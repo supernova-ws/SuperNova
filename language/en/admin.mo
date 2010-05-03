@@ -127,4 +127,5 @@ $lang['adm_er_time']  = "Дата";
 $lang['adm_er_nbs']   = "ошибок всего...";
 
 $lang['adm_maint']    = "Maintenance";
+$lang['adm_backup']   = "Backup";
 ?>
