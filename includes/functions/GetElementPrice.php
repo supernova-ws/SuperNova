@@ -17,38 +17,46 @@
 //
 // Reponse : Une chaine de caractère decrivant proprement le tarif pret a etre affichée
 function GetElementPrice ($user, $planet, $Element, $userfactor = true) {
-	global $pricelist, $resource, $lang;
+  global $pricelist, $resource, $lang, $reslist, $CombatCaps;
 
-	if ($userfactor) {
-		$level = ($planet[$resource[$Element]]) ? $planet[$resource[$Element]] : $user[$resource[$Element]];
-	}
+  if ($userfactor) {
+    $level = ($planet[$resource[$Element]]) ? $planet[$resource[$Element]] : $user[$resource[$Element]];
+  }
 
-	$is_buyeable = true;
-	$array = array(
-		'metal'      => $lang["Metal"],
-		'crystal'    => $lang["Crystal"],
-		'deuterium'  => $lang["Deuterium"],
-		'energy_max' => $lang["Energy"]
-		);
+  $is_buyeable = true;
+  $array = array(
+    'metal'      => $lang["Metal"],
+    'crystal'    => $lang["Crystal"],
+    'deuterium'  => $lang["Deuterium"],
+    'energy_max' => $lang["Energy"]
+    );
 
-	$text = $lang['Requires'] . ": ";
-	foreach ($array as $ResType => $ResTitle) {
-		if ($pricelist[$Element][$ResType] != 0) {
-			$text .= $ResTitle . ": ";
-			if ($userfactor) {
-				$cost = floor($pricelist[$Element][$ResType] * pow($pricelist[$Element]['factor'], $level));
-			} else {
-				$cost = floor($pricelist[$Element][$ResType]);
-			}
-			if ($cost > $planet[$ResType]) {
-				$text .= "<b style=\"color:red;\"> <t title=\"-" . pretty_number ($cost - $planet[$ResType]) . "\">";
-				$text .= "<span class=\"noresources\">" . pretty_number($cost) . "</span></t></b> ";
-				$is_buyeable = false; //style="cursor: pointer;"
-			} else {
-				$text .= "<b style=\"color:lime;\"> <span class=\"noresources\">" . pretty_number($cost) . "</span></b> ";
-			}
-		}
-	}
-	return $text;
+  if(in_array($Element, $reslist['fleet']) || in_array($Element, $reslist['defense'])){
+    // $text .= $lang['sys_ship_armour'] . ': ' . ($CombatCaps[$Element]['armor']<=10000 ? $CombatCaps[$Element]['armor'] : ($CombatCaps[$Element]['armor']/1000) .'k' )  . '; ';
+    $text .= $lang['sys_ship_armour'] . ': ' . INT_myPrettyNumber($CombatCaps[$Element]['armor'], 10000)  . '; ';
+    $text .= $lang['sys_ship_shield'] . ': ' . INT_myPrettyNumber($CombatCaps[$Element]['shield'], 10000) . '; ';
+    $text .= $lang['sys_ship_weapon'] . ': ' . INT_myPrettyNumber($CombatCaps[$Element]['attack'], 10000) ;
+    $text .= '<br>';
+  };
+
+  $text .= $lang['Requires'] . ": ";
+  foreach ($array as $ResType => $ResTitle) {
+    if ($pricelist[$Element][$ResType] != 0) {
+      $text .= $ResTitle . ": ";
+      if ($userfactor) {
+        $cost = floor($pricelist[$Element][$ResType] * pow($pricelist[$Element]['factor'], $level));
+      } else {
+        $cost = floor($pricelist[$Element][$ResType]);
+      }
+      if ($cost > $planet[$ResType]) {
+        $text .= "<b style=\"color:red;\"> <t title=\"-" . pretty_number ($cost - $planet[$ResType]) . "\">";
+        $text .= "<span class=\"noresources\">" . pretty_number($cost) . "</span></t></b> ";
+        $is_buyeable = false; //style="cursor: pointer;"
+      } else {
+        $text .= "<b style=\"color:lime;\"> <span class=\"noresources\">" . pretty_number($cost) . "</span></b> ";
+      }
+    }
+  }
+  return $text;
 }
 ?>
