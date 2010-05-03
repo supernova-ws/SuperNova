@@ -1,0 +1,1 @@
+<span id="schrotti_energy" style="color:red;">0</span>

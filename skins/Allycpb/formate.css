@@ -1,0 +1,301 @@
+/*
+
+--==::::[+]::::==----==::::[ Aurora - Skin für Ogame ]::::==----==::::[+]::::==--
+
+  Beschreibung:	Skin für das Browsergame "OGame".
+  Ersteller:	Diamond (diamond@dragonscall.com); basierend auf dem Skin von "g3ck0 (g3ck0@cnp-online.de)"
+  Datum:		31.01.2004
+  Version:	1.00
+  Entstehung:	Tja, man macht sich an die seltsamsten Dinge wenn man in Ogame auf Ressourcen warten muss ;). Diesmal Uni13, zu Ehren der von mir gegründeten Allianz "Aurora".
+
+--==::::[+]::::==----==::::[ Aurora - Skin für Ogame ]::::==----==::::[+]::::==--
+
+*/
+
+., #, td, th, textarea, body
+{
+  font-family          : Trebuchet MS, Arial, Helvetica, sans-serif;
+  font-size            : 11px;
+}
+
+img
+{
+  border               : 0px;
+}
+
+p table
+{
+  border               : 0px;
+}
+
+p td
+{
+  text-align           : center;
+}
+
+table table
+{
+  border               : 0px;
+}
+
+table table td
+{
+  font-size            : 15px;
+}
+
+body
+{
+  color                : #C79F00;
+  margin-top           : 1px;
+  margin-left          : 1px;
+  background           : #000000;
+  background-image     : url(img/animspace.gif);
+  SCROLLBAR-BASE-COLOR : #000000;
+  SCROLLBAR-ARROW-COLOR: #FFEE2B;
+}
+
+th, td.a, td.b, td.c, td.f, input, select,
+td.g, td.h, td.i, td.j, td.k, td.l, td.m,
+td.n, td.o, td.q, td.r, td.v, .style td,
+textarea, p td, table.s th img
+{
+  border               : 1px #920000 solid;
+}
+
+th, td.a, td.b, td.c, td.f, input, select, td.g,
+td.h, td.i, td.j, td.k, td.m, td.o, td.q, td.r,
+td.v, td.s, .style td, p td
+{
+  background-color     : #3C0E0E;
+}
+
+th
+{
+  text-align           : center;
+  padding-left         : 3px;
+  padding-right        : 3px;
+}
+
+td.a
+{
+  height               : 37px;
+  text-align           : center;
+}
+
+td.b
+{
+  padding              : 3px;
+}
+
+td.c
+{
+  font-weight          : bold;
+  color                : #FECB00;
+  padding-left         : 3px;
+  background-image     : url(img/bkd.gif);
+}
+
+td.f, input, select, textarea
+{
+  color                : #FECB00;
+  background-color     : #3C0E0E;
+}
+
+textarea
+{
+  width                : 100%;
+}
+
+td.k input
+{
+  text-align           : left;
+}
+
+td.g
+{
+  font-weight          : bold;
+  text-align           : right;
+  color                : #FECB00;
+}
+
+td.h
+{
+  text-align           : center;
+  color                : #FECB00;
+}
+
+td.i
+{
+  text-align           : center;
+  color                : #FECB00;
+}
+
+td.j
+{
+  text-align           : center;
+  color                : #FECB00;
+}
+
+td.k, td.k input
+{
+  text-align           : center;
+  color                : #FFEE2B;
+}
+
+td.l
+{
+  background-color     : #2D0000;
+  color                : #FFEE2B;
+  vertical-align       : top;
+  padding              : 3px;
+  background-image     : url(img/bbk.gif);
+  background-repeat    : no-repeat;
+}
+
+td.m
+{
+  font-weight          : bold;
+  text-align           : right;
+  width                : 86px;
+  color                : #89110D;
+}
+
+td.n
+{
+  font-weight          : bold;
+  text-align           : right;
+  width                : 88px;
+  text-align           : center;
+  color                : #FECB00;
+}
+
+td.o
+{
+  text-align           : center;
+  color                : #FECB00;
+}
+
+td.q
+{
+  font-weight          : bold;
+  font-size            : 11px;
+  text-align           : center;
+  vertical-align       : middle;
+  color                : #FECB00;
+}
+
+td.r
+{
+  text-align           : right;
+  color                : #FECB00;
+}
+
+td.v
+{
+  font-weight          : bold;
+  text-align           : right;
+  color                : #FECB00;
+}
+
+td.s
+{
+  color                : #FF0000;
+}
+
+table.s th
+{
+  border               : 0px;
+}
+
+table.s th img
+{
+  width                : 88px;
+  height               : 88px;
+}
+
+div.z
+{
+  font-weight          : bold;
+  color                : #FFEE2B;
+}
+
+a
+{
+  color                : #FFEE2B;
+  text-decoration      : none;
+  font-weight          : bold;
+}
+
+a.s
+{
+  color                : #FFEE2B;
+}
+
+a.t
+{
+  color                : #FECB00;
+}
+
+a:hover
+{
+  color                : #FFEE2B;
+  text-decoration      : underline;
+}
+
+.style td
+{
+  color                : #FFEE2B;
+  border-top           : 0px; 
+  font-size            : 11px;
+}
+
+.style div a
+{
+  height               : 100%;
+  width                : 100%;
+  color                : #FFEE2B;
+  font-size            : 11px;
+}
+
+.style div a:link
+{
+  height               : 100%;
+  width                : 100%;
+  color                : #FFEE2B;
+  font-size            : 11px;
+}
+
+.style div a:hover
+{
+  background-color     : #151515;
+  height               : 100%;
+  width                : 100%;
+  text-decoration      : none;
+  font-size            : 11px;
+}
+
+.style p
+{
+  height               : 1px;
+  width                : 1px;
+  margin               : 0px;
+  padding              : 0px;
+}
+
+.style
+{
+  margin-top           : 11px;
+}
+
+h1
+{
+  font-size            : 11px;
+  border-bottom        : 1px #000000 solid;
+  width                : 98%;
+  text-align           : right;
+}
+
+
+
+
+CE9637

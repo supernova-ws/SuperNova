@@ -1,0 +1,227 @@
+.allymember { 
+  color: lime;
+}
+
+.noob { 
+  color: #a0ffa0;
+}
+
+.strong { 
+  color: #ffa0a0;
+}
+
+.vacation { 
+  color: skyblue;
+}
+
+.inactive { 
+  color: CCCCCC;
+}
+
+.longinactive { 
+  color: 999999;
+}
+
+.banned {
+  text-decoration: line-through;
+}
+
+.flight {
+}
+
+.return {
+}
+
+.holding {
+}
+  
+*.ownattack { 
+  color: lime;
+}
+
+.flight .ownattack a {
+  color: #E6EBFB;
+}
+
+*.owncolony { 
+  color: lime;
+}
+
+.flight .owncolony a { 
+  color: #E6EBFB;
+}
+
+*.owndeploy { 
+  color: lime;
+}
+
+.flight .owndeploy a { 
+  color: #E6EBFB;
+}
+
+*.owndestroy { 
+  color: gold;
+}
+
+.flight .owndestroy a { 
+  color: #E6EBFB;
+}
+
+*.ownespionage { 
+  color: orange;
+}
+
+.flight .ownespionage a { 
+  color: #E6EBFB;
+}
+
+*.ownfederation { 
+  color: 33CC00;
+}
+
+.flight .ownfederation a { 
+  color: #E6EBFB;
+}
+
+*.ownharvest { 
+  color: lime;
+}
+
+.flight .ownharvest a { 
+  color: #E6EBFB;
+}
+
+*.ownhold { 
+  color: #80a0C0;
+}
+
+.flight .ownhold a { 
+  color: #E6EBFB;
+}
+
+*.ownmissile { 
+  color: orange;
+}
+
+.flight .ownmissile a { 
+  color: #E6EBFB;
+}
+
+*.owntransport { 
+  color: lime;
+}
+
+.flight .owntransport a { 
+  color: #E6EBFB;
+}
+
+*.attack { 
+  color: red;
+}
+
+.flight .attack a { 
+  color: #E6EBFB;
+}
+
+*.colony { 
+  color: lime;
+}
+
+.flight .colony a { 
+  color: #E6EBFB;
+}
+
+*.deploy { 
+  color: lime;
+}
+
+.flight .deploy a { 
+  color: #E6EBFB;
+}
+
+*.destroy { 
+  color: gold;
+}
+
+.flight .destroy a { 
+  color: #E6EBFB;
+}
+
+*.espionage { 
+  color: red;
+}
+
+.flight .espionage a { 
+  color: #E6EBFB;
+}
+
+*.federation {  
+  color: CC0000;
+}
+
+.flight .federation a { 
+  color: #E6EBFB;
+}
+
+*.harvest {  
+  color: lime;
+}
+
+.flight .harvest a { 
+  color: #E6EBFB;
+}
+
+*.hold { 
+  color: #80a0C0;
+}
+
+.flight .hold a { 
+  color: #E6EBFB;
+}
+
+*.missile { 
+  color: red;
+}
+
+
+*.transport {  
+  color: lime;
+}
+
+.flight .transport a { 
+  color: #E6EBFB;
+}
+
+.success { 
+  color: lime;
+}
+
+.errormessage a {
+	text-decoration: underline;
+}
+
+.error { 
+  color: red;
+}
+
+.warning { 
+  color: orange;
+}
+
+.notice { 
+  color: yellow;
+}
+
+.combatreport {
+  color: red;
+}
+
+.espionagereport {
+  color: orange;
+}
+
+.timeremaining {  
+  color: orange;
+}
+
+

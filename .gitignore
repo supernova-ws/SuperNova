@@ -1,0 +1,6 @@
+# Ignore config.php
+/config.php
+# Ignore all dotfiles...
+.*
+# except for .gitignore
+!.gitignore

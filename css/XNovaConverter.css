@@ -1,0 +1,98 @@
+/*
+
+  .:: Mercenary Report default skin ::.
+
+*/
+
+/* Colore sfondo finestra principale */
+body {
+ 	background-color: #000000;	
+	scrollbar-arrow-color: #FFCC00;
+	scrollbar-base-color: #212121; 
+	scrollbar-track-color: #D6D3CE; 
+	scrollbar-face-color: #535353;
+	scrollbar-3dlight-color: #666666; 
+ 	scrollbar-darkshadow-color: #222222; 
+	scrollbar-shadow-color: #555555;  
+}
+
+
+/* Carattere scritte finestra principale */
+td {
+	font-size: 11px;
+	font-family: Verdana;
+	color: #FFCC00;
+}
+
+
+/* Pannelli e anteprima sfondo scuro */
+
+textarea, .inp, .dark {
+	background-color: #212121;
+	color: #FFFFCC;
+	font-size: 11px;
+	font-family: Tahoma;
+	font-weight: normal;
+}
+
+
+/* Collegamenti (Scritta "Chiudi" in anteprima) */
+a {
+	font-size: 11px;
+	font-family: Tahoma;
+	font-weight: bold;
+	text-decoration: none;
+	color: #FFCC00;
+}
+a:hover {color: #CC9900;}
+
+
+/* Pulsanti */
+.button{
+	background-color: #212121;
+	color: #CC9900;	
+	border: 2px outset white;
+	font-weight: bold;
+	font-family: Tahoma;
+}
+
+
+/* Finestra Anteprima */
+
+#message {
+	font-size: 12px;
+	font-family: Tahoma;
+}
+
+/* Finestra Anteprima su sfondo chiaro */
+
+.light {
+	background-color: #DFDFDF;
+	color: #000000;
+	font-size: 11px;
+	font-family: Tahoma;
+	font-weight: normal;
+}
+
+
+/* Headers finestra anteprima */
+
+#note0 {font-weight: bold;}
+#note1 {font-weight: bold;}
+
+
+/* Banner finestra principale */
+
+.c {
+	background-image:url("images/XNovaConverterLogo.png");
+	background-repeat:no-repeat;
+	background-position:top center;
+	font-size: 16px;
+	font-weight: bold;
+	letter-spacing:3pt;
+	text-align:center;
+	text-shadow: white 2.5em 2.5em 12px;
+}
+
+
+

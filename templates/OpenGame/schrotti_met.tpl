@@ -1,0 +1,1 @@
+<span id="schrotti_met" style="color:yellow;">0</span>

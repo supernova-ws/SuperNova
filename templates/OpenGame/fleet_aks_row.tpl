@@ -1,0 +1,1 @@
+<tr height="20"><th colspan="2"><a href="javascript: setTarget({aks_galaxy},{aks_system},{aks_planet},{aks_planet_type}); shortInfo(); setACS({aks_id}); setACS_target('g{aks_galaxy}s{aks_system}p{aks_planet}t{aks_planet_type}');">({aks_name})</a></th></tr>

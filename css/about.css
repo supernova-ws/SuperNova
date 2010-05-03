@@ -1,0 +1,56 @@
+.aboutParagraphHead{
+  text-align:left;
+  font-weight:bold;
+  font-size:14px;
+}
+.storyParagraphHead{
+  text-align:left;
+  font-weight:bold;
+    font-size:14px;
+}
+
+.storyLink{
+    font-size:12px;
+    color:#878787;
+    text-align:center;
+    display:block;
+}
+
+.storyLink:hover{
+    color:#FFFFFF;
+}
+
+.joinLink{
+font-weight:bold;
+font-size:14px;
+color:#497ec7;
+text-align:center;
+  display:block;
+}
+
+.joinLink:hover{
+  display:block;
+font-weight:bold;
+color:#FFFFFF;
+}
+
+.imageLeft{
+float:left;
+margin-right:10px;
+margin-left:5px;
+margin-bottom:10px;
+}
+
+.imageRight{
+float:right;
+margin-left:10px;
+}
+.imageFirst{
+float:right;
+margin-left:10px;
+margin-top:20px;
+}
+
+.bigImage{
+margin-left:8px;
+}
