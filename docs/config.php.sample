@@ -1,0 +1,10 @@
+<?php
+if(!defined("INSIDE")){ die("attemp hacking"); }
+$dbsettings = Array(
+"server"     => "localhost", // MySQL сервер.
+"user"       => "MYSQL_USERNAME", // Логин доступа MySQL сервера.
+"pass"       => "MYSQL_PASSWORD", // Пароль доступа MySQL сервера.
+"name"       => "MYSQL_TABLENAME", // Название MySQL базы.
+"prefix"     => "game_", // Префикс для таблиц в базе.
+"secretword" => "SECRETWORD"); // Ключевое слово для создания Cookies. (Не забудьте изменить на своё!)
+?>
