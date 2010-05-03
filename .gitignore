@@ -4,3 +4,4 @@
 .*
 # except for .gitignore
 !.gitignore
+!.gitattributes
