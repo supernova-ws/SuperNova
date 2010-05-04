@@ -6,23 +6,25 @@
 * @version 1.2 by Ihor
 * @copyright 2008 By e-Zobar for XNova
 */
+// Function to center text in the created banner
+function CenterTextBanner($z,$y,$zone) {
+  $a = strlen($z);
+  $b = imagefontwidth($y);
+  $c = $a*$b;
+  $d = $zone-$c;
+  $e = $d/2;
+  return $e;
+}
+
 define('INSIDE' , true);
 define('INSTALL' , false);
 $ugamela_root_path = '../';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 includeLang('overview');
-// Function to center text in the created banner
-function CenterTextBanner($z,$y,$zone) {
-$a = strlen($z);
-$b = imagefontwidth($y);
-$c = $a*$b;
-$d = $zone-$c;
-$e = $d/2;
-return $e;
-}
-extract($_GET);
-if (isset($id)) {
+
+$id = intval($_GET['id']);
+if (!empty($id)) {
 // Parameters
 header ("Content-type: image/png");
 $size = getimagesize($game_config['banner_source_post']);
