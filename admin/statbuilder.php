@@ -267,6 +267,9 @@ while ($CurAlly = mysql_fetch_assoc($GameAllys)) {
   doquery ( $QryInsertStats , 'statpoints');
 }
 
+$userCount = doquery ( "SELECT COUNT(*) FROM {{table}}", 'users', true);
+doquery( "UPDATE {{table}} SET `config_value`='". $userCount[0] ."' WHERE `config_name` = 'users_amount';", 'config' );
+
 /*
 $Dele_Teme = $StatDate-604800;
 $Del_Timeas = $StatDate;
