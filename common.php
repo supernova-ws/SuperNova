@@ -40,6 +40,9 @@ if (INSTALL != true) {
   include($ugamela_root_path . 'includes/db.'.$phpEx);
   include($ugamela_root_path . 'includes/strings.'.$phpEx);
 
+  // Initializing global "config" object
+  $config = objConfig::getInstance();
+
   // Lecture de la table de configuration
   $query = doquery("SELECT * FROM {{table}}",'config');
   while ( $row = mysql_fetch_assoc($query) ) {
