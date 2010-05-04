@@ -80,14 +80,26 @@ class objCache {
     };
   }
 
-  public function __unset($name)
-  {
+  public function __unset($name){
     switch (self::$mode) {
       case 0:
         unset(self::$data[self::$prefix.$name]);
         break;
       case 1:
         xcache_unset(self::$prefix.$name);
+        break;
+    };
+  }
+
+  public function unset_by_prefix($prefix_unset = '')
+  {
+  print(self::$mode);
+    switch (self::$mode) {
+      case 0:
+        array_walk(self::$data, create_function('&$v,$k,$p', 'if(strpos($k, $p) === 0)$v = NULL;'), self::$prefix.$prefix_unset);
+        break;
+      case 1:
+        xcache_unset_by_prefix(self::$prefix.$prefix_unset);
         break;
     };
   }
@@ -138,12 +150,16 @@ class objConfig extends objCache {
     'users_amount' => 0,
 
     'int_banner_showInOverview' => 1,
-    'int_banner_background' => "images/bann.png",
-    'int_banner_URL' => "/banner.php",
+    'int_banner_background' => "images/banner.png",
+    'int_banner_URL' => "/banner.php?type=banner",
+    'int_banner_fontUniverse' => "cristal.ttf",
+    'int_banner_fontRaids' => "klmnfp2005.ttf",
+    'int_banner_fontInfo' => "terminator.ttf",
 
-    'int_userBar_showInOverview' => 1,
-    'int_userBar_background' => "images/userbar.png",
-    'int_userBar_URL' => "/banner.php"
+    'int_userbar_showInOverview' => 1,
+    'int_userbar_background' => "images/userbar.png",
+    'int_userbar_URL' => "/banner.php?type=userbar",
+    'int_userbar_font' => "arialbd.ttf",
   );
 
 
@@ -155,9 +171,7 @@ class objConfig extends objCache {
     return self::$cacheObject;
   }
 
-  private function __construct()
-  {
-    parent::__construct('config_');
+  public function reload(){
     $query = doquery("SELECT * FROM {{table}}",'config');
     while ( $row = mysql_fetch_assoc($query) ) {
       $this->$row['config_name'] = $row['config_value'];
@@ -165,6 +179,12 @@ class objConfig extends objCache {
     foreach(self::$defaults as $defName => $defValue)
       if(!isset($this->$defName))
         $this->$defName = $defValue;
+  }
+
+  private function __construct()
+  {
+    parent::__construct('config_');
+    $this->reload();
   }
 }
 ?>

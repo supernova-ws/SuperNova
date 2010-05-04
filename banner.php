@@ -23,6 +23,6 @@ includeLang('overview');
 
 $id = intval($_GET['id']);
 if (!empty($id)) {
-  INT_createBanner($id, $_GET['type'], $_GET['format'])
+  INT_createBanner($id, $_GET['type'], $_GET['format']);
 }
 ?>
