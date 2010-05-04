@@ -2,6 +2,7 @@
 /**
  * FleetBuildingPage.php
  *
+ * @version 1.2s - Security checked for SQL-injection by Gorlum for http://supernova.ws
  * @version 1.2
  * @copyright 2008 By Chlorel for XNova
  * version 1.2 by F.E.A.R. aka PekopT, www.kodportal.ru, 2008
@@ -45,11 +46,15 @@ function CheckFleetSettingsInQueue ( $CurrentPlanet ) {
 function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser ) {
   global $planetrow, $lang, $pricelist, $resource, $phpEx, $dpath, $_POST, $user, $debug;
 
+  $GET_action   = SYS_mysqlSmartEscape($_GET['action']);
+  $GET_mode     = SYS_mysqlSmartEscape($_GET['mode']);
+  $POST_fmenge = $_POST['fmenge'];
+
   $NoResearchMessage = "";
   $bContinue         = true;
 
-  if(isset($_GET[action])){
-    switch($_GET[action]){
+  if(isset($GET_action)){
+    switch($GET_action){
       case "cancelqueue":
   $d_m = 'User cancelling defense: ' . $CurrentPlanet['b_hangar_id'];
   $debug->warning($d_m,'Possible Buguse');
@@ -75,18 +80,18 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser ) {
         doquery($SetRes, 'planets');
 
         // PREVENT SUBMITS?
-        header("location: " . $_SERVER['PHP_SELF'] . "?mode=" . $_GET[mode]);
+        header("location: " . $_SERVER['PHP_SELF'] . "?mode=" . $GET_mode);
         exit;
 
         break;
     }
   }
 
-  if (isset($_POST['fmenge'])) {
+  if (isset($POST_fmenge)) {
     $ResourcesToUpd = array();
 
     $AddedInQueue = false;
-    foreach($_POST['fmenge'] as $Element => $Count) {
+    foreach($POST_fmenge as $Element => $Count) {
       $Element = intval($Element);
       $Count   = intval($Count);
       if ($Count > MAX_FLEET_OR_DEFS_PER_ROW) {

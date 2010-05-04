@@ -3,9 +3,9 @@
 /**
  * BuildRessourcePage.php
  *
- * @version 2.0
+ * @version 2.0s - Security checked for SQL-injection by Gorlum for http://supernova.ws
+ * @version 2.0 - copyright 2010 almost fully rewrote and optimized by Gorlum for http://supernova.ws
  * @copyright 2008 by ShadoV for XNova
- * @copyright 2010 almost fully rewrote and optimized by Gorlum for http://ogame.triolan.com.ua
  */
 
 function INT_recalcStorageBar($Caps, &$parse, $strResource){
@@ -48,7 +48,7 @@ function BuildRessourcePage ( $CurrentUser, $CurrentPlanet ) {
   $SubQry               = "";
   if ($_POST) {
     foreach($_POST as $Field => $Value) {
-      $FieldName = $Field."_porcent";
+      $FieldName = SYS_mysqlSmartEscape($Field)."_porcent";
       if ( isset( $CurrentPlanet[ $FieldName ] ) ) {
         if ( ! in_array( $Value, $ValidList['percent']) ) {
           header("Location: overview.php");
@@ -130,9 +130,5 @@ function BuildRessourcePage ( $CurrentUser, $CurrentPlanet ) {
 // History version
 // 1.0 Mise en module initiale (creation)
 // 2.0 Almost fully rewrote and optimized by Gorlum for http://ogame.triolan.com.ua
-
-
-
-
 
 ?>

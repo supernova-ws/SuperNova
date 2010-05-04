@@ -3,6 +3,7 @@
 /**
  * ResearchBuildingPage.php
  *
+ * @version 1.2s - Security checked for SQL-injection by Gorlum for http://supernova.ws
  * @version 1.2
  * @copyright 2008 by Chlorel for XNova
  */
@@ -17,6 +18,9 @@
 function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $ThePlanet) {
   global $lang, $resource, $reslist, $phpEx, $dpath, $game_config, $_GET;
 
+  $TheCommand = SYS_mysqlSmartEscape($_GET['cmd']);
+  $Techno     = intval($_GET['tech']);
+
   $NoResearchMessage = "";
   $bContinue         = true;
   // Deja est qu'il y a un laboratoire sur la planete ???
@@ -30,10 +34,7 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
   }
 
   // Boucle d'interpretation des eventuelles commandes
-  if (isset($_GET['cmd'])) {
-    $TheCommand = $_GET['cmd'];
-    $Techno     = intval($_GET['tech']);
-
+  if (isset($TheCommand)) {
     if (!$Techno) {
       $debug->error("Buguser: ".$user['username']." (".$user['id'].")<br />Free research","Bug use");
       die();

@@ -3,12 +3,15 @@
 /**
  * ShowTopNavigationBar.php
  *
+ * @version 1.0s - Security checked for SQL-injection by Gorlum for http://supernova.ws
  * @version 1
  * @copyright 2008 By Chlorel for XNova
  */
 
 function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet ) {
   global $lang, $_GET, $game_config;
+
+  $GET_mode = SYS_mysqlSmartEscape($_GET['mode']);
 
   if ($CurrentUser) {
     if ( !$CurrentPlanet ) {
@@ -36,7 +39,7 @@ function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet ) {
           $parse['planetlist'] .= "selected=\"selected\" ";
         }
         $parse['planetlist'] .= "value=\"?cp=".$CurPlanet['id']."";
-        $parse['planetlist'] .= "&amp;mode=".$_GET['mode'];
+        $parse['planetlist'] .= "&amp;mode=".$GET_mode;
         $parse['planetlist'] .= "&amp;re=0\">";
 
         // Nom et coordonnées de la planete

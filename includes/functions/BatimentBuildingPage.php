@@ -3,6 +3,7 @@
 /**
  * BatimentBuildingPage.php
  *
+ * @version 1.1s - Security checked for SQL-injection by Gorlum for http://supernova.ws
  * @version 1.1
  * @copyright 2008 by Chlorel for XNova
  */
@@ -10,38 +11,37 @@
 function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser) {
   global $ProdGrid,$lang, $resource, $reslist, $phpEx, $dpath, $game_config, $_GET;
 
+  $GET_cmd      = SYS_mysqlSmartEscape($_GET['cmd']);
+  $GET_building = intval($_GET['building']);
+  // $Element      = intval($_GET['building']);
+  $GET_listid       = $_GET['listid'];
+
   CheckPlanetUsedFields ( $CurrentPlanet );
 
   // Tables des batiments possibles par type de planete
   $Allowed['1'] = array(  1,  2,  3,  4, 12, 14, 15, 21, 22, 23, 24, 31, 33, 34, 35, 44);
   $Allowed['3'] = array( 12, 14, 21, 22, 23, 24, 34, 41, 42, 43);
 
+
   // Boucle d'interpretation des eventuelles commandes
-  if (isset($_GET['cmd'])) {
+  if (isset($GET_cmd)) {
     // On passe une commande
     $bDoItNow   = false;
-    $TheCommand = $_GET['cmd'];
-    $Element    = $_GET['building'];
-    if ($Element) {
-      $Element = intval($Element);
-    };
-//    if ((!$Element) || ($_GET['building']!=$Element)) {
-    if ((!$Element) && (($TheCommand == 'insert') || ($TheCommand == 'destroy'))) {
+    if ((!$GET_building) && (($GET_cmd == 'insert') || ($GET_cmd == 'destroy'))) {
       $debug->error("Buguser: ".$user['username']." (".$user['id'].")<br />Free building","Bug use");
       die();
     };
-    $ListID     = $_GET['listid'];
-    if       ( isset ( $Element )) {
-      if ( !strchr ( $Element, " ") ) {
-        if (in_array( trim($Element), $Allowed[$CurrentPlanet['planet_type']])) {
+    if       ( isset ( $GET_building )) {
+      if ( !strchr ( $GET_building, " ") ) {
+        if (in_array( trim($GET_building), $Allowed[$CurrentPlanet['planet_type']])) {
           $bDoItNow = true;
         }
       }
-    } elseif ( isset ( $ListID )) {
+    } elseif ( isset ( $GET_listid )) {
       $bDoItNow = true;
     }
     if ($bDoItNow == true) {
-      switch($TheCommand){
+      switch($GET_cmd){
         case 'cancel':
           // Interrompre le premier batiment de la queue
           CancelBuildingFromQueue ( $CurrentPlanet, $CurrentUser );
@@ -49,15 +49,15 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser) {
         case 'remove':
           // Supprimer un element de la queue (mais pas le premier)
           // $RemID -> element de la liste a supprimer
-          RemoveBuildingFromQueue ( $CurrentPlanet, $CurrentUser, $ListID );
+          RemoveBuildingFromQueue ( $CurrentPlanet, $CurrentUser, $GET_listid );
           break;
         case 'insert':
           // Insere un element dans la queue
-          AddBuildingToQueue ( $CurrentPlanet, $CurrentUser, $Element, true );
+          AddBuildingToQueue ( $CurrentPlanet, $CurrentUser, $GET_building, true );
           break;
         case 'destroy':
           // Detruit un batiment deja construit sur la planete !
-          AddBuildingToQueue ( $CurrentPlanet, $CurrentUser, $Element, false );
+          AddBuildingToQueue ( $CurrentPlanet, $CurrentUser, $GET_building, false );
           break;
         default:
           break;

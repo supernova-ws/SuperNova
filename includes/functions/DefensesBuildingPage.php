@@ -3,6 +3,7 @@
 /**
  * DefensesBuildingPage.php
  *
+ * @version 1.2s - Security checked for SQL-injection by Gorlum for http://supernova.ws
  * @version 1.2
  * @copyright 2008 By Chlorel for XNova
   * version 1.2 by F.E.A.R. aka PekopT, www.kodportal.ru, 2008
@@ -44,10 +45,14 @@ function CheckDefSettingsInQueue ( $CurrentPlanet ) {
 
 
 function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
-  global $CurrentPlanetrow, $lang, $pricelist, $resource, $phpEx, $dpath, $_POST, $debug;
+  global $CurrentPlanetrow, $lang, $pricelist, $resource, $phpEx, $dpath, $_POST, $debug, $_GET;
 
-  if(isset($_GET[action])){
-    switch($_GET[action]){
+  $GET_action  = SYS_mysqlSmartEscape($_GET['action']);
+  $GET_mode    = SYS_mysqlSmartEscape($_GET['mode']);
+  $POST_fmenge = $_POST['fmenge'];
+
+  if(isset($GET_action)){
+    switch($GET_action){
       case "cancelqueue":
 
   $d_m = 'User cancelling defense: ' . $CurrentPlanet['b_hangar_id'];
@@ -75,7 +80,7 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
 
 
           // PREVENT SUBMITS?
-          header("location: " . $_SERVER['PHP_SELF'] . "?mode=" . $_GET[mode]);
+          header("location: " . $_SERVER['PHP_SELF'] . "?mode=" . $GET_mode);
           exit;
 
         break;
@@ -86,12 +91,12 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
   // counting those one the planet and those on the current que
   $built = GetRestrictedConstructionNum($CurrentPlanet);
 
-  if (isset($_POST['fmenge'])) {
+  if (isset($POST_fmenge)) {
     $ResourcesToUpd = array();
 
     $BuildArray = explode (";", $CurrentPlanet['b_hangar_id']);
     $SiloSpace = max(0, $CurrentPlanet[ $resource[44] ] * 10 - $built[502] - $built[503] * 2);
-    foreach($_POST['fmenge'] as $Element => $Count) {
+    foreach($POST_fmenge as $Element => $Count) {
       $Element = intval($Element);
       $Count   = intval($Count);
       if ($Count > MAX_FLEET_OR_DEFS_PER_ROW) {
@@ -99,7 +104,7 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
       }
 
   if ($Element==409) {
-    $d_m = 'User building Planet Defense: ' . dump($_POST['fmenge']);
+    $d_m = 'User building Planet Defense: ' . dump($POST_fmenge);
     $debug->warning($d_m,'Possible Buguse II');
   }
 
