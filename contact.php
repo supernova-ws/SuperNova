@@ -32,7 +32,7 @@ include($ugamela_root_path . 'common.' . $phpEx);
     $parse['ctc_admin_list'] .= parsetemplate($RowsTPL, $bloc);
   }
 
-  display(parsetemplate(gettemplate('contact_body'), $parse), $lang['ctc_title'], false, "", false, false);
+  display(parsetemplate(gettemplate('contact_body'), $parse), $lang['ctc_title']);
 
 // -----------------------------------------------------------------------------------------------------------
 // History version

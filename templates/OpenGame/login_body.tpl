@@ -28,7 +28,7 @@
     <div class="menupoint">:: {log_menu} ::</div>
     	<a href="reg.php">{log_reg}!</a>
 	<a href="lostpassword.php">{PasswordLost}</a>
-	<a href="stat_menu.php">{log_stat_menu}</a>
+	<a href="stat.php">{log_stat_menu}</a>
 	<a href="contact.php">{log_contacts}</a>
 	<a href="faq.php">{log_faq}</a>
 	<a href="credit.php">{log_cred}</a>

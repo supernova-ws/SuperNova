@@ -207,7 +207,7 @@ $page .= "
   </table>
   </center>";
 
-display ($page, $lang['Buddy_list'], false);
+display ($page, $lang['Buddy_list']);
 
 // Created by Perberos. All rights reversed (C) 2006
 ?>

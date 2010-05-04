@@ -154,7 +154,7 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
 // $metatags  -> S'il y a quelques actions particulieres a faire ...
 // $AdminPage -> Si on est dans la section admin ... faut le dire ...
 function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true) {
-  global $link, $game_config, $debug, $user, $planetrow, $dpath;
+  global $link, $game_config, $debug, $user, $planetrow, $dpath, $IsUserChecked;
 
   if (!$AdminPage) {
     $AdminPage = 0;
@@ -167,7 +167,7 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
 //  $DisplayPage .= '<table cellspacing=0 cellpadding=0 width=100% align=center style="none"><tr>';
 
   // $Menu = ShowLeftMenu ( $AdminPage );
-  if ($isDisplayMenu){ //
+  if ($isDisplayMenu && $IsUserChecked){ //
 //    $DisplayPage .= "<div style=\"position: fixed; top: 0px; left: 0px; width: 190px; align: center;\">";
     $DisplayPage .= "<div style=\"float:left; width: 190px; align: center;\">";
 //    $DisplayPage .= "<td width=190 valign=top>";
@@ -181,7 +181,7 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   $DisplayPage .= '<div id="page_body" style="margin-left: 190px; width: auto;"><center>';
 //  $DisplayPage .= '<td align=center>';
 
-  if ($topnav) {
+  if ($topnav && $IsUserChecked) {
     if ($user['aktywnosc'] == 1) {
       $urlaub_act_time = $user['time_aktyw'];
       $act_datum = date("d.m.Y", $urlaub_act_time);
