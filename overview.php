@@ -358,8 +358,6 @@ switch ($mode) {
 
     // -----------------------------------------------------------------------------------------------
     // News Frame ...
-    // External Chat Frame ...
-    // Banner ADS Google (meme si je suis contre cela)
     if ($game_config['OverviewNewsFrame'] == '1') {
       $parse['NewsFrame']          = "<tr><td colspan=4 class=\"c\">". $lang['ov_news_title'] . "</td></tr>";
       $lastAnnounces = doquery("SELECT * FROM {{table}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now} ORDER BY `tsTimeStamp` DESC LIMIT 3", 'announce');
@@ -367,21 +365,30 @@ switch ($mode) {
       while ($lastAnnounce = mysql_fetch_array($lastAnnounces))
         $parse['NewsFrame']         .= "<tr><th><font color=Cyan>" . $lastAnnounce['tsTimeStamp'] . "</font>" ."</th><th colspan=\"3\" valign=top><div align=justify>" . stripslashes($lastAnnounce['strAnnounce']) ."</div></th></tr>";
     }
+    // External Chat Frame ...
     if ($game_config['OverviewExternChat'] == '1') {
       $parse['ExternalTchatFrame'] = "<tr><th colspan=\"4\">". stripslashes( $game_config['OverviewExternChatCmd'] ) ."</th></tr>";
     }
 
+    // Banner ADS Google
     if ($game_config['OverviewClickBanner'] != '') {
       $parse['ClickBanner'] = stripslashes( $game_config['OverviewClickBanner'] );
     }
-    if ($game_config['BannerOverviewFrame'] == '1') {
-      $BannerURL = "http://".$_SERVER["SERVER_NAME"]."/scripts/createbanner.php?id=".$user['id']."";
-      $parse['bannerframe'] = "<th colspan=\"4\"><img src=\"/scripts/createbanner.php?id=".$user['id']."\"><br>".$lang['InfoBanner']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$BannerURL."[/img]\" size=\"62\"></th></tr>";
+
+    // SuperNova's banner for users to use
+    if ($config->int_banner_showInOverview) {
+      $bannerURL = "http://".$_SERVER["SERVER_NAME"]. $config->int_banner_URL;
+      $bannerURL .= strpos($bannerURL, '?') ? '&' : '?';
+      $bannerURL .= "id=" . $user['id'];
+      $parse['bannerframe'] = "<th colspan=\"4\"><img src=\"".$bannerURL."\"><br>".$lang['InfoBanner']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$bannerURL."[/img]\" size=\"62\"></th></tr>";
     }
 
-    if ($game_config['UserbarOverviewFrame'] == '1') {
-      $UserbarURL = "http://".$_SERVER["SERVER_NAME"]."/scripts/userbar.php?id=".$user['id']."";
-      $parse['userbarframe'] = "<th colspan=\"4\"><img src=\"/scripts/userbar.php?id=".$user['id']."\"><br>".$lang['InfoUserbar']."<br><input name=\"userbarlink\" type=\"text\" id=\"userbarlink\" value=\"[img]".$UserbarURL."[/img]\" size=\"62\"></th></tr>";
+    // SuperNova's userbar to use on forums
+    if ($config->int_userbar_showInOverview) {
+      $userbarURL = "http://" . $_SERVER["SERVER_NAME"] . $config->int_userbar_URL;
+      $userbarURL .= strpos($userbarURL, '?') ? '&' : '?';
+      $userbarURL .= "id=" . $user['id'];
+      $parse['userbarframe'] = "<th colspan=\"4\"><img src=\"".$userbarURL."\"><br>".$lang['InfoBanner']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$userbarURL."[/img]\" size=\"62\"></th></tr>";
     }
 
     // --- Gestion de l'affichage d'une lune ---------------------------------------------------------

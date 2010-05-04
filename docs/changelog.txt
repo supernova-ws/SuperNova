@@ -38,6 +38,17 @@ V0000
 
 [?] Боевка: Унификация боевого движка с движком уничтожения луны
 [?] Корректное отображение количества ползователей
+[?] using phpBB3 standalone template engine from
+    http://www.phpbb.com/community/viewtopic.php?f=71&t=1557455
+    http://wiki.phpbb.com/display/MODDOCS/Tutorial.Template+syntax
+
+[?] using phpBB3 for everything (^_^) - custom page
+    http://www.phpbb.com/kb/article/add-a-new-custom-page-to-phpbb/
+    looks like updated version of upper page:
+    http://wiki.phpbb.com/display/MODDOCS/Practical.Add+custom+page
+[?] using php 5.0+ embedded Database Object
+    http://ua2.php.net/manual/en/pdo.connections.php
+
 [?] Автоматическое обновление статистики (с обновлением количества пользователей)
 [?] Код сохранения конфигурации
 [?] Поддержка xCache для конфигурации

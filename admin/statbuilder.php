@@ -267,6 +267,9 @@ while ($CurAlly = mysql_fetch_assoc($GameAllys)) {
   doquery ( $QryInsertStats , 'statpoints');
 }
 
+$userCount = doquery ( "SELECT COUNT(*) FROM {{table}}", 'users', true);
+doquery( "UPDATE {{table}} SET `config_value`='". $userCount[0] ."' WHERE `config_name` = 'users_amount';", 'config' );
+
 /*
 $Dele_Teme = $StatDate-604800;
 $Del_Timeas = $StatDate;
@@ -330,7 +333,9 @@ while ($Del = mysql_fetch_assoc($Spr_Del)){
   doquery ( "DELETE FROM {{table}} WHERE `owner` = '" . $UserID . "';", 'buddy' );
   doquery ( "DELETE FROM {{table}} WHERE `user` = '" . $UserID . "';", 'annonce' );
   doquery ( "DELETE FROM {{table}} WHERE `id` = '" . $UserID . "';", 'users' );
-  doquery( "UPDATE {{table}} SET `config_value`='". $Useru_Poza ."' WHERE `config_name` = 'users_amount';", 'config' );
+  // doquery( "UPDATE {{table}} SET `config_value`='". $Useru_Poza ."' WHERE `config_name` = 'users_amount';", 'config' );
+  $userCount = doquery ( "SELECT COUNT(*) FROM {{table}}", 'users', true);
+  doquery( "UPDATE {{table}} SET `config_value`='". $userCount[0] ."' WHERE `config_name` = 'users_amount';", 'config' );
 }
 */
 
