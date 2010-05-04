@@ -1,5 +1,0 @@
-<?php 
-smilies_list
-
-
-?>

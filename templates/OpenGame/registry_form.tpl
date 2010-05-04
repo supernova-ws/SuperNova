@@ -1,18 +1,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon"><title>{log_servername}</title>
+<title>{log_servername}</title>
+<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
 <link rel="stylesheet" type="text/css" href="css/styles.css">
 <link rel="stylesheet" type="text/css" href="css/about.css">
 </head><body>
-<div id="main">
+<div><div id="main">
+</div>
 <div id="mainmenu">
-    <div class="menupoint"><a href="login.php">:: {log_menu} ::</a></div>
-    	<a href="reg.php">{log_reg}!</a>
-	<a href="lostpassword.php">{PasswordLost}</a>
-	<a href="stat_menu.php" target="_blank">{log_stat_menu}</a>
-	<a href="contact.php" target="_blank">{log_contacts}</a>
-<!-- 	<a href="faq.php">{log_faq}</a>
-	<a href="credit.php">{log_cred}</a> -->
+    <div class="menupoint">:: {log_menu} ::</div>
+	<a href="login.php">Главная</a>
+	<a href="lostpassword.php">Забыли пароль?</a>
+	<a href="credit.php">{log_cred}</a>
 	<a href="{forum_url}">{log_forums}</a>
+</div>
 </div>
     <div id="rightmenu" class="rightmenu_register">
         <div id="title">{log_reg}!</div>
@@ -84,17 +84,4 @@
             </div>
             <div id="infotext"></div>
             <div id="statustext"></div>
-<td colspan="2"><center>
-  </div>
-    </div></div>
-<table>
-<tr>
-<td>
-{ClickBanner}</td>
-</tr>
-</table>
-
-</body>
-
-
-</html>
+</body></html>

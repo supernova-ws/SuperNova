@@ -3,7 +3,6 @@ function f(target_url,win_name) {
   var new_win = window.open(target_url,win_name,'resizable=yes,scrollbars=yes,menubar=no,toolbar=no,width=550,height=280,top=0,left=0');
   new_win.focus();
 }
-parent.frames['Hauptframe'].location.replace("overview.php");
 </script>
 
 <table width="130" cellspacing="0" cellpadding="0">

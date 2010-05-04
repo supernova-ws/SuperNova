@@ -265,7 +265,7 @@ if ($_POST) {
     if ($game_config['OverviewClickBanner'] != '') {
         $parse['ClickBanner'] = stripslashes( $game_config['OverviewClickBanner'] );
       }
-  display(parsetemplate(gettemplate('registry_form'), $parse), $lang['registry'], false);
+  display(parsetemplate(gettemplate('registry_form'), $parse), $lang['registry'], false, '', false, false);
 }
 
 // -----------------------------------------------------------------------------------------------------------

@@ -1,9 +1,9 @@
 body {
-    background-color:#000000; 
-    background-image: url(../templates/OpenGame/img/sterne_bg2.jpg);
+    background-color:#000000;
+    background-image: url(../images/tlo.jpg);
     background-repeat: no-repeat;
-    text-align: center; 
-    font-family:Arial, Helvetica, sans-serif; 
+    text-align: center;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
 a {
@@ -19,9 +19,7 @@ a:hover {
     position: relative;
     width: 886px;
     height: 580px;
-    background-image: url(../images/tlo.jpg);
     background-repeat: none;
-   
 }
 
 #mainmenu {
@@ -29,10 +27,16 @@ a:hover {
     left: 270px;
     top: 366px;
     font-size: 12px;
-    font-weight: bold; 
-    color:#b1daf2; 
+    font-weight: bold;
+    color:#b1daf2;
     text-align: left;
     width: 127px;
+
+  background-color     : #000000;
+  filter               : alpha(opacity=70);
+  -moz-opacity         : 0.7;
+  -khtml-opacity       : 0.7;
+  opacity              : 0.7;
 }
 
 
@@ -42,9 +46,13 @@ a:hover {
     left: 400px;
     top: 457px;
     width: 450px;
-    height: 125px;
-    background-image: url(../images/tlo2.jpg);
-    z-index:10;
+    height: 69px;
+     border:1px solid #FFFFFF;
+  background-color     : #000000;
+  filter               : alpha(opacity=50);
+  -moz-opacity         : 0.5;
+  -khtml-opacity       : 0.5;
+  opacity              : 0.5;
 }
 
 .rightmenu_big {
@@ -53,7 +61,6 @@ a:hover {
     top: 70px;
     width: 450px;
     height: 384px;
-    background-image: url(../images/tlo3.jpg);
     z-index:1;
 }
 
@@ -63,7 +70,14 @@ a:hover {
     top: 70px;
     width: 450px;
     height: 384px;
-    background-image: url(../images/tlo5.jpg);
+
+     border:1px solid #FFFFFF;
+
+ background-color     : #000000;
+  filter               : alpha(opacity=70);
+  -moz-opacity         : 0.7;
+  -khtml-opacity       : 0.7;
+  opacity              : 0.7;
 }
 
 .rightmenu {
@@ -72,8 +86,14 @@ a:hover {
     top: 250px;
     width: 450px;
     height: 205px;
-    background-image: url(../images/tlo4.jpg);
-    z-index:1;
+
+     border:1px solid #FFFFFF;
+
+  background-color     : #000000;
+  filter               : alpha(opacity=50);
+  -moz-opacity         : 0.5;
+  -khtml-opacity       : 0.5;
+  opacity              : 0.5;
 }
 
 #link {
@@ -82,21 +102,30 @@ a:hover {
 
 #title {
     position: absolute;
-    left: 25px;
-    top: 12px;
-    font-family:Arial, Helvetica, sans-serif; 
-    font-size: 16px;
-    font-weight: bold; 
-    color: #0a1c25; 
+    left: 0px;
+    top: 0px;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #0a1c25;
     text-align: left;
+    width: 100%;
+    height: 24px;
+    text-align: center;
+
+  background-color     : #FFFFFF;
+  filter               : alpha(opacity=70);
+  -moz-opacity         : 0.7;
+  -khtml-opacity       : 0.7;
+  opacity              : 0.7;
 }
 
 /*#text1 {
     position: absolute;
-    font-family:Arial, Helvetica, sans-serif; 
+    font-family:Arial, Helvetica, sans-serif;
     font-size: 12px;
-    
-    color:#b1daf2; 
+
+    color:#b1daf2;
     text-align: left;
     width: 400px;
 
@@ -106,10 +135,10 @@ a:hover {
     position: absolute;
     left: 25px;
     top: 50px;
-    font-family:Arial, Helvetica, sans-serif; 
+    font-family:Arial, Helvetica, sans-serif;
     font-size: 12px;
-    
-    color:#b1daf2; 
+
+    color:#b1daf2;
     text-align: left;
     width: 400px;
 }
@@ -118,9 +147,9 @@ a:hover {
      overflow: auto;
      height: 320px;
      width: 405px;
-    
+
      padding-right: 10px;
-     
+
 }
 
 #register {
@@ -129,7 +158,7 @@ a:hover {
     top: 60px;
     width: 400px;
     height:26px;
-    padding-top:10px; 
+    padding-top:10px;
 }
 
 #register:hover {
@@ -140,9 +169,9 @@ a:hover {
     position: absolute;
     left: 0px;
     top: 110px;
-    font-family:Arial, Helvetica, sans-serif; 
+    font-family:Arial, Helvetica, sans-serif;
     font-size: 12px;
-    color:#b1daf2; 
+    color:#b1daf2;
     text-align: left;
     width: 400px;
 
@@ -152,9 +181,9 @@ a:hover {
     position: absolute;
     left: 11px;
     top: 23px;
-    font-family:Arial, Helvetica, sans-serif; 
+    font-family:Arial, Helvetica, sans-serif;
     font-size: 10px;
-    color:#b1daf2; 
+    color:#b1daf2;
     text-align: left;
     width: 440px;
 }
@@ -163,9 +192,9 @@ a:hover {
     position: absolute;
     top: 11px;
     left: 0px;
-    font-family:Arial, Helvetica, sans-serif; 
+    font-family:Arial, Helvetica, sans-serif;
     font-size: 9px;
-    color:#666666; 
+    color:#666666;
     text-align: left;
     width: 440px;
 }
@@ -174,9 +203,9 @@ a:hover {
     position: absolute;
     top: 30px;
     left: 0px;
-    font-family:Arial, Helvetica, sans-serif; 
+    font-family:Arial, Helvetica, sans-serif;
     font-size: 9px;
-    color:#666666; 
+    color:#666666;
     text-align: left;
     width: 440px;
 }
@@ -187,7 +216,7 @@ a:hover {
     top: 110px;
     left: 270px;
     font-size: 10px;
-    color:#666666; 
+    color:#666666;
     text-align: right;
     width: 169px;
 }
@@ -197,7 +226,7 @@ a:hover {
     top: 110px;
     left: -100px;
     font-size: 10px;
-    color:#666666; 
+    color:#666666;
     text-align: left;
     width: 370px;
 }
@@ -206,12 +235,12 @@ a:hover {
     padding-bottom: 10px;
 }
 
-.eingabe{ 
+.eingabe{
     border:1px solid #000000;
     background:#ffffff url(../templates/OpenGame/img/eingabe_back.png) repeat-x;
     color: #000000;
     font-size:10px;
-  
+
 }
 .menupoint {
     /*width:10px;*/
@@ -235,10 +264,10 @@ a:hover {
    padding-left:10px;
    padding-top:2px;
    padding-bottom:1px;
-   color:#b1daf2; 
+   color:#b1daf2;
    text-decoration: none;
    display: block;
-   
+
 }
 
 #mainmenu span {
@@ -246,7 +275,7 @@ a:hover {
 }
 
 #login_input a {
-   color:#cccccc; 
+   color:#cccccc;
    text-decoration: none;
 }
 #login_input a:hover {
@@ -263,10 +292,10 @@ a:hover {
     width:886px;
     top:23px;
     height:30px;
-    font-family:Arial, Helvetica, sans-serif; 
+    font-family:Arial, Helvetica, sans-serif;
     margin:0 auto;
     font-size: 10px;
-    color:#b5cfcd; 
+    color:#b5cfcd;
 }
 
 img {
@@ -336,11 +365,11 @@ a img:hover {
     width:250px;
     padding-top: 4px;
     height:20px;
-    font-family:Arial, Helvetica, sans-serif; 
+    font-family:Arial, Helvetica, sans-serif;
     font-size: 13px;
     text-align: center;
-    font-weight: bold; 
-    color:#497ec7; 
+    font-weight: bold;
+    color:#497ec7;
     cursor: pointer;
 }
 
@@ -349,7 +378,7 @@ a img:hover {
 }
 
 
-table { 
+table {
     text-align: right;
     color:#cccccc;
     font-size: 10px;
@@ -361,13 +390,17 @@ td .eingabe {
 }
 
 .bigbutton {
-    font-family:Arial, Helvetica, sans-serif; 
+    font-family:Arial, Helvetica, sans-serif;
     font-size: 16px;
     text-align: center;
-    font-weight: bold; 
-    color:#497ec7; 
+    font-weight: bold;
+    color:#497ec7;
     cursor: pointer;
+
+    background-color     : #000000;
+    border:1px solid #FFFFFF;
 }
+
 
 .bigbutton:hover {
     color:#ffffff;
@@ -411,7 +444,7 @@ td .eingabe {
 
 .iframe {
     border:none;
-    
+
     width:100%;
     height:27px;
 }
@@ -428,9 +461,9 @@ td .eingabe {
 }
 
 .bildUeberschrift {
-     font-family:Arial, Helvetica, sans-serif; 
+     font-family:Arial, Helvetica, sans-serif;
      font-size: 10px;
-     color:#b1daf2; 
+     color:#b1daf2;
 }
 
 #unis_content {
@@ -455,7 +488,7 @@ td .eingabe {
     font-weight:bold;
     border-bottom-style:solid;
     border-bottom-width:1px;
-    border-bottom-color:#2a2f33; 
+    border-bottom-color:#2a2f33;
 }
 
 #closed_uni {
@@ -498,4 +531,3 @@ td .eingabe {
 #agb_zeile {
 
 }
-

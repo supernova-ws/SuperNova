@@ -20,5 +20,5 @@ include($ugamela_root_path . 'common.' . $phpEx);
   $parse['admin_email'] = ADMINEMAIL;
   $parse['forum_url'] = '/phpBB3/';
 
-  display(parsetemplate(gettemplate('credit_body'), $parse), $lang['cred_credit'], false);
+  display(parsetemplate(gettemplate('credit_body'), $parse), $lang['cred_credit'], false, "", false, false);
 ?>

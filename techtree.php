@@ -15,49 +15,49 @@ include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
 if ($IsUserChecked == false) {
-	includeLang('login');
-	header("Location: login.php");
+  includeLang('login');
+  header("Location: login.php");
 }
 
 check_urlaubmodus ($user);
-	$HeadTpl = gettemplate('techtree_head');
-	$RowTpl  = gettemplate('techtree_row');
-	foreach($lang['tech'] as $Element => $ElementName) {
-		$parse            = array();
-		$parse['tt_name'] = $ElementName;
-		if (!isset($resource[$Element])) {
-			$parse['Requirements']  = $lang['Requirements'];
-			$page                  .= parsetemplate($HeadTpl, $parse);
-		} else {
-			if (isset($requeriments[$Element])) {
-				$parse['required_list'] = "";
-				foreach($requeriments[$Element] as $ResClass => $Level) {
-					if       ( isset( $user[$resource[$ResClass]] ) &&
-						 $user[$resource[$ResClass]] >= $Level) {
-						$parse['required_list'] .= "<font color=\"#00ff00\">";
-					} elseif ( isset($planetrow[$resource[$ResClass]] ) &&
-						$planetrow[$resource[$ResClass]] >= $Level) {
-						$parse['required_list'] .= "<font color=\"#00ff00\">";
-					} else {
-						$parse['required_list'] .= "<font color=\"#ff0000\">";
-					}
-					//$parse['required_list'] .= $lang['tech'][$ResClass] ." (". $lang['level'] ." ". $Level .")";
-					$parse['required_list'] .= $lang['tech'][$ResClass] ." ( ". $lang['level'] ." ". $user[$resource[$ResClass]] ." ". $planetrow[$resource[$ResClass]] ." / ". $Level ." )";
-					$parse['required_list'] .= "</font><br>";
-				}
-				$parse['tt_detail']      = "<a href=\"techdetails.php?techid=". $Element ."\">" .$lang['treeinfo'] ."</a>";
-			} else {
-				$parse['required_list'] = "";
-				$parse['tt_detail']     = "";
-			}
-			$parse['tt_info']   = $Element;
-			$page              .= parsetemplate($RowTpl, $parse);
-		}
-	}
+  $HeadTpl = gettemplate('techtree_head');
+  $RowTpl  = gettemplate('techtree_row');
+  foreach($lang['tech'] as $Element => $ElementName) {
+    $parse            = array();
+    $parse['tt_name'] = $ElementName;
+    if (!isset($resource[$Element])) {
+      $parse['Requirements']  = $lang['Requirements'];
+      $page                  .= parsetemplate($HeadTpl, $parse);
+    } else {
+      if (isset($requeriments[$Element])) {
+        $parse['required_list'] = "";
+        foreach($requeriments[$Element] as $ResClass => $Level) {
+          if       ( isset( $user[$resource[$ResClass]] ) &&
+             $user[$resource[$ResClass]] >= $Level) {
+            $parse['required_list'] .= "<font color=\"#00ff00\">";
+          } elseif ( isset($planetrow[$resource[$ResClass]] ) &&
+            $planetrow[$resource[$ResClass]] >= $Level) {
+            $parse['required_list'] .= "<font color=\"#00ff00\">";
+          } else {
+            $parse['required_list'] .= "<font color=\"#ff0000\">";
+          }
+          //$parse['required_list'] .= $lang['tech'][$ResClass] ." (". $lang['level'] ." ". $Level .")";
+          $parse['required_list'] .= $lang['tech'][$ResClass] ." ( ". $lang['level'] ." ". $user[$resource[$ResClass]] ." ". $planetrow[$resource[$ResClass]] ." / ". $Level ." )";
+          $parse['required_list'] .= "</font><br>";
+        }
+        // $parse['tt_detail']      = "<a href=\"techdetails.php?techid=". $Element ."\">" .$lang['treeinfo'] ."</a>";
+      } else {
+        $parse['required_list'] = "";
+        $parse['tt_detail']     = "";
+      }
+      $parse['tt_info']   = $Element;
+      $page              .= parsetemplate($RowTpl, $parse);
+    }
+  }
 
-	$parse['techtree_list'] = $page;
+  $parse['techtree_list'] = $page;
 
-	display(parsetemplate(gettemplate('techtree_body'), $parse), $lang['Tech']);
+  display(parsetemplate(gettemplate('techtree_body'), $parse), $lang['Tech']);
 
 // -----------------------------------------------------------------------------------------------------------
 // History version

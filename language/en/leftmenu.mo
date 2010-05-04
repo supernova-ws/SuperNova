@@ -112,4 +112,5 @@ $lang['lm_ifo_game']  = "Скорость игры";
 $lang['lm_ifo_fleet'] = "Скорость кораблей";
 $lang['lm_ifo_queue'] = "Задачи";
 
+$lang['lm_shortcuts'] = "Shortcuts";
 ?>

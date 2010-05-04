@@ -144,6 +144,7 @@ td.lm_para {
   <tr><td><a href="simulator.php" accesskey="p"><span class="lm_simulator">{m_simulator}</span></a></td></tr>
   <tr><td><a href="buddy.php">{Buddylist}</a></td></tr>
   <tr><td><a href="notes.php">{Notes}</a></td></tr>
+  <tr><td><a href="fleetshortcut.php">{lm_shortcuts}</a></td></tr>
   <tr><td><a href="search.php"><span class="lm_search">{Search}</span></a></td></tr>
 
   <tr><td class="lm_para">{tool}</td></tr>

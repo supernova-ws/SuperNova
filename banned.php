@@ -3,6 +3,8 @@
 /**
  * banned.php
  *
+ * List of all issued bans
+ *
  * @version 1.0
  * @copyright 2008 by ??????? for XNova
  */

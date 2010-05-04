@@ -3,6 +3,8 @@
 /**
  * buildings.php
  *
+ *  Allow building of... hmm... buildings
+ *
  * @version 1.3
  * @copyright 2008 by Chlorel for XNova
  */

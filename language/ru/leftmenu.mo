@@ -105,4 +105,6 @@ $lang['lm_ifo_serv']	= "Сырьё";
 $lang['lm_ifo_game']	= "Игра";
 $lang['lm_ifo_fleet']	= "Флот";
 $lang['lm_ifo_queue']	= "Очередь";
+
+$lang['lm_shortcuts'] = "Закладки";
 ?>

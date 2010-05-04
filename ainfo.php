@@ -3,6 +3,8 @@
 /**
  * ainfo.php
  *
+ * Alliance info for non-allied user
+ *
  * @version 1.0
  * @copyright 2008 by ??????? for XNova
  */
@@ -16,8 +18,8 @@ include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.'.$phpEx);
 
 if ($IsUserChecked == false) {
-	includeLang('login');
-	header("Location: login.php");
+  includeLang('login');
+  header("Location: login.php");
 }
 
 $dpath = (!$userrow["dpath"]) ? DEFAULT_SKINPATH : $userrow["dpath"];
@@ -34,26 +36,26 @@ $ally_member_scount = $count[0];
 
 $page .="<table width=519><tr><td class=c colspan=2>Informations sur l'alliance</td></tr>";
 
-	if($allyrow["ally_image"] != ""){
-		$page .= "<tr><th colspan=2><img src=\"".$allyrow["ally_image"]."\"></td></tr>";
-	}
+  if($allyrow["ally_image"] != ""){
+    $page .= "<tr><th colspan=2><img src=\"".$allyrow["ally_image"]."\"></td></tr>";
+  }
 
-	$page .= "<tr><th>Tag</th><th>".$allyrow["ally_tag"]."</th></tr><tr><th>Nom</th><th>".$allyrow["ally_name"]."</th></tr><tr><th>Membres</th><th>$ally_member_scount</th></tr>";
+  $page .= "<tr><th>Tag</th><th>".$allyrow["ally_tag"]."</th></tr><tr><th>Nom</th><th>".$allyrow["ally_name"]."</th></tr><tr><th>Membres</th><th>$ally_member_scount</th></tr>";
 
-	if($allyrow["ally_description"] != ""){
-		$page .= "<tr><th colspan=2 height=100>".$allyrow["ally_description"]."</th></tr>";
-	}
+  if($allyrow["ally_description"] != ""){
+    $page .= "<tr><th colspan=2 height=100>".$allyrow["ally_description"]."</th></tr>";
+  }
 
 
-	if($allyrow["ally_web"] != ""){
-		$page .="<tr>
-		<th>Site internet</th>
-		<th><a href=\"".$allyrow["ally_web"]."\">".$allyrow["ally_web"]."</a></th>
-		</tr>";
-	}
-	$page .= "</table>";
+  if($allyrow["ally_web"] != ""){
+    $page .="<tr>
+    <th>Site internet</th>
+    <th><a href=\"".$allyrow["ally_web"]."\">".$allyrow["ally_web"]."</a></th>
+    </tr>";
+  }
+  $page .= "</table>";
 
-	display($page,"Information sur l'alliance [".$allyrow["ally_name"]."]",false);
+  display($page,"Information sur l'alliance [".$allyrow["ally_name"]."]",false);
 
 // Created by Perberos. All rights reversed (C) 2006
 ?>

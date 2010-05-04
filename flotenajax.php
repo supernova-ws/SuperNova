@@ -3,6 +3,8 @@
 /**
  * flotenajax.php
  *
+ * Fleet manager on Ajax (to work in Galaxy view)
+ *
  * @version 1
  * @copyright 2008 By Chlorel for XNova
  */

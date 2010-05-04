@@ -3,6 +3,8 @@
 /**
  * fleet.php
  *
+ * Fleet manager
+ *
  * @version ?
  * @copyright (c) 2009 by Gorlum for http://ogame.triolan.com.ua
  */

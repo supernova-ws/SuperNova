@@ -3,6 +3,8 @@
 /**
 * annonce.php
 *
+* Announces for trading between players
+*
 * @version 1.0
 * @copyright 2008 by ??????? for XNova
 */
@@ -15,8 +17,8 @@ include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
 if ($IsUserChecked == false) {
-	includeLang('login');
-	header("Location: login.php");
+  includeLang('login');
+  header("Location: login.php");
 }
 
 check_urlaubmodus ($user);

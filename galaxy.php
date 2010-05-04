@@ -3,6 +3,8 @@
 /**
  * galaxy.php
  *
+ * Galaxy view
+ *
  * @version 1.3
  * @copyright 2008 by Chlorel for XNova
  */
