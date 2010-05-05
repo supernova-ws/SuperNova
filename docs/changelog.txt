@@ -64,6 +64,7 @@ V0000
 V?
 [?] Интерфейс: позаменять везде 'd/m/Y h:i:s' на прописанное в конфиге
 [?] Движок: functions/PadaGalaxy.php - пересмотреть код
+[?] Движок: alliance.php - переписать!
 [?] Движок: объединить DefensesBuildingPage.php и FleetBuildingPage.php
 [?] Не работает константа HIDE_1st_FROM_STATS - должна скрывать юзера 1 (админов?)
 [?] Интерфейс: informations.php - выводить информацию о сервере: скорости итд
