@@ -3,9 +3,10 @@
 /**
  * banned.php
  *
+ * @version 1.1s - Security checked for SQL-injection by Gorlum for http://supernova.ws
+ * @version 1.1  - (c) Copyright by Gorlum for http://supernova.ws
  * @version 1.0
  * @copyright 2008 by ??????? for XNova
- * (c) Copyright by Gorlum for ogame.triolan.com.ua
  */
 
 define('INSIDE'  , true);
@@ -105,9 +106,9 @@ if ($user['authlevel'] >= 1) {
     AdminMessage ($DoneMessage, $lang['adm_unbn_ttle']);
   };
 
-  $parse['name'] = $_GET['name'];
+  $parse['name'] = SYS_mysqlSmartEscape($_GET['name']);
 
-  $mode = $_GET['mode'] ? $_GET['mode'] : 'banit';
+  $mode = SYS_mysqlSmartEscape($_GET['mode'] ? $_GET['mode'] : 'banit');
   $parse['mode'] = $mode;
   $PageTpl = ($mode == 'banit') ? gettemplate("admin/banned") : gettemplate("admin/unbanned");
 

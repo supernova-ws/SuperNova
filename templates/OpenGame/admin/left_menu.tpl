@@ -11,6 +11,8 @@ function f(target_url,win_name) {
   <tr><td><a href="overview.php">{adm_over}</a></td></tr>
   <tr><td><a href="settings.php">{adm_conf}</a></td></tr>
   <tr><td><a href="XNovaResetUnivers.php">{adm_reset}</a></td></tr>
+  <tr><td align=center background="{dpath}img/bg1.png">Нормальная админка</td></tr>
+  <tr><td><a href="admin_darkmatter.php">{dark_matter}</a></td></tr>
   <tr><td align=center background="{dpath}img/bg1.png">Add Menu</td></tr>
   <tr><td><a href="add_building.php">Add Building </a></td></tr>
   <tr><td><a href="add_def.php">Add Def </a></td></tr>
@@ -41,7 +43,7 @@ function f(target_url,win_name) {
   <tr><td><a href="unbanned.php">{adm_unban}</a></td></tr>
 
   <tr><td align=center background="{dpath}img/bg1.png">{tool}</td></tr>
-  <tr><td><a href="chat.php">{adm_chat}</a></td></tr>
+  <tr><td><a href="admin_chat.php">{adm_chat}</a></td></tr>
   <tr><td><a href="statbuilder.php">{adm_updpt}</a></td></tr>
   <tr><td><a href="dumper/dumper.php">{adm_backup}</a></td></tr>
   <tr><td><a href="maintenance.php">{adm_maint}</a></td></tr>

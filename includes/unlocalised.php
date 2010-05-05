@@ -351,8 +351,17 @@ function CreateFleetPopupedMissionLink ( $FleetRow, $Texte, $FleetType ) {
 //
 //
 function SYS_mysqlSmartEscape($string) {
+  if(!isset($string)) return NULL;
+
   if(get_magic_quotes_gpc())
     $string = stripslashes($string);
   return mysql_real_escape_string($string);
+}
+
+// ----------------------------------------------------------------------------------------------------------------
+//
+//
+function INT_makeCoordinates ($from, $prefix = ''){
+  return '[' . $from[$prefix.'galaxy'] . ':' . $from[$prefix.'system'] . ':' . $from[$prefix.'planet'] . ']';
 }
 ?>

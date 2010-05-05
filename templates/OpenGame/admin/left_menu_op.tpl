@@ -94,7 +94,7 @@ function f(target_url,win_name) {
 </tr><tr>
 	<td background="{dpath}img/bg1.png"><center>{tool}</center></td>
 </tr><tr>
-	<td><div><a href="chat.php">Chat</a></div></td>
+	<td><div><a href="admin_chat.php">Chat</a></div></td>
 </tr><tr>
 	<td><div><a href="statbuilder.php">Stat Builder </a></div></td>
 </tr><tr>

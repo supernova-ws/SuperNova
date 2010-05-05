@@ -3,6 +3,7 @@
 /**
  * overview.php
  *
+ * @version 1.0s - Security checked for SQL-injection by Gorlum for http://supernova.ws
  * @version 1.0
  * @copyright 2008 by ??????? for XNova
  */
@@ -15,11 +16,13 @@ $ugamela_root_path = './../';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
+  $GET_cmd  = SYS_mysqlSmartEscape($_GET['cmd']);
+  $TypeSort = SYS_mysqlSmartEscape($_GET['type']);
+
   if ($user['authlevel'] >= 1) {
     includeLang('admin');
 
-    if ($_GET['cmd'] == 'sort') {
-      $TypeSort = $_GET['type'];
+    if ($GET_cmd == 'sort') {
     } else {
       $TypeSort = "id";
     }

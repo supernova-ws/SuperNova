@@ -14,6 +14,10 @@ if ( defined('INSIDE') ) {
   define('ADMINEMAIL'               , "gorlum@triolan.ua");
   define('GAMEURL'                  , "http://".$_SERVER['HTTP_HOST']."/");
 
+
+  // Pattern to parse planet coordinates like [1:123:14] - no expedition [::16] will pass!
+  define('PLANET_COORD_PREG', "/^\[([1-9]):([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):(1[0-5]|[1-9])\]$/i");
+
   define('MAX_ATTACK_ROUNDS', 10);
 
   // Definition du monde connu !

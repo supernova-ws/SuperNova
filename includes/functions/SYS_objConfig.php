@@ -149,6 +149,8 @@ class objConfig extends objCache {
     'urlaubs_modus_erz' => 0,
     'users_amount' => 0,
 
+    'game_date_withTime' => 'd.m.Y h:i:s',
+
     'int_banner_showInOverview' => 1,
     'int_banner_background' => "images/banner.png",
     'int_banner_URL' => "/banner.php?type=banner",
@@ -179,6 +181,11 @@ class objConfig extends objCache {
     foreach(self::$defaults as $defName => $defValue)
       if(!isset($this->$defName))
         $this->$defName = $defValue;
+  }
+
+  public function reloadDefaults(){
+    foreach(self::$defaults as $defName => $defValue)
+      $this->$defName = $defValue;
   }
 
   private function __construct()

@@ -1,11 +1,11 @@
 <?php
 
 /**
- * paneladmina.php
+ * mats.php
  *
  * @version 1.0s - Security checked for SQL-injection by Gorlum for http://supernova.ws
  * @version 1.0
- * @copyright 2008 by ??????? for XNova
+ * @copyright 2008 by Xire -AlteGarde-
  */
 
 define('INSIDE'  , true);
@@ -16,16 +16,16 @@ $ugamela_root_path = './../';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
-  $GET_action = SYS_mysqlSmartEscape($_GET['action']);
   $GET_result = SYS_mysqlSmartEscape($_GET['result']);
+  $GET_action = SYS_mysqlSmartEscape($_GET['action']);
   $Pattern    = SYS_mysqlSmartEscape($_GET['player']);
   $NewLvl     = intval($_GET['authlvl']);
   $ip         = SYS_mysqlSmartEscape($_GET['ip']);
 
   if ($user['authlevel'] >= "1") {
-    includeLang('admin/adminpanel');
+    includeLang('admin/mats');
 
-    $PanelMainTPL = gettemplate('admin/admin_panel_main');
+    $PanelMainTPL = gettemplate('admin/mats');
 
     $parse                  = $lang;
     $parse['adm_sub_form1'] = "";
@@ -94,15 +94,8 @@ include($ugamela_root_path . 'common.' . $phpEx);
 
         case 'usr_level':
 
-          # only for admins
-          if ($user['authlevel'] < 3)
-          {
-            message($lang['sys_noalloaw'], $lang['sys_noaccess']);
-            die();
-          }
-
-          $QryUpdate  = doquery("UPDATE {{table}} SET `authlevel` = '".$NewLvl."' WHERE `username` = '".$Pattern."';", 'users');
-          $Message    = $lang['adm_mess_lvl1']. " ". $Pattern ." ".$lang['adm_mess_lvl2'];
+          $QryUpdate  = doquery("UPDATE {{table}} SET `authlevel` = '".$NewLvl."' WHERE `username` = '".$Player."';", 'users');
+          $Message    = $lang['adm_mess_lvl1']. " ". $Player ." ".$lang['adm_mess_lvl2'];
           $Message   .= "<font color=\"red\">".$lang['adm_usr_level'][ $NewLvl ]."</font>!";
 
           AdminMessage ( $Message, $lang['adm_mod_level'] );
@@ -137,14 +130,6 @@ include($ugamela_root_path . 'common.' . $phpEx);
           break;
 
         case 'usr_level':
-          # only for admins
-          if ($user['authlevel'] != 3)
-          {
-            message($lang['sys_noalloaw'], $lang['sys_noaccess']);
-            die();
-          }
-
-
           for ($Lvl = 0; $Lvl < 4; $Lvl++) {
             $bloc['adm_level_lst'] .= "<option value=\"". $Lvl ."\">". $lang['adm_usr_level'][ $Lvl ] ."</option>";
           }
