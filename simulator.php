@@ -100,6 +100,17 @@ if(isset($_POST['submit'])) {
     'crystal'   => intval($_POST['crystal']),
     'deuterium' => intval($_POST['deuterium']));
 
+  $replay = serialize(array($attackFleets, $defense));
+}
+
+if(isset($_GET['replay'])) {
+  $replay       = $_GET['replay'];
+  $unpacked     = unserialize($replay);
+  $attackFleets = &$unpacked[0];
+  $defense      = &$unpacked[1];
+}
+
+if(is_array($attackFleets)){
   // Lets calcualte attack...
   $start = microtime(true);
   $result = calculateAttack($attackFleets, $defense, true);
@@ -138,16 +149,19 @@ if(isset($_POST['submit'])) {
 
   $Page .= "<br /><br />";
   //We we aren't gonna chare this reoprt because we cheated so it acutally doesn't exist.
-  $Page .= "Sorry, this report can't be shared.";
+
+  $Page .= '<a href=simulator.php?replay=' . $replay .'><font color=red>';
+  $Page .= "Sorry, this report CAN be shared!";
+  $Page .= "</font></a>";
+
   $Page .= "<br /><br />";
   $Page .= "</center>";
   $Page .= "</body>";
   $Page .= "</html>";
 
   echo $Page;
-
+}else{
 // Now its Sonyedorlys input form. Many thanks for allowing me to use it. (Slightly edited)
-} else {
   $parse['military'] = 0;
   $parse['defence'] = 0;
   $parse['shield'] = 0;
