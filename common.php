@@ -1,4 +1,11 @@
 <?php
+/*
+ * common.php
+ *
+ * Common init file
+ *
+ * @version 1.0s Security checks by Gorlum for http://supernova.ws
+ */
 //print('ÂÍÈÌÀÍÈÅ! ÈÃÐÀ ÎÑÒÀÍÎÂËÅÍÀ ÍÀ ÏÐÎÔÈËÀÊÒÈÊÓ!');
 //die();
 //ini_set('display_errors', 1);

@@ -5,8 +5,9 @@
   /**
    * chat.php
    *
-   * @version 1.0
+   * @version 1.2s Security checks by Gorlum for http://supernova.ws
    * @version 1.2 by Ihor
+   * @version 1.0
    * @copyright 2008 by e-Zobar for XNova
    */
 

@@ -5,6 +5,7 @@
  *
  * Alliance info for non-allied user
  *
+ * @version 1.0s - Security checked for SQL-injection by Gorlum for http://supernova.ws
  * @version 1.0
  * @copyright 2008 by ??????? for XNova
  */
@@ -23,7 +24,6 @@ if ($IsUserChecked == false) {
 }
 
 $dpath = (!$userrow["dpath"]) ? DEFAULT_SKINPATH : $userrow["dpath"];
-
 
 if(!is_numeric($_GET["a"]) || !$_GET["a"] ){ message("Ung&uuml;ltige Allianz-ID","Fehler");}
 

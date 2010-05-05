@@ -7,9 +7,9 @@
 /**
  * chat_msg.php
  *
- * @version 1.0
+ * @version 1.2s Security checks by Gorlum for http://supernova.ws
  * @version 1.2 by Ihor
- * @copyright 2008 by e-Zobar for XNova
+ * @version 1.0 copyright 2008 by e-Zobar for XNova
  */
 
 define('INSIDE'  , true);
@@ -24,6 +24,9 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
+$GET_ally_id = intval($_GET['ally_id']);
+$GET_chat_type = SYS_mysqlSmartEscape($_GET['chat_type']);
+
 includeLang('chat');
 
 $page_limit = 25; // Chat rows Limit
@@ -35,17 +38,17 @@ if($_GET['page']>''){
 $start_row = $page * $page_limit;
 
 if ($_GET) {
-  if($_GET['chat_type']=='ally' && $_GET['ally_id']>'' && $_GET['ally_id']<>$user['ally_id']){
+  if($GET_chat_type=='ally' && $GET_ally_id>'' && $GET_ally_id<>$user['ally_id']){
     $debug->error("Buguser: ".$user['username']." (".$user['id'].")<br />","Bug use");
     die();
   };
 
-  if($_GET['chat_type']=='ally' && $_GET['ally_id']>''){
+  if($GET_chat_type=='ally' && $GET_ally_id>''){
     if ($_GET['show']=='history') {
       showPageButtons($page,'ally');
-      $query = doquery("SELECT * FROM {{table}} WHERE ally_id = '".$_GET['ally_id']."' ORDER BY messageid DESC LIMIT ".$start_row.",".$page_limit." ", "chat");
+      $query = doquery("SELECT * FROM {{table}} WHERE ally_id = '".$GET_ally_id."' ORDER BY messageid DESC LIMIT ".$start_row.",".$page_limit." ", "chat");
     }else{
-      $query = doquery("SELECT * FROM {{table}} WHERE ally_id = '".$_GET['ally_id']."' ORDER BY messageid DESC LIMIT ".$page_limit." ", "chat");
+      $query = doquery("SELECT * FROM {{table}} WHERE ally_id = '".$GET_ally_id."' ORDER BY messageid DESC LIMIT ".$page_limit." ", "chat");
     }
   }else{
     if ($_GET['show']=='history') {
@@ -85,14 +88,15 @@ while($v=mysql_fetch_object($query)){
 print $buff;
 
 function showPageButtons($curPage,$type){
-  global $page_limit,$lang;
+  global $page_limit, $lang, $GET_chat_type, $GET_ally_id;
+
   echo "<div style='width:100%;border:1px solid red;padding:4px;' align=center>";
   echo "<b><font size=3>".$lang['AllyChat']." / ".$lang['chat_history']."</font></b> ";
   echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
   echo "<b><font size=2>".$lang['chat_page'].":</font></b> ";
-  echo "<select name='page' onchange='document.location.assign(\"chat_msg.php?chat_type=".$_GET['chat_type']."&ally_id=".$_GET['ally_id']."&show=".$_GET['show']."&page=\"+this.value)'>";
+  echo "<select name='page' onchange='document.location.assign(\"chat_msg.php?chat_type=".$GET_chat_type."&ally_id=".$GET_ally_id."&show=".$_GET['show']."&page=\"+this.value)'>";
   if($type=='ally'){
-    $rows = doquery("SELECT count(1) AS CNT FROM {{table}} WHERE ally_id = '".$_GET['ally_id']."'", "chat",true);
+    $rows = doquery("SELECT count(1) AS CNT FROM {{table}} WHERE ally_id = '".$GET_ally_id."'", "chat",true);
     $cnt = $rows['CNT'] / $page_limit;
       for($i = 0; $i < $cnt; $i++) {
       if($curPage==$i){

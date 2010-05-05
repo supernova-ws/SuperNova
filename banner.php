@@ -1,6 +1,7 @@
 <?php
 /**
 * banner.php
+* @version 1.0s - Security checks by Gorlum for http://supernova.ws
 * @version 1.0
 *
 * Simple wrapper for INT_createBanner.php
@@ -22,7 +23,9 @@ include($ugamela_root_path . 'common.' . $phpEx);
 includeLang('overview');
 
 $id = intval($_GET['id']);
+$type = mysqlSmartEscape($_GET['type']);
+$format = mysqlSmartEscape($_GET['format']);
 if (!empty($id)) {
-  INT_createBanner($id, $_GET['type'], $_GET['format']);
+  INT_createBanner($id, $type, $format);
 }
 ?>
