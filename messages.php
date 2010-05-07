@@ -1,5 +1,8 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('error_reporting', E_ALL ^ E_NOTICE);
+
 /**
  * messages.php
  *
@@ -174,20 +177,23 @@ check_urlaubmodus ($user);
       $page .= "<td>\n<input name=\"messages\" value=\"1\" type=\"hidden\">";
       $page .= "<table width=\"519\">";
       $page .= "<tr>";
-      $page .= "<th colspan=\"4\">";
-      $page .= "<select onchange=\"document.getElementById('deletemessages').options[this.selectedIndex].selected='true'\" id=\"deletemessages2\" name=\"deletemessages2\">";
-      $page .= "<option value=\"deletemarked\">".$lang['mess_deletemarked']."</option>";
-      $page .= "<option value=\"deleteunmarked\">".$lang['mess_deleteunmarked']."</option>";
-      $page .= "<option value=\"deleteall\">".$lang['mess_deleteall']."</option>";
-      $page .= "</select>";
-      $page .= "<input value=\"".$lang['mess_its_ok']."\" type=\"submit\">";
-      $page .= "</th>";
-      $page .= "</tr><tr>";
-      $page .= "<th style=\"color: rgb(242, 204, 74);\" colspan=\"4\">";
-      $page .= "<input name=\"category\" value=\"".$MessCategory."\" type=\"hidden\">";
-      $page .= "<input onchange=\"document.getElementById('fullreports').checked=this.checked\" id=\"fullreports2\" name=\"fullreports2\" type=\"checkbox\">".$lang['mess_partialreport']."</th>";
-      $page .= "</tr><tr>";
-      $page .= "<th>".$lang['mess_action']."</th>";
+      if($MessCategory != -1){
+        $page .= "<th colspan=\"4\">";
+        $page .= "<select onchange=\"document.getElementById('deletemessages').options[this.selectedIndex].selected='true'\" id=\"deletemessages2\" name=\"deletemessages2\">";
+        $page .= "<option value=\"deletemarked\">".$lang['mess_deletemarked']."</option>";
+        $page .= "<option value=\"deleteunmarked\">".$lang['mess_deleteunmarked']."</option>";
+        $page .= "<option value=\"deleteall\">".$lang['mess_deleteall']."</option>";
+        $page .= "</select>";
+        $page .= "<input value=\"".$lang['mess_its_ok']."\" type=\"submit\">";
+        $page .= "</th></tr>";
+
+        $page .= "<tr>";
+        $page .= "<th style=\"color: rgb(242, 204, 74);\" colspan=\"4\">";
+        $page .= "<input name=\"category\" value=\"".$MessCategory."\" type=\"hidden\">";
+        $page .= "<input onchange=\"document.getElementById('fullreports').checked=this.checked\" id=\"fullreports2\" name=\"fullreports2\" type=\"checkbox\">".$lang['mess_partialreport']."</th>";
+        $page .= "</tr><tr>";
+        $page .= "<th>".$lang['mess_action']."</th>";
+      }
       $page .= "<th>".$lang['mess_date']."</th>";
 
       if($MessCategory == -1){
@@ -252,7 +258,9 @@ check_urlaubmodus ($user);
         while ($CurMess = mysql_fetch_array($UsrMess)) {
             $page .= "\n<tr>";
             $page .= "<input name=\"showmes". $CurMess['message_id'] . "\" type=\"hidden\" value=\"1\">";
-            $page .= "<th><input name=\"delmes". $CurMess['message_id'] ."\" type=\"checkbox\"></th>";
+            if($MessCategory != -1){
+              $page .= "<th><input name=\"delmes". $CurMess['message_id'] ."\" type=\"checkbox\"></th>";
+            }
             $page .= "<th>". date(DATE_TIME, $CurMess['message_time']) ."</th>";
             $page .= "<th>". stripslashes( $CurMess[$fieldFrom] ) ."</th>";
             $page .= "<th>". stripslashes( $CurMess['message_subject'] ) ." ";
@@ -263,27 +271,32 @@ check_urlaubmodus ($user);
               $page .= "</th>";
             }
             $page .= "</tr><tr>";
-            $page .= "<td class=\"b\"> </td>";
+            if($MessCategory != -1){
+              $page .= "<td class=\"b\"> </td>";
+            }
             $page .= "<td colspan=\"3\" class=\"b\">". nl2br( stripslashes( $CurMess['message_text'] ) ) ."</td>";
             $page .= "</tr>";
         }
       }
 
 
-      $page .= "<tr>";
-      $page .= "<th style=\"color: rgb(242, 204, 74);\" colspan=\"4\">";
-      $page .= "<input onchange=\"document.getElementById('fullreports2').checked=this.checked\" id=\"fullreports\" name=\"fullreports\" type=\"checkbox\">".$lang['mess_partialreport']."</th>";
-      $page .= "</tr><tr>";
-      $page .= "<th colspan=\"4\">";
-      $page .= "<select onchange=\"document.getElementById('deletemessages2').options[this.selectedIndex].selected='true'\" id=\"deletemessages\" name=\"deletemessages\">";
-      $page .= "<option value=\"deletemarked\">".$lang['mess_deletemarked']."</option>";
-      $page .= "<option value=\"deleteunmarked\">".$lang['mess_deleteunmarked']."</option>";
-      $page .= "<option value=\"deleteall\">".$lang['mess_deleteall']."</option>";
-      $page .= "</select>";
-      $page .= "<input value=\"".$lang['mess_its_ok']."\" type=\"submit\">";
-      $page .= "</th>";
-      $page .= "</tr><tr>";
-      $page .= "<td colspan=\"4\"></td>";
+      if($MessCategory != -1){
+        $page .= "<tr>";
+        $page .= "<th style=\"color: rgb(242, 204, 74);\" colspan=\"4\">";
+        $page .= "<input onchange=\"document.getElementById('fullreports2').checked=this.checked\" id=\"fullreports\" name=\"fullreports\" type=\"checkbox\">".$lang['mess_partialreport']."</th>";
+        $page .= "</tr>";
+
+        $page .= "<tr><th colspan=\"4\">";
+        $page .= "<select onchange=\"document.getElementById('deletemessages2').options[this.selectedIndex].selected='true'\" id=\"deletemessages\" name=\"deletemessages\">";
+        $page .= "<option value=\"deletemarked\">".$lang['mess_deletemarked']."</option>";
+        $page .= "<option value=\"deleteunmarked\">".$lang['mess_deleteunmarked']."</option>";
+        $page .= "<option value=\"deleteall\">".$lang['mess_deleteall']."</option>";
+        $page .= "</select>";
+        $page .= "<input value=\"".$lang['mess_its_ok']."\" type=\"submit\">";
+        $page .= "</th>";
+        $page .= "</tr>";
+      }
+      $page .= "<tr><td colspan=\"4\"></td>";
       $page .= "</tr>";
       $page .= "</table>\n";
       $page .= "</td>";
