@@ -62,7 +62,7 @@ function BE_preCalcRoundData(&$fleets, &$fleetRoundData, &$fleetArray, $strField
 function BE_calculateRoundFleetHarmPct(&$attArray){
   foreach ($attArray as $fleetID => $fleet) {
     if (!is_numeric($fleetID)) continue;
-    $attArray[$fleetID]['HarmPct'] = $attArray[$fleetID]['def'] / $attArray[$fleetID]['def'];
+    $attArray[$fleetID]['HarmPct'] = $attArray[$fleetID]['def'] / $attArray['total']['def'];
   }
 }
 
