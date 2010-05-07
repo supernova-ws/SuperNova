@@ -325,22 +325,13 @@ check_urlaubmodus ($user);
       $page .= "  <th>". $lang['head_count'] ."</th>";
       $page .= "  <th>". $lang['head_total'] ."</th>";
       $page .= "</tr>";
-      $page .= "<tr>";
-      $page .= "  <th colspan=\"3\"><a href=\"messages.php?mode=show&amp;messcat=100\"><font color=\"". $TitleColor[100] ."\">". $lang['type'][100] ."</a></th>";
-      $page .= "  <th><font color=\"". $TitleColor[100] ."\">". $WaitingMess[100] ."</font></th>";
-      $page .= "  <th><font color=\"". $TitleColor[100] ."\">". $TotalMess[100] ."</font></th>";
-      $page .= "</tr>";
-//      for ($MessType = 0; $MessType < 100; $MessType++) {
-//        if ( in_array($MessType, $MessageType) ) {
-        foreach($MessageType as $MessType){
-          $page .= "<tr>";
-          $page .= "  <th colspan=\"3\"><a href=\"messages.php?mode=show&amp;messcat=". $MessType ." \"><font color=\"". $TitleColor[$MessType] ."\">". $lang['type'][$MessType] ."</a></th>";
-          $page .= "  <th><font color=\"". $TitleColor[$MessType] ."\">". $WaitingMess[$MessType] ."</font></th>";
-          $page .= "  <th><font color=\"". $TitleColor[$MessType] ."\">". $TotalMess[$MessType] ."</font></th>";
-          $page .= "</tr>";
-        }
-//        }
-//      }
+      foreach($MessageType as $MessType){
+        $page .= "<tr>";
+        $page .= "  <th colspan=\"3\"><a href=\"messages.php?mode=show&amp;messcat=". $MessType ." \"><font color=\"". $TitleColor[$MessType] ."\">". $lang['type'][$MessType] ."</a></th>";
+        $page .= "  <th><font color=\"". $TitleColor[$MessType] ."\">". $WaitingMess[$MessType] ."</font></th>";
+        $page .= "  <th><font color=\"". $TitleColor[$MessType] ."\">". $TotalMess[$MessType] ."</font></th>";
+        $page .= "</tr>";
+      }
       $page .= "</table>";
       $page .= "</center>";
       break;
