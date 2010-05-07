@@ -24,17 +24,14 @@ $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
-if($_GET['debug'])
-  define("BE_DEBUG", true);
+define("BE_DEBUG", true);
 
 function SYS_combatDataPack($combat, $strArray){
   foreach($combat as $fleetID => $fleetCompress){
     if($strArray == 'def')
-      $strPacked .= "D";
+      $strPacked .= "!D,";
     else
-      $strPacked .= "A";
-
-    $strPacked .= '.';
+      $strPacked .= "!A,";
 
     foreach($fleetCompress['user'] as $techLevel)
       $strPacked .= ((empty($techLevel)) ? 0 : $techLevel) . ',';
@@ -44,49 +41,28 @@ function SYS_combatDataPack($combat, $strArray){
     foreach($fleetCompress[$strArray] as $shipID => $shipCount)
       $strPacked .= $shipID . ',' . $shipCount . ';';
   }
-  $strPacked .= '!';
 
   return $strPacked;
 }
 
 function SYS_combatDataUnPack($strData){
-  $userFields = array('rpg_amiral', 'defence_tech', 'shield_tech', 'military_tech');
-  $unpacked = array (
-    'detail' => array(),
-    'def' => array()
-  );
 
-  $fleetList = explode('!', $strData);
+  foreach($combat as $fleetID => $fleetCompress){
+    if($strArray == 'def')
+      $strPacked .= "!D,";
+    else
+      $strPacked .= "!A,";
 
-  $fleetID = 1;
-  foreach($fleetList as $fleet){
-    $t = explode('.', $fleet);
+    foreach($fleetCompress['user'] as $techLevel)
+      $strPacked .= ((empty($techLevel)) ? 0 : $techLevel) . ',';
 
-    if(!$t[0]) continue;
+    $strPacked .= '.';
 
-    if($t[0] == 'A' ){
-      $strArray = 'detail';
-    }else{
-      $strArray = 'def';
-    };
-
-    $t[1] = explode(',', $t[1]);
-    $t[2] = explode(';', $t[2]);
-
-    $combat = array();
-
-    foreach($userFields as $key => $field)
-      $combat['user'][$field] = $t[1][$key];
-
-    foreach($t[2] as $shipInfo)
-      if($shipInfo){
-        $shipInfo = explode(',', $shipInfo);
-        $combat[$strArray][$shipInfo[0]] = $shipInfo[1];
-      }
-    $unpacked[$strArray][] = $combat;
+    foreach($fleetCompress[$strArray] as $shipID => $shipCount)
+      $strPacked .= $shipID . ',' . $shipCount . ';';
   }
 
-  return $unpacked;
+  return $strPacked;
 }
 
 if(isset($_POST['submit'])) {
@@ -165,17 +141,30 @@ if(isset($_POST['submit'])) {
     'crystal'   => intval($_POST['crystal']),
     'deuterium' => intval($_POST['deuterium']));
 
-  $replay = SYS_combatDataPack($attackFleets, 'detail');
-  $replay .= SYS_combatDataPack($defense, 'def');
+  $replay = serialize(array($attackFleets, $defense));
+
+  $strPacked = SYS_combatDataPack($attackFleets, 'detail');
+  $strPacked .= SYS_combatDataPack($defense, 'def');
 }
 
 if(isset($_GET['replay'])) {
   $replay       = $_GET['replay'];
-  $unpacked = SYS_combatDataUnPack($replay);
+  $unpacked     = unserialize($replay);
+  $attackFleets = &$unpacked[0];
+  $defense      = &$unpacked[1];
 
-  $attackFleets = $unpacked['detail'];
-  $defense      = $unpacked['def'];
+  $strPacked = SYS_combatDataPack($attackFleets, 'detail');
+  $strPacked .= SYS_combatDataPack($defense, 'def');
+  $unpackedData .= SYS_combatDataUnPack($strPacked);
+  pdump($strPacked);
+  pdump($replay);
 }
+
+/*
+$attackFleets = array(
+);
+*/
+pdump($defense);
 
 if(is_array($attackFleets)){
   // Lets calcualte attack...

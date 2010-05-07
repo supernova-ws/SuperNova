@@ -19,41 +19,37 @@ $parse = $lang;
 
 if ($user['authlevel'] >= 3) {
   $ques = array(
-    'DELETE FROM {{table}} WHERE message_time<unix_timestamp(now())-(60*60*24*35);',
-    'DELETE FROM {{table}} WHERE time<unix_timestamp(now())-(60*60*24*14);',
-    'DELETE FROM {{table}} WHERE timestamp<unix_timestamp( now())-(60*60*24*14);',
-    'DELETE FROM {{table}} WHERE onlinetime<unix_timestamp( now())-(60*60*24*35);',
-    'DELETE FROM {{table}} WHERE id_owner not in (select id from game_users);',
-    'DELETE FROM {{table}} WHERE id_planet not in (select id from game_planets);',
-    'DELETE FROM {{table}} WHERE message_owner not in (select id from game_users);',
-    'DELETE FROM {{table}} WHERE id_owner1 not in (select id from game_users);',
-    'DELETE FROM {{table}} WHERE id_owner2 not in (select id from game_users);'
+    'messages' => 'DELETE FROM {{table}} WHERE message_time<unix_timestamp(now())-(60*60*24*35);',
+    'rw' => 'DELETE FROM {{table}} WHERE time<unix_timestamp(now())-(60*60*24*14);',
+    'chat' => 'DELETE FROM {{table}} WHERE timestamp<unix_timestamp( now())-(60*60*24*14);',
+    'users' => 'DELETE FROM {{table}} WHERE onlinetime<unix_timestamp( now())-(60*60*24*35);',
+    'planets' => 'DELETE FROM {{table}} WHERE id_owner not in (select id from {{users}});',
+    'galaxy' => 'DELETE FROM {{table}} WHERE id_planet not in (select id from {{planets}});',
+    'messages' => 'DELETE FROM {{table}} WHERE message_owner not in (select id from {{users}});',
+    'rw' => 'DELETE FROM {{table}} WHERE id_owner1 not in (select id from {{users}});',
+    'rw' => 'DELETE FROM {{table}} WHERE id_owner2 not in (select id from {{users}});',
+    'DELETE FROM {{table}} WHERE id_owner2 not in (select id from {{users}});',
+    'alliance' => 'DELETE FROM {{table}} WHERE id not in (select ally_id from {{users}} group by ally_id);',
   );
 
-  $tables = array(
-    'messages',
-    'rw',
-    'chat',
-    'users',
-    'planets',
-    'galaxy',
-    'messages',
-    'rw',
-    'rw'
-  );
+  $replaces = array('users', 'planets');
 
   $msg = '<ul>';
 
-  foreach($ques as $key => $que) {
-    $QryResult = doquery($que, $tables[$key]);
+  foreach($ques as $table => $que) {
+    foreach($replaces as $replace)
+      $que = str_replace('{{'.$replace.'}}', $dbsettings['prefix'] . $replace, $que);
+    //$que = str_replace('{{users}}', $dbsettings['prefix'] . 'users', $que);
+    //$que = str_replace('{{planets}}', $dbsettings['prefix'] . 'planets', $que);
+    $QryResult = doquery($que, $table);
 
-    $msg .= '<li>' .  htmlspecialchars(str_replace('{{table}}', $tables[$key], $que)) . ' --- <font color=';
+    $msg .= '<li>' .  htmlspecialchars(str_replace('{{table}}', $dbsettings['prefix'] . $table, $que)) . ' --- <font color=';
     if ($QryResult) {
-      $msg .= 'green>OK';
+      $msg .= 'green>OK.';
     }else{
       $msg .= 'red>FAILED!';
     };
-    $msg .= '</font><br>';
+    $msg .= '</font> ' . mysql_affected_rows($link) . ' records deleted<br>';
   }
 
   $msg .= '</ul>';
