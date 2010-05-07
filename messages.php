@@ -50,8 +50,8 @@ check_urlaubmodus ($user);
   $DeleteWhat = SYS_mysqlSmartEscape($_POST['deletemessages']);
 
   $MessageType   = array ( -1, 0, 1, 2, 3, 4, 5, 15, 99, 100 );
-  $TitleColor    = array ( -1 => '#FFFF00', 0 => '#FFFF00', 1 => '#FF6699', 2 => '#FF3300', 3 => '#FF9900', 4 => '#773399', 5 => '#009933', 15 => '#0270FF', 99 => '#007070', 100 => '#ABABAB'  );
-  $BackGndColor  = array ( -1 => '#663366', 0 => '#663366', 1 => '#336666', 2 => '#000099', 3 => '#666666', 4 => '#999999', 5 => '#999999', 15 => '#999999', 99 => '#999999', 100 => '#999999'  );
+  $TitleColor    = array ( -1 => '#FFFFFF', 0 => '#FFFF00', 1 => '#FF6699', 2 => '#FF3300', 3 => '#FF9900', 4 => '#773399', 5 => '#009933', 15 => '#0270FF', 99 => '#007070', 100 => '#ABABAB'  );
+  $BackGndColor  = array ( -1 => '#000000', 0 => '#663366', 1 => '#336666', 2 => '#000099', 3 => '#666666', 4 => '#999999', 5 => '#999999', 15 => '#999999', 99 => '#999999', 100 => '#999999'  );
 
   $UnRead        = doquery("SELECT * FROM {{table}} WHERE `id` = '". $user['id'] ."';", 'users', true);
   foreach($MessageType as $MessType){
