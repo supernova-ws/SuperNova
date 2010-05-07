@@ -15,6 +15,7 @@ $lang['title']      = "Выбрать тип сообщений";
 $lang['head_type']  = "Тип сообщений";
 $lang['head_count'] = "Непрочитано";
 $lang['head_total'] = "Всего";
+$lang['type'][-1]	  = "Outbound";
 $lang['type'][0]    = "Отчеты шпионажа";
 $lang['type'][1]    = "Личные сообщения";
 $lang['type'][2]    = "Указания";
