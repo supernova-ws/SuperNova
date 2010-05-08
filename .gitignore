@@ -1,5 +1,5 @@
 # Ignore config.php
-/config.php
+config.php
 # Ignore forums
 phpBB3/
 forum/
