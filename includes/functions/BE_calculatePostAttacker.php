@@ -25,16 +25,12 @@ function BE_calculatePostAttacker($TargetPlanet, &$attackFleets, $result, $isSim
       $totalCount += $amount;
 
       // !G+ For now we do not count deutrium for return in capacity
-//      $attackFleets[$fleetID]['loot']['capacity'] += $pricelist[$element]['capacity'] * $amount;
       $attacker['loot']['capacity'] += $pricelist[$element]['capacity'] * $amount;
     }
 
     // !G+ Some misc calculations
-//    $attackFleets[$fleetID]['totalCount'] = $totalCount;
     $attacker['totalCount'] = $totalCount;
     if ($totalCount>0) {
-//      $attackFleets[$fleetID]['fleetArray'] = $fleetArray;
-//      $attackerTotalCapacity += $attackFleets[$fleetID]['loot']['capacity'];
       $attacker['fleetArray'] = $fleetArray;
       $attackerTotalCapacity += $attacker['loot']['capacity'];
     }else{

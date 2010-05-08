@@ -410,11 +410,19 @@ if ( defined('INSIDE')) {
     )
   );
 
+  // Building list
   $reslist['build']    = array (   1,   2,   3,   4,  12,  14,  15,  21,  22,  23,  24,  31,  33,  34,  35,  44,  41,  42,  43 );
+  // Tech list
   $reslist['tech']     = array ( 106, 108, 109, 110, 111, 113, 114, 115, 117, 118, 120, 121, 122, 123, 124, 150, 199);
+  // Flying fleet list
   $reslist['fleet']    = array ( 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216 );
+  // Planet defense list
   $reslist['defense']  = array ( 401, 402, 403, 404, 405, 406, 407, 408, 409, 502, 503 );
+  // Combat units list
+  $reslist['combat']    = array ( 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 401, 402, 403, 404, 405, 406, 407, 408, 409 );
+  // Officier list
   $reslist['officier'] = array ( 601, 602, 603, 604, 605, 606, 607, 608, 609, 610, 611, 612, 613, 614, 615);
+  // Units that can produce resources list
   $reslist['prod']     = array (   1,   2,   3,   4,  12, 212 );
 }
 ?>
