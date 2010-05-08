@@ -62,16 +62,12 @@ function BE_preCalcRoundData(&$fleets, &$fleetRoundData, &$fleetArray, $strField
 function BE_calculateRoundFleetHarmPct(&$attArray){
   foreach ($attArray as $fleetID => $fleet) {
     if (!is_numeric($fleetID)) continue;
-    $attArray[$fleetID]['HarmPct'] = $attArray[$fleetID]['def'] / $attArray[$fleetID]['def'];
+    $attArray[$fleetID]['HarmPct'] = $attArray[$fleetID]['def'] / $attArray['total']['def'];
   }
 }
 
 function BE_calculateRound(&$fleets, &$fleetsAttacking, &$fleet_n, &$fleet_shield, &$fleetDmgPerEnemyFleet, &$attackArray, &$defenseArray, &$attackRoundData, &$defenseRoundData, $strFieldName, $round ){
   global $pricelist, $CombatCaps;
-
-  $SN = array(202 => 'ÌàÒð', 203 => 'ÁîÒð', 204 => 'ËãÈñ', 205 => 'ÒÿÈñ', 206 => 'Êðåé', 207 => 'Ëèíê', 208 => '208',
-    209 => '209', 210 => 'Øïèî', 211 => 'Áîìá', 212 => '212', 213 => 'Óíèê', 214 => 'ÇâÑì', 215 => 'Ëèíå', 216 => 'Íîâà',
-    401 => 'Ðàêå', 402 => 'ËåËà', 403 => 'ÒÿËà', 404 => 'Ãàóñ', 405 => 'Èîíí', 406 => 'Ïëàç', 407 => 'ÌàëÙ', 408 => 'ÁîëÙ', 409 => 'Ïëàí');
 
   foreach ($fleets as $fleetID => $fleet) {
     $fleet_n[$fleetID] = array();
@@ -97,7 +93,7 @@ function BE_calculateRound(&$fleets, &$fleetsAttacking, &$fleet_n, &$fleet_shiel
             $FinalHarm = round($HarmMade * $CombatCaps[$defenseShipID]['amplify'][$element]); // method 2 - Amplification (RapidFire) applies BEFORE shields
             // $FinalHarm = $HarmMade; // method 3 - Amplification applies AFTER shields
 
-// BE_dump1($round, $SN, $defenseShipID, $defenseShipData, $element, $attackArray, $fleetID, $HarmPctIncoming, $HarmMade, $FinalHarm, $amount);
+BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $attackArray, $fleetID, $HarmPctIncoming, $HarmMade, $FinalHarm, $amount);
 
             if ($attackArray[$fleetID][$element]['shield'] < $FinalHarm) {          // Does damage enough to penetrate shields? If yes...
               $FinalHarm = $FinalHarm - $attackArray[$fleetID][$element]['shield']; // How much damage passed through shield
@@ -117,7 +113,7 @@ function BE_calculateRound(&$fleets, &$fleetsAttacking, &$fleet_n, &$fleet_shiel
               $fleet_shield += $FinalHarm;                       // Adding all incoming damage to fleet's shield
               $calculatedDestroyedShip = 0;                      // No ship was destroyed
             }
-// BE_dump2($calculatedDestroyedShip, $fleet_n[$fleetID][$element]);
+BE_DEBUG_closeRow($calculatedDestroyedShip, $fleet_n[$fleetID][$element]);
           }
         }
       } else {
@@ -128,6 +124,8 @@ function BE_calculateRound(&$fleets, &$fleetsAttacking, &$fleet_n, &$fleet_shiel
 }
 
 function calculateAttack (&$attackers, &$defenders, $isSimulated = false) {
+//  define("BE_DEBUG", true);
+
   global $pricelist, $CombatCaps, $game_config, $resource;
   global $strBE_Header;
 
@@ -163,7 +161,7 @@ function calculateAttack (&$attackers, &$defenders, $isSimulated = false) {
   $totalResourcePoints['defender'] += $defenseResourcePoints['crystal'];
 
 
-// BE_dump0();
+BE_DEBUG_openTable();
 
   for ($round = 0, $rounds = array(); $round < MAX_ATTACK_ROUNDS; $round++) {
     $attArray = array();
@@ -219,7 +217,7 @@ function calculateAttack (&$attackers, &$defenders, $isSimulated = false) {
     }
   }
 
-//print('</table>');
+BE_DEBUG_closeTable();
 
   if ($attackRoundData['amount']['total'] <= 0) {
     $won = 2; // defender

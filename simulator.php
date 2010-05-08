@@ -24,6 +24,71 @@ $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
+if($_GET['debug'])
+  define("BE_DEBUG", true);
+
+function SYS_combatDataPack($combat, $strArray){
+  foreach($combat as $fleetID => $fleetCompress){
+    if($strArray == 'def')
+      $strPacked .= "D";
+    else
+      $strPacked .= "A";
+
+    $strPacked .= '.';
+
+    foreach($fleetCompress['user'] as $techLevel)
+      $strPacked .= ((empty($techLevel)) ? 0 : $techLevel) . ',';
+
+    $strPacked .= '.';
+
+    foreach($fleetCompress[$strArray] as $shipID => $shipCount)
+      $strPacked .= $shipID . ',' . $shipCount . ';';
+  }
+  $strPacked .= '!';
+
+  return $strPacked;
+}
+
+function SYS_combatDataUnPack($strData){
+  $userFields = array('rpg_amiral', 'defence_tech', 'shield_tech', 'military_tech');
+  $unpacked = array (
+    'detail' => array(),
+    'def' => array()
+  );
+
+  $fleetList = explode('!', $strData);
+
+  $fleetID = 1;
+  foreach($fleetList as $fleet){
+    $t = explode('.', $fleet);
+
+    if(!$t[0]) continue;
+
+    if($t[0] == 'A' ){
+      $strArray = 'detail';
+    }else{
+      $strArray = 'def';
+    };
+
+    $t[1] = explode(',', $t[1]);
+    $t[2] = explode(';', $t[2]);
+
+    $combat = array();
+
+    foreach($userFields as $key => $field)
+      $combat['user'][$field] = $t[1][$key];
+
+    foreach($t[2] as $shipInfo)
+      if($shipInfo){
+        $shipInfo = explode(',', $shipInfo);
+        $combat[$strArray][$shipInfo[0]] = $shipInfo[1];
+      }
+    $unpacked[$strArray][] = $combat;
+  }
+
+  return $unpacked;
+}
+
 if(isset($_POST['submit'])) {
 
   // !-------------------------------------------------------------------------------------------------------------------------------------! //
@@ -100,6 +165,19 @@ if(isset($_POST['submit'])) {
     'crystal'   => intval($_POST['crystal']),
     'deuterium' => intval($_POST['deuterium']));
 
+  $replay = SYS_combatDataPack($attackFleets, 'detail');
+  $replay .= SYS_combatDataPack($defense, 'def');
+}
+
+if(isset($_GET['replay'])) {
+  $replay       = $_GET['replay'];
+  $unpacked = SYS_combatDataUnPack($replay);
+
+  $attackFleets = $unpacked['detail'];
+  $defense      = $unpacked['def'];
+}
+
+if(is_array($attackFleets)){
   // Lets calcualte attack...
   $start = microtime(true);
   $result = calculateAttack($attackFleets, $defense, true);
@@ -138,16 +216,19 @@ if(isset($_POST['submit'])) {
 
   $Page .= "<br /><br />";
   //We we aren't gonna chare this reoprt because we cheated so it acutally doesn't exist.
-  $Page .= "Sorry, this report can't be shared.";
+
+  $Page .= '<a href=simulator.php?replay=' . $replay .'><font color=red>';
+  $Page .= "Sorry, this report CAN be shared!";
+  $Page .= "</font></a>";
+
   $Page .= "<br /><br />";
   $Page .= "</center>";
   $Page .= "</body>";
   $Page .= "</html>";
 
   echo $Page;
-
+}else{
 // Now its Sonyedorlys input form. Many thanks for allowing me to use it. (Slightly edited)
-} else {
   $parse['military'] = 0;
   $parse['defence'] = 0;
   $parse['shield'] = 0;
