@@ -81,6 +81,7 @@ function BE_calculateRound(&$fleets, &$fleetsAttacking, &$fleet_n, &$fleet_shiel
           if (!is_numeric($fleetDefID)) continue;
 
           foreach($fleetDef as $defenseShipID => $defenseShipData){
+            //if ($defenseShipData['def'] <= 0) continue;
             if (!is_numeric($defenseShipID)) continue;
 
             // $PctHarmFromThisShip = $defenseShipData['att'] / $fleetDef['att']; // which % of damage of whole fleet came from this partial ship
@@ -123,10 +124,7 @@ BE_DEBUG_closeRow($calculatedDestroyedShip, $fleet_n[$fleetID][$element]);
 }
 
 function calculateAttack (&$attackers, &$defenders, $isSimulated = false) {
-//  define("BE_DEBUG", true);
-
   global $pricelist, $CombatCaps, $game_config, $resource;
-  global $strBE_Header;
 
   $totalResourcePoints = array('attacker' => 0, 'defender' => 0);
 
@@ -193,12 +191,15 @@ BE_DEBUG_openTable();
       $defensePctPerFleet[$fleetID] = $amount / $defenseRoundData['amount']['total'];
     }
 
+    // UGLY CODE!! WARNING
     $attacker_n = array();
     $attacker_shield = 0;
+//    BE_calculateRoundOld($attackers, $attacker_n, $attacker_shield, $attackPctPerFleet, $attArray, $attackRoundData, $defenseRoundData, 'detail', 'A'.$round);
     BE_calculateRound($attackers, $defenders, $attacker_n, $attacker_shield, $attackPctPerFleet, $attArray, $defArray, $attackRoundData, $defenseRoundData, 'detail', 'A'.$round);
 
     $defender_n = array();
     $defender_shield = 0;
+//    BE_calculateRound($defenders, $defender_n, $defender_shield, $defensePctPerFleet, $defArray, $defenseRoundData, $attackRoundData, 'def', 'D'.$round);
     BE_calculateRound($defenders, $attackers, $defender_n, $defender_shield, $defensePctPerFleet, $defArray, $attArray, $defenseRoundData, $attackRoundData, 'def', 'D'.$round);
 
     $rounds[$round]['attackShield'] = $attacker_shield;

@@ -65,84 +65,29 @@ function MissionCaseAttack ( $FleetRow) {
   UpdatePlanetBatimentQueueList($TargetPlanet, $TargetUser);
   PlanetResourceUpdate( $TargetUser, $TargetPlanet, $time_now );
 
+  $attackFleets = array();
   // ACS function: put all fleet into an array
-  $attackFleets = array(); // attackFleets[id] = array('fleet' => $FleetRow, 'user' => $user);
-
-  // !G+ Here is the place for optimization - always create fleet AKS and put one fleet to it
   if ($FleetRow['fleet_group'] != 0) {
     $fleets = doquery('SELECT * FROM {{table}} WHERE fleet_group='.$FleetRow['fleet_group'],'fleets');
-    while ($fleet = mysql_fetch_assoc($fleets)) {
+    while ($fleet = mysql_fetch_assoc($fleets))
       BE_attackFleetFill(&$attackFleets, $fleet);
-/*
-      $attackFleets[$fleet['fleet_id']]['fleet'] = $fleet;
-
-      // !G+ We only need id, techlevels and rpg_amiral - why query whole row?
-      $attackFleets[$fleet['fleet_id']]['user'] = doquery('SELECT id, username, defence_tech, rpg_amiral, shield_tech, military_tech FROM {{table}} WHERE id='.$fleet['fleet_owner'],'users', true);
-
-      $attackFleets[$fleet['fleet_id']]['detail'] = array();
-      $temp = explode(';', $fleet['fleet_array']);
-      foreach ($temp as $temp2) {
-        $temp2 = explode(',', $temp2);
-
-        if ($temp2[0] < 100) continue;
-
-        if (!isset($attackFleets[$fleet['fleet_id']]['detail'][$temp2[0]]))
-          $attackFleets[$fleet['fleet_id']]['detail'][$temp2[0]] = 0;
-        $attackFleets[$fleet['fleet_id']]['detail'][$temp2[0]] += $temp2[1];
-      }
-*/
-    }
   } else {
     BE_attackFleetFill(&$attackFleets, $FleetRow);
-/*
-    $attackFleets[$fleet['fleet_id']]['fleet'] = $fleet;
-
-    // !G+ We only need id, techlevels and rpg_amiral - why query whole row?
-    $attackFleets[$fleet['fleet_id']]['user'] = doquery('SELECT id, username, defence_tech, rpg_amiral, shield_tech, military_tech FROM {{table}} WHERE id='.$fleet['fleet_owner'],'users', true);
-
-    $attackFleets[$fleet['fleet_id']]['detail'] = array();
-    $temp = explode(';', $fleet['fleet_array']);
-    foreach ($temp as $temp2) {
-      $temp2 = explode(',', $temp2);
-
-      if ($temp2[0] < 100) continue;
-
-      if (!isset($attackFleets[$fleet['fleet_id']]['detail'][$temp2[0]]))
-        $attackFleets[$fleet['fleet_id']]['detail'][$temp2[0]] = 0;
-      $attackFleets[$fleet['fleet_id']]['detail'][$temp2[0]] += $temp2[1];
-    }
-*/
   }
 
-  $defenseFleets = array();
-  $def = doquery('SELECT * FROM {{table}} WHERE `fleet_end_galaxy` = '. $FleetRow['fleet_end_galaxy'] .' AND `fleet_end_system` = '. $FleetRow['fleet_end_system'] .' AND `fleet_end_type` = '. $FleetRow['fleet_end_type'] .' AND `fleet_end_planet` = '. $FleetRow['fleet_end_planet'] .' AND fleet_start_time<'.$time_now.' AND fleet_end_stay>='.$time_now,'fleets');
-  while ($defRow = mysql_fetch_assoc($def)) {
-    $defRowDef = explode(';', $defRow['fleet_array']);
-    foreach ($defRowDef as $Element) {
-      $Element = explode(',', $Element);
+  $defenseFleets = array(
+    0 => array(
+      'def' => array(),
+      'user' => $TargetUser
+    )
+  );
+  foreach($reslist['combat'] as $combatUnitID)
+    if (isset($resource[$combatUnitID]) && isset($TargetPlanet[$resource[$combatUnitID]]))
+      $defenseFleets[0]['def'][$combatUnitID] = $TargetPlanet[$resource[$combatUnitID]];
 
-      if ($Element[0] < 100) continue;
-
-      if (!isset($defenseFleets[$defRow['fleet_id']]['def'][$Element[0]]))
-        $defenseFleets[$defRow['fleet_id']][$Element[0]] = 0;
-      $defenseFleets[$defRow['fleet_id']]['def'][$Element[0]] += $Element[1];
-
-      // !G+ We only need id, techlevels and rpg_amiral - why query whole row?
-      // $defenseFleets[$defRow['fleet_id']]['user'] = doquery('SELECT * FROM {{table}} WHERE id='.$defRow['fleet_owner'],'users', true);
-      $defenseFleets[$defRow['fleet_id']]['user'] = doquery('SELECT id, defence_tech, rpg_amiral, shield_tech, military_tech FROM {{table}} WHERE id='.$defRow['fleet_owner'],'users', true);
-    }
-  }
-
-  $defenseFleets[0]['def'] = array();
-  $defenseFleets[0]['user'] = $TargetUser;
-  for ($i = 200; $i < 500; $i++) {
-    if (isset($resource[$i]) && isset($TargetPlanet[$resource[$i]])) {
-      $defenseFleets[0]['def'][$i] = $TargetPlanet[$resource[$i]];
-    }
-  }
-
-  //Debug
-  //echo "<font color=\"red\">A combat report has been generated. Please post any errors below on the forums. Thanks</font><br />";
+  $fleets = doquery('SELECT * FROM {{table}} WHERE `fleet_end_galaxy` = '. $FleetRow['fleet_end_galaxy'] .' AND `fleet_end_system` = '. $FleetRow['fleet_end_system'] .' AND `fleet_end_planet` = '. $FleetRow['fleet_end_planet'] . ' AND `fleet_end_type` = '. $FleetRow['fleet_end_type'] .' AND fleet_start_time<'.$time_now.' AND fleet_end_stay>='.$time_now,'fleets');
+  while ($fleet = mysql_fetch_assoc($fleets))
+    BE_attackFleetFill(&$defenseFleets, $fleet, 'def');
 
   $start = microtime(true);
   $result = calculateAttack($attackFleets, $defenseFleets);
@@ -238,13 +183,13 @@ function MissionCaseAttack ( $FleetRow) {
   doquery($QryInsertRapport,'rw') or die("Error inserting CR to database".mysql_error()."<br /><br />Trying to execute:".mysql_query());
 
   // Colorize report.
-        $raport  = '<a href # OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
+  $raport  = '<a href # OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
   $raport .= '<center>';
-        if       ($result['won'] == 1) {
+  if ($result['won'] == 1) {
     $raport .= '<font color=\'green\'>';
-        } elseif ($result['won'] == 0) {
+  } elseif ($result['won'] == 0) {
     $raport .= '<font color=\'orange\'>';
-        } elseif ($result['won'] == 2) {
+  } elseif ($result['won'] == 2) {
     $raport .= '<font color=\'red\'>';
   }
   $raport .= $lang['sys_mess_attack_report'] .' ['. $FleetRow['fleet_end_galaxy'] .':'. $FleetRow['fleet_end_system'] .':'. $FleetRow['fleet_end_planet'] .'] </font></a><br /><br />';
@@ -289,6 +234,8 @@ function MissionCaseAttack ( $FleetRow) {
   $QryUpdateRaidsCompteur .= "WHERE id = '" . $CurrentUserID . "' ";
   $QryUpdateRaidsCompteur .= "LIMIT 1 ;";
   doquery($QryUpdateRaidsCompteur, 'users');
+
+  return $result;
 }
 // MadnessRed 2008
 ?>
