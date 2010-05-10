@@ -592,8 +592,7 @@ switch ($mode) {
       $msg .= "<tr><td align=\"left\">".$usr.":</td><td>".$str."</td></tr>";
     }
     $msg .= '</table>';
-    include("includes/msg_replace.php");
-    $parse['LastChat'] = $msg;
+    $parse['LastChat'] = CHT_messageParse($msg);
     $parse['admin_email'] = ADMINEMAIL;
 
     display(parsetemplate(gettemplate('overview_body'), $parse), $lang['Overview']);

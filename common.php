@@ -20,10 +20,12 @@ define('TEMPLATE_DIR'     , 'templates/');
 define('TEMPLATE_NAME'    , 'OpenGame');
 define('DEFAULT_LANG'     , 'ru');
 
+
 $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 
 include($ugamela_root_path . 'includes/debug.class.'.$phpEx);
 $debug = new debug();
+
 
 include($ugamela_root_path . 'includes/constants.'.$phpEx);
 include($ugamela_root_path . 'includes/functions.'.$phpEx);
@@ -149,5 +151,4 @@ if ( isset ($user) ) {
 } else {
   $dpath     = "../" . DEFAULT_SKINPATH;
 }
-
 ?>
