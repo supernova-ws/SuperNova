@@ -74,7 +74,7 @@ while($v=mysql_fetch_object($query)){
   }
   $msg=htmlentities($v->message, ENT_QUOTES, cp1251);
   $msgtimestamp=htmlentities($v->timestamp, ENT_QUOTES, cp1251);
-  $msgtimestamp=date("m/d H:i:s", $msgtimestamp);
+  $msgtimestamp=date(DATE_TIME, $msgtimestamp);
   // Les différentes polices (gras, italique, couleurs, etc...)
   include("includes/msg_replace.php");
 
