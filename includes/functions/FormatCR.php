@@ -122,8 +122,6 @@ function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_f
       $html .= "Раунд ".$round_no.":<br /><br />";
     };
 
-//    html .= dump($defenderCoord,'$defenderCoord');
-
     //Now whats that attackers and defenders data
     $data = $result_array['rw'][$round_no-1];
     $data['defCoord'] = $defenderCoord;

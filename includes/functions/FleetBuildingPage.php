@@ -205,7 +205,6 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser ) {
 
   if ($CurrentPlanet['b_hangar_id'] != '') {
     $BuildQueue .= ElementBuildListBox( $CurrentUser, $CurrentPlanet );
-  //  var_dump($CurrentPlanet['id']);
   }
 
   $parse = $lang;
