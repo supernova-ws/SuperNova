@@ -162,6 +162,10 @@ class objConfig extends objCache {
     'int_userbar_background' => "images/userbar.png",
     'int_userbar_URL' => "/banner.php?type=userbar",
     'int_userbar_font' => "arialbd.ttf",
+
+    // Variables
+    'var_stats_lastUpdated' => '0',
+    'var_stats_schedule' => 'd@04:00',
   );
 
 
