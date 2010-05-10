@@ -76,7 +76,7 @@ while($v=mysql_fetch_object($query)){
   $msgtimestamp=htmlentities($v->timestamp, ENT_QUOTES, cp1251);
   $msgtimestamp=date(DATE_TIME, $msgtimestamp);
   // Les différentes polices (gras, italique, couleurs, etc...)
-  include("includes/msg_replace.php");
+  $msg = CHT_messageParse($msg);
 
   // Affichage du message
   $msg="<div align=\"left\" style='background-color:black;color:white;'><span style='font:menu;'>[".$msgtimestamp."]</span> <span style='width:50px;font:menu;'><b>".$nick."</b></span> : ".$msg."<br></div>";

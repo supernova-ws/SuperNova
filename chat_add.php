@@ -22,10 +22,12 @@ if ($IsUserChecked == false) {
   includeLang('login');
   header("Location: login.php");
 }
-
   // On récupère les informations du message et de l'envoyeur
   if (isset($_POST["msg"]) && isset($user['username'])) {
-     $msg  = addslashes ($_POST["msg"]);
+     $msg  = SYS_mysqlSmartEscape ($_POST["msg"]);
+     if ($user['authlevel'] == 3) {
+       $msg = preg_replace("#\[c=(white|blue|yellow|green|pink|red|orange)\](.+)\[/c\]#isU", $config->chat_admin_msgFormat, $msg);
+     }
      $nick = addslashes ($user['username']);
      $chat_type = addslashes ($_POST["chat_type"]);
      $ally_id = addslashes ($_POST["ally_id"]);

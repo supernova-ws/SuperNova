@@ -170,7 +170,7 @@ class objConfig extends objCache {
     'int_userbar_URL' => "/banner.php?type=userbar",
     'int_userbar_font' => "arialbd.ttf",
 
-    'chat_admin_nickFormat' => "[c=purple]%s[/c]",
+    'chat_admin_msgFormat' => '[c=purple]$2[/c]',
   );
 
 
