@@ -24,14 +24,14 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser) {
 
 
   // Boucle d'interpretation des eventuelles commandes
-  if (isset($GET_cmd)) {
+  if (!empty($GET_cmd)) {
     // On passe une commande
     $bDoItNow   = false;
     if ((!$GET_building) && (($GET_cmd == 'insert') || ($GET_cmd == 'destroy'))) {
       $debug->error("Buguser: ".$user['username']." (".$user['id'].")<br />Free building","Bug use");
       die();
     };
-    if       ( isset ( $GET_building )) {
+    if ( !empty ( $GET_building )) {
       if ( !strchr ( $GET_building, " ") ) {
         if (in_array( trim($GET_building), $Allowed[$CurrentPlanet['planet_type']])) {
           $bDoItNow = true;
