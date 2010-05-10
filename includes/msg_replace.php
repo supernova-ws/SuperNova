@@ -3,7 +3,7 @@
   $msg=preg_replace("#\[b\](.+)\[/b\]#isU","<b>$1</b>",$msg);
   $msg=preg_replace("#\[i\](.+)\[/i\]#isU","<i>$1</i>",$msg);
   $msg=preg_replace("#\[u\](.+)\[/u\]#isU","<u>$1</u>",$msg);
-  $msg=preg_replace("#\[c=(white|blue|yellow|green|pink|red|orange)\](.+)\[/c\]#isU","<font color=\"$1\">$2</font>",$msg);
+  $msg=preg_replace("#\[c=(white|blue|yellow|green|pink|red|orange|purple)\](.+)\[/c\]#isU","<font color=\"$1\">$2</font>",$msg);
 
   // Les smileys avec leurs raccourcis
   $msg=preg_replace("#:agr:#isU","<img src=\"images/smileys/aggressive.gif\" align=\"absmiddle\" title=\":agr:\" alt=\":agr:\">",$msg);

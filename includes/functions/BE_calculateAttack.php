@@ -191,15 +191,12 @@ BE_DEBUG_openTable();
       $defensePctPerFleet[$fleetID] = $amount / $defenseRoundData['amount']['total'];
     }
 
-    // UGLY CODE!! WARNING
     $attacker_n = array();
     $attacker_shield = 0;
-//    BE_calculateRoundOld($attackers, $attacker_n, $attacker_shield, $attackPctPerFleet, $attArray, $attackRoundData, $defenseRoundData, 'detail', 'A'.$round);
     BE_calculateRound($attackers, $defenders, $attacker_n, $attacker_shield, $attackPctPerFleet, $attArray, $defArray, $attackRoundData, $defenseRoundData, 'detail', 'A'.$round);
 
     $defender_n = array();
     $defender_shield = 0;
-//    BE_calculateRound($defenders, $defender_n, $defender_shield, $defensePctPerFleet, $defArray, $defenseRoundData, $attackRoundData, 'def', 'D'.$round);
     BE_calculateRound($defenders, $attackers, $defender_n, $defender_shield, $defensePctPerFleet, $defArray, $attArray, $defenseRoundData, $attackRoundData, 'def', 'D'.$round);
 
     $rounds[$round]['attackShield'] = $attacker_shield;

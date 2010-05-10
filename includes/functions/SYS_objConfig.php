@@ -105,7 +105,14 @@ class objCache {
   }
 
   public function dumpData(){
-    pdump(self::$data);
+    switch (self::$mode) {
+      case 0:
+        return dump(self::$data, self::$prefix);
+        break;
+      default:
+        return false;
+        break;
+    };
   }
 
   public function getPrefix(){
@@ -162,6 +169,8 @@ class objConfig extends objCache {
     'int_userbar_background' => "images/userbar.png",
     'int_userbar_URL' => "/banner.php?type=userbar",
     'int_userbar_font' => "arialbd.ttf",
+
+    'chat_admin_nickFormat' => "[c=purple]%s[/c]",
   );
 
 
