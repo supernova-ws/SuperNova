@@ -219,7 +219,8 @@ check_urlaubmodus ($user);
       }
 */
 //  display(parsetemplate(gettemplate('stat_body'), $parse), $lang['stat_title']);
-  display(parsetemplate(gettemplate('stat_body'), $parse), $lang['stat_title'], false, '', false, $IsUserChecked);
+//  display(parsetemplate(gettemplate('stat_body'), $parse), $lang['stat_title'], false, '', false, $IsUserChecked);
+  display(parsetemplate(gettemplate('stat_body'), $parse), $lang['stat_title'], $IsUserChecked, '', false, $IsUserChecked);
 
 // -----------------------------------------------------------------------------------------------------------
 // History version

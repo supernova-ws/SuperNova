@@ -55,11 +55,11 @@ function is_email($email) {
 // Routine Affichage d'un message administrateur avec saut vers une autre page si souhaité
 //
 function AdminMessage ($mes, $title = 'Error', $dest = "", $time = "3") {
-  $parse['color'] = $color;
+//  $parse['color'] = $color;
   $parse['title'] = $title;
   $parse['mes']   = $mes;
 
-  $page .= parsetemplate(gettemplate('admin/message_body'), $parse);
+  $page = parsetemplate(gettemplate('admin/message_body'), $parse);
 
   display ($page, $title, false, (($dest != "") ? "<meta http-equiv=\"refresh\" content=\"$time;URL=javascript:self.location='$dest';\">" : ""), true);
 }

@@ -157,7 +157,7 @@
 <br />
 {ClickBanner}{ClickUserbar}</center>
 <!-- anda flytmeny delen -->
-&copy; OGame Triolan 2009 - Отдельные вопросы вы можете задать по адресу {admin_email}.
+{copyright} {admin_email}.
 </table></div>
 </body>
 </html>

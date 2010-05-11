@@ -7,4 +7,6 @@ $dbsettings = Array(
 "name"       => "MYSQL_DBNAME",   // Название MySQL базы.
 "prefix"     => "sn_",            // Префикс для таблиц в базе.
 "secretword" => "SUPERNOVA");     // Ключевое слово для создания Cookies. (Не забудьте изменить на своё!)
+
+$game['prefix'] = $dbsettings['prefix'];
 ?>

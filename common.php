@@ -43,7 +43,9 @@ if (INSTALL != true) {
   include($ugamela_root_path . 'includes/strings.'.$phpEx);
 
   // Initializing global "config" object
-  $config = objConfig::getInstance();
+  include($ugamela_root_path . 'config.'.$phpEx);
+  $config = objConfig::getInstance($dbsettings['prefix']);
+  unset($dbsettings);
 
   // Lecture de la table de configuration
   $query = doquery("SELECT * FROM {{table}}",'config');

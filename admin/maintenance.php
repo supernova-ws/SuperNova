@@ -28,11 +28,13 @@ if ($user['authlevel'] >= 3) {
     'messages' => 'DELETE FROM {{table}} WHERE message_owner not in (select id from {{users}});',
     'rw' => 'DELETE FROM {{table}} WHERE id_owner1 not in (select id from {{users}});',
     'rw' => 'DELETE FROM {{table}} WHERE id_owner2 not in (select id from {{users}});',
-    'DELETE FROM {{table}} WHERE id_owner2 not in (select id from {{users}});',
     'alliance' => 'DELETE FROM {{table}} WHERE id not in (select ally_id from {{users}} group by ally_id);',
+    'users' => "UPDATE {{table}} SET ally_id = 0, ally_name='', ally_rank_id=0 WHERE ally_id not in (select id from {{alliance}});",
+    'statpoints' => "DELETE FROM {{table}} WHERE stat_type=1 AND id_owner not in (select id from {{users}});",
+    'statpoints' => "DELETE FROM {{table}} WHERE stat_type=2 AND id_owner not in (select id from {{alliance}});",
   );
 
-  $replaces = array('users', 'planets');
+  $replaces = array('users', 'planets', 'alliance');
 
   $msg = '<ul>';
 

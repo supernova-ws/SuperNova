@@ -1,7 +1,5 @@
 <?php
 class objCache {
-  protected static $cacheObject;
-
   // -1 - not initialized
   // 0 - no cache - array() used
   // 1 - xCache
@@ -9,10 +7,11 @@ class objCache {
   protected static $data;
   protected static $prefix;
 
-  private function __construct($prefIn = 'CACHE_')
-  {
+  protected static $cacheObject;
+
+  private function __construct($prefIn = 'CACHE_') {
     self::$prefix = $prefIn;
-    if ( extension_loaded('xcache')){
+    if ( extension_loaded('xcache') ){
       self::$mode = 1;
     }else{
       self::$mode = 0;
@@ -20,56 +19,54 @@ class objCache {
     };
   }
 
-  public final function __clone()
-  {
-      // throw new BadMethodCallException("Clone is not allowed");
-  }
-
-  public static function getInstance($prefIn = 'CACHE_')
-  {
+  public static function getInstance($prefIn = 'CACHE_') {
     if (!isset(self::$cacheObject)) {
       self::$cacheObject = new objCache($prefIn);
     }
     return self::$cacheObject;
   }
 
-  public static function getMode()
-  {
-    return self::$mode;
+  public final function __clone() {
+    // throw new BadMethodCallException("Clone is not allowed");
   }
 
-  public function __set($name, $value)
-  {
-    if($name == 'prefix'){
-      self::$prefix = $value;
-    }else{
-      switch (self::$mode) {
-        case 0:
-          self::$data[self::$prefix.$name] = $value;
-          break;
-        case 1:
-          xcache_set(self::$prefix.$name, $value);
-          break;
-      };
-    }
-  }
-
-  public function __get($name)
-  {
-    if($name == 'prefix'){
-      return self::$prefix;
-    }else{
-      switch (self::$mode) {
-        case 0:
-          return self::$data[self::$prefix.$name];
-        case 1:
-          return xcache_get(self::$prefix.$name);
-      };
+  public function __set($name, $value) {
+    switch ($name){
+      case 'CACHER_PREFIX':
+        self::$prefix = $value;
+        break;
+      default:
+        switch (self::$mode) {
+          case 0:
+            self::$data[self::$prefix.$name] = $value;
+            break;
+          case 1:
+            xcache_set(self::$prefix.$name, $value);
+            break;
+        };
+        break;
     };
   }
 
-  public function __isset($name)
-  {
+  public function __get($name) {
+    switch ($name){
+      case 'CACHER_PREFIX':
+        return self::$prefix;
+        break;
+      case 'CACHER_MODE':
+        return self::$mode;
+        break;
+      default:
+        switch (self::$mode) {
+          case 0:
+            return self::$data[self::$prefix.$name];
+          case 1:
+            return xcache_get(self::$prefix.$name);
+        };
+    };
+  }
+
+  public function __isset($name) {
     switch (self::$mode) {
       case 0:
         return isset(self::$data[self::$prefix.$name]);
@@ -80,7 +77,7 @@ class objCache {
     };
   }
 
-  public function __unset($name){
+  public function __unset($name) {
     switch (self::$mode) {
       case 0:
         unset(self::$data[self::$prefix.$name]);
@@ -91,9 +88,7 @@ class objCache {
     };
   }
 
-  public function unset_by_prefix($prefix_unset = '')
-  {
-  print(self::$mode);
+  public function unset_by_prefix($prefix_unset = '') {
     switch (self::$mode) {
       case 0:
         array_walk(self::$data, create_function('&$v,$k,$p', 'if(strpos($k, $p) === 0)$v = NULL;'), self::$prefix.$prefix_unset);
@@ -104,7 +99,7 @@ class objCache {
     };
   }
 
-  public function dumpData(){
+  public function dumpData() {
     switch (self::$mode) {
       case 0:
         return dump(self::$data, self::$prefix);
@@ -115,8 +110,8 @@ class objCache {
     };
   }
 
-  public function getPrefix(){
-    return self::$prefix;
+  public function reset(){
+    $this->unset_by_prefix();
   }
 }
 
@@ -174,37 +169,36 @@ class objConfig extends objCache {
 
     // Variables
     'var_stats_lastUpdated' => '0',
-    'var_stats_schedule' => 'd@04:00',
+    'var_stats_schedule' => 'd@04:00:00',
   );
 
+  private function __construct($gamePrefix = 'ogame_') {
+    parent::__construct($gamePrefix.'config_');
+    if(!$this->OBJECT_LOADED_DB)
+      $this->loadDB();
+  }
 
-  public static function getInstance()
-  {
+  public static function getInstance($gamePrefix = 'ogame_') {
     if (!isset(self::$cacheObject)) {
-      self::$cacheObject = new objConfig;
+      self::$cacheObject = new objConfig($gamePrefix);
     }
     return self::$cacheObject;
   }
 
-  public function reload(){
-    $query = doquery("SELECT * FROM {{table}}",'config');
-    while ( $row = mysql_fetch_assoc($query) ) {
-      $this->$row['config_name'] = $row['config_value'];
-    }
-    foreach(self::$defaults as $defName => $defValue)
-      if(!isset($this->$defName))
-        $this->$defName = $defValue;
-  }
-
-  public function reloadDefaults(){
+  public function loadDefaults(){
     foreach(self::$defaults as $defName => $defValue)
       $this->$defName = $defValue;
   }
 
-  private function __construct()
-  {
-    parent::__construct('config_');
-    $this->reload();
+  public function loadDB(){
+    $this->loadDefaults();
+
+    $query = doquery("SELECT * FROM {{table}}",'config');
+    while ( $row = mysql_fetch_assoc($query) ) {
+      $this->$row['config_name'] = $row['config_value'];
+    }
+
+    $this->OBJECT_LOADED_DB = true;
   }
 }
 ?>
