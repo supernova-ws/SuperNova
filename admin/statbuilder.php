@@ -30,7 +30,6 @@ includeLang('admin');
 $start = microtime(true);
 SYS_statCalculate();
 $totaltime = microtime(true) - $start;
-pdump($totaltime);
 
 AdminMessage ( $lang['adm_done'], $lang['adm_stat_title'] );
 ?>
