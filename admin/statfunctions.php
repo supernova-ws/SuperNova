@@ -120,6 +120,33 @@ function SYS_statCalculate(){
     $points[$CurFleet['fleet_owner']]['fleet'] += ($Points['FleetPoint'] / 1000);
   }
 
+  $UsrPlanets     = doquery("SELECT * FROM {{table}};", 'planets');
+  while ($CurPlanet = mysql_fetch_assoc($UsrPlanets) ) {
+    $Points           = GetPlanetPoints ( $CurPlanet );
+
+    $counts[$CurPlanet['id_owner']]['build'] += $Points['BuildCount'];
+    $counts[$CurPlanet['id_owner']]['defs']  += $Points['DefenseCount'];
+    $counts[$CurPlanet['id_owner']]['fleet'] += $Points['FleetCount'];
+
+    $points[$CurPlanet['id_owner']]['build'] += $Points['BuildPoint'] / 1000;
+    $points[$CurPlanet['id_owner']]['defs']  += $Points['DefensePoint'] / 1000;
+    $points[$CurPlanet['id_owner']]['fleet'] += $Points['FleetPoint'] / 1000;
+
+    $PlanetPoints     = ($Points['BuildPoint'] + $Points['DefensePoint'] + $Points['FleetPoint']) / 1000;
+
+//      $GPoints         += $PlanetPoints;
+
+//      $GCount          += $Points['FleetCount'];
+//      $GCount          += $Points['BuildCount'];
+//      $GCount          += $Points['DefenseCount'];
+
+    $QryUpdatePlanet  = "UPDATE {{table}} SET ";
+    $QryUpdatePlanet .= "`points` = '". $PlanetPoints ."' ";
+    $QryUpdatePlanet .= "WHERE ";
+    $QryUpdatePlanet .= "`id` = '". $CurPlanet['id'] ."';";
+    doquery ( $QryUpdatePlanet , 'planets');
+  }
+
   $GameUsers  = doquery("SELECT * FROM {{table}}", 'users');
   while ($CurUser = mysql_fetch_assoc($GameUsers)) {
     $Points         = GetTechnoPoints ( $CurUser );
@@ -132,32 +159,6 @@ function SYS_statCalculate(){
 //    $GPoints      = $points[$CurUser['id']]['tech'];
 //    $GPoints     += $points[$CurUser['id']]['fleet'];
 
-    $UsrPlanets     = doquery("SELECT * FROM {{table}} WHERE `id_owner` = '". $CurUser['id'] ."';", 'planets');
-    while ($CurPlanet = mysql_fetch_assoc($UsrPlanets) ) {
-      $Points           = GetPlanetPoints ( $CurPlanet );
-
-      $counts[$CurPlanet['id_owner']]['build'] += $Points['BuildCount'];
-      $counts[$CurPlanet['id_owner']]['defs']  += $Points['DefenseCount'];
-      $counts[$CurPlanet['id_owner']]['fleet'] += $Points['FleetCount'];
-
-      $points[$CurPlanet['id_owner']]['build'] += $Points['BuildPoint'] / 1000;
-      $points[$CurPlanet['id_owner']]['defs']  += $Points['DefensePoint'] / 1000;
-      $points[$CurPlanet['id_owner']]['fleet'] += $Points['FleetPoint'] / 1000;
-
-      $PlanetPoints     = ($Points['BuildPoint'] + $Points['DefensePoint'] + $Points['FleetPoint']) / 1000;
-
-//      $GPoints         += $PlanetPoints;
-
-//      $GCount          += $Points['FleetCount'];
-//      $GCount          += $Points['BuildCount'];
-//      $GCount          += $Points['DefenseCount'];
-
-      $QryUpdatePlanet  = "UPDATE {{table}} SET ";
-      $QryUpdatePlanet .= "`points` = '". $PlanetPoints ."' ";
-      $QryUpdatePlanet .= "WHERE ";
-      $QryUpdatePlanet .= "`id` = '". $CurPlanet['id'] ."';";
-      doquery ( $QryUpdatePlanet , 'planets');
-    }
 
 //    echo $GPoints, ' ', array_sum($points[$CurUser['id']]), '<br>';
 //    echo $GCount , ' ', array_sum($counts[$CurUser['id']]), '<br>';
