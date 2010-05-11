@@ -31,5 +31,5 @@ $start = microtime(true);
 SYS_statCalculate();
 $totaltime = microtime(true) - $start;
 
-AdminMessage ( $lang['adm_done'], $lang['adm_stat_title'] );
+AdminMessage ( $lang['adm_done'] . ' ' . $totaltime, $lang['adm_stat_title'] );
 ?>
