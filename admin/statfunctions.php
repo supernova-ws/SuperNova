@@ -134,12 +134,6 @@ function SYS_statCalculate(){
 
     $PlanetPoints     = ($Points['BuildPoint'] + $Points['DefensePoint'] + $Points['FleetPoint']) / 1000;
 
-//      $GPoints         += $PlanetPoints;
-
-//      $GCount          += $Points['FleetCount'];
-//      $GCount          += $Points['BuildCount'];
-//      $GCount          += $Points['DefenseCount'];
-
     $QryUpdatePlanet  = "UPDATE {{table}} SET ";
     $QryUpdatePlanet .= "`points` = '". $PlanetPoints ."' ";
     $QryUpdatePlanet .= "WHERE ";
@@ -152,16 +146,6 @@ function SYS_statCalculate(){
     $Points         = GetTechnoPoints ( $CurUser );
     $counts[$CurUser['id']]['tech']    = $Points['TechCount'];
     $points[$CurUser['id']]['tech']    = $Points['TechPoint'] / 1000;
-
-//    $GCount       = $counts[$CurUser['id']]['tech'];
-//    $GCount      += $counts[$CurUser['id']]['fleet'];
-
-//    $GPoints      = $points[$CurUser['id']]['tech'];
-//    $GPoints     += $points[$CurUser['id']]['fleet'];
-
-
-//    echo $GPoints, ' ', array_sum($points[$CurUser['id']]), '<br>';
-//    echo $GCount , ' ', array_sum($counts[$CurUser['id']]), '<br>';
 
     $GPoints = array_sum($points[$CurUser['id']]);
     $GCount  = array_sum($counts[$CurUser['id']]);
@@ -190,96 +174,46 @@ function SYS_statCalculate(){
     doquery ( $QryInsertStats , 'statpoints');
   }
 
-  $Rank           = 1;
-  $RankQry        = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `tech_points` DESC;", 'statpoints');
-  while ($TheRank = mysql_fetch_assoc($RankQry) ) {
-    $QryUpdateStats  = "UPDATE {{table}} SET ";
-    $QryUpdateStats .= "`tech_rank` = '". $Rank ."' ";
-    $QryUpdateStats .= "WHERE ";
-    $QryUpdateStats .= " `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $TheRank['id_owner'] ."';";
-    doquery ( $QryUpdateStats , 'statpoints');
-    $Rank++;
-  }
+  $qryResetRowNum = 'SET @rownum=0;';
+  $qryFormat = 'UPDATE {{table}} SET `%1$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = %2$d AND `stat_code` = 1 ORDER BY `%1$s_points` DESC;';
 
-  $Rank           = 1;
-  $RankQry        = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `build_points` DESC;", 'statpoints');
-  while ($TheRank = mysql_fetch_assoc($RankQry) ) {
-    $QryUpdateStats  = "UPDATE {{table}} SET ";
-    $QryUpdateStats .= "`build_rank` = '". $Rank ."' ";
-    $QryUpdateStats .= "WHERE ";
-    $QryUpdateStats .= " `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $TheRank['id_owner'] ."';";
-    doquery ( $QryUpdateStats , 'statpoints');
-    $Rank++;
-  }
+  doquery ( $qryResetRowNum, 'statpoints');
+  doquery ( sprintf($qryFormat, 'tech', 1) , 'statpoints');
 
-  $Rank           = 1;
-  $RankQry        = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `defs_points` DESC;", 'statpoints');
-  while ($TheRank = mysql_fetch_assoc($RankQry) ) {
-    $QryUpdateStats  = "UPDATE {{table}} SET ";
-    $QryUpdateStats .= "`defs_rank` = '". $Rank ."' ";
-    $QryUpdateStats .= "WHERE ";
-    $QryUpdateStats .= " `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $TheRank['id_owner'] ."';";
-    doquery ( $QryUpdateStats , 'statpoints');
-    $Rank++;
-  }
+  doquery ( $qryResetRowNum, 'statpoints');
+  doquery ( sprintf($qryFormat, 'build', 1) , 'statpoints');
 
-  $Rank           = 1;
-  $RankQry        = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `fleet_points` DESC;", 'statpoints');
-  while ($TheRank = mysql_fetch_assoc($RankQry) ) {
-    $QryUpdateStats  = "UPDATE {{table}} SET ";
-    $QryUpdateStats .= "`fleet_rank` = '". $Rank ."' ";
-    $QryUpdateStats .= "WHERE ";
-    $QryUpdateStats .= " `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $TheRank['id_owner'] ."';";
-    doquery ( $QryUpdateStats , 'statpoints');
-    $Rank++;
-  }
+  doquery ( $qryResetRowNum, 'statpoints');
+  doquery ( sprintf($qryFormat, 'defs', 1) , 'statpoints');
 
-  $Rank           = 1;
-  $RankQry        = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `total_points` DESC;", 'statpoints');
-  while ($TheRank = mysql_fetch_assoc($RankQry) ) {
-    $QryUpdateStats  = "UPDATE {{table}} SET ";
-    $QryUpdateStats .= "`total_rank` = '". $Rank ."' ";
-    $QryUpdateStats .= "WHERE ";
-    $QryUpdateStats .= " `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $TheRank['id_owner'] ."';";
-    doquery ( $QryUpdateStats , 'statpoints');
-    $Rank++;
-  }
+  doquery ( $qryResetRowNum, 'statpoints');
+  doquery ( sprintf($qryFormat, 'fleet', 1) , 'statpoints');
 
-    $QryInsertStats  = "INSERT INTO {{table}}
-       (`tech_points`, `tech_count`, `build_points`, `build_count`, `defs_points`, `defs_count`,
-        `fleet_points`, `fleet_count`, `total_points`, `total_count`, `stat_date`,
-        `id_owner`, `id_ally`, `stat_type`, `stat_code`, `tech_old_rank`, `build_old_rank`, `defs_old_rank`,
-        `fleet_old_rank`, `total_old_rank`)
-      SELECT
-SUM(u.`tech_points`),
-SUM(u.`tech_count`),
-SUM(u.`build_points`),
-SUM(u.`build_count`),
-SUM(u.`defs_points`),
-SUM(u.`defs_count`),
-SUM(u.`fleet_points`),
-SUM(u.`fleet_count`),
-SUM(u.`total_points`),
-SUM(u.`total_count`),
-{$StatDate},
-u.`id_ally`,
-0,
-2,
-1,
-a.tech_rank,
-a.build_rank,
-a.defs_rank,
-a.fleet_rank,
-a.total_rank
-FROM {{table}} as u
-LEFT JOIN {{table}} as a ON a.id_ally=u.id_ally AND a.stat_code = 2 AND a.`stat_type` = 2
-WHERE u.`stat_type` = 1 and u.id_ally<>0
-GROUP BY u.`id_ally`";
+  doquery ( $qryResetRowNum, 'statpoints');
+  doquery ( sprintf($qryFormat, 'total', 1) , 'statpoints');
 
-
+  // Updating Allie's stats
+  $QryInsertStats  = "
+    INSERT INTO {{table}}
+      (`tech_points`, `tech_count`, `build_points`, `build_count`, `defs_points`, `defs_count`,
+       `fleet_points`, `fleet_count`, `total_points`, `total_count`, `stat_date`,
+       `id_owner`, `id_ally`, `stat_type`, `stat_code`, `tech_old_rank`, `build_old_rank`, `defs_old_rank`,
+       `fleet_old_rank`, `total_old_rank`)
+    SELECT
+      SUM(u.`tech_points`), SUM(u.`tech_count`), SUM(u.`build_points`), SUM(u.`build_count`), SUM(u.`defs_points`),
+      SUM(u.`defs_count`), SUM(u.`fleet_points`), SUM(u.`fleet_count`), SUM(u.`total_points`), SUM(u.`total_count`),
+      {$StatDate}, u.`id_ally`, 0, 2, 1,
+      a.tech_rank, a.build_rank, a.defs_rank, a.fleet_rank, a.total_rank
+    FROM {{table}} as u
+      LEFT JOIN {{table}} as a ON a.id_ally=u.id_ally AND a.stat_code = 2 AND a.`stat_type` = 2
+    WHERE u.`stat_type` = 1 and u.id_ally<>0
+    GROUP BY u.`id_ally`";
   doquery ( $QryInsertStats , 'statpoints');
+
+  // Deleting old stat_code
   doquery ("DELETE FROM {{table}} WHERE `stat_type` = '2' AND stat_code = 2;",'statpoints');
 
+  //
   $userCount = doquery ( "SELECT COUNT(*) FROM {{table}}", 'users', true);
   doquery( "UPDATE {{table}} SET `config_value`='". $userCount[0] ."' WHERE `config_name` = 'users_amount';", 'config' );
 

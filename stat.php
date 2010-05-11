@@ -54,13 +54,13 @@ check_urlaubmodus ($user);
     $Rank    = "total_rank";
     $OldRank = "total_old_rank";
   } elseif ($type == 2) {
-    $Order   = "fleet_count";
+    $Order   = "fleet_points";
     $Points  = "fleet_points";
     $Counts  = "fleet_count";
     $Rank    = "fleet_rank";
     $OldRank = "fleet_old_rank";
   } elseif ($type == 3) {
-    $Order   = "tech_count";
+    $Order   = "tech_points";
     $Points  = "tech_points";
     $Counts  = "tech_count";
     $Rank    = "tech_rank";
@@ -94,7 +94,7 @@ check_urlaubmodus ($user);
     $parse['stat_header'] = parsetemplate(gettemplate('stat_alliancetable_header'), $parse);
 
     $start = floor($range / 100 % 100) * 100;
-    $query = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '2' AND `stat_code` = '1' ORDER BY `". $Order ."` DESC LIMIT ". $start .",100;", 'statpoints');
+    $query = doquery("SELECT @rownum:=@rownum+1 as rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `stat_type` = '2' AND `stat_code` = '1' ORDER BY `". $Order ."` DESC LIMIT ". $start .",100;", 'statpoints');
 
     $start++;
     $parse['stat_date']   = $game_config['stats'];
@@ -102,15 +102,17 @@ check_urlaubmodus ($user);
     while ($StatRow = mysql_fetch_assoc($query)) {
       $parse['ally_rank']       = $start;
 
-      $AllyRow                  = doquery("SELECT * FROM {{table}} WHERE `id` = '". $StatRow['id_owner'] ."';", 'alliance',true);
+      $AllyRow                  = doquery("SELECT @rownum:=@rownum+1 as rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `id` = '". $StatRow['id_owner'] ."';", 'alliance',true);
 
       $rank_old                 = $StatRow[ $OldRank ];
+/*
       if ( $rank_old == 0) {
         $rank_old             = $start;
         $QryUpdRank           = doquery("UPDATE {{table}} SET `".$Rank."` = '".$start."', `".$OldRank."` = '".$start."' WHERE `stat_type` = '2' AND `stat_code` = '1' AND `id_owner` = '". $StatRow['id_owner'] ."';" , "statpoints");
       } else {
         $QryUpdRank           = doquery("UPDATE {{table}} SET `".$Rank."` = '".$start."' WHERE `stat_type` = '2' AND `stat_code` = '1' AND `id_owner` = '". $StatRow['id_owner'] ."';" , "statpoints");
       }
+*/
       $rank_new                 = $start;
       $ranking                  = $rank_old - $rank_new;
       if ($ranking == "0") {
@@ -147,27 +149,30 @@ check_urlaubmodus ($user);
     $parse['stat_header'] = parsetemplate(gettemplate('stat_playertable_header'), $parse);
 
     $start = floor($range / 100 % 100) * 100;
-    $query = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `". $Order ."` DESC LIMIT ". $start .",100;", 'statpoints');
+    $start1 = $start;
+//    $query = doquery("SELECT @a:=@a+1 as rownum, {{table}}.* FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `". $Order ."` DESC LIMIT ". $start .",100;", 'statpoints');
+    $query = doquery("SELECT @rownum:=@rownum+1 rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `". $Order ."` DESC LIMIT ". $start .",100;", 'statpoints');
 
     $start++;
     $parse['stat_date']   = $game_config['stats'];
     $parse['stat_values'] = "";
     while ($StatRow = mysql_fetch_assoc($query)) {
-      $parse['stat_date']       = date("d M Y - H:i:s", $StatRow['stat_date']);
-      $parse['player_rank']     = $start;
+      $parse['stat_date']       = date(DATE_TIME, $StatRow['stat_date']);
+      $parse['player_rank']     = ($StatRow['rownum'] + $start1);
 
-      $UsrRow                   = doquery("SELECT * FROM {{table}} WHERE `id` = '". $StatRow['id_owner'] ."';", 'users',true);
+      $UsrRow                   = doquery("SELECT @rownum:=@rownum+1 as rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `id` = '". $StatRow['id_owner'] ."';", 'users',true);
 
       $QryUpdateStats .= "`stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $TheRank['id_owner'] ."';";
 
-
       $rank_old                 = $StatRow[ $OldRank ];
+/*
       if ( $rank_old == 0) {
         $rank_old             = $start;
         $QryUpdRank           = doquery("UPDATE {{table}} SET `".$Rank."` = '".$start."', `".$OldRank."` = '".$start."' WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $StatRow['id_owner'] ."';" , "statpoints");
       } else {
         $QryUpdRank           = doquery("UPDATE {{table}} SET `".$Rank."` = '".$start."' WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $StatRow['id_owner'] ."';" , "statpoints");
       }
+*/
       $rank_new                 = $start;
       $ranking                  = $rank_old - $rank_new;
       if ($ranking == "0") {
@@ -219,7 +224,6 @@ check_urlaubmodus ($user);
       }
 */
 //  display(parsetemplate(gettemplate('stat_body'), $parse), $lang['stat_title']);
-//  display(parsetemplate(gettemplate('stat_body'), $parse), $lang['stat_title'], false, '', false, $IsUserChecked);
   display(parsetemplate(gettemplate('stat_body'), $parse), $lang['stat_title'], $IsUserChecked, '', false, $IsUserChecked);
 
 // -----------------------------------------------------------------------------------------------------------
