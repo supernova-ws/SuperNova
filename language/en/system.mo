@@ -110,4 +110,6 @@ $lang['sys_sec_short'] = "s";
 
 $lang['copyright'] = '&copy; OGame Triolan 2009-2010 - You can send your questions to';
 $lang['TranslationBy'] = '';
+
+$lang['sys_wait'] = 'Query in progress. Please wait.';
 ?>

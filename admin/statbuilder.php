@@ -29,9 +29,22 @@ if ($user['authlevel'] < 1) {
 
 includeLang('admin');
 
-$start = microtime(true);
-SYS_statCalculate();
-$totaltime = microtime(true) - $start;
+$script = '
+<script type="text/javascript">
+$(document).ready(function() {
+  // send requests
+  $.post("/scheduler.php", {rating: $(this).html()}, function(xml) {
+    // format result
+    var result = [
+      "'.$lang['adm_done'].': ",
+      $("runtime", xml).text(),
+      " '.$lang['sys_sec'].'"
+    ];
+    // output result
+    $("#admin_message").html(result.join(""));
+  } );
+});
+</script>';
 
-AdminMessage ( $lang['adm_done'] . ' - ' . $totaltime . ' ' . $lang['sys_sec'], $lang['adm_stat_title'] );
+AdminMessage ( $script . '<img src=./../images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_stat_title'] );
 ?>

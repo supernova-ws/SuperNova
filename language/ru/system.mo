@@ -113,4 +113,6 @@ $lang['sys_sec_short'] = "с";
 
 $lang['copyright'] = '&copy; OGame Triolan 2009-2010 - Отдельные вопросы вы можете задать по адресу';
 $lang['TranslationBy'] = '';
+
+$lang['sys_wait'] = 'Запрос выполняется. Пожалуйста, подождите.';
 ?>

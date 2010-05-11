@@ -12,3 +12,4 @@
 </head>
 {-body-}
 <script type="text/javascript" src="{-path_prefix-}js/wz_tooltip.js"></script>
+<script type="text/javascript" src="{-path_prefix-}js/lib/jquery.js"></script>

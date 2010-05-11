@@ -13,8 +13,9 @@
 
 function SYS_scheduleGetNextRun($scheduleList, $lastRun = 0, $timeNow = 0, $runMissed = true){
   $dtf = 'Y-m-d H:i:s';
-  $dtf = 'd H:i:s';
+//  $dtf = 'd H:i:s';
 
+//pdump($scheduleList);
 //pdump(date($dtf, $timeNow), 'timeNow');
 //pdump(date($dtf, $lastRun), 'lastRun');
 //pdump($runMissed, 'runMissed');
@@ -44,6 +45,7 @@ function SYS_scheduleGetNextRun($scheduleList, $lastRun = 0, $timeNow = 0, $runM
         $scheduledInterval = 24*60*60;
         break;
     }
+    if(!$lastRun) $lastRun = $timeNow - 2*$scheduledInterval;
 
     // Checking - if current schedule correct
     if(preg_match(SCHEDULER_PREG,$thisSchedule[1],$matches)){
@@ -59,13 +61,14 @@ function SYS_scheduleGetNextRun($scheduleList, $lastRun = 0, $timeNow = 0, $runM
       // Making new date with correct schedule
       $lastRun = mktime( $last['hours'], $last['minutes'], $last['seconds'], $last['mon'], $last['mday'], $last['year']);
       // Calculating previous schedule time
-      $lastRun += $scheduledInterval * (round(($timeNow - $lastRun)/$scheduledInterval) );
+      $lastRun += $scheduledInterval * floor(($timeNow - $lastRun)/$scheduledInterval);
 
       if(!$nextRun)
         $nextRun = $lastRun + $scheduledInterval * intval(!$runMissed);
 
       if(($runMissed && $lastRun>$nextRun && $lastRun<=$timeNow)||(!$runMissed && $lastRun<$nextRun && $lastRun>=$timeNow))
           $nextRun = $lastRun;
+
     };
   }
 
