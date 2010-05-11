@@ -3,6 +3,8 @@
 /**
  * StatBuilder.php
  *
+ * @version 1.1 (c) copyright 2010 by Gorlum for http://supernova.ws
+ *   [*] All calculations moved to StatFunctions.php - thus we can utilize them in automatized stats calculations
  * @version 1
  * @copyright 2008 by Chlorel for XNova
  */
@@ -31,5 +33,5 @@ $start = microtime(true);
 SYS_statCalculate();
 $totaltime = microtime(true) - $start;
 
-AdminMessage ( $lang['adm_done'] . ' ' . $totaltime, $lang['adm_stat_title'] );
+AdminMessage ( $lang['adm_done'] . ' - ' . $totaltime . ' ' . $lang['sys_sec'], $lang['adm_stat_title'] );
 ?>

@@ -3,6 +3,11 @@
 /**
  * stat.php
  *
+ * @version 1.2 (c) copyright 2010 by Gorlum for http://supernova.ws
+ *   [*] Now we don't need any misc new and old RANK calculations or UPDATEs here
+ *       All RANKs calculations now handled in StatFunctions.php
+ * @version 1.1 (c) copyright 2010 by Gorlum for http://supernova.ws
+ *   [*] This file is also used when no users logged in to show server stats
  * @version 1.0
  * @copyright 2008 by Chlorel for XNova
  */

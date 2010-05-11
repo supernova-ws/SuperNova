@@ -3,12 +3,13 @@
 /**
  * StatFunctions.php
  *
- * @version 2
- *   [!] Stats calculation greatly increased to 10x times or even more!
- *   [!] Now all ranks counting inside of this file - no unnecessary UPDATEs in /stats.php
+ * @version 2 (c) copyright 2010 by Gorlum for http://supernova.ws
+ *   [!] Stats calculation greatly increased to 10x times (and even more in certain configurations)
+ *   [!] Now all ranks for players/allies counting here - no unnecessary UPDATEs in /stats.php
  *   [*] All planet funcs merged into GetPlanetPoints
  *   [*] GetPlanetPoints optimized to utilize properties of geometrical progression
- *   [*] Planet-related calculations now made with one SQL-query for all planets - not per user
+ *   [*] Planet-related calculations now made within one SQL-query for all planets - not per user
+ *   [*] Fleet-On-Fly-related calculations now made within one SQL-query for all fleets - not per user
  *   [*] Greatly improved insertions of new Allie's stat by moving all calculation to single query
  *   [*] Greatly improved speed of updating Player's rank by moving every rank update to single query
  * @version 1
@@ -99,54 +100,46 @@ function GetFleetPointsOnTour ( $CurrentFleet ) {
 
 function SYS_statCalculate(){
   $StatDate   = time();
-/*
-  // Getting old ranks (WHY HERE?!)
-  $OldStatRecord  = doquery ("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = 1;", 'statpoints');
-  while($o = mysql_fetch_array($OldStatRecord)) {
-    // id_owner
-    $OldTotalRank[$o['id_owner']] = $o['total_rank'];
-    $OldTechRank[$o['id_owner']] = $o['tech_rank'];
-    $OldBuildRank[$o['id_owner']] = $o['build_rank'];
-    $OldDefsRank[$o['id_owner']] = $o['defs_rank'];
-    $OldFleetRank[$o['id_owner']] = $o['fleet_rank'];
-  }
-*/
-  // Rotation des statistiques
+
+  // Statistic rotation
   doquery ( "DELETE FROM {{table}} WHERE `stat_code` = '2';" , 'statpoints');
   doquery ( "UPDATE {{table}} SET `stat_code` = `stat_code` + '1';" , 'statpoints');
 
-  $UsrFleets      = doquery("SELECT * FROM {{table}};", 'fleets');
+  // Calculation of Fleet-In-Flight
+  $UsrFleets = doquery("SELECT * FROM {{table}};", 'fleets');
   while ($CurFleet = mysql_fetch_assoc($UsrFleets)) {
-    $Points       = GetFleetPointsOnTour ( $CurFleet['fleet_array'] );
+    $Points = GetFleetPointsOnTour ( $CurFleet['fleet_array'] );
     $counts[$CurFleet['fleet_owner']]['fleet'] += $Points['FleetCount'];
-    $points[$CurFleet['fleet_owner']]['fleet'] += ($Points['FleetPoint'] / 1000);
+    $points[$CurFleet['fleet_owner']]['fleet'] += $Points['FleetPoint'] / 1000;
   }
 
   // This is only admin-used as I know so far. Did I really need it as admin?!
-  $UsrPlanets     = doquery("SELECT * FROM {{table}};", 'planets');
+  $UsrPlanets = doquery("SELECT * FROM {{table}};", 'planets');
   while ($CurPlanet = mysql_fetch_assoc($UsrPlanets) ) {
-    $Points           = GetPlanetPoints ( $CurPlanet );
+    $userID = $CurPlanet['id_owner'];
+    $Points = GetPlanetPoints ( $CurPlanet );
 
-    $counts[$CurPlanet['id_owner']]['build'] += $Points['BuildCount'];
-    $counts[$CurPlanet['id_owner']]['defs']  += $Points['DefenseCount'];
-    $counts[$CurPlanet['id_owner']]['fleet'] += $Points['FleetCount'];
+    $counts[$userID]['build'] += $Points['BuildCount'];
+    $counts[$userID]['defs']  += $Points['DefenseCount'];
+    $counts[$userID]['fleet'] += $Points['FleetCount'];
 
-    $points[$CurPlanet['id_owner']]['build'] += $Points['BuildPoint'] / 1000;
-    $points[$CurPlanet['id_owner']]['defs']  += $Points['DefensePoint'] / 1000;
-    $points[$CurPlanet['id_owner']]['fleet'] += $Points['FleetPoint'] / 1000;
+    $points[$userID]['build'] += $Points['BuildPoint'] / 1000;
+    $points[$userID]['defs']  += $Points['DefensePoint'] / 1000;
+    $points[$userID]['fleet'] += $Points['FleetPoint'] / 1000;
 
-    $PlanetPoints     = ($Points['BuildPoint'] + $Points['DefensePoint'] + $Points['FleetPoint']) / 1000;
-
+    $PlanetPoints = ($Points['BuildPoint'] + $Points['DefensePoint'] + $Points['FleetPoint']) / 1000;
     $QryUpdatePlanet  = "UPDATE {{table}} SET `points` = '". $PlanetPoints ."' WHERE `id` = '". $CurPlanet['id'] ."';";
     doquery ( $QryUpdatePlanet , 'planets');
   }
 
-  $GameUsers  = doquery("SELECT * FROM {{table}}", 'users');
+  $GameUsers = doquery("SELECT * FROM {{table}}", 'users');
   while ($CurUser = mysql_fetch_assoc($GameUsers)) {
     $userID = $CurUser['id'];
-    $Points                         = GetTechnoPoints ( $CurUser );
-    $counts[$CurUser['id']]['tech'] = $Points['TechCount'];
-    $points[$CurUser['id']]['tech'] = $Points['TechPoint'] / 1000;
+
+    $Points = GetTechnoPoints ( $CurUser );
+
+    $counts[$userID]['tech'] = $Points['TechCount'];
+    $points[$userID]['tech'] = $Points['TechPoint'] / 1000;
 
     $GPoints = array_sum($points[$userID]);
     $GCount  = array_sum($counts[$userID]);
@@ -158,19 +151,14 @@ function SYS_statCalculate(){
     $QryInsertStats .= "`stat_code` = '1', "; // de 1 a 2 mis a jour de maniere automatique
     $QryInsertStats .= "`tech_points` = '". $points[$userID]['tech'] ."', ";
     $QryInsertStats .= "`tech_count` = '". $counts[$userID]['tech'] ."', ";
-//    $QryInsertStats .= "`tech_old_rank` = '". $OldTechRank[$userID] ."', ";
     $QryInsertStats .= "`build_points` = '". $points[$userID]['build'] ."', ";
     $QryInsertStats .= "`build_count` = '". $counts[$userID]['build'] ."', ";
-//    $QryInsertStats .= "`build_old_rank` = '". $OldBuildRank[$userID] ."', ";
     $QryInsertStats .= "`defs_points` = '". $points[$userID]['defs'] ."', ";
     $QryInsertStats .= "`defs_count` = '". $counts[$userID]['defs'] ."', ";
-//    $QryInsertStats .= "`defs_old_rank` = '". $OldDefsRank[$userID] ."', ";
     $QryInsertStats .= "`fleet_points` = '". $points[$userID]['fleet'] ."', ";
     $QryInsertStats .= "`fleet_count` = '". $counts[$userID]['fleet'] ."', ";
-//    $QryInsertStats .= "`fleet_old_rank` = '". $OldFleetRank[$userID] ."', ";
     $QryInsertStats .= "`total_points` = '". $GPoints ."', ";
     $QryInsertStats .= "`total_count` = '". $GCount ."', ";
-//    $QryInsertStats .= "`total_old_rank` = '". $OldTotalRank[$userID] ."', ";
     $QryInsertStats .= "`stat_date` = '". $StatDate ."';";
     doquery ( $QryInsertStats , 'statpoints');
   }
@@ -188,7 +176,7 @@ function SYS_statCalculate(){
       new.stat_type = 1 AND new.stat_code = 1;
   " , 'statpoints');
 
-  // some variables we need to update ranks
+  // Some variables we need to update ranks
   $qryResetRowNum = 'SET @rownum=0;';
   $qryFormat = 'UPDATE {{table}} SET `%1$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = %2$d AND `stat_code` = 1 ORDER BY `%1$s_points` DESC;';
   $rankNames = array( 'tech', 'build', 'defs', 'fleet', 'total',);
@@ -218,7 +206,7 @@ function SYS_statCalculate(){
       GROUP BY u.`id_ally`";
   doquery ( $QryInsertStats , 'statpoints');
 
-  // Updating Allie's ranks
+  // --- Updating Allie's ranks
   foreach($rankNames as $rankName){
     doquery ( $qryResetRowNum, 'statpoints');
     doquery ( sprintf($qryFormat, $rankName, 2) , 'statpoints');
