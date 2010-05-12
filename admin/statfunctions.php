@@ -178,7 +178,7 @@ function SYS_statCalculate(){
 
   // Some variables we need to update ranks
   $qryResetRowNum = 'SET @rownum=0;';
-  $qryFormat = 'UPDATE {{table}} SET `%1$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = %2$d AND `stat_code` = 1 ORDER BY `%1$s_points` DESC;';
+  $qryFormat = 'UPDATE {{table}} SET `%1$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = %2$d AND `stat_code` = 1 ORDER BY `%1$s_points` DESC, `id_owner` ASC;';
   $rankNames = array( 'tech', 'build', 'defs', 'fleet', 'total',);
 
   // Updating player's ranks

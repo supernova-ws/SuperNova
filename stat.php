@@ -99,7 +99,7 @@ check_urlaubmodus ($user);
     $parse['stat_header'] = parsetemplate(gettemplate('stat_alliancetable_header'), $parse);
 
     $start = floor($range / 100 % 100) * 100;
-    $query = doquery("SELECT @rownum:=@rownum+1 as rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `stat_type` = '2' AND `stat_code` = '1' ORDER BY `". $Order ."` DESC LIMIT ". $start .",100;", 'statpoints');
+    $query = doquery("SELECT @rownum:=@rownum+1 as rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `stat_type` = '2' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;", 'statpoints');
 
     $start++;
     $parse['stat_date']   = $game_config['stats'];
@@ -151,7 +151,7 @@ check_urlaubmodus ($user);
 
     $start = floor($range / 100 % 100) * 100;
     $start1 = $start;
-    $query = doquery("SELECT @rownum:=@rownum+1 rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `". $Order ."` DESC LIMIT ". $start .",100;", 'statpoints');
+    $query = doquery("SELECT @rownum:=@rownum+1 rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;", 'statpoints');
 
     $start++;
     $parse['stat_date']   = $game_config['stats'];
