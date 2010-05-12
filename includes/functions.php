@@ -102,8 +102,9 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
     $parse['server_info']     = $SubFrame;
     $parse['forum_url']       = $game_config['forum_url'];
     $parse['game_url']        = GAMEURL;
-    $gn                       = doquery("SELECT `config_value` FROM {{table}} WHERE config_name='game_name' LIMIT 1",'config',true);
-    $parse['game_name']       = $gn['config_value'];
+//    $gn                       = doquery("SELECT `config_value` FROM {{table}} WHERE config_name='game_name' LIMIT 1",'config',true);
+//    $parse['game_name']       = $gn['config_value'];
+    $parse['game_name']       = $config->game_name;
     $rank                     = doquery("SELECT `total_rank` FROM {{table}} WHERE `stat_code` = '1' AND `stat_type` = '1' AND `id_owner` = '". $user['id'] ."';",'statpoints',true);
     $parse['user_rank']       = $rank['total_rank'];
 

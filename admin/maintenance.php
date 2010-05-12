@@ -40,12 +40,12 @@ if ($user['authlevel'] >= 3) {
 
   foreach($ques as $table => $que) {
     foreach($replaces as $replace)
-      $que = str_replace('{{'.$replace.'}}', $dbsettings['prefix'] . $replace, $que);
+      $que = str_replace('{{'.$replace.'}}', $config->db_prefix . $replace, $que);
     //$que = str_replace('{{users}}', $dbsettings['prefix'] . 'users', $que);
     //$que = str_replace('{{planets}}', $dbsettings['prefix'] . 'planets', $que);
     $QryResult = doquery($que, $table);
 
-    $msg .= '<li>' .  htmlspecialchars(str_replace('{{table}}', $dbsettings['prefix'] . $table, $que)) . ' --- <font color=';
+    $msg .= '<li>' .  htmlspecialchars(str_replace('{{table}}', $config->db_prefix . $table, $que)) . ' --- <font color=';
     if ($QryResult) {
       $msg .= 'green>OK.';
     }else{
