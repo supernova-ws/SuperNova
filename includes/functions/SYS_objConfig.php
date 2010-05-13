@@ -1,5 +1,5 @@
 <?php
-class objCache {
+class classCache {
   // -1 - not initialized
   // 0 - no cache - array() used
   // 1 - xCache
@@ -21,7 +21,8 @@ class objCache {
 
   public static function getInstance($prefIn = 'CACHE_') {
     if (!isset(self::$cacheObject)) {
-      self::$cacheObject = new objCache($prefIn);
+      $className = get_class();
+      self::$cacheObject = new $className($prefIn);
     }
     return self::$cacheObject;
   }
@@ -115,8 +116,60 @@ class objCache {
   }
 }
 
-class objConfig extends objCache {
-  private static $defaults = array(
+// -- Persistent object - saves itself to DB
+class classPersistent extends classCache {
+
+  protected $internalName;
+  protected $sqlTableName;
+  protected $sqlSelect;
+  protected $sqlInsert;
+  protected $sqlUpdate;
+  protected $sqlIndexName;
+  protected $sqlValueName;
+
+  protected static $defaults = array();
+
+  private function __construct($gamePrefix = 'ogame_', $internalName = '') {
+    parent::__construct($gamePrefix.$internalName.'_');
+    $this->internalName = $internalName;
+
+    $this->sqlTableName = $internalName;
+    $this->sqlSelect    = "SELECT * FROM {{table}};";
+    $this->sqlIndexName = $internalName.'_name';
+    $this->sqlValueName = $internalName.'_value';
+
+    if(!$this->_OBJECT_LOADED_DB)
+      $this->loadDB();
+  }
+
+  public static function getInstance($gamePrefix = 'ogame_', $internalName = '') {
+    if (!isset(self::$cacheObject)) {
+      $className = get_class();
+      self::$cacheObject = new $className($gamePrefix, $internalName);
+    }
+    return self::$cacheObject;
+  }
+
+  public function loadDefaults(){
+    foreach(self::$defaults as $defName => $defValue)
+      $this->$defName = $defValue;
+  }
+
+  public function loadDB(){
+    $this->loadDefaults();
+
+    $query = doquery($this->sqlSelect, $this->sqlTableName);
+    while ( $row = mysql_fetch_assoc($query) ) {
+      $this->$row[$this->sqlIndexName] = $row[$this->sqlValueName];
+    }
+    print('e');
+
+    $this->_OBJECT_LOADED_DB = true;
+  }
+}
+
+class classConfig extends classPersistent {
+  protected static $defaults = array(
     'BannerOverviewFrame' => 1,
     'BuildLabWhileRun' => 0,
     'close_reason' => "SuperNova is in maintenance mode! Please return later!",
@@ -166,39 +219,30 @@ class objConfig extends objCache {
     'int_userbar_font' => "arialbd.ttf",
 
     'chat_admin_msgFormat' => '[c=purple]$2[/c]',
+  );
 
+  public static function getInstance($gamePrefix = 'ogame_') {
+    if (!isset(self::$cacheObject)) {
+      $className = get_class();
+      self::$cacheObject = new $className($gamePrefix, 'config');
+    }
+    return self::$cacheObject;
+  }
+}
+
+class classVariables extends classPersistent {
+  protected static $defaults = array(
     // Variables
     'var_stats_lastUpdated' => '0',
     'var_stats_schedule' => 'd@04:00:00',
   );
 
-  private function __construct($gamePrefix = 'ogame_') {
-    parent::__construct($gamePrefix.'config_');
-    if(!$this->OBJECT_LOADED_DB)
-      $this->loadDB();
-  }
-
   public static function getInstance($gamePrefix = 'ogame_') {
     if (!isset(self::$cacheObject)) {
-      self::$cacheObject = new objConfig($gamePrefix);
+      $className = get_class();
+      self::$cacheObject = new $className($gamePrefix, 'variables');
     }
     return self::$cacheObject;
-  }
-
-  public function loadDefaults(){
-    foreach(self::$defaults as $defName => $defValue)
-      $this->$defName = $defValue;
-  }
-
-  public function loadDB(){
-    $this->loadDefaults();
-
-    $query = doquery("SELECT * FROM {{table}}",'config');
-    while ( $row = mysql_fetch_assoc($query) ) {
-      $this->$row['config_name'] = $row['config_value'];
-    }
-
-    $this->OBJECT_LOADED_DB = true;
   }
 }
 ?>

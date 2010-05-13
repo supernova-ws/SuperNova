@@ -35,16 +35,19 @@ $(document).ready(function() {
   // send requests
   $.post("/scheduler.php", {rating: $(this).html()}, function(xml) {
     // format result
-    var result = [
-      "'.$lang['adm_done'].': ",
-      $("runtime", xml).text(),
-      " '.$lang['sys_sec'].'"
-    ];
+    var result = [ $("message", xml).text() ];
     // output result
     $("#admin_message").html(result.join(""));
   } );
 });
 </script>';
+/*
+    var result = [
+      "'.$lang['adm_done'].': ",
+      $("runtime", xml).text(),
+      " '.$lang['sys_sec'].'"
+    ];
+*/
 
 AdminMessage ( $script . '<img src=./../images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_stat_title'] );
 ?>
