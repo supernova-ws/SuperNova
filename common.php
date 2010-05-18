@@ -67,7 +67,7 @@ if ( isset ($user) ) {
       }
     };
 
-    include_once($ugamela_root_path . 'includes/mip_calculate.'.$phpEx);
+    COE_missileCalculate();
   };
 
   if ( defined('IN_ADMIN') ) {

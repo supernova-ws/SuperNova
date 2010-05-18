@@ -62,8 +62,8 @@ if ( defined('INSIDE') ) {
   define('MARKET_MERCHANT', 1);
   define('MARKET_SCRAPER' , 1);
 
-    define('RINOK_LOM'              , 1);
-    define('RINOK_FLOT'             , 1);
+  define('RINOK_LOM'              , 1);
+  define('RINOK_FLOT'             , 1);
 
   //add darkmater then level up
   define('EXP_MULTI_ECO'   , 50);   // Economy to dark matter divisor
@@ -74,7 +74,6 @@ if ( defined('INSIDE') ) {
   define('SHOW_ADMIN', 1);
 
   define('VOCATION_TIME', 2*24*60*60); // 48 hours
-
 
   // Debug Level
   define('DEBUG', 1); // Debugging off

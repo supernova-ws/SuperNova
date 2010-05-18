@@ -23,7 +23,12 @@ $g = intval($_GET['galaxy']);
 $s = intval($_GET['system']);
 $i = intval($_GET['planet']);
 $MIPSent = max(0,intval($_POST['SendMI']));
-$targetedStructures = $_POST['Target'];
+
+$targetedStructures = SYS_mysqlSmartEscape($_POST['Target']);
+if ($targetedStructures == "all")
+  $targetedStructures = 0;
+else
+  $targetedStructures = intval($targetedStructures);
 
 $currentplanet = doquery("SELECT * FROM `{{table}}` WHERE `id` =  '{$user['current_planet']}'",'planets',true);
 $MIPAvailable = $currentplanet['interplanetary_misil'];
@@ -31,7 +36,6 @@ $MIPAvailable = $currentplanet['interplanetary_misil'];
 $distance = abs($s-$currentplanet['system']);
 $mipRange = ($user['impulse_motor_tech'] * 5) - 1;
 $tempvar3 = doquery("SELECT * FROM `{{table}}` WHERE `galaxy` = '".$g."' AND system = ".$s." AND planet = ".$i." AND planet_type = 1", 'planets');
-
 
 includeLang('mip');
 
@@ -63,19 +67,12 @@ if ($error) {
   exit();
 };
 
-if ($targetedStructures == "all")
-  $targetedStructures = 0;
-else
-  $targetedStructures = intval($targetedStructures);
-
 $planet = doquery("SELECT * FROM `{{table}}` WHERE `galaxy` = '".$g."' AND
       `system` = '".$s."' AND
       `planet` = '".$i."' AND
       `planet_type` = '1'", 'planets', true);
 
 $ziel_id = $planet['id_owner'];
-
-// $select = doquery("SELECT * FROM `{{table}}` WHERE `id` = '".$ziel_id."'", 'users', true);
 
 $flugzeit = round(((30 + (60 * $distance)) * 2500) / $game_config['game_speed']);
 
