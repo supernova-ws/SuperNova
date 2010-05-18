@@ -121,21 +121,22 @@ class classPersistent extends classCache {
 
   protected $internalName;
   protected $sqlTableName;
-  protected $sqlSelect;
+  protected $sqlSelectAll;
   protected $sqlInsert;
   protected $sqlUpdate;
-  protected $sqlIndexName;
+  protected $sqlFieldName;
   protected $sqlValueName;
 
   protected static $defaults = array();
 
-  private function __construct($gamePrefix = 'ogame_', $internalName = '') {
+  private function __construct($gamePrefix = 'ogame_', $internalName = '', $tableName = '') {
     parent::__construct($gamePrefix.$internalName.'_');
     $this->internalName = $internalName;
 
-    $this->sqlTableName = $internalName;
-    $this->sqlSelect    = "SELECT * FROM {{table}};";
-    $this->sqlIndexName = $internalName.'_name';
+    if(!$tableName) $tableName = $internalName;
+    $this->sqlTableName = $tableName;
+    $this->sqlSelectAll = "SELECT * FROM {{table}};";
+    $this->sqlFieldName = $internalName.'_name';
     $this->sqlValueName = $internalName.'_value';
 
     if(!$this->_OBJECT_LOADED_DB)
@@ -158,11 +159,10 @@ class classPersistent extends classCache {
   public function loadDB(){
     $this->loadDefaults();
 
-    $query = doquery($this->sqlSelect, $this->sqlTableName);
+    $query = doquery($this->sqlSelectAll, $this->sqlTableName);
     while ( $row = mysql_fetch_assoc($query) ) {
-      $this->$row[$this->sqlIndexName] = $row[$this->sqlValueName];
+      $this->$row[$this->sqlFieldName] = $row[$this->sqlValueName];
     }
-    print('e');
 
     $this->_OBJECT_LOADED_DB = true;
   }
@@ -194,17 +194,12 @@ class classConfig extends classPersistent {
     'noobprotection' => 1,
     'noobprotectionmulti' => 5,
     'noobprotectiontime' => 5000,
-    'OverviewBanner' => 1,
-    'OverviewClickBanner' => "",
-    'OverviewExternChat' => 0,
-    'OverviewExternChatCmd' => "",
-    'OverviewNewsFrame' => "1",
-    'OverviewNewsText' => "Welcome to SuperNova!",
     'resource_multiplier' => 1,
     'urlaubs_modus_erz' => 0,
     'users_amount' => 0,
 
     'game_date_withTime' => 'd.m.Y h:i:s',
+    'game_mode' => '0', // 0 - SuperNova, 1 - oGame
 
     'int_banner_showInOverview' => 1,
     'int_banner_background' => "images/banner.png",
@@ -219,7 +214,11 @@ class classConfig extends classPersistent {
     'int_userbar_font' => "arialbd.ttf",
 
     'chat_admin_msgFormat' => '[c=purple]$2[/c]',
-  );
+
+     // Variables
+    'var_stats_lastUpdated' => '0',
+    'var_stats_schedule' => 'd@04:00:00',
+);
 
   public static function getInstance($gamePrefix = 'ogame_') {
     if (!isset(self::$cacheObject)) {
@@ -232,15 +231,12 @@ class classConfig extends classPersistent {
 
 class classVariables extends classPersistent {
   protected static $defaults = array(
-    // Variables
-    'var_stats_lastUpdated' => '0',
-    'var_stats_schedule' => 'd@04:00:00',
   );
 
   public static function getInstance($gamePrefix = 'ogame_') {
     if (!isset(self::$cacheObject)) {
       $className = get_class();
-      self::$cacheObject = new $className($gamePrefix, 'variables');
+      self::$cacheObject = new $className($gamePrefix, 'var', 'variables');
     }
     return self::$cacheObject;
   }
