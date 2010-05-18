@@ -127,7 +127,7 @@ class classPersistent extends classCache {
   protected $sqlFieldName;
   protected $sqlValueName;
 
-  protected static $defaults = array();
+  protected $defaults = array();
 
   private function __construct($gamePrefix = 'ogame_', $internalName = '', $tableName = '') {
     parent::__construct($gamePrefix.$internalName.'_');
@@ -152,8 +152,9 @@ class classPersistent extends classCache {
   }
 
   public function loadDefaults(){
-    foreach(self::$defaults as $defName => $defValue)
+    foreach($this->defaults as $defName => $defValue){
       $this->$defName = $defValue;
+    }
   }
 
   public function loadDB(){
@@ -169,7 +170,7 @@ class classPersistent extends classCache {
 }
 
 class classConfig extends classPersistent {
-  protected static $defaults = array(
+  protected $defaults = array(
     'BannerOverviewFrame' => 1,
     'BuildLabWhileRun' => 0,
     'close_reason' => "SuperNova is in maintenance mode! Please return later!",
@@ -234,7 +235,7 @@ class classConfig extends classPersistent {
 }
 
 class classVariables extends classPersistent {
-  protected static $defaults = array(
+  protected $defaults = array(
   );
 
   public static function getInstance($gamePrefix = 'ogame_') {
