@@ -3,6 +3,7 @@ config.php
 # Ignore forums
 phpBB3/
 forum/
+xcache-admin/
 # Ignore all dotfiles...
 .*
 # except for .gitignore
