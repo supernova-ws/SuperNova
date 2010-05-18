@@ -198,9 +198,11 @@ class classConfig extends classPersistent {
     'urlaubs_modus_erz' => 0,
     'users_amount' => 0,
 
-    'game_date_withTime' => 'd.m.Y h:i:s',
+    // Game global settings
     'game_mode' => '0', // 0 - SuperNova, 1 - oGame
+    'game_date_withTime' => 'd.m.Y h:i:s',
 
+    // Interface - UserBanner
     'int_banner_showInOverview' => 1,
     'int_banner_background' => "images/banner.png",
     'int_banner_URL' => "/banner.php?type=banner",
@@ -208,11 +210,13 @@ class classConfig extends classPersistent {
     'int_banner_fontRaids' => "klmnfp2005.ttf",
     'int_banner_fontInfo' => "terminator.ttf",
 
+    // Interface - UserBar
     'int_userbar_showInOverview' => 1,
     'int_userbar_background' => "images/userbar.png",
     'int_userbar_URL' => "/banner.php?type=userbar",
     'int_userbar_font' => "arialbd.ttf",
 
+    // Chat - formatting message for Admin
     'chat_admin_msgFormat' => '[c=purple]$2[/c]',
 
      // Variables

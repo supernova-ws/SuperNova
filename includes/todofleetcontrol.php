@@ -9,7 +9,7 @@
 // Fonctions deja 'au propre'
 
 if (!defined('INSIDE')) {
-	die('Hacking attemp');
+  die('Hacking attemp');
 }
 
 // Functions already 'with the propre'
@@ -19,9 +19,17 @@ if (!defined('INSIDE')) {
 $dir = opendir($ugamela_root_path . 'includes/functions');
 
 while (($file = readdir($dir)) !== false) {
-	$extension = '.' . substr($file, -3);
-	if ($extension == ".$phpEx")
-		require_once $ugamela_root_path . 'includes/functions/' . $file;
+  $extension = '.' . substr($file, -3);
+  if ($extension == ".$phpEx")
+    require_once $ugamela_root_path . 'includes/functions/' . $file;
+}
+
+$dir = opendir($ugamela_root_path . 'includes/classes');
+
+while (($file = readdir($dir)) !== false) {
+  $extension = '.' . substr($file, -3);
+  if ($extension == ".$phpEx")
+    require_once $ugamela_root_path . 'includes/classes/' . $file;
 }
 
 ?>
