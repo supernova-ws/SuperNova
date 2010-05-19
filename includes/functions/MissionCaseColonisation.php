@@ -13,7 +13,6 @@
 function MissionCaseColonisation ( $FleetRow ) {
   global $lang, $resource, $user;
   $iMaxColo = doquery("SELECT `colonisation_tech` + 1 FROM `{{table}}` WHERE `id`='". $FleetRow['fleet_owner']."'",'users', true);
-  //  var_dump($iMaxColo);
 
   $iPlanetCount = doquery ("SELECT count(*) FROM `{{table}}` WHERE `id_owner` = '". $FleetRow['fleet_owner'] ."' AND `planet_type` = '1'", 'planets', true);
   if ($FleetRow['fleet_mess'] == 0) {

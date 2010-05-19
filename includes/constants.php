@@ -14,9 +14,14 @@ if ( defined('INSIDE') ) {
   define('ADMINEMAIL'               , "gorlum@triolan.ua");
   define('GAMEURL'                  , "http://".$_SERVER['HTTP_HOST']."/");
 
+  // Game type constants starts with "GAME_"
+  define('GAME_SUPERNOVA', 0);
+  define('GAME_OGAME',     1);
 
-  // Pattern to parse planet coordinates like [1:123:14] - no expedition [::16] will pass!
+  // Pattern to parse planet coordinates like [1:123:14] - no expedition [x:x:16] will pass!
   define('PLANET_COORD_PREG', "/^\[([1-9]):([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):(1[0-5]|[1-9])\]$/i");
+  // Pattern to parse scheduler '[[[[[YYYY-]MM-]DD ]HH:]MM:]SS'
+  define('SCHEDULER_PREG', '/^(?:(?:(?:(?:(?:(2\d\d\d)-)?(1[0-2]|0[1-9])-)?(?:(3[01]|[0-2]\d)\ ))?(?:(2[0-3]|[01]\d):))?(?:([0-5]\d):))?([0-5]\d)$/i');
 
   define('MAX_ATTACK_ROUNDS', 10);
 
@@ -57,8 +62,8 @@ if ( defined('INSIDE') ) {
   define('MARKET_MERCHANT', 1);
   define('MARKET_SCRAPER' , 1);
 
-    define('RINOK_LOM'              , 1);
-    define('RINOK_FLOT'             , 1);
+  define('RINOK_LOM'              , 1);
+  define('RINOK_FLOT'             , 1);
 
   //add darkmater then level up
   define('EXP_MULTI_ECO'   , 50);   // Economy to dark matter divisor
@@ -69,7 +74,6 @@ if ( defined('INSIDE') ) {
   define('SHOW_ADMIN', 1);
 
   define('VOCATION_TIME', 2*24*60*60); // 48 hours
-
 
   // Debug Level
   define('DEBUG', 1); // Debugging off

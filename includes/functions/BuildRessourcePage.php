@@ -118,9 +118,6 @@ function BuildRessourcePage ( $CurrentUser, $CurrentPlanet ) {
   $QryUpdatePlanet .= "WHERE ";
   $QryUpdatePlanet .= "`id` = '". $CurrentPlanet['id'] ."';";
   doquery( $QryUpdatePlanet, 'planets');
-  if ($game_config['OverviewClickBanner'] != '') {
-    $parse['ClickBanner'] = stripslashes( $game_config['OverviewClickBanner'] );
-  }
   $page = parsetemplate( $RessBodyTPL, $parse );
 
   display($page, '');

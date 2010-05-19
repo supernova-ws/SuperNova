@@ -3,6 +3,11 @@
 /**
  * stat.php
  *
+ * @version 1.2 (c) copyright 2010 by Gorlum for http://supernova.ws
+ *   [*] Now we don't need any misc new and old RANK calculations or UPDATEs here
+ *       All RANKs calculations now handled in StatFunctions.php
+ * @version 1.1 (c) copyright 2010 by Gorlum for http://supernova.ws
+ *   [*] This file is also used when no users logged in to show server stats
  * @version 1.0
  * @copyright 2008 by Chlorel for XNova
  */
@@ -54,13 +59,13 @@ check_urlaubmodus ($user);
     $Rank    = "total_rank";
     $OldRank = "total_old_rank";
   } elseif ($type == 2) {
-    $Order   = "fleet_count";
+    $Order   = "fleet_points";
     $Points  = "fleet_points";
     $Counts  = "fleet_count";
     $Rank    = "fleet_rank";
     $OldRank = "fleet_old_rank";
   } elseif ($type == 3) {
-    $Order   = "tech_count";
+    $Order   = "tech_points";
     $Points  = "tech_points";
     $Counts  = "tech_count";
     $Rank    = "tech_rank";
@@ -94,7 +99,7 @@ check_urlaubmodus ($user);
     $parse['stat_header'] = parsetemplate(gettemplate('stat_alliancetable_header'), $parse);
 
     $start = floor($range / 100 % 100) * 100;
-    $query = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '2' AND `stat_code` = '1' ORDER BY `". $Order ."` DESC LIMIT ". $start .",100;", 'statpoints');
+    $query = doquery("SELECT @rownum:=@rownum+1 as rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `stat_type` = '2' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;", 'statpoints');
 
     $start++;
     $parse['stat_date']   = $game_config['stats'];
@@ -105,25 +110,23 @@ check_urlaubmodus ($user);
       $AllyRow                  = doquery("SELECT * FROM {{table}} WHERE `id` = '". $StatRow['id_owner'] ."';", 'alliance',true);
 
       $rank_old                 = $StatRow[ $OldRank ];
-      if ( $rank_old == 0) {
-        $rank_old             = $start;
-        $QryUpdRank           = doquery("UPDATE {{table}} SET `".$Rank."` = '".$start."', `".$OldRank."` = '".$start."' WHERE `stat_type` = '2' AND `stat_code` = '1' AND `id_owner` = '". $StatRow['id_owner'] ."';" , "statpoints");
-      } else {
-        $QryUpdRank           = doquery("UPDATE {{table}} SET `".$Rank."` = '".$start."' WHERE `stat_type` = '2' AND `stat_code` = '1' AND `id_owner` = '". $StatRow['id_owner'] ."';" , "statpoints");
-      }
-      $rank_new                 = $start;
+      $rank_new                 = $StatRow[ $Rank ];
       $ranking                  = $rank_old - $rank_new;
       if ($ranking == "0") {
         $parse['ally_rankplus']   = "<font color=\"#87CEEB\">*</font>";
-      }
-      if ($ranking < "0") {
+      }elseif ($ranking < "0") {
         $parse['ally_rankplus']   = "<font color=\"red\">".$ranking."</font>";
-      }
-      if ($ranking > "0") {
+      }elseif ($ranking > "0") {
         $parse['ally_rankplus']   = "<font color=\"green\">+".$ranking."</font>";
       }
       $parse['ally_tag']        = $AllyRow['ally_tag'];
-      $parse['ally_name']       = $AllyRow['ally_name'];
+
+      if ($AllyRow['ally_name'] == $user['ally_name']) {
+        $parse['ally_name'] = "<font color=\"#33CCFF\">".$AllyRow['ally_name']."</font>";
+      } else {
+        $parse['ally_name'] = $AllyRow['ally_name'];
+      }
+//      $parse['ally_name']       = $AllyRow['ally_name'];
       $parse['ally_mes']        = '';
       $parse['ally_members']    = $AllyRow['ally_members'];
       $parse['ally_points']     = pretty_number( $StatRow[ $Order ] );
@@ -147,36 +150,25 @@ check_urlaubmodus ($user);
     $parse['stat_header'] = parsetemplate(gettemplate('stat_playertable_header'), $parse);
 
     $start = floor($range / 100 % 100) * 100;
-    $query = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `". $Order ."` DESC LIMIT ". $start .",100;", 'statpoints');
+    $start1 = $start;
+    $query = doquery("SELECT @rownum:=@rownum+1 rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;", 'statpoints');
 
     $start++;
     $parse['stat_date']   = $game_config['stats'];
     $parse['stat_values'] = "";
     while ($StatRow = mysql_fetch_assoc($query)) {
-      $parse['stat_date']       = date("d M Y - H:i:s", $StatRow['stat_date']);
-      $parse['player_rank']     = $start;
-
       $UsrRow                   = doquery("SELECT * FROM {{table}} WHERE `id` = '". $StatRow['id_owner'] ."';", 'users',true);
 
-      $QryUpdateStats .= "`stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $TheRank['id_owner'] ."';";
+      $parse['stat_date']       = date(DATE_TIME, $StatRow['stat_date']);
+      $parse['player_rank']     = ($StatRow['rownum'] + $start1);
 
-
-      $rank_old                 = $StatRow[ $OldRank ];
-      if ( $rank_old == 0) {
-        $rank_old             = $start;
-        $QryUpdRank           = doquery("UPDATE {{table}} SET `".$Rank."` = '".$start."', `".$OldRank."` = '".$start."' WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $StatRow['id_owner'] ."';" , "statpoints");
-      } else {
-        $QryUpdRank           = doquery("UPDATE {{table}} SET `".$Rank."` = '".$start."' WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $StatRow['id_owner'] ."';" , "statpoints");
-      }
-      $rank_new                 = $start;
-      $ranking                  = $rank_old - $rank_new;
+      $parse['player_rank']     = $StatRow[ $Rank ];
+      $ranking                  = $StatRow[ $OldRank ] - $StatRow[ $Rank ];
       if ($ranking == "0") {
         $parse['player_rankplus'] = "<font color=\"#87CEEB\">*</font>";
-      }
-      if ($ranking < "0") {
+      }elseif ($ranking < "0") {
         $parse['player_rankplus'] = "<font color=\"red\">".$ranking."</font>";
-      }
-      if ($ranking > "0") {
+      }elseif ($ranking > "0") {
         $parse['player_rankplus'] = "<font color=\"green\">+".$ranking."</font>";
       }
       if ($UsrRow['id'] == $user['id']) {
@@ -192,6 +184,7 @@ check_urlaubmodus ($user);
         $parse['player_alliance'] = $UsrRow['ally_name'];
       }
       $parse['player_country'] = '';
+
       if($UsrRow['lang'] == "ru"){
         $parse['player_country'] .= '<img src="images/lang/ru.png">';
       }elseif($UsrRow['lang'] == "en"){
@@ -219,7 +212,7 @@ check_urlaubmodus ($user);
       }
 */
 //  display(parsetemplate(gettemplate('stat_body'), $parse), $lang['stat_title']);
-  display(parsetemplate(gettemplate('stat_body'), $parse), $lang['stat_title'], false, '', false, $IsUserChecked);
+  display(parsetemplate(gettemplate('stat_body'), $parse), $lang['stat_title'], $IsUserChecked, '', false, $IsUserChecked);
 
 // -----------------------------------------------------------------------------------------------------------
 // History version

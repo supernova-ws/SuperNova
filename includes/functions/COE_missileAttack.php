@@ -1,10 +1,10 @@
 <?php
-// Copyright (c) 2009 by Gorlum for http://ogame.triolan.com.ua
+// Copyright (c) 2009-2010 by Gorlum for http://supernova.ws
 // Date 2009-08-08
 // Open Source
 // V1
 //
-function MIPAttack($defenceTech, $attackerTech, $MIPs, $structures, $targetedStructure = '0') {
+function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $targetedStructure = '0') {
   global $CombatCaps, $pricelist, $resource;
 
   // Here we select which part of defense should take damage: structure or shield
@@ -19,7 +19,6 @@ function MIPAttack($defenceTech, $attackerTech, $MIPs, $structures, $targetedStr
     $structures[$key]['structure'] = ($pricelist[$key]['metal'] + $pricelist[$key]['crystal']) * (1 + 0.05 * $defenceTech[$resource[110]]);
   };
 
-  $minDamage = $structures[401][$damageTo];
   $startStructs = $structures;
 
   if ($targetedStructure){
@@ -64,7 +63,7 @@ function MIPAttack($defenceTech, $attackerTech, $MIPs, $structures, $targetedStr
   return $return;
 }
 
-// Copyright (c) 2009 by Gorlum for http://ogame.triolan.com.ua
+// Copyright (c) 2009-2010 by Gorlum for http://supernova.ws
 // Date 2009-08-08
 // Open Source
 ?>

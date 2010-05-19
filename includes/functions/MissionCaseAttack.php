@@ -19,7 +19,7 @@
    */
 
 function MissionCaseAttack ( $FleetRow) {
-  global $phpEx, $ugamela_root_path, $pricelist, $lang, $resource, $CombatCaps, $game_config, $debug, $time_now;
+  global $phpEx, $ugamela_root_path, $pricelist, $lang, $resource, $CombatCaps, $game_config, $debug, $time_now, $reslist;
 
   // --- This is universal part which should be moved to fleet manager
   // Checking fleet message: if not 0 then we already managed this fleet
@@ -78,9 +78,17 @@ function MissionCaseAttack ( $FleetRow) {
   $defenseFleets = array(
     0 => array(
       'def' => array(),
-      'user' => $TargetUser
+      'user' => array(
+        'id'            => $TargetUser['id'],
+        'username'      => $TargetUser['username'],
+        'defence_tech'  => $TargetUser['defence_tech'],
+        'rpg_amiral'    => $TargetUser['rpg_amiral'],
+        'shield_tech'   => $TargetUser['shield_tech'],
+        'military_tech' => $TargetUser['military_tech'],
+      ),
     )
   );
+
   foreach($reslist['combat'] as $combatUnitID)
     if (isset($resource[$combatUnitID]) && isset($TargetPlanet[$resource[$combatUnitID]]))
       $defenseFleets[0]['def'][$combatUnitID] = $TargetPlanet[$resource[$combatUnitID]];

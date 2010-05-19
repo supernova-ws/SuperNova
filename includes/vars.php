@@ -77,6 +77,7 @@ if ( defined('INSIDE')) {
   214 => "dearth_star",
   215 => "battleship",
   216 => "supernova",
+  217 => "assault_ship",
 
   401 => "misil_launcher",
   402 => "small_laser",

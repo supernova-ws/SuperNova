@@ -1,9 +1,10 @@
-  <?php
+<?php
+function CHT_messageParse($msg){
   $msg=preg_replace("#\[a=(ft|https?://)(.+)\](.+)\[/a\]#isU", "<a href=\"$1$2\" target=\"_blank\">$3</a>", $msg);
   $msg=preg_replace("#\[b\](.+)\[/b\]#isU","<b>$1</b>",$msg);
   $msg=preg_replace("#\[i\](.+)\[/i\]#isU","<i>$1</i>",$msg);
   $msg=preg_replace("#\[u\](.+)\[/u\]#isU","<u>$1</u>",$msg);
-  $msg=preg_replace("#\[c=(white|blue|yellow|green|pink|red|orange)\](.+)\[/c\]#isU","<font color=\"$1\">$2</font>",$msg);
+  $msg=preg_replace("#^\[c=(white|blue|yellow|green|pink|red|orange|purple)\](.+)\[/c\]$#isU","<font color=\"$1\">$2</font>",$msg);
 
   // Les smileys avec leurs raccourcis
   $msg=preg_replace("#:agr:#isU","<img src=\"images/smileys/aggressive.gif\" align=\"absmiddle\" title=\":agr:\" alt=\":agr:\">",$msg);
@@ -39,4 +40,6 @@
   $msg=preg_replace("#:dr#isU","<img src=\"images/smileys/drinks.gif\" align=\"absmiddle\" title=\":dr\" alt=\":dr\">",$msg);
   $msg=preg_replace("#:tease:#isU","<img src=\"images/smileys/tease.gif\" align=\"absmiddle\" title=\":tease:\" alt=\":tease:\">",$msg);
 
-  ?>
+  return $msg;
+}
+?>

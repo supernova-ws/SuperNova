@@ -111,7 +111,7 @@ function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_f
   $data = $result_array['rw'][0]['attackers'];
   $dataKey = array_keys($data);
   $data = $data[$dataKey[0]]['fleet'];
-  $defenderCoord = "[".intval($data['fleet_end_galaxy']).":".intval($data['fleet_end_system']).":".intval($data['fleet_end_planet']."]");
+  $defenderCoord = "[".intval($data['fleet_end_galaxy']).":".intval($data['fleet_end_system']).":".intval($data['fleet_end_planet'])."]";
 
   $rw_count = count($result_array['rw']);
   for ($round_no = 1; $round_no <= $rw_count; $round_no++) {
@@ -121,8 +121,6 @@ function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_f
     }else{
       $html .= "Раунд ".$round_no.":<br /><br />";
     };
-
-//    html .= dump($defenderCoord,'$defenderCoord');
 
     //Now whats that attackers and defenders data
     $data = $result_array['rw'][$round_no-1];

@@ -7,56 +7,9 @@
  * @version 1.0st Tested s-version
  * @version 1.0s Security checks by Gorlum for http://supernova.ws
  */
-//print('ÂÍÈÌÀÍÈÅ! ÈÃÐÀ ÎÑÒÀÍÎÂËÅÍÀ ÍÀ ÏÐÎÔÈËÀÊÒÈÊÓ!');
-//die();
-//ini_set('display_errors', 1);
-//ini_set('error_reporting', E_ALL ^ E_NOTICE);
-define('VERSION','v. 0.26');                // Passera en version 1.0 quand toutes les fonctions ET l'install seront correct
-
-                                                                // Et c'est pas encore demain la veille !!!
-//$ugamela_root_path = '/srv/www/ogame.triolan.com.ua/';
-$ugamela_root_path = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT']);
-set_magic_quotes_runtime(0);
-$phpEx = "php";
-
-$user          = array();
-$lang          = array();
-$IsUserChecked = false;
-
-define('DEFAULT_SKINPATH' , 'skins/xnova/');
-define('TEMPLATE_DIR'     , 'templates/');
-define('TEMPLATE_NAME'    , 'OpenGame');
-define('DEFAULT_LANG'     , 'ru');
-
-$HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
-
-include($ugamela_root_path . 'includes/debug.class.'.$phpEx);
-$debug = new debug();
-
-include($ugamela_root_path . 'includes/constants.'.$phpEx);
-include($ugamela_root_path . 'includes/functions.'.$phpEx);
-include_once($ugamela_root_path . 'includes/unlocalised.'.$phpEx);
-include($ugamela_root_path . 'includes/todofleetcontrol.'.$phpEx);
-include($ugamela_root_path . 'language/'. DEFAULT_LANG .'/lang_info.cfg');
-
-$game_config   = $game_config_default;
-
-$time_now = time();
+include_once('includes/init.inc');
 
 if (INSTALL != true) {
-  include($ugamela_root_path . 'includes/vars.'.$phpEx);
-  include($ugamela_root_path . 'includes/db.'.$phpEx);
-  include($ugamela_root_path . 'includes/strings.'.$phpEx);
-
-  // Initializing global "config" object
-  $config = objConfig::getInstance();
-
-  // Lecture de la table de configuration
-  $query = doquery("SELECT * FROM {{table}}",'config');
-  while ( $row = mysql_fetch_assoc($query) ) {
-    $game_config[$row['config_name']] = $row['config_value'];
-  }
-
   if ($InLogin != true) {
     $Result        = CheckTheUser ( $IsUserChecked );
     $IsUserChecked = $Result['state'];
@@ -69,9 +22,6 @@ if (INSTALL != true) {
       }
     }
   }
-
-  includeLang ("system");
-  includeLang ('tech');
 
 if ( isset ($user) ) {
   $_lastupdate = doquery("SELECT `lastupdate` FROM {{table}} LIMIT 1;", 'update');
@@ -125,7 +75,7 @@ if ( isset ($user) ) {
       }
     };
 
-    include_once($ugamela_root_path . 'includes/mip_calculate.'.$phpEx);
+    COE_missileCalculate();
   };
 
   if ( defined('IN_ADMIN') ) {
@@ -157,5 +107,4 @@ if ( isset ($user) ) {
 } else {
   $dpath     = "../" . DEFAULT_SKINPATH;
 }
-
 ?>

@@ -28,22 +28,24 @@ if ($user['authlevel'] >= 3) {
     'messages' => 'DELETE FROM {{table}} WHERE message_owner not in (select id from {{users}});',
     'rw' => 'DELETE FROM {{table}} WHERE id_owner1 not in (select id from {{users}});',
     'rw' => 'DELETE FROM {{table}} WHERE id_owner2 not in (select id from {{users}});',
-    'DELETE FROM {{table}} WHERE id_owner2 not in (select id from {{users}});',
     'alliance' => 'DELETE FROM {{table}} WHERE id not in (select ally_id from {{users}} group by ally_id);',
+    'users' => "UPDATE {{table}} SET ally_id = 0, ally_name='', ally_rank_id=0 WHERE ally_id not in (select id from {{alliance}});",
+    'statpoints' => "DELETE FROM {{table}} WHERE stat_type=1 AND id_owner not in (select id from {{users}});",
+    'statpoints' => "DELETE FROM {{table}} WHERE stat_type=2 AND id_owner not in (select id from {{alliance}});",
   );
 
-  $replaces = array('users', 'planets');
+  $replaces = array('users', 'planets', 'alliance');
 
   $msg = '<ul>';
 
   foreach($ques as $table => $que) {
     foreach($replaces as $replace)
-      $que = str_replace('{{'.$replace.'}}', $dbsettings['prefix'] . $replace, $que);
+      $que = str_replace('{{'.$replace.'}}', $config->db_prefix . $replace, $que);
     //$que = str_replace('{{users}}', $dbsettings['prefix'] . 'users', $que);
     //$que = str_replace('{{planets}}', $dbsettings['prefix'] . 'planets', $que);
     $QryResult = doquery($que, $table);
 
-    $msg .= '<li>' .  htmlspecialchars(str_replace('{{table}}', $dbsettings['prefix'] . $table, $que)) . ' --- <font color=';
+    $msg .= '<li>' .  htmlspecialchars(str_replace('{{table}}', $config->db_prefix . $table, $que)) . ' --- <font color=';
     if ($QryResult) {
       $msg .= 'green>OK.';
     }else{
