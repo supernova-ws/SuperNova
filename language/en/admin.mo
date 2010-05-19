@@ -127,6 +127,8 @@ $lang['adm_er_play']  = "id Игрока";
 $lang['adm_er_time']  = "Дата";
 $lang['adm_er_page']  = "Page address";
 $lang['adm_er_nbs']   = "ошибок всего...";
+$lang['adm_er_text']  = "Error message";
+$lang['adm_er_bktr']  = "Backtrace";
 
 $lang['adm_dm_title'] = "Изменение количества Темной Материи";
 $lang['adm_dm_planet'] = "ID, координаты или название планеты";
