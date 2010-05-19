@@ -1,4 +1,3 @@
-<br><br>
 <h2>{adm_er_ttle}</h2>
 <table>
 <tr>

@@ -51,12 +51,7 @@ if ($currentplanet['silo'] < 4) {
   message($lang['mip_planet_error'], $lang['sys_error']);
 } elseif ($MIPSent > $MIPAvailable) {
   message($lang['mip_no_rocket'], $lang['sys_error']);
-} elseif (
-    (!is_numeric($targetedStructures) && $targetedStructures != "all")
-    OR
-    (is_numeric($targetedStructures) && ($targetedStructures < 401 || $targetedStructures > 409))
- )
-{
+} elseif ($targetedStructures && ($targetedStructures < 401 || $targetedStructures > 409)){
   message($targetedStructures.$lang['mip_hack_attempt'], $lang['sys_error']);
 }else{
   $error = 0;
