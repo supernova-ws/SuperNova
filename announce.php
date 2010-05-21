@@ -7,7 +7,6 @@
  * @v2 (c) copyright 2010 by Gorlum for http://supernova.ws
  * based on admin/activeplanet.php (c) 2008 for XNova
  */
-
 define('INSIDE', true);
 define('INSTALL' , false);
 
@@ -15,13 +14,15 @@ $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
+ini_set('display_errors', 1);
+
 includeLang('admin');
 
-$GET_cmd = mysqlSmartEscape($_GET['cmd']);
+$GET_cmd = SYS_mysqlSmartEscape($_GET['cmd']);
 $GET_id = intval($_GET['id']);
-$POST_text = mysqlSmartEscape($_POST['text']);
-$POST_dtDateTime = mysqlSmartEscape($_POST['dtDateTime']);
-$POST_mode = mysqlSmartEscape($_POST['mode']);
+$POST_text = SYS_mysqlSmartEscape($_POST['text']);
+$POST_dtDateTime = SYS_mysqlSmartEscape($_POST['dtDateTime']);
+$POST_mode = SYS_mysqlSmartEscape($_POST['mode']);
 
 $parse          = $lang;
 $parse['dpath'] = $dpath;

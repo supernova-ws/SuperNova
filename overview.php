@@ -12,6 +12,14 @@ if (filesize('config.php') == 0) {
   exit();
 }
 
+define('INSIDE'  , true);
+define('INSTALL' , false);
+
+$ugamela_root_path = './';
+include($ugamela_root_path . 'extension.inc');
+include($ugamela_root_path . 'common.' . $phpEx);
+// include($ugamela_root_path . 'autoreload.'.$phpEx);
+
 $mode = $_GET['mode'];
 $pl = mysql_escape_string($_GET['pl']);
 $POST_deleteid = intval($_POST['deleteid']);
@@ -51,14 +59,6 @@ case '10': $miesiac = 'Октября'; break;
 case '11': $miesiac = 'Ноября'; break;
 case '12': $miesiac = 'Декабря'; break;
 }
-
-define('INSIDE'  , true);
-define('INSTALL' , false);
-
-$ugamela_root_path = './';
-include($ugamela_root_path . 'extension.inc');
-include($ugamela_root_path . 'common.' . $phpEx);
-// include($ugamela_root_path . 'autoreload.'.$phpEx);
 
 if ($IsUserChecked == false) {
   includeLang('login');
