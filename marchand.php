@@ -93,6 +93,9 @@ function ModuleMarchand ( $CurrentUser, &$CurrentPlanet ) {
       if ($Error == false) {
         $rinok_lom = RINOK_LOM;
         $CurrentUser['rpg_points']         -= $rinok_lom;
+        pdump($POST_metal , 'metal' );
+        pdump($POST_cristal, 'crystal');
+        pdump($POST_deut, 'deuterium'   );
         $CurrentPlanet['metal']     += $POST_metal;
         $CurrentPlanet['crystal']   += $POST_cristal;
         $CurrentPlanet['deuterium'] += $POST_deut;
@@ -109,6 +112,7 @@ function ModuleMarchand ( $CurrentUser, &$CurrentPlanet ) {
         $QryUpdatePlanet .= "`id` = '".        $CurrentPlanet['id']        ."';";
         doquery ( $QryUpdatePlanet , 'planets');
         $Message = $lang['mod_ma_done'];
+        $CurrentPlanet = doquery ( "SELECT * FROM {{table}} WHERE id = {$CurrentPlanet['id']};" , 'planets', true);
       }
       if ($Error == true) {
         $parse['title'] = $lang['mod_ma_error'];
