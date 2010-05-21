@@ -5,6 +5,7 @@
  *
  * Shortcut manager (for coordinates)
  *
+ * @version 1.0s Security checks by Gorlum for http://supernova.ws
  * @version 1.0
  * @copyright 2008 by ??????? for XNova
  */
@@ -21,8 +22,8 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-$mode = $_GET['mode'];
-$a = $_GET['a'];
+$mode = SYS_mysqlSmartEscape($_GET['mode']);
+$a = SYS_mysqlSmartEscape($_GET['a']);
 /*
   Este script es original xD
   La funcion de este script es administrar una variable del $user
@@ -35,7 +36,7 @@ if(isset($_GET['mode'])){
     if($_POST["n"] == ""){$_POST["n"] = "Без названия";}
 
     $r = strip_tags($_POST[n]).",".intval($_POST[g]).",".intval($_POST[s]).",".intval($_POST[p]).",".intval($_POST[t])."\r\n";
-    $user['fleet_shortcut'] .= $r;
+    $user['fleet_shortcut'] .= SYS_mysqlSmartEscape($r);
     doquery("UPDATE `{{table}}` SET fleet_shortcut='{$user[fleet_shortcut]}' WHERE id={$user[id]}","users");
     message("Эта ссылка сохранена!","Сохранено","fleetshortcut.php");
   }

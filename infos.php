@@ -16,6 +16,8 @@ $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
+$gid  = intval($_GET['gid']);
+
 if ($IsUserChecked == false) {
   includeLang('login');
   header("Location: login.php");
@@ -341,7 +343,6 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
 // Tout le reste ne sert qu'a la calculer :)
 //
 
-  $gid  = $_GET['gid'];
   $page = ShowBuildingInfoPage ($user, $planetrow, $gid);
 
   display ($page, $lang['nfo_page_title']);

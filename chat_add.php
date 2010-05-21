@@ -6,8 +6,9 @@
 /**
  * chat_add.php
  *
- * @version 1.0
+ * @version 1.2s Security checks by Gorlum for http://supernova.ws
  * @version 1.2 by Ihor
+ * @version 1.0
  * @copyright 2008 by e-Zobar for XNova
  */
 
@@ -22,15 +23,16 @@ if ($IsUserChecked == false) {
   includeLang('login');
   header("Location: login.php");
 }
+
+  $msg  = SYS_mysqlSmartEscape ($_POST["msg"]);
+  $chat_type = SYS_mysqlSmartEscape ($_POST["chat_type"]);
+  $ally_id = SYS_mysqlSmartEscape ($_POST["ally_id"]);
+
   // On récupère les informations du message et de l'envoyeur
   if (isset($_POST["msg"]) && isset($user['username'])) {
-     $msg  = SYS_mysqlSmartEscape ($_POST["msg"]);
      if ($user['authlevel'] == 3) {
        $msg = preg_replace("#\[c=(white|blue|yellow|green|pink|red|orange)\](.+)\[/c\]#isU", $config->chat_admin_msgFormat, $msg);
      }
-     $nick = addslashes ($user['username']);
-     $chat_type = addslashes ($_POST["chat_type"]);
-     $ally_id = addslashes ($_POST["ally_id"]);
      $nick = addslashes ($user['username']);
      $msg = iconv('UTF-8', 'CP1251', $msg); // CHANGE IT !!!!!!!!!!!
   }
