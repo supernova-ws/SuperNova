@@ -3,6 +3,7 @@
 /**
  * officier.php
  *
+ * 1.1st - Security checks & tests by Gorlum for http://supernova.ws
  * @version 1.1
  * @copyright 2008 By Tom1991 for XNova
  */
@@ -23,6 +24,9 @@ check_urlaubmodus ($user);
 function ShowOfficierPage ( &$CurrentUser ) {
   global $lang, $resource, $reslist, $_GET;
 
+  $mode = $_GET['mode'];
+  $offi = $_GET['offi'];
+
   includeLang('officier');
 
   // Vérification que le joueur n'a pas un nombre de points négatif
@@ -32,9 +36,9 @@ function ShowOfficierPage ( &$CurrentUser ) {
   //darkmater constant
     $darkmater_cost = DARKMATER_COST;
   // Si recrutement d'un officier
-  if ($_GET['mode'] == 2) {
+  if ($mode == 2) {
     if ($CurrentUser['rpg_points'] >= $darkmater_cost) {
-      $Selected    = $_GET['offi'];
+      $Selected    = $offi;
       if ( in_array($Selected, $reslist['officier']) ) {
         $Result = IsOfficierAccessible ( $CurrentUser, $Selected );
         if ( $Result == 1 ) {

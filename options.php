@@ -3,6 +3,7 @@
 /**
  * options.php
  *
+ * 1.1s - Security checks by Gorlum for http://supernova.ws
  * @version 1.0
  * @copyright 2008 by ??????? for XNova
  */
@@ -24,7 +25,8 @@ includeLang('options');
 $lang['PHP_SELF'] = 'options.' . $phpEx;
 
 $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
-$mode = $_GET['mode'];
+$mode = SYS_mysqlSmartEscape($_GET['mode']);
+$POST_db_character = SYS_mysqlSmartEscape($_POST["db_character"]);
 
 if ($_POST && $mode == "exit") { // Array ( [db_character]
   if (isset($_POST["exit_modus"]) && $_POST["exit_modus"] == 'on' and $user['urlaubs_until'] <= time()){
@@ -33,20 +35,18 @@ if ($_POST && $mode == "exit") { // Array ( [db_character]
         `urlaubs_modus` = '0',
         `urlaubs_until` = '0'
         WHERE `id` = '".$user['id']."' LIMIT 1", "users");
-    $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
     message($lang['succeful_save'], $lang['Options'],"options.php",1);
   }else{
     $urlaubs_modus = "1";
-    $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
     message($lang['You_cant_exit_vmode'], $lan['Error'] ,"options.php",1);
    }
 }
 
 if ($_POST && $mode == "change") { // Array ( [db_character]
   $iduser = $user["id"];
-  $avatar = $_POST["avatar"];
-  $dpath = $_POST["dpath"];
-  $languese = $_POST["langer"];
+  $avatar = SYS_mysqlSmartEscape($_POST["avatar"]);
+  $dpath = SYS_mysqlSmartEscape($_POST["dpath"]);
+  $languese = SYS_mysqlSmartEscape($_POST["langer"]);
 
   // Gestion des options speciales pour les admins
   if ($user['authlevel'] > 0) {
@@ -69,32 +69,32 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
     $noipcheck = "0";
   }
   // Nombre de usuario
-//  if (isset($_POST["db_character"]) && $_POST["db_character"] != '') {
+//  if (isset($POST_db_character) && $POST_db_character != '') {
 //    $username = CheckInputStrings ( $_POST['db_character'] );
 //  } else {
     $username = $user['username'];
 //  }
   // Adresse e-Mail
   if (isset($_POST["db_email"]) && $_POST["db_email"] != '') {
-    $db_email = CheckInputStrings ( $_POST['db_email'] );
+    $db_email = SYS_mysqlSmartEscape(CheckInputStrings ( $_POST['db_email'] ));
   } else {
     $db_email = $user['email'];
   }
   // Cantidad de sondas de espionaje
   if (isset($_POST["spio_anz"]) && is_numeric($_POST["spio_anz"])) {
-    $spio_anz = $_POST["spio_anz"];
+    $spio_anz = intval($_POST["spio_anz"]);
   } else {
     $spio_anz = "1";
   }
   // Mostrar tooltip durante
   if (isset($_POST["settings_tooltiptime"]) && is_numeric($_POST["settings_tooltiptime"])) {
-    $settings_tooltiptime = $_POST["settings_tooltiptime"];
+    $settings_tooltiptime = intval($_POST["settings_tooltiptime"]);
   } else {
     $settings_tooltiptime = "1";
   }
   // Maximo mensajes de flotas
   if (isset($_POST["settings_fleetactions"]) && is_numeric($_POST["settings_fleetactions"])) {
-    $settings_fleetactions = $_POST["settings_fleetactions"];
+    $settings_fleetactions = intval($_POST["settings_fleetactions"]);
   } else {
     $settings_fleetactions = "1";
   } //
@@ -137,9 +137,7 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   // Modo vacaciones
   if (isset($_POST["urlaubs_modus"]) && $_POST["urlaubs_modus"] == 'on') {
     if(CheckIfIsBuilding($user)){
-    $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
       message($lang['Building_something'], $lang['Error'], "options.php",1);
-
     }
     $urlaubs_modus = "1";
           $time = time() + VOCATION_TIME;
@@ -176,13 +174,10 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
     $db_deaktjava = "0";
     $Del_Time = "0";
   }
-  $SetSort  = $_POST['settings_sort'];
-  $SetOrder = $_POST['settings_order'];
+  $SetSort  = intval($_POST['settings_sort']);
+  $SetOrder = intval($_POST['settings_order']);
 
-//  pdump($dpath);
-  $dpath = str_replace('\\','\\\\',$dpath);
-//  pdump($dpath);
-//  die();
+//  $dpath = str_replace('\\','\\\\',$dpath);
 
   doquery("UPDATE {{table}} SET
   `email` = '$db_email',
@@ -220,8 +215,8 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
       message($lang['succeful_changepass'], $lang['changue_pass']);
     }
   }
-  if ($user['username'] != $_POST["db_character"]) {
-    $query = doquery("SELECT id FROM {{table}} WHERE username='{$_POST["db_character"]}'", 'users', true);
+  if ($user['username'] != $POST_db_character) {
+    $query = doquery("SELECT id FROM {{table}} WHERE username='{$POST_db_character}'", 'users', true);
     if (!$query) {
       doquery("UPDATE {{table}} SET username='{$username}' WHERE id='{$user['id']}' LIMIT 1", "users");
       setcookie(COOKIE_NAME, "", time()-100000, "/", "", 0); //le da el expire
@@ -287,8 +282,8 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   $parse['opt_delac_data'] = ($user['db_deaktjava'] == 1) ? " checked='checked'/":'';
   $parse['opt_modev_data'] = ($user['urlaubs_modus'] == 1)?" checked='checked'/":'';
   $parse['opt_modev_exit'] = ($user['urlaubs_modus'] == 0)?" checked='1'/":'';
-    $parse['Vaccation_mode'] = $lang['Vaccation_mode'];
-    $parse['vacation_until'] = date("d.m.Y G:i:s",$user['urlaubs_until']);
+  $parse['Vaccation_mode'] = $lang['Vaccation_mode'];
+  $parse['vacation_until'] = date("d.m.Y G:i:s",$user['urlaubs_until']);
   $parse['user_settings_rep'] = ($user['settings_rep'] == 1) ? " checked='checked'/":'';
   $parse['user_settings_esp'] = ($user['settings_esp'] == 1) ? " checked='checked'/":'';
   $parse['user_settings_wri'] = ($user['settings_wri'] == 1) ? " checked='checked'/":'';

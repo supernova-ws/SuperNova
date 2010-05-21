@@ -2,6 +2,7 @@
 /**
  * index.php - overview.php
  *
+ * 1.0s - Security checks by Gorlum for http://supernova.ws
  * @version 1
  * @copyright 2008 By Chlorel for XNova
  */
@@ -10,6 +11,13 @@ if (filesize('config.php') == 0) {
   header('location: install/');
   exit();
 }
+
+$mode = $_GET['mode'];
+$pl = mysql_escape_string($_GET['pl']);
+$POST_deleteid = intval($_POST['deleteid']);
+$POST_action = SYS_mysqlSmartEscape($_POST['action']);
+$POST_kolonieloeschen = intval($_POST['kolonieloeschen']);
+$POST_newname = SYS_mysqlSmartEscape($_POST['newname']);
 
 // Русская дата
 $dz_tyg=date("w");
@@ -67,19 +75,15 @@ $lunarow   = doquery("SELECT * FROM {{table}} WHERE `id_owner` = '".$planetrow['
 
 CheckPlanetUsedFields ($lunarow);
 
-$mode = $_GET['mode'];
-$pl = mysql_escape_string($_GET['pl']);
-$_POST['deleteid'] = intval($_POST['deleteid']);
-
 includeLang('resources');
 includeLang('overview');
 
 switch ($mode) {
   case 'renameplanet':
     // -----------------------------------------------------------------------------------------------
-    if ($_POST['action'] == $lang['namer']) {
+    if ($POST_action == $lang['namer']) {
       // Reponse au changement de nom de la planete
-      $UserPlanet     = CheckInputStrings ( $_POST['newname'] );
+      $UserPlanet     = CheckInputStrings ( $POST_newname );
       $newname        = mysql_escape_string(strip_tags(trim( $UserPlanet )));
       if ($newname != "") {
         // Deja on met jour la planete qu'on garde en memoire (pour le nom)
@@ -93,7 +97,7 @@ switch ($mode) {
         }
       }
 
-    } elseif ($_POST['action'] == $lang['colony_abandon']) {
+    } elseif ($POST_action == $lang['colony_abandon']) {
       // Cas d'abandon d'une colonie
       // Affichage de la forme d'abandon de colonie
       $parse                   = $lang;
@@ -108,7 +112,7 @@ switch ($mode) {
       // On affiche la forme pour l'abandon de la colonie
       display($page, $lang['rename_and_abandon_planet']);
 
-    } elseif ($_POST['kolonieloeschen'] == 1 && $_POST['deleteid'] == $user['current_planet']) {
+    } elseif ($POST_kolonieloeschen == 1 && $POST_deleteid == $user['current_planet']) {
       // Controle du mot de passe pour abandon de colonie
       if (md5($_POST['pw']) == $user["password"] && $user['id_planet'] != $user['current_planet']) {
         $destruyed        = time() + 60 * 60 * 24;

@@ -3,6 +3,7 @@
 /**
  * login.php
  *
+ * @version 1.0st Security checks & tests by Gorlum for http://supernova.ws
  * @version 1.0
  * @copyright 2008 by ?????? for XNova
  */

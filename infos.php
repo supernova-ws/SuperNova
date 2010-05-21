@@ -5,6 +5,7 @@
  *
  * Info about every aspect of in-game objects: buildings, officiers, techs etc
  *
+ * @version 1.1st Security checks & tests by Gorlum for http://supernova.ws
  * @version 1.1
  * @copyright 2008 By Chlorel for XNova
  */
