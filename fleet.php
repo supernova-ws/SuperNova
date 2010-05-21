@@ -523,7 +523,7 @@ if (!$fleet_page) {
 
   $parse['consumption'] = $consumption ;
   $parse['dist'] = $distance ;
-  $parse['speedallsmin'] = intval($_POST["speedallsmin"]) ;
+  $parse['speedallsmin'] = floatval($_POST["speedallsmin"]) ;
   $parse['speed'] = intval($_POST['speed']) ;
   $parse['maxepedition'] = intval($_POST['maxepedition']) ;
   $parse['curepedition'] = intval($_POST['curepedition']) ;
@@ -717,7 +717,7 @@ if (!$fleet_page) {
     message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
   }
   if ($MaxFleetSpeed != $_POST['speedallsmin']) {
-    message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
+    message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."123</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
   }
 
   $distance      = GetTargetDistance ( $planetrow['galaxy'], $galaxy, $planetrow['system'], $system, $planetrow['planet'], $planet );
