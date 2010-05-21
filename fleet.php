@@ -525,11 +525,11 @@ if (!$fleet_page) {
   $parse['dist'] = $distance ;
   $parse['speedallsmin'] = intval($_POST["speedallsmin"]) ;
   $parse['speed'] = intval($_POST['speed']) ;
-  $parse['usedfleet'] = intval($_POST["usedfleet"]) ;
   $parse['maxepedition'] = intval($_POST['maxepedition']) ;
   $parse['curepedition'] = intval($_POST['curepedition']) ;
   $parse['fleet_group'] = intval($_POST['fleet_group']) ;
   $parse['acs_target_mr'] = intval($_POST['acs_target_mr']) ;
+  $parse['usedfleet'] = $_POST["usedfleet"];
 
   $page = parsetemplate(gettemplate('fleet2'), $parse);
   display($page, $lang['fl_title']);
