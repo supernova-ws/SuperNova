@@ -15,7 +15,8 @@ $user          = array();
 $lang          = array();
 $IsUserChecked = false;
 
-define('DEFAULT_SKINPATH' , 'skins/xnova/');
+// define('DEFAULT_SKINPATH' , 'skins/xnova/');
+define('DEFAULT_SKINPATH' , 'skins/EpicBlue/');
 define('TEMPLATE_DIR'     , 'templates/');
 define('TEMPLATE_NAME'    , 'OpenGame');
 define('DEFAULT_LANG'     , 'ru');
