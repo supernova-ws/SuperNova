@@ -17,6 +17,8 @@ $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
+$id_ref = intval($_GET['id_ref'] ? $_GET['id_ref'] : $_POST['id_ref']);
+
   includeLang('login');
 
   if ($_POST) {
@@ -78,6 +80,8 @@ include($ugamela_root_path . 'common.' . $phpEx);
     $parse['servername'] = $game_config['game_name'];
     $parse['forum_url'] = $game_config['forum_url'];
     $parse['PasswordLost'] = $lang['PasswordLost'];
+    if($id_ref)
+      $parse['referral'] = "?id_ref=$id_ref";
 
     $page = parsetemplate(gettemplate('login_body'), $parse);
     display($page, $lang['Login'], false, '', false, false);
