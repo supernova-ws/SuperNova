@@ -20,6 +20,7 @@
             <div id="text1">{log_reg_text}</div>
             <div id="register_container">
                 <form name="registerForm"  method="POST" action="" onsubmit="changeAction('register');" >
+                  <input type="hidden" name="id_ref" value="{id_ref}">
                   <table width="340" align="center">
                     <tbody>
                       <tr>

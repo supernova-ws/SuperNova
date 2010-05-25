@@ -18,6 +18,9 @@ includeLang('reg');
 
 $wylosuj = rand(100000,9000000);
 $kod = md5($wylosuj);
+
+$id_ref = intval($_GET['id_ref'] ? $_GET['id_ref'] : $_POST['id_ref']);
+
 /*
 print("wylosuj=".$wylosuj."<br>");
 print("kod=".$kod."<br>");
@@ -170,6 +173,9 @@ if ($_POST) {
     $NewUser        = doquery("SELECT `id` FROM {{table}} WHERE `username` = '". mysql_escape_string($_POST['character']) ."' LIMIT 1;", 'users', true);
     $iduser         = $NewUser['id'];
 
+    if ($id_ref)
+      doquery( "INSERT INTO {{table}} SET `id` = {$iduser}, `id_partner` = {$id_ref}", 'referrals');
+
     // Recherche d'une place libre !
     $LastSettedGalaxyPos  = $game_config['LastSettedGalaxyPos'];
     $LastSettedSystemPos  = $game_config['LastSettedSystemPos'];
@@ -260,8 +266,9 @@ if ($_POST) {
 } else {
   // Afficher le formulaire d'enregistrement
   $parse               = $lang;
+  $parse['id_ref']     = $id_ref;
   $parse['servername'] = $game_config['game_name'];
-    $parse['forum_url'] = $game_config['forum_url'];
+  $parse['forum_url']  = $game_config['forum_url'];
     if ($game_config['OverviewClickBanner'] != '') {
         $parse['ClickBanner'] = stripslashes( $game_config['OverviewClickBanner'] );
       }
