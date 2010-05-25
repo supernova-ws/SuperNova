@@ -1,4 +1,12 @@
 <?php
+/*
+ * common.php
+ *
+ * Common init file
+ *
+ * @version 1.0st Tested s-version
+ * @version 1.0s Security checks by Gorlum for http://supernova.ws
+ */
 include_once('includes/init.inc');
 
 if (INSTALL != true) {

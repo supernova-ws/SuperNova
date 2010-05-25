@@ -5,6 +5,7 @@
  *
  * Galaxy view
  *
+ * @version 1.3s Security checks by Gorlum for http://supernova.ws
  * @version 1.3
  * @copyright 2008 by Chlorel for XNova
  */
@@ -20,6 +21,19 @@ if ($IsUserChecked == false) {
   includeLang('login');
   header("Location: login.php");
 }
+
+$mode             = intval($_GET['mode']);
+$CurrentPlanetID  = intval($_GET['current']);
+$POST_galaxy      = intval($_POST["galaxy"]);
+$POST_system      = intval($_POST["system"]);
+$POST_planet      = intval($_POST["planet"]);
+$POST_galaxyLeft  = SYS_mysqlSmartEscape($_POST["galaxyLeft"]);
+$POST_galaxyRight = SYS_mysqlSmartEscape($_POST["galaxyRight"]);
+$POST_systemLeft  = SYS_mysqlSmartEscape($_POST["systemLeft"]);
+$POST_systemRight = SYS_mysqlSmartEscape($_POST["systemRight"]);
+$GET_galaxy       = intval($_GET['galaxy']);
+$GET_system       = intval($_GET['system']);
+$GET_planet       = intval($_GET['planet']);
 
 check_urlaubmodus ($user);
   includeLang('galaxy');
@@ -47,14 +61,6 @@ check_urlaubmodus ($user);
   CheckPlanetUsedFields($lunarow);
 
   // Imperatif, dans quel mode suis-je (pour savoir dans quel etat j'ere)
-  if (!isset($mode)) {
-    if (isset($_GET['mode'])) {
-      $mode          = intval($_GET['mode']);
-    } else {
-      // ca ca sent l'appel sans parametres a plein nez
-      $mode          = 0;
-    }
-  }
 
   if ($mode == 0) {
     // On vient du menu
@@ -74,67 +80,67 @@ check_urlaubmodus ($user);
     // $_POST['systemLeft']  => <- A ete cliqué
     // $_POST['systemRight'] => -> A ete cliqué
 
-    if ($_POST["galaxyLeft"]) {
-      if ($_POST["galaxy"] < 1) {
-        $_POST["galaxy"] = 1;
+    if ($POST_galaxyLeft) {
+      if ($POST_galaxy < 1) {
+        $POST_galaxy = 1;
         $galaxy          = 1;
-      } elseif ($_POST["galaxy"] == 1) {
-        $_POST["galaxy"] = 1;
+      } elseif ($POST_galaxy == 1) {
+        $POST_galaxy = 1;
         $galaxy          = 1;
       } else {
-        $galaxy = $_POST["galaxy"] - 1;
+        $galaxy = $POST_galaxy - 1;
       }
-    } elseif ($_POST["galaxyRight"]) {
-      if ($_POST["galaxy"]      > MAX_GALAXY_IN_WORLD OR
-        $_POST["galaxyRight"] > MAX_GALAXY_IN_WORLD) {
-        $_POST["galaxy"]      = MAX_GALAXY_IN_WORLD;
-        $_POST["galaxyRight"] = MAX_GALAXY_IN_WORLD;
+    } elseif ($POST_galaxyRight) {
+      if ($POST_galaxy      > MAX_GALAXY_IN_WORLD OR
+        $POST_galaxyRight > MAX_GALAXY_IN_WORLD) {
+        $POST_galaxy      = MAX_GALAXY_IN_WORLD;
+        $POST_galaxyRight = MAX_GALAXY_IN_WORLD;
         $galaxy               = MAX_GALAXY_IN_WORLD;
-      } elseif ($_POST["galaxy"] == MAX_GALAXY_IN_WORLD) {
-        $_POST["galaxy"]      = MAX_GALAXY_IN_WORLD;
+      } elseif ($POST_galaxy == MAX_GALAXY_IN_WORLD) {
+        $POST_galaxy      = MAX_GALAXY_IN_WORLD;
         $galaxy               = MAX_GALAXY_IN_WORLD;
       } else {
-        $galaxy = $_POST["galaxy"] + 1;
+        $galaxy = $POST_galaxy + 1;
       }
     } else {
-      $galaxy = $_POST["galaxy"];
+      $galaxy = $POST_galaxy;
     }
 
-    if ($_POST["systemLeft"]) {
-      if ($_POST["system"] < 1) {
-        $_POST["system"] = 1;
+    if ($POST_systemLeft) {
+      if ($POST_system < 1) {
+        $POST_system = 1;
         $system          = 1;
-      } elseif ($_POST["system"] == 1) {
-        $_POST["system"] = 1;
+      } elseif ($POST_system == 1) {
+        $POST_system = 1;
         $system          = 1;
       } else {
-        $system = $_POST["system"] - 1;
+        $system = $POST_system - 1;
       }
-    } elseif ($_POST["systemRight"]) {
-      if ($_POST["system"]      > MAX_SYSTEM_IN_GALAXY OR
-        $_POST["systemRight"] > MAX_SYSTEM_IN_GALAXY) {
-        $_POST["system"]      = MAX_SYSTEM_IN_GALAXY;
+    } elseif ($POST_systemRight) {
+      if ($POST_system      > MAX_SYSTEM_IN_GALAXY OR
+        $POST_systemRight > MAX_SYSTEM_IN_GALAXY) {
+        $POST_system      = MAX_SYSTEM_IN_GALAXY;
         $system               = MAX_SYSTEM_IN_GALAXY;
-      } elseif ($_POST["system"] == MAX_SYSTEM_IN_GALAXY) {
-        $_POST["system"]      = MAX_SYSTEM_IN_GALAXY;
+      } elseif ($POST_system == MAX_SYSTEM_IN_GALAXY) {
+        $POST_system      = MAX_SYSTEM_IN_GALAXY;
         $system               = MAX_SYSTEM_IN_GALAXY;
       } else {
-        $system = $_POST["system"] + 1;
+        $system = $POST_system + 1;
       }
     } else {
-      $system = $_POST["system"];
+      $system = $POST_system;
     }
   } elseif ($mode == 2) {
     // Mais c'est qu'il mordrait !
     // A t'on idée de vouloir lancer des MIP sur ce pauvre bonhomme !!
 
-    $galaxy        = $_GET['galaxy'];
-    $system        = $_GET['system'];
-    $planet        = $_GET['planet'];
+    $galaxy        = $GET_galaxy;
+    $system        = $GET_system;
+    $planet        = $GET_planet;
   } elseif ($mode == 3) {
     // Appel depuis un menu avec uniquement galaxy et system de passé !
-    $galaxy        = $_GET['galaxy'];
-    $system        = $_GET['system'];
+    $galaxy        = $GET_galaxy;
+    $system        = $GET_system;
   } else {
     // Si j'arrive ici ...
     // C'est qu'il y a vraiment eu un bug
@@ -153,7 +159,6 @@ check_urlaubmodus ($user);
   $page .= ShowGalaxySelector ( $galaxy, $system );
 
   if ($mode == 2) {
-    $CurrentPlanetID = $_GET['current'];
     $page .= ShowGalaxyMISelector ( $galaxy, $system, $planet, $CurrentPlanetID, $CurrentMIP );
   }
 

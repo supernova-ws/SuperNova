@@ -5,6 +5,7 @@
  *
  * Fleet manager
  *
+ * @version 1.0s Security checks by Gorlum for http://supernova.ws
  * @version ?
  * @copyright (c) 2009 by Gorlum for http://ogame.triolan.com.ua
  */
@@ -439,8 +440,8 @@ if (!$fleet_page) {
 
   $parse['speedfactor'] = $SpeedFactor;
   $parse['t' . $planet_type] = 'SELECTED';
-  $parse['maxepedition'] = $_POST['maxepedition'];
-  $parse['curepedition'] = $_POST['curepedition'];
+  $parse['maxepedition'] = intval($_POST['maxepedition']);
+  $parse['curepedition'] = intval($_POST['curepedition']);
   $parse['target_mission'] = $target_mission;
 
   $page = parsetemplate(gettemplate('fleet1'), $parse);
@@ -455,10 +456,10 @@ if (!$fleet_page) {
 
   $fleetarray    = unserialize(base64_decode(str_rot13($_POST["usedfleet"])));
   $AllFleetSpeed = GetFleetMaxSpeed ($fleetarray, 0, $user);
-  $GenFleetSpeed = $_POST['speed'];
+  $GenFleetSpeed = intval($_POST['speed']);
   $MaxFleetSpeed = min($AllFleetSpeed);
 
-  $distance      = GetTargetDistance ( $planetrow['galaxy'], $galaxy, $planetrow['system'], $_POST['system'], $planetrow['planet'], $_POST['planet'] );
+  $distance      = GetTargetDistance ( $planetrow['galaxy'], $galaxy, $planetrow['system'], intval($_POST['system']), $planetrow['planet'], intval($_POST['planet']) );
   $duration      = GetMissionDuration ( $GenFleetSpeed, $MaxFleetSpeed, $distance, $SpeedFactor );
   $consumption   = GetFleetConsumption ( $fleetarray, $SpeedFactor, $duration, $distance, $MaxFleetSpeed, $user );
 
@@ -522,13 +523,13 @@ if (!$fleet_page) {
 
   $parse['consumption'] = $consumption ;
   $parse['dist'] = $distance ;
-  $parse['speedallsmin'] = $_POST["speedallsmin"] ;
-  $parse['speed'] = $_POST['speed'] ;
-  $parse['usedfleet'] = $_POST["usedfleet"] ;
-  $parse['maxepedition'] = $_POST['maxepedition'] ;
-  $parse['curepedition'] = $_POST['curepedition'] ;
-  $parse['fleet_group'] = $_POST['fleet_group'] ;
-  $parse['acs_target_mr'] = $_POST['acs_target_mr'] ;
+  $parse['speedallsmin'] = floatval($_POST["speedallsmin"]) ;
+  $parse['speed'] = intval($_POST['speed']) ;
+  $parse['maxepedition'] = intval($_POST['maxepedition']) ;
+  $parse['curepedition'] = intval($_POST['curepedition']) ;
+  $parse['fleet_group'] = intval($_POST['fleet_group']) ;
+  $parse['acs_target_mr'] = intval($_POST['acs_target_mr']) ;
+  $parse['usedfleet'] = $_POST["usedfleet"];
 
   $page = parsetemplate(gettemplate('fleet2'), $parse);
   display($page, $lang['fl_title']);
@@ -710,13 +711,13 @@ if (!$fleet_page) {
 
   $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
   $AllFleetSpeed  = GetFleetMaxSpeed ($fleetarray, 0, $user);
-  $GenFleetSpeed  = $_POST['speed'];
+  $GenFleetSpeed  = intval($_POST['speed']);
   $MaxFleetSpeed  = min($AllFleetSpeed);
   if (!in_array($GenFleetSpeed, $speed_possible)) {
     message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
   }
   if ($MaxFleetSpeed != $_POST['speedallsmin']) {
-    message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
+    message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."123</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
   }
 
   $distance      = GetTargetDistance ( $planetrow['galaxy'], $galaxy, $planetrow['system'], $system, $planetrow['planet'], $planet );

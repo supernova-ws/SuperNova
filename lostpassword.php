@@ -3,6 +3,7 @@
 /**
  * lostpassword.php
  *
+ * @version 1.0st Security checks & tests by Gorlum for http://supernova.ws
  * @version 1.0
  * @copyright 2008 by Tom1991 for XNova
  */
@@ -14,7 +15,9 @@ $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
-  includeLang('lostpassword');
+includeLang('lostpassword');
+
+$email               = SYS_mysqlSmartEscape($_POST['email']);
 
   if ($action != 1) {
     $parse               = $lang;
@@ -23,7 +26,6 @@ include($ugamela_root_path . 'common.' . $phpEx);
     display($page, $lang['system'], false, '', false, false);
   }
   if ($action == 1) {
-    $email               = $_POST['email'];
     sendnewpassword($email);
     message('Le nouveau mot de passe a &eacute;t&eacute; envoy&eacute; avec succ&egrave;s !', 'OK');
   }

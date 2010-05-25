@@ -5,6 +5,7 @@
  *
  * Jump Gate interface, I presume
  *
+ * @version 1.0st Security checks & tests by Gorlum for http://supernova.ws
  * @version 1
  * @copyright 2008 By Chlorel for XNova
  */
@@ -33,7 +34,7 @@ function DoFleetJump ( $CurrentUser, $CurrentPlanet ) {
     // Dit monsieur, j'ai le droit de sauter ???
     if ( $NextJumpTime == 0 ) {
       // Dit monsieur, ou je veux aller ca existe ???
-      $TargetPlanet = $_POST['jmpto'];
+      $TargetPlanet = intval($_POST['jmpto']);
       $TargetGate   = doquery ( "SELECT `id`, `sprungtor`, `last_jump_time` FROM {{table}} WHERE `id` = '". $TargetPlanet ."';", 'planets', true);
       // Dit monsieur, ou je veux aller y a une porte de saut ???
       if ($TargetGate['sprungtor'] > 0) {
@@ -47,10 +48,11 @@ function DoFleetJump ( $CurrentUser, $CurrentPlanet ) {
           $SubQueryDes = "";
           for ( $Ship = 200; $Ship < 300; $Ship++ ) {
             $ShipLabel = "c". $Ship;
-            if ( $_POST[ $ShipLabel ] > $CurrentPlanet[ $resource[ $Ship ] ] ) {
+            $ShipNum = intval($_POST[ $ShipLabel ]);
+            if ( $ShipNum > $CurrentPlanet[ $resource[ $Ship ] ] ) {
               $ShipArray[ $Ship ] = $CurrentPlanet[ $resource[ $Ship ] ];
             } else {
-              $ShipArray[ $Ship ] = $_POST[ $ShipLabel ];
+              $ShipArray[ $Ship ] = $ShipNum;
             }
             if ($ShipArray[ $Ship ] <> 0) {
               $SubQueryOri .= "`". $resource[ $Ship ] ."` = `". $resource[ $Ship ] ."` - '". $ShipArray[ $Ship ] ."', ";

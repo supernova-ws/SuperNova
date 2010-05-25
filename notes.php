@@ -3,6 +3,7 @@
 /**
  * notes.php
  *
+ * 1.0s - Security checks by Gorlum for http://supernova.ws
  * @version 1.0
  * @copyright 2008 by ??????? for XNova
  */
@@ -23,8 +24,14 @@ if ($IsUserChecked == false) {
 check_urlaubmodus ($user);
 $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
 
-$a = $_GET['a'];
+$GET_a = intval($_GET['a']);
 $n = intval($_GET['n']);
+$POST_s = intval($_POST["s"]);
+$priority = intval($_POST["u"]);
+$title = ($_POST["title"]) ? SYS_mysqlSmartEscape(strip_tags($_POST["title"])) : $lang['NoTitle'];
+$text = ($_POST["text"]) ? SYS_mysqlSmartEscape(strip_tags($_POST["text"])) : $lang['NoText'];
+$id = intval($_POST["n"]);
+
 $lang['Please_Wait'] = "Patientez...";
 
 //lenguaje
@@ -32,21 +39,17 @@ includeLang('notes');
 
 $lang['PHP_SELF'] = 'notes.'.$phpEx;
 
-if($_POST["s"] == 1 || $_POST["s"] == 2){//Edicion y agregar notas
+if($POST_s == 1 || $POST_s == 2){//Edicion y agregar notas
 
   $time = time();
-  $priority = $_POST["u"];
-  $title = ($_POST["title"]) ? mysql_escape_string(strip_tags($_POST["title"])) : $lang['NoTitle'];
-  $text = ($_POST["text"]) ? mysql_escape_string(strip_tags($_POST["text"])) : $lang['NoText'];
 
-  if($_POST["s"] ==1){
+  if($POST_s ==1){
     doquery("INSERT INTO {{table}} SET owner={$user['id']}, time=$time, priority=$priority, title='$title', text='$text'","notes");
     message($lang['NoteAdded'], $lang['Please_Wait'],'notes.'.$phpEx,"3");
-  }elseif($_POST["s"] == 2){
+  }elseif($POST_s == 2){
     /*
       pequeño query para averiguar si la nota que se edita es del propio jugador
     */
-    $id = intval($_POST["n"]);
     $note_query = doquery("SELECT * FROM {{table}} WHERE id=$id AND owner=".$user["id"],"notes");
 
     if(!$note_query){ error($lang['notpossiblethisway'],$lang['Notes']); }
@@ -80,7 +83,7 @@ elseif($_POST){//Borrar
   }else{header("Location: notes.$phpEx");}
 
 }else{//sin post...
-  if($_GET["a"] == 1){//crear una nueva nota.
+  if($GET_a == 1){//crear una nueva nota.
     /*
       Formulario para crear una nueva nota.
     */
@@ -102,7 +105,7 @@ elseif($_POST){//Borrar
     display($page,$lang['Notes'],false);
 
   }
-  elseif($_GET["a"] == 2){//editar
+  elseif($GET_a == 2){//editar
     /*
       Formulario donde se puestra la nota y se puede editar.
     */

@@ -5,6 +5,7 @@
  *
  * Info about every aspect of in-game objects: buildings, officiers, techs etc
  *
+ * @version 1.1st Security checks & tests by Gorlum for http://supernova.ws
  * @version 1.1
  * @copyright 2008 By Chlorel for XNova
  */
@@ -15,6 +16,8 @@ define('INSTALL' , false);
 $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
+
+$gid  = intval($_GET['gid']);
 
 if ($IsUserChecked == false) {
   includeLang('login');
@@ -341,7 +344,6 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
 // Tout le reste ne sert qu'a la calculer :)
 //
 
-  $gid  = $_GET['gid'];
   $page = ShowBuildingInfoPage ($user, $planetrow, $gid);
 
   display ($page, $lang['nfo_page_title']);

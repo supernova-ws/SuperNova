@@ -5,6 +5,7 @@
  *
  *  Allow building of... hmm... buildings
  *
+ * @version 1.3s Security checks by Gorlum for http://supernova.ws
  * @version 1.3
  * @copyright 2008 by Chlorel for XNova
  */
@@ -22,6 +23,9 @@ if ($IsUserChecked == false) {
 }
 
 check_urlaubmodus ($user);
+
+$GET_mode = SYS_mysqlSmartEscape($_GET['mode']);
+
   includeLang('buildings');
 
   // Mise a jour de la liste de construction si necessaire
@@ -29,7 +33,7 @@ check_urlaubmodus ($user);
 
   $IsWorking = HandleTechnologieBuild ( $planetrow, $user );
 
-  switch ($_GET['mode']) {
+  switch ($GET_mode) {
     case 'fleet':
       // --------------------------------------------------------------------------------------------------
       FleetBuildingPage ( $planetrow, $user );

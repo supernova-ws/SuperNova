@@ -5,6 +5,7 @@
 *
 * Announces for trading between players
 *
+* @version 1.0s - Security checked for SQL-injection by Gorlum for http://supernova.ws
 * @version 1.0
 * @copyright 2008 by ??????? for XNova
 */
@@ -24,7 +25,10 @@ if ($IsUserChecked == false) {
 check_urlaubmodus ($user);
 
 $users = doquery("SELECT `username`,`galaxy`,`system` FROM {{table}} WHERE `id` ='".$user['id']."';", 'users',true);
-$action = $_GET['action'];
+$action = intval($_GET['action']);
+$GET_id = intval($_GET['id']);
+
+
 includeLang('announce');
 switch($action){
 case 1://on veut poster une annonce
@@ -54,7 +58,7 @@ break;
 
 case 2:// On vient d'envoyer une annonce, on l'enregistre et on affiche un message comme quoi on l'a bien fait
 foreach($_POST as $name => $value){
-$$name=$value;
+$$name=SYS_mysqlSmartEscape($value);
 }
 if(($metalvendre!=0 && $metalsouhait==0) ||($cristalvendre!=0 && $cristalsouhait==0) || ($deutvendre!=0 && $deutsouhait==0)){
 doquery("INSERT INTO {{table}} SET `user` ='{$users['username']}', `galaxie` ='{$users['galaxy']}', `systeme` ='{$users['system']}', `metala` ='{$metalvendre}', `cristala` ='{$cristalvendre}', `deuta` ='{$deutvendre}', `metals` ='{$metalsouhait}', `cristals` ='{$cristalsouhait}', `deuts` ='{$deutsouhait}'" , "annonce");
@@ -70,7 +74,7 @@ break;
 
 case 3://Suppression d'annonce
 
-doquery("DELETE FROM {{table}} WHERE `id` = {$_GET[id]}" , "annonce");
+doquery("DELETE FROM {{table}} WHERE `id` = {$GET_id}" , "annonce");
 message ($lang['Your_announce_was_deleted'], $lang['announce_status'],"annonce.php");
 break;
 

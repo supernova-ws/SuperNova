@@ -1,5 +1,6 @@
 <?php
 
+// @v2.0s Security checks by Gorlum for http://supernova.ws
 //buddy.php - version 2.0
 // Friend system
 
@@ -18,14 +19,19 @@ if ($IsUserChecked == false) {
 check_urlaubmodus ($user);
   includeLang('buddy');
 
-$a = $_GET['a'];
-$e = $_GET['e'];
-$s = $_GET['s'];
+$a = intval($_GET['a']);
+$e = intval($_GET['e']);
+$s = intval($_GET['s']);
 $u = intval( $_GET['u'] );
+$bid = intval( $_GET['bid'] );
+$POST_s = intval($_POST["s"]);
+$POST_u = intval($_POST["u"]);
+$POST_a = intval($_POST["a"]);
+$POST_e = intval($_POST["e"]);
+$POST_text = SYS_mysqlSmartEscape($_POST['text']);
 
-if ( $s == 1 && isset( $_GET['bid'] ) ) {
+if ( $s == 1 && isset( $bid ) ) {
   // Effacer une entree de la liste d'amis
-  $bid = intval( $_GET['bid'] );
 
   $buddy = doquery( "SELECT * FROM `{{table}}` WHERE `id` = '".$bid."';", 'buddy', true );
   if ( $buddy['owner'] == $user['id'] ) {
@@ -39,18 +45,18 @@ if ( $s == 1 && isset( $_GET['bid'] ) ) {
   } elseif ( $buddy['sender'] == $user['id'] ) {
     doquery( "DELETE FROM `{{table}}` WHERE `id` = '".$bid."';", 'buddy' );
   }
-} elseif ( $_POST["s"] == 3 && $_POST["a"] == 1 && $_POST["e"] == 1 && isset( $_POST["u"] ) ) {
+} elseif ( $POST_s == 3 && $POST_a == 1 && $POST_e == 1 && isset( $POST_u ) ) {
   // Traitement de l'enregistrement de la demande d'entree dans la liste d'amis
   $uid = $user["id"];
-  $u = intval( $_POST["u"] );
+  $u = $POST_u;
 
   $buddy = doquery( "SELECT * FROM `{{table}}` WHERE `sender` = '{$uid}' AND `owner` = '{$u}' OR `sender` = '{$u}' AND `owner` = '{$uid}'", 'buddy', true );
 
   if ( !$buddy ) {
-    if ( strlen( $_POST['text'] ) > 5000 ) {
+    if ( strlen( $POST_text ) > 5000 ) {
       message( "Текст не может содержать больше чем 5 000 символов.", "Ошибка" );
     }
-    $text = mysql_escape_string( strip_tags( $_POST['text'] ) );
+    $text = strip_tags( $POST_text );
     doquery( "INSERT INTO `{{table}}` SET `sender` = '{$uid}', `owner` = '{$u}', `active` = '0', `text` = '{$text}'", 'buddy' );
     message( $lang['Request_sent'], $lang['Buddy_request'], 'buddy.php' );
   } else {

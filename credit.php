@@ -1,7 +1,7 @@
 <?php
 
 /**
- * stat.php
+ * credit.php
  *
  * @version 1.0
  * @copyright 2008 by e-Zobar for XNova

@@ -1,28 +1,34 @@
 <?php
 
+/**
+ * schrotti.php
+ *
+ * 1.0st - Security checks & tests by Gorlum for http://supernova.ws
+ */
+
 define('INSIDE'  , true);
 define('INSTALL' , false);
 
 $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
-check_urlaubmodus ($user);if ($IsUserChecked == false) {	includeLang('login');	header("Location: login.php");}
+check_urlaubmodus ($user);if ($IsUserChecked == false) {  includeLang('login'); header("Location: login.php");}
 function RinokPage ( $CurrentUser, &$CurrentPlanet ) {
-	global $lang, $pricelist, $planetrow, $phpEx, $resource, $reslist, $_GET, $_POST, $dpath;
+  global $lang, $pricelist, $planetrow, $phpEx, $resource, $reslist, $_GET, $_POST, $dpath;
 includeLang('schrotti');
 $rinok_flot = RINOK_FLOT;
 if ($CurrentUser['rpg_points'] >= $rinok_flot) {
-					
+
 if (array_key_exists('shiptypeid', $_POST)) {
-	$res_id = $_POST['shiptypeid'];
+  $res_id = intval($_POST['shiptypeid']);
 } else {
-	$res_id = 202;	
+  $res_id = 202;
 }
 
 if (array_key_exists('number_ships_sell', $_POST)) {
-	$number_ships_sell = $_POST['number_ships_sell'];
+  $number_ships_sell = intval($_POST['number_ships_sell']);
 } else {
-	$number_ships_sell = 0;	
+  $number_ships_sell = 0;
 }
 
 // Herstellungskosten des Schifftyps ermitteln
@@ -45,50 +51,50 @@ $schrotti_energy = $price_energy * $schrotti_rate_energy;
 
 if($_POST){
 
-	if($number_ships_sell > 0 && $planetrow[$resource[$res_id]]!=0){
+  if($number_ships_sell > 0 && $planetrow[$resource[$res_id]]!=0){
 
-		if($number_ships_sell > $planetrow[$resource[$res_id]]){
-			$number_ships_sell = $planetrow[$resource[$res_id]];
-		}
-		$rinok_flot = RINOK_FLOT;
-					$CurrentUser['rpg_points']         -= $rinok_flot;
+    if($number_ships_sell > $planetrow[$resource[$res_id]]){
+      $number_ships_sell = $planetrow[$resource[$res_id]];
+    }
+    $rinok_flot = RINOK_FLOT;
+          $CurrentUser['rpg_points']         -= $rinok_flot;
 
-					$QryUpdateUser  = "UPDATE {{table}} SET ";
-					$QryUpdateUser .= "`rpg_points` = '". $CurrentUser['rpg_points'] ."' ";
-					$QryUpdateUser .= "WHERE ";
-					$QryUpdateUser .= "`id` = '". $CurrentUser['id'] ."';";
-					doquery( $QryUpdateUser, 'users' );
-			
-			
-			$CurrentPlanet['metal']     += $number_ships_sell * $schrotti_met;
-			$CurrentPlanet['crystal']   += $number_ships_sell * $schrotti_crys;
-			$CurrentPlanet['deuterium'] += $number_ships_sell * $schrotti_deut;
-		    $CurrentPlanet[$resource[$res_id]] -= $number_ships_sell;
-			
-			
-			$QryUpdatePlanet  = "UPDATE {{table}} SET ";
-			$QryUpdatePlanet .= "`metal` = '".     $CurrentPlanet['metal']     ."', ";
-			$QryUpdatePlanet .= "`crystal` = '".   $CurrentPlanet['crystal']   ."', ";
-			$QryUpdatePlanet .= "`{$resource[$res_id]}` = '".   $CurrentPlanet[$resource[$res_id]]   ."', ";
-			$QryUpdatePlanet .= "`deuterium` = '". $CurrentPlanet['deuterium'] ."' ";
-			$QryUpdatePlanet .= "WHERE ";
-			$QryUpdatePlanet .= "`id` = '".        $CurrentPlanet['id']        ."';";
-			doquery ( $QryUpdatePlanet , 'planets');
-		
-	}
+          $QryUpdateUser  = "UPDATE {{table}} SET ";
+          $QryUpdateUser .= "`rpg_points` = '". $CurrentUser['rpg_points'] ."' ";
+          $QryUpdateUser .= "WHERE ";
+          $QryUpdateUser .= "`id` = '". $CurrentUser['id'] ."';";
+          doquery( $QryUpdateUser, 'users' );
+
+
+      $CurrentPlanet['metal']     += $number_ships_sell * $schrotti_met;
+      $CurrentPlanet['crystal']   += $number_ships_sell * $schrotti_crys;
+      $CurrentPlanet['deuterium'] += $number_ships_sell * $schrotti_deut;
+        $CurrentPlanet[$resource[$res_id]] -= $number_ships_sell;
+
+
+      $QryUpdatePlanet  = "UPDATE {{table}} SET ";
+      $QryUpdatePlanet .= "`metal` = '".     $CurrentPlanet['metal']     ."', ";
+      $QryUpdatePlanet .= "`crystal` = '".   $CurrentPlanet['crystal']   ."', ";
+      $QryUpdatePlanet .= "`{$resource[$res_id]}` = '".   $CurrentPlanet[$resource[$res_id]]   ."', ";
+      $QryUpdatePlanet .= "`deuterium` = '". $CurrentPlanet['deuterium'] ."' ";
+      $QryUpdatePlanet .= "WHERE ";
+      $QryUpdatePlanet .= "`id` = '".        $CurrentPlanet['id']        ."';";
+      doquery ( $QryUpdatePlanet , 'planets');
+
+  }
 }
 
 $parse = $lang;
 
 $parse['shiplist'] = '';
 foreach ($reslist['fleet'] as $value) {
-	$parse['shiplist'] .= "\n<option ";
-	if ($res_id == $value) {
-		$parse['shiplist'] .= "selected=\"selected\" ";
-	}
-	$parse['shiplist'] .= "value=\"".$value."\">";
-	$parse['shiplist'] .= $lang['tech'][$value];
-	$parse['shiplist'] .= "</option>";
+  $parse['shiplist'] .= "\n<option ";
+  if ($res_id == $value) {
+    $parse['shiplist'] .= "selected=\"selected\" ";
+  }
+  $parse['shiplist'] .= "value=\"".$value."\">";
+  $parse['shiplist'] .= $lang['tech'][$value];
+  $parse['shiplist'] .= "</option>";
 }
 
 $parse['image'] = $res_id;
@@ -110,7 +116,7 @@ return $page;
 }
 }
 
-	$page = RinokPage ( $user, $planetrow);
-	display($page, $lang['Intergalactic_merchant']);
+  $page = RinokPage ( $user, $planetrow);
+  display($page, $lang['Intergalactic_merchant']);
 
 ?>

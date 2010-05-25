@@ -3,11 +3,10 @@
 /**
  * announce.php
  *
- * @v2
- * @copyright 2010 by Gorlum for http://ogame.triolan.com.ua
+ * @v4 Security checks by Gorlum for http://supernova.ws
+ * @v2 (c) copyright 2010 by Gorlum for http://supernova.ws
  * based on admin/activeplanet.php (c) 2008 for XNova
  */
-
 define('INSIDE', true);
 define('INSTALL' , false);
 
@@ -15,7 +14,15 @@ $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
+ini_set('display_errors', 1);
+
 includeLang('admin');
+
+$GET_cmd = SYS_mysqlSmartEscape($_GET['cmd']);
+$GET_id = intval($_GET['id']);
+$POST_text = SYS_mysqlSmartEscape($_POST['text']);
+$POST_dtDateTime = SYS_mysqlSmartEscape($_POST['dtDateTime']);
+$POST_mode = SYS_mysqlSmartEscape($_POST['mode']);
 
 $parse          = $lang;
 $parse['dpath'] = $dpath;
@@ -23,39 +30,39 @@ $parse['submitTitle'] = $lang['adm_an_add'];
 $parse['modePrintable'] = $lang['adm_an_mode_new'];
 
 if ($user['authlevel'] >= 3) {
-  if (!empty($_POST['text'])){
+  if (!empty($POST_text)){
     $idAnnounce = intval(mysql_real_escape_string($_POST['id']));
-    $dtDateTime = empty($_POST['dtDateTime']) ? ("FROM_UNIXTIME(".time().")") : "'" . mysql_real_escape_string($_POST['dtDateTime']) . "'";
-    $strText = mysql_real_escape_string($_POST['text']);
+    $dtDateTime = empty($POST_dtDateTime) ? ("FROM_UNIXTIME(".time().")") : "'" . $POST_dtDateTime . "'";
+    $strText = $POST_text;
 
-    if ($_POST['mode']=='edit'){
+    if ($POST_mode == 'edit'){
       doquery( "UPDATE {{table}} SET `tsTimeStamp`={$dtDateTime}, `strAnnounce`='{$strText}' WHERE `idAnnounce`={$idAnnounce}", 'announce');
     }else{
       doquery( "INSERT INTO {{table}} SET `tsTimeStamp`={$dtDateTime}, `strAnnounce`='{$strText}'", 'announce');
     }
   };
 
-  if ($_GET['cmd']=='del'){
-    $idAnnounce = intval(mysql_real_escape_string($_GET['id']));
+  if ($GET_cmd=='del'){
+    $idAnnounce = $GET_id;
     doquery( "DELETE FROM {{table}} WHERE `idAnnounce`={$idAnnounce}", 'announce');
   };
 
-  if ($_GET['cmd']=='edit'){
-    $parse['id'] = intval(mysql_real_escape_string($_GET['id']));
-    $announce = doquery("SELECT * FROM {{table}} WHERE `idAnnounce`=".intval(mysql_real_escape_string($_GET['id'])), 'announce', true);
+  if ($GET_cmd=='edit'){
+    $parse['id'] = $GET_id;
+    $announce = doquery("SELECT * FROM {{table}} WHERE `idAnnounce`=".$GET_id, 'announce', true);
     $parse['tsTimeStamp']   = $announce['tsTimeStamp'];
     $parse['strAnnounce']   = $announce['strAnnounce'];
     $parse['modePrintable'] = $lang['adm_an_mode_edit'];
     $parse['submitTitle']   = $lang['adm_an_edit'];
   };
 
-  if ($_GET['cmd']=='dup'){
-    $announce = doquery("SELECT * FROM {{table}} WHERE `idAnnounce`=".intval(mysql_real_escape_string($_GET['id'])), 'announce', true);
+  if ($GET_cmd=='dup'){
+    $announce = doquery("SELECT * FROM {{table}} WHERE `idAnnounce`=".$GET_id, 'announce', true);
     $parse['tsTimeStamp']   = $announce['tsTimeStamp'];
     $parse['strAnnounce']   = $announce['strAnnounce'];
     $parse['modePrintable'] = $lang['adm_an_mode_dupe'];
   };
-  $parse['mode'] = $_GET['cmd'];
+  $parse['mode'] = $GET_cmd;
 
   $annQuery = '';
 }else{

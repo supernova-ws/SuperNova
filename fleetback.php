@@ -5,6 +5,7 @@
  *
  * Return your fleet
  *
+ * @version 1.0st Security checks and tests by Gorlum for http://supernova.ws
  * @version 1.0
  * @copyright 2008 by Chlorel for XNova
  */

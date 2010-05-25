@@ -1,21 +1,24 @@
 <?php
 
 /**
-* simulator.php
-*
-* @version 1.0
-* @copyright 2008 by Anthony for Darkness fo Evolution
-*
-* Script by Anthony
-*
-* Template for Sonyedorlys converter.
-*
-* Hevily modified by Gorlum for http://ogame.triolan.com.ua
-*
-* [*] Many optimizations
-* [*] Added ACS support
-* [*] Now fully unified with combat engine and removed duplicate code
-*/
+ * simulator.php
+ *
+ * 1.5st - Security checks & tests by Gorlum for http://supernova.ws
+ * @version 1.5 Heavily modified by Gorlum for http://supernova.ws
+ *
+ *   [*] Added REPLAY ability - link to simulator results
+ *   [*] Many optimizations
+ *   [*] Added ACS support
+ *   [*] Now fully unified with combat engine and removed duplicate code
+ *
+ *  @version 1.0
+ * @copyright 2008 by Anthony for Darkness fo Evolution
+ *
+ * Script by Anthony
+ *
+ * Template for Sonyedorlys converter.
+ *
+ */
 
 define('INSIDE'  , true);
 define('INSTALL' , false);
@@ -115,10 +118,10 @@ if(isset($_POST['submit'])) {
     $attackFleets[$fleet_id_mr]['fleet']['fleet_amount'] = $fleet_count[$fleet_id_mr];
     $attackFleets[$fleet_id_mr]['fleet']['fleet_array'] = $fleet_code[$fleet_id_mr];
 
-    $rpg_amiral_us_mr    = $_POST['rpg_amiral_us'];
-    $defence_tech_us_mr  = $_POST['defence_tech_us'];
-    $shield_tech_us_mr   = $_POST['shield_tech_us'];
-    $military_tech_us_mr = $_POST['military_tech_us'];
+    $rpg_amiral_us_mr    = intval($_POST['rpg_amiral_us']);
+    $defence_tech_us_mr  = intval($_POST['defence_tech_us']);
+    $shield_tech_us_mr   = intval($_POST['shield_tech_us']);
+    $military_tech_us_mr = intval($_POST['military_tech_us']);
 
     $attackFleets[$fleet_id_mr]['user']['rpg_amiral']    = $rpg_amiral_us_mr[$fleet_id_mr];
     $attackFleets[$fleet_id_mr]['user']['defence_tech']  = $defence_tech_us_mr[$fleet_id_mr];
@@ -141,10 +144,10 @@ if(isset($_POST['submit'])) {
   //Lets get Defense
   $defense = array();
 
-  $rpg_amiral_them_mr    = $_POST['rpg_amiral_them'];
-  $defence_tech_them_mr  = $_POST['defence_tech_them'];
-  $shield_tech_them_mr   = $_POST['shield_tech_them'];
-  $military_tech_them_mr = $_POST['military_tech_them'];
+  $rpg_amiral_them_mr    = intval($_POST['rpg_amiral_them']);
+  $defence_tech_them_mr  = intval($_POST['defence_tech_them']);
+  $shield_tech_them_mr   = intval($_POST['shield_tech_them']);
+  $military_tech_them_mr = intval($_POST['military_tech_them']);
 
   $defense[0]['user']['rpg_amiral']    = $rpg_amiral_them_mr[0];
   $defense[0]['user']['defence_tech']  = $defence_tech_them_mr[0];
@@ -171,7 +174,7 @@ if(isset($_POST['submit'])) {
 
 if(isset($_GET['replay'])) {
   $replay       = $_GET['replay'];
-  $unpacked = SYS_combatDataUnPack($replay);
+  $unpacked     = SYS_combatDataUnPack($replay);
 
   $attackFleets = $unpacked['detail'];
   $defense      = $unpacked['def'];

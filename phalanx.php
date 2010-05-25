@@ -3,6 +3,7 @@
 /**
  * phalanx.php
  *
+ * 1.1st - Security checks & tests by Gorlum for http://supernova.ws
  * @version 1.1
  * @original made by ????
  * @copyright 2008 by Pada for XNova.project.es
@@ -26,10 +27,10 @@ includeLang("galaxy");
 
   secureNumericGet();
 
-  $g  = trim($_GET["galaxy"]);
-  $s  = trim($_GET["system"]);
-  $i  = trim($_GET["planet"]);
-  $id = trim($_GET["id"]);
+  $g  = intval($_GET["galaxy"]);
+  $s  = intval($_GET["system"]);
+  $i  = intval($_GET["planet"]);
+  $id = intval($_GET["id"]);
 
   $galaxy = $planetrow['galaxy'];
   $system = $planetrow['system'];
