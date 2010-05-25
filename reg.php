@@ -268,6 +268,8 @@ if ($_POST) {
   // Afficher le formulaire d'enregistrement
   $parse               = $lang;
   $parse['id_ref']     = $id_ref;
+  if($id_ref)
+    $parse['referral'] = "?id_ref=$id_ref";
   $parse['servername'] = $game_config['game_name'];
   $parse['forum_url']  = $game_config['forum_url'];
     if ($game_config['OverviewClickBanner'] != '') {

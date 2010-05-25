@@ -384,7 +384,7 @@ switch ($mode) {
       $bannerURL = "http://".$_SERVER["SERVER_NAME"]. $config->int_banner_URL;
       $bannerURL .= strpos($bannerURL, '?') ? '&' : '?';
       $bannerURL .= "id=" . $user['id'];
-      $parse['bannerframe'] = "<th colspan=\"4\"><img src=\"".$bannerURL."\"><br>".$lang['InfoBanner']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$bannerURL."[/img]\" size=\"62\"></th></tr>";
+      $parse['bannerframe'] = "<th colspan=\"4\"><img src=\"".$bannerURL."\"><br>".$lang['sys_banner_bb']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$bannerURL."[/img]\" size=\"62\"></th></tr>";
     }
 
     // SuperNova's userbar to use on forums
@@ -392,7 +392,7 @@ switch ($mode) {
       $userbarURL = "http://" . $_SERVER["SERVER_NAME"] . $config->int_userbar_URL;
       $userbarURL .= strpos($userbarURL, '?') ? '&' : '?';
       $userbarURL .= "id=" . $user['id'];
-      $parse['userbarframe'] = "<th colspan=\"4\"><img src=\"".$userbarURL."\"><br>".$lang['InfoBanner']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$userbarURL."[/img]\" size=\"62\"></th></tr>";
+      $parse['userbarframe'] = "<th colspan=\"4\"><img src=\"".$userbarURL."\"><br>".$lang['sys_userbar_bb']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$userbarURL."[/img]\" size=\"62\"></th></tr>";
     }
 
     // --- Gestion de l'affichage d'une lune ---------------------------------------------------------

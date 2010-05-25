@@ -112,4 +112,16 @@ $lang['copyright'] = '&copy; OGame Triolan 2009-2010 - You can send your questio
 $lang['TranslationBy'] = '';
 
 $lang['sys_wait'] = 'Query in progress. Please wait.';
+
+$lang['sys_affilates_title'] = "Affilates";
+$lang['sys_affilates_text']  = "Разместите эту ссылку, баннер или юзербар где-нибудь и за каждого пришедшего по ссылке будет что-нибудь хорошее. Что - я пока не придумал. Но все регистрации уже записываются в БД и как только я придумаю бонусы - они будут начислены за каждого приведенного";
+$lang['sys_link_name']       = "Personal link in partnership program";
+$lang['sys_link_bb']         = "Personal link BBCode for use in forums";
+$lang['sys_link_html']       = "Personal link HTML code for use on web pages";
+$lang['sys_banner_name']     = "Banner";
+$lang['sys_banner_bb']       = "Banner BBCode for use in forums";
+$lang['sys_banner_html']     = "Banner HTML code for use on web pages";
+$lang['sys_userbar_name']    = "Userbar";
+$lang['sys_userbar_bb']      = "Userbar BBCode for use in forums";
+$lang['sys_userbar_html']    = "Userbar HTML code for use on web pages";
 ?>

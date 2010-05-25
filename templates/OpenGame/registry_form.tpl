@@ -8,7 +8,7 @@
 </div>
 <div id="mainmenu">
     <div class="menupoint">:: {log_menu} ::</div>
-	<a href="login.php">Главная</a>
+	<a href="login.php{referral}">Главная</a>
 	<a href="lostpassword.php">Забыли пароль?</a>
 	<a href="credit.php">{log_cred}</a>
 	<a href="{forum_url}">{log_forums}</a>

@@ -23,6 +23,7 @@ $lang['m_others']			= 'Other';
 $lang['m_simulator']		= 'Battle simulator';
 $lang['m_communication']= 'Communication';
 $lang['m_exchange']		= 'Resource exchange';
+$lang['m_affilates']    = 'Affilates';
 
 $lang['Overview']     = 'Planet overview';
 $lang['Officiers']    = 'ќфицеры';

@@ -41,7 +41,8 @@ function INT_createBanner($id, $type = 'userbar', $format = 'png'){
   $b_ally = $Player['ally_name'];
   $b_planet = $Planet['name'];
   $b_xyz = "[".$Planet['galaxy'].":".$Planet['system'].":".$Planet['planet']."]";
-  $b_lvl = "".$Stats['total_rank']."/".$config->users_amount."";
+  $Stats['total_rank'] = $Stats['total_rank'] ? $Stats['total_rank'] : $config->users_amount;
+  $b_lvl = $Stats['total_rank']."/".$config->users_amount;
 
   // Colors
   $color = "FFFFFF";

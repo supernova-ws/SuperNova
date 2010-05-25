@@ -40,7 +40,7 @@
     <div id="title">{log_servername}</div>
     <div id="content">
         <div id="text1">{log_desc}</div>
-        <div id="register" class="bigbutton" onclick="document.location.href='./reg.php';">{log_reg_main}</div>
+        <div id="register" class="bigbutton" onclick="document.location.href='./reg.php{referral}';">{log_reg_main}</div>
         <div id="text2">
           <div class="eingabe" align="center"><b>{log_online}: <font color="red">{online_users}</font> - {log_lastreg}: <font color="red">{last_user}</font> - {log_numbreg}: <font color="red">{users_amount}</font></b></div>
         </div>

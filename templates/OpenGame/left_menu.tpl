@@ -110,6 +110,7 @@ td.lm_para {
   <tr><td title="{m_faq_hint}"><a href="http://ogame.triolan.com.ua/phpBB3/viewtopic.php?f=3&t=333">{m_faq}</a></td></tr> 
 <!--  <tr><td><a href="faq.php">{m_faq}</a></td></tr> -->
   <tr><td><a href="announce.php">{adm_announce}</a></td></tr>
+  <tr><td class="lm_para"><a href="affilates.php"><span class="lm_logout">{m_affilates}</span></a></td></tr>
 
   <tr><td class="lm_para">{m_h_control}</td></tr>
   <tr><td><a href="overview.php"><span class="lm_overview">{Overview}</span></a></td></tr>
@@ -150,7 +151,7 @@ td.lm_para {
   <tr><td class="lm_para">{tool}</td></tr>
   <tr><td><a href="options.php" accesskey="o"><span class="lm_options">{Options}</span></a></td></tr>
   <tr><td><a href="contact.php" accesskey="3">{commun}</a></td></tr>
-  <tr><td><a href="javascript:top.location.href='logout.php'"><span class="lm_logout">{Logout}</span></a></td></tr>
+  <tr><td class="lm_para"><a href="javascript:top.location.href='logout.php'"><span class="lm_logout">{Logout}</span></a></td></tr>
   {ADMIN_LINK}
 
   <tr><td class="lm_para"><a href="http://wow.triolan.com.ua/" target="_blank"><img border="0" src="/images/banners/wow.gif" width="130" height="25" alt="Wow Triolan Server"></a></td></tr>

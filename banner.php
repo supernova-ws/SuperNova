@@ -23,8 +23,8 @@ include($ugamela_root_path . 'common.' . $phpEx);
 includeLang('overview');
 
 $id = intval($_GET['id']);
-$type = mysqlSmartEscape($_GET['type']);
-$format = mysqlSmartEscape($_GET['format']);
+$type = SYS_mysqlSmartEscape($_GET['type']);
+$format = SYS_mysqlSmartEscape($_GET['format']);
 if (!empty($id)) {
   INT_createBanner($id, $type, $format);
 }

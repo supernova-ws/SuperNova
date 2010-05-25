@@ -12,6 +12,7 @@ $lang['m_others']			= 'Прочее';
 $lang['m_simulator']		= 'Симулятор боя';
 $lang['m_communication']= 'Связь & Общение';
 $lang['m_exchange']		= 'Биржа ресурсов';
+$lang['m_affilates']    = '!!!ЗАРАБОТАЙ!!!';
 
 $lang['Overview']	= 'Обзор планеты';
 $lang['Officiers']	= 'Офицеры';
