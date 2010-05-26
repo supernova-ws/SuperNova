@@ -93,9 +93,6 @@ function ModuleMarchand ( $CurrentUser, &$CurrentPlanet ) {
       if ($Error == false) {
         $rinok_lom = RINOK_LOM;
         $CurrentUser['rpg_points']         -= $rinok_lom;
-        pdump($POST_metal , 'metal' );
-        pdump($POST_cristal, 'crystal');
-        pdump($POST_deut, 'deuterium'   );
         $CurrentPlanet['metal']     += $POST_metal;
         $CurrentPlanet['crystal']   += $POST_cristal;
         $CurrentPlanet['deuterium'] += $POST_deut;
