@@ -23,8 +23,14 @@ if ($IsUserChecked == false) {
 
 check_urlaubmodus ($user);
 
+// modes:
+// exit = leave alliance
+// memberslist = list of members
 $mode       = SYS_mysqlSmartEscape($_GET['mode']);
+
+// alliance ID
 $a          = intval($_GET['a']);
+
 $edit       = SYS_mysqlSmartEscape($_GET['edit']);
 $allyid     = intval($_GET['allyid']);
 $d          = intval($_GET['d']);

@@ -1,7 +1,7 @@
 <?php
   // Evitamos errores casuales xD
   // query
-  if (isset($tag)) {
+  if ($tag) {
     $allyrow = doquery("SELECT * FROM {{table}} WHERE ally_tag='{$tag}'", "alliance", true);
   } elseif ($a) {
     $allyrow = doquery("SELECT * FROM {{table}} WHERE id='{$a}'", "alliance", true);
