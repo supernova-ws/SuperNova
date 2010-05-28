@@ -2,6 +2,9 @@
 if (!defined('INSIDE')) {
 	die("attemp hacking");
 }
+// mine
+$lang['ali_leader_rank']      = 'Leader';
+
 $lang['alliance'] = 'Альянс';
 $lang['alliances'] = 'Альянсы';
 $lang['your_alliance'] = 'Ваш Альянс';

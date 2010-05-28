@@ -42,8 +42,8 @@ if ($sendmail == 1) {
 }
 
 $lang['r_list'] = "<option value=\"0\">{$lang['All_players']}</option>";
-if ($allianz_raenge) {
-  foreach($allianz_raenge as $id => $array) {
+if ($ranks) {
+  foreach($ranks as $id => $array) {
     $lang['r_list'] .= "<option value=\"" . ($id + 1) . "\">" . $array['name'] . "</option>";
   }
 }

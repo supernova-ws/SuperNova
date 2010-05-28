@@ -1,70 +1,39 @@
 <br />
-<table width=519><tr><td class=c colspan=11>{laws_config}</td></tr>
+<table width=519><tr><td class=c colspan=8><span class="fl">{laws_config}</span><span class="fr"><a href="?mode=admin">{ali_returnToAdmin}</a></span></td></tr>
+  <form action="alliance.php?mode=admin&edit=rights" method=POST>
+    <tr>
+      <th><img src="images/abort.gif" alt="{Delete_range}" title="{Delete_range}" border="0"></th>
+      <th>{Range_name}</th>
+      <th><img src=images/r8.png alt="{make_circular}" title="{make_circular}"></th>
+      <th><img src=images/r7.png alt="{memberlist_online}" title="{memberlist_online}"></th>
+      <th><img src=images/r6.png alt="{requests_admin}" title="{requests_admin}"></th>
+      <th><img src=images/r2.png alt="{Expel_users}" title="{Expel_users}"></th>
+      <th><img src=images/r9.png alt="{Left_hand_text}" title="{Left_hand_text}"></th>
+      <th><img src=images/r1.png alt="{ally_dissolve}" title="{ally_dissolve}"></th>
+    </tr>
+    {list}
+    <tr><th colspan=8><input type=submit value="{Save}"></th></tr>
+  </form>
 
-{list}
-
-
+  <form action="alliance.php?mode=admin&edit=rights&add=name" method=POST><tr>
+    <th></th>
+    <th><input type=text name="newRankName" size="60" maxlength="60" value="{Range_make}"></th>
+    <th colspan="6"><input type=submit value="{Make}"></th>
+  </tr></form>
 </table>
 
 <br />
 
-<form action="alliance.php?mode=admin&edit=rights&add=name" method=POST>
-<table width=519>
-	<tr>
-	  <td class=c colspan=2>{Range_make}</td>
-	</tr>
-	<tr>
-	  <th>{Range_name}</th>
-	  <th><input type=text name="newrangname" size=20 maxlength=30></th>
-	</tr>
-	<tr>
-	  <th colspan=2><input type=submit value="{Make}"></th>
-	</tr>
-</form>
-</table>
-
 <form action="alliance.php?mode=admin&edit=rights" method=POST>
 <table width=519>
-	<tr>
-	  <td class=c colspan=2>{Law_leyends}</td>
-	</tr>
-	<tr>
-	  <th><img src=images/r1.png></th>
-	  <th>{ally_dissolve}</th>
-	</tr>
-	<tr>
-	  <th><img src=images/r2.png></th>
-	  <th>{Expel_users}</th>
-	</tr>
-	<tr>
-	  <th><img src=images/r3.png></th>
-	  <th>{requests_view}</th>
-	</tr>
-	<tr>
-	  <th><img src=images/r4.png></th>
-	  <th>{memberlist_view}</th>
-	</tr>
-	<tr>
-	  <th><img src=images/r5.png></th>
-	  <th>{requests_admin}</th>
-	</tr>
-	<tr>
-	  <th><img src=images/r6.png></th>
-	  <th>{ally_admin}</th>
-	</tr>
-	<tr>
-	  <th><img src=images/r7.png></th>
-	  <th>{memberlist_online}</th>
-	</tr>
-	<tr>
-	  <th><img src=images/r8.png></th><th>{make_circular}</th>
-	</tr>
-	<tr>
-	  <th><img src=images/r9.png></th><th>{Left_hand_text}</th>
-	</tr>
-	<tr>
-	  <td class="c" colspan="2"><a href="alliance.php?mode=admin&edit=ally">{Return_to_overview}</a></td>
-	</tr>
-</form>
+	<tr><td class=c colspan=2>{Law_leyends}</td></tr>
+	<tr><th><img src=images/r8.png></th><th>{make_circular}</th></tr>
+	<tr><th><img src=images/r7.png></th><th>{memberlist_online}</th></tr>
+	<tr><th><img src=images/r5.png></th><th>{requests_admin}</th></tr>
+	<tr><th><img src=images/r2.png></th><th>{Expel_users}</th></tr>
+	<tr><th><img src=images/r9.png></th><th>{Left_hand_text}</th></tr>
+	<tr><th><img src=images/r1.png></th><th>{ally_dissolve}</th></tr>
+	<tr><td class="c" colspan="2"><span class="fr"><a href="alliance.php">{Return_to_overview}</a></span></td></tr>
 </table>
+</form>
 	

@@ -21,8 +21,9 @@
       `ally_name`='{$POST_aname}',
       `ally_tag`='{$POST_atag}' ,
       `ally_owner`='{$user['id']}',
-      `ally_owner_range`='Leader',
+      `ally_owner_range`='{$lang['ali_leaderRank']}',
       `ally_members`='1',
+      `ranklist` = '{$lang['ali_defaultRankName']},0,0,0,0,0,0',
       `ally_register_time`=" . time() , "alliance");
 
       $allyquery = doquery("SELECT * FROM {{table}} WHERE `ally_tag` ='{$POST_atag}'", 'alliance', true);

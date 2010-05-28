@@ -5,7 +5,7 @@ $this->SET = array(
 'tables' => '',
 'comp_method' => '1',
 'comp_level' => '9',
-'last_db_restore' => 'ogame',
+'last_db_restore' => 'ogame-test',
 'tables_exclude' => '0',
 )
 ?>

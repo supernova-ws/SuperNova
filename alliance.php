@@ -4,9 +4,10 @@
  *
  * Alliance control page
  *
- * @version 1.0s - Security checked for SQL-injection by Gorlum for http://supernova.ws
- * @version 1.0
- * @copyright 2008 by ??????? for XNova
+ * History
+ * 2.0  - Full rewrite by Gorlum for http://supernova.ws
+ * 1.0s - Security checked for SQL-injection by Gorlum for http://supernova.ws
+ * 1.0  - copyright 2008 by Chlorel for XNova
  */
 
 define('INSTALL' , false);
@@ -23,13 +24,40 @@ if ($IsUserChecked == false) {
 
 check_urlaubmodus ($user);
 
-// modes:
-// exit = leave alliance
-// memberslist = list of members
+// MINE VARS
+$POST_name = SYS_mysqlSmartEscape($_POST['name']);
+$POST_tag = SYS_mysqlSmartEscape($_POST['tag']);
+$POST_web = SYS_mysqlSmartEscape($_POST['web']);
+$POST_image = SYS_mysqlSmartEscape($_POST['image']);
+$POST_request_notallow = intval($_POST['request_notallow']);
+$POST_owner_range = SYS_mysqlSmartEscape($_POST['owner_range']);
+$POST_text = SYS_mysqlSmartEscape(strip_tags($_POST['text']));
+
+$rankListInput = $_POST['u'];
+
+$id_user = intval($_GET['id_user']);
+if(isset($_GET['id_rank']))
+  $id_rank = intval($_GET['id_rank']);
+
+$newRankName = SYS_mysqlSmartEscape(strip_tags($_POST['newRankName']));
+
+// Main admin page save themes
+$isSaveText       = !empty($_POST['isSaveText']);
+$isSaveOptions    = !empty($_POST['isSaveOptions']);
+$isDisband        = !empty($_POST['isDisband']);
+$isConfirmDisband = !empty($_POST['isConfirmDisband']);
+
 $mode       = SYS_mysqlSmartEscape($_GET['mode']);
 
 // alliance ID
 $a          = intval($_GET['a']);
+
+// new tag when creating alliance
+$POST_atag  = SYS_mysqlSmartEscape($_POST['atag']);
+
+
+
+
 
 $edit       = SYS_mysqlSmartEscape($_GET['edit']);
 $allyid     = intval($_GET['allyid']);
@@ -44,22 +72,15 @@ $id         = intval($_GET['id']);
 $show       = intval($_GET['show']);
 $sendmail   = intval($_GET['sendmail']);
 $tag        = SYS_mysqlSmartEscape($_GET['tag']);
-$POST_atag  = SYS_mysqlSmartEscape($_POST['atag']);
 $POST_aname = SYS_mysqlSmartEscape($_POST['aname']);
 $POST_searchtext = SYS_mysqlSmartEscape($_POST['searchtext']);
-$POST_text = SYS_mysqlSmartEscape($_POST['text']);
 $POST_action = SYS_mysqlSmartEscape($_POST['action']);
 $POST_r = intval($_POST['r']);
 $POST_id = $_POST['id']; // pretty safe 'cause it's array. We will handle it's later
 $POST_further = SYS_mysqlSmartEscape($_POST['further']);
 $POST_bcancel = SYS_mysqlSmartEscape($_POST['bcancel']);
 $POST_newrangname = SYS_mysqlSmartEscape($_POST['newrangname']);
-$POST_owner_range = SYS_mysqlSmartEscape($_POST['owner_range']);
-$POST_web = SYS_mysqlSmartEscape($_POST['web']);
-$POST_image = SYS_mysqlSmartEscape($_POST['image']);
-$POST_request_notallow = intval($_POST['request_notallow']);
 $POST_newleader = SYS_mysqlSmartEscape($_POST['newleader']);
-$POST_options = SYS_mysqlSmartEscape($_POST['options']);
 $POST_newrang = SYS_mysqlSmartEscape($_POST['newrang']);
 $POST_newname = SYS_mysqlSmartEscape($_POST['newname']);
 $POST_newtag = SYS_mysqlSmartEscape($_POST['newtag']);

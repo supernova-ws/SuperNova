@@ -425,5 +425,9 @@ if ( defined('INSIDE')) {
   $reslist['officier'] = array ( 601, 602, 603, 604, 605, 606, 607, 608, 609, 610, 611, 612, 613, 614, 615);
   // Units that can produce resources list
   $reslist['prod']     = array (   1,   2,   3,   4,  12, 212 );
+
+  $tableList = array( 'aks', 'alliance', 'announce', 'annonce', 'banned', 'buddy', 'chat', 'config', 'errors', 'fleets',
+  'fleet_log', 'galaxy', 'iraks', 'logs', 'lunas', 'messages', 'notes', 'planets', 'referrals', 'rw', 'statpoints',
+  'update', 'users');
 }
 ?>

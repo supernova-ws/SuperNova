@@ -2,9 +2,6 @@
 // obtenemos el array de los rangos
 // $user_can_watch_memberlist
 // comprobamos el permiso
-if (!$user_can_watch_memberlist) {
-  message($lang['Denied_access'], $lang['Members_list']);
-}
 // El orden de aparicion
 if ($sort2) {
   if ($sort1 == 1) {
@@ -54,7 +51,7 @@ while ($u = mysql_fetch_array($listuser)) {
   } elseif ($u['ally_rank_id'] == 0 ) {
     $u["ally_range"] = $lang['Novate'];
   } else {
-    $u["ally_range"] = $allianz_raenge[$u['ally_rank_id']-1]['name'];
+    $u["ally_range"] = $ranks[$u['ally_rank_id']]['name'];
   }
 
   $u["dpath"] = $dpath;

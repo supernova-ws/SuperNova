@@ -528,6 +528,10 @@ td .eingabe {
     text-align:left;
 }
 
-#agb_zeile {
+.fl{ /* Float left */
+  float: left;
+}
 
+.fr{ /* Float right */
+  float: right;
 }

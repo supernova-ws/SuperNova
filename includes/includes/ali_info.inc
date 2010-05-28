@@ -8,7 +8,7 @@
   }
   // Si no existe
   if (!$allyrow)
-    message($lang['Ally_not_exist'], $lang['Ally_info_1']);
+    message($lang['ali_notexist'], $lang['Ally_info_1']);
 
   extract($allyrow);
 
@@ -16,10 +16,10 @@
     $ally_image = "<tr><th colspan=2><img src=\"{$ally_image}\"></td></tr>";
   }
 
-  if ($ally_description) {
-    $ally_description = "<tr><th colspan=2 height=100>{$ally_description}</th></tr>";
-  } else
-    $ally_description = "<tr><th colspan=2 height=100>{$lang['Ally_nodescription']}</th></tr>";
+  if (!$ally_description)
+    $ally_description = $lang['Ally_nodescription'];
+
+  $ally_description = "<tr><th colspan=2 height=100>{$ally_description}</th></tr>";
 
   if ($ally_web) {
     $ally_web = "<tr>

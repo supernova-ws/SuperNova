@@ -25,7 +25,8 @@ $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 
 $time_now = time();
 
-$ugamela_root_path = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT']);
+$ugamela_root_path = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT']) . '/';
+//print($ugamela_root_path[strlen($ugamela_root_path)-1]);
 include_once($ugamela_root_path . 'includes/extensions.inc');
 
 include($ugamela_root_path . 'includes/debug.class.'.$phpEx);
@@ -56,5 +57,16 @@ $game_config   = $game_config_default;
 $query = doquery("SELECT * FROM {{table}}",'config');
 while ( $row = mysql_fetch_assoc($query) ) {
   $game_config[$row['config_name']] = $row['config_value'];
+}
+
+$cache = classCache::getInstance($config->db_prefix);
+if(!isset($cache->tables)){
+  $query = doquery("SHOW TABLES;", 'config');
+
+  while ( $row = mysql_fetch_assoc($query) ) {
+    foreach($row as $row)
+      $tl[] = str_replace($config->db_prefix, "", $row);
+  }
+  $cache->tables = $tl;
 }
 ?>
