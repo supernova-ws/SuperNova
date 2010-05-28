@@ -34,7 +34,7 @@ if ($d && isset($ranks[$d])) {
 ALI_rankListSave($ranks);
 
 if (!count($ranks)) { // si no hay rangos
-  $list = "<th>{$lang['There_is_not_range']}</th>";
+  $list = "<th colspan=8>{$lang['There_is_not_range']}</th>";
 } else {
   $template = gettemplate('alliance_admin_laws_row');
 
