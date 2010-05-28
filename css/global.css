@@ -1,0 +1,11 @@
+.fl{ /* Float left */
+  float: left;
+}
+
+.fr{ /* Float right */
+  float: right;
+}
+
+.hide{ /* Hide */
+  display: none;
+}
