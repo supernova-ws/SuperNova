@@ -44,7 +44,7 @@
     <tr><td class=c colspan=2>{ally_admin}</td></tr>
     <tr><th colspan=2><a href="?mode=admin&edit=members">{members_admin}</a></th></tr>
     <tr><th colspan=2><a href="?mode=admin&edit=rights">{Law_settings}</a></th></tr>
-    <tr>
+    <tr{hideNotOwner}>
       <th>
         {ali_transfer}&nbsp;&nbsp;&nbsp;
         <select name="idNewLeader">
@@ -52,17 +52,11 @@
           {player_list}
         </select>
       </th>
-      <th>
-        <input type="submit" name="isTransfer" value="{ali_confirm}">
-      </th>
+      <th><input type="submit" name="isTransfer" value="{ali_confirm}"></th>
     </tr>
-    <tr>
-      <th>
-        {ali_disband}&nbsp;&nbsp;&nbsp;<input type="checkbox" name="isConfirmDisband" value="1">
-      </th>
-      <th>
-        <input type="submit" name="isDisband" value="{ali_confirm}">
-      </th>
+    <tr{hideNotOwner}>
+      <th>{ali_disband}&nbsp;&nbsp;&nbsp;<input type="checkbox" name="isConfirmDisband" value="1"></th>
+      <th><input type="submit" name="isDisband" value="{ali_confirm}"></th>
     </tr>
   </table>
 </form>

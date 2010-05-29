@@ -1,16 +1,20 @@
 <?php
   // query para la allyrow
-  $rights     = array( 0 => 'name', 1 => 'mail',  2 => 'online',       3 => 'invite',                4 => 'kick', 5 => 'admin',      6 => 'disband',        );
-  $rights_old = array( 0 => 'name', 1 => 'mails', 2 => 'onlinestatus', 3 => 'bewerbungenbearbeiten', 4 => 'kick', 5 => 'rechtehand', 6 => 'administrieren', );
+  $rights     = array( 0 => 'name', 1 => 'mail',  2 => 'online',       3 => 'invite',                4 => 'kick', 5 => 'admin',     );
+  $rights_old = array( 0 => 'name', 1 => 'mails', 2 => 'onlinestatus', 3 => 'bewerbungenbearbeiten', 4 => 'kick', 5 => 'rechtehand',);
 
   $ally = doquery("SELECT * FROM {{table}} WHERE `id` ='{$user['ally_id']}'", "alliance", true);
 
   // This piece converting old ally data to new one
+//  unset($ally['ranklist']);
   if(!$ally['ranklist'] && $ally['ally_ranks']){
     $ally_ranks = unserialize($ally['ally_ranks']);
+    $i = 0;
     foreach($ally_ranks as $rank_id => $rank){
       foreach($rights as $key => $value)
-        $ranks[$rank_id - 1][$value] = $rank[$rights_old[$key]];
+        $ranks[$i][$value] = $rank[$rights_old[$key]];
+      doquery("UPDATE {{table}} SET `ally_rank_id` = {$i} WHERE `ally_id` ='{$user['ally_id']}' AND `ally_rank_id`={$rank_id};", "users", true);
+      $i++;
     };
 
     if(!empty($ranks))
@@ -41,14 +45,16 @@
     $user_admin_applications = true;
   $user_can_see_applications = $user_admin_applications;
 
-  if ($ranks[$user['ally_rank_id']]['kick'] == 1 || $ally['ally_owner'] == $user['id']) $user_can_kick = true;
+  if ($ranks[$user['ally_rank_id']]['kick'] == 1 || $ally['ally_owner'] == $user['id'])
+    $user_can_kick = true;
 
   if ($ranks[$user['ally_rank_id']]['admin'] == 1 || $ally['ally_owner'] == $user['id']){
     $user_can_edit_rights = true;
     $user_admin = true;
   }
 
-  if ($ranks[$user['ally_rank_id']]['disband'] == 1 || $ally['ally_owner'] == $user['id']) $user_can_disband = true;
+  if ($ally['ally_owner'] == $user['id'])
+    $user_can_disband = true;
 
   if (!$ally) {
     doquery("UPDATE {{table}} SET `ally_id` = 0, `ally_name` = '' WHERE `id`='{$user['id']}'", "users");
@@ -57,6 +63,7 @@
 
   switch ($mode){
     case 'admin':
+    	$allianceAdminMode = true;
       switch($edit){
         case 'rights':   include('ali_internal_admin_rights.inc'); break;
         case 'members':  include('ali_internal_admin_members.inc'); break;

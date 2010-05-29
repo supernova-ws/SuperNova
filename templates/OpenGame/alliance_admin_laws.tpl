@@ -1,5 +1,5 @@
 <br />
-<table width=519><tr><td class=c colspan=8><span class="fl">{laws_config}</span><span class="fr"><a href="?mode=admin">{ali_returnToAdmin}</a></span></td></tr>
+<table width=519><tr><td class=c colspan=7><span class="fl">{laws_config}</span><span class="fr"><a href="?mode=admin">{ali_returnToAdmin}</a></span></td></tr>
   <form action="alliance.php?mode=admin&edit=rights" method=POST>
     <tr>
       <th><img src="images/abort.gif" alt="{Delete_range}" title="{Delete_range}" border="0"></th>
@@ -9,16 +9,15 @@
       <th><img src=images/r6.png alt="{requests_admin}" title="{requests_admin}"></th>
       <th><img src=images/r2.png alt="{Expel_users}" title="{Expel_users}"></th>
       <th><img src=images/r9.png alt="{Left_hand_text}" title="{Left_hand_text}"></th>
-      <th><img src=images/r1.png alt="{ally_dissolve}" title="{ally_dissolve}"></th>
     </tr>
     {list}
-    <tr><th colspan=8><input type=submit value="{Save}"></th></tr>
+    <tr><th colspan=7><input type=submit value="{Save}"></th></tr>
   </form>
 
   <form action="alliance.php?mode=admin&edit=rights&add=name" method=POST><tr>
     <th></th>
     <th><input type=text name="newRankName" size="60" maxlength="60" value="{Range_make}"></th>
-    <th colspan="6"><input type=submit value="{Make}"></th>
+    <th colspan="5"><input type=submit value="{Make}"></th>
   </tr></form>
 </table>
 
@@ -32,7 +31,6 @@
 	<tr><th><img src=images/r5.png></th><th>{requests_admin}</th></tr>
 	<tr><th><img src=images/r2.png></th><th>{Expel_users}</th></tr>
 	<tr><th><img src=images/r9.png></th><th>{Left_hand_text}</th></tr>
-	<tr><th><img src=images/r1.png></th><th>{ally_dissolve}</th></tr>
 	<tr><td class="c" colspan="2"><span class="fr"><a href="alliance.php">{Return_to_overview}</a></span></td></tr>
 </table>
 </form>

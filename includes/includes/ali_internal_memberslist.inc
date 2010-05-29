@@ -1,8 +1,4 @@
 <?php
-// obtenemos el array de los rangos
-// $user_can_watch_memberlist
-// comprobamos el permiso
-// El orden de aparicion
 if ($sort2) {
   if ($sort1 == 1) {
     $sort = " ORDER BY `username`";
@@ -23,7 +19,7 @@ if ($sort2) {
   } elseif ($sort2 == 2) {
     $sort .= " ASC;";
   }
-  $listuser = doquery("SELECT * FROM {{table}} inner join `game_statpoints` on `game_users`.`id`=`game_statpoints`.`id_owner` WHERE ally_id='{$user['ally_id']}' AND STAT_type=1 $sort", 'users');
+  $listuser = doquery("SELECT * FROM {{table}} inner join `game_statpoints` on `game_users`.`id`=`game_statpoints`.`id_owner` AND `stat_type` = 1 AND `stat_code` = 1 WHERE ally_id='{$user['ally_id']}' $sort", 'users');
 } else {
   $listuser = doquery("SELECT * FROM {{table}} WHERE ally_id='{$user['ally_id']}'", 'users');
 }
@@ -48,9 +44,9 @@ while ($u = mysql_fetch_array($listuser)) {
   // Nombre de rango
   if ($ally['ally_owner'] == $u['id']) {
     $u["ally_range"] = ($ally['ally_owner_range'] == '')?$lang['Founder']:$ally['ally_owner_range'];
-  } elseif ($u['ally_rank_id'] == 0 ) {
+  } /*elseif ($u['ally_rank_id'] == 0 ) {
     $u["ally_range"] = $lang['Novate'];
-  } else {
+  } */else {
     $u["ally_range"] = $ranks[$u['ally_rank_id']]['name'];
   }
 

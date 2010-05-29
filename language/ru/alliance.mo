@@ -19,7 +19,7 @@ $lang['ali_selectNewLeader']  = 'ВЫБЕРИТЕ ИГРОКА';
 $lang['ali_onlyOneRankLeft']  = 'Нельзя удалить единственное звание!';
 
 $lang['ali_leaderRank']       = 'Глава Альянса';
-$lang['ali_defaultRankName']  = 'Член Альянса';
+$lang['ali_defaultRankName']  = 'Новичок';
 
 $lang['ali_returnToAdmin']    = 'Вернуться к управлению Альянсом';
 

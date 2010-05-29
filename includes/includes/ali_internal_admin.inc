@@ -64,6 +64,9 @@ $parse['ally_image'] = $ally['ally_image'];
 $parse['ally_request_notallow_0'] = (( $ally['ally_request_notallow']) ? ' SELECTED' : '');
 $parse['ally_request_notallow_1'] = ((!$ally['ally_request_notallow']) ? ' SELECTED' : '');
 $parse['ally_owner_range'] = $ally['ally_owner_range'];
+if($ally['ally_owner'] != $user['id']){
+  $parse['hideNotOwner'] = ' style="hide"';
+}
 //$parse['Ally_transfer'] = MessageForm($lang['Ally_transfer'], "", "?mode=admin&edit=transfer", $lang['Continue']);
 //$parse['ally_dissolve'] = MessageForm($lang['ally_dissolve'], "", "?mode=admin&edit=exit", $lang['Continue']);
 

@@ -10,8 +10,6 @@
         if ($ally['ally_owner'] != $user['id']) {
             message($lang['Denied_access'], $lang['Members_list']);
         } else {
-        // У нас есть массив из рядов
-        $rangos_alianza = unserialize($ally['ally_ranks']);
         // Armamar опять список пользователей альянс
         $listuser = doquery("SELECT * FROM {{table}} WHERE `ally_id` ='{$user['ally_id']}'", 'users');
         // подсчет количества пользователей.
@@ -28,12 +26,12 @@
             } elseif ($u['ally_rank_id'] == 0 ) {
             // Если вы новичок никогда не позволят правую руку
             } else {
-                if ($rangos_alianza[$u['ally_rank_id']-1]['rechtehand'] == 1){
+                if ($user_admin){
                 // Вот, вооруженных вариант для пользователей, с разрешения его правой рукой
                 $righthand['righthand'] .= "\n<option value=\"" . $u['id'] . "\"";
                 $righthand['righthand'] .= ">";
                 $righthand['righthand'] .= "".$u['username'];
-                $righthand['righthand'] .= " [".$rangos_alianza[$u['ally_rank_id']-1]['name'];
+                $righthand['righthand'] .= " [".$ranks[$u['ally_rank_id']]['name'];
                 $righthand['righthand'] .= "]  </option>";
                 }
 

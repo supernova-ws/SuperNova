@@ -1,5 +1,5 @@
 <?php
-if (!$user_can_kick) {
+if (!$user_can_kick && $allianceAdminMode) {
   message($lang['Denied_access'], $lang['Members_list']);
 }
 

@@ -6,5 +6,4 @@
   <th><input type=checkbox name="u[{rankID}][{n3}]"{r3} value="1"></th>
   <th><input type=checkbox name="u[{rankID}][{n4}]"{r4} value="1"></th>
   <th><input type=checkbox name="u[{rankID}][{n5}]"{r5} value="1"></th>
-  <th><input type=checkbox name="u[{rankID}][{n6}]"{r6} value="1"></th>
 </tr>
