@@ -26,7 +26,6 @@ $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 $time_now = time();
 
 $ugamela_root_path = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT']) . '/';
-//print($ugamela_root_path[strlen($ugamela_root_path)-1]);
 include_once($ugamela_root_path . 'includes/extensions.inc');
 
 include($ugamela_root_path . 'includes/debug.class.'.$phpEx);
