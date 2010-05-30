@@ -48,8 +48,8 @@
       <th>
         {ali_transfer}&nbsp;&nbsp;&nbsp;
         <select name="idNewLeader">
-          <option disabled>{ali_selectNewLeader}</option>
-          {player_list}
+          <option disabled selected>{ali_selectNewLeader}</option>
+          {adminMembers}
         </select>
       </th>
       <th><input type="submit" name="isTransfer" value="{ali_confirm}"></th>

@@ -1,14 +1,13 @@
 <?php
 /**
- * alliance.php
- *
- * Alliance control page
- *
- * History
- * 2.0  - Full rewrite by Gorlum for http://supernova.ws
- * 1.0s - Security checked for SQL-injection by Gorlum for http://supernova.ws
- * 1.0  - copyright 2008 by Chlorel for XNova
- */
+ alliance.php
+ Alliance manager
+
+ History
+ 2.0  - Full rewrite by Gorlum for http://supernova.ws
+ 1.0s - Security checked for SQL-injection by Gorlum for http://supernova.ws
+ 1.0  - copyright 2008 by Chlorel for XNova
+*/
 
 define('INSTALL' , false);
 define('INSIDE', true);
@@ -43,15 +42,18 @@ if(isset($_GET['id_rank']))
 $newRankName = SYS_mysqlSmartEscape(strip_tags($_POST['newRankName']));
 $allyTextID = intval($_GET['t']);
 
-
 // Main admin page save themes
 $isSaveText       = !empty($_POST['isSaveText']);
 $isSaveOptions    = !empty($_POST['isSaveOptions']);
 $isDisband        = !empty($_POST['isDisband']);
 $isConfirmDisband = !empty($_POST['isConfirmDisband']);
+$isTransfer       = !empty($_POST['isTransfer']);
+$idNewLeader      = intval($_POST['idNewLeader']);
 
 $mode             = SYS_mysqlSmartEscape($_GET['mode']);
-$edit       = SYS_mysqlSmartEscape($_GET['edit']);
+$edit             = SYS_mysqlSmartEscape($_GET['edit']);
+
+
 
 // alliance ID
 $id_ally          = intval($_GET['a']);
@@ -75,25 +77,12 @@ $POST_newleader = SYS_mysqlSmartEscape($_POST['newleader']);
 
 includeLang('alliance');
 
-
-/*
-  Alianza consiste en tres partes.
-  La primera es la comun. Es decir, no se necesita comprobar si se esta en una alianza o no.
-  La segunda, es sin alianza. Eso implica las solicitudes.
-  La ultima, seria cuando ya se esta dentro de una.
-*/
-// Parte inicial.
-
 if ($mode == 'ainfo') {
   include('includes/includes/ali_info.inc');
 };
-// --[Comprobaciones de alianza]-------------------------
-if ($user['ally_id'] == 0) { // Sin alianza
+if ($user['ally_id'] == 0) {
   include('includes/includes/ali_external.inc');
-}elseif
-//---------------------------------------------------------------------------------------------------------------------------------------------------
-// Parte de adentro de la alianza
-($user['ally_id'] != 0 && $user['ally_request'] == 0) { // Con alianza
+}elseif ($user['ally_id'] != 0 && $user['ally_request'] == 0) {
   include('includes/includes/ali_internal.inc');
 }
 ?>

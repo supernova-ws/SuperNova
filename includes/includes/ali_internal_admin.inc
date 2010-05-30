@@ -39,9 +39,14 @@ if ($isSaveOptions) {
   $ally[$db_field] = $POST_text;
   doquery("UPDATE {{table}} SET `{$db_field}`='{$POST_text}' WHERE `id`='{$ally['id']}'", "alliance");
 } elseif ($isTransfer && $idNewLeader){
-
-  include('ali_internal_admin_transfer.inc');
-
+  $newLeader = doquery("SELECT `ally_id` FROM {{table}} WHERE `id` = '$idNewLeader';", "users", true);
+  if($newLeader['ally_id'] == $user['ally_id']){
+    doquery("UPDATE {{table}} SET `ally_rank_id`='0' WHERE `id`={$user['id']};", 'users');
+    doquery("UPDATE {{table}} SET `ally_owner`='{$idNewLeader}' WHERE `id`={$user['ally_id']};", 'alliance');
+    doquery("UPDATE {{table}} SET `ally_rank_id`='0' WHERE `id`='{$idNewLeader}';", 'users');
+    header('Location: alliance.php');
+    exit;
+  }
 } elseif ($isDisband && $isConfirmDisband){
   if (!$user_can_disband) {
     message($lang['Denied_access'], $lang['Members_list']);
@@ -67,12 +72,23 @@ $parse['ally_owner_range'] = $ally['ally_owner_range'];
 if($ally['ally_owner'] != $user['id']){
   $parse['hideNotOwner'] = ' style="hide"';
 }
-//$parse['Ally_transfer'] = MessageForm($lang['Ally_transfer'], "", "?mode=admin&edit=transfer", $lang['Continue']);
-//$parse['ally_dissolve'] = MessageForm($lang['ally_dissolve'], "", "?mode=admin&edit=exit", $lang['Continue']);
 
-//$parse['Ally_transfer'] = $lang['Ally_transfer'];
-//$parse['ally_dissolve'] = MessageForm($lang['ally_dissolve'], "", "?mode=admin&edit=exit", $lang['Continue']);
+unset($tmp);
+foreach($ranks as $rankID => $rank)
+  if($rank['admin'])
+    $tmp .= "`ally_rank_id` = {$rankID} OR ";
+$tmp = substr($tmp, 0, -4);
+
+if(!empty($tmp)){
+  $userAllyAdmins = doquery("SELECT `id`, `username` FROM {{table}} WHERE ({$tmp}) AND `ally_id` = {$ally['id']};", 'users');
+  unset($tmp);
+  while ($userAllyAdmin = mysql_fetch_array($userAllyAdmins)) {
+    $tmp .= "<option value={$userAllyAdmin['id']}>{$userAllyAdmin['username']}</option>";
+  }
+
+  $parse['adminMembers'] = $tmp;
+}
 
 $page .= parsetemplate(gettemplate('alliance_admin'), $parse);
-display($page, $lang['ally_admin']);
+display($page, $lang['ally_admin'] . '123');
 ?>

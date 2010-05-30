@@ -102,7 +102,7 @@ while ($userRow = mysql_fetch_array($userList)) {
       if ( $last_active < 60 * 5 ) {
         $tmp = "lime>{$lang['On']}";
       } elseif ($last_active < 60 * 15) {
-        $tmp = "yellow>{$lang['15_min']}";
+        $tmp = "yellow>{$lang['ali_lessThen15min']}";
       } else {
         $tmp = "red>{$lang['Off']}";
       }

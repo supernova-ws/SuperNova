@@ -3,9 +3,7 @@ if (!defined('INSIDE')) {
 	die("Обнаружена попытка взлома!");
 }
 
-$lang['15_min']            = '&lt; 15 м';
-$lang['1_hour']            = '&lt; часа';
-$lang['1_day']            = '&lt; суток';
+$lang['ali_lessThen15min']    = '&lt; 15 м';
 $lang['Accept_cand']             = 'Принять';
 
 $lang['ali_confirm']          = 'Подтвердить';
