@@ -35,11 +35,14 @@ $POST_text = SYS_mysqlSmartEscape(strip_tags($_POST['text']));
 
 $rankListInput = $_POST['u'];
 
+$id_kick          = intval($_GET['kick']);
 $id_user = intval($_GET['id_user']);
 if(isset($_GET['id_rank']))
   $id_rank = intval($_GET['id_rank']);
 
 $newRankName = SYS_mysqlSmartEscape(strip_tags($_POST['newRankName']));
+$allyTextID = intval($_GET['t']);
+
 
 // Main admin page save themes
 $isSaveText       = !empty($_POST['isSaveText']);
@@ -47,43 +50,28 @@ $isSaveOptions    = !empty($_POST['isSaveOptions']);
 $isDisband        = !empty($_POST['isDisband']);
 $isConfirmDisband = !empty($_POST['isConfirmDisband']);
 
-$mode       = SYS_mysqlSmartEscape($_GET['mode']);
+$mode             = SYS_mysqlSmartEscape($_GET['mode']);
+$edit       = SYS_mysqlSmartEscape($_GET['edit']);
 
 // alliance ID
-$a          = intval($_GET['a']);
+$id_ally          = intval($_GET['a']);
 
-// new tag when creating alliance
-$POST_atag  = SYS_mysqlSmartEscape($_POST['atag']);
-
-
-
-
-
-$edit       = SYS_mysqlSmartEscape($_GET['edit']);
 $allyid     = intval($_GET['allyid']);
 $d          = intval($_GET['d']);
 $yes        = intval($_GET['yes']);
 $sort1      = intval($_GET['sort1']);
 $sort2      = intval($_GET['sort2']);
-$t          = intval($_GET['t']);
-$rank       = intval($_GET['rank']);
-$kick       = intval($_GET['kick']);
 $id         = intval($_GET['id']);
 $show       = intval($_GET['show']);
 $sendmail   = intval($_GET['sendmail']);
 $tag        = SYS_mysqlSmartEscape($_GET['tag']);
-$POST_aname = SYS_mysqlSmartEscape($_POST['aname']);
+
 $POST_searchtext = SYS_mysqlSmartEscape($_POST['searchtext']);
 $POST_action = SYS_mysqlSmartEscape($_POST['action']);
 $POST_r = intval($_POST['r']);
-$POST_id = $_POST['id']; // pretty safe 'cause it's array. We will handle it's later
 $POST_further = SYS_mysqlSmartEscape($_POST['further']);
 $POST_bcancel = SYS_mysqlSmartEscape($_POST['bcancel']);
-$POST_newrangname = SYS_mysqlSmartEscape($_POST['newrangname']);
 $POST_newleader = SYS_mysqlSmartEscape($_POST['newleader']);
-$POST_newrang = SYS_mysqlSmartEscape($_POST['newrang']);
-$POST_newname = SYS_mysqlSmartEscape($_POST['newname']);
-$POST_newtag = SYS_mysqlSmartEscape($_POST['newtag']);
 
 includeLang('alliance');
 

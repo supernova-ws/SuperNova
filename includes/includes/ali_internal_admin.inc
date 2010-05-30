@@ -11,8 +11,8 @@ $text_list = array(
   2 => array ( 'db_field' => 'ally_text', 'text_type' => 'Internal_text'),
   3 => array ( 'db_field' => 'ally_request', 'text_type' => 'Show_of_request_text'),
 );
-if ($t<1 || $t>3) $t = 1;
-extract($text_list[$t]);
+if ($allyTextID<1 || $allyTextID>3) $allyTextID = 1;
+extract($text_list[$allyTextID]);
 
 if ($isSaveOptions) {
   $ally['ally_name'] = $POST_name;
@@ -55,7 +55,7 @@ if ($isSaveOptions) {
 $parse['text']         = $ally[$db_field];
 $parse['request_type'] = $lang[$text_type];
 
-$parse['t'] = $t;
+$parse['t'] = $allyTextID;
 
 $parse['ally_name'] = $ally['ally_name'];
 $parse['ally_tag'] = $ally['ally_tag'];

@@ -3,7 +3,9 @@ if (!defined('INSIDE')) {
 	die("Обнаружена попытка взлома!");
 }
 
-$lang['15_min']            = '15 мин';
+$lang['15_min']            = '&lt; 15 м';
+$lang['1_hour']            = '&lt; часа';
+$lang['1_day']            = '&lt; суток';
 $lang['Accept_cand']             = 'Принять';
 
 $lang['ali_confirm']          = 'Подтвердить';
@@ -25,7 +27,7 @@ $lang['ali_returnToAdmin']    = 'Вернуться к управлению Альянсом';
 
 $lang['ali_name']             = 'Имя';
 $lang['ali_points']           = 'Очки';
-$lang['ali_lastActive']       = 'Последняя активность';
+$lang['ali_lastActive']       = 'Активность';
 $lang['ali_totalMembers']     = 'Всего';
 
 $lang['ali_kickUser']         = 'Исключить игрока из Альянса';

@@ -9,6 +9,5 @@ ali_internal_admin_transfer.inc
 ali_internal_default.inc
 ali_internal_exit.inc
 ali_internal_mail.inc
-ali_internal_memberslist.inc
 
 languages/en/alliance.tpl

@@ -38,8 +38,10 @@
   // Everyone can view memberlist!
   $user_can_watch_memberlist = true;
 
-  if ($ranks[$user['ally_rank_id']]['mail'] == 1 || $ally['ally_owner'] == $user['id']) $user_can_send_mails = true;
-  if ($ranks[$user['ally_rank_id']]['online'] == 1 || $ally['ally_owner'] == $user['id']) $user_onlinestatus = true;
+  if ($ranks[$user['ally_rank_id']]['mail'] == 1 || $ally['ally_owner'] == $user['id'])
+    $user_can_send_mails = true;
+  if ($ranks[$user['ally_rank_id']]['online'] == 1 || $ally['ally_owner'] == $user['id'])
+    $user_onlinestatus = true;
   // Only those who can invite can see applications
   if ($ranks[$user['ally_rank_id']]['invite'] == 1 || $ally['ally_owner'] == $user['id'])
     $user_admin_applications = true;
@@ -66,13 +68,13 @@
     	$allianceAdminMode = true;
       switch($edit){
         case 'rights':   include('ali_internal_admin_rights.inc'); break;
-        case 'members':  include('ali_internal_admin_members.inc'); break;
+        case 'members':  include('ali_internal_memberlist.inc'); break;
         case 'requests': include('ali_internal_admin_invite.inc'); break;
         default:         include('ali_internal_admin.inc'); break;
       }
       break;
     case 'exit':         include('ali_internal_exit.inc'); break;
-    case 'memberslist':  include('ali_internal_memberslist.inc'); break;
+    case 'memberslist':  include('ali_internal_memberlist.inc'); break;
     case 'circular':     include('ali_internal_mail.inc'); break;
     default:             include('ali_internal_default.inc'); break;
   }

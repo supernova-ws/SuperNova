@@ -7,10 +7,8 @@
   <th><a href="galaxy.php?mode=0&galaxy={galaxy}&system={system}">[{galaxy}:{system}:{planet}]</a></th>
   <th>{ally_register_time}</th>
   <th>{onlinetime}</th>
-  <th><span {functions}>
+  <th {isHideAdmin}><span {isHideOwnerKick}>
     <a href="alliance.php?mode=admin&edit=members&kick={id}" alt="{ali_kickUser}" title="{ali_kickUser}"
       onclick="javascript:return confirm('{Kick_sure}');"><img src="{dpath}pic/abort.gif" border=0 ></a>
-    &nbsp;
-    <a href="alliance.php?mode=admin&edit=members&rank={id}" alt="{Set_range}" title="{Set_range}"><img src="{dpath}pic/key.gif" border=0></a>
   </span></script></th>
 </tr>
