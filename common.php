@@ -33,7 +33,7 @@ if ( isset ($user) ) {
     doquery("UNLOCK TABLES", '');
     $_lastupdate = $time_now;
 
-    $_fleets = doquery("SELECT DISTINCT fleet_start_galaxy, fleet_start_system, fleet_start_planet, fleet_start_type FROM {{table}} WHERE `fleet_start_time` <= '{$time_now}' ORDER BY fleet_start_time;", 'fleets'); // OR fleet_end_time <= ".$time_now
+    $_fleets = doquery("SELECT DISTINCT fleet_start_galaxy, fleet_start_system, fleet_start_planet, fleet_start_type FROM {{table}} WHERE `fleet_start_time` <= '{$time_now}' ORDER BY fleet_start_time;", 'fleets');
     while ($row = mysql_fetch_array($_fleets)) {
       $array = array();
       $array['galaxy'] = $row['fleet_start_galaxy'];
@@ -44,7 +44,7 @@ if ( isset ($user) ) {
       $temp = FlyingFleetHandler ($array);
     }
 
-    $_fleets = doquery("SELECT DISTINCT fleet_end_galaxy, fleet_end_system, fleet_end_planet, fleet_end_type FROM {{table}} WHERE `fleet_end_time` <= '".$time_now."' ORDER BY fleet_end_time;", 'fleets'); // OR fleet_end_time <= ".$time_now
+    $_fleets = doquery("SELECT DISTINCT fleet_end_galaxy, fleet_end_system, fleet_end_planet, fleet_end_type FROM {{table}} WHERE `fleet_end_time` <= '".$time_now."' ORDER BY fleet_end_time;", 'fleets');
     while ($row = mysql_fetch_array($_fleets)) {
       $array = array();
       $array['galaxy'] = $row['fleet_end_galaxy'];
@@ -54,16 +54,6 @@ if ( isset ($user) ) {
 
       $temp = FlyingFleetHandler ($array);
     }
-
-    // $dbg_msg .= "Common.php Removing all arrived fleets<br />";
-    // doquery("UPDATE {{table}} SET `metal` = 0 WHERE `metal` < 0 ;", 'planets');
-    //$_fleets = doquery("SELECT * FROM {{table}} WHERE `fleet_end_time` <= '".$time_now."';", 'fleets'); // OR fleet_end_time <= ".$time_now
-    // doquery("DELETE FROM {{table}} WHERE `fleet_end_time` <= '".$time_now."' ;", 'fleets');
-
-    //if ($user['id']==492 && $dbg_msg) {
-    //if ($dbg_msg<>"") {
-    // $debug->warning($dbg_msg,"Debug");
-    //};
 
     unset($_fleets);
 
