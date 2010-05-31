@@ -9,7 +9,7 @@ class classCache {
 
   protected static $cacheObject;
 
-  private function __construct($prefIn = 'CACHE_') {
+  protected function __construct($prefIn = 'CACHE_') {
     self::$prefix = $prefIn;
     if ( extension_loaded('xcache') ){
       self::$mode = 1;
@@ -51,10 +51,10 @@ class classCache {
 
   public function __get($name) {
     switch ($name){
-      case 'CACHER_PREFIX':
+      case '_PREFIX':
         return self::$prefix;
         break;
-      case 'CACHER_MODE':
+      case '_MODE':
         return self::$mode;
         break;
       default:
@@ -113,12 +113,21 @@ class classCache {
 
   public function reset(){
     $this->unset_by_prefix();
+
+    $this->_INITIALIZED = false;
+  }
+
+  public function init($reInit = false){
+    $this->_INITIALIZED = true;
+  }
+
+  public function isInitialized(){
+    return $this->_INITIALIZED;
   }
 }
 
 // -- Persistent object - saves itself to DB
 class classPersistent extends classCache {
-
   protected $internalName;
   protected $sqlTableName;
   protected $sqlSelectAll;
@@ -129,7 +138,7 @@ class classPersistent extends classCache {
 
   protected $defaults = array();
 
-  private function __construct($gamePrefix = 'ogame_', $internalName = '', $tableName = '') {
+  protected function __construct($gamePrefix = 'ogame_', $internalName = '', $tableName = '') {
     parent::__construct($gamePrefix.$internalName.'_');
     $this->internalName = $internalName;
 
@@ -139,7 +148,7 @@ class classPersistent extends classCache {
     $this->sqlFieldName = $internalName.'_name';
     $this->sqlValueName = $internalName.'_value';
 
-    if(!$this->_OBJECT_LOADED_DB)
+    if(!$this->_DB_LOADED)
       $this->loadDB();
   }
 
@@ -165,7 +174,7 @@ class classPersistent extends classCache {
       $this->$row[$this->sqlFieldName] = $row[$this->sqlValueName];
     }
 
-    $this->_OBJECT_LOADED_DB = true;
+    $this->_DB_LOADED = true;
   }
 }
 
@@ -223,7 +232,7 @@ class classConfig extends classPersistent {
      // Variables
     'var_stats_lastUpdated' => '0',
     'var_stats_schedule' => 'd@04:00:00',
-);
+  );
 
   public static function getInstance($gamePrefix = 'ogame_') {
     if (!isset(self::$cacheObject)) {
