@@ -107,15 +107,17 @@ function sys_combatDataUnPack($strData){
 }
 
 function coe_simulatorHTMLMake($resToLook){
-  global $lang, $resource;
+  global $lang, $resource, $user;
 
   foreach($resToLook as $unitID){
     if($unitID<200 || $unitID>600 ){
       $parse['fieldNameAtt'] = 'user';
       $parse['fieldNameDef'] = 'user';
+      $parse['fieldValue']   = $user[$resource[$unitID]];
     }else{
       $parse['fieldNameAtt'] = 'detail';
       $parse['fieldNameDef'] = 'def';
+      $parse['fieldValue']   = 0;
     }
     $parse['unitID'] = $unitID;
     $parse['unitName'] = $lang["tech"][$unitID];
