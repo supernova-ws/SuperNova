@@ -128,5 +128,12 @@ $lang['sys_userbar_name']    = "Юзербар";
 $lang['sys_userbar_bb']      = "BBCode для размещения юзербара на форуме";
 $lang['sys_userbar_html']    = "HTML-код для размещения юзербара на веб-странице";
 
+$lang['sys_attacker'] 		= "Атакующий";
+$lang['sys_defender'] 		= "Обороняющийся";
 
+$lang['COE_combatSimulator'] = "Симулятор боя";
+$lang['COE_simulate']        = "Запуск симулятора";
+$lang['COE_fleet']           = "Флот";
+$lang['COE_defense']         = "Оборона";
+$lang['sys_resources']     = "Ресурсы";
 ?>

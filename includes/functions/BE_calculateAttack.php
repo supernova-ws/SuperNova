@@ -169,7 +169,8 @@ BE_DEBUG_openTable();
     $defenseRoundData = array();
     BE_preCalcRoundData($defenders, $defenseRoundData, $defArray, 'def', $isSimulated);
 
-    $rounds[$round] = array('attackers' => $attackers, 'defenders' => $defenders, 'attack' => $attackRoundData['att'], 'defense' => $defenseRoundData['att'], 'attackA' => $attackRoundData['amount'], 'defenseA' => $defenseRoundData['amount'], 'infoA' => $attArray, 'infoD' => $defArray);
+
+    $rounds[$round] = array('attackers' => unserialize(serialize($attackers)), 'defenders' => unserialize(serialize($defenders)), 'attack' => $attackRoundData['att'], 'defense' => $defenseRoundData['att'], 'attackA' => $attackRoundData['amount'], 'defenseA' => $defenseRoundData['amount'], 'infoA' => $attArray, 'infoD' => $defArray);
 
     if ($defenseRoundData['amount']['total'] <= 0 || $attackRoundData['amount']['total'] <= 0) {
       break;
