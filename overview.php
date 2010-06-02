@@ -367,7 +367,7 @@ switch ($mode) {
       $lastAnnounces = doquery("SELECT * FROM {{table}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now} ORDER BY `tsTimeStamp` DESC LIMIT 3", 'announce');
 
       while ($lastAnnounce = mysql_fetch_array($lastAnnounces))
-        $parse['NewsFrame']         .= "<tr><th><font color=Cyan>" . $lastAnnounce['tsTimeStamp'] . "</font>" ."</th><th colspan=\"3\" valign=top><div align=justify>" . stripslashes($lastAnnounce['strAnnounce']) ."</div></th></tr>";
+        $parse['NewsFrame']         .= "<tr><th><font color=Cyan>" . $lastAnnounce['tsTimeStamp'] . "</font>" ."</th><th colspan=\"3\" valign=top><div align=justify>" . sys_parseBBCode($lastAnnounce['strAnnounce']) ."</div></th></tr>";
     }
     // External Chat Frame ...
     if ($game_config['OverviewExternChat'] == '1') {
