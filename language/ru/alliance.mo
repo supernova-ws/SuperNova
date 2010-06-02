@@ -30,6 +30,8 @@ $lang['ali_totalMembers']     = 'Всего';
 
 $lang['ali_kickUser']         = 'Исключить игрока из Альянса';
 
+$lang['ali_requestAdmin']     = 'Проверка заявок';
+$lang['ali_requests']         = 'Заявки';
 
 $lang['alliance']             = 'Альянс';
 $lang['alliances']            = 'Альянсы';
@@ -130,8 +132,6 @@ $lang['Range_name']        = 'Звание';
 $lang['Reject_cand']             = 'Отклонить';
 $lang['Reload']            = 'Пример';
 $lang['Repel']             = 'Repel';
-$lang['Requests']          = 'Запросы';
-$lang['requests_admin']       = 'Проверка заявок';
 $lang['requests_view']        = 'Просмотр заявок';
 $lang['Request_answer']       = 'Запрос отклонен';
 $lang['Request_date']      = 'Дата подачи заявки';

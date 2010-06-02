@@ -1,7 +1,7 @@
 <br />
 <table width=519>
 	<tr>
-	  <td class=c colspan=2>{Apply_ally_overview} [{ally_tag}]</td>
+	  <td class=c colspan=2><span class="fl">{Apply_ally_overview} [{ally_tag}]</span><span class="fr"><a href="?mode=admin">{ali_returnToAdmin}</a></span></td>
 	</tr>
 	{request}
 	<tr>
@@ -13,6 +13,6 @@
 	</tr>
 	{list}
 	<tr>
-	  <td class=c colspan=2><a href="alliance.php">{Back}</a></td>
+	  <td class=c colspan=2><span class="fr"><a href="alliance.php">{Return_to_overview}</a></span></td>
 	</tr>
 </table>

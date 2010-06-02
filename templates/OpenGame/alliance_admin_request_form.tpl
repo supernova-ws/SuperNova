@@ -20,6 +20,6 @@
          </th>
    </tr>
    <tr>
-     <td colspan=2>&#160;</td>
+     <td colspan=2>-</td>
    </tr>
    </form>
