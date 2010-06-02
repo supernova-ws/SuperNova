@@ -78,7 +78,7 @@ $Count          = 0;
 while ($announce = mysql_fetch_array($allAnnounces)) {
   $parse['announces'] .= "<tr>";
   $parse['announces'] .= "<td class=b>". str_replace(" ", "&nbsp;", $announce['tsTimeStamp']) ."</td>";
-  $parse['announces'] .= "<td class=b align=justify>". $announce['strAnnounce'] ."</td>";
+  $parse['announces'] .= "<td class=b align=justify>". sys_parseBBCode($announce['strAnnounce']) ."</td>";
   if ($user['authlevel'] >= 1) {
     $parse['announces'] .= "<td class=b><center><a href=\"announce.php?cmd=edit&id=".$announce['idAnnounce']."\">Ed</a></th>";
     $parse['announces'] .= "<td class=b><center><a href=\"announce.php?cmd=dup&id=".$announce['idAnnounce']."\">Dup</a></th>";
