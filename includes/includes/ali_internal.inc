@@ -60,7 +60,7 @@
 
   if (!$ally) {
     doquery("UPDATE {{table}} SET `ally_id` = 0, `ally_name` = '' WHERE `id`='{$user['id']}'", "users");
-    message($lang['ali_notexist'], $lang['your_alliance'], 'alliance.php');
+    message($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
   }
 
   switch ($mode){

@@ -8,7 +8,7 @@
   }
   // Si no existe
   if (!$allyrow)
-    message($lang['ali_notexist'], $lang['Ally_info_1']);
+    message($lang['ali_sys_notFound'], $lang['Ally_info_1']);
 
   extract($allyrow);
 
@@ -45,16 +45,12 @@
   $lang['ally_description'] = nl2br($ally_description);
   $lang['ally_image'] = $ally_image;
   $lang['ally_web'] = $ally_web;
+  $lang['ally_id'] = $id_ally;
 
   if ($user['ally_id'] == 0) {
-    $lang['bewerbung'] = "<tr>
-    <th>Bewerben</th>
-    <th><a href=\"alliance.php?mode=apply&amp;allyid=" . $id . "\">{$lang['Click_writerequest']}</a></th>
-
-  </tr>";
   } else
-    $lang['bewerbung'] = "";
+    $lang['ally_application'] = 'class="hide"';
 
-  $page .= parsetemplate(gettemplate('alliance_ainfo'), $lang);
+  $page .= parsetemplate(gettemplate('ali_external_info'), $lang);
   display($page, str_replace('%s', $ally_name, $lang['Info_of_Alliance']));
 ?>

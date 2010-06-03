@@ -76,7 +76,7 @@ while ($userRow = mysql_fetch_array($userList)) {
 
   $last_active = time() - $userRow["onlinetime"];
   if($allianceAdminMode && ($user_admin)){
-    $parse["onlineMessage"] = $lang['ali_lastActive'];
+    $parse["onlineMessage"] = $lang['ali_sys_lastActive'];
     if ( $last_active < 60 ) {
       $tmp = "lime>{$lang['On']}";
     } elseif ($last_active < 60 * 60) {

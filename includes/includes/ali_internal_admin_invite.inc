@@ -1,6 +1,6 @@
 <?php
 
-if ($ally['ally_owner'] != $user['id'] && !$user_admin_applications) {
+if (!$user_admin_applications) {
   message($lang['Denied_access'], $lang['requests_admin']);
 }
 
@@ -51,24 +51,16 @@ if ($POST_action == $lang['Accept_cand']) {
   die();
 }
 
-$row = gettemplate('alliance_admin_request_row');
-$i = 0;
+$row = gettemplate('ali_admin_request_row');
 $parse = $lang;
-$query = doquery("SELECT id,username,ally_request_text,ally_register_time FROM {{table}} WHERE ally_request='{$ally['id']}'", 'users');
+$query = doquery("SELECT {{table}}.*, {{users}}.username FROM {{table}} LEFT JOIN {{users}} ON {{users}}.id = {{table}}.id_user WHERE id_ally='{$ally['id']}'", 'alliance_requests');
 while ($r = mysql_fetch_array($query)) {
-  // recolectamos los datos del que se eligio.
-  if (isset($show) && $r['id'] == $show) {
-    $s['username'] = $r['username'];
-    $s['ally_request_text'] = nl2br($r['ally_request_text']);
-    $s['id'] = $r['id'];
-  }
-  // la fecha de cuando se envio la solicitud
-  $r['time'] = date("Y-m-d h:i:s", $r['ally_register_time']);
+  $r['request_time'] = date($config->game_date_withTime, $r['request_time']);
   $parse['list'] .= parsetemplate($row, $r);
-  $i++;
+  pdump($r);
 }
 if ($parse['list'] == '') {
-  $parse['list'] = '<tr><th colspan=2> Больше нет заявок </th></tr>';
+  $parse['list'] = '<tr><th colspan=3>' . $lang['ali_req_emptyList'] . '</th></tr>';
 }
 // Con $show
 if (isset($show) && $show != 0 && $parse['list'] != '') {
@@ -89,7 +81,6 @@ $parse['ally_tag'] = $ally['ally_tag'];
 $parse['Back'] = $lang['Back'];
 
 $parse['There_is_hanging_request'] = str_replace('%n', $i, $lang['There_is_hanging_request']);
-// $parse['list'] = $lang['Return_to_overview'];
 $page = parsetemplate(gettemplate('alliance_admin_request_table'), $parse);
 display($page, $lang['requests_admin']);
 
