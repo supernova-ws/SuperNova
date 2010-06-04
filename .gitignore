@@ -6,6 +6,9 @@ phpBB3/
 forum/
 xcache-admin/
 
+# Ignore backup folder
+admin/backup/
+
 # Ignore all dotfiles...
 .*
 # ...except for .gitignore
