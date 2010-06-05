@@ -36,7 +36,7 @@ ALI_rankListSave($ranks);
 if (!count($ranks)) { // si no hay rangos
   $list = "<th colspan=8>{$lang['There_is_not_range']}</th>";
 } else {
-  $template = gettemplate('alliance_admin_rights_row');
+  $template = gettemplate('ali_admin_rights_row');
 
   foreach($ranks as $rankID => $rank) {
     $lang['rankID'] = $rankID;
@@ -55,7 +55,7 @@ if (!count($ranks)) { // si no hay rangos
 
 $lang['list'] = $list;
 $lang['dpath'] = $dpath;
-$page .= parsetemplate(gettemplate('alliance_admin_rights'), $lang);
+$page .= parsetemplate(gettemplate('ali_admin_rights'), $lang);
 
 display($page, $lang['Law_settings']);
 ?>

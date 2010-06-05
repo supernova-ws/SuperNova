@@ -69,7 +69,7 @@
       switch($edit){
         case 'rights':   include('ali_internal_admin_rights.inc'); break;
         case 'members':  include('ali_internal_memberlist.inc'); break;
-        case 'requests': include('ali_internal_admin_invite.inc'); break;
+        case 'requests': include('ali_internal_admin_request.inc'); break;
         default:         include('ali_internal_admin.inc'); break;
       }
       break;

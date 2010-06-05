@@ -89,6 +89,6 @@ if(!empty($tmp)){
   $parse['adminMembers'] = $tmp;
 }
 
-$page .= parsetemplate(gettemplate('alliance_admin'), $parse);
-display($page, $lang['ally_admin'] . '123');
+$page .= parsetemplate(gettemplate('ali_admin'), $parse);
+display($page, $lang['ally_admin']);
 ?>

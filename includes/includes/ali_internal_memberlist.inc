@@ -119,7 +119,7 @@ while ($userRow = mysql_fetch_array($userList)) {
     $parse["isHideOwnerKick"] = 'class="hide"';
   }
 
-  $page_list .= parsetemplate(gettemplate('alliance_memberlist_row'), $parse);
+  $page_list .= parsetemplate(gettemplate('ali_members_row'), $parse);
 }
 
 if ($i != $ally['ally_members']) {
@@ -129,7 +129,7 @@ if ($i != $ally['ally_members']) {
 $parse['memberCount'] = mysql_num_rows($userList);
 $parse['memberslist'] = $page_list;
 $parse['s'] = $sort2;
-$page .= parsetemplate(gettemplate('alliance_memberlist'), $parse);
+$page .= parsetemplate(gettemplate('ali_members'), $parse);
 
 display($page, $lang['members_admin']);
 ?>
