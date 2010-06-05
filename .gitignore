@@ -8,6 +8,10 @@ xcache-admin/
 
 # Ignore backup folder
 admin/backup/
+admin/sxd/backup/
+admin/sxd/cfg.php
+admin/sxd/error.log
+admin/sxd/ses.php
 
 # Ignore all dotfiles...
 .*

@@ -1,5 +1,5 @@
 <?php
-function doquery($query, $table, $fetch = false){
+function doquery($query, $table = "", $fetch = false){
   global $numqueries, $link, $debug, $ugamela_root_path, $user, $tableList, $cache;
 
   require($ugamela_root_path.'config.php');

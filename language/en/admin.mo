@@ -14,10 +14,13 @@
 if (!defined('INSIDE')) {
 	die("attemp hacking");
 }
-$lang['adm_done']               = "Выполнено";
-$lang['adm_stat_title']         = "Статистика";
+$lang['adm_done']               = "Work complete";
+$lang['adm_done_records']       = 'Work complete. %2$d record(s) processed in %1$01.3f seconds.';
+$lang['adm_stat_title']         = "Обновление статистики";
+$lang['adm_maintenance_title']  = "Database maintenance";
 $lang['adm_cleaner_title']      = "Cтатистика";
 $lang['adm_cleaned']            = "Кол-во удаленных задач: ";
+
 $lang['Fix']                    = "Обновлено";
 $lang['Welcome_to_Fix_section'] = "секция патчей";
 $lang['There_is_not_need_fix']  = "Фикс ненужен!";

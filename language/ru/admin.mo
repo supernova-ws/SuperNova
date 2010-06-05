@@ -15,9 +15,13 @@ if (!defined('INSIDE')) {
 	die("Обнаружена попытка взлома!");
 }
 $lang['adm_done']               = "Успешно выполнено";
+$lang['adm_inactive_removed']   = '<li>Удалено неактивных записей игроков: %d</li>';
 $lang['adm_stat_title']         = "Обновление статистики";
+$lang['adm_maintenance_title']  = "Обслуживание БД";
+$lang['adm_records']            = "записей обработано";
 $lang['adm_cleaner_title']      = "Чистка очереди построек";
 $lang['adm_cleaned']            = "Кол-во удаленных задач: ";
+
 $lang['Fix']                    = "Обновлено";
 $lang['Welcome_to_Fix_section'] = "секция патчей";
 $lang['There_is_not_need_fix']  = "Фикс ненужен!";
