@@ -104,4 +104,19 @@ function pdump($value,$varname = "",$level=0,$dumper = "")
 {
   print(dump($value,$varname,$level,$dumper));
 }
+
+function pr($prePrint = false){
+  if($prePrint)
+    print("<br>");
+  print(rand() . "<br>");
+}
+
+function pc($prePrint = false){
+  global $_PRINT_COUNT_VALUE;
+  $_PRINT_COUNT_VALUE++;
+
+  if($prePrint)
+    print("<br>");
+  print($_PRINT_COUNT_VALUE . "<br>");
+}
 ?>

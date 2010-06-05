@@ -135,5 +135,8 @@ $lang['COE_combatSimulator'] = "Симулятор боя";
 $lang['COE_simulate']        = "Запуск симулятора";
 $lang['COE_fleet']           = "Флот";
 $lang['COE_defense']         = "Оборона";
-$lang['sys_resources']     = "Ресурсы";
+$lang['sys_resources']       = "Ресурсы";
+
+$lang['sys_reset']           = "Сбросить";
+$lang['sys_send']            = "Отправить";
 ?>

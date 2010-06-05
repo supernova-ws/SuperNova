@@ -58,7 +58,6 @@ $edit             = SYS_mysqlSmartEscape($_GET['edit']);
 // alliance ID
 $id_ally          = intval($_GET['a']);
 
-$allyid     = intval($_GET['allyid']);
 $d          = intval($_GET['d']);
 $yes        = intval($_GET['yes']);
 $sort1      = intval($_GET['sort1']);
@@ -80,9 +79,12 @@ includeLang('alliance');
 if ($mode == 'ainfo') {
   include('includes/includes/ali_info.inc');
 };
-if ($user['ally_id'] == 0) {
+
+$user_request = doquery("SELECT * FROM {{table}} WHERE `id_user` ='{$user['id']}'", "alliance_requests", true);
+
+if (!$user['ally_id']) {
   include('includes/includes/ali_external.inc');
-}elseif ($user['ally_id'] != 0 && $user['ally_request'] == 0) {
+}elseif (!$user_request['id_user']) {
   include('includes/includes/ali_internal.inc');
 }
 ?>

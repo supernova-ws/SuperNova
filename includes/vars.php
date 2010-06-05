@@ -435,6 +435,6 @@ if ( defined('INSIDE')) {
 
   $tableList = array( 'aks', 'alliance', 'announce', 'annonce', 'banned', 'buddy', 'chat', 'config', 'errors', 'fleets',
   'fleet_log', 'galaxy', 'iraks', 'logs', 'lunas', 'messages', 'notes', 'planets', 'referrals', 'rw', 'statpoints',
-  'update', 'users');
+  'update', 'users', 'alliance_requests');
 }
 ?>

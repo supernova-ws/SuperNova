@@ -61,5 +61,5 @@ $lang['ally_tag'] = $ally['ally_tag'];
 $lang['ally_members'] = $ally['ally_members'];
 $lang['ally_name'] = $ally['ally_name'];
 
-display(parsetemplate(gettemplate('alliance_frontpage'), $lang), $lang['your_alliance']);
+display(parsetemplate(gettemplate('ali_internal'), $lang), $lang['your_alliance']);
 ?>
