@@ -23,20 +23,24 @@ $lang['ali_leaderRank']       = 'Глава Альянса';
 $lang['ali_defaultRankName']  = 'Новичок';
 
 
+$lang['ali_req_cancel']       = 'Удалить заявку';
+$lang['ali_req_candidate']    = 'Кандидат';
+$lang['ali_req_characters']   = 'символов';
+$lang['ali_req_date']         = 'Дата подачи заявки';
+$lang['ali_req_deny_msg']     = 'Ваша заявка на вступление в Альянс [%s] была отклонена.<br>Причина отказа: "%s".<br>Вы можете удалить заявку и попробовать позже или вступить в другой Альянс.';
+$lang['ali_req_deny_admin']   = '<font color=red>Запрос уже отклонен</font>. Однако, пока пользователь не удалил запрос на вступление, вы можете изменить свое решение';
+$lang['ali_req_deny_reason']  = 'Ваш запрос на вступление отклонен';
+$lang['ali_req_emptyList']    = 'Нет заявок для рассмотрения';
+$lang['ali_req_inAlly']       = 'Вы уже являетесь участником Альянса.';
 $lang['ali_req_make']         = 'Подать заявку';
 $lang['ali_req_notAllowed']   = '<font color=red>НЕТ ПРИЕМА</font>';
-$lang['ali_req_inAlly']       = 'Вы уже являетесь участником Альянса.';
 $lang['ali_req_otherRequest'] = 'Вы уже подали заявку в другой Альянс.';
-$lang['ali_req_title']        = 'Подача заявки в Альянс';
-$lang['ali_req_text']         = 'Текст заявки';
 $lang['ali_req_template']     = 'Прошу принять меня в ваш Альянс';
-$lang['ali_req_cancel']       = 'Удалить заявку';
+$lang['ali_req_text']         = 'Текст заявки';
+$lang['ali_req_title']        = 'Подача заявки в Альянс';
 $lang['ali_req_waiting']      = 'Ваше заявка на вступление в Альянс [%s] будет расмотренно главой Альянса.<br>Вас оповестят о принятом решении.';
-$lang['ali_req_denied']       = 'Ваша заявка на вступление в Альянс [%s] была отклонена.<br>Причина отказа: "%s".<br>Вы можете удалить заявку и попробовать позже или вступить в другой Альянс.';
-$lang['ali_req_characters']   = 'символов';
-$lang['ali_req_candidate']    = 'Кандидат';
-$lang['ali_req_date']         = 'Дата подачи заявки';
-$lang['ali_req_emptyList']    = 'Нет заявок для рассмотрения';
+
+
 
 $lang['ali_searchAlly']       = 'Поиск Альянса';
 $lang['ali_searchAction']     = 'Искать';
