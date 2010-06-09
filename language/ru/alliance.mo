@@ -12,7 +12,6 @@ $lang['ali_adm_options']      = 'Настройки Альянса';
 $lang['ali_adm_transfer']     = 'Передать Альянс игроку';
 $lang['ali_adm_return']       = 'Вернуться к управлению Альянсом';
 $lang['ali_adm_kick']         = 'Исключить игрока из Альянса';
-$lang['ali_adm_requests']     = 'Проверка заявок';
 $lang['ali_adm_requests']     = 'Заявки';
 
 $lang['ali_adm_newLeader']    = 'ВЫБЕРИТЕ ИГРОКА';
@@ -39,6 +38,7 @@ $lang['ali_req_template']     = 'Прошу принять меня в ваш Альянс';
 $lang['ali_req_text']         = 'Текст заявки';
 $lang['ali_req_title']        = 'Подача заявки в Альянс';
 $lang['ali_req_waiting']      = 'Ваше заявка на вступление в Альянс [%s] будет расмотренно главой Альянса.<br>Вас оповестят о принятом решении.';
+$lang['ali_req_check']        = 'Управление заявками';
 
 
 

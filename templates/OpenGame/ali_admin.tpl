@@ -12,7 +12,7 @@
       <th>
         <span class="fl"><select name="request_notallow"><option value=1{ally_request_notallow_0}>{not_allow_request}</option>
         <option value=0{ally_request_notallow_1}>{Allow_request}</option></select></span>
-        <span class="fr"><a href="alliance.php?mode=admin&edit=requests">{ali_adm_requests}</a></span>
+        <span class="fr"><a href="alliance.php?mode=admin&edit=requests">{ali_req_check}</a></span>
       </th>
     </tr>
     <tr><th>{Founder_name}</th><th><input type="text" name="owner_range" value="{ally_owner_range}" size=30></th></tr>
