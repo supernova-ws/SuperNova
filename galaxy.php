@@ -35,7 +35,7 @@ $GET_galaxy       = intval($_GET['galaxy']);
 $GET_system       = intval($_GET['system']);
 $GET_planet       = intval($_GET['planet']);
 
-check_urlaubmodus ($user);
+  check_urlaubmodus ($user);
   includeLang('galaxy');
 
   $CurrentPlanet = doquery("SELECT * FROM {{table}} WHERE `id` = '". $user['current_planet'] ."';", 'planets', true);
@@ -51,8 +51,7 @@ check_urlaubmodus ($user);
   $HavePhalanx   = $CurrentPlanet['phalanx'];
   $CurrentSystem = $CurrentPlanet['system'];
   $CurrentGalaxy = $CurrentPlanet['galaxy'];
-//  $CanDestroy    = $CurrentPlanet[$resource[213]] + $CurrentPlanet[$resource[214]];
-  $CanDestroy = $CurrentPlanet[$resource[214]];
+  $CanDestroy    = $CurrentPlanet[$resource[214]];
 
   $maxfleet       = doquery("SELECT * FROM {{table}} WHERE `fleet_owner` = '". $user['id'] ."';", 'fleets');
   $maxfleet_count = mysql_num_rows($maxfleet);
@@ -71,40 +70,18 @@ check_urlaubmodus ($user);
     $system        = $CurrentPlanet['system'];
     $planet        = $CurrentPlanet['planet'];
   } elseif ($mode == 1) {
-    // On vient du selecteur de galaxie
-    // Il nous poste :
-    // $_POST['galaxy']      => Galaxie affichée dans la case a saisir
-    // $_POST['galaxyLeft']  => <- A ete cliqué
-    // $_POST['galaxyRight'] => -> A ete cliqué
-    // $_POST['system']      => Systeme affiché dans la case a saisir
-    // $_POST['systemLeft']  => <- A ete cliqué
-    // $_POST['systemRight'] => -> A ete cliqué
-
     if ($POST_galaxyLeft) {
+      $POST_galaxy--;
       if ($POST_galaxy < 1) {
-        $POST_galaxy = 1;
-        $galaxy          = 1;
-      } elseif ($POST_galaxy == 1) {
-        $POST_galaxy = 1;
-        $galaxy          = 1;
-      } else {
-        $galaxy = $POST_galaxy - 1;
+        $POST_galaxy     = 1;
       }
     } elseif ($POST_galaxyRight) {
-      if ($POST_galaxy      > $config->game_maxGalaxy OR
-        $POST_galaxyRight > $config->game_maxGalaxy) {
-        $POST_galaxy      = $config->game_maxGalaxy;
-        $POST_galaxyRight = $config->game_maxGalaxy;
-        $galaxy               = $config->game_maxGalaxy;
-      } elseif ($POST_galaxy == $config->game_maxGalaxy) {
-        $POST_galaxy      = $config->game_maxGalaxy;
-        $galaxy               = $config->game_maxGalaxy;
-      } else {
-        $galaxy = $POST_galaxy + 1;
+      $POST_galaxy++;
+      if ($POST_galaxy > $config->game_maxGalaxy){
+        $POST_galaxy = $config->game_maxGalaxy;
       }
-    } else {
-      $galaxy = $POST_galaxy;
     }
+    $galaxy = $POST_galaxy;
 
     if ($POST_systemLeft) {
       if ($POST_system < 1) {
@@ -153,8 +130,6 @@ check_urlaubmodus ($user);
 
   $page  = InsertGalaxyScripts ( $CurrentPlanet );
 
-//  $page .= "<body style=\"overflow: hidden;\" onUnload=\"\"><br><br>";
-//  $page .= "<body><br><br>";
   $page .= "<body>";
   $page .= ShowGalaxySelector ( $galaxy, $system );
 

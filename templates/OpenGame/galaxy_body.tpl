@@ -1,14 +1,14 @@
 <script language="JavaScript">
-    function galaxy_submit(value) {
-      document.getElementById('auto').name = value;
-      document.getElementById('galaxy_form').submit();
-    }
+  function galaxy_submit(value) {
+    document.getElementById('auto').name = value;
+    document.getElementById('galaxy_form').submit();
+  }
 
-    function fenster(target_url,win_name) {
-      var new_win = window.open(target_url,win_name,'resizable=yes,scrollbars=yes,menubar=no,toolbar=no,width=640,height=480,top=0,left=0');
-new_win.focus();
-    }
-  </script>
+  function fenster(target_url,win_name) {
+    var new_win = window.open(target_url,win_name,'resizable=yes,scrollbars=yes,menubar=no,toolbar=no,width=640,height=480,top=0,left=0');
+    new_win.focus();
+  }
+</script>
 <script language="JavaScript" src="scripts/tw-sack.js"></script>
 <script type="text/javascript">
 var ajax = new sack();
@@ -221,9 +221,9 @@ function setShips(ship, count) {
          <td class="c" colspan="3">{Galaxy}</td>
         </tr>
         <tr>
-          <td class="l"><input name="galaxyLeft" value="&lt;-" onClick="galaxy_submit('galaxyLeft')" type="button"></td>
-          <td class="l"><input name="galaxy" value="{galaxy}" size="5" maxlength="3" tabindex="1" type="text">
-          </td><td class="l"><input name="galaxyRight" value="-&gt;" onClick="galaxy_submit('galaxyRight')" type="button"></td>
+          <td class="l"><input name="galaxyLeft" value="&lt;-" type="submit"></td>
+          <td class="l"><input name="galaxy" value="{galaxy}" size="5" maxlength="3" tabindex="1" type="text"></td>
+          <td class="l"><input name="galaxyRight" value="-&gt;" type="submit"></td>
         </tr>
        </tbody></table>
       </td>
@@ -233,9 +233,9 @@ function setShips(ship, count) {
          <td class="c" colspan="3">{Solar_system}</td>
         </tr>
          <tr>
-          <td class="l"><input name="systemLeft" value="&lt;-" onClick="galaxy_submit('systemLeft')" type="button"></td>
-          <td class="l"><input name="system" value="{system}" size="5" maxlength="3" tabindex="2" type="text">
-          </td><td class="l"><input name="systemRight" value="-&gt;" onClick="galaxy_submit('systemRight')" type="button"></td>
+          <td class="l"><input name="systemLeft" value="&lt;-" type="submit"></td>
+          <td class="l"><input name="system" value="{system}" size="5" maxlength="3" tabindex="2" type="text"></td>
+          <td class="l"><input name="systemRight" value="-&gt;" type="submit"></td>
          </tr>
         </tbody></table>
        </td>
