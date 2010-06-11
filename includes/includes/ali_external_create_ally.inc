@@ -1,11 +1,6 @@
 <?php
 /* Aca se crean las alianzas... */
-if ($yes) {
-  // Por el momento solo estoy improvisando, luego se perfeccionara el sistema :)
-  // Creo que aqui se realiza una query para comprovar el nombre, y luego le pregunta si es el tag correcto...
-  if (!$POST_tag) {
-    message($lang['have_not_tag'], $lang['make_alliance']);
-  }
+if ($POST_tag) {
   if (!$POST_name) {
     message($lang['have_not_name'], $lang['make_alliance']);
   }
@@ -14,6 +9,12 @@ if ($yes) {
 
   if ($tagquery) {
     message(str_replace('%s', $POST_tag, $lang['always_exist']), $lang['make_alliance']);
+  }
+
+  $tagquery = doquery("SELECT * FROM {{table}} WHERE `ally_name` ='{$POST_name}'", 'alliance', true);
+
+  if ($tagquery) {
+    message(str_replace('%s', $POST_name, $lang['always_exist']), $lang['make_alliance']);
   }
 
   doquery("INSERT INTO {{table}} SET

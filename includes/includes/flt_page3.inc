@@ -5,11 +5,11 @@
 
   // Test de coherance de la destination (voir si elle se trouve dans les limites de l'univers connu
   $errorlist = "";
-  if (!$galaxy || $galaxy > MAX_GALAXY_IN_WORLD || $galaxy < 1)
+  if (!$galaxy || $galaxy > $config->game_maxGalaxy || $galaxy < 1)
     $errorlist .= $lang['fl_limit_galaxy'];
-  if (!$system || $system > MAX_SYSTEM_IN_GALAXY || $system < 1)
+  if (!$system || $system > $config->game_maxSystem || $system < 1)
     $errorlist .= $lang['fl_limit_system'];
-  if (!$planet || $planet < 1 || ($planet > MAX_PLANET_IN_SYSTEM AND $target_mission != MT_EXPLORE ))
+  if (!$planet || $planet < 1 || ($planet > $config->game_maxPlanet AND $target_mission != MT_EXPLORE ))
     $errorlist .= $lang['fl_limit_planet'];
   if ($planetrow['galaxy'] == $galaxy && $planetrow['system'] == $system && $planetrow['planet'] == $planet && $planetrow['planet_type'] == $planet_type)
     $errorlist .= $lang['fl_ownpl_err'];

@@ -26,9 +26,9 @@ if ( defined('INSIDE') ) {
   define('MAX_ATTACK_ROUNDS', 10);
 
   // Definition du monde connu !
-  define('MAX_GALAXY_IN_WORLD'      , 9);
-  define('MAX_SYSTEM_IN_GALAXY'     , 499);
-  define('MAX_PLANET_IN_SYSTEM'     , 15);
+  //define('MAX_GALAXY_IN_WORLD'      , 9);
+  //define('MAX_SYSTEM_IN_GALAXY'     , 499);
+  //define('MAX_PLANET_IN_SYSTEM'     , 15);
   // Nombre de colones pour les rapports d'espionnage
   define('SPY_REPORT_ROW'           , 1);
   // Cases données par niveau de Base Lunaire
@@ -41,7 +41,7 @@ if ( defined('INSIDE') ) {
   define('MAX_FLEET_OR_DEFS_PER_ROW', 2000);
   // Taux de depassement possible dans l'espace de stockage des hangards ...
   // 1.0 pour 100% - 1.1 pour 110% etc ...
-  define('MAX_OVERFLOW'             , 1.00001);
+  define('MAX_OVERFLOW'             , 1);
 
   // Valeurs de bases pour les colonies ou planetes fraichement crées
   define('BASE_STORAGE_SIZE', 500000);

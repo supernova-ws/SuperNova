@@ -182,8 +182,8 @@ if ($_POST) {
     $LastSettedSystemPos  = $game_config['LastSettedSystemPos'];
     $LastSettedPlanetPos  = $game_config['LastSettedPlanetPos'];
     while (!isset($newpos_checked)) {
-      for ($Galaxy = $LastSettedGalaxyPos; $Galaxy <= MAX_GALAXY_IN_WORLD; $Galaxy++) {
-        for ($System = $LastSettedSystemPos; $System <= MAX_SYSTEM_IN_GALAXY; $System++) {
+      for ($Galaxy = $LastSettedGalaxyPos; $Galaxy <= $config->game_maxGalaxy; $Galaxy++) {
+        for ($System = $LastSettedSystemPos; $System <= $config->game_maxSystem; $System++) {
           for ($Posit = $LastSettedPlanetPos; $Posit <= 4; $Posit++) {
             $Planet = round (rand ( 4, 12) );
 
@@ -195,7 +195,7 @@ if ($_POST) {
                 $LastSettedPlanetPos += 1;
                 break;
               case 3:
-                if ($LastSettedSystemPos == MAX_SYSTEM_IN_GALAXY) {
+                if ($LastSettedSystemPos == $config->game_maxSystem) {
                   $LastSettedGalaxyPos += 1;
                   $LastSettedSystemPos  = 1;
                   $LastSettedPlanetPos  = 1;

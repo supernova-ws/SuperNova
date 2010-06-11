@@ -91,14 +91,14 @@ check_urlaubmodus ($user);
         $galaxy = $POST_galaxy - 1;
       }
     } elseif ($POST_galaxyRight) {
-      if ($POST_galaxy      > MAX_GALAXY_IN_WORLD OR
-        $POST_galaxyRight > MAX_GALAXY_IN_WORLD) {
-        $POST_galaxy      = MAX_GALAXY_IN_WORLD;
-        $POST_galaxyRight = MAX_GALAXY_IN_WORLD;
-        $galaxy               = MAX_GALAXY_IN_WORLD;
-      } elseif ($POST_galaxy == MAX_GALAXY_IN_WORLD) {
-        $POST_galaxy      = MAX_GALAXY_IN_WORLD;
-        $galaxy               = MAX_GALAXY_IN_WORLD;
+      if ($POST_galaxy      > $config->game_maxGalaxy OR
+        $POST_galaxyRight > $config->game_maxGalaxy) {
+        $POST_galaxy      = $config->game_maxGalaxy;
+        $POST_galaxyRight = $config->game_maxGalaxy;
+        $galaxy               = $config->game_maxGalaxy;
+      } elseif ($POST_galaxy == $config->game_maxGalaxy) {
+        $POST_galaxy      = $config->game_maxGalaxy;
+        $galaxy               = $config->game_maxGalaxy;
       } else {
         $galaxy = $POST_galaxy + 1;
       }
@@ -117,13 +117,13 @@ check_urlaubmodus ($user);
         $system = $POST_system - 1;
       }
     } elseif ($POST_systemRight) {
-      if ($POST_system      > MAX_SYSTEM_IN_GALAXY OR
-        $POST_systemRight > MAX_SYSTEM_IN_GALAXY) {
-        $POST_system      = MAX_SYSTEM_IN_GALAXY;
-        $system               = MAX_SYSTEM_IN_GALAXY;
-      } elseif ($POST_system == MAX_SYSTEM_IN_GALAXY) {
-        $POST_system      = MAX_SYSTEM_IN_GALAXY;
-        $system               = MAX_SYSTEM_IN_GALAXY;
+      if ($POST_system      > $config->game_maxSystem OR
+        $POST_systemRight > $config->game_maxSystem) {
+        $POST_system      = $config->game_maxSystem;
+        $system               = $config->game_maxSystem;
+      } elseif ($POST_system == $config->game_maxSystem) {
+        $POST_system      = $config->game_maxSystem;
+        $system               = $config->game_maxSystem;
       } else {
         $system = $POST_system + 1;
       }

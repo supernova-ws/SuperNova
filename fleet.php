@@ -75,7 +75,7 @@ if (!$planet_type)
   $planet_type = $planetrow['planet_type'];
 
 $target_mission = max(intval($_GET['target_mission']), intval($_POST['target_mission']));
-if ($planet > MAX_PLANET_IN_SYSTEM)
+if ($planet > $config->game_maxPlanet)
   $target_mission = MT_EXPLORE;
 
 $fleet_group_mr = intval($_POST['fleet_group']);
@@ -95,7 +95,7 @@ if ($galaxy AND $system AND $planet AND $planet_type){
     $UsedPlanet = false;
   };
 
-  if ($planet > MAX_PLANET_IN_SYSTEM) {
+  if ($planet > $config->game_maxPlanet) {
     $missiontype = array(MT_EXPLORE => $lang['type_mission'][MT_EXPLORE]);
   }else{
     $missiontype = array();
@@ -157,7 +157,7 @@ if ($galaxy AND $system AND $planet AND $planet_type){
     };
   };
 
-  if(!$TargetPlanet AND ($planet <= MAX_PLANET_IN_SYSTEM) AND (!isColonizer)){
+  if(!$TargetPlanet AND ($planet <= $config->game_maxPlanet) AND (!isColonizer)){
     message ("<font color=\"red\"><b>". $lang['fl_no_planettype'] ."</b></font>", $lang['fl_error']);
   }
 

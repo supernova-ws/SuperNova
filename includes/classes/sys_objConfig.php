@@ -211,6 +211,9 @@ class classConfig extends classPersistent {
     // Game global settings
     'game_mode' => '0', // 0 - SuperNova, 1 - oGame
     'game_date_withTime' => 'd.m.Y h:i:s',
+    'game_maxGalaxy' => '9',
+    'game_maxPlanet' => '15',
+    'game_maxSystem' => '499',
 
     // Interface - UserBanner
     'int_banner_showInOverview' => 1,
