@@ -100,7 +100,7 @@ td.lm_para {
 
 <table width="130" cellspacing="0" cellpadding="0" style="font-weight: bold;" align="center">
   <tr><td style="border-top: 1px #545454 solid" align="center">
-    <span class="style4">oGame @ Triolan</span>
+    <span class="style4">{servername}</span>
   </td></tr>
 
   <tr><td align="center"><a href="http://games.triolan.ua" target="_blank"><img border="0" src="/images/banners/bannergtu.gif" alt="Games @ Triolan.UA"></font></a></td></tr>
