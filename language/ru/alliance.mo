@@ -57,6 +57,7 @@ $lang['ali_sys_memberName']   = 'Имя';
 $lang['ali_sys_points']       = 'Очки';
 $lang['ali_sys_lastActive']   = 'Активность';
 $lang['ali_sys_totalMembers'] = 'Всего';
+$lang['ali_sys_clear']        = 'Сбросить';
 
 
 $lang['Name']           = 'Название';

@@ -33,7 +33,7 @@
     <tr>
       <th colspan=3>
         <input type="hidden" name="t" value="{t}">
-        <input type="reset"  value="{Reset}">
+        <input type="reset"  value="{ali_sys_clear}">
         <input type="submit" name="isSaveText" value="{Save}">
       </th>
     </tr>
