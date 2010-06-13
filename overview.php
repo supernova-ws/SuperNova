@@ -438,7 +438,7 @@ switch ($mode) {
     } elseif ($ile == 0) {
       $parse['ile']              = "<font color=lightblue>" . $ile . "</font>";
     }
-    $parse['u_user_rank']          = $StatRecord['total_rank'];
+    $parse['u_user_rank']          = intval($StatRecord['total_rank']);
     $parse['user_username']        = $user['username'];
 
     if (count($fpage) > 0) {
