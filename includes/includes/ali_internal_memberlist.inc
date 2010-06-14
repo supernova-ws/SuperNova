@@ -1,7 +1,6 @@
 <?php
-if (!$user_can_kick && $allianceAdminMode) {
+if (!$user_can_kick && $allianceAdminMode)
   message($lang['Denied_access'], $lang['Members_list']);
-}
 
 // Changing rank for single user
 if($id_user && isset($id_rank) && $user_admin){
@@ -75,7 +74,7 @@ while ($userRow = mysql_fetch_array($userList)) {
   $parse['ally_register_time'] = date("Y-m-d h:i:s", $userRow['ally_register_time']);
 
   $last_active = time() - $userRow["onlinetime"];
-  if($allianceAdminMode && ($user_admin)){
+  if($allianceAdminMode && $user_admin){
     $parse["onlineMessage"] = $lang['ali_sys_lastActive'];
     if ( $last_active < 60 ) {
       $tmp = "lime>{$lang['On']}";

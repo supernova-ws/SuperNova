@@ -69,7 +69,7 @@
       break;
     case 'exit':         include('ali_internal_exit.inc'); break;
     case 'memberslist':  include('ali_internal_memberlist.inc'); break;
-    case 'circular':     include('ali_admin_mail.inc'); break;
+    case 'circular':     include('ali_internal_admin_mail.inc'); break;
     default:             include('ali_internal_default.inc'); break;
   }
 ?>

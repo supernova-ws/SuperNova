@@ -1,7 +1,7 @@
 <?php
 
-if (!$user_can_edit_rights) {
-  message($lang['Denied_access'], $lang['Members_list']);
+if (!$user_admin) {
+  message($lang['Denied_access'], $lang['Law_settings']);
 };
 
 if ($newRankName) {
@@ -25,7 +25,7 @@ if (is_array($rankListInput)) {
 
 if ($d && isset($ranks[$d])) {
   if(count($ranks) == 1){
-    message($lang['ali_adm_lastRank'], $lang['Members_list']);
+    message($lang['ali_adm_lastRank'], $lang['Law_settings']);
   }
   array_splice($ranks, $d, 1);
   doquery("UPDATE {{table}} SET `ally_rank_id`=`ally_rank_id` - 1 WHERE `ally_id`={$ally['id']} AND `ally_rank_id` >= {$d}", "users");
