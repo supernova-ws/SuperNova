@@ -32,31 +32,25 @@
      };
   };
 
-  // Everyone can leave alliance at his own!
-  $user_can_exit_alliance = true;
+  if ($ally['ally_owner'] == $user['id'])
+    $isAllyOwner = true;
 
-  // Everyone can view memberlist!
-  $user_can_watch_memberlist = true;
-
-  if ($ranks[$user['ally_rank_id']]['mail'] == 1 || $ally['ally_owner'] == $user['id'])
+  if ($ranks[$user['ally_rank_id']]['mail'] == 1 || $isAllyOwner)
     $user_can_send_mails = true;
-  if ($ranks[$user['ally_rank_id']]['online'] == 1 || $ally['ally_owner'] == $user['id'])
+  if ($ranks[$user['ally_rank_id']]['online'] == 1 || $isAllyOwner)
     $user_onlinestatus = true;
   // Only those who can invite can see applications
-  if ($ranks[$user['ally_rank_id']]['invite'] == 1 || $ally['ally_owner'] == $user['id'])
+  if ($ranks[$user['ally_rank_id']]['invite'] == 1 || $isAllyOwner)
     $user_admin_applications = true;
   $user_can_see_applications = $user_admin_applications;
 
-  if ($ranks[$user['ally_rank_id']]['kick'] == 1 || $ally['ally_owner'] == $user['id'])
+  if ($ranks[$user['ally_rank_id']]['kick'] == 1 || $isAllyOwner)
     $user_can_kick = true;
 
-  if ($ranks[$user['ally_rank_id']]['admin'] == 1 || $ally['ally_owner'] == $user['id']){
+  if ($ranks[$user['ally_rank_id']]['admin'] == 1 || $isAllyOwner){
     $user_can_edit_rights = true;
     $user_admin = true;
   }
-
-  if ($ally['ally_owner'] == $user['id'])
-    $user_can_disband = true;
 
   if (!$ally) {
     doquery("UPDATE {{table}} SET `ally_id` = 0, `ally_name` = '' WHERE `id`='{$user['id']}'", "users");
@@ -75,7 +69,7 @@
       break;
     case 'exit':         include('ali_internal_exit.inc'); break;
     case 'memberslist':  include('ali_internal_memberlist.inc'); break;
-    case 'circular':     include('ali_internal_mail.inc'); break;
+    case 'circular':     include('ali_admin_mail.inc'); break;
     default:             include('ali_internal_default.inc'); break;
   }
 ?>

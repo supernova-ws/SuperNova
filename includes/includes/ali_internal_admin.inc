@@ -1,7 +1,6 @@
 <?php
-if (!$user_admin) {
-  message($lang['Denied_access'], $lang['Send_circular_mail']);
-}
+if (!$user_admin)
+  message($lang['Denied_access'], $lang['ally_admin']);
 
 $lang['dpath'] = $dpath;
 $parse = $lang;
@@ -22,11 +21,6 @@ if ($isSaveOptions) {
   $ally['ally_image'] = $POST_image;
   $ally['ally_request_notallow'] = $POST_request_notallow;
 
-  if ($ally['ally_request_notallow'] != 0 && $ally['ally_request_notallow'] != 1) {
-    message("You at \"Applications\" an option from the form!", "Mistake");
-    exit;
-  }
-
   doquery("UPDATE {{table}} SET
       `ally_name`='{$ally['ally_name']}',
       `ally_tag`='{$ally['ally_tag']}',
@@ -39,6 +33,9 @@ if ($isSaveOptions) {
   $ally[$db_field] = $POST_text;
   doquery("UPDATE {{table}} SET `{$db_field}`='{$POST_text}' WHERE `id`='{$ally['id']}'", "alliance");
 } elseif ($isTransfer && $idNewLeader){
+  if (!$isAllyOwner)
+    message($lang['Denied_access'], $lang['ally_admin']);
+
   $newLeader = doquery("SELECT `ally_id` FROM {{table}} WHERE `id` = '$idNewLeader';", "users", true);
   if($newLeader['ally_id'] == $user['ally_id']){
     doquery("UPDATE {{table}} SET `ally_rank_id`='0' WHERE `id`={$user['id']};", 'users');
@@ -48,9 +45,8 @@ if ($isSaveOptions) {
     exit;
   }
 } elseif ($isDisband && $isConfirmDisband){
-  if (!$user_can_disband) {
-    message($lang['Denied_access'], $lang['Members_list']);
-  }
+  if (!$isAllyOwner)
+    message($lang['Denied_access'], $lang['ally_admin']);
   doquery("DELETE FROM {{table}} WHERE id='{$ally['id']}'", "alliance");
   doquery("UPDATE {{table}} SET `ally_id` = 0, `ally_name` = '', `ally_request` = 0, `ally_rank_id` = 0, `ally_register_time` = 0 WHERE ally_id='{$ally['id']}'", "users");
   header('Location: alliance.php');
@@ -62,6 +58,13 @@ $parse['request_type'] = $lang[$text_type];
 
 $parse['t'] = $allyTextID;
 
+$request = doquery("SELECT COUNT(*) AS request_count FROM {{table}} WHERE `id_ally` ='{$ally['id']}'", 'alliance_requests', true);
+if($request['request_count']){
+  $parse['request_count'] = $lang['ali_req_requestCount'] . ': ' . intval($request['request_count']) . '. ' . $lang['ali_req_check'];
+}else{
+  $parse['request_count'] = $lang['ali_req_emptyList'];
+}
+
 $parse['ally_name'] = $ally['ally_name'];
 $parse['ally_tag'] = $ally['ally_tag'];
 $parse['ally_web'] = $ally['ally_web'];
@@ -69,9 +72,8 @@ $parse['ally_image'] = $ally['ally_image'];
 $parse['ally_request_notallow_0'] = (( $ally['ally_request_notallow']) ? ' SELECTED' : '');
 $parse['ally_request_notallow_1'] = ((!$ally['ally_request_notallow']) ? ' SELECTED' : '');
 $parse['ally_owner_range'] = $ally['ally_owner_range'];
-if($ally['ally_owner'] != $user['id']){
+if($ally['ally_owner'] != $user['id'])
   $parse['hideNotOwner'] = ' style="hide"';
-}
 
 unset($tmp);
 foreach($ranks as $rankID => $rank)
@@ -82,9 +84,8 @@ $tmp = substr($tmp, 0, -4);
 if(!empty($tmp)){
   $userAllyAdmins = doquery("SELECT `id`, `username` FROM {{table}} WHERE ({$tmp}) AND `ally_id` = {$ally['id']};", 'users');
   unset($tmp);
-  while ($userAllyAdmin = mysql_fetch_array($userAllyAdmins)) {
+  while ($userAllyAdmin = mysql_fetch_array($userAllyAdmins))
     $tmp .= "<option value={$userAllyAdmin['id']}>{$userAllyAdmin['username']}</option>";
-  }
 
   $parse['adminMembers'] = $tmp;
 }

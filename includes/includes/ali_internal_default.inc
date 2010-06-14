@@ -3,7 +3,6 @@
 if ($ally['ally_image'])
   $ally['ally_image'] = "<tr><th colspan=2><img src=\"{$ally['ally_image']}\"></th></tr>";
 
-// temporalmente...
 if ($ally['ally_owner'] == $user['id']) {
   $range = ($ally['ally_owner_range'] != '')?$lang['Founder']:$ally['ally_owner_range'];
 } elseif ($user['ally_rank_id'] != 0 && isset($ranks[$user['ally_rank_id']]['name'])) {
@@ -12,11 +11,6 @@ if ($ally['ally_owner'] == $user['id']) {
   $range = $lang['member'];
 }
 
-// Link de la lista de miembros
-if ($user_can_watch_memberlist)
-  $lang['members_list'] = " (<a href=\"?mode=memberslist\">{$lang['Members_list']}</a>)";
-
-// El link de adminstrar la allianza
 if ($user_admin) {
   $lang['alliance_admin'] = "<a href=\"?mode=admin&edit=ally\">{$lang['ally_admin']}</a>";
 } elseif ($user_can_kick){
@@ -24,15 +18,18 @@ if ($user_admin) {
 }
 
 // El link de enviar correo circular
-if ($user_can_send_mails)
-  $lang['send_circular_mail'] = "<tr><th>{$lang['Circular_message']}</th><th><a href=\"?mode=circular\">{$lang['Send_circular_mail']}</a></th></tr>";
+if (!$user_can_send_mails)
+  $lang['isCanMassMail'] = 'class="hide"';
 
 // El link para ver las solicitudes
-$lang['requests'] = '';
-$request = doquery("SELECT id FROM {{table}} WHERE `ally_request` ='{$ally['id']}'", 'users');
-$request_count = mysql_num_rows($request);
-if ($request_count && $user_admin_applications)
-    $lang['requests'] = "<tr><th>{$lang['Requests']}</th><th><a href=\"alliance.php?mode=admin&edit=requests\">{$request_count} {$lang['XRequests']}</a></th></tr>";
+$request = doquery("SELECT COUNT(*) AS request_count FROM {{table}} WHERE `id_ally` ='{$ally['id']}'", 'alliance_requests', true);
+if($request['request_count']){
+  $lang['request_count'] = $lang['ali_req_requestCount'] . ': ' . intval($request['request_count']);
+}else{
+  $lang['request_count'] = $lang['ali_req_emptyList'];
+}
+if (!$user_admin_applications)
+    $lang['isShowRequests'] = 'class="hide"';
 
 if ($ally['ally_owner'] != $user['id']) {
   $lang['ally_owner'] .= MessageForm($lang['Exit_of_this_alliance'], "", "?mode=exit", $lang['Continue']);

@@ -4,19 +4,13 @@
   {ally_image}
   <tr><th>{Name}</th><th>{ally_name}</th></tr>
   <tr><th>{Tag}</th><th>{ally_tag}</th></tr>
-  <tr><th>{Members}</th><th>{ally_members}{members_list}</th></tr>
+  <tr><th>{Members}</th><th>{ally_members} (<a href="?mode=memberslist">{Members_list}</a>)</th></tr>
   <tr><th>{Range}</th><th>{range}</th></tr>
-  {requests}
-  {send_circular_mail}
+  <tr {isShowRequests}><th>{ali_req_check}</th><th><a href="alliance.php?mode=admin&edit=requests">{request_count} {XRequests}</a></th></tr>
+  <tr {isCanMassMail}><th>{Circular_message}</th><th><a href="?mode=circular">{Send_circular_mail}</a></th></tr>
   <tr><th>{Main_Page}</th><th><a href="{ally_web}">{ally_web}</a></th></tr>
   <tr><th colspan=2 height=100>{ally_description}</th></tr>
   <tr><td class=c colspan=2>{Inner_section}</td></tr>
   <tr><th colspan=2 height=100>{ally_text}</th></tr>
-<!--
-    <tr{hideNotOwner}>
-      <th>{ali_disband}&nbsp;&nbsp;&nbsp;<input type="checkbox" name="isConfirmDisband" value="1"></th>
-      <th><input type="submit" name="isDisband" value="{ali_confirm}"></th>
-    </tr>
--->
 </table>
 {ally_owner}
