@@ -17,11 +17,6 @@ $ugamela_root_path = './../';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
-include($ugamela_root_path . 'admin/statfunctions.' . $phpEx);
-
-ini_set('display_errors', 1);
-ini_set('error_reporting', E_ALL ^ E_NOTICE);
-
 if ($user['authlevel'] < 1) {
   AdminMessage ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
   die();
@@ -41,13 +36,6 @@ $(document).ready(function() {
   } );
 });
 </script>';
-/*
-    var result = [
-      "'.$lang['adm_done'].': ",
-      $("runtime", xml).text(),
-      " '.$lang['sys_sec'].'"
-    ];
-*/
 
 AdminMessage ( $script . '<img src=./../images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_stat_title'] );
 ?>

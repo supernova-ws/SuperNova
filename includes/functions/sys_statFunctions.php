@@ -1,7 +1,7 @@
 <?php
 
 /**
- * StatFunctions.php
+ * sys_statFunctions.php
  *
  * @version 2 (c) copyright 2010 by Gorlum for http://supernova.ws
  *   [!] Stats calculation greatly increased to 10x times (and even more in certain configurations)
@@ -12,8 +12,7 @@
  *   [*] Fleet-On-Fly-related calculations now made within one SQL-query for all fleets - not per user
  *   [*] Greatly improved insertions of new Allie's stat by moving all calculation to single query
  *   [*] Greatly improved speed of updating Player's rank by moving every rank update to single query
- * @version 1
- * @copyright 2008 by Chlorel for XNova
+ * StatFunctions.php @version 1 copyright 2008 by Chlorel for XNova
  */
 function GetPlanetPoints ( $CurrentPlanet ) {
   global $resource, $pricelist, $reslist;

@@ -22,6 +22,8 @@ $lang['adm_records']            = "записей обработано";
 $lang['adm_cleaner_title']      = "Чистка очереди построек";
 $lang['adm_cleaned']            = "Кол-во удаленных задач: ";
 
+$lang['adm_schedule_none']      = "В расписании нет задач на сейчас";
+
 $lang['Fix']                    = "Обновлено";
 $lang['Welcome_to_Fix_section'] = "секция патчей";
 $lang['There_is_not_need_fix']  = "Фикс ненужен!";
