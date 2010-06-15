@@ -111,7 +111,7 @@ $lang['sys_hrs_short'] = "ч";
 $lang['sys_min_short'] = "м";
 $lang['sys_sec_short'] = "с";
 
-$lang['copyright'] = '&copy; OGame Triolan 2009-2010 - Отдельные вопросы вы можете задать по адресу';
+$lang['copyright'] = '&copy; SuperNova.WS 2009-2010 - Отдельные вопросы вы можете задать по адресу';
 $lang['TranslationBy'] = '';
 
 $lang['sys_wait'] = 'Запрос выполняется. Пожалуйста, подождите.';
@@ -139,4 +139,19 @@ $lang['sys_resources']       = "Ресурсы";
 
 $lang['sys_reset']           = "Сбросить";
 $lang['sys_send']            = "Отправить";
+$lang['sys_characters']      = "символов";
+$lang['sys_back']            = "Назад";
+$lang['sys_return']          = "Вернуться";
+$lang['sys_delete']          = "Удалить";
+$lang['sys_writeMessage']    = "Написать сообщение";
+$lang['sys_hint']            = "Подсказка";
+
+$lang['sys_alliance']        = "Альянс";
+$lang['sys_player']          = "Игрок";
+$lang['sys_coordinates']     = "Координаты";
+
+$lang['sys_online']          = "Онлайн";
+$lang['sys_offline']         = "Оффлайн";
+$lang['sys_lessThen15min']   = '&lt; 15 м';
+$lang['sys_status']          = "Статус";
 ?>

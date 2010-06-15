@@ -364,4 +364,52 @@ function SYS_mysqlSmartEscape($string) {
 function INT_makeCoordinates ($from, $prefix = ''){
   return '[' . $from[$prefix.'galaxy'] . ':' . $from[$prefix.'system'] . ':' . $from[$prefix.'planet'] . ']';
 }
+
+function int_makeCoordinatesURL ($from, $prefix = '', $mode = 0){
+  return "galaxy.php?mode={$mode}&galaxy={$from[$prefix.'galaxy']}&system={$from[$prefix.'system']}&planet={$from[$prefix.'planet']}";
+}
+
+function int_makeCoordinatesLink ($from, $prefix = '', $mode = 0){
+  return '<a href="' . int_makeCoordinatesURL($from, $prefix, $mode) . '">' . INT_makeCoordinates ($from, $prefix) . '</a>';
+}
+
+function int_renderLastActiveHTML($last_active = 0, $isAllowed = true, $isAdmin = false){
+  global $lang;
+
+  if($isAdmin){
+    if ( $last_active < 60 ) {
+      $tmp = "lime>{$lang['sys_online']}";
+    } elseif ($last_active < 60 * 60) {
+      $last_active = round($last_active / 60);
+      $tmp = "lime>{$last_active} {$lang['sys_min_short']}";
+    } elseif ($last_active < 60 * 60 * 24) {
+      $last_active = round( $last_active / (60 * 60));
+      $tmp = "green>{$last_active} {$lang['sys_hrs_short']}";
+    } else {
+      $last_active = round( $last_active / (60 * 60 * 24));
+      if ($last_active < 7) {
+        $tmp = "yellow";
+      }elseif ($last_active < 30) {
+        $tmp = "orange";
+      }else{
+        $tmp = "red";
+      }
+      $tmp .= ">{$last_active} {$lang['sys_day_short']}";
+    }
+  }else{
+    if($isAllowed){
+      if ( $last_active < 60 * 5 ) {
+        $tmp = "lime>{$lang['sys_online']}";
+      } elseif ($last_active < 60 * 15) {
+        $tmp = "yellow>{$lang['sys_lessThen15min']}";
+      } else {
+        $tmp = "red>{$lang['sys_offline']}";
+      }
+    } else {
+      $tmp = "orange>-";
+    }
+  }
+  return '<font color=' . $tmp . '</font>';
+}
+
 ?>

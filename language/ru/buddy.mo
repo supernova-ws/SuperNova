@@ -1,31 +1,17 @@
 <?php
 
-$lang['Request_sent']				= 'Запрос отправлен';
-$lang['Buddy_request']				= 'Предложение подружиться';
-$lang['A_request_exists_already_for_this_user']	= 'Запрос для данного пользователя уже есть';
-$lang['You_cannot_ask_yourself_for_a_request']	= 'Нельзя себе предложить подружиться';
-$lang['Buddy_list']				= 'Список друзей';
-$lang['There_is_no_request']			= 'Нет запросов';
-$lang['Request_text']				= 'Необходимо ввести текст';
-$lang['characters']				= 'знаков';
-$lang['Back']					= 'Назад';
-$lang['Send']					= 'Отправить';
-$lang['Delete_request']				= 'Удалить запрос';
-$lang['Ok']					= 'Применить';
-$lang['Reject']					= 'Отклонить';
-$lang['Delete']					= 'Удалить';
-$lang['On']					= 'Вкл';
-$lang['15_min']					= '15 мин';
-$lang['Off']					= 'Выкл';
-$lang['Player']					= 'Игрок';
+$lang['bud_sys_cantFriendYourself'] = 'Нельзя предлагать дружбу себе';
+$lang['bud_sys_cantFriendAgain']    = 'Вы уже отправляли предложение подружиться этому пользователю';
+$lang['bud_req_title']              = 'Предложение подружиться';
+$lang['bud_req_toUser']             = 'игроку';
+$lang['bud_listTitle']              = 'Список друзей';
+$lang['bud_req_myTitle']            = 'Мои предложения дружбы';
+$lang['bud_req_toMeTitle']          = 'Предложения дружьбы мне';
+$lang['bud_req_text']               = 'Текст предложения';
+$lang['bud_noFriends']              = 'Список друзей пуст';
+$lang['bud_noMyReqs']               = 'Нет предложений дружбы от меня';
+$lang['bud_noReqsToMe']             = 'Нет предложений дружбы мне';
+$lang['bud_req_accept']             = 'Принять предложение дружбы';
+$lang['bud_hint']                   = 'Послать предложение дружбы можно через пункт меню <a href="search.php">Поиск</a>.<br/>Вы можете видеть статус ваших друзей - находятся ли они онлайн или оффлайн.<br />Однако и ваши друзья могут видеть ваш статус.<br />Учитывайте данный факт перед принятием предложения о дружбе.';
 
-$lang['Name']					= 'Имя';
-$lang['User']					= 'Пользователь';
-$lang['Alliance']				= 'Альянс';
-$lang['Coordinates']				= 'Координаты';
-$lang['Position']				= 'Позиция';
-$lang['Text']					= 'Текст';
-$lang['Requests']				= 'Запросы';
-$lang['My_requests']				= 'Мои запросы';
-$lang['Anothers_requests']			= 'Другие запросы';
 ?>
