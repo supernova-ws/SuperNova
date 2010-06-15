@@ -98,6 +98,8 @@ function GetFleetPointsOnTour ( $CurrentFleet ) {
 }
 
 function SYS_statCalculate(){
+  global $config, $game_config;
+
   $StatDate   = time();
 
   // Statistic rotation
