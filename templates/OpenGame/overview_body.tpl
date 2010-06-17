@@ -170,7 +170,7 @@ jQuery(document).ready(function() {
     // format result
     var result = [ jQuery("message", xml).text() ];
     // output result
-    jQuery("#admin_message").html(result.join("12345"));
+    jQuery("#admin_message").html(result.join(""));
   } );
 });
 </script>
