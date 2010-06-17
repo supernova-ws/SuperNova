@@ -7,7 +7,7 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-function ShowGalaxySelector ( $Galaxy, $System ) {
+function ShowGalaxySelector ( &$Galaxy, &$System ) {
   global $lang, $config;
 
   if ($Galaxy > $config->game_maxGalaxy) {
@@ -30,18 +30,18 @@ function ShowGalaxySelector ( $Galaxy, $System ) {
 
   $Result .= "<table><tbody><tr>";
   $Result .= "<td class=\"c\" colspan=\"3\">". $lang['Galaxy'] ."</td></tr><tr>";
-  $Result .= "<td class=\"l\"><input name=\"galaxyLeft\" value=\"&lt;-\" type=\"submit\"></td>";
+  $Result .= "<td class=\"l\"><input name=\"galaxyLeft\" value=\"&lt;-\" type=\"button\" onClick=\"this.form.galaxy.value--;this.form.submit();\"></td>";
   $Result .= "<td class=\"l\"><input name=\"galaxy\" value=\"". $Galaxy ."\" size=\"5\" maxlength=\"3\" tabindex=\"1\" type=\"text\"></td>";
-  $Result .= "<td class=\"l\"><input name=\"galaxyRight\" value=\"-&gt;\" type=\"submit\"></td>";
+  $Result .= "<td class=\"l\"><input name=\"galaxyRight\" value=\"-&gt;\" type=\"button\" onClick=\"this.form.galaxy.value++;this.form.submit();\"></td>";
   $Result .= "</tr></tbody></table>";
 
   $Result .= "</td><td>";
 
   $Result .= "<table><tbody><tr>";
   $Result .= "<td class=\"c\" colspan=\"3\">". $lang['Solar_system'] ."</td></tr><tr>";
-  $Result .= "<td class=\"l\"><input name=\"systemLeft\" value=\"&lt;-\" type=\"submit\"></td>";
+  $Result .= "<td class=\"l\"><input name=\"systemLeft\" value=\"&lt;-\" type=\"button\" onClick=\"this.form.system.value--;this.form.submit();\"></td>";
   $Result .= "<td class=\"l\"><input name=\"system\" value=\"". $System ."\" size=\"5\" maxlength=\"3\" tabindex=\"2\" type=\"text\"></td>";
-  $Result .= "<td class=\"l\"><input name=\"systemRight\" value=\"-&gt;\" type=\"submit\"></td>";
+  $Result .= "<td class=\"l\"><input name=\"systemRight\" value=\"-&gt;\" type=\"button\" onClick=\"this.form.system.value++;this.form.submit();\"></td>";
   $Result .= "</tr></tbody></table>";
 
   $Result .= "</td>";
