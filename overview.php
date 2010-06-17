@@ -477,17 +477,9 @@ switch ($mode) {
         $CurrBuild  = explode (",", $BuildQueue[0]);
         $RestTime   = $planetrow['b_building'] - time();
         $PlanetID   = $planetrow['id'];
-        $Build  = InsertBuildListScript ( "overview" );
+        $Build  = InsertBuildListScript ( "overview", "build" );
         $Build .= $lang['tech'][$CurrBuild[0]] .' ('. ($CurrBuild[1]) .')';
-        $Build .= "<br /><div id=\"blc\" class=\"z\">". pretty_time( $RestTime ) ."</div>";
-        $Build .= "\n<script language=\"JavaScript\">";
-        $Build .= "\n pp = \"". $RestTime ."\";\n";  // temps necessaire (a compter de maintenant et sans ajouter time() )
-        $Build .= "\n pk = \"". 1 ."\";\n";          // id index (dans la liste de construction)
-        $Build .= "\n pm = \"cancel\";\n";           // mot de controle
-        $Build .= "\n pl = \"". $PlanetID ."\";\n";  // id planete
-        $Build .= "\n t();\n";
-        $Build .= "\n</script>\n";
-
+        $Build .= InsertCounterLaunchScript($RestTime, $PlanetID, "build");
         $parse['building'] = $Build;
       }
     } else {
@@ -499,16 +491,9 @@ switch ($mode) {
       $CurrBuild  = explode (",", $BuildQueue[0]);
       $RestTime   = $planetrow['b_tech'] - time();
       $PlanetID   = $planetrow['id'];
-      $Build  = InsertBuildListScript ( "overview" );
+      $Build  = InsertBuildListScript ( "overview", "tech" );
       $Build .= $lang['tech'][$CurrBuild[0]] .' ';
-      $Build .= "<div id=\"blc\" class=\"z\">". pretty_time( $RestTime ) ."</div>";
-      $Build .= "\n<script language=\"JavaScript\">";
-      $Build .= "\n pp = \"". $RestTime ."\";\n";  // temps necessaire (a compter de maintenant et sans ajouter time() )
-      $Build .= "\n pk = \"". 1 ."\";\n";          // id index (dans la liste de construction)
-      $Build .= "\n pm = \"cancel\";\n";           // mot de controle
-      $Build .= "\n pl = \"". $PlanetID ."\";\n";  // id planete
-      $Build .= "\n t();\n";
-      $Build .= "\n</script>\n";
+      $Build .= InsertCounterLaunchScript($RestTime, $PlanetID, "tech");
 
       $parse['teching'] = $Build;
     } else {
