@@ -47,7 +47,6 @@ function DisplayGameSettingsPage ( $CurrentUser ) {
         $game_config['OverviewExternChat']     = "0";
       }
 
-      pdump($_POST['advGoogleLeftMenuIsOn']);
       $game_config['advGoogleLeftMenuCode'] = mysql_real_escape_string( $_POST['advGoogleLeftMenuCode'] );
       if (isset($_POST['advGoogleLeftMenuIsOn']) && $_POST['advGoogleLeftMenuIsOn'] == 'on') {
         $game_config['advGoogleLeftMenuIsOn'] = "1";

@@ -158,7 +158,7 @@ if($_POST['submit']){
         if(!$value)
           unset($fleet[$tmp][$key]);
     }
-pdump($_POST['attacker']);
+
   // Lets calcualte attack...
   $start = microtime(true);
   $result = calculateAttack($_POST['attacker'], $_POST['defender'], true);
