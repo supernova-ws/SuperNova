@@ -27,7 +27,7 @@ includeLang('buddy');
 
 $userID  = intval(isset($_GET['u']) ? $_GET['u'] : $_POST['u']);
 $buddyID = intval(isset($_GET['buddyID']) ? $_GET['buddyID'] : $_POST['buddyID']);
-$text    = SYS_mysqlSmartEscape(sys_parseBBCode(strip_tags($_POST['text'])));
+$text    = SYS_mysqlSmartEscape(sys_bbcodeParse(strip_tags($_POST['text'])));
 $mode    = SYS_mysqlSmartEscape(isset($_GET['mode']) ? $_GET['mode'] : $_POST['mode']);
 
 if($userID){

@@ -29,9 +29,10 @@ if ($isSaveOptions) {
       `ally_web`='{$ally['ally_web']}',
       `ally_request_notallow`='{$ally['ally_request_notallow']}'
     WHERE `id`='{$ally['id']}'", "alliance");
+  $ally = doquery("SELECT * FROM {{table}} WHERE `id` ='{$user['ally_id']}'", "alliance", true);
 } elseif ($isSaveText) {
-  $ally[$db_field] = $POST_text;
   doquery("UPDATE {{table}} SET `{$db_field}`='{$POST_text}' WHERE `id`='{$ally['id']}'", "alliance");
+  $ally = doquery("SELECT * FROM {{table}} WHERE `id` ='{$user['ally_id']}'", "alliance", true);
 } elseif ($isTransfer && $idNewLeader){
   if (!$isAllyOwner)
     message($lang['Denied_access'], $lang['ally_admin']);

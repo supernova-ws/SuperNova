@@ -1,14 +1,1 @@
-[+] ali_internal.inc
-[+] ali_internal_admin_members.inc
-[+] ali_internal_admin_rights.inc
-[+] ali_internal_admin_allyinfo.inc - NEED TO FINISH TRANSFER
-ali_external.inc
-ali_info.inc
-ali_internal_admin_invite.inc
-ali_internal_default.inc
-ali_internal_exit.inc
-ali_internal_mail.inc
-
 languages/en/alliance.tpl
-
-Добавить поиск на страницу члена альянса

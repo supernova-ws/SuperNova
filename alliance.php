@@ -30,7 +30,7 @@ $POST_web = SYS_mysqlSmartEscape($_POST['web']);
 $POST_image = SYS_mysqlSmartEscape($_POST['image']);
 $POST_request_notallow = intval($_POST['request_notallow']);
 $POST_owner_range = SYS_mysqlSmartEscape($_POST['owner_range']);
-$POST_text = SYS_mysqlSmartEscape(sys_parseBBCode(strip_tags($_POST['text'])));
+$POST_text = SYS_mysqlSmartEscape(strip_tags($_POST['text']));
 
 $rankListInput = $_POST['u'];
 
