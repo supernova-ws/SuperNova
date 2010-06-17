@@ -28,7 +28,7 @@ $script = '
 <script type="text/javascript">
 $(document).ready(function() {
   // send requests
-  $.post("/scheduler.php", {rating: $(this).html()}, function(xml) {
+  $.post("../scheduler.php", {rating: $(this).html()}, function(xml) {
     // format result
     var result = [ $("message", xml).text() ];
     // output result

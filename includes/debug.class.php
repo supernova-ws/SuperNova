@@ -76,7 +76,7 @@ class debug
     die();
   }
 
-  function warning($message,$title,$log_type = 0)
+  function warning($message, $title = "System Message", $log_type = 0)
   {
     global $link, $game_config;
 

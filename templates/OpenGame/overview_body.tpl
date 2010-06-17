@@ -1,3 +1,6 @@
+<script type="text/javascript"> 
+  jQuery.noConflict(); 
+</script> 
 <script language="JavaScript" type="text/javascript" src="scripts/mootools.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/slide.js"></script>
 <style type="text/css">
@@ -157,7 +160,20 @@
 <br />
 {ClickBanner}{ClickUserbar}</center>
 <!-- anda flytmeny delen -->
-{copyright} {admin_email}.
+{copyright} {admin_email}.<div id="admin_message"></div>
 </table></div>
+
+<script type="text/javascript">
+jQuery(document).ready(function() {
+  // send requests
+  jQuery.post("../scheduler.php", {rating: jQuery(this).html()}, function(xml) {
+    // format result
+    var result = [ jQuery("message", xml).text() ];
+    // output result
+    jQuery("#admin_message").html(result.join("12345"));
+  } );
+});
+</script>
+
 </body>
 </html>

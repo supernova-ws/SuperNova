@@ -16,7 +16,7 @@ if($nextStatUpdate>$config->var_stats_lastUpdated){
   }else{
     $msg = "scheduler. Config->var_stats_lastUpdated = " . date(DATE_TIME, $config->var_stats_lastUpdated) . ", nextStatUpdate = " . date(DATE_TIME, $nextStatUpdate);
   };
-  $debug->warning("Stat update", "Running stat updates: " . $msg, 999);
+  $debug->warning("Running stat updates: " . $msg, "Stat update", 999);
 
   $config->var_stats_lastUpdated = $nextStatUpdate;
   $totaltime = microtime(true);
@@ -24,12 +24,16 @@ if($nextStatUpdate>$config->var_stats_lastUpdated){
   $totaltime = microtime(true) - $totaltime;
 
   $msg = $lang['adm_done'] . ': ' . $totaltime . ' ' . $lang['sys_sec'];
+  $debug->warning("Stat update complete: " . $msg, "Stat update", 999);
 }else{
-  $msg = $lang['adm_schedule_none'];
+//  $msg = $lang['adm_schedule_none'];
 }
-$msg = iconv('CP1251', 'UTF-8', $msg);
-$xml = "<ratings><message>" . $msg . "</message></ratings>";
 
-header('Content-type: text/xml');
-echo $xml;
+if($msg){
+  $msg = iconv('CP1251', 'UTF-8', $msg);
+  $xml = "<ratings><message>" . $msg . "</message></ratings>";
+
+  header('Content-type: text/xml');
+  echo $xml;
+}
 ?>
