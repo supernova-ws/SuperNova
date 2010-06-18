@@ -326,3 +326,36 @@ h1
   width                : 98%;
   text-align           : right;
 }
+
+.allymember {
+  color: lime;
+}
+
+.noob {
+  color: #a0ffa0;
+}
+
+.strong {
+  color: #ffa0a0;
+}
+
+.vacation {
+  color: skyblue;
+}
+
+.inactive {
+  color: CCCCCC;
+}
+
+.longinactive {
+  color: 999999;
+}
+
+.banned {
+  text-decoration: line-through;
+}
+
+.admin {
+  text-decoration: blink;
+  color: lime;
+}

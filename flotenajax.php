@@ -248,6 +248,9 @@ $POST_thisplanettype = intval($_POST['thisplanettype']);
                 }
         }
 
+        if($UserDeuterium<$consumption)
+          die();
+
         $QryInsertFleet  = "INSERT INTO {{table}} SET ";
         $QryInsertFleet .= "`fleet_owner` = '". $user['id'] ."', ";
         $QryInsertFleet .= "`fleet_mission` = '". intval($POST_mission) ."', ";

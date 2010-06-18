@@ -27,20 +27,10 @@ function GalaxyRowActions ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowPlayer, $Gal
           if ($System <= $SystemLimitMax) {
             if ($System >= $SystemLimitMin) {
               $MissileBtn = true;
-//            } else {
-//              $MissileBtn = false;
             }
-//          } else {
-//            $MissileBtn = false;
           }
-//        } else {
-//          $MissileBtn = false;
         }
-//      } else {
-//        $MissileBtn = false;
       }
-//    } else {
-//      $MissileBtn = false;
     }
 
     if ($GalaxyRowPlayer && $GalaxyRowPlanet["destruyed"] == 0) {

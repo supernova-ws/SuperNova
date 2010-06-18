@@ -1,5 +1,15 @@
 <?php
 
+$lang['user_level0'] = $lang['user_level'][0];
+$lang['user_level1'] = $lang['user_level'][1];
+$lang['user_level2'] = $lang['user_level'][2];
+$lang['user_level3'] = $lang['user_level'][3];
+
+$lang['user_level0_shortcut'] = $lang['user_level0'][0];
+$lang['user_level1_shortcut'] = $lang['user_level1'][0];
+$lang['user_level2_shortcut'] = $lang['user_level2'][0];
+$lang['user_level3_shortcut'] = $lang['user_level3'][0];
+
 $lang['Galaxy']			= 'Галактика';
 $lang['Solar_system']		= 'Солнечная система';
 $lang['Afficher']		= "Просмотр";

@@ -1,29 +1,34 @@
-.allymember { 
+.allymember {
   color: lime;
 }
 
-.noob { 
+.noob {
   color: #a0ffa0;
 }
 
-.strong { 
+.strong {
   color: #ffa0a0;
 }
 
-.vacation { 
+.vacation {
   color: skyblue;
 }
 
-.inactive { 
+.inactive {
   color: CCCCCC;
 }
 
-.longinactive { 
+.longinactive {
   color: 999999;
 }
 
 .banned {
   text-decoration: line-through;
+}
+
+.admin {
+  text-decoration: blink;
+  color: lime;
 }
 
 .flight {
@@ -34,8 +39,8 @@
 
 .holding {
 }
-  
-*.ownattack { 
+
+*.ownattack {
   color: lime;
 }
 
@@ -43,172 +48,172 @@
   color: #E6EBFB;
 }
 
-*.owncolony { 
+*.owncolony {
   color: lime;
 }
 
-.flight .owncolony a { 
+.flight .owncolony a {
   color: #E6EBFB;
 }
 
-*.owndeploy { 
+*.owndeploy {
   color: lime;
 }
 
-.flight .owndeploy a { 
+.flight .owndeploy a {
   color: #E6EBFB;
 }
 
-*.owndestroy { 
+*.owndestroy {
   color: gold;
 }
 
-.flight .owndestroy a { 
+.flight .owndestroy a {
   color: #E6EBFB;
 }
 
-*.ownespionage { 
+*.ownespionage {
   color: orange;
 }
 
-.flight .ownespionage a { 
+.flight .ownespionage a {
   color: #E6EBFB;
 }
 
-*.ownfederation { 
+*.ownfederation {
   color: 33CC00;
 }
 
-.flight .ownfederation a { 
+.flight .ownfederation a {
   color: #E6EBFB;
 }
 
-*.ownharvest { 
+*.ownharvest {
   color: lime;
 }
 
-.flight .ownharvest a { 
+.flight .ownharvest a {
   color: #E6EBFB;
 }
 
-*.ownhold { 
+*.ownhold {
   color: #80a0C0;
 }
 
-.flight .ownhold a { 
+.flight .ownhold a {
   color: #E6EBFB;
 }
 
-*.ownmissile { 
+*.ownmissile {
   color: orange;
 }
 
-.flight .ownmissile a { 
+.flight .ownmissile a {
   color: #E6EBFB;
 }
 
-*.owntransport { 
+*.owntransport {
   color: lime;
 }
 
-.flight .owntransport a { 
+.flight .owntransport a {
   color: #E6EBFB;
 }
 
-*.attack { 
+*.attack {
   color: red;
 }
 
-.flight .attack a { 
+.flight .attack a {
   color: #E6EBFB;
 }
 
-*.colony { 
+*.colony {
   color: lime;
 }
 
-.flight .colony a { 
+.flight .colony a {
   color: #E6EBFB;
 }
 
-*.deploy { 
+*.deploy {
   color: lime;
 }
 
-.flight .deploy a { 
+.flight .deploy a {
   color: #E6EBFB;
 }
 
-*.destroy { 
+*.destroy {
   color: gold;
 }
 
-.flight .destroy a { 
+.flight .destroy a {
   color: #E6EBFB;
 }
 
-*.espionage { 
+*.espionage {
   color: red;
 }
 
-.flight .espionage a { 
+.flight .espionage a {
   color: #E6EBFB;
 }
 
-*.federation {  
+*.federation {
   color: CC0000;
 }
 
-.flight .federation a { 
+.flight .federation a {
   color: #E6EBFB;
 }
 
-*.harvest {  
+*.harvest {
   color: lime;
 }
 
-.flight .harvest a { 
+.flight .harvest a {
   color: #E6EBFB;
 }
 
-*.hold { 
+*.hold {
   color: #80a0C0;
 }
 
-.flight .hold a { 
+.flight .hold a {
   color: #E6EBFB;
 }
 
-*.missile { 
+*.missile {
   color: red;
 }
 
 
-*.transport {  
+*.transport {
   color: lime;
 }
 
-.flight .transport a { 
+.flight .transport a {
   color: #E6EBFB;
 }
 
-.success { 
+.success {
   color: lime;
 }
 
 .errormessage a {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
-.error { 
+.error {
   color: red;
 }
 
-.warning { 
+.warning {
   color: orange;
 }
 
-.notice { 
+.notice {
   color: yellow;
 }
 
@@ -220,8 +225,6 @@
   color: orange;
 }
 
-.timeremaining {  
+.timeremaining {
   color: orange;
 }
-
-
