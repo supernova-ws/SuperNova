@@ -170,7 +170,7 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   // $Menu = ShowLeftMenu ( $AdminPage );
   if ($isDisplayMenu && $IsUserChecked){ //
 //    $DisplayPage .= "<div style=\"position: fixed; top: 0px; left: 0px; width: 190px; align: center;\">";
-    $DisplayPage .= "<div style=\"float:left; width: 190px; align: center;\">";
+    $DisplayPage .= "<div style=\"float:left; width: 190px; text-align: center;\">";
 //    $DisplayPage .= "<td width=190 valign=top>";
     $DisplayPage .= ShowLeftMenu ( $AdminPage );
 //    $DisplayPage .= "</td>";

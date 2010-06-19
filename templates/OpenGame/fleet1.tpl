@@ -75,17 +75,12 @@ function getStorageFaktor() {
   <th>{fl_max_load}</th>
   <th><div id="storage">-</div></th>
   </tr>
-
-  <tr height="20">
-  <th>Debug</th>
-  <th><div id="debug">-</div></th>
-  </tr>
-
+  <tr height="20"><th colspan="2"><input type="submit" value="{fl_continue}" /></th></tr>
 
 <!--
   <tr height=20><td class=c>{fl_shortcut}</td><td class=c style="align: right;"><div style="floating: left"><a href=fleetshortcut.php>{fl_shortlnk}</a></div></td></tr>
 -->
-  <tr height=20><td colspan=2 class=c><div style="float: left;">{fl_shortcut}&nbsp;</div><a href=fleetshortcut.php>{fl_shortlnk}</a></td></tr>
+  <tr height=20><td colspan=2 class=c><div class="fl">{fl_shortcut}</div><a href=fleetshortcut.php class="fr">{fl_shortlnk}</a></td></tr>
   {shortcuts}
   <tr height="20" style="{DisplayNoShortcuts}"><th colspan="2">{fl_noshortc}</th></tr>
 
@@ -101,7 +96,10 @@ function getStorageFaktor() {
   </tr>
   {acss}
   
-  <tr height="20"><th colspan="2"><input type="submit" value="{fl_continue}" /></th></tr>
+  </table>
+  <table width="519" border="0" cellpadding="0" cellspacing="1">
+    <tr><td class="c">{sys_hint}</td></tr>
+    <tr><th><div class="hint">{fl_AKS_hint}</div></th></tr>
   </table>
   </div></center>
   <input type="hidden" name="maxepedition" value="{maxepedition}" />

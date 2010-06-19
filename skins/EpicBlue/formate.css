@@ -16,9 +16,9 @@
                                   ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 */
 
-., #, td, th, textarea, body, table
+*, td, th, textarea, body, table
 {
-  font-family : Tahoma,sans-serif;
+  font-family : Tahoma, sans-serif;
   font-size : 11px;
 }
 
@@ -322,7 +322,7 @@ h1
 {
   font-size            : 11px;
   font-family          : Tahoma,sans-serif;
-  border-bottom        : 0px #344566; solid;
+  border-bottom        : 0px #344566 solid;
   width                : 98%;
   text-align           : right;
 }
@@ -358,4 +358,8 @@ h1
 .admin {
   text-decoration: blink;
   color: lime;
+}
+
+.hint {
+  text-align: justify;
 }

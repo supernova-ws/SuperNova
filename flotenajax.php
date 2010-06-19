@@ -249,7 +249,7 @@ $POST_thisplanettype = intval($_POST['thisplanettype']);
         }
 
         if($UserDeuterium<$consumption)
-          die();
+          die( $lang['fl_no_deuterium'] . $UserDeuterium - $consumption );
 
         $QryInsertFleet  = "INSERT INTO {{table}} SET ";
         $QryInsertFleet .= "`fleet_owner` = '". $user['id'] ."', ";

@@ -174,7 +174,7 @@ function consumption() {
   consumption = Math.round(consumption) + 1;
 
   //  document.write(values);
-  document.getElementById("debug").innerHTML = consumption;
+  // document.getElementById("debug").innerHTML = consumption;
 
 
   return(consumption);
