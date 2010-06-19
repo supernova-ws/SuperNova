@@ -61,91 +61,57 @@ $GET_planet       = intval($_GET['planet']);
 
   // Imperatif, dans quel mode suis-je (pour savoir dans quel etat j'ere)
 
-  if ($mode == 0) {
-    // On vient du menu
-    // Y a pas de parametres de passé
-    // On met ce qu'il faut pour commencer là ou l'on se trouve
-
-    $galaxy        = $CurrentPlanet['galaxy'];
-    $system        = $CurrentPlanet['system'];
-    $planet        = $CurrentPlanet['planet'];
-  } elseif ($mode == 1) {
+  if ($mode == 1) {
     if ($POST_galaxyLeft) {
       $POST_galaxy--;
-      if ($POST_galaxy < 1) {
-        $POST_galaxy     = 1;
-      }
+      if ($POST_galaxy < 1)
+        $POST_galaxy = 1;
     } elseif ($POST_galaxyRight) {
       $POST_galaxy++;
-      if ($POST_galaxy > $config->game_maxGalaxy){
+      if ($POST_galaxy > $config->game_maxGalaxy)
         $POST_galaxy = $config->game_maxGalaxy;
-      }
     }
     $galaxy = $POST_galaxy;
 
     if ($POST_systemLeft) {
-      if ($POST_system < 1) {
+      $POST_system--;
+      if ($POST_system < 1)
         $POST_system = 1;
-        $system          = 1;
-      } elseif ($POST_system == 1) {
-        $POST_system = 1;
-        $system          = 1;
-      } else {
-        $system = $POST_system - 1;
-      }
-    } elseif ($POST_systemRight) {
-      if ($POST_system      > $config->game_maxSystem OR
-        $POST_systemRight > $config->game_maxSystem) {
-        $POST_system      = $config->game_maxSystem;
-        $system               = $config->game_maxSystem;
-      } elseif ($POST_system == $config->game_maxSystem) {
-        $POST_system      = $config->game_maxSystem;
-        $system               = $config->game_maxSystem;
-      } else {
-        $system = $POST_system + 1;
-      }
-    } else {
       $system = $POST_system;
+    } elseif ($POST_systemRight) {
+      $POST_system++;
+      if ($POST_system > $config->game_maxSystem)
+        $POST_system = $config->game_maxSystem;
     }
+    $system = $POST_system;
   } elseif ($mode == 2) {
-    // Mais c'est qu'il mordrait !
-    // A t'on idée de vouloir lancer des MIP sur ce pauvre bonhomme !!
-
     $galaxy        = $GET_galaxy;
     $system        = $GET_system;
     $planet        = $GET_planet;
   } elseif ($mode == 3) {
-    // Appel depuis un menu avec uniquement galaxy et system de passé !
     $galaxy        = $GET_galaxy;
     $system        = $GET_system;
   } else {
-    // Si j'arrive ici ...
-    // C'est qu'il y a vraiment eu un bug
-    $galaxy        = 1;
-    $system        = 1;
+    $galaxy = $CurrentPlanet['galaxy'];
+    $system = $CurrentPlanet['system'];
+    $planet = $CurrentPlanet['planet'];
   }
 
   $planetcount = 0;
   $lunacount   = 0;
 
-  $page  = InsertGalaxyScripts ( $CurrentPlanet );
+  $parse = $lang;
+  $parse['scripts']  = InsertGalaxyScripts ( $CurrentPlanet );
+  $parse['selector'] = ShowGalaxySelector ( $galaxy, $system );
 
-  $page .= "<body>";
-  $page .= ShowGalaxySelector ( $galaxy, $system );
+  if ($mode == 2)
+    $parse['selectorMI'] = ShowGalaxyMISelector ( $galaxy, $system, $planet, $CurrentPlanetID, $CurrentMIP );
 
-  if ($mode == 2) {
-    $page .= ShowGalaxyMISelector ( $galaxy, $system, $planet, $CurrentPlanetID, $CurrentMIP );
-  }
+  $parse['titles'] = ShowGalaxyTitles ( $galaxy, $system );
+  $parse['rows']   = ShowGalaxyRows   ( $galaxy, $system );
+  $parse['footer'] = ShowGalaxyFooter ( $galaxy, $system,  $CurrentMIP, $CurrentRC, $CurrentSP);
 
-  $page .= "<table width=569><tbody>";
-
-  $page .= ShowGalaxyTitles ( $galaxy, $system );
-    $page .= ShowGalaxyRows   ( $galaxy, $system );
-    $page .= ShowGalaxyFooter ( $galaxy, $system,  $CurrentMIP, $CurrentRC, $CurrentSP);
-
-  $page .= "</tbody></table></div>";
-
-  display ($page, $lang[''], true, '', false);
+  display (parsetemplate(gettemplate('gal_main'), $parse), $lang['sys_universe'], true, '', false);
 
 // -----------------------------------------------------------------------------------------------------------
 // History version

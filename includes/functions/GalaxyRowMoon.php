@@ -83,7 +83,6 @@ function GalaxyRowMoon ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Galaxy, 
     $Result .= "</th>";
     $Result .= "</tr>";
     $Result .= "</table>\"";
-//        $Result .= ", STICKY, MOUSEOFF, DELAY, ". ($user["settings_tooltiptime"] * 1000) .", CENTER, OFFSETX, -40, OFFSETY, -40 );'";
     $Result .= ", STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -40 );'";
     $Result .= " onmouseout='return nd();'>";
     $Result .= "<img src=". $dpath ."planeten/small/s_mond.jpg height=22 width=22>";

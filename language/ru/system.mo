@@ -154,4 +154,6 @@ $lang['sys_online']          = "Онлайн";
 $lang['sys_offline']         = "Оффлайн";
 $lang['sys_lessThen15min']   = '&lt; 15 м';
 $lang['sys_status']          = "Статус";
+
+$lang['sys_universe']        = "Вселенная";
 ?>

@@ -116,7 +116,7 @@ td.lm_para {
   <tr><td><a href="overview.php"><span class="lm_overview">{Overview}</span></a></td></tr>
   <tr><td><a href="resources.php" accesskey="r">{Resources}</a></td></tr>
   <tr><td><a href="fleet.php" accesskey="t"><span class="lm_fleet">{Fleet}</span></a></td></tr>
-  <tr><td><a href="galaxy.php?mode=0" accesskey="s"><span class="lm_galaxy">{Galaxy}</span></a></td></tr>
+  <tr><td><a href="galaxy.php?mode=0" accesskey="s"><span class="lm_galaxy">{sys_universe}</span></a></td></tr>
   <tr><td><a href="officier.php" accesskey="o">{Officiers}</a></td></tr>
   <tr><td><a href="rinok.php" accesskey="m">{rinok}</a></td></tr>
 <!--  <tr><td><a href="market.php" accesskey="m">{rinok}</a></td></tr> -->

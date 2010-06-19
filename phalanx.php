@@ -25,6 +25,28 @@ includeLang('resources');
 includeLang('overview');
 includeLang("galaxy");
 
+function secureNumericGet(){
+  if(!$_GET) return false;
+
+  foreach($_GET as $name => $value){
+    if(secureNumeric($value) == false){
+      unset($_GET[$name]);
+    }
+  }
+  return;
+}
+
+function secureNumeric($value){
+  if(!$value) return false;
+/*
+  if(ereg("[0-9]", $value) === false){
+    return false;
+  }
+  return true;
+*/
+  return is_numeric($value);
+}
+
   secureNumericGet();
 
   $g  = intval($_GET["galaxy"]);
