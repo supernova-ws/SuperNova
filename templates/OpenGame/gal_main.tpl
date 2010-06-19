@@ -217,3 +217,8 @@ function showAlly(id){
     <table style="font-weight: bold" width="100%" id="fleetstatustable"></table>
   </th></tr>
 </tbody></table>
+<br>
+  <table width="519" border="0" cellpadding="0" cellspacing="1">
+    <tr><td class="c">{sys_hint}</td></tr>
+    <tr><th><div class="hint">{gal_sys_hint}</div></th></tr>
+  </table>
