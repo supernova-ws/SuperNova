@@ -6,7 +6,7 @@
 <tr><td width=220>{Pendent_user}</td><td><span class=banned>{banned_shortcut}</span></td></tr>\
 <tr><td width=220>{Inactive_7_days}</td><td><span class=inactive>{inactif_7_shortcut}</span></td></tr>\
 <tr><td width=220>{Inactive_28_days}</td><td><span class=longinactive>{inactif_28_shortcut}</span></td></tr>\
-<tr {isShowAdmin}><td width=220>{user_level3}</td><td><span class=admin>{user_level3_shortcut}</span></td></tr>\
-<tr {isShowAdmin}><td width=220>{user_level2}</td><td><span class=admin>{user_level2_shortcut}</span></td></tr>\
-<tr {isShowAdmin}><td width=220>{user_level1}</td><td><span class=admin>{user_level1_shortcut}</span></td></tr>\
+<tr {isShowAdmin}><td width=220>{L_user_level[3]}</td><td><span class=admin>{L_user_level_shortcut[3]}</span></td></tr>\
+<tr {isShowAdmin}><td width=220>{L_user_level[2]}</td><td><span class=admin>{L_user_level_shortcut[2]}</span></td></tr>\
+<tr {isShowAdmin}><td width=220>{L_user_level[1]}</td><td><span class=admin>{L_user_level_shortcut[1]}</span></td></tr>\
 </table>", STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -150, OFFSETY, -150 );'>{Legend}</a>

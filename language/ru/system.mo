@@ -7,6 +7,9 @@ $lang['user_level'] = array (
 	'3' => 'Администратор',
 );
 
+foreach($lang['user_level'] as $ID => $levelName)
+  $lang['user_level_shortcut'][$ID] = $levelName[0];
+
 $lang['sys_first_round_crash_1']	= 'Контакт с атакованным флотом потерян.';
 $lang['sys_first_round_crash_2']	= 'Это означает что он был уничтожен в первом раунде боя.';
 
@@ -156,4 +159,5 @@ $lang['sys_lessThen15min']   = '&lt; 15 м';
 $lang['sys_status']          = "Статус";
 
 $lang['sys_universe']        = "Вселенная";
+$lang['sys_goto']            = "Перейти";
 ?>

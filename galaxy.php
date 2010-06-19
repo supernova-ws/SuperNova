@@ -24,9 +24,9 @@ if ($IsUserChecked == false) {
 
 $mode             = intval($_GET['mode']);
 $CurrentPlanetID  = intval($_GET['current']);
-$POST_galaxy      = intval($_POST["galaxy"]);
-$POST_system      = intval($_POST["system"]);
-$POST_planet      = intval($_POST["planet"]);
+$galaxy           = intval($_POST["galaxy"]);
+$system           = intval($_POST["system"]);
+$planet           = intval($_POST["planet"]);
 $POST_galaxyLeft  = SYS_mysqlSmartEscape($_POST["galaxyLeft"]);
 $POST_galaxyRight = SYS_mysqlSmartEscape($_POST["galaxyRight"]);
 $POST_systemLeft  = SYS_mysqlSmartEscape($_POST["systemLeft"]);
@@ -46,8 +46,6 @@ $GET_planet       = intval($_GET['planet']);
   $fleetmax      = GetMaxFleets($user);
   $CurrentPlID   = $CurrentPlanet['id'];
   $CurrentMIP    = $CurrentPlanet['interplanetary_misil'];
-  $CurrentRC     = $CurrentPlanet['recycler'];
-  $CurrentSP     = $CurrentPlanet['spy_sonde'];
   $HavePhalanx   = $CurrentPlanet['phalanx'];
   $CurrentSystem = $CurrentPlanet['system'];
   $CurrentGalaxy = $CurrentPlanet['galaxy'];
@@ -62,54 +60,59 @@ $GET_planet       = intval($_GET['planet']);
   // Imperatif, dans quel mode suis-je (pour savoir dans quel etat j'ere)
 
   if ($mode == 1) {
-    if ($POST_galaxyLeft) {
-      $POST_galaxy--;
-      if ($POST_galaxy < 1)
-        $POST_galaxy = 1;
-    } elseif ($POST_galaxyRight) {
-      $POST_galaxy++;
-      if ($POST_galaxy > $config->game_maxGalaxy)
-        $POST_galaxy = $config->game_maxGalaxy;
-    }
-    $galaxy = $POST_galaxy;
+    if ($POST_galaxyLeft)
+      $galaxy--;
+    elseif ($POST_galaxyRight)
+      $galaxy++;
 
-    if ($POST_systemLeft) {
-      $POST_system--;
-      if ($POST_system < 1)
-        $POST_system = 1;
-      $system = $POST_system;
-    } elseif ($POST_systemRight) {
-      $POST_system++;
-      if ($POST_system > $config->game_maxSystem)
-        $POST_system = $config->game_maxSystem;
-    }
-    $system = $POST_system;
-  } elseif ($mode == 2) {
-    $galaxy        = $GET_galaxy;
-    $system        = $GET_system;
-    $planet        = $GET_planet;
-  } elseif ($mode == 3) {
-    $galaxy        = $GET_galaxy;
-    $system        = $GET_system;
+    if ($POST_systemLeft)
+      $system--;
+    elseif ($POST_systemRight)
+      $system++;
+  } elseif ($mode == 2 || $mode == 3) {
+    $galaxy = $GET_galaxy;
+    $system = $GET_system;
+    $planet = $GET_planet;
   } else {
     $galaxy = $CurrentPlanet['galaxy'];
     $system = $CurrentPlanet['system'];
     $planet = $CurrentPlanet['planet'];
   }
 
+  if ($galaxy < 1) $galaxy = 1;
+  if ($galaxy > $config->game_maxGalaxy) $galaxy = $config->game_maxGalaxy;
+  if ($system < 1) $system = 1;
+  if ($system > $config->game_maxSystem) $system = $config->game_maxSystem;
+  if ($planet < 1) $planet = 1;
+  if ($planet > $config->game_maxPlanet + 1) $planet = $config->game_maxPlanet + 1;
+
   $planetcount = 0;
   $lunacount   = 0;
 
   $parse = $lang;
-  $parse['scripts']  = InsertGalaxyScripts ( $CurrentPlanet );
-  $parse['selector'] = ShowGalaxySelector ( $galaxy, $system );
+  $parse['curPlanetG']  = $CurrentPlanet["galaxy"];
+  $parse['curPlanetS']  = $CurrentPlanet["system"];
+  $parse['curPlanetP']  = $CurrentPlanet["planet"];
+  $parse['curPlanetPT'] = $CurrentPlanet["planet_type"];
 
-  if ($mode == 2)
-    $parse['selectorMI'] = ShowGalaxyMISelector ( $galaxy, $system, $planet, $CurrentPlanetID, $CurrentMIP );
+  $parse['galaxy'] = $galaxy;
+  $parse['system'] = $system;
+  $parse['planet'] = $planet;
 
-  $parse['titles'] = ShowGalaxyTitles ( $galaxy, $system );
+  $parse['curPlanetID'] = $CurrentPlanetID;
+  $parse['MIPs']        = $CurrentMIP;
+  if ($mode != 2)
+    $parse['isShowMISelector'] = 'class="hide"';
+
   $parse['rows']   = ShowGalaxyRows   ( $galaxy, $system );
-  $parse['footer'] = ShowGalaxyFooter ( $galaxy, $system,  $CurrentMIP, $CurrentRC, $CurrentSP);
+
+  $parse['planets']     = $planetcount ? ($lang['gal_planets'] . $planetcount) : $lang['gal_planetNone'];
+  $parse['RCs']         = pretty_number($CurrentPlanet['recycler']);
+  $parse['SPs']         = pretty_number($CurrentPlanet['spy_sonde']);
+  if(!SHOW_ADMIN)
+    $parse['isShowAdmin'] = 'class=hide';
+  $parse['fleet_count'] = $maxfleet_count;
+  $parse['fleet_max']   = $fleetmax;
 
   display (parsetemplate(gettemplate('gal_main'), $parse), $lang['sys_universe'], true, '', false);
 

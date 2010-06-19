@@ -1,18 +1,12 @@
 <?php
-
-$lang['user_level0'] = $lang['user_level'][0];
-$lang['user_level1'] = $lang['user_level'][1];
-$lang['user_level2'] = $lang['user_level'][2];
-$lang['user_level3'] = $lang['user_level'][3];
-
-$lang['user_level0_shortcut'] = $lang['user_level0'][0];
-$lang['user_level1_shortcut'] = $lang['user_level1'][0];
-$lang['user_level2_shortcut'] = $lang['user_level2'][0];
-$lang['user_level3_shortcut'] = $lang['user_level3'][0];
-
+/*
+$lang['user_level_shortcut'][0] = $lang['user_level'][0][0];
+$lang['user_level_shortcut'][1] = $lang['user_level'][1][0];
+$lang['user_level_shortcut'][2] = $lang['user_level'][2][0];
+$lang['user_level_shortcut'][3] = $lang['user_level'][3][0];
+*/
 $lang['Galaxy']			= 'Галактика';
 $lang['Solar_system']		= 'Солнечная система';
-$lang['Afficher']		= "Просмотр";
 $lang['Show']			= 'Показать';
 $lang['vacation_shortcut']	= "U";
 $lang['banned_shortcut']	= "G";
@@ -76,13 +70,15 @@ $lang['gm_all'] 						= "Всё";
 $lang['gm_launch'] 						= "Начать ракетную атаку на";
 $lang['gm_send'] 						= "Отправить";
 $lang['gm_target'] 						= "Цель:";
-$lang['gm_restmi'] 						= "Количество ракет (<b>%d</b> на складе):";
+$lang['gal_mis_toLaunch'] 				= "Количество ракет ";
+$lang['gal_mis_rest'] 						= "Ракет: ";
+$lang['gal_mis_launch'] 						= "ПУСК";
 $lang['gl_espionner']						= "Шпионаж";
 $lang['gl_mipattack'] 						= "Межпланетная атака";
 $lang['gl_shortcut'] 						= "Добавить в закладки";
 $lang['gl_with'] 						= "с";
 $lang['gl_membre'] 						= "членами";
-$lang['gl_ally_internal'] 					= "Инфо альянса";
+$lang['gl_ally_internal'] 					= "Инфо&nbsp;альянса";
 $lang['gl_ally_web'] 						= "Сайт альянса";
 $lang['gl_sendmess'] 						= "Послать сообщение";
 $lang['gl_buddy'] 						= "Список друзей";
@@ -114,7 +110,11 @@ $lang['gs_sending']						= "отправлен";
 $lang['gs_to'] 							= "по координатам";
 $lang['Sending'] 						= 'Отправить';
 
-$lang['gf_cntmone'] 						= "заселённые планеты";
+
+$lang['gal_planets']							= "Планет заселено: ";
+$lang['gal_planetNone']						= "Нет заселенных планет";
+
+$lang['gf_cntmone'] 							= "заселённые планеты";
 $lang['gf_cntmnone'] 						= "Нет заселённых планет.";
 $lang['gf_cntmsome'] 						= "заселённые планеты.";
 $lang['gf_mi_title'] 						= "межпланетных ракет";
@@ -128,6 +128,7 @@ $lang['phalanx_noflotes'] = "Нет флотов в полете";
 $lang['phalanx_nodeuterium'] = "Нехватает Дейтерия для работы Сенсорной фаланги.";
 $lang['phalanx_onlyformoons'] = "Эта постройка доступна только для Луны.";
 $lang['phalanx_nosensoravailable'] = "У Вас нет Сенсорной фаланги.";
-$lang['phalanx_rangeerror'] = "Нехватает уровня Сенсорной фаланги!";
+$lang['phalanx_rangeerror'] = "Не хватает уровня Сенсорной фаланги!";
 
+$lang['gal_sys_members']      = 'Участников:&nbsp;';
 ?>
