@@ -248,8 +248,11 @@ $POST_thisplanettype = intval($_POST['thisplanettype']);
                 }
         }
 
-        if($UserDeuterium<$consumption)
-          die( $lang['fl_no_deuterium'] . $UserDeuterium - $consumption );
+        if($UserDeuterium<$consumption){
+          $ResultMessage = "613;".$lang['gs_c613']."|".$CurrentFlyingFleets." ".$UserSpyProbes." ".$UserRecycles." ".$UserMissiles;
+          die ( $ResultMessage );
+//          die( $lang['fl_no_deuterium'] . $UserDeuterium - $consumption );
+        }
 
         $QryInsertFleet  = "INSERT INTO {{table}} SET ";
         $QryInsertFleet .= "`fleet_owner` = '". $user['id'] ."', ";
@@ -273,7 +276,7 @@ $POST_thisplanettype = intval($_POST['thisplanettype']);
         $UserDeuterium   -= $consumption;
         $QryUpdatePlanet  = "UPDATE {{table}} SET ";
         $QryUpdatePlanet .= $FleetSubQRY;
-        $QryUpdatePlanet .= "`deuterium` = '".$UserDeuterium."' " ;
+        $QryUpdatePlanet .= "`deuterium` = `deuterium` - {$consumption} " ;
         $QryUpdatePlanet .= "WHERE ";
         $QryUpdatePlanet .= "`id` = '". $planetrow['id'] ."';";
         doquery( $QryUpdatePlanet, 'planets');

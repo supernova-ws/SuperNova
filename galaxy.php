@@ -99,6 +99,8 @@ $GET_planet       = intval($_GET['planet']);
   $parse['system'] = $system;
   $parse['planet'] = $planet;
 
+  $CurrentRC = $CurrentPlanet['recycler'];
+
   $parse['curPlanetID'] = $CurrentPlanetID;
   $parse['MIPs']        = $CurrentMIP;
   if ($mode != 2)

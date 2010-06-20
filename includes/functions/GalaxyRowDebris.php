@@ -55,7 +55,7 @@ function GalaxyRowDebris ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Galaxy
       $Result .= "<td class=c colspan=2>".$lang['gl_action']."</td>";
       $Result .= "</tr><tr>";
       $Result .= "<th colspan=2 align=left>";
-      $Result .= "<a href= # onclick=&#039javascript:doit (8, ".$Galaxy.", ".$System.", ".$Planet.", ".$PlanetType.", ".$RecSended.");&#039 >". $lang['type_mission'][8] ."</a>";
+      $Result .= "<a href=# onclick=&#039javascript:doit (8, ".$Galaxy.", ".$System.", ".$Planet.", ".$PlanetType.", ".$RecSended.");&#039 >". $lang['type_mission'][8] ."</a>";
       $Result .= "</tr>";
       $Result .= "</table>";
       $Result .= "</th>";
