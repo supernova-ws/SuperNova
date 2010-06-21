@@ -31,7 +31,6 @@ function ShowGalaxyRows ($Galaxy, $System) {
           $GalaxyRowUser = $cached['users'][$GalaxyRowPlanet["id_owner"]];
         else{
           $GalaxyRowUser = doquery("SELECT * FROM {{table}} WHERE `id` = '". $GalaxyRowPlanet["id_owner"] ."';", 'users', true);
-          $cached['users'][$GalaxyRowPlanet["id_owner"]] = $GalaxyRowUser;
         }
       }
 
@@ -78,61 +77,55 @@ function ShowGalaxyRows ($Galaxy, $System) {
       } elseif ($RowUserLevel < $CurrentPoints AND $config->noobprotection AND $RowUserPoints < $config->noobprotectiontime * 1000 ) {
         $Systemtatus2 = "<span class=\"noob\">".$lang['weak_player_shortcut']."</span>";
         $Systemtatus  = "<span class=\"noob\">";
-      } elseif ($RowUserPoints > $CurrentLevel AND
-            $config->noobprotection AND
-            $config->noobprotectiontime * 1000 > $CurrentPoints) {
+      } elseif ($RowUserPoints > $CurrentLevel AND $config->noobprotection AND $config->noobprotectiontime * 1000 > $CurrentPoints) {
         $Systemtatus2 = $lang['strong_player_shortcut'];
         $Systemtatus  = "<span class=\"strong\">";
       } else {
         $Systemtatus2 = "";
         $Systemtatus  = "";
       }
-      $Systemtatus4 = $User2Points['total_rank'];
-      if ($Systemtatus2 != '') {
+
+      if ($Systemtatus2) {
         $Systemtatus6 = "<font color=\"white\">(</font>";
         $Systemtatus7 = "<font color=\"white\">)</font>";
-      }
-      if ($Systemtatus2 == '') {
+      } else {
         $Systemtatus6 = "";
         $Systemtatus7 = "";
       }
+
       $admin = "";
       if(SHOW_ADMIN && $GalaxyRowUser['authlevel']) {
         $admin = "<font color=\"lime\"><blink>{$lang['user_level_shortcut'][$GalaxyRowUser['authlevel']]}</blink></font>";
       }
-      $Systemtart = $User2Points['total_rank'];
-      if (strlen($Systemtart) < 3) {
-        $Systemtart = 1;
-      } else {
-        $Systemtart = (floor( $User2Points['total_rank'] / 100 ) * 100) + 1;
-      }
-      $ResultUser .= "<a style=\"cursor: pointer;\"";
-      $ResultUser .= " onmouseover='return overlib(\"";
-      $ResultUser .= "<table width=190>";
-      $ResultUser .= "<tr>";
-      $ResultUser .= "<td class=c colspan=2>".$lang['Player']." ".$GalaxyRowUser['username']." ".$lang['Place']." ".$Systemtatus4."</td>";
-      $ResultUser .= "</tr><tr>";
       if ($GalaxyRowUser['id'] != $user['id']) {
-        $ResultUser .= "<td><a href=messages.php?mode=write&id=".$GalaxyRowUser['id'].">".$lang['gl_sendmess']."</a></td>";
-        $ResultUser .= "</tr><tr>";
-        $ResultUser .= "<td><a href=buddy.php?a=2&u=".$GalaxyRowUser['id'].">".$lang['gl_buddyreq']."</a></td>";
-        $ResultUser .= "</tr><tr>";
+        $parse['isShowUserOther'] = '';
+        $GalaxyRowUser['isShowUserOther'] = 1;
+      } else {
+        $parse['isShowUserOther'] = 'class="hide"';
+        $GalaxyRowUser['isShowUserOther'] = 0;
       }
-      $ResultUser .= "<td><a href=stat.php?who=player&start=".$Systemtart.">".$lang['gl_stats']."</a></td>";
-      $ResultUser .= "</tr>";
-      $ResultUser .= "</table>\"";
-      $ResultUser .= ", STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -40 );'";
-      $ResultUser .= " onmouseout='return nd();'>";
+      $GalaxyRowUser['rank'] = intval($User2Points['total_rank']);
 
-      $ResultUser .= $Systemtatus . $GalaxyRowUser["username"]."</span>";
+      $ResultUser .= $Systemtatus . $GalaxyRowUser['username']."</span>";
       $ResultUser .= $Systemtatus6;
       $ResultUser .= $Systemtatus;
       $ResultUser .= $Systemtatus2;
       $ResultUser .= $Systemtatus7." ".$admin;
-      $ResultUser .= "</span></a>";
+      $ResultUser .= "</span>";
+
+      $parse['isShowUser'] = '';
+      $parse['username'] = $GalaxyRowUser['username'];
+      $parse['id'] = $GalaxyRowUser['id'];
+      $parse['rank'] = $GalaxyRowUser['rank'];
+      $cached['users'][$GalaxyRowUser['id']] = $GalaxyRowUser;
+    }else{
+      $parse['isShowUser'] = 'class="hide"';
+      $parse['username'] = '';
+      $parse['id'] = '';
+      $parse['rank'] = '';
     }
 
-    $parse['rowUser']       = $ResultUser;
+    $parse['rowUser']   = $ResultUser;
 
     $ResultAlly = '';
     $parse['isShowAlly'] = ' class="hide"';
@@ -163,15 +156,11 @@ function ShowGalaxyRows ($Galaxy, $System) {
 
   $Result .= '<script type="text/javascript" language="JavaScript">';
   foreach($cached['users'] as $PlanetUser){
+    $Result .= "users[{$PlanetUser['id']}] = new Array('{$PlanetUser['username']}','{$PlanetUser['rank']}','{$PlanetUser['isShowUserOther']}','{$PlanetUser['id']}');";
   }
 
   foreach($cached['allies'] as $PlanetAlly){
     $Result .= "allies[{$PlanetAlly['id']}] = new Array('{$PlanetAlly['ally_web']}','{$PlanetAlly['ally_name']}','{$PlanetAlly['ally_members']}');";
-
-// 0 - ally_web
-// 1 - ally_name
-// 2 - ally_members
-
   }
   $Result .= '</script>';
 

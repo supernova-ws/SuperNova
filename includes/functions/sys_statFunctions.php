@@ -218,8 +218,8 @@ function SYS_statCalculate(){
 
   // Counting real user count and updating values
   $userCount = doquery ( "SELECT COUNT(*) FROM {{table}}", 'users', true);
-  $game_config['users_amount'] = $userCount;
-  $config->users_amount = $userCount;
+  $game_config['users_amount'] = $userCount[0];
+  $config->users_amount = $userCount[0];
   doquery( "UPDATE {{table}} SET `config_value`='". $userCount[0] ."' WHERE `config_name` = 'users_amount';", 'config' );
 
 //  doquery("COMMIT", 'users');

@@ -90,6 +90,7 @@ $GET_planet       = intval($_GET['planet']);
   $lunacount   = 0;
 
   $parse = $lang;
+  $parse['userCount']   = $config->users_amount;
   $parse['curPlanetG']  = $CurrentPlanet["galaxy"];
   $parse['curPlanetS']  = $CurrentPlanet["system"];
   $parse['curPlanetP']  = $CurrentPlanet["planet"];

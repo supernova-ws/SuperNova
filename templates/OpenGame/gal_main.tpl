@@ -1,4 +1,5 @@
 <script language="JavaScript" src="scripts/tw-sack.js"></script>
+<script language="JavaScript" type="text/javascript" src="js/galaxy.js"></script>
 
 <script language="JavaScript" type="text/javascript">
 function galaxy_submit(value) {
@@ -89,6 +90,34 @@ function setShips(ship, count) {
   var e = document.getElementById(ship);
   e.innerHTML = count;
 }
+
+var allies = new Array();
+function showAlly(id){
+  var result = "<table><tr><td class=c><center>{L_Alliance}&nbsp;" + \
+    allies[id][1] + "<br>{L_gal_sys_members}" +  allies[id][2] + "</center></td></tr>" + \
+    "<tr><th><a href=alliance.php?mode=ainfo&a=" + id + ">{L_gl_ally_internal}</a></th></tr>" + \
+    "<tr><th><a href=stat.php?start=1&who=ally>{L_gl_stats}</a></th>";
+  if (allies[id][0]) {
+    result = result + "</tr><tr><th><a href=" + allies[id][0] + " target=_new>{L_gl_ally_web}</th>";
+  }
+  result = result + "</tr></table>";
+
+  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -40);
+}
+
+var users = new Array();
+function showUser(id){
+  var result = "<table width=190><tr><td class=c><center>{L_sys_player}&nbsp;" + \
+    users[id][0] + "<br>{L_Place}&nbsp;" + users[id][1] + "/{userCount}</center></td></tr>";
+
+  if (users[id][2]) {
+    result = result + "<tr><th><a href=messages.php?mode=write&id=" + users[id][3] + ">{L_gl_sendmess}</a></th></tr>";
+    result = result + "<tr><th><a href=buddy.php?a=2&u=" + users[id][3] + ">{L_gl_buddyreq}</a></th></tr>";
+  }
+  result = result + "<tr><th><a href=stat.php?who=player&start=" + users[id][1] + ">{L_gl_stats}</a></th></tr></table>";
+
+  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -40);
+}
 </script>
 
 <br />
@@ -148,7 +177,8 @@ function setShips(ship, count) {
 
 <table width=569><tbody>
   <tr><td class=c colspan=8><span class="fl">{L_Solar_system} [{galaxy}:{system}] - {planets}</span>
-    <span class="fr"><a href=# style="cursor: pointer;" onmouseout='return nd();' onmouseover='return overlib("<table width=240>\
+    <span class="fr"><a href=# style="cursor: pointer;" onmouseout='return nd();' onmouseover='return overlib("\
+    <table width=240>\
     <tr><td class=c colspan=2>{Legend}</td></tr>\
     <tr><td width=220>{L_Strong_player}</td><td><span class=strong>{strong_player_shortcut}</span></td></tr>\
     <tr><td width=220>{L_Weak_player}</td><td><span class=noob>{weak_player_shortcut}</span></td></tr>\
@@ -172,28 +202,6 @@ function setShips(ship, count) {
     <td class=c>{L_Alliance}</td>
     <td class=c>{L_Actions}</td>
   </tr>
-  
-<!--
-// 0 - ally_web
-// 1 - ally_name
-// 2 - ally_members
--->
-
-<script type="text/javascript" language="JavaScript">
-var allies = new Array();
-function showAlly(id){
-  var result = "<table><tr><td class=c><center>{L_Alliance}&nbsp;" + \
-    allies[id][1] + "<br> {L_gal_sys_members}" +  allies[id][2] + "</center></td></tr>" + \
-    "<tr><th><a href=alliance.php?mode=ainfo&a=" + id + ">{L_gl_ally_internal}</a></th></tr>" + \
-    "<tr><th><a href=stat.php?start=1&who=ally>{L_gl_stats}</a></th>";
-  if (allies[0]) {
-    result = result + "</tr><tr><th><a href=" + allies[id][0] + " target=_new>{L_gl_ally_web}</th>";
-  }
-  result = result + "</tr></table>";
-
-  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -40);
-}
-</script>
 
   {rows}
 
