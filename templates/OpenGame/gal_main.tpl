@@ -1,7 +1,7 @@
 <script language="JavaScript" src="scripts/tw-sack.js"></script>
-<script language="JavaScript" type="text/javascript" src="js/galaxy.js"></script>
 
-<script language="JavaScript" type="text/javascript">
+<script type="text/javascript">
+<!--
 function galaxy_submit(value) {
   document.getElementById('auto').name = value;
   document.getElementById('galaxy_form').submit();
@@ -91,24 +91,30 @@ function setShips(ship, count) {
   e.innerHTML = count;
 }
 
+// --> </script>
+
+<script type="text/javascript"> <!--
 var allies = new Array();
+
 function showAlly(id){
-  var result = "<table><tr><td class=c><center>{L_Alliance}&nbsp;" + \
-    allies[id][1] + "<br>{L_gal_sys_members}" +  allies[id][2] + "</center></td></tr>" + \
-    "<tr><th><a href=alliance.php?mode=ainfo&a=" + id + ">{L_gl_ally_internal}</a></th></tr>" + \
-    "<tr><th><a href=stat.php?start=1&who=ally>{L_gl_stats}</a></th>";
+  var result = "<table><tr><td class=c><center>{L_Alliance}&nbsp;";
+  result = result + allies[id][1] + "<br>{L_gal_sys_members}" +  allies[id][2] + "</center></td></tr>";
+  result = result + "<tr><th><a href=alliance.php?mode=ainfo&a=" + id + ">{L_gl_ally_internal}</a></th></tr>";
+  result = result + "<tr><th><a href=stat.php?start=1&who=ally>{L_gl_stats}</a></th></tr>";
   if (allies[id][0]) {
-    result = result + "</tr><tr><th><a href=" + allies[id][0] + " target=_new>{L_gl_ally_web}</th>";
+    result = result + "<tr><th><a href=" + allies[id][0] + " target=_new>{L_gl_ally_web}</th></tr>";
   }
-  result = result + "</tr></table>";
+  result = result + "</table>";
 
-  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -40);
+  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -10, OFFSETY, -10);
 }
+// --> </script>
 
+<script type="text/javascript"> <!--
 var users = new Array();
+
 function showUser(id){
-  var result = "<table width=190><tr><td class=c><center>{L_sys_player}&nbsp;" + \
-    users[id][0] + "<br>{L_Place}&nbsp;" + users[id][1] + "/{userCount}</center></td></tr>";
+  var result = "<table width=190><tr><td class=c><center>{L_sys_player}&nbsp;" + users[id][0] + "<br>{L_Place}&nbsp;" + users[id][1] + "/{userCount}</center></td></tr>";
 
   if (users[id][2]) {
     result = result + "<tr><th><a href=messages.php?mode=write&id=" + users[id][3] + ">{L_gl_sendmess}</a></th></tr>";
@@ -118,7 +124,8 @@ function showUser(id){
 
   return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -40);
 }
-</script>
+
+// --> </script>
 
 <br />
 <form action="galaxy.php?mode=1" method="post" id="galaxy_form"><table border="0"><tbody>
@@ -226,7 +233,7 @@ function showUser(id){
   </th></tr>
 </tbody></table>
 <br>
-  <table width="519" border="0" cellpadding="0" cellspacing="1">
-    <tr><td class="c">{sys_hint}</td></tr>
-    <tr><th><div class="hint">{gal_sys_hint}</div></th></tr>
-  </table>
+<table width="519">
+  <tr><td class="c">{sys_hint}</td></tr>
+  <tr><th><div class="hint">{gal_sys_hint}</div></th></tr>
+</table>

@@ -8,7 +8,7 @@
  */
 
 function ShowGalaxyRows ($Galaxy, $System) {
-  global $lang, $planetcount, $CurrentRC, $dpath, $user, $config;
+  global $lang, $planetcount, $CurrentRC, $dpath, $user, $config, $parse;
 
   $Result = "";
   for ($Planet = 1; $Planet < 16; $Planet++) {
@@ -51,7 +51,7 @@ function ShowGalaxyRows ($Galaxy, $System) {
 
 
     $ResultUser  = '';
-    if ($GalaxyRowUser && !$GalaxyRowPlanet["destruyed"]) {
+    if ($GalaxyRowUser['id'] && !$GalaxyRowPlanet["destruyed"]) {
       $UserPoints    = doquery("SELECT * FROM `{{table}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."'", 'statpoints', true);
       $User2Points   = doquery("SELECT * FROM `{{table}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $GalaxyRowUser['id'] ."'", 'statpoints', true);
       $CurrentPoints = $UserPoints['total_points'];
@@ -118,6 +118,7 @@ function ShowGalaxyRows ($Galaxy, $System) {
       $parse['id'] = $GalaxyRowUser['id'];
       $parse['rank'] = $GalaxyRowUser['rank'];
       $cached['users'][$GalaxyRowUser['id']] = $GalaxyRowUser;
+      $ResultUser = "<a style=\"cursor: pointer;\" onmouseover='javascript:showUser({$GalaxyRowUser['id']});' onmouseout='return nd();'>{$ResultUser}</a>";
     }else{
       $parse['isShowUser'] = 'class="hide"';
       $parse['username'] = '';
@@ -129,6 +130,7 @@ function ShowGalaxyRows ($Galaxy, $System) {
 
     $ResultAlly = '';
     $parse['isShowAlly'] = ' class="hide"';
+    $parse['rowAlly'] = '';
     if ($GalaxyRowUser['ally_id']) {
 
       if($cached['allies'][$GalaxyRowUser['ally_id']])
@@ -147,6 +149,7 @@ function ShowGalaxyRows ($Galaxy, $System) {
           $parse['ally_class'] = "allymember";
 
         $parse['isShowAlly'] = '';
+        $parse['rowAlly'] = "<a style=\"cursor: pointer;\" onmouseover='javascript:showAlly({$allyquery['id']});' onmouseout='return nd();'><span class=\"{$parse['ally_class']}\">{$allyquery['ally_tag']}</span></a>";
       }
     }
 
@@ -154,7 +157,7 @@ function ShowGalaxyRows ($Galaxy, $System) {
     $Result .= parsetemplate(gettemplate('gal_main_row'), $parse);
   }
 
-  $Result .= '<script type="text/javascript" language="JavaScript">';
+  $Result .= "<script LANGUAGE='JavaScript'>";
   foreach($cached['users'] as $PlanetUser){
     $Result .= "users[{$PlanetUser['id']}] = new Array('{$PlanetUser['username']}','{$PlanetUser['rank']}','{$PlanetUser['isShowUserOther']}','{$PlanetUser['id']}');";
   }
