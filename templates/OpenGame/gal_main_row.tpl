@@ -10,12 +10,8 @@
 {rowDebris}
 
 
-<th width=150 align=center><div style="line-height: 1em; height: 1em"><span {isShowUser}>
-  <a style="cursor: pointer;" onmouseover='javascript:showUser({id});' onmouseout='return nd();'>{rowUser}</a>
-</span></div></th>
+<th width=150 align=center><div style="line-height: 1em; height: 1em">{rowUser}</div></th>
 
-<th width=80><div style="line-height: 1em; height: 1em">
-  <a style="cursor: pointer;" onmouseover='javascript:showAlly({ally_id});' onmouseout='return nd();' {isShowAlly}><span class="{ally_class}">{ally_tag}</span></a>
-</div></th>
+<th width=80><div style="line-height: 1em; height: 1em">{rowAlly}</div></th>
 {rowActions}
 </tr>
