@@ -26,6 +26,8 @@ V0000
     Переписаны запросы. Скорость работы возросла  в  несколько  раз.  Добавлена
     возможность  автоматического  обновления  (настройка  пока   только   через
     конфиг-файл). Автоматическое обновление статистики по расписанию через AJAX
+[!] Движок/Интерфейс: Добавлен движок рендеринга темплейтов от  phpBB3.  Движок
+    доработан до обратной совместимости с темплейтами XNova
 
 [+] Админка/Баннерилка: Полностью переписан код. Добавлена возможность включить
     РО при бане. При разбане режим РО остается, но разрешается  из  него  выйти
@@ -132,9 +134,6 @@ V?
 [?] Интерфейс: credit.php
 [?] Интерфейс: darkmatter.php - templatize!
 [?] Интерфейс: changelog.php - add changelogs
-[?] using phpBB3 standalone template engine from
-    http://www.phpbb.com/community/viewtopic.php?f=71&t=1557455
-    http://wiki.phpbb.com/display/MODDOCS/Tutorial.Template+syntax
 [?] using phpBB3 for everything (^_^) - custom page
     http://www.phpbb.com/kb/article/add-a-new-custom-page-to-phpbb/
     looks like updated version of upper page:
