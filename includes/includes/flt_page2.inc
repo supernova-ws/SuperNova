@@ -77,7 +77,7 @@
   $parse['maxepedition'] = intval($_POST['maxepedition']) ;
   $parse['curepedition'] = intval($_POST['curepedition']) ;
   $parse['fleet_group'] = intval($_POST['fleet_group']) ;
-  $parse['acs_target_mr'] = intval($_POST['acs_target_mr']) ;
+  $parse['acs_target_mr'] = ($_POST['acs_target_mr']) ;
   $parse['usedfleet'] = $_POST["usedfleet"];
 
   $page = parsetemplate(gettemplate('fleet2'), $parse);
