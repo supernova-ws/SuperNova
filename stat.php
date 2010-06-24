@@ -127,6 +127,7 @@ check_urlaubmodus ($user);
         $parse['ally_name'] = $AllyRow['ally_name'];
       }
 //      $parse['ally_name']       = $AllyRow['ally_name'];
+      $parse['ally_id']         = $AllyRow['id'];
       $parse['ally_mes']        = '';
       $parse['ally_members']    = $AllyRow['ally_members'];
       $parse['ally_points']     = pretty_number( $StatRow[ $Order ] );
