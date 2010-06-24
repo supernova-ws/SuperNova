@@ -104,20 +104,19 @@ $GET_planet       = intval($_GET['planet']);
 
   $parse['curPlanetID'] = $CurrentPlanetID;
   $parse['MIPs']        = $CurrentMIP;
-  if ($mode != 2)
-    $parse['isShowMISelector'] = 'class="hide"';
+  if ($mode == 2)
+    $parse['IS_SHOW_MI_SELECTOR'] = true;
 
   $parse['rows']   = ShowGalaxyRows   ( $galaxy, $system );
 
   $parse['planets']     = $planetcount ? ($lang['gal_planets'] . $planetcount) : $lang['gal_planetNone'];
   $parse['RCs']         = pretty_number($CurrentPlanet['recycler']);
   $parse['SPs']         = pretty_number($CurrentPlanet['spy_sonde']);
-  if(!SHOW_ADMIN)
-    $parse['isShowAdmin'] = 'class=hide';
+  $parse['SHOW_ADMIN']  = SHOW_ADMIN;
   $parse['fleet_count'] = $maxfleet_count;
   $parse['fleet_max']   = $fleetmax;
 
-  display (parsetemplate(gettemplate('gal_main'), $parse), $lang['sys_universe'], true, '', false);
+  display (parsetemplate(gettemplate('gal_main', true), $parse), $lang['sys_universe'], true, '', false);
 
 // -----------------------------------------------------------------------------------------------------------
 // History version

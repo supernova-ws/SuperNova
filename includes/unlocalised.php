@@ -197,22 +197,6 @@ function SaveToFile ($filename, $content) {
   $content = @file_put_contents ($filename, $content);
 }
 
-function parsetemplate ($template, $array) {
-  global $lang;
-
-  $template = preg_replace('#\{L_([a-z0-9\-_]*?)\[([a-z0-9\-_]*?)\]\}#Ssie', '( ( isset($lang[\'\1\'][\'\2\']) ) ? $lang[\'\1\'][\'\2\'] : \'\' );', $template);
-  $template = preg_replace('#\{L_([a-z0-9\-_]*?)\}#Ssie', '( ( isset($lang[\'\1\']) ) ? $lang[\'\1\'] : \'\' );', $template);
-  return preg_replace('#\{([a-z0-9\-_]*?)\}#Ssie', '( ( isset($array[\'\1\']) ) ? $array[\'\1\'] : \'\' );', $template);
-}
-
-function gettemplate ($templatename) {
-  global $ugamela_root_path;
-
-  $filename = $ugamela_root_path . TEMPLATE_DIR . TEMPLATE_NAME . '/' . $templatename . ".tpl";
-
-  return ReadFromFile($filename);
-}
-
 // ----------------------------------------------------------------------------------------------------------------
 //
 // Gestion de la localisation des chaines

@@ -198,8 +198,14 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
     }
     $DisplayPage .= ShowTopNavigationBar( $user, $planetrow );
   }
+  echo $DisplayPage;
 
-  $DisplayPage .= $page;
+  if(is_object($page))
+    displayP($page);
+  else
+    echo $page;
+
+  $DisplayPage = '';
 
   // Affichage du Debug si necessaire
   if ($user['authlevel'] == 1 || $user['authlevel'] == 3) {
@@ -207,11 +213,6 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   }
 
   $DisplayPage .= '</center></div>';
-
-//  $DisplayPage .= '</td>';
-
-//  $DisplayPage .= '</tr></table>';
-
   $DisplayPage .= StdFooter();
 
   echo $DisplayPage;

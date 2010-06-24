@@ -155,7 +155,8 @@ function showUser(id){
   </tr>
 </tbody></table></form>
 
-<form action="raketenangriff.php?c={curPlanetID}&mode=2&galaxy={galaxy}&system={system}&planet={planet}" method=POST><table border=0 {isShowMISelector}>
+<!-- IF IS_SHOW_MI_SELECTOR -->
+<form action="raketenangriff.php?c={curPlanetID}&mode=2&galaxy={galaxy}&system={system}&planet={planet}" method=POST><table border=0>
   <tr>
     <td class=c colspan=3>
        <span class="fl">{L_gm_launch} [{galaxy}:{system}:{planet}]</span>
@@ -181,7 +182,7 @@ function showUser(id){
     <th class=c><input type=submit name=aktion value={L_gal_mis_launch}></th>
   </tr>
 </table></form>
-
+<!-- ENDIF -->
 <table width=569><tbody>
   <tr><td class=c colspan=8><span class="fl">{L_Solar_system} [{galaxy}:{system}] - {planets}</span>
     <span class="fr"><a href=# style="cursor: pointer;" onmouseout='return nd();' onmouseover='return overlib("\
@@ -193,9 +194,9 @@ function showUser(id){
     <tr><td width=220>{L_Pendent_user}</td><td><span class=banned>{banned_shortcut}</span></td></tr>\
     <tr><td width=220>{L_Inactive_7_days}</td><td><span class=inactive>{inactif_7_shortcut}</span></td></tr>\
     <tr><td width=220>{L_Inactive_28_days}</td><td><span class=longinactive>{inactif_28_shortcut}</span></td></tr>\
-    <tr {isShowAdmin}><td width=220>{L_user_level[3]}</td><td><span class=admin>{L_user_level_shortcut[3]}</span></td></tr>\
+    <!-- IF SHOW_ADMIN --><tr {isShowAdmin}><td width=220>{L_user_level[3]}</td><td><span class=admin>{L_user_level_shortcut[3]}</span></td></tr>\
     <tr {isShowAdmin}><td width=220>{L_user_level[2]}</td><td><span class=admin>{L_user_level_shortcut[2]}</span></td></tr>\
-    <tr {isShowAdmin}><td width=220>{L_user_level[1]}</td><td><span class=admin>{L_user_level_shortcut[1]}</span></td></tr>\
+    <tr {isShowAdmin}><td width=220>{L_user_level[1]}</td><td><span class=admin>{L_user_level_shortcut[1]}</span></td></tr><!-- ENDIF -->\
     </table>", STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -150, OFFSETY, -150 );'>{Legend}</a>
     </span></td>
   </tr>

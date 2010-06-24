@@ -6,6 +6,9 @@ phpBB3/
 forum/
 xcache-admin/
 
+# Ignore cache folder
+cache/
+
 # Ignore backup folder
 admin/backup/
 admin/sxd/backup/
