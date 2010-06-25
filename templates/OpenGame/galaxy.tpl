@@ -1,7 +1,6 @@
 <script language="JavaScript" src="scripts/tw-sack.js"></script>
 
-<script type="text/javascript">
-<!--
+<script type="text/javascript"><!--
 function galaxy_submit(value) {
   document.getElementById('auto').name = value;
   document.getElementById('galaxy_form').submit();
@@ -90,14 +89,13 @@ function setShips(ship, count) {
   var e = document.getElementById(ship);
   e.innerHTML = count;
 }
+// --></script>
 
-// --> </script>
-
-<script type="text/javascript"> <!--
+<script type="text/javascript"><!--
 var allies = new Array();
 
 function showAlly(id){
-  var result = "<table><tr><td class=c><center>{L_Alliance}&nbsp;";
+  var result = "<table><tr><td class=c><center>{L_sys_alliance}&nbsp;";
   result = result + allies[id][1] + "<br>{L_gal_sys_members}" +  allies[id][2] + "</center></td></tr>";
   result = result + "<tr><th><a href=alliance.php?mode=ainfo&a=" + id + ">{L_gl_ally_internal}</a></th></tr>";
   result = result + "<tr><th><a href=stat.php?start=1&who=ally>{L_gl_stats}</a></th></tr>";
@@ -106,26 +104,25 @@ function showAlly(id){
   }
   result = result + "</table>";
 
-  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -10, OFFSETY, -10);
+  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -10, OFFSETY, -45);
 }
-// --> </script>
+// --></script>
 
-<script type="text/javascript"> <!--
+<script type="text/javascript"><!--
 var users = new Array();
 
 function showUser(id){
   var result = "<table width=190><tr><td class=c><center>{L_sys_player}&nbsp;" + users[id][0] + "<br>{L_Place}&nbsp;" + users[id][1] + "/{userCount}</center></td></tr>";
 
-  if (users[id][2]) {
-    result = result + "<tr><th><a href=messages.php?mode=write&id=" + users[id][3] + ">{L_gl_sendmess}</a></th></tr>";
-    result = result + "<tr><th><a href=buddy.php?a=2&u=" + users[id][3] + ">{L_gl_buddyreq}</a></th></tr>";
+  if (id != curUserID) {
+    result = result + "<tr><th><a href=messages.php?mode=write&id=" + id + ">{L_gl_sendmess}</a></th></tr>";
+    result = result + "<tr><th><a href=buddy.php?a=2&u=" + id + ">{L_gl_buddyreq}</a></th></tr>";
   }
   result = result + "<tr><th><a href=stat.php?who=player&start=" + users[id][1] + ">{L_gl_stats}</a></th></tr></table>";
 
-  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -40);
+  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -45);
 }
-
-// --> </script>
+// --></script>
 
 <br />
 <form action="galaxy.php?mode=1" method="post" id="galaxy_form"><table border="0"><tbody>
@@ -155,7 +152,7 @@ function showUser(id){
   </tr>
 </tbody></table></form>
 
-<!-- IF IS_SHOW_MI_SELECTOR -->
+<!-- IF MODE == 2 -->
 <form action="raketenangriff.php?c={curPlanetID}&mode=2&galaxy={galaxy}&system={system}&planet={planet}" method=POST><table border=0>
   <tr>
     <td class=c colspan=3>
@@ -187,17 +184,17 @@ function showUser(id){
   <tr><td class=c colspan=8><span class="fl">{L_Solar_system} [{galaxy}:{system}] - {planets}</span>
     <span class="fr"><a href=# style="cursor: pointer;" onmouseout='return nd();' onmouseover='return overlib("\
     <table width=240>\
-    <tr><td class=c colspan=2>{Legend}</td></tr>\
-    <tr><td width=220>{L_Strong_player}</td><td><span class=strong>{strong_player_shortcut}</span></td></tr>\
-    <tr><td width=220>{L_Weak_player}</td><td><span class=noob>{weak_player_shortcut}</span></td></tr>\
-    <tr><td width=220>{L_Way_vacation}</td><td><span class=vacation>{vacation_shortcut}</span></td></tr>\
-    <tr><td width=220>{L_Pendent_user}</td><td><span class=banned>{banned_shortcut}</span></td></tr>\
-    <tr><td width=220>{L_Inactive_7_days}</td><td><span class=inactive>{inactif_7_shortcut}</span></td></tr>\
-    <tr><td width=220>{L_Inactive_28_days}</td><td><span class=longinactive>{inactif_28_shortcut}</span></td></tr>\
-    <!-- IF SHOW_ADMIN --><tr {isShowAdmin}><td width=220>{L_user_level[3]}</td><td><span class=admin>{L_user_level_shortcut[3]}</span></td></tr>\
-    <tr {isShowAdmin}><td width=220>{L_user_level[2]}</td><td><span class=admin>{L_user_level_shortcut[2]}</span></td></tr>\
-    <tr {isShowAdmin}><td width=220>{L_user_level[1]}</td><td><span class=admin>{L_user_level_shortcut[1]}</span></td></tr><!-- ENDIF -->\
-    </table>", STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -150, OFFSETY, -150 );'>{Legend}</a>
+    <tr><td class=c colspan=2>{L_Legend}</td></tr>\
+    <tr><td width=220><span class=strong>{L_Strong_player}</span></td><td><span class=strong>{L_strong_player_shortcut}</span></td></tr>\
+    <tr><td width=220>{L_Weak_player}</td><td><span class=noob>{L_weak_player_shortcut}</span></td></tr>\
+    <tr><td width=220>{L_Way_vacation}</td><td><span class=vacation>{L_vacation_shortcut}</span></td></tr>\
+    <tr><td width=220>{L_Pendent_user}</td><td><span class=banned>{L_banned_shortcut}</span></td></tr>\
+    <tr><td width=220>{L_Inactive_7_days}</td><td><span class=inactive>{L_inactif_7_shortcut}</span></td></tr>\
+    <tr><td width=220>{L_Inactive_28_days}</td><td><span class=longinactive>{L_inactif_28_shortcut}</span></td></tr>\
+    <!-- IF SHOW_ADMIN --><tr><td width=220>{L_user_level[3]}</td><td><span class=admin>{L_user_level_shortcut[3]}</span></td></tr>\
+    <tr><td width=220>{L_user_level[2]}</td><td><span class=admin>{L_user_level_shortcut[2]}</span></td></tr>\
+    <tr><td width=220>{L_user_level[1]}</td><td><span class=admin>{L_user_level_shortcut[1]}</span></td></tr><!-- ENDIF -->\
+    </table>", STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -150, OFFSETY, -150 );'>{L_Legend}</a>
     </span></td>
   </tr>
   <tr align="center">
@@ -207,18 +204,29 @@ function showUser(id){
     <td class=c>{L_Moon}</td>
     <td class=c>{L_Debris}</td>
     <td class=c>{L_Player}</td>
-    <td class=c>{L_Alliance}</td>
+    <td class=c>{L_sys_alliance}</td>
     <td class=c>{L_Actions}</td>
   </tr>
 
-  {rows}
+<!-- BEGIN galaxyrow -->
+<tr>
+<th width=30 style="white-space: nowrap">
+  <div style="line-height: 1em; height: 1em"><a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANETNUM}&planettype=0&target_mission=7">{galaxyrow.PLANETNUM}</a></div>
+</th>
+{galaxyrow.PLANET}
+{galaxyrow.PLANETNAME}
+{galaxyrow.MOON}
+{galaxyrow.DEBRIS}
+<th width=150 align=center><!-- IF galaxyrow.USER_ID --><div style="line-height: 1em; height: 1em"><a style="cursor: pointer;" onmouseover='javascript:showUser({galaxyrow.USER_ID});' onmouseout='return nd();'><span class="<!-- IF galaxyrow.USER_BANNED -->banned<!-- ELSEIF galaxyrow.USER_VACANCY -->vacation<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 28 -->longinactive<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 -->inactive<!-- ELSEIF galaxyrow.USER_NOOB -->noob<!-- ELSEIF galaxyrow.USER_STRONG -->strong<!-- ENDIF -->">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACANCY --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)</a></div><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
+<th width=80><!-- IF galaxyrow.ALLY_ID --><div style="line-height: 1em; height: 1em"><a style="cursor: pointer;" onmouseover='javascript:showAlly({galaxyrow.ALLY_ID});' onmouseout='return nd();'><span class="<!-- IF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.ALLY_TAG}</span></a></div><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
+{galaxyrow.ACTIONS}
+</tr>
+<!-- END galaxyrow -->
 
   <tr>
     <th width="30">16</th>
     <th colspan=7><a href="fleet.php?galaxy={galaxy}&system={system}&planet=16&planettype=1&target_mission=15">{L_gf_unknowsp}</a></th>
   </tr>
-
-  <tr><td class=c colspan=8></td></tr>
 
   <tr>
     <td class=c colspan=3><span id="missiles">{MIPs}</span> {L_gf_mi_title}</td>
@@ -235,6 +243,11 @@ function showUser(id){
 </tbody></table>
 <br>
 <table width="519">
-  <tr><td class="c">{sys_hint}</td></tr>
-  <tr><th><div class="hint">{gal_sys_hint}</div></th></tr>
+  <tr><td class="c">{L_sys_hint}</td></tr>
+  <tr><th><div class="hint">{L_gal_sys_hint}</div></th></tr>
 </table>
+
+<script LANGUAGE='JavaScript'><!--
+{script}
+var curUserID = {USER_ID};
+--></script>
