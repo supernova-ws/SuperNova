@@ -10,6 +10,4 @@ CREATE TABLE `game_announce` (
   KEY `indTimeStamp` (`tsTimeStamp`)
 ) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
--- ----------------------------
--- Records 
--- ----------------------------
+SET FOREIGN_KEY_CHECKS=1;

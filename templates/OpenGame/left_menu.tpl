@@ -140,20 +140,19 @@ td.lm_para {
   <tr><td><a href="chat.php" accesskey="a"><span class="lm_chat">{Chat}</span></a></td></tr>
   <tr><td><a href="alliance.php" accesskey="a">{Alliance}</a></td></tr>
   <tr><td><a href="chat.php?chat_type=ally" accesskey="a"><span class="lm_chatally">{AllyChat}</span></a></td></tr>
+  <tr><td><a href="buddy.php">{Buddylist}</a></td></tr>
+  <tr><td><a href="search.php"><span class="lm_search">{Search}</span></a></td></tr>
+  <tr><td><a href="contact.php" accesskey="3">{commun}</a></td></tr>
 
   <tr><td class="lm_para">{m_others}</td></tr>
   <tr><td><a href="simulator.php" accesskey="p"><span class="lm_simulator">{m_simulator}</span></a></td></tr>
-  <tr><td><a href="buddy.php">{Buddylist}</a></td></tr>
+  <tr><td><a href="banned.php">{L_lm_banned}</a></td></tr>
   <tr><td><a href="notes.php">{Notes}</a></td></tr>
   <tr><td><a href="fleetshortcut.php">{lm_shortcuts}</a></td></tr>
-  <tr><td><a href="search.php"><span class="lm_search">{Search}</span></a></td></tr>
 
-  <tr><td class="lm_para">{tool}</td></tr>
-  <tr><td><a href="options.php" accesskey="o"><span class="lm_options">{Options}</span></a></td></tr>
-  <tr><td><a href="contact.php" accesskey="3">{commun}</a></td></tr>
+  <tr><td class="lm_para"><a href="options.php" accesskey="o"><span class="lm_options">{Options}</span></a></td></tr>
   <tr><td class="lm_para"><a href="javascript:top.location.href='logout.php'"><span class="lm_logout">{Logout}</span></a></td></tr>
   {ADMIN_LINK}
-
   <tr><td class="lm_para"><a href="http://wow.triolan.com.ua/" target="_blank"><img border="0" src="/images/banners/wow.gif" width="130" height="25" alt="Wow Triolan Server"></a></td></tr>
   {GoogleCode}
 </table>

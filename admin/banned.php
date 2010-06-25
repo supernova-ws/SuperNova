@@ -5,8 +5,8 @@
  *
  * @version 1.1s - Security checked for SQL-injection by Gorlum for http://supernova.ws
  * @version 1.1  - (c) Copyright by Gorlum for http://supernova.ws
- * @version 1.0
- * @copyright 2008 by ??????? for XNova
+ * @version 1.0  - copyright 2008 by Chlorel for XNova
+ *
  */
 
 define('INSIDE'  , true);
@@ -96,11 +96,11 @@ if ($user['authlevel'] >= 1) {
       $DoneMessage = sprintf($lang['adm_bn_errr'], $name);
     };
 
-
     AdminMessage ($DoneMessage, $lang['adm_bn_ttle']);
   }elseif ($mode == 'unbanit') {
     $nam = $_POST['name'];
-    doquery("DELETE FROM {{table}} WHERE who2='{$nam}'", 'banned');
+    //doquery("DELETE FROM {{table}} WHERE who2='{$nam}'", 'banned');
+    //doquery("UPDATE {{banned}} SET `longer` = {$time_now} WHERE who2='{$nam}'", 'banned');
     doquery("UPDATE {{table}} SET bana=0, banaday=0, `urlaubs_until` = 0 WHERE username like '{$nam}'", "users");
     $DoneMessage       = $lang['adm_unbn_thpl'] ." ". $name ." ". $lang['adm_unbn_isbn'];
     AdminMessage ($DoneMessage, $lang['adm_unbn_ttle']);

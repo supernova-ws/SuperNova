@@ -22,8 +22,8 @@ $lang['Weak_player']		= 'Слабый игрок';
 $lang['Way_vacation']		= 'Режим отпуска';
 $lang['Pendent_user']		= 'Заблокирован';
 $lang['Active']            = 'Активный игрок';
-$lang['Inactive_7_days']   = 'Неактивен 7 дней';
-$lang['Inactive_28_days']  = 'Неактивен 28 дней';
+$lang['Inactive_7_days']   = 'Неактивен более 7 дней';
+$lang['Inactive_28_days']  = 'Неактивен более 28 дней';
 
 $lang['Solar_system_at']	= 'Солнечная система %g:%s';
 

@@ -1,0 +1,148 @@
+diff -r -u --new-file original\functions_template.php patched\functions_template.php
+--- original\functions_template.php	Fri Jun 25 22:17:02 2010
++++ patched\functions_template.php	Fri Jun 25 22:20:21 2010
+@@ -6,12 +6,14 @@
+ * @copyright (c) 2005 phpBB Group, sections (c) 2001 ispi of Lincoln Inc
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ *
++* Modified by Gorlum to work within http://supernova.ws
++*
+ */
+ 
+ /**
+ * @ignore
+ */
+-if (!defined('IN_PHPBB'))
++if (!defined('INSIDE'))
+ {
+   exit;
+ }
+@@ -229,11 +231,11 @@
+         break;
+ 
+         case 'INCLUDEPHP':
+-          $compile_blocks[] = ($config['tpl_allow_php']) ? '<?php ' . $this->compile_tag_include_php(array_shift($includephp_blocks)) . ' ?>' : '';
++          $compile_blocks[] = ($config->tpl_allow_php) ? '<?php ' . $this->compile_tag_include_php(array_shift($includephp_blocks)) . ' ?>' : '';
+         break;
+ 
+         case 'PHP':
+-          $compile_blocks[] = ($config['tpl_allow_php']) ? '<?php ' . array_shift($php_blocks) . ' ?>' : '';
++          $compile_blocks[] = ($config->tpl_allow_php) ? '<?php ' . array_shift($php_blocks) . ' ?>' : '';
+         break;
+ 
+         default:
+@@ -275,6 +277,9 @@
+   */
+   function compile_var_tags(&$text_blocks)
+   {
++    // including $lang variable
++    global $lang;
++
+     // change template varrefs into PHP varrefs
+     $varrefs = array();
+ 
+@@ -294,19 +299,20 @@
+     // transform vars prefixed by L_ into their language variable pendant if nothing is set within the tpldata array
+     if (strpos($text_blocks, '{L_') !== false)
+     {
+-      $text_blocks = preg_replace('#\{L_([A-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['L_\\1'])) ? \$this->_rootref['L_\\1'] : ((isset(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '{ \\1 }')); ?>", $text_blocks);
++      $text_blocks = preg_replace('#\{L_([a-zA-Z0-9\-_]+)\[([a-zA-Z0-9\-_]*?)\]\}#', "<?php echo ((isset(\$this->_rootref['L_\\1']['\\2'])) ? \$this->_rootref['L_\\1']['\\2'] : ((isset(\$lang['\\1']['\\2'])) ? \$lang['\\1']['\\2'] : '{ \\1[\\2] }')); ?>", $text_blocks);
++      $text_blocks = preg_replace('#\{L_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['L_\\1'])) ? \$this->_rootref['L_\\1'] : ((isset(\$lang['\\1'])) ? \$lang['\\1'] : '{ L_\\1 }')); ?>", $text_blocks);
+     }
+ 
+     // Handle addslashed language variables prefixed with LA_
+     // If a template variable already exist, it will be used in favor of it...
+     if (strpos($text_blocks, '{LA_') !== false)
+     {
+-      $text_blocks = preg_replace('#\{LA_([A-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['LA_\\1'])) ? \$this->_rootref['LA_\\1'] : ((isset(\$this->_rootref['L_\\1'])) ? addslashes(\$this->_rootref['L_\\1']) : ((isset(\$user->lang['\\1'])) ? addslashes(\$user->lang['\\1']) : '{ \\1 }'))); ?>", $text_blocks);
++      $text_blocks = preg_replace('#\{LA_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['LA_\\1'])) ? \$this->_rootref['LA_\\1'] : ((isset(\$this->_rootref['L_\\1'])) ? addslashes(\$this->_rootref['L_\\1']) : ((isset(\$lang['\\1'])) ? addslashes(\$lang['\\1']) : '{ \\1 }'))); ?>", $text_blocks);
+     }
+ 
+     // Handle remaining varrefs
+-    $text_blocks = preg_replace('#\{([A-Z0-9\-_]+)\}#', "<?php echo (isset(\$this->_rootref['\\1'])) ? \$this->_rootref['\\1'] : ''; ?>", $text_blocks);
+-    $text_blocks = preg_replace('#\{\$([A-Z0-9\-_]+)\}#', "<?php echo (isset(\$this->_tpldata['DEFINE']['.']['\\1'])) ? \$this->_tpldata['DEFINE']['.']['\\1'] : ''; ?>", $text_blocks);
++    $text_blocks = preg_replace('#\{([a-zA-Z0-9\-_]+)\}#', "<?php echo (isset(\$this->_rootref['\\1'])) ? \$this->_rootref['\\1'] : ''; ?>", $text_blocks);
++    $text_blocks = preg_replace('#\{\$([a-zA-Z0-9\-_]+)\}#', "<?php echo (isset(\$this->_tpldata['DEFINE']['.']['\\1'])) ? \$this->_tpldata['DEFINE']['.']['\\1'] : ''; ?>", $text_blocks);
+ 
+     return;
+   }
+@@ -795,7 +801,7 @@
+ 
+     $filename = $this->template->cachepath . str_replace('/', '.', $this->template->filename[$handle]) . '.' . $phpEx;
+ 
+-    $data = "<?php if (!defined('IN_PHPBB')) exit;" . ((strpos($data, '<?php') === 0) ? substr($data, 5) : ' ?>' . $data);
++    $data = "<?php if (!defined('INSIDE')) exit;" . ((strpos($data, '<?php') === 0) ? substr($data, 5) : ' ?>' . $data);
+ 
+     if ($fp = @fopen($filename, 'wb'))
+     {
+@@ -804,7 +810,8 @@
+       @flock($fp, LOCK_UN);
+       @fclose($fp);
+ 
+-      phpbb_chmod($filename, CHMOD_READ | CHMOD_WRITE);
++      //phpbb_chmod($filename, CHMOD_READ | CHMOD_WRITE);
++      chmod($filename, 0710);
+     }
+ 
+     return;
+diff -r -u --new-file original\template.php patched\template.php
+--- original\template.php	Fri Jun 25 22:15:56 2010
++++ patched\template.php	Fri Jun 25 22:15:11 2010
+@@ -6,12 +6,14 @@
+ * @copyright (c) 2005 phpBB Group, sections (c) 2001 ispi of Lincoln Inc
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ *
++* Modified by Gorlum to work within http://supernova.ws
++*
+ */
+ 
+ /**
+ * @ignore
+ */
+-if (!defined('IN_PHPBB'))
++if (!defined('INSIDE'))
+ {
+   exit;
+ }
+@@ -45,6 +47,9 @@
+   // this will hash handle names to the compiled/uncompiled code for that handle.
+   var $compiled_code = array();
+ 
++  // this for compatibility with old templates
++  var $parse = array();
++
+   /**
+   * Set template location
+   * @access public
+@@ -203,7 +208,7 @@
+   */
+   function display($handle, $include_once = true)
+   {
+-    global $user, $phpbb_hook;
++    global $user, $phpbb_hook, $lang;
+ 
+     if (!empty($phpbb_hook) && $phpbb_hook->call_hook(array(__CLASS__, __FUNCTION__), $handle, $include_once))
+     {
+@@ -269,18 +274,18 @@
+     // reload these settings to have the values they had when this object was initialised
+     // using set_template or set_custom_template, they might otherwise have been overwritten
+     // by other template class instances in between.
+-    $user->theme['template_storedb'] = $this->orig_tpl_storedb;
+-    $user->theme['template_inherits_id'] = $this->orig_tpl_inherits_id;
++    //$user->theme['template_storedb'] = $this->orig_tpl_storedb;
++    //$user->theme['template_inherits_id'] = $this->orig_tpl_inherits_id;
+ 
+     $filename = $this->cachepath . str_replace('/', '.', $this->filename[$handle]) . '.' . $phpEx;
+-    $this->files_template[$handle] = (isset($user->theme['template_id'])) ? $user->theme['template_id'] : 0;
++    //$this->files_template[$handle] = (isset($user->theme['template_id'])) ? $user->theme['template_id'] : 0;
+ 
+     $recompile = false;
+     if (!file_exists($filename) || @filesize($filename) === 0)
+     {
+       $recompile = true;
+     }
+-    else if ($config['load_tplcompile'])
++    else if ($config->load_tplcompile)
+     {
+       // No way around it: we need to check inheritance here
+       if ($user->theme['template_inherits_id'] && !file_exists($this->files[$handle]))

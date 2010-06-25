@@ -108,4 +108,6 @@ $lang['lm_ifo_fleet']	= "Флот";
 $lang['lm_ifo_queue']	= "Очередь";
 
 $lang['lm_shortcuts'] = "Закладки";
+
+$lang['lm_banned']    = "Список банов";
 ?>

@@ -2,23 +2,23 @@
 config.php
 
 # Ignore forums
-phpBB3/
-forum/
-xcache-admin/
+/phpBB3/
+/forum/
+/xcache-admin/
 
 # Ignore cache folder
-cache/
+/cache/
 
 # Ignore backup folder
-admin/backup/
-admin/sxd/backup/
-admin/sxd/cfg.php
-admin/sxd/error.log
-admin/sxd/ses.php
+/admin/backup/
+/admin/sxd/backup/
+/admin/sxd/cfg.php
+/admin/sxd/error.log
+/admin/sxd/ses.php
 
 # Ignore all dotfiles...
 .*
-# ...except for .gitignore
+# ...except for .gitignore & .gitattributes
 !.gitignore
 !.gitattributes
 
