@@ -238,7 +238,7 @@ function showPlanet(planet, planet_name, planet_image, planet_owner, planet_type
     <th width=30 style="white-space: nowrap"><a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype=0&target_mission=7">{galaxyrow.PLANET_NUM}</a></th>
     <th style="white-space: nowrap;" width=30 valign=middle><!-- IF galaxyrow.PLANET_ID --><a style="cursor: pointer;"
       onmouseover="javascript:showPlanet({galaxyrow.PLANET_NUM}, '{galaxyrow.PLANET_NAME}', '{galaxyrow.PLANET_IMAGE}', {galaxyrow.USER_ID}, {galaxyrow.PLANET_TYPE}, '{galaxyrow.PLANET_PHALANX}');"
-      onmouseout='return nd();'><img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg height=30 width=30></a><!-- ENDIF -->
+      onmouseout='return nd();'><img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg height=30 width=30></a><!-- ELSE -->&nbsp;<!-- ENDIF -->
     </th>
 
     <th style="white-space: nowrap;" width=130><!-- IF galaxyrow.PLANET_ID --><div class="g_galaxy_row"><!-- IF galaxyrow.PLANET_DESTROYED -->{L_gl_destroyedplanet}<!-- ELSE --><a href=#<!-- IF galaxyrow.PLANET_PHALANX --> onclick=fenster('phalanx.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype={galaxyrow.PLANET_TYPE}') title="{L_gl_phalanx}"<!-- ENDIF -->><span class="<!-- IF USER_ID == galaxyrow.USER_ID -->myplanet<!-- ELSEIF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.PLANET_NAME}&nbsp;<!-- IF USER_ID != galaxyrow.USER_ID --><!-- IF galaxyrow.PLANET_ACTIVITY < 15 -->({L_sys_lessThen15min})<!-- ELSEIF galaxyrow.PLANET_ACTIVITY < 60 -->({galaxyrow.PLANET_ACTIVITY}&nbsp;{L_sys_min_short})<!-- ENDIF --><!-- ENDIF --></span></a><!-- ENDIF --></div><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
