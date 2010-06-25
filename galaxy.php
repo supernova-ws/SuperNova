@@ -94,6 +94,8 @@ $GET_planet       = intval($_GET['planet']);
   $UserPoints    = doquery("SELECT * FROM `{{table}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."'", 'statpoints', true);
   $CurrentPoints = $UserPoints['total_points'];
   $CurrentLevel  = $CurrentPoints * $config->noobprotectionmulti;
+  $MissileRange  = GetMissileRange();
+  $PhalanxRange  = GetPhalanxRange ( $HavePhalanx );
 
   for ($Planet = 1; $Planet < 16; $Planet++) {
     unset($GalaxyRowPlanet);
@@ -106,25 +108,27 @@ $GET_planet       = intval($_GET['planet']);
     $GalaxyRow = doquery("SELECT * FROM {{table}} WHERE `galaxy` = '".$galaxy."' AND `system` = '".$system."' AND `planet` = '".$Planet."';", 'galaxy', true);
 
     $GalaxyRowPlanet = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$galaxy} AND `system` = {$system} AND `planet` = {$Planet} AND `planet_type` = 1;", '', true);
-    if ($GalaxyRowPlanet['id']) {
-      if ($GalaxyRowPlanet['destruyed']) {
-        CheckAbandonPlanetState ($GalaxyRowPlanet);
-      } else {
-        $planetcount++;
-        if($cached['users'][$GalaxyRowPlanet['id_owner']]){
-          $GalaxyRowUser = $cached['users'][$GalaxyRowPlanet['id_owner']];
-        }else{
-          $GalaxyRowUser = doquery("SELECT * FROM {{users}} WHERE `id` = '{$GalaxyRowPlanet['id_owner']}';", '', true);
 
-          $User2Points   = doquery("SELECT * FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '{$GalaxyRowUser['id']}'", '', true);
-          $GalaxyRowUser['rank']   = intval($User2Points['total_rank']);
-          $GalaxyRowUser['points'] = intval($User2Points['total_points']);
+    if ($GalaxyRowPlanet['destruyed']) {
+      CheckAbandonPlanetState ($GalaxyRowPlanet);
+    } elseif ($GalaxyRowPlanet['id']) {
+      $planetcount++;
 
-          $cached['users'][$GalaxyRowUser['id']] = $GalaxyRowUser;
-        }
-        $RowUserPoints = $GalaxyRowUser['points'];
-        $RowUserLevel  = $RowUserPoints * $config->noobprotectionmulti;
+      if($cached['users'][$GalaxyRowPlanet['id_owner']]){
+        $GalaxyRowUser = $cached['users'][$GalaxyRowPlanet['id_owner']];
+      }else{
+        $GalaxyRowUser = doquery("SELECT * FROM {{users}} WHERE `id` = '{$GalaxyRowPlanet['id_owner']}';", '', true);
 
+        $User2Points   = doquery("SELECT * FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '{$GalaxyRowUser['id']}'", '', true);
+        $GalaxyRowUser['rank']   = intval($User2Points['total_rank']);
+        $GalaxyRowUser['points'] = intval($User2Points['total_points']);
+
+        $cached['users'][$GalaxyRowUser['id']] = $GalaxyRowUser;
+      }
+      $RowUserPoints = $GalaxyRowUser['points'];
+      $RowUserLevel  = $RowUserPoints * $config->noobprotectionmulti;
+
+      if($GalaxyRowUser['id'])
         if ($GalaxyRowUser['ally_id']) {
           if($cached['allies'][$GalaxyRowUser['ally_id']])
             $allyquery = $cached['allies'][$GalaxyRowUser['ally_id']];
@@ -133,21 +137,27 @@ $GET_planet       = intval($_GET['planet']);
             $cached['allies'][$GalaxyRowUser['ally_id']] = $allyquery;
           }
         }
-      }
 
-      $GalaxyRowMoon = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$galaxy} AND `system` = {$system} AND `planet` = {$Planet} AND `planet_type` = 3;", '', true);
+//      $GalaxyRowMoon = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$galaxy} AND `system` = {$system} AND `planet` = {$Planet} AND `planet_type` = 3;", '', true);
+      $GalaxyRowMoon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = {$GalaxyRowPlanet['id']};", '', true);
       if ($GalaxyRowMoon['destruyed'])
         CheckAbandonMoonState ($GalaxyRowMoon);
     }
 
-
-
     $template->assign_block_vars('galaxyrow', array(
-       'PLANETNUM'  => $Planet,
+       'PLANET_NUM'  => $Planet,
        'PLANET'     => GalaxyRowPlanet     ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $galaxy, $system, $Planet, 1 ),
-       'PLANETNAME' => GalaxyRowPlanetName ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $galaxy, $system, $Planet, 1 ),
-       'MOON'       => GalaxyRowMoon       ( $GalaxyRow, $GalaxyRowMoon  , $GalaxyRowUser, $galaxy, $system, $Planet, 3 ),
-       'DEBRIS'     => GalaxyRowDebris     ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $galaxy, $system, $Planet, 2 ),
+
+       'PLANET_ID'        => $GalaxyRowPlanet['id'],
+       'PLANET_NAME'      => $GalaxyRowPlanet['name'],
+       'PLANET_DESTROYED' => $GalaxyRowPlanet["destruyed"],
+       'PLANET_TYPE'      => $GalaxyRowPlanet["planet_type"],
+       'PLANET_PHALANX'   => $HavePhalanx && $GalaxyRowPlanet["galaxy"] == $CurrentGalaxy &&
+                             $system >= $CurrentSystem - $PhalanxRange && $system <= $CurrentSystem + $PhalanxRange,
+       'PLANET_ACTIVITY'  => floor(($time_now - $GalaxyRowPlanet['last_update'])/60),
+
+       'MOON'          => GalaxyRowMoon       ( $GalaxyRow, $GalaxyRowMoon  , $GalaxyRowUser, $galaxy, $system, $Planet, 3 ),
+       'DEBRIS'        => GalaxyRowDebris     ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $galaxy, $system, $Planet, 2 ),
 
        'USER_ID'       => $GalaxyRowUser['id'],
        'USER_NAME'     => $GalaxyRowUser['username'],
@@ -160,11 +170,12 @@ $GET_planet       = intval($_GET['planet']);
        'USER_AUTH'     => $GalaxyRowUser['authlevel'],
        'USER_ADMIN'    => $lang['user_level_shortcut'][$GalaxyRowUser['authlevel']],
 
+       'ALLY_ID'       => $allyquery['id'],
+       'ALLY_TAG'      => $allyquery['ally_tag'],
 
-       'ALLY_ID'    => $allyquery['id'],
-       'ALLY_TAG'   => $allyquery['ally_tag'],
+       'ACT_MISSILE'   => $user["settings_mis"] && ($CurrentMIP > 0) && ($galaxy == $CurrentGalaxy) &&
+                          ($system >= $CurrentSystem - $MissileRange) && ($system <= $CurrentSystem + $MissileRange),
 
-       'ACTIONS'    => GalaxyRowActions    ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $galaxy, $system, $Planet, 0 ),
     ));
   }
 
@@ -180,16 +191,17 @@ $GET_planet       = intval($_GET['planet']);
   $template->assign_vars(array(
        'rows'                => $Result,
        'userCount'           => $config->users_amount,
-       'curPlanetG'          => $CurrentPlanet["galaxy"],
-       'curPlanetS'          => $CurrentPlanet["system"],
-       'curPlanetP'          => $CurrentPlanet["planet"],
-       'curPlanetPT'         => $CurrentPlanet["planet_type"],
+       'curPlanetID'         => $CurrentPlanet['id'],
+       'curPlanetG'          => $CurrentPlanet['galaxy'],
+       'curPlanetS'          => $CurrentPlanet['system'],
+       'curPlanetP'          => $CurrentPlanet['planet'],
+       'curPlanetPT'         => $CurrentPlanet['planet_type'],
        'galaxy'              => $galaxy,
        'system'              => $system,
        'planet'              => $planet,
-       'curPlanetID'         => $CurrentPlanetID,
        'MIPs'                => $CurrentMIP,
        'MODE'                => $mode,
+       'dpath'               => $dpath,
        'planets'             => $planetcount ? ($lang['gal_planets'] . $planetcount) : $lang['gal_planetNone'],
        'RCs'                 => pretty_number($CurrentPlanet['recycler']),
        'SPs'                 => pretty_number($CurrentPlanet['spy_sonde']),
@@ -199,10 +211,14 @@ $GET_planet       = intval($_GET['planet']);
        'ALLY_ID'             => $user['ally_id'],
        'USER_ID'             => $user['id'],
        'script'              => $script,
+       'ACT_SPY'             => $user['settings_esp'],
+       'ACT_SPIO'            => $user['spio_anz'],
+       'ACT_WRITE'           => $user['settings_wri'],
+       'ACT_FRIEND'          => $user['settings_bud'],
      )
   );
 
-//  pr();
+  pr();
   display ($template, $lang['sys_universe'], true, '', false);
 
 // -----------------------------------------------------------------------------------------------------------

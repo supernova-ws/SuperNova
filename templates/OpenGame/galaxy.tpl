@@ -33,30 +33,6 @@ function whenResponse () {
   setShips("missiles", Missiles );
 }
 
-function doit (order, galaxy, system, planet, planettype, shipcount) {
-  ajax.requestFile = "flotenajax.php?action=send";
-  ajax.runResponse = whenResponse;
-  ajax.execute = true;
-  ajax.setVar("thisgalaxy", "{curPlanetG}");
-  ajax.setVar("thissystem", "{curPlanetS}");
-  ajax.setVar("thisplanet", "{curPlanetP}");
-  ajax.setVar("thisplanettype", "{curPlanetPT}");
-  ajax.setVar("mission", order);
-  ajax.setVar("galaxy", galaxy);
-  ajax.setVar("system", system);
-  ajax.setVar("planet", planet);
-  ajax.setVar("planettype", planettype);
-  if (order == 6)
-    ajax.setVar("ship210", shipcount);
-  if (order == 7) {
-    ajax.setVar("ship208", 1);
-    ajax.setVar("ship203", 2);
-  }
-  if (order == 8)
-    ajax.setVar("ship209", shipcount);
-  ajax.runAJAX();
-}
-
 function addToTable(strDataResult, strClass) {
   var e = document.getElementById('fleetstatusrow');
   var e2 = document.getElementById('fleetstatustable');
@@ -92,6 +68,32 @@ function setShips(ship, count) {
 // --></script>
 
 <script type="text/javascript"><!--
+function doit (order, galaxy, system, planet, planettype, shipcount) {
+  ajax.requestFile = "flotenajax.php?action=send";
+  ajax.runResponse = whenResponse;
+  ajax.execute = true;
+  ajax.setVar("thisgalaxy", "{curPlanetG}");
+  ajax.setVar("thissystem", "{curPlanetS}");
+  ajax.setVar("thisplanet", "{curPlanetP}");
+  ajax.setVar("thisplanettype", "{curPlanetPT}");
+  ajax.setVar("mission", order);
+  ajax.setVar("galaxy", galaxy);
+  ajax.setVar("system", system);
+  ajax.setVar("planet", planet);
+  ajax.setVar("planettype", planettype);
+  if (order == 6)
+    ajax.setVar("ship210", shipcount);
+  if (order == 7) {
+    ajax.setVar("ship208", 1);
+    ajax.setVar("ship203", 2);
+  }
+  if (order == 8)
+    ajax.setVar("ship209", shipcount);
+  ajax.runAJAX();
+}
+// --></script>
+
+<script type="text/javascript"><!--
 var allies = new Array();
 
 function showAlly(id){
@@ -112,6 +114,22 @@ function showAlly(id){
 var users = new Array();
 
 function showUser(id){
+  var result = "<table width=190><tr><td class=c><center>{L_sys_player}&nbsp;" + users[id][0] + "<br>{L_Place}&nbsp;" + users[id][1] + "/{userCount}</center></td></tr>";
+
+  if (id != curUserID) {
+    result = result + "<tr><th><a href=messages.php?mode=write&id=" + id + ">{L_gl_sendmess}</a></th></tr>";
+    result = result + "<tr><th><a href=buddy.php?a=2&u=" + id + ">{L_gl_buddyreq}</a></th></tr>";
+  }
+  result = result + "<tr><th><a href=stat.php?who=player&start=" + users[id][1] + ">{L_gl_stats}</a></th></tr></table>";
+
+  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -45);
+}
+// --></script>
+
+<script type="text/javascript"><!--
+var planets = new Array();
+
+function showPlanet(id){
   var result = "<table width=190><tr><td class=c><center>{L_sys_player}&nbsp;" + users[id][0] + "<br>{L_Place}&nbsp;" + users[id][1] + "/{userCount}</center></td></tr>";
 
   if (id != curUserID) {
@@ -209,18 +227,25 @@ function showUser(id){
   </tr>
 
 <!-- BEGIN galaxyrow -->
-<tr>
-<th width=30 style="white-space: nowrap">
-  <div style="line-height: 1em; height: 1em"><a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANETNUM}&planettype=0&target_mission=7">{galaxyrow.PLANETNUM}</a></div>
-</th>
-{galaxyrow.PLANET}
-{galaxyrow.PLANETNAME}
-{galaxyrow.MOON}
-{galaxyrow.DEBRIS}
-<th width=150 align=center><!-- IF galaxyrow.USER_ID --><div style="line-height: 1em; height: 1em"><a style="cursor: pointer;" onmouseover='javascript:showUser({galaxyrow.USER_ID});' onmouseout='return nd();'><span class="<!-- IF galaxyrow.USER_BANNED -->banned<!-- ELSEIF galaxyrow.USER_VACANCY -->vacation<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 28 -->longinactive<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 -->inactive<!-- ELSEIF galaxyrow.USER_NOOB -->noob<!-- ELSEIF galaxyrow.USER_STRONG -->strong<!-- ENDIF -->">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACANCY --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)</a></div><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
-<th width=80><!-- IF galaxyrow.ALLY_ID --><div style="line-height: 1em; height: 1em"><a style="cursor: pointer;" onmouseover='javascript:showAlly({galaxyrow.ALLY_ID});' onmouseout='return nd();'><span class="<!-- IF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.ALLY_TAG}</span></a></div><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
-{galaxyrow.ACTIONS}
-</tr>
+  <tr>
+    <th width=30 style="white-space: nowrap"><a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype=0&target_mission=7">{galaxyrow.PLANET_NUM}</a></th>
+    {galaxyrow.PLANET}
+    <th style="white-space: nowrap;" width=130><!-- IF galaxyrow.PLANET_ID --><div class="g_galaxy_row"><!-- IF galaxyrow.PLANET_DESTROYED -->{L_gl_destroyedplanet}<!-- ELSE --><a href=#<!-- IF galaxyrow.PLANET_PHALANX --> onclick=fenster('phalanx.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype={galaxyrow.PLANET_TYPE}') title="{L_gl_phalanx}"<!-- ENDIF -->><span class="<!-- IF USER_ID == galaxyrow.USER_ID -->myplanet<!-- ELSEIF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.PLANET_NAME}&nbsp;<!-- IF USER_ID != galaxyrow.USER_ID --><!-- IF galaxyrow.PLANET_ACTIVITY < 15 -->({L_sys_lessThen15min})<!-- ELSEIF galaxyrow.PLANET_ACTIVITY < 60 -->({galaxyrow.PLANET_ACTIVITY}&nbsp;{L_sys_min_short})<!-- ENDIF --><!-- ENDIF --></span></a><!-- ENDIF --></div><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
+    {galaxyrow.MOON}
+    {galaxyrow.DEBRIS}
+    <th width=150 align=center><!-- IF galaxyrow.USER_ID --><a style="cursor: pointer;" onmouseover='javascript:showUser({galaxyrow.USER_ID});' onmouseout='return nd();'><span class="<!-- IF galaxyrow.USER_BANNED -->banned<!-- ELSEIF galaxyrow.USER_VACANCY -->vacation<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 28 -->longinactive<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 -->inactive<!-- ELSEIF galaxyrow.USER_NOOB -->noob<!-- ELSEIF galaxyrow.USER_STRONG -->strong<!-- ENDIF -->">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACANCY --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)</a><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
+    <th width=80><!-- IF galaxyrow.ALLY_ID --><div style="line-height: 1em; height: 1em"><a style="cursor: pointer;" onmouseover='javascript:showAlly({galaxyrow.ALLY_ID});' onmouseout='return nd();'><span class="<!-- IF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.ALLY_TAG}</span></a></div><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
+    <th style="white-space: nowrap" width=125 align="center"><!-- IF galaxyrow.USER_ID && USER_ID != galaxyrow.USER_ID --><!-- IF ACT_SPY --><a 
+        href=# onclick="javascript:doit(6, {galaxy}, {system}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});"><img 
+        src={dpath}img/e.gif alt="{L_gl_espionner}" title="{L_gl_espionner}" 
+        border=0></a><!-- ENDIF -->&nbsp;<!-- IF ACT_WRITE --><a 
+        href=messages.php?mode=write&id={galaxyrow.USER_ID}><img src={dpath}img/m.gif alt="{L_gl_sendmess}" 
+        title="{L_gl_sendmess}" border=0></a><!-- ENDIF -->&nbsp;<!-- IF ACT_FRIEND --><a 
+        href=buddy.php?a=2&u={galaxyrow.USER_ID}><img src={dpath}img/b.gif alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" 
+        border=0></a><!-- ENDIF -->&nbsp;<!-- IF galaxyrow.ACT_MISSILE --><a 
+        href=galaxy.php?mode=2&galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&current={curPlanetID}><img 
+        src={dpath}img/r.gif alt="{L_gl_mipattack}" title="{L_gl_mipattack}" border=0></a><!-- ENDIF --><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
+  </tr>
 <!-- END galaxyrow -->
 
   <tr>
