@@ -116,7 +116,7 @@ var users = new Array();
 function showUser(id){
   var result = "<table width=190><tr><td class=c><center>{L_sys_player}&nbsp;" + users[id][0] + "<br>{L_Place}&nbsp;" + users[id][1] + "/{userCount}</center></td></tr>";
 
-  if (id != curUserID) {
+  if (id != {USER_ID}) {
     result = result + "<tr><th><a href=messages.php?mode=write&id=" + id + ">{L_gl_sendmess}</a></th></tr>";
     result = result + "<tr><th><a href=buddy.php?a=2&u=" + id + ">{L_gl_buddyreq}</a></th></tr>";
   }
@@ -129,15 +129,22 @@ function showUser(id){
 <script type="text/javascript"><!--
 var planets = new Array();
 
-function showPlanet(id){
-  var result = "<table width=190><tr><td class=c><center>{L_sys_player}&nbsp;" + users[id][0] + "<br>{L_Place}&nbsp;" + users[id][1] + "/{userCount}</center></td></tr>";
+function showPlanet(planet, planet_name, planet_image, planet_owner, planet_type, show_phalanx){
+  var result = "<table width=240><tr><td class=c colspan=2>{L_gl_planet}&nbsp;" + planet_name + "&nbsp;[{galaxy}:{system}:" + planet + "]</td></tr>";
+  result = result + "<tr><th width=80><img src={dpath}planeten/small/s_" + planet_image + ".jpg height=75 width=75 /></th><th align=left>";
 
-  if (id != curUserID) {
-    result = result + "<tr><th><a href=messages.php?mode=write&id=" + id + ">{L_gl_sendmess}</a></th></tr>";
-    result = result + "<tr><th><a href=buddy.php?a=2&u=" + id + ">{L_gl_buddyreq}</a></th></tr>";
-  }
-  result = result + "<tr><th><a href=stat.php?who=player&start=" + users[id][1] + ">{L_gl_stats}</a></th></tr></table>";
+  if(planet_owner == {USER_ID}){
+    result = result + "<a href=fleet.php?galaxy={galaxy}&system={system}&planet=" + planet + "&planettype=" + planet_type + "&target_mission=4>{L_type_mission[4]}</a><br />";
+  }else{
+    if(show_phalanx)
+      result = result + '<a href=# onclick=fenster("phalanx.php?galaxy={galaxy}&system={system}&planet=' + planet + '&planettype=' + planet_type + '")>{L_gl_phalanx}</a><br />';
 
+    result = result + '<a href=# onclick="javascript:doit(6, {galaxy}, {system}, ' + planet + ', ' + planet_type + ', {ACT_SPIO})">{L_type_mission[6]}</a><br /><br />';
+    result = result + '<a href=fleet.php?galaxy={galaxy}&system={system}&planet=' + planet + '&planettype=' + planet_type + '&target_mission=1>{L_type_mission[1]}</a><br />';
+    result = result + '<a href=fleet.php?galaxy={galaxy}&system={system}&planet=' + planet + '&planettype=' + planet_type + '&target_mission=5>{L_type_mission[5]}</a><br />';
+  };
+  result = result + "<a href=fleet.php?galaxy={galaxy}&system={system}&planet=" + planet + "&planettype=" + planet_type + "&target_mission=3>{L_type_mission[3]}</a></th></tr></table>";
+  
   return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -45);
 }
 // --></script>
@@ -229,7 +236,11 @@ function showPlanet(id){
 <!-- BEGIN galaxyrow -->
   <tr>
     <th width=30 style="white-space: nowrap"><a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype=0&target_mission=7">{galaxyrow.PLANET_NUM}</a></th>
-    {galaxyrow.PLANET}
+    <th style="white-space: nowrap;" width=30 valign=middle><!-- IF galaxyrow.PLANET_ID --><a style="cursor: pointer;"
+      onmouseover="javascript:showPlanet({galaxyrow.PLANET_NUM}, '{galaxyrow.PLANET_NAME}', '{galaxyrow.PLANET_IMAGE}', {galaxyrow.USER_ID}, {galaxyrow.PLANET_TYPE}, '{galaxyrow.PLANET_PHALANX}');"
+      onmouseout='return nd();'><img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg height=30 width=30></a><!-- ENDIF -->
+    </th>
+
     <th style="white-space: nowrap;" width=130><!-- IF galaxyrow.PLANET_ID --><div class="g_galaxy_row"><!-- IF galaxyrow.PLANET_DESTROYED -->{L_gl_destroyedplanet}<!-- ELSE --><a href=#<!-- IF galaxyrow.PLANET_PHALANX --> onclick=fenster('phalanx.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype={galaxyrow.PLANET_TYPE}') title="{L_gl_phalanx}"<!-- ENDIF -->><span class="<!-- IF USER_ID == galaxyrow.USER_ID -->myplanet<!-- ELSEIF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.PLANET_NAME}&nbsp;<!-- IF USER_ID != galaxyrow.USER_ID --><!-- IF galaxyrow.PLANET_ACTIVITY < 15 -->({L_sys_lessThen15min})<!-- ELSEIF galaxyrow.PLANET_ACTIVITY < 60 -->({galaxyrow.PLANET_ACTIVITY}&nbsp;{L_sys_min_short})<!-- ENDIF --><!-- ENDIF --></span></a><!-- ENDIF --></div><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
     {galaxyrow.MOON}
     {galaxyrow.DEBRIS}

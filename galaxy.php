@@ -8,6 +8,11 @@
  * @version 1.3s Security checks by Gorlum for http://supernova.ws
  * @version 1.3
  * @copyright 2008 by Chlorel for XNova
+ * History version
+ * 1.3 - 2eme Nettoyage Chlorel ... Mise en fonction et debuging complet
+ * 1.2 - 1er Nettoyage Chlorel ...
+ * 1.1 - Modified by -MoF- (UGamela germany)
+ * 1.0 - Created by Perberos
  */
 
 define('INSIDE'  , true);
@@ -145,16 +150,15 @@ $GET_planet       = intval($_GET['planet']);
     }
 
     $template->assign_block_vars('galaxyrow', array(
-       'PLANET_NUM'  => $Planet,
-       'PLANET'     => GalaxyRowPlanet     ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $galaxy, $system, $Planet, 1 ),
-
        'PLANET_ID'        => $GalaxyRowPlanet['id'],
+       'PLANET_NUM'       => $Planet,
        'PLANET_NAME'      => $GalaxyRowPlanet['name'],
        'PLANET_DESTROYED' => $GalaxyRowPlanet["destruyed"],
        'PLANET_TYPE'      => $GalaxyRowPlanet["planet_type"],
        'PLANET_PHALANX'   => $HavePhalanx && $GalaxyRowPlanet["galaxy"] == $CurrentGalaxy &&
                              $system >= $CurrentSystem - $PhalanxRange && $system <= $CurrentSystem + $PhalanxRange,
        'PLANET_ACTIVITY'  => floor(($time_now - $GalaxyRowPlanet['last_update'])/60),
+       'PLANET_IMAGE'     => $GalaxyRowPlanet['image'],
 
        'MOON'          => GalaxyRowMoon       ( $GalaxyRow, $GalaxyRowMoon  , $GalaxyRowUser, $galaxy, $system, $Planet, 3 ),
        'DEBRIS'        => GalaxyRowDebris     ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $galaxy, $system, $Planet, 2 ),
@@ -175,10 +179,8 @@ $GET_planet       = intval($_GET['planet']);
 
        'ACT_MISSILE'   => $user["settings_mis"] && ($CurrentMIP > 0) && ($galaxy == $CurrentGalaxy) &&
                           ($system >= $CurrentSystem - $MissileRange) && ($system <= $CurrentSystem + $MissileRange),
-
     ));
   }
-
 
   foreach($cached['users'] as $PlanetUser){
     $script .= "users[{$PlanetUser['id']}] = new Array('{$PlanetUser['username']}','{$PlanetUser['rank']}');";
@@ -218,13 +220,6 @@ $GET_planet       = intval($_GET['planet']);
      )
   );
 
-  pr();
+//  pr();
   display ($template, $lang['sys_universe'], true, '', false);
-
-// -----------------------------------------------------------------------------------------------------------
-// History version
-// 1.0 - Created by Perberos
-// 1.1 - Modified by -MoF- (UGamela germany)
-// 1.2 - 1er Nettoyage Chlorel ...
-// 1.3 - 2eme Nettoyage Chlorel ... Mise en fonction et debuging complet
 ?>
