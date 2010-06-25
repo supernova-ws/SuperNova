@@ -10,6 +10,7 @@ $lang['Solar_system']		= 'Солнечная система';
 $lang['Show']			= 'Показать';
 $lang['vacation_shortcut']	= "U";
 $lang['banned_shortcut']	= "G";
+$lang['active_shortcut']	= "*";
 $lang['inactif_7_shortcut']	= "i";
 $lang['inactif_28_shortcut']	= "I";
 $lang['strong_player_shortcut']	= "S";
@@ -20,8 +21,9 @@ $lang['Strong_player']		= 'Сильный игрок';
 $lang['Weak_player']		= 'Слабый игрок';
 $lang['Way_vacation']		= 'Режим отпуска';
 $lang['Pendent_user']		= 'Заблокирован';
-$lang['Inactive_7_days']	= 'Неактивен 7 дней';
-$lang['Inactive_28_days']	= 'Неактивен 28 дней';
+$lang['Active']            = 'Активный игрок';
+$lang['Inactive_7_days']   = 'Неактивен 7 дней';
+$lang['Inactive_28_days']  = 'Неактивен 28 дней';
 
 $lang['Solar_system_at']	= 'Солнечная система %g:%s';
 

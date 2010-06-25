@@ -214,6 +214,7 @@ function showPlanet(planet, planet_name, planet_image, planet_owner, planet_type
     <tr><td width=220>{L_Weak_player}</td><td><span class=noob>{L_weak_player_shortcut}</span></td></tr>\
     <tr><td width=220>{L_Way_vacation}</td><td><span class=vacation>{L_vacation_shortcut}</span></td></tr>\
     <tr><td width=220>{L_Pendent_user}</td><td><span class=banned>{L_banned_shortcut}</span></td></tr>\
+    <tr><td width=220>{L_Active}</td><td>{L_active_shortcut}</td></tr>\
     <tr><td width=220>{L_Inactive_7_days}</td><td><span class=inactive>{L_inactif_7_shortcut}</span></td></tr>\
     <tr><td width=220>{L_Inactive_28_days}</td><td><span class=longinactive>{L_inactif_28_shortcut}</span></td></tr>\
     <!-- IF SHOW_ADMIN --><tr><td width=220>{L_user_level[3]}</td><td><span class=admin>{L_user_level_shortcut[3]}</span></td></tr>\
@@ -232,7 +233,6 @@ function showPlanet(planet, planet_name, planet_image, planet_owner, planet_type
     <td class=c>{L_sys_alliance}</td>
     <td class=c>{L_Actions}</td>
   </tr>
-
 <!-- BEGIN galaxyrow -->
   <tr>
     <th width=30 style="white-space: nowrap"><a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype=0&target_mission=7">{galaxyrow.PLANET_NUM}</a></th>
@@ -240,11 +240,10 @@ function showPlanet(planet, planet_name, planet_image, planet_owner, planet_type
       onmouseover="javascript:showPlanet({galaxyrow.PLANET_NUM}, '{galaxyrow.PLANET_NAME}', '{galaxyrow.PLANET_IMAGE}', {galaxyrow.USER_ID}, {galaxyrow.PLANET_TYPE}, '{galaxyrow.PLANET_PHALANX}');"
       onmouseout='return nd();'><img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg height=30 width=30></a><!-- ELSE -->&nbsp;<!-- ENDIF -->
     </th>
-
     <th style="white-space: nowrap;" width=130><!-- IF galaxyrow.PLANET_ID --><div class="g_galaxy_row"><!-- IF galaxyrow.PLANET_DESTROYED -->{L_gl_destroyedplanet}<!-- ELSE --><a href=#<!-- IF galaxyrow.PLANET_PHALANX --> onclick=fenster('phalanx.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype={galaxyrow.PLANET_TYPE}') title="{L_gl_phalanx}"<!-- ENDIF -->><span class="<!-- IF USER_ID == galaxyrow.USER_ID -->myplanet<!-- ELSEIF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.PLANET_NAME}&nbsp;<!-- IF USER_ID != galaxyrow.USER_ID --><!-- IF galaxyrow.PLANET_ACTIVITY < 15 -->({L_sys_lessThen15min})<!-- ELSEIF galaxyrow.PLANET_ACTIVITY < 60 -->({galaxyrow.PLANET_ACTIVITY}&nbsp;{L_sys_min_short})<!-- ENDIF --><!-- ENDIF --></span></a><!-- ENDIF --></div><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
     {galaxyrow.MOON}
     {galaxyrow.DEBRIS}
-    <th width=150 align=center><!-- IF galaxyrow.USER_ID --><a style="cursor: pointer;" onmouseover='javascript:showUser({galaxyrow.USER_ID});' onmouseout='return nd();'><span class="<!-- IF galaxyrow.USER_BANNED -->banned<!-- ELSEIF galaxyrow.USER_VACANCY -->vacation<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 28 -->longinactive<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 -->inactive<!-- ELSEIF galaxyrow.USER_NOOB -->noob<!-- ELSEIF galaxyrow.USER_STRONG -->strong<!-- ENDIF -->">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACANCY --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)</a><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
+    <th width=150 align=center><!-- IF galaxyrow.USER_ID --><a style="cursor: pointer;" onmouseover='javascript:showUser({galaxyrow.USER_ID});' onmouseout='return nd();'><span class="<!-- IF galaxyrow.USER_BANNED -->banned<!-- ELSEIF galaxyrow.USER_VACANCY -->vacation<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 28 -->longinactive<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 -->inactive<!-- ELSEIF galaxyrow.USER_NOOB -->noob<!-- ELSEIF galaxyrow.USER_STRONG -->strong<!-- ENDIF -->">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACANCY --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)</a><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
     <th width=80><!-- IF galaxyrow.ALLY_ID --><div style="line-height: 1em; height: 1em"><a style="cursor: pointer;" onmouseover='javascript:showAlly({galaxyrow.ALLY_ID});' onmouseout='return nd();'><span class="<!-- IF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.ALLY_TAG}</span></a></div><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
     <th style="white-space: nowrap" width=125 align="center"><!-- IF galaxyrow.USER_ID && USER_ID != galaxyrow.USER_ID --><!-- IF ACT_SPY --><a 
         href=# onclick="javascript:doit(6, {galaxy}, {system}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});"><img 
@@ -258,12 +257,10 @@ function showPlanet(planet, planet_name, planet_image, planet_owner, planet_type
         src={dpath}img/r.gif alt="{L_gl_mipattack}" title="{L_gl_mipattack}" border=0></a><!-- ENDIF --><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
   </tr>
 <!-- END galaxyrow -->
-
   <tr>
     <th width="30">16</th>
     <th colspan=7><a href="fleet.php?galaxy={galaxy}&system={system}&planet=16&planettype=1&target_mission=15">{L_gf_unknowsp}</a></th>
   </tr>
-
   <tr>
     <td class=c colspan=3><span id="missiles">{MIPs}</span> {L_gf_mi_title}</td>
     <td class=c colspan=3><span id="slots">{fleet_count}</span>/{fleet_max} {L_gf_fleetslt}</td>
@@ -272,10 +269,9 @@ function showPlanet(planet, planet_name, planet_image, planet_owner, planet_type
       <span id="probes">{SPs}</span> {L_gf_sp_title}
     </td>
   </tr>
-
-  <tr style="display: none;" id="fleetstatusrow"><th class=c colspan=8>
-    <table style="font-weight: bold" width="100%" id="fleetstatustable"></table>
-  </th></tr>
+  <tr style="display: none;" id="fleetstatusrow">
+    <th class=c colspan=8><table style="font-weight: bold" width="100%" id="fleetstatustable"></table></th>
+  </tr>
 </tbody></table>
 <br>
 <table width="519">
