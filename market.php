@@ -72,9 +72,8 @@ switch($mode){
           $user['rpg_points'] -= $config->rpg_cost_exchanger;
         }
       }
+      $page = parsetemplate(gettemplate('message_body'), array('title' => $page_title, 'mes' => $error_list[$intError]));
     }
-
-    $page = parsetemplate(gettemplate('message_body'), array('title' => $page_title, 'mes' => $error_list[$intError]));
     if($intError){
       $parse['spend0'] = intval($_POST['spend'][0]);
       $parse['spend1'] = intval($_POST['spend'][1]);
