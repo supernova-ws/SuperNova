@@ -83,7 +83,7 @@ var rates = Array ( {rpg_exchange_metal}, {rpg_exchange_crystal}, {rpg_exchange_
     </tr>
 <!-- END ships -->    
     <tr><td class="c" colspan=6 align=center>
-      <input type="submit" name="exchange" value="{L_eco_mrk_sellFor}">
+      <input type="submit" name="scrape" value="{L_eco_mrk_sellFor}">
       {L_Metal} <span id="total_metal">0</span>
       {L_Crystal} <span id="total_crystal">0</span>
       {L_Deuterium} <span id="total_deuterium">0</span>

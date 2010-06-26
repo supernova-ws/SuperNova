@@ -107,7 +107,14 @@ switch($mode){
     break;
 
   case 2: // Fleet scraper
+    pdump($_POST);
     $page_title .= " - {$lang['eco_mrk_scraper']}";
+
+    if($_POST['scrape']){
+      foreach($_POST['ships'] as $shipID => $shipCount){
+      }
+    }
+
 
     $template = gettemplate('market_scraper', true);
 
