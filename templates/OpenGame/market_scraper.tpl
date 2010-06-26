@@ -1,80 +1,74 @@
-<script type="text/javascript">
+<br />
+<script type="text/javascript"><!--
+var originalColor;
 
-function calc_resources()
+function reCalc(){
+/*
+  var inz = 0;
 
-{
-	var regain_met = {schrotti_met};
-	var regain_crys = {schrotti_crys};
-	var regain_deut = {schrotti_deut};
-	var regain_energy = {schrotti_energy};
-	var max_ships_sell = {max_ships_to_sell};
-	var num = parseInt(document.getElementById('numschrotti').value, 10);
+  si = document.getElementsByName('exchangeTo')[0].selectedIndex;
+  sinp = document.getElementsByName('spend[' + si + ']')[0];
 
-	if (num < 0){
-		num = 0;
-		document.getElementById('numschrotti').value=num;
-	}
+  for (i=0;i<=3;i++){
+    document.getElementById('course' + i).innerHTML = rates[i] / rates[si];
 
-	if (num > max_ships_sell){
-		num = max_ships_sell;
-		document.getElementById('numschrotti').value=num;
-	}
+    inp = document.getElementsByName('spend[' + i + ']')[0];
+    if(i == si){
+      inp.disabled = true;
+      inp.style.backgroundColor = "#00FF00";
+    }else{
+      if (originalColor == undefined)
+        originalColor = inp.style.backgroundColor;
+      inp.style.backgroundColor = originalColor;
 
-	document.getElementById('schrotti_met').innerHTML = num * regain_met;
-	document.getElementById('schrotti_crys').innerHTML = num * regain_crys;
-	document.getElementById('schrotti_deut').innerHTML = num * regain_deut;
-	document.getElementById('schrotti_energy').innerHTML = num * regain_energy;
+      inp.disabled = false;
+      inz = inz + inp.value * rates[i] / rates[si];
+      inp.value = parseFloat(0 + inp.value);
+    }
+  }
+  sinp.value = parseFloat(inz);
+*/
 }
+//--></script>
 
-</script>
+<script type="text/javascript"><!--
+var rates = Array ( {rpg_exchange_metal}, {rpg_exchange_crystal}, {rpg_exchange_deuterium}, {rpg_exchange_darkMatter});
+//--></script>
 
-<br>
-<br>
-<center>
-  <table border="0" cellpadding="0" cellspacing="1" width="600">
-   <tr height="20">
-		<td colspan="4" class="c">{Intergalactic_merchant}</td>
-</tr>
+<form action="" method="POST">
+  <table>
+    <tr><td class="c" colspan=4>{L_eco_mrk_trader}</td></tr>
+    <tr align="center">
+      <td class="c">{L_sys_resources}</td>
+      <td class="c">{L_Metal}</td>
+      <td class="c">{L_Crystal}</td>
+      <td class="c">{L_Deuterium}</td>
+    </tr>
 
-   <tbody>
-     
-     <tr height="10">
-    	<th rowspan="3" align="left" class="c"><img src="{dpath}gebaeude/{image}.gif" width="120" height="120"></th>
-    	<th class="1" colspan="2" align="center">{Merchant_text_decript}<br></th>
-    	<td class="c" colspan="2" align="center"><br>
-				<form name="planets" action="schrotti.php" method="post">
-				<select name="shiptypeid" onchange="this.form.submit();">{shiplist}</select>
-				</form>
-     </tr>
-
-	<form action="" method="post">
-     <tr height="20">
-         <th align="center">{How_much_want_exchange}</th>
-         <td colspan="2" class="c" align="left">
-         	<input type="hidden" name="shiptypeid" value="{shiptype_id}">
-          <input id="numschrotti" type="text" name="number_ships_sell" alt="{Kleiner_transporter}" size="8" maxlength="6" value="0" tabindex="1" onKeyup="calc_resources();">
-         	<span style="color:yellow;"> {von} {max_ships_to_sell}</span></td>
-     </tr>
-
-     <tr height="20">
-       <th colspan="2" align="center">{Merchant_give_Info}</th>
-     <td colspan="2" class="c">
-     {Merchant_give_Aluminium}<br>
-     {Merchant_give_Silicium}<br>
-     {Merchant_give_Deuterium}<br>
-     {Merchant_give_Energy}</td>
-     </td>
-
-     <tr height="20" align="center">
-			<td></td>
-			<td></td>
-     <td colspan="3" class="c"><input name="submit" type="submit" value="{Exchange}"></td>
-     </tr>
-    </tbody</table>
-
+<!-- BEGIN ships -->    
+    <tr>
+      <th>{ships.NAME}</th>
+      <th>{ships.METAL}</th>
+      <th>{ships.CRYSTAL}</th>
+      <th>{ships.DEUTERIUM}</th>
+      <th><input name="ships[ships.ID]" value="{spend3}" onKeyUp="javascript:reCalc();"></th>
+      <th>{ships.COUNT}</th>
+    </tr>
+<!-- END ships -->    
+    <tr><td class="c" colspan=4 align=center>
+      <input type="submit" name="exchange" value="{L_eco_mrk_sellFor}">
+    </td></tr>
+    <tr><td class="c" colspan=4 align=center>{L_eco_mrk_trader_cost}{rpg_cost_trader} {L_eco_mrk_dark_matter_short}</td></tr>
+  </table>
+  <input type="hidden" name="mode" value="{mode}">
 </form>
 
-</center>
-{ClickBanner}
-</body>
-</html>
+<script type="text/javascript"><!--
+varTemp = '{exchangeTo}';
+
+if(varTemp == '')
+  varTemp = 0;
+
+document.getElementsByName('exchangeTo')[0].selectedIndex = varTemp;
+reCalc();
+//--></script>

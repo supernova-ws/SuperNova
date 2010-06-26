@@ -1,4 +1,3 @@
-<br />
 <script type="text/javascript"><!--
 var originalColor;
 
@@ -33,6 +32,8 @@ function reCalc(){
 var rates = Array ( {rpg_exchange_metal}, {rpg_exchange_crystal}, {rpg_exchange_deuterium}, {rpg_exchange_darkMatter});
 //--></script>
 
+{message}
+<br />
 <form action="" method="POST">
   <table>
     <tr><td class="c" colspan=4>{L_eco_mrk_trader}</td></tr>
@@ -43,34 +44,15 @@ var rates = Array ( {rpg_exchange_metal}, {rpg_exchange_crystal}, {rpg_exchange_
       <td class="c">{L_eco_mrk_course}</td>
     </tr>
 
+<!-- BEGIN resources -->    
     <tr>
-      <th>{L_Metal}</th>
-      <th>{avail_metal}</th>
-      <th><input name="spend[0]" value="{spend0}" onKeyUp="javascript:reCalc();"></th>
-      <th><span id="course0"></span></th>
+      <th>{resources.NAME}</th>
+      <th>{resources.AVAIL}</th>
+      <th><input name="spend[{resources.ID}]" value="{resources.SPEND}" onKeyUp="javascript:reCalc();"></th>
+      <th><span id="course{resources.ID}"></span></th>
     </tr>
-    
-    <tr>
-      <th>{L_Crystal}</th>
-      <th>{avail_crystal}</th>
-      <th><input name="spend[1]" value="{spend1}" onKeyUp="javascript:reCalc();"></th>
-      <th><span id="course1"></span></th>
-    </tr>
-    
-    <tr>
-      <th>{L_Deuterium}</th>
-      <th>{avail_deuterium}</th>
-      <th><input name="spend[2]" value="{spend2}" onKeyUp="javascript:reCalc();"></th>
-      <th><span id="course2"></span></th>
-    </tr>
-    
-    <tr>
-      <th>{L_dark_matter}</th>
-      <th>{avail_darkMatter}</th>
-      <th><input name="spend[3]" value="{spend3}" onKeyUp="javascript:reCalc();"></th>
-      <th><span id="course3"></span></th>
-    </tr>
-    
+<!-- END resources -->    
+
     <tr><td class="c" colspan=4 align=center><input type="submit" name="exchange" value="Обменять на">
       <select name="exchangeTo" onChange="javascript:reCalc();">
         <option value="0">{L_Metal}

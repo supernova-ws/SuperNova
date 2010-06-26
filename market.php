@@ -80,22 +80,50 @@ switch($mode){
       }
       $page = parsetemplate(gettemplate('message_body'), array('title' => $page_title, 'mes' => $error_list[$intError]));
     }
+    $template = gettemplate('market_trader', true);
+    $data = array(
+      'avail' => array( floor($planetrow['metal']), floor($planetrow['crystal']), floor($planetrow['deuterium']), $user['rpg_points'], ),
+      'name'=> array( $lang['Metal'], $lang['Crystal'], $lang['Deuterium'], $lang['dark_matter'], ),
+    );
     if($intError){
-      $parse['spend0'] = intval($_POST['spend'][0]);
-      $parse['spend1'] = intval($_POST['spend'][1]);
-      $parse['spend2'] = intval($_POST['spend'][2]);
-      $parse['spend3'] = intval($_POST['spend'][3]);
+      for($i=0; $i<=3; $i++){
+        $data['spend'][$i] = intval($_POST['spend'][$i]);
+      }
       $parse['exchangeTo'] = $exchangeTo;
     }
-    $parse['avail_metal']      = floor($planetrow['metal']);
-    $parse['avail_crystal']    = floor($planetrow['crystal']);
-    $parse['avail_deuterium']  = floor($planetrow['deuterium']);
-    $parse['avail_darkMatter'] = $user['rpg_points'];
+    $template->assign_var('message', $page);
+    $parse['message']          = $page;
 
-    display($page . parsetemplate(gettemplate('market_trader'), $parse), $page_title);
+    for($i=0; $i<=3; $i++){
+      $template->assign_block_vars('resources', array(
+        'ID'    => $i,
+        'NAME'  => $data['name'][$i],
+        'AVAIL' => $data['avail'][$i],
+        'SPEND' => $data['spend'][$i],
+      ));
+    }
+
+    display(parsetemplate($template, $parse), $page_title);
     break;
 
   case 2: // Fleet scraper
+    $template = gettemplate('market_scraper', true);
+
+    foreach($reslist['fleet'] as $shipID){
+      if($planetrow[$resource[$shipID]]){
+        $template->assign_block_vars('ships', array(
+          'ID' => $shipID,
+          'COUNT' => $planetrow[$resource[$shipID]],
+          'NAME' => $lang['tech'][$shipID],
+          'METAL' => $pricelist[$shipID]['metal'],
+          'CRYSTAL' => $pricelist[$shipID]['crystal'],
+          'DEUTERIUM' => $pricelist[$shipID]['deuterium'],
+        ));
+      }
+    }
+
+    // $page .
+    display(parsetemplate($template, $parse), $page_title);
     break;
 
   case 3: // Banker
