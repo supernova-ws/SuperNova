@@ -32,7 +32,8 @@ $lang['eco_mrk_stockman'] = 'Продавец подержанных кораблей';
 $lang['eco_mrk_exchange'] = 'Биржа обмена ресурсов';
 $lang['eco_mrk_pawnshop'] = 'Ломбард';
 
-$lang['eco_mrk_trader_cost']       = 'Стоимость обмена ресурсов: ';
+$lang['eco_mrk_trader_cost']       = 'Стоимость обмена ресурсов';
+$lang['eco_mrk_scraper_cost']      = 'Продать корабли на лом стоит';
 $lang['eco_mrk_dark_matter_short'] = 'ТМ';
 
 $lang['eco_mrk_error_title']        = 'Ошибка черного рынка';
@@ -41,4 +42,7 @@ $lang['eco_mrk_error_noDM']         = 'Не хватает Темной Материи для завершения 
 $lang['eco_mrk_error_noResources']  = 'Не хватает ресурсов для завершения операции';
 
 $lang['eco_mrk_sellFor']  = 'Продать за';
+$lang['eco_mrk_orbiting'] = 'На орбите';
+$lang['eco_mrk_toScrape'] = 'Пустить на слом';
+$lang['eco_mrk_scrapePrice'] = 'Выход лома';
 ?>

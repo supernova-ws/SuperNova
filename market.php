@@ -37,10 +37,11 @@ $parse['rpg_exchange_deuterium'] = $config->rpg_exchange_deuterium;
 $parse['rpg_exchange_darkMatter'] = $config->rpg_exchange_darkMatter;
 
 $parse['mode']  = $mode;
+$page_title = "{$lang['eco_mrk_title']}";
 
 switch($mode){
   case 1: // Resource trader
-    $page_title = "{$lang['eco_mrk_title']} - {$lang['eco_mrk_trader']}";
+    $page_title .= " - {$lang['eco_mrk_trader']}";
 
     $error_list = array(
       0 => $lang['eco_mrk_error_none'],
@@ -50,9 +51,9 @@ switch($mode){
 
     $intError = 0;
     if($_POST['exchange'] && isset($exchangeTo)){
-      if($user['rpg_points']<$config->rpg_cost_trader){
+      if($user['rpg_points']<$config->rpg_cost_trader + $_POST['spend'][3])
         $intError = 1;
-      }else{
+      else{
         $rates = array($config->rpg_exchange_metal, $config->rpg_exchange_crystal, $config->rpg_exchange_deuterium, $config->rpg_exchange_darkMatter);
 
         $qry = "UPDATE {{planets}} SET ";
@@ -64,8 +65,7 @@ switch($mode){
             $amountDM = $amount;
           }else{
             $qry .= "`{$reslist['resources'][$resource]}` = `{$reslist['resources'][$resource]}` - {$amount}, ";
-            if($planetrow[$reslist['resources'][$resource]] < $amount)
-              $intError = 2;
+            if($planetrow[$reslist['resources'][$resource]] < $amount) $intError = 2;
             $planetrow[$reslist['resources'][$resource]] -= $amount;
           }
         }
@@ -86,13 +86,12 @@ switch($mode){
       'name'=> array( $lang['Metal'], $lang['Crystal'], $lang['Deuterium'], $lang['dark_matter'], ),
     );
     if($intError){
-      for($i=0; $i<=3; $i++){
+      for($i=0; $i<=3; $i++)
         $data['spend'][$i] = intval($_POST['spend'][$i]);
-      }
+
       $parse['exchangeTo'] = $exchangeTo;
     }
     $template->assign_var('message', $page);
-    $parse['message']          = $page;
 
     for($i=0; $i<=3; $i++){
       $template->assign_block_vars('resources', array(
@@ -101,12 +100,15 @@ switch($mode){
         'AVAIL' => $data['avail'][$i],
         'SPEND' => $data['spend'][$i],
       ));
+      $resources .= $data['avail'][$i] . ', ';
     }
-
-    display(parsetemplate($template, $parse), $page_title);
+    $resources .= '0';
+    $template->assign_var('resources', $resources);
     break;
 
   case 2: // Fleet scraper
+    $page_title .= " - {$lang['eco_mrk_scraper']}";
+
     $template = gettemplate('market_scraper', true);
 
     foreach($reslist['fleet'] as $shipID){
@@ -115,15 +117,21 @@ switch($mode){
           'ID' => $shipID,
           'COUNT' => $planetrow[$resource[$shipID]],
           'NAME' => $lang['tech'][$shipID],
-          'METAL' => $pricelist[$shipID]['metal'],
-          'CRYSTAL' => $pricelist[$shipID]['crystal'],
-          'DEUTERIUM' => $pricelist[$shipID]['deuterium'],
+          'METAL' => floor($pricelist[$shipID]['metal']*3/4),
+          'CRYSTAL' => floor($pricelist[$shipID]['crystal']/2),
+          'DEUTERIUM' => floor($pricelist[$shipID]['deuterium']/4),
+          'SELL' => 0,
         ));
+        $ships .= "Array($shipID, ";
+        $ships .= floor($pricelist[$shipID]['metal']*3/4) . ", ";
+        $ships .= floor($pricelist[$shipID]['crystal']/2) . ", ";
+        $ships .= floor($pricelist[$shipID]['deuterium']/4) . ", ";
+        $ships .= $planetrow[$resource[$shipID]];
+        $ships .= '), ';
       }
     }
-
-    // $page .
-    display(parsetemplate($template, $parse), $page_title);
+    $ships .= "1";
+    $template->assign_var('ships', $ships);
     break;
 
   case 3: // Banker
@@ -139,7 +147,8 @@ switch($mode){
     break;
 
   default:
-    display(parsetemplate(gettemplate('market'), $parse), $lang['eco_mrk_title']);
+    $template = gettemplate('market');
     break;
 }
+display(parsetemplate($template, $parse), $page_title);
 ?>
