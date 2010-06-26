@@ -156,4 +156,7 @@ $lang['adm_dm_planet_conflict_coords'] = 'планета с именем "%1$s" и планета с ко
 $lang['adm_apply'] = "Применить";
 $lang['adm_maint']    = "Обслуживание";
 $lang['adm_backup']   = "Резервная копия";
+
+$lang['adm_tools']   = "Утилиты";
+$lang['adm_tools_reloadConfig'] = 'Пересчитать конфигурацию';
 ?>

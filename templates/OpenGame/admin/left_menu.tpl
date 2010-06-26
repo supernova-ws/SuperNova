@@ -52,6 +52,8 @@ function f(target_url,win_name) {
   <tr><td><a href="ElementQueueFixer.php">{adm_updrank}</a></td></tr>
   
   <tr><td style="background-color:#FFFFFF" height="1px"></td></tr>
+  <tr><td><a href="tools.php">{tool}</a></td></tr>
+  <tr><td style="background-color:#FFFFFF" height="1px"></td></tr>
   <tr><td><a href="errors.php">{adm_error}</a></td></tr>
   <tr><td><a href="../index.php" target="_top" style="color:red">{adm_back}</a></td></tr>
   <tr><td align=center background="{dpath}img/bg1.png">{infog}</td></tr>
