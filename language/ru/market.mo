@@ -1,4 +1,5 @@
 <?php
+
 $lang['mrkt_title']		= "Черный рынок";
 $lang['mrkt_merchant']	= "Торговец ресурсами";
 $lang['mrkt_scraper']	= "Скупщик флота";
@@ -17,4 +18,17 @@ $lang['mod_ma_excha'] = "Обменять";
 $lang['mod_ma_cours'] = "Курс обмена";
 $lang['mod_ma_nbre']  = "Можно вводить только числа!!!";
 
+
+$lang['eco_mrk_title']     = 'Черный рынок';
+$lang['eco_mrk_services']  = 'Услуги';
+
+$lang['eco_mrk_exchanger'] = 'Торговец ресурсами';
+$lang['eco_mrk_scraper']   = 'Скупщик лома';
+$lang['eco_mrk_banker']    = 'Банкир';
+$lang['eco_mrk_stockman']  = 'Продавец флота';
+
+$lang['eco_mrk_error_title']        = 'Ошибка черного рынка';
+$lang['eco_mrk_error_none']         = 'Обмен ресурсов произошел успешно<br><font color=red>!!! Не обновляйте страницу иначе обмен произойдет еще раз !!!</font><br>Правильное количество ресурсов можно посмотреть на странице "Обзор"!';
+$lang['eco_mrk_error_noDM']         = 'Не хватает Темной Материи для завершения операции';
+$lang['eco_mrk_error_noResources']  = 'Не хватает ресурсов для завершения операции';
 ?>

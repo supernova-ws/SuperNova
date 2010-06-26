@@ -233,6 +233,16 @@ class classConfig extends classPersistent {
     // Chat - formatting message for Admin
     'chat_admin_msgFormat' => '[c=purple]$2[/c]',
 
+    //Roleplay system
+    'rpg_cost_exchanger' => 1,     // Exchanger exchanges resources
+    'rpg_cost_scraper'   => 1,     // Scrapper buys ship for fraction of cost
+    'rpg_cost_banker'    => 1,     // Banker can hold
+    'rpg_cost_stockman'  => 1,     // Stockman resells ship that was scrapped
+
+    'rpg_exchange_metal' => 1,
+    'rpg_exchange_crystal' => 2,
+    'rpg_exchange_deuterium' => 4,
+
      // Variables
     'var_stats_lastUpdated' => '0',
     'var_stats_schedule' => 'd@04:00:00',
