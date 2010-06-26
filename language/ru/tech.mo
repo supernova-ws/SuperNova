@@ -2,8 +2,8 @@
 
 $lang['Tech']         = "Технология";
 $lang['Requirements'] = "Требуется";
-$lang['Store_max']    = "Склад:";
-$lang['Ressverf']     = "На складе:";
+$lang['Store_max']    = "Склад";
+$lang['Ressverf']     = "На складе";
 $lang['Metal']        = "Металл";
 $lang['Crystal']      = "Кристалл";
 $lang['Deuterium']    = "Дейтерий";

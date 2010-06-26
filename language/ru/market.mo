@@ -19,16 +19,25 @@ $lang['mod_ma_cours'] = "Курс обмена";
 $lang['mod_ma_nbre']  = "Можно вводить только числа!!!";
 
 
-$lang['eco_mrk_title']     = 'Черный рынок';
-$lang['eco_mrk_services']  = 'Услуги';
+$lang['eco_mrk_title']       = 'Черный рынок';
+$lang['eco_mrk_services']    = 'Услуги';
+$lang['eco_mrk_exchange']    = 'Обмен';
+$lang['eco_mrk_exchangeTo']  = 'Обменять на';
+$lang['eco_mrk_course']      = 'Курс';
 
-$lang['eco_mrk_exchanger'] = 'Торговец ресурсами';
-$lang['eco_mrk_scraper']   = 'Скупщик лома';
-$lang['eco_mrk_banker']    = 'Банкир';
-$lang['eco_mrk_stockman']  = 'Продавец флота';
+$lang['eco_mrk_trader']   = 'Торговец ресурсами';
+$lang['eco_mrk_scraper']  = 'Скупщик флота';
+$lang['eco_mrk_banker']   = 'Банкир';
+$lang['eco_mrk_stockman'] = 'Продавец подержанных кораблей';
+$lang['eco_mrk_exchange'] = 'Биржа обмена ресурсов';
+$lang['eco_mrk_pawnshop'] = 'Ломбард';
+
+$lang['eco_mrk_trader_cost']       = 'Стоимость обмена ресурсов: ';
+$lang['eco_mrk_dark_matter_short'] = 'ТМ';
+
 
 $lang['eco_mrk_error_title']        = 'Ошибка черного рынка';
-$lang['eco_mrk_error_none']         = 'Обмен ресурсов произошел успешно<br><font color=red>!!! Не обновляйте страницу иначе обмен произойдет еще раз !!!</font><br>Правильное количество ресурсов можно посмотреть на странице "Обзор"!';
+$lang['eco_mrk_error_none']         = 'Обмен ресурсов произошел успешно<br>В зависимости от настроек кэширования в браузере, текущее количество ресурсов может отображаться неверно. Правильное количество ресурсов можно посмотреть на странице "Обзор".<br><font color=red>!!! Не обновляйте страницу иначе обмен произойдет еще раз !!!</font><br>';
 $lang['eco_mrk_error_noDM']         = 'Не хватает Темной Материи для завершения операции';
 $lang['eco_mrk_error_noResources']  = 'Не хватает ресурсов для завершения операции';
 ?>

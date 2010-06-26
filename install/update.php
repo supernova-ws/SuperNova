@@ -13,6 +13,8 @@ if (INSTALL != true) {
   }
 }
 
+// alliance_request
+
 if ( $user['authlevel'] >= 3 ) {
   $game_version = doquery("SELECT `config_value` FROM {{config}} WHERE `config_name` = 'dbVersion';", '', true);
   switch($game_version['config_value']){

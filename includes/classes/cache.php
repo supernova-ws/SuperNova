@@ -234,14 +234,17 @@ class classConfig extends classPersistent {
     'chat_admin_msgFormat' => '[c=purple]$2[/c]',
 
     //Roleplay system
-    'rpg_cost_exchanger' => 1,     // Exchanger exchanges resources
+    'rpg_cost_trader'    => 1,     // Trader trades between resources
     'rpg_cost_scraper'   => 1,     // Scrapper buys ship for fraction of cost
-    'rpg_cost_banker'    => 1,     // Banker can hold
+    'rpg_cost_banker'    => 1,     // Banker can hold some resources
     'rpg_cost_stockman'  => 1,     // Stockman resells ship that was scrapped
+    'rpg_cost_exchange'  => 1,     // Exchange allows resource trade between players
+    'rpg_cost_pawnshop'  => 1,     // You can get loan in pawnshop
 
     'rpg_exchange_metal' => 1,
     'rpg_exchange_crystal' => 2,
     'rpg_exchange_deuterium' => 4,
+    'rpg_exchange_darkMatter' => 10000,
 
      // Variables
     'var_stats_lastUpdated' => '0',
