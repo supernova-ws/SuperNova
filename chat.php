@@ -47,7 +47,7 @@ if ($game_config['OverviewClickBanner'] != '') {
 
 $page = parsetemplate(gettemplate('chat_body'), $parse);
 
-display($page, $lang['Chat'], false);
+display($page, $lang['Chat']);
 
 // Shoutbox by e-Zobar - Copyright XNova Team 2008
 ?>

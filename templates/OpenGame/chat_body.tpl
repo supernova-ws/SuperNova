@@ -3,7 +3,7 @@ var chat_type = "{chat_type}";
 var ally_id = "{ally_id}";
 </script>
 <script language="JavaScript" type="text/javascript" src="scripts/chat.js"></script>
-
+<br />
 <table align="center" width='100%'><tbody>
 
 <tr><td class="c"><span class="fl"><b>{chat_disc}</b></span><span class="fr"><a href=# onClick="MessageHistory()">{chat_history}</a></span></td></tr>
