@@ -41,34 +41,6 @@ function CreateOneMoonRecord ( $Galaxy, $System, $Planet, $Owner, $MoonID, $Moon
       $mintemp                = $MoonPlanet['temp_min'] - rand(10, 45);
       $size                   = rand ($SizeMin, $SizeMax);
 
-      $QryInsertMoonInLunas   = "INSERT INTO `{{table}}` SET ";
-      $QryInsertMoonInLunas  .= "`name` = '". ( empty($MoonName) ? $lang['sys_moon'] : $MoonName ) ."', ";
-      $QryInsertMoonInLunas  .= "`galaxy` = '".   $Galaxy  ."', ";
-      $QryInsertMoonInLunas  .= "`system` = '".   $System  ."', ";
-      $QryInsertMoonInLunas  .= "`lunapos` = '".  $Planet  ."', ";
-      $QryInsertMoonInLunas  .= "`id_owner` = '". $Owner   ."', ";
-      $QryInsertMoonInLunas  .= "`temp_max` = '". $maxtemp ."', ";
-      $QryInsertMoonInLunas  .= "`temp_min` = '". $mintemp ."', ";
-      $QryInsertMoonInLunas  .= "`diameter` = '". $size    ."', ";
-      $QryInsertMoonInLunas  .= "`id_luna` = '".  $MoonID  ."';";
-      doquery( $QryInsertMoonInLunas , 'lunas' );
-
-      $QryGetMoonIdFromLunas  = "SELECT * FROM `{{table}}` ";
-      $QryGetMoonIdFromLunas .= "WHERE ";
-      $QryGetMoonIdFromLunas .= "`galaxy` = '".  $Galaxy ."' AND ";
-      $QryGetMoonIdFromLunas .= "`system` = '".  $System ."' AND ";
-      $QryGetMoonIdFromLunas .= "`lunapos` = '". $Planet ."';";
-      $lunarow = doquery( $QryGetMoonIdFromLunas , 'lunas', true);
-
-      $QryUpdateMoonInGalaxy  = "UPDATE `{{table}}` SET ";
-      $QryUpdateMoonInGalaxy .= "`id_luna` = '". $lunarow['id'] ."', ";
-      $QryUpdateMoonInGalaxy .= "`luna` = '0' ";
-      $QryUpdateMoonInGalaxy .= "WHERE ";
-      $QryUpdateMoonInGalaxy .= "`galaxy` = '". $Galaxy ."' AND ";
-      $QryUpdateMoonInGalaxy .= "`system` = '". $System ."' AND ";
-      $QryUpdateMoonInGalaxy .= "`planet` = '". $Planet ."';";
-      doquery( $QryUpdateMoonInGalaxy , 'galaxy');
-
       $QryInsertMoonInPlanet  = "INSERT INTO `{{table}}` SET ";
       $QryInsertMoonInPlanet .= "`name` = '" .( empty($MoonName) ? $lang['sys_moon'] : $MoonName ) ."', ";
       $QryInsertMoonInPlanet .= "`id_owner` = '". $Owner ."', ";

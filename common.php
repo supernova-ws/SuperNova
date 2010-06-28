@@ -87,7 +87,6 @@ if ( isset ($user) ) {
   SetSelectedPlanet ( $user );
 
   $planetrow = doquery("SELECT * FROM {{table}} WHERE `id` = '".$user['current_planet']."';", 'planets', true);
-  $galaxyrow = doquery("SELECT * FROM {{table}} WHERE `id_planet` = '".$planetrow['id']."';", 'galaxy', true);
 
   CheckPlanetUsedFields($planetrow);
   } else {

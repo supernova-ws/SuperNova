@@ -61,7 +61,6 @@ function MissionCaseDestruction($FleetRow) {
        "`system` = '". $FleetRow['fleet_end_system'] . "' AND " .
        "`planet` = '". $FleetRow['fleet_end_planet'] . "';"
      , 'galaxy', true);
-     doquery("DELETE FROM {{table}} WHERE `id` = '".$QryGalaxy['id_luna']."';", 'lunas');
      doquery("DELETE FROM {{table}} WHERE `id` ='".$TargetPlanet['id']."';", 'planets');
 
      $QryUpdateGalaxy  = "UPDATE {{table}} SET ";

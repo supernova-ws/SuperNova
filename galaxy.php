@@ -44,8 +44,6 @@ $GET_planet       = intval($_GET['planet']);
   includeLang('galaxy');
 
   $CurrentPlanet = doquery("SELECT * FROM {{table}} WHERE `id` = '". $user['current_planet'] ."';", 'planets', true);
-  $lunarow       = doquery("SELECT * FROM {{table}} WHERE `id` = '". $user['current_luna'] ."';", 'lunas', true);
-  $galaxyrow     = doquery("SELECT * FROM {{table}} WHERE `id_planet` = '". $CurrentPlanet['id'] ."';", 'galaxy', true);
 
   $dpath         = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
   $fleetmax      = GetMaxFleets($user);
@@ -60,7 +58,6 @@ $GET_planet       = intval($_GET['planet']);
   $maxfleet_count = $maxfleet[0];
 
   CheckPlanetUsedFields($CurrentPlanet);
-  CheckPlanetUsedFields($lunarow);
 
   if ($mode == 1) {
     if ($POST_galaxyLeft)
@@ -143,10 +140,9 @@ $GET_planet       = intval($_GET['planet']);
           }
         }
 
-//      $GalaxyRowMoon = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$galaxy} AND `system` = {$system} AND `planet` = {$Planet} AND `planet_type` = 3;", '', true);
       $GalaxyRowMoon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = {$GalaxyRowPlanet['id']};", '', true);
       if ($GalaxyRowMoon['destruyed'])
-        CheckAbandonMoonState ($GalaxyRowMoon);
+        CheckAbandonPlanetState($GalaxyRowMoon);
     }
 
     $template->assign_block_vars('galaxyrow', array(

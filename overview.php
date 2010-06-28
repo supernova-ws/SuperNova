@@ -71,10 +71,6 @@ if((filesize($ugamela_root_path.'badqrys.txt') > 0) && ($user['authlevel'] >= 2)
 
 check_urlaubmodus ($user);
 
-$lunarow   = doquery("SELECT * FROM {{table}} WHERE `id_owner` = '".$planetrow['id_owner']."' AND `galaxy` = '".$planetrow['galaxy']."' AND `system` = '".$planetrow['system']."' AND `lunapos` = '".$planetrow['planet']."';", 'lunas', true);
-
-CheckPlanetUsedFields ($lunarow);
-
 includeLang('resources');
 includeLang('overview');
 
@@ -90,11 +86,6 @@ switch ($mode) {
         $planetrow['name'] = $newname;
         // Ensuite, on enregistre dans la base de données
         doquery("UPDATE {{table}} SET `name` = '".$newname."' WHERE `id` = '". $user['current_planet'] ."' LIMIT 1;", "planets");
-        // Est ce qu'il sagit d'une lune ??
-        if ($planetrow['planet_type'] == 3) {
-          // Oui ... alors y a plus qu'a changer son nom dans la table des lunes aussi !!!
-          doquery("UPDATE {{table}} SET `name` = '".$newname."' WHERE `galaxy` = '".$planetrow['galaxy']."' AND `system` = '".$planetrow['system']."' AND `lunapos` = '".$planetrow['planet']."' LIMIT 1;", "lunas");
-        }
       }
 
     } elseif ($POST_action == $lang['colony_abandon']) {
@@ -102,9 +93,9 @@ switch ($mode) {
       // Affichage de la forme d'abandon de colonie
       $parse                   = $lang;
       $parse['planet_id']      = $planetrow['id'];
-      $parse['galaxy_galaxy']  = $galaxyrow['galaxy'];
-      $parse['galaxy_system']  = $galaxyrow['system'];
-      $parse['galaxy_planet']  = $galaxyrow['planet'];
+      $parse['galaxy_galaxy']  = $planetrow['galaxy'];
+      $parse['galaxy_system']  = $planetrow['system'];
+      $parse['galaxy_planet']  = $planetrow['planet'];
       $parse['planet_name']    = $planetrow['name'];
 
       $page                   .= parsetemplate(gettemplate('overview_deleteplanet'), $parse);
@@ -146,9 +137,9 @@ switch ($mode) {
     $parse = $lang;
 
     $parse['planet_id']     = $planetrow['id'];
-    $parse['galaxy_galaxy'] = $galaxyrow['galaxy'];
-    $parse['galaxy_system'] = $galaxyrow['system'];
-    $parse['galaxy_planet'] = $galaxyrow['planet'];
+    $parse['galaxy_galaxy'] = $planetrow['galaxy'];
+    $parse['galaxy_system'] = $planetrow['system'];
+    $parse['galaxy_planet'] = $planetrow['planet'];
     $parse['planet_name']   = $planetrow['name'];
 
     $page                  .= parsetemplate(gettemplate('overview_renameplanet'), $parse);
@@ -396,16 +387,11 @@ switch ($mode) {
     }
 
     // --- Gestion de l'affichage d'une lune ---------------------------------------------------------
-    if ($planetrow['galaxy'] && $planetrow['galaxy'] == $lunarow['galaxy'] && $planetrow['system'] == $lunarow['system'] && $planetrow['planet'] == $lunarow['lunapos'] && $planetrow['planet_type'] != 3) {
-      // print("<br>Galaxy12345:".$planetrow['galaxy']."<br>");
-      // Gorlum's Mod Start
-      // Original
-      // $lune = doquery("SELECT * FROM {{table}} WHERE galaxy={$lunarow['galaxy']} AND system={$lunarow['system']} AND planet={$lunarow['lunapos']} AND planet_type='3'", 'planets', true);
-      // Fixed
-      $lune = doquery("SELECT * FROM {{table}} WHERE galaxy={$planetrow['galaxy']} AND system={$planetrow['system']} AND planet={$planetrow['planet']} AND planet_type='3'", 'planets', true);
+    $lune = doquery("SELECT * FROM {{table}} WHERE `parent_planet` = '{$planetrow['id']}' AND `planet_type` = 3;", 'planets', true);
+    if ($lune['id']) {
       // Gorlum's Mod End
-      $parse['moon_img'] = "<a href=\"?cp={$lune['id']}&re=0\" title=\"{$UserPlanet['name']}\"><img src=\"{$dpath}planeten/{$lunarow['image']}.jpg\" height=\"50\" width=\"50\"></a>";
-      $parse['moon'] = $lunarow['name'];
+      $parse['moon_img'] = "<a href=\"?cp={$lune['id']}&re=0\" title=\"{$UserPlanet['name']}\"><img src=\"{$dpath}planeten/{$lune['image']}.jpg\" height=\"50\" width=\"50\"></a>";
+      $parse['moon'] = $lune['name'];
     } else {
       $parse['moon_img'] = "";
       $parse['moon'] = "";
@@ -462,10 +448,11 @@ switch ($mode) {
     $parse['anothers_planets']      = $AllPlanets;
     $parse['max_users']             = $game_config['users_amount'];
 
+    $galaxyrow = doquery("SELECT * FROM {{table}} WHERE `id_planet` = '{$planetrow['id']}';", 'galaxy', true);
     $parse['metal_debris']          = pretty_number($galaxyrow['metal']);
     $parse['crystal_debris']        = pretty_number($galaxyrow['crystal']);
-    if (($galaxyrow['metal'] != 0 || $galaxyrow['crystal'] != 0) && $planetrow[$resource[209]] != 0) {
-      $parse['get_link'] = " (<a href=\"quickfleet.php?mode=8&g=".$galaxyrow['galaxy']."&s=".$galaxyrow['system']."&p=".$galaxyrow['planet']."&t=2\">". $lang['type_mission'][8] ."</a>)";
+    if (($galaxyrow['metal'] || $galaxyrow['crystal']) && $planetrow[$resource[209]]) {
+      $parse['get_link'] = " (<a href=\"quickfleet.php?mode=8&g=".$planetrow['galaxy']."&s=".$planetrow['system']."&p=".$planetrow['planet']."&t=2\">". $lang['type_mission'][8] ."</a>)";
     } else {
       $parse['get_link'] = '';
     }

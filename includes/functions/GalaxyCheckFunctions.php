@@ -12,19 +12,30 @@
 // Verification sur la base des planetes
 //
 
-// Suppression complete d'une lune
-function CheckAbandonMoonState ($lunarow) {
-	if (($lunarow['destruyed'] + 172800) <= time() && $lunarow['destruyed'] != 0) {
-		$query = doquery("DELETE FROM {{table}} WHERE `id` = '" . $lunarow['id'] . "'", "lunas");
-	}
-}
-
 // Suppression complete d'une planete
 function CheckAbandonPlanetState (&$planet) {
-	if ($planet['destruyed'] <= time()) {
-		doquery("DELETE FROM `{{table}}` WHERE `id` = '{$planet['id']}'", 'planets');
-		doquery("UPDATE `{{table}}` SET `id_planet` = '0' WHERE `id_planet` = '{$planet['id']}'", 'galaxy');
-		doquery("DELETE FROM `{{table}}` WHERE `id_planet` = '0'", 'galaxy');
-	}
+  global $time_now;
+
+/*
+  if($planet['planet_type'] == 1){
+    if ($planet['destruyed'] <= time()) {
+      doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}';");
+      doquery("DELETE FROM `{{galaxy}}` WHERE `id_planet` = '{$planet['id']}';");
+    }
+  }elseif($planet['planet_type'] == 3){
+    if (($planet['destruyed'] + 172800) <= time() && $planet['destruyed']) {
+      $query = doquery("DELETE FROM {{planets}} WHERE `id` = '{$planet['id']}';");
+    }
+  }
+*/
+
+  if(!$planet['destruyed']) return;
+
+  if($planet['planet_type'] == 1 && $planet['destruyed'] <= $time_now){
+    doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}';");
+    doquery("DELETE FROM `{{galaxy}}` WHERE `id_planet` = '{$planet['id']}';");
+  }elseif($planet['planet_type'] == 3 && ($planet['destruyed'] + 172800) <= $time_now){
+    doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}';");
+  }
 }
 ?>
