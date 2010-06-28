@@ -139,6 +139,22 @@ $lang['COE_simulate']        = "Запуск симулятора";
 $lang['COE_fleet']           = "Флот";
 $lang['COE_defense']         = "Оборона";
 $lang['sys_resources']       = "Ресурсы";
+$lang['sys_ships']           = "Корабли";
+
+
+$lang['sys_metal']      = "Металл";
+$lang['sys_crystal']    = "Кристалл";
+$lang['sys_deuterium']  = "Дейтрий";
+$lang['sys_darkMatter'] = "Темная Материя";
+$lang['sys_energy']     = "Энергия";
+
+$lang['sys_resource'] = array(
+  1 => $lang['sys_metal'],
+  2 => $lang['sys_crystal'],
+  3 => $lang['sys_deuterium'],
+  4 => $lang['sys_darkMatter'],
+  5 => $lang['sys_energy'],
+);
 
 $lang['sys_reset']           = "Сбросить";
 $lang['sys_send']            = "Отправить";

@@ -19,6 +19,8 @@ include($ugamela_root_path . 'common.' . $phpEx);
 includeLang('market');
 
 $mode = intval($_GET['mode'] ? $_GET['mode'] : $_POST['mode']);
+$tradeList = $_POST['spend'];
+$shipList  = $_POST['ships'];
 $exchangeTo = intval($_POST['exchangeTo']);
 $exchangeTo = ($exchangeTo<3) ? $exchangeTo : 0 ;
 
@@ -39,25 +41,26 @@ $parse['rpg_exchange_darkMatter'] = $config->rpg_exchange_darkMatter;
 $parse['mode']  = $mode;
 $page_title = "{$lang['eco_mrk_title']}";
 
+$newrow = $planetrow;
+
 switch($mode){
   case 1: // Resource trader
     $page_title .= " - {$lang['eco_mrk_trader']}";
 
     $error_list = array(
-      0 => $lang['eco_mrk_error_none'],
+      0 => $lang['eco_mrk_trader_ok'],
       1 => $lang['eco_mrk_error_noDM'],
-      2 => $lang['eco_mrk_error_noResources']
+      2 => $lang['eco_mrk_error_noResources'],
     );
 
     $intError = 0;
-    if($_POST['exchange'] && isset($exchangeTo)){
-      if($user['rpg_points']<$config->rpg_cost_trader + $_POST['spend'][3])
-        $intError = 1;
-      else{
+    if(is_array($tradeList) && isset($exchangeTo)){
+      $rpg_deduct = $config->rpg_cost_trader + $tradeList[3];
+      if($user['rpg_points']>=$rpg_deduct){
         $rates = array($config->rpg_exchange_metal, $config->rpg_exchange_crystal, $config->rpg_exchange_deuterium, $config->rpg_exchange_darkMatter);
 
         $qry = "UPDATE {{planets}} SET ";
-        foreach($_POST['spend'] as $resource => $amount){
+        foreach($tradeList as $resource => $amount){
           $amount = abs(intval($amount));
           $value += $amount * $rates[$resource] / $rates[$exchangeTo];
 
@@ -66,20 +69,24 @@ switch($mode){
           }else{
             $qry .= "`{$reslist['resources'][$resource]}` = `{$reslist['resources'][$resource]}` - {$amount}, ";
             if($planetrow[$reslist['resources'][$resource]] < $amount) $intError = 2;
-            $planetrow[$reslist['resources'][$resource]] -= $amount;
+            $newrow[$reslist['resources'][$resource]] -= $amount;
           }
         }
         if(!$intError){
           $amountDM = intval($amountDM);
+          $newrow[$reslist['resources'][$exchangeTo]] += $value;
+
           $qry .= "`{$reslist['resources'][$exchangeTo]}` = `{$reslist['resources'][$exchangeTo]}` + {$value} WHERE `id` = {$planetrow['id']};";
           doquery($qry);
-          doquery("UPDATE {{users}} SET `rpg_points` = `rpg_points` - {$config->rpg_cost_trader} - {$amountDM} WHERE `id` = {$user['id']};");
-          $user['rpg_points'] -= $config->rpg_cost_trader + $amountDM;
-          $planetrow[$reslist['resources'][$exchangeTo]] += $value;
+
+          $planetrow = $newrow;
         }
+      }else{
+        $intError = 1;
       }
-      $page = parsetemplate(gettemplate('message_body'), array('title' => $page_title, 'mes' => $error_list[$intError]));
+      $message = parsetemplate(gettemplate('message_body'), array('title' => $lang['eco_mrk_error_title'], 'mes' => $error_list[$intError]));
     }
+
     $template = gettemplate('market_trader', true);
     $data = array(
       'avail' => array( floor($planetrow['metal']), floor($planetrow['crystal']), floor($planetrow['deuterium']), $user['rpg_points'], ),
@@ -87,11 +94,10 @@ switch($mode){
     );
     if($intError){
       for($i=0; $i<=3; $i++)
-        $data['spend'][$i] = intval($_POST['spend'][$i]);
+        $data['spend'][$i] = abs(intval($tradeList[$i]));
 
       $parse['exchangeTo'] = $exchangeTo;
     }
-    $template->assign_var('message', $page);
 
     for($i=0; $i<=3; $i++){
       $template->assign_block_vars('resources', array(
@@ -107,14 +113,74 @@ switch($mode){
     break;
 
   case 2: // Fleet scraper
-    pdump($_POST);
     $page_title .= " - {$lang['eco_mrk_scraper']}";
 
-    if($_POST['scrape']){
-      foreach($_POST['ships'] as $shipID => $shipCount){
+    $error_list = array(
+      1 => $lang['eco_mrk_error_noDM'],
+      2 => $lang['eco_mrk_error_noShips'],
+      3 => $lang['eco_mrk_error_zeroRes'],
+    );
+
+    if(is_array($shipList)){
+      if($user['rpg_points'] >= $config->rpg_cost_scraper){
+        $message .= "{$lang['eco_mrk_scraper_ships']}<ul>";
+        $qry = "UPDATE {{planets}} SET ";
+        foreach($shipList as $shipID => $shipCount){
+          $shipCount = abs($shipCount);
+          if($shipCount <= 0) continue;
+          if($newrow[$resource[$shipID]] < $shipCount){
+            $intError = 2;
+            break;
+          }
+          $qry .= "`{$resource[$shipID]}` = `{$resource[$shipID]}` - {$shipCount}, ";
+          $newrow[$resource[$shipID]] -= $shipCount;
+
+          $total['metal'] += floor($pricelist[$shipID]['metal']*$config->rpg_scrape_metal)*$shipCount;
+          $total['crystal'] += floor($pricelist[$shipID]['crystal']*$config->rpg_scrape_crystal)*$shipCount;
+          $total['deuterium'] += floor($pricelist[$shipID]['deuterium']*$config->rpg_scrape_deuterium)*$shipCount;
+
+          $newrow['metal'] += floor($pricelist[$shipID]['metal']*$config->rpg_scrape_metal)*$shipCount;
+          $newrow['crystal'] += floor($pricelist[$shipID]['crystal']*$config->rpg_scrape_crystal)*$shipCount;
+          $newrow['deuterium'] += floor($pricelist[$shipID]['deuterium']*$config->rpg_scrape_deuterium)*$shipCount;
+
+          $message .= "<li>{$lang['tech'][$shipID]}:";
+          $message .= " {$shipCount}";
+        }
+
+        if(!$intError){
+          $message .= "</ul>";
+          if(array_sum($total) > 0){
+            $message .= "{$lang['eco_mrk_scraper_got']}<ul>";
+            $message .= "<li>{$lang['sys_metal']}: {$total['metal']}";
+            $message .= "<li>{$lang['sys_crystal']}: {$total['crystal']}";
+            $message .= "<li>{$lang['sys_deuterium']}: {$total['deuterium']}";
+            $message .= "</ul>";
+
+            $qry .= "`metal` = `metal` + {$total['metal']}, ";
+            $qry .= "`crystal` = `crystal` + {$total['crystal']}, ";
+            $qry .= "`deuterium` = `deuterium` + {$total['deuterium']}";
+            doquery($qry);
+
+            $rpg_deduct = $config->rpg_cost_scraper;
+
+            $planetrow = $newrow;
+          }else{
+            $intError = 3;
+          }
+        }
+      }else{
+        $intError = 1;
+      }
+
+      if($intError){
+        $message = parsetemplate(gettemplate('message_body'), array('title' => $lang['eco_mrk_error_title'], 'mes' => $error_list[$intError]));
+        foreach($shipList as $shipID => $shipCount){
+          $data['ships'][$shipID] = abs(intval($shipCount));
+        }
+      }else{
+        $message = parsetemplate(gettemplate('message_body'), array('title' => $page_title, 'mes' => "<div align=left>{$message}</div>"));
       }
     }
-
 
     $template = gettemplate('market_scraper', true);
 
@@ -124,15 +190,15 @@ switch($mode){
           'ID' => $shipID,
           'COUNT' => $planetrow[$resource[$shipID]],
           'NAME' => $lang['tech'][$shipID],
-          'METAL' => floor($pricelist[$shipID]['metal']*3/4),
-          'CRYSTAL' => floor($pricelist[$shipID]['crystal']/2),
-          'DEUTERIUM' => floor($pricelist[$shipID]['deuterium']/4),
-          'SELL' => 0,
+          'METAL' => floor($pricelist[$shipID]['metal']*$config->rpg_scrape_metal),
+          'CRYSTAL' => floor($pricelist[$shipID]['crystal']*$config->rpg_scrape_crystal),
+          'DEUTERIUM' => floor($pricelist[$shipID]['deuterium']*$config->rpg_scrape_deuterium),
+          'SELL' => intval($data['ships'][$shipID]),
         ));
         $ships .= "Array($shipID, ";
-        $ships .= floor($pricelist[$shipID]['metal']*3/4) . ", ";
-        $ships .= floor($pricelist[$shipID]['crystal']/2) . ", ";
-        $ships .= floor($pricelist[$shipID]['deuterium']/4) . ", ";
+        $ships .= floor($pricelist[$shipID]['metal']*$config->rpg_scrape_metal) . ", ";
+        $ships .= floor($pricelist[$shipID]['crystal']*$config->rpg_scrape_crystal) . ", ";
+        $ships .= floor($pricelist[$shipID]['deuterium']*$config->rpg_scrape_deuterium) . ", ";
         $ships .= $planetrow[$resource[$shipID]];
         $ships .= '), ';
       }
@@ -154,8 +220,15 @@ switch($mode){
     break;
 
   default:
-    $template = gettemplate('market');
+    $template = gettemplate('market', true);
     break;
 }
+
+if(!$intError && $rpg_deduct){
+  doquery("UPDATE {{users}} SET `rpg_points` = `rpg_points` - {$rpg_deduct} WHERE `id` = {$user['id']};");
+  $user['rpg_points'] -= $rpg_deduct;
+}
+
+$template->assign_var('message', $message);
 display(parsetemplate($template, $parse), $page_title);
 ?>

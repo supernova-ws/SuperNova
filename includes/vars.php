@@ -112,6 +112,7 @@ if ( defined('INSIDE')) {
   992 => 'crystal',
   993 => 'deuterium',
   994 => 'dark_matter',
+  995 => 'energy',
   );
 
   $requeriments = array(

@@ -118,8 +118,8 @@ td.lm_para {
   <tr><td><a href="fleet.php" accesskey="t"><span class="lm_fleet">{Fleet}</span></a></td></tr>
   <tr><td><a href="galaxy.php?mode=0" accesskey="s"><span class="lm_galaxy">{sys_universe}</span></a></td></tr>
   <tr><td><a href="officier.php" accesskey="o">{Officiers}</a></td></tr>
-  <tr><td><a href="rinok.php" accesskey="m">{rinok}</a></td></tr>
-  <tr><td><a href="market.php" accesskey="m">{rinok} II</a></td></tr>
+<!--  <tr><td><a href="rinok.php" accesskey="m">{rinok}</a></td></tr> -->
+  <tr><td><a href="market.php" accesskey="m">{L_rinok}</a></td></tr>
 
   <tr><td class="lm_para">{Building}</td></tr>
   <tr><td><a href="buildings.php" accesskey="b"><span class="lm_buildings">{Buildings}</span></a></td></tr>

@@ -246,6 +246,10 @@ class classConfig extends classPersistent {
     'rpg_exchange_deuterium' => 4,
     'rpg_exchange_darkMatter' => 10000,
 
+    'rpg_scrape_metal' => 0.75,
+    'rpg_scrape_crystal' => 0.50,
+    'rpg_scrape_deuterium' => 0.25,
+
      // Variables
     'var_stats_lastUpdated' => '0',
     'var_stats_schedule' => 'd@04:00:00',
