@@ -1,1 +1,0 @@
-<span id="schrotti_crys" style="color:yellow;">0</span>
