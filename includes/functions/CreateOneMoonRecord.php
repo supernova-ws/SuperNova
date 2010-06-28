@@ -17,9 +17,10 @@ function CreateOneMoonRecord ( $Galaxy, $System, $Planet, $Owner, $MoonID, $Moon
 
   $QryGetMoonPlanetData  = "SELECT * FROM `{{table}}` ";
   $QryGetMoonPlanetData .= "WHERE ";
-  $QryGetMoonPlanetData .= "`galaxy` = '". $Galaxy ."' AND ";
-  $QryGetMoonPlanetData .= "`system` = '". $System ."' AND ";
-  $QryGetMoonPlanetData .= "`planet` = '". $Planet ."';";
+  $QryGetMoonPlanetData .= "`galaxy` = '{$Galaxy}' AND ";
+  $QryGetMoonPlanetData .= "`system` = '{$System}' AND ";
+  $QryGetMoonPlanetData .= "`planet` = '{$Planet}' AND ";
+  $QryGetMoonPlanetData .= "`planet_type` = 1;";
   $MoonPlanet = doquery ( $QryGetMoonPlanetData, 'planets', true);
 
   $QryGetMoonGalaxyData  = "SELECT * FROM `{{table}}` ";
@@ -76,6 +77,7 @@ function CreateOneMoonRecord ( $Galaxy, $System, $Planet, $Owner, $MoonID, $Moon
       $QryInsertMoonInPlanet .= "`planet` = '". $Planet ."', ";
       $QryInsertMoonInPlanet .= "`last_update` = '". time() ."', ";
       $QryInsertMoonInPlanet .= "`planet_type` = '3', ";
+      $QryInsertMoonInPlanet .= "`parent_planet` = {$MoonPlanet['id']}, ";
       $QryInsertMoonInPlanet .= "`image` = 'mond', ";
       $QryInsertMoonInPlanet .= "`diameter` = '". $size ."', ";
       $QryInsertMoonInPlanet .= "`field_max` = '1', ";
