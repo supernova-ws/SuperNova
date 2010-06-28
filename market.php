@@ -55,8 +55,7 @@ switch($mode){
 
     $intError = 0;
     if(is_array($tradeList) && isset($exchangeTo)){
-      $rpg_deduct = $config->rpg_cost_trader + $tradeList[3];
-      if($user['rpg_points']>=$rpg_deduct){
+      if($user['rpg_points'] >= $config->rpg_cost_trader + $tradeList[3]){
         $rates = array($config->rpg_exchange_metal, $config->rpg_exchange_crystal, $config->rpg_exchange_deuterium, $config->rpg_exchange_darkMatter);
 
         $qry = "UPDATE {{planets}} SET ";
@@ -73,6 +72,7 @@ switch($mode){
           }
         }
         if(!$intError){
+          $rpg_deduct = $config->rpg_cost_trader + $tradeList[3];
           $amountDM = intval($amountDM);
           $newrow[$reslist['resources'][$exchangeTo]] += $value;
 
@@ -158,7 +158,8 @@ switch($mode){
 
             $qry .= "`metal` = `metal` + {$total['metal']}, ";
             $qry .= "`crystal` = `crystal` + {$total['crystal']}, ";
-            $qry .= "`deuterium` = `deuterium` + {$total['deuterium']}";
+            $qry .= "`deuterium` = `deuterium` + {$total['deuterium']} ";
+            $qry .= "WHERE `id` = {$planetrow['id']};";
             doquery($qry);
 
             $rpg_deduct = $config->rpg_cost_scraper;
