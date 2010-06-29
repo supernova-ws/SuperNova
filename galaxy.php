@@ -107,8 +107,6 @@ $GET_planet       = intval($_GET['planet']);
     unset($GalaxyRowAlly);
     unset($allyquery);
 
-    $GalaxyRow = doquery("SELECT * FROM {{table}} WHERE `galaxy` = '".$galaxy."' AND `system` = '".$system."' AND `planet` = '".$Planet."';", 'galaxy', true);
-
     $GalaxyRowPlanet = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$galaxy} AND `system` = {$system} AND `planet` = {$Planet} AND `planet_type` = 1;", '', true);
 
     if ($GalaxyRowPlanet['destruyed']) {
@@ -145,19 +143,32 @@ $GET_planet       = intval($_GET['planet']);
         CheckAbandonPlanetState($GalaxyRowMoon);
     }
 
+    $DebrisRow = doquery("SELECT * FROM {{table}} WHERE `galaxy` = '{$galaxy}' AND `system` = '{$system}' AND `planet` = '{$Planet}';", 'galaxy', true);
+    if ($DebrisRow["metal"] || $DebrisRow["crystal"]) {
+      $RecNeeded = ceil(($DebrisRow["metal"] + $DebrisRow["crystal"]) / $pricelist[209]['capacity']);
+      if ($RecNeeded < $CurrentRC) {
+        $RecSended = $RecNeeded;
+      }else{
+        $RecSended = $CurrentRC;
+      }
+    }
+
     $template->assign_block_vars('galaxyrow', array(
        'PLANET_ID'        => $GalaxyRowPlanet['id'],
        'PLANET_NUM'       => $Planet,
        'PLANET_NAME'      => $GalaxyRowPlanet['name'],
        'PLANET_DESTROYED' => $GalaxyRowPlanet["destruyed"],
        'PLANET_TYPE'      => $GalaxyRowPlanet["planet_type"],
-       'PLANET_PHALANX'   => $HavePhalanx && $GalaxyRowPlanet["galaxy"] == $CurrentGalaxy &&
-                             $system >= $CurrentSystem - $PhalanxRange && $system <= $CurrentSystem + $PhalanxRange,
        'PLANET_ACTIVITY'  => floor(($time_now - $GalaxyRowPlanet['last_update'])/60),
        'PLANET_IMAGE'     => $GalaxyRowPlanet['image'],
 
-       'MOON'          => GalaxyRowMoon       ( $GalaxyRow, $GalaxyRowMoon  , $GalaxyRowUser, $galaxy, $system, $Planet, 3 ),
-       'DEBRIS'        => GalaxyRowDebris     ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $galaxy, $system, $Planet, 2 ),
+       'MOON_NAME'      => $GalaxyRowMoon["name"],
+       'MOON_DIAMETER'  => number_format($GalaxyRowMoon['diameter'], 0, '', '.'),
+       'MOON_TEMP'      => number_format($GalaxyRowMoon['temp_min'], 0, '', '.'),
+
+       'DEBRIS_METAL'   => $DebrisRow['metal'], //number_format( $DebrisRow['metal'], 0, '', '.'),
+       'DEBRIS_CRYSTAL' => $DebrisRow['crystal'], //number_format( $DebrisRow['crystal'], 0, '', '.'),
+       'DEBRIS_RC_SEND' => $RecSended,
 
        'USER_ID'       => $GalaxyRowUser['id'],
        'USER_NAME'     => $GalaxyRowUser['username'],
@@ -172,9 +183,6 @@ $GET_planet       = intval($_GET['planet']);
 
        'ALLY_ID'       => $allyquery['id'],
        'ALLY_TAG'      => $allyquery['ally_tag'],
-
-       'ACT_MISSILE'   => $user["settings_mis"] && ($CurrentMIP > 0) && ($galaxy == $CurrentGalaxy) &&
-                          ($system >= $CurrentSystem - $MissileRange) && ($system <= $CurrentSystem + $MissileRange),
     ));
   }
 
@@ -187,35 +195,39 @@ $GET_planet       = intval($_GET['planet']);
   }
 
   $template->assign_vars(array(
-       'rows'                => $Result,
-       'userCount'           => $config->users_amount,
-       'curPlanetID'         => $CurrentPlanet['id'],
-       'curPlanetG'          => $CurrentPlanet['galaxy'],
-       'curPlanetS'          => $CurrentPlanet['system'],
-       'curPlanetP'          => $CurrentPlanet['planet'],
-       'curPlanetPT'         => $CurrentPlanet['planet_type'],
-       'galaxy'              => $galaxy,
-       'system'              => $system,
-       'planet'              => $planet,
-       'MIPs'                => $CurrentMIP,
-       'MODE'                => $mode,
-       'dpath'               => $dpath,
-       'planets'             => $planetcount ? ($lang['gal_planets'] . $planetcount) : $lang['gal_planetNone'],
-       'RCs'                 => pretty_number($CurrentPlanet['recycler']),
-       'SPs'                 => pretty_number($CurrentPlanet['spy_sonde']),
-       'SHOW_ADMIN'          => SHOW_ADMIN,
-       'fleet_count'         => $maxfleet_count,
-       'fleet_max'           => $fleetmax,
-       'ALLY_ID'             => $user['ally_id'],
-       'USER_ID'             => $user['id'],
-       'script'              => $script,
-       'ACT_SPY'             => $user['settings_esp'],
-       'ACT_SPIO'            => $user['spio_anz'],
-       'ACT_WRITE'           => $user['settings_wri'],
-       'ACT_FRIEND'          => $user['settings_bud'],
+       'rows'           => $Result,
+       'userCount'      => $config->users_amount,
+       'curPlanetID'    => $CurrentPlanet['id'],
+       'curPlanetG'     => $CurrentPlanet['galaxy'],
+       'curPlanetS'     => $CurrentPlanet['system'],
+       'curPlanetP'     => $CurrentPlanet['planet'],
+       'curPlanetPT'    => $CurrentPlanet['planet_type'],
+       'deathStars'     => $CurrentPlanet[$resource[214]],
+       'galaxy'         => $galaxy,
+       'system'         => $system,
+       'planet'         => $planet,
+       'MIPs'           => $CurrentMIP,
+       'MODE'           => $mode,
+       'dpath'          => $dpath,
+       'planets'        => $planetcount ? ($lang['gal_planets'] . $planetcount) : $lang['gal_planetNone'],
+       'RCs'            => pretty_number($CurrentPlanet['recycler']),
+       'SPs'            => pretty_number($CurrentPlanet['spy_sonde']),
+       'SHOW_ADMIN'     => SHOW_ADMIN,
+       'fleet_count'    => $maxfleet_count,
+       'fleet_max'      => $fleetmax,
+       'ALLY_ID'        => $user['ally_id'],
+       'USER_ID'        => $user['id'],
+       'script'         => $script,
+       'ACT_SPY'        => $user['settings_esp'],
+       'ACT_SPIO'       => $user['spio_anz'],
+       'ACT_WRITE'      => $user['settings_wri'],
+       'ACT_FRIEND'     => $user['settings_bud'],
+       'ACT_MISSILE'    => $user["settings_mis"] && ($CurrentMIP > 0) && ($galaxy == $CurrentGalaxy) &&
+                           ($system >= $CurrentSystem - $MissileRange) && ($system <= $CurrentSystem + $MissileRange),
+       'PLANET_PHALANX' => $HavePhalanx && $galaxy == $CurrentGalaxy &&
+                           $system >= $CurrentSystem - $PhalanxRange && $system <= $CurrentSystem + $PhalanxRange,
      )
   );
 
-//  pr();
   display ($template, $lang['sys_universe'], true, '', false);
 ?>

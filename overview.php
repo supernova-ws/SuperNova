@@ -448,10 +448,10 @@ switch ($mode) {
     $parse['anothers_planets']      = $AllPlanets;
     $parse['max_users']             = $game_config['users_amount'];
 
-    $galaxyrow = doquery("SELECT * FROM {{table}} WHERE `id_planet` = '{$planetrow['id']}';", 'galaxy', true);
-    $parse['metal_debris']          = pretty_number($galaxyrow['metal']);
-    $parse['crystal_debris']        = pretty_number($galaxyrow['crystal']);
-    if (($galaxyrow['metal'] || $galaxyrow['crystal']) && $planetrow[$resource[209]]) {
+    $debris = doquery("SELECT * FROM {{table}} WHERE `id_planet` = '{$planetrow['id']}';", 'galaxy', true);
+    $parse['metal_debris']          = pretty_number($debris['metal']);
+    $parse['crystal_debris']        = pretty_number($debris['crystal']);
+    if (($debris['metal'] || $debris['crystal']) && $planetrow[$resource[209]]) {
       $parse['get_link'] = " (<a href=\"quickfleet.php?mode=8&g=".$planetrow['galaxy']."&s=".$planetrow['system']."&p=".$planetrow['planet']."&t=2\">". $lang['type_mission'][8] ."</a>)";
     } else {
       $parse['get_link'] = '';
