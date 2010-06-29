@@ -5,14 +5,15 @@
  *
  * Galaxy view
  *
- * @version 1.3s Security checks by Gorlum for http://supernova.ws
- * @version 1.3
- * @copyright 2008 by Chlorel for XNova
  * History version
- * 1.3 - 2eme Nettoyage Chlorel ... Mise en fonction et debuging complet
- * 1.2 - 1er Nettoyage Chlorel ...
- * 1.1 - Modified by -MoF- (UGamela germany)
- * 1.0 - Created by Perberos
+ *   2.0 - Rewrote by Gorlum for http://supernova.ws
+ *     [+] Template-related parts cutted from PHP and moved to TPL-code
+ *   1.4 - Security checks & tests by Gorlum for http://supernova.ws
+ *   1.3 - 2eme Nettoyage Chlorel ... Mise en fonction et debuging complet
+ *   1.2 - 1er Nettoyage Chlorel ...
+ *   1.1 - Modified by -MoF- (UGamela germany)
+ *   1.0 - Created by Perberos
+ * @copyright 2008 by Chlorel for XNova
  */
 
 define('INSIDE'  , true);
