@@ -41,8 +41,10 @@ $parse['rpg_exchange_darkMatter'] = $config->rpg_exchange_darkMatter;
 $parse['mode']  = $mode;
 $page_title = "{$lang['eco_mrk_title']}";
 
-$newrow = $planetrow;
+$stock = sys_fleetUnPack($config->eco_stockman_fleet);
 
+$newrow = $planetrow;
+$newstock = $stock;
 switch($mode){
   case 1: // Resource trader
     $page_title .= " - {$lang['eco_mrk_trader']}";
@@ -134,6 +136,7 @@ switch($mode){
           }
           $qry .= "`{$resource[$shipID]}` = `{$resource[$shipID]}` - {$shipCount}, ";
           $newrow[$resource[$shipID]] -= $shipCount;
+          $newstock[$shipID] += $shipCount;
 
           $total['metal'] += floor($pricelist[$shipID]['metal']*$config->rpg_scrape_metal)*$shipCount;
           $total['crystal'] += floor($pricelist[$shipID]['crystal']*$config->rpg_scrape_crystal)*$shipCount;
@@ -165,6 +168,10 @@ switch($mode){
             $rpg_deduct = $config->rpg_cost_scraper;
 
             $planetrow = $newrow;
+            $stock = $newstock;
+
+            $config->eco_stockman_fleet = sys_fleetPack($stock);
+            $config->save('eco_stockman_fleet');
           }else{
             $intError = 3;
           }

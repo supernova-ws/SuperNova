@@ -176,6 +176,23 @@ class classPersistent extends classCache {
 
     $this->_DB_LOADED = true;
   }
+
+  public function save($name){
+    if($name){
+      doquery("UPDATE {{table}} SET `{$this->sqlValueName}` = '{$this->$name}' WHERE `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName);
+      if(!mysql_affected_rows())
+        doquery("INSERT INTO {{table}} SET `{$this->sqlValueName}` = '{$this->$name}', `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName);
+    };
+  }
+
+  public function load($name){
+    if($name){
+      $qry = doquery("SELECT `{$this->sqlValueName}` FROM {{table}} WHERE `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName, true);
+      $this->$name = $qry[$this->sqlValueName];
+
+      return $this->$name;
+    };
+  }
 }
 
 class classConfig extends classPersistent {
@@ -250,7 +267,10 @@ class classConfig extends classPersistent {
     'rpg_scrape_crystal' => 0.50,
     'rpg_scrape_deuterium' => 0.25,
 
-     // Variables
+    // Economy
+    'eco_stockman_fleet' => '',
+
+    // Variables
     'var_stats_lastUpdated' => '0',
     'var_stats_schedule' => 'd@04:00:00',
   );
