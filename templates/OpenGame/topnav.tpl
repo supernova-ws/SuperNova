@@ -29,9 +29,9 @@ input.frameles
   </tr>
   <tr class="header" align=center valign=middle><form name='ressources'> <center>
     <td class="header" align="center" width="150"><b><font color="#FFFF00">{Ressverf}</font></b></td>
-    <td class="header" align="center" width="150"><font><input class='frameles' type='text' name='metal' value='' readonly></font></td>
-    <td class="header" align="center" width="150"><font><input class='frameles' type='text' name='crystal' value='' readonly></font></td>
-    <td class="header" align="center" width="150"><font><input class='frameles' type='text' name='deut' value='' readonly></font></td>
+    <td class="header" align="center" width="150"><span id='onPlanetMetal'>{metalh}</span></td>
+    <td class="header" align="center" width="150"><span id='onPlanetCrystal'>{crystalh}</span></td>
+    <td class="header" align="center" width="150"><span id='onPlanetDeuterium'>{deuteriumh}</span></td>
     <td class="header" align="center" width="150"><font>{energy_total}</font></td>
     <td class="header" align="center" width="140" rowspan="2"><font color="green"><b>{rpg_points}</b></font></td>
     <td class="header" align="center" valign=middle width="140" rowspan="2" style="white-space: nowrap;">{message}</td>
@@ -55,7 +55,9 @@ var val = 0;
 var val2 = 0;
 var val3 = 0;
 
-ID=window.setTimeout('update();', 1000);
+var d_m = document.getElementById('onPlanetMetal');
+var d_c = document.getElementById('onPlanetCrystal');
+var d_d = document.getElementById('onPlanetDeuterium');
 
 function update() {
   now = new Date();
@@ -64,29 +66,31 @@ function update() {
   val = ( {metal_perhour} /3600.0) * seconds + {metalh};
   if( val >= {metal_mmax} ) {
     val = {metalh};
-    document.ressources.metal.style.color = '#FF0000';
-    document.ressources.metal.style.fontWeight = 'bold';
+    d_m.style.color = '#FF0000';
+    d_m.style.fontWeight = 'bold';
   }
-  document.ressources.metal.value = number_format( val ,2);
+  d_m.innerHTML = number_format( val ,2);
 
   val = ( {crystal_perhour} /3600.0) * seconds + {crystalh};
   if( val >= {crystal_mmax} ) {
     val = {crystalh};
-    document.ressources.crystal.style.color = '#FF0000';
-    document.ressources.crystal.style.fontWeight = 'bold';
+    d_c.style.color = '#FF0000';
+    d_c.style.fontWeight = 'bold';
   }
-  document.ressources.crystal.value = number_format( val ,2);
+  d_c.innerHTML = number_format( val ,2);
 
   val = ( {deuterium_perhour} /3600.0) * seconds + {deuteriumh};
   if( val >= {deuterium_mmax} ) {
     val = {deuteriumh};
-    document.ressources.deut.style.color = '#FF0000';
-    document.ressources.deut.style.fontWeight = 'bold';
+    d_d.style.color = '#FF0000';
+    d_d.style.fontWeight = 'bold';
   }
-  document.ressources.deut.value = number_format( val ,2);
+  d_d.innerHTML = number_format( val ,2);
 
   ID=window.setTimeout('update();',1000);
 }
+
+update();
 
 function number_format(number,laenge) {
   number = Math.round( number * Math.pow(10, laenge) ) / Math.pow(10, laenge);
