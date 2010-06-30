@@ -62,17 +62,28 @@ function update() {
   seconds = (now - event) /1000;
 
   val = ( {metal_perhour} /3600.0) * seconds + {metalh};
-  if( val >= {metal_mmax} ) val = {metal_mmax};
+  if( val >= {metal_mmax} ) {
+    val = {metalh};
+    document.ressources.metal.style.color = '#FF0000';
+    document.ressources.metal.style.fontWeight = 'bold';
+  }
   document.ressources.metal.value = number_format( val ,2);
 
   val = ( {crystal_perhour} /3600.0) * seconds + {crystalh};
-  if( val >= {crystal_mmax} ) val = {crystal_mmax};
+  if( val >= {crystal_mmax} ) {
+    val = {crystalh};
+    document.ressources.crystal.style.color = '#FF0000';
+    document.ressources.crystal.style.fontWeight = 'bold';
+  }
   document.ressources.crystal.value = number_format( val ,2);
 
   val = ( {deuterium_perhour} /3600.0) * seconds + {deuteriumh};
-  if( val >= {deuterium_mmax} ) val = {deuterium_mmax};
+  if( val >= {deuterium_mmax} ) {
+    val = {deuteriumh};
+    document.ressources.deut.style.color = '#FF0000';
+    document.ressources.deut.style.fontWeight = 'bold';
+  }
   document.ressources.deut.value = number_format( val ,2);
-
 
   ID=window.setTimeout('update();',1000);
 }
