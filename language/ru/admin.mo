@@ -72,9 +72,12 @@ $lang['adm_an_announce']  = "Содержание";
 $lang['adm_an_total']     = "Всего новостей: ";
 $lang['adm_an_add']       = "Добавить новость";
 $lang['adm_an_edit']      = "Редактировать новость";
+$lang['adm_an_copy']      = "Скопировать новость";
 $lang['adm_an_mode_new']  = "Новая";
 $lang['adm_an_mode_edit'] = "Редактирование";
-$lang['adm_an_mode_dupe'] = "Дубликат";
+$lang['adm_an_mode_copy'] = "Дубликат";
+$lang['adm_an_copy_shrt'] = "Дуб";
+$lang['adm_an_edit_shrt'] = "Ред";
 
 $lang['adm_am_plid']  = "ID планеты";
 $lang['adm_am_done']  = "Добавление прошло успешно";

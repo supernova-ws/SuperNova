@@ -2,8 +2,9 @@
 function displayP($template){
   global $lang;
 
-  foreach($template->parse as $key => $data)
-    $template->assign_var($key, $data); // This is an example of assigning a template variable
+  if(isset($template->parse))
+    foreach($template->parse as $key => $data)
+      $template->assign_var($key, $data);
 
   $template->display('body');
 }
