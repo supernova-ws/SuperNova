@@ -244,7 +244,7 @@ class classConfig extends classPersistent {
     'rpg_exchange_metal' => 1,
     'rpg_exchange_crystal' => 2,
     'rpg_exchange_deuterium' => 4,
-    'rpg_exchange_darkMatter' => 10000,
+    'rpg_exchange_darkMatter' => 100000,
 
     'rpg_scrape_metal' => 0.75,
     'rpg_scrape_crystal' => 0.50,
