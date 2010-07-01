@@ -205,8 +205,7 @@ switch($mode){
     if($ships){
       $ships .= "1";
       $template->assign_var('ships', $ships);
-    }else
-      $template->assign_var('NOSHIP', true);
+    };
     break;
 
   case 3: // S/H ship seller
@@ -307,8 +306,6 @@ switch($mode){
       }
       $ships .= "1";
       $template->assign_var('ships', $ships);
-    }else{
-      $template->assign_var('NOSHIP', true);
     };
     break;
 

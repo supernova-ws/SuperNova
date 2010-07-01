@@ -49,9 +49,9 @@ var rates = Array ( {rpg_scrape_metal}, {rpg_scrape_crystal}, {rpg_scrape_deuter
     <tr><td class="c" colspan=6><div class="fl"><!-- IF MODE == 2 -->{L_eco_mrk_scraper}<!-- ELSE -->{L_eco_mrk_stockman}<!-- ENDIF --></div><div class="fr">{L_eco_mrk_service_cost} {rpg_cost} {L_eco_mrk_dark_matter_short}</div></td></tr>
     <tr align="center" rowspan=2><td class="c" rowspan=2>{L_sys_ships}</td><td class="c" colspan=3><!-- IF MODE == 2 -->{L_eco_mrk_scraper_price} {L_eco_mrk_scraper_perShip}<!-- ELSE -->{L_eco_mrk_stockman_price} {L_eco_mrk_stockman_perShip}<!-- ENDIF --></td><td class="c" rowspan=2><!-- IF MODE == 2 -->{L_eco_mrk_scraper_onOrbit}<!-- ELSE -->{L_eco_mrk_stockman_onStock}<!-- ENDIF --></td><td class="c" rowspan=2><!-- IF MODE == 2 -->{L_eco_mrk_scraper_to}<!-- ELSE -->{L_eco_mrk_stockman_buy}<!-- ENDIF --></td></tr>
     <tr align="center"><td class="c">{L_Metal}</td><td class="c">{L_Crystal}</td><td class="c">{L_Deuterium}</td></tr>
-<!-- IF NOSHIP -->
+<!-- IF .ships == 0 -->
     <tr><th class="c" colspan="6" align=center><!-- IF MODE == 2 -->{L_eco_mrk_scraper_noShip}<!-- ELSE -->{L_eco_mrk_stockman_noShip}<!-- ENDIF --></td></tr>
-<!-- ELSE --><!-- BEGIN ships -->    
+<!-- ELSE --><!-- BEGIN ships -->
     <tr>
       <th>{ships.NAME}</th>
       <th><span class="fr">{ships.METAL}</span></th>
