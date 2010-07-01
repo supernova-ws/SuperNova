@@ -202,8 +202,11 @@ switch($mode){
         $ships .= '), ';
       }
     }
-    $ships .= "1";
-    $template->assign_var('ships', $ships);
+    if($ships){
+      $ships .= "1";
+      $template->assign_var('ships', $ships);
+    }else
+      $template->assign_var('NOSHIP', true);
     break;
 
   case 3: // S/H ship seller
@@ -282,27 +285,31 @@ switch($mode){
     $template = gettemplate('market_fleet', true);
     $template->assign_var('rpg_cost', $config->rpg_cost_stockman);
 
-    foreach($stock as $shipID => $shipCount){
-      if($shipCount){
-        $template->assign_block_vars('ships', array(
-          'ID'        => $shipID,
-          'COUNT'     => $shipCount,
-          'NAME'      => $lang['tech'][$shipID],
-          'METAL'     => floor($pricelist[$shipID]['metal']/$config->rpg_scrape_metal),
-          'CRYSTAL'   => floor($pricelist[$shipID]['crystal']/$config->rpg_scrape_crystal),
-          'DEUTERIUM' => floor($pricelist[$shipID]['deuterium']/$config->rpg_scrape_deuterium),
-          'AMOUNT'    => intval($data['ships'][$shipID]),
-        ));
-        $ships .= "Array($shipID, ";
-        $ships .= floor($pricelist[$shipID]['metal']/$config->rpg_scrape_metal) . ", ";
-        $ships .= floor($pricelist[$shipID]['crystal']/$config->rpg_scrape_crystal) . ", ";
-        $ships .= floor($pricelist[$shipID]['deuterium']/$config->rpg_scrape_deuterium) . ", ";
-        $ships .= $shipCount;
-        $ships .= '), ';
+    if($stock){
+      foreach($stock as $shipID => $shipCount){
+        if($shipCount){
+          $template->assign_block_vars('ships', array(
+            'ID'        => $shipID,
+            'COUNT'     => $shipCount,
+            'NAME'      => $lang['tech'][$shipID],
+            'METAL'     => floor($pricelist[$shipID]['metal']/$config->rpg_scrape_metal),
+            'CRYSTAL'   => floor($pricelist[$shipID]['crystal']/$config->rpg_scrape_crystal),
+            'DEUTERIUM' => floor($pricelist[$shipID]['deuterium']/$config->rpg_scrape_deuterium),
+            'AMOUNT'    => intval($data['ships'][$shipID]),
+          ));
+          $ships .= "Array($shipID, ";
+          $ships .= floor($pricelist[$shipID]['metal']/$config->rpg_scrape_metal) . ", ";
+          $ships .= floor($pricelist[$shipID]['crystal']/$config->rpg_scrape_crystal) . ", ";
+          $ships .= floor($pricelist[$shipID]['deuterium']/$config->rpg_scrape_deuterium) . ", ";
+          $ships .= $shipCount;
+          $ships .= '), ';
+        }
       }
-    }
-    $ships .= "1";
-    $template->assign_var('ships', $ships);
+      $ships .= "1";
+      $template->assign_var('ships', $ships);
+    }else{
+      $template->assign_var('NOSHIP', true);
+    };
     break;
 
   case 4: // Banker
