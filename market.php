@@ -184,7 +184,7 @@ switch($mode){
     $template->assign_var('rpg_cost', $config->rpg_cost_scraper);
 
     foreach($reslist['fleet'] as $shipID){
-      if($planetrow[$resource[$shipID]] >= 0){
+      if($planetrow[$resource[$shipID]] > 0){
         $template->assign_block_vars('ships', array(
           'ID' => $shipID,
           'COUNT' => $planetrow[$resource[$shipID]],
@@ -287,7 +287,7 @@ switch($mode){
 
     if($stock){
       foreach($stock as $shipID => $shipCount){
-        if($shipCount >= 0){
+        if($shipCount > 0){
           $template->assign_block_vars('ships', array(
             'ID'        => $shipID,
             'COUNT'     => $shipCount,

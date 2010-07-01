@@ -48,7 +48,7 @@ $lang['eco_mrk_scraper_onOrbit'] = 'На орбите';
 $lang['eco_mrk_scraper_to']      = 'Пустить на слом';
 $lang['eco_mrk_scraper_res']     = 'Получен следующий лом:';
 $lang['eco_mrk_scraper_ships']   = 'Пущены на лом следующие корабли:';
-$lang['eco_mrk_scraper_noShip']  = 'На орбите планеты нет кораблей';
+$lang['eco_mrk_scraper_noShip']  = 'На орбите нет кораблей';
 
 $lang['eco_mrk_stockman']         = 'Продавец подержанных кораблей';
 $lang['eco_mrk_stockman_price']   = 'Цена';
