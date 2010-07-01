@@ -177,8 +177,11 @@ class classPersistent extends classCache {
     $this->_DB_LOADED = true;
   }
 
-  public function save($name){
+  public function save($name, $value = NULL){
     if($name){
+      if($value !== NULL)
+        $this->$name = $value;
+
       doquery("UPDATE {{table}} SET `{$this->sqlValueName}` = '{$this->$name}' WHERE `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName);
       if(!mysql_affected_rows())
         doquery("INSERT INTO {{table}} SET `{$this->sqlValueName}` = '{$this->$name}', `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName);
@@ -253,8 +256,8 @@ class classConfig extends classPersistent {
     //Roleplay system
     'rpg_cost_trader'    => 1,     // Trader trades between resources
     'rpg_cost_scraper'   => 1,     // Scrapper buys ship for fraction of cost
-    'rpg_cost_banker'    => 1,     // Banker can hold some resources
     'rpg_cost_stockman'  => 1,     // Stockman resells ship that was scrapped
+    'rpg_cost_banker'    => 1,     // Banker can hold some resources
     'rpg_cost_exchange'  => 1,     // Exchange allows resource trade between players
     'rpg_cost_pawnshop'  => 1,     // You can get loan in pawnshop
 

@@ -46,8 +46,8 @@ var rates = Array ( {rpg_scrape_metal}, {rpg_scrape_crystal}, {rpg_scrape_deuter
 <br />
 <form action="" method="POST">
   <table>
-    <tr><td class="c" colspan=6><div class="fl">{L_eco_mrk_scraper}</div><div class="fr">{L_eco_mrk_service_cost} {rpg_cost_scraper} {L_eco_mrk_dark_matter_short}</div></td></tr>
-    <tr align="center" rowspan=2><td class="c" rowspan=2>{L_sys_ships}</td><td class="c" colspan=3>{L_eco_mrk_scraper_price} {L_eco_mrk_scraper_perShip}</td><td class="c" rowspan=2>{L_eco_mrk_scraper_onOrbit}</td><td class="c" rowspan=2>{L_eco_mrk_scraper_to}</td></tr>
+    <tr><td class="c" colspan=6><div class="fl"><!-- IF MODE == 2 -->{L_eco_mrk_scraper}<!-- ELSE -->{L_eco_mrk_stockman}<!-- ENDIF --></div><div class="fr">{L_eco_mrk_service_cost} {rpg_cost} {L_eco_mrk_dark_matter_short}</div></td></tr>
+    <tr align="center" rowspan=2><td class="c" rowspan=2>{L_sys_ships}</td><td class="c" colspan=3><!-- IF MODE == 2 -->{L_eco_mrk_scraper_price} {L_eco_mrk_scraper_perShip}<!-- ELSE -->{L_eco_mrk_stockman_price} {L_eco_mrk_stockman_perShip}<!-- ENDIF --></td><td class="c" rowspan=2><!-- IF MODE == 2 -->{L_eco_mrk_scraper_onOrbit}<!-- ELSE -->{L_eco_mrk_stockman_onStock}<!-- ENDIF --></td><td class="c" rowspan=2><!-- IF MODE == 2 -->{L_eco_mrk_scraper_to}<!-- ELSE -->{L_eco_mrk_stockman_buy}<!-- ENDIF --></td></tr>
     <tr align="center"><td class="c">{L_Metal}</td><td class="c">{L_Crystal}</td><td class="c">{L_Deuterium}</td></tr>
 <!-- BEGIN ships -->    
     <tr>
@@ -56,7 +56,7 @@ var rates = Array ( {rpg_scrape_metal}, {rpg_scrape_crystal}, {rpg_scrape_deuter
       <th><span class="fr">{ships.CRYSTAL}</span></th>
       <th><span class="fr">{ships.DEUTERIUM}</span></th>
       <th><span class="fr">{ships.COUNT}</span></th>
-      <th><input name="ships[{ships.ID}]" value="{ships.SELL}" onKeyUp="javascript:reCalc(this);"></th>
+      <th><input name="ships[{ships.ID}]" value="{ships.AMOUNT}" onKeyUp="javascript:reCalc(this);"></th>
     </tr>
 <!-- END ships -->    
     <tr align=right>
@@ -64,10 +64,10 @@ var rates = Array ( {rpg_scrape_metal}, {rpg_scrape_crystal}, {rpg_scrape_deuter
       <td class="c"><span id="total_metal">0</span></td>
       <td class="c"><span id="total_crystal">0</span></td>
       <td class="c"><span id="total_deuterium">0</span></td>
-      <td class="c" colspan=2><input type="submit" name="scrape" value="{L_eco_mrk_scraper_to}"></td>
+      <td class="c" colspan=2><input type="submit" name="<!-- IF MODE == 2 -->scrape<!-- ELSE -->stock<!-- ENDIF -->" value="<!-- IF MODE == 2 -->{L_eco_mrk_scraper_to}<!-- ELSE -->{L_eco_mrk_stockman_buy}<!-- ENDIF -->"></td>
     </td></tr>
   </table>
-  <input type="hidden" name="mode" value="{mode}">
+  <input type="hidden" name="mode" value="{MODE}">
 </form>
 
 <script type="text/javascript"><!--

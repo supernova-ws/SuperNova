@@ -23,11 +23,13 @@ $lang['eco_mrk_services']          = 'Услуги';
 $lang['eco_mrk_dark_matter_short'] = 'ТМ';
 $lang['eco_mrk_service_cost']      = 'Стоимость услуги';
 
-$lang['eco_mrk_error_title']       = $lang['eco_mrk_title'] . ' - Ошибка';
-$lang['eco_mrk_error_noDM']        = 'Не хватает Темной Материи для завершения операции';
-$lang['eco_mrk_error_noResources'] = 'Не хватает ресурсов для завершения операции';
-$lang['eco_mrk_error_noShips']     = 'Вы пытаетесь пустить на лом больше кораблей, чем есть на орбите';
-$lang['eco_mrk_error_zeroRes']     = 'Нужно выбрать корабли для продажи';
+$lang['eco_mrk_error_title']        = $lang['eco_mrk_title'] . ' - Ошибка';
+$lang['eco_mrk_error_noDM']         = 'Не хватает Темной Материи для завершения операции';
+$lang['eco_mrk_error_noResources']  = 'Не хватает ресурсов для завершения операции';
+$lang['eco_mrk_error_noShips']      = 'Вы пытаетесь пустить на лом больше кораблей, чем есть на орбите';
+$lang['eco_mrk_error_noStock']      = 'Вы пытаетесь купить больше кораблей, чем есть у продавца. Возможно, пока вы выбирали корабли, кто-то другой уже купил их';
+$lang['eco_mrk_error_zeroRes']      = 'Нужно выбрать корабли для продажи';
+$lang['eco_mrk_error_zeroResStock'] = 'Нужно выбрать корабли для покупки';
 
 $lang['eco_mrk_trader']          = 'Торговец ресурсами';
 $lang['eco_mrk_trader_cost']     = 'Стоимость обмена ресурсов';
@@ -42,13 +44,21 @@ $lang['eco_mrk_scraper_price']   = 'Выход лома';
 $lang['eco_mrk_scraper_perShip'] = 'с корабля';
 $lang['eco_mrk_scraper_total']   = 'Всего';
 $lang['eco_mrk_scraper_cost']    = 'Продать корабли на лом стоит';
-$lang['eco_mrk_scraper_ships']   = 'Пущены на лом следующие корабли:';
-$lang['eco_mrk_scraper_got']     = 'Получен следующий лом:';
 $lang['eco_mrk_scraper_onOrbit'] = 'На орбите';
 $lang['eco_mrk_scraper_to']      = 'Пустить на слом';
+$lang['eco_mrk_scraper_res']     = 'Получен следующий лом:';
+$lang['eco_mrk_scraper_ships']   = 'Пущены на лом следующие корабли:';
+
+$lang['eco_mrk_stockman']         = 'Продавец подержанных кораблей';
+$lang['eco_mrk_stockman_price']   = 'Цена';
+$lang['eco_mrk_stockman_perShip'] = 'корабля';
+$lang['eco_mrk_stockman_onStock'] = 'У продавца';
+$lang['eco_mrk_stockman_buy']     = 'Купить корабли';
+$lang['eco_mrk_stockman_res']     = 'Стоимость купленных кораблей:';
+$lang['eco_mrk_stockman_ships']   = 'Куплены следующие корабли:';
+
 
 $lang['eco_mrk_banker']   = 'Банкир';
-$lang['eco_mrk_stockman'] = 'Продавец подержанных кораблей';
 $lang['eco_mrk_exchange'] = 'Биржа обмена ресурсов';
 $lang['eco_mrk_pawnshop'] = 'Ломбард';
 ?>
