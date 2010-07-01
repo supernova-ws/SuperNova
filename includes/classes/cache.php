@@ -149,7 +149,7 @@ class classPersistent extends classCache {
     $this->sqlValueName = $internalName.'_value';
 
     if(!$this->_DB_LOADED)
-      $this->loadDB();
+      $this->db_loadAll();
   }
 
   public static function getInstance($gamePrefix = 'ogame_', $internalName = '') {
@@ -166,7 +166,7 @@ class classPersistent extends classCache {
     }
   }
 
-  public function loadDB(){
+  public function db_loadAll(){
     $this->loadDefaults();
 
     $query = doquery($this->sqlSelectAll, $this->sqlTableName);
@@ -177,7 +177,7 @@ class classPersistent extends classCache {
     $this->_DB_LOADED = true;
   }
 
-  public function save($name, $value = NULL){
+  public function db_saveItem($name, $value = NULL){
     if($name){
       if($value !== NULL)
         $this->$name = $value;
@@ -188,7 +188,7 @@ class classPersistent extends classCache {
     };
   }
 
-  public function load($name){
+  public function db_loadItem($name){
     if($name){
       $qry = doquery("SELECT `{$this->sqlValueName}` FROM {{table}} WHERE `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName, true);
       $this->$name = $qry[$this->sqlValueName];

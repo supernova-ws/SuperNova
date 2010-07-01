@@ -25,7 +25,7 @@ if($nextStatUpdate>$config->stats_lastUpdated){
 
   $msg = $lang['adm_done'] . ': ' . $totaltime . ' ' . $lang['sys_sec'];
   $debug->warning("Stat update complete: " . $msg, "Stat update", 999);
-  $config->save('stats_lastUpdated');
+  $config->db_saveItem('stats_lastUpdated');
 }else{
 //  $msg = $lang['adm_schedule_none'];
 }

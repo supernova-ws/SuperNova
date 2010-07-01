@@ -2,8 +2,6 @@
 //print('Chat temporary disabled');
 //die();
 
- ini_set('display_error',0);
- ini_set('error_reporting',0);
 /**
  * chat_msg.php
  *

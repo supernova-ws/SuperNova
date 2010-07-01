@@ -162,7 +162,7 @@ switch($mode){
             $stock = $newstock;
 
             $config->eco_stockman_fleet = sys_fleetPack($stock);
-            $config->save('eco_stockman_fleet');
+            $config->db_saveItem('eco_stockman_fleet');
           }else{
             $intError = 3;
           }
@@ -262,7 +262,7 @@ switch($mode){
             $stock = $newstock;
 
             $config->eco_stockman_fleet = sys_fleetPack($stock);
-            $config->save('eco_stockman_fleet');
+            $config->db_saveItem('eco_stockman_fleet');
           }else{
             $intError = 3;
           }

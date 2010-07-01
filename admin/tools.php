@@ -23,7 +23,7 @@ if ($user['authlevel'] >= 3) {
 
   switch($mode){
     case 1:
-      $config->loadDB();
+      $config->db_loadAll();
       break;
   }
 
