@@ -11,7 +11,6 @@
 // ----------------------------------------------------------------------------------------------------------------
 
 if ( defined('INSIDE') ) {
-  define('ADMINEMAIL'               , "gorlum@triolan.ua");
   define('GAMEURL'                  , "http://".$_SERVER['HTTP_HOST']."/");
 
   // Game type constants starts with "GAME_"
@@ -25,10 +24,6 @@ if ( defined('INSIDE') ) {
 
   define('MAX_ATTACK_ROUNDS', 10);
 
-  // Definition du monde connu !
-  //define('MAX_GALAXY_IN_WORLD'      , 9);
-  //define('MAX_SYSTEM_IN_GALAXY'     , 499);
-  //define('MAX_PLANET_IN_SYSTEM'     , 15);
   // Nombre de colones pour les rapports d'espionnage
   define('SPY_REPORT_ROW'           , 1);
   // Cases données par niveau de Base Lunaire

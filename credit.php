@@ -17,7 +17,7 @@ include($ugamela_root_path . 'common.' . $phpEx);
   includeLang('credit');
 
   $parse   = $lang;
-  $parse['admin_email'] = ADMINEMAIL;
+  $parse['admin_email'] = $config->game_adminEmail;
   $parse['forum_url'] = '/phpBB3/';
 
   display(parsetemplate(gettemplate('credit_body'), $parse), $lang['cred_credit'], false, "", false, false);

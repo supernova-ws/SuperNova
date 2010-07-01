@@ -227,6 +227,7 @@ class classConfig extends classPersistent {
     'resource_multiplier' => 1,
     'urlaubs_modus_erz' => 0,
     'users_amount' => 0,
+    'game_adminEmail' => '',
 
     // Game global settings
     'game_mode' => '0', // 0 - SuperNova, 1 - oGame
@@ -273,9 +274,9 @@ class classConfig extends classPersistent {
     // Economy
     'eco_stockman_fleet' => '',
 
-    // Variables
-    'var_stats_lastUpdated' => '0',
-    'var_stats_schedule' => 'd@04:00:00',
+    // Statistic
+    'stats_lastUpdated' => '0',
+    'stats_schedule' => 'd@04:00:00',
   );
 
   public static function getInstance($gamePrefix = 'ogame_') {

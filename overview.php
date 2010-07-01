@@ -569,7 +569,7 @@ switch ($mode) {
     }
     $msg .= '</table>';
     $parse['LastChat'] = CHT_messageParse($msg);
-    $parse['admin_email'] = ADMINEMAIL;
+    $parse['admin_email'] = $config->game_adminEmail;
 
     display(parsetemplate(gettemplate('overview_body'), $parse), $lang['Overview']);
     break;

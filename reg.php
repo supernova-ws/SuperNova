@@ -40,13 +40,15 @@ function sendpassemail($emailaddress, $password) {
 }
 
 function mymail($to, $title, $body, $from = '') {
+  global $config;
+
   $from = trim($from);
 
   if (!$from) {
-    $from = ADMINEMAIL;
+    $from = $config->game_adminEmail;
   }
 
-  $rp     = ADMINEMAIL;
+  $rp     = $config->game_adminEmail;
 
   $head   = '';
   $head  .= "Content-Type: text/plain \r\n";
