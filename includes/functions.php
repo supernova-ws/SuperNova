@@ -155,7 +155,7 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
 // $metatags  -> S'il y a quelques actions particulieres a faire ...
 // $AdminPage -> Si on est dans la section admin ... faut le dire ...
 function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true) {
-  global $link, $game_config, $debug, $user, $planetrow, $dpath, $IsUserChecked;
+  global $link, $game_config, $debug, $user, $planetrow, $dpath, $IsUserChecked, $time_now;
 
   if (!$AdminPage) {
     $AdminPage = 0;
@@ -216,6 +216,8 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   $DisplayPage .= StdFooter();
 
   echo $DisplayPage;
+
+  doquery("INSERT INTO {{table}} (`time`, `page`, `user_id`, `ip`) VALUES ('{$time_now}', '{$_SERVER['PHP_SELF']}', '{$user['id']}', '{$_SERVER['REMOTE_ADDR']}');", 'counter');
 
   if (isset($link)) {
     mysql_close();

@@ -434,9 +434,9 @@ if ( defined('INSIDE')) {
   // Resource list
   $reslist['resources'] = array ( 0 => 'metal', 1 => 'crystal', 2 => 'deuterium', 3 => 'dark_matter');
 
-  $tableList = array( 'aks', 'alliance', 'announce', 'annonce', 'banned', 'buddy', 'chat', 'config', 'errors', 'fleets',
-    'fleet_log', 'galaxy', 'iraks', 'logs', 'messages', 'notes', 'planets', 'referrals', 'rw', 'statpoints', 'update',
-    'users', 'alliance_requests',
+  $tableList = array( 'aks', 'alliance', 'alliance_requests', 'announce', 'annonce', 'banned', 'buddy', 'chat', 'config', 'counter',
+    'errors', 'fleets', 'fleet_log', 'galaxy', 'iraks', 'logs', 'messages', 'notes', 'planets', 'referrals', 'rw', 'statpoints',
+    'update', 'users',
   );
 }
 ?>
