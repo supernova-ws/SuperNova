@@ -38,8 +38,8 @@ if ( $user['authlevel'] >= 3 ) {
       set_time_limit(30);
     case 1:
       if(!$tables['counter']){
-        doquery(
-"CREATE TABLE `{{counter}}` (
+        mysql_query(
+"CREATE TABLE `{$config->db_prefix}counter` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `time` int(11) NOT NULL DEFAULT '0',
   `page` varchar(255) CHARACTER SET utf8 DEFAULT '0',
