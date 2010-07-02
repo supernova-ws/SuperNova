@@ -173,34 +173,6 @@ function CreateOnePlanetRecord($Galaxy, $System, $Position, $PlanetOwnerID, $Pla
     $QrySelectPlanet .= "`id_owner` = '". $planet['id_owner'] ."';";
     $GetPlanetID      = doquery( $QrySelectPlanet , 'planets', true);
 
-    // Testons s'il y a deja eu une planete ici
-    $QrySelectGalaxy  = "SELECT * ";
-    $QrySelectGalaxy .= "FROM `{{table}}` ";
-    $QrySelectGalaxy .= "WHERE ";
-    $QrySelectGalaxy .= "`galaxy` = '". $planet['galaxy'] ."' AND ";
-    $QrySelectGalaxy .= "`system` = '". $planet['system'] ."' AND ";
-    $QrySelectGalaxy .= "`planet` = '". $planet['planet'] ."';";
-    $GetGalaxyID      = doquery( $QrySelectGalaxy, 'galaxy', true);
-
-    if ($GetGalaxyID) {
-      // Ah ... Ce secteur de ce vaste monde a deja ete occupé
-      $QryUpdateGalaxy  = "UPDATE `{{table}}` SET ";
-      $QryUpdateGalaxy .= "`id_planet` = '". $GetPlanetID['id'] ."' ";
-      $QryUpdateGalaxy .= "WHERE ";
-      $QryUpdateGalaxy .= "`galaxy` = '". $planet['galaxy'] ."' AND ";
-      $QryUpdateGalaxy .= "`system` = '". $planet['system'] ."' AND ";
-      $QryUpdateGalaxy .= "`planet` = '". $planet['planet'] ."';";
-      doquery( $QryUpdateGalaxy, 'galaxy');
-    } else {
-      // C'est tout vide ... y a que dalle ... j'm'y pose !!
-      $QryInsertGalaxy  = "INSERT INTO `{{table}}` SET ";
-      $QryInsertGalaxy .= "`galaxy` = '". $planet['galaxy'] ."', ";
-      $QryInsertGalaxy .= "`system` = '". $planet['system'] ."', ";
-      $QryInsertGalaxy .= "`planet` = '". $planet['planet'] ."', ";
-      $QryInsertGalaxy .= "`id_planet` = '". $GetPlanetID['id'] ."';";
-      doquery( $QryInsertGalaxy, 'galaxy');
-    }
-
     $RetValue = true;
   } else {
 
