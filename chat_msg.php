@@ -27,6 +27,11 @@ $GET_chat_type = SYS_mysqlSmartEscape($_GET['chat_type']);
 
 includeLang('chat');
 
+if($config->users[$user['id']]['chat_lastUpdate'] + $config->chat_timeout < $time_now){
+  print(iconv('CP1251', 'UTF-8', $lang['chat_timeout']));
+  die();
+}
+
 $page_limit = 25; // Chat rows Limit
 if($_GET['page']>''){
   $page = $_GET['page'];
@@ -83,7 +88,7 @@ while($v=mysql_fetch_object($query)){
   $msg="<div align=\"left\" style='background-color:black;color:white;'><span style='font:menu;'>[".$msgtimestamp."]</span> <span style='width:50px;font:menu;'><b>".$nick."</b></span> : ".$msg."<br></div>";
   $buff = $msg . $buff;
 }
-print $buff;
+print $buff . $config->users[$user['id']]['chat_lastUpdate'];
 
 function showPageButtons($curPage,$type){
   global $page_limit, $lang, $GET_chat_type, $GET_ally_id;

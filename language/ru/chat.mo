@@ -16,5 +16,7 @@ $lang['chat_send']     = "Отправить";
 $lang['chat_history']  = "История";
 $lang['chat_page']     = "Страница";
 
+$lang['chat_timeout']  = "Чат отключен из-за вашей неактивности. Обновите страницу.";
+
 // Ьbersetzt by Dr.Isaacs XNova Team Germany. All rights reversed (C) 2008
 ?>

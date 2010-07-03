@@ -229,6 +229,9 @@ class classConfig extends classPersistent {
     'users_amount' => 0,
     'game_adminEmail' => '',
 
+    // Chat settings
+    'chat_timeout' => 900, // in seconds. Default = 15 min
+
     // Game global settings
     'game_mode' => '0', // 0 - SuperNova, 1 - oGame
     'game_date_withTime' => 'd.m.Y h:i:s',

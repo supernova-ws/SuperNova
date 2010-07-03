@@ -50,5 +50,8 @@ if ($IsUserChecked == false) {
     }else{
       $query = doquery("INSERT INTO {{table}}(user, ally_id, message, timestamp) VALUES ('".$nick."','0', '".$msg."', '".time()."')", "chat");
     }
+    $temp = $config->users;
+    $temp[$user['id']]['chat_lastUpdate'] = $time_now;
+    $config->users = $temp;
   }
 ?>

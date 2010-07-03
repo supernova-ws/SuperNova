@@ -45,8 +45,11 @@ if ($game_config['OverviewClickBanner'] != '') {
   $parse['ClickBanner'] = stripslashes( $game_config['OverviewClickBanner'] );
 }
 
-$page = parsetemplate(gettemplate('chat_body'), $parse);
+$temp = $config->users;
+$temp[$user['id']]['chat_lastUpdate'] = $time_now;
+$config->users = $temp;
 
+$page = parsetemplate(gettemplate('chat_body'), $parse);
 display($page, $lang['Chat']);
 
 // Shoutbox by e-Zobar - Copyright XNova Team 2008
