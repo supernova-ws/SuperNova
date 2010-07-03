@@ -89,6 +89,7 @@ while($v=mysql_fetch_object($query)){
   $buff = $msg . $buff;
 }
 print $buff;
+sys_logHit();
 
 function showPageButtons($curPage,$type){
   global $page_limit, $lang, $GET_chat_type, $GET_ally_id;
