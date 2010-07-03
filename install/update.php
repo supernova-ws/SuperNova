@@ -29,8 +29,8 @@ if ( $user['authlevel'] >= 3 ) {
   }
 
   $config->db_loadItem('db_version');
-  switch($config->db_version){
-    case '':
+  switch(intval($config->db_version)){
+    case 0:
       doquery("UPDATE `{{planets}}` AS lu
           LEFT JOIN `{{planets}}` AS pl ON pl.galaxy=lu.galaxy AND pl.system=lu.system AND pl.planet=lu.planet AND pl.planet_type=1
         SET lu.parent_planet=pl.id WHERE lu.planet_type=3;");
@@ -54,13 +54,12 @@ if ( $user['authlevel'] >= 3 ) {
       $newVersion = 2;
 
     case 2:
-      if($tables['lunas']){
+      if($tables['lunas'])
         mysql_query("DROP TABLE {$config->db_prefix}lunas;");
-      };
       $newVersion = 3;
 
     case 3:
-      if(!$tables['counter']['url']){
+      if(!$tables['counter']['url'])
         mysql_query("ALTER TABLE {$config->db_prefix}counter ADD `url` varchar(255) CHARACTER SET utf8 DEFAULT '';");
       $newVersion = 4;
 
