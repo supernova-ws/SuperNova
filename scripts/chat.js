@@ -78,7 +78,8 @@ function addSmiley(smiley){
 }
 
 // Intervalle entre les messages
-setInterval(showMessage,3000);
+showMessage();
+setInterval(showMessage,5000);
 
 // Add Nick by Click
 function addNick(obj){

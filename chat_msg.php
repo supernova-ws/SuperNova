@@ -88,7 +88,7 @@ while($v=mysql_fetch_object($query)){
   $msg="<div align=\"left\" style='background-color:black;color:white;'><span style='font:menu;'>[".$msgtimestamp."]</span> <span style='width:50px;font:menu;'><b>".$nick."</b></span> : ".$msg."<br></div>";
   $buff = $msg . $buff;
 }
-print $buff . $config->users[$user['id']]['chat_lastUpdate'];
+print $buff;
 
 function showPageButtons($curPage,$type){
   global $page_limit, $lang, $GET_chat_type, $GET_ally_id;
