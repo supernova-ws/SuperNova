@@ -36,6 +36,7 @@ if ( $user['authlevel'] >= 3 ) {
         SET lu.parent_planet=pl.id WHERE lu.planet_type=3;");
       $newVersion = 1;
       set_time_limit(30);
+
     case 1:
       if(!$tables['counter']){
         mysql_query(
@@ -51,11 +52,18 @@ if ( $user['authlevel'] >= 3 ) {
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
       };
       $newVersion = 2;
+
     case 2:
       if($tables['lunas']){
         mysql_query("DROP TABLE {$config->db_prefix}lunas;");
       };
       $newVersion = 3;
+
+    case 3:
+      if(!$tables['counter']['url']){
+        mysql_query("ALTER TABLE {$config->db_prefix}counter ADD `url` varchar(255) CHARACTER SET utf8 DEFAULT '';");
+      $newVersion = 4;
+
     case 4:
   };
   if($newVersion){
