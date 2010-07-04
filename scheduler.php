@@ -1,7 +1,7 @@
 <?php
 include_once('includes/init.inc');
 
-$nextStatUpdate = SYS_scheduleGetNextRun($config->var_stats_schedule, $config->stats_lastUpdated, $time_now);
+$nextStatUpdate = SYS_scheduleGetNextRun($config->stats_schedule, $config->stats_lastUpdated, $time_now);
 
 includeLang('admin');
 
