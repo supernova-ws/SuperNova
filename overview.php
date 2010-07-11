@@ -293,7 +293,17 @@ switch ($mode) {
 
     // --- Gestion de la liste des planetes ----------------------------------------------------------
     // Planetes ...
-    $planets_query = doquery("SELECT * FROM {{planets}} WHERE id_owner='{$user['id']}' AND planet_type = 1;");
+    switch($user['planet_sort']){
+      case 1: $planetSort = '`galaxy` %1$s, `system` %1$s, `planet` %1$s';break;
+      case 2: $planetSort = '`name` %s';break;
+      default:$planetSort = '`id` %s';break;
+    }
+    if($user['planet_sort_order'])
+      $planetSort = sprintf($planetSort, 'DESC');
+    else
+      $planetSort = sprintf($planetSort, 'ASC');
+
+    $planets_query = doquery("SELECT * FROM {{planets}} WHERE id_owner='{$user['id']}' AND planet_type = 1 ORDER BY {$planetSort};");
     $Colone  = 1;
 
     while ($UserPlanet = mysql_fetch_array($planets_query)) {
@@ -319,6 +329,10 @@ switch ($mode) {
           'ID'        => $UserPlanet['id'],
           'NAME'      => $UserPlanet['name'],
           'IMAGE'     => $UserPlanet['image'],
+
+          'GALAXY'    => $UserPlanet['galaxy'],
+          'SYSTEM'    => $UserPlanet['system'],
+          'PLANET'    => $UserPlanet['planet'],
 
           'MOON_ID'   => $moon['id'],
           'MOON_NAME' => $moon['name'],
@@ -530,10 +544,13 @@ switch ($mode) {
     $parse['kod'] = $user['kiler'];
 
     //Подсчет кол-ва онлайн и кто онлайн
+    $OnlineUsersNames2 = doquery("SELECT `username` FROM {{table}} WHERE `onlinetime`>'".$time."'",'users');
+    $parse['NumberMembersOnline'] = mysql_num_rows($OnlineUsersNames2);
+
+/*
     $time = time() - 15*60;
     $ally = $user['ally_id'];
     $OnlineUsersNames = doquery("SELECT `username` FROM {{table}} WHERE `onlinetime`>'".$time."' AND `ally_id`='".$ally."' AND `ally_id` != '0'",'users');
-    $OnlineUsersNames2 = doquery("SELECT `username` FROM {{table}} WHERE `onlinetime`>'".$time."'",'users');
 
     $names = '';
     while ($OUNames = mysql_fetch_array($OnlineUsersNames)) {
@@ -541,7 +558,7 @@ switch ($mode) {
       $names .= ", ";
     }
     $parse['MembersOnline2'] = $names;
-    $parse['NumberMembersOnline'] = mysql_num_rows($OnlineUsersNames2);
+*/
 
     //Последние сообщения чата.
     $mess = doquery("SELECT `user`,`message` FROM {{table}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5", 'chat');
@@ -553,14 +570,14 @@ switch ($mode) {
       $msg .= "<tr><td align=\"left\">".$usr.":</td><td>".$str."</td></tr>";
     }
     $msg .= '</table>';
-    $parse['LastChat'] = CHT_messageParse($msg);
-    $parse['admin_email'] = $config->game_adminEmail;
 
     $template->assign_vars(array(
       'dpath' => $dpath,
       'PLANET_ID'   => $planetrow['id'],
       'PLANET_NAME' => $planetrow['name'],
       'PLANET_TYPE' => $planetrow['planet_type'],
+      'LastChat'    => CHT_messageParse($msg),
+      'admin_email' => $config->game_adminEmail,
     ));
     display(parsetemplate($template, $parse), $lang['Overview']);
     break;

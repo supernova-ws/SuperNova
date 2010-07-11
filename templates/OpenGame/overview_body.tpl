@@ -117,9 +117,9 @@
 
 <th valign=top class="tr">
   <table border="0" cellspacing=0 cellpadding=0 width="200"><!-- BEGIN planet -->
-    <tr><th class="tr"><!-- IF planet.MOON_ID == PLANET_ID -->{L_sys_moon} {planet.MOON_NAME}<!-- ELSE -->{L_sys_planet} {planet.NAME}<!-- ENDIF --><br>
-    <a href="?cp={planet.ID}&re=0" title="{planet.NAME}"><img src="{dpath}planeten/{planet.IMAGE}.jpg" height="<!-- IF planet.ID == PLANET_ID -->100<!-- ELSE -->50<!-- ENDIF -->" width="<!-- IF planet.ID == PLANET_ID -->100<!-- ELSE -->50<!-- ENDIF -->"></a>
-    <!-- IF planet.MOON_ID --><a href="?cp={planet.MOON_ID}&re=0" title="{planet.MOON_NAME}"><img src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" height="<!-- IF planet.MOON_ID == PLANET_ID -->100<!-- ELSE -->35<!-- ENDIF -->" width="<!-- IF planet.MOON_ID == PLANET_ID -->100<!-- ELSE -->35<!-- ENDIF -->"></a><!-- ENDIF -->
+    <tr><th class="tr"><!-- IF planet.MOON_ID == PLANET_ID -->{L_sys_moon} {planet.MOON_NAME}<!-- ELSE -->{planet.NAME}<!-- ENDIF --> [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]<br>
+    <a href="?cp={planet.ID}&re=0" title="{planet.NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img src="{dpath}planeten/{planet.IMAGE}.jpg" height="<!-- IF planet.ID == PLANET_ID -->100<!-- ELSE -->50<!-- ENDIF -->" width="<!-- IF planet.ID == PLANET_ID -->100<!-- ELSE -->50<!-- ENDIF -->"></a>
+    <!-- IF planet.MOON_ID --><a href="?cp={planet.MOON_ID}&re=0" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" height="<!-- IF planet.MOON_ID == PLANET_ID -->100<!-- ELSE -->35<!-- ENDIF -->" width="<!-- IF planet.MOON_ID == PLANET_ID -->100<!-- ELSE -->35<!-- ENDIF -->"></a><!-- ENDIF -->
     <!-- IF planet.BUILD_NAME --><br>{planet.BUILD_NAME} ({planet.BUILD_LEVEL})<br><font color="#7f7f7f">({planet.BUILD_TIME})</font><!-- ENDIF -->
     <br><br>
     </th></tr>
