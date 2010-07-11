@@ -29,7 +29,7 @@ function int_buildCounter($planetrow, $type){
       $RestTime   = GetBuildingTime( $user, $planetrow, $CurrBuild[0] ) - $planetrow["b_{$type}"];
     else
       $RestTime   = $planetrow["b_{$type}"] - time();
-    $Build  = InsertBuildListScript ( 'overview', $type );
+    $Build  = InsertBuildListScript ( 'overview', $type, $type!='hangar');
     $Build .= $lang['tech'][$CurrBuild[0]] .' ';
     if($type=='building')
       $Build .= '('. ($CurrBuild[1]) .')';

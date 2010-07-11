@@ -7,7 +7,7 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
-function InsertBuildListScript ( $CallProgram, $prefix = "" ) {
+function InsertBuildListScript ( $CallProgram, $prefix = "", $autoRefresh = true ) {
   global $lang;
 
   $BuildListScript  = "<script type=\"text/javascript\">\n";
@@ -25,13 +25,15 @@ function InsertBuildListScript ( $CallProgram, $prefix = "" ) {
   $BuildListScript .= " if ( (ss + 3) < aa ) {\n";
   $BuildListScript .= "   blc.innerHTML = \"". $lang['completed'] ."<br>\" + \"<a href=". $CallProgram .".php?planet=\" + pl{$prefix} + \">". $lang['continue'] ."</a>\";\n";
   $BuildListScript .= "   if ((ss + 6) >= aa) {\n";
-  $BuildListScript .= "     window.setTimeout('document.location.href=\"". $CallProgram .".php?planet=' + pl{$prefix} + '\";', 3500);\n";
+  if($autoRefresh)
+    $BuildListScript .= "     window.setTimeout('document.location.href=\"". $CallProgram .".php?planet=' + pl{$prefix} + '\";', 3500);\n";
   $BuildListScript .= "   }\n";
   $BuildListScript .= " } else {\n";
   $BuildListScript .= "   if ( s < 0 ) {\n";
   $BuildListScript .= "     if (1) {\n";
   $BuildListScript .= "       blc.innerHTML = \"". $lang['completed'] ."<br>\" + \"<a href=". $CallProgram .".php?planet=\" + pl{$prefix} + \">". $lang['continue'] ."</a>\";\n";
-  $BuildListScript .= "       window.setTimeout('document.location.href=\"". $CallProgram .".php?planet=' + pl{$prefix} + '\";', 2000);\n";
+  if($autoRefresh)
+    $BuildListScript .= "       window.setTimeout('document.location.href=\"". $CallProgram .".php?planet=' + pl{$prefix} + '\";', 2000);\n";
   $BuildListScript .= "     } else {\n";
   $BuildListScript .= "       timeout = 0;\n";
   $BuildListScript .= "       blc.innerHTML = \"". $lang['completed'] ."<br>\" + \"<a href=". $CallProgram .".php?planet=\" + pl{$prefix} + \">". $lang['continue'] ."</a>\";\n";
