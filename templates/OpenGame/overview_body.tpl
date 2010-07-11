@@ -16,7 +16,7 @@
 <table><tr><th valign=top class="tr">
   <table width="519">
     <tr><td style="white-space: nowrap;" class="c" colspan=4>
-        <div class="fl">[{user_username}] - {Planet} "{planet_name}" <a href="galaxy.php?mode=0&galaxy={galaxy_galaxy}&system={galaxy_system}">[{galaxy_galaxy}:{galaxy_system}:{galaxy_planet}]</a></div>
+        <div class="fl">{Planet} "{planet_name}" <a href="galaxy.php?mode=0&galaxy={galaxy_galaxy}&system={galaxy_system}">[{galaxy_galaxy}:{galaxy_system}:{galaxy_planet}]</a></div>
         <div class="fr"><a href="overview.php?mode=renameplanet"><font color="green">[{L_ov_operations}]</font></a></td></div>
     </td></tr>
     {Have_new_message}
@@ -62,7 +62,7 @@
 
   <table width=519>
     <tr><td colspan=4 class="c">
-        <span class="fl">{L_ov_player_rpg}</span>
+        <span class="fl">{L_ov_player_rpg} {user_username}</span>
         <span class="fr"><b>{L_ov_rank}: <a href="stat.php?start={u_user_rank}"><strong><span class="style2">{user_rank}</span> из <span class="style1">{max_users}</span></strong></a></b></span>
     </td></tr>
     <tr>
