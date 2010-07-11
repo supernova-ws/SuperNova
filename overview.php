@@ -18,7 +18,29 @@ define('INSTALL' , false);
 $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
-// include($ugamela_root_path . 'autoreload.'.$phpEx);
+
+function int_buildCounter($planetrow, $type){
+  global $lang, $user;
+
+  if ( $planetrow["b_{$type}_id"]) {
+    $BuildQueue = explode (';', $planetrow["b_{$type}_id"]);
+    $CurrBuild  = explode (',', $BuildQueue[0]);
+    if($type=='hangar')
+      $RestTime   = GetBuildingTime( $user, $planetrow, $CurrBuild[0] ) - $planetrow["b_{$type}"];
+    else
+      $RestTime   = $planetrow["b_{$type}"] - time();
+    $Build  = InsertBuildListScript ( 'overview', $type );
+    $Build .= $lang['tech'][$CurrBuild[0]] .' ';
+    if($type=='building')
+      $Build .= '('. ($CurrBuild[1]) .')';
+
+    $Build .= InsertCounterLaunchScript($RestTime, $planetrow['id'], $type);
+  } else {
+    $Build = $lang['Free'];
+  }
+
+  return $Build;
+}
 
 $mode = $_GET['mode'];
 $pl = mysql_escape_string($_GET['pl']);
@@ -73,6 +95,8 @@ check_urlaubmodus ($user);
 
 includeLang('resources');
 includeLang('overview');
+
+$template = gettemplate('overview_body', true);
 
 switch ($mode) {
   case 'renameplanet':
@@ -269,43 +293,37 @@ switch ($mode) {
 
     // --- Gestion de la liste des planetes ----------------------------------------------------------
     // Planetes ...
-    $planets_query = doquery("SELECT * FROM {{table}} WHERE id_owner='{$user['id']}'", "planets");
+    $planets_query = doquery("SELECT * FROM {{planets}} WHERE id_owner='{$user['id']}' AND planet_type = 1;");
     $Colone  = 1;
 
-    $AllPlanets = "<tr>";
     while ($UserPlanet = mysql_fetch_array($planets_query)) {
-      if ($UserPlanet["id"] != $user["current_planet"] && $UserPlanet['planet_type'] != 3) {
-        $AllPlanets .= "<th>". $UserPlanet['name'] ."<br>";
-        $AllPlanets .= "<a href=\"?cp=". $UserPlanet['id'] ."&re=0\" title=\"". $UserPlanet['name'] ."\"><img src=\"". $dpath ."planeten/small/s_". $UserPlanet['image'] .".jpg\" height=\"50\" width=\"50\"></a><br>";
-        $AllPlanets .= "<center>";
+      $buildArray = array();
+      if ($UserPlanet['b_building'] != 0) {
+        UpdatePlanetBatimentQueueList ( $UserPlanet, $user );
+        if ( $UserPlanet['b_building'] != 0 ) {
+          $QueueArray      = explode ( ";", $UserPlanet['b_building_id'] );
+          $CurrentBuild    = explode ( ",", $QueueArray[0] );
 
-        if ($UserPlanet['b_building'] != 0) {
-          UpdatePlanetBatimentQueueList ( $UserPlanet, $user );
-          if ( $UserPlanet['b_building'] != 0 ) {
-            $BuildQueue      = $UserPlanet['b_building_id'];
-            $QueueArray      = explode ( ";", $BuildQueue );
-            $CurrentBuild    = explode ( ",", $QueueArray[0] );
-            $BuildElement    = $CurrentBuild[0];
-            $BuildLevel      = $CurrentBuild[1];
-            $BuildRestTime   = pretty_time( $CurrentBuild[3] - time() );
-            $AllPlanets     .= '' . $lang['tech'][$BuildElement] . ' (' . $BuildLevel . ')';
-            $AllPlanets     .= "<br><font color=\"#7f7f7f\">(". $BuildRestTime .")</font>";
-          } else {
-            CheckPlanetUsedFields ($UserPlanet);
-            $AllPlanets     .= $lang['Free'];
-          }
+          $buildArray['BUILD_NAME']  = $lang['tech'][$CurrentBuild[0]];
+          $buildArray['BUILD_LEVEL'] = $CurrentBuild[1];
+          $buildArray['BUILD_TIME']  = pretty_time( $CurrentBuild[3] - time() );
         } else {
-          $AllPlanets    .= $lang['Free'];
-        }
-
-        $AllPlanets .= "</center></th>";
-        if ($Colone <= 1) {
-          $Colone++;
-        } else {
-          $AllPlanets .= "</tr><tr>";
-          $Colone      = 1;
+          CheckPlanetUsedFields ($UserPlanet);
         }
       }
+
+      $moon = doquery("SELECT * FROM {{table}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3;", 'planets', true);
+
+      $template->assign_block_vars('planet', array_merge(
+        array(
+          'ID'        => $UserPlanet['id'],
+          'NAME'      => $UserPlanet['name'],
+          'IMAGE'     => $UserPlanet['image'],
+
+          'MOON_ID'   => $moon['id'],
+          'MOON_NAME' => $moon['name'],
+          'MOON_IMG'  => $moon['image'],
+        ), $buildArray));
     }
     // -----------------------------------------------------------------------------------------------
 
@@ -387,14 +405,16 @@ switch ($mode) {
     }
 
     // --- Gestion de l'affichage d'une lune ---------------------------------------------------------
-    $lune = doquery("SELECT * FROM {{table}} WHERE `parent_planet` = '{$planetrow['id']}' AND `planet_type` = 3;", 'planets', true);
-    if ($lune['id']) {
-      // Gorlum's Mod End
-      $parse['moon_img'] = "<a href=\"?cp={$lune['id']}&re=0\" title=\"{$UserPlanet['name']}\"><img src=\"{$dpath}planeten/{$lune['image']}.jpg\" height=\"50\" width=\"50\"></a>";
-      $parse['moon'] = $lune['name'];
-    } else {
-      $parse['moon_img'] = "";
-      $parse['moon'] = "";
+    if($planetrow['planet_type'] == 1)
+      $lune = doquery("SELECT * FROM {{table}} WHERE `parent_planet` = '{$planetrow['id']}' AND `planet_type` = 3;", 'planets', true);
+    else
+      $lune = doquery("SELECT * FROM {{table}} WHERE `id` = '{$planetrow['parent_planet']}' AND `planet_type` = 1;", 'planets', true);
+    if ($lune) {
+      $template->assign_vars(array(
+        'MOON_ID' => $lune['id'],
+        'MOON_IMG' => $lune['image'],
+        'MOON_NAME' => $lune['name'],
+      ));
     }
     // Moon END
 
@@ -440,12 +460,9 @@ switch ($mode) {
     $parse['Have_new_message']      = $Have_new_message;
     $parse['Have_new_level_mineur'] = $HaveNewLevelMineur;
     $parse['Have_new_level_raid']   = $HaveNewLevelRaid;
-    //$parse['time']                  = date("D M d H:i:s", time());
-    //$parse['time']                  = (date("D M d H:i:s", time()));
     $parse['time']=" $dz_tyg, $dzien $miesiac $rok года - ";
     $parse['dpath']                 = $dpath;
     $parse['planet_image']          = $planetrow['image'];
-    $parse['anothers_planets']      = $AllPlanets;
     $parse['max_users']             = $game_config['users_amount'];
 
     $debris = doquery("SELECT * FROM {{table}} WHERE `id_planet` = '{$planetrow['id']}';", 'galaxy', true);
@@ -457,53 +474,21 @@ switch ($mode) {
       $parse['get_link'] = '';
     }
 
-    if ( $planetrow['b_building'] != 0 ) {
+    $PlanetID   = $planetrow['id'];
+    if ($planetrow['b_building'])
       UpdatePlanetBatimentQueueList ( $planetrow, $user );
-      if ( $planetrow['b_building'] != 0 ) {
-        $BuildQueue = explode (";", $planetrow['b_building_id']);
-        $CurrBuild  = explode (",", $BuildQueue[0]);
-        $RestTime   = $planetrow['b_building'] - time();
-        $PlanetID   = $planetrow['id'];
-        $Build  = InsertBuildListScript ( "overview", "build" );
-        $Build .= $lang['tech'][$CurrBuild[0]] .' ('. ($CurrBuild[1]) .')';
-        $Build .= InsertCounterLaunchScript($RestTime, $PlanetID, "build");
-        $parse['building'] = $Build;
-      }
-    } else {
-      $parse['building'] = $lang['Free'];
-    }
 
-    if ( $planetrow['b_tech'] != 0 ) {
-      $BuildQueue = explode (";", $planetrow['b_tech_id']);
-      $CurrBuild  = explode (",", $BuildQueue[0]);
-      $RestTime   = $planetrow['b_tech'] - time();
-      $PlanetID   = $planetrow['id'];
-      $Build  = InsertBuildListScript ( "overview", "tech" );
-      $Build .= $lang['tech'][$CurrBuild[0]] .' ';
-      $Build .= InsertCounterLaunchScript($RestTime, $PlanetID, "tech");
+    $parse['building'] = int_buildCounter($planetrow, 'building');
+    $parse['hangar'] = int_buildCounter($planetrow, 'hangar');
+    $parse['tech'] = int_buildCounter($planetrow, 'tech');
 
-      $parse['teching'] = $Build;
-    } else {
-      $parse['teching'] = $lang['Free'];
-    }
+    $query = doquery('SELECT username FROM {{table}} ORDER BY register_time DESC', 'users', true);
+    $parse['last_user'] = $query['username'];
+    $query = doquery("SELECT COUNT(DISTINCT(id)) FROM {{table}} WHERE onlinetime>" . (time()-900), 'users', true);
+    $parse['online_users'] = $query[0];
+    // $count = doquery(","users",true);
+    $parse['users_amount'] = $game_config['users_amount'];
 
-    if ($planetrow['b_hangar_id'] != '') {
-      $Build = ElementBuildListBox2 ( $user, $planetrow );
-      $parse['hangaring'] = $Build;
-
-      // $parse['hangaring'] = 'Занят';
-    } else {
-      $parse['hangaring'] = $lang['Free'];
-    };
-
-    { // Vista normal
-      $query = doquery('SELECT username FROM {{table}} ORDER BY register_time DESC', 'users', true);
-      $parse['last_user'] = $query['username'];
-      $query = doquery("SELECT COUNT(DISTINCT(id)) FROM {{table}} WHERE onlinetime>" . (time()-900), 'users', true);
-      $parse['online_users'] = $query[0];
-      // $count = doquery(","users",true);
-      $parse['users_amount'] = $game_config['users_amount'];
-    }
     // Rajout d'une barre pourcentage
     // Calcul du pourcentage de remplissage
     $parse['case_pourcentage'] = floor($planetrow["field_current"] / CalculateMaxPlanetFields($planetrow) * 100) . $lang['o/o'];
@@ -571,7 +556,13 @@ switch ($mode) {
     $parse['LastChat'] = CHT_messageParse($msg);
     $parse['admin_email'] = $config->game_adminEmail;
 
-    display(parsetemplate(gettemplate('overview_body'), $parse), $lang['Overview']);
+    $template->assign_vars(array(
+      'dpath' => $dpath,
+      'PLANET_ID'   => $planetrow['id'],
+      'PLANET_NAME' => $planetrow['name'],
+      'PLANET_TYPE' => $planetrow['planet_type'],
+    ));
+    display(parsetemplate($template, $parse), $lang['Overview']);
     break;
 }
 ?>

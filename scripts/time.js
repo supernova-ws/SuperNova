@@ -27,6 +27,6 @@ total = DinaHeure
 
 document.getElementById("dateheure").innerHTML = total;
 
-tempo = setTimeout("HeureCheck()", 1000)
+tempo = setTimeout("HeureCheck()", 1000);
 }
-window.onload = HeureCheck;
+// window.onload = HeureCheck;

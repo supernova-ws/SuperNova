@@ -9,3 +9,8 @@
 .hide{ /* Hide */
   display: none;
 }
+
+.tr{
+  background-color: transparent;
+  border: 0;
+}

@@ -2,9 +2,9 @@
 <head>
 <title>{title}</title>
 <link rel="shortcut icon" href="{-path_prefix-}favicon.ico">
+<link rel="stylesheet" type="text/css" href="{-path_prefix-}css/global.css" />
 <link rel="stylesheet" type="text/css" href="{-path_prefix-}{dpath}default.css" />
 <link rel="stylesheet" type="text/css" href="{-path_prefix-}{dpath}formate.css" />
-<link rel="stylesheet" type="text/css" href="{-path_prefix-}css/global.css" />
 <meta http-equiv="content-type" content="text/html; charset=windows-1251" />
 <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
 {-meta-}

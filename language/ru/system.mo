@@ -16,6 +16,7 @@ $lang['sys_first_round_crash_2']	= 'Это означает что он был уничтожен в первом р
 $lang['sys_overview']			= "Обзор";
 $lang['mod_marchand']			= "Торговец";
 $lang['sys_moon']			= "Луна";
+$lang['sys_planet']			= "Планета";
 $lang['sys_error']			= "Ошибка";
 $lang['sys_no_vars']			= "Ошибка инициализации переменных, обратитесь к администрации!";
 $lang['sys_attacker_lostunits']		= "Атакующий потерял %s единиц.";

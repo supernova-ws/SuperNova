@@ -132,4 +132,11 @@ $lang['Teching'] = 'Иследования';
 
 $lang['InfoBanner'] = 'BBCode для вставки баннера на форуме';
 $lang['InfoUserbar'] = 'BBCode для вставки юзербара на форуме';
+
+$lang['ov_planet_details'] = 'Подробно о планете';
+$lang['ov_operations']     = 'операции';
+$lang['ov_building']       = 'Текущее строительство';
+$lang['ov_hangar']         = 'Верфи';
+$lang['ov_raid_xp']        = 'Рейдовый опыт';
+$lang['ov_rank']           = 'Ранг';
 ?>
