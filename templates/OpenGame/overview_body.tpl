@@ -34,9 +34,9 @@
     
     <tr><td colspan="4" class="c">{Planet_menu}</td></tr>
     {fleet_list}
-    <tr><th width=90>{L_ov_building}</th><th colspan=3>{building}</th></tr>
-    <tr><th>{L_ov_hangar}</th><th colspan="3">{hangar}</th></tr>
-    <tr><th>{Teching}</th><th colspan="3">{tech}</th></tr>
+    <tr><th width=90>{L_ov_building}</th><th colspan=3><!-- IF BUILDING -->{BUILDING}<span id="ov_building"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
+    <tr><th>{L_ov_hangar}</th><th colspan="3"><!-- IF HANGAR -->{HANGAR}<span id="ov_hangar"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
+    <tr><th>{Teching}</th><th colspan="3"><!-- IF TECH -->{TECH}<span id="ov_tech"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
 
     <tr><td class="c" colspan=4>{L_ov_planet_details}</td></tr>
     <tr>
@@ -105,9 +105,8 @@
   <table border="0" cellspacing=0 cellpadding=0 width="200"><!-- BEGIN planet -->
     <tr><th class="tr"><!-- IF planet.MOON_ID == PLANET_ID -->{L_sys_moon} {planet.MOON_NAME}<!-- ELSE -->{planet.NAME}<!-- ENDIF --> [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]<br>
     <a href="?cp={planet.ID}&re=0" title="{planet.NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img src="{dpath}planeten/{planet.IMAGE}.jpg" height="<!-- IF planet.ID == PLANET_ID -->100<!-- ELSE -->50<!-- ENDIF -->" width="<!-- IF planet.ID == PLANET_ID -->100<!-- ELSE -->50<!-- ENDIF -->"></a>
-    <!-- IF planet.MOON_ID --><a href="?cp={planet.MOON_ID}&re=0" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" height="<!-- IF planet.MOON_ID == PLANET_ID -->100<!-- ELSE -->35<!-- ENDIF -->" width="<!-- IF planet.MOON_ID == PLANET_ID -->100<!-- ELSE -->35<!-- ENDIF -->"></a><!-- ENDIF -->
-    <!-- IF planet.BUILD_NAME --><br>{planet.BUILD_NAME} ({planet.BUILD_LEVEL})<br><font color="#7f7f7f">({planet.BUILD_TIME})</font><!-- ENDIF -->
-    <br><br>
+    <!-- IF planet.MOON_ID --><a href="?cp={planet.MOON_ID}&re=0" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" height="<!-- IF planet.MOON_ID == PLANET_ID -->100<!-- ELSE -->35<!-- ENDIF -->" width="<!-- IF planet.MOON_ID == PLANET_ID -->100<!-- ELSE -->35<!-- ENDIF -->"></a><!-- ENDIF --><br>
+    <!-- IF planet.BUILDING -->{planet.BUILDING}<span id="ov_building{planet.ID}"></span><br><font color="darkgrey"><span id="ov_building{planet.ID}_timer"></span></font><!-- ELSE -->{L_Free}<!-- ENDIF --><br><br>
     </th></tr>
   <!-- END planet --></table>
 </th></tr></table>

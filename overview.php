@@ -2,7 +2,13 @@
 /**
  * index.php - overview.php
  *
- * 1.0s - Security checks by Gorlum for http://supernova.ws
+ * 1.4 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [*] All mainplanet timers now use new sn_timer.js library
+ * 1.3 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [*] Adjusted layouts of player infos
+ * 1.2 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [*] Adjusted layouts of planet info
+ * 1.1 - Security checks by Gorlum for http://supernova.ws
  * @version 1
  * @copyright 2008 By Chlorel for XNova
  */
@@ -18,29 +24,6 @@ define('INSTALL' , false);
 $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
-
-function int_buildCounter($planetrow, $type){
-  global $lang, $user;
-
-  if ( $planetrow["b_{$type}_id"]) {
-    $BuildQueue = explode (';', $planetrow["b_{$type}_id"]);
-    $CurrBuild  = explode (',', $BuildQueue[0]);
-    if($type=='hangar')
-      $RestTime   = GetBuildingTime( $user, $planetrow, $CurrBuild[0] ) - $planetrow["b_{$type}"];
-    else
-      $RestTime   = $planetrow["b_{$type}"] - time();
-    $Build  = InsertBuildListScript ( 'overview', $type, $type!='hangar');
-    $Build .= $lang['tech'][$CurrBuild[0]] .' ';
-    if($type=='building')
-      $Build .= '('. ($CurrBuild[1]) .')';
-
-    $Build .= InsertCounterLaunchScript($RestTime, $planetrow['id'], $type);
-  } else {
-    $Build = $lang['Free'];
-  }
-
-  return $Build;
-}
 
 $mode = $_GET['mode'];
 $pl = mysql_escape_string($_GET['pl']);
@@ -332,6 +315,7 @@ switch ($mode) {
           'GALAXY'    => $UserPlanet['galaxy'],
           'SYSTEM'    => $UserPlanet['system'],
           'PLANET'    => $UserPlanet['planet'],
+          'BUILDING'  => int_buildCounter($UserPlanet, 'building', $UserPlanet['id']),
 
           'MOON_ID'   => $moon['id'],
           'MOON_NAME' => $moon['name'],
@@ -489,9 +473,10 @@ switch ($mode) {
     if ($planetrow['b_building'])
       UpdatePlanetBatimentQueueList ( $planetrow, $user );
 
-    $parse['building'] = int_buildCounter($planetrow, 'building');
-    $parse['hangar'] = int_buildCounter($planetrow, 'hangar');
-    $parse['tech'] = int_buildCounter($planetrow, 'tech');
+
+    $parse['BUILDING'] = int_buildCounter($planetrow, 'building');
+    $parse['HANGAR'] = int_buildCounter($planetrow, 'hangar');
+    $parse['TECH'] = int_buildCounter($planetrow, 'tech');
 
     $query = doquery('SELECT username FROM {{table}} ORDER BY register_time DESC', 'users', true);
     $parse['last_user'] = $query['username'];
