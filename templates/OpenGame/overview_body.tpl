@@ -20,8 +20,8 @@
         <div class="fr"><a href="overview.php?mode=renameplanet"><font color="green">[{L_ov_operations}]</font></a></td></div>
     </td></tr>
     {Have_new_message}
-    {Have_new_level_mineur}
-    {Have_new_level_raid}
+    <!-- IF NEW_LEVEL_MINER --><tr><th colspan=4><a href=officier.$phpEx>{L_ov_rpg_new_level_miner}</a></th></tr><!-- ENDIF -->
+    <!-- IF NEW_LEVEL_RAID --><tr><th colspan=4><a href=officier.$phpEx>{L_ov_rpg_new_level_raid}</a></th></tr><!-- ENDIF -->
     <tr>
       <th width="100">{Server_time}</th>
       <th colspan="3" style="white-space: nowrap;">{time}<span id="dateheure">00:00:00</span></th>
@@ -58,61 +58,47 @@
       <th>{orb}</th>
       <th colspan="3">{L_sys_metal}: {metal_debris} / {L_sys_crystal}: {crystal_debris}{get_link}</th>
     </tr>
-    <tr>
-      <th>{Economica}</th>
-      <th colspan="1" align="center">{Experience}: {xpminier}/{lvl_up_minier} </th>
-      <th colspan="2" align="center">{Level}: {lvl_minier} </th>
-    </tr>
   </table>
 
   <table width=519>
-    <tr align=center>
-      <td class="c" colspan=2>{Raids}</td>
-      <td class="c" colspan=2>{Points}</td>
+    <tr><td colspan=4 class="c">
+        <span class="fl">{L_ov_player_rpg}</span>
+        <span class="fr"><b>{L_ov_rank}: <a href="stat.php?start={u_user_rank}"><strong><span class="style2">{user_rank}</span> из <span class="style1">{max_users}</span></strong></a></b></span>
+    </td></tr>
+    <tr>
+      <th>{Economica}</th>
+      <th colspan="1" align="center">{L_ov_level}: {builder_lvl}</th>
+      <th colspan="2" align="center">{L_ov_experience}: {builder_xp}/{builder_lvl_up}</th>
+    </tr>
+    <tr align="center" class="c">
+      <th rowspan=2>{L_ov_points}</th>
+      <th>{user_points_1}: {user_points}</th>
+      <th>{user_points_3}: {user_defs_points}</th>
+      <th>{user_points_4}: {user_fleet}</th>
     </tr>
     <tr>
-      <td align="right"><b>{NumberOfRaids}:</b></td>
-      <td align="left" ><b>{raids}</b></td>
-      <td align="right"><b>{user_points_1}:</b></td>
-      <td align="left" ><b>{user_points}</b></td>
+      <th>{user_points_2}: {player_points_tech}</th>
+      <th colspan="2">{user_points_all}: {total_points}</th>
     </tr>
     <tr>
-      <td align="right"><b>{RaidsWin}:</b></td>
-      <td align="left" ><b>{raidswin}</b></td>
-      <td align="right"><b>{user_points_2}:</b></td>
-      <td align="left" ><b>{player_points_tech}</b></td>
+      <th rowspan=2>{L_ov_raids}</th>
+      <th colspan="1" align="center">{L_ov_level}: {raid_lvl}</th>
+      <th colspan="2" align="center">{L_ov_experience}: {raid_xp}/{raid_lvl_up}</th>
     </tr>
     <tr>
-      <td align="right"><b>{RaidsLoose}:</b></td>
-      <td align="left" ><b>{raidsloose}</b></td>
-      <td align="right"><b>{user_points_2}:</b></td>
-      <td align="left" ><b>{player_points_tech}</b></td>
-    </tr>
-    <tr>
-      <td align="right"><b>{L_ov_raid_xp}:</b></td>
-      <td align="left" ><b>{xpraid}/{lvl_up_raid}</b></td>
-      <td align="right"><b>{user_points_3}:</b></td>
-      <td align="left" ><b>{user_defs_points}</b></td>
-    </tr>
-    <tr>
-      <td colspan=2>&nbsp;</td>
-      <td align="right"><b>{user_points_4}:</b></td>
-      <td align="left" ><b>{user_fleet}</b></td>
-    </tr>
-    <tr>
-      <td colspan=2>&nbsp;</td>
-      <td align="right"><b>{user_points_all}:</b></td>
-      <td align="left" ><b>{total_points}</b></td>
-    </tr>
-    <tr align=center>
-      <td class="c" colspan=4><b>{L_ov_rank}: <a href="stat.php?start={u_user_rank}"><strong><span class="style2">{user_rank}</span> из <span class="style1">{max_users}</span></strong></a></b></td>
+      <th>{NumberOfRaids}: {raids}</th>
+      <th>{RaidsWin}: {raidswin}</th>
+      <th>{RaidsLoose}: {raidsloose}</th>
     </tr>
   </table>
 
+  <!-- IF bannerframe || userbarframe -->
   <table width="519" align="center">
+    <tr><td class="c">{L_ov_banner_and_userbar}</td></tr>
     {bannerframe}
     {userbarframe}
   </table>
+  <!-- ENDIF -->
 </th>
 
 <th valign=top class="tr">

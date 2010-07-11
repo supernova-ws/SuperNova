@@ -177,7 +177,7 @@ switch ($mode) {
     $Have_new_message = "";
     if ($user['new_message'] != 0) {
       $Have_new_message .= "<tr>";
-      if       ($user['new_message'] == 1) {
+      if ($user['new_message'] == 1) {
         $Have_new_message .= "<th colspan=4><a href=messages.$phpEx>". $lang['Have_new_message']."</a></th>";
       } elseif ($user['new_message'] > 1) {
         $Have_new_message .= "<th colspan=4><a href=messages.$phpEx>";
@@ -192,39 +192,38 @@ switch ($mode) {
     // --- Gestion Officiers -------------------------------------------------------------------------
     // Passage au niveau suivant, ajout du point de compГ©tence et affichage du passage au nouveau level
 
-    $minerXP = $user['xpminier'];
-    $minerXPLevel = $user['lvl_minier'];
-    $minerXPLevelUp = RPG_getMinerXP($minerXPLevel);
-    if ($minerXP>$minerXPLevelUp) {
-      do {
+    if ($user['xpminier']>=RPG_getMinerXP($user['lvl_minier'])) {
+      $minerXPLevel = $user['lvl_minier'];
+      while ($user['xpminier']>=RPG_getMinerXP($minerXPLevel))
         $minerXPLevel++;
-        $minerXPLevelUp = RPG_getMinerXP($minerXPLevel);
-      } while ($minerXP>$minerXPLevelUp);
-      $QryUpdateUser  = "UPDATE `{{table}}` SET ";
-      $QryUpdateUser .= "`lvl_minier` = '".$minerXPLevel."', ";
-      $QryUpdateUser .= "`rpg_points` = `rpg_points` + '".($minerXPLevel - $user['lvl_minier'])."' ";
-      $QryUpdateUser .= "WHERE ";
-      $QryUpdateUser .= "`id` = '". $user['id'] ."'";
-      doquery($QryUpdateUser, 'users');
-      $HaveNewLevelMineur .= "<tr><th colspan=4><a href=officier.$phpEx>". $lang['Have_new_level_mineur']."</a></th></tr>";
+
+      $miner_lvl_up = $minerXPLevel - $user['lvl_minier'];
+      $QryUpdateUser  = "UPDATE `{{users}}` SET ";
+      $QryUpdateUser .= "`lvl_minier` = `lvl_minier` + '{$miner_lvl_up}', `rpg_points` = `rpg_points` + '{$miner_lvl_up}' ";
+      $QryUpdateUser .= "WHERE `id` = '{$user['id']}'";
+      doquery($QryUpdateUser);
+      $user['lvl_minier'] += $miner_lvl_up;
+      $user['rpg_points'] += $miner_lvl_up;
+      $isNewLevelMiner = true;
     }
 
-    $raidXP = $user['xpraid'];
-    $raidXPLevel = $user['lvl_raid'];
-    $raidXPLevelUp = RPG_getRaidXP($raidXPLevel);
-    if ($raidXP>$raidXPLevelUp) {
-      do {
+    if ($user['xpraid']>=RPG_getRaidXP($user['lvl_raid'])) {
+      $raidXPLevel = $user['lvl_raid'];
+      while ($user['xpraid']>=RPG_getRaidXP($raidXPLevel))
         $raidXPLevel++;
-        $raidXPLevelUp = RPG_getRaidXP($raidXPLevel);
-      } while ($raidXP>$raidXPLevelUp);
-      $QryUpdateUser  = "UPDATE `{{table}}` SET ";
-      $QryUpdateUser .= "`lvl_raid` = '".$raidXPLevel."', ";
-      $QryUpdateUser .= "`rpg_points` = `rpg_points` + '".($raidXPLevel - $user['lvl_raid'])."' ";
-      $QryUpdateUser .= "WHERE ";
-      $QryUpdateUser .= "`id` = '". $user['id'] ."'";
-      doquery($QryUpdateUser, 'users');
-      $HaveNewLevelMineur .= "<tr><th colspan=4><a href=officier.$phpEx>". $lang['Have_new_level_raid']."</a></th></tr>";
+
+      $raid_lvl_up = $raidXPLevel - $user['lvl_raid'];
+      $QryUpdateUser  = "UPDATE `{{users}}` SET ";
+      $QryUpdateUser .= "`lvl_raid` = `lvl_raid` + '{$raid_lvl_up}', `rpg_points` = `rpg_points` + '{$raid_lvl_up}' ";
+      $QryUpdateUser .= "WHERE `id` = '{$user['id']}'";
+      doquery($QryUpdateUser);
+      $user['lvl_raid']   += $raid_lvl_up;
+      $user['rpg_points'] += $raid_lvl_up;
+      $isNewLevelRaid = true;
     }
+
+    $raid_lvl_up = intval($raid_lvl_up);
+    $miner_lvl_up = intval($miner_lvl_up);
 
     // -----------------------------------------------------------------------------------------------
 
@@ -472,8 +471,6 @@ switch ($mode) {
     $parse['energy_used'] = $planetrow["energy_max"] - $planetrow["energy_used"];
 
     $parse['Have_new_message']      = $Have_new_message;
-    $parse['Have_new_level_mineur'] = $HaveNewLevelMineur;
-    $parse['Have_new_level_raid']   = $HaveNewLevelRaid;
     $parse['time']=" $dz_tyg, $dzien $miesiac $rok года - ";
     $parse['dpath']                 = $dpath;
     $parse['planet_image']          = $planetrow['image'];
@@ -519,22 +516,13 @@ switch ($mode) {
     }
 
     //Mode AmГ©liorations
-    $parse['xpminier']= $user['xpminier'];
-    $LvlMinier = $user['lvl_minier'];
-    $parse['lvl_minier'] = $LvlMinier;
-    $parse['lvl_up_minier'] = RPG_getMinerXP($LvlMinier);
+    $parse['builder_xp']= $user['xpminier'];
+    $parse['builder_lvl'] = $user['lvl_minier'];
+    $parse['builder_lvl_up'] = RPG_getMinerXP($user['lvl_minier']);
 
-    $parse['xpraid'] = $user['xpraid'];
-    $LvlRaid = $user['lvl_raid'];
-    $parse['lvl_raid'] = $LvlRaid;
-    $parse['lvl_up_raid']   = RPG_getRaidXP($LvlRaid);
-
-    // Nombre de raids, pertes, etc ...
-    $parse['MAX_ECONOMIC_LVL'] = MAX_ECONOMIC_LVL;
-    $parse['Raids'] = $lang['Raids'];
-    $parse['NumberOfRaids'] = $lang['NumberOfRaids'];
-    $parse['RaidsWin'] = $lang['RaidsWin'];
-    $parse['RaidsLoose'] = $lang['RaidsLoose'];
+    $parse['raid_xp']     = $user['xpraid'];
+    $parse['raid_lvl']    = $user['lvl_raid'];
+    $parse['raid_lvl_up'] = RPG_getRaidXP($user['lvl_raid']);
 
     $parse['raids'] = $user['raids'];
     $parse['raidswin'] = $user['raidswin'];
@@ -544,11 +532,11 @@ switch ($mode) {
     $parse['kod'] = $user['kiler'];
 
     //Подсчет кол-ва онлайн и кто онлайн
+    $time = time() - 15*60;
     $OnlineUsersNames2 = doquery("SELECT `username` FROM {{table}} WHERE `onlinetime`>'".$time."'",'users');
     $parse['NumberMembersOnline'] = mysql_num_rows($OnlineUsersNames2);
 
 /*
-    $time = time() - 15*60;
     $ally = $user['ally_id'];
     $OnlineUsersNames = doquery("SELECT `username` FROM {{table}} WHERE `onlinetime`>'".$time."' AND `ally_id`='".$ally."' AND `ally_id` != '0'",'users');
 
@@ -559,7 +547,7 @@ switch ($mode) {
     }
     $parse['MembersOnline2'] = $names;
 */
-
+/*
     //Последние сообщения чата.
     $mess = doquery("SELECT `user`,`message` FROM {{table}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5", 'chat');
     $msg = '<table>';
@@ -570,14 +558,16 @@ switch ($mode) {
       $msg .= "<tr><td align=\"left\">".$usr.":</td><td>".$str."</td></tr>";
     }
     $msg .= '</table>';
-
+*/
     $template->assign_vars(array(
-      'dpath' => $dpath,
-      'PLANET_ID'   => $planetrow['id'],
-      'PLANET_NAME' => $planetrow['name'],
-      'PLANET_TYPE' => $planetrow['planet_type'],
-      'LastChat'    => CHT_messageParse($msg),
-      'admin_email' => $config->game_adminEmail,
+      'dpath'           => $dpath,
+      'PLANET_ID'       => $planetrow['id'],
+      'PLANET_NAME'     => $planetrow['name'],
+      'PLANET_TYPE'     => $planetrow['planet_type'],
+//      'LastChat'        => CHT_messageParse($msg),
+      'admin_email'     => $config->game_adminEmail,
+      'NEW_LEVEL_MINER' => $isNewLevelMiner,
+      'NEW_LEVEL_RAID'  => $isNewLevelRaid,
     ));
     display(parsetemplate($template, $parse), $lang['Overview']);
     break;

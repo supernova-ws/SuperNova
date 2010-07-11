@@ -45,18 +45,15 @@ $lang['approx']				= 'приблизительно';
 $lang['to']				= 'to';
 $lang['Centigrade']			= 'C';
 $lang['Position']			= 'Координаты';
-$lang['Points']				= 'Очки';
 
 $lang['Buildings'] = 'Строения';
 $lang['Fleet'] = 'Флот';
 $lang['Research'] = 'Исследования';
 $lang['Total'] = 'Всего';
-$lang['Experience'] = 'Опыт';
 
 
 $lang['Rank'] = 'Место';
 $lang['of'] = 'из';
-$lang['Level'] = 'уровень';
 $lang['Miner'] = 'Геолог';
 $lang['Raider'] = 'Рейдер';
 $lang['Debris_Field'] = 'Debris Field';
@@ -113,30 +110,44 @@ $lang['ov_une_hostile']			= "Чужой ";
 $lang['ov_hostile']			= " игрока ";
 $lang['ov_message']			= "Отправить сообщение";
 
-$lang['user_points_1']			= 'Очки за постройки';
-$lang['user_points_2']			= 'Очки за исследования';
-$lang['user_points_3']			= 'Очки за оборону';
-$lang['user_points_4']			= 'Очки за флот';
-$lang['user_points_all']		= 'Всего очков';
+$lang['user_points_1']			= 'За постройки';
+$lang['user_points_2']			= 'За исследования';
+$lang['user_points_3']			= 'За оборону';
+$lang['user_points_4']			= 'За флот';
+$lang['user_points_all']		= 'Всего';
 $lang['Points_1']			= 'сектора';
 $lang['km']				= 'км';
 $lang['orb']				= 'Обломки на орбите';
 $lang['buildings_on_planet']		= 'Занятые сектора';
-$lang['Raids'] 				= 'Рейды';
 $lang['NumberOfRaids'] = 'Проведено';
 $lang['RaidsWin'] = 'Выиграно';
 $lang['RaidsLoose'] = 'Проиграно';
-$lang['Level'] = 'Уровень';
 $lang['Economica'] = 'Экономика';
 $lang['Teching'] = 'Иследования';
 
 $lang['InfoBanner'] = 'BBCode для вставки баннера на форуме';
 $lang['InfoUserbar'] = 'BBCode для вставки юзербара на форуме';
 
+
+
+
+
+
 $lang['ov_planet_details'] = 'Подробно о планете';
-$lang['ov_operations']     = 'операции';
+$lang['ov_operations']     = 'переименовать/покинуть';
 $lang['ov_building']       = 'Текущее строительство';
 $lang['ov_hangar']         = 'Верфи';
-$lang['ov_raid_xp']        = 'Рейдовый опыт';
 $lang['ov_rank']           = 'Ранг';
+
+$lang['ov_rpg_new_level_miner'] = 'За достижения в экономике Вы получаете Темную Материю.';
+$lang['ov_rpg_new_level_raid']  = 'За успешные атаки Вы получаете Темную Материю.';
+
+$lang['ov_points']              = 'Очки';
+$lang['ov_raids']               = 'Рейды';
+$lang['ov_experience']          = 'Опыт';
+$lang['ov_level']               = 'Уровень';
+
+$lang['ov_player_rpg']          = 'Статистика игрока';
+
+$lang['ov_banner_and_userbar']  = 'Баннеры и юзербары';
 ?>
