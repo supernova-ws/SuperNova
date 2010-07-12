@@ -2,6 +2,8 @@
 /**
  * index.php - overview.php
  *
+ * 1.5 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [*] Subplanet timers now use sn_timer.js library
  * 1.4 - copyright (c) 2010 by Gorlum for http://supernova.ws
  *     [*] All mainplanet timers now use new sn_timer.js library
  * 1.3 - copyright (c) 2010 by Gorlum for http://supernova.ws
