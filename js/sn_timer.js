@@ -87,8 +87,9 @@ function sn_timer() {
     if(!timer[2])continue;
     timer_options = timer[4];
 
-    HTML       = document.getElementById(timer[0]);
-    HTML_timer = document.getElementById(timer[0] + '_timer');
+    HTML        = document.getElementById(timer[0]);
+    HTML_timer  = document.getElementById(timer[0] + '_timer');
+    HTML_finish = document.getElementById(timer[0] + '_finish');
 
     switch(timer[1]){
       case 0: // countdown timer
@@ -100,6 +101,7 @@ function sn_timer() {
         }
 
         if(timer_options[1].length && timer_options[1][0][0]){
+          timeFinish = timer[3] + timer_options[1][0][2];
           timeLeft = timer[3] + timer_options[1][0][2] - timestamp;
           infoText = timer_options[1][0][1];
           timerText = sn_timestampToString(timeLeft);
@@ -108,11 +110,18 @@ function sn_timer() {
           infoText = timer_options[0];
           timerText = '';
         }
+
         if(HTML_timer != null)
           HTML_timer.innerHTML = timerText;
         else
           infoText += '<br>' + timerText;
-        HTML.innerHTML = infoText;
+
+        if(HTML_finish != null)
+          HTML_finish.innerHTML = timeFinish;
+
+        if(HTML != null)
+          HTML.innerHTML = infoText;
+
         break;
 
       case 1: // counter

@@ -215,6 +215,7 @@ switch($mode){
       1 => $lang['eco_mrk_error_noDM'],
       2 => $lang['eco_mrk_error_noStock'],
       3 => $lang['eco_mrk_error_zeroResStock'],
+      4 => $lang['eco_mrk_error_noResources'],
     );
 
     if(is_array($shipList)){
@@ -241,6 +242,13 @@ switch($mode){
 
           $message .= "<li>{$lang['tech'][$shipID]}: {$shipCount}";
         }
+
+        foreach($total as $resID => $resCount)
+          if($newrow[$resID] < $resCount){
+            $intError = 4;
+            $debug->warning('Trying to use bug in market s/h', 'Buguse');
+            break;
+          }
 
         if(!$intError){
           $message .= "</ul>";
