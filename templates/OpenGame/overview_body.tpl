@@ -20,8 +20,8 @@
         <div class="fr"><a href="overview.php?mode=renameplanet"><font color="green">[{L_ov_operations}]</font></a></td></div>
     </td></tr>
     {Have_new_message}
-    <!-- IF NEW_LEVEL_MINER --><tr><th colspan=4><a href=officier.$phpEx>{L_ov_rpg_new_level_miner}</a></th></tr><!-- ENDIF -->
-    <!-- IF NEW_LEVEL_RAID --><tr><th colspan=4><a href=officier.$phpEx>{L_ov_rpg_new_level_raid}</a></th></tr><!-- ENDIF -->
+    <!-- IF NEW_LEVEL_MINER --><tr><th colspan=4><a href=officier.php>{L_ov_rpg_new_level_miner}</a></th></tr><!-- ENDIF -->
+    <!-- IF NEW_LEVEL_RAID --><tr><th colspan=4><a href=officier.php>{L_ov_rpg_new_level_raid}</a></th></tr><!-- ENDIF -->
     <tr>
       <th width="100">{Server_time}</th>
       <th colspan="3" style="white-space: nowrap;">{time}<span id="dateheure">00:00:00</span></th>

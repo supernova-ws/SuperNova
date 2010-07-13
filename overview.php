@@ -163,9 +163,9 @@ switch ($mode) {
     if ($user['new_message'] != 0) {
       $Have_new_message .= "<tr>";
       if ($user['new_message'] == 1) {
-        $Have_new_message .= "<th colspan=4><a href=messages.$phpEx>". $lang['Have_new_message']."</a></th>";
+        $Have_new_message .= "<th colspan=4><a href=messages.{$phpEx}>". $lang['Have_new_message']."</a></th>";
       } elseif ($user['new_message'] > 1) {
-        $Have_new_message .= "<th colspan=4><a href=messages.$phpEx>";
+        $Have_new_message .= "<th colspan=4><a href=messages.{$phpEx}>";
         $m = pretty_number($user['new_message']);
         $Have_new_message .= str_replace('%m', $m, $lang['Have_new_messages']);
         $Have_new_message .= "</a></th>";
