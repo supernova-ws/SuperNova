@@ -1,12 +1,10 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('error_reporting', E_ALL ^ E_NOTICE);
-
 /**
  * messages.php
  *
- * @version 1.3sv - Security checked & verified for SQL-injection by Gorlum for http://supernova.ws
+ * @version 1.5 - Replaced table 'galaxy' with table 'planer' by Gorlum for http://supernova.ws
+ * @version 1.4 - Security checked & verified for SQL-injection by Gorlum for http://supernova.ws
  * @version 1.3 - Adding "Inbound" messages by Gorlum for http://supernova.ws
  * @version 1.2
  * @copyright 2008 by Chlorel for XNova
@@ -82,7 +80,7 @@ check_urlaubmodus ($user);
         message ($lang['mess_no_owner']  , $lang['mess_error']);
       }
 
-      $OwnerHome   = doquery("SELECT * FROM {{table}} WHERE `id_planet` = '". $OwnerRecord["id_planet"] ."';", 'galaxy', true);
+      $OwnerHome   = doquery("SELECT * FROM {{table}} WHERE `id` = '". $OwnerRecord["id_planet"] ."';", 'planets', true);
       if (!$OwnerHome) {
         message ($lang['mess_no_ownerpl'], $lang['mess_error']);
       }
