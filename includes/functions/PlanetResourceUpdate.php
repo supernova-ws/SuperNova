@@ -28,7 +28,7 @@ function PlanetResourceUpdate ( $CurrentUser, &$CurrentPlanet, $UpdateTime, $Sim
       $incRes[$resName] = ECO_calcResourceIncrease($Caps, $resName, $ProductionTime);
 
       if($CurrentPlanet[$resName]<0){ // correction for negative resources if any
-        $incRes[$resName] -= $CurrentPlanet[$resName];
+        // $incRes[$resName] -= $CurrentPlanet[$resName];
         $debug->warning('Player have negative resources on '.$CurrentPlanet['galaxy'].':'.$CurrentPlanet['system'].':'.$CurrentPlanet['planet'].'. Compensating '.$CurrentPlanet[$resName].' of '.$resName, 'Negative Resources', 998);
       }
       // ...changing data in $Caps according to resource increase
