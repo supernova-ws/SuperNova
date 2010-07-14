@@ -103,8 +103,7 @@ function MissionCaseAttack ( $FleetRow) {
 
   // Update galaxy (debree)
   if ($TargetUser['authlevel'] == 0) {
-    $sqlQuery = 'UPDATE {{table}} SET metal=metal+'.($result['debree']['att'][0]+$result['debree']['def'][0]).' , crystal=crystal+'.($result['debree']['att'][1]+$result['debree']['def'][1]).' WHERE `galaxy` = '. $FleetRow['fleet_end_galaxy'] .' AND `system` = '. $FleetRow['fleet_end_system'] .' AND `planet` = '. $FleetRow['fleet_end_planet'];
-    doquery($sqlQuery,'galaxy');
+    doquery('UPDATE {{planets}} SET `debris_metal` = `debris_metal` + '.($result['debree']['att'][0]+$result['debree']['def'][0]).' , debris_crystal = debris_crystal+'.($result['debree']['att'][1]+$result['debree']['def'][1]).' WHERE `galaxy` = '. $FleetRow['fleet_end_galaxy'] .' AND `system` = '. $FleetRow['fleet_end_system'] .' AND `planet` = '. $FleetRow['fleet_end_planet'] . ' AND `planet_type` = 1');
   };
 
   // !G+ post-calculation for Attackers: fleet left and possible loot
@@ -138,8 +137,7 @@ function MissionCaseAttack ( $FleetRow) {
       foreach ($defender['def'] as $element => $amount) {
         $fleetArray .= '`'.$resource[$element].'`='.$amount.', ';
       }
-      $sqlQuery = 'UPDATE {{table}} SET '.$fleetArray.' metal=metal-'.$loot['looted']['metal'].', crystal=crystal-'.$loot['looted']['crystal'].', deuterium=deuterium-'.$loot['looted']['deuterium'].' WHERE id='.$TargetPlanet['id'];
-      doquery($sqlQuery,'planets');
+      doquery('UPDATE {{planets}} SET '.$fleetArray.' metal=metal-'.$loot['looted']['metal'].', crystal=crystal-'.$loot['looted']['crystal'].', deuterium=deuterium-'.$loot['looted']['deuterium'].' WHERE id='.$TargetPlanet['id']);
     } else {
       foreach ($defender['def'] as $element => $amount) {
         if ($amount)
@@ -147,10 +145,9 @@ function MissionCaseAttack ( $FleetRow) {
         $totalCount += $amount;
       }
       if ($totalCount <= 0) {
-        doquery ('DELETE FROM {{table}} WHERE `fleet_id`='.$fleetID,'fleets');
+        doquery ("DELETE FROM `{{fleets}}` WHERE `fleet_id` = '{$fleetID}'");
       } else {
-        $sqlQuery = 'UPDATE {{table}} SET fleet_array="'.$fleetArray.'", fleet_amount='.$totalCount.', fleet_mess=1 WHERE fleet_id='.$fleetID;
-        doquery($sqlQuery,'fleets');
+        doquery("UPDATE {{fleets}} SET fleet_array = '{$fleetArray}', fleet_amount = {$totalCount}, fleet_mess = 1 WHERE fleet_id = {$fleetID}");
       }
     }
   }

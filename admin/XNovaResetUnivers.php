@@ -37,7 +37,6 @@ function XNovaResetUnivers ( $CurrentUser ) {
     doquery( "TRUNCATE TABLE {{table}}", 'banned');
     doquery( "TRUNCATE TABLE {{table}}", 'buddy');
     doquery( "TRUNCATE TABLE {{table}}", 'chat');
-    doquery( "TRUNCATE TABLE {{table}}", 'galaxy');
     doquery( "TRUNCATE TABLE {{table}}", 'errors');
     doquery( "TRUNCATE TABLE {{table}}", 'fleets');
     doquery( "TRUNCATE TABLE {{table}}", 'iraks');

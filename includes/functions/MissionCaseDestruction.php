@@ -55,22 +55,8 @@ function MissionCaseDestruction($FleetRow) {
   }
 
   if ($MoonDestroyed == 1){
-     // Getting ID of Luna in Galaxy table - really just for deletion
-     $QryGalaxy = doquery("SELECT * FROM {{table}} WHERE " .
-       "`galaxy` = '". $FleetRow['fleet_end_galaxy'] . "' AND " .
-       "`system` = '". $FleetRow['fleet_end_system'] . "' AND " .
-       "`planet` = '". $FleetRow['fleet_end_planet'] . "';"
-     , 'galaxy', true);
-     doquery("DELETE FROM {{table}} WHERE `id` ='".$TargetPlanet['id']."';", 'planets');
+     doquery("DELETE FROM {{planets}} WHERE `id` ='{$TargetPlanet['id']}';");
 
-     $QryUpdateGalaxy  = "UPDATE {{table}} SET ";
-     $QryUpdateGalaxy .= "`id_luna` = '0' ";
-     $QryUpdateGalaxy .= "WHERE ";
-     $QryUpdateGalaxy .= "`galaxy` = '". $FleetRow['fleet_end_galaxy'] ."' AND ";
-     $QryUpdateGalaxy .= "`system` = '". $FleetRow['fleet_end_system'] ."' AND ";
-     $QryUpdateGalaxy .= "`planet` = '". $FleetRow['fleet_end_planet'] ."' ";
-     $QryUpdateGalaxy .= "LIMIT 1;";
-     doquery( $QryUpdateGalaxy , 'galaxy');
      $message  = $lang['sys_moon_destroyed'];
   }elseif($RipsKilled == 1){
      doquery("DELETE FROM {{table}} WHERE `fleet_id` = '". $FleetRow["fleet_id"] ."';", 'fleets');

@@ -218,13 +218,14 @@ if ($_POST) {
       $QrySelectGalaxy  = "SELECT * ";
       $QrySelectGalaxy .= "FROM {{table}} ";
       $QrySelectGalaxy .= "WHERE ";
-      $QrySelectGalaxy .= "`galaxy` = '". $Galaxy ."' AND ";
-      $QrySelectGalaxy .= "`system` = '". $System ."' AND ";
-      $QrySelectGalaxy .= "`planet` = '". $Planet ."' ";
+      $QrySelectGalaxy .= "`galaxy` = '{$Galaxy}' AND ";
+      $QrySelectGalaxy .= "`system` = '{$System}' AND ";
+      $QrySelectGalaxy .= "`planet` = '{$Planet}' AND ";
+      $QrySelectGalaxy .= "`planet_type` = 1 ";
       $QrySelectGalaxy .= "LIMIT 1;";
-      $GalaxyRow = doquery( $QrySelectGalaxy, 'galaxy', true);
+      $GalaxyRow = doquery( $QrySelectGalaxy, 'planets', true);
 
-      if ($GalaxyRow["id_planet"] == "0") {
+      if ($GalaxyRow["id"] == "0") {
         $newpos_checked = true;
       }
 

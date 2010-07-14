@@ -54,6 +54,10 @@ if ( $user['authlevel'] >= 3 ) {
       $newVersion = 2;
 
     case 2:
+
+      // NEED CONVERTER FROM "LUNAS" TO "PLANETS"
+      // NEED TO ADD `parent_planet` field to `planets` table
+
       if($tables['lunas'])
         mysql_query("DROP TABLE {$config->db_prefix}lunas;");
       $newVersion = 3;
@@ -64,6 +68,23 @@ if ( $user['authlevel'] >= 3 ) {
       $newVersion = 4;
 
     case 4:
+
+      // NEED TO ADD `debris_metal` and `debris_crystal` fields to `planets` table
+
+      doquery('UPDATE `{{planets}}`
+        LEFT JOIN `{{galaxy}}` ON {{galaxy}}.id_planet = {{planets}}.id
+      SET
+        {{planets}}.debris_metal = {{galaxy}}.metal,
+        {{planets}}.debris_crystal = {{galaxy}}.crystal
+      WHERE {{galaxy}}.metal>0 OR {{galaxy}}.crystal>0;');
+      $newVersion = 5;
+
+    case 5:
+      // mysql_query("DROP TABLE IF EXISTS `{$config->db_prefix}galaxy`;");
+      // $newVersion = 6;
+
+    case 6:
+
   };
   if($newVersion){
     $config->db_version = $newVersion;

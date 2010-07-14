@@ -6,6 +6,7 @@
  * Galaxy view
  *
  * History version
+ *   2.1 - 'galaxy' table replaced with 'planets' by Gorlum for http://supernova.ws
  *   2.0 - Rewrote by Gorlum for http://supernova.ws
  *     [+] Template-related parts cutted from PHP and moved to TPL-code
  *   1.4 - Security checks & tests by Gorlum for http://supernova.ws
@@ -144,9 +145,8 @@ $GET_planet       = intval($_GET['planet']);
         CheckAbandonPlanetState($GalaxyRowMoon);
     }
 
-    $DebrisRow = doquery("SELECT * FROM {{table}} WHERE `galaxy` = '{$galaxy}' AND `system` = '{$system}' AND `planet` = '{$Planet}';", 'galaxy', true);
-    if ($DebrisRow["metal"] || $DebrisRow["crystal"]) {
-      $RecNeeded = ceil(($DebrisRow["metal"] + $DebrisRow["crystal"]) / $pricelist[209]['capacity']);
+    if ($GalaxyRowPlanet["debris_metal"] || $GalaxyRowPlanet["debris_crystal"]) {
+      $RecNeeded = ceil(($GalaxyRowPlanet["debris_metal"] + $GalaxyRowPlanet["debris_crystal"]) / $pricelist[209]['capacity']);
       if ($RecNeeded < $CurrentRC) {
         $RecSended = $RecNeeded;
       }else{
@@ -167,8 +167,8 @@ $GET_planet       = intval($_GET['planet']);
        'MOON_DIAMETER'  => number_format($GalaxyRowMoon['diameter'], 0, '', '.'),
        'MOON_TEMP'      => number_format($GalaxyRowMoon['temp_min'], 0, '', '.'),
 
-       'DEBRIS_METAL'   => $DebrisRow['metal'], //number_format( $DebrisRow['metal'], 0, '', '.'),
-       'DEBRIS_CRYSTAL' => $DebrisRow['crystal'], //number_format( $DebrisRow['crystal'], 0, '', '.'),
+       'DEBRIS_METAL'   => $GalaxyRowPlanet['debris_metal'], //number_format( $GalaxyRowPlanet['metal'], 0, '', '.'),
+       'DEBRIS_CRYSTAL' => $GalaxyRowPlanet['debris_crystal'], //number_format( $GalaxyRowPlanet['crystal'], 0, '', '.'),
        'DEBRIS_RC_SEND' => $RecSended,
 
        'USER_ID'       => $GalaxyRowUser['id'],

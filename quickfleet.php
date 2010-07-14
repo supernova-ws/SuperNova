@@ -49,8 +49,8 @@ includeLang('fleet');
     $QrySelectGalaxy .= "`system` = '".$planetrow['system']."' AND ";
     $QrySelectGalaxy .= "`planet` = '".$planetrow['planet']."' ";
     $QrySelectGalaxy .= "LIMIT 1;";
-    $TargetGalaxy     = doquery( $QrySelectGalaxy, 'galaxy', true);
-    $DebrisSize       = $TargetGalaxy['metal'] + $TargetGalaxy['crystal'];
+    $TargetGalaxy     = doquery( $QrySelectGalaxy, 'planets', true);
+    $DebrisSize       = $TargetGalaxy['debris_metal'] + $TargetGalaxy['debris_crystal'];
     $RecyclerNeeded   = floor($DebrisSize / ($pricelist[209]['capacity'])) + 1;
     $RecyclerSpeed    = $pricelist[209]['speed'] + (($pricelist[209]['speed'] * $user['combustion_tech']) * 0.1);
 

@@ -59,8 +59,7 @@
           $errorlist .= $lang['fl_nomoon'];
 
         if ($target_mission == MT_RECYCLE){
-          $debris = doquery("SELECT * FROM {{table}} WHERE galaxy = {$galaxy} and system = {$system} AND planet = {$planet}", "galaxy", true);
-          if($debris['metal']+$debris['crystal']==0)
+          if($TargetPlanet['debris_metal'] + $TargetPlanet['debris_crystal'] == 0)
             $errorlist .= $lang['fl_nodebris'];
         }
       }
