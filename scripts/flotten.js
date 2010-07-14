@@ -1,3 +1,20 @@
+function changeMission(mission){
+  switch(mission.value){
+    case '1': // Attack
+    case '2': // AKS
+    case '5': // Hold
+    case '6': // Spy
+    case '8': // Recycle
+    case '9': // Destroy
+    case '15':// Explore
+      document.getElementById("resTable").style="display:none";
+      break;
+    default:
+      document.getElementById("resTable").style="display:inline";
+      break;
+  };
+}
+
 function speed() {
   var sp;
   sp = document.getElementsByName("speed")[0].value;

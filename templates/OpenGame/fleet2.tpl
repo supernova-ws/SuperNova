@@ -48,7 +48,7 @@ function getStorageFaktor() {
       </tbody></table>
     </th>
 
-    <th>
+    <th><div id="resTable">
       <table border="1" cellpadding="0" cellspacing="0" width="100%">
       <tbody>
         <tr height="20"><td colspan="3" class="c">{fl_ressources}</td></tr>
@@ -74,14 +74,15 @@ function getStorageFaktor() {
         <tr height="20">
           <th colspan="3"><a href="javascript:maxResources()">{fl_allressources}</a></th>
         </tr>
-        <tr height="20">
-         <th colspan="3"><div id="debug">debug</div></th>
-        </tr>
+<!--        <tr height="20"><th colspan="3"><div id="debug">debug</div></th></tr> -->
       </tbody></table>
-    </th>
+    </div>&nbsp;</th>
   </tr>
 
   <tr height="20"><th colspan="2"><input accesskey="z" value="{fl_continue}" type="submit"></th></tr>
 
 </tbody></table>
 </form></center>
+<script type="text/javascript"><!--
+  changeMission(document.getElementsByName("target_mission")[0]);
+--></script>
