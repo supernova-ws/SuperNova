@@ -155,7 +155,8 @@
         OR
         (($MyGameLevel * $protectionmulti) < $HeGameLevel AND $MyGameLevel < ($protectiontime * 1000))
       ) ) message("<font color=\"lime\"><b>".$lang['fl_noob_mess_n']."</b></font>", $lang['fl_noob_title'], "fleet." . $phpEx, 2);
-
+    case MT_RECYCLE:
+    case MT_EXPLORE:
       $TransMetal     = 0;
       $TransCrystal   = 0;
       $TransDeuterium = 0;
