@@ -1,12 +1,8 @@
 <br />
-<center>
 <form action="overview.php?mode=renameplanet&pl={planet_id}" method="POST">
 <table width=519>
 <tr>
-<td class="c" colspan=3><h1>{rename_and_abandon_planet}</h1></<td>
-</tr>
-<tr>
-	<td class="c" colspan=3>{your_planet}</td>
+<td class="c" colspan=3>{rename_and_abandon_planet}</<td>
 </tr>
 <tr>
 	<th>{coords}</th>
@@ -23,6 +19,3 @@
 </tr>
 </table>
 </form>
-</center>
-</body>
-</html>

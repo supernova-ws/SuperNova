@@ -1,5 +1,3 @@
-<center>
-<h1>{rename_and_abandon_planet}</h1>
 <form action="overview.php?mode=renameplanet&pl={planet_id}" method=POST>
 <table width=519>
 <tr>
@@ -14,6 +12,3 @@
 </table>
 <input type=hidden name=deleteid value ="{planet_id}">
 </form>
-</center>
-</body>
-</html>
