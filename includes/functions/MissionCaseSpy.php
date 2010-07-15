@@ -49,7 +49,7 @@ function MissionCaseSpy ( $FleetRow ) {
             $QryTargetGalaxy .= "`galaxy` = '". $FleetRow['fleet_end_galaxy'] ."' AND ";
             $QryTargetGalaxy .= "`system` = '". $FleetRow['fleet_end_system'] ."' AND ";
             $QryTargetGalaxy .= "`planet` = '". $FleetRow['fleet_end_planet'] ."' AND ";
-            $QryTargetGalaxy .= "`planet_type` = '". $FleetRow['fleet_end_type'] ."';";
+            $QryTargetGalaxy .= "`planet_type` = 1;";
             $TargetGalaxy     = doquery( $QryTargetGalaxy, 'planets', true);
             $CristalDebris    = $TargetGalaxy['crystal'];
             $SpyToolDebrisM   = $LS * $pricelist[210]['metal'] * 0.3;
@@ -164,7 +164,12 @@ function MissionCaseSpy ( $FleetRow ) {
             $QryUpdateGalaxy  = "UPDATE {{planets}} SET ";
             $QryUpdateGalaxy .= "`debris_metal` = `debris_metal` + '". (0 + $SpyToolDebrisM) ."', ";
             $QryUpdateGalaxy .= "`debris_crystal` = `debris_crystal` + '". (0 + $SpyToolDebrisC) ."' ";
-            $QryUpdateGalaxy .= "WHERE `id_planet` = '". $TargetPlanet['id'] ."';";
+            $QryUpdateGalaxy .= "WHERE ";
+
+            $QryUpdateGalaxy .= "`galaxy` = '". $FleetRow['fleet_end_galaxy'] ."' AND ";
+            $QryUpdateGalaxy .= "`system` = '". $FleetRow['fleet_end_system'] ."' AND ";
+            $QryUpdateGalaxy .= "`planet` = '". $FleetRow['fleet_end_planet'] ."' AND ";
+            $QryUpdateGalaxy .= "`planet_type` = 1;";
             doquery( $QryUpdateGalaxy);
 
             SendSimpleMessage ( $TargetUserID, '', $FleetRow['fleet_start_time'], 0, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], 'Ваш шпионский флот уничтожен');

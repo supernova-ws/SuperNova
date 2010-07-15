@@ -16,7 +16,7 @@ function MissionCaseRecycling ($FleetRow) {
       $QrySelectGalaxy .= "`galaxy` = '{$FleetRow['fleet_end_galaxy']}' AND ";
       $QrySelectGalaxy .= "`system` = '{$FleetRow['fleet_end_system']}' AND ";
       $QrySelectGalaxy .= "`planet` = '{$FleetRow['fleet_end_planet']}' AND ";
-      $QrySelectGalaxy .= "`planet_type` = '{$FleetRow['fleet_end_type']}' ";
+      $QrySelectGalaxy .= "`planet_type` = 1 ";
       $QrySelectGalaxy .= "LIMIT 1;";
       $TargetGalaxy     = doquery( $QrySelectGalaxy, 'planets', true);
 
@@ -90,7 +90,7 @@ function MissionCaseRecycling ($FleetRow) {
       $QryUpdateFleet .= "`fleet_resource_deuterium` = '".$NewCargo['Deuterium']."', ";
       $QryUpdateFleet .= "`fleet_mess` = '1' ";
             $QryUpdateFleet .= "WHERE ";
-      $QryUpdateFleet .= "`fleet_id` = '".$FleetRow['fleet_id']."' ";
+      $QryUpdateFleet .= "`fleet_id` = '{$FleetRow['fleet_id']}' ";
             $QryUpdateFleet .= "LIMIT 1;";
       doquery( $QryUpdateFleet, 'fleets');
     }

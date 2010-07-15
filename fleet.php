@@ -81,7 +81,7 @@ if ($planet > $config->game_maxPlanet)
 $fleet_group_mr = intval($_POST['fleet_group']);
 
 if ($galaxy AND $system AND $planet AND $planet_type){
-  $TargetPlanet = doquery("SELECT * FROM {{table}} WHERE galaxy = {$galaxy} and system = {$system} AND planet = {$planet} and planet_type = {$planet_type}", "planets", true);
+  $TargetPlanet = doquery("SELECT * FROM {{table}} WHERE galaxy = {$galaxy} and system = {$system} AND planet = {$planet} and planet_type = 1", "planets", true);
 
   if ($TargetPlanet['id_owner']){
     $UsedPlanet = true;
