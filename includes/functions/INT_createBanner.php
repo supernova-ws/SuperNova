@@ -97,8 +97,8 @@ function INT_createBanner($id, $type = 'userbar', $format = 'png'){
       imagettftext($image, 8, 0, 410-$is[2], 9, $txt_color, $fonts['info'], $b_points);
 
       //Raids Total
-      imagettftext($image, 6, 0, 8, 37, $txt_shadow2, $fonts['raids'], $lang['Raids']);
-      imagettftext($image, 6, 0, 6, 35, $txt_color2, $fonts['raids'], $lang['Raids']);
+      imagettftext($image, 6, 0, 8, 37, $txt_shadow2, $fonts['raids'], $lang['NumberOfRaids']);
+      imagettftext($image, 6, 0, 6, 35, $txt_color2, $fonts['raids'], $lang['NumberOfRaids']);
       $b_points = ": ".pretty_number($Player['raids']);
       imagettftext($image, 6, 0, 61, 37, $txt_shadow2, $fonts['raids'], $b_points);
       imagettftext($image, 6, 0, 59, 35, $txt_color2, $fonts['raids'], $b_points);
