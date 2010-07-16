@@ -20,13 +20,48 @@
       <th>{fl_order}</th>
     </tr>
 
-    {FlyingFleets_array}
+<!-- BEGIN fleets -->
+<tr height=20>
+  <th>{fleets.NUMBER}</th>
+  <th><a>{fleets.MISSION_NAME}</a><br>
+    <span title="<!-- IF fleets.MESSAGE -->{L_fl_back_to_ttl">{L_fl_back_to}<!-- ELSE -->{L_fl_get_to_ttl}">{L_fl_get_to}<!-- ENDIF --></span>
+  </th>
+  <th><a title="{fleets.TIP}">{fleets.AMOUNT}</a></th>
+  <th>{fleets.START_PLANET}</th>
+  <th>{fleets.START_TIME}</th>
+  <th>{fleets.END_PLANET}</th>
+  <th>{fleets.END_TIME}</th>
+  <th><font color=lime><span id="fleet_timer{fleets.ID}"></span></font></th>
+  <th>
+  <!-- IF fleets.MESSAGE == 0 -->
+  <form action="fleetback.php" method="post" style="margin: 0">
+  <input name="fleetid" value="{fleets.ID}" type="hidden">
+  <input value="{L_fl_back_to_ttl}" type="submit" name="send">
+  </form>
+  <!-- IF fleets.MISSION == 1 || fleets.MISSION == 2 -->
+  <form action="fleet.php?fleet_page=4" method="post" style="margin: 0">
+  <input name="fleetid" value="{fleets.ID}" type="hidden">
+  <input value="<!-- IF fleets.MISSION == 1 -->{L_fl_associate}<!-- ELSE -->{fleets.ACS}<!-- ENDIF -->" type="submit">
+  </form>
+  <!-- ENDIF -->
+  <!-- ELSE -->
+  {L_fl_isback}
+  <!-- ENDIF -->
+  </th>
+</tr>
+<script type="text/javascript"><!--
+  sn_timers.unshift(['fleet_timer{fleets.ID}', 0, true, {TIME_NOW}, ['Флот прибыл',[
+    ['{fleets.ID}', '', {fleets.TIME_LEFT}, '0']
+  ]]]);
+--></script>
+<!-- END fleets -->
+
 
     <tr height="20" style="{DisplayNoSlotFree}"><th colspan="9"><font color="red">{fl_noslotfree}</font></th></tr>
   </table><br>
 
   {AKS}
-  
+
   <form action="fleet.php?fleet_page=1" method="post">
     <table width="519" border="0" cellpadding="0" cellspacing="1">
       <tr height="20"><td colspan="4" class="c">{fl_new_miss}</td></tr>

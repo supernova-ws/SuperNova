@@ -113,8 +113,11 @@ function sn_timer() {
 
         if(HTML_timer != null)
           HTML_timer.innerHTML = timerText;
-        else
-          infoText += '<br>' + timerText;
+        else{
+          if(infoText != '')
+            infoText += '<br>';
+          infoText += timerText;
+        }
 
         if(HTML_finish != null)
           HTML_finish.innerHTML = timeFinish;
