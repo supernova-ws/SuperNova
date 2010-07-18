@@ -177,4 +177,6 @@ $lang['sys_status']          = "Статус";
 
 $lang['sys_universe']        = "Вселенная";
 $lang['sys_goto']            = "Перейти";
+
+$lang['sys_affilates']       = "Приглашенные игроки";
 ?>

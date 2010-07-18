@@ -28,9 +28,9 @@ if ( isset ($user) ) {
   $row = mysql_fetch_row($_lastupdate);
 
   if(($time_now-$row[0]>8)&&(!$doNotUpdateFleet)){
-    doquery("LOCK TABLE {{table}} WRITE", 'update');
+//    doquery("LOCK TABLE {{table}} WRITE", 'update');
     doquery("UPDATE {{table}} SET `lastupdate` = ".$time_now."", 'update');
-    doquery("UNLOCK TABLES", '');
+//    doquery("UNLOCK TABLES", '');
     $_lastupdate = $time_now;
 
     $_fleets = doquery("SELECT DISTINCT fleet_start_galaxy, fleet_start_system, fleet_start_planet, fleet_start_type FROM {{table}} WHERE `fleet_start_time` <= '{$time_now}' ORDER BY fleet_start_time;", 'fleets');

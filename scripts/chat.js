@@ -79,7 +79,7 @@ function addSmiley(smiley){
 
 // Intervalle entre les messages
 showMessage();
-setInterval(showMessage,5000);
+chatIntervalID = setInterval(showMessage,5000);
 
 // Add Nick by Click
 function addNick(obj){

@@ -271,9 +271,9 @@
   $QryUpdatePlanet .= "`id` = '". $planetrow['id'] ."'";
 
   // Mise a jours de l'enregistrement de la planete de depart (a partir de l?ï, y a quelque chose qui vole et ce n'est plus sur la planete de depart)
-  doquery("LOCK TABLE {{table}} WRITE", 'planets');
+//  doquery("LOCK TABLE {{table}} WRITE", 'planets');
   doquery ($QryUpdatePlanet, "planets");
-  doquery("UNLOCK TABLES", '');
+//  doquery("UNLOCK TABLES", '');
 
 //  if ($fleet_group) {
 //    // doquery("UPDATE `{{table}}` SET `p_num` = `p_num` + 1 WHERE `id` = '{$fleet_group}';", 'aks');
