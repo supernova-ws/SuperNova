@@ -183,7 +183,7 @@ class classPersistent extends classCache {
         $this->$name = $value;
 
       doquery("UPDATE {{table}} SET `{$this->sqlValueName}` = '{$this->$name}' WHERE `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName);
-      if(!mysql_affected_rows())
+      if(!doquery("SELECT * FROM {{table}} WHERE `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName, true))
         doquery("INSERT INTO {{table}} SET `{$this->sqlValueName}` = '{$this->$name}', `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName);
     };
   }
