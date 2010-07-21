@@ -8,7 +8,7 @@ $lang['adm_opt_game_fspeed']   = "Скорость флота<br>(нормальная = 2500)";
 $lang['adm_opt_game_pspeed']   = "Скорость производительности<br>(нормальная = 1)";
 $lang['adm_opt_game_forum']    = "Адрес форума";
 $lang['adm_opt_game_copyrigh'] = "Copyright";
-$lang['adm_opt_game_online']   = "On-line статус";
+$lang['adm_opt_game_online']   = "Отключить игру";
 $lang['adm_opt_game_offreaso'] = "Причина отключения";
 $lang['adm_opt_plan_settings'] = "Параметры планет";
 $lang['adm_opt_plan_initial']  = "Размер главной планеты";

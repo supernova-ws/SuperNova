@@ -10,28 +10,25 @@
 include_once('includes/init.inc');
 
 if (INSTALL != true) {
-  if ($InLogin != true) {
+  if (!$InLogin) {
     $Result        = CheckTheUser ( $IsUserChecked );
     $IsUserChecked = $Result['state'];
     $user          = $Result['record'];
-  } elseif ($InLogin == false) {
+
     // Jeux en mode 'clos' ???
-    if( $game_config['game_disable']) {
+    if( $config->game_disable) {
       if ($user['authlevel'] < 1) {
-        message ( stripslashes ( $game_config['close_reason'] ), $game_config['game_name'] );
+        message ( stripslashes ( $config->game_disable_reason ), $config->game_name );
+        die();
+      } else {
+        print( "<div align=center style='font-size: 24; font-weight: bold; color:red;'>" . $config->game_disable_reason . '</div><br>' );
       }
     }
   }
 
 if ( isset ($user) ) {
-  $_lastupdate = doquery("SELECT `lastupdate` FROM {{table}} LIMIT 1;", 'update');
-  $row = mysql_fetch_row($_lastupdate);
-
-  if(($time_now-$row[0]>8)&&(!$doNotUpdateFleet)){
-//    doquery("LOCK TABLE {{table}} WRITE", 'update');
-    doquery("UPDATE {{table}} SET `lastupdate` = ".$time_now."", 'update');
-//    doquery("UNLOCK TABLES", '');
-    $_lastupdate = $time_now;
+  if(($time_now - $config->flt_lastUpdate > 8 ) && (!$doNotUpdateFleet)){
+    $config->db_saveItem('flt_lastUpdate', $time_now);
 
     $_fleets = doquery("SELECT DISTINCT fleet_start_galaxy, fleet_start_system, fleet_start_planet, fleet_start_type FROM {{table}} WHERE `fleet_start_time` <= '{$time_now}' ORDER BY fleet_start_time;", 'fleets');
     while ($row = mysql_fetch_array($_fleets)) {

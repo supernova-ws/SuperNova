@@ -6,10 +6,10 @@ if (INSTALL != true) {
     $Result        = CheckTheUser ( $IsUserChecked );
     $IsUserChecked = $Result['state'];
     $user          = $Result['record'];
-  } elseif ($InLogin == false) {
+
     if( $config->game_disable)
       if ($user['authlevel'] < 1)
-        message ( stripslashes ( $game_config['close_reason'] ), $game_config['game_name'] );
+        message ( stripslashes ( $config->game_disable_reason ), $config->game_name );
   }
 }
 

@@ -10,8 +10,6 @@ config.php
 /cache/
 
 # Ignore backup folder
-/admin/backup/
-/admin/sxd/backup/
 /admin/sxd/cfg.php
 /admin/sxd/error.log
 /admin/sxd/ses.php
@@ -23,4 +21,7 @@ config.php
 !.gitattributes
 
 # Ignore backups
-admin/backup/*.gz
+/admin/backup/*.gz
+/admin/backup/*.bz2
+/admin/sxd/backup/*.gz
+/admin/sxd/backup/*.bz2

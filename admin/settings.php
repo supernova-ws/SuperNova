@@ -16,7 +16,7 @@ include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
 function DisplayGameSettingsPage ( $CurrentUser ) {
-  global $lang, $game_config, $_POST;
+  global $lang, $game_config, $_POST, $config;
 
   includeLang('admin/settings');
 
@@ -24,12 +24,11 @@ function DisplayGameSettingsPage ( $CurrentUser ) {
     if ($_POST['opt_save'] == "1") {
       // Jeu Ouvert ou Ferm� !
       if (isset($_POST['closed']) && $_POST['closed'] == 'on') {
-        $game_config['game_disable']         = "1";
-        $game_config['close_reason']         = addslashes( $_POST['close_reason'] );
+        $config->game_disable         = "1";
       } else {
-        $game_config['game_disable']         = "0";
-        $game_config['close_reason']         = "";
+        $config->game_disable         = "0";
       }
+      $config->game_disable_reason  = addslashes( $_POST['game_disable_reason'] );
 
       // Y a un News Frame ? !
       if (isset($_POST['newsframe']) && $_POST['newsframe'] == 'on') {
@@ -119,8 +118,10 @@ function DisplayGameSettingsPage ( $CurrentUser ) {
       }
 
       // Activation du jeu
-      doquery("UPDATE {{table}} SET `config_value` = '". $game_config['game_disable']           ."' WHERE `config_name` = 'game_disable';", 'config');
-      doquery("UPDATE {{table}} SET `config_value` = '". $game_config['close_reason']           ."' WHERE `config_name` = 'close_reason';", 'config');
+//      doquery("UPDATE {{table}} SET `config_value` = '". $config->game_disable           ."' WHERE `config_name` = 'game_disable';", 'config');
+//      doquery("UPDATE {{table}} SET `config_value` = '". $config->game_disable_reason           ."' WHERE `config_name` = 'game_disable_reason';", 'config');
+      $config->db_saveItem('game_disable');
+      $config->db_saveItem('game_disable_reason');
 
       // Configuration du Jeu
       doquery("UPDATE {{table}} SET `config_value` = '". $game_config['game_name']              ."' WHERE `config_name` = 'game_name';", 'config');
@@ -168,8 +169,8 @@ function DisplayGameSettingsPage ( $CurrentUser ) {
       $parse['deuterium_basic_income'] = $game_config['deuterium_basic_income'];
       $parse['energy_basic_income']    = $game_config['energy_basic_income'];
 
-      $parse['closed']                 = ($game_config['game_disable'] == 1) ? " checked = 'checked' ":"";
-      $parse['close_reason']           = stripslashes( $game_config['close_reason'] );
+      $parse['closed']                 = ($config->game_disable == 1) ? " checked = 'checked' ":"";
+      $parse['game_disable_reason']           = stripslashes( $config->game_disable_reason );
 
       $parse['newsframe']              = ($game_config['OverviewNewsFrame'] == 1) ? " checked = 'checked' ":"";
       $parse['NewsTextVal']            = stripslashes( $game_config['OverviewNewsText'] );

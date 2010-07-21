@@ -191,7 +191,7 @@ INSERT INTO `sn_config` VALUES ('BannerURL', '/scripts/createbanner.php');
 INSERT INTO `sn_config` VALUES ('banner_source_post', '../images/bann.png');
 INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
 INSERT INTO `sn_config` VALUES ('chat_admin_msgFormat', '[c=purple]$2[/c]');
-INSERT INTO `sn_config` VALUES ('close_reason', 'Извините, производится техобслуживание.');
+INSERT INTO `sn_config` VALUES ('game_disable_reason', 'Извините, производится техобслуживание.');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'supernova0');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
 INSERT INTO `sn_config` VALUES ('dbVersion', '1');

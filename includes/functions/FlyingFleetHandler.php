@@ -14,7 +14,7 @@ function FlyingFleetHandler (&$planet) {
   // $dbg_msg .= "&nbsp;&nbsp;FleetHandler for planet ".PrintPlanetCoords($planet)."<br />";
   $process_delay = 10; //seconds
 
-//  doquery("LOCK TABLE {{table}}aks WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}galaxy WRITE ,{{table}}users WRITE", "");
+  doquery("LOCK TABLE {{table}}aks WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}galaxy WRITE ,{{table}}users WRITE", "");
 
   $QryFleet   = "SELECT * FROM `{{table}}` ";
   $QryFleet  .= "WHERE (";
@@ -102,7 +102,7 @@ function FlyingFleetHandler (&$planet) {
   }
 
   // $dbg_msg .= "&nbsp;&nbsp;Fleet ".$CurrentFleet['fleet_id'].". EndOf FleetHandler<br />";
-//  doquery("UNLOCK TABLES", "");
+  doquery("UNLOCK TABLES", "");
 }
 
 ?>

@@ -202,7 +202,6 @@ class classConfig extends classPersistent {
   protected $defaults = array(
     'BannerOverviewFrame' => 1,
     'BuildLabWhileRun' => 0,
-    'close_reason' => "SuperNova is in maintenance mode! Please return later!",
     'COOKIE_NAME' => "SuperNova",
     'crystal_basic_income' => 20,
     'debug' => 0,
@@ -214,6 +213,7 @@ class classConfig extends classPersistent {
     'ForumUserBarFrame' => 1,
     'forum_url' => "/forum/",
     'game_disable' => 0,
+    'game_disable_reason' => "SuperNova is in maintenance mode! Please return later!",
     'game_name' => "SuperNova",
     'game_speed' => 2500,
     'initial_fields' => 163,
