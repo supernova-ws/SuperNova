@@ -1,6 +1,6 @@
 <?php
-//print('Chat temporary disabled');
-//die();
+print('Чат временно отключен');
+die();
 
 /**
  * chat_msg.php
