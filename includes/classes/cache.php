@@ -33,7 +33,7 @@ class classCache {
 
   public function __set($name, $value) {
     switch ($name){
-      case 'CACHER_PREFIX':
+      case '_PREFIX':
         self::$prefix = $value;
         break;
       default:
@@ -89,13 +89,83 @@ class classCache {
     };
   }
 
+  private function make_element_name($args, $diff = 0){
+    $num_args = count($args);
+
+    if($num_args<1)
+      return false;
+
+    $aName = array();
+
+    for($i = 0; $i <= $num_args - 1 - $diff; $i++){
+      $name .= '[' . $args[$i] . ']';
+      array_unshift($aName, $name);
+    }
+
+    return $aName;
+  }
+
+  public function array_set(){
+    $args = func_get_args();
+    $name = $this->make_element_name($args, 1);
+
+    if(!$name) return NULL;
+
+    if($this->$name[0] === NULL){
+      for($i = count($name) - 1; $i > 0; $i--){
+        $cName = $name[$i] . '_COUNT';
+        $cName1 = $name[$i-1] . '_COUNT';
+        if($this->$cName1 == NULL || $i == 1)
+          $this->$cName++;
+      }
+    }
+
+    $this->$name[0] = $args[count($args) - 1];
+    return true;
+  }
+
+  public function array_get(){
+    $name = $this->make_element_name(func_get_args());
+    if(!$name) return NULL;
+    return $this->$name[0];
+  }
+
+  public function array_count(){
+    $name = $this->make_element_name(func_get_args());
+    if(!$name) return 0;
+    $cName = $name[0] . "_COUNT";
+    $retVal = $this->$cName;
+    if(!$retVal) $retVal = 0;
+    return $retVal;
+  }
+
+  public function array_unset(){
+    $name = $this->make_element_name(func_get_args());
+    if(!$name) return false;
+    $this->unset_by_prefix($name[0]);
+
+    for($i = 1; $i < count($name); $i++){
+      $cName = $name[$i] . "_COUNT";
+      $cName1 = $name[$i-1] . "_COUNT";
+
+      if($i == 1 || $this->$cName1 === NULL){
+        $this->$cName--;
+        if($this->$cName <= 0)
+          unset($this->$cName);
+      }
+    }
+    return true;
+  }
+
   public function unset_by_prefix($prefix_unset = '') {
     switch (self::$mode) {
       case 0:
         array_walk(self::$data, create_function('&$v,$k,$p', 'if(strpos($k, $p) === 0)$v = NULL;'), self::$prefix.$prefix_unset);
+        return true;
         break;
       case 1:
-        xcache_unset_by_prefix(self::$prefix.$prefix_unset);
+        if(!function_exists('xcache_unset_by_prefix')) return false;
+        return xcache_unset_by_prefix(self::$prefix.$prefix_unset);
         break;
     };
   }
@@ -138,7 +208,7 @@ class classPersistent extends classCache {
 
   protected $defaults = array();
 
-  protected function __construct($gamePrefix = 'ogame_', $internalName = '', $tableName = '') {
+  protected function __construct($gamePrefix = 'sn_', $internalName = '', $tableName = '') {
     parent::__construct($gamePrefix.$internalName.'_');
     $this->internalName = $internalName;
 
@@ -152,7 +222,7 @@ class classPersistent extends classCache {
       $this->db_loadAll();
   }
 
-  public static function getInstance($gamePrefix = 'ogame_', $internalName = '') {
+  public static function getInstance($gamePrefix = 'sn_', $internalName = '') {
     if (!isset(self::$cacheObject)) {
       $className = get_class();
       self::$cacheObject = new $className($gamePrefix, $internalName);
@@ -183,11 +253,6 @@ class classPersistent extends classCache {
         $this->$name = $value;
 
       doquery("REPLACE INTO {{table}} SET `{$this->sqlValueName}` = '{$this->$name}', `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName);
-/*
-      doquery("UPDATE {{table}} SET `{$this->sqlValueName}` = '{$this->$name}' WHERE `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName);
-      if(!doquery("SELECT * FROM {{table}} WHERE `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName, true))
-        doquery("INSERT INTO {{table}} SET `{$this->sqlValueName}` = '{$this->$name}', `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName);
-*/
     };
   }
 
@@ -285,7 +350,7 @@ class classConfig extends classPersistent {
     'stats_schedule' => 'd@04:00:00',
   );
 
-  public static function getInstance($gamePrefix = 'ogame_') {
+  public static function getInstance($gamePrefix = 'sn_') {
     if (!isset(self::$cacheObject)) {
       $className = get_class();
       self::$cacheObject = new $className($gamePrefix, 'config');
@@ -298,7 +363,7 @@ class classVariables extends classPersistent {
   protected $defaults = array(
   );
 
-  public static function getInstance($gamePrefix = 'ogame_') {
+  public static function getInstance($gamePrefix = 'sn_') {
     if (!isset(self::$cacheObject)) {
       $className = get_class();
       self::$cacheObject = new $className($gamePrefix, 'var', 'variables');
