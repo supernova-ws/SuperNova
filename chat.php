@@ -1,18 +1,20 @@
 <?php
-//print('Chat temporary disabled');
-//die();
+/**
+ chat.php
+   Main chat window
 
-  /**
-   * chat.php
-   *
-   * @version 1.2s Security checks by Gorlum for http://supernova.ws
-   * @version 1.2 by Ihor
-   * @version 1.0
-   * @copyright 2008 by e-Zobar for XNova
-   */
-
-ini_set('display_error',0);
-ini_set('error_reporting',0);
+ Changelog:
+   2.0 copyright (c) 2009-2001 by Gorlum for http://supernova.ws
+     [+] Rewrote to remove unnecessary code dupes
+   1.5 copyright (c) 2009-2001 by Gorlum for http://supernova.ws
+     [~] More DDoS-realted fixes
+   1.4 copyright (c) 2009-2001 by Gorlum for http://supernova.ws
+     [~] DDoS-realted fixes
+   1.3 copyright (c) 2009-2001 by Gorlum for http://supernova.ws
+     [~] Security checks for SQL-injection
+   1.2 by Ihor
+   1.0 copyright 2008 by e-Zobar for XNova
+**/
 
 define('INSIDE'  , true);
 define('INSTALL' , false);
@@ -41,8 +43,7 @@ if ($_GET) {
   }
 }
 
-if(!$config->array_get('users', $user['id'], 'chat_lastUpdate'))
-  $config->array_set('users', $user['id'], 'chat_lastUpdate', $time_now);
+$config->array_set('users', $user['id'], 'chat_lastUpdate', $time_now);
 
 $page = parsetemplate(gettemplate('chat_body'), $parse);
 display($page, $lang['Chat']);
