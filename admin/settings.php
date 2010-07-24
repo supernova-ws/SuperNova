@@ -154,6 +154,8 @@ function DisplayGameSettingsPage ( $CurrentUser ) {
       doquery("REPLACE INTO {{table}} (`config_name`, `config_value`) VALUES ('advGoogleLeftMenuIsOn', '". $game_config['advGoogleLeftMenuIsOn'] ."');", 'config');
       doquery("REPLACE INTO {{table}} (`config_name`, `config_value`) VALUES ('advGoogleLeftMenuCode', '". $game_config['advGoogleLeftMenuCode'] ."');", 'config');
 
+      $config->db_saveAll();
+
       AdminMessage ('Настройки сохранены успешно!', 'Готово', '?');
     } else {
 

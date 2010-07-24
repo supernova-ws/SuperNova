@@ -247,6 +247,14 @@ class classPersistent extends classCache {
     $this->_DB_LOADED = true;
   }
 
+  public function db_saveAll(){
+    $toSave = array();
+    foreach($defaults as $field => $value)
+      $toSave[$field] = NULL;
+
+    $this->db_saveItem($toSave);
+  }
+
   public function db_saveItem($name, $value = NULL){
     if($name){
       if(!is_array($name))
@@ -255,6 +263,8 @@ class classPersistent extends classCache {
       foreach($name as $itemName => &$itemValue){
         if($itemValue !== NULL)
           $this->$itemName = $itemValue;
+        else
+          $itemValue = $this->$itemName;
 
         $qry .= " ('{$itemName}', '{$itemValue}'),";
       }
