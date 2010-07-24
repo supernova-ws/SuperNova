@@ -249,10 +249,17 @@ class classPersistent extends classCache {
 
   public function db_saveItem($name, $value = NULL){
     if($name){
-      if($value !== NULL)
-        $this->$name = $value;
+      if(!is_array($name))
+        $name = array($name => $value);
 
-      doquery("REPLACE INTO {{table}} SET `{$this->sqlValueName}` = '{$this->$name}', `{$this->sqlFieldName}` = '{$name}';", $this->sqlTableName);
+      foreach($name as $itemName => &$itemValue){
+        if($itemValue !== NULL)
+          $this->$itemName = $itemValue;
+
+        $qry .= " ('{$itemName}', '{$itemValue}'),";
+      }
+      $qry = "REPLACE INTO {{table}} (`{$this->sqlFieldName}`, `{$this->sqlValueName}`) VALUES" . substr($qry, 0, -1);
+      doquery($qry, $this->sqlTableName);
     };
   }
 

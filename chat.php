@@ -41,13 +41,8 @@ if ($_GET) {
   }
 }
 
-if ($game_config['OverviewClickBanner'] != '') {
-  $parse['ClickBanner'] = stripslashes( $game_config['OverviewClickBanner'] );
-}
-
-$temp = $config->users;
-$temp[$user['id']]['chat_lastUpdate'] = $time_now;
-$config->users = $temp;
+if(!$config->array_get('users', $user['id'], 'chat_lastUpdate'))
+  $config->array_set('users', $user['id'], 'chat_lastUpdate', $time_now);
 
 $page = parsetemplate(gettemplate('chat_body'), $parse);
 display($page, $lang['Chat']);

@@ -29,7 +29,7 @@ $GET_chat_type = SYS_mysqlSmartEscape($_GET['chat_type']);
 
 includeLang('chat');
 
-if($config->users[$user['id']]['chat_lastUpdate'] + $config->chat_timeout < $time_now){
+if($config->array_get('users', $user['id'], 'chat_lastUpdate') + $config->chat_timeout < $time_now){
   print(iconv('CP1251', 'UTF-8', $lang['chat_timeout']));
   die();
 }

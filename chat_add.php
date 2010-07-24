@@ -26,6 +26,10 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
+if($config->array_get('users', $user['id'], 'chat_lastUpdate') + $config->chat_timeout < $time_now)
+  die();
+
+
   $msg  = SYS_mysqlSmartEscape ($_POST["msg"]);
   $chat_type = SYS_mysqlSmartEscape ($_POST["chat_type"]);
   $ally_id = SYS_mysqlSmartEscape ($_POST["ally_id"]);
@@ -52,8 +56,6 @@ if ($IsUserChecked == false) {
     }else{
       $query = doquery("INSERT INTO {{table}}(user, ally_id, message, timestamp) VALUES ('".$nick."','0', '".$msg."', '".time()."')", "chat");
     }
-    $temp = $config->users;
-    $temp[$user['id']]['chat_lastUpdate'] = $time_now;
-    $config->users = $temp;
+    $config->array_set('users', $user['id'], 'chat_lastUpdate', $time_now);
   }
 ?>
