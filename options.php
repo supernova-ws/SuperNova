@@ -69,11 +69,11 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
     $noipcheck = "0";
   }
   // Nombre de usuario
-//  if (isset($POST_db_character) && $POST_db_character != '') {
-//    $username = CheckInputStrings ( $_POST['db_character'] );
-//  } else {
+  if (isset($POST_db_character) && $POST_db_character && $config->game_user_changename) {
+    $username = CheckInputStrings ( $_POST['db_character'] );
+  } else {
     $username = $user['username'];
-//  }
+  }
   // Adresse e-Mail
   if (isset($_POST["db_email"]) && $_POST["db_email"] != '') {
     $db_email = SYS_mysqlSmartEscape(CheckInputStrings ( $_POST['db_email'] ));
@@ -215,7 +215,8 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
       message($lang['succeful_changepass'], $lang['changue_pass']);
     }
   }
-  if ($user['username'] != $POST_db_character) {
+
+  if ($user['username'] != $username && $config->game_user_changename) {
     $query = doquery("SELECT id FROM {{table}} WHERE username='{$POST_db_character}'", 'users', true);
     if (!$query) {
       doquery("UPDATE {{table}} SET username='{$username}' WHERE id='{$user['id']}' LIMIT 1", "users");
@@ -225,11 +226,11 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   }
 
   if ($user['urlaubs_modus_time'] != 0){
-  $query =  ("UPDATE {{table}} SET ");
-  $query .= ("`last_update` = '".time()."' ");
-  $query .= ("WHERE id_owner='{$user['id']}';");
-  doquery($query, 'planets');
-  message($lang['vacations_exit'], $lang['mode_vacations']);
+    $query =  ("UPDATE {{table}} SET ");
+    $query .= ("`last_update` = '".time()."' ");
+    $query .= ("WHERE id_owner='{$user['id']}';");
+    doquery($query, 'planets');
+    message($lang['vacations_exit'], $lang['mode_vacations']);
   }
 
   message($lang['succeful_save'], $lang['Options']);

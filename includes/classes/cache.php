@@ -301,6 +301,7 @@ class classConfig extends classPersistent {
     'game_disable_reason' => "SuperNova is in maintenance mode! Please return later!",
     'game_name' => "SuperNova",
     'game_speed' => 2500,
+    'game_user_changename' => 0,
     'initial_fields' => 163,
     'LastSettedGalaxyPos' => 0,
     'LastSettedPlanetPos' => 0,

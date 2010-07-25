@@ -5,6 +5,7 @@ $lang['changue_pass']			= "Сменить пароль";
 $lang['Download']			= "Загрузка";
 $lang['Search']				= "Поиск";
 $lang['succeful_changepass']		= "Пароль успешно изменён.<br /><a href=\"login.php\" target=\"_top\">Назад</a>";
+$lang['succeful_changename']		= "Имя пользователя успешно изменено.<br /><a href=\"login.php\" target=\"_top\">Назад</a>";
 $lang['succeful_save']			= "Настройки успешно изменены.<br /><a href=\"options.php\">Назад</a>";
 
 //	
