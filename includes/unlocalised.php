@@ -55,7 +55,7 @@ function GetFleetMaxSpeed ($FleetArray, $Fleet, $Player) {
   foreach ($FleetArray as $Ship => $Count) {
     if ($Ship == 202) {
       if ($Player['impulse_motor_tech'] >= 5) {
-        $speedalls[$Ship] = ($pricelist[$Ship]['speed2'] + (($pricelist[$Ship]['speed'] * $Player['impulse_motor_tech']) * 0.2)) * (1 + 0.25 * $Player['rpg_general']);
+        $speedalls[$Ship] = ($pricelist[$Ship]['speed2'] + (($pricelist[$Ship]['speed2'] * $Player['impulse_motor_tech']) * 0.2)) * (1 + 0.25 * $Player['rpg_general']);
       } else {
         $speedalls[$Ship] = ($pricelist[$Ship]['speed']  + (($pricelist[$Ship]['speed'] * $Player['combustion_tech']) * 0.1)) * (1 + 0.25 * $Player['rpg_general']);
       }
@@ -68,7 +68,7 @@ function GetFleetMaxSpeed ($FleetArray, $Fleet, $Player) {
     }
     if ($Ship == 211) {
       if ($Player['hyperspace_motor_tech'] >= 8) {
-        $speedalls[$Ship] = ($pricelist[$Ship]['speed2'] + (($pricelist[$Ship]['speed'] * $Player['hyperspace_motor_tech']) * 0.3)) * (1 + 0.25 * $Player['rpg_general']);
+        $speedalls[$Ship] = ($pricelist[$Ship]['speed2'] + (($pricelist[$Ship]['speed2'] * $Player['hyperspace_motor_tech']) * 0.3)) * (1 + 0.25 * $Player['rpg_general']);
       } else {
         $speedalls[$Ship] = ($pricelist[$Ship]['speed']  + (($pricelist[$Ship]['speed'] * $Player['impulse_motor_tech']) * 0.2)) * (1 + 0.25 * $Player['rpg_general']);
       }
