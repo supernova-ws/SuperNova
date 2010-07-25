@@ -80,6 +80,6 @@
   $parse['acs_target_mr'] = ($_POST['acs_target_mr']) ;
   $parse['usedfleet'] = $_POST["usedfleet"];
 
-  $page = parsetemplate(gettemplate('fleet2'), $parse);
+  $page = parsetemplate(gettemplate('fleet2', true), $parse);
   display($page, $lang['fl_title']);
 ?>

@@ -85,4 +85,7 @@ function getStorageFaktor() {
 </form></center>
 <script type="text/javascript"><!--
   changeMission(document.getElementsByName("target_mission")[0]);
+  <!-- IF !MissionNum -->
+  document.getElementsByName("target_mission")[0].checked = true;
+  <!-- ENDIF -->
 --></script>
