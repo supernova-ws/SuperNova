@@ -17,30 +17,30 @@
 // $Subject -> Sujet
 // $Message -> Le message lui meme !!
 //
-function SendSimpleMessage ( $Owner, $Sender, $Time, $Type, $From, $Subject, $Message) {
-	global $messfields;
+function SendSimpleMessage ( $Owners, $Sender, $Time, $Type, $From, $Subject, $Message, $escaped = false) {
+  global $messfields;
 
-	if ($Time == '') {
-		$Time = time();
-	}
+  if (!$Time)
+    $Time = time();
 
-	$QryInsertMessage  = "INSERT INTO {{table}} SET ";
-	$QryInsertMessage .= "`message_owner` = '". $Owner ."', ";
-	$QryInsertMessage .= "`message_sender` = '". $Sender ."', ";
-	$QryInsertMessage .= "`message_time` = '" . $Time . "', ";
-	$QryInsertMessage .= "`message_type` = '". $Type ."', ";
-	$QryInsertMessage .= "`message_from` = '". addslashes( $From ) ."', ";
-	$QryInsertMessage .= "`message_subject` = '". addslashes( $Subject ) ."', ";
-	$QryInsertMessage .= "`message_text` = '". addslashes( $Message ) ."';";
-	doquery( $QryInsertMessage, 'messages');
+  if(!is_array($Owners))
+    $Owners = array($Owners);
 
-	$QryUpdateUser  = "UPDATE {{table}} SET ";
-	$QryUpdateUser .= "`".$messfields[$Type]."` = `".$messfields[$Type]."` + 1, ";
-	$QryUpdateUser .= "`".$messfields[100]."` = `".$messfields[100]."` + 1 ";
-	$QryUpdateUser .= "WHERE ";
-	$QryUpdateUser .= "`id` = '". $Owner ."';";
-	doquery( $QryUpdateUser, 'users');
+  if(!$escaped){
+    $From    = SYS_mysqlSmartEscape( $From    );
+    $Subject = SYS_mysqlSmartEscape( $Subject );
+    $Message = SYS_mysqlSmartEscape( $Message );
+  }
 
+  $QryInsertMessage  = "INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) VALUES ";
+  $QryUpdateUser  = "UPDATE {{users}} SET `".$messfields[$Type]."` = `".$messfields[$Type]."` + 1, `".$messfields[100]."` = `".$messfields[100]."` + 1 WHERE `id` IN (";
+
+  foreach($Owners as $Owner){
+    $QryInsertMessage .= " ('{$Owner}', '{$Sender}', '{$Time}', '{$Type}', '{$From}', '{$Subject}', '{$Message}'),";
+    $QryUpdateUser .= "'{$Owner}',";
+  }
+  doquery( substr($QryInsertMessage, 0, -1) );
+  doquery( substr($QryUpdateUser, 0, -1) . ')' );
 }
 
 // Revision history :
@@ -48,4 +48,6 @@ function SendSimpleMessage ( $Owner, $Sender, $Time, $Type, $From, $Subject, $Me
 // 1.1 - Ajout gestion des messages par type pour le module de messages
 // 1.2 - Correction bug (addslashes pour les zone texte pouvant contenir une apostrophe)
 // 1.3 - Correction bug (integration de la variable $Time pour afficher l'heure exacte de l'evenement pour les flottes)
+// 1.4 - copyright (c) 2010 by Gorlum for http://supernova.ws
+//       [+] Ability to mass-send emails. Mass-sending done via two mysql queries - one for messages table, one for users table
 ?>
