@@ -25,7 +25,6 @@ includeLang('overview');
 $id = intval($_GET['id']);
 $type = SYS_mysqlSmartEscape($_GET['type']);
 $format = SYS_mysqlSmartEscape($_GET['format']);
-if (!empty($id)) {
-  INT_createBanner($id, $type, $format);
-}
+
+INT_createBanner($id, $type, $format);
 ?>
