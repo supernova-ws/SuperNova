@@ -151,5 +151,5 @@ $lang['ov_player_rpg']          = 'Статистика игрока';
 
 $lang['ov_banner_and_userbar']  = 'Баннеры и юзербары';
 
-$lang['ov_banner_empty_id'] = 'Сверхновая - Присоединяйся!';
+$lang['ov_banner_empty_id'] = 'SuperNova - Join The Game!';
 ?>
