@@ -35,14 +35,26 @@ $debug = new debug();
 include_once($ugamela_root_path . 'includes/constants.'.$phpEx);
 include_once($ugamela_root_path . 'includes/functions.'.$phpEx);
 include_once($ugamela_root_path . 'includes/unlocalised.'.$phpEx);
-include_once($ugamela_root_path . 'includes/todofleetcontrol.'.$phpEx);
-include_once($ugamela_root_path . 'language/'. DEFAULT_LANG .'/lang_info.cfg');
 
+$dir = opendir($ugamela_root_path . 'includes/functions');
+while (($file = readdir($dir)) !== false) {
+  $extension = '.' . substr($file, -3);
+  if ($extension == ".$phpEx")
+    require_once $ugamela_root_path . 'includes/functions/' . $file;
+}
+
+$dir = opendir($ugamela_root_path . 'includes/classes');
+while (($file = readdir($dir)) !== false) {
+  $extension = '.' . substr($file, -3);
+  if ($extension == ".$phpEx")
+    require_once $ugamela_root_path . 'includes/classes/' . $file;
+}
+
+include_once($ugamela_root_path . 'language/'. DEFAULT_LANG .'/lang_info.cfg');
 include_once($ugamela_root_path . 'includes/vars.'.$phpEx);
 include_once($ugamela_root_path . 'includes/db.'.$phpEx);
-include_once($ugamela_root_path . 'includes/strings.'.$phpEx);
 
-includeLang ("system");
+includeLang ('system');
 includeLang ('tech');
 
 // Initializing global "config" object
