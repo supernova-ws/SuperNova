@@ -44,12 +44,12 @@ function RestoreFleetToPlanet ( &$FleetRow, $Start = true ) {
   $QryUpdatePlanet .= $QryPart;
   $QryUpdatePlanet .= "LIMIT 1;";
 
-  $qry = 'select metal, crystal, deuterium from {{table}} ' . $QryPart;
-    $q_before = doquery( $qry, 'planets', true);
-
   doquery( $QryUpdatePlanet, 'planets');
 
-  // doquery( "DELETE FROM {{table}} WHERE `fleet_id`=".$FleetRow['fleet_id'].";", 'fleets');
+  doquery( "DELETE FROM {{table}} WHERE `fleet_id`=".$FleetRow['fleet_id'].";", 'fleets');
+
+  // $qry = 'select metal, crystal, deuterium from {{table}} ' . $QryPart;
+  //  $q_before = doquery( $qry, 'planets', true);
   // $q_after = doquery( $qry, 'planets', true);
   // $d_m  = 'Fleet ' . $FleetRow['fleet_id'] . ': ';
   // if ($FleetRow['fleet_resource_metal']+$FleetRow['fleet_resource_crystal']+$FleetRow['fleet_resource_deuterium']==0){
