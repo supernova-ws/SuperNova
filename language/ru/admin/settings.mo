@@ -15,13 +15,14 @@ $lang['adm_opt_plan_initial']  = "Размер главной планеты";
 $lang['adm_opt_plan_base_inc'] = "Базовая добыча ";
 $lang['adm_opt_game_debugmod'] = "Режим отладки";
 $lang['adm_opt_game_oth_info'] = "Прочие параметры";
-$lang['adm_opt_game_oth_news'] = "Лента новостей вверху";
-$lang['adm_opt_game_oth_chat'] = "Лента новостей внизу";
+$lang['adm_opt_game_oth_news'] = "Показывать ленту новостей в обзоре планет";
 $lang['adm_opt_game_oth_adds'] = "Реклама от GOOGLE";
-$lang['adm_opt_game_oth_lstc'] = "&quot;Прошлая координата главки&quot;";
 $lang['adm_opt_game_oth_gala'] = "Галактика";
 $lang['adm_opt_game_oth_syst'] = "Система";
 $lang['adm_opt_game_oth_plan'] = "Планета";
 $lang['adm_opt_btn_save']      = "Сохранить";
+$lang['adm_opt_vacancy_mode']  = "Отключить режим отпуска";
+$lang['adm_opt_sectors']       = "секторов";
+$lang['adm_opt_per_hour']      = "в час";
 
 ?>

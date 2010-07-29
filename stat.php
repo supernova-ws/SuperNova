@@ -206,12 +206,6 @@ check_urlaubmodus ($user);
       $start++;
     }
   }
-/*
-// Don't even know what this shit doing here
-      if ($game_config['OverviewClickBanner'] != '') {
-        $parse['ClickBanner'] = stripslashes( $game_config['OverviewClickBanner'] );
-      }
-*/
 //  display(parsetemplate(gettemplate('stat_body'), $parse), $lang['stat_title']);
   display(parsetemplate(gettemplate('stat_body'), $parse), $lang['stat_title'], $IsUserChecked, '', false, $IsUserChecked);
 

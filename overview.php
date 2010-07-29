@@ -377,15 +377,6 @@ switch ($mode) {
       while ($lastAnnounce = mysql_fetch_array($lastAnnounces))
         $parse['NewsFrame']         .= "<tr><th><font color=Cyan>" . $lastAnnounce['tsTimeStamp'] . "</font>" ."</th><th colspan=\"3\" valign=top><div align=justify>" . sys_bbcodeParse($lastAnnounce['strAnnounce']) ."</div></th></tr>";
     }
-    // External Chat Frame ...
-    if ($game_config['OverviewExternChat'] == '1') {
-      $parse['ExternalTchatFrame'] = "<tr><th colspan=\"4\">". stripslashes( $game_config['OverviewExternChatCmd'] ) ."</th></tr>";
-    }
-
-    // Banner ADS Google
-    if ($game_config['OverviewClickBanner'] != '') {
-      $parse['ClickBanner'] = stripslashes( $game_config['OverviewClickBanner'] );
-    }
 
     // SuperNova's banner for users to use
     if ($config->int_banner_showInOverview) {
@@ -462,10 +453,9 @@ switch ($mode) {
     $parse['planet_image']          = $planetrow['image'];
     $parse['max_users']             = $game_config['users_amount'];
 
-    $debris = doquery("SELECT * FROM {{table}} WHERE `id_planet` = '{$planetrow['id']}';", 'galaxy', true);
-    $parse['metal_debris']          = pretty_number($debris['metal']);
-    $parse['crystal_debris']        = pretty_number($debris['crystal']);
-    if (($debris['metal'] || $debris['crystal']) && $planetrow[$resource[209]]) {
+    $parse['metal_debris']          = pretty_number($planetrow['debris_metal']);
+    $parse['crystal_debris']        = pretty_number($planetrow['debris_crystal']);
+    if (($planetrow['debris_metal'] || $planetrow['debris_crystal']) && $planetrow[$resource[209]]) {
       $parse['get_link'] = " (<a href=\"quickfleet.php?mode=8&g=".$planetrow['galaxy']."&s=".$planetrow['system']."&p=".$planetrow['planet']."&t=2\">". $lang['type_mission'][8] ."</a>)";
     } else {
       $parse['get_link'] = '';

@@ -275,9 +275,6 @@ if ($_POST) {
     $parse['referral'] = "?id_ref=$id_ref";
   $parse['servername'] = $game_config['game_name'];
   $parse['forum_url']  = $game_config['forum_url'];
-    if ($game_config['OverviewClickBanner'] != '') {
-        $parse['ClickBanner'] = stripslashes( $game_config['OverviewClickBanner'] );
-      }
   display(parsetemplate(gettemplate('registry_form'), $parse), $lang['registry'], false, '', false, false);
 }
 

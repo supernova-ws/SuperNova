@@ -96,11 +96,7 @@ if ( defined('INSIDE') ) {
   define('DATE_TIME', 'd.m.Y H:i:s');
 
   $game_config_default = array(
-    'BannerOverviewFrame' => 1,
-    'BannerURL' => "/scripts/createbanner.php",
-    'banner_source_post' => "../images/bann.png",
     'BuildLabWhileRun' => 0,
-    'game_disable_reason' => "SuperNova is in maintenance mode! Please return later!",
     'COOKIE_NAME' => "SuperNova",
     'crystal_basic_income' => 20,
     'debug' => 0,
@@ -109,10 +105,10 @@ if ( defined('INSIDE') ) {
     'energy_basic_income' => 0,
     'Fleet_Cdr' => 30,
     'fleet_speed' => 2500,
-    'ForumUserBarFrame' => 1,
     'forum_url' => "/forum/",
     'game_disable' => 0,
-    'game_name' => "gGame",
+    'game_disable_reason' => "SuperNova is in maintenance mode! Please return later!",
+    'game_name' => "SuperNova.ws",
     'game_speed' => 2500,
     'initial_fields' => 163,
     'LastSettedGalaxyPos' => 0,
@@ -122,17 +118,10 @@ if ( defined('INSIDE') ) {
     'noobprotection' => 1,
     'noobprotectionmulti' => 5,
     'noobprotectiontime' => 5000,
-    'OverviewBanner' => 1,
-    'OverviewClickBanner' => "",
-    'OverviewExternChat' => 0,
-    'OverviewExternChatCmd' => "",
     'OverviewNewsFrame' => "1",
-    'OverviewNewsText' => "Welcome to gGame!",
     'resource_multiplier' => 1,
     'urlaubs_modus_erz' => 0,
     'UserbarOverviewFrame' => 1,
-    'UserbarURL' => "/scripts/userbar.php",
-    'userbar_source' => "../images/userbar.png",
     'users_amount' => 0
   );
 } else {

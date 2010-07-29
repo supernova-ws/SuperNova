@@ -78,11 +78,12 @@ function sn_timer() {
   var HTML;
 
   activeTimers = 0;
+  time_now = new Date();
+  if(serverTime)
+    time_now.setTime(serverTime * 1000);
+  timestamp = Math.round(time_now.valueOf() / 1000);
 
   for(timerID in sn_timers){
-    time_now = new Date();
-    timestamp = Math.round(time_now.valueOf() / 1000);
-
     timer = sn_timers[timerID];
     if(!timer[2])continue;
     timer_options = timer[4];

@@ -268,9 +268,10 @@ function AdminUserHeader ($title = '', $metatags = '') {
 // Pied de page
 //
 function StdFooter() {
-  global $game_config, $lang;
+  global $game_config, $lang, $time_now;
   $parse['copyright']     = $game_config['copyright'];
   $parse['TranslationBy'] = $lang['TranslationBy'];
+  $parse['serverTime']    = $time_now;
   return parsetemplate(gettemplate('overall_footer'), $parse);
 }
 

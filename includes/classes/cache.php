@@ -285,7 +285,6 @@ class classPersistent extends classCache {
 
 class classConfig extends classPersistent {
   protected $defaults = array(
-    'BannerOverviewFrame' => 1,
     'BuildLabWhileRun' => 0,
     'COOKIE_NAME' => "SuperNova",
     'crystal_basic_income' => 20,
@@ -295,7 +294,6 @@ class classConfig extends classPersistent {
     'energy_basic_income' => 0,
     'Fleet_Cdr' => 30,
     'fleet_speed' => 2500,
-    'ForumUserBarFrame' => 1,
     'forum_url' => "/forum/",
     'game_disable' => 0,
     'game_disable_reason' => "SuperNova is in maintenance mode! Please return later!",

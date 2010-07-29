@@ -101,7 +101,12 @@ if ( $user['authlevel'] >= 3 ) {
       $newVersion = 6;
 
     case 6:
+      doquery("DELETE FROM {{config}} WHERE `config_name` in ('BannerURL', 'banner_source_post', 'BannerOverviewFrame',
+      'close_reason', 'dbVersion', 'ForumUserBarFrame', 'OverviewBanner', 'OverviewClickBanner', 'OverviewExternChat',
+      'OverviewExternChatCmd', 'OverviewNewsText', 'UserbarURL', 'userbar_source');");
+      $newVersion = 7;
 
+    case 7:
   };
 
   if($newVersion){

@@ -30,22 +30,6 @@ function DisplayGameSettingsPage ( $CurrentUser ) {
       }
       $config->game_disable_reason  = addslashes( $_POST['game_disable_reason'] );
 
-      // Y a un News Frame ? !
-      if (isset($_POST['newsframe']) && $_POST['newsframe'] == 'on') {
-        $game_config['OverviewNewsFrame']     = "1";
-        $game_config['OverviewNewsText']      = addslashes( $_POST['NewsText'] );
-      } else {
-        $game_config['OverviewNewsFrame']     = "0";
-      }
-
-      // Y a un TCHAT externe ??
-      if (isset($_POST['chatframe']) && $_POST['chatframe'] == 'on') {
-        $game_config['OverviewExternChat']     = "1";
-        $game_config['OverviewExternChatCmd']  = addslashes( $_POST['ExternChat'] );
-      } else {
-        $game_config['OverviewExternChat']     = "0";
-      }
-
       $game_config['advGoogleLeftMenuCode'] = mysql_real_escape_string( $_POST['advGoogleLeftMenuCode'] );
       if (isset($_POST['advGoogleLeftMenuIsOn']) && $_POST['advGoogleLeftMenuIsOn'] == 'on') {
         $game_config['advGoogleLeftMenuIsOn'] = "1";
@@ -132,11 +116,6 @@ function DisplayGameSettingsPage ( $CurrentUser ) {
 
       // Page Generale
       doquery("UPDATE {{table}} SET `config_value` = '". $game_config['OverviewNewsFrame']       ."' WHERE `config_name` = 'OverviewNewsFrame';", 'config');
-      doquery("UPDATE {{table}} SET `config_value` = '". $game_config['OverviewNewsText']        ."' WHERE `config_name` = 'OverviewNewsText';", 'config');
-      doquery("UPDATE {{table}} SET `config_value` = '". $game_config['OverviewExternChat']      ."' WHERE `config_name` = 'OverviewExternChat';", 'config');
-      doquery("UPDATE {{table}} SET `config_value` = '". $game_config['OverviewExternChatCmd']   ."' WHERE `config_name` = 'OverviewExternChatCmd';", 'config');
-      doquery("UPDATE {{table}} SET `config_value` = '". $game_config['OverviewBanner']          ."' WHERE `config_name` = 'OverviewBanner';", 'config');
-      doquery("UPDATE {{table}} SET `config_value` = '". $game_config['OverviewClickBanner']     ."' WHERE `config_name` = 'OverviewClickBanner';", 'config');
 
       // Options Planete
       doquery("UPDATE {{table}} SET `config_value` = '". $game_config['initial_fields']         ."' WHERE `config_name` = 'initial_fields';", 'config');
@@ -175,10 +154,6 @@ function DisplayGameSettingsPage ( $CurrentUser ) {
       $parse['game_disable_reason']           = stripslashes( $config->game_disable_reason );
 
       $parse['newsframe']              = ($game_config['OverviewNewsFrame'] == 1) ? " checked = 'checked' ":"";
-      $parse['NewsTextVal']            = stripslashes( $game_config['OverviewNewsText'] );
-
-      $parse['chatframe']              = ($game_config['OverviewExternChat'] == 1) ? " checked = 'checked' ":"";
-      $parse['ExtTchatVal']            = stripslashes( $game_config['OverviewExternChatCmd'] );
 
       $parse['advGoogleLeftMenuIsOn']  = ($game_config['advGoogleLeftMenuIsOn'] == 1) ? " checked = 'checked' ":"";
       $parse['advGoogleLeftMenuCode']  =  $game_config['advGoogleLeftMenuCode'];
