@@ -79,8 +79,7 @@ function sn_timer() {
 
   activeTimers = 0;
   time_now = new Date();
-  if(serverTime)
-    time_now.setTime(serverTime * 1000);
+  time_now.setTime(time_now.valueOf() + timeDiff);
   timestamp = Math.round(time_now.valueOf() / 1000);
 
   for(timerID in sn_timers){
@@ -115,7 +114,7 @@ function sn_timer() {
         if(HTML_timer != null)
           HTML_timer.innerHTML = timerText;
         else{
-          if(infoText != '')
+          if(infoText != '' && timerText)
             infoText += '<br>';
           infoText += timerText;
         }

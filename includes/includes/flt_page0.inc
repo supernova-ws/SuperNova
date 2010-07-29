@@ -43,11 +43,15 @@
         'AMOUNT' => pretty_number($f['fleet_amount']),
         'TIP' => $fleetTip,
 
+        'START_TYPE' => $lang['fl_shrtcup'][$f['fleet_start_type']],
         'START_PLANET' => "[".$f['fleet_start_galaxy'].":".$f['fleet_start_system'].":".$f['fleet_start_planet']."]",
-        'START_TIME' => date("d M Y H:i:s", $f['fleet_start_time']),
+        'START_TIME' => date("d.m.Y H:i:s", $f['fleet_end_time']),
+        'START_LEFT' => floor($f['fleet_end_time'] + 1 - $time_now),
+
+        'END_TYPE' => $lang['fl_shrtcup'][$f['fleet_end_type']],
         'END_PLANET' => "[".$f['fleet_end_galaxy'].":".$f['fleet_end_system'].":".$f['fleet_end_planet']."]",
-        'END_TIME' => date("d M Y H:i:s", $f['fleet_end_time']),
-        'TIME_LEFT' => floor($f['fleet_end_time'] + 1 - $time_now),
+        'END_TIME' => date("d.m.Y H:i:s", $f['fleet_start_time']),
+        'END_LEFT' => floor($f['fleet_start_time'] + 1 - $time_now),
       ));
     }
   }

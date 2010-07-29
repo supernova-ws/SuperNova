@@ -3,21 +3,20 @@
 <br>
 <center>
   {vacation}
-  <table width='519' border='0' cellpadding='0' cellspacing='1'>
+  <table border='0' cellpadding='0' cellspacing='1'>
     <tr height='20' class='c'>
-      <td colspan=9 class='c'><div style="float: left">{fl_title} {MaxFlyingFleets} {fl_sur} {MaxFlottes} </div><div align=right>{ExpeditionEnCours}/{EnvoiMaxExpedition} {fl_expttl}</div></td>
+      <td colspan=8 class='c'><div style="float: left">{fl_title} {MaxFlyingFleets} {fl_sur} {MaxFlottes} </div><div align=right>{ExpeditionEnCours}/{EnvoiMaxExpedition} {fl_expttl}</div></td>
     </tr>
 
     <tr height='20'>
-      <th>{fl_id}</th>
-      <th>{fl_mission}</th>
-      <th>{fl_count}</th>
-      <th>{fl_from}</th>
-      <th>{fl_start_t}</th>
-      <th>{fl_dest}</th>
-      <th>{fl_dest_t}</th>
-      <th>{fl_back_in}</th>
-      <th>{fl_order}</th>
+      <th>{L_fl_id}</th>
+      <th>{L_fl_mission}</th>
+      <th>{L_fl_count_short}</th>
+      <th>{L_fl_dest}</th>
+      <th>{L_fl_dest_t}</th>
+      <th>{L_fl_from}</th>
+      <th>{L_fl_from_t}</th>
+      <th>{L_fl_order}</th>
     </tr>
 
 <!-- BEGIN fleets -->
@@ -27,11 +26,22 @@
     <span title="<!-- IF fleets.MESSAGE -->{L_fl_back_to_ttl">{L_fl_back_to}<!-- ELSE -->{L_fl_get_to_ttl}">{L_fl_get_to}<!-- ENDIF --></span>
   </th>
   <th><a title="{fleets.TIP}">{fleets.AMOUNT}</a></th>
-  <th>{fleets.START_PLANET}</th>
-  <th>{fleets.START_TIME}</th>
-  <th>{fleets.END_PLANET}</th>
-  <th>{fleets.END_TIME}</th>
-  <th><font color=lime><span id="fleet_timer{fleets.ID}"></span></font></th>
+  <th>{fleets.END_PLANET} {fleets.END_TYPE}</th>
+  <th>
+  <!-- IF fleets.MESSAGE == 0 -->
+  <font color=lime><span id="fleet_timer_end{fleets.ID}"></span></font><br>{fleets.END_TIME}
+  <!-- ELSE -->
+  -
+  <!-- ENDIF -->
+  </th>
+  <th>{fleets.START_PLANET} {fleets.START_TYPE}</th>
+  <th>
+  <!-- IF ((fleets.MISSION == 7 || fleets.MISSION == 4) && fleets.MESSAGE == 1) || (fleets.MISSION != 7 && fleets.MISSION != 4) -->
+  <font color=lime><span id="fleet_timer_start{fleets.ID}"></span></font><br>{fleets.START_TIME}
+  <!-- ELSE -->
+  -
+  <!-- ENDIF -->
+  </th>
   <th>
   <!-- IF fleets.MESSAGE == 0 -->
   <form action="fleetback.php" method="post" style="margin: 0">
@@ -50,14 +60,17 @@
   </th>
 </tr>
 <script type="text/javascript"><!--
-  sn_timers.unshift(['fleet_timer{fleets.ID}', 0, true, {TIME_NOW}, ['Флот прибыл',[
-    ['{fleets.ID}', '', {fleets.TIME_LEFT}, '0']
+  sn_timers.unshift(['fleet_timer_start{fleets.ID}', 0, true, {TIME_NOW}, ['Флот прибыл',[
+    ['{fleets.ID}', '', {fleets.START_LEFT}, '0']
+  ]]]);
+  sn_timers.unshift(['fleet_timer_end{fleets.ID}', 0, true, {TIME_NOW}, ['Флот прибыл',[
+    ['{fleets.ID}', '', {fleets.END_LEFT}, '0']
   ]]]);
 --></script>
 <!-- END fleets -->
 
 
-    <tr height="20" style="{DisplayNoSlotFree}"><th colspan="9"><font color="red">{fl_noslotfree}</font></th></tr>
+    <tr height="20" style="{DisplayNoSlotFree}"><th colspan="8"><font color="red">{fl_noslotfree}</font></th></tr>
   </table><br>
 
   {AKS}
