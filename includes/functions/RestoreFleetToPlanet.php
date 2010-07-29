@@ -46,7 +46,7 @@ function RestoreFleetToPlanet ( &$FleetRow, $Start = true ) {
 
   doquery( $QryUpdatePlanet, 'planets');
 
-  doquery( "DELETE FROM {{table}} WHERE `fleet_id`=".$FleetRow['fleet_id'].";", 'fleets');
+  doquery( "DELETE FROM {{fleets}} WHERE `fleet_id`=".$FleetRow['fleet_id'].";");
 
   // $qry = 'select metal, crystal, deuterium from {{table}} ' . $QryPart;
   //  $q_before = doquery( $qry, 'planets', true);

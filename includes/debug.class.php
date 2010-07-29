@@ -78,12 +78,12 @@ class debug
 
   function warning($message, $title = "System Message", $log_type = 0)
   {
-    global $link, $game_config;
-
-    global $user,$ugamela_root_path,$phpEx;
+    global $link, $user, $phpEx, $ugamela_root_path;
     include($ugamela_root_path . 'config.'.$phpEx);
+
     if(!$link)
       $link = mysql_connect($dbsettings["server"], $dbsettings["user"], $dbsettings["pass"]);
+
     $query = "INSERT INTO `{{table}}` SET
       `log_time` = '".time()."' ,
       `log_type` = '{$log_type}',
