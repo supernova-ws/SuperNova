@@ -19,7 +19,7 @@ input.frameles
     <td class="header" align="center" width="140"><A HREF="messages.php"><img src="{dpath}images/message.gif" border="0" height="22" width="42"></A></td>
   </tr>
   <tr class="header">
-    <td class="header" align="center" width="150"><b><font color="#ffffff">&nbsp;</font></b></td>
+    <td class="header" align="center" width="150"><b><font color="#ffffff"><span id="localTime">00.00.0000 00:00:00</span></font></b></td>
     <td class="header" align="center" width="150"><b><font color="#FFFF00"><A HREF="resources.php">{Metal}</A></font></td>
     <td class="header" align="center" width="150"><b><font color="#FFFF00"><A HREF="resources.php">{Crystal}</A></font></b></td>
     <td class="header" align="center" width="150"><b><font color="#FFFF00"><A HREF="resources.php">{Deuterium}</A></font></b></td>

@@ -136,7 +136,9 @@ function CreateOnePlanetRecord($Galaxy, $System, $Position, $PlanetOwnerID, $Pla
     $planet['planet_type'] = 1;
     $planet['id_owner']    = $PlanetOwnerID;
     $planet['last_update'] = time();
-    $planet['name']        = ($PlanetName == '') ? $lang['sys_colo_defaultname'] : $PlanetName;
+
+    $OwnerName = doquery("SELECT `username` FROM {{users}} WHERE `id` = {$PlanetOwnerID};", '', true);
+    $planet['name']        = $OwnerName['username'] . ' ' . (($PlanetName == '') ? $lang['sys_colo_defaultname'] : $PlanetName);
 
     $QryInsertPlanet  = "INSERT INTO `{{table}}` SET ";
     $QryInsertPlanet .= "`name` = '".              $planet['name']              ."', ";

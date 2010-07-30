@@ -6,7 +6,7 @@ SuperNova JavaScript timer system
 
 Array structure:
 [0] - timer ID (name)
-[1] - timer type: 0 - time countdown; 1 - counter
+[1] - timer type: 0 - time countdown; 1 - counter; 2 - date&time
 [2] - is timer active?
 [3] - start time
 [4] - timer options
@@ -23,6 +23,11 @@ Options for counter:
 [0] - start value
 [1] - delta value
 [2] - max value
+
+Options for date&time:
+bit 1 - date
+bit 2 - time
+It means: 1 - just date; 2 - just time; 3 - both date & time
 
 */
 
@@ -137,7 +142,28 @@ function sn_timer() {
           timer[3] = timestamp;
         };
 
-        HTML.innerHTML = printData;
+        if(HTML != null)
+          HTML.innerHTML = printData;
+        else
+          timer[2] = false;
+        break;
+
+      case 2: // date&time
+        printData = '';
+
+        if(timer[4] & 1)
+          printData += time_now.toLocaleDateString();
+
+        if(timer[4] & 3)
+         printData += '&nbsp;';
+
+        if(timer[4] & 2)
+          printData += time_now.toTimeString().substring(0,8);
+
+        if(HTML != null)
+          HTML.innerHTML = printData;
+        else
+          timer[2] = false;
         break;
     }
     activeTimers++;
