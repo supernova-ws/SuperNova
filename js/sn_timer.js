@@ -149,6 +149,7 @@ function sn_timer() {
         break;
 
       case 2: // date&time
+        time_now.setTime(time_now.valueOf() - timeDiff);
         printData = '';
 
         if(timer[4] & 1)
