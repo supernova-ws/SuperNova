@@ -180,9 +180,9 @@ if ($_POST) {
       doquery( "INSERT INTO {{table}} SET `id` = {$iduser}, `id_partner` = {$id_ref}", 'referrals');
 
     // Recherche d'une place libre !
-    $LastSettedGalaxyPos  = $game_config['LastSettedGalaxyPos'];
-    $LastSettedSystemPos  = $game_config['LastSettedSystemPos'];
-    $LastSettedPlanetPos  = $game_config['LastSettedPlanetPos'];
+    $LastSettedGalaxyPos  = $config->LastSettedGalaxyPos;
+    $LastSettedSystemPos  = $config->LastSettedSystemPos;
+    $LastSettedPlanetPos  = $config->LastSettedPlanetPos;
     while (!isset($newpos_checked)) {
       for ($Galaxy = $LastSettedGalaxyPos; $Galaxy <= $config->game_maxGalaxy; $Galaxy++) {
         for ($System = $LastSettedSystemPos; $System <= $config->game_maxSystem; $System++) {
