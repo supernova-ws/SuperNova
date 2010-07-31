@@ -27,43 +27,7 @@ if (INSTALL != true) {
   }
 
 if ( isset ($user) ) {
-  if(($time_now - $config->flt_lastUpdate > 8 ) && (!$doNotUpdateFleet)){
-    $config->db_saveItem('flt_lastUpdate', $time_now);
-
-    $_fleets = doquery("SELECT DISTINCT fleet_start_galaxy, fleet_start_system, fleet_start_planet, fleet_start_type FROM {{table}} WHERE `fleet_start_time` <= '{$time_now}' ORDER BY fleet_start_time;", 'fleets');
-    while ($row = mysql_fetch_array($_fleets)) {
-      $array = array();
-      $array['galaxy'] = $row['fleet_start_galaxy'];
-      $array['system'] = $row['fleet_start_system'];
-      $array['planet'] = $row['fleet_start_planet'];
-      $array['planet_type'] = $row['fleet_start_type'];
-
-      $temp = FlyingFleetHandler ($array);
-    }
-
-    $_fleets = doquery("SELECT DISTINCT fleet_end_galaxy, fleet_end_system, fleet_end_planet, fleet_end_type FROM {{table}} WHERE `fleet_end_time` <= '".$time_now."' ORDER BY fleet_end_time;", 'fleets');
-    while ($row = mysql_fetch_array($_fleets)) {
-      $array = array();
-      $array['galaxy'] = $row['fleet_end_galaxy'];
-      $array['system'] = $row['fleet_end_system'];
-      $array['planet'] = $row['fleet_end_planet'];
-      $array['planet_type'] = $row['fleet_end_type'];
-
-      $temp = FlyingFleetHandler ($array);
-    }
-
-    unset($_fleets);
-
-    $aks = doquery("SELECT id FROM {{table}};", 'aks');
-    while ($aks_row = mysql_fetch_array($aks)) {
-      $aks_fleet = doquery("SELECT DISTINCT fleet_group FROM {{table}} WHERE fleet_group = {$aks_row['id']};", 'fleets', true);
-      if (!$aks_fleet){
-        doquery("DELETE FROM {{table}} WHERE id = {$aks_row['id']};", 'aks');
-      }
-    };
-
-    COE_missileCalculate();
-  };
+  FlyingFleetHandler();
 
   if ( defined('IN_ADMIN') ) {
     $UserSkin  = $user['dpath'];

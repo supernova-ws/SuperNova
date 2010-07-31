@@ -53,18 +53,6 @@ if ( defined('INSIDE') ) {
   //darkmater
   define('DARKMATER_COST' , 3);
 
-  //market
-  define('MARKET_MERCHANT', 1);
-  define('MARKET_SCRAPER' , 1);
-
-  define('RINOK_LOM'              , 1);
-  define('RINOK_FLOT'             , 1);
-
-  //add darkmater then level up
-  define('EXP_MULTI_ECO'   , 50);   // Economy to dark matter divisor
-  define('EXP_MULTI_RAID'  , 10);   // Raid to dark mater divisor
-  define('MAX_ECONOMIC_LVL', 150);  // Maximum economy level
-
   //galaxy_show_admins
   define('SHOW_ADMIN', 1);
 

@@ -21,10 +21,16 @@ if ( $user['authlevel'] >= 3 ) {
 
   $q = doquery('SHOW TABLES;');
   while($r = mysql_fetch_row($q)){
-    $q1 = doquery("SHOW COLUMNS FROM {$r[0]};");
     $tableName = str_replace($config->db_prefix, "", $r[0]);
+
+    $q1 = doquery("SHOW COLUMNS FROM {$r[0]};");
     while($r1 = mysql_fetch_assoc($q1)){
       $tables[$tableName][$r1['Field']] = $r1;
+    }
+
+    $q1 = doquery("SHOW INDEX FROM {$r[0]};");
+    while($r1 = mysql_fetch_assoc($q1)){
+      $indexes[$tableName][$r1['Key_name']] .= $r1['Column_name'] . ',';
     }
   }
 
@@ -107,11 +113,22 @@ if ( $user['authlevel'] >= 3 ) {
       $newVersion = 7;
 
     case 7:
+      // add index to fleets for fleet_mess
+      // add index to fleets for fleet_group
+      if(!$indexes['fleets']['fleet_mess'])
+        mysql_query(
+          "ALTER TABLE {$config->db_prefix}fleets
+             ADD KEY `fleet_mess` (`fleet_mess`),
+             ADD KEY `fleet_group` (`fleet_group`)
+            ;");
+      $newVersion = 8;
+
+    case 8:
   };
 
   if($newVersion){
-    $config->db_version = $newVersion;
-    $config->db_saveItem('db_version');
+    //$config->db_version = $newVersion;
+    $config->db_saveItem('db_version', $newVersion);
     print("db_version is now {$newVersion}");
   }else
     print("db_version didn't changed from {$config->db_version}");
