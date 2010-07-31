@@ -63,9 +63,9 @@ $POST_thisplanettype = intval($_POST['thisplanettype']);
           }
         }
 
-        $PrNoob      = $game_config['noobprotection'];
-        $PrNoobTime  = $game_config['noobprotectiontime'];
-        $PrNoobMulti = $game_config['noobprotectionmulti'];
+        $PrNoob      = $config->noobprotection;
+        $PrNoobTime  = $config->noobprotectiontime;
+        $PrNoobMulti = $config->noobprotectionmulti;
 
         // Petit Test de coherance
         $galaxy          = intval($POST_galaxy);

@@ -115,9 +115,9 @@
 
   CheckPlanetUsedFields($planetrow);
 
-  $protection      = $game_config['noobprotection'];
-  $protectiontime  = $game_config['noobprotectiontime'];
-  $protectionmulti = $game_config['noobprotectionmulti'];
+  $protection      = $config->noobprotection;
+  $protectiontime  = $config->noobprotectiontime;
+  $protectionmulti = $config->noobprotectionmulti;
   if ($protectiontime < 1) {
     $protectiontime = 9999999999999999;
   }
