@@ -157,7 +157,13 @@ if ( $user['authlevel'] >= 3 ) {
       set_time_limit(30);
 
     case 9:
+      doquery("UPDATE {{referrals}} AS r
+        LEFT JOIN {{users}} AS u ON u.id = r.id
+        SET r.dark_matter = u.lvl_minier + u.lvl_raid;");
+      $newVersion = 10;
+      set_time_limit(30);
 
+    case 10:
   };
   print('done.<br>');
 

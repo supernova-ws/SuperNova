@@ -1,7 +1,32 @@
-<h2>{sys_affilates_title}</h2>
+<table width=519>
+ <tr><td class="c" colspan=4>{L_sys_affilate_list}</td></tr>
+ <tr>
+   <th>Игрок</th>
+   <th>Дата регистрации</th>
+   <th>Заработано ТМ игроком</th>
+   <th>Ваш бонус</th>
+ </tr>
+ <!-- IF .affilates -->
+ <!-- BEGIN affilates -->
+ <tr>
+   <th>{affilates.USERNAME}</th>
+   <th>{affilates.REGISTERED}</th>
+   <th>{affilates.DARK_MATTER}</th>
+   <th>{affilates.GAINED}</th>
+ </tr>
+ <!-- END affilates -->
+ <tr>
+   <td colspan=3 class="c">{L_sys_total}</td>
+   <td class="c" align="center">{GAINED}</td>
+ </tr>
+ <!-- ELSE -->
+ <tr><th colspan=4>{L_sys_affilates_none}</th></tr>
+ <!-- ENDIF -->
+</table>
 <table width="519">
+  <tr><td class="c">{L_sys_affilates_title}</td></tr>
   <tr><th>
-    {sys_affilates_text}
+    {L_sys_affilates_text1}{rpg_bonus_divisor}{L_sys_affilates_text2}
   </th></tr>
   <tr><th>
     <h2>{sys_link_name}</h2>
