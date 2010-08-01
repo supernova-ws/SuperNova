@@ -43,6 +43,7 @@ while ($affilate = mysql_fetch_array($affilates)) {
   ));
 }
 
+
 $template->assign_var('GAINED', $gained);
 $template->assign_var('rpg_bonus_divisor', $config->rpg_bonus_divisor);
 
