@@ -92,6 +92,7 @@ if ($user['authlevel'] >= 2) {
     $parse['id_planet'] = $id_planet;
     $parse['id_user'] = $id_user;
     $parse['points'] = $points;
+    $parse['reason'] = $reason;
   };
 
   $Page = parsetemplate($PageTpl, $parse);
