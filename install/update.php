@@ -160,12 +160,12 @@ if ( $user['authlevel'] >= 3 ) {
       doquery("UPDATE {{referrals}} AS r
         LEFT JOIN {{users}} AS u ON u.id = r.id
         SET r.dark_matter = u.lvl_minier + u.lvl_raid;");
-      $newVersion = 10;
 
       doquery("UPDATE {{users}} AS u
         RIGHT JOIN {{referrals}} AS r ON r.id_partner = u.id AND r.dark_matter >= {$config->rpg_bonus_divisor}
         SET u.rpg_points = u.rpg_points + FLOOR(r.dark_matter/{$config->rpg_bonus_divisor});");
 
+      $newVersion = 10;
       set_time_limit(30);
 
     case 10:
