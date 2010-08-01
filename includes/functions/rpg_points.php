@@ -3,7 +3,7 @@
 function rpg_pointsAdd($userID, $darkMatter, $comment = false){
   global $debug, $config;
 
-  if(!($darkMatter && $userID)) return false;
+  if(!$userID) return false;
 
   doquery("UPDATE {{users}} SET rpg_points = rpg_points + '$darkMatter' WHERE `id` = {$userID}");
   $rowsAffected = mysql_affected_rows();
