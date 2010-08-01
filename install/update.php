@@ -113,8 +113,6 @@ if ( $user['authlevel'] >= 3 ) {
       $newVersion = 7;
 
     case 7:
-      // add index to fleets for fleet_mess
-      // add index to fleets for fleet_group
       if(!$indexes['fleets']['fleet_mess'])
         mysql_query(
           "ALTER TABLE {$config->db_prefix}fleets
@@ -124,10 +122,23 @@ if ( $user['authlevel'] >= 3 ) {
       $newVersion = 8;
 
     case 8:
+      if(!$tables['referrals']['dark_matter'])
+        mysql_query(
+          "ALTER TABLE {$config->db_prefix}referrals
+             ADD `dark_matter` bigint(11) NOT NULL DEFAULT '0' COMMENT 'How much player have aquired Dark Matter'
+            ;");
+
+      if(!$indexes['referrals']['id_partner'])
+        mysql_query(
+          "ALTER TABLE {$config->db_prefix}referrals
+             ADD KEY `id_partner` (`id_partner`)
+            ;");
+      $newVersion = 9;
+
+    case 9:
   };
 
   if($newVersion){
-    //$config->db_version = $newVersion;
     $config->db_saveItem('db_version', $newVersion);
     print("db_version is now {$newVersion}");
   }else
