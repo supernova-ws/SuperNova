@@ -150,10 +150,14 @@ if ( $user['authlevel'] >= 3 ) {
       if(!$config->db_loadItem('rpg_bonus_divisor'))
         $config->db_saveItem('rpg_bonus_divisor', 10);
 
+      if(!$config->db_loadItem('rpg_officer'))
+        $config->db_saveItem('rpg_officer', 3);
+
       $newVersion = 9;
       set_time_limit(30);
 
     case 9:
+
   };
   print('done.<br>');
 
