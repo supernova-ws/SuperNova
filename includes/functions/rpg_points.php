@@ -16,7 +16,7 @@ function rpg_pointsAdd($userID, $darkMatter, $comment = false){
         doquery("UPDATE {{referrals}} SET dark_matter = dark_matter + '$darkMatter' WHERE `id` = {$userID}");
         $newReferral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$userID}", '', true);
 
-        $partnerBonus = floor($newReferral['dark_matter']/$config->rpg_bonus_divisor) - floor($oldReferral['dark_matter']/$config->rpg_bonus_divisor);
+        $partnerBonus = floor($newReferral['dark_matter']/10) - floor($oldReferral['dark_matter']/10);
         if($partnerBonus > 0)
           rpg_pointsAdd($newReferral['id_partner'], $partnerBonus, "Incoming From Referral ID{$userID}");
       }
