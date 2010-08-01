@@ -30,11 +30,11 @@ function ShowOfficierPage ( &$CurrentUser ) {
   includeLang('officier');
 
   // Vérification que le joueur n'a pas un nombre de points négatif
-  if ($CurrentUser['rpg_points'] < 0) {
-    doquery("UPDATE {{table}} SET `rpg_points` = '0' WHERE `id` = '". $CurrentUser['id'] ."';", 'users');
-  }
+//  if ($CurrentUser['rpg_points'] < 0) {
+//    doquery("UPDATE {{table}} SET `rpg_points` = '0' WHERE `id` = '". $CurrentUser['id'] ."';", 'users');
+//  }
   //darkmater constant
-    $darkmater_cost = DARKMATER_COST;
+  $darkmater_cost = $config->rpg_officer;
   // Si recrutement d'un officier
   if ($mode == 2) {
     if ($CurrentUser['rpg_points'] >= $darkmater_cost) {
@@ -44,12 +44,8 @@ function ShowOfficierPage ( &$CurrentUser ) {
         if ( $Result == 1 ) {
           $CurrentUser[$resource[$Selected]] += 1;
           $CurrentUser['rpg_points']         -= $darkmater_cost;
-          $QryUpdateUser  = "UPDATE {{table}} SET ";
-          $QryUpdateUser .= "`rpg_points` = '". $CurrentUser['rpg_points'] ."', ";
-          $QryUpdateUser .= "`".$resource[$Selected]."` = '". $CurrentUser[$resource[$Selected]] ."' ";
-          $QryUpdateUser .= "WHERE ";
-          $QryUpdateUser .= "`id` = '". $CurrentUser['id'] ."';";
-          doquery( $QryUpdateUser, 'users' );
+          doquery( "UPDATE {{users}} SET `{$resource[$Selected]}` = `{$resource[$Selected]}` + 1 WHERE `id` = '{$CurrentUser['id']}';");
+          rpg_pointsAdd($CurrentUser['id'], -($darkmater_cost), "Spent for officer {$lang['ttle'][$Selected]} ID {$Selected}");
           $Message = $lang['OffiRecrute'];
           Header("Location: officier.php");
         } elseif ( $Result == -1 ) {

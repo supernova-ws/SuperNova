@@ -55,8 +55,8 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
     switch($GET_action){
       case "cancelqueue":
 
-  $d_m = 'User cancelling defense: ' . $CurrentPlanet['b_hangar_id'];
-  $debug->warning($d_m,'Possible Buguse');
+  $d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User cancelling defense: ' . $CurrentPlanet['b_hangar_id'];
+  $debug->warning($d_m,'Canceling Hangar Que', 300);
 
           $ElementQueue = explode(';', $CurrentPlanet['b_hangar_id']);
           foreach($ElementQueue as $ElementLine => $Element) {
@@ -104,8 +104,8 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
       }
 
   if ($Element==409) {
-    $d_m = 'User building Planet Defense: ' . dump($POST_fmenge);
-    $debug->warning($d_m,'Possible Buguse II');
+    $d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User building Planet Defense: ' . dump($POST_fmenge);
+    $debug->warning($d_m,'Building Planet Defense', 300);
   }
 
       if ($Count AND $Element) {

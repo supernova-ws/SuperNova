@@ -183,10 +183,8 @@ switch ($mode) {
         $minerXPLevel++;
 
       $miner_lvl_up = $minerXPLevel - $user['lvl_minier'];
-      $QryUpdateUser  = "UPDATE `{{users}}` SET ";
-      $QryUpdateUser .= "`lvl_minier` = `lvl_minier` + '{$miner_lvl_up}', `rpg_points` = `rpg_points` + '{$miner_lvl_up}' ";
-      $QryUpdateUser .= "WHERE `id` = '{$user['id']}'";
-      doquery($QryUpdateUser);
+      doquery("UPDATE `{{users}}` SET `lvl_minier` = `lvl_minier` + '{$miner_lvl_up}' WHERE `id` = '{$user['id']}'");
+      rpg_pointsAdd($user['id'], $miner_lvl_up, 'Level Up For Structure Building');
       $user['lvl_minier'] += $miner_lvl_up;
       $user['rpg_points'] += $miner_lvl_up;
       $isNewLevelMiner = true;
@@ -198,10 +196,8 @@ switch ($mode) {
         $raidXPLevel++;
 
       $raid_lvl_up = $raidXPLevel - $user['lvl_raid'];
-      $QryUpdateUser  = "UPDATE `{{users}}` SET ";
-      $QryUpdateUser .= "`lvl_raid` = `lvl_raid` + '{$raid_lvl_up}', `rpg_points` = `rpg_points` + '{$raid_lvl_up}' ";
-      $QryUpdateUser .= "WHERE `id` = '{$user['id']}'";
-      doquery($QryUpdateUser);
+      doquery("UPDATE `{{users}}` SET `lvl_raid` = `lvl_raid` + '{$raid_lvl_up}' WHERE `id` = '{$user['id']}'");
+      rpg_pointsAdd($user['id'], $raid_lvl_up, 'Level Up For Raids');
       $user['lvl_raid']   += $raid_lvl_up;
       $user['rpg_points'] += $raid_lvl_up;
       $isNewLevelRaid = true;

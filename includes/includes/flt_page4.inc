@@ -22,7 +22,7 @@
   }
 
   if ($fleet['fleet_owner'] != $user['id']) {
-    $debug->warning($lang['fl_aks_hack_wrong_fleet'],"Hack attempt");
+    $debug->warning($lang['fl_aks_hack_wrong_fleet'],'Wrong Fleet Owner',301);
     message($lang['fl_aks_hack_wrong_fleet'], $lang['fl_error']);
   }
 

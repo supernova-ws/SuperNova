@@ -54,7 +54,7 @@ function MissionCaseColonisation ( $FleetRow ) {
             $FleetRow['fleet_array'] = $NewFleet;
           }
           if($FleetRow['fleet_amount'] > 0)
-            $debug->warning('Sending several ships with colonizer: ' . dump($NewFleet), 'Possible Buguse');
+            $debug->warning('Sending several type of ships with colonizer leads to resource duplication. Resource duplicate X time where X - number of ship type<br>Fleet: ' . dump($NewFleet), 'Colonization With Fleet', 300);
           RestoreFleetToPlanet ($FleetRow, false);
         } else {
           $TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_badpos'];

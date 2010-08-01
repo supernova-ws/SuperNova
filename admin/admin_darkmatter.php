@@ -1,5 +1,5 @@
 <?php
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
 /**
@@ -29,6 +29,7 @@ if ($user['authlevel'] >= 2) {
   $id_planet = SYS_mysqlSmartEscape($_POST['id_planet']);
   $id_user   = SYS_mysqlSmartEscape($_POST['id_user']);
   $points    = intval($_POST['points']);
+  $reason    = $_POST['reason'];
 
   if($points){ // If points not empty...
     if($id_user){
@@ -41,8 +42,8 @@ if ($user['authlevel'] >= 2) {
           break;
         case 1: // Proceeding normal - only one user exists
           $row = mysql_fetch_array($query);
-          doquery("UPDATE {{table}} SET rpg_points = rpg_points + '$points' WHERE `id` = " . $row['id'], 'users');
-          if(mysql_affected_rows($link)){ // Does anything post to DB?
+          // Does anything post to DB?
+          if(rpg_pointsAdd($row['id'], $points, "Through admin interface for user {$row['username']} ID {$row['id']} " . $reason)){
             $message = sprintf($lang['adm_dm_user_added'], $row['username'], $row['id'], $points);
             $isNoError = true;
           }else // No? We will say it to user...
@@ -70,8 +71,7 @@ if ($user['authlevel'] >= 2) {
           break;
         case 1: // Proceeding normal - only one user exists
           $row = mysql_fetch_array($query);
-          doquery("UPDATE {{table}} SET rpg_points = rpg_points + '$points' WHERE `id` = " . $row['id_owner'], 'users');
-          if(mysql_affected_rows($link)){
+          if(rpg_pointsAdd($row['id_owner'], $points, "Through admin interface to planet '{$row['name']} ID: {$row['id']} for user ID: {$row['id_owner']} " . $reason)){
             $message = sprintf($lang['adm_dm_planet_added'], $row['id_owner'], $row['name'], $row['id'], INT_makeCoordinates($row), $points);
             $isNoError = true;
           }else

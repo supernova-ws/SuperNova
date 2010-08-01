@@ -132,8 +132,7 @@ $parse['deuterium_mmax'] .= $CurrentPlanet["deuterium_max"];
       $parse['message'] = "0";
     }
     ///dark mater
-     $rpg_points = pretty_number($CurrentUser["rpg_points"]);
-     $parse['rpg_points'] = $rpg_points;
+     $parse['dark_matter'] = pretty_number($CurrentUser['rpg_points']);
     // Le tout passe dans la template
     $parse['resource_multiplier'] = ($game_config['resource_multiplier']);
     $parse['rpg_geologue'] = ( 1 + ( $CurrentUser['rpg_geologue']  * 0.05 ));

@@ -342,6 +342,10 @@ class classConfig extends classPersistent {
     'chat_admin_msgFormat' => '[c=purple]$2[/c]',
 
     //Roleplay system
+    'rpg_officer'       =>  3, // Cost per officer level
+    'rpg_bonus_divisor' => 10, // Amount of DM referral shoud get for partner have 1 DM bonus
+
+    // Black Market - General
     'rpg_cost_trader'    => 1,     // Trader trades between resources
     'rpg_cost_scraper'   => 1,     // Scrapper buys ship for fraction of cost
     'rpg_cost_stockman'  => 1,     // Stockman resells ship that was scrapped
@@ -349,13 +353,15 @@ class classConfig extends classPersistent {
     'rpg_cost_exchange'  => 1,     // Exchange allows resource trade between players
     'rpg_cost_pawnshop'  => 1,     // You can get loan in pawnshop
 
-    'rpg_exchange_metal' => 1,
-    'rpg_exchange_crystal' => 2,
-    'rpg_exchange_deuterium' => 4,
+    // Black Market - Resource exachange rates
+    'rpg_exchange_metal'      =>     1,
+    'rpg_exchange_crystal'    =>     2,
+    'rpg_exchange_deuterium'  =>     4,
     'rpg_exchange_darkMatter' => 100000,
 
-    'rpg_scrape_metal' => 0.75,
-    'rpg_scrape_crystal' => 0.50,
+    // Black Market - Scraper rates for ship pre resource
+    'rpg_scrape_metal'     => 0.75,
+    'rpg_scrape_crystal'   => 0.50,
     'rpg_scrape_deuterium' => 0.25,
 
     // Economy

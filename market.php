@@ -246,7 +246,7 @@ switch($mode){
         foreach($total as $resID => $resCount)
           if($newrow[$resID] < $resCount){
             $intError = 4;
-            $debug->warning('Trying to use bug in market s/h', 'Buguse');
+            $debug->warning('Trying to use bug in s/h market', 'S/H Ship Market', 300);
             break;
           }
 
@@ -332,7 +332,7 @@ switch($mode){
 }
 
 if(!$intError && $rpg_deduct){
-  doquery("UPDATE {{users}} SET `rpg_points` = `rpg_points` - {$rpg_deduct} WHERE `id` = {$user['id']};");
+  rpg_pointsAdd($user['id'], -($rpg_deduct), "Using Black Market page {$mode}");
   $user['rpg_points'] -= $rpg_deduct;
 }
 

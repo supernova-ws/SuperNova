@@ -56,8 +56,8 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser ) {
   if(isset($GET_action)){
     switch($GET_action){
       case "cancelqueue":
-  $d_m = 'User cancelling defense: ' . $CurrentPlanet['b_hangar_id'];
-  $debug->warning($d_m,'Possible Buguse');
+  $d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User cancelling defense: ' . $CurrentPlanet['b_hangar_id'];
+  $debug->warning($d_m,'Canceling Hangar Que', 300);
 
         $ElementQueue = explode(';', $CurrentPlanet['b_hangar_id']);
         foreach($ElementQueue as $ElementLine => $Element) {

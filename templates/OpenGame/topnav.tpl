@@ -33,7 +33,7 @@ input.frameles
     <td class="header" align="center" width="150"><span id='onPlanetCrystal'>{crystalh}</span></td>
     <td class="header" align="center" width="150"><span id='onPlanetDeuterium'>{deuteriumh}</span></td>
     <td class="header" align="center" width="150"><font>{energy_total}</font></td>
-    <td class="header" align="center" width="140" rowspan="2"><font color="green"><b>{rpg_points}</b></font></td>
+    <td class="header" align="center" width="140" rowspan="2"><font color="green"><b>{dark_matter}</b></font></td>
     <td class="header" align="center" valign=middle width="140" rowspan="2" style="white-space: nowrap;">{message}</td>
   </form></tr>
   <tr class="header">

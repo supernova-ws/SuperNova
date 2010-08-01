@@ -16,7 +16,7 @@ if($nextStatUpdate>$config->stats_lastUpdated){
   }else{
     $msg = "scheduler. Config->stats_lastUpdated = " . date(DATE_TIME, $config->stats_lastUpdated) . ", nextStatUpdate = " . date(DATE_TIME, $nextStatUpdate);
   };
-  $debug->warning("Running stat updates: " . $msg, "Stat update", 999);
+  $debug->warning("Running stat updates: " . $msg, "Stat update", 100);
 
   $config->stats_lastUpdated = $nextStatUpdate;
   $totaltime = microtime(true);
@@ -24,7 +24,7 @@ if($nextStatUpdate>$config->stats_lastUpdated){
   $totaltime = microtime(true) - $totaltime;
 
   $msg = $lang['adm_done'] . ': ' . $totaltime . ' ' . $lang['sys_sec'];
-  $debug->warning("Stat update complete: " . $msg, "Stat update", 999);
+  $debug->warning("Stat update complete: " . $msg, "Stat update", 101);
   $config->db_saveItem('stats_lastUpdated');
 }else{
 //  $msg = $lang['adm_schedule_none'];

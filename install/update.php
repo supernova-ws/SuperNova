@@ -1,4 +1,19 @@
 <?php
+function sys_alterTable($table, $alters){
+  global $config;
+
+  if(!is_array($alters))
+    $alters = array($alters);
+
+  $qry = "ALTER TABLE {$config->db_prefix}{$table}";
+  foreach($alters as $alteration)
+    if($alteration)
+      $qry .= ' ' . $alteration . ',';
+  $qry = substr($qry, 0, -1) . ';';
+
+  return mysql_query($qry);
+}
+
 include_once('../includes/init.inc');
 
 if (INSTALL != true) {
@@ -16,9 +31,10 @@ if (INSTALL != true) {
 // alliance_request
 
 if ( $user['authlevel'] >= 3 ) {
+  print('Random number: ');
   pr();
-  // pdump($cache->tables);
 
+  print('Loading table info... ');
   $q = doquery('SHOW TABLES;');
   while($r = mysql_fetch_row($q)){
     $tableName = str_replace($config->db_prefix, "", $r[0]);
@@ -33,6 +49,7 @@ if ( $user['authlevel'] >= 3 ) {
       $indexes[$tableName][$r1['Key_name']] .= $r1['Column_name'] . ',';
     }
   }
+  print('done.<br>Now upgrading DB...');
 
   $config->db_loadItem('db_version');
   switch(intval($config->db_version)){
@@ -105,44 +122,46 @@ if ( $user['authlevel'] >= 3 ) {
     case 5:
       mysql_query("DROP TABLE IF EXISTS `{$config->db_prefix}galaxy`;");
       $newVersion = 6;
+      set_time_limit(30);
 
     case 6:
       doquery("DELETE FROM {{config}} WHERE `config_name` in ('BannerURL', 'banner_source_post', 'BannerOverviewFrame',
       'close_reason', 'dbVersion', 'ForumUserBarFrame', 'OverviewBanner', 'OverviewClickBanner', 'OverviewExternChat',
       'OverviewExternChatCmd', 'OverviewNewsText', 'UserbarURL', 'userbar_source');");
       $newVersion = 7;
+      set_time_limit(30);
 
     case 7:
       if(!$indexes['fleets']['fleet_mess'])
-        mysql_query(
-          "ALTER TABLE {$config->db_prefix}fleets
-             ADD KEY `fleet_mess` (`fleet_mess`),
-             ADD KEY `fleet_group` (`fleet_group`)
-            ;");
+        sys_alterTable('fleets', array(
+          "ADD KEY `fleet_mess` (`fleet_mess`)",
+          "ADD KEY `fleet_group` (`fleet_group`)"
+        ));
       $newVersion = 8;
+      set_time_limit(30);
 
     case 8:
       if(!$tables['referrals']['dark_matter'])
-        mysql_query(
-          "ALTER TABLE {$config->db_prefix}referrals
-             ADD `dark_matter` bigint(11) NOT NULL DEFAULT '0' COMMENT 'How much player have aquired Dark Matter'
-            ;");
+        sys_alterTable('referrals', "ADD `dark_matter` bigint(11) NOT NULL DEFAULT '0' COMMENT 'How much player have aquired Dark Matter'");
 
       if(!$indexes['referrals']['id_partner'])
-        mysql_query(
-          "ALTER TABLE {$config->db_prefix}referrals
-             ADD KEY `id_partner` (`id_partner`)
-            ;");
+        sys_alterTable('referrals', "ADD KEY `id_partner` (`id_partner`)");
+
+      if(!$config->db_loadItem('rpg_bonus_divisor'))
+        $config->db_saveItem('rpg_bonus_divisor', 10);
+
       $newVersion = 9;
+      set_time_limit(30);
 
     case 9:
   };
+  print('done.<br>');
 
   if($newVersion){
     $config->db_saveItem('db_version', $newVersion);
-    print("db_version is now {$newVersion}");
+    print("DB version is now {$newVersion}");
   }else
-    print("db_version didn't changed from {$config->db_version}");
+    print("DB version didn't changed from {$config->db_version}");
 }
 
 ?>

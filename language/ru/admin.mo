@@ -162,4 +162,6 @@ $lang['adm_backup']   = "Резервная копия";
 
 $lang['adm_tools']   = "Утилиты";
 $lang['adm_tools_reloadConfig'] = 'Пересчитать конфигурацию';
+
+$lang['adm_reason']  = "Причина";
 ?>
