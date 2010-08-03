@@ -1,6 +1,6 @@
 <?php
   // query para la allyrow
-  $rights     = array( 0 => 'name', 1 => 'mail',  2 => 'online',       3 => 'invite',                4 => 'kick', 5 => 'admin',     );
+  $rights     = array( 0 => 'name', 1 => 'mail',  2 => 'online',       3 => 'invite',                4 => 'kick', 5 => 'admin',      6 => 'forum',);
   $rights_old = array( 0 => 'name', 1 => 'mails', 2 => 'onlinestatus', 3 => 'bewerbungenbearbeiten', 4 => 'kick', 5 => 'rechtehand',);
 
   $ally = doquery("SELECT * FROM {{table}} WHERE `id` ='{$user['ally_id']}'", "alliance", true);
@@ -37,12 +37,15 @@
 
   if ($ranks[$user['ally_rank_id']]['mail'] == 1 || $isAllyOwner)
     $user_can_send_mails = true;
+
+  if ($ranks[$user['ally_rank_id']]['forum'] == 1 || $isAllyOwner)
+    $userCanPostForum = true;
+
   if ($ranks[$user['ally_rank_id']]['online'] == 1 || $isAllyOwner)
     $user_onlinestatus = true;
-  // Only those who can invite can see applications
+
   if ($ranks[$user['ally_rank_id']]['invite'] == 1 || $isAllyOwner)
     $user_admin_applications = true;
-  $user_can_see_applications = $user_admin_applications;
 
   if ($ranks[$user['ally_rank_id']]['kick'] == 1 || $isAllyOwner)
     $user_can_kick = true;

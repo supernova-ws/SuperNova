@@ -60,6 +60,7 @@ $lang['ali_sys_lastActive']   = 'Активность';
 $lang['ali_sys_totalMembers'] = 'Всего';
 $lang['ali_sys_clear']        = 'Сбросить';
 
+$lang['ali_frm_write']        = 'Писать на форум';
 
 $lang['Name']           = 'Название';
 $lang['Tag']            = 'Обозначение';
