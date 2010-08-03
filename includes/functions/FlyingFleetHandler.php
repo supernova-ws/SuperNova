@@ -19,7 +19,7 @@ function FlyingFleetHandler (&$planet) {
   if(($time_now - $config->flt_lastUpdate <= 8 ) || ($doNotUpdateFleet)) return;
   $config->db_saveItem('flt_lastUpdate', $time_now);
 
-  doquery('LOCK TABLE {{table}}aks WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}users WRITE, {{table}}logs WRITE, {{table}}iraks WRITE');
+  doquery('LOCK TABLE {{table}}aks WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}users WRITE, {{table}}logs WRITE, {{table}}iraks WRITE, {{table}}statpoints WRITE');
 
   COE_missileCalculate();
   /*
