@@ -19,55 +19,47 @@
       <th>{L_fl_order}</th>
     </tr>
 
-<!-- BEGIN fleets -->
-<tr height=20>
-  <th>{fleets.NUMBER}</th>
-  <th><a>{fleets.MISSION_NAME}</a><br>
-    <span title="<!-- IF fleets.MESSAGE -->{L_fl_back_to_ttl">{L_fl_back_to}<!-- ELSE -->{L_fl_get_to_ttl}">{L_fl_get_to}<!-- ENDIF --></span>
-  </th>
-  <th><a title="{fleets.TIP}">{fleets.AMOUNT}</a></th>
-  <th>{fleets.END_PLANET} {fleets.END_TYPE}</th>
-  <th>
-  <!-- IF fleets.MESSAGE == 0 -->
-  <font color=lime><span id="fleet_timer_end{fleets.ID}"></span></font><br>{fleets.END_TIME}
-  <!-- ELSE -->
-  -
-  <!-- ENDIF -->
-  </th>
-  <th>{fleets.START_PLANET} {fleets.START_TYPE}</th>
-  <th>
-  <!-- IF ((fleets.MISSION == 7 || fleets.MISSION == 4) && fleets.MESSAGE == 1) || (fleets.MISSION != 7 && fleets.MISSION != 4) -->
-  <font color=lime><span id="fleet_timer_start{fleets.ID}"></span></font><br>{fleets.START_TIME}
-  <!-- ELSE -->
-  -
-  <!-- ENDIF -->
-  </th>
-  <th>
-  <!-- IF fleets.MESSAGE == 0 -->
-  <form action="fleetback.php" method="post" style="margin: 0">
-  <input name="fleetid" value="{fleets.ID}" type="hidden">
-  <input value="{L_fl_back_to_ttl}" type="submit" name="send">
-  </form>
-  <!-- IF fleets.MISSION == 1 || fleets.MISSION == 2 -->
-  <form action="fleet.php?fleet_page=4" method="post" style="margin: 0">
-  <input name="fleetid" value="{fleets.ID}" type="hidden">
-  <input value="<!-- IF fleets.MISSION == 1 -->{L_fl_associate}<!-- ELSE -->{fleets.ACS}<!-- ENDIF -->" type="submit">
-  </form>
-  <!-- ENDIF -->
-  <!-- ELSE -->
-  {L_fl_isback}
-  <!-- ENDIF -->
-  </th>
-</tr>
-<script type="text/javascript"><!--
-  sn_timers.unshift(['fleet_timer_start{fleets.ID}', 0, true, {TIME_NOW}, ['Флот прибыл',[
-    ['{fleets.ID}', '', {fleets.START_LEFT}, '0']
-  ]]]);
-  sn_timers.unshift(['fleet_timer_end{fleets.ID}', 0, true, {TIME_NOW}, ['Флот прибыл',[
-    ['{fleets.ID}', '', {fleets.END_LEFT}, '0']
-  ]]]);
---></script>
-<!-- END fleets -->
+    <!-- BEGIN fleets -->
+    <tr height=20>
+      <th>{fleets.NUMBER}</th>
+      <th><a>{fleets.MISSION_NAME}</a><br>
+        <span title="<!-- IF fleets.MESSAGE -->{L_fl_back_to_ttl">{L_fl_back_to}<!-- ELSE -->{L_fl_get_to_ttl}">{L_fl_get_to}<!-- ENDIF --></span>
+      </th>
+      <th><a href=# style="cursor: pointer;" onmouseout='return nd();' onmouseover="return overlib('<table><tr><td class=c colspan=2>{L_sys_ships}</td></tr><!-- BEGIN ships --><tr><th>{ships.NAME}</th><th>{ships.AMOUNT}</th></tr><!-- END ships --><!-- IF fleets.METAL + fleets.CRYSTAL + fleets.DEUTERIUM > 0 --><tr><td class=c colspan=2>{L_sys_resources}</td></tr><!-- IF fleets.METAL > 0 --><tr><th>{L_sys_metal}</th><th>{fleets.METAL}</th></tr><!-- ENDIF --><!-- IF fleets.CRYSTAL > 0 --><tr><th>{L_sys_crystal}</th><th>{fleets.CRYSTAL}</th></tr><!-- ENDIF --><!-- IF fleets.DEUTERIUM > 0 --><tr><th>{L_sys_deuterium}</th><th>{fleets.DEUTERIUM}</th></tr><!-- ENDIF --><!-- ENDIF --></table>', STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, 0, OFFSETY, 0);"> {fleets.AMOUNT}</a></th>
+      <th>{fleets.END_PLANET} {fleets.END_TYPE}</th>
+      <th><!-- IF fleets.MESSAGE == 0 --><font color=lime><span id="fleet_timer_end{fleets.ID}"></span></font><br>{fleets.END_TIME}<!-- ELSE -->-<!-- ENDIF --></th>
+      <th>{fleets.START_PLANET} {fleets.START_TYPE}</th>
+      <th>
+        <!-- IF ((fleets.MISSION == 7 || fleets.MISSION == 4) && fleets.MESSAGE == 1) || (fleets.MISSION != 7 && fleets.MISSION != 4) -->
+        <font color=lime><span id="fleet_timer_start{fleets.ID}"></span></font><br>{fleets.START_TIME}
+        <!-- ELSE -->-<!-- ENDIF -->
+      </th>
+      <th>
+        <!-- IF fleets.MESSAGE == 0 -->
+        <form action="fleetback.php" method="post" style="margin: 0">
+        <input name="fleetid" value="{fleets.ID}" type="hidden">
+        <input value="{L_fl_back_to_ttl}" type="submit" name="send">
+        </form>
+        <!-- IF fleets.MISSION == 1 || fleets.MISSION == 2 -->
+        <form action="fleet.php?fleet_page=4" method="post" style="margin: 0">
+        <input name="fleetid" value="{fleets.ID}" type="hidden">
+        <input value="<!-- IF fleets.MISSION == 1 -->{L_fl_associate}<!-- ELSE -->{fleets.ACS}<!-- ENDIF -->" type="submit">
+        </form>
+        <!-- ENDIF -->
+        <!-- ELSE -->
+        {L_fl_isback}
+        <!-- ENDIF -->
+      </th>
+    </tr>
+    <script type="text/javascript"><!--
+      sn_timers.unshift(['fleet_timer_start{fleets.ID}', 0, true, {TIME_NOW}, ['Флот прибыл',[
+        ['{fleets.ID}', '', {fleets.START_LEFT}, '0']
+      ]]]);
+      sn_timers.unshift(['fleet_timer_end{fleets.ID}', 0, true, {TIME_NOW}, ['Флот прибыл',[
+        ['{fleets.ID}', '', {fleets.END_LEFT}, '0']
+      ]]]);
+    --></script>
+    <!-- END fleets -->
 
 
     <tr height="20" style="{DisplayNoSlotFree}"><th colspan="8"><font color="red">{fl_noslotfree}</font></th></tr>

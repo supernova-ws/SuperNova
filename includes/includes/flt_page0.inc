@@ -16,17 +16,6 @@
       // Fleet details (commentaire)
       $fleet = explode(";", $f['fleet_array']);
       $e = 0;
-      $fleetTip = '';
-      foreach ($fleet as $a => $b) {
-        if ($b != '') {
-          $e++;
-          $a = explode(",", $b);
-          $fleetTip .= $lang['tech'][$a[0]] . ":" . $a[1] . " \n";
-          if ($e > 1) {
-            $fleetTip .= "\t";
-          }
-        }
-      }
 
       if ($f['fleet_mess'] == 0 && $f['fleet_mission'] == 2) {
         $aks = doquery("SELECT * FROM {{table}} WHERE id={$f['fleet_group']}", "aks", true);
@@ -41,7 +30,11 @@
         'MISSION_NAME' => $lang['type_mission'][$f['fleet_mission']],
         'ACS' => $aks['name'],
         'AMOUNT' => pretty_number($f['fleet_amount']),
-        'TIP' => $fleetTip,
+
+        'METAL' => $f['fleet_resource_metal'],
+        'CRYSTAL' => $f['fleet_resource_crystal'],
+        'DEUTERIUM' => $f['fleet_resource_deuterium'],
+
 
         'START_TYPE' => $lang['fl_shrtcup'][$f['fleet_start_type']],
         'START_PLANET' => "[".$f['fleet_start_galaxy'].":".$f['fleet_start_system'].":".$f['fleet_start_planet']."]",
@@ -53,6 +46,15 @@
         'END_TIME' => date("d.m.Y H:i:s", $f['fleet_start_time']),
         'END_LEFT' => floor($f['fleet_start_time'] + 1 - $time_now),
       ));
+      foreach ($fleet as $a => $b) {
+        if ($b != '') {
+          $a = explode(",", $b);
+          $template->assign_block_vars('fleets.ships', array(
+            'NAME' => $lang['tech'][$a[0]],
+            'AMOUNT' => $a[1],
+          ));
+        }
+      }
     }
   }
 
