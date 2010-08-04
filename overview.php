@@ -314,6 +314,8 @@ switch ($mode) {
           'SYSTEM'    => $UserPlanet['system'],
           'PLANET'    => $UserPlanet['planet'],
           'BUILDING'  => int_buildCounter($UserPlanet, 'building', $UserPlanet['id']),
+          'TECH'      => $UserPlanet['b_tech'] ? $lang['tech'][$UserPlanet['b_tech_id']] : 0,
+          'HANGAR'    => $UserPlanet['b_hangar'],
 
           'MOON_ID'   => $moon['id'],
           'MOON_NAME' => $moon['name'],

@@ -104,7 +104,12 @@
 <th valign=top class="tr">
   <table border="0" cellspacing=0 cellpadding=0 width="200"><!-- BEGIN planet -->
     <tr><th class="tr"><!-- IF planet.MOON_ID == PLANET_ID -->{L_sys_moon} {planet.MOON_NAME}<!-- ELSE -->{planet.NAME}<!-- ENDIF --> [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]<br>
-    <a href="?cp={planet.ID}&re=0" title="{planet.NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img src="{dpath}planeten/{planet.IMAGE}.jpg" height="<!-- IF planet.ID == PLANET_ID -->100<!-- ELSE -->50<!-- ENDIF -->" width="<!-- IF planet.ID == PLANET_ID -->100<!-- ELSE -->50<!-- ENDIF -->"></a>
+    <span style="position: relative;">
+      <span><a href="?cp={planet.ID}&re=0" title="{planet.NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img src="{dpath}planeten/{planet.IMAGE}.jpg" height="<!-- IF planet.ID == PLANET_ID -->100" width="100<!-- ELSE -->75" width="75<!-- ENDIF -->"></a></span>
+      <!-- IF planet.BUILDING --><span style="position: absolute; top: 0px; left: 0px; "><img src="images/build_building.png" height="<!-- IF planet.ID == PLANET_ID -->24" width="24<!-- ELSE -->18" width="18<!-- ENDIF -->"></span><!-- ENDIF -->
+      <!-- IF planet.TECH --><span title="{planet.TECH}" style="position: absolute; top: <!-- IF planet.ID == PLANET_ID -->24<!-- ELSE -->18<!-- ENDIF -->px; left: 0px; "><img src="images/build_tech.png" height="<!-- IF planet.ID == PLANET_ID -->24" width="24<!-- ELSE -->18" width="18<!-- ENDIF -->"></span><!-- ENDIF -->
+      <!-- IF planet.HANGAR --><span style="position: absolute; top: <!-- IF planet.ID == PLANET_ID -->48<!-- ELSE -->36<!-- ENDIF -->px; left: 0px; "><img src="images/build_hangar.png" height="<!-- IF planet.ID == PLANET_ID -->24" width="24<!-- ELSE -->18" width="18<!-- ENDIF -->"></span><!-- ENDIF -->
+    </span>
     <!-- IF planet.MOON_ID --><a href="?cp={planet.MOON_ID}&re=0" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" height="<!-- IF planet.MOON_ID == PLANET_ID -->100<!-- ELSE -->35<!-- ENDIF -->" width="<!-- IF planet.MOON_ID == PLANET_ID -->100<!-- ELSE -->35<!-- ENDIF -->"></a><!-- ENDIF --><br>
     <!-- IF planet.BUILDING -->{planet.BUILDING}<span id="ov_building{planet.ID}"></span><br><font color="darkgrey"><span id="ov_building{planet.ID}_timer"></span></font><!-- ELSE -->{L_Free}<!-- ENDIF --><br><br>
     </th></tr>
