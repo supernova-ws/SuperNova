@@ -28,7 +28,7 @@
 	<tr><th>{L_adm_an_date}</th><th width="100%">{L_adm_an_announce}</th><!-- IF AUTHLEVEL >= 3 -->
      <th>{L_adm_an_edit_shrt}</th><th>{L_adm_an_copy_shrt}</th><th><img src="/images/r1.png"></th><!-- ENDIF --></tr>
 <!-- BEGIN announces -->
-<tr><td class=b>{announces.TIME}</td><td class=b align=justify>{announces.ANNOUNCE}</td><!-- IF AUTHLEVEL >= 3 -->
+<tr><td class=b><!-- IF announces.FUTURE --><font color=red><strong>{L_adm_an_future}</strong></font><br><!-- ELSEIF announces.NEW --><font color=red><strong>{L_adm_an_new}</strong></font><br><!-- ENDIF -->{announces.TIME}</td><td class=b align=justify>{announces.ANNOUNCE}</td><!-- IF AUTHLEVEL >= 3 -->
 <td class=b><a href="?mode=edit&id={announces.ID}">{L_adm_an_edit_shrt}</a></td>
 <td class=b><a href="?mode=copy&id={announces.ID}">{L_adm_an_copy_shrt}</a></td>
 <td class=b><a href="?mode=del&id={announces.ID}"><img src="../images/r1.png"></a></td>

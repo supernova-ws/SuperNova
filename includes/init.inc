@@ -2,6 +2,9 @@
 //print('ÂÍÈÌÀÍÈÅ! ÈÃÐÀ ÎÑÒÀÍÎÂËÅÍÀ ÍÀ ÏÐÎÔÈËÀÊÒÈÊÓ!');
 //die();
 
+if(defined('INIT'))
+  return;
+
 ini_set('display_errors', 0);
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 set_magic_quotes_runtime(0);
@@ -9,6 +12,7 @@ set_magic_quotes_runtime(0);
 define('VERSION','v. 0.26');                // Passera en version 1.0 quand toutes les fonctions ET l'install seront correct
 
 define('INSIDE'  , true);
+define('INIT'    , true);
 define('INSTALL' , false);
 
 $user          = array();
@@ -81,4 +85,17 @@ if(!isset($cache->tables)){
   }
   $cache->tables = $tl;
 }
+
+$update_file = $_SERVER['DOCUMENT_ROOT'] . '/includes/update.php';
+$flag_file   = $_SERVER['DOCUMENT_ROOT'] . '/includes/update.last';
+
+if(file_exists($update_file)){
+  if(!file_exists($flag_file))
+    fclose(fopen($flag_file, 'w'));
+
+  if(filemtime($update_file) != filemtime($flag_file)){
+    require_once($update_file);
+    touch($flag_file, filemtime($update_file));
+  }
+};
 ?>

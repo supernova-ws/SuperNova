@@ -66,6 +66,7 @@ $lang['adm_pl_since'] = "Активна";
 $lang['adm_pl_they']  = "Всего";
 $lang['adm_pl_apla']  = "планет(а/ы)";
 
+// Announces
 $lang['adm_an_title']     = "Новости";
 $lang['adm_an_date']      = "Дата";
 $lang['adm_an_announce']  = "Содержание";
@@ -78,6 +79,8 @@ $lang['adm_an_mode_edit'] = "Редактирование";
 $lang['adm_an_mode_copy'] = "Дубликат";
 $lang['adm_an_copy_shrt'] = "Дуб";
 $lang['adm_an_edit_shrt'] = "Ред";
+$lang['adm_an_new']       = "НОВАЯ";
+$lang['adm_an_future']    = "АНОНС";
 
 $lang['adm_am_plid']  = "ID планеты";
 $lang['adm_am_done']  = "Добавление прошло успешно";

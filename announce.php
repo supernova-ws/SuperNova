@@ -52,7 +52,7 @@ if ($user['authlevel'] >= 3) {
   $annQuery = 'WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<=' . intval($time_now);
 }
 
-$allAnnounces = doquery("SELECT * FROM {{announce}} {$annQuery} ORDER BY `tsTimeStamp` DESC");
+$allAnnounces = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} {$annQuery} ORDER BY `tsTimeStamp` DESC");
 
 $template->assign_vars(array(
   'AUTHLEVEL'       => $user['authlevel'],
@@ -61,6 +61,7 @@ $template->assign_vars(array(
   'dpath'           => $dpath,
   'tsTimeStamp'     => $announce['tsTimeStamp'],
   'strAnnounce'     => $announce['strAnnounce'],
+  'time_now'        => $time_now,
 ));
 
 while ($announce = mysql_fetch_array($allAnnounces)) {
@@ -68,6 +69,8 @@ while ($announce = mysql_fetch_array($allAnnounces)) {
     'ID'       => $announce['idAnnounce'],
     'TIME'     => str_replace(' ', '&nbsp;', $announce['tsTimeStamp']),
     'ANNOUNCE' => sys_bbcodeParse($announce['strAnnounce']),
+    'NEW'      => $announce['unix_time'] + $config->game_news_actual > $time_now,
+    'FUTURE'   => $announce['unix_time'] > $time_now,
   ));
 }
 

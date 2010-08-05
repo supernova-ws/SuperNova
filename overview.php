@@ -370,10 +370,14 @@ switch ($mode) {
     // News Frame ...
     if ($game_config['OverviewNewsFrame'] == '1') {
       $parse['NewsFrame']          = "<tr><td colspan=4 class=\"c\">". $lang['ov_news_title'] . "</td></tr>";
-      $lastAnnounces = doquery("SELECT * FROM {{table}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now} ORDER BY `tsTimeStamp` DESC LIMIT 3", 'announce');
+      $lastAnnounces = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now} ORDER BY `tsTimeStamp` DESC LIMIT {$config->game_news_overview}");
 
-      while ($lastAnnounce = mysql_fetch_array($lastAnnounces))
-        $parse['NewsFrame']         .= "<tr><th><font color=Cyan>" . $lastAnnounce['tsTimeStamp'] . "</font>" ."</th><th colspan=\"3\" valign=top><div align=justify>" . sys_bbcodeParse($lastAnnounce['strAnnounce']) ."</div></th></tr>";
+      while ($lastAnnounce = mysql_fetch_array($lastAnnounces)){
+        $parse['NewsFrame'] .= "<tr><th>";
+        if($lastAnnounce['unix_time'] + $config->game_news_actual > $time_now )
+          $parse['NewsFrame'] .= "<font color=red>{$lang['ov_new']}</font><br>";
+        $parse['NewsFrame'] .= "<font color=Cyan>{$lastAnnounce['tsTimeStamp']}</font></th><th colspan=\"3\" valign=top><div align=justify>" . sys_bbcodeParse($lastAnnounce['strAnnounce']) ."</div></th></tr>";
+      }
     }
 
     // SuperNova's banner for users to use

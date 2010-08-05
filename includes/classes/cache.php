@@ -295,11 +295,6 @@ class classConfig extends classPersistent {
     'Fleet_Cdr' => 30,
     'fleet_speed' => 2500,
     'forum_url' => "/forum/",
-    'game_disable' => 0,
-    'game_disable_reason' => "SuperNova is in maintenance mode! Please return later!",
-    'game_name' => "SuperNova",
-    'game_speed' => 2500,
-    'game_user_changename' => 0,
     'initial_fields' => 163,
     'LastSettedGalaxyPos' => 0,
     'LastSettedPlanetPos' => 0,
@@ -311,18 +306,28 @@ class classConfig extends classPersistent {
     'resource_multiplier' => 1,
     'urlaubs_modus_erz' => 0,
     'users_amount' => 0,
-    'game_adminEmail' => '',
-
-    // Chat settings
-    'chat_timeout' => 900, // in seconds. Default = 15 min
 
     // Game global settings
+    'game_name' => "SuperNova", // Server name (would be on banners and on top of left menu)
     'game_mode' => '0', // 0 - SuperNova, 1 - oGame
-    'game_date_withTime' => 'd.m.Y h:i:s',
+    'game_speed' => 2500,       // Game speed. 2500 - normal
 
+    // Universe size
     'game_maxGalaxy' => '9',
     'game_maxSystem' => '499',
     'game_maxPlanet' => '15',
+
+    'game_adminEmail' => '',    // Admin's email to show to users
+
+    'game_disable' => 1,
+    'game_disable_reason' => "SuperNova is in maintenance mode! Please return later!",
+
+    'game_user_changename' => 0, // Is user allowed to change name after registration?
+
+    'game_date_withTime' => 'd.m.Y h:i:s', // Date & time global format
+
+    'game_news_overview' => 3,    // How much last news to show in Overview page
+    'game_news_actual' => 259200, // How long announcement would be marked as "New". In seconds
 
     // Interface - UserBanner
     'int_banner_showInOverview' => 1,
@@ -338,8 +343,9 @@ class classConfig extends classPersistent {
     'int_userbar_URL' => "/banner.php?type=userbar",
     'int_userbar_font' => "arialbd.ttf",
 
-    // Chat - formatting message for Admin
-    'chat_admin_msgFormat' => '[c=purple]$2[/c]',
+    // Chat settings
+    'chat_timeout' => 900, // in seconds. Default = 15 min
+    'chat_admin_msgFormat' => '[c=purple]$2[/c]', // formatting message for Admin
 
     //Roleplay system
     'rpg_officer'       =>  3, // Cost per officer level
