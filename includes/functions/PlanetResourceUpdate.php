@@ -31,7 +31,7 @@ function PlanetResourceUpdate ( $CurrentUser, &$CurrentPlanet, $UpdateTime, $Sim
 
       if($CurrentPlanet[$resName]<0){ // correction for negative resources if any
         // $incCount -= $CurrentPlanet[$resName];
-        $debug->warning('Player have negative resources on '.$CurrentPlanet['galaxy'].':'.$CurrentPlanet['system'].':'.$CurrentPlanet['planet'].'. Compensating '.$CurrentPlanet[$resName].' of '.$resName, 'Negative Resources', 500);
+        $debug->warning('Player have negative resources on '.$CurrentPlanet['galaxy'].':'.$CurrentPlanet['system'].':'.$CurrentPlanet['planet'].'. Difference '.$CurrentPlanet[$resName].' of '.$resName, 'Negative Resources', 500);
       }
       // ...changing data in $Caps according to resource increase
       $Caps['planet'][$resName] += $incCount;
