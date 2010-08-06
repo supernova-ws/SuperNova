@@ -126,7 +126,7 @@ function MissionCaseAttack ( $FleetRow) {
   }
 
   if($FleetRow['mission_type']==MT_AKS AND $FleetRow['fleet_group']!=0){
-    doquery("DELETE FROM {{table}} WHERE id={$FleetRow['fleet_group']}", 'aks');
+    doquery("DELETE FROM {{aks}} WHERE id={$FleetRow['fleet_group']}");
   };
 
   foreach ($defenseFleets as $fleetID => $defender) {
