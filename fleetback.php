@@ -27,8 +27,9 @@ define('INSTALL' , false);
   $BoxTitle   = $lang['fl_error'];
   $TxtColor   = "red";
   $BoxMessage = $lang['fl_notback'];
-  if ( is_numeric($_POST['fleetid']) ) {
-    $fleetid  = intval($_POST['fleetid']);
+  $fleetid  = intval($_POST['fleetid']);
+
+  if ($fleetid) {
 
     $FleetRow = doquery("SELECT * FROM {{table}} WHERE `fleet_id` = '". $fleetid ."';", 'fleets', true);
     $i = 0;
@@ -37,10 +38,10 @@ define('INSTALL' , false);
       if ($FleetRow['fleet_mess'] == 0) {
         if ($FleetRow['fleet_end_stay'] != 0) {
           // Faut calculer le temps reel de retour
-          if ($FleetRow['fleet_start_time'] < time()) {
+          if ($FleetRow['fleet_start_time'] > $time_now) {
             // On a pas encore entamé le stationnement
             // Il faut calculer la parcelle de temps ecoulée depuis le lancement de la flotte
-            $CurrentFlyingTime = time() - $FleetRow['start_time'];
+            $CurrentFlyingTime = $time_now - $FleetRow['start_time'];
           } else {
             // On est deja en stationnement
             // Il faut donc directement calculer la durée d'un vol aller ou retour
@@ -49,13 +50,13 @@ define('INSTALL' , false);
         } else {
           // C'est quoi le stationnement ??
           // On calcule sagement la parcelle de temps ecoulée depuis le depart
-          $CurrentFlyingTime = time() - $FleetRow['start_time'];
+          $CurrentFlyingTime = $time_now - $FleetRow['start_time'];
         }
         // Allez houste au bout du compte y a la maison !! (E.T. phone home.............)
-        $ReturnFlyingTime  = $CurrentFlyingTime + time();
+        $ReturnFlyingTime  = $CurrentFlyingTime + $time_now;
 
         $QryUpdateFleet  = "UPDATE {{table}} SET ";
-        $QryUpdateFleet .= "`fleet_start_time` = '". (time() - 1) ."', ";
+        $QryUpdateFleet .= "`fleet_start_time` = '". ($time_now - 1) ."', ";
         $QryUpdateFleet .= "`fleet_end_stay` = '0', ";
         $QryUpdateFleet .= "`fleet_end_time` = '". ($ReturnFlyingTime + 1) ."', ";
         $QryUpdateFleet .= "`fleet_target_owner` = '". $user['id'] ."', ";
