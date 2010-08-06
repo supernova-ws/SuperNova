@@ -13,7 +13,7 @@ function flt_flyingFleetsSort($a, $b){
   return $a['fleet_time'] == $b['fleet_time'] ? 0 : ($a['fleet_time'] > $b['fleet_time'] ? 1 : -1);
 }
 
-function FlyingFleetHandler (&$planet) {
+function FlyingFleetHandler () {
   global $resource, $dbg_msg, $time_now, $config, $doNotUpdateFleet;
 
   if(($time_now - $config->flt_lastUpdate <= 8 ) || ($doNotUpdateFleet)) return;
