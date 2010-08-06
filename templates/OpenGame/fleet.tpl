@@ -23,7 +23,7 @@
     <tr height=20>
       <th>{fleets.NUMBER}</th>
       <th><a>{fleets.MISSION_NAME}</a><br>
-        <span title="<!-- IF fleets.MESSAGE -->{L_fl_back_to_ttl">{L_fl_back_to}<!-- ELSE -->{L_fl_get_to_ttl}">{L_fl_get_to}<!-- ENDIF --></span>
+        <span title="<!-- IF fleets.MESSAGE -->{L_fl_back_to_ttl}">{L_fl_back_to}<!-- ELSE -->{L_fl_get_to_ttl}">{L_fl_get_to}<!-- ENDIF --></span>
       </th>
       <th><a href=# style="cursor: pointer;" onmouseout='return nd();' onmouseover="return overlib('<table><tr><td class=c colspan=2>{L_sys_ships}</td></tr><!-- BEGIN ships --><tr><th>{ships.NAME}</th><th>{ships.AMOUNT}</th></tr><!-- END ships --><!-- IF fleets.METAL + fleets.CRYSTAL + fleets.DEUTERIUM > 0 --><tr><td class=c colspan=2>{L_sys_resources}</td></tr><!-- IF fleets.METAL > 0 --><tr><th>{L_sys_metal}</th><th>{fleets.METAL}</th></tr><!-- ENDIF --><!-- IF fleets.CRYSTAL > 0 --><tr><th>{L_sys_crystal}</th><th>{fleets.CRYSTAL}</th></tr><!-- ENDIF --><!-- IF fleets.DEUTERIUM > 0 --><tr><th>{L_sys_deuterium}</th><th>{fleets.DEUTERIUM}</th></tr><!-- ENDIF --><!-- ENDIF --></table>', STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, 0, OFFSETY, 0);"> {fleets.AMOUNT}</a></th>
       <th>{fleets.END_PLANET} {fleets.END_TYPE}</th>
