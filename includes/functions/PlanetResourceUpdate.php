@@ -3,15 +3,18 @@
 /**
  * PlanetResourceUpdate.php
  *
- * @version 2.0
- * @copyright 2008 By Chlorel for XNova
- * @copyright 2009 By Gorlum for http://ogame.triolan.com.ua
+ * 2.1 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [+] Bit more optimization
+ * 2.0 - copyright (c) 2009-2010 by Gorlum for http://supernova.ws
+ *     [+] Full rewrote and optimization
+ * 1.1 - @copyright 2008 By Chlorel for XNova
+ *     [*] Mise a jour automatique mines / silos / energie ...
+ * 1.0 - @copyright 2008 By Chlorel for XNova
+ *     [*] Mise en module initiale
  */
 
 function PlanetResourceUpdate ( $CurrentUser, &$CurrentPlanet, $UpdateTime, $Simul = false ) {
-  global $ProdGrid, $resource, $reslist, $game_config, $debug;
-
-  $resList = array ('metal', 'crystal', 'deuterium'); // Just names of the resources
+  global $ProdGrid, $resource, $game_config, $debug;
 
   $incRes = array ('metal' => 0, 'crystal' => 0, 'deuterium' => 0); // Zero increment to each type of resources
 
@@ -21,29 +24,21 @@ function PlanetResourceUpdate ( $CurrentUser, &$CurrentPlanet, $UpdateTime, $Sim
   // Yes
   $Caps = ECO_getPlanetCaps($CurrentUser, $CurrentPlanet); // calculating current resource production data
 
-  if ($CurrentPlanet['planet_type'] != 3) { // Is it a moon?
-
-    foreach($resList as $resName){ // Now, for each type of resource we...
+  if ($CurrentPlanet['planet_type'] == 1) { // Resource calculation for planet
+    foreach($incRes as $resName => &$incCount){ // Now, for each type of resource we...
       // ...calculating resource increase (may be negative if resource amount less then storage capacity)
-      $incRes[$resName] = ECO_calcResourceIncrease($Caps, $resName, $ProductionTime);
+      $incCount = ECO_calcResourceIncrease($Caps, $resName, $ProductionTime);
 
       if($CurrentPlanet[$resName]<0){ // correction for negative resources if any
-        // $incRes[$resName] -= $CurrentPlanet[$resName];
+        // $incCount -= $CurrentPlanet[$resName];
         $debug->warning('Player have negative resources on '.$CurrentPlanet['galaxy'].':'.$CurrentPlanet['system'].':'.$CurrentPlanet['planet'].'. Compensating '.$CurrentPlanet[$resName].' of '.$resName, 'Negative Resources', 500);
       }
       // ...changing data in $Caps according to resource increase
-      $Caps['planet'][$resName] += $incRes[$resName];
+      $Caps['planet'][$resName] += $incCount;
       // ...calculating total planet production per hour - old one counts only units (buildings and fleet ones)
       $Caps['planet'][$resName.'_perhour'] = array_sum($Caps[$resName.'_perhour']);
     }
-
-    /*
-    foreach($Caps['planet'] as $fieldName => $fieldValue){
-      $CurrentPlanet[$fieldName] = $fieldValue;
-    }
-    */
-
-  } else {
+  } elseif ($CurrentPlanet['planet_type'] == 3) {
     // Yes - no production on moon
     $CurrentPlanet['metal_perhour']        = 0;
     $CurrentPlanet['crystal_perhour']      = 0;
@@ -53,13 +48,12 @@ function PlanetResourceUpdate ( $CurrentUser, &$CurrentPlanet, $UpdateTime, $Sim
   }
   $CurrentPlanet = array_merge($CurrentPlanet, $Caps['planet']); // replacing old planet data with newly calculated ones
 
-  $Simul = false;
   if (!$Simul) {
     // Now checking fleet/defense production
     $Builded          = HandleElementBuildingQueue ( $CurrentUser, $CurrentPlanet, $ProductionTime );
 
     // Query to update planet data in DB
-    $QryUpdatePlanet  = "UPDATE {{table}} SET ";
+    $QryUpdatePlanet  = "UPDATE {{planets}} SET ";
     $QryUpdatePlanet .= "`last_update` = '"      . $CurrentPlanet['last_update']         ."', ";
     // Applying resource changes
     $QryUpdatePlanet .= "`metal`     = `metal`     + '". floatval($incRes['metal']     ) ."', ";
@@ -78,7 +72,6 @@ function PlanetResourceUpdate ( $CurrentUser, &$CurrentPlanet, $UpdateTime, $Sim
     if ( $Builded != '' ) {
       foreach ( $Builded as $Element => $Count ) {
         if ($Element <> '') {
-//          $QryUpdatePlanet .= "`". $resource[$Element] ."` = '". $CurrentPlanet[$resource[$Element]] ."', "; // BAH! Bad code, bad!
           // Adding those elements which was built
           $QryUpdatePlanet .= "`". $resource[$Element] ."` = `". $resource[$Element] ."` + '". $Count ."', ";
         }
@@ -89,15 +82,8 @@ function PlanetResourceUpdate ( $CurrentUser, &$CurrentPlanet, $UpdateTime, $Sim
     $QryUpdatePlanet .= "`id` = '". $CurrentPlanet['id'] ."';";
 
     // doquery("LOCK TABLE {{table}} WRITE", 'planets');
-    doquery($QryUpdatePlanet, 'planets');
+    doquery($QryUpdatePlanet);
     // doquery("UNLOCK TABLES", '');
   }
 }
-
-// Revision History
-// - 1.0 Mise en module initiale
-// - 1.1 Mise a jour automatique mines / silos / energie ...
-// - 2.0 Full rewrite and optimization by Gorlum
-
-
 ?>
