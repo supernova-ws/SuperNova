@@ -2,6 +2,9 @@
 /**
  * index.php - overview.php
  *
+ * 2.0 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [+] Now there is full planet list on right side of screen a-la oGame
+ *     [+] Planet list now include icons for buildings/tech/fleet on progress
  * 1.5 - copyright (c) 2010 by Gorlum for http://supernova.ws
  *     [*] Subplanet timers now use sn_timer.js library
  * 1.4 - copyright (c) 2010 by Gorlum for http://supernova.ws
