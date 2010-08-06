@@ -3,6 +3,8 @@
 /**
  * IsElementBuyable.php
  *
+ * 1.1 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [*] Now using GetBuildingPrice proc to get building cost
  * @version 1
  * @copyright 2008 by Chlorel for XNova
  */
@@ -18,36 +20,16 @@
 //
 // Reponse        -> boolean (oui / non)
 function IsElementBuyable ($CurrentUser, $CurrentPlanet, $Element, $Incremental = true, $ForDestroy = false) {
-	global $pricelist, $resource;
-	
-	if (IsVacationMode($CurrentUser)){
-		return false;
-	}
+  global $pricelist, $resource;
 
-	if ($Incremental) {
-		$level  = ($CurrentPlanet[$resource[$Element]]) ? $CurrentPlanet[$resource[$Element]] : $CurrentUser[$resource[$Element]];
-	}
+  if (IsVacationMode($CurrentUser))
+    return false;
 
-	$RetValue = true;
-	$array    = array('metal', 'crystal', 'deuterium', 'energy_max');
+  $array = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, $Incremental, $ForDestroy);
+  foreach ($array as $ResType => $resorceNeeded)
+    if ($resorceNeeded > $CurrentPlanet[$ResType])
+      return false;
 
-	foreach ($array as $ResType) {
-		if ($pricelist[$Element][$ResType] != 0) {
-			if ($Incremental) {
-				$cost[$ResType]  = floor($pricelist[$Element][$ResType] * pow($pricelist[$Element]['factor'], $level));
-			} else {
-				$cost[$ResType]  = floor($pricelist[$Element][$ResType]);
-			}
-
-			if ($ForDestroy) {
-				$cost[$ResType]  = floor($cost[$ResType] / 2);
-			}
-
-			if ($cost[$ResType] > $CurrentPlanet[$ResType]) {
-				$RetValue = false;
-			}
-		}
-	}
-	return $RetValue;
+  return true;
 }
 ?>

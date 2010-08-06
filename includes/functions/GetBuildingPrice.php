@@ -3,6 +3,8 @@
 /**
  * GetBuildingPrice.php
  *
+ * 1.1 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [*] Some optimizations done
  * @version 1.0
  * @copyright 2008 by Chlorel for XNova
  */
@@ -18,26 +20,23 @@
 //
 // Reponse        -> un tableau avec les couts de construction (a ajouter ou retirer des ressources)
 function GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, $Incremental = true, $ForDestroy = false) {
-	global $pricelist, $resource;
+  global $pricelist, $resource;
 
-	if ($Incremental) {
-		$level = ($CurrentPlanet[$resource[$Element]]) ? $CurrentPlanet[$resource[$Element]] : $CurrentUser[$resource[$Element]];
-	}
+  if ($Incremental) {
+    $level = ($CurrentPlanet[$resource[$Element]]) ? $CurrentPlanet[$resource[$Element]] : $CurrentUser[$resource[$Element]];
+    if($ForDestroy) $level--;
+  }
 
-	$array = array('metal', 'crystal', 'deuterium', 'energy_max');
-	foreach ($array as $ResType) {
-		if ($Incremental) {
-			$cost[$ResType] = floor($pricelist[$Element][$ResType] * pow($pricelist[$Element]['factor'], $level));
-		} else {
-			$cost[$ResType] = floor($pricelist[$Element][$ResType]);
-		}
+  $cost = array('metal' => 0, 'crystal' => 0, 'deuterium' => 0, 'energy_max' => 0);
+  foreach ($cost as $ResType => &$resCount) {
+    $resCount = floor($pricelist[$Element][$ResType]);
+    if ($Incremental)
+      $resCount = floor($resCount * pow($pricelist[$Element]['factor'], $level));
 
-		if ($ForDestroy == true) {
-			$cost[$ResType]  = floor($cost[$ResType]) / 2;
-			$cost[$ResType] /= 2;
-		}
-	}
+    if ($ForDestroy == true)
+      $resCount = floor($cost[$ResType] / 2);
+  }
 
-	return $cost;
+  return $cost;
 }
 ?>
