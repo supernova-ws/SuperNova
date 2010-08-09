@@ -1,6 +1,6 @@
 <?php
-print(iconv('CP1251', 'UTF-8', 'Чат временно отключен'));
-die();
+// print(iconv('CP1251', 'UTF-8', 'Чат временно отключен'));
+// die();
 
 /*
  chat_msg.php
