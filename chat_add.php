@@ -43,8 +43,8 @@ if ($msg && $user['username']) {
      $msg = preg_replace("#\[c=(white|blue|yellow|green|pink|red|orange)\](.+)\[/c\]#isU", $config->chat_admin_msgFormat, $msg);
    }
    $nick = addslashes ($user['username']);
-   if($user['ally_id'] && !$ally_id){
-     $tag = doquery("SELECT ally_tag FROM {{alliance}} WHERE id = {$user['ally_id']}", "alliance", true);
+   if($ally_id && $chat_type != 'ally'){
+     $tag = doquery("SELECT ally_tag FROM {{alliance}} WHERE id = {$user['ally_id']}", '', true);
      $nick .= addslashes ("(" . $tag['ally_tag'] . ")");
    };
    $msg = iconv('UTF-8', 'CP1251', $msg); // CHANGE IT !!!!!!!!!!!
