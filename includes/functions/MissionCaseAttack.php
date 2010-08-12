@@ -48,10 +48,10 @@ function MissionCaseAttack ( $FleetRow) {
 
   if (!isset($TargetPlanet['id'])) {
     if ($FleetRow['fleet_group'] > 0) {
-      doquery('DELETE FROM {{table}} WHERE `fleet_group` ='.$FleetRow['fleet_group'],'aks');
-      doquery('UPDATE {{table}} SET `fleet_mess` = 1 WHERE `fleet_group` ='.$FleetRow['fleet_group'],'fleets');
+      doquery("DELETE FROM {{aks}} WHERE `id` ='{$FleetRow['fleet_group']}';");
+      doquery('UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_group` ='.$FleetRow['fleet_group']);
     } else {
-      doquery('UPDATE {{table}} SET `fleet_mess` = 1 WHERE `fleet_id` ='.$FleetRow['fleet_id'],'fleets');
+      doquery('UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` ='.$FleetRow['fleet_id']);
     }
     return;
   }
