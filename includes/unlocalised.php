@@ -438,11 +438,24 @@ function colorGreen($n) {
   return '<font color="#00ff00">' . $n . '</font>';
 }
 
-function pretty_number($n, $floor = true) {
-  if ($floor) {
+function pretty_number($n, $floor = true, $color = false) {
+  if ($floor)
     $n = floor($n);
+  $ret = number_format($n, 0, ",", ".");
+
+  if(is_numeric($color)){
+    if($n<$color)
+      $ret = colorGreen($ret);
+    elseif($n>=$color)
+      $ret = colorRed($ret);
+  }elseif($color) {
+    if($n>0)
+      $ret = colorGreen($ret);
+    elseif($n<0)
+      $ret = colorRed($ret);
   }
-  return number_format($n, 0, ",", ".");
+
+  return $ret;
 }
 
 // Created by Perberos. All rights reversed (C) 2006

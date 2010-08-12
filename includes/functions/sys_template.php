@@ -1,10 +1,12 @@
 <?php
 function displayP($template){
-  global $lang;
+  global $lang, $user;
 
   if(isset($template->parse))
     foreach($template->parse as $key => $data)
       $template->assign_var($key, $data);
+
+  $template->assign_var('dpath', (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"]);
 
   $template->display('body');
 }

@@ -49,6 +49,7 @@ $GET_mode = SYS_mysqlSmartEscape($_GET['mode']);
       DefensesBuildingPage ( $planetrow, $user );
       break;
 
+    case 'buildings':
     default:
       // --------------------------------------------------------------------------------------------------
       BatimentBuildingPage ( $planetrow, $user );

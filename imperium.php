@@ -22,84 +22,87 @@ if ($IsUserChecked == false) {
 }
 
 check_urlaubmodus ($user);
-  includeLang('imperium');
 
-  $planetsrow = doquery("SELECT * FROM {{table}} WHERE `id_owner` = '".$user['id']."';",'planets');
+includeLang('imperium');
 
-  $planet = array();
-  $parse  = $lang;
+$planetsrow = doquery("SELECT * FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
+
+$planet = array();
+$parse  = $lang;
 
 while ($p = mysql_fetch_array($planetsrow)) {
   $planet[] = $p;
 }
 
-$parse['mount'] = count($planet) + 1;
-// primera tabla, con las imagenes y coordenadas
-$row  = gettemplate('imperium_row');
-$row2 = gettemplate('imperium_row2');
+$template = gettemplate('imperium', true);
+$template->assign_var(mount, count($planet) + 1);
+
+//$parse['mount'] = count($planet) + 1;
 
 foreach ($planet as $p) {
-  // {file_images}
-  $data['text'] = '<a href="overview.php?cp=' . $p['id'] . '&amp;re=0"><img src="' . $dpath . 'planeten/small/s_' . $p['image'] . '.jpg" border="0" height="71" width="75"></a>';
-  $parse['file_images'] .= parsetemplate($row, $data);
-  // {file_names}
-  $data['text'] = $p['name'];
-  $parse['file_names'] .= parsetemplate($row2, $data);
-  // {file_coordinates}
-  $data['text'] = "[<a href=\"galaxy.php?mode=3&galaxy={$p['galaxy']}&system={$p['system']}\">{$p['galaxy']}:{$p['system']}:{$p['planet']}</a>]";
-  $parse['file_coordinates'] .= parsetemplate($row2, $data);
-  // {file_fields}
-  $data['text'] = $p['field_current'] . '/' . $p['field_max'];
-  $parse['file_fields'] .= parsetemplate($row2, $data);
-  // {file_metal}
-  $data['text'] = '<a href="resources.php?cp=' . $p['id'] . '&amp;re=0&amp;planettype=' . $p['planet_type'] . '">'. pretty_number($p['metal']) .'</a> / '. pretty_number($p['metal_perhour']);
-  $parse['file_metal'] .= parsetemplate($row2, $data);
-  // {file_crystal}
-  $data['text'] = '<a href="resources.php?cp=' . $p['id'] . '&amp;re=0&amp;planettype=' . $p['planet_type'] . '">'. pretty_number($p['crystal']) .'</a> / '. pretty_number($p['crystal_perhour']);
-  $parse['file_crystal'] .= parsetemplate($row2, $data);
-  // {file_deuterium}
-  $data['text'] = '<a href="resources.php?cp=' . $p['id'] . '&amp;re=0&amp;planettype=' . $p['planet_type'] . '">'. pretty_number($p['deuterium']) .'</a> / '. pretty_number($p['deuterium_perhour']);
-  $parse['file_deuterium'] .= parsetemplate($row2, $data);
-  // {file_energy}
-  $data['text'] = pretty_number($p['energy_max'] - $p['energy_used']) . ' / ' . pretty_number($p['energy_max']);
-  $parse['file_energy'] .= parsetemplate($row2, $data);
+  $planetCaps = ECO_getPlanetCaps($user, $p);
 
-  foreach ($resource as $i => $res) {
-    if (in_array($i, $reslist['build']))
-      $data['text'] = ($p[$resource[$i]]    == 0) ? '-' : "<a href=\"buildings.php?cp={$p['id']}&amp;re=0&amp;planettype={$p['planet_type']}\">{$p[$resource[$i]]}</a>";
-    elseif (in_array($i, $reslist['tech']))
-      $data['text'] = ($user[$resource[$i]] == 0) ? '-' : "<a href=\"buildings.php?mode=research&cp={$p['id']}&amp;re=0&amp;planettype={$p['planet_type']}\">{$user[$resource[$i]]}</a>";
-    elseif (in_array($i, $reslist['fleet']))
-      $data['text'] = ($p[$resource[$i]]    == 0) ? '-' : "<a href=\"buildings.php?mode=fleet&cp={$p['id']}&amp;re=0&amp;planettype={$p['planet_type']}\">{$p[$resource[$i]]}</a>";
-    elseif (in_array($i, $reslist['defense']))
-      $data['text'] = ($p[$resource[$i]]    == 0) ? '-' : "<a href=\"buildings.php?mode=defense&cp={$p['id']}&amp;re=0&amp;planettype={$p['planet_type']}\">{$p[$resource[$i]]}</a>";
+  $template->assign_block_vars('planet', array(
+    'ID' => $p['id'],
+    'TYPE' => $p['planet_type'],
+    'IMAGE' => $p['image'],
+    'NAME' => $p['name'],
+    'COORDINATES' => INT_makeCoordinates($p),
 
-    $r[$i] .= parsetemplate($row2, $data);
+    'FIELDS_CUR' => $p['field_current'],
+    'FIELDS_MAX' => $p['field_max'],
+
+    'METAL_CUR'  => pretty_number($p['metal'], true, $planetCaps['planet']['metal_max']),
+    'METAL_PROD' => pretty_number($p['metal_perhour']),
+
+    'CRYSTAL_CUR'  => pretty_number($p['crystal'], true, $planetCaps['planet']['crystal_max']),
+    'CRYSTAL_PROD' => pretty_number($p['crystal_perhour']),
+
+    'DEUTERIUM_CUR'  => pretty_number($p['deuterium'], true, $planetCaps['planet']['deuterium_max']),
+    'DEUTERIUM_PROD' => pretty_number($p['deuterium_perhour']),
+
+    'ENERGY_CUR' => pretty_number($p['energy_max'] - $p['energy_used'], true, true),
+    'ENERGY_MAX' => pretty_number($p['energy_max']),
+  ));
+}
+
+$last = -1000;
+foreach ($resource as $i => $res) {
+  if (in_array($i, $reslist['build']))
+    $mode = 'buildings';
+  elseif (in_array($i, $reslist['fleet']))
+    $mode = 'fleet';
+  elseif (in_array($i, $reslist['defense']))
+    $mode = 'defense';
+  else
+    $mode = '';
+
+  if($mode){
+    if((int) ($i/100) != (int)($last/100)){
+      $template->assign_block_vars('prods', array(
+        'NAME' => $lang['tech'][(int) ($i/100)*100],
+      ));
+    }
+
+    $template->assign_block_vars('prods', array(
+      'ID'    => $i,
+      'FIELD' => $resource[$i],
+      'NAME'  => $lang['tech'][$i],
+      'MODE'  => $mode,
+    ));
+
+    foreach($planet as $p){
+      $template->assign_block_vars('prods.planet', array(
+        'ID' => $p['id'],
+        'TYPE' => $p['planet_type'],
+        'LEVEL' => $p[$resource[$i]],
+      ));
+    }
+    $last = $i;
   }
 }
 
-// {building_row}
-foreach ($reslist['build'] as $a => $i) {
-  $data['text'] = $lang['tech'][$i];
-  $parse['building_row'] .= "<tr>" . parsetemplate($row2, $data) . $r[$i] . "</tr>";
-}
-// {technology_row}
-foreach ($reslist['tech'] as $a => $i) {
-  $data['text'] = $lang['tech'][$i];
-  $parse['technology_row'] .= "<tr>" . parsetemplate($row2, $data) . $r[$i] . "</tr>";
-}
-// {fleet_row}
-foreach ($reslist['fleet'] as $a => $i) {
-  $data['text'] = $lang['tech'][$i];
-  $parse['fleet_row'] .= "<tr>" . parsetemplate($row2, $data) . $r[$i] . "</tr>";
-}
-// {defense_row}
-foreach ($reslist['defense'] as $a => $i) {
-  $data['text'] = $lang['tech'][$i];
-  $parse['defense_row'] .= "<tr>" . parsetemplate($row2, $data) . $r[$i] . "</tr>";
-}
-
-  display(parsetemplate(gettemplate('imperium_table'), $parse), $lang['Imperium']);
+display(parsetemplate($template, $parse), $lang['Imperium']);
 
 // Created by Perberos. All rights reserved (C) 2006
 ?>
