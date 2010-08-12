@@ -50,7 +50,7 @@ foreach ($planet as $p) {
     'COORDINATES' => INT_makeCoordinates($p),
 
     'FIELDS_CUR' => $p['field_current'],
-    'FIELDS_MAX' => $p['field_max'],
+    'FIELDS_MAX' => $p['field_max'] + $p[$resource[33]] * 5,
 
     'METAL_CUR'  => pretty_number($p['metal'], true, $planetCaps['planet']['metal_max']),
     'METAL_PROD' => pretty_number($p['metal_perhour']),
