@@ -6,19 +6,19 @@
   <tr>
     <th>&nbsp;</th>
     <!-- BEGIN planet -->
-    <th class="c"><a href="overview.php?cp={planets.ID}&re=0"><img src="{dpath}planeten/small/s_{planet.IMAGE}.jpg" border="0" height="75" width="75"></a></th>
+    <th class="c"><a href="overview.php?cp={planet.ID}&re=0"><img src="{dpath}planeten/small/s_{planet.IMAGE}.jpg" border="0" height="75" width="75"></a></th>
     <!-- END planet -->
   </tr>
   <tr>
     <th>{name}</th>
     <!-- BEGIN planet -->
-    <th class="c" width="75"><a href="overview.php?cp={planets.ID}&re=0">{planet.NAME}</a></th>
+    <th class="c" width="75"><a href="overview.php?cp={planet.ID}&re=0">{planet.NAME}</a></th>
     <!-- END planet -->
   </tr>
   <tr>
     <th>{coordinates}</th>
     <!-- BEGIN planet -->
-    <th class="c"><a href="overview.php?cp={planets.ID}&re=0">{planet.COORDINATES}</a></th>
+    <th class="c"><a href="overview.php?cp={planet.ID}&re=0">{planet.COORDINATES}</a></th>
     <!-- END planet -->
   </tr>
   <tr>
