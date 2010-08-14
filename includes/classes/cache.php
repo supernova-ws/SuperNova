@@ -1,4 +1,18 @@
 <?php
+/**
+*
+* @package cacher
+* @version $Id$
+* @copyright (c) 2009-2001 Gorlum for http://supernova.ws
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+*
+*/
+
+/**
+* Basic cacher class that handles different cache engines
+*
+* @package cacher
+*/
 class classCache {
   // -1 - not initialized
   // 0 - no cache - array() used

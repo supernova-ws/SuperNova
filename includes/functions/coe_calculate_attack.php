@@ -124,7 +124,7 @@ BE_DEBUG_closeRow($calculatedDestroyedShip, $fleet_n[$fleetID][$element]);
 }
 
 function calculateAttack (&$attackers, &$defenders, $isSimulated = false) {
-  global $pricelist, $CombatCaps, $game_config, $resource;
+  global $pricelist, $CombatCaps, $resource;
 
   $totalResourcePoints = array('attacker' => 0, 'defender' => 0);
 

@@ -9,7 +9,7 @@
  */
 
 function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser) {
-  global $ProdGrid,$lang, $resource, $reslist, $phpEx, $dpath, $game_config, $_GET;
+  global $ProdGrid,$lang, $resource, $reslist, $phpEx, $dpath, $_GET, $config;
 
   $GET_cmd      = SYS_mysqlSmartEscape($_GET['cmd']);
   $GET_building = intval($_GET['building']);
@@ -105,8 +105,8 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser) {
                                 $CurrentBuildtLvl     = $BuildingLevel;
                                 $BuildLevel         = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
 
-                                $Prod[3]         = (floor(eval($ProdGrid[$Element]['formule']['deuterium']) * $game_config['resource_multiplier']) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-                                $Prod[4]         = (floor(eval($ProdGrid[$Element]['formule']['energy'])    * $game_config['resource_multiplier']) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
+                                $Prod[3]         = (floor(eval($ProdGrid[$Element]['formule']['deuterium']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
+                                $Prod[4]         = (floor(eval($ProdGrid[$Element]['formule']['energy'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
 
                                 if ($Element != 12) {
                                     $ActualNeed     = floor($Prod[4]);
@@ -116,8 +116,8 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser) {
 
                                 $BuildLevel++;
 
-                                $Prod[3]         = (floor(eval($ProdGrid[$Element]['formule']['deuterium']) * $game_config['resource_multiplier']) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-                                $Prod[4]         = (floor(eval($ProdGrid[$Element]['formule']['energy'])    * $game_config['resource_multiplier']) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
+                                $Prod[3]         = (floor(eval($ProdGrid[$Element]['formule']['deuterium']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
+                                $Prod[4]         = (floor(eval($ProdGrid[$Element]['formule']['energy'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
                                  if ($Element != 12) {
 
                                      //$bloc['build_prod']      = pretty_number(floor($Prod[$BuildID]));
@@ -153,7 +153,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser) {
         if ($Element == 31 || $Element == 35) {
           // Spécial Laboratoire
           if ($CurrentUser["b_tech_planet"] != 0 &&     // Si pas 0 y a une recherche en cours
-            $game_config['BuildLabWhileRun'] != 1) {  // Variable qui contient le parametre
+            !$config->BuildLabWhileRun) {  // Variable qui contient le parametre
             // On verifie si on a le droit d'evoluer pendant les recherches (Setting dans config)
             $parse['click'] = "<font color=#FF0000>". $lang['in_working'] ."</font>";
           }
