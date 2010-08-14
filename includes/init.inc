@@ -9,7 +9,7 @@ ini_set('display_errors', 0);
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 set_magic_quotes_runtime(0);
 
-define('VERSION','v. 0.26');                // Passera en version 1.0 quand toutes les fonctions ET l'install seront correct
+define('VERSION','v. 0000');                // Passera en version 1.0 quand toutes les fonctions ET l'install seront correct
 
 define('INSIDE'  , true);
 define('INIT'    , true);

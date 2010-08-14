@@ -180,9 +180,9 @@ switch ($mode) {
     // --- Gestion Officiers -------------------------------------------------------------------------
     // Passage au niveau suivant, ajout du point de compétence et affichage du passage au nouveau level
 
-    if ($user['xpminier']>=RPG_getMinerXP($user['lvl_minier'])) {
+    if ($user['xpminier']>=rpg_get_miner_xp($user['lvl_minier'])) {
       $minerXPLevel = $user['lvl_minier'];
-      while ($user['xpminier']>=RPG_getMinerXP($minerXPLevel))
+      while ($user['xpminier']>=rpg_get_miner_xp($minerXPLevel))
         $minerXPLevel++;
 
       $miner_lvl_up = $minerXPLevel - $user['lvl_minier'];
@@ -193,9 +193,9 @@ switch ($mode) {
       $isNewLevelMiner = true;
     }
 
-    if ($user['xpraid']>=RPG_getRaidXP($user['lvl_raid'])) {
+    if ($user['xpraid']>=RPG_get_raider_xp($user['lvl_raid'])) {
       $raidXPLevel = $user['lvl_raid'];
-      while ($user['xpraid']>=RPG_getRaidXP($raidXPLevel))
+      while ($user['xpraid']>=RPG_get_raider_xp($raidXPLevel))
         $raidXPLevel++;
 
       $raid_lvl_up = $raidXPLevel - $user['lvl_raid'];
@@ -470,7 +470,6 @@ switch ($mode) {
     if ($planetrow['b_building'])
       UpdatePlanetBatimentQueueList ( $planetrow, $user );
 
-
     $parse['BUILDING'] = int_buildCounter($planetrow, 'building');
     $parse['HANGAR'] = int_buildCounter($planetrow, 'hangar');
     $parse['TECH'] = int_buildCounter($planetrow, 'tech');
@@ -484,9 +483,9 @@ switch ($mode) {
 
     // Rajout d'une barre pourcentage
     // Calcul du pourcentage de remplissage
-    $parse['case_pourcentage'] = floor($planetrow["field_current"] / CalculateMaxPlanetFields($planetrow) * 100) . $lang['o/o'];
+    $parse['case_pourcentage'] = floor($planetrow['field_current'] / CalculateMaxPlanetFields($planetrow) * 100) . $lang['o/o'];
     // Barre de remplissage
-    $parse['case_barre'] = floor($planetrow["field_current"] / CalculateMaxPlanetFields($planetrow) * 100) * 4;
+    $parse['case_barre'] = floor($planetrow['field_current'] / CalculateMaxPlanetFields($planetrow) * 100) * 4;
     // Couleur de la barre de remplissage
     if ($parse['case_barre'] > (100 * 4)) {
       $parse['case_barre'] = 4;
@@ -500,11 +499,11 @@ switch ($mode) {
     //Mode Améliorations
     $parse['builder_xp']= $user['xpminier'];
     $parse['builder_lvl'] = $user['lvl_minier'];
-    $parse['builder_lvl_up'] = RPG_getMinerXP($user['lvl_minier']);
+    $parse['builder_lvl_up'] = rpg_get_miner_xp($user['lvl_minier']);
 
     $parse['raid_xp']     = $user['xpraid'];
     $parse['raid_lvl']    = $user['lvl_raid'];
-    $parse['raid_lvl_up'] = RPG_getRaidXP($user['lvl_raid']);
+    $parse['raid_lvl_up'] = RPG_get_raider_xp($user['lvl_raid']);
 
     $parse['raids'] = $user['raids'];
     $parse['raidswin'] = $user['raidswin'];

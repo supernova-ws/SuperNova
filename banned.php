@@ -12,6 +12,7 @@
 define('INSIDE'  , true);
 define('INSTALL' , false);
 
+$skip_ban_check = true;
 $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.'.$phpEx);
