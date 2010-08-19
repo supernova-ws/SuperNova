@@ -103,6 +103,7 @@ td.lm_para {
     <span class="style4">{servername}</span>
   </td></tr>
 
+  <tr><td align="center"><img border="0" src="/images/supernova.png" alt="supernova.ws"></td></tr>
   <tr><td align="center"><a href="http://games.triolan.ua" target="_blank"><img border="0" src="/images/banners/bannergtu.gif" alt="Games @ Triolan.UA"></font></a></td></tr>
 
   <tr><td class="lm_para">{m_h_rules}</td></tr>
