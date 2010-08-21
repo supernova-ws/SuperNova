@@ -42,7 +42,7 @@ function BE_calculatePostAttacker($TargetPlanet, &$attackFleets, $result, $isSim
   $loot['metal'] = $TargetPlanet['metal'] / 2;
   $loot['crystal'] = $TargetPlanet['crystal'] / 2;
   $loot['deuterium'] = $TargetPlanet['deuterium'] / 2;
-  $loot['all'] = $loot['metal'] + $loot['crystal'] + $loot['deuterium'];
+  $loot['all'] = max($loot['metal'] + $loot['crystal'] + $loot['deuterium'], 1);
   $loot['available'] = min($loot['all'], $attackerTotalCapacity);
 
   $loot = array_map('round', $loot);

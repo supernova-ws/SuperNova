@@ -1,7 +1,11 @@
 <?php
 
-function BE_DEBUG_openTable(){
-  if (!defined("BE_DEBUG")) return;
+function BE_DEBUG_openTable()
+{
+  if (!defined("BE_DEBUG")){
+    return;
+  }
+
   $strBE_Header = '<table>'.'<tr>'.
     '<th>R</th>'.
     '<th>Att</th>'.
@@ -21,8 +25,12 @@ function BE_DEBUG_openTable(){
   print($strBE_Header);
 }
 
-function BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $attackArray, $fleetID, $HarmPctIncoming, $HarmMade, $FinalHarm, $amount){
-  if (!defined("BE_DEBUG")) return;
+function BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $attackArray, $fleetID, $HarmPctIncoming, $HarmMade, $FinalHarm, $amount)
+{
+  if (!defined("BE_DEBUG")){
+    return;
+  }
+
   global $CombatCaps;
 
   $SN = array(202 => 'Ã‡“', 203 => '¡Ó“', 204 => 'À„»Ò', 205 => '“ˇ»Ò', 206 => ' ÂÈ', 207 => 'ÀËÌÍ', 208 => ' ÓÎÓ',
@@ -48,8 +56,11 @@ function BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $a
   '');
 }
 
-function BE_DEBUG_closeRow($calculatedDestroyedShip, $fleet_n){
-  if (!defined("BE_DEBUG")) return;
+function BE_DEBUG_closeRow($calculatedDestroyedShip, $fleet_n)
+{
+  if (!defined('BE_DEBUG')){
+    return;
+  }
 
   print(''.
     '<td>'.$calculatedDestroyedShip.'</td>'.
@@ -58,8 +69,11 @@ function BE_DEBUG_closeRow($calculatedDestroyedShip, $fleet_n){
   print('</tr>');
 }
 
-function BE_DEBUG_closeTable(){
-  if (!defined("BE_DEBUG")) return;
+function BE_DEBUG_closeTable()
+{
+  if (!defined("BE_DEBUG")){
+    return;
+  }
 
   print('</table>');
 }

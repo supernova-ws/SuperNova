@@ -22,4 +22,5 @@
     <tr><th>{Deuterium}</th><th>&nbsp;</th><th><input type='text' name='resources[deuterium]' value='0'></th></tr>
     <tr><th colspan='3'><input type='submit' name='submit' value='{COE_simulate}'></th></tr>
   </table>
+  <input type='hidden' name='BE_DEBUG' value="{BE_DEBUG}">
 </form>
