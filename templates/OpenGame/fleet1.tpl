@@ -13,10 +13,6 @@ function getStorageFaktor() {
   <input type="hidden" name="thisplanet"      value="{thisplanet}" />
   <input type="hidden" name="thisplanet_type" value="{thisplanet_type}" />
 
-  <input type="hidden" name="galaxy"       value="{galaxy}" />
-  <input type="hidden" name="system"       value="{system}" />
-  <input type="hidden" name="planet"       value="{planet}" />
-  <input type="hidden" name="planet_type"  value="{planet_type}" />
   <input type="hidden" name="target_mission"  value="{target_mission}" />
 
   <input type="hidden" name="usedfleet"       value="{usedfleet}" />
