@@ -77,14 +77,14 @@ $POST_newleader = SYS_mysqlSmartEscape($_POST['newleader']);
 includeLang('alliance');
 
 if ($mode == 'ainfo') {
-  include('includes/includes/ali_info.inc');
+  include('includes/alliance/ali_info.inc');
 };
 
 $user_request = doquery("SELECT * FROM {{table}} WHERE `id_user` ='{$user['id']}'", "alliance_requests", true);
 
 if (!$user['ally_id']) {
-  include('includes/includes/ali_external.inc');
+  include('includes/alliance/ali_external.inc');
 }elseif (!$user_request['id_user']) {
-  include('includes/includes/ali_internal.inc');
+  include('includes/alliance/ali_internal.inc');
 }
 ?>

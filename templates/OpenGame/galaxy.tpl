@@ -273,7 +273,7 @@ function showPlanet(planet_owner, planet, planet_type, name, planet_image, diame
       onmouseover='javascript:showPlanet({galaxyrow.USER_ID}, {galaxyrow.PLANET_NUM}, 3, "{galaxyrow.MOON_NAME}", "mond", "{galaxyrow.MOON_DIAMETER}")'
       onmouseout='return nd();'><img src={dpath}planeten/small/s_mond.jpg height=22 width=22></a><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
     <th style="white-space: nowrap; background-image: none;
-        <!-- IF     galaxyrow.DEBRIS_METAL + galaxyrow.DEBRIS_CRYSTAL >= 10000000 -->
+        <!-- IF galaxyrow.DEBRIS_METAL + galaxyrow.DEBRIS_CRYSTAL >= 10000000 -->
         background-color: rgb(100, 0, 0);
         <!-- ELSEIF galaxyrow.DEBRIS_METAL + galaxyrow.DEBRIS_CRYSTAL >= 1000000 -->
         background-color: rgb(100, 100, 0);

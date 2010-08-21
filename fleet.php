@@ -5,7 +5,7 @@
   Fleet manager
 
   V3.1 copyright (c) 2009 by Gorlum for http://supernova.ws
-    [*] separate independent chunks int INC-files
+    [*] separate independent chunks in INC-files
   V3.0st copyright (c) 2010 by Gorlum for http://supernova.ws
     [*] Security checked & tested
   V3.0 Updated by Gorlum Sep 2009
@@ -26,26 +26,6 @@ if ($IsUserChecked == false) {
   includeLang('login');
   header("Location: login.php");
 }
-includeLang('fleet');
-
-$fleet_page = intval($_GET['fleet_page']);
-
-$MaxFleets = GetMaxFleets(&$user);
-$FlyingFleets = doquery("SELECT COUNT(fleet_id) as Number FROM {{table}} WHERE `fleet_owner`='{$user['id']}'", 'fleets', true);
-$FlyingFleets = $FlyingFleets["Number"];
-if ($MaxFleets <= $FlyingFleets AND $fleet_page) {
-  message($lang['fl_noslotfree'], $lang['fl_error'], "fleet." . $phpEx, 5);
-}
-
-if($user[$resource[124]]>0){
-  $FlyingExpeditions  = doquery("SELECT COUNT(fleet_owner) AS `expedi` FROM {{table}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '15';", 'fleets', true);
-  $FlyingExpeditions  = $FlyingExpeditions['expedi'];
-  $MaxExpeditions = GetMaxExpeditions($user);
-}else{
-  $MaxExpeditions = 0;
-  $FlyingExpeditions = 0;
-};
-
 check_urlaubmodus ($user);
 
 if(IsVacationMode($user)){
@@ -53,152 +33,158 @@ if(IsVacationMode($user)){
   message($lang['Vacation_mode'], $lang['Error'], "fleet.php", 1);
 }
 
-$galaxy = max(intval($_GET['galaxy']), intval($_POST['galaxy']));
-if (!$galaxy) {
-  $galaxy = $planetrow['galaxy'];
-}
-
-$system = max(intval($_GET['system']), intval($_POST['system']));
-if (!$system) {
-  $system = $planetrow['system'];
-}
-
-$planet = max(intval($_GET['planet']), intval($_POST['planet']));
-if (!$planet) {
-  $planet = $planetrow['planet'];
-}
-
-$planet_type = max(intval($_GET['planet_type']), intval($_POST['planet_type']));
-if (!$planet_type)
-  $planet_type = max(intval($_GET['planettype']), intval($_POST['planettype']));
-if (!$planet_type)
-  $planet_type = $planetrow['planet_type'];
-
-$target_mission = max(intval($_GET['target_mission']), intval($_POST['target_mission']));
-if ($planet > $config->game_maxPlanet)
-  $target_mission = MT_EXPLORE;
-
-$fleet_group_mr = intval($_POST['fleet_group']);
-
-if ($galaxy AND $system AND $planet AND $planet_type){
-  $TargetPlanet = doquery("SELECT * FROM {{table}} WHERE galaxy = {$galaxy} and system = {$system} AND planet = {$planet} and planet_type = 1", "planets", true);
-
-  if ($TargetPlanet['id_owner']){
-    $UsedPlanet = true;
-    if ($TargetPlanet['id_owner'] == $user['id']) {
-      $YourPlanet = true;
-    }else{
-      $YourPlanet = false;
-    };
-  }else{
-    $YourPlanet = false;
-    $UsedPlanet = false;
-  };
-
-  if ($planet > $config->game_maxPlanet) {
-    $missiontype = array(MT_EXPLORE => $lang['type_mission'][MT_EXPLORE]);
-  }else{
-    $missiontype = array();
-
-    if (intval($_POST['ship209'])>=1){
-      $isRecycler = true;
-      if ($planet_type == PT_DEBRIS)
-        $missiontype[MT_RECYCLE] = $lang['type_mission'][MT_RECYCLE];
-    };
-
-    if (($planet_type == PT_PLANET) || ($planet_type == PT_MOON)) {
-      if ((intval($_POST['ship210'])>=1)){
-        if(!$YourPlanet && $UsedPlanet){
-          $missiontype[MT_SPY] = $lang['type_mission'][MT_SPY];
-        }elseif ($YourPlanet){
-          $missiontype[MT_RELOCATE] = $lang['type_mission'][MT_RELOCATE];
-        }
-      };
-
-      if (intval($_POST['ship208'])>=1){
-        $isColonizer = true;
-        if (!$UsedPlanet)
-          $missiontype[MT_COLONIZE] = $lang['type_mission'][MT_COLONIZE];
-      };
-
-      if ((intval($_POST['ship202']) >= 1) || (intval($_POST['ship203'])>=1) || $isColonizer || $isRecycler){
-        $isTransport = true;
-      };
-
-      if ($isTransport ||
-        $_POST['ship204'] >= 1 ||
-        $_POST['ship205'] >= 1 ||
-        $_POST['ship206'] >= 1 ||
-        $_POST['ship207'] >= 1 ||
-        $_POST['ship211'] >= 1 ||
-        $_POST['ship213'] >= 1 ||
-        $_POST['ship214'] >= 1 ||
-        $_POST['ship215'] >= 1 ||
-        $_POST['ship216'] >= 1)
-      {
-        if ($UsedPlanet)
-          $missiontype[MT_TRANSPORT] = $lang['type_mission'][MT_TRANSPORT];
-
-        if ($YourPlanet) {
-          $missiontype[MT_RELOCATE] = $lang['type_mission'][MT_RELOCATE];
-        }else{
-          if ($UsedPlanet) {
-            $missiontype[MT_ATTACK] = $lang['type_mission'][MT_ATTACK];
-            $missiontype[MT_HOLD] = $lang['type_mission'][MT_HOLD];
-
-            if (($planet_type == PT_MOON) AND (intval($_POST['ship214']) >= 1))
-              $missiontype[MT_DESTROY] = $lang['type_mission'][MT_DESTROY];
-
-            if ($fleet_group_mr > 0)
-              $missiontype[MT_AKS] = $lang['type_mission'][MT_AKS];
-          };
-        };
-      };
-    };
-  };
-
-  if(!$TargetPlanet AND ($planet <= $config->game_maxPlanet) AND (!isColonizer)){
-    message ("<font color=\"red\"><b>". $lang['fl_no_planettype'] ."</b></font>", $lang['fl_error']);
-  }
-
-  if (!$target_mission)
-    $target_mission = MT_ATTACK;
-
-  if (!$UsedPlanet and $isColonizer)
-    $target_mission = MT_COLONIZE;
-
-  ksort($missiontype);
-};
-
-$SpeedFactor = GetGameSpeedFactor ();
+includeLang('fleet');
 
 $parse = $lang;
+
+$fleet_page = intval($_GET['fleet_page']);
+
+$target_mission = $_GET['target_mission'] ? intval($_GET['target_mission']) : intval($_POST['target_mission']);
+
+$galaxy = $_GET['galaxy'] ? intval($_GET['galaxy']) : ($_POST['galaxy'] ? intval($_POST['galaxy']) : $planetrow['galaxy']);
+$system = $_GET['system'] ? intval($_GET['system']) : ($_POST['system'] ? intval($_POST['system']) : $planetrow['system']);
+$planet = $_GET['planet'] ? intval($_GET['planet']) : ($_POST['planet'] ? intval($_POST['planet']) : $planetrow['planet']);
+$planet_type = $_GET['planet_type'] ? intval($_GET['planet_type']) : intval($_POST['planet_type']);
+if (!$planet_type)
+{
+  $planet_type = $_GET['planettype'] ? intval($_GET['planettype']) : ($_POST['planettype'] ? intval($_POST['planettype']) : $planetrow['planet_type']);
+}
+
+$MaxFleets = GetMaxFleets($user);
+$FlyingFleets = doquery("SELECT COUNT(fleet_id) as Number FROM {{fleets}} WHERE `fleet_owner`='{$user['id']}'", '', true);
+$FlyingFleets = $FlyingFleets['Number'];
+if ($MaxFleets <= $FlyingFleets AND $fleet_page)
+{
+  message($lang['fl_noslotfree'], $lang['fl_error'], "fleet.{$phpEx}", 5);
+}
+
+$MaxExpeditions = GetMaxExpeditions($user);
+if($MaxExpeditions){
+  $FlyingExpeditions  = doquery("SELECT COUNT(fleet_owner) AS `expedi` FROM {{fleets}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '15';", '', true);
+  $FlyingExpeditions  = $FlyingExpeditions['expedi'];
+}else{
+  $FlyingExpeditions = 0;
+};
+
+switch ($fleet_page)
+{
+  case 3:
+
+
+  case 2:
+    $fleet_group_mr = intval($_POST['fleet_group']);
+    $fleetarray     = unserialize(base64_decode(str_rot13($_POST["usedfleet"])));
+
+    $missiontype = array();
+    if ($planet > $config->game_maxPlanet)
+    {
+      $target_mission = MT_EXPLORE;
+      $missiontype[MT_EXPLORE] = $lang['type_mission'][MT_EXPLORE];
+    }
+    elseif ($fleetarray[209] && $planet_type == PT_DEBRIS)
+    {
+      $missiontype[MT_RECYCLE] = $lang['type_mission'][MT_RECYCLE];
+    }
+    elseif ($galaxy && $system && $planet && ($planet_type == PT_PLANET || $planet_type == PT_MOON))
+    {
+      $TargetPlanet = doquery("SELECT * FROM {{planets}} WHERE galaxy = {$galaxy} AND system = {$system} AND planet = {$planet} AND planet_type = 1", '', true);
+
+      if ($TargetPlanet['id_owner'])
+      {
+        $UsedPlanet = true;
+        $missiontype[MT_TRANSPORT] = $lang['type_mission'][MT_TRANSPORT];
+
+        if ($TargetPlanet['id_owner'] == $user['id'])
+        {
+          $YourPlanet = true;
+
+          $missiontype[MT_RELOCATE] = $lang['type_mission'][MT_RELOCATE];
+        }
+        else
+        {
+          $YourPlanet = false;
+
+          $missiontype[MT_ATTACK] = $lang['type_mission'][MT_ATTACK];
+          $missiontype[MT_HOLD] = $lang['type_mission'][MT_HOLD];
+
+          if ($fleetarray[210])
+          {
+            $missiontype[MT_SPY] = $lang['type_mission'][MT_SPY];
+          };
+          if ($planet_type == PT_MOON && $fleetarray[214])
+          {
+            $missiontype[MT_DESTROY] = $lang['type_mission'][MT_DESTROY];
+          }
+
+          if ($fleet_group_mr > 0)
+          {
+            $missiontype[MT_AKS] = $lang['type_mission'][MT_AKS];
+          }
+
+        };
+      }
+      else
+      {
+        $YourPlanet = false;
+        $UsedPlanet = false;
+
+        if ($fleetarray[208])
+        {
+          $missiontype[MT_COLONIZE] = $lang['type_mission'][MT_COLONIZE];
+          $target_mission = MT_COLONIZE;
+        }
+        else
+        {
+          message ("<font color=\"red\"><b>". $lang['fl_no_planettype'] ."</b></font>", $lang['fl_error']);
+        }
+        ;
+      };
+
+    };
+    if (!$target_mission)
+      $target_mission = MT_ATTACK;
+
+    ksort($missiontype);
+
+    $speed_percent = intval($_POST['speed']);
+    $fleet_speed   = min(GetFleetMaxSpeed ($fleetarray, 0, $user));
+    $distance      = GetTargetDistance ( $planetrow['galaxy'], $galaxy, $planetrow['system'], $system, $planetrow['planet'], $planet );
+    $duration      = GetMissionDuration ( $speed_percent, $fleet_speed, $distance, $SpeedFactor );
+    $consumption   = GetFleetConsumption ( $fleetarray, $SpeedFactor, $duration, $distance, $fleet_speed, $user, $speed_percent );
+  // No Break
+
+  case 1:
+    $SpeedFactor = GetGameSpeedFactor();
+
+    $parse['thisgalaxy']      = $planetrow['galaxy'];
+    $parse['thissystem']      = $planetrow['system'];
+    $parse['thisplanet']      = $planetrow['planet'];
+    $parse['thisplanet_type'] = $planetrow['planet_type'];
+
+
+
+  case 0:
+  // no break
+
+}
 
 $parse['galaxy'] = $galaxy;
 $parse['system'] = $system;
 $parse['planet'] = $planet;
 $parse['planet_type'] = $planet_type;
 
-$parse['thisgalaxy'] = $planetrow['galaxy'];
-$parse['thissystem'] = $planetrow['system'];
-$parse['thisplanet'] = $planetrow['planet'];
-$parse['thisresource1'] = floor($planetrow['metal']);
-$parse['thisresource2'] = floor($planetrow['crystal']);
-$parse['thisresource3'] = floor($planetrow['deuterium']);
-$parse['speedfactor'] = GetGameSpeedFactor();
-
 $time_now = time();
-
+pdump($_POST);
 if (!$fleet_page) {
-  include('includes/includes/flt_page0.inc');
+  include('includes/fleet/flt_page0.inc');
 }elseif ($fleet_page==1){
-  include('includes/includes/flt_page1.inc');
+  include('includes/fleet/flt_page1.inc');
 }elseif ($fleet_page==2){
-  include('includes/includes/flt_page2.inc');
+  include('includes/fleet/flt_page2.inc');
 }elseif ($fleet_page==3){
-  include('includes/includes/flt_page3.inc');
+  include('includes/fleet/flt_page3.inc');
 }elseif ($fleet_page==4){
-  include('includes/includes/flt_page4.inc');
+  include('includes/fleet/flt_page4.inc');
 }else{
   message($lang['sys_hackattempt'], $lang['sys_error'], "fleet." . $phpEx, 5);
 };

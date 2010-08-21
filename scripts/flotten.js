@@ -1,5 +1,9 @@
-function changeMission(mission){
-  switch(mission.value){
+function changeMission(mission)
+{
+  element = document.getElementById('resTable');
+
+  switch(mission.value)
+  {
     case '1': // Attack
     case '2': // AKS
     case '5': // Hold
@@ -7,15 +11,16 @@ function changeMission(mission){
     case '8': // Recycle
     case '9': // Destroy
     case '15':// Explore
-      document.getElementById("resTable").style="display:none";
-      break;
+      element.style.display = "none";
+    break;
+
     default:
-      document.getElementById("resTable").style="display:inline";
-      break;
+      element.style.display = "inline";
+    break;
   };
 }
 
-function speed() {
+function speed_percent() {
   var sp;
   sp = document.getElementsByName("speed")[0].value;
 
@@ -52,11 +57,8 @@ function setACS(fleet_group) {
 }
 
 function setACS_target(acs_target_mr) {
-
    document.getElementsByName('acs_target_mr')[0].value = acs_target_mr;
-
    return;
-
 }
 
 function setUnion(unionid) {
@@ -79,18 +81,14 @@ function min(a, b) {
   }
 }
 
-function maxspeed() {
-  var msp = 1000000000;
-  for (i = 200; i < 220; i++) {
-    if (document.getElementsByName("ship" + i)[0]) {
-      if ((document.getElementsByName("speed" + i)[0].value * 1) >= 1
-      && (document.getElementsByName("ship" + i)[0].value * 1) >= 1) {
-        msp = min(msp, document.getElementsByName("speed" + i)[0].value);
-      }
-    }
+function get_fleet_speed() {
+/*
+  if(!fleet_speed)
+  {
+    var fleet_speed = document.getElementsByName("fleet_speed")[0].value;
   }
-
-  return(msp);
+*/
+  return(fleet_speed);
 }
 
 function distance() {
@@ -102,7 +100,7 @@ function distance() {
   var targetSystem;
   var targetPlanet;
 
-  var dist;
+  var dist = 0;
 
   thisGalaxy = document.getElementsByName("thisgalaxy")[0].value;
   thisSystem = document.getElementsByName("thissystem")[0].value;
@@ -112,7 +110,6 @@ function distance() {
   targetSystem = document.getElementsByName("system")[0].value;
   targetPlanet = document.getElementsByName("planet")[0].value;
 
-  dist = 0;
   if ((targetGalaxy - thisGalaxy) != 0) {
     dist = Math.abs(targetGalaxy - thisGalaxy) * 20000;
   } else if ((targetSystem - thisSystem) != 0) {
@@ -127,72 +124,27 @@ function distance() {
 }
 
 function duration() {
-  var speedfactor;
+//  var speedfactor;
+//  speedfactor = document.getElementsByName("speedfactor")[0].value;
 
-  speedfactor = document.getElementsByName("speedfactor")[0].value;
-  msp = maxspeed();
-  sp = speed();
-  dist = distance();
-
-  ret = Math.round(((35000 / sp * Math.sqrt(dist * 10 / msp) + 10) / speedfactor ));
+  ret = Math.round(((35000 / speed_percent() * Math.sqrt(distance() * 10 / get_fleet_speed()) + 10) / speed_factor ));
   return ret;
-}
-
-function consumption2() {
-  var consumption;
-  var basicConsumption = 0;
-
-  for (i = 200; i < 220; i++) {
-    if (document.getElementsByName("ship" + i)[0]) {
-      basicConsumption = basicConsumption +
-      document.getElementsByName("consumption" + i)[0].value
-      * document.getElementsByName("ship" + i)[0].value;
-    }
-  }
-
-  speedfactor = document.getElementsByName("speedfactor")[0].value;
-  msp = maxspeed();
-  sp = speed();
-  dist = distance();
-
-  consumption = Math.round(basicConsumption * dist / 35000 * ((sp / 10) + 1) * ((sp / 10) + 1)) + 1;
-
-  return(consumption);
 }
 
 function consumption() {
   var consumption = 0;
-  var basicConsumption = 0;
-  var values;
-  var i;
+  var spd = speed_percent() * Math.sqrt(get_fleet_speed());
 
-  msp = maxspeed();
-  sp = speed();
-  dist = distance();
-  dur = duration();
-  speedfactor = document.getElementsByName("speedfactor")[0].value;
+  for (var i in ships) {
+    shipcount = ships[i][0];
+    shipspeed = ships[i][1];
+    shipconsumption = ships[i][2];
 
-  for (i = 200; i < 220; i++) {
-    if (document.getElementsByName("ship" + i)[0]) {
-      shipspeed = document.getElementsByName("speed" + i)[0].value;
-      spd = 35000 / (dur * speedfactor - 10) * Math.sqrt(dist * 10 / shipspeed);
-
-      //spd = Math.max(msp / document.getElementsByName("speed" + i)[0].value, 0.1);
-      //spd = Math.min(spd, 1.0);
-      //spd = spd * sp;
-      //spd = 10;
-      basicConsumption = document.getElementsByName("consumption" + i)[0].value
-      * document.getElementsByName("ship" + i)[0].value;
-      consumption += basicConsumption * dist / 35000 * ((spd / 10) + 1) * ((spd / 10) + 1);
-      //      values = values + " " + spd;
-    }
+    consumption += shipconsumption * shipcount  * (spd / Math.sqrt(shipspeed) / 10 + 1 ) * (spd / Math.sqrt(shipspeed) / 10 + 1 );
   }
 
-  consumption = Math.round(consumption) + 1;
-
-  //  document.write(values);
+  consumption = Math.round(distance() * consumption / 35000) + 1;
   // document.getElementById("debug").innerHTML = consumption;
-
 
   return(consumption);
 }
@@ -203,16 +155,15 @@ function probeConsumption() {
   var values;
   var i;
 
-  msp = maxspeed();
-  sp = speed();
+  msp = get_fleet_speed();
+  sp = speed_percent();
   dist = distance();
   dur = duration();
-  speedfactor = document.getElementsByName("speedfactor")[0].value;
-
+  // speedfactor = document.getElementsByName("speedfactor")[0].value;
 
   if (document.getElementsByName("ship210")[0]) {
     shipspeed = document.getElementsByName("speed210")[0].value;
-    spd = 35000 / (dur * speedfactor - 10) * Math.sqrt(dist * 10 / shipspeed);
+    spd = 35000 / (dur * speed_factor - 10) * Math.sqrt(dist * 10 / shipspeed);
 
     basicConsumption = document.getElementsByName("consumption210")[0].value
     * document.getElementsByName("ship210")[0].value;
@@ -236,6 +187,11 @@ function unusedProbeStorage() {
 }
 
 function storage() {
+  if(fleet_capacity)
+  {
+    return fleet_capacity;
+  }
+/*
   var storage = 0;
 
   for (i = 200; i < 300; i++) {
@@ -256,11 +212,12 @@ function storage() {
   }
 
   return(storage);
+*/
 }
 
 
 function fleetInfo() {
-  document.getElementById("speed").innerHTML = speed() * 10 + "%";
+  document.getElementById("speed").innerHTML = speed_percent() * 10 + "%";
   document.getElementById("target").innerHTML = target();
   document.getElementById("distance").innerHTML = distance();
 
@@ -278,7 +235,7 @@ function fleetInfo() {
 
   var stor = storage();
   var cons = consumption();
-  document.getElementById("maxspeed").innerHTML = tsdpkt(maxspeed());
+//  document.getElementById("maxspeed").innerHTML = tsdpkt(get_fleet_speed());
   if (stor >= 0) {
     document.getElementById("consumption").innerHTML = '<font color="lime">'+cons+'</font>';
     document.getElementById("storage").innerHTML = '<font color="lime">'+stor+'</font>';
@@ -318,13 +275,13 @@ function shortInfo() {
   var cons = consumption();
 
 
-  document.getElementById("maxspeed").innerHTML = tsdpkt(maxspeed());
+//  document.getElementById("maxspeed").innerHTML = tsdpkt(get_fleet_speed());
   if (stor >= 0) {
     document.getElementById("consumption").innerHTML = '<font color="lime">'+tsdpkt(cons)+'</font>';
-    document.getElementById("storage").innerHTML = '<font color="lime">'+tsdpkt(stor)+'</font>';
+//    document.getElementById("storage").innerHTML = '<font color="lime">'+tsdpkt(stor)+'</font>';
   } else {
     document.getElementById("consumption").innerHTML = '<font color="red">'+tsdpkt(cons)+'</font>';
-    document.getElementById("storage").innerHTML = '<font color="red">'+tsdpkt(stor)+'</font>';
+//    document.getElementById("storage").innerHTML = '<font color="red">'+tsdpkt(stor)+'</font>';
   }
 
 }
@@ -341,14 +298,16 @@ function maxResource(id) {
   var thisresourcechosen = parseInt(document.getElementsByName("resource" + id)[0].value);
 
   if (isNaN(thisresourcechosen)){
-    thisresourcechosen=0;
+    thisresourcechosen = 0;
   }
-  if (isNaN(thisresource)){
-    thisresource=0;
+  if (isNaN(thisresource))
+  {
+    thisresource = 0;
   }
 
   var storCap = storage();
-  if (id==3){
+  if (id==3)
+  {
     thisresource -= consumption();
   }
 
@@ -358,13 +317,16 @@ function maxResource(id) {
   var crystalToTransport = parseInt(document.getElementsByName("resource2")[0].value);
   var deuteriumToTransport = parseInt(document.getElementsByName("resource3")[0].value);
 
-  if (isNaN(metalToTransport)){
+  if (isNaN(metalToTransport))
+  {
     metalToTransport=0;
   }
-  if (isNaN(crystalToTransport)){
+  if (isNaN(crystalToTransport))
+  {
     crystalToTransport=0;
   }
-  if (isNaN(deuteriumToTransport)){
+  if (isNaN(deuteriumToTransport))
+  {
     deuteriumToTransport=0;
   }
 
@@ -429,17 +391,9 @@ function noShips (){
 }
 
 function calculateTransportCapacity() {
-  var metal = Math.abs(document.getElementsByName("resource1")[0].value);
-  var crystal = Math.abs(document.getElementsByName("resource2")[0].value);
-  var deuterium = Math.abs(document.getElementsByName("resource3")[0].value);
+  transportCapacity = storage() - check_resource(0) - check_resource(1) - check_resource(2);
 
-  transportCapacity =  storage() - metal - crystal - deuterium;
-
-  if (transportCapacity < 0) {
-    document.getElementById("remainingresources").innerHTML="<font color=red>"+transportCapacity+"</font>";
-  } else {
-    document.getElementById("remainingresources").innerHTML="<font color=lime>"+transportCapacity+"</font>";
-  }
+  document.getElementById("remainingresources").innerHTML = sn_format_number(transportCapacity, 0, 'lime');
   return transportCapacity;
 }
 
@@ -501,14 +455,6 @@ function setVisibilityForDivByPrefix(prefix, visible, d) {
   }
 }
 
-
-/*
-function disableSome() {
-document.forms[0].mission[6].disabled = true;
-document.forms[0].mission[7].disabled = true;
-document.forms[0].mission[8].disabled = true;
-}
-*/
 function setPlanet(string) {
   var splitstring = string.split(":");
   document.getElementsByName('galaxy')[0].value = splitstring[0];
@@ -530,7 +476,7 @@ function setUnions(cnt) {
   thisplanet_type = document.getElementsByName("thisplanet_type")[0].value;
 
   spd = document.getElementsByName("speed")[0].value;
-  speedfactor = document.getElementsByName("speedfactor")[0].value;
+  // speedfactor = document.getElementsByName("speedfactor")[0].value;
 
   for (i = 0; i < cnt; i++) {
     //    alert ("set unions called "+ cnt);
@@ -548,7 +494,7 @@ function setUnions(cnt) {
 
       inSpeedLimit = isInSpeedLimit(flightTime(thisgalaxy, thissystem, thisplanet,
       targetgalaxy, targetsystem, targetplanet,
-      spd, speedfactor), time);
+      spd, speed_factor), time);
       //      alert ("in here" + inSpeedLimit);
       if (inSpeedLimit == 2) {
         document.getElementById("union"+i).innerHTML =
@@ -582,7 +528,7 @@ function isInSpeedLimit(flightlength, eventtime) {
 
 function flightTime(galaxy, system, planet,
 targetgalaxy, targetsystem, targetplanet,
-spd, maxspeed, speedfactor) {
+spd, maxspeed, speed_factor) {
   //    alert ("flighttime called 1"+galaxy+" "+system+" "+planet+" "+targetgalaxy+" "+targetsystem+" "+targetplanet);
 
   if ((galaxy - targetgalaxy) != 0) {
@@ -594,7 +540,7 @@ spd, maxspeed, speedfactor) {
   } else {
     dist = 5;
   }
-  return Math.round(((35000 / spd * Math.sqrt(dist * 10 / maxspeed) + 10) / speedfactor));
+  return Math.round(((35000 / spd * Math.sqrt(dist * 10 / maxspeed) + 10) / speed_factor));
 }
 
 function showCoords() {
@@ -683,4 +629,205 @@ function tsdpkt(f) {
 function abs(a) {
   if(a < 0) return -a;
   return a;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function inc_value(id, max_value, step)
+{
+  step = step || 1;
+  element = document.getElementsByName(id)[0];
+
+  if(parseInt(element.value) + step < max_value)
+  {
+    element.value = parseInt(element.value) + step;
+  }
+  else
+  {
+    element.value = max_value;
+  };
+}
+
+function dec_value(id, step)
+{
+  step = step || 1;
+  element = document.getElementsByName(id)[0];
+
+  if(parseInt(element.value) > step)
+  {
+    element.value = parseInt(element.value) - step;
+  }
+  else
+  {
+    element.value = 0;
+  };
+}
+
+function zero_value(id)
+{
+  element = document.getElementsByName(id)[0];
+  if(element)
+  {
+    element.value = 0;
+  }
+}
+
+function max_value(id, max_value)
+{
+  element = document.getElementsByName(id)[0];
+
+  if(element)
+  {
+    element.value = max_value;
+  }
+}
+
+function zero_fleet()
+{
+  for (i in ships)
+  {
+    zero_value('ships[' + i + ']');
+  }
+}
+
+function max_fleet()
+{
+  for (i in ships)
+  {
+    max_value('ships[' + i + ']', ships[i][0]);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function dec_resource(id)
+{
+  element = document.getElementsByName('resource' + id)[0];
+
+  if(parseInt(element.value) > 1000)
+  {
+    element.value = parseInt(element.value) - 1000;
+  }
+  else
+  {
+    element.value = 0;
+  };
+  calculateTransportCapacity();
+}
+
+function zero_resource(id)
+{
+  element = document.getElementsByName('resource' + id)[0];
+
+  if(element)
+  {
+    element.value = 0;
+  }
+  calculateTransportCapacity();
+}
+
+function zero_resources()
+{
+  for (i in resource_max)
+  {
+    zero_resource(i);
+  }
+  calculateTransportCapacity();
+}
+
+function inc_resource(id)
+{
+  element = document.getElementsByName('resource' + id)[0];
+
+  if(parseInt(element.value) + 1000 < resource_max[id])
+  {
+    element.value = parseInt(element.value) + 1000;
+  }
+  else
+  {
+    element.value = resource_max[id];
+  };
+  calculateTransportCapacity();
+}
+
+function check_resource(id)
+{
+  var zi_res = parseInt(document.getElementsByName("resource" + id)[0].value);
+  if (isNaN(zi_res)){
+    zi_res = 0;
+  }
+
+  document.getElementById('rest_res' + id).innerHTML = sn_format_number(resource_max[id] - zi_res, 0, 'white');
+
+  return zi_res;
+}
+
+function max_resource(id) {
+  if (document.getElementsByName("resource" + id)[0])
+  {
+    var freeCapacity = Math.max(fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2), 0);
+    var cargo = Math.min (freeCapacity + check_resource(id), resource_max[id]);
+
+    document.getElementsByName("resource" + id)[0].value = cargo;
+    calculateTransportCapacity();
+  }
+}
+
+function max_resources()
+{
+  for (i in resource_max)
+  {
+    max_resource(i);
+  }
+  calculateTransportCapacity();
 }

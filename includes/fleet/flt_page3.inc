@@ -3,6 +3,9 @@
   // @version 1.0
   // @copyright 2008 by Chlorel for XNova
 
+  if (!is_array($fleetarray))
+    $errorlist .= $lang['fl_no_fleetarray'];
+
   // Test de coherance de la destination (voir si elle se trouve dans les limites de l'univers connu
   $errorlist = "";
   if (!$galaxy || $galaxy > $config->game_maxGalaxy || $galaxy < 1)
@@ -21,12 +24,12 @@
     $errorlist .= $lang['fl_bad_mission'];
   }
 
-  $TransMetal      = max(0, intval($_POST['resource1']));
-  $TransCrystal    = max(0, intval($_POST['resource2']));
-  $TransDeuterium  = max(0, intval($_POST['resource3']));
+  $TransMetal      = max(0, intval($_POST['resource0']));
+  $TransCrystal    = max(0, intval($_POST['resource1']));
+  $TransDeuterium  = max(0, intval($_POST['resource2']));
   $StorageNeeded   = $TransMetal + $TransCrystal + $TransDeuterium;
 
-  if ($StorageNeeded < 1 AND $target_mission == MT_TRANSPORT) {
+  if (!$StorageNeeded && $target_mission == MT_TRANSPORT) {
     $errorlist .= $lang['fl_noenoughtgoods'];
   }
 
@@ -66,10 +69,6 @@
     }
   }
 
-
-  $fleetarray  = unserialize(base64_decode(str_rot13($_POST["usedfleet"])));
-  if (!is_array($fleetarray))
-    $errorlist .= $lang['fl_no_fleetarray'];
 
   if ($errorlist)
     message ("<font color=\"red\"><ul>" . $errorlist . "</ul></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
@@ -176,19 +175,9 @@
   }
 
   $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
-  $AllFleetSpeed  = GetFleetMaxSpeed ($fleetarray, 0, $user);
-  $GenFleetSpeed  = intval($_POST['speed']);
-  $MaxFleetSpeed  = min($AllFleetSpeed);
-  if (!in_array($GenFleetSpeed, $speed_possible)) {
+  if (!in_array($speed_percent, $speed_possible)) {
     message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
   }
-  if ($MaxFleetSpeed != $_POST['speedallsmin']) {
-    message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."123</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
-  }
-
-  $distance      = GetTargetDistance ( $planetrow['galaxy'], $galaxy, $planetrow['system'], $system, $planetrow['planet'], $planet );
-  $duration      = GetMissionDuration ( $GenFleetSpeed, $MaxFleetSpeed, $distance, $SpeedFactor );
-  $consumption   = GetFleetConsumption ( $fleetarray, $SpeedFactor, $duration, $distance, $MaxFleetSpeed, $user );
 
   $fleet['start_time'] = $duration + $time_now;
   if ($target_mission == MT_EXPLORE OR $target_mission == MT_HOLD) {
@@ -285,7 +274,7 @@
     $parse["mission"] .= ' ' . pretty_time($StayDuration);
   };
   $parse["dist"] = pretty_number($distance);
-  $parse["speed"] = pretty_number($MaxFleetSpeed);
+  $parse["speed"] = pretty_number($fleet_speed);
   $parse["deute_need"] = pretty_number($consumption);
   $parse["from"] = $planetrow['galaxy'].":".$planetrow['system'].":".$planetrow['planet'];
   $parse["time_go"] = date(DATE_TIME, $fleet['start_time']);
@@ -294,7 +283,7 @@
   $parse_temp['DisplayControls'] = 'display: none;';
   $$ShipList = "";
   foreach ($fleetarray as $Ship => $Count) {
-    $parse_temp['ShipSpeed'] =
+    // $parse_temp['ShipSpeed'] =
     $parse_temp['ShipName'] = $lang['tech'][$Ship];
     $parse_temp['ShipNumPrint'] = pretty_number($Count);
     $ShipList .= parsetemplate(gettemplate('fleet_ship_row'), $parse_temp);

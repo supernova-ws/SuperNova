@@ -1,25 +1,31 @@
+<!--
+@package fleet
+2.0 Utilize PTE
+    Comply with PCG
+-->
+
 <script language="JavaScript" src="scripts/flotten.js"></script>
 <script language="JavaScript" src="scripts/ocnt.js"></script>
 <br>
-<center>
-  {vacation}
-  <table border='0' cellpadding='0' cellspacing='1'>
-    <tr height='20' class='c'>
-      <td colspan=8 class='c'><div style="float: left">{fl_title} {MaxFlyingFleets} {fl_sur} {MaxFlottes} </div><div align=right>{ExpeditionEnCours}/{EnvoiMaxExpedition} {fl_expttl}</div></td>
-    </tr>
+{vacation}
+<table border='0' cellpadding='0' cellspacing='1'>
+  <tr height='20' class='c'>
+    <td colspan=8 class='c'><div style="float: left">{fl_title}: {FLYING_FLEETS}/{MAX_FLEETS}</div><div align=right>{fl_expttl}: {ExpeditionEnCours}/{EnvoiMaxExpedition}</div></td>
+  </tr>
 
-    <tr height='20'>
-      <th>{L_fl_id}</th>
-      <th>{L_fl_mission}</th>
-      <th>{L_fl_count_short}</th>
-      <th>{L_fl_dest}</th>
-      <th>{L_fl_dest_t}</th>
-      <th>{L_fl_from}</th>
-      <th>{L_fl_from_t}</th>
-      <th>{L_fl_order}</th>
-    </tr>
+  <tr height='20'>
+    <th>{L_fl_id}</th>
+    <th>{L_fl_mission}</th>
+    <th>{L_fl_count_short}</th>
+    <th>{L_fl_dest}</th>
+    <th>{L_fl_dest_t}</th>
+    <th>{L_fl_from}</th>
+    <th>{L_fl_from_t}</th>
+    <th>{L_fl_order}</th>
+  </tr>
 
-    <!-- BEGIN fleets -->
+  
+  <!-- BEGIN fleets -->
     <tr height=20>
       <th>{fleets.NUMBER}</th>
       <th><a>{fleets.MISSION_NAME}</a><br>
@@ -36,18 +42,18 @@
       </th>
       <th>
         <!-- IF fleets.MESSAGE == 0 -->
-        <form action="fleetback.php" method="post" style="margin: 0">
-        <input name="fleetid" value="{fleets.ID}" type="hidden">
-        <input value="{L_fl_back_to_ttl}" type="submit" name="send">
-        </form>
-        <!-- IF fleets.MISSION == 1 || fleets.MISSION == 2 -->
-        <form action="fleet.php?fleet_page=4" method="post" style="margin: 0">
-        <input name="fleetid" value="{fleets.ID}" type="hidden">
-        <input value="<!-- IF fleets.MISSION == 1 -->{L_fl_associate}<!-- ELSE -->{fleets.ACS}<!-- ENDIF -->" type="submit">
-        </form>
-        <!-- ENDIF -->
+          <form action="fleetback.php" method="post" style="margin: 0">
+            <input name="fleetid" value="{fleets.ID}" type="hidden">
+            <input value="{L_fl_back_to_ttl}" type="submit" name="send">
+          </form>
+          <!-- IF fleets.MISSION == 1 || fleets.MISSION == 2 -->
+            <form action="fleet.php?fleet_page=4" method="post" style="margin: 0">
+              <input name="fleetid" value="{fleets.ID}" type="hidden">
+              <input value="<!-- IF fleets.MISSION == 1 -->{L_fl_associate}<!-- ELSE -->{fleets.ACS}<!-- ENDIF -->" type="submit">
+            </form>
+          <!-- ENDIF -->
         <!-- ELSE -->
-        {L_fl_isback}
+          {L_fl_isback}
         <!-- ENDIF -->
       </th>
     </tr>
@@ -59,44 +65,81 @@
         ['{fleets.ID}', '', {fleets.END_LEFT}, '0']
       ]]]);
     --></script>
-    <!-- END fleets -->
+  <!-- BEGINELSE fleets -->
+    <tr><th colspan="8">{L_fl_no_flying_fleets}</th></tr>
+  <!-- END fleets -->
 
+  <!-- IF FLYING_FLEETS >= MAX_FLEETS -->
+    <tr><th colspan="8"><font color="red">{fl_noslotfree}</font></th></tr>
+  <!-- ENDIF -->
+</table><br>
 
-    <tr height="20" style="{DisplayNoSlotFree}"><th colspan="8"><font color="red">{fl_noslotfree}</font></th></tr>
-  </table><br>
+{AKS}
 
-  {AKS}
+<form action="fleet.php?fleet_page=1" method="post">
+  <input type="hidden" name="galaxy" value="{galaxy}">
+  <input type="hidden" name="system" value="{system}">
+  <input type="hidden" name="planet" value="{planet}">
+  <input type="hidden" name="planet_type" value="{planet_type}">
+  <input type="hidden" name="target_mission" value="{target_mission}">
 
-  <form action="fleet.php?fleet_page=1" method="post">
-    <table width="519" border="0" cellpadding="0" cellspacing="1">
-      <tr height="20"><td colspan="4" class="c">{fl_new_miss}</td></tr>
-      <tr height="20" style="{DisplayButtons}">
-        <th>{fl_fleet_typ}</th>
-        <th>{fl_fleet_disp}</th>
-        <th>-</th>
-        <th>-</th>
+  <table width="519" border="0" cellpadding="0" cellspacing="1">
+    <tr><td colspan="3" class="c">
+      <div class="fl">{fl_new_miss}</div>
+      <!-- IF MISSION_NAME -->
+        <div class="fr">{TYPE_NAME} [{galaxy}:{system}:{planet}], {MISSION_NAME}</div>
+      <!-- ENDIF -->
+    </td></tr>
+
+    <tr>
+      <th>{fl_fleet_typ}</th>
+      <th>{L_fl_orbiting}</th>
+      <th>{L_fl_to_fly}</th>
+    </tr>
+
+    {ErrorNoPlanetRow}
+    
+    <!-- IF .ships -->
+      <!-- BEGIN ships -->
+        <tr>
+          <th><div class="fl"><a title="{L_fl_fleetspeed}{ships.SPEED}"</a>{ships.NAME}</div></th>
+          <th>{ships.AMOUNT}</th>
+          <th>
+            <!-- IF (ships.ID == 212) || (FLYING_FLEETS >= MAX_FLEETS) -->
+              &nbsp;
+            <!-- ELSE -->
+              <input value="0" type="button" onClick="javascript:zero_value('ships[{ships.ID}]');" style="font-weight:bold;color:red;">
+              <input value="-" type="button" onClick="javascript:dec_value('ships[{ships.ID}]');">
+              <input name="ships[{ships.ID}]" size="10" value="0" onfocus="javascript:if(this.value == '0') this.value='';" onblur="javascript:if(this.value == '') this.value='0';" alt="{ships.NAME}{ships.NUM}" />
+              <input value="+" type="button" onClick="javascript:inc_value('ships[{ships.ID}]', ships[{ships.ID}][0]);">
+              <input value="{L_fl_selmax}" type="button" onClick="javascript:max_value('ships[{ships.ID}]', ships[{ships.ID}][0]);" style="font-weight:bold;color:green;">
+            <!-- ENDIF -->
+          </th>
+        </tr>
+      <!-- END ships -->
+      <tr>
+        <!-- IF FLYING_FLEETS < MAX_FLEETS -->
+          <th colspan="2">&nbsp;</th>
+          <th>
+              <div class="fl"><input type="button" value="{fl_unselectall}" onclick="javascript:zero_fleet();"></div>
+              <div class="fl"><input type="button" value="{fl_selectall}" onclick="javascript:max_fleet();"></div>
+            <div class="fr"><input type="submit" value="{L_fl_continue}" /></div>
+          </th>
+        <!-- ELSE -->
+          <th colspan="3"><font color="red">{fl_noslotfree}</font></th>
+        <!-- ENDIF -->
       </tr>
+    <!-- ELSE -->
+      <tr><th colspan="3">{L_fl_noships}</th></tr>
+    <!-- ENDIF -->
+  </table>
+</form>
 
-      {ErrorNoPlanetRow}
-      
-      {ShipList}
-      
-      <tr height="20" style="{DisplayNoShips}"><th colspan="4">{fl_noships}</th></tr>
-
-      <tr height="20" style="{DisplayButtons}">
-        <th colspan="2"><a href="javascript:noShips();shortInfo();noResources();" >{fl_unselectall}</a></th>
-        <th colspan="2"><a href="javascript:maxShips();shortInfo();">{fl_selectall}</a></th>
-      </tr>
-      
-      <tr height="20" style="{DisplayButtons}"><th colspan="4"><input type="submit" value="{fl_continue}" /></th></tr>
-    </table>
-    <input type="hidden" name="galaxy" value="{galaxy}">
-    <input type="hidden" name="system" value="{system}">
-    <input type="hidden" name="planet" value="{planet}">
-    <input type="hidden" name="planet_type" value="{planet_type}">
-    <input type="hidden" name="mission" value="{target_mission}">
-    <input type="hidden" name="maxepedition" value="{EnvoiMaxExpedition}">
-    <input type="hidden" name="curepedition" value="{ExpeditionEnCours}">
-    <input type="hidden" name="target_mission" value="{target_mission}">
-  </form>
-</center>
+<script type="text/javascript"><!--
+var ships = Array();
+<!-- BEGIN ships -->
+  <!-- IF (ships.ID != 212) -->
+  ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION});
+  <!-- ENDIF -->
+<!-- END ships -->
+--></script>

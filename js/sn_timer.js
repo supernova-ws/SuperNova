@@ -33,7 +33,8 @@ It means: 1 - just date; 2 - just time; 3 - both date & time
 
 var sn_timers = new Array();
 
-function sn_formatNumber(number,laenge) {
+function sn_format_number(number, laenge, color)
+{
   number = Math.round( number * Math.pow(10, laenge) ) / Math.pow(10, laenge);
   str_number = number+'';
   arr_int = str_number.split('.');
@@ -54,7 +55,19 @@ function sn_formatNumber(number,laenge) {
     str_first = Begriff.substr(0, (Begriff.length % 3 == 0)?3:(Begriff.length % 3));
     arr_int[0] = str_first + arr_int[0];
   }
-  return arr_int[0]+','+arr_int[1];
+  ret_val = arr_int[0] + (arr_int[1] ? ','+arr_int[1] : '');
+  if(color)
+  {
+    if(number<0)
+    {
+      ret_val = '<font color="red">' + ret_val + '</font>';
+    }
+    else
+    {
+      ret_val = '<font color="' + color + '">' + ret_val + '</font>';
+    }
+  }
+  return ret_val;
 }
 
 function sn_timestampToString(timestamp, useDays){
@@ -135,10 +148,10 @@ function sn_timer() {
       case 1: // counter
         if(timer_options[0] >= timer_options[2]){
           timer[2] = false;
-          printData = '<font color=red>' + sn_formatNumber(timer_options[0], 2) + '</font>';
+          printData = '<font color=red>' + sn_format_number(timer_options[0], 2) + '</font>';
         }else{
           timer_options[0] += Math.floor(timer_options[1] * (timestamp - timer[3]) / 36) / 100
-          printData = sn_formatNumber(timer_options[0], 2);
+          printData = sn_format_number(timer_options[0], 2);
           timer[3] = timestamp;
         };
 

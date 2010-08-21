@@ -13,8 +13,6 @@
 
 // Calcul de la distance entre 2 planetes
 function GetTargetDistance ($OrigGalaxy, $DestGalaxy, $OrigSystem, $DestSystem, $OrigPlanet, $DestPlanet) {
-  $distance = 0;
-
   if (($OrigGalaxy - $DestGalaxy) != 0) {
     $distance = abs($OrigGalaxy - $DestGalaxy) * 20000;
   } elseif (($OrigSystem - $DestSystem) != 0) {
@@ -30,7 +28,6 @@ function GetTargetDistance ($OrigGalaxy, $DestGalaxy, $OrigSystem, $DestSystem, 
 
 // Calcul de la durée de vol d'une flotte par rapport a sa vitesse max
 function GetMissionDuration ($GameSpeed, $MaxFleetSpeed, $Distance, $SpeedFactor) {
-  $Duration = 0;
   $Duration = round(((35000 / $GameSpeed * sqrt($Distance * 10 / $MaxFleetSpeed) + 10) / $SpeedFactor));
 
   return $Duration;
@@ -38,100 +35,120 @@ function GetMissionDuration ($GameSpeed, $MaxFleetSpeed, $Distance, $SpeedFactor
 
 // Retourne la valeur ajustée de vitesse des flottes
 function GetGameSpeedFactor () {
-  global $game_config;
+  global $config;
 
-  return $game_config['fleet_speed'] / 2500;
+  return $config->fleet_speed / 2500;
+}
+
+function get_ship_speed($ship_id, $user)
+{
+  global $resource, $reslist, $pricelist;
+
+  if($pricelist[$ship_id]['tech_level'] && $user[$resource[$pricelist[$ship_id]['tech2']]] >= $pricelist[$ship_id]['tech_level'])
+  {
+    $speed = $pricelist[$ship_id]['speed2'];
+    $tech  = $pricelist[$ship_id]['tech2'];
+  }
+  else
+  {
+    $speed = $pricelist[$ship_id]['speed'];
+    $tech  = $pricelist[$ship_id]['tech'];
+  }
+
+  $speed *= 1 + $user[$resource[$tech]] * $pricelist[$tech]['speed_increase'];
+  $speed *= 1 + $user['rpg_general'] * 0.25;
+
+  return $speed;
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 // Calcul de la vitesse de la flotte par rapport aux technos du joueur
 // Avec prise en compte
-function GetFleetMaxSpeed ($FleetArray, $Fleet, $Player) {
-  global $reslist, $pricelist;
+function GetFleetMaxSpeed ($FleetArray, $Fleet, $Player)
+{
+  if ($Fleet)
+  {
+    return get_ship_speed($Fleet, $Player);
+  }
 
-  if ($Fleet != 0) {
-    $FleetArray[$Fleet] =  1;
-  }
   foreach ($FleetArray as $Ship => $Count) {
-    if ($Ship == 202) {
-      if ($Player['impulse_motor_tech'] >= 5) {
-        $speedalls[$Ship] = ($pricelist[$Ship]['speed2'] + (($pricelist[$Ship]['speed2'] * $Player['impulse_motor_tech']) * 0.2)) * (1 + 0.25 * $Player['rpg_general']);
-      } else {
-        $speedalls[$Ship] = ($pricelist[$Ship]['speed']  + (($pricelist[$Ship]['speed'] * $Player['combustion_tech']) * 0.1)) * (1 + 0.25 * $Player['rpg_general']);
-      }
+    if(!$Count)
+    {
+      continue;
     }
-    if ($Ship == 203 or $Ship == 204 or $Ship == 209 or $Ship == 210) {
-      $speedalls[$Ship] = ($pricelist[$Ship]['speed'] + (($pricelist[$Ship]['speed'] * $Player['combustion_tech']) * 0.1)) * (1 + 0.25 * $Player['rpg_general']);
-    }
-    if ($Ship == 205 or $Ship == 206 or $Ship == 208) {
-      $speedalls[$Ship] = ($pricelist[$Ship]['speed'] + (($pricelist[$Ship]['speed'] * $Player['impulse_motor_tech']) * 0.2)) * (1 + 0.25 * $Player['rpg_general']);
-    }
-    if ($Ship == 211) {
-      if ($Player['hyperspace_motor_tech'] >= 8) {
-        $speedalls[$Ship] = ($pricelist[$Ship]['speed2'] + (($pricelist[$Ship]['speed2'] * $Player['hyperspace_motor_tech']) * 0.3)) * (1 + 0.25 * $Player['rpg_general']);
-      } else {
-        $speedalls[$Ship] = ($pricelist[$Ship]['speed']  + (($pricelist[$Ship]['speed'] * $Player['impulse_motor_tech']) * 0.2)) * (1 + 0.25 * $Player['rpg_general']);
-      }
-    }
-    if ($Ship == 207 or $Ship == 213 or $Ship == 214 or $Ship == 215 or $Ship == 216) {
-      $speedalls[$Ship] = ($pricelist[$Ship]['speed'] + (($pricelist[$Ship]['speed'] * $Player['hyperspace_motor_tech']) * 0.3)) * (1 + 0.25 * $Player['rpg_general']);
-    }
-  }
-  if ($Fleet != 0) {
-    $ShipSpeed = $speedalls[$Ship];
-    $speedalls = $ShipSpeed;
+    $speedalls[$Ship] = get_ship_speed($Ship, $Player);
   }
 
   return $speedalls;
 }
-
 // ----------------------------------------------------------------------------------------------------------------
 // Calcul de la consommation de base d'un vaisseau au regard des technologies
-function GetShipConsumption ( $Ship, $Player ) {
-  global $pricelist;
-  if ($Player['impulse_motor_tech'] >= 5) {
-    $Consumption  = $pricelist[$Ship]['consumption2'];
-  } else {
-    $Consumption  = $pricelist[$Ship]['consumption'];
+function GetShipConsumption ( $ship_id, $user )
+{
+  global $pricelist, $resource;
+
+  if($pricelist[$ship_id]['tech_level'] && $user[$resource[$pricelist[$ship_id]['tech2']]] >= $pricelist[$ship_id]['tech_level'])
+  {
+    $consumption = $pricelist[$ship_id]['consumption2'];
+  }
+  else
+  {
+    $consumption = $pricelist[$ship_id]['consumption'];
   }
 
-  return $Consumption;
+  return $consumption;
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 // Calcul de la consommation de la flotte pour cette mission
-function GetFleetConsumption ($FleetArray, $SpeedFactor, $MissionDuration, $MissionDistance, $FleetMaxSpeed, $Player) {
+function GetFleetConsumption ($FleetArray, $SpeedFactor, $MissionDuration, $MissionDistance, $FleetMaxSpeed, $Player, $speed_percent = 10) {
+  $consumption     = 0;
 
-  $consumption = 0;
-  $basicConsumption = 0;
+  $MissionDuration = $MissionDuration < 1 ? 1 : $MissionDuration;
+  $MissionDistance = $MissionDistance < 1 ? 1 : $MissionDistance;
+  $SpeedFactor     = $SpeedFactor == 10 ? 11 : $SpeedFactor;
+
+  $spd             = $speed_percent * sqrt( $FleetMaxSpeed );
 
   foreach ($FleetArray as $Ship => $Count) {
-    if ($Ship > 0) {
-      $ShipSpeed         = GetFleetMaxSpeed ( "", $Ship, $Player );
-      $ShipConsumption   = GetShipConsumption ( $Ship, $Player );
-
-      if ($MissionDuration < 1) {
-        $MissionDuration = 1;
-      }
-      if ($MissionDistance < 1) {
-        $MissionDistance =1;
-      }
-      if ($ShipSpeed < 1) {
-        $ShipSpeed = 1;
-      }
-      if ($SpeedFactor == 10) {
-        $SpeedFactor = 11;
+    if (!$Ship) {
+      continue;
     }
 
-      $spd               = 35000 / ($MissionDuration * $SpeedFactor - 10) * sqrt( $MissionDistance * 10 / $ShipSpeed );
-      $basicConsumption  = $ShipConsumption * $Count;
-      $consumption      += $basicConsumption * $MissionDistance / 35000 * (($spd / 10) + 1) * (($spd / 10) + 1);
-    }
+    $ShipSpeed         = get_ship_speed ( $Ship, $Player );
+    $ShipSpeed         = $ShipSpeed < 1 ? 1 : $ShipSpeed;
+
+    $ShipConsumption   = GetShipConsumption ( $Ship, $Player );
+
+    $consumption += $ShipConsumption * $Count  * pow($spd / sqrt($ShipSpeed) / 10 + 1, 2 );
+    /*
+    $spd               = 35000 / ($MissionDuration * $SpeedFactor - 10) * sqrt( $MissionDistance * 10 / $ShipSpeed );
+    $consumption      += $ShipConsumption * $Count * $MissionDistance / 35000 * (($spd / 10) + 1) * (($spd / 10) + 1);
+    */
   }
 
-  $consumption = round($consumption) + 1;
+  $consumption = round($MissionDistance * $consumption  / 35000) + 1;
 
   return $consumption;
+
+/*
+  var consumption = 0;
+  var spd = speed_percent() * Math.sqrt(fleet_speed());
+
+  for (var i in ships) {
+    shipcount = ships[i][0];
+    shipspeed = ships[i][1];
+    shipconsumption = ships[i][2];
+
+    consumption += shipconsumption * shipcount  * (spd / Math.sqrt(shipspeed) / 10 + 1 ) * (spd / Math.sqrt(shipspeed) / 10 + 1 );
+  }
+
+  consumption = Math.round(distance() * consumption / 35000) + 1;
+  // document.getElementById("debug").innerHTML = consumption;
+
+  return(consumption);
+*/
+
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -338,30 +355,40 @@ function CreateFleetPopupedMissionLink ( $FleetRow, $Texte, $FleetType ) {
 // ----------------------------------------------------------------------------------------------------------------
 //
 //
-function SYS_mysqlSmartEscape($string) {
-  if(!isset($string)) return NULL;
+function SYS_mysqlSmartEscape($string)
+{
+  if(!isset($string))
+  {
+    return NULL;
+  }
 
   if(get_magic_quotes_gpc())
+  {
     $string = stripslashes($string);
+  }
   return mysql_real_escape_string($string);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 //
 //
-function INT_makeCoordinates ($from, $prefix = ''){
+function INT_makeCoordinates ($from, $prefix = '')
+{
   return '[' . $from[$prefix.'galaxy'] . ':' . $from[$prefix.'system'] . ':' . $from[$prefix.'planet'] . ']';
 }
 
-function int_makeCoordinatesURL ($from, $prefix = '', $mode = 0){
+function int_makeCoordinatesURL ($from, $prefix = '', $mode = 0)
+{
   return "galaxy.php?mode={$mode}&galaxy={$from[$prefix.'galaxy']}&system={$from[$prefix.'system']}&planet={$from[$prefix.'planet']}";
 }
 
-function int_makeCoordinatesLink ($from, $prefix = '', $mode = 0){
+function int_makeCoordinatesLink ($from, $prefix = '', $mode = 0)
+{
   return '<a href="' . int_makeCoordinatesURL($from, $prefix, $mode) . '">' . INT_makeCoordinates ($from, $prefix) . '</a>';
 }
 
-function int_renderLastActiveHTML($last_active = 0, $isAllowed = true, $isAdmin = false){
+function int_renderLastActiveHTML($last_active = 0, $isAllowed = true, $isAdmin = false)
+{
   global $lang;
 
   if($isAdmin){

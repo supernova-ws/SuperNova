@@ -33,9 +33,12 @@ $lang['fl_fleetspeed'] 			= "Скорость: ";
 $lang['fl_selmax'] 				= "макс.";
 $lang['fl_sur'] 					= "из";
 $lang['fl_continue'] 			= "Далее";
-$lang['fl_noships'] 				= "Нет кораблей!";
+$lang['fl_noships'] 				= "На орбите планеты нет кораблей";
 $lang['fl_unselectall'] 		= "Обнулить";
 $lang['fl_selectall'] 			= "Все корабли";
+$lang['fl_orbiting'] 			= "На орбите";
+$lang['fl_to_fly']	 			= "Отправить";
+$lang['fl_no_flying_fleets']	= "Нет флотов в полете";
 
 //	
 $lang['fl_floten1_ttl'] 		= "Отправление флота";
@@ -51,8 +54,8 @@ $lang['fl_time_back'] 			= "Вернётся (время)";
 $lang['fl_deute_need'] 			= "Потребление топлива";
 $lang['fl_speed_max'] 			= "Максимальная скорость";
 $lang['fl_max_load'] 			= "Грузоподъёмность";
-$lang['fl_shortcut'] 			= "Ссылки";
-$lang['fl_shortlnk'] 			= "(Просмотр / Редактирование)";
+$lang['fl_shortcut'] 			= "Закладки";
+$lang['fl_shortlnk'] 			= "Редактирование закладок";
 $lang['fl_shrtcup1'] 			= "(П)";
 $lang['fl_shrtcup2'] 			= "(О)";
 $lang['fl_shrtcup3'] 			= "(Л)";
@@ -67,7 +70,7 @@ $lang['fl_grattack'] 			= "Боевые союзы";
 // floten2.php
 $lang['fl_ressources'] 			= "Сырьё";
 $lang['fl_allressources'] 		= "Всё сырьё";
-$lang['fl_space_left'] 			= "Остаток";
+$lang['fl_space_left'] 			= "Место в трюме";
 
 // floten3.php
 $lang['fl_fleet_err']			= "Ошибка!";
@@ -109,6 +112,8 @@ $lang['fl_adm_attak'] 			= "Вы не можете атаковать Администратора";
 $lang['fl_warning'] 				= "Предупреждение";
 $lang['fl_AKS_hint']				= "Продолжительность полета включает время на взлет/посадку флота - обязательную компоненту любого рейса, как далеко или близко он бы не совершался<br>Что бы присоединится к боевому союзу кликните на названии любого доступного вам союза";
 
+$lang['fl_err_no_ships'] 		= "Во флоте нет ни одного корабля. Вернитесь на предыдущую страницу и выберите корабля для отправки флота";
+
 $lang['res']['fleet'] = array(
   202 => $lang['tech'][202],
   203 => $lang['tech'][203],
@@ -127,13 +132,13 @@ $lang['res']['fleet'] = array(
   216 => $lang['tech'][216],
 );
 
-$lang['fl_shrtcup']	= array(
+$lang['fl_shrtcup'] = array(
   1 => $lang['fl_shrtcup1'], 
   2 => $lang['fl_shrtcup2'], 
   3 => $lang['fl_shrtcup3']
 );
 
-$lang['fl_planettype']	= array(
+$lang['fl_planettype'] = array(
   1 => $lang['fl_planettype1'], 
   2 => $lang['fl_planettype2'], 
   3 => $lang['fl_planettype3']
@@ -151,4 +156,9 @@ $lang['fl_aks_too_slow']					= "Флот слишком медленный и не может присоединиться
 
 $lang['fl_fleet_not_exists'] 				= "Тот флот не существует (больше)!";
 $lang['fl_multi_ip_protection']			= "ЗАЩИТА ОТ МУЛЬИАККАУНТОВ!<br>Невозможно отправить ресурсы игроку с таким же IP!";
+
+$lang['fl_on_stores']						= "На складе";
+$lang['fl_load_cargo']						= "В трюме";
+$lang['fl_rest_on_planet']					= "Остаток";
+$lang['fl_none_resources']					= "Сбросить";
 ?>
