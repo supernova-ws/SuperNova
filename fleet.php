@@ -66,6 +66,8 @@ if($MaxExpeditions){
   $FlyingExpeditions = 0;
 };
 
+$SpeedFactor = GetGameSpeedFactor();
+
 switch ($fleet_page)
 {
   case 3:
@@ -154,8 +156,6 @@ switch ($fleet_page)
   // No Break
 
   case 1:
-    $SpeedFactor = GetGameSpeedFactor();
-
     $parse['thisgalaxy']      = $planetrow['galaxy'];
     $parse['thissystem']      = $planetrow['system'];
     $parse['thisplanet']      = $planetrow['planet'];
