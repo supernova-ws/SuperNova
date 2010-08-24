@@ -174,7 +174,7 @@ $parse['planet'] = $planet;
 $parse['planet_type'] = $planet_type;
 
 $time_now = time();
-pdump($_POST);
+
 if (!$fleet_page) {
   include('includes/fleet/flt_page0.inc');
 }elseif ($fleet_page==1){
