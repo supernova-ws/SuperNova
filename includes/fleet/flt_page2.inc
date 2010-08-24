@@ -45,8 +45,6 @@
   $parse['fleet_group'] = intval($_POST['fleet_group']) ;
   $parse['acs_target_mr'] = ($_POST['acs_target_mr']) ;
 
-  pdump($consumption);
-
   for($i = 0; $i<3; $i++){
     $template->assign_block_vars('resources', array(
       'ID' => $i,
