@@ -7,7 +7,7 @@
     $errorlist .= $lang['fl_no_fleetarray'];
 
   // Test de coherance de la destination (voir si elle se trouve dans les limites de l'univers connu
-  $errorlist = "";
+  $errorlist = '';
   if (!$galaxy || $galaxy > $config->game_maxGalaxy || $galaxy < 1)
     $errorlist .= $lang['fl_limit_galaxy'];
   if (!$system || $system > $config->game_maxSystem || $system < 1)
@@ -44,7 +44,7 @@
       if ($target_mission == MT_COLONIZE)
         $errorlist .= $lang['fl_colonized'];
 
-      if ($TargetPlanet["id_owner"] == $planetrow["id_owner"]){
+      if ($TargetPlanet['id_owner'] == $planetrow['id_owner']){
         if ($target_mission == MT_ATTACK)
           $errorlist .= $lang['fl_no_self_attack'];
 
@@ -71,7 +71,7 @@
 
 
   if ($errorlist)
-    message ("<font color=\"red\"><ul>" . $errorlist . "</ul></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
+    message ("<font color=\"red\"><ul>{$errorlist}</ul></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
 
 //  if (!isset($fleetarray)) {
 //    message ("<font color=\"red\"><b>". $lang['fl_no_fleetarray'] ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
@@ -79,7 +79,7 @@
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach ($fleetarray as $Ship => $Count) {
     if ($Count > $planetrow[$resource[$Ship]]) {
-      message ("<font color=\"red\"><b>". $lang['fl_fleet_err'] ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
+      message ("<font color=\"red\"><b>{$lang['fl_fleet_err']}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
     }
   }
 
@@ -92,10 +92,10 @@
     //Also it must be mission type 2
     if($target_mission == MT_AKS){
       //The co-ords must be the same as where the acs fleet is going.
-      $target = "g".$galaxy."s".$system."p".$planet."t".$planet_type;
+      $target = "g{$galaxy}s{$system}p{$planet}t{$planet_type}";
       if($_POST['acs_target_mr'] == $target){
         //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
-        $aks = doquery("SELECT * FROM {{table}} WHERE id = {$fleet_group}",'aks', true);
+        $aks = doquery("SELECT * FROM {{aks}} WHERE id = {$fleet_group}",'', true);
         if (!$aks){
           $fleet_group = 0;
         }else{
@@ -121,21 +121,21 @@
     $protectiontime = 9999999999999999;
   }
 
-  $MyDBRec = doquery("SELECT * FROM {{table}} WHERE `id` = {$user['id']};", 'users', true);
+  $MyDBRec = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']};", '', true);
   if ($TargetPlanet['id_owner'] == '') {
     $HeDBRec = $MyDBRec;
   } elseif ($TargetPlanet['id_owner'] != '') {
-    $HeDBRec = doquery("SELECT * FROM {{table}} WHERE `id` = '". $TargetPlanet['id_owner'] ."';", 'users', true);
+    $HeDBRec = doquery("SELECT * FROM {{users}} WHERE `id` = '{$TargetPlanet['id_owner']}';", '', true);
   }
   if ($HeDBRec['onlinetime'] < ($time_now - 60*60*24*7)) {
     $protectiontime = 0;
   }
   if ($MyDBRec['user_lastip'] == $HeDBRec['user_lastip'] AND $MyDBRec['user_lastip'] > 0 AND $HeDBRec['id'] != $MyDBRec['id']) {
-    message ("<font color=\"red\"><b>". $lang['fl_multi_ip_protection'] ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
+    message ("<font color=\"red\"><b>{$lang['fl_multi_ip_protection']}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
   }
 
-  $MyGameLevel = doquery("SELECT total_points FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $MyDBRec['id'] ."';", 'statpoints', true);
-  $HeGameLevel = doquery("SELECT total_points FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $HeDBRec['id'] ."';", 'statpoints', true);
+  $MyGameLevel = doquery("SELECT total_points FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '{$MyDBRec['id']}';", '', true);
+  $HeGameLevel = doquery("SELECT total_points FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '{$HeDBRec['id']}';", '', true);
   $MyGameLevel = $MyGameLevel['total_points'];
   $HeGameLevel = $HeGameLevel['total_points'];
 
@@ -146,13 +146,13 @@
     case MT_SPY:
     case MT_DESTROY:
       if ($TargetPlanet['id_level'] > $user['authlevel'])
-        message ("<font color=\"red\"><b>". $lang['fl_adm_attak'] ."</b></font>", $lang['fl_warning'], "fleet." . $phpEx, 2);
+        message ("<font color=\"red\"><b>{$lang['fl_adm_attak']}</b></font>", $lang['fl_warning'], "fleet.{$phpEx}", 2);
 
       if( ($TargetPlanet['id_owner'] AND $protection) AND (
         (($HeGameLevel * $protectionmulti) < $MyGameLevel AND $HeGameLevel < ($protectiontime * 1000))
         OR
         (($MyGameLevel * $protectionmulti) < $HeGameLevel AND $MyGameLevel < ($protectiontime * 1000))
-      ) ) message("<font color=\"lime\"><b>".$lang['fl_noob_mess_n']."</b></font>", $lang['fl_noob_title'], "fleet." . $phpEx, 2);
+      ) ) message("<font color=\"lime\"><b>".$lang['fl_noob_mess_n']."</b></font>", $lang['fl_noob_title'], "fleet.{$phpEx}", 2);
     case MT_RECYCLE:
     case MT_EXPLORE:
       $TransMetal     = 0;
@@ -162,21 +162,21 @@
   }
 
   if ($HeDBRec['urlaubs_modus'] AND $target_mission != MT_RECYCLE) {
-    message("<font color=\"lime\"><b>".$lang['fl_vacation_pla']."</b></font>", $lang['fl_vacation_ttl'], "fleet." . $phpEx, 2);
+    message("<font color=\"lime\"><b>".$lang['fl_vacation_pla']."</b></font>", $lang['fl_vacation_ttl'], "fleet.{$phpEx}", 2);
   }
 
   if ($target_mission != MT_EXPLORE) {
     if ($HeDBRec['ally_id'] != $MyDBRec['ally_id'] AND $target_mission == MT_RELOCATE) {
-      message ("<font color=\"red\"><b>". $lang['fl_only_stay_at_home'] ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
+      message ("<font color=\"red\"><b>". $lang['fl_only_stay_at_home'] ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
     }
     if ($TargetPlanet['ally_deposit'] < 1 AND $HeDBRec != $MyDBRec AND $target_mission == MT_HOLD) {
-      message ("<font color=\"red\"><b>". $lang['fl_no_allydeposit'] ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
+      message ("<font color=\"red\"><b>". $lang['fl_no_allydeposit'] ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
     }
   }
 
   $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
   if (!in_array($speed_percent, $speed_possible)) {
-    message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
+    message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
   }
 
   $fleet['start_time'] = $duration + $time_now;
@@ -209,13 +209,13 @@
   $FleetStorage        -= $consumption;
 
   if ( $StorageNeeded > $FleetStorage) {
-    message ("<font color=\"red\"><b>". $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
+    message ("<font color=\"red\"><b>". $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
   }
   if ($planetrow['deuterium'] < $TransDeuterium + $consumption) {
-    message ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
+    message ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
   }
   if (($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal)) {
-    message ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
+    message ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
   }
 
   // ecriture de l'enregistrement de flotte (a partir de lôå_, y a quelque chose qui vole et c'est toujours sur la planete d'origine)
@@ -250,9 +250,6 @@
 
   $QryUpdatePlanet  = "UPDATE {{table}} SET ";
   $QryUpdatePlanet .= $FleetSubQRY;
-  // $QryUpdatePlanet .= "`metal` = '". $planetrow["metal"] ."', ";
-  // $QryUpdatePlanet .= "`crystal` = '". $planetrow["crystal"] ."', ";
-  // $QryUpdatePlanet .= "`deuterium` = '". $planetrow["deuterium"] ."' ";
   $QryUpdatePlanet .= "`metal` = `metal` - {$TransMetal}, ";
   $QryUpdatePlanet .= "`crystal` = `crystal` - {$TransCrystal}, ";
   $QryUpdatePlanet .= "`deuterium` = `deuterium` - {$TransDeuterium} - {$consumption} ";

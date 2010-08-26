@@ -77,59 +77,32 @@ switch ($fleet_page)
     $fleet_group_mr = intval($_POST['fleet_group']);
     $fleetarray     = unserialize(base64_decode(str_rot13($_POST["usedfleet"])));
 
+    $UsedPlanet = false;
+    $YourPlanet = false;
+
     $missiontype = array();
     if ($planet > $config->game_maxPlanet)
     {
       $target_mission = MT_EXPLORE;
       $missiontype[MT_EXPLORE] = $lang['type_mission'][MT_EXPLORE];
     }
-    elseif ($fleetarray[209] && $planet_type == PT_DEBRIS)
+    elseif ($galaxy && $system && $planet)
     {
-      $missiontype[MT_RECYCLE] = $lang['type_mission'][MT_RECYCLE];
-    }
-    elseif ($galaxy && $system && $planet && ($planet_type == PT_PLANET || $planet_type == PT_MOON))
-    {
-      $TargetPlanet = doquery("SELECT * FROM {{planets}} WHERE galaxy = {$galaxy} AND system = {$system} AND planet = {$planet} AND planet_type = 1", '', true);
+      $check_type = $planet_type == PT_MOON ? PT_MOON : PT_PLANET;
+
+      $TargetPlanet = doquery("SELECT * FROM {{planets}} WHERE galaxy = {$galaxy} AND system = {$system} AND planet = {$planet} AND planet_type = {$check_type};", '', true);
 
       if ($TargetPlanet['id_owner'])
       {
         $UsedPlanet = true;
-        $missiontype[MT_TRANSPORT] = $lang['type_mission'][MT_TRANSPORT];
-
         if ($TargetPlanet['id_owner'] == $user['id'])
         {
           $YourPlanet = true;
-
-          $missiontype[MT_RELOCATE] = $lang['type_mission'][MT_RELOCATE];
         }
-        else
-        {
-          $YourPlanet = false;
-
-          $missiontype[MT_ATTACK] = $lang['type_mission'][MT_ATTACK];
-          $missiontype[MT_HOLD] = $lang['type_mission'][MT_HOLD];
-
-          if ($fleetarray[210])
-          {
-            $missiontype[MT_SPY] = $lang['type_mission'][MT_SPY];
-          };
-          if ($planet_type == PT_MOON && $fleetarray[214])
-          {
-            $missiontype[MT_DESTROY] = $lang['type_mission'][MT_DESTROY];
-          }
-
-          if ($fleet_group_mr > 0)
-          {
-            $missiontype[MT_AKS] = $lang['type_mission'][MT_AKS];
-          }
-
-        };
       }
-      else
-      {
-        $YourPlanet = false;
-        $UsedPlanet = false;
 
+      if (!$UsedPlanet)
+      {
         if ($fleetarray[208])
         {
           $missiontype[MT_COLONIZE] = $lang['type_mission'][MT_COLONIZE];
@@ -139,12 +112,53 @@ switch ($fleet_page)
         {
           message ("<font color=\"red\"><b>". $lang['fl_no_planettype'] ."</b></font>", $lang['fl_error']);
         }
-        ;
-      };
+      }
+      else
+      {
+        if ($fleetarray[209] && $planet_type == PT_DEBRIS)
+        {
+          $target_mission = MT_RECYCLE;
+          $missiontype[MT_RECYCLE] = $lang['type_mission'][MT_RECYCLE];
+        }
+        elseif ($planet_type == PT_PLANET || $planet_type == PT_MOON)
+        {
+          if ($YourPlanet)
+          {
+            $missiontype[MT_RELOCATE] = $lang['type_mission'][MT_RELOCATE];
+            $missiontype[MT_TRANSPORT] = $lang['type_mission'][MT_TRANSPORT];
+          }
+          else // Not Your Planet
+          {
+            if ($fleetarray[210]) // Only spy missions if any spy
+            {
+              $missiontype[MT_SPY] = $lang['type_mission'][MT_SPY];
+            }
+            else // If no spies...
+            {
+              $missiontype[MT_TRANSPORT] = $lang['type_mission'][MT_TRANSPORT];
 
-    };
-    if (!$target_mission)
+              $missiontype[MT_ATTACK] = $lang['type_mission'][MT_ATTACK];
+              $missiontype[MT_HOLD] = $lang['type_mission'][MT_HOLD];
+
+              if ($planet_type == PT_MOON && $fleetarray[214])
+              {
+                $missiontype[MT_DESTROY] = $lang['type_mission'][MT_DESTROY];
+              }
+
+              if ($fleet_group_mr > 0)
+              {
+                $missiontype[MT_AKS] = $lang['type_mission'][MT_AKS];
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (!$target_mission && is_array($missiontype))
+    {
       $target_mission = MT_ATTACK;
+    }
 
     ksort($missiontype);
 

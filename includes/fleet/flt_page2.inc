@@ -29,7 +29,12 @@
     case MT_COLONIZE:
     case MT_EXPLORE:
       $TableTitle .= $lang['type_mission'][$target_mission];
-      break;
+    break;
+
+    case MT_RECYCLE:
+      $TableTitle .= $lang['fl_planettype2'];
+    break;
+
     default:
       $TableTitle .= $lang['fl_planettype' . $TargetPlanet['planet_type']]  . ' ' . $TargetPlanet['name'];
   }
