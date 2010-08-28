@@ -14,4 +14,5 @@
 {-body-}
 <script type="text/javascript" src="{-path_prefix-}js/wz_tooltip.js"></script>
 <script type="text/javascript" src="{-path_prefix-}js/lib/jquery.js"></script>
+<script type="text/javascript" src="{-path_prefix-}js/lib/jquery-ui.js"></script>
 <script type="text/javascript" src="{-path_prefix-}js/sn_timer.js"></script>

@@ -77,10 +77,11 @@ body form table th table input
   width: 60px;
 }
 
-th, td.a, td.b, td.c, td.f, input, select,
-td.g, td.h, td.i, td.j, td.k, td.l, td.m,
-td.n, td.o, td.q, td.r, td.v, .style td,
-textarea, p td, table.s th img
+td.a, td.b, td.c, td.f, td.g, td.h,
+td.i, td.j, td.k, td.l, td.m, td.n,
+td.o, td.q, td.r, td.v, th, th img,
+input, select, textarea,
+.style td, p td, table.s
 {
   border               : 1px #415680 solid;
   font-size            : 11px;
@@ -367,3 +368,6 @@ h1
 .hint {
   text-align: justify;
 }
+
+.ui-dialog { position: absolute; padding: .2em; width: 200px; overflow: hidden; background: #344055; }
+.ui-dialog .ui-dialog-titlebar { display: none; }

@@ -6,6 +6,43 @@
 
 <script language="JavaScript" src="scripts/flotten.js"></script>
 <script language="JavaScript" src="scripts/ocnt.js"></script>
+
+<script type="text/javascript"><!--
+var ships = Array();
+<!-- BEGIN ships -->
+  <!-- IF (ships.ID != 212) -->
+  ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION});
+  <!-- ENDIF -->
+<!-- END ships -->
+
+var fleets = Array();
+<!-- BEGIN fleets -->
+  fleets[{fleets.NUMBER}] = 
+    [
+      [
+        <!-- BEGIN ships -->
+        ['{ships.NAME}', '{ships.AMOUNT}'],
+        <!-- END ships -->
+      ],
+      ['{fleets.METAL}', '{fleets.CRYSTAL}', '{fleets.DEUTERIUM}'],
+    ];
+<!-- END fleets -->
+--></script>
+
+<script type="text/javascript"><!--
+var mouseX, mouseY;
+jQuery(document).mousemove(function(e){
+   mouseX = e.pageX;
+   mouseY = e.pageY;
+});
+
+var fleet_dialog = jQuery(document.createElement("span"));
+fleet_dialog.dialog({ autoOpen: false, width: 200 });
+
+var res_names = ['{L_sys_metal}', '{L_sys_crystal}', '{L_sys_deuterium}'];
+var language = ['{L_sys_ships}', '{L_sys_resources}'];
+--></script>
+
 <br>
 {vacation}
 <table border='0' cellpadding='0' cellspacing='1'>
@@ -24,14 +61,13 @@
     <th>{L_fl_order}</th>
   </tr>
 
-  
   <!-- BEGIN fleets -->
     <tr height=20>
       <th>{fleets.NUMBER}</th>
       <th><a>{fleets.MISSION_NAME}</a><br>
         <span title="<!-- IF fleets.MESSAGE -->{L_fl_back_to_ttl}">{L_fl_back_to}<!-- ELSE -->{L_fl_get_to_ttl}">{L_fl_get_to}<!-- ENDIF --></span>
       </th>
-      <th><a href=# style="cursor: pointer;" onmouseout='return nd();' onmouseover="return overlib('<table><tr><td class=c colspan=2>{L_sys_ships}</td></tr><!-- BEGIN ships --><tr><th>{ships.NAME}</th><th>{ships.AMOUNT}</th></tr><!-- END ships --><!-- IF fleets.METAL + fleets.CRYSTAL + fleets.DEUTERIUM > 0 --><tr><td class=c colspan=2>{L_sys_resources}</td></tr><!-- IF fleets.METAL > 0 --><tr><th>{L_sys_metal}</th><th>{fleets.METAL}</th></tr><!-- ENDIF --><!-- IF fleets.CRYSTAL > 0 --><tr><th>{L_sys_crystal}</th><th>{fleets.CRYSTAL}</th></tr><!-- ENDIF --><!-- IF fleets.DEUTERIUM > 0 --><tr><th>{L_sys_deuterium}</th><th>{fleets.DEUTERIUM}</th></tr><!-- ENDIF --><!-- ENDIF --></table>', STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, 0, OFFSETY, 0);"> {fleets.AMOUNT}</a></th>
+      <th onmouseover='fleet_dialog_show({fleets.NUMBER})' onmouseout='fleet_dialog_hide()'>{fleets.AMOUNT}</th>
       <th>{fleets.END_PLANET} {fleets.END_TYPE}</th>
       <th><!-- IF fleets.MESSAGE == 0 --><font color=lime><span id="fleet_timer_end{fleets.ID}"></span></font><br>{fleets.END_TIME}<!-- ELSE -->-<!-- ENDIF --></th>
       <th>{fleets.START_PLANET} {fleets.START_TYPE}</th>
@@ -134,12 +170,3 @@
     <!-- ENDIF -->
   </table>
 </form>
-
-<script type="text/javascript"><!--
-var ships = Array();
-<!-- BEGIN ships -->
-  <!-- IF (ships.ID != 212) -->
-  ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION});
-  <!-- ENDIF -->
-<!-- END ships -->
---></script>

@@ -831,3 +831,52 @@ function max_resources()
   }
   calculateTransportCapacity();
 }
+
+function fleet_dialog_show(fleet_id)
+{
+  var fleet_html = '<table width=100%><tr><td class=c colspan=2>' + language[0] + '</td></tr>';
+  var fleet = fleets[fleet_id][0];
+  var resources = fleets[fleet_id][1];
+
+  var ship_id;
+
+  for(ship_id in fleet)
+  {
+    if(fleet[ship_id][1] != 0)
+    {
+      fleet_html += '<tr><th>';
+      switch(fleet[ship_id][0])
+      {
+        default:
+          fleet_html += fleet[ship_id][0];
+        break;
+      }
+      fleet_html += '</th><th>' + fleet[ship_id][1] + '</th></tr>';
+    }
+  };
+
+  if(parseInt(resources[0]) + parseInt(resources[1]) + parseInt(resources[2]) > 0)
+  {
+    fleet_html += '<tr><td class=c colspan=2>' + language [1] + '</td></tr>';
+
+    for(res_id in resources)
+    {
+      if(parseInt(resources[res_id]))
+      {
+        fleet_html += '<tr><th>' + res_names[res_id] + '</th><th>' + parseInt(resources[res_id]) + '</th></tr>';
+      }
+    }
+  }
+
+  fleet_html += '</table>';
+
+  fleet_dialog.dialog( "option", "position", [mouseX, mouseY + 20]);
+  fleet_dialog.dialog("close");
+  fleet_dialog.html(fleet_html);
+  fleet_dialog.dialog("open");
+}
+
+function fleet_dialog_hide()
+{
+  fleet_dialog.dialog("close");
+}

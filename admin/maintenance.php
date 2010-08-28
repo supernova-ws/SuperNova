@@ -1,6 +1,6 @@
 <?php
 /**
- * erreurs.php
+ * maintenance.php
  *
  * @version 1.0
  * @copyright 2009 by Gorlum for http://oGame.Triolan.COM.UA
