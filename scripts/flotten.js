@@ -832,7 +832,7 @@ function max_resources()
   calculateTransportCapacity();
 }
 
-function fleet_dialog_show(fleet_id)
+function fleet_dialog_show(caller, fleet_id)
 {
   var fleet_html = '<table width=100%><tr><td class=c colspan=2>' + language[0] + '</td></tr>';
   var fleet = fleets[fleet_id][0];
@@ -870,7 +870,7 @@ function fleet_dialog_show(fleet_id)
 
   fleet_html += '</table>';
 
-  fleet_dialog.dialog( "option", "position", [mouseX, mouseY + 20]);
+  fleet_dialog.dialog( "option", "position", [clientX, clientY + 20]);
   fleet_dialog.dialog("close");
   fleet_dialog.html(fleet_html);
   fleet_dialog.dialog("open");

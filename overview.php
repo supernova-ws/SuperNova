@@ -84,7 +84,7 @@ check_urlaubmodus ($user);
 includeLang('resources');
 includeLang('overview');
 
-$template = gettemplate('overview_body', true);
+$template = gettemplate('overview', true);
 
 switch ($mode) {
   case 'renameplanet':
@@ -209,8 +209,84 @@ switch ($mode) {
     $raid_lvl_up = intval($raid_lvl_up);
     $miner_lvl_up = intval($miner_lvl_up);
 
+    $fleets = array();
     // -----------------------------------------------------------------------------------------------
+    // Compare function to sort fleet in time order
+    function int_fleet_compare($a, $b)
+    {
+      if($a['fleet']['OV_LEFT'] == $b['fleet']['OV_LEFT'])
+      {
+        return 0;
+      }
+      return ($a['fleet']['OV_LEFT'] < $b['fleet']['OV_LEFT']) ? -1 : 1;
+    }
 
+    // Filling table with fleet events regarding to current users
+    $fleet_number = 0;
+    $flying_fleets_mysql = doquery("SELECT DISTINCT * FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}' OR `fleet_target_owner` = '{$user['id']}';");
+    while ($fleet = mysql_fetch_array($flying_fleets_mysql))
+    {
+      $planet_start_type = $fleet['fleet_start_type'] == 3 ? 3 : 1;
+      $planet_start = doquery(
+        "SELECT `name` FROM {{planets}}
+          WHERE
+            galaxy = {$fleet['fleet_start_galaxy']} AND
+            system = {$fleet['fleet_start_system']} AND
+            planet = {$fleet['fleet_start_planet']} AND
+            planet_type = {$planet_start_type}
+        ", '', true);
+      $fleet['fleet_start_name'] = $planet_start['name'];
+
+      if($fleet['fleet_end_planet'] == 16)
+      {
+        $fleet['fleet_end_name'] = $lang['ov_fleet_exploration'];
+      }
+      else
+      {
+        $planet_end_type = $fleet['fleet_end_type'] == 3 ? 3 : 1;
+        $planet_end = doquery(
+          "SELECT `name` FROM {{planets}}
+            WHERE
+              galaxy = {$fleet['fleet_end_galaxy']} AND
+              system = {$fleet['fleet_end_system']} AND
+              planet = {$fleet['fleet_end_planet']} AND
+              planet_type = {$planet_end_type}
+          ", '', true);
+        $fleet['fleet_end_name'] = $planet_end['name'];
+      }
+
+      if($fleet['fleet_start_time'] > $time_now)
+      {
+        $fleet['ov_time'] = $fleet['fleet_start_time'];
+        $fleet['ov_label'] = 0;
+        $fleets[] = flt_parse_for_template($fleet, ++$fleet_number);
+      }
+      if($fleet['fleet_end_stay'] > $time_now)
+      {
+        $fleet['ov_time'] = $fleet['fleet_end_stay'];
+        $fleet['ov_label'] = 1;
+        $fleets[] = flt_parse_for_template($fleet, ++$fleet_number);
+      }
+      if($fleet['fleet_end_time'] > $time_now && $fleet['fleet_owner'] == $user['id'])
+      {
+        $fleet['ov_time'] = $fleet['fleet_end_time'];
+        $fleet['ov_label'] = 2;
+        $fleets[] = flt_parse_for_template($fleet, ++$fleet_number);
+      }
+    }
+    usort($fleets, 'int_fleet_compare');
+
+    foreach($fleets as $fleet_data)
+    {
+      $template->assign_block_vars('fleets', $fleet_data['fleet']);
+
+      foreach($fleet_data['ships'] as $ship_data)
+      {
+        $template->assign_block_vars('fleets.ships', $ship_data);
+      }
+    }
+
+/*
     // --- Gestion des flottes personnelles ---------------------------------------------------------
     // Toutes de vert vetues
     $OwnFleets       = doquery("SELECT * FROM {{table}} WHERE `fleet_owner` = '". $user['id'] ."';", 'fleets');
@@ -271,7 +347,7 @@ switch ($mode) {
         }
       }
     }
-
+*/
     // -----------------------------------------------------------------------------------------------
 
     // --- Gestion de la liste des planetes ----------------------------------------------------------
@@ -542,13 +618,18 @@ switch ($mode) {
 */
     $template->assign_vars(array(
       'dpath'           => $dpath,
+      'TIME_NOW'        => $time_now,
+
+      'USER_ID'         => $user['id'],
+
       'PLANET_ID'       => $planetrow['id'],
       'PLANET_NAME'     => $planetrow['name'],
       'PLANET_TYPE'     => $planetrow['planet_type'],
-//      'LastChat'        => CHT_messageParse($msg),
+      //'LastChat'        => CHT_messageParse($msg),
       'admin_email'     => $config->game_adminEmail,
       'NEW_LEVEL_MINER' => $isNewLevelMiner,
       'NEW_LEVEL_RAID'  => $isNewLevelRaid,
+
     ));
     display(parsetemplate($template, $parse), $lang['Overview']);
     break;

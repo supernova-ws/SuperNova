@@ -22,13 +22,19 @@
   while ($f = mysql_fetch_array($fq))
   {
     $i++;
-    $fleet = explode(';', $f['fleet_array']);
+    $fleet_data = flt_parse_for_template($f, $i);
+    $template->assign_block_vars('fleets', $fleet_data['fleet']);
 
+    foreach($fleet_data['ships'] as $ship_data)
+    {
+      $template->assign_block_vars('fleets.ships', $ship_data);
+    }
+
+/*
     if ($f['fleet_mess'] == 0 && $f['fleet_mission'] == 2)
     {
       $aks = doquery("SELECT * FROM {{aks}} WHERE id={$f['fleet_group']}", '', true);
     };
-
     $template->assign_block_vars('fleets', array(
       'NUMBER'       => $i,
       'ID'           => $f['fleet_id'],
@@ -38,21 +44,25 @@
       'ACS'          => $aks['name'],
       'AMOUNT'       => pretty_number($f['fleet_amount']),
 
-      'METAL'     => $f['fleet_resource_metal'],
-      'CRYSTAL'   => $f['fleet_resource_crystal'],
-      'DEUTERIUM' => $f['fleet_resource_deuterium'],
+      'METAL'        => $f['fleet_resource_metal'],
+      'CRYSTAL'      => $f['fleet_resource_crystal'],
+      'DEUTERIUM'    => $f['fleet_resource_deuterium'],
 
       'START_TYPE'   => $lang['fl_shrtcup'][$f['fleet_start_type']],
       'START_PLANET' => "[{$f['fleet_start_galaxy']}:{$f['fleet_start_system']}:{$f['fleet_start_planet']}]",
       'START_TIME'   => date('d.m.Y H:i:s', $f['fleet_end_time']),
       'START_LEFT'   => floor($f['fleet_end_time'] + 1 - $time_now),
 
-      'END_TYPE'   => $lang['fl_shrtcup'][$f['fleet_end_type']],
-      'END_PLANET' => "[{$f['fleet_end_galaxy']}:{$f['fleet_end_system']}:{$f['fleet_end_planet']}]",
-      'END_TIME'   => date('d.m.Y H:i:s', $f['fleet_start_time']),
-      'END_LEFT'   => floor($f['fleet_start_time'] + 1 - $time_now),
+      'END_TYPE'     => $lang['fl_shrtcup'][$f['fleet_end_type']],
+      'END_PLANET'   => "[{$f['fleet_end_galaxy']}:{$f['fleet_end_system']}:{$f['fleet_end_planet']}]",
+      'END_TIME'     => date('d.m.Y H:i:s', $f['fleet_start_time']),
+      'END_LEFT'     => floor($f['fleet_start_time'] + 1 - $time_now),
+
+      'STAY_TIME'    => date('d.m.Y H:i:s', $f['fleet_end_stay']),
+      'STAY_LEFT'    => floor($f['fleet_end_stay'] + 1 - $time_now),
     ));
 
+    $fleet = explode(';', $f['fleet_array']);
     foreach ($fleet as $a => $b)
     {
       if ($b)
@@ -64,6 +74,7 @@
         ));
       }
     }
+*/
   }
 
   foreach ($reslist['fleet'] as $n => $i)

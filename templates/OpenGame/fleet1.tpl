@@ -120,7 +120,21 @@ function getStorageFaktor() {
     </tr>
 
     <tr><td colspan=2 class=c>{fl_grattack}</td></tr>
-    {acss}
+    <tr>
+      <!-- BEGIN acss -->       
+        <th>
+          <input type="button" onClick="javascript: setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});shortInfo();setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');this.form.submit();" value="{acss.NAME} [{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT}">
+        </th>
+        <!-- IF acss.S_ROW_COUNT is odd -->
+          </tr><tr>
+        <!-- ELSEIF acss.S_LAST_ROW -->
+          <th>&nbsp;</th>
+        <!-- ENDIF -->
+      <!-- BEGINELSE acss -->
+        <th colspan="2">{fl_noacss}</th>
+      <!-- END acss -->
+     </tr>
+    {acss1}
     
   </table>
   <!-- INCLUDE page_hint.tpl -->

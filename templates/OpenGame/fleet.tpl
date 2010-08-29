@@ -1,10 +1,10 @@
 <!--
 @package fleet
+2.1 Overlib (wz_tooltip) replaced with jQuery
 2.0 Utilize PTE
     Comply with PCG
 -->
 
-<script language="JavaScript" src="scripts/flotten.js"></script>
 <script language="JavaScript" src="scripts/ocnt.js"></script>
 
 <script type="text/javascript"><!--
@@ -14,34 +14,9 @@ var ships = Array();
   ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION});
   <!-- ENDIF -->
 <!-- END ships -->
-
-var fleets = Array();
-<!-- BEGIN fleets -->
-  fleets[{fleets.NUMBER}] = 
-    [
-      [
-        <!-- BEGIN ships -->
-        ['{ships.NAME}', '{ships.AMOUNT}'],
-        <!-- END ships -->
-      ],
-      ['{fleets.METAL}', '{fleets.CRYSTAL}', '{fleets.DEUTERIUM}'],
-    ];
-<!-- END fleets -->
 --></script>
 
-<script type="text/javascript"><!--
-var mouseX, mouseY;
-jQuery(document).mousemove(function(e){
-   mouseX = e.pageX;
-   mouseY = e.pageY;
-});
-
-var fleet_dialog = jQuery(document.createElement("span"));
-fleet_dialog.dialog({ autoOpen: false, width: 200 });
-
-var res_names = ['{L_sys_metal}', '{L_sys_crystal}', '{L_sys_deuterium}'];
-var language = ['{L_sys_ships}', '{L_sys_resources}'];
---></script>
+<!-- INCLUDE fleet_javascript.tpl -->
 
 <br>
 {vacation}
@@ -67,13 +42,13 @@ var language = ['{L_sys_ships}', '{L_sys_resources}'];
       <th><a>{fleets.MISSION_NAME}</a><br>
         <span title="<!-- IF fleets.MESSAGE -->{L_fl_back_to_ttl}">{L_fl_back_to}<!-- ELSE -->{L_fl_get_to_ttl}">{L_fl_get_to}<!-- ENDIF --></span>
       </th>
-      <th onmouseover='fleet_dialog_show({fleets.NUMBER})' onmouseout='fleet_dialog_hide()'>{fleets.AMOUNT}</th>
-      <th>{fleets.END_PLANET} {fleets.END_TYPE}</th>
-      <th><!-- IF fleets.MESSAGE == 0 --><font color=lime><span id="fleet_timer_end{fleets.ID}"></span></font><br>{fleets.END_TIME}<!-- ELSE -->-<!-- ENDIF --></th>
-      <th>{fleets.START_PLANET} {fleets.START_TYPE}</th>
+      <th style="cursor: pointer;" onmouseover='fleet_dialog_show(this, {fleets.ID})' onmouseout='fleet_dialog_hide()'>{fleets.AMOUNT}</th>
+      <th>{fleets.END_COORDS} {fleets.END_TYPE_TEXT_SH}</th>
+      <th><!-- IF fleets.MESSAGE == 0 --><font color=lime><span id="fleet_timer_end{fleets.ID}"></span></font><br>{fleets.END_TIME_TEXT}<!-- ELSE -->-<!-- ENDIF --></th>
+      <th>{fleets.START_COORDS} {fleets.START_TYPE_TEXT_SH}</th>
       <th>
         <!-- IF ((fleets.MISSION == 7 || fleets.MISSION == 4) && fleets.MESSAGE == 1) || (fleets.MISSION != 7 && fleets.MISSION != 4) -->
-        <font color=lime><span id="fleet_timer_start{fleets.ID}"></span></font><br>{fleets.START_TIME}
+        <font color=lime><span id="fleet_timer_start{fleets.ID}"></span></font><br>{fleets.START_TIME_TEXT}
         <!-- ELSE -->-<!-- ENDIF -->
       </th>
       <th>

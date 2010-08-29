@@ -27,7 +27,7 @@ $lang['weekdays'] = array(
 
 // General
 $lang['cancel']				= 'Отменить';
-$lang['Planet_menu']			= 'Меню планеты';
+$lang['Planet_menu']			= 'Строительство на планете';
 $lang['Planet']				= 'Планета';
 $lang['Have_new_message']		= 'У вас одно новое сообщение';
 $lang['Have_new_messages']		= 'У вас %m новых сообщений';
@@ -74,41 +74,61 @@ $lang['confirmed_with_password']	= 'Подтвердите с паролем';
 
 
 // 	
-$lang['deletemessage_ok']		= "Колония успешно удалена";
-$lang['deletemessage_wrong']		= "Планета не может быть оставлена!";
-$lang['deletemessage_fail']		= "Неверный пароль!";
+$lang['deletemessage_ok']		= 'Колония успешно удалена';
+$lang['deletemessage_wrong']		= 'Планета не может быть оставлена!';
+$lang['deletemessage_fail']		= 'Неверный пароль!';
 
 // 	
-$lang['MembersOnline']			= "Игроки on-line";
-$lang['ov_news_title']			= "Новости";
+$lang['MembersOnline']			= 'Игроки on-line';
+$lang['ov_news_title']			= 'Новости';
 
 // 	
-$lang['ov_fleet']			= "флот";
-$lang['ov_une']				= "Ваш ";
-$lang['ov_vennant']			= " отправленный ";
-$lang['ov_planet_to']			= "с планеты ";
-$lang['ov_moon_to']			= "с луны ";
-$lang['ov_atteint']			= " отправлен на ";
-$lang['ov_planet_to_target']		= "планету ";
-$lang['ov_moon_to_target']		= "луну ";
-$lang['ov_debris_to_target']		= "поле обломков ";
-$lang['ov_explo_to_target']		= "позиции ";
-$lang['ov_mission']			= ". Задание : ";
+$lang['ov_fleet_list']				= 'График движения флотов';
 
-$lang['ov_explo_stay']			= " на исследование ";
-$lang['ov_explo_mission']		= ". Задание : ";
+$lang['ov_fleet_yours']				= 'Ваш ';
+$lang['ov_fleet_hostile']			= 'Чужой ';
+$lang['ov_fleet_friendly']			= 'Дружественный ';
+$lang['ov_fleet']                = 'флот';
 
-$lang['ov_rentrant']			= " возвращается ";
-$lang['ov_planet_from']			= "с планеты ";
-$lang['ov_moon_from']			= "с луны ";
-$lang['ov_debris_from']			= "с поля обломков ";
-$lang['ov_explo_from']			= "с позиции ";
-$lang['ov_back_planet']			= " на планету ";
-$lang['ov_back_moon']			= " на луну ";
+$lang['ov_fleet_arrive']         = 'достигнет точки назначения';
+$lang['ov_fleet_return']         = 'вернется';
+$lang['ov_fleet_hold']           = 'закончит задание';
+$lang['ov_fleet_sent']           = ' отправленный с ';
+$lang['ov_fleet_sent_to']        = ' на ';
 
-$lang['ov_une_hostile']			= "Чужой ";
-$lang['ov_hostile']			= " игрока ";
-$lang['ov_message']			= "Отправить сообщение";
+$lang['ov_fleet_mission']        = ' с заданием ';
+$lang['ov_fleet_exploration']    = 'исследование звездной системы';
+
+
+
+
+
+$lang['ov_une']				= 'Ваш ';
+$lang['ov_une_hostile']			= 'Чужой ';
+
+$lang['ov_vennant']			= ' отправленный ';
+$lang['ov_planet_to']			= 'с планеты ';
+$lang['ov_moon_to']			= 'с луны ';
+$lang['ov_atteint']			= ' отправлен на ';
+$lang['ov_planet_to_target']		= 'планету ';
+$lang['ov_moon_to_target']		= 'луну ';
+$lang['ov_debris_to_target']		= 'поле обломков ';
+$lang['ov_explo_to_target']		= 'позиции ';
+$lang['ov_mission']			= '. Задание : ';
+
+$lang['ov_explo_stay']			= ' на исследование ';
+$lang['ov_explo_mission']		= '. Задание : ';
+
+$lang['ov_rentrant']			= ' возвращается ';
+$lang['ov_planet_from']			= 'с планеты ';
+$lang['ov_moon_from']			= 'с луны ';
+$lang['ov_debris_from']			= 'с поля обломков ';
+$lang['ov_explo_from']			= 'с позиции ';
+$lang['ov_back_planet']			= ' на планету ';
+$lang['ov_back_moon']			= ' на луну ';
+
+$lang['ov_hostile']			= ' игрока ';
+$lang['ov_message']			= 'Отправить сообщение';
 
 $lang['user_points_1']			= 'За постройки';
 $lang['user_points_2']			= 'За исследования';

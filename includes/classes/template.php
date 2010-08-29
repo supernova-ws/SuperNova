@@ -651,6 +651,8 @@ class template
   */
   function _tpl_include($filename, $include = true)
   {
+    global $lang;
+
     $handle = $filename;
     $this->filename[$handle] = $filename;
     $this->files[$handle] = $this->root . '/' . $filename;

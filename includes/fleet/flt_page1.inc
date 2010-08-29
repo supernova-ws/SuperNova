@@ -84,6 +84,15 @@
     $members = explode(',', $row['eingeladen']);
     foreach($members as $a => $b) {
       if ($b == $user['id']) {
+        $template->assign_block_vars('acss', array(
+          'ID'         => $row['id'],
+          'GALAXY'     => $row['galaxy'],
+          'SYSTEM'     => $row['system'],
+          'PLANET'     => $row['planet'],
+          'TYPE'       => $row['planet_type'],
+          'TYPE_PRINT' => $lang['fl_shrtcup'][$row['planet_type']],
+          'NAME'       => $row['name'],
+        ));
         $parse['aks_id'] = $row['id'];
         $parse['aks_galaxy'] = $row['galaxy'];
         $parse['aks_system'] = $row['system'];
@@ -97,7 +106,7 @@
   }
 
   $template->assign_vars(array(
-    'acss'            => $aks_fleets_mr, // just data to print
+    'acss1'           => $aks_fleets_mr, // just data to print
 
     'usedfleet'       => str_rot13(base64_encode(serialize($fleet['fleetarray']))),
 

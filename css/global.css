@@ -1,16 +1,26 @@
-.fl{ /* Float left */
+.fl /* Float left */
+{
   float: left;
 }
 
-.fr{ /* Float right */
+.fr /* Float right */
+{
   float: right;
 }
 
-.hide{ /* Hide */
+.hide  /* Hide */
+{
   display: none;
 }
 
-.tr{
+.tr /* Transparent */
+{
   background-color: transparent;
   border: 0;
+}
+
+ul /* Unmarked list */
+{
+  margin: 0;
+  padding-left: 20;
 }

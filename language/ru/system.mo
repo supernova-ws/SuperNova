@@ -183,4 +183,25 @@ $lang['sys_universe']        = "Вселенная";
 $lang['sys_goto']            = "Перейти";
 
 $lang['sys_affilates']       = "Приглашенные игроки";
+
+$lang['sys_planet_type1']    = "Планета";
+$lang['sys_planet_type2'] 	  = "Поле обломков";
+$lang['sys_planet_type3']    = "Луна";
+
+$lang['sys_planet_type'] = array(
+  1 => $lang['sys_planet_type1'], 
+  2 => $lang['sys_planet_type2'], 
+  3 => $lang['sys_planet_type3']
+);
+
+$lang['sys_planet_type_sh1'] = "(П)";
+$lang['sys_planet_type_sh2'] = "(О)";
+$lang['sys_planet_type_sh3'] = "(Л)";
+
+$lang['sys_planet_type_sh'] = array(
+  1 => $lang['sys_planet_type_sh1'], 
+  2 => $lang['sys_planet_type_sh2'], 
+  3 => $lang['sys_planet_type_sh3']
+);
+
 ?>

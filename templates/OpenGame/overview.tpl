@@ -1,3 +1,5 @@
+<!-- INCLUDE fleet_javascript.tpl -->
+
 <script language="JavaScript" type="text/javascript" src="scripts/time.js"></script>
 <script type="text/javascript"> 
   jQuery.noConflict(); 
@@ -32,8 +34,82 @@
     </tr>
     {NewsFrame}
     
-    <tr><td colspan="4" class="c">{Planet_menu}</td></tr>
+    <tr><td colspan="4" class="c">{L_ov_fleet_list}</td></tr>
+
+<!-- BEGIN fleets -->
+
+  <!-- IF fleets.OV_LABEL == 0 -->
+    <!-- DEFINE $OV_FLEET_ACTION = 'flight' -->
+  <!-- ELSEIF fleets.OV_LABEL == 1 -->
+    <!-- DEFINE $OV_FLEET_ACTION = 'holding' -->
+  <!-- ELSEIF fleets.OV_LABEL == 2 -->
+    <!-- DEFINE $OV_FLEET_ACTION = 'return' -->
+  <!-- ENDIF -->
+
+  <!-- IF USER_ID == fleets.OWNER -->
+    <!-- DEFINE $OV_FLEET_PREFIX = 'own' -->
+  <!-- ELSE -->
+    <!-- DEFINE $OV_FLEET_PREFIX = '' -->
+  <!-- ENDIF -->
+
+  <!-- IF fleets.MISSION == 1 -->
+    <!-- DEFINE $OV_FLEET_STYLE = 'flight' -->
+  <!-- ELSEIF fleets.MISSION ==  2 -->
+    <!-- DEFINE $OV_FLEET_STYLE = 'federation' -->
+  <!-- ELSEIF fleets.MISSION ==  3 -->
+    <!-- DEFINE $OV_FLEET_STYLE = 'transport' -->
+  <!-- ELSEIF fleets.MISSION ==  4 -->
+    <!-- DEFINE $OV_FLEET_STYLE = 'deploy' -->
+  <!-- ELSEIF fleets.MISSION ==  5 -->
+    <!-- DEFINE $OV_FLEET_STYLE = 'hold' -->
+  <!-- ELSEIF fleets.MISSION ==  6 -->
+    <!-- DEFINE $OV_FLEET_STYLE = 'espionage' -->
+  <!-- ELSEIF fleets.MISSION ==  7 -->
+    <!-- DEFINE $OV_FLEET_STYLE = 'colony' -->
+  <!-- ELSEIF fleets.MISSION ==  8 -->
+    <!-- DEFINE $OV_FLEET_STYLE = 'harvest' -->
+  <!-- ELSEIF fleets.MISSION ==  9 -->
+    <!-- DEFINE $OV_FLEET_STYLE = 'destroy' -->
+  <!-- ELSEIF fleets.MISSION == 10 -->
+    <!-- DEFINE $OV_FLEET_STYLE = 'missile' -->
+  <!-- ELSEIF fleets.MISSION == 15 -->
+    <!-- DEFINE $OV_FLEET_STYLE = 'transport' -->
+  <!-- ENDIF -->
+
+
+
+  <tr class="{$OV_FLEET_ACTION}">
+    {fleet_javai}
+    <th>
+      <div id="ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}" class="z">00:00:00</div>
+      <font color="lime">{fleets.OV_TIME_TEXT}</font>
+    </th>
+    <th colspan="3">
+      <span class="{$OV_FLEET_ACTION} {$OV_FLEET_PREFIX}{$OV_FLEET_STYLE}">
+        <span style="cursor: pointer; font-weight: bold; text-decoration: underline;" onmouseover='fleet_dialog_show(this, {fleets.ID})' onmouseout='fleet_dialog_hide()'>
+          <!-- IF USER_ID == fleets.OWNER -->
+            {L_ov_fleet_yours}
+          <!-- ELSE -->
+            {L_ov_fleet_hostile}
+          <!-- ENDIF -->
+        {L_ov_fleet}</span>{L_ov_fleet_sent}
+        {fleets.START_NAME} {fleets.START_URL} {fleets.START_TYPE_TEXT_SH}
+        {L_ov_fleet_sent_to} {fleets.END_NAME} {fleets.END_URL} {fleets.END_TYPE_TEXT_SH} {L_ov_fleet_mission} {fleets.MISSION_NAME}
+        <!-- IF fleets.OV_LABEL == 0 -->{L_ov_fleet_arrive}<!-- ELSEIF fleets.OV_LABEL == 1 -->{L_ov_fleet_hold}<!-- ELSEIF fleets.OV_LABEL == 2 -->{L_ov_fleet_return}<!-- ENDIF -->
+      </span>
+    </th>
+    <script type="text/javascript"><!--
+      sn_timers.unshift(['ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}', 0, true, {TIME_NOW}, ['Флот прибыл',[
+        ['{fleets.ID}', '', {fleets.OV_LEFT}, '0']
+      ]]]);
+    --></script>
+  </tr>
+<!-- END fleets -->
+
+    
     {fleet_list}
+
+    <tr><td colspan="4" class="c">{L_Planet_menu}</td></tr>
     <tr><th width=90>{L_ov_building}</th><th colspan=3><!-- IF BUILDING -->{BUILDING}<span id="ov_building"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
     <tr><th>{L_ov_hangar}</th><th colspan="3"><!-- IF HANGAR -->{HANGAR}<span id="ov_hangar"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
     <tr><th>{Teching}</th><th colspan="3"><!-- IF TECH -->{TECH}<span id="ov_tech"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
