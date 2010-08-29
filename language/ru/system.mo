@@ -184,6 +184,8 @@ $lang['sys_goto']            = "Перейти";
 
 $lang['sys_affilates']       = "Приглашенные игроки";
 
+$lang['sys_fleet_arrived']   = "Флот прибыл";
+
 $lang['sys_planet_type1']    = "Планета";
 $lang['sys_planet_type2'] 	  = "Поле обломков";
 $lang['sys_planet_type3']    = "Луна";

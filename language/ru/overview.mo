@@ -99,6 +99,7 @@ $lang['ov_fleet_sent_to']        = ' на ';
 $lang['ov_fleet_mission']        = ' с заданием ';
 $lang['ov_fleet_exploration']    = 'исследование звездной системы';
 
+$lang['ov_fleet_no_flying']      = 'Нет флотов в полете';
 
 
 

@@ -69,10 +69,10 @@ var ships = Array();
       </th>
     </tr>
     <script type="text/javascript"><!--
-      sn_timers.unshift(['fleet_timer_start{fleets.ID}', 0, true, {TIME_NOW}, ['Флот прибыл',[
+      sn_timers.unshift(['fleet_timer_start{fleets.ID}', 0, true, {TIME_NOW}, ['{L_sys_fleet_arrived}',[
         ['{fleets.ID}', '', {fleets.START_LEFT}, '0']
       ]]]);
-      sn_timers.unshift(['fleet_timer_end{fleets.ID}', 0, true, {TIME_NOW}, ['Флот прибыл',[
+      sn_timers.unshift(['fleet_timer_end{fleets.ID}', 0, true, {TIME_NOW}, ['{L_sys_fleet_arrived}',[
         ['{fleets.ID}', '', {fleets.END_LEFT}, '0']
       ]]]);
     --></script>
