@@ -267,7 +267,9 @@ switch ($mode) {
         $fleet['ov_label'] = 1;
         $fleets[] = flt_parse_for_template($fleet, ++$fleet_number);
       }
-      if($fleet['fleet_end_time'] > $time_now && $fleet['fleet_owner'] == $user['id'])
+      if($fleet['fleet_end_time'] > $time_now && $fleet['fleet_owner'] == $user['id'] &&
+        !($fleet['fleet_mess'] == 0 &&
+          ($fleet['fleet_mission'] == MT_RELOCATE || $fleet['fleet_mission'] == MT_COLONIZE)))
       {
         $fleet['ov_time'] = $fleet['fleet_end_time'];
         $fleet['ov_label'] = 2;
