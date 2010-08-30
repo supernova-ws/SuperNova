@@ -30,14 +30,14 @@ function flt_parse_for_template($fleet, $index)
     'START_COORDS'       => "[{$fleet['fleet_start_galaxy']}:{$fleet['fleet_start_system']}:{$fleet['fleet_start_planet']}]",
     'START_TIME_TEXT'    => date('d.m.Y H:i:s', $fleet['fleet_end_time']),
     'START_LEFT'         => floor($fleet['fleet_end_time'] + 1 - $time_now),
-    'START_URL'          => int_makeCoordinatesLink($fleet, 'fleet_start_', 2),
+    'START_URL'          => int_makeCoordinatesLink($fleet, 'fleet_start_', 3),
     'START_NAME'         => $fleet['fleet_start_name'],
 
     'END_TYPE_TEXT_SH'   => $lang['sys_planet_type_sh'][$fleet['fleet_end_type']],
     'END_COORDS'         => "[{$fleet['fleet_end_galaxy']}:{$fleet['fleet_end_system']}:{$fleet['fleet_end_planet']}]",
     'END_TIME_TEXT'      => date('d.m.Y H:i:s', $fleet['fleet_start_time']),
     'END_LEFT'           => floor($fleet['fleet_start_time'] + 1 - $time_now),
-    'END_URL'            => int_makeCoordinatesLink($fleet, 'fleet_end_', 2),
+    'END_URL'            => int_makeCoordinatesLink($fleet, 'fleet_end_', 3),
     'END_NAME'           => $fleet['fleet_end_name'],
 
     'STAY_TIME'          => date('d.m.Y H:i:s', $fleet['fleet_end_stay']),
