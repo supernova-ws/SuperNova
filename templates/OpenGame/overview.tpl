@@ -53,7 +53,7 @@
       <!-- ENDIF -->
 
       <!-- IF fleets.MISSION == 1 -->
-        <!-- DEFINE $OV_FLEET_STYLE = 'flight' -->
+        <!-- DEFINE $OV_FLEET_STYLE = 'attack' -->
       <!-- ELSEIF fleets.MISSION ==  2 -->
         <!-- DEFINE $OV_FLEET_STYLE = 'federation' -->
       <!-- ELSEIF fleets.MISSION ==  3 -->
@@ -92,7 +92,7 @@
               <!-- ENDIF -->
             {L_ov_fleet}</span>{L_ov_fleet_sent}
             {fleets.START_NAME} {fleets.START_URL} {fleets.START_TYPE_TEXT_SH}
-            {L_ov_fleet_sent_to} {fleets.END_NAME} {fleets.END_URL} {fleets.END_TYPE_TEXT_SH} {L_ov_fleet_mission} {fleets.MISSION_NAME}
+            {L_ov_fleet_sent_to} {fleets.END_NAME} {fleets.END_URL} {fleets.END_TYPE_TEXT_SH} {L_ov_fleet_mission} <i>{fleets.MISSION_NAME}</i>
             <!-- IF fleets.OV_LABEL == 0 -->{L_ov_fleet_arrive}<!-- ELSEIF fleets.OV_LABEL == 1 -->{L_ov_fleet_hold}<!-- ELSEIF fleets.OV_LABEL == 2 -->{L_ov_fleet_return}<!-- ENDIF -->
           </span>
         </th>
