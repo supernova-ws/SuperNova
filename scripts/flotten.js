@@ -863,7 +863,7 @@ function fleet_dialog_show(caller, fleet_id)
     {
       if(parseInt(resources[res_id]))
       {
-        fleet_html += '<tr><th>' + res_names[res_id] + '</th><th>' + parseInt(resources[res_id]) + '</th></tr>';
+        fleet_html += '<tr><th>' + res_names[res_id] + '</th><th>' + sn_format_number(parseInt(resources[res_id]), 0, 'white') + '</th></tr>';
       }
     }
   }
