@@ -67,7 +67,7 @@ $template->assign_vars(array(
 while ($announce = mysql_fetch_array($allAnnounces)) {
   $template->assign_block_vars('announces', array(
     'ID'       => $announce['idAnnounce'],
-    'TIME'     => str_replace(' ', '&nbsp;', $announce['tsTimeStamp']),
+    'TIME'     => $announce['tsTimeStamp'], //str_replace(' ', '&nbsp;', $announce['tsTimeStamp']),
     'ANNOUNCE' => sys_bbcodeParse($announce['strAnnounce']),
     'NEW'      => $announce['unix_time'] + $config->game_news_actual > $time_now,
     'FUTURE'   => $announce['unix_time'] > $time_now,
