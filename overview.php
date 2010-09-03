@@ -393,8 +393,6 @@ switch ($mode) {
           (fleet_mission = 1 OR fleet_mission = 2)
           ", '', true);
 
-      pdump($enemy_fleet);
-
       $moon = doquery("SELECT * FROM {{table}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3;", 'planets', true);
       $template->assign_block_vars('planet', array_merge(
         array(
