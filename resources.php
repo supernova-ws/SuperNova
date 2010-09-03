@@ -174,6 +174,6 @@ $template->assign_vars(array(
  'page_hint'        => $lang['res_hint'],
 ));
 
-display(parsetemplate( $template, $parse ), '');
+display(parsetemplate( $template, $parse ), $lang['res_planet_production']);
 
 ?>
