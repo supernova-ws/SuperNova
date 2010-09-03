@@ -79,7 +79,7 @@ body form table th table input
 
 td.a, td.b, td.c, td.f, td.g, td.h,
 td.i, td.j, td.k, td.l, td.m, td.n,
-td.o, td.q, td.r, td.v, th, th img,
+td.o, td.q, td.r, td.v, th, table.s th img,
 input, select, textarea,
 .style td, p td, table.s
 {

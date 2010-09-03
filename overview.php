@@ -383,8 +383,19 @@ switch ($mode) {
         }
       }
 
-      $moon = doquery("SELECT * FROM {{table}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3;", 'planets', true);
+      $enemy_fleet = doquery("SELECT count(*) AS fleets_count FROM {{fleets}}
+        WHERE
+          fleet_end_galaxy = {$UserPlanet['galaxy']} AND
+          fleet_end_system = {$UserPlanet['system']} AND
+          fleet_end_planet = {$UserPlanet['planet']} AND
+          fleet_end_type   = 1 AND
+          fleet_mess       = 0 AND
+          (fleet_mission = 1 OR fleet_mission = 2)
+          ", '', true);
 
+      pdump($enemy_fleet);
+
+      $moon = doquery("SELECT * FROM {{table}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3;", 'planets', true);
       $template->assign_block_vars('planet', array_merge(
         array(
           'ID'        => $UserPlanet['id'],
@@ -394,6 +405,8 @@ switch ($mode) {
           'GALAXY'    => $UserPlanet['galaxy'],
           'SYSTEM'    => $UserPlanet['system'],
           'PLANET'    => $UserPlanet['planet'],
+
+          'ENEMY'     => $enemy_fleet['fleets_count'],
 
           'BUILDING'  => int_buildCounter($UserPlanet, 'building', $UserPlanet['id']),
           'TECH'      => $UserPlanet['b_tech'] ? $lang['tech'][$UserPlanet['b_tech_id']] : 0,

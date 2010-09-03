@@ -204,6 +204,12 @@
           </span>
         <!-- ENDIF -->
 
+        <!-- IF planet.ENEMY != 0 -->
+          <span style="position: absolute; top: 26%; left: 26%; width: 48%; height: 48%;">
+            <img src="images/icon_warning.png" height="100%" width="100%" style="border-style: none">
+          </span>
+        <!-- ENDIF -->
+
         <span style="position: absolute; left: 0; width: 100%; top: 96%; height: 4%; overflow: hidden;">
           <div class="fl" style="position: relative; left: 0px; height: 100%; width: {planet.FILL}%; background-color: <!-- IF planet.FILL >= 100 -->red<!-- ELSEIF planet.FILL > 80 -->yellow<!-- ELSE -->green<!-- ENDIF -->;"></div>
         </span>
@@ -217,7 +223,7 @@
           </span>
         </div>
       <!-- ENDIF -->
-      </div>
+      </div>{planet.ENEMY}
       <!-- IF planet.BUILDING -->{planet.BUILDING}<span id="ov_building{planet.ID}"></span><br><font color="darkgrey"><span id="ov_building{planet.ID}_timer"></span></font><!-- ELSE -->{L_Free}<!-- ENDIF --><br><br>
     </center></th></tr>
   <!-- END planet --></table>
