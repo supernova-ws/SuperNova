@@ -56,8 +56,14 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet){
       $Caps['planet']['deuterium_perhour'] += $Caps['deuterium_perhour'][$ProdID];
     };
 
-    if ($Caps['planet']['energy_used'] != 0)
+    if ($Caps['planet']['energy_used'])
+    {
       $Caps['production'] = min(1, $Caps['planet']['energy_max'] / $Caps['planet']['energy_used']);
+    }
+    else
+    {
+      $Caps['production'] = 1;
+    }
   }
 
   return $Caps;

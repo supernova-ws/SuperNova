@@ -92,7 +92,7 @@
               <!-- ENDIF -->
             {L_ov_fleet}</span>{L_ov_fleet_sent}
             {fleets.START_NAME} {fleets.START_URL} {fleets.START_TYPE_TEXT_SH}
-            {L_ov_fleet_sent_to} {fleets.END_NAME} {fleets.END_URL} {fleets.END_TYPE_TEXT_SH} {L_ov_fleet_mission} <i>{fleets.MISSION_NAME}</i>
+            {L_ov_fleet_sent_to} {fleets.END_NAME} {fleets.END_URL} {fleets.END_TYPE_TEXT_SH} {L_ov_fleet_mission} <font color="white">{fleets.MISSION_NAME}</font>
             <!-- IF fleets.OV_LABEL == 0 -->{L_ov_fleet_arrive}<!-- ELSEIF fleets.OV_LABEL == 1 -->{L_ov_fleet_hold}<!-- ELSEIF fleets.OV_LABEL == 2 -->{L_ov_fleet_return}<!-- ENDIF -->
           </span>
         </th>

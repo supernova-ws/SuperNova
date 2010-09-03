@@ -1,5 +1,7 @@
 <?php
 
+// System-wide localization
+
 $lang['user_level'] = array (
 	'0' => 'Игрок',
 	'1' => 'Модератор',
@@ -8,7 +10,9 @@ $lang['user_level'] = array (
 );
 
 foreach($lang['user_level'] as $ID => $levelName)
+{
   $lang['user_level_shortcut'][$ID] = $levelName[0];
+}
 
 $lang['sys_first_round_crash_1']	= 'Контакт с атакованным флотом потерян.';
 $lang['sys_first_round_crash_2']	= 'Это означает что он был уничтожен в первом раунде боя.';
@@ -146,7 +150,6 @@ $lang['COE_defense']         = "Оборона";
 $lang['sys_resources']       = "Ресурсы";
 $lang['sys_ships']           = "Корабли";
 
-
 $lang['sys_metal']      = "Металл";
 $lang['sys_crystal']    = "Кристалл";
 $lang['sys_deuterium']  = "Дейтрий";
@@ -206,4 +209,14 @@ $lang['sys_planet_type_sh'] = array(
   3 => $lang['sys_planet_type_sh3']
 );
 
+// Resource page
+$lang['res_planet_production'] = 'Производство ресурсов на планете';
+$lang['res_basic_income'] = 'Естесственное производство';
+$lang['res_total'] = 'ВСЕГО';
+$lang['res_calculate'] = 'Рассчитать';
+$lang['res_daily'] = 'За день';
+$lang['res_weekly'] = 'За неделю';
+$lang['res_monthly'] = 'За месяц';
+$lang['res_storage_fill'] = 'Заполненность хранилища';
+$lang['res_hint'] = '<ul><li>Производство ресурсов <100% означает нехватку энергии. Постройте дополнительные электростанции или уменьшите производство ресурсов<li>Если ваше производство равно 0% скорее всего вы вышли из отпуска и вам нужно включить все заводы<li>Что бы выставить добычу для всех заводов сразу используйте дроп-даун в загловке таблицы. Особенно удобно использовать его после выхода из отпуска</ul>';
 ?>
