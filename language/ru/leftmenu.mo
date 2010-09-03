@@ -12,7 +12,7 @@ $lang['m_others']			= 'Прочее';
 $lang['m_simulator']		= 'Симулятор боя';
 $lang['m_communication']= 'Связь & Общение';
 $lang['m_exchange']		= 'Биржа ресурсов';
-$lang['m_affilates']    = '!!!ЗАРАБОТАЙ!!!';
+$lang['m_affilates']    = '!!!ЗАРАБОТАЙ ТМ!!!';
 
 $lang['Overview']	= 'Обзор планеты';
 $lang['Officiers']	= 'Офицеры';
@@ -23,7 +23,7 @@ $lang['Research']	= 'Исследования';
 $lang['Shipyard']	= 'Верфь';
 $lang['Defense']	= 'Оборона';
 
-$lang['Resources']	= 'Сырьё';
+$lang['Resources']	= 'Ресурсы';
 $lang['Imperium']	= 'Империя';
 $lang['Marchand']	= 'Торговец';
 $lang['Annonces']	= 'Объявления';
