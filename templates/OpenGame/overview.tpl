@@ -229,7 +229,7 @@
           </span>
         </div>
       <!-- ENDIF -->
-      </div>{planet.ENEMY}
+      </div>
       <!-- IF planet.BUILDING -->{planet.BUILDING}<span id="ov_building{planet.ID}"></span><br><font color="darkgrey"><span id="ov_building{planet.ID}_timer"></span></font><!-- ELSE -->{L_Free}<!-- ENDIF --><br><br>
     </center></th></tr>
   <!-- END planet --></table>
