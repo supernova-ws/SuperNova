@@ -116,23 +116,23 @@
 
     <tr><td class="c" colspan=4>{L_ov_planet_details}</td></tr>
     <tr>
-      <th>{Diameter}</th>
-      <th>{planet_diameter} {km}</th>
-      <th>{Temperature}</th>
-      <th>{planet_temp_min}&deg;C / {planet_temp_max}&deg;C</th>
-    </tr>
-    <tr>
       <th align="center">{buildings_on_planet}</th>
       <th colspan="3" align="center"  style="white-space: nowrap;">
         <font color="#CCF19F">{planet_field_current} / {planet_field_max} {Points_1}</font><br />
-        <div align=left style="border: 1px solid rgb(153, 153, 255); width: 400px;">
-          <div id="CaseBarre" align=center style="position: relative; left: 0px; background-color: {case_barre_barcolor}; width: {case_barre}px;">{case_pourcentage}</div>
+        <div align=left style="border: 1px solid rgb(153, 153, 255); width: 100%;">
+          <div id="CaseBarre" align=center style="position: relative; left: 0px; background-color: {case_barre_barcolor}; width: {case_barre}%;">{case_pourcentage}%</div>
         </div>
       </th>
     </tr>
     <tr>
       <th>{orb}</th>
       <th colspan="3">{L_sys_metal}: {metal_debris} / {L_sys_crystal}: {crystal_debris}{get_link}</th>
+    </tr>
+    <tr>
+      <th>{Diameter}</th>
+      <th>{planet_diameter} {km}</th>
+      <th>{Temperature}</th>
+      <th>{planet_temp_min}&deg;C / {planet_temp_max}&deg;C</th>
     </tr>
   </table>
 
@@ -141,6 +141,16 @@
         <span class="fl">{L_ov_player_rpg} {user_username}</span>
         <span class="fr"><b>{L_ov_rank}: <a href="stat.php?start={u_user_rank}"><strong><span class="style2">{user_rank}</span> из <span class="style1">{max_users}</span></strong></a></b></span>
     </td></tr>
+    <tr>
+      <th rowspan=2>{L_ov_raids}</th>
+      <th colspan="1" align="center">{L_ov_level}: {raid_lvl}</th>
+      <th colspan="2" align="center">{L_ov_experience}: {raid_xp}/{raid_lvl_up}</th>
+    </tr>
+    <tr>
+      <th>{NumberOfRaids}: {raids}</th>
+      <th>{RaidsWin}: {raidswin}</th>
+      <th>{RaidsLoose}: {raidsloose}</th>
+    </tr>
     <tr>
       <th>{Economica}</th>
       <th colspan="1" align="center">{L_ov_level}: {builder_lvl}</th>
@@ -156,16 +166,6 @@
       <th>{user_points_2}: {player_points_tech}</th>
       <th colspan="2">{user_points_all}: {total_points}</th>
     </tr>
-    <tr>
-      <th rowspan=2>{L_ov_raids}</th>
-      <th colspan="1" align="center">{L_ov_level}: {raid_lvl}</th>
-      <th colspan="2" align="center">{L_ov_experience}: {raid_xp}/{raid_lvl_up}</th>
-    </tr>
-    <tr>
-      <th>{NumberOfRaids}: {raids}</th>
-      <th>{RaidsWin}: {raidswin}</th>
-      <th>{RaidsLoose}: {raidsloose}</th>
-    </tr>
   </table>
 
   <!-- IF bannerframe || userbarframe -->
@@ -179,19 +179,51 @@
 
 <th valign=top class="tr">
   <table border="0" cellspacing=0 cellpadding=0 width="200"><!-- BEGIN planet -->
-    <tr><th class="tr"><!-- IF planet.MOON_ID == PLANET_ID -->{L_sys_moon} {planet.MOON_NAME}<!-- ELSE -->{planet.NAME}<!-- ENDIF --> [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]<br>
-    <span style="position: relative;">
-      <span><a href="?cp={planet.ID}&re=0" title="{planet.NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img src="{dpath}planeten/{planet.IMAGE}.jpg" height="<!-- IF planet.ID == PLANET_ID -->100" width="100<!-- ELSE -->75" width="75<!-- ENDIF -->"></a></span>
-      <!-- IF planet.BUILDING --><span style="position: absolute; top: 0px; left: 0px; "><img src="images/build_building.png" height="<!-- IF planet.ID == PLANET_ID -->24" width="24<!-- ELSE -->18" width="18<!-- ENDIF -->"></span><!-- ENDIF -->
-      <!-- IF planet.TECH --><span title="{planet.TECH}" style="position: absolute; top: <!-- IF planet.ID == PLANET_ID -->24<!-- ELSE -->18<!-- ENDIF -->px; left: 0px; "><img src="images/build_tech.png" height="<!-- IF planet.ID == PLANET_ID -->24" width="24<!-- ELSE -->18" width="18<!-- ENDIF -->"></span><!-- ENDIF -->
-      <!-- IF planet.HANGAR --><span style="position: absolute; top: <!-- IF planet.ID == PLANET_ID -->48<!-- ELSE -->36<!-- ENDIF -->px; left: 0px; "><img src="images/build_hangar.png" height="<!-- IF planet.ID == PLANET_ID -->24" width="24<!-- ELSE -->18" width="18<!-- ENDIF -->"></span><!-- ENDIF -->
-    </span>
-    <!-- IF planet.MOON_ID --><a href="?cp={planet.MOON_ID}&re=0" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" height="<!-- IF planet.MOON_ID == PLANET_ID -->100<!-- ELSE -->35<!-- ENDIF -->" width="<!-- IF planet.MOON_ID == PLANET_ID -->100<!-- ELSE -->35<!-- ENDIF -->"></a><!-- ENDIF --><br>
-    <!-- IF planet.BUILDING -->{planet.BUILDING}<span id="ov_building{planet.ID}"></span><br><font color="darkgrey"><span id="ov_building{planet.ID}_timer"></span></font><!-- ELSE -->{L_Free}<!-- ENDIF --><br><br>
-    </th></tr>
+    <tr><th class="tr" align="center"><center>
+      <!-- IF planet.MOON_ID == PLANET_ID -->{L_sys_moon} {planet.MOON_NAME}<!-- ELSE -->{planet.NAME}<!-- ENDIF --> [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]<br>
+      <div style="position: relative; <!-- IF planet.ID == PLANET_ID -->height: 100px; width: 100px;<!-- ELSE -->height: 75px; width: 75px;<!-- ENDIF -->">
+        <span style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%">
+          <a href="?cp={planet.ID}&re=0"><img style="border-style: none;" src="{dpath}planeten/{planet.IMAGE}.jpg" height="100%" width="100%"></a>
+        </span>
+
+        <!-- IF planet.BUILDING -->
+          <span style="position: absolute; top: 0px; left: 0px; width: 25%; height: 25%">
+            <img src="images/build_building.png" height="100%" width="100%">
+          </span>
+        <!-- ENDIF -->
+        
+        <!-- IF planet.TECH -->
+          <span title="{planet.TECH}" style="position: absolute; top: 25%; left: 0px; width: 25%; height: 25%">
+            <img src="images/build_tech.png" height="100%" width="100%">
+          </span>
+        <!-- ENDIF -->
+
+        <!-- IF planet.HANGAR -->
+          <span style="position: absolute; top: 50%; left: 0px; width: 25%; height: 25%;">
+            <img src="images/build_hangar.png" height="100%" width="100%">
+          </span>
+        <!-- ENDIF -->
+
+        <span style="position: absolute; left: 0; width: 100%; top: 96%; height: 4%; overflow: hidden;">
+          <div class="fl" style="position: relative; left: 0px; height: 100%; width: {planet.FILL}%; background-color: <!-- IF planet.FILL >= 100 -->red<!-- ELSEIF planet.FILL > 80 -->yellow<!-- ELSE -->green<!-- ENDIF -->;"></div>
+        </span>
+
+        <!-- IF planet.MOON_ID -->
+        <div style="position: absolute; top: 0; left: 75%; width: 25%; height: 25%;">
+          <a href="?cp={planet.MOON_ID}&re=0" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img style="border-style: none;" src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" height="100%" width="100%"></a>
+          
+          <span style="position: absolute; left: 0; width: 100%; top: 90%; height: 10%; overflow: hidden;">
+            <div class="fl" style="position: relative; left: 0px; height: 100%; width: {planet.MOON_FILL}%; background-color: <!-- IF planet.FILL >= 100 -->red<!-- ELSEIF planet.FILL > 80 -->yellow<!-- ELSE -->green<!-- ENDIF -->;"></div>
+          </span>
+        </div>
+      <!-- ENDIF -->
+      </div>
+      <!-- IF planet.BUILDING -->{planet.BUILDING}<span id="ov_building{planet.ID}"></span><br><font color="darkgrey"><span id="ov_building{planet.ID}_timer"></span></font><!-- ELSE -->{L_Free}<!-- ENDIF --><br><br>
+    </center></th></tr>
   <!-- END planet --></table>
 </th></tr></table>
-{copyright} {admin_email}.<div id="admin_message"></div>
+{copyright} {admin_email}<br>
+<div id="admin_message"></div>
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
