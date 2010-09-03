@@ -394,13 +394,17 @@ switch ($mode) {
           'GALAXY'    => $UserPlanet['galaxy'],
           'SYSTEM'    => $UserPlanet['system'],
           'PLANET'    => $UserPlanet['planet'],
+
           'BUILDING'  => int_buildCounter($UserPlanet, 'building', $UserPlanet['id']),
           'TECH'      => $UserPlanet['b_tech'] ? $lang['tech'][$UserPlanet['b_tech_id']] : 0,
           'HANGAR'    => $UserPlanet['b_hangar'],
 
+          'FILL'      => min(100, floor($UserPlanet['field_current'] / CalculateMaxPlanetFields($UserPlanet) * 100)),
+
           'MOON_ID'   => $moon['id'],
           'MOON_NAME' => $moon['name'],
           'MOON_IMG'  => $moon['image'],
+          'MOON_FILL' => min(100, floor($moon['field_current'] / CalculateMaxPlanetFields($moon) * 100)),
         ), $buildArray));
     }
     // -----------------------------------------------------------------------------------------------
@@ -563,12 +567,12 @@ switch ($mode) {
     // Calcul du pourcentage de remplissage
     $parse['case_pourcentage'] = floor($planetrow['field_current'] / CalculateMaxPlanetFields($planetrow) * 100) . $lang['o/o'];
     // Barre de remplissage
-    $parse['case_barre'] = floor($planetrow['field_current'] / CalculateMaxPlanetFields($planetrow) * 100) * 4;
+    $parse['case_barre'] = floor($planetrow['field_current'] / CalculateMaxPlanetFields($planetrow) * 100);
     // Couleur de la barre de remplissage
-    if ($parse['case_barre'] > (100 * 4)) {
-      $parse['case_barre'] = 4;
+    if ($parse['case_barre'] > 100) {
+      $parse['case_barre'] = 100;
       $parse['case_barre_barcolor'] = '#C00000';
-    } elseif ($parse['case_barre'] > (80 * 4)) {
+    } elseif ($parse['case_barre'] > 80) {
       $parse['case_barre_barcolor'] = '#C0C000';
     } else {
       $parse['case_barre_barcolor'] = '#00C000';
