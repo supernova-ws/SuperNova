@@ -394,28 +394,41 @@ switch ($mode) {
           ", '', true);
 
       $moon = doquery("SELECT * FROM {{table}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3;", 'planets', true);
+      if($moon)
+      {
+        $enemy_fleet_moon = doquery("SELECT count(*) AS fleets_count FROM {{fleets}}
+          WHERE
+            fleet_end_galaxy = {$UserPlanet['galaxy']} AND
+            fleet_end_system = {$UserPlanet['system']} AND
+            fleet_end_planet = {$UserPlanet['planet']} AND
+            fleet_end_type   = 3 AND
+            fleet_mess       = 0 AND
+            (fleet_mission = 1 OR fleet_mission = 2 OR fleet_mission = 9)", '', true);
+      }
+
       $template->assign_block_vars('planet', array_merge(
         array(
-          'ID'        => $UserPlanet['id'],
-          'NAME'      => $UserPlanet['name'],
-          'IMAGE'     => $UserPlanet['image'],
+          'ID'         => $UserPlanet['id'],
+          'NAME'       => $UserPlanet['name'],
+          'IMAGE'      => $UserPlanet['image'],
 
-          'GALAXY'    => $UserPlanet['galaxy'],
-          'SYSTEM'    => $UserPlanet['system'],
-          'PLANET'    => $UserPlanet['planet'],
+          'GALAXY'     => $UserPlanet['galaxy'],
+          'SYSTEM'     => $UserPlanet['system'],
+          'PLANET'     => $UserPlanet['planet'],
 
-          'ENEMY'     => $enemy_fleet['fleets_count'],
+          'ENEMY'      => $enemy_fleet['fleets_count'],
 
-          'BUILDING'  => int_buildCounter($UserPlanet, 'building', $UserPlanet['id']),
-          'TECH'      => $UserPlanet['b_tech'] ? $lang['tech'][$UserPlanet['b_tech_id']] : 0,
-          'HANGAR'    => $UserPlanet['b_hangar'],
+          'BUILDING'   => int_buildCounter($UserPlanet, 'building', $UserPlanet['id']),
+          'TECH'       => $UserPlanet['b_tech'] ? $lang['tech'][$UserPlanet['b_tech_id']] : 0,
+          'HANGAR'     => $UserPlanet['b_hangar'],
 
-          'FILL'      => min(100, floor($UserPlanet['field_current'] / CalculateMaxPlanetFields($UserPlanet) * 100)),
+          'FILL'       => min(100, floor($UserPlanet['field_current'] / CalculateMaxPlanetFields($UserPlanet) * 100)),
 
-          'MOON_ID'   => $moon['id'],
-          'MOON_NAME' => $moon['name'],
-          'MOON_IMG'  => $moon['image'],
-          'MOON_FILL' => min(100, floor($moon['field_current'] / CalculateMaxPlanetFields($moon) * 100)),
+          'MOON_ID'    => $moon['id'],
+          'MOON_NAME'  => $moon['name'],
+          'MOON_IMG'   => $moon['image'],
+          'MOON_FILL'  => min(100, floor($moon['field_current'] / CalculateMaxPlanetFields($moon) * 100)),
+          'MOON_ENEMY' => $enemy_fleet_moon['fleets_count'],
         ), $buildArray));
     }
     // -----------------------------------------------------------------------------------------------

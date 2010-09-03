@@ -215,9 +215,15 @@
         </span>
 
         <!-- IF planet.MOON_ID -->
-        <div style="position: absolute; top: 0; left: 75%; width: 25%; height: 25%;">
+        <div style="position: absolute; top: 0; left: 67%; width: 33%; height: 33%;">
           <a href="?cp={planet.MOON_ID}&re=0" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img style="border-style: none;" src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" height="100%" width="100%"></a>
           
+          <!-- IF planet.MOON_ENEMY != 0 -->
+            <span style="position: absolute; top: 26%; left: 26%; width: 48%; height: 48%;">
+              <img src="images/icon_warning.png" height="100%" width="100%" style="border-style: none">
+            </span>
+          <!-- ENDIF -->
+
           <span style="position: absolute; left: 0; width: 100%; top: 90%; height: 10%; overflow: hidden;">
             <div class="fl" style="position: relative; left: 0px; height: 100%; width: {planet.MOON_FILL}%; background-color: <!-- IF planet.FILL >= 100 -->red<!-- ELSEIF planet.FILL > 80 -->yellow<!-- ELSE -->green<!-- ENDIF -->;"></div>
           </span>
