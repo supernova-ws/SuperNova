@@ -30,6 +30,80 @@ $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
+function int_assign_event($fleet, $ov_label)
+{
+  global $fleets, $fleet_number, $planetrow, $planet_end_type;
+
+  $fleet['ov_label'] = $ov_label;
+  switch($ov_label)
+  {
+    case 0:
+      $fleet['ov_time'] = $fleet['fleet_start_time'];
+      $is_this_planet = (
+        ($planetrow['galaxy'] == $fleet['fleet_end_galaxy']) AND
+        ($planetrow['system'] == $fleet['fleet_end_system']) AND
+        ($planetrow['planet'] == $fleet['fleet_end_planet']) AND
+        ($planetrow['planet_type'] == $planet_end_type));
+    break;
+
+    case 1:
+      $fleet['ov_time'] = $fleet['fleet_end_stay'];
+      $is_this_planet = (
+        ($planetrow['galaxy'] == $fleet['fleet_end_galaxy']) AND
+        ($planetrow['system'] == $fleet['fleet_end_system']) AND
+        ($planetrow['planet'] == $fleet['fleet_end_planet']) AND
+        ($planetrow['planet_type'] == $planet_end_type));
+    break;
+
+    case 2:
+      $fleet['ov_time'] = $fleet['fleet_end_time'];
+      $is_this_planet = (
+        ($planetrow['galaxy'] == $fleet['fleet_start_galaxy']) AND
+        ($planetrow['system'] == $fleet['fleet_start_system']) AND
+        ($planetrow['planet'] == $fleet['fleet_start_planet']) AND
+        ($planetrow['planet_type'] == $fleet['fleet_start_type']));
+    break;
+  }
+
+  $fleet['ov_this_planet'] = $is_this_planet;
+
+  $fleets[] = flt_parse_for_template($fleet, ++$fleet_number);
+}
+
+// Compare function to sort fleet in time order
+function int_fleet_compare($a, $b)
+{
+  if($a['fleet']['OV_THIS_PLANET'] == $b['fleet']['OV_THIS_PLANET'])
+  {
+    if($a['fleet']['OV_LEFT'] == $b['fleet']['OV_LEFT'])
+    {
+      return 0;
+    }
+    return ($a['fleet']['OV_LEFT'] < $b['fleet']['OV_LEFT']) ? -1 : 1;
+  }
+  else
+  {
+    return $a['fleet']['OV_THIS_PLANET'] ? -1 : 1;
+  }
+}
+
+function int_template_assign(&$fleets, $suffix = '')
+{
+  global $template;
+
+  usort($fleets, 'int_fleet_compare');
+
+  foreach($fleets as $fleet_data)
+  {
+    $template->assign_block_vars("fleets$suffix", $fleet_data['fleet']);
+
+    foreach($fleet_data['ships'] as $ship_data)
+    {
+      $template->assign_block_vars("fleets$suffix.ships", $ship_data);
+    }
+  }
+}
+
 $mode = $_GET['mode'];
 $pl = mysql_escape_string($_GET['pl']);
 $POST_deleteid = intval($_POST['deleteid']);
@@ -211,16 +285,6 @@ switch ($mode) {
 
     $fleets = array();
     // -----------------------------------------------------------------------------------------------
-    // Compare function to sort fleet in time order
-    function int_fleet_compare($a, $b)
-    {
-      if($a['fleet']['OV_LEFT'] == $b['fleet']['OV_LEFT'])
-      {
-        return 0;
-      }
-      return ($a['fleet']['OV_LEFT'] < $b['fleet']['OV_LEFT']) ? -1 : 1;
-    }
-
     // Filling table with fleet events regarding to current users
     $fleet_number = 0;
     $flying_fleets_mysql = doquery("SELECT DISTINCT * FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}' OR `fleet_target_owner` = '{$user['id']}';");
@@ -237,9 +301,13 @@ switch ($mode) {
         ", '', true);
       $fleet['fleet_start_name'] = $planet_start['name'];
 
-      if($fleet['fleet_end_planet'] == 16)
+      if($fleet['fleet_end_planet'] > $config->game_maxPlanet)
       {
         $fleet['fleet_end_name'] = $lang['ov_fleet_exploration'];
+      }
+      elseif($fleet['fleet_mission'] == MT_COLONIZE)
+      {
+        $fleet['fleet_end_name'] = $lang['ov_fleet_colonization'];
       }
       else
       {
@@ -257,101 +325,22 @@ switch ($mode) {
 
       if($fleet['fleet_start_time'] > $time_now)
       {
-        $fleet['ov_time'] = $fleet['fleet_start_time'];
-        $fleet['ov_label'] = 0;
-        $fleets[] = flt_parse_for_template($fleet, ++$fleet_number);
+        int_assign_event($fleet, 0);
       }
       if($fleet['fleet_end_stay'] > $time_now)
       {
-        $fleet['ov_time'] = $fleet['fleet_end_stay'];
-        $fleet['ov_label'] = 1;
-        $fleets[] = flt_parse_for_template($fleet, ++$fleet_number);
+        int_assign_event($fleet, 1);
       }
       if($fleet['fleet_end_time'] > $time_now && $fleet['fleet_owner'] == $user['id'] &&
         !($fleet['fleet_mess'] == 0 &&
           ($fleet['fleet_mission'] == MT_RELOCATE || $fleet['fleet_mission'] == MT_COLONIZE)))
       {
-        $fleet['ov_time'] = $fleet['fleet_end_time'];
-        $fleet['ov_label'] = 2;
-        $fleets[] = flt_parse_for_template($fleet, ++$fleet_number);
+        int_assign_event($fleet, 2);
       }
     }
-    usort($fleets, 'int_fleet_compare');
-
-    foreach($fleets as $fleet_data)
-    {
-      $template->assign_block_vars('fleets', $fleet_data['fleet']);
-
-      foreach($fleet_data['ships'] as $ship_data)
-      {
-        $template->assign_block_vars('fleets.ships', $ship_data);
-      }
-    }
-
-/*
-    // --- Gestion des flottes personnelles ---------------------------------------------------------
-    // Toutes de vert vetues
-    $OwnFleets       = doquery("SELECT * FROM {{table}} WHERE `fleet_owner` = '". $user['id'] ."';", 'fleets');
-    $Record          = 0;
-    while ($FleetRow = mysql_fetch_array($OwnFleets)) {
-      $Record++;
-
-      $StartTime   = $FleetRow['fleet_start_time'];
-      $StayTime    = $FleetRow['fleet_end_stay'];
-      $EndTime     = $FleetRow['fleet_end_time'];
-
-      // Flotte a l'aller
-      $Label = "fs";
-      if ($StartTime > time()) {
-        $fpage[$StartTime] = BuildFleetEventTable ( $FleetRow, 0, true, $Label, $Record );
-      }
-
-      if ($FleetRow['fleet_mission'] <> 4) {
-        // Flotte en stationnement
-        $Label = "ft";
-        if ($StayTime > time()) {
-          $fpage[$StayTime] = BuildFleetEventTable ( $FleetRow, 1, true, $Label, $Record );
-        }
-
-        // Flotte au retour
-        $Label = "fe";
-        if ($EndTime > time()) {
-          $fpage[$EndTime]  = BuildFleetEventTable ( $FleetRow, 2, true, $Label, $Record );
-        }
-      }
-    } // End While
+    int_template_assign($fleets);
 
     // -----------------------------------------------------------------------------------------------
-
-    // --- Gestion des flottes autres que personnelles ----------------------------------------------
-    // Flotte ennemies (ou amie) mais non personnelles
-    $OtherFleets     = doquery("SELECT * FROM {{table}} WHERE `fleet_target_owner` = '".$user['id']."';", 'fleets');
-
-    $Record          = 2000;
-    while ($FleetRow = mysql_fetch_array($OtherFleets)) {
-      if ($FleetRow['fleet_owner'] != $user['id']) {
-        if ($FleetRow['fleet_mission'] != 8) {
-          $Record++;
-          $StartTime = $FleetRow['fleet_start_time'];
-          $StayTime  = $FleetRow['fleet_end_stay'];
-
-          if ($StartTime > time()) {
-            $Label = "ofs";
-            $fpage[$StartTime] = BuildFleetEventTable ( $FleetRow, 0, false, $Label, $Record );
-          }
-          if ($FleetRow['fleet_mission'] == 5) {
-            // Flotte en stationnement
-            $Label = "oft";
-            if ($StayTime > time()) {
-              $fpage[$StayTime] = BuildFleetEventTable ( $FleetRow, 1, false, $Label, $Record );
-            }
-          }
-        }
-      }
-    }
-*/
-    // -----------------------------------------------------------------------------------------------
-
     // --- Gestion de la liste des planetes ----------------------------------------------------------
     // Planetes ...
     switch($user['planet_sort']){
