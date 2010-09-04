@@ -34,10 +34,59 @@
     </tr>
     {NewsFrame}
     
-    <tr><td colspan="4" class="c">{L_ov_fleet_list}</td></tr>
+    {fleet_list}
+
+    <tr><td colspan="4" class="c">{L_Planet_menu}</td></tr>
+    <tr><th width=90>{L_ov_building}</th><th colspan=3><!-- IF BUILDING -->{BUILDING}<span id="ov_building"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
+    <tr><th>{L_ov_hangar}</th><th colspan="3"><!-- IF HANGAR -->{HANGAR}<span id="ov_hangar"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
+    <tr><th>{Teching}</th><th colspan="3"><!-- IF TECH -->{TECH}<span id="ov_tech"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
+
+    <tr><td class="c" colspan=4>{L_ov_planet_details}</td></tr>
+    <tr>
+      <th align="center">{buildings_on_planet}</th>
+      <th colspan="3" align="center"  style="white-space: nowrap;">
+        <font color="#CCF19F">{planet_field_current} / {planet_field_max} {Points_1}</font><br />
+        <div align=left style="border: 1px solid rgb(153, 153, 255); width: 100%;">
+          <div id="CaseBarre" align=center style="position: relative; left: 0px; background-color: {case_barre_barcolor}; width: {case_barre}%;">{case_pourcentage}%</div>
+        </div>
+      </th>
+    </tr>
+    <tr>
+      <th>{orb}</th>
+      <th colspan="3">{L_sys_metal}: {metal_debris} / {L_sys_crystal}: {crystal_debris}{get_link}</th>
+    </tr>
+    <tr>
+      <th>{Diameter}</th>
+      <th>{planet_diameter} {km}</th>
+      <th>{Temperature}</th>
+      <th>{planet_temp_min}&deg;C / {planet_temp_max}&deg;C</th>
+    </tr>
+  </table>
+
+  <table width="519">
+    <!-- <tr><td colspan="6" class="c">{L_ov_fleet_list}</td></tr> -->
+    
+    <tr align="center">
+      <td class="c" width="70">{L_ov_time}</td>
+      <td class="c" colspan="2">{L_ov_destination}</td>
+      <td class="c">{L_ov_fleet}</td>
+      <td class="c">{L_ov_mission}</td>
+      <td class="c">{L_ov_event}</td>
+    </tr>
 
     <!-- BEGIN fleets -->
+      <!-- IF fleets.S_FIRST_ROW -->
+        <!-- IF fleets.OV_THIS_PLANET -->
+          <tr><th colspan="6" class="c">{L_ov_this_planet}</th></tr>
+        <!-- ENDIF -->
+        <!-- DEFINE $THIS_PLANET = 1 -->
+      <!-- ENDIF -->
 
+      <!-- IF $THIS_PLANET == 1 && fleets.OV_THIS_PLANET != 1 -->
+        <tr><th colspan="6" class="c">{L_ov_other_planets}</th></tr>
+        <!-- DEFINE $THIS_PLANET = 2 -->
+      <!-- ENDIF -->
+      
       <!-- IF fleets.OV_LABEL == 0 -->
         <!-- DEFINE $OV_FLEET_ACTION = 'flight' -->
       <!-- ELSEIF fleets.OV_LABEL == 1 -->
@@ -76,66 +125,38 @@
         <!-- DEFINE $OV_FLEET_STYLE = 'transport' -->
       <!-- ENDIF -->
 
-      <tr class="{$OV_FLEET_ACTION}">
-        {fleet_javai}
+      <tr class="{$OV_FLEET_ACTION} {$OV_FLEET_PREFIX}{$OV_FLEET_STYLE}">
         <th>
           <div id="ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}" class="z">00:00:00</div>
-          <font color="lime">{fleets.OV_TIME_TEXT}</font>
+          {fleets.OV_TIME_TEXT}
         </th>
-        <th colspan="3">
-          <span class="{$OV_FLEET_ACTION} {$OV_FLEET_PREFIX}{$OV_FLEET_STYLE}">
-            <span style="cursor: pointer; font-weight: bold; text-decoration: underline;" onmouseover='fleet_dialog_show(this, {fleets.ID})' onmouseout='fleet_dialog_hide()'>
-              <!-- IF USER_ID == fleets.OWNER -->
-                {L_ov_fleet_yours}
-              <!-- ELSE -->
-                {L_ov_fleet_hostile}
-              <!-- ENDIF -->
-            {L_ov_fleet}</span>{L_ov_fleet_sent}
-            {fleets.START_NAME} {fleets.START_URL} {fleets.START_TYPE_TEXT_SH}
-            {L_ov_fleet_sent_to} {fleets.END_NAME} {fleets.END_URL} {fleets.END_TYPE_TEXT_SH} {L_ov_fleet_mission} <font color="white">{fleets.MISSION_NAME}</font>
-            <!-- IF fleets.OV_LABEL == 0 -->{L_ov_fleet_arrive}<!-- ELSEIF fleets.OV_LABEL == 1 -->{L_ov_fleet_hold}<!-- ELSEIF fleets.OV_LABEL == 2 -->{L_ov_fleet_return}<!-- ENDIF -->
-          </span>
+        <!-- IF fleets.OV_LABEL == 0 || fleets.OV_LABEL == 1 -->
+          <th>{fleets.END_URL}<br>{fleets.END_TYPE_TEXT_SH}</th>
+          <th>{fleets.END_NAME}</th>
+        <!-- ELSEIF fleets.OV_LABEL == 2 -->
+          <th>{fleets.START_URL}<br>{fleets.START_TYPE_TEXT_SH}</th>
+          <th>{fleets.START_NAME}</th>
+        <!-- ENDIF -->
+        <th style="cursor: pointer;" onmouseover='fleet_dialog_show(this, {fleets.ID})' onmouseout='fleet_dialog_hide()'>
+          {fleets.AMOUNT}
         </th>
-        <script type="text/javascript"><!--
-          sn_timers.unshift(['ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}', 0, true, {TIME_NOW}, ['{L_sys_fleet_arrived}',[
-            ['{fleets.ID}', '', {fleets.OV_LEFT}, '0']
-          ]]]);
-        --></script>
+        <th>
+          {fleets.MISSION_NAME}
+        </th>
+        <th>
+          <!-- IF fleets.OV_LABEL == 0 -->{L_ov_fleet_arrive}<!-- ELSEIF fleets.OV_LABEL == 1 -->{fleets.MISSION_NAME} - {L_ov_fleet_hold}<!-- ELSEIF fleets.OV_LABEL == 2 -->{L_ov_fleet_return}<!-- ENDIF -->
+        </th>
       </tr>
+
+      <script type="text/javascript"><!--
+        sn_timers.unshift(['ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}', 0, true, {TIME_NOW}, ['{L_sys_fleet_arrived}',[
+          ['{fleets.ID}', '', {fleets.OV_LEFT}, '0']
+        ]]]);
+      --></script>
     <!-- BEGINELSE fleets -->
       <tr><th colspan=4>{L_ov_fleet_no_flying}</th></tr>
     <!-- END fleets -->
-
-    
-    {fleet_list}
-
-    <tr><td colspan="4" class="c">{L_Planet_menu}</td></tr>
-    <tr><th width=90>{L_ov_building}</th><th colspan=3><!-- IF BUILDING -->{BUILDING}<span id="ov_building"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
-    <tr><th>{L_ov_hangar}</th><th colspan="3"><!-- IF HANGAR -->{HANGAR}<span id="ov_hangar"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
-    <tr><th>{Teching}</th><th colspan="3"><!-- IF TECH -->{TECH}<span id="ov_tech"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
-
-    <tr><td class="c" colspan=4>{L_ov_planet_details}</td></tr>
-    <tr>
-      <th align="center">{buildings_on_planet}</th>
-      <th colspan="3" align="center"  style="white-space: nowrap;">
-        <font color="#CCF19F">{planet_field_current} / {planet_field_max} {Points_1}</font><br />
-        <div align=left style="border: 1px solid rgb(153, 153, 255); width: 100%;">
-          <div id="CaseBarre" align=center style="position: relative; left: 0px; background-color: {case_barre_barcolor}; width: {case_barre}%;">{case_pourcentage}%</div>
-        </div>
-      </th>
-    </tr>
-    <tr>
-      <th>{orb}</th>
-      <th colspan="3">{L_sys_metal}: {metal_debris} / {L_sys_crystal}: {crystal_debris}{get_link}</th>
-    </tr>
-    <tr>
-      <th>{Diameter}</th>
-      <th>{planet_diameter} {km}</th>
-      <th>{Temperature}</th>
-      <th>{planet_temp_min}&deg;C / {planet_temp_max}&deg;C</th>
-    </tr>
   </table>
-
   <table width=519>
     <tr><td colspan=4 class="c">
         <span class="fl">{L_ov_player_rpg} {user_username}</span>

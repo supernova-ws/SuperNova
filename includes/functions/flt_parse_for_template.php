@@ -46,6 +46,7 @@ function flt_parse_for_template($fleet, $index)
     'OV_LABEL'           => $fleet['ov_label'],
     'OV_TIME_TEXT'       => date('d.m.Y H:i:s', $fleet['ov_time']),
     'OV_LEFT'            => floor($fleet['ov_time'] + 1 - $time_now),
+    'OV_THIS_PLANET'     => $fleet['ov_this_planet'],
   );
 
   $ship_list = explode(';', $fleet['fleet_array']);

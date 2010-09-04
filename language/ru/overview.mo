@@ -85,19 +85,20 @@ $lang['ov_news_title']			= 'Новости';
 // 	
 $lang['ov_fleet_list']				= 'График движения флотов';
 
-$lang['ov_fleet_yours']				= 'Ваш ';
-$lang['ov_fleet_hostile']			= 'Чужой ';
-$lang['ov_fleet_friendly']			= 'Дружественный ';
-$lang['ov_fleet']                = 'флот';
+$lang['ov_fleet']                = 'Флот';
+$lang['ov_destination']          = 'Пункт назначения';
+$lang['ov_time']                 = 'Время';
+$lang['ov_mission']              = 'Задание';
+$lang['ov_event']                = 'Событие';
+$lang['ov_this_planet']          = 'Флоты, летящие на эту планету';
+$lang['ov_other_planets']        = 'Флоты, летящие на другие планеты';
 
-$lang['ov_fleet_arrive']         = 'достигнет точки назначения';
-$lang['ov_fleet_return']         = 'вернется';
-$lang['ov_fleet_hold']           = 'закончит задание';
-$lang['ov_fleet_sent']           = ' отправленный с ';
-$lang['ov_fleet_sent_to']        = ' на ';
+$lang['ov_fleet_arrive']         = 'Прибытие';
+$lang['ov_fleet_return']         = 'Возвращение';
+$lang['ov_fleet_hold']           = 'конец задания';
 
-$lang['ov_fleet_mission']        = ' с заданием ';
-$lang['ov_fleet_exploration']    = 'исследование звездной системы';
+$lang['ov_fleet_exploration']    = 'Исследование';
+$lang['ov_fleet_colonization']   = 'Колонизация планеты';
 
 $lang['ov_fleet_no_flying']      = 'Нет флотов в полете';
 
@@ -115,7 +116,6 @@ $lang['ov_planet_to_target']		= 'планету ';
 $lang['ov_moon_to_target']		= 'луну ';
 $lang['ov_debris_to_target']		= 'поле обломков ';
 $lang['ov_explo_to_target']		= 'позиции ';
-$lang['ov_mission']			= '. Задание : ';
 
 $lang['ov_explo_stay']			= ' на исследование ';
 $lang['ov_explo_mission']		= '. Задание : ';
@@ -156,7 +156,7 @@ $lang['InfoUserbar'] = 'BBCode для вставки юзербара на форуме';
 
 $lang['ov_planet_details'] = 'Подробно о планете';
 $lang['ov_operations']     = 'переименовать/покинуть';
-$lang['ov_building']       = 'Текущее строительство';
+$lang['ov_building']       = 'Здания';
 $lang['ov_hangar']         = 'Верфи';
 $lang['ov_rank']           = 'Ранг';
 

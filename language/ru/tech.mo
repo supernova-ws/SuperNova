@@ -18,14 +18,14 @@ $lang['comingsoon']   = "Скоро";
 $lang['te_dt_tx_pre'] = "Слабая добыча";
 
 
-$lang['type_mission'][1]  = "Атаковать";
+$lang['type_mission'][1]  = "Атака";
 $lang['type_mission'][2]  = "Совместная атака";
 $lang['type_mission'][3]  = "Транспорт";
 $lang['type_mission'][4]  = "Передислокация";
-$lang['type_mission'][5]  = "Удерживать";
+$lang['type_mission'][5]  = "Удержание";
 $lang['type_mission'][6]  = "Шпионаж";
-$lang['type_mission'][7]  = "Колонизировать";
-$lang['type_mission'][8]  = "Переработать";
+$lang['type_mission'][7]  = "Колонизация";
+$lang['type_mission'][8]  = "Переработка";
 $lang['type_mission'][9]  = "Уничтожение";
 $lang['type_mission'][15] = "Экспедиция";
 
