@@ -66,51 +66,12 @@
     <!-- BEGINELSE news -->
       <tr><td colspan="4" class="c">{L_ov_news_none}</td></tr>
     <!-- END news -->
-    
-    <tr><td colspan="4" class="c">{L_Planet_menu}</td></tr>
-    <tr><th width=90>{L_ov_building}</th><th colspan=3><!-- IF BUILDING -->{BUILDING}<span id="ov_building"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
-    <tr><th>{L_ov_hangar}</th><th colspan="3"><!-- IF HANGAR -->{HANGAR}<span id="ov_hangar"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
-    <tr><th>{Teching}</th><th colspan="3"><!-- IF TECH -->{TECH}<span id="ov_tech"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
-
-    <!-- IF PLANET_FILL >= 100 -->
-      <!-- DEFINE $BAR_COLOR = '#C00000' -->
-    <!-- ELSEIF PLANET_FILL >= 100 -->
-      <!-- DEFINE $BAR_COLOR = '#C0C000' -->
-    <!-- ELSE -->
-      <!-- DEFINE $BAR_COLOR = '#00C000' -->
-    <!-- ENDIF -->
-
-    <tr><td class="c" colspan=4>{L_ov_planet_details}</td></tr>
-    <tr>
-      <th align="center">{buildings_on_planet}</th>
-      <th colspan="3" align="center"  style="white-space: nowrap;">
-        <font color="#CCF19F">{planet_field_current} / {planet_field_max} {Points_1}</font><br />
-        <div align=left style="border: 1px solid rgb(153, 153, 255); width: 100%;">
-          <div id="CaseBarre" align=center style="position: relative; left: 0px; background-color: {$BAR_COLOR}; width: {PLANET_FILL_BAR}%;">{PLANET_FILL}%</div>
-        </div>
-      </th>
-    </tr>
-    <tr>
-      <th>{orb}</th>
-      <th colspan="3">{L_sys_metal}: {metal_debris} / {L_sys_crystal}: {crystal_debris}
-        <!-- IF CAN_RECYCLE -->
-          <br>(<a href="quickfleet.php?mode=8&g={PLANET_GALAXY}&s={PLANET_SYSTEM}&p={PLANET_PLANET}&t=2">{L_type_mission[8]}</a>)
-        <!-- ENDIF -->
-      </th>
-    </tr>
-    <tr>
-      <th>{Diameter}</th>
-      <th>{planet_diameter} {km}</th>
-      <th>{Temperature}</th>
-      <th>{planet_temp_min}&deg;C / {planet_temp_max}&deg;C</th>
-    </tr>
-  </table>
+  </table>    
 
   <table width="519">
     <!-- <tr><td colspan="6" class="c">{L_ov_fleet_list}</td></tr> -->
-    
     <tr align="center">
-      <td class="c" width="70">{L_ov_time}</td>
+      <td class="c">{L_ov_time}</td>
       <td class="c" colspan="2">{L_ov_destination}</td>
       <td class="c">{L_ov_fleet}</td>
       <td class="c">{L_ov_mission}</td>
@@ -169,7 +130,7 @@
       <!-- ENDIF -->
 
       <tr class="{$OV_FLEET_ACTION} {$OV_FLEET_PREFIX}{$OV_FLEET_STYLE}">
-        <th>
+        <th width=70>
           <div id="ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}" class="z">00:00:00</div>
           {fleets.OV_TIME_TEXT}
         </th>
@@ -200,6 +161,47 @@
       <tr><th colspan=6>{L_ov_fleet_no_flying}</th></tr>
     <!-- END fleets -->
   </table>
+
+  <table width="519">
+    <tr><td colspan="4" class="c">{L_Planet_menu}</td></tr>
+    <tr><th width=100>{L_ov_building}</th><th colspan=3><!-- IF BUILDING -->{BUILDING}<span id="ov_building"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
+    <tr><th>{L_ov_hangar}</th><th colspan="3"><!-- IF HANGAR -->{HANGAR}<span id="ov_hangar"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
+    <tr><th>{Teching}</th><th colspan="3"><!-- IF TECH -->{TECH}<span id="ov_tech"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
+
+    <!-- IF PLANET_FILL >= 100 -->
+      <!-- DEFINE $BAR_COLOR = '#C00000' -->
+    <!-- ELSEIF PLANET_FILL >= 100 -->
+      <!-- DEFINE $BAR_COLOR = '#C0C000' -->
+    <!-- ELSE -->
+      <!-- DEFINE $BAR_COLOR = '#00C000' -->
+    <!-- ENDIF -->
+
+    <tr><td class="c" colspan=4>{L_ov_planet_details}</td></tr>
+    <tr>
+      <th width=100 align="center">{buildings_on_planet}</th>
+      <th colspan="3" align="center"  style="white-space: nowrap;">
+        <font color="#CCF19F">{planet_field_current} / {planet_field_max} {Points_1}</font><br />
+        <div align=left style="border: 1px solid rgb(153, 153, 255); width: 100%;">
+          <div id="CaseBarre" align=center style="position: relative; left: 0px; background-color: {$BAR_COLOR}; width: {PLANET_FILL_BAR}%;">{PLANET_FILL}%</div>
+        </div>
+      </th>
+    </tr>
+    <tr>
+      <th width=100>{orb}</th>
+      <th colspan="3">{L_sys_metal}: {metal_debris} / {L_sys_crystal}: {crystal_debris}
+        <!-- IF CAN_RECYCLE -->
+          <br>(<a href="quickfleet.php?mode=8&g={PLANET_GALAXY}&s={PLANET_SYSTEM}&p={PLANET_PLANET}&t=2">{L_type_mission[8]}</a>)
+        <!-- ENDIF -->
+      </th>
+    </tr>
+    <tr>
+      <th>{Diameter}</th>
+      <th>{planet_diameter} {km}</th>
+      <th>{Temperature}</th>
+      <th>{planet_temp_min}&deg;C / {planet_temp_max}&deg;C</th>
+    </tr>
+  </table>
+
 
   <table width=519>
     <tr>
