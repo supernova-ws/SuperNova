@@ -2,6 +2,13 @@
 /**
  * index.php - overview.php
  *
+ * 2.3 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [*] Complying with PCG
+ * 2.2 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [+] Redo flying fleet list
+ * 2.1 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [+] Planets on planet list now have indication of planet fill
+ *     [+] Planets on planet list now have indication when there is enemy fleet flying to planet
  * 2.0 - copyright (c) 2010 by Gorlum for http://supernova.ws
  *     [+] Now there is full planet list on right side of screen a-la oGame
  *     [+] Planet list now include icons for buildings/tech/fleet on progress
@@ -18,7 +25,8 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-if (filesize('config.php') == 0) {
+if (filesize('config.php') == 0)
+{
   header('location: install/');
   exit();
 }
@@ -27,8 +35,19 @@ define('INSIDE'  , true);
 define('INSTALL' , false);
 
 $ugamela_root_path = './';
-include($ugamela_root_path . 'extension.inc');
-include($ugamela_root_path . 'common.' . $phpEx);
+include("{$ugamela_root_path}extension.inc");
+include("{$ugamela_root_path}common.{$phpEx}");
+
+if ($IsUserChecked == false) {
+  includeLang('login');
+  header('Location: login.php');
+}
+
+if((filesize("{$ugamela_root_path}badqrys.txt") > 0) && ($user['authlevel'] >= 2)){
+  echo "<a href=\"badqrys.txt\" target=\"_NEW\"><font color=\"red\">{$lang['ov_hack_alert']}</font</a>";
+}
+
+check_urlaubmodus ($user);
 
 function int_assign_event($fleet, $ov_label)
 {
@@ -56,11 +75,21 @@ function int_assign_event($fleet, $ov_label)
     break;
 
     case 2:
+    case 3:
       $fleet['ov_time'] = $fleet['fleet_end_time'];
       $is_this_planet = (
         ($planetrow['galaxy'] == $fleet['fleet_start_galaxy']) AND
         ($planetrow['system'] == $fleet['fleet_start_system']) AND
         ($planetrow['planet'] == $fleet['fleet_start_planet']) AND
+        ($planetrow['planet_type'] == $fleet['fleet_start_type']));
+    break;
+
+    case 3:
+      $fleet['ov_time'] = $fleet['zeit'];
+      $is_this_planet = (
+        ($planetrow['galaxy'] == $fleet['galaxy']) AND
+        ($planetrow['system'] == $fleet['system']) AND
+        ($planetrow['planet'] == $fleet['planet']) AND
         ($planetrow['planet_type'] == $fleet['fleet_start_type']));
     break;
   }
@@ -87,7 +116,7 @@ function int_fleet_compare($a, $b)
   }
 }
 
-function int_template_assign(&$fleets, $suffix = '')
+function int_template_assign(&$fleets)
 {
   global $template;
 
@@ -95,86 +124,43 @@ function int_template_assign(&$fleets, $suffix = '')
 
   foreach($fleets as $fleet_data)
   {
-    $template->assign_block_vars("fleets$suffix", $fleet_data['fleet']);
+    $template->assign_block_vars('fleets', $fleet_data['fleet']);
 
     foreach($fleet_data['ships'] as $ship_data)
     {
-      $template->assign_block_vars("fleets$suffix.ships", $ship_data);
+      $template->assign_block_vars('fleets.ships', $ship_data);
     }
   }
 }
 
-$mode = $_GET['mode'];
-$pl = mysql_escape_string($_GET['pl']);
-$POST_deleteid = intval($_POST['deleteid']);
-$POST_action = SYS_mysqlSmartEscape($_POST['action']);
-$POST_kolonieloeschen = intval($_POST['kolonieloeschen']);
-$POST_newname = SYS_mysqlSmartEscape($_POST['newname']);
-
-// Русская дата
-$dz_tyg=date("w");
-$dzien=date("d");
-$miesiac=date("m");
-$rok=date("Y");
-$hour=date("H");
-$min=date("i");
-$sec=date("s");
-switch ($dz_tyg){
-case '1': $dz_tyg = 'Понедельник'; break;
-case '2': $dz_tyg = 'Вторник'; break;
-case '3': $dz_tyg = 'Среда'; break;
-case '4': $dz_tyg = 'Четверг'; break;
-case '5': $dz_tyg = 'Пятница'; break;
-case '6': $dz_tyg = 'Суббота'; break;
-case '0': $dz_tyg = 'Воскресенье'; break;
-}
-switch ($miesiac)
-{
-case '01': $miesiac = 'Января'; break;
-case '02': $miesiac = 'Февраля'; break;
-case '03': $miesiac = 'Марта'; break;
-case '04': $miesiac = 'Апреля'; break;
-case '05': $miesiac = 'Мая'; break;
-case '06': $miesiac = 'Июня'; break;
-case '07': $miesiac = 'Июля'; break;
-case '08': $miesiac = 'Августа'; break;
-case '09': $miesiac = 'Сентября'; break;
-case '10': $miesiac = 'Октября'; break;
-case '11': $miesiac = 'Ноября'; break;
-case '12': $miesiac = 'Декабря'; break;
-}
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header("Location: login.php");
-}
-
-if((filesize($ugamela_root_path.'badqrys.txt') > 0) && ($user['authlevel'] >= 2)){
-  echo "<a href=\"badqrys.txt\" target=\"_NEW\"><font color=\"red\">Попытка взлома БД!!!</font</a>";
-}
-
-check_urlaubmodus ($user);
-
 includeLang('resources');
 includeLang('overview');
 
-$template = gettemplate('overview', true);
+$mode                 = $_GET['mode'];
+$POST_deleteid        = intval($_POST['deleteid']);
+$POST_action          = SYS_mysqlSmartEscape($_POST['action']);
+$POST_kolonieloeschen = intval($_POST['kolonieloeschen']);
+$POST_newname         = SYS_mysqlSmartEscape($_POST['newname']);
 
-switch ($mode) {
+switch ($mode)
+{
   case 'renameplanet':
     // -----------------------------------------------------------------------------------------------
-    if ($POST_action == $lang['namer']) {
+    if ($POST_action == $lang['namer'])
+    {
       // Reponse au changement de nom de la planete
       $UserPlanet     = CheckInputStrings ( $POST_newname );
       $newname        = mysql_escape_string(strip_tags(trim( $UserPlanet )));
-      if ($newname != "") {
+      if ($newname)
+      {
         // Deja on met jour la planete qu'on garde en memoire (pour le nom)
         $planetrow['name'] = $newname;
         // Ensuite, on enregistre dans la base de donnГ©es
-        doquery("UPDATE {{table}} SET `name` = '".$newname."' WHERE `id` = '". $user['current_planet'] ."' LIMIT 1;", "planets");
+        doquery("UPDATE {{planets}} SET `name` = '{$newname}' WHERE `id` = '{$user['current_planet']}' LIMIT 1;");
       }
-
-    } elseif ($POST_action == $lang['colony_abandon']) {
+    }
+    elseif ($POST_action == $lang['colony_abandon'])
+    {
       // Cas d'abandon d'une colonie
       // Affichage de la forme d'abandon de colonie
       $parse                   = $lang;
@@ -184,38 +170,23 @@ switch ($mode) {
       $parse['galaxy_planet']  = $planetrow['planet'];
       $parse['planet_name']    = $planetrow['name'];
 
-      $page                   .= parsetemplate(gettemplate('overview_deleteplanet'), $parse);
-
-      // On affiche la forme pour l'abandon de la colonie
-      display($page, $lang['rename_and_abandon_planet']);
-
-    } elseif ($POST_kolonieloeschen == 1 && $POST_deleteid == $user['current_planet']) {
-      // Controle du mot de passe pour abandon de colonie
-      if (md5($_POST['pw']) == $user["password"] && $user['id_planet'] != $user['current_planet']) {
-        $destruyed        = time() + 60 * 60 * 24;
-
-        $QryUpdatePlanet  = "UPDATE {{table}} SET ";
-        $QryUpdatePlanet .= "`destruyed` = '".$destruyed."', ";
-        $QryUpdatePlanet .= "`id_owner` = '0' ";
-        $QryUpdatePlanet .= "WHERE ";
-        $QryUpdatePlanet .= "`id` = '".$user['current_planet']."' LIMIT 1;";
-        doquery( $QryUpdatePlanet , 'planets');
-
-        $QryUpdateUser    = "UPDATE {{table}} SET ";
-        $QryUpdateUser   .= "`current_planet` = `id_planet` ";
-        $QryUpdateUser   .= "WHERE ";
-        $QryUpdateUser   .= "`id` = '". $user['id'] ."' LIMIT 1";
-        doquery( $QryUpdateUser, "users");
-
-        // Tout s'est bien passГ© ! La colo a Г©tГ© effacГ©e !!
-        message($lang['deletemessage_ok']   , $lang['colony_abandon'], 'overview.php?mode=renameplanet');
-
-      } elseif ($user['id_planet'] == $user["current_planet"]) {
-        // Et puis quoi encore ??? On ne peut pas effacer la planete mere ..
-        // Uniquement les colonies crГ©es apres coup !!!
+      display(parsetemplate(gettemplate('overview_deleteplanet'), $parse), $lang['rename_and_abandon_planet']);
+    }
+    elseif ($POST_kolonieloeschen == 1 && $POST_deleteid == $user['current_planet'])
+    {
+      if (md5($_POST['pw']) == $user['password'] && $user['id_planet'] != $user['current_planet'])
+      {
+        $destruyed        = $time_now + 60 * 60 * 24;
+        doquery("UPDATE {{planets}} SET `destruyed`='{$destruyed}', `id_owner`='0' WHERE `id`='{$user['current_planet']}' LIMIT 1;");
+        doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = '{$user['id']}' LIMIT 1");
+        message($lang['deletemessage_ok'], $lang['colony_abandon'], 'overview.php?mode=renameplanet');
+      }
+      elseif ($user['id_planet'] == $user['current_planet'])
+      {
         message($lang['deletemessage_wrong'], $lang['colony_abandon'], 'overview.php?mode=renameplanet');
-      } else {
-        // Erreur de saisie du mot de passe je n'efface pas !!!
+      }
+      else
+      {
         message($lang['deletemessage_fail'] , $lang['colony_abandon'], 'overview.php?mode=renameplanet');
       }
     }
@@ -228,36 +199,25 @@ switch ($mode) {
     $parse['galaxy_planet'] = $planetrow['planet'];
     $parse['planet_name']   = $planetrow['name'];
 
-    $page                  .= parsetemplate(gettemplate('overview_renameplanet'), $parse);
+    $page .= parsetemplate(gettemplate('overview_renameplanet'), $parse);
 
-    // On affiche la page permettant d'abandonner OU de renomme une Colonie / Planete
     display($page, $lang['rename_and_abandon_planet']);
-    break;
+  break;
 
   default:
     // --- Gestion des messages ----------------------------------------------------------------------
-    $Have_new_message = "";
-    if ($user['new_message'] != 0) {
-      $Have_new_message .= "<tr>";
-      if ($user['new_message'] == 1) {
-        $Have_new_message .= "<th colspan=4><a href=messages.{$phpEx}>". $lang['Have_new_message']."</a></th>";
-      } elseif ($user['new_message'] > 1) {
-        $Have_new_message .= "<th colspan=4><a href=messages.{$phpEx}>";
-        $m = pretty_number($user['new_message']);
-        $Have_new_message .= str_replace('%m', $m, $lang['Have_new_messages']);
-        $Have_new_message .= "</a></th>";
-      }
-      $Have_new_message .= "</tr>";
-    }
-    // -----------------------------------------------------------------------------------------------
+    $template = gettemplate('overview', true);
 
     // --- Gestion Officiers -------------------------------------------------------------------------
     // Passage au niveau suivant, ajout du point de compГ©tence et affichage du passage au nouveau level
 
-    if ($user['xpminier']>=rpg_get_miner_xp($user['lvl_minier'])) {
+    if ($user['xpminier']>=rpg_get_miner_xp($user['lvl_minier']))
+    {
       $minerXPLevel = $user['lvl_minier'];
       while ($user['xpminier']>=rpg_get_miner_xp($minerXPLevel))
+      {
         $minerXPLevel++;
+      }
 
       $miner_lvl_up = $minerXPLevel - $user['lvl_minier'];
       doquery("UPDATE `{{users}}` SET `lvl_minier` = `lvl_minier` + '{$miner_lvl_up}' WHERE `id` = '{$user['id']}'");
@@ -267,10 +227,13 @@ switch ($mode) {
       $isNewLevelMiner = true;
     }
 
-    if ($user['xpraid']>=RPG_get_raider_xp($user['lvl_raid'])) {
+    if ($user['xpraid']>=RPG_get_raider_xp($user['lvl_raid']))
+    {
       $raidXPLevel = $user['lvl_raid'];
       while ($user['xpraid']>=RPG_get_raider_xp($raidXPLevel))
+      {
         $raidXPLevel++;
+      }
 
       $raid_lvl_up = $raidXPLevel - $user['lvl_raid'];
       doquery("UPDATE `{{users}}` SET `lvl_raid` = `lvl_raid` + '{$raid_lvl_up}' WHERE `id` = '{$user['id']}'");
@@ -280,14 +243,13 @@ switch ($mode) {
       $isNewLevelRaid = true;
     }
 
-    $raid_lvl_up = intval($raid_lvl_up);
-    $miner_lvl_up = intval($miner_lvl_up);
-
-    $fleets = array();
     // -----------------------------------------------------------------------------------------------
-    // Filling table with fleet events regarding to current users
+    // Filling table with fleet events relating to current users
+    $fleets = array();
     $fleet_number = 0;
-    $flying_fleets_mysql = doquery("SELECT DISTINCT * FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}' OR `fleet_target_owner` = '{$user['id']}';");
+    $flying_fleets_mysql = doquery(
+      "SELECT DISTINCT * FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}' OR `fleet_target_owner` = '{$user['id']}';"
+    );
     while ($fleet = mysql_fetch_array($flying_fleets_mysql))
     {
       $planet_start_type = $fleet['fleet_start_type'] == 3 ? 3 : 1;
@@ -338,36 +300,90 @@ switch ($mode) {
         int_assign_event($fleet, 2);
       }
     }
+
+    // -----------------------------------------------------------------------------------------------
+    // Adding missile attacks to fleet event table
+    $iraks_query = doquery("SELECT * FROM `{{iraks}}` WHERE `owner` = '{$user['id']}'");
+    while ($irak = mysql_fetch_array ($iraks_query))
+    {
+      if ($irak['zeit'] >= $time_now) {
+        $planet_start = doquery("SELECT `name` FROM `{{planets}}` WHERE
+          `galaxy` = '{$irak['galaxy']}' AND
+          `system` = '{$irak['system']}' AND
+          `planet` = '{$irak['planet']}' AND
+          `planet_type` = '1'", '', true);
+
+        $irak['fleet_id']             = -$irak['anzahl'];
+        $irak['fleet_owner']          = $irak['owner'];
+        $irak['fleet_mission']        = MT_MISSILE;
+        $irak['fleet_array']          = "503,{$irak['anzahl']};";
+        $irak['fleet_amount']         = $irak['anzahl'];
+
+        $irak['fleet_end_galaxy']     = $irak['galaxy'];
+        $irak['fleet_end_system']     = $irak['system'];
+        $irak['fleet_end_planet']     = $irak['planet'];
+        $irak['fleet_end_type']       = 1;
+        $irak['fleet_end_time']       = $irak['zeit'];
+        $irak['fleet_end_name']       = $planet_start['name'];
+
+        //$irak['fleet_start_galaxy'] = $irak['galaxy_angreifer'];
+        //$irak['fleet_start_system'] = $irak['system_angreifer'];
+        //$irak['fleet_start_planet'] = $irak['planet_angreifer'];
+        //$irak['fleet_start_type']   = 1;
+        //$irak['fleet_start_time']   = $irak['zeit'];
+
+        int_assign_event($irak, 3);
+      }
+    }
+
     int_template_assign($fleets);
 
     // -----------------------------------------------------------------------------------------------
     // --- Gestion de la liste des planetes ----------------------------------------------------------
     // Planetes ...
-    switch($user['planet_sort']){
-      case 1: $planetSort = '`galaxy` %1$s, `system` %1$s, `planet` %1$s';break;
-      case 2: $planetSort = '`name` %s';break;
-      default:$planetSort = '`id` %s';break;
+    switch($user['planet_sort'])
+    {
+      case 1:
+        $planetSort = '`galaxy` %1$s, `system` %1$s, `planet` %1$s';
+      break;
+
+      case 2:
+        $planetSort = '`name` %s';
+      break;
+
+      default:
+        $planetSort = '`id` %s';
+      break;
     }
+
     if($user['planet_sort_order'])
+    {
       $planetSort = sprintf($planetSort, 'DESC');
+    }
     else
+    {
       $planetSort = sprintf($planetSort, 'ASC');
+    }
 
     $planets_query = doquery("SELECT * FROM {{planets}} WHERE id_owner='{$user['id']}' AND planet_type = 1 ORDER BY {$planetSort};");
     $Colone  = 1;
 
-    while ($UserPlanet = mysql_fetch_array($planets_query)) {
+    while ($UserPlanet = mysql_fetch_array($planets_query))
+    {
       $buildArray = array();
-      if ($UserPlanet['b_building'] != 0) {
-        UpdatePlanetBatimentQueueList ( $UserPlanet, $user );
-        if ( $UserPlanet['b_building'] != 0 ) {
-          $QueueArray      = explode ( ";", $UserPlanet['b_building_id'] );
-          $CurrentBuild    = explode ( ",", $QueueArray[0] );
+      if ($UserPlanet['b_building']) {
+        UpdatePlanetBatimentQueueList ($UserPlanet, $user);
+        if ( $UserPlanet['b_building'] != 0 )
+        {
+          $QueueArray      = explode ( ';', $UserPlanet['b_building_id'] );
+          $CurrentBuild    = explode ( ',', $QueueArray[0] );
 
           $buildArray['BUILD_NAME']  = $lang['tech'][$CurrentBuild[0]];
           $buildArray['BUILD_LEVEL'] = $CurrentBuild[1];
           $buildArray['BUILD_TIME']  = pretty_time( $CurrentBuild[3] - time() );
-        } else {
+        }
+        else
+        {
           CheckPlanetUsedFields ($UserPlanet);
         }
       }
@@ -380,9 +396,9 @@ switch ($mode) {
           fleet_end_type   = 1 AND
           fleet_mess       = 0 AND
           (fleet_mission = 1 OR fleet_mission = 2)
-          ", '', true);
+      ", '', true);
 
-      $moon = doquery("SELECT * FROM {{table}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3;", 'planets', true);
+      $moon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3;", '', true);
       if($moon)
       {
         $enemy_fleet_moon = doquery("SELECT count(*) AS fleets_count FROM {{fleets}}
@@ -393,6 +409,11 @@ switch ($mode) {
             fleet_end_type   = 3 AND
             fleet_mess       = 0 AND
             (fleet_mission = 1 OR fleet_mission = 2 OR fleet_mission = 9)", '', true);
+        $moon_fill = min(100, floor($moon['field_current'] / CalculateMaxPlanetFields($moon) * 100));
+      }
+      else
+      {
+        $moon_fill = 0;
       }
 
       $template->assign_block_vars('planet', array_merge(
@@ -416,90 +437,61 @@ switch ($mode) {
           'MOON_ID'    => $moon['id'],
           'MOON_NAME'  => $moon['name'],
           'MOON_IMG'   => $moon['image'],
-          'MOON_FILL'  => min(100, floor($moon['field_current'] / CalculateMaxPlanetFields($moon) * 100)),
+          'MOON_FILL'  => $moon_fill,
           'MOON_ENEMY' => $enemy_fleet_moon['fleets_count'],
         ), $buildArray));
     }
-    // -----------------------------------------------------------------------------------------------
-
-    // --- Gestion des attaques missiles -------------------------------------------------------------
-    $iraks_query = doquery("SELECT * FROM `{{table}}` WHERE `owner` = '" . $user['id'] . "'", 'iraks');
-    $Record = 4000;
-    while ($irak = mysql_fetch_array ($iraks_query)) {
-      $Record++;
-      $fpage[$irak['zeit']] = '';
-
-      if ($irak['zeit'] > time()) {
-        $time = $irak['zeit'] - time();
-
-        $fpage[$irak['zeit']] .= InsertJavaScriptChronoApplet ( "fm", $Record, $time, true );
-
-        $planet_start = doquery("SELECT * FROM `{{table}}` WHERE
-        `galaxy` = '" . $irak['galaxy'] . "' AND
-        `system` = '" . $irak['system'] . "' AND
-        `planet` = '" . $irak['planet'] . "' AND
-        `planet_type` = '1'", 'planets');
-
-        $user_planet = doquery("SELECT * FROM `{{table}}` WHERE
-        `galaxy` = '" . $irak['galaxy_angreifer'] . "' AND
-        `system` = '" . $irak['system_angreifer'] . "' AND
-        `planet` = '" . $irak['planet_angreifer'] . "' AND
-        `planet_type` = '1'", 'planets', true);
-
-        if (mysql_num_rows($planet_start) == 1) {
-          $planet = mysql_fetch_array($planet_start);
-        }
-
-        $fpage[$irak['zeit']] .= "<tr><th><div id=\"bxxfm$Record\" class=\"z\"></div><font color=\"lime\">" . date("H:i:s", $irak['zeit'] + 1 * 60 * 60) . "</font> </th><th colspan=\"3\"><font color=\"#0099FF\">Ракетная атака (" . $irak['anzahl'] . ") с планеты " . $user_planet['name'] . " ";
-        $fpage[$irak['zeit']] .= '<a href="galaxy.php?mode=3&galaxy=' . $irak["galaxy_angreifer"] . '&system=' . $irak["system_angreifer"] . '&planet=' . $irak["planet_angreifer"] . '">[' . $irak["galaxy_angreifer"] . ':' . $irak["system_angreifer"] . ':' . $irak["planet_angreifer"] . ']</a>';
-        $fpage[$irak['zeit']] .= ' совершена на планету ' . $planet["name"] . ' ';
-        $fpage[$irak['zeit']] .= '<a href="galaxy.php?mode=3&galaxy=' . $irak["galaxy"] . '&system=' . $irak["system"] . '&planet=' . $irak["planet"] . '">[' . $irak["galaxy"] . ':' . $irak["system"] . ':' . $irak["planet"] . ']</a>';
-        $fpage[$irak['zeit']] .= '</font>';
-        $fpage[$irak['zeit']] .= InsertJavaScriptChronoApplet ( "fm", $Record, $time, false );
-        $fpage[$irak['zeit']] .= "</th>";
-      }
-    }
 
     // -----------------------------------------------------------------------------------------------
-
     $parse                         = $lang;
 
     // -----------------------------------------------------------------------------------------------
     // News Frame ...
-    if ($game_config['OverviewNewsFrame'] == '1') {
-      $parse['NewsFrame']          = "<tr><td colspan=4 class=\"c\">". $lang['ov_news_title'] . "</td></tr>";
+    if ($config->OverviewNewsFrame)
+    {
       $lastAnnounces = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now} ORDER BY `tsTimeStamp` DESC LIMIT {$config->game_news_overview}");
 
-      while ($lastAnnounce = mysql_fetch_array($lastAnnounces)){
-        $parse['NewsFrame'] .= "<tr><th>";
-        if($lastAnnounce['unix_time'] + $config->game_news_actual > $time_now )
-          $parse['NewsFrame'] .= "<font color=red>{$lang['ov_new']}</font><br>";
-        $parse['NewsFrame'] .= "<font color=Cyan>{$lastAnnounce['tsTimeStamp']}</font></th><th colspan=\"3\" valign=top><div align=justify>" . sys_bbcodeParse($lastAnnounce['strAnnounce']) ."</div></th></tr>";
+      while ($lastAnnounce = mysql_fetch_array($lastAnnounces))
+      {
+        $template->assign_block_vars('news', array(
+          'TIME'     => $lastAnnounce['tsTimeStamp'],
+          'ANNOUNCE' => sys_bbcodeParse($lastAnnounce['strAnnounce']),
+          'IS_NEW'   => $lastAnnounce['unix_time'] + $config->game_news_actual > $time_now,
+        ));
       }
     }
 
     // SuperNova's banner for users to use
-    if ($config->int_banner_showInOverview) {
-      $bannerURL = "http://".$_SERVER["SERVER_NAME"]. $config->int_banner_URL;
-      $bannerURL .= strpos($bannerURL, '?') ? '&' : '?';
-      $bannerURL .= "id=" . $user['id'];
-      $parse['bannerframe'] = "<th colspan=\"4\"><img src=\"".$bannerURL."\"><br>".$lang['sys_banner_bb']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$bannerURL."[/img]\" size=\"62\"></th></tr>";
+    if ($config->int_banner_showInOverview)
+    {
+      $delimiter = strpos($config->int_banner_URL, '?') ? '&' : '?';
+      $template->assign_vars(array(
+        'BANNER_URL' => "http://{$_SERVER["SERVER_NAME"]}{$config->int_banner_URL}{$delimiter}id={$user['id']}",
+      ));
     }
 
     // SuperNova's userbar to use on forums
-    if ($config->int_userbar_showInOverview) {
-      $userbarURL = "http://" . $_SERVER["SERVER_NAME"] . $config->int_userbar_URL;
-      $userbarURL .= strpos($userbarURL, '?') ? '&' : '?';
-      $userbarURL .= "id=" . $user['id'];
-      $parse['userbarframe'] = "<th colspan=\"4\"><img src=\"".$userbarURL."\"><br>".$lang['sys_userbar_bb']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$userbarURL."[/img]\" size=\"62\"></th></tr>";
+    if ($config->int_userbar_showInOverview)
+    {
+      $delimiter = strpos($config->int_userbar_URL, '?') ? '&' : '?';
+
+      $template->assign_vars(array(
+        'USERBAR_URL' => "http://{$_SERVER["SERVER_NAME"]}{$config->int_userbar_URL}{$delimiter}id={$user['id']}",
+      ));
     }
 
     // --- Gestion de l'affichage d'une lune ---------------------------------------------------------
     if($planetrow['planet_type'] == 1)
-      $lune = doquery("SELECT * FROM {{table}} WHERE `parent_planet` = '{$planetrow['id']}' AND `planet_type` = 3;", 'planets', true);
+    {
+      $lune = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$planetrow['id']}' AND `planet_type` = 3;", '', true);
+    }
     else
-      $lune = doquery("SELECT * FROM {{table}} WHERE `id` = '{$planetrow['parent_planet']}' AND `planet_type` = 1;", 'planets', true);
-    if ($lune) {
+    {
+      $lune = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['parent_planet']}' AND `planet_type` = 1;", '', true);
+    }
+
+    if ($lune)
+    {
       $template->assign_vars(array(
         'MOON_ID' => $lune['id'],
         'MOON_IMG' => $lune['image'],
@@ -508,109 +500,42 @@ switch ($mode) {
     }
     // Moon END
 
-    $parse['planet_name']          = $planetrow['name'];
-    $parse['planet_diameter']      = pretty_number($planetrow['diameter']);
-    $parse['planet_field_current'] = $planetrow['field_current'];
-    $parse['planet_field_max']     = CalculateMaxPlanetFields($planetrow);
-    $parse['planet_temp_min']      = $planetrow['temp_min'];
-    $parse['planet_temp_max']      = $planetrow['temp_max'];
-    $parse['galaxy_galaxy']        = $planetrow['galaxy'];
-    $parse['galaxy_planet']        = $planetrow['planet'];
-    $parse['galaxy_system']        = $planetrow['system'];
+
     $StatRecord = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."';", 'statpoints', true);
 
-    $parse['user_points']          = pretty_number( $StatRecord['build_points'] );
-    $parse['user_fleet']           = pretty_number( $StatRecord['fleet_points'] );
-    $parse['player_points_tech']   = pretty_number( $StatRecord['tech_points'] );
-    $parse['user_defs_points']     = pretty_number( $StatRecord['defs_points'] );
-    $parse['total_points']         = pretty_number( $StatRecord['total_points'] );;
-
-    $parse['user_rank']            = $StatRecord['total_rank'];
-    $ile = $StatRecord['total_old_rank'] - $StatRecord['total_rank'];
-    if ($ile >= 1) {
+    $ile                           = $StatRecord['total_old_rank'] - $StatRecord['total_rank'];
+    if ($ile >= 1)
+    {
       $parse['ile']              = "<font color=lime>+" . $ile . "</font>";
-    } elseif ($ile < 0) {
+    }
+    elseif ($ile < 0)
+    {
       $parse['ile']              = "<font color=red>-" . $ile . "</font>";
-    } elseif ($ile == 0) {
+    }
+    elseif ($ile == 0)
+    {
       $parse['ile']              = "<font color=lightblue>" . $ile . "</font>";
     }
-    $parse['u_user_rank']          = intval($StatRecord['total_rank']);
-    $parse['user_username']        = $user['username'];
 
-    if (count($fpage) > 0) {
-      ksort($fpage);
-      foreach ($fpage as $time => $content) {
-        $flotten .= $content . "\n";
-      }
-    }
+    $day_of_week = $lang['weekdays'][date('w')];
+    $day         = date('d');
+    $month       = $lang['months'][date('m')];
+    $year        = date('Y');
+    $hour        = date('H');
+    $min         = date('i');
+    $sec         = date('s');
 
-    $parse['fleet_list']  = $flotten;
-    $parse['energy_used'] = $planetrow["energy_max"] - $planetrow["energy_used"];
-
-    $parse['Have_new_message']      = $Have_new_message;
-    $parse['time']=" $dz_tyg, $dzien $miesiac $rok года - ";
-    $parse['dpath']                 = $dpath;
-    $parse['planet_image']          = $planetrow['image'];
-    $parse['max_users']             = $game_config['users_amount'];
-
-    $parse['metal_debris']          = pretty_number($planetrow['debris_metal']);
-    $parse['crystal_debris']        = pretty_number($planetrow['debris_crystal']);
-    if (($planetrow['debris_metal'] || $planetrow['debris_crystal']) && $planetrow[$resource[209]]) {
-      $parse['get_link'] = " (<a href=\"quickfleet.php?mode=8&g=".$planetrow['galaxy']."&s=".$planetrow['system']."&p=".$planetrow['planet']."&t=2\">". $lang['type_mission'][8] ."</a>)";
-    } else {
-      $parse['get_link'] = '';
-    }
-
-    $PlanetID   = $planetrow['id'];
     if ($planetrow['b_building'])
+    {
       UpdatePlanetBatimentQueueList ( $planetrow, $user );
-
-    $parse['BUILDING'] = int_buildCounter($planetrow, 'building');
-    $parse['HANGAR'] = int_buildCounter($planetrow, 'hangar');
-    $parse['TECH'] = int_buildCounter($planetrow, 'tech');
-
-    $query = doquery('SELECT username FROM {{table}} ORDER BY register_time DESC', 'users', true);
-    $parse['last_user'] = $query['username'];
-    $query = doquery("SELECT COUNT(DISTINCT(id)) FROM {{table}} WHERE onlinetime>" . (time()-900), 'users', true);
-    $parse['online_users'] = $query[0];
-    // $count = doquery(","users",true);
-    $parse['users_amount'] = $game_config['users_amount'];
-
-    // Rajout d'une barre pourcentage
-    // Calcul du pourcentage de remplissage
-    $parse['case_pourcentage'] = floor($planetrow['field_current'] / CalculateMaxPlanetFields($planetrow) * 100) . $lang['o/o'];
-    // Barre de remplissage
-    $parse['case_barre'] = floor($planetrow['field_current'] / CalculateMaxPlanetFields($planetrow) * 100);
-    // Couleur de la barre de remplissage
-    if ($parse['case_barre'] > 100) {
-      $parse['case_barre'] = 100;
-      $parse['case_barre_barcolor'] = '#C00000';
-    } elseif ($parse['case_barre'] > 80) {
-      $parse['case_barre_barcolor'] = '#C0C000';
-    } else {
-      $parse['case_barre_barcolor'] = '#00C000';
     }
 
-    //Mode AmГ©liorations
-    $parse['builder_xp']= $user['xpminier'];
-    $parse['builder_lvl'] = $user['lvl_minier'];
-    $parse['builder_lvl_up'] = rpg_get_miner_xp($user['lvl_minier']);
-
-    $parse['raid_xp']     = $user['xpraid'];
-    $parse['raid_lvl']    = $user['lvl_raid'];
-    $parse['raid_lvl_up'] = RPG_get_raider_xp($user['lvl_raid']);
-
-    $parse['raids'] = $user['raids'];
-    $parse['raidswin'] = $user['raidswin'];
-    $parse['raidsloose'] = $user['raidsloose'];
-
-    $parse['gameurl'] = GAMEURL;
-    $parse['kod'] = $user['kiler'];
+    $planet_fill = floor($planetrow['field_current'] / CalculateMaxPlanetFields($planetrow) * 100);
+    $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
 
     //Подсчет кол-ва онлайн и кто онлайн
-    $time = time() - 15*60;
-    $OnlineUsersNames2 = doquery("SELECT `username` FROM {{table}} WHERE `onlinetime`>'".$time."'",'users');
-    $parse['NumberMembersOnline'] = mysql_num_rows($OnlineUsersNames2);
+    $time = $time_now - 15*60;
+    $OnlineUsersNames2 = doquery("SELECT `username` FROM {{users}} WHERE `onlinetime`>'{$time}'");
 
 /*
     $ally = $user['ally_id'];
@@ -636,21 +561,63 @@ switch ($mode) {
     $msg .= '</table>';
 */
     $template->assign_vars(array(
-      'dpath'           => $dpath,
-      'TIME_NOW'        => $time_now,
+      'dpath'                => $dpath,
+      'TIME_NOW'             => $time_now,
+      'TIME_TEXT'            => "$day_of_week, $day $month $year {$lang['ov_of_year']},",
 
-      'USER_ID'         => $user['id'],
+      'USERS_ONLINE'         => mysql_num_rows($OnlineUsersNames2),
+      'USERS_TOTAL'          => $game_config['users_amount'],
 
-      'PLANET_ID'       => $planetrow['id'],
-      'PLANET_NAME'     => $planetrow['name'],
-      'PLANET_TYPE'     => $planetrow['planet_type'],
-      //'LastChat'        => CHT_messageParse($msg),
-      'admin_email'     => $config->game_adminEmail,
-      'NEW_LEVEL_MINER' => $isNewLevelMiner,
-      'NEW_LEVEL_RAID'  => $isNewLevelRaid,
+      'USER_ID'              => $user['id'],
+      'user_username'        => $user['username'],
 
+      'NEW_MESSAGES'         => $user['new_message'],
+      'NEW_LEVEL_MINER'      => $isNewLevelMiner,
+      'NEW_LEVEL_RAID'       => $isNewLevelRaid,
+
+      'PLANET_ID'            => $planetrow['id'],
+      'PLANET_GALAXY'        => $planetrow['galaxy'],
+      'PLANET_SYSTEM'        => $planetrow['system'],
+      'PLANET_PLANET'        => $planetrow['planet'],
+      'PLANET_NAME'          => $planetrow['name'],
+      'PLANET_TYPE_TEXT'     => $lang['sys_planet_type'][$planetrow['planet_type']],
+      'BUILDING'             => int_buildCounter($planetrow, 'building'),
+      'HANGAR'               => int_buildCounter($planetrow, 'hangar'),
+      'TECH'                 => int_buildCounter($planetrow, 'tech'),
+      'planet_diameter'      => pretty_number($planetrow['diameter']),
+      'planet_field_current' => $planetrow['field_current'],
+      'planet_field_max'     => CalculateMaxPlanetFields($planetrow),
+      'PLANET_FILL'          => floor($planetrow['field_current'] / CalculateMaxPlanetFields($planetrow) * 100),
+      'PLANET_FILL_BAR'      => $planet_fill,
+      'metal_debris'         => pretty_number($planetrow['debris_metal']),
+      'crystal_debris'       => pretty_number($planetrow['debris_crystal']),
+      'CAN_RECYCLE'          => ($planetrow['debris_metal'] || $planetrow['debris_crystal']) && $planetrow[$resource[209]],
+      'planet_temp_min'      => $planetrow['temp_min'],
+      'planet_temp_max'      => $planetrow['temp_max'],
+
+      'builder_xp'           => $user['xpminier'],
+      'builder_lvl'          => $user['lvl_minier'],
+      'builder_lvl_up'       => rpg_get_miner_xp($user['lvl_minier']),
+      'raid_xp'              => $user['xpraid'],
+      'raid_lvl'             => $user['lvl_raid'],
+      'raid_lvl_up'          => RPG_get_raider_xp($user['lvl_raid']),
+      'raids'                => $user['raids'],
+      'raidswin'             => $user['raidswin'],
+      'raidsloose'           => $user['raidsloose'],
+      'user_points'          => pretty_number( $StatRecord['build_points'] ),
+      'user_fleet'           => pretty_number( $StatRecord['fleet_points'] ),
+      'player_points_tech'   => pretty_number( $StatRecord['tech_points'] ),
+      'user_defs_points'     => pretty_number( $StatRecord['defs_points'] ),
+      'total_points'         => pretty_number( $StatRecord['total_points'] ),
+      'user_rank'            => $StatRecord['total_rank'],
+      'RANK_DIFF'            => $StatRecord['total_old_rank'] - $StatRecord['total_rank'],
+
+      'ADMIN_EMAIL'          => $config->game_adminEmail,
+
+      //'LastChat'       => CHT_messageParse($msg),
     ));
+
     display(parsetemplate($template, $parse), $lang['Overview']);
-    break;
+  break;
 }
 ?>

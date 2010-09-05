@@ -1,9 +1,10 @@
 <?php
 
+$lang['tech_storage_max'] = "Размер хранилища";
+$lang['tech_storage']     = "В хранилищах";
+
 $lang['Tech']         = "Технология";
 $lang['Requirements'] = "Требуется";
-$lang['Store_max']    = "Склад";
-$lang['Ressverf']     = "На складе";
 $lang['Metal']        = "Металл";
 $lang['Crystal']      = "Кристалл";
 $lang['Deuterium']    = "Дейтерий";
@@ -27,6 +28,7 @@ $lang['type_mission'][6]  = "Шпионаж";
 $lang['type_mission'][7]  = "Колонизация";
 $lang['type_mission'][8]  = "Переработка";
 $lang['type_mission'][9]  = "Уничтожение";
+$lang['type_mission'][10] = "Ракетная атака";
 $lang['type_mission'][15] = "Экспедиция";
 
 $lang['tech'] = array(

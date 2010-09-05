@@ -73,6 +73,7 @@ if ( defined('INSIDE') ) {
   define('MT_COLONIZE',  7);
   define('MT_RECYCLE',   8);
   define('MT_DESTROY',   9);
+  define('MT_MISSILE',  10);
   define('MT_EXPLORE',  15);
 
 

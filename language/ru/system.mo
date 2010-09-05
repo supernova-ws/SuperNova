@@ -153,14 +153,14 @@ $lang['sys_ships']           = "Корабли";
 $lang['sys_metal']      = "Металл";
 $lang['sys_crystal']    = "Кристалл";
 $lang['sys_deuterium']  = "Дейтрий";
-$lang['sys_darkMatter'] = "Темная Материя";
+$lang['sys_dark_matter'] = "Темная Материя";
 $lang['sys_energy']     = "Энергия";
 
 $lang['sys_resource'] = array(
   1 => $lang['sys_metal'],
   2 => $lang['sys_crystal'],
   3 => $lang['sys_deuterium'],
-  4 => $lang['sys_darkMatter'],
+  4 => $lang['sys_dark_matter'],
   5 => $lang['sys_energy'],
 );
 

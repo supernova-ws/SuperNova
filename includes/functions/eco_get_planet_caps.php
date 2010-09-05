@@ -64,6 +64,10 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet){
     {
       $Caps['production'] = 1;
     }
+
+    $Caps['real']['metal_perhour']     = floor($Caps['planet']['metal_perhour']     * $Caps['production'] + $Caps['metal_perhour'][0]);
+    $Caps['real']['crystal_perhour']   = floor($Caps['planet']['crystal_perhour']   * $Caps['production'] + $Caps['crystal_perhour'][0]);
+    $Caps['real']['deuterium_perhour'] = floor($Caps['planet']['deuterium_perhour'] * $Caps['production'] + $Caps['deuterium_perhour'][0]);
   }
 
   return $Caps;

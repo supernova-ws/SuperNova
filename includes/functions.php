@@ -196,9 +196,14 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
       $del_uhrzeit = date("H:i:s", $urlaub_del_time);
       //$DisplayPage .= "Vous êtes en del user!<br>Le mode del dure jusque $del_datum $del_uhrzeit<br>  Ce n'est qu'après cette période que vous pouvez changer vos options.";
     }
-    $DisplayPage .= ShowTopNavigationBar( $user, $planetrow );
+    $TopNav = ShowTopNavigationBar( $user, $planetrow );
   }
   echo $DisplayPage;
+
+  if(is_object($TopNav))
+    displayP($TopNav);
+  else
+    echo $TopNav;
 
   if(is_object($page))
     displayP($page);

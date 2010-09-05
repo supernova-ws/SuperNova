@@ -1,5 +1,8 @@
 <?php
 
+$lang['ov_of_year'] = 'года';
+$lang['ov_hack_alert'] = 'Попытка взлома БД!!!';
+
 $lang['months'] = array(
 	'01'=>'Января',
 	'02'=>'Февраля',
@@ -7,7 +10,7 @@ $lang['months'] = array(
 	'04'=>'Апреля',
 	'05'=>'Мая',
 	'06'=>'Июня',
-	'07'=>'Ибля :)',
+	'07'=>'Июля',
 	'08'=>'Августа',
 	'09'=>'Сентября',
 	'10'=>'Октября',
@@ -25,12 +28,14 @@ $lang['weekdays'] = array(
 	'6' => 'Суббота'
 );
 
+$lang['ov_you_have']			= 'У вас';
+$lang['ov_new_message']		= 'одно новое сообщение';
+$lang['ov_new_messages']	= 'новых сообщений';
+
 // General
 $lang['cancel']				= 'Отменить';
 $lang['Planet_menu']			= 'Строительство на планете';
 $lang['Planet']				= 'Планета';
-$lang['Have_new_message']		= 'У вас одно новое сообщение';
-$lang['Have_new_messages']		= 'У вас %m новых сообщений';
 $lang['Have_new_level_mineur']		= 'За достижения в экономике Вы выиграли очко развития офицеров!';
 $lang['Have_new_level_raid']		= 'За успешные атаки Вы выиграли очко развития офицеров!';
 $lang['Server_time']			= 'Время';
@@ -81,6 +86,7 @@ $lang['deletemessage_fail']		= 'Неверный пароль!';
 // 	
 $lang['MembersOnline']			= 'Игроки on-line';
 $lang['ov_news_title']			= 'Новости';
+$lang['ov_news_none']			= 'Нет новостей';
 
 // 	
 $lang['ov_fleet_list']				= 'График движения флотов';
@@ -90,12 +96,13 @@ $lang['ov_destination']          = 'Пункт назначения';
 $lang['ov_time']                 = 'Время';
 $lang['ov_mission']              = 'Задание';
 $lang['ov_event']                = 'Событие';
-$lang['ov_this_planet']          = 'Флоты, летящие на эту планету';
-$lang['ov_other_planets']        = 'Флоты, летящие на другие планеты';
+$lang['ov_flying_fleets']        = 'Флоты, летящие на';
+$lang['ov_other_planets']        = 'другие планеты';
 
 $lang['ov_fleet_arrive']         = 'Прибытие';
 $lang['ov_fleet_return']         = 'Возвращение';
 $lang['ov_fleet_hold']           = 'конец задания';
+$lang['ov_fleet_rocket']         = 'Ракетный удар';
 
 $lang['ov_fleet_exploration']    = 'Исследование';
 $lang['ov_fleet_colonization']   = 'Колонизация планеты';
@@ -104,9 +111,6 @@ $lang['ov_fleet_no_flying']      = 'Нет флотов в полете';
 
 
 
-
-$lang['ov_une']				= 'Ваш ';
-$lang['ov_une_hostile']			= 'Чужой ';
 
 $lang['ov_vennant']			= ' отправленный ';
 $lang['ov_planet_to']			= 'с планеты ';
@@ -146,13 +150,6 @@ $lang['RaidsLoose'] = 'Проиграно';
 $lang['Economica'] = 'Экономика';
 $lang['Teching'] = 'Иследования';
 
-$lang['InfoBanner'] = 'BBCode для вставки баннера на форуме';
-$lang['InfoUserbar'] = 'BBCode для вставки юзербара на форуме';
-
-
-
-
-
 
 $lang['ov_planet_details'] = 'Подробно о планете';
 $lang['ov_operations']     = 'переименовать/покинуть';
@@ -170,7 +167,8 @@ $lang['ov_level']               = 'Уровень';
 
 $lang['ov_player_rpg']          = 'Статистика игрока';
 
-$lang['ov_banner_and_userbar']  = 'Баннеры и юзербары';
+$lang['ov_banner']   = 'Баннер';
+$lang['ov_userbar']  = 'Юзербар';
 
 $lang['ov_banner_empty_id'] = 'SuperNova - Join The Game!';
 

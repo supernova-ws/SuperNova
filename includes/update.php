@@ -86,7 +86,7 @@ switch(intval($config->db_version)){
 
   case 2:
     if($tables['lunas'])
-      mysql_query("DROP TABLE {$config->db_prefix}lunas;");
+      mysql_query("DROP TABLE IF EXISTS {$config->db_prefix}lunas;");
     $newVersion = 3;
     set_time_limit(30);
 

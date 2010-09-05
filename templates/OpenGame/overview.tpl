@@ -1,9 +1,7 @@
 <!-- INCLUDE fleet_javascript.tpl -->
 
-<script language="JavaScript" type="text/javascript" src="scripts/time.js"></script>
 <script type="text/javascript"> 
   jQuery.noConflict(); 
-  setTimeout("HeureCheck()", 1000);
 </script> 
 <style type="text/css"><!--
 .style1 {color: #FF0000}
@@ -18,28 +16,69 @@
 <table><tr><th valign=top class="tr">
   <table width="519">
     <tr><td style="white-space: nowrap;" class="c" colspan=4>
-        <div class="fl">{Planet} "{planet_name}" <a href="galaxy.php?mode=0&galaxy={galaxy_galaxy}&system={galaxy_system}">[{galaxy_galaxy}:{galaxy_system}:{galaxy_planet}]</a></div>
+        <div class="fl">{PLANET_TYPE_TEXT} "{PLANET_NAME}" <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</a></div>
         <div class="fr"><a href="overview.php?mode=renameplanet"><font color="green">[{L_ov_operations}]</font></a></td></div>
     </td></tr>
-    {Have_new_message}
-    <!-- IF NEW_LEVEL_MINER --><tr><th colspan=4><a href=officier.php>{L_ov_rpg_new_level_miner}</a></th></tr><!-- ENDIF -->
-    <!-- IF NEW_LEVEL_RAID --><tr><th colspan=4><a href=officier.php>{L_ov_rpg_new_level_raid}</a></th></tr><!-- ENDIF -->
+    
+    <!-- IF NEW_MESSAGES -->
+      <tr><th colspan=4><a href=messages.php>
+        {L_ov_you_have}
+        <!-- IF NEW_MESSAGES == 1 -->
+          {L_ov_new_message}
+        <!-- ELSE -->
+          {NEW_MESSAGES} {L_ov_new_messages}
+        <!-- ENDIF -->
+      </a></th></tr>
+    <!-- ENDIF -->
+
+    <!-- IF NEW_LEVEL_MINER -->
+      <tr><th colspan=4><a href=officier.php>{L_ov_rpg_new_level_miner}</a></th></tr>
+    <!-- ENDIF -->
+    
+    <!-- IF NEW_LEVEL_RAID -->
+      <tr><th colspan=4><a href=officier.php>{L_ov_rpg_new_level_raid}</a></th></tr>
+    <!-- ENDIF -->
+    
     <tr>
       <th width="100">{Server_time}</th>
-      <th colspan="3" style="white-space: nowrap;">{time}<span id="dateheure">00:00:00</span></th>
+      <th colspan="3" style="white-space: nowrap;">{TIME_TEXT} <span id="ov_time">00:00:00</span></th>
     </tr>
+    
     <tr>
       <th>{MembersOnline}</th>
-      <th colspan="3"><a href="admin/overview.php" title="{MembersOnline2}">[{NumberMembersOnline}]</a></th>
+      <th colspan="3"><a href="admin/overview.php" title="{MembersOnline2}">[{USERS_ONLINE}]</a></th>
     </tr>
-    {NewsFrame}
-    
-    {fleet_list}
 
+    <!-- News Frame -->
+    <tr><td colspan=4 class="c">{L_ov_news_title}</td></tr>
+    <!-- BEGIN news -->
+      <tr>
+        <th>
+          <!-- IF news.IS_NEW -->
+            <font color=red>{$lang['ov_new']}</font><br>
+          <!-- ENDIF -->
+          <font color=cyan>{news.TIME}</font>
+        </th>
+        <th colspan="3" valign=top>
+          <div align=justify>{news.ANNOUNCE}</div>
+        </th>
+      </tr>
+    <!-- BEGINELSE news -->
+      <tr><td colspan="4" class="c">{L_ov_news_none}</td></tr>
+    <!-- END news -->
+    
     <tr><td colspan="4" class="c">{L_Planet_menu}</td></tr>
     <tr><th width=90>{L_ov_building}</th><th colspan=3><!-- IF BUILDING -->{BUILDING}<span id="ov_building"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
     <tr><th>{L_ov_hangar}</th><th colspan="3"><!-- IF HANGAR -->{HANGAR}<span id="ov_hangar"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
     <tr><th>{Teching}</th><th colspan="3"><!-- IF TECH -->{TECH}<span id="ov_tech"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
+
+    <!-- IF PLANET_FILL >= 100 -->
+      <!-- DEFINE $BAR_COLOR = '#C00000' -->
+    <!-- ELSEIF PLANET_FILL >= 100 -->
+      <!-- DEFINE $BAR_COLOR = '#C0C000' -->
+    <!-- ELSE -->
+      <!-- DEFINE $BAR_COLOR = '#00C000' -->
+    <!-- ENDIF -->
 
     <tr><td class="c" colspan=4>{L_ov_planet_details}</td></tr>
     <tr>
@@ -47,13 +86,17 @@
       <th colspan="3" align="center"  style="white-space: nowrap;">
         <font color="#CCF19F">{planet_field_current} / {planet_field_max} {Points_1}</font><br />
         <div align=left style="border: 1px solid rgb(153, 153, 255); width: 100%;">
-          <div id="CaseBarre" align=center style="position: relative; left: 0px; background-color: {case_barre_barcolor}; width: {case_barre}%;">{case_pourcentage}%</div>
+          <div id="CaseBarre" align=center style="position: relative; left: 0px; background-color: {$BAR_COLOR}; width: {PLANET_FILL_BAR}%;">{PLANET_FILL}%</div>
         </div>
       </th>
     </tr>
     <tr>
       <th>{orb}</th>
-      <th colspan="3">{L_sys_metal}: {metal_debris} / {L_sys_crystal}: {crystal_debris}{get_link}</th>
+      <th colspan="3">{L_sys_metal}: {metal_debris} / {L_sys_crystal}: {crystal_debris}
+        <!-- IF CAN_RECYCLE -->
+          <br>(<a href="quickfleet.php?mode=8&g={PLANET_GALAXY}&s={PLANET_SYSTEM}&p={PLANET_PLANET}&t=2">{L_type_mission[8]}</a>)
+        <!-- ENDIF -->
+      </th>
     </tr>
     <tr>
       <th>{Diameter}</th>
@@ -77,13 +120,13 @@
     <!-- BEGIN fleets -->
       <!-- IF fleets.S_FIRST_ROW -->
         <!-- IF fleets.OV_THIS_PLANET -->
-          <tr><th colspan="6" class="c">{L_ov_this_planet}</th></tr>
+          <tr><th colspan="6" class="c">{L_ov_flying_fleets} {PLANET_NAME} [{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</th></tr>
         <!-- ENDIF -->
         <!-- DEFINE $THIS_PLANET = 1 -->
       <!-- ENDIF -->
 
       <!-- IF $THIS_PLANET == 1 && fleets.OV_THIS_PLANET != 1 -->
-        <tr><th colspan="6" class="c">{L_ov_other_planets}</th></tr>
+        <tr><th colspan="6" class="c">{L_ov_flying_fleets} {L_ov_other_planets}</th></tr>
         <!-- DEFINE $THIS_PLANET = 2 -->
       <!-- ENDIF -->
       
@@ -130,7 +173,7 @@
           <div id="ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}" class="z">00:00:00</div>
           {fleets.OV_TIME_TEXT}
         </th>
-        <!-- IF fleets.OV_LABEL == 0 || fleets.OV_LABEL == 1 -->
+        <!-- IF fleets.OV_LABEL == 0 || fleets.OV_LABEL == 1  || fleets.OV_LABEL == 3 -->
           <th>{fleets.END_URL}<br>{fleets.END_TYPE_TEXT_SH}</th>
           <th>{fleets.END_NAME}</th>
         <!-- ELSEIF fleets.OV_LABEL == 2 -->
@@ -144,7 +187,7 @@
           {fleets.MISSION_NAME}
         </th>
         <th>
-          <!-- IF fleets.OV_LABEL == 0 -->{L_ov_fleet_arrive}<!-- ELSEIF fleets.OV_LABEL == 1 -->{fleets.MISSION_NAME} - {L_ov_fleet_hold}<!-- ELSEIF fleets.OV_LABEL == 2 -->{L_ov_fleet_return}<!-- ENDIF -->
+          <!-- IF fleets.OV_LABEL == 0 -->{L_ov_fleet_arrive}<!-- ELSEIF fleets.OV_LABEL == 1 -->{fleets.MISSION_NAME} - {L_ov_fleet_hold}<!-- ELSEIF fleets.OV_LABEL == 2 -->{L_ov_fleet_return}<!-- ELSEIF fleets.OV_LABEL == 3 -->{L_ov_fleet_rocket}<!-- ENDIF -->
         </th>
       </tr>
 
@@ -157,11 +200,14 @@
       <tr><th colspan=4>{L_ov_fleet_no_flying}</th></tr>
     <!-- END fleets -->
   </table>
+
   <table width=519>
-    <tr><td colspan=4 class="c">
+    <tr>
+      <td colspan=4 class="c">
         <span class="fl">{L_ov_player_rpg} {user_username}</span>
-        <span class="fr"><b>{L_ov_rank}: <a href="stat.php?start={u_user_rank}"><strong><span class="style2">{user_rank}</span> из <span class="style1">{max_users}</span></strong></a></b></span>
-    </td></tr>
+        <span class="fr"><strong>{L_ov_rank}: <a href="stat.php?start={user_rank}"><span class="style2">{user_rank} ({RANK_DIFF})</span> из <span class="style1">{USERS_TOTAL}</span></strong></a></strong></span>
+      </td>
+    </tr>
     <tr>
       <th rowspan=2>{L_ov_raids}</th>
       <th colspan="1" align="center">{L_ov_level}: {raid_lvl}</th>
@@ -189,12 +235,30 @@
     </tr>
   </table>
 
-  <!-- IF bannerframe || userbarframe -->
-  <table width="519" align="center">
-    <tr><td class="c">{L_ov_banner_and_userbar}</td></tr>
-    {bannerframe}
-    {userbarframe}
-  </table>
+  <!-- IF BANNER_URL -->
+    <table width="519" align="center">
+      <tr><td class="c">{L_ov_banner}</td></tr>
+      <tr>
+        <th>
+          <img src="{BANNER_URL}"><br><br>
+          {L_sys_banner_bb}<br>
+          <input type="text" value="[img]{BANNER_URL}[/img]" size="55">
+        </th>
+      </tr>
+    </table>
+  <!-- ENDIF -->
+
+  <!-- IF USERBAR_URL -->
+    <table width="519" align="center">
+      <tr><td class="c">{L_ov_userbar}</td></tr>
+      <tr>
+        <th>
+          <img src="{USERBAR_URL}"><br><br>
+          {L_sys_userbar_bb}<br>
+          <input type="text" value="[img]{USERBAR_URL}[/img]" size="55">
+        </th>
+      </tr>
+    </table>
   <!-- ENDIF -->
 </th>
 
@@ -255,7 +319,9 @@
     </center></th></tr>
   <!-- END planet --></table>
 </th></tr></table>
-{copyright} {admin_email}<br>
+
+{L_copyright} {ADMIN_EMAIL}<br>
+
 <div id="admin_message"></div>
 
 <script type="text/javascript">
@@ -268,4 +334,7 @@ jQuery(document).ready(function() {
     jQuery("#admin_message").html(result.join(""));
   } );
 });
+
+sn_timers.unshift(['ov_time', 2, true, , 2]);
+--></script> 
 </script>
