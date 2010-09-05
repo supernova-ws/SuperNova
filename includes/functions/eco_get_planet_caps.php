@@ -1,7 +1,7 @@
 <?php
 
 function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet){
-  global $ProdGrid, $resource, $reslist, $game_config;
+  global $ProdGrid, $resource, $reslist, $game_config, $config;
   $Caps = array( 'planet' => array(
     'metal' => $CurrentPlanet['metal'],
     'crystal' => $CurrentPlanet['crystal'],
