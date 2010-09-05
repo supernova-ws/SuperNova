@@ -6,6 +6,9 @@
  * @version 1.2
  * @copyright 2008 By Chlorel for XNova
  * version 1.2 by F.E.A.R. aka PekopT, www.kodportal.ru, 2008
+// - 1.0 Modularisation
+// - 1.1 Correction mise en place d'une limite max d'elements constructibles par ligne
+//
  * (adding  Del Fleet&Defense Queue)
  */
 
@@ -15,27 +18,37 @@
 //                   dans le programme appelant
 // $CurrentUser   -> Utilisateur qui a lancÃ© la construction
 //
-function CheckFleetSettingsInQueue ( $CurrentPlanet ) {
+
+function CheckFleetSettingsInQueue ( $CurrentPlanet )
+{
+
   global $lang, $game_config;
 
-
-    if ($CurrentPlanet['b_building_id'] != "0") {
+  if ($CurrentPlanet['b_building_id'] != '0')
+  {
     $BuildQueue = $CurrentPlanet['b_building_id'];
-    if (strpos ($BuildQueue, ";")) {
-      $Queue = explode (";", $BuildQueue);
+    if (strpos ($BuildQueue, ';'))
+    {
+      $Queue = explode (';', $BuildQueue);
       $CurrentBuilding = $Queue[0];
-    } else {
+    }
+    else
+    {
       // Y a pas de queue de construction la liste n'a qu'un seul element
       $CurrentBuilding = $BuildQueue;
     }
 
-    if ($CurrentBuilding == 21) {
+    if ($CurrentBuilding == 21)
+    {
       $return = false;
-    } else {
+    }
+    else
+    {
       $return = true;
     }
-
-  } else {
+  }
+  else
+  {
     $return = true;
   }
 
@@ -43,25 +56,30 @@ function CheckFleetSettingsInQueue ( $CurrentPlanet ) {
 }
 
 
-function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser ) {
+function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser )
+{
   global $planetrow, $lang, $pricelist, $resource, $phpEx, $dpath, $_POST, $user, $debug;
 
-  $GET_action   = SYS_mysqlSmartEscape($_GET['action']);
-  $GET_mode     = SYS_mysqlSmartEscape($_GET['mode']);
+  $GET_action  = SYS_mysqlSmartEscape($_GET['action']);
+  $GET_mode    = SYS_mysqlSmartEscape($_GET['mode']);
   $POST_fmenge = $_POST['fmenge'];
 
-  $NoResearchMessage = "";
+  $NoResearchMessage = '';
   $bContinue         = true;
 
-  if(isset($GET_action)){
-    switch($GET_action){
-      case "cancelqueue":
-  $d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User cancelling defense: ' . $CurrentPlanet['b_hangar_id'];
-  $debug->warning($d_m,'Canceling Hangar Que', 300);
+  if(isset($GET_action))
+  {
+    switch($GET_action)
+    {
+      case 'cancelqueue':
+        $d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User cancelling defense: ' . $CurrentPlanet['b_hangar_id'];
+        $debug->warning($d_m,'Canceling Hangar Que', 300);
 
         $ElementQueue = explode(';', $CurrentPlanet['b_hangar_id']);
-        foreach($ElementQueue as $ElementLine => $Element) {
-          if ($Element != '') {
+        foreach($ElementQueue as $ElementLine => $Element)
+        {
+          if ($Element != '')
+          {
             $Element = explode(',', $Element);
 
             $ResourcesToUpd[metal] += floor($pricelist[$Element[0]][metal] * $Element[1]);
@@ -70,37 +88,44 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser ) {
           }
         }
 
-        $SetRes = "UPDATE `{{table}}` SET ";
-        $SetRes .= "`metal` = metal + '" . $ResourcesToUpd[metal] . "', ";
-        $SetRes .= "`crystal` = crystal + '" . $ResourcesToUpd[crystal] . "', ";
-        $SetRes .= "`deuterium` = deuterium + '" . $ResourcesToUpd[deuterium] . "', ";
-        $SetRes .= "`b_hangar` = '', ";
-        $SetRes .= "`b_hangar_id` = ''";
-        $SetRes .= " WHERE `id` = '" . $CurrentPlanet['id'] . "'";
-        doquery($SetRes, 'planets');
+        doquery(
+          "UPDATE `{{planets}}`
+            SET
+              `metal` = metal + '{$ResourcesToUpd[metal]}',
+              `crystal` = crystal + '{$ResourcesToUpd[crystal]}',
+              `deuterium` = deuterium + '{$ResourcesToUpd[deuterium]}',
+              `b_hangar` = '',
+              `b_hangar_id` = ''
+            WHERE
+              `id` = '{$CurrentPlanet['id']}'");
 
         // PREVENT SUBMITS?
-        header("location: " . $_SERVER['PHP_SELF'] . "?mode=" . $GET_mode);
+        header("location: {$_SERVER['PHP_SELF']}?mode={$GET_mode}");
         exit;
 
         break;
     }
   }
 
-  if (isset($POST_fmenge)) {
+  if (isset($POST_fmenge))
+  {
     $ResourcesToUpd = array();
 
     $AddedInQueue = false;
-    foreach($POST_fmenge as $Element => $Count) {
+    foreach($POST_fmenge as $Element => $Count)
+    {
       $Element = intval($Element);
       $Count   = intval($Count);
-      if ($Count > MAX_FLEET_OR_DEFS_PER_ROW) {
+      if ($Count > MAX_FLEET_OR_DEFS_PER_ROW)
+      {
         $Count = MAX_FLEET_OR_DEFS_PER_ROW;
       }
 
-      if ($Count != 0) {
+      if ($Count != 0)
+      {
         // On verifie si on a les technologies necessaires a la construction de l'element
-        if ( IsTechnologieAccessible ($CurrentUser, $CurrentPlanet, $Element) ) {
+        if ( IsTechnologieAccessible ($CurrentUser, $CurrentPlanet, $Element) )
+        {
           // On verifie combien on sait faire de cet element au max
           $MaxElements   = GetMaxConstructibleElements ( $Element, $CurrentPlanet );
           // Si pas assez de ressources, on ajuste le nombre d'elements
@@ -117,7 +142,7 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser ) {
             $CurrentPlanet['metal']          -= $Ressource['metal'];
             $CurrentPlanet['crystal']        -= $Ressource['crystal'];
             $CurrentPlanet['deuterium']      -= $Ressource['deuterium'];
-            $CurrentPlanet['b_hangar_id']    .= "". $Element .",". $Count .";";
+            $CurrentPlanet['b_hangar_id']    .= "{$Element},{$Count};";
 
             $ResourcesToUpd['metal']     += $Ressource['metal'];
             $ResourcesToUpd['crystal']   += $Ressource['crystal'];
@@ -127,21 +152,25 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser ) {
       }
     }
 
-    if (array_sum($ResourcesToUpd)>0){
-      $SetRes = "UPDATE `{{table}}` SET ";
-      $SetRes .= "`metal` = metal - '" . $ResourcesToUpd['metal'] . "', ";
-      $SetRes .= "`crystal` = crystal - '" . $ResourcesToUpd['crystal'] . "', ";
-      $SetRes .= "`deuterium` = deuterium - '" . $ResourcesToUpd['deuterium'] . "', ";
-      $SetRes .= "`b_hangar` = '', ";
-      $SetRes .= "`b_hangar_id` = '". $CurrentPlanet['b_hangar_id'] ."'";
-      $SetRes .= " WHERE `id` = '" . $CurrentPlanet['id'] . "'";
-      doquery($SetRes, 'planets');
+    if (array_sum($ResourcesToUpd)>0)
+    {
+      doquery(
+        "UPDATE `{{planets}}`
+          SET
+            `metal` = metal - '{$ResourcesToUpd['metal']}',
+            `crystal` = crystal - '{$ResourcesToUpd['crystal']}',
+            `deuterium` = deuterium - '{$ResourcesToUpd['deuterium']}',
+            `b_hangar` = '',
+            `b_hangar_id` = '{$CurrentPlanet['b_hangar_id']}'
+          WHERE
+            `id` = '{$CurrentPlanet['id']}'");
     }
   }
 
   // -------------------------------------------------------------------------------------------------------
   // S'il n'y a pas de Chantier ...
-  if ($CurrentPlanet[$resource[21]] == 0) {
+  if ($CurrentPlanet[$resource[21]] == 0)
+  {
     // Veuillez avoir l'obligeance de construire le Chantier Spacial !!
     message($lang['need_hangar'], $lang['tech'][21]);
   }
@@ -149,61 +178,62 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser ) {
   // -------------------------------------------------------------------------------------------------------
   // Construction de la page du Chantier (car si j'arrive ici ... c'est que j'ai tout ce qu'il faut pour ...
   $TabIndex = 0;
-  foreach($lang['tech'] as $Element => $ElementName) {
-    if ($Element > 201 && $Element <= 399) {
-      if (IsTechnologieAccessible($CurrentUser, $CurrentPlanet, $Element)) {
-        // Disponible Ã  la construction
-
+  foreach($lang['tech'] as $Element => $ElementName)
+  {
+    if ($Element > 201 && $Element <= 399)
+    {
+      if (IsTechnologieAccessible($CurrentUser, $CurrentPlanet, $Element))
+      {
         // On regarde si on peut en acheter au moins 1
         $CanBuildOne         = IsElementBuyable($CurrentUser, $CurrentPlanet, $Element, false);
         // On regarde combien de temps il faut pour construire l'element
         $BuildOneElementTime = GetBuildingTime($CurrentUser, $CurrentPlanet, $Element);
         // DisponibilitÃ© actuelle
         $ElementCount        = $CurrentPlanet[$resource[$Element]];
-        $ElementNbre         = ($ElementCount == 0) ? "" : " (".$lang['dispo'].": " . pretty_number($ElementCount) . ")";
+        $pretty_elementcount = pretty_number($ElementCount);
+        $ElementNbre         = ($ElementCount == 0) ? '' : " ({$lang['dispo']}: {$pretty_elementcount})";
 
         // Construction des 3 cases de la ligne d'un element dans la page d'achat !
         // DÃ©but de ligne
         $PageTable .= "\n<tr>";
 
         // Imagette + Link vers la page d'info
-        $PageTable .= "<th class=l>";
-        $PageTable .= "<a href=infos.".$phpEx."?gid=".$Element.">";
-        $PageTable .= "<img border=0 src=\"".$dpath."gebaeude/".$Element.".gif\" align=top width=120 height=120></a>";
-        $PageTable .= "</th>";
+        $PageTable .= "<th class=l><a href=infos.{$phpEx}?gid={$Element}><img border=0 src=\"{$dpath}gebaeude/{$Element}.gif\" align=top width=120 height=120></a></th>";
 
         // Description
-        $PageTable .= "<td class=l>";
-        $PageTable .= "<a href=infos.".$phpEx."?gid=".$Element.">".$ElementName."</a> ".$ElementNbre."<br>";
-        $PageTable .= "".$lang['res']['descriptions'][$Element]."<br>";
-        // On affiche le 'prix' avec eventuellement ce qui manque en ressource
+        $PageTable .= "<td class=l><a href=infos.{$phpEx}?gid={$Element}>{$ElementName}</a> {$ElementNbre}<br>{$lang['res']['descriptions'][$Element]}<br>";
+
         $PageTable .= GetElementPrice($CurrentUser, $CurrentPlanet, $Element, false);
 
         // On affiche le temps de construction (c'est toujours tellement plus joli)
         $PageTable .= ShowBuildTime($BuildOneElementTime);
         $baubar= GetMaxConstructibleShips($CurrentPlanet, $Element);
-        $PageTable .= "<br><br>Äîñòóïíî:".$baubar;
-        $PageTable .= "</td>";
+        $PageTable .= "<br><br>Äîñòóïíî:{$baubar}</td>";
 
         // Case nombre d'elements a construire
         $PageTable .= "<th class=k>";
         // Si ... Et Seulement si je peux construire je mets la p'tite zone de saisie
-        if (CheckFleetSettingsInQueue ( $CurrentPlanet )) {
-        if ($CanBuildOne) {
-          $TabIndex++;
-          $PageTable .= "<input type=text name=fmenge[".$Element."] alt='".$lang['tech'][$Element]."' size=5 maxlength=5 value=0 tabindex=".$TabIndex.">";
+        if (CheckFleetSettingsInQueue ( $CurrentPlanet ))
+        {
+          if ($CanBuildOne)
+          {
+            $TabIndex++;
+            $PageTable .= "<input type=text name=fmenge[{$Element}] alt='{$lang['tech'][$Element]}' size=5 maxlength=5 value=0 tabindex={$TabIndex}>";
+          }
+          $PageTable .= '</th>';
         }
-        $PageTable .= "</th>";
-        } else {
-        $NoFleetMessage = $lang['fleet_on_update'];
+        else
+        {
+          $NoFleetMessage = $lang['fleet_on_update'];
         }
         // Fin de ligne (les 3 cases sont construites !!
-        $PageTable .= "</tr>";
+        $PageTable .= '</tr>';
       }
     }
   }
 
-  if ($CurrentPlanet['b_hangar_id'] != '') {
+  if ($CurrentPlanet['b_hangar_id'] != '')
+  {
     $BuildQueue .= ElementBuildListBox( $CurrentUser, $CurrentPlanet );
   }
 
@@ -212,15 +242,10 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser ) {
   $parse['buildlist']    = $PageTable;
   // Et la liste de constructions en cours dans $BuildQueue;
   $parse['buildinglist'] = $BuildQueue;
-  $parse['noresearch']  = $NoFleetMessage;
+  $parse['noresearch']   = $NoFleetMessage;
   $page .= parsetemplate(gettemplate('buildings_fleet'), $parse);
 
   display($page, $lang['Fleet']);
-
 }
-// Version History
-// - 1.0 Modularisation
-// - 1.1 Correction mise en place d'une limite max d'elements constructibles par ligne
-//
 
 ?>
