@@ -55,7 +55,7 @@
       <tr>
         <th>
           <!-- IF news.IS_NEW -->
-            <font color=red>{$lang['ov_new']}</font><br>
+            <font color=red>{L_ov_new}</font><br>
           <!-- ENDIF -->
           <font color=cyan>{news.TIME}</font>
         </th>
