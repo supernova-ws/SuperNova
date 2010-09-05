@@ -374,7 +374,8 @@ function SYS_mysqlSmartEscape($string)
 //
 function INT_makeCoordinates ($from, $prefix = '')
 {
-  return '[' . $from[$prefix.'galaxy'] . ':' . $from[$prefix.'system'] . ':' . $from[$prefix.'planet'] . ']';
+//  return '[' . $from[$prefix.'galaxy'] . ':' . $from[$prefix.'system'] . ':' . $from[$prefix.'planet'] . ']';
+  return "[{$from[$prefix.'galaxy']}:{$from[$prefix.'system']}:{$from[$prefix.'planet']}]";
 }
 
 function int_makeCoordinatesURL ($from, $prefix = '', $mode = 0)
@@ -392,39 +393,62 @@ function int_renderLastActiveHTML($last_active = 0, $isAllowed = true, $isAdmin 
   global $lang;
 
   if($isAdmin){
-    if ( $last_active < 60 ) {
+    if ( $last_active < 60 )
+    {
       $tmp = "lime>{$lang['sys_online']}";
-    } elseif ($last_active < 60 * 60) {
+    }
+    elseif ($last_active < 60 * 60)
+    {
       $last_active = round($last_active / 60);
       $tmp = "lime>{$last_active} {$lang['sys_min_short']}";
-    } elseif ($last_active < 60 * 60 * 24) {
+    }
+    elseif ($last_active < 60 * 60 * 24)
+    {
       $last_active = round( $last_active / (60 * 60));
       $tmp = "green>{$last_active} {$lang['sys_hrs_short']}";
-    } else {
+    }
+    else
+    {
       $last_active = round( $last_active / (60 * 60 * 24));
-      if ($last_active < 7) {
-        $tmp = "yellow";
-      }elseif ($last_active < 30) {
-        $tmp = "orange";
-      }else{
-        $tmp = "red";
+
+      if ($last_active < 7)
+      {
+        $tmp = 'yellow';
+      }
+      elseif ($last_active < 30)
+      {
+        $tmp = 'orange';
+      }
+      else
+      {
+        $tmp = 'red';
       }
       $tmp .= ">{$last_active} {$lang['sys_day_short']}";
     }
-  }else{
-    if($isAllowed){
-      if ( $last_active < 60 * 5 ) {
+  }
+  else
+  {
+    if($isAllowed)
+    {
+      if ( $last_active < 60 * 5 )
+      {
         $tmp = "lime>{$lang['sys_online']}";
-      } elseif ($last_active < 60 * 15) {
+      }
+      elseif ($last_active < 60 * 15)
+      {
         $tmp = "yellow>{$lang['sys_lessThen15min']}";
-      } else {
+      }
+      else
+      {
         $tmp = "red>{$lang['sys_offline']}";
       }
-    } else {
+    }
+    else
+    {
       $tmp = "orange>-";
     }
   }
-  return '<font color=' . $tmp . '</font>';
+  return "<font color={$tmp}</font>";
 }
 
 /**
@@ -466,16 +490,35 @@ function colorGreen($n) {
 }
 
 function pretty_number($n, $floor = true, $color = false) {
-  if ($floor)
+  if ($floor === true)
+  {
     $n = floor($n);
-  $ret = number_format($n, 0, ",", ".");
+  }
+  elseif(is_numeric($floor))
+  {
+    $n = round($n, $floor, PHP_ROUND_HALF_DOWN);
+  }
+  $ret = number_format($n, 0, ',', '.');
 
-  if(is_numeric($color)){
-    if($n<$color)
-      $ret = colorGreen($ret);
-    elseif($n>=$color)
-      $ret = colorRed($ret);
-  }elseif($color) {
+  if(is_numeric($color))
+  {
+    if($color>0)
+    {
+      if($n<$color)
+        $ret = colorGreen($ret);
+      elseif($n>=$color)
+        $ret = colorRed($ret);
+    }
+    else
+    {
+      if($n>=-$color)
+        $ret = colorGreen($ret);
+      elseif($n<-$color)
+        $ret = colorRed($ret);
+    }
+  }
+  elseif($color)
+  {
     if($n>0)
       $ret = colorGreen($ret);
     elseif($n<0)

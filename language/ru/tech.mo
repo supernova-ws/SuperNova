@@ -1,9 +1,10 @@
 <?php
 
+$lang['tech_storage_max'] = "Размер хранилища";
+$lang['tech_storage']     = "В хранилищах";
+
 $lang['Tech']         = "Технология";
 $lang['Requirements'] = "Требуется";
-$lang['Store_max']    = "Склад";
-$lang['Ressverf']     = "На складе";
 $lang['Metal']        = "Металл";
 $lang['Crystal']      = "Кристалл";
 $lang['Deuterium']    = "Дейтерий";

@@ -36,7 +36,7 @@ function PlanetResourceUpdate ( $CurrentUser, &$CurrentPlanet, $UpdateTime, $Sim
       // ...changing data in $Caps according to resource increase
       $Caps['planet'][$resName] += $incCount;
       // ...calculating total planet production per hour - old one counts only units (buildings and fleet ones)
-      $Caps['planet'][$resName.'_perhour'] = array_sum($Caps[$resName.'_perhour']);
+      $Caps['planet'][$resName.'_perhour'] = $Caps['real'][$resName.'_perhour'];
     }
   } elseif ($CurrentPlanet['planet_type'] == 3) {
     // Yes - no production on moon

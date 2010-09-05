@@ -409,6 +409,11 @@ switch ($mode)
             fleet_end_type   = 3 AND
             fleet_mess       = 0 AND
             (fleet_mission = 1 OR fleet_mission = 2 OR fleet_mission = 9)", '', true);
+        $moon_fill = min(100, floor($moon['field_current'] / CalculateMaxPlanetFields($moon) * 100));
+      }
+      else
+      {
+        $moon_fill = 0;
       }
 
       $template->assign_block_vars('planet', array_merge(
@@ -432,7 +437,7 @@ switch ($mode)
           'MOON_ID'    => $moon['id'],
           'MOON_NAME'  => $moon['name'],
           'MOON_IMG'   => $moon['image'],
-          'MOON_FILL'  => min(100, floor($moon['field_current'] / CalculateMaxPlanetFields($moon) * 100)),
+          'MOON_FILL'  => $moon_fill,
           'MOON_ENEMY' => $enemy_fleet_moon['fleets_count'],
         ), $buildArray));
     }
