@@ -14,6 +14,8 @@
 
 function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
 {
+  $template = gettemplate('buildings_builds', true);
+
   global $ProdGrid,$lang, $resource, $reslist, $phpEx, $dpath, $_GET, $config;
 
   $GET_cmd      = SYS_mysqlSmartEscape($_GET['cmd']);
@@ -104,6 +106,8 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
 
   $SubTemplate         = gettemplate('buildings_builds_row');
   $BuildingPage        = '';
+  $caps = ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet);
+  pdump($caps);
   foreach($lang['tech'] as $Element => $ElementName)
   {
     if (in_array($Element, $Allowed[$CurrentPlanet['planet_type']]))
@@ -129,7 +133,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
 
         // show energy on BuildingPage
         //================================
-        $BuildLevelFactor     = $CurrentPlanet[$resource[$Element].'_porcent'];
+        $BuildLevelFactor     = 10; //$CurrentPlanet[$resource[$Element].'_porcent'];
         $BuildTemp            = $CurrentPlanet['temp_max'];
         $CurrentBuildtLvl     = $BuildingLevel;
         $BuildLevel         = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
@@ -256,6 +260,26 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
         }
 
         $BuildingPage .= parsetemplate($SubTemplate, $parse);
+
+        $template->assign_block_vars('production', array(
+          'ID'          => $Element,
+          'NAME'        => $ElementName,
+          'DESCRIPTION' => $lang['res']['descriptions'][$Element],
+          'LEVEL'       => ($BuildingLevel == 0) ? '' : " ({$lang['level']} {$BuildingLevel})",
+
+          'PRICE'       => GetElementPrice($CurrentUser, $CurrentPlanet, $Element),
+          'TIME'        => ShowBuildTime($ElementBuildTime),
+          'RESOURCES_LEFT' => GetRestPrice($CurrentUser, $CurrentPlanet, $Element),
+
+
+          'METAL_BALANCE'  => $caps['metal_perhour'][$Element],
+          'CRYSTAL_BALANCE' => $caps['crystal_perhour'][$Element],
+          'DEUTERIUM_BALANCE' => $caps['deuterium_perhour'][$Element],
+          'ENERGY_BALANCE' => $parse['build_need_diff'],
+
+          'BUILD_LINK'  => $parse['click'],
+
+        ));
       }
     }
   }
@@ -279,8 +303,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
 
   $parse['BuildingsList']        = $BuildingPage;
 
-  $page                         .= parsetemplate(gettemplate('buildings_builds'), $parse);
-
+  $page                          = parsetemplate($template, $parse);
   display($page, $lang['Builds']);
 }
 

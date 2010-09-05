@@ -103,11 +103,11 @@ switch($mode){
         'AVAIL' => $data['avail'][$i],
         'SPEND' => $data['spend'][$i],
       ));
-      $resources .= $data['avail'][$i] . ', ';
+      $avail_res .= $data['avail'][$i] . ', ';
     }
-    $resources .= '0';
-    $template->assign_var('resources', $resources);
-    break;
+    $avail_res .= '0';
+    $template->assign_var('resources', $avail_res);
+  break;
 
   case 2: // Fleet scraper
     $page_title .= " - {$lang['eco_mrk_scraper']}";

@@ -14,7 +14,7 @@
  */
 
 function PlanetResourceUpdate ( $CurrentUser, &$CurrentPlanet, $UpdateTime, $Simul = false ) {
-  global $ProdGrid, $resource, $game_config, $debug;
+  global $resource, $game_config, $debug;
 
   $incRes = array ('metal' => 0, 'crystal' => 0, 'deuterium' => 0); // Zero increment to each type of resources
 

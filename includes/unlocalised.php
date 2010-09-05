@@ -189,11 +189,11 @@ function ShowBuildTime ($time) {
 
 // ----------------------------------------------------------------------------------------------------------------
 //
-function add_points ($resources, $userid) {
+function add_points ($res, $userid) {
   return false;
 }
 
-function remove_points ($resources, $userid) {
+function remove_points ($res, $userid) {
   return false;
 }
 
