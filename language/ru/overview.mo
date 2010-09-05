@@ -86,6 +86,7 @@ $lang['deletemessage_fail']		= 'Неверный пароль!';
 // 	
 $lang['MembersOnline']			= 'Игроки on-line';
 $lang['ov_news_title']			= 'Новости';
+$lang['ov_news_none']			= 'Нет новостей';
 
 // 	
 $lang['ov_fleet_list']				= 'График движения флотов';
@@ -110,9 +111,6 @@ $lang['ov_fleet_no_flying']      = 'Нет флотов в полете';
 
 
 
-
-$lang['ov_une']				= 'Ваш ';
-$lang['ov_une_hostile']			= 'Чужой ';
 
 $lang['ov_vennant']			= ' отправленный ';
 $lang['ov_planet_to']			= 'с планеты ';
@@ -152,13 +150,6 @@ $lang['RaidsLoose'] = 'Проиграно';
 $lang['Economica'] = 'Экономика';
 $lang['Teching'] = 'Иследования';
 
-$lang['InfoBanner'] = 'BBCode для вставки баннера на форуме';
-$lang['InfoUserbar'] = 'BBCode для вставки юзербара на форуме';
-
-
-
-
-
 
 $lang['ov_planet_details'] = 'Подробно о планете';
 $lang['ov_operations']     = 'переименовать/покинуть';
@@ -176,7 +167,8 @@ $lang['ov_level']               = 'Уровень';
 
 $lang['ov_player_rpg']          = 'Статистика игрока';
 
-$lang['ov_banner_and_userbar']  = 'Баннеры и юзербары';
+$lang['ov_banner']   = 'Баннер';
+$lang['ov_userbar']  = 'Юзербар';
 
 $lang['ov_banner_empty_id'] = 'SuperNova - Join The Game!';
 
