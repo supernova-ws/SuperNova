@@ -21,7 +21,18 @@
         <div class="fl">{Planet} "{planet_name}" <a href="galaxy.php?mode=0&galaxy={galaxy_galaxy}&system={galaxy_system}">[{galaxy_galaxy}:{galaxy_system}:{galaxy_planet}]</a></div>
         <div class="fr"><a href="overview.php?mode=renameplanet"><font color="green">[{L_ov_operations}]</font></a></td></div>
     </td></tr>
-    {Have_new_message}
+    
+    <!-- IF NEW_MESSAGES -->
+      <tr><th colspan=4><a href=messages.{$phpEx}>
+        {L_ov_you_have}
+        <!-- IF NEW_MESSAGES == 1 -->
+          {L_ov_new_message}
+        <!-- ELSE -->
+          {NEW_MESSAGES} {L_ov_new_messages}
+        <!-- ENDIF -->
+      </a></th></tr>
+    <!-- ENDIF -->
+
     <!-- IF NEW_LEVEL_MINER --><tr><th colspan=4><a href=officier.php>{L_ov_rpg_new_level_miner}</a></th></tr><!-- ENDIF -->
     <!-- IF NEW_LEVEL_RAID --><tr><th colspan=4><a href=officier.php>{L_ov_rpg_new_level_raid}</a></th></tr><!-- ENDIF -->
     <tr>
@@ -34,8 +45,6 @@
     </tr>
     {NewsFrame}
     
-    {fleet_list}
-
     <tr><td colspan="4" class="c">{L_Planet_menu}</td></tr>
     <tr><th width=90>{L_ov_building}</th><th colspan=3><!-- IF BUILDING -->{BUILDING}<span id="ov_building"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
     <tr><th>{L_ov_hangar}</th><th colspan="3"><!-- IF HANGAR -->{HANGAR}<span id="ov_hangar"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
@@ -77,13 +86,13 @@
     <!-- BEGIN fleets -->
       <!-- IF fleets.S_FIRST_ROW -->
         <!-- IF fleets.OV_THIS_PLANET -->
-          <tr><th colspan="6" class="c">{L_ov_this_planet}</th></tr>
+          <tr><th colspan="6" class="c">{L_ov_flying_fleets} {planet_name} [{galaxy_galaxy}:{galaxy_system}:{galaxy_planet}]</th></tr>
         <!-- ENDIF -->
         <!-- DEFINE $THIS_PLANET = 1 -->
       <!-- ENDIF -->
 
       <!-- IF $THIS_PLANET == 1 && fleets.OV_THIS_PLANET != 1 -->
-        <tr><th colspan="6" class="c">{L_ov_other_planets}</th></tr>
+        <tr><th colspan="6" class="c">{L_ov_flying_fleets} {L_ov_other_planets}</th></tr>
         <!-- DEFINE $THIS_PLANET = 2 -->
       <!-- ENDIF -->
       
@@ -130,7 +139,7 @@
           <div id="ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}" class="z">00:00:00</div>
           {fleets.OV_TIME_TEXT}
         </th>
-        <!-- IF fleets.OV_LABEL == 0 || fleets.OV_LABEL == 1 -->
+        <!-- IF fleets.OV_LABEL == 0 || fleets.OV_LABEL == 1  || fleets.OV_LABEL == 3 -->
           <th>{fleets.END_URL}<br>{fleets.END_TYPE_TEXT_SH}</th>
           <th>{fleets.END_NAME}</th>
         <!-- ELSEIF fleets.OV_LABEL == 2 -->
@@ -144,7 +153,7 @@
           {fleets.MISSION_NAME}
         </th>
         <th>
-          <!-- IF fleets.OV_LABEL == 0 -->{L_ov_fleet_arrive}<!-- ELSEIF fleets.OV_LABEL == 1 -->{fleets.MISSION_NAME} - {L_ov_fleet_hold}<!-- ELSEIF fleets.OV_LABEL == 2 -->{L_ov_fleet_return}<!-- ENDIF -->
+          <!-- IF fleets.OV_LABEL == 0 -->{L_ov_fleet_arrive}<!-- ELSEIF fleets.OV_LABEL == 1 -->{fleets.MISSION_NAME} - {L_ov_fleet_hold}<!-- ELSEIF fleets.OV_LABEL == 2 -->{L_ov_fleet_return}<!-- ELSEIF fleets.OV_LABEL == 3 -->{L_ov_fleet_rocket}<!-- ENDIF -->
         </th>
       </tr>
 

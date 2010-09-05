@@ -27,6 +27,7 @@ $lang['type_mission'][6]  = "Шпионаж";
 $lang['type_mission'][7]  = "Колонизация";
 $lang['type_mission'][8]  = "Переработка";
 $lang['type_mission'][9]  = "Уничтожение";
+$lang['type_mission'][10] = "Ракетная атака";
 $lang['type_mission'][15] = "Экспедиция";
 
 $lang['tech'] = array(

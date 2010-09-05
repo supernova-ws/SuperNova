@@ -1,5 +1,8 @@
 <?php
 
+$lang['ov_of_year'] = 'года';
+$lang['ov_hack_alert'] = 'Попытка взлома БД!!!';
+
 $lang['months'] = array(
 	'01'=>'Января',
 	'02'=>'Февраля',
@@ -7,7 +10,7 @@ $lang['months'] = array(
 	'04'=>'Апреля',
 	'05'=>'Мая',
 	'06'=>'Июня',
-	'07'=>'Ибля :)',
+	'07'=>'Июля',
 	'08'=>'Августа',
 	'09'=>'Сентября',
 	'10'=>'Октября',
@@ -25,12 +28,14 @@ $lang['weekdays'] = array(
 	'6' => 'Суббота'
 );
 
+$lang['ov_you_have']			= 'У вас';
+$lang['ov_new_message']		= 'одно новое сообщение';
+$lang['ov_new_messages']	= 'новых сообщений';
+
 // General
 $lang['cancel']				= 'Отменить';
 $lang['Planet_menu']			= 'Строительство на планете';
 $lang['Planet']				= 'Планета';
-$lang['Have_new_message']		= 'У вас одно новое сообщение';
-$lang['Have_new_messages']		= 'У вас %m новых сообщений';
 $lang['Have_new_level_mineur']		= 'За достижения в экономике Вы выиграли очко развития офицеров!';
 $lang['Have_new_level_raid']		= 'За успешные атаки Вы выиграли очко развития офицеров!';
 $lang['Server_time']			= 'Время';
@@ -90,12 +95,13 @@ $lang['ov_destination']          = 'Пункт назначения';
 $lang['ov_time']                 = 'Время';
 $lang['ov_mission']              = 'Задание';
 $lang['ov_event']                = 'Событие';
-$lang['ov_this_planet']          = 'Флоты, летящие на эту планету';
-$lang['ov_other_planets']        = 'Флоты, летящие на другие планеты';
+$lang['ov_flying_fleets']        = 'Флоты, летящие на';
+$lang['ov_other_planets']        = 'другие планеты';
 
 $lang['ov_fleet_arrive']         = 'Прибытие';
 $lang['ov_fleet_return']         = 'Возвращение';
 $lang['ov_fleet_hold']           = 'конец задания';
+$lang['ov_fleet_rocket']         = 'Ракетный удар';
 
 $lang['ov_fleet_exploration']    = 'Исследование';
 $lang['ov_fleet_colonization']   = 'Колонизация планеты';
