@@ -197,7 +197,7 @@
         ]]]);
       --></script>
     <!-- BEGINELSE fleets -->
-      <tr><th colspan=4>{L_ov_fleet_no_flying}</th></tr>
+      <tr><th colspan=6>{L_ov_fleet_no_flying}</th></tr>
     <!-- END fleets -->
   </table>
 
