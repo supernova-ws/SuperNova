@@ -16,15 +16,6 @@
 <table><tr><th valign=top class="tr">
   <table width="519">
     <tr>
-      <th>
-        {MembersOnline} <a href="admin/overview.php" title="{MembersOnline2}">[{USERS_ONLINE}/{USERS_TOTAL}]</a>
-      </th>
-      <th style="white-space: nowrap;">
-        {TIME_TEXT} <span id="ov_time">00:00:00</span>
-      </th>
-    </tr>
-
-    <tr>
       <th colspan=2 style="position: relative;">
         &nbsp;
         <div style="position: absolute; left: 0px; top: 0px; width: 80%;">{TIME_TEXT} <span id="ov_time">00:00:00</span></div>
