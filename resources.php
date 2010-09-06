@@ -51,7 +51,7 @@ function int_calc_storage_bar($resource_name)
   $resource_max_name    = $resource_name.'_max';
 
   $totalProduction      = floor($caps['planet'][$resource_name.'_perhour'] * $caps['production'] + $caps[$resource_name.'_perhour'][0]);
-  $storage_fill         = (int)round($caps['planet'][$resource_name] / $caps['planet'][$resource_max_name] * 100, 2,  PHP_ROUND_HALF_DOWN);
+  $storage_fill         = round($caps['planet'][$resource_name] / $caps['planet'][$resource_max_name] * 100, 2,  PHP_ROUND_HALF_DOWN);
 
   if ($caps['planet'][$resource_max_name] < $caps['planet'][$resource_name])
   {
@@ -71,7 +71,7 @@ function int_calc_storage_bar($resource_name)
     'WEEKLY'      => colorNumber(pretty_number($totalProduction * 24 * 7)),
     'MONTHLY'     => colorNumber(pretty_number($totalProduction * 24 * 30)),
 
-    'STORAGE'     => $storage_fill,
+    'STORAGE'     => intval($storage_fill),
     'BAR'         => min($storage_fill, 100),
   ));
 };
