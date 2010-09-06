@@ -15,13 +15,17 @@
 <br>
 <table><tr><th valign=top class="tr">
   <table width="519">
-    <tr><td style="white-space: nowrap;" class="c" colspan=4>
-        <div class="fl">{PLANET_TYPE_TEXT} "{PLANET_NAME}" <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</a></div>
-        <div class="fr"><a href="overview.php?mode=renameplanet"><font color="green">[{L_ov_operations}]</font></a></td></div>
-    </td></tr>
-    
+    <tr>
+      <th>
+        {MembersOnline} <a href="admin/overview.php" title="{MembersOnline2}">[{USERS_ONLINE}/{USERS_TOTAL}]</a>
+      </th>
+      <th style="white-space: nowrap;">
+        {TIME_TEXT} <span id="ov_time">00:00:00</span>
+      </th>
+    </tr>
+
     <!-- IF NEW_MESSAGES -->
-      <tr><th colspan=4><a href=messages.php>
+      <tr><th colspan=2><a href=messages.php>
         {L_ov_you_have}
         <!-- IF NEW_MESSAGES == 1 -->
           {L_ov_new_message}
@@ -32,44 +36,34 @@
     <!-- ENDIF -->
 
     <!-- IF NEW_LEVEL_MINER -->
-      <tr><th colspan=4><a href=officier.php>{L_ov_rpg_new_level_miner}</a></th></tr>
+      <tr><th colspan=2><a href=officier.php>{L_ov_rpg_new_level_miner}</a></th></tr>
     <!-- ENDIF -->
     
     <!-- IF NEW_LEVEL_RAID -->
-      <tr><th colspan=4><a href=officier.php>{L_ov_rpg_new_level_raid}</a></th></tr>
+      <tr><th colspan=2><a href=officier.php>{L_ov_rpg_new_level_raid}</a></th></tr>
     <!-- ENDIF -->
     
-    <tr>
-      <th width="100">{Server_time}</th>
-      <th colspan="3" style="white-space: nowrap;">{TIME_TEXT} <span id="ov_time">00:00:00</span></th>
-    </tr>
-    
-    <tr>
-      <th>{MembersOnline}</th>
-      <th colspan="3"><a href="admin/overview.php" title="{MembersOnline2}">[{USERS_ONLINE}]</a></th>
-    </tr>
-
     <!-- News Frame -->
-    <tr><td colspan=4 class="c">{L_ov_news_title}</td></tr>
+    <tr><td colspan=2 class="c">{L_ov_news_title}</td></tr>
     <!-- BEGIN news -->
       <tr>
-        <th>
+        <th width="90">
           <!-- IF news.IS_NEW -->
             <font color=red>{L_ov_new}</font><br>
           <!-- ENDIF -->
           <font color=cyan>{news.TIME}</font>
         </th>
-        <th colspan="3" valign=top>
+        <th valign=top>
           <div align=justify>{news.ANNOUNCE}</div>
         </th>
       </tr>
     <!-- BEGINELSE news -->
-      <tr><td colspan="4" class="c">{L_ov_news_none}</td></tr>
+      <tr><td colspan="2" class="c">{L_ov_news_none}</td></tr>
     <!-- END news -->
   </table>    
 
   <table width="519">
-    <!-- <tr><td colspan="6" class="c">{L_ov_fleet_list}</td></tr> -->
+    <!-- <tr><td colspan="5" class="c">{L_ov_fleet_list}</td></tr> -->
     <tr align="center">
       <td class="c">{L_ov_time}</td>
       <td class="c">{L_ov_fleet}</td>
@@ -81,13 +75,13 @@
     <!-- BEGIN fleets -->
       <!-- IF fleets.S_FIRST_ROW -->
         <!-- IF fleets.OV_THIS_PLANET -->
-          <tr><th colspan="6" class="c">{L_ov_flying_fleets} {PLANET_NAME} [{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</th></tr>
+          <tr><th colspan="5" class="c">{L_ov_flying_fleets} {PLANET_NAME} [{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</th></tr>
         <!-- ENDIF -->
         <!-- DEFINE $THIS_PLANET = 1 -->
       <!-- ENDIF -->
 
       <!-- IF $THIS_PLANET == 1 && fleets.OV_THIS_PLANET != 1 -->
-        <tr><th colspan="6" class="c">{L_ov_flying_fleets} {L_ov_other_planets}</th></tr>
+        <tr><th colspan="5" class="c">{L_ov_flying_fleets} {L_ov_other_planets}</th></tr>
         <!-- DEFINE $THIS_PLANET = 2 -->
       <!-- ENDIF -->
       
@@ -168,12 +162,15 @@
         ]]]);
       --></script>
     <!-- BEGINELSE fleets -->
-      <tr><th colspan=6>{L_ov_fleet_no_flying}</th></tr>
+      <tr><th colspan=5>{L_ov_fleet_no_flying}</th></tr>
     <!-- END fleets -->
   </table>
 
   <table width="519">
-    <tr><td colspan="4" class="c">{L_Planet_menu}</td></tr>
+    <tr><td style="white-space: nowrap;" class="c" colspan=4>
+        <div class="fl">{PLANET_TYPE_TEXT} "{PLANET_NAME}" <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</a></div>
+        <div class="fr"><a href="overview.php?mode=renameplanet"><font color="green">[{L_ov_operations}]</font></a></td></div>
+    </td></tr>
     <tr><th width=100>{L_ov_building}</th><th colspan=3><!-- IF BUILDING -->{BUILDING}<span id="ov_building"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
     <tr><th>{L_ov_hangar}</th><th colspan="3"><!-- IF HANGAR -->{HANGAR}<span id="ov_hangar"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
     <tr><th>{Teching}</th><th colspan="3"><!-- IF TECH -->{TECH}<span id="ov_tech"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>

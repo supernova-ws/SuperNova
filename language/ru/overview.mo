@@ -84,7 +84,7 @@ $lang['deletemessage_wrong']		= 'Планета не может быть оставлена!';
 $lang['deletemessage_fail']		= 'Неверный пароль!';
 
 // 	
-$lang['MembersOnline']			= 'Игроки on-line';
+$lang['MembersOnline']			= 'Игроков';
 $lang['ov_news_title']			= 'Новости';
 $lang['ov_news_none']			= 'Нет новостей';
 
