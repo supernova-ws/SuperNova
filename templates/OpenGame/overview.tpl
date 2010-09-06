@@ -24,6 +24,14 @@
       </th>
     </tr>
 
+    <tr>
+      <th colspan=2 style="position: relative;">
+        &nbsp;
+        <div style="position: absolute; left: 0px; top: 0px; width: 80%;">{TIME_TEXT} <span id="ov_time">00:00:00</span></div>
+        <div style="position: absolute; left: 80%; top: 0px;">{MembersOnline} <a href="admin/overview.php" title="{MembersOnline2}">[{USERS_ONLINE}/{USERS_TOTAL}]</a></div>
+      </th>
+    </tr>
+
     <!-- IF NEW_MESSAGES -->
       <tr><th colspan=2><a href=messages.php>
         {L_ov_you_have}
