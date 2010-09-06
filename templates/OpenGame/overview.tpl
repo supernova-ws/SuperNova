@@ -72,10 +72,10 @@
     <!-- <tr><td colspan="6" class="c">{L_ov_fleet_list}</td></tr> -->
     <tr align="center">
       <td class="c">{L_ov_time}</td>
-      <td class="c" colspan="2">{L_ov_destination}</td>
       <td class="c">{L_ov_fleet}</td>
+      <td class="c">{L_ov_destination}</td>
+      <td class="c">{L_ov_source}</td>
       <td class="c">{L_ov_mission}</td>
-      <td class="c">{L_ov_event}</td>
     </tr>
 
     <!-- BEGIN fleets -->
@@ -134,20 +134,30 @@
           <div id="ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}" class="z">00:00:00</div>
           {fleets.OV_TIME_TEXT}
         </th>
-        <!-- IF fleets.OV_LABEL == 0 || fleets.OV_LABEL == 1  || fleets.OV_LABEL == 3 -->
-          <th>{fleets.END_URL}<br>{fleets.END_TYPE_TEXT_SH}</th>
-          <th>{fleets.END_NAME}</th>
-        <!-- ELSEIF fleets.OV_LABEL == 2 -->
-          <th>{fleets.START_URL}<br>{fleets.START_TYPE_TEXT_SH}</th>
-          <th>{fleets.START_NAME}</th>
-        <!-- ENDIF -->
         <th style="cursor: pointer;" onmouseover='fleet_dialog_show(this, {fleets.ID})' onmouseout='fleet_dialog_hide()'>
           {fleets.AMOUNT}
         </th>
+        <!-- IF fleets.OV_LABEL == 0 || fleets.OV_LABEL == 1  || fleets.OV_LABEL == 3 -->
+          <th>
+            {fleets.END_NAME}<br>
+            {fleets.END_URL} {fleets.END_TYPE_TEXT_SH}
+          </th>
+          <th>
+            {fleets.START_NAME}<br>
+            {fleets.START_URL} {fleets.START_TYPE_TEXT_SH}
+          </th>
+        <!-- ELSEIF fleets.OV_LABEL == 2 -->
+          <th>
+            {fleets.START_NAME}<br>
+            {fleets.START_URL} {fleets.START_TYPE_TEXT_SH}
+          </th>
+          <th>
+            {fleets.END_NAME}<br>
+            {fleets.END_URL} {fleets.END_TYPE_TEXT_SH}
+          </th>
+        <!-- ENDIF -->
         <th>
-          {fleets.MISSION_NAME}
-        </th>
-        <th>
+          {fleets.MISSION_NAME}<br>
           <!-- IF fleets.OV_LABEL == 0 -->{L_ov_fleet_arrive}<!-- ELSEIF fleets.OV_LABEL == 1 -->{fleets.MISSION_NAME} - {L_ov_fleet_hold}<!-- ELSEIF fleets.OV_LABEL == 2 -->{L_ov_fleet_return}<!-- ELSEIF fleets.OV_LABEL == 3 -->{L_ov_fleet_rocket}<!-- ENDIF -->
         </th>
       </tr>

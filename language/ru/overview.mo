@@ -92,7 +92,8 @@ $lang['ov_news_none']			= 'Нет новостей';
 $lang['ov_fleet_list']				= 'График движения флотов';
 
 $lang['ov_fleet']                = 'Флот';
-$lang['ov_destination']          = 'Пункт назначения';
+$lang['ov_destination']          = 'Куда';
+$lang['ov_source']               = 'Откуда';
 $lang['ov_time']                 = 'Время';
 $lang['ov_mission']              = 'Задание';
 $lang['ov_event']                = 'Событие';
