@@ -2,14 +2,22 @@
 
 SuperNova JavaScript timer system
 
+ 1.1 - copyright (c) 2010 by Gorlum for http://supernova.ws
+   [~] - optimization: now HTML elements for timers is caching after first tick and didn't search every tick
+         This should rise perfomance a bit
+
  1.0 - copyright (c) 2010 by Gorlum for http://supernova.ws
+   [!] - initial release
 
 Array structure:
-[0] - timer ID (name)
-[1] - timer type: 0 - time countdown; 1 - counter; 2 - date&time
-[2] - is timer active?
-[3] - start time
-[4] - timer options
+ [0] - timer ID (name)
+ [1] - timer type: 0 - time countdown; 1 - counter; 2 - date&time
+ [2] - is timer active?
+ [3] - start time
+ [4] - timer options
+[90] - reserved for internal use (link to main HTML element)
+[91] - reserved for internal use (link to 'timer' HTML element)
+[92] - reserved for internal use (link to 'finish' HTML element)
 
 Options for time countdown:
 [0] - inactive message
@@ -93,7 +101,7 @@ function sn_timestampToString(timestamp, useDays){
 }
 
 function sn_timer() {
-  var HTML;
+  var HTML, HTML_timer, HTML_finish;
 
   activeTimers = 0;
   time_now = new Date();
@@ -105,9 +113,19 @@ function sn_timer() {
     if(!timer[2])continue;
     timer_options = timer[4];
 
-    HTML        = document.getElementById(timer[0]);
-    HTML_timer  = document.getElementById(timer[0] + '_timer');
-    HTML_finish = document.getElementById(timer[0] + '_finish');
+    if(!timer[90])
+    {
+      sn_timers[timerID][90] = document.getElementById(timer[0]);
+      sn_timers[timerID][91] = document.getElementById(timer[0] + '_timer');
+      sn_timers[timerID][92] = document.getElementById(timer[0] + '_finish');
+    }
+
+//    HTML        = document.getElementById(timer[0]);
+//    HTML_timer  = document.getElementById(timer[0] + '_timer');
+//    HTML_finish = document.getElementById(timer[0] + '_finish');
+    HTML        = sn_timers[timerID][90];
+    HTML_timer  = sn_timers[timerID][91];
+    HTML_finish = sn_timers[timerID][92];
 
     switch(timer[1]){
       case 0: // countdown timer
