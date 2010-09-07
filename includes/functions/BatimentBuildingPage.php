@@ -3,6 +3,7 @@
 /**
  * BatimentBuildingPage.php
  *
+ * @version 1.5 - Using PTE (not everywhere) by Gorlum for http://supernova.ws
  * @version 1.4 - Complying with PCG by Gorlum for http://supernova.ws
  * @version 1.3 - Security checked for SQL-injection by Gorlum for http://supernova.ws
 // 1.0 Mise en module initiale (creation)
@@ -107,7 +108,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
   $SubTemplate         = gettemplate('buildings_builds_row');
   $BuildingPage        = '';
   $caps = ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet);
-  pdump($caps);
+  //pdump($caps);
   foreach($lang['tech'] as $Element => $ElementName)
   {
     if (in_array($Element, $Allowed[$CurrentPlanet['planet_type']]))
@@ -126,17 +127,14 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
       {
         $HaveRessources        = IsElementBuyable ($CurrentUser, $CurrentPlanet, $Element, true, false);
         $parse                 = array();
-        $parse['dpath']        = $dpath;
-        $parse['i']            = $Element;
         $BuildingLevel         = $CurrentPlanet[$resource[$Element]];
-        $parse['nivel']        = ($BuildingLevel == 0) ? '' : " ({$lang['level']} {$BuildingLevel})";
 
         // show energy on BuildingPage
         //================================
         $BuildLevelFactor     = 10; //$CurrentPlanet[$resource[$Element].'_porcent'];
         $BuildTemp            = $CurrentPlanet['temp_max'];
         $CurrentBuildtLvl     = $BuildingLevel;
-        $BuildLevel         = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
+        $BuildLevel           = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
 
         $Prod[3] = (floor(eval($ProdGrid[$Element]['formule']['deuterium']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
         $Prod[4] = (floor(eval($ProdGrid[$Element]['formule']['energy'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
@@ -157,31 +155,28 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
 
         if ($Element != 12)
         {
-            $EnergyNeed = colorNumber( pretty_number(floor($Prod[4] - $ActualNeed)) );
+//            $EnergyNeed = colorNumber( pretty_number(floor($Prod[4] - $ActualNeed)) );
+            $EnergyNeed = floor($Prod[4] - $ActualNeed);
         }
         else
         {
-            $EnergyNeed = colorNumber( pretty_number(floor($Prod[3] - $ActualNeed)) );
+//            $EnergyNeed = colorNumber( pretty_number(floor($Prod[3] - $ActualNeed)) );
+            $EnergyNeed = floor($Prod[4] - $ActualNeed);
         }
 
         if ($Element >= 1 && $Element <= 3)
         {
-          $parse['build_need_diff'] = "(<font color=#FF0000>{$EnergyNeed} {$lang['Energy']}</font>)";
+          $parse['build_need_diff'] = "<font color=#FF0000>{$EnergyNeed} {$lang['Energy']}</font>";
           $BuildLevel = 0;
         }
         elseif ($Element == 4 || $Element == 12)
         {
-          $parse['build_need_diff'] = "(<font color=#00FF00>+{$EnergyNeed} {$lang['Energy']}</font>)";
+          $parse['build_need_diff'] = "<font color=#00FF00>+{$EnergyNeed} {$lang['Energy']}</font>";
           $BuildLevel = 0;
         }
 
         //================================
-        $parse['n']            = $ElementName;
-        $parse['descriptions'] = $lang['res']['descriptions'][$Element];
         $ElementBuildTime      = GetBuildingTime($CurrentUser, $CurrentPlanet, $Element);
-        $parse['time']         = ShowBuildTime($ElementBuildTime);
-        $parse['price']        = GetElementPrice($CurrentUser, $CurrentPlanet, $Element);
-        $parse['rest_price']   = GetRestPrice($CurrentUser, $CurrentPlanet, $Element);
         $parse['click']        = '';
         $NextBuildLevel        = $CurrentPlanet[$resource[$Element]] + 1;
 
@@ -259,13 +254,11 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
           $parse['click'] = "<font color=#FF0000>{$lang['NoMoreSpace']}</font>";
         }
 
-        $BuildingPage .= parsetemplate($SubTemplate, $parse);
-
         $template->assign_block_vars('production', array(
           'ID'          => $Element,
           'NAME'        => $ElementName,
           'DESCRIPTION' => $lang['res']['descriptions'][$Element],
-          'LEVEL'       => ($BuildingLevel == 0) ? '' : " ({$lang['level']} {$BuildingLevel})",
+          'LEVEL'       => ($BuildingLevel == 0) ? '' : "{$BuildingLevel}",
 
           'PRICE'       => GetElementPrice($CurrentUser, $CurrentPlanet, $Element),
           'TIME'        => ShowBuildTime($ElementBuildTime),
@@ -275,16 +268,13 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
           'METAL_BALANCE'  => $caps['metal_perhour'][$Element],
           'CRYSTAL_BALANCE' => $caps['crystal_perhour'][$Element],
           'DEUTERIUM_BALANCE' => $caps['deuterium_perhour'][$Element],
-          'ENERGY_BALANCE' => $parse['build_need_diff'],
+          'ENERGY_BALANCE' => $EnergyNeed,
 
           'BUILD_LINK'  => $parse['click'],
-
         ));
       }
     }
   }
-
-  $parse = $lang;
 
   if ($Queue['lenght'] > 0)
   {
@@ -300,8 +290,6 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
   $parse['planet_field_current'] = $CurrentPlanet['field_current'];
   $parse['planet_field_max']     = $CurrentPlanet['field_max'] + ($CurrentPlanet[$resource[33]] * 5);
   $parse['field_libre']          = $parse['planet_field_max']  - $CurrentPlanet['field_current'];
-
-  $parse['BuildingsList']        = $BuildingPage;
 
   $page                          = parsetemplate($template, $parse);
   display($page, $lang['Builds']);

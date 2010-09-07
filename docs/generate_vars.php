@@ -2,21 +2,21 @@
 define('INSIDE'  , true);
 define('INSTALL' , false);
 
-$ugamela_root_path = './';
+$ugamela_root_path = './../';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
 pr();
 print("\n");
 
-print("\$resources = array(\n");
+print("  \$resources = array(\n");
 
 function p_s($str, $sameline = false)
 {
   global $space;
 
   if(!$sameline)
-    for($i == 0; $i < 2 + $space; $i++)
+    for($i == 0; $i < 4 + $space; $i++)
       print(' ');
   print("{$str}");
   if(!$sameline)
@@ -91,7 +91,7 @@ foreach($resource as $id => $name)
       {
         foreach($field_value as $field_name2 => $field_value2)
         {
-          p_s("'{$field_name2}_perhour' => \"{$field_value2}\",");
+          p_s("'{$field_name2}_perhour' => '{$field_value2}',");
         }
       }
       else
@@ -104,5 +104,5 @@ foreach($resource as $id => $name)
   $space-=2;
   p_s("),\n");
 }
-print(');');
+print('  );');
 ?>
