@@ -254,23 +254,28 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
           $parse['click'] = "<font color=#FF0000>{$lang['NoMoreSpace']}</font>";
         }
 
+        $destroy_price = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, true, true);
         $template->assign_block_vars('production', array(
-          'ID'          => $Element,
-          'NAME'        => $ElementName,
-          'DESCRIPTION' => $lang['res']['descriptions'][$Element],
-          'LEVEL'       => ($BuildingLevel == 0) ? '' : "{$BuildingLevel}",
+          'ID'                => $Element,
+          'NAME'              => $ElementName,
+          'DESCRIPTION'       => $lang['res']['descriptions'][$Element],
+          'LEVEL'             => ($BuildingLevel == 0) ? '' : "{$BuildingLevel}",
 
-          'PRICE'       => GetElementPrice($CurrentUser, $CurrentPlanet, $Element),
-          'TIME'        => ShowBuildTime($ElementBuildTime),
-          'RESOURCES_LEFT' => GetRestPrice($CurrentUser, $CurrentPlanet, $Element),
+          'PRICE'             => GetElementPrice($CurrentUser, $CurrentPlanet, $Element),
+          'TIME'              => ShowBuildTime($ElementBuildTime),
+          'RESOURCES_LEFT'    => GetRestPrice($CurrentUser, $CurrentPlanet, $Element),
 
+          'DESTROY_METAL'     => $destroy_price['metal'],
+          'DESTROY_CRYSTAL'   => $destroy_price['crystal'],
+          'DESTROY_DEUTERIUM' => $destroy_price['deuterium'],
+          'DESTROY_TIME'      => pretty_time(GetBuildingTime  ($CurrentUser, $CurrentPlanet, $Element) / 2),
 
-          'METAL_BALANCE'  => $caps['metal_perhour'][$Element],
-          'CRYSTAL_BALANCE' => $caps['crystal_perhour'][$Element],
+          'METAL_BALANCE'     => $caps['metal_perhour'][$Element],
+          'CRYSTAL_BALANCE'   => $caps['crystal_perhour'][$Element],
           'DEUTERIUM_BALANCE' => $caps['deuterium_perhour'][$Element],
-          'ENERGY_BALANCE' => $EnergyNeed,
+          'ENERGY_BALANCE'    => $EnergyNeed,
 
-          'BUILD_LINK'  => $parse['click'],
+          'BUILD_LINK'        => $parse['click'],
         ));
       }
     }
