@@ -18,8 +18,8 @@
     <tr>
       <th colspan=2 style="position: relative;">
         <div style="position: relative; width: 100%; height: 100%;">
-          <div style="position: absolute; left: 7%;">{TIME_TEXT} <span id="ov_time">00:00:00</span></div>
-          <div style="position: absolute; right: 10%; align: center;">{MembersOnline} <a href="admin/overview.php" title="{MembersOnline2}">[{USERS_ONLINE}/{USERS_TOTAL}]</a></div>
+          <div style="position: absolute; left: 5%;">{TIME_TEXT} <span id="ov_time">00:00:00</span></div>
+          <div style="position: absolute; right: 5%; align: center;">{MembersOnline} <a href="admin/overview.php" title="{MembersOnline2}">[{USERS_ONLINE}/{USERS_TOTAL}]</a></div>
           &nbsp;
         </div>
       </th>
