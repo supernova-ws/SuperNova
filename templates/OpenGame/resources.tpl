@@ -21,6 +21,7 @@ function res_set_all(obj)
     <tr><td class="c" colspan="6">{L_res_planet_production} "{PLANET_NAME}"</td></tr>
     <tr>
       <th colspan="6" style="position: relative; border: 1px solid rgb(153, 153, 255); padding: 0px;">
+      <div style="position: relative;">
         <!-- IF PRODUCTION_LEVEL == 100 -->
           <!-- DEFINE $BAR_COLOR = '#00C000' -->
         <!-- ELSE -->
@@ -29,6 +30,7 @@ function res_set_all(obj)
         <div style="position: absolute; top: 0px; left: 0px; width: {PRODUCTION_LEVEL}%; background-color: {$BAR_COLOR};">&nbsp;</div>
         <div style="position: absolute; top: 0px; left: 0px; width: 100%;">{PRODUCTION_LEVEL}%</div>
         &nbsp;
+      </div>
       </th>
     </tr>
     <tr align=center>
@@ -95,6 +97,7 @@ function res_set_all(obj)
     <tr>
       <th>{resources.NAME}</th>
       <th width="469" style="position: relative; border: 1px solid rgb(153, 153, 255); padding: 0px;">
+      <div style="position: relative; top: 0px; left: 0px;">
         <!-- IF resources.STORAGE > 100 -->
           <!-- DEFINE $BAR_COLOR = '#C00000' -->
         <!-- ELSEIF resources.STORAGE > 80 -->
@@ -102,9 +105,10 @@ function res_set_all(obj)
         <!-- ELSE -->
           <!-- DEFINE $BAR_COLOR = '#00C000' -->
         <!-- ENDIF -->
-        <div style="position: absolute; top: 1px; left: 0px; width: {resources.BAR}%; background-color: {$BAR_COLOR};">&nbsp;</div>
-        <div style="position: absolute; top: 1px; left: 0px; width: 100%;">{resources.STORAGE}%</div>
+        <div style="position: absolute; width: {resources.BAR}%; background-color: {$BAR_COLOR};">&nbsp;</div>
+        <div style="position: absolute; width: 100%;">{resources.STORAGE}%</div>
         &nbsp;
+      </div>
       </th>
     </tr>
   <!-- END resources -->

@@ -17,9 +17,11 @@
   <table width="519">
     <tr>
       <th colspan=2 style="position: relative;">
-        &nbsp;
-        <div style="position: absolute; left: 0px; top: 0px; width: 80%;">{TIME_TEXT} <span id="ov_time">00:00:00</span></div>
-        <div style="position: absolute; left: 80%; top: 0px;">{MembersOnline} <a href="admin/overview.php" title="{MembersOnline2}">[{USERS_ONLINE}/{USERS_TOTAL}]</a></div>
+        <div style="position: relative; width: 100%; height: 100%;">
+          <div style="position: absolute; left: 0px; width: 80%;">{TIME_TEXT} <span id="ov_time">00:00:00</span></div>
+          <div style="position: absolute; left: 80%;">{MembersOnline} <a href="admin/overview.php" title="{MembersOnline2}">[{USERS_ONLINE}/{USERS_TOTAL}]</a></div>
+          &nbsp;
+        </div>
       </th>
     </tr>
 
@@ -180,16 +182,18 @@
     <tr>
       <th width=100 align="center">{buildings_on_planet}</th>
       <th colspan="3" style="position: relative; border: 1px solid rgb(153, 153, 255); padding: 0px; height: 100%;">
-        <!-- IF PLANET_FILL >= 100 -->
-          <!-- DEFINE $BAR_COLOR = '#C00000' -->
-        <!-- ELSEIF PLANET_FILL >= 80 -->
-          <!-- DEFINE $BAR_COLOR = '#C0C000' -->
-        <!-- ELSE -->
-          <!-- DEFINE $BAR_COLOR = '#00C000' -->
-        <!-- ENDIF -->
-        <div style="position: absolute; top: 0px; left: 0px; width: {PLANET_FILL_BAR}%; background-color: {$BAR_COLOR}; height:100%;">&nbsp;</div>
-        <div style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; vertical-align: middle;">{planet_field_current}/{planet_field_max} ({PLANET_FILL}%)</div>
-        &nbsp;
+        <div style="position: relative; width: 100%; height: 100%;">
+          <!-- IF PLANET_FILL >= 100 -->
+            <!-- DEFINE $BAR_COLOR = '#C00000' -->
+          <!-- ELSEIF PLANET_FILL >= 80 -->
+            <!-- DEFINE $BAR_COLOR = '#C0C000' -->
+          <!-- ELSE -->
+            <!-- DEFINE $BAR_COLOR = '#00C000' -->
+          <!-- ENDIF -->
+          <div style="position: absolute; top: 0px; left: 0px; width: {PLANET_FILL_BAR}%; background-color: {$BAR_COLOR}; height:100%;">&nbsp;</div>
+          <div style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; vertical-align: middle;">{planet_field_current}/{planet_field_max} ({PLANET_FILL}%)</div>
+          &nbsp;
+        </div>
       </th>
     </tr>
 
