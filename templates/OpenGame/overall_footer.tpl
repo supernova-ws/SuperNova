@@ -3,8 +3,6 @@
   var localTime = new Date();
   var timeDiff = serverTime.valueOf() - localTime.valueOf();
   
-  sn_timers.unshift(['localTime', 2, true, {TIME_NOW}, 3]);
-
   sn_timer();
 --></script> 
   </body>

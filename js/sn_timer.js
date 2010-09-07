@@ -104,8 +104,9 @@ function sn_timer() {
   var HTML, HTML_timer, HTML_finish;
 
   activeTimers = 0;
+  local_time = new Date();
   time_now = new Date();
-  time_now.setTime(time_now.valueOf() + timeDiff);
+  time_now.setTime(local_time.valueOf() + timeDiff);
   timestamp = Math.round(time_now.valueOf() / 1000);
 
   for(timerID in sn_timers){
@@ -113,16 +114,15 @@ function sn_timer() {
     if(!timer[2])continue;
     timer_options = timer[4];
 
+//    HTML        = document.getElementById(timer[0]);
+//    HTML_timer  = document.getElementById(timer[0] + '_timer');
+//    HTML_finish = document.getElementById(timer[0] + '_finish');
     if(!timer[90])
     {
       sn_timers[timerID][90] = document.getElementById(timer[0]);
       sn_timers[timerID][91] = document.getElementById(timer[0] + '_timer');
       sn_timers[timerID][92] = document.getElementById(timer[0] + '_finish');
     }
-
-//    HTML        = document.getElementById(timer[0]);
-//    HTML_timer  = document.getElementById(timer[0] + '_timer');
-//    HTML_finish = document.getElementById(timer[0] + '_finish');
     HTML        = sn_timers[timerID][90];
     HTML_timer  = sn_timers[timerID][91];
     HTML_finish = sn_timers[timerID][92];
@@ -180,17 +180,16 @@ function sn_timer() {
         break;
 
       case 2: // date&time
-        time_now.setTime(time_now.valueOf() - timeDiff);
         printData = '';
 
         if(timer[4] & 1)
-          printData += time_now.toLocaleDateString();
+          printData += local_time.toLocaleDateString();
 
         if(timer[4] & 3)
          printData += '&nbsp;';
 
         if(timer[4] & 2)
-          printData += time_now.toTimeString().substring(0,8);
+          printData += local_time.toTimeString().substring(0,8);
 
         if(HTML != null)
           HTML.innerHTML = printData;

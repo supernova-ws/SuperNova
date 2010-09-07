@@ -53,4 +53,6 @@ input.frameles
   sn_timers.unshift(['top_metal', 1, true, {TIME_NOW}, [{TOPNAV_METAL}, {TOPNAV_METAL_PERHOUR}, {TOPNAV_METAL_MAX}]]);
   sn_timers.unshift(['top_crystal', 1, true, {TIME_NOW}, [{TOPNAV_CRYSTAL}, {TOPNAV_CRYSTAL_PERHOUR}, {TOPNAV_CRYSTAL_MAX}]]);
   sn_timers.unshift(['top_deuterium', 1, true, {TIME_NOW}, [{TOPNAV_DEUTERIUM}, {TOPNAV_DEUTERIUM_PERHOUR}, {TOPNAV_DEUTERIUM_MAX}]]);
+
+  sn_timers.unshift(['localTime', 2, true, {TIME_NOW}, 3]);
 // --></script>

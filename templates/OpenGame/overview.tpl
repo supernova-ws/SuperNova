@@ -333,7 +333,7 @@
 
 <div id="admin_message"></div>
 
-<script type="text/javascript">
+<script type="text/javascript"><!--
 jQuery(document).ready(function() {
   // send requests
   jQuery.post("../scheduler.php", {rating: jQuery(this).html()}, function(xml) {
@@ -344,6 +344,5 @@ jQuery(document).ready(function() {
   } );
 });
 
-sn_timers.unshift(['ov_time', 2, true, , 2]);
+sn_timers.unshift(['ov_time', 2, true, {TIME_NOW}, 2]);
 --></script> 
-</script>
