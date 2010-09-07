@@ -56,56 +56,45 @@ function getStorageFaktor() {
           <!-- BEGINELSE missions -->
             <tr><th><font color="red">{L_fl_bad_mission}</font></th></tr>
           <!-- END missions -->
-
-
-        </tbody></table>
-      </th>
-     </tr>
-
-     <tr id="resTable">
-      <th>
-        <table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody>
-          <tr>
-            <td class="c">{L_sys_resources}</td>
-            <td class="c">{L_fl_on_stores}</td>
-            <td class="c">{L_fl_load_cargo}</td>
-            <td class="c">{L_fl_rest_on_planet}</td>
-          </tr>
-
-
-          <!-- BEGIN resources -->
-            <tr>
-              <th>{resources.NAME}</th>
-              <th align=right>{resources.ON_PLANET}</th>
-              <th>
-                <input type="button" value="0" onClick="javascript:zero_resource({resources.ID});" style="font-weight:bold;color:red;width:20;">
-                <input type="button" value="-" onClick="javascript:dec_resource({resources.ID});" style="width:20;">
-                <input type="text"   value="0" name="resource{resources.ID}" onkeyup="calculateTransportCapacity();" onchange="calculateTransportCapacity();" onfocus="javascript:if(this.value == '0') this.value='';" onblur="javascript:if(this.value == '') this.value='0';" alt="{Metal} {thisresource{resources.ID}}" />
-                <input type="button" value="+" onClick="javascript:inc_resource({resources.ID});" style="width:20;">
-                <input type="button" value="{L_fl_selmax}" onClick="javascript:max_resource({resources.ID});" style="font-weight:bold;color:green;width:40;">
-              </th>
-              <th align=right><div id="rest_res{resources.ID}" class="fr">{resources.ON_PLANET}</div></th>
-            </tr>
-          <!-- END resources -->
-
-
-          <tr>
-            <th colspan="2">{fl_space_left}</th>
-            <th>&nbsp;</th>
-            <th><div id="remainingresources" class="fr">-</div></th>
-          </tr>
-          <tr>
-            <th colspan="2">&nbsp;</th>
-            <th>
-              <input type="button" onclick="javascript:zero_resources()" value="{L_fl_none_resources}">
-              <input type="button" onclick="javascript:max_resources()" value="{L_fl_allressources}">
-            </th>
-          </tr>
         </tbody></table>
       </th>
     </tr>
-
     <tr><th><input value="{fl_continue}" type="submit"></th></tr>
+  </tbody></table><br>
+
+  <table id="resTable" border="0" cellpadding="0" cellspacing="0" width="100%" ><tbody>
+    <tr>
+      <td class="c">{L_sys_resources}</td>
+      <td class="c">{L_fl_on_stores}</td>
+      <td class="c">{L_fl_load_cargo}</td>
+      <td class="c">{L_fl_rest_on_planet}</td>
+    </tr>
+
+
+    <!-- BEGIN resources -->
+      <tr>
+        <th>{resources.NAME}</th>
+        <th align=right>{resources.ON_PLANET}</th>
+        <th>
+          <input type="button" value="0" onClick="javascript:zero_resource({resources.ID});" style="font-weight:bold;color:red;width:20;">
+          <input type="button" value="-1k" onClick="javascript:dec_resource({resources.ID});" style="width:20;">
+          <input type="text"   value="0" name="resource{resources.ID}" onkeyup="calculateTransportCapacity();" onchange="calculateTransportCapacity();" onfocus="javascript:if(this.value == '0') this.value='';" onblur="javascript:if(this.value == '') this.value='0';" alt="{Metal} {thisresource{resources.ID}}" />
+          <input type="button" value="+1k" onClick="javascript:inc_resource({resources.ID});" style="width:20;">
+          <input type="button" value="{L_fl_selmax}" onClick="javascript:max_resource({resources.ID});" style="font-weight:bold;color:green;width:40;">
+        </th>
+        <th align=right><div id="rest_res{resources.ID}" class="fr">{resources.ON_PLANET}</div></th>
+      </tr>
+    <!-- END resources -->
+
+
+    <tr>
+      <th colspan="2">{fl_space_left}</th>
+      <th>
+        <div class="fl"><input type="button" onclick="javascript:zero_resources()" value="{L_fl_none_resources}"></div>
+        <div class="fr"><input type="button" onclick="javascript:max_resources()" value="{L_fl_allressources}"></div>
+      </th>
+      <th><div id="remainingresources" class="fr">-</div></th>
+    </tr>
   </tbody></table>
 </form>
 
