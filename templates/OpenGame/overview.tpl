@@ -174,24 +174,25 @@
     <tr><th>{L_ov_hangar}</th><th colspan="3"><!-- IF HANGAR -->{HANGAR}<span id="ov_hangar"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
     <tr><th>{Teching}</th><th colspan="3"><!-- IF TECH -->{TECH}<span id="ov_tech"></span><!-- ELSE -->{L_Free}<!-- ENDIF --></th></tr>
 
-    <!-- IF PLANET_FILL >= 100 -->
-      <!-- DEFINE $BAR_COLOR = '#C00000' -->
-    <!-- ELSEIF PLANET_FILL >= 100 -->
-      <!-- DEFINE $BAR_COLOR = '#C0C000' -->
-    <!-- ELSE -->
-      <!-- DEFINE $BAR_COLOR = '#00C000' -->
-    <!-- ENDIF -->
 
     <tr><td class="c" colspan=4>{L_ov_planet_details}</td></tr>
+    
     <tr>
       <th width=100 align="center">{buildings_on_planet}</th>
-      <th colspan="3" align="center"  style="white-space: nowrap;">
-        <font color="#CCF19F">{planet_field_current} / {planet_field_max} {Points_1}</font><br />
-        <div align=left style="border: 1px solid rgb(153, 153, 255); width: 100%;">
-          <div id="CaseBarre" align=center style="position: relative; left: 0px; background-color: {$BAR_COLOR}; width: {PLANET_FILL_BAR}%;">{PLANET_FILL}%</div>
-        </div>
+      <th colspan="3" style="position: relative; border: 1px solid rgb(153, 153, 255); padding: 0px; height: 100%;">
+        <!-- IF PLANET_FILL >= 100 -->
+          <!-- DEFINE $BAR_COLOR = '#C00000' -->
+        <!-- ELSEIF PLANET_FILL >= 80 -->
+          <!-- DEFINE $BAR_COLOR = '#C0C000' -->
+        <!-- ELSE -->
+          <!-- DEFINE $BAR_COLOR = '#00C000' -->
+        <!-- ENDIF -->
+        <div style="position: absolute; top: 0px; left: 0px; width: {PLANET_FILL_BAR}%; background-color: {$BAR_COLOR}; height:100%;">&nbsp;</div>
+        <div style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; vertical-align: middle;">{planet_field_current}/{planet_field_max} ({PLANET_FILL}%)</div>
+        &nbsp;
       </th>
     </tr>
+
     <tr>
       <th width=100>{orb}</th>
       <th colspan="3">{L_sys_metal}: {metal_debris} / {L_sys_crystal}: {crystal_debris}
@@ -299,7 +300,7 @@
 
         <!-- IF planet.ENEMY != 0 -->
           <span style="position: absolute; top: 26%; left: 26%; width: 48%; height: 48%;">
-            <img src="images/icon_warning.png" height="100%" width="100%" style="border-style: none">
+            <img src="images/icon_warning.png" height="100%" width="100%" style="border-style: none; cursor: pointer;" onclick="javascript:window.location = '?cp={planet.ID}&re=0'">
           </span>
         <!-- ENDIF -->
 
@@ -308,17 +309,17 @@
         </span>
 
         <!-- IF planet.MOON_ID -->
-        <div style="position: absolute; top: 0; left: 67%; width: 33%; height: 33%;">
+        <div style="position: absolute; top: 0; left: 68%; width: 32%; height: 32%;">
           <a href="?cp={planet.MOON_ID}&re=0" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img style="border-style: none;" src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" height="100%" width="100%"></a>
           
           <!-- IF planet.MOON_ENEMY != 0 -->
             <span style="position: absolute; top: 26%; left: 26%; width: 48%; height: 48%;">
-              <img src="images/icon_warning.png" height="100%" width="100%" style="border-style: none">
+              <img src="images/icon_warning.png" height="100%" width="100%" style="border-style: none; cursor: pointer;" onclick="javascript:window.location = '?cp={planet.MOON_ID}&re=0'">
             </span>
           <!-- ENDIF -->
 
           <span style="position: absolute; left: 0; width: 100%; top: 90%; height: 10%; overflow: hidden;">
-            <div class="fl" style="position: relative; left: 0px; height: 100%; width: {planet.MOON_FILL}%; background-color: <!-- IF planet.FILL >= 100 -->red<!-- ELSEIF planet.FILL > 80 -->yellow<!-- ELSE -->green<!-- ENDIF -->;"></div>
+            <div class="fl" style="position: relative; left: 0px; height: 100%; width: {planet.MOON_FILL}%; background-color: <!-- IF planet.MOON_FILL >= 100 -->red<!-- ELSEIF planet.MOON_FILL > 80 -->yellow<!-- ELSE -->green<!-- ENDIF -->;"></div>
           </span>
         </div>
       <!-- ENDIF -->
