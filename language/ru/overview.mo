@@ -84,7 +84,7 @@ $lang['deletemessage_wrong']		= 'Планета не может быть оставлена!';
 $lang['deletemessage_fail']		= 'Неверный пароль!';
 
 // 	
-$lang['MembersOnline']			= 'Игроки on-line';
+$lang['MembersOnline']			= 'Игроков';
 $lang['ov_news_title']			= 'Новости';
 $lang['ov_news_none']			= 'Нет новостей';
 
@@ -92,7 +92,8 @@ $lang['ov_news_none']			= 'Нет новостей';
 $lang['ov_fleet_list']				= 'График движения флотов';
 
 $lang['ov_fleet']                = 'Флот';
-$lang['ov_destination']          = 'Пункт назначения';
+$lang['ov_destination']          = 'Куда';
+$lang['ov_source']               = 'Откуда';
 $lang['ov_time']                 = 'Время';
 $lang['ov_mission']              = 'Задание';
 $lang['ov_event']                = 'Событие';
@@ -143,7 +144,7 @@ $lang['user_points_all']		= 'Всего';
 $lang['Points_1']			= 'сектора';
 $lang['km']				= 'км';
 $lang['orb']				= 'Обломки на орбите';
-$lang['buildings_on_planet']		= 'Занятые сектора';
+$lang['buildings_on_planet']		= 'Застройка';
 $lang['NumberOfRaids'] = 'Проведено';
 $lang['RaidsWin'] = 'Выиграно';
 $lang['RaidsLoose'] = 'Проиграно';

@@ -71,9 +71,8 @@ function int_calc_storage_bar($resource_name)
     'WEEKLY'      => colorNumber(pretty_number($totalProduction * 24 * 7)),
     'MONTHLY'     => colorNumber(pretty_number($totalProduction * 24 * 30)),
 
-    'STORAGE'     => $storage_fill,
+    'STORAGE'     => intval($storage_fill),
     'BAR'         => min($storage_fill, 100),
-    'BAR_COLOR'   => $storage_fill > 100 ? '#C00000' : ($storage_fill > 80 ? '#C0C000' : '#00C000'),
   ));
 };
 

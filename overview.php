@@ -307,29 +307,34 @@ switch ($mode)
     while ($irak = mysql_fetch_array ($iraks_query))
     {
       if ($irak['zeit'] >= $time_now) {
-        $planet_start = doquery("SELECT `name` FROM `{{planets}}` WHERE
-          `galaxy` = '{$irak['galaxy']}' AND
-          `system` = '{$irak['system']}' AND
-          `planet` = '{$irak['planet']}' AND
-          `planet_type` = '1'", '', true);
-
         $irak['fleet_id']             = -$irak['anzahl'];
         $irak['fleet_owner']          = $irak['owner'];
         $irak['fleet_mission']        = MT_MISSILE;
         $irak['fleet_array']          = "503,{$irak['anzahl']};";
         $irak['fleet_amount']         = $irak['anzahl'];
 
+        $planet_end = doquery("SELECT `name` FROM `{{planets}}` WHERE
+          `galaxy` = '{$irak['galaxy']}' AND
+          `system` = '{$irak['system']}' AND
+          `planet` = '{$irak['planet']}' AND
+          `planet_type` = '1'", '', true);
         $irak['fleet_end_galaxy']     = $irak['galaxy'];
         $irak['fleet_end_system']     = $irak['system'];
         $irak['fleet_end_planet']     = $irak['planet'];
         $irak['fleet_end_type']       = 1;
         $irak['fleet_end_time']       = $irak['zeit'];
-        $irak['fleet_end_name']       = $planet_start['name'];
+        $irak['fleet_end_name']       = $planet_end['name'];
 
-        //$irak['fleet_start_galaxy'] = $irak['galaxy_angreifer'];
-        //$irak['fleet_start_system'] = $irak['system_angreifer'];
-        //$irak['fleet_start_planet'] = $irak['planet_angreifer'];
-        //$irak['fleet_start_type']   = 1;
+        $planet_start = doquery("SELECT `name` FROM `{{planets}}` WHERE
+          `galaxy` = '{$irak['galaxy_angreifer']}' AND
+          `system` = '{$irak['system_angreifer']}' AND
+          `planet` = '{$irak['planet_angreifer']}' AND
+          `planet_type` = '1'", '', true);
+        $irak['fleet_start_galaxy']   = $irak['galaxy_angreifer'];
+        $irak['fleet_start_system']   = $irak['system_angreifer'];
+        $irak['fleet_start_planet']   = $irak['planet_angreifer'];
+        $irak['fleet_start_type']     = 1;
+        $irak['fleet_start_name']     = $planet_start['name'];
         //$irak['fleet_start_time']   = $irak['zeit'];
 
         int_assign_event($irak, 3);
@@ -437,7 +442,7 @@ switch ($mode)
           'MOON_ID'    => $moon['id'],
           'MOON_NAME'  => $moon['name'],
           'MOON_IMG'   => $moon['image'],
-          'MOON_FILL'  => $moon_fill,
+          'MOON_FILL'  => min(100, $moon_fill),
           'MOON_ENEMY' => $enemy_fleet_moon['fleets_count'],
         ), $buildArray));
     }

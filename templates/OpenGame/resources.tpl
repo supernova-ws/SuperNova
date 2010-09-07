@@ -19,11 +19,18 @@ function res_set_all(obj)
 <form action="" method="post">
   <table width="569"><tbody>
     <tr><td class="c" colspan="6">{L_res_planet_production} "{PLANET_NAME}"</td></tr>
-    <tr><th colspan="6">
-      <div style="border: 1px solid rgb(153, 153, 255); width: 100%;">
-        <div id="AlmDBar" style="background-color: <!-- IF PRODUCTION_LEVEL == 100 -->#00C000<!-- ELSE -->#C00000<!-- ENDIF -->; width: {PRODUCTION_LEVEL}%; float:left;">{PRODUCTION_LEVEL}%</div>
-      </div>
-    </th></tr>
+    <tr>
+      <th colspan="6" style="position: relative; border: 1px solid rgb(153, 153, 255); padding: 0px;">
+        <!-- IF PRODUCTION_LEVEL == 100 -->
+          <!-- DEFINE $BAR_COLOR = '#00C000' -->
+        <!-- ELSE -->
+          <!-- DEFINE $BAR_COLOR = '#C00000' -->
+        <!-- ENDIF -->
+        <div style="position: absolute; top: 0px; left: 0px; width: {PRODUCTION_LEVEL}%; background-color: {$BAR_COLOR};">&nbsp;</div>
+        <div style="position: absolute; top: 0px; left: 0px; width: 100%;">{PRODUCTION_LEVEL}%</div>
+        &nbsp;
+      </th>
+    </tr>
     <tr align=center>
       <td class="c">&nbsp;</td>
       <td class="c" width="60">{L_sys_metal}</td>
@@ -81,22 +88,23 @@ function res_set_all(obj)
   <!-- END resources -->
 </tbody></table>
 <br>
+
 <table width="569"><tbody>
   <tr><td class="c" colspan="2">{L_res_storage_fill}</td></tr>
   <!-- BEGIN resources -->
     <tr>
       <th>{resources.NAME}</th>
-      <th width="469">
-        <div style="border: 1px solid rgb(153, 153, 255); width: 100%;">
-          <!-- IF resources.STORAGE > 100 -->
-            <!-- DEFINE $BAR_COLOR = '#C00000' -->
-          <!-- ELSEIF resources.STORAGE > 80 -->
-            <!-- DEFINE $BAR_COLOR = '#C0C000' -->
-          <!-- ELSE -->
-            <!-- DEFINE $BAR_COLOR = '#00C000' -->
-          <!-- ENDIF -->
-          <div id="AlmMBar" style="background-color: {$BAR_COLOR}; width: {resources.BAR}%; float: left;">{resources.STORAGE}%</div>
-        </div>
+      <th width="469" style="position: relative; border: 1px solid rgb(153, 153, 255); padding: 0px;">
+        <!-- IF resources.STORAGE > 100 -->
+          <!-- DEFINE $BAR_COLOR = '#C00000' -->
+        <!-- ELSEIF resources.STORAGE > 80 -->
+          <!-- DEFINE $BAR_COLOR = '#C0C000' -->
+        <!-- ELSE -->
+          <!-- DEFINE $BAR_COLOR = '#00C000' -->
+        <!-- ENDIF -->
+        <div style="position: absolute; top: 1px; left: 0px; width: {resources.BAR}%; background-color: {$BAR_COLOR};">&nbsp;</div>
+        <div style="position: absolute; top: 1px; left: 0px; width: 100%;">{resources.STORAGE}%</div>
+        &nbsp;
       </th>
     </tr>
   <!-- END resources -->
