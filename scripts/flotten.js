@@ -394,6 +394,15 @@ function calculateTransportCapacity() {
   transportCapacity = storage() - check_resource(0) - check_resource(1) - check_resource(2);
 
   document.getElementById("remainingresources").innerHTML = sn_format_number(transportCapacity, 0, 'lime');
+
+  if(transportCapacity<0)
+  {
+    document.getElementById("fleet_page2_submit").disabled = true;
+  }
+  else
+  {
+    document.getElementById("fleet_page2_submit").disabled = false;
+  }
   return transportCapacity;
 }
 
@@ -772,6 +781,7 @@ function zero_resource(id)
   if(element)
   {
     element.value = 0;
+    jQuery("#resource" + id).trigger('change');
   }
   calculateTransportCapacity();
 }
@@ -785,9 +795,16 @@ function zero_resources()
   calculateTransportCapacity();
 }
 
-function inc_resource(id)
+function inc_resource(element, id, inc_value)
 {
+  alert(element.test);
+
+  if(!inc_value)
+  {
+    inc_value = 1;
+  }
   element = document.getElementsByName('resource' + id)[0];
+
 
   if(parseInt(element.value) + 1000 < resource_max[id])
   {
@@ -802,7 +819,7 @@ function inc_resource(id)
 
 function check_resource(id)
 {
-  var zi_res = parseInt(document.getElementsByName("resource" + id)[0].value);
+  var zi_res = parseInt(document.getElementById("resource" + id).value);
   if (isNaN(zi_res)){
     zi_res = 0;
   }
@@ -819,6 +836,7 @@ function max_resource(id) {
     var cargo = Math.min (freeCapacity + check_resource(id), resource_max[id]);
 
     document.getElementsByName("resource" + id)[0].value = cargo;
+    jQuery("#resource" + id).trigger('change');
     calculateTransportCapacity();
   }
 }

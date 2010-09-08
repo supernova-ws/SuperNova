@@ -327,3 +327,6 @@ h1
   width                : 98%;
   text-align           : right;
 }
+
+.ui-dialog { position: absolute; padding: .2em; width: 200px; overflow: hidden; background: #344055; }
+.ui-dialog .ui-dialog-titlebar { display: none; }
