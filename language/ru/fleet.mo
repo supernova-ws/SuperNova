@@ -70,7 +70,7 @@ $lang['fl_grattack'] 			= 'Боевые союзы';
 
 // floten2.php
 $lang['fl_ressources'] 			= 'Сырьё';
-$lang['fl_allressources'] 		= 'Всё сырьё';
+$lang['fl_allressources'] 		= 'Все ресурсы';
 $lang['fl_space_left'] 			= 'Место в трюме';
 
 // floten3.php
