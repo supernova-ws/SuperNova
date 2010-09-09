@@ -11,8 +11,27 @@
 var ships = Array();
 <!-- BEGIN ships -->
   <!-- IF (ships.ID != 212) -->
-  ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION});
+  ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.CAPACITY}, {ships.SPEED}, {ships.CONSUMPTION});
   <!-- ENDIF -->
+
+function fl_calc_stats(event, ui) {
+  var fleet_speed = Infinity, fleet_capacity = 0, fleet_consumption = 0, ship_number;
+
+  for(i in ships)
+  {
+    ship_number = document.getElementById('ships' + i).value;
+    if( ship_number != 0)
+    {
+      fleet_capacity += ship_number * ships[i][1];
+      fleet_speed = Math.min(fleet_speed, ships[i][2]);
+      fleet_consumption += ship_number * ships[i][3];
+    }
+  }
+
+  document.getElementById('int_fleet_capacity').innerHTML = fleet_capacity;
+  document.getElementById('int_fleet_speed').innerHTML = fleet_speed;
+  document.getElementById('int_fleet_consumption').innerHTML = fleet_consumption;
+}
 <!-- END ships -->
 --></script>
 
@@ -121,6 +140,8 @@ var ships = Array();
             <!-- ELSE -->
               <script type="text/javascript"><!--
                 sn_ainput_make('ships[{ships.ID}]', 0, ships[{ships.ID}][0], 50);
+
+                jQuery('#ships{ships.ID}slide').bind('slide slidechange', fl_calc_stats);
               --></script>
               <!--
               <input value="0" type="button" onClick="javascript:zero_value('ships[{ships.ID}]');" style="font-weight:bold;color:red;">
@@ -135,7 +156,11 @@ var ships = Array();
       <!-- END ships -->
       <tr>
         <!-- IF FLYING_FLEETS < MAX_FLEETS -->
-          <th colspan="2">&nbsp;</th>
+          <th colspan="2"><div class="fl" style="text-align: left;">
+            {L_fl_max_load}: <span id='int_fleet_capacity'>0</span><br>
+            {L_fl_speed}: <span id='int_fleet_speed'>Infinity</span><br>
+            {L_fl_deute_need}: <span id='int_fleet_consumption'>0</span>
+          </div></th>
           <th>
               <div class="fl"><input type="button" value="{fl_unselectall}" onclick="javascript:zero_fleet();"></div>
               <div class="fl"><input type="button" value="{fl_selectall}" onclick="javascript:max_fleet();"></div>
