@@ -728,7 +728,7 @@ function zero_fleet()
 {
   for (i in ships)
   {
-    zero_value('ships[' + i + ']');
+    jQuery('#ships' + i + 'slide').slider("value", 0);
   }
 }
 
@@ -736,7 +736,7 @@ function max_fleet()
 {
   for (i in ships)
   {
-    max_value('ships[' + i + ']', ships[i][0]);
+    jQuery('#ships' + i + 'slide').slider("value", ships[i][0]);
   }
 }
 
