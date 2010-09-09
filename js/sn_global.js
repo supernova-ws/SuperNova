@@ -85,6 +85,9 @@ function sn_ainput_make(field_name, min_value, max_value, div_width)
       slide: function(event, ui) {
         jQuery("#" + field_name).val(ui.value);
         jQuery("#" + field_name).change();
+      },
+      change: function(event, ui) {
+        jQuery("#" + field_name).val(ui.value);
       }
     });
     jQuery("#" + field_name).val(jQuery(slider_id).slider("value"));
