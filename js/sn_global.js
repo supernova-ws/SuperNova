@@ -59,6 +59,11 @@ function sn_timestampToString(timestamp, useDays){
 
 function sn_ainput_make(field_name, min_value, max_value, div_width)
 {
+  var field_name_orig = field_name;
+
+  field_name = field_name.replace('[', '');
+  field_name = field_name.replace(']', '');
+
   var slider_id = "#" + field_name + 'slide';
 
   if(!min_value)
@@ -67,7 +72,7 @@ function sn_ainput_make(field_name, min_value, max_value, div_width)
   }
 
   document.write('<div width="' + div_width + '">');
-  document.write('<div style="margin: 2px;" ><input type="text"   width="100%" id="' + field_name + '" value="0" name="' + field_name + '" onfocus="javascript:if(this.value == \'0\') this.value=\'\';" onblur="javascript:if(this.value == \'\') this.value=\'0\';"/></div>');
+  document.write('<div><input type="text"   width="100%" id="' + field_name + '" value="0" style="margin: 2px;" name="' + field_name_orig + '" onfocus="javascript:if(this.value == \'0\') this.value=\'\';" onblur="javascript:if(this.value == \'\') this.value=\'0\';"/></div>');
   document.write('<div style="margin: 6px;" id="' + field_name + 'slide"></div>');
   document.write('</div>');
 
@@ -103,4 +108,19 @@ function sn_ainput_make(field_name, min_value, max_value, div_width)
       //Math.min(jQuery('#resource' + i + 'slide').slider("value") + transportCapacity, resource_max[i])
     }
   );
+}
+
+var element_cache = new Object();
+
+function calc_elements()
+{
+  var all_elements = document.getElementsByTagName('*');
+
+  for(element in all_elements)
+  {
+    if(all_elements[element].id != undefined)
+    {
+      element_cache[all_elements[element].id] = all_elements[element];
+    }
+  }
 }

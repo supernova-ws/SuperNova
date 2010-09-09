@@ -17,6 +17,7 @@ include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
 includeLang('market');
+includeLang('fleet');
 
 ini_set('display_errors', 1);
 
@@ -86,7 +87,7 @@ switch($mode){
     ));
 
     $data = array(
-      'avail' => array( floor($planetrow['metal']), floor($planetrow['crystal']), floor($planetrow['deuterium']), $user['rpg_points'], ),
+      'avail' => array( floor($planetrow['metal']), floor($planetrow['crystal']), floor($planetrow['deuterium']), $user['rpg_points'] - $config->rpg_cost_trader, ),
       'name'=> array( $lang['Metal'], $lang['Crystal'], $lang['Deuterium'], $lang['dark_matter'], ),
     );
     if($intError){

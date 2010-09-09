@@ -119,11 +119,16 @@ var ships = Array();
             <!-- IF (ships.ID == 212) || (FLYING_FLEETS >= MAX_FLEETS) -->
               &nbsp;
             <!-- ELSE -->
+              <script type="text/javascript"><!--
+                sn_ainput_make('ships[{ships.ID}]', 0, ships[{ships.ID}][0], 50);
+              --></script>
+              <!--
               <input value="0" type="button" onClick="javascript:zero_value('ships[{ships.ID}]');" style="font-weight:bold;color:red;">
               <input value="-" type="button" onClick="javascript:dec_value('ships[{ships.ID}]');">
               <input name="ships[{ships.ID}]" size="10" value="0" onfocus="javascript:if(this.value == '0') this.value='';" onblur="javascript:if(this.value == '') this.value='0';" alt="{ships.NAME}{ships.NUM}" />
               <input value="+" type="button" onClick="javascript:inc_value('ships[{ships.ID}]', ships[{ships.ID}][0]);">
               <input value="{L_fl_selmax}" type="button" onClick="javascript:max_value('ships[{ships.ID}]', ships[{ships.ID}][0]);" style="font-weight:bold;color:green;">
+              -->
             <!-- ENDIF -->
           </th>
         </tr>
