@@ -2,6 +2,7 @@
 <head>
 <title>{title}</title>
 <link rel="shortcut icon" href="{-path_prefix-}favicon.ico">
+<link rel="stylesheet" type="text/css" href="{-path_prefix-}css/jquery.ui.all.css" />
 <link rel="stylesheet" type="text/css" href="{-path_prefix-}css/global.css" />
 <link rel="stylesheet" type="text/css" href="{-path_prefix-}{dpath}default.css" />
 <link rel="stylesheet" type="text/css" href="{-path_prefix-}{dpath}formate.css" />
@@ -15,6 +16,7 @@
 <script type="text/javascript" src="{-path_prefix-}js/wz_tooltip.js"></script>
 <script type="text/javascript" src="{-path_prefix-}js/lib/jquery.js"></script>
 <script type="text/javascript" src="{-path_prefix-}js/lib/jquery-ui.js"></script>
+<script type="text/javascript" src="{-path_prefix-}js/sn_global.js"></script>
 <script type="text/javascript" src="{-path_prefix-}js/sn_timer.js"></script>
 
 <script type="text/javascript"><!--

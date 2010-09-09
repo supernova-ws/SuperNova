@@ -14,7 +14,7 @@ var fleets = Array();
 <!-- END fleets -->
 
 var fleet_dialog = jQuery(document.createElement("span"));
-fleet_dialog.dialog({ autoOpen: false, width: 200 });
+fleet_dialog.dialog({ autoOpen: false, width: 200, resizable: false });
 
 var res_names = ['{L_sys_metal}', '{L_sys_crystal}', '{L_sys_deuterium}'];
 var language = ['{L_sys_ships}', '{L_sys_resources}'];

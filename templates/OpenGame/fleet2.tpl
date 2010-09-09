@@ -9,67 +9,7 @@ function getStorageFaktor() {
 var fleet_capacity = {fleet_capacity};
 var resource_max = Array({planet_metal}, {planet_crystal}, {planet_deuterium});
 var fleet_slide_changing = false;
-// var ainput_list = Array();
 
-function int_ainput_zero()
-{
-  for (i in resource_max)
-  {
-    zero_resource(i);
-  }
-  calculateTransportCapacity();
-}
-
-function int_ainput_make(field_name, min_value, max_value)
-{
-//  var my_input = Array();
-//  document.write('<input type="button" value="0" onClick="javascript:int_ainput_zero(\''+ field_name + '\');" style="font-weight:bold;color:red;width:20;">');
-//  document.write('<input type="button" value="-1k" onClick="javascript:int_ainput_dec(\''+ field_name + '\');" style="width:20;">');
-  document.write('<input type="text"   id="' + field_name + '" value="0" name="' + field_name + '" onfocus="javascript:if(this.value == \'0\') this.value=\'\';" onblur="javascript:if(this.value == \'\') this.value=\'0\';"/>');
-//  document.write('<input type="button" value="+1k" onClick="javascript:int_ainput_inc(\''+ field_name + '\', 1000);" style="width:20;">');
-//  document.write('<input type="button" value="{L_fl_selmax}" onClick="javascript:int_ainput_max(\'' + field_name + '\');" style="font-weight:bold;color:green;width:40;">');
-  document.write('<div id="' + field_name + 'slide"></div>');
-
-  var slider_id = "#" + field_name + 'slide';
-//  var field_name = field_name;
-
-  jQuery(function() {
-    jQuery(slider_id).slider({
-      range: "min",
-      value: min_value,
-      min: min_value,
-      max: max_value,
-      slide: function(event, ui) {
-        jQuery("#" + field_name).val(ui.value);
-        jQuery("#" + field_name).change();
-      }
-    });
-    jQuery("#" + field_name).val(jQuery(slider_id).slider("value"));
-  });
-
-  jQuery("#" + field_name).bind('keyup change',
-    function(event, ui)
-    {
-      if(jQuery(this).val() > jQuery(slider_id).slider("option", "max"))
-      {
-        jQuery(this).val(jQuery(slider_id).slider("option", "max"));
-      }
-
-      if(jQuery(this).val() < jQuery(slider_id).slider("option", "min"))
-      {
-        jQuery(this).val(jQuery(slider_id).slider("option", "min"));
-      }
-
-      jQuery(slider_id).slider("value", jQuery(this).val()); 
-      //document.getElementById('resource0temp').innerHTML = field_name + '!' + jQuery(this).val() + '?' + jQuery(slider_id).slider("option", "max");
-      //Math.min(jQuery('#resource' + i + 'slide').slider("value") + transportCapacity, resource_max[i]) 
-    }
-  );
-
-//  ainput_list[] = Array();
-//  alert(ainput_list.length);
-
-}
 --></script>
 
 <br>
@@ -142,13 +82,8 @@ function int_ainput_make(field_name, min_value, max_value)
         <th>{resources.NAME}</th>
         <th align=right>{resources.ON_PLANET}</th>
         <th>
-          <div>
-          <!--
-          <div id="resource{resources.ID}temp">&nbsp;</div>
-          -->
-
           <script type="text/javascript"><!--
-            int_ainput_make('resource{resources.ID}', 0, Math.min({resources.ON_PLANET}, {fleet_capacity}));
+            sn_ainput_make('resource{resources.ID}', 0, Math.min({resources.ON_PLANET}, {fleet_capacity}));
 
             jQuery('#resource{resources.ID}').bind('keyup change',
               function(event, ui) {    
@@ -176,14 +111,11 @@ function int_ainput_make(field_name, min_value, max_value)
                 fleet_slide_changing = false;
               }
             );
-
           --></script>
-          </div>
         </th>
         <th align=right><div id="rest_res{resources.ID}" class="fr">{resources.ON_PLANET}</div></th>
       </tr>
     <!-- END resources -->
-
 
     <tr>
       <th colspan="2">{fl_space_left}</th>
