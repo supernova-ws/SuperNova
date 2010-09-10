@@ -229,15 +229,7 @@ function fl_calc_stats(event, ui) {
 
   document.getElementById('int_fleet_capacity').innerHTML = sn_format_number(fleet_capacity);
   document.getElementById('int_fleet_consumption').innerHTML = sn_format_number(fleet_consumption);
-  if(fleet_speed == Infinity)
-  {
-    fleet_speed = '-';
-  }
-  else
-  {
-    fleet_speed = sn_format_number(fleet_speed);
-  }
-  document.getElementById('int_fleet_speed').innerHTML = fleet_speed;
+  document.getElementById('int_fleet_speed').innerHTML = fleet_speed == Infinity ? '-' : sn_format_number(fleet_speed);
 
   shortInfo();
 }
