@@ -117,10 +117,10 @@
 
     'ships'           => str_rot13(base64_encode(serialize($ships))),
 
-    'fleet_speed'     => min(GetFleetMaxSpeed($fleet['fleetarray'], false, $user)),
+    'fleet_speed'     => pretty_number(round(min(GetFleetMaxSpeed($fleet['fleetarray'], false, $user)))),
     'fleet_capacity'  => $fleet['capacity'],
 
-    'page_hint'       => $lang['fl_AKS_hint'],
+    'PAGE_HINT'       => $lang['fl_page1_hint'],
   ));
 
   display(parsetemplate($template, $parse), $lang['fl_title']);

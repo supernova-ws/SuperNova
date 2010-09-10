@@ -1,25 +1,37 @@
-function sn_format_number(number, laenge, color)
+function sn_format_number(number, precission, color)
 {
-  number = Math.round( number * Math.pow(10, laenge) ) / Math.pow(10, laenge);
+  if(!precission)
+  {
+    precission = 0;
+  }
+  number = Math.round( number * Math.pow(10, precission) ) / Math.pow(10, precission);
   str_number = number+'';
   arr_int = str_number.split('.');
   if(!arr_int[0]) arr_int[0] = '0';
   if(!arr_int[1]) arr_int[1] = '';
-  if(arr_int[1].length < laenge){
+  if(arr_int[1].length < precission)
+  {
     nachkomma = arr_int[1];
-    for(i=arr_int[1].length+1; i <= laenge; i++){  nachkomma += '0';  }
+    for(i=arr_int[1].length+1; i <= precission; i++)
+    {
+      nachkomma += '0';
+    }
     arr_int[1] = nachkomma;
   }
-  if(arr_int[0].length > 3){
+
+  if(arr_int[0].length > 3)
+  {
     Begriff = arr_int[0];
     arr_int[0] = '';
-    for(j = 3; j < Begriff.length ; j+=3){
+    for(j = 3; j < Begriff.length ; j+=3)
+    {
       Extrakt = Begriff.slice(Begriff.length - j, Begriff.length - j + 3);
       arr_int[0] = '.' + Extrakt +  arr_int[0] + '';
     }
     str_first = Begriff.substr(0, (Begriff.length % 3 == 0)?3:(Begriff.length % 3));
     arr_int[0] = str_first + arr_int[0];
   }
+
   ret_val = arr_int[0] + (arr_int[1] ? ','+arr_int[1] : '');
   if(color)
   {
@@ -38,7 +50,8 @@ function sn_format_number(number, laenge, color)
 function sn_timestampToString(timestamp, useDays){
   strTime = '';
 
-  if(useDays){
+  if(useDays)
+  {
     tmp = Math.floor( timestamp / (60*60*24));
     timestamp -= tmp * 60*60*24;
     strTime += (tmp>0 ? tmp + 'd ' : '');
@@ -59,17 +72,17 @@ function sn_timestampToString(timestamp, useDays){
 
 function sn_ainput_make(field_name, min_value, max_value, div_width)
 {
+  if(!min_value)
+  {
+    min_value = 0;
+  }
+
   var field_name_orig = field_name;
 
   field_name = field_name.replace('[', '');
   field_name = field_name.replace(']', '');
 
   var slider_id = "#" + field_name + 'slide';
-
-  if(!min_value)
-  {
-    min_value = 0;
-  }
 
   document.write('<div width="' + div_width + '">');
   document.write('<div><input type="text"   width="100%" id="' + field_name + '" value="0" style="margin: 2px;" name="' + field_name_orig + '" onfocus="javascript:if(this.value == \'0\') this.value=\'\';" onblur="javascript:if(this.value == \'\') this.value=\'0\';"/></div>');
@@ -84,10 +97,11 @@ function sn_ainput_make(field_name, min_value, max_value, div_width)
       max: max_value,
       slide: function(event, ui) {
         jQuery("#" + field_name).val(ui.value);
-        jQuery("#" + field_name).change();
+        jQuery("#" + field_name).trigger('change', [event, ui]);
       },
       change: function(event, ui) {
         jQuery("#" + field_name).val(ui.value);
+        jQuery("#" + field_name).trigger('change', [event, ui]);
       }
     });
     jQuery("#" + field_name).val(jQuery(slider_id).slider("value"));
@@ -96,6 +110,14 @@ function sn_ainput_make(field_name, min_value, max_value, div_width)
   jQuery("#" + field_name).bind('keyup change',
     function(event, ui)
     {
+      if(ui != undefined)
+      {
+        if(ui.type == 'slidechange')
+        {
+          return;
+        }
+      }
+
       if(jQuery(this).val() > jQuery(slider_id).slider("option", "max"))
       {
         jQuery(this).val(jQuery(slider_id).slider("option", "max"));
@@ -117,6 +139,11 @@ var element_cache = new Object();
 
 function calc_elements()
 {
+  if(element_cache['_IS_INIT'])
+  {
+    return;
+  }
+
   var all_elements = document.getElementsByTagName('*');
 
   for(element in all_elements)
@@ -126,4 +153,7 @@ function calc_elements()
       element_cache[all_elements[element].id] = all_elements[element];
     }
   }
+  element_cache['_IS_INIT'] = true;
 }
+
+jQuery(document).ready(calc_elements);

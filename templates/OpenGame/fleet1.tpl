@@ -76,11 +76,7 @@ function getStorageFaktor() {
     
     <tr>
       <th>{fl_max_load}</th>
-      <th>
-        <script type="text/javascript"><!--
-        document.write(sn_format_number({fleet_capacity}, 0));
-        --></script>
-      </th>
+      <th><div id="capacity">-</div></th>
     </tr>
     
     <tr><th colspan="2"><input type="submit" value="{fl_continue}" /></th></tr>
@@ -148,7 +144,7 @@ var speed_factor   = {speed_factor};
 var ships = Array();
 <!-- BEGIN ships -->
   <!-- IF (ships.ID != 212) -->
-  ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION});
+  ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION}, 0);
   <!-- ENDIF -->
 <!-- END ships -->
 

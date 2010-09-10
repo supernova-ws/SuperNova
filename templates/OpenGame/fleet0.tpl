@@ -11,28 +11,10 @@
 var ships = Array();
 <!-- BEGIN ships -->
   <!-- IF (ships.ID != 212) -->
-  ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.CAPACITY}, {ships.SPEED}, {ships.CONSUMPTION});
+  ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION}, {ships.CAPACITY});
   <!-- ENDIF -->
-
-function fl_calc_stats(event, ui) {
-  var fleet_speed = Infinity, fleet_capacity = 0, fleet_consumption = 0, ship_number;
-
-  for(i in ships)
-  {
-    ship_number = document.getElementById('ships' + i).value;
-    if( ship_number != 0)
-    {
-      fleet_capacity += ship_number * ships[i][1];
-      fleet_speed = Math.min(fleet_speed, ships[i][2]);
-      fleet_consumption += ship_number * ships[i][3];
-    }
-  }
-
-  document.getElementById('int_fleet_capacity').innerHTML = fleet_capacity;
-  document.getElementById('int_fleet_speed').innerHTML = fleet_speed;
-  document.getElementById('int_fleet_consumption').innerHTML = fleet_consumption;
-}
 <!-- END ships -->
+var speed_factor   = {speed_factor};
 --></script>
 
 <!-- INCLUDE fleet_javascript.tpl -->
@@ -107,13 +89,18 @@ function fl_calc_stats(event, ui) {
 {AKS}
 
 <form action="fleet.php?fleet_page=1" method="post">
+  <input type="hidden" name="thisgalaxy"      value="{thisgalaxy}" />
+  <input type="hidden" name="thissystem"      value="{thissystem}" />
+  <input type="hidden" name="thisplanet"      value="{thisplanet}" />
+  <input type="hidden" name="thisplanet_type" value="{thisplanet_type}" />
+
   <input type="hidden" name="galaxy" value="{galaxy}">
   <input type="hidden" name="system" value="{system}">
   <input type="hidden" name="planet" value="{planet}">
   <input type="hidden" name="planet_type" value="{planet_type}">
   <input type="hidden" name="target_mission" value="{target_mission}">
 
-  <table width="519" border="0" cellpadding="0" cellspacing="1">
+  <table border="0" cellpadding="0" cellspacing="1">
     <tr><td colspan="3" class="c">
       <div class="fl">{fl_new_miss}</div>
       <!-- IF MISSION_NAME -->
@@ -143,35 +130,60 @@ function fl_calc_stats(event, ui) {
 
                 jQuery('#ships{ships.ID}slide').bind('slide slidechange', fl_calc_stats);
               --></script>
-              <!--
-              <input value="0" type="button" onClick="javascript:zero_value('ships[{ships.ID}]');" style="font-weight:bold;color:red;">
-              <input value="-" type="button" onClick="javascript:dec_value('ships[{ships.ID}]');">
-              <input name="ships[{ships.ID}]" size="10" value="0" onfocus="javascript:if(this.value == '0') this.value='';" onblur="javascript:if(this.value == '') this.value='0';" alt="{ships.NAME}{ships.NUM}" />
-              <input value="+" type="button" onClick="javascript:inc_value('ships[{ships.ID}]', ships[{ships.ID}][0]);">
-              <input value="{L_fl_selmax}" type="button" onClick="javascript:max_value('ships[{ships.ID}]', ships[{ships.ID}][0]);" style="font-weight:bold;color:green;">
-              -->
             <!-- ENDIF -->
           </th>
         </tr>
       <!-- END ships -->
+      <!-- IF FLYING_FLEETS < MAX_FLEETS -->
       <tr>
-        <!-- IF FLYING_FLEETS < MAX_FLEETS -->
-          <th colspan="2"><div class="fl" style="text-align: left;">
-            {L_fl_max_load}: <span id='int_fleet_capacity'>0</span><br>
-            {L_fl_speed}: <span id='int_fleet_speed'>Infinity</span><br>
-            {L_fl_deute_need}: <span id='int_fleet_consumption'>0</span>
-          </div></th>
+          <th colspan="2">&nbsp;
+          </th>
           <th>
               <div class="fl"><input type="button" value="{fl_unselectall}" onclick="javascript:zero_fleet();"></div>
-              <div class="fl"><input type="button" value="{fl_selectall}" onclick="javascript:max_fleet();"></div>
-            <div class="fr"><input type="submit" value="{L_fl_continue}" /></div>
+              <div class="fr"><input type="button" value="{fl_selectall}" onclick="javascript:max_fleet();"></div>
+            <div class="fr"></div>
           </th>
+      </tr>
+      <tr>
+          <th colspan="3">
+          <input type="submit" value="{L_fl_continue}" />
+          </th>
+      </tr>
         <!-- ELSE -->
+      <tr>
           <th colspan="3"><font color="red">{fl_noslotfree}</font></th>
+      </tr>
         <!-- ENDIF -->
       </tr>
     <!-- ELSE -->
       <tr><th colspan="3">{L_fl_noships}</th></tr>
     <!-- ENDIF -->
   </table>
+  <!-- IF FLYING_FLEETS < MAX_FLEETS -->
+    <br>
+    <table>
+      <tr><td class="c" colspan=2>{L_fl_fleet_data}</td></tr>
+      <tr>
+          <th>{L_fl_speed}</th>
+          <th width="100"><span id='int_fleet_speed'>-</span></th>
+      </tr>
+      <tr>
+          <th>{L_fl_dist}</th>
+          <th><span id='distance'>0</span></th>
+      </tr>
+      <tr>
+          <th>{L_fl_fltime}</th>
+          <th><span id='duration'>-</span></th>
+      </tr>
+      <tr>
+          <th>{L_fl_deute_need}</th>
+          <th><span id='int_fleet_consumption'>0</span></th>
+      </tr>
+      <tr>
+          <th>{L_fl_max_load}</th>
+          <th><span id='int_fleet_capacity'>0</span></th>
+      </tr>
+    </table>
+  <!-- ENDIF -->
+  <!-- INCLUDE page_hint.tpl -->
 </form>

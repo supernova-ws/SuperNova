@@ -1,21 +1,37 @@
 <?php
-function displayP($template){
-  global $lang, $user;
+function displayP($template)
+{
+  if(is_object($template))
+  {
+    global $lang, $user;
 
-  if(isset($template->parse))
-    foreach($template->parse as $key => $data)
-      $template->assign_var($key, $data);
+    if(isset($template->parse))
+    {
+      foreach($template->parse as $key => $data)
+      {
+        $template->assign_var($key, $data);
+      }
+    }
 
-  $template->assign_var('dpath', (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"]);
+    $template->assign_var('dpath', (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"]);
 
-  $template->display('body');
+    $template->display('body');
+  }
+  else
+  {
+    print($template);
+  }
 }
 
-function parsetemplate ($template, $array) {
-  if(is_object($template)){
+function parsetemplate ($template, $array)
+{
+  if(is_object($template))
+  {
     $template->parse = $array;
     return $template;
-  }else{
+  }
+  else
+  {
     global $lang;
 
     $search[] = '#\{L_([a-z0-9\-_]*?)\[([a-z0-9\-_]*?)\]\}#Ssie';
@@ -29,12 +45,14 @@ function parsetemplate ($template, $array) {
   }
 }
 
-function gettemplate ($templatename, $isphpBB = false) {
+function gettemplate ($templatename, $is_phpbb = false)
+{
   global $ugamela_root_path;
 
   $filename = $ugamela_root_path . TEMPLATE_DIR . TEMPLATE_NAME . '/' . $templatename . ".tpl";
 
-  if($isphpBB){
+  if($is_phpbb)
+  {
     $template = new template();
     $template->set_custom_template('templates/'.TEMPLATE_NAME, TEMPLATE_NAME);
 
@@ -43,7 +61,9 @@ function gettemplate ($templatename, $isphpBB = false) {
     ));
 
     return $template;
-  }else{
+  }
+  else
+  {
     return ReadFromFile($filename);
   }
 }

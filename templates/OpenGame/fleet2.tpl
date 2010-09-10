@@ -101,7 +101,7 @@ var fleet_slide_changing = false;
                 {
                   fleet_slide_changing = true;
                 }
-                transportCapacity = storage() - check_resource(0) - check_resource(1) - check_resource(2);
+                var transportCapacity = fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2);
                 for(i = 0; i < 3; i++)
                 {        
                   jQuery('#resource' + i + 'slide').slider("option", "max", Math.min(jQuery('#resource' + i + 'slide').slider("value") + transportCapacity, resource_max[i]));

@@ -170,7 +170,7 @@ $template->assign_vars(array(
 
  'PRODUCTION_LEVEL' => floor($caps['production'] * 100),
 
- 'page_hint'        => $lang['res_hint'],
+ 'PAGE_HINT'        => $lang['res_hint'],
 ));
 
 display(parsetemplate( $template, $parse ), $lang['res_planet_production']);
