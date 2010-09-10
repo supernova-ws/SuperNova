@@ -62,6 +62,7 @@ function DisplayGameSettingsPage ( $CurrentUser ) {
       // Vitesse des Flottes
       if (isset($_POST['fleet_speed']) && is_numeric($_POST['fleet_speed'])) {
         $game_config['fleet_speed'] = $_POST['fleet_speed'];
+        $config->db_saveItem('fleet_speed', intval($_POST['fleet_speed']));
       }
 
       // Multiplicateur de Production
