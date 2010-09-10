@@ -71,7 +71,7 @@ function getStorageFaktor() {
     
     <tr>
       <th>{fl_speed_max}</th>
-      <th>{fleet_speed}</th>
+      <th><div id="fleet_speed">0</div></th>
     </tr>
     
     <tr>
@@ -140,6 +140,8 @@ function getStorageFaktor() {
 var fleet_capacity = {fleet_capacity};
 var fleet_speed    = {fleet_speed};
 var speed_factor   = {speed_factor};
+
+document.getElementById('fleet_speed').innerHTML = sn_format_number(fleet_speed);
 
 var ships = Array();
 <!-- BEGIN ships -->
