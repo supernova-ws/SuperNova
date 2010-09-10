@@ -42,6 +42,12 @@ $template->assign_var(mount, count($planet) + 1);
 foreach ($planet as $p) {
   $planetCaps = ECO_getPlanetCaps($user, $p);
 
+  $building_build = explode(',', $p['b_building_id']);
+  $building_build = $building_build[0] ? $lang[tech][$building_build[0]] : '';
+
+  $hangar_build = explode(',', $p['b_hangar_id']);
+  $hangar_build = $hangar_build[0] ? $lang[tech][$hangar_build[0]] : '';
+
   $template->assign_block_vars('planet', array(
     'ID' => $p['id'],
     'TYPE' => $p['planet_type'],
@@ -52,8 +58,9 @@ foreach ($planet as $p) {
     'FILL'       => min(100, floor($p['field_current'] / CalculateMaxPlanetFields($p) * 100)),
 
     'BUILDING'   => int_buildCounter($p, 'building', $p['id']),
+    'BUILDING_TIP' => $building_build,
     'TECH'       => $p['b_tech'] ? $lang['tech'][$p['b_tech_id']] : 0,
-    'HANGAR'     => $p['b_hangar'],
+    'HANGAR'     => $hangar_build,
 
     'FIELDS_CUR' => $p['field_current'],
     'FIELDS_MAX' => $p['field_max'] + $p[$resource[33]] * 5,

@@ -6,27 +6,27 @@
   <tr>
     <th>&nbsp;</th>
     <!-- BEGIN planet -->
-    <th>
+    <th valign="top">
       <div style="position: relative; height: 75px; width: 75px;">
         <span style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%">
           <a href="overview.php?cp={planet.ID}&re=0"><img style="border-style: none;" src="{dpath}planeten/{planet.IMAGE}.jpg" height="100%" width="100%"></a>
         </span>
 
         <!-- IF planet.BUILDING -->
-          <span style="position: absolute; top: 0px; left: 0px; width: 25%; height: 25%">
-            <img src="images/build_building.png" height="100%" width="100%">
+          <span title="{planet.BUILDING_TIP}" style="position: absolute; top: 0px; left: 0px; width: 25%; height: 25%">
+            <a href="buildings.php?cp={planet.ID}&re=0"><img src="images/build_building.png" height="100%" width="100%"></a>
           </span>
         <!-- ENDIF -->
         
         <!-- IF planet.TECH -->
           <span title="{planet.TECH}" style="position: absolute; top: 25%; left: 0px; width: 25%; height: 25%">
-            <img src="images/build_tech.png" height="100%" width="100%">
+            <a href="buildings.php?mode=research&cp={planet.ID}&re=0"><img src="images/build_tech.png" height="100%" width="100%"></a>
           </span>
         <!-- ENDIF -->
 
         <!-- IF planet.HANGAR -->
-          <span style="position: absolute; top: 50%; left: 0px; width: 25%; height: 25%;">
-            <img src="images/build_hangar.png" height="100%" width="100%">
+          <span title="{planet.HANGAR}" style="position: absolute; top: 50%; left: 0px; width: 25%; height: 25%;">
+            <a href="buildings.php?mode=fleet&cp={planet.ID}&re=0"><img src="images/build_hangar.png" height="100%" width="100%"></a>
           </span>
         <!-- ENDIF -->
 
@@ -40,6 +40,7 @@
           <div class="fl" style="position: relative; left: 0px; height: 100%; width: {planet.FILL}%; background-color: <!-- IF planet.FILL >= 100 -->red<!-- ELSEIF planet.FILL > 80 -->yellow<!-- ELSE -->green<!-- ENDIF -->;"></div>
         </span>
       </div>
+      <!-- IF planet.BUILDING -->{planet.BUILDING}<span id="ov_building{planet.ID}_timer"></span><!-- ENDIF -->
     </th>
     <!-- END planet -->
   </tr>

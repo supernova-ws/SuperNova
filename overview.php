@@ -421,6 +421,12 @@ switch ($mode)
         $moon_fill = 0;
       }
 
+      $building_build = explode(',', $UserPlanet['b_building_id']);
+      $building_build = $building_build[0] ? $lang[tech][$building_build[0]] : '';
+
+      $hangar_build = explode(',', $UserPlanet['b_hangar_id']);
+      $hangar_build = $hangar_build[0] ? $lang[tech][$hangar_build[0]] : '';
+
       $template->assign_block_vars('planet', array_merge(
         array(
           'ID'         => $UserPlanet['id'],
@@ -434,8 +440,9 @@ switch ($mode)
           'ENEMY'      => $enemy_fleet['fleets_count'],
 
           'BUILDING'   => int_buildCounter($UserPlanet, 'building', $UserPlanet['id']),
+          'BUILDING_TIP' => $building_build,
           'TECH'       => $UserPlanet['b_tech'] ? $lang['tech'][$UserPlanet['b_tech_id']] : 0,
-          'HANGAR'     => $UserPlanet['b_hangar'],
+          'HANGAR'     => $hangar_build,
 
           'FILL'       => min(100, floor($UserPlanet['field_current'] / CalculateMaxPlanetFields($UserPlanet) * 100)),
 
