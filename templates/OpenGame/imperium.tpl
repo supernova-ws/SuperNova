@@ -6,7 +6,41 @@
   <tr>
     <th>&nbsp;</th>
     <!-- BEGIN planet -->
-    <th class="c"><a href="overview.php?cp={planet.ID}&re=0"><img src="{dpath}planeten/small/s_{planet.IMAGE}.jpg" border="0" height="75" width="75"></a></th>
+    <th>
+      <div style="position: relative; height: 75px; width: 75px;">
+        <span style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%">
+          <a href="overview.php?cp={planet.ID}&re=0"><img style="border-style: none;" src="{dpath}planeten/{planet.IMAGE}.jpg" height="100%" width="100%"></a>
+        </span>
+
+        <!-- IF planet.BUILDING -->
+          <span style="position: absolute; top: 0px; left: 0px; width: 25%; height: 25%">
+            <img src="images/build_building.png" height="100%" width="100%">
+          </span>
+        <!-- ENDIF -->
+        
+        <!-- IF planet.TECH -->
+          <span title="{planet.TECH}" style="position: absolute; top: 25%; left: 0px; width: 25%; height: 25%">
+            <img src="images/build_tech.png" height="100%" width="100%">
+          </span>
+        <!-- ENDIF -->
+
+        <!-- IF planet.HANGAR -->
+          <span style="position: absolute; top: 50%; left: 0px; width: 25%; height: 25%;">
+            <img src="images/build_hangar.png" height="100%" width="100%">
+          </span>
+        <!-- ENDIF -->
+
+        <!-- IF planet.ENEMY != 0 -->
+          <span style="position: absolute; top: 26%; left: 26%; width: 48%; height: 48%;">
+            <img src="images/icon_warning.png" height="100%" width="100%" style="border-style: none; cursor: pointer;" onclick="javascript:window.location = '?cp={planet.ID}&re=0'">
+          </span>
+        <!-- ENDIF -->
+
+        <span style="position: absolute; left: 0; width: 100%; top: 96%; height: 4%; overflow: hidden;">
+          <div class="fl" style="position: relative; left: 0px; height: 100%; width: {planet.FILL}%; background-color: <!-- IF planet.FILL >= 100 -->red<!-- ELSEIF planet.FILL > 80 -->yellow<!-- ELSE -->green<!-- ENDIF -->;"></div>
+        </span>
+      </div>
+    </th>
     <!-- END planet -->
   </tr>
   <tr>

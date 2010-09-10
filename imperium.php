@@ -49,6 +49,12 @@ foreach ($planet as $p) {
     'NAME' => $p['name'],
     'COORDINATES' => INT_makeCoordinates($p),
 
+    'FILL'       => min(100, floor($p['field_current'] / CalculateMaxPlanetFields($p) * 100)),
+
+    'BUILDING'   => int_buildCounter($p, 'building', $p['id']),
+    'TECH'       => $p['b_tech'] ? $lang['tech'][$p['b_tech_id']] : 0,
+    'HANGAR'     => $p['b_hangar'],
+
     'FIELDS_CUR' => $p['field_current'],
     'FIELDS_MAX' => $p['field_max'] + $p[$resource[33]] * 5,
 
