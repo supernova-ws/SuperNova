@@ -159,7 +159,7 @@ var speed_factor   = {speed_factor};
       <tr><th colspan="3">{L_fl_noships}</th></tr>
     <!-- ENDIF -->
   </table>
-  <!-- IF FLYING_FLEETS < MAX_FLEETS -->
+  <!-- IF FLYING_FLEETS < MAX_FLEETS && .ships -->
     <br>
     <table>
       <tr><td class="c" colspan=2>{L_fl_fleet_data}</td></tr>
