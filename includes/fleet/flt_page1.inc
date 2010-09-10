@@ -117,7 +117,7 @@
 
     'ships'           => str_rot13(base64_encode(serialize($ships))),
 
-    'fleet_speed'     => pretty_number(round(min(GetFleetMaxSpeed($fleet['fleetarray'], false, $user)))),
+    'fleet_speed'     => round(min(GetFleetMaxSpeed($fleet['fleetarray'], false, $user))),
     'fleet_capacity'  => $fleet['capacity'],
 
     'PAGE_HINT'       => $lang['fl_page1_hint'],
