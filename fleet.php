@@ -170,14 +170,11 @@ switch ($fleet_page)
   // No Break
 
   case 1:
+  case 0:
     $parse['thisgalaxy']      = $planetrow['galaxy'];
     $parse['thissystem']      = $planetrow['system'];
     $parse['thisplanet']      = $planetrow['planet'];
     $parse['thisplanet_type'] = $planetrow['planet_type'];
-
-
-
-  case 0:
   // no break
 
 }

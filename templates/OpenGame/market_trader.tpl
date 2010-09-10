@@ -79,8 +79,6 @@ function reCourse(){
 jQuery(document).ready(
   function() 
   {
-    calc_elements();
-    
     varTemp = '{exchangeTo}';
     if(varTemp == '') varTemp = 0;
     element_cache['exchangeTo'].selectedIndex = varTemp;

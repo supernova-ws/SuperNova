@@ -1,3 +1,5 @@
+</center></div>
+
 <script type="text/javascript"><!--
   var serverTime = new Date('{serverTime}' * 1000);
   var localTime = new Date();

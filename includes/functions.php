@@ -165,22 +165,14 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   $DisplayPage  = StdHeader ($title, $metatags, $AdminPage);
 
 
-//  $DisplayPage .= '<table cellspacing=0 cellpadding=0 width=100% align=center style="none"><tr>';
-
-  // $Menu = ShowLeftMenu ( $AdminPage );
   if ($isDisplayMenu && $IsUserChecked){ //
-//    $DisplayPage .= "<div style=\"position: fixed; top: 0px; left: 0px; width: 190px; align: center;\">";
     $DisplayPage .= "<div style=\"float:left; width: 190px; text-align: center;\">";
-//    $DisplayPage .= "<td width=190 valign=top>";
     $DisplayPage .= ShowLeftMenu ( $AdminPage );
-//    $DisplayPage .= "</td>";
     $DisplayPage .= "</div>"; // float: left;
   }
 
 
-//  $DisplayPage .= '<div id="page_body" style="position: absolute; top: 0px; left: 190px; width: auto;"><center>';
   $DisplayPage .= '<div id="page_body" style="margin-left: 190px; width: auto;"><center>';
-//  $DisplayPage .= '<td align=center>';
 
   if ($topnav && $IsUserChecked) {
     if ($user['aktywnosc'] == 1) {
@@ -217,10 +209,15 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
     if ($game_config['debug'] == 1) $debug->echo_log();
   }
 
-  $DisplayPage .= '</center></div>';
-  $DisplayPage .= StdFooter();
-
+  $DisplayPage .= '';
   echo $DisplayPage;
+
+  $std_footer = StdFooter();
+  if(is_object($std_footer))
+    displayP($std_footer);
+  else
+    echo $std_footer;
+
 
   sys_logHit();
 
@@ -277,7 +274,7 @@ function StdFooter() {
   $parse['copyright']     = $game_config['copyright'];
   $parse['TranslationBy'] = $lang['TranslationBy'];
   $parse['serverTime']    = $time_now;
-  return parsetemplate(gettemplate('overall_footer'), $parse);
+  return parsetemplate(gettemplate('overall_footer', true), $parse);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
