@@ -91,6 +91,7 @@ $GET_planet       = intval($_GET['planet']);
   $planetcount = 0;
   $lunacount   = 0;
   $CurrentRC   = $CurrentPlanet['recycler'];
+  $cached = array();
 
 
   $template = gettemplate('galaxy', true);
