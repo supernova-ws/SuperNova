@@ -43,8 +43,15 @@ if ($IsUserChecked == false) {
   header('Location: login.php');
 }
 
-if((filesize("{$ugamela_root_path}badqrys.txt") > 0) && ($user['authlevel'] >= 2)){
-  echo "<a href=\"badqrys.txt\" target=\"_NEW\"><font color=\"red\">{$lang['ov_hack_alert']}</font</a>";
+if($user['authlevel'] >= 2)
+{
+  if(file_exists("{$ugamela_root_path}badqrys.txt"))
+  {
+    if(filesize("{$ugamela_root_path}badqrys.txt") > 0)
+    {
+      echo "<a href=\"badqrys.txt\" target=\"_NEW\"><font color=\"red\">{$lang['ov_hack_alert']}</font</a>";
+    }
+  }
 }
 
 check_urlaubmodus ($user);
@@ -133,7 +140,7 @@ function int_template_assign(&$fleets)
   }
 }
 
-includeLang('resources');
+// includeLang('resources');
 includeLang('overview');
 
 $mode                 = $_GET['mode'];

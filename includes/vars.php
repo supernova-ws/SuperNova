@@ -22,7 +22,7 @@ if ( defined('INSIDE')) {
     100 => 'new_message'
   );
 
-  $resources = array(
+  $sn_data = array(
     1   => array(
       'name' => 'metal_mine',
       'metal' => 60,
@@ -995,7 +995,7 @@ if ( defined('INSIDE')) {
     ),
   );
 
-  $resource_groups = array(
+  $sn_groups = array(
     // Building list
     'build'     => array (   1,   2,   3,   4,  12,  14,  15,  21,  22,  23,  24,  31,  33,  34,  35,  44,  41,  42,  43 ),
     // Tech list

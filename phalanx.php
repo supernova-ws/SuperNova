@@ -21,7 +21,7 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-includeLang('resources');
+// includeLang('resources');
 includeLang('overview');
 includeLang("galaxy");
 
