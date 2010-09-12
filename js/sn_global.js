@@ -70,11 +70,21 @@ function sn_timestampToString(timestamp, useDays){
   return strTime;
 }
 
-function sn_ainput_make(field_name, min_value, max_value, div_width)
+function sn_ainput_make(field_name, min_value, max_value, step_value, div_width)
 {
   if(!min_value)
   {
     min_value = 0;
+  }
+
+  if(!div_width)
+  {
+    div_width = 'auto';
+  }
+
+  if(!step_value)
+  {
+    step_value = 1;
   }
 
   var field_name_orig = field_name;
@@ -84,9 +94,17 @@ function sn_ainput_make(field_name, min_value, max_value, div_width)
 
   var slider_id = "#" + field_name + 'slide';
 
-  document.write('<div width="' + div_width + '">');
-  document.write('<div><input type="text"   width="100%" id="' + field_name + '" value="0" style="margin: 2px;" name="' + field_name_orig + '" onfocus="javascript:if(this.value == \'0\') this.value=\'\';" onblur="javascript:if(this.value == \'\') this.value=\'0\';"/></div>');
-  document.write('<div style="margin: 6px;" id="' + field_name + 'slide"></div>');
+  document.write('<div>');
+  document.write('<div style="width: 100%">');
+  document.write('<input type="button" value="-" id="' + field_name + 'dec" style="width: 20;">');
+  document.write('<input type="text"   value="0" id="' + field_name + '"    style="margin: 2px; width: ' + div_width + ';" name="' + field_name_orig + '" onfocus="javascript:if(this.value == \'0\') this.value=\'\';" onblur="javascript:if(this.value == \'\') this.value=\'0\';"/>');
+  document.write('<input type="button" value="+" id="' + field_name + 'inc" style="width: 20;">');
+  document.write('</div>');
+  if(div_width != 'auto')
+  {
+    div_width += 20 + 20 + 6 + 6 + 2 + 2;
+  }
+  document.write('<div style="margin: 6px; width: ' + div_width + '" id="' + field_name + 'slide"></div>');
   document.write('</div>');
 
   jQuery(function() {
@@ -133,6 +151,61 @@ function sn_ainput_make(field_name, min_value, max_value, div_width)
       //Math.min(jQuery('#resource' + i + 'slide').slider("value") + transportCapacity, resource_max[i])
     }
   );
+
+  jQuery("#" + field_name + 'dec').bind('click',
+    function(event, ui)
+    {
+      var element = jQuery("#" + field_name);
+      if(parseInt(element.val()) > step_value)
+      {
+        element.val(parseInt(element.val()) - step_value);
+      }
+      else
+      {
+        element.val(0);
+      };
+      element.trigger('change', [event, ui]);
+
+/*
+      if(ui != undefined)
+      {
+        if(ui.type == 'slidechange')
+        {
+          return;
+        }
+      }
+
+      if(jQuery(this).val() > jQuery(slider_id).slider("option", "max"))
+      {
+        jQuery(this).val(jQuery(slider_id).slider("option", "max"));
+      }
+
+      if(jQuery(this).val() < jQuery(slider_id).slider("option", "min"))
+      {
+        jQuery(this).val(jQuery(slider_id).slider("option", "min"));
+      }
+
+      jQuery(slider_id).slider("value", jQuery(this).val());
+*/
+    }
+  );
+
+  jQuery("#" + field_name + 'inc').bind('click',
+    function(event, ui)
+    {
+      var element = jQuery("#" + field_name);
+      if(parseInt(element.val()) + step_value < jQuery(slider_id).slider("option", "max"))
+      {
+        element.val(parseInt(element.val()) + step_value);
+      }
+      else
+      {
+        element.val(jQuery(slider_id).slider("option", "max"));
+      };
+      element.trigger('change', [event, ui]);
+    }
+  );
+
 }
 
 var element_cache = new Object();
