@@ -82,7 +82,6 @@ function MissionCaseRecycling ($FleetRow) {
 
       $Message = sprintf($lang['sys_recy_gotten'], pretty_number($RecycledGoods["metal"]), $lang['Metal'], pretty_number($RecycledGoods["crystal"]), $lang['Crystal']);
       SendSimpleMessage ( $FleetRow['fleet_owner'], '', $FleetRow['fleet_start_time'], 4, $lang['sys_mess_spy_control'], $lang['sys_recy_report'], $Message);
-      doquery("UPDATE {{table}} SET `mnl_exploit` = `mnl_exploit` + '1' WHERE `id` = '".$FleetRow['fleet_owner']."'", 'users');
 
       $QryUpdateFleet  = "UPDATE {{table}} SET ";
             $QryUpdateFleet .= "`fleet_resource_metal` = '".$NewCargo['Metal']."', ";
