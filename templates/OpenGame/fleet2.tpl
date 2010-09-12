@@ -83,7 +83,7 @@ var fleet_slide_changing = false;
         <th align=right>{resources.ON_PLANET}</th>
         <th>
           <script type="text/javascript"><!--
-            sn_ainput_make('resource{resources.ID}', 0, Math.min({resources.ON_PLANET}, {fleet_capacity}));
+            sn_ainput_make('resource{resources.ID}', 0, Math.min({resources.ON_PLANET}, {fleet_capacity}), 1000);
 
             jQuery('#resource{resources.ID}').bind('keyup change',
               function(event, ui) {    
