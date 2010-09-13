@@ -15,12 +15,12 @@ $ugamela_root_path = './../';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
-function DisplayGameSettingsPage ( $CurrentUser ) {
-  global $lang, $game_config, $_POST, $config;
+//function DisplayGameSettingsPage ( ) {
+//  global $lang, $game_config, $_POST, $config, $user;
 
   includeLang('admin/settings');
 
-  if ( $CurrentUser['authlevel'] >= 3 ) {
+  if ( $user['authlevel'] >= 3 ) {
     if ($_POST['opt_save'] == "1") {
       // Jeu Ouvert ou Ferm� !
       if (isset($_POST['closed']) && $_POST['closed'] == 'on') {
@@ -161,16 +161,16 @@ function DisplayGameSettingsPage ( $CurrentUser ) {
 
       $parse['debug']                  = ($game_config['debug'] == 1)        ? " checked = 'checked' ":"";
 
-      $PageTPL                         = gettemplate('admin/options_body');
-      $Page                           .= parsetemplate( $PageTPL,  $parse );
+      $PageTPL                         = gettemplate('admin/options_body', true);
+      $Page                            = parsetemplate( $PageTPL,  $parse );
 
       display ( $Page, $lang['adm_opt_title'], false, '', true );
     }
   } else {
     AdminMessage ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
   }
-  return $Page;
-}
+//  return $Page;
+//}
 
-  $Page = DisplayGameSettingsPage ( $user );
+//  $Page = DisplayGameSettingsPage ( $user );
 ?>

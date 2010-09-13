@@ -296,14 +296,14 @@ class template_compile
     }
 
     // This will handle the remaining root-level varrefs
-/*
+
     // transform vars prefixed by C_ into global config value
     if (strpos($text_blocks, '{C_') !== false)
     {
       $text_blocks = preg_replace('#\{C_([a-zA-Z0-9\-_]+)\[([a-zA-Z0-9\-_]*?)\]\}#', "<?php echo ((isset(\$this->_rootref['C_\\1']['\\2'])) ? \$this->_rootref['C_\\1']['\\2'] : ((isset(\$config->\\1['\\2'])) ? \$config->\\1['\\2'] : '{ \\1[\\2] }')); ?>", $text_blocks);
       $text_blocks = preg_replace('#\{C_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['C_\\1'])) ? \$this->_rootref['C_\\1'] : ((isset(\$config->\\1)) ? \$config->\\1 : '{ C_\\1 }')); ?>", $text_blocks);
     }
-*/
+
     // transform vars prefixed by L_ into their language variable pendant if nothing is set within the tpldata array
     if (strpos($text_blocks, '{L_') !== false)
     {

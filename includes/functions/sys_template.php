@@ -54,7 +54,7 @@ function gettemplate ($templatename, $is_phpbb = false)
   if($is_phpbb)
   {
     $template = new template();
-    $template->set_custom_template('templates/'.TEMPLATE_NAME, TEMPLATE_NAME);
+    $template->set_custom_template($ugamela_root_path . TEMPLATE_DIR . '/' . TEMPLATE_NAME, TEMPLATE_NAME);
 
     $template->set_filenames(array(
         'body' => $templatename . ".tpl"
