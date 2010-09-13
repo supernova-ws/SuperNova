@@ -9,6 +9,7 @@ $lang['can_build']			= "Можно построить: ";
 $lang['Requirements']		= "Необходимо: ";
 $lang['Requires']		= "Необходимые ресурсы ";
 $lang['Rest_ress']		= "Останется ресурсов ";
+$lang['Rest_ress_fleet']		= "С учетом прибывающих флотов";
 $lang['Rechercher']		= "Исследовать";
 $lang['ConstructionTime']	= "Время строительства ";
 $lang['ResearchTime']		= "Время исследования ";

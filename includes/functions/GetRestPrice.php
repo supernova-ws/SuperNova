@@ -16,37 +16,51 @@
 //
 // Reponse : Chaine de caractère mise en forme prete a etre affichée
 function GetRestPrice ($user, $planet, $Element, $userfactor = true) {
-	global $pricelist, $resource, $lang;
+  global $pricelist, $resource, $lang;
 
-	if ($userfactor) {
-		$level = ($planet[$resource[$Element]]) ? $planet[$resource[$Element]] : $user[$resource[$Element]];
-	}
+  if ($userfactor) {
+    $level = ($planet[$resource[$Element]]) ? $planet[$resource[$Element]] : $user[$resource[$Element]];
+  }
 
-	$array = array(
-		'metal'      => $lang["Metal"],
-		'crystal'    => $lang["Crystal"],
-		'deuterium'  => $lang["Deuterium"],
-		'energy_max' => $lang["Energy"]
-		);
+  $array = array(
+    'metal'      => $lang["sys_metal"],
+    'crystal'    => $lang["sys_crystal"],
+    'deuterium'  => $lang["sys_deuterium"],
+    'energy_max' => $lang["sys_energy"]
+    );
 
-	$text  = "<br><font color=\"#7f7f7f\">". $lang['Rest_ress'] .": ";
-	foreach ($array as $ResType => $ResTitle) {
-		if ($pricelist[$Element][$ResType] != 0) {
-			$text .= $ResTitle . ": ";
-			if ($userfactor) {
-				$cost = floor($pricelist[$Element][$ResType] * pow($pricelist[$Element]['factor'], $level));
-			} else {
-				$cost = floor($pricelist[$Element][$ResType]);
-			}
-			if ($cost > $planet[$ResType]) {
-				$text .= "<b style=\"color: rgb(127, 95, 96);\">". pretty_number($planet[$ResType] - $cost) ."</b> ";
-			} else {
-				$text .= "<b style=\"color: rgb(95, 127, 108);\">". pretty_number($planet[$ResType] - $cost) ."</b> ";
-			}
-		}
-	}
-	$text .= "</font>";
+  $planet_fleets = flt_get_fleets_to_planet($planet);
 
-	return $text;
+  $text  = "<br><font color=\"#7f7f7f\">{$lang['Rest_ress']}: ";
+  $text1 = "";
+  foreach ($array as $ResType => $ResTitle) {
+    if ($pricelist[$Element][$ResType] != 0) {
+      $text .= $ResTitle . ": ";
+      if ($userfactor) {
+        $cost = floor($pricelist[$Element][$ResType] * pow($pricelist[$Element]['factor'], $level));
+      } else {
+        $cost = floor($pricelist[$Element][$ResType]);
+      }
+      if ($cost > $planet[$ResType]) {
+        $text .= "<b style=\"color: rgb(127, 95, 96);\">". pretty_number($planet[$ResType] - $cost) ."</b> ";
+      } else {
+        $text .= "<b style=\"color: rgb(95, 127, 108);\">". pretty_number($planet[$ResType] - $cost) ."</b> ";
+      }
+
+      if ($cost > $planet[$ResType] + $planet_fleets["own_{$ResType}"]) {
+        $text1 .= "{$ResTitle}: <b style=\"color: rgb(127, 95, 96);\">". pretty_number($planet[$ResType] + $planet_fleets["own_{$ResType}"] - $cost) ."</b> ";
+      } else {
+        $text1 .= "{$ResTitle}: <b style=\"color: rgb(95, 127, 108);\">". pretty_number($planet[$ResType] + $planet_fleets["own_{$ResType}"] - $cost) ."</b> ";
+      }
+    }
+  }
+  $text .= '</font>';
+
+  if($planet_fleets['own_count'])
+  {
+    $text .= "<br><font color=\"#7f7f7f\">{$lang['Rest_ress_fleet']}: {$text1}</font>";
+  }
+
+  return $text;
 }
 ?>
