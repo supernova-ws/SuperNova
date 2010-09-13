@@ -339,7 +339,7 @@ class classPersistent extends classCache
 
   public function __construct($gamePrefix = 'sn_', $table_name = 'table')
   {
-    parent::__construct("{$gamePrefix}{$table_name}");
+    parent::__construct("{$gamePrefix}{$table_name}_");
     $this->table_name = $table_name;
 
     $this->sql_index_field = "{$table_name}_name";
@@ -551,5 +551,198 @@ class classConfig extends classPersistent
     }
     return self::$cacheObject;
   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class classPersistent2 extends classCache
+{
+  protected $table_name;
+  protected $fields;
+
+  protected $sql_index_field;
+
+  public function __construct($gamePrefix = 'sn_', $table_name = 'table', $index_field = 'id')
+  {
+    parent::__construct("{$gamePrefix}{$table_name}_");
+
+    $this->table_name = $table_name;
+    $this->sql_index_field = $index_field;
+
+//    if(!$this->_DB_LOADED)
+//    {
+//      $this->db_loadAll();
+//    }
+  }
+
+  public function get_item($index)
+  {
+    if(isset($this->$index))
+    {
+      return $this->$index;
+    }
+    else
+    {
+      return $this->db_loadItem($index);
+    }
+  }
+
+  public function db_loadItem($index)
+  {
+    // If no index - there is no such element
+    if(!$index)
+    {
+      return NULL;
+    }
+
+    $result = $this->db_loadItems("`{$this->sql_index_field}` = '{$index}'");
+    if($result)
+    {
+      return $result[0];
+    }
+    else
+    {
+      unset($this->$index);
+      return $result;
+    }
+  }
+
+  public function db_loadItems($condition = '', $limits = '')
+  {
+    if($condition)
+    {
+      $condition = " WHERE {$condition}";
+    }
+
+    if($limits)
+    {
+      $limits = " LIMIT {$limits}";
+    }
+
+    $query = doquery("SELECT * FROM `{{table}}`{$condition}{$limits};", $this->table_name);
+
+    if(!$query)
+    {
+      $result = NULL;
+    }
+    else
+    {
+      $result = array();
+      $index = $this->_INDEX;
+
+      while ( $row = mysql_fetch_assoc($query) )
+      {
+        /*
+        foreach($row as $index => &$value)
+        {
+          if(is_numeric($value))
+          {
+            $value = floatval($value);
+
+            //if((double)intval($value) === $value)
+            //{
+            //  $value = intval($value);
+            //}
+          }
+        }
+        */
+
+        if(!isset($this->$row[$this->sql_index_field]))
+        {
+          // Increasing element count
+          $this->_COUNT++;
+        }
+
+        // Loading element to cache
+        $this->$row[$this->sql_index_field] = $row;
+        // Also loading element to returning set
+        $result[$this->sql_index_field] = $row;
+
+        // Internal work
+        // Indexing element for fast search
+        $index[$row[$this->sql_index_field]] = true;
+      }
+      $this->_INDEX = $index;
+    }
+
+    return $result;
+  }
+
+  public function db_loadAll()
+  {
+    $this->unset_by_prefix();
+    $this->db_loadItems();
+    $this->_DB_LOADED = true;
+  }
+/*
+  public function db_saveAll()
+  {
+    $toSave = array();
+    foreach($defaults as $field => $value)
+    {
+      $toSave[$field] = NULL;
+    }
+
+    $this->db_saveItem($toSave);
+  }
+
+  public function db_saveItem($index, $value = NULL)
+  {
+    if($index)
+    {
+      if(!is_array($index))
+      {
+        $index = array($index => $value);
+      }
+
+      foreach($index as $item_index => &$itemValue)
+      {
+        if($itemValue !== NULL)
+        {
+          $this->$item_index = $itemValue;
+        }
+        else
+        {
+          $itemValue = $this->$item_index;
+        }
+
+        $qry .= " ('{$item_index}', '{$itemValue}'),";
+      }
+
+      $qry = substr($qry, 0, -1);
+      $qry = "REPLACE INTO `{{table}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES {$qry};";
+      doquery($qry, $this->table_name);
+    };
+  }
+*/
 }
 ?>

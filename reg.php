@@ -3,8 +3,10 @@
 /**
  * reg.php
  *
- * 1.1st - Security checks & tests by Gorlum for http://supernova.ws
- * @version 1.1
+ * 1.2 - Security checks & tests by Gorlum for http://supernova.ws
+ * 1.1 - Menage + rangement + utilisation fonction de creation planete nouvelle generation
+ * 1.0 - Version originelle
+ * @version 1.2
  * @copyright 2008 by Chlorel for XNova
  */
 
@@ -144,40 +146,36 @@ if ($_POST) {
     $errors++;
   }
 
-  if ($errors != 0) {
+  if ($errors != 0)
+  {
     message ($errorlist, $lang['Register']);
-  } else {
+  }
+  else
+  {
     $newpass        = $_POST['passwrd'];
-    $UserName       = CheckInputStrings ( $_POST['character'] );
-    $UserEmail      = CheckInputStrings ( $_POST['email'] );
+    $UserName       = mysql_escape_string(strip_tags(CheckInputStrings ( $_POST['character'] )));
+    $UserEmail      = mysql_escape_string(CheckInputStrings ( $_POST['email']));
     $UserPlanet     = CheckInputStrings ( $_POST['planet'] );
 
     $md5newpass     = md5($newpass);
-    $Killer = $game_config['aktywacjen'];
-    $killers = md5($Killer);
-    $aktywacja = time()+2678400;
     // Creation de l'utilisateur
-    $QryInsertUser  = "INSERT INTO {{table}} SET ";
-    $QryInsertUser .= "`username` = '". mysql_escape_string(strip_tags( $UserName )) ."', ";
-    $QryInsertUser .= "`email` = '".    mysql_escape_string( $UserEmail )            ."', ";
-    $QryInsertUser .= "`email_2` = '".  mysql_escape_string( $UserEmail )            ."', ";
+    $QryInsertUser  = "INSERT INTO {{users}} SET ";
+    $QryInsertUser .= "`username` = '{$UserName}', `email` = '{$UserEmail}', `email_2` = '{$UserEmail}', ";
     $QryInsertUser .= "`lang` = '".     mysql_escape_string( $_POST['langer'] )      ."', ";
     $QryInsertUser .= "`sex` = '".      mysql_escape_string( $_POST['sex'] )         ."', ";
     $QryInsertUser .= "`id_planet` = '0', ";
     $QryInsertUser .= "`register_time` = '". time() ."', ";
-    $QryInsertUser .= "`password`='". $md5newpass ."', ";
-    $QryInsertUser .= "`aktywnosc` = '1', ";
-    $QryInsertUser .= "`kod_aktywujacy`='". mysql_escape_string( $kod )              ."', ";
-    $QryInsertUser .= "`kiler`='".          mysql_escape_string( $killers )          ."', ";
-    $QryInsertUser .= "`time_aktyw`='".     mysql_escape_string( $aktywacja )        ."';";
-    doquery( $QryInsertUser, 'users');
+    $QryInsertUser .= "`password`='{$md5newpass}';";
+    doquery( $QryInsertUser);
 
     // On cherche le numero d'enregistrement de l'utilisateur fraichement créé
-    $NewUser        = doquery("SELECT `id` FROM {{table}} WHERE `username` = '". mysql_escape_string($_POST['character']) ."' LIMIT 1;", 'users', true);
+    $NewUser        = doquery("SELECT `id` FROM {{table}} WHERE `username` = '{$UserName}' LIMIT 1;", 'users', true);
     $iduser         = $NewUser['id'];
 
     if ($id_ref)
-      doquery( "INSERT INTO {{table}} SET `id` = {$iduser}, `id_partner` = {$id_ref}", 'referrals');
+    {
+      doquery( "INSERT INTO {{referrals}} SET `id` = {$iduser}, `id_partner` = {$id_ref}");
+    }
 
     // Recherche d'une place libre !
     $LastSettedGalaxyPos  = $config->LastSettedGalaxyPos;
@@ -279,7 +277,4 @@ if ($_POST) {
 }
 
 // -----------------------------------------------------------------------------------------------------------
-// History version
-// 1.0 - Version originelle
-// 1.1 - Menage + rangement + utilisation fonction de creation planete nouvelle generation
 ?>
