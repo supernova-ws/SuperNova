@@ -295,19 +295,19 @@
           </span>
 
           <!-- IF planet.BUILDING -->
-            <span title="{planet.BUILDING_TIP}" style="position: absolute; top: 0px; left: 0px; width: 25%; height: 25%">
+            <span title="{planet.BUILDING_TIP}" style="position: absolute; top: 0px; left: 0px; width: 25%; height: 25%" class="icon_alpha">
               <a href="buildings.php?cp={planet.ID}&re=0"><img src="images/build_building.png" height="100%" width="100%"></a>
             </span>
           <!-- ENDIF -->
           
           <!-- IF planet.TECH -->
-            <span title="{planet.TECH}" style="position: absolute; top: 25%; left: 0px; width: 25%; height: 25%">
+            <span title="{planet.TECH}" style="position: absolute; top: 25%; left: 0px; width: 25%; height: 25%" class="icon_alpha">
               <a href="buildings.php?mode=research&cp={planet.ID}&re=0"><img src="images/build_tech.png" height="100%" width="100%"></a>
             </span>
           <!-- ENDIF -->
 
           <!-- IF planet.HANGAR -->
-            <span title="{planet.HANGAR}" style="position: absolute; top: 50%; left: 0px; width: 25%; height: 25%;">
+            <span title="{planet.HANGAR}" style="position: absolute; top: 50%; left: 0px; width: 25%; height: 25%;" class="icon_alpha">
               <a href="buildings.php?mode=fleet&cp={planet.ID}&re=0"><img src="images/build_hangar.png" height="100%" width="100%"></a>
             </span>
           <!-- ENDIF -->
