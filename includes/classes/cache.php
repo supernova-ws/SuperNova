@@ -36,18 +36,18 @@ class classCache
   // CACHER_XCACHE   - xCache
   protected static $mode = CACHER_NOT_INIT;
   protected static $data;
-  protected static $prefix;
+  protected $prefix;
 
   protected static $cacheObject;
 
-  protected function __construct($prefIn = 'CACHE_', $init_mode = false)
+  public function __construct($prefIn = 'CACHE_', $init_mode = false)
   {
     if( !($init_mode === false || $init_mode === CACHER_NO_CACHE || ($init_mode === CACHER_XCACHE && extension_loaded('xcache')) ))
     {
       throw new UnexpectedValueException('Wrong work mode or current mode does not supported on your server');
     }
 
-    self::$prefix = $prefIn;
+    $this->prefix = $prefIn;
     if ( extension_loaded('xcache') && ($init_mode === CACHER_XCACHE || $init_mode === false) )
     {
       self::$mode = CACHER_XCACHE;
@@ -87,18 +87,18 @@ class classCache
       break;
 
       case '_PREFIX':
-        self::$prefix = $value;
+        $this->prefix = $value;
       break;
 
       default:
         switch (self::$mode)
         {
           case CACHER_NO_CACHE:
-            self::$data[self::$prefix.$name] = $value;
+            self::$data[$this->prefix.$name] = $value;
           break;
 
           case CACHER_XCACHE:
-            xcache_set(self::$prefix.$name, $value);
+            xcache_set($this->prefix.$name, $value);
           break;
 
         };
@@ -115,18 +115,18 @@ class classCache
       break;
 
       case '_PREFIX':
-        return self::$prefix;
+        return $this->prefix;
       break;
 
       default:
         switch (self::$mode)
         {
           case CACHER_NO_CACHE:
-            return self::$data[self::$prefix.$name];
+            return self::$data[$this->prefix.$name];
           break;
 
           case CACHER_XCACHE:
-            return xcache_get(self::$prefix.$name);
+            return xcache_get($this->prefix.$name);
           break;
 
         };
@@ -138,11 +138,11 @@ class classCache
     switch (self::$mode)
     {
       case CACHER_NO_CACHE:
-        return isset(self::$data[self::$prefix.$name]);
+        return isset(self::$data[$this->prefix.$name]);
       break;
 
       case CACHER_XCACHE:
-        return xcache_isset(self::$prefix.$name);
+        return xcache_isset($this->prefix.$name);
       break;
 
     };
@@ -153,11 +153,11 @@ class classCache
     switch (self::$mode)
     {
       case CACHER_NO_CACHE:
-        unset(self::$data[self::$prefix.$name]);
+        unset(self::$data[$this->prefix.$name]);
       break;
 
       case CACHER_XCACHE:
-        xcache_unset(self::$prefix.$name);
+        xcache_unset($this->prefix.$name);
       break;
 
     };
@@ -168,7 +168,7 @@ class classCache
     switch (self::$mode)
     {
       case CACHER_NO_CACHE:
-        array_walk(self::$data, create_function('&$v,$k,$p', 'if(strpos($k, $p) === 0)$v = NULL;'), self::$prefix.$prefix_unset);
+        array_walk(self::$data, create_function('&$v,$k,$p', 'if(strpos($k, $p) === 0)$v = NULL;'), $this->prefix.$prefix_unset);
         return true;
       break;
 
@@ -177,7 +177,7 @@ class classCache
         {
           return false;
         }
-        return xcache_unset_by_prefix(self::$prefix.$prefix_unset);
+        return xcache_unset_by_prefix($this->prefix.$prefix_unset);
       break;
     };
   }
@@ -290,7 +290,7 @@ class classCache
     switch (self::$mode)
     {
       case CACHER_NO_CACHE:
-        return dump(self::$data, self::$prefix);
+        return dump(self::$data, $this->prefix);
       break;
 
       default:
@@ -337,7 +337,7 @@ class classPersistent extends classCache
 
   protected $defaults = array();
 
-  protected function __construct($gamePrefix = 'sn_', $table_name = 'table')
+  public function __construct($gamePrefix = 'sn_', $table_name = 'table')
   {
     parent::__construct("{$gamePrefix}{$table_name}");
     $this->table_name = $table_name;
@@ -536,6 +536,11 @@ class classConfig extends classPersistent
     'stats_lastUpdated' => '0',
     'stats_schedule' => 'd@04:00:00',
   );
+
+  public function __construct($gamePrefix = 'sn_')
+  {
+    parent::__construct($gamePrefix, 'config');
+  }
 
   public static function getInstance($gamePrefix = 'sn_')
   {
