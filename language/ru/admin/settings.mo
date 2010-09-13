@@ -15,7 +15,7 @@ $lang['adm_opt_plan_initial']  = "Размер главной планеты";
 $lang['adm_opt_plan_base_inc'] = "Базовая добыча ";
 $lang['adm_opt_game_debugmod'] = "Режим отладки";
 $lang['adm_opt_game_oth_info'] = "Прочие параметры";
-$lang['adm_opt_game_oth_news'] = "Показывать ленту новостей в обзоре планет";
+$lang['adm_opt_game_oth_news'] = "Количество новостей на странице обзора<br>0 - отключить";
 $lang['adm_opt_game_oth_adds'] = "Реклама от GOOGLE";
 $lang['adm_opt_game_oth_gala'] = "Галактика";
 $lang['adm_opt_game_oth_syst'] = "Система";
@@ -25,4 +25,5 @@ $lang['adm_opt_vacancy_mode']  = "Отключить режим отпуска";
 $lang['adm_opt_sectors']       = "секторов";
 $lang['adm_opt_per_hour']      = "в час";
 
+$lang['adm_opt_saved']         = "Настройки игры сохранены успешно";
 ?>

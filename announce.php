@@ -23,30 +23,37 @@ $mode            = SYS_mysqlSmartEscape($_GET['mode'] ? $_GET['mode'] : $_POST['
 
 $template     = gettemplate('announce', true);
 
-if ($user['authlevel'] >= 3) {
-  if (!empty($POST_text)){
+if ($user['authlevel'] >= 3)
+{
+  if (!empty($POST_text))
+  {
     $idAnnounce = intval(mysql_real_escape_string($_POST['id']));
-    $dtDateTime = empty($POST_dtDateTime) ? ("FROM_UNIXTIME(".time().")") : "'" . $POST_dtDateTime . "'";
+    $dtDateTime = empty($POST_dtDateTime) ? ("FROM_UNIXTIME(".time().")") : "'{$POST_dtDateTime}'";
     $strText = $POST_text;
 
-    if ($mode == 'edit'){
+    if ($mode == 'edit')
+    {
       doquery( "UPDATE {{announce}} SET `tsTimeStamp`={$dtDateTime}, `strAnnounce`='{$strText}' WHERE `idAnnounce`={$idAnnounce}");
-    }else{
+    }
+    else
+    {
       doquery( "INSERT INTO {{announce}} SET `tsTimeStamp`={$dtDateTime}, `strAnnounce`='{$strText}'");
     }
     $mode = '';
   };
 
-  switch($mode){
+  switch($mode)
+  {
     case 'del':
       doquery( "DELETE FROM {{announce}} WHERE `idAnnounce`={$GET_id}");
       $mode = '';
-      break;
+    break;
+
     case 'edit':
       $template->assign_var('ID', $GET_id);
     case 'copy':
-      $announce = doquery("SELECT * FROM {{table}} WHERE `idAnnounce`=".$GET_id, 'announce', true);
-      break;
+      $announce = doquery("SELECT * FROM {{table}} WHERE `idAnnounce`={$GET_id};", 'announce', true);
+    break;
   }
 }else{
   $annQuery = 'WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<=' . intval($time_now);

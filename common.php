@@ -18,10 +18,10 @@ if (INSTALL != true) {
     // Jeux en mode 'clos' ???
     if( $config->game_disable) {
       if ($user['authlevel'] < 1) {
-        message ( stripslashes ( $config->game_disable_reason ), $config->game_name );
+        message ( sys_bbcodeParse($config->game_disable_reason), $config->game_name );
         die();
       } else {
-        print( "<div align=center style='font-size: 24; font-weight: bold; color:red;'>" . $config->game_disable_reason . '</div><br>' );
+        print( "<div align=center style='font-size: 24; font-weight: bold; color:red;'>" . sys_bbcodeParse($config->game_disable_reason) . '</div><br>' );
       }
     }
   }

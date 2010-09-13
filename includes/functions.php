@@ -21,8 +21,8 @@ function check_urlaubmodus ($user) {
 }
 
 function check_urlaubmodus_time () {
-  global $user, $game_config;
-  if ($game_config['urlaubs_modus_erz'] == 1) {
+  global $user, $game_config, $config;
+  if ($config->urlaubs_modus_erz == 1) {
     $begrenzung = VOCATION_TIME; //24x60x60= 24h
     $iduser = $user["id"];
     $urlaub_modus_time = $user['urlaubs_modus_time'];
@@ -79,7 +79,7 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
 }
 
 function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
-  global $lang, $dpath, $game_config, $user;
+  global $lang, $dpath, $game_config, $user, $config;
 
   includeLang('leftmenu');
   $Level = min ($Level, $user['authlevel']);
@@ -89,18 +89,18 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
   $parse['mf']              = '_self';
   $parse['dpath']           = $dpath;
   $parse['XNovaRelease']    = VERSION;
-  $parse['servername']      = $game_config['game_name'];
+  $parse['servername']      = $config->game_name;
   //$parse['servername']   = XNova;
 
 
   if ($Level <= "0") {
-    $parse['lm_tx_serv']      = $game_config['resource_multiplier'];
-    $parse['lm_tx_game']      = $game_config['game_speed'] / 2500;
-    $parse['lm_tx_fleet']     = $game_config['fleet_speed'] / 2500;
+    $parse['lm_tx_serv']      = $config->resource_multiplier;
+    $parse['lm_tx_game']      = $config->game_speed / 2500;
+    $parse['lm_tx_fleet']     = $config->fleet_speed / 2500;
     $parse['lm_tx_queue']     = MAX_FLEET_OR_DEFS_PER_ROW;
     $SubFrame                 = parsetemplate( $InfoTPL, $parse );
     $parse['server_info']     = $SubFrame;
-    $parse['forum_url']       = $game_config['forum_url'];
+    $parse['forum_url']       = $config->forum_url;
     $parse['game_url']        = GAMEURL;
 //    $gn                       = doquery("SELECT `config_value` FROM {{table}} WHERE config_name='game_name' LIMIT 1",'config',true);
 //    $parse['game_name']       = $gn['config_value'];
@@ -108,8 +108,8 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
     $rank                     = doquery("SELECT `total_rank` FROM {{table}} WHERE `stat_code` = '1' AND `stat_type` = '1' AND `id_owner` = '". $user['id'] ."';",'statpoints',true);
     $parse['user_rank']       = $rank['total_rank'];
 
-    if ($game_config['advGoogleLeftMenuIsOn'] == 1)
-      $parse['GoogleCode'] = $game_config['advGoogleLeftMenuCode'];
+    if ($config->advGoogleLeftMenuIsOn)
+      $parse['GoogleCode'] = $config->advGoogleLeftMenuCode;
 
     if ($user['authlevel'] > 0) {
       $parse['ADMIN_LINK']  = "
@@ -155,7 +155,7 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
 // $metatags  -> S'il y a quelques actions particulieres a faire ...
 // $AdminPage -> Si on est dans la section admin ... faut le dire ...
 function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true) {
-  global $link, $game_config, $debug, $user, $planetrow, $dpath, $IsUserChecked, $time_now;
+  global $link, $game_config, $debug, $user, $planetrow, $dpath, $IsUserChecked, $time_now, $config;
 
   if (!$AdminPage) {
     $AdminPage = 0;
@@ -206,7 +206,7 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
 
   // Affichage du Debug si necessaire
   if ($user['authlevel'] == 1 || $user['authlevel'] == 3) {
-    if ($game_config['debug'] == 1) $debug->echo_log();
+    if ($config->debug) $debug->echo_log();
   }
 
   $DisplayPage .= '';
@@ -270,8 +270,8 @@ function AdminUserHeader ($title = '', $metatags = '') {
 // Pied de page
 //
 function StdFooter() {
-  global $game_config, $lang, $time_now;
-  $parse['copyright']     = $game_config['copyright'];
+  global $game_config, $lang, $time_now, $config;
+  $parse['copyright']     = $config->copyright;
   $parse['TranslationBy'] = $lang['TranslationBy'];
   $parse['serverTime']    = $time_now;
   return parsetemplate(gettemplate('overall_footer', true), $parse);

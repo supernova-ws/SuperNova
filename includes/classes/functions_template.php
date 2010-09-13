@@ -278,7 +278,7 @@ class template_compile
   function compile_var_tags(&$text_blocks)
   {
     // including $lang variable
-    global $lang;
+    global $lang, $config;
 
     // change template varrefs into PHP varrefs
     $varrefs = array();
@@ -540,7 +540,7 @@ class template_compile
         // no break
 
         default:
-          if (preg_match('#^((?:[a-z0-9\-_]+\.)+)?(\$)?(?=[A-Z])([A-Z0-9\-_]+)#s', $token, $varrefs))
+          if (preg_match('#^((?:[a-z0-9\-_]+\.)+)?(\$)?(?=[A-Za-z])([A-Za-z0-9\-_]+)#s', $token, $varrefs))
           {
             $token = (!empty($varrefs[1])) ? $this->generate_block_data_ref(substr($varrefs[1], 0, -1), true, $varrefs[2]) . '[\'' . $varrefs[3] . '\']' : (($varrefs[2]) ? '$this->_tpldata[\'DEFINE\'][\'.\'][\'' . $varrefs[3] . '\']' : '$this->_rootref[\'' . $varrefs[3] . '\']');
           }

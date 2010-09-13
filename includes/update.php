@@ -180,6 +180,7 @@ switch(intval($config->db_version)){
     set_time_limit(30);
 
   case 11:
+   // remove option OverviewNewsFrame - replaced with game_news_overview
 };
 print('done.<br>');
 
