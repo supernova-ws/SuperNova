@@ -28,8 +28,6 @@ if (INSTALL != true) {
   }
 }
 
-// alliance_request
-
 if ( $user['authlevel'] < 3 ) return;
 
 print('Random number: ');
@@ -68,7 +66,8 @@ switch(intval($config->db_version)){
     set_time_limit(30);
 
   case 1:
-    if(!$tables['counter']){
+    if(!$tables['counter'])
+    {
       mysql_query(
         "CREATE TABLE `{$config->db_prefix}counter` (
           `id` bigint(11) NOT NULL AUTO_INCREMENT,
@@ -180,14 +179,33 @@ switch(intval($config->db_version)){
     set_time_limit(30);
 
   case 11:
-   // remove option OverviewNewsFrame - replaced with game_news_overview
+    if($tables['users']['ataker'])
+      mysql_query(
+        "ALTER TABLE {$config->db_prefix}users
+          DROP COLUMN `aktywnosc`,
+          DROP COLUMN `time_aktyw`,
+          DROP COLUMN `kiler`,
+          DROP COLUMN `kod_aktywujacy`,
+          DROP COLUMN `ataker`,
+          DROP COLUMN `atakin`
+          ;");
+
+    doquery("DELETE FROM {{config}} WHERE `config_name` in ('OverviewNewsFrame');");
+    $newVersion = 12;
+    set_time_limit(30);
+
+  case 12:
+   // +alliance_request
 };
 print('done.<br>');
 
-if($newVersion){
+if($newVersion)
+{
   $config->db_saveItem('db_version', $newVersion);
   print("DB version is now {$newVersion}");
-}else
+}
+else
+{
   print("DB version didn't changed from {$config->db_version}");
-
+}
 ?>

@@ -23,8 +23,6 @@ if ($IsUserChecked == false) {
 
 check_urlaubmodus ($user);
 
-includeLang('imperium');
-
 $planetsrow = doquery("SELECT * FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
 
 $planet = array();
@@ -48,11 +46,18 @@ foreach ($planet as $p) {
   $hangar_build = explode(',', $p['b_hangar_id']);
   $hangar_build = $hangar_build[0] ? $lang[tech][$hangar_build[0]] : '';
 
+  $fleet_list = flt_get_fleets_to_planet($p);
+
   $template->assign_block_vars('planet', array(
     'ID' => $p['id'],
     'TYPE' => $p['planet_type'],
     'IMAGE' => $p['image'],
     'NAME' => $p['name'],
+
+    'GALAXY'       => $p['galaxy'],
+    'SYSTEM'       => $p['system'],
+    'PLANET'       => $p['planet'],
+
     'COORDINATES' => INT_makeCoordinates($p),
 
     'FILL'       => min(100, floor($p['field_current'] / CalculateMaxPlanetFields($p) * 100)),
@@ -61,6 +66,9 @@ foreach ($planet as $p) {
     'BUILDING_TIP' => $building_build,
     'TECH'       => $p['b_tech'] ? $lang['tech'][$p['b_tech_id']] : 0,
     'HANGAR'     => $hangar_build,
+
+    'FLEET_ENEMY'  => $fleet_list['enemy_count'],
+    'FLEET_OWN'    => $fleet_list['own_count'],
 
     'FIELDS_CUR' => $p['field_current'],
     'FIELDS_MAX' => $p['field_max'] + $p[$resource[33]] * 5,

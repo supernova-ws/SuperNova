@@ -21,7 +21,7 @@ function check_urlaubmodus ($user) {
 }
 
 function check_urlaubmodus_time () {
-  global $user, $game_config, $config;
+  global $user, $config;
   if ($config->urlaubs_modus_erz == 1) {
     $begrenzung = VOCATION_TIME; //24x60x60= 24h
     $iduser = $user["id"];
@@ -79,7 +79,7 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
 }
 
 function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
-  global $lang, $dpath, $game_config, $user, $config;
+  global $lang, $dpath, $user, $config;
 
   includeLang('leftmenu');
   $Level = min ($Level, $user['authlevel']);
@@ -155,7 +155,7 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
 // $metatags  -> S'il y a quelques actions particulieres a faire ...
 // $AdminPage -> Si on est dans la section admin ... faut le dire ...
 function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true) {
-  global $link, $game_config, $debug, $user, $planetrow, $dpath, $IsUserChecked, $time_now, $config;
+  global $link, $debug, $user, $planetrow, $dpath, $IsUserChecked, $time_now, $config;
 
   if (!$AdminPage) {
     $AdminPage = 0;
@@ -164,24 +164,15 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   }
   $DisplayPage  = StdHeader ($title, $metatags, $AdminPage);
 
-
   if ($isDisplayMenu && $IsUserChecked){ //
     $DisplayPage .= "<div style=\"float:left; width: 190px; text-align: center;\">";
     $DisplayPage .= ShowLeftMenu ( $AdminPage );
     $DisplayPage .= "</div>"; // float: left;
   }
 
-
   $DisplayPage .= '<div id="page_body" style="margin-left: 190px; width: auto;"><center>';
 
   if ($topnav && $IsUserChecked) {
-    if ($user['aktywnosc'] == 1) {
-      $urlaub_act_time = $user['time_aktyw'];
-      $act_datum = date("d.m.Y", $urlaub_act_time);
-      $act_uhrzeit = date("H:i:s", $urlaub_act_time);
-      //$DisplayPage .= "Le mode del dure jusque $act_datum $act_uhrzeit<br>  Ce n'est qu'après cette période que vous pouvez changer vos options.";
-    }
-
     if ($user['db_deaktjava'] == 1) {
       $urlaub_del_time = $user['deltime'];
       $del_datum = date("d.m.Y", $urlaub_del_time);
@@ -202,15 +193,10 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   else
     echo $page;
 
-  $DisplayPage = '';
-
   // Affichage du Debug si necessaire
   if ($user['authlevel'] == 1 || $user['authlevel'] == 3) {
     if ($config->debug) $debug->echo_log();
   }
-
-  $DisplayPage .= '';
-  echo $DisplayPage;
 
   $std_footer = StdFooter();
   if(is_object($std_footer))
@@ -218,10 +204,10 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   else
     echo $std_footer;
 
-
   sys_logHit();
 
-  if (isset($link)) {
+  if (isset($link))
+  {
     mysql_close();
   }
 
@@ -270,7 +256,7 @@ function AdminUserHeader ($title = '', $metatags = '') {
 // Pied de page
 //
 function StdFooter() {
-  global $game_config, $lang, $time_now, $config;
+  global $lang, $time_now, $config;
   $parse['copyright']     = $config->copyright;
   $parse['TranslationBy'] = $lang['TranslationBy'];
   $parse['serverTime']    = $time_now;
