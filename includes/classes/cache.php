@@ -331,29 +331,19 @@ class classCache
 */
 class classPersistent extends classCache
 {
-  protected $internalName;
-  protected $sqlTableName;
-  protected $sqlSelectAll;
-  protected $sqlInsert;
-  protected $sqlUpdate;
+  protected $table_name;
   protected $sql_index_field;
   protected $sql_value_field;
 
   protected $defaults = array();
 
-  protected function __construct($gamePrefix = 'sn_', $internalName = '', $tableName = '')
+  protected function __construct($gamePrefix = 'sn_', $table_name = 'table')
   {
-    parent::__construct("{$gamePrefix}{$internalName}");
-    $this->internalName = $internalName;
+    parent::__construct("{$gamePrefix}{$table_name}");
+    $this->table_name = $table_name;
 
-    if(!$tableName)
-    {
-      $tableName = $internalName;
-    }
-    $this->sqlTableName = $tableName;
-    $this->sqlSelectAll = 'SELECT * FROM `{{table}}`;';
-    $this->sql_index_field = "{$internalName}_name";
-    $this->sqlValueName = "{$internalName}_value";
+    $this->sql_index_field = "{$table_name}_name";
+    $this->sql_value_field = "{$table_name}_value";
 
     if(!$this->_DB_LOADED)
     {
@@ -361,12 +351,12 @@ class classPersistent extends classCache
     }
   }
 
-  public static function getInstance($gamePrefix = 'sn_', $internalName = '')
+  public static function getInstance($gamePrefix = 'sn_', $table_name = '')
   {
     if (!isset(self::$cacheObject))
     {
       $className = get_class();
-      self::$cacheObject = new $className($gamePrefix, $internalName);
+      self::$cacheObject = new $className($gamePrefix, $table_name);
     }
     return self::$cacheObject;
   }
@@ -383,10 +373,10 @@ class classPersistent extends classCache
   {
     $this->loadDefaults();
 
-    $query = doquery($this->sqlSelectAll, $this->sqlTableName);
+    $query = doquery('SELECT * FROM {{table}};', $this->table_name);
     while ( $row = mysql_fetch_assoc($query) )
     {
-      $this->$row[$this->sql_index_field] = $row[$this->sqlValueName];
+      $this->$row[$this->sql_index_field] = $row[$this->sql_value_field];
     }
 
     $this->_DB_LOADED = true;
@@ -427,8 +417,8 @@ class classPersistent extends classCache
       }
 
       $qry = substr($qry, 0, -1);
-      $qry = "REPLACE INTO `{{table}}` (`{$this->sql_index_field}`, `{$this->sqlValueName}`) VALUES {$qry}";
-      doquery($qry, $this->sqlTableName);
+      $qry = "REPLACE INTO `{{table}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES {$qry};";
+      doquery($qry, $this->table_name);
     };
   }
 
@@ -436,10 +426,10 @@ class classPersistent extends classCache
   {
     if($index)
     {
-      $qry = doquery("SELECT `{$this->sqlValueName}` FROM `{{table}}` WHERE `{$this->sql_index_field}` = '{$index}';", $this->sqlTableName, true);
-      $this->$index = $qry[$this->sqlValueName];
+      $qry = doquery("SELECT `{$this->sql_value_field}` FROM `{{table}}` WHERE `{$this->sql_index_field}` = '{$index}';", $this->table_name, true);
+      $this->$index = $qry[$this->sql_value_field];
 
-      return $qry[$this->sqlValueName];
+      return $qry[$this->sql_value_field];
     };
   }
 }
