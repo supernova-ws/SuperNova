@@ -434,30 +434,34 @@ switch ($mode)
       $hangar_build = explode(',', $UserPlanet['b_hangar_id']);
       $hangar_build = $hangar_build[0] ? $lang[tech][$hangar_build[0]] : '';
 
+      $planet_fleets = flt_get_fleets_to_planet($UserPlanet);
+      $moon_fleets = flt_get_fleets_to_planet($moon);
+
       $template->assign_block_vars('planet', array_merge(
         array(
-          'ID'         => $UserPlanet['id'],
-          'NAME'       => $UserPlanet['name'],
-          'IMAGE'      => $UserPlanet['image'],
+          'ID'           => $UserPlanet['id'],
+          'NAME'         => $UserPlanet['name'],
+          'IMAGE'        => $UserPlanet['image'],
 
-          'GALAXY'     => $UserPlanet['galaxy'],
-          'SYSTEM'     => $UserPlanet['system'],
-          'PLANET'     => $UserPlanet['planet'],
+          'GALAXY'       => $UserPlanet['galaxy'],
+          'SYSTEM'       => $UserPlanet['system'],
+          'PLANET'       => $UserPlanet['planet'],
 
-          'ENEMY'      => $enemy_fleet['fleets_count'],
+          'FLEET_ENEMY'  => $planet_fleets['enemy_count'],
+          'FLEET_OWN'    => $planet_fleets['own_count'],
 
-          'BUILDING'   => int_buildCounter($UserPlanet, 'building', $UserPlanet['id']),
+          'BUILDING'     => int_buildCounter($UserPlanet, 'building', $UserPlanet['id']),
           'BUILDING_TIP' => $building_build,
-          'TECH'       => $UserPlanet['b_tech'] ? $lang['tech'][$UserPlanet['b_tech_id']] : 0,
-          'HANGAR'     => $hangar_build,
+          'TECH'         => $UserPlanet['b_tech'] ? $lang['tech'][$UserPlanet['b_tech_id']] : 0,
+          'HANGAR'       => $hangar_build,
 
-          'FILL'       => min(100, floor($UserPlanet['field_current'] / CalculateMaxPlanetFields($UserPlanet) * 100)),
+          'FILL'         => min(100, floor($UserPlanet['field_current'] / CalculateMaxPlanetFields($UserPlanet) * 100)),
 
-          'MOON_ID'    => $moon['id'],
-          'MOON_NAME'  => $moon['name'],
-          'MOON_IMG'   => $moon['image'],
-          'MOON_FILL'  => min(100, $moon_fill),
-          'MOON_ENEMY' => $enemy_fleet_moon['fleets_count'],
+          'MOON_ID'      => $moon['id'],
+          'MOON_NAME'    => $moon['name'],
+          'MOON_IMG'     => $moon['image'],
+          'MOON_FILL'    => min(100, $moon_fill),
+          'MOON_ENEMY'   => $moon_fleets['enemy_count'],
         ), $buildArray));
     }
 

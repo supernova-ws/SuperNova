@@ -187,6 +187,8 @@ $lang['sys_goto']            = "Перейти";
 
 $lang['sys_time']            = "Время";
 
+$lang['sys_no_task']         = "нет задания";
+
 $lang['sys_affilates']       = "Приглашенные игроки";
 
 $lang['sys_fleet_arrived']   = "Флот прибыл";
@@ -224,4 +226,13 @@ $lang['res_hint'] = '<ul><li>Производство ресурсов <100% означает нехватку энерг
 
 // Build page
 $lang['bld_destroy'] = 'Уничтожить';
+
+// Imperium page
+$lang['imp_overview'] = "Обзор Империи";
+$lang['imp_production'] = "Производство";
+//$lang['resources'] = "Ресурсы";
+//$lang['name'] = "Название";
+//$lang['coordinates'] = "Координаты";
+//$lang['fields'] = "Поля";
+
 ?>
