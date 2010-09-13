@@ -171,5 +171,7 @@ $lang['fl_load_cargo']						= 'В трюме';
 $lang['fl_rest_on_planet']					= 'Остаток';
 $lang['fl_none_resources']					= 'Сбросить';
 
+$lang['fl_planet_resources']				= 'Ресурсы на планете';
+
 $lang['fl_fleet_data'] 						= 'Текущие параметры флота';
 ?>

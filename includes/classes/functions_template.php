@@ -278,7 +278,7 @@ class template_compile
   function compile_var_tags(&$text_blocks)
   {
     // including $lang variable
-    global $lang;
+    global $lang, $config;
 
     // change template varrefs into PHP varrefs
     $varrefs = array();
@@ -296,14 +296,14 @@ class template_compile
     }
 
     // This will handle the remaining root-level varrefs
-/*
+
     // transform vars prefixed by C_ into global config value
     if (strpos($text_blocks, '{C_') !== false)
     {
       $text_blocks = preg_replace('#\{C_([a-zA-Z0-9\-_]+)\[([a-zA-Z0-9\-_]*?)\]\}#', "<?php echo ((isset(\$this->_rootref['C_\\1']['\\2'])) ? \$this->_rootref['C_\\1']['\\2'] : ((isset(\$config->\\1['\\2'])) ? \$config->\\1['\\2'] : '{ \\1[\\2] }')); ?>", $text_blocks);
       $text_blocks = preg_replace('#\{C_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['C_\\1'])) ? \$this->_rootref['C_\\1'] : ((isset(\$config->\\1)) ? \$config->\\1 : '{ C_\\1 }')); ?>", $text_blocks);
     }
-*/
+
     // transform vars prefixed by L_ into their language variable pendant if nothing is set within the tpldata array
     if (strpos($text_blocks, '{L_') !== false)
     {
@@ -540,7 +540,7 @@ class template_compile
         // no break
 
         default:
-          if (preg_match('#^((?:[a-z0-9\-_]+\.)+)?(\$)?(?=[A-Z])([A-Z0-9\-_]+)#s', $token, $varrefs))
+          if (preg_match('#^((?:[a-z0-9\-_]+\.)+)?(\$)?(?=[A-Za-z])([A-Za-z0-9\-_]+)#s', $token, $varrefs))
           {
             $token = (!empty($varrefs[1])) ? $this->generate_block_data_ref(substr($varrefs[1], 0, -1), true, $varrefs[2]) . '[\'' . $varrefs[3] . '\']' : (($varrefs[2]) ? '$this->_tpldata[\'DEFINE\'][\'.\'][\'' . $varrefs[3] . '\']' : '$this->_rootref[\'' . $varrefs[3] . '\']');
           }

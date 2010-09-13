@@ -466,7 +466,7 @@ switch ($mode)
 
     // -----------------------------------------------------------------------------------------------
     // News Frame ...
-    if ($config->OverviewNewsFrame)
+    if ($config->game_news_overview)
     {
       $lastAnnounces = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now} ORDER BY `tsTimeStamp` DESC LIMIT {$config->game_news_overview}");
 
@@ -585,7 +585,7 @@ switch ($mode)
       'TIME_TEXT'            => "$day_of_week, $day $month $year {$lang['ov_of_year']},",
 
       'USERS_ONLINE'         => mysql_num_rows($OnlineUsersNames2),
-      'USERS_TOTAL'          => $game_config['users_amount'],
+      'USERS_TOTAL'          => $config->users_amount,
 
       'USER_ID'              => $user['id'],
       'user_username'        => $user['username'],
@@ -632,6 +632,8 @@ switch ($mode)
       'RANK_DIFF'            => $StatRecord['total_old_rank'] - $StatRecord['total_rank'],
 
       'ADMIN_EMAIL'          => $config->game_adminEmail,
+
+      'GAME_NEWS_OVERVIEW'   => $config->game_news_overview,
 
       //'LastChat'       => CHT_messageParse($msg),
     ));

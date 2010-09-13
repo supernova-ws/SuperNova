@@ -183,6 +183,10 @@ var speed_factor   = {speed_factor};
           <th>{L_fl_max_load}</th>
           <th><span id='int_fleet_capacity'>0</span></th>
       </tr>
+      <tr>
+          <th>{L_fl_planet_resources}</th>
+          <th>{PLANET_RESOURCES}</th>
+      </tr>
     </table>
   <!-- ENDIF -->
   <!-- INCLUDE page_hint.tpl -->

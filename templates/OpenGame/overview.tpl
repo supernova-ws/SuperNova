@@ -45,22 +45,24 @@
     <!-- ENDIF -->
     
     <!-- News Frame -->
-    <tr><td colspan=2 class="c">{L_ov_news_title}</td></tr>
-    <!-- BEGIN news -->
-      <tr>
-        <th width="90">
-          <!-- IF news.IS_NEW -->
-            <font color=red>{L_ov_new}</font><br>
-          <!-- ENDIF -->
-          <font color=cyan>{news.TIME}</font>
-        </th>
-        <th valign=top>
-          <div align=justify>{news.ANNOUNCE}</div>
-        </th>
-      </tr>
-    <!-- BEGINELSE news -->
-      <tr><td colspan="2" class="c">{L_ov_news_none}</td></tr>
-    <!-- END news -->
+    <!-- IF GAME_NEWS_OVERVIEW -->
+      <tr><td colspan=2 class="c">{L_ov_news_title}</td></tr>
+      <!-- BEGIN news -->
+        <tr>
+          <th width="90">
+            <!-- IF news.IS_NEW -->
+              <font color=red>{L_ov_new}</font><br>
+            <!-- ENDIF -->
+            <font color=cyan>{news.TIME}</font>
+          </th>
+          <th valign=top>
+            <div align=justify>{news.ANNOUNCE}</div>
+          </th>
+        </tr>
+      <!-- BEGINELSE news -->
+        <tr><th colspan="2" class="c">{L_ov_news_none}</th></tr>
+      <!-- END news -->
+    <!-- ENDIF -->
   </table>    
 
   <table width="519">

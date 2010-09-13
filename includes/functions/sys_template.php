@@ -23,7 +23,7 @@ function displayP($template)
   }
 }
 
-function parsetemplate ($template, $array)
+function parsetemplate ($template, $array = false)
 {
   if(is_object($template))
   {
@@ -33,6 +33,11 @@ function parsetemplate ($template, $array)
   else
   {
     global $lang;
+
+    if(!$array)
+    {
+      $array = array();
+    }
 
     $search[] = '#\{L_([a-z0-9\-_]*?)\[([a-z0-9\-_]*?)\]\}#Ssie';
     $replace[] = '( ( isset($lang[\'\1\'][\'\2\']) ) ? $lang[\'\1\'][\'\2\'] : \'\' );';
@@ -54,7 +59,7 @@ function gettemplate ($templatename, $is_phpbb = false)
   if($is_phpbb)
   {
     $template = new template();
-    $template->set_custom_template('templates/'.TEMPLATE_NAME, TEMPLATE_NAME);
+    $template->set_custom_template($ugamela_root_path . TEMPLATE_DIR . '/' . TEMPLATE_NAME, TEMPLATE_NAME);
 
     $template->set_filenames(array(
         'body' => $templatename . ".tpl"
