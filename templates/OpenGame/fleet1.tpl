@@ -60,8 +60,18 @@ function getStorageFaktor() {
     </tr>
     
     <tr>
-      <th>{fl_fltime}</th>
+      <th>{L_fl_fltime}</th>
       <th><div id="duration">-</div></th>
+    </tr>
+    
+    <tr>
+      <th>{L_fl_dest_t}</th>
+      <th><div id="time_dst">-</div></th>
+    </tr>
+    
+    <tr>
+      <th>{L_fl_back_t}</th>
+      <th><div id="time_src">-</div></th>
     </tr>
     
     <tr>

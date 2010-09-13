@@ -150,6 +150,7 @@ function shortInfo() {
   document.getElementById("distance").innerHTML = sn_format_number(distance());
 
   var seconds = duration();
+  var duration_tick = seconds * 1000;
   if(seconds)
   {
     var hours = Math.floor(seconds / 3600);
@@ -162,6 +163,22 @@ function shortInfo() {
     if (seconds < 10) seconds = "0" + seconds;
 
     document.getElementById("duration").innerHTML = hours + ":" + minutes + ":" + seconds;
+
+    time_temp = new Date();
+
+    time_temp.setTime(time_temp.valueOf() + duration_tick);
+    element = document.getElementById("time_dst");
+    if(element)
+    {
+      element.innerHTML = time_temp.toLocaleString();
+    }
+
+    time_temp.setTime(time_temp.valueOf() + duration_tick);
+    element = document.getElementById("time_src");
+    if(element)
+    {
+      element.innerHTML = time_temp.toLocaleString();
+    }
   }
   else
   {
