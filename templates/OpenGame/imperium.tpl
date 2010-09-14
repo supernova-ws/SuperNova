@@ -10,19 +10,19 @@
   </tr>
 
   <tr>
-    <th>{name}</th>
+    <th>{L_imp_name}</th>
     <!-- BEGIN planet -->
     <th class="c" width="75"><a href="overview.php?cp={planet.ID}&re=0">{planet.NAME}</a></th>
     <!-- END planet -->
   </tr>
   <tr>
-    <th>{coordinates}</th>
+    <th>{L_sys_coordinates}</th>
     <!-- BEGIN planet -->
     <th class="c"><a href="overview.php?cp={planet.ID}&re=0">{planet.COORDINATES}</a></th>
     <!-- END planet -->
   </tr>
   <tr>
-    <th>{fields}</th>
+    <th>{L_sys_fields}</th>
     <!-- BEGIN planet -->
     <th class="c"><font<!-- IF planet.FIELDS_CUR >= planet.FIELDS_MAX --> color="red"<!-- ENDIF -->>{planet.FIELDS_CUR}/{planet.FIELDS_MAX}</font></th>
     <!-- END planet -->
