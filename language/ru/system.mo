@@ -230,9 +230,6 @@ $lang['bld_destroy'] = 'Уничтожить';
 // Imperium page
 $lang['imp_overview'] = "Обзор Империи";
 $lang['imp_production'] = "Производство";
-//$lang['resources'] = "Ресурсы";
-//$lang['name'] = "Название";
-//$lang['coordinates'] = "Координаты";
-//$lang['fields'] = "Поля";
-
+$lang['imp_name'] = "Название";
+$lang['sys_fields'] = "Сектора";
 ?>
