@@ -75,17 +75,17 @@ function getStorageFaktor() {
     </tr>
     
     <tr>
-      <th>{fl_deute_need}</th>
+      <th>{L_fl_deute_need}</th>
       <th><div id="consumption">-</div></th>
     </tr>
     
     <tr>
-      <th>{fl_speed_max}</th>
+      <th>{L_fl_speed_max}</th>
       <th><div id="fleet_speed">0</div></th>
     </tr>
     
     <tr>
-      <th>{fl_max_load}</th>
+      <th>{L_sys_capacity}</th>
       <th><div id="capacity">-</div></th>
     </tr>
     

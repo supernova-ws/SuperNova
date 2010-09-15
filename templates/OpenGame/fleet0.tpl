@@ -180,7 +180,7 @@ var speed_factor   = {speed_factor};
           <th><span id='int_fleet_consumption'>0</span></th>
       </tr>
       <tr>
-          <th>{L_fl_max_load}</th>
+          <th>{L_sys_capacity}</th>
           <th><span id='int_fleet_capacity'>0</span></th>
       </tr>
       <tr>
