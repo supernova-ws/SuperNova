@@ -1,8 +1,13 @@
 <?php
 
-function flt_parse_for_template($fleet, $index)
+function flt_parse_for_template($fleet, $index, $user_data = '')
 {
-  global $lang, $time_now;
+  global $lang, $time_now, $user, $pricelist;
+
+  if(!$user_data)
+  {
+    $user_data = $user;
+  }
 
   if ($fleet['fleet_mess'] == 0 && $fleet['fleet_mission'] == 2)
   {
@@ -55,9 +60,13 @@ function flt_parse_for_template($fleet, $index)
     if ($ship_record)
     {
       $ship_data = explode(',', $ship_record);
-      $return['ships'][] = array(
-        'NAME' => $lang['tech'][$ship_data[0]],
-        'AMOUNT' => $ship_data[1],
+      $return['ships'][$ship_data[0]] = array(
+        'ID'          => $ship_data[0],
+        'NAME'        => $lang['tech'][$ship_data[0]],
+        'AMOUNT'      => $ship_data[1],
+        'CONSUMPTION' => GetShipConsumption($ship_data[0], $user_data),
+        'SPEED'       => get_ship_speed($ship_data[0], $user_data),
+        'CAPACITY'    => $pricelist[$ship_data[0]]['capacity'],
       );
     }
   }

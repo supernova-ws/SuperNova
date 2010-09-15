@@ -6,7 +6,7 @@ var fleets = Array();
     [
       [
         <!-- BEGIN ships -->
-        ['{ships.NAME}', '{ships.AMOUNT}'],
+        ['{ships.NAME}', '{ships.AMOUNT}', '{ships.SPEED}', '{ships.CONSUMPTION}', '{ships.CAPACITY}'],
         <!-- END ships -->
       ],
       ['{fleets.METAL}', '{fleets.CRYSTAL}', '{fleets.DEUTERIUM}'],

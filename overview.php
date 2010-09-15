@@ -58,7 +58,7 @@ check_urlaubmodus ($user);
 
 function int_assign_event($fleet, $ov_label)
 {
-  global $fleets, $fleet_number, $planetrow, $planet_end_type;
+  global $fleets, $fleet_number, $planetrow, $planet_end_type, $user;
 
   $fleet['ov_label'] = $ov_label;
   switch($ov_label)
@@ -103,7 +103,16 @@ function int_assign_event($fleet, $ov_label)
 
   $fleet['ov_this_planet'] = $is_this_planet;
 
-  $fleets[] = flt_parse_for_template($fleet, ++$fleet_number);
+  if($fleet['fleet_owner'] == $user['id'])
+  {
+    $user_data = $user;
+  }
+  else
+  {
+    $user_data = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$fleet['fleet_owner']};", '', true);
+  };
+
+  $fleets[] = flt_parse_for_template($fleet, ++$fleet_number, $user_data);
 }
 
 // Compare function to sort fleet in time order

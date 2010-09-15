@@ -1,3 +1,9 @@
+var C_SHIP_NAME        = 0,
+    C_SHIP_AMOUNT      = 1,
+    C_SHIP_SPEED       = 2,
+    C_SHIP_CONSUMPTION = 3,
+    C_SHIP_CAPACITY    = 4;
+
 function changeMission(mission)
 {
   var element = document.getElementById('resTable');
@@ -383,22 +389,23 @@ function fleet_dialog_show(caller, fleet_id)
 
   for(ship_id in fleet)
   {
-    if(fleet[ship_id][1] != 0)
+    if(fleet[ship_id][C_SHIP_AMOUNT] != 0)
     {
       fleet_html += '<tr><th>';
-      switch(fleet[ship_id][0])
+      switch(fleet[ship_id][C_SHIP_NAME])
       {
         default:
-          fleet_html += fleet[ship_id][0];
+          fleet_html += fleet[ship_id][C_SHIP_NAME];
         break;
       }
-      fleet_html += '</th><th>' + fleet[ship_id][1] + '</th></tr>';
+      fleet_html += '</th><th>' + fleet[ship_id][C_SHIP_AMOUNT];
+      fleet_html += '</th></tr>';
     }
   };
 
   if(parseInt(resources[0]) + parseInt(resources[1]) + parseInt(resources[2]) > 0)
   {
-    fleet_html += '<tr><td class=c colspan=2>' + language [1] + '</td></tr>';
+    fleet_html += '<tr><td class=c colspan=2>' + language[1] + '</td></tr>';
 
     for(res_id in resources)
     {
