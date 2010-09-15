@@ -225,16 +225,19 @@ function sn_ainput_make(field_name, min_value, max_value, step_value, div_width)
 
 var popup = jQuery(document.createElement("span"));
 popup.dialog({ autoOpen: false }); // , width: auto, resizable: false
+popup.mouseleave(function()
+{
+  popup.dialog("close");
+});
 
 function popup_show(html, width)
 {
-
   popup_hide();
   if(width)
   {
     popup.dialog("option", "width", width);
   }
-  popup.dialog("option", "position", [clientX, clientY + 20]);
+  popup.dialog("option", "position", [clientX, clientY]); // + 20
   popup.html(html);
   popup.dialog("open");
 }
