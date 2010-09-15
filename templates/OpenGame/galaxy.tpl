@@ -1,4 +1,4 @@
-<script language="JavaScript" src="scripts/tw-sack.js"></script>
+<script language="JavaScript" src="js/tw-sack.js"></script>
 
 <script type="text/javascript"><!--
 function galaxy_submit(value) {
@@ -106,7 +106,7 @@ function showAlly(id){
   }
   result = result + "</table>";
 
-  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -10, OFFSETY, -45);
+  popup_show(result);
 }
 // --></script>
 
@@ -122,7 +122,7 @@ function showUser(id){
   }
   result = result + "<tr><th><a href=stat.php?who=player&start=" + users[id][1] + ">{L_gl_stats}</a></th></tr></table>";
 
-  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -45);
+  popup_show(result);
 }
 // --></script>
 
@@ -142,7 +142,7 @@ function showDebris(planet, metal, crystal, RCs){
   result = result + "<tr><th colspan=2 align=left><a href=# onclick='javascript:doit(8,{galaxy},{system}," + planet +",2,";
   result = result + RCs + ");'>{L_type_mission[8]}</a></th></tr></table>";  
   
-  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -80, OFFSETY, -100);
+  popup_show(result, 250);
 }
 // --></script>
 
@@ -173,7 +173,7 @@ function showPlanet(planet_owner, planet, planet_type, name, planet_image, diame
   };
   result = result + '<br>' + makeAHREF(planet, planet_type, 3, "{L_type_mission[3]}") + '</th></tr></table>';
   
-  return overlib(result, STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -100, OFFSETY, -80);
+  popup_show(result);
 }
 // --></script>
 
@@ -235,20 +235,20 @@ function showPlanet(planet_owner, planet, planet_type, name, planet_image, diame
 <!-- ENDIF -->
 <table width=569><tbody>
   <tr><td class=c colspan=8><span class="fl">{L_Solar_system} [{galaxy}:{system}] - {planets}</span>
-    <span class="fr"><a href=# style="cursor: pointer;" onmouseout='return nd();' onmouseover='return overlib("\
-    <table width=240>\
+    <span class="fr"><a href=# style="cursor: pointer;" onmouseout='popup_hide();' onmouseover='popup_show("\
+    <table>\
     <tr><td class=c colspan=2>{L_Legend}</td></tr>\
-    <tr><td width=220><span class=strong>{L_Strong_player}</span></td><td><span class=strong>{L_strong_player_shortcut}</span></td></tr>\
-    <tr><td width=220>{L_Weak_player}</td><td><span class=noob>{L_weak_player_shortcut}</span></td></tr>\
-    <tr><td width=220>{L_Way_vacation}</td><td><span class=vacation>{L_vacation_shortcut}</span></td></tr>\
-    <tr><td width=220>{L_Pendent_user}</td><td><span class=banned>{L_banned_shortcut}</span></td></tr>\
-    <tr><td width=220>{L_Active}</td><td>{L_active_shortcut}</td></tr>\
-    <tr><td width=220>{L_Inactive_7_days}</td><td><span class=inactive>{L_inactif_7_shortcut}</span></td></tr>\
-    <tr><td width=220>{L_Inactive_28_days}</td><td><span class=longinactive>{L_inactif_28_shortcut}</span></td></tr>\
-    <!-- IF SHOW_ADMIN --><tr><td width=220>{L_user_level[3]}</td><td><span class=admin>{L_user_level_shortcut[3]}</span></td></tr>\
-    <tr><td width=220>{L_user_level[2]}</td><td><span class=admin>{L_user_level_shortcut[2]}</span></td></tr>\
-    <tr><td width=220>{L_user_level[1]}</td><td><span class=admin>{L_user_level_shortcut[1]}</span></td></tr><!-- ENDIF -->\
-    </table>", STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -150, OFFSETY, -150 );'>{L_Legend}</a>
+    <tr><td><span class=strong>{L_Strong_player}</span></td><td><span class=strong>{L_strong_player_shortcut}</span></td></tr>\
+    <tr><td>{L_Weak_player}</td><td><span class=noob>{L_weak_player_shortcut}</span></td></tr>\
+    <tr><td>{L_Way_vacation}</td><td><span class=vacation>{L_vacation_shortcut}</span></td></tr>\
+    <tr><td>{L_Pendent_user}</td><td><span class=banned>{L_banned_shortcut}</span></td></tr>\
+    <tr><td>{L_Active}</td><td>{L_active_shortcut}</td></tr>\
+    <tr><td>{L_Inactive_7_days}</td><td><span class=inactive>{L_inactif_7_shortcut}</span></td></tr>\
+    <tr><td>{L_Inactive_28_days}</td><td><span class=longinactive>{L_inactif_28_shortcut}</span></td></tr>\
+    <!-- IF SHOW_ADMIN --><tr><td>{L_user_level[3]}</td><td><span class=admin>{L_user_level_shortcut[3]}</span></td></tr>\
+    <tr><td>{L_user_level[2]}</td><td><span class=admin>{L_user_level_shortcut[2]}</span></td></tr>\
+    <tr><td>{L_user_level[1]}</td><td><span class=admin>{L_user_level_shortcut[1]}</span></td></tr><!-- ENDIF -->\
+    </table>");'>{L_Legend}</a>
     </span></td>
   </tr>
   <tr align="center">
@@ -266,12 +266,12 @@ function showPlanet(planet_owner, planet, planet_type, name, planet_image, diame
     <th width=30 style="white-space: nowrap"><a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype={galaxyrow.PLANET_TYPE}&target_mission=7">{galaxyrow.PLANET_NUM}</a></th>
     <th style="white-space: nowrap;" width=30 valign=middle><!-- IF galaxyrow.PLANET_ID --><a style="cursor: pointer;"
       onmouseover="javascript:showPlanet({galaxyrow.USER_ID}, {galaxyrow.PLANET_NUM}, {galaxyrow.PLANET_TYPE}, '{galaxyrow.PLANET_NAME}', '{galaxyrow.PLANET_IMAGE}', '');"
-      onmouseout='return nd();'><img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg height=30 width=30></a><!-- ELSE -->&nbsp;<!-- ENDIF -->
+      onmouseout='popup_hide();'><img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg height=30 width=30></a><!-- ELSE -->&nbsp;<!-- ENDIF -->
     </th>
     <th style="white-space: nowrap;" width=130><!-- IF galaxyrow.PLANET_ID --><div class="g_galaxy_row"><!-- IF galaxyrow.PLANET_DESTROYED -->{L_gl_destroyedplanet}<!-- ELSE --><a href=#<!-- IF PLANET_PHALANX --> onclick=fenster('phalanx.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype={galaxyrow.PLANET_TYPE}') title="{L_gl_phalanx}"<!-- ENDIF -->><span class="<!-- IF USER_ID == galaxyrow.USER_ID -->myplanet<!-- ELSEIF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.PLANET_NAME}&nbsp;<!-- IF USER_ID != galaxyrow.USER_ID --><!-- IF galaxyrow.PLANET_ACTIVITY < 15 -->({L_sys_lessThen15min})<!-- ELSEIF galaxyrow.PLANET_ACTIVITY < 60 -->({galaxyrow.PLANET_ACTIVITY}&nbsp;{L_sys_min_short})<!-- ENDIF --><!-- ENDIF --></span></a><!-- ENDIF --></div><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
     <th style="white-space: nowrap;" width=30><!-- IF galaxyrow.MOON_NAME --><a style="cursor: pointer;" 
       onmouseover='javascript:showPlanet({galaxyrow.USER_ID}, {galaxyrow.PLANET_NUM}, 3, "{galaxyrow.MOON_NAME}", "mond", "{galaxyrow.MOON_DIAMETER}")'
-      onmouseout='return nd();'><img src={dpath}planeten/small/s_mond.jpg height=22 width=22></a><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
+      onmouseout='popup_hide();'><img src={dpath}planeten/small/s_mond.jpg height=22 width=22></a><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
     <th style="white-space: nowrap; background-image: none;
         <!-- IF galaxyrow.DEBRIS_METAL + galaxyrow.DEBRIS_CRYSTAL >= 10000000 -->
         background-color: rgb(100, 0, 0);
@@ -281,9 +281,9 @@ function showPlanet(planet_owner, planet, planet_type, name, planet_image, diame
         background-color: rgb(0, 100, 0);<!-- ENDIF -->" 
         width=30><!-- IF galaxyrow.DEBRIS_METAL + galaxyrow.DEBRIS_CRYSTAL --><a style="cursor: pointer;" 
         onmouseover='javascript:showDebris({galaxyrow.PLANET_NUM}, "{galaxyrow.DEBRIS_METAL}", "{galaxyrow.DEBRIS_CRYSTAL}", {galaxyrow.DEBRIS_RC_SEND});'
-        onmouseout='return nd();'><img src={dpath}planeten/debris.jpg height=22 width=22></a><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
-    <th width=150 align=center><!-- IF galaxyrow.USER_ID --><a style="cursor: pointer;" onmouseover='javascript:showUser({galaxyrow.USER_ID});' onmouseout='return nd();'><span class="<!-- IF galaxyrow.USER_BANNED -->banned<!-- ELSEIF galaxyrow.USER_VACANCY -->vacation<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 28 -->longinactive<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 -->inactive<!-- ELSEIF galaxyrow.USER_NOOB -->noob<!-- ELSEIF galaxyrow.USER_STRONG -->strong<!-- ENDIF -->">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACANCY --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)</a><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
-    <th width=80><!-- IF galaxyrow.ALLY_ID --><div style="line-height: 1em; height: 1em"><a style="cursor: pointer;" onmouseover='javascript:showAlly({galaxyrow.ALLY_ID});' onmouseout='return nd();'><span class="<!-- IF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.ALLY_TAG}</span></a></div><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
+        onmouseout='popup_hide();'><img src={dpath}planeten/debris.jpg height=22 width=22></a><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
+    <th width=150 align=center><!-- IF galaxyrow.USER_ID --><a style="cursor: pointer;" onmouseover='javascript:showUser({galaxyrow.USER_ID});' onmouseout='popup_hide();'><span class="<!-- IF galaxyrow.USER_BANNED -->banned<!-- ELSEIF galaxyrow.USER_VACANCY -->vacation<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 28 -->longinactive<!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 -->inactive<!-- ELSEIF galaxyrow.USER_NOOB -->noob<!-- ELSEIF galaxyrow.USER_STRONG -->strong<!-- ENDIF -->">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACANCY --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)</a><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
+    <th width=80><!-- IF galaxyrow.ALLY_ID --><div style="line-height: 1em; height: 1em"><a style="cursor: pointer;" onmouseover='javascript:showAlly({galaxyrow.ALLY_ID});' onmouseout='popup_hide();'><span class="<!-- IF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.ALLY_TAG}</span></a></div><!-- ELSE -->&nbsp;<!-- ENDIF --></th>
     <th style="white-space: nowrap" width=125 align="center"><!-- IF galaxyrow.USER_ID && USER_ID != galaxyrow.USER_ID --><!-- IF ACT_SPY --><a 
         href=# onclick="javascript:doit(6, {galaxy}, {system}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});"><img 
         src={dpath}img/e.gif alt="{L_gl_espionner}" title="{L_gl_espionner}" 

@@ -1,3 +1,18 @@
+var x = "";
+var e = null;
+
+function cntchar(m) {
+  if(window.document.forms[0].text.value.length > m) {
+    window.document.forms[0].text.value = x;
+  } else {
+    x = window.document.forms[0].text.value;
+  }
+  if(e == null)
+  e = document.getElementById('cntChars');
+  else
+  e.childNodes[0].data = window.document.forms[0].text.value.length;
+}
+
 function sn_format_number(number, precission, color)
 {
   if(!precission)
@@ -208,6 +223,27 @@ function sn_ainput_make(field_name, min_value, max_value, step_value, div_width)
 
 }
 
+var popup = jQuery(document.createElement("span"));
+popup.dialog({ autoOpen: false }); // , width: auto, resizable: false
+
+function popup_show(html, width)
+{
+
+  popup_hide();
+  if(width)
+  {
+    popup.dialog("option", "width", width);
+  }
+  popup.dialog("option", "position", [clientX, clientY + 20]);
+  popup.html(html);
+  popup.dialog("open");
+}
+
+function popup_hide()
+{
+  popup.dialog("close");
+}
+
 var element_cache = new Object();
 
 function calc_elements()
@@ -228,5 +264,16 @@ function calc_elements()
   }
   element_cache['_IS_INIT'] = true;
 }
+
+var mouseX, mouseY;
+var clientX, clientY;
+
+jQuery(document).mousemove(function(e){
+   mouseX = e.pageX;
+   mouseY = e.pageY;
+
+   clientX = e.clientX;
+   clientY = e.clientY;
+});
 
 jQuery(document).ready(calc_elements);

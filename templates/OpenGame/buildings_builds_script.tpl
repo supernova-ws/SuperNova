@@ -1,4 +1,4 @@
-<script src="scripts/cnt.js" type="text/javascript"></script>
+<script src="js/cnt.js" type="text/javascript"></script>
 <div id="btc" class="z"></div><SCRIPT language="JavaScript">
    pp='{time}';
    pk='{building_id}';

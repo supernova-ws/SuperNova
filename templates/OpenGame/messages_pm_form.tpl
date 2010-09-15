@@ -1,4 +1,3 @@
-<script src="scripts/cntchar.js" type="text/javascript"></script>
 <br />
 <center>
 <form action="messages.php?mode=write&id={id}" method="post">

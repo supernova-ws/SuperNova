@@ -1,4 +1,4 @@
-<script type="text/javascript" src="scripts/flotten.js"></script>
+<script type="text/javascript" src="js/fleet.js"></script>
 <script type="text/javascript">
 function getStorageFaktor() {
     return 1;

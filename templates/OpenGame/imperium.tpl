@@ -76,4 +76,3 @@
    </tr>
    <!-- END prods -->
 </tbody></table>
-<script type="text/javascript" src="scripts/wz_tooltip.js"></script>

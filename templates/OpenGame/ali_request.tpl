@@ -9,5 +9,3 @@
   <tr><th><span class="fl"><input type="reset" value="{sys_reset}"></span><span class="fr"><input type=submit value="{sys_send}"></span></th></tr>
 </table>
 </form>
-
-<script language="JavaScript" src="js/wz_tooltip.js"></script>
