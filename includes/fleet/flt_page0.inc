@@ -23,7 +23,7 @@ $fq = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner={$user['id']}");
 while ($f = mysql_fetch_array($fq))
 {
   $i++;
-  $fleet_data = flt_parse_for_template($f, $i);
+  $fleet_data = flt_parse_for_template($f, $i, $user);
   $template->assign_block_vars('fleets', $fleet_data['fleet']);
 
   foreach($fleet_data['ships'] as $ship_data)
@@ -39,7 +39,7 @@ foreach ($reslist['fleet'] as $n => $i)
     $template->assign_block_vars('ships', array(
       'ID'          => $i,
       'NAME'        => $lang['tech'][$i],
-		  'AMOUNT'      => $planetrow[$resource[$i]],
+		'AMOUNT'      => $planetrow[$resource[$i]],
       'CONSUMPTION' => GetShipConsumption ( $i, $user ),
       'SPEED'       => get_ship_speed($i, $user),
       'CAPACITY'    => $pricelist[$i]['capacity'],

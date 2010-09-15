@@ -58,7 +58,6 @@ $lang['fl_time_go']		= "Время прибытия (туда)";
 $lang['fl_time_back']	= "Время прибытия (туда-обратно)";
 $lang['fl_deute_need']	= "Потребление дейтерия";
 $lang['fl_speed_max']	= "Скорость (макс)";
-$lang['fl_max_load']		= "Вместительность";
 $lang['fl_shortcut']		= "Shortcuts";
 $lang['fl_shortlnk']		= "(Добавить/Редактировать)";
 $lang['fl_shrtcup1']		= "(П)";

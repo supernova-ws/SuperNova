@@ -213,6 +213,8 @@ $lang['sys_planet_type_sh'] = array(
   3 => $lang['sys_planet_type_sh3']
 );
 
+$lang['sys_capacity'] 			= 'Грузоподъёмность';
+
 // Resource page
 $lang['res_planet_production'] = 'Производство ресурсов на планете';
 $lang['res_basic_income'] = 'Естесственное производство';

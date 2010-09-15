@@ -53,7 +53,6 @@ $lang['fl_time_go'] 				= 'Отправлен (Время)';
 $lang['fl_time_back'] 			= 'Вернётся (время)';
 $lang['fl_deute_need'] 			= 'Потребление топлива';
 $lang['fl_speed_max'] 			= 'Максимальная скорость';
-$lang['fl_max_load'] 			= 'Грузоподъёмность';
 $lang['fl_shortcut'] 			= 'Закладки';
 $lang['fl_shortlnk'] 			= 'Редактирование закладок';
 $lang['fl_shrtcup1'] 			= '(П)';
