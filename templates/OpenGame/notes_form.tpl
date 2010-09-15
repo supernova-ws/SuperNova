@@ -1,4 +1,3 @@
-
 <form action="{PHP_SELF}" method=post>
   {inputs}
   <table width=519>

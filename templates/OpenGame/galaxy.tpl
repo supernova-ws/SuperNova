@@ -1,4 +1,4 @@
-<script language="JavaScript" src="scripts/tw-sack.js"></script>
+<script language="JavaScript" src="js/tw-sack.js"></script>
 
 <script type="text/javascript"><!--
 function galaxy_submit(value) {

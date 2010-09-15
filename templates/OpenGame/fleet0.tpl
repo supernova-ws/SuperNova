@@ -5,8 +5,6 @@
     Comply with PCG
 -->
 
-<script language="JavaScript" src="scripts/ocnt.js"></script>
-
 <script type="text/javascript"><!--
 var ships = Array();
 <!-- BEGIN ships -->

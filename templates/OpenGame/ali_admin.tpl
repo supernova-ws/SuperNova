@@ -1,4 +1,3 @@
-<script src="scripts/cntchar.js" type="text/javascript"></script>
 <br />
 <form action="" method="POST">
   <table width=519>

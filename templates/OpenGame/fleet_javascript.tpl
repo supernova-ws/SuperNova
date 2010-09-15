@@ -1,4 +1,4 @@
-<script language="JavaScript" src="scripts/flotten.js"></script>
+<script language="JavaScript" src="js/fleet.js"></script>
 <script type="text/javascript"><!--
 var fleets = Array();
 <!-- BEGIN fleets -->

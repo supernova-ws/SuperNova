@@ -2,7 +2,7 @@
 var chat_type = "{chat_type}";
 var ally_id = "{ally_id}";
 </script>
-<script language="JavaScript" type="text/javascript" src="scripts/chat.js"></script>
+<script language="JavaScript" type="text/javascript" src="js/chat.js"></script>
 <br />
 <table align="center" width='100%'><tbody>
 
