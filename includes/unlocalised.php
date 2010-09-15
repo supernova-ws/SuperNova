@@ -121,34 +121,11 @@ function GetFleetConsumption ($FleetArray, $SpeedFactor, $MissionDuration, $Miss
     $ShipConsumption   = GetShipConsumption ( $Ship, $Player );
 
     $consumption += $ShipConsumption * $Count  * pow($spd / sqrt($ShipSpeed) / 10 + 1, 2 );
-    /*
-    $spd               = 35000 / ($MissionDuration * $SpeedFactor - 10) * sqrt( $MissionDistance * 10 / $ShipSpeed );
-    $consumption      += $ShipConsumption * $Count * $MissionDistance / 35000 * (($spd / 10) + 1) * (($spd / 10) + 1);
-    */
   }
 
   $consumption = round($MissionDistance * $consumption  / 35000) + 1;
 
   return $consumption;
-
-/*
-  var consumption = 0;
-  var spd = speed_percent() * Math.sqrt(fleet_speed());
-
-  for (var i in ships) {
-    shipcount = ships[i][0];
-    shipspeed = ships[i][1];
-    shipconsumption = ships[i][2];
-
-    consumption += shipconsumption * shipcount  * (spd / Math.sqrt(shipspeed) / 10 + 1 ) * (spd / Math.sqrt(shipspeed) / 10 + 1 );
-  }
-
-  consumption = Math.round(distance() * consumption / 35000) + 1;
-  // document.getElementById("debug").innerHTML = consumption;
-
-  return(consumption);
-*/
-
 }
 
 // ----------------------------------------------------------------------------------------------------------------
