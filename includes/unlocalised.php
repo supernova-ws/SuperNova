@@ -274,7 +274,7 @@ function CreateFleetPopupedFleetLink ( $FleetRow, $Texte, $FleetType, $Owner ) {
     $spy_tech = GetSpyLevel($user);
     $admin    = $user['authlevel'];
     $FleetRec     = explode(";", $FleetRow['fleet_array']);
-    $FleetPopup   = "<span onmouseover=\"return overlib('";
+    $FleetPopup   = "<span onmouseover=\"popup_show('";
     $FleetPopup  .= "<table width=200>";
     if (!$Owner && $spy_tech<2) {
         $FleetPopup .= "<tr><td width=80% align=left><font color=white>". $lang['ov_spy_failed'] ."<font></td><td width=20% align=right>&nbsp;</td></tr>";
@@ -296,7 +296,7 @@ function CreateFleetPopupedFleetLink ( $FleetRow, $Texte, $FleetType, $Owner ) {
         $FleetPopup .= "<td width=100% align=center><font color=red>Все видящее Админское око :-D<font></td>";
     }
     $FleetPopup  .= "</table>";
-    $FleetPopup  .= "');\" onmouseout=\"return nd();\" class=\"". $FleetType ."\">". $Texte ."</span>";
+    $FleetPopup  .= "');\" onmouseout=\"popup_hide();\" class=\"". $FleetType ."\">". $Texte ."</span>";
 
     return $FleetPopup;
 
@@ -320,8 +320,8 @@ function CreateFleetPopupedMissionLink ( $FleetRow, $Texte, $FleetType ) {
   }
 
   if ($FRessource <> "") {
-    $MissionPopup  = "<a href='#' onmouseover=\"return overlib('". $FRessource ."');";
-    $MissionPopup .= "\" onmouseout=\"return nd();\" class=\"". $FleetType ."\">" . $Texte ."</a>";
+    $MissionPopup  = "<a href='#' onmouseover=\"popup_show('". $FRessource ."');";
+    $MissionPopup .= "\" onmouseout=\"popup_hide();\" class=\"". $FleetType ."\">" . $Texte ."</a>";
   } else {
     $MissionPopup  = $Texte ."";
   }

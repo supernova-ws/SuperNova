@@ -83,6 +83,7 @@ function BE_calculateRound(&$fleets, &$fleetsAttacking, &$fleet_n, &$fleet_shiel
           foreach($fleetDef as $defenseShipID => $defenseShipData){
             //if ($defenseShipData['def'] <= 0) continue;
             if (!is_numeric($defenseShipID)) continue;
+            if ($amount <= 0) continue; // if in loop we destroy all ship of current class - no need in looping more
 
             // $PctHarmFromThisShip = $defenseShipData['att'] / $fleetDef['att']; // which % of damage of whole fleet came from this partial ship
             // $PctHarmMade = $HarmPctIncoming * $PctHarmFromThisShip; // which % of damage came to defending ship from attacker's ship

@@ -1,6 +1,6 @@
 {include file="head.tpl"}
 <center>
-<center><hr>- <a onMouseOver="overlib('<center> Strona Glowna!</center>', FGCOLOR, 'black', BGCOLOR, '#FAEBD7', TEXTCOLOR, '#FFFFFF', STATUS, 'Dymek zwykly')" onMouseOut="nd();" href="http://gamextra.sytes.net/"><b><font class=test>Strona G³ówna</font></a></b> -<hr></center><br>
+<center><hr>- <a onMouseOver="popup_show('<center> Strona Glowna!</center>')" onMouseOut="popup_hide();" href="http://gamextra.sytes.net/"><b><font class=test>Strona G³ówna</font></a></b> -<hr></center><br>
 <h3><font class=admin>B³êdny e-mail</font></h3>
 <br /><br />
 {if $Action != "haslo"}

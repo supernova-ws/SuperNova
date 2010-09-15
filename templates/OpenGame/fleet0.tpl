@@ -1,6 +1,6 @@
 <!--
 @package fleet
-2.1 Overlib (wz_tooltip) replaced with jQuery
+2.1 Overlib replaced with jQuery
 2.0 Utilize PTE
     Comply with PCG
 -->
@@ -43,7 +43,7 @@ var speed_factor   = {speed_factor};
       <th><a>{fleets.MISSION_NAME}</a><br>
         <span title="<!-- IF fleets.MESSAGE -->{L_fl_back_to_ttl}">{L_fl_back_to}<!-- ELSE -->{L_fl_get_to_ttl}">{L_fl_get_to}<!-- ENDIF --></span>
       </th>
-      <th style="cursor: pointer;" onmouseover='fleet_dialog_show(this, {fleets.ID})' onmouseout='fleet_dialog_hide()'>{fleets.AMOUNT}</th>
+      <th style="cursor: pointer;" onmouseover='fleet_dialog_show(this, {fleets.ID})' onmouseout='popup_hide()'>{fleets.AMOUNT}</th>
       <th>{fleets.END_COORDS} {fleets.END_TYPE_TEXT_SH}</th>
       <th><!-- IF fleets.MESSAGE == 0 --><font color=lime><span id="fleet_timer_end{fleets.ID}"></span></font><br>{fleets.END_TIME_TEXT}<!-- ELSE -->-<!-- ENDIF --></th>
       <th>{fleets.START_COORDS} {fleets.START_TYPE_TEXT_SH}</th>
