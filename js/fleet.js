@@ -407,7 +407,7 @@ function fleet_dialog_show(caller, fleet_id)
       }
       fleet_html += '</th><th>' + fleet[ship_id][C_SHIP_AMOUNT];
       fleet_html += '</th></tr>';
-      fleet_capacity += fleet[ship_id][C_SHIP_CAPACITY];
+      fleet_capacity += fleet[ship_id][C_SHIP_CAPACITY] * fleet[ship_id][C_SHIP_AMOUNT];
     }
   };
 
