@@ -21,7 +21,7 @@ $email               = SYS_mysqlSmartEscape($_POST['email']);
 
   if ($action != 1) {
     $parse               = $lang;
-    $parse['servername'] = $game_config['game_name'];
+    $parse['servername'] = $config->game_name;
     $page .= parsetemplate(gettemplate('lostpassword'), $parse);
     display($page, $lang['system'], false, '', false, false);
   }

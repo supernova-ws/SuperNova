@@ -41,8 +41,8 @@ class debug
 
   function error($message,$title)
   {
-    global $link,$game_config;
-    if($game_config['debug']==1){
+    global $link, $config;
+    if($config->debug == 1){
       echo "<h2>$title</h2><br><font color=red>$message</font><br><hr>";
       echo  "<table>".$this->log."</table>";
     }

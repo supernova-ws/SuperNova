@@ -14,11 +14,11 @@ $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.'.$phpEx);
 
-	includeLang('logout');
+  includeLang('logout');
 
-	setcookie($game_config['COOKIE_NAME'], "", time()-100000, "/", "", 0);
+  setcookie($config->COOKIE_NAME, "", time()-100000, "/", "", 0);
 
-	message ( $lang['see_you'], $lang['session_closed'], "login.".$phpEx );
+  message ( $lang['see_you'], $lang['session_closed'], "login.".$phpEx );
 
 // -----------------------------------------------------------------------------------------------------------
 // History version

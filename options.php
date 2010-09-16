@@ -149,9 +149,9 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
           $query = doquery("SELECT * FROM {{table}} WHERE id_owner = '{$user['id']}'", 'planets');
           while($id = mysql_fetch_array($query)){
              doquery("UPDATE {{table}} SET
-               metal_perhour = '".$game_config['metal_basic_income']."',
-               crystal_perhour = '".$game_config['metal_basic_income']."',
-               deuterium_perhour = '".$game_config['metal_basic_income']."',
+               metal_perhour = '".$config->metal_basic_income."',
+               crystal_perhour = '".$config->metal_basic_income."',
+               deuterium_perhour = '".$config->metal_basic_income."',
                energy_used = '0',
                energy_max = '0',
                metal_mine_porcent = '0',

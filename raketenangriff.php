@@ -70,7 +70,7 @@ $planet = doquery("SELECT * FROM `{{table}}` WHERE `galaxy` = '".$g."' AND
 
 $ziel_id = $planet['id_owner'];
 
-$flugzeit = round(((30 + (60 * $distance)) * 2500) / $game_config['game_speed']);
+$flugzeit = round(((30 + (60 * $distance)) * 2500) / $config->game_speed);
 
 doquery("INSERT INTO `{{table}}` SET
    `zeit` = '".(time() + $flugzeit)."',
