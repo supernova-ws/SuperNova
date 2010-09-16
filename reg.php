@@ -271,8 +271,8 @@ if ($_POST) {
   $parse['id_ref']     = $id_ref;
   if($id_ref)
     $parse['referral'] = "?id_ref=$id_ref";
-  $parse['servername'] = $game_config['game_name'];
-  $parse['forum_url']  = $game_config['forum_url'];
+  $parse['servername'] = $config->game_name;
+  $parse['forum_url']  = $config->forum_url;
   display(parsetemplate(gettemplate('registry_form'), $parse), $lang['registry'], false, '', false, false);
 }
 

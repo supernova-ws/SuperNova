@@ -36,7 +36,7 @@ $id_ref = intval($_GET['id_ref'] ? $_GET['id_ref'] : $_POST['id_ref']);
 
         @include('config.php');
         $cookie = $login["id"] . "/%/" . $login["username"] . "/%/" . md5($login["password"] . "--" . $dbsettings["secretword"]) . "/%/" . $rememberme;
-        setcookie($game_config['COOKIE_NAME'], $cookie, $expiretime, "/", "", 0);
+        setcookie($config->COOKIE_NAME, $cookie, $expiretime, "/", "", 0);
 
         unset($dbsettings);
         if ($login['urlaubs_modus'] == 1) {
@@ -58,8 +58,8 @@ $id_ref = intval($_GET['id_ref'] ? $_GET['id_ref'] : $_POST['id_ref']);
       message($lang['Login_FailUser'], $lang['Login_Error']);
     }
 
-  } elseif(!empty($_COOKIE[$game_config['COOKIE_NAME']])) {
-    $cookie = explode('/%/',$_COOKIE[$game_config['COOKIE_NAME']]);
+  } elseif(!empty($_COOKIE[$config->COOKIE_NAME])) {
+    $cookie = explode('/%/',$_COOKIE[$config->COOKIE_NAME]);
     $login = doquery("SELECT * FROM {{table}} WHERE `username` = '" . mysql_escape_string($cookie[1]) . "' LIMIT 1", "users", true);
     if ($login) {
       @include('config.php');
@@ -76,9 +76,9 @@ $id_ref = intval($_GET['id_ref'] ? $_GET['id_ref'] : $_POST['id_ref']);
     $parse['last_user'] = $query['username'];
     $query = doquery("SELECT COUNT(DISTINCT(id)) FROM {{table}} WHERE onlinetime>" . (time()-900), 'users', true);
     $parse['online_users'] = $query[0];
-    $parse['users_amount'] = $game_config['users_amount'];
-    $parse['servername'] = $game_config['game_name'];
-    $parse['forum_url'] = $game_config['forum_url'];
+    $parse['users_amount'] = $config->users_amount;
+    $parse['servername'] = $config->game_name;
+    $parse['forum_url'] = $config->forum_url;
     $parse['PasswordLost'] = $lang['PasswordLost'];
     if($id_ref)
       $parse['referral'] = "?id_ref=$id_ref";
