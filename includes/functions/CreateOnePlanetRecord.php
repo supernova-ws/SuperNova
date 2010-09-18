@@ -17,7 +17,7 @@ function chance ($percent) {
 }
 
 function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
-  global $game_config, $user;
+  global $config, $user;
 
   $ClassicBase           = 163;
   if (!$HomeWorld) {
@@ -42,10 +42,10 @@ function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
       $PlanetFields      = mt_rand($MinSize, $MaxSize);
     }
   } else {
-    $PlanetFields     = $game_config['initial_fields'];
+    $PlanetFields     = $config->initial_fields;
   }
-  $SettingSize          = $game_config['initial_fields'];
-  $PlanetFields          = ($PlanetFields / $ClassicBase) * $game_config['initial_fields'];
+  $SettingSize          = $config->initial_fields;
+  $PlanetFields          = ($PlanetFields / $ClassicBase) * $config->initial_fields;
   $PlanetFields          = floor($PlanetFields);
 
   $PlanetSize           = ($PlanetFields ^ (14 / 1.5)) * 75;
@@ -75,9 +75,9 @@ function CreateOnePlanetRecord($Galaxy, $System, $Position, $PlanetOwnerID, $Pla
     $planet['metal']             = BUILD_METAL + $metal;
     $planet['crystal']           = BUILD_CRISTAL + $crystal;
     $planet['deuterium']         = BUILD_DEUTERIUM + $deuterium;
-    $planet['metal_perhour']     = $game_config['metal_basic_income'];
-    $planet['crystal_perhour']   = $game_config['crystal_basic_income'];
-    $planet['deuterium_perhour'] = $game_config['deuterium_basic_income'];
+    $planet['metal_perhour']     = $config->metal_basic_income;
+    $planet['crystal_perhour']   = $config->crystal_basic_income;
+    $planet['deuterium_perhour'] = $config->deuterium_basic_income;
     $planet['metal_max']         = BASE_STORAGE_SIZE;
     $planet['crystal_max']       = BASE_STORAGE_SIZE;
     $planet['deuterium_max']     = BASE_STORAGE_SIZE;

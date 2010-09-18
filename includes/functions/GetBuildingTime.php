@@ -12,7 +12,7 @@
 // $planet     -> La planete sur laquelle l'Element doit etre construit
 // $Element    -> L'Element que l'on convoite
 function GetBuildingTime ($user, $planet, $Element) {
-  global $pricelist, $resource, $reslist, $game_config;
+  global $pricelist, $resource, $reslist, $config;
 
   $isDefense = in_array($Element, $reslist['defense']);
   $isFleet = in_array($Element, $reslist['fleet']);
@@ -24,7 +24,7 @@ function GetBuildingTime ($user, $planet, $Element) {
   $cost_metal   = floor($pricelist[$Element]['metal']   * pow($pricelist[$Element]['factor'], $level));
   $cost_crystal = floor($pricelist[$Element]['crystal'] * pow($pricelist[$Element]['factor'], $level));
   $cost_deuterium = floor($pricelist[$Element]['deuterium'] * pow($pricelist[$Element]['factor'], $level));
-  $time = ($cost_metal + $cost_crystal + $cost_deuterium) / $game_config['game_speed'];
+  $time = ($cost_metal + $cost_crystal + $cost_deuterium) / $config->game_speed;
 
   if (in_array($Element, $reslist['build'])) {
     // Pour un batiment ...

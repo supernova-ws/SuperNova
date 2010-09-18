@@ -1,8 +1,6 @@
 <?php
 
 function ECO_calcResourceIncrease(&$Caps, $strResource, $ProductionTime){
-  global $game_config;
-
   $Caps['planet'][$strResource] = max(0, $Caps['planet'][$strResource]);
   $resourceIncrease = ($Caps[$strResource.'_perhour'][0] + $Caps['planet'][$strResource.'_perhour'] * $Caps['production']) * $ProductionTime / 3600 ;
 

@@ -21,8 +21,7 @@
 
 function CheckFleetSettingsInQueue ( $CurrentPlanet )
 {
-
-  global $lang, $game_config;
+  global $lang;
 
   if ($CurrentPlanet['b_building_id'] != '0')
   {
