@@ -37,7 +37,7 @@ if ($user['authlevel'] >= 3) {
     "UPDATE {{users}} SET ally_id = 0, ally_name='', ally_rank_id=0 WHERE ally_id not in (select id from {{alliance}});",
     "DELETE FROM {{statpoints}} WHERE stat_type=2 AND id_owner not in (select id from {{alliance}});",
 
-    'DELETE FROM {{galaxy}} WHERE id_planet not in (select id from {{planets}});',
+//    'DELETE FROM {{galaxy}} WHERE id_planet not in (select id from {{planets}});',
   );
 
   foreach($ques as $que) {
