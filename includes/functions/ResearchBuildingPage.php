@@ -16,7 +16,7 @@
 // $InResearch    -> Indicateur qu'il y a une Recherche en cours
 // $ThePlanet     -> Planete sur laquelle se realise la technologie eventuellement
 function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $ThePlanet) {
-  global $lang, $resource, $reslist, $phpEx, $dpath, $game_config, $_GET;
+  global $lang, $resource, $reslist, $phpEx, $dpath, $_GET;
 
   $TheCommand = SYS_mysqlSmartEscape($_GET['cmd']);
   $Techno     = intval($_GET['tech']);

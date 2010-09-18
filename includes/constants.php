@@ -76,37 +76,12 @@ if ( defined('INSIDE') ) {
   define('MT_MISSILE',  10);
   define('MT_EXPLORE',  15);
 
-
   // Planet Target constants starts with "PT_"
   define('PT_PLANET', 1);
   define('PT_DEBRIS', 2);
   define('PT_MOON',   3);
 
   define('DATE_TIME', 'd.m.Y H:i:s');
-
-  $game_config_default = array(
-    'BuildLabWhileRun' => 0,
-    'COOKIE_NAME' => "SuperNova",
-    'crystal_basic_income' => 20,
-    'debug' => 0,
-    'Defs_Cdr' => 30,
-    'deuterium_basic_income' => 0,
-    'energy_basic_income' => 0,
-    'Fleet_Cdr' => 30,
-    'fleet_speed' => 2500,
-    'forum_url' => "/forum/",
-    'game_disable' => 0,
-    'game_disable_reason' => "SuperNova is in maintenance mode! Please return later!",
-    'game_name' => "SuperNova.ws",
-    'game_speed' => 2500,
-    'initial_fields' => 163,
-    'metal_basic_income' => 40,
-    'OverviewNewsFrame' => "1",
-    'resource_multiplier' => 1,
-    'urlaubs_modus_erz' => 0,
-    'UserbarOverviewFrame' => 1,
-    'users_amount' => 0
-  );
 } else {
   die("Hacking attempt");
 }

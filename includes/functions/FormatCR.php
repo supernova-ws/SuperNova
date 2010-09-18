@@ -100,7 +100,7 @@ function formatCR_Fleet(&$dataInc, $isAttacker, $isLastRound){
 
 function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_float) {
 
-  global $phpEx, $ugamela_root_path, $pricelist, $lang, $resource, $CombatCaps, $game_config;
+  global $phpEx, $ugamela_root_path, $pricelist, $lang, $resource, $CombatCaps;
 
   $html = "";
   $bbc = "";

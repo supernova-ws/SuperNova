@@ -11,15 +11,15 @@
 #############################################################################
 */
 function IsVacationMode($CurrentUser){
-   global $game_config;
+   global $config;
 
    if($CurrentUser['urlaubs_modus'] == 1){
    $query = doquery("SELECT * FROM `{{table}}` WHERE id_owner = '{$CurrentUser['id']}'", 'planets');
    while($id = mysql_fetch_array($query)){
       doquery("UPDATE {{table}} SET
-               metal_perhour = '".$game_config['metal_basic_income']."',
-               crystal_perhour = '".$game_config['crystal_basic_income']."',
-               deuterium_perhour = '".$game_config['deuterium_basic_income']."',
+               metal_perhour = '".$config->metal_basic_income."',
+               crystal_perhour = '".$config->crystal_basic_income."',
+               deuterium_perhour = '".$config->deuterium_basic_income."',
                metal_mine_porcent = '0',
                crystal_mine_porcent = '0',
                deuterium_sintetizer_porcent = '0',

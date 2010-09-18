@@ -8,7 +8,7 @@
  */
 
 function MissionCaseACS ( $FleetRow) {
-        global $phpEx, $pricelist, $lang, $resource, $CombatCaps, $game_config;
+        global $phpEx, $pricelist, $lang, $resource, $CombatCaps;
 
         if ($FleetRow['fleet_mess'] == 0 && $FleetRow['fleet_start_time'] > time()) {
                 //Well... acs in dealt with in misioncaseattack.php, so all we need to do is make the fleet return

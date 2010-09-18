@@ -18,7 +18,7 @@
 //
 
 function CheckDefSettingsInQueue ( $CurrentPlanet ) {
-  global $lang, $game_config;
+  global $lang;
 
     if ($CurrentPlanet['b_building_id'] != "0") {
     $BuildQueue = $CurrentPlanet['b_building_id'];

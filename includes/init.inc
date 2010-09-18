@@ -76,7 +76,6 @@ includeLang ('tech');
 
 // Initializing global "config" object
 include_once($ugamela_root_path . "config.{$phpEx}");
-//$config = classConfig::getInstance($dbsettings['prefix']);
 $config = new classConfig($dbsettings['prefix']);
 $config->db_prefix = $dbsettings['prefix'];
 unset($dbsettings);
@@ -86,7 +85,6 @@ if($config->debug)
   ini_set('display_errors', 1);
 }
 
-//$cache = classCache::getInstance($config->db_prefix);
 $cache = new classCache($config->db_prefix);
 if(!isset($cache->tables))
 {
@@ -100,12 +98,5 @@ if(!isset($cache->tables))
     }
   }
   $cache->tables = $tl;
-}
-
-$game_config   = $game_config_default;
-$query = doquery('SELECT * FROM {{config}};');
-while ( $row = mysql_fetch_assoc($query) )
-{
-  $game_config[$row['config_name']] = $row['config_value'];
 }
 ?>

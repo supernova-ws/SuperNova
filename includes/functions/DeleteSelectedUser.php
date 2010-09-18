@@ -8,8 +8,6 @@
  */
 
 function DeleteSelectedUser ( $UserID ) {
-  global $game_config;
-
   $TheUser = doquery ( "SELECT * FROM `{{table}}` WHERE `id` = '" . $UserID . "';", 'users', true );
   if ( $TheUser['ally_id'] != 0 ) {
     $TheAlly = doquery ( "SELECT * FROM `{{table}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", 'alliance', true );

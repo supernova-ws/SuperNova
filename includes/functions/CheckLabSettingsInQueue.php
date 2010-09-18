@@ -9,28 +9,28 @@
 
 // Teste si la queue de construction eventuelle a le labo en premiere position ....
 function CheckLabSettingsInQueue ( $CurrentPlanet ) {
-	global $lang, $game_config;
+  global $lang, $config;
 
-	if ($CurrentPlanet['b_building_id'] != "0") {
-		$BuildQueue = $CurrentPlanet['b_building_id'];
-		if (strpos ($BuildQueue, ";")) {
-			$Queue = explode (";", $BuildQueue);
-			$CurrentBuilding = $Queue[0];
-		} else {
-			// Y a pas de queue de construction la liste n'a qu'un seul element
-			$CurrentBuilding = $BuildQueue;
-		}
+  if ($CurrentPlanet['b_building_id'] != "0") {
+    $BuildQueue = $CurrentPlanet['b_building_id'];
+    if (strpos ($BuildQueue, ";")) {
+      $Queue = explode (";", $BuildQueue);
+      $CurrentBuilding = $Queue[0];
+    } else {
+      // Y a pas de queue de construction la liste n'a qu'un seul element
+      $CurrentBuilding = $BuildQueue;
+    }
 
-		if ($CurrentBuilding == 31 || $CurrentBuilding == 35 && $game_config['BuildLabWhileRun'] != 1) {
-			$return = false;
-		} else {
-			$return = true;
-		}
+    if ($CurrentBuilding == 31 || $CurrentBuilding == 35 && $config->BuildLabWhileRun != 1) {
+      $return = false;
+    } else {
+      $return = true;
+    }
 
-	} else {
-		$return = true;
-	}
+  } else {
+    $return = true;
+  }
 
-	return $return;
+  return $return;
 }
 ?>
