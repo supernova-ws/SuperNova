@@ -171,7 +171,7 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
     <td class=c>{L_Planet}</td>
     <td class=c>{L_Name}</td>
     <td class=c>{L_Moon}</td>
-    <td class=c>{L_Debris}</td>
+    <td class=c>{L_uni_debris}</td>
     <td class=c>{L_Player}</td>
     <td class=c>{L_sys_alliance}</td>
     <td class=c>{L_Actions}</td>
@@ -179,9 +179,12 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 <!-- BEGIN galaxyrow -->
   <tr>
     <th width=30 style="white-space: nowrap"><a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype={galaxyrow.PLANET_TYPE}&target_mission=7">{galaxyrow.PLANET_NUM}</a></th>
-    <th style="white-space: nowrap;" width=30 valign=middle><!-- IF galaxyrow.PLANET_ID --><a style="cursor: pointer;"
-      onmouseover="javascript:show_planet({galaxyrow.PLANET_NUM}, {galaxyrow.PLANET_TYPE});"
-      ><img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg height=30 width=30></a><!-- ELSE -->&nbsp;<!-- ENDIF -->
+    <th style="white-space: nowrap;" width=30 valign=middle>
+      <!-- IF galaxyrow.PLANET_ID -->
+        <img style="cursor: pointer;" onmouseover="javascript:show_planet({galaxyrow.PLANET_NUM}, {galaxyrow.PLANET_TYPE});" src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg height=30 width=30>
+      <!-- ELSE -->
+        &nbsp;
+      <!-- ENDIF -->
     </th>
     <th style="white-space: nowrap;" width=130>
       <!-- IF galaxyrow.PLANET_ID -->
@@ -202,9 +205,7 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
     </th>
     <th style="white-space: nowrap;" width=30>
       <!-- IF galaxyrow.MOON_NAME -->
-        <a style="cursor: pointer;" onmouseover='javascript:show_planet({galaxyrow.PLANET_NUM}, 3)'>
-          <img src={dpath}planeten/small/s_mond.jpg height=30 width=30>
-        </a>
+        <img style="cursor: pointer;" onmouseover='javascript:show_planet({galaxyrow.PLANET_NUM}, 3)' src={dpath}planeten/small/s_mond.jpg height=30 width=30>
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
@@ -220,11 +221,9 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
       <!-- DEFINE $DEBRIS_BKG = '' -->
     <!-- ENDIF -->
 
-    <th style="white-space: nowrap; background-image: none; background-color: {$DEBRIS_BKG};" width=30>
+    <th style="white-space: nowrap; background-image: none; width: 60px; height: 100%; background-color: {$DEBRIS_BKG}; text-align: center;">
       <!-- IF galaxyrow.DEBRIS_METAL + galaxyrow.DEBRIS_CRYSTAL -->
-        <a style="cursor: pointer;" onmouseover='javascript:show_debris({galaxyrow.PLANET_NUM});'>
-          <img src={dpath}planeten/debris.jpg height=22 width=22>
-        </a>
+        <img style="cursor: pointer;" onmouseover='javascript:show_debris({galaxyrow.PLANET_NUM});' src={dpath}planeten/debris.jpg height=30 width=30>
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
@@ -248,9 +247,7 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
     
     <th width=150 align=center>
       <!-- IF galaxyrow.USER_ID -->
-        <a style="cursor: pointer;" onmouseover='javascript:show_user({galaxyrow.USER_ID});'>
-          <span class="{$USER_CLASS}">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACANCY --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)
-        </a>
+        <span style="cursor: pointer;" onmouseover='javascript:show_user({galaxyrow.USER_ID});' class="{$USER_CLASS}">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACANCY --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
@@ -258,11 +255,7 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 
     <th width=80>
       <!-- IF galaxyrow.ALLY_ID -->
-        <div style="line-height: 1em; height: 1em">
-          <a style="cursor: pointer;" onmouseover='javascript:show_alliance({galaxyrow.ALLY_ID});'>
-            <span class="<!-- IF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.ALLY_TAG}</span>
-          </a>
-        </div>
+        <span style="line-height: 1em; height: 1em; cursor: pointer;" onmouseover='javascript:show_alliance({galaxyrow.ALLY_ID});' class="<!-- IF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.ALLY_TAG}</span>
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
@@ -271,22 +264,20 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
     <th style="white-space: nowrap" width=125 align="center">
       <!-- IF galaxyrow.USER_ID && USER_ID != galaxyrow.USER_ID -->
         <!-- IF ACT_SPY -->
-          <a href=# onclick="javascript:doit(6, {galaxy}, {system}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});">
-            <img src={dpath}img/e.gif alt="{L_gl_espionner}" title="{L_gl_espionner}" border=0>
-          </a>
+          <img onclick="javascript:doit(6, {galaxy}, {system}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src={dpath}img/e.gif alt="{L_gl_espionner}" title="{L_gl_espionner}" border=0 style="cursor: pointer;">
         <!-- ENDIF -->&nbsp;
         <!-- IF ACT_WRITE -->
-        <a href=messages.php?mode=write&id={galaxyrow.USER_ID}>
-          <img src={dpath}img/m.gif alt="{L_gl_sendmess}" title="{L_gl_sendmess}" border=0>
+        <a href="messages.php?mode=write&id={galaxyrow.USER_ID}">
+          <img src={dpath}img/m.gif alt="{L_gl_sendmess}" title="{L_gl_sendmess}" border=0  style="cursor: pointer;">
         </a>
         <!-- ENDIF -->&nbsp;
         <!-- IF ACT_FRIEND -->
-        <a href=buddy.php?a=2&u={galaxyrow.USER_ID}>
+        <a href="buddy.php?a=2&u={galaxyrow.USER_ID}">
           <img src={dpath}img/b.gif alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" border=0>
         </a>
         <!-- ENDIF -->&nbsp;
         <!-- IF ACT_MISSILE -->
-          <a href=galaxy.php?mode=2&galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&current={curPlanetID}>
+          <a href="galaxy.php?mode=2&galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&current={curPlanetID}">
             <img src={dpath}img/r.gif alt="{L_gl_mipattack}" title="{L_gl_mipattack}" border=0>
           </a>
         <!-- ENDIF -->
