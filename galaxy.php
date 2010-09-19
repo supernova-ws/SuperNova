@@ -31,19 +31,19 @@ if ($IsUserChecked == false) {
 
 $mode             = intval($_GET['mode']);
 $CurrentPlanetID  = intval($_GET['current']);
-$galaxy           = intval($_POST["galaxy"]);
-$system           = intval($_POST["system"]);
-$planet           = intval($_POST["planet"]);
-$POST_galaxyLeft  = SYS_mysqlSmartEscape($_POST["galaxyLeft"]);
-$POST_galaxyRight = SYS_mysqlSmartEscape($_POST["galaxyRight"]);
-$POST_systemLeft  = SYS_mysqlSmartEscape($_POST["systemLeft"]);
-$POST_systemRight = SYS_mysqlSmartEscape($_POST["systemRight"]);
+$galaxy           = intval($_POST['galaxy']);
+$system           = intval($_POST['system']);
+$planet           = intval($_POST['planet']);
+$POST_galaxyLeft  = SYS_mysqlSmartEscape($_POST['galaxyLeft']);
+$POST_galaxyRight = SYS_mysqlSmartEscape($_POST['galaxyRight']);
+$POST_systemLeft  = SYS_mysqlSmartEscape($_POST['systemLeft']);
+$POST_systemRight = SYS_mysqlSmartEscape($_POST['systemRight']);
 $GET_galaxy       = intval($_GET['galaxy']);
 $GET_system       = intval($_GET['system']);
 $GET_planet       = intval($_GET['planet']);
 
   check_urlaubmodus ($user);
-  includeLang('galaxy');
+  includeLang('universe');
 
   $CurrentPlanet = doquery("SELECT * FROM {{table}} WHERE `id` = '". $user['current_planet'] ."';", 'planets', true);
 
@@ -54,7 +54,7 @@ $GET_planet       = intval($_GET['planet']);
   $HavePhalanx   = $CurrentPlanet['phalanx'];
   $CurrentSystem = $CurrentPlanet['system'];
   $CurrentGalaxy = $CurrentPlanet['galaxy'];
-  $CanDestroy    = $CurrentPlanet[$resource[214]];
+  $CanDestroy    = $CurrentPlanet[$sn_data[214]['name']];
 
   $maxfleet       = doquery("SELECT COUNT(*) FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", 'fleets', true);
   $maxfleet_count = $maxfleet[0];
@@ -94,7 +94,7 @@ $GET_planet       = intval($_GET['planet']);
   $cached = array();
 
 
-  $template = gettemplate('galaxy', true);
+  $template = gettemplate('universe', true);
 
   $UserPoints    = doquery("SELECT * FROM `{{table}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."'", 'statpoints', true);
   $CurrentPoints = $UserPoints['total_points'];
@@ -189,11 +189,20 @@ $GET_planet       = intval($_GET['planet']);
   }
 
   foreach($cached['users'] as $PlanetUser){
-    $script .= "users[{$PlanetUser['id']}] = new Array('{$PlanetUser['username']}','{$PlanetUser['rank']}');";
+    $template->assign_block_vars('users', array(
+      'ID'   => $PlanetUser['id'],
+      'NAME' => $PlanetUser['username'],
+      'RANK' => $PlanetUser['rank'],
+    ));
   }
 
   foreach($cached['allies'] as $PlanetAlly){
-    $script .= "allies[{$PlanetAlly['id']}] = new Array('{$PlanetAlly['ally_web']}','{$PlanetAlly['ally_name']}','{$PlanetAlly['ally_members']}');";
+    $template->assign_block_vars('alliances', array(
+      'ID'      => $PlanetAlly['id'],
+      'NAME'    => $PlanetAlly['ally_name'],
+      'MEMBERS' => $PlanetAlly['ally_members'],
+      'URL'     => $PlanetAlly['ally_web'],
+    ));
   }
 
   $template->assign_vars(array(
@@ -204,7 +213,7 @@ $GET_planet       = intval($_GET['planet']);
        'curPlanetS'     => $CurrentPlanet['system'],
        'curPlanetP'     => $CurrentPlanet['planet'],
        'curPlanetPT'    => $CurrentPlanet['planet_type'],
-       'deathStars'     => $CurrentPlanet[$resource[214]],
+       'deathStars'     => $CurrentPlanet[$sn_data[214]['name']],
        'galaxy'         => $galaxy,
        'system'         => $system,
        'planet'         => $planet,
@@ -219,7 +228,6 @@ $GET_planet       = intval($_GET['planet']);
        'fleet_max'      => $fleetmax,
        'ALLY_ID'        => $user['ally_id'],
        'USER_ID'        => $user['id'],
-       'script'         => $script,
        'ACT_SPY'        => $user['settings_esp'],
        'ACT_SPIO'       => $user['spio_anz'],
        'ACT_WRITE'      => $user['settings_wri'],
@@ -228,6 +236,7 @@ $GET_planet       = intval($_GET['planet']);
                            ($system >= $CurrentSystem - $MissileRange) && ($system <= $CurrentSystem + $MissileRange),
        'PLANET_PHALANX' => $HavePhalanx && $galaxy == $CurrentGalaxy &&
                            $system >= $CurrentSystem - $PhalanxRange && $system <= $CurrentSystem + $PhalanxRange,
+       'PAGE_HINT'      => $lang['gal_sys_hint'],
      )
   );
 

@@ -3,7 +3,7 @@
 /**
  * phalanx.php
  *
- * 1.1st - Security checks & tests by Gorlum for http://supernova.ws
+ * 1.2 - Security checks & tests by Gorlum for http://supernova.ws
  * @version 1.1
  * @original made by ????
  * @copyright 2008 by Pada for XNova.project.es
@@ -21,9 +21,8 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-// includeLang('resources');
 includeLang('overview');
-includeLang("galaxy");
+includeLang('universe');
 
 function secureNumericGet(){
   if(!$_GET) return false;
@@ -49,10 +48,10 @@ function secureNumeric($value){
 
   secureNumericGet();
 
-  $g  = intval($_GET["galaxy"]);
-  $s  = intval($_GET["system"]);
-  $i  = intval($_GET["planet"]);
-  $id = intval($_GET["id"]);
+  $g  = intval($_GET['galaxy']);
+  $s  = intval($_GET['system']);
+  $i  = intval($_GET['planet']);
+  $id = intval($_GET['id']);
 
   $galaxy = $planetrow['galaxy'];
   $system = $planetrow['system'];

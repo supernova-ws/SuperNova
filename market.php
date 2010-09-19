@@ -50,16 +50,16 @@ switch($mode){
         $rates = array($config->rpg_exchange_metal, $config->rpg_exchange_crystal, $config->rpg_exchange_deuterium, $config->rpg_exchange_darkMatter);
 
         $qry = "UPDATE {{planets}} SET ";
-        foreach($tradeList as $resource => $amount){
+        foreach($tradeList as $res_name => $amount){
           $amount = abs(intval($amount));
-          $value += $amount * $rates[$resource] / $rates[$exchangeTo];
+          $value += $amount * $rates[$res_name] / $rates[$exchangeTo];
 
-          if($resource == 3){
+          if($res_name == 3){
             $amountDM = $amount;
           }else{
-            $qry .= "`{$reslist['resources'][$resource]}` = `{$reslist['resources'][$resource]}` - {$amount}, ";
-            if($planetrow[$reslist['resources'][$resource]] < $amount) $intError = 2;
-            $newrow[$reslist['resources'][$resource]] -= $amount;
+            $qry .= "`{$reslist['resources'][$res_name]}` = `{$reslist['resources'][$res_name]}` - {$amount}, ";
+            if($planetrow[$reslist['resources'][$res_name]] < $amount) $intError = 2;
+            $newrow[$reslist['resources'][$res_name]] -= $amount;
           }
         }
         if(!$intError){
@@ -126,12 +126,13 @@ switch($mode){
         foreach($shipList as $shipID => $shipCount){
           $shipCount = abs($shipCount);
           if($shipCount <= 0) continue;
-          if($newrow[$resource[$shipID]] < $shipCount){
+          if($newrow[$sn_data[$shipID]['name']] < $shipCount){
             $intError = 2;
             break;
           }
-          $qry .= "`{$resource[$shipID]}` = `{$resource[$shipID]}` - {$shipCount}, ";
-          $newrow[$resource[$shipID]] -= $shipCount;
+          $ship_db_name = $sn_data[$shipID]['name'];
+          $qry .= "`{$ship_db_name}` = `{$ship_db_name}` - {$shipCount}, ";
+          $newrow[$ship_db_name] -= $shipCount;
           $newstock[$shipID] += $shipCount;
 
           $resTemp['metal'] = floor($pricelist[$shipID]['metal']*$shipCount*$config->rpg_scrape_metal);
@@ -185,10 +186,10 @@ switch($mode){
     $template->assign_var('rpg_cost', $config->rpg_cost_scraper);
 
     foreach($reslist['fleet'] as $shipID){
-      if($planetrow[$resource[$shipID]] > 0){
+      if($planetrow[$sn_data[$shipID]['name']] > 0){
         $template->assign_block_vars('ships', array(
           'ID' => $shipID,
-          'COUNT' => $planetrow[$resource[$shipID]],
+          'COUNT' => $planetrow[$sn_data[$shipID]['name']],
           'NAME' => $lang['tech'][$shipID],
           'METAL' => floor($pricelist[$shipID]['metal']*$config->rpg_scrape_metal),
           'CRYSTAL' => floor($pricelist[$shipID]['crystal']*$config->rpg_scrape_crystal),
@@ -199,7 +200,7 @@ switch($mode){
         $ships .= floor($pricelist[$shipID]['metal']*$config->rpg_scrape_metal) . ", ";
         $ships .= floor($pricelist[$shipID]['crystal']*$config->rpg_scrape_crystal) . ", ";
         $ships .= floor($pricelist[$shipID]['deuterium']*$config->rpg_scrape_deuterium) . ", ";
-        $ships .= $planetrow[$resource[$shipID]];
+        $ships .= $planetrow[$sn_data[$shipID]['name']];
         $ships .= '), ';
       }
     }
@@ -230,8 +231,8 @@ switch($mode){
             $intError = 2;
             break;
           }
-          $qry .= "`{$resource[$shipID]}` = `{$resource[$shipID]}` + {$shipCount}, ";
-          $newrow[$resource[$shipID]] += $shipCount;
+          $qry .= "`{$sn_data[$shipID]['name']}` = `{$sn_data[$shipID]['name']}` + {$shipCount}, ";
+          $newrow[$sn_data[$shipID]['name']] += $shipCount;
           $newstock[$shipID] -= $shipCount;
 
           $resTemp['metal'] = floor($pricelist[$shipID]['metal']*$shipCount/$config->rpg_scrape_metal);

@@ -71,7 +71,7 @@ foreach ($planet as $p) {
     'FLEET_OWN'    => $fleet_list['own_count'],
 
     'FIELDS_CUR' => $p['field_current'],
-    'FIELDS_MAX' => $p['field_max'] + $p[$resource[33]] * 5,
+    'FIELDS_MAX' => $p['field_max'] + $p[$sn_data[33]['name']] * 5,
 
     'METAL_CUR'  => pretty_number($p['metal'], true, $planetCaps['planet']['metal_max']),
     'METAL_PROD' => pretty_number($p['metal_perhour']),
@@ -88,27 +88,27 @@ foreach ($planet as $p) {
 }
 
 $last = -1000;
-foreach ($resource as $i => $res) {
-  if (in_array($i, $reslist['build']))
+foreach ($sn_data as $unit_id => $res) {
+  if (in_array($unit_id, $reslist['build']))
     $mode = 'buildings';
-  elseif (in_array($i, $reslist['fleet']))
+  elseif (in_array($unit_id, $reslist['fleet']))
     $mode = 'fleet';
-  elseif (in_array($i, $reslist['defense']))
+  elseif (in_array($unit_id, $reslist['defense']))
     $mode = 'defense';
   else
     $mode = '';
 
   if($mode){
-    if((int) ($i/100) != (int)($last/100)){
+    if((int) ($unit_id/100) != (int)($last/100)){
       $template->assign_block_vars('prods', array(
-        'NAME' => $lang['tech'][(int) ($i/100)*100],
+        'NAME' => $lang['tech'][(int) ($unit_id/100)*100],
       ));
     }
 
     $template->assign_block_vars('prods', array(
-      'ID'    => $i,
-      'FIELD' => $resource[$i],
-      'NAME'  => $lang['tech'][$i],
+      'ID'    => $unit_id,
+      'FIELD' => $resource[$unit_id],
+      'NAME'  => $lang['tech'][$unit_id],
       'MODE'  => $mode,
     ));
 
@@ -116,10 +116,10 @@ foreach ($resource as $i => $res) {
       $template->assign_block_vars('prods.planet', array(
         'ID' => $p['id'],
         'TYPE' => $p['planet_type'],
-        'LEVEL' => $p[$resource[$i]],
+        'LEVEL' => $p[$resource[$unit_id]],
       ));
     }
-    $last = $i;
+    $last = $unit_id;
   }
 }
 
