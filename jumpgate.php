@@ -22,13 +22,10 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-function DoFleetJump ( $CurrentUser, $CurrentPlanet ) {
-  global $lang, $sn_data;
-
   includeLang ('infos');
 
   if ($_POST) {
-    $RestString   = GetNextJumpWaitTime ( $CurrentPlanet );
+    $RestString   = GetNextJumpWaitTime ( $planetrow );
     $NextJumpTime = $RestString['value'];
     $JumpTime     = time();
     // Dit monsieur, j'ai le droit de sauter ???
@@ -49,8 +46,8 @@ function DoFleetJump ( $CurrentUser, $CurrentPlanet ) {
           for ( $Ship = 200; $Ship < 300; $Ship++ ) {
             $ShipLabel = "c". $Ship;
             $ShipNum = intval($_POST[ $ShipLabel ]);
-            if ( $ShipNum > $CurrentPlanet[ $sn_data[$Ship]['name'] ] ) {
-              $ShipArray[ $Ship ] = $CurrentPlanet[ $sn_data[$Ship]['name'] ];
+            if ( $ShipNum > $planetrow[ $sn_data[$Ship]['name'] ] ) {
+              $ShipArray[ $Ship ] = $planetrow[ $sn_data[$Ship]['name'] ];
             } else {
               $ShipArray[ $Ship ] = $ShipNum;
             }
@@ -66,7 +63,7 @@ function DoFleetJump ( $CurrentUser, $CurrentPlanet ) {
             $QryUpdateOri .= $SubQueryOri;
             $QryUpdateOri .= "`last_jump_time` = '". $JumpTime ."' ";
             $QryUpdateOri .= "WHERE ";
-            $QryUpdateOri .= "`id` = '". $CurrentPlanet['id'] ."';";
+            $QryUpdateOri .= "`id` = '". $planetrow['id'] ."';";
             doquery ( $QryUpdateOri, 'planets');
 
             // Addition à la lune d'arrivée !
@@ -81,11 +78,11 @@ function DoFleetJump ( $CurrentUser, $CurrentPlanet ) {
             $QryUpdateUsr  = "UPDATE {{table}} SET ";
             $QryUpdateUsr .= "`current_planet` = '". $TargetGate['id'] ."' ";
             $QryUpdateUsr .= "WHERE ";
-            $QryUpdateUsr .= "`id` = '". $CurrentUser['id'] ."';";
+            $QryUpdateUsr .= "`id` = '". $user['id'] ."';";
             doquery ( $QryUpdateUsr, 'users');
 
-            $CurrentPlanet['last_jump_time'] = $JumpTime;
-            $RestString    = GetNextJumpWaitTime ( $CurrentPlanet );
+            $planetrow['last_jump_time'] = $JumpTime;
+            $RestString    = GetNextJumpWaitTime ( $planetrow );
             $RetMessage    = $lang['gate_jump_done'] ." - ". $RestString['string'];
           } else {
             $RetMessage = $lang['gate_wait_data'];
@@ -103,11 +100,7 @@ function DoFleetJump ( $CurrentUser, $CurrentPlanet ) {
     $RetMessage = $lang['gate_wait_data'];
   }
 
-  return $RetMessage;
-}
-
-  $Message = DoFleetJump($user, $planetrow);
-  message ($Message, $lang['tech'][43], "infos.php?gid=43", 4);
+  message ($RetMessage, $lang['tech'][43], "infos.php?gid=43", 4);
 
 // -----------------------------------------------------------------------------------------------------------
 // History version
