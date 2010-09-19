@@ -368,3 +368,6 @@ h1
 .hint {
   text-align: justify;
 }
+
+/* Setting popup table background color */
+div .ui-dialog-content table { background: #344055; }
