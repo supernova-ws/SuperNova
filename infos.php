@@ -28,18 +28,18 @@ if ($IsUserChecked == false) {
 // Creation de la Liste de flotte disponible sur la lune
 //
 function BuildFleetListRows ( $CurrentPlanet ) {
-  global $resource, $lang;
+  global $sn_data, $lang;
 
   $RowsTPL  = gettemplate('gate_fleet_rows');
   $CurrIdx  = 1;
   $Result   = "";
   for ($Ship = 300; $Ship > 200; $Ship-- ) {
-    if ($resource[$Ship] != "") {
-      if ($CurrentPlanet[$resource[$Ship]] > 0) {
+    if ($sn_data[$Ship]['name'] != "") {
+      if ($CurrentPlanet[$sn_data[$Ship]['name']] > 0) {
         $bloc['idx']             = $CurrIdx;
         $bloc['fleet_id']        = $Ship;
         $bloc['fleet_name']      = $lang['tech'][$Ship];
-        $bloc['fleet_max']       = pretty_number ( $CurrentPlanet[$resource[$Ship]] );
+        $bloc['fleet_max']       = pretty_number ( $CurrentPlanet[$sn_data[$Ship]['name']] );
         $bloc['gate_ship_dispo'] = $lang['gate_ship_dispo'];
         $Result                 .= parsetemplate ( $RowsTPL, $bloc );
         $CurrIdx++;
@@ -53,14 +53,14 @@ function BuildFleetListRows ( $CurrentPlanet ) {
 // Creation de la combo de selection de Lune d'arrivé
 //
 function BuildJumpableMoonCombo ( $CurrentUser, $CurrentPlanet ) {
-  global $resource;
+  global $sn_data;
   $QrySelectMoons  = "SELECT * FROM {{table}} WHERE `planet_type` = '3' AND `id_owner` = '". $CurrentUser['id'] ."';";
   $MoonList        = doquery ( $QrySelectMoons, 'planets');
   $Combo           = "";
   while ( $CurMoon = mysql_fetch_assoc($MoonList) ) {
     if ( $CurMoon['id'] != $CurrentPlanet['id'] ) {
       $RestString = GetNextJumpWaitTime ( $CurMoon );
-      if ( $CurMoon[$resource[43]] >= 1) {
+      if ( $CurMoon[$sn_data[43]['name']] >= 1) {
         $Combo .= "<option value=\"". $CurMoon['id'] ."\">[". $CurMoon['galaxy'] .":". $CurMoon['system'] .":". $CurMoon['planet'] ."] ". $CurMoon['name'] . $RestString['string'] ."</option>\n";
       }
     }
@@ -74,11 +74,11 @@ function BuildJumpableMoonCombo ( $CurrentUser, $CurrentPlanet ) {
 // Tient compte aussi du multiplicateur de ressources
 //
 function ShowProductionTable ($CurrentUser, $CurrentPlanet, $BuildID, $Template) {
-  global $ProdGrid, $resource, $config;
+  global $ProdGrid, $sn_data, $config;
 
-  $BuildLevelFactor = $CurrentPlanet[ $resource[$BuildID]."_porcent" ];
+  $BuildLevelFactor = $CurrentPlanet[ $sn_data[$BuildID]['name']."_porcent" ];
   $BuildTemp        = $CurrentPlanet[ 'temp_max' ];
-  $CurrentBuildtLvl = $CurrentPlanet[ $resource[$BuildID] ];
+  $CurrentBuildtLvl = $CurrentPlanet[ $sn_data[$BuildID]['name'] ];
 
   $BuildLevel       = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
   $Prod[1]          = (floor(eval($ProdGrid[$BuildID]['formule']['metal'])     * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
@@ -180,7 +180,7 @@ function ShowRapidFireFrom ($BuildID) {
 // Permet de faire la differance entre les divers types et les pages speciales
 //
 function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
-  global $dpath, $lang, $resource, $pricelist, $CombatCaps;
+  global $dpath, $lang, $pricelist, $CombatCaps;
 
   includeLang('infos');
 
@@ -299,7 +299,7 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
   // La page principale
   $page  = parsetemplate($PageTPL, $parse);
   if ($GateTPL != '') {
-    if ($CurrentPlanet[$resource[$BuildID]] > 0) {
+    if ($CurrentPlanet[$sn_data[$BuildID]['name']] > 0) {
       $RestString               = GetNextJumpWaitTime ( $CurrentPlanet );
       $parse['gate_start_link'] = BuildPlanetAdressLink ( $CurrentPlanet );
       if ($RestString['value'] != 0) {
@@ -318,12 +318,12 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
   }
 
   if ($DestroyTPL != '') {
-    if ($CurrentPlanet[$resource[$BuildID]] > 0) {
+    if ($CurrentPlanet[$sn_data[$BuildID]['name']] > 0) {
       // ---- Destruction
       $NeededRessources     = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $BuildID, true, true);
       $DestroyTime          = GetBuildingTime  ($CurrentUser, $CurrentPlanet, $BuildID) / 2;
       $parse['destroyurl']  = "buildings.php?cmd=destroy&building=".$BuildID; // Non balisé les balises sont dans le tpl
-      $parse['levelvalue']  = $CurrentPlanet[$resource[$BuildID]]; // Niveau du batiment a detruire
+      $parse['levelvalue']  = $CurrentPlanet[$sn_data[$BuildID]['name']]; // Niveau du batiment a detruire
       $parse['nfo_metal']   = $lang['Metal'];
       $parse['nfo_crysta']  = $lang['Crystal'];
       $parse['nfo_deuter']  = $lang['Deuterium'];

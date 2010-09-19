@@ -23,7 +23,7 @@ if ($IsUserChecked == false) {
 }
 
 function DoFleetJump ( $CurrentUser, $CurrentPlanet ) {
-  global $lang, $resource;
+  global $lang, $sn_data;
 
   includeLang ('infos');
 
@@ -49,14 +49,14 @@ function DoFleetJump ( $CurrentUser, $CurrentPlanet ) {
           for ( $Ship = 200; $Ship < 300; $Ship++ ) {
             $ShipLabel = "c". $Ship;
             $ShipNum = intval($_POST[ $ShipLabel ]);
-            if ( $ShipNum > $CurrentPlanet[ $resource[ $Ship ] ] ) {
-              $ShipArray[ $Ship ] = $CurrentPlanet[ $resource[ $Ship ] ];
+            if ( $ShipNum > $CurrentPlanet[ $sn_data[$Ship]['name'] ] ) {
+              $ShipArray[ $Ship ] = $CurrentPlanet[ $sn_data[$Ship]['name'] ];
             } else {
               $ShipArray[ $Ship ] = $ShipNum;
             }
             if ($ShipArray[ $Ship ] <> 0) {
-              $SubQueryOri .= "`". $resource[ $Ship ] ."` = `". $resource[ $Ship ] ."` - '". $ShipArray[ $Ship ] ."', ";
-              $SubQueryDes .= "`". $resource[ $Ship ] ."` = `". $resource[ $Ship ] ."` + '". $ShipArray[ $Ship ] ."', ";
+              $SubQueryOri .= "`". $sn_data[$Ship]['name'] ."` = `". $sn_data[$Ship]['name'] ."` - '". $ShipArray[ $Ship ] ."', ";
+              $SubQueryDes .= "`". $sn_data[$Ship]['name'] ."` = `". $sn_data[$Ship]['name'] ."` + '". $ShipArray[ $Ship ] ."', ";
             }
           }
           // Dit monsieur, y avait quelque chose a envoyer ???

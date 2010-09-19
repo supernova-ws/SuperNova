@@ -7,14 +7,16 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-function MissionCaseExpedition ( $FleetRow ) {
-  global $lang, $resource, $pricelist;
+function MissionCaseExpedition ( $FleetRow )
+{
+  global $lang, $pricelist, $sn_data;
 
   $FleetOwner = $FleetRow['fleet_owner'];
   $MessSender = $lang['sys_mess_qg'];
   $MessTitle  = $lang['sys_expe_report'];
 
-  if ($FleetRow['fleet_mess'] == 0) {
+  if ($FleetRow['fleet_mess'] == 0)
+  {
     // Flotte en vol aller
     if ($FleetRow['fleet_end_stay'] < time()) {
       // La Flotte vient de finir son exploration
@@ -57,10 +59,10 @@ function MissionCaseExpedition ( $FleetRow ) {
       $FleetStayDuration = ($FleetRow['fleet_end_stay'] - $FleetRow['fleet_start_time']) / 3600;
 
       // Initialisation du contenu de la Flotte
-      $farray = explode(";", $FleetRow['fleet_array']);
+      $farray = explode(';', $FleetRow['fleet_array']);
       foreach ($farray as $Item => $Group) {
         if ($Group != '') {
-          $Class = explode (",", $Group);
+          $Class = explode (',', $Group);
           $TypeVaisseau = $Class[0];
           $NbreVaisseau = $Class[1];
 
@@ -83,7 +85,7 @@ function MissionCaseExpedition ( $FleetRow ) {
       // Bon on les mange comment ces explorateurs ???
       $Hasard = rand(0, 10);
 
-      $MessSender = $lang['sys_mess_qg']. "(".$Hasard.")";
+      $MessSender = "{$lang['sys_mess_qg']} ({$Hasard})";
 
       if ($Hasard < 3) {
         // Pas de bol, on les mange tout crus
@@ -94,26 +96,21 @@ function MissionCaseExpedition ( $FleetRow ) {
         if ($LostAmount == 100) {
           // Supprimer effectivement la flotte
           SendSimpleMessage ( $FleetOwner, '', $FleetRow['fleet_end_stay'], 15, $MessSender, $MessTitle, $lang['sys_expe_blackholl_2'] );
-          doquery ("DELETE FROM {{table}} WHERE `fleet_id` = ". $FleetRow["fleet_id"], 'fleets');
+          doquery ("DELETE FROM {{fleets}} WHERE `fleet_id` = {$FleetRow['fleet_id']}");
         } else {
           foreach ($LaFlotte as $Ship => $Count) {
             $LostShips[$Ship] = intval($Count * $LostAmount);
-            $NewFleetArray   .= $Ship.",". ($Count - $LostShips[$Ship]) .";";
+            $NewFleetArray   .= $Ship.','. ($Count - $LostShips[$Ship]) .';';
           }
 
-          $QryUpdateFleet  = "UPDATE {{table}} SET ";
-          $QryUpdateFleet .= "`fleet_array` = '". $NewFleetArray ."', ";
-          $QryUpdateFleet .= "`fleet_mess` = '1'  ";
-          $QryUpdateFleet .= "WHERE ";
-          $QryUpdateFleet .= "`fleet_id` = '". $FleetRow["fleet_id"] ."';";
-          doquery( $QryUpdateFleet, 'fleets');
+          doquery("UPDATE {{fleets}} SET `fleet_array` = '{$NewFleetArray}', `fleet_mess` = '1' WHERE `fleet_id` = '{$FleetRow['fleet_id']}';");
           SendSimpleMessage ( $FleetOwner, '', $FleetRow['fleet_end_stay'], 15, $MessSender, $MessTitle, $lang['sys_expe_blackholl_1'] );
         }
 
       } elseif ($Hasard == 3) {
         // Ah un tour pour rien
-        doquery("UPDATE {{table}} SET `fleet_mess` = '1' WHERE `fleet_id` = ". $FleetRow["fleet_id"], 'fleets');
-        rpg_pointsAdd($FleetRow["fleet_owner"], 1, 'Expedition Bonus');
+        doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = {$FleetRow['fleet_id']}");
+        rpg_pointsAdd($FleetRow['fleet_owner'], 1, 'Expedition Bonus');
         SendSimpleMessage ( $FleetOwner, '', $FleetRow['fleet_end_stay'], 15, $MessSender, $MessTitle, $lang['sys_expe_nothing_1'] );
       } elseif ($Hasard >= 4 && $Hasard < 7) {
         // Gains de ressources
@@ -125,14 +122,13 @@ function MissionCaseExpedition ( $FleetRow ) {
           $FoundCrist  = intval($FoundGoods / 4);
           $FoundDeute  = intval($FoundGoods / 6);
 
-          $QryUpdateFleet  = "UPDATE {{table}} SET ";
-          $QryUpdateFleet .= "`fleet_resource_metal` = `fleet_resource_metal` + '". $FoundMetal ."', ";
-          $QryUpdateFleet .= "`fleet_resource_crystal` = `fleet_resource_crystal` + '". $FoundCrist ."', ";
-          $QryUpdateFleet .= "`fleet_resource_deuterium` = `fleet_resource_deuterium` + '". $FoundDeute ."', ";
+          $QryUpdateFleet  = "UPDATE {{fleets}} SET ";
+          $QryUpdateFleet .= "`fleet_resource_metal` = `fleet_resource_metal` + '{$FoundMetal}', ";
+          $QryUpdateFleet .= "`fleet_resource_crystal` = `fleet_resource_crystal` + '{$FoundCrist}', ";
+          $QryUpdateFleet .= "`fleet_resource_deuterium` = `fleet_resource_deuterium` + '{$FoundDeute}', ";
           $QryUpdateFleet .= "`fleet_mess` = '1'  ";
-          $QryUpdateFleet .= "WHERE ";
-          $QryUpdateFleet .= "`fleet_id` = '". $FleetRow["fleet_id"] ."';";
-          doquery( $QryUpdateFleet, 'fleets');
+          $QryUpdateFleet .= "WHERE `fleet_id` = '{$FleetRow['fleet_id']}';";
+          doquery( $QryUpdateFleet);
           $Message = sprintf($lang['sys_expe_found_goods'],
             pretty_number($FoundMetal), $lang['Metal'],
             pretty_number($FoundCrist), $lang['Crystal'],
@@ -141,7 +137,7 @@ function MissionCaseExpedition ( $FleetRow ) {
         }
       } elseif ($Hasard == 7) {
         // Ah un tour pour rien
-        doquery("UPDATE {{table}} SET `fleet_mess` = '1' WHERE `fleet_id` = ". $FleetRow["fleet_id"], 'fleets');
+        doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = {$FleetRow['fleet_id']}");
         SendSimpleMessage ( $FleetOwner, '', $FleetRow['fleet_end_stay'], 15, $MessSender, $MessTitle, $lang['sys_expe_nothing_2'] );
       } elseif ($Hasard >= 8 && $Hasard < 11) {
         // Gain de vaisseaux
@@ -154,26 +150,21 @@ function MissionCaseExpedition ( $FleetRow ) {
             }
           }
         }
-        $NewFleetArray = "";
-        $FoundShipMess = "";
+        $NewFleetArray = '';
+        $FoundShipMess = '';
         foreach ($LaFlotte as $Ship => $Count) {
           if ($Count > 0) {
-            $NewFleetArray   .= $Ship.",". $Count .";";
+            $NewFleetArray   .= "{$Ship},{$Count};";
           }
         }
         foreach ($FoundShip as $Ship => $Count) {
           if ($Count != 0) {
-            $FoundShipMess   .= $Count." ".$lang['tech'][$Ship].",";
+            $FoundShipMess   .= "{$Count} {$lang['tech'][$Ship]},";
           }
         }
 
-        $QryUpdateFleet  = "UPDATE {{table}} SET ";
-        $QryUpdateFleet .= "`fleet_array` = '". $NewFleetArray ."', ";
-        $QryUpdateFleet .= "`fleet_mess` = '1'  ";
-        $QryUpdateFleet .= "WHERE ";
-        $QryUpdateFleet .= "`fleet_id` = '". $FleetRow["fleet_id"] ."';";
-        doquery( $QryUpdateFleet, 'fleets');
-        $Message = $lang['sys_expe_found_ships']. $FoundShipMess . "";
+        doquery("UPDATE {{fleets}} SET `fleet_array` = '{$NewFleetArray}', `fleet_mess` = '1' WHERE `fleet_id` = '{$FleetRow['fleet_id']}';");
+        $Message = "{$lang['sys_expe_found_ships']}{$FoundShipMess}";
         SendSimpleMessage ( $FleetOwner, '', $FleetRow['fleet_end_stay'], 15, $MessSender, $MessTitle, $Message );
       }
 
@@ -182,31 +173,32 @@ function MissionCaseExpedition ( $FleetRow ) {
     // La Flotte est de retour a quai
     if ($FleetRow['fleet_end_time'] < time()) {
       // Reintegration de ce qui se ballade avec la flotte
-      $farray = explode(";", $FleetRow['fleet_array']);
+      $farray = explode(';', $FleetRow['fleet_array']);
       foreach ($farray as $Item => $Group) {
         if ($Group != '') {
-          $Class = explode (",", $Group);
-          $FleetAutoQuery .= "`". $resource[$Class[0]]. "` = `". $resource[$Class[0]] ."` + ". $Class[1] .", ";
+          $Class = explode (',', $Group);
+          $ship_db_name = $sn_data[$Class[0]]['name'];
+          $FleetAutoQuery .= "`{$ship_db_name}` = `{$ship_db_name}` + {$Class[1]}, ";
         }
       }
-      $QryUpdatePlanet  = "UPDATE {{table}} SET ";
+      $QryUpdatePlanet  = "UPDATE {{planets}} SET ";
       $QryUpdatePlanet .= $FleetAutoQuery;
-      $QryUpdatePlanet .= "`metal` = `metal` + ". $FleetRow['fleet_resource_metal'] .", ";
-      $QryUpdatePlanet .= "`crystal` = `crystal` + ". $FleetRow['fleet_resource_crystal'] .", ";
-      $QryUpdatePlanet .= "`deuterium` = `deuterium` + ". $FleetRow['fleet_resource_deuterium'] ." ";
+      $QryUpdatePlanet .= "`metal` = `metal` + {$FleetRow['fleet_resource_metal']}, ";
+      $QryUpdatePlanet .= "`crystal` = `crystal` + {$FleetRow['fleet_resource_crystal']}, ";
+      $QryUpdatePlanet .= "`deuterium` = `deuterium` + {$FleetRow['fleet_resource_deuterium']} ";
       $QryUpdatePlanet .= "WHERE ";
-      $QryUpdatePlanet .= "`galaxy` = '". $FleetRow['fleet_start_galaxy'] ."' AND ";
-      $QryUpdatePlanet .= "`system` = '". $FleetRow['fleet_start_system'] ."' AND ";
-      $QryUpdatePlanet .= "`planet` = '". $FleetRow['fleet_start_planet'] ."' AND ";
-      $QryUpdatePlanet .= "`planet_type` = '". $FleetRow['fleet_start_type'] ."' ";
+      $QryUpdatePlanet .= "`galaxy` = '{$FleetRow['fleet_start_galaxy']}' AND ";
+      $QryUpdatePlanet .= "`system` = '{$FleetRow['fleet_start_system']}' AND ";
+      $QryUpdatePlanet .= "`planet` = '{$FleetRow['fleet_start_planet']}' AND ";
+      $QryUpdatePlanet .= "`planet_type` = '{$FleetRow['fleet_start_type']}' ";
       $QryUpdatePlanet .= "LIMIT 1 ;";
-      doquery( $QryUpdatePlanet, 'planets');
+      doquery( $QryUpdatePlanet);
 
       // Message pour annoncer le retour de flotte
       SendSimpleMessage ( $FleetOwner, '', $FleetRow['fleet_end_time'], 15, $MessSender, $MessTitle, $lang['sys_expe_back_home'] );
 
       // Suppression de la flotte
-      doquery ("DELETE FROM {{table}} WHERE `fleet_id` = ". $FleetRow["fleet_id"], 'fleets');
+      doquery ("DELETE FROM {{fleets}} WHERE `fleet_id` = {$FleetRow['fleet_id']}");
     }
   }
 }
