@@ -103,8 +103,8 @@ function SYS_statCalculate(){
   $StatDate   = time();
 
   // Statistic rotation
-  doquery ( "DELETE FROM {{table}} WHERE `stat_code` = '2';" , 'statpoints');
-  doquery ( "UPDATE {{table}} SET `stat_code` = `stat_code` + '1';" , 'statpoints');
+  doquery ( "DELETE FROM {{statpoints}} WHERE `stat_code` = '2';");
+  doquery ( "UPDATE {{statpoints}} SET `stat_code` = `stat_code` + '1';");
 
   // Calculation of Fleet-In-Flight
   $UsrFleets = doquery("SELECT * FROM {{table}};", 'fleets');
