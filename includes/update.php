@@ -16,16 +16,12 @@ function sys_alterTable($table, $alters){
 
 include_once('init.inc');
 
-if (INSTALL != true) {
-  if ($InLogin != true) {
-    $Result        = CheckTheUser ( $IsUserChecked );
-    $IsUserChecked = $Result['state'];
-    $user          = $Result['record'];
+if ($InLogin != true) {
+  $user          = CheckTheUser();
 
-    if( $config->game_disable)
-      if ($user['authlevel'] < 1)
-        message ( stripslashes ( $config->game_disable_reason ), $config->game_name );
-  }
+  if( $config->game_disable)
+    if ($user['authlevel'] < 1)
+      message ( stripslashes ( $config->game_disable_reason ), $config->game_name );
 }
 
 if ( $user['authlevel'] < 3 ) return;

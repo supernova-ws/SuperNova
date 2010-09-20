@@ -10,7 +10,7 @@ ini_set('error_reporting', E_ALL ^ E_NOTICE);
 if($_SERVER['SERVER_NAME'] == 'localhost')
 {
   ini_set('display_errors', 1);
-  ini_set('error_reporting', E_ALL);
+//  ini_set('error_reporting', E_ALL);
 }
 else
 {
