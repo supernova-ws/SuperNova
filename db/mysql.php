@@ -81,8 +81,8 @@ function doquery($query, $table = "", $fetch = false){
 
   $numqueries++;
   $arr = debug_backtrace();
-  $file = end(explode('/',$arr[1]['file']));
-  $line = $arr[1]['line'];
+  $file = end(explode('/',$arr[0]['file']));
+  $line = $arr[0]['line'];
   $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>$table</th><th>$fetch</th></tr>");
 
   if($fetch){
@@ -92,4 +92,6 @@ function doquery($query, $table = "", $fetch = false){
     return $sqlquery;
   }
 }
+
+
 ?>

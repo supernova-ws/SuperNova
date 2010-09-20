@@ -1,9 +1,7 @@
 <?php
 include_once('../includes/init.inc');
 
-$Result        = CheckTheUser ( $IsUserChecked );
-$IsUserChecked = $Result['state'];
-$user          = $Result['record'];
+$user          = CheckTheUser();
 
 includeLang('admin');
 
