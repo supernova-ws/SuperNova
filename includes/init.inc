@@ -10,6 +10,7 @@ ini_set('error_reporting', E_ALL ^ E_NOTICE);
 if($_SERVER['SERVER_NAME'] == 'localhost')
 {
   ini_set('display_errors', 1);
+  ini_set('error_reporting', E_ALL);
 }
 else
 {
@@ -41,7 +42,7 @@ $phpbb_root_path = $ugamela_root_path;
 
 include_once("{$ugamela_root_path}includes/extensions.inc");
 
-include($ugamela_root_path . "includes/debug.class.{$phpEx}");
+include_once("{$ugamela_root_path}includes/debug.class.{$phpEx}");
 $debug = new debug();
 
 include_once("{$ugamela_root_path}includes/constants.{$phpEx}");

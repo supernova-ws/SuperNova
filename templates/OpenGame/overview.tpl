@@ -292,7 +292,7 @@
 <div id="admin_message"></div>
 
 <script type="text/javascript"><!--
-jQuery(document).ready(function() {
+jQuery(document).bind("ready", function() {
   // send requests
   jQuery.post("../scheduler.php", {rating: jQuery(this).html()}, function(xml) {
     // format result
