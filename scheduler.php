@@ -19,8 +19,9 @@ if($nextStatUpdate>$config->stats_lastUpdated)
   }
   else
   {
-    $msg = 'scheduler. Config->stats_lastUpdated = ' . date(DATE_TIME, $config->stats_lastUpdated) . ', nextStatUpdate = ' . date(DATE_TIME, $nextStatUpdate);
+    $msg = 'scheduler';
   };
+  $msg .= '. Config->stats_lastUpdated = ' . date(DATE_TIME, $config->stats_lastUpdated) . ', nextStatUpdate = ' . date(DATE_TIME, $nextStatUpdate);
   $debug->warning("Running stat updates: {$msg}", 'Stat update', 100);
 
   $totaltime = microtime(true);
