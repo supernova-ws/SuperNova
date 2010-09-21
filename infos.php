@@ -250,7 +250,7 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
   } elseif ($BuildID >= 106 && $BuildID <= 199) {
     // Laboratoire
     $PageTPL              = gettemplate('info_buildings_general');
-  } elseif ($BuildID >= 202 && $BuildID <= 216) {
+  } elseif ($BuildID >= 201 && $BuildID <= 216) {
     // Flotte
     $PageTPL              = gettemplate('info_buildings_fleet');
     $parse['element_typ'] = $lang['tech'][200];
