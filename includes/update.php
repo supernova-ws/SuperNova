@@ -191,7 +191,28 @@ switch(intval($config->db_version)){
     set_time_limit(30);
 
   case 12:
+    if(!$tables['planets']['supercargo'])
+      sys_alterTable('planets', "ADD `supercargo` bigint(11) NOT NULL DEFAULT '0' COMMENT 'Supercargo ship count'");
+
+    if(!$tables['alliance_requests'])
+    {
+      mysql_query("
+        CREATE TABLE `{$config->db_prefix}alliance_requests` (
+          `id_user` int(11) NOT NULL,
+          `id_ally` int(11) NOT NULL DEFAULT '0',
+          `request_text` text,
+          `request_time` int(11) NOT NULL DEFAULT '0',
+          `request_denied` tinyint(1) unsigned NOT NULL DEFAULT '0',
+          PRIMARY KEY (`id_user`,`id_ally`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+        ");
+    };
+
+    //$newVersion = 13;
+    set_time_limit(30);
    // +alliance_request
+
+  case 13:
 };
 print('done.<br>');
 
