@@ -61,7 +61,6 @@ function FlyingFleetHandler () {
 
   $fleetquery = doquery( $QryFleet );
   while ($CurrentFleet = mysql_fetch_array($fleetquery)) {
-    pdump($CurrentFleet);
     switch ($CurrentFleet["fleet_mission"]) {
       case MT_ATTACK:    MissionCaseAttack ( $CurrentFleet ); break;
       case MT_AKS:       MissionCaseAttack ( $CurrentFleet ); break;

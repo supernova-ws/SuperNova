@@ -177,11 +177,9 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser )
   // -------------------------------------------------------------------------------------------------------
   // Construction de la page du Chantier (car si j'arrive ici ... c'est que j'ai tout ce qu'il faut pour ...
   $TabIndex = 0;
-  pdump($sn_groups['fleet']);
   foreach($sn_groups['fleet'] as $Element)
   {
     $ElementName = $lang['tech'][$Element];
-    pdump($lang['tech'][$Element]);
     if (IsTechnologieAccessible($CurrentUser, $CurrentPlanet, $Element))
     {
       // On regarde si on peut en acheter au moins 1

@@ -108,7 +108,6 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
   $SubTemplate         = gettemplate('buildings_builds_row');
   $BuildingPage        = '';
   $caps = ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet);
-  //pdump($caps);
   foreach($lang['tech'] as $Element => $ElementName)
   {
     if (in_array($Element, $Allowed[$CurrentPlanet['planet_type']]))
