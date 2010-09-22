@@ -208,11 +208,11 @@ switch(intval($config->db_version)){
         ");
     };
 
-    //$newVersion = 13;
+    $newVersion = 13;
     set_time_limit(30);
-   // +alliance_request
 
   case 13:
+    set_time_limit(30);
 };
 print('done.<br>');
 
