@@ -438,7 +438,7 @@ if ( defined('INSIDE')) {
 
     201 => array(
       'name' => 'supercargo',
-      'require' => array(21 => 8, 117 => 5, 609 => 1),
+      'require' => array(21 => 8, 117 => 5, 607 => 1),
       'metal' => 20000,
       'crystal' => 10000,
       'deuterium' => 5000,
@@ -1158,7 +1158,7 @@ if ( defined('INSIDE')) {
     199 => array(  31 =>  12),
 
     // Flotte
-    201 => array(  21 =>   8, 117 =>   5, 609 =>   1),
+    201 => array(  21 =>   8, 117 =>   5, 607 =>   1),
     202 => array(  21 =>   2, 115 =>   2),
     203 => array(  21 =>   4, 115 =>   6),
     204 => array(  21 =>   1, 115 =>   1),
