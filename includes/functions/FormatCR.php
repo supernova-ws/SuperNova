@@ -17,7 +17,10 @@
     Rewrite and optimization by Gorlum for http://ogame.triolan.com.ua
   */
 
-function formatCR_Fleet(&$dataInc, $isAttacker, $isLastRound){
+function formatCR_Fleet(&$dataInc, $isAttacker, $isLastRound)
+{
+  global $lang;
+
   if ($isAttacker){
     $dataA = $dataInc['attackers'];
     $dataB = $dataInc['infoA'];
@@ -66,7 +69,8 @@ function formatCR_Fleet(&$dataInc, $isAttacker, $isLastRound){
     //And now the data columns "foreach" ship
     foreach( $data2[$strField] as $ship_id => $ship_count1){
       if ($ship_count1 > 0){
-        $ships1 .= "<th>[ship[".$ship_id."]]</th>";
+//        $ships1 .= "<th>[ship[".$ship_id."]]</th>";
+        $ships1 .= "<th>{$lang['tech'][$ship_id]}</th>";
         $count1 .= "<th>".$ship_count1."</th>";
 
         if (!$isLastRound) {
