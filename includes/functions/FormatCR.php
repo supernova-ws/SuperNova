@@ -109,6 +109,16 @@ function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_f
   $html = "";
   $bbc = "";
 
+  if (defined('BE_DEBUG'))
+  {
+    global $be_debug_array;
+
+    foreach($be_debug_array as $be_debug_line)
+    {
+      $html .= $be_debug_line;
+    }
+  }
+
   //And lets start the CR. And admin message like asking them to give the cr. Nope, well moving on give the time and date ect.
   $html .= "Флоты соперников встретились ".date("d-m-Y H:i:s")."<br /><br />";
 

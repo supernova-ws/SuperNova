@@ -90,7 +90,7 @@ function MissionCaseAttack ( $FleetRow) {
   );
 
   foreach($reslist['combat'] as $combatUnitID)
-    if (isset($resource[$combatUnitID]) && isset($TargetPlanet[$resource[$combatUnitID]]))
+    if ($TargetPlanet[$resource[$combatUnitID]] > 0)
       $defenseFleets[0]['def'][$combatUnitID] = $TargetPlanet[$resource[$combatUnitID]];
 
   $fleets = doquery('SELECT * FROM {{table}} WHERE `fleet_end_galaxy` = '. $FleetRow['fleet_end_galaxy'] .' AND `fleet_end_system` = '. $FleetRow['fleet_end_system'] .' AND `fleet_end_planet` = '. $FleetRow['fleet_end_planet'] . ' AND `fleet_end_type` = '. $FleetRow['fleet_end_type'] .' AND fleet_start_time<'.$time_now.' AND fleet_end_stay>='.$time_now,'fleets');
