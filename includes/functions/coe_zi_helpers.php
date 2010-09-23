@@ -1,7 +1,4 @@
 <?php
-
-define('BE_DEBUG', true);
-
 function BE_DEBUG_openTable()
 {
   if (!defined("BE_DEBUG")){
