@@ -26,10 +26,7 @@ if ($InLogin != true) {
 
 if ( $user['authlevel'] < 3 ) return;
 
-print('Random number: ');
-pr();
-
-print('Loading table info... ');
+$msg = 'Loading table info... ';
 $q = doquery('SHOW TABLES;');
 while($r = mysql_fetch_row($q)){
   $tableName = str_replace($config->db_prefix, "", $r[0]);
