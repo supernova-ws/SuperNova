@@ -9,6 +9,7 @@ ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
 if($_SERVER['SERVER_NAME'] == 'localhost')
 {
+  define('BE_DEBUG', true);
   ini_set('display_errors', 1);
 //  ini_set('error_reporting', E_ALL);
 }
@@ -84,6 +85,10 @@ unset($dbsettings);
 if($config->debug)
 {
   ini_set('display_errors', 1);
+  if(!defined('BE_DEBUG'))
+  {
+    define('BE_DEBUG', true);
+  }
 }
 
 $cache = new classCache($config->db_prefix);
