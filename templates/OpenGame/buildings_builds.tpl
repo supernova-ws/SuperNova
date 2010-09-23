@@ -18,7 +18,7 @@
            </span>
 
            <!-- IF production.LEVEL -->
-           <span style="position: absolute; top: 0px; left: 75%; width: 25%; height: 25%">
+           <span style="position: absolute; top: 0px; left: 85%; width: 15%; height: 15%">
              <a href="?cmd=destroy&building={production.ID}">
                <img src="images/r1.png" height="100%" width="100%" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}">
              </a>
