@@ -4,7 +4,7 @@ if(!defined('INIT'))
   include_once('init.inc');
 }
 
-function sys_alterTable($table, $alters)
+function sys_alter_table($table, $alters)
 {
   global $config;
 
@@ -35,13 +35,13 @@ while($row = mysql_fetch_row($query))
   $q1 = doquery("SHOW COLUMNS FROM {$row[0]};");
   while($r1 = mysql_fetch_assoc($q1))
   {
-    $tables[$tableName][$r1['Field']] = $r1;
+    $update_tables[$tableName][$r1['Field']] = $r1;
   }
 
   $q1 = doquery("SHOW INDEX FROM {$row[0]};");
   while($r1 = mysql_fetch_assoc($q1))
   {
-    $indexes[$tableName][$r1['Key_name']] .= "{$r1['Column_name']},";
+    $update_indexes[$tableName][$r1['Key_name']] .= "{$r1['Column_name']},";
   }
 }
 $msg .= "done.\r\nNow upgrading DB...";
@@ -50,7 +50,7 @@ $config->db_loadItem('db_version');
 switch(intval($config->db_version))
 {
   case 0:
-    if(!$tables['planets']['parent_planet'])
+    if(!$update_tables['planets']['parent_planet'])
       mysql_query(
         "ALTER TABLE {$config->db_prefix}planets
           ADD `parent_planet` bigint(11) unsigned DEFAULT '0',
@@ -63,7 +63,7 @@ switch(intval($config->db_version))
     set_time_limit(30);
 
   case 1:
-    if(!$tables['counter'])
+    if(!$update_tables['counter'])
     {
       mysql_query(
         "CREATE TABLE `{$config->db_prefix}counter` (
@@ -81,26 +81,26 @@ switch(intval($config->db_version))
     set_time_limit(30);
 
   case 2:
-    if($tables['lunas'])
+    if($update_tables['lunas'])
       mysql_query("DROP TABLE IF EXISTS {$config->db_prefix}lunas;");
     $newVersion = 3;
     set_time_limit(30);
 
   case 3:
-    if(!$tables['counter']['url'])
+    if(!$update_tables['counter']['url'])
       mysql_query("ALTER TABLE {$config->db_prefix}counter ADD `url` varchar(255) CHARACTER SET utf8 DEFAULT '';");
     $newVersion = 4;
     set_time_limit(30);
 
   case 4:
-    if(!$tables['planets']['debris_metal'])
+    if(!$update_tables['planets']['debris_metal'])
       mysql_query(
         "ALTER TABLE {$config->db_prefix}planets
            ADD `debris_metal` bigint(11) unsigned DEFAULT '0'
           ;");
     set_time_limit(30);
 
-    if(!$tables['planets']['debris_crystal'])
+    if(!$update_tables['planets']['debris_crystal'])
       mysql_query(
         "ALTER TABLE {$config->db_prefix}planets
            ADD `debris_crystal` bigint(11) unsigned DEFAULT '0'
@@ -129,8 +129,8 @@ switch(intval($config->db_version))
     set_time_limit(30);
 
   case 7:
-    if(!$indexes['fleets']['fleet_mess'])
-      sys_alterTable('fleets', array(
+    if(!$update_indexes['fleets']['fleet_mess'])
+      sys_alter_table('fleets', array(
         "ADD KEY `fleet_mess` (`fleet_mess`)",
         "ADD KEY `fleet_group` (`fleet_group`)"
       ));
@@ -138,11 +138,11 @@ switch(intval($config->db_version))
     set_time_limit(30);
 
   case 8:
-    if(!$tables['referrals']['dark_matter'])
-      sys_alterTable('referrals', "ADD `dark_matter` bigint(11) NOT NULL DEFAULT '0' COMMENT 'How much player have aquired Dark Matter'");
+    if(!$update_tables['referrals']['dark_matter'])
+      sys_alter_table('referrals', "ADD `dark_matter` bigint(11) NOT NULL DEFAULT '0' COMMENT 'How much player have aquired Dark Matter'");
 
-    if(!$indexes['referrals']['id_partner'])
-      sys_alterTable('referrals', "ADD KEY `id_partner` (`id_partner`)");
+    if(!$update_indexes['referrals']['id_partner'])
+      sys_alter_table('referrals', "ADD KEY `id_partner` (`id_partner`)");
 
     if(!$config->db_loadItem('rpg_bonus_divisor'))
       $config->db_saveItem('rpg_bonus_divisor', 10);
@@ -176,7 +176,7 @@ switch(intval($config->db_version))
     set_time_limit(30);
 
   case 11:
-    if($tables['users']['ataker'])
+    if($update_tables['users']['ataker'])
       mysql_query(
         "ALTER TABLE {$config->db_prefix}users
           DROP COLUMN `aktywnosc`,
@@ -192,10 +192,10 @@ switch(intval($config->db_version))
     set_time_limit(30);
 
   case 12:
-    if(!$tables['planets']['supercargo'])
-      sys_alterTable('planets', "ADD `supercargo` bigint(11) NOT NULL DEFAULT '0' COMMENT 'Supercargo ship count'");
+    if(!$update_tables['planets']['supercargo'])
+      sys_alter_table('planets', "ADD `supercargo` bigint(11) NOT NULL DEFAULT '0' COMMENT 'Supercargo ship count'");
 
-    if(!$tables['alliance_requests'])
+    if(!$update_tables['alliance_requests'])
     {
       mysql_query("
         CREATE TABLE `{$config->db_prefix}alliance_requests` (
@@ -213,6 +213,11 @@ switch(intval($config->db_version))
     set_time_limit(30);
 
   case 13:
+    mysql_query("DROP TABLE IF EXISTS `{$config->db_prefix}update`;");
+    $newVersion = 14;
+    set_time_limit(30);
+
+  case 14:
     set_time_limit(30);
 };
 $msg .= "done.\r\n";

@@ -1,13 +1,3 @@
-/*
-Navicat MySQL Data Transfer
-
-Source Database       : supernova
-
-Target Server Type    : MYSQL
-Target Server Version : 50137
-File Encoding         : 65001
-*/
-
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 -- Table structure for `sn_aks`
@@ -26,11 +16,7 @@ CREATE TABLE `sn_aks` (
   `eingeladen` varchar(50) DEFAULT NULL,
   `fleet_end_time` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=371 DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_aks
--- ----------------------------
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
 -- Table structure for `sn_alliance`
@@ -54,11 +40,7 @@ CREATE TABLE `sn_alliance` (
   `ally_members` int(11) NOT NULL DEFAULT '0',
   `ranklist` varchar(255) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_alliance
--- ----------------------------
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
 -- Table structure for `sn_alliance_requests`
@@ -72,10 +54,6 @@ CREATE TABLE `sn_alliance_requests` (
   `request_denied` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_user`,`id_ally`)
 ) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_alliance_requests
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_annonce`
@@ -93,11 +71,7 @@ CREATE TABLE `sn_annonce` (
   `cristals` bigint(11) NOT NULL DEFAULT '0',
   `deuts` bigint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_annonce
--- ----------------------------
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
 -- Table structure for `sn_announce`
@@ -109,11 +83,7 @@ CREATE TABLE `sn_announce` (
   `strAnnounce` text NOT NULL,
   PRIMARY KEY (`idAnnounce`),
   KEY `indTimeStamp` (`tsTimeStamp`)
-) ENGINE=MyISAM AUTO_INCREMENT=89 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_announce
--- ----------------------------
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for `sn_banned`
@@ -132,10 +102,6 @@ CREATE TABLE `sn_banned` (
 ) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
--- Records of sn_banned
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_buddy`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_buddy`;
@@ -146,11 +112,7 @@ CREATE TABLE `sn_buddy` (
   `active` tinyint(3) NOT NULL DEFAULT '0',
   `text` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_buddy
--- ----------------------------
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
 -- Table structure for `sn_chat`
@@ -164,11 +126,7 @@ CREATE TABLE `sn_chat` (
   `ally_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`messageid`),
   KEY `i_ally_idmess` (`ally_id`,`messageid`)
-) ENGINE=InnoDB AUTO_INCREMENT=6821 DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_chat
--- ----------------------------
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
 -- Table structure for `sn_config`
@@ -182,66 +140,20 @@ CREATE TABLE `sn_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
--- Records of sn_config
+-- Table structure for `sn_counter`
 -- ----------------------------
-INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '<tr><td align=center><script type=\"text/javascript\"><!--\r\ngoogle_ad_client = \"pub-1914310741599503\";\r\n/* oGame */\r\ngoogle_ad_slot = \"2544836773\";\r\ngoogle_ad_width = 125;\r\ngoogle_ad_height = 125;\r\n//-->\r\n</script>\r\n<script type=\"text/javascript\"\r\nsrc=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\r\n</script></td></tr>\r\n');
-INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '0');
-INSERT INTO `sn_config` VALUES ('BannerOverviewFrame', '1');
-INSERT INTO `sn_config` VALUES ('BannerURL', '/scripts/createbanner.php');
-INSERT INTO `sn_config` VALUES ('banner_source_post', '../images/bann.png');
-INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
-INSERT INTO `sn_config` VALUES ('chat_admin_msgFormat', '[c=purple]$2[/c]');
-INSERT INTO `sn_config` VALUES ('game_disable_reason', 'Извините, производится техобслуживание.');
-INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'supernova0');
-INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
-INSERT INTO `sn_config` VALUES ('dbVersion', '1');
-INSERT INTO `sn_config` VALUES ('debug', '0');
-INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
-INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
-INSERT INTO `sn_config` VALUES ('energy_basic_income', '0');
-INSERT INTO `sn_config` VALUES ('Fleet_Cdr', '30');
-INSERT INTO `sn_config` VALUES ('fleet_speed', '2500');
-INSERT INTO `sn_config` VALUES ('ForumUserbarFrame', '1');
-INSERT INTO `sn_config` VALUES ('forum_url', '/forum');
-INSERT INTO `sn_config` VALUES ('game_date_withTime', 'd.m.Y h:i:s');
-INSERT INTO `sn_config` VALUES ('game_disable', '1');
-INSERT INTO `sn_config` VALUES ('game_maxGalaxy', '5');
-INSERT INTO `sn_config` VALUES ('game_maxPlanet', '15');
-INSERT INTO `sn_config` VALUES ('game_maxSystem', '199');
-INSERT INTO `sn_config` VALUES ('game_mode', '0');
-INSERT INTO `sn_config` VALUES ('game_name', 'SuperNova.WS');
-INSERT INTO `sn_config` VALUES ('game_speed', '2500');
-INSERT INTO `sn_config` VALUES ('initial_fields', '163');
-INSERT INTO `sn_config` VALUES ('int_banner_background', 'images/banner.png');
-INSERT INTO `sn_config` VALUES ('int_banner_fontInfo', 'terminator.ttf');
-INSERT INTO `sn_config` VALUES ('int_banner_fontRaids', 'klmnfp2005.ttf');
-INSERT INTO `sn_config` VALUES ('int_banner_fontUniverse', 'cristal.ttf');
-INSERT INTO `sn_config` VALUES ('int_banner_showInOverview', '1');
-INSERT INTO `sn_config` VALUES ('int_banner_URL', '/banner.php?type=banner');
-INSERT INTO `sn_config` VALUES ('int_userbar_background', 'images/userbar.png');
-INSERT INTO `sn_config` VALUES ('int_userbar_font', 'arialbd.ttf');
-INSERT INTO `sn_config` VALUES ('int_userbar_showInOverview', '1');
-INSERT INTO `sn_config` VALUES ('int_userbar_URL', '/banner.php?type=userbar');
-INSERT INTO `sn_config` VALUES ('LastSettedGalaxyPos', '1');
-INSERT INTO `sn_config` VALUES ('LastSettedPlanetPos', '1');
-INSERT INTO `sn_config` VALUES ('LastSettedSystemPos', '1');
-INSERT INTO `sn_config` VALUES ('metal_basic_income', '40');
-INSERT INTO `sn_config` VALUES ('noobprotection', '1');
-INSERT INTO `sn_config` VALUES ('noobprotectionmulti', '5');
-INSERT INTO `sn_config` VALUES ('noobprotectiontime', '5000');
-INSERT INTO `sn_config` VALUES ('OverviewBanner', '0');
-INSERT INTO `sn_config` VALUES ('OverviewExternChat', '0');
-INSERT INTO `sn_config` VALUES ('OverviewExternChatCmd', '');
-INSERT INTO `sn_config` VALUES ('OverviewNewsFrame', '1');
-INSERT INTO `sn_config` VALUES ('OverviewNewsText', '');
-INSERT INTO `sn_config` VALUES ('resource_multiplier', '1');
-INSERT INTO `sn_config` VALUES ('urlaubs_modus_erz', '0');
-INSERT INTO `sn_config` VALUES ('UserbarOverviewFrame', '1');
-INSERT INTO `sn_config` VALUES ('UserbarURL', '/scripts/userbar.php');
-INSERT INTO `sn_config` VALUES ('userbar_source', '../images/userbar.png');
-INSERT INTO `sn_config` VALUES ('users_amount', '1');
-INSERT INTO `sn_config` VALUES ('stats_lastUpdated', '0');
-INSERT INTO `sn_config` VALUES ('stats_schedule', 'd@04:00:00');
+DROP TABLE IF EXISTS `sn_counter`;
+CREATE TABLE `sn_counter` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `time` int(11) NOT NULL DEFAULT '0',
+  `page` varchar(255) DEFAULT '0',
+  `user_id` bigint(11) DEFAULT '0',
+  `ip` varchar(15) DEFAULT NULL,
+  `url` varchar(255) DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `i_user_id` (`user_id`),
+  KEY `i_ip` (`ip`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for `sn_errors`
@@ -257,10 +169,6 @@ CREATE TABLE `sn_errors` (
   `error_backtrace` text,
   PRIMARY KEY (`error_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_errors
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_fleets`
@@ -298,12 +206,10 @@ CREATE TABLE `sn_fleets` (
   KEY `fllet_end_time` (`fleet_end_time`),
   KEY `fleet_owner` (`fleet_owner`),
   KEY `i_fl_targ_owner` (`fleet_target_owner`),
-  KEY `fleet_both` (`fleet_start_galaxy`,`fleet_start_system`,`fleet_start_planet`,`fleet_start_type`,`fleet_end_galaxy`,`fleet_end_system`,`fleet_end_planet`)
-) ENGINE=InnoDB AUTO_INCREMENT=11220 DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_fleets
--- ----------------------------
+  KEY `fleet_both` (`fleet_start_galaxy`,`fleet_start_system`,`fleet_start_planet`,`fleet_start_type`,`fleet_end_galaxy`,`fleet_end_system`,`fleet_end_planet`),
+  KEY `fleet_mess` (`fleet_mess`),
+  KEY `fleet_group` (`fleet_group`)
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
 -- Table structure for `sn_fleet_log`
@@ -348,35 +254,6 @@ CREATE TABLE `sn_fleet_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
--- Records of sn_fleet_log
--- ----------------------------
-
--- ----------------------------
--- Table structure for `sn_galaxy`
--- ----------------------------
-DROP TABLE IF EXISTS `sn_galaxy`;
-CREATE TABLE `sn_galaxy` (
-  `galaxy` int(2) NOT NULL DEFAULT '0',
-  `system` int(3) NOT NULL DEFAULT '0',
-  `planet` int(2) NOT NULL DEFAULT '0',
-  `id_planet` int(11) NOT NULL DEFAULT '0',
-  `metal` bigint(11) NOT NULL DEFAULT '0',
-  `crystal` bigint(11) NOT NULL DEFAULT '0',
-  `id_luna` int(11) NOT NULL DEFAULT '0',
-  `luna` int(2) NOT NULL DEFAULT '0',
-  KEY `galaxy` (`galaxy`),
-  KEY `system` (`system`),
-  KEY `planet` (`planet`),
-  KEY `GSP` (`galaxy`,`system`,`planet`),
-  KEY `i_id_planet` (`id_planet`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_galaxy
--- ----------------------------
-INSERT INTO `sn_galaxy` VALUES ('1', '1', '1', '1', '0', '0', '0', '0');
-
--- ----------------------------
 -- Table structure for `sn_iraks`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_iraks`;
@@ -397,10 +274,6 @@ CREATE TABLE `sn_iraks` (
 ) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
--- Records of sn_iraks
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_logs`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_logs`;
@@ -413,36 +286,7 @@ CREATE TABLE `sn_logs` (
   `log_text` text,
   `log_page` text,
   PRIMARY KEY (`log_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=366 DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_logs
--- ----------------------------
-
--- ----------------------------
--- Table structure for `sn_lunas`
--- ----------------------------
-DROP TABLE IF EXISTS `sn_lunas`;
-CREATE TABLE `sn_lunas` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `id_luna` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(11) NOT NULL DEFAULT 'Lune',
-  `image` varchar(11) NOT NULL DEFAULT 'mond',
-  `destruyed` int(11) NOT NULL DEFAULT '0',
-  `id_owner` int(11) DEFAULT NULL,
-  `galaxy` int(11) DEFAULT NULL,
-  `system` int(11) DEFAULT NULL,
-  `lunapos` int(11) DEFAULT NULL,
-  `temp_min` int(11) NOT NULL DEFAULT '0',
-  `temp_max` int(11) NOT NULL DEFAULT '0',
-  `diameter` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `IGSP` (`id_owner`,`galaxy`,`system`,`lunapos`)
-) ENGINE=InnoDB AUTO_INCREMENT=350 DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_lunas
--- ----------------------------
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
 -- Table structure for `sn_messages`
@@ -461,11 +305,7 @@ CREATE TABLE `sn_messages` (
   KEY `owner` (`message_owner`),
   KEY `owner_type` (`message_owner`,`message_type`),
   KEY `sender_type` (`message_sender`,`message_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=23906 DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_messages
--- ----------------------------
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
 -- Table structure for `sn_notes`
@@ -479,11 +319,7 @@ CREATE TABLE `sn_notes` (
   `title` varchar(32) DEFAULT NULL,
   `text` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_notes
--- ----------------------------
+) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
 -- Table structure for `sn_planets`
@@ -581,6 +417,7 @@ CREATE TABLE `sn_planets` (
   `parent_planet` bigint(11) unsigned DEFAULT '0',
   `debris_metal` bigint(11) unsigned DEFAULT '0',
   `debris_crystal` bigint(11) unsigned DEFAULT '0',
+  `supercargo` bigint(11) NOT NULL DEFAULT '0' COMMENT 'Supercargo ship count',
   PRIMARY KEY (`id`),
   KEY `owner_type` (`id_owner`,`planet_type`),
   KEY `i_metal` (`metal`),
@@ -625,12 +462,12 @@ CREATE TABLE `sn_planets` (
   KEY `i_nano` (`nano`,`id_level`),
   KEY `i_last_update` (`last_update`),
   KEY `GSPT` (`galaxy`,`system`,`planet`,`planet_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=22388 DEFAULT CHARSET=cp1251;
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
 -- Records of sn_planets
 -- ----------------------------
-INSERT INTO `sn_planets` VALUES ('1', 'Планета', '1', '0', '1', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '', '0', 'wasserplanet05', '12750', '0', '0', '0', '163', '-58', '-18', '0', '40', '0', '0', '20', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '10', '10', '10', '10', '0', '10', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `sn_planets` VALUES ('1', 'Admin Планета', '1', '0', '1', '1', '1', '0', '1', '0', '0', '0', '0', '0', '0', '', '0', 'wasserplanet05', '12750', '0', '0', '0', '163', '-58', '-18', '0', '40', '0', '0', '20', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '10', '10', '10', '10', '0', '10', '0', '0', '0', '0', '0', '0', '0', '0');
 
 -- ----------------------------
 -- Table structure for `sn_referrals`
@@ -639,12 +476,10 @@ DROP TABLE IF EXISTS `sn_referrals`;
 CREATE TABLE `sn_referrals` (
   `id` bigint(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Referral ID (from table USERS)',
   `id_partner` bigint(11) unsigned NOT NULL COMMENT 'Partner with whom refferal affilates (from table USERS)',
-  PRIMARY KEY (`id`)
+  `dark_matter` bigint(11) NOT NULL DEFAULT '0' COMMENT 'How much player have aquired Dark Matter',
+  PRIMARY KEY (`id`),
+  KEY `id_partner` (`id_partner`)
 ) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_referrals
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_rw`
@@ -663,10 +498,6 @@ CREATE TABLE `sn_rw` (
   KEY `id_owner2` (`id_owner2`,`rid`),
   KEY `time` (`time`)
 ) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_rw
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_statpoints`
@@ -705,22 +536,6 @@ CREATE TABLE `sn_statpoints` (
   KEY `TOTAL` (`total_points`),
   KEY `i_stats_owner` (`id_owner`,`stat_type`,`stat_code`,`tech_rank`,`build_rank`,`defs_rank`,`fleet_rank`,`total_rank`)
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-
--- ----------------------------
--- Records of sn_statpoints
--- ----------------------------
-
--- ----------------------------
--- Table structure for `sn_update`
--- ----------------------------
-DROP TABLE IF EXISTS `sn_update`;
-CREATE TABLE `sn_update` (
-  `lastupdate` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of sn_update
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_users`
@@ -828,20 +643,14 @@ CREATE TABLE `sn_users` (
   `bana` int(11) DEFAULT NULL,
   `urlaubs_modus_time` int(11) NOT NULL DEFAULT '0',
   `deltime` int(11) NOT NULL DEFAULT '0',
-  `aktywnosc` varchar(255) NOT NULL DEFAULT '',
-  `kod_aktywujacy` varchar(255) NOT NULL DEFAULT '',
-  `kiler` varchar(255) NOT NULL DEFAULT '',
-  `time_aktyw` int(11) NOT NULL DEFAULT '0',
   `deleteme` int(11) NOT NULL DEFAULT '0',
-  `ataker` int(11) NOT NULL DEFAULT '0',
-  `atakin` int(11) NOT NULL DEFAULT '0',
   `banaday` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `i_username` (`username`),
   KEY `i_ally_online` (`ally_id`,`onlinetime`),
   KEY `onlinetime` (`onlinetime`),
   KEY `i_register_time` (`register_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=6058 DEFAULT CHARSET=cp1251;
+) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
 
 -- ----------------------------
 -- Records of sn_users
