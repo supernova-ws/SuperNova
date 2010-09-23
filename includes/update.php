@@ -1,53 +1,54 @@
 <?php
-function sys_alterTable($table, $alters){
+if(!defined('INIT'))
+{
+  include_once('init.inc');
+}
+
+function sys_alterTable($table, $alters)
+{
   global $config;
 
   if(!is_array($alters))
+  {
     $alters = array($alters);
+  }
 
   $qry = "ALTER TABLE {$config->db_prefix}{$table}";
   foreach($alters as $alteration)
+  {
     if($alteration)
-      $qry .= ' ' . $alteration . ',';
+    {
+      $qry .= " {$alteration},";
+    }
+  }
   $qry = substr($qry, 0, -1) . ';';
 
   return mysql_query($qry);
 }
 
-include_once('init.inc');
+$msg = 'Loading table info... ';
+$query = doquery('SHOW TABLES;');
+while($row = mysql_fetch_row($query))
+{
+  $tableName = str_replace($config->db_prefix, '', $row[0]);
 
-if ($InLogin != true) {
-  $user          = CheckTheUser();
-
-  if( $config->game_disable)
-    if ($user['authlevel'] < 1)
-      message ( stripslashes ( $config->game_disable_reason ), $config->game_name );
-}
-
-if ( $user['authlevel'] < 3 ) return;
-
-print('Random number: ');
-pr();
-
-print('Loading table info... ');
-$q = doquery('SHOW TABLES;');
-while($r = mysql_fetch_row($q)){
-  $tableName = str_replace($config->db_prefix, "", $r[0]);
-
-  $q1 = doquery("SHOW COLUMNS FROM {$r[0]};");
-  while($r1 = mysql_fetch_assoc($q1)){
+  $q1 = doquery("SHOW COLUMNS FROM {$row[0]};");
+  while($r1 = mysql_fetch_assoc($q1))
+  {
     $tables[$tableName][$r1['Field']] = $r1;
   }
 
-  $q1 = doquery("SHOW INDEX FROM {$r[0]};");
-  while($r1 = mysql_fetch_assoc($q1)){
-    $indexes[$tableName][$r1['Key_name']] .= $r1['Column_name'] . ',';
+  $q1 = doquery("SHOW INDEX FROM {$row[0]};");
+  while($r1 = mysql_fetch_assoc($q1))
+  {
+    $indexes[$tableName][$r1['Key_name']] .= "{$r1['Column_name']},";
   }
 }
-print('done.<br>Now upgrading DB...');
+$msg .= "done.\r\nNow upgrading DB...";
 
 $config->db_loadItem('db_version');
-switch(intval($config->db_version)){
+switch(intval($config->db_version))
+{
   case 0:
     if(!$tables['planets']['parent_planet'])
       mysql_query(
@@ -214,15 +215,30 @@ switch(intval($config->db_version)){
   case 13:
     set_time_limit(30);
 };
-print('done.<br>');
+$msg .= "done.\r\n";
 
 if($newVersion)
 {
   $config->db_saveItem('db_version', $newVersion);
-  print("DB version is now {$newVersion}");
+  $msg .= "DB version is now {$newVersion}";
 }
 else
 {
-  print("DB version didn't changed from {$config->db_version}");
+  $msg .= "DB version didn't changed from {$config->db_version}";
+}
+
+$debug->warning($msg, 'Database Update', 103);
+
+if ($InLogin != true) {
+  $user          = CheckTheUser();
+
+  if( $config->game_disable)
+    if ($user['authlevel'] < 1)
+      message ( stripslashes ( $config->game_disable_reason ), $config->game_name );
+}
+
+if ( $user['authlevel'] >= 3 )
+{
+  print(sys_bbcodeParse($msg));
 }
 ?>

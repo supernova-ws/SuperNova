@@ -4,6 +4,22 @@ if(defined('INIT'))
   return;
 }
 
+function sys_refresh_tablelist()
+{
+  global $cache, $config;
+
+  $query = doquery('SHOW TABLES;');
+
+  while ( $row = mysql_fetch_assoc($query) )
+  {
+    foreach($row as $row)
+    {
+      $tl[] = str_replace($config->db_prefix, '', $row);
+    }
+  }
+  $cache->tables = $tl;
+}
+
 set_magic_quotes_runtime(0);
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
@@ -50,21 +66,21 @@ include_once("{$ugamela_root_path}includes/constants.{$phpEx}");
 include_once("{$ugamela_root_path}includes/functions.{$phpEx}");
 include_once("{$ugamela_root_path}includes/unlocalised.{$phpEx}");
 
-$dir = opendir($ugamela_root_path . 'includes/functions');
+$dir = opendir("{$ugamela_root_path}includes/functions");
 while (($file = readdir($dir)) !== false)
 {
   $extension = '.' . substr($file, -3);
-  if ($extension == ".$phpEx")
+  if ($extension == ".{$phpEx}")
   {
     require_once "{$ugamela_root_path}includes/functions/{$file}";
   }
 }
 
-$dir = opendir($ugamela_root_path . 'includes/classes');
+$dir = opendir("{$ugamela_root_path}includes/classes");
 while (($file = readdir($dir)) !== false)
 {
   $extension = '.' . substr($file, -3);
-  if ($extension == ".$phpEx"){
+  if ($extension == ".{$phpEx}"){
     require_once "{$ugamela_root_path}includes/classes/{$file}";
   }
 }
@@ -77,7 +93,7 @@ includeLang ('system');
 includeLang ('tech');
 
 // Initializing global "config" object
-include_once($ugamela_root_path . "config.{$phpEx}");
+include_once("{$ugamela_root_path}config.{$phpEx}");
 $config = new classConfig($dbsettings['prefix']);
 $config->db_prefix = $dbsettings['prefix'];
 unset($dbsettings);
@@ -94,15 +110,25 @@ if($config->debug)
 $cache = new classCache($config->db_prefix);
 if(!isset($cache->tables))
 {
-  $query = doquery('SHOW TABLES;');
+  sys_refresh_tablelist();
+}
 
-  while ( $row = mysql_fetch_assoc($query) )
+$update_file = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.{$phpEx}";
+$flag_file   = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.last";
+
+if(file_exists($update_file))
+{
+  if(filemtime($update_file) != filemtime($flag_file))
   {
-    foreach($row as $row)
+    require_once($update_file);
+    sys_refresh_tablelist();
+
+    if(!file_exists($flag_file))
     {
-      $tl[] = str_replace($config->db_prefix, '', $row);
+      fclose(fopen($flag_file, 'w'));
     }
+
+    touch($flag_file, filemtime($update_file));
   }
-  $cache->tables = $tl;
 }
 ?>

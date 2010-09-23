@@ -124,7 +124,7 @@ class debug
   }
 }
 
-// Copyright (c) 2009 Gorlum for oGame.Triolan.com.ua
+// Copyright (c) 2009-2010 Gorlum for http://supernova.ws
 // Dump variables nicer then var_dump()
 
 function dump($value,$varname = "",$level=0,$dumper = "")
