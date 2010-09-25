@@ -1,2 +1,7 @@
 User-agent: *
+Allow: /reg.php
+Disallow: /
+
+User-agent: Yandex
+Allow: /reg.php
 Disallow: /
