@@ -75,7 +75,7 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
 
   $page .= parsetemplate(gettemplate('message_body'), $parse);
 
-  display ($page, $title, $show_header, (($dest != "") ? "<meta http-equiv=\"refresh\" content=\"$time;URL=javascript:self.location='$dest';\">" : ""), false);
+  display ($page, $title, $show_header, (($dest != "") ? "<meta http-equiv=\"refresh\" content=\"{$time};url={$dest}\">" : ""), false);
 }
 
 function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
@@ -154,35 +154,46 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
 // $topnav    -> Affichage des ressources ? oui ou non ??
 // $metatags  -> S'il y a quelques actions particulieres a faire ...
 // $AdminPage -> Si on est dans la section admin ... faut le dire ...
-function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true) {
+function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true)
+{
   global $link, $debug, $user, $planetrow, $dpath, $IsUserChecked, $time_now, $config;
 
-  if (!$AdminPage) {
-    $AdminPage = 0;
-  } else {
-    $AdminPage = $user['authlevel'];
+  if(!$user)
+  {
+    $isDisplayMenu = false;
+    $topnav = false;
   }
+
+  $AdminPage = $AdminPage ? $user['authlevel'] : 0;
+
   $DisplayPage  = StdHeader ($title, $metatags, $AdminPage);
 
   if ($isDisplayMenu && $IsUserChecked){ //
-    $DisplayPage .= "<div style=\"float:left; width: 190px; text-align: center;\">";
+    $DisplayPage .= '<div style="float:left; width: 190px; text-align: center;">';
     $DisplayPage .= ShowLeftMenu ( $AdminPage );
-    $DisplayPage .= "</div>"; // float: left;
+    $DisplayPage .= '</div>';
+    $DisplayPage .= '<div id="page_body" style="margin-left: 190px; width: auto;">';
   }
+  else
+  {
+    $DisplayPage .= '<div>';
+  }
+  $DisplayPage .= '<center>';
 
-  $DisplayPage .= '<div id="page_body" style="margin-left: 190px; width: auto;"><center>';
+  echo $DisplayPage;
 
   if ($topnav && $IsUserChecked) {
     if ($user['db_deaktjava'] == 1) {
       $urlaub_del_time = $user['deltime'];
-      $del_datum = date("d.m.Y", $urlaub_del_time);
-      $del_uhrzeit = date("H:i:s", $urlaub_del_time);
-      //$DisplayPage .= "Vous êtes en del user!<br>Le mode del dure jusque $del_datum $del_uhrzeit<br>  Ce n'est qu'après cette période que vous pouvez changer vos options.";
+      $del_datum = date('d.m.Y', $urlaub_del_time);
+      $del_uhrzeit = date('H:i:s', $urlaub_del_time);
     }
     $TopNav = ShowTopNavigationBar( $user, $planetrow );
   }
-  echo $DisplayPage;
 
+  displayP($TopNav);
+  displayP($page);
+/*
   if(is_object($TopNav))
     displayP($TopNav);
   else
@@ -192,18 +203,25 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
     displayP($page);
   else
     echo $page;
+*/
 
   // Affichage du Debug si necessaire
-  if ($user['authlevel'] == 1 || $user['authlevel'] == 3) {
-    if ($config->debug) $debug->echo_log();
+  if ($user['authlevel'] == 3)
+  {
+    if ($config->debug)
+    {
+      $debug->echo_log();
+    }
   }
 
   $std_footer = StdFooter();
+  displayP($std_footer);
+/*
   if(is_object($std_footer))
     displayP($std_footer);
   else
     echo $std_footer;
-
+*/
   sys_logHit();
 
   if (isset($link))

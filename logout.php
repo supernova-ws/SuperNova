@@ -14,11 +14,13 @@ $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.'.$phpEx);
 
-  includeLang('logout');
+includeLang('login');
 
-  setcookie($config->COOKIE_NAME, "", time()-100000, "/", "", 0);
+setcookie($config->COOKIE_NAME, "", time()-100000, "/", "", 0);
 
-  message ( $lang['see_you'], $lang['session_closed'], "login.".$phpEx );
+unset($user);
+
+message ( $lang['log_see_you'], $lang['log_session_closed'], "login.{$phpEx}", 5, false );
 
 // -----------------------------------------------------------------------------------------------------------
 // History version

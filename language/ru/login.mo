@@ -34,4 +34,7 @@ $lang['log_servername'] = 'OGame Triolan';
 $lang['vacation_mode'] = 'Вы в отпуске<br> отключить режим отпуска можно через ';
 $lang['hours'] = ' часов';
 $lang['vacations'] = 'Режим отпуска';
+
+$lang['log_see_you'] = 'Надеемся вас снова увидеть на просторах нашей Вселенной. Удачи!<br><a href="login.php">Перейти на страницу входа в игру</a>';
+$lang['log_session_closed'] = "Сессия закрыта.";
 ?>

@@ -14,7 +14,7 @@ function CheckCookies ()
 {
   global $lang, $config, $ugamela_root_path, $phpEx, $time_now;
 
-  include($ugamela_root_path . 'config.' . $phpEx);
+  include("{$ugamela_root_path}config.{$phpEx}");
 
   if (isset($_COOKIE[$config->COOKIE_NAME]))
   {
