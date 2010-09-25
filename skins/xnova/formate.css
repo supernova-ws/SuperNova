@@ -38,10 +38,11 @@ body
   margin-top           : 1px;
   margin-left          : 1px;
   background-color     : #040e1e;
+  background-color     : #000000;
   background-image     :  url(img/background2.jpg);
   background-attachment: fixed;
   background-repeat    : no-repeat;
-  background-position  : top left;
+  background-position  : top;
   scrollbar-arrow-color: #FFFFFF;
   scrollbar-base-color: #344566;
   scrollbar-track-color: #344566;

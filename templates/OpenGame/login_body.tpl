@@ -5,7 +5,7 @@
 }
 
 body {
-    background-color:#000000;
+    background-color:#0a2624;
     background-image: url(../images/tlo.jpg);
     background-repeat: no-repeat;
     text-align: center;
