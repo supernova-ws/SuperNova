@@ -17,7 +17,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
 {
   $template = gettemplate('buildings_builds', true);
 
-  global $ProdGrid,$lang, $resource, $reslist, $phpEx, $dpath, $_GET, $config;
+  global $sn_data, $lang, $resource, $reslist, $phpEx, $dpath, $_GET, $config;
 
   $GET_cmd      = SYS_mysqlSmartEscape($_GET['cmd']);
   $GET_building = intval($_GET['building']);
@@ -135,8 +135,8 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
         $CurrentBuildtLvl     = $BuildingLevel;
         $BuildLevel           = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
 
-        $Prod[3] = (floor(eval($ProdGrid[$Element]['formule']['deuterium']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-        $Prod[4] = (floor(eval($ProdGrid[$Element]['formule']['energy'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
+        $Prod[3] = (floor(eval($sn_data[$Element]['deuterium_perhour']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
+        $Prod[4] = (floor(eval($sn_data[$Element]['energy_perhour'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
 
         if ($Element != 12)
         {
@@ -149,8 +149,8 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
 
         $BuildLevel++;
 
-        $Prod[3] = (floor(eval($ProdGrid[$Element]['formule']['deuterium']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-        $Prod[4] = (floor(eval($ProdGrid[$Element]['formule']['energy'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
+        $Prod[3] = (floor(eval($sn_data[$Element]['deuterium_perhour']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
+        $Prod[4] = (floor(eval($sn_data[$Element]['energy_perhour'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
 
         if ($Element != 12)
         {

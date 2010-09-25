@@ -132,7 +132,7 @@ $template->assign_block_vars('production', array(
 
 foreach($reslist['prod'] as $ProdID)
 {
- if ($planetrow[$resource[$ProdID]] > 0 && isset($ProdGrid[$ProdID]))
+ if ($planetrow[$resource[$ProdID]] > 0 && isset($sn_data[$ProdID]))
  {
    $template->assign_block_vars('production', array(
      'ID'             => $ProdID,
