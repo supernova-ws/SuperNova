@@ -116,7 +116,7 @@ form
 --></style>
 
 <div id="log_main">
-  <div id="log_title">{L_sys_supernova}: {L_sys_universe} "{log_servername}"</div>
+  <div id="log_title">{L_sys_supernova}: {L_sys_universe} "{C_game_name}"</div>
   <div id="log_description">{L_log_desc}</div>
 
   <div id="log_register" onclick="document.location.href='./reg.php{referral}';">
@@ -130,11 +130,11 @@ form
   <form action="login.php" method="post">
     <div id="log_form">
       <div class="log_input_wrapper">
-        {User_name}<br>
+        {L_User_name}<br>
         <input name="username" type="text" value="" class="log_input" />
       </div>
       <div class="log_input_wrapper">
-        {Password}<br>
+        {L_Password}<br>
         <input name="password" type="password" value="" class="log_input" /> 
       </div><br>
       <div class="log_input_wrapper">
@@ -148,6 +148,7 @@ form
   </form>
 
   <div id="log_menu">
+    <a href="reg.php{referral}">{L_log_reg}</a> ::
     <a href="{C_rules_url}">{L_log_rules}</a> ::
 <!--    <a href="faq.php">{log_faq}</a> ::-->
     <a href="stat.php">{log_stat_menu}</a> ::

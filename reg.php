@@ -17,7 +17,7 @@ $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
-includeLang('reg');
+includeLang('login');
 
 $wylosuj = rand(100000,9000000);
 $kod = md5($wylosuj);
@@ -275,7 +275,7 @@ if ($_POST) {
     $parse['referral'] = "?id_ref=$id_ref";
   $parse['servername'] = $config->game_name;
   $parse['forum_url']  = $config->forum_url;
-  display(parsetemplate(gettemplate('registry_form'), $parse), $lang['registry'], false, '', false, false);
+  display(parsetemplate(gettemplate('registry_form', true), $parse), $lang['registry'], false, '', false, false);
 }
 
 // -----------------------------------------------------------------------------------------------------------
