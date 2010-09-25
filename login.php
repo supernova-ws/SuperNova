@@ -119,7 +119,7 @@ if($id_ref)
   $parse['referral'] = "?id_ref=$id_ref";
 }
 
-$page = parsetemplate(gettemplate('login_body'), $parse);
+$page = parsetemplate(gettemplate('login_body', true), $parse);
 display($page, $lang['Login'], false, '', false, false);
 
 // -----------------------------------------------------------------------------------------------------------
