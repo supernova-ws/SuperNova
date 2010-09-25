@@ -218,6 +218,12 @@ switch(intval($config->db_version))
     set_time_limit(30);
 
   case 14:
+    if(!$config->db_loadItem('rules_url'))
+      $config->db_saveItem('rules_url', 'http://forum.supernova.ws/viewtopic.php?f=3&t=974');
+    // $newVersion = 15;
+    set_time_limit(30);
+
+  case 15:
     set_time_limit(30);
 };
 $msg .= "done.\r\n";

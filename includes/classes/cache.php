@@ -454,6 +454,7 @@ class classConfig extends classPersistent
     'Fleet_Cdr'              => 30,
     'fleet_speed'            => 2500,
     'forum_url'              => '/forum/',
+    'rules_url'              => '/rules.txt',
     'initial_fields'         => 163,
     'LastSettedGalaxyPos'    => 0,
     'LastSettedPlanetPos'    => 0,

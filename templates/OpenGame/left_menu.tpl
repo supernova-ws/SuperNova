@@ -107,7 +107,7 @@ td.lm_para {
   <tr><td align="center"><a href="http://games.triolan.ua" target="_blank"><img border="0" src="/images/banners/bannergtu.gif" alt="Games @ Triolan.UA"></font></a></td></tr>
 
   <tr><td class="lm_para">{m_h_rules}</td></tr>
-  <tr><td><a href="http://forum.supernova.ws/viewtopic.php?f=3&t=974">Правила игры</a></td></tr>
+  <tr><td><a href="{C_rules_url}">Правила игры</a></td></tr>
 <!--  <tr><td title="{m_faq_hint}"><a href="http://forum.supernova.ws/phpBB3/viewtopic.php?f=3&t=333">{m_faq}</a></td></tr> -->
 <!--  <tr><td><a href="faq.php">{m_faq}</a></td></tr> -->
   <tr><td><a href="announce.php">{adm_announce}</a></td></tr>

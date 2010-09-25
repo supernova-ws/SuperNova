@@ -215,6 +215,10 @@ $lang['sys_planet_type_sh'] = array(
 
 $lang['sys_capacity'] 			= 'Грузоподъёмность';
 
+$lang['sys_supernova'] 			= 'Сверхновая';
+$lang['sys_server'] 			= 'Сервер';
+
+
 // Resource page
 $lang['res_planet_production'] = 'Производство ресурсов на планете';
 $lang['res_basic_income'] = 'Естесственное производство';
