@@ -74,17 +74,17 @@ function BuildJumpableMoonCombo ( $CurrentUser, $CurrentPlanet ) {
 // Tient compte aussi du multiplicateur de ressources
 //
 function ShowProductionTable ($CurrentUser, $CurrentPlanet, $BuildID, $Template) {
-  global $ProdGrid, $sn_data, $config;
+  global $sn_data, $config;
 
   $BuildLevelFactor = $CurrentPlanet[ $sn_data[$BuildID]['name']."_porcent" ];
   $BuildTemp        = $CurrentPlanet[ 'temp_max' ];
   $CurrentBuildtLvl = $CurrentPlanet[ $sn_data[$BuildID]['name'] ];
 
   $BuildLevel       = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
-  $Prod[1]          = (floor(eval($ProdGrid[$BuildID]['formule']['metal'])     * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-  $Prod[2]          = (floor(eval($ProdGrid[$BuildID]['formule']['crystal'])   * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-  $Prod[3]          = (floor(eval($ProdGrid[$BuildID]['formule']['deuterium']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-  $Prod[4]          = (floor(eval($ProdGrid[$BuildID]['formule']['energy'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
+  $Prod[1]          = (floor(eval($sn_data[$BuildID]['metal_perhour'])     * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
+  $Prod[2]          = (floor(eval($sn_data[$BuildID]['crystal_perhour'])   * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
+  $Prod[3]          = (floor(eval($sn_data[$BuildID]['deuterium_perhour']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
+  $Prod[4]          = (floor(eval($sn_data[$BuildID]['energy_perhour'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
   $BuildLevel       = "";
 
   $ActualProd       = floor($Prod[$BuildID]);
@@ -102,10 +102,10 @@ function ShowProductionTable ($CurrentUser, $CurrentPlanet, $BuildID, $Template)
   $ProdFirst = 0;
   for ( $BuildLevel = $BuildStartLvl; $BuildLevel < $BuildStartLvl + 10; $BuildLevel++ ) {
     if ($BuildID != 42) {
-      $Prod[1] = (floor(eval($ProdGrid[$BuildID]['formule']['metal'])     * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-      $Prod[2] = (floor(eval($ProdGrid[$BuildID]['formule']['crystal'])   * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-      $Prod[3] = (floor(eval($ProdGrid[$BuildID]['formule']['deuterium']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-      $Prod[4] = (floor(eval($ProdGrid[$BuildID]['formule']['energy'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
+      $Prod[1] = (floor(eval($sn_data[$BuildID]['metal_perhour'])     * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
+      $Prod[2] = (floor(eval($sn_data[$BuildID]['crystal_perhour'])   * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
+      $Prod[3] = (floor(eval($sn_data[$BuildID]['deuterium_perhour']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
+      $Prod[4] = (floor(eval($sn_data[$BuildID]['energy_perhour'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
 
       $bloc['build_lvl']       = ($CurrentBuildtLvl == $BuildLevel) ? "<font color=\"#ff0000\">".$BuildLevel."</font>" : $BuildLevel;
       if ($ProdFirst > 0) {

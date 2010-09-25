@@ -2,7 +2,7 @@
 
 function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
 {
-  global $ProdGrid, $resource, $reslist, $config;
+  global $sn_data, $resource, $reslist, $config;
 
   $Caps = array( 'planet' => array(
     'metal' => $CurrentPlanet['metal'],
@@ -34,12 +34,12 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
     $BuildLevel       = $CurrentPlanet[ $resource[$ProdID] ];
     $BuildLevelFactor = $CurrentPlanet[ $resource[$ProdID]."_porcent" ];
 
-    $Caps['energy'][$ProdID] = floor( eval ( $ProdGrid[$ProdID]['formule']['energy'] ) );
+    $Caps['energy'][$ProdID] = floor( eval ( $sn_data[$ProdID]['energy_perhour'] ) );
     if ($ProdID == 12)
     {
       if ($CurrentPlanet['deuterium'] > 0)
       {
-        $Caps['deuterium_perhour'][$ProdID] = floor( eval ( $ProdGrid[$ProdID]['formule']['deuterium'] ));
+        $Caps['deuterium_perhour'][$ProdID] = floor( eval ( $sn_data[$ProdID]['deuterium_perhour'] ));
       }
       else
       {
@@ -53,9 +53,9 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
       {
         $rpgGeologue += $CurrentUser['rpg_geologue'] * 0.05;
       };
-      $Caps['metal_perhour'][$ProdID]     +=  floor( eval ( $ProdGrid[$ProdID]['formule']['metal']     ) * $rpgGeologue *  $config->resource_multiplier);
-      $Caps['crystal_perhour'][$ProdID]   +=  floor( eval ( $ProdGrid[$ProdID]['formule']['crystal']   ) * $rpgGeologue *  $config->resource_multiplier);
-      $Caps['deuterium_perhour'][$ProdID] +=  floor( eval ( $ProdGrid[$ProdID]['formule']['deuterium'] ) * $rpgGeologue *  $config->resource_multiplier);
+      $Caps['metal_perhour'][$ProdID]     +=  floor( eval ( $sn_data[$ProdID]['metal_perhour']     ) * $rpgGeologue *  $config->resource_multiplier);
+      $Caps['crystal_perhour'][$ProdID]   +=  floor( eval ( $sn_data[$ProdID]['crystal_perhour']   ) * $rpgGeologue *  $config->resource_multiplier);
+      $Caps['deuterium_perhour'][$ProdID] +=  floor( eval ( $sn_data[$ProdID]['deuterium_perhour'] ) * $rpgGeologue *  $config->resource_multiplier);
     };
 
     if ($Caps['energy'][$ProdID]>0)
