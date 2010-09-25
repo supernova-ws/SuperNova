@@ -263,6 +263,8 @@ if ($_POST) {
       $Message .= " (" . htmlentities($_POST["email"]) . ")";
       $Message .= "<br><br>". $lang['error_mailsend'] ." <b>" . $newpass . "</b>";
     }
+    $user          = CheckTheUser();
+
     message( $Message, $lang['reg_welldone']);
   }
 } else {
