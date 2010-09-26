@@ -17,9 +17,9 @@
     {inputDefense}
 
     <tr><td class="c" colspan="3">{sys_resources}</td></tr>
-    <tr><th>{Metal}</th><th>&nbsp;</th><th><input type='text' name='resources[metal]' value='0'></th></tr>
-    <tr><th>{Crystal}</th><th>&nbsp;</th><th><input type='text' name='resources[crystal]' value='0'></th></tr>
-    <tr><th>{Deuterium}</th><th>&nbsp;</th><th><input type='text' name='resources[deuterium]' value='0'></th></tr>
+    <tr><th>{Metal}</th><th>&nbsp;</th><th><input type='text' name='defender[0][resources][metal]' value='{res_metal}'></th></tr>
+    <tr><th>{Crystal}</th><th>&nbsp;</th><th><input type='text' name='defender[0][resources][crystal]' value='{res_crystal}'></th></tr>
+    <tr><th>{Deuterium}</th><th>&nbsp;</th><th><input type='text' name='defender[0][resources][deuterium]' value='{res_deuterium}'></th></tr>
     <tr><th colspan='3'><input type='submit' name='submit' value='{COE_simulate}'></th></tr>
   </table>
   <input type='hidden' name='BE_DEBUG' value="{BE_DEBUG}">
