@@ -56,7 +56,8 @@ switch(intval($config->db_version))
           ADD `parent_planet` bigint(11) unsigned DEFAULT '0',
           ADD KEY `i_parent_planet` (`parent_planet`)
           ;");
-    doquery("UPDATE `{{planets}}` AS lu
+    doquery(
+      "UPDATE `{{planets}}` AS lu
         LEFT JOIN `{{planets}}` AS pl ON pl.galaxy=lu.galaxy AND pl.system=lu.system AND pl.planet=lu.planet AND pl.planet_type=1
       SET lu.parent_planet=pl.id WHERE lu.planet_type=3;");
     $newVersion = 1;
@@ -220,7 +221,7 @@ switch(intval($config->db_version))
   case 14:
     if(!$config->db_loadItem('rules_url'))
       $config->db_saveItem('rules_url', 'http://forum.supernova.ws/viewtopic.php?f=3&t=974');
-    // $newVersion = 15;
+    $newVersion = 15;
     set_time_limit(30);
 
   case 15:
