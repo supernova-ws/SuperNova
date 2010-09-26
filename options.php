@@ -134,36 +134,47 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   } else {
     $settings_rep = "0";
   }
-  // Modo vacaciones
-  if (isset($_POST["urlaubs_modus"]) && $_POST["urlaubs_modus"] == 'on') {
-    if(CheckIfIsBuilding($user)){
-      message($lang['Building_something'], $lang['Error'], "options.php",1);
-    }
-    $urlaubs_modus = "1";
-          $time = time() + VOCATION_TIME;
-           doquery("UPDATE {{table}} SET
-          `urlaubs_modus` = '$urlaubs_modus',
-          `urlaubs_until` = '$time'
-          WHERE `id` = '$iduser' LIMIT 1", "users");
 
-          $query = doquery("SELECT * FROM {{table}} WHERE id_owner = '{$user['id']}'", 'planets');
-          while($id = mysql_fetch_array($query)){
-             doquery("UPDATE {{table}} SET
-               metal_perhour = '".$config->metal_basic_income."',
-               crystal_perhour = '".$config->metal_basic_income."',
-               deuterium_perhour = '".$config->metal_basic_income."',
-               energy_used = '0',
-               energy_max = '0',
-               metal_mine_porcent = '0',
-               crystal_mine_porcent = '0',
-               deuterium_sintetizer_porcent = '0',
-               solar_plant_porcent = '0',
-               fusion_plant_porcent = '0',
-               solar_satelit_porcent = '0'
-             WHERE id = '{$id['id']}' AND `planet_type` = 1 ", 'planets');
-          }
-    } else {
-    $urlaubs_modus = "0";
+  // Modo vacaciones
+  if (isset($_POST['urlaubs_modus']) && $_POST['urlaubs_modus'] == 'on')
+  {
+    $urlaubs_modus = '1';
+
+    $time = time();
+
+    if($user['authlevel'] < 3)
+    {
+      if(CheckIfIsBuilding($user))
+      {
+        message($lang['Building_something'], $lang['Error'], "options.php", 1);
+      }
+
+      $time += VOCATION_TIME;
+
+      $query = doquery("SELECT * FROM {{planets}} WHERE id_owner = '{$user['id']}'");
+      while($id = mysql_fetch_array($query))
+      {
+        doquery("UPDATE {{planets}} SET
+          metal_perhour = '".$config->metal_basic_income."',
+          crystal_perhour = '".$config->metal_basic_income."',
+          deuterium_perhour = '".$config->metal_basic_income."',
+          energy_used = '0',
+          energy_max = '0',
+          metal_mine_porcent = '0',
+          crystal_mine_porcent = '0',
+          deuterium_sintetizer_porcent = '0',
+          solar_plant_porcent = '0',
+          fusion_plant_porcent = '0',
+          solar_satelit_porcent = '0'
+        WHERE id = '{$id['id']}' AND `planet_type` = 1 ");
+      }
+    }
+
+    doquery("UPDATE {{users}} SET `urlaubs_modus` = '$urlaubs_modus', `urlaubs_until` = '$time' WHERE `id` = '$iduser' LIMIT 1");
+  }
+  else
+  {
+    $urlaubs_modus = '0';
   }
 
   // Borrar cuenta
@@ -179,7 +190,7 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
 
 //  $dpath = str_replace('\\','\\\\',$dpath);
 
-  doquery("UPDATE {{table}} SET
+  doquery("UPDATE {{users}} SET
   `email` = '$db_email',
   `lang` = '$languese',
   `avatar` = '$avatar',
@@ -204,7 +215,7 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   `kolorpoziom` = '$kolorpoziom',
   `urlaubs_modus_time` = '$urlaubs_modus_time',
   `deltime` = '$Del_Time'
-  WHERE `id` = '$iduser' LIMIT 1", "users");
+  WHERE `id` = '$iduser' LIMIT 1");
 
   if (isset($_POST["db_password"]) && md5($_POST["db_password"]) == $user["password"]) {
 
