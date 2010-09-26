@@ -27,10 +27,12 @@ $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
-function sys_combatDataPack($combat, $strArray){
+function sys_combatDataPack($combat, $strArray)
+{
   global $reslist;
 
-  foreach($combat as $fleetID => $fleetCompress){
+  foreach($combat as $fleetID => $fleetCompress)
+  {
     $strPackedEnd = '';
     if($strArray == 'def')
       $strPacked .= 'D';
@@ -48,14 +50,18 @@ function sys_combatDataPack($combat, $strArray){
       $strPacked .= $shipCount ? ($shipID . ',' . $shipCount . ';') : '';
   }
   $strPacked .= '.';
+
   foreach($reslist['resources'] as $resource)
-     $strPacked .= intval($combat['resources'][$resource]) . ',';
+  {
+     $strPacked .= intval($combat[0]['resources'][$resource]) . ',';
+  }
   $strPacked .= '!';
 
   return $strPacked;
 }
 
-function sys_combatDataUnPack($strData){
+function sys_combatDataUnPack($strData)
+{
   global $reslist;
 
   $unpacked = array (
@@ -65,7 +71,8 @@ function sys_combatDataUnPack($strData){
 
   $fleetList = explode('!', $strData);
 
-  foreach($fleetList as $fleet){
+  foreach($fleetList as $fleet)
+  {
     $t = explode('.', $fleet);
 
     if(!$t[0]) continue;
@@ -80,22 +87,32 @@ function sys_combatDataUnPack($strData){
 
     $t[1] = explode(';', $t[1]);
     foreach($t[1] as $techInfo)
-      if($techInfo){
+    {
+      if($techInfo)
+      {
         $techInfo = explode(',', $techInfo);
         $combat['user'][$techInfo[0]] = $techInfo[1];
       }
+    }
 
     $t[2] = explode(';', $t[2]);
     foreach($t[2] as $shipInfo)
-      if($shipInfo){
+    {
+      if($shipInfo)
+      {
         $shipInfo = explode(',', $shipInfo);
         $combat[$strArray][$shipInfo[0]] = $shipInfo[1];
       }
+    }
 
-    $t[3] = explode(',', $t[2]);
+    $t[3] = explode(',', $t[3]);
     foreach($t[3] as $resourceID => $resource)
-      if($resourceID)
-        $combat['resources'][$reslist['resources'][$resourceID]] = $resource;
+    {
+      if($resource)
+      {
+        $combat['resources'][$reslist['resources'][$resourceID]] = intval($resource);
+      }
+    }
 
     $unpacked[$strArray][] = $combat;
   }
@@ -103,19 +120,26 @@ function sys_combatDataUnPack($strData){
   return $unpacked;
 }
 
-function coe_simulatorHTMLMake($resToLook){
-  global $lang, $resource, $user;
+function coe_simulatorHTMLMake($resToLook)
+{
+  global $lang, $resource, $user, $unpacked;
 
-  foreach($resToLook as $unitID){
-    if($unitID<200 || $unitID>600 ){
-      $parse['fieldNameAtt'] = 'user';
-      $parse['fieldNameDef'] = 'user';
-      $parse['fieldValue']   = $user[$resource[$unitID]];
-    }else{
-      $parse['fieldNameAtt'] = 'detail';
-      $parse['fieldNameDef'] = 'def';
-      $parse['fieldValue']   = 0;
+  foreach($resToLook as $unitID)
+  {
+    if($unitID<200 || $unitID>600 )
+    {
+      $parse['fieldNameAtt']  = 'user';
+      $parse['fieldNameDef']  = 'user';
     }
+    else
+    {
+      $parse['fieldNameAtt']  = 'detail';
+      $parse['fieldNameDef']  = 'def';
+    }
+    $parse['fieldValueAtt'] = intval($unpacked['detail'][0][$parse['fieldNameAtt']][$unitID]);
+    $parse['fieldValueAtt'] = intval($parse['fieldValueAtt'] ? $parse['fieldValueAtt'] : $user[$resource[$unitID]]);
+
+    $parse['fieldValueDef'] = intval($unpacked['def'][0][$parse['fieldNameDef']][$unitID]);
     $parse['unitID'] = $unitID;
     $parse['unitName'] = $lang['tech'][$unitID];
     $parse['hideAttacker'] = $unitID < 400 ? '' : 'class="hide"';
@@ -123,48 +147,70 @@ function coe_simulatorHTMLMake($resToLook){
     $tmp = parsetemplate(gettemplate('simulator_row'), $parse);
     $input[floor($unitID/100) * 100] .= $tmp;
   }
+
   return $input;
 }
 
-if(isset($_GET['replay'])) {
-  $replay       = $_GET['replay'];
+$replay = $_GET['replay'] ? $_GET['replay'] : $_POST['replay'];
+$execute = intval($_GET['execute']);
+$sym_attacker = $_POST['attacker'];
+$sym_defender = $_POST['defender'];
+
+if($replay)
+{
   $unpacked     = sys_combatDataUnPack($replay);
 
-  $_POST['attacker'] = $unpacked['detail'];
-  $_POST['defender'] = $unpacked['def'];
-  $_POST['submit']   = true;
+  $sym_attacker = $unpacked['detail'];
+  $sym_defender = $unpacked['def'];
 }
 
-if($_GET['BE_DEBUG'] || $_POST['BE_DEBUG'])
+if(($_GET['BE_DEBUG'] || $_POST['BE_DEBUG']) && !defined('BE_DEBUG'))
+{
   define('BE_DEBUG', true);
+}
 
-if($_POST['submit']){
-  $replay = sys_combatDataPack($_POST['attacker'], 'detail');
-  $replay .= sys_combatDataPack($_POST['defender'], 'def');
+if($_POST['submit'] || $execute)
+{
+  $replay = sys_combatDataPack($sym_attacker, 'detail');
+  $replay .= sys_combatDataPack($sym_defender, 'def');
 
-  foreach(array('attacker', 'defender') as $index)
-    foreach($_POST[$index] as &$fleet){
-      foreach($fleet['user'] as $key => $value){
+  $a = array(&$sym_attacker, &$sym_defender);
+  foreach($a as &$sym_fleet_list)
+  {
+    foreach($sym_fleet_list as &$fleet)
+    {
+      foreach($fleet['user'] as $key => $value)
+      {
         $fleet['user'][$resource[$key]] = $value;
         unset($fleet['user'][$key]);
       }
 
       if(is_array($fleet['detail']))
+      {
         $tmp = 'detail';
+      }
       else
+      {
         $tmp = 'def';
+      }
 
       foreach($fleet[$tmp] as $key => $value)
+      {
         if(!$value)
+        {
           unset($fleet[$tmp][$key]);
+        }
+      }
     }
+  }
+
   // Lets calcualte attack...
   $start = microtime(true);
-  $result = calculateAttack($_POST['attacker'], $_POST['defender'], true);
+  $result = calculateAttack($sym_attacker, $sym_defender, true);
   $totaltime = microtime(true) - $start;
 
   // calculating loot per attacking fleet
-  $loot = BE_calculatePostAttacker($_POST['resources'], $_POST['attacker'], $result, true);
+  $loot = BE_calculatePostAttacker($sym_defender[0]['resources'], $sym_attacker, $result, true);
 
   // Calculating Moon Chance
   $MoonChance = BE_calculateMoonChance($result);
@@ -196,26 +242,32 @@ if($_POST['submit']){
 
   $Page .= '<br /><br />';
 
-  $Page .= "<a href=simulator.php?replay={$replay}><font color=red>Sorry, this report CAN be shared!</font></a>";
+  $Page .= "<a href=simulator.php?execute=1&replay={$replay}><font color=red>Link to simulation result</font></a><br>";
+  $Page .= "<a href=simulator.php?replay={$replay}><font color=red>Link to edit simulatioin data</font></a><br>";
 
   $Page .= '<br /><br /></center></body></html>';
 
   echo $Page;
-}else{
+}
+else
+{
   $parse = $lang;
 
-  $tmp = array_merge($reslist['combat'], array(109, 110, 111));
-  $tmp = coe_simulatorHTMLMake($tmp);
+  $tmp = coe_simulatorHTMLMake(array_merge($reslist['combat'], array(109, 110, 111)));
 
   $parse['inputTech'] = $tmp['100'];
   $parse['inputFleet'] = $tmp['200'];
   $parse['inputDefense'] = $tmp['400'];
+  $parse['res_metal'] = intval($unpacked['def'][0]['resources']['metal']);
+  $parse['res_crystal'] = intval($unpacked['def'][0]['resources']['crystal']);
+  $parse['res_deuterium'] = intval($unpacked['def'][0]['resources']['deuterium']);
   $parse['BE_DEBUG'] = $_GET['BE_DEBUG'];
   $page = parsetemplate(gettemplate('simulator', true), $parse);
   display($page, $lang['coe_combatSimulator'], false);
 }
 
-function rp($input) {
+function rp($input)
+{
   return str_replace('.', '', $input);
 }
 ?>
