@@ -56,12 +56,21 @@ class classCache
     $this->prefix = $prefIn;
     if ( extension_loaded('xcache') && ($init_mode === CACHER_XCACHE || $init_mode === false) )
     {
-      self::$mode = CACHER_XCACHE;
+      if(self::$mode === CACHER_NOT_INIT)
+      {
+        self::$mode = CACHER_XCACHE;
+      }
     }
     else
     {
-      self::$mode = CACHER_NO_CACHE;
-      self::$data = array();
+      if(self::$mode === CACHER_NOT_INIT)
+      {
+        self::$mode = CACHER_NO_CACHE;
+        if(!self::$data)
+        {
+         self::$data = array();
+        }
+      }
     };
   }
 
