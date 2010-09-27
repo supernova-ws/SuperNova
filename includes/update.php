@@ -108,12 +108,13 @@ switch(intval($config->db_version))
           ;");
     set_time_limit(30);
 
-    doquery('UPDATE `{{planets}}`
-      LEFT JOIN `{{galaxy}}` ON {{galaxy}}.id_planet = {{planets}}.id
-    SET
-      {{planets}}.debris_metal = {{galaxy}}.metal,
-      {{planets}}.debris_crystal = {{galaxy}}.crystal
-    WHERE {{galaxy}}.metal>0 OR {{galaxy}}.crystal>0;');
+    if($update_tables['galaxy'])
+      doquery('UPDATE `{{planets}}`
+        LEFT JOIN `{{galaxy}}` ON {{galaxy}}.id_planet = {{planets}}.id
+      SET
+        {{planets}}.debris_metal = {{galaxy}}.metal,
+        {{planets}}.debris_crystal = {{galaxy}}.crystal
+      WHERE {{galaxy}}.metal>0 OR {{galaxy}}.crystal>0;');
     $newVersion = 5;
     set_time_limit(30);
 
@@ -124,8 +125,8 @@ switch(intval($config->db_version))
 
   case 6:
     doquery("DELETE FROM {{config}} WHERE `config_name` in ('BannerURL', 'banner_source_post', 'BannerOverviewFrame',
-    'close_reason', 'dbVersion', 'ForumUserBarFrame', 'OverviewBanner', 'OverviewClickBanner', 'OverviewExternChat',
-    'OverviewExternChatCmd', 'OverviewNewsText', 'UserbarURL', 'userbar_source');");
+      'close_reason', 'dbVersion', 'ForumUserBarFrame', 'OverviewBanner', 'OverviewClickBanner', 'OverviewExternChat',
+      'OverviewExternChatCmd', 'OverviewNewsText', 'UserbarURL', 'userbar_source');");
     $newVersion = 7;
     set_time_limit(30);
 
