@@ -460,7 +460,7 @@ class classConfig extends classPersistent
     'Fleet_Cdr'              => 30,
     'fleet_speed'            => 2500,
     'forum_url'              => '/forum/',
-    'rules_url'              => '/rules.txt',
+    'rules_url'              => '/rules.php',
     'initial_fields'         => 163,
     'LastSettedGalaxyPos'    => 0,
     'LastSettedPlanetPos'    => 0,
@@ -479,11 +479,11 @@ class classConfig extends classPersistent
     'game_speed' => 2500,        // Game speed. 2500 - normal
 
     // Universe size
-    'game_maxGalaxy' => '9',
-    'game_maxSystem' => '499',
+    'game_maxGalaxy' => '5',
+    'game_maxSystem' => '199',
     'game_maxPlanet' => '15',
 
-    'game_adminEmail' => '',    // Admin's email to show to users
+    'game_adminEmail' => 'root@localhost',    // Admin's email to show to users
 
     'game_disable'         => 1,
     'game_disable_reason'  => 'SuperNova is in maintenance mode! Please return later!',
