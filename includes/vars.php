@@ -30,10 +30,10 @@ if ( defined('INSIDE')) {
       'deuterium' => 0,
       'energy' => 0,
       'factor' => 1.5,
-      'metal_perhour' => 'return   (30 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);',
+      'metal_perhour' => 'return   (40 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);',
       'crystal_perhour' => 'return   "0";',
       'deuterium_perhour' => 'return   "0";',
-      'energy_perhour' => 'return - (10 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);',
+      'energy_perhour' => 'return - (15 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);',
     ),
 
     2   => array(
