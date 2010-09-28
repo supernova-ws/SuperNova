@@ -112,7 +112,7 @@ function int_assign_event($fleet, $ov_label)
     $user_data = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$fleet['fleet_owner']};", '', true);
   };
 
-  $fleets[] = flt_parse_for_template($fleet, ++$fleet_number, $user_data);
+  $fleets[] = tpl_parse_fleet($fleet, ++$fleet_number, $user_data);
 }
 
 // Compare function to sort fleet in time order

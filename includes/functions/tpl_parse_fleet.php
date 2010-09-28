@@ -1,6 +1,6 @@
 <?php
 
-function flt_parse_for_template($fleet, $index, $user_data = '')
+function tpl_parse_fleet($fleet, $index, $user_data = '')
 {
   global $lang, $time_now, $user, $pricelist;
 
