@@ -12,11 +12,13 @@
 // Routine pour la gestion du mode vacance
 //
 
-// include_once("/includes/functions/dump.php");
+function check_urlaubmodus ($user)
+{
+  global $lang;
 
-function check_urlaubmodus ($user) {
-  if ($user['urlaubs_modus'] == 1) {
-    message("Вы же в отпуске!", $title = $user['username'], $dest = "", $time = "3");
+  if ($user['urlaubs_modus'] == 1)
+  {
+    message('<img src="images/vacancy.jpg">', "{$user['username']}, {$lang['sys_vacancy']}");
   }
 }
 

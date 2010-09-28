@@ -247,4 +247,6 @@ $lang['cookies']['Error3'] = 'Ошибка! Очистите cookie или разрешите их приём! <a
 // Supported languages
 $lang['ru']              	  = 'Русский';
 $lang['en']              	  = 'Английский';
+
+$lang['sys_vacancy']         = 'Вы же в отпуске!';
 ?>
