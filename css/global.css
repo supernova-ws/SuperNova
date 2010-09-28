@@ -1,3 +1,115 @@
+* {margin: 0; padding: 0;}
+
+/* Login and Registration screens */
+body {
+    background-image: url(../images/bg-unauthorized.jpg);
+    background-repeat: no-repeat;
+    text-align: center;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+#log_main {
+  top: 190px;
+  position: relative;
+  width: 450px;
+  background-repeat: none;
+  border:1px solid #FFFFFF;
+
+  font-color: #0a1c25;
+  color:  #b1daf2;
+
+  background-color     : #000000;
+  filter               : alpha(opacity=70);
+  -moz-opacity         : 0.7;
+  -khtml-opacity       : 0.7;
+  opacity              : 0.7;
+}
+
+#log_status, #log_title
+{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+
+  color: #0a1c25;
+  width: 100%;
+  text-align: center;
+
+  background-color     : #FFFFFF;
+  filter               : alpha(opacity=90);
+  -moz-opacity         : 0.9;
+  -khtml-opacity       : 0.9;
+  opacity              : 0.9;
+}
+
+#log_title
+{
+  font-size: 20px;
+}
+
+#log_description
+{
+  margin: 20px;
+  color:  #b1daf2;
+  text-align: justify;
+}
+
+#log_register {
+  font-family:Arial, Helvetica, sans-serif;
+  font-size: 16px;
+
+  margin:20px;
+  padding: 0.3em;
+  text-align: center;
+  font-weight: bold;
+  color:#497ec7;
+  cursor: pointer;
+
+  background-color     : #000000;
+  border:1px solid #FFFFFF;
+}
+
+#log_register:hover
+{
+  color:#ffffff;
+}
+
+#log_form {
+  padding: 2%;
+  height: 5em;
+}
+
+.log_input_wrapper
+{
+  float: left;
+  margin-left: 2%;
+  width: 46%;
+  text-align: left;
+}
+
+.log_input
+{
+  border:1px solid #000000;
+  background:#ffffff url(../templates/OpenGame/img/eingabe_back.png) repeat-x;
+  color: #000000;
+  font-size:10px;
+  width: 100%;
+  left: 0px;
+}
+
+form
+{
+  margin: 0px;
+  border: 0px;
+  padding: 0px;
+}
+
+#log_menu {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-top: solid 1px;
+}
+
+/* System classes */
 .fl /* Float left */
 {
   float: left;
