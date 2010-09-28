@@ -625,7 +625,7 @@ switch ($mode)
       //'LastChat'       => CHT_messageParse($msg),
     ));
 
-    display(parsetemplate($template, $parse), $lang['Overview']);
+    display(parsetemplate($template, $parse), "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");
   break;
 }
 ?>

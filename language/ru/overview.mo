@@ -173,6 +173,7 @@ $lang['ov_userbar']  = 'Þçåðáàð';
 
 $lang['ov_banner_empty_id'] = 'SuperNova - Join The Game!';
 
-
 $lang['ov_new']          = 'ÍÎÂÀß';
+
+$lang['ov_overview']     = 'Îáçîð';
 ?>
