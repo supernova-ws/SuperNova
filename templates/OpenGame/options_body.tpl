@@ -27,12 +27,16 @@
 </tr><tr>
 	<th>{permanentemaildir}</th>
 	<th>{opt_mail2_data}</th>
-</tr><tr> 
-  <th>{Languese}</th>
+</tr>
+<!--
+<tr> 
+  <th>{L_opt_language}</th>
   <th><select name="langer">
 		{opt_lst_lang_data}
 		</select></th>
-</tr><tr>
+</tr>
+-->
+<tr>
 	<th colspan="2"></th>
 </tr><tr>
 	<td class="c" colspan="2">{general_settings}</td>
