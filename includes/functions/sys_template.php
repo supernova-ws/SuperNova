@@ -5,7 +5,7 @@ function displayP($template)
   {
     global $lang, $user;
 
-    if(isset($template->parse))
+    if($template->parse)
     {
       foreach($template->parse as $key => $data)
       {
