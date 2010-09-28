@@ -411,7 +411,7 @@ class classPersistent extends classCache
   public function db_saveAll()
   {
     $toSave = array();
-    foreach($defaults as $field => $value)
+    foreach($this->defaults as $field => $value)
     {
       $toSave[$field] = NULL;
     }
