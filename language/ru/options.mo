@@ -78,4 +78,6 @@ $lang['cans_fly_fleet2']                 = "Чужой флот приближается... вы не мож
 $lang['vacations_exit']                 = "Режим отпуска отключен... Перезайдите";
 
 $lang['select_skin_path']		= "ВЫБРАТЬ";
+
+$lang['opt_language']         = 'Язык интерфейса';
 ?>
