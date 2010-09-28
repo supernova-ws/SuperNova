@@ -94,7 +94,7 @@ foreach ($sn_data as $unit_id => $res) {
   }
 }
 
-display(parsetemplate($template, $parse), $lang['Imperium']);
+display(parsetemplate($template, $parse), $lang['imp_overview']);
 
 // Created by Perberos. All rights reserved (C) 2006
 ?>

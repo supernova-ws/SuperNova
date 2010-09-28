@@ -156,7 +156,7 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
 // $AdminPage -> Si on est dans la section admin ... faut le dire ...
 function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true)
 {
-  global $link, $debug, $user, $planetrow, $dpath, $IsUserChecked, $time_now, $config;
+  global $link, $debug, $user, $planetrow, $dpath, $IsUserChecked, $time_now, $config, $lang;
 
   if(!$user)
   {
@@ -165,6 +165,9 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   }
 
   $AdminPage = $AdminPage ? $user['authlevel'] : 0;
+
+  $title = $title ? "{$title} - " : $title;
+  $title .= "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}";
 
   $DisplayPage  = StdHeader ($title, $metatags, $AdminPage);
 
