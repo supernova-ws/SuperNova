@@ -112,7 +112,7 @@ function int_assign_event($fleet, $ov_label)
     $user_data = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$fleet['fleet_owner']};", '', true);
   };
 
-  $fleets[] = flt_parse_for_template($fleet, ++$fleet_number, $user_data);
+  $fleets[] = tpl_parse_fleet($fleet, ++$fleet_number, $user_data);
 }
 
 // Compare function to sort fleet in time order
@@ -437,35 +437,9 @@ switch ($mode)
         $moon_fill = 0;
       }
 
-      $building_build = explode(',', $UserPlanet['b_building_id']);
-      $building_build = $building_build[0] ? $lang[tech][$building_build[0]] : '';
-
-      $hangar_build = explode(',', $UserPlanet['b_hangar_id']);
-      $hangar_build = $hangar_build[0] ? $lang[tech][$hangar_build[0]] : '';
-
-      $planet_fleets = flt_get_fleets_to_planet($UserPlanet);
       $moon_fleets = flt_get_fleets_to_planet($moon);
-
-      $template->assign_block_vars('planet', array_merge(
+      $template->assign_block_vars('planet', array_merge(tpl_parse_planet($UserPlanet),
         array(
-          'ID'           => $UserPlanet['id'],
-          'NAME'         => $UserPlanet['name'],
-          'IMAGE'        => $UserPlanet['image'],
-
-          'GALAXY'       => $UserPlanet['galaxy'],
-          'SYSTEM'       => $UserPlanet['system'],
-          'PLANET'       => $UserPlanet['planet'],
-
-          'FLEET_ENEMY'  => $planet_fleets['enemy_count'],
-          'FLEET_OWN'    => $planet_fleets['own_count'],
-
-          'BUILDING'     => int_buildCounter($UserPlanet, 'building', $UserPlanet['id']),
-          'BUILDING_TIP' => $building_build,
-          'TECH'         => $UserPlanet['b_tech'] ? $lang['tech'][$UserPlanet['b_tech_id']] : 0,
-          'HANGAR'       => $hangar_build,
-
-          'FILL'         => min(100, floor($UserPlanet['field_current'] / CalculateMaxPlanetFields($UserPlanet) * 100)),
-
           'MOON_ID'      => $moon['id'],
           'MOON_NAME'    => $moon['name'],
           'MOON_IMG'     => $moon['image'],
