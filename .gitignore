@@ -4,7 +4,19 @@ config.php
 # Ignore forums
 /phpBB3/
 /forum/
+
+# Ignore xcache interface
+/xcache/
 /xcache-admin/
+
+# Ignore test folder
+/test/
+
+# Ignore CMD-files
+/*.cmd
+
+# Ignore update flag
+/includes/update.last
 
 # Ignore cache folder
 /cache/
