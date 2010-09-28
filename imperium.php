@@ -40,36 +40,7 @@ $template->assign_var(mount, count($planet) + 1);
 foreach ($planet as $p) {
   $planetCaps = ECO_getPlanetCaps($user, $p);
 
-  $building_build = explode(',', $p['b_building_id']);
-  $building_build = $building_build[0] ? $lang[tech][$building_build[0]] : '';
-
-  $hangar_build = explode(',', $p['b_hangar_id']);
-  $hangar_build = $hangar_build[0] ? $lang[tech][$hangar_build[0]] : '';
-
-  $fleet_list = flt_get_fleets_to_planet($p);
-
-  $template->assign_block_vars('planet', array(
-    'ID' => $p['id'],
-    'TYPE' => $p['planet_type'],
-    'IMAGE' => $p['image'],
-    'NAME' => $p['name'],
-
-    'GALAXY'       => $p['galaxy'],
-    'SYSTEM'       => $p['system'],
-    'PLANET'       => $p['planet'],
-
-    'COORDINATES' => INT_makeCoordinates($p),
-
-    'FILL'       => min(100, floor($p['field_current'] / CalculateMaxPlanetFields($p) * 100)),
-
-    'BUILDING'   => int_buildCounter($p, 'building', $p['id']),
-    'BUILDING_TIP' => $building_build,
-    'TECH'       => $p['b_tech'] ? $lang['tech'][$p['b_tech_id']] : 0,
-    'HANGAR'     => $hangar_build,
-
-    'FLEET_ENEMY'  => $fleet_list['enemy_count'],
-    'FLEET_OWN'    => $fleet_list['own_count'],
-
+  $template->assign_block_vars('planet', array_merge(tpl_parse_planet($p), array(
     'FIELDS_CUR' => $p['field_current'],
     'FIELDS_MAX' => $p['field_max'] + $p[$sn_data[33]['name']] * 5,
 
@@ -84,7 +55,7 @@ foreach ($planet as $p) {
 
     'ENERGY_CUR' => pretty_number($p['energy_max'] - $p['energy_used'], true, true),
     'ENERGY_MAX' => pretty_number($p['energy_max']),
-  ));
+  )));
 }
 
 $last = -1000;
