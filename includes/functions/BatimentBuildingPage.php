@@ -105,6 +105,13 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
     $CanBuildElement = false;
   }
 
+  if($CurrentPlanet['b_building_id'])
+  {
+    $now_building = explode(';', $CurrentPlanet['b_building_id']);
+    $now_building = explode(',', $now_building[0]);
+    $now_building = $now_building[0];
+  }
+
   $SubTemplate         = gettemplate('buildings_builds_row');
   $BuildingPage        = '';
   $caps = ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet);
@@ -196,6 +203,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
           }
         }
 
+        $can_build_unit = false;
         if ($parse['click'] != '')
         {
           // Bin on ne fait rien, vu que l'on l'a deja fait au dessus !!
@@ -209,6 +217,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
               if ( $HaveRessources == true )
               {
                 $parse['click'] = "<a href=\"?cmd=insert&building={$Element}\"><font color=#00FF00>{$lang['BuildFirstLevel']}</font></a>";
+                $can_build_unit = true;
               }
               else
               {
@@ -220,6 +229,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
               if ( $HaveRessources == true )
               {
                 $parse['click'] = "<a href=\"?cmd=insert&building={$Element}\"><font color=#00FF00>{$lang['BuildNextLevel']} {$NextBuildLevel}</font></a>";
+                $can_build_unit = true;
               } else {
                 $parse['click'] = "<font color=#FF0000>{$lang['BuildNextLevel']} {$NextBuildLevel}</font>";
               }
@@ -230,6 +240,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
             if ( $HaveRessources == true )
             {
               $parse['click'] = "<a href=\"?cmd=insert&building={$Element}\"><font color=#00FF00>{$lang['InBuildQueue']}</font></a>";
+              $can_build_unit = true;
             }
             else
             {
@@ -275,6 +286,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
           'ENERGY_BALANCE'    => $EnergyNeed,
 
           'BUILD_LINK'        => $parse['click'],
+          'CAN_BUILD'         => $can_build_unit,
         ));
       }
     }
@@ -294,6 +306,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
   $parse['planet_field_current'] = $CurrentPlanet['field_current'];
   $parse['planet_field_max']     = $CurrentPlanet['field_max'] + ($CurrentPlanet[$resource[33]] * 5);
   $parse['field_libre']          = $parse['planet_field_max']  - $CurrentPlanet['field_current'];
+  $parse['NOW_BUILDING']         = $now_building;
 
   $page                          = parsetemplate($template, $parse);
   display($page, $lang['Builds']);
