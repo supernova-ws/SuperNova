@@ -103,6 +103,7 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
     $SubFrame                 = parsetemplate( $InfoTPL, $parse );
     $parse['server_info']     = $SubFrame;
     $parse['forum_url']       = $config->forum_url;
+    $parse['C_rules_url']     = $config->rules_url;
     $parse['game_url']        = GAMEURL;
 //    $gn                       = doquery("SELECT `config_value` FROM {{table}} WHERE config_name='game_name' LIMIT 1",'config',true);
 //    $parse['game_name']       = $gn['config_value'];
