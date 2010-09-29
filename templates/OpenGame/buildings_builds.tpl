@@ -3,36 +3,57 @@
 <script type="text/javascript"><!--
 var production = Array();
 var unit_selected;
+var unit_hovered;
+var unit_cache = Array();
 
 function show_unit_info(unit_id)
 {
-  document.getElementById('unit' + unit_id).style.borderColor="#0000FF";
+/*
+  if(!unit_cache[unit_id])
+  {
+    unit_cache[unit_id] = document.getElementById('unit' + unit_id).style;
+  }
+  var style = unit_cache[unit_id];
+
+  style.borderColor="#0000FF";
+*/
+  element_cache['unit' + unit_id].style.borderColor="#0000FF";
+
   if(unit_selected)
   {
     return;
   }
 
-  var unit = production[unit_id];
-  
-  var result = unit['description'] + "<br>";
-  result += unit['price'];
-  result += unit['time'];
-  result += unit['resources_left'] + "<br>";
-  result += unit['build_link'];
+  if(!unit_cache[unit_id])
+  {
+    var unit = production[unit_id];
+    
+    var result = unit['description'] + "<br>";
+    result += unit['price'];
+    result += unit['time'];
+    result += unit['resources_left'] + "<br>";
+    result += unit['build_link'];
 
-  document.getElementById('unit_info').innerHTML = result;
+    unit_cache[unit_id] = result;
+  }
+  result = unit_cache[unit_id];
+//  document.getElementById('unit_info').innerHTML = result;
+  element_cache['unit_info'].innerHTML = result;
+
 }
 
 function select_unit(unit_id)
 {
   if(unit_selected)
   {
-    document.getElementById('unit' + unit_selected).style.borderColor="";
+//    document.getElementById('unit' + unit_selected).style.borderColor="";
+    element_cache['unit' + unit_selected].style.borderColor="";
     unit_selected = undefined;
     show_unit_info(unit_id);
   }
   unit_selected = unit_id;
-  document.getElementById('unit' + unit_id).style.borderColor="#0000FF";
+//  document.getElementById('unit' + unit_id).style.borderColor="#0000FF";
+  element_cache['unit' + unit_id].style.borderColor="#0000FF";
 }
 
 function unborder_unit(unit_id)
@@ -45,7 +66,7 @@ function unborder_unit(unit_id)
 --></script>
 
 {BuildListScript}
-<table width=530>
+<table width=530 id="unit_table">
 	{BuildList}
 	<tr>
 		<td colspan="6" class="c" align="center">
@@ -56,12 +77,12 @@ function unborder_unit(unit_id)
    <tr>
 	<!-- BEGIN production -->
        <td class="l" align="center">
-         <div style="cursor: pointer; position: relative; height: 100px; width: 100px; font-size: 80%; border: 3px solid;" id="unit{production.ID}">
+         <div style="cursor: pointer; position: relative; height: 100px; width: 100px; font-size: 80%; border: 3px solid;" id="unit{production.ID}" unit_id="{production.ID}">
            <span style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%">
-                <img border="0" src="{dpath}gebaeude/{production.ID}.gif" align="top" width="100%" height="100%" onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})" onclick="select_unit({production.ID})">
+             <img border="0" src="{dpath}gebaeude/{production.ID}.gif" align="top" width="100%" height="100%" onclick="select_unit({production.ID})"> <!-- onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
            </span>
 
-           <span style="position: absolute; top: 15%; left: 0px; width: 100%; height: 20%; font-size: 100%;" class="icon_alpha">
+           <span style="position: absolute; top: 15%; left: 0px; width: 100%; height: 20%; font-size: 100%;" class="icon_alpha"> <!--  onclick="select_unit({production.ID})" onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
              {production.NAME}
            </span>
 
@@ -111,7 +132,39 @@ production[{production.ID}] =
   deuterium_balance: '{production.DEUTERIUM_BALANCE}',
   build_link: '{production.BUILD_LINK}'
 };
+/*
+   jQuery("#unit{production.ID}").mouseenter(function(event, ui) {
+     show_unit_info({production.ID});
+   });
+
+   jQuery("#unit{production.ID}").mouseleave(function(event, ui) {
+     unborder_unit({production.ID});
+   });
+*/
 --></script>
 	<!-- END production -->
      </tr>
 </table>
+
+<script type="text/javascript"><!--
+ jQuery(document).ready(function() {
+/*  
+   jQuery("*").click(function(event, ui) {
+//     alert(event.target.nodeName);
+   });
+*/
+   jQuery("#unit_table").delegate("*[unit_id]", "mouseenter", function(event, ui) {
+     show_unit_info(jQuery(this).attr('unit_id'));
+   });
+
+   jQuery("#unit_table").delegate("*[unit_id]", "mouseleave", function(event, ui) {
+     unborder_unit(jQuery(this).attr('unit_id'));
+   });
+
+   jQuery("#unit_table").delegate("*[unit_id]", "click", function(event, ui) {
+     select_unit(jQuery(this).attr('unit_id'));
+   });
+});
+// onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})" onclick="select_unit({production.ID})"
+
+--></script>
