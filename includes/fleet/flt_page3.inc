@@ -130,7 +130,7 @@
   if ($HeDBRec['onlinetime'] < ($time_now - 60*60*24*7)) {
     $protectiontime = 0;
   }
-  if ($MyDBRec['user_lastip'] == $HeDBRec['user_lastip'] AND $MyDBRec['user_lastip'] > 0 AND $HeDBRec['id'] != $MyDBRec['id']) {
+  if ($MyDBRec['user_lastip'] == $HeDBRec['user_lastip'] AND $MyDBRec['user_lastip'] AND $HeDBRec['id'] != $MyDBRec['id']) {
     message ("<font color=\"red\"><b>{$lang['fl_multi_ip_protection']}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
   }
 
@@ -219,7 +219,7 @@
   }
 
   // ecriture de l'enregistrement de flotte (a partir de lфе_, y a quelque chose qui vole et c'est toujours sur la planete d'origine)
-  $QryInsertFleet  = "INSERT INTO {{table}} SET ";
+  $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
   $QryInsertFleet .= "`fleet_owner` = '". $user['id'] ."', ";
   $QryInsertFleet .= "`fleet_mission` = '". $target_mission ."', ";
   $QryInsertFleet .= "`fleet_amount` = '". $FleetShipCount ."', ";
@@ -241,14 +241,14 @@
   $QryInsertFleet .= "`fleet_target_owner` = '". $TargetPlanet['id_owner'] ."', ";
   $QryInsertFleet .= "`fleet_group` = '". $fleet_group ."', ";
   $QryInsertFleet .= "`start_time` = '". $time_now ."';";
-  doquery( $QryInsertFleet, 'fleets');
+  doquery( $QryInsertFleet);
 
   $planetrow["metal"]     -= $TransMetal;
   $planetrow["crystal"]   -= $TransCrystal;
   $planetrow["deuterium"] -= $TransDeuterium;
   $planetrow["deuterium"] -= $consumption;
 
-  $QryUpdatePlanet  = "UPDATE {{table}} SET ";
+  $QryUpdatePlanet  = "UPDATE {{planets}} SET ";
   $QryUpdatePlanet .= $FleetSubQRY;
   $QryUpdatePlanet .= "`metal` = `metal` - {$TransMetal}, ";
   $QryUpdatePlanet .= "`crystal` = `crystal` - {$TransCrystal}, ";
@@ -258,7 +258,7 @@
 
   // Mise a jours de l'enregistrement de la planete de depart (a partir de l?п, y a quelque chose qui vole et ce n'est plus sur la planete de depart)
 //  doquery("LOCK TABLE {{table}} WRITE", 'planets');
-  doquery ($QryUpdatePlanet, "planets");
+  doquery ($QryUpdatePlanet);
 //  doquery("UNLOCK TABLES", '');
 
 //  if ($fleet_group) {
@@ -278,7 +278,7 @@
   $parse["time_back"] = date(DATE_TIME, $fleet['end_time']);
 
   $parse_temp['DisplayControls'] = 'display: none;';
-  $$ShipList = "";
+  $ShipList = "";
   foreach ($fleetarray as $Ship => $Count) {
     // $parse_temp['ShipSpeed'] =
     $parse_temp['ShipName'] = $lang['tech'][$Ship];
@@ -286,9 +286,6 @@
     $ShipList .= parsetemplate(gettemplate('fleet_ship_row'), $parse_temp);
   }
   $parse['ShipList'] = $ShipList;
-
-  // Provisoire
-  sleep (1);
 
   $planetrow = doquery ("SELECT * FROM {{table}} WHERE `id` = '". $planetrow['id'] ."';", 'planets', true);
 
