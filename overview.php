@@ -568,6 +568,7 @@ switch ($mode)
 */
     $template->assign_vars(array(
       'dpath'                => $dpath,
+      'USER_AUTHLEVEL'       => $user['authlevel'],
       'TIME_NOW'             => $time_now,
       'TIME_TEXT'            => "$day_of_week, $day $month $year {$lang['ov_of_year']},",
 

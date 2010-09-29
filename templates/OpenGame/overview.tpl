@@ -19,7 +19,7 @@
       <th colspan=2 style="position: relative;">
         <div style="position: relative; width: 100%; height: 100%;">
           <div style="position: absolute; left: 5%;">{TIME_TEXT} <span id="ov_time">00:00:00</span></div>
-          <div style="position: absolute; right: 5%; align: center;">{MembersOnline} <a href="admin/overview.php" title="{MembersOnline2}">[{USERS_ONLINE}/{USERS_TOTAL}]</a></div>
+          <div style="position: absolute; right: 5%; align: center;">{MembersOnline} [{USERS_ONLINE}/{USERS_TOTAL}]<!-- IF USER_AUTHLEVEL >= 3 --> <a href="admin/overview.php">{L_user_level[3]}</a><!-- ENDIF --></div>
           &nbsp;
         </div>
       </th>
