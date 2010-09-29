@@ -30,7 +30,7 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-if($config->array_get('users', $user['id'], 'chat_lastUpdate') + $config->chat_timeout < $time_now)
+if($config->array_get('users', $user['id'], 'chat_lastUpdate') + $config->chat_timeout < $time_now && $config->_MODE != CACHER_NO_CACHE)
   die();
 
 $msg = SYS_mysqlSmartEscape ($_POST["msg"]);
