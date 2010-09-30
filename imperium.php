@@ -56,7 +56,27 @@ foreach ($planet as $p) {
     'ENERGY_CUR' => pretty_number($p['energy_max'] - $p['energy_used'], true, true),
     'ENERGY_MAX' => pretty_number($p['energy_max']),
   )));
+  $total['metal'] += $p['metal'];
+  $total['crystal'] += $p['crystal'];
+  $total['deuterium'] += $p['deuterium'];
+
+  $total['metal_perhour'] += $p['metal_perhour'];
+  $total['crystal_perhour'] += $p['crystal_perhour'];
+  $total['deuterium_perhour'] += $p['deuterium_perhour'];
 }
+
+/*
+$template->assign_block_vars('planet', array_merge(array(
+  'METAL_CUR'  => pretty_number($total['metal']),
+  'METAL_PROD' => pretty_number($p['metal_perhour']),
+
+  'CRYSTAL_CUR'  => pretty_number($total['crystal']),
+  'CRYSTAL_PROD' => pretty_number($p['crystal_perhour']),
+
+  'DEUTERIUM_CUR'  => pretty_number($total['deuterium']),
+  'DEUTERIUM_PROD' => pretty_number($p['deuterium_perhour']),
+)));
+*/
 
 $last = -1000;
 foreach ($sn_data as $unit_id => $res) {
