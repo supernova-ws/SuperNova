@@ -306,7 +306,10 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
   $parse['planet_field_current'] = $CurrentPlanet['field_current'];
   $parse['planet_field_max']     = $CurrentPlanet['field_max'] + ($CurrentPlanet[$resource[33]] * 5);
   $parse['field_libre']          = $parse['planet_field_max']  - $CurrentPlanet['field_current'];
-  $parse['NOW_BUILDING']         = $now_building;
+  $template->assign_vars(array(
+    'NOW_BUILDING' => $now_building,
+    'PAGE_HINT' => $lang['eco_bld_page_hint'],
+  ));
 
   $page                          = parsetemplate($template, $parse);
   display($page, $lang['Builds']);

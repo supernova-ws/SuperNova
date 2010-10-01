@@ -2,11 +2,10 @@
 
 <script type="text/javascript"><!--
 var production = Array();
-var unit_selected;
-var unit_hovered;
+var unit_selected = null;
 var unit_cache = Array();
 
-function show_unit_info(unit_id)
+function show_unit_info(unit_id, force_show)
 {
   element_cache['unit' + unit_id].style.borderColor="#0000FF";
 
@@ -48,14 +47,18 @@ function show_unit_info(unit_id)
 
 function select_unit(unit_id)
 {
-  if(unit_selected)
+  if(unit_selected == unit_id)
   {
-    element_cache['unit' + unit_selected].style.borderColor="";
-    unit_selected = undefined;
-    show_unit_info(unit_id);
+    unit_selected = null;
   }
-  unit_selected = unit_id;
-  element_cache['unit' + unit_id].style.borderColor="#0000FF";
+  else
+  {
+    if(unit_selected)
+    {
+      document.getElementById('unit' + unit_selected).style.borderColor="";
+    }
+    unit_selected = unit_id;
+  }
 }
 
 function unborder_unit(unit_id)
@@ -66,7 +69,7 @@ function unborder_unit(unit_id)
   }
 }
 --></script>
-{BuildListScript}
+{BuildListScript}<div id='deb'></div>
 <table width=530 id="unit_table">
 	{BuildList}
 	<tr>
@@ -80,7 +83,7 @@ function unborder_unit(unit_id)
        <td class="l" align="center">
          <div style="cursor: pointer; position: relative; height: 100px; width: 100px; font-size: 80%; border: 3px solid;" id="unit{production.ID}" unit_id="{production.ID}">
            <span style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%">
-             <img border="0" src="{dpath}gebaeude/{production.ID}.gif" align="top" width="100%" height="100%" onclick="select_unit({production.ID})"> <!-- onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
+             <img border="0" src="{dpath}gebaeude/{production.ID}.gif" align="top" width="100%" height="100%"> <!-- onclick="select_unit({production.ID})"> <!-- onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
            </span>
 
            <span style="position: absolute; top: 20%; left: 0px; width: 100%; height: 20%; font-size: 100%;" class="icon_alpha"> <!--  onclick="select_unit({production.ID})" onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
@@ -134,15 +137,6 @@ production[{production.ID}] =
   energy_balance: '{production.ENERGY_BALANCE}',
   build_link: '{production.BUILD_LINK}'
 };
-/*
-   jQuery("#unit{production.ID}").mouseenter(function(event, ui) {
-     show_unit_info({production.ID});
-   });
-
-   jQuery("#unit{production.ID}").mouseleave(function(event, ui) {
-     unborder_unit({production.ID});
-   });
-*/
 --></script>
 	<!-- END production -->
      </tr>
@@ -169,3 +163,4 @@ language =
   sys_energy: '{L_sys_energy}'
 };
 --></script>
+<!-- INCLUDE page_hint.tpl -->
