@@ -234,6 +234,11 @@ switch(intval($config->db_version))
     {
       sys_alter_table('planets', "ADD `governor` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Planet governor'");
     }
+    if(!$update_tables['users']['options'])
+    {
+      sys_alter_table('users', "ADD `options` TEXT COMMENT 'Packed user options'");
+    }
+    // $newVersion = 16;
     set_time_limit(30);
 
   case 16:

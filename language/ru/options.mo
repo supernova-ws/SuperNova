@@ -80,4 +80,8 @@ $lang['vacations_exit']                 = "–ежим отпуска отключен... ѕерезайдите
 $lang['select_skin_path']		= "¬џЅ–ј“№";
 
 $lang['opt_language']         = 'язык интерфейса';
+
+$lang['opt_compatibility']    = '—овместимость - старые интерфейсов';
+$lang['opt_compat_structures']= '—тарый интерфейс строительства зданий';
+
 ?>
