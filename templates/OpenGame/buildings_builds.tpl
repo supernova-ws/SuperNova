@@ -5,7 +5,7 @@ var production = Array();
 var unit_selected = null;
 var unit_cache = Array();
 
-function show_unit_info(unit_id, force_show)
+function show_unit_info(unit_id)
 {
   element_cache['unit' + unit_id].style.borderColor="#0000FF";
 
@@ -19,7 +19,12 @@ function show_unit_info(unit_id, force_show)
     var unit = production[unit_id];
     
     var result = '';
-    result += '<b>' + unit['name'] + ', ' + language['level'] + ' ' + unit['level'] + '</b><br>';
+    result += '<b>' + unit['name'];
+    if(unit['level'])
+    {
+     result += ', ' + language['level'] + ' ' + unit['level'];
+    }
+    result += '</b><br>';
     result += unit['description'] + '<br>';
     result += unit['price'];
     result += unit['time'];
@@ -56,6 +61,8 @@ function select_unit(unit_id)
     if(unit_selected)
     {
       document.getElementById('unit' + unit_selected).style.borderColor="";
+      unit_selected = null;
+      show_unit_info(unit_id);
     }
     unit_selected = unit_id;
   }
