@@ -24,7 +24,8 @@ function show_unit_info(unit_id)
     result += unit['description'] + '<br>';
     result += unit['price'];
     result += unit['time'];
-    result += unit['resources_left'] + '<br>'	;
+    result += unit['resources_left'] + '<br>';
+    result += unit['energy_balance'] + '<br>';
     result += unit['build_link'];
 
     unit_cache[unit_id] = result;
@@ -118,6 +119,7 @@ production[{production.ID}] =
   metal_balance: '{production.METAL_BALANCE}',
   crystal_balance: '{production.CRYSTAL_BALANCE}',
   deuterium_balance: '{production.DEUTERIUM_BALANCE}',
+  energy_balance: '{production.ENERGY_BALANCE}',
   build_link: '{production.BUILD_LINK}'
 };
 /*
