@@ -76,22 +76,26 @@ function CheckTheUser()
   global $skip_ban_check, $IsUserChecked;
 
   $user = CheckCookies();
+  $IsUserChecked = is_array($user);
 
-  if ($user && !$skip_ban_check)
+  if($user)
   {
-    if ($user['bana'] == 1 && $user['banaday'] > time())
+    sys_user_options_unpack($user);
+
+    if(!$skip_ban_check)
     {
-      $bantime = date("d.m.Y H:i:s", $user['banaday']);
-      die ('Вы забанены. Срок окончания блокировки аккаунта: '.$bantime.' <br>Для получения информации зайдите <a href="banned.php">сюда</a>');
-    }
-    elseif ($user['bana'] == 1)
-    {
-      // doquery("DELETE FROM {{table}} WHERE who2='$user[username]'", 'banned');
-      doquery("UPDATE {{users}} SET bana=0, urlaubs_modus=0, banaday=0 WHERE username='{$user['username']}'");
+      if ($user['bana'] == 1 && $user['banaday'] > time())
+      {
+        $bantime = date("d.m.Y H:i:s", $user['banaday']);
+        die ('Вы забанены. Срок окончания блокировки аккаунта: '.$bantime.' <br>Для получения информации зайдите <a href="banned.php">сюда</a>');
+      }
+      elseif ($user['bana'] == 1)
+      {
+        // doquery("DELETE FROM {{table}} WHERE who2='$user[username]'", 'banned');
+        doquery("UPDATE {{users}} SET bana=0, urlaubs_modus=0, banaday=0 WHERE username='{$user['username']}'");
+      }
     }
   }
-
-  $IsUserChecked = is_array($user);
 
   return $user;
 }

@@ -135,6 +135,11 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
     $settings_rep = "0";
   }
 
+  if($_POST['compat_builds'])
+  {
+    $user['compat_builds'] = 1;
+  }
+
   // Modo vacaciones
   if (isset($_POST['urlaubs_modus']) && $_POST['urlaubs_modus'] == 'on')
   {
@@ -190,6 +195,8 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
 
 //  $dpath = str_replace('\\','\\\\',$dpath);
 
+  $options = sys_user_options_pack($user);
+
   doquery("UPDATE {{users}} SET
   `email` = '$db_email',
   `lang` = '$languese',
@@ -214,6 +221,7 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   `kolorplus` = '$kolorplus',
   `kolorpoziom` = '$kolorpoziom',
   `urlaubs_modus_time` = '$urlaubs_modus_time',
+  `options` = '$options',
   `deltime` = '$Del_Time'
   WHERE `id` = '$iduser' LIMIT 1");
 
@@ -246,6 +254,13 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
 
   message($lang['succeful_save'], $lang['Options']);
 } else {
+
+  if($user['urlaubs_modus']){
+    $template = gettemplate('options_body_vmode', true);
+  }else{
+    $template = gettemplate('options_body', true);
+  }
+
   $parse = $lang;
 
   $parse['dpath'] = $dpath;
@@ -305,11 +320,13 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   $parse['kolorplus']   = $user['kolorplus'];
   $parse['kolorpoziom'] = $user['kolorpoziom'];
 
-  if($user['urlaubs_modus']){
-    display(parsetemplate(gettemplate('options_body_vmode'), $parse), 'Options', false);
-  }else{
-    display(parsetemplate(gettemplate('options_body'), $parse), 'Options', false);
+  $options = sys_user_options_unpack($user);
+  foreach($options as $option_name => $option_value)
+  {
+    $parse[$option_name] = $user[$option_name];
   }
+
+  display(parsetemplate($template, $parse), 'Options', false);
   die();
 }
 ?>

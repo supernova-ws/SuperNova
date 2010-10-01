@@ -15,7 +15,14 @@
 
 function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
 {
-  $template = gettemplate('buildings_builds', true);
+  if($CurrentUser['compat_builds'])
+  {
+    $template = gettemplate('buildings_builds_old', true);
+  }
+  else
+  {
+    $template = gettemplate('buildings_builds', true);
+  }
 
   global $sn_data, $lang, $resource, $reslist, $phpEx, $dpath, $_GET, $config;
 
@@ -303,12 +310,12 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
     $parse['BuildList']        = '';
   }
 
-  $parse['planet_field_current'] = $CurrentPlanet['field_current'];
-  $parse['planet_field_max']     = $CurrentPlanet['field_max'] + ($CurrentPlanet[$resource[33]] * 5);
-  $parse['field_libre']          = $parse['planet_field_max']  - $CurrentPlanet['field_current'];
   $template->assign_vars(array(
-    'NOW_BUILDING' => $now_building,
-    'PAGE_HINT' => $lang['eco_bld_page_hint'],
+    'planet_field_current' => $CurrentPlanet['field_current'],
+    'planet_field_max'     => $CurrentPlanet['field_max'] + ($CurrentPlanet[$resource[33]] * 5),
+    'field_libre'          => $CurrentPlanet['field_max'] + ($CurrentPlanet[$resource[33]] * 5) - $CurrentPlanet['field_current'],
+    'NOW_BUILDING'         => $now_building,
+    'PAGE_HINT'            => $lang['eco_bld_page_hint'],
   ));
 
   $page                          = parsetemplate($template, $parse);
