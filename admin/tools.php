@@ -14,21 +14,22 @@ $ugamela_root_path = '../';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
+if ($user['authlevel'] < 3)
+{
+  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+  die();
+}
+
 $mode = intval($_GET['mode'] ? $_GET['mode'] : $_POST['mode']);
 
 includeLang('admin');
 $parse = $lang;
 
-if ($user['authlevel'] >= 3) {
-
-  switch($mode){
-    case 1:
-      $config->db_loadAll();
-      break;
-  }
-
-  display( parsetemplate(gettemplate("admin/admin_tools"), $parse), $lang['adm_bn_ttle'], false, '', true);
-} else {
-  AdminMessage( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+switch($mode){
+  case 1:
+    $config->db_loadAll();
+    break;
 }
+
+display( parsetemplate(gettemplate("admin/admin_tools"), $parse), $lang['adm_bn_ttle'], false, '', true);
 ?>

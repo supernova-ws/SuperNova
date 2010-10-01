@@ -15,6 +15,12 @@ $ugamela_root_path = './../';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
+if ($user['authlevel'] < 3)
+{
+  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+  die();
+}
+
   if ($user['authlevel'] >= 1) {
     if ($_POST && $mode == "change") {
       if (isset($_POST["tresc"]) && $_POST["tresc"] != '') {

@@ -189,6 +189,7 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   $SetOrder = intval($_POST['settings_order']);
 
 //  $dpath = str_replace('\\','\\\\',$dpath);
+pdump($db_email);
 
   doquery("UPDATE {{users}} SET
   `email` = '$db_email',

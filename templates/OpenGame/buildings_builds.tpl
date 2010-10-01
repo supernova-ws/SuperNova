@@ -20,7 +20,7 @@ function show_unit_info(unit_id)
     var unit = production[unit_id];
     
     var result = '';
-    result += unit['name'] + ', ' + language['level'] + ' ' + unit['level'] + '<br>';
+    result += '<b>' + unit['name'] + ', ' + language['level'] + ' ' + unit['level'] + '</b><br>';
     result += unit['description'] + '<br>';
     result += unit['price'];
     result += unit['time'];
@@ -80,7 +80,6 @@ function unborder_unit(unit_id)
              <!-- ENDIF -->
            </span>
 
-
            <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='infos.php?gid={production.ID}'">
              <div class="icons icon-info"></div>
            </span>
@@ -91,9 +90,9 @@ function unborder_unit(unit_id)
              </span>
   
              <!-- IF production.LEVEL -->
-               <span style="position: absolute; bottom: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=destroy&building={production.ID}'">
+               <div style="position: absolute; bottom: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=destroy&building={production.ID}'">
                  <div class="icons icon-minus" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
-               </span>
+               </div>
              <!-- ENDIF -->
            <!-- ENDIF -->
 
@@ -136,26 +135,19 @@ production[{production.ID}] =
 </table>
 
 <script type="text/javascript"><!--
- jQuery(document).ready(function() {
-/*  
-   jQuery("*").click(function(event, ui) {
-//     alert(event.target.nodeName);
-   });
-*/
-   jQuery("#unit_table").delegate("*[unit_id]", "mouseenter", function(event, ui) {
-     show_unit_info(jQuery(this).attr('unit_id'));
-   });
+jQuery(document).ready(function() {
+  jQuery("#unit_table").delegate("*[unit_id]", "mouseenter", function(event, ui) {
+    show_unit_info(jQuery(this).attr('unit_id'));
+  });
 
-   jQuery("#unit_table").delegate("*[unit_id]", "mouseleave", function(event, ui) {
-     unborder_unit(jQuery(this).attr('unit_id'));
-   });
+  jQuery("#unit_table").delegate("*[unit_id]", "mouseleave", function(event, ui) {
+    unborder_unit(jQuery(this).attr('unit_id'));
+  });
 
-   jQuery("#unit_table").delegate("*[unit_id]", "click", function(event, ui) {
-     select_unit(jQuery(this).attr('unit_id'));
-   });
+  jQuery("#unit_table").delegate("*[unit_id]", "click", function(event, ui) {
+    select_unit(jQuery(this).attr('unit_id'));
+  });
+});
 
 language = {level: '{L_level}'};
-});
-// onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})" onclick="select_unit({production.ID})"
-
 --></script>

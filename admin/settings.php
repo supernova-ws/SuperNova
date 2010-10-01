@@ -18,9 +18,10 @@ include($ugamela_root_path . 'common.' . $phpEx);
 
 includeLang('admin/settings');
 
-if ( $user['authlevel'] < 3 )
+if ($user['authlevel'] < 3)
 {
-  AdminMessage ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+  die();
 }
 
 $template                         = gettemplate('admin/admin_settings', true);

@@ -17,34 +17,40 @@ $ugamela_root_path = './../';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
-	if ($user['authlevel'] >= 1) {
-		includeLang('admin');
+if ($user['authlevel'] < 3)
+{
+  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+  die();
+}
 
-		$mode      = $_POST['mode'];
+  if ($user['authlevel'] >= 1) {
+    includeLang('admin');
 
-		$PageTpl   = gettemplate("admin/add_money");
-		$parse     = $lang;
+    $mode      = $_POST['mode'];
 
-		if ($mode == 'addit') {
-			$id          = $_POST['id'];
-			$metal       = $_POST['metal'];
-			$cristal     = $_POST['cristal'];
-			$deut        = $_POST['deut'];
-			$QryUpdatePlanet  = "UPDATE {{table}} SET ";
-			$QryUpdatePlanet .= "`metal` = `metal` + '". $metal ."', ";
-			$QryUpdatePlanet .= "`crystal` = `crystal` + '". $cristal ."', ";
-			$QryUpdatePlanet .= "`deuterium` = `deuterium` + '". $deut ."' ";
-			$QryUpdatePlanet .= "WHERE ";
-			$QryUpdatePlanet .= "`id` = '". $id ."' ";
-			doquery( $QryUpdatePlanet, "planets");
+    $PageTpl   = gettemplate("admin/add_money");
+    $parse     = $lang;
 
-			AdminMessage ( $lang['adm_am_done'], $lang['adm_am_ttle'] );
-		}
-		$Page = parsetemplate($PageTpl, $parse);
+    if ($mode == 'addit') {
+      $id          = $_POST['id'];
+      $metal       = $_POST['metal'];
+      $cristal     = $_POST['cristal'];
+      $deut        = $_POST['deut'];
+      $QryUpdatePlanet  = "UPDATE {{table}} SET ";
+      $QryUpdatePlanet .= "`metal` = `metal` + '". $metal ."', ";
+      $QryUpdatePlanet .= "`crystal` = `crystal` + '". $cristal ."', ";
+      $QryUpdatePlanet .= "`deuterium` = `deuterium` + '". $deut ."' ";
+      $QryUpdatePlanet .= "WHERE ";
+      $QryUpdatePlanet .= "`id` = '". $id ."' ";
+      doquery( $QryUpdatePlanet, "planets");
 
-		display ($Page, $lang['adm_am_ttle'], false, '', true);
-	} else {
-		AdminMessage ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-	}
+      AdminMessage ( $lang['adm_am_done'], $lang['adm_am_ttle'] );
+    }
+    $Page = parsetemplate($PageTpl, $parse);
+
+    display ($Page, $lang['adm_am_ttle'], false, '', true);
+  } else {
+    AdminMessage ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+  }
 
 ?>
