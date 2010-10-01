@@ -137,6 +137,17 @@ ul /* Unmarked list */
   padding-left: 20;
 }
 
+.icons
+{
+  width: 16px;
+  height: 16px;
+}
+
+.icon-plus { background-position: -32px -128px; }
+.icon-minus { background-position: -64px -128px; }
+.icon-cancel { background-position: 0 -128px; }
+.icon-info { background-position: -16px -144px; }
+
 .icon_alpha /* Partially transparent background for over-planet-image icons */
 {
   /* Fallback for web browsers that doesn't support RGBa */

@@ -334,3 +334,6 @@ h1
 
 /* Setting popup table background color */
 div .ui-dialog-content table { background: #040e1e; }
+
+/* Icon file */
+.icons { background-image: url(images/icons.png); }
