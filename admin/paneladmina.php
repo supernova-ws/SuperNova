@@ -16,155 +16,156 @@ $ugamela_root_path = './../';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
-  $GET_action = SYS_mysqlSmartEscape($_GET['action']);
-  $GET_result = SYS_mysqlSmartEscape($_GET['result']);
-  $Pattern    = SYS_mysqlSmartEscape($_GET['player']);
-  $NewLvl     = intval($_GET['authlvl']);
-  $ip         = SYS_mysqlSmartEscape($_GET['ip']);
+if ($user['authlevel'] < 3)
+{
+  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+  die();
+}
 
-  if ($user['authlevel'] >= "1") {
-    includeLang('admin/adminpanel');
+$GET_action = SYS_mysqlSmartEscape($_GET['action']);
+$GET_result = SYS_mysqlSmartEscape($_GET['result']);
+$Pattern    = SYS_mysqlSmartEscape($_GET['player']);
+$NewLvl     = intval($_GET['authlvl']);
+$ip         = SYS_mysqlSmartEscape($_GET['ip']);
 
-    $PanelMainTPL = gettemplate('admin/admin_panel_main');
+includeLang('admin/adminpanel');
 
-    $parse                  = $lang;
-    $parse['adm_sub_form1'] = "";
-    $parse['adm_sub_form2'] = "";
-    $parse['adm_sub_form3'] = "";
+$PanelMainTPL = gettemplate('admin/admin_panel_main');
 
-    // Afficher les templates
-    if (isset($GET_result)) {
-      switch ($GET_result){
-        case 'usr_search':
-          $SelUser = doquery("SELECT * FROM {{table}} WHERE `username` LIKE '%". $Pattern ."%' LIMIT 1;", 'users', true);
-          $UsrMain = doquery("SELECT `name` FROM {{table}} WHERE `id` = '". $SelUser['id_planet'] ."';", 'planets', true);
+$parse                  = $lang;
+$parse['adm_sub_form1'] = "";
+$parse['adm_sub_form2'] = "";
+$parse['adm_sub_form3'] = "";
 
-          $bloc                   = $lang;
-          $bloc['answer1']        = $SelUser['id'];
-          $bloc['answer2']        = $SelUser['username'];
-          $bloc['answer3']        = $SelUser['user_lastip'];
-          $bloc['answer4']        = $SelUser['email'];
-          $bloc['answer5']        = $lang['adm_usr_level'][ $SelUser['authlevel'] ];
-          $bloc['answer6']        = $lang['adm_usr_genre'][ $SelUser['sex'] ];
-          $bloc['answer7']        = "[".$SelUser['id_planet']."] ".$UsrMain['name'];
-          $bloc['answer8']        = "[".$SelUser['galaxy'].":".$SelUser['system'].":".$SelUser['planet']."] ";
-          $SubPanelTPL            = gettemplate('admin/admin_panel_asw1');
-          $parse['adm_sub_form2'] = parsetemplate( $SubPanelTPL, $bloc );
-          break;
+// Afficher les templates
+if (isset($GET_result)) {
+  switch ($GET_result){
+    case 'usr_search':
+      $SelUser = doquery("SELECT * FROM {{table}} WHERE `username` LIKE '%". $Pattern ."%' LIMIT 1;", 'users', true);
+      $UsrMain = doquery("SELECT `name` FROM {{table}} WHERE `id` = '". $SelUser['id_planet'] ."';", 'planets', true);
 
-        case 'usr_data':
-          $SelUser = doquery("SELECT * FROM {{table}} WHERE `username` LIKE '%". $Pattern ."%' LIMIT 1;", 'users', true);
-          $UsrMain = doquery("SELECT `name` FROM {{table}} WHERE `id` = '". $SelUser['id_planet'] ."';", 'planets', true);
-
-          $bloc                    = $lang;
-          $bloc['answer1']         = $SelUser['id'];
-          $bloc['answer2']         = $SelUser['username'];
-          $bloc['answer3']         = $SelUser['user_lastip'];
-          $bloc['answer4']         = $SelUser['email'];
-          $bloc['answer5']         = $lang['adm_usr_level'][ $SelUser['authlevel'] ];
-          $bloc['answer6']         = $lang['adm_usr_genre'][ $SelUser['sex'] ];
-          $bloc['answer7']         = "[".$SelUser['id_planet']."] ".$UsrMain['name'];
-          $bloc['answer8']         = "[".$SelUser['galaxy'].":".$SelUser['system'].":".$SelUser['planet']."] ";
-          $SubPanelTPL             = gettemplate('admin/admin_panel_asw1');
-          $parse['adm_sub_form1']  = parsetemplate( $SubPanelTPL, $bloc );
-
-          $parse['adm_sub_form2']  = "<table><tbody>";
-          $parse['adm_sub_form2'] .= "<tr><td colspan=\"4\" class=\"c\">".$lang['adm_colony']."</td></tr>";
-          $UsrColo = doquery("SELECT * FROM {{table}} WHERE `id_owner` = '". $SelUser['id'] ." ORDER BY `galaxy` ASC, `planet` ASC, `system` ASC, `planet_type` ASC';", 'planets');
-          while ( $Colo = mysql_fetch_assoc($UsrColo) ) {
-            if ($Colo['id'] != $SelUser['id_planet']) {
-              $parse['adm_sub_form2'] .= "<tr><th>".$Colo['id']."</th>";
-              $parse['adm_sub_form2'] .= "<th>". (($Colo['planet_type'] == 1) ? $lang['adm_planet'] : $lang['adm_moon'] ) ."</th>";
-              $parse['adm_sub_form2'] .= "<th>[".$Colo['galaxy'].":".$Colo['system'].":".$Colo['planet']."]</th>";
-              $parse['adm_sub_form2'] .= "<th>".$Colo['name']."</th></tr>";
-            }
-          }
-          $parse['adm_sub_form2'] .= "</tbody></table>";
-
-          $parse['adm_sub_form3']  = "<table><tbody>";
-          $parse['adm_sub_form3'] .= "<tr><td colspan=\"4\" class=\"c\">".$lang['adm_technos']."</td></tr>";
-          for ($Item = 100; $Item <= 199; $Item++) {
-            if ($resource[$Item] != "") {
-              $parse['adm_sub_form3'] .= "<tr><th>".$lang['tech'][$Item]."</th>";
-              $parse['adm_sub_form3'] .= "<th>".$SelUser[$resource[$Item]]."</th></tr>";
-            }
-          }
-          $parse['adm_sub_form3'] .= "</tbody></table>";
-          break;
-
-        case 'usr_level':
-
-          # only for admins
-          if ($user['authlevel'] < 3)
-          {
-            message($lang['sys_noalloaw'], $lang['sys_noaccess']);
-            die();
-          }
-
-          $QryUpdate  = doquery("UPDATE {{table}} SET `authlevel` = '".$NewLvl."' WHERE `username` = '".$Pattern."';", 'users');
-          $Message    = $lang['adm_mess_lvl1']. " ". $Pattern ." ".$lang['adm_mess_lvl2'];
-          $Message   .= "<font color=\"red\">".$lang['adm_usr_level'][ $NewLvl ]."</font>!";
-
-          AdminMessage ( $Message, $lang['adm_mod_level'] );
-          break;
-
-        case 'ip_search':
-          $SelUser    = doquery("SELECT * FROM {{table}} WHERE `user_lastip` = '". $ip ."' LIMIT 10;", 'users');
-          $bloc                   = $lang;
-          $bloc['adm_this_ip']    = $ip;
-          while ( $Usr = mysql_fetch_assoc($SelUser) ) {
-            $UsrMain = doquery("SELECT `name` FROM {{table}} WHERE `id` = '". $Usr['id_planet'] ."';", 'planets', true);
-            $bloc['adm_plyer_lst'] .= "<tr><th>".$Usr['username']."</th><th>[".$Usr['galaxy'].":".$Usr['system'].":".$Usr['planet']."] ".$UsrMain['name']."</th></tr>";
-          }
-          $SubPanelTPL            = gettemplate('admin/admin_panel_asw2');
-          $parse['adm_sub_form2'] = parsetemplate( $SubPanelTPL, $bloc );
-          break;
-        default:
-          break;
-      }
-    }
-
-    // Traiter les reponses aux formulaires
-    if (isset($GET_action)) {
       $bloc                   = $lang;
-      switch ($GET_action){
-        case 'usr_search':
-          $SubPanelTPL            = gettemplate('admin/admin_panel_frm1');
-          break;
-
-        case 'usr_data':
-          $SubPanelTPL            = gettemplate('admin/admin_panel_frm4');
-          break;
-
-        case 'usr_level':
-          # only for admins
-          if ($user['authlevel'] != 3)
-          {
-            message($lang['sys_noalloaw'], $lang['sys_noaccess']);
-            die();
-          }
-
-
-          for ($Lvl = 0; $Lvl < 4; $Lvl++) {
-            $bloc['adm_level_lst'] .= "<option value=\"". $Lvl ."\">". $lang['adm_usr_level'][ $Lvl ] ."</option>";
-          }
-          $SubPanelTPL            = gettemplate('admin/admin_panel_frm3');
-          break;
-
-        case 'ip_search':
-          $SubPanelTPL            = gettemplate('admin/admin_panel_frm2');
-          break;
-
-        default:
-          break;
-      }
+      $bloc['answer1']        = $SelUser['id'];
+      $bloc['answer2']        = $SelUser['username'];
+      $bloc['answer3']        = $SelUser['user_lastip'];
+      $bloc['answer4']        = $SelUser['email'];
+      $bloc['answer5']        = $lang['adm_usr_level'][ $SelUser['authlevel'] ];
+      $bloc['answer6']        = $lang['adm_usr_genre'][ $SelUser['sex'] ];
+      $bloc['answer7']        = "[".$SelUser['id_planet']."] ".$UsrMain['name'];
+      $bloc['answer8']        = "[".$SelUser['galaxy'].":".$SelUser['system'].":".$SelUser['planet']."] ";
+      $SubPanelTPL            = gettemplate('admin/admin_panel_asw1');
       $parse['adm_sub_form2'] = parsetemplate( $SubPanelTPL, $bloc );
-    }
+      break;
 
-    $page = parsetemplate( $PanelMainTPL, $parse );
-    display( $page, $lang['panel_mainttl'], false, '', true );
-  } else {
-    message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+    case 'usr_data':
+      $SelUser = doquery("SELECT * FROM {{table}} WHERE `username` LIKE '%". $Pattern ."%' LIMIT 1;", 'users', true);
+      $UsrMain = doquery("SELECT `name` FROM {{table}} WHERE `id` = '". $SelUser['id_planet'] ."';", 'planets', true);
+
+      $bloc                    = $lang;
+      $bloc['answer1']         = $SelUser['id'];
+      $bloc['answer2']         = $SelUser['username'];
+      $bloc['answer3']         = $SelUser['user_lastip'];
+      $bloc['answer4']         = $SelUser['email'];
+      $bloc['answer5']         = $lang['adm_usr_level'][ $SelUser['authlevel'] ];
+      $bloc['answer6']         = $lang['adm_usr_genre'][ $SelUser['sex'] ];
+      $bloc['answer7']         = "[".$SelUser['id_planet']."] ".$UsrMain['name'];
+      $bloc['answer8']         = "[".$SelUser['galaxy'].":".$SelUser['system'].":".$SelUser['planet']."] ";
+      $SubPanelTPL             = gettemplate('admin/admin_panel_asw1');
+      $parse['adm_sub_form1']  = parsetemplate( $SubPanelTPL, $bloc );
+
+      $parse['adm_sub_form2']  = "<table><tbody>";
+      $parse['adm_sub_form2'] .= "<tr><td colspan=\"4\" class=\"c\">".$lang['adm_colony']."</td></tr>";
+      $UsrColo = doquery("SELECT * FROM {{table}} WHERE `id_owner` = '". $SelUser['id'] ." ORDER BY `galaxy` ASC, `planet` ASC, `system` ASC, `planet_type` ASC';", 'planets');
+      while ( $Colo = mysql_fetch_assoc($UsrColo) ) {
+        if ($Colo['id'] != $SelUser['id_planet']) {
+          $parse['adm_sub_form2'] .= "<tr><th>".$Colo['id']."</th>";
+          $parse['adm_sub_form2'] .= "<th>". (($Colo['planet_type'] == 1) ? $lang['adm_planet'] : $lang['adm_moon'] ) ."</th>";
+          $parse['adm_sub_form2'] .= "<th>[".$Colo['galaxy'].":".$Colo['system'].":".$Colo['planet']."]</th>";
+          $parse['adm_sub_form2'] .= "<th>".$Colo['name']."</th></tr>";
+        }
+      }
+      $parse['adm_sub_form2'] .= "</tbody></table>";
+
+      $parse['adm_sub_form3']  = "<table><tbody>";
+      $parse['adm_sub_form3'] .= "<tr><td colspan=\"4\" class=\"c\">".$lang['adm_technos']."</td></tr>";
+      for ($Item = 100; $Item <= 199; $Item++) {
+        if ($resource[$Item] != "") {
+          $parse['adm_sub_form3'] .= "<tr><th>".$lang['tech'][$Item]."</th>";
+          $parse['adm_sub_form3'] .= "<th>".$SelUser[$resource[$Item]]."</th></tr>";
+        }
+      }
+      $parse['adm_sub_form3'] .= "</tbody></table>";
+      break;
+
+    case 'usr_level':
+
+      # only for admins
+      if ($user['authlevel'] < 3)
+      {
+        message($lang['sys_noalloaw'], $lang['sys_noaccess']);
+        die();
+      }
+
+      $QryUpdate  = doquery("UPDATE {{table}} SET `authlevel` = '".$NewLvl."' WHERE `username` = '".$Pattern."';", 'users');
+      $Message    = $lang['adm_mess_lvl1']. " ". $Pattern ." ".$lang['adm_mess_lvl2'];
+      $Message   .= "<font color=\"red\">".$lang['adm_usr_level'][ $NewLvl ]."</font>!";
+
+      AdminMessage ( $Message, $lang['adm_mod_level'] );
+      break;
+
+    case 'ip_search':
+      $SelUser    = doquery("SELECT * FROM {{table}} WHERE `user_lastip` = '". $ip ."' LIMIT 10;", 'users');
+      $bloc                   = $lang;
+      $bloc['adm_this_ip']    = $ip;
+      while ( $Usr = mysql_fetch_assoc($SelUser) ) {
+        $UsrMain = doquery("SELECT `name` FROM {{table}} WHERE `id` = '". $Usr['id_planet'] ."';", 'planets', true);
+        $bloc['adm_plyer_lst'] .= "<tr><th>".$Usr['username']."</th><th>[".$Usr['galaxy'].":".$Usr['system'].":".$Usr['planet']."] ".$UsrMain['name']."</th></tr>";
+      }
+      $SubPanelTPL            = gettemplate('admin/admin_panel_asw2');
+      $parse['adm_sub_form2'] = parsetemplate( $SubPanelTPL, $bloc );
+      break;
+    default:
+      break;
   }
+}
 
+// Traiter les reponses aux formulaires
+if (isset($GET_action)) {
+  $bloc                   = $lang;
+  switch ($GET_action){
+    case 'usr_search':
+      $SubPanelTPL            = gettemplate('admin/admin_panel_frm1');
+      break;
+
+    case 'usr_data':
+      $SubPanelTPL            = gettemplate('admin/admin_panel_frm4');
+      break;
+
+    case 'usr_level':
+      # only for admins
+      if ($user['authlevel'] != 3)
+      {
+        message($lang['sys_noalloaw'], $lang['sys_noaccess']);
+        die();
+      }
+
+
+      for ($Lvl = 0; $Lvl < 4; $Lvl++) {
+        $bloc['adm_level_lst'] .= "<option value=\"". $Lvl ."\">". $lang['adm_usr_level'][ $Lvl ] ."</option>";
+      }
+      $SubPanelTPL            = gettemplate('admin/admin_panel_frm3');
+      break;
+
+    case 'ip_search':
+      $SubPanelTPL            = gettemplate('admin/admin_panel_frm2');
+      break;
+
+    default:
+      break;
+  }
+  $parse['adm_sub_form2'] = parsetemplate( $SubPanelTPL, $bloc );
+}
+
+$page = parsetemplate( $PanelMainTPL, $parse );
+display( $page, $lang['panel_mainttl'], false, '', true );
 ?>

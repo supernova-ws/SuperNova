@@ -16,6 +16,12 @@ $ugamela_root_path = './../';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
+if ($user['authlevel'] < 3)
+{
+  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+  die();
+}
+
   $GET_cmd  = SYS_mysqlSmartEscape($_GET['cmd']);
   $TypeSort = SYS_mysqlSmartEscape($_GET['type']);
 

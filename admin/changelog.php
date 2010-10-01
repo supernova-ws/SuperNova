@@ -15,6 +15,12 @@ $ugamela_root_path = '../';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.'.$phpEx);
 
+if ($user['authlevel'] < 3)
+{
+  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+  die();
+}
+
 includeLang('changelog');
 $template = gettemplate('changelog_table');
 
@@ -23,10 +29,10 @@ $parse = $lang;
 foreach($lang['changelog'] as $a => $b)
 {
 
-	$parse['version_number'] = $a;
-	$parse['description']    = nl2br($b);
+  $parse['version_number'] = $a;
+  $parse['description']    = nl2br($b);
 
-	$body .= parsetemplate($template, $parse);
+  $body .= parsetemplate($template, $parse);
 
 }
 

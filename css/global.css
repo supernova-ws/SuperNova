@@ -143,10 +143,13 @@ ul /* Unmarked list */
   height: 16px;
 }
 
-.icon-plus { background-position: -32px -128px; }
-.icon-minus { background-position: -64px -128px; }
-.icon-cancel { background-position: 0 -128px; }
-.icon-info { background-position: -16px -144px; }
+/* Icon file */
+.icons { background-image: url(../images/icons.png); }
+
+.icon-plus { background-position: 0px 0px; }
+.icon-minus { background-position: -16px 0px; }
+.icon-info { background-position: -32px 0px; }
+.icon-cancel { background-position: -48px 0px; }
 
 .icon_alpha /* Partially transparent background for over-planet-image icons */
 {

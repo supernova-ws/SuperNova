@@ -3,6 +3,12 @@ include_once('../includes/init.inc');
 
 $user          = CheckTheUser();
 
+if ($user['authlevel'] < 3)
+{
+  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+  die();
+}
+
 includeLang('admin');
 
 if ($user['authlevel'] >= 3) {

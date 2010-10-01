@@ -15,37 +15,43 @@ $ugamela_root_path = './../';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
-	if ($user['authlevel'] >= 1) {
-		includeLang('admin/addmoon');
+if ($user['authlevel'] < 3)
+{
+  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+  die();
+}
 
-		$mode      = $_POST['mode'];
+  if ($user['authlevel'] >= 1) {
+    includeLang('admin/addmoon');
 
-		$PageTpl   = gettemplate("admin/add_moon");
-		$parse     = $lang;
+    $mode      = $_POST['mode'];
 
-		if ($mode == 'addit') {
-			$PlanetID  = $_POST['user'];
-			$MoonName  = $_POST['name'];
+    $PageTpl   = gettemplate("admin/add_moon");
+    $parse     = $lang;
 
-			$QrySelectPlanet  = "SELECT * FROM {{table}} ";
-			$QrySelectPlanet .= "WHERE ";
-			$QrySelectPlanet .= "`id` = '". $PlanetID ."';";
-			$PlanetSelected = doquery ( $QrySelectPlanet, 'planets', true);
+    if ($mode == 'addit') {
+      $PlanetID  = $_POST['user'];
+      $MoonName  = $_POST['name'];
 
-			$Galaxy    = $PlanetSelected['galaxy'];
-			$System    = $PlanetSelected['system'];
-			$Planet    = $PlanetSelected['planet'];
+      $QrySelectPlanet  = "SELECT * FROM {{table}} ";
+      $QrySelectPlanet .= "WHERE ";
+      $QrySelectPlanet .= "`id` = '". $PlanetID ."';";
+      $PlanetSelected = doquery ( $QrySelectPlanet, 'planets', true);
+
+      $Galaxy    = $PlanetSelected['galaxy'];
+      $System    = $PlanetSelected['system'];
+      $Planet    = $PlanetSelected['planet'];
             $Owner     = $PlanetSelected['id_owner'];
-			$MoonID    = time();
+      $MoonID    = time();
 
-			CreateOneMoonRecord ( $Galaxy, $System, $Planet, $Owner, $MoonID, $MoonName, 20 );
+      CreateOneMoonRecord ( $Galaxy, $System, $Planet, $Owner, $MoonID, $MoonName, 20 );
 
-			AdminMessage ( $lang['addm_done'], $lang['addm_title'] );
-		}
-		$Page = parsetemplate($PageTpl, $parse);
+      AdminMessage ( $lang['addm_done'], $lang['addm_title'] );
+    }
+    $Page = parsetemplate($PageTpl, $parse);
 
-		display ($Page, $lang['addm_title'], false, '', true);
-	} else {
-		AdminMessage ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-	}
+    display ($Page, $lang['addm_title'], false, '', true);
+  } else {
+    AdminMessage ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+  }
 ?>
