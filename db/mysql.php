@@ -19,8 +19,8 @@ function doquery($query, $table = "", $fetch = false){
     $badword = true;
   }elseif (stripos($query, 'EOAD DAT') != FALSE) {
     $badword = true;
-  }elseif (stripos($query, 'AUTHLEVEL') != FALSE) {
-    $badword = true;
+//  }elseif (stripos($query, 'AUTHLEVEL') != FALSE) {
+//    $badword = true;
   }
   if ($badword) {
     $message = 'Привет, я не знаю то, что Вы пробовали сделать, но команда, которую Вы только послали базе данных, не выглядела очень дружественной и она была заблокированна.<br /><br />Ваш IP, и другие данные переданны администрации сервера. Удачи!.';
