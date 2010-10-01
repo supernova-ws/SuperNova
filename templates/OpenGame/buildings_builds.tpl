@@ -8,15 +8,6 @@ var unit_cache = Array();
 
 function show_unit_info(unit_id)
 {
-/*
-  if(!unit_cache[unit_id])
-  {
-    unit_cache[unit_id] = document.getElementById('unit' + unit_id).style;
-  }
-  var style = unit_cache[unit_id];
-
-  style.borderColor="#0000FF";
-*/
   element_cache['unit' + unit_id].style.borderColor="#0000FF";
 
   if(unit_selected)
@@ -28,31 +19,29 @@ function show_unit_info(unit_id)
   {
     var unit = production[unit_id];
     
-    var result = unit['description'] + "<br>";
+    var result = '';
+    result += unit['name'] + ', ' + language['level'] + ' ' + unit['level'] + '<br>';
+    result += unit['description'] + '<br>';
     result += unit['price'];
     result += unit['time'];
-    result += unit['resources_left'] + "<br>";
+    result += unit['resources_left'] + '<br>'	;
     result += unit['build_link'];
 
     unit_cache[unit_id] = result;
   }
-  result = unit_cache[unit_id];
-//  document.getElementById('unit_info').innerHTML = result;
-  element_cache['unit_info'].innerHTML = result;
-
+  
+  element_cache['unit_info'].innerHTML = unit_cache[unit_id];
 }
 
 function select_unit(unit_id)
 {
   if(unit_selected)
   {
-//    document.getElementById('unit' + unit_selected).style.borderColor="";
     element_cache['unit' + unit_selected].style.borderColor="";
     unit_selected = undefined;
     show_unit_info(unit_id);
   }
   unit_selected = unit_id;
-//  document.getElementById('unit' + unit_id).style.borderColor="#0000FF";
   element_cache['unit' + unit_id].style.borderColor="#0000FF";
 }
 
@@ -64,7 +53,6 @@ function unborder_unit(unit_id)
   }
 }
 --></script>
-
 {BuildListScript}
 <table width=530 id="unit_table">
 	{BuildList}
@@ -82,37 +70,36 @@ function unborder_unit(unit_id)
              <img border="0" src="{dpath}gebaeude/{production.ID}.gif" align="top" width="100%" height="100%" onclick="select_unit({production.ID})"> <!-- onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
            </span>
 
-           <span style="position: absolute; top: 15%; left: 0px; width: 100%; height: 20%; font-size: 100%;" class="icon_alpha"> <!--  onclick="select_unit({production.ID})" onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
+           <span style="position: absolute; top: 20%; left: 0px; width: 100%; height: 20%; font-size: 100%;" class="icon_alpha"> <!--  onclick="select_unit({production.ID})" onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
              {production.NAME}
            </span>
 
-           <span style="position: absolute; top: 88%; left: 10%; width: 90%; height: 10%; text-align: right; font-size: 100%;" class="icon_alpha">
-               <!-- IF production.LEVEL -->
-                 {production.LEVEL}
-               <!-- ENDIF -->
+           <span style="position: absolute; bottom: 0; right: 0; width: 80%; height: 10%; text-align: right; font-size: 100%;" class="icon_alpha">
+             <!-- IF production.LEVEL -->
+               {production.LEVEL}
+             <!-- ENDIF -->
            </span>
 
-           <span style="position: absolute; top: 0px; left: 85%; width: 15%; font-size: 100%;" class="icon_alpha">
-             <a href="infos.php?gid={production.ID}">?</a>
-           </span>
 
+           <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='infos.php?gid={production.ID}'">
+             <div class="icons icon-info" onclick="infos.php?gid={production.ID}"></div>
+           </span>
+           
            <!-- IF production.CAN_BUILD -->
-             <span style="position: absolute; top: 0px; left: 0%; width: 15%; font-size: 100%;" class="icon_alpha">
-               <a href="?cmd=insert&building={production.ID}">+1</a>
+             <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=insert&building={production.ID}'">
+               <div class="icons icon-plus" onclick="infos.php?gid={production.ID}"></div>
              </span>
   
              <!-- IF production.LEVEL -->
-               <span style="position: absolute; top: 83%; left: 2%; width: 15%; height: 15%">
-                 <a href="?cmd=destroy&building={production.ID}">
-                   <img src="images/r1.png" height="100%" width="100%" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}">
-                 </a>
+               <span style="position: absolute; bottom: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=destroy&building={production.ID}'">
+                 <div class="icons icon-minus" onclick="infos.php?gid={production.ID}" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
                </span>
              <!-- ENDIF -->
            <!-- ENDIF -->
 
            <!-- IF production.ID == NOW_BUILDING -->
-             <span style="position: absolute; top: 0%; left: 0%; height: 15%" class="icon_alpha">
-               <a href="?listid=1&cmd=cancel&planet=2">STOP</a>
+             <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?listid=1&cmd=cancel&planet=2'">
+               <div class="icons icon-cancel" onclick="infos.php?gid={production.ID}"></div>
              </span>
            <!-- ENDIF -->
          </div>
@@ -123,6 +110,8 @@ function unborder_unit(unit_id)
 <script type="text/javascript"><!--
 production[{production.ID}] = 
 {
+  name: '{production.NAME}',
+  level: '{production.LEVEL}',
   description: '{production.DESCRIPTION}', 
   price: '{production.PRICE}', 
   time: '{production.TIME}', 
@@ -164,6 +153,8 @@ production[{production.ID}] =
    jQuery("#unit_table").delegate("*[unit_id]", "click", function(event, ui) {
      select_unit(jQuery(this).attr('unit_id'));
    });
+
+language = {level: '{L_level}'};
 });
 // onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})" onclick="select_unit({production.ID})"
 

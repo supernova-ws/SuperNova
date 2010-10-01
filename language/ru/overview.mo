@@ -164,7 +164,6 @@ $lang['ov_rpg_new_level_raid']  = 'За успешные атаки Вы получаете Темную Материю
 $lang['ov_points']              = 'Очки';
 $lang['ov_raids']               = 'Рейды';
 $lang['ov_experience']          = 'Опыт';
-$lang['ov_level']               = 'Уровень';
 
 $lang['ov_player_rpg']          = 'Статистика игрока';
 

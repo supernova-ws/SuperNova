@@ -225,7 +225,7 @@
     </tr>
     <tr>
       <th rowspan=2>{L_ov_raids}</th>
-      <th colspan="1" align="center">{L_ov_level}: {raid_lvl}</th>
+      <th colspan="1" align="center">{L_sys_level}: {raid_lvl}</th>
       <th colspan="2" align="center">{L_ov_experience}: {raid_xp}/{raid_lvl_up}</th>
     </tr>
     <tr>
@@ -235,7 +235,7 @@
     </tr>
     <tr>
       <th>{Economica}</th>
-      <th colspan="1" align="center">{L_ov_level}: {builder_lvl}</th>
+      <th colspan="1" align="center">{L_sys_level}: {builder_lvl}</th>
       <th colspan="2" align="center">{L_ov_experience}: {builder_xp}/{builder_lvl_up}</th>
     </tr>
     <tr align="center" class="c">

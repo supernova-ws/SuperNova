@@ -19,7 +19,11 @@
 
     <div style="position: relative; height: {$PLANET_IMG_SIZE}px; width: {$PLANET_IMG_SIZE}px;">
       <span style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%">
+        <!-- IF planet.IMAGE -->
         <a href="overview.php?cp={planet.ID}&re=0"><img style="border-style: none;" src="{dpath}planeten/{planet.IMAGE}.jpg" height="100%" width="100%"></a>
+        <!-- ELSE -->
+        &nbsp;
+        <!-- ENDIF -->
       </span>
 
       <!-- IF planet.BUILDING -->

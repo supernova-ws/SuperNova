@@ -226,12 +226,17 @@ switch(intval($config->db_version))
     set_time_limit(30);
 
   case 15:
-    /*
     if($update_tables['users']['current_luna'])
     {
       sys_alter_table('users', "DROP COLUMN `current_luna`");
     }
-    */
+    if(!$update_tables['planets']['governor'])
+    {
+      sys_alter_table('planets', "ADD `governor` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Planet governor'");
+    }
+    set_time_limit(30);
+
+  case 16:
     set_time_limit(30);
 };
 $msg .= "done.\r\n";
