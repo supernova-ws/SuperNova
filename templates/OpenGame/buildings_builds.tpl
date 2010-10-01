@@ -99,13 +99,13 @@ function unborder_unit(unit_id)
            
            <!-- IF production.CAN_BUILD -->
              <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=insert&building={production.ID}'">
-               <div class="icons icon-plus"</div>
+               <div class="icons icon-plus"></div>
              </span>
   
              <!-- IF production.LEVEL -->
-               <div style="position: absolute; bottom: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=destroy&building={production.ID}'">
+               <span style="position: absolute; bottom: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=destroy&building={production.ID}'">
                  <div class="icons icon-minus" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
-               </div>
+               </span>
              <!-- ENDIF -->
            <!-- ENDIF -->
 
