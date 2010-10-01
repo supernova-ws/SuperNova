@@ -25,8 +25,20 @@ function show_unit_info(unit_id)
     result += unit['price'];
     result += unit['time'];
     result += unit['resources_left'] + '<br>';
-    result += unit['energy_balance'] + '<br>';
-    result += unit['build_link'];
+    if(unit['energy_balance'] != 0)
+    {
+      result += '<font color=';
+      if(unit['energy_balance'] > 0)
+      {
+        result += 'lime';
+      }
+      else
+      {
+        result += 'red';
+      }
+      result += '>' + language['sys_energy'] + ': ' + unit['energy_balance'] + '</font><br>';
+    }
+    result += '<br>' + unit['build_link'];
 
     unit_cache[unit_id] = result;
   }
@@ -151,5 +163,9 @@ jQuery(document).ready(function() {
   });
 });
 
-language = {level: '{L_level}'};
+language = 
+{
+  level: '{L_level}',
+  sys_energy: '{L_sys_energy}'
+};
 --></script>
