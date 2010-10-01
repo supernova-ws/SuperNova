@@ -82,24 +82,24 @@ function unborder_unit(unit_id)
 
 
            <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='infos.php?gid={production.ID}'">
-             <div class="icons icon-info" onclick="infos.php?gid={production.ID}"></div>
+             <div class="icons icon-info"></div>
            </span>
            
            <!-- IF production.CAN_BUILD -->
              <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=insert&building={production.ID}'">
-               <div class="icons icon-plus" onclick="infos.php?gid={production.ID}"></div>
+               <div class="icons icon-plus"</div>
              </span>
   
              <!-- IF production.LEVEL -->
                <span style="position: absolute; bottom: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=destroy&building={production.ID}'">
-                 <div class="icons icon-minus" onclick="infos.php?gid={production.ID}" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
+                 <div class="icons icon-minus" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
                </span>
              <!-- ENDIF -->
            <!-- ENDIF -->
 
            <!-- IF production.ID == NOW_BUILDING -->
              <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?listid=1&cmd=cancel&planet=2'">
-               <div class="icons icon-cancel" onclick="infos.php?gid={production.ID}"></div>
+               <div class="icons icon-cancel"></div>
              </span>
            <!-- ENDIF -->
          </div>
