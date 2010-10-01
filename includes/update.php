@@ -238,7 +238,7 @@ switch(intval($config->db_version))
     {
       sys_alter_table('users', "ADD `options` TEXT COMMENT 'Packed user options'");
     }
-    // $newVersion = 16;
+    $newVersion = 16;
     set_time_limit(30);
 
   case 16:
