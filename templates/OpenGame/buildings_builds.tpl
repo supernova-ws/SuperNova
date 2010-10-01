@@ -28,10 +28,12 @@ function show_unit_info(unit_id)
   {
     var unit = production[unit_id];
     
-    var result = unit['description'] + "<br>";
+    var result = '';
+    result += unit['name'] + ', ' + language['level'] + ' ' + unit['level'] + '<br>';
+    result += unit['description'] + '<br>';
     result += unit['price'];
     result += unit['time'];
-    result += unit['resources_left'] + "<br>";
+    result += unit['resources_left'] + '<br>'	;
     result += unit['build_link'];
 
     unit_cache[unit_id] = result;
@@ -87,9 +89,9 @@ function unborder_unit(unit_id)
            </span>
 
            <span style="position: absolute; top: 88%; left: 10%; width: 90%; height: 10%; text-align: right; font-size: 100%;" class="icon_alpha">
-               <!-- IF production.LEVEL -->
-                 {production.LEVEL}
-               <!-- ENDIF -->
+             <!-- IF production.LEVEL -->
+               {production.LEVEL}
+             <!-- ENDIF -->
            </span>
 
            <span style="position: absolute; top: 0px; left: 85%; width: 15%; font-size: 100%;" class="icon_alpha">
@@ -123,6 +125,8 @@ function unborder_unit(unit_id)
 <script type="text/javascript"><!--
 production[{production.ID}] = 
 {
+  name: '{production.NAME}',
+  level: '{production.LEVEL}',
   description: '{production.DESCRIPTION}', 
   price: '{production.PRICE}', 
   time: '{production.TIME}', 
@@ -164,6 +168,8 @@ production[{production.ID}] =
    jQuery("#unit_table").delegate("*[unit_id]", "click", function(event, ui) {
      select_unit(jQuery(this).attr('unit_id'));
    });
+
+language = {level: '{L_level}'};
 });
 // onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})" onclick="select_unit({production.ID})"
 

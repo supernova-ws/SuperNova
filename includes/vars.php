@@ -22,6 +22,7 @@ if ( defined('INSIDE')) {
     100 => 'new_message'
   );
 
+  // factor -> price_factor, perhour_factor
   $sn_data = array(
     1   => array(
       'name' => 'metal_mine',
