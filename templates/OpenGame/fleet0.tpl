@@ -124,7 +124,7 @@ var speed_factor   = {speed_factor};
               &nbsp;
             <!-- ELSE -->
               <script type="text/javascript"><!--
-                sn_ainput_make('ships[{ships.ID}]', 0, ships[{ships.ID}][0], 1);
+                sn_ainput_make('ships[{ships.ID}]', {max: ships[{ships.ID}][0]});
 
                 jQuery('#ships{ships.ID}slide').bind('slide slidechange', fl_calc_stats);
               --></script>

@@ -83,7 +83,7 @@ var fleet_slide_changing = false;
         <th align=right>{resources.ON_PLANET}</th>
         <th>
           <script type="text/javascript"><!--
-            sn_ainput_make('resource{resources.ID}', 0, Math.min({resources.ON_PLANET}, {fleet_capacity}), 1000);
+            sn_ainput_make('resource{resources.ID}', {max: Math.min({resources.ON_PLANET}, {fleet_capacity}), step: 1000});
 
             jQuery('#resource{resources.ID}').bind('keyup change',
               function(event, ui) {    
@@ -106,7 +106,6 @@ var fleet_slide_changing = false;
                 {        
                   jQuery('#resource' + i + 'slide').slider("option", "max", Math.min(jQuery('#resource' + i + 'slide').slider("value") + transportCapacity, resource_max[i]));
                   jQuery('#resource' + i).keyup();
-                  // document.getElementById('resource' + i + 'temp').innerHTML = Math.min(jQuery('#resource' + i + 'slide').slider("value") + transportCapacity, resource_max[i]);
                 }
                 fleet_slide_changing = false;
               }
