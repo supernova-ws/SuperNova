@@ -12,19 +12,39 @@
   <tr>
     <th>{L_imp_name}</th>
     <!-- BEGIN planet -->
-    <th class="c" width="75"><a href="overview.php?cp={planet.ID}&re=0">{planet.NAME}</a></th>
+      <th class="c" width="75" style="width: 75">
+        <!-- IF planet.ID -->
+          <a href="overview.php?cp={planet.ID}&re=0">{planet.NAME}</a>
+        <!-- ELSE -->
+          {planet.NAME}
+        <!-- ENDIF -->
+      </th>
     <!-- END planet -->
   </tr>
   <tr>
     <th>{L_sys_coordinates}</th>
     <!-- BEGIN planet -->
-    <th class="c"><a href="overview.php?cp={planet.ID}&re=0">{planet.COORDINATES}</a></th>
+      <th class="c">
+        <!-- IF planet.ID -->
+          <a href="overview.php?cp={planet.ID}&re=0">{planet.COORDINATES}</a>
+        <!-- ENDIF -->&nbsp;
+      </th>
     <!-- END planet -->
   </tr>
   <tr>
     <th>{L_sys_fields}</th>
     <!-- BEGIN planet -->
-    <th class="c"><font<!-- IF planet.FIELDS_CUR >= planet.FIELDS_MAX --> color="red"<!-- ENDIF -->>{planet.FIELDS_CUR}/{planet.FIELDS_MAX}</font></th>
+      <!-- IF planet.FIELDS_CUR >= planet.FIELDS_MAX --> 
+        <!-- DEFINE $FIELD_COLOR = 'color="red"' -->
+      <!-- ELSE -->
+        <!-- DEFINE $FIELD_COLOR = '' -->
+      <!-- ENDIF -->
+
+      <th class="c">
+        <!-- IF planet.FIELDS_CUR -->
+          <font {$FIELD_COLOR}>{planet.FIELDS_CUR}/{planet.FIELDS_MAX}</font>
+        <!-- ENDIF -->&nbsp;
+      </th>
     <!-- END planet -->
   </tr>
 
