@@ -444,7 +444,7 @@ switch ($mode)
           'MOON_NAME'    => $moon['name'],
           'MOON_IMG'     => $moon['image'],
           'MOON_FILL'    => min(100, $moon_fill),
-          'MOON_ENEMY'   => $moon_fleets['enemy_count'],
+          'MOON_ENEMY'   => $moon_fleets['enemy']['count'],
         ), $buildArray));
     }
 

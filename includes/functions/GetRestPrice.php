@@ -29,7 +29,7 @@ function GetRestPrice ($user, $planet, $Element, $userfactor = true) {
     'energy_max' => $lang["sys_energy"]
     );
 
-  $planet_fleets = flt_get_fleets_to_planet($planet);
+  $fleet_list = flt_get_fleets_to_planet($planet);
 
   $text  = "<br><font color=\"#7f7f7f\">{$lang['Rest_ress']}: ";
   $text1 = "";
@@ -47,16 +47,16 @@ function GetRestPrice ($user, $planet, $Element, $userfactor = true) {
         $text .= "<b style=\"color: rgb(95, 127, 108);\">". pretty_number($planet[$ResType] - $cost) ."</b> ";
       }
 
-      if ($cost > $planet[$ResType] + $planet_fleets["own_{$ResType}"]) {
-        $text1 .= "{$ResTitle}: <b style=\"color: rgb(127, 95, 96);\">". pretty_number($planet[$ResType] + $planet_fleets["own_{$ResType}"] - $cost) ."</b> ";
+      if ($cost > $planet[$ResType] + $fleet_list['own'][$ResType]) {
+        $text1 .= "{$ResTitle}: <b style=\"color: rgb(127, 95, 96);\">". pretty_number($planet[$ResType] + $fleet_list['own'][$ResType] - $cost) ."</b> ";
       } else {
-        $text1 .= "{$ResTitle}: <b style=\"color: rgb(95, 127, 108);\">". pretty_number($planet[$ResType] + $planet_fleets["own_{$ResType}"] - $cost) ."</b> ";
+        $text1 .= "{$ResTitle}: <b style=\"color: rgb(95, 127, 108);\">". pretty_number($planet[$ResType] + $fleet_list['own'][$ResType] - $cost) ."</b> ";
       }
     }
   }
   $text .= '</font>';
 
-  if($planet_fleets['own_count'])
+  if($fleet_list['own']['count'])
   {
     $text .= "<br><font color=\"#7f7f7f\">{$lang['Rest_ress_fleet']}: {$text1}</font>";
   }
