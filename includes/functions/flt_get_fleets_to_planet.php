@@ -1,7 +1,7 @@
 <?php
 function flt_get_fleets_to_planet($planet)
 {
-  global $user;
+  global $user, $sn_data;
 
   if(!$planet)
   {
@@ -41,11 +41,20 @@ function flt_get_fleets_to_planet($planet)
       }
     }
 
-    $fleet_list[$fleet_ownage][] = $fleet;
-    $fleet_list["{$fleet_ownage}_count"]++;
-    $fleet_list["{$fleet_ownage}_metal"] += $fleet['fleet_resource_metal'];
-    $fleet_list["{$fleet_ownage}_crystal"] += $fleet['fleet_resource_crystal'];
-    $fleet_list["{$fleet_ownage}_deuterium"] += $fleet['fleet_resource_deuterium'];
+    $fleet_list[$fleet_ownage]['fleets'][$fleet['fleet_id']] = $fleet;
+    $fleet_ships = explode(';',$fleet['fleet_array']);
+    foreach(explode(';',$fleet['fleet_array']) as $ship_data)
+    {
+      if($ship_data)
+      {
+        $ship_data = explode(',', $ship_data);
+        $fleet_list[$fleet_ownage][$ship_data[0]] += $ship_data[1];
+      }
+    }
+    $fleet_list[$fleet_ownage]['count']++;
+    $fleet_list[$fleet_ownage]['metal'] += $fleet['fleet_resource_metal'];
+    $fleet_list[$fleet_ownage]['crystal'] += $fleet['fleet_resource_crystal'];
+    $fleet_list[$fleet_ownage]['deuterium'] += $fleet['fleet_resource_deuterium'];
   }
 
   return $fleet_list;

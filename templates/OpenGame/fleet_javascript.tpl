@@ -14,5 +14,5 @@ var fleets = Array();
 <!-- END fleets -->
 
 var res_names = ['{L_sys_metal}', '{L_sys_crystal}', '{L_sys_deuterium}'];
-var language = ['{L_sys_ships}', '{L_sys_resources}', '{L_sys_capacity}'];
+var language = {sys_ships: '{L_sys_ships}', sys_resources: '{L_sys_resources}', sys_capacity: '{L_sys_capacity}'};
 --></script>

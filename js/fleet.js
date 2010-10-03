@@ -387,7 +387,7 @@ function max_resources()
 
 function fleet_dialog_show(caller, fleet_id)
 {
-  var fleet_html = '<table><tr><td class=c colspan=2>' + language[0] + '</td></tr>';
+  var fleet_html = '<table><tr><td class=c colspan=2>' + language['sys_ships'] + '</td></tr>';
   var fleet = fleets[fleet_id][0];
   var resources = fleets[fleet_id][1];
 
@@ -413,12 +413,12 @@ function fleet_dialog_show(caller, fleet_id)
 
   if(fleet_capacity)
   {
-    fleet_html += '<tr><td class="c">' + language[2] + '</td><td class="c">' + sn_format_number(fleet_capacity, 0, 'white') + '</td></tr>';
+    fleet_html += '<tr><td class="c">' + language['sys_capacity'] + '</td><td class="c">' + sn_format_number(fleet_capacity, 0, 'white') + '</td></tr>';
   }
 
   if(parseInt(resources[0]) + parseInt(resources[1]) + parseInt(resources[2]) > 0)
   {
-    fleet_html += '<tr><td class=c colspan=2>' + language[1] + '</td></tr>';
+    fleet_html += '<tr><td class=c colspan=2>' + language['sys_resources'] + '</td></tr>';
 
     for(res_id in resources)
     {
