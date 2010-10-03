@@ -196,19 +196,23 @@ switch($mode){
           'DEUTERIUM' => floor($pricelist[$shipID]['deuterium']*$config->rpg_scrape_deuterium),
           'AMOUNT' => intval($data['ships'][$shipID]),
         ));
+        /*
         $ships .= "Array($shipID, ";
         $ships .= floor($pricelist[$shipID]['metal']*$config->rpg_scrape_metal) . ", ";
         $ships .= floor($pricelist[$shipID]['crystal']*$config->rpg_scrape_crystal) . ", ";
         $ships .= floor($pricelist[$shipID]['deuterium']*$config->rpg_scrape_deuterium) . ", ";
         $ships .= $planetrow[$sn_data[$shipID]['name']];
         $ships .= '), ';
+        */
       }
     }
+    /*
     if($ships){
       $ships .= "1";
       $template->assign_var('ships', $ships);
     };
-    break;
+    */
+  break;
 
   case 3: // S/H ship seller
     $page_title .= " - {$lang['eco_mrk_stockman']}";
@@ -306,31 +310,35 @@ switch($mode){
             'DEUTERIUM' => floor($pricelist[$shipID]['deuterium']/$config->rpg_scrape_deuterium),
             'AMOUNT'    => intval($data['ships'][$shipID]),
           ));
+          /*
           $ships .= "Array($shipID, ";
           $ships .= floor($pricelist[$shipID]['metal']/$config->rpg_scrape_metal) . ", ";
           $ships .= floor($pricelist[$shipID]['crystal']/$config->rpg_scrape_crystal) . ", ";
           $ships .= floor($pricelist[$shipID]['deuterium']/$config->rpg_scrape_deuterium) . ", ";
           $ships .= $shipCount;
           $ships .= '), ';
+          */
         }
       }
+      /*
       $ships .= "1";
       $template->assign_var('ships', $ships);
+      */
     };
-    break;
+  break;
 
   case 4: // Banker
-    break;
+  break;
 
   case 5: // Cross-player resource exchange
-    break;
+  break;
 
   case 6: // Pawnshop
-    break;
+  break;
 
   default:
     $template = gettemplate('market', true);
-    break;
+  break;
 }
 
 if(!$intError && $rpg_deduct){
