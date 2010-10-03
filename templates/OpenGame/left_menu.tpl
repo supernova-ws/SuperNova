@@ -30,7 +30,7 @@ function f(target_url,win_name) {
   <tr><td><a href="imperium.php">{L_imp_overview}</a></th></tr>
   <tr><td><a href="techtree.php" id="lm_techtree">{Technology}</a></td></tr>
   <tr><td><a href="buildings.php?mode=research" id="lm_techtree">{Research}</a></td></tr>
-  <tr><td><a href="officier.php">{Officiers}</a></td></tr>
+  <tr><td><a href="officier.php">{L_tech[600]}</a></td></tr>
   <tr><td><a href="market.php">{L_rinok}</a></td></tr>
   <tr><td><a href="galaxy.php?mode=0" id="lm_universe">{sys_universe}</a></td></tr>
 
