@@ -121,7 +121,7 @@ function sn_ainput_make(field_name, options)
       value: start_value,
       min: min_value,
       max: max_value,
-      step: step_value,
+      step: 1,
       slide: function(event, ui)
       {
         jQuery("#" + field_name).val(ui.value);
