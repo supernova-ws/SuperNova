@@ -467,25 +467,6 @@ switch ($mode)
       }
     }
 
-    // SuperNova's banner for users to use
-    if ($config->int_banner_showInOverview)
-    {
-      $delimiter = strpos($config->int_banner_URL, '?') ? '&' : '?';
-      $template->assign_vars(array(
-        'BANNER_URL' => "http://{$_SERVER["SERVER_NAME"]}{$config->int_banner_URL}{$delimiter}id={$user['id']}",
-      ));
-    }
-
-    // SuperNova's userbar to use on forums
-    if ($config->int_userbar_showInOverview)
-    {
-      $delimiter = strpos($config->int_userbar_URL, '?') ? '&' : '?';
-
-      $template->assign_vars(array(
-        'USERBAR_URL' => "http://{$_SERVER["SERVER_NAME"]}{$config->int_userbar_URL}{$delimiter}id={$user['id']}",
-      ));
-    }
-
     // --- Gestion de l'affichage d'une lune ---------------------------------------------------------
     if($planetrow['planet_type'] == 1)
     {
@@ -568,7 +549,6 @@ switch ($mode)
 */
     $template->assign_vars(array(
       'dpath'                => $dpath,
-      'USER_AUTHLEVEL'       => $user['authlevel'],
       'TIME_NOW'             => $time_now,
       'TIME_TEXT'            => "$day_of_week, $day $month $year {$lang['ov_of_year']},",
 
@@ -577,6 +557,7 @@ switch ($mode)
 
       'USER_ID'              => $user['id'],
       'user_username'        => $user['username'],
+      'USER_AUTHLEVEL'       => $user['authlevel'],
 
       'NEW_MESSAGES'         => $user['new_message'],
       'NEW_LEVEL_MINER'      => $isNewLevelMiner,
@@ -601,23 +582,6 @@ switch ($mode)
       'CAN_RECYCLE'          => ($planetrow['debris_metal'] || $planetrow['debris_crystal']) && $planetrow[$resource[209]],
       'planet_temp_min'      => $planetrow['temp_min'],
       'planet_temp_max'      => $planetrow['temp_max'],
-
-      'builder_xp'           => $user['xpminier'],
-      'builder_lvl'          => $user['lvl_minier'],
-      'builder_lvl_up'       => rpg_get_miner_xp($user['lvl_minier']),
-      'raid_xp'              => $user['xpraid'],
-      'raid_lvl'             => $user['lvl_raid'],
-      'raid_lvl_up'          => RPG_get_raider_xp($user['lvl_raid']),
-      'raids'                => $user['raids'],
-      'raidswin'             => $user['raidswin'],
-      'raidsloose'           => $user['raidsloose'],
-      'user_points'          => pretty_number( $StatRecord['build_points'] ),
-      'user_fleet'           => pretty_number( $StatRecord['fleet_points'] ),
-      'player_points_tech'   => pretty_number( $StatRecord['tech_points'] ),
-      'user_defs_points'     => pretty_number( $StatRecord['defs_points'] ),
-      'total_points'         => pretty_number( $StatRecord['total_points'] ),
-      'user_rank'            => $StatRecord['total_rank'],
-      'RANK_DIFF'            => $StatRecord['total_old_rank'] - $StatRecord['total_rank'],
 
       'ADMIN_EMAIL'          => $config->game_adminEmail,
 

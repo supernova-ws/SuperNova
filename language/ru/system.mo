@@ -234,6 +234,7 @@ $lang['res_hint'] = '<ul><li>Производство ресурсов <100% означает нехватку энерг
 $lang['bld_destroy'] = 'Уничтожить';
 
 // Imperium page
+$lang['imp_imperator'] = "Император";
 $lang['imp_overview'] = "Обзор Империи";
 $lang['imp_production'] = "Производство";
 $lang['imp_name'] = "Название";
