@@ -7,6 +7,7 @@
    <tr>
   <!-- ENDIF -->
   <th valign="top" {$CELL_CLASS}><center>
+  <!-- IF planet.ID -->
     <!-- IF $OVERVIEW -->
       <!-- IF planet.MOON_ID == PLANET_ID -->{L_sys_moon} {planet.MOON_NAME}<!-- ELSE -->{planet.NAME}<!-- ENDIF --> [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]<br>
     <!-- ENDIF -->
@@ -80,6 +81,7 @@
     <!-- IF $OVERVIEW -->
     <br><br>
     <!-- ENDIF -->
+  <!-- ENDIF -->
   </center></th>
   <!-- IF $OVERVIEW -->
     </tr>

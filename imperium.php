@@ -33,50 +33,62 @@ while ($p = mysql_fetch_array($planetsrow)) {
 }
 
 $template = gettemplate('imperium', true);
-$template->assign_var(mount, count($planet) + 1);
+$template->assign_var(mount, count($planet) + 2);
 
 //$parse['mount'] = count($planet) + 1;
 
 foreach ($planet as $p) {
-  $planetCaps = ECO_getPlanetCaps($user, $p);
+//  $planetCaps = ECO_getPlanetCaps($user, $p);
+  PlanetResourceUpdate($user, $p, $time_now, true);
 
   $template->assign_block_vars('planet', array_merge(tpl_parse_planet($p), array(
     'FIELDS_CUR' => $p['field_current'],
     'FIELDS_MAX' => $p['field_max'] + $p[$sn_data[33]['name']] * 5,
 
-    'METAL_CUR'  => pretty_number($p['metal'], true, $planetCaps['planet']['metal_max']),
+    'METAL_CUR'  => pretty_number($p['metal'], true, $p['metal_max']),
     'METAL_PROD' => pretty_number($p['metal_perhour']),
 
-    'CRYSTAL_CUR'  => pretty_number($p['crystal'], true, $planetCaps['planet']['crystal_max']),
+    'CRYSTAL_CUR'  => pretty_number($p['crystal'], true, $p['crystal_max']),
     'CRYSTAL_PROD' => pretty_number($p['crystal_perhour']),
 
-    'DEUTERIUM_CUR'  => pretty_number($p['deuterium'], true, $planetCaps['planet']['deuterium_max']),
+    'DEUTERIUM_CUR'  => pretty_number($p['deuterium'], true, $p['deuterium_max']),
     'DEUTERIUM_PROD' => pretty_number($p['deuterium_perhour']),
 
     'ENERGY_CUR' => pretty_number($p['energy_max'] - $p['energy_used'], true, true),
     'ENERGY_MAX' => pretty_number($p['energy_max']),
   )));
+  $total['fields'] += $p['field_current'];
   $total['metal'] += $p['metal'];
   $total['crystal'] += $p['crystal'];
   $total['deuterium'] += $p['deuterium'];
+  $total['energy'] += $p['energy_max'] - $p['energy_used'];
 
+  $total['fields_max'] += $p['field_max'] + $p[$sn_data[33]['name']] * 5;
   $total['metal_perhour'] += $p['metal_perhour'];
   $total['crystal_perhour'] += $p['crystal_perhour'];
   $total['deuterium_perhour'] += $p['deuterium_perhour'];
+  $total['energy_max'] += $p['energy_max'];
 }
 
-/*
 $template->assign_block_vars('planet', array_merge(array(
+  'NAME'       => 'ÈÒÎÃÎ',
+
+  'FIELDS_CUR' => $total['fields'],
+  'FIELDS_MAX' => $total['fields_max'],
+
   'METAL_CUR'  => pretty_number($total['metal']),
-  'METAL_PROD' => pretty_number($p['metal_perhour']),
+  'METAL_PROD' => pretty_number($total['metal_perhour']),
 
   'CRYSTAL_CUR'  => pretty_number($total['crystal']),
-  'CRYSTAL_PROD' => pretty_number($p['crystal_perhour']),
+  'CRYSTAL_PROD' => pretty_number($total['crystal_perhour']),
 
   'DEUTERIUM_CUR'  => pretty_number($total['deuterium']),
-  'DEUTERIUM_PROD' => pretty_number($p['deuterium_perhour']),
+  'DEUTERIUM_PROD' => pretty_number($total['deuterium_perhour']),
+
+  'ENERGY_CUR' => pretty_number($total['energy']),
+  'ENERGY_MAX' => pretty_number($total['energy_max']),
 )));
-*/
+
 
 $last = -1000;
 foreach ($sn_data as $unit_id => $res) {
@@ -103,13 +115,21 @@ foreach ($sn_data as $unit_id => $res) {
       'MODE'  => $mode,
     ));
 
-    foreach($planet as $p){
+    $unit_count = 0;
+    foreach($planet as $p)
+    {
       $template->assign_block_vars('prods.planet', array(
         'ID' => $p['id'],
         'TYPE' => $p['planet_type'],
         'LEVEL' => $p[$resource[$unit_id]],
       ));
+      $unit_count += $p[$resource[$unit_id]];
     }
+
+    $template->assign_block_vars('prods.planet', array(
+      'LEVEL' => $unit_count,
+    ));
+
     $last = $unit_id;
   }
 }

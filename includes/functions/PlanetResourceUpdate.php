@@ -16,13 +16,12 @@
 function PlanetResourceUpdate ( $CurrentUser, &$CurrentPlanet, $UpdateTime, $Simul = false ) {
   global $resource, $debug;
 
-  $incRes = array ('metal' => 0, 'crystal' => 0, 'deuterium' => 0); // Zero increment to each type of resources
-
   $ProductionTime               = ($UpdateTime - $CurrentPlanet['last_update']); // How much time passes since last update
   $CurrentPlanet['last_update'] = $UpdateTime;
 
   // Yes
   $Caps = ECO_getPlanetCaps($CurrentUser, $CurrentPlanet); // calculating current resource production data
+  $incRes = array ('metal' => 0, 'crystal' => 0, 'deuterium' => 0); // Zero increment to each type of resources
 
   if ($CurrentPlanet['planet_type'] == 1) { // Resource calculation for planet
     foreach($incRes as $resName => &$incCount){ // Now, for each type of resource we...
