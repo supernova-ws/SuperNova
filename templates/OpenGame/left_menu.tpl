@@ -27,6 +27,7 @@ function f(target_url,win_name) {
   <tr><td><a href="buildings.php?mode=defense">{Defense}</a></td></tr>
 
   <tr><th>{Imperium}</th></tr>
+  <tr><td><a href="imperator.php" style="color: purple">{L_imp_imperator}</a></th></tr>
   <tr><td><a href="imperium.php">{L_imp_overview}</a></th></tr>
   <tr><td><a href="techtree.php" id="lm_techtree">{Technology}</a></td></tr>
   <tr><td><a href="buildings.php?mode=research" id="lm_techtree">{Research}</a></td></tr>

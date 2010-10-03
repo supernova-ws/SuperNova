@@ -10,7 +10,7 @@
       <th colspan=2 style="position: relative;">
         <div style="position: relative; width: 100%; height: 100%;">
           <div style="position: absolute; left: 5%;">{TIME_TEXT} <span id="ov_time">00:00:00</span></div>
-          <div style="position: absolute; right: 5%; align: center;">{MembersOnline} [{USERS_ONLINE}/{USERS_TOTAL}]<!-- IF USER_AUTHLEVEL >= 3 --> <a href="admin/overview.php">{L_user_level[3]}</a><!-- ENDIF --></div>
+          <div style="position: absolute; right: 5%; align: center;">{MembersOnline} [{USERS_ONLINE}/{USERS_TOTAL}]</div>
           &nbsp;
         </div>
       </th>
@@ -205,67 +205,6 @@
       <th>{planet_temp_min}&deg;C / {planet_temp_max}&deg;C</th>
     </tr>
   </table>
-
-
-  <table width=519>
-    <tr>
-      <td colspan=4 class="c">
-        <span class="fl">{L_ov_player_rpg} {user_username}</span>
-        <span class="fr"><strong>{L_ov_rank}: <a href="stat.php?start={user_rank}"><span class="ov_user_rank">{user_rank} ({RANK_DIFF})</span> из <span class="ov_user_total">{USERS_TOTAL}</span></strong></a></strong></span>
-      </td>
-    </tr>
-    <tr>
-      <th rowspan=2>{L_ov_raids}</th>
-      <th colspan="1" align="center">{L_sys_level}: {raid_lvl}</th>
-      <th colspan="2" align="center">{L_ov_experience}: {raid_xp}/{raid_lvl_up}</th>
-    </tr>
-    <tr>
-      <th>{NumberOfRaids}: {raids}</th>
-      <th>{RaidsWin}: {raidswin}</th>
-      <th>{RaidsLoose}: {raidsloose}</th>
-    </tr>
-    <tr>
-      <th>{Economica}</th>
-      <th colspan="1" align="center">{L_sys_level}: {builder_lvl}</th>
-      <th colspan="2" align="center">{L_ov_experience}: {builder_xp}/{builder_lvl_up}</th>
-    </tr>
-    <tr align="center" class="c">
-      <th rowspan=2>{L_ov_points}</th>
-      <th>{user_points_1}: {user_points}</th>
-      <th>{user_points_3}: {user_defs_points}</th>
-      <th>{user_points_4}: {user_fleet}</th>
-    </tr>
-    <tr>
-      <th>{user_points_2}: {player_points_tech}</th>
-      <th colspan="2">{user_points_all}: {total_points}</th>
-    </tr>
-  </table>
-
-  <!-- IF BANNER_URL -->
-    <table width="519" align="center">
-      <tr><td class="c">{L_ov_banner}</td></tr>
-      <tr>
-        <th>
-          <img src="{BANNER_URL}"><br><br>
-          {L_sys_banner_bb}<br>
-          <input type="text" value="[img]{BANNER_URL}[/img]" size="55">
-        </th>
-      </tr>
-    </table>
-  <!-- ENDIF -->
-
-  <!-- IF USERBAR_URL -->
-    <table width="519" align="center">
-      <tr><td class="c">{L_ov_userbar}</td></tr>
-      <tr>
-        <th>
-          <img src="{USERBAR_URL}"><br><br>
-          {L_sys_userbar_bb}<br>
-          <input type="text" value="[img]{USERBAR_URL}[/img]" size="55">
-        </th>
-      </tr>
-    </table>
-  <!-- ENDIF -->
 </th>
 
 <th valign=top class="tr">
