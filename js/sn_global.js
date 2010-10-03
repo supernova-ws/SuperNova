@@ -85,22 +85,13 @@ function sn_timestampToString(timestamp, useDays){
   return strTime;
 }
 
-function sn_ainput_make(field_name, min_value, max_value, step_value, div_width)
+function sn_ainput_make(field_name, options)
 {
-  if(!min_value)
-  {
-    min_value = 0;
-  }
-
-  if(!div_width)
-  {
-    div_width = 'auto';
-  }
-
-  if(!step_value)
-  {
-    step_value = 1;
-  }
+  var min_value = options['min'] ? options['min'] : 0;
+  var max_value = options['max'] ? options['max'] : 0;
+  var step_value = options['step'] ? options['step'] : 1;
+  var start_value = options['value'] ? options['value'] : min_value;
+  var div_width = options['width'] ? options['width'] : 'auto';
 
   var field_name_orig = field_name;
 
@@ -122,17 +113,22 @@ function sn_ainput_make(field_name, min_value, max_value, step_value, div_width)
   document.write('<div style="margin: 6px; width: ' + div_width + '" id="' + field_name + 'slide"></div>');
   document.write('</div>');
 
-  jQuery(function() {
-    jQuery(slider_id).slider({
+  jQuery(function()
+  {
+    jQuery(slider_id).slider(
+    {
       range: "min",
-      value: min_value,
+      value: start_value,
       min: min_value,
       max: max_value,
-      slide: function(event, ui) {
+      step: step_value,
+      slide: function(event, ui)
+      {
         jQuery("#" + field_name).val(ui.value);
         jQuery("#" + field_name).trigger('change', [event, ui]);
       },
-      change: function(event, ui) {
+      change: function(event, ui)
+      {
         jQuery("#" + field_name).val(ui.value);
         jQuery("#" + field_name).trigger('change', [event, ui]);
       }
@@ -162,8 +158,6 @@ function sn_ainput_make(field_name, min_value, max_value, step_value, div_width)
       }
 
       jQuery(slider_id).slider("value", jQuery(this).val());
-      //document.getElementById('resource0temp').innerHTML = field_name + '!' + jQuery(this).val() + '?' + jQuery(slider_id).slider("option", "max");
-      //Math.min(jQuery('#resource' + i + 'slide').slider("value") + transportCapacity, resource_max[i])
     }
   );
 
@@ -180,28 +174,6 @@ function sn_ainput_make(field_name, min_value, max_value, step_value, div_width)
         element.val(0);
       };
       element.trigger('change', [event, ui]);
-
-/*
-      if(ui != undefined)
-      {
-        if(ui.type == 'slidechange')
-        {
-          return;
-        }
-      }
-
-      if(jQuery(this).val() > jQuery(slider_id).slider("option", "max"))
-      {
-        jQuery(this).val(jQuery(slider_id).slider("option", "max"));
-      }
-
-      if(jQuery(this).val() < jQuery(slider_id).slider("option", "min"))
-      {
-        jQuery(this).val(jQuery(slider_id).slider("option", "min"));
-      }
-
-      jQuery(slider_id).slider("value", jQuery(this).val());
-*/
     }
   );
 
@@ -220,7 +192,6 @@ function sn_ainput_make(field_name, min_value, max_value, step_value, div_width)
       element.trigger('change', [event, ui]);
     }
   );
-
 }
 
 var popup = jQuery(document.createElement("span"));

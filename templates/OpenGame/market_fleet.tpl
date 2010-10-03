@@ -49,7 +49,7 @@ function eco_market_recalc()
         <th><span class="fr">{ships.COUNT}</span></th>
         <th>
           <script type="text/javascript"><!--
-            sn_ainput_make('ships[{ships.ID}]', 0, ships[{ships.ID}]['count'], 1);
+            sn_ainput_make('ships[{ships.ID}]', {max: ships[{ships.ID}]['count'], value: '{ships.AMOUNT}'});
 
             jQuery('#ships{ships.ID}slide').bind('slide slidechange', eco_market_recalc);
           --></script>
