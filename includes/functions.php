@@ -117,7 +117,7 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
     if ($user['authlevel'] > 0) {
       $parse['ADMIN_LINK']  = "
       <tr>
-        <td colspan=\"2\"><div><a href=\"admin/overview.php\"><font color=\"lime\">".$lang['user_level'][$user['authlevel']]."</font></a></div></td>
+        <th><div><a href=\"admin/overview.php\"><font color=\"lime\">".$lang['user_level'][$user['authlevel']]."</font></a></div></th>
       </tr>";
     };
 

@@ -369,6 +369,84 @@ h1
   text-align: justify;
 }
 
+.ov_user_total {color: #FF0000}
+.ov_user_rank {color: #FFFF00}
+
+#left_menu {
+  font-weight: bold;
+  width: 130px;
+  margin-left:5px;
+  margin-right:5px;
+}
+
+#left_menu #server_name {
+  color: #00FF00;
+  font-weight: bold;
+}
+
+#left_menu th {
+  color: #63698c;
+  background-image: url(img/bg1.gif);
+  background-color: #212c42;
+  text-align: center;
+}
+
+#lm_overview {
+  color: #999933;
+}
+
+#lm_fleet {
+  color: #CC3333;
+}
+
+#lm_universe {
+  color: #999966;
+}
+
+#lm_buildings {
+  color: #669933;
+}
+
+#lm_shipyard {
+  color: #993399;
+}
+
+#lm_techtree {
+  color: #999933;
+}
+
+#lm_forum {
+  color: #0066CC;
+}
+
+#lm_chat {
+  color: #996699;
+}
+
+#lm_chatally {
+  color: #996699;
+}
+
+#lm_simulator {
+  color: #FF9966;
+}
+
+#lm_search {
+  color: #887766;
+}
+
+#lm_options {
+  color: #CCCC66;
+}
+
+#lm_affilates {
+  color: #993333;
+}
+
+#lm_logout {
+  color: #993333;
+}
+
 /* Setting popup table background color */
 div .ui-dialog-content table { background: #344055; }
 

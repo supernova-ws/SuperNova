@@ -1,17 +1,8 @@
 <!-- INCLUDE fleet_javascript.tpl -->
-
 <script type="text/javascript"> 
   jQuery.noConflict(); 
 </script> 
-<style type="text/css"><!--
-.style1 {color: #FF0000}
-.style2 {color: #FFFF00}
-.style5 {color: #00FF00; font-weight: bold; }
-.style3 {color: #FFFFFF}
-.style4 {color: #FF0000; font-weight: bold; }
-.style6 {color: #FFFF00; font-weight: bold; }
-.style7 {color: #00FFFF}
---></style>
+
 <br>
 <table><tr><th valign=top class="tr">
   <table width="519">
@@ -220,7 +211,7 @@
     <tr>
       <td colspan=4 class="c">
         <span class="fl">{L_ov_player_rpg} {user_username}</span>
-        <span class="fr"><strong>{L_ov_rank}: <a href="stat.php?start={user_rank}"><span class="style2">{user_rank} ({RANK_DIFF})</span> из <span class="style1">{USERS_TOTAL}</span></strong></a></strong></span>
+        <span class="fr"><strong>{L_ov_rank}: <a href="stat.php?start={user_rank}"><span class="ov_user_rank">{user_rank} ({RANK_DIFF})</span> из <span class="ov_user_total">{USERS_TOTAL}</span></strong></a></strong></span>
       </td>
     </tr>
     <tr>
