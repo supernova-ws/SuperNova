@@ -139,6 +139,10 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   {
     $user['compat_builds'] = 1;
   }
+  else
+  {
+    $user['compat_builds'] = 0;
+  }
 
   // Modo vacaciones
   if (isset($_POST['urlaubs_modus']) && $_POST['urlaubs_modus'] == 'on')
