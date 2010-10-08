@@ -242,6 +242,10 @@ switch(intval($config->db_version))
     set_time_limit(30);
 
   case 16:
+    if(!$config->db_loadItem('player_max_planets'))
+    {
+      $config->db_saveItem('player_max_planets', 10);
+    }
     set_time_limit(30);
 };
 $msg .= "done.\r\n";

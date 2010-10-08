@@ -11,7 +11,7 @@
 // Mission Case 9: -> Coloniser
 //
 function MissionCaseColonisation ( $FleetRow ) {
-  global $lang, $resource, $user, $debug;
+  global $lang, $resource, $user, $debug, $config;
 
   $iMaxColo = doquery("SELECT `colonisation_tech` + 1 FROM `{{table}}` WHERE `id`='". $FleetRow['fleet_owner']."'",'users', true);
 
@@ -23,7 +23,7 @@ function MissionCaseColonisation ( $FleetRow ) {
     $iGalaxyPlace = doquery ("SELECT count(*) as planet_count FROM `{{planets}}` WHERE `galaxy` = '{$FleetRow['fleet_end_galaxy']}' AND `system` = '{$FleetRow['fleet_end_system']}' AND `planet` = '{$FleetRow['fleet_end_planet']}' AND `planet_type` = 1;", "", true);
     if (!$iGalaxyPlace['planet_count']) {
       // Can we colonize more planets?
-      if ($iPlanetCount[0] >= $iMaxColo[0] || $iPlanetCount[0] >= MAX_PLAYER_PLANETS) {
+      if ($iPlanetCount[0] >= $iMaxColo[0] || $iPlanetCount[0] >= $config->player_max_planets ) {
         // No, we can't
         $TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_maxcolo'];
         SendSimpleMessage ( $FleetRow['fleet_owner'], '', $FleetRow['fleet_start_time'], 0, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
