@@ -246,6 +246,14 @@ switch(intval($config->db_version))
     {
       $config->db_saveItem('player_max_planets', 10);
     }
+    if(!$update_tables['users']['news_lastread'])
+    {
+      sys_alter_table('users', "ADD `news_lastread` int(11) NOT NULL DEFAULT '0' COMMENT 'News last read tag'");
+    }
+    $newVersion = 16;
+    set_time_limit(30);
+
+  case 17:
     set_time_limit(30);
 };
 $msg .= "done.\r\n";

@@ -141,9 +141,9 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
     $Template = 'admin/left_menu';
   };
 
-  $time_new = $time_now - $config->game_news_actual;
-  $lastAnnounces = doquery("SELECT COUNT(*) AS `new_announce_count` FROM {{announce}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<='{$time_now}' AND UNIX_TIMESTAMP(`tsTimeStamp`)>='{$time_new}' ORDER BY `tsTimeStamp` DESC LIMIT 1;", '', true);
-  $parse['new_announce_count'] = $lastAnnounces['new_announce_count'];
+//  $time_new = $time_now - $config->game_news_actual;
+//  $lastAnnounces = doquery("SELECT COUNT(*) AS `new_announce_count` FROM {{announce}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<='{$time_now}' AND UNIX_TIMESTAMP(`tsTimeStamp`)>='{$time_new}' ORDER BY `tsTimeStamp` DESC LIMIT 1;", '', true);
+  $parse['new_announce_count'] = $user['news_lastread'];
 
   $Menu = parsetemplate( gettemplate($Template, true), $parse);
 

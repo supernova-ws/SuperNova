@@ -23,6 +23,8 @@ $mode            = SYS_mysqlSmartEscape($_GET['mode'] ? $_GET['mode'] : $_POST['
 
 $template     = gettemplate('announce', true);
 
+doquery("UPDATE {{users}} SET `news_lastread` = 0 WHERE `id` = {$user['id']};");
+
 if ($user['authlevel'] >= 3)
 {
   if (!empty($POST_text))
@@ -39,6 +41,8 @@ if ($user['authlevel'] >= 3)
     {
       doquery( "INSERT INTO {{announce}} SET `tsTimeStamp`={$dtDateTime}, `strAnnounce`='{$strText}'");
     }
+    doquery("UPDATE {{users}} SET `news_lastread` = `news_lastread` + 1;");
+
     $mode = '';
   };
 
