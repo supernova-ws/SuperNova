@@ -14,8 +14,7 @@
 
 function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet )
 {
-  global $_GET, $time_now, $dpath;
-
+  global $_GET, $time_now, $dpath, $lang, $config;
 
   if ($CurrentUser)
   {
@@ -43,9 +42,25 @@ function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet )
       }
     }
 
+    $day_of_week = $lang['weekdays'][date('w')];
+    $day         = date('d');
+    $month       = $lang['months'][date('m')];
+    $year        = date('Y');
+    $hour        = date('H');
+    $min         = date('i');
+    $sec         = date('s');
+
+    // Подсчет кол-ва онлайн и кто онлайн
+    $time = $time_now - 15*60;
+    $OnlineUsersNames2 = doquery("SELECT `username` FROM {{users}} WHERE `onlinetime`>'{$time}'");
+
     $template->assign_vars(array(
       'dpath'      => $dpath,
       'TIME_NOW' => $time_now,
+      'TIME_TEXT'          => "$day_of_week, $day $month $year {$lang['top_of_year']},",
+
+      'USERS_ONLINE'         => mysql_num_rows($OnlineUsersNames2),
+      'USERS_TOTAL'          => $config->users_amount,
 
       'TOPNAV_CURRENT_PLANET' => $CurrentUser['current_planet'],
       'TOPNAV_MODE' => $GET_mode,

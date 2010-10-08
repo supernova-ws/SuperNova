@@ -8,6 +8,16 @@ input.frameles
 </style>
 
 <table align=center width="722" cellpadding="0" cellspacing="0" class="header" id="resources" style="width: 722px;" padding-right="30"><tbody>
+  <tr class="c">
+    <td class="c" colspan=5>
+         {TIME_TEXT} <span id="top_time">00:00:00</span>
+        &nbsp;
+    </td>
+    <td class="c" colspan=2 align="right">
+        {L_MembersOnline} [{USERS_ONLINE}/{USERS_TOTAL}]
+       </td>
+  </tr>
+
   <tr class="header">
     <td class="header" align="center" width="150"><select size="1" onChange="eval('location=\''+this.options[this.selectedIndex].value+'\'');">
     {planetlist}
@@ -23,7 +33,7 @@ input.frameles
     <td class="header" align="center" width="140"><A HREF="messages.php"><img src="{dpath}images/message.gif" border="0" height="22" width="42"></A></td>
   </tr>
   <tr class="header">
-    <td class="header" align="center" width="150"><b><font color="#ffffff"><span id="localTime">00.00.0000 00:00:00</span></font></b></td>
+    <td class="header" align="center" width="150">&nbsp;</td>
     <td class="header" align="center" width="150"><A HREF="resources.php">{L_sys_metal}</A></td>
     <td class="header" align="center" width="150"><A HREF="resources.php">{L_sys_crystal}</A></td>
     <td class="header" align="center" width="150"><A HREF="resources.php">{L_sys_deuterium}</A></td>
@@ -54,5 +64,5 @@ input.frameles
   sn_timers.unshift(['top_crystal', 1, true, {TIME_NOW}, [{TOPNAV_CRYSTAL}, {TOPNAV_CRYSTAL_PERHOUR}, {TOPNAV_CRYSTAL_MAX}]]);
   sn_timers.unshift(['top_deuterium', 1, true, {TIME_NOW}, [{TOPNAV_DEUTERIUM}, {TOPNAV_DEUTERIUM_PERHOUR}, {TOPNAV_DEUTERIUM_MAX}]]);
 
-  sn_timers.unshift(['localTime', 2, true, {TIME_NOW}, 3]);
+  sn_timers.unshift(['top_time', 2, true, {TIME_NOW}, 2]);
 // --></script>

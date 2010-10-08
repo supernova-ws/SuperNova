@@ -1,6 +1,5 @@
 <?php
 
-$lang['ov_of_year'] = 'года';
 $lang['ov_hack_alert'] = 'Попытка взлома БД!!!';
 
 $lang['months'] = array(

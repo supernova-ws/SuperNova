@@ -251,4 +251,6 @@ $lang['en']              	  = 'Английский';
 
 $lang['sys_vacancy']         = 'Вы же в отпуске!';
 $lang['sys_level']           = 'Уровень';
+
+$lang['top_of_year'] = 'года';
 ?>

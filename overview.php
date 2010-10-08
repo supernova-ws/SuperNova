@@ -2,6 +2,9 @@
 /**
  * index.php - overview.php
  *
+ * 2.4 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [-] Removed News frame
+ *     [-] Time & Usersonline moved to Top-Frame
  * 2.3 - copyright (c) 2010 by Gorlum for http://supernova.ws
  *     [*] Complying with PCG
  * 2.2 - copyright (c) 2010 by Gorlum for http://supernova.ws
@@ -451,22 +454,6 @@ switch ($mode)
     // -----------------------------------------------------------------------------------------------
     $parse                         = $lang;
 
-    // -----------------------------------------------------------------------------------------------
-    // News Frame ...
-    if ($config->game_news_overview)
-    {
-      $lastAnnounces = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now} ORDER BY `tsTimeStamp` DESC LIMIT {$config->game_news_overview}");
-
-      while ($lastAnnounce = mysql_fetch_array($lastAnnounces))
-      {
-        $template->assign_block_vars('news', array(
-          'TIME'     => $lastAnnounce['tsTimeStamp'],
-          'ANNOUNCE' => sys_bbcodeParse($lastAnnounce['strAnnounce']),
-          'IS_NEW'   => $lastAnnounce['unix_time'] + $config->game_news_actual > $time_now,
-        ));
-      }
-    }
-
     // --- Gestion de l'affichage d'une lune ---------------------------------------------------------
     if($planetrow['planet_type'] == 1)
     {
@@ -487,31 +474,6 @@ switch ($mode)
     }
     // Moon END
 
-
-    $StatRecord = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."';", 'statpoints', true);
-
-    $ile                           = $StatRecord['total_old_rank'] - $StatRecord['total_rank'];
-    if ($ile >= 1)
-    {
-      $parse['ile']              = "<font color=lime>+" . $ile . "</font>";
-    }
-    elseif ($ile < 0)
-    {
-      $parse['ile']              = "<font color=red>-" . $ile . "</font>";
-    }
-    elseif ($ile == 0)
-    {
-      $parse['ile']              = "<font color=lightblue>" . $ile . "</font>";
-    }
-
-    $day_of_week = $lang['weekdays'][date('w')];
-    $day         = date('d');
-    $month       = $lang['months'][date('m')];
-    $year        = date('Y');
-    $hour        = date('H');
-    $min         = date('i');
-    $sec         = date('s');
-
     if ($planetrow['b_building'])
     {
       UpdatePlanetBatimentQueueList ( $planetrow, $user );
@@ -519,10 +481,6 @@ switch ($mode)
 
     $planet_fill = floor($planetrow['field_current'] / CalculateMaxPlanetFields($planetrow) * 100);
     $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
-
-    //Подсчет кол-ва онлайн и кто онлайн
-    $time = $time_now - 15*60;
-    $OnlineUsersNames2 = doquery("SELECT `username` FROM {{users}} WHERE `onlinetime`>'{$time}'");
 
 /*
     $ally = $user['ally_id'];
@@ -550,10 +508,6 @@ switch ($mode)
     $template->assign_vars(array(
       'dpath'                => $dpath,
       'TIME_NOW'             => $time_now,
-      'TIME_TEXT'            => "$day_of_week, $day $month $year {$lang['ov_of_year']},",
-
-      'USERS_ONLINE'         => mysql_num_rows($OnlineUsersNames2),
-      'USERS_TOTAL'          => $config->users_amount,
 
       'USER_ID'              => $user['id'],
       'user_username'        => $user['username'],
