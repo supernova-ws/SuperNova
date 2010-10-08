@@ -65,7 +65,7 @@
   </tr>
   <tr>
     <th>{L_adm_opt_max_colonies}</th>
-    <th>{C_player_max_planets}</th>
+    <th>{C_player_max_colonies}</th>
   </tr>
 
   
