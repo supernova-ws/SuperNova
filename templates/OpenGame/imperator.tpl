@@ -4,6 +4,26 @@
 
 <br>
 <table width=519>
+  <!-- News Frame -->
+  <!-- IF GAME_NEWS_OVERVIEW -->
+    <tr><td colspan=4 class="c">{L_ov_news_title}</td></tr>
+    <!-- BEGIN news -->
+      <tr>
+        <th width="90">
+          <!-- IF news.IS_NEW -->
+            <font color=red>{L_ov_new}</font><br>
+          <!-- ENDIF -->
+          <font color=cyan>{news.TIME}</font>
+        </th>
+        <th valign=top colspan=3>
+          <div align=justify>{news.ANNOUNCE}</div>
+        </th>
+      </tr>
+    <!-- BEGINELSE news -->
+      <tr><th colspan="4" class="c">{L_ov_news_none}</th></tr>
+    <!-- END news -->
+  <!-- ENDIF -->
+
   <!-- IF NEW_MESSAGES -->
     <tr><th colspan=4><a href=messages.php>
       {L_ov_you_have}

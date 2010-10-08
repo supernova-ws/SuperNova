@@ -539,8 +539,6 @@ switch ($mode)
 
       'ADMIN_EMAIL'          => $config->game_adminEmail,
 
-      'GAME_NEWS_OVERVIEW'   => $config->game_news_overview,
-
       //'LastChat'       => CHT_messageParse($msg),
     ));
 

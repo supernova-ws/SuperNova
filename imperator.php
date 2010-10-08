@@ -85,6 +85,22 @@ while ($result = mysql_fetch_array($mess)) {
 }
 $msg .= '</table>';
 */
+// -----------------------------------------------------------------------------------------------
+// News Frame ...
+if ($config->game_news_overview)
+{
+  $lastAnnounces = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now} ORDER BY `tsTimeStamp` DESC LIMIT {$config->game_news_overview}");
+
+  while ($lastAnnounce = mysql_fetch_array($lastAnnounces))
+  {
+    $template->assign_block_vars('news', array(
+      'TIME'     => $lastAnnounce['tsTimeStamp'],
+      'ANNOUNCE' => sys_bbcodeParse($lastAnnounce['strAnnounce']),
+      'IS_NEW'   => $lastAnnounce['unix_time'] + $config->game_news_actual > $time_now,
+    ));
+  }
+}
+
 $template->assign_vars(array(
   'dpath'                => $dpath,
   'TIME_NOW'             => $time_now,
@@ -115,6 +131,8 @@ $template->assign_vars(array(
   'total_points'         => pretty_number( $StatRecord['total_points'] ),
   'user_rank'            => $StatRecord['total_rank'],
   'RANK_DIFF'            => $StatRecord['total_old_rank'] - $StatRecord['total_rank'],
+
+  'GAME_NEWS_OVERVIEW'   => $config->game_news_overview,
 
   //'LastChat'       => CHT_messageParse($msg),
 ));
