@@ -60,15 +60,13 @@ function COE_missileCalculate(){
         foreach ($attackResult['structures'] as $key => $structure) {
           $destroyed = $planetDefense[$key][0] - $structure[0];
           if ($key > 400 && $destroyed) {
-            $message .= "&nbsp;&nbsp;" . $lang['tech'][$key] . " - " . $destroyed . " " . $lang['quantity'] . "<br>";
-            $qUpdate .= ", `" . $resource[$key] . "` = " . $structure[0];
+            $message .= "&nbsp;&nbsp;{$lang['tech'][$key]} - {$destroyed} {$lang['quantity']}<br>";
+            $qUpdate .= ", `{$resource[$key]}` = {$structure[0]}";
           };
         };
 
         $qUpdate .= ", `metal`=`metal`+".$attackResult['metal'].", `crystal`=`crystal`+".$attackResult['crystal'];
-        $message .= $lang['mip_recycled'] .
-          $lang['Metal']. ": " . $attackResult['metal'] . ", ".
-          $lang['Crystal']. ": " . $attackResult['crystal'] . "<br>";
+        $message .= "{$lang['mip_recycled']}{$lang['Metal']}: {$attackResult['metal']}, {$lang['Crystal']}: {$attackResult['crystal']}<br>";
       };
 
       $qUpdate .= " WHERE `id` = " . $targetPlanet['id'] . ";";

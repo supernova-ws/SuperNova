@@ -22,9 +22,9 @@ function BE_preCalcRoundData(&$fleets, &$fleetRoundData, &$fleetArray, $strField
       $thisAtt    = $amount * ($CombatCaps[$element]['attack']) * $fleet['techs']['att'];
 
       if (!$isSimulated){
-        $thisDef    *= rand(80, 120) / 100;
-        $thisShield *= rand(80, 120) / 100;
-        $thisAtt    *= rand(80, 120) / 100;
+        $thisDef    *= mt_rand(80, 120) / 100;
+        $thisShield *= mt_rand(80, 120) / 100;
+        $thisAtt    *= mt_rand(80, 120) / 100;
       }
 
       $fleetArray[$fleetID][$element] = array_map('round', array('def' => $thisDef, 'shield' => $thisShield, 'att' => $thisAtt));
@@ -245,9 +245,33 @@ BE_DEBUG_closeTable();
 
         $totalResourcePoints['defender'] -= $pricelist[$element]['metal'] * $amount ;
         $totalResourcePoints['defender'] -= $pricelist[$element]['crystal'] * $amount ;
-      } else {
+      }
+      else
+      {
         $lost = $originalDef[$element] - $amount;
-        $giveback = $lost * (rand(70*0.8, 70*1.2) / 100);
+
+        if($isSimulated)
+        { // for simulation just return 70% of loss
+          $giveback = floor($lost * 0.7);
+        }
+        else
+        {
+          if($originalDef[$element]>10)
+          { // if there were more then 10 defense elements - mass-calculating giveback
+            $giveback = floor($lost * (mt_rand(70*0.8, 70*1.2) / 100));
+          }
+          else
+          { //if there were less then 10 defense elements - calculating giveback per element
+            $giveback = 0;
+            for($i = 1; $i <= $lost; $i++)
+            {
+              if(mt_rand(1,100)<=70)
+              {
+                $giveback++;
+              }
+            }
+          }
+        }
         $defenders[$fleetID]['def'][$element] += $giveback;
       }
     }
