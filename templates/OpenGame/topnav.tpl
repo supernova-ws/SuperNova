@@ -14,7 +14,7 @@ input.frameles
         &nbsp;
     </td>
     <td class="c" colspan=2 align="right">
-        {L_MembersOnline} [{USERS_ONLINE}/{USERS_TOTAL}]
+        {L_top_online} [{USERS_ONLINE}/{USERS_TOTAL}]
        </td>
   </tr>
 
