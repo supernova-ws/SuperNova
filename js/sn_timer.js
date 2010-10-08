@@ -2,6 +2,9 @@
 
 SuperNova JavaScript timer system
 
+ 1.2 - copyright (c) 2010 by Gorlum for http://supernova.ws
+   [~] - changed sn_timer from array to objects
+
  1.1 - copyright (c) 2010 by Gorlum for http://supernova.ws
    [~] - optimization: now HTML elements for timers is caching after first tick and didn't search every tick
          This should rise perfomance a bit
@@ -9,15 +12,15 @@ SuperNova JavaScript timer system
  1.0 - copyright (c) 2010 by Gorlum for http://supernova.ws
    [!] - initial release
 
-Array structure:
- [0] - timer ID (name)
- [1] - timer type: 0 - time countdown; 1 - counter; 2 - date&time
- [2] - is timer active?
- [3] - start time
- [4] - timer options
-[90] - reserved for internal use (link to main HTML element)
-[91] - reserved for internal use (link to 'timer' HTML element)
-[92] - reserved for internal use (link to 'finish' HTML element)
+Object structure:
+  'id'          - timer ID (name)
+  'type'        - timer type: 0 - time countdown; 1 - counter; 2 - date&time
+  'active'      - is timer active?
+  'start_time'  - start time
+  'options'     - timer options
+  'html_main'   - reserved for internal use (link to main HTML element)
+  'html_timer'  - reserved for internal use (link to 'timer' HTML element)
+  'html_finish' - reserved for internal use (link to 'finish' HTML element)
 
 Options for time countdown:
 [0] - inactive message
@@ -52,38 +55,38 @@ function sn_timer() {
 
   for(timerID in sn_timers){
     timer = sn_timers[timerID];
-    if(!timer[2])continue;
-    timer_options = timer[4];
+    if(!timer['active'])continue;
+    timer_options = timer['options'];
 
 //    HTML        = document.getElementById(timer[0]);
 //    HTML_timer  = document.getElementById(timer[0] + '_timer');
 //    HTML_finish = document.getElementById(timer[0] + '_finish');
-    if(!timer[90])
+    if(!timer['html_main'])
     {
-      sn_timers[timerID][90] = document.getElementById(timer[0]);
-      sn_timers[timerID][91] = document.getElementById(timer[0] + '_timer');
-      sn_timers[timerID][92] = document.getElementById(timer[0] + '_finish');
+      sn_timers[timerID]['html_main'] = document.getElementById(timer['id']);
+      sn_timers[timerID]['html_timer'] = document.getElementById(timer['id'] + '_timer');
+      sn_timers[timerID]['html_finish'] = document.getElementById(timer['id'] + '_finish');
     }
-    HTML        = sn_timers[timerID][90];
-    HTML_timer  = sn_timers[timerID][91];
-    HTML_finish = sn_timers[timerID][92];
+    HTML        = sn_timers[timerID]['html_main'];
+    HTML_timer  = sn_timers[timerID]['html_timer'];
+    HTML_finish = sn_timers[timerID]['html_finish'];
 
-    switch(timer[1]){
+    switch(timer['type']){
       case 0: // countdown timer
-        if(timer[3] + timer_options[1][0][2] - timestamp < 0){
+        if(timer['start_time'] + timer_options[1][0][2] - timestamp < 0){
           timer_options[1][0][3]--;
           if(timer_options[1][0][3]<=0)
             timer_options[1].shift();
-          timer[3] = timestamp;
+          timer['start_time'] = timestamp;
         }
 
         if(timer_options[1].length && timer_options[1][0][0]){
-          timeFinish = timer[3] + timer_options[1][0][2];
-          timeLeft = timer[3] + timer_options[1][0][2] - timestamp;
+          timeFinish = timer['start_time'] + timer_options[1][0][2];
+          timeLeft = timer['start_time'] + timer_options[1][0][2] - timestamp;
           infoText = timer_options[1][0][1];
           timerText = sn_timestampToString(timeLeft);
         }else{
-          timer[2] = false;
+          timer['active'] = false;
           infoText = timer_options[0];
           timerText = '';
         }
@@ -106,36 +109,36 @@ function sn_timer() {
 
       case 1: // counter
         if(timer_options[0] >= timer_options[2]){
-          timer[2] = false;
+          timer['active'] = false;
           printData = '<font color=red>' + sn_format_number(timer_options[0], 2) + '</font>';
         }else{
-          timer_options[0] += Math.floor(timer_options[1] * (timestamp - timer[3]) / 36) / 100
+          timer_options[0] += Math.floor(timer_options[1] * (timestamp - timer['start_time']) / 36) / 100
           printData = sn_format_number(timer_options[0], 2);
-          timer[3] = timestamp;
+          timer['start_time'] = timestamp;
         };
 
         if(HTML != null)
           HTML.innerHTML = printData;
         else
-          timer[2] = false;
+          timer['active'] = false;
         break;
 
       case 2: // date&time
         printData = '';
 
-        if(timer[4] & 1)
+        if(timer['options'] & 1)
           printData += local_time.toLocaleDateString();
 
-        if(timer[4] & 3)
+        if(timer['options'] & 3)
          printData += '&nbsp;';
 
-        if(timer[4] & 2)
+        if(timer['options'] & 2)
           printData += local_time.toTimeString().substring(0,8);
 
         if(HTML != null)
           HTML.innerHTML = printData;
         else
-          timer[2] = false;
+          timer['active'] = false;
         break;
     }
     activeTimers++;

@@ -33,11 +33,16 @@ function GetMissionDuration ($GameSpeed, $MaxFleetSpeed, $Distance, $SpeedFactor
   return $Duration;
 }
 
-// Retourne la valeur ajustée de vitesse des flottes
-function GetGameSpeedFactor () {
+function get_fleet_speed() {
   global $config;
 
-  return $config->fleet_speed / 2500;
+  return $config->fleet_speed;
+}
+
+function get_game_speed() {
+  global $config;
+
+  return $config->game_speed;
 }
 
 function get_ship_speed($ship_id, $user)

@@ -95,8 +95,8 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
 
   if ($Level <= "0") {
     $parse['lm_tx_serv']      = $config->resource_multiplier;
-    $parse['lm_tx_game']      = $config->game_speed / 2500;
-    $parse['lm_tx_fleet']     = $config->fleet_speed / 2500;
+    $parse['lm_tx_game']      = get_game_speed();
+    $parse['lm_tx_fleet']     = get_fleet_speed();
     $parse['lm_tx_queue']     = MAX_FLEET_OR_DEFS_PER_ROW;
     $SubFrame                 = parsetemplate( $InfoTPL, $parse );
     $parse['server_info']     = $SubFrame;

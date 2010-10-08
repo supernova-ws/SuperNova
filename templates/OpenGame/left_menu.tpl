@@ -56,7 +56,8 @@ function f(target_url,win_name) {
   <tr><td><a href="records.php">{Records}</a></td></tr>
   <tr><td><a href="banned.php">{L_lm_banned}</a></td></tr>
   <tr><td><a href="contact.php">{commun}</a></td></tr>
-  
+  <tr><td><a href="server_info.php">{L_lm_server_info}</a></td></tr>
+
   <tr><th>{m_others}</th></tr>
   <tr><td><a href="simulator.php" id="lm_simulator">{m_simulator}</a></td></tr>
   <tr><td><a href="notes.php">{Notes}</a></td></tr>

@@ -467,7 +467,7 @@ class classConfig extends classPersistent
     'deuterium_basic_income' => 0,
     'energy_basic_income'    => 0,
     'Fleet_Cdr'              => 30,
-    'fleet_speed'            => 2500,
+    'fleet_speed'            => 1,
     'forum_url'              => '/forum/',
     'rules_url'              => '/rules.php',
     'initial_fields'         => 163,
@@ -484,8 +484,8 @@ class classConfig extends classPersistent
 
     // Game global settings
     'game_name'  => 'SuperNova', // Server name (would be on banners and on top of left menu)
-    'game_mode'  => '0',         // 0 - SuperNova, 1 - oGame
-    'game_speed' => 2500,        // Game speed. 2500 - normal
+    'game_mode'  => 0,           // 0 - SuperNova, 1 - oGame
+    'game_speed' => 1,           // Game speed
 
     // Universe size
     'game_maxGalaxy' => '5',
@@ -504,7 +504,7 @@ class classConfig extends classPersistent
     'game_news_overview'   => 3,    // How much last news to show in Overview page
     'game_news_actual'     => 259200, // How long announcement would be marked as "New". In seconds. Default - 3 days
 
-    'player_max_planets'   => 10, // Max player planet count (including main planet)
+    'player_max_colonies'  => 9, // Max player planet count (NOT including main planet)
 
     // Interface - UserBanner
     'int_banner_showInOverview'  => 1,

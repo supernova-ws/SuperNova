@@ -64,7 +64,7 @@ includeLang('fleet');
   }
 
   $distance      = GetTargetDistance  ( $planetrow['galaxy'], $Galaxy, $planetrow['system'], $System, $planetrow['planet'], $Planet );
-  $SpeedFactor   = $config->fleet_speed / 2500;
+  $SpeedFactor   = get_fleet_speed();
   $GenFleetSpeed = 10; // a 100%
   $duration      = GetMissionDuration ( $GenFleetSpeed, $RecyclerSpeed, $distance, $SpeedFactor );
 

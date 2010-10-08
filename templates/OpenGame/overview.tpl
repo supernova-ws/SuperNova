@@ -212,9 +212,9 @@
       </tr>
 
       <script type="text/javascript"><!--
-        sn_timers.unshift(['ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}', 0, true, {TIME_NOW}, ['{L_sys_fleet_arrived}',[
+        sn_timers.unshift({id: 'ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}', type: 0, active: true, start_time: {TIME_NOW}, options: ['{L_sys_fleet_arrived}',[
           ['{fleets.ID}', '', {fleets.OV_LEFT}, '0']
-        ]]]);
+        ]]});
       --></script>
     <!-- BEGINELSE fleets -->
       <tr><th colspan=5>{L_ov_fleet_no_flying}</th></tr>
