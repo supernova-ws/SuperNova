@@ -15,7 +15,14 @@ function f(target_url,win_name) {
   <tr><td><a href="{C_rules_url}">Правила игры</a></td></tr>
 <!--  <tr><td title="{m_faq_hint}"><a href="http://forum.supernova.ws/phpBB3/viewtopic.php?f=3&t=333">{m_faq}</a></td></tr> -->
 <!--  <tr><td><a href="faq.php">{m_faq}</a></td></tr> -->
-  <tr><td><a href="announce.php">{adm_announce}</a></td></tr>
+  <tr>
+    <td><a href="announce.php">{adm_announce}
+    <!-- IF new_announce_count -->
+    <font color=red><strong><blink>{L_lm_announce_fresh}</blink></strong></font>
+    <!-- ENDIF -->
+    </a>
+    </td>
+  </tr>
   <tr><th><a href="affilates.php" id="lm_affilates">{m_affilates}</a></th></tr>
 
   <tr><th>{L_sys_planet}</th></tr>

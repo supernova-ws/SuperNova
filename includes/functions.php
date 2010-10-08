@@ -81,7 +81,7 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
 }
 
 function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
-  global $lang, $dpath, $user, $config;
+  global $lang, $dpath, $user, $config, $time_now;
 
   includeLang('leftmenu');
   $Level = min ($Level, $user['authlevel']);
@@ -92,8 +92,6 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
   $parse['dpath']           = $dpath;
   $parse['XNovaRelease']    = VERSION;
   $parse['servername']      = $config->game_name;
-  //$parse['servername']   = XNova;
-
 
   if ($Level <= "0") {
     $parse['lm_tx_serv']      = $config->resource_multiplier;
@@ -143,7 +141,11 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
     $Template = 'admin/left_menu';
   };
 
-  $Menu = parsetemplate( gettemplate($Template), $parse);
+//  $time_new = $time_now - $config->game_news_actual;
+//  $lastAnnounces = doquery("SELECT COUNT(*) AS `new_announce_count` FROM {{announce}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<='{$time_now}' AND UNIX_TIMESTAMP(`tsTimeStamp`)>='{$time_new}' ORDER BY `tsTimeStamp` DESC LIMIT 1;", '', true);
+  $parse['new_announce_count'] = $user['news_lastread'];
+
+  $Menu = parsetemplate( gettemplate($Template, true), $parse);
 
   return $Menu;
 }
@@ -172,21 +174,21 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   $title = $title ? "{$title} - " : $title;
   $title .= "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}";
 
-  $DisplayPage  = StdHeader ($title, $metatags, $AdminPage);
+  displayP(StdHeader ($title, $metatags, $AdminPage));
 
   if ($isDisplayMenu && $IsUserChecked){ //
-    $DisplayPage .= '<div style="float:left; width: 190px; text-align: center;">';
-    $DisplayPage .= ShowLeftMenu ( $AdminPage );
-    $DisplayPage .= '</div>';
-    $DisplayPage .= '<div id="page_body" style="margin-left: 190px; width: auto;">';
+    echo '<div style="float:left; width: 190px; text-align: center;">';
+    displayP(ShowLeftMenu ( $AdminPage ));
+    echo $DisplayPage;
+    echo '</div>';
+    echo '<div id="page_body" style="margin-left: 190px; width: auto;">';
   }
   else
   {
-    $DisplayPage .= '<div>';
+    echo '<div>';
   }
-  $DisplayPage .= '<center>';
 
-  echo $DisplayPage;
+  echo '<center>';
 
   if ($topnav && $IsUserChecked) {
     if ($user['db_deaktjava'] == 1) {
@@ -199,17 +201,6 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
 
   displayP($TopNav);
   displayP($page);
-/*
-  if(is_object($TopNav))
-    displayP($TopNav);
-  else
-    echo $TopNav;
-
-  if(is_object($page))
-    displayP($page);
-  else
-    echo $page;
-*/
 
   // Affichage du Debug si necessaire
   if ($user['authlevel'] == 3)
@@ -222,12 +213,7 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
 
   $std_footer = StdFooter();
   displayP($std_footer);
-/*
-  if(is_object($std_footer))
-    displayP($std_footer);
-  else
-    echo $std_footer;
-*/
+
   sys_logHit();
 
   if (isset($link))

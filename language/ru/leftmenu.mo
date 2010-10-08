@@ -110,4 +110,6 @@ $lang['lm_ifo_queue']	= "Очередь";
 $lang['lm_shortcuts'] = "Закладки";
 
 $lang['lm_banned']    = "Список банов";
+
+$lang['lm_announce_fresh'] = "ОБНОВЛЕНИЕ";
 ?>

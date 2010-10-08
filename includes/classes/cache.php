@@ -504,6 +504,8 @@ class classConfig extends classPersistent
     'game_news_overview'   => 3,    // How much last news to show in Overview page
     'game_news_actual'     => 259200, // How long announcement would be marked as "New". In seconds. Default - 3 days
 
+    'player_max_planets'   => 10, // Max player planet count (including main planet)
+
     // Interface - UserBanner
     'int_banner_showInOverview'  => 1,
     'int_banner_background'      => 'images/banner.png',
