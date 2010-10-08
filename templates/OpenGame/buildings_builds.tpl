@@ -97,23 +97,17 @@ function unborder_unit(unit_id)
              {production.NAME}
            </span>
 
-           <span style="position: absolute; bottom: 0; right: 0; width: 80%; height: 10%; text-align: right; font-size: 100%;" class="icon_alpha">
-             <!-- IF production.LEVEL -->
-               {production.LEVEL}
-             <!-- ENDIF -->
-           </span>
-
-           <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='infos.php?gid={production.ID}'">
+           <span style="position: absolute; bottom: 0px; right: 0px;" class="icon_alpha" onclick="document.location='infos.php?gid={production.ID}'">
              <div class="icons icon-info"></div>
            </span>
            
            <!-- IF production.CAN_BUILD -->
-             <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=insert&building={production.ID}'">
+             <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='?cmd=insert&building={production.ID}'">
                <div class="icons icon-plus"></div>
              </span>
   
              <!-- IF production.LEVEL -->
-               <span style="position: absolute; bottom: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=destroy&building={production.ID}'">
+               <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=destroy&building={production.ID}'">
                  <div class="icons icon-minus" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
                </span>
              <!-- ENDIF -->
@@ -123,7 +117,17 @@ function unborder_unit(unit_id)
              <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?listid=1&cmd=cancel&planet=2'">
                <div class="icons icon-cancel"></div>
              </span>
+             <!-- DEFINE $BUILDINGPLUSONE = '+1' -->
+           <!-- ELSE -->
+             <!-- DEFINE $BUILDINGPLUSONE = '' -->
            <!-- ENDIF -->
+
+           <span style="position: absolute; top: 1; left: 20%; width: 60%; height: 14%; text-align: center; font-size: 120%;" class="icon_alpha">
+             <!-- IF production.LEVEL -->
+               {production.LEVEL}
+             <!-- ENDIF -->
+               {$BUILDINGPLUSONE}
+           </span>
          </div>
        </td>
        <!-- IF (production.S_ROW_COUNT + 1) mod 6 == 0 -->
