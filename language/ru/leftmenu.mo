@@ -112,4 +112,6 @@ $lang['lm_shortcuts'] = "Закладки";
 $lang['lm_banned']    = "Список банов";
 
 $lang['lm_announce_fresh'] = "ОБНОВЛЕНИЕ";
+
+$lang['lm_server_info'] = "Мировые константы";
 ?>

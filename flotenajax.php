@@ -227,7 +227,7 @@ if ($POST_thisgalaxy     != $planetrow['galaxy'] |
 $Distance    = GetTargetDistance ($POST_thisgalaxy, $POST_galaxy, $POST_thissystem, $POST_system, $POST_thisplanet, $POST_planet);
 $speedall    = GetFleetMaxSpeed ($FleetArray, 0, $user);
 $SpeedAllMin = min($speedall);
-$Duration    = GetMissionDuration ( 10, $SpeedAllMin, $Distance, GetGameSpeedFactor ());
+$Duration    = GetMissionDuration ( 10, $SpeedAllMin, $Distance, get_fleet_speed());
 
 $fleet['fly_time']   = $Duration;
 $fleet['start_time'] = $Duration + time();
@@ -237,7 +237,7 @@ $FleetShipCount      = 0;
 $FleetDBArray        = "";
 $FleetSubQRY         = "";
 $consumption         = 0;
-$SpeedFactor         = GetGameSpeedFactor ();
+$SpeedFactor         = get_fleet_speed();
 foreach ($FleetArray as $Ship => $Count)
 {
   $ShipSpeed        = $pricelist[$Ship]["speed"];

@@ -153,8 +153,9 @@ $lang['sys_ships']           = "Корабли";
 $lang['sys_metal']      = "Металл";
 $lang['sys_crystal']    = "Кристалл";
 $lang['sys_deuterium']  = "Дейтрий";
-$lang['sys_dark_matter'] = "Темная Материя";
 $lang['sys_energy']     = "Энергия";
+$lang['sys_dark_matter'] = "Темная Материя";
+$lang['sys_dark_matter_sh'] = "ТМ";
 
 $lang['sys_resource'] = array(
   1 => $lang['sys_metal'],
@@ -252,9 +253,18 @@ $lang['en']              	  = 'Английский';
 $lang['sys_vacancy']         = 'Вы же в отпуске!';
 $lang['sys_level']           = 'Уровень';
 
+$lang['sys_yes']             = 'Да';
+$lang['sys_no']              = 'Нет';
+
+$lang['sys_on']              = 'Включен';
+$lang['sys_off']             = 'Отключен';
+
+$lang['sys_game_mode'][0]    = 'Сверхновая';
+$lang['sys_game_mode'][1]    = 'оГейм';
+
 // top bar
 $lang['top_of_year'] = 'года';
-$lang['top_online']			= 'Игроков';
+$lang['top_online']			= 'Игроки on-line';
 
 $lang['months'] = array(
 	'01'=>'Января',

@@ -14,8 +14,8 @@
 $lang['adm_opt_title']         = "Server configuration";
 $lang['adm_opt_game_settings'] = "Game settings";
 $lang['adm_opt_game_name']     = "Game name";
-$lang['adm_opt_game_gspeed']   = "Game speed<br>(normal = 2500)";
-$lang['adm_opt_game_fspeed']   = "Fleet speed<br>(normal = 2500)";
+$lang['adm_opt_game_gspeed']   = "Game speed";
+$lang['adm_opt_game_fspeed']   = "Fleet speed";
 $lang['adm_opt_game_pspeed']   = "Production speed<br>(normal = 1)";
 $lang['adm_opt_game_forum']    = "Board address";
 $lang['adm_opt_game_copyrigh'] = "Copyright";

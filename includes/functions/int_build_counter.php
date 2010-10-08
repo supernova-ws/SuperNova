@@ -10,7 +10,7 @@ function int_buildCounter($planetrow, $type, $subType = ''){
       $start_prod = $time_now - $planetrow["b_{$type}"];
     }
 
-    $Build = "<script type='text/javascript'>sn_timers.unshift(['ov_{$type}{$subType}', 0, true, {$start_prod}, ['{$lang['Free']}',[";
+    $Build = "<script type='text/javascript'>sn_timers.unshift({id: 'ov_{$type}{$subType}', type: 0, active: true, start_time: {$start_prod}, options: ['{$lang['Free']}',[";
     foreach($BuildQueue as $queItem){
       $CurrBuild  = explode (',', $queItem);
       if($type=='hangar'){
@@ -25,7 +25,7 @@ function int_buildCounter($planetrow, $type, $subType = ''){
 
       $Build.= "['{$CurrBuild[0]}', '{$lang['tech'][$CurrBuild[0]]}{$b1}', {$RestTime}, '{$buildCount}'],";
     }
-    $Build.= "]]]);</script>";
+    $Build.= "]]});</script>";
   }
 
   return $Build;

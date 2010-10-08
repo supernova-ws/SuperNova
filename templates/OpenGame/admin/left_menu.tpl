@@ -44,9 +44,9 @@ function f(target_url,win_name) {
 
   <tr><td align=center background="{dpath}img/bg1.png">{tool}</td></tr>
   <tr><td><a href="admin_chat.php">{adm_chat}</a></td></tr>
-  <tr><td><a href="statbuilder.php">{adm_updpt}</a></td></tr>
-  <tr><td><a href="sxd/index.php">{adm_backup}</a></td></tr>
-  <tr><td><a href="maintenance.php">{adm_maint}</a></td></tr>
+  <tr><td><a href="statbuilder.php">{L_adm_updpt}</a></td></tr>
+  <tr><td><a href="sxd/index.php">{L_adm_backup}</a></td></tr>
+  <tr><td><a href="maintenance.php">{L_adm_maint}</a></td></tr>
   <tr><td><a href="messagelist.php">{adm_msg}</a></td></tr>
   <tr><td><a href="md5enc.php">{adm_md5}</a></td></tr>
   <tr><td><a href="ElementQueueFixer.php">{adm_updrank}</a></td></tr>

@@ -66,7 +66,7 @@ if($MaxExpeditions){
   $FlyingExpeditions = 0;
 };
 
-$SpeedFactor = GetGameSpeedFactor();
+$SpeedFactor = get_fleet_speed();
 
 switch ($fleet_page)
 {

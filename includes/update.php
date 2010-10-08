@@ -242,15 +242,29 @@ switch(intval($config->db_version))
     set_time_limit(30);
 
   case 16:
-    if(!$config->db_loadItem('player_max_planets'))
+    doquery("DELETE FROM {{config}} WHERE `config_name` in ('player_max_planets');");
+
+    if(!$config->db_loadItem('player_max_colonies'))
     {
-      $config->db_saveItem('player_max_planets', 10);
+      $config->db_saveItem('player_max_colonies', $config->player_max_planets ? ($config->player_max_planets - 1) : 9);
     }
+
+    if($config->game_speed >= 2500)
+    {
+      $config->db_saveItem('game_speed', $config->game_speed / 2500);
+    }
+
+    if($config->fleet_speed >= 2500)
+    {
+      $config->db_saveItem('fleet_speed', $config->fleet_speed / 2500);
+    }
+
     if(!$update_tables['users']['news_lastread'])
     {
       sys_alter_table('users', "ADD `news_lastread` int(11) NOT NULL DEFAULT '0' COMMENT 'News last read tag'");
     }
-    $newVersion = 16;
+
+    $newVersion = 17;
     set_time_limit(30);
 
   case 17:
