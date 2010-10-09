@@ -282,14 +282,14 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
           'LEVEL'             => ($BuildingLevel == 0) ? '' : "{$BuildingLevel}",
 
           'PRICE'             => GetElementPrice($CurrentUser, $CurrentPlanet, $Element),
-          'TIME'              => ShowBuildTime($ElementBuildTime),
+          'TIME'              => pretty_time($ElementBuildTime),
           'METAL'             => $build_price['metal'],
           'CRYSTAL'           => $build_price['crystal'],
           'DEUTERIUM'         => $build_price['deuterium'],
 
-          'METAL_REST'        => pretty_number(intval($CurrentPlanet['metal'] - $build_price['metal']), false, true),
-          'CRYSTAL_REST'      => pretty_number(intval($CurrentPlanet['crystal'] - $build_price['crystal']), false, true),
-          'DEUTERIUM_REST'    => pretty_number(intval($CurrentPlanet['deuterium'] - $build_price['deuterium']), false, true),
+          'METAL_REST'        => pretty_number(intval($CurrentPlanet['metal'] + $fleet_list['own']['metal'] - $build_price['metal']), false, true),
+          'CRYSTAL_REST'      => pretty_number(intval($CurrentPlanet['crystal'] + $fleet_list['own']['crystal'] - $build_price['crystal']), false, true),
+          'DEUTERIUM_REST'    => pretty_number(intval($CurrentPlanet['deuterium'] + $fleet_list['own']['deuterium'] - $build_price['deuterium']), false, true),
 /*
           'METAL'             => $build_price['metal'],
           'CRYSTAL'           => $build_price['crystal'],
