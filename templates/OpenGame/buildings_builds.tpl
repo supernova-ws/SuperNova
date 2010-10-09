@@ -53,11 +53,11 @@ function show_unit_info(unit_id)
     var color = '';
     var result = '';
 
-    result += '<div class="fl">';
+    result += '<div class="fl" style="margin: 4px">';
     result += '<img border="0" src="' + dpath + 'gebaeude/' + unit['id'] +'.gif" align="top">';
     result += '</div>';
 
-    result += '<div style="margin-left: 4px; width: 300px;" class="fl"><b>' + unit['name'];
+    result += '<div style="margin: 4px; width: 300px;" class="fl"><b>' + unit['name'];
     if(unit['level'])
     {
      result += ', ' + language['level'] + ' ' + unit['level'];
@@ -84,7 +84,7 @@ function show_unit_info(unit_id)
     result += '<br>' + unit['build_link'];
     result += '</div>';
 
-    result += '<div class="fr">';
+    result += '<div class="fr" style="margin: 2px">';
     result += '<table>';
     result += '<tr>';
     result += '<td>!Ресурс' + language['a'] + '</td>';
@@ -143,7 +143,7 @@ function unborder_unit(unit_id)
 			{L_bld_theyare} {field_libre} {L_bld_cellfree} ( <font color="#00FF00">{planet_field_current}</font> / <font color="#FF0000">{planet_field_max}</font> )
 		</th >
 	</tr>
-   <tr><td colspan=6 id="unit_info" style="height: 10em; vertical-align: top;">&nbsp;</td></tr>
+   <tr><td colspan=6 id="unit_info" style="height: 130px; vertical-align: top;">&nbsp;</td></tr>
    <tr>
 	<!-- BEGIN production -->
        <td class="l" align="center">
