@@ -85,6 +85,7 @@ function show_unit_info(unit_id)
     result += '</div>';
 
     result += '<div class="fr" style="margin: 2px">';
+    result += language['construction_time'] + unit['time'] + '<br /><br />';
     result += '<table>';
     result += '<tr>';
     result += '<td>!Ресурс' + language['a'] + '</td>';
@@ -100,7 +101,6 @@ function show_unit_info(unit_id)
     result += make_resource_row('crystal', unit['crystal'], unit['destroy_crystal']);
     result += make_resource_row('deuterium', unit['deuterium'], unit['destroy_deuterium']);
     result += '</table>';
-    result += unit['time'];
     result += '</div>';
 
     unit_cache[unit_id] = result;
@@ -188,10 +188,14 @@ function unborder_unit(unit_id)
                {$BUILDINGPLUSONE}
            </span>
 
-           <span style="position: absolute; top: 46px; left: 2%; width: 96%; height: 6ex; font-size: 100%; text-align: left;" class="icon_alpha"> <!--  onclick="select_unit({production.ID})" onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
-             <div class="fl">{L_sys_metal}</div><div class="fr">{production.METAL_REST}</div><br>
-             <div class="fl">{L_sys_crystal}</div><div class="fr">{production.CRYSTAL_REST}</div><br>
-             <div class="fl">{L_sys_deuterium}</div><div class="fr">{production.DEUTERIUM_REST}</div>
+           <span style="position: absolute; top: 46px; left: 2%; width: 96%; font-size: 100%; text-align: left;" class="icon_alpha"> <!--  onclick="select_unit({production.ID})" onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
+             <!-- IF production.METAL --><div class="fl">{L_sys_metal}</div><div class="fr">{production.METAL_REST}</div><br><!-- ENDIF -->
+             <!-- IF production.CRYSTAL --><div class="fl">{L_sys_crystal}</div><div class="fr">{production.CRYSTAL_REST}</div><br><!-- ENDIF -->
+             <!-- IF production.DEUTERIUM --><div class="fl">{L_sys_deuterium}</div><div class="fr">{production.DEUTERIUM_REST}</div><!-- ENDIF -->
+           </span>
+
+           <span style="position: absolute; bottom: 2px; right: 18px; width: 84%; font-size: 100%; text-align: left;" class="icon_alpha"> <!--  onclick="select_unit({production.ID})" onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
+             <div class="fr">{production.TIME}</div>
            </span>
 
          </div>
@@ -253,6 +257,7 @@ language =
 
   level: '{L_level}',
   bld_destroy: '{L_bld_destroy}',
+  construction_time: '{L_ConstructionTime}',
   sys_metal: '{L_sys_metal}',
   sys_crystal: '{L_sys_crystal}',
   sys_deuterium: '{L_sys_deuterium}',

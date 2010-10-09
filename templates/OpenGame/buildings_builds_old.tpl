@@ -35,8 +35,8 @@
            <!-- ENDIF -->
          </a><br>
          {production.DESCRIPTION}<br>
-         {production.PRICE}
-         {production.TIME}
+         {production.PRICE}<br>
+         {L_ConstructionTime} {production.TIME}
          {production.RESOURCES_LEFT}<br>
          
          <!-- IF production.ENERGY_BALANCE -->
