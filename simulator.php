@@ -48,7 +48,7 @@ if(($_GET['BE_DEBUG'] || $_POST['BE_DEBUG']) && !defined('BE_DEBUG'))
 if($_POST['submit'] || $execute)
 {
   $replay = sys_combatDataPack($sym_attacker, 'detail');
-  $replay .= sys_combatDataPack($sym_defender, 'def');pdump($sym_defender);
+  $replay .= sys_combatDataPack($sym_defender, 'def');
 
   $a = array(&$sym_attacker, &$sym_defender);
   foreach($a as &$sym_fleet_list)
