@@ -53,7 +53,11 @@ function show_unit_info(unit_id)
     var color = '';
     var result = '';
 
-    result += '<b>' + unit['name'];
+    result += '<div class="fl">';
+    result += '<img border="0" src="' + dpath + 'gebaeude/' + unit['id'] +'.gif" align="top">';
+    result += '</div>';
+
+    result += '<div style="margin-left: 4px; width: 300px;" class="fl"><b>' + unit['name'];
     if(unit['level'])
     {
      result += ', ' + language['level'] + ' ' + unit['level'];
@@ -61,25 +65,9 @@ function show_unit_info(unit_id)
     result += '</b><br>';
     result += unit['description'] + '<br>';
     
-    result += '<table>'
-    result += '<tr>';
-    result += '<td>!Ресурс' + language['a'] + '</td>';
-    result += '<td>!Построить' + language['a'] + '</td>';
-    result += '<td>!Остаток' + language['a'] + '</td>';
-    if(planet['fleet_own'])
-    {
-      result += '<td>!+ флоты' + language['a'] + '</td>';
-    }
-//    result += '<td>' + language['bld_destroy'] + '</td>';
-    result += '</tr>';
-    result += make_resource_row('metal', unit['metal'], unit['destroy_metal']);
-    result += make_resource_row('crystal', unit['crystal'], unit['destroy_crystal']);
-    result += make_resource_row('deuterium', unit['deuterium'], unit['destroy_deuterium']);
-    result += '</table>'
-
-    result += unit['time'];
-    result += unit['destroy_time'];
-    result += unit['resources_left'] + '<br>';
+    result += '';
+//    result += unit['destroy_time'];
+//    result += unit['resources_left'] + '<br>';
     if(unit['energy_balance'] != 0)
     {
       result += '<font color=';
@@ -94,6 +82,26 @@ function show_unit_info(unit_id)
       result += '>' + language['sys_energy'] + ': ' + unit['energy_balance'] + '</font><br>';
     }
     result += '<br>' + unit['build_link'];
+    result += '</div>';
+
+    result += '<div class="fr">';
+    result += '<table>';
+    result += '<tr>';
+    result += '<td>!Ресурс' + language['a'] + '</td>';
+    result += '<td>!Построить' + language['a'] + '</td>';
+    result += '<td>!Остаток' + language['a'] + '</td>';
+    if(planet['fleet_own'])
+    {
+      result += '<td>!+ флоты' + language['a'] + '</td>';
+    }
+//    result += '<td>' + language['bld_destroy'] + '</td>';
+    result += '</tr>';
+    result += make_resource_row('metal', unit['metal'], unit['destroy_metal']);
+    result += make_resource_row('crystal', unit['crystal'], unit['destroy_crystal']);
+    result += make_resource_row('deuterium', unit['deuterium'], unit['destroy_deuterium']);
+    result += '</table>';
+    result += unit['time'];
+    result += '</div>';
 
     unit_cache[unit_id] = result;
   }
@@ -194,6 +202,7 @@ function unborder_unit(unit_id)
 <script type="text/javascript"><!--
 production[{production.ID}] = 
 {
+  id: '{production.ID}',
   name: '{production.NAME}',
   level: '{production.LEVEL}',
   description: '{production.DESCRIPTION}', 
@@ -262,5 +271,7 @@ planet =
   crystal_incoming: '{CRYSTAL_INCOMING}',
   deuterium_incoming: '{DEUTERIUM_INCOMING}'
 };
+
+var dpath = '{dpath}';
 --></script>
 <!-- INCLUDE page_hint.tpl -->
