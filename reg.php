@@ -181,30 +181,40 @@ if ($_POST) {
     $LastSettedGalaxyPos  = $config->LastSettedGalaxyPos;
     $LastSettedSystemPos  = $config->LastSettedSystemPos;
     $LastSettedPlanetPos  = $config->LastSettedPlanetPos;
-    while (!isset($newpos_checked)) {
-      for ($Galaxy = $LastSettedGalaxyPos; $Galaxy <= $config->game_maxGalaxy; $Galaxy++) {
-        for ($System = $LastSettedSystemPos; $System <= $config->game_maxSystem; $System++) {
-          for ($Posit = $LastSettedPlanetPos; $Posit <= 4; $Posit++) {
+    while (!isset($newpos_checked))
+    {
+      for ($Galaxy = $LastSettedGalaxyPos; $Galaxy <= $config->game_maxGalaxy; $Galaxy++)
+      {
+        for ($System = $LastSettedSystemPos; $System <= $config->game_maxSystem; $System++)
+        {
+          for ($Posit = $LastSettedPlanetPos; $Posit <= 4; $Posit++)
+          {
             $Planet = round (rand ( 4, 12) );
 
-            switch ($LastSettedPlanetPos) {
+            switch ($LastSettedPlanetPos)
+            {
               case 1:
                 $LastSettedPlanetPos += 1;
-                break;
+              break;
+
               case 2:
                 $LastSettedPlanetPos += 1;
-                break;
+              break;
+
               case 3:
-                if ($LastSettedSystemPos == $config->game_maxSystem) {
+                if ($LastSettedSystemPos == $config->game_maxSystem)
+                {
                   $LastSettedGalaxyPos += 1;
                   $LastSettedSystemPos  = 1;
                   $LastSettedPlanetPos  = 1;
                   break;
-                } else {
+                }
+                else
+                {
                   $LastSettedPlanetPos  = 1;
                 }
                 $LastSettedSystemPos += 1;
-                break;
+              break;
             }
             break;
           }
@@ -223,15 +233,18 @@ if ($_POST) {
       $QrySelectGalaxy .= "LIMIT 1;";
       $GalaxyRow = doquery( $QrySelectGalaxy, 'planets', true);
 
-      if ($GalaxyRow["id"] == "0") {
+      if ($GalaxyRow["id"] == "0")
+      {
         $newpos_checked = true;
       }
 
-      if (!$GalaxyRow) {
+      if (!$GalaxyRow)
+      {
         CreateOnePlanetRecord ($Galaxy, $System, $Planet, $NewUser['id'], $UserPlanet, BUILD_METAL, BUILD_CRISTAL, BUILD_DEUTERIUM, true);
         $newpos_checked = true;
       }
-      if ($newpos_checked) {
+      if ($newpos_checked)
+      {
         doquery("UPDATE {{table}} SET `config_value` = '". $LastSettedGalaxyPos ."' WHERE `config_name` = 'LastSettedGalaxyPos';", 'config');
         doquery("UPDATE {{table}} SET `config_value` = '". $LastSettedSystemPos ."' WHERE `config_name` = 'LastSettedSystemPos';", 'config');
         doquery("UPDATE {{table}} SET `config_value` = '". $LastSettedPlanetPos ."' WHERE `config_name` = 'LastSettedPlanetPos';", 'config');
@@ -257,9 +270,12 @@ if ($_POST) {
     doquery("UPDATE {{table}} SET `config_value` = `config_value` + '1' WHERE `config_name` = 'aktywacjen' LIMIT 1;", 'config');
 
     $Message  = $lang['thanksforregistry'];
-    if (sendpassemail($_POST['email'], "$newpass")) {
+    if (sendpassemail($_POST['email'], "$newpass"))
+    {
       $Message .= " (" . htmlentities($_POST["email"]) . ")";
-    } else {
+    }
+    else
+    {
       $Message .= " (" . htmlentities($_POST["email"]) . ")";
       $Message .= "<br><br>". $lang['error_mailsend'] ." <b>" . $newpass . "</b>";
     }
@@ -267,7 +283,9 @@ if ($_POST) {
 
     message( $Message, $lang['reg_welldone']);
   }
-} else {
+}
+else
+{
   // Afficher le formulaire d'enregistrement
   $parse               = $lang;
   $parse['id_ref']     = $id_ref;
