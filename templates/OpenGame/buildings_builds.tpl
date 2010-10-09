@@ -5,6 +5,38 @@ var production = Array();
 var unit_selected = null;
 var unit_cache = Array();
 
+function make_resource_row(resource_name, value, value_destroy)
+{
+  value = parseInt(value);
+
+  var result = '';
+
+  if(value > 0)
+  {
+    if(parseInt(value) >= parseInt(planet[resource_name]))
+    {
+      color = 'lime';
+    }
+    else
+    {
+      color = 'red';
+    }
+    
+    result += '<tr align="right">';
+    result += '<td>' + language['sys_' + resource_name] + '</td>';
+    result += '<td>' + sn_format_number(value, 0, 'lime', planet[resource_name]) + '</td>';
+    result += '<td>' + sn_format_number(parseInt(planet[resource_name]) - parseInt(value), 0, 'lime') + '</td>';
+    if(planet['fleet_own'])
+    {
+      result += '<td>' + sn_format_number(parseInt(planet[resource_name]) + parseInt(planet[resource_name + '_incoming']) - parseInt(value), 0, 'lime') + '</td>';
+    }
+//    result += '<td>' + sn_format_number(parseInt(value_destroy), 0, 'lime') + '</td>';
+    result += '</tr>';
+  }
+
+  return result;
+}
+
 function show_unit_info(unit_id)
 {
   element_cache['unit' + unit_id].style.borderColor="#0000FF";
@@ -18,7 +50,9 @@ function show_unit_info(unit_id)
   {
     var unit = production[unit_id];
     
+    var color = '';
     var result = '';
+
     result += '<b>' + unit['name'];
     if(unit['level'])
     {
@@ -26,8 +60,25 @@ function show_unit_info(unit_id)
     }
     result += '</b><br>';
     result += unit['description'] + '<br>';
-    result += unit['price'];
+    
+    result += '<table>'
+    result += '<tr>';
+    result += '<td>!Ресурс' + language['a'] + '</td>';
+    result += '<td>!Построить' + language['a'] + '</td>';
+    result += '<td>!Остаток' + language['a'] + '</td>';
+    if(planet['fleet_own'])
+    {
+      result += '<td>!+ флоты' + language['a'] + '</td>';
+    }
+//    result += '<td>' + language['bld_destroy'] + '</td>';
+    result += '</tr>';
+    result += make_resource_row('metal', unit['metal'], unit['destroy_metal']);
+    result += make_resource_row('crystal', unit['crystal'], unit['destroy_crystal']);
+    result += make_resource_row('deuterium', unit['deuterium'], unit['destroy_deuterium']);
+    result += '</table>'
+
     result += unit['time'];
+    result += unit['destroy_time'];
     result += unit['resources_left'] + '<br>';
     if(unit['energy_balance'] != 0)
     {
@@ -80,7 +131,7 @@ function unborder_unit(unit_id)
 <table width=530 id="unit_table">
 	{BuildList}
 	<tr>
-		<td colspan="6" class="c" align="center">
+		<td colspan="5" class="c" align="center">
 			{L_bld_theyare} {field_libre} {L_bld_cellfree} ( <font color="#00FF00">{planet_field_current}</font> / <font color="#FF0000">{planet_field_max}</font> )
 		</th >
 	</tr>
@@ -88,12 +139,12 @@ function unborder_unit(unit_id)
    <tr>
 	<!-- BEGIN production -->
        <td class="l" align="center">
-         <div style="cursor: pointer; position: relative; height: 100px; width: 100px; font-size: 80%; border: 3px solid;" id="unit{production.ID}" unit_id="{production.ID}">
+         <div style="cursor: pointer; position: relative; height: 120px; width: 120px; font-size: 100%; border: 3px solid;" id="unit{production.ID}" unit_id="{production.ID}">
            <span style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%">
              <img border="0" src="{dpath}gebaeude/{production.ID}.gif" align="top" width="100%" height="100%"> <!-- onclick="select_unit({production.ID})"> <!-- onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
            </span>
 
-           <span style="position: absolute; top: 20%; left: 0px; width: 100%; height: 20%; font-size: 100%;" class="icon_alpha"> <!--  onclick="select_unit({production.ID})" onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
+           <span style="position: absolute; top: 18px; left: 0px; width: 100%; height: 4ex; font-size: 100%;" class="icon_alpha"> <!--  onclick="select_unit({production.ID})" onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
              {production.NAME}
            </span>
 
@@ -122,15 +173,22 @@ function unborder_unit(unit_id)
              <!-- DEFINE $BUILDINGPLUSONE = '' -->
            <!-- ENDIF -->
 
-           <span style="position: absolute; top: 1; left: 20%; width: 60%; height: 14%; text-align: center; font-size: 120%;" class="icon_alpha">
+           <span style="position: absolute; top: 0; left: 20%; width: 60%; height: 16px; text-align: center; font-size: 120%;" class="icon_alpha">
              <!-- IF production.LEVEL -->
                {production.LEVEL}
              <!-- ENDIF -->
                {$BUILDINGPLUSONE}
            </span>
+
+           <span style="position: absolute; top: 46px; left: 2%; width: 96%; height: 6ex; font-size: 100%; text-align: left;" class="icon_alpha"> <!--  onclick="select_unit({production.ID})" onmouseout="unborder_unit({production.ID})" onmouseover="show_unit_info({production.ID})"> -->
+             <div class="fl">{L_sys_metal}</div><div class="fr">{production.METAL_REST}</div><br>
+             <div class="fl">{L_sys_crystal}</div><div class="fr">{production.CRYSTAL_REST}</div><br>
+             <div class="fl">{L_sys_deuterium}</div><div class="fr">{production.DEUTERIUM_REST}</div>
+           </span>
+
          </div>
        </td>
-       <!-- IF (production.S_ROW_COUNT + 1) mod 6 == 0 -->
+       <!-- IF (production.S_ROW_COUNT + 1) mod 5 == 0 -->
        </tr><tr>
        <!-- ENDIF -->
 <script type="text/javascript"><!--
@@ -140,12 +198,24 @@ production[{production.ID}] =
   level: '{production.LEVEL}',
   description: '{production.DESCRIPTION}', 
   price: '{production.PRICE}', 
-  time: '{production.TIME}', 
+  
+  metal: '{production.METAL}',
+  crystal: '{production.CRYSTAL}',
+  deuterium: '{production.DEUTERIUM}',
+  time: '{production.TIME}',
+
+  destroy_metal: '{production.DESTROY_METAL}',
+  destroy_crystal: '{production.DESTROY_CRYSTAL}',
+  destroy_deuterium: '{production.DESTROY_DEUTERIUM}',
+  destroy_time: '{production.DESTROY_TIME}',
+
   resources_left: '{production.RESOURCES_LEFT}',
+
   metal_balance: '{production.METAL_BALANCE}',
   crystal_balance: '{production.CRYSTAL_BALANCE}',
   deuterium_balance: '{production.DEUTERIUM_BALANCE}',
   energy_balance: '{production.ENERGY_BALANCE}',
+  
   build_link: '{production.BUILD_LINK}'
 };
 --></script>
@@ -170,8 +240,27 @@ jQuery(document).ready(function() {
 
 language = 
 {
+  a: '',
+
   level: '{L_level}',
+  bld_destroy: '{L_bld_destroy}',
+  sys_metal: '{L_sys_metal}',
+  sys_crystal: '{L_sys_crystal}',
+  sys_deuterium: '{L_sys_deuterium}',
   sys_energy: '{L_sys_energy}'
+};
+
+planet =
+{
+  fleet_own: '{FLEET_OWN}',
+  
+  metal: '{METAL}',
+  crystal: '{CRYSTAL}',
+  deuterium: '{DEUTERIUM}',
+
+  metal_incoming: '{METAL_INCOMING}',
+  crystal_incoming: '{CRYSTAL_INCOMING}',
+  deuterium_incoming: '{DEUTERIUM_INCOMING}'
 };
 --></script>
 <!-- INCLUDE page_hint.tpl -->

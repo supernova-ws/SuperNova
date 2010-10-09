@@ -119,6 +119,8 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
     $now_building = $now_building[0];
   }
 
+  $fleet_list = flt_get_fleets_to_planet($CurrentPlanet);
+
   $SubTemplate         = gettemplate('buildings_builds_row');
   $BuildingPage        = '';
   $caps = ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet);
@@ -271,6 +273,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
           $parse['click'] = "<font color=#FF0000>{$lang['NoMoreSpace']}</font>";
         }
 
+        $build_price = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, true);
         $destroy_price = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, true, true);
         $template->assign_block_vars('production', array(
           'ID'                => $Element,
@@ -280,6 +283,18 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
 
           'PRICE'             => GetElementPrice($CurrentUser, $CurrentPlanet, $Element),
           'TIME'              => ShowBuildTime($ElementBuildTime),
+          'METAL'             => $build_price['metal'],
+          'CRYSTAL'           => $build_price['crystal'],
+          'DEUTERIUM'         => $build_price['deuterium'],
+
+          'METAL_REST'        => pretty_number(intval($CurrentPlanet['metal'] - $build_price['metal']), false, true),
+          'CRYSTAL_REST'      => pretty_number(intval($CurrentPlanet['crystal'] - $build_price['crystal']), false, true),
+          'DEUTERIUM_REST'    => pretty_number(intval($CurrentPlanet['deuterium'] - $build_price['deuterium']), false, true),
+/*
+          'METAL'             => $build_price['metal'],
+          'CRYSTAL'           => $build_price['crystal'],
+          'DEUTERIUM'         => $build_price['deuterium'],
+*/
           'RESOURCES_LEFT'    => GetRestPrice($CurrentUser, $CurrentPlanet, $Element),
 
           'DESTROY_METAL'     => $destroy_price['metal'],
@@ -316,10 +331,18 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
     'field_libre'          => $CurrentPlanet['field_max'] + ($CurrentPlanet[$resource[33]] * 5) - $CurrentPlanet['field_current'],
     'NOW_BUILDING'         => $now_building,
     'PAGE_HINT'            => $lang['eco_bld_page_hint'],
-  ));
 
-  $page                          = parsetemplate($template, $parse);
-  display($page, $lang['Builds']);
+    'METAL'                => $CurrentPlanet['metal'],
+    'CRYSTAL'              => $CurrentPlanet['crystal'],
+    'DEUTERIUM'            => $CurrentPlanet['deuterium'],
+
+    'METAL_INCOMING'       => $fleet_list['own']['metal'],
+    'CRYSTAL_INCOMING'     => $fleet_list['own']['crystal'],
+    'DEUTERIUM_INCOMING'   => $fleet_list['own']['deuterium'],
+
+    'FLEET_OWN'            => $fleet_list['own']['count'],
+  ));
+  display(parsetemplate($template, $parse), $lang['Builds']);
 }
 
 ?>

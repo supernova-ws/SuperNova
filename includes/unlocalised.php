@@ -471,7 +471,7 @@ function colorGreen($n) {
   return '<font color="#00ff00">' . $n . '</font>';
 }
 
-function pretty_number($n, $floor = true, $color = false) {
+function pretty_number($n, $floor = true, $color = false, $limit = 0) {
   if ($floor === true)
   {
     $n = floor($n);
@@ -480,7 +480,32 @@ function pretty_number($n, $floor = true, $color = false) {
   {
     $n = round($n, $floor, PHP_ROUND_HALF_DOWN);
   }
-  $ret = number_format($n, 0, ',', '.');
+
+  if($limit)
+  {
+    $ret = $n;
+    if($ret>0)
+    {
+      while($ret>$limit)
+      {
+        $suffix .= 'k';
+        $ret = round($ret/$limit);
+      }
+    }
+    else
+    {
+      while($ret<-$limit)
+      {
+        $suffix .= 'k';
+        $ret = round($ret/$limit);
+      }
+    }
+    $ret .= $suffix;
+  }
+  else
+  {
+    $ret = number_format($n, 0, ',', '.');
+  }
 
   if(is_numeric($color))
   {
