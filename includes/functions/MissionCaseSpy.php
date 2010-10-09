@@ -7,11 +7,25 @@
  * @copyright 2008
  */
 
+function coe_compress_add_units($unit_group, $TargetPlanet, &$compress_data)
+{
+  global $sn_data;
+
+  foreach($unit_group as $unit_id)
+  {
+    $unit_count = $TargetPlanet[$sn_data[$unit_id]['name']];
+    if($unit_count > 0)
+    {
+      $compress_data[$unit_id] = $unit_count;
+    }
+  }
+}
+
 // ----------------------------------------------------------------------------------------------------------------
 // Mission Case 6: -> Espionner
 //
 function MissionCaseSpy ( $FleetRow ) {
-  global $lang, $resource, $time_now, $dbg_msg, $pricelist;
+  global $lang, $resource, $time_now, $dbg_msg, $pricelist, $sn_data, $sn_groups, $user;
   // $time_now = time();
 
   if ($FleetRow['fleet_start_time'] <= $time_now) {
@@ -132,6 +146,32 @@ function MissionCaseSpy ( $FleetRow ) {
             if ($TargetSpyLvl == $CurrentSpyLvl) {
               $ST = $LS;
             }
+
+            $combat_pack[0]['resources'] = array(
+              'metal'     => $TargetPlanet['metal'],
+              'crystal'   => $TargetPlanet['crystal'],
+              'deuterium' => $TargetPlanet['deuterium']
+            );
+            if ($ST >= 2)
+            {
+              coe_compress_add_units($sn_groups['fleet'], $TargetPlanet, $combat_pack[0]['def']);
+            }
+            if ($ST >= 3)
+            {
+              coe_compress_add_units($sn_groups['defense_active'], $TargetPlanet, $combat_pack[0]['def']);
+            }
+            if ($ST >= 7)
+            {
+              // add user technos
+              $combat_pack[0]['user'] = array(
+                109 => $TargetUser[$sn_data[109]['name']],
+                110 => $TargetUser[$sn_data[110]['name']],
+                111 => $TargetUser[$sn_data[111]['name']]
+              );
+            }
+            $simulator_link = sys_combatDataPack($combat_pack, 'def');
+            $AttackLink .= "<center><a href=\"simulator.php?replay={$simulator_link}\">{$lang['COE_combatSimulator']}</a></center><br />";
+
             if ($ST <= "1") {
               $SpyMessage = $Materials."<br />".$AttackLink.$MessageEnd;
             }

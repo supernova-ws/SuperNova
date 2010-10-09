@@ -1024,6 +1024,8 @@ if ( defined('INSIDE')) {
     'fleet'     => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216 ),
     // Planet defense list
     'defense'   => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409, 502, 503 ),
+    // Planet active defense list
+    'defense_active' => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
     // Combat units list
     'combat'    => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
     // Officier list
