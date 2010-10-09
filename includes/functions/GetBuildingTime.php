@@ -30,7 +30,7 @@ function GetBuildingTime ($user, $planet, $Element)
   $cost_metal   = floor($pricelist[$Element]['metal']   * pow($pricelist[$Element]['factor'], $level));
   $cost_crystal = floor($pricelist[$Element]['crystal'] * pow($pricelist[$Element]['factor'], $level));
   $cost_deuterium = floor($pricelist[$Element]['deuterium'] * pow($pricelist[$Element]['factor'], $level));
-  $time = ($cost_metal + $cost_crystal + $cost_deuterium) / $config->game_speed;
+  $time = ($cost_metal + $cost_crystal + $cost_deuterium) / get_game_speed() / 2500;
 
   if (in_array($Element, $reslist['build']))
   {
