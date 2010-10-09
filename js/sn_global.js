@@ -13,14 +13,27 @@ function cntchar(m) {
   e.childNodes[0].data = window.document.forms[0].text.value.length;
 }
 
-function sn_format_number(number, precission, color)
+function sn_format_number(number, precission, color, max)
 {
   if(!precission)
   {
     precission = 0;
   }
+
+  if(!max)
+  {
+    max = 0;
+  }
+
   number = Math.round( number * Math.pow(10, precission) ) / Math.pow(10, precission);
-  str_number = number+'';
+  if(number > 0)
+  {
+    str_number = number+'';
+  }
+  else
+  {
+    str_number = (-number)+'';
+  }
   arr_int = str_number.split('.');
   if(!arr_int[0]) arr_int[0] = '0';
   if(!arr_int[1]) arr_int[1] = '';
@@ -48,15 +61,33 @@ function sn_format_number(number, precission, color)
   }
 
   ret_val = arr_int[0] + (arr_int[1] ? ','+arr_int[1] : '');
+  if(number < 0)
+  {
+    ret_val = '-' + ret_val;
+  }
   if(color)
   {
-    if(number<0)
+    if(max)
     {
-      ret_val = '<font color="red">' + ret_val + '</font>';
+      if(-number < -max)
+      {
+        ret_val = '<font color="red">' + ret_val + '</font>';
+      }
+      else
+      {
+        ret_val = '<font color="' + color + '">' + ret_val + '</font>';
+      }
     }
     else
     {
-      ret_val = '<font color="' + color + '">' + ret_val + '</font>';
+      if(number < 0)
+      {
+        ret_val = '<font color="red">' + ret_val + '</font>';
+      }
+      else
+      {
+        ret_val = '<font color="' + color + '">' + ret_val + '</font>';
+      }
     }
   }
   return ret_val;

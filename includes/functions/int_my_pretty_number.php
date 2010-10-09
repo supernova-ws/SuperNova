@@ -1,13 +1,26 @@
 <?php
 function INT_myPrettyNumber($number, $limit = 1000){
+  if($number < 0)
+  {
+    $negative = '-';
+    $number = -$number;
+  }
+
+  while($number > $limit)
+  {
+    $suffix .= 'k';
+    $number = round($number / 1000);
+  }
+/*
   if($number > $limit){
-    $number = $number / 1000;
+    $number = round($number / 1000);
     $suffix = 'k';
     if($number > $limit * 1000){
-      $number = $number / 1000;
+      $number = round($number / 1000);
       $suffix = 'm';
     }
   }
-  return pretty_number($number) . $suffix;
+*/
+  return $negative . pretty_number($number) . $suffix;
 }
 ?>
