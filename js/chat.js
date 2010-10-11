@@ -38,7 +38,7 @@ function addMessage(){
     }
     x_object.send("chat_type="+chat_type+"&ally_id="+ally_id+"&nick="+nick+"&msg="+msg.value);
     msg.value = "";
-    showMessage();
+    showMessage(true);
   }
 }
 function MessageHistory(){
@@ -46,7 +46,7 @@ function MessageHistory(){
 }
 
 // Affichage des messages
-function showMessage(){
+function showMessage(norefresh){
 var x_object2 = null;
   if(window.XMLHttpRequest){
     x_object2 = new XMLHttpRequest();
@@ -60,13 +60,18 @@ var x_object2 = null;
   x_object2.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   x_object2.send("chat_type="+chat_type+"&ally_id="+ally_id+"");
 
-  x_object2.onreadystatechange = function(){
-    if(x_object2.readyState==4){
+  x_object2.onreadystatechange = function()
+  {
+    if(x_object2.readyState==4)
+    {
       if(x_object2.status==200){
-      document.getElementById('shoutbox').innerHTML = x_object2.responseText;
-      descendreTchat();
+        document.getElementById('shoutbox').innerHTML = x_object2.responseText;
+        descendreTchat();
       }
-      window.setTimeout(showMessage, 5000);
+      if(!norefresh)
+      {
+        window.setTimeout(showMessage, 5000);
+      }
     }
   }
 }
