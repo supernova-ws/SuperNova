@@ -66,9 +66,9 @@ var x_object2 = null;
       document.getElementById('shoutbox').innerHTML = x_object2.responseText;
       descendreTchat();
       }
+      window.setTimeout(showMessage, 5000);
     }
   }
-
 }
 
 // Raccourcis des smileys
@@ -80,6 +80,8 @@ function addSmiley(smiley){
 // Intervalle entre les messages
 showMessage();
 // chatIntervalID = setInterval(showMessage,5000);
+window.setTimeout(showMessage, 5000);
+
 
 // Add Nick by Click
 function addNick(obj){
