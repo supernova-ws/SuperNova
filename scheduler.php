@@ -22,6 +22,7 @@ if($nextStatUpdate>$config->stats_lastUpdated)
     $msg = 'scheduler';
   };
   $msg .= '. Config->stats_lastUpdated = ' . date(DATE_TIME, $config->stats_lastUpdated) . ', nextStatUpdate = ' . date(DATE_TIME, $nextStatUpdate);
+  $config->db_saveItem('stats_lastUpdated', $nextStatUpdate);
   $debug->warning("Running stat updates: {$msg}", 'Stat update', 100);
 
   $totaltime = microtime(true);
@@ -30,7 +31,6 @@ if($nextStatUpdate>$config->stats_lastUpdated)
 
   $msg = "{$lang['adm_done']}: {$totaltime} {$lang['sys_sec']}";
   $debug->warning("Stat update complete: {$msg}", 'Stat update', 101);
-  $config->db_saveItem('stats_lastUpdated', $nextStatUpdate);
 }
 else
 {

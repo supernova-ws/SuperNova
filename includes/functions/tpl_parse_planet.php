@@ -33,6 +33,8 @@ function tpl_parse_planet($planet)
     'FLEET_OWN'     => $fleet_list['own']['count'],
     'FLEET_ENEMY'   => $fleet_list['enemy']['count'],
     'FLEET_NEUTRAL' => $fleet_list['neutral']['count'],
+
+    'fleet_list'    => $fleet_list,
   );
 
   return $result;
