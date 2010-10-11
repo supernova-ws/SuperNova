@@ -113,22 +113,4 @@ if(!isset($cache->tables))
   sys_refresh_tablelist();
 }
 
-$update_file = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.{$phpEx}";
-$flag_file   = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.last";
-
-if(file_exists($update_file))
-{
-  if(filemtime($update_file) != filemtime($flag_file))
-  {
-    require_once($update_file);
-    sys_refresh_tablelist();
-
-    if(!file_exists($flag_file))
-    {
-      fclose(fopen($flag_file, 'w'));
-    }
-
-    touch($flag_file, filemtime($update_file));
-  }
-}
 ?>
