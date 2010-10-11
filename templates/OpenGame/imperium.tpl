@@ -89,7 +89,9 @@
      <!-- BEGIN planet -->
      <th>
        <!-- IF prods.planet.LEVEL -->
-       <a href="buildings.php?mode={prods.MODE}&cp={prods.planet.ID}&re=0&planettype={prods.planet.TYPE}">{prods.planet.LEVEL}</a>
+       <a href="buildings.php?mode={prods.MODE}&cp={prods.planet.ID}&re=0&planettype={prods.planet.TYPE}">
+         {prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS --><font color="yellow">+{prods.planet.LEVEL_PLUS}</font><!-- ENDIF -->
+       </a>
        <!-- ELSE -->-<!-- ENDIF -->
      </th>
      <!-- END planet -->

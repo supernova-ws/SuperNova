@@ -37,11 +37,13 @@ $template->assign_var(mount, count($planet) + 2);
 
 //$parse['mount'] = count($planet) + 1;
 
-foreach ($planet as $p) {
+foreach ($planet as &$p) {
 //  $planetCaps = ECO_getPlanetCaps($user, $p);
   PlanetResourceUpdate($user, $p, $time_now, true);
 
-  $template->assign_block_vars('planet', array_merge(tpl_parse_planet($p), array(
+  $planet_template = tpl_parse_planet($p);
+
+  $template->assign_block_vars('planet', array_merge($planet_template, array(
     'FIELDS_CUR' => $p['field_current'],
     'FIELDS_MAX' => $p['field_max'] + $p[$sn_data[33]['name']] * 5,
 
@@ -57,6 +59,10 @@ foreach ($planet as $p) {
     'ENERGY_CUR' => pretty_number($p['energy_max'] - $p['energy_used'], true, true),
     'ENERGY_MAX' => pretty_number($p['energy_max']),
   )));
+  $p['fleet_list'] = $planet_template['fleet_list'];
+
+  // pdump($p['fleet_list']);
+
   $total['fields'] += $p['field_current'];
   $total['metal'] += $p['metal'];
   $total['crystal'] += $p['crystal'];
@@ -118,11 +124,45 @@ foreach ($sn_data as $unit_id => $res) {
     $unit_count = 0;
     foreach($planet as $p)
     {
-      $template->assign_block_vars('prods.planet', array(
-        'ID' => $p['id'],
-        'TYPE' => $p['planet_type'],
-        'LEVEL' => $p[$resource[$unit_id]],
-      ));
+      switch($mode)
+      {
+        case 'buildings':
+          $level_plus['LEVEL_PLUS'] = '';
+        break;
+
+        case 'fleet':
+          $level_plus['LEVEL_PLUS'] = $p['fleet_list']['own'][$unit_id];
+        break;
+
+        case 'defense':
+          $level_plus['LEVEL_PLUS'] = '';
+        break;
+
+        default:
+          $level_plus['LEVEL_PLUS'] = '';
+        break;
+      }
+
+      if ($mode == 'buildings')
+      {
+        $level_plus['LEVEL_PLUS'] = '';
+      }
+      elseif ($mode == 'fleet')
+      {
+      }
+      elseif ($mode == 'defense')
+      {
+      }
+      else
+      {
+        $level_plus['LEVEL_PLUS'] = '';
+      }
+
+      $template->assign_block_vars('prods.planet', array_merge($level_plus, array(
+        'ID'         => $p['id'],
+        'TYPE'       => $p['planet_type'],
+        'LEVEL'      => $p[$resource[$unit_id]],
+      )));
       $unit_count += $p[$resource[$unit_id]];
     }
 

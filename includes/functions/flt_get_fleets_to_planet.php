@@ -42,15 +42,21 @@ function flt_get_fleets_to_planet($planet)
     }
 
     $fleet_list[$fleet_ownage]['fleets'][$fleet['fleet_id']] = $fleet;
-    $fleet_ships = explode(';',$fleet['fleet_array']);
-    foreach(explode(';',$fleet['fleet_array']) as $ship_data)
+
+    if($fleet['fleet_mess'] == 1 || ($fleet['fleet_mess'] == 0 && ($fleet['fleet_mission'] == MT_RELOCATE)))
     {
-      if($ship_data)
+      // then this fleet would stay
+      $fleet_ships = explode(';',$fleet['fleet_array']);
+      foreach(explode(';',$fleet['fleet_array']) as $ship_data)
       {
-        $ship_data = explode(',', $ship_data);
-        $fleet_list[$fleet_ownage][$ship_data[0]] += $ship_data[1];
+        if($ship_data)
+        {
+          $ship_data = explode(',', $ship_data);
+          $fleet_list[$fleet_ownage][$ship_data[0]] += $ship_data[1];
+        }
       }
     }
+
     $fleet_list[$fleet_ownage]['count']++;
     $fleet_list[$fleet_ownage]['metal'] += $fleet['fleet_resource_metal'];
     $fleet_list[$fleet_ownage]['crystal'] += $fleet['fleet_resource_crystal'];
