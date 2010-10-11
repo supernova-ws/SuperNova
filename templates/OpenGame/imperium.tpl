@@ -89,7 +89,7 @@
      <!-- BEGIN planet -->
      <th style="cursor: pointer;" onclick="document.location='buildings.php?mode={prods.MODE}&cp={prods.planet.ID}&re=0&planettype={prods.planet.TYPE}';">
        <!-- IF prods.planet.LEVEL -->
-         {prods.planet.LEVEL}<!-- ELSE -->-<!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS --><font color="yellow">+{prods.planet.LEVEL_PLUS}</font><!-- ENDIF -->
+         {prods.planet.LEVEL}<!-- ELSE -->-<!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_GREEN --><font color="lime">+{prods.planet.LEVEL_PLUS_GREEN}</font><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><font color="yellow">+{prods.planet.LEVEL_PLUS_YELLOW}</font><!-- ENDIF -->
      </th>
      <!-- END planet -->
    </tr>

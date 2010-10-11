@@ -4,11 +4,20 @@ function tpl_parse_planet($planet)
 {
   global $lang, $config, $time_now;
 
-  $hangar_build = explode(',', $planet['b_hangar_id']);
-  $hangar_build = $hangar_build[0] ? $lang[tech][$hangar_build[0]] : '';
+  $hangar = explode(';', $planet['b_hangar_id']);
+  foreach($hangar as $hangar_row)
+  {
+    if($hangar_row)
+    {
+      $hangar_row = explode(',', $hangar_row);
+      $hangar_que['que'][] = array( 'id' => $hangar_row[0], 'count' => $hangar_row[1]);
+      $hangar_que[$hangar_row[0]] += $hangar_row[1];
+    }
+  }
+  $hangar_build_tip = $hangar_que['que'][0]['id'] ? $lang[tech][$hangar_que['que'][0]['id']] : '';
 
   $building_build = explode(',', $planet['b_building_id']);
-  $building_build = $building_build[0] ? $lang[tech][$building_build[0]] : '';
+  $building_build_tip = $building_build[0] ? $lang[tech][$building_build[0]] : '';
 
   $fleet_list = flt_get_fleets_to_planet($planet);
 
@@ -24,9 +33,11 @@ function tpl_parse_planet($planet)
     'COORDINATES'   => INT_makeCoordinates($planet),
 
     'BUILDING'      => int_buildCounter($planet, 'building', $planet['id']),
-    'BUILDING_TIP'  => $building_build,
+    'BUILDING_TIP'  => $building_build_tip,
+    'BUILDING_ID'   => $building_build[0],
     'TECH'          => $planet['b_tech'] ? $lang['tech'][$planet['b_tech_id']] . ' ' . pretty_time($planet['b_tech'] - $time_now) : 0, //date($config->game_date_withTime, $planet['b_tech'])
-    'HANGAR'        => $hangar_build,
+    'HANGAR'        => $hangar_build_tip,
+    'hangar_que'    => $hangar_que,
 
     'FILL'          => min(100, floor($planet['field_current'] / CalculateMaxPlanetFields($planet) * 100)),
 
