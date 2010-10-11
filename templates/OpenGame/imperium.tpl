@@ -87,12 +87,9 @@
      <!-- ENDIF -->
      
      <!-- BEGIN planet -->
-     <th>
+     <th style="cursor: pointer;" onclick="document.location='buildings.php?mode={prods.MODE}&cp={prods.planet.ID}&re=0&planettype={prods.planet.TYPE}';">
        <!-- IF prods.planet.LEVEL -->
-       <a href="buildings.php?mode={prods.MODE}&cp={prods.planet.ID}&re=0&planettype={prods.planet.TYPE}">
-         {prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS --><font color="yellow">+{prods.planet.LEVEL_PLUS}</font><!-- ENDIF -->
-       </a>
-       <!-- ELSE -->-<!-- ENDIF -->
+         {prods.planet.LEVEL}<!-- ELSE -->-<!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS --><font color="yellow">+{prods.planet.LEVEL_PLUS}</font><!-- ENDIF -->
      </th>
      <!-- END planet -->
    </tr>
