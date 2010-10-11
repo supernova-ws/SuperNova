@@ -7,6 +7,7 @@
  *
  * @version 1.0
  * @copyright 2008 by Chlorel for XNova
+// Created by Perberos. All rights reserved (C) 2006
  */
 
 define('INSIDE'  , true);
@@ -25,55 +26,55 @@ check_urlaubmodus ($user);
 
 $planetsrow = doquery("SELECT * FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
 
-$planet = array();
+$planets = array();
 $parse  = $lang;
 
-while ($p = mysql_fetch_array($planetsrow)) {
-  $planet[] = $p;
+while ($planet = mysql_fetch_array($planetsrow)) {
+  $planets[] = $planet;
 }
 
 $template = gettemplate('imperium', true);
-$template->assign_var(mount, count($planet) + 2);
+$template->assign_var(mount, count($planets) + 2);
 
-//$parse['mount'] = count($planet) + 1;
+//$parse['mount'] = count($planets) + 1;
 
-foreach ($planet as &$p) {
-//  $planetCaps = ECO_getPlanetCaps($user, $p);
-  PlanetResourceUpdate($user, $p, $time_now, true);
+foreach ($planets as $planet_index => $planet) {
+//  $planetCaps = ECO_getPlanetCaps($user, $planet);
+  PlanetResourceUpdate($user, $planet, $time_now, true);
 
-  $planet_template = tpl_parse_planet($p);
+  $planet_template = tpl_parse_planet($planet);
 
   $template->assign_block_vars('planet', array_merge($planet_template, array(
-    'FIELDS_CUR' => $p['field_current'],
-    'FIELDS_MAX' => $p['field_max'] + $p[$sn_data[33]['name']] * 5,
+    'FIELDS_CUR' => $planet['field_current'],
+    'FIELDS_MAX' => $planet['field_max'] + $planet[$sn_data[33]['name']] * 5,
 
-    'METAL_CUR'  => pretty_number($p['metal'], true, $p['metal_max']),
-    'METAL_PROD' => pretty_number($p['metal_perhour']),
+    'METAL_CUR'  => pretty_number($planet['metal'], true, $planet['metal_max']),
+    'METAL_PROD' => pretty_number($planet['metal_perhour']),
 
-    'CRYSTAL_CUR'  => pretty_number($p['crystal'], true, $p['crystal_max']),
-    'CRYSTAL_PROD' => pretty_number($p['crystal_perhour']),
+    'CRYSTAL_CUR'  => pretty_number($planet['crystal'], true, $planet['crystal_max']),
+    'CRYSTAL_PROD' => pretty_number($planet['crystal_perhour']),
 
-    'DEUTERIUM_CUR'  => pretty_number($p['deuterium'], true, $p['deuterium_max']),
-    'DEUTERIUM_PROD' => pretty_number($p['deuterium_perhour']),
+    'DEUTERIUM_CUR'  => pretty_number($planet['deuterium'], true, $planet['deuterium_max']),
+    'DEUTERIUM_PROD' => pretty_number($planet['deuterium_perhour']),
 
-    'ENERGY_CUR' => pretty_number($p['energy_max'] - $p['energy_used'], true, true),
-    'ENERGY_MAX' => pretty_number($p['energy_max']),
+    'ENERGY_CUR' => pretty_number($planet['energy_max'] - $planet['energy_used'], true, true),
+    'ENERGY_MAX' => pretty_number($planet['energy_max']),
   )));
-  $p['fleet_list'] = $planet_template['fleet_list'];
+  $planets[$planet_index]['fleet_list'] = $planet_template['fleet_list'];
+  $planets[$planet_index]['BUILDING_ID'] = $planet_template['BUILDING_ID'];
+  $planets[$planet_index]['hangar_que'] = $planet_template['hangar_que'];
 
-  // pdump($p['fleet_list']);
+  $total['fields'] += $planet['field_current'];
+  $total['metal'] += $planet['metal'];
+  $total['crystal'] += $planet['crystal'];
+  $total['deuterium'] += $planet['deuterium'];
+  $total['energy'] += $planet['energy_max'] - $planet['energy_used'];
 
-  $total['fields'] += $p['field_current'];
-  $total['metal'] += $p['metal'];
-  $total['crystal'] += $p['crystal'];
-  $total['deuterium'] += $p['deuterium'];
-  $total['energy'] += $p['energy_max'] - $p['energy_used'];
-
-  $total['fields_max'] += $p['field_max'] + $p[$sn_data[33]['name']] * 5;
-  $total['metal_perhour'] += $p['metal_perhour'];
-  $total['crystal_perhour'] += $p['crystal_perhour'];
-  $total['deuterium_perhour'] += $p['deuterium_perhour'];
-  $total['energy_max'] += $p['energy_max'];
+  $total['fields_max'] += $planet['field_max'] + $planet[$sn_data[33]['name']] * 5;
+  $total['metal_perhour'] += $planet['metal_perhour'];
+  $total['crystal_perhour'] += $planet['crystal_perhour'];
+  $total['deuterium_perhour'] += $planet['deuterium_perhour'];
+  $total['energy_max'] += $planet['energy_max'];
 }
 
 $template->assign_block_vars('planet', array_merge(array(
@@ -122,48 +123,39 @@ foreach ($sn_data as $unit_id => $res) {
     ));
 
     $unit_count = 0;
-    foreach($planet as $p)
+    foreach($planets as $planet)
     {
+      $level_plus['LEVEL_PLUS_YELLOW'] = 0;
+      $level_plus['LEVEL_PLUS_GREEN'] = 0;
       switch($mode)
       {
         case 'buildings':
-          $level_plus['LEVEL_PLUS'] = '';
+          if($planet['BUILDING_ID'] == $unit_id)
+          {
+            $level_plus['LEVEL_PLUS_GREEN'] = 1;
+          }
         break;
 
         case 'fleet':
-          $level_plus['LEVEL_PLUS'] = $p['fleet_list']['own'][$unit_id];
-        break;
+          $level_plus['LEVEL_PLUS_YELLOW'] = $planet['fleet_list']['own'][$unit_id];
 
         case 'defense':
-          $level_plus['LEVEL_PLUS'] = '';
+          if($planet['hangar_que'][$unit_id])
+          {
+            $level_plus['LEVEL_PLUS_GREEN'] += $planet['hangar_que'][$unit_id];
+          }
         break;
 
         default:
-          $level_plus['LEVEL_PLUS'] = '';
         break;
       }
 
-      if ($mode == 'buildings')
-      {
-        $level_plus['LEVEL_PLUS'] = '';
-      }
-      elseif ($mode == 'fleet')
-      {
-      }
-      elseif ($mode == 'defense')
-      {
-      }
-      else
-      {
-        $level_plus['LEVEL_PLUS'] = '';
-      }
-
       $template->assign_block_vars('prods.planet', array_merge($level_plus, array(
-        'ID'         => $p['id'],
-        'TYPE'       => $p['planet_type'],
-        'LEVEL'      => $p[$resource[$unit_id]],
+        'ID'         => $planet['id'],
+        'TYPE'       => $planet['planet_type'],
+        'LEVEL'      => $planet[$resource[$unit_id]],
       )));
-      $unit_count += $p[$resource[$unit_id]];
+      $unit_count += $planet[$resource[$unit_id]];
     }
 
     $template->assign_block_vars('prods.planet', array(
@@ -176,5 +168,4 @@ foreach ($sn_data as $unit_id => $res) {
 
 display(parsetemplate($template, $parse), $lang['imp_overview']);
 
-// Created by Perberos. All rights reserved (C) 2006
 ?>
