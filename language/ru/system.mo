@@ -150,11 +150,15 @@ $lang['COE_defense']         = "Оборона";
 $lang['sys_resources']       = "Ресурсы";
 $lang['sys_ships']           = "Корабли";
 
-$lang['sys_metal']      = "Металл";
-$lang['sys_crystal']    = "Кристалл";
-$lang['sys_deuterium']  = "Дейтрий";
-$lang['sys_energy']     = "Энергия";
-$lang['sys_dark_matter'] = "Темная Материя";
+$lang['sys_metal']          = "Металл";
+$lang['sys_metal_sh']       = "М";
+$lang['sys_crystal']        = "Кристалл";
+$lang['sys_crystal_sh']     = "К";
+$lang['sys_deuterium']      = "Дейтрий";
+$lang['sys_deuterium_sh']   = "Д";
+$lang['sys_energy']         = "Энергия";
+$lang['sys_energy_sh']      = "Э";
+$lang['sys_dark_matter']    = "Темная Материя";
 $lang['sys_dark_matter_sh'] = "ТМ";
 
 $lang['sys_resource'] = array(

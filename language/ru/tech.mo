@@ -121,7 +121,14 @@ $lang['tech'] = array(
   612 => "Разрушитель",
   613 => "Генерал",
   614 => "Убийца",
-  615 => "Император"
+  615 => "Император",
+
+  900 => $lang['sys_resources'],
+  901 => $lang['sys_metal'],
+  902 => $lang['sys_crystal'],
+  903 => $lang['sys_deuterium'],
+  904 => $lang['sys_energy'],
+  904 => $lang['sys_dark_matter'],
 );
 
 // Short names for fight rapport

@@ -994,46 +994,54 @@ if ( defined('INSIDE')) {
       'max' => 1,
     ),
 
-    991 => array(
+    901 => array(
       'name' => 'metal',
     ),
 
-    992 => array(
+    902 => array(
       'name' => 'crystal',
     ),
 
-    993 => array(
+    903 => array(
       'name' => 'deuterium',
     ),
 
-    994 => array(
+    904 => array(
       'name' => 'energy',
     ),
 
-    995 => array(
+    905 => array(
       'name' => 'dark_matter',
     ),
   );
 
   $sn_groups = array(
-    // Building list
+    // Planet structures list
     'build'     => array (   1,   2,   3,   4,  12,  14,  15,  21,  22,  23,  24,  31,  33,  34,  35,  44,  41,  42,  43 ),
     // Tech list
     'tech'      => array ( 106, 108, 109, 110, 111, 113, 114, 115, 117, 118, 120, 121, 122, 123, 124, 150, 199),
-    // Flying fleet list
-    'fleet'     => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216 ),
-    // Planet defense list
-    'defense'   => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409, 502, 503 ),
-    // Planet active defense list
-    'defense_active' => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
-    // Combat units list
-    'combat'    => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
     // Officier list
     'officier'  => array ( 601, 602, 603, 604, 605, 606, 607, 608, 609, 610, 611, 612, 613, 614, 615),
-    // Units that can produce resources list
-    'prod'      => array (   1,   2,   3,   4,  12, 212 ),
+
+    // Spaceships list
+    'fleet'     => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216 ),
+    // Defensive building list
+    'defense'   => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409, 502, 503 ),
+
+    // List of units that can produce resources
+    'prod'      => array ( 1, 2, 3, 4, 12, 212 ),
+
+    // Combat units list
+    'combat'    => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
+    // Planet active defense list
+    'defense_active' => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
+
     // Resource list
     'resources' => array ( 0 => 'metal', 1 => 'crystal', 2 => 'deuterium', 3 => 'dark_matter'),
+    // Resources can be produced on planet
+    'resources_planet' => array (901, 902, 903, 904),
+    // Resources can be looted from planet
+    'resources_loot' => array (901, 902, 903),
   );
 
   $user_options = array('compat_builds' => 0);

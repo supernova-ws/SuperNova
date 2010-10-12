@@ -179,7 +179,7 @@ function dump($value,$varname = "",$level=0,$dumper = "")
 
 function pdump($value,$varname = "",$level=0,$dumper = "")
 {
-  print(dump($value,$varname,$level,$dumper));
+  print('<span style="text-align: left">' . dump($value,$varname,$level,$dumper) . '</span>');
 }
 
 function pr($prePrint = false){
