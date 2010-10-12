@@ -7,13 +7,13 @@
  * @copyright 2008
  */
 
-function coe_compress_add_units($unit_group, $TargetPlanet, &$compress_data)
+function coe_compress_add_units($unit_group, $target, &$compress_data)
 {
   global $sn_data;
 
   foreach($unit_group as $unit_id)
   {
-    $unit_count = $TargetPlanet[$sn_data[$unit_id]['name']];
+    $unit_count = $target[$sn_data[$unit_id]['name']];
     if($unit_count > 0)
     {
       $compress_data[$unit_id] = $unit_count;
@@ -37,8 +37,8 @@ function MissionCaseSpy ( $FleetRow ) {
     $QryGetTargetPlanet .= "`system` = '". $FleetRow['fleet_end_system'] ."' AND ";
     $QryGetTargetPlanet .= "`planet` = '". $FleetRow['fleet_end_planet'] ."' AND ";
     $QryGetTargetPlanet .= "`planet_type` = '". $FleetRow['fleet_end_type'] ."';";
-    $TargetPlanet        = doquery( $QryGetTargetPlanet, 'planets', true);
-    $TargetUserID        = $TargetPlanet['id_owner'];
+    $target_planet        = doquery( $QryGetTargetPlanet, 'planets', true);
+    $TargetUserID        = $target_planet['id_owner'];
 
     // serrrgio fix for speedsim ds.ru
     $TargetUser=doquery( "SELECT username FROM {{table}} WHERE id='".$TargetUserID."'", 'users', true);
@@ -50,8 +50,8 @@ function MissionCaseSpy ( $FleetRow ) {
     $TargetSpyLvl        = GetSpyLevel($TargetUser);
     $fleet               = explode(";", $FleetRow['fleet_array']);
     $fquery              = "";
-    PlanetResourceUpdate ( $TargetUser, $TargetPlanet, $time_now );
-    //$TargetPlanet = doquery( "SELECT * FROM {{table}} WHERE `id` = '".$TargetPlanet['id']."';", 'planets', true);
+    PlanetResourceUpdate ( $TargetUser, $target_planet, $time_now );
+    //$target_planet = doquery( "SELECT * FROM {{table}} WHERE `id` = '".$target_planet['id']."';", 'planets', true);
     foreach ($fleet as $a => $b) {
       if ($b != '') {
         $a = explode(",", $b);
@@ -69,18 +69,18 @@ function MissionCaseSpy ( $FleetRow ) {
             $SpyToolDebrisM   = $LS * $pricelist[210]['metal'] * 0.3;
             $SpyToolDebrisC   = $LS * $pricelist[210]['crystal'] * 0.3;
 
-            $MaterialsInfo    = SpyTarget ( $TargetPlanet, 0, $lang['sys_spy_maretials'], $TargetUsername );
+            $MaterialsInfo    = SpyTarget ( $target_planet, 0, $lang['sys_spy_maretials'], $TargetUsername );
             $Materials        = $MaterialsInfo['String'];
 
-            $PlanetFleetInfo  = SpyTarget ( $TargetPlanet, 1, $lang['sys_spy_fleet'] );
+            $PlanetFleetInfo  = SpyTarget ( $target_planet, 1, $lang['sys_spy_fleet'] );
             $PlanetFleet      = $Materials;
             $PlanetFleet     .= $PlanetFleetInfo['String'];
 
-            $PlanetDefenInfo  = SpyTarget ( $TargetPlanet, 2, $lang['sys_spy_defenses'] );
+            $PlanetDefenInfo  = SpyTarget ( $target_planet, 2, $lang['sys_spy_defenses'] );
             $PlanetDefense    = $PlanetFleet;
             $PlanetDefense   .= $PlanetDefenInfo['String'];
 
-            $PlanetBuildInfo  = SpyTarget ( $TargetPlanet, 3, $lang['tech'][0] );
+            $PlanetBuildInfo  = SpyTarget ( $target_planet, 3, $lang['tech'][0] );
             $PlanetBuildings  = $PlanetDefense;
             $PlanetBuildings .= $PlanetBuildInfo['String'];
 
@@ -147,30 +147,30 @@ function MissionCaseSpy ( $FleetRow ) {
               $ST = $LS;
             }
 
-            $combat_pack[0]['resources'] = array(
-              'metal'     => $TargetPlanet['metal'],
-              'crystal'   => $TargetPlanet['crystal'],
-              'deuterium' => $TargetPlanet['deuterium']
+            // Generating link to simulator
+            $combat_pack[0] = array(
+              901 => $target_planet['metal'],
+              902 => $target_planet['crystal'],
+              903 => $target_planet['deuterium']
             );
             if ($ST >= 2)
             {
-              coe_compress_add_units($sn_groups['fleet'], $TargetPlanet, $combat_pack[0]['def']);
+              // add planet fleet
+              coe_compress_add_units($sn_groups['fleet'], $target_planet, $combat_pack[0]);
             }
             if ($ST >= 3)
             {
-              coe_compress_add_units($sn_groups['defense_active'], $TargetPlanet, $combat_pack[0]['def']);
+              // add planet defense
+              coe_compress_add_units($sn_groups['defense_active'], $target_planet, $combat_pack[0]);
             }
             if ($ST >= 7)
             {
               // add user technos
-              $combat_pack[0]['user'] = array(
-                109 => $TargetUser[$sn_data[109]['name']],
-                110 => $TargetUser[$sn_data[110]['name']],
-                111 => $TargetUser[$sn_data[111]['name']]
-              );
+              coe_compress_add_units(array(109, 110, 111), $TargetUser, $combat_pack[0]);
             }
-            $simulator_link = sys_combatDataPack($combat_pack, 'def');
+            $simulator_link = eco_sym_encode_replay($combat_pack, 'D');
             $AttackLink .= "<center><a href=\"simulator.php?replay={$simulator_link}\">{$lang['COE_combatSimulator']}</a></center><br />";
+            // End of link generation
 
             if ($ST <= "1") {
               $SpyMessage = $Materials."<br />".$AttackLink.$MessageEnd;
@@ -194,8 +194,8 @@ function MissionCaseSpy ( $FleetRow ) {
             $TargetMessage  = $lang['sys_mess_spy_ennemyfleet'] ." ". $CurrentPlanet['name'];
             $TargetMessage .= "<a href=\"galaxy.php?mode=3&galaxy=". $CurrentPlanet["galaxy"] ."&system=". $CurrentPlanet["system"] ."\">";
             $TargetMessage .= "[". $CurrentPlanet["galaxy"] .":". $CurrentPlanet["system"] .":". $CurrentPlanet["planet"] ."]</a> ";
-            $TargetMessage .= $lang['sys_mess_spy_seen_at'] ." ". $TargetPlanet['name'];
-            $TargetMessage .= " [". $TargetPlanet["galaxy"] .":". $TargetPlanet["system"] .":". $TargetPlanet["planet"] ."].";
+            $TargetMessage .= $lang['sys_mess_spy_seen_at'] ." ". $target_planet['name'];
+            $TargetMessage .= " [". $target_planet["galaxy"] .":". $target_planet["system"] .":". $target_planet["planet"] ."].";
 
             SendSimpleMessage ( $TargetUserID, '', $FleetRow['fleet_start_time'], 0, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $TargetMessage);
 

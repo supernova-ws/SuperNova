@@ -3,20 +3,28 @@
 /**
  * simulator.php
  *
- * 1.5st - Security checks & tests by Gorlum for http://supernova.ws
- * @version 1.5 Heavily modified by Gorlum for http://supernova.ws
+ * @package combat
+ * @version 1.8
  *
- *   [*] Added REPLAY ability - link to simulator results
- *   [*] Many optimizations
- *   [*] Added ACS support
- *   [*] Now fully unified with combat engine and removed duplicate code
+ * 1.8 copyright (c) 2009-2010 by Gorlum for http://supernova.ws
+ *   [~] PCG-compliant
+ *   [~] PTE-compliant. Not using simulator_row.tpl
+ *   [~] Fully rewrote REPLAY structure
  *
- *  @version 1.0
- * @copyright 2008 by Anthony for Darkness fo Evolution
+ * 1.7 copyright (c) 2009-2010 by Gorlum for http://supernova.ws
+ *   [~] Enchanced REPLAY - now you can link to page when you can change simulator input data
  *
- * Script by Anthony
+ * 1.6 copyright (c) 2009-2010 by Gorlum for http://supernova.ws
+ *   [~] Security checks & tests
  *
- * Template for Sonyedorlys converter.
+ * 1.5 copyright (c) 2009-2010 by Gorlum for http://supernova.ws
+ *   [!] Now fully unified with combat engine and removed duplicate code
+ *   [+] Added REPLAY ability - link to simulator results
+ *   [+] Added ACS support
+ *   [~] Many optimizations
+ *
+ * 1.0 copyright 2008 by Anthony for Darkness fo Evolution
+ *   [!] Template for Sonyedorlys converter.
  *
  */
 
@@ -27,66 +35,44 @@ $ugamela_root_path = './';
 include($ugamela_root_path . 'extension.inc');
 include($ugamela_root_path . 'common.' . $phpEx);
 
-$replay = $_GET['replay'] ? $_GET['replay'] : $_POST['replay'];
-$execute = intval($_GET['execute']);
-$sym_attacker = $_POST['attacker'];
-$sym_defender = $_POST['defender'];
-
-if($replay)
-{
-  $unpacked     = sys_combatDataUnPack($replay);
-
-  $sym_attacker = $unpacked['detail'];
-  $sym_defender = $unpacked['def'];
-}
-
 if(($_GET['BE_DEBUG'] || $_POST['BE_DEBUG']) && !defined('BE_DEBUG'))
 {
   define('BE_DEBUG', true);
 }
 
+$replay = $_GET['replay'] ? $_GET['replay'] : $_POST['replay'];
+$execute = intval($_GET['execute']);
+$sym_defender1 = $_POST['defender'];
+$sym_attacker1 = $_POST['attacker'];
+
+if($replay)
+{
+  $unpacked = eco_sym_decode_replay($replay);
+
+  $sym_defender1 = $unpacked['D'];
+  $sym_attacker1 = $unpacked['A'];
+}
+else
+{
+  $sym_defender1 = array(0 => $sym_defender1);
+  $sym_attacker1 = array(1 => $sym_attacker1);
+}
+
 if($_POST['submit'] || $execute)
 {
-  $replay = sys_combatDataPack($sym_attacker, 'detail');
-  $replay .= sys_combatDataPack($sym_defender, 'def');
+  $replay = eco_sym_encode_replay($sym_defender1, 'D');
+  $replay .= eco_sym_encode_replay($sym_attacker1, 'A');
 
-  $a = array(&$sym_attacker, &$sym_defender);
-  foreach($a as &$sym_fleet_list)
-  {
-    foreach($sym_fleet_list as &$fleet)
-    {
-      foreach($fleet['user'] as $key => $value)
-      {
-        $fleet['user'][$resource[$key]] = $value;
-        unset($fleet['user'][$key]);
-      }
-
-      if(is_array($fleet['detail']))
-      {
-        $tmp = 'detail';
-      }
-      else
-      {
-        $tmp = 'def';
-      }
-
-      foreach($fleet[$tmp] as $key => $value)
-      {
-        if(!$value)
-        {
-          unset($fleet[$tmp][$key]);
-        }
-      }
-    }
-  }
+  $arr_combat_defender = eco_sym_to_combat($sym_defender1, 'def');
+  $arr_combat_attacker = eco_sym_to_combat($sym_attacker1, 'detail');
 
   // Lets calcualte attack...
   $start = microtime(true);
-  $result = calculateAttack($sym_attacker, $sym_defender, true);
+  $result = calculateAttack($arr_combat_attacker, $arr_combat_defender, true);
   $totaltime = microtime(true) - $start;
 
   // calculating loot per attacking fleet
-  $loot = BE_calculatePostAttacker($sym_defender[0]['resources'], $sym_attacker, $result, true);
+  $loot = BE_calculatePostAttacker($arr_combat_defender[0]['resources'], $arr_combat_attacker, $result, true);
 
   // Calculating Moon Chance
   $MoonChance = BE_calculateMoonChance($result);
@@ -127,23 +113,33 @@ if($_POST['submit'] || $execute)
 }
 else
 {
-  $parse = $lang;
+  $template = gettemplate('simulator', true);
 
-  $tmp = coe_simulatorHTMLMake(array_merge($reslist['combat'], array(109, 110, 111)));
+  foreach(array_merge(array(109, 110, 111), $sn_groups['combat'], $sn_groups['resources_loot']) as $unit_id)
+  {
+    $new_group = $unit_id - $unit_id % 100;
+    if($unit_group != $new_group)
+    {
+      $template->assign_block_vars('simulator', array(
+        'NAME' => $lang['tech'][$new_group]
+      ));
+      $unit_group = $new_group;
+    }
 
-  $parse['inputTech'] = $tmp['100'];
-  $parse['inputFleet'] = $tmp['200'];
-  $parse['inputDefense'] = $tmp['400'];
-  $parse['res_metal'] = intval($unpacked['def'][0]['resources']['metal']);
-  $parse['res_crystal'] = intval($unpacked['def'][0]['resources']['crystal']);
-  $parse['res_deuterium'] = intval($unpacked['def'][0]['resources']['deuterium']);
-  $parse['BE_DEBUG'] = $_GET['BE_DEBUG'];
-  $page = parsetemplate(gettemplate('simulator', true), $parse);
-  display($page, $lang['coe_combatSimulator'], false);
+    $template->assign_block_vars('simulator', array(
+      'ID'       => $unit_id,
+      'GROUP'    => $unit_group,
+      'NAME'     => $lang['tech'][$unit_id],
+      'ATTACKER' => intval($sym_attacker1[1][$unit_id]),
+      'DEFENDER' => intval($sym_defender1[0][$unit_id]),
+    ));
+  }
+
+  $template->assign_vars(array(
+    'BE_DEBUG' => $_GET['BE_DEBUG'],
+  ));
+
+  display(parsetemplate($template, $parse), $lang['coe_combatSimulator'], false);
 }
 
-function rp($input)
-{
-  return str_replace('.', '', $input);
-}
 ?>

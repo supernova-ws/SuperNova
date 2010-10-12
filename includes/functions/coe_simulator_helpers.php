@@ -1,127 +1,94 @@
 <?php
 
-function sys_combatDataPack($combat, $strArray)
+function eco_sym_encode_replay($combat, $type)
 {
   global $reslist;
 
+  $strPacked = "{$type}!";
+
   foreach($combat as $fleetID => $fleetCompress)
   {
-    $strPackedEnd = '';
-    if($strArray == 'def')
-      $strPacked .= 'D';
-    else
-      $strPacked .= 'A';
-
-    $strPacked .= '.';
-
-    foreach($fleetCompress['user'] as $key => $techLevel)
-      $strPacked .= $key  . ',' . (empty($techLevel) ? 0 : $techLevel) . ';';
-
-    $strPacked .= '.';
-
-    foreach($fleetCompress[$strArray] as $shipID => $shipCount)
-      $strPacked .= $shipCount ? ($shipID . ',' . $shipCount . ';') : '';
+    foreach($fleetCompress as $key => $value)
+    {
+      $value = intval($value);
+      $strPacked .= "{$key},{$value};";
+    }
+    $strPacked .= '!';
   }
-  $strPacked .= '.';
-
-  foreach($reslist['resources'] as $resource)
-  {
-     $strPacked .= intval($combat[0]['resources'][$resource]) . ',';
-  }
-  $strPacked .= '!';
 
   return $strPacked;
 }
 
-function sys_combatDataUnPack($strData)
+function eco_sym_decode_replay($str_data)
 {
-  global $reslist;
+  global $reslist, $sn_groups;
 
-  $unpacked = array (
-    'detail' => array(),
-    'def' => array()
-  );
+  $fleet_id = 0;
 
-  $fleetList = explode('!', $strData);
-
-  foreach($fleetList as $fleet)
+  $arr_data_unpacked = explode('!', $str_data);
+  foreach($arr_data_unpacked as $data_piece)
   {
-    $t = explode('.', $fleet);
-
-    if(!$t[0]) continue;
-
-    if($t[0] == 'A' ){
-      $strArray = 'detail';
-    }else{
-      $strArray = 'def';
-    };
-
-    $combat = array();
-
-    $t[1] = explode(';', $t[1]);
-    foreach($t[1] as $techInfo)
+    if(!$data_piece)
     {
-      if($techInfo)
+      continue;
+    }
+
+    if($data_piece == 'A' || $data_piece == 'D')
+    {
+      $fleet_type = $data_piece;
+      continue;
+    }
+
+    $arr_unit_strings = explode(';', $data_piece);
+    foreach($arr_unit_strings as $str_unit_string)
+    {
+      if(!$str_unit_string)
       {
-        $techInfo = explode(',', $techInfo);
-        $combat['user'][$techInfo[0]] = $techInfo[1];
+        continue;
+      }
+
+      $arr_unit_data = explode(',', $str_unit_string);
+      if($arr_unit_data[1])
+      {
+        $unpacked[$fleet_type][$fleet_id][$arr_unit_data[0]] = intval($arr_unit_data[1]);
       }
     }
 
-    $t[2] = explode(';', $t[2]);
-    foreach($t[2] as $shipInfo)
-    {
-      if($shipInfo)
-      {
-        $shipInfo = explode(',', $shipInfo);
-        $combat[$strArray][$shipInfo[0]] = $shipInfo[1];
-      }
-    }
-
-    $t[3] = explode(',', $t[3]);
-    foreach($t[3] as $resourceID => $resource)
-    {
-      if($resource)
-      {
-        $combat['resources'][$reslist['resources'][$resourceID]] = intval($resource);
-      }
-    }
-
-    $unpacked[$strArray][] = $combat;
+    $fleet_id++;
   }
 
   return $unpacked;
 }
 
-function coe_simulatorHTMLMake($resToLook)
+function eco_sym_to_combat($arr_sym_data, $str_fleet_type)
 {
-  global $lang, $resource, $user, $unpacked;
+  global $reslist, $sn_data, $sn_groups;
 
-  foreach($resToLook as $unitID)
+  foreach($arr_sym_data as $int_fleet_id => $arr_sym_fleet)
   {
-    if($unitID<200 || $unitID>600 )
+    foreach($arr_sym_fleet as $int_unit_id => $int_unit_count)
     {
-      $parse['fieldNameAtt']  = 'user';
-      $parse['fieldNameDef']  = 'user';
-    }
-    else
-    {
-      $parse['fieldNameAtt']  = 'detail';
-      $parse['fieldNameDef']  = 'def';
-    }
-    $parse['fieldValueAtt'] = intval($unpacked['detail'][0][$parse['fieldNameAtt']][$unitID]);
-    $parse['fieldValueAtt'] = intval($parse['fieldValueAtt'] ? $parse['fieldValueAtt'] : $user[$resource[$unitID]]);
+      if(!$int_unit_count)
+      {
+        continue;
+      }
 
-    $parse['fieldValueDef'] = intval($unpacked['def'][0][$parse['fieldNameDef']][$unitID]);
-    $parse['unitID'] = $unitID;
-    $parse['unitName'] = $lang['tech'][$unitID];
-    $parse['hideAttacker'] = $unitID < 400 ? '' : 'class="hide"';
-
-    $tmp = parsetemplate(gettemplate('simulator_row'), $parse);
-    $input[floor($unitID/100) * 100] .= $tmp;
+      if(in_array($int_unit_id, $sn_groups['tech']))
+      {
+        $combat[$int_fleet_id]['user'][$sn_data[$int_unit_id]['name']] = intval($int_unit_count);
+      }
+      elseif(in_array($int_unit_id, $sn_groups['resources_loot']))
+      {
+        $combat[$int_fleet_id]['resources'][$sn_data[$int_unit_id]['name']] = $int_unit_count;
+      }
+      elseif(in_array($int_unit_id, $sn_groups['combat']))
+      {
+        $combat[$int_fleet_id][$str_fleet_type][$int_unit_id] = $int_unit_count;
+      }
+    }
   }
 
-  return $input;
+  return $combat;
 }
 
 ?>
