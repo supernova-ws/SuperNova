@@ -295,4 +295,5 @@ $lang['weekdays'] = array(
 	'6' => 'Суббота'
 );
 
+$lang['sys_max'] = 'макс';
 ?>

@@ -63,6 +63,7 @@ function eco_sym_decode_replay($str_data)
 function eco_sym_to_combat($arr_sym_data, $str_fleet_type)
 {
   global $reslist, $sn_data, $sn_groups;
+  $combat = array();
 
   foreach($arr_sym_data as $int_fleet_id => $arr_sym_fleet)
   {
