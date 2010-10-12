@@ -42,29 +42,29 @@ if(($_GET['BE_DEBUG'] || $_POST['BE_DEBUG']) && !defined('BE_DEBUG'))
 
 $replay = $_GET['replay'] ? $_GET['replay'] : $_POST['replay'];
 $execute = intval($_GET['execute']);
-$sym_defender1 = $_POST['defender'];
-$sym_attacker1 = $_POST['attacker'];
+$sym_defender = $_POST['defender'] ? $_POST['defender'] : array();
+$sym_attacker = $_POST['attacker'] ? $_POST['attacker'] : array();
 
 if($replay)
 {
   $unpacked = eco_sym_decode_replay($replay);
 
-  $sym_defender1 = $unpacked['D'];
-  $sym_attacker1 = $unpacked['A'];
+  $sym_defender = $unpacked['D'];
+  $sym_attacker = $unpacked['A'];
 }
 else
 {
-  $sym_defender1 = array(0 => $sym_defender1);
-  $sym_attacker1 = array(1 => $sym_attacker1);
+  $sym_defender = array(0 => $sym_defender);
+  $sym_attacker = array(1 => $sym_attacker);
 }
 
 if($_POST['submit'] || $execute)
 {
-  $replay = eco_sym_encode_replay($sym_defender1, 'D');
-  $replay .= eco_sym_encode_replay($sym_attacker1, 'A');
+  $replay = eco_sym_encode_replay($sym_defender, 'D');
+  $replay .= eco_sym_encode_replay($sym_attacker, 'A');
 
-  $arr_combat_defender = eco_sym_to_combat($sym_defender1, 'def');
-  $arr_combat_attacker = eco_sym_to_combat($sym_attacker1, 'detail');
+  $arr_combat_defender = eco_sym_to_combat($sym_defender, 'def');
+  $arr_combat_attacker = eco_sym_to_combat($sym_attacker, 'detail');
 
   // Lets calcualte attack...
   $start = microtime(true);
@@ -117,21 +117,35 @@ else
 
   foreach(array_merge(array(109, 110, 111), $sn_groups['combat'], $sn_groups['resources_loot']) as $unit_id)
   {
+    $tab++;
+
     $new_group = $unit_id - $unit_id % 100;
     if($unit_group != $new_group)
     {
-      $template->assign_block_vars('simulator', array(
-        'NAME' => $lang['tech'][$new_group]
-      ));
       $unit_group = $new_group;
+      $template->assign_block_vars('simulator', array(
+        'GROUP' => $unit_group,
+        'NAME'  => $lang['tech'][$unit_group],
+      ));
+    }
+
+    if(in_array($unit_id, $sn_groups['tech']))
+    {
+      $value = $user[$sn_data[$unit_id]['name']];
+    }
+    else
+    {
+      $value = $planetrow[$sn_data[$unit_id]['name']];
     }
 
     $template->assign_block_vars('simulator', array(
+      'NUM'      => $tab < 9 ? "0{$tab}" : $tab,
       'ID'       => $unit_id,
       'GROUP'    => $unit_group,
       'NAME'     => $lang['tech'][$unit_id],
-      'ATTACKER' => intval($sym_attacker1[1][$unit_id]),
-      'DEFENDER' => intval($sym_defender1[0][$unit_id]),
+      'ATTACKER' => intval($sym_attacker[1][$unit_id]),
+      'DEFENDER' => intval($sym_defender[0][$unit_id]),
+      'VALUE'    => $value,
     ));
   }
 

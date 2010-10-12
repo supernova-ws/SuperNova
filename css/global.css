@@ -1,4 +1,15 @@
-* {margin: 0; padding: 0;}
+*
+{
+  margin: 0; padding: 0;
+}
+
+input.button
+{
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
 
 /* Login and Registration screens */
 body {
