@@ -24,7 +24,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
     $template = gettemplate('buildings_builds', true);
   }
 
-  global $sn_data, $lang, $resource, $reslist, $phpEx, $dpath, $_GET, $config;
+  global $sn_data, $sn_groups, $lang, $resource, $reslist, $phpEx, $dpath, $_GET, $config;
 
   $GET_cmd      = SYS_mysqlSmartEscape($_GET['cmd']);
   $GET_building = intval($_GET['building']);
@@ -124,10 +124,11 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
   $SubTemplate         = gettemplate('buildings_builds_row');
   $BuildingPage        = '';
   $caps = ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet);
-  foreach($lang['tech'] as $Element => $ElementName)
+  foreach($sn_groups['build'] as $Element)
   {
     if (in_array($Element, $Allowed[$CurrentPlanet['planet_type']]))
     {
+      $ElementName = $lang['tech'][$Element];
       $CurrentMaxFields      = CalculateMaxPlanetFields($CurrentPlanet);
       if ($CurrentPlanet['field_current'] < ($CurrentMaxFields - $Queue['lenght']))
       {
