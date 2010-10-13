@@ -1,6 +1,28 @@
 <?php
 function doquery($query, $table = "", $fetch = false){
-  global $numqueries, $link, $debug, $ugamela_root_path, $user, $tableList, $cache;
+  global $numqueries, $link, $debug, $ugamela_root_path, $user, $tableList, $cache, $is_watching, $config;
+
+  if($config->game_watchlist_array)
+  {
+    if(!$is_watching && in_array($user['id'], $config->game_watchlist_array))
+    {
+      if(stripos($query, 'SELECT') !== 0)
+      {
+        $is_watching = true;
+        $msg = "\$query = \"{$query}\"\n\rtable = '{$table}', fetch = '{$fetch}'";
+        if(!empty($_POST))
+        {
+          $msg .= "\n\r" . dump($_POST,'$_POST');
+        }
+        if(!empty($_GET))
+        {
+          $msg .= "\n\r" . dump($_GET,'$_GET');
+        }
+        $debug->warning($msg,"Watching user {$user['id']}",399);
+        $is_watching = false;
+      }
+    }
+  }
 
   require($ugamela_root_path.'config.php');
 
@@ -18,8 +40,6 @@ function doquery($query, $table = "", $fetch = false){
   }elseif (stripos($query, 'ET PASSWOR') != FALSE) {
     $badword = true;
   }elseif (stripos($query, 'EOAD DAT') != FALSE) {
-    $badword = true;
-  }elseif (stripos($query, 'AUTHLEVEL') != FALSE && stripos($query, 'SELECT') !== 0 && $user['authlevel']<3) {
     $badword = true;
   }
   if ($badword) {
@@ -94,6 +114,5 @@ function doquery($query, $table = "", $fetch = false){
     return $sqlquery;
   }
 }
-
 
 ?>
