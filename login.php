@@ -18,7 +18,7 @@ include("{$ugamela_root_path}extension.inc");
 include("{$ugamela_root_path}common.{$phpEx}");
 
 $id_ref = intval($_GET['id_ref'] ? $_GET['id_ref'] : $_POST['id_ref']);
-$username = mysql_escape_string($_GET['username'] ? $_GET['username'] : $_POST['username']);
+$username = mysql_real_escape_string($_GET['username'] ? $_GET['username'] : $_POST['username']);
 $password = md5($_GET['password'] ? $_GET['password'] : $_POST['password']);
 
 includeLang('login');
@@ -89,7 +89,7 @@ elseif(!empty($_COOKIE[$config->COOKIE_NAME]))
   }
 /*
   $cookie = explode('/%/',$_COOKIE[$config->COOKIE_NAME]);
-  $login = doquery("SELECT * FROM {{table}} WHERE `username` = '" . mysql_escape_string($cookie[1]) . "' LIMIT 1", "users", true);
+  $login = doquery("SELECT * FROM {{table}} WHERE `username` = '" . mysql_real_escape_string($cookie[1]) . "' LIMIT 1", "users", true);
 
   if ($login)
   {

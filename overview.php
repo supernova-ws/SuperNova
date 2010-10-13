@@ -169,7 +169,7 @@ switch ($mode)
     {
       // Reponse au changement de nom de la planete
       $UserPlanet     = CheckInputStrings ( $POST_newname );
-      $newname        = mysql_escape_string(strip_tags(trim( $UserPlanet )));
+      $newname        = mysql_real_escape_string(strip_tags(trim( $UserPlanet )));
       if ($newname)
       {
         // Deja on met jour la planete qu'on garde en memoire (pour le nom)

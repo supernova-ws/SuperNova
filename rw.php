@@ -24,7 +24,7 @@ check_urlaubmodus ($user);
 
   $open = true;
   $reportid = $_GET["raport"];
-  $raportrow = doquery("SELECT * FROM {{table}} WHERE `rid` = '".(mysql_escape_string($_GET["raport"]))."';", 'rw', true);
+  $raportrow = doquery("SELECT * FROM {{table}} WHERE `rid` = '".(mysql_real_escape_string($_GET["raport"]))."';", 'rw', true);
 
   if ($allow == 1 || $open) {
     $Page  = "<html>";

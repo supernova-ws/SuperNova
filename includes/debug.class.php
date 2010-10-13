@@ -76,17 +76,34 @@ class debug
 
     $fatal_error = 'Fatal error: cannot write to `errors` table. Please contact Administration...';
 
+    $error_backtrace = debug_backtrace();
+    unset($error_backtrace[0]);
+    $error_backtrace = dump($error_backtrace, 'Error backtrace');
+    $error_backtrace .= "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>";
+    if($_GET)
+    {
+      $error_backtrace .= dump($_GET, '$_GET');
+    }
+    if($_POST)
+    {
+      $error_backtrace .= dump($_POST, '$_POST');
+    }
+    $error_backtrace = mysql_real_escape_string($error_backtrace);
+
+    $error_text  = $message;
+    $error_text = mysql_real_escape_string($error_text);
+
     mysql_query("INSERT INTO `{$dbsettings['prefix']}errors`
       SET
-        `error_sender` = '{$user['id']}' ,
-        `error_time` = '".time()."' ,
+        `error_sender` = '{$user['id']}',
+        `error_time` = '".time()."',
         `error_type` = '{$title}' ,
-        `error_text` = '".mysql_escape_string($message)."' ,
-        `error_page` = '".mysql_escape_string($_SERVER['HTTP_REFERER'])."',
-        `error_backtrace` = '".mysql_escape_string(dump(debug_backtrace()))."'
+        `error_text` = '{$error_text}' ,
+        `error_page` = '".mysql_real_escape_string($_SERVER['HTTP_REFERER'])."',
+        `error_backtrace` = '{$error_backtrace}'
       ;") or die($fatal_error);
 
-    $q = mysql_fetch_array(mysql_query("explain select * from {$dbsettings['prefix']}errors;"))
+    $q = mysql_fetch_array(mysql_query("SELECT max(error_id) AS rows FROM {$dbsettings['prefix']}errors;"))
       or die($fatal_error);
 
     $message = "Пожалуйста свяжитесь с админом, если ошибка повториться. Ошибка №: <b>{$q['rows']}</b>";
@@ -118,8 +135,8 @@ class debug
       `log_type` = '{$log_type}',
       `log_sender` = '{$user['id']}' ,
       `log_title` = '{$title}' ,
-      `log_text` = '".mysql_escape_string($message)."' ,
-      `log_page` = '".mysql_escape_string($_SERVER['HTTP_REFERER'])."';";
+      `log_text` = '".mysql_real_escape_string($message)."' ,
+      `log_page` = '".mysql_real_escape_string($_SERVER['HTTP_REFERER'])."';";
     $sqlquery = mysql_query(str_replace('{{table}}', "{$dbsettings['prefix']}logs", $query));
   }
 }

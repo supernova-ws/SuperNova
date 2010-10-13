@@ -119,14 +119,14 @@ if ($_POST) {
   }
 
   // Le meilleur moyen de voir si un nom d'utilisateur est pris c'est d'essayer de l'appeler !!
-  $ExistUser = doquery("SELECT `username` FROM {{table}} WHERE `username` = '". mysql_escape_string($_POST['character']) ."' LIMIT 1;", 'users', true);
+  $ExistUser = doquery("SELECT `username` FROM {{table}} WHERE `username` = '". mysql_real_escape_string($_POST['character']) ."' LIMIT 1;", 'users', true);
   if ($ExistUser) {
     $errorlist .= $lang['error_userexist'];
     $errors++;
   }
 
   // Si l'on verifiait que l'adresse email n'existe pas encore ???
-  $ExistMail = doquery("SELECT `email` FROM {{table}} WHERE `email` = '". mysql_escape_string($_POST['email']) ."' LIMIT 1;", 'users', true);
+  $ExistMail = doquery("SELECT `email` FROM {{table}} WHERE `email` = '". mysql_real_escape_string($_POST['email']) ."' LIMIT 1;", 'users', true);
   if ($ExistMail) {
     $errorlist .= $lang['error_emailexist'];
     $errors++;
@@ -153,16 +153,16 @@ if ($_POST) {
   else
   {
     $newpass        = $_POST['passwrd'];
-    $UserName       = mysql_escape_string(strip_tags(CheckInputStrings ( $_POST['character'] )));
-    $UserEmail      = mysql_escape_string(CheckInputStrings ( $_POST['email']));
+    $UserName       = mysql_real_escape_string(strip_tags(CheckInputStrings ( $_POST['character'] )));
+    $UserEmail      = mysql_real_escape_string(CheckInputStrings ( $_POST['email']));
     $UserPlanet     = CheckInputStrings ( $_POST['planet'] );
 
     $md5newpass     = md5($newpass);
     // Creation de l'utilisateur
     $QryInsertUser  = "INSERT INTO {{users}} SET ";
     $QryInsertUser .= "`username` = '{$UserName}', `email` = '{$UserEmail}', `email_2` = '{$UserEmail}', ";
-    $QryInsertUser .= "`lang` = '".     mysql_escape_string( $_POST['langer'] )      ."', ";
-    $QryInsertUser .= "`sex` = '".      mysql_escape_string( $_POST['sex'] )         ."', ";
+    $QryInsertUser .= "`lang` = '".     mysql_real_escape_string( $_POST['langer'] )      ."', ";
+    $QryInsertUser .= "`sex` = '".      mysql_real_escape_string( $_POST['sex'] )         ."', ";
     $QryInsertUser .= "`id_planet` = '0', ";
     $QryInsertUser .= "`register_time` = '". time() ."', ";
     $QryInsertUser .= "`password`='{$md5newpass}';";

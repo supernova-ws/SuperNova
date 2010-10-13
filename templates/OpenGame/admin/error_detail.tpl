@@ -7,6 +7,6 @@
 <tr><th>{L_adm_er_play}</th><td>{error_sender}</td></tr>
 <tr><th>{L_adm_er_page}</th><td>{error_page}</td></tr>
 <tr><th>{L_adm_er_type}</th><td>{error_type}</td></tr>
-<tr><th>{L_adm_er_text}</th><td>{error_text}</td></tr>
-<tr><th>{L_adm_er_bktr}</th><td>{error_backtrace}</td></tr>
+<tr><th>{L_adm_er_text}</th><td><div style="width: 800px">{error_text}</div></td></tr>
+<tr><th>{L_adm_er_bktr}</th><td><div style="width: 800px">{error_backtrace}</div></td></tr>
 </table>
