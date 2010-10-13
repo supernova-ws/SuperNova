@@ -28,10 +28,15 @@ $parse = $lang;
 switch($mode){
   case 1:
     $config->db_loadAll();
+
     $config->db_loadItem('game_watchlist');
     if($config->game_watchlist)
     {
       $config->game_watchlist_array = explode(';', $config->game_watchlist);
+    }
+    else
+    {
+      unset($config->game_watchlist_array);
     }
   break;
 
