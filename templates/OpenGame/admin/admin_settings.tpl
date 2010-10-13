@@ -62,7 +62,6 @@
       </th>
     </tr>
 
-
     <tr><td class="c" colspan="2">{L_adm_opt_plan_settings}</td></tr>
     <tr>
       <th>{L_adm_opt_plan_initial}</th>
@@ -93,6 +92,20 @@
     <tr>
       <th>{L_adm_opt_game_rules}</a></th>
       <th><input name="rules_url" size="40" maxlength="254" value="{C_rules_url}" type="text"></th>
+    </tr>
+
+    <tr><td class="c" colspan="2">{L_adm_opt_game_defaults}</td></tr>
+    <tr>
+      <th>{L_adm_opt_game_default_language}</a></th>
+      <th><input name="game_default_language" size="40" maxlength="254" value="{C_game_default_language}" type="text"></th>
+    </tr>
+    <tr>
+      <th>{L_adm_opt_game_default_skin}</a></th>
+      <th><input name="game_default_skin" size="40" maxlength="254" value="{C_game_default_skin}" type="text"></th>
+    </tr>
+    <tr>
+      <th>{L_adm_opt_game_default_template}</a></th>
+      <th><input name="game_default_template" size="40" maxlength="254" value="{C_game_default_template}" type="text"></th>
     </tr>
 
     <tr><td class="c" colspan="2">{L_adm_opt_maintenance}</td></tr>
