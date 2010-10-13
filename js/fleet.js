@@ -413,20 +413,21 @@ function fleet_dialog_show(caller, fleet_id)
 
   if(fleet_capacity)
   {
-    fleet_html += '<tr><td class="c">' + language['sys_capacity'] + '</td><td class="c">' + sn_format_number(fleet_capacity, 0, 'white') + '</td></tr>';
+    fleet_html += '<tr><td class="c">' + language['sys_capacity'] + '</td><td class="c" style="padding-right: 3px;">' + sn_format_number(fleet_capacity, 0, 'white') + '</td></tr>';
   }
 
-  if(parseInt(resources[0]) + parseInt(resources[1]) + parseInt(resources[2]) > 0)
+  var resources_total = parseInt(resources[0]) + parseInt(resources[1]) + parseInt(resources[2]);
+  if(resources_total > 0)
   {
-    fleet_html += '<tr><td class=c colspan=2>' + language['sys_resources'] + '</td></tr>';
-
     for(res_id in resources)
     {
       if(parseInt(resources[res_id]))
       {
-        fleet_html += '<tr><th>' + res_names[res_id] + '</th><th>' + sn_format_number(parseInt(resources[res_id]), 0, 'white') + '</th></tr>';
+        fleet_html += '<tr><th class=c><div style="text-align: left">' + res_names[res_id] + '</div></th><th><div style="text-align: right;">' + sn_format_number(parseInt(resources[res_id]), 0, 'white') + '</div></th></tr>';
       }
     }
+
+    fleet_html += '<tr><td class=c>' + language['sys_resources'] + '</td><td class=c style="text-align: right; padding-right: 3px;">' + sn_format_number(resources_total, 0, 'white') + '</td></tr>';
   }
 
   fleet_html += '</table>';
