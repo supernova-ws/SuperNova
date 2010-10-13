@@ -31,7 +31,6 @@ $lang['adm_opt_players_online']    = "Игроков на сервере";
 $lang['adm_opt_vacancy_mode_is']   = "Режим отпуска";
 $lang['adm_opt_maintenance']       = "Обслуживание и отладка";
 $lang['adm_opt_links']             = "Ссылки и баннеры";
-
                                    
 $lang['adm_opt_galaxies']          = "Количество галактик во Вселенной";
 $lang['adm_opt_systems']           = "Количество систем в галактике";
@@ -41,4 +40,10 @@ $lang['adm_opt_game_rules']        = "Ссылка на правила";
 $lang['adm_opt_max_colonies']      = "Количество колоний";
 $lang['adm_opt_exchange']          = "Курс обмена ресурсов";
 $lang['adm_opt_game_mode']         = "Тип Вселенной";
+
+$lang['adm_opt_game_defaults']         = "Параметры игрока по умолчанию";
+$lang['adm_opt_game_default_language'] = "Язык интерфейса";
+$lang['adm_opt_game_default_skin']     = "Шкурка (Оформление)";
+$lang['adm_opt_game_default_template'] = "Шаблон";
+
 ?>
