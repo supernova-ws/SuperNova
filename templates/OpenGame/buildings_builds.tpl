@@ -5,6 +5,7 @@ var dpath = '{dpath}';
 
 var production = Array();
 var unit_selected = null;
+var eco_bld_style_probe;
 
 language = 
 {
@@ -54,9 +55,12 @@ function eco_struc_make_resource_row(resource_name, value, value_destroy)
   }
 }
 
-function eco_struc_show_unit_info(unit_id)
+function eco_struc_show_unit_info(unit_id, no_color)
 {
-  element_cache['unit' + unit_id].style.borderColor="#0000FF";
+  if(!no_color)
+  {
+    element_cache['unit' + unit_id].style.borderColor=eco_bld_style_probe;
+  }
 
   if(unit_selected)
   {
@@ -67,7 +71,7 @@ function eco_struc_show_unit_info(unit_id)
   var result = '';
 
   element_cache['unit_image'].src = dpath + 'gebaeude/' + unit['id'] +'.gif';
-  element_cache['unit_description'].innerHTML = unit['description'];
+  element_cache['unit_description'].innerHTML = unit['description'] + '"'+ eco_bld_style_probe + '"';
   element_cache['unit_build_link'].innerHTML = unit['build_link'];
 
   element_cache['unit_time'].innerHTML = unit['time'];
@@ -191,12 +195,12 @@ function eco_struc_unborder_unit(unit_id)
   <tr>
     <!-- BEGIN production -->
       <td class="l" align="center">
-        <div style="cursor: pointer; position: relative; height: 120px; width: 120px; font-size: 100%; border: 3px solid;" id="unit{production.ID}" unit_id="{production.ID}">
+        <div class="unit_preview" style="" id="unit{production.ID}" unit_id="{production.ID}">
           <span style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%">
             <img border="0" src="{dpath}gebaeude/{production.ID}.gif" align="top" width="100%" height="100%"> <!-- onclick="eco_struc_select_unit({production.ID})"> <!-- onmouseout="eco_struc_unborder_unit({production.ID})" onmouseover="eco_struc_show_unit_info({production.ID})"> -->
           </span>
 
-          <span style="position: absolute; top: 18px; left: 0px; width: 100%; height: 4ex; font-size: 100%;" class="icon_alpha"> <!--  onclick="eco_struc_select_unit({production.ID})" onmouseout="eco_struc_unborder_unit({production.ID})" onmouseover="eco_struc_show_unit_info({production.ID})"> -->
+          <span style="position: absolute; top: 18px; left: 0px; width: 100%; height: 5ex; font-size: 100%;" class="icon_alpha"> <!--  onclick="eco_struc_select_unit({production.ID})" onmouseout="eco_struc_unborder_unit({production.ID})" onmouseover="eco_struc_show_unit_info({production.ID})"> -->
             {production.NAME}
           </span>
 
@@ -232,7 +236,7 @@ function eco_struc_unborder_unit(unit_id)
             {$BUILDINGPLUSONE}
           </span>
 
-          <span style="position: absolute; top: 46px; left: 2%; width: 96%; font-size: 100%; text-align: left;" class="icon_alpha"> <!--  onclick="eco_struc_select_unit({production.ID})" onmouseout="eco_struc_unborder_unit({production.ID})" onmouseover="eco_struc_show_unit_info({production.ID})"> -->
+          <span style="position: absolute; top: 46px; left: 0px; width: 100%; font-size: 100%; text-align: left; padding: 0px 2px;" class="icon_alpha"> <!--  onclick="eco_struc_select_unit({production.ID})" onmouseout="eco_struc_unborder_unit({production.ID})" onmouseover="eco_struc_show_unit_info({production.ID})"> -->
             <!-- IF production.METAL --><div class="fl">{L_sys_metal}</div><div class="fr">{production.METAL_REST}</div><br><!-- ENDIF -->
             <!-- IF production.CRYSTAL --><div class="fl">{L_sys_crystal}</div><div class="fr">{production.CRYSTAL_REST}</div><br><!-- ENDIF -->
             <!-- IF production.DEUTERIUM --><div class="fl">{L_sys_deuterium}</div><div class="fr">{production.DEUTERIUM_REST}</div><!-- ENDIF -->
@@ -281,6 +285,7 @@ function eco_struc_unborder_unit(unit_id)
     <!-- END production -->
   </tr>
 </table>
+<div id="style_probe"></div>
 
 <script type="text/javascript"><!--
 jQuery(document).ready(function() {
@@ -301,9 +306,11 @@ jQuery(document).ready(function() {
     jQuery("[hide_no_fleet]").hide();
   }
 
+  eco_bld_style_probe = sn_probe_style(element_cache['style_probe'], 'border-top-color');
+
   for(production_id in production)
   {
-    eco_struc_show_unit_info(production_id);
+    eco_struc_show_unit_info(production_id, true);
     break;
   }
 });

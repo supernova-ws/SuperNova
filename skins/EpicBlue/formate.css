@@ -452,3 +452,23 @@ div .ui-dialog-content table { background: #344055; }
 
 /* Icon file */
 .icons { background-image: url(images/icons.png); }
+
+/* Unit preview box on build pages */
+.unit_preview
+{
+  cursor: pointer;
+
+  border: 3px solid #344566;
+
+  position: relative;
+  height: 120px;
+  width: 120px;
+
+  font-size: 100%;
+}
+
+/* Pseudoelement to use colors from CSS in JS */
+#style_probe
+{
+  border-top-color: #6B90D3;  /*  Reserved for unit_preview border color*/
+}

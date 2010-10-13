@@ -249,6 +249,23 @@ function popup_hide()
   popup.dialog("close");
 }
 
+// Helper probe to use CSS-values in JS
+function sn_probe_style(element, css_attribute)
+{
+  switch(css_attribute)
+  {
+    case 'border-top-color':
+      if(element.currentStyle)
+        return element.currentStyle.borderTopColor;
+      if(document.defaultView)
+        return document.defaultView.getComputedStyle(element, '').getPropertyValue('border-top-color');
+    break;
+
+  }
+
+  return false;
+}
+
 var element_cache = new Object();
 
 function calc_elements()
