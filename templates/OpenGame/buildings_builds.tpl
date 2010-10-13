@@ -71,7 +71,7 @@ function eco_struc_show_unit_info(unit_id, no_color)
   var result = '';
 
   element_cache['unit_image'].src = dpath + 'gebaeude/' + unit['id'] +'.gif';
-  element_cache['unit_description'].innerHTML = unit['description'] + '"'+ eco_bld_style_probe + '"';
+  element_cache['unit_description'].innerHTML = unit['description'];
   element_cache['unit_build_link'].innerHTML = unit['build_link'];
 
   element_cache['unit_time'].innerHTML = unit['time'];
