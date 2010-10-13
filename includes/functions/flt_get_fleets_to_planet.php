@@ -13,7 +13,7 @@ function flt_get_fleets_to_planet($planet)
       WHERE
         (fleet_start_galaxy = {$planet['galaxy']} AND fleet_start_system = {$planet['system']} AND fleet_start_planet = {$planet['planet']} AND fleet_start_type = {$planet['planet_type']} AND fleet_mess = 1)
         OR
-        (fleet_end_galaxy =  AND fleet_end_system = {$planet['system']} AND fleet_end_planet = {$planet['planet']} AND fleet_end_type = {$planet['planet_type']} AND fleet_mess = 0)
+        (fleet_end_galaxy = {$planet['galaxy']} AND fleet_end_system = {$planet['system']} AND fleet_end_planet = {$planet['planet']} AND fleet_end_type = {$planet['planet_type']} AND fleet_mess = 0)
     ");
   $fleet_list['total'] = mysql_num_rows($sql_fleets);
 
