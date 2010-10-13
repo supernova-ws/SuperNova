@@ -494,6 +494,11 @@ class classConfig extends classPersistent
 
     'game_adminEmail' => 'root@localhost',    // Admin's email to show to users
 
+    // Defaults
+    'game_default_language' => 'ru',
+    'game_default_skin'     => 'skins/EpicBlue/',
+    'game_default_template' => 'OpenGame',
+
     'game_disable'         => 1,
     'game_disable_reason'  => 'SuperNova is in maintenance mode! Please return later!',
 
@@ -649,37 +654,7 @@ class class_db_cache extends classCache
     {
       $this->$lock_field_name = $lock;
     }
-/*
-    if($this->$lock_field_name)
-    {
-      // there is still a lock
-      if($lock === NULL)
-      {
-        // if we doesn't tried to lock table  - just say that table is locked
-        return true;
-      }
-      else
-      {
-        // if we did - it's failure
-        return false;
-      }
-    }
-    else
-    {
-      // Ah! No lock! Nice!
-      if($lock === NULL)
-      {
-        // saying that there is no lock
-        return false;
-      }
-      else
-      {
-        // setting new lock mode and reporting success
-        $this->$lock_field_name = $lock;
-        return true;
-      }
-    }
-*/
+
     return $result;
   }
 
@@ -688,7 +663,7 @@ class class_db_cache extends classCache
     Magic start here. __call magic method will transform name of call to table name and handle all caching & db-related stuff
     If there is such row in cache it will be returned. Otherwise it will read from DB, cached and returned
     I.e. class_db_cache->table_name() call mean that all request will be done with records (cached or DB) in `table_name` table
-    __call interpets last argument as option parameter boolean parameter $force.
+    __call interpets last argument as optional boolean parameter $force.
     In read operations $force === true will tell cacher not to use cached data but load records from DB
     In write operations $force === true will tell cacher immidiatly store new data to DB not relating on internal mechanics
 
@@ -734,13 +709,13 @@ class class_db_cache extends classCache
 
     if(isset($this->$internal_name) && !$force_reload)
     {
-      pdump("{$id} - returning stored data");
+      // pdump("{$id} - returning stored data");
 
       return $this->$internal_name;
     }
     else
     {
-      pdump("{$id} - asking DB");
+      // pdump("{$id} - asking DB");
 
       return $this->db_loadItem($table_name, $id);
     }
