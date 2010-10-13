@@ -11,7 +11,8 @@
 
 2010-10-13 09:39
 [@] Добавил   новые   переменные   game_default_language,   game_default_skin,
-    game_default_template. Подробнее см. includes/classes/cache.php
+    game_default_template. Подробнее см. includes/classes/cache.php . Их  можно
+    изменить на странице настройки сервера
 [@] Отформатировал update.php в PCG1
 
 2010-10-13 07:59
