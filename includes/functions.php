@@ -312,4 +312,28 @@ function GetMaxExpeditions(&$user) {
   return floor(sqrt($user[$resource[124]]));
 }
 
+// ----------------------------------------------------------------------------------------------------------------
+// Check input string for forbidden words
+//
+function CheckInputStrings ( $String ) {
+  global $ListCensure;
+
+  return (preg_replace( $ListCensure, '*', $String ));
+}
+
+// ----------------------------------------------------------------------------------------------------------------
+// Convert planet coords to [G:S:P]
+//
+function PrintPlanetCoords(&$array){
+  return "[{$array['galaxy']}:{$array['system']}:{$array['planet']}]";
+}
+
+// ----------------------------------------------------------------------------------------------------------------
+// Logs page hit to DB
+//
+function sys_logHit(){
+  global $time_now, $user;
+  doquery("INSERT INTO {{table}} (`time`, `page`, `url`, `user_id`, `ip`) VALUES ('{$time_now}', '{$_SERVER['PHP_SELF']}', '{$_SERVER['REQUEST_URI']}', '{$user['id']}', '{$_SERVER['REMOTE_ADDR']}');", 'counter');
+}
+
 ?>

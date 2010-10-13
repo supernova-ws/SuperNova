@@ -9,7 +9,15 @@
  [@] Это исправление будет интересно только админам и/или разработчикам
  [*] ToDo - см. changelog.todo
 
+2010-10-14 02:20
+[@] В  CheckInputStrings  deprecated   функция   eregi_replace   заменена   на
+    preg_replace. Соответствующим  образом  изменено  значение  $ListCensure  в
+    /includes/constants.php
+[@] Функции  CheckInputStrings,  PrintPlanetCoords,  sys_logHit  перенесены  из
+    индивидуальных файлов в /includes/functions.php
+
 2010-10-14 01:57
+[#] Строительство/Здания: Изменен цвет рамки превьюшки юнита
 [@] Строительство/Здания: Для рамки  выделения  превьюшки  теперь  используются
     стили из  CSS.  Добавлены  цвета  для  встроенных  стилей.  См.,  например,
     /skins/EpicBlue/formatte.css, стиль ".unit_preview"
