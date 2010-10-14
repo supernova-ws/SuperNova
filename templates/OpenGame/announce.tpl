@@ -6,7 +6,7 @@
       <tr>
         <td>{L_adm_an_date}</td>
         <td>
-        <div style="float: left"><input name="dtDateTime" size="25" maxlength="19" value="{tsTimeStamp}"></div>
+        <div style="float: left"><input name="dtDateTime" size="19" maxlength="19" value="{tsTimeStamp}"></div>
         <div style="float: right"><!-- IF MODE == 'edit' -->{L_adm_an_mode_edit}<!-- ELSEIF MODE == 'copy' -->{L_adm_an_mode_copy}<!-- ELSE -->{L_adm_an_mode_new}<!-- ENDIF --></div>
         <input type="hidden" name="id" value="{ID}">
         <input type="hidden" name="mode" value="{MODE}">
@@ -16,6 +16,10 @@
       <tr>
         <td valign="top">{L_adm_an_announce}</td>
         <td><textarea name="text" cols=40 rows=5 width="80%">{strAnnounce}</textarea></td>
+      </tr>
+      <tr>
+        <td>—сылка на подробности</td>
+        <td><input name="detail_url" size=60 maxlength="250" value="{DETAIL_URL}"></td>
       </tr>
       <tr><td colspan="2" align="center"><input type=submit value="<!-- IF MODE == 'edit' -->{L_adm_an_edit}<!-- ELSEIF MODE == 'copy' -->{L_adm_an_copy}<!-- ELSE -->{L_adm_an_add}<!-- ENDIF -->"></td></tr>
     </form>
@@ -36,7 +40,12 @@
   <!-- BEGIN announces -->
     <tr>
       <td align="center" width="100"><!-- IF announces.FUTURE --><font color=red><strong>{L_adm_an_future}</strong></font><br><!-- ELSEIF announces.NEW --><font color=red><strong>{L_adm_an_new}</strong></font><br><!-- ENDIF -->{announces.TIME}</td>
-      <td align=justify>{announces.ANNOUNCE}</td>
+      <td align=justify>
+        {announces.ANNOUNCE}
+        <!-- IF announces.DETAIL_URL -->
+         <a href="{announces.DETAIL_URL}"><u><font color="green">{L_ann_more}</font></u></a>
+        <!-- ENDIF -->
+      </td>
       <!-- IF AUTHLEVEL >= 3 -->
         <td><a href="?mode=edit&id={announces.ID}"><img src="../images/icon_edit.png"></a></td>
         <td><a href="?mode=copy&id={announces.ID}"><img src="../images/icon_copy.gif"></a></td>

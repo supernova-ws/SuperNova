@@ -296,4 +296,7 @@ $lang['weekdays'] = array(
 );
 
 $lang['sys_max'] = 'макс';
+
+// News page
+$lang['ann_more'] = 'Подробнее...';
 ?>

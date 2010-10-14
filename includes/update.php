@@ -287,9 +287,20 @@ switch(intval($config->db_version))
     set_time_limit(30);
 
   case 17:
+  case 18:
     upd_check_key('game_default_language', 'ru');
     upd_check_key('game_default_skin', 'skins/EpicBlue/');
     upd_check_key('game_default_template', 'OpenGame');
+
+    if(!$update_tables['announce']['detail_url'])
+    {
+      upd_alter_table('announce', "ADD `detail_url` varchar(250) NOT NULL DEFAULT '' COMMENT 'Link to more details about update'");
+    }
+
+    $newVersion = 18;
+    set_time_limit(30);
+
+  case 18:
     set_time_limit(30);
 
 };
