@@ -53,7 +53,7 @@ th, td, input, select, textarea
   background-color     : #344566;
 }
 
-input, select, textarea
+input, select, textarea, div.z
 {
  color                : #E6EBFB;
 }
