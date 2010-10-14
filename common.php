@@ -25,7 +25,7 @@ if (!$InLogin) {
   }
 }
 
-if ( isset ($user) )
+if ($user['id'])
 {
   $update_file = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.{$phpEx}";
   $flag_file   = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.last";
@@ -90,5 +90,6 @@ else
 {
   // Bah si déja y a quelqu'un qui passe par là et qu'a rien a faire de pressé ...
   // On se sert de lui pour mettre a jour tout les retardataires !!
+  $debug->warning("May be it's login page? InLogin = '{$InLogin}', IsUserChecked = '{$IsUserChecked}'", 'Unregistered user', 303);
 }
 ?>
