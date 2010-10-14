@@ -7,8 +7,8 @@
 	  <td class="c" colspan="2">Informacje</td>
 	</tr>
 	<tr>
-	  <td class="b">Aktual Versiyon<strong> <a href=""{VERSION}</a></strong></td>
-	  <td class=b>Son Versiyon: <b><a style="color:orange;" href="http://hostcuyum.net/ogamedownload/">7.9b</a></b></td>
+	  <td>Aktual Versiyon<strong> <a href=""{VERSION}</a></strong></td>
+	  <td>Son Versiyon: <b><a style="color:orange;" href="http://hostcuyum.net/ogamedownload/">7.9b</a></b></td>
 	</tr>
 </table>
 

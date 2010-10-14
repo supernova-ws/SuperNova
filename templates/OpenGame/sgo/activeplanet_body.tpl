@@ -7,8 +7,8 @@
 	  <td class="c" colspan="2">2</td>
 	</tr>
 	<tr>
-	  <td class="b">Game version<strong> <a href=""{VERSION}</a></strong></td>
-	  <td class=b>Privious game version: <b><a style="color:orange;" href="">7.9b</a></b></td>
+	  <td>Game version<strong> <a href=""{VERSION}</a></strong></td>
+	  <td>Privious game version: <b><a style="color:orange;" href="">7.9b</a></b></td>
 	</tr>
 </table>
 

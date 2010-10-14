@@ -35,12 +35,12 @@
   </tr>
   <!-- BEGIN announces -->
     <tr>
-      <td class=b align="center" width="100"><!-- IF announces.FUTURE --><font color=red><strong>{L_adm_an_future}</strong></font><br><!-- ELSEIF announces.NEW --><font color=red><strong>{L_adm_an_new}</strong></font><br><!-- ENDIF -->{announces.TIME}</td>
-      <td class=b align=justify>{announces.ANNOUNCE}</td>
+      <td align="center" width="100"><!-- IF announces.FUTURE --><font color=red><strong>{L_adm_an_future}</strong></font><br><!-- ELSEIF announces.NEW --><font color=red><strong>{L_adm_an_new}</strong></font><br><!-- ENDIF -->{announces.TIME}</td>
+      <td align=justify>{announces.ANNOUNCE}</td>
       <!-- IF AUTHLEVEL >= 3 -->
-        <td class=b><a href="?mode=edit&id={announces.ID}"><img src="../images/icon_edit.png"></a></td>
-        <td class=b><a href="?mode=copy&id={announces.ID}"><img src="../images/icon_copy.gif"></a></td>
-        <td class=b><a href="?mode=del&id={announces.ID}"><img src="../images/r1.png"></a></td>
+        <td><a href="?mode=edit&id={announces.ID}"><img src="../images/icon_edit.png"></a></td>
+        <td><a href="?mode=copy&id={announces.ID}"><img src="../images/icon_copy.gif"></a></td>
+        <td><a href="?mode=del&id={announces.ID}"><img src="../images/r1.png"></a></td>
       <!-- ENDIF -->
     </tr>
   <!-- END announces -->

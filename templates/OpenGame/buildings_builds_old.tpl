@@ -53,7 +53,7 @@
            <!--<br>{production.DEUTERIUM_BALANCE}-->
          <!-- ENDIF -->
        </td>
-       <td class="k">{production.BUILD_LINK}</td>
+       <th class="c">{production.BUILD_LINK}</th>
      </tr>
 	<!-- END production -->
 </table>

@@ -12,5 +12,5 @@
 		{rest_price}<br>
 		{build_need_diff}
 	</td>
-	<td class="k">{click}</td>
+	<th class="c">{click}</th>
 </tr>
