@@ -166,21 +166,21 @@ function eco_struc_unborder_unit(unit_id)
             </tr>
             <tr id="unit_metal">
               <td>{L_sys_metal}</td>
-              <td id="metal_price">0</td>
-              <td id="metal_left">0</td>
-              <td id="metal_fleet" hide_no_fleet="yes">0</td>
+              <td id="metal_price" align="right">0</td>
+              <td id="metal_left" align="right">0</td>
+              <td id="metal_fleet" hide_no_fleet="yes" align="right">0</td>
             </tr>
             <tr id="unit_crystal">
               <td>{L_sys_crystal}</td>
-              <td id="crystal_price">0</td>
-              <td id="crystal_left">0</td>
-              <td id="crystal_fleet" hide_no_fleet="yes">0</td>
+              <td id="crystal_price" align="right">0</td>
+              <td id="crystal_left" align="right">0</td>
+              <td id="crystal_fleet" hide_no_fleet="yes" align="right">0</td>
             </tr>
             <tr id="unit_deuterium">
               <td>{L_sys_deuterium}</td>
-              <td id="deuterium_price">0</td>
-              <td id="deuterium_left">0</td>
-              <td id="deuterium_fleet" hide_no_fleet="yes">0</td>
+              <td id="deuterium_price" align="right">0</td>
+              <td id="deuterium_left" align="right">0</td>
+              <td id="deuterium_fleet" hide_no_fleet="yes" align="right">0</td>
             </tr>
           </table>
           <b><div id="unit_balance"></div></b>
