@@ -61,7 +61,7 @@ define('SHOW_ADMIN', 1);
 define('VOCATION_TIME', 2*24*60*60); // 48 hours
 
 // Mot qui sont interdit a la saisie !
-$ListCensure = array ( "<", ">", "script", "doquery", "http", "javascript");
+$ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
 // Mission Target constants starts with "MT_"
 define('MT_ATTACK',    1);

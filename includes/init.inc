@@ -85,8 +85,9 @@ $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 // Now including all functions
 include_once("{$ugamela_root_path}includes/constants.{$phpEx}");
 include_once("{$ugamela_root_path}includes/functions.{$phpEx}");
-include_once("{$ugamela_root_path}includes/unlocalised.{$phpEx}");
 include_once("{$ugamela_root_path}includes/vars.{$phpEx}");
+
+include_once("{$ugamela_root_path}includes/template.{$phpEx}");
 include_once("{$ugamela_root_path}language/" . DEFAULT_LANG .'/lang_info.cfg');
 
 $dir = opendir("{$ugamela_root_path}includes/functions");

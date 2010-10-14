@@ -233,8 +233,6 @@
 
 </table>
 
-{L_copyright} {ADMIN_EMAIL}<br>
-
 <div id="admin_message"></div>
 
 <script type="text/javascript"><!--
