@@ -76,7 +76,7 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   }
   // Adresse e-Mail
   if (isset($_POST["db_email"]) && $_POST["db_email"] != '') {
-    $db_email = SYS_mysqlSmartEscape(CheckInputStrings ( $_POST['db_email'] ));
+    $db_email = $_POST['db_email'];
   } else {
     $db_email = $user['email'];
   }
@@ -200,6 +200,12 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
 //  $dpath = str_replace('\\','\\\\',$dpath);
 
   $options = sys_user_options_pack($user);
+
+  $db_email = SYS_mysqlSmartEscape(CheckInputStrings($db_email));
+  $languese = SYS_mysqlSmartEscape(CheckInputStrings($languese));
+  $avatar   = SYS_mysqlSmartEscape(CheckInputStrings($avatar));
+  $dpath    = SYS_mysqlSmartEscape(CheckInputStrings($dpath));
+  $username = SYS_mysqlSmartEscape(CheckInputStrings($username));
 
   doquery("UPDATE {{users}} SET
   `email` = '$db_email',
