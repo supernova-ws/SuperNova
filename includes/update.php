@@ -287,7 +287,6 @@ switch(intval($config->db_version))
     set_time_limit(30);
 
   case 17:
-  case 18:
     upd_check_key('game_default_language', 'ru');
     upd_check_key('game_default_skin', 'skins/EpicBlue/');
     upd_check_key('game_default_template', 'OpenGame');
