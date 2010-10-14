@@ -1,12 +1,7 @@
 <style type="text/css"><!--
-body {
-    background-image: url(../images/bg-unauthorized.jpg);
-    background-repeat: no-repeat;
-    text-align: center;
-    font-family:Arial, Helvetica, sans-serif;
-}
+ @import url(./css/login.css);
 --></style>
-
+<div id="log_skipper"></div>
 <div id="log_main">
   <div id="log_title">{L_sys_supernova}: {L_sys_universe} "{C_game_name}"</div>
   <div id="log_description">{L_log_desc}</div>
@@ -19,8 +14,8 @@ body {
     {L_log_online}: <font color="red">{online_users}</font> - {L_log_lastreg}: <font color="red">{last_user}</font> - {L_log_numbreg}: <font color="red">{users_amount}</font>
   </div>
 
-  <form action="login.php" method="post">
-    <div id="log_form">
+  <div id="log_form">
+    <form action="login.php" method="post">
       <div class="log_input_wrapper">
         {L_User_name}<br>
         <input name="username" type="text" value="" class="log_input" />
@@ -36,8 +31,8 @@ body {
         <div class="fl"><input name="rememberme" type="checkbox"> {L_Remember_me}</div>
         <input name="submit" type="submit" value="{log_enter}" /><br />
       </div>
-    </div>
-  </form>
+    </form>
+  </div>
 
   <div id="log_menu">
     <a href="reg.php{referral}">{L_log_reg}</a> ::

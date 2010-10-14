@@ -1,6 +1,6 @@
 *
 {
-  font-family : Tahoma,sans-serif;
+  font-family : Tahoma, sans-serif;
   font-size : 11px;
 }
 
@@ -9,7 +9,6 @@ body
   color                : #FFFFFF;
   margin-top           : 5px;
   margin-left          : 1px;
-  background-color     : #040e1e;
   background-color     : #000000;
   background-image     :  url(img/background2.jpg);
   background-attachment: fixed;
@@ -28,20 +27,6 @@ body
 img
 {
   border               : 0px;
-}
-
-table table
-{
-  border               : 0px;
-}
-
-body.style table {
-  margin               : 0px;
-}
-
-body form table th table input
-{
-  width: 60px;
 }
 
 th, td, input, select, textarea
@@ -93,6 +78,20 @@ div.z
 {
   font-weight          : bold;
   color                : #E6EBFB;
+}
+
+table table
+{
+  border               : 0px;
+}
+
+body.style table {
+  margin               : 0px;
+}
+
+body form table th table input
+{
+  width: 60px;
 }
 
 a

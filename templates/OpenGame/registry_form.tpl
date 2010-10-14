@@ -1,11 +1,8 @@
 <style type="text/css"><!--
-body {
-    background-image: url(../images/bg-unauthorized.jpg);
-    background-repeat: no-repeat;
-    text-align: center;
-    font-family:Arial, Helvetica, sans-serif;
-}
+ @import url(./css/login.css);
 --></style>
+
+<div id="log_skipper"></div>
 
 <div id="log_main">
   <div id="log_title">{L_log_reg} - {L_sys_universe} "{C_game_name}"</div>
