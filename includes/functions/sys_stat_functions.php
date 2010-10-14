@@ -1,7 +1,7 @@
 <?php
 
 /**
- * sys_statFunctions.php
+ * sys_stat_functions.php
  *
  * @version 2 (c) copyright 2010 by Gorlum for http://supernova.ws
  *   [!] Stats calculation greatly increased to 10x times (and even more in certain configurations)

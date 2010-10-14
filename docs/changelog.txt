@@ -10,6 +10,12 @@
  [*] ToDo - см. changelog.todo
 
 2010-10-14 02:20
+[#] Добавлены сведения о копирайте на все страницы (через overal_footer.tpl)
+[@]    Перераспределены    функции    в    файлах    /includes/unlocalized.php,
+    /includes/functions.php, /includes/functions/sys_template.php между файлами
+    /includes/functions.php и /includes/template.php
+
+2010-10-14 02:20
 [@] В  CheckInputStrings  deprecated   функция   eregi_replace   заменена   на
     preg_replace. Соответствующим  образом  изменено  значение  $ListCensure  в
     /includes/constants.php

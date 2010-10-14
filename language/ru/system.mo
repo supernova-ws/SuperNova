@@ -119,7 +119,7 @@ $lang['sys_hrs_short'] = "ч";
 $lang['sys_min_short'] = "м";
 $lang['sys_sec_short'] = "с";
 
-$lang['copyright'] = '&copy; SuperNova.WS 2009-2010 - Отдельные вопросы вы можете задать по адресу';
+$lang['sys_ask_admin'] = ' - Отдельные вопросы вы можете задать по адресу';
 $lang['TranslationBy'] = '';
 
 $lang['sys_wait'] = 'Запрос выполняется. Пожалуйста, подождите.';
