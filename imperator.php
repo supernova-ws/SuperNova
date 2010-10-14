@@ -94,9 +94,10 @@ if ($config->game_news_overview)
   while ($lastAnnounce = mysql_fetch_array($lastAnnounces))
   {
     $template->assign_block_vars('news', array(
-      'TIME'     => $lastAnnounce['tsTimeStamp'],
-      'ANNOUNCE' => sys_bbcodeParse($lastAnnounce['strAnnounce']),
-      'IS_NEW'   => $lastAnnounce['unix_time'] + $config->game_news_actual > $time_now,
+      'TIME'       => $lastAnnounce['tsTimeStamp'],
+      'ANNOUNCE'   => sys_bbcodeParse($lastAnnounce['strAnnounce']),
+      'DETAIL_URL' => $lastAnnounce['detail_url'],
+      'IS_NEW'     => $lastAnnounce['unix_time'] + $config->game_news_actual > $time_now,
     ));
   }
 }
