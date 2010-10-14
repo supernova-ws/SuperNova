@@ -202,7 +202,7 @@ function pdump($value,$varname = "",$level=0,$dumper = "")
 function pr($prePrint = false){
   if($prePrint)
     print("<br>");
-  print(rand() . "<br>");
+  print(mt_rand() . "<br>");
 }
 
 function pc($prePrint = false){
