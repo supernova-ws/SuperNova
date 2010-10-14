@@ -36,7 +36,6 @@ th, td, input, select, textarea
   -moz-opacity   : 0.7;
   -khtml-opacity : 0.7;
   opacity        : 0.7;
-  color          : #FFFFFF;
 }
 
 th, td
@@ -46,6 +45,7 @@ th, td
 
 input, select, textarea
 {
+  color          : #FFFFFF;
   background-color: #1c1c1c;
 }
 
