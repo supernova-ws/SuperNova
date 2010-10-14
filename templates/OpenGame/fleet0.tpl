@@ -117,7 +117,7 @@ var speed_factor   = {speed_factor};
     <!-- IF .ships -->
       <!-- BEGIN ships -->
         <tr>
-          <th><div class="fl"><a title="{L_fl_fleetspeed}{ships.SPEED}"</a>{ships.NAME}</div></th>
+          <th><div class="fl"><a href="infos.php?gid={ships.ID}" title="{L_fl_fleetspeed}{ships.SPEED}"</a>{ships.NAME}</div></th>
           <th>{ships.AMOUNT}</th>
           <th>
             <!-- IF (ships.ID == 212) || (FLYING_FLEETS >= MAX_FLEETS) -->
