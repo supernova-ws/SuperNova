@@ -16,44 +16,16 @@
                                   ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 */
 
-*, td, th, textarea, body, table
+*
 {
   font-family : Tahoma, sans-serif;
   font-size : 11px;
 }
 
-img
-{
-  border               : 0px;
-}
-
-p table
-{
-  border               : 0px;
-}
-
-p td
-{
-  text-align           : center;
-  font-size            : 11px;
-  font-family          : Tahoma,sans-serif;
-}
-
-table table
-{
-  border               : 0px;
-}
-
-table table td
-{
-  font-size            : 11px;
-  font-family          : Tahoma,sans-serif;
-}
-
 body
 {
   color                : #E6EBFB;
-  margin-top           : 1px;
+  margin-top           : 5px;
   margin-left          : 1px;
   background           : #132544;
   background-image     : url(img/background.jpg);
@@ -68,31 +40,23 @@ body
   scrollbar-3dlight-color: #465673;
   scrollbar-darkshadow-color: #344566;
   scrollbar-shadow-color: #465673;
-  font-size            : 11px;
-  font-family          : Tahoma,sans-serif;
 }
 
-body form table th table input
+img
 {
-  width: 60px;
+  border               : 0px;
 }
 
-td.a, td.b, td.c, td.f, td.g, td.h,
-td.i, td.j, td.k, td.l, td.m, td.n,
-td.o, td.q, td.r, td.v, th, table.s th img,
-input, select, textarea,
-.style td, p td, table.s
+th, td, input, select, textarea
 {
+  color                : #E6EBFB;
   border               : 1px #415680 solid;
-  font-size            : 11px;
-  font-family          : Tahoma,sans-serif;
+  background-color     : #344566;
 }
 
-th, td.a, td.b, td.c, td.f, input, select, td.g,
-td.h, td.i, td.j, td.k, td.m, td.o, td.q, td.r,
-td.v, td.s, .style td, p td
+textarea
 {
-  background-color     : #344566;
+  width                : 100%;
 }
 
 th
@@ -102,164 +66,39 @@ th
   padding-right        : 3px;
 }
 
-td.a
-{
-  height               : 39px;
-  text-align           : center;
-}
-
-td.b
-{
-  padding              : 3px;
-}
-
 td.c
 {
   font-weight          : bold;
-  color                : #E6EBFB;
   padding-left         : 3px;
   background-image     : url(img/bg1.gif);
 }
 
-td.f, input, select, textarea
-{
-  color                : #E6EBFB;
-  background-color     : #344566;
-}
-
-textarea
-{
-  width                : 100%;
-}
-
-td.k input
-{
-  text-align           : left;
-}
-
-td.g
-{
-  font-weight          : bold;
-  text-align           : right;
-  color                : #E6EBFB;
-}
-
-td.h
-{
-  text-align           : center;
-  color                : #E6EBFB;
-}
-
-td.i
-{
-  text-align           : center;
-  color                : #E6EBFB;
-}
-
-td.j
-{
-  text-align           : center;
-  color                : #E6EBFB;
-}
-
-td.k, td.k input
-{
-  text-align           : center;
-  color                : #E6EBFB;
-}
-
 td.l
 {
-  background-color     : #344566;
-  color                : #E6EBFB;
   vertical-align       : top;
   padding              : 3px;
   background-image     : url(img/bg2.gif);
 }
 
-td.m
-{
-  font-weight          : bold;
-  text-align           : right;
-  width                : 86px;
-  color                : #E6EBFB;
-}
-
-td.n
-{
-  font-weight          : bold;
-  text-align           : right;
-  width                : 89px;
-  text-align           : center;
-  color                : #E6EBFB;
-}
-
-td.o
-{
-  text-align           : center;
-  color                : #E6EBFB;
-}
-
-td.q
-{
-  font-weight          : bold;
-  font-size            : 11px;
-  font-family          : Tahoma,sans-serif;
-  text-align           : center;
-  vertical-align       : middle;
-  color                : #E6EBFB;
-}
-
-td.r
-{
-  text-align           : right;
-  color                : #E6EBFB;
-}
-
-td.v
-{
-  font-weight          : bold;
-  text-align           : right;
-  color                : #f7f7f7;
-}
-
-td.s
-{
-  color                : #E6EBFB;
-}
-
-table.s th
+table table
 {
   border               : 0px;
 }
 
-table.s th img
+body form table th table input
 {
-  width                : 89px;
-  height               : 89px;
+  width: 60px;
 }
 
 div.z
 {
   font-weight          : bold;
-  color                : #E6EBFB;
 }
 
 a
 {
-  color                : #E6EBFB;
   text-decoration      : none;
   font-weight          : bold;
-}
-
-a.s
-{
-  color                : #E6EBFB;
-}
-
-a.t
-{
-  color                : #E6EBFB;
 }
 
 a:hover
@@ -270,99 +109,36 @@ a:hover
 
 .style td
 {
-  color                : #E6EBFB;
   border-top           : 0px;
-  font-size            : 11px;
-  font-family          : Tahoma,sans-serif;
 }
 
 .style div a
 {
-/*  height               : 100%;
-  width                : 100%;*/
   color                : #f2f2f2;
-  font-size            : 11px;
-  font-family          : Tahoma,sans-serif;
 }
 
 .style div a:link
 {
-/*  height               : 100%;
-  width                : 100%;*/
   color                : #f2f2f2;
-  font-size            : 11px;
-  font-family          : Tahoma,sans-serif;
 }
 
 .style div a:visited
 {
-/*  height               : 100%;
-  width                : 100%;*/
   color                : #f2f2f2;
-  font-size            : 11px;
-  font-family          : Tahoma,sans-serif;
 }
 
 .style div a:hover
 {
   background-color     : #415680;
-/*  height               : 100%;
-  width                : 100%;*/
   text-decoration      : none;
-  font-size            : 11px;
-  font-family          : Tahoma,sans-serif;
-  color                : #E6EBFB;
-}
-
-.style
-{
-  margin-top           : 15px;
 }
 
 h1
 {
   font-size            : 200%;
-  font-family          : Tahoma,sans-serif;
   border-bottom        : 0px #344566 solid;
 
   margin-top: 16px;
-}
-
-.allymember {
-  color: lime;
-}
-
-.myplanet {
-  color: red;
-}
-
-.noob {
-  color: #a0ffa0;
-}
-
-.strong {
-  color: #ffa0a0;
-}
-
-.vacation {
-  color: skyblue;
-}
-
-.inactive {
-  color: CCCCCC;
-}
-
-.longinactive {
-  color: 999999;
-}
-
-.banned {
-  text-decoration: line-through;
-}
-
-.admin {
-  text-decoration: blink;
-  color: lime;
 }
 
 .hint {

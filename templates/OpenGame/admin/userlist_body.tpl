@@ -17,6 +17,6 @@
 </tr>
 {adm_ul_table}
 <tr>
-<th class="b" colspan="9">{adm_ul_count}{adm_ul_playe}</th>
+<th colspan="9">{adm_ul_count}{adm_ul_playe}</th>
 </tr>
 </table>

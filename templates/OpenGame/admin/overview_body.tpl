@@ -17,6 +17,6 @@
 </tr>
 	{adm_ov_data_table}
 <tr>
-	<th class="b" colspan="6">{adm_ov_count}: {adm_ov_data_count}</th>
+	<th colspan="6">{adm_ov_count}: {adm_ov_data_count}</th>
 </tr>
 </table>

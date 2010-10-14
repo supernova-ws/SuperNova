@@ -1,6 +1,6 @@
 <br>
 <table border="0" cellpadding="0" cellspacing="1" width="750" align=center><tbody>
-  <tr height="20" valign="left">
+  <tr valign="left">
     <td class="c" colspan="{mount}">{L_imp_overview}</td>
   </tr>
 

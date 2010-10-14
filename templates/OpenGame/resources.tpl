@@ -68,7 +68,7 @@ function res_set_all(obj)
         </th>
       </tr>
     <!-- END production -->
-    <tr><td class="k" colspan="6"><input value="{L_res_calculate}" type="submit"></td></tr>
+    <tr><th class="c" colspan="6"><input value="{L_res_calculate}" type="submit"></th></tr>
   </tbody></table>
 </form>
 
