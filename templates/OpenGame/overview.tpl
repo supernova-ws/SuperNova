@@ -175,7 +175,7 @@
       <!-- ELSEIF fleets.MISSION == 10 -->
         <!-- DEFINE $OV_FLEET_STYLE = 'missile' -->
       <!-- ELSEIF fleets.MISSION == 15 -->
-        <!-- DEFINE $OV_FLEET_STYLE = 'transport' -->
+        <!-- DEFINE $OV_FLEET_STYLE = 'expedition' -->
       <!-- ENDIF -->
 
       <tr class="{$OV_FLEET_ACTION} {$OV_FLEET_PREFIX}{$OV_FLEET_STYLE}">
@@ -207,7 +207,7 @@
         <!-- ENDIF -->
         <th>
           {fleets.MISSION_NAME}<br>
-          <!-- IF fleets.OV_LABEL == 0 -->{L_ov_fleet_arrive}<!-- ELSEIF fleets.OV_LABEL == 1 -->{fleets.MISSION_NAME} - {L_ov_fleet_hold}<!-- ELSEIF fleets.OV_LABEL == 2 -->{L_ov_fleet_return}<!-- ELSEIF fleets.OV_LABEL == 3 -->{L_ov_fleet_rocket}<!-- ENDIF -->
+          <div class="z"><!-- IF fleets.OV_LABEL == 0 -->{L_ov_fleet_arrive}<!-- ELSEIF fleets.OV_LABEL == 1 -->{fleets.MISSION_NAME} - {L_ov_fleet_hold}<!-- ELSEIF fleets.OV_LABEL == 2 -->{L_ov_fleet_return}<!-- ELSEIF fleets.OV_LABEL == 3 -->{L_ov_fleet_rocket}<!-- ENDIF --></div>
         </th>
       </tr>
 
