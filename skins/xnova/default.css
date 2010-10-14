@@ -61,11 +61,11 @@
 }
 
 *.ownmissile {
-  color: orange;
+  color: sienna;
 }
 
 *.ownespionage {
-  color: lightorange;
+  color: orange;
 }
 
 *.owntransport {
