@@ -22,16 +22,6 @@
   font-size : 11px;
 }
 
-img
-{
-  border               : 0px;
-}
-
-table table
-{
-  border               : 0px;
-}
-
 body
 {
   color                : #E6EBFB;
@@ -52,21 +42,31 @@ body
   scrollbar-shadow-color: #465673;
 }
 
+img
+{
+  border               : 0px;
+}
+
+table table
+{
+  border               : 0px;
+}
+
 body form table th table input
 {
   width: 60px;
 }
 
-th, td.c, td.l,
-input, select, textarea, .style td
+th, td, input, select, textarea
 {
+  color                : #E6EBFB;
   border               : 1px #415680 solid;
+  background-color     : #344566;
 }
 
-th, td.c,
-input, select, .style td
+textarea
 {
-  background-color     : #344566;
+  width                : 100%;
 }
 
 th
@@ -83,20 +83,8 @@ td.c
   background-image     : url(img/bg1.gif);
 }
 
-input, select, textarea
-{
-  background-color     : #344566;
-  color                : #E6EBFB;
-}
-
-textarea
-{
-  width                : 100%;
-}
-
 td.l
 {
-  background-color     : #344566;
   vertical-align       : top;
   padding              : 3px;
   background-image     : url(img/bg2.gif);
