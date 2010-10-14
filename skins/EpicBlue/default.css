@@ -45,82 +45,53 @@
 }
 
 *.ownattack {
-  color: lime;
-}
-
-.flight .ownattack a {
-  color: #E6EBFB;
-}
-
-*.owncolony {
-  color: lime;
-}
-
-.flight .owncolony a {
-  color: #E6EBFB;
-}
-
-*.owndeploy {
-  color: lime;
-}
-
-.flight .owndeploy a {
-  color: #E6EBFB;
-}
-
-*.owndestroy {
-  color: gold;
-}
-
-.flight .owndestroy a {
-  color: #E6EBFB;
-}
-
-*.ownespionage {
-  color: orange;
-}
-
-.flight .ownespionage a {
-  color: #E6EBFB;
+  color: yellow;
 }
 
 *.ownfederation {
   color: 33CC00;
 }
 
-.flight .ownfederation a {
-  color: #E6EBFB;
-}
-
-*.ownharvest {
-  color: lime;
-}
-
-.flight .ownharvest a {
-  color: #E6EBFB;
+*.owndestroy {
+  color: gold;
 }
 
 *.ownhold {
   color: #80a0C0;
 }
 
-.flight .ownhold a {
-  color: #E6EBFB;
-}
-
 *.ownmissile {
   color: orange;
 }
 
-.flight .ownmissile a {
-  color: #E6EBFB;
+*.ownespionage {
+  color: lightorange;
 }
 
 *.owntransport {
   color: lime;
 }
 
-.flight .owntransport a {
+*.owndeploy {
+  color: lightgreen;
+}
+
+*.ownharvest {
+  color: green;
+}
+
+*.owncolony {
+  color: blue;
+}
+
+*.ownexpedition {
+  color: lightblue;
+}
+
+.flight .ownattack a, .flight .owncolony a, .flight .owndeploy a, .flight .owndestroy a,
+.flight .ownespionage a, .flight .ownfederation a, .flight .ownharvest a, .flight .ownhold a,
+.flight .ownmissile a, .flight .owntransport a, .flight .ownexpedition a
+{
   color: #E6EBFB;
 }
 
