@@ -43,7 +43,7 @@ th, td
   background-color: #000000;
 }
 
-input, select, textarea
+input, select, textarea, div.z
 {
   color          : #FFFFFF;
   background-color: #1c1c1c;
