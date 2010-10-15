@@ -115,6 +115,14 @@ else
 {
   $template = gettemplate('simulator', true);
 
+  foreach(array(109, 110, 111) as $tech_id)
+  {
+    if(!$sym_attacker[1][$tech_id])
+    {
+      $sym_attacker[1][$tech_id] = $user[$sn_data[$tech_id]['name']];
+    }
+  }
+
   foreach(array_merge(array(109, 110, 111), $sn_groups['combat'], $sn_groups['resources_loot']) as $unit_id)
   {
     $tab++;
