@@ -191,7 +191,7 @@
 
   if ($aks AND $target_mission==MT_AKS){
     if ($fleet['start_time']>$aks['ankunft'])
-      message ($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(DATE_TIME,$fleet['start_time']) . " AKS arrival: " .date(DATE_TIME,$aks['ankunft']), $lang['fl_error']);
+      message ($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME,$fleet['start_time']) . " AKS arrival: " .date(FMT_DATE_TIME,$aks['ankunft']), $lang['fl_error']);
     $fleet['start_time'] = $aks['ankunft'];
     $fleet['end_time'] = $aks['ankunft'] + $duration;
   };
@@ -274,8 +274,8 @@
   $parse["speed"] = pretty_number($fleet_speed);
   $parse["deute_need"] = pretty_number($consumption);
   $parse["from"] = $planetrow['galaxy'].":".$planetrow['system'].":".$planetrow['planet'];
-  $parse["time_go"] = date(DATE_TIME, $fleet['start_time']);
-  $parse["time_back"] = date(DATE_TIME, $fleet['end_time']);
+  $parse["time_go"] = date(FMT_DATE_TIME, $fleet['start_time']);
+  $parse["time_back"] = date(FMT_DATE_TIME, $fleet['end_time']);
 
   $parse_temp['DisplayControls'] = 'display: none;';
   $ShipList = "";

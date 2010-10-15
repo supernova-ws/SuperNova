@@ -259,7 +259,7 @@ check_urlaubmodus ($user);
             if($MessCategory != -1){
               $page .= "<th><input name=\"delmes". $CurMess['message_id'] ."\" type=\"checkbox\"></th>";
             }
-            $page .= "<th>". date(DATE_TIME, $CurMess['message_time']) ."</th>";
+            $page .= "<th>". date(FMT_DATE_TIME, $CurMess['message_time']) ."</th>";
             $page .= "<th>". stripslashes( $CurMess[$fieldFrom] ) ."</th>";
             $page .= "<th>". stripslashes( $CurMess['message_subject'] ) ." ";
             if ($CurMess['message_type'] == 1) {

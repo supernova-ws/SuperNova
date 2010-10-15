@@ -21,7 +21,6 @@ else
 define('VERSION','v. 0000');
 
 define('INSIDE'  , true);
-define('INIT'    , true);
 define('INSTALL' , false);
 
 $user          = array();
@@ -67,6 +66,32 @@ if($config->debug)
   }
 }
 
+$update_file = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.{$phpEx}";
+$flag_file   = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.last";
+
+if(file_exists($update_file))
+{
+  if(filemtime($update_file) != filemtime($flag_file))
+  {
+    if(!$config->db_loadItem('var_updating_db'))
+    {
+      $config->db_saveItem('var_updating_db', true);
+
+      require_once($update_file);
+      sys_refresh_tablelist();
+
+      if(!file_exists($flag_file))
+      {
+        fclose(fopen($flag_file, 'w'));
+      }
+
+      touch($flag_file, filemtime($update_file));
+
+      $config->db_saveItem('var_updating_db', false);
+    }
+  }
+}
+
 // Initializing global 'cacher' object
 $cache = new classCache($config->db_prefix);
 if(!isset($cache->tables))
@@ -79,6 +104,9 @@ define('TEMPLATE_DIR'     , 'templates/');
 define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_default_template : 'OpenGame');
 define('DEFAULT_SKINPATH' , $config->game_default_skin ? $config->game_default_skin : 'skins/EpicBlue/');
 define('DEFAULT_LANG'     , $config->game_default_language ? $config->game_default_language : 'ru');
+define('FMT_DATE'         , $config->int_format_date ? $config->int_format_date : 'd.m.Y');
+define('FMT_TIME'         , $config->int_format_time ? $config->int_format_time : 'h:i:s');
+define('FMT_DATE_TIME'    , FMT_DATE . ' ' . FMT_TIME);
 
 $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 
@@ -118,5 +146,7 @@ function sys_refresh_tablelist()
   }
   $cache->tables = $tl;
 }
+
+define('INIT', true);
 
 ?>

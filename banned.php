@@ -30,8 +30,8 @@ while($u = mysql_fetch_array($query)){
   $parse['banned'] .=
     "<tr align=center><td class=b><b>".$u[1]."</td></b>".
     "<td class=b><b>".$u[2]."</b></td>".
-    "<td class=b><b>".date($config->game_date_withTime,$u[4])."</b></td>".
-    "<td class=b><b>".date($config->game_date_withTime,$u[5])."</b></td>".
+    "<td class=b><b>".date(FMT_DATE_TIME,$u[4])."</b></td>".
+    "<td class=b><b>".date(FMT_DATE_TIME,$u[5])."</b></td>".
     "<td class=b><b>".$u[6]."</b></td></tr>";
   $i++;
 }

@@ -160,7 +160,7 @@ check_urlaubmodus ($user);
     while ($StatRow = mysql_fetch_assoc($query)) {
       $UsrRow                   = doquery("SELECT * FROM {{table}} WHERE `id` = '". $StatRow['id_owner'] ."';", 'users',true);
 
-      $parse['stat_date']       = date(DATE_TIME, $StatRow['stat_date']);
+      $parse['stat_date']       = date(FMT_DATE_TIME, $StatRow['stat_date']);
       $parse['player_rank']     = ($StatRow['rownum'] + $start1);
 
       $parse['player_rank']     = $StatRow[ $Rank ];

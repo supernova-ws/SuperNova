@@ -62,7 +62,9 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
     $parse['user_rank']       = $rank['total_rank'];
 
     if ($config->advGoogleLeftMenuIsOn)
-      $parse['GoogleCode'] = $config->advGoogleLeftMenuCode;
+    {
+      $parse['ADV_LEFT_BOTTOM'] = $config->advGoogleLeftMenuCode;
+    }
 
     if ($user['authlevel'] > 0) {
       $parse['ADMIN_LINK']  = "
@@ -129,11 +131,8 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   displayP(StdHeader ($title, $metatags, $AdminPage));
 
   if ($isDisplayMenu && $IsUserChecked){ //
-    echo '<div style="float:left; width: 190px; text-align: center;">';
     displayP(ShowLeftMenu ( $AdminPage ));
-    echo $DisplayPage;
-    echo '</div>';
-    echo '<div id="page_body" style="margin-left: 190px; width: auto;">';
+    echo '<div id="page_body">';
   }
   else
   {
@@ -155,18 +154,16 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   displayP($page);
 
   // Affichage du Debug si necessaire
-  if ($user['authlevel'] == 3)
+  if ($user['authlevel'] == 3 && $config->debug)
   {
-    if ($config->debug)
-    {
-      $debug->echo_log();
-    }
+    $debug->echo_log();
   }
+  echo '</center></div>';
 
   $std_footer = StdFooter();
   displayP($std_footer);
 
-  sys_logHit();
+  sys_log_hit();
 
   if (isset($link))
   {
@@ -189,7 +186,7 @@ function StdHeader ($title = '', $metatags = '', $Level = 0) {
   $parse['dpath']  = $dpath;
   $parse['title']  = $title;
   $parse['-meta-'] = ($metatags) ? $metatags : "";
-  $parse['-body-'] = "<body class=\"style\">"; //  class=\"style\" topmargin=\"0\" leftmargin=\"0\" marginwidth=\"0\" marginheight=\"0\">";
+//  $parse['-body-'] = ''; //  class=\"style\" topmargin=\"0\" leftmargin=\"0\" marginwidth=\"0\" marginheight=\"0\">";
   if ($Level>0){
     $parse['-path_prefix-'] = "../";
   };

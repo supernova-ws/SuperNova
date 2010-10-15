@@ -25,7 +25,7 @@ if(!$config->db_loadItem('var_scheduler_active'))
     {
       $msg = 'scheduler';
     };
-    $msg .= '. Config->stats_lastUpdated = ' . date(DATE_TIME, $config->stats_lastUpdated) . ', nextStatUpdate = ' . date(DATE_TIME, $nextStatUpdate);
+    $msg .= '. Config->stats_lastUpdated = ' . date(FMT_DATE_TIME, $config->stats_lastUpdated) . ', nextStatUpdate = ' . date(FMT_DATE_TIME, $nextStatUpdate);
     $config->db_saveItem('stats_lastUpdated', $nextStatUpdate);
     $debug->warning("Running stat updates: {$msg}", 'Stat update', 100);
 

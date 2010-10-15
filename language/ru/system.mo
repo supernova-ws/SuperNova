@@ -119,7 +119,7 @@ $lang['sys_hrs_short'] = "ч";
 $lang['sys_min_short'] = "м";
 $lang['sys_sec_short'] = "с";
 
-$lang['sys_ask_admin'] = ' - Отдельные вопросы вы можете задать по адресу';
+$lang['sys_ask_admin'] = 'Вопросы и предложения направлять по адресу';
 $lang['TranslationBy'] = '';
 
 $lang['sys_wait'] = 'Запрос выполняется. Пожалуйста, подождите.';
@@ -226,7 +226,7 @@ $lang['sys_server'] 			= 'Сервер';
 
 // Resource page
 $lang['res_planet_production'] = 'Производство ресурсов на планете';
-$lang['res_basic_income'] = 'Естесственное производство';
+$lang['res_basic_income'] = 'Естественное производство';
 $lang['res_total'] = 'ВСЕГО';
 $lang['res_calculate'] = 'Рассчитать';
 $lang['res_daily'] = 'За день';

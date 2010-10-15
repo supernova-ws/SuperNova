@@ -81,6 +81,4 @@ define('PT_PLANET', 1);
 define('PT_DEBRIS', 2);
 define('PT_MOON',   3);
 
-define('DATE_TIME', 'd.m.Y H:i:s');
-
 ?>

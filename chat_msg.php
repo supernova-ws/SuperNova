@@ -86,7 +86,7 @@ while($v = mysql_fetch_object($query)){
     $nick = htmlentities($v->user, ENT_QUOTES, cp1251);
   }
   $msg = htmlentities($v->message, ENT_QUOTES, cp1251);
-  $msgtimestamp = date(DATE_TIME, htmlentities($v->timestamp, ENT_QUOTES, cp1251));
+  $msgtimestamp = date(FMT_DATE_TIME, htmlentities($v->timestamp, ENT_QUOTES, cp1251));
 
   $msg = CHT_messageParse($msg);
 
@@ -95,6 +95,6 @@ while($v = mysql_fetch_object($query)){
   $buff = $msg . $buff;
 }
 print $buff;
-sys_logHit();
+sys_log_hit();
 
 ?>
