@@ -36,18 +36,42 @@ var speed_factor   = {speed_factor};
   </tr>
 
   <!-- BEGIN fleets -->
-    <tr height=20>
+    <!-- IF fleets.MISSION == 1 -->
+      <!-- DEFINE $OV_FLEET_STYLE = 'attack' -->
+    <!-- ELSEIF fleets.MISSION ==  2 -->
+      <!-- DEFINE $OV_FLEET_STYLE = 'federation' -->
+    <!-- ELSEIF fleets.MISSION ==  3 -->
+      <!-- DEFINE $OV_FLEET_STYLE = 'transport' -->
+    <!-- ELSEIF fleets.MISSION ==  4 -->
+      <!-- DEFINE $OV_FLEET_STYLE = 'deploy' -->
+    <!-- ELSEIF fleets.MISSION ==  5 -->
+      <!-- DEFINE $OV_FLEET_STYLE = 'hold' -->
+    <!-- ELSEIF fleets.MISSION ==  6 -->
+      <!-- DEFINE $OV_FLEET_STYLE = 'espionage' -->
+    <!-- ELSEIF fleets.MISSION ==  7 -->
+      <!-- DEFINE $OV_FLEET_STYLE = 'colony' -->
+    <!-- ELSEIF fleets.MISSION ==  8 -->
+      <!-- DEFINE $OV_FLEET_STYLE = 'harvest' -->
+    <!-- ELSEIF fleets.MISSION ==  9 -->
+      <!-- DEFINE $OV_FLEET_STYLE = 'destroy' -->
+    <!-- ELSEIF fleets.MISSION == 10 -->
+      <!-- DEFINE $OV_FLEET_STYLE = 'missile' -->
+    <!-- ELSEIF fleets.MISSION == 15 -->
+      <!-- DEFINE $OV_FLEET_STYLE = 'expedition' -->
+    <!-- ENDIF -->
+
+    <tr height=20 class="own{$OV_FLEET_STYLE}">
       <th>{fleets.NUMBER}</th>
-      <th><a>{fleets.MISSION_NAME}</a><br>
-        <span title="<!-- IF fleets.MESSAGE -->{L_fl_back_to_ttl}">{L_fl_back_to}<!-- ELSE -->{L_fl_get_to_ttl}">{L_fl_get_to}<!-- ENDIF --></span>
+      <th>{fleets.MISSION_NAME}<br>
+        <div class="z"><!-- IF fleets.MESSAGE -->{L_ov_fleet_return}<!-- ELSE -->{L_ov_fleet_arrive}<!-- ENDIF --></div>
       </th>
       <th style="cursor: pointer;" onmouseover='fleet_dialog_show(this, {fleets.ID})' onmouseout='popup_hide()'>{fleets.AMOUNT}</th>
-      <th>{fleets.END_COORDS} {fleets.END_TYPE_TEXT_SH}</th>
-      <th><!-- IF fleets.MESSAGE == 0 --><font color=lime><span id="fleet_timer_end{fleets.ID}"></span></font><br>{fleets.END_TIME_TEXT}<!-- ELSE -->-<!-- ENDIF --></th>
-      <th>{fleets.START_COORDS} {fleets.START_TYPE_TEXT_SH}</th>
+      <th>{fleets.END_URL} {fleets.END_TYPE_TEXT_SH}</th>
+      <th><!-- IF fleets.MESSAGE == 0 --><div class="z" id="fleet_timer_end{fleets.ID}"></div>{fleets.END_TIME_TEXT}<!-- ELSE -->-<!-- ENDIF --></th>
+      <th>{fleets.START_URL} {fleets.START_TYPE_TEXT_SH}</th>
       <th>
         <!-- IF ((fleets.MISSION == 7 || fleets.MISSION == 4) && fleets.MESSAGE == 1) || (fleets.MISSION != 7 && fleets.MISSION != 4) -->
-        <font color=lime><span id="fleet_timer_start{fleets.ID}"></span></font><br>{fleets.START_TIME_TEXT}
+        <div class="z" id="fleet_timer_start{fleets.ID}"></div>{fleets.START_TIME_TEXT}
         <!-- ELSE -->-<!-- ENDIF -->
       </th>
       <th>

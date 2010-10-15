@@ -5,6 +5,8 @@
 // @version 1.0
 // @copyright 2008 by Chlorel for XNova
 
+includeLang('overview');
+
 if (!$planetrow)
 {
   $parse_err['title'] = $lang['fl_error'];
