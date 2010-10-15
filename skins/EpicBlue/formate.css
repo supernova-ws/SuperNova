@@ -26,7 +26,9 @@ body
 {
   color                : #E6EBFB;
   margin-top           : 5px;
-  margin-left          : 1px;
+  margin-left          : 0px;
+  height               : 100%;
+  min-height            : 100%;
   background           : #132544;
   background-image     : url(img/background.jpg);
   background-attachment: fixed;
@@ -152,11 +154,36 @@ h1
 .ov_user_total {color: #FF0000}
 .ov_user_rank {color: #FFFF00}
 
+#body_container
+{
+  height: 100%;
+  min-height: 100%;
+  position: realtive;
+}
+
+#page_footer
+{
+  float: right;
+  margin: 5px;
+}
+
+#page_body
+{
+  width: 100%;
+  text-align: center;
+  text-align: -moz-center;
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #left_menu {
   font-weight: bold;
-  width: 130px;
-  margin-left:5px;
-  margin-right:5px;
+  width: 135px;
+  padding-left:5px;
+  padding-right:5px;
+  text-align: center;
+  float: left;
 }
 
 #left_menu #server_name {

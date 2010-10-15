@@ -63,9 +63,9 @@ while ($u = mysql_fetch_assoc ($query) ) {
   $Bloc['adm_ov_altpm']       = $lang['adm_ov_altpm'];
   $Bloc['adm_ov_wrtpm']       = $lang['adm_ov_wrtpm'];
   $Bloc['adm_ul_data_adip']   = "<font color=\"".$Color."\">". $u['user_lastip'] ."</font>";
-  $Bloc['adm_ul_data_regd']   = date ( $config->game_date_withTime, $u['register_time'] );
-  $Bloc['adm_ul_data_lconn']  = date ( $config->game_date_withTime, $u['onlinetime'] );
-  $Bloc['adm_ul_data_banna']  = ( $u['bana'] == 1 ) ? "<span title=\"". date ( $config->game_date_withTime, $u['banaday']) ."\">". $lang['adm_ul_yes'] ."</span>" : $lang['adm_ul_no'];
+  $Bloc['adm_ul_data_regd']   = date ( FMT_DATE_TIME, $u['register_time'] );
+  $Bloc['adm_ul_data_lconn']  = date ( FMT_DATE_TIME, $u['onlinetime'] );
+  $Bloc['adm_ul_data_banna']  = ( $u['bana'] == 1 ) ? "<span title=\"". date ( FMT_DATE_TIME, $u['banaday']) ."\">". $lang['adm_ul_yes'] ."</span>" : $lang['adm_ul_no'];
   $Bloc['adm_ul_ban_mode']    = ( $u['bana'] == 1 ) ? 'unbanit' : 'banit' ;
   // $Bloc['adm_ul_data_actio']  = "<a href=\"userlist.php?cmd=dele&user=".$u['id']."\"><img src=\"../images/r1.png\"></a>"; // Lien vers actions 'effacer'
   $PrevIP                     = $u['user_lastip'];

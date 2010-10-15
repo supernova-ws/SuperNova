@@ -16,16 +16,15 @@ $ugamela_root_path = './../';
 include("{$ugamela_root_path}extension.inc");
 include("{$ugamela_root_path}common.{$phpEx}");
 
-includeLang('admin');
-includeLang('admin/settings');
-
 if ($user['authlevel'] < 3)
 {
   message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
   die();
 }
 
-$template                         = gettemplate('admin/admin_settings', true);
+includeLang('admin');
+
+$template = gettemplate('admin/settings', true);
 
 if ($_POST['save'])
 {

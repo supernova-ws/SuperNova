@@ -604,11 +604,18 @@ function PrintPlanetCoords(&$array){
 // ----------------------------------------------------------------------------------------------------------------
 // Logs page hit to DB
 //
-function sys_logHit(){
+function sys_log_hit(){
+  global $config;
+  if(!$config->game_counter)
+  {
+    return;
+  }
+
   global $time_now, $user, $is_watching;
 
   $is_watching = true;
-  doquery("INSERT INTO {{counter}} (`time`, `page`, `url`, `user_id`, `ip`) VALUES ('{$time_now}', '{$_SERVER['PHP_SELF']}', '{$_SERVER['REQUEST_URI']}', '{$user['id']}', '{$_SERVER['REMOTE_ADDR']}');");
+  $ip = sys_get_user_ip;
+  doquery("INSERT INTO {{counter}} (`time`, `page`, `url`, `user_id`, `ip`, `proxy`) VALUES ('{$time_now}', '{$_SERVER['PHP_SELF']}', '{$_SERVER['REQUEST_URI']}', '{$user['id']}', '{$ip['client']}', '{$ip['proxy']}');");
   $is_watching = false;
 }
 
@@ -643,6 +650,35 @@ function check_urlaubmodus_time () {
       doquery("UPDATE {{users}} SET `urlaubs_modus` = '0', `urlaubs_modus_time` = '0' WHERE `id` = '{$user['id']}' LIMIT 1;");
     }
   }
+}
+
+function sys_get_user_ip()
+{
+  if ($_SERVER["HTTP_X_FORWARDED_FOR"])
+  {
+    if ($_SERVER["HTTP_CLIENT_IP"])
+    {
+      $ip['proxy'] = $_SERVER["HTTP_CLIENT_IP"];
+    }
+    else
+    {
+      $ip['proxy'] = $_SERVER["REMOTE_ADDR"];
+    }
+    $ip['client'] = mysql_real_escape_string($_SERVER["HTTP_X_FORWARDED_FOR"]);
+  }
+  else
+  {
+    if ($_SERVER["HTTP_CLIENT_IP"])
+    {
+      $ip['client'] = $_SERVER["HTTP_CLIENT_IP"];
+    }
+    else
+    {
+      $ip['client'] = $_SERVER["REMOTE_ADDR"];
+    }
+  }
+
+  return array_map('mysql_real_escape_string', $ip);;
 }
 
 ?>

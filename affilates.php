@@ -36,7 +36,7 @@ $affilates = doquery("SELECT r.*, u.username, u.register_time FROM {{referrals}}
 while ($affilate = mysql_fetch_array($affilates)) {
   $gained += floor($affilate['dark_matter']/10);
   $template->assign_block_vars('affilates', array(
-    'REGISTERED'  => date($config->game_date_withTime,$affilate['register_time']),
+    'REGISTERED'  => date(FMT_DATE_TIME, $affilate['register_time']),
     'USERNAME'    => $affilate['username'],
     'DARK_MATTER' => $affilate['dark_matter'],
     'GAINED'      => floor($affilate['dark_matter']/$config->rpg_bonus_divisor),

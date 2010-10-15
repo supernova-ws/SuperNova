@@ -167,4 +167,62 @@ $lang['adm_tools']   = "Утилиты";
 $lang['adm_tools_reloadConfig'] = 'Пересчитать конфигурацию';
 
 $lang['adm_reason']  = "Причина";
+
+// Server settings page
+$lang = array_merge($lang, array(
+  'adm_opt_title'             => "Настройки Вселенной",
+  'adm_opt_game_settings'     => "Параметры Вселенной",
+  'adm_opt_game_name'         => "Название Вселенной",
+  'adm_opt_game_gspeed'       => "Скорость игры",
+  'adm_opt_game_fspeed'       => "Скорость флота",
+  'adm_opt_game_pspeed'       => "Скорость добычи ресурсов",
+  
+  'adm_opt_speed'             => "Скорость",
+  'adm_opt_game_gspeed'       => "Игры",
+  'adm_opt_game_fspeed'       => "Флота",
+  'adm_opt_game_pspeed'       => "Добычи ресурсов",
+
+  'adm_opt_main_not_counted'  => "(не считая главную планету)",
+  'adm_opt_game_speed_normal' => "(1&nbsp;-&nbsp;нормальная)",
+  'adm_opt_game_forum'        => "Адрес форума",
+  'adm_opt_game_copyrigh'     => "Copyright",
+  'adm_opt_game_online'       => "Отключить игру. Пользователи увидят следующее сообщение:",
+  'adm_opt_game_offreaso'     => "Сообщение",
+  'adm_opt_plan_settings'     => "Параметры планет",
+  'adm_opt_plan_initial'      => "Размер главной планеты",
+  'adm_opt_plan_base_inc'     => "Базовая добыча",
+  'adm_opt_game_debugmod'     => "Включить режим отладки",
+  'adm_opt_game_oth_info'     => "Прочие параметры",
+  'adm_opt_int_news_count'    => "Количество новостей",
+  'adm_opt_int_page_imperor'  => "на странице &quot;Император&quot;",
+  'adm_opt_game_zero_dsiable' => "(0&nbsp;-&nbsp;отключить)",
+  'adm_opt_game_oth_adds'     => "Включить рекламный блок в левом меню. Код баннера:",
+  'adm_opt_game_oth_gala'     => "Галактика",
+  'adm_opt_game_oth_syst'     => "Система",
+  'adm_opt_game_oth_plan'     => "Планета",
+  'adm_opt_btn_save'          => "Сохранить",
+  'adm_opt_vacancy_mode'      => "Отключить режим отпуска",
+  'adm_opt_sectors'           => "секторов",
+  'adm_opt_per_hour'          => "в час",
+  'adm_opt_saved'             => "Настройки игры сохранены успешно",
+  'adm_opt_players_online'    => "Игроков на сервере",
+  'adm_opt_vacancy_mode_is'   => "Режим отпуска",
+  'adm_opt_maintenance'       => "Обслуживание и отладка",
+  'adm_opt_links'             => "Ссылки и баннеры",
+                                     
+  'adm_opt_universe_size'     => "Размер Вселенной",
+  'adm_opt_galaxies'          => "Галактик",
+  'adm_opt_systems'           => "Систем",
+  'adm_opt_planets'           => "Планет",
+  'adm_opt_build_on_research' => "Строить лабораторию во время исследования",
+  'adm_opt_game_rules'        => "Ссылка на правила",
+  'adm_opt_max_colonies'      => "Количество колоний",
+  'adm_opt_exchange'          => "Курс обмена ресурсов",
+  'adm_opt_game_mode'         => "Тип Вселенной",
+
+  'adm_opt_game_defaults'         => "Настройки игрока по умолчанию",
+  'adm_opt_game_default_language' => "Язык интерфейса",
+  'adm_opt_game_default_skin'     => "Оформление/Шкурка",
+  'adm_opt_game_default_template' => "Шаблон",
+));
 ?>

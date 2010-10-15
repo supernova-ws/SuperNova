@@ -35,7 +35,7 @@ function tpl_parse_planet($planet)
     'BUILDING'      => int_buildCounter($planet, 'building', $planet['id']),
     'BUILDING_TIP'  => $building_build_tip,
     'BUILDING_ID'   => $building_build[0],
-    'TECH'          => $planet['b_tech'] ? $lang['tech'][$planet['b_tech_id']] . ' ' . pretty_time($planet['b_tech'] - $time_now) : 0, //date($config->game_date_withTime, $planet['b_tech'])
+    'TECH'          => $planet['b_tech'] ? $lang['tech'][$planet['b_tech_id']] . ' ' . pretty_time($planet['b_tech'] - $time_now) : 0, //date(FMT_DATE_TIME, $planet['b_tech'])
     'HANGAR'        => $hangar_build_tip,
     'hangar_que'    => $hangar_que,
 

@@ -53,11 +53,16 @@ function CheckCookies ()
     }
 
     setcookie ($config->COOKIE_NAME, $NextCookie, $ExpireTime, "/", "", 0);
+
+    $ip = sys_get_user_ip();
+    $user_agent = mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']);
+
     doquery("UPDATE `{{users}}`
       SET
-        `onlinetime` = '{$time_now}',
-        `user_lastip` = '{$_SERVER['REMOTE_ADDR']}',
-        `user_agent` = '{$_SERVER['HTTP_USER_AGENT']}'
+        `onlinetime`  = '{$time_now}',
+        `user_lastip` = '{$ip['client']}',
+        `user_proxy`  = '{$ip['proxy']}',
+        `user_agent`  = '{$user_agent}'
       WHERE
         `id` = '{$user['id']}' LIMIT 1;");
   }

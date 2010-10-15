@@ -85,3 +85,9 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
 
 /* Coloring Slider Range */
 .ui-slider-range { background: #f6a828; }
+
+.table th, .table tr, .table td
+{
+  vertical-align: top;
+  text-align: left;
+}

@@ -493,6 +493,7 @@ class classConfig extends classPersistent
     'game_maxPlanet' => '15',
 
     'game_adminEmail' => 'root@localhost',    // Admin's email to show to users
+    'game_counter' => 1,  // Does built-in page hit counter is on?
 
     // Defaults
     'game_default_language' => 'ru',
@@ -504,7 +505,8 @@ class classConfig extends classPersistent
 
     'game_user_changename' => 0, // Is user allowed to change name after registration?
 
-    'game_date_withTime'   => 'd.m.Y h:i:s', // Date & time global format
+    'int_format_date'      => 'd.m.Y', // Date default format
+    'int_format_time'      => 'h:i:s', // Time default format
 
     'game_news_overview'   => 3,    // How much last news to show in Overview page
     'game_news_actual'     => 259200, // How long announcement would be marked as "New". In seconds. Default - 3 days
