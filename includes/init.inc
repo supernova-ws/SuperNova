@@ -51,7 +51,7 @@ while (($file = readdir($dir)) !== false)
 // Initializing global 'debug' object
 $debug = new debug();
 
-include_once("{$ugamela_root_path}config.{$phpEx}");
+require("{$ugamela_root_path}config.{$phpEx}");
 
 // Initializing global 'cacher' object
 $cache = new classCache($dbsettings['prefix']);
