@@ -56,7 +56,7 @@ if($detail){
     <td class=n>{$u['error_type']}</td>
     <td class=n>". date(FMT_DATE_TIME, $u['error_time']) ."</td>
     <td class=b>{$u['error_page']}</td>
-    <td class=n><a href=\"?delete=". $u['error_id'] ."\"><img src=\"../images/r1.png\"></a></td>
+    <td class=n><a href=\"?delete=". $u['error_id'] ."\"><img src=\"../design/images/r1.png\"></a></td>
     </tr>
     <tr><td colspan=\"6\" class=b>".  nl2br($u['error_text'])."</td></tr>";
   }

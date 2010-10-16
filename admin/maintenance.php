@@ -38,7 +38,7 @@ $(document).ready(function() {
 });
 </script>';
 
-AdminMessage ( $script . '<img src=./../images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title'] );
+AdminMessage ( $script . '<img src=../design/images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title'] );
 } else {
   AdminMessage( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
 }

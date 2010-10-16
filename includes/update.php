@@ -283,7 +283,10 @@ switch(intval($config->db_version))
     $new_version = 19;
 
   case 19:
+    upd_log_update();
     upd_check_key('int_format_time', 'H:i:s', true);
+    upd_check_key('int_banner_background', 'design/images/banner.png', true);
+    upd_check_key('int_userbar_background', 'design/images/userbar.png', true);
 
 };
 $msg .= "Upgrade complete.\r\n";

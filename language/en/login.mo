@@ -21,7 +21,7 @@ $lang['Register'] = 'Register';
 $lang['Login_Error'] = 'Error';
 $lang['PleaseWait'] = 'Please wait';
 
-$lang['Login_Ok'] = 'Login successful, <a href="./"><blink>redirection...</blink></a><br><center><img src="images/progressbar.gif"></center>';
+$lang['Login_Ok'] = 'Login successful, <a href="./"><blink>redirection...</blink></a><br><center><img src="design/images/progressbar.gif"></center>';
 $lang['Login_FailPassword'] = 'Wrong password !<br /><a href="login.php" target="_top">Back</a>';
 $lang['Login_FailUser'] = 'Username does not exsist<br><a href=login.php>Back</a>';
 

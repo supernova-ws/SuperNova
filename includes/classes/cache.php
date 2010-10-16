@@ -515,7 +515,7 @@ class classConfig extends classPersistent
 
     // Interface - UserBanner
     'int_banner_showInOverview'  => 1,
-    'int_banner_background'      => 'images/banner.png',
+    'int_banner_background'      => 'design/images/banner.png',
     'int_banner_URL'             => '/banner.php?type=banner',
     'int_banner_fontUniverse'    => 'cristal.ttf',
     'int_banner_fontRaids'       => 'klmnfp2005.ttf',
@@ -523,7 +523,7 @@ class classConfig extends classPersistent
 
     // Interface - UserBar
     'int_userbar_showInOverview' => 1,
-    'int_userbar_background'     => 'images/userbar.png',
+    'int_userbar_background'     => 'design/images/userbar.png',
     'int_userbar_URL'            => '/banner.php?type=userbar',
     'int_userbar_font'           => 'arialbd.ttf',
 

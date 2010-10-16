@@ -19,7 +19,7 @@ if ($IsUserChecked == false) {
   includeLang('login');
   header("Location: login.php");
 }
-
+pdump($config->int_banner_background);
 check_urlaubmodus ($user);
 
 includeLang('overview');

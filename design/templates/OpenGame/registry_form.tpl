@@ -1,5 +1,5 @@
 <style type="text/css"><!--
- @import url(./css/login.css);
+ @import url(./design/css/login.css);
 --></style>
 
 <div id="log_skipper"></div>

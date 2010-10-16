@@ -99,7 +99,7 @@ if(file_exists($update_file))
 }
 
 // Initializing constants
-define('TEMPLATE_DIR'     , 'templates/');
+define('TEMPLATE_DIR'     , 'design/templates/');
 define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_default_template : 'OpenGame');
 define('DEFAULT_SKINPATH' , $config->game_default_skin ? $config->game_default_skin : 'skins/EpicBlue/');
 define('DEFAULT_LANG'     , $config->game_default_language ? $config->game_default_language : 'ru');

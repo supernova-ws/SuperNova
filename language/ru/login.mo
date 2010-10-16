@@ -14,7 +14,7 @@ $lang['Login_Error'] = 'Ошибка';
 $lang['PleaseWait'] = 'Подождите';
 $lang['PasswordLost'] = 'Забыли пароль?';
 
-$lang['Login_Ok'] = 'Успешное подключение, <a href="./"><blink>перенаправление...</blink></a><br><center><img src="images/progressbar.gif"></center>';
+$lang['Login_Ok'] = 'Успешное подключение, <a href="./"><blink>перенаправление...</blink></a><br><center><img src="design/images/progressbar.gif"></center>';
 $lang['Login_FailPassword'] = 'Неверное имя и/или пароль<br /><a href="login.php" target="_top">Назад</a>';
 $lang['Login_FailUser'] = 'Такого игрока не существует.<br><a href=login.php>Назад</a>';
 

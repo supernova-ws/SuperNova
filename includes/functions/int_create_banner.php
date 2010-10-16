@@ -41,10 +41,10 @@ function INT_createBanner($id, $type = 'userbar', $format = 'png'){
   $txt_color2 = imagecolorallocatealpha($image, 255, 255, 255, 40);
 
   $fonts = array (
-    'userbar' => $ugamela_root_path . "fonts/" . $config->int_userbar_font,
-    'universe' => $ugamela_root_path . "fonts/" . $config->int_banner_fontUniverse,
-    'raids' => $ugamela_root_path . "fonts/" . $config->int_banner_fontRaids,
-    'info' => $ugamela_root_path . "fonts/" . $config->int_banner_fontInfo,
+    'userbar' => $ugamela_root_path . "design/fonts/" . $config->int_userbar_font,
+    'universe' => $ugamela_root_path . "design/fonts/" . $config->int_banner_fontUniverse,
+    'raids' => $ugamela_root_path . "design/fonts/" . $config->int_banner_fontRaids,
+    'info' => $ugamela_root_path . "design/fonts/" . $config->int_banner_fontInfo,
   );
 
   if (!empty($id)) {

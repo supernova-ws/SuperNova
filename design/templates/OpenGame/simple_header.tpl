@@ -2,8 +2,8 @@
   <head>
     <title>{title}</title>
     <link rel="shortcut icon" href="{-path_prefix-}favicon.ico">
-    <link rel="stylesheet" type="text/css" href="{-path_prefix-}css/jquery.css" />
-    <link rel="stylesheet" type="text/css" href="{-path_prefix-}css/global.css" />
+    <link rel="stylesheet" type="text/css" href="{-path_prefix-}design/css/jquery.css" />
+    <link rel="stylesheet" type="text/css" href="{-path_prefix-}design/css/global.css" />
     <link rel="stylesheet" type="text/css" href="{-path_prefix-}{dpath}default.css" />
     <link rel="stylesheet" type="text/css" href="{-path_prefix-}{dpath}formate.css" />
     <meta name="keywords" content="ogame,огейм,ога,supernova,сверхновая,бесплатная,free,браузерка,онлайн стратегия,онлайновая стратегия,играть,игра,ogame скрипт,xnova" />

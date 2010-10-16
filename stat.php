@@ -187,19 +187,19 @@ check_urlaubmodus ($user);
       $parse['player_country'] = '';
 
       if($UsrRow['lang'] == "ru"){
-        $parse['player_country'] .= '<img src="images/lang/ru.png">';
+        $parse['player_country'] .= '<img src="design/images/lang/ru.png">';
       }elseif($UsrRow['lang'] == "en"){
-        $parse['player_country'] .= '<img src="images/lang/en.png">';
+        $parse['player_country'] .= '<img src="design/images/lang/en.png">';
       }elseif($UsrRow['lang'] == "pl"){
-        $parse['player_country'] .= '<img src="images/lang/pl.png">';
+        $parse['player_country'] .= '<img src="design/images/lang/pl.png">';
       }elseif($UsrRow['lang'] == "fr"){
-        $parse['player_country'] .= '<img src="images/lang/fr.png">';
+        $parse['player_country'] .= '<img src="design/images/lang/fr.png">';
       }elseif($UsrRow['lang'] == "es"){
-        $parse['player_country'] .= '<img src="images/lang/es.png">';
+        $parse['player_country'] .= '<img src="design/images/lang/es.png">';
       }elseif($UsrRow['lang'] == "de"){
-        $parse['player_country'] .= '<img src="images/lang/de.png">';
+        $parse['player_country'] .= '<img src="design/images/lang/de.png">';
       }elseif($UsrRow['lang'] == "it"){
-        $parse['player_country'] .= '<img src="images/lang/it.png">';
+        $parse['player_country'] .= '<img src="design/images/lang/it.png">';
       }
       $parse['player_points']   = pretty_number( $StatRow[ $Order ] );
       $parse['stat_values']    .= parsetemplate(gettemplate('stat_playertable'), $parse);

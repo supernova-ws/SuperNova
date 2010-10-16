@@ -629,7 +629,7 @@ function check_urlaubmodus ($user)
 
   if ($user['urlaubs_modus'])
   {
-    message('<img src="images/vacancy.jpg">', "{$user['username']}, {$lang['sys_vacancy']}");
+    message('<img src="design/images/vacancy.jpg">', "{$user['username']}, {$lang['sys_vacancy']}");
   }
 }
 

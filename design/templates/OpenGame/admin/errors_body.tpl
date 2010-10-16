@@ -9,7 +9,7 @@
 <th>{adm_er_type}</th>
 <th width="120px">{adm_er_time}</th>
 <th width="16px">{adm_er_page}</th>
-<th><img src="../images/r1.png"></th>
+<th><img src="../design/images/r1.png"></th>
 </tr>
 {errors_list}
 <tr><th class=b colspan=6>{errors_num}&nbsp;{adm_er_nbs}</th></tr>

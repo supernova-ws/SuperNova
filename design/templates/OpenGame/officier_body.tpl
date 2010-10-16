@@ -11,12 +11,12 @@
   </tr>
 
   <tr>
-    <th width="120" ><img src="{dpath}images/DMaterie.jpg" width="120" height="120"></th>
+    <th width="120" ><img src="{dpath}design/images/DMaterie.jpg" width="120" height="120"></th>
     <th width="314" >
       <p align="justify">{L_sys_dark_matter}</p>
       <p align="justify">{L_ofi_dark_matter_desc}</p>
       <div>
-      <div class="fl"><img src="{dpath}images/dm_klein_1.jpg"></div>
+      <div class="fl"><img src="{dpath}design/images/dm_klein_1.jpg"></div>
       <div align="left" class="ofi_dark_matter_hint">{L_ofi_dark_matter_hint}</div>
       </div>
     </th>

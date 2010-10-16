@@ -22,7 +22,7 @@ function CHT_messageParse($msg){
     $msg = preg_replace("#".$key."#isU", $html, $msg);
 
   foreach ($smiles as $key => $imgName)
-    $msg = preg_replace("#" . $key . "#isU","<img src=\"images/smileys/".$imgName.".gif\" align=\"absmiddle\" title=\"".$key."\" alt=\"".$key."\">",$msg);
+    $msg = preg_replace("#" . $key . "#isU","<img src=\"design/images/smileys/".$imgName.".gif\" align=\"absmiddle\" title=\"".$key."\" alt=\"".$key."\">",$msg);
 
   return $msg;
 }

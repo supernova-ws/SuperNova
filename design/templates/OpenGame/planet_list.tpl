@@ -29,31 +29,31 @@
 
       <!-- IF planet.BUILDING -->
         <span title="{planet.BUILDING_TIP}" style="position: absolute; top: 0px; left: 0px; width: 25%; height: 25%" class="icon_alpha">
-          <a href="buildings.php?cp={planet.ID}&re=0"><img src="images/build_building.png" height="100%" width="100%"></a>
+          <a href="buildings.php?cp={planet.ID}&re=0"><img src="../design/images/build_building.png" height="100%" width="100%"></a>
         </span>
       <!-- ENDIF -->
       
       <!-- IF planet.TECH -->
         <span title="{planet.TECH}" style="position: absolute; top: 25%; left: 0px; width: 25%; height: 25%" class="icon_alpha">
-          <a href="buildings.php?mode=research&cp={planet.ID}&re=0"><img src="images/build_tech.png" height="100%" width="100%"></a>
+          <a href="buildings.php?mode=research&cp={planet.ID}&re=0"><img src="../design/images/build_tech.png" height="100%" width="100%"></a>
         </span>
       <!-- ENDIF -->
 
       <!-- IF planet.HANGAR -->
         <span title="{planet.HANGAR}" style="position: absolute; top: 50%; left: 0px; width: 25%; height: 25%;" class="icon_alpha">
-          <a href="buildings.php?mode=fleet&cp={planet.ID}&re=0"><img src="images/build_hangar.png" height="100%" width="100%"></a>
+          <a href="buildings.php?mode=fleet&cp={planet.ID}&re=0"><img src="../design/images/build_hangar.png" height="100%" width="100%"></a>
         </span>
       <!-- ENDIF -->
 
       <!-- IF planet.FLEET_OWN -->
         <span style="position: absolute; top: 0px; left: 25%; width: 25%; height: 25%;" class="icon_alpha">
-          <a href="fleet.php?cp={planet.ID}&re=0"><img src="images/icon_fleet_own.png" height="100%" width="100%"></a>
+          <a href="fleet.php?cp={planet.ID}&re=0"><img src="../design/images/icon_fleet_own.png" height="100%" width="100%"></a>
         </span>
       <!-- ENDIF -->
 
       <!-- IF planet.FLEET_ENEMY -->
         <span style="position: absolute; top: 26%; left: 26%; width: 48%; height: 48%;">
-          <img src="images/icon_warning.png" height="100%" width="100%" style="border-style: none; cursor: pointer;" onclick="javascript:window.location = '?cp={planet.ID}&re=0'">
+          <img src="../design/images/icon_warning.png" height="100%" width="100%" style="border-style: none; cursor: pointer;" onclick="javascript:window.location = '?cp={planet.ID}&re=0'">
         </span>
       <!-- ENDIF -->
 
@@ -67,7 +67,7 @@
           
           <!-- IF planet.MOON_ENEMY != 0 -->
             <span style="position: absolute; top: 26%; left: 26%; width: 48%; height: 48%;">
-              <img src="images/icon_warning.png" height="100%" width="100%" style="border-style: none; cursor: pointer;" onclick="javascript:window.location = '?cp={planet.MOON_ID}&re=0'">
+              <img src="../design/images/icon_warning.png" height="100%" width="100%" style="border-style: none; cursor: pointer;" onclick="javascript:window.location = '?cp={planet.MOON_ID}&re=0'">
             </span>
           <!-- ENDIF -->
 
