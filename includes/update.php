@@ -23,7 +23,7 @@ $db_last_version = 18;
 $config->db_loadItem('db_version');
 if($config->db_version == $db_last_version)
 {
-  return;
+//  return;
 }
 
 if($config->db_version > $db_last_version)
