@@ -37,7 +37,7 @@ UpdatePlanetBatimentQueueList ( $planetrow, $user );
 
 $IsWorking = HandleTechnologieBuild ( $planetrow, $user );
 
-PlanetResourceUpdate($user, $planetrow, $time_now, true);
+PlanetResourceUpdate($user, $planetrow, $time_now);
 
 switch ($GET_mode) {
   case 'fleet':
