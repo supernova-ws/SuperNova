@@ -60,7 +60,7 @@ class debug
 
     global $user, $ugamela_root_path, $phpEx;
 
-    include("{$ugamela_root_path}config.{$phpEx}");
+    require("{$ugamela_root_path}config.{$phpEx}");
 
     if(!$link)
     {
