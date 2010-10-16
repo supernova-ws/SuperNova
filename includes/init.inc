@@ -85,7 +85,7 @@ if(file_exists($update_file))
 {
   if(filemtime($update_file) > $config->var_db_update)
   {
-    if($time_now - 5> $config->var_db_update_start)
+    if($time_now - 600 > $config->var_db_update_start)
     {
       $config->db_saveItem('var_db_update_start', $time_now);
 
