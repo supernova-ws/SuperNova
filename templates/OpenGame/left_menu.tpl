@@ -1,11 +1,12 @@
-<script language="JavaScript">
-function f(target_url,win_name) {
-  var new_win = window.open(target_url,win_name,'resizable=yes,scrollbars=yes,menubar=no,toolbar=no,width=550,height=280,top=0,left=0');
-  new_win.focus();
-}
-</script>
-<div id="left_menu">
-  <table width="100%" cellspacing="0" cellpadding="0">
+<div id="left_menu_wrapper">
+  <script language="JavaScript">
+  function f(target_url,win_name) {
+    var new_win = window.open(target_url,win_name,'resizable=yes,scrollbars=yes,menubar=no,toolbar=no,width=550,height=280,top=0,left=0');
+    new_win.focus();
+  }
+  </script>
+
+  <table width="100%" cellspacing="0" cellpadding="0" id="left_menu">
     <tr><th id="server_name">{servername}</th></tr>
 
     <tr><td align="center"><img border="0" src="/images/supernova.png" alt="supernova.ws"></td></tr>

@@ -129,7 +129,6 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   $title .= "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}";
 
   displayP(StdHeader ($title, $metatags, $AdminPage));
-
   if ($isDisplayMenu && $IsUserChecked){ //
     displayP(ShowLeftMenu ( $AdminPage ));
     echo '<div id="page_body">';

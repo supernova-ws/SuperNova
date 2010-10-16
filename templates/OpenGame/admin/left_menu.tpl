@@ -4,15 +4,18 @@ function f(target_url,win_name) {
   new_win.focus();
 }
 </script>
-<div id="left_menu">
-  <table width="130" cellspacing="0" cellpadding="0">
+<div id="left_menu_wrapper">
+  <table width="130" cellspacing="0" cellpadding="0" id="left_menu">
     <tr><td align=center><strong>OGame Triolan</strong></td></tr>
+
     <tr><td align=center background="{dpath}img/bg1.png">{admin}</td></tr>
     <tr><td><a href="overview.php">{adm_over}</a></td></tr>
     <tr><td><a href="settings.php">{adm_conf}</a></td></tr>
     <tr><td><a href="XNovaResetUnivers.php">{adm_reset}</a></td></tr>
+
     <tr><td align=center background="{dpath}img/bg1.png">Нормальная админка</td></tr>
     <tr><td><a href="admin_darkmatter.php">{dark_matter}</a></td></tr>
+
     <tr><td align=center background="{dpath}img/bg1.png">Add Menu</td></tr>
     <tr><td><a href="add_building.php">Add Building </a></td></tr>
     <tr><td><a href="add_def.php">Add Def </a></td></tr>
@@ -20,6 +23,7 @@ function f(target_url,win_name) {
     <tr><td><a href="add_research.php">Add Research</a></td></tr>
     <tr><td><a href="add_ship.php">Add Ships </a></td></tr>
     <tr><td><a href="add_pts.php">Add Dark Matter</a></td></tr>
+
     <tr><td align=center background="{dpath}img/bg1.png">Delete Menu</td></tr>
     <tr><td><a href="del_building.php">Del Building </a></td></tr>
     <tr><td><a href="del_def.php">Del Def </a></td></tr>
@@ -27,6 +31,7 @@ function f(target_url,win_name) {
     <tr><td><a href="del_research.php">Del Research</a></td></tr>
     <tr><td><a href="del_ship.php">Del Ships </a></td></tr>
     <tr><td><a href="del_pts_offi.php">Del Dark Matter</a></td></tr>
+
     <tr><td align=center background="{dpath}img/bg1.png">{player}</td></tr>
     <tr><td><a href="userlist.php">{adm_plrlst}</a></td></tr>
     <tr><td><a href="paneladmina.php">{adm_panel}</a></td></tr>

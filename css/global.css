@@ -91,3 +91,8 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
   vertical-align: top;
   text-align: left;
 }
+
+#chat_box
+{
+  width: 100%;
+}
