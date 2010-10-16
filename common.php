@@ -23,6 +23,10 @@ if (!$InLogin) {
       print( "<div align=center style='font-size: 24; font-weight: bold; color:red;'>" . sys_bbcodeParse($config->game_disable_reason) . '</div><br>' );
     }
   }
+  if(!$user['id'])
+  {
+    header('Location: login.php');
+  }
 }
 
 if ($user['id'])
