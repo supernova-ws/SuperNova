@@ -614,7 +614,7 @@ function sys_log_hit(){
   global $time_now, $user, $is_watching;
 
   $is_watching = true;
-  $ip = sys_get_user_ip;
+  $ip = sys_get_user_ip();
   doquery("INSERT INTO {{counter}} (`time`, `page`, `url`, `user_id`, `ip`, `proxy`) VALUES ('{$time_now}', '{$_SERVER['PHP_SELF']}', '{$_SERVER['REQUEST_URI']}', '{$user['id']}', '{$ip['client']}', '{$ip['proxy']}');");
   $is_watching = false;
 }
