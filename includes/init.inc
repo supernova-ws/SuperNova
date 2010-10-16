@@ -52,18 +52,19 @@ while (($file = readdir($dir)) !== false)
 $debug = new debug();
 
 require("{$ugamela_root_path}config.{$phpEx}");
+$db_prefix = $dbsettings['prefix'];
+unset($dbsettings);
 
 // Initializing global 'cacher' object
-$cache = new classCache($dbsettings['prefix']);
+$cache = new classCache($db_prefix);
 if(!isset($cache->tables))
 {
-  sys_refresh_tablelist();
+  sys_refresh_tablelist($db_prefix);
 }
 
 // Initializing global "config" object
-$config = new classConfig($dbsettings['prefix']);
+$config = new classConfig($db_prefix);
 $config->db_prefix = $dbsettings['prefix'];
-unset($dbsettings);
 
 if($config->debug)
 {
@@ -84,7 +85,7 @@ if(file_exists($update_file))
       $config->db_saveItem('var_db_update_end', $time_now + 600);
 
       require_once($update_file);
-      sys_refresh_tablelist();
+      sys_refresh_tablelist($db_prefix);
 
       $config->db_saveItem('var_db_update', $time_now);
       $config->db_saveItem('var_db_update_end', $time_now);
@@ -129,7 +130,7 @@ while (($file = readdir($dir)) !== false)
 includeLang ('system');
 includeLang ('tech');
 
-function sys_refresh_tablelist()
+function sys_refresh_tablelist($db_prefix)
 {
   global $cache, $dbsettings;
 
@@ -139,7 +140,7 @@ function sys_refresh_tablelist()
   {
     foreach($row as $row)
     {
-      $tl[] = str_replace($dbsettings['prefix'], '', $row);
+      $tl[] = str_replace($db_prefix, '', $row);
     }
   }
   $cache->tables = $tl;
