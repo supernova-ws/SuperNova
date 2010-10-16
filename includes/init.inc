@@ -75,37 +75,29 @@ if($config->debug)
 }
 
 $update_file = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.{$phpEx}";
-$flag_file   = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.last";
-//pdump($time_now, '$time_now');
-//pdump($config->var_db_update, 'var_db_update');
-//pdump($config->var_db_update_start, 'var_db_update_start');
-//pdump(filemtime($update_file), 'filemtime');
-
 if(file_exists($update_file))
 {
   if(filemtime($update_file) > $config->var_db_update)
   {
-    if($time_now - 600 > $config->var_db_update_start)
+    if($time_now > $config->var_db_update_end)
     {
-      $config->db_saveItem('var_db_update_start', $time_now);
+      $config->db_saveItem('var_db_update_end', $time_now + 30);
 
       require_once($update_file);
       sys_refresh_tablelist();
 
       $config->db_saveItem('var_db_update', $time_now);
-//      if(!file_exists($flag_file))
-//      {
-//        fclose(fopen($flag_file, 'w'));
-//      }
-
-//      touch($flag_file, filemtime($update_file));
+      $config->db_saveItem('var_db_update_end', $time_now);
     }
-    else
+    elseif(filemtime($update_file) > $config->var_db_update)
     {
-      die('Databse update in progress. Please wait...');
+      $timeout = $config->var_db_update_end - $time_now;
+      die("Database update in progress. {$timeout} seconds left. Please wait...");
     }
   }
 }
+
+pdump($config->var_db_update_end, 'var_db_update_end');
 
 // Initializing constants
 define('TEMPLATE_DIR'     , 'templates/');
