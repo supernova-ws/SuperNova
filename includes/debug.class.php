@@ -50,7 +50,7 @@ class debug
 
   function error($message,$title)
   {
-    global $link, $config;
+    global $link, $config, $sys_stop_log_hit;
 
     if($config->debug == 1)
     {
@@ -108,6 +108,7 @@ class debug
 
     $message = "Пожалуйста свяжитесь с админом, если ошибка повториться. Ошибка №: <b>{$q['rows']}</b>";
 
+    $sys_stop_log_hit = true;
     if (!function_exists('message'))
     {
       die($message);

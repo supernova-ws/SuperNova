@@ -605,8 +605,8 @@ function PrintPlanetCoords(&$array){
 // Logs page hit to DB
 //
 function sys_log_hit(){
-  global $config;
-  if(!$config->game_counter)
+  global $config, $sys_stop_log_hit;
+  if(!$config->game_counter || $sys_stop_log_hit)
   {
     return;
   }
