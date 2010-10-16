@@ -181,35 +181,35 @@ var speed_factor   = {speed_factor};
       <tr><th colspan="3">{L_fl_noships}</th></tr>
     <!-- ENDIF -->
   </table>
-  <!-- IF FLYING_FLEETS < MAX_FLEETS && .ships -->
-    <br>
-    <table>
-      <tr><td class="c" colspan=2>{L_fl_fleet_data}</td></tr>
-      <tr>
-          <th>{L_fl_speed}</th>
-          <th width="100"><span id='int_fleet_speed'>-</span></th>
-      </tr>
-      <tr>
-          <th>{L_fl_dist}</th>
-          <th><span id='distance'>0</span></th>
-      </tr>
-      <tr>
-          <th>{L_fl_fltime}</th>
-          <th><span id='duration'>-</span></th>
-      </tr>
-      <tr>
-          <th>{L_fl_deute_need}</th>
-          <th><span id='int_fleet_consumption'>0</span></th>
-      </tr>
-      <tr>
-          <th>{L_sys_capacity}</th>
-          <th><span id='int_fleet_capacity'>0</span></th>
-      </tr>
-      <tr>
-          <th>{L_fl_planet_resources}</th>
-          <th>{PLANET_RESOURCES}</th>
-      </tr>
-    </table>
-  <!-- ENDIF -->
-  <!-- INCLUDE page_hint.tpl -->
 </form>
+<!-- IF FLYING_FLEETS < MAX_FLEETS && .ships -->
+  <br>
+  <table>
+    <tr><td class="c" colspan=2>{L_fl_fleet_data}</td></tr>
+    <tr>
+        <th>{L_fl_speed}</th>
+        <th width="100"><span id='int_fleet_speed'>-</span></th>
+    </tr>
+    <tr>
+        <th>{L_fl_dist}</th>
+        <th><span id='distance'>0</span></th>
+    </tr>
+    <tr>
+        <th>{L_fl_fltime}</th>
+        <th><span id='duration'>-</span></th>
+    </tr>
+    <tr>
+        <th>{L_fl_deute_need}</th>
+        <th><span id='int_fleet_consumption'>0</span></th>
+    </tr>
+    <tr>
+        <th>{L_sys_capacity}</th>
+        <th><span id='int_fleet_capacity'>0</span></th>
+    </tr>
+    <tr>
+        <th>{L_fl_planet_resources}</th>
+        <th>{PLANET_RESOURCES}</th>
+    </tr>
+  </table>
+<!-- ENDIF -->
+<!-- INCLUDE page_hint.tpl -->
