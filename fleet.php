@@ -83,8 +83,11 @@ switch ($fleet_page)
     $missiontype = array();
     if ($planet > $config->game_maxPlanet)
     {
-      $target_mission = MT_EXPLORE;
-      $missiontype[MT_EXPLORE] = $lang['type_mission'][MT_EXPLORE];
+      if(!$fleetarray[210])
+      {
+        $target_mission = MT_EXPLORE;
+        $missiontype[MT_EXPLORE] = $lang['type_mission'][MT_EXPLORE];
+      }
     }
     elseif ($galaxy && $system && $planet)
     {
