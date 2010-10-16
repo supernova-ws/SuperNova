@@ -51,8 +51,16 @@ while (($file = readdir($dir)) !== false)
 // Initializing global 'debug' object
 $debug = new debug();
 
-// Initializing global "config" object
 include_once("{$ugamela_root_path}config.{$phpEx}");
+
+// Initializing global 'cacher' object
+$cache = new classCache($dbsettings['prefix']);
+if(!isset($cache->tables))
+{
+  sys_refresh_tablelist();
+}
+
+// Initializing global "config" object
 $config = new classConfig($dbsettings['prefix']);
 $config->db_prefix = $dbsettings['prefix'];
 unset($dbsettings);
@@ -68,35 +76,35 @@ if($config->debug)
 
 $update_file = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.{$phpEx}";
 $flag_file   = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.last";
+//pdump($time_now, '$time_now');
+//pdump($config->var_db_update, 'var_db_update');
+//pdump($config->var_db_update_start, 'var_db_update_start');
+//pdump(filemtime($update_file), 'filemtime');
 
 if(file_exists($update_file))
 {
-  if(filemtime($update_file) != filemtime($flag_file))
+  if(filemtime($update_file) > $config->var_db_update)
   {
-    if(!$config->db_loadItem('var_updating_db'))
+    if($time_now - 5> $config->var_db_update_start)
     {
-      $config->db_saveItem('var_updating_db', true);
+      $config->db_saveItem('var_db_update_start', $time_now);
 
       require_once($update_file);
       sys_refresh_tablelist();
 
-      if(!file_exists($flag_file))
-      {
-        fclose(fopen($flag_file, 'w'));
-      }
+      $config->db_saveItem('var_db_update', $time_now);
+//      if(!file_exists($flag_file))
+//      {
+//        fclose(fopen($flag_file, 'w'));
+//      }
 
-      touch($flag_file, filemtime($update_file));
-
-      $config->db_saveItem('var_updating_db', false);
+//      touch($flag_file, filemtime($update_file));
+    }
+    else
+    {
+      die('Databse update in progress. Please wait...');
     }
   }
-}
-
-// Initializing global 'cacher' object
-$cache = new classCache($config->db_prefix);
-if(!isset($cache->tables))
-{
-  sys_refresh_tablelist();
 }
 
 // Initializing constants

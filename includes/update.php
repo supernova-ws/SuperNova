@@ -19,7 +19,7 @@ if(!defined('INIT'))
   include_once('init.inc');
 }
 
-$db_last_version = 18;
+$db_last_version = 19;
 $config->db_loadItem('db_version');
 if($config->db_version == $db_last_version)
 {
@@ -51,7 +51,7 @@ while($row = mysql_fetch_row($query))
 }
 $msg .= "done.\r\nNow upgrading DB...\r\n";
 
-$new_version = 0;
+$new_version = $config->db_version;
 switch(intval($config->db_version))
 {
   case 0:
@@ -280,7 +280,8 @@ switch(intval($config->db_version))
       "MODIFY `ip` VARCHAR(250) COMMENT 'User last IP'",
       "ADD `proxy` VARCHAR(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)'"
     ), !$update_tables['counter']['proxy']);
-    //$new_version = 18;
+    $new_version = 19;
+
   case 19:
 
 };
@@ -298,9 +299,9 @@ else
 
 $debug->warning($msg, 'Database Update', 103);
 
-if ( $user['authlevel'] >= 3 )
+//if ( $user['authlevel'] >= 3 )
 {
-  print(sys_bbcodeParse($msg));
+  print(str_replace("\r\n", '<br>', $msg));
 }
 
 function upd_alter_table($table, $alters, $condition = true)
@@ -351,6 +352,5 @@ function upd_log_update()
   $msg .= "Detected outdated version {$new_version}. Upgrading...\r\n";
   set_time_limit(30);
 }
-
 
 ?>

@@ -560,6 +560,10 @@ class classConfig extends classPersistent
     // Statistic
     'stats_lastUpdated' => '0',
     'stats_schedule' => 'd@04:00:00',
+
+    'var_db_update'       => 0,  // Time of last DB update
+    'var_db_update_start' => 0,  // Time when last DB update started. Need to prevent duplicate update
+
   );
 
   public function __construct($gamePrefix = 'sn_')
