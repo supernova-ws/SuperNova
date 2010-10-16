@@ -81,7 +81,7 @@ if(file_exists($update_file))
   {
     if($time_now > $config->var_db_update_end)
     {
-      $config->db_saveItem('var_db_update_end', $time_now + 30);
+      $config->db_saveItem('var_db_update_end', $time_now + 600);
 
       require_once($update_file);
       sys_refresh_tablelist();
@@ -92,12 +92,10 @@ if(file_exists($update_file))
     elseif(filemtime($update_file) > $config->var_db_update)
     {
       $timeout = $config->var_db_update_end - $time_now;
-      die("Database update in progress. {$timeout} seconds left. Please wait...");
+      die("Database update in progress. It may take up to {$timeout} seconds more. Please wait...");
     }
   }
 }
-
-pdump($config->var_db_update_end, 'var_db_update_end');
 
 // Initializing constants
 define('TEMPLATE_DIR'     , 'templates/');
