@@ -14,10 +14,10 @@
 <!--<style> body, html { margin:0px; padding: 0px; overflow: hidden; font: menu; border: none; } </style>-->
 </head>
 
-<script type="text/javascript" src="{-path_prefix-}js/lib/jquery.js"></script>
-<script type="text/javascript" src="{-path_prefix-}js/lib/jquery-ui.js"></script>
-<script type="text/javascript" src="{-path_prefix-}js/sn_global.js"></script>
-<script type="text/javascript" src="{-path_prefix-}js/sn_timer.js"></script>
-
 <body class="style">
+  <script type="text/javascript" src="{-path_prefix-}js/lib/jquery.js"></script>
+  <script type="text/javascript" src="{-path_prefix-}js/lib/jquery-ui.js"></script>
+  <script type="text/javascript" src="{-path_prefix-}js/sn_global.js"></script>
+  <script type="text/javascript" src="{-path_prefix-}js/sn_timer.js"></script>
+
   <div id="body_container">

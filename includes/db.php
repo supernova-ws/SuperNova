@@ -107,9 +107,12 @@ function doquery($query, $table = "", $fetch = false){
 
   $sql = str_replace("{{table}}", $dbsettings["prefix"].$table, $query);
   if(!(strpos($sql, '{{') === false) )
+  {
     foreach($cache->tables as $tableName)
+    {
       $sql = str_replace("{{".$tableName."}}", $dbsettings["prefix"].$tableName, $sql);
-
+    }
+  }
   $sqlquery = mysql_query($sql) or
     $debug->error(mysql_error()."<br />$sql<br />","SQL Error");
   unset($dbsettings);

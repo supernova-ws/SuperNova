@@ -131,7 +131,7 @@ includeLang ('tech');
 
 function sys_refresh_tablelist()
 {
-  global $cache, $config;
+  global $cache, $dbsettings;
 
   $query = doquery('SHOW TABLES;');
 
@@ -139,7 +139,7 @@ function sys_refresh_tablelist()
   {
     foreach($row as $row)
     {
-      $tl[] = str_replace($config->db_prefix, '', $row);
+      $tl[] = str_replace($dbsettings['prefix'], '', $row);
     }
   }
   $cache->tables = $tl;
