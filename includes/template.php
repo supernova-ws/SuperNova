@@ -143,8 +143,8 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   if ($topnav && $IsUserChecked) {
     if ($user['db_deaktjava'] == 1) {
       $urlaub_del_time = $user['deltime'];
-      $del_datum = date('d.m.Y', $urlaub_del_time);
-      $del_uhrzeit = date('H:i:s', $urlaub_del_time);
+      $del_datum = date(FMT_DATE, $urlaub_del_time);
+      $del_uhrzeit = date(FMT_TIME, $urlaub_del_time);
     }
     $TopNav = ShowTopNavigationBar( $user, $planetrow );
   }

@@ -642,8 +642,8 @@ function check_urlaubmodus_time () {
 
     if ($user['urlaubs_modus'] == 1 && $urlaub_modus_time_soll > $time_now)
     {
-      $soll_datum = date("d.m.Y", $urlaub_modus_time_soll);
-      $soll_uhrzeit = date("H:i:s", $urlaub_modus_time_soll);
+      $soll_datum = date(FMT_DATE, $urlaub_modus_time_soll);
+      $soll_uhrzeit = date(FMT_TIME, $urlaub_modus_time_soll);
     }
     elseif ($user['urlaubs_modus'] && $urlaub_modus_time_soll < $time_now)
     {

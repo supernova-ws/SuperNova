@@ -222,7 +222,7 @@ check_urlaubmodus ($user);
           $page .= "\n<tr>";
           $page .= "<input name=\"showmes". $CurMess['message_id'] . "\" type=\"hidden\" value=\"1\">";
           $page .= "<th><input name=\"delmes". $CurMess['message_id'] . "\" type=\"checkbox\"></th>";
-          $page .= "<th>". date("m-d H:i:s O", $CurMess['message_time']) ."</th>";
+          $page .= "<th>". date(FMT_DATE_TIME, $CurMess['message_time']) ."</th>";
           $page .= "<th>". stripslashes( $CurMess['message_from'] ) ."</th>";
           $page .= "<th>". stripslashes( $CurMess['message_subject'] ) ." ";
           if ($CurMess['message_type'] == 1) {

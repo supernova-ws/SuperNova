@@ -506,7 +506,7 @@ class classConfig extends classPersistent
     'game_user_changename' => 0, // Is user allowed to change name after registration?
 
     'int_format_date'      => 'd.m.Y', // Date default format
-    'int_format_time'      => 'h:i:s', // Time default format
+    'int_format_time'      => 'H:i:s', // Time default format
 
     'game_news_overview'   => 3,    // How much last news to show in Overview page
     'game_news_actual'     => 259200, // How long announcement would be marked as "New". In seconds. Default - 3 days

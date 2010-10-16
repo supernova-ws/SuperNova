@@ -91,7 +91,7 @@ function CheckTheUser()
     {
       if ($user['bana'] == 1 && $user['banaday'] > time())
       {
-        $bantime = date("d.m.Y H:i:s", $user['banaday']);
+        $bantime = date(FMT_DATE_TIME, $user['banaday']);
         die ('Вы забанены. Срок окончания блокировки аккаунта: '.$bantime.' <br>Для получения информации зайдите <a href="banned.php">сюда</a>');
       }
       elseif ($user['bana'] == 1)

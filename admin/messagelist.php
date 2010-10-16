@@ -117,7 +117,7 @@ if ($user['authlevel'] < 3)
       $bloc['mlst_from']    = $row['message_from'];
       $bloc['mlst_to']      = $OwnerData['username'] ." ID:". $row['message_owner'];
       $bloc['mlst_text']    = $row['message_text'];
-      $bloc['mlst_time']    = date ( "d. M Y H:i:s", $row['message_time'] );
+      $bloc['mlst_time']    = date ( FMT_DATE_TIME, $row['message_time'] );
 
       $parse['mlst_data_rows'] .= parsetemplate($RowsTpl , $bloc);
     }

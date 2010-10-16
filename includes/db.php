@@ -58,7 +58,7 @@ function doquery($query, $table = "", $fetch = false){
   if ($badword) {
     $message = 'Привет, я не знаю то, что Вы пробовали сделать, но команда, которую Вы только послали базе данных, не выглядела очень дружественной и она была заблокированна.<br /><br />Ваш IP, и другие данные переданны администрации сервера. Удачи!.';
 
-    $report  = "Hacking attempt (".date("H:i:s d/m/Y")." - [".time()."]):\n";
+    $report  = "Hacking attempt (".date("d.m.Y H:i:s")." - [".time()."]):\n";
     $report .= ">Database Info\n";
     $report .= "\tID - ".$user['id']."\n";
     $report .= "\tUser - ".$user['username']."\n";

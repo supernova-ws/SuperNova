@@ -71,7 +71,7 @@ while ($userRow = mysql_fetch_array($userList)) {
   }
   $parse['ally_range'] = $ally_range;
 
-  $parse['ally_register_time'] = date("Y-m-d h:i:s", $userRow['ally_register_time']);
+  $parse['ally_register_time'] = date(FMT_DATE_TIME, $userRow['ally_register_time']);
 
   $last_active = time() - $userRow["onlinetime"];
   if($allianceAdminMode && $user_admin){

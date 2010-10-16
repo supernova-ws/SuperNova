@@ -270,7 +270,7 @@ switch(intval($config->db_version))
     upd_log_update();
     upd_check_key('game_counter', 1);
     upd_check_key('int_format_date', 'd.m.Y');
-    upd_check_key('int_format_time', 'h:i:s');
+    upd_check_key('int_format_time', 'H:i:s');
     doquery("DELETE FROM {{config}} WHERE `config_name` IN ('game_date_withTime');");
     upd_alter_table('users', array(
       "MODIFY `user_lastip` VARCHAR(250) COMMENT 'User last IP'",
@@ -283,6 +283,7 @@ switch(intval($config->db_version))
     $new_version = 19;
 
   case 19:
+    upd_check_key('int_format_time', 'H:i:s', true);
 
 };
 $msg .= "Upgrade complete.\r\n";

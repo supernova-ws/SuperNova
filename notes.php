@@ -147,7 +147,7 @@ elseif($_POST){//Borrar
 
       //fragmento de template
       $parse['NOTE_ID'] = $note['id'];
-      $parse['NOTE_TIME'] = date("Y-m-d h:i:s",$note["time"]);
+      $parse['NOTE_TIME'] = date(FMT_DATE_TIME,$note["time"]);
       $parse['NOTE_TITLE'] = $note['title'];
       $parse['NOTE_TEXT'] = strlen($note['text']);
 
