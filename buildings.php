@@ -7,6 +7,10 @@
  *
  * @version 1.3s Security checks by Gorlum for http://supernova.ws
  * @version 1.3
+// History version
+// 1.0 - Nettoyage modularisation
+// 1.1 - Mise au point, mise en fonction pour linéarisation du fonctionnement
+// 1.2 - Liste de construction batiments
  * @copyright 2008 by Chlorel for XNova
  */
 
@@ -26,39 +30,36 @@ check_urlaubmodus ($user);
 
 $GET_mode = SYS_mysqlSmartEscape($_GET['mode']);
 
-  includeLang('buildings');
+includeLang('buildings');
 
-  // Mise a jour de la liste de construction si necessaire
-  UpdatePlanetBatimentQueueList ( $planetrow, $user );
+// Mise a jour de la liste de construction si necessaire
+UpdatePlanetBatimentQueueList ( $planetrow, $user );
 
-  $IsWorking = HandleTechnologieBuild ( $planetrow, $user );
+$IsWorking = HandleTechnologieBuild ( $planetrow, $user );
 
-  switch ($GET_mode) {
-    case 'fleet':
-      // --------------------------------------------------------------------------------------------------
-      FleetBuildingPage ( $planetrow, $user );
-      break;
+PlanetResourceUpdate($user, $planetrow, $time_now, true);
 
-    case 'research':
-      // --------------------------------------------------------------------------------------------------
-      ResearchBuildingPage ( $planetrow, $user, $IsWorking['OnWork'], $IsWorking['WorkOn'] );
-      break;
+switch ($GET_mode) {
+  case 'fleet':
+    // --------------------------------------------------------------------------------------------------
+    FleetBuildingPage ( $planetrow, $user );
+    break;
 
-    case 'defense':
-      // --------------------------------------------------------------------------------------------------
-      DefensesBuildingPage ( $planetrow, $user );
-      break;
+  case 'research':
+    // --------------------------------------------------------------------------------------------------
+    ResearchBuildingPage ( $planetrow, $user, $IsWorking['OnWork'], $IsWorking['WorkOn'] );
+    break;
 
-    case 'buildings':
-    default:
-      // --------------------------------------------------------------------------------------------------
-      BatimentBuildingPage ( $planetrow, $user );
-      break;
-  }
+  case 'defense':
+    // --------------------------------------------------------------------------------------------------
+    DefensesBuildingPage ( $planetrow, $user );
+    break;
 
-// -----------------------------------------------------------------------------------------------------------
-// History version
-// 1.0 - Nettoyage modularisation
-// 1.1 - Mise au point, mise en fonction pour linéarisation du fonctionnement
-// 1.2 - Liste de construction batiments
+  case 'buildings':
+  default:
+    // --------------------------------------------------------------------------------------------------
+    BatimentBuildingPage ( $planetrow, $user );
+    break;
+}
+
 ?>
