@@ -9,8 +9,9 @@ config.php
 /xcache/
 /xcache-admin/
 
-# Ignore test folder
+# Ignore test folder and test files
 /test/
+t.*
 
 # Ignore CMD-files
 /*.cmd
