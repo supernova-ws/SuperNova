@@ -66,7 +66,7 @@ function ShowBuildingQueue ( $CurrentPlanet, $CurrentUser ) {
           $ListIDRow .= " <td class=\"k\">";
           if ($ListID == 1) {
             $ListIDRow .= InsertCounterLaunchScript($BuildTime, $PlanetID);
-            $ListIDRow .= "   <strong color=\"lime\"><br><font color=\"lime\">". date("j/m H:i:s" ,$BuildEndTime) ."</font></strong>";
+            $ListIDRow .= "   <strong color=\"lime\"><br><font color=\"lime\">". date(FMT_DATE_TIME ,$BuildEndTime) ."</font></strong>";
           } else {
             $ListIDRow .= "   <font color=\"red\">";
             $ListIDRow .= "   <a href=\"buildings.php?listid=". $ListID ."&amp;cmd=remove&amp;planet=". $PlanetID ."\">". $lang['DelFromQueue'] ."</a></font>";

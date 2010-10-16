@@ -120,7 +120,7 @@ function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_f
   }
 
   //And lets start the CR. And admin message like asking them to give the cr. Nope, well moving on give the time and date ect.
-  $html .= "Флоты соперников встретились ".date("d-m-Y H:i:s")."<br /><br />";
+  $html .= "Флоты соперников встретились ".date(FMT_DATE_TIME)."<br /><br />";
 
   $data = $result_array['rw'][0]['attackers'];
   $dataKey = array_keys($data);

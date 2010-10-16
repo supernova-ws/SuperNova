@@ -79,7 +79,7 @@ INSERT INTO `sn_config` VALUES
   ('int_banner_showInOverview', 1), 
   ('int_banner_URL', '/banner.php?type=banner'), 
   ('int_format_date', 'd.m.Y'),
-  ('int_format_time', 'h:i:s'),
+  ('int_format_time', 'H:i:s'),
   ('int_userbar_background', 'images/userbar.png'), 
   ('int_userbar_font', 'arialbd.ttf'), 
   ('int_userbar_showInOverview', 1), 
