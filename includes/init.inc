@@ -64,7 +64,7 @@ if(!isset($cache->tables))
 
 // Initializing global "config" object
 $config = new classConfig($db_prefix);
-$config->db_prefix = $dbsettings['prefix'];
+$config->db_prefix = $db_prefix;
 
 if($config->debug)
 {
@@ -132,7 +132,7 @@ includeLang ('tech');
 
 function sys_refresh_tablelist($db_prefix)
 {
-  global $cache, $dbsettings;
+  global $cache;
 
   $query = doquery('SHOW TABLES;');
 
