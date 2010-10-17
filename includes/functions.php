@@ -681,4 +681,29 @@ function sys_get_user_ip()
   return array_map('mysql_real_escape_string', $ip);;
 }
 
+function flt_expand($target)
+{
+  $arr_fleet = array();
+  if($target['fleet_array']) // it's a fleet!
+  {
+    $arr_fleet_lines = explode(';', $target['fleet_array']);
+    foreach($arr_fleet_lines as $str_fleet_line)
+    {
+      if($str_fleet_line)
+      {
+        $arr_ship_data = explode(',', $str_fleet_line);
+        $arr_fleet[$arr_ship_data[0]] = $arr_ship_data[1];
+      }
+    }
+    $arr_fleet[901] = $target['fleet_resource_metal'];
+    $arr_fleet[902] = $target['fleet_resource_crystal'];
+    $arr_fleet[903] = $target['fleet_resource_deuterium'];
+  }
+  elseif($target['field_max']) // it's a planet!
+  {
+
+  }
+
+  return $arr_fleet;
+}
 ?>

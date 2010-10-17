@@ -51,6 +51,7 @@ function show_debris(planet){
     var result = "<table>";
     result += "<tr><td class=c colspan=3>" + language['debris'] + " [" + uni_galaxy + ":" + uni_system + ":" + planet + "]</td></tr>";
     result += "<tr><th rowspan=6><img src=" + dpath + "planeten/debris.jpg height=75 width=75 /></th></tr>";
+    // debris_incoming
     result += "<tr><td class=c>" + language['gl_ressource'] + "</td><td class=c>" + sn_format_number(parseInt(uni_row[planet]['debris_metal']) + parseInt(uni_row[planet]['debris_crystal'])) + "</td></tr>";
     result += "<tr><th>" + language['sys_metal'] + '</th><th style="text-align: right;">' + sn_format_number(uni_row[planet]['debris_metal']) + "</th></tr>";
     result += "<tr><th>" + language['sys_crystal'] + '</th><th style="text-align: right;">' + sn_format_number(uni_row[planet]['debris_crystal']) + "</th></tr>";

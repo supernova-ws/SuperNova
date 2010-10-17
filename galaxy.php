@@ -141,6 +141,13 @@ $GET_planet       = intval($_GET['planet']);
           }
         }
 
+      $recyclers_incoming = 0;
+      $sqlFleets = doquery("SELECT * FROM {{fleets}} WHERE `fleet_end_galaxy` = {$galaxy} AND `fleet_end_system` = {$system} AND `fleet_end_planet` = {$Planet} AND `fleet_end_type` = 2 AND fleet_owner = {$user['id']};");
+      while ($arrFleet = mysql_fetch_array($sqlFleets)) {
+        $fleet = flt_expand($arrFleet);
+        $recyclers_incoming += $fleet[209];
+      }
+
       $GalaxyRowMoon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = {$GalaxyRowPlanet['id']};", '', true);
       if ($GalaxyRowMoon['destruyed'])
         CheckAbandonPlanetState($GalaxyRowMoon);
@@ -149,9 +156,9 @@ $GET_planet       = intval($_GET['planet']);
     if ($GalaxyRowPlanet["debris_metal"] || $GalaxyRowPlanet["debris_crystal"]) {
       $RecNeeded = ceil(($GalaxyRowPlanet["debris_metal"] + $GalaxyRowPlanet["debris_crystal"]) / $pricelist[209]['capacity']);
       if ($RecNeeded < $CurrentRC) {
-        $RecSended = $RecNeeded;
+        $recyclers_sent = $RecNeeded;
       }else{
-        $RecSended = $CurrentRC;
+        $recyclers_sent = $CurrentRC;
       }
     }
 
@@ -170,7 +177,8 @@ $GET_planet       = intval($_GET['planet']);
 
        'DEBRIS_METAL'   => $GalaxyRowPlanet['debris_metal'], //number_format( $GalaxyRowPlanet['metal'], 0, '', '.'),
        'DEBRIS_CRYSTAL' => $GalaxyRowPlanet['debris_crystal'], //number_format( $GalaxyRowPlanet['crystal'], 0, '', '.'),
-       'DEBRIS_RC_SEND' => $RecSended,
+       'DEBRIS_RC_SEND' => $recyclers_sent,
+       'DEBRIS_RC_INC'  => $recyclers_incoming,
 
        'USER_ID'       => $GalaxyRowUser['id'],
        'USER_NAME'     => $GalaxyRowUser['username'],

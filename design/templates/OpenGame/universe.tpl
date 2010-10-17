@@ -221,13 +221,20 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
       <!-- DEFINE $DEBRIS_BKG = '' -->
     <!-- ENDIF -->
 
-    <th style="white-space: nowrap; background-image: none; width: 60px; height: 100%; background-color: {$DEBRIS_BKG}; text-align: center;">
+    <th style="white-space: nowrap; background-image: none; width: 60px; height: 100%; background-color: {$DEBRIS_BKG};"><center>
       <!-- IF galaxyrow.DEBRIS_METAL + galaxyrow.DEBRIS_CRYSTAL -->
-        <img style="cursor: pointer;" onmouseover='javascript:show_debris({galaxyrow.PLANET_NUM});' src={dpath}planeten/debris.jpg height=30 width=30>
+        <div style="position: relative; height: 30px; width: 30px;">
+          <span style="position: absolute; top: 0; height: 30px; width: 30px;">
+            <img onmouseover='javascript:show_debris({galaxyrow.PLANET_NUM});' src={dpath}planeten/debris.jpg height=30px width=30px>
+          </span>
+          <!-- IF galaxyrow.DEBRIS_RC_INC -->
+            <span class="icon_alpha" style="position: absolute; bottom: 0; right: 0;">{galaxyrow.DEBRIS_RC_INC}</span>
+          <!-- ENDIF -->
+        </div>
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
-    </th>
+    </center></th>
 
     <!-- IF galaxyrow.USER_BANNED -->
       <!-- DEFINE $USER_CLASS = 'banned' -->
@@ -349,8 +356,7 @@ allies[{alliances.ID}] = {name: '{alliances.NAME}', members: '{alliances.MEMBERS
 <!-- END alliances -->
 
 var uni_row = new Array();
-<!-- BEGIN galaxyrow -->
-uni_row[{galaxyrow.PLANET_NUM}] = 
+<!-- BEGIN galaxyrow -->uni_row[{galaxyrow.PLANET_NUM}] = 
 {
   owner: '{galaxyrow.USER_ID}',
   planet: '{galaxyrow.PLANET_NUM}',
@@ -361,8 +367,9 @@ uni_row[{galaxyrow.PLANET_NUM}] =
   moon_image: 'mond',
   debris_metal: '{galaxyrow.DEBRIS_METAL}',
   debris_crystal: '{galaxyrow.DEBRIS_CRYSTAL}',
-  debris_recyclers: '{galaxyrow.DEBRIS_RC_SEND}'
+  debris_recyclers: '{galaxyrow.DEBRIS_RC_SEND}',
+  debris_incoming: '{galaxyrow.DEBRIS_RC_INC}'
 };
-<!-- END planets -->
+<!-- END galaxyrow -->
 
 --></script>
