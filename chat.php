@@ -18,11 +18,12 @@
 
 define('INSIDE'  , true);
 define('INSTALL' , false);
-$xnova_root_path = './';
 
 $doNotUpdateFleet = true;
-include($xnova_root_path . 'extension.inc');
-include($xnova_root_path . 'common.' . $phpEx);
+
+$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
+include("{$ugamela_root_path}common.{$phpEx}");
 
 if ($IsUserChecked == false) {
   includeLang('login');

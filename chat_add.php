@@ -16,14 +16,14 @@
    1.0 copyright 2008 by e-Zobar for XNova
 */
 
-$doNotUpdateFleet = true;
-
 define('INSIDE'  , true);
 define('INSTALL' , false);
 
-$xnova_root_path = './';
-include($xnova_root_path . 'extension.inc');
-include($xnova_root_path . 'common.' . $phpEx);
+$doNotUpdateFleet = true;
+
+$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
+include("{$ugamela_root_path}common.{$phpEx}");
 
 if ($IsUserChecked == false) {
   includeLang('login');

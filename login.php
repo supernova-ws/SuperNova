@@ -13,8 +13,8 @@ define('INSTALL' , false);
 
 $InLogin = true;
 
-$ugamela_root_path = './';
-include("{$ugamela_root_path}extension.inc");
+$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
 
 $id_ref = intval($_GET['id_ref'] ? $_GET['id_ref'] : $_POST['id_ref']);
