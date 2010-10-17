@@ -13,7 +13,7 @@ if ( !defined('INSIDE') ) {
 }
 
 function doquery($query, $table = "", $fetch = false){
-  global $numqueries, $link, $debug, $ugamela_root_path, $user, $tableList, $cache, $is_watching, $config;
+  global $numqueries, $link, $debug, $ugamela_root_path, $user, $tableList, $sn_cache, $is_watching, $config;
 
   if($config->game_watchlist_array)
   {
@@ -108,7 +108,7 @@ function doquery($query, $table = "", $fetch = false){
   $sql = str_replace("{{table}}", $dbsettings["prefix"].$table, $query);
   if(!(strpos($sql, '{{') === false) )
   {
-    foreach($cache->tables as $tableName)
+    foreach($sn_cache->tables as $tableName)
     {
       $sql = str_replace("{{".$tableName."}}", $dbsettings["prefix"].$tableName, $sql);
     }

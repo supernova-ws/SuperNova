@@ -11,7 +11,6 @@ if($_SERVER['SERVER_NAME'] == 'localhost')
 {
   define('BE_DEBUG', true);
   ini_set('display_errors', 1);
-//  ini_set('error_reporting', E_ALL);
 }
 else
 {
@@ -23,11 +22,10 @@ define('VERSION','v. 0000');
 define('INSIDE'  , true);
 define('INSTALL' , false);
 
+$time_now      = time();
 $user          = array();
 $lang          = array();
 $IsUserChecked = false;
-
-$time_now = time();
 
 $ugamela_root_path = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT']) . '/';
 $phpbb_root_path = $ugamela_root_path;
@@ -35,8 +33,10 @@ $phpEx = substr(strrchr(__FILE__, '.'), 1);
 
 // required for db.php
 include_once("{$ugamela_root_path}includes/debug.class.{$phpEx}");
-// required for class_cache.php
 include_once("{$ugamela_root_path}includes/db.{$phpEx}");
+
+// $dbms = 'mysql';
+// include_once("{$ugamela_root_path}includes/db/{$dbms}.{$phpEx}");
 
 $dir = opendir("{$ugamela_root_path}includes/classes");
 while (($file = readdir($dir)) !== false)
@@ -55,8 +55,8 @@ $db_prefix = $dbsettings['prefix'];
 unset($dbsettings);
 
 // Initializing global 'cacher' object
-$cache = new classCache($db_prefix);
-if(!isset($cache->tables))
+$sn_cache = new classCache($db_prefix);
+if(!isset($sn_cache->tables))
 {
   sys_refresh_tablelist($db_prefix);
 }
@@ -131,7 +131,7 @@ includeLang ('tech');
 
 function sys_refresh_tablelist($db_prefix)
 {
-  global $cache;
+  global $sn_cache;
 
   $query = doquery('SHOW TABLES;');
 
@@ -142,7 +142,7 @@ function sys_refresh_tablelist($db_prefix)
       $tl[] = str_replace($db_prefix, '', $row);
     }
   }
-  $cache->tables = $tl;
+  $sn_cache->tables = $tl;
 }
 
 define('INIT', true);
