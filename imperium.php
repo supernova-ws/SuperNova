@@ -41,6 +41,10 @@ $template->assign_var(mount, count($planets) + 2);
 foreach ($planets as $planet_index => $planet) {
 //  $planetCaps = ECO_getPlanetCaps($user, $planet);
   PlanetResourceUpdate($user, $planet, $time_now);
+  if($planet[id] == $planetrow['id'])
+  {
+    $planetrow = $planet;
+  }
 
   $planet_template = tpl_parse_planet($planet);
 
