@@ -16,7 +16,7 @@
 
 if(!defined('INIT'))
 {
-  include_once('init.inc');
+  include_once('init.php');
 }
 
 $db_last_version = 19;

@@ -1,5 +1,5 @@
 <?php
-include_once('includes/init.inc');
+include_once('includes/init.php');
 
 if(!$config->db_loadItem('var_scheduler_active'))
 {

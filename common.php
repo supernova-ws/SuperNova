@@ -6,7 +6,7 @@
  *
  * @version 1.1 Security checks by Gorlum for http://supernova.ws
  */
-require_once('includes/init.inc');
+require_once('includes/init.php');
 
 if (!$InLogin) {
   $user          = CheckTheUser();

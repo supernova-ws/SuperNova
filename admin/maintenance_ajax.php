@@ -1,5 +1,5 @@
 <?php
-include_once('../includes/init.inc');
+include_once('../includes/init.php');
 
 $user          = CheckTheUser();
 
