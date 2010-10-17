@@ -134,6 +134,26 @@ git reset --hard
 Так же некоторые настройки игры хранятся в файле /includes/constants.php
 Все изменения - на ваш страх и риск
 
+Апгрейд
+=======
+Автоматический апгрейд с баз RR в  разработке.  Частично  апгрейд  производится
+автоматически запуском файла update.php
+
+В СН относительно RR изменено местоположение баннера. Раньше ссылка была
+/scripts/createbanner.php
+Новая ссылка
+/banner.php
+
+Используйте средства веб-сервера (mod_rewrite) для перенаправления запросов.  В
+частности, правило для lighttpd будет следующим:
+
+#Redirects old-style banners to new one
+server.modules += ( "mod_rewrite" )
+url.rewrite-once = (
+  "^/scripts/createbanner.php(.*)" => "/banner.php$1"
+)
+
+
 Ссылки
 ======
 Основной сайт проекта: http://supernova.ws
