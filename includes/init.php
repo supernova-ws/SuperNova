@@ -31,9 +31,8 @@ $time_now = time();
 
 $ugamela_root_path = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT']) . '/';
 $phpbb_root_path = $ugamela_root_path;
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
 
-// required for any other code
-include_once("{$ugamela_root_path}includes/extensions.inc");
 // required for db.php
 include_once("{$ugamela_root_path}includes/debug.class.{$phpEx}");
 // required for class_cache.php

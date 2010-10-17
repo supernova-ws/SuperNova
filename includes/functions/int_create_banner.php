@@ -23,8 +23,8 @@ function INT_createBanner($id, $type = 'userbar', $format = 'png'){
       $img_name = $config->int_userbar_background;
   }
 
-  $size = getimagesize($img_name);
-  $im = imagecreatefrompng($img_name);
+  $size = getimagesize("{$ugamela_root_path}{$img_name}");
+  $im = imagecreatefrompng("{$ugamela_root_path}{$img_name}");
   $image = imagecreatetruecolor($size[0],$size[1]);
   imagecopy($image,$im,0,0,0,0,$size[0],$size[1]);
   imagedestroy($im);

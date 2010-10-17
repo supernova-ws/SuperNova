@@ -18,8 +18,8 @@ define('INSIDE'  , true);
 define('INSTALL' , false);
 
 $ugamela_root_path = './';
-include($ugamela_root_path . 'extension.inc');
-include($ugamela_root_path . 'common.' . $phpEx);
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
+include("{$ugamela_root_path}common.{$phpEx}");
 
 if ($IsUserChecked == false) {
   includeLang('login');

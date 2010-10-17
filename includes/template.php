@@ -92,6 +92,7 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
     $Template = 'admin/left_menu_op';
   }
   elseif ($Level >= "3") {
+    //$parse['dpath']           = "../{$dpath}";
     $Template = 'admin/left_menu';
   };
 
@@ -229,6 +230,8 @@ function StdFooter() {
 
 function displayP($template)
 {
+  global $ugamela_root_path;
+
   if(is_object($template))
   {
     global $lang, $user;
@@ -241,7 +244,9 @@ function displayP($template)
       }
     }
 
-    $template->assign_var('dpath', (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"]);
+    $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
+    //$dpath = "{$ugamela_root_path}{$dpath}";
+    $template->assign_var('dpath', $dpath);
 
     $template->display('body');
   }
