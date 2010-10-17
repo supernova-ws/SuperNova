@@ -12,17 +12,17 @@
 
 if ( !defined('INSIDE') )
 {
-  die("Hacking attempt");
+  die('Hacking attempt');
 }
 
-define('GAMEURL', "http://".$_SERVER['HTTP_HOST']."/");
+define('GAMEURL', "http://{$_SERVER['HTTP_HOST']}/");
 
-// Game type constants starts with "GAME_"
+// Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
 define('GAME_OGAME',     1);
 
 // Pattern to parse planet coordinates like [1:123:14] - no expedition [x:x:16] will pass!
-define('PLANET_COORD_PREG', "/^\[([1-9]):([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):(1[0-5]|[1-9])\]$/i");
+define('PLANET_COORD_PREG', '/^\[([1-9]):([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):(1[0-5]|[1-9])\]$/i');
 // Pattern to parse scheduler '[[[[[YYYY-]MM-]DD ]HH:]MM:]SS'
 define('SCHEDULER_PREG', '/^(?:(?:(?:(?:(?:(2\d\d\d)-)?(1[0-2]|0[1-9])-)?(?:(3[01]|[0-2]\d)\ ))?(?:(2[0-3]|[01]\d):))?(?:([0-5]\d):))?([0-5]\d)$/i');
 
@@ -63,7 +63,7 @@ define('VOCATION_TIME', 2*24*60*60); // 48 hours
 // Mot qui sont interdit a la saisie !
 $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
-// Mission Target constants starts with "MT_"
+// Mission Target constants starts with MT_
 define('MT_ATTACK',    1);
 define('MT_AKS',       2);
 define('MT_TRANSPORT', 3);
@@ -76,7 +76,7 @@ define('MT_DESTROY',   9);
 define('MT_MISSILE',  10);
 define('MT_EXPLORE',  15);
 
-// Planet Target constants starts with "PT_"
+// Planet Target constants starts with PT_
 define('PT_PLANET', 1);
 define('PT_DEBRIS', 2);
 define('PT_MOON',   3);

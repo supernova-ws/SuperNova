@@ -20,6 +20,7 @@ else
 define('VERSION','v. 0000');
 
 define('INSIDE'  , true);
+define('IN_PHPBB', true);
 define('INSTALL' , false);
 
 $time_now      = time();
@@ -35,8 +36,10 @@ $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include_once("{$ugamela_root_path}includes/debug.class.{$phpEx}");
 include_once("{$ugamela_root_path}includes/db.{$phpEx}");
 
-// $dbms = 'mysql';
-// include_once("{$ugamela_root_path}includes/db/{$dbms}.{$phpEx}");
+//$dbms = 'mysql';
+//include_once("{$ugamela_root_path}includes/db/{$dbms}.{$phpEx}");
+// $db      = new $sql_db();
+
 
 $dir = opendir("{$ugamela_root_path}includes/classes");
 while (($file = readdir($dir)) !== false)
