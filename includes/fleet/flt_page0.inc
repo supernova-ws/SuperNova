@@ -25,7 +25,7 @@ $fq = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner={$user['id']}");
 while ($f = mysql_fetch_array($fq))
 {
   $i++;
-  $fleet_data = tpl_parse_fleet($f, $i, $user);
+  $fleet_data = tpl_parse_fleet_db($f, $i, $user);
   $template->assign_block_vars('fleets', $fleet_data['fleet']);
 
   foreach($fleet_data['ships'] as $ship_data)

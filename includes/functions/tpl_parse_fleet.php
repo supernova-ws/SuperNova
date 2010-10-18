@@ -1,6 +1,39 @@
 <?php
 
-function tpl_parse_fleet($fleet, $index, $user_data = '')
+// function that parses internal fleet representation (as array(id => count))
+function tpl_parse_fleet_sn($fleet, $fleet_id)
+{
+  global $lang, $time_now, $user, $pricelist, $sn_groups;
+
+  $user_data = &$user;
+
+  $return['fleet'] = array(
+    'ID'                 => $fleet_id,
+
+    'METAL'              => $fleet[901],
+    'CRYSTAL'            => $fleet[902],
+    'DEUTERIUM'          => $fleet[903],
+  );
+
+  foreach ($fleet as $ship_id => $ship_amount)
+  {
+    if(in_array($ship_id, $sn_groups['fleet']))
+    {
+      $return['ships'][$ship_id] = array(
+        'ID'          => $ship_id,
+        'NAME'        => $lang['tech'][$ship_id],
+        'AMOUNT'      => $ship_amount,
+        'CONSUMPTION' => GetShipConsumption($ship_id, $user_data),
+        'SPEED'       => get_ship_speed($ship_id, $user_data),
+        'CAPACITY'    => $pricelist[$ship_id]['capacity'],
+      );
+    }
+  }
+
+  return $return;
+}
+
+function tpl_parse_fleet_db($fleet, $index, $user_data = false)
 {
   global $lang, $time_now, $user, $pricelist;
 
@@ -11,7 +44,7 @@ function tpl_parse_fleet($fleet, $index, $user_data = '')
 
   if ($fleet['fleet_mess'] == 0 && $fleet['fleet_mission'] == 2)
   {
-    $aks = doquery("SELECT * FROM {{aks}} WHERE id={$fleet['fleet_group']}", '', true);
+    $aks = doquery("SELECT * FROM {{aks}} WHERE id={$fleet['fleet_group']} LIMIT 1;", '', true);
   };
 
   $return['fleet'] = array(

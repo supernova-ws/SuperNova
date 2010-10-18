@@ -115,41 +115,7 @@ function int_assign_event($fleet, $ov_label)
     $user_data = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$fleet['fleet_owner']};", '', true);
   };
 
-  $fleets[] = tpl_parse_fleet($fleet, ++$fleet_number, $user_data);
-}
-
-// Compare function to sort fleet in time order
-function int_fleet_compare($a, $b)
-{
-  if($a['fleet']['OV_THIS_PLANET'] == $b['fleet']['OV_THIS_PLANET'])
-  {
-    if($a['fleet']['OV_LEFT'] == $b['fleet']['OV_LEFT'])
-    {
-      return 0;
-    }
-    return ($a['fleet']['OV_LEFT'] < $b['fleet']['OV_LEFT']) ? -1 : 1;
-  }
-  else
-  {
-    return $a['fleet']['OV_THIS_PLANET'] ? -1 : 1;
-  }
-}
-
-function int_template_assign(&$fleets)
-{
-  global $template;
-
-  usort($fleets, 'int_fleet_compare');
-
-  foreach($fleets as $fleet_data)
-  {
-    $template->assign_block_vars('fleets', $fleet_data['fleet']);
-
-    foreach($fleet_data['ships'] as $ship_data)
-    {
-      $template->assign_block_vars('fleets.ships', $ship_data);
-    }
-  }
+  $fleets[] = tpl_parse_fleet_db($fleet, ++$fleet_number, $user_data);
 }
 
 // includeLang('resources');
@@ -360,7 +326,7 @@ switch ($mode)
       }
     }
 
-    int_template_assign($fleets);
+    tpl_assign_fleet($template, $fleets);
 
     // -----------------------------------------------------------------------------------------------
     // --- Gestion de la liste des planetes ----------------------------------------------------------

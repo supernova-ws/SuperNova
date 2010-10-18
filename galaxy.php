@@ -102,6 +102,8 @@ $GET_planet       = intval($_GET['planet']);
   $MissileRange  = GetMissileRange();
   $PhalanxRange  = GetPhalanxRange ( $HavePhalanx );
 
+  $fleet_id = 1;
+  $fleets = array();
   for ($Planet = 1; $Planet < 16; $Planet++) {
     unset($GalaxyRowPlanet);
     unset($GalaxyRowMoon);
@@ -112,6 +114,7 @@ $GET_planet       = intval($_GET['planet']);
 
     $GalaxyRowPlanet = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$galaxy} AND `system` = {$system} AND `planet` = {$Planet} AND `planet_type` = 1;", '', true);
 
+    $planet_fleet_id = 0;
     if ($GalaxyRowPlanet['destruyed']) {
       CheckAbandonPlanetState ($GalaxyRowPlanet);
     } elseif ($GalaxyRowPlanet['id']) {
@@ -141,10 +144,18 @@ $GET_planet       = intval($_GET['planet']);
           }
         }
 
+      $fleet_list = flt_get_fleets_to_planet($GalaxyRowPlanet);
+      if($fleet_list['own']['count'])
+      {
+        $planet_fleet_id = $fleet_id;
+        $fleets[] = tpl_parse_fleet_sn($fleet_list['own']['total'], $fleet_id);
+        $fleet_id++;
+      }
+
       $recyclers_incoming = 0;
-      $sqlFleets = doquery("SELECT * FROM {{fleets}} WHERE `fleet_end_galaxy` = {$galaxy} AND `fleet_end_system` = {$system} AND `fleet_end_planet` = {$Planet} AND `fleet_end_type` = 2 AND fleet_owner = {$user['id']};");
-      while ($arrFleet = mysql_fetch_array($sqlFleets)) {
-        $fleet = flt_expand($arrFleet);
+      $sql_fleets = doquery("SELECT * FROM {{fleets}} WHERE `fleet_end_galaxy` = {$galaxy} AND `fleet_end_system` = {$system} AND `fleet_end_planet` = {$Planet} AND `fleet_end_type` = 2 AND fleet_mess = 0 AND fleet_owner = {$user['id']};");
+      while ($arr_fleet = mysql_fetch_array($sql_fleets)) {
+        $fleet = flt_expand($arr_fleet);
         $recyclers_incoming += $fleet[209];
       }
 
@@ -170,6 +181,7 @@ $GET_planet       = intval($_GET['planet']);
        'PLANET_TYPE'      => $GalaxyRowPlanet["planet_type"],
        'PLANET_ACTIVITY'  => floor(($time_now - $GalaxyRowPlanet['last_update'])/60),
        'PLANET_IMAGE'     => $GalaxyRowPlanet['image'],
+       'PLANET_FLEET_ID'  => $planet_fleet_id,
 
        'MOON_NAME'      => $GalaxyRowMoon["name"],
        'MOON_DIAMETER'  => number_format($GalaxyRowMoon['diameter'], 0, '', '.'),
@@ -195,6 +207,8 @@ $GET_planet       = intval($_GET['planet']);
        'ALLY_TAG'      => $allyquery['ally_tag'],
     ));
   }
+
+  tpl_assign_fleet($template, $fleets);
 
   foreach($cached['users'] as $PlanetUser){
     $template->assign_block_vars('users', array(
@@ -247,6 +261,7 @@ $GET_planet       = intval($_GET['planet']);
        'PAGE_HINT'      => $lang['gal_sys_hint'],
      )
   );
+
 
   display ($template, $lang['sys_universe'], true, '', false);
 ?>

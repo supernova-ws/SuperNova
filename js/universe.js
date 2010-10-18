@@ -125,6 +125,11 @@ function show_planet(planet, planet_type)
   {
     result = uni_row[planet]['cache_planet' + planet_type];
   }
+  var fleet_table = fleet_table_make(uni_row[planet]['planet_fleet_id'])
+  if(fleet_table)
+  {
+    result += '' + fleet_table + '';
+  }
 
   popup_show(result);
 }

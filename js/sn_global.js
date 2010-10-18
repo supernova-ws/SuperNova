@@ -1,3 +1,5 @@
+var language = {};
+
 var x = "";
 var e = null;
 
