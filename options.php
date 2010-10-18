@@ -163,6 +163,8 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
       $query = doquery("SELECT * FROM {{planets}} WHERE id_owner = '{$user['id']}'");
       while($id = mysql_fetch_array($query))
       {
+        PlanetResourceUpdate ($user, $id, $time_now);
+
         doquery("UPDATE {{planets}} SET
           metal_perhour = '".$config->metal_basic_income."',
           crystal_perhour = '".$config->metal_basic_income."',
