@@ -77,19 +77,19 @@ if($config->debug)
     define('BE_DEBUG', true);
   }
 }
-
 $update_file = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.{$phpEx}";
 if(file_exists($update_file))
 {
   if(filemtime($update_file) > $config->var_db_update)
   {
-    if($time_now > $config->var_db_update_end)
+    if($time_now >= $config->var_db_update_end)
     {
-      $config->db_saveItem('var_db_update_end', $time_now + 120);
+      $config->db_saveItem('var_db_update_end', $time_now + 60);
 
       require_once($update_file);
       sys_refresh_tablelist($db_prefix);
 
+      $time_now = time();
       $config->db_saveItem('var_db_update', $time_now);
       $config->db_saveItem('var_db_update_end', $time_now);
     }
