@@ -33,6 +33,8 @@ if($config->db_version > $db_last_version)
   die('Internal error! Auotupdater detects DB version greater then can be handled!<br>Possible you have out-of-date SuperNova version<br>Pleas upgrade your server from <a href="http://github.com/supernova-ws/SuperNova">GIT repository</a>.');
 }
 
+$debug->warning('Update starting', 'Database Update', 103);
+
 $msg = 'Loading table info... ';
 $query = doquery('SHOW TABLES;');
 while($row = mysql_fetch_row($query))
