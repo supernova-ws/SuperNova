@@ -2,7 +2,7 @@
 <script type="text/javascript"><!--
 var fleets = Array();
 <!-- BEGIN fleets -->
-  fleets[{fleets.ID}] = [[
+  fleets['{fleets.ID}'] = [[
     <!-- BEGIN ships -->
     ['{ships.NAME}', '{ships.AMOUNT}', '{ships.SPEED}', '{ships.CONSUMPTION}', '{ships.CAPACITY}', '{ships.ID}'],
     <!-- END ships -->

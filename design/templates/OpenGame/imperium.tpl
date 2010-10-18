@@ -1,3 +1,4 @@
+<!-- INCLUDE fleet_javascript.tpl -->
 <br>
 <table border="0" cellpadding="0" cellspacing="1" width="750" align=center><tbody>
   <tr valign="left">

@@ -38,6 +38,8 @@ $template->assign_var(mount, count($planets) + 2);
 
 //$parse['mount'] = count($planets) + 1;
 
+$fleet_id = 1;
+$fleets = array();
 foreach ($planets as $planet_index => $planet) {
 //  $planetCaps = ECO_getPlanetCaps($user, $planet);
   PlanetResourceUpdate($user, $planet, $time_now);
@@ -48,7 +50,18 @@ foreach ($planets as $planet_index => $planet) {
 
   $planet_template = tpl_parse_planet($planet);
 
+  $planet_fleet_id = 0;
+  $fleet_list = flt_get_fleets_to_planet($planet);
+  if($fleet_list['own']['count'])
+  {
+    $planet_fleet_id = "p{$fleet_id}";
+    $fleets[] = tpl_parse_fleet_sn($fleet_list['own']['total'], $planet_fleet_id);
+    $fleet_id++;
+  }
+
   $template->assign_block_vars('planet', array_merge($planet_template, array(
+    'PLANET_FLEET_ID'  => $planet_fleet_id,
+
     'FIELDS_CUR' => $planet['field_current'],
     'FIELDS_MAX' => $planet['field_max'] + $planet[$sn_data[33]['name']] * 5,
 
@@ -80,6 +93,8 @@ foreach ($planets as $planet_index => $planet) {
   $total['deuterium_perhour'] += $planet['deuterium_perhour'];
   $total['energy_max'] += $planet['energy_max'];
 }
+
+tpl_assign_fleet($template, $fleets);
 
 $template->assign_block_vars('planet', array_merge(array(
   'NAME'       => 'хрнцн',

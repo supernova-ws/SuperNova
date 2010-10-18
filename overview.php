@@ -326,8 +326,6 @@ switch ($mode)
       }
     }
 
-    tpl_assign_fleet($template, $fleets);
-
     // -----------------------------------------------------------------------------------------------
     // --- Gestion de la liste des planetes ----------------------------------------------------------
     // Planetes ...
@@ -358,6 +356,8 @@ switch ($mode)
     $planets_query = doquery("SELECT * FROM {{planets}} WHERE id_owner='{$user['id']}' AND planet_type = 1 ORDER BY {$planetSort};");
     $Colone  = 1;
 
+    $fleet_id = 1;
+    // $fleets = array();
     while ($UserPlanet = mysql_fetch_array($planets_query))
     {
       $buildArray = array();
@@ -406,16 +406,28 @@ switch ($mode)
         $moon_fill = 0;
       }
 
+      $planet_fleet_id = 0;
+      $fleet_list = flt_get_fleets_to_planet($UserPlanet);
+      if($fleet_list['own']['count'])
+      {
+        $planet_fleet_id = "p{$fleet_id}";
+        $fleets[] = tpl_parse_fleet_sn($fleet_list['own']['total'], $planet_fleet_id);
+        $fleet_id++;
+      }
+
       $moon_fleets = flt_get_fleets_to_planet($moon);
-      $template->assign_block_vars('planet', array_merge(tpl_parse_planet($UserPlanet),
-        array(
+      $template->assign_block_vars('planet', array_merge(tpl_parse_planet($UserPlanet), array(
+          'PLANET_FLEET_ID'  => $planet_fleet_id,
+
           'MOON_ID'      => $moon['id'],
           'MOON_NAME'    => $moon['name'],
           'MOON_IMG'     => $moon['image'],
           'MOON_FILL'    => min(100, $moon_fill),
           'MOON_ENEMY'   => $moon_fleets['enemy']['count'],
-        ), $buildArray));
+      ), $buildArray));
     }
+
+    tpl_assign_fleet($template, $fleets);
 
     // -----------------------------------------------------------------------------------------------
     $parse                         = $lang;

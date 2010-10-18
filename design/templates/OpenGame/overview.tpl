@@ -128,6 +128,7 @@
     </tr>
 
     <!-- BEGIN fleets -->
+    <!-- IF fleets.NUMBER -->
       <!-- IF fleets.S_FIRST_ROW -->
         <!-- IF fleets.OV_THIS_PLANET -->
           <tr><th colspan="5" class="c">{L_ov_flying_fleets} {PLANET_NAME} [{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</th></tr>
@@ -216,6 +217,7 @@
           ['{fleets.ID}', '', {fleets.OV_LEFT}, '0']
         ]]});
       --></script>
+    <!-- ENDIF -->
     <!-- BEGINELSE fleets -->
       <tr><th colspan=5>{L_ov_fleet_no_flying}</th></tr>
     <!-- END fleets -->

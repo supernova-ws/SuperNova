@@ -17,7 +17,7 @@ function tpl_assign_fleet_compare($a, $b)
   }
 }
 
-function tpl_assign_fleet(&$template, $fleets)
+function tpl_assign_fleet(&$template, $fleets, $js_name = 'fleets')
 {
   if(!$fleets)
   {
@@ -28,13 +28,13 @@ function tpl_assign_fleet(&$template, $fleets)
 
   foreach($fleets as $fleet_data)
   {
-    $template->assign_block_vars('fleets', $fleet_data['fleet']);
+    $template->assign_block_vars($js_name, $fleet_data['fleet']);
 
     if($fleet_data['ships'])
     {
       foreach($fleet_data['ships'] as $ship_data)
       {
-        $template->assign_block_vars('fleets.ships', $ship_data);
+        $template->assign_block_vars("{$js_name}.ships", $ship_data);
       }
     }
   }
