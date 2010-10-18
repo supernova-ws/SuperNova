@@ -49,7 +49,7 @@ function PlanetResourceUpdate ( $CurrentUser, &$CurrentPlanet, $UpdateTime, $Sim
 
   if (!$Simul) {
     // Now checking fleet/defense production
-    $Builded          = HandleElementBuildingQueue ( $CurrentUser, $CurrentPlanet, $ProductionTime );
+    $Builded          = eco_bld_handle_que ( $CurrentUser, $CurrentPlanet, $ProductionTime );
 
     // Query to update planet data in DB
     $QryUpdatePlanet  = "UPDATE {{planets}} SET ";
