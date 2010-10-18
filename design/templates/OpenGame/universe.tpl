@@ -186,11 +186,11 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
           <span style="position: absolute; top: 0; left: 0; height: 30px; width: 30px;">
             <img style="cursor: pointer;" src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg height=30 width=30>
           </span>
-        <!-- IF galaxyrow.PLANET_FLEET_ID -->
-          <span class="icon_alpha" style="position: absolute; bottom: 0; right: 0; height: 100%; width: 100%;">
-            <img src=design/images/icon_fleet_own.png height=100%>
-          </span>
-        <!-- ENDIF -->
+          <!-- IF galaxyrow.PLANET_FLEET_ID -->
+            <span class="alpha50" style="position: absolute; top: 0; left: 0; height: 100%; width: 100%;">
+              <img src=design/images/icon_fleet_own.png width=100%>
+            </span>
+          <!-- ENDIF -->
         </div>
       <!-- ELSE -->
         &nbsp;
@@ -231,9 +231,18 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
         &nbsp;
       <!-- ENDIF -->
     </th>
-    <th style="white-space: nowrap;" width=30>
+    <th width=30>
       <!-- IF galaxyrow.MOON_NAME -->
-        <img style="cursor: pointer;" onmouseover='javascript:show_planet({galaxyrow.PLANET_NUM}, 3)' src={dpath}planeten/small/s_mond.jpg height=30 width=30>
+        <div style="position: relative; height: 30px; width: 30px;" onmouseover="javascript:show_planet({galaxyrow.PLANET_NUM}, {galaxyrow.PLANET_TYPE});" >
+          <span style="position: absolute; top: 0; left: 0; height: 30px; width: 30px;">
+            <img style="cursor: pointer;" onmouseover='javascript:show_planet({galaxyrow.PLANET_NUM}, 3)' src={dpath}planeten/small/s_mond.jpg height=30 width=30>
+          </span>
+          <!-- IF galaxyrow.MOON_FLEET_ID -->
+            <span class="alpha50" style="position: absolute; top: 0; left: 0; height: 100%; width: 100%;">
+              <img src=design/images/icon_fleet_own.png width=100%>
+            </span>
+          <!-- ENDIF -->
+        </div>
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
@@ -405,6 +414,7 @@ var uni_row = new Array();
   moon_name: '{galaxyrow.MOON_NAME}',
   moon_diameter: '{galaxyrow.MOON_DIAMETER}',
   moon_image: 'mond',
+  moon_fleet_id: '{galaxyrow.MOON_FLEET_ID}',
   debris_metal: '{galaxyrow.DEBRIS_METAL}',
   debris_crystal: '{galaxyrow.DEBRIS_CRYSTAL}',
   debris_recyclers: '{galaxyrow.DEBRIS_RC_SEND}',

@@ -77,6 +77,7 @@ function show_planet(planet, planet_type)
 {
   if(!uni_row[planet]['cache_planet' + planet_type])
   {
+    var fleet_table;
     var result = '<table width=240><tr><td class=c colspan=2>';
 
     if(planet_type == 1)
@@ -85,6 +86,7 @@ function show_planet(planet, planet_type)
       diameter = '';
       planet_image = uni_row[planet]['planet_image'];
       name = uni_row[planet]['planet_name'];
+      fleet_table = fleet_table_make(uni_row[planet]['planet_fleet_id']);
     }
     else
     {
@@ -92,6 +94,7 @@ function show_planet(planet, planet_type)
       diameter = '<div>' + uni_row[planet]['moon_diameter'] + '</div>';
       planet_image = uni_row[planet]['moon_image'];
       name = uni_row[planet]['moon_name'];
+      fleet_table = fleet_table_make(uni_row[planet]['moon_fleet_id']);
     }
 
     result += '&nbsp;' + name + '&nbsp;[' + uni_galaxy + ':' + uni_system + ':' + planet + ']</td></tr>';
@@ -119,17 +122,13 @@ function show_planet(planet, planet_type)
     };
     result += '<br>' + makeAHREF(planet, planet_type, 3, language['type_mission3']) + '</th></tr></table>';
 
+    if(fleet_table)
+    {
+      result += '' + fleet_table + '';
+    }
+
     uni_row[planet]['cache_planet' + planet_type] = result;
   }
-  else
-  {
-    result = uni_row[planet]['cache_planet' + planet_type];
-  }
-  var fleet_table = fleet_table_make(uni_row[planet]['planet_fleet_id'])
-  if(fleet_table)
-  {
-    result += '' + fleet_table + '';
-  }
 
-  popup_show(result);
+  popup_show(uni_row[planet]['cache_planet' + planet_type]);
 }

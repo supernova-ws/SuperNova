@@ -161,7 +161,20 @@ $GET_planet       = intval($_GET['planet']);
 
       $GalaxyRowMoon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = {$GalaxyRowPlanet['id']};", '', true);
       if ($GalaxyRowMoon['destruyed'])
+      {
         CheckAbandonPlanetState($GalaxyRowMoon);
+      }
+      else
+      {
+        $moon_fleet_id = 0;
+        $fleet_list = flt_get_fleets_to_planet($GalaxyRowMoon);
+        if($fleet_list['own']['count'])
+        {
+          $moon_fleet_id = $fleet_id;
+          $fleets[] = tpl_parse_fleet_sn($fleet_list['own']['total'], $fleet_id);
+          $fleet_id++;
+        }
+      }
     }
 
     if ($GalaxyRowPlanet["debris_metal"] || $GalaxyRowPlanet["debris_crystal"]) {
@@ -186,6 +199,7 @@ $GET_planet       = intval($_GET['planet']);
        'MOON_NAME'      => $GalaxyRowMoon["name"],
        'MOON_DIAMETER'  => number_format($GalaxyRowMoon['diameter'], 0, '', '.'),
        'MOON_TEMP'      => number_format($GalaxyRowMoon['temp_min'], 0, '', '.'),
+       'MOON_FLEET_ID'  => $moon_fleet_id,
 
        'DEBRIS_METAL'   => $GalaxyRowPlanet['debris_metal'], //number_format( $GalaxyRowPlanet['metal'], 0, '', '.'),
        'DEBRIS_CRYSTAL' => $GalaxyRowPlanet['debris_crystal'], //number_format( $GalaxyRowPlanet['crystal'], 0, '', '.'),
