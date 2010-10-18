@@ -4,6 +4,12 @@ if(defined('INIT'))
   return;
 }
 
+define('INIT'    , true);
+define('INSIDE'  , true);
+define('IN_PHPBB', true);
+define('INSTALL' , false);
+define('VERSION' , '2010-10-19-00-03');
+
 set_magic_quotes_runtime(0);
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
@@ -17,11 +23,6 @@ else
   ini_set('display_errors', 0);
 }
 
-define('VERSION','v. 0000');
-
-define('INSIDE'  , true);
-define('IN_PHPBB', true);
-define('INSTALL' , false);
 
 $time_now      = time();
 $user          = array();
@@ -84,7 +85,7 @@ if(file_exists($update_file))
   {
     if($time_now > $config->var_db_update_end)
     {
-      $config->db_saveItem('var_db_update_end', $time_now + 600);
+      $config->db_saveItem('var_db_update_end', $time_now + 120);
 
       require_once($update_file);
       sys_refresh_tablelist($db_prefix);
@@ -95,7 +96,7 @@ if(file_exists($update_file))
     elseif(filemtime($update_file) > $config->var_db_update)
     {
       $timeout = $config->var_db_update_end - $time_now;
-      die("Database update in progress. It may take up to {$timeout} seconds more. Please wait...");
+      die("Обновляется база данных. Рассчетное время окончания - {$timeout} секунд (время обновления может увеличиваться). Пожалуйста, подождите...<br>Obnovljaetsja baza dannyh. Rasschetnoe vremya okonchanija - {$timeout} secund. Pozhalujsta, podozhdute...<br>Database update in progress. Estimated update time {$timeout} seconds (can increase depending on update process). Please wait...");
     }
   }
 }
@@ -147,7 +148,4 @@ function sys_refresh_tablelist($db_prefix)
   }
   $sn_cache->tables = $tl;
 }
-
-define('INIT', true);
-
 ?>

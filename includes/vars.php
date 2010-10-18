@@ -26,15 +26,15 @@ if ( defined('INSIDE')) {
   $sn_data = array(
     1   => array(
       'name' => 'metal_mine',
-      'metal' => 60,
-      'crystal' => 15,
+      'metal' => 80,
+      'crystal' => 20,
       'deuterium' => 0,
       'energy' => 0,
       'factor' => 1.5,
       'metal_perhour' => 'return   (40 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);',
       'crystal_perhour' => 'return   "0";',
       'deuterium_perhour' => 'return   "0";',
-      'energy_perhour' => 'return - (15 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);',
+      'energy_perhour' => 'return - (13 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);',
     ),
 
     2   => array(

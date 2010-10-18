@@ -5,13 +5,15 @@
  Automated DB upgrade system
 
  @package supernova
- @version 18
+ @version 20
 
- 18 - copyright (c) 2009-2010 Gorlum for http://supernova.ws
+ v18-v20 - copyright (c) 2009-2010 Gorlum for http://supernova.ws
+   [!] DB code updates
  17 - copyright (c) 2009-2010 Gorlum for http://supernova.ws
    [~] PCG1 compliant
 
  v01-v16 copyright (c) 2009-2010 Gorlum for http://supernova.ws
+   [!] DB code updates
 */
 
 if(!defined('INIT'))
@@ -19,7 +21,7 @@ if(!defined('INIT'))
   include_once('init.php');
 }
 
-$db_last_version = 19;
+$db_last_version = 20;
 $config->db_loadItem('db_version');
 if($config->db_version == $db_last_version)
 {
@@ -287,6 +289,8 @@ switch(intval($config->db_version))
     upd_check_key('int_format_time', 'H:i:s', true);
     upd_check_key('int_banner_background', 'design/images/banner.png', true);
     upd_check_key('int_userbar_background', 'design/images/userbar.png', true);
+    doquery('UPDATE {{planets}} SET `metal_mine` = `metal_mine` - 1 WHERE `metal_mine` > 5;');
+    $new_version = 20;
 
 };
 $msg .= "Upgrade complete.\r\n";
@@ -351,9 +355,10 @@ function upd_check_key($key, $default_value, $condition = false)
 
 function upd_log_update()
 {
-  global $msg, $new_version;
+  global $msg, $new_version, $time_now;
 
   $msg .= "Detected outdated version {$new_version}. Upgrading...\r\n";
+  $config->db_saveItem('var_db_update_end', $time_now + 120);
   set_time_limit(30);
 }
 
