@@ -356,8 +356,6 @@ var uni_phalanx = '{PLANET_PHALANX}';
 var uni_spies = '{ACT_SPIO}';
 var uni_death_stars = '{deathStars}';
 
-console.log(language);
-
 jQuery.extend(language, {
   debris: '{L_Debris}',
   gal_sys_members: '{L_gal_sys_members}',
