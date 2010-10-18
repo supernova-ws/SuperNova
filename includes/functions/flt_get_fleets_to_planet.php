@@ -43,7 +43,8 @@ function flt_get_fleets_to_planet($planet)
 
     $fleet_list[$fleet_ownage]['fleets'][$fleet['fleet_id']] = $fleet;
 
-    if($fleet['fleet_mess'] == 1 || ($fleet['fleet_mess'] == 0 && ($fleet['fleet_mission'] == MT_RELOCATE)))
+    if($fleet['fleet_mess'] == 1 || ($fleet['fleet_mess'] == 0 && ($fleet['fleet_mission'] == MT_RELOCATE)) ||
+    ($fleet['fleet_target_owner'] != $user['id']))
     {
       $fleet_sn = flt_expand($fleet);
       foreach($fleet_sn as $ship_id => $ship_amount)
