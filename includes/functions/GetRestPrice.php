@@ -58,6 +58,7 @@ function GetRestPrice ($user, $planet, $Element, $userfactor = true) {
       } else {
         $color_rgb = '95, 127, 108';
       }
+      $resource_left = pretty_number($resource_left);
       $text .= "<b style=\"color: rgb({$color_rgb});\">{$resource_left}</b> ";
 
       if($fleet_own_count)
