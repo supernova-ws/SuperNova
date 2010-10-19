@@ -79,7 +79,7 @@
 <!--    <a href="faq.php">{log_faq}</a> ::-->
     <a href="stat.php">{log_stat_menu}</a> ::
     <a href="{forum_url}">{log_forums}</a><br>
-    <a href="credit.php">{log_cred}</a> ::
+    <a href="server_info.php">{log_cred}</a> ::
     <a href="contact.php">{log_contacts}</a> ::
     <a href="banned.php">{log_banned}</a>
   </div>

@@ -12,6 +12,8 @@
  *   [!] Réécriture module
 */
 
+$InLogin = true;
+
 define('INSIDE'  , true);
 define('INSTALL' , false);
 

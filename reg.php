@@ -10,6 +10,8 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
+$InLogin = true;
+
 define('INSIDE'  , true);
 define('INSTALL' , false);
 

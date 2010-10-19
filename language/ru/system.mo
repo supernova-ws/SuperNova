@@ -246,9 +246,9 @@ $lang['imp_name'] = "Название";
 $lang['sys_fields'] = "Сектора";
 
 // Cookies
-$lang['cookies']['Error1'] = 'Ошибка! Очистите cookie или разрешите их приём! <a href=login.php>Войти</a>';
-$lang['cookies']['Error2'] = 'Ошибка! Очистите cookie или разрешите их приём! <a href=login.php>Войти</a>';
-$lang['cookies']['Error3'] = 'Ошибка! Очистите cookie или разрешите их приём! <a href=login.php>Войти</a>';
+$lang['cookies']['Error1'] = 'Ошибка! Пользователь не найден! <a href=login.php>Войти</a>';
+$lang['cookies']['Error2'] = 'Ошибка! Неправильный пользователь или пароль! <a href=login.php>Войти</a>&nbsp;';
+$lang['cookies']['Error3'] = 'Ошибка! Неправильный пользователь или пароль! <a href=login.php>Войти</a>&nbsp;&nbsp;';
 
 // Supported languages
 $lang['ru']              	  = 'Русский';

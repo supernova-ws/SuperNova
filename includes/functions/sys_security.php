@@ -24,18 +24,21 @@ function CheckCookies ()
     // On verifie s'il y a qu'un seul enregistrement pour ce nom
     if (!$user)
     {
+      setcookie ($config->COOKIE_NAME, "", time() - 3600*25);
       message($lang['cookies']['Error1']);
     }
 
     // On teste si on a bien le bon UserID
     if ($user['id'] != $TheCookie[0])
     {
+      setcookie ($config->COOKIE_NAME, "", time() - 3600*25);
       message( $lang['cookies']['Error2'] );
     }
 
     // On teste si le mot de passe est correct !
     if (md5($user['password'] . '--' . $dbsettings['secretword']) !== $TheCookie[2])
     {
+      setcookie ($config->COOKIE_NAME, "", time() - 3600*25);
       message( $lang['cookies']['Error3'] );
     }
 
