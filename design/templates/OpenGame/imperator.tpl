@@ -16,7 +16,7 @@
           <font color=cyan>{news.TIME}</font>
         </th>
         <th valign=top colspan=3>
-          <div align=justify>{news.ANNOUNCE}<!-- IF news.DETAIL_URL --> <a href="{announces.DETAIL_URL}"><u><font color="green">{L_ann_more}</font></u></a><!-- ENDIF --></div>
+          <div align=justify>{news.ANNOUNCE}<!-- IF news.DETAIL_URL --> <a href="{news.DETAIL_URL}"><u><font color="green">{L_ann_more}</font></u></a><!-- ENDIF --></div>
         </th>
       </tr>
     <!-- BEGINELSE news -->
