@@ -75,18 +75,22 @@ function MissionCaseSpy ( $FleetRow ) {
             $PlanetFleetInfo  = SpyTarget ( $target_planet, 1, $lang['sys_spy_fleet'] );
             $PlanetFleet      = $Materials;
             $PlanetFleet     .= $PlanetFleetInfo['String'];
+            $PlanetFleet      = "<div class='spy_medium'>{$PlanetFleet}</div>";
 
             $PlanetDefenInfo  = SpyTarget ( $target_planet, 2, $lang['sys_spy_defenses'] );
             $PlanetDefense    = $PlanetFleet;
             $PlanetDefense   .= $PlanetDefenInfo['String'];
+            $PlanetDefense    = "<div class='spy_medium'>{$PlanetDefense}</div>";
 
             $PlanetBuildInfo  = SpyTarget ( $target_planet, 3, $lang['tech'][0] );
             $PlanetBuildings  = $PlanetDefense;
             $PlanetBuildings .= $PlanetBuildInfo['String'];
+            $PlanetBuildings  = "<div class='spy_long'>{$PlanetBuildings}</div>";
 
             $TargetTechnInfo  = SpyTarget ( $TargetUser, 4, $lang['tech'][100] );
             $TargetTechnos    = $PlanetBuildings;
             $TargetTechnos   .= $TargetTechnInfo['String'];
+            $TargetTechnos    = "<div class='spy_long'>{$TargetTechnos}</div>";
 
             //$TargetForce = ($PlanetFleetInfo['Count'] * $LS) / 4;
 

@@ -2,12 +2,35 @@
 
 /**
  * messages.php
+ * Handles internal message system
  *
- * @version 1.5 - Replaced table 'galaxy' with table 'planer' by Gorlum for http://supernova.ws
- * @version 1.4 - Security checked & verified for SQL-injection by Gorlum for http://supernova.ws
- * @version 1.3 - Adding "Inbound" messages by Gorlum for http://supernova.ws
- * @version 1.2
- * @copyright 2008 by Chlorel for XNova
+ * @package messages
+ * @version 2.0
+ *
+ * Revision History
+ * ================
+ *
+ * 2.0 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *   [!] Fully rewrote MessPageMode = 'show' part
+ *   [~] All HTML code from 'show' part moved to messages.tpl
+ *   [~] Tweaks and optimizations
+ *
+ * 1.5 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *   [~] Replaced table 'galaxy' with table 'planets'
+ *
+ * 1.4 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *   [~] Security checked & verified for SQL-injection by Gorlum for http://supernova.ws
+ *
+ * 1.3 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *   [+] "Outbox" added
+ *
+ * 1.2 - copyright 2008 by Chlorel for XNova
+ *   [+] Regroupage des 2 fichiers vers 1 seul plus simple a mettre en oeuvre et a gerer !
+ *
+ * 1.1 - Mise a plat, linearisation, suppression des doublons / triplons / 'n'gnions dans le code (Chlorel)
+ *
+ * 1.0 - Version originelle (Tom1991)
+ *
  */
 
 define('INSIDE'  , true);
@@ -21,10 +44,6 @@ if ($IsUserChecked == false) {
   includeLang('login');
   header("Location: login.php");
 }
-
-require($ugamela_root_path.'config.php');
-$prefix = $dbsettings["prefix"];
-unset($dbsettings);
 
 check_urlaubmodus ($user);
   includeLang('messages');
@@ -145,166 +164,62 @@ check_urlaubmodus ($user);
           $Selected   = "delmes".$MessId;
           $IsSelected = $_POST[ $Selected ];
           if (preg_match("/showmes/i", $Message) && !isset($IsSelected)) {
-            $MessHere = doquery("SELECT * FROM {{table}} WHERE `message_id` = '". $MessId ."' AND `message_owner` = '". $user['id'] ."';", 'messages');
-            if ($MessHere) {
-              doquery("DELETE FROM {{table}} WHERE `message_id` = '".$MessId."';", 'messages');
-            }
+            doquery("DELETE FROM {{messages}} WHERE `message_id` = '{$MessId}' AND `message_owner` = '{$user['id']}';");
           }
         }
       }
       $MessCategory = intval($_POST['category']);
 
     case 'show':
-      // -------------------------------------------------------------------------------------------------------
-      // Affichage de la page des messages
-      $page  = "<script language=\"JavaScript\">\n";
-      $page .= "function f(target_url, win_name) {\n";
-      $page .= "var new_win = window.open(target_url,win_name,'resizable=yes,scrollbars=yes,menubar=no,toolbar=no,width=550,height=280,top=0,left=0');\n";
-      $page .= "new_win.focus();\n";
-      $page .= "}\n";
-      $page .= "</script>\n";
-      $page .= "<center>";
-      $page .= "<table>";
-      $page .= "<tr>";
-      $page .= "<td></td>";
-      $page .= "<td>\n";
-      $page .= "<table width=\"519\">";
-      $page .= "<form action=\"messages.php\" method=\"post\"><table>";
-      $page .= "<tr>";
-      $page .= "<td></td>";
-      $page .= "<td>\n<input name=\"messages\" value=\"1\" type=\"hidden\">";
-      $page .= "<table width=\"519\">";
-      $page .= "<tr>";
-      if($MessCategory != -1){
-        $page .= "<th colspan=\"4\">";
-        $page .= "<select onchange=\"document.getElementById('deletemessages').options[this.selectedIndex].selected='true'\" id=\"deletemessages2\" name=\"deletemessages2\">";
-        $page .= "<option value=\"deletemarked\">".$lang['mess_deletemarked']."</option>";
-        $page .= "<option value=\"deleteunmarked\">".$lang['mess_deleteunmarked']."</option>";
-        $page .= "<option value=\"deleteall\">".$lang['mess_deleteall']."</option>";
-        $page .= "</select>";
-        $page .= "<input value=\"".$lang['mess_its_ok']."\" type=\"submit\">";
-        $page .= "</th></tr>";
+      $template = gettemplate('messages', true);
 
-        $page .= "<tr>";
-        $page .= "<th style=\"color: rgb(242, 204, 74);\" colspan=\"4\">";
-        $page .= "<input name=\"category\" value=\"".$MessCategory."\" type=\"hidden\">";
-        $page .= "<input onchange=\"document.getElementById('fullreports').checked=this.checked\" id=\"fullreports2\" name=\"fullreports2\" type=\"checkbox\">".$lang['mess_partialreport']."</th>";
-        $page .= "</tr><tr>";
-        $page .= "<th>".$lang['mess_action']."</th>";
+      if($MessCategory == -1)
+      {
+        $UsrMess = doquery(
+          "SELECT {{messages}}.message_id, {{messages}}.message_owner, {{users}}.id AS message_sender, {{messages}}.message_time,
+            {{messages}}.message_type, {{users}}.username AS message_from, {{messages}}.message_subject, {{messages}}.message_text
+         FROM
+           {{messages}} LEFT JOIN {{users}} ON {{users}}.id = {{messages}}.message_owner WHERE `message_sender` = '{$user['id']}' AND `message_type` = 1 ORDER BY `message_time` DESC;");
       }
-      $page .= "<th>".$lang['mess_date']."</th>";
-
-      if($MessCategory == -1){
-        $page .= "<th>".$lang['mess_recipient']."</th>";
-      }else{
-        $page .= "<th>".$lang['mess_from']."</th>";
-      }
-
-      $page .= "<th>".$lang['mess_subject']."</th>";
-      $page .= "</tr>";
-
-      if ($MessCategory == 100) {
-        $UsrMess       = doquery("SELECT * FROM {{table}} WHERE `message_owner` = '".$user['id']."' ORDER BY `message_time` DESC;", 'messages');
-        $SubUpdateQry  = "";
-        for ($MessType = 0; $MessType < 101; $MessType++) {
-          if ( in_array($MessType, $MessageType) ) {
-            $SubUpdateQry .= "`".$messfields[$MessType]."` = '0', ";
+      else
+      {
+        $SubUpdateQry  = '';
+        if ($MessCategory == 100) {
+          foreach($messfields as $msg_type => $msg_field)
+          {
+            $SubUpdateQry .= "`{$msg_field}` = '0',";
           }
+          $SubUpdateQry = substr($SubUpdateQry, 0, -1);
         }
-        $QryUpdateUser  = "UPDATE {{table}} SET ";
-        $QryUpdateUser .= $SubUpdateQry;
-        $QryUpdateUser .= "`id` = '".$user['id']."' "; // Vraiment pas envie de me casser le fion a virer la derniere virgule du sub query
-        $QryUpdateUser .= "WHERE ";
-        $QryUpdateUser .= "`id` = '".$user['id']."';";
-        doquery ( $QryUpdateUser, 'users' );
+        else
+        {
+          $SubUpdateQry = "`{$messfields[$MessCategory]}` = '0', `{$messfields[100]}` = `{$messfields[100]}` - '{$WaitingMess[$MessCategory]}'";
+          $SubSelectQry = "AND `message_type` = '{$MessCategory}'";
+        }
+        doquery("UPDATE {{users}} SET {$SubUpdateQry}  WHERE `id` = '{$user['id']}';");
+        $UsrMess = doquery("SELECT * FROM {{messages}} WHERE `message_owner` = '{$user['id']}' {$SubSelectQry} ORDER BY `message_time` DESC;");
+      };
 
-        while ($CurMess = mysql_fetch_array($UsrMess)) {
-          $page .= "\n<tr>";
-          $page .= "<input name=\"showmes". $CurMess['message_id'] . "\" type=\"hidden\" value=\"1\">";
-          $page .= "<th><input name=\"delmes". $CurMess['message_id'] . "\" type=\"checkbox\"></th>";
-          $page .= "<th>". date(FMT_DATE_TIME, $CurMess['message_time']) ."</th>";
-          $page .= "<th>". stripslashes( $CurMess['message_from'] ) ."</th>";
-          $page .= "<th>". stripslashes( $CurMess['message_subject'] ) ." ";
-          if ($CurMess['message_type'] == 1) {
-            $page .= "<a href=\"messages.php?mode=write&amp;id=". $CurMess['message_sender'] ."&amp;subject=".$lang['mess_answer_prefix'] . htmlspecialchars( $CurMess['message_subject']) ."\">";
-            $page .= "<img src=\"". $dpath ."img/m.gif\" alt=\"".$lang['mess_answer']."\" border=\"0\"></a></th>";
-          } else {
-            $page .= "</th>";
-          }
-          $page .= "</tr><tr>";
-          $page .= "<td style=\"background-color: ".$BackGndColor[$CurMess['message_type']]."; background-image: none;\"; class=\"b\"> </td>";
-          $page .= "<td style=\"background-color: ".$BackGndColor[$CurMess['message_type']]."; background-image: none;\"; colspan=\"3\" class=\"b\">". stripslashes( nl2br( $CurMess['message_text'] ) ) ."</td>";
-          $page .= "</tr>";
-        }
-      } else {
-        if($MessCategory == -1){
-          $tableUsers  = $prefix.'users';
-          $UsrMess     = doquery("SELECT {{table}}.*, {$tableUsers}.username, {$tableUsers}.id FROM {{table}} LEFT JOIN {$tableUsers} ON id = message_owner WHERE `message_sender` = '".$user['id']."' AND `message_type` = 1 ORDER BY `message_time` DESC;", 'messages');
-          $fieldFrom   = 'username';
-          $fieldFromID = 'id';
-        }else{
-          $UsrMess       = doquery("SELECT * FROM {{table}} WHERE `message_owner` = '".$user['id']."' AND `message_type` = '".$MessCategory."' ORDER BY `message_time` DESC;", 'messages');
-          $QryUpdateUser  = "UPDATE {{table}} SET ";
-          $QryUpdateUser .= "`".$messfields[$MessCategory]."` = '0', ";
-          $QryUpdateUser .= "`".$messfields[100]."` = `".$messfields[100]."` - '".$WaitingMess[$MessCategory]."' ";
-          $QryUpdateUser .= "WHERE ";
-          $QryUpdateUser .= "`id` = '".$user['id']."';";
-          doquery ( $QryUpdateUser, 'users' );
-          $fieldFrom   = 'message_from';
-          $fieldFromID = 'message_sender';
-        };
-        while ($CurMess = mysql_fetch_array($UsrMess)) {
-            $page .= "\n<tr>";
-            $page .= "<input name=\"showmes". $CurMess['message_id'] . "\" type=\"hidden\" value=\"1\">";
-            if($MessCategory != -1){
-              $page .= "<th><input name=\"delmes". $CurMess['message_id'] ."\" type=\"checkbox\"></th>";
-            }
-            $page .= "<th>". date(FMT_DATE_TIME, $CurMess['message_time']) ."</th>";
-            $page .= "<th>". stripslashes( $CurMess[$fieldFrom] ) ."</th>";
-            $page .= "<th>". stripslashes( $CurMess['message_subject'] ) ." ";
-            if ($CurMess['message_type'] == 1) {
-              $page .= "<a href=\"messages.php?mode=write&amp;id=". $CurMess[$fieldFromID] ."&amp;subject=".$lang['mess_answer_prefix'] . htmlspecialchars( $CurMess['message_subject']) ."\">";
-              $page .= "<img src=\"". $dpath ."img/m.gif\" alt=\"".$lang['mess_answer']."\" border=\"0\"></a></th>";
-            } else {
-              $page .= "</th>";
-            }
-            $page .= "</tr><tr>";
-            if($MessCategory != -1){
-              $page .= "<td class=\"b\"> </td>";
-            }
-            $page .= "<td colspan=\"3\" class=\"b\">". nl2br( stripslashes( $CurMess['message_text'] ) ) ."</td>";
-            $page .= "</tr>";
-        }
+      while ($CurMess = mysql_fetch_array($UsrMess)) {
+        $template->assign_block_vars('messages', array(
+          'ID'             => $CurMess['message_id'],
+          'DATE'           => date(FMT_DATE_TIME, $CurMess['message_time']),
+          'FROM'           => stripslashes($CurMess['message_from']),
+          'SUBJ'           => stripslashes($CurMess['message_subject']),
+          'TEXT'           => stripslashes(nl2br($CurMess['message_text'])),
+
+          'FROM_ID'        => $CurMess['message_sender'],
+          'SUBJ_SANITIZED' => htmlspecialchars($CurMess['message_subject']),
+          'BG_COLOR'       => $MessCategory == 100 ? '' : $BackGndColor[$CurMess['message_type']],
+        ));
       }
 
+      $template->assign_vars(array(
+        "MSG_CATEGORY" => $MessCategory,
+      ));
 
-      if($MessCategory != -1){
-        $page .= "<tr>";
-        $page .= "<th style=\"color: rgb(242, 204, 74);\" colspan=\"4\">";
-        $page .= "<input onchange=\"document.getElementById('fullreports2').checked=this.checked\" id=\"fullreports\" name=\"fullreports\" type=\"checkbox\">".$lang['mess_partialreport']."</th>";
-        $page .= "</tr>";
-
-        $page .= "<tr><th colspan=\"4\">";
-        $page .= "<select onchange=\"document.getElementById('deletemessages2').options[this.selectedIndex].selected='true'\" id=\"deletemessages\" name=\"deletemessages\">";
-        $page .= "<option value=\"deletemarked\">".$lang['mess_deletemarked']."</option>";
-        $page .= "<option value=\"deleteunmarked\">".$lang['mess_deleteunmarked']."</option>";
-        $page .= "<option value=\"deleteall\">".$lang['mess_deleteall']."</option>";
-        $page .= "</select>";
-        $page .= "<input value=\"".$lang['mess_its_ok']."\" type=\"submit\">";
-        $page .= "</th>";
-        $page .= "</tr>";
-      }
-      $page .= "<tr><td colspan=\"4\"></td>";
-      $page .= "</tr>";
-      $page .= "</table>\n";
-      $page .= "</td>";
-      $page .= "</tr>";
-      $page .= "</table>\n";
-      $page .= "</form>";
-      $page .= "</td>";
-      $page .= "</table>\n";
-      $page .= "</center>";
-      break;
+      display(parsetemplate($template), $lang['mess_pagetitle']);
+    break;
 
     default:
       $page  = "<script language=\"JavaScript\">\n";
@@ -337,9 +252,4 @@ check_urlaubmodus ($user);
 
   display($page, $lang['mess_pagetitle']);
 
-// -----------------------------------------------------------------------------------------------------------
-// History version
-// 1.0 - Version originelle (Tom1991)
-// 1.1 - Mise a plat, linearisation, suppression des doublons / triplons / 'n'gnions dans le code (Chlorel)
-// 1.2 - Regroupage des 2 fichiers vers 1 seul plus simple a mettre en oeuvre et a gerer !
 ?>

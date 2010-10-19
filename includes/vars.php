@@ -17,7 +17,7 @@ if ( defined('INSIDE')) {
       4 => 'mnl_exploit',
       5 => 'mnl_transport',
      15 => 'mnl_expedition',
-     97 => 'mnl_general',
+//     97 => 'mnl_general',
      99 => 'mnl_buildlist',
     100 => 'new_message'
   );
