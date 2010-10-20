@@ -419,27 +419,30 @@ class classPersistent extends classCache
     $this->db_saveItem($toSave);
   }
 
-  public function db_saveItem($index, $value = NULL)
+  public function db_saveItem($item_list, $value = NULL)
   {
-    if($index)
+    if($item_list)
     {
-      if(!is_array($index))
+      if(!is_array($item_list))
       {
-        $index = array($index => $value);
+        $item_list = array($item_list => $value);
       }
 
-      foreach($index as $item_index => &$itemValue)
+      foreach($item_list as $item_name => &$value)
       {
-        if($itemValue !== NULL)
+        if($item_name)
         {
-          $this->$item_index = $itemValue;
-        }
-        else
-        {
-          $itemValue = $this->$item_index;
-        }
+          if($value !== NULL)
+          {
+            $this->$item_name = $value;
+          }
+          else
+          {
+            $value = $this->$item_name;
+          }
 
-        $qry .= " ('{$item_index}', '{$itemValue}'),";
+          $qry .= " ('{$item_name}', '{$value}'),";
+        }
       }
 
       $qry = substr($qry, 0, -1);
@@ -864,18 +867,18 @@ class class_db_cache extends classCache
         $index = array($index => $value);
       }
 
-      foreach($index as $item_index => &$itemValue)
+      foreach($index as $item_name => &$value)
       {
-        if($itemValue !== NULL)
+        if($value !== NULL)
         {
-          $this->$item_index = $itemValue;
+          $this->$item_name = $value;
         }
         else
         {
-          $itemValue = $this->$item_index;
+          $value = $this->$item_name;
         }
 
-        $qry .= " ('{$item_index}', '{$itemValue}'),";
+        $qry .= " ('{$item_name}', '{$value}'),";
       }
 
       $qry = substr($qry, 0, -1);

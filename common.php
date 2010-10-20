@@ -6,27 +6,26 @@
  *
  * @version 1.1 Security checks by Gorlum for http://supernova.ws
  */
+
 require_once('includes/init.php');
 
-if (!$InLogin) {
-  $user          = CheckTheUser();
+$user          = sn_autologin();
 
-  if($config->game_disable)
+if($config->game_disable)
+{
+  if ($user['authlevel'] < 1)
   {
-    if ($user['authlevel'] < 1)
-    {
-      message ( sys_bbcodeParse($config->game_disable_reason), $config->game_name );
-      die();
-    }
-    else
-    {
-      print( "<div align=center style='font-size: 24; font-weight: bold; color:red;'>" . sys_bbcodeParse($config->game_disable_reason) . '</div><br>' );
-    }
+    message ( sys_bbcodeParse($config->game_disable_reason), $config->game_name );
+    die();
   }
-  if(!$user['id'])
+  else
   {
-    header('Location: login.php');
+    print( "<div align=center style='font-size: 24; font-weight: bold; color:red;'>" . sys_bbcodeParse($config->game_disable_reason) . '</div><br>' );
   }
+}
+if(!$user['id'] && !$InLogin)
+{
+  header('Location: login.php');
 }
 
 if ($user['id'])
@@ -59,15 +58,17 @@ if ($user['id'])
   }
 
   SetSelectedPlanet ( $user );
-
   $planetrow = doquery("SELECT * FROM {{table}} WHERE `id` = '".$user['current_planet']."';", 'planets', true);
-
   CheckPlanetUsedFields($planetrow);
 }
 else
 {
   // Bah si déja y a quelqu'un qui passe par là et qu'a rien a faire de pressé ...
   // On se sert de lui pour mettre a jour tout les retardataires !!
-  $debug->warning("May be it's login page? InLogin = '{$InLogin}', IsUserChecked = '{$IsUserChecked}'", 'Unregistered user', 303);
+  if(!$InLogin)
+  {
+    $debug->warning("May be it's login page? InLogin = '{$InLogin}', IsUserChecked = '{$IsUserChecked}'", 'Unregistered user', 303);
+  }
 }
+
 ?>

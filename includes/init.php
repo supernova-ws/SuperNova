@@ -23,7 +23,6 @@ else
   ini_set('display_errors', 0);
 }
 
-
 $time_now      = time();
 $user          = array();
 $lang          = array();
@@ -33,14 +32,20 @@ $ugamela_root_path = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT']) . '/';
 $phpbb_root_path = $ugamela_root_path;
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 
+require("{$ugamela_root_path}config.{$phpEx}");
+$db_prefix = $dbsettings['prefix'];
+$sn_secret_word = $dbsettings['secretword'];
+unset($dbsettings);
+
 // required for db.php
 include_once("{$ugamela_root_path}includes/debug.class.{$phpEx}");
 include_once("{$ugamela_root_path}includes/db.{$phpEx}");
+// Initializing global 'debug' object
+$debug = new debug();
 
 //$dbms = 'mysql';
 //include_once("{$ugamela_root_path}includes/db/{$dbms}.{$phpEx}");
 // $db      = new $sql_db();
-
 
 $dir = opendir("{$ugamela_root_path}includes/classes");
 while (($file = readdir($dir)) !== false)
@@ -50,13 +55,6 @@ while (($file = readdir($dir)) !== false)
     require_once "{$ugamela_root_path}includes/classes/{$file}";
   }
 }
-
-// Initializing global 'debug' object
-$debug = new debug();
-
-require("{$ugamela_root_path}config.{$phpEx}");
-$db_prefix = $dbsettings['prefix'];
-unset($dbsettings);
 
 // Initializing global 'cacher' object
 $sn_cache = new classCache($db_prefix);
@@ -68,6 +66,7 @@ if(!isset($sn_cache->tables))
 // Initializing global "config" object
 $config = new classConfig($db_prefix);
 $config->db_prefix = $db_prefix;
+$config->secret_word = $sn_secret_word;
 
 if($config->debug)
 {
@@ -77,6 +76,7 @@ if($config->debug)
     define('BE_DEBUG', true);
   }
 }
+
 $update_file = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.{$phpEx}";
 if(file_exists($update_file))
 {
@@ -133,6 +133,8 @@ while (($file = readdir($dir)) !== false)
 includeLang ('system');
 includeLang ('tech');
 
+sn_db_connect();
+
 function sys_refresh_tablelist($db_prefix)
 {
   global $sn_cache;
@@ -148,4 +150,5 @@ function sys_refresh_tablelist($db_prefix)
   }
   $sn_cache->tables = $tl;
 }
+
 ?>

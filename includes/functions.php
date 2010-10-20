@@ -204,14 +204,10 @@ function SaveToFile ($filename, $content) {
 // Gestion de la localisation des chaines
 //
 function includeLang ($filename, $ext = '.mo') {
-  global $ugamela_root_path, $lang, $user;
+  global $ugamela_root_path, $lang, $user, $phpEx;
 
-  //if ($user['lang'] != '') {
-  //  $SelLanguage = $user['lang'];
-  //} else {
-    $SelLanguage = DEFAULT_LANG;
-  //}
-  include_once $ugamela_root_path . "language/". $SelLanguage ."/". $filename.$ext;
+  $SelLanguage = $user['lang'] ? $user['lang'] : DEFAULT_LANG;
+  include_once("{$ugamela_root_path}language/{$SelLanguage}/{$filename}{$ext}");
 }
 
 

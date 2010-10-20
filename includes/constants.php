@@ -81,4 +81,12 @@ define('PT_PLANET', 1);
 define('PT_DEBRIS', 2);
 define('PT_MOON',   3);
 
+// Login statuses
+define('LOGIN_SUCCESS'               , 1);
+define('LOGIN_SUCCESS_CREATE_PROFILE', 2);
+define('LOGIN_ERROR_PASSWORD'        , 3);
+define('LOGIN_ERROR_USERNAME'        , 4);
+define('LOGIN_ERROR_ACTIVE'          , 5);
+define('LOGIN_ERROR_EXTERNAL_AUTH'   , 6);
+
 ?>

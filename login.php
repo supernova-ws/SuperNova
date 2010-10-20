@@ -11,101 +11,50 @@
 define('INSIDE'  , true);
 define('INSTALL' , false);
 
-$InLogin = true;
-
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-$id_ref = intval($_GET['id_ref'] ? $_GET['id_ref'] : $_POST['id_ref']);
-$username = mysql_real_escape_string($_GET['username'] ? $_GET['username'] : $_POST['username']);
-$password = md5($_GET['password'] ? $_GET['password'] : $_POST['password']);
+include("{$ugamela_root_path}includes/init.{$phpEx}");
 
 includeLang('login');
 
+$id_ref = intval($_GET['id_ref'] ? $_GET['id_ref'] : $_POST['id_ref']);
+
+$username = $_GET['username'] ? $_GET['username'] : $_POST['username'];
+$password = $_GET['password'] ? $_GET['password'] : $_POST['password'];
 if ($username)
 {
-  $login = doquery("SELECT * FROM {{table}} WHERE `username` = '{$username}' LIMIT 1", 'users', true);
+  $result = sn_login($username, $password, $_POST['rememberme']);
 
-  if ($login)
+  switch($result['status'])
   {
-    if ($login['password'] == $password)
-    {
-      if (isset($_POST["rememberme"]))
-      {
-        $expiretime = time() + 31536000;
-        $rememberme = 1;
-      }
-      else
-      {
-        $expiretime = 0;
-        $rememberme = 0;
-      }
+    case LOGIN_SUCCESS:
+      $user = $result['user_row'];
+      header('Location: overview.php');
+    break;
 
-      @include('config.php');
-      $cookie = $login["id"] . "/%/" . $login["username"] . "/%/" . md5($login["password"] . "--" . $dbsettings["secretword"]) . "/%/" . $rememberme;
-      setcookie($config->COOKIE_NAME, $cookie, $expiretime, "/", "", 0);
+    case LOGIN_ERROR_USERNAME:
+    case LOGIN_ERROR_PASSWORD:
+      message($result['error_msg'], $lang['Login_Error']);
+    break;
 
-      unset($dbsettings);
+    default:
 
-      if ($login['urlaubs_modus'] == 1)
-      {
-        $time_out = ((($login['urlaubs_modus_time'] + VOCATION_TIME)-time())/3600);
-
-        if (time() >= $login['urlaubs_modus_time'] + VOCATION_TIME )
-        {
-          header("Location: ./options.php");
-          exit;
-        }
-        else
-        {
-          message($lang['vacation_mode'].floor($time_out).$lang['hours'], $lang['vacations']);
-        }
-      }
-      else
-      {
-        header("Location: ./overview.php");
-      }
-      exit;
-    }
-    else
-    {
-      message($lang['Login_FailPassword'], $lang['Login_Error']);
-    }
   }
-  else
-  {
-    message($lang['Login_FailUser'], $lang['Login_Error']);
-  }
+  die();
 }
 elseif(!empty($_COOKIE[$config->COOKIE_NAME]))
 {
-  $user = CheckTheUser();
+  $user = sn_autologin();
 
-  if($user)
+  if($user['id'])
   {
-    header("Location: ./index.php");
+    header("Location: ./index.{$phpEx}");
     exit;
   }
-/*
-  $cookie = explode('/%/',$_COOKIE[$config->COOKIE_NAME]);
-  $login = doquery("SELECT * FROM {{table}} WHERE `username` = '" . mysql_real_escape_string($cookie[1]) . "' LIMIT 1", "users", true);
-
-  if ($login)
-  {
-    @include('config.php');
-
-    if (md5($login["password"] . "--" . $dbsettings["secretword"]) == $cookie[2])
-    {
-      unset($dbsettings);
-      header("Location: ./index.php");
-      exit;
-    }
-  }
-*/
+  die();
 }
 
-$parse = $lang;
+// $parse = $lang;
 $query = doquery('SELECT username FROM {{table}} ORDER BY register_time DESC', 'users', true);
 $parse['last_user'] = $query['username'];
 $query = doquery("SELECT COUNT(DISTINCT(id)) FROM {{table}} WHERE onlinetime>" . (time()-900), 'users', true);

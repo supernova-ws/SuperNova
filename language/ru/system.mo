@@ -246,9 +246,7 @@ $lang['imp_name'] = "Название";
 $lang['sys_fields'] = "Сектора";
 
 // Cookies
-$lang['cookies']['Error1'] = 'Ошибка! Пользователь не найден! <a href=login.php>Войти</a>';
-$lang['cookies']['Error2'] = 'Ошибка! Неправильный пользователь или пароль! <a href=login.php>Войти</a>&nbsp;';
-$lang['cookies']['Error3'] = 'Ошибка! Неправильный пользователь или пароль! <a href=login.php>Войти</a>&nbsp;&nbsp;';
+$lang['err_cookie'] = "Ошибка! Невозможно авторизировать пользователя по информации в cookie. <a href='login.{$phpEx}'>Войдите</a> в игру или <a href='reg.{$phpEx}'>зарегестрируйтесь</a>.";
 
 // Supported languages
 $lang['ru']              	  = 'Русский';
@@ -296,6 +294,7 @@ $lang['weekdays'] = array(
 );
 
 $lang['sys_max'] = 'макс';
+$lang['sys_banned_msg'] = 'Вы забанены. Для получения информации зайдите <a href="banned.php">сюда</a>. Срок окончания блокировки аккаунта: ';
 
 // News page
 $lang['ann_more'] = 'Подробнее...';

@@ -1,6 +1,7 @@
 <style type="text/css"><!--
  @import url(./design/css/login.css);
 --></style>
+
 <div id="log_skipper"></div>
 <div id="log_main">
   <div id="log_title">{L_sys_supernova}: {L_sys_universe} "{C_game_name}"</div>
@@ -28,24 +29,14 @@
         <a href="lostpassword.php">{L_PasswordLost}</a>
       </div>
       <div class="log_input_wrapper" style="text-align: right">
-        <div class="fl"><input name="rememberme" type="checkbox"> {L_Remember_me}</div>
-        <input name="submit" type="submit" value="{log_enter}" /><br />
+        <div class="fl"><input name="rememberme" type="checkbox" value="1"> {L_Remember_me}</div>
+        <input name="submit" type="submit" value="{L_log_enter}" /><br />
       </div>
     </form>
   </div>
 
   <div id="log_menu">
     <a href="reg.php{referral}">{L_log_reg}</a> ::
-    <a href="{C_rules_url}">{L_log_rules}</a> ::
-<!--    <a href="faq.php">{log_faq}</a> ::-->
-    <a href="stat.php">{log_stat_menu}</a> ::
-    <a href="{forum_url}">{log_forums}</a><br>
-    <a href="server_info.php">{log_cred}</a> ::
-    <a href="contact.php">{log_contacts}</a> ::
-    <a href="banned.php">{log_banned}</a>
-  </div>
-
-  <div id="log_status">
-    &copy; 2009-2010 Gorlum for http://supernova.ws
+    <!-- INCLUDE login_menu.tpl -->
   </div>
 </div>

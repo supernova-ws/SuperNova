@@ -120,3 +120,8 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
 {
   width: 100%;
 }
+
+#copyright
+{
+  text-align: center;
+}

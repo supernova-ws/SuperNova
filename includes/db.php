@@ -12,7 +12,27 @@ if ( !defined('INSIDE') ) {
   die();
 }
 
-function doquery($query, $table = "", $fetch = false){
+function sn_db_connect()
+{
+  global $ugamela_root_path, $phpEx, $link, $debug, $config;
+  require("{$ugamela_root_path}config.{$phpEx}");
+  if(!$link) {
+    $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']) or
+      $debug->error(mysql_error(),'DB Error - cannot connect to server');
+
+    mysql_query("/*!40101 SET NAMES 'cp1251' */") or
+      die('Error: ' . mysql_error());
+    mysql_select_db($dbsettings['name']) or
+      $debug->error(mysql_error(), 'DB error - cannot find DB on server');
+    echo mysql_error();
+  }
+  $db_prefix = $config->db_prefix ? $config->db_prefix : $dbsettings['prefix'];
+
+  unset($dbsettings);
+  return $db_prefix;
+}
+
+function doquery($query, $table = '', $fetch = false){
   global $numqueries, $link, $debug, $ugamela_root_path, $user, $tableList, $sn_cache, $is_watching, $config;
 
   if($config->game_watchlist_array)
@@ -37,8 +57,6 @@ function doquery($query, $table = "", $fetch = false){
     }
   }
 
-  require($ugamela_root_path.'config.php');
-
   $badword = false;
   if ((stripos($query, 'RUNCATE TABL') != FALSE) && ($table != 'errors')) {
     $badword = true;
@@ -53,6 +71,8 @@ function doquery($query, $table = "", $fetch = false){
   }elseif (stripos($query, 'ET PASSWOR') != FALSE) {
     $badword = true;
   }elseif (stripos($query, 'EOAD DAT') != FALSE) {
+    $badword = true;
+  }elseif (stripos($query, 'AUTHLEVEL') != FALSE && $user['authlevel'] < 3) {
     $badword = true;
   }
   if ($badword) {
@@ -97,25 +117,18 @@ function doquery($query, $table = "", $fetch = false){
     die($message);
   }
 
-  if(!$link) {
-    $link = mysql_connect($dbsettings["server"], $dbsettings["user"], $dbsettings["pass"]) or
-      $debug->error(mysql_error()."<br />$query","SQL Error");
-    mysql_query("/*!40101 SET NAMES 'cp1251' */") or die("Error: " . mysql_error());
-    mysql_select_db($dbsettings["name"]) or $debug->error(mysql_error()."<br />$query","SQL Error");
-    echo mysql_error();
-  }
+  $db_prefix = sn_db_connect($query);
 
-  $sql = str_replace("{{table}}", $dbsettings["prefix"].$table, $query);
+  $sql = str_replace('{{table}}', $db_prefix.$table, $query);
   if(!(strpos($sql, '{{') === false) )
   {
     foreach($sn_cache->tables as $tableName)
     {
-      $sql = str_replace("{{".$tableName."}}", $dbsettings["prefix"].$tableName, $sql);
+      $sql = str_replace("{{{$tableName}}}", $db_prefix.$tableName, $sql);
     }
   }
   $sqlquery = mysql_query($sql) or
-    $debug->error(mysql_error()."<br />$sql<br />","SQL Error");
-  unset($dbsettings);
+    $debug->error(mysql_error()."<br />$sql<br />",'SQL Error');
 
   $numqueries++;
   $arr = debug_backtrace();

@@ -16,9 +16,9 @@ body {
   height: 200px;
 }
 
-#log_main {
+
+#log_main, #copyright {
   position: relative;
-  width: 450px;
   background-repeat: none;
   border:1px solid #FFFFFF;
 
@@ -26,6 +26,25 @@ body {
   color:  #b1daf2;
 
   background-color     : #000000;
+
+  width: 450px;
+}
+
+#log_main {
+  filter               : alpha(opacity=70);
+  -moz-opacity         : 0.7;
+  -khtml-opacity       : 0.7;
+  opacity              : 0.7;
+}
+
+#copyright
+{
+  font-weight: bold;
+
+  color: #0a1c25;
+  text-align: center;
+
+  background-color     : #FFFFFF;
   filter               : alpha(opacity=70);
   -moz-opacity         : 0.7;
   -khtml-opacity       : 0.7;

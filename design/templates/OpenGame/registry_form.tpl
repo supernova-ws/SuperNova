@@ -12,18 +12,14 @@
     <input type="hidden" name="id_ref" value="{id_ref}">
     <table width="340" align="center">
       <tbody>
-        <tr align="center">
-          <td colspan="2" class="c">{form}</td>
-        </tr>
-
         <tr>
           <th width="179">{L_User_name}</th>
-          <th width="161"><input name="character" type="text" size="20" maxlength="20" /></th>
+          <th width="161"><input name="username" type="text" size="20" maxlength="20" /></th>
         </tr>
 
         <tr>
           <th>{L_neededpass}:</th>
-          <th><input name="passwrd" type="password" size="20" maxlength="20" /></th>
+          <th><input name="password" type="password" size="20" maxlength="20" /></th>
         </tr>
 
         <tr>
@@ -33,7 +29,7 @@
 
         <tr>
           <th>{L_MainPlanet}:</th>
-          <th><input name="planet" type="text" size="20" maxlength="20" /></th>
+          <th><input name="planet_name" type="text" size="20" maxlength="20" /></th>
         </tr>
 
         <tr>
@@ -51,13 +47,12 @@
         <tr>
           <th>{L_Languese}:</th>
           <th>
-            <select name="langer">
+            <select name="language">
               <option value="ru" selected="selected">{ru}</option>
             </select>
           </th>
         </tr>
         -->
-        <input type="hidden" name="langer" value="ru">
 
         <tr>
           <th><img src="captcha.php" /></th>
@@ -65,26 +60,19 @@
         </tr>
     
         <tr>
-          <th colspan=2><input name="rgt" type="checkbox" /> {L_reg_i_agree} <a href="{C_rules_url}"><u><font color="red">{L_reg_with_rules}</font></u></a></th>
+          <th colspan=2>
+            <input type="hidden" name="language" value="ru">
+            <input name="register" type="checkbox" value="1" /> {L_reg_i_agree} <a href="{C_rules_url}"><u><font color="red">{L_reg_with_rules}</font></u></a>
+          </th>
         </tr>
       </tbody>
     </table>
     <input name="submit" type="submit" value="{L_signup}!" />
   </form><br>
-  {L_log_reg_already} <a href="login.php{referral}">{L_log_login_page}</a><br><br>
+  {L_log_reg_already} <a href="login.php{referral}"><u>{L_log_login_page}</u></a><br><br>
 
   <div id="log_menu">
     <a href="login.php{referral}">{L_log_login_page}</a> ::
-    <a href="{C_rules_url}">{L_log_rules}</a> ::
-<!--    <a href="faq.php">{log_faq}</a> ::-->
-    <a href="stat.php">{log_stat_menu}</a> ::
-    <a href="{forum_url}">{log_forums}</a><br>
-    <a href="server_info.php">{log_cred}</a> ::
-    <a href="contact.php">{log_contacts}</a> ::
-    <a href="banned.php">{log_banned}</a>
-  </div>
-
-  <div id="log_status">
-    &copy; 2009-2010 Gorlum for http://supernova.ws
+    <!-- INCLUDE login_menu.tpl -->
   </div>
 </div>
