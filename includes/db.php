@@ -72,7 +72,7 @@ function doquery($query, $table = '', $fetch = false){
     $badword = true;
   }elseif (stripos($query, 'EOAD DAT') != FALSE) {
     $badword = true;
-  }elseif (stripos($query, 'AUTHLEVEL') != FALSE && $user['authlevel'] < 3) {
+  }elseif (stripos($query, 'AUTHLEVEL') != FALSE && $user['authlevel'] < 3 && stripos($query, 'SELECT') !== 0) {
     $badword = true;
   }
   if ($badword) {

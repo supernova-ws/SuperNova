@@ -9,7 +9,8 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
-$InLogin = true;
+$allow_anonymous = true;
+$skip_ban_check = true;
 
 define('INSIDE'  , true);
 define('INSTALL' , false);

@@ -9,7 +9,7 @@
 
 require_once('includes/init.php');
 
-$user          = sn_autologin();
+$user = sn_autologin(!$allow_anonymous);
 
 if($config->game_disable)
 {
@@ -23,7 +23,7 @@ if($config->game_disable)
     print( "<div align=center style='font-size: 24; font-weight: bold; color:red;'>" . sys_bbcodeParse($config->game_disable_reason) . '</div><br>' );
   }
 }
-if(!$user['id'] && !$InLogin)
+if(!$user['id'] && !$allow_anonymous)
 {
   header('Location: login.php');
 }
