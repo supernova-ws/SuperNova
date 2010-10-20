@@ -204,6 +204,7 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
           <!-- ELSE -->
             <!-- IF USER_ID == galaxyrow.USER_ID -->
               <!-- DEFINE $PLANET_CLASS = 'myplanet' -->
+              <!-- DEFINE $PLANET_ACTIVITY = '' -->
             <!-- ELSE -->
               <!-- IF ALLY_ID == galaxyrow.ALLY_ID -->
                 <!-- DEFINE $PLANET_CLASS = 'allymember' -->
