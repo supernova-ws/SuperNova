@@ -233,9 +233,9 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
     </th>
     <th width=30>
       <!-- IF galaxyrow.MOON_NAME -->
-        <div style="position: relative; height: 30px; width: 30px;" onmouseover="javascript:show_planet({galaxyrow.PLANET_NUM}, {galaxyrow.PLANET_TYPE});" >
+        <div style="position: relative; height: 30px; width: 30px;" onmouseover="javascript:show_planet({galaxyrow.PLANET_NUM}, 3);" >
           <span style="position: absolute; top: 0; left: 0; height: 30px; width: 30px;">
-            <img style="cursor: pointer;" onmouseover='javascript:show_planet({galaxyrow.PLANET_NUM}, 3)' src={dpath}planeten/small/s_mond.jpg height=30 width=30>
+            <img src={dpath}planeten/small/s_mond.jpg height=100% width=100%>
           </span>
           <!-- IF galaxyrow.MOON_FLEET_ID -->
             <span class="alpha50" style="position: absolute; top: 0; left: 0; height: 100%; width: 100%;">
