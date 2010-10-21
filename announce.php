@@ -7,6 +7,7 @@
  * @v2 (c) copyright 2010 by Gorlum for http://supernova.ws
  * based on admin/activeplanet.php (c) 2008 for XNova
  */
+
 define('INSIDE', true);
 define('INSTALL' , false);
 
@@ -14,33 +15,29 @@ $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
 
-includeLang('admin');
-
-$GET_id          = intval($_GET['id']);
-$POST_text       = SYS_mysqlSmartEscape($_POST['text']);
-$POST_dtDateTime = SYS_mysqlSmartEscape($_POST['dtDateTime']);
-$detail_url      = SYS_mysqlSmartEscape($_POST['detail_url']);
-$mode            = SYS_mysqlSmartEscape($_GET['mode'] ? $_GET['mode'] : $_POST['mode']);
-
 $template     = gettemplate('announce', true);
 
-doquery("UPDATE {{users}} SET `news_lastread` = 0 WHERE `id` = {$user['id']};");
+$announce_id   = intval($_GET['id']);
+$text          = SYS_mysqlSmartEscape($_POST['text']);
+$announce_time = SYS_mysqlSmartEscape($_POST['dtDateTime']);
+$detail_url    = SYS_mysqlSmartEscape($_POST['detail_url']);
+$mode          = SYS_mysqlSmartEscape($_GET['mode'] ? $_GET['mode'] : $_POST['mode']);
 
+doquery("UPDATE {{users}} SET `news_lastread` = 0 WHERE `id` = {$user['id']};");
 if ($user['authlevel'] >= 3)
 {
-  if (!empty($POST_text))
+  if (!empty($text))
   {
     $idAnnounce = intval(mysql_real_escape_string($_POST['id']));
-    $dtDateTime = empty($POST_dtDateTime) ? ("FROM_UNIXTIME(".time().")") : "'{$POST_dtDateTime}'";
-    $strText = $POST_text;
+    $dtDateTime = empty($announce_time) ? ("FROM_UNIXTIME(".time().")") : "'{$announce_time}'";
 
     if ($mode == 'edit')
     {
-      doquery( "UPDATE {{announce}} SET `tsTimeStamp`={$dtDateTime}, `strAnnounce`='{$strText}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$idAnnounce}");
+      doquery( "UPDATE {{announce}} SET `tsTimeStamp`={$dtDateTime}, `strAnnounce`='{$text}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$idAnnounce}");
     }
     else
     {
-      doquery( "INSERT INTO {{announce}} SET `tsTimeStamp`={$dtDateTime}, `strAnnounce`='{$strText}', detail_url = '{$detail_url}'");
+      doquery( "INSERT INTO {{announce}} SET `tsTimeStamp`={$dtDateTime}, `strAnnounce`='{$text}', detail_url = '{$detail_url}'");
     }
     doquery("UPDATE {{users}} SET `news_lastread` = `news_lastread` + 1;");
 
@@ -50,17 +47,20 @@ if ($user['authlevel'] >= 3)
   switch($mode)
   {
     case 'del':
-      doquery( "DELETE FROM {{announce}} WHERE `idAnnounce`={$GET_id}");
+      doquery( "DELETE FROM {{announce}} WHERE `idAnnounce`={$announce_id}");
       $mode = '';
     break;
 
     case 'edit':
-      $template->assign_var('ID', $GET_id);
+      $template->assign_var('ID', $announce_id);
+
     case 'copy':
-      $announce = doquery("SELECT * FROM {{table}} WHERE `idAnnounce`={$GET_id};", 'announce', true);
+      $announce = doquery("SELECT * FROM {{table}} WHERE `idAnnounce`={$announce_id};", 'announce', true);
     break;
   }
-}else{
+}
+else
+{
   $annQuery = 'WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<=' . intval($time_now);
 }
 
@@ -80,7 +80,7 @@ $template->assign_vars(array(
 while ($announce = mysql_fetch_array($allAnnounces)) {
   $template->assign_block_vars('announces', array(
     'ID'         => $announce['idAnnounce'],
-    'TIME'       => $announce['tsTimeStamp'], //str_replace(' ', '&nbsp;', $announce['tsTimeStamp']),
+    'TIME'       => $announce['tsTimeStamp'],
     'ANNOUNCE'   => sys_bbcodeParse($announce['strAnnounce']),
     'DETAIL_URL' => $announce['detail_url'],
     'NEW'        => $announce['unix_time'] + $config->game_news_actual > $time_now,
@@ -88,5 +88,6 @@ while ($announce = mysql_fetch_array($allAnnounces)) {
   ));
 }
 
-display( $template, $lang['adm_an_title']);
+display($template, $lang['news_title']);
+
 ?>

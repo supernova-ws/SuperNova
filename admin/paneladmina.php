@@ -28,7 +28,7 @@ $Pattern    = SYS_mysqlSmartEscape($_GET['player']);
 $NewLvl     = intval($_GET['authlvl']);
 $ip         = SYS_mysqlSmartEscape($_GET['ip']);
 
-includeLang('admin/adminpanel');
+includeLang('admin');
 
 $PanelMainTPL = gettemplate('admin/admin_panel_main');
 

@@ -124,21 +124,8 @@ $lang['TranslationBy'] = '';
 
 $lang['sys_wait'] = 'Запрос выполняется. Пожалуйста, подождите.';
 
-$lang['sys_affilates_title'] = "Партнерская программа";
-$lang['sys_affilates_text1'] = "Разместите эту ссылку, баннер или юзербар на форуме или сайте и каждый пришедший по ссылке станет вашим Приглашенным. За каждые ";
-$lang['sys_affilates_text2'] = " ТМ, заработанных приглашенным, вы получите 1 ТМ!";
-$lang['sys_affilate_list']   = "Список приглашенных";
-$lang['sys_affilates_none']  = "Нет приглашенных";
 $lang['sys_total']           = "ИТОГО";
-$lang['sys_link_name']       = "Личная ссылка в партнерской программе";
-$lang['sys_link_bb']         = "BBCode для размещения личной ссылки на форуме";
-$lang['sys_link_html']       = "HTML-код для размещения личной ссылки на веб-странице";
-$lang['sys_banner_name']     = "Баннер";
-$lang['sys_banner_bb']       = "BBCode для размещения баннера на форуме";
-$lang['sys_banner_html']     = "HTML-код для размещения баннера на веб-странице";
-$lang['sys_userbar_name']    = "Юзербар";
-$lang['sys_userbar_bb']      = "BBCode для размещения юзербара на форуме";
-$lang['sys_userbar_html']    = "HTML-код для размещения юзербара на веб-странице";
+$lang['sys_register_date']   = 'Дата регистрации';
 
 $lang['sys_attacker'] 		= "Атакующий";
 $lang['sys_defender'] 		= "Обороняющийся";
@@ -296,6 +283,26 @@ $lang['weekdays'] = array(
 $lang['sys_max'] = 'макс';
 $lang['sys_banned_msg'] = 'Вы забанены. Для получения информации зайдите <a href="banned.php">сюда</a>. Срок окончания блокировки аккаунта: ';
 
-// News page
-$lang['ann_more'] = 'Подробнее...';
+// News page & a bit of imperator page
+$lang = array_merge($lang, array(
+  'news_title'     => 'Новости',
+  'news_none'      => 'Нет новостей',
+  'news_new'       => 'НОВАЯ',
+  'news_future'    => 'АНОНС',
+  'news_more'      => 'Подробнее...',
+
+  'news_date'      => 'Дата',
+  'news_announce'  => 'Содержание',
+  'news_total'     => 'Всего новостей: ',
+
+  'news_add'       => 'Добавить новость',
+  'news_edit'      => 'Редактировать новость',
+  'news_copy'      => 'Скопировать новость',
+  'news_mode_new'  => 'Новая',
+  'news_mode_edit' => 'Редактирование',
+  'news_mode_copy' => 'Копия',
+));
+
+//
+$lang['sys_game_rules'] = 'Правила игры';
 ?>

@@ -59,8 +59,6 @@ $lang['deletemessage_fail']		= 'Неверный пароль!';
 
 // 	
 $lang['MembersOnline']			= 'Игроков';
-$lang['ov_news_title']			= 'Новости';
-$lang['ov_news_none']			= 'Нет новостей';
 
 // 	
 $lang['ov_fleet_list']				= 'График движения флотов';

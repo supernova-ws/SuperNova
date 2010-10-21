@@ -22,7 +22,7 @@ if ($user['authlevel'] < 3)
 }
 
   if ($user['authlevel'] >= "2") {
-    includeLang('admin/messagelist');
+    includeLang('admin');
 
     $BodyTpl    = gettemplate('admin/messagelist_body');
     $RowsTpl    = gettemplate('admin/messagelist_table_rows');

@@ -66,7 +66,6 @@ $lang['infog']		= 'Информация';
 
 //	
 $lang['adm_over']	    = 'Обзор';
-$lang['adm_announce'] = 'Новости';
 $lang['adm_conf']	    = 'Настройки';
 $lang['adm_reset']	 = 'Обнуление';
 

@@ -1,10 +1,13 @@
 <?php
 
 /**
- * banner_list.php
+ * affilates.php
  *
+ * v2 (c) copyright 2010 by Gorlum for http://supernova.ws
+ *  [~] Complies with PCG1
  * v1 (c) copyright 2010 by Gorlum for http://supernova.ws
  */
+
 define('INSIDE', true);
 define('INSTALL' , false);
 
@@ -12,39 +15,44 @@ $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
 
-includeLang('admin');
+includeLang('affilates');
 
-$parse          = $lang;
-$parse['dpath'] = $dpath;
-$parse['user_id'] = $user['id'];
+$template = gettemplate('affilates', true);
 
-$parse['serverURL'] = "http://".$_SERVER["SERVER_NAME"];
+$rpg_bonus_divisor = $config->rpg_bonus_divisor ? $config->rpg_bonus_divisor : 10;
 
-$bannerURL = "http://".$_SERVER["SERVER_NAME"]. $config->int_banner_URL;
-$bannerURL .= strpos($bannerURL, '?') ? '&' : '?';
-$bannerURL .= "id=" . $user['id'];
-$parse['bannerURL'] = $bannerURL;
+$affilates = doquery("SELECT r.*, u.username, u.register_time FROM {{referrals}} AS r LEFT JOIN {{users}} AS u ON u.id = r.id WHERE id_partner = {$user['id']};");
+while ($affilate = mysql_fetch_array($affilates))
+{
+  $affilate_gain = floor($affilate['dark_matter']/$rpg_bonus_divisor);
 
-$userbarURL = "http://" . $_SERVER["SERVER_NAME"] . $config->int_userbar_URL;
-$userbarURL .= strpos($userbarURL, '?') ? '&' : '?';
-$userbarURL .= "id=" . $user['id'];
-$parse['userbarURL'] = $userbarURL;
-
-$template = parsetemplate( gettemplate('affilates', true) , $parse );
-
-$affilates = doquery("SELECT r.*, u.username, u.register_time FROM {{referrals}} AS r LEFT JOIN {{users}} AS u ON u.id = r.id WHERE id_partner = {$user['id']}");
-while ($affilate = mysql_fetch_array($affilates)) {
-  $gained += floor($affilate['dark_matter']/10);
   $template->assign_block_vars('affilates', array(
     'REGISTERED'  => date(FMT_DATE_TIME, $affilate['register_time']),
     'USERNAME'    => $affilate['username'],
     'DARK_MATTER' => $affilate['dark_matter'],
-    'GAINED'      => floor($affilate['dark_matter']/$config->rpg_bonus_divisor),
+    'GAINED'      => $affilate_gain,
   ));
+
+  $gained += $affilate_gain;
 }
 
-$template->assign_var('GAINED', $gained);
-$template->assign_var('rpg_bonus_divisor', $config->rpg_bonus_divisor);
+$bannerURL  = "http://{$_SERVER['SERVER_NAME']}{$config->int_banner_URL}";
+$bannerURL .= strpos($bannerURL, '?') ? '&' : '?';
+$bannerURL .= "id={$user['id']}";
 
-display( $template, $lang['sys_affilates_title']);
+$userbarURL  = "http://{$_SERVER['SERVER_NAME']}{$config->int_userbar_URL}";
+$userbarURL .= strpos($userbarURL, '?') ? '&' : '?';
+$userbarURL .= "id={$user['id']}";
+
+$template->assign_vars(array(
+  'GAINED'     => $gained,
+  'dpath'      => $dpath,
+  'user_id'    => $user['id'],
+  'serverURL'  => "http://{$_SERVER['SERVER_NAME']}",
+  'bannerURL'  => $bannerURL,
+  'userbarURL' => $userbarURL,
+));
+
+display(parsetemplate($template), $lang['aff_title']);
+
 ?>

@@ -22,6 +22,7 @@ if ($IsUserChecked == false) {
 
 check_urlaubmodus ($user);
 
+includeLang('affilates');
 includeLang('overview');
 
 $template = gettemplate('imperator', true);

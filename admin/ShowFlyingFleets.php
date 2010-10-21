@@ -21,7 +21,7 @@ if ($user['authlevel'] < 3)
   die();
 }
 
-includeLang('admin/fleets');
+includeLang('admin');
 $PageTPL            = gettemplate('admin/fleet_body');
 
 $parse              = $lang;

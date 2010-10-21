@@ -6,21 +6,21 @@
 <table width=519>
   <!-- News Frame -->
   <!-- IF GAME_NEWS_OVERVIEW -->
-    <tr><td colspan=4 class="c">{L_ov_news_title}</td></tr>
+    <tr><td colspan=4 class="c">{L_news_title}</td></tr>
     <!-- BEGIN news -->
       <tr>
         <th width="90">
           <!-- IF news.IS_NEW -->
-            <font color=red>{L_ov_new}</font><br>
+            <font color=red>{L_news_new}</font><br>
           <!-- ENDIF -->
           <font color=cyan>{news.TIME}</font>
         </th>
         <th valign=top colspan=3>
-          <div align=justify>{news.ANNOUNCE}<!-- IF news.DETAIL_URL --> <a href="{news.DETAIL_URL}"><u><font color="green">{L_ann_more}</font></u></a><!-- ENDIF --></div>
+          <div align=justify>{news.ANNOUNCE}<!-- IF news.DETAIL_URL --> <a href="{news.DETAIL_URL}"><u><font color="green">{L_news_more}</font></u></a><!-- ENDIF --></div>
         </th>
       </tr>
     <!-- BEGINELSE news -->
-      <tr><th colspan="4" class="c">{L_ov_news_none}</th></tr>
+      <tr><th colspan="4" class="c">{L_news_none}</th></tr>
     <!-- END news -->
   <!-- ENDIF -->
 
@@ -70,11 +70,11 @@
 
 <!-- IF BANNER_URL -->
   <table width="519" align="center">
-    <tr><td class="c">{L_ov_banner}</td></tr>
+    <tr><td class="c">{L_aff_banner}</td></tr>
     <tr>
       <th>
         <img src="{BANNER_URL}"><br><br>
-        {L_sys_banner_bb}<br>
+        {L_aff_banner_bb}<br>
         <input type="text" value="[img]{BANNER_URL}[/img]" size="55">
       </th>
     </tr>
@@ -83,11 +83,11 @@
 
 <!-- IF USERBAR_URL -->
   <table width="519" align="center">
-    <tr><td class="c">{L_ov_userbar}</td></tr>
+    <tr><td class="c">{L_aff_userbar}</td></tr>
     <tr>
       <th>
         <img src="{USERBAR_URL}"><br><br>
-        {L_sys_userbar_bb}<br>
+        {L_aff_userbar_bb}<br>
         <input type="text" value="[img]{USERBAR_URL}[/img]" size="55">
       </th>
     </tr>

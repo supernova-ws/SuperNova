@@ -22,7 +22,7 @@ if ($user['authlevel'] < 3)
 }
 
   if ($user['authlevel'] >= 1) {
-    includeLang('admin/addmoon');
+    includeLang('admin');
 
     $mode      = $_POST['mode'];
 

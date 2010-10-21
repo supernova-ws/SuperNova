@@ -66,22 +66,6 @@ $lang['adm_pl_since'] = "Активна";
 $lang['adm_pl_they']  = "Всего";
 $lang['adm_pl_apla']  = "планет(а/ы)";
 
-// Announces
-$lang['adm_an_title']     = "Новости";
-$lang['adm_an_date']      = "Дата";
-$lang['adm_an_announce']  = "Содержание";
-$lang['adm_an_total']     = "Всего новостей: ";
-$lang['adm_an_add']       = "Добавить новость";
-$lang['adm_an_edit']      = "Редактировать новость";
-$lang['adm_an_copy']      = "Скопировать новость";
-$lang['adm_an_mode_new']  = "Новая";
-$lang['adm_an_mode_edit'] = "Редактирование";
-$lang['adm_an_mode_copy'] = "Дубликат";
-$lang['adm_an_copy_shrt'] = "Дуб";
-$lang['adm_an_edit_shrt'] = "Ред";
-$lang['adm_an_new']       = "НОВАЯ";
-$lang['adm_an_future']    = "АНОНС";
-
 $lang['adm_am_plid']  = "ID планеты";
 $lang['adm_am_done']  = "Добавление прошло успешно";
 $lang['adm_am_ttle']  = "Добавить ресурсы";
@@ -224,5 +208,152 @@ $lang = array_merge($lang, array(
   'adm_opt_game_default_language' => "Язык интерфейса",
   'adm_opt_game_default_skin'     => "Оформление/Шкурка",
   'adm_opt_game_default_template' => "Шаблон",
+
+  'adm_uni_compensate' => "Компенсировать",
 ));
+
+// Add moon
+$lang['addm_title']    = "Добавить луну";
+$lang['addm_addform']  = "Формуляр новой луны";
+$lang['addm_playerid'] = "ID планеты размещения";
+$lang['addm_moonname'] = "Название луны";
+$lang['addm_moongala'] = "Укажите галактику";
+$lang['addm_moonsyst'] = "Укажите систему";
+$lang['addm_moonplan'] = "Укажите позицию";
+$lang['addm_moondoit'] = "Добавить";
+$lang['addm_done']     = "Луна создана";
+
+
+//Admin panel
+$lang['adm_usr_level'][0] = "Игрок";
+$lang['adm_usr_level'][1] = "Оператор";
+$lang['adm_usr_level'][2] = "Модератор";
+$lang['adm_usr_level'][3] = "Администратор";
+$lang['adm_usr_genre']['M'] = "Мужчина";
+$lang['adm_usr_genre']['F'] = "Женщина";
+
+// Admin Strings
+$lang['panel_mainttl'] = "Панель администратора";
+// Admin Panel A Template 1
+$lang['adm_panel_mnu'] = "Поиск игрока";
+$lang['adm_panel_ttl'] = "Вид поиска";
+$lang['adm_search_pl'] = "Поиск по имени";
+$lang['adm_search_ip'] = "Поиск по IP";
+$lang['adm_stat_play'] = "Статистика игрока";
+$lang['adm_mod_level'] = "Уровень доступа";
+
+$lang['adm_player_nm'] = "Имя игрока";
+$lang['adm_ip']        = "IP";
+$lang['adm_plyer_wip'] = "Игроки с IP";
+$lang['adm_frm1_id']   = "ID";
+$lang['adm_frm1_name'] = "Имя";
+$lang['adm_frm1_ip']   = "IP";
+$lang['adm_frm1_mail'] = "e-Mail";
+$lang['adm_frm1_acc']  = "Звание";
+$lang['adm_frm1_gen']  = "Пол";
+$lang['adm_frm1_main'] = "ID планеты";
+$lang['adm_frm1_gpos'] = "Координаты";
+$lang['adm_mess_lvl1'] = "Уровень доступа";
+$lang['adm_mess_lvl2'] = "&quot;теперь&quot; ";
+$lang['adm_colony']    = "Колонии";
+$lang['adm_planet']    = "Планета";
+$lang['adm_moon']      = "Луна";
+$lang['adm_technos']   = "Технологии";
+$lang['adm_bt_search'] = "Искать";
+$lang['adm_bt_change'] = "Изменить";
+
+// Admin fleet
+$lang['flt_id']       = "ID";
+$lang['flt_fleet']    = "Флот";
+$lang['flt_mission']  = "Задание";
+$lang['flt_owner']    = "Отправление";
+$lang['flt_planet']   = "Планета";
+$lang['flt_time_st']  = "Время отправления";
+$lang['flt_e_owner']  = "Прибытие";
+$lang['flt_time_en']  = "Время прибытия";
+$lang['flt_staying']  = "Stat.";
+$lang['flt_action']   = "Действие";
+$lang['flt_title']    = "Флоты в полёте";
+
+// MD5
+$lang['md5_title']  = "Утилита шифрования";
+$lang['md5_pswcyp'] = "Шифрование пароля";
+$lang['md5_psw']    = "Пароль";
+$lang['md5_pswenc'] = "Зашифрованный пароль";
+$lang['md5_doit']   = "[ зашифровать ]";
+
+// Message list
+$lang['mlst_title']       = "Список сообщений";
+$lang['mlst_mess_del']    = "Удаление сообщений";
+$lang['mlst_hdr_page']    = "Стр.";
+$lang['mlst_hdr_title']   = " ) сообщений :";
+$lang['mlst_hdr_prev']    = "[ &lt;- ]";
+$lang['mlst_hdr_next']    = "[ -&gt; ]";
+$lang['mlst_hdr_id']      = "ID";
+$lang['mlst_hdr_type']    = "Type";
+$lang['mlst_hdr_time']    = "Heure";
+$lang['mlst_hdr_from']    = "От";
+$lang['mlst_hdr_to']      = "Кому";
+$lang['mlst_hdr_text']    = "Contenu";
+$lang['mlst_hdr_action']  = "Отм.";
+$lang['mlst_del_mess']    = "Удалить";
+$lang['mlst_bt_delsel']   = "Удалить выделенные";
+$lang['mlst_bt_deldate']  = "Удалить сообщения даты";
+$lang['mlst_hdr_delfrom'] = "Удалить с даты";
+$lang['mlst_mess_typ__0'] = "Шпионаж";
+$lang['mlst_mess_typ__1'] = "Игроков";
+$lang['mlst_mess_typ__2'] = "Альянсов";
+$lang['mlst_mess_typ__3'] = "Боёв";
+$lang['mlst_mess_typ__4'] = "Эксплуатац.";
+$lang['mlst_mess_typ__5'] = "Трансорт";
+$lang['mlst_mess_typ_15'] = "Экспедиции";
+$lang['mlst_mess_typ_99'] = "Список Batiment";
+
+// Settings
+$lang['adm_opt_title']             = "Настройки Вселенной";
+$lang['adm_opt_game_settings']     = "Параметры Вселенной";
+$lang['adm_opt_game_name']         = "Название Вселенной";
+$lang['adm_opt_game_gspeed']       = "Скорость игры";
+$lang['adm_opt_game_fspeed']       = "Скорость флота";
+$lang['adm_opt_game_speed_normal'] = "(нормальная&nbsp;=&nbsp;1)";
+$lang['adm_opt_game_pspeed']       = "Добыча ресурсов";
+$lang['adm_opt_game_pspeed_norm']  = "(нормальная&nbsp;=&nbsp;1)";
+$lang['adm_opt_game_forum']        = "Адрес форума";
+$lang['adm_opt_game_copyrigh']     = "Copyright";
+$lang['adm_opt_game_online']       = "Отключить игру";
+$lang['adm_opt_game_offreaso']     = "Причина отключения";
+$lang['adm_opt_plan_settings']     = "Параметры планет";
+$lang['adm_opt_plan_initial']      = "Размер главной планеты";
+$lang['adm_opt_plan_base_inc']     = "Базовая добыча ";
+$lang['adm_opt_game_debugmod']     = "Режим отладки";
+$lang['adm_opt_game_oth_info']     = "Прочие параметры";
+$lang['adm_opt_game_oth_news']     = "Количество новостей на странице Император<br>0 - отключить";
+$lang['adm_opt_game_oth_adds']     = "Реклама от GOOGLE";
+$lang['adm_opt_game_oth_gala']     = "Галактика";
+$lang['adm_opt_game_oth_syst']     = "Система";
+$lang['adm_opt_game_oth_plan']     = "Планета";
+$lang['adm_opt_btn_save']          = "Сохранить";
+$lang['adm_opt_vacancy_mode']      = "Отключить режим отпуска";
+$lang['adm_opt_sectors']           = "секторов";
+$lang['adm_opt_per_hour']          = "в час";
+$lang['adm_opt_saved']             = "Настройки игры сохранены успешно";
+$lang['adm_opt_players_online']    = "Игроков на сервере";
+$lang['adm_opt_vacancy_mode_is']   = "Режим отпуска";
+$lang['adm_opt_maintenance']       = "Обслуживание и отладка";
+$lang['adm_opt_links']             = "Ссылки и баннеры";
+                                   
+$lang['adm_opt_galaxies']          = "Количество галактик во Вселенной";
+$lang['adm_opt_systems']           = "Количество систем в галактике";
+$lang['adm_opt_planets']           = "Количество планет в системе";
+$lang['adm_opt_build_on_research'] = "Строить лабораторию во время исследования";
+$lang['adm_opt_game_rules']        = "Ссылка на правила";
+$lang['adm_opt_max_colonies']      = "Количество колоний";
+$lang['adm_opt_exchange']          = "Курс обмена ресурсов";
+$lang['adm_opt_game_mode']         = "Тип Вселенной";
+
+$lang['adm_opt_game_defaults']         = "Параметры игрока по умолчанию";
+$lang['adm_opt_game_default_language'] = "Язык интерфейса";
+$lang['adm_opt_game_default_skin']     = "Шкурка (Оформление)";
+$lang['adm_opt_game_default_template'] = "Шаблон";
+
 ?>

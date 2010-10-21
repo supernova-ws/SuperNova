@@ -154,4 +154,121 @@ $lang['adm_dm_planet_conflict_coords'] = 'планета с именем "%1$s" и планета с ко
 $lang['adm_apply']    = "Apply";
 $lang['adm_maint']    = "Maintenance";
 $lang['adm_backup']   = "Backup";
+
+$lang['addm_title']    = "Add a moon";
+$lang['addm_addform']  = "Adding Form";
+$lang['addm_playerid'] = "ID of player";
+$lang['addm_moonname'] = "Moon name";
+$lang['addm_moongala'] = "Choose galaxy";
+$lang['addm_moonsyst'] = "Choose system";
+$lang['addm_moonplan'] = "Choose position";
+$lang['addm_moondoit'] = "Add";
+$lang['addm_done']     = "Added";
+
+$lang['adm_usr_level'][0] = "Player";
+$lang['adm_usr_level'][1] = "GameOperator";
+$lang['adm_usr_level'][2] = "SuperGameOperator";
+$lang['adm_usr_level'][3] = "Administrator";
+$lang['adm_usr_genre']['M'] = "Male";
+$lang['adm_usr_genre']['F'] = "Female";
+
+// Admin Strings
+$lang['panel_mainttl'] = "Administration panel";
+
+// Admin Panel A Template 1
+$lang['adm_panel_mnu'] = "Search for a player";
+$lang['adm_panel_ttl'] = "Type of research";
+$lang['adm_search_pl'] = "Find a player";
+$lang['adm_search_ip'] = "Search an IP";
+$lang['adm_stat_play'] = "Statistic of a player";
+$lang['adm_mod_level'] = "Modify access";
+
+$lang['adm_player_nm'] = "Player name";
+$lang['adm_ip']        = "Players using";
+$lang['adm_plyer_wip'] = "Players with IP";
+$lang['adm_frm1_id']   = "ID";
+$lang['adm_frm1_name'] = "Name";
+$lang['adm_frm1_ip']   = "IP";
+$lang['adm_frm1_mail'] = "E-mail";
+$lang['adm_frm1_acc']  = "Access";
+$lang['adm_frm1_gen']  = "Gender";
+$lang['adm_frm1_main'] = "ID planet";
+$lang['adm_frm1_gpos'] = "Position";
+$lang['adm_mess_lvl1'] = "Access level";
+$lang['adm_mess_lvl2'] = "now ";
+$lang['adm_colony']    = "Colony";
+$lang['adm_planet']    = "Planet";
+$lang['adm_moon']      = "Moon";
+$lang['adm_technos']   = "Research and development";
+$lang['adm_bt_search'] = "Search";
+$lang['adm_bt_change'] = "Change";
+
+$lang['flt_id']       = "ID";
+$lang['flt_fleet']    = "Fleet";
+$lang['flt_mission']  = "Mission";
+$lang['flt_owner']    = "Owner";
+$lang['flt_planet']   = "Planet";
+$lang['flt_time_st']  = "Start time";
+$lang['flt_e_owner']  = "Destination";
+$lang['flt_time_en']  = "End time";
+$lang['flt_staying']  = "Hold time";
+$lang['flt_action']   = "Action";
+$lang['flt_title']    = "Fleets in air";
+
+$lang['md5_title']  = "md5 password crypting";
+$lang['md5_pswcyp'] = "Password crypting";
+$lang['md5_psw']    = "Password";
+$lang['md5_pswenc'] = "Crypted password";
+$lang['md5_doit']   = "[ Crypt ]";
+
+$lang['mlst_title']       = "Message list";
+$lang['mlst_mess_del']    = "Delete messages";
+$lang['mlst_hdr_page']    = "Page";
+$lang['mlst_hdr_title']   = " ) of messages :";
+$lang['mlst_hdr_prev']    = "[ &lt;- ]";
+$lang['mlst_hdr_next']    = "[ -&gt; ]";
+$lang['mlst_hdr_id']      = "ID";
+$lang['mlst_hdr_type']    = "Type";
+$lang['mlst_hdr_time']    = "Time";
+$lang['mlst_hdr_from']    = "From";
+$lang['mlst_hdr_to']      = "To";
+$lang['mlst_hdr_text']    = "Content";
+$lang['mlst_hdr_action']  = "Select";
+$lang['mlst_del_mess']    = "Delete";
+$lang['mlst_bt_delsel']   = "Delete Selected";
+$lang['mlst_bt_deldate']  = "Delete from";
+$lang['mlst_hdr_delfrom'] = "Delete from";
+$lang['mlst_mess_typ__0'] = "Espionnage";
+$lang['mlst_mess_typ__1'] = "Player";
+$lang['mlst_mess_typ__2'] = "Alliance";
+$lang['mlst_mess_typ__3'] = "Attack";
+$lang['mlst_mess_typ__4'] = "Exploitation";
+$lang['mlst_mess_typ__5'] = "Transport";
+$lang['mlst_mess_typ_15'] = "Expeditions";
+$lang['mlst_mess_typ_99'] = "Building Queue";
+
+$lang['adm_opt_title']         = "Server configuration";
+$lang['adm_opt_game_settings'] = "Game settings";
+$lang['adm_opt_game_name']     = "Game name";
+$lang['adm_opt_game_gspeed']   = "Game speed";
+$lang['adm_opt_game_fspeed']   = "Fleet speed";
+$lang['adm_opt_game_pspeed']   = "Production speed<br>(normal = 1)";
+$lang['adm_opt_game_forum']    = "Board address";
+$lang['adm_opt_game_copyrigh'] = "Copyright";
+$lang['adm_opt_game_online']   = "On-line Status";
+$lang['adm_opt_game_offreaso'] = "Raison for offline";
+$lang['adm_opt_plan_settings'] = "Planet settings";
+$lang['adm_opt_plan_initial']  = "Initial fields";
+$lang['adm_opt_plan_base_inc'] = "Basic income ";
+$lang['adm_opt_game_debugmod'] = "Debug mode";
+$lang['adm_opt_game_oth_info'] = "Other info";
+$lang['adm_opt_game_oth_news'] = "Show framework News";
+$lang['adm_opt_game_oth_chat'] = "Show external Chat";
+$lang['adm_opt_game_oth_adds'] = "Google AdSense";
+$lang['adm_opt_game_oth_lstc'] = "Last planet coordinates";
+$lang['adm_opt_game_oth_gala'] = "Galaxy";
+$lang['adm_opt_game_oth_syst'] = "System";
+$lang['adm_opt_game_oth_plan'] = "Position";
+$lang['adm_opt_btn_save']      = "Save";
+
 ?>
