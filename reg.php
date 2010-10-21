@@ -119,41 +119,41 @@ if ($_POST['submit'])
 
     $galaxy = $config->LastSettedGalaxyPos;
     $system = $config->LastSettedSystemPos;
-    $planet = mt_rand($config->LastSettedPlanetPos, $config->game_maxPlanet);
+    $segment_size = floor($config->game_maxPlanet/3);
+    $segment = floor($config->LastSettedPlanetPos / $segment_size);
+    $segment++;
+    $planet = mt_rand(1 + $segment*$segment_size, ($segment + 1)*$segment_size);
 
     $planet_set = false;
     while (!$planet_set)
     {
-      $planet++;
-      if($planet > $config_maxPlanet)
+      if($planet > $config->game_maxPlanet)
       {
-       $planet = mt_rand(1, $config->game_maxPlanet);
-       $system++;
+        $planet = mt_rand(0, $segment_size - 1) + 1;
+        $system++;
       }
-      if($system > $config_maxSystem)
+      if($system > $config->game_maxSystem)
       {
         $system = 1;
         $galaxy++;
       }
-      if($galaxy > $config_maxGalaxy)
+      if($galaxy > $config->game_maxGalaxy)
       {
         $galaxy = 1;
       }
 
-      $galaxy_row = doquery( "SELECT * FROM {{planets}} WHERE `galaxy` = '{$galaxy}' AND `system` = '{$system}' AND `planet` = '{$planet}' AND `planet_type` = 1 LIMIT 1;", '', true);
-      if($galaxy_row['id'])
+      $galaxy_row = doquery( "SELECT `id` FROM {{planets}} WHERE `galaxy` = '{$galaxy}' AND `system` = '{$system}' AND `planet` = '{$planet}' AND `planet_type` = 1 LIMIT 1;", '', true);
+      if(!$galaxy_row['id'])
       {
-        continue;
+        $planet_set = true;
+        $config->db_saveItem(array(
+          'LastSettedGalaxyPos' => $galaxy,
+          'LastSettedSystemPos' => $system,
+          'LastSettedPlanetPos' => $planet
+        ));
+        break;
       }
-
-      $planet_set = true;
-      CreateOnePlanetRecord ($galaxy, $system, $planet, $user['id'], $planet_name, $config->metal_basic_income, $config->crystal_basic_income, $config->deuterium_basic_income, true);
-      $config->db_saveItem(array(
-        'LastSettedGalaxyPos' => $galaxy,
-        'LastSettedSystemPos' => $system,
-        'LastSettedPlanetPos' => $planet
-      ));
-      break;
+      $planet += 3;
     }
 
     $new_planet = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}' LIMIT 1;", '', true);
@@ -180,14 +180,15 @@ if ($_POST['submit'])
 }
 else
 {
-  $parse['id_ref']     = $id_ref;
-  if($id_ref)
-  {
-    $parse['referral'] = "?id_ref=$id_ref";
-  }
-  $parse['servername'] = $config->game_name;
-  $parse['forum_url']  = $config->forum_url;
-  display(parsetemplate(gettemplate('registry_form', true), $parse), $lang['registry'], false, '', false, false);
+  $template = gettemplate('registry_form', true);
+  $template->assign_vars(array(
+    'id_ref'     => $id_ref,
+    'referral'   => "?id_ref=$id_ref",
+    'servername' => $config->game_name,
+    'forum_url'  => $config->forum_url,
+  ));
+
+  display(parsetemplate($template), $lang['registry'], false, '', false, false);
 }
 
 function sendpassemail($emailaddress, $password) {

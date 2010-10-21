@@ -428,20 +428,20 @@ class classPersistent extends classCache
         $item_list = array($item_list => $value);
       }
 
-      foreach($item_list as $item_name => &$value)
+      foreach($item_list as $item_name => $item_value)
       {
         if($item_name)
         {
-          if($value !== NULL)
+          if($item_value !== NULL)
           {
-            $this->$item_name = $value;
+            $this->$item_name = $item_value;
           }
           else
           {
-            $value = $this->$item_name;
+            $item_value = $this->$item_name;
           }
 
-          $qry .= " ('{$item_name}', '{$value}'),";
+          $qry .= " ('{$item_name}', '{$item_value}'),";
         }
       }
 
