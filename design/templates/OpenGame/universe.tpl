@@ -308,13 +308,23 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 
     <th style="white-space: nowrap" width=125 align="center"><center>
       <!-- IF galaxyrow.USER_ID && USER_ID != galaxyrow.USER_ID -->
-        <!-- IF ACT_SPY -->
-          <span class="fl">
-            <a>
-              <img onclick="javascript:doit(6, {galaxy}, {system}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src={dpath}img/e.gif alt="{L_gl_espionner}" title="{L_gl_espionner}" border=0 style="cursor: pointer;">
-            </a>&nbsp;
-          </span>
+        <!-- IF !galaxyrow.USER_NOOB -->
+          <!-- IF ACT_SPY -->
+            <span class="fl">
+              <a>
+                <img onclick="javascript:doit(6, {galaxy}, {system}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src={dpath}img/e.gif alt="{L_gl_espionner}" title="{L_gl_espionner}" border=0 style="cursor: pointer;">
+              </a>&nbsp;
+            </span>
+          <!-- ENDIF -->
+          <!-- IF ACT_MISSILE -->
+            <span class="fl">
+              <a href="galaxy.php?mode=2&galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&current={curPlanetID}">
+                <img src={dpath}img/r.gif alt="{L_gl_mipattack}" title="{L_gl_mipattack}" border=0>
+              </a>&nbsp;
+            </span>
+          <!-- ENDIF -->
         <!-- ENDIF -->
+
         <!-- IF ACT_WRITE -->
         <span class="fl">
           <a href="messages.php?mode=write&id={galaxyrow.USER_ID}">
@@ -326,15 +336,8 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
         <span class="fl">
           <a href="buddy.php?a=2&u={galaxyrow.USER_ID}">
             <img src={dpath}img/b.gif alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" border=0>
-          </a>&nbsp;
+          </a>
         </span>
-        <!-- ENDIF -->
-        <!-- IF ACT_MISSILE -->
-          <span class="fl">
-            <a href="galaxy.php?mode=2&galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&current={curPlanetID}">
-              <img src={dpath}img/r.gif alt="{L_gl_mipattack}" title="{L_gl_mipattack}" border=0>
-            </a>
-          </span>
         <!-- ENDIF -->
       <!-- ELSE -->
         &nbsp;

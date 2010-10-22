@@ -20,6 +20,8 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
+includeLang('fleet');
+
 $g = intval($_GET['galaxy']);
 $s = intval($_GET['system']);
 $i = intval($_GET['planet']);
@@ -63,10 +65,13 @@ if ($error) {
   exit();
 };
 
-$planet = doquery("SELECT * FROM `{{table}}` WHERE `galaxy` = '".$g."' AND
-      `system` = '".$s."' AND
-      `planet` = '".$i."' AND
-      `planet_type` = '1'", 'planets', true);
+$planet = doquery("SELECT * FROM `{{planets}}` WHERE `galaxy` = '{$g}' AND `system` = '{$s}' AND `planet` = '{$i}' AND `planet_type` = '1'", '', true);
+
+$cant_attack = flt_can_attack($planet, MT_MISSILE);
+if($cant_attack)
+{
+  message("<font color=\"red\"><b>{$lang['fl_attack_error'][$cant_attack]}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 5);
+}
 
 $ziel_id = $planet['id_owner'];
 

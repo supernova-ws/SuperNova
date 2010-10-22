@@ -485,6 +485,10 @@ class classConfig extends classPersistent
     'urlaubs_modus_erz'      => 0,
     'users_amount'           => 0,
 
+    // Noob protection
+    'game_noob_points'       => 5000, // Below this point user threated as noob. 0 to disable
+    'game_noob_factor'       => 5,    // Multiplier to divide "stronger" and "weaker" users
+
     // Game global settings
     'game_name'  => 'SuperNova', // Server name (would be on banners and on top of left menu)
     'game_mode'  => 0,           // 0 - SuperNova, 1 - oGame

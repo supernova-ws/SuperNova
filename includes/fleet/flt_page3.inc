@@ -108,70 +108,17 @@
     }
   }
   //Check that a failed acs attack isn't being sent, if it is, make it an attack fleet.
-  if((!$fleet_group) && ($target_mission == MT_AKS)){
+  if(!$fleet_group && $target_mission == MT_AKS)
+  {
     $target_mission = MT_ATTACK;
   }
 
   CheckPlanetUsedFields($planetrow);
 
-  $protection      = $config->noobprotection;
-  $protectiontime  = $config->noobprotectiontime;
-  $protectionmulti = $config->noobprotectionmulti;
-  if ($protectiontime < 1) {
-    $protectiontime = 9999999999999999;
-  }
-
-  $MyDBRec = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']};", '', true);
-  if ($TargetPlanet['id_owner'] == '') {
-    $HeDBRec = $MyDBRec;
-  } elseif ($TargetPlanet['id_owner'] != '') {
-    $HeDBRec = doquery("SELECT * FROM {{users}} WHERE `id` = '{$TargetPlanet['id_owner']}';", '', true);
-  }
-  if ($HeDBRec['onlinetime'] < ($time_now - 60*60*24*7)) {
-    $protectiontime = 0;
-  }
-  if ($MyDBRec['user_lastip'] == $HeDBRec['user_lastip'] AND $MyDBRec['user_lastip'] AND $HeDBRec['id'] != $MyDBRec['id']) {
-    message ("<font color=\"red\"><b>{$lang['fl_multi_ip_protection']}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
-  }
-
-  $MyGameLevel = doquery("SELECT total_points FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '{$MyDBRec['id']}';", '', true);
-  $HeGameLevel = doquery("SELECT total_points FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '{$HeDBRec['id']}';", '', true);
-  $MyGameLevel = $MyGameLevel['total_points'];
-  $HeGameLevel = $HeGameLevel['total_points'];
-
-  switch ($target_mission){
-    case MT_ATTACK:
-    case MT_AKS:
-    case MT_HOLD:
-    case MT_SPY:
-    case MT_DESTROY:
-      if ($TargetPlanet['id_level'] > $user['authlevel'])
-        message ("<font color=\"red\"><b>{$lang['fl_adm_attak']}</b></font>", $lang['fl_warning'], "fleet.{$phpEx}", 2);
-
-      if( ($TargetPlanet['id_owner'] AND $protection) AND (
-        (($HeGameLevel * $protectionmulti) < $MyGameLevel AND $HeGameLevel < ($protectiontime * 1000))
-        OR
-        (($MyGameLevel * $protectionmulti) < $HeGameLevel AND $MyGameLevel < ($protectiontime * 1000))
-      ) ) message("<font color=\"lime\"><b>".$lang['fl_noob_mess_n']."</b></font>", $lang['fl_noob_title'], "fleet.{$phpEx}", 2);
-    case MT_RECYCLE:
-    case MT_EXPLORE:
-      $TransMetal     = 0;
-      $TransCrystal   = 0;
-      $TransDeuterium = 0;
-    default:
-  }
-
-  if ($HeDBRec['urlaubs_modus'] AND $target_mission != MT_RECYCLE) {
-    message("<font color=\"lime\"><b>".$lang['fl_vacation_pla']."</b></font>", $lang['fl_vacation_ttl'], "fleet.{$phpEx}", 2);
-  }
-
-  if ($target_mission != MT_EXPLORE) {
-    if ($HeDBRec['ally_id'] != $MyDBRec['ally_id'] AND $target_mission == MT_RELOCATE) {
-      message ("<font color=\"red\"><b>". $lang['fl_only_stay_at_home'] ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
-    }
-    if ($TargetPlanet['ally_deposit'] < 1 AND $HeDBRec != $MyDBRec AND $target_mission == MT_HOLD) {
-      message ("<font color=\"red\"><b>". $lang['fl_no_allydeposit'] ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
-    }
+  $cant_attack = flt_can_attack($TargetPlanet, $target_mission);
+  if($cant_attack)
+  {
+    message("<font color=\"red\"><b>{$lang['fl_attack_error'][$cant_attack]}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
   }
 
   $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
@@ -189,9 +136,12 @@
   }
   $fleet['end_time']   = $StayDuration + (2 * $duration) + $time_now;
 
-  if ($aks AND $target_mission==MT_AKS){
+  if ($aks && $target_mission == MT_AKS)
+  {
     if ($fleet['start_time']>$aks['ankunft'])
+    {
       message ($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME,$fleet['start_time']) . " AKS arrival: " .date(FMT_DATE_TIME,$aks['ankunft']), $lang['fl_error']);
+    }
     $fleet['start_time'] = $aks['ankunft'];
     $fleet['end_time'] = $aks['ankunft'] + $duration;
   };
@@ -200,7 +150,8 @@
   $FleetShipCount      = 0;
   $fleet_array         = "";
   $FleetSubQRY         = "";
-  foreach ($fleetarray as $Ship => $Count) {
+  foreach ($fleetarray as $Ship => $Count)
+  {
     $FleetStorage    += $pricelist[$Ship]["capacity"] * $Count;
     $FleetShipCount  += $Count;
     $fleet_array     .= $Ship .",". $Count .";";
@@ -208,13 +159,16 @@
   }
   $FleetStorage        -= $consumption;
 
-  if ( $StorageNeeded > $FleetStorage) {
+  if ( $StorageNeeded > $FleetStorage)
+  {
     message ("<font color=\"red\"><b>". $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
   }
-  if ($planetrow['deuterium'] < $TransDeuterium + $consumption) {
+  if ($planetrow['deuterium'] < $TransDeuterium + $consumption)
+  {
     message ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
   }
-  if (($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal)) {
+  if (($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal))
+  {
     message ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
   }
 

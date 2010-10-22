@@ -89,4 +89,17 @@ define('LOGIN_ERROR_USERNAME'        , 4);
 define('LOGIN_ERROR_ACTIVE'          , 5);
 define('LOGIN_ERROR_EXTERNAL_AUTH'   , 6);
 
+// Attack verification statuses
+define('ATTACK_ALLOWED'        , 0);
+define('ATTACK_NO_TARGET'      , 1);
+define('ATTACK_OWN'            , 2);
+define('ATTACK_WRONG_MISSION'  , 3);
+define('ATTACK_NO_ALLY_DEPOSIT', 4);
+define('ATTACK_NO_DEBRIS'      , 5);
+define('ATTACK_VACANCY'        , 6);
+define('ATTACK_SAME_IP'        , 7);
+define('ATTACK_BUFFING'        , 8);
+define('ATTACK_ADMIN'          , 9);
+define('ATTACK_NOOB'           ,10);
+
 ?>

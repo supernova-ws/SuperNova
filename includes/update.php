@@ -304,6 +304,11 @@ switch(intval($config->db_version))
     ), !$update_tables['statpoints']['res_rank']);
   $new_version = 21;
 
+  case 21:
+    upd_log_version_update();
+    upd_check_key('game_noob_points', 5000, true);
+    upd_check_key('game_noob_factor', 5, true);
+  //$new_version = 22;
 };
 upd_log_message('Upgrade complete.');
 

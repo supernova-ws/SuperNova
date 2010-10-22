@@ -37,12 +37,6 @@ function sn_set_cookie($user, $rememberme)
   $md5pass = md5("{$user['password']}--{$config->secret_word}");
   $cookie = "{$user['id']}/%/{$user['username']}/%/{$md5pass}/%/{$rememberme}";
   $result = setcookie($config->COOKIE_NAME, $cookie, $expiretime, '/', '', 0);
-  //pdump($result);
-  //pdump($config->COOKIE_NAME);
-  //pdump($cookie);
-  //pdump($expiretime);
-  //pdump($_COOKIE[$config->COOKIE_NAME]);
-  //print('cokie set2.');
 }
 
 function sn_autologin($abort = true)
@@ -50,31 +44,24 @@ function sn_autologin($abort = true)
   global $lang, $config, $ugamela_root_path, $phpEx, $time_now, $skip_ban_check, $IsUserChecked;
 
   $IsUserChecked = false;
-  //print('searching cookie...');
   if (!isset($_COOKIE[$config->COOKIE_NAME]))
   {
-    //print('not found');
     return false;
   }
-  //print('cookie set... parsing...');
 
   $TheCookie  = explode("/%/", $_COOKIE[$config->COOKIE_NAME]);
   $TheCookie[1] = mysql_real_escape_string($TheCookie[1]);
   $user = doquery("SELECT * FROM `{{users}}` WHERE `username` = '{$TheCookie[1]}';", '', true);
 
-  //print('parsed. ');
-
   if (!$user || $user['id'] != $TheCookie[0] || md5("{$user['password']}--{$config->secret_word}") !== $TheCookie[2])
   {
-    //print('user not found');
- //   setcookie($config->COOKIE_NAME, "", time() - 3600*25);
+    setcookie($config->COOKIE_NAME, "", time() - 3600*25);
     if($abort)
     {
       message($lang['err_cookie']);
     }
     return false;
   }
-  //print('user found');
 
   sn_set_cookie($user, $TheCookie[3]);
   sys_user_options_unpack($user);
@@ -119,13 +106,18 @@ function sn_login($username, $password, $remember_me = '1')
   }
   else
   {
-    //print('inlogin setcookie call...');
+    sys_user_options_unpack($login);
     sn_set_cookie($login, $remember_me);
     $status = LOGIN_SUCCESS;
     $error_msg = '';
   }
 
   return array('status' => $status, 'error_msg' => $error_msg, 'user_row' => $login);
+}
+
+function sys_is_multiaccount($user1, $user2)
+{
+ return $user1['user_lastip'] == $user2['user_lastip'];
 }
 
 ?>

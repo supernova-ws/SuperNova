@@ -69,6 +69,8 @@ INSERT INTO `sn_config` VALUES
   ('game_name', 'SuperNova'), 
   ('game_news_actual', 259200), 
   ('game_news_overview', 3), 
+  ('game_noob_points', 5000),
+  ('game_noob_factor', 5),
   ('game_speed', 1), 
   ('game_user_changename', 0), 
   ('initial_fields', 163), 
