@@ -186,6 +186,8 @@ $GET_planet       = intval($_GET['planet']);
       }
     }
 
+    $recyclers_need = ceil(($GalaxyRowPlanet['debris_metal'] + $GalaxyRowPlanet['debris_crystal']) / $sn_data[209]['capacity']);
+
     $template->assign_block_vars('galaxyrow', array(
        'PLANET_ID'        => $GalaxyRowPlanet['id'],
        'PLANET_NUM'       => $Planet,
@@ -201,10 +203,11 @@ $GET_planet       = intval($_GET['planet']);
        'MOON_TEMP'      => number_format($GalaxyRowMoon['temp_min'], 0, '', '.'),
        'MOON_FLEET_ID'  => $moon_fleet_id,
 
-       'DEBRIS_METAL'   => $GalaxyRowPlanet['debris_metal'], //number_format( $GalaxyRowPlanet['metal'], 0, '', '.'),
-       'DEBRIS_CRYSTAL' => $GalaxyRowPlanet['debris_crystal'], //number_format( $GalaxyRowPlanet['crystal'], 0, '', '.'),
-       'DEBRIS_RC_SEND' => $recyclers_sent,
+       'DEBRIS_METAL'   => $GalaxyRowPlanet['debris_metal'],
+       'DEBRIS_CRYSTAL' => $GalaxyRowPlanet['debris_crystal'],
        'DEBRIS_RC_INC'  => $recyclers_incoming,
+       'DEBRIS_RC_SEND' => $recyclers_sent <= $recyclers_incoming ? 0 : $recyclers_sent - $recyclers_incoming,
+       'DEBRIS_RC_NEED' => $recyclers_need,
 
        'USER_ID'       => $GalaxyRowUser['id'],
        'USER_NAME'     => $GalaxyRowUser['username'],

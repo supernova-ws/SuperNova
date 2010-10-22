@@ -391,7 +391,8 @@ jQuery.extend(language, {
   type_mission6: '{L_type_mission[6]}',
   type_mission8: '{L_type_mission[8]}',
   type_mission9: '{L_type_mission[9]}',
-  sys_ships: '{L_uni_incoming_fleets}'
+  sys_ships: '{L_uni_incoming_fleets}',
+  tech_209: '{L_tech[209]}'
 });
 
 var users = new Array();
@@ -419,7 +420,8 @@ var uni_row = new Array();
   debris_metal: '{galaxyrow.DEBRIS_METAL}',
   debris_crystal: '{galaxyrow.DEBRIS_CRYSTAL}',
   debris_recyclers: '{galaxyrow.DEBRIS_RC_SEND}',
-  debris_incoming: '{galaxyrow.DEBRIS_RC_INC}'
+  debris_incoming: '{galaxyrow.DEBRIS_RC_INC}',
+  debris_rc_need: '{galaxyrow.DEBRIS_RC_NEED}'
 };
 <!-- END galaxyrow -->
 

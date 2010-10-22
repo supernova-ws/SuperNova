@@ -137,5 +137,7 @@ $lang['gal_sys_hint']         = 'Подведите курсор мышки к картинке планеты, луны
 
 $lang['uni_debris']           = 'Обломки';
 
+$lang['uni_need']           = 'Нужно';
+
 $lang['uni_incoming_fleets']  = 'Состав прибывающих флотов';
 ?>

@@ -55,7 +55,8 @@ function show_debris(planet){
     result += "<tr><td class=c>" + language['gl_ressource'] + "</td><td class=c>" + sn_format_number(parseInt(uni_row[planet]['debris_metal']) + parseInt(uni_row[planet]['debris_crystal'])) + "</td></tr>";
     result += "<tr><th>" + language['sys_metal'] + '</th><th style="text-align: right;">' + sn_format_number(uni_row[planet]['debris_metal']) + "</th></tr>";
     result += "<tr><th>" + language['sys_crystal'] + '</th><th style="text-align: right;">' + sn_format_number(uni_row[planet]['debris_crystal']) + "</th></tr>";
-    result += "<tr><td class=c colspan=2 align=center><a href=# onclick='javascript:doit(8," + uni_galaxy + "," + uni_system + "," + planet + ",2," + uni_row[planet]['debris_recyclers'] + ");'>" + language['type_mission8'] + "</a></td></tr>";
+    /*result += '<tr><td class="c">' + language['tech_209'] + '</tâ><td class="c" style="text-align: right;">' + sn_format_number(uni_row[planet]['debris_rc_need']) + "</th></tr>";*/
+    result += "<tr><td class=c colspan=2 align=center><a href=# onclick='javascript:doit(8," + uni_galaxy + "," + uni_system + "," + planet + ",2," + uni_row[planet]['debris_recyclers'] + ");'>" + language['type_mission8'] + "</a><br>" + language['tech_209'] + ': ' + uni_row[planet]['debris_recyclers'] + "/" + uni_row[planet]['debris_rc_need'] + "</td></tr>";
     result += "</table>";
 
     uni_row[planet]['cache_debris'] = result;
