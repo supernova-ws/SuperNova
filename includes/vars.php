@@ -615,9 +615,9 @@ if ( defined('INSIDE')) {
     212 => array(
       'name' => 'solar_satelit',
       'require' => array(21 => 1),
-      'metal' => 0,
+      'metal' => 1500,
       'crystal' => 2000,
-      'deuterium' => 500,
+      'deuterium' => 100,
       'energy' => 0,
       'factor' => 1,
       'capacity' => 0,
