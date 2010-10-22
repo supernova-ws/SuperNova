@@ -21,7 +21,7 @@ if(!defined('INIT'))
   include_once('init.php');
 }
 
-$db_last_version = 20;
+$db_last_version = 21;
 $config->db_loadItem('db_version');
 if($config->db_version == $db_last_version)
 {
@@ -293,6 +293,16 @@ switch(intval($config->db_version))
     upd_check_key('int_userbar_background', 'design/images/userbar.png', true);
     doquery('UPDATE {{planets}} SET `metal_mine` = `metal_mine` - 1 WHERE `metal_mine` > 5;');
   $new_version = 20;
+
+  case 20:
+    upd_log_version_update();
+    upd_alter_table('statpoints', array(
+      "ADD `res_rank` INT(11) DEFAULT 0 COMMENT 'Rank by resources'",
+      "ADD `res_old_rank` INT(11) DEFAULT 0 COMMENT 'Old rank by resources'",
+      "ADD `res_points` BIGINT(20) DEFAULT 0 COMMENT 'Resource stat points'",
+      "ADD `res_count` BIGINT(20) DEFAULT 0 COMMENT 'Old rank by resources'"
+    ), !$update_tables['statpoints']['res_rank']);
+  $new_version = 21;
 
 };
 upd_log_message('Upgrade complete.');

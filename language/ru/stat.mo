@@ -12,6 +12,7 @@ $lang['stat_fleet']    = "Флот";
 $lang['stat_research'] = "Исследования";
 $lang['stat_building'] = "Постройки";
 $lang['stat_defenses'] = "Оборона";
+$lang['stat_resources'] = "Ресурсы";
 
 
 $lang['Position']      = "Место";

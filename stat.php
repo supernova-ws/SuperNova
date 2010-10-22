@@ -46,6 +46,7 @@ include("{$ugamela_root_path}common.{$phpEx}");
   $parse['type']  .= "<option value=\"3\"". (($type == "3") ? " SELECTED" : "") .">". $lang['stat_research'] ."</option>";
   $parse['type']  .= "<option value=\"4\"". (($type == "4") ? " SELECTED" : "") .">". $lang['stat_building'] ."</option>";
   $parse['type']  .= "<option value=\"5\"". (($type == "5") ? " SELECTED" : "") .">". $lang['stat_defenses'] ."</option>";
+  $parse['type']  .= "<option value=\"6\"". (($type == "6") ? " SELECTED" : "") .">". $lang['stat_resources'] ."</option>";
 
   if       ($type == 1) {
     $Order   = "total_points";
@@ -77,6 +78,12 @@ include("{$ugamela_root_path}common.{$phpEx}");
     $Counts  = "defs_count";
     $Rank    = "defs_rank";
     $OldRank = "defs_old_rank";
+  } elseif ($type == 6) {
+    $Order   = "res_points";
+    $Points  = "res_points";
+    $Counts  = "res_count";
+    $Rank    = "res_rank";
+    $OldRank = "res_old_rank";
   }
 
   if ($who == 2) {
