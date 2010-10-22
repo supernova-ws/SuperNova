@@ -90,12 +90,12 @@ function GetTechnoPoints ( $CurrentUser ) {
 }
 
 function GetFleetPointsOnTour ( $CurrentFleet ) {
-  global $resource, $pricelist, $reslist;
+  global $resource, $pricelist, $reslist, $sn_groups;
 
   $FleetCounts = 0;
   $FleetPoints = 0;
 
-  $split = trim(str_replace(';',' ',$CurrentFleet));
+  $split = trim(str_replace(';',' ',$CurrentFleet['fleet_array']));
   $split = explode(' ',$split);
 
   foreach($split as $ship) {
@@ -135,7 +135,7 @@ function SYS_statCalculate(){
   // Calculation of Fleet-In-Flight
   $UsrFleets = doquery("SELECT * FROM {{fleets}};");
   while ($CurFleet = mysql_fetch_assoc($UsrFleets)) {
-    $Points = GetFleetPointsOnTour ( $CurFleet['fleet_array'] );
+    $Points = GetFleetPointsOnTour ( $CurFleet );
     $counts[$CurFleet['fleet_owner']]['fleet'] += $Points['FleetCount'];
     $points[$CurFleet['fleet_owner']]['fleet'] += $Points['FleetPoint'] / 1000;
 
