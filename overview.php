@@ -483,6 +483,8 @@ switch ($mode)
     }
     $msg .= '</table>';
 */
+    $recyclers_send = min(ceil(($planetrow['debris_metal'] + $planetrow['debris_crystal']) / $sn_data[209]['capacity']), $planetrow[$sn_data[209]['name']]);
+
     $template->assign_vars(array(
       'dpath'                => $dpath,
       'TIME_NOW'             => $time_now,
@@ -496,10 +498,11 @@ switch ($mode)
       'NEW_LEVEL_RAID'       => $isNewLevelRaid,
 
       'PLANET_ID'            => $planetrow['id'],
+      'PLANET_NAME'          => $planetrow['name'],
       'PLANET_GALAXY'        => $planetrow['galaxy'],
       'PLANET_SYSTEM'        => $planetrow['system'],
       'PLANET_PLANET'        => $planetrow['planet'],
-      'PLANET_NAME'          => $planetrow['name'],
+      'PLANET_TYPE'          => $planetrow['planet_type'],
       'PLANET_TYPE_TEXT'     => $lang['sys_planet_type'][$planetrow['planet_type']],
       'BUILDING'             => int_buildCounter($planetrow, 'building'),
       'HANGAR'               => int_buildCounter($planetrow, 'hangar'),
@@ -511,7 +514,7 @@ switch ($mode)
       'PLANET_FILL_BAR'      => $planet_fill,
       'metal_debris'         => pretty_number($planetrow['debris_metal']),
       'crystal_debris'       => pretty_number($planetrow['debris_crystal']),
-      'CAN_RECYCLE'          => ($planetrow['debris_metal'] || $planetrow['debris_crystal']) && $planetrow[$resource[209]],
+      'RECYCLERS_SEND'       => $recyclers_send,
       'planet_temp_min'      => $planetrow['temp_min'],
       'planet_temp_max'      => $planetrow['temp_max'],
 

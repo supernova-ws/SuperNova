@@ -1,7 +1,64 @@
+<script language="JavaScript" src="js/lib/tw-sack.js"></script>
 <!-- INCLUDE fleet_javascript.tpl -->
 <script type="text/javascript"> 
+
+// fixing bug with sending recycle from planet overview
+// replace sack() with jQuery! Everywhere!!!
+
+function changeSlots(slotsInUse) {
+  var e = document.getElementById('slots');
+  e.innerHTML = slotsInUse;
+}
+
+function setShips(ship, count) {
+  var e = document.getElementById(ship);
+  e.innerHTML = count;
+}
+
+function whenResponse () {
+  retVals   = this.response.split("|");
+  Message   = retVals[0];
+  Infos     = retVals[1];
+  retVals   = Infos.split(" ");
+  UsedSlots = retVals[0];
+  SpyProbes = retVals[1];
+  Recyclers = retVals[2];
+  Missiles  = retVals[3];
+  retVals   = Message.split(";");
+  CmdCode   = retVals[0];
+  strInfo   = retVals[1];
+  document.getElementById("ov_recycle").innerHTML = strInfo;
+//  addToTable("done", "success");
+
+//  var td1text = document.createTextNode(strInfo);
+//  td1.appendChild(td1text);
+//  var spantext = document.createTextNode("done");
+//  spanclass.nodeValue = "success";
+//  span.appendChild(spantext);
+}
+
+var ajax = new sack();
+
+function doit (order, galaxy, system, planet, planettype, shipcount) {
+  ajax.requestFile = "flotenajax.php?action=send";
+  ajax.runResponse = whenResponse;
+  ajax.execute = true;
+  ajax.setVar("thisgalaxy", galaxy);
+  ajax.setVar("thissystem", system);
+  ajax.setVar("thisplanet", planet);
+  ajax.setVar("thisplanettype", planettype);
+  ajax.setVar("mission", order);
+  ajax.setVar("galaxy", galaxy);
+  ajax.setVar("system", system);
+  ajax.setVar("planet", planet);
+  ajax.setVar("planettype", 2);
+  if (order == 8)
+    ajax.setVar("ship209", shipcount);
+  ajax.runAJAX();
+}
+
   jQuery.noConflict(); 
-</script> 
+// --></script>
 
 <br>
 <table><tr><th valign=top class="tr">
@@ -55,8 +112,8 @@
     <tr>
       <th width=100>{orb}</th>
       <th colspan="3">{L_sys_metal}: {metal_debris} / {L_sys_crystal}: {crystal_debris}
-        <!-- IF CAN_RECYCLE -->
-          <br>(<a href="quickfleet.php?mode=8&g={PLANET_GALAXY}&s={PLANET_SYSTEM}&p={PLANET_PLANET}&t=2">{L_type_mission[8]}</a>)
+        <!-- IF RECYCLERS_SEND -->
+          <br><span id="ov_recycle" style="cursor: pointer" onclick="doit(8, {PLANET_GALAXY}, {PLANET_SYSTEM}, {PLANET_PLANET}, {PLANET_TYPE}, {RECYCLERS_SEND});">{L_type_mission[8]}</span>
         <!-- ENDIF -->
       </th>
     </tr>
