@@ -6,7 +6,7 @@ function f(target_url,win_name) {
 </script>
 <div id="left_menu_wrapper">
   <table width="130" cellspacing="0" cellpadding="0" id="left_menu">
-    <tr><td align=center><strong>OGame Triolan</strong></td></tr>
+    <tr><td align=center><strong>{C_game_name}</strong></td></tr>
 
     <tr><td align=center class="c">{admin}</td></tr>
     <tr><td><a href="overview.php">{adm_over}</a></td></tr>
@@ -17,7 +17,7 @@ function f(target_url,win_name) {
     <tr><td><a href="admin_darkmatter.php">{dark_matter}</a></td></tr>
 
     <tr><td align=center class="c">{L_sys_planet}</td></tr>
-    <tr><td><a href="planet_compensate.php">{L_adm_uni_compensate}</a></td></tr>
+    <tr><td><a href="planet_compensate.php">{L_adm_lm_compensate}</a></td></tr>
 
     <tr><td align=center class="c">Add Menu</td></tr>
     <tr><td><a href="add_building.php">Add Building </a></td></tr>

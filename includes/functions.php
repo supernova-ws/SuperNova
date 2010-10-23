@@ -702,4 +702,25 @@ function flt_expand($target)
 
   return $arr_fleet;
 }
+
+function sys_get_param($param_name, $default = '')
+{
+  return $_POST[$param_name] ? $_POST[$param_name] : ($_GET[$param_name] ? $_GET[$param_name] : $default);
+}
+
+function sys_get_param_int($param_name, $default = 0)
+{
+  return intval(sys_get_param($param_name, $default));
+}
+
+function sys_get_param_float($param_name, $default = 0)
+{
+  return floatval(sys_get_param($param_name, $default));
+}
+
+function sys_get_param_escaped($param_name, $default = '')
+{
+  return mysql_real_escape_string(sys_get_param($param_name, $default));
+}
+
 ?>

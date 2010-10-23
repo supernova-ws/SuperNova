@@ -42,6 +42,7 @@ ul /* Unmarked list */
 {
   margin: 0;
   padding-left: 20;
+  text-align: left;
 }
 
 .icons
@@ -124,4 +125,11 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
 #copyright
 {
   text-align: center;
+}
+
+.error
+{
+  text-align: left;
+  font-color: red;
+  color: red;
 }

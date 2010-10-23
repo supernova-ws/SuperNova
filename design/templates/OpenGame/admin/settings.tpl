@@ -97,7 +97,7 @@
       <th><input name="initial_fields" maxlength="80" size="10" value="{C_initial_fields}" type="text"> {L_adm_opt_sectors}</th>
     </tr>
     <tr>
-      <th>{L_res_basic_income}<br>({L_adm_opt_per_hour})</th>
+      <th>{L_res_basic_income}</th>
       <th>
         <div class="fl" style="width: 5em;">{L_sys_metal}</div>
         <div class="fl" style="width: 10.5em;"><input name="metal_basic_income" maxlength="10" size="9" value="{C_metal_basic_income}" type="text"> {L_adm_opt_per_hour}</div>
@@ -135,19 +135,21 @@
     </tr>
     <tr>
       <th>{L_adm_opt_int_news_count}<br>{L_adm_opt_game_zero_dsiable}</th>
-      <th><input name="game_news_overview" type="text" value="{C_game_news_overview}" /> {L_adm_opt_int_page_imperor}</th>
+      <th>{L_adm_opt_int_page_imperor} <input name="game_news_overview" type="text" size=3 maxlength=3 value="{C_game_news_overview}" /></th>
+    </tr>
+
+    <tr><td class="c" colspan="2">{L_adm_opt_game_advertise}</td></tr>
+    <tr>
+      <th colspan=2>
+        <input name="advGoogleLeftMenuIsOn" {advGoogleLeftMenuIsOn} type="checkbox" value="1" /> {L_adm_opt_game_oth_adds}
+        <textarea name="advGoogleLeftMenuCode" rows="10">{C_advGoogleLeftMenuCode}</textarea>
+      </th>
     </tr>
 
     <tr><td class="c" colspan="2">{L_adm_opt_game_oth_info}</td></tr>
     <tr> 
       <th>{L_adm_opt_vacancy_mode}</th> 
       <th><input name="urlaubs_modus_erz" type="checkbox" value="1" {urlaubs_modus_erz} /></th> 
-    </tr>
-    <tr>
-      <th colspan=2>
-        <input name="advGoogleLeftMenuIsOn" {advGoogleLeftMenuIsOn} type="checkbox" value="1" /> {L_adm_opt_game_oth_adds}
-        <textarea name="advGoogleLeftMenuCode" rows="10">{C_advGoogleLeftMenuCode}</textarea>
-      </th>
     </tr>
 
     <tr><td class="c" colspan="2"><center><input name="save" value="{L_adm_opt_btn_save}" type="submit"></center></td></tr>

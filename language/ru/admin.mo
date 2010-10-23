@@ -152,8 +152,8 @@ $lang['adm_tools_reloadConfig'] = 'Пересчитать конфигурацию';
 
 $lang['adm_reason']  = "Причина";
 
-// Server settings page
 $lang = array_merge($lang, array(
+// Server settings page
   'adm_opt_title'             => "Настройки Вселенной",
   'adm_opt_game_settings'     => "Параметры Вселенной",
   'adm_opt_game_name'         => "Название Вселенной",
@@ -178,9 +178,12 @@ $lang = array_merge($lang, array(
   'adm_opt_game_debugmod'     => "Включить режим отладки",
   'adm_opt_game_oth_info'     => "Прочие параметры",
   'adm_opt_int_news_count'    => "Количество новостей",
-  'adm_opt_int_page_imperor'  => "на странице &quot;Император&quot;",
+  'adm_opt_int_page_imperor'  => 'На странице &quot;Император&quot;:',
   'adm_opt_game_zero_dsiable' => "(0&nbsp;-&nbsp;отключить)",
+  
+  'adm_opt_game_advertise'    => "Рекламные блоки",
   'adm_opt_game_oth_adds'     => "Включить рекламный блок в левом меню. Код баннера:",
+
   'adm_opt_game_oth_gala'     => "Галактика",
   'adm_opt_game_oth_syst'     => "Система",
   'adm_opt_game_oth_plan'     => "Планета",
@@ -209,7 +212,30 @@ $lang = array_merge($lang, array(
   'adm_opt_game_default_skin'     => "Оформление/Шкурка",
   'adm_opt_game_default_template' => "Шаблон",
 
-  'adm_uni_compensate' => "Компенсировать",
+  'adm_lm_compensate' => "Компенсировать",
+
+// Planet compensate page
+  'adm_pl_comp_title'   => 'Компенсация уничтоженной планеты',
+  'adm_pl_comp_src'     => 'Уничтожить планету',
+  'adm_pl_comp_dst'     => 'Зачислить ресурсы на планету',
+  'adm_pl_comp_bonus'   => 'Бонус игрока',
+  'adm_pl_comp_check'   => 'Проверить',
+  'adm_pl_comp_confirm' => 'Подтвердить',
+
+  'adm_pl_com_of_plr'   => 'игрока',
+  'adm_pl_comp_destr'   => 'будет уничтожена.',
+  'adm_pl_comp_got'     => 'будут зачислены на планету',
+  
+  'adm_pl_comp_price'   => 'Стоимость построек на ней составляет',
+
+  'adm_pl_comp_done'    => 'Готово',
+
+  'adm_pl_comp_err_0' => 'Не найдена уничтожаемая планета',
+  'adm_pl_comp_err_1' => 'Планета уже уничтожена',
+  'adm_pl_comp_err_2' => 'Не найдена планета, на которую нужно зачислить ресурсы',
+  'adm_pl_comp_err_3' => 'У указанных планет разные владельцы. Зачислить ресурсы можно только на планету того же игрока',
+  'adm_pl_comp_err_4' => 'Планета не пренадлежит указанному игроку',
+  'adm_pl_comp_err_5' => 'Планеты для уничтжения и для зачисления ресурсов совпадают',
 ));
 
 // Add moon
@@ -308,52 +334,5 @@ $lang['mlst_mess_typ__4'] = "Эксплуатац.";
 $lang['mlst_mess_typ__5'] = "Трансорт";
 $lang['mlst_mess_typ_15'] = "Экспедиции";
 $lang['mlst_mess_typ_99'] = "Список Batiment";
-
-// Settings
-$lang['adm_opt_title']             = "Настройки Вселенной";
-$lang['adm_opt_game_settings']     = "Параметры Вселенной";
-$lang['adm_opt_game_name']         = "Название Вселенной";
-$lang['adm_opt_game_gspeed']       = "Скорость игры";
-$lang['adm_opt_game_fspeed']       = "Скорость флота";
-$lang['adm_opt_game_speed_normal'] = "(нормальная&nbsp;=&nbsp;1)";
-$lang['adm_opt_game_pspeed']       = "Добыча ресурсов";
-$lang['adm_opt_game_pspeed_norm']  = "(нормальная&nbsp;=&nbsp;1)";
-$lang['adm_opt_game_forum']        = "Адрес форума";
-$lang['adm_opt_game_copyrigh']     = "Copyright";
-$lang['adm_opt_game_online']       = "Отключить игру";
-$lang['adm_opt_game_offreaso']     = "Причина отключения";
-$lang['adm_opt_plan_settings']     = "Параметры планет";
-$lang['adm_opt_plan_initial']      = "Размер главной планеты";
-$lang['adm_opt_plan_base_inc']     = "Базовая добыча ";
-$lang['adm_opt_game_debugmod']     = "Режим отладки";
-$lang['adm_opt_game_oth_info']     = "Прочие параметры";
-$lang['adm_opt_game_oth_news']     = "Количество новостей на странице Император<br>0 - отключить";
-$lang['adm_opt_game_oth_adds']     = "Реклама от GOOGLE";
-$lang['adm_opt_game_oth_gala']     = "Галактика";
-$lang['adm_opt_game_oth_syst']     = "Система";
-$lang['adm_opt_game_oth_plan']     = "Планета";
-$lang['adm_opt_btn_save']          = "Сохранить";
-$lang['adm_opt_vacancy_mode']      = "Отключить режим отпуска";
-$lang['adm_opt_sectors']           = "секторов";
-$lang['adm_opt_per_hour']          = "в час";
-$lang['adm_opt_saved']             = "Настройки игры сохранены успешно";
-$lang['adm_opt_players_online']    = "Игроков на сервере";
-$lang['adm_opt_vacancy_mode_is']   = "Режим отпуска";
-$lang['adm_opt_maintenance']       = "Обслуживание и отладка";
-$lang['adm_opt_links']             = "Ссылки и баннеры";
-                                   
-$lang['adm_opt_galaxies']          = "Количество галактик во Вселенной";
-$lang['adm_opt_systems']           = "Количество систем в галактике";
-$lang['adm_opt_planets']           = "Количество планет в системе";
-$lang['adm_opt_build_on_research'] = "Строить лабораторию во время исследования";
-$lang['adm_opt_game_rules']        = "Ссылка на правила";
-$lang['adm_opt_max_colonies']      = "Количество колоний";
-$lang['adm_opt_exchange']          = "Курс обмена ресурсов";
-$lang['adm_opt_game_mode']         = "Тип Вселенной";
-
-$lang['adm_opt_game_defaults']         = "Параметры игрока по умолчанию";
-$lang['adm_opt_game_default_language'] = "Язык интерфейса";
-$lang['adm_opt_game_default_skin']     = "Шкурка (Оформление)";
-$lang['adm_opt_game_default_template'] = "Шаблон";
 
 ?>

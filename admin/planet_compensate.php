@@ -12,52 +12,74 @@ if ($user['authlevel'] < 3)
   die();
 }
 
+includeLang('admin');
+
 $template = gettemplate('admin/planet_compensate', true);
 
 // http://localhost/admin/t.php?g=1&s=19&p=10&g1=1&s1=2&p1=8&u=gorlum&f=1.1&c=1
 
-if($_GET['g'])
+$galaxy_src = sys_get_param_int('galaxy_src');
+$system_src = sys_get_param_int('system_src');
+$planet_src = sys_get_param_int('planet_src');
+
+$galaxy_dst = sys_get_param_int('galaxy_dst');
+$system_dst = sys_get_param_int('system_dst');
+$planet_dst = sys_get_param_int('planet_dst');
+
+$bonus = sys_get_param_float('bonus', 1);
+
+$username = sys_get_param_escaped('username');
+
+if($galaxy_src)
 {
-  $galaxy_src = intval($_GET['g']);
-  $planet_src = intval($_GET['s']);
-  $system_src = intval($_GET['p']);
-
-  $galaxy_dst = intval($_GET['g1']);
-  $planet_dst = intval($_GET['s1']);
-  $system_dst = intval($_GET['p1']);
-
-  $username = mysql_real_escape_string($_GET['u']);
+  $errors = array();
 
   $planet = doquery("SELECT * FROM {{planets}} WHERE galaxy = '{$galaxy_src}' AND system = '{$system_src}' AND planet = '{$planet_src}' AND planet_type = 1;", '', true);
   if(!$planet)
   {
-    die('No src planet');
+    $errors[] = $lang['adm_pl_comp_err_0'];
   }
 
   if($planet['destruyed'])
   {
-    die('Planet already destroyed');
+    $errors[] = $lang['adm_pl_comp_err_1'];
   }
 
-  $destination = doquery("SELECT * FROM {{planets}} galaxy = '{$galaxy_dst}' AND system = '{$system_dst}' AND planet = '{$planet_dst}' AND planet_type = 1;", '', true);
+  $destination = doquery("SELECT * FROM {{planets}} WHERE galaxy = '{$galaxy_dst}' AND system = '{$system_dst}' AND planet = '{$planet_dst}' AND planet_type = 1;", '', true);
   if(!$destination)
   {
-    die('No dst planet');
+    $errors[] = $lang['adm_pl_comp_err_2'];
+  }
+
+  if($planet['id'] == $destination['id'])
+  {
+    $errors[] = $lang['adm_pl_comp_err_5'];
   }
 
   if($planet['id_owner'] != $destination['id_owner'])
   {
-    die('Planets has different owners');
+    $errors[] = $lang['adm_pl_comp_err_3'];
   }
 
   $owner = doquery("SELECT * FROM {{users}} WHERE username like '{$username}'", '', true);
   if($planet['id_owner'] != $user['id'] || !$username)
   {
-    die('User is not owner of planet');
+    $errors[] = $lang['adm_pl_comp_err_4'];
   }
 
-  if($_GET['c'])
+  if(!empty($errors))
   {
+    foreach($errors as $error)
+    {
+      $template->assign_block_vars('error', array(
+        'TEXT' => $error,
+      ));
+    }
+  }
+  else
+  {
+    $template->assign_var('CHECK', 1);
+
     PlanetResourceUpdate($planet, $owner, time());
     PlanetResourceUpdate($destination, $owner, time());
 
@@ -70,33 +92,49 @@ if($_GET['g'])
       killer_add_planet($moon);
     }
 
-    $factor = $_GET['f'] ? floatval($_GET['f']) : 1;
+    pdump($final_cost, "Planet cost");
+
     foreach($sn_groups['resources_loot'] as $resource_id)
     {
-      $final_cost[$resource_id] = floor($final_cost[$resource_id] * $factor);
+      $resource_name = $sn_data[$resource_id]['name'];
+      $template->assign_var("{$resource_name}_cost", $final_cost[$resource_id]);
+      $final_cost[$resource_id] = floor($final_cost[$resource_id] * $bonus);
+      $template->assign_var("{$resource_name}_bonus", $final_cost[$resource_id]);
     }
 
-    pdump($final_cost, "Planet cost");
-    doquery("UPDATE {{planets}} SET metal = metal + '{$final_cost['901']}', crystal = crystal + '{$final_cost['902']}', deuterium = deuterium + '{$final_cost['903']}' WHERE id = {$destination['id']};");
+    pdump($final_cost, "User will recieve");
 
-    $time = time() + 60*60*24*7;
-    doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = '{$time}' WHERE id = {$planet['id']};");
-    if($moon)
+    if($_GET['btn_confirm'])
     {
-      doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = '{$time}' WHERE id = {$moon['id']};");
-    }
+      doquery("UPDATE {{planets}} SET metal = metal + '{$final_cost['901']}', crystal = crystal + '{$final_cost['902']}', deuterium = deuterium + '{$final_cost['903']}' WHERE id = {$destination['id']};");
 
-    die('Task complete');
-  }
-  else
-  {
-    die("All check done. <a href='?g={$galaxy_src}&s={$system_src}&p={$planet_src}&g1={$galaxy_dst}&s1={$system_dst}&p1={$planet_dst}&u={$_GET['u']}&f={$factor}&c=1'>Press here to complete process</a>");
+      $time = time() + 60*60*24*7;
+      doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = '{$time}' WHERE id = {$planet['id']};");
+      if($moon)
+      {
+        doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = '{$time}' WHERE id = {$moon['id']};");
+      }
+
+      $template->assign_var('CHECK', 2);
+    }
   }
 }
-else
-{
-  display(parsetemplate($template, $parse), '', false, '', true );
-}
+
+$template->assign_vars(array(
+  'galaxy_src' => $galaxy_src,
+  'system_src' => $system_src,
+  'planet_src' => $planet_src,
+
+  'galaxy_dst' => $galaxy_dst,
+  'system_dst' => $system_dst,
+  'planet_dst' => $planet_dst,
+
+  'bonus' => $bonus,
+
+  'username' => $username,
+));
+
+display(parsetemplate($template, $parse), $lang['adm_pl_comp_title'], false, '', true );
 
 function killer_add_planet($planet)
 {
@@ -105,11 +143,26 @@ function killer_add_planet($planet)
   foreach($sn_groups['build'] as $unit)
   {
     $build_level = $planet[$sn_data[$unit]['name']];
-    if($build_level)
+    if($build_level > 0)
     {
+      $factor = $pricelist[$unit]['factor'];
       foreach($sn_groups['resources_loot'] as $resource_id)
       {
-        $final_cost[$resource_id] += floor($pricelist[$unit][$sn_data[$resource_id]['name']] * pow($pricelist[$unit]['factor'], $build_level-1));
+        $base_price = $pricelist[$unit][$sn_data[$resource_id]['name']];
+        if($base_price > 0)
+        {
+          if($factor != 1)
+          {
+            $build_factor = (1 - pow($factor, $build_level)) / (1 - $factor);
+          }
+          else
+          {
+            $build_factor = $factor;
+          }
+          $building_cost = floor($base_price * $build_factor);
+          $final_cost[$resource_id] += $building_cost;
+          pdump(pretty_number($building_cost), "{$unit}, {$resource_id}, {$base_price}");
+        }
       }
     }
   }
@@ -128,9 +181,8 @@ function killer_add_planet($planet)
 
   foreach($sn_groups['resources_loot'] as $resource_id)
   {
-    $final_cost[$resource_id] += $planet[$sn_data[$resource_id]['name']];
+    $final_cost[$resource_id] += floor($planet[$sn_data[$resource_id]['name']]);
   }
 }
-
 
 ?>
