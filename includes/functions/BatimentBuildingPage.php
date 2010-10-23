@@ -288,9 +288,9 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
           'CRYSTAL'           => $build_price['crystal'],
           'DEUTERIUM'         => $build_price['deuterium'],
 
-          'METAL_REST'        => pretty_number(intval($CurrentPlanet['metal']     + $fleet_list['own']['total'][901] - $build_price['metal']), false, true),
-          'CRYSTAL_REST'      => pretty_number(intval($CurrentPlanet['crystal']   + $fleet_list['own']['total'][902] - $build_price['crystal']), false, true),
-          'DEUTERIUM_REST'    => pretty_number(intval($CurrentPlanet['deuterium'] + $fleet_list['own']['total'][903] - $build_price['deuterium']), false, true),
+          'METAL_REST'        => pretty_number($CurrentPlanet['metal']     + $fleet_list['own']['total'][901] - $build_price['metal'], false, true),
+          'CRYSTAL_REST'      => pretty_number($CurrentPlanet['crystal']   + $fleet_list['own']['total'][902] - $build_price['crystal'], false, true),
+          'DEUTERIUM_REST'    => pretty_number($CurrentPlanet['deuterium'] + $fleet_list['own']['total'][903] - $build_price['deuterium'], false, true),
 /*
           'METAL'             => $build_price['metal'],
           'CRYSTAL'           => $build_price['crystal'],
