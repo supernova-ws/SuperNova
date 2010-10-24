@@ -43,7 +43,7 @@ if(!$config->db_loadItem('var_scheduler_active'))
 
   if($msg)
   {
-    $msg = iconv('CP1251', 'UTF-8', $msg);
+//    $msg = iconv('CP1251', 'UTF-8', $msg);
     $xml = "<ratings><message>{$msg}</message></ratings>";
 
     header('Content-type: text/xml');

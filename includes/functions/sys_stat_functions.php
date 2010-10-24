@@ -64,6 +64,17 @@ function GetPlanetPoints ( $CurrentPlanet ) {
       $ResourcePoint   += $resource_amount;
     }
   }
+
+  if($CurrentPlanet['b_hangar_id'])
+  {
+    $ship_list = flt_expand(array('fleet_array' => $CurrentPlanet['b_hangar_id']));
+    foreach($ship_list as $ship_id => $ship_amount)
+    {
+      $data = $sn_data[$ship_id];
+      $ResourcePoint += ($data['metal'] + $data['crystal'] + $data['deuterium']) * $ship_amount;
+      $ResourceCount += ($data['metal'] + $data['crystal'] + $data['deuterium']) * $ship_amount;
+    }
+  }
   $RetValue['ResourceCount'] = $ResourceCount;
   $RetValue['ResourcePoint'] = $ResourcePoint;
 
