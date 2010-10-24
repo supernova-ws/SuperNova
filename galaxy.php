@@ -98,9 +98,9 @@ $GET_planet       = intval($_GET['planet']);
 
   $UserPoints    = doquery("SELECT * FROM `{{table}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."'", 'statpoints', true);
   $CurrentPoints = $UserPoints['total_points'];
-  $CurrentLevel  = $CurrentPoints * $config->noobprotectionmulti;
-  $MissileRange  = GetMissileRange();
-  $PhalanxRange  = GetPhalanxRange ( $HavePhalanx );
+
+  $MissileRange  = get_missile_range();
+  $PhalanxRange  = GetPhalanxRange($HavePhalanx);
 
   $fleet_id = 1;
   $fleets = array();
@@ -114,6 +114,7 @@ $GET_planet       = intval($_GET['planet']);
 
     $GalaxyRowPlanet = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$galaxy} AND `system` = {$system} AND `planet` = {$Planet} AND `planet_type` = 1;", '', true);
 
+    $RowUserPoints = 0;
     $planet_fleet_id = 0;
     if ($GalaxyRowPlanet['destruyed']) {
       CheckAbandonPlanetState ($GalaxyRowPlanet);
@@ -123,16 +124,15 @@ $GET_planet       = intval($_GET['planet']);
       if($cached['users'][$GalaxyRowPlanet['id_owner']]){
         $GalaxyRowUser = $cached['users'][$GalaxyRowPlanet['id_owner']];
       }else{
-        $GalaxyRowUser = doquery("SELECT * FROM {{users}} WHERE `id` = '{$GalaxyRowPlanet['id_owner']}';", '', true);
+        $GalaxyRowUser = doquery("SELECT * FROM {{users}} WHERE `id` = '{$GalaxyRowPlanet['id_owner']}' LIMIT 1;", '', true);
 
-        $User2Points   = doquery("SELECT * FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '{$GalaxyRowUser['id']}'", '', true);
+        $User2Points   = doquery("SELECT * FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '{$GalaxyRowUser['id']}' LIMIT 1;", '', true);
         $GalaxyRowUser['rank']   = intval($User2Points['total_rank']);
         $GalaxyRowUser['points'] = intval($User2Points['total_points']);
 
         $cached['users'][$GalaxyRowUser['id']] = $GalaxyRowUser;
       }
       $RowUserPoints = $GalaxyRowUser['points'];
-      $RowUserLevel  = $RowUserPoints * $config->noobprotectionmulti;
 
       if($GalaxyRowUser['id'])
         if ($GalaxyRowUser['ally_id']) {
@@ -215,8 +215,10 @@ $GET_planet       = intval($_GET['planet']);
        'USER_BANNED'   => $GalaxyRowUser['bana'],
        'USER_VACANCY'  => $GalaxyRowUser['urlaubs_modus'],
        'USER_ACTIVITY' => floor(($time_now - $GalaxyRowUser['onlinetime'])/(60*60*24)),
-       'USER_NOOB'     => $config->noobprotection && $RowUserLevel < $CurrentPoints && $RowUserPoints < $config->noobprotectiontime * 1000,
-       'USER_STRONG'   => $config->noobprotection && $RowUserPoints > $CurrentLevel && $CurrentPoints < $config->noobprotectiontime * 1000,
+//       'USER_NOOB'     => $config->noobprotection && $RowUserLevel < $CurrentPoints && $RowUserPoints < $config->noobprotectiontime * 1000,
+//       'USER_STRONG'   => $config->noobprotection && $RowUserPoints > $CurrentLevel && $CurrentPoints < $config->noobprotectiontime * 1000,
+       'USER_NOOB'     => $RowUserPoints <= $config->game_noob_points || $RowUserPoints * $config->game_noob_factor < $CurrentPoints,
+       'USER_STRONG'   => $CurrentPoints * $config->game_noob_factor < $RowUserPoints,
        'USER_AUTH'     => $GalaxyRowUser['authlevel'],
        'USER_ADMIN'    => $lang['user_level_shortcut'][$GalaxyRowUser['authlevel']],
 

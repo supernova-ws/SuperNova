@@ -130,7 +130,7 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
   // Okay. Now skipping protection checks for inactive longer then 1 week
   if (!$enemy['onlinetime'] || $enemy['onlinetime'] >= ($time_now - 60*60*24*7))
   {
-    if($enemy_points <= $config->game_noob_points || $user_points > $enemy_points * $config->game_noob_factor)
+    if($enemy_points <= $config->game_noob_points && ($user_points > $config->game_noob_points || $user_points > $enemy_points * $config->game_noob_factor))
     {
       return ATTACK_NOOB;
     }
@@ -159,18 +159,11 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
     }
 
     $distance = abs($target_planet['system'] - $planetrow['system']);
-    $mip_range = ($user[$sn_data[117]['name']] * 5) - 1;
-    if($mip_range <= 0 || $distance >= $mip_range || $target_planet['galaxy'] != $planetrow['galaxy'])
+    $mip_range = get_missile_range();
+    if($distance > $mip_range || $target_planet['galaxy'] != $planetrow['galaxy'])
     {
       return ATTACK_MISSILE_TOO_FAR;
     }
-
-    /*
-    if($target_planet['debris_metal'] + $target_planet['debris_crystal'] > 0)
-    {
-      return ATTACK_NO_DEBRIS;
-    }
-    */
   }
 
   return ATTACK_ALLOWED;

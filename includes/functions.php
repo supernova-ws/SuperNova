@@ -723,4 +723,48 @@ function sys_get_param_escaped($param_name, $default = '')
   return mysql_real_escape_string(sys_get_param($param_name, $default));
 }
 
+function get_missile_range()
+{
+  global $sn_data, $user;
+
+  return max(0, $user[$sn_data[117]['name']] * 5 - 1);
+}
+
+function GetPhalanxRange ( $PhalanxLevel ) {
+  // Niveau                       1  2  3  4  5  6  7  = lvl
+  // Portée ajouté                0  3  5  7  9 11 13  = (lvl * 2) - 1
+  // Phalanx en nbre de systemes  0  3  8 15 24 35 48  =
+  $PhalanxRange = 0;
+
+  if ($PhalanxLevel > 1) {
+    $PhalanxRange = pow($PhalanxLevel, 2) - 1;
+  }
+  return $PhalanxRange;
+}
+
+function CheckAbandonPlanetState (&$planet) {
+  global $time_now;
+
+  if(!$planet['destruyed']) return;
+
+  if($planet['planet_type'] == 1 && $planet['destruyed'] <= $time_now)
+  {
+    doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}';");
+  }
+  elseif($planet['planet_type'] == 3 && ($planet['destruyed'] + 172800) <= $time_now)
+  {
+    doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}';");
+  }
+}
+
+function GetElementRessources ( $Element, $Count ) {
+  global $pricelist;
+
+  $ResType['metal']     = ($pricelist[$Element]['metal']     * $Count);
+  $ResType['crystal']   = ($pricelist[$Element]['crystal']   * $Count);
+  $ResType['deuterium'] = ($pricelist[$Element]['deuterium'] * $Count);
+
+  return $ResType;
+}
+
 ?>

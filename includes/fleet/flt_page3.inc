@@ -3,6 +3,9 @@
   // @version 1.0
   // @copyright 2008 by Chlorel for XNova
 
+  doquery('START TRANSACTION;');
+  $planetrow = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1 FOR UPDATE;", '', true);
+
   if (!is_array($fleetarray))
     $errorlist .= $lang['fl_no_fleetarray'];
 
@@ -73,16 +76,12 @@
   if ($errorlist)
     message ("<font color=\"red\"><ul>{$errorlist}</ul></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
 
-//  if (!isset($fleetarray)) {
-//    message ("<font color=\"red\"><b>". $lang['fl_no_fleetarray'] ."</b></font>", $lang['fl_error'], "fleet." . $phpEx, 2);
-//  }
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach ($fleetarray as $Ship => $Count) {
     if ($Count > $planetrow[$resource[$Ship]]) {
       message ("<font color=\"red\"><b>{$lang['fl_fleet_err']}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
     }
   }
-
 
   //Normally... unless its acs...
   $fleet_group = max(0, intval($_POST['fleet_group']));
@@ -154,7 +153,7 @@
   {
     $FleetStorage    += $pricelist[$Ship]["capacity"] * $Count;
     $FleetShipCount  += $Count;
-    $fleet_array     .= $Ship .",". $Count .";";
+    $fleet_array     .= "{$Ship},{$Count};";
     $FleetSubQRY     .= "`{$resource[$Ship]}` = `{$resource[$Ship]}` - {$Count} , ";
   }
   $FleetStorage        -= $consumption;
@@ -197,27 +196,10 @@
   $QryInsertFleet .= "`start_time` = '". $time_now ."';";
   doquery( $QryInsertFleet);
 
-  $planetrow["metal"]     -= $TransMetal;
-  $planetrow["crystal"]   -= $TransCrystal;
-  $planetrow["deuterium"] -= $TransDeuterium;
-  $planetrow["deuterium"] -= $consumption;
-
-  $QryUpdatePlanet  = "UPDATE {{planets}} SET ";
-  $QryUpdatePlanet .= $FleetSubQRY;
-  $QryUpdatePlanet .= "`metal` = `metal` - {$TransMetal}, ";
-  $QryUpdatePlanet .= "`crystal` = `crystal` - {$TransCrystal}, ";
-  $QryUpdatePlanet .= "`deuterium` = `deuterium` - {$TransDeuterium} - {$consumption} ";
-  $QryUpdatePlanet .= "WHERE ";
-  $QryUpdatePlanet .= "`id` = '". $planetrow['id'] ."'";
-
-  // Mise a jours de l'enregistrement de la planete de depart (a partir de l?ï, y a quelque chose qui vole et ce n'est plus sur la planete de depart)
-//  doquery("LOCK TABLE {{table}} WRITE", 'planets');
+  $QryUpdatePlanet  = "UPDATE {{planets}} SET {$FleetSubQRY}";
+  $QryUpdatePlanet .= "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption} ";
+  $QryUpdatePlanet .= "WHERE `id` = '{$planetrow['id']}' LIMIT 1;";
   doquery ($QryUpdatePlanet);
-//  doquery("UNLOCK TABLES", '');
-
-//  if ($fleet_group) {
-//    // doquery("UPDATE `{{table}}` SET `p_num` = `p_num` + 1 WHERE `id` = '{$fleet_group}';", 'aks');
-//  };
 
   $parse["mission"] = $lang['type_mission'][$target_mission];
   if ($target_mission == MT_EXPLORE OR $target_mission == MT_HOLD) {
@@ -241,7 +223,8 @@
   }
   $parse['ShipList'] = $ShipList;
 
-  $planetrow = doquery ("SELECT * FROM {{table}} WHERE `id` = '". $planetrow['id'] ."';", 'planets', true);
+  $planetrow = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1;", '', true);
+  doquery("COMMIT;");
 
   $page = parsetemplate(gettemplate('fleet3'), $parse);
   display($page, $lang['fl_title']);
