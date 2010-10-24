@@ -275,7 +275,7 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
 
     $parse['rf_info_to']  = ShowRapidFireTo ($BuildID);   // Rapid Fire vers
     $parse['rf_info_fr']  = ShowRapidFireFrom ($BuildID); // Rapid Fire de
-    $parse['hull_pt']     = pretty_number ($pricelist[$BuildID]['metal'] + $pricelist[$BuildID]['crystal']); // Points de Structure
+    $parse['hull_pt']     = pretty_number (($pricelist[$BuildID]['metal'] + $pricelist[$BuildID]['crystal'])/10); // Points de Structure
     $parse['shield_pt']   = pretty_number ($CombatCaps[$BuildID]['shield']);  // Points de Bouclier
     $parse['attack_pt']   = pretty_number ($CombatCaps[$BuildID]['attack']);  // Points d'Attaque
   } elseif ($BuildID >= 502 && $BuildID <= 503) {
