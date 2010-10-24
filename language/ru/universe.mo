@@ -1,10 +1,5 @@
 <?php
-/*
-$lang['user_level_shortcut'][0] = $lang['user_level'][0][0];
-$lang['user_level_shortcut'][1] = $lang['user_level'][1][0];
-$lang['user_level_shortcut'][2] = $lang['user_level'][2][0];
-$lang['user_level_shortcut'][3] = $lang['user_level'][3][0];
-*/
+
 $lang['Galaxy']			= 'Галактика';
 $lang['Solar_system']		= 'Солнечная система';
 $lang['Show']			= 'Показать';
@@ -24,6 +19,9 @@ $lang['Pendent_user']		= 'Заблокирован';
 $lang['Active']            = 'Активный игрок';
 $lang['Inactive_7_days']   = 'Неактивен более 7 дней';
 $lang['Inactive_28_days']  = 'Неактивен более 28 дней';
+
+$lang['uni_legend_myplanet']    = 'Мои планеты';
+$lang['uni_legend_allyplanet']  = 'Планеты соальянсовца';
 
 $lang['Solar_system_at']	= 'Солнечная система %g:%s';
 

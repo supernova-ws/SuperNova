@@ -3,167 +3,58 @@
 <!-- INCLUDE fleet_javascript.tpl -->
 
 <script type="text/javascript"><!--
-function galaxy_submit(value) {
-  document.getElementById('auto').name = value;
-  document.getElementById('galaxy_form').submit();
-}
-
-function fenster(target_url,win_name) {
-  var new_win = window.open(target_url,win_name,'resizable=yes,scrollbars=yes,menubar=no,toolbar=no,width=640,height=480,top=0,left=0');
-  new_win.focus();
-}
-
-var ajax = new sack();
-var strInfo = "";
-
-function whenResponse () {
-  retVals   = this.response.split("|");
-  Message   = retVals[0];
-  Infos     = retVals[1];
-  retVals   = Infos.split(" ");
-  UsedSlots = retVals[0];
-  SpyProbes = retVals[1];
-  Recyclers = retVals[2];
-  Missiles  = retVals[3];
-  retVals   = Message.split(";");
-  CmdCode   = retVals[0];
-  strInfo   = retVals[1];
-  addToTable("done", "success");
-  changeSlots( UsedSlots );
-  setShips("probes", SpyProbes );
-  setShips("recyclers", Recyclers );
-  setShips("missiles", Missiles );
-}
-
-function addToTable(strDataResult, strClass) {
-  var e = document.getElementById('fleetstatusrow');
-  var e2 = document.getElementById('fleetstatustable');
-  e.style.display = '';
-  if(e2.rows.length > 2) {
-    e2.deleteRow(2);
-  }
-  var row = e2.insertRow(0);
-  var td1 = document.createElement("td");
-  var td1text = document.createTextNode(strInfo);
-  td1.appendChild(td1text);
-  var td2 = document.createElement("td");
-  var span = document.createElement("span");
-  var spantext = document.createTextNode(strDataResult);
-  var spanclass = document.createAttribute("class");
-  spanclass.nodeValue = strClass;
-  span.setAttributeNode(spanclass);
-  span.appendChild(spantext);
-  td2.appendChild(span);
-  row.appendChild(td1);
-  row.appendChild(td2);
-}
-
-function changeSlots(slotsInUse) {
-  var e = document.getElementById('slots');
-  e.innerHTML = slotsInUse;
-}
-
-function setShips(ship, count) {
-  var e = document.getElementById(ship);
-  e.innerHTML = count;
-}
-
-function doit (order, galaxy, system, planet, planettype, shipcount) {
-  ajax.requestFile = "flotenajax.php?action=send";
-  ajax.runResponse = whenResponse;
-  ajax.execute = true;
-  ajax.setVar("thisgalaxy", "{curPlanetG}");
-  ajax.setVar("thissystem", "{curPlanetS}");
-  ajax.setVar("thisplanet", "{curPlanetP}");
-  ajax.setVar("thisplanettype", "{curPlanetPT}");
-  ajax.setVar("mission", order);
-  ajax.setVar("galaxy", galaxy);
-  ajax.setVar("system", system);
-  ajax.setVar("planet", planet);
-  ajax.setVar("planettype", planettype);
-  if (order == 6)
-    ajax.setVar("ship210", shipcount);
-  if (order == 7) {
-    ajax.setVar("ship208", 1);
-    ajax.setVar("ship203", 2);
-  }
-  if (order == 8)
-    ajax.setVar("ship209", shipcount);
-  ajax.runAJAX();
-}
+var uni_missile_planet = 0;
+var uni_user_galaxy = "{curPlanetG}";
+var uni_user_system = "{curPlanetS}";
+var uni_user_planet = "{curPlanetP}";
+var uni_user_planet_type = "{curPlanetPT}";
+var uni_galaxy = "{galaxy}";
+var uni_system = "{system}";
 // --></script>
 
 <br />
-<form action="galaxy.php?mode=1" method="post" id="galaxy_form"><table border="0"><tbody>
-  <tr>
-    <td>
-      <table><tbody><tr>
-        <td class="c" colspan="3">{L_Galaxy}</td></tr><tr>
-        <td class="l"><input name="galaxyLeft" value="&lt;-" type="button" onClick="this.form.galaxy.value--;this.form.submit();"></td>
-        <td class="l"><input name="galaxy" value="{galaxy}" size="5" maxlength="3" tabindex="1" type="text"></td>
-        <td class="l"><input name="galaxyRight" value="-&gt;" type="button" onClick="this.form.galaxy.value++;this.form.submit();"></td>
-      </tr></tbody></table>
-    </td>
-    <td>
-      <table><tbody><tr>
-        <td class="c" colspan="3">{L_Solar_system}</td></tr><tr>
-        <td class="l"><input name="systemLeft" value="&lt;-" type="button" onClick="this.form.system.value--;this.form.submit();"></td>
-        <td class="l"><input name="system" value="{system}" size="5" maxlength="3" tabindex="2" type="text"></td>
-        <td class="l"><input name="systemRight" value="-&gt;" type="button" onClick="this.form.system.value++;this.form.submit();"></td>
-      </tr></tbody></table>
-    </td>
-  </tr>
-  <tr>
-    <td class="l" colspan="2" align="center">
-      <input value="{L_sys_goto}" type="submit">
-      <input type="hidden" id="auto" value="dr" >
-    </td>
-  </tr>
-</tbody></table></form>
+<form action="galaxy.php?mode=1" method="post" id="galaxy_form">
+  <table><tbody>
+    <tr>
+      <td class="c" colspan="3">{L_Galaxy}</td>
+      <td class="c" colspan="3">{L_Solar_system}</td>
+    </tr>
+    <tr>
+      <th class="c"><input name="galaxyLeft" value="&lt;-" type="button" onClick="this.form.galaxy.value--;this.form.submit();"></th>
+      <th class="c"><input name="galaxy" value="{galaxy}" size="5" maxlength="3" tabindex="1" type="text"></th>
+      <th class="c"><input name="galaxyRight" value="-&gt;" type="button" onClick="this.form.galaxy.value++;this.form.submit();"></th>
 
-<!-- IF MODE == 2 -->
-<form action="raketenangriff.php?c={curPlanetID}&mode=2&galaxy={galaxy}&system={system}&planet={planet}" method=POST><table border=0>
-  <tr>
-    <td class=c colspan=3>
-       <span class="fl">{L_gm_launch} [{galaxy}:{system}:{planet}]</span>
-       <span class="fr">{L_gal_mis_rest}{MIPs}</span>
-    </td>
-  </tr>
-  <tr>
-    <th class=c>{L_gal_mis_toLaunch} <input type=text name=SendMI size=7 maxlength=7 /></th>
-    <th class=c>{L_gm_target}
-      <select name=Target>
-        <option value=all selected>{L_gm_all}</option>
-        <option value=401>{L_tech[401]}</option>
-        <option value=402>{L_tech[402]}</option>
-        <option value=403>{L_tech[403]}</option>
-        <option value=404>{L_tech[404]}</option>
-        <option value=405>{L_tech[405]}</option>
-        <option value=406>{L_tech[406]}</option>
-        <option value=407>{L_tech[407]}</option>
-        <option value=408>{L_tech[408]}</option>
-        <option value=409>{L_tech[409]}</option>
-      </select>
-    </th>
-    <th class=c><input type=submit name=aktion value={L_gal_mis_launch}></th>
-  </tr>
-</table></form>
-<!-- ENDIF -->
+      <th class="c"><input name="systemLeft" value="&lt;-" type="button" onClick="this.form.system.value--;this.form.submit();"></th>
+      <th class="c"><input name="system" value="{system}" size="5" maxlength="3" tabindex="2" type="text"></th>
+      <th class="c"><input name="systemRight" value="-&gt;" type="button" onClick="this.form.system.value++;this.form.submit();"></th>
+    </tr>
+    <tr>
+      <th class="c" colspan="6" align="center">
+        <input value="{L_sys_goto}" type="submit">
+        <input type="hidden" id="auto" value="dr" >
+      </th>
+    </tr>
+  </tbody></table>
+</form>
+
 <table width=569><tbody>
   <tr><td class=c colspan=8><span class="fl">{L_Solar_system} [{galaxy}:{system}] - {planets}</span>
     <span class="fr"><a href=# style="cursor: pointer;" onmouseout='popup_hide();' onmouseover='popup_show("\
     <table>\
-    <tr><td class=c colspan=2>{L_Legend}</td></tr>\
-    <tr><td><span class=strong>{L_Strong_player}</span></td><td><span class=strong>{L_strong_player_shortcut}</span></td></tr>\
-    <tr><td>{L_Weak_player}</td><td><span class=noob>{L_weak_player_shortcut}</span></td></tr>\
-    <tr><td>{L_Way_vacation}</td><td><span class=vacation>{L_vacation_shortcut}</span></td></tr>\
-    <tr><td>{L_Pendent_user}</td><td><span class=banned>{L_banned_shortcut}</span></td></tr>\
+    <tr><td class=c colspan=2>{L_sys_planet}</td></tr>\
+    <tr class=myplanet><td colspan=2>{L_uni_legend_myplanet}</td></tr>\
+    <tr class=allymember><td colspan=2>{L_uni_legend_allyplanet}</td></tr>\
+    <tr><td class=c colspan=2>{L_sys_player}</td></tr>\
+    <tr class=strong><td>{L_Strong_player}</td><td>{L_strong_player_shortcut}</td></tr>\
+    <tr class=noob><td>{L_Weak_player}</td><td>{L_weak_player_shortcut}</td></tr>\
+    <tr class=vacation><td>{L_Way_vacation}</td><td>{L_vacation_shortcut}</td></tr>\
+    <tr class=banned><td>{L_Pendent_user}</td><td>{L_banned_shortcut}</td></tr>\
     <tr><td>{L_Active}</td><td>{L_active_shortcut}</td></tr>\
-    <tr><td>{L_Inactive_7_days}</td><td><span class=inactive>{L_inactif_7_shortcut}</span></td></tr>\
-    <tr><td>{L_Inactive_28_days}</td><td><span class=longinactive>{L_inactif_28_shortcut}</span></td></tr>\
-    <!-- IF SHOW_ADMIN --><tr><td>{L_user_level[3]}</td><td><span class=admin>{L_user_level_shortcut[3]}</span></td></tr>\
-    <tr><td>{L_user_level[2]}</td><td><span class=admin>{L_user_level_shortcut[2]}</span></td></tr>\
-    <tr><td>{L_user_level[1]}</td><td><span class=admin>{L_user_level_shortcut[1]}</span></td></tr><!-- ENDIF -->\
+    <tr class=inactive><td>{L_Inactive_7_days}</td><td>{L_inactif_7_shortcut}</td></tr>\
+    <tr class=longinactive><td>{L_Inactive_28_days}</td><td>{L_inactif_28_shortcut}</td></tr>\
+    <!-- IF SHOW_ADMIN --><tr class=admin><td>{L_user_level[3]}</td><td>{L_user_level_shortcut[3]}</td></tr>\
+    <tr class=admin><td>{L_user_level[2]}</td><td>{L_user_level_shortcut[2]}</td></tr>\
+    <tr class=admin><td>{L_user_level[1]}</td><td>{L_user_level_shortcut[1]}</td></tr><!-- ENDIF -->\
     </table>");'>{L_Legend}</a>
     </span></td>
   </tr>
@@ -311,16 +202,12 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
         <!-- IF !galaxyrow.USER_NOOB -->
           <!-- IF ACT_SPY -->
             <span class="fl">
-              <a>
-                <img onclick="javascript:doit(6, {galaxy}, {system}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src={dpath}img/e.gif alt="{L_gl_espionner}" title="{L_gl_espionner}" border=0 style="cursor: pointer;">
-              </a>&nbsp;
+              <img onclick="javascript:doit(6, {galaxy}, {system}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src={dpath}img/e.gif alt="{L_gl_espionner}" title="{L_gl_espionner}" border=0 style="cursor: pointer;">&nbsp;
             </span>
           <!-- ENDIF -->
           <!-- IF ACT_MISSILE -->
             <span class="fl">
-              <a href="galaxy.php?mode=2&galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&current={curPlanetID}">
-                <img src={dpath}img/r.gif alt="{L_gl_mipattack}" title="{L_gl_mipattack}" border=0>
-              </a>&nbsp;
+              <img onclick="javascript:uni_missile_planet={galaxyrow.PLANET_NUM};jQuery('#uni_missile_form').show();" src={dpath}img/r.gif alt="{L_gl_mipattack}" title="{L_gl_mipattack}" border=0 style="cursor: pointer;">&nbsp;
             </span>
           <!-- ENDIF -->
         <!-- ENDIF -->
@@ -328,15 +215,13 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
         <!-- IF ACT_WRITE -->
         <span class="fl">
           <a href="messages.php?mode=write&id={galaxyrow.USER_ID}">
-            <img src={dpath}img/m.gif alt="{L_gl_sendmess}" title="{L_gl_sendmess}" border=0  style="cursor: pointer;">
-          </a>&nbsp;
+            <img src={dpath}img/m.gif alt="{L_gl_sendmess}" title="{L_gl_sendmess}" border=0  style="cursor: pointer;"></a>&nbsp;
         </span>
         <!-- ENDIF -->
         <!-- IF ACT_FRIEND -->
         <span class="fl">
           <a href="buddy.php?a=2&u={galaxyrow.USER_ID}">
-            <img src={dpath}img/b.gif alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" border=0>
-          </a>
+            <img src={dpath}img/b.gif alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" border=0></a>
         </span>
         <!-- ENDIF -->
       <!-- ELSE -->
@@ -356,6 +241,39 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
   </tr>
   <tr style="display: none;" id="fleetstatusrow"><th class=c colspan=8><table style="font-weight: bold" width="100%" id="fleetstatustable"></table></th></tr>
 </tbody></table>
+
+<form id="uni_missile_form" style="display: none;" name="uni_missile_form" method=POST>
+  <br>
+  <table border=0>
+    <tr>
+      <td class=c colspan=3>
+         <span class="fl">{L_gm_launch} [{galaxy}:{system}:{planet}]</span>
+         <span class="fr">{L_gal_mis_rest}{MIPs}</span>
+      </td>
+    </tr>
+    <tr>
+      <th class=c>{L_gal_mis_toLaunch} <input type=text name=SendMI size=7 maxlength=7 /></th>
+      <th class=c>{L_gm_target}
+        <select name=Target>
+          <option value=0 selected>{L_gm_all}</option>
+          <option value=401>{L_tech[401]}</option>
+          <option value=402>{L_tech[402]}</option>
+          <option value=403>{L_tech[403]}</option>
+          <option value=404>{L_tech[404]}</option>
+          <option value=405>{L_tech[405]}</option>
+          <option value=406>{L_tech[406]}</option>
+          <option value=407>{L_tech[407]}</option>
+          <option value=408>{L_tech[408]}</option>
+          <option value=409>{L_tech[409]}</option>
+        </select>
+      </th>
+      <th class=c>
+<!--        <input type=submit name=aktion value={L_gal_mis_launch}> -->
+        <input type="button" value="{L_gal_mis_launch}" onclick="javascript:doit(10, {galaxy}, {system}, uni_missile_planet, 1, document.uni_missile_form.SendMI.value);jQuery('#uni_missile_form').hide();">
+      </th>
+    </tr>
+  </table>
+</form>
 <!-- INCLUDE page_hint.tpl -->
 
 <script LANGUAGE='JavaScript'><!--
@@ -395,7 +313,9 @@ jQuery.extend(language, {
   type_mission8: '{L_type_mission[8]}',
   type_mission9: '{L_type_mission[9]}',
   sys_ships: '{L_uni_incoming_fleets}',
-  tech_209: '{L_tech[209]}'
+  tech_209: '{L_tech[209]}',
+  sys_error: '{L_sys_error}',
+  sys_done: '{L_sys_done}'
 });
 
 var users = new Array();

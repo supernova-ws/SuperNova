@@ -215,6 +215,7 @@ if ( defined('INSIDE')) {
 
     44  => array(
       'name' => 'silo',
+      'require' => array(117 => 1),
       'metal' => 20000,
       'crystal' => 20000,
       'deuterium' => 1000,

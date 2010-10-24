@@ -1,20 +1,65 @@
 <?php
 
-function flt_can_attack($target_planet, $target_mission)
+function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flying_fleets = false)
 {
-  global $user, $config, $time_now, $sn_data;
+  global $time_now, $config, $sn_data, $sn_groups, $user, $planetrow;
+
+  if($user['urlaubs_modus'])
+  {
+    return ATTACK_OWN_VACATION;
+  }
+
+  if(empty($fleet) || !is_array($fleet))
+  {
+    return ATTACK_NO_FLEET;
+  }
+
+  foreach($fleet as $ship_id => $ship_count)
+  {
+    if($ship_count > $planetrow[$sn_data[$ship_id]['name']])
+    {
+      return ATTACK_NO_SHIPS;
+    }
+  }
+
+  if($flying_fleets === false)
+  {
+    $flying_fleets = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
+    $flying_fleets = $flying_fleets['flying_fleets'];
+  }
+  if (GetMaxFleets($user) <= $flying_fleets && $target_mission != MT_MISSILE)
+  {
+    return ATTACK_NO_SLOTS;
+  }
 
   // Checking for no planet
   if(!$target_planet['id_owner'])
   {
-    if($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE)
+    if($target_mission == MT_COLONIZE && !$fleet[208])
+    {
+      return ATTACK_NO_COLONIZER;
+    }
+
+    if($target_mission == MT_EXPLORE || $target_mission == MT_COLONIZE)
     {
       return ATTACK_ALLOWED;
     }
-    else
+    return ATTACK_NO_TARGET;
+  }
+
+  if($target_mission == MT_RECYCLE)
+  {
+    if($target_planet['debris_metal'] + $target_planet['debris_crystal'] <= 0)
     {
-      return ATTACK_NO_TARGET;
+      return ATTACK_NO_DEBRIS;
     }
+
+    if($fleet[209] <= 0)
+    {
+      return ATTACK_NO_RECYCLERS;
+    }
+
+    return ATTACK_ALLOWED;
   }
 
   // Got planet. Checking if it is ours
@@ -24,10 +69,7 @@ function flt_can_attack($target_planet, $target_mission)
     {
       return ATTACK_ALLOWED;
     }
-    else
-    {
-      return ATTACK_OWN;
-    }
+    return ATTACK_OWN;
   }
 
   // No, planet not ours. Cutting mission that can't be send to not-ours planet
@@ -43,22 +85,7 @@ function flt_can_attack($target_planet, $target_mission)
     {
       return ATTACK_ALLOWED;
     }
-    else
-    {
-      return ATTACK_NO_ALLY_DEPOSIT;
-    }
-  }
-
-  if($target_mission == MT_RECYCLE)
-  {
-    if($target_planet['debris_metal'] + $target_planet['debris_crystal'] > 0)
-    {
-      return ATTACK_ALLOWED;
-    }
-    else
-    {
-      return ATTACK_NO_DEBRIS;
-    }
+    return ATTACK_NO_ALLY_DEPOSIT;
   }
 
   $enemy = doquery("SELECT * FROM {{users}} WHERE `id` = '{$target_planet['id_owner']}';", '', true);
@@ -91,6 +118,7 @@ function flt_can_attack($target_planet, $target_mission)
       return ATTACK_BUFFING;
     }
   }
+
   // Only aggresive missions passed to this point
 
   // Is it admin with planet protection?
@@ -100,39 +128,52 @@ function flt_can_attack($target_planet, $target_mission)
   }
 
   // Okay. Now skipping protection checks for inactive longer then 1 week
-  if ($enemy['onlinetime'] && $enemy['onlinetime'] < ($time_now - 60*60*24*7))
+  if (!$enemy['onlinetime'] || $enemy['onlinetime'] >= ($time_now - 60*60*24*7))
   {
-    return ATTACK_ALLOWED;
+    if($enemy_points <= $config->game_noob_points || $user_points > $enemy_points * $config->game_noob_factor)
+    {
+      return ATTACK_NOOB;
+    }
   }
 
-  if($enemy_points <= $config->game_noob_points)
+  if($target_mission == MT_SPY)
   {
-    return ATTACK_NOOB;
+    if($fleet[210] >= 1)
+    {
+      return ATTACK_ALLOWED;
+    }
+    return ATTACK_NO_SPIES;
   }
 
-  if($user_points > $enemy_points * $config->game_noob_factor)
+  // Is it MISSILE mission?
+  if($target_mission == MT_MISSILE)
   {
-    return ATTACK_NOOB;
+    if($planetrow[$sn_data[44]['name']] < $sn_data[503]['require'][44])
+    {
+      return ATTACK_NO_SILO;
+    }
+
+    if(!$fleet[503])
+    {
+      return ATTACK_NO_MISSILE;
+    }
+
+    $distance = abs($target_planet['system'] - $planetrow['system']);
+    $mip_range = ($user[$sn_data[117]['name']] * 5) - 1;
+    if($mip_range <= 0 || $distance >= $mip_range || $target_planet['galaxy'] != $planetrow['galaxy'])
+    {
+      return ATTACK_MISSILE_TOO_FAR;
+    }
+
+    /*
+    if($target_planet['debris_metal'] + $target_planet['debris_crystal'] > 0)
+    {
+      return ATTACK_NO_DEBRIS;
+    }
+    */
   }
 
-/*
-  {
-    $protectiontime  = $config->noobprotectiontime;
-    $protectionmulti = $config->noobprotectionmulti;
-
-    if($enemy_points*)
-      if( (
-        (($enemy_points * $protectionmulti) < $user_points AND $enemy_points < ($protectiontime * 1000))
-        OR
-        (($user_points * $protectionmulti) < $enemy_points AND $user_points < ($protectiontime * 1000))
-      ) ) message("<font color=\"lime\"><b>".$lang['fl_noob_mess_n']."</b></font>", $lang['fl_noob_title'], "fleet.{$phpEx}", 2);
-  }
-
-  if ($protectiontime < 1) {
-    $protectiontime = 9999999999999999;
-  }
-*/
-    return ATTACK_ALLOWED;
+  return ATTACK_ALLOWED;
 }
 
 ?>

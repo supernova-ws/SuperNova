@@ -10,8 +10,6 @@
 function COE_missileCalculate(){
   global $time_now, $resource, $lang;
 
-  includeLang('mip');
-
   $iraks = doquery("SELECT * FROM {{table}} WHERE `zeit` <= '" . $time_now . "'", 'iraks');
 
   while ($fleetRow = mysql_fetch_array($iraks)) {

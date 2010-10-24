@@ -5,7 +5,11 @@
  *
  * Fleet manager on Ajax (to work in Galaxy view)
  *
- * @version 1.0s Security checks by Gorlum for http://supernova.ws
+ * @version 2.0 Security checks by Gorlum for http://supernova.ws
+ *  [!] Full rewrite
+ *  [+] Added missile attack launch sequience
+ *  [-] Moved almost all check code to flt_can_attack
+ * @version 1.1 Security checks by Gorlum for http://supernova.ws
  * @version 1
  * @copyright 2008 By Chlorel for XNova
 **/
@@ -21,302 +25,142 @@ include("{$ugamela_root_path}common.{$phpEx}");
 includeLang('universe');
 includeLang('fleet');
 
-if(IsVacationMode($user))
-{
-  $ResultMessage = "620;{$lang['gs_c620']}|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
+doquery("START TRANSACTION;");
+$planetrow = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['current_planet']}' LIMIT 1 FOR UPDATE;", '',true);
 
-$POST_galaxy = intval($_POST['galaxy']);
-$POST_system = intval($_POST['system']);
-$POST_planet = intval($_POST['planet']);
-$POST_planettype = intval($_POST['planettype']);
-$POST_thisgalaxy = intval($_POST['thisgalaxy']);
-$POST_thissystem = intval($_POST['thissystem']);
-$POST_thisplanet = intval($_POST['thisplanet']);
-$POST_thisplanettype = intval($_POST['thisplanettype']);
-$POST_mission = intval($_POST['mission']);
-
+$CurrentFlyingFleets = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
+$CurrentFlyingFleets = $CurrentFlyingFleets["flying_fleets"];
 $UserSpyProbes  = $planetrow['spy_sonde'];
 $UserRecycles   = $planetrow['recycler'];
 $UserDeuterium  = $planetrow['deuterium'];
 $UserMissiles   = $planetrow['interplanetary_misil'];
 
-$fleet          = array();
-$speedalls      = array();
-$PartialFleet   = false; // 610
-$PartialCount   = 0;
-
-foreach ($reslist['fleet'] as $Node => $ShipID)
+$target_galaxy = intval($_POST['galaxy']);
+$target_system = intval($_POST['system']);
+$target_planet = intval($_POST['planet']);
+if($target_galaxy > $config->game_maxGalaxy || $target_galaxy < 1 ||
+   $target_system > $config->game_maxSystem || $target_system < 1 ||
+   $target_planet > $config->game_maxPlanet || $target_planet < 1)
 {
-  $TName = "ship".$ShipID;
-  $POST_TName = intval($_POST[$TName]);
-  if ($ShipID > 200 && $ShipID < 300 && $POST_TName > 0)
+  $ResultMessage = "602|{$lang['gs_c602']}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}";
+  die ( $ResultMessage );
+}
+$target_planet_type = intval($_POST['planettype']);
+
+$target_mission = intval($_POST['mission']);
+
+$fleet_array    = array();
+$FleetDBArray   = '';
+$FleetSubQRY    = '';
+$fleet_ship_count = 0;
+foreach (array_merge($sn_groups['fleet'], array(503)) as $ship_id)
+{
+  $ship_count = intval($_POST["ship{$ship_id}"]);
+  if(!$ship_count)
   {
-    if ($POST_TName > $planetrow[$sn_data[$ShipID]['name']])
-    {
-      $fleet['fleetarray'][$ShipID]   = $planetrow[$sn_data[$ShipID]['name']];
-      $fleet['fleetlist']            .= $ShipID .",". $planetrow[$sn_data[$ShipID]['name']] .";";
-      $fleet['amount']               += $planetrow[$sn_data[$ShipID]['name']];
-      $PartialCount                  += $planetrow[$sn_data[$ShipID]['name']];
-      $PartialFleet                   = true;
-    }
-    else
-    {
-      $fleet['fleetarray'][$ShipID]   = intval($POST_TName);
-      $fleet['fleetlist']            .= $ShipID .",". intval($POST_TName) .";";
-      $fleet['amount']               += intval($POST_TName);
-      $speedalls[$ShipID]             = intval($POST_TName);
-    }
+    continue;
   }
-}
-
-$PrNoob      = $config->noobprotection;
-$PrNoobTime  = $config->noobprotectiontime;
-$PrNoobMulti = $config->noobprotectionmulti;
-
-// Petit Test de coherance
-$galaxy          = intval($POST_galaxy);
-if ($galaxy > $config->game_maxGalaxy || $galaxy < 1)
-{
-  $ResultMessage = "602;".$lang['gs_c602']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-$system = intval($POST_system);
-if ($system > $config->game_maxSystem || $system < 1)
-{
-  $ResultMessage = "602;".$lang['gs_c602']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-$planet = intval($POST_planet);
-if ($planet > $config->game_maxPlanet || $planet < 1) {
-  $ResultMessage = "602;".$lang['gs_c602']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-$FleetArray = $fleet['fleetarray'];
-
-$CurrentFlyingFleets = doquery("SELECT COUNT(fleet_id) AS `Nbre` FROM {{table}} WHERE `fleet_owner` = '".$user['id']."';", 'fleets', true);
-$CurrentFlyingFleets = $CurrentFlyingFleets["Nbre"];
-
-$QrySelectEnemy  = "SELECT * FROM {{table}} ";
-$QrySelectEnemy .= "WHERE ";
-$QrySelectEnemy .= "`galaxy` = '". intval($POST_galaxy) ."' AND ";
-$QrySelectEnemy .= "`system` = '". intval($POST_system) ."' AND ";
-$QrySelectEnemy .= "`planet` = '". intval($POST_planet) ."' AND ";
-$QrySelectEnemy .= "`planet_type` = '". intval($POST_planettype) ."';";
-$TargetRow = doquery( $QrySelectEnemy, 'planets', true);
-
-if       ($TargetRow['id_owner'] == '')
-{
-  $TargetUser = $user;
-}
-elseif ($TargetRow['id_owner'] != '')
-{
-  $TargetUser = doquery("SELECT * FROM {{table}} WHERE `id` = '". $TargetRow['id_owner'] ."';", 'users', true);
-}
-$UserPoints    = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."';", 'statpoints', true);
-$User2Points   = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $TargetUser['id'] ."';", 'statpoints', true);
-
-$CurrentPoints = $UserPoints['total_points'];
-$TargetPoints  = $User2Points['total_points'];
-$TargetVacat   = $TargetUser['urlaubs_modus'];
-
-// Test s'il y a un slot de libre au moins !
-if (GetMaxFleets($user) <= $CurrentFlyingFleets)
-{
-  $ResultMessage = "612;".$lang['gs_c612']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-if(($POST_mission == 6) AND ($UserSpyProbes == 0))
-{
-  $ResultMessage = "604k;".$lang['gs_c604k']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-if(($POST_mission == 8) AND ($UserRecycles == 0))
-{
-  $ResultMessage = "604r;".$lang['gs_c604r']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-// Y a une flotte dans la variable ??
-if (!is_array($FleetArray))
-{
-  $ResultMessage = "611;".$lang['gs_c611']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-// Faut pas deconner non plus ... c'est Espionnage OU Recyclage .... Pour le café vous repasserez !!
-if (! (($POST_mission == 6) OR ($POST_mission == 8)) )
-{
-  $ResultMessage = "618;".$lang['gs_c618']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-// On teste une derniere fois s'il nous reste des billes ...
-foreach ($FleetArray as $Ships => $Count)
-{
-  if ($Count > $planetrow[$sn_data[$Ships]['name']])
+  if ($ship_count > $planetrow[$sn_data[$ship_id]['name']] && $target_mission != MT_MISSILE)
   {
-    $ResultMessage = "611;".$lang['gs_c611']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
+    $ship_count = $planetrow[$sn_data[$ship_id]['name']];
+  }
+  $fleet_array[$ship_id]  = $ship_count;
+  $fleet_ship_count        += $ship_count;
+  $FleetDBArray          .= "{$ship_id},{$ship_count};";
+  $FleetSubQRY           .= "`{$sn_data[$ship_id]['name']}` = `{$sn_data[$ship_id]['name']}` - {$ship_count}, ";
+}
+$target_planet_type = $target_planet_type == PT_DEBRIS ? PT_PLANET : $target_planet_type;
+$TargetRow = doquery( "SELECT * FROM {{planets}} WHERE `galaxy` = '{$target_galaxy}' AND `system` = '{$target_system}' AND `planet` = '{$target_planet}' AND `planet_type` = '{$target_planet_type}' LIMIT 1;", '', true);
+
+$cant_attack = flt_can_attack($TargetRow, $target_mission, $fleet_array);
+if($cant_attack)
+{
+  die("{$cant_attack}|{$lang['fl_attack_error'][$cant_attack]}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}");
+}
+
+$consumption = 0;
+if($target_mission == MT_MISSILE)
+{
+  $target_structure = intval($_POST['structures']);
+  if ($target_structure && !in_array($target_structure, $sn_groups['defense_ative']))
+  {
+    $cant_attack = ATTACK_WRONG_STRUCTURE;
+    die("{$cant_attack}|{$lang['fl_attack_error'][$cant_attack]}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}");
+  };
+
+  $mips_sent = $fleet_array[503];
+
+  $distance = abs($target_system - $planetrow['system']);
+  $mipRange = ($user['impulse_motor_tech'] * 5) - 1;
+
+  $arrival = $time_now + round((30 + (60 * $distance)) / get_fleet_speed());
+
+  doquery("INSERT INTO `{{iraks}}` SET
+     `zielid` = '{$TargetRow['id_owner']}', `galaxy` = '{$target_galaxy}', `system` = '{$target_system}', `planet` = '{$target_planet}',
+     `owner` = '{$user['id']}', `galaxy_angreifer` = '{$planetrow['galaxy']}', `system_angreifer` = '{$planetrow['system']}', `planet_angreifer` = '{$planetrow['planet']}',
+     `zeit` = '{$arrival}', `anzahl` = '{$mips_sent}', `primaer` = '{$target_structure}';");
+
+  $FleetSubQRY = "`{$sn_data[503]['name']}` = `{$sn_data[503]['name']}` - '{$mips_sent}', ";
+  $Ship = 503;
+  //doquery("UPDATE `{{planets}}` SET  WHERE `id` = '{$user['current_planet']}' LIMIT 1;");
+}
+else
+{
+  $Distance    = GetTargetDistance ($planetrow['galaxy'], $target_galaxy, $planetrow['system'], $target_system, $planetrow['planet'], $target_planet);
+  $speedall    = GetFleetMaxSpeed ($fleet_array, 0, $user);
+  $SpeedAllMin = min($speedall);
+  $Duration    = GetMissionDuration ( 10, $SpeedAllMin, $Distance, get_fleet_speed());
+
+  $fleet_start_time = $Duration + time();
+  $fleet_end_time   = ($Duration * 2) + time();
+
+  $consumption         = 0;
+  $SpeedFactor         = get_fleet_speed();
+  foreach ($fleet_array as $Ship => $Count)
+  {
+    $ShipSpeed        = $pricelist[$Ship]["speed"];
+    $spd              = 35000 / ($Duration * $SpeedFactor - 10) * sqrt($Distance * 10 / $ShipSpeed);
+    $basicConsumption = $pricelist[$Ship]["consumption"] * $Count ;
+    $consumption     += $basicConsumption * $Distance / 35000 * (($spd / 10) + 1) * (($spd / 10) + 1);
+  }
+  $consumption = round($consumption) + 1;
+
+  if($UserDeuterium<$consumption)
+  {
+    $ResultMessage = "613|{$lang['gs_c613']}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}";
     die ( $ResultMessage );
   }
+
+  $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
+  $QryInsertFleet .= "`fleet_owner` = '{$user['id']}', ";
+  $QryInsertFleet .= "`fleet_mission` = '{$target_mission}', ";
+  $QryInsertFleet .= "`fleet_amount` = '{$fleet_ship_count}', ";
+  $QryInsertFleet .= "`fleet_array` = '{$FleetDBArray}', ";
+  $QryInsertFleet .= "`fleet_start_time` = '{$fleet_start_time}', ";
+  $QryInsertFleet .= "`fleet_start_galaxy` = '{$planetrow['galaxy']}', ";
+  $QryInsertFleet .= "`fleet_start_system` = '{$planetrow['system']}', ";
+  $QryInsertFleet .= "`fleet_start_planet` = '{$planetrow['planet']}', ";
+  $QryInsertFleet .= "`fleet_start_type`   = '{$planetrow['planet_type']}', ";
+  $QryInsertFleet .= "`fleet_end_time` = '{$fleet_end_time}', ";
+  $QryInsertFleet .= "`fleet_end_galaxy` = '{$target_galaxy}', ";
+  $QryInsertFleet .= "`fleet_end_system` = '{$target_system}', ";
+  $QryInsertFleet .= "`fleet_end_planet` = '{$target_planet}', ";
+  $QryInsertFleet .= "`fleet_end_type` = '{$target_planet_type}', ";
+  $QryInsertFleet .= "`fleet_target_owner` = '{$TargetRow['id_owner']}', ";
+  $QryInsertFleet .= "`start_time` = '{$time_now}';";
+  doquery( $QryInsertFleet);
 }
-
-if ($PrNoobTime < 1)
-{
-  $PrNoobTime = 9999999999999999;
-}
-
-if ($TargetUser['onlinetime'] < (time() - 60*60*24*7))
-{
-  $PrNoobTime = 0;
-}
-
-if ($TargetVacat && $POST_mission != 8)
-{
-  $ResultMessage = "605;".$lang['gs_c605']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-if ($CurrentPoints > ($TargetPoints * $PrNoobMulti) AND
-        $TargetRow['id_owner'] != '' AND
-        $POST_mission      == 6  AND
-        $PrNoob                == 1  AND
-        $TargetPoints           < ($PrNoobTime * 1000))
-{
-  $ResultMessage = "603;".$lang['gs_c603']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-if ($TargetPoints           > ($CurrentPoints * $PrNoobMulti) AND
-        $TargetRow['id_owner'] != '' AND
-        $POST_mission      == 6  AND
-        $PrNoob                == 1  AND
-        $CurrentPoints          < ($PrNoobTime * 1000))
-{
-  $ResultMessage = "604;".$lang['gs_c604']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-if ($TargetRow['id_owner'] == '' AND
-        $POST_mission      != 8 )
-{
-  $ResultMessage = "601;".$lang['gs_c601']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-if (($TargetRow["id_owner"] == $planetrow["id_owner"]) AND ($POST_mission == 6))
-{
-  $ResultMessage = "618;".$lang['gs_c618']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-if ($POST_thisgalaxy     != $planetrow['galaxy'] |
-    $POST_thissystem     != $planetrow['system'] |
-    $POST_thisplanet     != $planetrow['planet'] |
-    $POST_thisplanettype != $planetrow['planet_type'])
-{
-  $ResultMessage = "618;".$lang['gs_c618']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-$Distance    = GetTargetDistance ($POST_thisgalaxy, $POST_galaxy, $POST_thissystem, $POST_system, $POST_thisplanet, $POST_planet);
-$speedall    = GetFleetMaxSpeed ($FleetArray, 0, $user);
-$SpeedAllMin = min($speedall);
-$Duration    = GetMissionDuration ( 10, $SpeedAllMin, $Distance, get_fleet_speed());
-
-$fleet['fly_time']   = $Duration;
-$fleet['start_time'] = $Duration + time();
-$fleet['end_time']   = ($Duration * 2) + time();
-
-$FleetShipCount      = 0;
-$FleetDBArray        = "";
-$FleetSubQRY         = "";
-$consumption         = 0;
-$SpeedFactor         = get_fleet_speed();
-foreach ($FleetArray as $Ship => $Count)
-{
-  $ShipSpeed        = $pricelist[$Ship]["speed"];
-  $spd              = 35000 / ($Duration * $SpeedFactor - 10) * sqrt($Distance * 10 / $ShipSpeed);
-  $basicConsumption = $pricelist[$Ship]["consumption"] * $Count ;
-  $consumption     += $basicConsumption * $Distance / 35000 * (($spd / 10) + 1) * (($spd / 10) + 1);
-  $FleetShipCount  += $Count;
-  $FleetDBArray    .= $Ship .",". $Count .";";
-  $FleetSubQRY     .= "`".$sn_data[$Ship]['name'] . "` = `" . $sn_data[$Ship]['name'] . "` - " . $Count . " , ";
-}
-$consumption = round($consumption) + 1;
-
-if ($TargetRow['id_level'] > $user['authlevel'])
-{
-  $Allowed = true;
-  switch ($POST_mission)
-  {
-          case 1:
-          case 2:
-          case 6:
-          case 9:
-            $Allowed = false;
-          break;
-
-          case 3:
-          case 4:
-          case 5:
-          case 7:
-          case 8:
-          case 15:
-          default:
-          break;
-  }
-  if ($Allowed == false)
-  {
-    $ResultMessage = "619;".$lang['gs_c619']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-    die ( $ResultMessage );
-  }
-}
-
-if($UserDeuterium<$consumption)
-{
-  $ResultMessage = "613;".$lang['gs_c613']."|{$CurrentFlyingFleets} {$UserSpyProbes} {$UserRecycles} {$UserMissiles}";
-  die ( $ResultMessage );
-}
-
-$QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
-$QryInsertFleet .= "`fleet_owner` = '". $user['id'] ."', ";
-$QryInsertFleet .= "`fleet_mission` = '". intval($POST_mission) ."', ";
-$QryInsertFleet .= "`fleet_amount` = '". $FleetShipCount ."', ";
-$QryInsertFleet .= "`fleet_array` = '". $FleetDBArray ."', ";
-$QryInsertFleet .= "`fleet_start_time` = '". $fleet['start_time']. "', ";
-$QryInsertFleet .= "`fleet_start_galaxy` = '". $POST_thisgalaxy ."', ";
-$QryInsertFleet .= "`fleet_start_system` = '". $POST_thissystem ."', ";
-$QryInsertFleet .= "`fleet_start_planet` = '". $POST_thisplanet ."', ";
-$QryInsertFleet .= "`fleet_start_type` = '".   $POST_thisplanettype ."', ";
-$QryInsertFleet .= "`fleet_end_time` = '". $fleet['end_time'] ."', ";
-$QryInsertFleet .= "`fleet_end_galaxy` = '". $POST_galaxy ."', ";
-$QryInsertFleet .= "`fleet_end_system` = '". $POST_system ."', ";
-$QryInsertFleet .= "`fleet_end_planet` = '". $POST_planet ."', ";
-$QryInsertFleet .= "`fleet_end_type` = '". $POST_planettype ."', ";
-$QryInsertFleet .= "`fleet_target_owner` = '". $TargetRow['id_owner'] ."', ";
-$QryInsertFleet .= "`start_time` = '" . time() . "';";
-doquery( $QryInsertFleet);
-
-$UserDeuterium   -= $consumption;
-$QryUpdatePlanet  = "UPDATE {{planets}} SET ";
-$QryUpdatePlanet .= $FleetSubQRY;
-$QryUpdatePlanet .= "`deuterium` = `deuterium` - {$consumption} " ;
-$QryUpdatePlanet .= "WHERE ";
-$QryUpdatePlanet .= "`id` = '{$planetrow['id']}';";
-doquery( $QryUpdatePlanet);
+doquery( "UPDATE {{planets}} SET {$FleetSubQRY} `{$sn_data[903]['name']}` = `{$sn_data[903]['name']}` - {$consumption} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+doquery("COMMIT;");
 
 $CurrentFlyingFleets++;
+$UserSpyProbes -= $fleet_array[210];
+$UserRecycles  -= $fleet_array[209];
+$UserMissiles  -= $fleet_array[503];
 
-$planetrow = doquery("SELECT * FROM {{table}} WHERE `id` = '". $user['current_planet'] ."';", 'planets', true);
-$ResultMessage  = "600;". $lang['gs_sending'] ." ". $FleetShipCount  ." ". $lang['tech'][$Ship] ." ". $lang['gs_to'] ." ". $POST_galaxy .":". $POST_system .":". $POST_planet ."...|";
-$ResultMessage .= $CurrentFlyingFleets ." ".$UserSpyProbes." ".$UserRecycles." ".$UserMissiles;
+$ResultMessage  = "{$cant_attack}|{$lang['gs_sending']} {$fleet_ship_count} {$lang['tech'][$Ship]} {$lang['gs_to']} {$target_galaxy}:{$target_system}:{$target_planet}...|";
+$ResultMessage .= "{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}";
 
 die ( $ResultMessage );
+
 ?>

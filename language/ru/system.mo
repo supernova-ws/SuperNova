@@ -14,92 +14,6 @@ foreach($lang['user_level'] as $ID => $levelName)
   $lang['user_level_shortcut'][$ID] = $levelName[0];
 }
 
-$lang['sys_first_round_crash_1']	= 'Контакт с атакованным флотом потерян.';
-$lang['sys_first_round_crash_2']	= 'Это означает что он был уничтожен в первом раунде боя.';
-
-$lang['sys_overview']			= "Обзор";
-$lang['mod_marchand']			= "Торговец";
-$lang['sys_moon']			= "Луна";
-$lang['sys_planet']			= "Планета";
-$lang['sys_error']			= "Ошибка";
-$lang['sys_no_vars']			= "Ошибка инициализации переменных, обратитесь к администрации!";
-$lang['sys_attacker_lostunits']		= "Атакующий потерял %s единиц.";
-$lang['sys_defender_lostunits']		= "Обороняющийся потерял %s единиц.";
-$lang['sys_gcdrunits'] 			= "Теперь на этих пространственных координатах находятся %s %s и %s %s.";
-$lang['sys_moonproba'] 			= "Шанс появления луны составляет: %d %% ";
-$lang['sys_moonbuilt'] 			= "Благодаря огромной энергии огромные куски металла и кристалла соединяются и образуется новая луна %s [%d:%d:%d] !";
-$lang['sys_attack_title']    		= "%s. Произошёл бой между следующими флотами::";
-$lang['sys_attack_attacker_pos']      	= "Атакующий %s [%s:%s:%s]";
-$lang['sys_attack_techologies'] 	= "Вооружение: %d %% Щиты: %d %% Броня: %d %% ";
-$lang['sys_attack_defender_pos'] 	= "Обороняющийся %s [%s:%s:%s]";
-$lang['sys_ship_type'] 			= "Тип";
-$lang['sys_ship_count'] 		= "Кол-во";
-$lang['sys_ship_weapon'] 		= "Вооружение";
-$lang['sys_ship_shield'] 		= "Щиты";
-$lang['sys_ship_armour'] 		= "Броня";
-$lang['sys_destroyed'] 			= "уничтожен";
-$lang['sys_attack_attack_wave'] 	= "Атакующий делает выстрелы общей мощностью %s по обороняющемуся. Щиты обороняющегося поглощают %s выстрелов.";
-$lang['sys_attack_defend_wave']		= "Обороняющийся делает выстрелы общей мощностью %s по атакующему. Щиты атакующего поглащают %s выстрелов.";
-$lang['sys_attacker_won'] 		= "Атакующий выиграл битву!";
-$lang['sys_defender_won'] 		= "Обороняющийся выиграл битву!";
-$lang['sys_both_won'] 			= "Бой закончился ничьёй!";
-$lang['sys_stealed_ressources'] 	= "Он получает %s металла %s %s кристалла %s и %s дейтерия.";
-$lang['sys_rapport_build_time'] 	= "Время генерации страницы %s секунд";
-$lang['sys_mess_tower'] 		= "Транспорт";
-$lang['sys_mess_attack_report'] 	= "Боевой доклад";
-$lang['sys_spy_maretials'] 		= "Сырьё на";
-$lang['sys_spy_fleet'] 			= "Флот";
-$lang['sys_spy_defenses'] 		= "Оборона";
-$lang['sys_mess_qg'] 			= "Командование флотом";
-$lang['sys_mess_spy_report'] 		= "Шпионский доклад";
-$lang['sys_mess_spy_lostproba'] 	= "Погрешность информации, полученной спутником %d %% ";
-$lang['sys_mess_spy_control'] 		= "Контрразведка";
-$lang['sys_mess_spy_activity'] 		= "Шпионская активность";
-$lang['sys_mess_spy_ennemyfleet'] 	= "Чужой флот с планеты";
-$lang['sys_mess_spy_seen_at']		= "был обнаружен возле планеты";
-$lang['sys_mess_spy_destroyed']		= "Шпионский спутник был уничтожен";
-$lang['sys_object_arrival']		= "Прибыл на планету";
-$lang['sys_stay_mess_stay'] = "Оставить флот";
-$lang['sys_stay_mess_start'] 		= "Ваш флот прибыл на планету";
-$lang['sys_stay_mess_back']		= "Ваш флот вернулся ";
-$lang['sys_stay_mess_end']		= " и доставил:";
-$lang['sys_stay_mess_bend']		= " и доставил следующие ресурсы:";
-$lang['sys_adress_planet'] 		= "[%s:%s:%s]";
-$lang['sys_stay_mess_goods'] 		= "%s : %s, %s : %s, %s : %s";
-$lang['sys_colo_mess_from'] 		= "Колонизация";
-$lang['sys_colo_mess_report'] 		= "Отчёт о колонизации";
-$lang['sys_colo_defaultname'] 		= "Колония";
-$lang['sys_colo_arrival'] 		= "Флот достигает координат ";
-$lang['sys_colo_maxcolo'] 		= ", но колонизировать планету нельзя, достигнуто максимальное число колоний для вашего уровня колонизации";
-$lang['sys_colo_allisok'] 		= ", и колонисты начинают осваивать новую планету.";
-$lang['sys_colo_badpos']  			= ", и колонисты нашли среду мало выгодной для Вашей империи. Миссия колонизации возвращается обратно на планету отправки.";
-$lang['sys_colo_notfree'] 			= ", и колонисты не нашли планету в этих координатах. Они вынуждены проложить дорогу обратно абсолютно обескураженными.";
-$lang['sys_colo_planet']  		= " Планета колонизирована!";
-$lang['sys_expe_report'] 		= "Отчёт экспедиции";
-$lang['sys_recy_report'] 		= "Системная информация";
-$lang['sys_expe_blackholl_1'] 		= "Ваш флот попал в чёрную дыру и частично потерян!";
-$lang['sys_expe_blackholl_2'] 		= "Ваш флот попал в чёрную дыру и полностью потерян!";
-$lang['sys_expe_nothing_1'] 		= "Ваш исследователи стали свидетелями СверхНовой Звезды! И ваши накопители успели принять часть высвободившейся энергии.";
-$lang['sys_expe_nothing_2'] 		= "Ваш исследователи ничего не обнаружили!";
-$lang['sys_expe_found_goods'] 		= "Ваш исследователи нашли планету, богатую сырьём!<br>Вы получили %s %s, %s %s и %s %s";
-$lang['sys_expe_found_ships'] 		= "Ваш исследователи нашли безупречно новый флот!<br>Вы получили: ";
-$lang['sys_expe_back_home'] 		= "Ваш флот возвращается обратно.";
-$lang['sys_mess_transport'] 		= "Транспорт";
-$lang['sys_tran_mess_owner'] 		= "Один из ваших флотов достигает планеты %s %s и доставляет %s %s, %s  %s и %s %s.";
-$lang['sys_tran_mess_user']  		= "Ваш флот отправленный с планеты %s %s прибыл на %s %s и доставил %s %s, %s  %s и %s %s.";
-$lang['sys_mess_fleetback'] 		= "Возвращение";
-$lang['sys_tran_mess_back'] 		= "Один из ваших флотов возвращается на планету %s %s.";
-$lang['sys_recy_gotten'] 		= "Один из Ваших флотов добыл %s %s и %s %s Возвращается на планету.";
-$lang['sys_notenough_money'] 		= "Вам не хватает ресурсов, чтобы построить: %s. У Вас сейчас: %s %s , %s %s и %s %s. Для строительства необходимо: %s %s , %s %s и %s %s.";
-$lang['sys_nomore_level']		= "Вы больше не можете совершенствовать это. Оно достигло макс. уровня ( %s ).";
-$lang['sys_buildlist'] 			= "Список построек";
-$lang['sys_buildlist_fail'] 		= "нет построек";
-$lang['sys_gain'] 			= "Добыча: ";
-$lang['sys_perte_attaquant'] 		= "Атакующий потерял";
-$lang['sys_perte_defenseur'] 		= "Обороняющийся потерял";
-$lang['sys_debris'] 			= "Обломки: ";
-$lang['sys_noaccess'] 			= "В доступе отказано";
-$lang['sys_noalloaw'] 			= "Вам закрыт доступ в эту зону!";
 
 $lang['VacationMode']			= "Ваше производство закрыто, так как вы в Отпуске";
 $lang['sys_moon_destruction_report'] = "Рапорт разрушения луны";
@@ -280,11 +194,96 @@ $lang['weekdays'] = array(
 	'6' => 'Суббота'
 );
 
-$lang['sys_max'] = 'макс';
-$lang['sys_banned_msg'] = 'Вы забанены. Для получения информации зайдите <a href="banned.php">сюда</a>. Срок окончания блокировки аккаунта: ';
-
-// News page & a bit of imperator page
 $lang = array_merge($lang, array(
+  'sys_first_round_crash_1'	=> 'Контакт с атакованным флотом потерян.',
+  'sys_first_round_crash_2'	=> 'Это означает что он был уничтожен в первом раунде боя.',
+
+  'sys_overview'			=> 'Обзор',
+  'mod_marchand'			=> 'Торговец',
+  'sys_moon'			=> 'Луна',
+  'sys_planet'			=> 'Планета',
+  'sys_error'			=> 'Ошибка',
+  'sys_done'				=> 'Готово',
+  'sys_no_vars'			=> 'Ошибка инициализации переменных, обратитесь к администрации!',
+  'sys_attacker_lostunits'		=> 'Атакующий потерял %s единиц.',
+  'sys_defender_lostunits'		=> 'Обороняющийся потерял %s единиц.',
+  'sys_gcdrunits' 			=> 'Теперь на этих пространственных координатах находятся %s %s и %s %s.',
+  'sys_moonproba' 			=> 'Шанс появления луны составляет: %d %% ',
+  'sys_moonbuilt' 			=> 'Благодаря огромной энергии огромные куски металла и кристалла соединяются и образуется новая луна %s [%d:%d:%d] !',
+  'sys_attack_title'    		=> '%s. Произошёл бой между следующими флотами::',
+  'sys_attack_attacker_pos'      	=> 'Атакующий %s [%s:%s:%s]',
+  'sys_attack_techologies' 	=> 'Вооружение: %d %% Щиты: %d %% Броня: %d %% ',
+  'sys_attack_defender_pos' 	=> 'Обороняющийся %s [%s:%s:%s]',
+  'sys_ship_type' 			=> 'Тип',
+  'sys_ship_count' 		=> 'Кол-во',
+  'sys_ship_weapon' 		=> 'Вооружение',
+  'sys_ship_shield' 		=> 'Щиты',
+  'sys_ship_armour' 		=> 'Броня',
+  'sys_destroyed' 			=> 'уничтожен',
+  'sys_attack_attack_wave' 	=> 'Атакующий делает выстрелы общей мощностью %s по обороняющемуся. Щиты обороняющегося поглощают %s выстрелов.',
+  'sys_attack_defend_wave'		=> 'Обороняющийся делает выстрелы общей мощностью %s по атакующему. Щиты атакующего поглащают %s выстрелов.',
+  'sys_attacker_won' 		=> 'Атакующий выиграл битву!',
+  'sys_defender_won' 		=> 'Обороняющийся выиграл битву!',
+  'sys_both_won' 			=> 'Бой закончился ничьёй!',
+  'sys_stealed_ressources' 	=> 'Он получает %s металла %s %s кристалла %s и %s дейтерия.',
+  'sys_rapport_build_time' 	=> 'Время генерации страницы %s секунд',
+  'sys_mess_tower' 		=> 'Транспорт',
+  'sys_mess_attack_report' 	=> 'Боевой доклад',
+  'sys_spy_maretials' 		=> 'Сырьё на',
+  'sys_spy_fleet' 			=> 'Флот',
+  'sys_spy_defenses' 		=> 'Оборона',
+  'sys_mess_qg' 			=> 'Командование флотом',
+  'sys_mess_spy_report' 		=> 'Шпионский доклад',
+  'sys_mess_spy_lostproba' 	=> 'Погрешность информации, полученной спутником %d %% ',
+  'sys_mess_spy_control' 		=> 'Контрразведка',
+  'sys_mess_spy_activity' 		=> 'Шпионская активность',
+  'sys_mess_spy_ennemyfleet' 	=> 'Чужой флот с планеты',
+  'sys_mess_spy_seen_at'		=> 'был обнаружен возле планеты',
+  'sys_mess_spy_destroyed'		=> 'Шпионский спутник был уничтожен',
+  'sys_object_arrival'		=> 'Прибыл на планету',
+  'sys_stay_mess_stay' => 'Оставить флот',
+  'sys_stay_mess_start' 		=> 'Ваш флот прибыл на планету',
+  'sys_stay_mess_back'		=> 'Ваш флот вернулся ',
+  'sys_stay_mess_end'		=> ' и доставил:',
+  'sys_stay_mess_bend'		=> ' и доставил следующие ресурсы:',
+  'sys_adress_planet' 		=> '[%s:%s:%s]',
+  'sys_stay_mess_goods' 		=> '%s : %s, %s : %s, %s : %s',
+  'sys_colo_mess_from' 		=> 'Колонизация',
+  'sys_colo_mess_report' 		=> 'Отчёт о колонизации',
+  'sys_colo_defaultname' 		=> 'Колония',
+  'sys_colo_arrival' 		=> 'Флот достигает координат ',
+  'sys_colo_maxcolo' 		=> ', но колонизировать планету нельзя, достигнуто максимальное число колоний для вашего уровня колонизации',
+  'sys_colo_allisok' 		=> ', и колонисты начинают осваивать новую планету.',
+  'sys_colo_badpos'  			=> ', и колонисты нашли среду мало выгодной для Вашей империи. Миссия колонизации возвращается обратно на планету отправки.',
+  'sys_colo_notfree' 			=> ', и колонисты не нашли планету в этих координатах. Они вынуждены проложить дорогу обратно абсолютно обескураженными.',
+  'sys_colo_planet'  		=> ' Планета колонизирована!',
+  'sys_expe_report' 		=> 'Отчёт экспедиции',
+  'sys_recy_report' 		=> 'Системная информация',
+  'sys_expe_blackholl_1' 		=> 'Ваш флот попал в чёрную дыру и частично потерян!',
+  'sys_expe_blackholl_2' 		=> 'Ваш флот попал в чёрную дыру и полностью потерян!',
+  'sys_expe_nothing_1' 		=> 'Ваш исследователи стали свидетелями СверхНовой Звезды! И ваши накопители успели принять часть высвободившейся энергии.',
+  'sys_expe_nothing_2' 		=> 'Ваш исследователи ничего не обнаружили!',
+  'sys_expe_found_goods' 		=> 'Ваш исследователи нашли планету, богатую сырьём!<br>Вы получили %s %s, %s %s и %s %s',
+  'sys_expe_found_ships' 		=> 'Ваш исследователи нашли безупречно новый флот!<br>Вы получили: ',
+  'sys_expe_back_home' 		=> 'Ваш флот возвращается обратно.',
+  'sys_mess_transport' 		=> 'Транспорт',
+  'sys_tran_mess_owner' 		=> 'Один из ваших флотов достигает планеты %s %s и доставляет %s %s, %s  %s и %s %s.',
+  'sys_tran_mess_user'  		=> 'Ваш флот отправленный с планеты %s %s прибыл на %s %s и доставил %s %s, %s  %s и %s %s.',
+  'sys_mess_fleetback' 		=> 'Возвращение',
+  'sys_tran_mess_back' 		=> 'Один из ваших флотов возвращается на планету %s %s.',
+  'sys_recy_gotten' 		=> 'Один из Ваших флотов добыл %s %s и %s %s Возвращается на планету.',
+  'sys_notenough_money' 		=> 'Вам не хватает ресурсов, чтобы построить: %s. У Вас сейчас: %s %s , %s %s и %s %s. Для строительства необходимо: %s %s , %s %s и %s %s.',
+  'sys_nomore_level'		=> 'Вы больше не можете совершенствовать это. Оно достигло макс. уровня ( %s ).',
+  'sys_buildlist' 			=> 'Список построек',
+  'sys_buildlist_fail' 		=> 'нет построек',
+  'sys_gain' 			=> 'Добыча: ',
+  'sys_perte_attaquant' 		=> 'Атакующий потерял',
+  'sys_perte_defenseur' 		=> 'Обороняющийся потерял',
+  'sys_debris' 			=> 'Обломки: ',
+  'sys_noaccess' 			=> 'В доступе отказано',
+  'sys_noalloaw' 			=> 'Вам закрыт доступ в эту зону!',
+
+  // News page & a bit of imperator page
   'news_title'     => 'Новости',
   'news_none'      => 'Нет новостей',
   'news_new'       => 'НОВАЯ',
@@ -301,8 +300,33 @@ $lang = array_merge($lang, array(
   'news_mode_new'  => 'Новая',
   'news_mode_edit' => 'Редактирование',
   'news_mode_copy' => 'Копия',
+
+  // Missile-related
+  'mip_h_launched'			=> 'Запуск межпланетных ракет',
+  'mip_launched'				=> 'Запущено межпланетных ракет: <b>%s</b>!',
+
+  'mip_no_silo'				=> 'Недостаточен уровень ракетных шахт на планете <b>%s</b>.',
+  'mip_no_impulse'			=> 'Необходимо исследовать импульсный двигатель.',
+  'mip_too_far'				=> 'Ракета не может лететь так далеко.',
+  'mip_planet_error'			=> 'Ошибка - больше одной планеты по одной координате',
+  'mip_no_rocket'				=> 'Недостаточно ракет в шахте для проведения атаки.',
+  'mip_hack_attempt'			=> ' Ты чо хакер? Еще один такой прикол и будешь забанен. ip адрес и логин я записал.',
+
+  'mip_all_destroyed' 		=> 'Все межпланетные ракеты были уничтожены ракетами-перехватчиками<br>',
+  'mip_destroyed'				=> '%s межпланетых ракет были уничтожены ракетами-перехватчиками.<br>',
+  'mip_defense_destroyed'	=> 'Уничтожены следующие оборонительные сооружения:<br />',
+  'mip_recycled'				=> 'Переработано из обломков защитных сооружений: ',
+  'mip_no_defense'			=> 'На атакуемой планете не было защиты!',
+
+  'mip_sender_amd'			=> 'Ракетно-космические войска',
+  'mip_subject_amd'			=> 'Ракетная атака',
+  'mip_body_attack'			=> 'Атака межпланетными ракетами (%1$s шт.) с планеты %2$s <a href="galaxy.php?mode=3&galaxy=%3$d&system=%4$d&planet=%5$d">[%3$d:%4$d:%5$d]</a> на планету %6$s <a href="galaxy.php?mode=3&galaxy=%7$d&system=%8$d&planet=%9$d">[%7$d:%8$d:%9$d]</a><br><br>',
+  
+  // Misc
+  'sys_game_rules' => 'Правила игры',
+  'sys_max' => 'макс',
+  'sys_banned_msg' => 'Вы забанены. Для получения информации зайдите <a href="banned.php">сюда</a>. Срок окончания блокировки аккаунта: ',
 ));
 
 //
-$lang['sys_game_rules'] = 'Правила игры';
 ?>

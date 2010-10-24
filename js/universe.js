@@ -133,3 +133,119 @@ function show_planet(planet, planet_type)
 
   popup_show(uni_row[planet]['cache_planet' + planet_type]);
 }
+
+function galaxy_submit(value)
+{
+  document.getElementById('auto').name = value;
+  document.getElementById('galaxy_form').submit();
+}
+
+function fenster(target_url,win_name)
+{
+  var new_win = window.open(target_url,win_name,'resizable=yes,scrollbars=yes,menubar=no,toolbar=no,width=640,height=480,top=0,left=0');
+  new_win.focus();
+}
+
+function changeSlots(slotsInUse)
+{
+  var e = document.getElementById('slots');
+  e.innerHTML = slotsInUse;
+}
+
+function uni_set_ships(ship, count)
+{
+  var e = document.getElementById(ship);
+  e.innerHTML = count;
+}
+
+var ajax = new sack();
+var strInfo = "";
+var CmdCode = 0;
+
+function whenResponse ()
+{
+  retValue  = this.response;
+  retVals   = this.response.split("|");
+  CmdCode   = retVals[0];
+  strInfo   = retVals[1];
+  UsedSlots = retVals[2];
+  SpyProbes = retVals[3];
+  Recyclers = retVals[4];
+  Missiles  = retVals[5];
+  addToTable("done", "success");
+  changeSlots( UsedSlots );
+  uni_set_ships("probes", SpyProbes);
+  uni_set_ships("recyclers", Recyclers );
+  uni_set_ships("missiles", Missiles );
+}
+
+function addToTable(strDataResult, strClass)
+{
+  if(CmdCode != 0)
+  {
+    strDataResult = language['sys_error'];
+    strClass = "error";
+  }
+  else
+  {
+    strDataResult = language['sys_done'];
+    strClass = "success";
+  };
+  var e = document.getElementById('fleetstatusrow');
+  var e2 = document.getElementById('fleetstatustable');
+  e.style.display = '';
+  if(e2.rows.length > 2) {
+    e2.deleteRow(2);
+  }
+  var row = e2.insertRow(0);
+  var td1 = document.createElement("td");
+//  var td1text = document.createTextNode(retValue);
+  var td1text = document.createTextNode(strInfo);
+  td1.appendChild(td1text);
+  var td2 = document.createElement("td");
+  var span = document.createElement("span");
+  var spantext = document.createTextNode(strDataResult);
+  var spanclass = document.createAttribute("class");
+  spanclass.nodeValue = strClass;
+  span.setAttributeNode(spanclass);
+  span.appendChild(spantext);
+  td2.appendChild(span);
+  row.appendChild(td1);
+  row.appendChild(td2);
+}
+
+function doit (order, galaxy, system, planet, planettype, shipcount)
+{
+  ajax.requestFile = "flotenajax.php?action=send";
+  ajax.runResponse = whenResponse;
+  ajax.execute = true;
+  ajax.setVar("thisgalaxy", uni_user_galaxy);
+  ajax.setVar("thissystem", uni_user_system);
+  ajax.setVar("thisplanet", uni_user_planet);
+  ajax.setVar("thisplanettype", uni_user_planet_type);
+  ajax.setVar("mission", order);
+  ajax.setVar("galaxy", uni_galaxy);
+  ajax.setVar("system", uni_system);
+  ajax.setVar("planet", planet);
+  ajax.setVar("planettype", planettype);
+  if (order == 6) // Spy
+  {
+    ajax.setVar("ship210", shipcount);
+  }
+  if (order == 7) //Colonize
+  {
+    ajax.setVar("ship208", 1); // Colonizer
+    ajax.setVar("ship203", 2); // Big Cargo
+  }
+  if (order == 8) // Recycle
+  {
+    ajax.setVar("ship209", shipcount);
+  }
+  if (order == 10) // Missile attack
+  {
+    ajax.setVar("ship503", shipcount);
+    ajax.setVar("fleet[503]", shipcount);
+    ajax.setVar("structures", document.uni_missile_form.Target.value);
+  }
+  ajax.runAJAX();
+}
