@@ -10,6 +10,7 @@
 if ( defined('INSIDE')) {
   // Liste de champs pour l'indication des messages en attante
   $messfields = array (
+     -1 => 'mnl_outbox',
       0 => 'mnl_spy',
       1 => 'mnl_joueur',
       2 => 'mnl_alliance',

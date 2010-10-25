@@ -44,7 +44,7 @@
 .holding {
 }
 
-*.ownattack {
+*.ownattack, .mnl_attaque {
   color: yellow;
 }
 
@@ -64,11 +64,11 @@
   color: sienna;
 }
 
-*.ownespionage {
+*.ownespionage, *.mnl_spy, .mnl_spy td {
   color: orange;
 }
 
-*.owntransport {
+*.owntransport, .mnl_transport {
   color: lime;
 }
 
@@ -76,7 +76,7 @@
   color: lightgreen;
 }
 
-*.ownharvest {
+*.ownharvest, .mnl_exploit {
   color: green;
 }
 
@@ -84,7 +84,7 @@
   color: blue;
 }
 
-*.ownexpedition {
+*.ownexpedition, .mnl_expedition {
   color: lightblue;
 }
 
@@ -202,4 +202,33 @@
 
 .timeremaining {
   color: orange;
+}
+
+.mnl_outbox
+{
+  background-color: #000000;
+}
+
+.mnl_joueur
+{
+  background-color: #114444;
+}
+
+.mnl_exploit
+{
+  background-color: #999999';
+}
+
+.mnl_buildlist
+{
+  color: red;
+}
+
+.mnl_alliance {
+  background-color: #446666;
+}
+
+.new_message
+{
+  background-color: #99999;
 }

@@ -66,12 +66,13 @@ check_urlaubmodus ($user);
 
   $DeleteWhat = SYS_mysqlSmartEscape($_POST['deletemessages']);
 
-  $MessageType   = array ( -1, 0, 1, 2, 3, 4, 5, 15, 99, 100 );
+  $MessageType   = array ( -1 => '', 0 => '', 1 => '', 2 => '', 3 => '', 4 => '', 5 => '', 15 => '', 99 => '', 100 => '' );
   $TitleColor    = array ( -1 => '#FFFFFF', 0 => '#FFFF00', 1 => '#FF6699', 2 => '#FF3300', 3 => '#FF9900', 4 => '#773399', 5 => '#009933', 15 => '#0270FF', 99 => '#007070', 100 => '#ABABAB'  );
   $BackGndColor  = array ( -1 => '#000000', 0 => '#663366', 1 => '#336666', 2 => '#000099', 3 => '#666666', 4 => '#999999', 5 => '#999999', 15 => '#999999', 99 => '#999999', 100 => '#999999'  );
 
   $UnRead        = doquery("SELECT * FROM {{table}} WHERE `id` = '". $user['id'] ."';", 'users', true);
-  foreach($MessageType as $MessType){
+  foreach($MessageType as $MessType => $msg_class)
+  {
     $WaitingMess[$MessType] = $UnRead[$messfields[$MessType]];
     $TotalMess[$MessType]   = 0;
   }
@@ -187,7 +188,10 @@ check_urlaubmodus ($user);
         if ($MessCategory == 100) {
           foreach($messfields as $msg_type => $msg_field)
           {
-            $SubUpdateQry .= "`{$msg_field}` = '0',";
+            if($msg_type >= 0)
+            {
+              $SubUpdateQry .= "`{$msg_field}` = '0',";
+            }
           }
           $SubUpdateQry = substr($SubUpdateQry, 0, -1);
         }
@@ -210,7 +214,8 @@ check_urlaubmodus ($user);
 
           'FROM_ID'        => $CurMess['message_sender'],
           'SUBJ_SANITIZED' => htmlspecialchars($CurMess['message_subject']),
-          'BG_COLOR'       => $MessCategory == 100 ? '' : $BackGndColor[$CurMess['message_type']],
+          'BG_COLOR'       => $MessCategory == 100 ? $BackGndColor[$CurMess['message_type']] : '',
+          'STYLE'          => $MessCategory == -1 ? $messfields[-1] : $messfields[$CurMess['message_type']],
         ));
       }
 
@@ -238,11 +243,11 @@ check_urlaubmodus ($user);
       $page .= "  <th>". $lang['head_count'] ."</th>";
       $page .= "  <th>". $lang['head_total'] ."</th>";
       $page .= "</tr>";
-      foreach($MessageType as $MessType){
+      foreach($messfields as $MessType => $msg_class){
         $page .= "<tr>";
-        $page .= "  <th colspan=\"3\"><a href=\"messages.php?mode=show&amp;messcat=". $MessType ." \"><font color=\"". $TitleColor[$MessType] ."\">". $lang['type'][$MessType] ."</a></th>";
-        $page .= "  <th><font color=\"". $TitleColor[$MessType] ."\">". $WaitingMess[$MessType] ."</font></th>";
-        $page .= "  <th><font color=\"". $TitleColor[$MessType] ."\">". $TotalMess[$MessType] ."</font></th>";
+        $page .= "  <th colspan=\"3\"><a href=\"messages.php?mode=show&amp;messcat=". $MessType ." \"><span class=\"". $msg_class ."\">". $lang['type'][$MessType] ."</span></a></th>";
+        $page .= "  <th><span class=\"". $msg_class ."\">". $WaitingMess[$MessType] ."</span></th>";
+        $page .= "  <th><span class=\"". $msg_class ."\">". $TotalMess[$MessType] ."</span></th>";
         $page .= "</tr>";
       }
       $page .= "</table>";

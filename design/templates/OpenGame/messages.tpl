@@ -64,11 +64,11 @@
     </tr>
     <tr id='mess{messages.ID}'>
       <!-- IF MSG_CATEGORY != -1 -->
-      <td style="background-color: {messages.BG_COLOR}; background-image: none;" class="b">
+      <td class="{messages.STYLE}" class="b">
         &nbsp;
       </td>
       <!-- ENDIF -->    	
-      <td style="background-color: {messages.BG_COLOR}; background-image: none;" class="b" colspan="3">
+      <td class="{messages.STYLE}" class="b" colspan="3">
         {messages.TEXT}
       </td>
     </tr>
