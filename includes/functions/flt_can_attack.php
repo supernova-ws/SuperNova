@@ -78,16 +78,6 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
     return ATTACK_WRONG_MISSION;
   }
 
-  // Is it HOLD mission? If yes - there should be ally deposit
-  if($target_mission == MT_HOLD)
-  {
-    if($target_planet[$sn_data[34]['name']])
-    {
-      return ATTACK_ALLOWED;
-    }
-    return ATTACK_NO_ALLY_DEPOSIT;
-  }
-
   $enemy = doquery("SELECT * FROM {{users}} WHERE `id` = '{$target_planet['id_owner']}';", '', true);
   // We cannot attack or send resource to users in VACANCY mode
   if ($enemy['urlaubs_modus'] && $target_mission != MT_RECYCLE)
@@ -119,7 +109,7 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
     }
   }
 
-  // Only aggresive missions passed to this point
+  // Only aggresive missions passed to this point. HOLD counts as passive but aggresive
 
   // Is it admin with planet protection?
   if ($target_planet['id_level'] > $user['authlevel'])
@@ -134,6 +124,16 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
     {
       return ATTACK_NOOB;
     }
+  }
+
+  // Is it HOLD mission? If yes - there should be ally deposit
+  if($target_mission == MT_HOLD)
+  {
+    if($target_planet[$sn_data[34]['name']])
+    {
+      return ATTACK_ALLOWED;
+    }
+    return ATTACK_NO_ALLY_DEPOSIT;
   }
 
   if($target_mission == MT_SPY)
