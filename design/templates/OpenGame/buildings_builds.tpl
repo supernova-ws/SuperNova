@@ -220,11 +220,15 @@ function eco_struc_unborder_unit(unit_id)
             <!-- ENDIF -->
           <!-- ENDIF -->
 
-          <!-- IF production.ID == NOW_BUILDING -->
+          <!-- IF production.ID == NOW_WORKING -->
             <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?listid=1&cmd=cancel&planet=2'">
               <div class="icons icon-cancel"></div>
             </span>
-            <!-- DEFINE $BUILDINGPLUSONE = '+1' -->
+            <!-- IF NOW_BUILDING -->
+              <!-- DEFINE $BUILDINGPLUSONE = '+1' -->
+            <!-- ELSE -->
+              <!-- DEFINE $BUILDINGPLUSONE = '-1' -->
+            <!-- ENDIF -->
           <!-- ELSE -->
             <!-- DEFINE $BUILDINGPLUSONE = '' -->
           <!-- ENDIF -->
@@ -236,10 +240,16 @@ function eco_struc_unborder_unit(unit_id)
             {$BUILDINGPLUSONE}
           </span>
 
-          <span style="position: absolute; top: 46px; left: 0px; width: 100%; font-size: 100%; text-align: left; padding: 0px 2px;" class="icon_alpha"> <!--  onclick="eco_struc_select_unit({production.ID})" onmouseout="eco_struc_unborder_unit({production.ID})" onmouseover="eco_struc_show_unit_info({production.ID})"> -->
-            <!-- IF production.METAL --><div class="fl">{L_sys_metal}</div><div class="fr">{production.METAL_REST}</div><br><!-- ENDIF -->
-            <!-- IF production.CRYSTAL --><div class="fl">{L_sys_crystal}</div><div class="fr">{production.CRYSTAL_REST}</div><br><!-- ENDIF -->
-            <!-- IF production.DEUTERIUM --><div class="fl">{L_sys_deuterium}</div><div class="fr">{production.DEUTERIUM_REST}</div><!-- ENDIF -->
+          <!-- IF production.METAL_REST > 99999999999 || production.CRYSTAL_REST > 9999999999 || production.DEUTERIUM_REST_NUM > 9999999999 -->
+            <!-- DEFINE $FONT_SIZE = '80%' -->
+          <!-- ELSE -->
+            <!-- DEFINE $FONT_SIZE = '100%' -->
+          <!-- ENDIF -->
+
+          <span style="position: absolute; top: 45px; left: 0px; width: 100%; font-size: {$FONT_SIZE}; text-align: left;" class="icon_alpha"> <!--  onclick="eco_struc_select_unit({production.ID})" onmouseout="eco_struc_unborder_unit({production.ID})" onmouseover="eco_struc_show_unit_info({production.ID})"> -->
+            <!-- IF production.METAL --><div><div style="left: 0px; position: absolute;">{L_sys_metal}</div><div style="right: 0px; position:absolute;">{production.METAL_REST}</div></div><br><!-- ENDIF -->
+            <!-- IF production.CRYSTAL --><div><div style="left: 0px; position: absolute;">{L_sys_crystal}</div><div class="fr">{production.CRYSTAL_REST}</div></div><br><!-- ENDIF -->
+            <!-- IF production.DEUTERIUM --><div><div style="left: 0px; position: absolute;">{L_sys_deuterium}</div><div class="fr">{production.DEUTERIUM_REST}</div></div><!-- ENDIF -->
           </span>
 
           <span style="position: absolute; bottom: 2px; right: 18px; width: 84%; font-size: 100%; text-align: left;" class="icon_alpha"> <!--  onclick="eco_struc_select_unit({production.ID})" onmouseout="eco_struc_unborder_unit({production.ID})" onmouseover="eco_struc_show_unit_info({production.ID})"> -->
@@ -247,6 +257,9 @@ function eco_struc_unborder_unit(unit_id)
           </span>
 
         </div>
+          <!-- IF production.METAL_REST > 99999999999 || production.CRYSTAL_REST > 9999999999 || production.DEUTERIUM_REST_NUM > 9999999999 -->
+          {$FONT_SIZE}
+          <!-- ENDIF -->
       </td>
 
       <!-- IF (production.S_ROW_COUNT + 1) mod 5 == 0 -->
@@ -260,7 +273,7 @@ function eco_struc_unborder_unit(unit_id)
         name: '{production.NAME}',
         level: '{production.LEVEL}',
         description: '{production.DESCRIPTION}', 
-        price: '{production.PRICE}', 
+        // price: '{production.PRICE}', 
         
         metal: '{production.METAL}',
         crystal: '{production.CRYSTAL}',

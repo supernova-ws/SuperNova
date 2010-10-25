@@ -116,7 +116,19 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
   {
     $now_building = explode(';', $CurrentPlanet['b_building_id']);
     $now_building = explode(',', $now_building[0]);
-    $now_building = $now_building[0];
+    $now_working  = $now_building[0];
+    if($now_building[4] == destroy)
+    {
+      $now_building = 0;
+    }
+    else
+    {
+      $now_building = 1;
+    }
+  }
+  else
+  {
+    $now_working = false;
   }
 
   $fleet_list = flt_get_fleets_to_planet($CurrentPlanet);
@@ -282,26 +294,25 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
           'DESCRIPTION'       => $lang['res']['descriptions'][$Element],
           'LEVEL'             => ($BuildingLevel == 0) ? '' : "{$BuildingLevel}",
 
-          'PRICE'             => GetElementPrice($CurrentUser, $CurrentPlanet, $Element),
           'TIME'              => pretty_time($ElementBuildTime),
+          'DESTROY_TIME'      => pretty_time(GetBuildingTime  ($CurrentUser, $CurrentPlanet, $Element) / 2),
+
+          'PRICE'             => GetElementPrice($CurrentUser, $CurrentPlanet, $Element),
+          'RESOURCES_LEFT'    => GetRestPrice($CurrentUser, $CurrentPlanet, $Element),
+
           'METAL'             => $build_price['metal'],
           'CRYSTAL'           => $build_price['crystal'],
           'DEUTERIUM'         => $build_price['deuterium'],
+          'DESTROY_METAL'     => $destroy_price['metal'],
+          'DESTROY_CRYSTAL'   => $destroy_price['crystal'],
+          'DESTROY_DEUTERIUM' => $destroy_price['deuterium'],
 
           'METAL_REST'        => pretty_number($CurrentPlanet['metal']     + $fleet_list['own']['total'][901] - $build_price['metal'], false, true),
           'CRYSTAL_REST'      => pretty_number($CurrentPlanet['crystal']   + $fleet_list['own']['total'][902] - $build_price['crystal'], false, true),
           'DEUTERIUM_REST'    => pretty_number($CurrentPlanet['deuterium'] + $fleet_list['own']['total'][903] - $build_price['deuterium'], false, true),
-/*
-          'METAL'             => $build_price['metal'],
-          'CRYSTAL'           => $build_price['crystal'],
-          'DEUTERIUM'         => $build_price['deuterium'],
-*/
-          'RESOURCES_LEFT'    => GetRestPrice($CurrentUser, $CurrentPlanet, $Element),
-
-          'DESTROY_METAL'     => $destroy_price['metal'],
-          'DESTROY_CRYSTAL'   => $destroy_price['crystal'],
-          'DESTROY_DEUTERIUM' => $destroy_price['deuterium'],
-          'DESTROY_TIME'      => pretty_time(GetBuildingTime  ($CurrentUser, $CurrentPlanet, $Element) / 2),
+          'METAL_REST_NUM'    => $CurrentPlanet['metal']     + $fleet_list['own']['total'][901] - $build_price['metal'],
+          'CRYSTAL_REST_NUM'  => $CurrentPlanet['crystal']   + $fleet_list['own']['total'][902] - $build_price['crystal'],
+          'DEUTERIUM_REST_NUM'=> $CurrentPlanet['deuterium'] + $fleet_list['own']['total'][903] - $build_price['deuterium'],
 
           'METAL_BALANCE'     => $caps['metal_perhour'][$Element],
           'CRYSTAL_BALANCE'   => $caps['crystal_perhour'][$Element],
@@ -330,6 +341,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
     'planet_field_current' => $CurrentPlanet['field_current'],
     'planet_field_max'     => $CurrentPlanet['field_max'] + ($CurrentPlanet[$resource[33]] * 5),
     'field_libre'          => $CurrentPlanet['field_max'] + ($CurrentPlanet[$resource[33]] * 5) - $CurrentPlanet['field_current'],
+    'NOW_WORKING'          => $now_working,
     'NOW_BUILDING'         => $now_building,
     'PAGE_HINT'            => $lang['eco_bld_page_hint'],
 
