@@ -257,9 +257,6 @@ function eco_struc_unborder_unit(unit_id)
           </span>
 
         </div>
-          <!-- IF production.METAL_REST > 99999999999 || production.CRYSTAL_REST > 9999999999 || production.DEUTERIUM_REST_NUM > 9999999999 -->
-          {$FONT_SIZE}
-          <!-- ENDIF -->
       </td>
 
       <!-- IF (production.S_ROW_COUNT + 1) mod 5 == 0 -->
