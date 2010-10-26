@@ -6,7 +6,7 @@
 
 <div id="log_main">
   <div id="log_title">{L_log_reg} - {L_sys_universe} "{C_game_name}"</div>
-  <div id="log_description">{L_log_reg_text0} <a href="{C_rules_url}"><u><font color="red">{L_reg_with_rules}</font></u></a>. {L_log_reg_text1}</div>
+  <div id="log_description">{L_log_reg_text0} <a href="{C_url_rules}"><u><font color="red">{L_reg_with_rules}</font></u></a>. {L_log_reg_text1}</div>
 
   <form name="registerForm" method="POST" action="" onsubmit="changeAction('register');" >
     <input type="hidden" name="id_ref" value="{id_ref}">
@@ -62,7 +62,7 @@
         <tr>
           <th colspan=2>
             <input type="hidden" name="language" value="ru">
-            <input name="register" type="checkbox" value="1" /> {L_reg_i_agree} <a href="{C_rules_url}"><u><font color="red">{L_reg_with_rules}</font></u></a>
+            <input name="register" type="checkbox" value="1" /> {L_reg_i_agree} <a href="{C_url_rules}"><u><font color="red">{L_reg_with_rules}</font></u></a>
           </th>
         </tr>
       </tbody>

@@ -157,9 +157,6 @@ $lang = array_merge($lang, array(
   'adm_opt_title'             => "Настройки Вселенной",
   'adm_opt_game_settings'     => "Параметры Вселенной",
   'adm_opt_game_name'         => "Название Вселенной",
-  'adm_opt_game_gspeed'       => "Скорость игры",
-  'adm_opt_game_fspeed'       => "Скорость флота",
-  'adm_opt_game_pspeed'       => "Скорость добычи ресурсов",
   
   'adm_opt_speed'             => "Скорость",
   'adm_opt_game_gspeed'       => "Игры",
@@ -169,6 +166,7 @@ $lang = array_merge($lang, array(
   'adm_opt_main_not_counted'  => "(не считая главную планету)",
   'adm_opt_game_speed_normal' => "(1&nbsp;-&nbsp;нормальная)",
   'adm_opt_game_forum'        => "Адрес форума",
+  'adm_opt_game_dark_matter'  => "Ссылка &quot;Добыть ТМ&quot;",
   'adm_opt_game_copyrigh'     => "Copyright",
   'adm_opt_game_online'       => "Отключить игру. Пользователи увидят следующее сообщение:",
   'adm_opt_game_offreaso'     => "Сообщение",

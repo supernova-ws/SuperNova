@@ -20,7 +20,7 @@
       <div align="left" class="ofi_dark_matter_hint">{L_ofi_dark_matter_hint}</div>
       </div>
     </th>
-    <th width="80" colspan="2" ><A HREF="darkmather.php" class="ofi_get_dark_matter">{L_ofi_dark_matter_get}</A></th >
+    <th width="80" colspan="2" ><A HREF="dark_matter.php" class="ofi_get_dark_matter">{L_ofi_dark_matter_get}</A></th >
   </tr>
 
   <tr>

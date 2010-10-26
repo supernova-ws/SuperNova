@@ -21,7 +21,7 @@ if(!defined('INIT'))
   include_once('init.php');
 }
 
-$db_last_version = 21;
+$db_last_version = 22;
 $config->db_loadItem('db_version');
 if($config->db_version == $db_last_version)
 {
@@ -308,6 +308,10 @@ switch(intval($config->db_version))
     upd_log_version_update();
     upd_check_key('game_noob_points', 5000, true);
     upd_check_key('game_noob_factor', 5, true);
+    upd_check_key('url_forum', $config->forum_url, !$config->url_forum);
+    upd_check_key('url_rules', $config->rules_url, !$config->url_rules);
+    upd_check_key('url_dark_matter', '/dark_matter_get.php', !$config->url_dark_matter);
+    doquery("DELETE FROM {{config}} WHERE `config_name` IN ('forum_url', 'rules_url');");
   //$new_version = 22;
 };
 upd_log_message('Upgrade complete.');

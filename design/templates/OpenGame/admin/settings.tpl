@@ -112,12 +112,16 @@
   
     <tr><td class="c" colspan="2">{L_adm_opt_links}</td></tr>
     <tr>
-      <th>{L_adm_opt_game_forum}<br></th>
-      <th><input name="forum_url" size="53" maxlength="254" value="{C_forum_url}" type="text"></th>
+      <th>{L_adm_opt_game_rules}</a></th>
+      <th><input name="url_rules" size="53" maxlength="254" value="{C_url_rules}" type="text"></th>
     </tr>
     <tr>
-      <th>{L_adm_opt_game_rules}</a></th>
-      <th><input name="rules_url" size="53" maxlength="254" value="{C_rules_url}" type="text"></th>
+      <th>{L_adm_opt_game_forum}<br></th>
+      <th><input name="url_forum" size="53" maxlength="254" value="{C_url_forum}" type="text"></th>
+    </tr>
+    <tr>
+      <th>{L_adm_opt_game_dark_matter}<br></th>
+      <th><input name="url_dark_matter" size="53" maxlength="254" value="{C_url_dark_matter}" type="text"></th>
     </tr>
 
     <tr><td class="c" colspan="2">{L_adm_opt_game_defaults}</td></tr>

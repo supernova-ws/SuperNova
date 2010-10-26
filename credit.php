@@ -18,7 +18,7 @@ includeLang('credit');
 
 $parse   = $lang;
 $parse['admin_email'] = $config->game_adminEmail;
-$parse['forum_url'] = '/phpBB3/';
+$parse['url_forum'] = '/phpBB3/';
 
 display(parsetemplate(gettemplate('credit_body'), $parse), $lang['cred_credit'], false, "", false, false);
 ?>

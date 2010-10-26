@@ -185,7 +185,6 @@ else
     'id_ref'     => $id_ref,
     'referral'   => "?id_ref=$id_ref",
     'servername' => $config->game_name,
-    'forum_url'  => $config->forum_url,
   ));
 
   display(parsetemplate($template), $lang['registry'], false, '', false, false);

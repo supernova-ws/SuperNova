@@ -54,14 +54,12 @@ elseif(!empty($_COOKIE[$config->COOKIE_NAME]))
   die();
 }
 
-// $parse = $lang;
 $query = doquery('SELECT username FROM {{table}} ORDER BY register_time DESC', 'users', true);
 $parse['last_user'] = $query['username'];
 $query = doquery("SELECT COUNT(DISTINCT(id)) FROM {{table}} WHERE onlinetime>" . (time()-900), 'users', true);
 $parse['online_users'] = $query[0];
 $parse['users_amount'] = $config->users_amount;
 $parse['servername'] = $config->game_name;
-$parse['forum_url'] = $config->forum_url;
 $parse['PasswordLost'] = $lang['PasswordLost'];
 if($id_ref)
 {

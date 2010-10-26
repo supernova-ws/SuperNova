@@ -34,7 +34,7 @@
 			<P><FONT SIZE="2" COLOR="#FFFFFF">Наша администрация не будет к вам безразлична<BR>
 			  Мы будем строги но справедливы. </FONT></P>
 			<P><FONT SIZE="2" COLOR="#FFFFFF">Все вопросы вы можете задать на {admin_email} или же на 
-			  нашем <A HREF="{forum_url}">форуме</A></FONT></P>
+			  нашем <A HREF="{url_forum}">форуме</A></FONT></P>
 			</TD>
 		</TR>
 	  </TABLE>

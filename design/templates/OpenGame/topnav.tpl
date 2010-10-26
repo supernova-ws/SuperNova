@@ -29,7 +29,7 @@ input.frameles
     <td class="header" align="center" width="150"><A HREF="resources.php"><img src="{dpath}images/kristall.gif" border="0" height="22" width="42"></A></td>
     <td class="header" align="center" width="150"><A HREF="resources.php"><img src="{dpath}images/deuterium.gif" border="0" height="22" width="42"></A></td>
     <td class="header" align="center" width="150"><A HREF="resources.php"><img src="{dpath}images/energie.gif" border="0" height="22" width="42"></A></td>
-    <td class="header" align="center" width="140"><A HREF="resources.php"><img src="{dpath}images/dm_klein_2.jpg" border="0" height="22" width="42"></A></td>
+    <td class="header" align="center" width="140"><A HREF="dark_matter.php"><img src="{dpath}images/dm_klein_2.jpg" border="0" height="22" width="42"></A></td>
     <td class="header" align="center" width="140"><A HREF="messages.php"><img src="{dpath}images/message.gif" border="0" height="22" width="42"></A></td>
   </tr>
   <tr class="header">
@@ -38,7 +38,7 @@ input.frameles
     <td class="header" align="center" width="150"><A HREF="resources.php">{L_sys_crystal}</A></td>
     <td class="header" align="center" width="150"><A HREF="resources.php">{L_sys_deuterium}</A></td>
     <td class="header" align="center" width="150"><A HREF="resources.php">{L_sys_energy}</A></td>
-    <td class="header" align="center" width="140"><A HREF="resources.php">{L_sys_dark_matter}</A></td>
+    <td class="header" align="center" width="140"><A HREF="dark_matter.php">{L_sys_dark_matter}</A></td>
     <td class="header" align="center" width="140"><A HREF="messages.php">{L_Message}</A></td>
   </tr>
   <tr class="header" align=center valign=middle><form name='ressources'> <center>

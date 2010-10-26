@@ -13,7 +13,7 @@
 
     {ADMIN_LINK}
     <tr><th>{L_m_h_rules}</th></tr>
-    <tr><td><a href="{C_rules_url}">{L_sys_game_rules}</a></td></tr>
+    <tr><td><a href="{C_url_rules}">{L_sys_game_rules}</a></td></tr>
   <!--  <tr><td title="{m_faq_hint}"><a href="http://forum.supernova.ws/phpBB3/viewtopic.php?f=3&t=333">{m_faq}</a></td></tr> -->
   <!--  <tr><td><a href="faq.php">{m_faq}</a></td></tr> -->
     <tr>
@@ -44,7 +44,7 @@
     <tr><td><a href="galaxy.php?mode=0" id="lm_universe">{L_sys_universe}</a></td></tr>
 
     <tr><th>{L_m_communication}</th></tr>
-    <tr><td><a href="{forum_url}" id="lm_forum">{L_m_forum}</a></td></tr>
+    <tr><td><a href="{C_url_forum}" id="lm_forum">{L_m_forum}</a></td></tr>
     <tr><td><a href="messages.php">{L_Messages}</a></td></tr>
     <tr><td><a href="chat.php" id="lm_chat">{L_Chat}</a></td></tr>
     <tr><td><a href="alliance.php">{L_Alliance}</a></td></tr>

@@ -34,8 +34,9 @@ if ($_POST['save'])
   $config->fleet_speed             = floatval( $_POST['fleet_speed'] );
   $config->resource_multiplier     = floatval( $_POST['resource_multiplier'] );
   $config->urlaubs_modus_erz       = $_POST['urlaubs_modus_erz'] ? 1 : 0;
-  $config->forum_url               = $_POST['forum_url'];
-  $config->rules_url               = $_POST['rules_url'];
+  $config->url_forum               = $_POST['url_forum'];
+  $config->url_rules               = $_POST['url_rules'];
+  $config->url_dark_matter         = $_POST['url_dark_matter'];
   $config->game_disable            = $_POST['game_disable'] ? 1 : 0;
   $config->game_disable_reason     = $_POST['game_disable_reason'];
 
