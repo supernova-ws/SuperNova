@@ -69,8 +69,8 @@ foreach (array_merge($sn_groups['fleet'], array(503)) as $ship_id)
   $FleetDBArray          .= "{$ship_id},{$ship_count};";
   $FleetSubQRY           .= "`{$sn_data[$ship_id]['name']}` = `{$sn_data[$ship_id]['name']}` - {$ship_count}, ";
 }
-$target_planet_type = $target_planet_type == PT_DEBRIS ? PT_PLANET : $target_planet_type;
-$TargetRow = doquery( "SELECT * FROM {{planets}} WHERE `galaxy` = '{$target_galaxy}' AND `system` = '{$target_system}' AND `planet` = '{$target_planet}' AND `planet_type` = '{$target_planet_type}' LIMIT 1;", '', true);
+$target_planet_check = $target_planet_type == PT_DEBRIS ? PT_PLANET : $target_planet_type;
+$TargetRow = doquery( "SELECT * FROM {{planets}} WHERE `galaxy` = '{$target_galaxy}' AND `system` = '{$target_system}' AND `planet` = '{$target_planet}' AND `planet_type` = '{$target_planet_check}' LIMIT 1;", '', true);
 
 $cant_attack = flt_can_attack($TargetRow, $target_mission, $fleet_array);
 if($cant_attack)
