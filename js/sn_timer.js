@@ -14,7 +14,7 @@ SuperNova JavaScript timer system
 
 Object structure:
   'id'          - timer ID (name)
-  'type'        - timer type: 0 - time countdown; 1 - counter; 2 - date&time
+  'type'        - timer type: 0 - time countdown; 1 - counter; 2 - date&time; 3 - new counter
   'active'      - is timer active?
   'start_time'  - start time
   'options'     - timer options
@@ -47,11 +47,11 @@ var sn_timers = new Array();
 function sn_timer() {
   var HTML, HTML_timer, HTML_finish;
 
-  activeTimers = 0;
-  local_time = new Date();
-  time_now = new Date();
+  var activeTimers = 0;
+  var local_time = new Date();
+  var time_now = new Date();
   time_now.setTime(local_time.valueOf() + timeDiff);
-  timestamp = Math.round(time_now.valueOf() / 1000);
+  var timestamp = Math.round(time_now.valueOf() / 1000);
 
   for(timerID in sn_timers){
     timer = sn_timers[timerID];
@@ -105,8 +105,22 @@ function sn_timer() {
         if(HTML != null)
           HTML.innerHTML = infoText;
 
-        break;
+      break;
 
+      case 1: // time-independent counter
+        var new_value = timer_options[0] + Math.floor(timer_options[1] * (timestamp - timer['start_time']) / 36) / 100;
+        printData = sn_format_number(new_value, 2, 'white', timer_options[2]);
+        if(new_value >= timer_options[2])
+        {
+          timer['active'] = false;
+        };
+
+        if(HTML != null)
+          HTML.innerHTML = printData;
+        else
+          timer['active'] = false;
+      break;
+/*
       case 1: // counter
         if(timer_options[0] >= timer_options[2]){
           timer['active'] = false;
@@ -121,8 +135,8 @@ function sn_timer() {
           HTML.innerHTML = printData;
         else
           timer['active'] = false;
-        break;
-
+      break;
+*/
       case 2: // date&time
         printData = '';
 
@@ -139,7 +153,8 @@ function sn_timer() {
           HTML.innerHTML = printData;
         else
           timer['active'] = false;
-        break;
+      break;
+
     }
     activeTimers++;
   }

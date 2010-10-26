@@ -58,7 +58,7 @@ input.frameles
     <td class="header" align="center" width="150"><font color="#00ff00">{ENERGY_MAX}</font></td>
   </tr>
 </tbody></table>
-
+<div id="debug" style="text-align: left"></div>
 <script LANGUAGE='JavaScript'><!--
   sn_timers.unshift({id: 'top_metal', type: 1, active: true, start_time: {TIME_NOW}, options: [{TOPNAV_METAL}, {TOPNAV_METAL_PERHOUR}, {TOPNAV_METAL_MAX}]});
   sn_timers.unshift({id: 'top_crystal', type: 1, active: true, start_time: {TIME_NOW}, options: [{TOPNAV_CRYSTAL}, {TOPNAV_CRYSTAL_PERHOUR}, {TOPNAV_CRYSTAL_MAX}]});

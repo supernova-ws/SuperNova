@@ -5,11 +5,20 @@
     </center>
 
     <script type="text/javascript"><!--
-      var serverTime = new Date('{SERVER_TIME}' * 1000);
-      var localTime = new Date();
-      var timeDiff = serverTime.valueOf() - localTime.valueOf();
-      
-      sn_timer();
+      var timeDiff = new Date('{SERVER_TIME}' * 1000).valueOf() - new Date().valueOf();
+
+      jQuery(document).ready(function() 
+        {
+          jQuery.post("../../../time_probe.php", function(xml) 
+            {
+              var result = jQuery("time", xml).text();
+              timeDiff = new Date(result * 1000).valueOf() - new Date().valueOf();
+            } 
+          );
+
+          sn_timer();
+        }
+      );
     --></script> 
   </body>
 </html>
