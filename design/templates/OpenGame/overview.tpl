@@ -270,9 +270,21 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
       </tr>
 
       <script type="text/javascript"><!--
-        sn_timers.unshift({id: 'ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}', type: 0, active: true, start_time: {TIME_NOW}, options: ['{L_sys_fleet_arrived}',[
-          ['{fleets.ID}', '', {fleets.OV_LEFT}, '0']
-        ]]});
+        sn_timers.unshift(
+          {
+            id: 'ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}', 
+            type: 0, 
+            active: true, 
+            start_time: {TIME_NOW}, 
+            options: 
+              {msg_done: '{L_sys_fleet_arrived}',
+                que:
+                  [
+                    ['{fleets.ID}', '', {fleets.OV_LEFT}, '0']
+                  ]
+              }
+          }
+        );
       --></script>
     <!-- ENDIF -->
     <!-- BEGINELSE fleets -->

@@ -4,14 +4,21 @@
   fleet.php
   Fleet manager
 
-  V3.1 copyright (c) 2009 by Gorlum for http://supernova.ws
-    [*] separate independent chunks in INC-files
-  V3.0st copyright (c) 2010 by Gorlum for http://supernova.ws
-    [*] Security checked & tested
+  V3.3 copyright (c) 2009-2010 by Gorlum for http://supernova.ws
+    [~] Imploded fleet_back.php code
+
+  V3.2 copyright (c) 2009-2010 by Gorlum for http://supernova.ws
+    [~] separate independent chunks in INC-files
+
+  V3.1 copyright (c) 2009-2010 by Gorlum for http://supernova.ws
+    [~] Security checked & tested
+
   V3.0 Updated by Gorlum Sep 2009
-    [*] extracting templates from code
-    [*] some redundant code cleaning
+    [!] extracting templates from code
+    [~] some redundant code cleaning
+
   V2.0 Updated by Chlorel. 16 Jan 2008 (String extraction, bug corrections, code uniformisation
+
   V1.0 Created by Perberos. All rights reversed (C) 2006
 */
 
@@ -67,6 +74,42 @@ if($MaxExpeditions){
 };
 
 $SpeedFactor = get_fleet_speed();
+
+if($_POST['return_fleet'])
+{
+  $fleet_page = 0;
+
+  $fleetid  = intval($_POST['fleetid']);
+  if($fleetid)
+  {
+    $FleetRow = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = '{$fleetid}';", '', true);
+
+    if ($FleetRow['fleet_owner'] == $user['id'] && $FleetRow['fleet_mess'] == 0)
+    {
+      if ($FleetRow['fleet_end_stay'] != 0)
+      {
+        if ($FleetRow['fleet_start_time'] > $time_now)
+        {
+          $CurrentFlyingTime = $time_now - $FleetRow['start_time'];
+        }
+        else
+        {
+          $CurrentFlyingTime = $FleetRow['fleet_start_time'] - $FleetRow['start_time'];
+        }
+      }
+      else
+      {
+        $CurrentFlyingTime = $time_now - $FleetRow['start_time'];
+      }
+      $ReturnFlyingTime  = $CurrentFlyingTime + $time_now + 1;
+
+      $QryUpdateFleet  = "UPDATE {{fleets}} SET `fleet_start_time` = '{$time_now}', `fleet_end_stay` = '0', ";
+      $QryUpdateFleet .= "`fleet_end_time` = '{$ReturnFlyingTime}', `fleet_target_owner` = '{$user['id']}', `fleet_mess` = '1' ";
+      $QryUpdateFleet .= "WHERE `fleet_id` = '{$fleetid}';";
+      doquery($QryUpdateFleet);
+    }
+  }
+}
 
 switch ($fleet_page)
 {
@@ -187,19 +230,27 @@ $parse['system'] = $system;
 $parse['planet'] = $planet;
 $parse['planet_type'] = $planet_type;
 
-$time_now = time();
+switch($fleet_page)
+{
+  case 1:
+    include('includes/fleet/flt_page1.inc');
+  break;
 
-if (!$fleet_page) {
-  include('includes/fleet/flt_page0.inc');
-}elseif ($fleet_page==1){
-  include('includes/fleet/flt_page1.inc');
-}elseif ($fleet_page==2){
-  include('includes/fleet/flt_page2.inc');
-}elseif ($fleet_page==3){
-  include('includes/fleet/flt_page3.inc');
-}elseif ($fleet_page==4){
-  include('includes/fleet/flt_page4.inc');
-}else{
-  message($lang['sys_hackattempt'], $lang['sys_error'], "fleet." . $phpEx, 5);
-};
+  case 2:
+    include('includes/fleet/flt_page2.inc');
+  break;
+
+  case 3:
+    include('includes/fleet/flt_page3.inc');
+  break;
+
+  case 4:
+    include('includes/fleet/flt_page4.inc');
+  break;
+
+  default:
+    include('includes/fleet/flt_page0.inc');
+  break;
+}
+
 ?>

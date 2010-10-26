@@ -60,9 +60,9 @@ input.frameles
 </tbody></table>
 <div id="debug" style="text-align: left"></div>
 <script LANGUAGE='JavaScript'><!--
-  sn_timers.unshift({id: 'top_metal', type: 1, active: true, start_time: {TIME_NOW}, options: [{TOPNAV_METAL}, {TOPNAV_METAL_PERHOUR}, {TOPNAV_METAL_MAX}]});
-  sn_timers.unshift({id: 'top_crystal', type: 1, active: true, start_time: {TIME_NOW}, options: [{TOPNAV_CRYSTAL}, {TOPNAV_CRYSTAL_PERHOUR}, {TOPNAV_CRYSTAL_MAX}]});
-  sn_timers.unshift({id: 'top_deuterium', type: 1, active: true, start_time: {TIME_NOW}, options: [{TOPNAV_DEUTERIUM}, {TOPNAV_DEUTERIUM_PERHOUR}, {TOPNAV_DEUTERIUM_MAX}]});
+  sn_timers.unshift({id: 'top_metal', type: 1, active: true, start_time: {TIME_NOW}, options: {start_value: {TOPNAV_METAL}, per_second: {TOPNAV_METAL_PERHOUR} / 3600, max_value: {TOPNAV_METAL_MAX}}});
+  sn_timers.unshift({id: 'top_crystal', type: 1, active: true, start_time: {TIME_NOW}, options: {start_value: {TOPNAV_CRYSTAL}, per_second: {TOPNAV_CRYSTAL_PERHOUR} / 3600, max_value: {TOPNAV_CRYSTAL_MAX}}});
+  sn_timers.unshift({id: 'top_deuterium', type: 1, active: true, start_time: {TIME_NOW}, options: {start_value: {TOPNAV_DEUTERIUM}, per_second: {TOPNAV_DEUTERIUM_PERHOUR} / 3600, max_value: {TOPNAV_DEUTERIUM_MAX}}});
 
   sn_timers.unshift({id: 'top_time', type: 2, active: true, start_time: {TIME_NOW}, options: 2});
 // --></script>

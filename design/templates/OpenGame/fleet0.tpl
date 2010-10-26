@@ -76,9 +76,9 @@ var speed_factor   = {speed_factor};
       </th>
       <th>
         <!-- IF fleets.MESSAGE == 0 -->
-          <form action="fleetback.php" method="post" style="margin: 0">
+          <form action="" method="post">
             <input name="fleetid" value="{fleets.ID}" type="hidden">
-            <input value="{L_fl_back_to_ttl}" type="submit" name="send">
+            <input value="{L_fl_back_to_ttl}" type="submit" name="return_fleet">
           </form>
           <!-- IF fleets.MISSION == 1 || fleets.MISSION == 2 -->
             <form action="fleet.php?fleet_page=4" method="post" style="margin: 0">
@@ -92,12 +92,12 @@ var speed_factor   = {speed_factor};
       </th>
     </tr>
     <script type="text/javascript"><!--
-      sn_timers.unshift({id: 'fleet_timer_start{fleets.ID}', type: 0, active: true, start_time: {TIME_NOW}, options: ['{L_sys_fleet_arrived}',[
+      sn_timers.unshift({id: 'fleet_timer_start{fleets.ID}', type: 0, active: true, start_time: {TIME_NOW}, options: { msg_done: '{L_sys_fleet_arrived}', que: [
         ['{fleets.ID}', '', {fleets.START_LEFT}, '0']
-      ]]});
-      sn_timers.unshift({id: 'fleet_timer_end{fleets.ID}', type: 0, active: true, start_time: {TIME_NOW}, options: ['{L_sys_fleet_arrived}',[
+      ]}});
+      sn_timers.unshift({id: 'fleet_timer_end{fleets.ID}', type: 0, active: true, start_time: {TIME_NOW}, options: { msg_done: '{L_sys_fleet_arrived}', que: [
         ['{fleets.ID}', '', {fleets.END_LEFT}, '0']
-      ]]});
+      ]}});
     --></script>
   <!-- BEGINELSE fleets -->
     <tr><th colspan="8">{L_fl_no_flying_fleets}</th></tr>
