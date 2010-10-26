@@ -108,7 +108,7 @@ var uni_system = "{system}";
               <!-- ELSEIF galaxyrow.PLANET_ACTIVITY < 60 -->
                 <!-- DEFINE $PLANET_ACTIVITY = '{galaxyrow.PLANET_ACTIVITY}' -->
               <!-- ELSE -->
-
+                <!-- DEFINE $PLANET_ACTIVITY = '' -->
               <!-- ENDIF -->
             <!-- ENDIF -->
 
