@@ -19,7 +19,7 @@ function chance ($percent) {
 function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
   global $config, $user;
 
-  $ClassicBase           = 163;
+  //$ClassicBase           = 163;
   if (!$HomeWorld) {
     if(chance(60)){
       $Average          = array ( 64, 68, 73,173,167,155,144,150,159,101, 98,105,110, 84,101);
@@ -44,8 +44,8 @@ function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
   } else {
     $PlanetFields     = $config->initial_fields;
   }
-  $SettingSize          = $config->initial_fields;
-  $PlanetFields          = ($PlanetFields / $ClassicBase) * $config->initial_fields;
+//  $SettingSize          = $config->initial_fields;
+//  $PlanetFields          = ($PlanetFields / $ClassicBase) * $config->initial_fields;
   $PlanetFields          = floor($PlanetFields);
 
   $PlanetSize           = ($PlanetFields ^ (14 / 1.5)) * 75;
@@ -55,7 +55,7 @@ function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
   return $return;
 }
 
-function CreateOnePlanetRecord($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetName = '', $metal = 0, $crystal = 0, $deuterium = 0, $HomeWorld = false) {
+function CreateOnePlanetRecord($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetName = '', $HomeWorld = false) {
   global $lang;
 
   // Avant tout, on verifie s'il existe deja une planete a cet endroit
@@ -72,9 +72,9 @@ function CreateOnePlanetRecord($Galaxy, $System, $Position, $PlanetOwnerID, $Pla
   if (!$PlanetExist) {
     $planet                      = PlanetSizeRandomiser ($Position, $HomeWorld);
     $planet['diameter']          = ($planet['field_max'] ^ (14 / 1.5)) * 75 ;
-    $planet['metal']             = BUILD_METAL + $metal;
-    $planet['crystal']           = BUILD_CRISTAL + $crystal;
-    $planet['deuterium']         = BUILD_DEUTERIUM + $deuterium;
+    $planet['metal']             = BUILD_METAL;
+    $planet['crystal']           = BUILD_CRISTAL;
+    $planet['deuterium']         = BUILD_DEUTERIUM;
     $planet['metal_perhour']     = $config->metal_basic_income;
     $planet['crystal_perhour']   = $config->crystal_basic_income;
     $planet['deuterium_perhour'] = $config->deuterium_basic_income;
@@ -143,6 +143,7 @@ function CreateOnePlanetRecord($Galaxy, $System, $Position, $PlanetOwnerID, $Pla
       $OwnerName = doquery("SELECT `username` FROM {{users}} WHERE `id` = {$PlanetOwnerID};", '', true);
       $planet['name'] = "{$OwnerName['username']} {$planet['name']}";
     }
+    pdump($HomeWorld, '$HomeWorld');
 
     $QryInsertPlanet  = "INSERT INTO `{{table}}` SET ";
     $QryInsertPlanet .= "`name` = '".              $planet['name']              ."', ";
@@ -170,16 +171,12 @@ function CreateOnePlanetRecord($Galaxy, $System, $Position, $PlanetOwnerID, $Pla
     doquery( $QryInsertPlanet, 'planets');
 
     // On recupere l'id de planete nouvellement créé
-    $QrySelectPlanet  = "SELECT `id` ";
-    $QrySelectPlanet .= "FROM `{{table}}` ";
-    $QrySelectPlanet .= "WHERE ";
-    $QrySelectPlanet .= "`galaxy` = '".   $planet['galaxy']   ."' AND ";
-    $QrySelectPlanet .= "`system` = '".   $planet['system']   ."' AND ";
-    $QrySelectPlanet .= "`planet` = '".   $planet['planet']   ."' AND ";
-    $QrySelectPlanet .= "`id_owner` = '". $planet['id_owner'] ."';";
-    $GetPlanetID      = doquery( $QrySelectPlanet , 'planets', true);
+    $QrySelectPlanet  = "SELECT `id` FROM `{{planets}}` WHERE ";
+    $QrySelectPlanet .= "`galaxy` = '{$planet['galaxy']}' AND `system` = '{$planet['system']}' AND `planet` = '{$planet['planet']}' AND ";
+    $QrySelectPlanet .= "`id_owner` = '{$planet['id_owner']}';";
+    $GetPlanetID      = doquery( $QrySelectPlanet , '', true);
 
-    $RetValue = true;
+    $RetValue = $GetPlanetID['id'];
   } else {
 
     $RetValue = false;
@@ -187,4 +184,5 @@ function CreateOnePlanetRecord($Galaxy, $System, $Position, $PlanetOwnerID, $Pla
 
   return $RetValue;
 }
+
 ?>

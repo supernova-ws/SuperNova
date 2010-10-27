@@ -151,13 +151,14 @@ if ($_POST['submit'])
           'LastSettedSystemPos' => $system,
           'LastSettedPlanetPos' => $planet
         ));
+        $new_planet = CreateOnePlanetRecord($galaxy, $system, $planet, $user['id'], $planet_name, true);
         break;
       }
       $planet += 3;
     }
 
-    $new_planet = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}' LIMIT 1;", '', true);
-    $new_planet = $new_planet['id'];
+//    $new_planet = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}' LIMIT 1;", '', true);
+//    $new_planet = $new_planet['id'];
     doquery("UPDATE {{users}} SET `id_planet` = '{$new_planet}', `current_planet` = '{$new_planet}', `galaxy` = '{$galaxy}', `system` = '{$system}', `planet` = '{$planet}' WHERE `id` = '{$user['id']}' LIMIT 1;");
 
     $config->db_saveItem('users_amount', $config->users_amount+1);
