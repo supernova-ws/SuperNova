@@ -54,7 +54,7 @@ $lang['show']				= "Показывать";
 $lang['write_a_messege']		= "Написать сообщение";
 $lang['spy']				= "Шпионаж";
 $lang['add_to_buddylist']		= "Добавить в друзья";
-$lang['attack_with_missile']		= "Атаковать межпланетными ракетами";
+$lang['attack_with_missile']		= "Ракетная атака";
 $lang['show_report']			= "Просмотреть отчёт";
 
 //	
