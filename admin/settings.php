@@ -38,7 +38,7 @@ if ($_POST['save'])
   $config->url_rules               = $_POST['url_rules'];
   $config->url_dark_matter         = $_POST['url_dark_matter'];
   $config->game_disable            = $_POST['game_disable'] ? 1 : 0;
-  $config->game_disable_reason     = $_POST['game_disable_reason'];
+  $config->game_disable_reason     = strip_tags($_POST['game_disable_reason']);
 
   $config->game_default_language   = $_POST['game_default_language'];
   $config->game_default_skin       = $_POST['game_default_skin'];
