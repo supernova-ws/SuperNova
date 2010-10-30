@@ -517,15 +517,15 @@ function pretty_number($n, $floor = true, $color = false, $limit = 0) {
     }
     else
     {
-      if($n>=-$color)
+      if($n>-$color)
         $ret = colorGreen($ret);
-      elseif($n<-$color)
+      elseif($n<=-$color)
         $ret = colorRed($ret);
     }
   }
   elseif($color)
   {
-    if($n>0)
+    if($n>=0)
       $ret = colorGreen($ret);
     elseif($n<0)
       $ret = colorRed($ret);

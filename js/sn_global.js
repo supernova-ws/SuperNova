@@ -71,7 +71,7 @@ function sn_format_number(number, precission, color, max)
   {
     if(max)
     {
-      if(-number < -max)
+      if(-number <= -max)
       {
         ret_val = '<font color="red">' + ret_val + '</font>';
       }
