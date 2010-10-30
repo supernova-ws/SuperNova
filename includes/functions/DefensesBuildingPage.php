@@ -55,8 +55,8 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
     switch($GET_action){
       case "cancelqueue":
 
-  $d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User cancelling defense: ' . $CurrentPlanet['b_hangar_id'];
-  $debug->warning($d_m,'Canceling Hangar Que', 300);
+          $d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User cancelling defense: ' . $CurrentPlanet['b_hangar_id'];
+          $debug->warning($d_m,'Canceling Hangar Que', 300);
 
           $ElementQueue = explode(';', $CurrentPlanet['b_hangar_id']);
           foreach($ElementQueue as $ElementLine => $Element) {
@@ -103,10 +103,10 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
         $Count = MAX_FLEET_OR_DEFS_PER_ROW;
       }
 
-  if ($Element==409) {
-    $d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User building Planet Defense: ' . dump($POST_fmenge);
-    $debug->warning($d_m,'Building Planet Defense', 300);
-  }
+      if ($Element==409) {
+        $d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User building Planet Defense: ' . dump($POST_fmenge);
+        $debug->warning($d_m,'Building Planet Defense', 300);
+      }
 
       if ($Count AND $Element) {
         // On verifie si on a les technologies necessaires a la construction de l'element
@@ -117,9 +117,11 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
           switch ($Element) {
             case 502:
               $Count = min($SiloSpace, $Count, $MaxElements);
+              $SiloSpace -= $Count;
               break;
             case 503:
               $Count = min(floor($SiloSpace/2), $Count, $MaxElements);
+              $SiloSpace -= $Count * 2;
               break;
             case 407:
             case 408:
