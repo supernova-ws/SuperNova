@@ -219,14 +219,18 @@ $lang = array_merge($lang, array(
   'adm_pl_comp_bonus'   => 'Бонус игрока',
   'adm_pl_comp_check'   => 'Проверить',
   'adm_pl_comp_confirm' => 'Подтвердить',
+  'adm_pl_comp_done'    => 'Готово',
+
+  'adm_pl_comp_price'   => 'Стоимость построек',
+  'adm_pl_comp_got'     => 'Будет зачислено',
 
   'adm_pl_com_of_plr'   => 'игрока',
-  'adm_pl_comp_destr'   => 'будет уничтожена.',
-  'adm_pl_comp_got'     => 'будут зачислены на планету',
+  'adm_pl_comp_will_be' => 'будет',
+  'adm_pl_comp_destr'   => 'уничтожена.',
+  'adm_pl_comp_recieve' => 'Указанное количество ресурсов',
+  'adm_pl_comp_recieve2' => 'зачислено на планету',
   
-  'adm_pl_comp_price'   => 'Стоимость построек на ней составляет',
 
-  'adm_pl_comp_done'    => 'Готово',
 
   'adm_pl_comp_err_0' => 'Не найдена уничтожаемая планета',
   'adm_pl_comp_err_1' => 'Планета уже уничтожена',

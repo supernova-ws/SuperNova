@@ -42,23 +42,50 @@
   </table>
 
   <!-- IF CHECK -->
+    <br>
     <table>
       <tr>
-        <td>
-          {L_sys_planet} [{galaxy_src}:{system_src}:{planet_src}] {L_adm_pl_com_of_plr} <b>{username}</b> {L_adm_pl_comp_destr}<br>
-          {L_adm_pl_comp_price} {L_sys_metal} {metal_cost}, {L_sys_crystal} {crystal_cost}, {L_sys_deuterium} {deuterium_cost}<br>
-          {L_sys_metal} {metal_bonus}, {L_sys_crystal} {crystal_bonus}, {L_sys_deuterium} {deuterium_bonus} {L_adm_pl_comp_got} [{galaxy_dst}:{system_dst}:{planet_dst}]<br>
+        <td class=c>{L_sys_planet} [{galaxy_src}:{system_src}:{planet_src}]</td>
+        <td class=c>{L_sys_metal}</td>
+        <td class=c>{L_sys_crystal}</td>
+        <td class=c>{L_sys_deuterium}</td>
+      </tr>
+      <tr align=right>
+        <th align=left>{L_adm_pl_comp_price}</th>
+        <th>{metal_cost}</th>
+        <th>{crystal_cost}</th>
+        <th>{deuterium_cost}</th>
+      </tr>
+      <tr align=right>
+        <th align=left>{L_adm_pl_comp_got} </th>
+        <th>{metal_bonus}</th>
+        <th>{crystal_bonus}</th>
+        <th>{deuterium_bonus}</th>
+      </tr>
+      <tr>
+        <td colspan=4>
+          {L_sys_planet} <b>[{galaxy_src}:{system_src}:{planet_src}]</b> {L_adm_pl_com_of_plr} <b>{username}</b> 
+          <!-- IF CHECK == 1 -->
+            {L_adm_pl_comp_will_be}
+          <!-- ENDIF -->
+          {L_adm_pl_comp_destr}<br>
+  
+          {L_adm_pl_comp_recieve}
+          <!-- IF CHECK == 1 -->
+            {L_adm_pl_comp_will_be}
+          <!-- ENDIF -->
+          {L_adm_pl_comp_recieve2} <b>[{galaxy_dst}:{system_dst}:{planet_dst}]</b>.
         </td>
       </tr>
 
       <tr>
-        <th>
+        <td colspan=4 class="c" align="center">
           <!-- IF CHECK == 1 -->
           <input type="submit" name="btn_confirm" value="{L_adm_pl_comp_confirm}">
           <!-- ELSEIF CHECK == 2 -->
-          {L_adm_pl_comp_done}
+          <font color="lime">{L_adm_pl_comp_done}</font>
           <!-- ENDIF -->
-        </th>
+        </td>
       </tr>
     </table>
   <!-- ENDIF -->

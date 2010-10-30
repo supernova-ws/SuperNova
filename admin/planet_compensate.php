@@ -62,7 +62,7 @@ if($galaxy_src)
   }
 
   $owner = doquery("SELECT * FROM {{users}} WHERE username like '{$username}'", '', true);
-  if($planet['id_owner'] != $user['id'] || !$username)
+  if($planet['id_owner'] != $owner['id'] || !$username)
   {
     $errors[] = $lang['adm_pl_comp_err_4'];
   }
@@ -92,8 +92,6 @@ if($galaxy_src)
       killer_add_planet($moon);
     }
 
-    pdump($final_cost, "Planet cost");
-
     foreach($sn_groups['resources_loot'] as $resource_id)
     {
       $resource_name = $sn_data[$resource_id]['name'];
@@ -101,8 +99,6 @@ if($galaxy_src)
       $final_cost[$resource_id] = floor($final_cost[$resource_id] * $bonus);
       $template->assign_var("{$resource_name}_bonus", $final_cost[$resource_id]);
     }
-
-    pdump($final_cost, "User will recieve");
 
     if($_GET['btn_confirm'])
     {
@@ -161,7 +157,7 @@ function killer_add_planet($planet)
           }
           $building_cost = floor($base_price * $build_factor);
           $final_cost[$resource_id] += $building_cost;
-          pdump(pretty_number($building_cost), "{$unit}, {$resource_id}, {$base_price}");
+          //pdump(pretty_number($building_cost), "{$unit}, {$resource_id}, {$base_price}");
         }
       }
     }
