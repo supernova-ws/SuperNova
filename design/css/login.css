@@ -5,17 +5,36 @@
       background-image: url(../images/bg-unauthorized.jpg);
       background-repeat: no-repeat;
   }
+
+  #log_skipper {
+    height: 200px;
+  }
+
+#log_title
+{
+  font-size: 20px;
+}
+
+#log_description
+{
+  margin: 20px;
+}
+
+#log_register {
+  margin:20px;
+}
+
+#log_menu {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 }
 
 body {
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
 }
-
-#log_skipper {
-  height: 200px;
-}
-
 
 #log_main, #copyright {
   position: relative;
@@ -67,14 +86,8 @@ body {
   opacity              : 0.9;
 }
 
-#log_title
-{
-  font-size: 20px;
-}
-
 #log_description
 {
-  margin: 20px;
   color:  #b1daf2;
   text-align: justify;
 }
@@ -83,7 +96,6 @@ body {
   font-family:Arial, Helvetica, sans-serif;
   font-size: 16px;
 
-  margin:20px;
   padding: 0.3em;
   text-align: center;
   font-weight: bold;
@@ -123,7 +135,5 @@ body {
 }
 
 #log_menu {
-  padding-top: 10px;
-  padding-bottom: 10px;
   border-top: solid 1px;
 }

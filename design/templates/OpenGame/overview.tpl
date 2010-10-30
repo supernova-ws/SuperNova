@@ -5,36 +5,15 @@
 // fixing bug with sending recycle from planet overview
 // replace sack() with jQuery! Everywhere!!!
 
-function changeSlots(slotsInUse) {
-  var e = document.getElementById('slots');
-  e.innerHTML = slotsInUse;
-}
-
-function setShips(ship, count) {
-  var e = document.getElementById(ship);
-  e.innerHTML = count;
-}
-
 function whenResponse () {
   retVals   = this.response.split("|");
-  Message   = retVals[0];
-  Infos     = retVals[1];
-  retVals   = Infos.split(" ");
-  UsedSlots = retVals[0];
-  SpyProbes = retVals[1];
-  Recyclers = retVals[2];
-  Missiles  = retVals[3];
-  retVals   = Message.split(";");
   CmdCode   = retVals[0];
   strInfo   = retVals[1];
-  document.getElementById("ov_recycle").innerHTML = strInfo;
-//  addToTable("done", "success");
-
-//  var td1text = document.createTextNode(strInfo);
-//  td1.appendChild(td1text);
-//  var spantext = document.createTextNode("done");
-//  spanclass.nodeValue = "success";
-//  span.appendChild(spantext);
+  UsedSlots = retVals[2];
+  SpyProbes = retVals[3];
+  Recyclers = retVals[4];
+  Missiles  = retVals[5];
+  document.getElementById("ov_recycle").innerHTML = retVals[1];
 }
 
 var ajax = new sack();
