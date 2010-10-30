@@ -72,6 +72,7 @@ function reCourse(){
   rate_for_selected = rates[element_cache['exchangeTo'].selectedIndex];
   for (i=0;i<=3;i++){
     element_cache['course' + i].innerHTML = rates[i] / rate_for_selected;
+    element_cache['spend' + i].value = 0;
   }
   reCalc();
 }
