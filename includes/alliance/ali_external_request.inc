@@ -30,7 +30,7 @@ if ($POST_text) {
   header('Location: alliance.php');
 }
 
-$ally = doquery("SELECT * FROM {{table}} WHERE `id` ='{$id_ally}'", "alliance", true);
+$ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$id_ally}'", '', true);
 
 if(!$ally) {
   message($lang['ali_sys_notFound'], $lang['ali_req_title']);
@@ -40,13 +40,13 @@ if($ally['ally_request_notallow']) {
   message($lang['ali_req_notAllowed'], $lang['ali_req_title']);
 }
 
-$text_apply = ($ally_request) ? $ally_request : $lang['ali_req_template'];
+$text_apply = $ally['ally_request'] ? $ally['ally_request'] : $lang['ali_req_template'];
 
 $parse = $lang;
 $parse['allyid'] = $id_ally;
 $parse['chars_count'] = strlen($text_apply);
 $parse['text_apply'] = $text_apply;
-$parse['ali_req_title'] = $lang['ali_req_title']  . ' [' . $ally['ally_tag'] . ']';
+$parse['ali_req_title'] = "{$lang['ali_req_title']} [{$ally['ally_tag']}]";
 
 display(parsetemplate(gettemplate('ali_request'), $parse), $lang['ali_req_title']);
 
