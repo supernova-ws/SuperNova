@@ -1,3 +1,4 @@
+/* Universe status styles */
 .allymember {
   color: lime;
 }
@@ -35,6 +36,7 @@
   color: lime;
 }
 
+/* Flying fleet & message color coding */
 .flight {
 }
 
@@ -163,33 +165,12 @@
   color: red;
 }
 
-
 *.transport {
   color: lime;
 }
 
 .flight .transport a {
   color: #E6EBFB;
-}
-
-.success {
-  color: lime;
-}
-
-.errormessage a {
-  text-decoration: underline;
-}
-
-.error {
-  color: red;
-}
-
-.warning {
-  color: orange;
-}
-
-.notice {
-  color: yellow;
 }
 
 .combatreport {
@@ -231,4 +212,25 @@
 .new_message
 {
   background-color: #99999;
+}
+
+/* Message & numbers color coding */
+.success, .positive {
+  color: lime;
+}
+
+.notice {
+  color: yellow;
+}
+
+.warning {
+  color: orange;
+}
+
+.error, .negative {
+  color: red;
+}
+
+.errormessage a, .success a, .notice a, .warning a, .error a {
+  text-decoration: underline;
 }
