@@ -889,11 +889,13 @@ INSERT INTO `sn_config` VALUES
   ('rpg_scrape_crystal', 0.50), 
   ('rpg_scrape_deuterium', 0.25), 
   ('rpg_scrape_metal', 0.75), 
-  ('stats_lastUpdated', '0'), 
   ('stats_schedule', 'd@04:00:00'),
   ('url_dark_matter', '/dark_matter_get.php'), 
   ('url_forum', '/forum/'), 
   ('url_rules', '/rules.php'), 
   ('urlaubs_modus_erz', 0), 
-  ('users_amount', 0);
+  ('users_amount', 0),
+  ('var_stat_update', 0),
+  ('var_stat_update_end', 0),
+  ('var_stat_update_msg', 'Update never started');
 

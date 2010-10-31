@@ -104,7 +104,7 @@ include("{$ugamela_root_path}common.{$phpEx}");
     $query = doquery("SELECT @rownum:=@rownum+1 as rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `stat_type` = '2' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;", 'statpoints');
 
     $start++;
-    $parse['stat_date']   = $config->stats_lastUpdated;
+    $parse['stat_date']   = $config->var_stat_update;
     $parse['stat_values'] = "";
     while ($StatRow = mysql_fetch_assoc($query)) {
       $parse['ally_rank']       = $start;
@@ -157,7 +157,7 @@ include("{$ugamela_root_path}common.{$phpEx}");
     $query = doquery("SELECT @rownum:=@rownum+1 rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;", 'statpoints');
 
     $start++;
-    $parse['stat_date']   = $config->stats_lastUpdated;
+    $parse['stat_date']   = $config->var_stat_update;
     $parse['stat_values'] = "";
     while ($StatRow = mysql_fetch_assoc($query)) {
       $UsrRow                   = doquery("SELECT * FROM {{table}} WHERE `id` = '". $StatRow['id_owner'] ."';", 'users',true);

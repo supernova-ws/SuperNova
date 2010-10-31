@@ -3,6 +3,11 @@
 /**
  * sys_stat_functions.php
  *
+ * @version 4 (c) copyright 2010 by Gorlum for http://supernova.ws
+ *   [~] Now setting time limit also update end time in the DB
+ *   [+] Logging more info about update process to simplify error detection
+ *   [+] Implemented locking mechanic that permits launches of more then one update process
+ *   [+] Stat update logging statistic about it progress to DB
  * @version 3 (c) copyright 2010 by Gorlum for http://supernova.ws
  *   [+] Added resource stat
  * @version 2 (c) copyright 2010 by Gorlum for http://supernova.ws
@@ -16,6 +21,30 @@
  *   [*] Greatly improved speed of updating Player's rank by moving every rank update to single query
  * StatFunctions.php @version 1 copyright 2008 by Chlorel for XNova
  */
+
+function sta_set_time_limit($sta_update_msg = 'updatins something', $next_step = true)
+{
+  global $config, $debug, $sta_update_step;
+
+  $value = 60;
+  set_time_limit($value);
+  $config->db_saveItem('var_stat_update_end', time() + $value);
+
+  $sta_update_msg = mysql_real_escape_string($sta_update_msg);
+
+  if($next_step)
+  {
+    $sta_update_step++;
+  }
+  $sta_update_msg = "Update in progress. Step {$sta_update_step}/9: {$sta_update_msg}.";
+
+  $config->db_saveItem('var_stat_update_msg', $sta_update_msg);
+  if($next_step)
+  {
+    $debug->warning($sta_update_msg, 'Stat update', 101);
+  }
+}
+
 function GetPlanetPoints ( $CurrentPlanet ) {
   global $resource, $pricelist, $reslist, $sn_data, $sn_groups;
 
@@ -134,30 +163,52 @@ function GetFleetPointsOnTour ( $CurrentFleet ) {
 }
 
 function SYS_statCalculate(){
-  global $config;
+  global $config, $time_now, $sta_update_step;
 
-  $StatDate   = time();
+  $StatDate   = $time_now;
 
+  $sta_update_step = 0;
+
+//  doquery('START TRANSACTION;');
+
+  sta_set_time_limit('archiving old statistic');
   // Statistic rotation
   doquery ( "DELETE FROM {{statpoints}} WHERE `stat_code` = 2;");
   doquery ( "UPDATE {{statpoints}} SET `stat_code` = `stat_code` + 1;");
-  set_time_limit(60);
 
+  sta_set_time_limit('calculating flying fleets stats');
   // Calculation of Fleet-In-Flight
   $UsrFleets = doquery("SELECT * FROM {{fleets}};");
-  while ($CurFleet = mysql_fetch_assoc($UsrFleets)) {
+  $i = 0;
+  $row_num = mysql_num_rows($UsrFleets);
+  while ($CurFleet = mysql_fetch_assoc($UsrFleets))
+  {
+    if($i % 100 == 0)
+    {
+      sta_set_time_limit("calculating flying fleets stats (fleet {$i}/{$row_num})", false);
+    }
+    $i++;
+
     $Points = GetFleetPointsOnTour ( $CurFleet );
     $counts[$CurFleet['fleet_owner']]['fleet'] += $Points['FleetCount'];
     $points[$CurFleet['fleet_owner']]['fleet'] += $Points['FleetPoint'] / 1000;
 
     $counts[$CurFleet['fleet_owner']]['resources'] += $Points['ResourceCount'];
     $points[$CurFleet['fleet_owner']]['resources'] += $Points['ResourcePoint'] / 1000;
-    set_time_limit(60);
   }
 
+  sta_set_time_limit('calculating planets stats');
   // This is only admin-used as I know so far. Did I really need it as admin?!
   $UsrPlanets = doquery("SELECT * FROM {{planets}};");
+  $i = 0;
+  $row_num = mysql_num_rows($UsrPlanets);
   while ($CurPlanet = mysql_fetch_assoc($UsrPlanets) ) {
+    if($i % 100 == 0)
+    {
+      sta_set_time_limit("calculating planets stats (planet {$i}/{$row_num})", false);
+    }
+    $i++;
+
     $userID = $CurPlanet['id_owner'];
     $Points = GetPlanetPoints ( $CurPlanet );
 
@@ -173,9 +224,9 @@ function SYS_statCalculate(){
 
     $PlanetPoints = ($Points['BuildPoint'] + $Points['DefensePoint'] + $Points['FleetPoint'] + $Points['ResourcePoint']) / 1000;
     doquery ("UPDATE {{planets}} SET `points` = '{$PlanetPoints}' WHERE `id` = '{$CurPlanet['id']}';");
-    set_time_limit(60);
   }
 
+  sta_set_time_limit('posting new user stats to DB');
   $GameUsers = doquery("SELECT * FROM {{users}};");
   while ($CurUser = mysql_fetch_assoc($GameUsers)) {
     $userID = $CurUser['id'];
@@ -207,9 +258,9 @@ function SYS_statCalculate(){
     $QryInsertStats .= "`total_count` = '". $GCount ."', ";
     $QryInsertStats .= "`stat_date` = '". $StatDate ."';";
     doquery ( $QryInsertStats);
-    set_time_limit(60);
   }
 
+  sta_set_time_limit('setting previous user stats from archive');
   doquery ("
     UPDATE {{statpoints}} as new
       LEFT JOIN {{statpoints}} as old ON old.id_owner = new.id_owner AND old.stat_code = 2 AND old.stat_type = 1
@@ -223,20 +274,21 @@ function SYS_statCalculate(){
     WHERE
       new.stat_type = 1 AND new.stat_code = 1;
   " );
-  set_time_limit(60);
 
   // Some variables we need to update ranks
   $qryResetRowNum = 'SET @rownum=0;';
   $qryFormat = 'UPDATE {{statpoints}} SET `%1$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = %2$d AND `stat_code` = 1 ORDER BY `%1$s_points` DESC, `id_owner` ASC;';
   $rankNames = array( 'tech', 'build', 'defs', 'fleet', 'res', 'total');
 
+  sta_set_time_limit("updating ranks for players");
   // Updating player's ranks
   foreach($rankNames as $rankName){
+    sta_set_time_limit("updating player rank '{$rankName}'", false);
     doquery ( $qryResetRowNum);
     doquery ( sprintf($qryFormat, $rankName, 1));
-    set_time_limit(60);
   }
 
+  sta_set_time_limit('posting new Alliance stats to DB');
   // Updating Allie's stats
   $QryInsertStats  = "
     INSERT INTO {{statpoints}}
@@ -256,15 +308,16 @@ function SYS_statCalculate(){
       WHERE u.`stat_type` = 1 AND u.stat_code = 1 AND u.id_ally<>0
       GROUP BY u.`id_ally`";
   doquery ( $QryInsertStats );
-  set_time_limit(60);
 
+  sta_set_time_limit("updating ranks for Alliances");
   // --- Updating Allie's ranks
   foreach($rankNames as $rankName){
+    sta_set_time_limit("updating Alliances rank '{$rankName}'", false);
     doquery ( $qryResetRowNum);
     doquery ( sprintf($qryFormat, $rankName, 2) );
-    set_time_limit(60);
   }
 
+  sta_set_time_limit('purging outdated statistics from archive');
   // Deleting old stat_code
   // doquery ("DELETE FROM {{statpoints}} WHERE stat_code = 2;");
 
@@ -272,6 +325,7 @@ function SYS_statCalculate(){
   $userCount = doquery ( "SELECT COUNT(*) FROM {{users}}", '', true);
   $config->db_saveItem('users_amount', $userCount[0]);
 
-//  doquery("COMMIT", 'users');
+//  doquery('COMMIT');
 }
+
 ?>

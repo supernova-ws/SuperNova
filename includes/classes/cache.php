@@ -566,7 +566,9 @@ class classConfig extends classPersistent
     'eco_stockman_fleet' => '',
 
     // Statistic
-    'stats_lastUpdated' => '0',
+    'var_stat_update'     => 0,
+    'var_stat_update_end' => 0,
+    'var_stat_update_msg' => 'Update never started',
     'stats_schedule' => 'd@04:00:00',
 
     'var_db_update'     => 0,  // Time of last DB update
