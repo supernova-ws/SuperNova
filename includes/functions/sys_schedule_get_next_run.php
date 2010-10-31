@@ -19,6 +19,7 @@ function SYS_scheduleGetNextRun($scheduleList, $lastRun = 0, $timeNow = 0, $runM
 //pdump(date($dtf, $timeNow), 'timeNow');
 //pdump(date($dtf, $lastRun), 'lastRun');
 //pdump($runMissed, 'runMissed');
+  $lastRun = $lastRun ? $lastRun : 0;
 
   $dateFields = array( 'seconds', 'minutes', 'hours', 'mday', 'mon', 'year' );
 
