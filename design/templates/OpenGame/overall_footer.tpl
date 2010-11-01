@@ -1,5 +1,5 @@
     <center>
-      <div id="copyright">
+      <div id="copyright" style="padding-top: 2ex;">
         Project &quot;SuperNova.WS&quot; &copy; 2009-2010 Gorlum
       </div>
     </center>

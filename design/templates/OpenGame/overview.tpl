@@ -54,11 +54,11 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
     <!-- ENDIF -->
 
     <!-- IF NEW_LEVEL_MINER -->
-      <tr><th colspan=2><a href=officier.php>{L_ov_rpg_new_level_miner}</a></th></tr>
+      <tr><th colspan=2><a href=officer.php>{L_ov_rpg_new_level_miner}</a></th></tr>
     <!-- ENDIF -->
     
     <!-- IF NEW_LEVEL_RAID -->
-      <tr><th colspan=2><a href=officier.php>{L_ov_rpg_new_level_raid}</a></th></tr>
+      <tr><th colspan=2><a href=officer.php>{L_ov_rpg_new_level_raid}</a></th></tr>
     <!-- ENDIF -->
   </table>    
 

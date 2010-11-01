@@ -113,5 +113,11 @@ define('ATTACK_NO_COLONIZER'   , 19);
 define('ATTACK_MISSILE_TOO_FAR', 20);
 define('ATTACK_WRONG_STRUCTURE', 21);
 
+// Bonus types
+define('BONUS_NONE',      0);  // No bonus
+define('BONUS_PERCENT',   1);  // Percent
+define('BONUS_INCREMENT', 2);  // Increment to X
+define('BONUS_MULTIPLY',  3);  // Multiply by value
+define('BONUS_ABILITY',   4);  // Some ability
 
 ?>

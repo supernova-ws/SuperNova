@@ -266,3 +266,6 @@ div .ui-dialog-content table { background: #344055; }
 {
   border-top-color: #6B90D3;  /*  Reserved for unit_preview border color */
 }
+
+#off_dark_matter_hint {color: #00CCFF; font-weight: bold; floating: left}
+#off_get_dark_matter { color: #ff8900; font-weight: bold;}

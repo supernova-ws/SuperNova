@@ -883,6 +883,8 @@ if ( defined('INSIDE')) {
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 20,
+      'bonus' => 5,
+      'bonus_type' => BONUS_PERCENT,
     ),
 
     602 => array(
@@ -890,6 +892,8 @@ if ( defined('INSIDE')) {
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 20,
+      'bonus' => 5,
+      'bonus_type' => BONUS_PERCENT,
     ),
 
     603 => array(
@@ -898,6 +902,8 @@ if ( defined('INSIDE')) {
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 10,
+      'bonus' => 5,
+      'bonus_type' => BONUS_PERCENT,
     ),
 
     604 => array(
@@ -906,6 +912,8 @@ if ( defined('INSIDE')) {
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 10,
+      'bonus' => -5,
+      'bonus_type' => BONUS_PERCENT,
     ),
 
     605 => array(
@@ -913,7 +921,9 @@ if ( defined('INSIDE')) {
       'require' => array(601 => 10, 603 => 2),
       'dark_matter' => 3,
       'factor' => 1,
-      'max' => 3,
+      'max' => 5,
+      'bonus' => -5,
+      'bonus_type' => BONUS_PERCENT,
     ),
 
     606 => array(
@@ -921,7 +931,9 @@ if ( defined('INSIDE')) {
       'require' => array(601 => 10, 603 => 2),
       'dark_matter' => 3,
       'factor' => 1,
-      'max' => 3,
+      'max' => 5,
+      'bonus' => -5,
+      'bonus_type' => BONUS_PERCENT,
     ),
 
     607 => array(
@@ -929,7 +941,9 @@ if ( defined('INSIDE')) {
       'require' => array(605 => 1),
       'dark_matter' => 3,
       'factor' => 1,
-      'max' => 2,
+      'max' => 5,
+      'bonus' => 20,
+      'bonus_type' => BONUS_PERCENT,
     ),
 
     608 => array(
@@ -937,7 +951,9 @@ if ( defined('INSIDE')) {
       'require' => array(606 => 1),
       'dark_matter' => 3,
       'factor' => 1,
-      'max' => 2,
+      'max' => 5,
+      'bonus' => 20,
+      'bonus_type' => BONUS_PERCENT,
     ),
 
     609 => array(
@@ -946,6 +962,7 @@ if ( defined('INSIDE')) {
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
+      'bonus_type' => BONUS_ABILITY,
     ),
 
     610 => array(
@@ -953,7 +970,9 @@ if ( defined('INSIDE')) {
       'require' => array(602 => 10, 604 => 5),
       'dark_matter' => 3,
       'factor' => 1,
-      'max' => 2,
+      'max' => 3,
+      'bonus' => 1,
+      'bonus_type' => BONUS_INCREASE,
     ),
 
     611 => array(
@@ -961,7 +980,9 @@ if ( defined('INSIDE')) {
       'require' => array(602 => 10, 604 => 5),
       'dark_matter' => 3,
       'factor' => 1,
-      'max' => 2,
+      'max' => 5,
+      'bonus' => 1,
+      'bonus_type' => BONUS_INCREASE,
     ),
 
     612 => array(
@@ -970,6 +991,7 @@ if ( defined('INSIDE')) {
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
+      'bonus_type' => BONUS_ABILITY,
     ),
 
     613 => array(
@@ -977,7 +999,9 @@ if ( defined('INSIDE')) {
       'require' => array(611 => 1),
       'dark_matter' => 3,
       'factor' => 1,
-      'max' => 3,
+      'max' => 10,
+      'bonus' => 5,
+      'bonus_type' => BONUS_PERCENT,
     ),
 
     614 => array(
@@ -986,6 +1010,7 @@ if ( defined('INSIDE')) {
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
+      'bonus_type' => BONUS_ABILITY,
     ),
 
     615 => array(
@@ -994,6 +1019,7 @@ if ( defined('INSIDE')) {
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
+      'bonus_type' => BONUS_ABILITY,
     ),
 
     901 => array(

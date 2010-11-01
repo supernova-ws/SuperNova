@@ -7,7 +7,7 @@
 	<table>
 	<tbody>
 	<tr>
-		<td><img src="../design/images/officiers/{image}.jpg" align="top" border="0" height="120" width="120"></td>
+		<td><img src="{dpath}gebaeude/{image}.jpg" align="top" border="0" height="120" width="120"></td>
 		<td>{description}</td>
 	</tr>
 	</tbody>

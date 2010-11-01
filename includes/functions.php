@@ -767,4 +767,9 @@ function GetElementRessources ( $Element, $Count ) {
   return $ResType;
 }
 
+function sn_apply_officier_bonus($user, $officier_id, $value)
+{
+
+}
+
 ?>
