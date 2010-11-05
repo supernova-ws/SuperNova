@@ -20,13 +20,14 @@
 */
 function rpg_pointsAdd($user_id, $dark_matter, $comment = false)
 {
-  global $debug, $config;
+  global $debug, $config, $dm_change_legit;
 
   if(!$user_id)
   {
     return false;
   }
 
+  $dm_change_legit = true;
   doquery("UPDATE {{users}} SET rpg_points = rpg_points + '$dark_matter' WHERE `id` = {$user_id}");
   $rows_affected = mysql_affected_rows();
   if($rows_affected)
@@ -51,6 +52,8 @@ function rpg_pointsAdd($user_id, $dark_matter, $comment = false)
   }else{
     $debug->warning("Error adjusting Dark Matter for player ID {$user_id} with {$dark_matter}. Reason: {$comment}", 'Dark Matter Change', 402);
   }
+
+  $dm_change_legit = false;
   return $rows_affected;
 }
 

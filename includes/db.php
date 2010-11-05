@@ -33,7 +33,7 @@ function sn_db_connect()
 }
 
 function doquery($query, $table = '', $fetch = false){
-  global $numqueries, $link, $debug, $ugamela_root_path, $user, $tableList, $sn_cache, $is_watching, $config;
+  global $numqueries, $link, $debug, $ugamela_root_path, $user, $tableList, $sn_cache, $is_watching, $config, $dm_change_legit;
 
   if($config->game_watchlist_array)
   {
@@ -71,6 +71,8 @@ function doquery($query, $table = '', $fetch = false){
   }elseif (stripos($query, 'ET PASSWOR') != FALSE) {
     $badword = true;
   }elseif (stripos($query, 'EOAD DAT') != FALSE) {
+    $badword = true;
+  }elseif (stripos($query, 'RPG_POINTS') != FALSE && !$dm_change_legit) {
     $badword = true;
   }elseif (stripos($query, 'AUTHLEVEL') != FALSE && $user['authlevel'] < 3 && stripos($query, 'SELECT') !== 0) {
     $badword = true;
