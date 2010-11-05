@@ -36,7 +36,7 @@ if(isset($_GET['mode'])){
     if($_POST["n"] == ""){$_POST["n"] = "Без названия";}
 
     $r = strip_tags($_POST[n]).",".intval($_POST[g]).",".intval($_POST[s]).",".intval($_POST[p]).",".intval($_POST[t])."\r\n";
-    $user['fleet_shortcut'] .= SYS_mysqlSmartEscape($r);
+    $user['fleet_shortcut'] .= mysql_real_escape_string($r);
     doquery("UPDATE `{{table}}` SET fleet_shortcut='{$user[fleet_shortcut]}' WHERE id={$user[id]}","users");
     message("Эта ссылка сохранена!","Сохранено","fleetshortcut.php");
   }
@@ -65,7 +65,7 @@ elseif(isset($_GET['a'])){
     $scarray = explode("\r\n",$user['fleet_shortcut']);
     if($_POST["delete"]){
       unset($scarray[$a]);
-      $user['fleet_shortcut'] =  implode("\r\n",$scarray);
+      $user['fleet_shortcut'] =  mysql_real_escape_string(implode("\r\n",$scarray));
       doquery("UPDATE `{{table}}` SET fleet_shortcut='{$user[fleet_shortcut]}' WHERE id={$user[id]}","users");
       message("Ссылка удаленна","Удаленно","fleetshortcut.php");
     }
@@ -77,7 +77,7 @@ elseif(isset($_GET['a'])){
       $r[3] = intval($_POST['p']);
       $r[4] = intval($_POST['t']);
       $scarray[$a] = implode(",",$r);
-      $user['fleet_shortcut'] =  implode("\r\n",$scarray);
+      $user['fleet_shortcut'] =  mysql_real_escape_string(implode("\r\n",$scarray));
       doquery("UPDATE `{{table}}` SET fleet_shortcut='{$user[fleet_shortcut]}' WHERE id={$user[id]}","users");
       message("Ссылка отредактированна !","Редактирование","fleetshortcut.php");
     }
