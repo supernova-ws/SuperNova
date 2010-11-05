@@ -72,7 +72,7 @@ function doquery($query, $table = '', $fetch = false){
     $badword = true;
   }elseif (stripos($query, 'EOAD DAT') != FALSE) {
     $badword = true;
-  }elseif (stripos($query, 'RPG_POINTS') != FALSE && !$dm_change_legit) {
+  }elseif (stripos($query, 'RPG_POINTS') != FALSE && stripos(trim($query), 'UPDATE ') === 0 false && !$dm_change_legit) {
     $badword = true;
   }elseif (stripos($query, 'AUTHLEVEL') != FALSE && $user['authlevel'] < 3 && stripos($query, 'SELECT') !== 0) {
     $badword = true;
