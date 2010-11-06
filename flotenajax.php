@@ -82,7 +82,7 @@ $consumption = 0;
 if($target_mission == MT_MISSILE)
 {
   $target_structure = intval($_POST['structures']);
-  if ($target_structure && !in_array($target_structure, $sn_groups['defense_ative']))
+  if ($target_structure && !in_array($target_structure, $sn_groups['defense_active']))
   {
     $cant_attack = ATTACK_WRONG_STRUCTURE;
     die("{$cant_attack}|{$lang['fl_attack_error'][$cant_attack]}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}");
