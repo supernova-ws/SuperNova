@@ -120,4 +120,97 @@ define('BONUS_INCREMENT', 2);  // Increment to X
 define('BONUS_MULTIPLY',  3);  // Multiply by value
 define('BONUS_ABILITY',   4);  // Some ability
 
+// Structures
+define('STRUC_MINE_METAL', 1);
+define('STRUC_MINE_CRYSTAL', 2);
+define('STRUC_MINE_DEUTERIUM', 3);
+define('STRUC_MINE_SOLAR', 4);
+define('STRUC_MINE_FUSION', 12);
+define('STRUC_FACTORY_ROBOT', 14);
+define('STRUC_FACTORY_NANO', 15);
+define('STRUC_FACTORY_HANGAR', 21);
+define('STRUC_STORE_METAL', 22);
+define('STRUC_STORE_CRYSTAL', 23);
+define('STRUC_STORE_DEUTERIUM', 24);
+define('STRUC_LABORATORY', 31);
+define('STRUC_TERRAFORMER', 33);
+define('STRUC_ALLY_DEPOSIT', 34);
+define('STRUC_LABORATORY_NANO', 35);
+define('STRUC_MOON_STATION', 41);
+define('STRUC_MOON_PHALANX', 42);
+define('STRUC_MOON_GATE', 43);
+define('STRUC_SILO', 44);
+
+// Techs
+define('TECH_SPY', 106);
+define('TECH_COMPUTER', 108);
+define('TECH_WEAPON', 109);
+define('TECH_SHIELD', 110);
+define('TECH_ARMOR', 111);
+define('TECH_ENERGY', 113);
+define('TECH_HYPERSPACE', 114);
+define('TECH_ENGINE_CHEMICAL', 115);
+define('TECH_ENIGNE_ION', 117);
+define('TECH_ENGINE_HYPER', 118);
+define('TECH_LASER', 120);
+define('TECH_ION', 121);
+define('TECH_PLASMA', 122);
+define('TECH_RESEARCH', 123);
+define('TECH_EXPEDITION', 124);
+define('TECH_COLONIZATION', 150);
+define('TECH_GRAVITON', 199);
+
+// Ships
+define('small_ship_cargo', 202);
+define('big_ship_cargo', 203);
+define('supercargo', 201);
+define('light_hunter', 204);
+define('heavy_hunter', 205);
+define('crusher', 206);
+define('battle_ship', 207);
+define('colonizer', 208);
+define('recycler', 209);
+define('spy_sonde', 210);
+define('bomber_ship', 211);
+define('solar_satelit', 212);
+define('destructor', 213);
+define('dearth_star', 214);
+define('battleship', 215);
+define('supernova', 216);
+define('assault_ship', 217);
+
+define('misil_launcher', 401);
+define('small_laser', 402);
+define('big_laser', 403);
+define('gauss_canyon', 404);
+define('ionic_canyon', 405);
+define('buster_canyon', 406);
+define('small_protection_shield', 407);
+define('big_protection_shield', 408);
+define('planet_protector', 409);
+define('interceptor_misil', 502);
+define('interplanetary_misil', 503);
+
+define('rpg_geologue', 601);
+define('rpg_amiral', 602);
+define('rpg_ingenieur', 603);
+define('rpg_technocrate', 604);
+define('rpg_constructeur', 605);
+define('rpg_scientifique', 606);
+define('rpg_stockeur', 607);
+define('rpg_defenseur', 608);
+define('rpg_bunker', 609);
+define('rpg_espion', 610);
+define('rpg_commandant', 611);
+define('rpg_destructeur', 612);
+define('rpg_general', 613);
+define('rpg_raideur', 614);
+define('rpg_empereur', 615);
+
+define('metal', 901);
+define('crystal', 902);
+define('deuterium', 903);
+define('energy', 904);
+define('dark_matter', 905);
+
 ?>

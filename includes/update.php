@@ -21,7 +21,7 @@ if(!defined('INIT'))
   include_once('init.php');
 }
 
-$db_last_version = 22;
+$db_last_version = 23;
 $config->db_loadItem('db_version');
 if($config->db_version == $db_last_version)
 {
@@ -312,7 +312,26 @@ switch(intval($config->db_version))
     upd_check_key('url_rules', $config->rules_url, !$config->url_rules);
     upd_check_key('url_dark_matter', '/dark_matter_get.php', !$config->url_dark_matter);
     doquery("DELETE FROM {{config}} WHERE `config_name` IN ('forum_url', 'rules_url');");
-  //$new_version = 22;
+  $new_version = 22;
+/*
+  case 22:
+    upd_log_version_update();
+    if(!$update_tables['mercenaries'])
+    {
+      mysql_query(
+        "CREATE TABLE `{$config->db_prefix}mercenaries` (
+          `id` bigint(11) NOT NULL AUTO_INCREMENT,
+          `id_user` bigint(11) NOT NULL,
+          `mercenary` UNSIGNED SMALLINT NOT NULL DEFAULT '0',
+          `time_start` int(11) NOT NULL DEFAULT '0',
+          `time_finish` int(11) NOT NULL DEFAULT '0',
+          PRIMARY KEY (`id`),
+          KEY `i_user_mercenary_time` (`id_user`, `mercenary`, `time_start`, `time_finish`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+    };
+  //$new_version = 23;
+*/
 };
 upd_log_message('Upgrade complete.');
 
