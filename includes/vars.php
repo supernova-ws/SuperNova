@@ -441,7 +441,7 @@ if ( defined('INSIDE')) {
 
     201 => array(
       'name' => 'supercargo',
-      'require' => array(21 => 8, 117 => 5, 607 => 1),
+      'require' => array(21 => 8, 117 => 5, MRC_STOCKMAN => 1),
       'metal' => 25000,
       'crystal' => 15000,
       'deuterium' => 5000,
@@ -658,7 +658,7 @@ if ( defined('INSIDE')) {
 
     214 => array(
       'name' => 'dearth_star',
-      'require' => array(21 => 12, 118 => 7, 114 => 6, 199 => 1, 612 => 1),
+      'require' => array(21 => 12, 118 => 7, 114 => 6, 199 => 1, MRC_DESTRUCTOR => 1),
       'metal' => 5000000,
       'crystal' => 4000000,
       'deuterium' => 1000000,
@@ -696,7 +696,7 @@ if ( defined('INSIDE')) {
 
     216 => array(
       'name' => 'supernova',
-      'require' => array(614 => 1),
+      'require' => array(MRC_ASSASIN => 1),
       'metal' => 20000000,
       'crystal' => 15000000,
       'deuterium' => 5000000,
@@ -839,7 +839,7 @@ if ( defined('INSIDE')) {
 
     409 => array(
       'name'      => 'planet_protector',
-      'require'   => array(609 => 1),
+      'require'   => array(MRC_DEFENDER => 1),
       'metal'     => 10000000,
       'crystal'   => 5000000,
       'deuterium' => 2500000,
@@ -878,7 +878,7 @@ if ( defined('INSIDE')) {
       'armor' => 1500,
     ),
 
-    601 => array(
+    MRC_GEOLOGIST => array(
       'name' => 'rpg_geologue',
       'dark_matter' => 3,
       'factor' => 1,
@@ -887,7 +887,7 @@ if ( defined('INSIDE')) {
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    602 => array(
+    MRC_ADMIRAL => array(
       'name' => 'rpg_amiral',
       'dark_matter' => 3,
       'factor' => 1,
@@ -896,9 +896,9 @@ if ( defined('INSIDE')) {
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    603 => array(
+    MRC_POWERMAN => array(
       'name' => 'rpg_ingenieur',
-      'require' => array(601 => 5),
+      'require' => array(MRC_GEOLOGIST => 5),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 10,
@@ -906,9 +906,9 @@ if ( defined('INSIDE')) {
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    604 => array(
+    MRC_CONSTRUCTOR => array(
       'name' => 'rpg_technocrate',
-      'require' => array(602 => 5),
+      'require' => array(MRC_ADMIRAL => 5),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 10,
@@ -916,9 +916,9 @@ if ( defined('INSIDE')) {
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    605 => array(
+    MRC_ARCHITECT => array(
       'name' => 'rpg_constructeur',
-      'require' => array(601 => 10, 603 => 2),
+      'require' => array(MRC_GEOLOGIST => 10, MRC_POWERMAN => 2),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 5,
@@ -926,9 +926,9 @@ if ( defined('INSIDE')) {
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    606 => array(
+    MRC_ACADEMIC => array(
       'name' => 'rpg_scientifique',
-      'require' => array(601 => 10, 603 => 2),
+      'require' => array(MRC_GEOLOGIST => 10, MRC_POWERMAN => 2),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 5,
@@ -936,9 +936,9 @@ if ( defined('INSIDE')) {
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    607 => array(
+    MRC_STOCKMAN => array( // MRC_STOCKMAN
       'name' => 'rpg_stockeur',
-      'require' => array(605 => 1),
+      'require' => array(MRC_ARCHITECT => 1),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 5,
@@ -946,9 +946,9 @@ if ( defined('INSIDE')) {
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    608 => array(
+    MRC_FORTIFIER => array(
       'name' => 'rpg_defenseur',
-      'require' => array(606 => 1),
+      'require' => array(MRC_ACADEMIC => 1),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 5,
@@ -956,18 +956,18 @@ if ( defined('INSIDE')) {
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    609 => array(
+    MRC_DEFENDER => array(
       'name' => 'rpg_bunker',
-      'require' => array(601 => 20, 603 => 10, 605 => 3, 606 => 3, 607 => 2, 608 => 2),
+      'require' => array(MRC_GEOLOGIST => 20, MRC_POWERMAN => 10, MRC_ARCHITECT => 3, MRC_ACADEMIC => 3, MRC_STOCKMAN => 2, MRC_FORTIFIER => 2),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
       'bonus_type' => BONUS_ABILITY,
     ),
 
-    610 => array(
+    MRC_SPY => array(
       'name' => 'rpg_espion',
-      'require' => array(602 => 10, 604 => 5),
+      'require' => array(MRC_ADMIRAL => 10, MRC_CONSTRUCTOR => 5),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 3,
@@ -975,9 +975,9 @@ if ( defined('INSIDE')) {
       'bonus_type' => BONUS_INCREASE,
     ),
 
-    611 => array(
+    MRC_COORDINATOR => array(
       'name' => 'rpg_commandant',
-      'require' => array(602 => 10, 604 => 5),
+      'require' => array(MRC_ADMIRAL => 10, MRC_CONSTRUCTOR => 5),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 5,
@@ -985,18 +985,18 @@ if ( defined('INSIDE')) {
       'bonus_type' => BONUS_INCREASE,
     ),
 
-    612 => array(
+    MRC_DESTRUCTOR => array(
       'name' => 'rpg_destructeur',
-      'require' => array(610 => 1),
+      'require' => array(MRC_SPY => 1),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
       'bonus_type' => BONUS_ABILITY,
     ),
 
-    613 => array(
+    MRC_NAVIGATOR => array(
       'name' => 'rpg_general',
-      'require' => array(611 => 1),
+      'require' => array(MRC_COORDINATOR => 1),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 10,
@@ -1004,18 +1004,18 @@ if ( defined('INSIDE')) {
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    614 => array(
+    MRC_ASSASIN => array(
       'name' => 'rpg_raideur',
-      'require' => array(602 => 20, 604 => 10, 610 => 2, 611 => 2, 612 => 1, 613 => 3),
+      'require' => array(MRC_ADMIRAL => 20, MRC_CONSTRUCTOR => 10, MRC_SPY => 2, MRC_COORDINATOR => 2, MRC_DESTRUCTOR => 1, MRC_NAVIGATOR => 3),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
       'bonus_type' => BONUS_ABILITY,
     ),
 
-    615 => array(
+    MRC_EMPEROR => array(
       'name' => 'rpg_empereur',
-      'require' => array(614 => 1, 609 => 1),
+      'require' => array(MRC_ASSASIN => 1, MRC_DEFENDER => 1),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
@@ -1041,35 +1041,49 @@ if ( defined('INSIDE')) {
     905 => array(
       'name' => 'dark_matter',
     ),
+
+    'groups' => array(
+      // Planet structures list
+      'structures' => array ( 1, 2, 3, 4, 12, 14, 21, 15, 31, 35, 44, 22, 23, 24, 34, 33, 41, 42, 43 ),
+      'build'      => array ( 1, 2, 3, 4, 12, 14, 21, 15, 31, 35, 44, 22, 23, 24, 34, 33, 41, 42, 43 ),
+      'build_allow'=> array (
+          PT_PLANET => array(  1,  2,  3,  4, 12, 14, 15, 21, 22, 23, 24, 31, 33, 34, 35, 44),
+          PT_MOON   => array( 12, 14, 21, 22, 23, 24, 34, 41, 42, 43),
+      ),
+
+      // Tech list
+      'tech'      => array ( 106, 108, 109, 110, 111, 113, 114, 115, 117, 118, 120, 121, 122, 123, 124, 150, 199),
+      // Mercenary list
+      'mercenaries' => array (
+        MRC_GEOLOGIST, MRC_ADMIRAL, MRC_POWERMAN, MRC_CONSTRUCTOR, MRC_ARCHITECT, MRC_ACADEMIC,
+        MRC_STOCKMAN, MRC_FORTIFIER, MRC_DEFENDER, MRC_SPY, MRC_COORDINATOR, MRC_DESTRUCTOR,
+        MRC_NAVIGATOR, MRC_ASSASIN, MRC_EMPEROR
+      ),
+      // Spaceships list
+      'fleet'     => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216 ),
+      // Defensive building list
+      'defense'   => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409, 502, 503 ),
+
+      // List of units that can produce resources
+      'prod'      => array ( 1, 2, 3, 4, 12, 212 ),
+
+      // Combat units list
+      'combat'    => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
+      // Planet active defense list
+      'defense_active' => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
+
+      // Resource list
+      'resources' => array ( 0 => 'metal', 1 => 'crystal', 2 => 'deuterium', 3 => 'dark_matter'),
+      // Resources can be produced on planet
+      'resources_planet' => array (901, 902, 903, 904),
+      // Resources can be looted from planet
+      'resources_loot' => array (901, 902, 903),
+    ),
+
   );
 
-  $sn_groups = array(
-    // Planet structures list
-    'build'     => array ( 1, 2, 3, 4, 12, 14, 21, 15, 31, 35, 44, 22, 23, 24, 34, 33, 41, 42, 43 ),
-    // Tech list
-    'tech'      => array ( 106, 108, 109, 110, 111, 113, 114, 115, 117, 118, 120, 121, 122, 123, 124, 150, 199),
-    // Officier list
-    'officier'  => array ( 601, 602, 603, 604, 605, 606, 607, 608, 609, 610, 611, 612, 613, 614, 615),
-    // Spaceships list
-    'fleet'     => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216 ),
-    // Defensive building list
-    'defense'   => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409, 502, 503 ),
-
-    // List of units that can produce resources
-    'prod'      => array ( 1, 2, 3, 4, 12, 212 ),
-
-    // Combat units list
-    'combat'    => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
-    // Planet active defense list
-    'defense_active' => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
-
-    // Resource list
-    'resources' => array ( 0 => 'metal', 1 => 'crystal', 2 => 'deuterium', 3 => 'dark_matter'),
-    // Resources can be produced on planet
-    'resources_planet' => array (901, 902, 903, 904),
-    // Resources can be looted from planet
-    'resources_loot' => array (901, 902, 903),
-  );
+  $sn_groups = &$sn_data['groups'];
+  $reslist   = &$sn_groups;
 
   $user_options = array('compat_builds' => 0);
 
@@ -1114,8 +1128,6 @@ if ( defined('INSIDE')) {
       }
     }
   }
-  // Reslist structure now equivalent to sn_groups structure.
-  $reslist = $sn_groups;
   // END parse
 
   foreach ($CombatCaps as $unitID => $unitData)

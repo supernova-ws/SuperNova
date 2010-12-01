@@ -42,7 +42,7 @@ if($target_galaxy > $config->game_maxGalaxy || $target_galaxy < 1 ||
    $target_system > $config->game_maxSystem || $target_system < 1 ||
    $target_planet > $config->game_maxPlanet || $target_planet < 1)
 {
-  $ResultMessage = "602|{$lang['gs_c602']}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}";
+  $ResultMessage = "02|{$lang['gs_c02']}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}";
   die ( $ResultMessage );
 }
 $target_planet_type = intval($_POST['planettype']);
@@ -127,7 +127,7 @@ else
 
   if($UserDeuterium<$consumption)
   {
-    $ResultMessage = "613|{$lang['gs_c613']}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}";
+    $ResultMessage = "13|{$lang['gs_c13']}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}";
     die ( $ResultMessage );
   }
 

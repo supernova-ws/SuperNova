@@ -6,11 +6,15 @@
  * "rp" stands for "ResourcePoints"
 */
 
-function BE_calculateTechs(&$user){
-  $defTech    = (1 + (0.1 * ($user['defence_tech'])  + (0.05 * $user['rpg_amiral'])));
-  $shieldTech = (1 + (0.1 * ($user['shield_tech'])   + (0.05 * $user['rpg_amiral'])));
-  $attTech    = (1 + (0.1 * ($user['military_tech']) + (0.05 * $user['rpg_amiral'])));
+function BE_calculateTechs(&$user)
+{
+  global $sn_data;
 
-  return array('def' => $defTech, 'shield' => $shieldTech, 'att' => $attTech);
+  $armor_tech  = mrc_modify_value($user, MRC_ADMIRAL, 1 + 0.1 * $user['defence_tech']);
+  $shield_tech = mrc_modify_value($user, MRC_ADMIRAL, 1 + 0.1 * $user['shield_tech']);
+  $weapon_tech = mrc_modify_value($user, MRC_ADMIRAL, 1 + 0.1 * $user['military_tech']);
+
+  return array('def' => $armor_tech, 'shield' => $shield_tech, 'att' => $weapon_tech);
 }
+
 ?>

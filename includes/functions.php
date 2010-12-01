@@ -64,7 +64,7 @@ function get_ship_speed($ship_id, $user)
   }
 
   $speed *= 1 + $user[$resource[$tech]] * $pricelist[$tech]['speed_increase'];
-  $speed *= 1 + $user['rpg_general'] * 0.25;
+  $speed = mrc_modify_value($user, MRC_NAVIGATOR, $speed);
 
   return $speed;
 }
@@ -552,17 +552,20 @@ function CalculateMaxPlanetFields (&$planet) {
 // ----------------------------------------------------------------------------------------------------------------
 //
 //
-function GetSpyLevel(&$user) {
-  global $resource;
-  return $user[$resource[106]] + $user[$resource[610]];
+function GetSpyLevel(&$user)
+{
+  global $sn_data;
+  // return $user[$resource[106]] + $user[$resource[MRC_SPY]];
+  return mrc_modify_value($user, MRC_SPY, $user[$sn_data[106]['name']]);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 //
 //
 function GetMaxFleets(&$user) {
-  global $resource;
-  return 1 + $user[$resource[108]] + ($user[$resource[611]]*3);
+  global $sn_data;
+  // return 1 + $user[$resource[108]] + ($user[$resource[611]]*3);
+  return mrc_modify_value($user, MRC_COORDINATOR, 1 + $user[$sn_data[108]['name']]);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
