@@ -2,44 +2,51 @@
 
 function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
 {
-  global $sn_data, $resource, $reslist, $config;
+  global $sn_data, $resource, $config;
 
+  $sn_groups = $sn_data['groups'];
+  $sn_group_structures = $sn_groups['structures'];
+
+  $storage_overflowed_size = BASE_STORAGE_SIZE * MAX_OVERFLOW;
   $Caps = array( 'planet' => array(
-    'metal' => $CurrentPlanet['metal'],
-    'crystal' => $CurrentPlanet['crystal'],
-    'deuterium' => $CurrentPlanet['deuterium']
+    'metal'         => $CurrentPlanet['metal'],
+    'crystal'       => $CurrentPlanet['crystal'],
+    'deuterium'     => $CurrentPlanet['deuterium'],
+    'metal_max'     => floor(mrc_modify_value($CurrentUser, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $CurrentPlanet[$resource[22]]))),
+    'crystal_max'   => floor(mrc_modify_value($CurrentUser, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $CurrentPlanet[$resource[23]]))),
+    'deuterium_max' => floor(mrc_modify_value($CurrentUser, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $CurrentPlanet[$resource[24]]))),
   ));
-
-  // Mise a jour de l'espace de stockage
-  $Caps['planet']['metal_max']     = floor (BASE_STORAGE_SIZE * pow (1.5, $CurrentPlanet[ $resource[22] ] ) * (1 + $CurrentUser['rpg_stockeur'] * 0.5) * MAX_OVERFLOW);
-  $Caps['planet']['crystal_max']   = floor (BASE_STORAGE_SIZE * pow (1.5, $CurrentPlanet[ $resource[23] ] ) * (1 + $CurrentUser['rpg_stockeur'] * 0.5) * MAX_OVERFLOW);
-  $Caps['planet']['deuterium_max'] = floor (BASE_STORAGE_SIZE * pow (1.5, $CurrentPlanet[ $resource[24] ] ) * (1 + $CurrentUser['rpg_stockeur'] * 0.5) * MAX_OVERFLOW);
 
   if ($CurrentPlanet['planet_type'] == 3)
   {
     return $Caps;
   }
 
+  $config_resource_multiplier = $config->resource_multiplier;
+
   // Calcul de production linéaire des divers types
   $BuildTemp = $CurrentPlanet['temp_max'];
 
-  $Caps['energy'][0]            = $config->energy_basic_income    *  $config->resource_multiplier;
-  $Caps['metal_perhour'][0]     = $config->metal_basic_income     *  $config->resource_multiplier;
-  $Caps['crystal_perhour'][0]   = $config->crystal_basic_income   *  $config->resource_multiplier;
-  $Caps['deuterium_perhour'][0] = $config->deuterium_basic_income *  $config->resource_multiplier;
-  $Caps['planet']['energy_max'] = $Caps['energy']['0'];
+  $Caps['metal_perhour'][0]     = $config->metal_basic_income     * $config_resource_multiplier;
+  $Caps['crystal_perhour'][0]   = $config->crystal_basic_income   * $config_resource_multiplier;
+  $Caps['deuterium_perhour'][0] = $config->deuterium_basic_income * $config_resource_multiplier;
+  $Caps['energy'][0]            = $config->energy_basic_income    * $config_resource_multiplier;
+  $Caps['planet']['energy_max'] = $Caps['energy'][0];
 
-  foreach($reslist['prod'] as $ProdID)
+  foreach($sn_groups['prod'] as $ProdID)
   {
-    $BuildLevel       = $CurrentPlanet[ $resource[$ProdID] ];
-    $BuildLevelFactor = $CurrentPlanet[ $resource[$ProdID]."_porcent" ];
+    $unit_data = $sn_data[$ProdID];
 
-    $Caps['energy'][$ProdID] = floor( eval ( $sn_data[$ProdID]['energy_perhour'] ) );
+    $BuildLevel       = $CurrentPlanet[ $resource[$ProdID] ];
+    //$BuildLevelFactor = $CurrentPlanet[ $resource[$ProdID]."_porcent" ];
+    $BuildLevelFactor = $CurrentPlanet[ "{$resource[$ProdID]}_porcent" ];
+
+    $Caps['energy'][$ProdID] = floor( eval ( $unit_data['energy_perhour'] ) );
     if ($ProdID == 12)
     {
       if ($CurrentPlanet['deuterium'] > 0)
       {
-        $Caps['deuterium_perhour'][$ProdID] = floor( eval ( $sn_data[$ProdID]['deuterium_perhour'] ));
+        $Caps['deuterium_perhour'][$ProdID] = floor( eval ( $unit_data['deuterium_perhour'] ));
       }
       else
       {
@@ -48,19 +55,17 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
     }
     else
     {
-      $rpgGeologue = 1;
-      if (in_array( $ProdID, $reslist['build']))
+      if (in_array($ProdID, $sn_group_structures))
       {
-        $rpgGeologue += $CurrentUser['rpg_geologue'] * 0.05;
-      };
-      $Caps['metal_perhour'][$ProdID]     +=  floor( eval ( $sn_data[$ProdID]['metal_perhour']     ) * $rpgGeologue *  $config->resource_multiplier);
-      $Caps['crystal_perhour'][$ProdID]   +=  floor( eval ( $sn_data[$ProdID]['crystal_perhour']   ) * $rpgGeologue *  $config->resource_multiplier);
-      $Caps['deuterium_perhour'][$ProdID] +=  floor( eval ( $sn_data[$ProdID]['deuterium_perhour'] ) * $rpgGeologue *  $config->resource_multiplier);
+        $Caps['metal_perhour'][$ProdID]     += floor(mrc_modify_value($CurrentUser, MRC_GEOLOGIST, eval($unit_data['metal_perhour']) * $config_resource_multiplier));
+        $Caps['crystal_perhour'][$ProdID]   += floor(mrc_modify_value($CurrentUser, MRC_GEOLOGIST, eval($unit_data['crystal_perhour']) * $config_resource_multiplier));
+        $Caps['deuterium_perhour'][$ProdID] += floor(mrc_modify_value($CurrentUser, MRC_GEOLOGIST, eval($unit_data['deuterium_perhour']) * $config_resource_multiplier));
+      }
     };
 
     if ($Caps['energy'][$ProdID]>0)
     {
-      $Caps['energy'][$ProdID] = floor ( $Caps['energy'][$ProdID] * ( 1 + $CurrentUser['rpg_ingenieur'] * 0.05 ) * ( 1 + $CurrentUser['energy_tech'] * 0.1 ) * $config->resource_multiplier);
+      $Caps['energy'][$ProdID] = floor ( $Caps['energy'][$ProdID] * ( 1 + $CurrentUser['rpg_ingenieur'] * 0.05 ) * ( 1 + $CurrentUser['energy_tech'] * 0.1 ) * $config_resource_multiplier);
       $Caps['planet']['energy_max'] += $Caps['energy'][$ProdID];
     }
     else

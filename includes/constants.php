@@ -114,11 +114,11 @@ define('ATTACK_MISSILE_TOO_FAR', 20);
 define('ATTACK_WRONG_STRUCTURE', 21);
 
 // Bonus types
-define('BONUS_NONE',      0);  // No bonus
-define('BONUS_PERCENT',   1);  // Percent
-define('BONUS_INCREMENT', 2);  // Increment to X
-define('BONUS_MULTIPLY',  3);  // Multiply by value
-define('BONUS_ABILITY',   4);  // Some ability
+define('BONUS_NONE',     0);  // No bonus
+define('BONUS_PERCENT',  1);  // Percent
+define('BONUS_ADD',      2);  // Add
+define('BONUS_ABILITY',  3);  // Some ability
+define('BONUS_MULTIPLY', 4);  // Multiply by value
 
 // Structures
 define('STRUC_MINE_METAL', 1);
@@ -191,21 +191,22 @@ define('planet_protector', 409);
 define('interceptor_misil', 502);
 define('interplanetary_misil', 503);
 
-define('rpg_geologue', 601);
-define('rpg_amiral', 602);
-define('rpg_ingenieur', 603);
-define('rpg_technocrate', 604);
-define('rpg_constructeur', 605);
-define('rpg_scientifique', 606);
-define('rpg_stockeur', 607);
-define('rpg_defenseur', 608);
-define('rpg_bunker', 609);
-define('rpg_espion', 610);
-define('rpg_commandant', 611);
-define('rpg_destructeur', 612);
-define('rpg_general', 613);
-define('rpg_raideur', 614);
-define('rpg_empereur', 615);
+define('MRC_MERCENARIES', 600);
+define('MRC_GEOLOGIST', 601);
+define('MRC_ADMIRAL', 602);
+define('MRC_POWERMAN', 603);
+define('MRC_CONSTRUCTOR', 604);
+define('MRC_ARCHITECT', 605);
+define('MRC_ACADEMIC', 606);
+define('MRC_STOCKMAN', 607);
+define('MRC_FORTIFIER', 608);
+define('MRC_DEFENDER', 609);
+define('MRC_SPY', 610);
+define('MRC_COORDINATOR', 611);
+define('MRC_DESTRUCTOR', 612);
+define('MRC_NAVIGATOR', 613);
+define('MRC_ASSASIN', 614);
+define('MRC_EMPEROR', 615);
 
 define('metal', 901);
 define('crystal', 902);

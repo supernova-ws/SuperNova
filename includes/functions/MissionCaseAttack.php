@@ -19,7 +19,7 @@
    */
 
 function MissionCaseAttack ( $FleetRow) {
-  global $phpEx, $ugamela_root_path, $pricelist, $lang, $resource, $CombatCaps, $debug, $time_now, $reslist;
+  global $phpEx, $ugamela_root_path, $pricelist, $lang, $resource, $CombatCaps, $debug, $time_now, $reslist, $sn_data;
 
   // --- This is universal part which should be moved to fleet manager
   // Checking fleet message: if not 0 then we already managed this fleet
@@ -75,16 +75,18 @@ function MissionCaseAttack ( $FleetRow) {
     BE_attackFleetFill(&$attackFleets, $FleetRow);
   }
 
+  $db_admiral_name = $sn_data[MRC_ADMIRAL]['name'];
+
   $defenseFleets = array(
     0 => array(
       'def' => array(),
       'user' => array(
-        'id'            => $TargetUser['id'],
-        'username'      => $TargetUser['username'],
-        'defence_tech'  => $TargetUser['defence_tech'],
-        'rpg_amiral'    => $TargetUser['rpg_amiral'],
-        'shield_tech'   => $TargetUser['shield_tech'],
-        'military_tech' => $TargetUser['military_tech'],
+        'id'             => $TargetUser['id'],
+        'username'       => $TargetUser['username'],
+        $db_admiral_name => $TargetUser[$db_admiral_name],
+        'defence_tech'   => $TargetUser['defence_tech'],
+        'shield_tech'    => $TargetUser['shield_tech'],
+        'military_tech'  => $TargetUser['military_tech'],
       ),
     )
   );

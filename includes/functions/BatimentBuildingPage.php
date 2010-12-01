@@ -24,18 +24,17 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
     $template = gettemplate('buildings_builds', true);
   }
 
-  global $sn_data, $sn_groups, $lang, $resource, $reslist, $phpEx, $dpath, $_GET, $config;
+  global $sn_data, $sn_groups, $lang, $resource, $reslist, $phpEx, $dpath, $config;
+
+  $config_resource_multiplier = $config->resource_multiplier;
 
   $GET_cmd      = SYS_mysqlSmartEscape($_GET['cmd']);
   $GET_building = intval($_GET['building']);
-  // $Element      = intval($_GET['building']);
   $GET_listid       = $_GET['listid'];
 
   CheckPlanetUsedFields ( $CurrentPlanet );
 
-  // Tables des batiments possibles par type de planete
-  $Allowed['1'] = array(  1,  2,  3,  4, 12, 14, 15, 21, 22, 23, 24, 31, 33, 34, 35, 44);
-  $Allowed['3'] = array( 12, 14, 21, 22, 23, 24, 34, 41, 42, 43);
+  $planet_type_builds = $sn_groups['build_allow'][$CurrentPlanet['planet_type']];
 
   // Boucle d'interpretation des eventuelles commandes
   if (!empty($GET_cmd))
@@ -52,7 +51,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
     {
       if ( !strchr ( $GET_building, ' ') )
       {
-        if (in_array( trim($GET_building), $Allowed[$CurrentPlanet['planet_type']]))
+        if (in_array( trim($GET_building), $planet_type_builds))
         {
           $bDoItNow = true;
         }
@@ -138,7 +137,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
   $caps = ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet);
   foreach($sn_groups['build'] as $Element)
   {
-    if (in_array($Element, $Allowed[$CurrentPlanet['planet_type']]))
+    if (in_array($Element, $planet_type_builds))
     {
       $ElementName = $lang['tech'][$Element];
       $CurrentMaxFields      = CalculateMaxPlanetFields($CurrentPlanet);
@@ -153,6 +152,10 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
 
       if (IsTechnologieAccessible($CurrentUser, $CurrentPlanet, $Element))
       {
+        $element_sn_data = $sn_data[$Element];
+        $element_deuterium_perhour = $element_sn_data['deuterium_perhour'];
+        $element_energy_perhour    = $element_sn_data['energy_perhour'];
+
         $HaveRessources        = IsElementBuyable ($CurrentUser, $CurrentPlanet, $Element, true, false);
         $parse                 = array();
         $BuildingLevel         = $CurrentPlanet[$resource[$Element]];
@@ -164,8 +167,8 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
         $CurrentBuildtLvl     = $BuildingLevel;
         $BuildLevel           = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
 
-        $Prod[3] = (floor(eval($sn_data[$Element]['deuterium_perhour']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-        $Prod[4] = (floor(eval($sn_data[$Element]['energy_perhour'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
+        $Prod[3] = mrc_modify_value($CurrentUser, MRC_GEOLOGIST, eval($element_deuterium_perhour) * $config_resource_multiplier);
+        $Prod[4] = mrc_modify_value($CurrentUser, MRC_POWERMAN , eval($element_energy_perhour) * $config_resource_multiplier);
 
         if ($Element != 12)
         {
@@ -178,17 +181,15 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
 
         $BuildLevel++;
 
-        $Prod[3] = (floor(eval($sn_data[$Element]['deuterium_perhour']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-        $Prod[4] = (floor(eval($sn_data[$Element]['energy_perhour'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
+        $Prod[3] = mrc_modify_value($CurrentUser, MRC_GEOLOGIST, eval($element_deuterium_perhour) * $config_resource_multiplier);
+        $Prod[4] = mrc_modify_value($CurrentUser, MRC_POWERMAN , eval($element_energy_perhour) * $config_resource_multiplier);
 
         if ($Element != 12)
         {
-//            $EnergyNeed = colorNumber( pretty_number(floor($Prod[4] - $ActualNeed)) );
             $EnergyNeed = floor($Prod[4] - $ActualNeed);
         }
         else
         {
-//            $EnergyNeed = colorNumber( pretty_number(floor($Prod[3] - $ActualNeed)) );
             $EnergyNeed = floor($Prod[4] - $ActualNeed);
         }
 

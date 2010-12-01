@@ -52,7 +52,7 @@ $darkmater_cost = $config->rpg_officer;
 if ($mode == 2) {
   if ($user['rpg_points'] >= $darkmater_cost) {
     $Selected    = $offi;
-    if ( in_array($Selected, $reslist['officier']) ) {
+    if ( in_array($Selected, $reslist['mercenaries']) ) {
       $Result = IsOfficierAccessible ( $user, $Selected );
       if ( $Result == 1 ) {
         $user[$resource[$Selected]] += 1;
@@ -77,18 +77,18 @@ if ($mode == 2) {
 else
 {
   $template = gettemplate('officer', true);
-  foreach ($sn_groups['officier'] as $Officier) {
-    $Result = IsOfficierAccessible ( $user, $Officier );
+  foreach ($sn_groups['mercenaries'] as $mercenary_id) {
+    $Result = IsOfficierAccessible ( $user, $mercenary_id );
     if($Result)
     {
       $template->assign_block_vars('officer', array(
-        'ID'          => $Officier,
-        'NAME'        => $lang['tech'][$Officier],
-        'DESCRIPTION' => $lang['info'][$Officier]['description'],
-        'LEVEL'       => $user[$resource[$Officier]],
-        'LEVEL_MAX'   => $sn_data[$Officier]['max'],
-        'BONUS'       => $sn_data[$Officier]['bonus'],
-        'BONUS_TYPE'  => $sn_data[$Officier]['bonus_type'],
+        'ID'          => $mercenary_id,
+        'NAME'        => $lang['tech'][$mercenary_id],
+        'DESCRIPTION' => $lang['info'][$mercenary_id]['description'],
+        'LEVEL'       => $user[$resource[$mercenary_id]],
+        'LEVEL_MAX'   => $sn_data[$mercenary_id]['max'],
+        'BONUS'       => $sn_data[$mercenary_id]['bonus'],
+        'BONUS_TYPE'  => $sn_data[$mercenary_id]['bonus_type'],
         'CAN_BUY'     => $Result,
       ));
     }
