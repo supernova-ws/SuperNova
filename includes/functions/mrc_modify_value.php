@@ -1,6 +1,6 @@
 <?php
 
-function mrc_modify_value($user, $mercenary_id, $value)
+function mrc_modify_value($user, $planet = false, $mercenary_id, $value)
 {
   global $sn_data;
 

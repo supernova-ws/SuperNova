@@ -282,6 +282,7 @@ $lang = array_merge($lang, array(
   'sys_debris' 			=> 'Обломки: ',
   'sys_noaccess' 			=> 'В доступе отказано',
   'sys_noalloaw' 			=> 'Вам закрыт доступ в эту зону!',
+  'sys_governor'        => 'Губернатор',
 
   // News page & a bit of imperator page
   'news_title'     => 'Новости',

@@ -63,7 +63,8 @@ define('VOCATION_TIME', 2*24*60*60); // 48 hours
 // Mot qui sont interdit a la saisie !
 $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
-// Mission Target constants starts with MT_
+// *** Combat-related constants
+// *** Mission Target constants starts with MT_
 define('MT_ATTACK',    1);
 define('MT_AKS',       2);
 define('MT_TRANSPORT', 3);
@@ -76,7 +77,7 @@ define('MT_DESTROY',   9);
 define('MT_MISSILE',  10);
 define('MT_EXPLORE',  15);
 
-// Planet Target constants starts with PT_
+// *** Planet Target constants starts with PT_
 define('PT_PLANET', 1);
 define('PT_DEBRIS', 2);
 define('PT_MOON',   3);
@@ -113,14 +114,15 @@ define('ATTACK_NO_COLONIZER'   , 19);
 define('ATTACK_MISSILE_TOO_FAR', 20);
 define('ATTACK_WRONG_STRUCTURE', 21);
 
-// Bonus types
+// *** Mercenary/talent bonus types
 define('BONUS_NONE',     0);  // No bonus
 define('BONUS_PERCENT',  1);  // Percent
 define('BONUS_ADD',      2);  // Add
 define('BONUS_ABILITY',  3);  // Some ability
 define('BONUS_MULTIPLY', 4);  // Multiply by value
 
-// Structures
+// *** Units
+// === Structures
 define('STRUC_MINE_METAL', 1);
 define('STRUC_MINE_CRYSTAL', 2);
 define('STRUC_MINE_DEUTERIUM', 3);
@@ -141,7 +143,7 @@ define('STRUC_MOON_PHALANX', 42);
 define('STRUC_MOON_GATE', 43);
 define('STRUC_SILO', 44);
 
-// Techs
+// === Techs
 define('TECH_SPY', 106);
 define('TECH_COMPUTER', 108);
 define('TECH_WEAPON', 109);
@@ -160,7 +162,8 @@ define('TECH_EXPEDITION', 124);
 define('TECH_COLONIZATION', 150);
 define('TECH_GRAVITON', 199);
 
-// Ships
+// === Hangar units
+// --- Ships
 define('small_ship_cargo', 202);
 define('big_ship_cargo', 203);
 define('supercargo', 201);
@@ -178,7 +181,7 @@ define('dearth_star', 214);
 define('battleship', 215);
 define('supernova', 216);
 define('assault_ship', 217);
-
+// --- Defense
 define('misil_launcher', 401);
 define('small_laser', 402);
 define('big_laser', 403);
@@ -188,9 +191,15 @@ define('buster_canyon', 406);
 define('small_protection_shield', 407);
 define('big_protection_shield', 408);
 define('planet_protector', 409);
+// --- Missiles
 define('interceptor_misil', 502);
 define('interplanetary_misil', 503);
 
+// === Mercenaries
+// --- Mercenary type
+define('MRT_GOVERNOR', 1); // Governor resides on planet
+define('MRT_ADVISOR', 2);  // Advisor has imperium-wide effects
+// --- Mercenary list
 define('MRC_MERCENARIES', 600);
 define('MRC_GEOLOGIST', 601);
 define('MRC_ADMIRAL', 602);
@@ -208,6 +217,7 @@ define('MRC_NAVIGATOR', 613);
 define('MRC_ASSASIN', 614);
 define('MRC_EMPEROR', 615);
 
+// === Resources
 define('metal', 901);
 define('crystal', 902);
 define('deuterium', 903);

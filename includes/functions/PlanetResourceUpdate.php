@@ -58,7 +58,7 @@ function PlanetResourceUpdate ( $CurrentUser, &$CurrentPlanet, $UpdateTime, $Sim
     $QryUpdatePlanet .= "`metal`     = `metal`     + '". floatval($incRes['metal']     ) ."', ";
     $QryUpdatePlanet .= "`crystal`   = `crystal`   + '". floatval($incRes['crystal']   ) ."', ";
     $QryUpdatePlanet .= "`deuterium` = `deuterium` + '". floatval($incRes['deuterium'] ) ."', ";
-    // Updating production per hour info
+    // Updating production per hour information
     $QryUpdatePlanet .= "`metal_perhour` = '"    . $CurrentPlanet['metal_perhour']       ."', ";
     $QryUpdatePlanet .= "`crystal_perhour` = '"  . $CurrentPlanet['crystal_perhour']     ."', ";
     $QryUpdatePlanet .= "`deuterium_perhour` = '". $CurrentPlanet['deuterium_perhour']   ."', ";

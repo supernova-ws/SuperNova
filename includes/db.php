@@ -81,7 +81,7 @@ function doquery($query, $table = '', $fetch = false){
     $message = 'Привет, я не знаю то, что Вы пробовали сделать, но команда, которую Вы только послали базе данных, не выглядела очень дружественной и она была заблокированна.<br /><br />Ваш IP, и другие данные переданны администрации сервера. Удачи!.';
 
     $report  = "Hacking attempt (".date("d.m.Y H:i:s")." - [".time()."]):\n";
-    $report .= ">Database Info\n";
+    $report .= ">Database Inforamation\n";
     $report .= "\tID - ".$user['id']."\n";
     $report .= "\tUser - ".$user['username']."\n";
     $report .= "\tAuth level - ".$user['authlevel']."\n";
@@ -95,13 +95,13 @@ function doquery($query, $table = '', $fetch = false){
 
     $report .= "\n";
 
-    $report .= ">Query Info\n";
+    $report .= ">Query Information\n";
     $report .= "\tTable - ".$table."\n";
     $report .= "\tQuery - ".$query."\n";
 
     $report .= "\n";
 
-    $report .= ">\$_SERVER Info\n";
+    $report .= ">\$_SERVER Information\n";
     $report .= "\tIP - ".$_SERVER['REMOTE_ADDR']."\n";
     $report .= "\tHost Name - ".$_SERVER['HTTP_HOST']."\n";
     $report .= "\tUser Agent - ".$_SERVER['HTTP_USER_AGENT']."\n";

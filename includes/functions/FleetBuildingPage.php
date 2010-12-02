@@ -195,11 +195,11 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser )
       // Début de ligne
       $PageTable .= "\n<tr>";
 
-      // Imagette + Link vers la page d'info
+      // Imagette + Link vers la page d'information
       $PageTable .= "<th class=l><a href=infos.{$phpEx}?gid={$Element}><img border=0 src=\"{$dpath}gebaeude/{$Element}.gif\" align=top width=120 height=120></a></th>";
 
       // Description
-      $PageTable .= "<td class=l><a href=infos.{$phpEx}?gid={$Element}>{$ElementName}</a> {$ElementNbre}<br>{$lang['res']['descriptions'][$Element]}<br>";
+      $PageTable .= "<td class=l><a href=infos.{$phpEx}?gid={$Element}>{$ElementName}</a> {$ElementNbre}<br>{$lang['info'][$Element]['description_short']}<br>";
 
       $PageTable .= GetElementPrice($CurrentUser, $CurrentPlanet, $Element, false);
 

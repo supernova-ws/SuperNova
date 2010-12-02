@@ -12,9 +12,9 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
     'metal'         => $CurrentPlanet['metal'],
     'crystal'       => $CurrentPlanet['crystal'],
     'deuterium'     => $CurrentPlanet['deuterium'],
-    'metal_max'     => floor(mrc_modify_value($CurrentUser, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $CurrentPlanet[$resource[22]]))),
-    'crystal_max'   => floor(mrc_modify_value($CurrentUser, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $CurrentPlanet[$resource[23]]))),
-    'deuterium_max' => floor(mrc_modify_value($CurrentUser, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $CurrentPlanet[$resource[24]]))),
+    'metal_max'     => floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $CurrentPlanet[$resource[22]]))),
+    'crystal_max'   => floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $CurrentPlanet[$resource[23]]))),
+    'deuterium_max' => floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $CurrentPlanet[$resource[24]]))),
   ));
 
   if ($CurrentPlanet['planet_type'] == 3)
@@ -57,9 +57,9 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
     {
       if (in_array($ProdID, $sn_group_structures))
       {
-        $Caps['metal_perhour'][$ProdID]     += floor(mrc_modify_value($CurrentUser, MRC_GEOLOGIST, eval($unit_data['metal_perhour']) * $config_resource_multiplier));
-        $Caps['crystal_perhour'][$ProdID]   += floor(mrc_modify_value($CurrentUser, MRC_GEOLOGIST, eval($unit_data['crystal_perhour']) * $config_resource_multiplier));
-        $Caps['deuterium_perhour'][$ProdID] += floor(mrc_modify_value($CurrentUser, MRC_GEOLOGIST, eval($unit_data['deuterium_perhour']) * $config_resource_multiplier));
+        $Caps['metal_perhour'][$ProdID]     += floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, eval($unit_data['metal_perhour']) * $config_resource_multiplier));
+        $Caps['crystal_perhour'][$ProdID]   += floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, eval($unit_data['crystal_perhour']) * $config_resource_multiplier));
+        $Caps['deuterium_perhour'][$ProdID] += floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, eval($unit_data['deuterium_perhour']) * $config_resource_multiplier));
       }
     };
 

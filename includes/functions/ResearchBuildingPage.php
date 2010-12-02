@@ -136,7 +136,7 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
         $building_level          = $CurrentUser[$resource[$Tech]];
         $RowParse['tech_level']  = ($building_level == 0) ? "" : "( ". $lang['level']. " ".$building_level." )";
         $RowParse['tech_name']   = $TechName;
-        $RowParse['tech_descr']  = $lang['res']['descriptions'][$Tech];
+        $RowParse['tech_descr']  = $lang['info'][$Tech]['description_short'];
         $RowParse['tech_price']  = GetElementPrice($CurrentUser, $CurrentPlanet, $Tech);
         $SearchTime              = GetBuildingTime($CurrentUser, $CurrentPlanet, $Tech);
         $RowParse['search_time'] = ShowBuildTime($SearchTime);

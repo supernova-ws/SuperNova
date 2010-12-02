@@ -22,7 +22,7 @@
  * 1.3 - copyright (c) 2010 by Gorlum for http://supernova.ws
  *     [*] Adjusted layouts of player infos
  * 1.2 - copyright (c) 2010 by Gorlum for http://supernova.ws
- *     [*] Adjusted layouts of planet info
+ *     [*] Adjusted layouts of planet infos
  * 1.1 - Security checks by Gorlum for http://supernova.ws
  * @version 1
  * @copyright 2008 By Chlorel for XNova
@@ -118,6 +118,28 @@ function int_assign_event($fleet, $ov_label)
   $fleets[] = tpl_parse_fleet_db($fleet, ++$fleet_number, $user_data);
 }
 
+function int_planet_pretemplate(&$template)
+{
+  global $planetrow, $lang, $sn_data;
+
+  $governor_id = $planetrow['governor'];
+
+  $template->assign_vars(array(
+    'PLANET_ID'          => $planetrow['id'],
+    'PLANET_NAME'        => $planetrow['name'],
+    'PLANET_GALAXY'      => $planetrow['galaxy'],
+    'PLANET_SYSTEM'      => $planetrow['system'],
+    'PLANET_PLANET'      => $planetrow['planet'],
+    'PLANET_TYPE'        => $planetrow['planet_type'],
+    'PLANET_TYPE_TEXT'   => $lang['sys_planet_type'][$planetrow['planet_type']],
+
+    'GOVERNOR_ID'        => $governor_id,
+    'GOVERNOR_NAME'      => $lang['tech'][$governor_id],
+    'GOVERNOR_LEVEL'     => $planetrow['governor_level'],
+    'GOVERNOR_LEVEL_MAX' => $sn_data[$governor_id]['max'],
+  ));
+}
+
 // includeLang('resources');
 includeLang('overview');
 
@@ -129,7 +151,15 @@ $POST_newname         = SYS_mysqlSmartEscape($_POST['newname']);
 
 switch ($mode)
 {
-  case 'renameplanet':
+  case 'manage':
+    $template = gettemplate('planet_manage', true);
+
+    $parse['planet_id']     = $planetrow['id'];
+    $parse['galaxy_galaxy'] = $planetrow['galaxy'];
+    $parse['galaxy_system'] = $planetrow['system'];
+    $parse['galaxy_planet'] = $planetrow['planet'];
+    $parse['planet_name']   = $planetrow['name'];
+
     // -----------------------------------------------------------------------------------------------
     if ($POST_action == $lang['namer'])
     {
@@ -148,14 +178,9 @@ switch ($mode)
     {
       // Cas d'abandon d'une colonie
       // Affichage de la forme d'abandon de colonie
-      $parse                   = $lang;
-      $parse['planet_id']      = $planetrow['id'];
-      $parse['galaxy_galaxy']  = $planetrow['galaxy'];
-      $parse['galaxy_system']  = $planetrow['system'];
-      $parse['galaxy_planet']  = $planetrow['planet'];
-      $parse['planet_name']    = $planetrow['name'];
-
-      display(parsetemplate(gettemplate('overview_deleteplanet'), $parse), $lang['rename_and_abandon_planet']);
+      $template = gettemplate('overview_deleteplanet', true);
+      int_planet_pretemplate($template);
+      display(parsetemplate($template, $parse), $lang['rename_and_abandon_planet']);
     }
     elseif ($POST_kolonieloeschen == 1 && $POST_deleteid == $user['current_planet'])
     {
@@ -164,34 +189,35 @@ switch ($mode)
         $destruyed        = $time_now + 60 * 60 * 24;
         doquery("UPDATE {{planets}} SET `destruyed`='{$destruyed}', `id_owner`='0' WHERE `id`='{$user['current_planet']}' LIMIT 1;");
         doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = '{$user['id']}' LIMIT 1");
-        message($lang['deletemessage_ok'], $lang['colony_abandon'], 'overview.php?mode=renameplanet');
+        message($lang['deletemessage_ok'], $lang['colony_abandon'], 'overview.php?mode=manage');
       }
       elseif ($user['id_planet'] == $user['current_planet'])
       {
-        message($lang['deletemessage_wrong'], $lang['colony_abandon'], 'overview.php?mode=renameplanet');
+        message($lang['deletemessage_wrong'], $lang['colony_abandon'], 'overview.php?mode=manage');
       }
       else
       {
-        message($lang['deletemessage_fail'] , $lang['colony_abandon'], 'overview.php?mode=renameplanet');
+        message($lang['deletemessage_fail'] , $lang['colony_abandon'], 'overview.php?mode=manage');
       }
     }
 
-    $parse = $lang;
+    int_planet_pretemplate($template);
+    foreach($sn_data['groups']['governors'] as $governor_id)
+    {
+      $template->assign_block_vars('governors', array(
+        'ID' => $governor_id,
+        'NAME' => $lang['tech'][$governor_id],
+      ));
+    }
 
-    $parse['planet_id']     = $planetrow['id'];
-    $parse['galaxy_galaxy'] = $planetrow['galaxy'];
-    $parse['galaxy_system'] = $planetrow['system'];
-    $parse['galaxy_planet'] = $planetrow['planet'];
-    $parse['planet_name']   = $planetrow['name'];
+    $template = parsetemplate($template, $parse);
 
-    $page .= parsetemplate(gettemplate('overview_renameplanet'), $parse);
-
-    display($page, $lang['rename_and_abandon_planet']);
+    display($template, $lang['rename_and_abandon_planet']);
   break;
 
   default:
     // --- Gestion des messages ----------------------------------------------------------------------
-    $template = gettemplate('overview', true);
+    $template = gettemplate('planet_overview', true);
 
     // --- Gestion Officiers -------------------------------------------------------------------------
     // Passage au niveau suivant, ajout du point de compétence et affichage du passage au nouveau level
@@ -485,6 +511,8 @@ switch ($mode)
 */
     $recyclers_send = min(ceil(($planetrow['debris_metal'] + $planetrow['debris_crystal']) / $sn_data[209]['capacity']), $planetrow[$sn_data[209]['name']]);
 
+    int_planet_pretemplate($template);
+
     $template->assign_vars(array(
       'dpath'                => $dpath,
       'TIME_NOW'             => $time_now,
@@ -497,13 +525,6 @@ switch ($mode)
       'NEW_LEVEL_MINER'      => $isNewLevelMiner,
       'NEW_LEVEL_RAID'       => $isNewLevelRaid,
 
-      'PLANET_ID'            => $planetrow['id'],
-      'PLANET_NAME'          => $planetrow['name'],
-      'PLANET_GALAXY'        => $planetrow['galaxy'],
-      'PLANET_SYSTEM'        => $planetrow['system'],
-      'PLANET_PLANET'        => $planetrow['planet'],
-      'PLANET_TYPE'          => $planetrow['planet_type'],
-      'PLANET_TYPE_TEXT'     => $lang['sys_planet_type'][$planetrow['planet_type']],
       'BUILDING'             => int_buildCounter($planetrow, 'building'),
       'HANGAR'               => int_buildCounter($planetrow, 'hangar'),
       'TECH'                 => int_buildCounter($planetrow, 'tech'),
@@ -526,4 +547,5 @@ switch ($mode)
     display(parsetemplate($template, $parse), "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");
   break;
 }
+
 ?>

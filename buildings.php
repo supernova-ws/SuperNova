@@ -31,6 +31,7 @@ check_urlaubmodus ($user);
 $GET_mode = SYS_mysqlSmartEscape($_GET['mode']);
 
 includeLang('buildings');
+includeLang('infos');
 
 // Mise a jour de la liste de construction si necessaire
 UpdatePlanetBatimentQueueList ( $planetrow, $user );
