@@ -64,13 +64,16 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 
   <table width="519">
     <tr>
-      <td style="white-space: nowrap;" class="c" colspan=4>
+      <td style="white-space: nowrap;" class="c" colspan=5>
         <div class="fl">{PLANET_TYPE_TEXT} "{PLANET_NAME}" <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</a></div>
-        <div class="fr"><a href="overview.php?mode=renameplanet"><font color="green">[{L_ov_operations}]</font></a></td></div>
+        <div class="fr"><a href="overview.php?mode=manage"><font color="green">[{L_ov_manage}]</font></a></td></div>
       </td>
     </tr>
 
     <tr>
+      <th rowspan=7 valign="top">
+        <!-- INCLUDE planet_governor.tpl -->
+      </th>
       <th width=100 align="center">{buildings_on_planet}</th>
       <th colspan="3" style="position: relative; border: 1px solid rgb(153, 153, 255); padding: 0px; height: 100%;">
         <div style="position: relative; width: 100%; height: 100%;">

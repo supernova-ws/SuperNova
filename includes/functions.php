@@ -64,7 +64,7 @@ function get_ship_speed($ship_id, $user)
   }
 
   $speed *= 1 + $user[$resource[$tech]] * $pricelist[$tech]['speed_increase'];
-  $speed = mrc_modify_value($user, MRC_NAVIGATOR, $speed);
+  $speed = mrc_modify_value($user, false, MRC_NAVIGATOR, $speed);
 
   return $speed;
 }
@@ -556,7 +556,7 @@ function GetSpyLevel(&$user)
 {
   global $sn_data;
   // return $user[$resource[106]] + $user[$resource[MRC_SPY]];
-  return mrc_modify_value($user, MRC_SPY, $user[$sn_data[106]['name']]);
+  return mrc_modify_value($user, $false, MRC_SPY, $user[$sn_data[106]['name']]);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -565,7 +565,7 @@ function GetSpyLevel(&$user)
 function GetMaxFleets(&$user) {
   global $sn_data;
   // return 1 + $user[$resource[108]] + ($user[$resource[611]]*3);
-  return mrc_modify_value($user, MRC_COORDINATOR, 1 + $user[$sn_data[108]['name']]);
+  return mrc_modify_value($user, false, MRC_COORDINATOR, 1 + $user[$sn_data[108]['name']]);
 }
 
 // ----------------------------------------------------------------------------------------------------------------

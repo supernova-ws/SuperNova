@@ -36,7 +36,7 @@ function GetBuildingTime ($user, $planet, $Element)
   {
     // Pour un batiment ...
     $time = $time * (1 / ($planet[$resource['14']] + 1)) * pow(0.5, $planet[$resource['15']]);
-    $time = floor(mrc_modify_value($user, MRC_ARCHITECT, $time * 60 * 60));
+    $time = floor(mrc_modify_value($user, $planet, MRC_ARCHITECT, $time * 60 * 60));
   }
   elseif (in_array($Element, $reslist['tech']))
   {
@@ -76,18 +76,18 @@ function GetBuildingTime ($user, $planet, $Element)
       $time = $time / $inves['laboratorio'];
       */
     }
-    $time = floor(mrc_modify_value($user, MRC_ACADEMIC, $time * 60 * 60));
+    $time = floor(mrc_modify_value($user, $planet, MRC_ACADEMIC, $time * 60 * 60));
   }
   elseif ($isDefense)
   {
     // Pour les defenses ou la flotte 'tarif fixe' durée adaptée a u niveau nanite et usine robot
     $time = $time * (1 / ($planet[$resource['21']] + 1)) * pow(1 / 2, $planet[$resource['15']]);
-    $time = floor(mrc_modify_value($user, MRC_FORTIFIER, $time * 60 * 60));
+    $time = floor(mrc_modify_value($user, $planet, MRC_FORTIFIER, $time * 60 * 60));
   }
   elseif ($isFleet)
   {
     $time = $time * (1 / ($planet[$resource['21']] + 1)) * pow(1 / 2, $planet[$resource['15']]);
-    $time = floor(mrc_modify_value($user, MRC_CONSTRUCTOR, $time * 60 * 60));
+    $time = floor(mrc_modify_value($user, $planet, MRC_CONSTRUCTOR, $time * 60 * 60));
   }
 
   return $time ? $time : 1;

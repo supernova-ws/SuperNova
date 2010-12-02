@@ -313,9 +313,11 @@ switch(intval($config->db_version))
     upd_check_key('url_dark_matter', '/dark_matter_get.php', !$config->url_dark_matter);
     doquery("DELETE FROM {{config}} WHERE `config_name` IN ('forum_url', 'rules_url');");
   $new_version = 22;
-/*
+
   case 22:
-    upd_log_version_update();
+//    upd_log_version_update();
+    upd_alter_table('planets', "ADD `governor_level` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Governor level'", !$update_tables['planets']['governor_level']);
+/*
     if(!$update_tables['mercenaries'])
     {
       mysql_query(

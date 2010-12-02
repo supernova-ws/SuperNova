@@ -3,7 +3,7 @@
 /**
  * infos.php
  *
- * Info about every aspect of in-game objects: buildings, officiers, techs etc
+ * Information about every aspect of in-game objects: buildings, officiers, techs etc
  *
  * @version 1.1st Security checks & tests by Gorlum for http://supernova.ws
  * @version 1.1
@@ -87,10 +87,10 @@ function ShowProductionTable ($CurrentUser, $CurrentPlanet, $BuildID, $Template)
   $BuildLevel       = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
 
 
-  $Prod[1]          = floor(mrc_modify_value($CurrentUser, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])     ));
-  $Prod[2]          = floor(mrc_modify_value($CurrentUser, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])   ));
-  $Prod[3]          = floor(mrc_modify_value($CurrentUser, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour']) ));
-  $Prod[4]          = floor(mrc_modify_value($CurrentUser, MRC_POWERMAN,  $config_resource_multiplier * eval($unit_data['energy_perhour'])    ));
+  $Prod[1]          = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])     ));
+  $Prod[2]          = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])   ));
+  $Prod[3]          = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour']) ));
+  $Prod[4]          = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_POWERMAN,  $config_resource_multiplier * eval($unit_data['energy_perhour'])    ));
 
   $ActualProd       = floor($Prod[$BuildID]);
   if ($BuildID != 12) {
@@ -107,10 +107,10 @@ function ShowProductionTable ($CurrentUser, $CurrentPlanet, $BuildID, $Template)
   $ProdFirst = 0;
   for ( $BuildLevel = $BuildStartLvl; $BuildLevel < $BuildStartLvl + 10; $BuildLevel++ ) {
     if ($BuildID != 42) {
-      $Prod[1] = floor(mrc_modify_value($CurrentUser, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])     ));
-      $Prod[2] = floor(mrc_modify_value($CurrentUser, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])   ));
-      $Prod[3] = floor(mrc_modify_value($CurrentUser, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour'] )));
-      $Prod[4] = floor(mrc_modify_value($CurrentUser, MRC_POWERMAN,  $config_resource_multiplier * eval($unit_data['energy_perhour'])    ));
+      $Prod[1] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])     ));
+      $Prod[2] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])   ));
+      $Prod[3] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour'] )));
+      $Prod[4] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_POWERMAN,  $config_resource_multiplier * eval($unit_data['energy_perhour'])    ));
 
       $bloc['build_lvl']       = ($CurrentBuildtLvl == $BuildLevel) ? "<font color=\"#ff0000\">".$BuildLevel."</font>" : $BuildLevel;
       if ($ProdFirst > 0) {

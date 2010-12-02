@@ -3,7 +3,7 @@
 /**
  * imperator.php
  *
- * Player's info
+ * Player's information
  *
  * @version 1.0 copyright (c) 2010 by Gorlum for http://supernova.ws
  */

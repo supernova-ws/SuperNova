@@ -167,8 +167,8 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
         $CurrentBuildtLvl     = $BuildingLevel;
         $BuildLevel           = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
 
-        $Prod[3] = mrc_modify_value($CurrentUser, MRC_GEOLOGIST, eval($element_deuterium_perhour) * $config_resource_multiplier);
-        $Prod[4] = mrc_modify_value($CurrentUser, MRC_POWERMAN , eval($element_energy_perhour) * $config_resource_multiplier);
+        $Prod[3] = mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, eval($element_deuterium_perhour) * $config_resource_multiplier);
+        $Prod[4] = mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_POWERMAN , eval($element_energy_perhour) * $config_resource_multiplier);
 
         if ($Element != 12)
         {
@@ -181,8 +181,8 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
 
         $BuildLevel++;
 
-        $Prod[3] = mrc_modify_value($CurrentUser, MRC_GEOLOGIST, eval($element_deuterium_perhour) * $config_resource_multiplier);
-        $Prod[4] = mrc_modify_value($CurrentUser, MRC_POWERMAN , eval($element_energy_perhour) * $config_resource_multiplier);
+        $Prod[3] = mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, eval($element_deuterium_perhour) * $config_resource_multiplier);
+        $Prod[4] = mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_POWERMAN , eval($element_energy_perhour) * $config_resource_multiplier);
 
         if ($Element != 12)
         {
@@ -292,7 +292,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
         $template->assign_block_vars('production', array(
           'ID'                => $Element,
           'NAME'              => $ElementName,
-          'DESCRIPTION'       => $lang['res']['descriptions'][$Element],
+          'DESCRIPTION'       => $lang['info'][$Element]['description_short'],
           'LEVEL'             => ($BuildingLevel == 0) ? '' : "{$BuildingLevel}",
 
           'TIME'              => pretty_time($ElementBuildTime),

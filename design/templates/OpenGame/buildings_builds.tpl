@@ -214,7 +214,7 @@ function eco_struc_unborder_unit(unit_id)
             </span>
           <!-- ENDIF -->
 
-          <!-- IF production.LEVEL -->
+          <!-- IF production.LEVEL && !NOW_WORKING -->
             <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=destroy&building={production.ID}'">
               <div class="icons icon-minus" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
             </span>
