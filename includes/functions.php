@@ -474,6 +474,11 @@ function pretty_number($n, $floor = true, $color = false, $limit = 0) {
   if ($floor === true)
   {
     $n = floor($n);
+    $floor = 0;
+  }
+  elseif ($floor === false)
+  {
+    $floor = 2;
   }
   elseif(is_numeric($floor))
   {
@@ -503,7 +508,7 @@ function pretty_number($n, $floor = true, $color = false, $limit = 0) {
   }
   else
   {
-    $ret = number_format($n, 0, ',', '.');
+    $ret = number_format($n, $floor, ',', '.');
   }
 
   if(is_numeric($color))
@@ -694,9 +699,9 @@ function flt_expand($target)
         $arr_fleet[$arr_ship_data[0]] = $arr_ship_data[1];
       }
     }
-    $arr_fleet[901] = $target['fleet_resource_metal'];
-    $arr_fleet[902] = $target['fleet_resource_crystal'];
-    $arr_fleet[903] = $target['fleet_resource_deuterium'];
+    $arr_fleet[RES_METAL] = $target['fleet_resource_metal'];
+    $arr_fleet[RES_CRYSTAL] = $target['fleet_resource_crystal'];
+    $arr_fleet[RES_DEUTERIUM] = $target['fleet_resource_deuterium'];
   }
   elseif($target['field_max']) // it's a planet!
   {

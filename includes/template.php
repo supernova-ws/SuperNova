@@ -297,17 +297,17 @@ function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet )
       'TOPNAV_METAL' => round($CurrentPlanet["metal"], 2),
       'TOPNAV_METAL_MAX' => round($CurrentPlanet["metal_max"]),
       'TOPNAV_METAL_PERHOUR' => round($CurrentPlanet["metal_perhour"], 5),
-      'TOPNAV_METAL_MAX_TEXT' => pretty_number($CurrentPlanet["metal_max"], true, -$CurrentPlanet["metal"]),
+      'TOPNAV_METAL_MAX_TEXT' => pretty_number($CurrentPlanet["metal_max"], 2, -$CurrentPlanet["metal"]),
 
       'TOPNAV_CRYSTAL' => round($CurrentPlanet["crystal"], 2),
       'TOPNAV_CRYSTAL_PERHOUR' => round($CurrentPlanet["crystal_perhour"], 5),
       'TOPNAV_CRYSTAL_MAX' => round($CurrentPlanet["crystal_max"]),
-      'TOPNAV_CRYSTAL_MAX_TEXT' => pretty_number($CurrentPlanet["crystal_max"], true, -$CurrentPlanet["crystal"]),
+      'TOPNAV_CRYSTAL_MAX_TEXT' => pretty_number($CurrentPlanet["crystal_max"], 2, -$CurrentPlanet["crystal"]),
 
       'TOPNAV_DEUTERIUM' => round($CurrentPlanet["deuterium"], 2),
       'TOPNAV_DEUTERIUM_PERHOUR' => round($CurrentPlanet["deuterium_perhour"], 5),
       'TOPNAV_DEUTERIUM_MAX' => round($CurrentPlanet["deuterium_max"]),
-      'TOPNAV_DEUTERIUM_MAX_TEXT' => pretty_number($CurrentPlanet["deuterium_max"], true, -$CurrentPlanet["deuterium"]),
+      'TOPNAV_DEUTERIUM_MAX_TEXT' => pretty_number($CurrentPlanet["deuterium_max"], 2, -$CurrentPlanet["deuterium"]),
 
       'TOPNAV_DARK_MATTER' => pretty_number($CurrentUser['rpg_points']),
 
