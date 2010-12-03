@@ -110,7 +110,7 @@ function MissionCaseExpedition ( $FleetRow )
       } elseif ($Hasard == 3) {
         // Ah un tour pour rien
         doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = {$FleetRow['fleet_id']}");
-        rpg_pointsAdd($FleetRow['fleet_owner'], 1, 'Expedition Bonus');
+        rpg_points_change($FleetRow['fleet_owner'], 1, 'Expedition Bonus');
         SendSimpleMessage ( $FleetOwner, '', $FleetRow['fleet_end_stay'], 15, $MessSender, $MessTitle, $lang['sys_expe_nothing_1'] );
       } elseif ($Hasard >= 4 && $Hasard < 7) {
         // Gains de ressources

@@ -18,7 +18,7 @@
 * @package rpg
 *
 */
-function rpg_pointsAdd($user_id, $dark_matter, $comment = false)
+function rpg_points_change($user_id, $dark_matter, $comment = false)
 {
   global $debug, $config, $dm_change_legit;
 
@@ -45,7 +45,7 @@ function rpg_pointsAdd($user_id, $dark_matter, $comment = false)
         $partner_bonus = floor($new_referral['dark_matter']/$config->rpg_bonus_divisor) - floor($old_referral['dark_matter']/$config->rpg_bonus_divisor);
         if($partner_bonus > 0)
         {
-          rpg_pointsAdd($new_referral['id_partner'], $partner_bonus, "Incoming From Referral ID {$user_id}");
+          rpg_points_change($new_referral['id_partner'], $partner_bonus, "Incoming From Referral ID {$user_id}");
         }
       }
     }

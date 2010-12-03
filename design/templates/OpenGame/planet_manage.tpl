@@ -1,5 +1,7 @@
 <br />
-<form action="overview.php?mode=renameplanet&pl={planet_id}" method="POST">
+<form action="overview.php?mode=manage" method="POST">
+  <input type="hidden" name="planet_id" value="{PLANET_ID}">
+
   <table width=519>
     <tr>
       <td style="white-space: nowrap;" class="c" colspan=4>
@@ -32,14 +34,14 @@
 
     <tr>
       <th>{L_ov_new_name}</th>
-      <th><input type="text" name="newname" size=25 maxlength=20 value="{PLANET_NAME}"></th>
-      <th><input type="submit" name="action" value="{L_ov_rename}"></th>
+      <th><input type="text" name="new_name" size=25 maxlength=20 value="{PLANET_NAME}"></th>
+      <th><input type="submit" name="rename" value="{L_ov_rename}"></th>
     </tr>
 
     <tr>
-      <th colspan=3>
-        <input type="submit" name="action" value="{L_colony_abandon}" alt="{L_colony_abandon}">
-      </th>
+      <th>{L_colony_abandon}</th>
+      <th>{L_ov_password} <input type="password" name="abandon_confirm" value=""></th>
+      <th><input type="submit" name="abandon" value="{L_colony_abandon}"></th>
      </tr>
   </table>
 </form>

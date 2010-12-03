@@ -52,9 +52,9 @@ $lang = array_merge($lang, array(
 
 
   // 	
-  'deletemessage_ok'		=> 'Колония успешно удалена',
-  'deletemessage_wrong'		=> 'Планета не может быть оставлена!',
-  'deletemessage_fail'		=> 'Неверный пароль!',
+  'ov_delete_ok'			   => 'Колония успешно удалена',
+  'ov_delete_wrong_planet'	=> 'Планета не может быть оставлена! Вы пытаетесь покинуть вашу основную планету или вы сменили текущую планету в другом окне браузера.',
+  'ov_delete_wrong_pass'	=> 'Неверный пароль!',
 
   // 	
   'MembersOnline'			=> 'Игроков',
@@ -151,6 +151,8 @@ $lang = array_merge($lang, array(
 
   'ov_rename'     => 'Переименовать',
   'ov_new_name'   => 'Новое название',
+
+  'ov_password'   => 'Ваш пароль',
 
 ));
 
