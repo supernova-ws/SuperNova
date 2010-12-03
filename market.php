@@ -372,7 +372,7 @@ switch($mode)
 }
 
 if(!$intError && $rpg_deduct){
-  rpg_pointsAdd($user['id'], -($rpg_deduct), "Using Black Market page {$mode}");
+  rpg_points_change($user['id'], -($rpg_deduct), "Using Black Market page {$mode}");
   $user['rpg_points'] -= $rpg_deduct;
 }
 

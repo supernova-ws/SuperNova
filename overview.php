@@ -59,145 +59,45 @@ if($user['authlevel'] >= 2)
 
 check_urlaubmodus ($user);
 
-function int_assign_event($fleet, $ov_label)
-{
-  global $fleets, $fleet_number, $planetrow, $planet_end_type, $user;
-
-  $fleet['ov_label'] = $ov_label;
-  switch($ov_label)
-  {
-    case 0:
-      $fleet['ov_time'] = $fleet['fleet_start_time'];
-      $is_this_planet = (
-        ($planetrow['galaxy'] == $fleet['fleet_end_galaxy']) AND
-        ($planetrow['system'] == $fleet['fleet_end_system']) AND
-        ($planetrow['planet'] == $fleet['fleet_end_planet']) AND
-        ($planetrow['planet_type'] == $planet_end_type));
-    break;
-
-    case 1:
-      $fleet['ov_time'] = $fleet['fleet_end_stay'];
-      $is_this_planet = (
-        ($planetrow['galaxy'] == $fleet['fleet_end_galaxy']) AND
-        ($planetrow['system'] == $fleet['fleet_end_system']) AND
-        ($planetrow['planet'] == $fleet['fleet_end_planet']) AND
-        ($planetrow['planet_type'] == $planet_end_type));
-    break;
-
-    case 2:
-    case 3:
-      $fleet['ov_time'] = $fleet['fleet_end_time'];
-      $is_this_planet = (
-        ($planetrow['galaxy'] == $fleet['fleet_start_galaxy']) AND
-        ($planetrow['system'] == $fleet['fleet_start_system']) AND
-        ($planetrow['planet'] == $fleet['fleet_start_planet']) AND
-        ($planetrow['planet_type'] == $fleet['fleet_start_type']));
-    break;
-
-    case 3:
-      $fleet['ov_time'] = $fleet['zeit'];
-      $is_this_planet = (
-        ($planetrow['galaxy'] == $fleet['galaxy']) AND
-        ($planetrow['system'] == $fleet['system']) AND
-        ($planetrow['planet'] == $fleet['planet']) AND
-        ($planetrow['planet_type'] == $fleet['fleet_start_type']));
-    break;
-  }
-
-  $fleet['ov_this_planet'] = $is_this_planet;
-
-  if($fleet['fleet_owner'] == $user['id'])
-  {
-    $user_data = $user;
-  }
-  else
-  {
-    $user_data = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$fleet['fleet_owner']};", '', true);
-  };
-
-  $fleets[] = tpl_parse_fleet_db($fleet, ++$fleet_number, $user_data);
-}
-
-function int_planet_pretemplate(&$template)
-{
-  global $planetrow, $lang, $sn_data;
-
-  $governor_id = $planetrow['governor'];
-
-  $template->assign_vars(array(
-    'PLANET_ID'          => $planetrow['id'],
-    'PLANET_NAME'        => $planetrow['name'],
-    'PLANET_GALAXY'      => $planetrow['galaxy'],
-    'PLANET_SYSTEM'      => $planetrow['system'],
-    'PLANET_PLANET'      => $planetrow['planet'],
-    'PLANET_TYPE'        => $planetrow['planet_type'],
-    'PLANET_TYPE_TEXT'   => $lang['sys_planet_type'][$planetrow['planet_type']],
-
-    'GOVERNOR_ID'        => $governor_id,
-    'GOVERNOR_NAME'      => $lang['tech'][$governor_id],
-    'GOVERNOR_LEVEL'     => $planetrow['governor_level'],
-    'GOVERNOR_LEVEL_MAX' => $sn_data[$governor_id]['max'],
-  ));
-}
-
-// includeLang('resources');
 includeLang('overview');
 
-$mode                 = $_GET['mode'];
-$POST_deleteid        = intval($_POST['deleteid']);
-$POST_action          = SYS_mysqlSmartEscape($_POST['action']);
-$POST_kolonieloeschen = intval($_POST['kolonieloeschen']);
-$POST_newname         = SYS_mysqlSmartEscape($_POST['newname']);
-
+$mode            = $_GET['mode'];
 switch ($mode)
 {
   case 'manage':
     $template = gettemplate('planet_manage', true);
+    $rename          = SYS_mysqlSmartEscape($_POST['rename']);
+    $new_name        = SYS_mysqlSmartEscape(strip_tags(trim($_POST['new_name'])));
+    $abandon         = SYS_mysqlSmartEscape($_POST['abandon']);
+    $abandon_confirm = $_POST['abandon_confirm'];
 
-    $parse['planet_id']     = $planetrow['id'];
-    $parse['galaxy_galaxy'] = $planetrow['galaxy'];
-    $parse['galaxy_system'] = $planetrow['system'];
-    $parse['galaxy_planet'] = $planetrow['planet'];
-    $parse['planet_name']   = $planetrow['name'];
-
-    // -----------------------------------------------------------------------------------------------
-    if ($POST_action == $lang['namer'])
+    if ($rename)
     {
-      // Reponse au changement de nom de la planete
-      $UserPlanet     = CheckInputStrings ( $POST_newname );
-      $newname        = mysql_real_escape_string(strip_tags(trim( $UserPlanet )));
-      if ($newname)
+      if ($new_name)
       {
-        // Deja on met jour la planete qu'on garde en memoire (pour le nom)
-        $planetrow['name'] = $newname;
-        // Ensuite, on enregistre dans la base de données
-        doquery("UPDATE {{planets}} SET `name` = '{$newname}' WHERE `id` = '{$user['current_planet']}' LIMIT 1;");
+        $planetrow['name'] = $new_name;
+        doquery("UPDATE {{planets}} SET `name` = '{$new_name}' WHERE `id` = '{$user['current_planet']}' LIMIT 1;");
       }
     }
-    elseif ($POST_action == $lang['colony_abandon'])
+    elseif ($abandon)
     {
-      // Cas d'abandon d'une colonie
-      // Affichage de la forme d'abandon de colonie
-      $template = gettemplate('overview_deleteplanet', true);
-      int_planet_pretemplate($template);
-      display(parsetemplate($template, $parse), $lang['rename_and_abandon_planet']);
-    }
-    elseif ($POST_kolonieloeschen == 1 && $POST_deleteid == $user['current_planet'])
-    {
-      if (md5($_POST['pw']) == $user['password'] && $user['id_planet'] != $user['current_planet'])
+      if (md5($abandon_confirm) == $user['password'])
       {
-        $destruyed        = $time_now + 60 * 60 * 24;
-        doquery("UPDATE {{planets}} SET `destruyed`='{$destruyed}', `id_owner`='0' WHERE `id`='{$user['current_planet']}' LIMIT 1;");
-        doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = '{$user['id']}' LIMIT 1");
-        message($lang['deletemessage_ok'], $lang['colony_abandon'], 'overview.php?mode=manage');
-      }
-      elseif ($user['id_planet'] == $user['current_planet'])
-      {
-        message($lang['deletemessage_wrong'], $lang['colony_abandon'], 'overview.php?mode=manage');
+        if($user['id_planet'] != $user['current_planet'] && $user['current_planet'] == $planet_id)
+        {
+          $destruyed        = $time_now + 60 * 60 * 24;
+          doquery("UPDATE {{planets}} SET `destruyed`='{$destruyed}', `id_owner`='0' WHERE `id`='{$user['current_planet']}' LIMIT 1;");
+          doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = '{$user['id']}' LIMIT 1");
+          message($lang['ov_delete_ok'], $lang['colony_abandon'], 'overview.php?mode=manage');
+        }
+        else
+        {
+          message($lang['ov_delete_wrong_planet'], $lang['colony_abandon'], 'overview.php?mode=manage');
+        }
       }
       else
       {
-        message($lang['deletemessage_fail'] , $lang['colony_abandon'], 'overview.php?mode=manage');
+        message($lang['ov_delete_wrong_pass'] , $lang['colony_abandon'], 'overview.php?mode=manage');
       }
     }
 
@@ -210,9 +110,7 @@ switch ($mode)
       ));
     }
 
-    $template = parsetemplate($template, $parse);
-
-    display($template, $lang['rename_and_abandon_planet']);
+    display(parsetemplate($template), $lang['rename_and_abandon_planet']);
   break;
 
   default:
@@ -222,36 +120,32 @@ switch ($mode)
     // --- Gestion Officiers -------------------------------------------------------------------------
     // Passage au niveau suivant, ajout du point de compétence et affichage du passage au nouveau level
 
-    if ($user['xpminier']>=rpg_get_miner_xp($user['lvl_minier']))
+    $level_miner = $user['lvl_minier'];
+    while ($user['xpminier'] >= rpg_get_miner_xp($level_miner))
     {
-      $minerXPLevel = $user['lvl_minier'];
-      while ($user['xpminier']>=rpg_get_miner_xp($minerXPLevel))
-      {
-        $minerXPLevel++;
-      }
-
-      $miner_lvl_up = $minerXPLevel - $user['lvl_minier'];
-      doquery("UPDATE `{{users}}` SET `lvl_minier` = `lvl_minier` + '{$miner_lvl_up}' WHERE `id` = '{$user['id']}'");
-      rpg_pointsAdd($user['id'], $miner_lvl_up, 'Level Up For Structure Building');
-      $user['lvl_minier'] += $miner_lvl_up;
-      $user['rpg_points'] += $miner_lvl_up;
-      $isNewLevelMiner = true;
+      $level_miner++;
+    }
+    $level_miner -= $user['lvl_minier'];
+    if($level_miner)
+    {
+      doquery("UPDATE `{{users}}` SET `lvl_minier` = `lvl_minier` + '{$level_miner}' WHERE `id` = '{$user['id']}'");
+      rpg_points_change($user['id'], $level_miner, 'Level Up For Structure Building');
+      $user['lvl_minier'] += $level_miner;
+      $user['rpg_points'] += $level_miner;
     }
 
-    if ($user['xpraid']>=RPG_get_raider_xp($user['lvl_raid']))
+    $level_raid = $user['lvl_raid'];
+    while ($user['xpraid'] >= rpg_get_raider_xp($level_raid))
     {
-      $raidXPLevel = $user['lvl_raid'];
-      while ($user['xpraid']>=RPG_get_raider_xp($raidXPLevel))
-      {
-        $raidXPLevel++;
-      }
-
-      $raid_lvl_up = $raidXPLevel - $user['lvl_raid'];
-      doquery("UPDATE `{{users}}` SET `lvl_raid` = `lvl_raid` + '{$raid_lvl_up}' WHERE `id` = '{$user['id']}'");
-      rpg_pointsAdd($user['id'], $raid_lvl_up, 'Level Up For Raids');
-      $user['lvl_raid']   += $raid_lvl_up;
-      $user['rpg_points'] += $raid_lvl_up;
-      $isNewLevelRaid = true;
+      $level_raid++;
+    }
+    $level_raid -= $user['lvl_raid'];
+    if($level_raid)
+    {
+      doquery("UPDATE `{{users}}` SET `lvl_raid` = `lvl_raid` + '{$level_raid}' WHERE `id` = '{$user['id']}'");
+      rpg_points_change($user['id'], $level_raid, 'Level Up For Raids');
+      $user['lvl_raid']   += $level_raid;
+      $user['rpg_points'] += $level_raid;
     }
 
     // -----------------------------------------------------------------------------------------------
@@ -522,8 +416,8 @@ switch ($mode)
       'USER_AUTHLEVEL'       => $user['authlevel'],
 
       'NEW_MESSAGES'         => $user['new_message'],
-      'NEW_LEVEL_MINER'      => $isNewLevelMiner,
-      'NEW_LEVEL_RAID'       => $isNewLevelRaid,
+      'NEW_LEVEL_MINER'      => $level_miner,
+      'NEW_LEVEL_RAID'       => $level_raid,
 
       'BUILDING'             => int_buildCounter($planetrow, 'building'),
       'HANGAR'               => int_buildCounter($planetrow, 'hangar'),
@@ -546,6 +440,87 @@ switch ($mode)
 
     display(parsetemplate($template, $parse), "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");
   break;
+}
+
+function int_assign_event($fleet, $ov_label)
+{
+  global $fleets, $fleet_number, $planetrow, $planet_end_type, $user;
+
+  $fleet['ov_label'] = $ov_label;
+  switch($ov_label)
+  {
+    case 0:
+      $fleet['ov_time'] = $fleet['fleet_start_time'];
+      $is_this_planet = (
+        ($planetrow['galaxy'] == $fleet['fleet_end_galaxy']) AND
+        ($planetrow['system'] == $fleet['fleet_end_system']) AND
+        ($planetrow['planet'] == $fleet['fleet_end_planet']) AND
+        ($planetrow['planet_type'] == $planet_end_type));
+    break;
+
+    case 1:
+      $fleet['ov_time'] = $fleet['fleet_end_stay'];
+      $is_this_planet = (
+        ($planetrow['galaxy'] == $fleet['fleet_end_galaxy']) AND
+        ($planetrow['system'] == $fleet['fleet_end_system']) AND
+        ($planetrow['planet'] == $fleet['fleet_end_planet']) AND
+        ($planetrow['planet_type'] == $planet_end_type));
+    break;
+
+    case 2:
+    case 3:
+      $fleet['ov_time'] = $fleet['fleet_end_time'];
+      $is_this_planet = (
+        ($planetrow['galaxy'] == $fleet['fleet_start_galaxy']) AND
+        ($planetrow['system'] == $fleet['fleet_start_system']) AND
+        ($planetrow['planet'] == $fleet['fleet_start_planet']) AND
+        ($planetrow['planet_type'] == $fleet['fleet_start_type']));
+    break;
+
+    case 3:
+      $fleet['ov_time'] = $fleet['zeit'];
+      $is_this_planet = (
+        ($planetrow['galaxy'] == $fleet['galaxy']) AND
+        ($planetrow['system'] == $fleet['system']) AND
+        ($planetrow['planet'] == $fleet['planet']) AND
+        ($planetrow['planet_type'] == $fleet['fleet_start_type']));
+    break;
+  }
+
+  $fleet['ov_this_planet'] = $is_this_planet;
+
+  if($fleet['fleet_owner'] == $user['id'])
+  {
+    $user_data = $user;
+  }
+  else
+  {
+    $user_data = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$fleet['fleet_owner']};", '', true);
+  };
+
+  $fleets[] = tpl_parse_fleet_db($fleet, ++$fleet_number, $user_data);
+}
+
+function int_planet_pretemplate(&$template)
+{
+  global $planetrow, $lang, $sn_data;
+
+  $governor_id = $planetrow['governor'];
+
+  $template->assign_vars(array(
+    'PLANET_ID'          => $planetrow['id'],
+    'PLANET_NAME'        => $planetrow['name'],
+    'PLANET_GALAXY'      => $planetrow['galaxy'],
+    'PLANET_SYSTEM'      => $planetrow['system'],
+    'PLANET_PLANET'      => $planetrow['planet'],
+    'PLANET_TYPE'        => $planetrow['planet_type'],
+    'PLANET_TYPE_TEXT'   => $lang['sys_planet_type'][$planetrow['planet_type']],
+
+    'GOVERNOR_ID'        => $governor_id,
+    'GOVERNOR_NAME'      => $lang['tech'][$governor_id],
+    'GOVERNOR_LEVEL'     => $planetrow['governor_level'],
+    'GOVERNOR_LEVEL_MAX' => $sn_data[$governor_id]['max'],
+  ));
 }
 
 ?>

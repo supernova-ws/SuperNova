@@ -58,7 +58,7 @@ if ($mode == 2) {
         $user[$resource[$Selected]] += 1;
         $user['rpg_points']         -= $darkmater_cost;
         doquery( "UPDATE {{users}} SET `{$resource[$Selected]}` = `{$resource[$Selected]}` + 1 WHERE `id` = '{$user['id']}';");
-        rpg_pointsAdd($user['id'], -($darkmater_cost), "Spent for officer {$lang['tech'][$Selected]} ID {$Selected}");
+        rpg_points_change($user['id'], -($darkmater_cost), "Spent for officer {$lang['tech'][$Selected]} ID {$Selected}");
         $Message = $lang['off_recruited'];
         Header("Location: officer.php");
       } elseif ( $Result == -1 ) {
