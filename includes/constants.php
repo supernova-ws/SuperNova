@@ -218,10 +218,10 @@ define('MRC_ASSASIN', 614);
 define('MRC_EMPEROR', 615);
 
 // === Resources
-define('metal', 901);
-define('crystal', 902);
-define('deuterium', 903);
-define('energy', 904);
-define('dark_matter', 905);
+define('RES_METAL', 901);
+define('RES_CRYSTAL', 902);
+define('RES_DEUTERIUM', 903);
+define('RES_ENERGY', 904);
+define('RES_DARK_MATTER', 905);
 
 ?>

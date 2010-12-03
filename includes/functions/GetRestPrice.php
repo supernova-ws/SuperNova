@@ -23,9 +23,9 @@ function GetRestPrice ($user, $planet, $Element, $userfactor = true) {
   }
 
   $array = array(
-    '901'        => $lang["sys_metal"],
-    '902'        => $lang["sys_crystal"],
-    '903'        => $lang["sys_deuterium"],
+    RES_METAL        => $lang["sys_metal"],
+    RES_CRYSTAL        => $lang["sys_crystal"],
+    RES_DEUTERIUM        => $lang["sys_deuterium"],
     'energy_max' => $lang["sys_energy"]
     );
 

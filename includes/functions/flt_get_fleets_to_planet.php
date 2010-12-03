@@ -70,9 +70,9 @@ function flt_get_fleets_to_planet($planet)
 
     $fleet_list[$fleet_ownage]['count']++;
     $fleet_list[$fleet_ownage]['amount'] += $fleet['fleet_amount'];
-    $fleet_list[$fleet_ownage]['total'][901] += $fleet['fleet_resource_metal'];
-    $fleet_list[$fleet_ownage]['total'][902] += $fleet['fleet_resource_crystal'];
-    $fleet_list[$fleet_ownage]['total'][903] += $fleet['fleet_resource_deuterium'];
+    $fleet_list[$fleet_ownage]['total'][RES_METAL] += $fleet['fleet_resource_metal'];
+    $fleet_list[$fleet_ownage]['total'][RES_CRYSTAL] += $fleet['fleet_resource_crystal'];
+    $fleet_list[$fleet_ownage]['total'][RES_DEUTERIUM] += $fleet['fleet_resource_deuterium'];
   }
 
   return $fleet_list;

@@ -150,7 +150,7 @@ else
   $QryInsertFleet .= "`start_time` = '{$time_now}';";
   doquery( $QryInsertFleet);
 }
-doquery( "UPDATE {{planets}} SET {$FleetSubQRY} `{$sn_data[903]['name']}` = `{$sn_data[903]['name']}` - {$consumption} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+doquery( "UPDATE {{planets}} SET {$FleetSubQRY} `{$sn_data[RES_DEUTERIUM]['name']}` = `{$sn_data[RES_DEUTERIUM]['name']}` - {$consumption} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
 doquery("COMMIT;");
 
 $CurrentFlyingFleets++;

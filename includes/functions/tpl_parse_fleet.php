@@ -10,9 +10,9 @@ function tpl_parse_fleet_sn($fleet, $fleet_id)
   $return['fleet'] = array(
     'ID'                 => $fleet_id,
 
-    'METAL'              => $fleet[901],
-    'CRYSTAL'            => $fleet[902],
-    'DEUTERIUM'          => $fleet[903],
+    'METAL'              => $fleet[RES_METAL],
+    'CRYSTAL'            => $fleet[RES_CRYSTAL],
+    'DEUTERIUM'          => $fleet[RES_DEUTERIUM],
   );
 
   foreach ($fleet as $ship_id => $ship_amount)

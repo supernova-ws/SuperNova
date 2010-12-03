@@ -124,11 +124,11 @@ $lang['tech'] = array(
   MRC_EMPEROR => "Император",
 
   900 => $lang['sys_resources'],
-  901 => $lang['sys_metal'],
-  902 => $lang['sys_crystal'],
-  903 => $lang['sys_deuterium'],
-  904 => $lang['sys_energy'],
-  904 => $lang['sys_dark_matter'],
+  RES_METAL => $lang['sys_metal'],
+  RES_CRYSTAL => $lang['sys_crystal'],
+  RES_DEUTERIUM => $lang['sys_deuterium'],
+  RES_ENERGY => $lang['sys_energy'],
+  RES_DARK_MATTER => $lang['sys_dark_matter'],
  
  1000 => 'Губернаторы',
 );

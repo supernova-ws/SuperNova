@@ -153,9 +153,9 @@ function MissionCaseSpy ( $FleetRow ) {
 
             // Generating link to simulator
             $combat_pack[0] = array(
-              901 => $target_planet['metal'],
-              902 => $target_planet['crystal'],
-              903 => $target_planet['deuterium']
+              RES_METAL => $target_planet['metal'],
+              RES_CRYSTAL => $target_planet['crystal'],
+              RES_DEUTERIUM => $target_planet['deuterium']
             );
             if ($ST >= 2)
             {

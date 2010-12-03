@@ -214,7 +214,7 @@ function eco_struc_unborder_unit(unit_id)
             </span>
           <!-- ENDIF -->
 
-          <!-- IF production.LEVEL && !NOW_WORKING -->
+          <!-- IF production.LEVEL && !(NOW_WORKING) -->
             <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=destroy&building={production.ID}'">
               <div class="icons icon-minus" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
             </span>
@@ -247,7 +247,7 @@ function eco_struc_unborder_unit(unit_id)
           <!-- ENDIF -->
 
           <span style="position: absolute; top: 45px; left: 0px; width: 100%; font-size: {$FONT_SIZE}; text-align: left;" class="icon_alpha"> <!--  onclick="eco_struc_select_unit({production.ID})" onmouseout="eco_struc_unborder_unit({production.ID})" onmouseover="eco_struc_show_unit_info({production.ID})"> -->
-            <!-- IF production.METAL --><div><div style="left: 0px; position: absolute;">{L_sys_metal}</div><div style="right: 0px; position:absolute;">{production.METAL_REST}</div></div><br><!-- ENDIF -->
+            <!-- IF production.METAL --><div><div style="left: 0px; position: absolute;">{L_sys_metal}</div><div class="fr">{production.METAL_REST}</div></div><br><!-- ENDIF -->
             <!-- IF production.CRYSTAL --><div><div style="left: 0px; position: absolute;">{L_sys_crystal}</div><div class="fr">{production.CRYSTAL_REST}</div></div><br><!-- ENDIF -->
             <!-- IF production.DEUTERIUM --><div><div style="left: 0px; position: absolute;">{L_sys_deuterium}</div><div class="fr">{production.DEUTERIUM_REST}</div></div><!-- ENDIF -->
           </span>

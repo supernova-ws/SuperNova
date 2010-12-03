@@ -308,12 +308,12 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
           'DESTROY_CRYSTAL'   => $destroy_price['crystal'],
           'DESTROY_DEUTERIUM' => $destroy_price['deuterium'],
 
-          'METAL_REST'        => pretty_number($CurrentPlanet['metal']     + $fleet_list['own']['total'][901] - $build_price['metal'], false, true),
-          'CRYSTAL_REST'      => pretty_number($CurrentPlanet['crystal']   + $fleet_list['own']['total'][902] - $build_price['crystal'], false, true),
-          'DEUTERIUM_REST'    => pretty_number($CurrentPlanet['deuterium'] + $fleet_list['own']['total'][903] - $build_price['deuterium'], false, true),
-          'METAL_REST_NUM'    => $CurrentPlanet['metal']     + $fleet_list['own']['total'][901] - $build_price['metal'],
-          'CRYSTAL_REST_NUM'  => $CurrentPlanet['crystal']   + $fleet_list['own']['total'][902] - $build_price['crystal'],
-          'DEUTERIUM_REST_NUM'=> $CurrentPlanet['deuterium'] + $fleet_list['own']['total'][903] - $build_price['deuterium'],
+          'METAL_REST'        => pretty_number($CurrentPlanet['metal']     + $fleet_list['own']['total'][RES_METAL] - $build_price['metal'], false, true),
+          'CRYSTAL_REST'      => pretty_number($CurrentPlanet['crystal']   + $fleet_list['own']['total'][RES_CRYSTAL] - $build_price['crystal'], false, true),
+          'DEUTERIUM_REST'    => pretty_number($CurrentPlanet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_price['deuterium'], false, true),
+          'METAL_REST_NUM'    => $CurrentPlanet['metal']     + $fleet_list['own']['total'][RES_METAL] - $build_price['metal'],
+          'CRYSTAL_REST_NUM'  => $CurrentPlanet['crystal']   + $fleet_list['own']['total'][RES_CRYSTAL] - $build_price['crystal'],
+          'DEUTERIUM_REST_NUM'=> $CurrentPlanet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_price['deuterium'],
 
           'METAL_BALANCE'     => $caps['metal_perhour'][$Element],
           'CRYSTAL_BALANCE'   => $caps['crystal_perhour'][$Element],
@@ -350,9 +350,9 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
     'CRYSTAL'              => $CurrentPlanet['crystal'],
     'DEUTERIUM'            => $CurrentPlanet['deuterium'],
 
-    'METAL_INCOMING'       => $fleet_list['own']['total'][901],
-    'CRYSTAL_INCOMING'     => $fleet_list['own']['total'][902],
-    'DEUTERIUM_INCOMING'   => $fleet_list['own']['total'][903],
+    'METAL_INCOMING'       => $fleet_list['own']['total'][RES_METAL],
+    'CRYSTAL_INCOMING'     => $fleet_list['own']['total'][RES_CRYSTAL],
+    'DEUTERIUM_INCOMING'   => $fleet_list['own']['total'][RES_DEUTERIUM],
 
     'FLEET_OWN'            => $fleet_list['own']['count'],
   ));
