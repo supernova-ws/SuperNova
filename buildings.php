@@ -28,7 +28,7 @@ if ($IsUserChecked == false) {
 
 check_urlaubmodus ($user);
 
-$GET_mode = SYS_mysqlSmartEscape($_GET['mode']);
+$mode = sys_get_param_escaped('mode');
 
 includeLang('buildings');
 includeLang('infos');
@@ -40,27 +40,33 @@ $IsWorking = HandleTechnologieBuild ( $planetrow, $user );
 
 PlanetResourceUpdate($user, $planetrow, $time_now);
 
-switch ($GET_mode) {
+switch ($mode)
+{
   case 'fleet':
     // --------------------------------------------------------------------------------------------------
     FleetBuildingPage ( $planetrow, $user );
-    break;
+  break;
 
   case 'research':
     // --------------------------------------------------------------------------------------------------
     ResearchBuildingPage ( $planetrow, $user, $IsWorking['OnWork'], $IsWorking['WorkOn'] );
-    break;
+  break;
 
   case 'defense':
     // --------------------------------------------------------------------------------------------------
     DefensesBuildingPage ( $planetrow, $user );
-    break;
+  break;
+
+  case 'test':
+    eco_build(QUE_STRUCTURES, $user, $planetrow);
+  break;
 
   case 'buildings':
   default:
     // --------------------------------------------------------------------------------------------------
     BatimentBuildingPage ( $planetrow, $user );
-    break;
+    // eco_build(QUE_STRUCTURES, $user, $planetrow);
+  break;
 }
 
 ?>

@@ -82,6 +82,24 @@ define('PT_PLANET', 1);
 define('PT_DEBRIS', 2);
 define('PT_MOON',   3);
 
+// *** Constants for changing DM
+define('RPG_STRUCTURE', 1);
+define('RPG_RAID', 2);
+define('RPG_TECH', 3);
+define('RPG_ADMIN', 4);
+define('RPG_BUY', 5);
+define('RPG_MARKET', 6);
+define('RPG_MERCENARY', 7);
+
+// *** Build type constants
+define('BUILD_CREATE', 0);
+define('BUILD_DESTROY', 1);
+
+// *** Que types
+define('QUE_STRUCTURES', 0);
+define('QUE_HANGAR', 1);
+define('QUE_RESEARCH', 2);
+
 // Login statuses
 define('LOGIN_SUCCESS'               , 1);
 define('LOGIN_SUCCESS_CREATE_PROFILE', 2);
@@ -135,13 +153,13 @@ define('STRUC_STORE_METAL', 22);
 define('STRUC_STORE_CRYSTAL', 23);
 define('STRUC_STORE_DEUTERIUM', 24);
 define('STRUC_LABORATORY', 31);
+define('STRUC_LABORATORY_NANO', 35);
 define('STRUC_TERRAFORMER', 33);
 define('STRUC_ALLY_DEPOSIT', 34);
-define('STRUC_LABORATORY_NANO', 35);
+define('STRUC_SILO', 44);
 define('STRUC_MOON_STATION', 41);
 define('STRUC_MOON_PHALANX', 42);
 define('STRUC_MOON_GATE', 43);
-define('STRUC_SILO', 44);
 
 // === Techs
 define('TECH_SPY', 106);

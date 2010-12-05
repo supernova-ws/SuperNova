@@ -39,7 +39,7 @@ function tpl_parse_planet($planet)
     'HANGAR'        => $hangar_build_tip,
     'hangar_que'    => $hangar_que,
 
-    'FILL'          => min(100, floor($planet['field_current'] / CalculateMaxPlanetFields($planet) * 100)),
+    'FILL'          => min(100, floor($planet['field_current'] / eco_planet_fields_max($planet) * 100)),
 
     'FLEET_OWN'     => $fleet_list['own']['count'],
     'FLEET_ENEMY'   => $fleet_list['enemy']['count'],

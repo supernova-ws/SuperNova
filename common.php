@@ -54,8 +54,9 @@ if ($user && $user['id'])
     $dpath     = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
   }
 
-  SetSelectedPlanet ( $user );
+  SetSelectedPlanet($user);
   $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$user['current_planet']}';", '', true);
+  eco_planet_update($user, $planetrow);
   CheckPlanetUsedFields($planetrow);
 }
 else

@@ -543,14 +543,17 @@ function pretty_number($n, $floor = true, $color = false, $limit = 0) {
 //
 // Calcul de la place disponible sur une planete
 //
-function CalculateMaxPlanetFields (&$planet) {
+function eco_planet_fields_max($planet)
+{
   global $resource;
 
-  if($planet["planet_type"] != 3) {
-  return $planet["field_max"] + ($planet[ $resource[33] ] * 5);
+  if($planet['planet_type'] == PT_PLANET)
+  {
+    return $planet['field_max'] + $planet[$resource[33]] * 5;
   }
-  elseif($planet["planet_type"] == 3) {
-  return $planet["field_max"] + ($planet[ $resource[41] ] * 3);
+  elseif($planet['planet_type'] == PT_MOON)
+  {
+    return $planet['field_max'] + $planet[$resource[41]] * 3;
   }
 }
 
