@@ -119,7 +119,9 @@ switch ($mode)
 
     // --- Gestion Officiers -------------------------------------------------------------------------
     // Passage au niveau suivant, ajout du point de compétence et affichage du passage au nouveau level
-
+    rpg_level_up($user, RPG_STRUCTURE);
+    rpg_level_up($user, RPG_RAID);
+/*
     $level_miner = $user['lvl_minier'];
     while ($user['xpminier'] >= rpg_get_miner_xp($level_miner))
     {
@@ -147,7 +149,7 @@ switch ($mode)
       $user['lvl_raid']   += $level_raid;
       $user['rpg_points'] += $level_raid;
     }
-
+*/
     // -----------------------------------------------------------------------------------------------
     // Filling table with fleet events relating to current users
     $fleets = array();
@@ -319,7 +321,7 @@ switch ($mode)
             fleet_end_type   = 3 AND
             fleet_mess       = 0 AND
             (fleet_mission = 1 OR fleet_mission = 2 OR fleet_mission = 9)", '', true);
-        $moon_fill = min(100, floor($moon['field_current'] / CalculateMaxPlanetFields($moon) * 100));
+        $moon_fill = min(100, floor($moon['field_current'] / eco_planet_fields_max($moon) * 100));
       }
       else
       {
@@ -377,7 +379,7 @@ switch ($mode)
       UpdatePlanetBatimentQueueList ( $planetrow, $user );
     }
 
-    $planet_fill = floor($planetrow['field_current'] / CalculateMaxPlanetFields($planetrow) * 100);
+    $planet_fill = floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100);
     $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
 
 /*
@@ -424,8 +426,8 @@ switch ($mode)
       'TECH'                 => int_buildCounter($planetrow, 'tech'),
       'planet_diameter'      => pretty_number($planetrow['diameter']),
       'planet_field_current' => $planetrow['field_current'],
-      'planet_field_max'     => CalculateMaxPlanetFields($planetrow),
-      'PLANET_FILL'          => floor($planetrow['field_current'] / CalculateMaxPlanetFields($planetrow) * 100),
+      'planet_field_max'     => eco_planet_fields_max($planetrow),
+      'PLANET_FILL'          => floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100),
       'PLANET_FILL_BAR'      => $planet_fill,
       'metal_debris'         => pretty_number($planetrow['debris_metal']),
       'crystal_debris'       => pretty_number($planetrow['debris_crystal']),

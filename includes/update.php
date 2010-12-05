@@ -317,6 +317,7 @@ switch(intval($config->db_version))
   case 22:
 //    upd_log_version_update();
     upd_alter_table('planets', "ADD `governor_level` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Governor level'", !$update_tables['planets']['governor_level']);
+    upd_alter_table('planets', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'Planet que'", !$update_tables['planets']['que']);
 /*
     if(!$update_tables['mercenaries'])
     {

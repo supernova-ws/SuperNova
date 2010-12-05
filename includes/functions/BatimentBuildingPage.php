@@ -98,9 +98,10 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
   $Queue = ShowBuildingQueue ( $CurrentPlanet, $CurrentUser );
 
   // On enregistre ce que l'on a modifi� dans planet !
-  BuildingSavePlanetRecord ( $CurrentPlanet );
+  doquery("UPDATE `{{planets}}` SET `b_building_id` = '{$CurrentPlanet['b_building_id']}', `b_building` = '{$CurrentPlanet['b_building']}' WHERE `id` = '{$CurrentPlanet['id']}' LIMIT 1;");
   // On enregistre ce que l'on a eventuellement modifi� dans users
-  BuildingSaveUserRecord ( $CurrentUser );
+  doquery("UPDATE `{{users}}` SET `xpminier` = '{$CurrentUser['xpminier']}' WHERE `id` = '{$CurrentUser['id']}' LIMIT 1;");
+  rpg_level_up($user, RPG_STRUCTURE);
 
   if ($Queue['lenght'] < MAX_BUILDING_QUEUE_SIZE)
   {
@@ -140,7 +141,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
     if (in_array($Element, $planet_type_builds))
     {
       $ElementName = $lang['tech'][$Element];
-      $CurrentMaxFields      = CalculateMaxPlanetFields($CurrentPlanet);
+      $CurrentMaxFields      = eco_planet_fields_max($CurrentPlanet);
       if ($CurrentPlanet['field_current'] < ($CurrentMaxFields - $Queue['lenght']))
       {
         $RoomIsOk = true;
@@ -357,6 +358,296 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
     'FLEET_OWN'            => $fleet_list['own']['count'],
   ));
   display(parsetemplate($template, $parse), $lang['Builds']);
+}
+
+/**
+ *
+ * AddBuildingToQueue.php
+ *
+ * @version 1
+ * @copyright 2008 by Chlorel for XNova
+ */
+
+// Ajoute un batiment dans la queue
+// $CurrentPlanet -> Planete sur laquelle on construit
+// $CurrentUser   -> Joueur courrant
+// $Element       -> Batiment a construire
+//
+// Retour         -> Valeur de l'element inseré
+//                   ou false s'il ne peut pas l'inserer (queue pleine)
+//
+function AddBuildingToQueue ( &$CurrentPlanet, $CurrentUser, $Element, $AddMode = true) {
+  global $lang, $resource;
+
+  $CurrentQueue  = $CurrentPlanet['b_building_id'];
+  if ($CurrentQueue != 0) {
+    $QueueArray    = explode ( ";", $CurrentQueue );
+    $ActualCount   = count ( $QueueArray );
+  } else {
+    $QueueArray    = "";
+    $ActualCount   = 0;
+  }
+
+  if ($AddMode == true) {
+    $BuildMode = 'build';
+  } else {
+    $BuildMode = 'destroy';
+  }
+
+  if ( $ActualCount < MAX_BUILDING_QUEUE_SIZE ) {
+    $QueueID      = $ActualCount + 1;
+  } else {
+    $QueueID      = false;
+  }
+  if ($AddMode == true) {
+    if ($CurrentPlanet['field_current'] < ($CurrentPlanet['field_max'] + ($CurrentPlanet[$resource[33]] * 5))) {
+      //$CanBuildElement = true;
+    } else {
+      $QueueID = false;
+      echo "1. You're Hacker. Your ip logged...";
+    }
+  }
+  if (IsTechnologieAccessible($CurrentUser, $CurrentPlanet, $Element) == true) {
+     $CanBuildElement = true;
+  } else {
+     $QueueID = false;
+     echo "2. You're Hacker. Your ip logged...";
+  }
+  if ( $QueueID != false ) {
+    // Faut verifier si l'Element que l'on veut integrer est deja dans le tableau !
+    if ($QueueID > 1) {
+
+      $InArray = 0;
+      for ( $QueueElement = 0; $QueueElement < $ActualCount; $QueueElement++ ) {
+        $QueueSubArray = explode ( ",", $QueueArray[$QueueElement] );
+        if ($QueueSubArray[0] == $Element) {
+          $InArray++;
+        }
+      }
+
+    } else {
+      $InArray = 0;
+    }
+
+    if ($InArray != 0) {
+      $ActualLevel  = $CurrentPlanet[$resource[$Element]];
+      if ($AddMode == true) {
+        $BuildLevel   = $ActualLevel + 1 + $InArray;
+        $CurrentPlanet[$resource[$Element]] += $InArray;
+        $BuildTime    = GetBuildingTime($CurrentUser, $CurrentPlanet, $Element);
+        $CurrentPlanet[$resource[$Element]] -= $InArray;
+      } else {
+        $BuildLevel   = $ActualLevel - 1 + $InArray;
+        $CurrentPlanet[$resource[$Element]] -= $InArray;
+        $BuildTime    = GetBuildingTime($CurrentUser, $CurrentPlanet, $Element) / 2;
+        $CurrentPlanet[$resource[$Element]] += $InArray;
+      }
+    } else {
+      $ActualLevel  = $CurrentPlanet[$resource[$Element]];
+      if ($AddMode == true) {
+        $BuildLevel   = $ActualLevel + 1;
+        $BuildTime    = GetBuildingTime($CurrentUser, $CurrentPlanet, $Element);
+      } else {
+        $BuildLevel   = $ActualLevel - 1;
+        $BuildTime    = GetBuildingTime($CurrentUser, $CurrentPlanet, $Element) / 2;
+      }
+    }
+
+    if ($QueueID == 1) {
+      $BuildEndTime = time() + $BuildTime;
+    } else {
+      $PrevBuild = explode (",", $QueueArray[$ActualCount - 1]);
+      $BuildEndTime = $PrevBuild[3] + $BuildTime;
+    }
+    $QueueArray[$ActualCount]       = $Element .",". $BuildLevel .",". $BuildTime .",". $BuildEndTime .",". $BuildMode;
+    $NewQueue                       = implode ( ";", $QueueArray );
+    $CurrentPlanet['b_building_id'] = $NewQueue;
+  }
+  return $QueueID;
+}
+
+/**
+ * CancelBuildingFromQueue
+ *
+ * @version 1
+ * @copyright 2008 by Chlorel for XNova
+ */
+
+function CancelBuildingFromQueue ( &$CurrentPlanet, &$CurrentUser ) {
+
+  $CurrentQueue  = $CurrentPlanet['b_building_id'];
+  if ($CurrentQueue != 0) {
+    // Creation du tableau de la liste de construction
+    $QueueArray          = explode ( ";", $CurrentQueue );
+    // Comptage du nombre d'elements dans la liste
+    $ActualCount         = count ( $QueueArray );
+
+    // Stockage de l'element a 'interrompre'
+    $CanceledIDArray     = explode ( ",", $QueueArray[0] );
+    $Element             = $CanceledIDArray[0];
+    $BuildMode           = $CanceledIDArray[4]; // pour savoir si on construit ou detruit
+
+    if ($ActualCount > 1) {
+      array_shift( $QueueArray );
+      $NewCount        = count( $QueueArray );
+      // Mise a jour de l'heure de fin de construction theorique du batiment
+      $BuildEndTime        = time();
+      for ($ID = 0; $ID < $NewCount ; $ID++ ) {
+        $ListIDArray          = explode ( ",", $QueueArray[$ID] );
+        $BuildEndTime        += $ListIDArray[2];
+        $ListIDArray[3]       = $BuildEndTime;
+        $QueueArray[$ID]      = implode ( ",", $ListIDArray );
+      }
+      $NewQueue        = implode(";", $QueueArray );
+      $ReturnValue     = true;
+      $BuildEndTime    = '0';
+    } else {
+      $NewQueue        = '0';
+      $ReturnValue     = false;
+      $BuildEndTime    = '0';
+    }
+
+    // Ici on va rembourser les ressources engagées ...
+    // Deja le mode (car quand on detruit ca ne coute que la moitié du prix de construction classique
+    if ($BuildMode == 'destroy') {
+      $ForDestroy = true;
+    } else {
+      $ForDestroy = false;
+    }
+
+    if ( $Element != false ) {
+      $Needed                        = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, true, $ForDestroy);
+      $CurrentPlanet['metal']       += $Needed['metal'];
+      $CurrentPlanet['crystal']     += $Needed['crystal'];
+      $CurrentPlanet['deuterium']   += $Needed['deuterium'];
+    }
+
+  } else {
+    $NewQueue          = '0';
+    $BuildEndTime      = '0';
+    $ReturnValue       = false;
+  }
+
+  $CurrentPlanet['b_building_id']  = $NewQueue;
+  $CurrentPlanet['b_building']     = $BuildEndTime;
+
+  return $ReturnValue;
+}
+
+/**
+ * RemoveBuildingFromQueue.php
+ *
+ * @version 1
+ * @copyright 2008 by Chlorel for XNova
+ */
+
+function RemoveBuildingFromQueue ( &$CurrentPlanet, $CurrentUser, $QueueID ) {
+
+  if ($QueueID > 1) {
+    $CurrentQueue  = $CurrentPlanet['b_building_id'];
+    if ($CurrentQueue != 0) {
+      $QueueArray    = explode ( ";", $CurrentQueue );
+      $ActualCount   = count ( $QueueArray );
+      $ListIDArray   = explode ( ",", $QueueArray[$QueueID - 2] );
+      $BuildEndTime  = $ListIDArray[3];
+      for ($ID = $QueueID; $ID < $ActualCount; $ID++ ) {
+        $ListIDArray          = explode ( ",", $QueueArray[$ID] );
+        $BuildEndTime        += $ListIDArray[2];
+        $ListIDArray[3]       = $BuildEndTime;
+        $QueueArray[$ID - 1]  = implode ( ",", $ListIDArray );
+      }
+      unset ($QueueArray[$ActualCount - 1]);
+      $NewQueue     = implode ( ";", $QueueArray );
+    }
+    $CurrentPlanet['b_building_id'] = $NewQueue;
+  }
+
+  return $QueueID;
+
+}
+
+/**
+ * ShowBuildingQueue.php
+ *
+ * @version 1
+ * @copyright 2008 by Chlorel for XNova
+ */
+
+// ----------------------------------------------------------------------------------------------------------
+// Construit le code html pour afficher une liste de construction en cours ...
+// Données en entree :
+// $CurrentPlanet -> Planete sur la quelle on affiche la page de construction de batiments
+// $CurrentUser   -> Joueur courrant (inutilisé pour le moment ... Mais sait on jamais)
+// Données en sortie :
+// $ListIDRow     -> lignes d'une table de 3 colonnes integrable au dessus (ou au dessous) de la page de
+//                   construction des batiments
+// Necessite :
+// Attention il faut avoir integré une fois au moins le script de controle en java ...
+// Donc lancer : InsertBuildListScript () avant la balise <table> de la page
+//
+function ShowBuildingQueue ( $CurrentPlanet, $CurrentUser ) {
+  global $lang;
+
+  $CurrentQueue  = $CurrentPlanet['b_building_id'];
+  $QueueID       = 0;
+  if ($CurrentQueue != 0) {
+    // Queue de fabrication documentée ... Y a au moins 1 element a construire !
+    $QueueArray    = explode ( ";", $CurrentQueue );
+    // Compte le nombre d'elements
+    $ActualCount   = count ( $QueueArray );
+  } else {
+    // Queue de fabrication vide
+    $QueueArray    = "0";
+    $ActualCount   = 0;
+  }
+
+  $ListIDRow    = "";
+  if ($ActualCount != 0) {
+    $PlanetID     = $CurrentPlanet['id'];
+    for ($QueueID = 0; $QueueID < $ActualCount; $QueueID++) {
+      // Chaque element de la liste de fabrication est un tableau de 5 données
+      // [0] -> Le batiment
+      // [1] -> Le niveau du batiment
+      // [2] -> La durée de construction
+      // [3] -> L'heure théorique de fin de construction
+      // [4] -> type d'action
+      $BuildArray   = explode (",", $QueueArray[$QueueID]);
+      $BuildEndTime = floor($BuildArray[3]);
+      $CurrentTime  = floor(time());
+      if ($BuildEndTime >= $CurrentTime) {
+        $ListID       = $QueueID + 1;
+        $Element      = $BuildArray[0];
+        $BuildLevel   = $BuildArray[1];
+        $BuildMode    = $BuildArray[4];
+        $BuildTime    = $BuildEndTime - time();
+        $ElementTitle = $lang['tech'][$Element];
+
+        if ($ListID > 0) {
+          $ListIDRow .= "<tr>";
+          if ($BuildMode == 'build') {
+            $ListIDRow .= " <td class=\"l\" colspan=\"2\">". $ListID .".: ". $ElementTitle ." ". $BuildLevel ."</td>";
+          } else {
+            $ListIDRow .= " <td class=\"l\" colspan=\"2\">". $ListID .".: ". $ElementTitle ." ". $BuildLevel ." ". $lang['destroy'] ."</td>";
+          }
+          $ListIDRow .= " <td class=\"k\">";
+          if ($ListID == 1) {
+            $ListIDRow .= InsertCounterLaunchScript($BuildTime, $PlanetID);
+            $ListIDRow .= "   <strong color=\"lime\"><br><font color=\"lime\">". date(FMT_DATE_TIME ,$BuildEndTime) ."</font></strong>";
+          } else {
+            $ListIDRow .= "   <font color=\"red\">";
+            $ListIDRow .= "   <a href=\"buildings.php?listid=". $ListID ."&amp;cmd=remove&amp;planet=". $PlanetID ."\">". $lang['DelFromQueue'] ."</a></font>";
+          }
+          $ListIDRow .= " </td>";
+          $ListIDRow .= "</tr>";
+        }
+      }
+    }
+  }
+
+  $RetValue['lenght']    = $ActualCount;
+  $RetValue['buildlist'] = $ListIDRow;
+
+  return $RetValue;
 }
 
 ?>
