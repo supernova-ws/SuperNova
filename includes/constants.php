@@ -33,7 +33,7 @@ define('SPY_REPORT_ROW'           , 1);
 // Cases données par niveau de Base Lunaire
 define('FIELDS_BY_MOONBASIS_LEVEL', 15);
 // Nombre maximum d'element dans la liste de construction de batiments
-define('MAX_BUILDING_QUEUE_SIZE'  , 1);
+define('MAX_BUILDING_QUEUE_SIZE'  , 5);
 // Nombre maximum d'element dans une ligne de liste de construction flotte et defenses
 define('MAX_FLEET_OR_DEFS_PER_ROW', 2000);
 // Taux de depassement possible dans l'espace de stockage des hangards ...
@@ -91,15 +91,6 @@ define('RPG_BUY', 5);
 define('RPG_MARKET', 6);
 define('RPG_MERCENARY', 7);
 
-// *** Build type constants
-define('BUILD_CREATE', 0);
-define('BUILD_DESTROY', 1);
-
-// *** Que types
-define('QUE_STRUCTURES', 0);
-define('QUE_HANGAR', 1);
-define('QUE_RESEARCH', 2);
-
 // Login statuses
 define('LOGIN_SUCCESS'               , 1);
 define('LOGIN_SUCCESS_CREATE_PROFILE', 2);
@@ -139,7 +130,25 @@ define('BONUS_ADD',      2);  // Add
 define('BONUS_ABILITY',  3);  // Some ability
 define('BONUS_MULTIPLY', 4);  // Multiply by value
 
+// *** Build type constants
+define('BUILD_CREATE', 1);
+define('BUILD_DESTROY', -1);
+
+// *** Que types
+define('QUE_STRUCTURES', 0);
+define('QUE_HANGAR', 1);
+define('QUE_RESEARCH', 2);
+
 // *** Units
+// === Unit types
+define('UNIT_STRUCTURE', 0);
+define('UNIT_RESEARCH', 1);
+define('UNIT_SHIP', 2);
+define('UNIT_DEFENSE', 4);
+define('UNIT_MISSILE', 5);
+define('UNIT_MERCENARY', 6);
+define('UNIT_RESOURCE', 9);
+
 // === Structures
 define('STRUC_MINE_METAL', 1);
 define('STRUC_MINE_CRYSTAL', 2);
@@ -241,5 +250,6 @@ define('RES_CRYSTAL', 902);
 define('RES_DEUTERIUM', 903);
 define('RES_ENERGY', 904);
 define('RES_DARK_MATTER', 905);
+define('RES_TIME', 999);
 
 ?>

@@ -247,6 +247,33 @@ div .ui-dialog-content table { background: #344055; }
 /* Icon file */
 .icons { background-image: url(images/icons.png); }
 
+/* Que item */
+.que_item
+{
+  cursor: pointer;
+
+  border: 0px;
+
+  position: relative;
+  height: 60px;
+  width: 60px;
+
+  font-size: 100%;
+}
+
+/* Unit picture */
+.unit_picture
+{
+  border: 0px;
+
+  position: absolute;
+  left: 0px;
+  top: 0px;
+
+  width: 100%;
+  height: 100%;
+}
+
 /* Unit preview box on build pages */
 .unit_preview
 {

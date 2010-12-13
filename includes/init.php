@@ -28,6 +28,8 @@ $user          = array();
 $lang          = array();
 $IsUserChecked = false;
 
+$old_path = $ugamela_root_path;
+
 $ugamela_root_path = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT']) . '/';
 $phpbb_root_path = $ugamela_root_path;
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
@@ -150,5 +152,7 @@ function sys_refresh_tablelist($db_prefix)
   }
   $sn_cache->tables = $tl;
 }
+
+$ugamela_root_path = $old_path;
 
 ?>

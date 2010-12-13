@@ -13,7 +13,7 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
-function eco_build($que_type, $user, &$planet)
+function eco_build($que_type, $user, &$planet, $que)
 {
   global $sn_data, $lang, $config, $time_now;
 
@@ -35,11 +35,11 @@ function eco_build($que_type, $user, &$planet)
   switch($action)
   {
     case 'create': // Add unit to que for build
-//      AddBuildingToQueue ( $planet, $user, $unit_id, true );
+      $que = eco_que_add($user, $planet, $que, $unit_id, QUE_STRUCTURES);
     break;
 
     case 'destroy': // Add unit to que for remove
-//      AddBuildingToQueue ( $planet, $user, $unit_id, false );
+      $que = eco_que_add($user, $planet, $que, $unit_id, QUE_STRUCTURES, 1, BUILD_DESTROY);
     break;
 
     case 'cancel': // Cancel unit from que
@@ -50,12 +50,14 @@ function eco_build($que_type, $user, &$planet)
     break;
 
     default: // Just build page
+      // $que = eco_que_process($user, $planet, $time_now - $planet['last_update']);
     break;
   }
 
-  $que = eco_que_process($user, $planet, $time_now - $planet['last_update']);
-
-  $que_length = count($que['que'][$que_type]);
+  $que_length  = count($que['que'][$que_type]);
+  $hangar_busy = count($que['que'][QUE_HANGAR]);
+  $lab_busy    = count($que['que'][QUE_RESEARCH]) && !$config->BuildLabWhileRun;
+  $can_que_element = $que_length < MAX_BUILDING_QUEUE_SIZE;
 
 //  $template->assign_block_vars('que', array)
 
@@ -68,37 +70,25 @@ function eco_build($que_type, $user, &$planet)
 //  doquery("UPDATE `{{users}}` SET `xpminier` = '{$user['xpminier']}' WHERE `id` = '{$user['id']}' LIMIT 1;");
 //  rpg_level_up($user, RPG_STRUCTURE);
 
-
-  if ($que_length < MAX_BUILDING_QUEUE_SIZE)
-    $can_que_element = true;
-  else
-    $can_que_element = false;
-
   if($planet['b_building_id'])
   {
     $now_building = explode(';', $planet['b_building_id']);
     $now_building = explode(',', $now_building[0]);
     $now_working  = $now_building[0];
-    if($now_building[4] == destroy)
-      $now_building = 0;
-    else
-      $now_building = 1;
+    $now_building = $now_building[4] == 'destroy';
   }
   else
     $now_working = false;
 
 
-  $fleet_list = flt_get_fleets_to_planet($planet);
-  $caps = ECO_getPlanetCaps($user, &$planet);
-  $planet_fields_max = eco_planet_fields_max($planet);
-  $planet_fields_current = $planet['field_current'];
-  $planet_fields_free = $planet_fields_max - $planet_fields_current;
-  $planet_temp_max = $planet['temp_max'];
+  $fleet_list            = flt_get_fleets_to_planet($planet);
+  $caps                  = ECO_getPlanetCaps($user, &$planet);
 
-  if ($planet_fields_free > $que_length)
-    $RoomIsOk = true;
-  else
-    $RoomIsOk = false;
+  $planet_fields_max     = eco_planet_fields_max($planet);
+  $planet_fields_current = $planet['field_current'];
+  $planet_fields_free    = $planet_fields_max - $planet_fields_current;
+  $planet_fields_queable = $planet_fields_free > $que_length;
+  $planet_temp_max       = $planet['temp_max'];
 
   foreach($planet_type_structs as $Element)
   {
@@ -108,7 +98,7 @@ function eco_build($que_type, $user, &$planet)
 
       $element_name    = $lang['tech'][$Element];
       $element_sn_data = &$sn_data[$Element];
-      $element_level   = $planet[$sn_data[$Element]['name']];
+      $element_level   = $planet[$sn_data[$Element]['name']] + $que['in_que'][$Element];
 
       // show energy on BuildingPage
       //================================
@@ -121,47 +111,26 @@ function eco_build($que_type, $user, &$planet)
           $energy_balance =
             floor(mrc_modify_value($user, $planet, array(TECH_ENERGY, MRC_POWERMAN), $element_production_energy($element_level + 1, 10, $planet_temp_max) * $config_resource_multiplier)) -
             floor(mrc_modify_value($user, $planet, array(TECH_ENERGY, MRC_POWERMAN), $element_production_energy($element_level, 10, $planet_temp_max) * $config_resource_multiplier));
-//          $energy_balance = mrc_modify_value($user, $planet, array(TECH_ENERGY, MRC_POWERMAN), $energy_balance * $config_resource_multiplier);
-        }
-        else
-        {
-//          $energy_balance = $element_production_energy($element_level + 1, 10, $planet_temp_max) - $element_production_energy($element_level, 10, $planet_temp_max);
-//          $energy_balance = floor($energy_balance * $config_resource_multiplier);
         }
         $energy_balance = floor($energy_balance);
-/*
-        //!!!
-        if ($Element >= 1 && $Element <= 3)
-          $parse['build_need_diff'] = "<font color=#FF0000>{$energy_balance} {$lang['Energy']}</font>";
-        elseif ($Element == 4 || $Element == 12)
-          $parse['build_need_diff'] = "<font color=#00FF00>+{$energy_balance} {$lang['Energy']}</font>";
-*/
+      }
+      else
+      {
+        $energy_balance = 0;
       }
 
       //================================
       $parse['click'] = '';
       $NextBuildLevel = $element_level + 1;
+
+      $unit_busy = (($Element == 31 || $Element == 35) && $lab_busy) || ($Element == 21 && $hangar_busy);
+
+
+
       $can_build_unit = false;
 
-      if((($Element == 31 || $Element == 35) && $user['b_tech_planet'] && !$config->BuildLabWhileRun)
-        || ($Element == 21 && $planet['b_hangar_id']))
       {
-        $parse['click'] = "<font color=#FF0000>{$lang['in_working']}</font>";
-      }
-      elseif(!$RoomIsOk)
-      {
-        $parse['click'] = "<font color=#FF0000>{$lang['NoMoreSpace']}</font>";
-      }
-      else
-      {
-        if ($NextBuildLevel == 1)
-        {
-          $next_level_msg = $lang['BuildFirstLevel'];
-        }
-        else
-        {
-          $next_level_msg = "{$lang['BuildNextLevel']} {$NextBuildLevel}";
-        }
+        $next_level_msg = "{$lang['BuildNextLevel']} {$element_level}";
 
         if (!$can_que_element)
         {
@@ -186,33 +155,35 @@ function eco_build($que_type, $user, &$planet)
         }
       }
 
+      $build_data = eco_get_build_data($user, $planet, $Element, $element_level);
+      $temp[RES_METAL]     = floor($planet['metal'] + $fleet_list['own']['total'][RES_METAL] - $build_data[BUILD_CREATE][RES_METAL]);
+      $temp[RES_CRYSTAL]   = floor($planet['crystal'] + $fleet_list['own']['total'][RES_CRYSTAL] - $build_data[BUILD_CREATE][RES_CRYSTAL]);
+      $temp[RES_DEUTERIUM] = floor($planet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_data[BUILD_CREATE][RES_DEUTERIUM]);
+
       $build_price = GetBuildingPrice ($user, $planet, $Element, true);
       $destroy_price = GetBuildingPrice ($user, $planet, $Element, true, true);
       $template->assign_block_vars('production', array(
         'ID'                => $Element,
         'NAME'              => $element_name,
         'DESCRIPTION'       => $lang['info'][$Element]['description_short'],
-        'LEVEL'             => ($element_level == 0) ? '' : $element_level,
+        'LEVEL'             => $element_level,
 
-        'TIME'              => pretty_time(GetBuildingTime($user, $planet, $Element)),
-        'DESTROY_TIME'      => pretty_time(GetBuildingTime($user, $planet, $Element) / 2),
+        'TIME'              => pretty_time($build_data[BUILD_CREATE][RES_TIME]),
+        'METAL'             => $build_data[BUILD_CREATE][RES_METAL],
+        'CRYSTAL'           => $build_data[BUILD_CREATE][RES_CRYSTAL],
+        'DEUTERIUM'         => $build_data[BUILD_CREATE][RES_DEUTERIUM],
 
-        'PRICE'             => GetElementPrice($user, $planet, $Element),
-        'RESOURCES_LEFT'    => GetRestPrice($user, $planet, $Element),
+        'DESTROY_TIME'      => pretty_time($build_data[BUILD_DESTROY][RES_TIME]),
+        'DESTROY_METAL'     => $build_data[BUILD_DESTROY][RES_METAL],
+        'DESTROY_CRYSTAL'   => $build_data[BUILD_DESTROY][RES_CRYSTAL],
+        'DESTROY_DEUTERIUM' => $build_data[BUILD_DESTROY][RES_DEUTERIUM],
 
-        'METAL'             => $build_price['metal'],
-        'CRYSTAL'           => $build_price['crystal'],
-        'DEUTERIUM'         => $build_price['deuterium'],
-        'DESTROY_METAL'     => $destroy_price['metal'],
-        'DESTROY_CRYSTAL'   => $destroy_price['crystal'],
-        'DESTROY_DEUTERIUM' => $destroy_price['deuterium'],
-
-        'METAL_REST'        => pretty_number($planet['metal']     + $fleet_list['own']['total'][RES_METAL] - $build_price['metal'], false, true),
-        'CRYSTAL_REST'      => pretty_number($planet['crystal']   + $fleet_list['own']['total'][RES_CRYSTAL] - $build_price['crystal'], false, true),
-        'DEUTERIUM_REST'    => pretty_number($planet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_price['deuterium'], false, true),
-        'METAL_REST_NUM'    => $planet['metal']     + $fleet_list['own']['total'][RES_METAL] - $build_price['metal'],
-        'CRYSTAL_REST_NUM'  => $planet['crystal']   + $fleet_list['own']['total'][RES_CRYSTAL] - $build_price['crystal'],
-        'DEUTERIUM_REST_NUM'=> $planet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_price['deuterium'],
+        'METAL_REST'        => pretty_number($temp[RES_METAL], true, true),
+        'CRYSTAL_REST'      => pretty_number($temp[RES_CRYSTAL], true, true),
+        'DEUTERIUM_REST'    => pretty_number($temp[RES_DEUTERIUM], true, true),
+        'METAL_REST_NUM'    => $temp[RES_METAL],
+        'CRYSTAL_REST_NUM'  => $temp[RES_CRYSTAL],
+        'DEUTERIUM_REST_NUM'=> $temp[RES_DEUTERIUM],
 
         'METAL_BALANCE'     => $caps['metal_perhour'][$Element],
         'CRYSTAL_BALANCE'   => $caps['crystal_perhour'][$Element],
@@ -221,6 +192,8 @@ function eco_build($que_type, $user, &$planet)
 
         'BUILD_LINK'        => $parse['click'],
         'CAN_BUILD'         => $can_build_unit,
+
+        'UNIT_BUSY'         => $unit_busy,
       ));
     }
 
@@ -237,23 +210,40 @@ function eco_build($que_type, $user, &$planet)
     $parse['BuildList']        = '';
   }
 
+  if(is_array($que['que'][$que_type]))
+  {
+    foreach($que['que'][$que_type] as $que_element)
+    {
+      $template->assign_block_vars('que', $que_element);
+    }
+  }
+
   $template->assign_vars(array(
-    'planet_field_current' => $planet_fields_current,
-    'planet_field_max'     => $planet_fields_max,
-    'field_libre'          => $planet_fields_max - $planet_fields_current,
-    'NOW_WORKING'          => $now_working,
-    'NOW_BUILDING'         => $now_building,
-    'PAGE_HINT'            => $lang['eco_bld_page_hint'],
+    'TIME_NOW'           => $time_now,
 
-    'METAL'                => $planet['metal'],
-    'CRYSTAL'              => $planet['crystal'],
-    'DEUTERIUM'            => $planet['deuterium'],
+    'QUE_ID'             => $que_type,
 
-    'METAL_INCOMING'       => $fleet_list['own']['total'][RES_METAL],
-    'CRYSTAL_INCOMING'     => $fleet_list['own']['total'][RES_CRYSTAL],
-    'DEUTERIUM_INCOMING'   => $fleet_list['own']['total'][RES_DEUTERIUM],
+    'METAL'              => $planet['metal'],
+    'CRYSTAL'            => $planet['crystal'],
+    'DEUTERIUM'          => $planet['deuterium'],
 
-    'FLEET_OWN'            => $fleet_list['own']['count'],
+    'METAL_INCOMING'     => $fleet_list['own']['total'][RES_METAL],
+    'CRYSTAL_INCOMING'   => $fleet_list['own']['total'][RES_CRYSTAL],
+    'DEUTERIUM_INCOMING' => $fleet_list['own']['total'][RES_DEUTERIUM],
+
+    'FIELDS_CURRENT'     => $planet_fields_current,
+    'FIELDS_MAX'         => $planet_fields_max,
+    'FIELDS_FREE'        => $planet_fields_free,
+
+    'QUE_HAS_PLACE'      => $can_que_element,
+    'QUE_HAS_FIELDS'     => $planet_fields_queable,
+
+    'NOW_WORKING'        => $now_working,
+    'NOW_BUILDING'       => $now_building,
+
+    'FLEET_OWN'          => $fleet_list['own']['count'],
+
+    'PAGE_HINT'          => $lang['eco_bld_page_hint'],
   ));
 
   display(parsetemplate($template, $parse), $lang['Builds']);

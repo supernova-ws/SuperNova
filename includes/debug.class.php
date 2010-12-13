@@ -115,7 +115,7 @@ class debug
     }
     else
     {
-      message($message, "Ошибка");
+      message($message, 'Ошибка', $dest, 0, false);
     }
   }
 

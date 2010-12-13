@@ -20,23 +20,43 @@
 //
 // Reponse        -> un tableau avec les couts de construction (a ajouter ou retirer des ressources)
 function GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, $Incremental = true, $ForDestroy = false) {
-  global $pricelist, $resource;
+  global $pricelist, $sn_data;
+
+  $unit_factor = $sn_data[$Element]['factor'];
+  $unit_name = $sn_data[$Element]['name'];
 
   if ($Incremental) {
-    $level = ($CurrentPlanet[$resource[$Element]]) ? $CurrentPlanet[$resource[$Element]] : $CurrentUser[$resource[$Element]];
-    if($ForDestroy) $level--;
+    $level = ($CurrentPlanet[$unit_name]) ? $CurrentPlanet[$unit_name] : $CurrentUser[$unit_name];
+    if($ForDestroy)
+    {
+      $level--;
+    }
   }
 
-  $cost = array('metal' => 0, 'crystal' => 0, 'deuterium' => 0, 'energy_max' => 0);
-  foreach ($cost as $ResType => &$resCount) {
-    $resCount = floor($pricelist[$Element][$ResType]);
-    if ($Incremental)
-      $resCount = floor($resCount * pow($pricelist[$Element]['factor'], $level));
+  $cost = array(
+    'metal' => 0,
+    'crystal' => 0,
+    'deuterium' => 0,
+    'energy_max' => 0
+  );
 
-    if ($ForDestroy == true)
-      $resCount = floor($cost[$ResType] / 2);
+  $price_increase = pow($unit_factor, $level);
+  foreach ($cost as $ResType => &$resCount)
+  {
+    $resCount = $pricelist[$Element][$ResType];
+    if ($Incremental)
+    {
+      $resCount = $resCount * $price_increase;
+      if ($ForDestroy)
+      {
+        $resCount = $cost[$ResType] / 2;
+      }
+    }
+
+    $resCount = floor($resCount);
   }
 
   return $cost;
 }
+
 ?>
