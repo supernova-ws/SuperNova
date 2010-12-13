@@ -38,7 +38,7 @@ UpdatePlanetBatimentQueueList ( $planetrow, $user );
 
 $IsWorking = HandleTechnologieBuild ( $planetrow, $user );
 
-PlanetResourceUpdate($user, $planetrow, $time_now);
+$que = PlanetResourceUpdate($user, $planetrow, $time_now);
 
 switch ($mode)
 {
@@ -57,14 +57,15 @@ switch ($mode)
     DefensesBuildingPage ( $planetrow, $user );
   break;
 
+  case '0':
   case 'test':
-    eco_build(QUE_STRUCTURES, $user, $planetrow);
+    eco_build(QUE_STRUCTURES, $user, $planetrow, $que);
   break;
 
   case 'buildings':
   default:
     // --------------------------------------------------------------------------------------------------
-    BatimentBuildingPage ( $planetrow, $user );
+    BatimentBuildingPage($planetrow, $user);
     // eco_build(QUE_STRUCTURES, $user, $planetrow);
   break;
 }

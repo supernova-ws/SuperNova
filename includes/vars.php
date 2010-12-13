@@ -27,6 +27,12 @@ if ( defined('INSIDE')) {
   $sn_data = array(
     1   => array(
       'name' => 'metal_mine',
+      'cost' => array(
+        RES_METAL     => 80,
+        RES_CRYSTAL   => 20,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 80,
       'crystal' => 20,
       'deuterium' => 0,
@@ -42,10 +48,17 @@ if ( defined('INSIDE')) {
       'crystal_perhour'   => 'return 0;',
       'deuterium_perhour' => 'return 0;',
       'energy_perhour'    => 'return - (13 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
+      'type' => UNIT_STRUCTURE,
     ),
 
     2   => array(
       'name' => 'crystal_mine',
+      'cost' => array(
+        RES_METAL     => 48,
+        RES_CRYSTAL   => 24,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 48,
       'crystal' => 24,
       'deuterium' => 0,
@@ -61,10 +74,17 @@ if ( defined('INSIDE')) {
       'crystal_perhour'   => 'return   (20 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
       'deuterium_perhour' => 'return 0;',
       'energy_perhour'    => 'return - (10 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
+      'type' => UNIT_STRUCTURE,
     ),
 
     3   => array(
       'name' => 'deuterium_sintetizer',
+      'cost' => array(
+        RES_METAL     => 225,
+        RES_CRYSTAL   => 75,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 225,
       'crystal' => 75,
       'deuterium' => 0,
@@ -76,14 +96,21 @@ if ( defined('INSIDE')) {
         RES_DEUTERIUM => function ($level, $production_factor, $temperature) {return  10 * $level * pow(1.1, $level) * (0.1 * $production_factor) * (-0.002 * $temperature + 1.28);},
         RES_ENERGY    => function ($level, $production_factor, $temperature) {return -20 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
       ),
-    'metal_perhour'     => 'return 0;',
+      'metal_perhour'     => 'return 0;',
       'crystal_perhour'   => 'return 0;',
       'deuterium_perhour' => 'return  ((10 * $BuildLevel * pow(1.1, $BuildLevel)) * (-0.002 * $BuildTemp + 1.28)) * (0.1 * $BuildLevelFactor);',
       'energy_perhour'    => 'return - (20 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
+      'type' => UNIT_STRUCTURE,
     ),
 
     4   => array(
       'name' => 'solar_plant',
+      'cost' => array(
+        RES_METAL     => 75,
+        RES_CRYSTAL   => 30,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 75,
       'crystal' => 30,
       'deuterium' => 0,
@@ -99,11 +126,18 @@ if ( defined('INSIDE')) {
       'crystal_perhour'   => 'return 0;',
       'deuterium_perhour' => 'return 0;',
       'energy_perhour'    => 'return   (20 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
+      'type' => UNIT_STRUCTURE,
     ),
 
     12  => array(
       'name' => 'fusion_plant',
       'require' => array(3 => 5, TECH_ENERGY => 3),
+      'cost' => array(
+        RES_METAL     => 900,
+        RES_CRYSTAL   => 360,
+        RES_DEUTERIUM => 180,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 900,
       'crystal' => 360,
       'deuterium' => 180,
@@ -119,144 +153,249 @@ if ( defined('INSIDE')) {
       'crystal_perhour'   => 'return 0;',
       'deuterium_perhour' => 'return - (10 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
       'energy_perhour'    => 'return   (50 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
+      'type' => UNIT_STRUCTURE,
     ),
 
     14  => array(
       'name' => 'robot_factory',
+      'cost' => array(
+        RES_METAL     => 400,
+        RES_CRYSTAL   => 120,
+        RES_DEUTERIUM => 200,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 400,
       'crystal' => 120,
       'deuterium' => 200,
       'energy' => 0,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     15  => array(
       'name' => 'nano_factory',
       'require' => array(14 => 10, 108 => 10),
+      'cost' => array(
+        RES_METAL     => 1000000,
+        RES_CRYSTAL   => 500000,
+        RES_DEUTERIUM => 100000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 1000000,
       'crystal' => 500000,
       'deuterium' => 100000,
       'energy' => 0,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     21  => array(
       'name' => 'hangar',
       'require' => array(14 => 2),
+      'cost' => array(
+        RES_METAL     => 400,
+        RES_CRYSTAL   => 200,
+        RES_DEUTERIUM => 100,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 400,
       'crystal' => 200,
       'deuterium' => 100,
       'energy' => 0,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     22  => array(
       'name' => 'metal_store',
+      'cost' => array(
+        RES_METAL     => 2000,
+        RES_CRYSTAL   => 0,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 2000,
       'crystal' => 0,
       'deuterium' => 0,
       'energy' => 0,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     23  => array(
       'name' => 'crystal_store',
+      'cost' => array(
+        RES_METAL     => 2000,
+        RES_CRYSTAL   => 1000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 2000,
       'crystal' => 1000,
       'deuterium' => 0,
       'energy' => 0,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     24  => array(
       'name' => 'deuterium_store',
+      'cost' => array(
+        RES_METAL     => 2000,
+        RES_CRYSTAL   => 2000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 2000,
       'crystal' => 2000,
       'deuterium' => 0,
       'energy' => 0,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     31  => array(
       'name' => 'laboratory',
+      'cost' => array(
+        RES_METAL     => 200,
+        RES_CRYSTAL   => 400,
+        RES_DEUTERIUM => 200,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 200,
       'crystal' => 400,
       'deuterium' => 200,
       'energy' => 0,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     33  => array(
       'name' => 'terraformer',
       'require' => array(15 => 1, TECH_ENERGY => 12),
+      'cost' => array(
+        RES_METAL     => 0,
+        RES_CRYSTAL   => 50000,
+        RES_DEUTERIUM => 100000,
+        RES_ENERGY    => 1000,
+      ),
       'metal' => 0,
       'crystal' => 50000,
       'deuterium' => 100000,
       'energy' => 1000,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     34  => array(
       'name' => 'ally_deposit',
+      'cost' => array(
+        RES_METAL     => 20000,
+        RES_CRYSTAL   => 40000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 20000,
       'crystal' => 40000,
       'deuterium' => 0,
       'energy' => 0,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     35  => array(
       'name' => 'nano',
       'require' => array(31 => 10, TECH_ENERGY => 10),
+      'cost' => array(
+        RES_METAL     => 1500000,
+        RES_CRYSTAL   => 750000,
+        RES_DEUTERIUM => 150000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 1500000,
       'crystal' => 750000,
       'deuterium' => 150000,
       'energy' => 0,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     41  => array(
       'name' => 'mondbasis',
+      'cost' => array(
+        RES_METAL     => 20000,
+        RES_CRYSTAL   => 40000,
+        RES_DEUTERIUM => 20000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 20000,
       'crystal' => 40000,
       'deuterium' => 20000,
       'energy' => 0,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     42  => array(
       'name' => 'phalanx',
       'require' => array(41 => 1),
+      'cost' => array(
+        RES_METAL     => 20000,
+        RES_CRYSTAL   => 40000,
+        RES_DEUTERIUM => 20000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 20000,
       'crystal' => 40000,
       'deuterium' => 20000,
       'energy' => 0,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     43  => array(
       'name' => 'sprungtor',
       'require' => array(41 => 1, 114 => 7),
+      'cost' => array(
+        RES_METAL     => 2000000,
+        RES_CRYSTAL   => 4000000,
+        RES_DEUTERIUM => 2000000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 2000000,
       'crystal' => 4000000,
       'deuterium' => 2000000,
       'energy' => 0,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     44  => array(
       'name' => 'silo',
       'require' => array(117 => 1),
+      'cost' => array(
+        RES_METAL     => 20000,
+        RES_CRYSTAL   => 20000,
+        RES_DEUTERIUM => 1000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 20000,
       'crystal' => 20000,
       'deuterium' => 1000,
       'energy' => 0,
       'factor' => 2,
+      'type' => UNIT_STRUCTURE,
     ),
 
     106 => array(
       'name' => 'spy_tech',
       'require' => array(31 => 3),
+      'cost' => array(
+        RES_METAL     => 200,
+        RES_CRYSTAL   => 1000,
+        RES_DEUTERIUM => 200,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 200,
       'crystal' => 1000,
       'deuterium' => 200,
@@ -267,6 +406,12 @@ if ( defined('INSIDE')) {
     108 => array(
       'name' => 'computer_tech',
       'require' => array(31 => 1),
+      'cost' => array(
+        RES_METAL     => 0,
+        RES_CRYSTAL   => 400,
+        RES_DEUTERIUM => 600,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 0,
       'crystal' => 400,
       'deuterium' => 600,
@@ -277,6 +422,12 @@ if ( defined('INSIDE')) {
     109 => array(
       'name' => 'military_tech',
       'require' => array(31 => 4),
+      'cost' => array(
+        RES_METAL     => 800,
+        RES_CRYSTAL   => 200,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 800,
       'crystal' => 200,
       'deuterium' => 0,
@@ -287,6 +438,12 @@ if ( defined('INSIDE')) {
     110 => array(
       'name' => 'shield_tech',
       'require' => array(TECH_ENERGY => 3, 31 => 6),
+      'cost' => array(
+        RES_METAL     => 200,
+        RES_CRYSTAL   => 600,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 200,
       'crystal' => 600,
       'deuterium' => 0,
@@ -297,6 +454,12 @@ if ( defined('INSIDE')) {
     111 => array(
       'name' => 'defence_tech',
       'require' => array(31 => 2),
+      'cost' => array(
+        RES_METAL     => 1000,
+        RES_CRYSTAL   => 0,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 1000,
       'crystal' => 0,
       'deuterium' => 0,
@@ -307,6 +470,12 @@ if ( defined('INSIDE')) {
     TECH_ENERGY => array(
       'name' => 'energy_tech',
       'require' => array(31 => 1),
+      'cost' => array(
+        RES_METAL     => 0,
+        RES_CRYSTAL   => 800,
+        RES_DEUTERIUM => 400,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 0,
       'crystal' => 800,
       'deuterium' => 400,
@@ -319,6 +488,12 @@ if ( defined('INSIDE')) {
     114 => array(
       'name' => 'hyperspace_tech',
       'require' => array(TECH_ENERGY => 5, 110 => 5, 31 => 7),
+      'cost' => array(
+        RES_METAL     => 0,
+        RES_CRYSTAL   => 4000,
+        RES_DEUTERIUM => 2000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 0,
       'crystal' => 4000,
       'deuterium' => 2000,
@@ -329,6 +504,12 @@ if ( defined('INSIDE')) {
     115 => array(
       'name' => 'combustion_tech',
       'require' => array(TECH_ENERGY => 1, 31 => 1),
+      'cost' => array(
+        RES_METAL     => 400,
+        RES_CRYSTAL   => 0,
+        RES_DEUTERIUM => 600,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 400,
       'crystal' => 0,
       'deuterium' => 600,
@@ -340,6 +521,12 @@ if ( defined('INSIDE')) {
     117 => array(
       'name' => 'impulse_motor_tech',
       'require' => array(TECH_ENERGY => 1, 31 => 2),
+      'cost' => array(
+        RES_METAL     => 2000,
+        RES_CRYSTAL   => 4000,
+        RES_DEUTERIUM => 600,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 2000,
       'crystal' => 4000,
       'deuterium' => 600,
@@ -351,6 +538,12 @@ if ( defined('INSIDE')) {
     118 => array(
       'name' => 'hyperspace_motor_tech',
       'require' => array(114 => 3, 31 => 7),
+      'cost' => array(
+        RES_METAL     => 10000,
+        RES_CRYSTAL   => 20000,
+        RES_DEUTERIUM => 6000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 10000,
       'crystal' => 20000,
       'deuterium' => 6000,
@@ -362,6 +555,12 @@ if ( defined('INSIDE')) {
     120 => array(
       'name' => 'laser_tech',
       'require' => array(31 => 1, TECH_ENERGY => 2),
+      'cost' => array(
+        RES_METAL     => 200,
+        RES_CRYSTAL   => 100,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 200,
       'crystal' => 100,
       'deuterium' => 0,
@@ -372,6 +571,12 @@ if ( defined('INSIDE')) {
     121 => array(
       'name' => 'ionic_tech',
       'require' => array(31 => 4, 120 => 5, TECH_ENERGY => 4),
+      'cost' => array(
+        RES_METAL     => 1000,
+        RES_CRYSTAL   => 300,
+        RES_DEUTERIUM => 100,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 1000,
       'crystal' => 300,
       'deuterium' => 100,
@@ -382,6 +587,12 @@ if ( defined('INSIDE')) {
     122 => array(
       'name' => 'buster_tech',
       'require' => array(31 => 5, TECH_ENERGY => 8, 120 => 10, 121 => 5),
+      'cost' => array(
+        RES_METAL     => 2000,
+        RES_CRYSTAL   => 4000,
+        RES_DEUTERIUM => 1000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 2000,
       'crystal' => 4000,
       'deuterium' => 1000,
@@ -392,6 +603,12 @@ if ( defined('INSIDE')) {
     123 => array(
       'name' => 'intergalactic_tech',
       'require' => array(31 => 10, 108 => 8, 114 => 8),
+      'cost' => array(
+        RES_METAL     => 240000,
+        RES_CRYSTAL   => 400000,
+        RES_DEUTERIUM => 160000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 240000,
       'crystal' => 400000,
       'deuterium' => 160000,
@@ -402,6 +619,12 @@ if ( defined('INSIDE')) {
     124 => array(
       'name' => 'expedition_tech',
       'require' => array(31 => 3, 108 => 4, 117 => 3),
+      'cost' => array(
+        RES_METAL     => 4000,
+        RES_CRYSTAL   => 8000,
+        RES_DEUTERIUM => 4000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 4000,
       'crystal' => 8000,
       'deuterium' => 4000,
@@ -412,6 +635,12 @@ if ( defined('INSIDE')) {
     150 => array(
       'name' => 'colonisation_tech',
       'require' => array(31 => 3, TECH_ENERGY => 5, 111 => 2),
+      'cost' => array(
+        RES_METAL     => 1000,
+        RES_CRYSTAL   => 4000,
+        RES_DEUTERIUM => 1000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 1000,
       'crystal' => 4000,
       'deuterium' => 1000,
@@ -422,6 +651,12 @@ if ( defined('INSIDE')) {
     199 => array(
       'name' => 'graviton_tech',
       'require' => array(31 => 12),
+      'cost' => array(
+        RES_METAL     => 0,
+        RES_CRYSTAL   => 0,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 300000,
+      ),
       'metal' => 0,
       'crystal' => 0,
       'deuterium' => 0,
@@ -432,6 +667,12 @@ if ( defined('INSIDE')) {
     202 => array(
       'name' => 'small_ship_cargo',
       'require' => array(21 => 2, 115 => 2),
+      'cost' => array(
+        RES_METAL     => 2000,
+        RES_CRYSTAL   => 2000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 2000,
       'crystal' => 2000,
       'deuterium' => 0,
@@ -456,6 +697,12 @@ if ( defined('INSIDE')) {
     203 => array(
       'name' => 'big_ship_cargo',
       'require' => array(21 => 4, 115 => 6),
+      'cost' => array(
+        RES_METAL     => 6000,
+        RES_CRYSTAL   => 6000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 6000,
       'crystal' => 6000,
       'deuterium' => 0,
@@ -476,6 +723,12 @@ if ( defined('INSIDE')) {
     201 => array(
       'name' => 'supercargo',
       'require' => array(21 => 8, 117 => 5, MRC_STOCKMAN => 1),
+      'cost' => array(
+        RES_METAL     => 25000,
+        RES_CRYSTAL   => 15000,
+        RES_DEUTERIUM => 5000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 25000,
       'crystal' => 15000,
       'deuterium' => 5000,
@@ -496,6 +749,12 @@ if ( defined('INSIDE')) {
     204 => array(
       'name' => 'light_hunter',
       'require' => array(21 => 1, 115 => 1),
+      'cost' => array(
+        RES_METAL     => 3000,
+        RES_CRYSTAL   => 1000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 3000,
       'crystal' => 1000,
       'deuterium' => 0,
@@ -516,6 +775,12 @@ if ( defined('INSIDE')) {
     205 => array(
       'name' => 'heavy_hunter',
       'require' => array(21 => 3, 111 => 2, 117 => 2),
+      'cost' => array(
+        RES_METAL     => 6000,
+        RES_CRYSTAL   => 4000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 6000,
       'crystal' => 4000,
       'deuterium' => 0,
@@ -536,6 +801,12 @@ if ( defined('INSIDE')) {
     206 => array(
       'name' => 'crusher',
       'require' => array(21 => 5, 117 => 4, 121 => 2),
+      'cost' => array(
+        RES_METAL     => 20000,
+        RES_CRYSTAL   => 7000,
+        RES_DEUTERIUM => 2000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 20000,
       'crystal' => 7000,
       'deuterium' => 2000,
@@ -556,6 +827,12 @@ if ( defined('INSIDE')) {
     207 => array(
       'name' => 'battle_ship',
       'require' => array(21 => 7, 118 => 4),
+      'cost' => array(
+        RES_METAL     => 45000,
+        RES_CRYSTAL   => 15000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 45000,
       'crystal' => 15000,
       'deuterium' => 0,
@@ -576,6 +853,12 @@ if ( defined('INSIDE')) {
     208 => array(
       'name' => 'colonizer',
       'require' => array(21 => 4, 117 => 3, 150 => 2),
+      'cost' => array(
+        RES_METAL     => 10000,
+        RES_CRYSTAL   => 20000,
+        RES_DEUTERIUM => 10000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 10000,
       'crystal' => 20000,
       'deuterium' => 10000,
@@ -596,6 +879,12 @@ if ( defined('INSIDE')) {
     209 => array(
       'name' => 'recycler',
       'require' => array(21 => 4, 115 => 6, 110 => 2),
+      'cost' => array(
+        RES_METAL     => 10000,
+        RES_CRYSTAL   => 6000,
+        RES_DEUTERIUM => 2000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 10000,
       'crystal' => 6000,
       'deuterium' => 2000,
@@ -616,6 +905,12 @@ if ( defined('INSIDE')) {
     210 => array(
       'name' => 'spy_sonde',
       'require' => array(21 => 3, 115 => 3, 106 => 2),
+      'cost' => array(
+        RES_METAL     => 0,
+        RES_CRYSTAL   => 1000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 0,
       'crystal' => 1000,
       'deuterium' => 0,
@@ -636,6 +931,12 @@ if ( defined('INSIDE')) {
     211 => array(
       'name' => 'bomber_ship',
       'require' => array(117 => 6, 21 => 8, 122 => 5),
+      'cost' => array(
+        RES_METAL     => 50000,
+        RES_CRYSTAL   => 25000,
+        RES_DEUTERIUM => 15000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 50000,
       'crystal' => 25000,
       'deuterium' => 15000,
@@ -660,6 +961,12 @@ if ( defined('INSIDE')) {
     212 => array(
       'name' => 'solar_satelit',
       'require' => array(21 => 1),
+      'cost' => array(
+        RES_METAL     => 1500,
+        RES_CRYSTAL   => 2000,
+        RES_DEUTERIUM => 100,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 1500,
       'crystal' => 2000,
       'deuterium' => 100,
@@ -690,6 +997,12 @@ if ( defined('INSIDE')) {
     213 => array(
       'name' => 'destructor',
       'require' => array(21 => 9, 118 => 6, 114 => 5),
+      'cost' => array(
+        RES_METAL     => 60000,
+        RES_CRYSTAL   => 50000,
+        RES_DEUTERIUM => 15000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 60000,
       'crystal' => 50000,
       'deuterium' => 15000,
@@ -710,6 +1023,12 @@ if ( defined('INSIDE')) {
     214 => array(
       'name' => 'dearth_star',
       'require' => array(21 => 12, 118 => 7, 114 => 6, 199 => 1, MRC_DESTRUCTOR => 1),
+      'cost' => array(
+        RES_METAL     => 5000000,
+        RES_CRYSTAL   => 4000000,
+        RES_DEUTERIUM => 1000000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 5000000,
       'crystal' => 4000000,
       'deuterium' => 1000000,
@@ -730,6 +1049,12 @@ if ( defined('INSIDE')) {
     215 => array(
       'name' => 'battleship',
       'require' => array(114 => 5, 120 => 12, 118 => 5, 21 => 8),
+      'cost' => array(
+        RES_METAL     => 30000,
+        RES_CRYSTAL   => 40000,
+        RES_DEUTERIUM => 15000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 30000,
       'crystal' => 40000,
       'deuterium' => 15000,
@@ -750,6 +1075,12 @@ if ( defined('INSIDE')) {
     216 => array(
       'name' => 'supernova',
       'require' => array(MRC_ASSASIN => 1),
+      'cost' => array(
+        RES_METAL     => 20000000,
+        RES_CRYSTAL   => 15000000,
+        RES_DEUTERIUM => 5000000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 20000000,
       'crystal' => 15000000,
       'deuterium' => 5000000,
@@ -774,6 +1105,12 @@ if ( defined('INSIDE')) {
     401 => array(
       'name' => 'misil_launcher',
       'require' => array(21 => 1),
+      'cost' => array(
+        RES_METAL     => 2000,
+        RES_CRYSTAL   => 0,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 2000,
       'crystal' => 0,
       'deuterium' => 0,
@@ -790,6 +1127,12 @@ if ( defined('INSIDE')) {
     402 => array(
       'name' => 'small_laser',
       'require' => array(TECH_ENERGY => 1, 21 => 2, 120 => 3),
+      'cost' => array(
+        RES_METAL     => 1500,
+        RES_CRYSTAL   => 500,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 1500,
       'crystal' => 500,
       'deuterium' => 0,
@@ -806,6 +1149,12 @@ if ( defined('INSIDE')) {
     403 => array(
       'name' => 'big_laser',
       'require' => array(TECH_ENERGY => 3, 21 => 4, 120 => 6),
+      'cost' => array(
+        RES_METAL     => 6000,
+        RES_CRYSTAL   => 2000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 6000,
       'crystal' => 2000,
       'deuterium' => 0,
@@ -822,6 +1171,12 @@ if ( defined('INSIDE')) {
     404 => array(
       'name' => 'gauss_canyon',
       'require' => array(21 => 6, TECH_ENERGY => 6, 109 => 3, 110 => 1),
+      'cost' => array(
+        RES_METAL     => 20000,
+        RES_CRYSTAL   => 15000,
+        RES_DEUTERIUM => 2000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 20000,
       'crystal' => 15000,
       'deuterium' => 2000,
@@ -838,6 +1193,12 @@ if ( defined('INSIDE')) {
     405 => array(
       'name' => 'ionic_canyon',
       'require' => array(21 => 4, 121 => 4),
+      'cost' => array(
+        RES_METAL     => 2000,
+        RES_CRYSTAL   => 6000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 2000,
       'crystal' => 6000,
       'deuterium' => 0,
@@ -854,6 +1215,12 @@ if ( defined('INSIDE')) {
     406 => array(
       'name' => 'buster_canyon',
       'require' => array(21 => 8, 122 => 7),
+      'cost' => array(
+        RES_METAL     => 50000,
+        RES_CRYSTAL   => 50000,
+        RES_DEUTERIUM => 30000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 50000,
       'crystal' => 50000,
       'deuterium' => 30000,
@@ -870,6 +1237,12 @@ if ( defined('INSIDE')) {
     407 => array(
       'name' => 'small_protection_shield',
       'require' => array(110 => 2, 21 => 1),
+      'cost' => array(
+        RES_METAL     => 10000,
+        RES_CRYSTAL   => 10000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 10000,
       'crystal' => 10000,
       'deuterium' => 0,
@@ -886,6 +1259,12 @@ if ( defined('INSIDE')) {
     408 => array(
       'name' => 'big_protection_shield',
       'require' => array(110 => 6, 21 => 6),
+      'cost' => array(
+        RES_METAL     => 50000,
+        RES_CRYSTAL   => 50000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 50000,
       'crystal' => 50000,
       'deuterium' => 0,
@@ -918,6 +1297,12 @@ if ( defined('INSIDE')) {
     502 => array(
       'name' => 'interceptor_misil',
       'require' => array(44 => 2),
+      'cost' => array(
+        RES_METAL     => 8000,
+        RES_CRYSTAL   => 2000,
+        RES_DEUTERIUM => 0,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 8000,
       'crystal' => 2000,
       'deuterium' => 0,
@@ -932,6 +1317,12 @@ if ( defined('INSIDE')) {
     503 => array(
       'name' => 'interplanetary_misil',
       'require' => array(44 => 4),
+      'cost' => array(
+        RES_METAL     => 12500,
+        RES_CRYSTAL   => 2500,
+        RES_DEUTERIUM => 10000,
+        RES_ENERGY    => 0,
+      ),
       'metal' => 12500,
       'crystal' => 2500,
       'deuterium' => 10000,
@@ -1146,8 +1537,33 @@ if ( defined('INSIDE')) {
       'resources_planet' => array (RES_METAL, RES_CRYSTAL, RES_DEUTERIUM, RES_ENERGY),
       // Resources can be looted from planet
       'resources_loot' => array (RES_METAL, RES_CRYSTAL, RES_DEUTERIUM),
+
+//      // Ques list
+//      'ques' => array(QUE_STRUCTURES, QUE_HANGAR, QUE_RESEARCH),
+    ),
+  );
+
+  $sn_data['groups']['ques'] = array(
+    QUE_STRUCTURES => array(
+      'unit_list' => $sn_data['groups']['structures'],
+      'length' => 5,
+      'mercenary' => MRC_ARCHITECT,
+      'que' => QUE_STRUCTURES,
     ),
 
+    QUE_HANGAR => array(
+      'unit_list' => array_merge($sn_data['groups']['fleet'], $sn_data['groups']['defense']),
+      'length' => 10,
+      'mercenary' => MRC_CONSTRUCTOR,
+      'que' => QUE_HANGAR,
+    ),
+
+    QUE_RESEACH => array(
+      'unit_list' => $sn_data['groups']['tech'],
+      'length' => 1,
+      'mercenary' => MRC_ACADEMIC,
+      'que' => QUE_RESEACH,
+    )
   );
 
   $sn_groups = &$sn_data['groups'];

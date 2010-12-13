@@ -15,7 +15,8 @@
 //
 
 // Calcul de la distance entre 2 planetes
-function GetTargetDistance ($OrigGalaxy, $DestGalaxy, $OrigSystem, $DestSystem, $OrigPlanet, $DestPlanet) {
+function GetTargetDistance ($OrigGalaxy, $DestGalaxy, $OrigSystem, $DestSystem, $OrigPlanet, $DestPlanet)
+{
   if (($OrigGalaxy - $DestGalaxy) != 0) {
     $distance = abs($OrigGalaxy - $DestGalaxy) * 20000;
   } elseif (($OrigSystem - $DestSystem) != 0) {
@@ -30,19 +31,22 @@ function GetTargetDistance ($OrigGalaxy, $DestGalaxy, $OrigSystem, $DestSystem, 
 }
 
 // Calcul de la dur√©e de vol d'une flotte par rapport a sa vitesse max
-function GetMissionDuration ($GameSpeed, $MaxFleetSpeed, $Distance, $SpeedFactor) {
+function GetMissionDuration ($GameSpeed, $MaxFleetSpeed, $Distance, $SpeedFactor)
+{
   $Duration = round(((35000 / $GameSpeed * sqrt($Distance * 10 / $MaxFleetSpeed) + 10) / $SpeedFactor));
 
   return $Duration;
 }
 
-function get_fleet_speed() {
+function get_fleet_speed()
+{
   global $config;
 
   return $config->fleet_speed;
 }
 
-function get_game_speed() {
+function get_game_speed()
+{
   global $config;
 
   return $config->game_speed;
@@ -109,7 +113,8 @@ function GetShipConsumption ( $ship_id, $user )
 
 // ----------------------------------------------------------------------------------------------------------------
 // Calcul de la consommation de la flotte pour cette mission
-function GetFleetConsumption ($FleetArray, $SpeedFactor, $MissionDuration, $MissionDistance, $FleetMaxSpeed, $Player, $speed_percent = 10) {
+function GetFleetConsumption ($FleetArray, $SpeedFactor, $MissionDuration, $MissionDistance, $FleetMaxSpeed, $Player, $speed_percent = 10)
+{
   $consumption     = 0;
 
   $MissionDuration = $MissionDuration < 1 ? 1 : $MissionDuration;
@@ -142,68 +147,52 @@ function GetFleetConsumption ($FleetArray, $SpeedFactor, $MissionDuration, $Miss
 //
 
 // Mise en forme de la dur√©e sous forme xj xxh xxm xxs
-function pretty_time ($seconds) {
+function pretty_time ($seconds)
+{
   global $lang;
 
   $day = floor($seconds / (24 * 3600));
-  $hs = floor($seconds / 3600 % 24);
-  $ms = floor($seconds / 60 % 60);
-  $sr = floor($seconds / 1 % 60);
-
-  $time = sprintf("%s%02d:%02d:%02d", $day?$day . $lang['sys_day_short'] . ' ':'', $hs, $ms, $sr);
-
-  return $time;
+  return sprintf("%s%02d:%02d:%02d", $day ? "{$day}{$lang['sys_day_short']} ":'', floor($seconds / 3600 % 24), floor($seconds / 60 % 60), floor($seconds / 1 % 60));
 }
 
 // Mise en forme de la dur√©e sous forme xxxmin
-function pretty_time_hour ($seconds) {
+function pretty_time_hour($seconds)
+{
+  global $lang;
+
   $min = floor($seconds / 60 % 60);
-
-  $time = '';
-  if ($min != 0) { $time .= $min . 'ÏËÌ '; }
-
-  return $time;
+  return $min ? "{$min}{$lang['sys_min_short']} " : '';
 }
 
 // Mise en forme du temps de construction (avec la phrase de description)
-function ShowBuildTime ($time) {
+function ShowBuildTime($time)
+{
   global $lang;
 
-  return "<br>". $lang['ConstructionTime'] .": " . pretty_time($time);
-}
-
-// ----------------------------------------------------------------------------------------------------------------
-//
-function add_points ($res, $userid) {
-  return false;
-}
-
-function remove_points ($res, $userid) {
-  return false;
-}
-
-function get_userdata () {
-  return '';
+  $time = pretty_time($time);
+  return "{$lang['ConstructionTime']}: {$time}";
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 //
 // Fonction de lecture / ecriture / exploitation de templates
 //
-function ReadFromFile($filename) {
-  $content = @file_get_contents ($filename);
-  return $content;
+function ReadFromFile($filename)
+{
+  return @file_get_contents($filename);
 }
 
-function SaveToFile ($filename, $content) {
-  $content = @file_put_contents ($filename, $content);
+function SaveToFile ($filename, $content)
+{
+  return @file_put_contents($filename, $content);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 //
 // Gestion de la localisation des chaines
 //
-function includeLang ($filename, $ext = '.mo') {
+function includeLang ($filename, $ext = '.mo')
+{
   global $ugamela_root_path, $lang, $user, $phpEx;
 
   $SelLanguage = $user['lang'] ? $user['lang'] : DEFAULT_LANG;
@@ -213,38 +202,6 @@ function includeLang ($filename, $ext = '.mo') {
 
 // ----------------------------------------------------------------------------------------------------------------
 //
-// Affiche une adresse de depart sous forme de lien
-function GetStartAdressLink ( $FleetRow, $FleetType ) {
-  $Link  = "<a href=\"galaxy.php?mode=3&galaxy=".$FleetRow['fleet_start_galaxy']."&system=".$FleetRow['fleet_start_system']."\" ". $FleetType ." >";
-  $Link .= "[".$FleetRow['fleet_start_galaxy'].":".$FleetRow['fleet_start_system'].":".$FleetRow['fleet_start_planet']."]</a>";
-  return $Link;
-}
-
-// Affiche une adresse de cible sous forme de lien
-function GetTargetAdressLink ( $FleetRow, $FleetType ) {
-  $Link  = "<a href=\"galaxy.php?mode=3&galaxy=".$FleetRow['fleet_end_galaxy']."&system=".$FleetRow['fleet_end_system']."\" ". $FleetType ." >";
-  $Link .= "[".$FleetRow['fleet_end_galaxy'].":".$FleetRow['fleet_end_system'].":".$FleetRow['fleet_end_planet']."]</a>";
-  return $Link;
-}
-
-// Affiche une adresse de planete sous forme de lien
-function BuildPlanetAdressLink ( $CurrentPlanet ) {
-  $Link  = "<a href=\"galaxy.php?mode=3&galaxy=".$CurrentPlanet['galaxy']."&system=".$CurrentPlanet['system']."\">";
-  $Link .= "[".$CurrentPlanet['galaxy'].":".$CurrentPlanet['system'].":".$CurrentPlanet['planet']."]</a>";
-  return $Link;
-}
-
-// Cr√©ation d'un lien pour le joueur hostile
-function BuildHostileFleetPlayerLink ( $FleetRow ) {
-  global $lang, $dpath;
-
-  $PlayerName = doquery ("SELECT `username` FROM {{table}} WHERE `id` = '". $FleetRow['fleet_owner']."';", 'users', true);
-  $Link  = $PlayerName['username']. " ";
-  $Link .= "<a href=\"messages.php?mode=write&id=".$FleetRow['fleet_owner']."\">";
-  $Link .= "<img src=\"".$dpath."/img/m.gif\" alt=\"". $lang['ov_message']."\" title=\"". $lang['ov_message']."\" border=\"0\"></a>";
-  return $Link;
-}
-
 function GetNextJumpWaitTime ( $CurMoon ) {
   global $resource;
 
@@ -352,10 +309,35 @@ function SYS_mysqlSmartEscape($string)
 
 // ----------------------------------------------------------------------------------------------------------------
 //
-//
+// Affiche une adresse de depart sous forme de lien
+function GetStartAdressLink ( $FleetRow, $FleetType )
+{
+//  $Link  = "<a href=\"galaxy.php?mode=3&galaxy={$FleetRow['fleet_start_galaxy']}&system={$FleetRow['fleet_start_system']}\" {$FleetType}>";
+//  $Link .= "[{$FleetRow['fleet_start_galaxy']}:{$FleetRow['fleet_start_system']}:{$FleetRow['fleet_start_planet']}]</a>";
+//  return $Link;
+  return int_makeCoordinatesLink($FleetRow, 'fleet_start_', 3, $FleetType);
+}
+
+// Affiche une adresse de cible sous forme de lien
+function GetTargetAdressLink($FleetRow, $FleetType)
+{
+//  $Link  = "<a href=\"galaxy.php?mode=3&galaxy=".$FleetRow['fleet_end_galaxy']."&system=".$FleetRow['fleet_end_system']."\" ". $FleetType ." >";
+//  $Link .= "[".$FleetRow['fleet_end_galaxy'].":".$FleetRow['fleet_end_system'].":".$FleetRow['fleet_end_planet']."]</a>";
+//  return $Link;
+  return int_makeCoordinatesLink($FleetRow, 'fleet_end_', 3, $FleetType);
+}
+
+// Affiche une adresse de planete sous forme de lien
+function BuildPlanetAdressLink($CurrentPlanet)
+{
+//  $Link  = "<a href=\"galaxy.php?mode=3&galaxy=".$CurrentPlanet['galaxy']."&system=".$CurrentPlanet['system']."\">";
+//  $Link .= "[".$CurrentPlanet['galaxy'].":".$CurrentPlanet['system'].":".$CurrentPlanet['planet']."]</a>";
+//  return $Link;
+  return int_makeCoordinatesLink($CurrentPlanet, '', 3);
+}
+
 function INT_makeCoordinates ($from, $prefix = '')
 {
-//  return '[' . $from[$prefix.'galaxy'] . ':' . $from[$prefix.'system'] . ':' . $from[$prefix.'planet'] . ']';
   return "[{$from[$prefix.'galaxy']}:{$from[$prefix.'system']}:{$from[$prefix.'planet']}]";
 }
 
@@ -364,9 +346,17 @@ function int_makeCoordinatesURL ($from, $prefix = '', $mode = 0)
   return "galaxy.php?mode={$mode}&galaxy={$from[$prefix.'galaxy']}&system={$from[$prefix.'system']}&planet={$from[$prefix.'planet']}";
 }
 
-function int_makeCoordinatesLink ($from, $prefix = '', $mode = 0)
+function int_makeCoordinatesLink ($from, $prefix = '', $mode = 0, $fleet_type = '')
 {
-  return '<a href="' . int_makeCoordinatesURL($from, $prefix, $mode) . '">' . INT_makeCoordinates ($from, $prefix) . '</a>';
+  return '<a href="' . int_makeCoordinatesURL($from, $prefix, $mode) . '" "{$fleet_type}">' . INT_makeCoordinates ($from, $prefix) . '</a>';
+}
+
+// Cr√©ation d'un lien pour le joueur hostile
+function BuildHostileFleetPlayerLink ( $FleetRow ) {
+  global $lang, $dpath;
+
+  $PlayerName = doquery ("SELECT `username` FROM {{users}} WHERE `id` = '{$FleetRow['fleet_owner']}' LIMIT 1;", '', true);
+  return "{$PlayerName['username']} <a href=\"messages.php?mode=write&id={$FleetRow['fleet_owner']}\"><img src=\"{$dpath}/img/m.gif\" alt=\"{$lang['ov_message']}\" title=\"{$lang['ov_message']}\" border=\"0\"></a>";
 }
 
 function int_renderLastActiveHTML($last_active = 0, $isAllowed = true, $isAdmin = false)
@@ -462,27 +452,45 @@ function colorNumber($n, $s = '') {
   return $s;
 }
 
-function colorRed($n) {
-  return '<font color="#ff0000">' . $n . '</font>';
+function colorRed($n)
+{
+  return "<font color=\"#ff0000\">{$n}</font>";
 }
 
-function colorGreen($n) {
-  return '<font color="#00ff00">' . $n . '</font>';
+function colorGreen($n)
+{
+  return "<font color=\"#00ff00\">{$n}</font>";
 }
 
-function pretty_number($n, $floor = true, $color = false, $limit = 0) {
-  if ($floor === true)
+// --- Formatting & Coloring numbers
+// $n - number to format
+// $floor: (ignored if $limit set)
+//   true      - floors number before format
+//   integer   - floors to $floor numbers after decimal points
+//   otherwise - floors to 2 numbers after decimal points
+// $color:
+//   true    - colors number to green if positive or zero; red if negative
+//   numeric - colors number to green if less then $color; red if greater
+// $limit:
+//   0/false - proceed with $floor
+//   numeric - divieds number to segments by power of $limit and adds 'k' for each segment
+//             makes sense for 1000, but works with any number
+//             generally converts "15000" to "15k", "2000000" to "2kk" etc
+
+function pretty_number($n, $floor = true, $color = false, $limit = 0)
+{
+  if(is_int($floor))
+  {
+    $n = round($n, $floor, PHP_ROUND_HALF_DOWN);
+  }
+  elseif ($floor === true)
   {
     $n = floor($n);
     $floor = 0;
   }
-  elseif ($floor === false)
+  else
   {
     $floor = 2;
-  }
-  elseif(is_numeric($floor))
-  {
-    $n = round($n, $floor, PHP_ROUND_HALF_DOWN);
   }
 
   if($limit)
@@ -563,23 +571,23 @@ function eco_planet_fields_max($planet)
 function GetSpyLevel(&$user)
 {
   global $sn_data;
-  // return $user[$resource[106]] + $user[$resource[MRC_SPY]];
   return mrc_modify_value($user, $false, MRC_SPY, $user[$sn_data[106]['name']]);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 //
 //
-function GetMaxFleets(&$user) {
+function GetMaxFleets(&$user)
+{
   global $sn_data;
-  // return 1 + $user[$resource[108]] + ($user[$resource[611]]*3);
   return mrc_modify_value($user, false, MRC_COORDINATOR, 1 + $user[$sn_data[108]['name']]);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 //
 //
-function GetMaxExpeditions(&$user) {
+function GetMaxExpeditions(&$user)
+{
   global $resource;
   return floor(sqrt($user[$resource[124]]));
 }
@@ -587,7 +595,8 @@ function GetMaxExpeditions(&$user) {
 // ----------------------------------------------------------------------------------------------------------------
 // Check input string for forbidden words
 //
-function CheckInputStrings ( $String ) {
+function CheckInputStrings($String)
+{
   global $ListCensure;
 
   return (preg_replace( $ListCensure, '*', $String ));
@@ -597,22 +606,26 @@ function CheckInputStrings ( $String ) {
 //
 // Routine Test de validitÈ d'une adresse email
 //
-function is_email($email) {
+function is_email($email)
+{
   return(preg_match("/^[-_.[:alnum:]]+@((([[:alnum:]]|[[:alnum:]][[:alnum:]-]*[[:alnum:]])\.)+(ad|ae|aero|af|ag|ai|al|am|an|ao|aq|ar|arpa|as|at|au|aw|az|ba|bb|bd|be|bf|bg|bh|bi|biz|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|com|coop|cr|cs|cu|cv|cx|cy|cz|de|dj|dk|dm|do|dz|ec|edu|ee|eg|eh|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gh|gi|gl|gm|gn|gov|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|in|info|int|io|iq|ir|is|it|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|mg|mh|mil|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|museum|mv|mw|mx|my|mz|na|name|nc|ne|net|nf|ng|ni|nl|no|np|nr|nt|nu|nz|om|org|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|pro|ps|pt|pw|py|qa|re|ro|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tf|tg|th|tj|tk|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|um|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)$|(([0-9][0-9]?|[0-1][0-9][0-9]|[2][0-4][0-9]|[2][5][0-5])\.){3}([0-9][0-9]?|[0-1][0-9][0-9]|[2][0-4][0-9]|[2][5][0-5]))$/i", $email));
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 // Convert planet coords to [G:S:P]
 //
-function PrintPlanetCoords(&$array){
+function PrintPlanetCoords(&$array)
+{
   return "[{$array['galaxy']}:{$array['system']}:{$array['planet']}]";
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 // Logs page hit to DB
 //
-function sys_log_hit(){
+function sys_log_hit()
+{
   global $config, $sys_stop_log_hit;
+
   if(!$config->game_counter || $sys_stop_log_hit)
   {
     return;
@@ -630,7 +643,7 @@ function sys_log_hit(){
 //
 // Routine pour la gestion du mode vacance
 //
-function check_urlaubmodus ($user)
+function check_urlaubmodus($user)
 {
   global $lang;
 
@@ -640,7 +653,8 @@ function check_urlaubmodus ($user)
   }
 }
 
-function check_urlaubmodus_time () {
+function check_urlaubmodus_time()
+{
   global $user, $config, $time_now;
 
   if ($config->urlaubs_modus_erz == 1)
@@ -716,7 +730,7 @@ function flt_expand($target)
 
 function sys_get_param($param_name, $default = '')
 {
-  return $_POST[$param_name] ? $_POST[$param_name] : ($_GET[$param_name] ? $_GET[$param_name] : $default);
+  return $_POST[$param_name] !== NULL ? $_POST[$param_name] : ($_GET[$param_name] !== NULL ? $_GET[$param_name] : $default);
 }
 
 function sys_get_param_int($param_name, $default = 0)
@@ -734,6 +748,16 @@ function sys_get_param_escaped($param_name, $default = '')
   return mysql_real_escape_string(sys_get_param($param_name, $default));
 }
 
+function sys_get_param_safe($param_name, $default = '')
+{
+  return mysql_real_escape_string(strip_tags(sys_get_param($param_name, $default)));
+}
+
+function sys_get_param_str($param_name, $default = '')
+{
+  return mysql_real_escape_string(strip_tags(trim(sys_get_param($param_name, $default))));
+}
+
 function get_missile_range()
 {
   global $sn_data, $user;
@@ -741,34 +765,29 @@ function get_missile_range()
   return max(0, $user[$sn_data[117]['name']] * 5 - 1);
 }
 
-function GetPhalanxRange ( $PhalanxLevel ) {
-  // Niveau                       1  2  3  4  5  6  7  = lvl
-  // Port√©e ajout√©                0  3  5  7  9 11 13  = (lvl * 2) - 1
-  // Phalanx en nbre de systemes  0  3  8 15 24 35 48  =
-  $PhalanxRange = 0;
-
-  if ($PhalanxLevel > 1) {
-    $PhalanxRange = pow($PhalanxLevel, 2) - 1;
-  }
-  return $PhalanxRange;
+function GetPhalanxRange($phalanx_level)
+{
+  return $phalanx_level > 1 ? pow($phalanx_level, 2) - 1 : 0;
 }
 
-function CheckAbandonPlanetState (&$planet) {
+function CheckAbandonPlanetState (&$planet)
+{
   global $time_now;
 
   if(!$planet['destruyed']) return;
 
   if($planet['planet_type'] == 1 && $planet['destruyed'] <= $time_now)
   {
-    doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}';");
+    doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}' LIMIT 1;");
   }
   elseif($planet['planet_type'] == 3 && ($planet['destruyed'] + 172800) <= $time_now)
   {
-    doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}';");
+    doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}' LIMIT 1;");
   }
 }
 
-function GetElementRessources ( $Element, $Count ) {
+function GetElementRessources ( $Element, $Count )
+{
   global $pricelist;
 
   $ResType['metal']     = ($pricelist[$Element]['metal']     * $Count);
@@ -776,11 +795,6 @@ function GetElementRessources ( $Element, $Count ) {
   $ResType['deuterium'] = ($pricelist[$Element]['deuterium'] * $Count);
 
   return $ResType;
-}
-
-function sn_apply_officier_bonus($user, $officier_id, $value)
-{
-
 }
 
 ?>

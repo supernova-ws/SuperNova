@@ -179,19 +179,16 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
 // Entete de page
 //
 function StdHeader ($title = '', $metatags = '', $Level = 0) {
-  global $user, $dpath, $langInfos;
+  global $user, $dpath, $ugamela_root_path;
 
-  $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
+  $template = gettemplate('simple_header');
 
-  $parse           = $langInfos;
-  $parse['dpath']  = $dpath;
+  $parse['dpath']  = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
   $parse['title']  = $title;
   $parse['-meta-'] = ($metatags) ? $metatags : "";
-//  $parse['-body-'] = ''; //  class=\"style\" topmargin=\"0\" leftmargin=\"0\" marginwidth=\"0\" marginheight=\"0\">";
-  if ($Level>0){
-    $parse['-path_prefix-'] = "../";
-  };
-  return parsetemplate(gettemplate('simple_header'), $parse);
+  $parse['-path_prefix-'] = $ugamela_root_path;
+
+  return parsetemplate($template, $parse);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -327,10 +324,10 @@ function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet )
 
 function displayP($template)
 {
-  global $ugamela_root_path;
-
   if(is_object($template))
   {
+    /*
+    global $ugamela_root_path;
     global $lang, $user;
 
     if($template->parse)
@@ -341,9 +338,13 @@ function displayP($template)
       }
     }
 
-    $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
-    //$dpath = "{$ugamela_root_path}{$dpath}";
-    $template->assign_var('dpath', $dpath);
+    $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
+    $template->assign_vars(array(
+      'dpath'         => $dpath,
+      'SN_ROOT_PATH'  => $ugamela_root_path,
+      '-path_prefix-' => $ugamela_root_path,
+    ));
+    */
 
     $template->display('body');
   }
@@ -355,16 +356,31 @@ function displayP($template)
 
 function parsetemplate ($template, $array = false)
 {
+  global $lang;
+
   if(is_object($template))
   {
-    $template->parse = $array;
+    global $ugamela_root_path, $user;
+
+    if($array)
+    {
+      foreach($array as $key => $data)
+      {
+        $template->assign_var($key, $data);
+      }
+    }
+
+    $template->assign_vars(array(
+      'dpath'         => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
+      'SN_ROOT_PATH'  => $ugamela_root_path,
+      '-path_prefix-' => $ugamela_root_path,
+    ));
+//    $template->parse = $array;
 
     return $template;
   }
   else
   {
-    global $lang;
-
     if(!$array)
     {
       $array = array();
