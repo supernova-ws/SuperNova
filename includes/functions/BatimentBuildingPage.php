@@ -288,6 +288,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
           $parse['click'] = "<font color=#FF0000>{$lang['NoMoreSpace']}</font>";
         }
 
+        $build_data = eco_get_build_data($user, $planet, $Element, $BuildingLevel);
         $build_price = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, true);
         $destroy_price = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, true, true);
         $template->assign_block_vars('production', array(
@@ -297,21 +298,21 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser)
           'LEVEL'             => ($BuildingLevel == 0) ? '' : "{$BuildingLevel}",
 
           'TIME'              => pretty_time($ElementBuildTime),
-          'DESTROY_TIME'      => pretty_time(GetBuildingTime  ($CurrentUser, $CurrentPlanet, $Element) / 2),
-
-          'PRICE'             => GetElementPrice($CurrentUser, $CurrentPlanet, $Element),
-          'RESOURCES_LEFT'    => GetRestPrice($CurrentUser, $CurrentPlanet, $Element),
-
           'METAL'             => $build_price['metal'],
           'CRYSTAL'           => $build_price['crystal'],
           'DEUTERIUM'         => $build_price['deuterium'],
+
+          'DESTROY_TIME'      => pretty_time($build_data[BUILD_DESTROY][RES_TIME]),
           'DESTROY_METAL'     => $destroy_price['metal'],
           'DESTROY_CRYSTAL'   => $destroy_price['crystal'],
           'DESTROY_DEUTERIUM' => $destroy_price['deuterium'],
 
-          'METAL_REST'        => pretty_number($CurrentPlanet['metal']     + $fleet_list['own']['total'][RES_METAL] - $build_price['metal'], false, true),
-          'CRYSTAL_REST'      => pretty_number($CurrentPlanet['crystal']   + $fleet_list['own']['total'][RES_CRYSTAL] - $build_price['crystal'], false, true),
-          'DEUTERIUM_REST'    => pretty_number($CurrentPlanet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_price['deuterium'], false, true),
+          'PRICE'             => GetElementPrice($CurrentUser, $CurrentPlanet, $Element),
+          'RESOURCES_LEFT'    => GetRestPrice($CurrentUser, $CurrentPlanet, $Element),
+
+          'METAL_REST'        => pretty_number($CurrentPlanet['metal']     + $fleet_list['own']['total'][RES_METAL] - $build_price['metal'], true, true),
+          'CRYSTAL_REST'      => pretty_number($CurrentPlanet['crystal']   + $fleet_list['own']['total'][RES_CRYSTAL] - $build_price['crystal'], true, true),
+          'DEUTERIUM_REST'    => pretty_number($CurrentPlanet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_price['deuterium'], true, true),
           'METAL_REST_NUM'    => $CurrentPlanet['metal']     + $fleet_list['own']['total'][RES_METAL] - $build_price['metal'],
           'CRYSTAL_REST_NUM'  => $CurrentPlanet['crystal']   + $fleet_list['own']['total'][RES_CRYSTAL] - $build_price['crystal'],
           'DEUTERIUM_REST_NUM'=> $CurrentPlanet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_price['deuterium'],
