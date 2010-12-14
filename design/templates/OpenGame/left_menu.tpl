@@ -31,6 +31,9 @@
     <tr><td><a href="resources.php">{L_Resources}</a></td></tr>
     <tr><td><a href="fleet.php" id="lm_fleet">{L_Fleet}</a></td></tr>
     <tr><td><a href="buildings.php" id="lm_buildings">{L_Buildings}</a></td></tr>
+
+    <tr><td><a href="buildings.php?mode=0" id="lm_buildings">онярпнийх - реяр</a></td></tr>
+
     <tr><td><a href="buildings.php?mode=fleet" id="lm_shipyard">{L_Shipyard}</a></td></tr>
     <tr><td><a href="buildings.php?mode=defense">{L_Defense}</a></td></tr>
 
