@@ -481,7 +481,7 @@ function pretty_number($n, $floor = true, $color = false, $limit = 0)
 {
   if(is_int($floor))
   {
-    $n = round($n, $floor, PHP_ROUND_HALF_DOWN);
+    $n = round($n, $floor); // , PHP_ROUND_HALF_DOWN
   }
   elseif ($floor === true)
   {

@@ -159,9 +159,6 @@ function eco_build($que_type, $user, &$planet, $que)
       $temp[RES_METAL]     = floor($planet['metal'] + $fleet_list['own']['total'][RES_METAL] - $build_data[BUILD_CREATE][RES_METAL]);
       $temp[RES_CRYSTAL]   = floor($planet['crystal'] + $fleet_list['own']['total'][RES_CRYSTAL] - $build_data[BUILD_CREATE][RES_CRYSTAL]);
       $temp[RES_DEUTERIUM] = floor($planet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_data[BUILD_CREATE][RES_DEUTERIUM]);
-
-      $build_price = GetBuildingPrice ($user, $planet, $Element, true);
-      $destroy_price = GetBuildingPrice ($user, $planet, $Element, true, true);
       $template->assign_block_vars('production', array(
         'ID'                => $Element,
         'NAME'              => $element_name,

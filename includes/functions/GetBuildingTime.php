@@ -28,8 +28,7 @@ function GetBuildingTime ($user, $planet, $Element, $for_building = BUILD_CREATE
     $level = ($planet[$resource[$Element]]) ? $planet[$resource[$Element]] : $user[$resource[$Element]];
     $level = (($level) AND !($isDefense OR $isFleet)) ? $level : 1;
   }
-  $time = floor(($pricelist[$Element]['metal'] + $pricelist[$Element]['crystal'] + $pricelist[$Element]['deuterium']) * pow($pricelist[$Element]['factor'], $level) / get_game_speed() / 2500);
-
+  $time = ($pricelist[$Element]['metal'] + $pricelist[$Element]['crystal'] + $pricelist[$Element]['deuterium']) * pow($pricelist[$Element]['factor'], $level) / get_game_speed() / 2500;
 
   if (in_array($Element, $reslist['build']))
   {
