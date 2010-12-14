@@ -146,7 +146,7 @@ function eco_que_add($user, &$planet, $que, $unit_id, $que_id, $unit_amount = 1,
     continue;
   }
 
-  if(count($que['que'][$que_id]) < $que_types[$que_id]['length'])
+  if(count($que['que'][$que_id]) >= $que_types[$que_id]['length'])
   {
     return $que;
   }
@@ -170,13 +170,14 @@ function eco_que_add($user, &$planet, $que, $unit_id, $que_id, $unit_amount = 1,
   $unit_db_name = $sn_data[$unit_id]['name'];
 
   $unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $que['in_que'][$unit_id];
+/////////////  if (IsTechnologieAccessible($user, $planet, $unit_id) == true) {
   $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
-  $unit_level_new += $change * $unit_amount;
-  if($build_data['CAN'][$build_mode] >= $unit_amount && $unit_level_new >= 0)
+  $unit_level += $change * $unit_amount;
+  if($build_data['CAN'][$build_mode] >= $unit_amount && $unit_level >= 0)
   {
-    $unit_level_new = $unit_level_new;
-    $unit_time  = $build_data[$build_mode][RES_TIME];
+    $unit_time       = $build_data[$build_mode][RES_TIME];
     $que_item_string = "{$unit_id},{$unit_amount},{$unit_time},{$build_mode},{$que_id};";
+
     $que['que'][$que_id][] = array(
         'ID'     => $unit_id, // unit ID
         'AMOUNT' => $unit_amount, // unit amount
