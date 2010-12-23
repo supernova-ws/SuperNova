@@ -100,7 +100,7 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
     $time = mrc_modify_value($user, $planet, $mercenary, $time);
   }
 
-  $time = $time > 1 ? $time : 2;
+  $time = ($time >= 2) ? $time : 2;
   $cost[BUILD_CREATE][RES_TIME]  = floor($time);
   $cost[BUILD_DESTROY][RES_TIME] = floor($time / 2);
 
