@@ -29,6 +29,7 @@ function eco_que_process($user, &$planet, $time_left)
       }
 
       $que_item = explode(',', $que_item_string);
+      $que_item[2] = ($que_item[2]<1) ? 1 : $que_item[2]<1;
       $que_item = array(
         'ID'     => $que_item[0], // unit ID
         'AMOUNT' => $que_item[1], // unit amount
@@ -143,10 +144,17 @@ function eco_que_add($user, &$planet, $que, $unit_id, $que_id, $unit_amount = 1,
   if($unit_list === false)
   {
     // This is not queable item. Remove it from que
-    continue;
+    return $que;
   }
 
+  // Check if que is full
   if(count($que['que'][$que_id]) >= $que_types[$que_id]['length'])
+  {
+    return $que;
+  }
+
+  // We do not work with negaitve unit_amounts - hack or cheat
+  if($unit_amount < 1)
   {
     return $que;
   }
@@ -170,8 +178,8 @@ function eco_que_add($user, &$planet, $que, $unit_id, $que_id, $unit_amount = 1,
   $unit_db_name = $sn_data[$unit_id]['name'];
 
   $unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $que['in_que'][$unit_id];
-/////////////  if (IsTechnologieAccessible($user, $planet, $unit_id) == true) {
   $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
+/////////////  if (IsTechnologieAccessible($user, $planet, $unit_id) == true) {
   $unit_level += $change * $unit_amount;
   if($build_data['CAN'][$build_mode] >= $unit_amount && $unit_level >= 0)
   {

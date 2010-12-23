@@ -304,6 +304,7 @@ $lang['flt_action']   = "Действие";
 $lang['flt_title']    = "Флоты в полёте";
 
 // MD5
+$lang['adm_md5']    = "MD5-хэш";
 $lang['md5_title']  = "Утилита шифрования";
 $lang['md5_pswcyp'] = "Шифрование пароля";
 $lang['md5_psw']    = "Пароль";
