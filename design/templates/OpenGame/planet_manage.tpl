@@ -12,6 +12,7 @@
 
     <tr>
       <th class="c">
+        {L_sys_governor}<br>
         <!-- INCLUDE planet_governor.tpl -->
       </th>
       <th class="c" colspan=3>

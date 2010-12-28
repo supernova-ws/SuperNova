@@ -47,6 +47,7 @@ function eco_build($que_type, $user, &$planet, $que)
     break;
 
     case 'clear': // Clear que
+      $que = eco_que_clear($user, $planet, $que, QUE_STRUCTURES);
     break;
 
     default: // Just build page
@@ -69,17 +70,6 @@ function eco_build($que_type, $user, &$planet, $que)
   // On enregistre ce que l'on a eventuellement modifié dans users
 //  doquery("UPDATE `{{users}}` SET `xpminier` = '{$user['xpminier']}' WHERE `id` = '{$user['id']}' LIMIT 1;");
 //  rpg_level_up($user, RPG_STRUCTURE);
-
-  if($planet['b_building_id'])
-  {
-    $now_building = explode(';', $planet['b_building_id']);
-    $now_building = explode(',', $now_building[0]);
-    $now_working  = $now_building[0];
-    $now_building = $now_building[4] == 'destroy';
-  }
-  else
-    $now_working = false;
-
 
   $fleet_list            = flt_get_fleets_to_planet($planet);
   $caps                  = ECO_getPlanetCaps($user, &$planet);
@@ -121,21 +111,17 @@ function eco_build($que_type, $user, &$planet, $que)
       }
 
       //================================
-      $parse['click'] = '';
       $NextBuildLevel = $element_level + 1;
 
       $unit_busy = (($Element == 31 || $Element == 35) && $lab_busy) || ($Element == 21 && $hangar_busy);
 
 
 
-      $can_build_unit = false;
-
       {
         $next_level_msg = "{$lang['BuildNextLevel']} {$element_level}";
 
         if (!$can_que_element)
         {
-          $parse['click'] = "<font color=#FF0000>{$next_level_msg}</font>";
         }
         else
         {
@@ -146,12 +132,9 @@ function eco_build($que_type, $user, &$planet, $que)
 
           if ( IsElementBuyable ($user, $planet, $Element, true, false) )
           {
-            $parse['click'] = "<a href=\"?cmd=insert&building={$Element}\"><font color=#00FF00>{$next_level_msg}</font></a>";
-            $can_build_unit = true;
           }
           else
           {
-            $parse['click'] = "<font color=#ff0000>{$next_level_msg}</font>";
           }
         }
       }
@@ -166,11 +149,13 @@ function eco_build($que_type, $user, &$planet, $que)
         'DESCRIPTION'       => $lang['info'][$Element]['description_short'],
         'LEVEL'             => $element_level,
 
+        'BUILD_CAN'         => $build_data['CAN'][BUILD_CREATE],
         'TIME'              => pretty_time($build_data[BUILD_CREATE][RES_TIME]),
         'METAL'             => $build_data[BUILD_CREATE][RES_METAL],
         'CRYSTAL'           => $build_data[BUILD_CREATE][RES_CRYSTAL],
         'DEUTERIUM'         => $build_data[BUILD_CREATE][RES_DEUTERIUM],
 
+        'DESTROY_CAN'       => $build_data['CAN'][BUILD_DESTROY],
         'DESTROY_TIME'      => pretty_time($build_data[BUILD_DESTROY][RES_TIME]),
         'DESTROY_METAL'     => $build_data[BUILD_DESTROY][RES_METAL],
         'DESTROY_CRYSTAL'   => $build_data[BUILD_DESTROY][RES_CRYSTAL],
@@ -187,9 +172,6 @@ function eco_build($que_type, $user, &$planet, $que)
         'CRYSTAL_BALANCE'   => $caps['crystal_perhour'][$Element],
         'DEUTERIUM_BALANCE' => $caps['deuterium_perhour'][$Element],
         'ENERGY_BALANCE'    => $energy_balance,
-
-        'BUILD_LINK'        => $parse['click'],
-        'CAN_BUILD'         => $can_build_unit,
 
         'UNIT_BUSY'         => $unit_busy,
       ));
@@ -236,9 +218,6 @@ function eco_build($que_type, $user, &$planet, $que)
 
     'QUE_HAS_PLACE'      => $can_que_element,
     'QUE_HAS_FIELDS'     => $planet_fields_queable,
-
-    'NOW_WORKING'        => $now_working,
-    'NOW_BUILDING'       => $now_building,
 
     'FLEET_OWN'          => $fleet_list['own']['count'],
 

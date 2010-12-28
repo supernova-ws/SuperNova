@@ -239,6 +239,11 @@ function sn_timer() {
       break;
 
       case 3: // new que display
+        if(timer_options['que'].length == 0)
+        {
+          timer['active'] = false;
+          break;
+        }
         var que_item = timer_options['que'][0];
         var que_compiled = '';
 

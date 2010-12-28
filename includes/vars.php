@@ -1558,11 +1558,11 @@ if ( defined('INSIDE')) {
       'que' => QUE_HANGAR,
     ),
 
-    QUE_RESEACH => array(
+    QUE_RESEARCH => array(
       'unit_list' => $sn_data['groups']['tech'],
       'length' => 1,
       'mercenary' => MRC_ACADEMIC,
-      'que' => QUE_RESEACH,
+      'que' => QUE_RESEARCH,
     )
   );
 

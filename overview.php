@@ -382,14 +382,21 @@ switch ($mode)
 
     int_planet_pretemplate($template);
 
-    foreach($que['que'] as $que_id => $que_array)
+
+
+    foreach($sn_data['groups']['ques'] as $que_id => $que_type_data)
     {
       $template->assign_block_vars('ques', array(
         ID => $que_id,
+        NAME => $lang['sys_ques'][$que_id],
       ));
-      foreach($que_array as $que_item)
+
+      if($que['que'][$que_id])
       {
-        $template->assign_block_vars('que', $que_item);
+        foreach($que['que'][$que_id] as $que_item)
+        {
+          $template->assign_block_vars('que', $que_item);
+        }
       }
     }
 

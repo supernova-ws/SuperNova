@@ -72,6 +72,7 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 
     <tr>
       <th rowspan=7 valign="top">
+        {L_sys_governor}<br>
         <!-- INCLUDE planet_governor.tpl -->
       </th>
       <th width=100 align="center">{buildings_on_planet}</th>
@@ -108,68 +109,20 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 
     <tr><td colspan=4 class="c">{L_Planet_menu}</td></tr>
     
+    <!-- BEGIN ques -->
     <tr>
-      <!-- BEGIN ques -->
-        <th width=100>
-          {L_ov_building}<br>
-          <span id="ov_{ques.ID}"></span><br>
-          <span id="ov_{ques.ID}_timer" style="color: lime"></span>
-        </th>
-        <th colspan=3>
-          <span id="ov_{ques.ID}_que">
-        </th>
-        <!-- DEFINE $QUE_ID = '{ques.ID}' -->
-        <!-- INCLUDE eco_queue.tpl -->
-      <!-- END ques -->
+      <th width=100>
+        {ques.NAME}<br>
+        <span id="ov_{ques.ID}"></span><br>
+        <span id="ov_{ques.ID}_timer" style="color: lime"></span>
+      </th>
+      <th colspan=3 id="ov_{ques.ID}_que">
+        {L_eco_que_empty}
+      </th>
+      <!-- DEFINE $QUE_ID = '{ques.ID}' -->
+      <!-- INCLUDE eco_queue.tpl -->
     </tr>
-
-    <tr>
-      <th width=100>{L_ov_building}</th>
-      <!-- IF BUILDING -->
-        <th>
-          {BUILDING}<span id="ov_building_timer" style="color: lime"></span>
-        </th>
-        <th colspan=2>
-          <span id="ov_building"></span>
-        </th>
-      <!-- ELSE -->
-        <th colspan=3>
-          {L_Free}
-        </th>
-      <!-- ENDIF -->
-    </tr>
-    
-    <tr>
-      <th>{L_ov_hangar}</th>
-      <!-- IF HANGAR -->
-        <th>
-          {HANGAR}<span id="ov_hangar_timer" style="color: lime"></span>
-        </th>
-        <th colspan="2">
-          <span id="ov_hangar"></span>
-        </th>
-      <!-- ELSE -->
-        <th colspan="3">
-          {L_Free}
-        </th>
-      <!-- ENDIF -->
-    </tr>
-    
-    <tr>
-      <th>{Teching}</th>
-      <!-- IF TECH -->
-        <th>
-          {TECH}<span id="ov_tech_timer" style="color: lime"></span>
-        </th>
-        <th colspan="2">
-          <span id="ov_tech"></span>
-        </th>
-      <!-- ELSE -->
-        <th colspan="3">
-          {L_Free}
-        </th>
-      <!-- ENDIF -->
-    </tr>
+    <!-- END ques -->
   </table>
 
   <table width="519">
