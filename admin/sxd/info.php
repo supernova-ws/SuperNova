@@ -72,7 +72,7 @@ if(!empty($_POST['ajax']['job']) && preg_match("/^[\w-]+$/", $_POST['ajax']['job
 			}
 			else{
 				if($JOB['act'] == 'backup') $f[3] = filesize($JOB['file_tmp']);
-				if($f[4] != 'EK' && time() > $f[1] + 10) {
+				if($f[4] != 'EK' && time() > $f[1] + 30) {
 					fopen($JOB['file_stp'],'w');
 					$f[9] = 0;
 					$f[1] = $time;
