@@ -9,7 +9,9 @@ var eco_bld_style_probe;
 
 language = 
 {
+  bld_que_free: '{L_bld_que_free}',
   level: '{L_level}',
+  bld_create: '{L_bld_create}',
   bld_destroy: '{L_bld_destroy}',
   construction_time: '{L_ConstructionTime}',
   eco_price: '{L_eco_price}',
@@ -33,7 +35,11 @@ planet =
 
   metal_incoming: '{METAL_INCOMING}',
   crystal_incoming: '{CRYSTAL_INCOMING}',
-  deuterium_incoming: '{DEUTERIUM_INCOMING}'
+  deuterium_incoming: '{DEUTERIUM_INCOMING}',
+
+  que_has_place: '{QUE_HAS_PLACE}',
+  que_has_fields: '{QUE_HAS_FIELDS}',
+  fields_free: '{FIELDS_FREE}'
 };
 
 function eco_struc_make_resource_row(resource_name, value, value_destroy)
@@ -69,10 +75,10 @@ function eco_struc_show_unit_info(unit_id, no_color)
 
   var unit = production[unit_id];
   var result = '';
+  var unit_destroy_link = '';
 
   element_cache['unit_image'].src = dpath + 'gebaeude/' + unit['id'] +'.gif';
   element_cache['unit_description'].innerHTML = unit['description'];
-  element_cache['unit_build_link'].innerHTML = unit['build_link'];
 
   element_cache['unit_time'].innerHTML = unit['time'];
 
@@ -81,9 +87,20 @@ function eco_struc_show_unit_info(unit_id, no_color)
   eco_struc_make_resource_row('deuterium', unit['deuterium'], unit['destroy_deuterium']);
 
   element_cache['unit_name'].innerHTML = unit['name'];
-  if(unit['level'])
+  if(unit['level'] > 0)
   {
-    element_cache['unit_name'].innerHTML += ', ' + language['level'] + ' ' + unit['level'];
+    element_cache['unit_name'].innerHTML += '<br>' + language['level'] + ' ' + unit['level'];
+    unit_destroy_link = language['bld_destroy'] + ' ' + language['level'] + ' ' + unit['level'];
+  }
+
+  if(planet['que_has_place'] != 0)
+  {
+    var pre_href = '<a href="?mode={QUE_ID}&action=';
+    element_cache['unit_destroy_link'].innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '">' + unit_destroy_link + '</a>';
+    if(planet['fields_free'] >= 0)
+    {
+      element_cache['unit_create_link'].innerHTML = pre_href + 'create&unit_id=' + unit['id'] + '">' + language['bld_create'] + ' ' + language['level'] + ' ' + (parseInt(unit['level']) + 1) + '</a>';
+    }
   }
 
   element_cache['unit_balance'].innerHTML = '';
@@ -149,7 +166,7 @@ function eco_struc_unborder_unit(unit_id)
   </tr>
   <tr>
   	<td colspan="5" class="c" align="center">
-  		{L_bld_theyare} {L_bld_cellfree} {FIELDS_FREE} (<span class="negative">{FIELDS_CURRENT}</span>/<span class="positive">{FIELDS_MAX}</span>)
+  		{L_bld_theyare} {L_bld_cellfree} {FIELDS_FREE} (<!-- IF FIELDS_QUE != 0 --><span style="color: yellow;">{FIELDS_QUE}</span>/<!-- ENDIF --><span class="negative">{FIELDS_CURRENT}</span>/<span class="positive">{FIELDS_MAX}</span>)
   	</td>
   </tr>
 
@@ -207,7 +224,8 @@ function eco_struc_unborder_unit(unit_id)
                 <td style="font-size: {$FONT_SIZE}" id="deuterium_fleet" hide_no_fleet="yes" align="right">0</td>
               </tr>
             </table>
-            <div id="unit_build_link"></div>
+            <div id="unit_create_link"></div>
+            <div id="unit_destroy_link"></div>
           </th>
           <th width=240px>
             <div id="unit_balance" ></div>
@@ -281,7 +299,7 @@ function eco_struc_unborder_unit(unit_id)
               </span>
             <!-- ENDIF -->
 
-            <!-- IF QUE_HAS_FIELDS -->
+            <!-- IF FIELDS_FREE > 0 -->
               <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='?mode={QUE_ID}&action=create&unit_id={production.ID}'">
                 <div class="icons icon-plus"></div>
               </span>
@@ -325,6 +343,11 @@ function eco_struc_unborder_unit(unit_id)
 </table>
 <div id="style_probe"></div>
 
+<!-- DEFINE $QUE_ID = '{QUE_ID}' -->
+<!-- INCLUDE eco_queue.tpl -->
+
+<!-- INCLUDE page_hint.tpl -->
+
 <script type="text/javascript"><!--
 jQuery(document).ready(function() {
   jQuery("#unit_table").delegate("*[unit_id]", "mouseenter", function(event, ui) {
@@ -353,31 +376,4 @@ jQuery(document).ready(function() {
   }
 });
 --></script>
-
-<script type="text/javascript"><!--
-<!-- IF .que -->
-sn_timers.unshift(
-{
-  id: 'ov_{QUE_ID}', 
-  type: 3, 
-  active: true, 
-  start_time: {TIME_NOW}, 
-  options: 
-  { 
-    msg_done: '$lang[Free]', 
-    template: '<div class="que_item fl" title="[UNIT_NAME]">\
-      <span class="unit_picture"><img src="{-path_prefix-}{dpath}gebaeude/[UNIT_ID].gif" align="top" width="100%" height="100%"></span>\
-      <span style="position: absolute; top: 18px; left: 0px; width: 100%; height: 2ex; font-size: 100%;" class="icon_alpha">[UNIT_LEVEL]</span>\
-      <span style="position: absolute; bottom: 0px; left: 0px; width: 100%; font-size: 100%;" class="icon_alpha">[UNIT_TIME]</span>\
-    </div>',
-    que: [
-      <!-- BEGIN que -->
-        ['{que.ID}', production['{que.ID}']['name'], {que.TIME}, {que.AMOUNT}, '{que.LEVEL}'],
-      <!-- END que -->
-    ]
-  }
-});
-<!-- ENDIF -->
---></script>
-
-<!-- INCLUDE page_hint.tpl -->
+"{QUE_HAS_FIELDS}"

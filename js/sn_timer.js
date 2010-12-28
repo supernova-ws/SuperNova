@@ -240,11 +240,13 @@ function sn_timer() {
 
       case 3: // new que display
         var que_item = timer_options['que'][0];
+        var que_compiled = '';
 
         if(!timer['que_compiled'] && timer['que_compiled'] != '')
         {
           sn_timers[timerID]['que_compiled'] = sn_timer_compile_que(timer_options);
-          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
+//          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
+          que_compiled = sn_timers[timerID]['que_compiled'];
         }
 
         if(que_item[UNIT_TIME] <= timestamp - timer['start_time'])
@@ -257,7 +259,8 @@ function sn_timer() {
           }
           timer['start_time'] = timestamp;
           sn_timers[timerID]['que_compiled'] = sn_timer_compile_que(timer_options);
-          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
+//          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
+          que_compiled = sn_timers[timerID]['que_compiled'];
         }
 
         if(timer_options['que'].length && que_item[UNIT_ID])
@@ -293,6 +296,15 @@ function sn_timer() {
             infoText += '<br>';
           }
           infoText += timerText;
+        }
+
+        if(HTML_que != null)
+        {
+          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
+        }
+        else
+        {
+          infoText += sn_timers[timerID]['que_compiled'];
         }
 
         if(HTML_finish != null)

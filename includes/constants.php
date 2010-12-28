@@ -135,9 +135,16 @@ define('BUILD_CREATE', 1);
 define('BUILD_DESTROY', -1);
 
 // *** Que types
-define('QUE_STRUCTURES', 0);
-define('QUE_HANGAR', 1);
-define('QUE_RESEARCH', 2);
+define('QUE_STRUCTURES', 1);
+define('QUE_HANGAR', 4);
+define('QUE_RESEARCH', 7);
+
+// *** Subque types
+define('SUBQUE_PLANET', 1);
+define('SUBQUE_MOON', 3);
+define('SUBQUE_FLEET', 4);
+define('SUBQUE_DEFENSE', 6);
+define('SUBQUE_RESEARCH', 7);
 
 // *** Units
 // === Unit types

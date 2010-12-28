@@ -1566,6 +1566,38 @@ if ( defined('INSIDE')) {
     )
   );
 
+  $sn_data['groups']['subques'] = array(
+    SUBQUE_PLANET => array(
+      'que' => QUE_STRUCTURES,
+      'mercenary' => MRC_ARCHITECT,
+      'unit_list' => $sn_data['groups']['build_allow'][PT_PLANET],
+    ),
+
+    SUBQUE_MOON => array(
+      'que' => QUE_STRUCTURES,
+      'mercenary' => MRC_ARCHITECT,
+      'unit_list' => $sn_data['groups']['build_allow'][PT_MOON],
+    ),
+
+    SUBQUE_FLEET => array(
+      'que' => QUE_HANGAR,
+      'mercenary' => MRC_CONSTRUCTOR,
+      'unit_list' => $sn_data['groups']['fleet'],
+    ),
+
+    SUBQUE_DEFENSE => array(
+      'que' => QUE_HANGAR,
+      'mercenary' => MRC_FORTIFIER,
+      'unit_list' => $sn_data['groups']['defense'],
+    ),
+
+    SUBQUE_RESEARCH => array(
+      'que' => QUE_RESEACH,
+      'mercenary' => MRC_ACADEMIC,
+      'unit_list' => $sn_data['groups']['tech'],
+    ),
+  );
+
   $sn_groups = &$sn_data['groups'];
   $reslist   = &$sn_groups;
 

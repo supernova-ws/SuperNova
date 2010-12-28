@@ -121,35 +121,7 @@ switch ($mode)
     // Passage au niveau suivant, ajout du point de compétence et affichage du passage au nouveau level
     rpg_level_up($user, RPG_STRUCTURE);
     rpg_level_up($user, RPG_RAID);
-/*
-    $level_miner = $user['lvl_minier'];
-    while ($user['xpminier'] >= rpg_get_miner_xp($level_miner))
-    {
-      $level_miner++;
-    }
-    $level_miner -= $user['lvl_minier'];
-    if($level_miner)
-    {
-      doquery("UPDATE `{{users}}` SET `lvl_minier` = `lvl_minier` + '{$level_miner}' WHERE `id` = '{$user['id']}'");
-      rpg_points_change($user['id'], $level_miner, 'Level Up For Structure Building');
-      $user['lvl_minier'] += $level_miner;
-      $user['rpg_points'] += $level_miner;
-    }
 
-    $level_raid = $user['lvl_raid'];
-    while ($user['xpraid'] >= rpg_get_raider_xp($level_raid))
-    {
-      $level_raid++;
-    }
-    $level_raid -= $user['lvl_raid'];
-    if($level_raid)
-    {
-      doquery("UPDATE `{{users}}` SET `lvl_raid` = `lvl_raid` + '{$level_raid}' WHERE `id` = '{$user['id']}'");
-      rpg_points_change($user['id'], $level_raid, 'Level Up For Raids');
-      $user['lvl_raid']   += $level_raid;
-      $user['rpg_points'] += $level_raid;
-    }
-*/
     // -----------------------------------------------------------------------------------------------
     // Filling table with fleet events relating to current users
     $fleets = array();
@@ -157,6 +129,7 @@ switch ($mode)
     $flying_fleets_mysql = doquery(
       "SELECT DISTINCT * FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}' OR `fleet_target_owner` = '{$user['id']}';"
     );
+
     while ($fleet = mysql_fetch_array($flying_fleets_mysql))
     {
       $planet_start_type = $fleet['fleet_start_type'] == 3 ? 3 : 1;
@@ -408,6 +381,17 @@ switch ($mode)
     $recyclers_send = min(ceil(($planetrow['debris_metal'] + $planetrow['debris_crystal']) / $sn_data[209]['capacity']), $planetrow[$sn_data[209]['name']]);
 
     int_planet_pretemplate($template);
+
+    foreach($que['que'] as $que_id => $que_array)
+    {
+      $template->assign_block_vars('ques', array(
+        ID => $que_id,
+      ));
+      foreach($que_array as $que_item)
+      {
+        $template->assign_block_vars('que', $que_item);
+      }
+    }
 
     $template->assign_vars(array(
       'dpath'                => $dpath,

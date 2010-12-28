@@ -255,6 +255,8 @@ div .ui-dialog-content table { background: #040e1e; }
   height: 60px;
   width: 60px;
 
+  margin-right: 2px;
+
   font-size: 100%;
 }
 
