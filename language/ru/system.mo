@@ -199,6 +199,15 @@ $lang = array_merge($lang, array(
   'sys_first_round_crash_1'	=> 'Контакт с атакованным флотом потерян.',
   'sys_first_round_crash_2'	=> 'Это означает что он был уничтожен в первом раунде боя.',
 
+  'sys_ques' => array(
+    QUE_STRUCTURES => 'Здания',
+    QUE_HANGAR     => 'Верфь',
+    QUE_RESEARCH   => 'Исследования',
+  ),
+
+  'eco_que_empty' => 'Очередь пуста',
+  'eco_que_clear' => 'Очистить очередь',
+
   'sys_overview'			=> 'Обзор',
   'mod_marchand'			=> 'Торговец',
   'sys_moon'			=> 'Луна',

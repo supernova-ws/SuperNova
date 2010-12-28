@@ -1,15 +1,13 @@
 <br />
 
 <script type="text/javascript"><!--
-//var dpath = '{dpath}';
-
 var production = Array();
 var unit_selected = null;
 var eco_bld_style_probe;
 
 language = 
 {
-  bld_que_free: '{L_bld_que_free}',
+  eco_que_empty: '{L_eco_que_empty}',
   level: '{L_level}',
   bld_create: '{L_bld_create}',
   bld_destroy: '{L_bld_destroy}',
@@ -148,27 +146,44 @@ function eco_struc_unborder_unit(unit_id)
 }
 --></script>
 
+<!-- DEFINE $QUE_ID = '{QUE_ID}' -->
+<!-- INCLUDE eco_queue.tpl -->
+
 <table width=530 id="unit_table">
-  <tr>
-  	<th colspan="5" class="c" align="center">
-  	  <table width=100% class="noborder">
-  	    <tr>
-  	      <th width=120px>
-           <div id="ov_{QUE_ID}" style="color: lime"></div>
-           <div id="ov_{QUE_ID}_timer" style="color: red"></div>
-  	      </th>
-  	      <th>
-           <div id="ov_{QUE_ID}_que"></div>
-  	      </th>
-  	    </tr>
-  	  </table>
-  	</th>
-  </tr>
   <tr>
   	<td colspan="5" class="c" align="center">
   		{L_bld_theyare} {L_bld_cellfree} {FIELDS_FREE} (<!-- IF FIELDS_QUE != 0 --><span style="color: yellow;">{FIELDS_QUE}</span>/<!-- ENDIF --><span class="negative">{FIELDS_CURRENT}</span>/<span class="positive">{FIELDS_MAX}</span>)
   	</td>
   </tr>
+
+  <!-- IF $QUE_NOT_EMPTY -->
+    <tr>
+      <th colspan="5" class="c" align="center">
+        <table width=100% class="noborder">
+          <tr>
+            <th width=120px>
+            <div id="ov_{QUE_ID}" style="color: lime"></div>
+            <div id="ov_{QUE_ID}_timer" style="color: red"></div>
+          </th>
+          <th id="ov_{QUE_ID}_que">
+            </th>
+          </tr>
+        </table>
+      </th>
+    </tr>
+
+    <tr>
+      <td colspan="5" class="c" align="center">
+        <a href="?mode={QUE_ID}&action=clear">{L_eco_que_clear}</a>
+      </td>
+    </tr>
+  <!-- ELSE -->
+    <tr>
+      <th colspan="5" class="c" align="center">
+        {L_eco_que_empty}
+      </th>
+    </tr>
+  <!-- ENDIF -->
 
   <!-- IF METAL > 99999999999 || CRYSTAL > 9999999999 || DEUTERIUM > 9999999999 -->
     <!-- DEFINE $FONT_SIZE = '80%' -->
@@ -272,36 +287,23 @@ function eco_struc_unborder_unit(unit_id)
             <!-- IF production.DEUTERIUM --><div><div style="left: 0px; position: absolute;">{L_sys_deuterium}</div><div class="fr">{production.DEUTERIUM_REST}</div></div><!-- ENDIF -->
           </span>
 
-          <!-- IF production.ID == NOW_WORKING -->
-            <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?listid=1&cmd=cancel&planet=2'">
-              <div class="icons icon-cancel"></div>
-            </span>
-            <!-- IF NOW_BUILDING -->
-              <!-- DEFINE $BUILDINGPLUSONE = '+1' -->
-            <!-- ELSE -->
-              <!-- DEFINE $BUILDINGPLUSONE = '-1' -->
-            <!-- ENDIF -->
-          <!-- ELSE -->
-            <!-- DEFINE $BUILDINGPLUSONE = '' -->
-          <!-- ENDIF -->
           <span style="position: absolute; top: 0; left: 20%; width: 60%; height: 16px; text-align: center; font-size: 120%;" class="icon_alpha">
             <!-- IF production.LEVEL -->
               {production.LEVEL}
             <!-- ENDIF -->
-            {$BUILDINGPLUSONE}
           </span>
 
           
           <!-- IF QUE_HAS_PLACE -->
-            <!-- IF production.LEVEL -->
-              <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?mode={QUE_ID}&action=destroy&unit_id={production.ID}'">
-                <div class="icons icon-minus" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
+            <!-- IF FIELDS_FREE > 0  && production.BUILD_CAN -->
+              <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='?mode={QUE_ID}&action=create&unit_id={production.ID}'">
+                <div class="icons icon-plus"></div>
               </span>
             <!-- ENDIF -->
 
-            <!-- IF FIELDS_FREE > 0 -->
-              <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='?mode={QUE_ID}&action=create&unit_id={production.ID}'">
-                <div class="icons icon-plus"></div>
+            <!-- IF production.LEVEL && production.DESTROY_CAN -->
+              <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?mode={QUE_ID}&action=destroy&unit_id={production.ID}'">
+                <div class="icons icon-minus" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
               </span>
             <!-- ENDIF -->
           <!-- ENDIF -->
@@ -334,17 +336,12 @@ function eco_struc_unborder_unit(unit_id)
         crystal_balance: '{production.CRYSTAL_BALANCE}',
         deuterium_balance: '{production.DEUTERIUM_BALANCE}',
         energy_balance: '{production.ENERGY_BALANCE}',
-        
-        //build_link: '{production.BUILD_LINK}'
       };
       --></script>
     <!-- END production -->
   </tr>
 </table>
 <div id="style_probe"></div>
-
-<!-- DEFINE $QUE_ID = '{QUE_ID}' -->
-<!-- INCLUDE eco_queue.tpl -->
 
 <!-- INCLUDE page_hint.tpl -->
 
@@ -376,4 +373,3 @@ jQuery(document).ready(function() {
   }
 });
 --></script>
-"{QUE_HAS_FIELDS}"

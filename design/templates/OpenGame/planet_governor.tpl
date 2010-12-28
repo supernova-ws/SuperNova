@@ -1,4 +1,3 @@
-{L_sys_governor}<br>
 <!-- IF GOVERNOR_ID -->
 <div class="unit_preview" style="" id="unit{production.ID}" unit_id="{production.ID}">
   <div onclick="document.location='overview.php?mode=manage'">
