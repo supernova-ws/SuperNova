@@ -57,7 +57,7 @@ switch ($mode)
     DefensesBuildingPage ( $planetrow, $user );
   break;
 
-  case '0':
+  case QUE_STRUCTURES:
   case 'test':
     eco_build(QUE_STRUCTURES, $user, $planetrow, $que);
   break;

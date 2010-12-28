@@ -47,16 +47,13 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
   $parse['XNovaRelease']    = VERSION;
   $parse['servername']      = $config->game_name;
 
-  if ($Level <= "0") {
+  if ($Level < 1) {
     $parse['lm_tx_serv']      = $config->resource_multiplier;
     $parse['lm_tx_game']      = get_game_speed();
     $parse['lm_tx_fleet']     = get_fleet_speed();
     $parse['lm_tx_queue']     = MAX_FLEET_OR_DEFS_PER_ROW;
     $SubFrame                 = parsetemplate( $InfoTPL, $parse );
     $parse['server_info']     = $SubFrame;
-//    $parse['C_url_forum']           = $config->url_forum;
-//    $parse['C_url_rules']           = $config->url_rules;
-//    $parse['C_url_dark_matter']     = $config->url_dark_matter;
     $parse['game_url']        = GAMEURL;
     $parse['game_name']       = $config->game_name;
     $rank                     = doquery("SELECT `total_rank` FROM {{table}} WHERE `stat_code` = '1' AND `stat_type` = '1' AND `id_owner` = '". $user['id'] ."';",'statpoints',true);
@@ -86,20 +83,19 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
       $parse['BUILDING_RECORDS_LINK'] = "";
     }
   }
-  elseif ($Level == "1") {
+  elseif ($Level == 1) {
     $Template = 'admin/left_menu_modo';
   }
-  elseif ($Level == "2") {
+  elseif ($Level == 2) {
     $Template = 'admin/left_menu_op';
   }
-  elseif ($Level >= "3") {
-    //$parse['dpath']           = "../{$dpath}";
+  elseif ($Level >= 3) {
     $Template = 'admin/left_menu';
   };
 
-//  $time_new = $time_now - $config->game_news_actual;
-//  $lastAnnounces = doquery("SELECT COUNT(*) AS `new_announce_count` FROM {{announce}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<='{$time_now}' AND UNIX_TIMESTAMP(`tsTimeStamp`)>='{$time_new}' ORDER BY `tsTimeStamp` DESC LIMIT 1;", '', true);
   $parse['new_announce_count'] = $user['news_lastread'];
+//!!!!!!!!!!!!!!
+$parse['QUE_STRUCTURES'] = QUE_STRUCTURES;
 
   $Menu = parsetemplate( gettemplate($Template, true), $parse);
 

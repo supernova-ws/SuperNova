@@ -138,6 +138,7 @@ $lang['res_hint'] = '<ul><li>Производство ресурсов <100% означает нехватку энерг
 
 // Build page
 $lang['bld_destroy'] = 'Уничтожить';
+$lang['bld_create']  = 'Построить';
 
 // Imperium page
 $lang['imp_imperator'] = "Император";

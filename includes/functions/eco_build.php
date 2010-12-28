@@ -86,8 +86,9 @@ function eco_build($que_type, $user, &$planet, $que)
 
   $planet_fields_max     = eco_planet_fields_max($planet);
   $planet_fields_current = $planet['field_current'];
-  $planet_fields_free    = $planet_fields_max - $planet_fields_current;
-  $planet_fields_queable = $planet_fields_free > $que_length;
+  $planet_fields_que     = -$que['amounts'][$que_type];
+  $planet_fields_free    = max(0, $planet_fields_max - $planet_fields_current + $planet_fields_que);
+  $planet_fields_queable = $planet_fields_free > 0;
   $planet_temp_max       = $planet['temp_max'];
 
   foreach($planet_type_structs as $Element)
@@ -231,6 +232,7 @@ function eco_build($que_type, $user, &$planet, $que)
     'FIELDS_CURRENT'     => $planet_fields_current,
     'FIELDS_MAX'         => $planet_fields_max,
     'FIELDS_FREE'        => $planet_fields_free,
+    'FIELDS_QUE'         => $planet_fields_que == 0 ? '' : $planet_fields_que > 0 ? "+{$planet_fields_que}" : $planet_fields_que,
 
     'QUE_HAS_PLACE'      => $can_que_element,
     'QUE_HAS_FIELDS'     => $planet_fields_queable,

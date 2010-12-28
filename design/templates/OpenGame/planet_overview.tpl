@@ -109,6 +109,21 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
     <tr><td colspan=4 class="c">{L_Planet_menu}</td></tr>
     
     <tr>
+      <!-- BEGIN ques -->
+        <th width=100>
+          {L_ov_building}<br>
+          <span id="ov_{ques.ID}"></span><br>
+          <span id="ov_{ques.ID}_timer" style="color: lime"></span>
+        </th>
+        <th colspan=3>
+          <span id="ov_{ques.ID}_que">
+        </th>
+        <!-- DEFINE $QUE_ID = '{ques.ID}' -->
+        <!-- INCLUDE eco_queue.tpl -->
+      <!-- END ques -->
+    </tr>
+
+    <tr>
       <th width=100>{L_ov_building}</th>
       <!-- IF BUILDING -->
         <th>

@@ -258,6 +258,8 @@ div .ui-dialog-content table { background: #344055; }
   height: 60px;
   width: 60px;
 
+  margin-right: 2px;
+
   font-size: 100%;
 }
 

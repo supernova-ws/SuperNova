@@ -2,7 +2,7 @@
 
 function eco_que_process($user, &$planet, $time_left)
 {
-  global $sn_data;
+  global $sn_data, $lang;
 
   $que_types = $sn_data['groups']['ques'];
   foreach($que_types as $que_type_id => &$que_type_data)
@@ -29,17 +29,24 @@ function eco_que_process($user, &$planet, $time_left)
       }
 
       $que_item = explode(',', $que_item_string);
-      $que_item[2] = ($que_item[2]<1) ? 1 : $que_item[2]<1;
+
+      // Skipping invalid negative values for time and unit_amount
+      if($que_item[2] < 1 || $que_item[1] < 1)
+      {
+        continue;
+      }
+
+      $unit_id      = $que_item[0];
       $que_item = array(
         'ID'     => $que_item[0], // unit ID
         'AMOUNT' => $que_item[1], // unit amount
         'TIME'   => $que_item[2], // build time left (in seconds)
         'MODE'   => $que_item[3], // build/destroy
         'QUE'    => $que_item[4], // que ID
+        'NAME'   => $lang['tech'][$unit_id],
         'STRING' => "{$que_item_string};",
       );
 
-      $unit_id      = $que_item['ID'];
       $unit_data    = $sn_data[$unit_id];
       $unit_db_name = $unit_data['name'];
 
@@ -67,13 +74,15 @@ function eco_que_process($user, &$planet, $time_left)
           $change = -1;
         break;
       }
+      $item_change = $change * $que_item['AMOUNT'];
 
-      $que_item['LEVEL'] = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $change * $que_item['AMOUNT'] + $in_que[$unit_id];
+      $que_item['LEVEL'] = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $item_change + $in_que[$unit_id];
 
       if($time_left === 0)
       {
         // There is no time left in this que. Skipping
         $query_string .= $que_item['STRING'];
+        $que_amounts[$que_id] += $item_change;
         $que[$que_id][] = $que_item;
         $in_que[$unit_id] += $change * $que_item['AMOUNT'];
 
@@ -101,6 +110,7 @@ function eco_que_process($user, &$planet, $time_left)
         $que_item['TIME'] -= $time_left;
         $time_left = 0;
         $que_item['STRING'] = "{$unit_id},{$que_item['AMOUNT']},{$que_item['TIME']},{$que_item['MODE']},{$que_item['QUE']};";
+        $que_amounts[$que_id] += $item_change;
 
         $query_string .= $que_item['STRING'];
         $que[$que_id][] = $que_item;
@@ -116,11 +126,12 @@ function eco_que_process($user, &$planet, $time_left)
   $query .= "`que` = '{$query_string}'";
 
   return array(
-    'que'    => $que,
-    'built'  => $built,
-    'in_que' => $in_que,
-    'string' => $query_string,
-    'query'  => $query,
+    'que'     => $que,
+    'built'   => $built,
+    'amounts' => $que_amounts,
+    'in_que'  => $in_que,
+    'string'  => $query_string,
+    'query'   => $query,
   );
 }
 
@@ -196,6 +207,7 @@ function eco_que_add($user, &$planet, $que, $unit_id, $que_id, $unit_amount = 1,
         'LEVEL'  => $unit_level
     );
     $que['in_que'][$unit_id] += $unit_amount * $change;
+    $que['amounts'][$que_id] += $unit_amount * $change;
     $que['string'] .= $que_item_string;
     $que['query'] = "`que` = '{$que['string']}'";
 
