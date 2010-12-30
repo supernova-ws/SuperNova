@@ -384,7 +384,8 @@ switch ($mode)
 
 
 
-    foreach($sn_data['groups']['ques'] as $que_id => $que_type_data)
+//    foreach($sn_data['groups']['ques'] as $que_id => $que_type_data)
+    foreach(array(QUE_STRUCTURES => $sn_data['groups']['ques'][QUE_STRUCTURES]) as $que_id => $que_type_data)
     {
       $template->assign_block_vars('ques', array(
         ID => $que_id,
@@ -412,7 +413,7 @@ switch ($mode)
       'NEW_LEVEL_MINER'      => $level_miner,
       'NEW_LEVEL_RAID'       => $level_raid,
 
-      'BUILDING'             => int_buildCounter($planetrow, 'building'),
+      'BUILDING'             => int_buildCounter($planetrow, 'building', '', $que),
       'HANGAR'               => int_buildCounter($planetrow, 'hangar'),
       'TECH'                 => int_buildCounter($planetrow, 'tech'),
       'planet_diameter'      => pretty_number($planetrow['diameter']),
