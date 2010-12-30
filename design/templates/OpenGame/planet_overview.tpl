@@ -72,7 +72,7 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 
     <tr>
       <th rowspan=7 valign="top">
-        {L_sys_governor}<br>
+<!--        {L_sys_governor}<br>
         <!-- INCLUDE planet_governor.tpl -->
       </th>
       <th width=100 align="center">{buildings_on_planet}</th>
@@ -123,6 +123,38 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
       <!-- INCLUDE eco_queue.tpl -->
     </tr>
     <!-- END ques -->
+
+    <tr>
+      <th>{L_ov_hangar}</th>
+      <!-- IF HANGAR -->
+        <th>
+          {HANGAR}<span id="ov_hangar_timer" style="color: lime"></span>
+        </th>
+        <th colspan="2">
+          <span id="ov_hangar"></span>
+        </th>
+      <!-- ELSE -->
+        <th colspan="3">
+          {L_Free}
+        </th>
+      <!-- ENDIF -->
+    </tr>
+    
+    <tr>
+      <th>{Teching}</th>
+      <!-- IF TECH -->
+        <th>
+          {TECH}<span id="ov_tech_timer" style="color: lime"></span>
+        </th>
+        <th colspan="2">
+          <span id="ov_tech"></span>
+        </th>
+      <!-- ELSE -->
+        <th colspan="3">
+          {L_Free}
+        </th>
+      <!-- ENDIF -->
+    </tr>
   </table>
 
   <table width="519">

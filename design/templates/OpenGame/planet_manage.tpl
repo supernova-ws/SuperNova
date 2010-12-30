@@ -9,30 +9,30 @@
         <div class="fr"><a href="overview.php?mode=manage"><font color="green">[{L_ov_return}]</font></a></td></div>
       </td>
     </tr>
-
+<!--
     <tr>
       <th class="c">
         {L_sys_governor}<br>
-        <!-- INCLUDE planet_governor.tpl -->
+        <!-- INCLUDE planet_governor.tpl --
       </th>
       <th class="c" colspan=3>
         <table>
           <tr>
-            <!-- BEGIN governors -->
+            <!-- BEGIN governors --
               <th>
                 {governors.NAME}<br>
                 <img src="{dpath}gebaeude/{governors.ID}.jpg" align="top" width="120" height="120" />
               </th>
-              <!-- IF (governors.S_ROW_COUNT + 1) mod 3 == 0 -->
+              <!-- IF (governors.S_ROW_COUNT + 1) mod 3 == 0 --
                 </tr><tr>
-              <!-- ENDIF -->
+              <!-- ENDIF --
 
-            <!-- END governors -->
+            <!-- END governors --
           </tr>
         </table>
       </th>
     </tr>
-
+-->
     <tr>
       <th>{L_ov_new_name}</th>
       <th><input type="text" name="new_name" size=25 maxlength=20 value="{PLANET_NAME}"></th>
