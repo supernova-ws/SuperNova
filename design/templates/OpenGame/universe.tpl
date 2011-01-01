@@ -124,7 +124,7 @@ var uni_system = "{system}";
       <!-- ENDIF -->
     </th>
     <th width=30>
-      <!-- IF galaxyrow.MOON_NAME -->
+      <!-- IF galaxyrow.MOON_DIAMETER -->
         <div style="position: relative; height: 30px; width: 30px;" onmouseover="javascript:show_planet({galaxyrow.PLANET_NUM}, 3);" >
           <span style="position: absolute; top: 0; left: 0; height: 30px; width: 30px;">
             <img src={dpath}planeten/small/s_mond.jpg height=100% width=100%>
