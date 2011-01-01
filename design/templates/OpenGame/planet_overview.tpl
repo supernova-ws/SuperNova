@@ -72,8 +72,10 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 
     <tr>
       <th rowspan=7 valign="top">
-<!--        {L_sys_governor}<br>
-        <!-- INCLUDE planet_governor.tpl -->
+<!--
+        {L_sys_governor}<br>
+        <!-- INCLUDE planet_governor.tpl --
+-->
       </th>
       <th width=100 align="center">{buildings_on_planet}</th>
       <th colspan="3" style="position: relative; border: 1px solid rgb(153, 153, 255); padding: 0px; height: 100%;">
