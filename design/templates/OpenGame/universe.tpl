@@ -320,12 +320,12 @@ jQuery.extend(language, {
 
 var users = new Array();
 <!-- BEGIN users -->
-users[{users.ID}] = {name: '{users.NAME}', rank: '{users.RANK}'};
+users[{users.ID}] = {name: '{users.NAME_JS}', rank: '{users.RANK}'};
 <!-- END users -->
 
 var allies = new Array();
 <!-- BEGIN alliances -->
-allies[{alliances.ID}] = {name: '{alliances.NAME}', members: '{alliances.MEMBERS}', url: '{alliances.URL}'};
+allies[{alliances.ID}] = {name: '{alliances.NAME_JS}', members: '{alliances.MEMBERS}', url: '{alliances.URL}'};
 <!-- END alliances -->
 
 var uni_row = new Array();
@@ -333,10 +333,10 @@ var uni_row = new Array();
 {
   owner: '{galaxyrow.USER_ID}',
   planet: '{galaxyrow.PLANET_NUM}',
-  planet_name: '{galaxyrow.PLANET_NAME}',
+  planet_name: '{galaxyrow.PLANET_NAME_JS}',
   planet_image: '{galaxyrow.PLANET_IMAGE}',
   planet_fleet_id: '{galaxyrow.PLANET_FLEET_ID}',
-  moon_name: '{galaxyrow.MOON_NAME}',
+  moon_name: '{galaxyrow.MOON_NAME_JS}',
   moon_diameter: '{galaxyrow.MOON_DIAMETER}',
   moon_image: 'mond',
   moon_fleet_id: '{galaxyrow.MOON_FLEET_ID}',
