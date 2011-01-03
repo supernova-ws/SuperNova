@@ -255,6 +255,7 @@ switch ($mode)
     // $fleets = array();
     while ($UserPlanet = mysql_fetch_array($planets_query))
     {
+      $list_planet_que = PlanetResourceUpdate($user, $UserPlanet, $time_now);
       $buildArray = array();
       if ($UserPlanet['b_building']) {
         UpdatePlanetBatimentQueueList ($UserPlanet, $user);
@@ -311,7 +312,7 @@ switch ($mode)
       }
 
       $moon_fleets = flt_get_fleets_to_planet($moon);
-      $template->assign_block_vars('planet', array_merge(tpl_parse_planet($UserPlanet), array(
+      $template->assign_block_vars('planet', array_merge(tpl_parse_planet($UserPlanet, $list_planet_que), array(
           'PLANET_FLEET_ID'  => $planet_fleet_id,
 
           'MOON_ID'      => $moon['id'],
