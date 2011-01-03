@@ -41,14 +41,13 @@ $template->assign_var(mount, count($planets) + 2);
 $fleet_id = 1;
 $fleets = array();
 foreach ($planets as $planet_index => $planet) {
-//  $planetCaps = ECO_getPlanetCaps($user, $planet);
-  PlanetResourceUpdate($user, $planet, $time_now);
+  $list_planet_que = PlanetResourceUpdate($user, $planet, $time_now);
   if($planet[id] == $planetrow['id'])
   {
     $planetrow = $planet;
   }
 
-  $planet_template = tpl_parse_planet($planet);
+  $planet_template = tpl_parse_planet($planet, $list_planet_que);
 
   $planet_fleet_id = 0;
   $fleet_list = flt_get_fleets_to_planet($planet);
@@ -80,6 +79,7 @@ foreach ($planets as $planet_index => $planet) {
   $planets[$planet_index]['fleet_list'] = $planet_template['fleet_list'];
   $planets[$planet_index]['BUILDING_ID'] = $planet_template['BUILDING_ID'];
   $planets[$planet_index]['hangar_que'] = $planet_template['hangar_que'];
+  $planets[$planet_index]['full_que'] = $list_planet_que;
 
   $total['fields'] += $planet['field_current'];
   $total['metal'] += $planet['metal'];
@@ -149,9 +149,10 @@ foreach ($sn_data as $unit_id => $res) {
       switch($mode)
       {
         case 'buildings':
-          if($planet['BUILDING_ID'] == $unit_id)
+          $level_plus_build = $planet['full_que']['in_que'][$unit_id];
+          if($level_plus_build)
           {
-            $level_plus['LEVEL_PLUS_GREEN'] = 1;
+            $level_plus['LEVEL_PLUS_GREEN'] = $level_plus_build<0 ? $level_plus_build : "+{$level_plus_build}";
           }
         break;
 
@@ -161,7 +162,7 @@ foreach ($sn_data as $unit_id => $res) {
         case 'defense':
           if($planet['hangar_que'][$unit_id])
           {
-            $level_plus['LEVEL_PLUS_GREEN'] += $planet['hangar_que'][$unit_id];
+            $level_plus['LEVEL_PLUS_GREEN'] = "+{$planet['hangar_que'][$unit_id]}";
           }
         break;
 

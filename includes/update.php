@@ -245,7 +245,6 @@ switch(intval($config->db_version))
   case 15:
     upd_log_version_update();
     upd_alter_table('users', "DROP COLUMN `current_luna`", $update_tables['users']['current_luna']);
-    upd_alter_table('planets', "ADD `governor` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Planet governor'", !$update_tables['planets']['governor']);
     upd_alter_table('users', "ADD `options` TEXT COMMENT 'Packed user options'", !$update_tables['users']['options']);
   $new_version = 16;
 
@@ -315,10 +314,39 @@ switch(intval($config->db_version))
   $new_version = 22;
 
   case 22:
-//    upd_log_version_update();
+    upd_log_version_update();
+    upd_alter_table('planets', "ADD `governor` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Planet governor'", !$update_tables['planets']['governor']);
     upd_alter_table('planets', "ADD `governor_level` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Governor level'", !$update_tables['planets']['governor_level']);
     upd_alter_table('planets', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'Planet que'", !$update_tables['planets']['que']);
-/*
+
+    $planet_query = doquery('SELECT * FROM {{planets}} WHERE `b_building` <> 0;');
+    $const_que_structures = QUE_STRUCTURES;
+    while($planet_data = mysql_fetch_assoc($planet_query))
+    {
+      $old_que = explode(';', $planet_data['b_building_id']);
+      foreach($old_que as $old_que_item_string)
+      {
+        if(!$old_que_item_string)
+        {
+          continue;
+        }
+
+        $old_que_item = explode(',', $old_que_item_string);
+        if($old_que_item[4] == 'build')
+        {
+          $old_que_item[4] = BUILD_CREATE;
+        }
+        else
+        {
+          $old_que_item[4] = BUILD_DESTROY;
+        }
+
+        $old_que_item[3] = $old_que_item[3] > $planet_data['last_update'] ? $old_que_item[3] - $planet_data['last_update'] : 1;
+        $planet_data['que'] = "{$old_que_item[0]},1,{$old_que_item[3]},{$old_que_item[4]},{$const_que_structures};{$planet_data['que']}";
+      }
+      doquery("UPDATE {{planets}} SET `que` = '{$planet_data['que']}', `b_building` = '0', `b_building_id` = '0' WHERE `id` = '{$planet_data['id']}' LIMIT 1;");
+    }
+
     if(!$update_tables['mercenaries'])
     {
       mysql_query(
@@ -334,7 +362,11 @@ switch(intval($config->db_version))
       );
     };
   //$new_version = 23;
-*/
+
+  case 23:
+    //upd_log_version_update();
+  //$new_version = 24;
+
 };
 upd_log_message('Upgrade complete.');
 

@@ -39,6 +39,8 @@ $db_prefix = $dbsettings['prefix'];
 $sn_secret_word = $dbsettings['secretword'];
 unset($dbsettings);
 
+include_once("{$ugamela_root_path}includes/constants.{$phpEx}");
+
 // required for db.php
 include_once("{$ugamela_root_path}includes/debug.class.{$phpEx}");
 include_once("{$ugamela_root_path}includes/db.{$phpEx}");
@@ -115,7 +117,6 @@ define('FMT_DATE_TIME'    , FMT_DATE . ' ' . FMT_TIME);
 $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 
 // Now including all functions
-include_once("{$ugamela_root_path}includes/constants.{$phpEx}");
 include_once("{$ugamela_root_path}includes/functions.{$phpEx}");
 include_once("{$ugamela_root_path}includes/vars.{$phpEx}");
 

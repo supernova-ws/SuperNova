@@ -1,4 +1,5 @@
 <?php
+
 function int_buildCounter($planetrow, $type, $subType = '', $que = false)
 {
   global $lang, $user, $time_now;
@@ -34,10 +35,9 @@ function int_buildCounter($planetrow, $type, $subType = '', $que = false)
     $que_item = $que['que'][QUE_STRUCTURES][0];
     if(!empty($que_item))
     {
-      pdump($que_item);
       $start_prod = $time_now - $que_item['TIME'];
 
-      $Build = "<script type='text/javascript'>sn_timers.unshift({id: 'ov_{$type}{$subType}', type: 0, active: true, start_time: {$start_prod}, options: { msg_done: '{$lang['Free']}', que: [";
+      $Build = "<script type='text/javascript'>sn_timers.unshift({id: 'ov_{$type}{$subType}', type: 0, active: true, start_time: {$time_now}, options: { msg_done: '{$lang['Free']}', que: [";
       $RestTime   = $que_item['TIME'];
       $buildCount = $que_item['AMOUNT'];
 
@@ -48,4 +48,5 @@ function int_buildCounter($planetrow, $type, $subType = '', $que = false)
 
   return $Build;
 }
+
 ?>

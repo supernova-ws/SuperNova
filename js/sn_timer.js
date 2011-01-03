@@ -139,7 +139,7 @@ function sn_timer() {
           timeFinish = timer['start_time'] + que_item[UNIT_TIME];
           timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp;
           infoText = que_item[UNIT_NAME];
-          if(que_item[UNIT_AMOUNT] > 0)
+          if(que_item[UNIT_AMOUNT] > 1)
           {
             infoText += ' (' + que_item[UNIT_AMOUNT] + ')';
           }

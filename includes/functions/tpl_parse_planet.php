@@ -1,6 +1,6 @@
 <?php
 
-function tpl_parse_planet($planet)
+function tpl_parse_planet($planet, $que = false)
 {
   global $lang, $config, $time_now;
 
@@ -18,8 +18,6 @@ function tpl_parse_planet($planet)
 
   $building_build = explode(',', $planet['b_building_id']);
   $building_build_tip = $building_build[0] ? $lang[tech][$building_build[0]] : '';
-
-  $fleet_list = flt_get_fleets_to_planet($planet);
 
   $result = array(
     'ID'            => $planet['id'],
@@ -47,6 +45,16 @@ function tpl_parse_planet($planet)
 
     'fleet_list'    => $fleet_list,
   );
+
+  $que_item = $que['que'][QUE_STRUCTURES][0];
+  if($que_item)
+  {
+    $result['BUILDING_ID']  = $que_item['ID'];
+    $result['BUILDING_TIP'] = $que_item['NAME'];
+    $result['BUILDING']     = int_buildCounter($planet, 'building', $planet['id'], $que);
+  }
+
+  $fleet_list = flt_get_fleets_to_planet($planet);
 
   return $result;
 }
