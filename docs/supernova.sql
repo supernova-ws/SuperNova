@@ -792,6 +792,7 @@ INSERT INTO `sn_users` SET
   `system` = 1,
   `planet` = 1,
   `current_planet` = 1,
+  `user_agent` = '0',
   `register_time` = UNIX_TIMESTAMP();
 
 
