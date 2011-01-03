@@ -66,18 +66,18 @@ switch ($mode)
 {
   case 'manage':
     $template = gettemplate('planet_manage', true);
+    $planet_id       = sys_get_param_int('planet_id');
+
     $rename          = SYS_mysqlSmartEscape($_POST['rename']);
     $new_name        = SYS_mysqlSmartEscape(strip_tags(trim($_POST['new_name'])));
+
     $abandon         = SYS_mysqlSmartEscape($_POST['abandon']);
     $abandon_confirm = $_POST['abandon_confirm'];
 
-    if ($rename)
+    if ($rename && $new_name)
     {
-      if ($new_name)
-      {
-        $planetrow['name'] = $new_name;
-        doquery("UPDATE {{planets}} SET `name` = '{$new_name}' WHERE `id` = '{$user['current_planet']}' LIMIT 1;");
-      }
+      $planetrow['name'] = $new_name;
+      doquery("UPDATE {{planets}} SET `name` = '{$new_name}' WHERE `id` = '{$planet_id}' LIMIT 1;");
     }
     elseif ($abandon)
     {
