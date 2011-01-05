@@ -39,7 +39,9 @@ INSERT INTO `sn_planets` SET
   `crystal_max` = 500000,
   `deuterium` = 0,
   `deuterium_perhour` = 0,
-  `deuterium_max` = 500000;
+  `deuterium_max` = 500000,
+  `b_building_id` = '0',
+  `b_hangar_id` = '0';
 
 
 INSERT INTO `sn_config` VALUES
