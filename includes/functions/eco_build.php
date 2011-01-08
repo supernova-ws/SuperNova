@@ -1,7 +1,7 @@
 <?php
 
 /**
- * BatimentBuildingPage.php
+ * eco_build.php
  *
  * @version 1.5 - Using PTE (not everywhere) by Gorlum for http://supernova.ws
  * @version 1.4 - Complying with PCG by Gorlum for http://supernova.ws
@@ -43,7 +43,6 @@ function eco_build($que_type, $user, &$planet, $que)
     break;
 
     case 'cancel': // Cancel unit from que
-//      CancelBuildingFromQueue ( $planet, $user );
     break;
 
     case 'clear': // Clear que
@@ -63,7 +62,6 @@ function eco_build($que_type, $user, &$planet, $que)
 //  $template->assign_block_vars('que', array)
 
 //  SetNextQueueElementOnTop ( $planet, $user );
-//  $Queue = ShowBuildingQueue ( $planet, $user );
 
   // On enregistre ce que l'on a modifié dans planet !
 //  doquery("UPDATE `{{planets}}` SET `b_building_id` = '{$planet['b_building_id']}', `b_building` = '{$planet['b_building']}' WHERE `id` = '{$planet['id']}' LIMIT 1;");
@@ -85,8 +83,6 @@ function eco_build($que_type, $user, &$planet, $que)
   {
     if (IsTechnologieAccessible($user, $planet, $Element))
     {
-      $parse = array();
-
       $element_name    = $lang['tech'][$Element];
       $element_sn_data = &$sn_data[$Element];
       $element_level   = $planet[$sn_data[$Element]['name']] + $que['in_que'][$Element];
@@ -179,17 +175,6 @@ function eco_build($que_type, $user, &$planet, $que)
 
   }
 
-  if ($que_length > 0)
-  {
-    $parse['BuildListScript']  = InsertBuildListScript ('buildings');
-    $parse['BuildList']        = $Queue['buildlist'];
-  }
-  else
-  {
-    $parse['BuildListScript']  = '';
-    $parse['BuildList']        = '';
-  }
-
   if(is_array($que['que'][$que_type]))
   {
     foreach($que['que'][$que_type] as $que_element)
@@ -224,7 +209,7 @@ function eco_build($que_type, $user, &$planet, $que)
     'PAGE_HINT'          => $lang['eco_bld_page_hint'],
   ));
 
-  display(parsetemplate($template, $parse), $lang['Builds']);
+  display(parsetemplate($template), $lang['Builds']);
 }
 
 ?>

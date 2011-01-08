@@ -258,7 +258,6 @@ switch ($mode)
       $list_planet_que = PlanetResourceUpdate($user, $UserPlanet, $time_now);
       $buildArray = array();
       if ($UserPlanet['b_building']) {
-        UpdatePlanetBatimentQueueList ($UserPlanet, $user);
         if ( $UserPlanet['b_building'] != 0 )
         {
           $QueueArray      = explode ( ';', $UserPlanet['b_building_id'] );
@@ -347,11 +346,6 @@ switch ($mode)
       ));
     }
     // Moon END
-
-    if ($planetrow['b_building'])
-    {
-      UpdatePlanetBatimentQueueList ( $planetrow, $user );
-    }
 
     $planet_fill = floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100);
     $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
