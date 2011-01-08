@@ -15,6 +15,12 @@
 [*] Добавить общее время строительства к индикации очереди
 [*] Транзакционность и блокируемость очереди построек!
 
+2011-01-09 00:12
+[@] Функция CheckIfIsBuilding "вшита" в файл /options.php
+[@] Убраны следующие функции и соответствующие им файлы: InsertBuildListScript,
+    InsertCounterLaunchScript, CheckPlanetBuildingQueue,
+    UpdatePlanetBatimentQueueList
+
 2011-01-08 23:49
 [@] Убрана часть функций, отвечающих за старую очередь построек
 

@@ -83,8 +83,6 @@ function eco_build($que_type, $user, &$planet, $que)
   {
     if (IsTechnologieAccessible($user, $planet, $Element))
     {
-      $parse = array();
-
       $element_name    = $lang['tech'][$Element];
       $element_sn_data = &$sn_data[$Element];
       $element_level   = $planet[$sn_data[$Element]['name']] + $que['in_que'][$Element];
@@ -177,17 +175,6 @@ function eco_build($que_type, $user, &$planet, $que)
 
   }
 
-  if ($que_length > 0)
-  {
-    $parse['BuildListScript']  = InsertBuildListScript ('buildings');
-    $parse['BuildList']        = $Queue['buildlist'];
-  }
-  else
-  {
-    $parse['BuildListScript']  = '';
-    $parse['BuildList']        = '';
-  }
-
   if(is_array($que['que'][$que_type]))
   {
     foreach($que['que'][$que_type] as $que_element)
@@ -222,7 +209,7 @@ function eco_build($que_type, $user, &$planet, $que)
     'PAGE_HINT'          => $lang['eco_bld_page_hint'],
   ));
 
-  display(parsetemplate($template, $parse), $lang['Builds']);
+  display(parsetemplate($template), $lang['Builds']);
 }
 
 ?>

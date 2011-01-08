@@ -149,11 +149,25 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   {
     $urlaubs_modus = '1';
 
-    $time = time();
+    $time = $time_now;
 
     if($user['authlevel'] < 3)
     {
-      if(CheckIfIsBuilding($user))
+      $is_building = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_owner` = '{$user['id']}' LIMIT 1;", '', true);
+
+      if(!$is_building)
+      {
+        $query = doquery("SELECT * FROM `{{planets}}` WHERE `id_owner` = '{$CurrentUser['id']}';");
+        while($id = mysql_fetch_array($query)){
+          if(($id['que']) || ($id['b_tech'] && $id['b_tech']) || ($id['b_hangar'] && $id['b_hangar']))
+          {
+            $is_building = true;
+            break;
+          }
+        }
+      }
+
+      if($is_building)
       {
         message($lang['Building_something'], $lang['Error'], "options.php", 1);
       }
@@ -166,9 +180,9 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
         PlanetResourceUpdate ($user, $id, $time_now);
 
         doquery("UPDATE {{planets}} SET
-          metal_perhour = '".$config->metal_basic_income."',
-          crystal_perhour = '".$config->metal_basic_income."',
-          deuterium_perhour = '".$config->metal_basic_income."',
+          metal_perhour = '{$config->metal_basic_income}',
+          crystal_perhour = '{$config->crystal_basic_income}',
+          deuterium_perhour = '{$config->deuterium_basic_income}',
           energy_used = '0',
           energy_max = '0',
           metal_mine_porcent = '0',
@@ -177,11 +191,11 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
           solar_plant_porcent = '0',
           fusion_plant_porcent = '0',
           solar_satelit_porcent = '0'
-        WHERE id = '{$id['id']}' AND `planet_type` = 1 ");
+        WHERE id = '{$id['id']}' AND `planet_type` = 1;");
       }
     }
 
-    doquery("UPDATE {{users}} SET `urlaubs_modus` = '$urlaubs_modus', `urlaubs_until` = '$time' WHERE `id` = '$iduser' LIMIT 1");
+    doquery("UPDATE {{users}} SET `urlaubs_modus` = '$urlaubs_modus', `urlaubs_until` = '{$time}' WHERE `id` = '{$iduser}' LIMIT 1;");
   }
   else
   {
@@ -189,17 +203,18 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   }
 
   // Borrar cuenta
-  if (isset($_POST["db_deaktjava"]) && $_POST["db_deaktjava"] == 'on') {
+  if (isset($_POST["db_deaktjava"]) && $_POST["db_deaktjava"] == 'on')
+  {
     $db_deaktjava = "1";
     $Del_Time = time()+604800;
-  } else {
+  }
+  else
+  {
     $db_deaktjava = "0";
     $Del_Time = "0";
   }
   $SetSort  = intval($_POST['settings_sort']);
   $SetOrder = intval($_POST['settings_order']);
-
-//  $dpath = str_replace('\\','\\\\',$dpath);
 
   $options = sys_user_options_pack($user);
 
@@ -207,14 +222,13 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   $languese = SYS_mysqlSmartEscape(CheckInputStrings($languese));
   $avatar   = SYS_mysqlSmartEscape(CheckInputStrings($avatar));
   $dpath    = SYS_mysqlSmartEscape(CheckInputStrings($dpath));
-  $username = SYS_mysqlSmartEscape(CheckInputStrings($username));
 
   doquery("UPDATE {{users}} SET
-  `email` = '$db_email',
-  `lang` = '$languese',
-  `avatar` = '$avatar',
-  `dpath` = '$dpath',
-  `design` = '$design',
+  `email` = '{$db_email}',
+  `lang` = '{$languese}',
+  `avatar` = '{$avatar}',
+  `dpath` = '{$dpath}',
+  `design` = '{$design}',
   `noipcheck` = '$noipcheck',
   `planet_sort` = '$SetSort',
   `planet_sort_order` = '$SetOrder',
@@ -247,6 +261,7 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
     }
   }
 
+  $username = SYS_mysqlSmartEscape(CheckInputStrings($username));
   if ($user['username'] != $username && $config->game_user_changename) {
     $query = doquery("SELECT id FROM {{table}} WHERE username='{$POST_db_character}'", 'users', true);
     if (!$query) {
@@ -265,8 +280,9 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   }
 
   message($lang['succeful_save'], $lang['Options']);
-} else {
-
+}
+else
+{
   if($user['urlaubs_modus']){
     $template = gettemplate('options_body_vmode', true);
   }else{

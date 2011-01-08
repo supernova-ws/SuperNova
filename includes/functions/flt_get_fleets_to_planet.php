@@ -54,18 +54,6 @@ function flt_get_fleets_to_planet($planet)
           $fleet_list[$fleet_ownage]['total'][$ship_id] += $ship_amount;
         }
       }
-      /*
-      // then this fleet would stay
-      $fleet_ships = explode(';',$fleet['fleet_array']);
-      foreach(explode(';',$fleet['fleet_array']) as $ship_data)
-      {
-        if($ship_data)
-        {
-          $ship_data = explode(',', $ship_data);
-          $fleet_list[$fleet_ownage]['total'][$ship_data[0]] += $ship_data[1];
-        }
-      }
-      */
     }
 
     $fleet_list[$fleet_ownage]['count']++;

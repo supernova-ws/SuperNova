@@ -33,9 +33,6 @@ $mode = sys_get_param_escaped('mode');
 includeLang('buildings');
 includeLang('infos');
 
-// Mise a jour de la liste de construction si necessaire
-UpdatePlanetBatimentQueueList ( $planetrow, $user );
-
 $IsWorking = HandleTechnologieBuild ( $planetrow, $user );
 
 $que = PlanetResourceUpdate($user, $planetrow, $time_now);

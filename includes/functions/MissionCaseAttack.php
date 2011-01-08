@@ -62,7 +62,6 @@ function MissionCaseAttack ( $FleetRow) {
 
   $TargetUser    = doquery('SELECT * FROM {{table}} WHERE `id` ='.$TargetPlanet['id_owner'],'users', true);
 
-  UpdatePlanetBatimentQueueList($TargetPlanet, $TargetUser);
   PlanetResourceUpdate( $TargetUser, $TargetPlanet, $time_now );
 
   $attackFleets = array();
