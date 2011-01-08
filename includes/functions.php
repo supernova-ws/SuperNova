@@ -465,11 +465,11 @@ function colorGreen($n)
 // --- Formatting & Coloring numbers
 // $n - number to format
 // $floor: (ignored if $limit set)
-//   true      - floors number before format
 //   integer   - floors to $floor numbers after decimal points
+//   true      - floors number before format
 //   otherwise - floors to 2 numbers after decimal points
 // $color:
-//   true    - colors number to green if positive or zero; red if negative
+//   0/true  - colors number to green if positive or zero; red if negative
 //   numeric - colors number to green if less then $color; red if greater
 // $limit:
 //   0/false - proceed with $floor
@@ -477,7 +477,7 @@ function colorGreen($n)
 //             makes sense for 1000, but works with any number
 //             generally converts "15000" to "15k", "2000000" to "2kk" etc
 
-function pretty_number($n, $floor = true, $color = false, $limit = 0)
+function pretty_number($n, $floor = true, $color = false, $limit = false)
 {
   if(is_int($floor))
   {
@@ -493,9 +493,10 @@ function pretty_number($n, $floor = true, $color = false, $limit = 0)
     $floor = 2;
   }
 
+  $ret = $n;
+
   if($limit)
   {
-    $ret = $n;
     if($ret>0)
     {
       while($ret>$limit)
@@ -512,36 +513,26 @@ function pretty_number($n, $floor = true, $color = false, $limit = 0)
         $ret = round($ret/1000);
       }
     }
-    $ret .= $suffix;
-  }
-  else
-  {
-    $ret = number_format($n, $floor, ',', '.');
   }
 
-  if(is_numeric($color))
+  $ret = number_format($ret, $floor, ',', '.');
+  $ret .= $suffix;
+
+  if($color)
   {
+    if(!is_numeric($color))
+    {
+      $color = 0;
+    }
+
     if($color>0)
     {
-      if($n<$color)
-        $ret = colorGreen($ret);
-      elseif($n>=$color)
-        $ret = colorRed($ret);
+      $ret = ($n<$color) ? colorGreen($ret) : colorRed($ret);
     }
     else
     {
-      if($n>-$color)
-        $ret = colorGreen($ret);
-      elseif($n<=-$color)
-        $ret = colorRed($ret);
+      $ret = ($n>-$color) ? colorGreen($ret) : colorRed($ret);
     }
-  }
-  elseif($color)
-  {
-    if($n>=0)
-      $ret = colorGreen($ret);
-    elseif($n<0)
-      $ret = colorRed($ret);
   }
 
   return $ret;
