@@ -338,6 +338,9 @@ $lang = array_merge($lang, array(
   'sys_max' => 'макс',
   'sys_banned_msg' => 'Вы забанены. Для получения информации зайдите <a href="banned.php">сюда</a>. Срок окончания блокировки аккаунта: ',
 
+  // Univers
+  'uni_moon_of_planet' => 'планеты',
+
   // Dark Matter
   'sys_dark_matter_get'  => 'Добыть ТМ',
   'sys_dark_matter_text' => '<h2>Что такое Темная Материя?</h2>

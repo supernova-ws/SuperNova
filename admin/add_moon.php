@@ -21,37 +21,33 @@ if ($user['authlevel'] < 3)
   die();
 }
 
-  if ($user['authlevel'] >= 1) {
-    includeLang('admin');
+includeLang('admin');
 
-    $mode      = $_POST['mode'];
+$mode      = $_POST['mode'];
 
-    $PageTpl   = gettemplate("admin/add_moon");
-    $parse     = $lang;
+$PageTpl   = gettemplate("admin/add_moon");
+$parse     = $lang;
 
-    if ($mode == 'addit') {
-      $PlanetID  = $_POST['user'];
-      $MoonName  = $_POST['name'];
+if ($mode == 'addit') {
+  $PlanetID  = $_POST['user'];
+  $MoonName  = $_POST['name'];
 
-      $QrySelectPlanet  = "SELECT * FROM {{table}} ";
-      $QrySelectPlanet .= "WHERE ";
-      $QrySelectPlanet .= "`id` = '". $PlanetID ."';";
-      $PlanetSelected = doquery ( $QrySelectPlanet, 'planets', true);
+  $QrySelectPlanet  = "SELECT * FROM {{table}} ";
+  $QrySelectPlanet .= "WHERE ";
+  $QrySelectPlanet .= "`id` = '". $PlanetID ."';";
+  $PlanetSelected = doquery ( $QrySelectPlanet, 'planets', true);
 
-      $Galaxy    = $PlanetSelected['galaxy'];
-      $System    = $PlanetSelected['system'];
-      $Planet    = $PlanetSelected['planet'];
-            $Owner     = $PlanetSelected['id_owner'];
-      $MoonID    = time();
+  $Galaxy    = $PlanetSelected['galaxy'];
+  $System    = $PlanetSelected['system'];
+  $Planet    = $PlanetSelected['planet'];
+  $Owner     = $PlanetSelected['id_owner'];
 
-      CreateOneMoonRecord ( $Galaxy, $System, $Planet, $Owner, $MoonID, $MoonName, 20 );
+  uni_create_moon ( $Galaxy, $System, $Planet, $Owner, 20, $MoonName);
 
-      AdminMessage ( $lang['addm_done'], $lang['addm_title'] );
-    }
-    $Page = parsetemplate($PageTpl, $parse);
+  AdminMessage ( $lang['addm_done'], $lang['addm_title'] );
+}
+$Page = parsetemplate($PageTpl, $parse);
 
-    display ($Page, $lang['addm_title'], false, '', true);
-  } else {
-    AdminMessage ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-  }
+display ($Page, $lang['addm_title'], false, '', true);
+
 ?>

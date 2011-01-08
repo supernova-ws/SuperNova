@@ -151,7 +151,7 @@ if ($_POST['submit'])
           'LastSettedSystemPos' => $system,
           'LastSettedPlanetPos' => $planet
         ));
-        $new_planet = CreateOnePlanetRecord($galaxy, $system, $planet, $user['id'], $planet_name, true);
+        $new_planet = uni_create_planet($galaxy, $system, $planet, $user['id'], $planet_name, true);
         break;
       }
       $planet += 3;

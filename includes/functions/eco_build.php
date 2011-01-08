@@ -61,8 +61,6 @@ function eco_build($que_type, $user, &$planet, $que)
 
 //  $template->assign_block_vars('que', array)
 
-//  SetNextQueueElementOnTop ( $planet, $user );
-
   // On enregistre ce que l'on a modifié dans planet !
 //  doquery("UPDATE `{{planets}}` SET `b_building_id` = '{$planet['b_building_id']}', `b_building` = '{$planet['b_building']}' WHERE `id` = '{$planet['id']}' LIMIT 1;");
   // On enregistre ce que l'on a eventuellement modifié dans users

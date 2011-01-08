@@ -163,7 +163,7 @@ function MissionCaseAttack ( $FleetRow) {
   $MoonChance = BE_calculateMoonChance($result);
 
   if ( (mt_rand(1, 100) <= $MoonChance) && ($galenemyrow['id_luna'] == 0) ){
-    $TargetPlanetName = CreateOneMoonRecord ( $FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet'], $TargetUserID, $FleetRow['fleet_start_time'], '', $MoonChance );
+    $TargetPlanetName = uni_create_moon ( $FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet'], $TargetUserID, $MoonChance);
     $GottenMoon       = sprintf ($lang['sys_moonbuilt'], $TargetPlanetName, $FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet']);
   }
 

@@ -127,7 +127,7 @@
 [*] Движок: Почистить каталог templates
 [*] Движок: Почистить каталог js
 [*] Движок: Почистить каталог includes
-[*] Движок: fleetback.php -> fleet.php
+[*] [s]Движок: fleetback.php -> fleet.php[/s] [color=#FF0000]DONE![/color]
 [*] Движок: infos.php - разбить на подпроцедуры
 [*] Интерфейс, RPG: Make empire work only with Emperor
 [*] Движок: проверить файлы в каталоге admin  на  наличие  SQL-injection  через глобальные переменные $_POST
