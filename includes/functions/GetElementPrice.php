@@ -16,6 +16,7 @@
 // -> false pour une defense ou un vaisseau
 //
 // Reponse : Une chaine de caractère decrivant proprement le tarif pret a etre affichée
+
 function GetElementPrice ($user, $planet, $Element, $userfactor = true) {
   global $pricelist, $resource, $lang, $reslist, $CombatCaps;
 
@@ -32,10 +33,9 @@ function GetElementPrice ($user, $planet, $Element, $userfactor = true) {
     );
 
   if(in_array($Element, $reslist['fleet']) || in_array($Element, $reslist['defense'])){
-    // $text .= $lang['sys_ship_armour'] . ': ' . ($CombatCaps[$Element]['armor']<=10000 ? $CombatCaps[$Element]['armor'] : ($CombatCaps[$Element]['armor']/1000) .'k' )  . '; ';
-    $text .= $lang['sys_ship_armour'] . ': ' . INT_myPrettyNumber($CombatCaps[$Element]['armor'], 10000)  . '; ';
-    $text .= $lang['sys_ship_shield'] . ': ' . INT_myPrettyNumber($CombatCaps[$Element]['shield'], 10000) . '; ';
-    $text .= $lang['sys_ship_weapon'] . ': ' . INT_myPrettyNumber($CombatCaps[$Element]['attack'], 10000) ;
+    $text .= $lang['sys_ship_armour'] . ': ' . pretty_number($CombatCaps[$Element]['armor'], true, false, 10000)  . '; ';
+    $text .= $lang['sys_ship_shield'] . ': ' . pretty_number($CombatCaps[$Element]['shield'], true, false, 10000) . '; ';
+    $text .= $lang['sys_ship_weapon'] . ': ' . pretty_number($CombatCaps[$Element]['attack'], true, false, 10000) ;
     $text .= '<br>';
   };
 
