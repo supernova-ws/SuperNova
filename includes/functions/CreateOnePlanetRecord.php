@@ -143,7 +143,6 @@ function CreateOnePlanetRecord($Galaxy, $System, $Position, $PlanetOwnerID, $Pla
       $OwnerName = doquery("SELECT `username` FROM {{users}} WHERE `id` = {$PlanetOwnerID};", '', true);
       $planet['name'] = "{$OwnerName['username']} {$planet['name']}";
     }
-    pdump($HomeWorld, '$HomeWorld');
 
     $QryInsertPlanet  = "INSERT INTO `{{table}}` SET ";
     $QryInsertPlanet .= "`name` = '".              $planet['name']              ."', ";
