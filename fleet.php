@@ -35,11 +35,6 @@ if ($IsUserChecked == false) {
 }
 check_urlaubmodus ($user);
 
-if(IsVacationMode($user)){
-  $parse['vacation'] = '<table width="525" height="25" cellpadding="0" cellspacing="0" border="2" bordercolor="#FF0000"><tr><td><center><font size=2 color=red><b><blink>  '.$lang['VacationMode'].'  </blink></b></font></center></td></tr></table>';
-  message($lang['Vacation_mode'], $lang['Error'], "fleet.php", 1);
-}
-
 includeLang('fleet');
 
 $parse = $lang;
