@@ -58,15 +58,9 @@ switch ($mode)
   break;
 
   case QUE_STRUCTURES:
-  case 'test':
-    eco_build(QUE_STRUCTURES, $user, $planetrow, $que);
-  break;
-
   case 'buildings':
   default:
-    // --------------------------------------------------------------------------------------------------
-    BatimentBuildingPage($planetrow, $user);
-    // eco_build(QUE_STRUCTURES, $user, $planetrow);
+    eco_build(QUE_STRUCTURES, $user, $planetrow, $que);
   break;
 }
 
