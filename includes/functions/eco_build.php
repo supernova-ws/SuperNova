@@ -1,7 +1,7 @@
 <?php
 
 /**
- * BatimentBuildingPage.php
+ * eco_build.php
  *
  * @version 1.5 - Using PTE (not everywhere) by Gorlum for http://supernova.ws
  * @version 1.4 - Complying with PCG by Gorlum for http://supernova.ws
