@@ -30,7 +30,7 @@ function MissionCaseColonisation ( $FleetRow ) {
         doquery("UPDATE `{{table}}` SET `fleet_mess` = '1' WHERE `fleet_id` = ". $FleetRow["fleet_id"], 'fleets');
       } else {
         // Yes, we can colonize
-        $NewOwnerPlanet = CreateOnePlanetRecord($FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet'], $FleetRow['fleet_owner'], "{$lang['sys_colo_defaultname']} ¹{$iPlanetCount[0]}");
+        $NewOwnerPlanet = uni_create_planet($FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet'], $FleetRow['fleet_owner'], "{$lang['sys_colo_defaultname']} ¹{$iPlanetCount[0]}");
         if ( $NewOwnerPlanet ) {
           $TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_allisok'];
           SendSimpleMessage ( $FleetRow['fleet_owner'], '', $FleetRow['fleet_start_time'], 0, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
