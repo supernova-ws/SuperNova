@@ -1,4 +1,8 @@
 <?php
+
+$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './../';
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
+
 include_once('../includes/init.php');
 
 $user = sn_autologin();
