@@ -322,9 +322,7 @@ function displayP($template)
 {
   if(is_object($template))
   {
-    /*
-    global $ugamela_root_path;
-    global $lang, $user;
+    global $ugamela_root_path, $user;
 
     if($template->parse)
     {
@@ -334,13 +332,12 @@ function displayP($template)
       }
     }
 
-    $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
+    $dpath = $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH;
     $template->assign_vars(array(
       'dpath'         => $dpath,
       'SN_ROOT_PATH'  => $ugamela_root_path,
       '-path_prefix-' => $ugamela_root_path,
     ));
-    */
 
     $template->display('body');
   }
