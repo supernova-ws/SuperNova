@@ -361,7 +361,7 @@ switch(intval($config->db_version))
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     };
-  //$new_version = 23;
+  $new_version = 23;
 
   case 23:
     //upd_log_version_update();
