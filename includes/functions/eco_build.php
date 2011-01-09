@@ -59,14 +59,6 @@ function eco_build($que_type, $user, &$planet, $que)
   $lab_busy    = count($que['que'][QUE_RESEARCH]) && !$config->BuildLabWhileRun;
   $can_que_element = $que_length < MAX_BUILDING_QUEUE_SIZE;
 
-//  $template->assign_block_vars('que', array)
-
-  // On enregistre ce que l'on a modifié dans planet !
-//  doquery("UPDATE `{{planets}}` SET `b_building_id` = '{$planet['b_building_id']}', `b_building` = '{$planet['b_building']}' WHERE `id` = '{$planet['id']}' LIMIT 1;");
-  // On enregistre ce que l'on a eventuellement modifié dans users
-//  doquery("UPDATE `{{users}}` SET `xpminier` = '{$user['xpminier']}' WHERE `id` = '{$user['id']}' LIMIT 1;");
-//  rpg_level_up($user, RPG_STRUCTURE);
-
   $fleet_list            = flt_get_fleets_to_planet($planet);
   $caps                  = ECO_getPlanetCaps($user, &$planet);
 
@@ -105,33 +97,7 @@ function eco_build($que_type, $user, &$planet, $que)
       }
 
       //================================
-      $NextBuildLevel = $element_level + 1;
-
       $unit_busy = (($Element == 31 || $Element == 35) && $lab_busy) || ($Element == 21 && $hangar_busy);
-
-
-
-      {
-        $next_level_msg = "{$lang['BuildNextLevel']} {$element_level}";
-
-        if (!$can_que_element)
-        {
-        }
-        else
-        {
-          if ($que_length != 0)
-          {
-            $next_level_msg = $lang['InBuildQueue'];
-          }
-
-          if ( IsElementBuyable ($user, $planet, $Element, true, false) )
-          {
-          }
-          else
-          {
-          }
-        }
-      }
 
       $build_data = eco_get_build_data($user, $planet, $Element, $element_level);
       $temp[RES_METAL]     = floor($planet['metal'] + $fleet_list['own']['total'][RES_METAL] - $build_data[BUILD_CREATE][RES_METAL]);
