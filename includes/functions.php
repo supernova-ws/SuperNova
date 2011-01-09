@@ -849,4 +849,48 @@ function SortUserPlanets ( $CurrentUser ) {
   return $Planets;
 }
 
+
+function mymail($to, $title, $body, $from = '') {
+  global $config;
+
+  $from = trim($from);
+
+  if (!$from) {
+    $from = $config->game_adminEmail;
+  }
+
+  $rp     = $config->game_adminEmail;
+
+  $head   = '';
+  $head  .= "Content-Type: text/plain \r\n";
+  $head  .= "Date: " . date('r') . " \r\n";
+  $head  .= "Return-Path: $rp \r\n";
+  $head  .= "From: $from \r\n";
+  $head  .= "Sender: $from \r\n";
+  $head  .= "Reply-To: $from \r\n";
+  $head  .= "Organization: $org \r\n";
+  $head  .= "X-Sender: $from \r\n";
+  $head  .= "X-Priority: 3 \r\n";
+  $body   = str_replace("\r\n", "\n", $body);
+  $body   = str_replace("\n", "\r\n", $body);
+
+  return mail($to, $title, $body, $head);
+}
+
+// Generates random string of $length symbols from $allowed_chars charset
+// Usefull for password and confirmation code generation
+function sys_random_string($length = 16)
+{
+  $allowed_chars  = 'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz023456789';
+  $allowed_length = strlen($allowed_chars);
+
+  $random_string = '';
+  for($i=0; $i<$length; $i++)
+  {
+    $random_string .= $allowed_chars[mt_rand(0, $allowed_length-1)];
+  }
+
+  return $random_string;
+}
+
 ?>
