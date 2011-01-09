@@ -51,7 +51,7 @@ if ($confirm)
     if($result)
     {
       $message = sprintf($lang['log_lost_email_pass'], $new_password);
-      @$result = mymail($email, $lang['log_lost_email_title'], $message);
+      @$result = mymail($last_confirm['email'], $lang['log_lost_email_title'], $message);
       $message = sys_bbcodeParse($message) . '<br><br>';
 
       if($result)
