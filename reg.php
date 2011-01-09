@@ -202,31 +202,4 @@ function sendpassemail($emailaddress, $password) {
   return $status;
 }
 
-function mymail($to, $title, $body, $from = '') {
-  global $config;
-
-  $from = trim($from);
-
-  if (!$from) {
-    $from = $config->game_adminEmail;
-  }
-
-  $rp     = $config->game_adminEmail;
-
-  $head   = '';
-  $head  .= "Content-Type: text/plain \r\n";
-  $head  .= "Date: " . date('r') . " \r\n";
-  $head  .= "Return-Path: $rp \r\n";
-  $head  .= "From: $from \r\n";
-  $head  .= "Sender: $from \r\n";
-  $head  .= "Reply-To: $from \r\n";
-  $head  .= "Organization: $org \r\n";
-  $head  .= "X-Sender: $from \r\n";
-  $head  .= "X-Priority: 3 \r\n";
-  $body   = str_replace("\r\n", "\n", $body);
-  $body   = str_replace("\n", "\r\n", $body);
-
-  return mail($to, $title, $body, $head);
-}
-
 ?>

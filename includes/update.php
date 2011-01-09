@@ -21,7 +21,7 @@ if(!defined('INIT'))
   include_once('init.php');
 }
 
-$db_last_version = 23;
+$db_last_version = 24;
 $config->db_loadItem('db_version');
 if($config->db_version == $db_last_version)
 {
@@ -364,7 +364,22 @@ switch(intval($config->db_version))
   $new_version = 23;
 
   case 23:
-    //upd_log_version_update();
+    upd_log_version_update();
+    if(!$update_tables['confirmations'])
+    {
+      $result = mysql_query(
+        "CREATE TABLE `{$config->db_prefix}confirmations` (
+          `id` bigint(11) NOT NULL AUTO_INCREMENT,
+          `id_user` bigint(11) NOT NULL DEFAULT 0,
+          `type` SMALLINT NOT NULL DEFAULT 0,
+          `code` NVARCHAR(16) NOT NULL DEFAULT '',
+          `email` NVARCHAR(64) NOT NULL DEFAULT '',
+          `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          PRIMARY KEY (`id`),
+          KEY `i_code_email` (`code`, `email`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+    };
   //$new_version = 24;
 
 };

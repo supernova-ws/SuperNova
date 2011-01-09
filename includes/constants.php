@@ -60,6 +60,11 @@ define('SHOW_ADMIN', 1);
 
 define('VOCATION_TIME', 2*24*60*60); // 48 hours
 
+// Confirmation record types
+define('CONFIRM_REGISTRATION', 1);
+define('CONFIRM_PASSWORD_RESET', 2);
+define('CONFIRM_DELETE', 3);
+
 // Mot qui sont interdit a la saisie !
 $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
