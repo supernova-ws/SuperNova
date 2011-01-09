@@ -862,7 +862,7 @@ function mymail($to, $title, $body, $from = '') {
   $rp     = $config->game_adminEmail;
 
   $head   = '';
-  $head  .= "Content-Type: text/plain \r\n";
+  $head  .= "Content-Type: text/plain; charset=utf-8 \r\n";
   $head  .= "Date: " . date('r') . " \r\n";
   $head  .= "Return-Path: $rp \r\n";
   $head  .= "From: $from \r\n";
@@ -873,6 +873,9 @@ function mymail($to, $title, $body, $from = '') {
   $head  .= "X-Priority: 3 \r\n";
   $body   = str_replace("\r\n", "\n", $body);
   $body   = str_replace("\n", "\r\n", $body);
+  $body   = iconv('CP1251', 'UTF-8', $body);
+
+  $title = '=?UTF-8?B?'.base64_encode(iconv('CP1251', 'UTF-8', $title)).'?=';
 
   return mail($to, $title, $body, $head);
 }
