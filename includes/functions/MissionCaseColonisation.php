@@ -32,29 +32,30 @@ function MissionCaseColonisation ( $FleetRow ) {
         // Yes, we can colonize
         $NewOwnerPlanet = uni_create_planet($FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet'], $FleetRow['fleet_owner'], "{$lang['sys_colo_defaultname']} ¹{$iPlanetCount[0]}");
         if ( $NewOwnerPlanet ) {
+//          if($FleetRow['fleet_amount'] > 0)
+            $debug->warning('Sending several type of ships with colonizer leads to resource duplication. Resource duplicate X time where X - number of ship type<br>Fleet: ' . dump($FleetRow['fleet_array']), 'Colonization With Fleet', 304);
+
           $TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_allisok'];
           SendSimpleMessage ( $FleetRow['fleet_owner'], '', $FleetRow['fleet_start_time'], 0, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
 
-          $CurrentFleet = explode(";", $FleetRow['fleet_array']);
-          $NewFleet     = "";
-          foreach ($CurrentFleet as $Item => $Group) {
-            if ($Group != '') {
-              $Class = explode (",", $Group);
+          $CurrentFleet = explode(';', $FleetRow['fleet_array']);
+          $NewFleet     = '';
+          foreach ($CurrentFleet as $Group) {
+            if ($Group) {
+              $Class = explode (',', $Group);
               if ($Class[0] == 208) {
                 if ($Class[1] > 0) {
-                  $NewFleet  .= $Class[0].",".($Class[1] - 1).";";
+                  $NewFleet  .= $Class[0].','.($Class[1] - 1).';';
                   $FleetRow['fleet_amount']--;
                 }
               } else {
                 if ($Class[1] <> 0) {
-                $NewFleet  .= $Class[0].",".$Class[1].";";
+                $NewFleet  .= $Class[0].','.$Class[1].';';
                 }
               }
             }
-            $FleetRow['fleet_array'] = $NewFleet;
           }
-          if($FleetRow['fleet_amount'] > 0)
-            $debug->warning('Sending several type of ships with colonizer leads to resource duplication. Resource duplicate X time where X - number of ship type<br>Fleet: ' . dump($NewFleet), 'Colonization With Fleet', 300);
+          $FleetRow['fleet_array'] = $NewFleet;
           RestoreFleetToPlanet ($FleetRow, false);
         } else {
           $TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_badpos'];
