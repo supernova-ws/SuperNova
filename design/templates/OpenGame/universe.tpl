@@ -70,7 +70,13 @@ var uni_system = "{system}";
   </tr>
 <!-- BEGIN galaxyrow -->
   <tr>
-    <th width=30 style="white-space: nowrap"><a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype={galaxyrow.PLANET_TYPE}&target_mission=7">{galaxyrow.PLANET_NUM}</a></th>
+    <th width=30 style="white-space: nowrap">
+      <!-- IF galaxyrow.PLANET_TYPE -->
+        {galaxyrow.PLANET_NUM}
+      <!-- ELSE -->
+        <a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype=1&target_mission=7">{galaxyrow.PLANET_NUM}</a>
+      <!-- ENDIF -->
+    </th>
     <th style="white-space: nowrap;" width=30 valign=middle>
       <!-- IF galaxyrow.PLANET_ID -->
         <div style="position: relative; height: 30px; width: 30px;" onmouseover="javascript:show_planet({galaxyrow.PLANET_NUM}, {galaxyrow.PLANET_TYPE});" >

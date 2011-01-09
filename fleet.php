@@ -41,15 +41,22 @@ $parse = $lang;
 
 $fleet_page = intval($_GET['fleet_page']);
 
-$target_mission = $_GET['target_mission'] ? intval($_GET['target_mission']) : intval($_POST['target_mission']);
-
 $galaxy = $_GET['galaxy'] ? intval($_GET['galaxy']) : ($_POST['galaxy'] ? intval($_POST['galaxy']) : $planetrow['galaxy']);
 $system = $_GET['system'] ? intval($_GET['system']) : ($_POST['system'] ? intval($_POST['system']) : $planetrow['system']);
 $planet = $_GET['planet'] ? intval($_GET['planet']) : ($_POST['planet'] ? intval($_POST['planet']) : $planetrow['planet']);
-$planet_type = $_GET['planet_type'] ? intval($_GET['planet_type']) : intval($_POST['planet_type']);
-if (!$planet_type)
+
+$target_mission = $_GET['target_mission'] ? intval($_GET['target_mission']) : intval($_POST['target_mission']);
+if($target_mission == MT_COLONIZE)
 {
-  $planet_type = $_GET['planettype'] ? intval($_GET['planettype']) : ($_POST['planettype'] ? intval($_POST['planettype']) : $planetrow['planet_type']);
+  $planet_type = PT_PLANET;
+}
+else
+{
+  $planet_type = $_GET['planet_type'] ? intval($_GET['planet_type']) : intval($_POST['planet_type']);
+  if (!$planet_type)
+  {
+    $planet_type = $_GET['planettype'] ? intval($_GET['planettype']) : ($_POST['planettype'] ? intval($_POST['planettype']) : $planetrow['planet_type']);
+  }
 }
 
 $MaxFleets = GetMaxFleets($user);
@@ -148,6 +155,7 @@ switch ($fleet_page)
         {
           $missiontype[MT_COLONIZE] = $lang['type_mission'][MT_COLONIZE];
           $target_mission = MT_COLONIZE;
+          $planet_type = PT_PLANET;
         }
         else
         {
