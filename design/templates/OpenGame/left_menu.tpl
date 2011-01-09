@@ -7,7 +7,7 @@
   </script>
 
   <table width="100%" cellspacing="0" cellpadding="0" id="left_menu">
-    <tr><th id="server_name">{servername}</th></tr>
+    <tr><th id="server_name">{C_game_name}</th></tr>
 
     <tr><td align="center"><img border="0" src="../design/images/supernova.png" alt="supernova.ws"></td></tr>
 

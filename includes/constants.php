@@ -15,6 +15,9 @@ if ( !defined('INSIDE') )
   die('Hacking attempt');
 }
 
+define('DB_VERSION', 23);
+define('SN_VERSION', 23);
+
 define('GAMEURL', "http://{$_SERVER['HTTP_HOST']}/");
 
 // Game type constants starts with GAME_

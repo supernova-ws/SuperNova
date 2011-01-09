@@ -84,7 +84,7 @@ if($config->debug)
 $update_file = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.{$phpEx}";
 if(file_exists($update_file))
 {
-  if(filemtime($update_file) > $config->var_db_update)
+  if(filemtime($update_file) > $config->var_db_update || $config->db_version < DB_VERSION)
   {
     if($time_now >= $config->var_db_update_end)
     {

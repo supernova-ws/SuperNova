@@ -21,14 +21,13 @@ if(!defined('INIT'))
   include_once('init.php');
 }
 
-$db_last_version = 24;
 $config->db_loadItem('db_version');
-if($config->db_version == $db_last_version)
+if($config->db_version == DB_VERSION)
 {
 //  return;
 }
 
-if($config->db_version > $db_last_version)
+if($config->db_version > DB_VERSION)
 {
   die('Internal error! Auotupdater detects DB version greater then can be handled!<br>Possible you have out-of-date SuperNova version<br>Pleas upgrade your server from <a href="http://github.com/supernova-ws/SuperNova">GIT repository</a>.');
 }
