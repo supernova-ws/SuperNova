@@ -298,6 +298,30 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
   {
     // Officiers
     $PageTPL              = gettemplate('info_officiers_general');
+
+    $mercenary = $sn_data[$BuildID];
+    $mercenary_bonus = $mercenary['bonus'];
+    $mercenary_bonus = $mercenary_bonus>=0 ? "+{$mercenary_bonus}" : "{$mercenary_bonus}";
+    switch($mercenary['bonus_type'])
+    {
+      case BONUS_PERCENT:
+        $mercenary_bonus = "{$mercenary_bonus}%";
+      break;
+
+      case BONUS_ADD:
+      break;
+
+      case BONUS_ABILITY:
+        $mercenary_bonus = '';
+      break;
+
+      default:
+      break;
+    }
+
+    $parse['description_short'] = $lang['info'][$BuildID]['description_short'];
+    $parse['mercenary_bonus'] = $mercenary_bonus;
+    $parse['max_level'] = $mercenary['max'];
   }
 
   // ---- Tableau d'evolution

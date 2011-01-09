@@ -1468,7 +1468,7 @@ if ( defined('INSIDE')) {
       'max' => 1,
       'bonus_type' => BONUS_ABILITY,
     ),
-
+/*
     MRC_EMPEROR => array(
       'name' => 'rpg_empereur',
       'require' => array(MRC_ASSASIN => 1, MRC_DEFENDER => 1),
@@ -1477,7 +1477,7 @@ if ( defined('INSIDE')) {
       'max' => 1,
       'bonus_type' => BONUS_ABILITY,
     ),
-
+*/
     RES_METAL => array(
       'name' => 'metal',
     ),
@@ -1511,9 +1511,9 @@ if ( defined('INSIDE')) {
       'tech'      => array ( 106, 108, 109, 110, 111, TECH_ENERGY, 114, 115, 117, 118, 120, 121, 122, 123, 124, 150, 199),
       // Mercenary list
       'mercenaries' => array (
-        MRC_GEOLOGIST, MRC_POWERMAN, MRC_CONSTRUCTOR, MRC_ARCHITECT, MRC_ACADEMIC, MRC_FORTIFIER,
-        MRC_ADMIRAL, MRC_STOCKMAN, MRC_NAVIGATOR, MRC_SPY, MRC_COORDINATOR,
-        MRC_DESTRUCTOR, MRC_DEFENDER, MRC_ASSASIN, MRC_EMPEROR
+        MRC_GEOLOGIST, MRC_ADMIRAL, MRC_POWERMAN, MRC_CONSTRUCTOR, MRC_ARCHITECT, MRC_ACADEMIC, MRC_STOCKMAN,
+        MRC_FORTIFIER, MRC_DEFENDER, MRC_SPY, MRC_COORDINATOR, MRC_DESTRUCTOR, MRC_NAVIGATOR,
+        MRC_ASSASIN //, MRC_EMPEROR
       ),
       'governors' => array(
         MRC_GEOLOGIST, MRC_POWERMAN, MRC_CONSTRUCTOR, MRC_ARCHITECT, MRC_ACADEMIC, MRC_FORTIFIER

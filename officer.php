@@ -114,14 +114,35 @@ else
     $Result = IsOfficierAccessible ( $user, $mercenary_id );
     if($Result)
     {
+      $mercenary = $sn_data[$mercenary_id];
+      $mercenary_bonus = $mercenary['bonus'];
+      $mercenary_bonus = $mercenary_bonus>=0 ? "+{$mercenary_bonus}" : "{$mercenary_bonus}";
+      switch($mercenary['bonus_type'])
+      {
+        case BONUS_PERCENT:
+          $mercenary_bonus = "{$mercenary_bonus}% ";
+        break;
+
+        case BONUS_ADD:
+        break;
+
+        case BONUS_ABILITY:
+          $mercenary_bonus = '';
+        break;
+
+        default:
+        break;
+      }
+
       $template->assign_block_vars('officer', array(
         'ID'          => $mercenary_id,
         'NAME'        => $lang['tech'][$mercenary_id],
         'DESCRIPTION' => $lang['info'][$mercenary_id]['description'],
+        'DESCRIPTION_SHORT' => $lang['info'][$mercenary_id]['description_short'],
         'LEVEL'       => $user[$resource[$mercenary_id]],
-        'LEVEL_MAX'   => $sn_data[$mercenary_id]['max'],
-        'BONUS'       => $sn_data[$mercenary_id]['bonus'],
-        'BONUS_TYPE'  => $sn_data[$mercenary_id]['bonus_type'],
+        'LEVEL_MAX'   => $mercenary['max'],
+        'BONUS'       => $mercenary_bonus,
+        'BONUS_TYPE'  => $mercenary['bonus_type'],
         'CAN_BUY'     => $Result,
       ));
     }

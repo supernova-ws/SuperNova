@@ -33,7 +33,8 @@
       </th>
 
       <th align=left>
-        {officer.DESCRIPTION}
+        {officer.DESCRIPTION}<br><br>
+        <span class="positive">{officer.BONUS} {officer.DESCRIPTION_SHORT}</span>
       </th>
     </tr>
   <!-- END officer -->
