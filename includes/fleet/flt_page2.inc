@@ -19,8 +19,6 @@
     $fleet_capacity += $pricelist[$Ship]['capacity'] * $Count;
   }
 
-
-
   $TableTitle  = "[{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}] ";
   $TableTitle .= $lang["fl_planettype{$planetrow['planet_type']}"] . ' ' . $planetrow['name'];
   $TableTitle .= '&nbsp;=&gt;&nbsp;';
