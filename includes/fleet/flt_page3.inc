@@ -94,7 +94,7 @@
       $target = "g{$galaxy}s{$system}p{$planet}t{$planet_type}";
       if($_POST['acs_target_mr'] == $target){
         //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
-        $aks = doquery("SELECT * FROM {{aks}} WHERE id = {$fleet_group}",'', true);
+        $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}';",'', true);
         if (!$aks){
           $fleet_group = 0;
         }else{
@@ -209,7 +209,7 @@
   $parse["dist"] = pretty_number($distance);
   $parse["speed"] = pretty_number($fleet_speed);
   $parse["deute_need"] = pretty_number($consumption);
-  $parse["from"] = $planetrow['galaxy'].":".$planetrow['system'].":".$planetrow['planet'];
+  $parse["from"] = "{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}";
   $parse["time_go"] = date(FMT_DATE_TIME, $fleet['start_time']);
   $parse["time_back"] = date(FMT_DATE_TIME, $fleet['end_time']);
 
@@ -223,9 +223,10 @@
   }
   $parse['ShipList'] = $ShipList;
 
-  $planetrow = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1;", '', true);
   doquery("COMMIT;");
+  $planetrow = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1;", '', true);
 
   $page = parsetemplate(gettemplate('fleet3'), $parse);
   display($page, $lang['fl_title']);
+
 ?>
