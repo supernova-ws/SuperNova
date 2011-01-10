@@ -1408,7 +1408,7 @@ if ( defined('INSIDE')) {
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 5,
-      'bonus' => -20,
+      'bonus' => -10,
       'bonus_type' => BONUS_PERCENT,
     ),
 
