@@ -32,7 +32,7 @@ if ($confirm)
   $last_confirm = doquery("SELECT *, UNIX_TIMESTAMP(`create_time`) as `unix_time` FROM {{confirmations}} WHERE `code` = '{$confirm}' LIMIT 1;", '', true);
   if($last_confirm['id'] && ($time_now - $last_confirm['unix_time'] <= 3*24*60*60))
   {
-//    doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$last_confirm['id']}' LIMIT 1;");
+    doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$last_confirm['id']}' LIMIT 1;");
 
     $user_data = doquery("SELECT * FROM {{users}} WHERE `id` = '{$last_confirm['id_user']}' LIMIT 1;", '', true);
     if(!$user_data['id'])
@@ -40,10 +40,10 @@ if ($confirm)
       message($lang['log_lost_err_code'], $lang['sys_error']);
     }
 
-//    if($user_data['authlevel'])
-//    {
-//      message($lang['log_lost_err_admin'], $lang['sys_error']);
-//    }
+    if($user_data['authlevel'])
+    {
+      message($lang['log_lost_err_admin'], $lang['sys_error']);
+    }
 
     $new_password = sys_random_string();
     $md5 = md5($new_password);
