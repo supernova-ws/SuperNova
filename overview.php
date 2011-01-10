@@ -383,8 +383,9 @@ switch ($mode)
     foreach(array(QUE_STRUCTURES => $sn_data['groups']['ques'][QUE_STRUCTURES]) as $que_id => $que_type_data)
     {
       $template->assign_block_vars('ques', array(
-        ID => $que_id,
-        NAME => $lang['sys_ques'][$que_id],
+        ID     => $que_id,
+        NAME   => $lang['sys_ques'][$que_id],
+        LENGTH => count($que['que'][$que_id]),
       ));
 
       if($que['que'][$que_id])

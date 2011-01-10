@@ -26,16 +26,18 @@ Object structure:
   'html_timer'  - reserved for internal use (link to 'timer' HTML element)
   'html_finish' - reserved for internal use (link to 'finish' HTML element)
   'html_que'    - reserved for internal use (link to 'que' HTML element)
+  'html_total'  - reserved for internal use (link to 'total time' HTML element)
 
 Options for que display:
-  'template' - template for que item
-  'msg_done' - inactive message
-  'que'      - que: array
-          [0] - element ID
-          [1] - element name
-          [2] - build length
-          [3] - element amount
-          [4] - element level
+  'template'  - template for que item
+  'msg_done'  - inactive message
+  'que'       - que: array
+                [0] - element ID
+                [1] - element name
+                [2] - build length
+                [3] - element amount
+                [4] - element level
+  'total'     - reserved for internal use (total que building time)
 
 Options for counter:
 'start_value' - start value
@@ -62,10 +64,16 @@ function sn_timer_compile_que(timer_options)
   var compiled = '';
   var unit_name = '';
   var temp = '';
+  var total = 0;
   var que = timer_options['que'];
 
   for(que_id in que)
   {
+    if(que_id != 0)
+    {
+      total += que[que_id][UNIT_TIME];
+    }
+
     temp = timer_options['template'].replace('[UNIT_ID]', que[que_id][UNIT_ID]);
     temp = temp.replace('[UNIT_TIME]', sn_timestampToString(que[que_id][UNIT_TIME]));
 
@@ -83,6 +91,7 @@ function sn_timer_compile_que(timer_options)
     temp = temp.replace('[UNIT_NAME]', unit_name);
     compiled += temp;
   }
+  timer_options['total'] = total;
 
   return compiled;
 };
@@ -107,16 +116,18 @@ function sn_timer() {
 
     if(!timer['html_main'])
     {
-      sn_timers[timerID]['html_main'] = document.getElementById(timer['id']);
-      sn_timers[timerID]['html_timer'] = document.getElementById(timer['id'] + '_timer');
+      sn_timers[timerID]['html_main']   = document.getElementById(timer['id']);
+      sn_timers[timerID]['html_timer']  = document.getElementById(timer['id'] + '_timer');
       sn_timers[timerID]['html_finish'] = document.getElementById(timer['id'] + '_finish');
-      sn_timers[timerID]['html_que'] = document.getElementById(timer['id'] + '_que');
+      sn_timers[timerID]['html_que']    = document.getElementById(timer['id'] + '_que');
+      sn_timers[timerID]['html_total']  = document.getElementById(timer['id'] + '_total');
       timer = sn_timers[timerID];
     }
     HTML        = timer['html_main'];
     HTML_timer  = timer['html_timer'];
     HTML_finish = timer['html_finish'];
     HTML_que    = timer['html_que'];
+    HTML_total  = timer['html_total'];
 
     switch(timer['type'])
     {
@@ -288,6 +299,16 @@ function sn_timer() {
           timer['active'] = false;
           infoText = timer_options['msg_done'];
           timerText = '';
+        }
+
+        total_text = sn_timestampToString(timeLeft + timer_options['total']);
+        if(HTML_total != null)
+        {
+          HTML_total.innerHTML = total_text;
+        }
+        else
+        {
+          timerText += '<br>' + total_text;
         }
 
         if(HTML_timer != null)

@@ -162,8 +162,10 @@ function eco_struc_unborder_unit(unit_id)
         <table width=100% class="noborder">
           <tr>
             <th width=120px>
-            <div id="ov_{QUE_ID}" style="color: lime"></div>
-            <div id="ov_{QUE_ID}_timer" style="color: red"></div>
+            <div id="ov_{QUE_ID}"></div>
+            <div id="ov_{QUE_ID}_timer" style="color: lime"></div>
+            <div>{L_sys_total_time}</div>
+            <div id="ov_{QUE_ID}_total" style="color: red"></div>
           </th>
           <th id="ov_{QUE_ID}_que">
             </th>
