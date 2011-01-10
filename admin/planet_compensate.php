@@ -102,7 +102,7 @@ if($galaxy_src)
 
     if($_GET['btn_confirm'])
     {
-      doquery("UPDATE {{planets}} SET metal = metal + '{$final_cost['901']}', crystal = crystal + '{$final_cost['902']}', deuterium = deuterium + '{$final_cost['903']}' WHERE id = {$destination['id']};");
+      doquery("UPDATE {{planets}} SET metal = metal + '{$final_cost[RES_METAL]}', crystal = crystal + '{$final_cost[RES_CRYSTAL]}', deuterium = deuterium + '{$final_cost[RES_DEUTERIUM]}' WHERE id = {$destination['id']};");
 
       $time = time() + 60*60*24*7;
       doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = '{$time}' WHERE id = {$planet['id']};");

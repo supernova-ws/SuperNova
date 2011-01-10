@@ -19,3 +19,7 @@
     <script type="text/javascript" src="{-path_prefix-}js/lib/jquery-ui.js"></script>
     <script type="text/javascript" src="{-path_prefix-}js/sn_global.js"></script>
     <script type="text/javascript" src="{-path_prefix-}js/sn_timer.js"></script>
+    <script type="text/javascript"><!--
+    var dpath = '{dpath}';
+    var sn_path_prefix = '{-path_prefix-}';
+    //--></script>

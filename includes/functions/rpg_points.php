@@ -18,7 +18,7 @@
 * @package rpg
 *
 */
-function rpg_pointsAdd($user_id, $dark_matter, $comment = false)
+function rpg_points_change($user_id, $dark_matter, $comment = false)
 {
   global $debug, $config, $dm_change_legit;
 
@@ -28,7 +28,7 @@ function rpg_pointsAdd($user_id, $dark_matter, $comment = false)
   }
 
   $dm_change_legit = true;
-  doquery("UPDATE {{users}} SET rpg_points = rpg_points + '$dark_matter' WHERE `id` = {$user_id}");
+  doquery("UPDATE {{users}} SET rpg_points = rpg_points + '{$dark_matter}' WHERE `id` = {$user_id} LIMIT 1;");
   $rows_affected = mysql_affected_rows();
   if($rows_affected)
   {
@@ -36,16 +36,16 @@ function rpg_pointsAdd($user_id, $dark_matter, $comment = false)
 
     if($dark_matter>0)
     {
-      $old_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id}", '', true);
+      $old_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1;", '', true);
       if($old_referral['id'])
       {
-        doquery("UPDATE {{referrals}} SET dark_matter = dark_matter + '$dark_matter' WHERE `id` = {$user_id}");
-        $new_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id}", '', true);
+        doquery("UPDATE {{referrals}} SET dark_matter = dark_matter + '$dark_matter' WHERE `id` = {$user_id} LIMIT 1;");
+        $new_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1;", '', true);
 
         $partner_bonus = floor($new_referral['dark_matter']/$config->rpg_bonus_divisor) - floor($old_referral['dark_matter']/$config->rpg_bonus_divisor);
         if($partner_bonus > 0)
         {
-          rpg_pointsAdd($new_referral['id_partner'], $partner_bonus, "Incoming From Referral ID {$user_id}");
+          rpg_points_change($new_referral['id_partner'], $partner_bonus, "Incoming From Referral ID {$user_id}");
         }
       }
     }
@@ -57,24 +57,53 @@ function rpg_pointsAdd($user_id, $dark_matter, $comment = false)
   return $rows_affected;
 }
 
-function rpg_calc_xp_for_levelup($current_xp, $b1, $q)
+function rpg_level_up($user, $type)
 {
-  return floor($b1 * (pow($q, $current_xp) - 1)/($q - 1));
+  $q = 1.03;
+
+  switch($type)
+  {
+    case RPG_STRUCTURE:
+      $field_level = 'lvl_minier';
+      $xp = $user['xpminier'];
+      $b1 = 50;
+    break;
+
+    case RPG_RAID:
+      $field_level = 'lvl_raid';
+      $xp = $user['xpraid'];
+      $b1 = 10;
+    break;
+  }
+
+  $level = $user[$field_level];
+  while ($xp >= rpg_xp_for_level($level, $b1, $q))
+  {
+    $level++;
+  }
+  $level -= $user[$field_level];
+  if($level)
+  {
+    doquery("UPDATE `{{users}}` SET `{$field_level}` = `{$field_level}` + '{$level}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    rpg_points_change($user['id'], $level, 'Level Up For Structure Building');
+    $user[$field_level] += $level;
+    $user['rpg_points'] += $level;
+  }
 }
 
-function rpg_get_miner_xp($current_xp)
+function rpg_xp_for_level($level, $b1, $q)
 {
-  $miner_b1 = 50;
-  $miner_q  = 1.03;
-
-  return rpg_calc_xp_for_levelup($current_xp, $miner_b1, $miner_q);
+  return floor($b1 * (pow($q, $level) - 1)/($q - 1));
 }
 
-function RPG_get_raider_xp($current_xp)
+function rpg_get_miner_xp($level)
 {
-  $raid_b1 = 10;
-  $raid_q  = 1.03;
-
-  return rpg_calc_xp_for_levelup($current_xp, $raid_b1, $raid_q);
+  return rpg_xp_for_level($level, 50, 1.03);
 }
+
+function RPG_get_raider_xp($level)
+{
+  return rpg_xp_for_level($level, 10, 1.03);
+}
+
 ?>

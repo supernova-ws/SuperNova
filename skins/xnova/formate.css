@@ -244,6 +244,35 @@ div .ui-dialog-content table { background: #040e1e; }
 /* Icon file */
 .icons { background-image: url(images/icons.png); }
 
+/* Que item */
+.que_item
+{
+  cursor: pointer;
+
+  border: 0px;
+
+  position: relative;
+  height: 60px;
+  width: 60px;
+
+  margin-right: 2px;
+
+  font-size: 100%;
+}
+
+/* Unit picture */
+.unit_picture
+{
+  border: 0px;
+
+  position: absolute;
+  left: 0px;
+  top: 0px;
+
+  width: 100%;
+  height: 100%;
+}
+
 /* Unit preview box on build pages */
 .unit_preview
 {
@@ -263,3 +292,6 @@ div .ui-dialog-content table { background: #040e1e; }
 {
   border-top-color: #666666;  /*  Reserved for unit_preview border color*/
 }
+
+#off_dark_matter_hint {color: #00CCFF; font-weight: bold; floating: left}
+#off_get_dark_matter { color: #ff8900; font-weight: bold;}

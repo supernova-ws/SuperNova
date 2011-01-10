@@ -16,27 +16,25 @@
 // $user       -> Le Joueur lui meme
 // $planet     -> La planete sur laquelle l'Element doit etre construit
 // $Element    -> L'Element que l'on convoite
-function GetBuildingTime ($user, $planet, $Element)
+function GetBuildingTime ($user, $planet, $Element, $for_building = BUILD_CREATE, $level = false)
 {
   global $pricelist, $resource, $reslist, $config, $sn_data;
 
   $isDefense = in_array($Element, $reslist['defense']);
   $isFleet = in_array($Element, $reslist['fleet']);
 
-  $level = ($planet[$resource[$Element]]) ? $planet[$resource[$Element]] : $user[$resource[$Element]];
-
-  $level = (($level) AND !($isDefense OR $isFleet)) ? $level : 1;
-
-  $cost_metal   = floor($pricelist[$Element]['metal']   * pow($pricelist[$Element]['factor'], $level));
-  $cost_crystal = floor($pricelist[$Element]['crystal'] * pow($pricelist[$Element]['factor'], $level));
-  $cost_deuterium = floor($pricelist[$Element]['deuterium'] * pow($pricelist[$Element]['factor'], $level));
-  $time = ($cost_metal + $cost_crystal + $cost_deuterium) / get_game_speed() / 2500;
+  if($level === false)
+  {
+    $level = ($planet[$resource[$Element]]) ? $planet[$resource[$Element]] : $user[$resource[$Element]];
+    $level = (($level) AND !($isDefense OR $isFleet)) ? $level : 1;
+  }
+  $time = ($pricelist[$Element]['metal'] + $pricelist[$Element]['crystal'] + $pricelist[$Element]['deuterium']) * pow($pricelist[$Element]['factor'], $level) / get_game_speed() / 2500;
 
   if (in_array($Element, $reslist['build']))
   {
     // Pour un batiment ...
     $time = $time * (1 / ($planet[$resource['14']] + 1)) * pow(0.5, $planet[$resource['15']]);
-    $time = floor(($time * 60 * 60) * (1 - (($user['rpg_constructeur']) * 0.1)));
+    $time = floor(mrc_modify_value($user, $planet, MRC_ARCHITECT, $time * 60 * 60));
   }
   elseif (in_array($Element, $reslist['tech']))
   {
@@ -76,20 +74,26 @@ function GetBuildingTime ($user, $planet, $Element)
       $time = $time / $inves['laboratorio'];
       */
     }
-    $time = floor(($time * 60 * 60) * (1 - $user['rpg_scientifique'] * 0.1));
+    $time = floor(mrc_modify_value($user, $planet, MRC_ACADEMIC, $time * 60 * 60));
   }
   elseif ($isDefense)
   {
     // Pour les defenses ou la flotte 'tarif fixe' durée adaptée a u niveau nanite et usine robot
     $time = $time * (1 / ($planet[$resource['21']] + 1)) * pow(1 / 2, $planet[$resource['15']]);
-    $time = floor(($time * 60 * 60) * pow(0.5, $user['rpg_defenseur']));
+    $time = floor(mrc_modify_value($user, $planet, MRC_FORTIFIER, $time * 60 * 60));
   }
   elseif ($isFleet)
   {
     $time = $time * (1 / ($planet[$resource['21']] + 1)) * pow(1 / 2, $planet[$resource['15']]);
-    $time = floor(($time * 60 * 60) * (1 - (($user['rpg_technocrate']) * 0.05)));
+    $time = floor(mrc_modify_value($user, $planet, MRC_CONSTRUCTOR, $time * 60 * 60));
+  }
+
+  if($for_building == BUILD_DESTROY)
+  {
+    $time = floor($time/2);
   }
 
   return $time ? $time : 1;
 }
+
 ?>

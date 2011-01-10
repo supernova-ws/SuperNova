@@ -1,6 +1,37 @@
 <?php
 
 /**
+ * GetRestrictedConstructionNum.php
+ *
+ * @version 1.0
+ * @copyright 2009 By Gorlum for http://ogame.triolan.com.ua
+ */
+function GetRestrictedConstructionNum($Planet) {
+  global $resource;
+
+  $limited = array(407 => 0, 408 =>0, 409 =>0, 502 => 0, 503 => 0);
+
+  foreach($limited as $key => $value){
+    $limited[$key] += $Planet[$resource[$key]];
+  }
+
+  $BuildQueue = $Planet['b_hangar_id'];
+  if ($BuildQueue){
+    $BuildArray = explode (";", $BuildQueue);
+    foreach($BuildArray as $BuildArrayElement){
+      $building = explode (",", $BuildArrayElement);
+      if(array_key_exists($building[0], $limited)){
+        $limited[$building[0]] += $building[1];
+      }
+    }
+  }
+
+  return $limited;
+}
+// Verion History
+// - 1.0 Initial Version
+
+/**
  * DefensesBuildingPage.php
  *
  * @version 1.2s - Security checked for SQL-injection by Gorlum for http://supernova.ws
@@ -197,16 +228,16 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
         // Début de ligne
         $PageTable .= "\n<tr>";
 
-        // Imagette + Link vers la page d'info
+        // Imagette + Link vers la page d'information
         $PageTable .= "<th class=l>";
-        $PageTable .= "<a href=infos.".$phpEx."?gid=".$Element.">";
-        $PageTable .= "<img border=0 src=\"".$dpath."gebaeude/".$Element.".gif\" align=top width=120 height=120></a>";
+        $PageTable .= "<a href=infos.{$phpEx}?gid={$Element}>";
+        $PageTable .= "<img border=0 src=\"{$dpath}gebaeude/{$Element}.gif\" align=top width=120 height=120></a>";
         $PageTable .= "</th>";
 
         // Description
         $PageTable .= "<td class=l>";
-        $PageTable .= "<a href=infos.".$phpEx."?gid=".$Element.">".$ElementName."</a> ".$ElementNbre."<br>";
-        $PageTable .= "".$lang['res']['descriptions'][$Element]."<br>";
+        $PageTable .= "<a href=infos.{$phpEx}?gid={$Element}>{$ElementName}</a> {$ElementNbre}<br>";
+        $PageTable .= "{$lang['info'][$Element]['description_short']}<br>";
         // On affiche le 'prix' avec eventuellement ce qui manque en ressource
         $PageTable .= GetElementPrice($User, $CurrentPlanet, $Element, false);
 

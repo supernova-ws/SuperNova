@@ -12,6 +12,7 @@ INSERT INTO `sn_users` SET
   `system` = 1,
   `planet` = 1,
   `current_planet` = 1,
+  `user_agent` = '0',
   `register_time` = UNIX_TIMESTAMP();
 
 
@@ -38,7 +39,9 @@ INSERT INTO `sn_planets` SET
   `crystal_max` = 500000,
   `deuterium` = 0,
   `deuterium_perhour` = 0,
-  `deuterium_max` = 500000;
+  `deuterium_max` = 500000,
+  `b_building_id` = '0',
+  `b_hangar_id` = '0';
 
 
 INSERT INTO `sn_config` VALUES

@@ -46,7 +46,7 @@ if ($user['authlevel'] >= 2) {
         case 1: // Proceeding normal - only one user exists
           $row = mysql_fetch_array($query);
           // Does anything post to DB?
-          if(rpg_pointsAdd($row['id'], $points, "Through admin interface for user {$row['username']} ID {$row['id']} " . $reason)){
+          if(rpg_points_change($row['id'], $points, "Through admin interface for user {$row['username']} ID {$row['id']} " . $reason)){
             $message = sprintf($lang['adm_dm_user_added'], $row['username'], $row['id'], $points);
             $isNoError = true;
           }else // No? We will say it to user...
@@ -74,7 +74,7 @@ if ($user['authlevel'] >= 2) {
           break;
         case 1: // Proceeding normal - only one user exists
           $row = mysql_fetch_array($query);
-          if(rpg_pointsAdd($row['id_owner'], $points, "Through admin interface to planet '{$row['name']} ID: {$row['id']} for user ID: {$row['id_owner']} " . $reason)){
+          if(rpg_points_change($row['id_owner'], $points, "Through admin interface to planet '{$row['name']} ID: {$row['id']} for user ID: {$row['id_owner']} " . $reason)){
             $message = sprintf($lang['adm_dm_planet_added'], $row['id_owner'], $row['name'], $row['id'], INT_makeCoordinates($row), $points);
             $isNoError = true;
           }else

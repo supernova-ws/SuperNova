@@ -1,4 +1,46 @@
 <?php
+
+function BE_attackFleetFill(&$attackFleets, $fleet, $strField = 'detail')
+{
+  global $sn_data;
+
+  $attackFleets[$fleet['fleet_id']]['fleet'] = $fleet;
+
+  $attackFleets[$fleet['fleet_id']]['user'] = doquery(
+    "SELECT `id`, `username`, `{$sn_data[MRC_ADMIRAL]['name']}`, `defence_tech`, `shield_tech`, `military_tech` FROM `{{users}}` WHERE `id` = '{$fleet['fleet_owner']}';"
+  , '', true);
+
+  $attackFleets[$fleet['fleet_id']][$strField] = array();
+  $temp = explode(';', $fleet['fleet_array']);
+  foreach ($temp as $Element) {
+    $Element = explode(',', $Element);
+
+    if ($Element[0] < 100) continue;
+
+    if (!isset($attackFleets[$fleet['fleet_id']][$strField][$Element[0]]))
+      $attackFleets[$fleet['fleet_id']][$strField][$Element[0]] = 0;
+    $attackFleets[$fleet['fleet_id']][$strField][$Element[0]] += $Element[1];
+  }
+}
+
+/**
+ * BE_calculateTech.php
+ * Battle Engine Effective Tech levels calculations
+ * "rf" stands for "Rapid Fire"
+ * "rp" stands for "ResourcePoints"
+*/
+
+function BE_calculateTechs(&$user)
+{
+  global $sn_data;
+
+  $armor_tech  = mrc_modify_value($user, false, MRC_ADMIRAL, 1 + 0.1 * $user['defence_tech']);
+  $shield_tech = mrc_modify_value($user, false, MRC_ADMIRAL, 1 + 0.1 * $user['shield_tech']);
+  $weapon_tech = mrc_modify_value($user, false, MRC_ADMIRAL, 1 + 0.1 * $user['military_tech']);
+
+  return array('def' => $armor_tech, 'shield' => $shield_tech, 'att' => $weapon_tech);
+}
+
 /**
  * BE_calculateAttack.php
  * Battle Engine Attack calculation
@@ -285,4 +327,106 @@ BE_DEBUG_closeTable();
 
   return array('won' => $won, 'debree' => array('att' => array($debAttMet, $debAttCry), 'def' => array($debDefMet, $debDefCry)), 'rw' => $rounds, 'lost' => $totalLost);
 }
+
+  /**
+   * This file is under the GPL liscence, which must be included with the file under distrobution (license.txt)
+   * this file was made by Xnova, edited to support Toms combat engine by Anthony (MadnessReD) [http://madnessred.co.cc/]
+   * Do not edit this comment block
+   */
+
+  /*
+   * BE_CalculateMoon.php
+   * Battle Engine File
+   * Calculate moon creation chance with simulation support
+   */
+
+  /*
+  *
+  * Partial copyright (c) 2010 by Gorlum for oGame.triolan.com.ua
+  */
+
+function BE_calculateMoonChance($result){
+  $FleetDebris = $result['debree']['att'][0] + $result['debree']['def'][0] + $result['debree']['att'][1] + $result['debree']['def'][1];
+
+  $MoonChance = $FleetDebris / 1000000;
+  return ($MoonChance<1) ? 0 : ($MoonChance>30 ? 30 : $MoonChance);
+}
+
+/**
+ * BE_calculatePostAttacker.php by Gorlum for http://ogame.triolan.com.ua
+ * Copyright (c) Gorlum 2010.
+ *
+ * Battle Engine Post-Attack Calculations for Attackers (ACS supported)
+ * Calculates fleet left and possible loot
+ *
+ * made from Scratch by Gorlum
+ *
+ * The files (below line 12) is under the GPL liscence, and the file license.txt must be included with this file.
+ *
+ * You may not edit this comment block. You may not copy any part of this file into any other file with out copying this comment block with it and placing it above any code there might be.
+*/
+
+function BE_calculatePostAttacker($TargetPlanet, &$attackFleets, $result, $isSimulation = true){
+  global $pricelist;
+
+  foreach ($attackFleets as $fleetID => &$attacker) {
+    $fleetArray = '';
+    $totalCount = 0;
+    foreach ($attacker['detail'] as $element => $amount) {
+      if ($amount)
+        $fleetArray .= $element.','.$amount.';';
+      $totalCount += $amount;
+
+      // !G+ For now we do not count deutrium for return in capacity
+      $attacker['loot']['capacity'] += $pricelist[$element]['capacity'] * $amount;
+    }
+
+    // !G+ Some misc calculations
+    $attacker['totalCount'] = $totalCount;
+    if ($totalCount>0) {
+      $attacker['fleetArray'] = $fleetArray;
+      $attackerTotalCapacity += $attacker['loot']['capacity'];
+    }else{
+      if (!$isSimulation)
+        doquery ('DELETE FROM {{table}} WHERE `fleet_id`='.$fleetID,'fleets');
+    };
+  };
+
+  $loot['metal'] = $TargetPlanet['metal'] / 2;
+  $loot['crystal'] = $TargetPlanet['crystal'] / 2;
+  $loot['deuterium'] = $TargetPlanet['deuterium'] / 2;
+  $loot['all'] = max($loot['metal'] + $loot['crystal'] + $loot['deuterium'], 1);
+  $loot['available'] = min($loot['all'], $attackerTotalCapacity);
+
+  $loot = array_map('round', $loot);
+
+  $loot['looted'] = array( 'deuterium' => 0, 'crystal' => 0, 'metal' => 0);
+
+  if ($result['won'] == 1) {
+    foreach ($attackFleets as $fleetID => &$attacker) {
+      if ($attacker['totalCount'] > 0) {
+        $attacker_part = $attacker['loot']['capacity'] / $attackerTotalCapacity;
+
+        // Variant 1: loot most expensive resources first deu -> cry -> met
+        //$attacker['loot']['deuterium'] = min(round($loot['deuterium'] * $attacker_part), $attacker['loot']['capacity']);
+        //$attacker['loot']['crystal'] = min(round($loot['crystal'] * $attacker_part), $attacker['loot']['capacity']) - $attacker['loot']['deuterium'];
+        //$attacker['loot']['metal'] = min(round($loot['metal'] * $attacker_part), $attacker['loot']['capacity']) - $attacker['loot']['deuterium'] - $attacker['loot']['crystal'];
+
+        // Variant 2: loot divided in proportion to resources on planet (i.e. 2kk deu 4kk cry 6kk met means loot proportion 1:2:3)
+        $attacker['loot']['deuterium'] = min($loot['deuterium'] * $attacker_part, $attacker['loot']['capacity'] * $loot['deuterium'] / $loot['all']);
+        $attacker['loot']['crystal'] = min($loot['crystal'] * $attacker_part, $attacker['loot']['capacity'] * $loot['crystal'] / $loot['all']);
+        $attacker['loot']['metal'] = min($loot['metal'] * $attacker_part, $attacker['loot']['capacity'] * $loot['metal'] / $loot['all']);
+
+        $attacker['loot'] = array_map('round', $attacker['loot']);
+
+        $loot['looted']['metal'] += $attacker['loot']['metal'];
+        $loot['looted']['crystal'] += $attacker['loot']['crystal'];
+        $loot['looted']['deuterium'] += $attacker['loot']['deuterium'];
+      }
+    }
+  }
+
+  return $loot;
+}
+
 ?>

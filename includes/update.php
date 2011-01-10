@@ -5,9 +5,11 @@
  Automated DB upgrade system
 
  @package supernova
- @version 20
+ @version 24
 
- v18-v20 - copyright (c) 2009-2010 Gorlum for http://supernova.ws
+ 24 - copyright (c) 2009-2011 Gorlum for http://supernova.ws
+   [+] Converted pre v18 entries to use later implemented functions
+ v18-v23 - copyright (c) 2009-2010 Gorlum for http://supernova.ws
    [!] DB code updates
  17 - copyright (c) 2009-2010 Gorlum for http://supernova.ws
    [~] PCG1 compliant
@@ -21,14 +23,13 @@ if(!defined('INIT'))
   include_once('init.php');
 }
 
-$db_last_version = 22;
 $config->db_loadItem('db_version');
-if($config->db_version == $db_last_version)
+if($config->db_version == DB_VERSION)
 {
 //  return;
 }
 
-if($config->db_version > $db_last_version)
+if($config->db_version > DB_VERSION)
 {
   die('Internal error! Auotupdater detects DB version greater then can be handled!<br>Possible you have out-of-date SuperNova version<br>Pleas upgrade your server from <a href="http://github.com/supernova-ws/SuperNova">GIT repository</a>.');
 }
@@ -60,14 +61,10 @@ switch(intval($config->db_version))
 {
   case 0:
     upd_log_version_update();
-    if(!$update_tables['planets']['parent_planet'])
-    {
-      upd_alter_table('planets', array(
-        "ADD `parent_planet` bigint(11) unsigned DEFAULT '0'",
-        "ADD KEY `i_parent_planet` (`parent_planet`)"
-      ));
-      //mysql_query("ALTER TABLE {$config->db_prefix}planets ADD `parent_planet` bigint(11) unsigned DEFAULT '0', ADD KEY `i_parent_planet` (`parent_planet`);");
-    }
+    upd_alter_table('planets', array(
+      "ADD `parent_planet` bigint(11) unsigned DEFAULT '0'",
+      "ADD KEY `i_parent_planet` (`parent_planet`)"
+    ), !$update_tables['planets']['parent_planet']);
     doquery(
       "UPDATE `{{planets}}` AS lu
         LEFT JOIN `{{planets}}` AS pl
@@ -105,25 +102,14 @@ switch(intval($config->db_version))
 
   case 3:
     upd_log_version_update();
-    if(!$update_tables['counter']['url'])
-    {
-      upd_alter_table('counter', "ADD `url` varchar(255) CHARACTER SET utf8 DEFAULT ''");
-      //mysql_query("ALTER TABLE {$config->db_prefix}counter ADD `url` varchar(255) CHARACTER SET utf8 DEFAULT '';");
-    }
+    upd_alter_table('counter', "ADD `url` varchar(255) CHARACTER SET utf8 DEFAULT ''", !$update_tables['counter']['url']);
   $new_version = 4;
 
   case 4:
     upd_log_version_update();
-    if(!$update_tables['planets']['debris_metal'])
-    {
-      upd_alter_table('planets', "ADD `debris_metal` bigint(11) unsigned DEFAULT '0'");
-      //mysql_query("ALTER TABLE {$config->db_prefix}planets ADD `debris_metal` bigint(11) unsigned DEFAULT '0';");
-    }
-    if(!$update_tables['planets']['debris_crystal'])
-    {
-      upd_alter_table('planets', "ADD `debris_crystal` bigint(11) unsigned DEFAULT '0'");
-      //mysql_query("ALTER TABLE {$config->db_prefix}planets ADD `debris_crystal` bigint(11) unsigned DEFAULT '0';");
-    }
+    upd_alter_table('planets', "ADD `debris_metal` bigint(11) unsigned DEFAULT '0'", !$update_tables['planets']['debris_metal']);
+    upd_alter_table('planets', "ADD `debris_crystal` bigint(11) unsigned DEFAULT '0'", !$update_tables['planets']['debris_crystal']);
+
     if($update_tables['galaxy'])
     {
       doquery(
@@ -151,31 +137,27 @@ switch(intval($config->db_version))
 
   case 7:
     upd_log_version_update();
-    if(!$update_indexes['fleets']['fleet_mess'])
-    {
-      upd_alter_table('fleets', array(
-        "ADD KEY `fleet_mess` (`fleet_mess`)",
-        "ADD KEY `fleet_group` (`fleet_group`)"
-      ));
-    }
+    upd_alter_table('fleets', array(
+      "ADD KEY `fleet_mess` (`fleet_mess`)",
+      "ADD KEY `fleet_group` (`fleet_group`)"
+    ), !$update_indexes['fleets']['fleet_mess']);
   $new_version = 8;
 
   case 8:
     upd_log_version_update();
-    if(!$update_tables['referrals']['dark_matter'])
-    {
-      upd_alter_table('referrals', "ADD `dark_matter` bigint(11) NOT NULL DEFAULT '0' COMMENT 'How much player have aquired Dark Matter'");
-    }
-    if(!$update_indexes['referrals']['id_partner'])
-    {
-      upd_alter_table('referrals', "ADD KEY `id_partner` (`id_partner`)");
-    }
+
+    upd_alter_table('referrals', "ADD `dark_matter` bigint(11) NOT NULL DEFAULT '0' COMMENT 'How much player have aquired Dark Matter'", !$update_tables['referrals']['dark_matter']);
+    upd_alter_table('referrals', "ADD KEY `id_partner` (`id_partner`)", !$update_indexes['referrals']['id_partner']);
+
     upd_check_key('rpg_bonus_divisor', 10);
     upd_check_key('rpg_officer', 3);
   $new_version = 9;
 
   case 9:
     upd_log_version_update();
+
+    $dm_change_legit = true;
+
     doquery(
       "UPDATE {{referrals}} AS r
         LEFT JOIN {{users}} AS u
@@ -183,12 +165,15 @@ switch(intval($config->db_version))
       SET r.dark_matter = u.lvl_minier + u.lvl_raid;"
     );
     upd_add_more_time();
+
     doquery(
       "UPDATE {{users}} AS u
         RIGHT JOIN {{referrals}} AS r
           ON r.id_partner = u.id AND r.dark_matter >= {$config->rpg_bonus_divisor}
       SET u.rpg_points = u.rpg_points + FLOOR(r.dark_matter/{$config->rpg_bonus_divisor});"
     );
+
+    $dm_change_legit = false;
   $new_version = 10;
 
   case 10:
@@ -199,18 +184,16 @@ switch(intval($config->db_version))
 
   case 11:
     upd_log_version_update();
-    if($update_tables['users']['ataker'])
-    {
-      upd_alter_table('users', array(
-        "DROP COLUMN `aktywnosc`",
-        "DROP COLUMN `time_aktyw`",
-        "DROP COLUMN `kiler`",
-        "DROP COLUMN `kod_aktywujacy`",
-        "DROP COLUMN `ataker`",
-        "DROP COLUMN `atakin`"
-      ));
-      //mysql_query("ALTER TABLE {$config->db_prefix}users DROP COLUMN `aktywnosc`, DROP COLUMN `time_aktyw`, DROP COLUMN `kiler`, DROP COLUMN `kod_aktywujacy`, DROP COLUMN `ataker`, DROP COLUMN `atakin`;");
-    }
+
+    upd_alter_table('users', array(
+      "DROP COLUMN `aktywnosc`",
+      "DROP COLUMN `time_aktyw`",
+      "DROP COLUMN `kiler`",
+      "DROP COLUMN `kod_aktywujacy`",
+      "DROP COLUMN `ataker`",
+      "DROP COLUMN `atakin`"
+    ), $update_tables['users']['ataker']);
+
     doquery("DELETE FROM {{config}} WHERE `config_name` IN ('OverviewNewsFrame');");
   $new_version = 12;
 
@@ -245,7 +228,6 @@ switch(intval($config->db_version))
   case 15:
     upd_log_version_update();
     upd_alter_table('users', "DROP COLUMN `current_luna`", $update_tables['users']['current_luna']);
-    upd_alter_table('planets', "ADD `governor` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Planet governor'", !$update_tables['planets']['governor']);
     upd_alter_table('users', "ADD `options` TEXT COMMENT 'Packed user options'", !$update_tables['users']['options']);
   $new_version = 16;
 
@@ -253,10 +235,6 @@ switch(intval($config->db_version))
     upd_log_version_update();
     upd_check_key('game_speed', $config->game_speed/2500, $config->game_speed >= 2500);
     upd_check_key('fleet_speed', $config->fleet_speed/2500, $config->fleet_speed >= 2500);
-    /*
-    if($config->game_speed >= 2500) $config->db_saveItem('game_speed', $config->game_speed/2500);
-    if($config->fleet_speed >= 2500) $config->db_saveItem('fleet_speed', $config->fleet_speed/2500);
-    */
     upd_check_key('player_max_colonies', $config->player_max_planets ? ($config->player_max_planets - 1) : 9);
     doquery("DELETE FROM {{config}} WHERE `config_name` IN ('player_max_planets');");
     upd_alter_table('users', "ADD `news_lastread` int(11) NOT NULL DEFAULT '0' COMMENT 'News last read tag'", !$update_tables['users']['news_lastread']);
@@ -272,14 +250,18 @@ switch(intval($config->db_version))
 
   case 18:
     upd_log_version_update();
+
     upd_check_key('game_counter', 1);
+
     upd_check_key('int_format_date', 'd.m.Y');
     upd_check_key('int_format_time', 'H:i:s');
     doquery("DELETE FROM {{config}} WHERE `config_name` IN ('game_date_withTime');");
+
     upd_alter_table('users', array(
       "MODIFY `user_lastip` VARCHAR(250) COMMENT 'User last IP'",
       "ADD `user_proxy` VARCHAR(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)'"
     ), !$update_tables['users']['user_proxy']);
+
     upd_alter_table('counter', array(
       "MODIFY `ip` VARCHAR(250) COMMENT 'User last IP'",
       "ADD `proxy` VARCHAR(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)'"
@@ -308,11 +290,83 @@ switch(intval($config->db_version))
     upd_log_version_update();
     upd_check_key('game_noob_points', 5000, true);
     upd_check_key('game_noob_factor', 5, true);
+
     upd_check_key('url_forum', $config->forum_url, !$config->url_forum);
     upd_check_key('url_rules', $config->rules_url, !$config->url_rules);
     upd_check_key('url_dark_matter', '/dark_matter_get.php', !$config->url_dark_matter);
     doquery("DELETE FROM {{config}} WHERE `config_name` IN ('forum_url', 'rules_url');");
-  //$new_version = 22;
+
+  $new_version = 22;
+
+  case 22:
+    upd_log_version_update();
+    upd_alter_table('planets', "ADD `governor` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Planet governor'", !$update_tables['planets']['governor']);
+    upd_alter_table('planets', "ADD `governor_level` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Governor level'", !$update_tables['planets']['governor_level']);
+    upd_alter_table('planets', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'Planet que'", !$update_tables['planets']['que']);
+
+    $planet_query = doquery('SELECT * FROM {{planets}} WHERE `b_building` <> 0;');
+    $const_que_structures = QUE_STRUCTURES;
+    while($planet_data = mysql_fetch_assoc($planet_query))
+    {
+      $old_que = explode(';', $planet_data['b_building_id']);
+      foreach($old_que as $old_que_item_string)
+      {
+        if(!$old_que_item_string)
+        {
+          continue;
+        }
+
+        $old_que_item = explode(',', $old_que_item_string);
+        if($old_que_item[4] == 'build')
+        {
+          $old_que_item[4] = BUILD_CREATE;
+        }
+        else
+        {
+          $old_que_item[4] = BUILD_DESTROY;
+        }
+
+        $old_que_item[3] = $old_que_item[3] > $planet_data['last_update'] ? $old_que_item[3] - $planet_data['last_update'] : 1;
+        $planet_data['que'] = "{$old_que_item[0]},1,{$old_que_item[3]},{$old_que_item[4]},{$const_que_structures};{$planet_data['que']}";
+      }
+      doquery("UPDATE {{planets}} SET `que` = '{$planet_data['que']}', `b_building` = '0', `b_building_id` = '0' WHERE `id` = '{$planet_data['id']}' LIMIT 1;");
+    }
+
+    if(!$update_tables['mercenaries'])
+    {
+      mysql_query(
+        "CREATE TABLE `{$config->db_prefix}mercenaries` (
+          `id` bigint(11) NOT NULL AUTO_INCREMENT,
+          `id_user` bigint(11) NOT NULL,
+          `mercenary` UNSIGNED SMALLINT NOT NULL DEFAULT '0',
+          `time_start` int(11) NOT NULL DEFAULT '0',
+          `time_finish` int(11) NOT NULL DEFAULT '0',
+          PRIMARY KEY (`id`),
+          KEY `i_user_mercenary_time` (`id_user`, `mercenary`, `time_start`, `time_finish`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+    };
+  $new_version = 23;
+
+  case 23:
+    upd_log_version_update();
+    if(!$update_tables['confirmations'])
+    {
+      $result = mysql_query(
+        "CREATE TABLE `{$config->db_prefix}confirmations` (
+          `id` bigint(11) NOT NULL AUTO_INCREMENT,
+          `id_user` bigint(11) NOT NULL DEFAULT 0,
+          `type` SMALLINT NOT NULL DEFAULT 0,
+          `code` NVARCHAR(16) NOT NULL DEFAULT '',
+          `email` NVARCHAR(64) NOT NULL DEFAULT '',
+          `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          PRIMARY KEY (`id`),
+          KEY `i_code_email` (`code`, `email`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+    };
+  //$new_version = 24;
+
 };
 upd_log_message('Upgrade complete.');
 

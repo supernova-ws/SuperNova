@@ -36,12 +36,6 @@ if ($IsUserChecked == false)
 }
 
 check_urlaubmodus ($user);
-if (IsVacationMode($CurrentUser))
-{
-  message($lang['Vacation_mode'], $lang['Error'], "overview.php", 1);
-}
-
-
 
 function int_calc_storage_bar($resource_name)
 {

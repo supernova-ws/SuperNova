@@ -3,7 +3,7 @@
 /**
  * infos.php
  *
- * Info about every aspect of in-game objects: buildings, officiers, techs etc
+ * Information about every aspect of in-game objects: buildings, officiers, techs etc
  *
  * @version 1.1st Security checks & tests by Gorlum for http://supernova.ws
  * @version 1.1
@@ -76,16 +76,21 @@ function BuildJumpableMoonCombo ( $CurrentUser, $CurrentPlanet ) {
 function ShowProductionTable ($CurrentUser, $CurrentPlanet, $BuildID, $Template) {
   global $sn_data, $config;
 
-  $BuildLevelFactor = $CurrentPlanet[ $sn_data[$BuildID]['name']."_porcent" ];
+  $unit_data = $sn_data[$BuildID];
+
+  $config_resource_multiplier = $config->resource_multiplier;
+
+  $BuildLevelFactor = $CurrentPlanet[ $unit_data['name']."_porcent" ];
   $BuildTemp        = $CurrentPlanet[ 'temp_max' ];
-  $CurrentBuildtLvl = $CurrentPlanet[ $sn_data[$BuildID]['name'] ];
+  $CurrentBuildtLvl = $CurrentPlanet[ $unit_data['name'] ];
 
   $BuildLevel       = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
-  $Prod[1]          = (floor(eval($sn_data[$BuildID]['metal_perhour'])     * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-  $Prod[2]          = (floor(eval($sn_data[$BuildID]['crystal_perhour'])   * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-  $Prod[3]          = (floor(eval($sn_data[$BuildID]['deuterium_perhour']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-  $Prod[4]          = (floor(eval($sn_data[$BuildID]['energy_perhour'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
-  $BuildLevel       = "";
+
+
+  $Prod[1]          = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])     ));
+  $Prod[2]          = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])   ));
+  $Prod[3]          = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour']) ));
+  $Prod[4]          = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_POWERMAN,  $config_resource_multiplier * eval($unit_data['energy_perhour'])    ));
 
   $ActualProd       = floor($Prod[$BuildID]);
   if ($BuildID != 12) {
@@ -102,10 +107,10 @@ function ShowProductionTable ($CurrentUser, $CurrentPlanet, $BuildID, $Template)
   $ProdFirst = 0;
   for ( $BuildLevel = $BuildStartLvl; $BuildLevel < $BuildStartLvl + 10; $BuildLevel++ ) {
     if ($BuildID != 42) {
-      $Prod[1] = (floor(eval($sn_data[$BuildID]['metal_perhour'])     * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-      $Prod[2] = (floor(eval($sn_data[$BuildID]['crystal_perhour'])   * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-      $Prod[3] = (floor(eval($sn_data[$BuildID]['deuterium_perhour']) * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_geologue']  * 0.05)));
-      $Prod[4] = (floor(eval($sn_data[$BuildID]['energy_perhour'])    * $config->resource_multiplier) * (1 + ($CurrentUser['rpg_ingenieur'] * 0.05)));
+      $Prod[1] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])     ));
+      $Prod[2] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])   ));
+      $Prod[3] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour'] )));
+      $Prod[4] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_POWERMAN,  $config_resource_multiplier * eval($unit_data['energy_perhour'])    ));
 
       $bloc['build_lvl']       = ($CurrentBuildtLvl == $BuildLevel) ? "<font color=\"#ff0000\">".$BuildLevel."</font>" : $BuildLevel;
       if ($ProdFirst > 0) {
@@ -182,6 +187,9 @@ function ShowRapidFireFrom ($BuildID) {
 function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
   global $dpath, $lang, $pricelist, $CombatCaps, $sn_data;
 
+  $sn_groups = $sn_data['groups'];
+  $unit_data = $sn_data[$BuildID];
+
   includeLang('infos');
 
   $GateTPL              = '';
@@ -191,7 +199,7 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
   $parse                = $lang;
   // Données de base
   $parse['dpath']       = $dpath;
-  $parse['name']        = $lang['info'][$BuildID]['name'];
+  $parse['name']        = $lang['tech'][$BuildID];
   $parse['image']       = $BuildID;
   $parse['description'] = $lang['info'][$BuildID]['description'];
 
@@ -285,9 +293,35 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
     $parse['hull_pt']     = pretty_number ($pricelist[$BuildID]['metal'] + $pricelist[$BuildID]['crystal']); // Points de Structure
     $parse['shield_pt']   = pretty_number ($CombatCaps[$BuildID]['shield']);  // Points de Bouclier
     $parse['attack_pt']   = pretty_number ($CombatCaps[$BuildID]['attack']);  // Points d'Attaque
-  } elseif ($BuildID >= 601 && $BuildID <= 615) {
+  }
+  elseif (in_array($BuildID, $sn_data['groups']['mercenaries']))
+  {
     // Officiers
     $PageTPL              = gettemplate('info_officiers_general');
+
+    $mercenary = $sn_data[$BuildID];
+    $mercenary_bonus = $mercenary['bonus'];
+    $mercenary_bonus = $mercenary_bonus>=0 ? "+{$mercenary_bonus}" : "{$mercenary_bonus}";
+    switch($mercenary['bonus_type'])
+    {
+      case BONUS_PERCENT:
+        $mercenary_bonus = "{$mercenary_bonus}%";
+      break;
+
+      case BONUS_ADD:
+      break;
+
+      case BONUS_ABILITY:
+        $mercenary_bonus = '';
+      break;
+
+      default:
+      break;
+    }
+
+    $parse['description_short'] = $lang['info'][$BuildID]['description_short'];
+    $parse['mercenary_bonus'] = $mercenary_bonus;
+    $parse['max_level'] = $mercenary['max'];
   }
 
   // ---- Tableau d'evolution
@@ -299,7 +333,7 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
   // La page principale
   $page  = parsetemplate($PageTPL, $parse);
   if ($GateTPL != '') {
-    if ($CurrentPlanet[$sn_data[$BuildID]['name']] > 0) {
+    if ($CurrentPlanet[$unit_data['name']] > 0) {
       $RestString               = GetNextJumpWaitTime ( $CurrentPlanet );
       $parse['gate_start_link'] = BuildPlanetAdressLink ( $CurrentPlanet );
       if ($RestString['value'] != 0) {
@@ -318,12 +352,12 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
   }
 
   if ($DestroyTPL != '') {
-    if ($CurrentPlanet[$sn_data[$BuildID]['name']] > 0) {
+    if ($CurrentPlanet[$unit_data['name']] > 0) {
       // ---- Destruction
       $NeededRessources     = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $BuildID, true, true);
       $DestroyTime          = GetBuildingTime  ($CurrentUser, $CurrentPlanet, $BuildID) / 2;
       $parse['destroyurl']  = "buildings.php?cmd=destroy&building=".$BuildID; // Non balisé les balises sont dans le tpl
-      $parse['levelvalue']  = $CurrentPlanet[$sn_data[$BuildID]['name']]; // Niveau du batiment a detruire
+      $parse['levelvalue']  = $CurrentPlanet[$unit_data['name']]; // Niveau du batiment a detruire
       $parse['nfo_metal']   = $lang['Metal'];
       $parse['nfo_crysta']  = $lang['Crystal'];
       $parse['nfo_deuter']  = $lang['Deuterium'];

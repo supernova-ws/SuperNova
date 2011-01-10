@@ -7,7 +7,7 @@
   </script>
 
   <table width="100%" cellspacing="0" cellpadding="0" id="left_menu">
-    <tr><th id="server_name">{servername}</th></tr>
+    <tr><th id="server_name">{C_game_name}</th></tr>
 
     <tr><td align="center"><img border="0" src="../design/images/supernova.png" alt="supernova.ws"></td></tr>
 
@@ -30,7 +30,10 @@
     <tr><td><a href="overview.php" id="lm_overview">{L_Overview}</a></td></tr>
     <tr><td><a href="resources.php">{L_Resources}</a></td></tr>
     <tr><td><a href="fleet.php" id="lm_fleet">{L_Fleet}</a></td></tr>
-    <tr><td><a href="buildings.php" id="lm_buildings">{L_Buildings}</a></td></tr>
+<!--    <tr><td><a href="buildings.php" id="lm_buildings">{L_Buildings}</a></td></tr>-->
+
+    <tr><td><a href="buildings.php?mode={QUE_STRUCTURES}" id="lm_buildings">{L_Buildings}</a></td></tr>
+
     <tr><td><a href="buildings.php?mode=fleet" id="lm_shipyard">{L_Shipyard}</a></td></tr>
     <tr><td><a href="buildings.php?mode=defense">{L_Defense}</a></td></tr>
 
@@ -39,7 +42,7 @@
     <tr><td><a href="imperium.php">{L_imp_overview}</a></th></tr>
     <tr><td><a href="techtree.php" id="lm_techtree">{L_Technology}</a></td></tr>
     <tr><td><a href="buildings.php?mode=research" id="lm_techtree">{L_Research}</a></td></tr>
-    <tr><td><a href="officier.php">{L_tech[600]}</a></td></tr>
+    <tr><td><a href="officer.php">{L_tech[600]}</a></td></tr>
     <tr><td><a href="market.php">{L_rinok}</a></td></tr>
     <tr><td><a href="galaxy.php?mode=0" id="lm_universe">{L_sys_universe}</a></td></tr>
 

@@ -25,14 +25,19 @@ Object structure:
   'html_main'   - reserved for internal use (link to main HTML element)
   'html_timer'  - reserved for internal use (link to 'timer' HTML element)
   'html_finish' - reserved for internal use (link to 'finish' HTML element)
+  'html_que'    - reserved for internal use (link to 'que' HTML element)
+  'html_total'  - reserved for internal use (link to 'total time' HTML element)
 
 Options for que display:
-  'msg_done' - inactive message
-  'que'      - que: array
-          [0] - element ID
-          [1] - element name
-          [2] - build length
-          [3] - level or count
+  'template'  - template for que item
+  'msg_done'  - inactive message
+  'que'       - que: array
+                [0] - element ID
+                [1] - element name
+                [2] - build length
+                [3] - element amount
+                [4] - element level
+  'total'     - reserved for internal use (total que building time)
 
 Options for counter:
 'start_value' - start value
@@ -46,7 +51,50 @@ It means: 1 - just date; 2 - just time; 3 - both date & time
 
 */
 
+var UNIT_ID       = 0;
+var UNIT_NAME     = 1;
+var UNIT_TIME     = 2;
+var UNIT_AMOUNT   = 3;
+var UNIT_LEVEL    = 4;
+
 var sn_timers = new Array();
+
+function sn_timer_compile_que(timer_options)
+{
+  var compiled = '';
+  var unit_name = '';
+  var temp = '';
+  var total = 0;
+  var que = timer_options['que'];
+
+  for(que_id in que)
+  {
+    if(que_id != 0)
+    {
+      total += que[que_id][UNIT_TIME];
+    }
+
+    temp = timer_options['template'].replace('[UNIT_ID]', que[que_id][UNIT_ID]);
+    temp = temp.replace('[UNIT_TIME]', sn_timestampToString(que[que_id][UNIT_TIME]));
+
+    unit_name = que[que_id][UNIT_NAME];
+    if(que[que_id][UNIT_AMOUNT] > 1)
+    {
+      unit_name += ' (' + que[que_id][UNIT_AMOUNT] + ')';
+      temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_AMOUNT]);
+    }
+    if(que[que_id][UNIT_LEVEL] >= 0)
+    {
+      unit_name += ' (' + que[que_id][UNIT_LEVEL] + ')';
+      temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_LEVEL]);
+    }
+    temp = temp.replace('[UNIT_NAME]', unit_name);
+    compiled += temp;
+  }
+  timer_options['total'] = total;
+
+  return compiled;
+};
 
 function sn_timer() {
   var HTML, HTML_timer, HTML_finish;
@@ -68,34 +116,44 @@ function sn_timer() {
 
     if(!timer['html_main'])
     {
-      sn_timers[timerID]['html_main'] = document.getElementById(timer['id']);
-      sn_timers[timerID]['html_timer'] = document.getElementById(timer['id'] + '_timer');
+      sn_timers[timerID]['html_main']   = document.getElementById(timer['id']);
+      sn_timers[timerID]['html_timer']  = document.getElementById(timer['id'] + '_timer');
       sn_timers[timerID]['html_finish'] = document.getElementById(timer['id'] + '_finish');
+      sn_timers[timerID]['html_que']    = document.getElementById(timer['id'] + '_que');
+      sn_timers[timerID]['html_total']  = document.getElementById(timer['id'] + '_total');
+      timer = sn_timers[timerID];
     }
-    HTML        = sn_timers[timerID]['html_main'];
-    HTML_timer  = sn_timers[timerID]['html_timer'];
-    HTML_finish = sn_timers[timerID]['html_finish'];
+    HTML        = timer['html_main'];
+    HTML_timer  = timer['html_timer'];
+    HTML_finish = timer['html_finish'];
+    HTML_que    = timer['html_que'];
+    HTML_total  = timer['html_total'];
 
     switch(timer['type'])
     {
-      case 0: // que display
+      case 0: // new que display
         var que_item = timer_options['que'][0];
 
-        if(timer['start_time'] + que_item[2] - timestamp < 0)
+        if(que_item[UNIT_TIME] <= timestamp - timer['start_time'])
         {
-          que_item[3]--;
-          if(que_item[3]<=0)
+          que_item[UNIT_AMOUNT]--;
+          if(que_item[UNIT_AMOUNT] <= 0)
           {
             timer_options['que'].shift();
+            que_item = timer_options['que'][0];
           }
           timer['start_time'] = timestamp;
         }
 
-        if(timer_options['que'].length && que_item[0])
+        if(timer_options['que'].length && que_item[UNIT_ID])
         {
-          timeFinish = timer['start_time'] + que_item[2];
-          timeLeft = timer['start_time'] + que_item[2] - timestamp;
-          infoText = que_item[1];
+          timeFinish = timer['start_time'] + que_item[UNIT_TIME];
+          timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp;
+          infoText = que_item[UNIT_NAME];
+          if(que_item[UNIT_AMOUNT] > 1)
+          {
+            infoText += ' (' + que_item[UNIT_AMOUNT] + ')';
+          }
           timerText = sn_timestampToString(timeLeft);
         }
         else
@@ -127,7 +185,6 @@ function sn_timer() {
         {
           HTML.innerHTML = infoText;
         }
-
       break;
 
       case 1: // time-independent counter
@@ -190,6 +247,102 @@ function sn_timer() {
         {
           timer['active'] = false;
         }
+      break;
+
+      case 3: // new que display
+        if(timer_options['que'].length == 0)
+        {
+          timer['active'] = false;
+          break;
+        }
+        var que_item = timer_options['que'][0];
+        var que_compiled = '';
+
+        if(!timer['que_compiled'] && timer['que_compiled'] != '')
+        {
+          sn_timers[timerID]['que_compiled'] = sn_timer_compile_que(timer_options);
+//          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
+          que_compiled = sn_timers[timerID]['que_compiled'];
+        }
+
+        if(que_item[UNIT_TIME] <= timestamp - timer['start_time'])
+        {
+          que_item[UNIT_AMOUNT]--;
+          if(que_item[UNIT_AMOUNT] <= 0)
+          {
+            timer_options['que'].shift();
+            que_item = timer_options['que'][0];
+          }
+          timer['start_time'] = timestamp;
+          sn_timers[timerID]['que_compiled'] = sn_timer_compile_que(timer_options);
+//          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
+          que_compiled = sn_timers[timerID]['que_compiled'];
+        }
+
+        if(timer_options['que'].length && que_item[UNIT_ID])
+        {
+          timeFinish = timer['start_time'] + que_item[UNIT_TIME];
+          timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp;
+          infoText = que_item[UNIT_NAME];
+          if(que_item[UNIT_AMOUNT] > 1)
+          {
+            infoText += ' (' + que_item[UNIT_AMOUNT] + ')';
+          }
+          if(que_item[UNIT_LEVEL] > 1)
+          {
+            infoText += ' (' + que_item[UNIT_LEVEL] + ')';
+          }
+          timerText = sn_timestampToString(timeLeft);
+        }
+        else
+        {
+          timer['active'] = false;
+          infoText = timer_options['msg_done'];
+          timerText = '';
+        }
+
+        total_text = sn_timestampToString(timeLeft + timer_options['total']);
+        if(HTML_total != null)
+        {
+          HTML_total.innerHTML = total_text;
+        }
+        else
+        {
+          timerText += '<br>' + total_text;
+        }
+
+        if(HTML_timer != null)
+        {
+          HTML_timer.innerHTML = timerText;
+        }
+        else
+        {
+          if(infoText != '' && timerText)
+          {
+            infoText += '<br>';
+          }
+          infoText += timerText;
+        }
+
+        if(HTML_que != null)
+        {
+          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
+        }
+        else
+        {
+          infoText += sn_timers[timerID]['que_compiled'];
+        }
+
+        if(HTML_finish != null)
+        {
+          HTML_finish.innerHTML = timeFinish;
+        }
+
+        if(HTML != null)
+        {
+          HTML.innerHTML = infoText;
+        }
+
       break;
     }
 

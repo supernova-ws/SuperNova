@@ -1,150 +1,159 @@
 <?php
 
-$lang['ov_hack_alert'] = 'Попытка взлома БД!!!';
+$lang = array_merge($lang, array(
+  'ov_hack_alert' => 'Попытка взлома БД!!!',
 
-$lang['ov_you_have']			= 'У вас';
-$lang['ov_new_message']		= 'одно новое сообщение';
-$lang['ov_new_messages']	= 'новых сообщений';
+  'ov_you_have'			=> 'У вас',
+  'ov_new_message'		=> 'одно новое сообщение',
+  'ov_new_messages'	=> 'новых сообщений',
 
-// General
-$lang['cancel']				= 'Отменить';
-$lang['Planet_menu']			= 'Строительство на планете';
-$lang['Planet']				= 'Планета';
-$lang['Have_new_level_mineur']		= 'За достижения в экономике Вы выиграли очко развития офицеров!';
-$lang['Have_new_level_raid']		= 'За успешные атаки Вы выиграли очко развития офицеров!';
-$lang['Server_time']			= 'Время';
-$lang['Events']				= 'События';
-$lang['Free']				= 'нет заданий';
-$lang['Diameter']			= 'Диаметр';
-$lang['fields']				= 'Сектора';
-$lang['Developed_fields']		= 'Занятость секторов';
-$lang['max_eveloped_fields']		= 'Максимальное количество секторов';
-$lang['Temperature']			= 'Температура';
-$lang['approx']				= 'приблизительно';
-$lang['to']				= 'to';
-$lang['Centigrade']			= 'C';
-$lang['Position']			= 'Координаты';
+  // General
+  'cancel'				=> 'Отменить',
+  'Planet_menu'			=> 'Строительство на планете',
+  'Planet'				=> 'Планета',
+  'Have_new_level_mineur'		=> 'За достижения в экономике Вы выиграли очко развития офицеров!',
+  'Have_new_level_raid'		=> 'За успешные атаки Вы выиграли очко развития офицеров!',
+  'Server_time'			=> 'Время',
+  'Events'				=> 'События',
+  'Free'				=> 'нет заданий',
+  'Diameter'			=> 'Диаметр',
+  'fields'				=> 'Сектора',
+  'Developed_fields'		=> 'Занятость секторов',
+  'max_eveloped_fields'		=> 'Максимальное количество секторов',
+  'Temperature'			=> 'Температура',
+  'approx'				=> 'приблизительно',
+  'to'				=> 'to',
+  'Centigrade'			=> 'C',
+  'Position'			=> 'Координаты',
 
-$lang['Buildings'] = 'Строения';
-$lang['Fleet'] = 'Флот';
-$lang['Research'] = 'Исследования';
-$lang['Total'] = 'Всего';
+  'Buildings' => 'Строения',
+  'Fleet' => 'Флот',
+  'Research' => 'Исследования',
+  'Total' => 'Всего',
 
+  'Rank' => 'Место',
+  'of' => 'из',
+  'Miner' => 'Геолог',
+  'Raider' => 'Рейдер',
+  'Debris_Field' => 'Debris Field',
 
-$lang['Rank'] = 'Место';
-$lang['of'] = 'из';
-$lang['Miner'] = 'Геолог';
-$lang['Raider'] = 'Рейдер';
-$lang['Debris_Field'] = 'Debris Field';
-
-// 	
-$lang['rename_and_abandon_planet']	= 'Переименовать и покинуть планету';
-$lang['functions']			= 'Функции';
-$lang['coords']				= 'Координаты';
-$lang['your_planet']			= 'Ваша планета';
-$lang['colony_abandon']			= 'Покинуть колонию';
-$lang['deleteplanet']			= 'Удалить планету!';
-$lang['security_query']			= 'Система безопасности';
-$lang['name']				= 'Имя';
-$lang['namer']				= 'Сменить название';
-$lang['password']			= 'Пароль';
-$lang['confirm_planet_delete']		= 'Подтвердите удаление планеты';
-$lang['confirmed_with_password']	= 'Подтвердите с паролем';
+  'rename_and_abandon_planet'	=> 'Переименовать и покинуть планету',
+  'functions'			=> 'Функции',
+  'coords'				=> 'Координаты',
+  'your_planet'			=> 'Ваша планета',
+  'colony_abandon'			=> 'Покинуть колонию',
+  'deleteplanet'			=> 'Удалить планету!',
+  'security_query'			=> 'Система безопасности',
+  'name'				=> 'Имя',
+  'namer'				=> 'Сменить название',
+  'password'			=> 'Пароль',
+  'confirm_planet_delete'		=> 'Подтвердите удаление планеты',
+  'confirmed_with_password'	=> 'Подтвердите с паролем',
 
 
-// 	
-$lang['deletemessage_ok']		= 'Колония успешно удалена';
-$lang['deletemessage_wrong']		= 'Планета не может быть оставлена!';
-$lang['deletemessage_fail']		= 'Неверный пароль!';
+  // 	
+  'ov_delete_ok'			   => 'Колония успешно удалена',
+  'ov_delete_wrong_planet'	=> 'Планета не может быть оставлена! Вы пытаетесь покинуть вашу основную планету или вы сменили текущую планету в другом окне браузера.',
+  'ov_delete_wrong_pass'	=> 'Неверный пароль!',
 
-// 	
-$lang['MembersOnline']			= 'Игроков';
+  // 	
+  'MembersOnline'			=> 'Игроков',
 
-// 	
-$lang['ov_fleet_list']				= 'График движения флотов';
+  // 	
+  'ov_fleet_list'				=> 'График движения флотов',
 
-$lang['ov_fleet']                = 'Флот';
-$lang['ov_destination']          = 'Куда';
-$lang['ov_source']               = 'Откуда';
-$lang['ov_time']                 = 'Время';
-$lang['ov_mission']              = 'Задание';
-$lang['ov_event']                = 'Событие';
-$lang['ov_flying_fleets']        = 'Флоты, летящие на';
-$lang['ov_other_planets']        = 'другие планеты';
+  'ov_fleet'                => 'Флот',
+  'ov_destination'          => 'Куда',
+  'ov_source'               => 'Откуда',
+  'ov_time'                 => 'Время',
+  'ov_mission'              => 'Задание',
+  'ov_event'                => 'Событие',
+  'ov_flying_fleets'        => 'Флоты, летящие на',
+  'ov_other_planets'        => 'другие планеты',
 
-$lang['ov_fleet_arrive']         = 'Прибытие';
-$lang['ov_fleet_return']         = 'Возвращение';
-$lang['ov_fleet_hold']           = 'конец задания';
-$lang['ov_fleet_rocket']         = 'Ракетный удар';
+  'ov_fleet_arrive'         => 'Прибытие',
+  'ov_fleet_return'         => 'Возвращение',
+  'ov_fleet_hold'           => 'конец задания',
+  'ov_fleet_rocket'         => 'Ракетный удар',
 
-$lang['ov_fleet_exploration']    = 'Исследование';
-$lang['ov_fleet_colonization']   = 'Колонизация планеты';
+  'ov_fleet_exploration'    => 'Исследование',
+  'ov_fleet_colonization'   => 'Колонизация планеты',
 
-$lang['ov_fleet_no_flying']      = 'Нет флотов в полете';
-
+  'ov_fleet_no_flying'      => 'Нет флотов в полете',
 
 
 
-$lang['ov_vennant']			= ' отправленный ';
-$lang['ov_planet_to']			= 'с планеты ';
-$lang['ov_moon_to']			= 'с луны ';
-$lang['ov_atteint']			= ' отправлен на ';
-$lang['ov_planet_to_target']		= 'планету ';
-$lang['ov_moon_to_target']		= 'луну ';
-$lang['ov_debris_to_target']		= 'поле обломков ';
-$lang['ov_explo_to_target']		= 'позиции ';
 
-$lang['ov_explo_stay']			= ' на исследование ';
-$lang['ov_explo_mission']		= '. Задание : ';
+  'ov_vennant'			=> ' отправленный ',
+  'ov_planet_to'			=> 'с планеты ',
+  'ov_moon_to'			=> 'с луны ',
+  'ov_atteint'			=> ' отправлен на ',
+  'ov_planet_to_target'		=> 'планету ',
+  'ov_moon_to_target'		=> 'луну ',
+  'ov_debris_to_target'		=> 'поле обломков ',
+  'ov_explo_to_target'		=> 'позиции ',
 
-$lang['ov_rentrant']			= ' возвращается ';
-$lang['ov_planet_from']			= 'с планеты ';
-$lang['ov_moon_from']			= 'с луны ';
-$lang['ov_debris_from']			= 'с поля обломков ';
-$lang['ov_explo_from']			= 'с позиции ';
-$lang['ov_back_planet']			= ' на планету ';
-$lang['ov_back_moon']			= ' на луну ';
+  'ov_explo_stay'			=> ' на исследование ',
+  'ov_explo_mission'		=> '. Задание : ',
 
-$lang['ov_hostile']			= ' игрока ';
-$lang['ov_message']			= 'Отправить сообщение';
+  'ov_rentrant'			=> ' возвращается ',
+  'ov_planet_from'			=> 'с планеты ',
+  'ov_moon_from'			=> 'с луны ',
+  'ov_debris_from'			=> 'с поля обломков ',
+  'ov_explo_from'			=> 'с позиции ',
+  'ov_back_planet'			=> ' на планету ',
+  'ov_back_moon'			=> ' на луну ',
 
-$lang['user_points_1']			= 'За постройки';
-$lang['user_points_2']			= 'За исследования';
-$lang['user_points_3']			= 'За оборону';
-$lang['user_points_4']			= 'За флот';
-$lang['user_points_all']		= 'Всего';
-$lang['Points_1']			= 'сектора';
-$lang['km']				= 'км';
-$lang['orb']				= 'Обломки на орбите';
-$lang['buildings_on_planet']		= 'Застройка';
-$lang['NumberOfRaids'] = 'Проведено';
-$lang['RaidsWin'] = 'Выиграно';
-$lang['RaidsLoose'] = 'Проиграно';
-$lang['Economica'] = 'Экономика';
-$lang['Teching'] = 'Иследования';
+  'ov_hostile'			=> ' игрока ',
+  'ov_message'			=> 'Отправить сообщение',
+
+  'user_points_1'			=> 'За постройки',
+  'user_points_2'			=> 'За исследования',
+  'user_points_3'			=> 'За оборону',
+  'user_points_4'			=> 'За флот',
+  'user_points_all'		=> 'Всего',
+  'Points_1'			=> 'сектора',
+  'km'				=> 'км',
+  'orb'				=> 'Обломки на орбите',
+  'buildings_on_planet'		=> 'Застройка',
+  'NumberOfRaids' => 'Проведено',
+  'RaidsWin' => 'Выиграно',
+  'RaidsLoose' => 'Проиграно',
+  'Economica' => 'Экономика',
+  'Teching' => 'Иследования',
 
 
-$lang['ov_planet_details'] = 'Подробно о планете';
-$lang['ov_operations']     = 'переименовать/покинуть';
-$lang['ov_building']       = 'Здания';
-$lang['ov_hangar']         = 'Верфи';
-$lang['ov_rank']           = 'Ранг';
+  'ov_planet_details' => 'Подробно о планете',
+  'ov_building'       => 'Здания',
+  'ov_hangar'         => 'Верфи',
+  'ov_rank'           => 'Ранг',
 
-$lang['ov_rpg_new_level_miner'] = 'За достижения в экономике Вы получаете Темную Материю.';
-$lang['ov_rpg_new_level_raid']  = 'За успешные атаки Вы получаете Темную Материю.';
+  'ov_rpg_new_level_miner' => 'За достижения в экономике Вы получаете Темную Материю.',
+  'ov_rpg_new_level_raid'  => 'За успешные атаки Вы получаете Темную Материю.',
 
-$lang['ov_points']              = 'Очки';
-$lang['ov_raids']               = 'Рейды';
-$lang['ov_experience']          = 'Опыт';
+  'ov_points'              => 'Очки',
+  'ov_raids'               => 'Рейды',
+  'ov_experience'          => 'Опыт',
 
-$lang['ov_player_rpg']          = 'Статистика игрока';
+  'ov_player_rpg'          => 'Статистика игрока',
 
-$lang['ov_banner']   = 'Баннер';
-$lang['ov_userbar']  = 'Юзербар';
+  'ov_banner'   => 'Баннер',
+  'ov_userbar'  => 'Юзербар',
 
-$lang['ov_banner_empty_id'] = 'SuperNova - Join The Game!';
+  'ov_banner_empty_id' => 'SuperNova - Join The Game!',
 
-$lang['ov_new']          = 'НОВАЯ';
+  'ov_new'          => 'НОВАЯ',
 
-$lang['ov_overview']     = 'Обзор';
+  'ov_overview'     => 'Обзор',
+
+  'ov_manage'     => 'Управление',
+  'ov_return'     => 'Вернуться к обзору',
+
+  'ov_rename'     => 'Переименовать',
+  'ov_new_name'   => 'Новое название',
+
+  'ov_password'   => 'Ваш пароль',
+
+));
+
 ?>

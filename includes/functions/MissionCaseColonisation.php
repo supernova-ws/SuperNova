@@ -30,7 +30,7 @@ function MissionCaseColonisation ( $FleetRow ) {
         doquery("UPDATE `{{table}}` SET `fleet_mess` = '1' WHERE `fleet_id` = ". $FleetRow["fleet_id"], 'fleets');
       } else {
         // Yes, we can colonize
-        $NewOwnerPlanet = CreateOnePlanetRecord($FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet'], $FleetRow['fleet_owner'], "{$lang['sys_colo_defaultname']} ¹{$iPlanetCount[0]}");
+        $NewOwnerPlanet = uni_create_planet($FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet'], $FleetRow['fleet_owner'], "{$lang['sys_colo_defaultname']} ¹{$iPlanetCount[0]}");
         if ( $NewOwnerPlanet ) {
 $debug->warning('Sending several type of ships with colonizer leads to resource duplication. Resource duplicate X time where X - number of ship type<br>Fleet: ' . dump($FleetRow['fleet_array']), 'Colonization With Fleet', 304);
 

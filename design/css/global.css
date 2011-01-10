@@ -1,3 +1,8 @@
+body
+{
+  overflow-y:scroll;
+}
+
 body, form
 {
   margin: 0; padding: 0;
@@ -132,4 +137,9 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
   text-align: left;
   font-color: red;
   color: red;
+}
+
+.noborder, .noborder tr, .noborder th
+{
+  border: 0;
 }

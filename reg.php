@@ -151,7 +151,7 @@ if ($_POST['submit'])
           'LastSettedSystemPos' => $system,
           'LastSettedPlanetPos' => $planet
         ));
-        $new_planet = CreateOnePlanetRecord($galaxy, $system, $planet, $user['id'], $planet_name, true);
+        $new_planet = uni_create_planet($galaxy, $system, $planet, $user['id'], $planet_name, true);
         break;
       }
       $planet += 3;
@@ -200,33 +200,6 @@ function sendpassemail($emailaddress, $password) {
   $email             = parsetemplate($lang['mail_welcome'], $parse);
   $status            = mymail($emailaddress, $lang['mail_title'], $email);
   return $status;
-}
-
-function mymail($to, $title, $body, $from = '') {
-  global $config;
-
-  $from = trim($from);
-
-  if (!$from) {
-    $from = $config->game_adminEmail;
-  }
-
-  $rp     = $config->game_adminEmail;
-
-  $head   = '';
-  $head  .= "Content-Type: text/plain \r\n";
-  $head  .= "Date: " . date('r') . " \r\n";
-  $head  .= "Return-Path: $rp \r\n";
-  $head  .= "From: $from \r\n";
-  $head  .= "Sender: $from \r\n";
-  $head  .= "Reply-To: $from \r\n";
-  $head  .= "Organization: $org \r\n";
-  $head  .= "X-Sender: $from \r\n";
-  $head  .= "X-Priority: 3 \r\n";
-  $body   = str_replace("\r\n", "\n", $body);
-  $body   = str_replace("\n", "\r\n", $body);
-
-  return mail($to, $title, $body, $head);
 }
 
 ?>

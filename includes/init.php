@@ -28,6 +28,8 @@ $user          = array();
 $lang          = array();
 $IsUserChecked = false;
 
+$old_path = $ugamela_root_path;
+
 $ugamela_root_path = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT']) . '/';
 $phpbb_root_path = $ugamela_root_path;
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
@@ -36,6 +38,8 @@ require("{$ugamela_root_path}config.{$phpEx}");
 $db_prefix = $dbsettings['prefix'];
 $sn_secret_word = $dbsettings['secretword'];
 unset($dbsettings);
+
+include_once("{$ugamela_root_path}includes/constants.{$phpEx}");
 
 // required for db.php
 include_once("{$ugamela_root_path}includes/debug.class.{$phpEx}");
@@ -80,7 +84,7 @@ if($config->debug)
 $update_file = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.{$phpEx}";
 if(file_exists($update_file))
 {
-  if(filemtime($update_file) > $config->var_db_update)
+  if(filemtime($update_file) > $config->var_db_update || $config->db_version < DB_VERSION)
   {
     if($time_now >= $config->var_db_update_end)
     {
@@ -113,7 +117,6 @@ define('FMT_DATE_TIME'    , FMT_DATE . ' ' . FMT_TIME);
 $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 
 // Now including all functions
-include_once("{$ugamela_root_path}includes/constants.{$phpEx}");
 include_once("{$ugamela_root_path}includes/functions.{$phpEx}");
 include_once("{$ugamela_root_path}includes/vars.{$phpEx}");
 
@@ -150,5 +153,7 @@ function sys_refresh_tablelist($db_prefix)
   }
   $sn_cache->tables = $tl;
 }
+
+$ugamela_root_path = $old_path;
 
 ?>

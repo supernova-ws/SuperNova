@@ -35,12 +35,12 @@ function formatCR_Fleet(&$dataInc, $isAttacker, $isLastRound)
   };
 
   foreach( $dataA as $fleet_id => $data2){ //25
-    //Player Info
+    //Player Information
     $weap = ($data2['user']['military_tech'] * 10);
     $shie = ($data2['user']['shield_tech'] * 10);
     $armr = ($data2['user']['defence_tech'] * 10);
 
-    //And html output player info
+    //And html output player information
     $fl_info1  = "<table><tr><th>";
 
     if($isAttacker){

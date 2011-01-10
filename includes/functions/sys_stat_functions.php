@@ -5,7 +5,7 @@
  *
  * @version 4 (c) copyright 2010 by Gorlum for http://supernova.ws
  *   [~] Now setting time limit also update end time in the DB
- *   [+] Logging more info about update process to simplify error detection
+ *   [+] Logging more information about update process to simplify error detection
  *   [+] Implemented locking mechanic that permits launches of more then one update process
  *   [+] Stat update logging statistic about it progress to DB
  * @version 3 (c) copyright 2010 by Gorlum for http://supernova.ws

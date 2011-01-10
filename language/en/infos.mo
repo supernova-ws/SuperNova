@@ -238,47 +238,47 @@ $lang['info'][503]['description'] = "Межпланетные ракеты выступают с разрушитель
 
 // ----------------------------------------------------------------------------------------------------------
 // Офицеры !
-$lang['info'][601]['name']        = "Geologist";
-$lang['info'][601]['description'] = "The Geologist is a expert in astro-mineralogy and crystalography. He assists his teams in metallurgy and chemistry as he also takes care of the interplanetary communications optimizing the use and refining of the raw material along the empire. Utilizing state of the art equipment for surveying, the Geologist can locate optimal areas for mining and increasing mining production. <br><br><font color=red>+5% mining production per level. Max level: 20</font>";
+$lang['info'][MRC_GEOLOGIST]['name']        = "Geologist";
+$lang['info'][MRC_GEOLOGIST]['description'] = "The Geologist is a expert in astro-mineralogy and crystalography. He assists his teams in metallurgy and chemistry as he also takes care of the interplanetary communications optimizing the use and refining of the raw material along the empire. Utilizing state of the art equipment for surveying, the Geologist can locate optimal areas for mining and increasing mining production. <br><br><font color=red>+5% mining production per level. Max level: 20</font>";
 
-$lang['info'][602]['name']        = "Admiral";
-$lang['info'][602]['description'] = "The admiral of the fleet is a war veteran and a strategist feared. Even when the fight is hard, it keeps the cold-blooded needed to dominate the situation and is in constant contact with the admirals under his command. An emperor should not be responsible for passing the admiral of the fleet to coordinate its attacks and can make such confidence that it can send more fleets in combat.<br><br><font color=red>+5% on shields per level. Max level. : 20</font>";
+$lang['info'][MRC_ADMIRAL]['name']        = "Admiral";
+$lang['info'][MRC_ADMIRAL]['description'] = "The admiral of the fleet is a war veteran and a strategist feared. Even when the fight is hard, it keeps the cold-blooded needed to dominate the situation and is in constant contact with the admirals under his command. An emperor should not be responsible for passing the admiral of the fleet to coordinate its attacks and can make such confidence that it can send more fleets in combat.<br><br><font color=red>+5% on shields per level. Max level. : 20</font>";
 
-$lang['info'][603]['name']        = "Engineer";
-$lang['info'][603]['description'] = "The engineer is a specialist in the management of energy. In peace time, it maximizes the efficiency of energy networks colonies.<br><br><font color=red>+5% emergy per level. Max levels: 10</font>";
+$lang['info'][MRC_POWERMAN]['name']        = "Engineer";
+$lang['info'][MRC_POWERMAN]['description'] = "The engineer is a specialist in the management of energy. In peace time, it maximizes the efficiency of energy networks colonies.<br><br><font color=red>+5% emergy per level. Max levels: 10</font>";
 
-$lang['info'][604]['name']        = "Technocrat";
-$lang['info'][604]['description'] = "Guilds of technocrats are recognized scientific genius. They are found in areas where technology is reaching its limits. Nobody will succeed in deciphering the encryption of a technocrat, his mere presence inspires researchers across the empire.<br><br><font color=red>Increasing speed of ship construction by 5% per level. Max levels: 10</font>";
+$lang['info'][MRC_CONSTRUCTOR]['name']        = "Technocrat";
+$lang['info'][MRC_CONSTRUCTOR]['description'] = "Guilds of technocrats are recognized scientific genius. They are found in areas where technology is reaching its limits. Nobody will succeed in deciphering the encryption of a technocrat, his mere presence inspires researchers across the empire.<br><br><font color=red>Increasing speed of ship construction by 5% per level. Max levels: 10</font>";
 
-$lang['info'][605]['name']        = "Manufacturer";
-$lang['info'][605]['description'] = "The manufacturer is a new kind of a builder. His DNA was modified to give it superhuman strength. Only one of these \"man\" can build an entire city.<br><br><font color=red>increasing 10% of construction speed per level. Max levels: 3</font>";
+$lang['info'][MRC_ARCHITECT]['name']        = "Architect";
+$lang['info'][MRC_ARCHITECT]['description'] = "The Architect is a new kind of a builder. His DNA was modified to give it superhuman strength. Only one of these \"man\" can build an entire city.<br><br><font color=red>increasing 10% of construction speed per level. Max levels: 3</font>";
 
-$lang['info'][606]['name']        = "Scientist";
-$lang['info'][606]['description'] = "Scientists are part of a guild concurente than technocrats. They specialize in the improvement of technology.<br><br><font color=red>Increasing 10% of researching speed per level. Max levels: 3</font>";
+$lang['info'][MRC_ACADEMIC]['name']        = "Scientist";
+$lang['info'][MRC_ACADEMIC]['description'] = "Scientists are part of a guild concurente than technocrats. They specialize in the improvement of technology.<br><br><font color=red>Increasing 10% of researching speed per level. Max levels: 3</font>";
 
-$lang['info'][607]['name']        = "Storekeeper";
-$lang['info'][607]['description'] = "The storekeeper is part of the former Brotherhood of the planet Hsac. His motto is to win a maximum, but for this reason it needs storage space as important thing. With the manufacturer he will developed a new storage technique.<br><br><font color=red> +50% of storage per level. Max levels: 2</font>";
+$lang['info'][MRC_STOCKMAN]['name']        = "Storekeeper";
+$lang['info'][MRC_STOCKMAN]['description'] = "The storekeeper is part of the former Brotherhood of the planet Hsac. His motto is to win a maximum, but for this reason it needs storage space as important thing. With the manufacturer he will developed a new storage technique.<br><br><font color=red> +50% of storage per level. Max levels: 2</font>";
 
-$lang['info'][608]['name']        = "Defender";
-$lang['info'][608]['description'] = "The defender is a member of the imperial army. His zeal in his work allows him to build a formidable defense in a short time in the colonies hostile.<br><br><font color=red>increasing 50% of defense production speed per level. Max levels: 2</font>";
+$lang['info'][MRC_FORTIFIER]['name']        = "Defender";
+$lang['info'][MRC_FORTIFIER]['description'] = "The defender is a member of the imperial army. His zeal in his work allows him to build a formidable defense in a short time in the colonies hostile.<br><br><font color=red>increasing 50% of defense production speed per level. Max levels: 2</font>";
 
-$lang['info'][609]['name']        = "Bunker";
-$lang['info'][609]['description'] = "The emperor has noticed the impressive work that you have provided to its empire. To thank you it gives you the chance to become Bunker. The Bunker is the highest award of the Mining sector of the imperial army.<br><br><font color=red>Clearing Planet protection</font>";
+$lang['info'][MRC_DEFENDER]['name']        = "Bunker";
+$lang['info'][MRC_DEFENDER]['description'] = "The emperor has noticed the impressive work that you have provided to its empire. To thank you it gives you the chance to become Bunker. The Bunker is the highest award of the Mining sector of the imperial army.<br><br><font color=red>Clearing Planet protection</font>";
 
-$lang['Desc'][610] = "<br><br>Шпион - загадочный человек. Никто и никогда не видел его лица, а если кто и видел - то он уже мертв. <br><br><font color=red>+5 уровней Шпионажа за уровень. Уровнь Макс: 2</font>";
+$lang['Desc'][MRC_SPY] = "<br><br>Шпион - загадочный человек. Никто и никогда не видел его лица, а если кто и видел - то он уже мертв. <br><br><font color=red>+5 уровней Шпионажа за уровень. Уровнь Макс: 2</font>";
 
-$lang['info'][611]['name']        = "Commander";
-$lang['info'][611]['description'] = "The commander of the imperial army has mastered the art of handling fleets. His brain can calculate the trajectories of many fleet, much more than that of a normal human.<br><br><font color=red>+3 fleet slots per level. Max levels: 3</font> ";
+$lang['info'][MRC_COORDINATOR]['name']        = "Commander";
+$lang['info'][MRC_COORDINATOR]['description'] = "The commander of the imperial army has mastered the art of handling fleets. His brain can calculate the trajectories of many fleet, much more than that of a normal human.<br><br><font color=red>+3 fleet slots per level. Max levels: 3</font> ";
 
-$lang['info'][612]['name']        = "Destroyer";
-$lang['info'][612]['description'] = "The destroyer is a ruthless officer. He massacred entire planet just for pleasure. It is currently developing a new method of producing the deathstars.<br><br><font color=red>2 RIP built instead of one.</font>";
+$lang['info'][MRC_DESTRUCTOR]['name']        = "Destroyer";
+$lang['info'][MRC_DESTRUCTOR]['description'] = "The destroyer is a ruthless officer. He massacred entire planet just for pleasure. It is currently developing a new method of producing the deathstars.<br><br><font color=red>2 RIP built instead of one.</font>";
 
-$lang['Desc'][613] = "<br><br>Генерал - почтенный человек, который служил много лет в армии. Рабочие и изготовители судов, производят быстрее в его присутствии. <br><br><font color=red>+25 % скорости постройки судов за уровень. Уровнь Макс: 3</font>";
+$lang['Desc'][MRC_NAVIGATOR] = "<br><br>Генерал - почтенный человек, который служил много лет в армии. Рабочие и изготовители судов, производят быстрее в его присутствии. <br><br><font color=red>+25 % скорости постройки судов за уровень. Уровнь Макс: 3</font>";
 
-$lang['info'][614]['name']        = "Raider";
-$lang['info'][614]['description'] = "The emperor has spotted you undeniable qualities of conqueror. It makes you stiffness. The stiffness is the highest rank in the industry stiffness of the imperial army<br><br><font color=red>Unlocking the SuperNova</font>";
+$lang['info'][MRC_ASSASIN]['name']        = "Raider";
+$lang['info'][MRC_ASSASIN]['description'] = "The emperor has spotted you undeniable qualities of conqueror. It makes you stiffness. The stiffness is the highest rank in the industry stiffness of the imperial army<br><br><font color=red>Unlocking the SuperNova</font>";
 
-$lang['info'][615]['name']        = "Emperer";
-$lang['info'][615]['description'] = "You have shown that you are the greatest conqueror of the universe. Now it is time for you, to take the place that is yours.<br><br><font color=red>Clearing the Planet destroyer</font>";
+$lang['info'][MRC_EMPEROR]['name']        = "Emperer";
+$lang['info'][MRC_EMPEROR]['description'] = "You have shown that you are the greatest conqueror of the universe. Now it is time for you, to take the place that is yours.<br><br><font color=red>Clearing the Planet destroyer</font>";
 
 ?>

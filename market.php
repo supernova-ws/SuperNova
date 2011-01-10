@@ -372,7 +372,7 @@ switch($mode)
 }
 
 if(!$intError && $rpg_deduct){
-  rpg_pointsAdd($user['id'], -($rpg_deduct), "Using Black Market page {$mode}");
+  rpg_points_change($user['id'], -($rpg_deduct), "Using Black Market page {$mode}");
   $user['rpg_points'] -= $rpg_deduct;
 }
 
@@ -389,4 +389,24 @@ $template->assign_vars(array(
 ));
 
 display($template, $page_title);
+
+function sys_fleetUnPack($strFleet){
+  $arrTemp = explode(';', $strFleet);
+  foreach($arrTemp as $temp){
+    if($temp){
+      $temp = explode(',', $temp);
+      $arrFleet[$temp[0]] = $temp[1];
+    }
+  }
+
+  return $arrFleet;
+}
+
+function sys_fleetPack($arrFleet){
+  foreach($arrFleet as $shipID => $shipCount){
+    $strFleet .= "$shipID,$shipCount;";
+  }
+  return $strFleet;
+}
+
 ?>

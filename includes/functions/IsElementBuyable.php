@@ -22,7 +22,7 @@
 function IsElementBuyable ($CurrentUser, $CurrentPlanet, $Element, $Incremental = true, $ForDestroy = false) {
   global $pricelist, $resource;
 
-  if (IsVacationMode($CurrentUser))
+  if ($CurrentUser['urlaubs_modus'])
     return false;
 
   $array = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, $Incremental, $ForDestroy);

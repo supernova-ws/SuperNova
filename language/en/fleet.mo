@@ -115,25 +115,6 @@ $lang['fl_expe_hours'] = "&nbsp;час(ов)";
 $lang['fl_adm_attak'] = "Вы пытаетесь напасть на планету администратора сервера ...Ваш флот может быть ПОЛНОСТЬЮ уничтожен ... Вы уверены что хотите продолжить ?";
 $lang['fl_warning'] = "Внимание!";
 
-$lang['res']['fleet'] = array(
-//Ships
-  202 => $lang['tech'][202],
-  203 => $lang['tech'][203],
-  204 => $lang['tech'][204],
-  205 => $lang['tech'][205],
-  206 => $lang['tech'][206],
-  207 => $lang['tech'][207],
-  208 => $lang['tech'][208],
-  209 => $lang['tech'][209],
-  210 => $lang['tech'][210],
-  211 => $lang['tech'][211],
-  212 => $lang['tech'][212],
-  213 => $lang['tech'][213],
-  214 => $lang['tech'][214],
-  215 => $lang['tech'][215],
-  216 => $lang['tech'][216],
-);
-
 $lang['fl_shrtcup'] = array(
   1 => $lang['fl_shrtcup1'], 
   2 => $lang['fl_shrtcup2'], 

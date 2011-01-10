@@ -47,16 +47,13 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
   $parse['XNovaRelease']    = VERSION;
   $parse['servername']      = $config->game_name;
 
-  if ($Level <= "0") {
+  if ($Level < 1) {
     $parse['lm_tx_serv']      = $config->resource_multiplier;
     $parse['lm_tx_game']      = get_game_speed();
     $parse['lm_tx_fleet']     = get_fleet_speed();
     $parse['lm_tx_queue']     = MAX_FLEET_OR_DEFS_PER_ROW;
     $SubFrame                 = parsetemplate( $InfoTPL, $parse );
     $parse['server_info']     = $SubFrame;
-//    $parse['C_url_forum']           = $config->url_forum;
-//    $parse['C_url_rules']           = $config->url_rules;
-//    $parse['C_url_dark_matter']     = $config->url_dark_matter;
     $parse['game_url']        = GAMEURL;
     $parse['game_name']       = $config->game_name;
     $rank                     = doquery("SELECT `total_rank` FROM {{table}} WHERE `stat_code` = '1' AND `stat_type` = '1' AND `id_owner` = '". $user['id'] ."';",'statpoints',true);
@@ -86,20 +83,19 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
       $parse['BUILDING_RECORDS_LINK'] = "";
     }
   }
-  elseif ($Level == "1") {
+  elseif ($Level == 1) {
     $Template = 'admin/left_menu_modo';
   }
-  elseif ($Level == "2") {
+  elseif ($Level == 2) {
     $Template = 'admin/left_menu_op';
   }
-  elseif ($Level >= "3") {
-    //$parse['dpath']           = "../{$dpath}";
+  elseif ($Level >= 3) {
     $Template = 'admin/left_menu';
   };
 
-//  $time_new = $time_now - $config->game_news_actual;
-//  $lastAnnounces = doquery("SELECT COUNT(*) AS `new_announce_count` FROM {{announce}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<='{$time_now}' AND UNIX_TIMESTAMP(`tsTimeStamp`)>='{$time_new}' ORDER BY `tsTimeStamp` DESC LIMIT 1;", '', true);
   $parse['new_announce_count'] = $user['news_lastread'];
+//!!!!!!!!!!!!!!
+$parse['QUE_STRUCTURES'] = QUE_STRUCTURES;
 
   $Menu = parsetemplate( gettemplate($Template, true), $parse);
 
@@ -179,19 +175,16 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
 // Entete de page
 //
 function StdHeader ($title = '', $metatags = '', $Level = 0) {
-  global $user, $dpath, $langInfos;
+  global $user, $dpath, $ugamela_root_path;
 
-  $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
+  $template = gettemplate('simple_header');
 
-  $parse           = $langInfos;
-  $parse['dpath']  = $dpath;
+  $parse['dpath']  = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
   $parse['title']  = $title;
   $parse['-meta-'] = ($metatags) ? $metatags : "";
-//  $parse['-body-'] = ''; //  class=\"style\" topmargin=\"0\" leftmargin=\"0\" marginwidth=\"0\" marginheight=\"0\">";
-  if ($Level>0){
-    $parse['-path_prefix-'] = "../";
-  };
-  return parsetemplate(gettemplate('simple_header'), $parse);
+  $parse['-path_prefix-'] = $ugamela_root_path;
+
+  return parsetemplate($template, $parse);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -297,17 +290,17 @@ function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet )
       'TOPNAV_METAL' => round($CurrentPlanet["metal"], 2),
       'TOPNAV_METAL_MAX' => round($CurrentPlanet["metal_max"]),
       'TOPNAV_METAL_PERHOUR' => round($CurrentPlanet["metal_perhour"], 5),
-      'TOPNAV_METAL_MAX_TEXT' => pretty_number($CurrentPlanet["metal_max"], true, -$CurrentPlanet["metal"]),
+      'TOPNAV_METAL_MAX_TEXT' => pretty_number($CurrentPlanet["metal_max"], 2, -$CurrentPlanet["metal"]),
 
       'TOPNAV_CRYSTAL' => round($CurrentPlanet["crystal"], 2),
       'TOPNAV_CRYSTAL_PERHOUR' => round($CurrentPlanet["crystal_perhour"], 5),
       'TOPNAV_CRYSTAL_MAX' => round($CurrentPlanet["crystal_max"]),
-      'TOPNAV_CRYSTAL_MAX_TEXT' => pretty_number($CurrentPlanet["crystal_max"], true, -$CurrentPlanet["crystal"]),
+      'TOPNAV_CRYSTAL_MAX_TEXT' => pretty_number($CurrentPlanet["crystal_max"], 2, -$CurrentPlanet["crystal"]),
 
       'TOPNAV_DEUTERIUM' => round($CurrentPlanet["deuterium"], 2),
       'TOPNAV_DEUTERIUM_PERHOUR' => round($CurrentPlanet["deuterium_perhour"], 5),
       'TOPNAV_DEUTERIUM_MAX' => round($CurrentPlanet["deuterium_max"]),
-      'TOPNAV_DEUTERIUM_MAX_TEXT' => pretty_number($CurrentPlanet["deuterium_max"], true, -$CurrentPlanet["deuterium"]),
+      'TOPNAV_DEUTERIUM_MAX_TEXT' => pretty_number($CurrentPlanet["deuterium_max"], 2, -$CurrentPlanet["deuterium"]),
 
       'TOPNAV_DARK_MATTER' => pretty_number($CurrentUser['rpg_points']),
 
@@ -327,11 +320,9 @@ function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet )
 
 function displayP($template)
 {
-  global $ugamela_root_path;
-
   if(is_object($template))
   {
-    global $lang, $user;
+    global $ugamela_root_path, $user;
 
     if($template->parse)
     {
@@ -341,9 +332,12 @@ function displayP($template)
       }
     }
 
-    $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
-    //$dpath = "{$ugamela_root_path}{$dpath}";
-    $template->assign_var('dpath', $dpath);
+    $dpath = $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH;
+    $template->assign_vars(array(
+      'dpath'         => $dpath,
+      'SN_ROOT_PATH'  => $ugamela_root_path,
+      '-path_prefix-' => $ugamela_root_path,
+    ));
 
     $template->display('body');
   }
@@ -355,16 +349,31 @@ function displayP($template)
 
 function parsetemplate ($template, $array = false)
 {
+  global $lang;
+
   if(is_object($template))
   {
-    $template->parse = $array;
+    global $ugamela_root_path, $user;
+
+    if($array)
+    {
+      foreach($array as $key => $data)
+      {
+        $template->assign_var($key, $data);
+      }
+    }
+
+    $template->assign_vars(array(
+      'dpath'         => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
+      'SN_ROOT_PATH'  => $ugamela_root_path,
+      '-path_prefix-' => $ugamela_root_path,
+    ));
+//    $template->parse = $array;
 
     return $template;
   }
   else
   {
-    global $lang;
-
     if(!$array)
     {
       $array = array();

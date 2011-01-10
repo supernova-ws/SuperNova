@@ -3,7 +3,7 @@
 /**
  * imperator.php
  *
- * Player's info
+ * Player's information
  *
  * @version 1.0 copyright (c) 2010 by Gorlum for http://supernova.ws
  */
@@ -122,7 +122,7 @@ $template->assign_vars(array(
   'builder_lvl_up'       => rpg_get_miner_xp($user['lvl_minier']),
   'raid_xp'              => $user['xpraid'],
   'raid_lvl'             => $user['lvl_raid'],
-  'raid_lvl_up'          => RPG_get_raider_xp($user['lvl_raid']),
+  'raid_lvl_up'          => rpg_get_raider_xp($user['lvl_raid']),
   'raids'                => $user['raids'],
   'raidswin'             => $user['raidswin'],
   'raidsloose'           => $user['raidsloose'],

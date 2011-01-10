@@ -1,4 +1,5 @@
 <?php
+
 function sys_bbcodeParse($text, $escaped = false){
   if($escaped)
     $text = str_replace('\r\n', '<br />', $text);
@@ -14,4 +15,5 @@ function sys_bbcodeUnParse($text, $escaped = false){
     $text = str_replace('<br />', "\r\n", $text);
   return $text;
 }
+
 ?>

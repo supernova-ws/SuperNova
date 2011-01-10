@@ -19,7 +19,7 @@
    */
 
 function MissionCaseAttack ( $FleetRow) {
-  global $phpEx, $ugamela_root_path, $pricelist, $lang, $resource, $CombatCaps, $debug, $time_now, $reslist;
+  global $phpEx, $ugamela_root_path, $pricelist, $lang, $resource, $CombatCaps, $debug, $time_now, $reslist, $sn_data;
 
   // --- This is universal part which should be moved to fleet manager
   // Checking fleet message: if not 0 then we already managed this fleet
@@ -62,7 +62,6 @@ function MissionCaseAttack ( $FleetRow) {
 
   $TargetUser    = doquery('SELECT * FROM {{table}} WHERE `id` ='.$TargetPlanet['id_owner'],'users', true);
 
-  UpdatePlanetBatimentQueueList($TargetPlanet, $TargetUser);
   PlanetResourceUpdate( $TargetUser, $TargetPlanet, $time_now );
 
   $attackFleets = array();
@@ -75,16 +74,18 @@ function MissionCaseAttack ( $FleetRow) {
     BE_attackFleetFill(&$attackFleets, $FleetRow);
   }
 
+  $db_admiral_name = $sn_data[MRC_ADMIRAL]['name'];
+
   $defenseFleets = array(
     0 => array(
       'def' => array(),
       'user' => array(
-        'id'            => $TargetUser['id'],
-        'username'      => $TargetUser['username'],
-        'defence_tech'  => $TargetUser['defence_tech'],
-        'rpg_amiral'    => $TargetUser['rpg_amiral'],
-        'shield_tech'   => $TargetUser['shield_tech'],
-        'military_tech' => $TargetUser['military_tech'],
+        'id'             => $TargetUser['id'],
+        'username'       => $TargetUser['username'],
+        $db_admiral_name => $TargetUser[$db_admiral_name],
+        'defence_tech'   => $TargetUser['defence_tech'],
+        'shield_tech'    => $TargetUser['shield_tech'],
+        'military_tech'  => $TargetUser['military_tech'],
       ),
     )
   );
@@ -162,7 +163,7 @@ function MissionCaseAttack ( $FleetRow) {
   $MoonChance = BE_calculateMoonChance($result);
 
   if ( (mt_rand(1, 100) <= $MoonChance) && ($galenemyrow['id_luna'] == 0) ){
-    $TargetPlanetName = CreateOneMoonRecord ( $FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet'], $TargetUserID, $FleetRow['fleet_start_time'], '', $MoonChance );
+    $TargetPlanetName = uni_create_moon ( $FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet'], $TargetUserID, $MoonChance);
     $GottenMoon       = sprintf ($lang['sys_moonbuilt'], $TargetPlanetName, $FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet']);
   }
 
