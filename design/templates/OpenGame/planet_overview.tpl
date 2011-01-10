@@ -108,9 +108,13 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
     <!-- BEGIN ques -->
     <tr>
       <th width=100>
+        <!-- IF ques.LENGTH -->
+        <div id="ov_{ques.ID}"></div>
+        <!-- ELSE -->
         {ques.NAME}<br>
-        <span id="ov_{ques.ID}"></span><br>
-        <span id="ov_{ques.ID}_timer" style="color: lime"></span>
+        <!-- ENDIF -->
+        <div id="ov_{ques.ID}_timer" style="color: lime"></div>
+        <div id="ov_{ques.ID}_total" style="color: red"></div>
       </th>
       <th colspan=3 id="ov_{ques.ID}_que">
         {L_eco_que_empty}

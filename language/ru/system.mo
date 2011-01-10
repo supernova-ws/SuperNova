@@ -337,6 +337,7 @@ $lang = array_merge($lang, array(
   'sys_game_rules' => 'Правила игры',
   'sys_max' => 'макс',
   'sys_banned_msg' => 'Вы забанены. Для получения информации зайдите <a href="banned.php">сюда</a>. Срок окончания блокировки аккаунта: ',
+  'sys_total_time' => 'Общее время',
 
   // Univers
   'uni_moon_of_planet' => 'планеты',

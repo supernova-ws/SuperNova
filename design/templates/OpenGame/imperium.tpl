@@ -1,6 +1,6 @@
 <!-- INCLUDE fleet_javascript.tpl -->
 <br>
-<table border="0" cellpadding="0" cellspacing="1" width="750" align=center><tbody>
+<table border="0" cellpadding="0" cellspacing="1" align=center><tbody>
   <tr valign="left">
     <td class="c" colspan="{mount}">{L_imp_overview}</td>
   </tr>
