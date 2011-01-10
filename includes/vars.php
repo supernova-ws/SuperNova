@@ -1428,7 +1428,7 @@ if ( defined('INSIDE')) {
       'factor' => 1,
       'max' => 3,
       'bonus' => 1,
-      'bonus_type' => BONUS_INCREASE,
+      'bonus_type' => BONUS_ADD,
     ),
 
     MRC_COORDINATOR => array(
@@ -1438,7 +1438,7 @@ if ( defined('INSIDE')) {
       'factor' => 1,
       'max' => 5,
       'bonus' => 1,
-      'bonus_type' => BONUS_INCREASE,
+      'bonus_type' => BONUS_ADD,
     ),
 
     MRC_DESTRUCTOR => array(
