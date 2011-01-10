@@ -77,7 +77,8 @@
         </div>
       <!-- ENDIF -->
     </div>
-    <!-- IF planet.BUILDING -->{planet.BUILDING}<span id="ov_building{planet.ID}"></span><br><font color="darkgrey"><span id="ov_building{planet.ID}_timer"></span></font><!-- ELSE --><!--{L_sys_no_task}--><!-- ENDIF -->
+    <!-- IF planet.BUILDING -->{planet.BUILDING}<div style="width: 75; white-space: normal;" id="ov_building{planet.ID}"></div>
+      <div id="ov_building{planet.ID}_timer" style="color: darkgrey;"></div><!-- ELSE -->{L_sys_no_task}<!-- ENDIF -->
     <!-- IF $OVERVIEW -->
     <br><br>
     <!-- ENDIF -->
