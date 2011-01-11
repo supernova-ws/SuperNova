@@ -157,7 +157,7 @@ foreach ($sn_data as $unit_id => $res) {
         break;
 
         case 'fleet':
-          $level_plus['LEVEL_PLUS_YELLOW'] = $planet['fleet_list']['own']['total'][$unit_id];
+          $level_plus['LEVEL_PLUS_YELLOW'] = $planet['fleet_list']['own']['total'][$unit_id]<=0 ? $planet['fleet_list']['own']['total'][$unit_id] : "+{$planet['fleet_list']['own']['total'][$unit_id]}";
 
         case 'defense':
           if($planet['hangar_que'][$unit_id])
