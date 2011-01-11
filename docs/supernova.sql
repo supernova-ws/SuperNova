@@ -1,27 +1,23 @@
--- MySQL dump 10.13  Distrib 5.1.41, for Win32 (ia32)
---
--- Host: localhost    Database: supernova
--- ------------------------------------------------------
--- Server version	5.1.41
+/*
+Navicat MySQL Data Transfer
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+Source Server         : localhost
+Source Server Version : 50141
+Source Host           : localhost:3306
+Source Database       : supernova
 
---
--- Table structure for table `sn_aks`
---
+Target Server Type    : MYSQL
+Target Server Version : 50141
+File Encoding         : 65001
 
+Date: 2011-01-11 22:13:22
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+-- ----------------------------
+-- Table structure for `sn_aks`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_aks`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_aks` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
@@ -35,16 +31,16 @@ CREATE TABLE `sn_aks` (
   `eingeladen` varchar(50) DEFAULT NULL,
   `fleet_end_time` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_alliance`
---
+-- ----------------------------
+-- Records of sn_aks
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_alliance`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_alliance`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_alliance` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `ally_name` varchar(32) DEFAULT '',
@@ -63,16 +59,16 @@ CREATE TABLE `sn_alliance` (
   `ally_members` int(11) NOT NULL DEFAULT '0',
   `ranklist` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_alliance_requests`
---
+-- ----------------------------
+-- Records of sn_alliance
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_alliance_requests`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_alliance_requests`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_alliance_requests` (
   `id_user` int(11) NOT NULL,
   `id_ally` int(11) NOT NULL DEFAULT '0',
@@ -80,16 +76,16 @@ CREATE TABLE `sn_alliance_requests` (
   `request_time` int(11) NOT NULL DEFAULT '0',
   `request_denied` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_user`,`id_ally`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_annonce`
---
+-- ----------------------------
+-- Records of sn_alliance_requests
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_annonce`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_annonce`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_annonce` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` text NOT NULL,
@@ -102,32 +98,33 @@ CREATE TABLE `sn_annonce` (
   `cristals` bigint(11) NOT NULL DEFAULT '0',
   `deuts` bigint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_announce`
---
+-- ----------------------------
+-- Records of sn_annonce
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_announce`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_announce`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_announce` (
   `idAnnounce` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `tsTimeStamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Date & Time of announce',
   `strAnnounce` text NOT NULL,
+  `detail_url` varchar(250) NOT NULL DEFAULT '' COMMENT 'Link to more details about update',
   PRIMARY KEY (`idAnnounce`),
   KEY `indTimeStamp` (`tsTimeStamp`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `sn_banned`
---
+-- ----------------------------
+-- Records of sn_announce
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_banned`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_banned`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_banned` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `who` varchar(11) NOT NULL DEFAULT '',
@@ -138,16 +135,16 @@ CREATE TABLE `sn_banned` (
   `author` varchar(11) NOT NULL DEFAULT '',
   `email` varchar(20) NOT NULL DEFAULT '',
   KEY `ID` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_buddy`
---
+-- ----------------------------
+-- Records of sn_banned
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_buddy`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_buddy`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_buddy` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `sender` int(11) NOT NULL DEFAULT '0',
@@ -155,16 +152,16 @@ CREATE TABLE `sn_buddy` (
   `active` tinyint(3) NOT NULL DEFAULT '0',
   `text` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_chat`
---
+-- ----------------------------
+-- Records of sn_buddy
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_chat`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_chat`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_chat` (
   `messageid` int(5) unsigned NOT NULL AUTO_INCREMENT,
   `user` varchar(255) NOT NULL DEFAULT '',
@@ -173,51 +170,151 @@ CREATE TABLE `sn_chat` (
   `ally_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`messageid`),
   KEY `i_ally_idmess` (`ally_id`,`messageid`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_config`
---
+-- ----------------------------
+-- Records of sn_chat
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_config`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_config`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_config` (
   `config_name` varchar(64) NOT NULL DEFAULT '',
   `config_value` text NOT NULL,
   PRIMARY KEY (`config_name`),
   KEY `i_config_name` (`config_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_counter`
---
+-- ----------------------------
+-- Records of sn_config
+-- ----------------------------
+INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
+INSERT INTO `sn_config` VALUES ('chat_admin_msgFormat', '[c=purple]$2[/c]');
+INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
+INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
+INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
+INSERT INTO `sn_config` VALUES ('db_version', '24');
+INSERT INTO `sn_config` VALUES ('debug', '0');
+INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
+INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
+INSERT INTO `sn_config` VALUES ('eco_stockman_fleet', '');
+INSERT INTO `sn_config` VALUES ('energy_basic_income', '0');
+INSERT INTO `sn_config` VALUES ('Fleet_Cdr', '30');
+INSERT INTO `sn_config` VALUES ('fleet_speed', '1');
+INSERT INTO `sn_config` VALUES ('flt_lastUpdate', '1294776780');
+INSERT INTO `sn_config` VALUES ('game_adminEmail', 'root@localhost');
+INSERT INTO `sn_config` VALUES ('game_counter', '1');
+INSERT INTO `sn_config` VALUES ('game_default_language', 'ru');
+INSERT INTO `sn_config` VALUES ('game_default_skin', 'skins/EpicBlue/');
+INSERT INTO `sn_config` VALUES ('game_default_template', 'OpenGame');
+INSERT INTO `sn_config` VALUES ('game_disable', '0');
+INSERT INTO `sn_config` VALUES ('game_disable_reason', 'SuperNova is in maintenance mode! Please return later!');
+INSERT INTO `sn_config` VALUES ('game_maxGalaxy', '5');
+INSERT INTO `sn_config` VALUES ('game_maxPlanet', '15');
+INSERT INTO `sn_config` VALUES ('game_maxSystem', '199');
+INSERT INTO `sn_config` VALUES ('game_mode', '0');
+INSERT INTO `sn_config` VALUES ('game_name', 'SuperNova');
+INSERT INTO `sn_config` VALUES ('game_news_actual', '259200');
+INSERT INTO `sn_config` VALUES ('game_news_overview', '3');
+INSERT INTO `sn_config` VALUES ('game_noob_factor', '5');
+INSERT INTO `sn_config` VALUES ('game_noob_points', '5000');
+INSERT INTO `sn_config` VALUES ('game_speed', '1');
+INSERT INTO `sn_config` VALUES ('game_user_changename', '0');
+INSERT INTO `sn_config` VALUES ('initial_fields', '163');
+INSERT INTO `sn_config` VALUES ('int_banner_background', 'design/images/banner.png');
+INSERT INTO `sn_config` VALUES ('int_banner_fontInfo', 'terminator.ttf');
+INSERT INTO `sn_config` VALUES ('int_banner_fontRaids', 'klmnfp2005.ttf');
+INSERT INTO `sn_config` VALUES ('int_banner_fontUniverse', 'cristal.ttf');
+INSERT INTO `sn_config` VALUES ('int_banner_showInOverview', '1');
+INSERT INTO `sn_config` VALUES ('int_banner_URL', '/banner.php?type=banner');
+INSERT INTO `sn_config` VALUES ('int_format_date', 'd.m.Y');
+INSERT INTO `sn_config` VALUES ('int_format_time', 'H:i:s');
+INSERT INTO `sn_config` VALUES ('int_userbar_background', 'design/images/userbar.png');
+INSERT INTO `sn_config` VALUES ('int_userbar_font', 'arialbd.ttf');
+INSERT INTO `sn_config` VALUES ('int_userbar_showInOverview', '1');
+INSERT INTO `sn_config` VALUES ('int_userbar_URL', '/banner.php?type=userbar');
+INSERT INTO `sn_config` VALUES ('LastSettedGalaxyPos', '1');
+INSERT INTO `sn_config` VALUES ('LastSettedPlanetPos', '1');
+INSERT INTO `sn_config` VALUES ('LastSettedSystemPos', '1');
+INSERT INTO `sn_config` VALUES ('metal_basic_income', '40');
+INSERT INTO `sn_config` VALUES ('noobprotection', '1');
+INSERT INTO `sn_config` VALUES ('noobprotectionmulti', '5');
+INSERT INTO `sn_config` VALUES ('noobprotectiontime', '5000');
+INSERT INTO `sn_config` VALUES ('player_max_colonies', '9');
+INSERT INTO `sn_config` VALUES ('resource_multiplier', '1');
+INSERT INTO `sn_config` VALUES ('rpg_bonus_divisor', '10');
+INSERT INTO `sn_config` VALUES ('rpg_cost_banker', '1');
+INSERT INTO `sn_config` VALUES ('rpg_cost_exchange', '1');
+INSERT INTO `sn_config` VALUES ('rpg_cost_pawnshop', '1');
+INSERT INTO `sn_config` VALUES ('rpg_cost_scraper', '1');
+INSERT INTO `sn_config` VALUES ('rpg_cost_stockman', '1');
+INSERT INTO `sn_config` VALUES ('rpg_cost_trader', '1');
+INSERT INTO `sn_config` VALUES ('rpg_exchange_crystal', '2');
+INSERT INTO `sn_config` VALUES ('rpg_exchange_darkMatter', '100000');
+INSERT INTO `sn_config` VALUES ('rpg_exchange_deuterium', '4');
+INSERT INTO `sn_config` VALUES ('rpg_exchange_metal', '1');
+INSERT INTO `sn_config` VALUES ('rpg_officer', '3');
+INSERT INTO `sn_config` VALUES ('rpg_scrape_crystal', '0.50');
+INSERT INTO `sn_config` VALUES ('rpg_scrape_deuterium', '0.25');
+INSERT INTO `sn_config` VALUES ('rpg_scrape_metal', '0.75');
+INSERT INTO `sn_config` VALUES ('stats_schedule', 'd@04:00:00');
+INSERT INTO `sn_config` VALUES ('urlaubs_modus_erz', '0');
+INSERT INTO `sn_config` VALUES ('url_dark_matter', '/dark_matter_get.php');
+INSERT INTO `sn_config` VALUES ('url_forum', '/forum/');
+INSERT INTO `sn_config` VALUES ('url_rules', '/rules.php');
+INSERT INTO `sn_config` VALUES ('users_amount', '1');
+INSERT INTO `sn_config` VALUES ('var_db_update', '1294776780');
+INSERT INTO `sn_config` VALUES ('var_db_update_end', '1294776780');
+INSERT INTO `sn_config` VALUES ('var_stat_update', '1294776781');
+INSERT INTO `sn_config` VALUES ('var_stat_update_end', '1294776781');
+INSERT INTO `sn_config` VALUES ('var_stat_update_msg', '');
 
+-- ----------------------------
+-- Table structure for `sn_confirmations`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_confirmations`;
+CREATE TABLE `sn_confirmations` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `id_user` bigint(11) NOT NULL DEFAULT '0',
+  `type` smallint(6) NOT NULL DEFAULT '0',
+  `code` varchar(16) NOT NULL DEFAULT '',
+  `email` varchar(64) NOT NULL DEFAULT '',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `i_code_email` (`code`,`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_confirmations
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_counter`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_counter`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_counter` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `time` int(11) NOT NULL DEFAULT '0',
   `page` varchar(255) CHARACTER SET utf8 DEFAULT '0',
   `url` varchar(255) CHARACTER SET utf8 DEFAULT '0',
   `user_id` bigint(11) DEFAULT '0',
-  `ip` varchar(15) DEFAULT NULL,
+  `ip` varchar(250) DEFAULT NULL COMMENT 'User last IP',
+  `proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)',
   PRIMARY KEY (`id`),
   KEY `i_user_id` (`user_id`),
   KEY `i_ip` (`ip`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_errors`
---
+-- ----------------------------
+-- Records of sn_counter
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_errors`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_errors`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_errors` (
   `error_id` bigint(11) NOT NULL AUTO_INCREMENT,
   `error_sender` varchar(32) NOT NULL DEFAULT '0',
@@ -227,16 +324,61 @@ CREATE TABLE `sn_errors` (
   `error_page` text,
   `error_backtrace` text,
   PRIMARY KEY (`error_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_fleet_log`
---
+-- ----------------------------
+-- Records of sn_errors
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_fleets`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_fleets`;
+CREATE TABLE `sn_fleets` (
+  `fleet_id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `fleet_owner` int(11) NOT NULL DEFAULT '0',
+  `fleet_mission` int(11) NOT NULL DEFAULT '0',
+  `fleet_amount` bigint(11) NOT NULL DEFAULT '0',
+  `fleet_array` text,
+  `fleet_start_time` int(11) NOT NULL DEFAULT '0',
+  `fleet_start_galaxy` int(11) NOT NULL DEFAULT '0',
+  `fleet_start_system` int(11) NOT NULL DEFAULT '0',
+  `fleet_start_planet` int(11) NOT NULL DEFAULT '0',
+  `fleet_start_type` int(11) NOT NULL DEFAULT '0',
+  `fleet_end_time` int(11) NOT NULL DEFAULT '0',
+  `fleet_end_stay` int(11) NOT NULL DEFAULT '0',
+  `fleet_end_galaxy` int(11) NOT NULL DEFAULT '0',
+  `fleet_end_system` int(11) NOT NULL DEFAULT '0',
+  `fleet_end_planet` int(11) NOT NULL DEFAULT '0',
+  `fleet_end_type` int(11) NOT NULL DEFAULT '0',
+  `fleet_resource_metal` bigint(11) NOT NULL DEFAULT '0',
+  `fleet_resource_crystal` bigint(11) NOT NULL DEFAULT '0',
+  `fleet_resource_deuterium` bigint(11) NOT NULL DEFAULT '0',
+  `fleet_target_owner` int(11) NOT NULL DEFAULT '0',
+  `fleet_group` varchar(15) NOT NULL DEFAULT '0',
+  `fleet_mess` int(11) NOT NULL DEFAULT '0',
+  `start_time` int(11) DEFAULT NULL,
+  `processing_start` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`fleet_id`),
+  KEY `fleet_origin` (`fleet_start_galaxy`,`fleet_start_system`,`fleet_start_planet`),
+  KEY `fleet_dest` (`fleet_end_galaxy`,`fleet_end_system`,`fleet_end_planet`),
+  KEY `fleet_start_time` (`fleet_start_time`),
+  KEY `fllet_end_time` (`fleet_end_time`),
+  KEY `fleet_owner` (`fleet_owner`),
+  KEY `i_fl_targ_owner` (`fleet_target_owner`),
+  KEY `fleet_both` (`fleet_start_galaxy`,`fleet_start_system`,`fleet_start_planet`,`fleet_start_type`,`fleet_end_galaxy`,`fleet_end_system`,`fleet_end_planet`),
+  KEY `fleet_mess` (`fleet_mess`),
+  KEY `fleet_group` (`fleet_group`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_fleets
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_fleet_log`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_fleet_log`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_fleet_log` (
   `id_owner` int(11) DEFAULT NULL,
   `last_update` int(11) DEFAULT NULL,
@@ -273,61 +415,16 @@ CREATE TABLE `sn_fleet_log` (
   `sprungtor` bigint(11) NOT NULL DEFAULT '0',
   `last_jump_time` int(11) NOT NULL DEFAULT '0',
   `nano` int(11) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_fleets`
---
+-- ----------------------------
+-- Records of sn_fleet_log
+-- ----------------------------
 
-DROP TABLE IF EXISTS `sn_fleets`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sn_fleets` (
-  `fleet_id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `fleet_owner` int(11) NOT NULL DEFAULT '0',
-  `fleet_mission` int(11) NOT NULL DEFAULT '0',
-  `fleet_amount` bigint(11) NOT NULL DEFAULT '0',
-  `fleet_array` text,
-  `fleet_start_time` int(11) NOT NULL DEFAULT '0',
-  `fleet_start_galaxy` int(11) NOT NULL DEFAULT '0',
-  `fleet_start_system` int(11) NOT NULL DEFAULT '0',
-  `fleet_start_planet` int(11) NOT NULL DEFAULT '0',
-  `fleet_start_type` int(11) NOT NULL DEFAULT '0',
-  `fleet_end_time` int(11) NOT NULL DEFAULT '0',
-  `fleet_end_stay` int(11) NOT NULL DEFAULT '0',
-  `fleet_end_galaxy` int(11) NOT NULL DEFAULT '0',
-  `fleet_end_system` int(11) NOT NULL DEFAULT '0',
-  `fleet_end_planet` int(11) NOT NULL DEFAULT '0',
-  `fleet_end_type` int(11) NOT NULL DEFAULT '0',
-  `fleet_resource_metal` bigint(11) NOT NULL DEFAULT '0',
-  `fleet_resource_crystal` bigint(11) NOT NULL DEFAULT '0',
-  `fleet_resource_deuterium` bigint(11) NOT NULL DEFAULT '0',
-  `fleet_target_owner` int(11) NOT NULL DEFAULT '0',
-  `fleet_group` varchar(15) NOT NULL DEFAULT '0',
-  `fleet_mess` int(11) NOT NULL DEFAULT '0',
-  `start_time` int(11) DEFAULT NULL,
-  `processing_start` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`fleet_id`),
-  KEY `fleet_origin` (`fleet_start_galaxy`,`fleet_start_system`,`fleet_start_planet`),
-  KEY `fleet_dest` (`fleet_end_galaxy`,`fleet_end_system`,`fleet_end_planet`),
-  KEY `fleet_start_time` (`fleet_start_time`),
-  KEY `fllet_end_time` (`fleet_end_time`),
-  KEY `fleet_owner` (`fleet_owner`),
-  KEY `i_fl_targ_owner` (`fleet_target_owner`),
-  KEY `fleet_both` (`fleet_start_galaxy`,`fleet_start_system`,`fleet_start_planet`,`fleet_start_type`,`fleet_end_galaxy`,`fleet_end_system`,`fleet_end_planet`),
-  KEY `fleet_mess` (`fleet_mess`),
-  KEY `fleet_group` (`fleet_group`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `sn_iraks`
---
-
+-- ----------------------------
+-- Table structure for `sn_iraks`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_iraks`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_iraks` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `zeit` int(32) DEFAULT NULL,
@@ -342,16 +439,16 @@ CREATE TABLE `sn_iraks` (
   `anzahl` int(32) DEFAULT NULL,
   `primaer` int(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_logs`
---
+-- ----------------------------
+-- Records of sn_iraks
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_logs`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_logs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_logs` (
   `log_id` bigint(11) NOT NULL AUTO_INCREMENT,
   `log_time` int(11) NOT NULL DEFAULT '0',
@@ -361,16 +458,16 @@ CREATE TABLE `sn_logs` (
   `log_text` text,
   `log_page` text,
   PRIMARY KEY (`log_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_mercenaries`
---
+-- ----------------------------
+-- Records of sn_logs
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_mercenaries`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_mercenaries`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_mercenaries` (
   `user_id` int(11) NOT NULL DEFAULT '0',
   `id` int(4) NOT NULL DEFAULT '0',
@@ -378,16 +475,16 @@ CREATE TABLE `sn_mercenaries` (
   `to` int(11) DEFAULT NULL,
   `level` int(2) DEFAULT NULL,
   PRIMARY KEY (`user_id`,`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_messages`
---
+-- ----------------------------
+-- Records of sn_mercenaries
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_messages`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_messages`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_messages` (
   `message_id` bigint(11) NOT NULL AUTO_INCREMENT,
   `message_owner` int(11) NOT NULL DEFAULT '0',
@@ -400,16 +497,16 @@ CREATE TABLE `sn_messages` (
   PRIMARY KEY (`message_id`),
   KEY `owner_type` (`message_owner`,`message_type`),
   KEY `sender_type` (`message_sender`,`message_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_notes`
---
+-- ----------------------------
+-- Records of sn_messages
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_notes`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_notes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_notes` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `owner` int(11) DEFAULT NULL,
@@ -418,16 +515,16 @@ CREATE TABLE `sn_notes` (
   `title` varchar(32) DEFAULT NULL,
   `text` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_planets`
---
+-- ----------------------------
+-- Records of sn_notes
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_planets`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_planets`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_planets` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
@@ -521,6 +618,9 @@ CREATE TABLE `sn_planets` (
   `debris_metal` bigint(11) unsigned DEFAULT '0',
   `debris_crystal` bigint(11) unsigned DEFAULT '0',
   `supercargo` bigint(11) NOT NULL DEFAULT '0' COMMENT 'Supercargo ship count',
+  `governor` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Planet governor',
+  `governor_level` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Governor level',
+  `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'Planet que',
   PRIMARY KEY (`id`),
   KEY `owner_type` (`id_owner`,`planet_type`),
   KEY `i_metal` (`metal`),
@@ -566,32 +666,33 @@ CREATE TABLE `sn_planets` (
   KEY `i_last_update` (`last_update`),
   KEY `GSPT` (`galaxy`,`system`,`planet`,`planet_type`),
   KEY `i_parent_planet` (`parent_planet`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_referrals`
---
+-- ----------------------------
+-- Records of sn_planets
+-- ----------------------------
+INSERT INTO `sn_planets` VALUES ('1', 'Planet', '1', '3', '1', '1', '1', '1294776780', '1', '0', '0', '0', '0', '0', '0', '0', '0', 'normaltempplanet01', '12750', '1', '0', '0', '163', '-40', '60', '500.11111111', '40', '500000', '500.05555556', '20', '500000', '0.00000000', '0', '500000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '10', '10', '10', '10', '10', '10', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '');
 
+-- ----------------------------
+-- Table structure for `sn_referrals`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_referrals`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_referrals` (
   `id` bigint(11) unsigned NOT NULL COMMENT 'Referral ID (from table USERS)',
   `id_partner` bigint(11) unsigned NOT NULL COMMENT 'Partner with whom refferal affilates (from table USERS)',
   `dark_matter` bigint(11) NOT NULL DEFAULT '0' COMMENT 'How much player have aquired Dark Matter',
   PRIMARY KEY (`id`),
   KEY `id_partner` (`id_partner`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_rw`
---
+-- ----------------------------
+-- Records of sn_referrals
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_rw`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_rw`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_rw` (
   `id_owner1` int(11) NOT NULL DEFAULT '0',
   `id_owner2` int(11) NOT NULL DEFAULT '0',
@@ -604,16 +705,16 @@ CREATE TABLE `sn_rw` (
   KEY `id_owner1` (`id_owner1`,`rid`),
   KEY `id_owner2` (`id_owner2`,`rid`),
   KEY `time` (`time`)
-) ENGINE=MyISAM DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_statpoints`
---
+-- ----------------------------
+-- Records of sn_rw
+-- ----------------------------
 
+-- ----------------------------
+-- Table structure for `sn_statpoints`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_statpoints`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_statpoints` (
   `id_owner` int(11) NOT NULL DEFAULT '0',
   `id_ally` int(11) NOT NULL DEFAULT '0',
@@ -640,22 +741,27 @@ CREATE TABLE `sn_statpoints` (
   `total_points` bigint(20) NOT NULL DEFAULT '0',
   `total_count` int(11) NOT NULL DEFAULT '0',
   `stat_date` int(11) NOT NULL DEFAULT '0',
+  `res_rank` int(11) DEFAULT '0' COMMENT 'Rank by resources',
+  `res_old_rank` int(11) DEFAULT '0' COMMENT 'Old rank by resources',
+  `res_points` bigint(20) DEFAULT '0' COMMENT 'Resource stat points',
+  `res_count` bigint(20) DEFAULT '0' COMMENT 'Old rank by resources',
   KEY `TECH` (`tech_points`),
   KEY `BUILDS` (`build_points`),
   KEY `DEFS` (`defs_points`),
   KEY `FLEET` (`fleet_points`),
   KEY `TOTAL` (`total_points`),
   KEY `i_stats_owner` (`id_owner`,`stat_type`,`stat_code`,`tech_rank`,`build_rank`,`defs_rank`,`fleet_rank`,`total_rank`)
-) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `sn_users`
---
+-- ----------------------------
+-- Records of sn_statpoints
+-- ----------------------------
+INSERT INTO `sn_statpoints` VALUES ('1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0', '1', '0', '0', '0', '1', '0', '0', '0', '1', '0', '1', '1000', '1294776780', '1', null, '1', '1000');
 
+-- ----------------------------
+-- Table structure for `sn_users`
+-- ----------------------------
 DROP TABLE IF EXISTS `sn_users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sn_users` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(64) NOT NULL DEFAULT '',
@@ -672,7 +778,7 @@ CREATE TABLE `sn_users` (
   `system` int(11) NOT NULL DEFAULT '0',
   `planet` int(11) NOT NULL DEFAULT '0',
   `current_planet` int(11) NOT NULL DEFAULT '0',
-  `user_lastip` varchar(16) NOT NULL DEFAULT '',
+  `user_lastip` varchar(250) DEFAULT NULL COMMENT 'User last IP',
   `user_agent` text NOT NULL,
   `register_time` int(11) NOT NULL DEFAULT '0',
   `onlinetime` int(11) NOT NULL DEFAULT '0',
@@ -719,7 +825,6 @@ CREATE TABLE `sn_users` (
   `ally_request_text` text,
   `ally_register_time` int(11) NOT NULL DEFAULT '0',
   `ally_rank_id` int(11) NOT NULL DEFAULT '0',
-  `current_luna` int(11) NOT NULL DEFAULT '0',
   `kolorminus` varchar(11) NOT NULL DEFAULT 'red',
   `kolorplus` varchar(11) NOT NULL DEFAULT '#00FF00',
   `kolorpoziom` varchar(11) NOT NULL DEFAULT 'yellow',
@@ -760,144 +865,17 @@ CREATE TABLE `sn_users` (
   `deltime` int(11) NOT NULL DEFAULT '0',
   `deleteme` int(11) NOT NULL DEFAULT '0',
   `banaday` int(11) DEFAULT NULL,
+  `options` text COMMENT 'Packed user options',
+  `news_lastread` int(11) NOT NULL DEFAULT '0' COMMENT 'News last read tag',
+  `user_proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)',
   PRIMARY KEY (`id`),
   KEY `i_username` (`username`),
   KEY `i_ally_online` (`ally_id`,`onlinetime`),
   KEY `onlinetime` (`onlinetime`),
   KEY `i_register_time` (`register_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=cp1251;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2010-09-27 21:49:03
-INSERT INTO `sn_users` SET 
-  `id` = 1, 
-  `username` = 'admin', 
-  `password` = MD5('admin'),
-  `email` = 'root@localhost',
-  `email_2` = 'root@localhost', 
-  `lang` = 'ru', 
-  `authlevel` = 3, 
-  `sex` = '0', 
-  `id_planet` = 1, 
-  `galaxy` = 1,
-  `system` = 1,
-  `planet` = 1,
-  `current_planet` = 1,
-  `user_agent` = '0',
-  `register_time` = UNIX_TIMESTAMP();
-
-
-INSERT INTO `sn_planets` SET
-  `id` = 1,
-  `name` = 'Planet',
-  `id_owner` = '1',
-  `id_level` = '3',
-  `galaxy` = 1,
-  `system` = 1,
-  `planet` = 1,
-  `last_update` = UNIX_TIMESTAMP(),
-  `planet_type` = 1,
-  `image` = 'normaltempplanet01',
-  `diameter` = 12750,
-  `field_max` = 163,
-  `temp_min` = -40,
-  `temp_max` = 60,
-  `metal` = 500,
-  `metal_perhour` = 40,
-  `metal_max` = 500000,
-  `crystal` = 500,
-  `crystal_perhour` = 20,
-  `crystal_max` = 500000,
-  `deuterium` = 0,
-  `deuterium_perhour` = 0,
-  `deuterium_max` = 500000,
-  `b_building_id` = '0',
-  `b_hangar_id` = '0';
-
-INSERT INTO `sn_config` VALUES
-  ('BuildLabWhileRun', 0), 
-  ('chat_admin_msgFormat', '[c=purple]$2[/c]'), 
-  ('chat_timeout', 900), 
-  ('COOKIE_NAME', 'SuperNova'), 
-  ('crystal_basic_income', 20), 
-  ('debug', 0), 
-  ('Defs_Cdr', 30), 
-  ('deuterium_basic_income', 0), 
-  ('eco_stockman_fleet', ''), 
-  ('energy_basic_income', 0), 
-  ('Fleet_Cdr', 30), 
-  ('fleet_speed', 1), 
-  ('game_adminEmail', 'root@localhost'), 
-  ('game_counter', 1), 
-  ('game_default_language', 'ru'), 
-  ('game_default_skin', 'skins/EpicBlue/'), 
-  ('game_default_template', 'OpenGame'), 
-  ('game_disable', 0), 
-  ('game_disable_reason', 'SuperNova is in maintenance mode! Please return later!'), 
-  ('game_maxGalaxy', '5'), 
-  ('game_maxPlanet', '15'), 
-  ('game_maxSystem', '199'), 
-  ('game_mode', '0'), 
-  ('game_name', 'SuperNova'), 
-  ('game_news_actual', 259200), 
-  ('game_news_overview', 3), 
-  ('game_noob_points', 5000),
-  ('game_noob_factor', 5),
-  ('game_speed', 1), 
-  ('game_user_changename', 0), 
-  ('initial_fields', 163), 
-  ('int_banner_background', 'design/images/banner.png'), 
-  ('int_banner_fontInfo', 'terminator.ttf'), 
-  ('int_banner_fontRaids', 'klmnfp2005.ttf'), 
-  ('int_banner_fontUniverse', 'cristal.ttf'), 
-  ('int_banner_showInOverview', 1), 
-  ('int_banner_URL', '/banner.php?type=banner'), 
-  ('int_format_date', 'd.m.Y'),
-  ('int_format_time', 'H:i:s'),
-  ('int_userbar_background', 'design/images/userbar.png'), 
-  ('int_userbar_font', 'arialbd.ttf'), 
-  ('int_userbar_showInOverview', 1), 
-  ('int_userbar_URL', '/banner.php?type=userbar'), 
-  ('LastSettedGalaxyPos', 1), 
-  ('LastSettedPlanetPos', 1), 
-  ('LastSettedSystemPos', 1), 
-  ('metal_basic_income', 40), 
-  ('noobprotection', 1), 
-  ('noobprotectionmulti', 5), 
-  ('noobprotectiontime', 5000), 
-  ('player_max_colonies', 9), 
-  ('resource_multiplier', 1), 
-  ('rpg_bonus_divisor', 10), 
-  ('rpg_cost_banker', 1), 
-  ('rpg_cost_exchange', 1), 
-  ('rpg_cost_pawnshop', 1), 
-  ('rpg_cost_scraper', 1), 
-  ('rpg_cost_stockman', 1), 
-  ('rpg_cost_trader', 1), 
-  ('rpg_exchange_crystal', 2), 
-  ('rpg_exchange_darkMatter', 100000), 
-  ('rpg_exchange_deuterium', 4), 
-  ('rpg_exchange_metal', 1), 
-  ('rpg_officer', 3), 
-  ('rpg_scrape_crystal', 0.50), 
-  ('rpg_scrape_deuterium', 0.25), 
-  ('rpg_scrape_metal', 0.75), 
-  ('stats_schedule', 'd@04:00:00'),
-  ('url_dark_matter', '/dark_matter_get.php'), 
-  ('url_forum', '/forum/'), 
-  ('url_rules', '/rules.php'), 
-  ('urlaubs_modus_erz', 0), 
-  ('users_amount', 0),
-  ('var_stat_update', 0),
-  ('var_stat_update_end', 0),
-  ('var_stat_update_msg', 'Update never started');
-
+-- ----------------------------
+-- Records of sn_users
+-- ----------------------------
+INSERT INTO `sn_users` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 'ru', '3', '0', '', null, '1', '1', '1', '1', '1', '127.0.0.1', 'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.7.62 Version/11.00', '1294776770', '1294776780', '', '1', '1', '0', '0', '1', '5', '0', '0', '1', '1', '1', '1', '0', '0', '0', '0', '0', null, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '', '0', null, '0', '0', 'red', '#00FF00', 'yellow', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', null, '0', '0', '0', null, null, '0', '');
