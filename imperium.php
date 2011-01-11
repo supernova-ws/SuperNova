@@ -173,7 +173,7 @@ foreach ($sn_data as $unit_id => $res) {
       $template->assign_block_vars('prods.planet', array_merge($level_plus, array(
         'ID'         => $planet['id'],
         'TYPE'       => $planet['planet_type'],
-        'LEVEL'      => $planet[$resource[$unit_id]],
+        'LEVEL'      => $planet[$resource[$unit_id]] == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : $planet[$resource[$unit_id]],
       )));
       $unit_count += $planet[$resource[$unit_id]];
     }
