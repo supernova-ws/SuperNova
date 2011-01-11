@@ -1601,7 +1601,7 @@ if ( defined('INSIDE')) {
   $sn_groups = &$sn_data['groups'];
   $reslist   = &$sn_groups;
 
-  $user_options = array('compat_builds' => 0);
+  $user_options = array();
 
   $tableList = array( 'aks', 'alliance', 'alliance_requests', 'announce', 'annonce', 'banned', 'buddy', 'chat', 'config', 'counter',
     'errors', 'fleets', 'fleet_log', 'galaxy', 'iraks', 'logs', 'messages', 'notes', 'planets', 'referrals', 'rw', 'statpoints',

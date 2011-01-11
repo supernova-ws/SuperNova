@@ -100,17 +100,6 @@
       <input name="settings_bud"{user_settings_bud} type="checkbox" /> <img src="{dpath}img/b.gif" alt="{add_to_buddylist}"> {add_to_buddylist}
 <!--      <img src="{dpath}img/s.gif" alt="{show_report}"> {show_report} <input name="settings_rep"{user_settings_rep} type="checkbox" /> -->
       </th>
-      </tr><tr>
-      
-      <tr>
-        <td class="c" colspan="2">{L_opt_compatibility}</td>
-      </tr>
-      <!-- IF compat_builds -->
-        <!-- DEFINE $COMPAT_BUILDS = 'checked' -->
-      <!-- ENDIF -->
-      <tr>
-        <th>{L_opt_compat_structures}</th>
-        <th><input name="compat_builds" {$COMPAT_BUILDS} type="checkbox" value=1 /></th>
       </tr>
       
       <tr>
