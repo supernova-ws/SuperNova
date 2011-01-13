@@ -110,6 +110,12 @@
       </th>
     </tr>
   
+    <tr><td class="c" colspan="2">{L_adm_opt_chat}</td></tr>
+    <tr>
+      <th>{L_adm_opt_chat_timeout}</th>
+      <th><input name="chat_timeout" maxlength="80" size="10" value="{C_chat_timeout}" type="text"> {L_sys_sec} {L_adm_opt_game_zero_dsiable}</th>
+    </tr>
+
     <tr><td class="c" colspan="2">{L_adm_opt_links}</td></tr>
     <tr>
       <th>{L_adm_opt_game_rules}</a></th>

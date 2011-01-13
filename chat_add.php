@@ -25,13 +25,16 @@ $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
 
-if ($IsUserChecked == false) {
+if ($IsUserChecked == false)
+{
   includeLang('login');
   header("Location: login.php");
 }
 
-if($config->array_get('users', $user['id'], 'chat_lastUpdate') + $config->chat_timeout < $time_now && $config->_MODE != CACHER_NO_CACHE)
+if (($config->_MODE != CACHER_NO_CACHE) && ($config->chat_timeout) && ($config->array_get('users', $user['id'], 'chat_lastUpdate') + $config->chat_timeout < $time_now))
+{
   die();
+}
 
 $msg = SYS_mysqlSmartEscape ($_POST["msg"]);
 $chat_type = SYS_mysqlSmartEscape($_GET['chat_type'] ? $_GET['chat_type'] : $_POST['chat_type']);
@@ -60,4 +63,5 @@ if ($msg && $nick) {
   $query = doquery("INSERT INTO {{chat}} (user, ally_id, message, timestamp) VALUES ('{$nick}','{$ally_id}','{$msg}', '{$time_now}');");
   $config->array_set('users', $user['id'], 'chat_lastUpdate', $time_now);
 }
+
 ?>

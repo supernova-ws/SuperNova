@@ -28,7 +28,8 @@ $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
 
-if ($IsUserChecked == false) {
+if ($IsUserChecked == false)
+{
   includeLang('login');
   header("Location: login.php");
 }
@@ -40,7 +41,8 @@ $page = intval($_GET['page'] ? $_GET['page'] : $_POST['page']);
 $ally_id = $user['ally_id'];
 
 includeLang('chat');
-if($config->array_get('users', $user['id'], 'chat_lastUpdate') + $config->chat_timeout < $time_now && $config->_MODE != CACHER_NO_CACHE){
+if (($config->_MODE != CACHER_NO_CACHE) && ($config->chat_timeout) && ($config->array_get('users', $user['id'], 'chat_lastUpdate') + $config->chat_timeout < $time_now))
+{
   print(iconv('CP1251', 'UTF-8', $lang['chat_timeout']));
   die();
 }
@@ -77,9 +79,8 @@ if ($show_history=='history') {
 
 $query = doquery("SELECT * FROM {{chat}} WHERE ally_id = '{$ally_id}' ORDER BY messageid DESC LIMIT {$qry}{$page_limit};");
 
-$buff = "";
+$buff = '';
 while($v = mysql_fetch_object($query)){
-  $msg = "";
   if($show_history != 'history'){
     $nick = "<a href='#' onmousedown=\"addSmiley('[ ".htmlentities($v->user, ENT_QUOTES, cp1251)." ]')\">".htmlentities($v->user, ENT_QUOTES, cp1251)."</a>";
   }else{

@@ -205,6 +205,10 @@ $lang = array_merge($lang, array(
   'adm_opt_exchange'          => "Курс обмена ресурсов",
   'adm_opt_game_mode'         => "Тип Вселенной",
 
+  'adm_opt_chat'              => "Настройки чата",
+  'adm_opt_chat_timeout'      => "Таймаут по неактивности",
+
+
   'adm_opt_game_defaults'         => "Настройки игрока по умолчанию",
   'adm_opt_game_default_language' => "Язык интерфейса",
   'adm_opt_game_default_skin'     => "Оформление/Шкурка",

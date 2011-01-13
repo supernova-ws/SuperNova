@@ -61,6 +61,8 @@ if ($_POST['save'])
   $config->deuterium_basic_income  = intval($_POST['deuterium_basic_income']);
   $config->energy_basic_income     = intval($_POST['energy_basic_income']);
 
+  $config->chat_timeout            = intval($_POST['chat_timeout']);
+
   $config->game_news_overview      = intval($_POST['game_news_overview']);
   $config->advGoogleLeftMenuIsOn   = $_POST['advGoogleLeftMenuIsOn'] ? 1 : 0;
   $config->advGoogleLeftMenuCode   = $_POST['advGoogleLeftMenuCode'];
