@@ -114,7 +114,7 @@ function eco_que_process($user, &$planet, $time_left)
             $xp_incoming += $build_data[$resource_id] * $amount_to_build;
           }
 
-          $xp[RPG_STRUCTURE] += round(($xp_incoming > 0 ? $xp_incoming : 0)/10);
+          $xp[RPG_STRUCTURE] += round(($xp_incoming > 0 ? $xp_incoming : 0)/1000);
         }
 
         $planet[$unit_db_name] += $amount_to_build;
