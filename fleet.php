@@ -184,19 +184,21 @@ switch ($fleet_page)
             }
             else // If no spies...
             {
-              $missiontype[MT_TRANSPORT] = $lang['type_mission'][MT_TRANSPORT];
-
-              $missiontype[MT_ATTACK] = $lang['type_mission'][MT_ATTACK];
-              $missiontype[MT_HOLD] = $lang['type_mission'][MT_HOLD];
-
-              if ($planet_type == PT_MOON && $fleetarray[214])
-              {
-                $missiontype[MT_DESTROY] = $lang['type_mission'][MT_DESTROY];
-              }
-
-              if ($fleet_group_mr > 0)
+              if ($fleet_group_mr)
               {
                 $missiontype[MT_AKS] = $lang['type_mission'][MT_AKS];
+              }
+              else
+              {
+                $missiontype[MT_ATTACK] = $lang['type_mission'][MT_ATTACK];
+                $missiontype[MT_TRANSPORT] = $lang['type_mission'][MT_TRANSPORT];
+
+                $missiontype[MT_HOLD] = $lang['type_mission'][MT_HOLD];
+
+                if ($planet_type == PT_MOON && $fleetarray[214])
+                {
+                  $missiontype[MT_DESTROY] = $lang['type_mission'][MT_DESTROY];
+                }
               }
             }
           }

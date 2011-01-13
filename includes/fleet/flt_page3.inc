@@ -89,20 +89,20 @@
   //Well all acs fleets must have a fleet code.
   if($fleet_group){
     //Also it must be mission type 2
-    if($target_mission == MT_AKS){
-      //The co-ords must be the same as where the acs fleet is going.
-      $target = "g{$galaxy}s{$system}p{$planet}t{$planet_type}";
-      if($_POST['acs_target_mr'] == $target){
-        //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
-        $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}';",'', true);
-        if (!$aks){
-          $fleet_group = 0;
-        }else{
-          $galaxy = $aks['galaxy'];
-          $system = $aks['system'];
-          $planet = $aks['planet'];
-          $planet_type = $aks['planet_type'];
-        }
+    $target_mission = MT_AKS;
+
+    //The co-ords must be the same as where the acs fleet is going.
+    $target = "g{$galaxy}s{$system}p{$planet}t{$planet_type}";
+    if($_POST['acs_target_mr'] == $target){
+      //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
+      $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}';",'', true);
+      if (!$aks){
+        $fleet_group = 0;
+      }else{
+        $galaxy = $aks['galaxy'];
+        $system = $aks['system'];
+        $planet = $aks['planet'];
+        $planet_type = $aks['planet_type'];
       }
     }
   }
