@@ -283,6 +283,7 @@ function sn_timer() {
         {
           timeFinish = timer['start_time'] + que_item[UNIT_TIME];
           timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp;
+          total_text = sn_timestampToString(timeLeft + timer_options['total']);
           infoText = que_item[UNIT_NAME];
           if(que_item[UNIT_AMOUNT] > 1)
           {
@@ -299,9 +300,9 @@ function sn_timer() {
           timer['active'] = false;
           infoText = timer_options['msg_done'];
           timerText = '';
+          total_text = '00:00:00';
         }
 
-        total_text = sn_timestampToString(timeLeft + timer_options['total']);
         if(HTML_total != null)
         {
           HTML_total.innerHTML = total_text;
