@@ -42,7 +42,8 @@ function eco_build($que_type, $user, &$planet, $que)
       $que = eco_que_add($user, $planet, $que, $unit_id, QUE_STRUCTURES, 1, BUILD_DESTROY);
     break;
 
-    case 'cancel': // Cancel unit from que
+    case 'trim': // Cancel unit from que
+      $que = eco_que_clear($user, $planet, $que, QUE_STRUCTURES, true);
     break;
 
     case 'clear': // Clear que

@@ -176,7 +176,8 @@ function eco_struc_unborder_unit(unit_id)
 
     <tr>
       <td colspan="5" class="c" align="center">
-        <a href="?mode={QUE_ID}&action=clear">{L_eco_que_clear}</a>
+        <div class="fl"><a href="?mode={QUE_ID}&action=clear">{L_eco_que_clear}</a></div>
+        <div class="fr"><a href="?mode={QUE_ID}&action=trim">{L_eco_que_trim}</a></div>
       </td>
     </tr>
   <!-- ELSE -->

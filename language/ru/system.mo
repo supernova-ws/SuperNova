@@ -207,6 +207,7 @@ $lang = array_merge($lang, array(
 
   'eco_que_empty' => 'Очередь пуста',
   'eco_que_clear' => 'Очистить очередь',
+  'eco_que_trim'  => 'Отменить последнее',
 
   'sys_overview'			=> 'Обзор',
   'mod_marchand'			=> 'Торговец',

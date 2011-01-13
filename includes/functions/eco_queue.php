@@ -245,35 +245,61 @@ function eco_que_add($user, &$planet, $que, $unit_id, $que_id, $unit_amount = 1,
   return $que;
 }
 
-function eco_que_clear($user, &$planet, $que, $que_id)
+function eco_que_trim($user, &$planet, &$que, $que_id, $que_item, &$resource_change)
 {
   global $sn_data;
 
   $sn_data_groups_resources_loot = $sn_data['groups']['resources_loot'];
 
+  $unit_id = $que_item['ID'];
+  $build_mode = $que_item['MODE'];
+
+  $build_data = eco_get_build_data($user, $planet, $unit_id, $que_item['LEVEL'] - $build_mode);
+
+  $unit_amount = $que_item['AMOUNT'];
+  foreach($sn_data_groups_resources_loot as $resource_id)
+  {
+    $resource_change[$resource_id] += $build_data[$build_mode][$resource_id] * $unit_amount;
+  }
+  $que['in_que'][$unit_id] -= $build_mode * $unit_amount;
+  $que['amounts'][$que_id] -= $build_mode * $unit_amount;
+}
+
+function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
+{
+  global $sn_data;
+
   $que_string = '';
 
-  foreach($que['que'] as $que_data_id => $que_data)
+//pdump($que,'Before');
+
+  foreach($que['que'] as $que_data_id => &$que_data)
   {
 
     if($que_data_id == $que_id)
     {
       // This que is those we want to clear
       // ADD CHECK FOR CLEAREBILITY!
+      if($only_one)
+      {
+        if (count($que_data) > 0)
+        {
+          eco_que_trim($user, &$planet, $que, $que_id, $que_data[count($que_data) - 1], &$resource_change);
+          unset($que_data[count($que_data) - 1]);
+        }
+      }
+      else
+      {
+        foreach($que_data as $que_item)
+        {
+          eco_que_trim($user, &$planet, $que, $que_id, $que_item, &$resource_change);
+        }
+        $que['que'][$que_id] = array();
+      }
+
       foreach($que_data as $que_item)
       {
-        $unit_id = $que_item['ID'];
-        $build_mode = $que_item['MODE'];
-
-        $build_data = eco_get_build_data($user, $planet, $unit_id, $que_item['LEVEL'] - $build_mode);
-
-        $unit_amount = $que_item['AMOUNT'];
-        foreach($sn_data_groups_resources_loot as $resource_id)
-        {
-          $resource_change[$resource_id] += $build_data[$build_mode][$resource_id] * $unit_amount;
-        }
-        $que['amounts'][$que_id] -= $build_mode * $unit_amount;
-        $que['in_que'][$unit_id] -= $build_mode * $unit_amount;
+        $que_string .= $que_item['STRING'];
       }
 
       $que_query = '';
@@ -287,9 +313,10 @@ function eco_que_clear($user, &$planet, $que, $que_id)
       $que_query = "{$que_query}`que` = '{$que_string}'";
       $que['string'] = $que_string;
       $que['query'] = $que_query;
-      $que['que'][$que_id] = array();
       $planet['que'] = $que_string;
-      doquery("UPDATE {{planets}} SET {$que['query']} WHERE `id` = '{$planet['id']}' LIMIT 1;");
+
+//pdump($que,'Before update');
+//die();
     }
     else
     {
@@ -300,6 +327,9 @@ function eco_que_clear($user, &$planet, $que, $que_id)
       }
     }
   }
+//pdump($que,'After');
+//die();
+  doquery("UPDATE {{planets}} SET {$que['query']} WHERE `id` = '{$planet['id']}' LIMIT 1;");
 
   return $que;
 }
