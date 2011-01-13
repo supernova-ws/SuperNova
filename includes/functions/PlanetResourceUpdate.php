@@ -26,7 +26,7 @@ function ECO_calcResourceIncrease(&$Caps, $strResource, $ProductionTime){
 }
 
 function PlanetResourceUpdate ( $user, &$planet, $UpdateTime, $Simul = false ) {
-  global $resource, $debug;
+  global $resource, $debug, $sn_data;
 
   $ProductionTime        = ($UpdateTime - $planet['last_update']); // How much time passes since last update
   $planet['last_update'] = $UpdateTime;
@@ -99,6 +99,14 @@ function PlanetResourceUpdate ( $user, &$planet, $UpdateTime, $Simul = false ) {
     // doquery("LOCK TABLE {{planets}} WRITE;");
     doquery($QryUpdatePlanet);
     // doquery("UNLOCK TABLES");
+
+    if(!empty($que['xp']))
+    {
+      foreach($que['xp'] as $xp_type => $xp_amount)
+      {
+        rpg_level_up($user, $xp_type, $xp_amount);
+      }
+    }
   }
 
   return $que;

@@ -14,6 +14,7 @@ function eco_que_process($user, &$planet, $time_left)
   $que = array();
   $built = array();
   $in_que = array();
+  $xp = array();
   $query_string = '';
   $query = '';
 
@@ -101,6 +102,21 @@ function eco_que_process($user, &$planet, $time_left)
 
         $amount_to_build *= $change;
         $built[$unit_id] += $amount_to_build;
+
+        if(in_array($unit_id, $sn_data['groups']['structures']))
+        {
+          $unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $que['in_que'][$unit_id];
+          $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
+          $build_data = $build_data[$que_item['MODE']];
+          $xp_incoming = 0;
+          foreach($sn_data['groups']['resources_loot'] as $resource_id)
+          {
+            $xp_incoming += $build_data[$resource_id] * $amount_to_build;
+          }
+
+          $xp[RPG_STRUCTURE] += round(($xp_incoming > 0 ? $xp_incoming : 0)/10);
+        }
+
         $planet[$unit_db_name] += $amount_to_build;
         $query .= "`{$unit_db_name}` = `{$unit_db_name}` + '{$amount_to_build}',";
       }
@@ -128,6 +144,7 @@ function eco_que_process($user, &$planet, $time_left)
   return array(
     'que'     => $que,
     'built'   => $built,
+    'xp'      => $xp,
     'amounts' => $que_amounts,
     'in_que'  => $in_que,
     'string'  => $query_string,

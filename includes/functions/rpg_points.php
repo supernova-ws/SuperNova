@@ -57,7 +57,7 @@ function rpg_points_change($user_id, $dark_matter, $comment = false)
   return $rows_affected;
 }
 
-function rpg_level_up($user, $type)
+function rpg_level_up(&$user, $type, $xp_to_add = 0)
 {
   $q = 1.03;
 
@@ -65,15 +65,23 @@ function rpg_level_up($user, $type)
   {
     case RPG_STRUCTURE:
       $field_level = 'lvl_minier';
-      $xp = $user['xpminier'];
+      $field_xp = 'xpminier';
+      $xp = &$user['xpminier'];
       $b1 = 50;
     break;
 
     case RPG_RAID:
       $field_level = 'lvl_raid';
-      $xp = $user['xpraid'];
+      $field_xp = 'xpraid';
+      $xp = &$user['xpraid'];
       $b1 = 10;
     break;
+  }
+
+  if($xp_to_add)
+  {
+    $xp += $xp_to_add;
+    doquery("UPDATE `{{users}}` SET `{$field_xp}` = `{$field_xp}` + '{$xp_to_add}' WHERE `id` = '{$user['id']}' LIMIT 1;");
   }
 
   $level = $user[$field_level];
