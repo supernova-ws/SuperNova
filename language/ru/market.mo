@@ -26,6 +26,7 @@ $lang['eco_mrk_service_cost']      = 'Стоимость услуги';
 $lang['eco_mrk_error_title']        = $lang['eco_mrk_title'] . ' - Ошибка';
 $lang['eco_mrk_error_noDM']         = 'Не хватает Темной Материи для завершения операции';
 $lang['eco_mrk_error_noResources']  = 'Не хватает ресурсов для завершения операции';
+$lang['eco_mrk_error_zero_xchnge']  = 'Не указано количество ресурсов для обмена';
 $lang['eco_mrk_error_noShips']      = 'Вы пытаетесь пустить на лом больше кораблей, чем есть на орбите';
 $lang['eco_mrk_error_noStock']      = 'Вы пытаетесь купить больше кораблей, чем есть у продавца. Возможно, пока вы выбирали корабли, кто-то другой уже купил их';
 $lang['eco_mrk_error_zeroRes']      = 'Нужно выбрать корабли для продажи';

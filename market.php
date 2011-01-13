@@ -43,12 +43,36 @@ switch($mode)
       0 => $lang['eco_mrk_trader_ok'],
       1 => $lang['eco_mrk_error_noDM'],
       2 => $lang['eco_mrk_error_noResources'],
+      3 => $lang['eco_mrk_error_zero_xchnge'],
     );
 
     $intError = 0;
     if(is_array($tradeList) && isset($exchangeTo))
     {
-      if($user['rpg_points'] >= $config->rpg_cost_trader + $tradeList[3])
+      $total_amount = 0;
+      foreach($tradeList as $amount)
+      {
+        if($amount < 0)
+        {
+          $debug->warning('Trying to supply negative resource amount on Black Market Page: ' . dump($tradeList), 'Hack Attempt', 305);
+          die();
+        }
+        else
+        {
+          $total_amount += $amount;
+        }
+      }
+      if ($total_amount <= 0)
+      {
+        $intError = 3;
+      }
+
+      if($user['rpg_points'] < $config->rpg_cost_trader + $tradeList[3])
+      {
+        $intError = 1;
+      }
+
+      if(!$intError)
       {
         $rates = array($config->rpg_exchange_metal, $config->rpg_exchange_crystal, $config->rpg_exchange_deuterium, $config->rpg_exchange_darkMatter);
 
@@ -81,10 +105,6 @@ switch($mode)
 
           $planetrow = $newrow;
         }
-      }
-      else
-      {
-        $intError = 1;
       }
       $message = parsetemplate(gettemplate('message_body'), array('title' => $lang['eco_mrk_error_title'], 'mes' => $error_list[$intError]));
     }
