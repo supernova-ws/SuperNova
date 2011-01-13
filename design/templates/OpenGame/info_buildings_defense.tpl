@@ -11,7 +11,7 @@
 		<tbody>
 		<tr>
 			<td><img src="{dpath}gebaeude/{image}.gif" align="top" border="0" height="120" width="120"></td>
-			<td>{description}<br><br>{rf_info_to}{rf_info_from}</td>
+			<td>{description}<br><br>{rf_info_to}{rf_info_fr}</td>
 		</tr>
 		</tbody>
 		</table>

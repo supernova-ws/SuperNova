@@ -151,33 +151,39 @@ function ShowProductionTable ($CurrentUser, $CurrentPlanet, $BuildID, $Template)
   return $Table;
 }
 
-// ----------------------------------------------------------------------------------------------------------
-// Creation de l'information des RapidFire contre ...
-//
-function ShowRapidFireTo ($BuildID) {
-  global $lang, $CombatCaps;
-  $ResultString = "";
-  for ($Type = 200; $Type < 500; $Type++) {
-    if ($CombatCaps[$BuildID]['sd'][$Type] > 1) {
-      $ResultString .= $lang['nfo_rf_again']. " ". $lang['tech'][$Type] ." <font color=\"#00ff00\">".$CombatCaps[$BuildID]['sd'][$Type]."</font><br>";
+function eco_render_rapid_fire ($unit_id)
+{
+  global $lang, $sn_data;
+
+  $unit_data  = $sn_data[$unit_id];
+  $unit_durability  = $unit_data['shield'] + $unit_data['armor'];
+
+  $str_rapid_from = '';
+  $str_rapid_to = '';
+  foreach (array_merge($sn_data[groups]['fleet'], $sn_data[groups]['defense_active']) as $enemy_id)
+  {
+    $enemy_data = $sn_data[$enemy_id];
+    $enemy_durability = $enemy_data['shield'] + $enemy_data['armor'];
+
+    $rapid = floor($unit_data['attack'] * $unit_data['amplify'][$enemy_id] / $enemy_durability);
+    if ($rapid > 1)
+    {
+      $str_rapid_to .= "{$lang['nfo_rf_again']} {$lang['tech'][$enemy_id]} <font color=\"#00ff00\">{$rapid}</font><br>";
+    }
+
+    $rapid = floor($enemy_data['attack'] * $enemy_data['amplify'][$unit_id] / $unit_durability);
+    if ($rapid > 1)
+    {
+      $str_rapid_from .= "{$lang['tech'][$enemy_id]} {$lang['nfo_rf_from']} <font color=\"#ff0000\">{$rapid}</font><br>";
     }
   }
-  return $ResultString;
-}
 
-// ----------------------------------------------------------------------------------------------------------
-// Creation de l'information des RapidFire de ...
-//
-function ShowRapidFireFrom ($BuildID) {
-  global $lang, $CombatCaps;
-
-  $ResultString = "";
-  for ($Type = 200; $Type < 500; $Type++) {
-    if ($CombatCaps[$Type]['sd'][$BuildID] > 1) {
-      $ResultString .= $lang['nfo_rf_from']. " ". $lang['tech'][$Type] ." <font color=\"#ff0000\">".$CombatCaps[$Type]['sd'][$BuildID]."</font><br>";
-    }
+  if($str_rapid_to && $str_rapid_from)
+  {
+    $str_rapid_to .= '<hr>';
   }
-  return $ResultString;
+
+  return array('to' => $str_rapid_to, 'from' => $str_rapid_from);
 }
 
 // ----------------------------------------------------------------------------------------------------------
@@ -255,15 +261,17 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
     $PageTPL              = gettemplate('info_buildings_general');
     $GateTPL              = gettemplate('gate_fleet_table');
     $DestroyTPL           = gettemplate('info_buildings_destroy');
-  } elseif ($BuildID >= 106 && $BuildID <= 199) {
+  } elseif (in_array($BuildID, $sn_data['groups']['tech'])) {
     // Laboratoire
     $PageTPL              = gettemplate('info_buildings_general');
-  } elseif ($BuildID >= 201 && $BuildID <= 216) {
+  } elseif (in_array($BuildID, $sn_data['groups']['fleet'])) {
     // Flotte
     $PageTPL              = gettemplate('info_buildings_fleet');
     $parse['element_typ'] = $lang['tech'][200];
-    $parse['rf_info_to']  = ShowRapidFireTo ($BuildID);   // Rapid Fire vers
-    $parse['rf_info_fr']  = ShowRapidFireFrom ($BuildID); // Rapid Fire de
+    $rapid_fire = eco_render_rapid_fire ($BuildID);
+    $parse['rf_info_to']  = $rapid_fire['to'];   // Rapid Fire vers
+    $parse['rf_info_fr']  = $rapid_fire['from']; // Rapid Fire de
+
     $parse['hull_pt']     = pretty_number (($pricelist[$BuildID]['metal'] + $pricelist[$BuildID]['crystal'])/10); // Points de Structure
     $parse['shield_pt']   = pretty_number ($CombatCaps[$BuildID]['shield']);  // Points de Bouclier
     $parse['attack_pt']   = pretty_number ($CombatCaps[$BuildID]['attack']);  // Points d'Attaque
@@ -276,13 +284,15 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
     } elseif ($BuildID == 211) {
       $parse['upd_speed']   = "<font color=\"yellow\">(". pretty_number ($pricelist[$BuildID]['speed2']) .")</font>";       // Vitesse rééquipée
     }
-  } elseif ($BuildID >= 401 && $BuildID <= 409) {
+  } elseif (in_array($BuildID, $sn_data['groups']['defense_active'])) {
     // Defenses
     $PageTPL              = gettemplate('info_buildings_defense');
     $parse['element_typ'] = $lang['tech'][400];
 
-    $parse['rf_info_to']  = ShowRapidFireTo ($BuildID);   // Rapid Fire vers
-    $parse['rf_info_fr']  = ShowRapidFireFrom ($BuildID); // Rapid Fire de
+    $rapid_fire = eco_render_rapid_fire ($BuildID);
+    $parse['rf_info_to']  = $rapid_fire['to'];   // Rapid Fire vers
+    $parse['rf_info_fr']  = $rapid_fire['from']; // Rapid Fire de
+
     $parse['hull_pt']     = pretty_number (($pricelist[$BuildID]['metal'] + $pricelist[$BuildID]['crystal'])/10); // Points de Structure
     $parse['shield_pt']   = pretty_number ($CombatCaps[$BuildID]['shield']);  // Points de Bouclier
     $parse['attack_pt']   = pretty_number ($CombatCaps[$BuildID]['attack']);  // Points d'Attaque
