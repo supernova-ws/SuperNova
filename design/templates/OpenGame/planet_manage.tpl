@@ -6,7 +6,7 @@
     <tr>
       <td style="white-space: nowrap;" class="c" colspan=4>
         <div class="fl">{PLANET_TYPE_TEXT} "{PLANET_NAME}" <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</a></div>
-        <div class="fr"><a href="overview.php?mode=manage"><font color="green">[{L_ov_return}]</font></a></td></div>
+        <div class="fr"><a href="overview.php"><font color="green">[{L_ov_return}]</font></a></td></div>
       </td>
     </tr>
 <!--
