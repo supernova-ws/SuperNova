@@ -46,7 +46,7 @@ switch ($mode)
 
   case 'research':
     // --------------------------------------------------------------------------------------------------
-    ResearchBuildingPage ( $planetrow, $user, $IsWorking['OnWork'], $IsWorking['WorkOn'] );
+    ResearchBuildingPage ( $planetrow, $user, $IsWorking['OnWork'], $IsWorking['WorkOn'], $que);
   break;
 
   case 'defense':

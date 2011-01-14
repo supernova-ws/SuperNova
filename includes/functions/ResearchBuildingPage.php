@@ -93,38 +93,9 @@ function GetRestPrice ($user, $planet, $Element, $userfactor = true) {
   return $text;
 }
 
-/**
- * CheckLabSettingsInQueue.php
- *
- * @version 1.0
- * @copyright 2008 By Chlorel for XNova
- */
-
-// Teste si la queue de construction eventuelle a le labo en premiere position ....
-function CheckLabSettingsInQueue ( $CurrentPlanet ) {
-  global $lang, $config;
-
-  if ($CurrentPlanet['b_building_id'] != "0") {
-    $BuildQueue = $CurrentPlanet['b_building_id'];
-    if (strpos ($BuildQueue, ";")) {
-      $Queue = explode (";", $BuildQueue);
-      $CurrentBuilding = $Queue[0];
-    } else {
-      // Y a pas de queue de construction la liste n'a qu'un seul element
-      $CurrentBuilding = $BuildQueue;
-    }
-
-    if ($CurrentBuilding == 31 || $CurrentBuilding == 35 && $config->BuildLabWhileRun != 1) {
-      $return = false;
-    } else {
-      $return = true;
-    }
-
-  } else {
-    $return = true;
-  }
-
-  return $return;
+function eco_lab_is_building($que)
+{
+  return $que['in_que'][31] ? true : false;
 }
 
 // Page de Construction de niveau de Recherche
@@ -134,7 +105,7 @@ function CheckLabSettingsInQueue ( $CurrentPlanet ) {
 // $CurrentUser   -> Utilisateur qui a lancé la construction
 // $InResearch    -> Indicateur qu'il y a une Recherche en cours
 // $ThePlanet     -> Planete sur laquelle se realise la technologie eventuellement
-function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $ThePlanet) {
+function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $ThePlanet, $que) {
   global $lang, $resource, $reslist, $phpEx, $dpath, $_GET;
 
   $TheCommand = SYS_mysqlSmartEscape($_GET['cmd']);
@@ -147,7 +118,7 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
     message($lang['no_laboratory'], $lang['Research']);
   }
   // Ensuite ... Est ce que la labo est en cours d'upgrade ?
-  if (!CheckLabSettingsInQueue ( $CurrentPlanet )) {
+  if (eco_lab_is_building($que)) {
     $NoResearchMessage = $lang['labo_on_update'];
     $bContinue         = false;
   }
@@ -266,7 +237,7 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
         if (!$InResearch) {
           $LevelToDo = 1 + $CurrentUser[$resource[$Tech]];
           if ($CanBeDone) {
-            if (!CheckLabSettingsInQueue ( $CurrentPlanet )) {
+            if (eco_lab_is_building ( $que )) {
               // Le laboratoire est cours de construction ou d'evolution
               // Et dans la config du systeme, on ne permet pas la recherche pendant
               // que le labo est en construction ou evolution !
