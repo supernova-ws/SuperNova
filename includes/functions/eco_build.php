@@ -32,27 +32,27 @@ function eco_build($que_type, $user, &$planet, $que)
   $GET_listid = $_GET['listid'];
 
   CheckPlanetUsedFields($planet);
-  switch($action)
+  if($action)
   {
-    case 'create': // Add unit to que for build
-      $que = eco_que_add($user, $planet, $que, $unit_id, QUE_STRUCTURES);
-    break;
+    switch($action)
+    {
+      case 'create': // Add unit to que for build
+        $que = eco_que_add($user, $planet, $que, $unit_id, QUE_STRUCTURES);
+      break;
 
-    case 'destroy': // Add unit to que for remove
-      $que = eco_que_add($user, $planet, $que, $unit_id, QUE_STRUCTURES, 1, BUILD_DESTROY);
-    break;
+      case 'destroy': // Add unit to que for remove
+        $que = eco_que_add($user, $planet, $que, $unit_id, QUE_STRUCTURES, 1, BUILD_DESTROY);
+      break;
 
-    case 'trim': // Cancel unit from que
-      $que = eco_que_clear($user, $planet, $que, QUE_STRUCTURES, true);
-    break;
+      case 'trim': // Cancel unit from que
+        $que = eco_que_clear($user, $planet, $que, QUE_STRUCTURES, true);
+      break;
 
-    case 'clear': // Clear que
-      $que = eco_que_clear($user, $planet, $que, QUE_STRUCTURES);
-    break;
-
-    default: // Just build page
-      // $que = eco_que_process($user, $planet, $time_now - $planet['last_update']);
-    break;
+      case 'clear': // Clear que
+        $que = eco_que_clear($user, $planet, $que, QUE_STRUCTURES);
+      break;
+    }
+    header("Location: {$_SERVER['PHP_SELF']}?mode={$que_type}");
   }
 
   $que_length  = count($que['que'][$que_type]);
