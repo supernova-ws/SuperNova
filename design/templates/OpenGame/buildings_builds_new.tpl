@@ -201,7 +201,7 @@ function eco_struc_unborder_unit(unit_id)
           <th width=120px valign=top>
             <div id="unit_name"></div>
           </th>
-          <th colspan=3 valign=top width=100%>
+          <th colspan=3 valign=top>
             <div id="unit_description" style="text-align: justify; height: 8ex;"></div>
           </th>
         </tr>
