@@ -11,6 +11,10 @@
   color: #a0ffa0;
 }
 
+.protected {
+  color: yellow;
+}
+
 .strong {
   color: #ffa0a0;
 }
@@ -19,12 +23,19 @@
   color: skyblue;
 }
 
+.player_active {
+  font-weight: bold;
+}
+
 .inactive {
-  color: CCCCCC;
+/*  color: CCCCCC;*/
+  font-weight: normal;
 }
 
 .longinactive {
-  color: 999999;
+/*  color: 999999;*/
+  font-weight: normal;
+  font-style: italic;
 }
 
 .banned {
@@ -33,7 +44,7 @@
 
 .admin {
   text-decoration: blink;
-  color: lime;
+  color: purple;
 }
 
 /* Flying fleet & message color coding */

@@ -10,6 +10,7 @@ $lang['inactif_7_shortcut']	= "i";
 $lang['inactif_28_shortcut']	= "I";
 $lang['strong_player_shortcut']	= "S";
 $lang['weak_player_shortcut']	= "N";
+$lang['uni_protected_player_shortcut']  = 'n';
 
 $lang['Legend']			= 'Легенда';
 $lang['Strong_player']		= 'Сильный игрок';
@@ -19,6 +20,7 @@ $lang['Pendent_user']		= 'Заблокирован';
 $lang['Active']            = 'Активный игрок';
 $lang['Inactive_7_days']   = 'Неактивен более 7 дней';
 $lang['Inactive_28_days']  = 'Неактивен более 28 дней';
+$lang['uni_protected_player']  = 'Начинающий игрок';
 
 $lang['uni_legend_myplanet']    = 'Мои планеты';
 $lang['uni_legend_allyplanet']  = 'Планеты соальянсовца';

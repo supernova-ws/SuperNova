@@ -39,24 +39,25 @@ var uni_system = "{system}";
 
 <table width=569><tbody>
   <tr><td class=c colspan=8><span class="fl">{L_Solar_system} [{galaxy}:{system}] - {planets}</span>
-    <span class="fr"><a href=# style="cursor: pointer;" onmouseout='popup_hide();' onmouseover='popup_show("\
+    <span class="fr" style="cursor: pointer;" onmouseout='popup_hide();' onmouseover='popup_show("\
     <table>\
     <tr><td class=c colspan=2>{L_sys_planet}</td></tr>\
     <tr class=myplanet><td colspan=2>{L_uni_legend_myplanet}</td></tr>\
     <tr class=allymember><td colspan=2>{L_uni_legend_allyplanet}</td></tr>\
     <tr><td class=c colspan=2>{L_sys_player}</td></tr>\
-    <tr class=strong><td>{L_Strong_player}</td><td>{L_strong_player_shortcut}</td></tr>\
+    <tr class=protected><td>{L_uni_protected_player}</td><td>{L_uni_protected_player_shortcut}</td></tr>\
     <tr class=noob><td>{L_Weak_player}</td><td>{L_weak_player_shortcut}</td></tr>\
+    <tr class=strong><td>{L_Strong_player}</td><td>{L_strong_player_shortcut}</td></tr>\
     <tr class=vacation><td>{L_Way_vacation}</td><td>{L_vacation_shortcut}</td></tr>\
     <tr class=banned><td>{L_Pendent_user}</td><td>{L_banned_shortcut}</td></tr>\
-    <tr><td>{L_Active}</td><td>{L_active_shortcut}</td></tr>\
+    <tr class=player_active><td>{L_Active}</td><td>{L_active_shortcut}</td></tr>\
     <tr class=inactive><td>{L_Inactive_7_days}</td><td>{L_inactif_7_shortcut}</td></tr>\
     <tr class=longinactive><td>{L_Inactive_28_days}</td><td>{L_inactif_28_shortcut}</td></tr>\
     <!-- IF SHOW_ADMIN --><tr class=admin><td>{L_user_level[3]}</td><td>{L_user_level_shortcut[3]}</td></tr>\
     <tr class=admin><td>{L_user_level[2]}</td><td>{L_user_level_shortcut[2]}</td></tr>\
     <tr class=admin><td>{L_user_level[1]}</td><td>{L_user_level_shortcut[1]}</td></tr><!-- ENDIF -->\
-    </table>");'>{L_Legend}</a>
-    </span></td>
+    </table>");'>{L_Legend}</span>
+    </td>
   </tr>
   <tr align="center">
     <td class=c>{L_Pos}</td>
@@ -171,14 +172,20 @@ var uni_system = "{system}";
       <!-- ENDIF -->
     </center></th>
 
+    <!-- IF galaxyrow.USER_ACTIVITY >= 28 -->
+      <!-- DEFINE $FONT_TYPE = 'longinactive' -->
+    <!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 -->
+      <!-- DEFINE $FONT_TYPE = 'inactive' -->
+    <!-- ELSE -->
+      <!-- DEFINE $FONT_TYPE = 'player_active' -->
+    <!-- ENDIF -->
+
     <!-- IF galaxyrow.USER_BANNED -->
       <!-- DEFINE $USER_CLASS = 'banned' -->
     <!-- ELSEIF galaxyrow.USER_VACANCY -->
       <!-- DEFINE $USER_CLASS = 'vacation' -->
-    <!-- ELSEIF galaxyrow.USER_ACTIVITY >= 28 -->
-      <!-- DEFINE $USER_CLASS = 'longinactive' -->
-    <!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 -->
-      <!-- DEFINE $USER_CLASS = 'inactive' -->
+    <!-- ELSEIF galaxyrow.USER_PROTECTED -->
+      <!-- DEFINE $USER_CLASS = 'protected' -->
     <!-- ELSEIF galaxyrow.USER_NOOB -->
       <!-- DEFINE $USER_CLASS = 'noob' -->
     <!-- ELSEIF galaxyrow.USER_STRONG -->
@@ -189,7 +196,7 @@ var uni_system = "{system}";
     
     <th width=150 align=center>
       <!-- IF galaxyrow.USER_ID -->
-        <span style="cursor: pointer;" onmouseover='javascript:show_user({galaxyrow.USER_ID});' class="{$USER_CLASS}">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACANCY --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)
+        <span style="cursor: pointer;" onmouseover='javascript:show_user({galaxyrow.USER_ID});' class="{$USER_CLASS} {$FONT_TYPE}">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACANCY --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_PROTECTED --><span class="protected">{L_uni_protected_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
