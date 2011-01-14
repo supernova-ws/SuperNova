@@ -996,7 +996,7 @@ if ( defined('INSIDE')) {
 
     213 => array(
       'name' => 'destructor',
-      'require' => array(21 => 9, 118 => 6, 114 => 5),
+      'require' => array(21 => 9, 114 => 5, 118 => 6),
       'cost' => array(
         RES_METAL     => 60000,
         RES_CRYSTAL   => 50000,
@@ -1022,7 +1022,7 @@ if ( defined('INSIDE')) {
 
     214 => array(
       'name' => 'dearth_star',
-      'require' => array(21 => 12, 118 => 7, 114 => 6, 199 => 1, MRC_DESTRUCTOR => 1),
+      'require' => array(21 => 12, 114 => 6, 118 => 7, 199 => 1, MRC_DESTRUCTOR => 1),
       'cost' => array(
         RES_METAL     => 5000000,
         RES_CRYSTAL   => 4000000,
@@ -1048,7 +1048,7 @@ if ( defined('INSIDE')) {
 
     215 => array(
       'name' => 'battleship',
-      'require' => array(114 => 5, 120 => 12, 118 => 5, 21 => 8),
+      'require' => array(21 => 8, 114 => 5, 118 => 5, 120 => 12),
       'cost' => array(
         RES_METAL     => 30000,
         RES_CRYSTAL   => 40000,
@@ -1074,7 +1074,7 @@ if ( defined('INSIDE')) {
 
     216 => array(
       'name' => 'supernova',
-      'require' => array(MRC_ASSASIN => 1),
+      'require' => array(21 => 15, 114 => 7, 118 => 9, 199 => 1, MRC_ASSASIN => 1),
       'cost' => array(
         RES_METAL     => 20000000,
         RES_CRYSTAL   => 15000000,
@@ -1542,6 +1542,9 @@ if ( defined('INSIDE')) {
 //      'ques' => array(QUE_STRUCTURES, QUE_HANGAR, QUE_RESEARCH),
     ),
   );
+
+  //All resources
+  $sn_data['groups']['all'] = array_merge($sn_data['groups']['structures'], $sn_data['groups']['tech'], $sn_data['groups']['fleet'], $sn_data['groups']['defense'], $sn_data['groups']['mercenaries']);
 
   $sn_data['groups']['ques'] = array(
     QUE_STRUCTURES => array(
