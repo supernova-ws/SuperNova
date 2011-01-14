@@ -2,7 +2,7 @@
 var sym_list = Array();
 
 <!-- BEGIN simulator -->
-  <!-- IF simulator.ID && simulator.ID < 400 -->
+  <!-- IF simulator.ID && simulator.GROUP != 400 -->
     sym_list[{simulator.ID}] = '{simulator.VALUE}';
   <!-- ENDIF -->
 <!-- END simulator -->
@@ -47,7 +47,7 @@ function sym_set_all(group, value)
       <!-- IF simulator.ID -->
         <th>{simulator.NAME}</th>
         <th>
-          <!-- IF simulator.ID < 400 -->
+          <!-- IF simulator.GROUP != 400 -->
             <span class="fl"><input type="button" class="button" tabindex=-1 value="0" onclick="sym_set({simulator.ID});"></span>
             <span class="fl">&nbsp;&nbsp;<input type='text' tabindex=1{simulator.NUM} group="attacker{simulator.ID}" id="attacker{simulator.ID}" name='attacker[{simulator.ID}]' value='{simulator.ATTACKER}'>&nbsp;&nbsp;</span>
             <span class="fr"><input type="button" class="button" tabindex=-1 value="{L_sys_max}" onclick="sym_set({simulator.ID}, 1);"></span>
@@ -57,7 +57,7 @@ function sym_set_all(group, value)
         </th>
         <th><input type='text' tabindex=2{simulator.NUM} name='defender[{simulator.ID}]' value='{simulator.DEFENDER}'></th>
       <!-- ELSE -->
-        <!-- IF simulator.GROUP < 400 -->
+        <!-- IF simulator.GROUP != 400 -->
           <td class=c>{simulator.NAME}</td>
           <td class=c>
             <span class="fl"><input type="button" class="button" tabindex=-1 value="0" onclick="sym_set_all({simulator.GROUP})"></span>

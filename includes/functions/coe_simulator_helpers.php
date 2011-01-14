@@ -74,7 +74,7 @@ function eco_sym_to_combat($arr_sym_data, $str_fleet_type)
         continue;
       }
 
-      if(in_array($int_unit_id, $sn_groups['tech']))
+      if(in_array($int_unit_id, $sn_groups['tech']) || $int_unit_id == MRC_ADMIRAL)
       {
         $combat[$int_fleet_id]['user'][$sn_data[$int_unit_id]['name']] = intval($int_unit_count);
       }

@@ -114,8 +114,9 @@ if($_POST['submit'] || $execute)
 else
 {
   $template = gettemplate('simulator', true);
+  $techs_and_officers = array(109, 110, 111, MRC_ADMIRAL);
 
-  foreach(array(109, 110, 111) as $tech_id)
+  foreach($techs_and_officers as $tech_id)
   {
     if(!$sym_attacker[1][$tech_id])
     {
@@ -123,7 +124,7 @@ else
     }
   }
 
-  foreach(array_merge(array(109, 110, 111), $sn_groups['combat'], $sn_groups['resources_loot']) as $unit_id)
+  foreach(array_merge($techs_and_officers, $sn_groups['combat'], $sn_groups['resources_loot']) as $unit_id)
   {
     $tab++;
 
@@ -137,7 +138,7 @@ else
       ));
     }
 
-    if(in_array($unit_id, $sn_groups['tech']))
+    if(in_array($unit_id, $sn_groups['tech']) || $unit_id == MRC_ADMIRAL)
     {
       $value = $user[$sn_data[$unit_id]['name']];
     }
