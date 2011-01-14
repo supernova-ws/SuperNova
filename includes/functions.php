@@ -518,7 +518,7 @@ function pretty_number($n, $floor = true, $color = false, $limit = false)
   $ret = number_format($ret, $floor, ',', '.');
   $ret .= $suffix;
 
-  if($color)
+  if($color !== false)
   {
     if(!is_numeric($color))
     {
