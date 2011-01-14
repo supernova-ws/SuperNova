@@ -2,7 +2,9 @@
 /**
  * search.php
  *
- * 1.1st - Security checks & tests by Gorlum for http://supernova.ws
+ * 1.3 copyright (c) 2009-2010 by Gorlum for http://supernova.ws
+ *   [%] Fixed search of players without alliance
+ * 1.2 - Security checks & tests by Gorlum for http://supernova.ws
  * @version 1.1
  * @copyright 2009 by angelus_ira for Project. XNova
  * @copyright 2008 by ??????? for XNova
@@ -38,14 +40,12 @@ switch($type){
         p.*, p.name as planet_name,
         s.total_points, s.total_rank,
         a.ally_tag, a.ally_name
-      FROM {{table}}users as u,
-        {{table}}planets as p,
-        {{table}}alliance as a,
-        {{table}}statpoints as s
+      FROM {{table}}planets as p,
+        {{table}}statpoints as s,
+        {{table}}users as u LEFT JOIN {{table}}alliance as a ON a.id = u.ally_id
       WHERE
         username LIKE '%{$searchtext}%'
         AND p.id_owner = u.id AND p.id=u.id_planet
-        AND a.id = u.ally_id
         AND s.id_owner = u.id AND stat_type = 1 AND stat_code = 1 LIMIT 30;";
     $search = doquery($sql, '');
   break;
