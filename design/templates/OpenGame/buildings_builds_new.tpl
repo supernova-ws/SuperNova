@@ -338,7 +338,7 @@ function eco_struc_unborder_unit(unit_id)
         metal_balance: '{production.METAL_BALANCE}',
         crystal_balance: '{production.CRYSTAL_BALANCE}',
         deuterium_balance: '{production.DEUTERIUM_BALANCE}',
-        energy_balance: '{production.ENERGY_BALANCE}',
+        energy_balance: '{production.ENERGY_BALANCE}'
       };
       --></script>
     <!-- END production -->
