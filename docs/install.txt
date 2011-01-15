@@ -158,12 +158,22 @@ url.rewrite-once = (
 ======
 Основной сайт проекта: http://supernova.ws
 
-Сверхновая на GIT: http://github.com/supernova-ws/SuperNova
-GIT-репозиторий: git://github.com/supernova-ws/SuperNova.git
-
+Форумы
+------
 Форум проекта: http://forum.supernova.ws
 Форум поддержки: http://forum.supernova.ws/viewforum.php?f=73
 Форум для багрепортов: http://forum.supernova.ws/viewforum.php?f=65
+
+Сверхновая на github
+--------------------
+Страница проекта: http://github.com/supernova-ws/SuperNova
+Репозиторий: git://github.com/supernova-ws/SuperNova.git
+
+Сверхновая на sourceforge
+--------------------
+Страница проекта: http://sourceforge.net/projects/supernova-ws/
+Репозиторий: git://supernova-ws.git.sourceforge.net/gitroot/supernova-ws/supernova-ws
+
 
 Помощь проекту
 ==============
