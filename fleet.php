@@ -253,6 +253,10 @@ switch($fleet_page)
     include('includes/fleet/flt_page4.inc');
   break;
 
+  case 5:
+    include('includes/fleet/flt_page5.inc');
+  break;
+
   default:
     include('includes/fleet/flt_page0.inc');
   break;
