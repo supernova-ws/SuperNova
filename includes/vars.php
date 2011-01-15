@@ -1595,7 +1595,7 @@ if ( defined('INSIDE')) {
     ),
 
     SUBQUE_RESEARCH => array(
-      'que' => QUE_RESEACH,
+      'que' => QUE_RESEARCH,
       'mercenary' => MRC_ACADEMIC,
       'unit_list' => $sn_data['groups']['tech'],
     ),
