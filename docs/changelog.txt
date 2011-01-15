@@ -42,6 +42,10 @@
 
 [~] Вернуть на страницу 2 флота возможность выбирать тип атаки при выборе САБа
 
+2011-01-15 15:50
+[@] В  .giattributes  добавлены  директивы  для  исключения  .gitattributes  и
+    .gitignore из архива
+
 2011-01-15 15:18
 [@] Каталог /docs/coding-guidelines переименован в /docs/html
 [@] /docs/readme_dev.txt переформатирован в /docs/html/developer.html
