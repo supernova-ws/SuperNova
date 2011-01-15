@@ -297,8 +297,8 @@ function eco_struc_unborder_unit(unit_id)
           </span>
 
           
-          <!-- IF QUE_HAS_PLACE -->
-            <!-- IF FIELDS_FREE > 0  && production.BUILD_CAN -->
+          <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY -->
+            <!-- IF FIELDS_FREE > 0 && production.BUILD_CAN -->
               <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='?mode={QUE_ID}&action=create&unit_id={production.ID}'">
                 <div class="icons icon-plus"></div>
               </span>

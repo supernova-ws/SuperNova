@@ -147,9 +147,11 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
   return $return;
 }
 
-function tpl_parse_planet($planet, $que = false)
+function tpl_parse_planet($planet, $que)
 {
   global $lang, $config, $time_now;
+
+  $fleet_list = flt_get_fleets_to_planet($planet);
 
   $hangar = explode(';', $planet['b_hangar_id']);
   foreach($hangar as $hangar_row)
@@ -163,11 +165,6 @@ function tpl_parse_planet($planet, $que = false)
   }
   $hangar_build_tip = $hangar_que['que'][0]['id'] ? $lang[tech][$hangar_que['que'][0]['id']] : '';
 
-  $building_build = explode(',', $planet['b_building_id']);
-  $building_build_tip = $building_build[0] ? $lang[tech][$building_build[0]] : '';
-
-  $fleet_list = flt_get_fleets_to_planet($planet);
-
   $result = array(
     'ID'            => $planet['id'],
     'NAME'          => $planet['name'],
@@ -179,10 +176,7 @@ function tpl_parse_planet($planet, $que = false)
     'TYPE'          => $planet['planet_type'],
     'COORDINATES'   => INT_makeCoordinates($planet),
 
-    'BUILDING'      => int_buildCounter($planet, 'building', $planet['id']),
-    'BUILDING_TIP'  => $building_build_tip,
-    'BUILDING_ID'   => $building_build[0],
-    'TECH'          => $planet['b_tech'] ? $lang['tech'][$planet['b_tech_id']] . ' ' . pretty_time($planet['b_tech'] - $time_now) : 0, //date(FMT_DATE_TIME, $planet['b_tech'])
+    'TECH'          => $planet['b_tech'] ? $lang['tech'][$planet['b_tech_id']] . ' ' . pretty_time($planet['b_tech'] - $time_now) : 0,
     'HANGAR'        => $hangar_build_tip,
     'hangar_que'    => $hangar_que,
 
@@ -195,12 +189,15 @@ function tpl_parse_planet($planet, $que = false)
     'fleet_list'    => $fleet_list,
   );
 
-  $que_item = $que['que'][QUE_STRUCTURES][0];
-  if($que_item)
+  if(!empty($que))
   {
-    $result['BUILDING_ID']  = $que_item['ID'];
-    $result['BUILDING_TIP'] = $que_item['NAME'];
-    $result['BUILDING']     = int_buildCounter($planet, 'building', $planet['id'], $que);
+    $que_item = $que['que'][QUE_STRUCTURES][0];
+    if($que_item)
+    {
+      $result['BUILDING_ID']  = $que_item['ID'];
+      $result['BUILDING_TIP'] = $que_item['NAME'];
+      $result['BUILDING']     = int_buildCounter($planet, 'building', $planet['id'], $que);
+    }
   }
 
   return $result;

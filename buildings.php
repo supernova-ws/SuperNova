@@ -41,7 +41,7 @@ switch ($mode)
 {
   case 'fleet':
     // --------------------------------------------------------------------------------------------------
-    FleetBuildingPage ( $planetrow, $user );
+    FleetBuildingPage ( $planetrow, $user, $que );
   break;
 
   case 'research':
@@ -51,7 +51,7 @@ switch ($mode)
 
   case 'defense':
     // --------------------------------------------------------------------------------------------------
-    DefensesBuildingPage ( $planetrow, $user );
+    DefensesBuildingPage ( $planetrow, $user, $que );
   break;
 
   case QUE_STRUCTURES:

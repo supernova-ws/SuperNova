@@ -19,43 +19,7 @@
 // $CurrentUser   -> Utilisateur qui a lancé la construction
 //
 
-function CheckFleetSettingsInQueue ( $CurrentPlanet )
-{
-  global $lang;
-
-  if ($CurrentPlanet['b_building_id'] != '0')
-  {
-    $BuildQueue = $CurrentPlanet['b_building_id'];
-    if (strpos ($BuildQueue, ';'))
-    {
-      $Queue = explode (';', $BuildQueue);
-      $CurrentBuilding = $Queue[0];
-    }
-    else
-    {
-      // Y a pas de queue de construction la liste n'a qu'un seul element
-      $CurrentBuilding = $BuildQueue;
-    }
-
-    if ($CurrentBuilding == 21)
-    {
-      $return = false;
-    }
-    else
-    {
-      $return = true;
-    }
-  }
-  else
-  {
-    $return = true;
-  }
-
-  return $return;
-}
-
-
-function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser )
+function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser,  $que )
 {
   global $planetrow, $lang, $pricelist, $resource, $phpEx, $dpath, $_POST, $user, $debug, $sn_groups, $sn_data;
 
@@ -106,7 +70,7 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser )
     }
   }
 
-  if (isset($POST_fmenge))
+  if (isset($POST_fmenge) && !eco_hangar_is_building ( $que ))
   {
     $ResourcesToUpd = array();
 
@@ -123,7 +87,7 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser )
       if ($Count != 0)
       {
         // On verifie si on a les technologies necessaires a la construction de l'element
-        if ( IsTechnologieAccessible ($CurrentUser, $CurrentPlanet, $Element) )
+        if ( eco_can_build_unit ($CurrentUser, $CurrentPlanet, $Element) )
         {
           // On verifie combien on sait faire de cet element au max
           $MaxElements   = GetMaxConstructibleElements ( $Element, $CurrentPlanet );
@@ -180,7 +144,7 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser )
   foreach($sn_groups['fleet'] as $Element)
   {
     $ElementName = $lang['tech'][$Element];
-    if (IsTechnologieAccessible($CurrentUser, $CurrentPlanet, $Element))
+    if (eco_can_build_unit($CurrentUser, $CurrentPlanet, $Element))
     {
       // On regarde si on peut en acheter au moins 1
       $CanBuildOne         = IsElementBuyable($CurrentUser, $CurrentPlanet, $Element, false);
@@ -211,7 +175,7 @@ function FleetBuildingPage ( &$CurrentPlanet, $CurrentUser )
       // Case nombre d'elements a construire
       $PageTable .= "<th class=k>";
       // Si ... Et Seulement si je peux construire je mets la p'tite zone de saisie
-      if (CheckFleetSettingsInQueue ( $CurrentPlanet ))
+      if (!eco_hangar_is_building ( $que ))
       {
         if ($CanBuildOne)
         {

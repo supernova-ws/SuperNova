@@ -93,11 +93,6 @@ function GetRestPrice ($user, $planet, $Element, $userfactor = true) {
   return $text;
 }
 
-function eco_lab_is_building($que)
-{
-  return $que['in_que'][31] ? true : false;
-}
-
 // Page de Construction de niveau de Recherche
 // $CurrentPlanet -> Planete sur laquelle la construction est lancée
 //                   Parametre passé par adresse, cela permet de mettre les valeurs a jours
@@ -106,7 +101,7 @@ function eco_lab_is_building($que)
 // $InResearch    -> Indicateur qu'il y a une Recherche en cours
 // $ThePlanet     -> Planete sur laquelle se realise la technologie eventuellement
 function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $ThePlanet, $que) {
-  global $lang, $resource, $reslist, $phpEx, $dpath, $_GET;
+  global $lang, $resource, $reslist, $phpEx, $dpath, $_GET, $config;
 
   $TheCommand = SYS_mysqlSmartEscape($_GET['cmd']);
   $Techno     = intval($_GET['tech']);
@@ -118,7 +113,7 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
     message($lang['no_laboratory'], $lang['Research']);
   }
   // Ensuite ... Est ce que la labo est en cours d'upgrade ?
-  if (eco_lab_is_building($que)) {
+  if (eco_lab_is_building($config, $que)) {
     $NoResearchMessage = $lang['labo_on_update'];
     $bContinue         = false;
   }
@@ -164,8 +159,9 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
             }
             break;
           case 'search':
-            if (!$InResearch){
-              if ( IsTechnologieAccessible($CurrentUser, $WorkingPlanet, $Techno) && IsElementBuyable($CurrentUser, $WorkingPlanet, $Techno) ) {
+            if ( !($InResearch || eco_unit_busy($CurrentUser, $CurrentPlanet, false, $Techno)) )
+            {
+              if ( eco_can_build_unit($CurrentUser, $WorkingPlanet, $Techno) && IsElementBuyable($CurrentUser, $WorkingPlanet, $Techno) ) {
                 $costs                        = GetBuildingPrice($CurrentUser, $WorkingPlanet, $Techno);
                 $WorkingPlanet['metal']      -= $costs['metal'];
                 $WorkingPlanet['crystal']    -= $costs['crystal'];
@@ -219,7 +215,7 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
 
   foreach($lang['tech'] as $Tech => $TechName) {
     if ($Tech > 105 && $Tech <= 199) {
-      if ( IsTechnologieAccessible($CurrentUser, $CurrentPlanet, $Tech)) {
+      if ( eco_can_build_unit($CurrentUser, $CurrentPlanet, $Tech)) {
         $RowParse                = $lang;
         $RowParse['dpath']       = $dpath;
         $RowParse['tech_id']     = $Tech;
@@ -237,7 +233,7 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
         if (!$InResearch) {
           $LevelToDo = 1 + $CurrentUser[$resource[$Tech]];
           if ($CanBeDone) {
-            if (eco_lab_is_building ( $que )) {
+            if (eco_lab_is_building ( $config, $que )) {
               // Le laboratoire est cours de construction ou d'evolution
               // Et dans la config du systeme, on ne permet pas la recherche pendant
               // que le labo est en construction ou evolution !

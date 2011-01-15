@@ -41,41 +41,7 @@ function GetRestrictedConstructionNum($Planet) {
  * (adding  Del Fleet&Defense Queue)
  */
 
-// Page de Construction d'Elements de Defense
-// $CurrentPlanet -> Planete sur laquelle la construction est lancée
-//                   Parametre passé par adresse, cela permet de mettre les valeurs a jours
-//                   dans le programme appelant
-// $User   -> Utilisateur qui a lancé la construction
-//
-
-function CheckDefSettingsInQueue ( $CurrentPlanet ) {
-  global $lang;
-
-    if ($CurrentPlanet['b_building_id'] != "0") {
-    $BuildQueue = $CurrentPlanet['b_building_id'];
-    if (strpos ($BuildQueue, ";")) {
-      $Queue = explode (";", $BuildQueue);
-      $CurrentBuilding = $Queue[0];
-    } else {
-      // Y a pas de queue de construction la liste n'a qu'un seul element
-      $CurrentBuilding = $BuildQueue;
-    }
-
-    if ($CurrentBuilding == 21) {
-      $return = false;
-    } else {
-      $return = true;
-    }
-
-  } else {
-    $return = true;
-  }
-
-  return $return;
-}
-
-
-function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
+function DefensesBuildingPage ( &$CurrentPlanet, $User, $que ) {
   global $CurrentPlanetrow, $lang, $pricelist, $resource, $phpEx, $dpath, $_POST, $debug, $_GET;
 
   $GET_action  = SYS_mysqlSmartEscape($_GET['action']);
@@ -122,7 +88,7 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
   // counting those one the planet and those on the current que
   $built = GetRestrictedConstructionNum($CurrentPlanet);
 
-  if (isset($POST_fmenge)) {
+  if (isset($POST_fmenge) && !eco_hangar_is_building ( $que )) {
     $ResourcesToUpd = array();
 
     $BuildArray = explode (";", $CurrentPlanet['b_hangar_id']);
@@ -141,7 +107,7 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
 
       if ($Count AND $Element) {
         // On verifie si on a les technologies necessaires a la construction de l'element
-        if ( IsTechnologieAccessible ($User, $CurrentPlanet, $Element) ) {
+        if ( eco_can_build_unit ($User, $CurrentPlanet, $Element) ) {
           // On verifie combien on sait faire de cet element au max
           $MaxElements = GetMaxConstructibleElements ( $Element, $CurrentPlanet );
 
@@ -213,7 +179,7 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
   $PageTable = "";
   foreach($lang['tech'] as $Element => $ElementName) {
     if ($Element > 400 && $Element <= 599) {
-      if (IsTechnologieAccessible($User, $CurrentPlanet, $Element)) {
+      if (eco_can_build_unit($User, $CurrentPlanet, $Element)) {
         // Disponible à la construction
 
         // On regarde si on peut en acheter au moins 1
@@ -273,7 +239,8 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User ) {
         $PageTable .= "<th class=k>";
         // Si ... Et Seulement si je peux construire je mets la p'tite zone de saisie
         if ($CanBuildOne) {
-          if (CheckDefSettingsInQueue ( $CurrentPlanet )) {
+          if (!eco_hangar_is_building ( $que ))
+          {
             if ($restrict == 2 AND $baubar == 0) {
               $PageTable .= "<font color=\"red\">".$lang['only_one']."</font>";
             } elseif ($restrict == 1 AND !$baubar) {

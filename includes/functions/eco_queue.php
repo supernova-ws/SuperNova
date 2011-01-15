@@ -14,6 +14,7 @@ function eco_que_process($user, &$planet, $time_left)
   $que = array();
   $built = array();
   $in_que = array();
+  $in_que_abs = array();
   $xp = array();
   $query_string = '';
   $query = '';
@@ -84,8 +85,9 @@ function eco_que_process($user, &$planet, $time_left)
         // There is no time left in this que. Skipping
         $query_string .= $que_item['STRING'];
         $que_amounts[$que_id] += $item_change;
+        $in_que[$unit_id] += $item_change;
+        $in_que_abs[$unit_id] += $que_item['AMOUNT'];
         $que[$que_id][] = $que_item;
-        $in_que[$unit_id] += $change * $que_item['AMOUNT'];
 
         continue;
       }
@@ -127,10 +129,11 @@ function eco_que_process($user, &$planet, $time_left)
         $time_left = 0;
         $que_item['STRING'] = "{$unit_id},{$que_item['AMOUNT']},{$que_item['TIME']},{$que_item['MODE']},{$que_item['QUE']};";
         $que_amounts[$que_id] += $item_change;
+        $in_que[$unit_id] += $item_change;
+        $in_que_abs[$unit_id] += $que_item['AMOUNT'];
 
         $query_string .= $que_item['STRING'];
         $que[$que_id][] = $que_item;
-        $in_que[$unit_id] += $change * $que_item['AMOUNT'];
       }
 
       // now placing rest of time back to que element
@@ -147,6 +150,7 @@ function eco_que_process($user, &$planet, $time_left)
     'xp'      => $xp,
     'amounts' => $que_amounts,
     'in_que'  => $in_que,
+    'in_que_abs'  => $in_que_abs,
     'string'  => $query_string,
     'query'   => $query,
   );
@@ -155,6 +159,16 @@ function eco_que_process($user, &$planet, $time_left)
 function eco_que_add($user, &$planet, $que, $unit_id, $que_id, $unit_amount = 1, $build_mode = BUILD_CREATE)
 {
   global $lang, $resource, $time_now, $sn_data;
+
+  if (!eco_can_build_unit($user, $planet, $unit_id))
+  {
+    return $que;
+  }
+
+  if (eco_unit_busy($user, $planet, $que, $unit_id))
+  {
+    return $que;
+  }
 
   $que_types = $sn_data['groups']['ques'];
   $que_types[QUE_STRUCTURES]['unit_list'] = $sn_data['groups']['build_allow'][$planet['planet_type']];
@@ -207,7 +221,6 @@ function eco_que_add($user, &$planet, $que, $unit_id, $que_id, $unit_amount = 1,
 
   $unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $que['in_que'][$unit_id];
   $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
-/////////////  if (IsTechnologieAccessible($user, $planet, $unit_id) == true) {
   $unit_level += $change * $unit_amount;
   if($build_data['CAN'][$build_mode] >= $unit_amount && $unit_level >= 0)
   {
@@ -225,6 +238,7 @@ function eco_que_add($user, &$planet, $que, $unit_id, $que_id, $unit_amount = 1,
         'LEVEL'  => $unit_level
     );
     $que['in_que'][$unit_id] += $unit_amount * $change;
+    $que['in_que_abs'][$unit_id] += $unit_amount;
     $que['amounts'][$que_id] += $unit_amount * $change;
     $que['string'] .= $que_item_string;
     $que['query'] = "`que` = '{$que['string']}'";
@@ -262,6 +276,7 @@ function eco_que_trim($user, &$planet, &$que, $que_id, $que_item, &$resource_cha
     $resource_change[$resource_id] += $build_data[$build_mode][$resource_id] * $unit_amount;
   }
   $que['in_que'][$unit_id] -= $build_mode * $unit_amount;
+  $que['in_que_abs'][$unit_id] -= $unit_amount;
   $que['amounts'][$que_id] -= $build_mode * $unit_amount;
 }
 

@@ -256,22 +256,6 @@ switch ($mode)
     while ($UserPlanet = mysql_fetch_array($planets_query))
     {
       $list_planet_que = PlanetResourceUpdate($user, $UserPlanet, $time_now);
-      $buildArray = array();
-      if ($UserPlanet['b_building']) {
-        if ( $UserPlanet['b_building'] != 0 )
-        {
-          $QueueArray      = explode ( ';', $UserPlanet['b_building_id'] );
-          $CurrentBuild    = explode ( ',', $QueueArray[0] );
-
-          $buildArray['BUILD_NAME']  = $lang['tech'][$CurrentBuild[0]];
-          $buildArray['BUILD_LEVEL'] = $CurrentBuild[1];
-          $buildArray['BUILD_TIME']  = pretty_time( $CurrentBuild[3] - time() );
-        }
-        else
-        {
-          CheckPlanetUsedFields ($UserPlanet);
-        }
-      }
 
       $enemy_fleet = doquery("SELECT count(*) AS fleets_count FROM {{fleets}}
         WHERE
@@ -319,7 +303,7 @@ switch ($mode)
           'MOON_IMG'     => $moon['image'],
           'MOON_FILL'    => min(100, $moon_fill),
           'MOON_ENEMY'   => $moon_fleets['enemy']['count'],
-      ), $buildArray));
+      )));
     }
 
     tpl_assign_fleet($template, $fleets);

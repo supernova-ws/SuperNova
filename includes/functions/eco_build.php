@@ -55,10 +55,14 @@ function eco_build($que_type, $user, &$planet, $que)
     header("Location: {$_SERVER['PHP_SELF']}?mode={$que_type}");
   }
 
-  $que_length  = count($que['que'][$que_type]);
+/*
+  // Code for fully working new que system
   $hangar_busy = count($que['que'][QUE_HANGAR]);
   $lab_busy    = count($que['que'][QUE_RESEARCH]) && !$config->BuildLabWhileRun;
+*/
+  $que_length  = count($que['que'][$que_type]);
   $can_que_element = $que_length < MAX_BUILDING_QUEUE_SIZE;
+
 
   $fleet_list            = flt_get_fleets_to_planet($planet);
   $caps                  = ECO_getPlanetCaps($user, &$planet);
@@ -72,7 +76,7 @@ function eco_build($que_type, $user, &$planet, $que)
 
   foreach($planet_type_structs as $Element)
   {
-    if (IsTechnologieAccessible($user, $planet, $Element))
+    if (eco_can_build_unit($user, $planet, $Element))
     {
       $element_name    = $lang['tech'][$Element];
       $element_sn_data = &$sn_data[$Element];
@@ -98,8 +102,6 @@ function eco_build($que_type, $user, &$planet, $que)
       }
 
       //================================
-      $unit_busy = (($Element == 31 || $Element == 35) && $lab_busy) || ($Element == 21 && $hangar_busy);
-
       $build_data = eco_get_build_data($user, $planet, $Element, $element_level);
       $temp[RES_METAL]     = floor($planet['metal'] + $fleet_list['own']['total'][RES_METAL] - $build_data[BUILD_CREATE][RES_METAL]);
       $temp[RES_CRYSTAL]   = floor($planet['crystal'] + $fleet_list['own']['total'][RES_CRYSTAL] - $build_data[BUILD_CREATE][RES_CRYSTAL]);
@@ -134,7 +136,7 @@ function eco_build($que_type, $user, &$planet, $que)
         'DEUTERIUM_BALANCE' => $caps['deuterium_perhour'][$Element],
         'ENERGY_BALANCE'    => $energy_balance,
 
-        'UNIT_BUSY'         => $unit_busy,
+        'UNIT_BUSY'         => eco_unit_busy($user, $planet, $que, $Element),
       ));
     }
 

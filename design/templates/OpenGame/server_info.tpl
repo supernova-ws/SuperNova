@@ -87,7 +87,7 @@
   <tr>
     <th>{L_adm_opt_build_on_research}</th>
     <th>
-      <!-- IF C_BuildLabWhileRun -->
+      <!-- IF game_build_and_research -->
         {L_sys_yes}
       <!-- ELSE -->
         {L_sys_no}

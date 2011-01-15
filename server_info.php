@@ -17,6 +17,7 @@ $template = gettemplate('server_info', true);
 $template->assign_vars(array(
   'game_speed' => get_game_speed(),
   'fleet_speed' => get_fleet_speed(),
+  'game_build_and_research' => $config->BuildLabWhileRun,
 ));
 
 display(parsetemplate($template, $parse)/*, "{$lang['sys_universe']} &quot;{$config->game_name}&quot;"*/);
