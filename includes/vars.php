@@ -1343,21 +1343,70 @@ if ( defined('INSIDE')) {
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    MRC_ADMIRAL => array(
-      'name' => 'rpg_amiral',
-      'dark_matter' => 3,
-      'factor' => 1,
-      'max' => 20,
-      'bonus' => 5,
-      'bonus_type' => BONUS_PERCENT,
-    ),
-
     MRC_POWERMAN => array(
       'name' => 'rpg_ingenieur',
       'require' => array(MRC_GEOLOGIST => 5),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 10,
+      'bonus' => 5,
+      'bonus_type' => BONUS_PERCENT,
+    ),
+
+    MRC_STOCKMAN => array( // MRC_STOCKMAN
+      'name' => 'rpg_stockeur',
+      'require' => array(MRC_GEOLOGIST => 10, MRC_POWERMAN => 5),
+      'dark_matter' => 3,
+      'factor' => 1,
+      'max' => 10,
+      'bonus' => 20,
+      'bonus_type' => BONUS_PERCENT,
+    ),
+
+    MRC_ARCHITECT => array(
+      'name' => 'rpg_constructeur',
+      'require' => array(MRC_POWERMAN => 10, MRC_STOCKMAN => 5),
+      'dark_matter' => 3,
+      'factor' => 1,
+      'max' => 5,
+      'bonus' => -5,
+      'bonus_type' => BONUS_PERCENT,
+    ),
+
+    MRC_SPY => array(
+      'name' => 'rpg_espion',
+      'require' => array(MRC_STOCKMAN => 10, MRC_ARCHITECT => 5),
+      'dark_matter' => 3,
+      'factor' => 1,
+      'max' => 5,
+      'bonus' => 1,
+      'bonus_type' => BONUS_ADD,
+    ),
+
+    MRC_COORDINATOR => array(
+      'name' => 'rpg_commandant',
+      'require' => array(MRC_GEOLOGIST => 15, MRC_SPY => 5),
+      'dark_matter' => 3,
+      'factor' => 1,
+      'max' => 5,
+      'bonus' => 1,
+      'bonus_type' => BONUS_ADD,
+    ),
+
+    MRC_DESTRUCTOR => array(
+      'name' => 'rpg_destructeur',
+      'require' => array(MRC_GEOLOGIST => 20, MRC_FORTIFIER => 5, MRC_COORDINATOR => 5),
+      'dark_matter' => 3,
+      'factor' => 1,
+      'max' => 1,
+      'bonus_type' => BONUS_ABILITY,
+    ),
+
+    MRC_ADMIRAL => array(
+      'name' => 'rpg_amiral',
+      'dark_matter' => 3,
+      'factor' => 1,
+      'max' => 20,
       'bonus' => 5,
       'bonus_type' => BONUS_PERCENT,
     ),
@@ -1372,39 +1421,19 @@ if ( defined('INSIDE')) {
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    MRC_ARCHITECT => array(
-      'name' => 'rpg_constructeur',
-      'require' => array(MRC_GEOLOGIST => 10, MRC_POWERMAN => 2),
-      'dark_matter' => 3,
-      'factor' => 1,
-      'max' => 5,
-      'bonus' => -5,
-      'bonus_type' => BONUS_PERCENT,
-    ),
-
     MRC_ACADEMIC => array(
       'name' => 'rpg_scientifique',
-      'require' => array(MRC_GEOLOGIST => 10, MRC_POWERMAN => 2),
+      'require' => array(MRC_ADMIRAL => 10, MRC_CONSTRUCTOR => 5),
       'dark_matter' => 3,
       'factor' => 1,
-      'max' => 5,
+      'max' => 10,
       'bonus' => -5,
-      'bonus_type' => BONUS_PERCENT,
-    ),
-
-    MRC_STOCKMAN => array( // MRC_STOCKMAN
-      'name' => 'rpg_stockeur',
-      'require' => array(MRC_ARCHITECT => 1),
-      'dark_matter' => 3,
-      'factor' => 1,
-      'max' => 5,
-      'bonus' => 20,
       'bonus_type' => BONUS_PERCENT,
     ),
 
     MRC_FORTIFIER => array(
       'name' => 'rpg_defenseur',
-      'require' => array(MRC_ACADEMIC => 1),
+      'require' => array(MRC_CONSTRUCTOR => 10, MRC_ACADEMIC => 5),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 5,
@@ -1414,36 +1443,7 @@ if ( defined('INSIDE')) {
 
     MRC_DEFENDER => array(
       'name' => 'rpg_bunker',
-      'require' => array(MRC_GEOLOGIST => 20, MRC_POWERMAN => 10, MRC_ARCHITECT => 3, MRC_ACADEMIC => 3, MRC_STOCKMAN => 2, MRC_FORTIFIER => 2),
-      'dark_matter' => 3,
-      'factor' => 1,
-      'max' => 1,
-      'bonus_type' => BONUS_ABILITY,
-    ),
-
-    MRC_SPY => array(
-      'name' => 'rpg_espion',
-      'require' => array(MRC_ADMIRAL => 10, MRC_CONSTRUCTOR => 5),
-      'dark_matter' => 3,
-      'factor' => 1,
-      'max' => 3,
-      'bonus' => 1,
-      'bonus_type' => BONUS_ADD,
-    ),
-
-    MRC_COORDINATOR => array(
-      'name' => 'rpg_commandant',
-      'require' => array(MRC_ADMIRAL => 10, MRC_CONSTRUCTOR => 5),
-      'dark_matter' => 3,
-      'factor' => 1,
-      'max' => 5,
-      'bonus' => 1,
-      'bonus_type' => BONUS_ADD,
-    ),
-
-    MRC_DESTRUCTOR => array(
-      'name' => 'rpg_destructeur',
-      'require' => array(MRC_SPY => 1),
+      'require' => array(MRC_ACADEMIC => 10, MRC_FORTIFIER => 5),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
@@ -1452,7 +1452,7 @@ if ( defined('INSIDE')) {
 
     MRC_NAVIGATOR => array(
       'name' => 'rpg_general',
-      'require' => array(MRC_COORDINATOR => 1),
+      'require' => array(MRC_ADMIRAL => 15, MRC_DEFENDER => 1),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 10,
@@ -1462,7 +1462,7 @@ if ( defined('INSIDE')) {
 
     MRC_ASSASIN => array(
       'name' => 'rpg_raideur',
-      'require' => array(MRC_ADMIRAL => 20, MRC_CONSTRUCTOR => 10, MRC_SPY => 2, MRC_COORDINATOR => 2, MRC_DESTRUCTOR => 1, MRC_NAVIGATOR => 3),
+      'require' => array(MRC_ADMIRAL => 20, MRC_ARCHITECT => 5, MRC_NAVIGATOR => 10),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
