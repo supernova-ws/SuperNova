@@ -1,0 +1,23 @@
+.icon_alpha, .alpha75 /* Partially transparent background for over-planet-image icons */
+{
+  /* For IE 5.5 - 7. 0.75*255 = 191.25 ~ 0xC0 */
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#C0000000, endColorstr=#C0000000);
+  /* For IE 8*/
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#C0000000, endColorstr=#C0000000)";
+}
+
+.alpha50
+{
+  /* For IE 5.5 - 7. 0.50*255 = 128 ~ 0x80 */
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#80000000, endColorstr=#80000000);
+  /* For IE 8*/
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#80000000, endColorstr=#80000000)";
+}
+
+.alpha25
+{
+  /* For IE 5.5 - 7. 0.25*255 = 64 ~ 0x40 */
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#40000000, endColorstr=#40000000);
+  /* For IE 8*/
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#40000000, endColorstr=#40000000)";
+}

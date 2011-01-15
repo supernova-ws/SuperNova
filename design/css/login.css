@@ -38,10 +38,9 @@ body {
 
 #log_main, #copyright {
   position: relative;
-  background-repeat: none;
+  background-repeat: no-repeat;
   border:1px solid #FFFFFF;
 
-  font-color: #0a1c25;
   color:  #b1daf2;
 
   background-color     : #000000;
