@@ -1,8 +1,8 @@
 <?php
 
-function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flying_fleets = false)
+function flt_can_attack($planet_src, $planet_dst, $mission, $fleet = array(), $flying_fleets = false)
 {
-  global $time_now, $config, $sn_data, $sn_groups, $user, $planetrow;
+  global $time_now, $config, $sn_data, $sn_groups, $user;
 
   if($user['urlaubs_modus'])
   {
@@ -16,7 +16,7 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
 
   foreach($fleet as $ship_id => $ship_count)
   {
-    if($ship_count > $planetrow[$sn_data[$ship_id]['name']])
+    if($ship_count > $planet_src[$sn_data[$ship_id]['name']])
     {
       return ATTACK_NO_SHIPS;
     }
@@ -27,29 +27,29 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
     $flying_fleets = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
     $flying_fleets = $flying_fleets['flying_fleets'];
   }
-  if (GetMaxFleets($user) <= $flying_fleets && $target_mission != MT_MISSILE)
+  if (GetMaxFleets($user) <= $flying_fleets && $mission != MT_MISSILE)
   {
     return ATTACK_NO_SLOTS;
   }
 
   // Checking for no planet
-  if(!$target_planet['id_owner'])
+  if(!$planet_dst['id_owner'])
   {
-    if($target_mission == MT_COLONIZE && !$fleet[208])
+    if($mission == MT_COLONIZE && !$fleet[208])
     {
       return ATTACK_NO_COLONIZER;
     }
 
-    if($target_mission == MT_EXPLORE || $target_mission == MT_COLONIZE)
+    if($mission == MT_EXPLORE || $mission == MT_COLONIZE)
     {
       return ATTACK_ALLOWED;
     }
     return ATTACK_NO_TARGET;
   }
 
-  if($target_mission == MT_RECYCLE)
+  if($mission == MT_RECYCLE)
   {
-    if($target_planet['debris_metal'] + $target_planet['debris_crystal'] <= 0)
+    if($planet_dst['debris_metal'] + $planet_dst['debris_crystal'] <= 0)
     {
       return ATTACK_NO_DEBRIS;
     }
@@ -63,9 +63,9 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
   }
 
   // Got planet. Checking if it is ours
-  if($target_planet['id_owner'] == $user['id'])
+  if($planet_dst['id_owner'] == $user['id'])
   {
-    if($target_mission == MT_TRANSPORT || $target_mission == MT_RELOCATE)
+    if($mission == MT_TRANSPORT || $mission == MT_RELOCATE)
     {
       return ATTACK_ALLOWED;
     }
@@ -73,14 +73,14 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
   }
 
   // No, planet not ours. Cutting mission that can't be send to not-ours planet
-  if($target_mission == MT_RELOCATE || $target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE)
+  if($mission == MT_RELOCATE || $mission == MT_COLONIZE || $mission == MT_EXPLORE)
   {
     return ATTACK_WRONG_MISSION;
   }
 
-  $enemy = doquery("SELECT * FROM {{users}} WHERE `id` = '{$target_planet['id_owner']}';", '', true);
+  $enemy = doquery("SELECT * FROM {{users}} WHERE `id` = '{$planet_dst['id_owner']}' LIMIT 1;", '', true);
   // We cannot attack or send resource to users in VACANCY mode
-  if ($enemy['urlaubs_modus'] && $target_mission != MT_RECYCLE)
+  if ($enemy['urlaubs_modus'] && $mission != MT_RECYCLE)
   {
     return ATTACK_VACANCY;
   }
@@ -97,7 +97,7 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
   $enemy_points = $enemy_points['total_points'];
 
   // Is it transport? If yes - checking for buffing to prevent mega-alliance destroyer
-  if($target_mission == MT_TRANSPORT)
+  if($mission == MT_TRANSPORT)
   {
     if($user_points >= $enemy_points)
     {
@@ -112,7 +112,7 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
   // Only aggresive missions passed to this point. HOLD counts as passive but aggresive
 
   // Is it admin with planet protection?
-  if ($target_planet['id_level'] > $user['authlevel'])
+  if ($planet_dst['id_level'] > $user['authlevel'])
   {
     return ATTACK_ADMIN;
   }
@@ -127,16 +127,16 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
   }
 
   // Is it HOLD mission? If yes - there should be ally deposit
-  if($target_mission == MT_HOLD)
+  if($mission == MT_HOLD)
   {
-    if($target_planet[$sn_data[34]['name']])
+    if($planet_dst[$sn_data[34]['name']])
     {
       return ATTACK_ALLOWED;
     }
     return ATTACK_NO_ALLY_DEPOSIT;
   }
 
-  if($target_mission == MT_SPY)
+  if($mission == MT_SPY)
   {
     if($fleet[210] >= 1)
     {
@@ -146,9 +146,9 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
   }
 
   // Is it MISSILE mission?
-  if($target_mission == MT_MISSILE)
+  if($mission == MT_MISSILE)
   {
-    if($planetrow[$sn_data[44]['name']] < $sn_data[503]['require'][44])
+    if($planet_src[$sn_data[44]['name']] < $sn_data[503]['require'][44])
     {
       return ATTACK_NO_SILO;
     }
@@ -158,9 +158,9 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
       return ATTACK_NO_MISSILE;
     }
 
-    $distance = abs($target_planet['system'] - $planetrow['system']);
+    $distance = abs($planet_dst['system'] - $planet_src['system']);
     $mip_range = get_missile_range();
-    if($distance > $mip_range || $target_planet['galaxy'] != $planetrow['galaxy'])
+    if($distance > $mip_range || $planet_dst['galaxy'] != $planet_src['galaxy'])
     {
       return ATTACK_MISSILE_TOO_FAR;
     }

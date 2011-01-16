@@ -24,78 +24,32 @@ $_POST = array(19)
   resource1 => string(4) 1000
   resource2 => string(4) 1000
 */
-
-function flt_send_fleet($user, &$from, $to, $fleet_array, $mission, $missiontype)
+/*
+$user - actual user record
+$from - actual planet record
+$to - actual planet record
+$fleet_array - array of records $unit_id -> $amount
+$mission - fleet mission
+*/
+function flt_send_fleet($user, &$from, $to, $fleet_array, $mission)
 {
   ini_set('error_reporting', E_ALL);
 
   global $sn_data, $config, $lang;
-
-  doquery('START TRANSACTION;');
-  $from = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$from['id']}' LIMIT 1 FOR UPDATE;", '', true);
-
-  $errorlist = '';
-
-  $errorlist .= !is_array($fleet_array) ? $lang['fl_no_fleetarray'] : '';
-
-  $errorlist .= (!$to['galaxy'] || $to['galaxy'] < 1 ||  $to['galaxy'] > $config->game_maxGalaxy) ? $lang['fl_limit_galaxy'] : '';
-  $errorlist .= (!$to['system'] || $to['system'] < 1 ||  $to['system'] > $config->game_maxSystem) ? $lang['fl_limit_system'] : '';
-  $errorlist .= (!$to['planet'] || $to['planet'] < 1 || ($to['planet'] > $config->game_maxPlanet AND $mission != MT_EXPLORE )) ? $lang['fl_limit_planet'] : '';
-  $errorlist .= (!$to['planet_type']) ? $lang['fl_no_planettype'] : '';
-  $errorlist .= ($to['planet_type'] != PT_PLANET && $to['planet_type'] != PT_DEBRIS && $to['planet_type'] != PT_MOON) ? $lang['fl_fleet_err_pl'] : '';
-
-  $errorlist .= ($from['galaxy'] == $to['galaxy'] && $from['system'] == $to['system'] && $from['planet'] == $to['planet'] && $from['planet_type'] == $to['planet_type']) ? $lang['fl_ownpl_err'] : '';
-  $errorlist .= (empty($missions_available[$mission])) ? $lang['fl_bad_mission'] : '';
-
 
   $TransMetal      = max(0, intval($_POST['resource0']));
   $TransCrystal    = max(0, intval($_POST['resource1']));
   $TransDeuterium  = max(0, intval($_POST['resource2']));
   $StorageNeeded   = $TransMetal + $TransCrystal + $TransDeuterium;
 
-  if (!$StorageNeeded && $mission == MT_TRANSPORT) {
-    $errorlist .= $lang['fl_noenoughtgoods'];
-  }
-
-  if ($mission == MT_EXPLORE) {
-    if ($MaxExpeditions == 0 ) {
-      $errorlist .= $lang['fl_expe_notech'];
-    } elseif ($FlyingExpeditions >= $MaxExpeditions ) {
-      $errorlist .= $lang['fl_expe_max'];
-    }
-  } else {
-    if ($TargetPlanet['id_owner']){
-      if ($mission == MT_COLONIZE)
-        $errorlist .= $lang['fl_colonized'];
-
-      if ($TargetPlanet['id_owner'] == $from['id_owner']){
-        if ($mission == MT_ATTACK)
-          $errorlist .= $lang['fl_no_self_attack'];
-
-        if ($mission == MT_SPY)
-          $errorlist .= $lang['fl_no_self_spy'];
-      }else{
-        if ($mission == MT_RELOCATE)
-          $errorlist .= $lang['fl_only_stay_at_home'];
-      }
-    }else{
-      if ($mission < MT_COLONIZE){
-        $errorlist .= $lang['fl_unknow_target'];
-      }else{
-        if ($mission == MT_DESTROY)
-          $errorlist .= $lang['fl_nomoon'];
-
-        if ($mission == MT_RECYCLE){
-          if($TargetPlanet['debris_metal'] + $TargetPlanet['debris_crystal'] == 0)
-            $errorlist .= $lang['fl_nodebris'];
-        }
-      }
-    }
-  }
-
+  $errorlist .= (!$StorageNeeded && $mission == MT_TRANSPORT) ? $lang['fl_noenoughtgoods'] : '';
 
   if ($errorlist)
     message ("<font color=\"red\"><ul>{$errorlist}</ul></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
+
+  doquery('SET autocommit = 0;');
+  doquery('LOCK TABLES {{users}} READ, {{planets}} WRITE, {{fleet}} WRITE, {{aks}} WRITE, {{statpoints}} READ;');
+  $from = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$from['id']}' LIMIT 1 FOR UPDATE;", '', true);
 
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach ($fleet_array as $Ship => $Count) {
@@ -116,7 +70,7 @@ function flt_send_fleet($user, &$from, $to, $fleet_array, $mission, $missiontype
     $target = "g{$to['galaxy']}s{$to['system']}p{$to['planet']}t{$to['planet_type']}";
     if($_POST['acs_target_mr'] == $target){
       //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
-      $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}';",'', true);
+      $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}' LIMIT 1;",'', true);
       if (!$aks){
         $fleet_group = 0;
       }else{
@@ -135,7 +89,7 @@ function flt_send_fleet($user, &$from, $to, $fleet_array, $mission, $missiontype
 
   CheckPlanetUsedFields($from);
 
-  $cant_attack = flt_can_attack($TargetPlanet, $mission, $fleet_array);
+  $cant_attack = flt_can_attack($from, $to, $mission, $fleet_array);
   if($cant_attack)
   {
     message("<font color=\"red\"><b>{$lang['fl_attack_error'][$cant_attack]}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
@@ -212,7 +166,7 @@ function flt_send_fleet($user, &$from, $to, $fleet_array, $mission, $missiontype
   $QryInsertFleet .= "`fleet_resource_metal` = '". $TransMetal ."', ";
   $QryInsertFleet .= "`fleet_resource_crystal` = '". $TransCrystal ."', ";
   $QryInsertFleet .= "`fleet_resource_deuterium` = '". $TransDeuterium ."', ";
-  $QryInsertFleet .= "`fleet_target_owner` = '". $TargetPlanet['id_owner'] ."', ";
+  $QryInsertFleet .= "`fleet_target_owner` = '". $to['id_owner'] ."', ";
   $QryInsertFleet .= "`fleet_group` = '". $fleet_group ."', ";
   $QryInsertFleet .= "`start_time` = '". $time_now ."';";
   doquery( $QryInsertFleet);

@@ -882,9 +882,8 @@ function mymail($to, $title, $body, $from = '') {
 
 // Generates random string of $length symbols from $allowed_chars charset
 // Usefull for password and confirmation code generation
-function sys_random_string($length = 16)
+function sys_random_string($length = 16, $allowed_chars = 'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz023456789')
 {
-  $allowed_chars  = 'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz023456789';
   $allowed_length = strlen($allowed_chars);
 
   $random_string = '';
