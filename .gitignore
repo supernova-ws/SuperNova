@@ -5,6 +5,9 @@ config.php
 /phpBB3/
 /forum/
 
+# Ignore DirInfo
+dirinfo
+
 # Ignore xcache interface
 /xcache/
 /xcache-admin/
