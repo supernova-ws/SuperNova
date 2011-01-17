@@ -47,13 +47,16 @@ function flt_send_fleet($user, &$from, $to, $fleet_array, $mission)
   if ($errorlist)
     message ("<font color=\"red\"><ul>{$errorlist}</ul></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
 
-  doquery('SET autocommit = 0;');
-  doquery('LOCK TABLES {{users}} READ, {{planets}} WRITE, {{fleet}} WRITE, {{aks}} WRITE, {{statpoints}} READ;');
+//  doquery('SET autocommit = 0;');
+//  doquery('LOCK TABLES {{users}} READ, {{planets}} WRITE, {{fleet}} WRITE, {{aks}} WRITE, {{statpoints}} READ;');
+  doquery('START TRANSACTION;');
   $from = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$from['id']}' LIMIT 1 FOR UPDATE;", '', true);
 
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach ($fleet_array as $Ship => $Count) {
     if ($Count > $from[$resource[$Ship]]) {
+      doquery('ROLLBACK;');
+      doquery('SET autocommit = 1;');
       message ("<font color=\"red\"><b>{$lang['fl_fleet_err']}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
     }
   }
@@ -199,7 +202,7 @@ function flt_send_fleet($user, &$from, $to, $fleet_array, $mission)
   $parse['ShipList'] = $ShipList;
 
   doquery("COMMIT;");
-  doquery('SET autocommit = 1;');
+  // doquery('SET autocommit = 1;');
   $from = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$from['id']}' LIMIT 1;", '', true);
 
   $page = parsetemplate(gettemplate('fleet3'), $parse);

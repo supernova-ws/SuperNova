@@ -108,6 +108,16 @@ if(!empty($planet_ids))
         $planet_data['resources_left'][$resource_db_name] = $resource_amount;
 
       } // end resource loop
+
+      $distance      = GetTargetDistance ( $planetrow['galaxy'], $planet_db_data['galaxy'], $planetrow['system'], $planet_db_data['system'], $planetrow['planet'], $planet_db_data['planet'] );
+
+      $fleet_speed   = min(GetFleetMaxSpeed ($planet_data['fleet'], 0, $user));
+      $duration      = GetMissionDuration ( 10, $fleet_speed, $distance, $SpeedFactor);
+      $consumption   = GetFleetConsumption ( $planet_data['fleet'], $SpeedFactor, $duration, $distance, $fleet_speed, $user);
+
+      $deuterium_db_name = $sn_data[RES_DEUTERIUM]['name'];
+      // $planet_data['resources'][$deuterium_db_name]
+
     } // end planet loop
     pdump($planets);
   }
