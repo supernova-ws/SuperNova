@@ -192,14 +192,14 @@ for ($Planet = 1; $Planet < 16; $Planet++) {
      'PLANET_ID'        => $GalaxyRowPlanet['id'],
      'PLANET_NUM'       => $Planet,
      'PLANET_NAME'      => $GalaxyRowPlanet['name'],
-     'PLANET_NAME_JS'   => str_replace("'", "\'", $GalaxyRowPlanet['name']),
+     'PLANET_NAME_JS'   => js_safe_string($GalaxyRowPlanet['name']),
      'PLANET_DESTROYED' => $GalaxyRowPlanet["destruyed"],
      'PLANET_TYPE'      => $GalaxyRowPlanet["planet_type"],
      'PLANET_ACTIVITY'  => floor(($time_now - $GalaxyRowPlanet['last_update'])/60),
      'PLANET_IMAGE'     => $GalaxyRowPlanet['image'],
      'PLANET_FLEET_ID'  => $planet_fleet_id,
 
-     'MOON_NAME_JS'   => str_replace("'", "\'", $GalaxyRowMoon['name']),
+     'MOON_NAME_JS'   => js_safe_string($GalaxyRowMoon['name']),
      'MOON_DIAMETER'  => number_format($GalaxyRowMoon['diameter'], 0, '', '.'),
      'MOON_TEMP'      => number_format($GalaxyRowMoon['temp_min'], 0, '', '.'),
      'MOON_FLEET_ID'  => $moon_fleet_id,
@@ -212,7 +212,7 @@ for ($Planet = 1; $Planet < 16; $Planet++) {
 
      'USER_ID'       => $GalaxyRowUser['id'],
      'USER_NAME'     => $GalaxyRowUser['username'],
-     'USER_NAME_JS'  => str_replace("'", "\'", $GalaxyRowUser['username']),
+     'USER_NAME_JS'  => js_safe_string($GalaxyRowUser['username']),
      'USER_RANK'     => $GalaxyRowUser['rank'],
      'USER_BANNED'   => $GalaxyRowUser['bana'],
      'USER_VACANCY'  => $GalaxyRowUser['urlaubs_modus'],
@@ -234,7 +234,7 @@ foreach($cached['users'] as $PlanetUser){
   $template->assign_block_vars('users', array(
     'ID'   => $PlanetUser['id'],
     'NAME' => $PlanetUser['username'],
-    'NAME_JS' => str_replace("'", "\'", $PlanetUser['username']),
+    'NAME_JS' => js_safe_string($PlanetUser['username']),
     'RANK' => $PlanetUser['rank'],
   ));
 }
@@ -242,7 +242,7 @@ foreach($cached['users'] as $PlanetUser){
 foreach($cached['allies'] as $PlanetAlly){
   $template->assign_block_vars('alliances', array(
     'ID'      => $PlanetAlly['id'],
-    'NAME_JS' => str_replace("'", "\'", $PlanetAlly['ally_name']),
+    'NAME_JS' => js_safe_string($PlanetAlly['ally_name']),
     'MEMBERS' => $PlanetAlly['ally_members'],
     'URL'     => $PlanetAlly['ally_web'],
   ));
