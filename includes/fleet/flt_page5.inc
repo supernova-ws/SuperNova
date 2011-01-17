@@ -1,236 +1,155 @@
 <?php
-  // Future page to gather resource from other planets on single planet
+/**
+* flt_page5.inc
+*
+* @package fleet
+* @version 1
+*
+* Revision History
+* ================
+*    1 - copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+*      [!] Write from scratch
+*
+**/
 
-  die();
+$planet_ids = sys_get_param('planets');
 
-  // floten3.php
-  // @version 1.0
-  // @copyright 2008 by Chlorel for XNova
-
-  doquery('START TRANSACTION;');
-  $planetrow = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1 FOR UPDATE;", '', true);
-
-  if (!is_array($fleetarray))
-    $errorlist .= $lang['fl_no_fleetarray'];
-
-  // Test de coherance de la destination (voir si elle se trouve dans les limites de l'univers connu
-  $errorlist = '';
-  if (!$galaxy || $galaxy > $config->game_maxGalaxy || $galaxy < 1)
-    $errorlist .= $lang['fl_limit_galaxy'];
-  if (!$system || $system > $config->game_maxSystem || $system < 1)
-    $errorlist .= $lang['fl_limit_system'];
-  if (!$planet || $planet < 1 || ($planet > $config->game_maxPlanet AND $target_mission != MT_EXPLORE ))
-    $errorlist .= $lang['fl_limit_planet'];
-  if ($planetrow['galaxy'] == $galaxy && $planetrow['system'] == $system && $planetrow['planet'] == $planet && $planetrow['planet_type'] == $planet_type)
-    $errorlist .= $lang['fl_ownpl_err'];
-  if (!$planet_type)
-    $errorlist .= $lang['fl_no_planettype'];
-  if ($planet_type != PT_PLANET AND $planet_type != PT_DEBRIS AND $planet_type != PT_MOON)
-    $errorlist .= $lang['fl_fleet_err_pl'];
-  if (empty($missiontype[$target_mission])) {
-    $errorlist .= $lang['fl_bad_mission'];
-  }
-
-  $TransMetal      = max(0, intval($_POST['resource0']));
-  $TransCrystal    = max(0, intval($_POST['resource1']));
-  $TransDeuterium  = max(0, intval($_POST['resource2']));
-  $StorageNeeded   = $TransMetal + $TransCrystal + $TransDeuterium;
-
-  if (!$StorageNeeded && $target_mission == MT_TRANSPORT) {
-    $errorlist .= $lang['fl_noenoughtgoods'];
-  }
-
-  if ($target_mission == MT_EXPLORE) {
-    if ($MaxExpeditions == 0 ) {
-      $errorlist .= $lang['fl_expe_notech'];
-    } elseif ($FlyingExpeditions >= $MaxExpeditions ) {
-      $errorlist .= $lang['fl_expe_max'];
-    }
-  } else {
-    if ($TargetPlanet['id_owner']){
-      if ($target_mission == MT_COLONIZE)
-        $errorlist .= $lang['fl_colonized'];
-
-      if ($TargetPlanet['id_owner'] == $planetrow['id_owner']){
-        if ($target_mission == MT_ATTACK)
-          $errorlist .= $lang['fl_no_self_attack'];
-
-        if ($target_mission == MT_SPY)
-          $errorlist .= $lang['fl_no_self_spy'];
-      }else{
-        if ($target_mission == MT_RELOCATE)
-          $errorlist .= $lang['fl_only_stay_at_home'];
-      }
-    }else{
-      if ($target_mission < MT_COLONIZE){
-        $errorlist .= $lang['fl_unknow_target'];
-      }else{
-        if ($target_mission == MT_DESTROY)
-          $errorlist .= $lang['fl_nomoon'];
-
-        if ($target_mission == MT_RECYCLE){
-          if($TargetPlanet['debris_metal'] + $TargetPlanet['debris_crystal'] == 0)
-            $errorlist .= $lang['fl_nodebris'];
-        }
-      }
-    }
-  }
-
-
-  if ($errorlist)
-    message ("<font color=\"red\"><ul>{$errorlist}</ul></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
-
-  // On verifie s'il y a assez de vaisseaux sur la planete !
-  foreach ($fleetarray as $Ship => $Count) {
-    if ($Count > $planetrow[$resource[$Ship]]) {
-      message ("<font color=\"red\"><b>{$lang['fl_fleet_err']}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
-    }
-  }
-
-  //Normally... unless its acs...
-  $fleet_group = max(0, intval($_POST['fleet_group']));
-  //But is it acs??
-  //Well all acs fleets must have a fleet code.
-  if($fleet_group){
-    //Also it must be mission type 2
-    $target_mission = MT_AKS;
-
-    //The co-ords must be the same as where the acs fleet is going.
-    $target = "g{$galaxy}s{$system}p{$planet}t{$planet_type}";
-    if($_POST['acs_target_mr'] == $target){
-      //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
-      $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}';",'', true);
-      if (!$aks){
-        $fleet_group = 0;
-      }else{
-        $galaxy = $aks['galaxy'];
-        $system = $aks['system'];
-        $planet = $aks['planet'];
-        $planet_type = $aks['planet_type'];
-      }
-    }
-  }
-  //Check that a failed acs attack isn't being sent, if it is, make it an attack fleet.
-  if(!$fleet_group && $target_mission == MT_AKS)
+if(!empty($planet_ids))
+{ // begin processing parameters
+  $query = '';
+  foreach($planet_ids as $planet_id)
   {
-    $target_mission = MT_ATTACK;
+    $planet_id = intval($planet_id);
+    $query .= $planet_id ? "{$planet_id}," : '';
   }
 
-  CheckPlanetUsedFields($planetrow);
-
-  $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $target_mission, $fleetarray);
-  if($cant_attack)
+  if($query)
   {
-    message("<font color=\"red\"><b>{$lang['fl_attack_error'][$cant_attack]}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
-  }
-
-  $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
-  if (!in_array($speed_percent, $speed_possible)) {
-    message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
-  }
-
-  $fleet['start_time'] = $duration + $time_now;
-  if ($target_mission == MT_EXPLORE OR $target_mission == MT_HOLD) {
-    $StayDuration = max(0,intval($_POST['missiontime'])) * 3600;
-    $StayTime     = $fleet['start_time'] + $StayDuration;
-  } else {
-    $StayDuration = 0;
-    $StayTime     = 0;
-  }
-  $fleet['end_time']   = $StayDuration + (2 * $duration) + $time_now;
-
-  if ($aks && $target_mission == MT_AKS)
-  {
-    if ($fleet['start_time']>$aks['ankunft'])
+    foreach($sn_data['groups']['flt_transports'] as $transport_id)
     {
-      message ($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME,$fleet['start_time']) . " AKS arrival: " .date(FMT_DATE_TIME,$aks['ankunft']), $lang['fl_error']);
+      $transports[$sn_data[$transport_id]['name']] = $sn_data[$transport_id]['capacity'];
+      $name_to_id[$sn_data[$transport_id]['name']] = $transport_id;
     }
-    $fleet['start_time'] = $aks['ankunft'];
-    $fleet['end_time'] = $aks['ankunft'] + $duration;
-  };
+    arsort($transports);//pdump($transports);
 
-  $FleetStorage        = 0;
-  $FleetShipCount      = 0;
-  $fleet_array         = "";
-  $FleetSubQRY         = "";
-  foreach ($fleetarray as $Ship => $Count)
+    $query = "SELECT * FROM `{{planets}}` WHERE `id_owner` = '{$user['id']}' AND `destruyed` = 0 AND `id` IN ({$query}-1);";
+    $planets_db_list = doquery($query);
+    while($planet_db_data = mysql_fetch_assoc($planets_db_list))
+    { // begin planet loop
+      $planet_id = $planet_db_data['id'];
+      $planet_data = &$planets[$planet_id];
+
+      $planet_data['ships'] = array();
+      $planet_ship_list = &$planet_data['ships'];
+      //$planet_ship_list = &$planets[$planet_id];
+
+      foreach($transports as $ship_id => $ship_capacity)
+      {
+        $planet_ship_list[$ship_id]['capacity'] = $planet_db_data[$ship_id] * $ship_capacity;
+        //$planet_ship_list[$ship_id]['id'] = ;
+      }pdump($planet_data, "Ships on planet {$planet_id}");print('<hr>');
+
+      reset($planet_ship_list);
+      $no_more_ships = false;
+
+      foreach($sn_data['groups']['resources_loot'] as $resource_id)
+      { // begin planet resource loop
+        $resource_db_name = $sn_data[$resource_id]['name'];
+
+        $resource_amount = floor($planet_db_data[$resource_db_name]);
+
+        while($resource_amount > 0 && !$no_more_ships)
+        { // begin ship fill loop
+          $planet_ship = current($planet_ship_list);
+          while($planet_ship['capacity'] <= 0 && !$no_more_ships)
+          { // begin search transport with free cargo
+            if(next($planet_ship_list) === false)
+            {
+              $no_more_ships = true;
+              break;
+            }
+            else
+            {
+              $planet_ship = current($planet_ship_list);
+            }
+          } // begin search transport with free cargo
+
+          if($no_more_ships)
+          {
+          	break;
+          }
+
+          $planet_ship_key = key($planet_ship_list);
+//pdump($resource_amount, $resource_db_name . ' amount');
+//pdump($planet_ship_list[$planet_ship_key]['capacity'], $planet_ship_key . ' capacity');
+
+          $can_take = min($resource_amount, $planet_ship['capacity']);
+//pdump($can_take, $planet_ship_key . ' will take');
+
+          $resource_amount -= $can_take;
+
+          $planet_ship_list[$planet_ship_key]['capacity'] -= $can_take;
+          $planet_ship_list[$planet_ship_key]['taken'] += $can_take;
+
+          $planet_data['resources'][$resource_db_name] += $can_take;
+
+          $planet_data['resources_taken_total'] += $can_take;
+
+          $planet_data['fleet'][$name_to_id[$planet_ship_key]] = ceil($planet_ship_list[$planet_ship_key]['taken'] / $transports[$planet_ship_key]);
+
+//pdump($resource_amount, $resource_db_name . ' amount LEFT');
+//pdump($planet_ship_list[key($planet_ship_list)]['capacity'], key($planet_ship_list) . ' capacity LEFT');
+//print('<hr>');
+        } // end ship fill loop
+
+// Высчитывать объем топлива и вычитать из общего количества ресурсов!
+// Менять количество кораблей после этого обратным счетом
+
+        $planet_data['resources_left'][$resource_db_name] = $resource_amount;
+
+      } // end resource loop
+    } // end planet loop
+    pdump($planets);
+  }
+} // end processing parameters
+
+$template = gettemplate('fleet5', true);
+// Building list of own planets & moons
+$colonies = SortUserPlanets ($user, $planetrow);
+if (mysql_num_rows($colonies) > 1)
+{
+  while ($row = mysql_fetch_array($colonies))
   {
-    $FleetStorage    += $pricelist[$Ship]["capacity"] * $Count;
-    $FleetShipCount  += $Count;
-    $fleet_array     .= "{$Ship},{$Count};";
-    $FleetSubQRY     .= "`{$resource[$Ship]}` = `{$resource[$Ship]}` - {$Count} , ";
+    $template->assign_block_vars('colonies', array(
+      'ID'         => $row['id'],
+      'NAME'       => $row['name'],
+      'GALAXY'     => $row['galaxy'],
+      'SYSTEM'     => $row['system'],
+      'PLANET'     => $row['planet'],
+      'TYPE'       => $row['planet_type'],
+      'TYPE_PRINT' => $lang['sys_planet_type'][$row['planet_type']],
+    ));
   }
-  $FleetStorage        -= $consumption;
+};
 
-  if ( $StorageNeeded > $FleetStorage)
-  {
-    message ("<font color=\"red\"><b>". $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
-  }
-  if ($planetrow['deuterium'] < $TransDeuterium + $consumption)
-  {
-    message ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
-  }
-  if (($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal))
-  {
-    message ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
-  }
+$template->assign_vars(array(
+  'acss1'           => $aks_fleets_mr, // just data to print
 
-  // ecriture de l'enregistrement de flotte (a partir de lфе_, y a quelque chose qui vole et c'est toujours sur la planete d'origine)
-  $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
-  $QryInsertFleet .= "`fleet_owner` = '". $user['id'] ."', ";
-  $QryInsertFleet .= "`fleet_mission` = '". $target_mission ."', ";
-  $QryInsertFleet .= "`fleet_amount` = '". $FleetShipCount ."', ";
-  $QryInsertFleet .= "`fleet_array` = '". $fleet_array ."', ";
-  $QryInsertFleet .= "`fleet_start_time` = '". $fleet['start_time'] ."', ";
-  $QryInsertFleet .= "`fleet_start_galaxy` = '". intval($planetrow['galaxy']) ."', ";
-  $QryInsertFleet .= "`fleet_start_system` = '". intval($planetrow['system']) ."', ";
-  $QryInsertFleet .= "`fleet_start_planet` = '". intval($planetrow['planet']) ."', ";
-  $QryInsertFleet .= "`fleet_start_type` = '". intval($planetrow['planet_type']) ."', ";
-  $QryInsertFleet .= "`fleet_end_time` = '". $fleet['end_time'] ."', ";
-  $QryInsertFleet .= "`fleet_end_stay` = '". $StayTime ."', ";
-  $QryInsertFleet .= "`fleet_end_galaxy` = '". $galaxy ."', ";
-  $QryInsertFleet .= "`fleet_end_system` = '". $system ."', ";
-  $QryInsertFleet .= "`fleet_end_planet` = '". $planet ."', ";
-  $QryInsertFleet .= "`fleet_end_type` = '". $planet_type ."', ";
-  $QryInsertFleet .= "`fleet_resource_metal` = '". $TransMetal ."', ";
-  $QryInsertFleet .= "`fleet_resource_crystal` = '". $TransCrystal ."', ";
-  $QryInsertFleet .= "`fleet_resource_deuterium` = '". $TransDeuterium ."', ";
-  $QryInsertFleet .= "`fleet_target_owner` = '". $TargetPlanet['id_owner'] ."', ";
-  $QryInsertFleet .= "`fleet_group` = '". $fleet_group ."', ";
-  $QryInsertFleet .= "`start_time` = '". $time_now ."';";
-  doquery( $QryInsertFleet);
+  'usedfleet'       => str_rot13(base64_encode(serialize($fleet['fleetarray']))),
 
-  $QryUpdatePlanet  = "UPDATE {{planets}} SET {$FleetSubQRY}";
-  $QryUpdatePlanet .= "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption} ";
-  $QryUpdatePlanet .= "WHERE `id` = '{$planetrow['id']}' LIMIT 1;";
-  doquery ($QryUpdatePlanet);
+  'speed_factor'     => $SpeedFactor,
+  "t{$planet_type}" => 'SELECTED',
 
-  $parse["mission"] = $lang['type_mission'][$target_mission];
-  if ($target_mission == MT_EXPLORE OR $target_mission == MT_HOLD) {
-    // $parse["mission"] .= sprintf($lang['fl_duration_time'], $StayDuration);
-    $parse["mission"] .= ' ' . pretty_time($StayDuration);
-  };
-  $parse["dist"] = pretty_number($distance);
-  $parse["speed"] = pretty_number($fleet_speed);
-  $parse["deute_need"] = pretty_number($consumption);
-  $parse["from"] = "{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}";
-  $parse["time_go"] = date(FMT_DATE_TIME, $fleet['start_time']);
-  $parse["time_back"] = date(FMT_DATE_TIME, $fleet['end_time']);
+  'target_mission'  => $target_mission,
 
-  $parse_temp['DisplayControls'] = 'display: none;';
-  $ShipList = "";
-  foreach ($fleetarray as $Ship => $Count) {
-    // $parse_temp['ShipSpeed'] =
-    $parse_temp['ShipName'] = $lang['tech'][$Ship];
-    $parse_temp['ShipNumPrint'] = pretty_number($Count);
-    $ShipList .= parsetemplate(gettemplate('fleet_ship_row'), $parse_temp);
-  }
-  $parse['ShipList'] = $ShipList;
+  'ships'           => str_rot13(base64_encode(serialize($ships))),
 
-  doquery("COMMIT;");
-  $planetrow = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1;", '', true);
+//  'fleet_speed'     => round(min(GetFleetMaxSpeed($fleet['fleetarray'], false, $user))),
+//  'fleet_capacity'  => $fleet['capacity'],
 
-  $page = parsetemplate(gettemplate('fleet3'), $parse);
-  display($page, $lang['fl_title']);
+  'PAGE_HINT'       => $lang['fl_page1_hint'],
+));
+
+display(parsetemplate($template, $parse), $lang['fl_title']);
 
 ?>

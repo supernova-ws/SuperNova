@@ -104,9 +104,9 @@ $lang['sys_planet_type2'] 	  = "Поле обломков";
 $lang['sys_planet_type3']    = "Луна";
 
 $lang['sys_planet_type'] = array(
-  1 => $lang['sys_planet_type1'], 
+  PT_PLANET => $lang['sys_planet_type1'], 
   2 => $lang['sys_planet_type2'], 
-  3 => $lang['sys_planet_type3']
+  PT_MOON => $lang['sys_planet_type3']
 );
 
 $lang['sys_planet_type_sh1'] = "(П)";

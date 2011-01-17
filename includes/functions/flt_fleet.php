@@ -199,6 +199,7 @@ function flt_send_fleet($user, &$from, $to, $fleet_array, $mission)
   $parse['ShipList'] = $ShipList;
 
   doquery("COMMIT;");
+  doquery('SET autocommit = 1;');
   $from = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$from['id']}' LIMIT 1;", '', true);
 
   $page = parsetemplate(gettemplate('fleet3'), $parse);
