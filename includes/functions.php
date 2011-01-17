@@ -896,4 +896,9 @@ function sys_random_string($length = 16)
   return $random_string;
 }
 
+function js_safe_string($string)
+{
+  return str_replace(array("'", "\\", "\""), array("\'", "\\\\", "\\\""), $string);
+}
+
 ?>
