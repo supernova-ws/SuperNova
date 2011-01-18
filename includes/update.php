@@ -408,7 +408,7 @@ switch(intval($config->db_version))
     }
 
   doquery('COMMIT;');
-  //$new_version = 25;
+  $new_version = 25;
 
 };
 upd_log_message('Upgrade complete.');

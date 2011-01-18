@@ -3,11 +3,7 @@
   // @version 1.0
   // @copyright 2008 by Chlorel for XNova
 
-  doquery('START TRANSACTION;');
-  $planetrow = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1 FOR UPDATE;", '', true);
-
-  if (!is_array($fleetarray))
-    $errorlist .= $lang['fl_no_fleetarray'];
+  $errorlist .= !is_array($fleetarray) ? $lang['fl_no_fleetarray'] : '';
 
   // Test de coherance de la destination (voir si elle se trouve dans les limites de l'univers connu
   $errorlist = '';
@@ -35,6 +31,9 @@
   if (!$StorageNeeded && $target_mission == MT_TRANSPORT) {
     $errorlist .= $lang['fl_noenoughtgoods'];
   }
+
+  doquery('START TRANSACTION;');
+  $planetrow = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1 FOR UPDATE;", '', true);
 
   if ($target_mission == MT_EXPLORE) {
     if ($MaxExpeditions == 0 ) {
@@ -74,7 +73,10 @@
 
 
   if ($errorlist)
+  {
+    doquery("ROLLBACK;");
     message ("<font color=\"red\"><ul>{$errorlist}</ul></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
+  }
 
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach ($fleetarray as $Ship => $Count) {
@@ -114,8 +116,9 @@
 
   CheckPlanetUsedFields($planetrow);
 
-  $cant_attack = flt_can_attack($TargetPlanet, $target_mission, $fleetarray);
-  if($cant_attack)
+  $options = array();
+  $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
+  if($cant_attack != ATTACK_ALLOWED)
   {
     message("<font color=\"red\"><b>{$lang['fl_attack_error'][$cant_attack]}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
   }

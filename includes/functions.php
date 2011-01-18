@@ -55,7 +55,12 @@ function get_game_speed()
 
 function get_ship_speed($ship_id, $user)
 {
-  global $resource, $reslist, $pricelist;
+  global $resource, $reslist, $pricelist, $sn_data;
+
+  if(!in_array($ship_id, $sn_data['groups']['fleet']))
+  {
+    return 0;
+  }
 
   if($pricelist[$ship_id]['tech_level'] && $user[$resource[$pricelist[$ship_id]['tech2']]] >= $pricelist[$ship_id]['tech_level'])
   {
@@ -79,13 +84,21 @@ function get_ship_speed($ship_id, $user)
 // Avec prise en compte
 function GetFleetMaxSpeed ($FleetArray, $Fleet, $Player)
 {
-  if ($Fleet)
+  global $sn_data;
+
+  if(empty($FleetArray) && !$Fleet)
   {
-    return get_ship_speed($Fleet, $Player);
+    return array(0 => 0);
   }
 
-  foreach ($FleetArray as $Ship => $Count) {
-    if(!$Count)
+  if(!is_array($FleetArray))
+  {
+    $FleetArray = array($Fleet => 1);
+  }
+
+  foreach ($FleetArray as $Ship => $Count)
+  {
+    if(!$Count || !in_array($Ship, $sn_data['groups']['fleet']))
     {
       continue;
     }
@@ -98,8 +111,9 @@ function GetFleetMaxSpeed ($FleetArray, $Fleet, $Player)
 // Calcul de la consommation de base d'un vaisseau au regard des technologies
 function GetShipConsumption ( $ship_id, $user )
 {
-  global $pricelist, $resource;
+  global $pricelist, $resource, $sn_data;
 
+/*
   if($pricelist[$ship_id]['tech_level'] && $user[$resource[$pricelist[$ship_id]['tech2']]] >= $pricelist[$ship_id]['tech_level'])
   {
     $consumption = $pricelist[$ship_id]['consumption2'];
@@ -110,6 +124,8 @@ function GetShipConsumption ( $ship_id, $user )
   }
 
   return $consumption;
+*/
+  return ($pricelist[$ship_id]['tech_level'] && $user[$resource[$pricelist[$ship_id]['tech2']]] >= $pricelist[$ship_id]['tech_level']) ? $pricelist[$ship_id]['consumption2'] : $consumption = $pricelist[$ship_id]['consumption'];
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -124,8 +140,10 @@ function GetFleetConsumption ($FleetArray, $SpeedFactor, $MissionDuration, $Miss
 
   $spd             = $speed_percent * sqrt( $FleetMaxSpeed );
 
-  foreach ($FleetArray as $Ship => $Count) {
-    if (!$Ship) {
+  foreach ($FleetArray as $Ship => $Count)
+  {
+    if (!$Ship || !$Count)
+    {
       continue;
     }
 
@@ -134,10 +152,10 @@ function GetFleetConsumption ($FleetArray, $SpeedFactor, $MissionDuration, $Miss
 
     $ShipConsumption   = GetShipConsumption ( $Ship, $Player );
 
-    $consumption += $ShipConsumption * $Count  * pow($spd / sqrt($ShipSpeed) / 10 + 1, 2 );
+    $consumption += $ShipConsumption * $Count * pow($spd / sqrt($ShipSpeed) / 10 + 1, 2 );
   }
 
-  $consumption = round($MissionDistance * $consumption  / 35000) + 1;
+  $consumption = round($MissionDistance * $consumption / 35000) + 1;
 
   return $consumption;
 }
@@ -833,19 +851,25 @@ function mrc_modify_value($user, $planet = false, $mercenaries, $value)
  * @copyright 2008 By Chlorel for XNova
  */
 
-function SortUserPlanets ( $CurrentUser ) {
+function SortUserPlanets ( $CurrentUser, $planet = false ) {
   $Order = ( $CurrentUser['planet_sort_order'] == 1 ) ? "DESC" : "ASC" ;
   $Sort  = $CurrentUser['planet_sort'];
 
-  $QryPlanets  = "SELECT `id`, `name`, `galaxy`, `system`, `planet`, `planet_type` FROM {{table}} WHERE `id_owner` = '". $CurrentUser['id'] ."' ORDER BY ";
-  if       ( $Sort == 0 ) {
-    $QryPlanets .= "`id` ". $Order;
-  } elseif ( $Sort == 1 ) {
-    $QryPlanets .= "`galaxy`, `system`, `planet`, `planet_type` ". $Order;
-  } elseif ( $Sort == 2 ) {
-    $QryPlanets .= "`name` ". $Order;
+  $QryPlanets  = "SELECT `id`, `name`, `galaxy`, `system`, `planet`, `planet_type` FROM {{planets}} WHERE `id_owner` = '{$CurrentUser['id']}' ";
+  if($planet)
+  {
+    $QryPlanets .= "AND `id` <> {$planet['id']} ";
   }
-  $Planets = doquery ( $QryPlanets, 'planets');
+
+  $QryPlanets .= 'ORDER BY ';
+  if       ( $Sort == 0 ) {
+    $QryPlanets .= "`id` {$Order}";
+  } elseif ( $Sort == 1 ) {
+    $QryPlanets .= "`galaxy`, `system`, `planet`, `planet_type` {$Order}";
+  } elseif ( $Sort == 2 ) {
+    $QryPlanets .= "`name` {$Order}";
+  }
+  $Planets = doquery ( $QryPlanets, '');
 
   return $Planets;
 }
@@ -883,9 +907,8 @@ function mymail($to, $title, $body, $from = '') {
 
 // Generates random string of $length symbols from $allowed_chars charset
 // Usefull for password and confirmation code generation
-function sys_random_string($length = 16)
+function sys_random_string($length = 16, $allowed_chars = 'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz023456789')
 {
-  $allowed_chars  = 'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz023456789';
   $allowed_length = strlen($allowed_chars);
 
   $random_string = '';
