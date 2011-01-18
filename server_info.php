@@ -19,6 +19,8 @@ $template->assign_vars(array(
   'fleet_speed' => get_fleet_speed(),
   'game_build_and_research' => $config->BuildLabWhileRun,
   'USER_VACATION_DISABLE' => $config->user_vacation_disable,
+  'DB_VERSION' => DB_VERSION,
+  'SN_VERSION' => SN_VERSION,
 ));
 
 display(parsetemplate($template));
