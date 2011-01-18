@@ -25,7 +25,7 @@ if($config->game_disable)
   }
 }
 
-if ($user && $user['id'])
+if (is_array($user) && !empty($user['id']))
 {
   FlyingFleetHandler();
 
@@ -55,7 +55,15 @@ if ($user && $user['id'])
   }
 
   SetSelectedPlanet($user);
-  $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$user['current_planet']}';", '', true);
+  $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$user['current_planet']}' LIMIT 1;", '', true);
+  if(!$planetrow['id'])
+  {
+    $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$user['id_planet']}' LIMIT 1;", '', true);
+    if(!$planetrow['id'])
+    {
+      header('Location: login.php');
+    }
+  }
   CheckPlanetUsedFields($planetrow);
   $que = PlanetResourceUpdate($user, $planetrow, $time_now);
 }
