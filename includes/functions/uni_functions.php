@@ -143,6 +143,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetN
       $OwnerName = doquery("SELECT `username` FROM {{users}} WHERE `id` = {$PlanetOwnerID};", '', true);
       $planet['name'] = "{$OwnerName['username']} {$planet['name']}";
     }
+    $planet['name'] = mysql_real_escape_string(strip_tags(trim($planet['name'])));
 
     $QryInsertPlanet  = "INSERT INTO `{{table}}` SET ";
     $QryInsertPlanet .= "`name` = '".              $planet['name']              ."', ";
@@ -220,7 +221,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
       $size      = rand ( $moon_chance * 100 + 1000, $moon_chance * 200 + 2999 );
       $temp_min  = $moon_planet['temp_min'] - rand(10, 45);
       $temp_max  = $moon_planet['temp_max'] - rand(10, 45);
-      $moon_name = $moon_name ? $moon_name : "{$lang['sys_moon']} {$lang['uni_moon_of_planet']} {$planet_name}";
+      $moon_name = mysql_real_escape_string($moon_name ? $moon_name : "{$lang['sys_moon']} {$lang['uni_moon_of_planet']} {$planet_name}");
 
       doquery(
         "INSERT INTO `{{planets}}` SET
