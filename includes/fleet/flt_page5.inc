@@ -39,7 +39,8 @@ if(!empty($planet_ids))
 
     $planets = array();
 
-    $query = "SELECT * FROM `{{planets}}` WHERE `id_owner` = '{$user['id']}' AND `destruyed` = 0 AND `id` IN ({$query}-1);";
+    $query = substr($query, 0, -1);
+    $query = "SELECT * FROM `{{planets}}` WHERE `id_owner` = '{$user['id']}' AND `destruyed` = 0 AND `id` IN ({$query});";
     $planets_db_list = doquery($query);
     while($planet_db_data = mysql_fetch_assoc($planets_db_list))
     { // begin planet loop

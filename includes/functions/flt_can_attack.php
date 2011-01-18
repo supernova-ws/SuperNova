@@ -67,7 +67,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
 //    $fleet_end_time = $aks['ankunft'] + $duration;
   }
 
-  $flying_fleets = $options('flying_fleets');
+  $flying_fleets = $options['flying_fleets'];
   if(!$flying_fleets)
   {
     $flying_fleets = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
