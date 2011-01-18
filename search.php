@@ -22,7 +22,6 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-check_urlaubmodus ($user);
 $searchtext = mysql_real_escape_string($_POST['searchtext']);
 $type = SYS_mysqlSmartEscape($_POST['type']);
 $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];

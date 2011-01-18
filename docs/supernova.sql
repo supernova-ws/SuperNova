@@ -260,7 +260,7 @@ INSERT INTO `sn_config` VALUES ('rpg_scrape_crystal', '0.50');
 INSERT INTO `sn_config` VALUES ('rpg_scrape_deuterium', '0.25');
 INSERT INTO `sn_config` VALUES ('rpg_scrape_metal', '0.75');
 INSERT INTO `sn_config` VALUES ('stats_schedule', 'd@04:00:00');
-INSERT INTO `sn_config` VALUES ('urlaubs_modus_erz', '0');
+INSERT INTO `sn_config` VALUES ('user_vacation_disable', '0');
 INSERT INTO `sn_config` VALUES ('url_dark_matter', '/dark_matter_get.php');
 INSERT INTO `sn_config` VALUES ('url_forum', '/forum/');
 INSERT INTO `sn_config` VALUES ('url_rules', '/rules.php');
@@ -868,6 +868,7 @@ CREATE TABLE `sn_users` (
   `options` text COMMENT 'Packed user options',
   `news_lastread` int(11) NOT NULL DEFAULT '0' COMMENT 'News last read tag',
   `user_proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)',
+  `vacation` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `i_username` (`username`),
   KEY `i_ally_online` (`ally_id`,`onlinetime`),
@@ -878,4 +879,4 @@ CREATE TABLE `sn_users` (
 -- ----------------------------
 -- Records of sn_users
 -- ----------------------------
-INSERT INTO `sn_users` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 'ru', '3', '0', '', null, '1', '1', '1', '1', '1', '127.0.0.1', 'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.7.62 Version/11.00', '1294776770', '1294776780', '', '1', '1', '0', '0', '1', '5', '0', '0', '1', '1', '1', '1', '0', '0', '0', '0', '0', null, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '', '0', null, '0', '0', 'red', '#00FF00', 'yellow', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', null, '0', '0', '0', null, null, '0', '');
+INSERT INTO `sn_users` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 'ru', '3', '0', '', null, '1', '1', '1', '1', '1', '127.0.0.1', 'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.7.62 Version/11.00', '1294776770', '1294776780', '', '1', '1', '0', '0', '1', '5', '0', '0', '1', '1', '1', '1', '0', '0', '0', '0', '0', null, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '', '0', null, '0', '0', 'red', '#00FF00', 'yellow', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', null, '0', '0', '0', null, null, '0', '', '0');

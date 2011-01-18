@@ -65,12 +65,13 @@ switch(intval($config->db_version))
       "ADD `parent_planet` bigint(11) unsigned DEFAULT '0'",
       "ADD KEY `i_parent_planet` (`parent_planet`)"
     ), !$update_tables['planets']['parent_planet']);
-    doquery(
+    upd_do_query(
       "UPDATE `{{planets}}` AS lu
         LEFT JOIN `{{planets}}` AS pl
           ON pl.galaxy=lu.galaxy AND pl.system=lu.system AND pl.planet=lu.planet AND pl.planet_type=1
       SET lu.parent_planet=pl.id WHERE lu.planet_type=3;"
     );
+  doquery('COMMIT;');
   $new_version = 1;
 
   case 1:
@@ -90,6 +91,7 @@ switch(intval($config->db_version))
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     };
+  doquery('COMMIT;');
   $new_version = 2;
 
   case 2:
@@ -98,11 +100,13 @@ switch(intval($config->db_version))
     {
       mysql_query("DROP TABLE IF EXISTS {$config->db_prefix}lunas;");
     }
+  doquery('COMMIT;');
   $new_version = 3;
 
   case 3:
     upd_log_version_update();
     upd_alter_table('counter', "ADD `url` varchar(255) CHARACTER SET utf8 DEFAULT ''", !$update_tables['counter']['url']);
+  doquery('COMMIT;');
   $new_version = 4;
 
   case 4:
@@ -112,7 +116,7 @@ switch(intval($config->db_version))
 
     if($update_tables['galaxy'])
     {
-      doquery(
+      upd_do_query(
         'UPDATE `{{planets}}`
           LEFT JOIN `{{galaxy}}` ON {{galaxy}}.id_planet = {{planets}}.id
         SET
@@ -121,18 +125,21 @@ switch(intval($config->db_version))
         WHERE {{galaxy}}.metal>0 OR {{galaxy}}.crystal>0;'
       );
     }
+  doquery('COMMIT;');
   $new_version = 5;
 
   case 5:
     upd_log_version_update();
     mysql_query("DROP TABLE IF EXISTS `{$config->db_prefix}galaxy`;");
+  doquery('COMMIT;');
   $new_version = 6;
 
   case 6:
     upd_log_version_update();
-    doquery("DELETE FROM {{config}} WHERE `config_name` IN ('BannerURL', 'banner_source_post', 'BannerOverviewFrame',
+    upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('BannerURL', 'banner_source_post', 'BannerOverviewFrame',
       'close_reason', 'dbVersion', 'ForumUserBarFrame', 'OverviewBanner', 'OverviewClickBanner', 'OverviewExternChat',
       'OverviewExternChatCmd', 'OverviewNewsText', 'UserbarURL', 'userbar_source');");
+  doquery('COMMIT;');
   $new_version = 7;
 
   case 7:
@@ -141,6 +148,7 @@ switch(intval($config->db_version))
       "ADD KEY `fleet_mess` (`fleet_mess`)",
       "ADD KEY `fleet_group` (`fleet_group`)"
     ), !$update_indexes['fleets']['fleet_mess']);
+  doquery('COMMIT;');
   $new_version = 8;
 
   case 8:
@@ -151,6 +159,7 @@ switch(intval($config->db_version))
 
     upd_check_key('rpg_bonus_divisor', 10);
     upd_check_key('rpg_officer', 3);
+  doquery('COMMIT;');
   $new_version = 9;
 
   case 9:
@@ -158,7 +167,7 @@ switch(intval($config->db_version))
 
     $dm_change_legit = true;
 
-    doquery(
+    upd_do_query(
       "UPDATE {{referrals}} AS r
         LEFT JOIN {{users}} AS u
           ON u.id = r.id
@@ -166,7 +175,7 @@ switch(intval($config->db_version))
     );
     upd_add_more_time();
 
-    doquery(
+    upd_do_query(
       "UPDATE {{users}} AS u
         RIGHT JOIN {{referrals}} AS r
           ON r.id_partner = u.id AND r.dark_matter >= {$config->rpg_bonus_divisor}
@@ -174,12 +183,14 @@ switch(intval($config->db_version))
     );
 
     $dm_change_legit = false;
+  doquery('COMMIT;');
   $new_version = 10;
 
   case 10:
     upd_log_version_update();
     upd_check_key('game_news_overview', 3);
     upd_check_key('game_news_actual', 259200);
+  doquery('COMMIT;');
   $new_version = 11;
 
   case 11:
@@ -194,7 +205,8 @@ switch(intval($config->db_version))
       "DROP COLUMN `atakin`"
     ), $update_tables['users']['ataker']);
 
-    doquery("DELETE FROM {{config}} WHERE `config_name` IN ('OverviewNewsFrame');");
+    upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('OverviewNewsFrame');");
+  doquery('COMMIT;');
   $new_version = 12;
 
   case 12:
@@ -213,6 +225,7 @@ switch(intval($config->db_version))
         ) ENGINE=MyISAM DEFAULT CHARSET=utf8;"
       );
     };
+  doquery('COMMIT;');
   $new_version = 13;
 
   case 13:
@@ -223,12 +236,14 @@ switch(intval($config->db_version))
   case 14:
     upd_log_version_update();
     upd_check_key('rules_url', '/rules.php');
+  doquery('COMMIT;');
   $new_version = 15;
 
   case 15:
     upd_log_version_update();
     upd_alter_table('users', "DROP COLUMN `current_luna`", $update_tables['users']['current_luna']);
     upd_alter_table('users', "ADD `options` TEXT COMMENT 'Packed user options'", !$update_tables['users']['options']);
+  doquery('COMMIT;');
   $new_version = 16;
 
   case 16:
@@ -236,8 +251,9 @@ switch(intval($config->db_version))
     upd_check_key('game_speed', $config->game_speed/2500, $config->game_speed >= 2500);
     upd_check_key('fleet_speed', $config->fleet_speed/2500, $config->fleet_speed >= 2500);
     upd_check_key('player_max_colonies', $config->player_max_planets ? ($config->player_max_planets - 1) : 9);
-    doquery("DELETE FROM {{config}} WHERE `config_name` IN ('player_max_planets');");
+    upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('player_max_planets');");
     upd_alter_table('users', "ADD `news_lastread` int(11) NOT NULL DEFAULT '0' COMMENT 'News last read tag'", !$update_tables['users']['news_lastread']);
+  doquery('COMMIT;');
   $new_version = 17;
 
   case 17:
@@ -246,6 +262,7 @@ switch(intval($config->db_version))
     upd_check_key('game_default_skin', 'skins/EpicBlue/');
     upd_check_key('game_default_template', 'OpenGame');
     upd_alter_table('announce', "ADD `detail_url` varchar(250) NOT NULL DEFAULT '' COMMENT 'Link to more details about update'", !$update_tables['announce']['detail_url']);
+  doquery('COMMIT;');
   $new_version = 18;
 
   case 18:
@@ -255,7 +272,7 @@ switch(intval($config->db_version))
 
     upd_check_key('int_format_date', 'd.m.Y');
     upd_check_key('int_format_time', 'H:i:s');
-    doquery("DELETE FROM {{config}} WHERE `config_name` IN ('game_date_withTime');");
+    upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('game_date_withTime');");
 
     upd_alter_table('users', array(
       "MODIFY `user_lastip` VARCHAR(250) COMMENT 'User last IP'",
@@ -266,6 +283,7 @@ switch(intval($config->db_version))
       "MODIFY `ip` VARCHAR(250) COMMENT 'User last IP'",
       "ADD `proxy` VARCHAR(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)'"
     ), !$update_tables['counter']['proxy']);
+  doquery('COMMIT;');
   $new_version = 19;
 
   case 19:
@@ -273,7 +291,8 @@ switch(intval($config->db_version))
     upd_check_key('int_format_time', 'H:i:s', true);
     upd_check_key('int_banner_background', 'design/images/banner.png', true);
     upd_check_key('int_userbar_background', 'design/images/userbar.png', true);
-    doquery('UPDATE {{planets}} SET `metal_mine` = `metal_mine` - 1 WHERE `metal_mine` > 5;');
+    upd_do_query('UPDATE {{planets}} SET `metal_mine` = `metal_mine` - 1 WHERE `metal_mine` > 5;');
+  doquery('COMMIT;');
   $new_version = 20;
 
   case 20:
@@ -284,6 +303,7 @@ switch(intval($config->db_version))
       "ADD `res_points` BIGINT(20) DEFAULT 0 COMMENT 'Resource stat points'",
       "ADD `res_count` BIGINT(20) DEFAULT 0 COMMENT 'Old rank by resources'"
     ), !$update_tables['statpoints']['res_rank']);
+  doquery('COMMIT;');
   $new_version = 21;
 
   case 21:
@@ -294,8 +314,9 @@ switch(intval($config->db_version))
     upd_check_key('url_forum', $config->forum_url, !$config->url_forum);
     upd_check_key('url_rules', $config->rules_url, !$config->url_rules);
     upd_check_key('url_dark_matter', '/dark_matter_get.php', !$config->url_dark_matter);
-    doquery("DELETE FROM {{config}} WHERE `config_name` IN ('forum_url', 'rules_url');");
+    upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('forum_url', 'rules_url');");
 
+  doquery('COMMIT;');
   $new_version = 22;
 
   case 22:
@@ -304,7 +325,7 @@ switch(intval($config->db_version))
     upd_alter_table('planets', "ADD `governor_level` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Governor level'", !$update_tables['planets']['governor_level']);
     upd_alter_table('planets', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'Planet que'", !$update_tables['planets']['que']);
 
-    $planet_query = doquery('SELECT * FROM {{planets}} WHERE `b_building` <> 0;');
+    $planet_query = upd_do_query('SELECT * FROM {{planets}} WHERE `b_building` <> 0;');
     $const_que_structures = QUE_STRUCTURES;
     while($planet_data = mysql_fetch_assoc($planet_query))
     {
@@ -329,7 +350,7 @@ switch(intval($config->db_version))
         $old_que_item[3] = $old_que_item[3] > $planet_data['last_update'] ? $old_que_item[3] - $planet_data['last_update'] : 1;
         $planet_data['que'] = "{$old_que_item[0]},1,{$old_que_item[3]},{$old_que_item[4]},{$const_que_structures};{$planet_data['que']}";
       }
-      doquery("UPDATE {{planets}} SET `que` = '{$planet_data['que']}', `b_building` = '0', `b_building_id` = '0' WHERE `id` = '{$planet_data['id']}' LIMIT 1;");
+      upd_do_query("UPDATE {{planets}} SET `que` = '{$planet_data['que']}', `b_building` = '0', `b_building_id` = '0' WHERE `id` = '{$planet_data['id']}' LIMIT 1;");
     }
 
     if(!$update_tables['mercenaries'])
@@ -346,6 +367,7 @@ switch(intval($config->db_version))
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     };
+  doquery('COMMIT;');
   $new_version = 23;
 
   case 23:
@@ -365,11 +387,28 @@ switch(intval($config->db_version))
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     };
+  doquery('COMMIT;');
   $new_version = 24;
 
   case 24:
-  //  upd_log_version_update();
-  //$new_version = 25;
+    upd_log_version_update();
+
+    if(!$update_tables['users']['vacation'])
+    {
+      upd_alter_table('users', "ADD `vacation` int(11) NOT NULL DEFAULT '0' COMMENT 'Time when user can leave vacation mode'", !$update_tables['users']['vacation']);
+      upd_do_query('UPDATE {{users}} SET `vacation` = `urlaubs_until`;');
+      upd_alter_table('users', 'DROP COLUMN `urlaubs_until`, DROP COLUMN `urlaubs_modus`, DROP COLUMN `urlaubs_modus_time`');
+    }
+
+    if(isset($config->urlaubs_modus_erz))
+    {
+      upd_check_key('user_vacation_disable', $config->urlaubs_modus_erz, !isset($config->user_vacation_disable));
+      upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('urlaubs_modus_erz');");
+      unset($config->urlaubs_modus_erz);
+    }
+
+  doquery('COMMIT;');
+  $new_version = 25;
 
 };
 upd_log_message('Upgrade complete.');
@@ -387,6 +426,16 @@ else
 //if ( $user['authlevel'] >= 3 )
 {
   print(str_replace("\r\n", '<br>', $upd_log));
+}
+
+function upd_do_query($query)
+{
+  global $config;
+
+  upd_add_more_time();
+  upd_log_message("Performing query '{$query}'");
+
+  return doquery($query);
 }
 
 function upd_alter_table($table, $alters, $condition = true)
@@ -423,11 +472,10 @@ function upd_check_key($key, $default_value, $condition = false)
 {
   global $config;
 
-  upd_add_more_time();
-  upd_log_message("Updating config key '{$key}' with value '{$default_value}'");
-
   if($condition || !$config->db_loadItem($key))
   {
+    upd_add_more_time();
+    upd_log_message("Updating config key '{$key}' with value '{$default_value}'");
     $config->db_saveItem($key, $default_value);
   }
 }
@@ -436,6 +484,7 @@ function upd_log_version_update()
 {
   global $new_version;
 
+  doquery('START TRANSACTION;');
   upd_add_more_time();
   upd_log_message("Detected outdated version {$new_version}. Upgrading...");
 }

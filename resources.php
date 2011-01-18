@@ -35,8 +35,6 @@ if ($IsUserChecked == false)
   header("Location: login.php");
 }
 
-check_urlaubmodus ($user);
-
 function int_calc_storage_bar($resource_name)
 {
   global $lang, $config, $template, $parse, $caps;

@@ -72,8 +72,9 @@ foreach (array_merge($sn_groups['fleet'], array(503)) as $ship_id)
 $target_planet_check = $target_planet_type == PT_DEBRIS ? PT_PLANET : $target_planet_type;
 $TargetRow = doquery( "SELECT * FROM {{planets}} WHERE `galaxy` = '{$target_galaxy}' AND `system` = '{$target_system}' AND `planet` = '{$target_planet}' AND `planet_type` = '{$target_planet_check}' LIMIT 1;", '', true);
 
-$cant_attack = flt_can_attack($TargetRow, $target_mission, $fleet_array);
-if($cant_attack)
+$options = array();
+$cant_attack = flt_can_attack($planetrow, $TargetRow, $fleet_array, $target_mission, $options);
+if($cant_attack != ATTACK_ALLOWED)
 {
   die("{$cant_attack}|{$lang['fl_attack_error'][$cant_attack]}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}");
 }

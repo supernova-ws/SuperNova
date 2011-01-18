@@ -20,8 +20,6 @@ if ($IsUserChecked == false)
   header("Location: login.php");
 }
 
-check_urlaubmodus ($user);
-
 $HeadTpl = gettemplate('techtree_head');
 $RowTpl  = gettemplate('techtree_row');
 
