@@ -5,8 +5,11 @@
  Automated DB upgrade system
 
  @package supernova
- @version 24
+ @version 25
 
+ 25 - copyright (c) 2009-2011 Gorlum for http://supernova.ws
+   [!] Now it's all abut transactions...
+   [~] Converted doquery to internal wrapper with logging ability
  24 - copyright (c) 2009-2011 Gorlum for http://supernova.ws
    [+] Converted pre v18 entries to use later implemented functions
  v18-v23 - copyright (c) 2009-2010 Gorlum for http://supernova.ws
