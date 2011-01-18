@@ -34,7 +34,7 @@ if ($_POST['submit'])
   $username_safe = mysql_real_escape_string($username);
   $password = strip_tags($_POST['password']);
   $email = mysql_real_escape_string(strip_tags($_POST['email']));
-  $planet_name = mysql_real_escape_string(strip_tags($_POST['planet_name']));
+  $planet_name = strip_tags(trim($_POST['planet_name']));
   $language = mysql_real_escape_string(strip_tags($_POST['language']));
   $sex = mysql_real_escape_string(strip_tags($_POST['sex']));
 
