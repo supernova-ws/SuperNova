@@ -1,7 +1,7 @@
     <center>
       <div id="copyright" style="padding-top: 2ex;">
-        Project &quot;SuperNova.WS&quot; &copy; 2009-2011 Gorlum.<br>
-        Based on XNova RageRepack v.226
+        Project &quot;SuperNova.WS&quot; version {SN_VERSION} &copy; 2009-2011 Gorlum<br>
+        Based on XNova RageRepack v226
       </div>
     </center>
 

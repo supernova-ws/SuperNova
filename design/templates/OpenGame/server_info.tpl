@@ -68,7 +68,6 @@
     <th>{C_player_max_colonies}</th>
   </tr>
 
-  
   <tr><td class="c" colspan="2">{L_adm_opt_game_oth_info}</td></tr>
   <tr>
     <th>{L_adm_opt_exchange}</th>
@@ -93,6 +92,16 @@
         {L_sys_no}
       <!-- ENDIF -->
     </th>
+  </tr>
+
+  <tr><td class="c" colspan="2">{L_adm_ver_versions}</td></tr>
+  <tr>
+    <th>{L_adm_ver_version_sn}</th>
+    <th>{SN_VERSION}</th>
+  </tr>
+  <tr>
+    <th>{L_adm_ver_version_db}</th>
+    <th>{C_db_version}</th>
   </tr>
 
 </tbody></table>
