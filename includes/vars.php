@@ -1509,6 +1509,7 @@ if ( defined('INSIDE')) {
 
       // Tech list
       'tech'      => array ( 106, 108, 109, 110, 111, TECH_ENERGY, 114, 115, 117, 118, 120, 121, 122, 123, 124, 150, 199),
+
       // Mercenary list
       'mercenaries' => array (
         MRC_GEOLOGIST, MRC_POWERMAN, MRC_STOCKMAN, MRC_ARCHITECT, MRC_SPY, MRC_COORDINATOR, MRC_DESTRUCTOR,
@@ -1519,18 +1520,21 @@ if ( defined('INSIDE')) {
       'governors' => array(
         MRC_GEOLOGIST, MRC_POWERMAN, MRC_CONSTRUCTOR, MRC_ARCHITECT, MRC_ACADEMIC, MRC_FORTIFIER
       ),
+
       // Spaceships list
       'fleet'     => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216 ),
       // Defensive building list
       'defense'   => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409, 502, 503 ),
 
-      // List of units that can produce resources
-      'prod'      => array ( 1, 2, 3, 4, 12, 212 ),
-
       // Combat units list
       'combat'    => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
       // Planet active defense list
       'defense_active' => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
+      // Transports
+      'flt_transports' => array ( 202, 203, 201 ),
+
+      // List of units that can produce resources
+      'prod'      => array ( 1, 2, 3, 4, 12, 212 ),
 
       // Resource list
       'resources' => array ( 0 => 'metal', 1 => 'crystal', 2 => 'deuterium', 3 => 'dark_matter'),

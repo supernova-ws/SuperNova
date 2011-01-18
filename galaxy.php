@@ -42,7 +42,6 @@ $GET_galaxy       = intval($_GET['galaxy']);
 $GET_system       = intval($_GET['system']);
 $GET_planet       = intval($_GET['planet']);
 
-check_urlaubmodus ($user);
 includeLang('universe');
 
 $CurrentPlanet = doquery("SELECT * FROM {{table}} WHERE `id` = '". $user['current_planet'] ."';", 'planets', true);
@@ -215,7 +214,7 @@ for ($Planet = 1; $Planet < 16; $Planet++) {
      'USER_NAME_JS'  => js_safe_string($GalaxyRowUser['username']),
      'USER_RANK'     => $GalaxyRowUser['rank'],
      'USER_BANNED'   => $GalaxyRowUser['bana'],
-     'USER_VACANCY'  => $GalaxyRowUser['urlaubs_modus'],
+     'USER_VACATION' => $GalaxyRowUser['vacation'],
      'USER_ACTIVITY' => floor(($time_now - $GalaxyRowUser['onlinetime'])/(60*60*24)),
      'USER_PROTECTED'=> $RowUserPoints <= $config->game_noob_points,
      'USER_NOOB'     => $RowUserPoints * $config->game_noob_factor < $CurrentPoints,

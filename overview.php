@@ -57,8 +57,6 @@ if($user['authlevel'] >= 2)
   }
 }
 
-check_urlaubmodus ($user);
-
 includeLang('overview');
 
 $mode            = $_GET['mode'];
@@ -499,4 +497,3 @@ function int_planet_pretemplate(&$template)
 }
 
 ?>
-

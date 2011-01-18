@@ -68,8 +68,6 @@ if ($IsUserChecked == false) {
   header("Location: login.{$phpEx}");
 }
 
-check_urlaubmodus ($user);
-
 $mode = $_GET['mode'];
 $offi = $_GET['offi'];
 

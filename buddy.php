@@ -22,7 +22,6 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-check_urlaubmodus ($user);
 includeLang('buddy');
 
 $userID  = intval(isset($_GET['u']) ? $_GET['u'] : $_POST['u']);

@@ -75,9 +75,9 @@
     <th>{L_sys_metal}&nbsp;{C_rpg_exchange_metal}&nbsp;:&nbsp;{L_sys_crystal}&nbsp;{C_rpg_exchange_crystal}&nbsp;:&nbsp;{L_sys_deuterium}&nbsp;{C_rpg_exchange_deuterium}&nbsp;:&nbsp;{L_sys_dark_matter_sh}&nbsp;{C_rpg_exchange_darkMatter}</th>
   </tr>
   <tr> 
-    <th>{L_adm_opt_vacancy_mode_is}</th> 
+    <th>{L_adm_opt_vacation_mode_is}</th> 
     <th>
-      <!-- IF C_urlaubs_modus_erz -->
+      <!-- IF USER_VACATION_DISABLE -->
         {L_sys_off}
       <!-- ELSE -->
         {L_sys_on}
