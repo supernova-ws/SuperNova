@@ -40,7 +40,7 @@
     <!-- BEGINELSE colonies -->
       <th colspan="2">{L_fl_nocolonies}</th>
     <!-- END colonies -->
-    <tr><th colspan="2"><input type="submit" value="{L_flt_gather_all}" /></th></tr>
+    <tr><td class="c" colspan="2" align="center"><input type="submit" value="{L_flt_gather_all}" /></td></tr>
 
   </table>
   <!-- INCLUDE page_hint.tpl -->

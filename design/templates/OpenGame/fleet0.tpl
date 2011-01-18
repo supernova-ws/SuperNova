@@ -104,7 +104,9 @@ var speed_factor   = {speed_factor};
   <!-- END fleets -->
 
   <!-- IF FLYING_FLEETS >= MAX_FLEETS -->
-    <tr><th colspan="8"><font color="red">{fl_noslotfree}</font></th></tr>
+    <tr><td class="c" colspan="8" align="center"><font color="red">{fl_noslotfree}</font></td></tr>
+  <!-- ELSE -->
+    <tr><td class="c" colspan="8" align="center"><input type="button" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';"></th></tr>
   <!-- ENDIF -->
 </table><br>
 
@@ -131,9 +133,9 @@ var speed_factor   = {speed_factor};
     </td></tr>
 
     <tr>
-      <th>{fl_fleet_typ}</th>
-      <th>{L_fl_orbiting}</th>
-      <th>{L_fl_to_fly}</th>
+      <td class="c">{fl_fleet_typ}</td>
+      <td class="c">{L_fl_orbiting}</rd>
+      <td class="c">{L_fl_to_fly}</td>
     </tr>
 
     {ErrorNoPlanetRow}
@@ -158,9 +160,7 @@ var speed_factor   = {speed_factor};
       <!-- END ships -->
       <!-- IF FLYING_FLEETS < MAX_FLEETS -->
       <tr>
-          <th colspan="2">
-            <input type="button" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';"></div>
-          </th>
+          <th colspan="2">&nbsp;</th>
           <th>
               <div class="fl"><input type="button" value="{fl_unselectall}" onclick="javascript:zero_fleet();"></div>
               <div class="fr"><input type="button" value="{fl_selectall}" onclick="javascript:max_fleet();"></div>

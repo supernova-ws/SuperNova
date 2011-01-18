@@ -145,7 +145,7 @@ if(!empty($planet_ids))
 
 // Building list of own planets & moons
 $colonies = SortUserPlanets ($user, $planetrow);
-if (mysql_num_rows($colonies) > 1)
+if (mysql_num_rows($colonies) >= 1)
 {
   while ($row = mysql_fetch_array($colonies))
   {
