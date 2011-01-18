@@ -22,8 +22,6 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-check_urlaubmodus ($user);
-
 $users = doquery("SELECT `username`,`galaxy`,`system` FROM {{table}} WHERE `id` ='".$user['id']."';", 'users',true);
 $action = intval($_GET['action']);
 $GET_id = intval($_GET['id']);

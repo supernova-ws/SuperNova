@@ -114,7 +114,7 @@ define('ATTACK_OWN'            ,  2);
 define('ATTACK_WRONG_MISSION'  ,  3);
 define('ATTACK_NO_ALLY_DEPOSIT',  4);
 define('ATTACK_NO_DEBRIS'      ,  5);
-define('ATTACK_VACANCY'        ,  6);
+define('ATTACK_VACATION'       ,  6);
 define('ATTACK_SAME_IP'        ,  7);
 define('ATTACK_BUFFING'        ,  8);
 define('ATTACK_ADMIN'          ,  9);

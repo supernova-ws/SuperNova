@@ -21,8 +21,6 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-check_urlaubmodus ($user);
-
 // MINE VARS
 $POST_name = SYS_mysqlSmartEscape($_POST['name']);
 $POST_tag = SYS_mysqlSmartEscape($_POST['tag']);

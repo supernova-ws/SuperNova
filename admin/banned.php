@@ -53,8 +53,7 @@ if ($mode == 'banit') {
   $QryUpdateUser    .= "`bana` = '1', ";
   $QryUpdateUser    .= "`banaday` = '". $BannedUntil ."' ";
   if($isVacation){
-    $QryUpdateUser    .= ", `urlaubs_until` = '". $BannedUntil ."' ";
-    $QryUpdateUser    .= ", `urlaubs_modus` = '1' ";
+    $QryUpdateUser    .= ", `vacation` = '{$BannedUntil}' ";
   }
   $QryUpdateUser    .= "WHERE ";
   $QryUpdateUser    .= "`username` = \"". $name ."\" LIMIT 1;";
@@ -93,7 +92,7 @@ if ($mode == 'banit') {
   $nam = $_POST['name'];
   //doquery("DELETE FROM {{table}} WHERE who2='{$nam}'", 'banned');
   //doquery("UPDATE {{banned}} SET `longer` = {$time_now} WHERE who2='{$nam}'", 'banned');
-  doquery("UPDATE {{users}} SET bana=0, banaday=0, `urlaubs_until` = 0 WHERE username like '{$nam}'");
+  doquery("UPDATE {{users}} SET bana=0, banaday=0, `vacation` = {$time_now} WHERE username like '{$nam}';");
   $DoneMessage       = $lang['adm_unbn_thpl'] ." ". $name ." ". $lang['adm_unbn_isbn'];
   AdminMessage ($DoneMessage, $lang['adm_unbn_ttle']);
 };

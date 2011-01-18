@@ -483,7 +483,7 @@ class classConfig extends classPersistent
     'noobprotectionmulti'    => 5,
     'noobprotectiontime'     => 5000,
     'resource_multiplier'    => 1,
-    'urlaubs_modus_erz'      => 0,
+    'user_vacation_disable'  => 0,
     'users_amount'           => 0,
 
     // Noob protection

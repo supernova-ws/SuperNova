@@ -4,7 +4,7 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
 {
   global $time_now, $config, $sn_data, $sn_groups, $user, $planetrow;
 
-  if($user['urlaubs_modus'])
+  if($user['vacation'])
   {
     return ATTACK_OWN_VACATION;
   }
@@ -79,10 +79,10 @@ function flt_can_attack($target_planet, $target_mission, $fleet = array(), $flyi
   }
 
   $enemy = doquery("SELECT * FROM {{users}} WHERE `id` = '{$target_planet['id_owner']}';", '', true);
-  // We cannot attack or send resource to users in VACANCY mode
-  if ($enemy['urlaubs_modus'] && $target_mission != MT_RECYCLE)
+  // We cannot attack or send resource to users in VACATION mode
+  if ($enemy['vacation'] && $target_mission != MT_RECYCLE)
   {
-    return ATTACK_VACANCY;
+    return ATTACK_VACATION;
   }
 
   // Multi IP protection. Here we need a procedure to check proxies

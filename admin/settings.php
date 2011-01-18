@@ -33,7 +33,7 @@ if ($_POST['save'])
   $config->game_speed              = floatval( $_POST['game_speed'] );
   $config->fleet_speed             = floatval( $_POST['fleet_speed'] );
   $config->resource_multiplier     = floatval( $_POST['resource_multiplier'] );
-  $config->urlaubs_modus_erz       = $_POST['urlaubs_modus_erz'] ? 1 : 0;
+  $config->user_vacation_disable   = $_POST['user_vacation_disable'] ? 1 : 0;
   $config->url_forum               = $_POST['url_forum'];
   $config->url_rules               = $_POST['url_rules'];
   $config->url_dark_matter         = $_POST['url_dark_matter'];
@@ -77,7 +77,7 @@ $template->assign_vars(array(
   'game_disable' => $config->game_disable ? 'checked' : '',
   'advGoogleLeftMenuIsOn' => $config->advGoogleLeftMenuIsOn ? 'checked' : '',
   'debug' => $config->debug ? 'checked' : '',
-  'urlaubs_modus_erz' => $config->urlaubs_modus_erz ? 'checked' : '',
+  'user_vacation_disable' => $config->user_vacation_disable ? 'checked' : '',
   'game_mode' => $config->game_mode,
 ));
 

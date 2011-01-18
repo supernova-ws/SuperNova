@@ -1,12 +1,19 @@
 <?php
 
 /**
- * functions.php
- * Previously "unlocalised.php"
+ * HandleElementBuildingQueue.php
  *
- * @version 1
- * @copyright 2008 By Chlorel for XNova
- // Created by Perberos. All rights reversed (C) 2006
+ * @package supernova
+ * @version 24
+ *
+ * Revision History
+ * ================
+ *   24 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *      [!] Many, many, many changes
+ *      [~] Rewrote all functions about vacation mode to single sys_user_vacation
+ *
+ *    1 - copyright 2008 By Chlorel for XNova
+ *    0 - Created by Perberos. All rights reversed (C) 2006
  */
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -33,23 +40,17 @@ function GetTargetDistance ($OrigGalaxy, $DestGalaxy, $OrigSystem, $DestSystem, 
 // Calcul de la durée de vol d'une flotte par rapport a sa vitesse max
 function GetMissionDuration ($GameSpeed, $MaxFleetSpeed, $Distance, $SpeedFactor)
 {
-  $Duration = round(((35000 / $GameSpeed * sqrt($Distance * 10 / $MaxFleetSpeed) + 10) / $SpeedFactor));
-
-  return $Duration;
+  return round(((35000 / $GameSpeed * sqrt($Distance * 10 / $MaxFleetSpeed) + 10) / $SpeedFactor));
 }
 
 function get_fleet_speed()
 {
-  global $config;
-
-  return $config->fleet_speed;
+  return $GLOBALS['config']->fleet_speed;
 }
 
 function get_game_speed()
 {
-  global $config;
-
-  return $config->game_speed;
+  return $GLOBALS['config']->game_speed;
 }
 
 function get_ship_speed($ship_id, $user)
@@ -634,34 +635,34 @@ function sys_log_hit()
 //
 // Routine pour la gestion du mode vacance
 //
-function check_urlaubmodus($user)
+function sys_user_vacation($user)
 {
-  global $lang;
+  global $time_now;
 
-  if ($user['urlaubs_modus'])
+  if(sys_get_param_str('vacation') == 'leave')
   {
-    message('<img src="design/images/vacancy.jpg">', "{$user['username']}, {$lang['sys_vacancy']}");
-  }
-}
-
-function check_urlaubmodus_time()
-{
-  global $user, $config, $time_now;
-
-  if ($config->urlaubs_modus_erz == 1)
-  {
-    $urlaub_modus_time_soll = $user['urlaubs_modus_time'] + VOCATION_TIME;
-
-    if ($user['urlaubs_modus'] == 1 && $urlaub_modus_time_soll > $time_now)
+    if($user['vacation'] < $time_now)
     {
-      $soll_datum = date(FMT_DATE, $urlaub_modus_time_soll);
-      $soll_uhrzeit = date(FMT_TIME, $urlaub_modus_time_soll);
-    }
-    elseif ($user['urlaubs_modus'] && $urlaub_modus_time_soll < $time_now)
-    {
-      doquery("UPDATE {{users}} SET `urlaubs_modus` = '0', `urlaubs_modus_time` = '0' WHERE `id` = '{$user['id']}' LIMIT 1;");
+      doquery("UPDATE {{users}} SET `vacation` = '0' WHERE `id` = '{$user['id']}' LIMIT 1;");
+      $user['vacation'] = 0;
     }
   }
+
+  if ($user['vacation'])
+  {
+    $template = gettemplate('vacation', true);
+
+    $template->assign_vars(array(
+      'NAME'         => $user['username'],
+      'VACATION_END' => date(FMT_DATE_TIME, $user['vacation']),
+      'CAN_LEAVE'    => $user['vacation'] <= $time_now,
+      'RANDOM'       => mt_rand(1, 2),
+    ));
+
+    display(parsetemplate($template));
+  }
+
+  return false;
 }
 
 function sys_get_user_ip()

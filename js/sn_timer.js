@@ -18,7 +18,7 @@ SuperNova JavaScript timer system
 
 Object structure:
   'id'          - timer ID (name)
-  'type'        - timer type: 0 - que display; 1 - counter; 2 - date&time
+  'type'        - timer type: 0 - que display; 1 - counter; 2 - date&time; 3 - pictured que; 4 - date&time with delta
   'active'      - is timer active?
   'start_time'  - start time
   'options'     - timer options
@@ -48,6 +48,12 @@ Options for date&time:
 bit 1 - date
 bit 2 - time
 It means: 1 - just date; 2 - just time; 3 - both date & time
+
+Options for date&time with delta:
+  'format' - bit 1 - date
+             bit 2 - time
+             It means: 1 - just date; 2 - just time; 3 - both date & time
+  'delta'  - seconds to add or substract
 
 */
 
@@ -235,6 +241,36 @@ function sn_timer() {
         }
 
         if(timer['options'] & 2)
+        {
+          printData += local_time.toTimeString().substring(0,8);
+        }
+
+        if(HTML != null)
+        {
+          HTML.innerHTML = printData;
+        }
+        else
+        {
+          timer['active'] = false;
+        }
+      break;
+
+      case 4: // date&time with delta
+        printData = '';
+
+        local_time.setTime(local_time.valueOf() + (timer['options']['delta'] * 1000));
+
+        if(timer['options']['format'] & 1)
+        {
+          printData += local_time.toLocaleDateString();
+        }
+
+        if(timer['options']['format'] & 3)
+        {
+          printData += '&nbsp;';
+        }
+
+        if(timer['options']['format'] & 2)
         {
           printData += local_time.toTimeString().substring(0,8);
         }

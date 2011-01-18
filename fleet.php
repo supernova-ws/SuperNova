@@ -33,7 +33,6 @@ if ($IsUserChecked == false) {
   includeLang('login');
   header("Location: login.php");
 }
-check_urlaubmodus ($user);
 
 includeLang('fleet');
 
