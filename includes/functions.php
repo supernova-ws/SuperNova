@@ -54,7 +54,12 @@ function get_game_speed()
 
 function get_ship_speed($ship_id, $user)
 {
-  global $resource, $reslist, $pricelist;
+  global $resource, $reslist, $pricelist, $sn_data;
+
+  if(!in_array($ship_id, $sn_data['groups']['fleet']))
+  {
+    return 0;
+  }
 
   if($pricelist[$ship_id]['tech_level'] && $user[$resource[$pricelist[$ship_id]['tech2']]] >= $pricelist[$ship_id]['tech_level'])
   {
@@ -78,18 +83,21 @@ function get_ship_speed($ship_id, $user)
 // Avec prise en compte
 function GetFleetMaxSpeed ($FleetArray, $Fleet, $Player)
 {
-  if ($Fleet)
+  global $sn_data;
+
+  if(empty($FleetArray) && !$Fleet)
   {
-    return get_ship_speed($Fleet, $Player);
+    return array(0 => 0);
   }
 
-  if(empty($FleetArray))
+  if(!is_array($FleetArray))
   {
-    return 0;
+    $FleetArray = array($Fleet => 1);
   }
 
-  foreach ($FleetArray as $Ship => $Count) {
-    if(!$Count)
+  foreach ($FleetArray as $Ship => $Count)
+  {
+    if(!$Count || !in_array($Ship, $sn_data['groups']['fleet']))
     {
       continue;
     }
@@ -102,8 +110,9 @@ function GetFleetMaxSpeed ($FleetArray, $Fleet, $Player)
 // Calcul de la consommation de base d'un vaisseau au regard des technologies
 function GetShipConsumption ( $ship_id, $user )
 {
-  global $pricelist, $resource;
+  global $pricelist, $resource, $sn_data;
 
+/*
   if($pricelist[$ship_id]['tech_level'] && $user[$resource[$pricelist[$ship_id]['tech2']]] >= $pricelist[$ship_id]['tech_level'])
   {
     $consumption = $pricelist[$ship_id]['consumption2'];
@@ -114,6 +123,8 @@ function GetShipConsumption ( $ship_id, $user )
   }
 
   return $consumption;
+*/
+  return ($pricelist[$ship_id]['tech_level'] && $user[$resource[$pricelist[$ship_id]['tech2']]] >= $pricelist[$ship_id]['tech_level']) ? $pricelist[$ship_id]['consumption2'] : $consumption = $pricelist[$ship_id]['consumption'];
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -128,8 +139,10 @@ function GetFleetConsumption ($FleetArray, $SpeedFactor, $MissionDuration, $Miss
 
   $spd             = $speed_percent * sqrt( $FleetMaxSpeed );
 
-  foreach ($FleetArray as $Ship => $Count) {
-    if (!$Ship) {
+  foreach ($FleetArray as $Ship => $Count)
+  {
+    if (!$Ship || !$Count)
+    {
       continue;
     }
 
@@ -138,10 +151,10 @@ function GetFleetConsumption ($FleetArray, $SpeedFactor, $MissionDuration, $Miss
 
     $ShipConsumption   = GetShipConsumption ( $Ship, $Player );
 
-    $consumption += $ShipConsumption * $Count  * pow($spd / sqrt($ShipSpeed) / 10 + 1, 2 );
+    $consumption += $ShipConsumption * $Count * pow($spd / sqrt($ShipSpeed) / 10 + 1, 2 );
   }
 
-  $consumption = round($MissionDistance * $consumption  / 35000) + 1;
+  $consumption = round($MissionDistance * $consumption / 35000) + 1;
 
   return $consumption;
 }

@@ -62,7 +62,8 @@ elseif ($targetedStructures && !in_array($targetedStructures, $sn_groups['defens
   message($targetedStructures.$lang['mip_hack_attempt'], $lang['sys_error']);
 };
 
-$cant_attack = flt_can_attack($planetrow, $target_planet, MT_MISSILE, array(503 => $MIPSent));
+$options = array();
+$cant_attack = flt_can_attack($planetrow, $target_planet, array(503 => $MIPSent), MT_MISSILE, $options);
 if($cant_attack != ATTACK_ALLOWED)
 {
   doquery("ROLLBACK;");

@@ -130,6 +130,13 @@ define('ATTACK_NO_SPIES'       , 18);
 define('ATTACK_NO_COLONIZER'   , 19);
 define('ATTACK_MISSILE_TOO_FAR', 20);
 define('ATTACK_WRONG_STRUCTURE', 21);
+define('ATTACK_NO_FUEL'        , 22);
+define('ATTACK_NO_RESOURCES'   , 23);
+define('ATTACK_NO_ACS'         , 24);
+define('ATTACK_ACS_MISSTARGET' , 25);
+define('ATTACK_WRONG_SPEED'    , 26);
+define('ATTACK_ACS_TOO_LATE'   , 27);
+
 
 // *** Mercenary/talent bonus types
 define('BONUS_NONE',     0);  // No bonus

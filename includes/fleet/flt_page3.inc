@@ -116,8 +116,9 @@
 
   CheckPlanetUsedFields($planetrow);
 
-  $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $target_mission, $fleetarray);
-  if($cant_attack)
+  $options = array();
+  $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
+  if($cant_attack != ATTACK_ALLOWED)
   {
     message("<font color=\"red\"><b>{$lang['fl_attack_error'][$cant_attack]}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
   }

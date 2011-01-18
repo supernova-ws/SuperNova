@@ -1,8 +1,8 @@
 <?php
 
-function flt_can_attack($planet_src, $planet_dst, $mission, $fleet = array(), $flying_fleets = false)
+function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false)
 {
-  global $time_now, $config, $sn_data, $sn_groups, $user;
+  global $config, $sn_data, $user, $time_now;
 
   if($user['urlaubs_modus'])
   {
@@ -22,7 +22,53 @@ function flt_can_attack($planet_src, $planet_dst, $mission, $fleet = array(), $f
     }
   }
 
-  if($flying_fleets === false)
+  $speed = $options['speed'];
+  if($speed && ($speed != intval($speed) || $speed < 1 || $speed > 10))
+  {
+    return ATTACK_WRONG_SPEED;
+  }
+
+  $speed_factor = get_fleet_speed();
+  $distance     = GetTargetDistance($planet_src['galaxy'], $planet_dst['galaxy'], $planet_src['system'], $planet_dst['system'], $planet_src['planet'], $planet_dst['planet']);
+  $fleet_speed  = min(GetFleetMaxSpeed($fleet, 0, $user));
+  $duration     = GetMissionDuration(10, $fleet_speed, $distance, $speed_factor);
+  $consumption  = GetFleetConsumption($fleet, $speed_factor, $duration, $distance, $fleet_speed, $user);
+  if($planet_src[$sn_data[RES_DEUTERIUM]['name']] < $fleet[RES_DEUTERIUM] + $consumption)
+  {
+    return ATTACK_NO_FUEL;
+  }
+
+  $fleet_start_time = $time_now + $duration;
+
+  $fleet_group = $options['fleet_group'];
+  if($fleet_group)
+  {
+    if($mission != MT_AKS)
+    {
+      return ATTACK_WRONG_MISISON;
+    };
+
+    $acs = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}' LIMIT 1;", '', true);
+    if ($acs['id'])
+    {
+      return ATTACK_NO_ACS;
+    }
+
+    if ($to['galaxy'] != $acs['galaxy'] || $to['system'] != $acs['system'] || $to['planet'] != $acs['planet'] || $to['planet_type'] != $acs['planet_type'])
+    {
+      return ATTACK_ACS_WRONG_TARGET;
+    }
+
+    if ($fleet_start_time>$acs['ankunft'])
+    {
+      return ATTACK_ACS_TOO_LATE;
+    }
+//    $fleet_start_time = $aks['ankunft'];
+//    $fleet_end_time = $aks['ankunft'] + $duration;
+  }
+
+  $flying_fleets = $options('flying_fleets');
+  if(!$flying_fleets)
   {
     $flying_fleets = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
     $flying_fleets = $flying_fleets['flying_fleets'];
