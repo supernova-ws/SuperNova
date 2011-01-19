@@ -40,7 +40,7 @@ function GetTargetDistance ($OrigGalaxy, $DestGalaxy, $OrigSystem, $DestSystem, 
 // Calcul de la durée de vol d'une flotte par rapport a sa vitesse max
 function GetMissionDuration ($GameSpeed, $MaxFleetSpeed, $Distance, $SpeedFactor)
 {
-  return round(((35000 / $GameSpeed * sqrt($Distance * 10 / $MaxFleetSpeed) + 10) / $SpeedFactor));
+  return $MaxFleetSpeed == 0 || $SpeedFactor == 0 ? 0 : round(((35000 / $GameSpeed * sqrt($Distance * 10 / $MaxFleetSpeed) + 10) / $SpeedFactor));
 }
 
 function get_fleet_speed()
@@ -86,24 +86,24 @@ function GetFleetMaxSpeed ($FleetArray, $Fleet, $Player)
 {
   global $sn_data;
 
-  if(empty($FleetArray) && !$Fleet)
+  if(!empty($FleetArray) || $Fleet)
   {
-    return array(0 => 0);
-  }
-
-  if(!is_array($FleetArray))
-  {
-    $FleetArray = array($Fleet => 1);
-  }
-
-  foreach ($FleetArray as $Ship => $Count)
-  {
-    if(!$Count || !in_array($Ship, $sn_data['groups']['fleet']))
+    if(!is_array($FleetArray))
     {
-      continue;
+      $FleetArray = array($Fleet => 1);
     }
-    $speedalls[$Ship] = get_ship_speed($Ship, $Player);
+
+    foreach ($FleetArray as $Ship => $Count)
+    {
+      if(!$Count || !in_array($Ship, $sn_data['groups']['fleet']))
+      {
+        continue;
+      }
+      $speedalls[$Ship] = get_ship_speed($Ship, $Player);
+    }
   }
+
+  $speedalls = empty($speedalls) ? array(0 => 0) : $speedalls;
 
   return $speedalls;
 }
@@ -851,11 +851,11 @@ function mrc_modify_value($user, $planet = false, $mercenaries, $value)
  * @copyright 2008 By Chlorel for XNova
  */
 
-function SortUserPlanets ( $CurrentUser, $planet = false ) {
+function SortUserPlanets ( $CurrentUser, $planet = false, $field_list = '' ) {
   $Order = ( $CurrentUser['planet_sort_order'] == 1 ) ? "DESC" : "ASC" ;
   $Sort  = $CurrentUser['planet_sort'];
 
-  $QryPlanets  = "SELECT `id`, `name`, `galaxy`, `system`, `planet`, `planet_type` FROM {{planets}} WHERE `id_owner` = '{$CurrentUser['id']}' ";
+  $QryPlanets  = "SELECT `id`, `name`, `galaxy`, `system`, `planet`, `planet_type`{$field_list} FROM {{planets}} WHERE `id_owner` = '{$CurrentUser['id']}' ";
   if($planet)
   {
     $QryPlanets .= "AND `id` <> {$planet['id']} ";
