@@ -144,7 +144,7 @@ if(!empty($planet_ids))
 } // end processing parameters
 
 // Building list of own planets & moons
-$colonies = SortUserPlanets ($user, $planetrow);
+$colonies = SortUserPlanets ($user, $planetrow, ', metal, crystal, deuterium');
 if (mysql_num_rows($colonies) >= 1)
 {
   while ($row = mysql_fetch_array($colonies))
@@ -157,25 +157,14 @@ if (mysql_num_rows($colonies) >= 1)
       'PLANET'     => $row['planet'],
       'TYPE'       => $row['planet_type'],
       'TYPE_PRINT' => $lang['sys_planet_type'][$row['planet_type']],
+      'METAL'      => pretty_number($row['metal']),
+      'CRYSTAL'    => pretty_number($row['crystal']),
+      'DEUTERIUM'  => pretty_number($row['deuterium']),
     ));
   }
 };
 
 $template->assign_vars(array(
-  'acss1'           => $aks_fleets_mr, // just data to print
-
-  'usedfleet'       => str_rot13(base64_encode(serialize($fleet['fleetarray']))),
-
-  'speed_factor'     => $SpeedFactor,
-  "t{$planet_type}" => 'SELECTED',
-
-  'target_mission'  => $target_mission,
-
-  'ships'           => str_rot13(base64_encode(serialize($ships))),
-
-//  'fleet_speed'     => round(min(GetFleetMaxSpeed($fleet['fleetarray'], false, $user))),
-//  'fleet_capacity'  => $fleet['capacity'],
-
   'PAGE_HINT'       => $lang['fl_page5_hint'],
 ));
 
