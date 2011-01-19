@@ -16,11 +16,6 @@ ini_set('error_reporting', E_ALL ^ E_NOTICE);
 if($_SERVER['SERVER_NAME'] == 'localhost')
 {
   define('BE_DEBUG', true);
-  ini_set('display_errors', 1);
-}
-else
-{
-  ini_set('display_errors', 0);
 }
 
 $time_now      = time();
@@ -72,12 +67,17 @@ $config = new classConfig($db_prefix);
 $config->db_prefix = $db_prefix;
 $config->secret_word = $sn_secret_word;
 
-if($config->debug)
+if(!defined('BE_DEBUG'))
 {
-  ini_set('display_errors', 1);
-  if(!defined('BE_DEBUG'))
+  if($config->debug)
   {
     define('BE_DEBUG', true);
+    ini_set('display_errors', 1);
+  }
+  else
+  {
+    define('BE_DEBUG', false);
+    ini_set('display_errors', 0);
   }
 }
 
