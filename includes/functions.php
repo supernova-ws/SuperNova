@@ -55,28 +55,50 @@ function get_game_speed()
 
 function get_ship_speed($ship_id, $user)
 {
-  global $resource, $reslist, $pricelist, $sn_data;
+  global $resource, $sn_data;
 
   if(!in_array($ship_id, $sn_data['groups']['fleet']))
   {
     return 0;
   }
 
-  if($pricelist[$ship_id]['tech_level'] && $user[$resource[$pricelist[$ship_id]['tech2']]] >= $pricelist[$ship_id]['tech_level'])
+  $sn_data_ship = $sn_data[$ship_id];
+  if(isset($sn_data_ship['tech_level']) && $user[$sn_data[$sn_data_ship['tech2']]['name']] >= $sn_data_ship['tech_level'])
   {
-    $speed = $pricelist[$ship_id]['speed2'];
-    $tech  = $pricelist[$ship_id]['tech2'];
+    $speed = $sn_data_ship['speed2'];
+    $sn_data_ship_tech = $sn_data[$sn_data_ship['tech2']];
   }
   else
   {
-    $speed = $pricelist[$ship_id]['speed'];
-    $tech  = $pricelist[$ship_id]['tech'];
+    $speed = $sn_data_ship['speed'];
+    $sn_data_ship_tech = $sn_data[$sn_data_ship['tech']];
   }
 
-  $speed *= 1 + $user[$resource[$tech]] * $pricelist[$tech]['speed_increase'];
-  $speed = mrc_modify_value($user, false, MRC_NAVIGATOR, $speed);
+  return mrc_modify_value($user, false, MRC_NAVIGATOR, $speed * (1 + $user[$sn_data_ship_tech['name']] * $sn_data_ship_tech['speed_increase']));
+}
 
-  return $speed;
+function flt_fleet_speed($user, $fleet)
+{
+  global $sn_data;
+
+  if(!is_array($fleet))
+  {
+    $fleet = array($fleet => 1);
+  }
+
+  if(!empty($fleet))
+  {
+    $speeds = array();
+    foreach ($fleet as $ship_id => $amount)
+    {
+      if($amount && in_array($ship_id, $sn_data['groups']['fleet']))
+      {
+        $speeds[] = get_ship_speed($ship_id, $user);
+      }
+    }
+  }
+
+  return empty($speeds) ? 0 : min($speeds);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -111,21 +133,9 @@ function GetFleetMaxSpeed ($FleetArray, $Fleet, $Player)
 // Calcul de la consommation de base d'un vaisseau au regard des technologies
 function GetShipConsumption ( $ship_id, $user )
 {
-  global $pricelist, $resource, $sn_data;
+  global $sn_data;
 
-/*
-  if($pricelist[$ship_id]['tech_level'] && $user[$resource[$pricelist[$ship_id]['tech2']]] >= $pricelist[$ship_id]['tech_level'])
-  {
-    $consumption = $pricelist[$ship_id]['consumption2'];
-  }
-  else
-  {
-    $consumption = $pricelist[$ship_id]['consumption'];
-  }
-
-  return $consumption;
-*/
-  return ($pricelist[$ship_id]['tech_level'] && $user[$resource[$pricelist[$ship_id]['tech2']]] >= $pricelist[$ship_id]['tech_level']) ? $pricelist[$ship_id]['consumption2'] : $consumption = $pricelist[$ship_id]['consumption'];
+  return (isset($sn_data[$ship_id]['tech_level']) && $user[$sn_data[$sn_data[$ship_id]['tech2']]['name']] >= $sn_data[$ship_id]['tech_level']) ? $sn_data[$ship_id]['consumption2'] : $sn_data[$ship_id]['consumption'];
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -133,6 +143,11 @@ function GetShipConsumption ( $ship_id, $user )
 function GetFleetConsumption ($FleetArray, $SpeedFactor, $MissionDuration, $MissionDistance, $FleetMaxSpeed, $Player, $speed_percent = 10)
 {
   $consumption     = 0;
+
+  if(empty($FleetArray) || !$FleetMaxSpeed)
+  {
+    return 0;
+  }
 
   $MissionDuration = $MissionDuration < 1 ? 1 : $MissionDuration;
   $MissionDistance = $MissionDistance < 1 ? 1 : $MissionDistance;
