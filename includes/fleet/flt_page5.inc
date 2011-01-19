@@ -212,10 +212,6 @@ if (mysql_num_rows($colonies) >= 1)
   };
 
   $planet_list2 = flt_build_gathering($planet_ids);
-/*
-  pdump($planet_list[0]);
-  pdump($planet_list2[0]);
-*/
   foreach($planet_list2 as $planet_data)
   {
     $planet_data['DURATION'] = pretty_time($planet_data['DURATION']);
