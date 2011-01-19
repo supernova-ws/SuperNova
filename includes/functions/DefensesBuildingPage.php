@@ -42,11 +42,12 @@ function GetRestrictedConstructionNum($Planet) {
  */
 
 function DefensesBuildingPage ( &$CurrentPlanet, $User, $que ) {
-  global $CurrentPlanetrow, $lang, $pricelist, $resource, $phpEx, $dpath, $_POST, $debug, $_GET;
+  global $CurrentPlanetrow, $lang, $pricelist, $resource, $phpEx, $dpath, $_POST, $debug, $_GET, $sn_data;
 
   $GET_action  = SYS_mysqlSmartEscape($_GET['action']);
   $GET_mode    = SYS_mysqlSmartEscape($_GET['mode']);
   $POST_fmenge = $_POST['fmenge'];
+  $parse = $lang;
 
   if(isset($GET_action)){
     switch($GET_action){
@@ -86,84 +87,106 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User, $que ) {
 
   // Getting numbers of construction restricted by number (missiles & shields)
   // counting those one the planet and those on the current que
-  $built = GetRestrictedConstructionNum($CurrentPlanet);
+  if (isset($POST_fmenge) && !eco_hangar_is_building ( $que ))
+  {
+    doquery('START TRANSACTION;');
+    $CurrentPlanet = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$CurrentPlanet['id']}' LIMIT 1 FOR UPDATE;", '', true);
 
-  if (isset($POST_fmenge) && !eco_hangar_is_building ( $que )) {
-    $ResourcesToUpd = array();
+    $sn_data_group_defense = $sn_data['groups']['defense'];
 
-    $BuildArray = explode (";", $CurrentPlanet['b_hangar_id']);
+    $units_cost = array();
+
+    $hangar = $CurrentPlanet['b_hangar_id'];
+    $built = GetRestrictedConstructionNum($CurrentPlanet);
     $SiloSpace = max(0, $CurrentPlanet[ $resource[44] ] * 10 - $built[502] - $built[503] * 2);
-    foreach($POST_fmenge as $Element => $Count) {
+
+    foreach($POST_fmenge as $Element => $Count)
+    {
       $Element = intval($Element);
-      $Count   = intval($Count);
-      if ($Count > MAX_FLEET_OR_DEFS_PER_ROW) {
-        $Count = MAX_FLEET_OR_DEFS_PER_ROW;
+
+      $Count   = min(max(0, intval($Count)), MAX_FLEET_OR_DEFS_PER_ROW);
+
+      if (!(($Count) && ($Element) && in_array($Element, $sn_data_group_defense) && eco_can_build_unit ($User, $CurrentPlanet, $Element) ))
+      {
+        continue;
       }
 
-      if ($Element==409) {
+      if ($Element == 409)
+      {
         $d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User building Planet Defense: ' . dump($POST_fmenge);
         $debug->warning($d_m,'Building Planet Defense', 300);
       }
 
-      if ($Count AND $Element) {
-        // On verifie si on a les technologies necessaires a la construction de l'element
-        if ( eco_can_build_unit ($User, $CurrentPlanet, $Element) ) {
-          // On verifie combien on sait faire de cet element au max
-          $MaxElements = GetMaxConstructibleElements ( $Element, $CurrentPlanet );
+      // On verifie combien on sait faire de cet element au max
+      $MaxElements = GetMaxConstructibleElements ( $Element, $CurrentPlanet );
 
-          switch ($Element) {
-            case 502:
-              $Count = min($SiloSpace, $Count, $MaxElements);
-              $SiloSpace -= $Count;
-              break;
-            case 503:
-              $Count = min(floor($SiloSpace/2), $Count, $MaxElements);
-              $SiloSpace -= $Count * 2;
-              break;
-            case 407:
-            case 408:
-            case 409:
-              $Count = $built[$Element] >=1 ? 0 : 1;
-              break;
-            default:
-              $Count = min($Count, $MaxElements);
-              break;
-          };
+      switch ($Element) {
+        case 502:
+          $Count = min($SiloSpace, $Count, $MaxElements);
+          $SiloSpace -= $Count;
+          break;
+        case 503:
+          $Count = min(floor($SiloSpace/2), $Count, $MaxElements);
+          $SiloSpace -= $Count * 2;
+          break;
+        case 407:
+        case 408:
+        case 409:
+          $Count = $built[$Element] >= 1 ? 0 : 1;
+          break;
+        default:
+          $Count = min($Count, $MaxElements);
+          break;
+      };
 
-          $Ressource = GetElementRessources ( $Element, $Count );
+      $unit_resources = GetElementRessources ( $Element, $Count );
 
-          if ($Count >= 1 &&
-              $Ressource['metal']<=$CurrentPlanet['metal'] &&
-              $Ressource['crystal']<=$CurrentPlanet['crystal'] &&
-              $Ressource['deuterium']<=$CurrentPlanet['deuterium']
-              ) {
-            $built[$Element] += $Count;
-            $BuildTime = GetBuildingTime($User, $CurrentPlanet, $Element);
-
-            $CurrentPlanet['metal']           -= $Ressource['metal'];
-            $CurrentPlanet['crystal']         -= $Ressource['crystal'];
-            $CurrentPlanet['deuterium']       -= $Ressource['deuterium'];
-            $CurrentPlanet['b_hangar_id']     .= "". $Element .",". $Count .";";
-
-            $ResourcesToUpd['metal']     += $Ressource['metal'];
-            $ResourcesToUpd['crystal']   += $Ressource['crystal'];
-            $ResourcesToUpd['deuterium'] += $Ressource['deuterium'];
-          }
-        }
+      foreach($unit_resources as $res_name => $res_amount)
+      {
+        $units_cost[$res_name] += $res_amount;
       }
+
+      $hangar .= "". $Element .",". $Count .";";
     }
 
-    if (array_sum($ResourcesToUpd)>0){
-      $SetRes = "UPDATE `{{table}}` SET ";
-      $SetRes .= "`metal` = metal - '" . $ResourcesToUpd['metal'] . "', ";
-      $SetRes .= "`crystal` = crystal - '" . $ResourcesToUpd['crystal'] . "', ";
-      $SetRes .= "`deuterium` = deuterium - '" . $ResourcesToUpd['deuterium'] . "', ";
-      $SetRes .= "`b_hangar` = '', ";
-      $SetRes .= "`b_hangar_id` = '". $CurrentPlanet['b_hangar_id'] ."'";
-      $SetRes .= " WHERE `id` = '" . $CurrentPlanet['id'] . "'";
-      doquery($SetRes, 'planets');
+    if ($hangar != $CurrentPlanet['b_hangar_id'])
+    {
+      $new_planet_data = $CurrentPlanet;
+
+      $can_build_def = true;
+      $query_string = '';
+      foreach($units_cost as $res_name => $res_amount)
+      {
+        if($res_amount <= 0)
+        {
+          continue;
+        }
+
+        if($CurrentPlanet[$res_name] < $res_amount)
+        {
+          $can_build_def = false;
+          $parse['error_msg'] = $lang['eco_bld_resources_not_enough'];
+          break;
+        }
+        $new_planet_data[$res_name] -= $res_amount;
+        $query_string .= "`{$res_name}` = `{$res_name}` - {$res_amount},";
+      }
+
+      if($can_build_def && $query_string)
+      {
+        $CurrentPlanet = $new_planet_data;
+        $CurrentPlanet['b_hangar_id'] = $hangar;
+
+        $query_string .= "`b_hangar_id` = '{$hangar}'";
+
+        doquery("UPDATE {{planets}} SET {$query_string} WHERE `id` = '{$CurrentPlanet['id']}' LIMIT 1;");
+      }
+
     }
+    doquery('COMMIT');
   }
+
+  $built = GetRestrictedConstructionNum($CurrentPlanet);
 
   $SiloSpace = max(0, $CurrentPlanet[ $resource[44] ] * 10 - $built[502] - $built[503] * 2);
   // -------------------------------------------------------------------------------------------------------
@@ -265,7 +288,6 @@ function DefensesBuildingPage ( &$CurrentPlanet, $User, $que ) {
     $BuildQueue = ElementBuildListBox( $User, $CurrentPlanet );
   }
 
-  $parse = $lang;
   // La page se trouve dans $PageTable;
   $parse['buildlist']    = $PageTable;
   // Et la liste de constructions en cours dans $BuildQueue;

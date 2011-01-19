@@ -1,6 +1,7 @@
 <center>
 <br />
 {buildinglist}
+<div>{error_msg}</div>
 <font color="#ff0000">{noresearch}</font>
 <table align="top">
 <tr>
