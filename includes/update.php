@@ -399,7 +399,7 @@ switch(intval($config->db_version))
     if(!$update_tables['users']['vacation'])
     {
       upd_alter_table('users', "ADD `vacation` int(11) NOT NULL DEFAULT '0' COMMENT 'Time when user can leave vacation mode'", !$update_tables['users']['vacation']);
-      upd_do_query('UPDATE {{users}} SET `vacation` = `urlaubs_until`;');
+      upd_do_query('UPDATE {{users}} SET `vacation` = `urlaubs_until` WHERE `urlaubs_modus` <> 0;');
     }
     upd_alter_table('users', 'DROP COLUMN `urlaubs_until`, DROP COLUMN `urlaubs_modus`, DROP COLUMN `urlaubs_modus_time`');
 
