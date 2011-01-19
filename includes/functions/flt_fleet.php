@@ -89,12 +89,17 @@ function flt_send_fleet($user, &$from, $to, $fleet, $mission, $options = array()
   $QryInsertFleet .= "`fleet_target_owner` = '{$to['id_owner']}', ";
   $QryInsertFleet .= "`fleet_group` = '{$fleet_group}', ";
   $QryInsertFleet .= "`start_time` = '{$time_now}';";
-pdump($QryInsertFleet);
   doquery( $QryInsertFleet);
 
   $QryUpdatePlanet  = "UPDATE {{planets}} SET {$planet_sub_query} `deuterium` = `deuterium` - '{$consumption}' WHERE `id` = '{$from['id']}' LIMIT 1;";
-pdump($QryUpdatePlanet);
   doquery ($QryUpdatePlanet);
+
+  if(BE_DEBUG)
+  {
+    pdump($QryInsertFleet);
+    pdump($QryUpdatePlanet);
+  }
+
   doquery("COMMIT;");
   // doquery('SET autocommit = 1;');
   $from = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$from['id']}' LIMIT 1;", '', true);
