@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2011-01-11 22:13:22
+Date: 2011-01-19 16:12:27
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -59,7 +59,7 @@ CREATE TABLE `sn_alliance` (
   `ally_members` int(11) NOT NULL DEFAULT '0',
   `ranklist` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_alliance
@@ -76,7 +76,7 @@ CREATE TABLE `sn_alliance_requests` (
   `request_time` int(11) NOT NULL DEFAULT '0',
   `request_denied` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_user`,`id_ally`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_alliance_requests
@@ -98,7 +98,7 @@ CREATE TABLE `sn_annonce` (
   `cristals` bigint(11) NOT NULL DEFAULT '0',
   `deuts` bigint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_annonce
@@ -115,7 +115,7 @@ CREATE TABLE `sn_announce` (
   `detail_url` varchar(250) NOT NULL DEFAULT '' COMMENT 'Link to more details about update',
   PRIMARY KEY (`idAnnounce`),
   KEY `indTimeStamp` (`tsTimeStamp`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_announce
@@ -135,7 +135,7 @@ CREATE TABLE `sn_banned` (
   `author` varchar(11) NOT NULL DEFAULT '',
   `email` varchar(20) NOT NULL DEFAULT '',
   KEY `ID` (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_banned
@@ -152,7 +152,7 @@ CREATE TABLE `sn_buddy` (
   `active` tinyint(3) NOT NULL DEFAULT '0',
   `text` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_buddy
@@ -170,7 +170,7 @@ CREATE TABLE `sn_chat` (
   `ally_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`messageid`),
   KEY `i_ally_idmess` (`ally_id`,`messageid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_chat
@@ -195,7 +195,7 @@ INSERT INTO `sn_config` VALUES ('chat_admin_msgFormat', '[c=purple]$2[/c]');
 INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
-INSERT INTO `sn_config` VALUES ('db_version', '24');
+INSERT INTO `sn_config` VALUES ('db_version', '25');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
@@ -203,7 +203,7 @@ INSERT INTO `sn_config` VALUES ('eco_stockman_fleet', '');
 INSERT INTO `sn_config` VALUES ('energy_basic_income', '0');
 INSERT INTO `sn_config` VALUES ('Fleet_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('fleet_speed', '1');
-INSERT INTO `sn_config` VALUES ('flt_lastUpdate', '1294776780');
+INSERT INTO `sn_config` VALUES ('flt_lastUpdate', '1295446296');
 INSERT INTO `sn_config` VALUES ('game_adminEmail', 'root@localhost');
 INSERT INTO `sn_config` VALUES ('game_counter', '1');
 INSERT INTO `sn_config` VALUES ('game_default_language', 'ru');
@@ -260,16 +260,16 @@ INSERT INTO `sn_config` VALUES ('rpg_scrape_crystal', '0.50');
 INSERT INTO `sn_config` VALUES ('rpg_scrape_deuterium', '0.25');
 INSERT INTO `sn_config` VALUES ('rpg_scrape_metal', '0.75');
 INSERT INTO `sn_config` VALUES ('stats_schedule', 'd@04:00:00');
-INSERT INTO `sn_config` VALUES ('urlaubs_modus_erz', '0');
 INSERT INTO `sn_config` VALUES ('url_dark_matter', '/dark_matter_get.php');
 INSERT INTO `sn_config` VALUES ('url_forum', '/forum/');
 INSERT INTO `sn_config` VALUES ('url_rules', '/rules.php');
 INSERT INTO `sn_config` VALUES ('users_amount', '1');
-INSERT INTO `sn_config` VALUES ('var_db_update', '1294776780');
-INSERT INTO `sn_config` VALUES ('var_db_update_end', '1294776780');
-INSERT INTO `sn_config` VALUES ('var_stat_update', '1294776781');
-INSERT INTO `sn_config` VALUES ('var_stat_update_end', '1294776781');
-INSERT INTO `sn_config` VALUES ('var_stat_update_msg', '');
+INSERT INTO `sn_config` VALUES ('user_vacation_disable', '0');
+INSERT INTO `sn_config` VALUES ('var_db_update', '1295446300');
+INSERT INTO `sn_config` VALUES ('var_db_update_end', '1295446300');
+INSERT INTO `sn_config` VALUES ('var_stat_update', '1295446302');
+INSERT INTO `sn_config` VALUES ('var_stat_update_end', '1295446302');
+INSERT INTO `sn_config` VALUES ('var_stat_update_msg', 'Stat update complete in 1.3352279663086 seconds.');
 
 -- ----------------------------
 -- Table structure for `sn_confirmations`
@@ -297,8 +297,8 @@ DROP TABLE IF EXISTS `sn_counter`;
 CREATE TABLE `sn_counter` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `time` int(11) NOT NULL DEFAULT '0',
-  `page` varchar(255) CHARACTER SET utf8 DEFAULT '0',
-  `url` varchar(255) CHARACTER SET utf8 DEFAULT '0',
+  `page` varchar(255) DEFAULT '0',
+  `url` varchar(255) DEFAULT '0',
   `user_id` bigint(11) DEFAULT '0',
   `ip` varchar(250) DEFAULT NULL COMMENT 'User last IP',
   `proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)',
@@ -439,7 +439,7 @@ CREATE TABLE `sn_iraks` (
   `anzahl` int(32) DEFAULT NULL,
   `primaer` int(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_iraks
@@ -475,7 +475,7 @@ CREATE TABLE `sn_mercenaries` (
   `to` int(11) DEFAULT NULL,
   `level` int(2) DEFAULT NULL,
   PRIMARY KEY (`user_id`,`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_mercenaries
@@ -515,7 +515,7 @@ CREATE TABLE `sn_notes` (
   `title` varchar(32) DEFAULT NULL,
   `text` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_notes
@@ -671,7 +671,7 @@ CREATE TABLE `sn_planets` (
 -- ----------------------------
 -- Records of sn_planets
 -- ----------------------------
-INSERT INTO `sn_planets` VALUES ('1', 'Planet', '1', '3', '1', '1', '1', '1294776780', '1', '0', '0', '0', '0', '0', '0', '0', '0', 'normaltempplanet01', '12750', '1', '0', '0', '163', '-40', '60', '500.11111111', '40', '500000', '500.05555556', '20', '500000', '0.00000000', '0', '500000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '10', '10', '10', '10', '10', '10', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '');
+INSERT INTO `sn_planets` VALUES ('1', 'Planet', '1', '3', '1', '1', '1', '1295446300', '1', '0', '0', '0', '0', '0', '0', '0', '0', 'normaltempplanet01', '12750', '12', '0', '0', '163', '-40', '60', '7939.22222222', '40', '500000', '4219.61111111', '20', '500000', '0.00000000', '0', '500000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '10', '10', '10', '10', '10', '10', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '');
 
 -- ----------------------------
 -- Table structure for `sn_referrals`
@@ -683,7 +683,7 @@ CREATE TABLE `sn_referrals` (
   `dark_matter` bigint(11) NOT NULL DEFAULT '0' COMMENT 'How much player have aquired Dark Matter',
   PRIMARY KEY (`id`),
   KEY `id_partner` (`id_partner`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_referrals
@@ -705,7 +705,7 @@ CREATE TABLE `sn_rw` (
   KEY `id_owner1` (`id_owner1`,`rid`),
   KEY `id_owner2` (`id_owner2`,`rid`),
   KEY `time` (`time`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_rw
@@ -756,7 +756,8 @@ CREATE TABLE `sn_statpoints` (
 -- ----------------------------
 -- Records of sn_statpoints
 -- ----------------------------
-INSERT INTO `sn_statpoints` VALUES ('1', '0', '1', '1', '1', '0', '0', '0', '1', '0', '0', '0', '1', '0', '0', '0', '1', '0', '0', '0', '1', '0', '1', '1000', '1294776780', '1', null, '1', '1000');
+INSERT INTO `sn_statpoints` VALUES ('1', '0', '1', '2', '1', '0', '0', '0', '1', '0', '0', '0', '1', '0', '0', '0', '1', '0', '0', '0', '1', '0', '1', '1000', '1294776780', '1', null, '1', '1000');
+INSERT INTO `sn_statpoints` VALUES ('1', '0', '1', '1', '1', '1', '0', '0', '1', '1', '0', '0', '1', '1', '0', '0', '1', '1', '0', '0', '1', '1', '12', '12159', '1295446300', '1', '1', '12', '12159');
 
 -- ----------------------------
 -- Table structure for `sn_users`
@@ -796,8 +797,6 @@ CREATE TABLE `sn_users` (
   `settings_bud` tinyint(4) NOT NULL DEFAULT '1',
   `settings_mis` tinyint(4) NOT NULL DEFAULT '1',
   `settings_rep` tinyint(4) NOT NULL DEFAULT '0',
-  `urlaubs_modus` tinyint(4) NOT NULL DEFAULT '0',
-  `urlaubs_until` int(11) NOT NULL DEFAULT '0',
   `db_deaktjava` tinyint(4) NOT NULL DEFAULT '0',
   `new_message` int(11) NOT NULL DEFAULT '0',
   `fleet_shortcut` text,
@@ -861,13 +860,13 @@ CREATE TABLE `sn_users` (
   `mnl_expedition` int(11) NOT NULL DEFAULT '0',
   `mnl_buildlist` int(11) NOT NULL DEFAULT '0',
   `bana` int(11) DEFAULT NULL,
-  `urlaubs_modus_time` int(11) NOT NULL DEFAULT '0',
   `deltime` int(11) NOT NULL DEFAULT '0',
   `deleteme` int(11) NOT NULL DEFAULT '0',
   `banaday` int(11) DEFAULT NULL,
   `options` text COMMENT 'Packed user options',
   `news_lastread` int(11) NOT NULL DEFAULT '0' COMMENT 'News last read tag',
   `user_proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)',
+  `vacation` int(11) NOT NULL DEFAULT '0' COMMENT 'Time when user can leave vacation mode',
   PRIMARY KEY (`id`),
   KEY `i_username` (`username`),
   KEY `i_ally_online` (`ally_id`,`onlinetime`),
@@ -878,4 +877,4 @@ CREATE TABLE `sn_users` (
 -- ----------------------------
 -- Records of sn_users
 -- ----------------------------
-INSERT INTO `sn_users` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 'ru', '3', '0', '', null, '1', '1', '1', '1', '1', '127.0.0.1', 'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.7.62 Version/11.00', '1294776770', '1294776780', '', '1', '1', '0', '0', '1', '5', '0', '0', '1', '1', '1', '1', '0', '0', '0', '0', '0', null, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '', '0', null, '0', '0', 'red', '#00FF00', 'yellow', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', null, '0', '0', '0', null, null, '0', '');
+INSERT INTO `sn_users` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 'ru', '3', '0', '', null, '1', '1', '1', '1', '1', '127.0.0.1', 'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.7.62 Version/11.00', '1294776770', '1295446300', '', '1', '1', '0', '0', '1', '5', '0', '0', '1', '1', '1', '1', '0', '0', '0', null, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '', '0', null, '0', '0', 'red', '#00FF00', 'yellow', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', null, '0', '0', null, null, '0', '', '0');

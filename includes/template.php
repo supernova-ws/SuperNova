@@ -217,6 +217,7 @@ function StdFooter() {
   $template->assign_vars(array(
     'ADMIN_EMAIL' => $config->game_adminEmail,
     'SERVER_TIME' => $time_now,
+    'SN_VERSION'  => SN_VERSION,
   ));
 
   return parsetemplate($template);

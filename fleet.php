@@ -33,7 +33,6 @@ if ($IsUserChecked == false) {
   includeLang('login');
   header("Location: login.php");
 }
-check_urlaubmodus ($user);
 
 includeLang('fleet');
 
@@ -41,23 +40,26 @@ $parse = $lang;
 
 $fleet_page = intval($_GET['fleet_page']);
 
-$galaxy = $_GET['galaxy'] ? intval($_GET['galaxy']) : ($_POST['galaxy'] ? intval($_POST['galaxy']) : $planetrow['galaxy']);
-$system = $_GET['system'] ? intval($_GET['system']) : ($_POST['system'] ? intval($_POST['system']) : $planetrow['system']);
-$planet = $_GET['planet'] ? intval($_GET['planet']) : ($_POST['planet'] ? intval($_POST['planet']) : $planetrow['planet']);
+$galaxy = sys_get_param_int('galaxy', $planetrow['galaxy']);
+$system = sys_get_param_int('system', $planetrow['system']);
+$planet = sys_get_param_int('planet', $planetrow['planet']);
 
-$target_mission = $_GET['target_mission'] ? intval($_GET['target_mission']) : intval($_POST['target_mission']);
-if($target_mission == MT_COLONIZE)
+$target_mission = sys_get_param_int('target_mission');
+if($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE)
 {
   $planet_type = PT_PLANET;
 }
 else
 {
-  $planet_type = $_GET['planet_type'] ? intval($_GET['planet_type']) : intval($_POST['planet_type']);
+  $planet_type = sys_get_param_int('planet_type');
   if (!$planet_type)
   {
-    $planet_type = $_GET['planettype'] ? intval($_GET['planettype']) : ($_POST['planettype'] ? intval($_POST['planettype']) : $planetrow['planet_type']);
+    $planet_type = sys_get_param_int('planettype', $planetrow['planet_type']);
   }
 }
+
+$options = array();
+$options['fleets_max'] = GetMaxFleets($user);
 
 $MaxFleets = GetMaxFleets($user);
 $FlyingFleets = doquery("SELECT COUNT(fleet_id) as Number FROM {{fleets}} WHERE `fleet_owner`='{$user['id']}'", '', true);
@@ -251,6 +253,10 @@ switch($fleet_page)
 
   case 4:
     include('includes/fleet/flt_page4.inc');
+  break;
+
+  case 5:
+    include('includes/fleet/flt_page5.inc');
   break;
 
   default:

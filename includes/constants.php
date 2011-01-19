@@ -15,8 +15,8 @@ if ( !defined('INSIDE') )
   die('Hacking attempt');
 }
 
-define('DB_VERSION', 24);
-define('SN_VERSION', 24);
+define('DB_VERSION', 25);
+define('SN_VERSION', '25beta2');
 
 define('GAMEURL', "http://{$_SERVER['HTTP_HOST']}/");
 
@@ -114,7 +114,7 @@ define('ATTACK_OWN'            ,  2);
 define('ATTACK_WRONG_MISSION'  ,  3);
 define('ATTACK_NO_ALLY_DEPOSIT',  4);
 define('ATTACK_NO_DEBRIS'      ,  5);
-define('ATTACK_VACANCY'        ,  6);
+define('ATTACK_VACATION'       ,  6);
 define('ATTACK_SAME_IP'        ,  7);
 define('ATTACK_BUFFING'        ,  8);
 define('ATTACK_ADMIN'          ,  9);
@@ -130,6 +130,13 @@ define('ATTACK_NO_SPIES'       , 18);
 define('ATTACK_NO_COLONIZER'   , 19);
 define('ATTACK_MISSILE_TOO_FAR', 20);
 define('ATTACK_WRONG_STRUCTURE', 21);
+define('ATTACK_NO_FUEL'        , 22);
+define('ATTACK_NO_RESOURCES'   , 23);
+define('ATTACK_NO_ACS'         , 24);
+define('ATTACK_ACS_MISSTARGET' , 25);
+define('ATTACK_WRONG_SPEED'    , 26);
+define('ATTACK_ACS_TOO_LATE'   , 27);
+
 
 // *** Mercenary/talent bonus types
 define('BONUS_NONE',     0);  // No bonus

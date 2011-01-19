@@ -58,7 +58,7 @@ class debug
       echo "<table>{$this->log}</table>";
     }
 
-    global $user, $ugamela_root_path, $phpEx;
+    global $user, $ugamela_root_path, $phpEx, $planetrow;
 
     require("{$ugamela_root_path}config.{$phpEx}");
 
@@ -79,23 +79,25 @@ class debug
     $error_backtrace = debug_backtrace();
     unset($error_backtrace[0]);
     $error_backtrace = dump($error_backtrace, 'Error backtrace');
-    $error_backtrace .= "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>";
+    $error_backtrace .= "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>\r\n";
 //    if($_GET)
     {
-      $error_backtrace .= dump($_GET, '$_GET');
+      $error_backtrace .= dump($_GET, '$_GET') . "\r\n";
     }
 //    if($_POST)
     {
-      $error_backtrace .= dump($_POST, '$_POST');
+      $error_backtrace .= dump($_POST, '$_POST') . "\r\n";
     }
 //    if($_COOKIES)
     {
-      $error_backtrace .= dump($_COOKIE, '$_COOKIE');
+      $error_backtrace .= dump($_COOKIE, '$_COOKIE') . "\r\n";
     }
 //    if($_SESSION)
     {
-      $error_backtrace .= dump($_SESSION, '$_SESSION');
+      $error_backtrace .= dump($_SESSION, '$_SESSION') . "\r\n";
     }
+    $error_backtrace .= dump($user, '$user') . "\r\n";
+    $error_backtrace .= dump($planetrow, '$planetrow') . "\r\n";
     $error_backtrace = mysql_real_escape_string($error_backtrace);
 
     $error_text  = $message;

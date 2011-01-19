@@ -18,8 +18,11 @@ $template->assign_vars(array(
   'game_speed' => get_game_speed(),
   'fleet_speed' => get_fleet_speed(),
   'game_build_and_research' => $config->BuildLabWhileRun,
+  'USER_VACATION_DISABLE' => $config->user_vacation_disable,
+  'DB_VERSION' => DB_VERSION,
+  'SN_VERSION' => SN_VERSION,
 ));
 
-display(parsetemplate($template, $parse)/*, "{$lang['sys_universe']} &quot;{$config->game_name}&quot;"*/);
+display(parsetemplate($template));
 
 ?>

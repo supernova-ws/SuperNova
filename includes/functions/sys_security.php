@@ -77,7 +77,7 @@ function sn_autologin($abort = true)
       $bantime = date(FMT_DATE_TIME, $user['banaday']);
       die ("{$lang['sys_banned_msg']}{$bantime}");
     }
-    doquery("UPDATE {{users}} SET bana=0, urlaubs_modus=0, banaday=0 WHERE id='{$user['id']}';");
+    doquery("UPDATE {{users}} SET bana=0, `vacation` = '{$time_now}', banaday=0 WHERE id='{$user['id']}' LIMIT 1;");
   }
 
   $IsUserChecked = is_array($user);

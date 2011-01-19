@@ -28,20 +28,6 @@ $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
 $mode = SYS_mysqlSmartEscape($_GET['mode']);
 $POST_db_character = SYS_mysqlSmartEscape($_POST["db_character"]);
 
-if ($_POST && $mode == "exit") { // Array ( [db_character]
-  if (isset($_POST["exit_modus"]) && $_POST["exit_modus"] == 'on' and $user['urlaubs_until'] <= time()){
-    $urlaubs_modus = "0";
-      doquery("UPDATE {{table}} SET
-        `urlaubs_modus` = '0',
-        `urlaubs_until` = '0'
-        WHERE `id` = '".$user['id']."' LIMIT 1", "users");
-    message($lang['succeful_save'], $lang['Options'],"options.php",1);
-  }else{
-    $urlaubs_modus = "1";
-    message($lang['You_cant_exit_vmode'], $lan['Error'] ,"options.php",1);
-   }
-}
-
 if ($_POST && $mode == "change") { // Array ( [db_character]
   $iduser = $user["id"];
   $avatar = SYS_mysqlSmartEscape($_POST["avatar"]);
@@ -136,12 +122,8 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   }
 
   // Modo vacaciones
-  if (isset($_POST['urlaubs_modus']) && $_POST['urlaubs_modus'] == 'on')
+  if ($_POST['vacation'] == 'on' && !$config->user_vacation_disable)
   {
-    $urlaubs_modus = '1';
-
-    $time = $time_now;
-
     if($user['authlevel'] < 3)
     {
       $is_building = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_owner` = '{$user['id']}' LIMIT 1;", '', true);
@@ -163,14 +145,13 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
         message($lang['Building_something'], $lang['Error'], "options.php", 1);
       }
 
-      $time += VOCATION_TIME;
-
-      $query = doquery("SELECT * FROM {{planets}} WHERE id_owner = '{$user['id']}'");
+      $query = doquery("SELECT * FROM {{planets}} WHERE id_owner = '{$user['id']}';");
       while($id = mysql_fetch_array($query))
       {
         PlanetResourceUpdate ($user, $id, $time_now);
 
         doquery("UPDATE {{planets}} SET
+          last_update = '{$time_now}',
           metal_perhour = '{$config->metal_basic_income}',
           crystal_perhour = '{$config->crystal_basic_income}',
           deuterium_perhour = '{$config->deuterium_basic_income}',
@@ -182,15 +163,16 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
           solar_plant_porcent = '0',
           fusion_plant_porcent = '0',
           solar_satelit_porcent = '0'
-        WHERE id = '{$id['id']}' AND `planet_type` = 1;");
+        WHERE id = '{$id['id']}' LIMIT 1;");
       }
+      $user['vacation'] = $time_now + VOCATION_TIME;
+    }
+    else
+    {
+      $user['vacation'] = $time_now;
     }
 
-    doquery("UPDATE {{users}} SET `urlaubs_modus` = '$urlaubs_modus', `urlaubs_until` = '{$time}' WHERE `id` = '{$iduser}' LIMIT 1;");
-  }
-  else
-  {
-    $urlaubs_modus = '0';
+    doquery("UPDATE {{users}} SET `vacation` = '{$user['vacation']}' WHERE `id` = '{$iduser}' LIMIT 1;");
   }
 
   // Borrar cuenta
@@ -232,12 +214,10 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   `settings_bud` = '$settings_bud',
   `settings_mis` = '$settings_mis',
   `settings_rep` = '$settings_rep',
-  `urlaubs_modus` = '$urlaubs_modus',
   `db_deaktjava` = '$db_deaktjava',
   `kolorminus` = '$kolorminus',
   `kolorplus` = '$kolorplus',
   `kolorpoziom` = '$kolorpoziom',
-  `urlaubs_modus_time` = '$urlaubs_modus_time',
   `options` = '$options',
   `deltime` = '$Del_Time'
   WHERE `id` = '$iduser' LIMIT 1");
@@ -262,90 +242,73 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
     }
   }
 
-  if ($user['urlaubs_modus_time'] != 0){
-    $query =  ("UPDATE {{table}} SET ");
-    $query .= ("`last_update` = '".time()."' ");
-    $query .= ("WHERE id_owner='{$user['id']}';");
-    doquery($query, 'planets');
-    message($lang['vacations_exit'], $lang['mode_vacations']);
-  }
-
-  message($lang['succeful_save'], $lang['Options']);
+  header("Location: options.php?saved=true");
 }
-else
-{
-  if($user['urlaubs_modus']){
-    $template = gettemplate('options_body_vmode', true);
-  }else{
-    $template = gettemplate('options_body', true);
-  }
 
-  $parse = $lang;
+$template = gettemplate('options', true);
 
-  $parse['dpath'] = $dpath;
+//$parse = $lang;
+$parse['SAVED'] = sys_get_param_str('saved');
+
+$parse['dpath'] = $dpath;
 //-------------------------------
-  $skin_dir = dir($ugamela_root_path."skins");
-  $parse['opt_lst_skin_data']="<option value =\"\">".$lang['select_skin_path']."</option>";
-  while (false !== ($entry = $skin_dir->read())) {
-    if (is_dir("skins/".$entry) && $entry[0] !=".") {
-      $parse['opt_lst_skin_data'].="<option value =\"$entry\">$entry</option>";
-    }
+$skin_dir = dir($ugamela_root_path."skins");
+$parse['opt_lst_skin_data']="<option value =\"\">".$lang['select_skin_path']."</option>";
+while (false !== ($entry = $skin_dir->read())) {
+  if (is_dir("skins/".$entry) && $entry[0] !=".") {
+    $parse['opt_lst_skin_data'].="<option value =\"$entry\">$entry</option>";
   }
-  $skin_dir->close();
+}
+$skin_dir->close();
 
 //  $parse['opt_lst_skin_data']  = "<option value =\"skins/xnova/\">skins/xnova/</option>";
-  $parse['opt_lst_ord_data']   = "<option value =\"0\"". (($user['planet_sort'] == 0) ? " selected": "") .">". $lang['opt_lst_ord0'] ."</option>";
-  $parse['opt_lst_ord_data']  .= "<option value =\"1\"". (($user['planet_sort'] == 1) ? " selected": "") .">". $lang['opt_lst_ord1'] ."</option>";
-  $parse['opt_lst_ord_data']  .= "<option value =\"2\"". (($user['planet_sort'] == 2) ? " selected": "") .">". $lang['opt_lst_ord2'] ."</option>";
+$parse['opt_lst_ord_data']   = "<option value =\"0\"". (($user['planet_sort'] == 0) ? " selected": "") .">". $lang['opt_lst_ord0'] ."</option>";
+$parse['opt_lst_ord_data']  .= "<option value =\"1\"". (($user['planet_sort'] == 1) ? " selected": "") .">". $lang['opt_lst_ord1'] ."</option>";
+$parse['opt_lst_ord_data']  .= "<option value =\"2\"". (($user['planet_sort'] == 2) ? " selected": "") .">". $lang['opt_lst_ord2'] ."</option>";
 
-  $parse['opt_lst_cla_data']   = "<option value =\"0\"". (($user['planet_sort_order'] == 0) ? " selected": "") .">". $lang['opt_lst_cla0'] ."</option>";
-  $parse['opt_lst_cla_data']  .= "<option value =\"1\"". (($user['planet_sort_order'] == 1) ? " selected": "") .">". $lang['opt_lst_cla1'] ."</option>";
+$parse['opt_lst_cla_data']   = "<option value =\"0\"". (($user['planet_sort_order'] == 0) ? " selected": "") .">". $lang['opt_lst_cla0'] ."</option>";
+$parse['opt_lst_cla_data']  .= "<option value =\"1\"". (($user['planet_sort_order'] == 1) ? " selected": "") .">". $lang['opt_lst_cla1'] ."</option>";
 
-  $parse['opt_lst_lang_data']   = "<option value =\"ru\"". (($user['lang'] == ru) ? " selected": "") .">". $lang['ru'] ."</option>";
-  $parse['opt_lst_lang_data']  .= "<option value =\"en\"". (($user['lang'] == en) ? " selected": "") .">". $lang['en'] ."</option>";
-  if ($user['authlevel'] > 0) {
-    $FrameTPL = gettemplate('options_admadd');
-    $IsProtOn = doquery ("SELECT `id_level` FROM {{table}} WHERE `id_owner` = '".$user['id']."' LIMIT 1;", 'planets', true);
-    $bloc['opt_adm_title']       = $lang['opt_adm_title'];
-    $bloc['opt_adm_planet_prot'] = $lang['opt_adm_planet_prot'];
-    $bloc['adm_pl_prot_data']    = ($IsProtOn['id_level'] > 0) ? " checked='checked'/":'';
-    $parse['opt_adm_frame']      = parsetemplate($FrameTPL, $bloc);
-  }
-  if ($user['urlaubs_modus_time'] != 0){
-  $parse['vocation_time_out'] = $lang['exit_vacations'];
-  }
-  $parse['opt_usern_data'] = $user['username'];
-  $parse['opt_mail1_data'] = $user['email'];
-  $parse['opt_mail2_data'] = $user['email_2'];
-  $parse['opt_dpath_data'] = $user['dpath'];
-  $parse['opt_avata_data'] = $user['avatar'];
-  $parse['opt_probe_data'] = $user['spio_anz'];
-  $parse['opt_toolt_data'] = $user['settings_tooltiptime'];
-  $parse['opt_fleet_data'] = $user['settings_fleetactions'];
-  $parse['opt_sskin_data'] = ($user['design'] == 1) ? " checked='checked'":'';
-  $parse['opt_noipc_data'] = ($user['noipcheck'] == 1) ? " checked='checked'":'';
-  $parse['opt_allyl_data'] = ($user['settings_allylogo'] == 1) ? " checked='checked'/":'';
-  $parse['opt_delac_data'] = ($user['db_deaktjava'] == 1) ? " checked='checked'/":'';
-  $parse['opt_modev_data'] = ($user['urlaubs_modus'] == 1)?" checked='checked'/":'';
-  $parse['opt_modev_exit'] = ($user['urlaubs_modus'] == 0)?" checked='1'/":'';
-  $parse['Vaccation_mode'] = $lang['Vaccation_mode'];
-  $parse['vacation_until'] = date("d.m.Y G:i:s",$user['urlaubs_until']);
-  $parse['user_settings_rep'] = ($user['settings_rep'] == 1) ? " checked='checked'/":'';
-  $parse['user_settings_esp'] = ($user['settings_esp'] == 1) ? " checked='checked'/":'';
-  $parse['user_settings_wri'] = ($user['settings_wri'] == 1) ? " checked='checked'/":'';
-  $parse['user_settings_mis'] = ($user['settings_mis'] == 1) ? " checked='checked'/":'';
-  $parse['user_settings_bud'] = ($user['settings_bud'] == 1) ? " checked='checked'/":'';
-  $parse['kolorminus']  = $user['kolorminus'];
-  $parse['kolorplus']   = $user['kolorplus'];
-  $parse['kolorpoziom'] = $user['kolorpoziom'];
-
-  $options = sys_user_options_unpack($user);
-  foreach($options as $option_name => $option_value)
-  {
-    $parse[$option_name] = $user[$option_name];
-  }
-
-  display(parsetemplate($template, $parse), 'Options', false);
-  die();
+$parse['opt_lst_lang_data']   = "<option value =\"ru\"". (($user['lang'] == ru) ? " selected": "") .">". $lang['ru'] ."</option>";
+$parse['opt_lst_lang_data']  .= "<option value =\"en\"". (($user['lang'] == en) ? " selected": "") .">". $lang['en'] ."</option>";
+if ($user['authlevel'] > 0) {
+  $parse['adm_pl_prot_data']    = ($planetrow['id_level'] > 0) ? " checked='checked'/" : '';
+  $parse['IS_ADMIN'] = true;
 }
+$parse['opt_usern_data'] = $user['username'];
+$parse['opt_mail1_data'] = $user['email'];
+$parse['opt_mail2_data'] = $user['email_2'];
+$parse['opt_dpath_data'] = $user['dpath'];
+$parse['opt_avata_data'] = $user['avatar'];
+$parse['opt_probe_data'] = $user['spio_anz'];
+$parse['opt_toolt_data'] = $user['settings_tooltiptime'];
+$parse['opt_fleet_data'] = $user['settings_fleetactions'];
+$parse['opt_sskin_data'] = ($user['design'] == 1) ? " checked='checked'":'';
+$parse['opt_noipc_data'] = ($user['noipcheck'] == 1) ? " checked='checked'":'';
+$parse['opt_allyl_data'] = ($user['settings_allylogo'] == 1) ? " checked='checked'/":'';
+$parse['opt_delac_data'] = ($user['db_deaktjava'] == 1) ? " checked='checked'/":'';
+
+
+
+$parse['user_settings_rep'] = ($user['settings_rep'] == 1) ? " checked='checked'/":'';
+$parse['user_settings_esp'] = ($user['settings_esp'] == 1) ? " checked='checked'/":'';
+$parse['user_settings_wri'] = ($user['settings_wri'] == 1) ? " checked='checked'/":'';
+$parse['user_settings_mis'] = ($user['settings_mis'] == 1) ? " checked='checked'/":'';
+$parse['user_settings_bud'] = ($user['settings_bud'] == 1) ? " checked='checked'/":'';
+$parse['kolorminus']  = $user['kolorminus'];
+$parse['kolorplus']   = $user['kolorplus'];
+$parse['kolorpoziom'] = $user['kolorpoziom'];
+
+$options = sys_user_options_unpack($user);
+foreach($options as $option_name => $option_value)
+{
+  $parse[$option_name] = $user[$option_name];
+}
+
+$parse['USER_VACATION_DISABLE'] = $config->user_vacation_disable;
+$parse['VACATION_TIME'] = VOCATION_TIME;
+$parse['TIME_NOW'] = $time_now;
+
+display(parsetemplate($template, $parse), 'Options', false);
+
 ?>

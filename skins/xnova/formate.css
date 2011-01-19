@@ -234,6 +234,12 @@ h1
   color: #993333;
 }
 
+.link {
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 /*  Patching this theme for ui-slider */
 .style .ui-slider a:link { width: 1.2em; height: 1.2em; }
 .style .ui-slider a:hover { width: 1.2em; height: 1.2em; }

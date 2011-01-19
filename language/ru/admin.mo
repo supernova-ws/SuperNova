@@ -186,12 +186,12 @@ $lang = array_merge($lang, array(
   'adm_opt_game_oth_syst'     => "Система",
   'adm_opt_game_oth_plan'     => "Планета",
   'adm_opt_btn_save'          => "Сохранить",
-  'adm_opt_vacancy_mode'      => "Отключить режим отпуска",
+  'adm_opt_vacation_mode'     => "Отключить режим отпуска",
   'adm_opt_sectors'           => "секторов",
   'adm_opt_per_hour'          => "в час",
   'adm_opt_saved'             => "Настройки игры сохранены успешно",
   'adm_opt_players_online'    => "Игроков на сервере",
-  'adm_opt_vacancy_mode_is'   => "Режим отпуска",
+  'adm_opt_vacation_mode_is'  => "Режим отпуска",
   'adm_opt_maintenance'       => "Обслуживание и отладка",
   'adm_opt_links'             => "Ссылки и баннеры",
                                      
@@ -242,6 +242,10 @@ $lang = array_merge($lang, array(
   'adm_pl_comp_err_3' => 'У указанных планет разные владельцы. Зачислить ресурсы можно только на планету того же игрока',
   'adm_pl_comp_err_4' => 'Планета не пренадлежит указанному игроку',
   'adm_pl_comp_err_5' => 'Планеты для уничтжения и для зачисления ресурсов совпадают',
+
+  'adm_ver_versions'  => 'Версии компонентов сервера',
+  'adm_ver_version_sn'=> 'Версия движка',
+  'adm_ver_version_db'=> 'Версии базы данных',
 ));
 
 // Add moon

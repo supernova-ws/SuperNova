@@ -26,8 +26,6 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-check_urlaubmodus ($user);
-
 $mode = sys_get_param_escaped('mode');
 
 includeLang('buildings');

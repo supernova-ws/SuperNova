@@ -6,14 +6,14 @@ $lang['Download']			= "Загрузка";
 $lang['Search']				= "Поиск";
 $lang['succeful_changepass']		= "Пароль успешно изменён.<br /><a href=\"login.php\" target=\"_top\">Назад</a>";
 $lang['succeful_changename']		= "Имя пользователя успешно изменено.<br /><a href=\"login.php\" target=\"_top\">Назад</a>";
-$lang['succeful_save']			= "Настройки успешно изменены.<br /><a href=\"options.php\">Назад</a>";
+$lang['opt_saved']			= "Настройки успешно изменены.";
 
 //	
 $lang['userdata']			= "Информация";
 $lang['username']			= "Имя";
 $lang['lastpassword']			= "Старый пароль";
-$lang['newpassword']			= "Новый пароль (мин. 8 Знаков)";
-$lang['newpasswordagain']		= "Новый пароль (повтор)";
+$lang['newpassword']			= "Новый пароль<br>(мин. 8 символов)";
+$lang['newpasswordagain']		= "Повторите новый пароль";
 $lang['emaildir']			= "Адрес e-mail";
 $lang['emaildir_tip']			= "Этот адрес может быть изменён в любое время. Адрес станет основным, если он не изменялся в течении 7 дней.";
 $lang['permanentemaildir']		= "Основной адрес e-mail";
@@ -34,8 +34,8 @@ $lang['opt_adm_planet_prot']		= "Защита планет";
 // 	
 $lang['thanksforregistry']		= "Спасибо за регистрацию.<br />Через несколько минут вы получите ваше сообщение с паролем.";
 $lang['general_settings']		= "Общие настройки";
-$lang['skins_example']			= "Оформление (например C:/ogame/skin/)";
-$lang['avatar_example']			= "Аватар (например /img/avatar.jpg)";
+$lang['skins_example']			= "Оформление<br>(например C:/ogame/skin/)";
+$lang['avatar_example']			= "Аватар<br>(например /img/avatar.jpg)";
 $lang['untoggleip']			= "Выключить функцию проверки по IP";
 $lang['untoggleip_tip']			= "Проверка IP означает то, что вы не сможете войти под своим именем с двух разных IP. Проверка даёт вам преимущество в безопасности!";
 
@@ -58,10 +58,10 @@ $lang['attack_with_missile']		= "Ракетная атака";
 $lang['show_report']			= "Просмотреть отчёт";
 
 //	
-$lang['delete_vacations']		= "Режим отпуска / Удалить профиль";
+$lang['delete_vacations']		= "Управление профилем";
 $lang['mode_vacations']			= "Включить режим отпуска";
 $lang['vacations_tip']			= "Режим отпуска нужен для защиты планет во время вашего отсутствия.";
-$lang['deleteaccount']			= "Удалить профиль";
+$lang['deleteaccount']			= "Отключить профиль";
 $lang['deleteaccount_tip']		= "Профиль будет удалён через 45 дней неактивности.";
 $lang['save_settings']			= "Сохранить изменения";
 $lang['Building_something']		= "Вы что-то строите и не можете уйти в режим отпуска.";
@@ -83,5 +83,7 @@ $lang['opt_language']         = 'Язык интерфейса';
 
 $lang['opt_compatibility']    = 'Совместимость - старые интерфейсов';
 $lang['opt_compat_structures']= 'Старый интерфейс строительства зданий';
+
+$lang['opt_vacation_min'] = 'минимум до';
 
 ?>
