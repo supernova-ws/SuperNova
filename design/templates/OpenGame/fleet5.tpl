@@ -26,7 +26,7 @@
     
 <form action="fleet.php?fleet_page=5" method="post">
   <table border="0" cellpadding="0" cellspacing="1">
-    <tr><td colspan="6" class="c">{L_flt_gather_all}</td></tr>
+    <tr><td colspan="7" class="c">{L_flt_gather_all}</td></tr>
     <tr>
       <td class="c"><input id="planet_gather_all" type="checkbox" onclick="jQuery('.planet_gather').attr('checked', jQuery('#planet_gather_all').is(':checked'));"></td>
       <td class="c">{L_sys_coordinates}</td>
@@ -34,6 +34,7 @@
       <td class="c">{L_sys_metal}</td>
       <td class="c">{L_sys_crystal}</td>
       <td class="c">{L_sys_deuterium}</td>
+      <td class="c">{L_sys_time}</td>
     </tr>
 
     <!-- BEGIN colonies -->       
@@ -44,11 +45,12 @@
         <th><span class="fr">{colonies.METAL}</span></th>
         <th><span class="fr">{colonies.CRYSTAL}</span></th>
         <th><span class="fr">{colonies.DEUTERIUM}</span></th>
+        <th><span class="fr">{colonies.DURATION}</span></th>
       </tr>
     <!-- BEGINELSE colonies -->
-      <th colspan="6">{L_fl_nocolonies}</th>
+      <th colspan="7">{L_fl_nocolonies}</th>
     <!-- END colonies -->
-    <tr><td class="c" colspan="6" align="center"><input type="submit" value="{L_flt_gather_all}" /></td></tr>
+    <tr><td class="c" colspan="7" align="center"><input type="submit" value="{L_flt_gather_all}" /></td></tr>
 
   </table>
   <!-- INCLUDE page_hint.tpl -->
