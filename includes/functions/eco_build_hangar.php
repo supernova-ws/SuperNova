@@ -226,7 +226,6 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
     $ElementName = $lang['tech'][$Element];
     if (eco_can_build_unit($CurrentUser, $CurrentPlanet, $Element))
     {
-
       // On regarde si on peut en acheter au moins 1
       $CanBuildOne         = IsElementBuyable($CurrentUser, $CurrentPlanet, $Element, false);
       // On regarde combien de temps il faut pour construire l'element
@@ -263,7 +262,7 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
         case 407:
         case 408:
         case 409:
-          $baubar = $built[$Element] >=1 ? 0 : 1;
+          $baubar = $built[$Element] >= 1 ? 0 : min(1, $baubar);
           $restrict = 2;
           break;
         default:
@@ -275,7 +274,6 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
 
       // Case nombre d'elements a construire
       $PageTable .= "<th class=k>";
-      // Si ... Et Seulement si je peux construire je mets la p'tite zone de saisie
       if ($CanBuildOne) {
         if (!eco_hangar_is_building ( $que ))
         {
