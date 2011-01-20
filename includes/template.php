@@ -95,7 +95,9 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
 
   $parse['new_announce_count'] = $user['news_lastread'];
 //!!!!!!!!!!!!!!
-$parse['QUE_STRUCTURES'] = QUE_STRUCTURES;
+  $parse['QUE_STRUCTURES'] = QUE_STRUCTURES;
+  $parse['SUBQUE_FLEET']   = SUBQUE_FLEET;
+  $parse['SUBQUE_DEFENSE'] = SUBQUE_DEFENSE;
 
   $Menu = parsetemplate( gettemplate($Template, true), $parse);
 
