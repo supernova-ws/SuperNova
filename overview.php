@@ -302,6 +302,8 @@ switch ($mode)
           'MOON_IMG'     => $moon['image'],
           'MOON_FILL'    => min(100, $moon_fill),
           'MOON_ENEMY'   => $moon_fleets['enemy']['count'],
+
+          'MOON_PLANET'  => $moon['parent_planet'],
       )));
     }
 

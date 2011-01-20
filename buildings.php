@@ -35,25 +35,21 @@ $IsWorking = HandleTechnologieBuild ( $planetrow, $user );
 
 $que = PlanetResourceUpdate($user, $planetrow, $time_now);
 
+$mode = (!$mode || $mode == 'buildings') ? QUE_STRUCTURES : ($mode == 'fleet' ? SUBQUE_FLEET : ($mode == 'defense' ? SUBQUE_DEFENSE : $mode));
+
 switch ($mode)
 {
-  case 'fleet':
-    // --------------------------------------------------------------------------------------------------
-    FleetBuildingPage ( $planetrow, $user, $que );
-  break;
-
   case 'research':
     // --------------------------------------------------------------------------------------------------
     ResearchBuildingPage ( $planetrow, $user, $IsWorking['OnWork'], $IsWorking['WorkOn'], $que);
   break;
 
-  case 'defense':
-    // --------------------------------------------------------------------------------------------------
-    DefensesBuildingPage ( $planetrow, $user, $que );
+  case SUBQUE_FLEET:
+  case SUBQUE_DEFENSE:
+    eco_build_hangar($mode, $user, $planetrow, $que);
   break;
 
   case QUE_STRUCTURES:
-  case 'buildings':
   default:
     eco_build(QUE_STRUCTURES, $user, $planetrow, $que);
   break;
