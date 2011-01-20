@@ -51,9 +51,9 @@
         </span>
       <!-- ENDIF -->
 
-        <span style="position: absolute; bottom: 0; right: 0; cursor: pointer;" title="{L_flt_gather_all}" class="icon_alpha" onclick="document.location='fleet.php?fleet_page=5&cp={planet.ID}&re=0'">
-          <div class="icons icon-gather"></div>
-        </span>
+      <span style="position: absolute; bottom: 0; right: 0; cursor: pointer;" title="{L_flt_gather_all}" class="icon_alpha" onclick="document.location='fleet.php?fleet_page=5&cp={planet.ID}&re=0'">
+        <div class="icons icon-gather"></div>
+      </span>
 
       <!-- IF planet.FLEET_OWN -->
         <span style="position: absolute; top: 0px; left: 25%; width: 25%; height: 25%; cursor: pointer;" class="icon_alpha" onmouseover="fleet_dialog_show(this, '{planet.PLANET_FLEET_ID}')"  onclick="document.location='fleet.php?cp={planet.ID}&re=0'">
@@ -71,15 +71,19 @@
         <div style="position: absolute; top: 0; right: 0; width: {$MOON_IMG_SIZE}; height: {$MOON_IMG_SIZE};">
           <a href="?cp={planet.MOON_ID}&re=0" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img style="border-style: none;" src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" height="100%" width="100%"></a>
           
+          <span style="position: absolute; bottom: 0; right: 0; cursor: pointer;" title="{L_flt_gather_all}" class="icon_alpha" onclick="document.location='fleet.php?fleet_page=5&cp={planet.MOON_ID}&re=0'">
+            <div class="icons icon-gather"></div>
+          </span>
+
+          <span style="position: absolute; left: 0; width: 100%; top: 90%; height: 10%; overflow: hidden;">
+            <div class="fl" style="position: relative; left: 0px; height: 100%; width: {planet.MOON_FILL}%; background-color: <!-- IF planet.MOON_FILL >= 100 -->red<!-- ELSEIF planet.MOON_FILL > 80 -->yellow<!-- ELSE -->green<!-- ENDIF -->;"></div>
+          </span>
+
           <!-- IF planet.MOON_ENEMY != 0 -->
             <span style="position: absolute; top: 26%; left: 26%; width: 48%; height: 48%;">
               <img src="../design/images/icon_warning.png" height="100%" width="100%" style="border-style: none; cursor: pointer;" onclick="javascript:window.location = '?cp={planet.MOON_ID}&re=0'">
             </span>
           <!-- ENDIF -->
-
-          <span style="position: absolute; left: 0; width: 100%; top: 90%; height: 10%; overflow: hidden;">
-            <div class="fl" style="position: relative; left: 0px; height: 100%; width: {planet.MOON_FILL}%; background-color: <!-- IF planet.MOON_FILL >= 100 -->red<!-- ELSEIF planet.MOON_FILL > 80 -->yellow<!-- ELSE -->green<!-- ENDIF -->;"></div>
-          </span>
         </div>
       <!-- ENDIF -->
     </div>
