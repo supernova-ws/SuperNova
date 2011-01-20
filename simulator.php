@@ -159,7 +159,7 @@ else
   }
 
   $template->assign_vars(array(
-    'BE_DEBUG' => $_GET['BE_DEBUG'],
+    'BE_DEBUG' => BE_DEBUG,
   ));
 
   display(parsetemplate($template, $parse), $lang['coe_combatSimulator'], false);
