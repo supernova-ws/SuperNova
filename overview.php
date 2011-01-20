@@ -57,19 +57,17 @@ if($user['authlevel'] >= 2)
   }
 }
 
-check_urlaubmodus ($user);
-
 includeLang('overview');
 
 $mode            = $_GET['mode'];
 switch ($mode)
 {
   case 'manage':
-    $template = gettemplate('planet_manage', true);
+    $template        = gettemplate('planet_manage', true);
     $planet_id       = sys_get_param_int('planet_id');
 
     $rename          = SYS_mysqlSmartEscape($_POST['rename']);
-    $new_name        = SYS_mysqlSmartEscape(strip_tags(trim($_POST['new_name'])));
+    $new_name        = strip_tags(trim(sys_get_param('new_name', 'Colony')));
 
     $abandon         = SYS_mysqlSmartEscape($_POST['abandon']);
     $abandon_confirm = $_POST['abandon_confirm'];
@@ -77,7 +75,8 @@ switch ($mode)
     if ($rename && $new_name)
     {
       $planetrow['name'] = $new_name;
-      doquery("UPDATE {{planets}} SET `name` = '{$new_name}' WHERE `id` = '{$planet_id}' LIMIT 1;");
+      $new_name = mysql_real_escape_string($new_name);
+      doquery("UPDATE {{planets}} SET `name` = '{$new_name}' WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
     }
     elseif ($abandon)
     {

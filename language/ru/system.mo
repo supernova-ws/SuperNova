@@ -104,9 +104,9 @@ $lang['sys_planet_type2'] 	  = "Поле обломков";
 $lang['sys_planet_type3']    = "Луна";
 
 $lang['sys_planet_type'] = array(
-  1 => $lang['sys_planet_type1'], 
+  PT_PLANET => $lang['sys_planet_type1'], 
   2 => $lang['sys_planet_type2'], 
-  3 => $lang['sys_planet_type3']
+  PT_MOON => $lang['sys_planet_type3']
 );
 
 $lang['sys_planet_type_sh1'] = "(П)";
@@ -154,7 +154,8 @@ $lang['err_cookie'] = "Ошибка! Невозможно авторизировать пользователя по информа
 $lang['ru']              	  = 'Русский';
 $lang['en']              	  = 'Английский';
 
-$lang['sys_vacancy']         = 'Вы же в отпуске!';
+$lang['sys_vacation']        = 'Вы же в отпуске до';
+$lang['sys_vacation_leave']  = 'Я уже отдохнул - выйти из отпуска!';
 $lang['sys_level']           = 'Уровень';
 
 $lang['sys_yes']             = 'Да';

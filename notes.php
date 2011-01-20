@@ -21,7 +21,6 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-check_urlaubmodus ($user);
 $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
 
 $GET_a = intval($_GET['a']);

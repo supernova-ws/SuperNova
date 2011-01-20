@@ -30,8 +30,6 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-check_urlaubmodus ($user);
-
 includeLang('chat');
 
 $nick = $user['username'];

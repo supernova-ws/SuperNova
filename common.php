@@ -66,6 +66,11 @@ if (is_array($user) && !empty($user['id']))
   }
   CheckPlanetUsedFields($planetrow);
   $que = PlanetResourceUpdate($user, $planetrow, $time_now);
+
+  if(!$skip_ban_check && !(IN_ADMIN === true))
+  {
+    sys_user_vacation($user);
+  }
 }
 else
 {

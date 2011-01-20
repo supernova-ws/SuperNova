@@ -20,7 +20,6 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-check_urlaubmodus ($user);
 if (HIDE_BUILDING_RECORDS) return;
 
   includeLang('records');

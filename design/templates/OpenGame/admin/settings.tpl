@@ -158,8 +158,8 @@
 
     <tr><td class="c" colspan="2">{L_adm_opt_game_oth_info}</td></tr>
     <tr> 
-      <th>{L_adm_opt_vacancy_mode}</th> 
-      <th><input name="urlaubs_modus_erz" type="checkbox" value="1" {urlaubs_modus_erz} /></th> 
+      <th>{L_adm_opt_vacation_mode}</th> 
+      <th><input name="user_vacation_disable" type="checkbox" value="1" {user_vacation_disable} /></th> 
     </tr>
 
     <tr><td class="c" colspan="2"><center><input name="save" value="{L_adm_opt_btn_save}" type="submit"></center></td></tr>

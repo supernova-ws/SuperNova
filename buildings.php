@@ -19,14 +19,12 @@ define('INSTALL' , false);
 
 $ugamela_root_path = './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
+require_once("{$ugamela_root_path}common.{$phpEx}");
 
 if ($IsUserChecked == false) {
   includeLang('login');
   header("Location: login.php");
 }
-
-check_urlaubmodus ($user);
 
 $mode = sys_get_param_escaped('mode');
 

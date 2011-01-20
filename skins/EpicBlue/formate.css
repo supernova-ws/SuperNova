@@ -241,6 +241,12 @@ h1
   color: #993333;
 }
 
+.link {
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 /* Setting popup table background color */
 div .ui-dialog-content table { background: #344055; }
 

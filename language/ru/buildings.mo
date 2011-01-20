@@ -55,4 +55,6 @@ $lang['eco_bld_page_hint'] =
 $lang['eco_price']			= "Цена";
 $lang['eco_left']				= "Остаток";
 $lang['eco_left_fleet']		= "+ флоты";
+
+$lang['eco_bld_resources_not_enough'] = 'Не хватает ресурсов для постройки заказанных юнитов';
 ?>

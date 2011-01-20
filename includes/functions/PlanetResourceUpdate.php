@@ -28,13 +28,15 @@ function ECO_calcResourceIncrease(&$Caps, $strResource, $ProductionTime){
 function PlanetResourceUpdate ( $user, &$planet, $UpdateTime, $Simul = false ) {
   global $resource, $debug, $sn_data;
 
+  doquery('START TRANSACTION;');
+
   $ProductionTime        = ($UpdateTime - $planet['last_update']); // How much time passes since last update
   $planet['last_update'] = $UpdateTime;
 
   $Caps = ECO_getPlanetCaps($user, $planet); // calculating current resource production data
   $incRes = array ('metal' => 0, 'crystal' => 0, 'deuterium' => 0); // Zero increment to each type of resources
 
-  if ($planet['planet_type'] == 1) { // Resource calculation for planet
+  if ($planet['planet_type'] == PT_PLANET) { // Resource calculation for planet
     foreach($incRes as $resName => &$incCount){ // Now, for each type of resource we...
       // ...calculating resource increase (may be negative if resource amount less then storage capacity)
       $incCount = ECO_calcResourceIncrease($Caps, $resName, $ProductionTime);
@@ -47,7 +49,7 @@ function PlanetResourceUpdate ( $user, &$planet, $UpdateTime, $Simul = false ) {
       // ...calculating total planet production per hour - old one counts only units (buildings and fleet ones)
       $Caps['planet'][$resName.'_perhour'] = $Caps['real'][$resName.'_perhour'];
     }
-  } elseif ($planet['planet_type'] == 3) {
+  } elseif ($planet['planet_type'] == PT_MOON) {
     // Yes - no production on moon
     $planet['metal_perhour']        = 0;
     $planet['crystal_perhour']      = 0;
@@ -108,6 +110,8 @@ function PlanetResourceUpdate ( $user, &$planet, $UpdateTime, $Simul = false ) {
       }
     }
   }
+
+  doquery('COMMIT;');
 
   return $que;
 }

@@ -91,11 +91,16 @@ function eco_struc_show_unit_info(unit_id, no_color)
     unit_destroy_link = language['bld_destroy'] + ' ' + language['level'] + ' ' + unit['level'];
   }
 
-  if(planet['que_has_place'] != 0)
+  element_cache['unit_create_link'].innerHTML = '';
+  element_cache['unit_destroy_link'].innerHTML = '';
+  if(planet['que_has_place'] != 0 && !unit['unit_busy'])
   {
     var pre_href = '<a href="?mode={QUE_ID}&action=';
-    element_cache['unit_destroy_link'].innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '">' + unit_destroy_link + '</a>';
-    if(planet['fields_free'] >= 0)
+    if(unit['level'] > 0 && unit['destroy_can'] != 0)
+    {
+      element_cache['unit_destroy_link'].innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '">' + unit_destroy_link + '</a>';
+    }
+    if(planet['fields_free'] > 0 && unit['build_can'] != 0)
     {
       element_cache['unit_create_link'].innerHTML = pre_href + 'create&unit_id=' + unit['id'] + '">' + language['bld_create'] + ' ' + language['level'] + ' ' + (parseInt(unit['level']) + 1) + '</a>';
     }
@@ -324,16 +329,19 @@ function eco_struc_unborder_unit(unit_id)
         name: '{production.NAME}',
         level: '{production.LEVEL}',
         description: '{production.DESCRIPTION}', 
+        unit_busy: '{production.UNIT_BUSY}',
         
         metal: '{production.METAL}',
         crystal: '{production.CRYSTAL}',
         deuterium: '{production.DEUTERIUM}',
         time: '{production.TIME}',
+        build_can: '{production.BUILD_CAN}',
 
         destroy_metal: '{production.DESTROY_METAL}',
         destroy_crystal: '{production.DESTROY_CRYSTAL}',
         destroy_deuterium: '{production.DESTROY_DEUTERIUM}',
         destroy_time: '{production.DESTROY_TIME}',
+        destroy_can: '{production.DESTROY_CAN}',
 
         metal_balance: '{production.METAL_BALANCE}',
         crystal_balance: '{production.CRYSTAL_BALANCE}',
