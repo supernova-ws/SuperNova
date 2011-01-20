@@ -370,4 +370,6 @@ $lang = array_merge($lang, array(
 
 ));
 
+$lang['flt_gather_all']    = 'Свезти ресурсы';
+
 ?>
