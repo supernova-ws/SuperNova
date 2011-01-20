@@ -16,9 +16,9 @@ function eco_can_build_unit($user, $planet, $unit_id)
   global $sn_data;
 
   $accessible = true;
-  if (isset($require))
+  if (isset($sn_data[$unit_id]['require']))
   {
-    foreach($require as $require_id => $require_level)
+    foreach($sn_data[$unit_id]['require'] as $require_id => $require_level)
     {
       $db_name = $sn_data[$require_id]['name'];
       $data = isset($planet[$db_name]) ? $planet[$db_name] : (isset($user[$db_name]) ? $user[$db_name] : 0);
