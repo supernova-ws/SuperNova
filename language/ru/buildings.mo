@@ -1,7 +1,9 @@
 <?php
 
 $lang['Fleet']			= "Флот";
+$lang['fleet']			= "Флот";
 $lang['Defense']		= "Оборона";
+$lang['defense']		= "Оборона";
 $lang['Research']		= "Исследования";
 $lang['level']			= "Уровень";
 $lang['dispo']			= "Доступно";

@@ -80,7 +80,7 @@ window.onload = t;
 </script>
 <br />
 <form name="Atr" method="get" action="buildings.php">
-<input type="hidden" name="mode" value="fleet">
+<input type="hidden" name="mode" value="{MODE}">
 <input type="hidden" name="action" value="cancelqueue">
 <table width="530">
 <tr>

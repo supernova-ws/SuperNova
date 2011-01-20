@@ -34,8 +34,8 @@
 
     <tr><td><a href="buildings.php?mode={QUE_STRUCTURES}" id="lm_buildings">{L_Buildings}</a></td></tr>
 
-    <tr><td><a href="buildings.php?mode=fleet" id="lm_shipyard">{L_Shipyard}</a></td></tr>
-    <tr><td><a href="buildings.php?mode=defense">{L_Defense}</a></td></tr>
+    <tr><td><a href="buildings.php?mode={SUBQUE_FLEET}" id="lm_shipyard">{L_Shipyard}</a></td></tr>
+    <tr><td><a href="buildings.php?mode={SUBQUE_DEFENSE}">{L_Defense}</a></td></tr>
 
     <tr><th>{L_Imperium}</th></tr>
     <tr><td><a href="imperator.php" style="color: purple">{L_imp_imperator}</a></th></tr>
