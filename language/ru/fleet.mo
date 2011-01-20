@@ -187,7 +187,6 @@ $lang['fl_planet_resources']				= 'Ресурсы на планете';
 
 $lang['fl_fleet_data'] 						= 'Текущие параметры флота';
 
-$lang['flt_gather_all']    = 'Свезти ресурсы';
 $lang['flt_gather_report'] = 'Отчет о выполнении';
 $lang['flt_report']        = 'Отчет';
 

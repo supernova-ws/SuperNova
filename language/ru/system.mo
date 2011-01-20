@@ -55,7 +55,7 @@ $lang['sys_metal']          = "Металл";
 $lang['sys_metal_sh']       = "М";
 $lang['sys_crystal']        = "Кристалл";
 $lang['sys_crystal_sh']     = "К";
-$lang['sys_deuterium']      = "Дейтрий";
+$lang['sys_deuterium']      = "Дейтерий";
 $lang['sys_deuterium_sh']   = "Д";
 $lang['sys_energy']         = "Энергия";
 $lang['sys_energy_sh']      = "Э";
@@ -369,5 +369,7 @@ $lang = array_merge($lang, array(
   'off_dark_matter_hint' => 'При помощи этой субстанции можно нанять офицеров и командиров.',
 
 ));
+
+$lang['flt_gather_all']    = 'Свезти ресурсы';
 
 ?>
