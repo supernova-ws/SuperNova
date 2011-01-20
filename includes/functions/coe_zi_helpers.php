@@ -1,7 +1,7 @@
 <?php
 function BE_DEBUG_openTable()
 {
-  if (!defined('BE_DEBUG')){
+  if (!defined('BE_DEBUG') || BE_DEBUG !== true){
     return;
   }
 
@@ -32,7 +32,7 @@ function BE_DEBUG_openTable()
 
 function BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $attackArray, $fleetID, $HarmPctIncoming, $HarmMade, $FinalHarm, $amount)
 {
-  if (!defined('BE_DEBUG')){
+  if (!defined('BE_DEBUG') || BE_DEBUG !== true){
     return;
   }
 
@@ -67,7 +67,7 @@ function BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $a
 
 function BE_DEBUG_closeRow($calculatedDestroyedShip, $fleet_n)
 {
-  if (!defined('BE_DEBUG')){
+  if (!defined('BE_DEBUG') || BE_DEBUG !== true){
     return;
   }
 
@@ -84,7 +84,7 @@ function BE_DEBUG_closeRow($calculatedDestroyedShip, $fleet_n)
 
 function BE_DEBUG_closeTable()
 {
-  if (!defined('BE_DEBUG')){
+  if (!defined('BE_DEBUG') || BE_DEBUG !== true){
     return;
   }
 
