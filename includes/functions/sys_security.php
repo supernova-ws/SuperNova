@@ -21,11 +21,11 @@
 
 function sn_set_cookie($user, $rememberme)
 {
-  global $config, $time_now;
+  global $config;
 
   if ($rememberme)
   {
-    $expiretime = $time_now + 31536000;
+    $expiretime = $GLOBALS['time_now'] + 31536000;
     $rememberme = 1;
   }
   else
@@ -41,7 +41,9 @@ function sn_set_cookie($user, $rememberme)
 
 function sn_autologin($abort = true)
 {
-  global $lang, $config, $ugamela_root_path, $phpEx, $time_now, $skip_ban_check, $IsUserChecked;
+  global $config, $IsUserChecked;
+  $lang = $GLOBALS['lang'];
+  $time_now = $GLOBALS['time_now'];
 
   $IsUserChecked = false;
   if (!isset($_COOKIE[$config->COOKIE_NAME]))
@@ -50,10 +52,11 @@ function sn_autologin($abort = true)
   }
 
   $TheCookie  = explode("/%/", $_COOKIE[$config->COOKIE_NAME]);
+  $TheCookie[0] = intval($TheCookie[0]);
   $TheCookie[1] = mysql_real_escape_string($TheCookie[1]);
-  $user = doquery("SELECT * FROM `{{users}}` WHERE `username` = '{$TheCookie[1]}';", '', true);
+  $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = '{$TheCookie[0]}' LIMIT 1;", '', true);
 
-  if (!$user || $user['id'] != $TheCookie[0] || md5("{$user['password']}--{$config->secret_word}") !== $TheCookie[2])
+  if (!$user || md5("{$user['password']}--{$config->secret_word}") !== $TheCookie[2])
   {
     setcookie($config->COOKIE_NAME, "", time() - 3600*25);
     if($abort)
@@ -70,12 +73,12 @@ function sn_autologin($abort = true)
   $user_agent = mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']);
   doquery("UPDATE `{{users}}` SET `onlinetime`  = '{$time_now}', `user_lastip` = '{$ip['client']}', `user_proxy`  = '{$ip['proxy']}', `user_agent`  = '{$user_agent}' WHERE `id` = '{$user['id']}' LIMIT 1;");
 
-  if(!$skip_ban_check && $user['banaday'])
+  if(!$GLOBALS['skip_ban_check'] && $user['banaday'])
   {
-    if ($user['banaday'] > time())
+    if ($user['banaday'] > $time_now)
     {
       $bantime = date(FMT_DATE_TIME, $user['banaday']);
-      die ("{$lang['sys_banned_msg']}{$bantime}");
+      die ("{$lang['sys_banned_msg']} {$bantime}");
     }
     doquery("UPDATE {{users}} SET bana=0, `vacation` = '{$time_now}', banaday=0 WHERE id='{$user['id']}' LIMIT 1;");
   }
@@ -87,7 +90,7 @@ function sn_autologin($abort = true)
 
 function sn_login($username, $password, $remember_me = '1')
 {
-  global $lang, $config;
+  global $lang;
 
   $username = mysql_real_escape_string($username);
 
