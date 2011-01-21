@@ -289,6 +289,10 @@ function sn_timer() {
         if(timer_options['que'].length == 0)
         {
           timer['active'] = false;
+          if(timer_options['url'] != undefined)
+          {
+            document.location = timer_options['url'];
+          }
           break;
         }
         var que_item = timer_options['que'][0];
@@ -315,7 +319,16 @@ function sn_timer() {
           que_compiled = sn_timers[timerID]['que_compiled'];
         }
 
-        if(timer_options['que'].length && que_item[UNIT_ID])
+        var should_break = true;
+        if(que_item != undefined)
+        {
+          if(que_item[UNIT_ID])
+          {
+            should_break = false;
+          }
+        }
+
+        if(timer_options['que'].length && !should_break)
         {
           timeFinish = timer['start_time'] + que_item[UNIT_TIME];
           timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp;
@@ -334,6 +347,10 @@ function sn_timer() {
         else
         {
           timer['active'] = false;
+          if(timer_options['url'] != undefined)
+          {
+            document.location = timer_options['url'];
+          }
           infoText = timer_options['msg_done'];
           timerText = '';
           total_text = '00:00:00';
