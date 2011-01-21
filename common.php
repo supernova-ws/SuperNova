@@ -25,7 +25,12 @@ if($config->game_disable)
   }
 }
 
-if (is_array($user) && !empty($user['id']))
+if(!$user && !$allow_anonymous)
+{
+  header('Location: login.php');
+}
+
+if ($user && is_array($user) && isset($user['id']) && !empty($user['id']))
 {
   FlyingFleetHandler();
 
@@ -56,10 +61,10 @@ if (is_array($user) && !empty($user['id']))
 
   SetSelectedPlanet($user);
   $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$user['current_planet']}' LIMIT 1;", '', true);
-  if(!$planetrow['id'])
+  if(!$planetrow)
   {
     $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$user['id_planet']}' LIMIT 1;", '', true);
-    if(!$planetrow['id'])
+    if(!$planetrow)
     {
       header('Location: login.php');
     }
@@ -70,13 +75,6 @@ if (is_array($user) && !empty($user['id']))
   if(!$skip_ban_check && !(IN_ADMIN === true))
   {
     sys_user_vacation($user);
-  }
-}
-else
-{
-  if(!$allow_anonymous)
-  {
-    header('Location: login.php');
   }
 }
 
