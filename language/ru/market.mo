@@ -60,8 +60,9 @@ $lang['eco_mrk_stockman_res']     = 'Стоимость купленных кораблей:';
 $lang['eco_mrk_stockman_ships']   = 'Куплены следующие корабли:';
 $lang['eco_mrk_stockman_noShip']  = 'У продавца сейчас нет кораблей для продажи';
 
+$lang['eco_mrk_exchange'] = 'Биржа обмена ресурсов';
 
 $lang['eco_mrk_banker']   = 'Банкир';
-$lang['eco_mrk_exchange'] = 'Биржа обмена ресурсов';
 $lang['eco_mrk_pawnshop'] = 'Ломбард';
+
 ?>
