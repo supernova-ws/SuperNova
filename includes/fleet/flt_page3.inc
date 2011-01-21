@@ -117,6 +117,10 @@
   CheckPlanetUsedFields($planetrow);
 
   $options = array();
+  if ($target_mission = MT_COLONIZE)
+  {
+    $TargetPlanet = array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet);
+  }
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
   if($cant_attack != ATTACK_ALLOWED)
   {
