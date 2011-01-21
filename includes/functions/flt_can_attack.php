@@ -31,8 +31,9 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   $speed_factor = get_fleet_speed();
   $distance     = GetTargetDistance($planet_src['galaxy'], $planet_dst['galaxy'], $planet_src['system'], $planet_dst['system'], $planet_src['planet'], $planet_dst['planet']);
   $fleet_speed  = min(GetFleetMaxSpeed($fleet, 0, $user));
-  $duration     = GetMissionDuration(10, $fleet_speed, $distance, $speed_factor);
-  $consumption  = GetFleetConsumption($fleet, $speed_factor, $duration, $distance, $fleet_speed, $user);
+  $fleet_speed_percent = $options['fleet_speed_percent'] ? $options['fleet_speed_percent'] : 10;
+  $duration     = GetMissionDuration($fleet_speed_percent, $fleet_speed, $distance, $speed_factor);
+  $consumption  = GetFleetConsumption($fleet, $speed_factor, $duration, $distance, $fleet_speed, $user, $fleet_speed_percent);
   if($planet_src[$sn_data[RES_DEUTERIUM]['name']] < $fleet[RES_DEUTERIUM] + $consumption)
   {
     return ATTACK_NO_FUEL;
