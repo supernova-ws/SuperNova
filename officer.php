@@ -136,7 +136,7 @@ else
         'ID'          => $mercenary_id,
         'NAME'        => $lang['tech'][$mercenary_id],
         'DESCRIPTION' => $lang['info'][$mercenary_id]['description'],
-        'DESCRIPTION_SHORT' => $lang['info'][$mercenary_id]['description_short'],
+        'EFFECT'      => $lang['info'][$mercenary_id]['effect'],
         'LEVEL'       => $user[$resource[$mercenary_id]],
         'LEVEL_MAX'   => $mercenary['max'],
         'BONUS'       => $mercenary_bonus,
