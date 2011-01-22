@@ -296,9 +296,7 @@ function eco_struc_unborder_unit(unit_id)
           </span>
 
           <span style="position: absolute; top: 0; left: 20%; width: 60%; height: 16px; text-align: center; font-size: 120%;" class="icon_alpha">
-            <!-- IF production.LEVEL -->
-              {production.LEVEL}
-            <!-- ENDIF -->
+            <!-- IF production.LEVEL_OLD -->{production.LEVEL_OLD}<!-- ENDIF --><!-- IF production.LEVEL_CHANGE --><!-- IF production.LEVEL_CHANGE > 0 -->+<!-- ENDIF -->{production.LEVEL_CHANGE}<!-- ENDIF -->
           </span>
 
           
@@ -328,6 +326,7 @@ function eco_struc_unborder_unit(unit_id)
         id: '{production.ID}',
         name: '{production.NAME}',
         level: '{production.LEVEL}',
+        change: '{production.CHANGE}',
         description: '{production.DESCRIPTION}', 
         unit_busy: '{production.UNIT_BUSY}',
         

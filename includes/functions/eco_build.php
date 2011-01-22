@@ -37,11 +37,11 @@ function eco_build($que_type, $user, &$planet, $que)
     switch($action)
     {
       case 'create': // Add unit to que for build
-        $que = eco_que_add($user, $planet, $que, $unit_id, QUE_STRUCTURES);
+        $que = eco_que_add($user, $planet, $que, QUE_STRUCTURES, $unit_id);
       break;
 
       case 'destroy': // Add unit to que for remove
-        $que = eco_que_add($user, $planet, $que, $unit_id, QUE_STRUCTURES, 1, BUILD_DESTROY);
+        $que = eco_que_add($user, $planet, $que, QUE_STRUCTURES, $unit_id, 1, BUILD_DESTROY);
       break;
 
       case 'trim': // Cancel unit from que
@@ -111,6 +111,8 @@ function eco_build($que_type, $user, &$planet, $que)
         'NAME'              => $element_name,
         'DESCRIPTION'       => $lang['info'][$Element]['description_short'],
         'LEVEL'             => $element_level,
+        'LEVEL_OLD'         => $planet[$sn_data[$Element]['name']],
+        'LEVEL_CHANGE'      => $que['in_que'][$Element],
 
         'BUILD_CAN'         => $build_data['CAN'][BUILD_CREATE],
         'TIME'              => pretty_time($build_data[BUILD_CREATE][RES_TIME]),
