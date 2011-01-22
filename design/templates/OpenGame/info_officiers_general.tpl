@@ -11,7 +11,7 @@
 		<td>
 		  {description}<br><br>
 		  <b>
-		    <span class=positive>{mercenary_bonus} {description_short}</span><br><br>
+		    <span class=positive>{mercenary_bonus} {EFFECT}</span><br><br>
 		    <span class=negative>{off_maxed_out} {max_level}</span>
 		  </b>
 		</td>

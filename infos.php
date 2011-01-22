@@ -329,7 +329,7 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
       break;
     }
 
-    $parse['description_short'] = $lang['info'][$BuildID]['description_short'];
+    $parse['EFFECT'] = $lang['info'][$BuildID]['effect'];
     $parse['mercenary_bonus'] = $mercenary_bonus;
     $parse['max_level'] = $mercenary['max'];
   }

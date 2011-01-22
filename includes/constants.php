@@ -72,7 +72,7 @@ define('CONFIRM_DELETE', 3);
 $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
 // *** Combat-related constants
-// *** Mission Target constants starts with MT_
+// *** Mission Type constants starts with MT_
 define('MT_ATTACK',    1);
 define('MT_AKS',       2);
 define('MT_TRANSPORT', 3);
@@ -89,6 +89,10 @@ define('MT_EXPLORE',  15);
 define('PT_PLANET', 1);
 define('PT_DEBRIS', 2);
 define('PT_MOON',   3);
+
+// *** Unit locations - shows db table where unit belong
+define('UL_USER', 1);
+define('UL_PLANET', 2);
 
 // *** Constants for changing DM
 define('RPG_STRUCTURE', 1);
@@ -148,6 +152,13 @@ define('BONUS_MULTIPLY', 4);  // Multiply by value
 // *** Build type constants
 define('BUILD_CREATE', 1);
 define('BUILD_DESTROY', -1);
+
+// *** Check unit availability codes
+define('BUILD_ALLOWED',      1);
+define('BUILD_AMOUNT_WRONG', 2);
+define('BUILD_QUE_WRONG',    3);
+define('BUILD_QUE_UNIT_WRONG',    4);
+
 
 // *** Que types
 define('QUE_STRUCTURES', 1);

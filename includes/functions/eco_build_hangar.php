@@ -1,4 +1,10 @@
 <?php
+
+function eco_hangar_is_building($que)
+{
+  return $que['in_que_abs'][21] ? true : false;
+}
+
 /**
  * GetRestrictedConstructionNum.php
  *
