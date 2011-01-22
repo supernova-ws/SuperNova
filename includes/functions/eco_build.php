@@ -31,6 +31,8 @@ function eco_build($que_type, $user, &$planet, $que)
   $unit_level = sys_get_param_int('unit_level');
   $GET_listid = $_GET['listid'];
 
+  $que_type = ($que_type == SUBQUE_FLEET || $que_type == SUBQUE_DEFENSE) ? QUE_HANGAR : $que_type;
+
   CheckPlanetUsedFields($planet);
   if($action)
   {
