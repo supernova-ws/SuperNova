@@ -34,7 +34,7 @@
 
       <th align=left>
         {officer.DESCRIPTION}<br><br>
-        <span class="positive">{officer.BONUS} {officer.DESCRIPTION_SHORT}</span>
+        <span class="positive">{officer.BONUS} {officer.EFFECT}</span>
       </th>
     </tr>
   <!-- END officer -->
