@@ -6,7 +6,6 @@
  * 2.0 copyright 2009-2011 Gorlum for http://supernova.ws
  *  [!] Full rewrote from scratch
  *  [+] function eco_unit_busy
- *  [+] function eco_lab_is_building
  * @version 1.0
  * @copyright 2008 By Chlorel for XNova
  */
@@ -41,17 +40,78 @@ function eco_unit_busy($user, $planet, $que, $unit_id)
   $hangar_busy = $planet['b_hangar'] && $planet['b_hangar_id'];
   $lab_busy    = $planet['b_tech'] && $planet['b_tech_id'] && !$config->BuildLabWhileRun;
 
-  return (($unit_id == 31 || $unit_id == 35) && $lab_busy) || ($unit_id == 21 && $hangar_busy);
+  switch($unit_id)
+  {
+    case 21:
+      $return = $hangar_busy;
+    break;
+
+    case 31:
+    case 35:
+      $return = $lab_busy;
+    break;
+
+    default:
+      $return = false;
+    break;
+  }
+
+//  return (($unit_id == 31 || $unit_id == 35) && $lab_busy) || ($unit_id == 21 && $hangar_busy);
+  return $return;
 }
 
-function eco_lab_is_building($config, $que)
+functioin eco_unit_buildable($user, $planet, $que, $que_id, $unit_id, $unit_amount = 1, $build_mode = BUILD_CREATE)
 {
-  return $que['in_que_abs'][31] && !$config->BuildLabWhileRun ? true : false;
-}
+  if($unit_amount < 1)
+  {
+    return BUILD_AMOUNT_WRONG;
+  }
+  $unit_amount = intval($unit_amount);
 
-function eco_hangar_is_building($que)
-{
-  return $que['in_que_abs'][21] ? true : false;
+  @$que_data = $GLOBALS['sn_data']['groups']['ques'][$que_id];
+  if(!isarray($que_data))
+  {
+    return BUILD_QUE_WRONG;
+  }
+
+  if($que_id == QUE_STRUCTURES)
+  {
+    $que_data['unit_list'] = $GLOBALS['sn_data']['groups']['build_allow'][$planet['planet_type']];
+  }
+
+  if(!in_array($unit_id, $que_data['unit_list']))
+  {
+    return BUILD_QUE_UNIT_WRONG;
+  }
+
+  $config_build_busy_lab = $GLOBALS['config']->BuildLabWhileRun;
+
+/*
+  $hangar_busy = $planet['b_hangar'] && $planet['b_hangar_id'];
+  $lab_busy    = $planet['b_tech'] && $planet['b_tech_id'] && !$config->BuildLabWhileRun;
+
+  switch($unit_id)
+  {
+    case 21:
+      $return = $hangar_busy;
+    break;
+
+    case 31:
+    case 35:
+      $return = $lab_busy;
+    break;
+
+    default:
+      $return = false;
+    break;
+  }
+
+//  return (($unit_id == 31 || $unit_id == 35) && $lab_busy) || ($unit_id == 21 && $hangar_busy);
+  return $return;
+*/
+
+//  $unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $que['in_que'][$unit_id];
+//  $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
 }
 
 ?>
