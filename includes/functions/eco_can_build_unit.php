@@ -60,8 +60,9 @@ function eco_unit_busy($user, $planet, $que, $unit_id)
   return $return;
 }
 
-functioin eco_unit_buildable($user, $planet, $que, $que_id, $unit_id, $unit_amount = 1, $build_mode = BUILD_CREATE)
+function eco_unit_buildable($user, $planet, $que, $que_id, $unit_id, $unit_amount = 1, $build_mode = BUILD_CREATE)
 {
+/*
   if($unit_amount < 1)
   {
     return BUILD_AMOUNT_WRONG;
@@ -85,6 +86,7 @@ functioin eco_unit_buildable($user, $planet, $que, $que_id, $unit_id, $unit_amou
   }
 
   $config_build_busy_lab = $GLOBALS['config']->BuildLabWhileRun;
+*/
 
 /*
   $hangar_busy = $planet['b_hangar'] && $planet['b_hangar_id'];
