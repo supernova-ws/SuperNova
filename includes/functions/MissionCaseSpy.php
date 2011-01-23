@@ -154,6 +154,8 @@ function MissionCaseSpy ( $fleet_row ) {
   }
   // --- End of Universal part
 
+  $target_user_id      = $target_planet['id_owner'];
+
   $target_user_row     = doquery("SELECT * FROM {{users}} WHERE `id` = '{$target_user_id}' LIMIT 1;", '', true);
   if(!$target_user_row || !isset($target_user_row['id']))
   {
@@ -166,7 +168,8 @@ function MissionCaseSpy ( $fleet_row ) {
     return false;
   }
 
-  $target_user_id      = $target_planet['id_owner'];
+  doquery('START TRANSACTION;');
+
   $TargetSpyLvl        = GetSpyLevel($target_user_row);
   $CurrentSpyLvl       = GetSpyLevel($spying_user_row);
 
@@ -344,13 +347,13 @@ function MissionCaseSpy ( $fleet_row ) {
 
           SendSimpleMessage ( $target_user_id, '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], 'Ваш шпионский флот уничтожен');
 
-          doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = '{$fleet_row["fleet_id"]}' LIMIT 1;");
-        } else {
-          doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_row["fleet_id"]}' LIMIT 1;");
+          doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
         }
+        doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
       }
     }
   }
+  doquery('COMMIT;');
 }
 
 ?>
