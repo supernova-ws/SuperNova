@@ -19,25 +19,21 @@
    */
 
 function MissionCaseAttack ( $FleetRow) {
-  global $phpEx, $ugamela_root_path, $pricelist, $lang, $resource, $CombatCaps, $debug, $time_now, $reslist, $sn_data;
-
   // --- This is universal part which should be moved to fleet manager
+  global $time_now;
+
+  // Checking if we should now to proceed this fleet - does it arrive? No - exiting.
+  if ($FleetRow['fleet_start_time'] > $time_now) return;
+
   // Checking fleet message: if not 0 then we already managed this fleet
   if($FleetRow['fleet_mess'] != 0) {
     // Checking fleet end_time: if less then time_now then restoring fleet to planet
     if($FleetRow['fleet_end_time'] <= $time_now) {
       RestoreFleetToPlanet($FleetRow);
-      doquery ('DELETE FROM {{table}} WHERE `fleet_id`='.$FleetRow['fleet_id'],'fleets');
     }
     return;
   }
 
-  // Checking if we should now to proceed this fleet - does it arrive? No - exiting.
-  if ($FleetRow['fleet_start_time'] > $time_now) return;
-
-  // Misc checking for missing fleet data. Why we need it anyway?!
-  if (!isset($CombatCaps[202]['sd']))
-     message("<font color=\"red\">". $lang['sys_no_vars'] ."</font>", $lang['sys_error'], "fleet." . $phpEx, 2);
   // Using to get ownerID, lunaID from PLANETS table and list of resources
   $TargetPlanet = doquery('SELECT * FROM {{table}} WHERE ' .
          '`galaxy` = '. $FleetRow['fleet_end_galaxy'] .
@@ -46,16 +42,18 @@ function MissionCaseAttack ( $FleetRow) {
     ' AND `planet_type` = '. $FleetRow['fleet_end_type'] .';',
   'planets', true);
 
-  if (!isset($TargetPlanet['id'])) {
+  if (!$TargetPlanet || !isset($TargetPlanet['id'])) {
     if ($FleetRow['fleet_group'] > 0) {
       doquery("DELETE FROM {{aks}} WHERE `id` ='{$FleetRow['fleet_group']}';");
-      doquery('UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_group` ='.$FleetRow['fleet_group']);
+      doquery('UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_group` = ' . $FleetRow['fleet_group']);
     } else {
-      doquery('UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` ='.$FleetRow['fleet_id']);
+      doquery('UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` =' . $FleetRow['fleet_id']);
     }
     return;
   }
   // --- End of Universal part
+
+  global $lang, $resource, $CombatCaps, $sn_data;
 
   $CurrentUserID = $FleetRow['fleet_owner'];
   $TargetUserID  = $TargetPlanet['id_owner'];
@@ -90,7 +88,7 @@ function MissionCaseAttack ( $FleetRow) {
     )
   );
 
-  foreach($reslist['combat'] as $combatUnitID)
+  foreach($sn_data['groups']['combat'] as $combatUnitID)
     if ($TargetPlanet[$resource[$combatUnitID]] > 0)
       $defenseFleets[0]['def'][$combatUnitID] = $TargetPlanet[$resource[$combatUnitID]];
 

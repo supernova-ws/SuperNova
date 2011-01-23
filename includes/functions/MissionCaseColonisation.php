@@ -11,6 +11,22 @@
 // Mission Case 9: -> Coloniser
 //
 function MissionCaseColonisation ( $FleetRow ) {
+  // --- This is universal part which should be moved to fleet manager
+  global $time_now;
+
+  // Checking if we should now to proceed this fleet - does it arrive? No - exiting.
+  if ($FleetRow['fleet_start_time'] > $time_now) return;
+
+  // Checking fleet message: if not 0 then we already managed this fleet
+  if($FleetRow['fleet_mess'] != 0) {
+    // Checking fleet end_time: if less then time_now then restoring fleet to planet
+    if($FleetRow['fleet_end_time'] <= $time_now) {
+      RestoreFleetToPlanet($FleetRow);
+    }
+    return;
+  }
+  // --- End of Universal part
+
   global $lang, $resource, $user, $debug, $config;
 
   $iMaxColo = doquery("SELECT `colonisation_tech` + 1 FROM `{{table}}` WHERE `id`='". $FleetRow['fleet_owner']."'",'users', true);
