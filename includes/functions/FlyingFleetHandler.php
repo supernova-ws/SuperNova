@@ -48,10 +48,10 @@ function FlyingFleetHandler ()
         case MT_COLONIZE:  MissionCaseColonisation ( $CurrentFleet ); break;
         case MT_RECYCLE:   MissionCaseRecycling ( $CurrentFleet ); break;
         case MT_DESTROY:   MissionCaseDestruction ( $CurrentFleet ); break;
+        case MT_MISSILE:   break; // Missiles !!
         case MT_EXPLORE:   MissionCaseExpedition ( $CurrentFleet ); break;
-        case 10: break; // Missiles !!
 
-        default: doquery("DELETE FROM `{{table}}` WHERE `fleet_id` = '". $CurrentFleet['fleet_id'] ."';", 'fleets');
+        default: doquery("DELETE FROM `{{fleets}}` WHERE `fleet_id` = '{$CurrentFleet['fleet_id']}';");
       }
   }
 
