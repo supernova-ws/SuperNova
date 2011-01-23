@@ -30,10 +30,10 @@ if(!$user && !$allow_anonymous)
   header('Location: login.php');
 }
 
+FlyingFleetHandler();
+
 if ($user && is_array($user) && isset($user['id']) && !empty($user['id']))
 {
-  FlyingFleetHandler();
-
   if ( defined('IN_ADMIN') )
   {
     $UserSkin  = $user['dpath'];
@@ -59,18 +59,23 @@ if ($user && is_array($user) && isset($user['id']) && !empty($user['id']))
     $dpath     = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
   }
 
-  SetSelectedPlanet($user);
-  $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$user['current_planet']}' LIMIT 1;", '', true);
-  if(!$planetrow)
+  $planet_id = SetSelectedPlanet($user);
+  $global_data = sys_get_updated($user, $planet_id, $time_now);
+
+  if(!$global_data)
   {
-    $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$user['id_planet']}' LIMIT 1;", '', true);
-    if(!$planetrow)
-    {
-      header('Location: login.php');
-    }
+    $debug->error("User ID {$user['id']} has no current planet and no homeworld", 'User record error', 502);
   }
+
+  $planetrow = $global_data['planet'];
+  if(!$planetrow || !isset($planetrow['id']))
+  {
+    header('Location: login.php');
+  }
+
+  $que = $global_data['que'];
+
   CheckPlanetUsedFields($planetrow);
-  $que = PlanetResourceUpdate($user, $planetrow, $time_now);
 
   if(!$skip_ban_check && !(IN_ADMIN === true))
   {

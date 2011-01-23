@@ -136,12 +136,12 @@ function MissionCaseSpy ( $fleet_row ) {
   }
 
   // Using to get ownerID, lunaID from PLANETS table and list of resources
-  $target_planet = doquery('SELECT * FROM {{table}} WHERE ' .
+  $target_planet = doquery('SELECT * FROM {{planets}} WHERE ' .
          '`galaxy` = '. $fleet_row['fleet_end_galaxy'] .
     ' AND `system` = '. $fleet_row['fleet_end_system'] .
     ' AND `planet` = '. $fleet_row['fleet_end_planet'] .
-    ' AND `planet_type` = '. $fleet_row['fleet_end_type'] .';',
-  'planets', true);
+    ' AND `planet_type` = '. $fleet_row['fleet_end_type'] .' LIMIT 1;',
+  '', true);
 
   if (!$target_planet || !isset($target_planet['id'])) {
     if ($fleet_row['fleet_group'] > 0) {
@@ -168,190 +168,179 @@ function MissionCaseSpy ( $fleet_row ) {
     return false;
   }
 
-  doquery('START TRANSACTION;');
 
-  $TargetSpyLvl        = GetSpyLevel($target_user_row);
-  $CurrentSpyLvl       = GetSpyLevel($spying_user_row);
+  $TargetSpyLvl  = GetSpyLevel($target_user_row);
+  $CurrentSpyLvl = GetSpyLevel($spying_user_row);
 
-  PlanetResourceUpdate ( $target_user_row, $target_planet, $time_now );
+  PlanetResourceUpdate($target_user_row, $target_planet, $time_now, true);
 
   global $lang, $resource, $dbg_msg, $pricelist, $sn_data;
 
-  $fquery              = '';
+  doquery('START TRANSACTION;');
   $fleet_strings       = explode(';', $fleet_row['fleet_array']);
   foreach ($fleet_strings as $ship_string)
   {
-    if ($ship_string != '')
+    if (!$ship_string)
     {
-      $ship_record = explode(",", $ship_string);
-      $fquery .= "{$resource[$ship_record[0]]}={$resource[$ship_record[0]]} + {$ship_record[1]}, \n";
-      if ($fleet_row["fleet_mess"] != "1")
-      {
-        if ($ship_record[0] == "210")
-        {
-          $QryTargetGalaxy  = "SELECT * FROM {{table}} WHERE ";
-          $QryTargetGalaxy .= "`galaxy` = '". $fleet_row['fleet_end_galaxy'] ."' AND ";
-          $QryTargetGalaxy .= "`system` = '". $fleet_row['fleet_end_system'] ."' AND ";
-          $QryTargetGalaxy .= "`planet` = '". $fleet_row['fleet_end_planet'] ."' AND ";
-          $QryTargetGalaxy .= "`planet_type` = 1;";
-          $TargetGalaxy     = doquery( $QryTargetGalaxy, 'planets', true);
-          $CristalDebris    = $TargetGalaxy['crystal'];
-
-          $MaterialsInfo    = SpyTarget ( $target_planet, 0, $lang['sys_spy_maretials'], $target_user_row['username'] );
-          $Materials        = $MaterialsInfo['String'];
-
-          $PlanetFleetInfo  = SpyTarget ( $target_planet, 1, $lang['sys_spy_fleet'] );
-          $PlanetFleet      = $Materials;
-          $PlanetFleet     .= $PlanetFleetInfo['String'];
-          $PlanetFleet      = "<div class='spy_medium'>{$PlanetFleet}</div>";
-
-          $PlanetDefenInfo  = SpyTarget ( $target_planet, 2, $lang['sys_spy_defenses'] );
-          $PlanetDefense    = $PlanetFleet;
-          $PlanetDefense   .= $PlanetDefenInfo['String'];
-          $PlanetDefense    = "<div class='spy_medium'>{$PlanetDefense}</div>";
-
-          $PlanetBuildInfo  = SpyTarget ( $target_planet, 3, $lang['tech'][0] );
-          $PlanetBuildings  = $PlanetDefense;
-          $PlanetBuildings .= $PlanetBuildInfo['String'];
-          $PlanetBuildings  = "<div class='spy_long'>{$PlanetBuildings}</div>";
-
-          $TargetTechnInfo  = SpyTarget ( $target_user_row, 4, $lang['tech'][100] );
-          $TargetTechnos    = $PlanetBuildings;
-          $TargetTechnos   .= $TargetTechnInfo['String'];
-          $TargetTechnos    = "<div class='spy_long'>{$TargetTechnos}</div>";
-
-          $spy_drones       = $ship_record[1];
-          $SpyToolDebrisM   = $spy_drones * $pricelist[210]['metal'] * 0.3;
-          $SpyToolDebrisC   = $spy_drones * $pricelist[210]['crystal'] * 0.3;
-
-          if ($CurrentSpyLvl == $TargetSpyLvl) {
-            $TargetForce = 0.25 * $spy_drones * $PlanetFleetInfo['Count'];
-          } elseif ($TargetSpyLvl > $CurrentSpyLvl) {
-            $TargetForce = ($TargetSpyLvl - $CurrentSpyLvl + 1) * (0.50 * $spy_drones * $PlanetFleetInfo['Count']);
-          } else {
-            $TargetForce = 0.125 * $spy_drones * $PlanetFleetInfo['Count'];
-          }
-
-          if ($spy_drones == 1) {
-            $SpyChances = 0;
-          } elseif ($spy_drones > 2) {
-            $SpyChances = 30;
-          } else {
-            $SpyChances = 10;
-          }
-
-          if (($TargetForce > 0) AND ($TargetForce > 100) AND ($TargetForce < 200)) {
-            $TargetForce_h = 100;
-            $TargetForce_l = 0;
-          } elseif (($TargetForce > 0) AND ($TargetForce > 200)) {
-            $TargetForce_h = 100;
-            $TargetForce_l = 20;
-          } else {
-            $TargetForce_h = 0;
-            $TargetForce_l = 0;
-          }
-
-          $TargetChances = rand($TargetForce_l, $TargetForce_h);
-          $SpyerChances = rand($SpyChances, 100);
-          if ($TargetChances < $SpyerChances) {
-            $DestProba = sprintf( $lang['sys_mess_spy_lostproba'], $TargetChances);
-          } elseif ($TargetChances >= $SpyerChances) {
-            $DestProba = "".$lang['sys_mess_spy_destroyed']."";
-          }
-
-          $AttackLink = "<center>";
-          $AttackLink .= "<a href=\"fleet.php?galaxy=". $fleet_row['fleet_end_galaxy'] ."&system=". $fleet_row['fleet_end_system'] ."";
-          $AttackLink .= "&planet=".$fleet_row['fleet_end_planet']."";
-          $AttackLink .= "&target_mission=1";
-          $AttackLink .= " \">". $lang['type_mission'][1] ."";
-          $AttackLink .= "</a></center>";
-
-          $MessageEnd = "<center>".$DestProba."</center>";
-
-          if ($TargetSpyLvl > $CurrentSpyLvl) {
-            $ST = ($spy_drones - pow(($TargetSpyLvl - $CurrentSpyLvl), 2));
-          }
-          if ($CurrentSpyLvl > $TargetSpyLvl) {
-            $ST = ($spy_drones + pow(($CurrentSpyLvl - $TargetSpyLvl), 2));
-          }
-          if ($TargetSpyLvl == $CurrentSpyLvl) {
-            $ST = $spy_drones;
-          }
-
-          // Generating link to simulator
-          $combat_pack[0] = array(
-            RES_METAL => $target_planet['metal'],
-            RES_CRYSTAL => $target_planet['crystal'],
-            RES_DEUTERIUM => $target_planet['deuterium']
-          );
-          if ($ST >= 2)
-          {
-            // add planet fleet
-            coe_compress_add_units($sn_data['groups']['fleet'], $target_planet, $combat_pack[0]);
-          }
-          if ($ST >= 3)
-          {
-            // add planet defense
-            coe_compress_add_units($sn_data['groups']['defense_active'], $target_planet, $combat_pack[0]);
-          }
-          if ($ST >= 7)
-          {
-            // add user technos
-            coe_compress_add_units(array(109, 110, 111), $target_user_row, $combat_pack[0]);
-          }
-          $simulator_link = eco_sym_encode_replay($combat_pack, 'D');
-          $AttackLink .= "<center><a href=\"simulator.php?replay={$simulator_link}\">{$lang['COE_combatSimulator']}</a></center><br />";
-          // End of link generation
-
-          if ($ST <= "1") {
-            $SpyMessage = $Materials."<br />".$AttackLink.$MessageEnd;
-          }
-          if ($ST == "2") {
-            $SpyMessage = $PlanetFleet."<br />".$AttackLink.$MessageEnd;
-          }
-          if ($ST == "4" or $ST == "3") {
-            $SpyMessage = $PlanetDefense."<br />".$AttackLink.$MessageEnd;
-          }
-          if ($ST == "5" or $ST == "6") {
-            $SpyMessage = $PlanetBuildings."<br />".$AttackLink.$MessageEnd;
-          }
-          if ($ST >= "7") {
-            $SpyMessage = $TargetTechnos."<br />".$AttackLink.$MessageEnd;
-          }
-
-
-          SendSimpleMessage ( $spying_user_row['id'], '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_qg'], $lang['sys_mess_spy_report'], $SpyMessage);
-
-          $spying_planet_row  = doquery("SELECT * FROM {{table}} WHERE `galaxy` = '".$fleet_row['fleet_start_galaxy']."' AND `system` = '".$fleet_row['fleet_start_system']."' AND `planet` = '".$fleet_row['fleet_start_planet']."' AND `planet_type` = '".$fleet_row['fleet_start_type']."';", 'planets', true);
-
-          $TargetMessage  = $lang['sys_mess_spy_ennemyfleet'] ." ". $spying_planet_row['name'];
-          $TargetMessage .= "<a href=\"galaxy.php?mode=3&galaxy=". $spying_planet_row["galaxy"] ."&system=". $spying_planet_row["system"] ."\">";
-          $TargetMessage .= "[". $spying_planet_row["galaxy"] .":". $spying_planet_row["system"] .":". $spying_planet_row["planet"] ."]</a> ";
-          $TargetMessage .= $lang['sys_mess_spy_seen_at'] ." ". $target_planet['name'];
-          $TargetMessage .= " [". $target_planet["galaxy"] .":". $target_planet["system"] .":". $target_planet["planet"] ."].";
-
-          SendSimpleMessage ( $target_user_id, '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $TargetMessage);
-
-        }
-        if ($TargetChances >= $SpyerChances) {
-          $QryUpdateGalaxy  = "UPDATE {{planets}} SET ";
-          $QryUpdateGalaxy .= "`debris_metal` = `debris_metal` + '". (0 + $SpyToolDebrisM) ."', ";
-          $QryUpdateGalaxy .= "`debris_crystal` = `debris_crystal` + '". (0 + $SpyToolDebrisC) ."' ";
-          $QryUpdateGalaxy .= "WHERE ";
-
-          $QryUpdateGalaxy .= "`galaxy` = '". $fleet_row['fleet_end_galaxy'] ."' AND ";
-          $QryUpdateGalaxy .= "`system` = '". $fleet_row['fleet_end_system'] ."' AND ";
-          $QryUpdateGalaxy .= "`planet` = '". $fleet_row['fleet_end_planet'] ."' AND ";
-          $QryUpdateGalaxy .= "`planet_type` = 1;";
-          doquery( $QryUpdateGalaxy);
-
-          SendSimpleMessage ( $target_user_id, '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], 'Ваш шпионский флот уничтожен');
-
-          doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
-        }
-        doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
-      }
+      continue;
     }
+
+    $ship_record = explode(",", $ship_string);
+    if ($ship_record[0] == 210)
+    {
+      $MaterialsInfo    = SpyTarget ( $target_planet, 0, $lang['sys_spy_maretials'], $target_user_row['username'] );
+      $Materials        = $MaterialsInfo['String'];
+
+      $PlanetFleetInfo  = SpyTarget ( $target_planet, 1, $lang['sys_spy_fleet'] );
+      $PlanetFleet      = $Materials;
+      $PlanetFleet     .= $PlanetFleetInfo['String'];
+      $PlanetFleet      = "<div class='spy_medium'>{$PlanetFleet}</div>";
+
+      $PlanetDefenInfo  = SpyTarget ( $target_planet, 2, $lang['sys_spy_defenses'] );
+      $PlanetDefense    = $PlanetFleet;
+      $PlanetDefense   .= $PlanetDefenInfo['String'];
+      $PlanetDefense    = "<div class='spy_medium'>{$PlanetDefense}</div>";
+
+      $PlanetBuildInfo  = SpyTarget ( $target_planet, 3, $lang['tech'][0] );
+      $PlanetBuildings  = $PlanetDefense;
+      $PlanetBuildings .= $PlanetBuildInfo['String'];
+      $PlanetBuildings  = "<div class='spy_long'>{$PlanetBuildings}</div>";
+
+      $TargetTechnInfo  = SpyTarget ( $target_user_row, 4, $lang['tech'][100] );
+      $TargetTechnos    = $PlanetBuildings;
+      $TargetTechnos   .= $TargetTechnInfo['String'];
+      $TargetTechnos    = "<div class='spy_long'>{$TargetTechnos}</div>";
+
+      $spy_drones       = $ship_record[1];
+      $SpyToolDebrisM   = $spy_drones * $pricelist[210]['metal'] * 0.3;
+      $SpyToolDebrisC   = $spy_drones * $pricelist[210]['crystal'] * 0.3;
+
+      if ($CurrentSpyLvl == $TargetSpyLvl) {
+        $TargetForce = 0.25 * $spy_drones * $PlanetFleetInfo['Count'];
+      } elseif ($TargetSpyLvl > $CurrentSpyLvl) {
+        $TargetForce = ($TargetSpyLvl - $CurrentSpyLvl + 1) * (0.50 * $spy_drones * $PlanetFleetInfo['Count']);
+      } else {
+        $TargetForce = 0.125 * $spy_drones * $PlanetFleetInfo['Count'];
+      }
+
+      if ($spy_drones == 1) {
+        $SpyChances = 0;
+      } elseif ($spy_drones > 2) {
+        $SpyChances = 30;
+      } else {
+        $SpyChances = 10;
+      }
+
+      if (($TargetForce > 0) AND ($TargetForce > 100) AND ($TargetForce < 200)) {
+        $TargetForce_h = 100;
+        $TargetForce_l = 0;
+      } elseif (($TargetForce > 0) AND ($TargetForce > 200)) {
+        $TargetForce_h = 100;
+        $TargetForce_l = 20;
+      } else {
+        $TargetForce_h = 0;
+        $TargetForce_l = 0;
+      }
+
+      $TargetChances = rand($TargetForce_l, $TargetForce_h);
+      $SpyerChances = rand($SpyChances, 100);
+      if ($TargetChances < $SpyerChances) {
+        $DestProba = sprintf( $lang['sys_mess_spy_lostproba'], $TargetChances);
+      } elseif ($TargetChances >= $SpyerChances) {
+        $DestProba = "".$lang['sys_mess_spy_destroyed']."";
+      }
+
+      $AttackLink = "<center>";
+      $AttackLink .= "<a href=\"fleet.php?galaxy=". $fleet_row['fleet_end_galaxy'] ."&system=". $fleet_row['fleet_end_system'] ."";
+      $AttackLink .= "&planet=".$fleet_row['fleet_end_planet']."";
+      $AttackLink .= "&target_mission=1";
+      $AttackLink .= " \">". $lang['type_mission'][1] ."";
+      $AttackLink .= "</a></center>";
+
+      $MessageEnd = "<center>".$DestProba."</center>";
+
+      if ($TargetSpyLvl > $CurrentSpyLvl) {
+        $ST = ($spy_drones - pow(($TargetSpyLvl - $CurrentSpyLvl), 2));
+      }
+      if ($CurrentSpyLvl > $TargetSpyLvl) {
+        $ST = ($spy_drones + pow(($CurrentSpyLvl - $TargetSpyLvl), 2));
+      }
+      if ($TargetSpyLvl == $CurrentSpyLvl) {
+        $ST = $spy_drones;
+      }
+
+      // Generating link to simulator
+      $combat_pack[0] = array(
+        RES_METAL => $target_planet['metal'],
+        RES_CRYSTAL => $target_planet['crystal'],
+        RES_DEUTERIUM => $target_planet['deuterium']
+      );
+      if ($ST >= 2)
+      {
+        // add planet fleet
+        coe_compress_add_units($sn_data['groups']['fleet'], $target_planet, $combat_pack[0]);
+      }
+      if ($ST >= 3)
+      {
+        // add planet defense
+        coe_compress_add_units($sn_data['groups']['defense_active'], $target_planet, $combat_pack[0]);
+      }
+      if ($ST >= 7)
+      {
+        // add user technos
+        coe_compress_add_units(array(109, 110, 111), $target_user_row, $combat_pack[0]);
+      }
+      $simulator_link = eco_sym_encode_replay($combat_pack, 'D');
+      $AttackLink .= "<center><a href=\"simulator.php?replay={$simulator_link}\">{$lang['COE_combatSimulator']}</a></center><br />";
+      // End of link generation
+
+      if ($ST <= "1") {
+        $SpyMessage = $Materials."<br />".$AttackLink.$MessageEnd;
+      }
+      if ($ST == "2") {
+        $SpyMessage = $PlanetFleet."<br />".$AttackLink.$MessageEnd;
+      }
+      if ($ST == "4" or $ST == "3") {
+        $SpyMessage = $PlanetDefense."<br />".$AttackLink.$MessageEnd;
+      }
+      if ($ST == "5" or $ST == "6") {
+        $SpyMessage = $PlanetBuildings."<br />".$AttackLink.$MessageEnd;
+      }
+      if ($ST >= "7") {
+        $SpyMessage = $TargetTechnos."<br />".$AttackLink.$MessageEnd;
+      }
+
+      SendSimpleMessage ( $spying_user_row['id'], '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_qg'], $lang['sys_mess_spy_report'], $SpyMessage);
+
+      $spying_planet_row  = doquery("SELECT * FROM {{table}} WHERE `galaxy` = '".$fleet_row['fleet_start_galaxy']."' AND `system` = '".$fleet_row['fleet_start_system']."' AND `planet` = '".$fleet_row['fleet_start_planet']."' AND `planet_type` = '".$fleet_row['fleet_start_type']."';", 'planets', true);
+
+      $TargetMessage  = $lang['sys_mess_spy_ennemyfleet'] ." ". $spying_planet_row['name'];
+      $TargetMessage .= "<a href=\"galaxy.php?mode=3&galaxy=". $spying_planet_row["galaxy"] ."&system=". $spying_planet_row["system"] ."\">";
+      $TargetMessage .= "[". $spying_planet_row["galaxy"] .":". $spying_planet_row["system"] .":". $spying_planet_row["planet"] ."]</a> ";
+      $TargetMessage .= $lang['sys_mess_spy_seen_at'] ." ". $target_planet['name'];
+      $TargetMessage .= " [". $target_planet["galaxy"] .":". $target_planet["system"] .":". $target_planet["planet"] ."].";
+
+      SendSimpleMessage ( $target_user_id, '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $TargetMessage);
+
+    }
+
+    if ($TargetChances >= $SpyerChances) {
+      $QryUpdateGalaxy  = "UPDATE {{planets}} SET ";
+      $QryUpdateGalaxy .= "`debris_metal` = `debris_metal` + '". (0 + $SpyToolDebrisM) ."', ";
+      $QryUpdateGalaxy .= "`debris_crystal` = `debris_crystal` + '". (0 + $SpyToolDebrisC) ."' ";
+      $QryUpdateGalaxy .= "WHERE ";
+
+      $QryUpdateGalaxy .= "`galaxy` = '". $fleet_row['fleet_end_galaxy'] ."' AND ";
+      $QryUpdateGalaxy .= "`system` = '". $fleet_row['fleet_end_system'] ."' AND ";
+      $QryUpdateGalaxy .= "`planet` = '". $fleet_row['fleet_end_planet'] ."' AND ";
+      $QryUpdateGalaxy .= "`planet_type` = 1;";
+      doquery( $QryUpdateGalaxy);
+
+      SendSimpleMessage ( $target_user_id, '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], 'Ваш шпионский флот уничтожен');
+
+      doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
+    }
+    doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
   }
   doquery('COMMIT;');
 }

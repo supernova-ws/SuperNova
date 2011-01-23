@@ -2,7 +2,7 @@
 <br>
 <table border="0" cellpadding="0" cellspacing="1" align=center><tbody>
   <tr valign="left">
-    <td class="c" colspan="{mount}">{L_imp_overview}</td>
+    <td class="c" colspan="{amount}">{L_imp_overview}</td>
   </tr>
 
   <tr>
@@ -49,7 +49,7 @@
     <!-- END planet -->
   </tr>
 
-  <td class="c" colspan="{mount}" align="left">{L_sys_resources}</td>
+  <td class="c" colspan="{amount}" align="left">{L_sys_resources}</td>
   <tr>
     <th>{L_sys_metal}<br>{L_imp_production}</th>
     <!-- BEGIN planet -->
@@ -84,7 +84,7 @@
      <!-- IF prods.MODE -->
      <th>{prods.NAME}</th>
      <!-- ELSE -->
-     <td class="c" colspan="{mount}">{prods.NAME}</td>
+     <td class="c" colspan="{amount}">{prods.NAME}</td>
      <!-- ENDIF -->
      
      <!-- BEGIN planet -->
