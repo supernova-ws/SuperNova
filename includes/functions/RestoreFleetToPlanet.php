@@ -12,40 +12,43 @@
 // $FleetRow -> enregistrement de flotte
 // $Start    -> true  = planete de depart
 //           -> false = planete d'arrivée
-function RestoreFleetToPlanet ( &$FleetRow, $Start = true ) {
-  global $resource;
+function RestoreFleetToPlanet ( &$fleet_row, $start = true )
+{
+  if(!is_array($fleet_row))
+  {
+    return false;
+  }
 
-  $QryUpdatePlanet = "UPDATE {{table}} SET ";
+  global $sn_data;
 
-  $FleetRecord = explode(";", $FleetRow['fleet_array']);
-  foreach ($FleetRecord as $Item => $Group) {
-    if ($Group != '') {
-      $Class = explode (",", $Group);
-      $QryUpdatePlanet .= "`". $resource[$Class[0]] ."` = `".$resource[$Class[0]]."` + '".$Class[1]."', ";
+  $prefix = $start ? 'start' : 'end';
+
+  $query = 'UPDATE {{planets}} SET ';
+
+  $fleet_strings = explode(';', $fleet_row['fleet_array']);
+  foreach ($fleet_strings as $ship_string)
+  {
+    if ($ship_string != '')
+    {
+      $ship_record = explode (',', $ship_string);
+      $ship_db_name = $sn_data[$ship_record[0]]['name'];
+      $query .= "`{$ship_db_name}` = `{$ship_db_name}` + '{$ship_record[1]}', ";
     }
   }
 
-  $QryUpdatePlanet  .= "`metal` = `metal` + '". $FleetRow['fleet_resource_metal'] ."', ";
-  $QryUpdatePlanet  .= "`crystal` = `crystal` + '". $FleetRow['fleet_resource_crystal'] ."', ";
-  $QryUpdatePlanet  .= "`deuterium` = `deuterium` + '". $FleetRow['fleet_resource_deuterium'] ."' ";
+  $query .= "`metal` = `metal` + '{$fleet_row['fleet_resource_metal']}', ";
+  $query .= "`crystal` = `crystal` + '{$fleet_row['fleet_resource_crystal']}', ";
+  $query .= "`deuterium` = `deuterium` + '{$fleet_row['fleet_resource_deuterium']}' ";
+  $query .= "WHERE ";
+  $query .= "`galaxy` = '". $fleet_row["fleet_{$prefix}_galaxy"] ."' AND ";
+  $query .= "`system` = '". $fleet_row["fleet_{$prefix}_system"] ."' AND ";
+  $query .= "`planet` = '". $fleet_row["fleet_{$prefix}_planet"] ."' AND ";
+  $query .= "`planet_type` = '". $fleet_row["fleet_{$prefix}_type"] ."' ";
+  $query .= "LIMIT 1;";
 
-  $QryPart  = " WHERE ";
-  if ($Start == true) {
-    $QryPart .= "`galaxy` = '". $FleetRow['fleet_start_galaxy'] ."' AND ";
-    $QryPart .= "`system` = '". $FleetRow['fleet_start_system'] ."' AND ";
-    $QryPart .= "`planet` = '". $FleetRow['fleet_start_planet'] ."' AND ";
-    $QryPart .= "`planet_type` = '". $FleetRow['fleet_start_type'] ."' ";
-  } else {
-    $QryPart .= "`galaxy` = '". $FleetRow['fleet_end_galaxy'] ."' AND ";
-    $QryPart .= "`system` = '". $FleetRow['fleet_end_system'] ."' AND ";
-    $QryPart .= "`planet` = '". $FleetRow['fleet_end_planet'] ."' AND ";
-    $QryPart .= "`planet_type` = '". $FleetRow['fleet_end_type'] ."' ";
-  }
-  $QryUpdatePlanet .= $QryPart;
-  $QryUpdatePlanet .= "LIMIT 1;";
+  doquery($query);
 
-  doquery( $QryUpdatePlanet, 'planets');
-
-  doquery( "DELETE FROM {{fleets}} WHERE `fleet_id`=".$FleetRow['fleet_id'].";");
+  doquery("DELETE FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
 }
+
 ?>
