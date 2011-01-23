@@ -77,37 +77,33 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
 function COE_missileCalculate(){
   global $time_now, $resource, $lang;
 
-  $iraks = doquery("SELECT * FROM {{table}} WHERE `zeit` <= '" . $time_now . "'", 'iraks');
+  $iraks = doquery("SELECT * FROM {{table}} WHERE `zeit` <= '{$time_now}';", 'iraks');
 
-  while ($fleetRow = mysql_fetch_array($iraks)) {
+  while ($fleetRow = mysql_fetch_array($iraks))
+  {
+    $targetUser  = doquery('SELECT * FROM {{table}} WHERE `id` = '.$fleetRow['zielid'], 'users', true);
 
-    $targetPlanet = doquery("SELECT * FROM `{{table}}` WHERE
-              `galaxy` = '{$fleetRow['galaxy']}' AND
-              `system` = '{$fleetRow['system']}' AND
-              `planet` = '{$fleetRow['planet']}' AND
-              `planet_type` = " . PT_PLANET, 'planets', true);
-    $targetUser    = doquery('SELECT * FROM {{table}} WHERE `id` = '.$targetPlanet['id_owner'], 'users', true);
-    PlanetResourceUpdate( $targetUser, $targetPlanet, $time_now );
+    $global_data = sys_get_updated($targetUser, array('galaxy' => $fleetRow['galaxy'], 'system' => $fleetRow['system'], 'planet' => $fleetRow['planet'], 'planet_type' => PT_PLANET), $time_now);
+    $target_planet_row = $global_data['planet'];
 
-    $rowAttacker = doquery("SELECT `military_tech` FROM `{{table}}` WHERE
-              `id` = '{$fleetRow['owner']}'", 'users', true);
+    $rowAttacker = doquery("SELECT `military_tech` FROM `{{table}}` WHERE `id` = '{$fleetRow['owner']}'", 'users', true);
 
-    if ($targetPlanet['id']) {
+    if ($target_planet_row['id']) {
       $planetDefense = array(
         400 => array( 0, 'shield' => 0, 'structure' => 0),
-        401 => array( $targetPlanet[$resource[401]], 'shield' => 0, 'structure' => 0),
-        402 => array( $targetPlanet[$resource[402]], 'shield' => 0, 'structure' => 0),
-        403 => array( $targetPlanet[$resource[403]], 'shield' => 0, 'structure' => 0),
-        404 => array( $targetPlanet[$resource[404]], 'shield' => 0, 'structure' => 0),
-        405 => array( $targetPlanet[$resource[405]], 'shield' => 0, 'structure' => 0),
-        406 => array( $targetPlanet[$resource[406]], 'shield' => 0, 'structure' => 0),
-        407 => array( $targetPlanet[$resource[407]], 'shield' => 0, 'structure' => 0),
-        408 => array( $targetPlanet[$resource[408]], 'shield' => 0, 'structure' => 0),
-        409 => array( $targetPlanet[$resource[409]], 'shield' => 0, 'structure' => 0),
+        401 => array( $target_planet_row[$resource[401]], 'shield' => 0, 'structure' => 0),
+        402 => array( $target_planet_row[$resource[402]], 'shield' => 0, 'structure' => 0),
+        403 => array( $target_planet_row[$resource[403]], 'shield' => 0, 'structure' => 0),
+        404 => array( $target_planet_row[$resource[404]], 'shield' => 0, 'structure' => 0),
+        405 => array( $target_planet_row[$resource[405]], 'shield' => 0, 'structure' => 0),
+        406 => array( $target_planet_row[$resource[406]], 'shield' => 0, 'structure' => 0),
+        407 => array( $target_planet_row[$resource[407]], 'shield' => 0, 'structure' => 0),
+        408 => array( $target_planet_row[$resource[408]], 'shield' => 0, 'structure' => 0),
+        409 => array( $target_planet_row[$resource[409]], 'shield' => 0, 'structure' => 0),
       );
 
       $message = '';
-      $interceptors = $targetPlanet[$resource[502]]; // Number of interceptors
+      $interceptors = $target_planet_row[$resource[502]]; // Number of interceptors
       $missiles = $fleetRow['anzahl']; // Number of MIP
       $qUpdate = "UPDATE `{{table}}` SET {$resource[502]} = ";
       if ($interceptors >= $missiles) {
@@ -134,14 +130,14 @@ function COE_missileCalculate(){
         $message .= "{$lang['mip_recycled']}{$lang['Metal']}: {$attackResult['metal']}, {$lang['Crystal']}: {$attackResult['crystal']}<br>";
       };
 
-      $qUpdate .= " WHERE `id` = " . $targetPlanet['id'] . ";";
+      $qUpdate .= " WHERE `id` = " . $target_planet_row['id'] . ";";
       doquery($qUpdate, 'planets');
 
       $sourcePlanet = doquery("SELECT `name` FROM `{{table}}` WHERE `galaxy` = '{$fleetRow['galaxy_angreifer']}' AND `system` = '{$fleetRow['system_angreifer']}' AND `planet` = '{$fleetRow['planet_angreifer']}' and planet_type = " . PT_PLANET, 'planets', true);
 
       $message_vorlage = sprintf($lang['mip_body_attack'], $fleetRow['anzahl'],
         addslashes($sourcePlanet['name']), $fleetRow['galaxy_angreifer'], $fleetRow['system_angreifer'], $fleetRow['planet_angreifer'],
-        addslashes($targetPlanet['name']), $fleetRow['galaxy'], $fleetRow['system'], $fleetRow['planet']);
+        addslashes($target_planet_row['name']), $fleetRow['galaxy'], $fleetRow['system'], $fleetRow['planet']);
 
       if (empty($message))
         $message = $lang['mip_no_defense'];

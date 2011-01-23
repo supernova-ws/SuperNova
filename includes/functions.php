@@ -595,8 +595,7 @@ function eco_planet_fields_max($planet)
 //
 function GetSpyLevel(&$user)
 {
-  global $sn_data;
-  return mrc_modify_value($user, $false, MRC_SPY, $user[$sn_data[106]['name']]);
+  return mrc_modify_value($user, $false, MRC_SPY, $user[$GLOBALS['sn_data'][106]['name']]);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -604,8 +603,7 @@ function GetSpyLevel(&$user)
 //
 function GetMaxFleets(&$user)
 {
-  global $sn_data;
-  return mrc_modify_value($user, false, MRC_COORDINATOR, 1 + $user[$sn_data[108]['name']]);
+  return mrc_modify_value($user, false, MRC_COORDINATOR, 1 + $user[$GLOBALS['sn_data'][108]['name']]);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -613,8 +611,7 @@ function GetMaxFleets(&$user)
 //
 function GetMaxExpeditions(&$user)
 {
-  global $resource;
-  return floor(sqrt($user[$resource[124]]));
+  return floor(sqrt($user[$GLOBALS['sn_data'][124]['name']]));
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -785,9 +782,7 @@ function sys_get_param_str($param_name, $default = '')
 
 function get_missile_range()
 {
-  global $sn_data, $user;
-
-  return max(0, $user[$sn_data[117]['name']] * 5 - 1);
+  return max(0, $GLOBALS['user'][$GLOBALS['sn_data'][117]['name']] * 5 - 1);
 }
 
 function GetPhalanxRange($phalanx_level)
@@ -938,6 +933,148 @@ function sys_random_string($length = 16, $allowed_chars = 'ABCDEFGHJKLMNOPQRSTUV
 function js_safe_string($string)
 {
   return str_replace(array("'", "\\", "\""), array("\'", "\\\\", "\\\""), $string);
+}
+
+/*
+*
+* @function SetSelectedPlanet
+*
+* @history
+*    3 - copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+*      [+] Added handling case when current_planet does not exists or didn't belong to user
+*      [+] Moved from SetSelectedPlanet.php
+*      [+] Function now return
+*      [~] Complies with PCG1
+*    2 - copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+*      [~] Security checked for SQL-injection
+*    1 - copyright 2008 By Chlorel for XNova
+*
+*/
+
+function SetSelectedPlanet(&$user)
+{
+  $selected_planet = intval($_GET['cp']);
+  $restore_planet  = intval($_GET['re']);
+
+  if (isset($selected_planet) && is_numeric($selected_planet) && $selected_planet && isset($restore_planet) && $restore_planet == 0)
+  {
+    $planet_row = doquery("SELECT `id` FROM {{planets}} WHERE `id` = '{$selected_planet}' AND `id_owner` = '{$user['id']}' LIMIT 1;", '', true);
+    if (!$planet_row || !isset($planet_row['id']))
+    {
+      $selected_planet = $user['id_planet'];
+    }
+    doquery("UPDATE {{users}} SET `current_planet` = '{$selected_planet}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    $user['current_planet'] = $selected_planet;
+  }
+
+  return $user['current_planet'];
+}
+
+/**
+ *
+ * @function CheckPlanetUsedFields
+ *
+ * v2.0 Rewrote to utilize foreach()
+ *      Complying with PCG0
+ * v1.1 some optimizations
+ * @version 1
+ * @copyright 2008 By Chlorel for XNova
+ */
+
+// Verification du nombre de cases utilisées sur la planete courrante
+function CheckPlanetUsedFields(&$planet)
+{
+  if(!$planet['id'])
+  {
+    return 0;
+  }
+
+  global $sn_data;
+
+  $planet_fields = 0;
+  foreach($sn_data['groups']['build_allow'][$planet['planet_type']] as $building_id)
+  {
+    $planet_fields += $planet[$sn_data[$building_id]['name']];
+  }
+
+  if($planet['field_current'] != $planet_fields)
+  {
+    $planet['field_current'] = $planet_fields;
+    doquery("UPDATE {{planets}} SET field_current={$planet_fields} WHERE id={$planet['id']} LIMIT 1;");
+  }
+}
+
+function sys_user_options_pack(&$user)
+{
+  global $user_options;
+
+  $options = '';
+  foreach($user_options as $option_name => $option_value)
+  {
+    if(!$user[$option_name])
+    {
+      $user[$option_name] = $option_value;
+    }
+    $options .= "{$option_name}^{$user[$option_name]}|";
+  }
+
+  return $options;
+}
+
+function sys_user_options_unpack(&$user)
+{
+  global $user_options;
+
+  $options = $user_options;
+
+  $opt_unpack = explode('|', $user['options']);
+  foreach($opt_unpack as $option)
+  {
+    if($option)
+    {
+      $option = explode('^', $option);
+      if(isset($options[$option[0]]))
+      {
+        $options[$option[0]] = $option[1];
+        $user[$option[0]] = $option[1];
+      }
+    }
+  }
+
+  return $options;
+}
+
+/**
+ * @function IsElementBuyable
+ *
+ * 1.1 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [*] Now using GetBuildingPrice proc to get building cost
+ * @version 1
+ * @copyright 2008 by Chlorel for XNova
+ */
+
+// Verifie si un element est achetable au moment demandé
+// $CurrentUser   -> Le Joueur lui meme
+// $CurrentPlanet -> La planete sur laquelle l'Element doit etre construit
+// $Element       -> L'Element que l'on convoite
+// $Incremental   -> true  pour un batiment ou une recherche
+//                -> false pour une defense ou un vaisseau
+// $ForDestroy    -> false par defaut pour une construction
+//                -> true pour calculer la demi valeur du niveau en cas de destruction
+//
+// Reponse        -> boolean (oui / non)
+function IsElementBuyable ($CurrentUser, $CurrentPlanet, $Element, $Incremental = true, $ForDestroy = false) {
+  global $pricelist, $resource;
+
+  if ($CurrentUser['vacation'])
+    return false;
+
+  $array = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, $Incremental, $ForDestroy);
+  foreach ($array as $ResType => $resorceNeeded)
+    if ($resorceNeeded > $CurrentPlanet[$ResType])
+      return false;
+
+  return true;
 }
 
 ?>

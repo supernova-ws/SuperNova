@@ -1,4 +1,23 @@
 <?php
+  // function ALI_rankListSave
+  // Copyright (c) 2010 by Gorlum for http://supernova.ws
+  // Open Source
+  // V1
+
+  function ALI_rankListSave($ranks) {
+    global $user;
+
+    if(!empty($ranks)){
+      foreach($ranks as $rank => $rights){
+        $rights = implode(',', $rights);
+        $ranklist .= $rights . ';';
+      }
+    }
+
+    doquery("UPDATE {{table}} SET `ranklist` = '{$ranklist}' WHERE `id` ='{$user['ally_id']}';", 'alliance');
+    return $ranklist;
+  }
+
   // query para la allyrow
   $rights     = array( 0 => 'name', 1 => 'mail',  2 => 'online',       3 => 'invite',                4 => 'kick', 5 => 'admin',      6 => 'forum',);
   $rights_old = array( 0 => 'name', 1 => 'mails', 2 => 'onlinestatus', 3 => 'bewerbungenbearbeiten', 4 => 'kick', 5 => 'rechtehand',);
