@@ -48,9 +48,9 @@ class debug
     die();
   }
 
-  function error($message,$title)
+  function error($message, $title, $error_id = 0)
   {
-    global $link, $config, $sys_stop_log_hit;
+    global $config;
 
     if($config->debug == 1)
     {
@@ -58,7 +58,7 @@ class debug
       echo "<table>{$this->log}</table>";
     }
 
-    global $user, $ugamela_root_path, $phpEx, $planetrow;
+    global $link, $user, $ugamela_root_path, $phpEx, $planetrow, $sys_stop_log_hit;
 
     require("{$ugamela_root_path}config.{$phpEx}");
 

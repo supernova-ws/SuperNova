@@ -31,9 +31,7 @@ $mode = sys_get_param_escaped('mode');
 includeLang('buildings');
 includeLang('infos');
 
-$IsWorking = HandleTechnologieBuild ( $planetrow, $user );
-
-$que = PlanetResourceUpdate($user, $planetrow, $time_now);
+$IsWorking = HandleTechnologieBuild ($planetrow, $user);
 
 $mode = (!$mode || $mode == 'buildings') ? QUE_STRUCTURES : ($mode == 'fleet' ? SUBQUE_FLEET : ($mode == 'defense' ? SUBQUE_DEFENSE : $mode));
 

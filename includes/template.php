@@ -249,10 +249,10 @@ function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet )
 
     if (!$CurrentPlanet)
     {
-      $CurrentPlanet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$CurrentUser['current_planet']}';", '', true);
+      $CurrentPlanet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$CurrentUser['current_planet']}' LIMIT 1;", '', true);
     }
 
-    PlanetResourceUpdate ( $CurrentUser, $CurrentPlanet, $time_now );
+    PlanetResourceUpdate($CurrentUser, $CurrentPlanet, $time_now, true);
 
     $ThisUsersPlanets    = SortUserPlanets ( $CurrentUser );
     while ($CurPlanet = mysql_fetch_array($ThisUsersPlanets)) {
