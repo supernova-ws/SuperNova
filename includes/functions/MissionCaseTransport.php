@@ -43,7 +43,47 @@ function StoreGoodsToPlanet ( $FleetRow, $Start = false ) {
   doquery( $QryUpdatePlanet, 'planets');
 }
 
-function MissionCaseTransport ( $FleetRow ) {
+function MissionCaseTransport ( $FleetRow )
+{
+  // --- This is universal part which should be moved to fleet manager
+  global $time_now;
+
+  // Checking if we should now to proceed this fleet - does it arrive? No - exiting.
+  if ($FleetRow['fleet_start_time'] > $time_now)
+  {
+    return;
+  }
+
+  // Checking fleet message: if not 0 then we already managed this fleet
+  if($FleetRow['fleet_mess'] != 0)
+  {
+    // Checking fleet end_time: if less then time_now then restoring fleet to planet
+    if($FleetRow['fleet_end_time'] <= $time_now)
+    {
+      RestoreFleetToPlanet($FleetRow);
+    }
+    return;
+  }
+
+  // Using to get ownerID, lunaID from PLANETS table and list of resources
+  $TargetPlanet = doquery('SELECT * FROM {{table}} WHERE ' .
+         '`galaxy` = '. $FleetRow['fleet_end_galaxy'] .
+    ' AND `system` = '. $FleetRow['fleet_end_system'] .
+    ' AND `planet` = '. $FleetRow['fleet_end_planet'] .
+    ' AND `planet_type` = '. $FleetRow['fleet_end_type'] .';',
+  'planets', true);
+
+  if (!$TargetPlanet || !isset($TargetPlanet['id'])) {
+    if ($FleetRow['fleet_group'] > 0) {
+      doquery("DELETE FROM {{aks}} WHERE `id` ='{$FleetRow['fleet_group']}' LIMIT 1;");
+      doquery('UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_group` = ' . $FleetRow['fleet_group']);
+    } else {
+      doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = '{$FleetRow['fleet_id']}' LIMIT 1;");
+    }
+    return;
+  }
+  // --- End of Universal part
+
   global $lang, $time_now, $dbg_msg;
   // $time_now = time();
 
