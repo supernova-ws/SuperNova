@@ -31,8 +31,8 @@ $planet_row_list = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$u
 while ($planet = mysql_fetch_array($planet_row_list))
 {
   $global_data = sys_get_updated($user, $planet['id'], $time_now);
-  $planets[] = $global_data['planet'];
-  $ques[] = $global_data['que'];
+  $planets[$planet['id']] = $global_data['planet'];
+  $ques[$planet['id']] = $global_data['que'];
 }
 
 $template = gettemplate('imperium', true);
@@ -44,11 +44,6 @@ $fleets = array();
 foreach ($planets as $planet_index => &$planet)
 {
   $list_planet_que = $ques[$planet_index];
-  if($planet[id] == $planetrow['id'])
-  {
-    $planetrow = $planet;
-  }
-
   $planet_template = tpl_parse_planet($planet, $list_planet_que);
 
   $planet_fleet_id = 0;
@@ -116,7 +111,7 @@ $template->assign_block_vars('planet', array_merge(array(
   'ENERGY_CUR' => pretty_number($total['energy']),
   'ENERGY_MAX' => pretty_number($total['energy_max']),
 )));
-
+unset($planet);
 
 $last = -1000;
 foreach ($sn_data as $unit_id => $res) {
@@ -129,8 +124,10 @@ foreach ($sn_data as $unit_id => $res) {
   else
     $mode = '';
 
-  if($mode){
-    if((int) ($unit_id/100) != (int)($last/100)){
+  if($mode)
+  {
+    if((int) ($unit_id/100) != (int)($last/100))
+    {
       $template->assign_block_vars('prods', array(
         'NAME' => $lang['tech'][(int) ($unit_id/100)*100],
       ));
