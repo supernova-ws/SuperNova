@@ -254,7 +254,7 @@ switch ($mode)
     // $fleets = array();
     while ($UserPlanet = mysql_fetch_array($planets_query))
     {
-      $list_planet_que = PlanetResourceUpdate($user, $UserPlanet, $time_now);
+      $list_planet_que = PlanetResourceUpdate($user, $UserPlanet, $time_now, true);
 
       $enemy_fleet = doquery("SELECT count(*) AS fleets_count FROM {{fleets}}
         WHERE
