@@ -7,14 +7,16 @@ $fleet_array - array of records $unit_id -> $amount
 $mission - fleet mission
 */
 
-function flt_send_fleet($user, &$from, $to, $fleet, $mission, $options = array())
+function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array())
 {
 //ini_set('error_reporting', E_ALL);
 
   //doquery('SET autocommit = 0;');
   //doquery('LOCK TABLES {{users}} READ, {{planets}} WRITE, {{fleet}} WRITE, {{aks}} WRITE, {{statpoints}} READ;');
   doquery('START TRANSACTION;');
-  $from = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$from['id']}' LIMIT 1 FOR UPDATE;", '', true);
+
+  $from = sys_o_get_updated($user, $from['id'], $GLOBALS['time_now']);
+  $from = $from['planet'];
 
   $speed_factor = get_fleet_speed();
   $distance     = GetTargetDistance($from['galaxy'], $to['galaxy'], $from['system'], $to['system'], $from['planet'], $to['planet']);

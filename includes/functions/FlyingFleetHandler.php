@@ -74,7 +74,9 @@ function FlyingFleetHandler ()
 
   doquery('LOCK TABLE {{table}}aks WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}users WRITE, {{table}}logs WRITE, {{table}}iraks WRITE, {{table}}statpoints WRITE, {{table}}referrals WRITE, {{table}}counter WRITE');
 
-  COE_missileCalculate();
+  // start transaction
+  coe_o_missile_calculate();
+  // commit
 
   $fleets = array();
   $_fleets = doquery("SELECT fleet_id, fleet_start_time AS fleet_time FROM {{fleets}} WHERE `fleet_start_time` <= '{$time_now}';");

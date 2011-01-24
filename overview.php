@@ -248,23 +248,22 @@ switch ($mode)
     }
 
     $planets_query = doquery("SELECT * FROM {{planets}} WHERE id_owner='{$user['id']}' AND planet_type = 1 ORDER BY {$planetSort};");
-    $Colone  = 1;
 
     $fleet_id = 1;
-    // $fleets = array();
     while ($UserPlanet = mysql_fetch_array($planets_query))
     {
-      $list_planet_que = PlanetResourceUpdate($user, $UserPlanet, $time_now, true);
+      $UserPlanet      = sys_o_get_updated($user, $UserPlanet, $time_now, true);
+      $list_planet_que = $UserPlanet['que'];
+      $UserPlanet      = $UserPlanet['planet'];
 
       $enemy_fleet = doquery("SELECT count(*) AS fleets_count FROM {{fleets}}
         WHERE
           fleet_end_galaxy = {$UserPlanet['galaxy']} AND
           fleet_end_system = {$UserPlanet['system']} AND
           fleet_end_planet = {$UserPlanet['planet']} AND
-          fleet_end_type   = 1 AND
+          fleet_end_type   = ".PT_PLANET." AND
           fleet_mess       = 0 AND
-          (fleet_mission = 1 OR fleet_mission = 2)
-      ", '', true);
+          (fleet_mission = ".MT_ATTACK." OR fleet_mission = ".MT_AKS.")", '', true);
 
       $moon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3;", '', true);
       if($moon)
@@ -274,9 +273,9 @@ switch ($mode)
             fleet_end_galaxy = {$UserPlanet['galaxy']} AND
             fleet_end_system = {$UserPlanet['system']} AND
             fleet_end_planet = {$UserPlanet['planet']} AND
-            fleet_end_type   = 3 AND
+            fleet_end_type   = ".PT_MOON." AND
             fleet_mess       = 0 AND
-            (fleet_mission = 1 OR fleet_mission = 2 OR fleet_mission = 9)", '', true);
+            (fleet_mission = ".MT_ATTACK." OR fleet_mission = ".MT_AKS." OR fleet_mission = ".MT_DESTROY.")", '', true);
         $moon_fill = min(100, floor($moon['field_current'] / eco_planet_fields_max($moon) * 100));
       }
       else
