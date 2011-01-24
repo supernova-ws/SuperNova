@@ -69,7 +69,9 @@
     </table>
     <input name="submit" type="submit" value="{L_signup}!" />
   </form><br>
-  {L_log_reg_already} <a href="login.php{referral}"><u>{L_log_login_page}</u></a><br><br>
+  {L_log_reg_already} <a href="login.php{referral}" class="link">{L_log_login_page}</a><br>
+  {L_log_reg_already_lost} <a href="lostpassword.php{referral}" class="link">{L_PasswordLost}</a><br>
+  <br>
 
   <div id="log_menu">
     <a href="login.php{referral}">{L_log_login_page}</a> ::
