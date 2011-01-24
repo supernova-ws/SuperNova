@@ -19,6 +19,7 @@
 //
 function SendSimpleMessage ( $Owners, $Sender, $Time, $Type, $From, $Subject, $Message, $escaped = false) {
   global $messfields;
+  global $user;
 
   if (!$Time)
     $Time = time();
@@ -41,6 +42,11 @@ function SendSimpleMessage ( $Owners, $Sender, $Time, $Type, $From, $Subject, $M
   }
   doquery( substr($QryInsertMessage, 0, -1) );
   doquery( substr($QryUpdateUser, 0, -1) . ')' );
+  if($user['id'] == $Owner)
+  {
+    $user[$messfields[$Type]]++;
+    $user[$messfields[100]]++;
+  }
 }
 
 // Revision history :
