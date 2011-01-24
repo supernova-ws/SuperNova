@@ -34,7 +34,11 @@ if($galaxy_src)
 {
   $errors = array();
 
-  $planet = doquery("SELECT * FROM {{planets}} WHERE galaxy = '{$galaxy_src}' AND system = '{$system_src}' AND planet = '{$planet_src}' AND planet_type = 1;", '', true);
+  $owner = doquery("SELECT * FROM {{users}} WHERE username like '{$username}'", '', true);
+
+  $planet = sys_o_get_updated($owner, array('galaxy' => $galaxy_src, 'system' => $system_src, 'planet' => $planet_src, 'planet_type' => 1), time());
+  $que    = $planet['que'];
+  $planet = $planet['planet'];
   if(!$planet)
   {
     $errors[] = $lang['adm_pl_comp_err_0'];
@@ -45,7 +49,13 @@ if($galaxy_src)
     $errors[] = $lang['adm_pl_comp_err_1'];
   }
 
-  $destination = doquery("SELECT * FROM {{planets}} WHERE galaxy = '{$galaxy_dst}' AND system = '{$system_dst}' AND planet = '{$planet_dst}' AND planet_type = 1;", '', true);
+  if($planet['id_owner'] != $owner['id'] || !$username)
+  {
+    $errors[] = $lang['adm_pl_comp_err_4'];
+  }
+
+  $destination = sys_o_get_updated($owner, array('galaxy' => $galaxy_dst, 'system' => $system_dst, 'planet' => $planet_dst, 'planet_type' => 1), time());
+  $destination = $destination['planet'];
   if(!$destination)
   {
     $errors[] = $lang['adm_pl_comp_err_2'];
@@ -61,12 +71,6 @@ if($galaxy_src)
     $errors[] = $lang['adm_pl_comp_err_3'];
   }
 
-  $owner = doquery("SELECT * FROM {{users}} WHERE username like '{$username}'", '', true);
-  if($planet['id_owner'] != $owner['id'] || !$username)
-  {
-    $errors[] = $lang['adm_pl_comp_err_4'];
-  }
-
   if(!empty($errors))
   {
     foreach($errors as $error)
@@ -80,15 +84,13 @@ if($galaxy_src)
   {
     $template->assign_var('CHECK', 1);
 
-    PlanetResourceUpdate($planet, $owner, time());
-    PlanetResourceUpdate($destination, $owner, time());
-
     killer_add_planet($planet);
 
     $moon = doquery("SELECT * FROM {{planets}} WHERE galaxy = '{$galaxy_src}' AND system = '{$system_src}' AND planet = '{$planet_src}' AND planet_type = 3;", '', true);
     if($moon)
     {
-      PlanetResourceUpdate($moon, $owner, time());
+      $moon = sys_o_get_updated($owner, $moon, time());
+      $moon = $moon['planet'];
       killer_add_planet($moon);
     }
 

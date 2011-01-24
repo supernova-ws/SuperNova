@@ -168,11 +168,11 @@ function MissionCaseSpy ( $fleet_row ) {
     return false;
   }
 
-
   $TargetSpyLvl  = GetSpyLevel($target_user_row);
   $CurrentSpyLvl = GetSpyLevel($spying_user_row);
 
-  PlanetResourceUpdate($target_user_row, $target_planet, $time_now, true);
+  $target_planet = sys_o_get_updated($target_user_row, $target_planet, $time_now, true);
+  $target_planet = $target_planet['planet'];
 
   global $lang, $resource, $dbg_msg, $pricelist, $sn_data;
 

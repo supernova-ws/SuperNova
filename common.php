@@ -60,7 +60,9 @@ if ($user && is_array($user) && isset($user['id']) && !empty($user['id']))
   }
 
   $planet_id = SetSelectedPlanet($user);
-  $global_data = sys_get_updated($user, $planet_id, $time_now);
+  doquery('START TRANSACTION;');
+  $global_data = sys_o_get_updated($user, $planet_id, $time_now);
+  doquery('COMMIT;');
 
   if(!$global_data)
   {
@@ -68,9 +70,10 @@ if ($user && is_array($user) && isset($user['id']) && !empty($user['id']))
   }
 
   $planetrow = $global_data['planet'];
-  if(!$planetrow || !isset($planetrow['id']))
+  if(!($planetrow && isset($planetrow['id']) && $planetrow['id']))
   {
     header('Location: login.php');
+    die();
   }
 
   $que = $global_data['que'];
