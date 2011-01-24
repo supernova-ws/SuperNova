@@ -34,12 +34,14 @@ function MissionCaseAttack ( $FleetRow) {
     return;
   }
 
+  //doquery('START TRANSACTION;');
+
   // Using to get ownerID, lunaID from PLANETS table and list of resources
   $TargetPlanet = doquery('SELECT * FROM {{table}} WHERE ' .
          '`galaxy` = '. $FleetRow['fleet_end_galaxy'] .
     ' AND `system` = '. $FleetRow['fleet_end_system'] .
     ' AND `planet` = '. $FleetRow['fleet_end_planet'] .
-    ' AND `planet_type` = '. $FleetRow['fleet_end_type'] .';',
+    ' AND `planet_type` = '. $FleetRow['fleet_end_type'] .' LIMIT 1 FOR UPDATE;',
   'planets', true);
 
   if (!$TargetPlanet || !isset($TargetPlanet['id'])) {
@@ -49,6 +51,7 @@ function MissionCaseAttack ( $FleetRow) {
     } else {
       doquery('UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` =' . $FleetRow['fleet_id']);
     }
+    //doquery('COMMIT;');
     return;
   }
   // --- End of Universal part
@@ -58,14 +61,15 @@ function MissionCaseAttack ( $FleetRow) {
   $CurrentUserID = $FleetRow['fleet_owner'];
   $TargetUserID  = $TargetPlanet['id_owner'];
 
-  $TargetUser    = doquery('SELECT * FROM {{table}} WHERE `id` ='.$TargetPlanet['id_owner'],'users', true);
+  $TargetUser    = doquery("SELECT * FROM {{users}} WHERE `id` = '{$TargetPlanet['id_owner']}' LIMIT 1;", '', true);
 
-  PlanetResourceUpdate( $TargetUser, $TargetPlanet, $time_now );
+  $TargetPlanet = sys_o_get_updated($TargetUser, $TargetPlanet, $time_now);
+  $TargetPlanet = $TargetPlanet['planet'];
 
   $attackFleets = array();
   // ACS function: put all fleet into an array
   if ($FleetRow['fleet_group'] != 0) {
-    $fleets = doquery('SELECT * FROM {{table}} WHERE fleet_group='.$FleetRow['fleet_group'],'fleets');
+    $fleets = doquery('SELECT * FROM {{fleets}} WHERE fleet_group='.$FleetRow['fleet_group'], '');
     while ($fleet = mysql_fetch_assoc($fleets))
       BE_attackFleetFill(&$attackFleets, $fleet);
   } else {
@@ -227,7 +231,7 @@ function MissionCaseAttack ( $FleetRow) {
   }
 
   // Adjust number of raids made/win/loose and xpraid
-  $QryUpdateRaidsCompteur = "UPDATE {{table}} SET ";
+  $QryUpdateRaidsCompteur = "UPDATE {{users}} SET ";
   $QryUpdateRaidsCompteur .= "`xpraid` = `xpraid` + 1, ";
   $QryUpdateRaidsCompteur .= "`raids` = `raids` + 1, ";
   if ($result['won'] == 1) {
@@ -237,7 +241,9 @@ function MissionCaseAttack ( $FleetRow) {
   }
   $QryUpdateRaidsCompteur .= "WHERE id = '" . $CurrentUserID . "' ";
   $QryUpdateRaidsCompteur .= "LIMIT 1 ;";
-  doquery($QryUpdateRaidsCompteur, 'users');
+  doquery($QryUpdateRaidsCompteur);
+
+  //doquery('COMMIT;');
 
   return $result;
 }
