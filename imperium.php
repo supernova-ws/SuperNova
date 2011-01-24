@@ -19,18 +19,16 @@ include("{$ugamela_root_path}common.{$phpEx}");
 
 if ($IsUserChecked == false) {
   includeLang('login');
-  header("Location: login.php");
+  header('Location: login.php');
 }
-
-$parse  = $lang;
 
 $planets = array();
 $ques = array();
-$planet_row_list = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
 
+$planet_row_list = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
 while ($planet = mysql_fetch_array($planet_row_list))
 {
-  $global_data = sys_get_updated($user, $planet['id'], $time_now);
+  $global_data = sys_o_get_updated($user, $planet['id'], $time_now, true);
   $planets[$planet['id']] = $global_data['planet'];
   $ques[$planet['id']] = $global_data['que'];
 }
@@ -185,6 +183,6 @@ foreach ($sn_data as $unit_id => $res) {
   }
 }
 
-display(parsetemplate($template, $parse), $lang['imp_overview']);
+display(parsetemplate($template), $lang['imp_overview']);
 
 ?>
