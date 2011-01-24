@@ -413,6 +413,8 @@ switch(intval($config->db_version))
   doquery('COMMIT;');
   $new_version = 25;
 
+// Add index on `planet` for `id_owner`
+
 };
 upd_log_message('Upgrade complete.');
 

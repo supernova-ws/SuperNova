@@ -17,7 +17,38 @@
     "имя_таблицы,serialize(таблица);"
 [@] Все таблицы из MyISAM переконвертировать в InnoDB
 
-2011-01-22 16:49 work
+2011-01-23 22:42 work commit
+[@] Файл GetMaxConstructibleShips.php удален, как неиспользуемый
+[@] Функция CheckPlanetUsedFields перенесена в /includes/functions.php
+[@] Функция GetMaxConstructibleElements перенесена в /includes/functions.php
+[@] Функция IsElementBuyable перенесена в /includes/functions.php
+[@] Функции  sys_user_options_pack  и  sys_user_options_unpack  перенесены   в
+    /includes/functions.php
+[@] Функция RestoreFleetToPlanet перенесена в
+    /includes/functions/FlyingFleetHandler.php
+[@]  Функция  ali_internal_admin_rights  перенесена  из  отдельного   файла   в
+    /includes/alliances/ali_internal.inc
+[@] Функция SetSelectedPlanet теперь  в  случае  несуществующей  current_planet
+    перебрасывает на $user['id_planet']. Сама функция перемещена из  отдельного
+    файла в /includes/functions.php
+[@] Новая функция sys_get_updated вместо PlanetResourceUpdate. Отличия:  вместо
+    массива $planet_row принимает либо ID колонии, либо её координаты  с  типом
+    (луна или планета). Вместо  очереди  возвращает  массив  из  актуальных  на
+    текущий момент записей пользователя, планеты и очереди на планете. При этом
+    новая функция производит извлечение записей из  БД,  если  параметр  $simul
+    истинен. В перспективе все вызовы PlanetResourceUpdate  будут  заменены  на
+    вызовы sys_get_updated с целью оптимизаций обращений к БД
+[@] PlanetResourceUpdate заменена на sys_get_updated в файлах:
+    /includes/functions/coe_missile_attack.php
+    /common.php
+    /imperium.php
+
+2011-01-23 16:33 work commit
+[@] Изменен   алгоритм   обработки   миссий    "Шпионаж",    "Транспорт"    и
+    "Передислокация".  Теперь  при  отсутствии  планеты-цели   флот   корректно
+    обрабатывается
+
+2011-01-22 16:49 work commit
 [@] Переработан алгоритм строительства  в  подготовке  к  подключению  верфи  и
     исследований
 [@] В $lang['info'] добавлено поле effect для описания функцонала юнитов

@@ -22,29 +22,28 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
-$planetsrow = doquery("SELECT * FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
-
-$planets = array();
 $parse  = $lang;
 
-while ($planet = mysql_fetch_array($planetsrow)) {
-  $planets[] = $planet;
+$planets = array();
+$ques = array();
+$planet_row_list = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
+
+while ($planet = mysql_fetch_array($planet_row_list))
+{
+  $global_data = sys_get_updated($user, $planet['id'], $time_now);
+  $planets[$planet['id']] = $global_data['planet'];
+  $ques[$planet['id']] = $global_data['que'];
 }
 
 $template = gettemplate('imperium', true);
-$template->assign_var(mount, count($planets) + 2);
-
-//$parse['mount'] = count($planets) + 1;
+$template->assign_var('amount', count($planets) + 2);
 
 $fleet_id = 1;
 $fleets = array();
-foreach ($planets as $planet_index => $planet) {
-  $list_planet_que = PlanetResourceUpdate($user, $planet, $time_now);
-  if($planet[id] == $planetrow['id'])
-  {
-    $planetrow = $planet;
-  }
 
+foreach ($planets as $planet_index => &$planet)
+{
+  $list_planet_que = $ques[$planet_index];
   $planet_template = tpl_parse_planet($planet, $list_planet_que);
 
   $planet_fleet_id = 0;
@@ -74,10 +73,10 @@ foreach ($planets as $planet_index => $planet) {
     'ENERGY_CUR' => pretty_number($planet['energy_max'] - $planet['energy_used'], true, true),
     'ENERGY_MAX' => pretty_number($planet['energy_max']),
   )));
-  $planets[$planet_index]['fleet_list'] = $planet_template['fleet_list'];
-  $planets[$planet_index]['BUILDING_ID'] = $planet_template['BUILDING_ID'];
-  $planets[$planet_index]['hangar_que'] = $planet_template['hangar_que'];
-  $planets[$planet_index]['full_que'] = $list_planet_que;
+  $planet['fleet_list'] = $planet_template['fleet_list'];
+  $planet['BUILDING_ID'] = $planet_template['BUILDING_ID'];
+  $planet['hangar_que'] = $planet_template['hangar_que'];
+  $planet['full_que'] = $list_planet_que;
 
   $total['fields'] += $planet['field_current'];
   $total['metal'] += $planet['metal'];
@@ -112,7 +111,7 @@ $template->assign_block_vars('planet', array_merge(array(
   'ENERGY_CUR' => pretty_number($total['energy']),
   'ENERGY_MAX' => pretty_number($total['energy_max']),
 )));
-
+unset($planet);
 
 $last = -1000;
 foreach ($sn_data as $unit_id => $res) {
@@ -125,8 +124,10 @@ foreach ($sn_data as $unit_id => $res) {
   else
     $mode = '';
 
-  if($mode){
-    if((int) ($unit_id/100) != (int)($last/100)){
+  if($mode)
+  {
+    if((int) ($unit_id/100) != (int)($last/100))
+    {
       $template->assign_block_vars('prods', array(
         'NAME' => $lang['tech'][(int) ($unit_id/100)*100],
       ));

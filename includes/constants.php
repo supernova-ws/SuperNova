@@ -153,6 +153,13 @@ define('BONUS_MULTIPLY', 4);  // Multiply by value
 define('BUILD_CREATE', 1);
 define('BUILD_DESTROY', -1);
 
+// *** Check unit availability codes
+define('BUILD_ALLOWED',      1);
+define('BUILD_AMOUNT_WRONG', 2);
+define('BUILD_QUE_WRONG',    3);
+define('BUILD_QUE_UNIT_WRONG',    4);
+
+
 // *** Que types
 define('QUE_STRUCTURES', 1);
 define('QUE_HANGAR', 4);

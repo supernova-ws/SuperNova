@@ -73,6 +73,7 @@ function eco_que_process($user, &$planet, $time_left)
 
         $build_time = $que_item['TIME'];
         $amount_to_build = min($que_item['AMOUNT'], floor($time_left / $build_time));
+
         if($amount_to_build > 0)
         {
 
@@ -82,7 +83,7 @@ function eco_que_process($user, &$planet, $time_left)
           {
             $que_item['AMOUNT'] -= $amount_to_build;
 
-            $time_left -= min($time_left, $amount_to_build * $build_time); // prevents negatives
+            $time_left -= min($time_left, $amount_to_build * $build_time); // prevents negative times and cycling
             $amount_to_build *= $build_mode;
             $built[$unit_id] += $amount_to_build;
 
@@ -97,7 +98,7 @@ function eco_que_process($user, &$planet, $time_left)
             }
 
             $xp[RPG_STRUCTURE] += round(($xp_incoming > 0 ? $xp_incoming : 0)/1000);
-            $planet[$unit_db_name] += $amount_to_build;
+            $planet[$unit_db_name] += min($planet[$unit_db_name], $amount_to_build); // Prevents neagative unit on planet
             $query .= "`{$unit_db_name}` = `{$unit_db_name}` + '{$amount_to_build}',";
           }
 
@@ -105,10 +106,10 @@ function eco_que_process($user, &$planet, $time_left)
 
         if($que_item['AMOUNT'] > 0)
         {
-          $time_left = 0;
-
           $que_item['TIME'] -= $time_left;
           $que_item['STRING'] = "{$unit_id},{$que_item['AMOUNT']},{$que_item['TIME']},{$que_item['MODE']},{$que_item['QUE']};";
+
+          $time_left = 0;
         }
       }  // end processing que with time left on it
       else
@@ -118,8 +119,6 @@ function eco_que_process($user, &$planet, $time_left)
 
       if($que_item['AMOUNT'] > 0)
       {
-
-        // There is no time left in this que. Skipping
         $query_string .= $que_item['STRING'];
         $que_amounts[$que_id] += $amount_change;
         $in_que[$unit_id] += $amount_change;
@@ -154,44 +153,22 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
 {
   global $lang, $resource, $time_now, $sn_data;
 
-  if (!eco_can_build_unit($user, $planet, $unit_id))
-  {
-    return $que;
-  }
-
-  if (eco_unit_busy($user, $planet, $que, $unit_id))
-  {
-    return $que;
-  }
-
   $que_types = $sn_data['groups']['ques'];
   $que_types[QUE_STRUCTURES]['unit_list'] = $sn_data['groups']['build_allow'][$planet['planet_type']];
 
-  $unit_list = false;
-  foreach($que_types as $que_id => $que_data)
-  {
-    if(in_array($unit_id, $que_data['unit_list']))
-    {
-      $unit_list   = $que_data['unit_list'];
-      break;
-    }
-  }
-
-  if($unit_list === false)
-  {
-    // This is not queable item. Remove it from que
-    return $que;
-  }
-
-  // Check if que is full
-  if(count($que['que'][$que_id]) >= $que_types[$que_id]['length'])
-  {
-    return $que;
-  }
+  $que_data  = &$que_types[$que_id];
 
   // We do not work with negaitve unit_amounts - hack or cheat
-  if($unit_amount < 1)
+  if($unit_amount < 1 || !in_array($unit_id, $que_data['unit_list']) || count($que['que'][$que_id]) >= $que_data['length'])
   {
+    return $que;
+  }
+
+  doquery('START TRANSACTION;');
+  $planet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = {$planet['id']} LIMIT 1 FOR UPDATE;", '', true);
+  if(!eco_can_build_unit($user, $planet, $unit_id) || eco_unit_busy($user, $planet, $que, $unit_id))
+  {
+    doquery('ROLLBACK;');
     return $que;
   }
 
@@ -241,6 +218,8 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
     doquery("UPDATE {{planets}} SET {$que['query']} WHERE `id` = '{$planet['id']}' LIMIT 1;");
   }
 
+  doquery('COMMIT');
+
   return $que;
 }
 
@@ -270,8 +249,6 @@ function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
   global $sn_data;
 
   $que_string = '';
-
-//pdump($que,'Before');
 
   foreach($que['que'] as $que_data_id => &$que_data)
   {
@@ -314,9 +291,6 @@ function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
       $que['string'] = $que_string;
       $que['query'] = $que_query;
       $planet['que'] = $que_string;
-
-//pdump($que,'Before update');
-//die();
     }
     else
     {
@@ -327,8 +301,6 @@ function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
       }
     }
   }
-//pdump($que,'After');
-//die();
   doquery("UPDATE {{planets}} SET {$que['query']} WHERE `id` = '{$planet['id']}' LIMIT 1;");
 
   return $que;
