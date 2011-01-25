@@ -932,7 +932,7 @@ function sys_random_string($length = 16, $allowed_chars = 'ABCDEFGHJKLMNOPQRSTUV
 
 function js_safe_string($string)
 {
-  return str_replace(array("'", "\\", "\""), array("\'", "\\\\", "\\\""), $string);
+  return str_replace(array("\\", "\"", "'"), array("\\\\", "\\\"", "\'"), $string);
 }
 
 /*
