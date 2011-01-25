@@ -16,7 +16,7 @@ if ( !defined('INSIDE') )
 }
 
 define('DB_VERSION', 25);
-define('SN_VERSION', '26a3');
+define('SN_VERSION', '26a4');
 
 define('GAMEURL', "http://{$_SERVER['HTTP_HOST']}/");
 
@@ -91,8 +91,25 @@ define('PT_DEBRIS', 2);
 define('PT_MOON',   3);
 
 // *** Unit locations - shows db table where unit belong
-define('UL_USER', 1);
+define('UL_USER',   1);
 define('UL_PLANET', 2);
+
+// *** Caching masks
+define('CACHE_NOTHING',     0);
+define('CACHE_FLEET',       1);
+define('CACHE_PLANET',      2);
+define('CACHE_USER',        4);
+define('CACHE_SOURCE',      8);
+define('CACHE_DESTINATION', 16);
+define('CACHE_EVENT',       32);
+
+define('CACHE_USER_SRC',   CACHE_USER | CACHE_SOURCE);
+define('CACHE_USER_DST',   CACHE_USER | CACHE_DESTINATION);
+define('CACHE_PLANET_SRC', CACHE_PLANET | CACHE_SOURCE);
+define('CACHE_PLANET_DST', CACHE_PLANET | CACHE_DESTINATION);
+define('CACHE_COMBAT',     CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURCE | CACHE_DESTINATION);
+
+define('CACHE_ALL',        CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURCE | CACHE_DESTINATION | CACHE_EVENT);
 
 // *** Constants for changing DM
 define('RPG_STRUCTURE', 1);

@@ -13,11 +13,40 @@
 [+] Штурмовик. Поставить в пререквисты 5 уровней Конструктора
 [@] Перекинуть ракеты в таблицу флотов
 [@] Добавить поля fleet_start_id и fleet_end_id - ID соответствующих планет
+[@] Все таблицы из MyISAM переконвертировать в InnoDB
+[*] Сохранять в таблицу пользователей количество активных флотов и экспедиций
+[*] Обновлять данные по производству  ресурсов  только  там,  где  это  реально
+    нужно: постройка/удаление  зданий,  найм  офицеров/губернаторов,  изменение
+    производства зданий через меню "Ресурсы". Вроде все
+[*] Обновлять данные по количеству свободных полей на планете только  там,  где
+    это реально нужно: постройка/удаление зданий
+[*] Переделать систему расчета рапортов: добавить в  таблицу  уникальный  ИД  и
+    возвращать ссылку на хэш И на ИД, что бы избежать дубликатов
+
+[+] Project "SuperNova.WS" Release 26
+
+[*] Заставить миссии вовзращать измененные результаты
+
 [@] Слить таблицы lh_logs и lh_errors в logs. Переделать  logs.  Добавить  поле
     для  machine-readable  данных.  Туда   будет   записываться   данные   типа
     "имя_таблицы,serialize(таблица);"
-[@] Все таблицы из MyISAM переконвертировать в InnoDB
-[+] Project "SuperNova.WS" Release 26
+ALTER TABLE engine=innodb;
+
+ALTER TABLE mybb_users AUTO_INCREMENT = 100;
+ALTER TABLE tablename AUTO_INCREMENT=0;
+But it won't work if you have entries in the table.
+
+If you want to re-number rows, and there are no dependencies, you can DROP  and
+then ADD the id column, and it will assign numbers  automatically,  and  remove
+any gaps in the sequence.
+
+If you want to get rid of all the values in the table, and start the  increment
+at 0, then TRUNCATE will drop  and  recreate  the  table,  thus  resetting  the
+counter.
+
+2011-01-25 09:56 work v26a4
+[@] Переделаны  обработчики  миссий  для  возвращения  флагов   рекеширования:
+    MT_EXPEDITION, MT_RELOCATE
 
 2011-01-25 02:04 work v26a3
 [@] Написана система кэширования данных для обработчика  флотов.  Пока  она  не
