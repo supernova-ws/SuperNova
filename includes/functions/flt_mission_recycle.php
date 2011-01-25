@@ -9,7 +9,7 @@
 
 function flt_mission_recycle($fleet_row)
 {
-  global $pricelist, $lang;
+  global $pricelist, $lang, $time_now;
 
   if ($fleet_row['fleet_mess'] != 0)
   {

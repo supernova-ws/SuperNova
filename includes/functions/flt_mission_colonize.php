@@ -62,7 +62,7 @@ function flt_mission_colonize($fleet_row)
 
           $fleet_array[208]--;
           $fleet_row['fleet_amount']--;
-          $fleet_row['fleet_array'] = sys_fleet_arr2str($fleet_array);
+          $fleet_row['fleet_array'] = sys_unit_arr2str($fleet_array);
 
           if($fleet_row['fleet_array'])
           {

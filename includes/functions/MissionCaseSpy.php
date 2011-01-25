@@ -10,20 +10,6 @@
 // Mission Case 6: -> Espionner
 //
 
-function coe_compress_add_units($unit_group, $target, &$compress_data)
-{
-  global $sn_data;
-
-  foreach($unit_group as $unit_id)
-  {
-    $unit_count = $target[$sn_data[$unit_id]['name']];
-    if($unit_count > 0)
-    {
-      $compress_data[$unit_id] = $unit_count;
-    }
-  }
-}
-
 /**
  * SpyTarget
  *

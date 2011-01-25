@@ -211,7 +211,7 @@ switch($mode)
             $planetrow = $newrow;
             $stock = $newstock;
 
-            $config->eco_stockman_fleet = sys_fleet_arr2str($stock);
+            $config->eco_stockman_fleet = sys_unit_arr2str($stock);
             $config->db_saveItem('eco_stockman_fleet');
           }
           else
@@ -329,7 +329,7 @@ switch($mode)
             $planetrow = $newrow;
             $stock = $newstock;
 
-            $config->eco_stockman_fleet = sys_fleet_arr2str($stock);
+            $config->eco_stockman_fleet = sys_unit_arr2str($stock);
             $config->db_saveItem('eco_stockman_fleet');
           }
           else

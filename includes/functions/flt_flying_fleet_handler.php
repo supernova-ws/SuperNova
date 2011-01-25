@@ -172,7 +172,14 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
   }
 
   $source = flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
-
+/*
+pdump($fleet_row['fleet_start_time'], '$fleet_row[fleet_start_time]');
+pdump($fleet_row['fleet_end_time'], '$fleet_row[fleet_end_time]');
+pdump($cache_mode, '$cache_mode');
+pdump(CACHE_EVENT, 'CACHE_EVENT');
+pdump($cache_mode & CACHE_EVENT, '$cache_mode & CACHE_EVENT');
+print('<hr>');
+*/
   if($cache_mode & CACHE_EVENT)
   {
     $flt_event_cache[] = array(
@@ -220,7 +227,7 @@ function flt_t_flying_fleet_handler()
   $_fleets = doquery("SELECT *, fleet_start_time AS fleet_time FROM `{{fleets}}` WHERE `fleet_start_time` <= '{$time_now}' FOR UPDATE;");
   while ($fleet_row = mysql_fetch_assoc($_fleets))
   {
-    flt_cache_fleet($fleet_row, $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_EVENT);
+    flt_cache_fleet($fleet_row, $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_ALL);
   }
 
   $_fleets = doquery("SELECT *, fleet_end_time AS fleet_time FROM `{{fleets}}` WHERE `fleet_end_time` <= '{$time_now}' FOR UPDATE;");
@@ -238,7 +245,6 @@ function flt_t_flying_fleet_handler()
     doquery("UNLOCK TABLES");
     return;
   }
-
 /*
 pdump(count($flt_user_cache), '$flt_user_row');
 pdump(count($flt_planet_cache), '$flt_planet_row');
@@ -282,6 +288,10 @@ foreach($flt_event_cache as $index => $data)
         $mission_result = flt_mission_recycle($fleet_row);
       break;
 
+      case MT_SPY:
+        $mission_result = flt_mission_spy($fleet_row);
+      break;
+
       case MT_MISSILE:  // Missiles !!
       break;
 
@@ -303,10 +313,6 @@ foreach($flt_event_cache as $index => $data)
         MissionCaseACS ( $fleet_row );
       break;
 
-      case MT_SPY:
-        MissionCaseSpy ( $fleet_row );
-      break;
-
       default:
         doquery("DELETE FROM `{{fleets}}` WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
       break;
@@ -317,6 +323,7 @@ foreach($flt_event_cache as $index => $data)
     if($mission_result & CACHE_FLEET)
     {
       unset($flt_fleet_cache[$fleet_event['fleet_id']]);
+      $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = {$fleet_event['fleet_id']} LIMIT 1 FOR UPDATE;", '', true);
     }
     if($mission_result & CACHE_USER_SRC)
     {
@@ -334,8 +341,21 @@ foreach($flt_event_cache as $index => $data)
     {
       unset($flt_planet_cache[$fleet_event['dst_planet_hash']]);
     }
+/*
+pdump(count($flt_user_cache), '$flt_user_row');
+pdump(count($flt_planet_cache), '$flt_planet_row');
+pdump(count($flt_fleet_cache), '$flt_fleet_cache');
+pdump(count($flt_event_cache), '$flt_event_cache');
+*/
     // Reloading fresh data from DB
     flt_cache_fleet($fleet_row, $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_COMBAT);
+/*
+pdump(count($flt_user_cache), '$flt_user_row');
+pdump(count($flt_planet_cache), '$flt_planet_row');
+pdump(count($flt_fleet_cache), '$flt_fleet_cache');
+pdump(count($flt_event_cache), '$flt_event_cache');
+*/
+
 
 /*
     // Ќадо предусмотреть случаи, когда мы два раза обрабатываем один и тот же флот - сначала с 0, затем с 1

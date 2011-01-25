@@ -10,7 +10,7 @@
 
 function flt_mission_explore($fleet_row)
 {
-  global $lang, $pricelist, $sn_data;
+  global $lang, $pricelist, $sn_data, $time_now;
 
   $FleetOwner = $fleet_row['fleet_owner'];
   $MessSender = $lang['sys_mess_qg'];
@@ -18,7 +18,7 @@ function flt_mission_explore($fleet_row)
 
   if($fleet_row['fleet_mess'] != 0)
   {
-    if($fleet_row['fleet_end_time'] <= time())
+    if($fleet_row['fleet_end_time'] <= $time_now)
     {
       SendSimpleMessage ( $FleetOwner, '', $fleet_row['fleet_end_time'], 15, $MessSender, $MessTitle, $lang['sys_expe_back_home'] );
       return RestoreFleetToPlanet($fleet_row, true);
@@ -26,7 +26,7 @@ function flt_mission_explore($fleet_row)
     return CACHE_NOTHING;
   }
 
-  if ($fleet_row['fleet_end_stay'] > time())
+  if ($fleet_row['fleet_end_stay'] > $time_now)
   {
     return CACHE_NOTHING;
   };

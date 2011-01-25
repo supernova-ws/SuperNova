@@ -1090,7 +1090,7 @@ function sys_unit_str2arr($fleet_string)
         $temp = explode(',', $temp);
         if (!empty($temp[0]) && !empty($temp[1]))
         {
-          $fleet_array[$temp[0]] = $temp[1];
+          $fleet_array[$temp[0]] += $temp[1];
         }
       }
     }
@@ -1099,7 +1099,7 @@ function sys_unit_str2arr($fleet_string)
   return $fleet_array;
 }
 
-function sys_fleet_arr2str($fleet_array)
+function sys_unit_arr2str($fleet_array)
 {
   $fleet_string = '';
   if (isset($fleet_array))
