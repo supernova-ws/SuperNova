@@ -239,17 +239,17 @@ function flt_t_flying_fleet_handler()
     return;
   }
 
+/*
 pdump(count($flt_user_cache), '$flt_user_row');
 pdump(count($flt_planet_cache), '$flt_planet_row');
 pdump(count($flt_fleet_cache), '$flt_fleet_cache');
 pdump(count($flt_event_cache), '$flt_event_cache');
-/*
 foreach($flt_event_cache as $index => $data)
 {
   pdump($flt_fleet_cache[$data['fleet_id']]['fleet_id'], "index {$index}, fleet_id {$data['fleet_id']}");
 }
 */
-die();
+//die();
 
   foreach($flt_event_cache as $fleet_event)
   {
