@@ -29,7 +29,7 @@ $exchangeTo = ($exchangeTo<3) ? $exchangeTo : 0 ;
 
 $page_title = "{$lang['eco_mrk_title']}";
 
-$stock = sys_fleetUnPack($config->eco_stockman_fleet);
+$stock = sys_unit_str2arr($config->eco_stockman_fleet);
 
 $newrow = $planetrow;
 $newstock = $stock;
@@ -211,7 +211,7 @@ switch($mode)
             $planetrow = $newrow;
             $stock = $newstock;
 
-            $config->eco_stockman_fleet = sys_fleetPack($stock);
+            $config->eco_stockman_fleet = sys_fleet_arr2str($stock);
             $config->db_saveItem('eco_stockman_fleet');
           }
           else
@@ -329,7 +329,7 @@ switch($mode)
             $planetrow = $newrow;
             $stock = $newstock;
 
-            $config->eco_stockman_fleet = sys_fleetPack($stock);
+            $config->eco_stockman_fleet = sys_fleet_arr2str($stock);
             $config->db_saveItem('eco_stockman_fleet');
           }
           else
@@ -409,24 +409,5 @@ $template->assign_vars(array(
 ));
 
 display($template, $page_title);
-
-function sys_fleetUnPack($strFleet){
-  $arrTemp = explode(';', $strFleet);
-  foreach($arrTemp as $temp){
-    if($temp){
-      $temp = explode(',', $temp);
-      $arrFleet[$temp[0]] = $temp[1];
-    }
-  }
-
-  return $arrFleet;
-}
-
-function sys_fleetPack($arrFleet){
-  foreach($arrFleet as $shipID => $shipCount){
-    $strFleet .= "$shipID,$shipCount;";
-  }
-  return $strFleet;
-}
 
 ?>

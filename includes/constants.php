@@ -16,7 +16,7 @@ if ( !defined('INSIDE') )
 }
 
 define('DB_VERSION', 25);
-define('SN_VERSION', '26a4');
+define('SN_VERSION', '26a5');
 
 define('GAMEURL', "http://{$_SERVER['HTTP_HOST']}/");
 
@@ -110,6 +110,8 @@ define('CACHE_PLANET_DST', CACHE_PLANET | CACHE_DESTINATION);
 define('CACHE_COMBAT',     CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURCE | CACHE_DESTINATION);
 
 define('CACHE_ALL',        CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURCE | CACHE_DESTINATION | CACHE_EVENT);
+
+define('CACHE_NONE', CACHE_NOTHING); // Alias to me
 
 // *** Constants for changing DM
 define('RPG_STRUCTURE', 1);

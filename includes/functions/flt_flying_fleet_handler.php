@@ -65,7 +65,7 @@ function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = fals
 }
 
 /**
- * FlyingFleetHandler.php
+ * @function flt_flying_fleet_handler
  *
  * @version 1.0
  * @copyright 2008 By Chlorel for XNova
@@ -191,34 +191,31 @@ function flt_t_flying_fleet_handler()
   // SAFE FALLBACK TO OLD-STYLE HANDLER
   define('FLT_FALLBACK', false);
 
-  global $resource, $dbg_msg, $time_now, $config, $doNotUpdateFleet;
+  global $time_now;
 
   if(FLT_FALLBACK)
   {
-    if(($time_now - $config->flt_lastUpdate <= 8 ) || ($doNotUpdateFleet)) return;
-    $config->db_saveItem('flt_lastUpdate', $time_now);
+    if(($time_now - $GLOBALS['config']->flt_lastUpdate <= 8 ) || $GLOBALS['skip_fleet_update'])
+    {
+      return;
+    }
 
+    $GLOBALS['config']->db_saveItem('flt_lastUpdate', $time_now);
     doquery('LOCK TABLE {{table}}aks WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}users WRITE, {{table}}logs WRITE, {{table}}iraks WRITE, {{table}}statpoints WRITE, {{table}}referrals WRITE, {{table}}counter WRITE');
   }
   else
   {
     $time_now = 1295903553 + 130 * 60;
-    pdump(date(FMT_DATE_TIME, 1295903553));
+    //pdump(date(FMT_DATE_TIME, $time_now));
     doquery('START TRANSACTION;');
   }
 
   coe_o_missile_calculate();
 
-  if(!FLT_FALLBACK)
-  {
-    doquery('COMMIT');
-    doquery('START TRANSACTION;');
-  }
-
-  $flt_user_cache = array();
+  $flt_user_cache   = array();
+  $flt_fleet_cache  = array();
+  $flt_event_cache  = array();
   $flt_planet_cache = array();
-  $flt_fleet_cache = array();
-  $flt_event_cache = array();
 
   $_fleets = doquery("SELECT *, fleet_start_time AS fleet_time FROM `{{fleets}}` WHERE `fleet_start_time` <= '{$time_now}' FOR UPDATE;");
   while ($fleet_row = mysql_fetch_assoc($_fleets))
@@ -235,8 +232,13 @@ function flt_t_flying_fleet_handler()
   uasort($flt_event_cache, 'flt_flyingFleetsSort');
   unset($_fleets);
 
-if(!FLT_FALLBACK)
-{
+  if(FLT_FALLBACK)
+  {
+    flt_fallback($flt_event_cache);
+    doquery("UNLOCK TABLES");
+    return;
+  }
+
 pdump(count($flt_user_cache), '$flt_user_row');
 pdump(count($flt_planet_cache), '$flt_planet_row');
 pdump(count($flt_fleet_cache), '$flt_fleet_cache');
@@ -248,65 +250,9 @@ foreach($flt_event_cache as $index => $data)
 }
 */
 die();
-}
 
   foreach($flt_event_cache as $fleet_event)
   {
-    if(FLT_FALLBACK)
-    {
-      $fleet_row = doquery( "SELECT * FROM {{fleets}} WHERE fleet_id={$fleet_event['fleet_id']}", '', true );
-      switch ($fleet_row['fleet_mission'])
-      {
-        case MT_ATTACK:
-          MissionCaseAttack ( $fleet_row );
-        break;
-
-        case MT_AKS:
-          MissionCaseAttack ( $fleet_row );
-        break;
-
-        case MT_DESTROY:
-          MissionCaseDestruction ( $fleet_row );
-        break;
-
-        case MT_TRANSPORT:
-          MissionCaseTransport ( $fleet_row );
-        break;
-
-        case MT_RELOCATE:
-          MissionCaseStay ( $fleet_row );
-        break;
-
-        case MT_HOLD:
-          MissionCaseACS ( $fleet_row );
-        break;
-
-        case MT_SPY:
-          MissionCaseSpy ( $fleet_row );
-        break;
-
-        case MT_COLONIZE:
-          MissionCaseColonisation ( $fleet_row );
-        break;
-
-        case MT_RECYCLE:
-          MissionCaseRecycling ( $fleet_row );
-        break;
-
-        case MT_MISSILE:  // Missiles !!
-        break;
-
-        case MT_EXPLORE:
-          MissionCaseExpedition ( $fleet_row );
-        break;
-
-        default:
-          doquery("DELETE FROM `{{fleets}}` WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
-        break;
-      }
-      continue;
-    }
-
     $fleet_row = $flt_fleet_cache[$fleet_event['fleet_id']];
     if(!$fleet_row)
     {
@@ -317,7 +263,7 @@ die();
     switch ($fleet_row['fleet_mission'])
     {
       case MT_EXPLORE:
-        $mission_result = flt_mission_expedition($fleet_row);
+        $mission_result = flt_mission_explore($fleet_row);
       break;
 
       case MT_RELOCATE:
@@ -326,6 +272,17 @@ die();
 
       case MT_TRANSPORT:
         $mission_result = flt_mission_transport($fleet_row);
+      break;
+
+      case MT_COLONIZE:
+        $mission_result = flt_mission_colonize($fleet_row);
+      break;
+
+      case MT_RECYCLE:
+        $mission_result = flt_mission_recycle($fleet_row);
+      break;
+
+      case MT_MISSILE:  // Missiles !!
       break;
 
       /*
@@ -348,17 +305,6 @@ die();
 
       case MT_SPY:
         MissionCaseSpy ( $fleet_row );
-      break;
-
-      case MT_COLONIZE:
-        MissionCaseColonisation ( $fleet_row );
-      break;
-
-      case MT_RECYCLE:
-        MissionCaseRecycling ( $fleet_row );
-      break;
-
-      case MT_MISSILE:  // Missiles !!
       break;
 
       default:
@@ -412,16 +358,65 @@ die();
     }
 */
   }
+  doquery('COMMIT;');
+}
 
-  if(FLT_FALLBACK)
+function flt_fallback($flt_event_cache)
+{
+  foreach($flt_event_cache as $fleet_event)
   {
-    doquery("DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT fleet_group FROM {{fleets}});");
-    doquery("UNLOCK TABLES");
+    $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = '{$fleet_event['fleet_id']}' LIMIT 1;", '', true);
+    switch ($fleet_row['fleet_mission'])
+    {
+      case MT_ATTACK:
+        MissionCaseAttack ( $fleet_row );
+      break;
+
+      case MT_AKS:
+        MissionCaseAttack ( $fleet_row );
+      break;
+
+      case MT_DESTROY:
+        MissionCaseDestruction ( $fleet_row );
+      break;
+
+      case MT_TRANSPORT:
+        MissionCaseTransport ( $fleet_row );
+      break;
+
+      case MT_RELOCATE:
+        MissionCaseStay ( $fleet_row );
+      break;
+
+      case MT_HOLD:
+        MissionCaseACS ( $fleet_row );
+      break;
+
+      case MT_SPY:
+        MissionCaseSpy ( $fleet_row );
+      break;
+
+      case MT_COLONIZE:
+        MissionCaseColonisation ( $fleet_row );
+      break;
+
+      case MT_RECYCLE:
+        MissionCaseRecycling ( $fleet_row );
+      break;
+
+      case MT_MISSILE:  // Missiles !!
+      break;
+
+      case MT_EXPLORE:
+        MissionCaseExpedition ( $fleet_row );
+      break;
+
+      default:
+        doquery("DELETE FROM `{{fleets}}` WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
+      break;
+    }
   }
-  else
-  {
-    doquery('COMMIT;');
-  }
+  doquery("DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT fleet_group FROM {{fleets}});");
 }
 
 ?>
