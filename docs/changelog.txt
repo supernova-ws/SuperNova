@@ -44,6 +44,11 @@ If you want to get rid of all the values in the table, and start the  increment
 at 0, then TRUNCATE will drop  and  recreate  the  table,  thus  resetting  the
 counter.
 
+2011-01-25 15:52 work v26a6
+[@] Переделаны  обработчики  миссий  для  возвращения  флагов   рекеширования:
+    MT_SPY
+[@] Исправлена ошибка обработки CACHE_FLEET
+
 2011-01-25 15:52 work v26a5
 [@] Переделаны  обработчики  миссий  для  возвращения  флагов   рекеширования:
     MT_COLONIZE и MT_RECYCLE
