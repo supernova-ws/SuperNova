@@ -7,16 +7,21 @@
  * @copyright 2008 Chlorel for XNova
  */
 
-// RestoreFleetToPlanet
-//
-// $FleetRow -> enregistrement de flotte
-// $Start    -> true  = planete de depart
-//           -> false = planete d'arrivГ©e
-function RestoreFleetToPlanet ( &$fleet_row, $start = true )
+/*
+@function RestoreFleetToPlanet
+
+$fleet_row      = enregistrement de flotte
+$start          = true  - planete de depart
+                = false - planete d'arrivГ©e
+$only_resources = true - store only resources
+                = false - store fleet too
+returns         = bitmask for recaching
+*/
+function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false)
 {
   if(!is_array($fleet_row))
   {
-    return false;
+    return CACHE_NOTHING;
   }
 
   global $sn_data;
@@ -25,15 +30,23 @@ function RestoreFleetToPlanet ( &$fleet_row, $start = true )
 
   $query = 'UPDATE {{planets}} SET ';
 
-  $fleet_strings = explode(';', $fleet_row['fleet_array']);
-  foreach ($fleet_strings as $ship_string)
+  if(!$only_resources)
   {
-    if ($ship_string != '')
+    $fleet_strings = explode(';', $fleet_row['fleet_array']);
+    foreach ($fleet_strings as $ship_string)
     {
-      $ship_record = explode (',', $ship_string);
-      $ship_db_name = $sn_data[$ship_record[0]]['name'];
-      $query .= "`{$ship_db_name}` = `{$ship_db_name}` + '{$ship_record[1]}', ";
+      if ($ship_string != '')
+      {
+        $ship_record = explode (',', $ship_string);
+        $ship_db_name = $sn_data[$ship_record[0]]['name'];
+        $query .= "`{$ship_db_name}` = `{$ship_db_name}` + '{$ship_record[1]}', ";
+      }
     }
+    doquery("DELETE FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
+  }
+  else
+  {
+    doquery("UPDATE {{fleets}} SET fleet_resource_metal = 0, fleet_resource_crystal = 0, fleet_resource_deuterium = 0 WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
   }
 
   $query .= "`metal` = `metal` + '{$fleet_row['fleet_resource_metal']}', ";
@@ -48,18 +61,15 @@ function RestoreFleetToPlanet ( &$fleet_row, $start = true )
 
   doquery($query);
 
-  doquery("DELETE FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
-
-  return CACHE_FLEET | CACHE_USER_SRC;
+  return CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
 }
-
-// Modified by MadnessRed to support ACS
 
 /**
  * FlyingFleetHandler.php
  *
  * @version 1.0
  * @copyright 2008 By Chlorel for XNova
+ * Modified by MadnessRed to support ACS
  */
 
 function flt_flyingFleetsSort($a, $b)
@@ -231,11 +241,12 @@ pdump(count($flt_user_cache), '$flt_user_row');
 pdump(count($flt_planet_cache), '$flt_planet_row');
 pdump(count($flt_fleet_cache), '$flt_fleet_cache');
 pdump(count($flt_event_cache), '$flt_event_cache');
-
+/*
 foreach($flt_event_cache as $index => $data)
 {
-  pdump($flt_fleet_cache[$data['fleet_id']], "index {$index}, fleet_id {$data['fleet_id']}");
+  pdump($flt_fleet_cache[$data['fleet_id']]['fleet_id'], "index {$index}, fleet_id {$data['fleet_id']}");
 }
+*/
 die();
 }
 
@@ -313,6 +324,10 @@ die();
         $mission_result = flt_mission_relocate($fleet_row);
       break;
 
+      case MT_TRANSPORT:
+        $mission_result = flt_mission_transport($fleet_row);
+      break;
+
       /*
       // Для боевых атак нужно обновлять по САБу и по холду - таки надо возвращать данные из обработчика миссий
       case MT_ATTACK:
@@ -325,10 +340,6 @@ die();
 
       case MT_DESTROY:
         MissionCaseDestruction ( $fleet_row );
-      break;
-
-      case MT_TRANSPORT:
-        MissionCaseTransport ( $fleet_row );
       break;
 
       case MT_HOLD:
