@@ -30,7 +30,7 @@ if(!$user && !$allow_anonymous)
   header('Location: login.php');
 }
 
-FlyingFleetHandler();
+flt_t_flying_fleet_handler();
 
 if ($user && is_array($user) && isset($user['id']) && !empty($user['id']))
 {

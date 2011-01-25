@@ -15,12 +15,14 @@
 
 function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 {
+  $no_data = array('user' => false, 'planet' => false, 'que' => false);
+
   if(!$planet)
   {
-    return false;
+    return $no_data;
   }
 
-  global $debug, $sn_data;
+  global $sn_data;
 
   $suffix = $simulation ? '' : 'FOR UPDATE';
 
@@ -38,10 +40,19 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 
   if(!($planet && isset($planet['id']) && $planet['id']))
   {
-    return false;
+    return $no_data;
   }
 
-  $ProductionTime        = max(0, $UpdateTime - $planet['last_update']);
+  if(!$user || !is_array($user) || !isset($user['id']))
+  {
+    $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$planet['id_owner']} LIMIT 1 FOR UPDATE;", '', true);
+    if(!$user)
+    {
+      return $no_data;
+    }
+  }
+
+  $ProductionTime = max(0, $UpdateTime - $planet['last_update']);
   $planet['last_update'] += $ProductionTime;
 
   $Caps = ECO_getPlanetCaps($user, $planet);
@@ -80,45 +91,49 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 
   $que = eco_que_process($user, $planet, $ProductionTime);
 
-  if (!$simulation)
+  if ($simulation)
   {
-    $QryUpdatePlanet  = "UPDATE {{planets}} SET ";
-    $QryUpdatePlanet .= "`last_update` = '{$planet['last_update']}', ";
+    return array('user' => $user, 'planet' => $planet, 'que' => $que);
+  }
 
-    $QryUpdatePlanet .= "`metal`     = `metal`     + '{$incRes['metal']}', ";
-    $QryUpdatePlanet .= "`crystal`   = `crystal`   + '{$incRes['crystal']}', ";
-    $QryUpdatePlanet .= "`deuterium` = `deuterium` + '{$incRes['deuterium']}', ";
+  $QryUpdatePlanet  = "UPDATE {{planets}} SET ";
+  $QryUpdatePlanet .= "`last_update` = '{$planet['last_update']}', ";
 
-    $QryUpdatePlanet .= "`metal_perhour` = '{$planet['metal_perhour']}', ";
-    $QryUpdatePlanet .= "`crystal_perhour` = '{$planet['crystal_perhour']}', ";
-    $QryUpdatePlanet .= "`deuterium_perhour` = '{$planet['deuterium_perhour']}', ";
+  $QryUpdatePlanet .= "`metal`     = `metal`     + '{$incRes['metal']}', ";
+  $QryUpdatePlanet .= "`crystal`   = `crystal`   + '{$incRes['crystal']}', ";
+  $QryUpdatePlanet .= "`deuterium` = `deuterium` + '{$incRes['deuterium']}', ";
 
-    $QryUpdatePlanet .= "`energy_used` = '{$planet['energy_used']}', ";
-    $QryUpdatePlanet .= "`energy_max` = '{$planet['energy_max']}', ";
+  $QryUpdatePlanet .= "`metal_perhour` = '{$planet['metal_perhour']}', ";
+  $QryUpdatePlanet .= "`crystal_perhour` = '{$planet['crystal_perhour']}', ";
+  $QryUpdatePlanet .= "`deuterium_perhour` = '{$planet['deuterium_perhour']}', ";
 
-    $Builded = eco_bld_handle_que($user, $planet, $ProductionTime);
-    $QryUpdatePlanet .= "`b_hangar_id` = '{$planet['b_hangar_id']}', ";
-    if ( $Builded != '' ) {
-      foreach ( $Builded as $Element => $Count ) {
-        if ($Element <> '') {
-          $QryUpdatePlanet .= "`{$sn_data[$Element]['name']}` = `{$sn_data[$Element]['name']}` + '{$Count}', ";
-        }
+  $QryUpdatePlanet .= "`energy_used` = '{$planet['energy_used']}', ";
+  $QryUpdatePlanet .= "`energy_max` = '{$planet['energy_max']}', ";
+
+  $Builded = eco_bld_handle_que($user, $planet, $ProductionTime);
+  $QryUpdatePlanet .= "`b_hangar_id` = '{$planet['b_hangar_id']}', ";
+  if ($Builded)
+  {
+    foreach ( $Builded as $Element => $Count )
+    {
+      if ($Element)
+      {
+        $QryUpdatePlanet .= "`{$sn_data[$Element]['name']}` = `{$sn_data[$Element]['name']}` + '{$Count}', ";
       }
     }
-    $QryUpdatePlanet .= "`b_hangar` = '{$planet['b_hangar']}'";
+  }
+  $QryUpdatePlanet .= "`b_hangar` = '{$planet['b_hangar']}' ";
 
-    $QryUpdatePlanet .= $que['query'] != $planet['que'] ? ",{$que['query']} " : '';
+  $QryUpdatePlanet .= $que['query'] != $planet['que'] ? ",{$que['query']} " : '';
 
-    $QryUpdatePlanet .= "WHERE `id` = '{$planet['id']}' LIMIT 1;";
+  $QryUpdatePlanet .= "WHERE `id` = '{$planet['id']}' LIMIT 1;";
+  doquery($QryUpdatePlanet);
 
-    doquery($QryUpdatePlanet);
-
-    if(!empty($que['xp']))
+  if(!empty($que['xp']))
+  {
+    foreach($que['xp'] as $xp_type => $xp_amount)
     {
-      foreach($que['xp'] as $xp_type => $xp_amount)
-      {
-        rpg_level_up($user, $xp_type, $xp_amount);
-      }
+      rpg_level_up($user, $xp_type, $xp_amount);
     }
   }
 
