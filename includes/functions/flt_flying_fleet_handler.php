@@ -101,7 +101,7 @@ function flt_cache_planet($planet_vector, &$flt_user_cache, &$flt_planet_cache)
   if(!isset($flt_planet_cache[$planet_hash]))
   {
 //!!!!!!!!!!!!! Œ“ Àﬁ◊»“‹ —»Ã”Àﬂ÷»ﬁ !!!!!!!!!!!!!!!!!!!!!!!!!!
-    $global_data = sys_o_get_updated(false, $planet_vector, $GLOBALS['time_now'], true);
+    $global_data = sys_o_get_updated(false, $planet_vector, $GLOBALS['time_now']);
     $flt_planet_cache[$planet_hash] = $global_data['planet'];
 
     flt_cache_user($global_data['user'], &$flt_user_cache);
@@ -205,7 +205,7 @@ function flt_t_flying_fleet_handler()
   }
   else
   {
-    $time_now = 1295903553 + 130 * 60;
+//    $time_now = 1295903553 + 130 * 60;
     //pdump(date(FMT_DATE_TIME, $time_now));
     doquery('START TRANSACTION;');
   }
