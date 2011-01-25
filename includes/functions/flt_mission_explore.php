@@ -8,7 +8,7 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-function flt_mission_expedition($fleet_row)
+function flt_mission_explore($fleet_row)
 {
   global $lang, $pricelist, $sn_data;
 

@@ -44,9 +44,20 @@ If you want to get rid of all the values in the table, and start the  increment
 at 0, then TRUNCATE will drop  and  recreate  the  table,  thus  resetting  the
 counter.
 
+2011-01-25 15:52 work v26a5
+[@] Переделаны  обработчики  миссий  для  возвращения  флагов   рекеширования:
+    MT_COLONIZE и MT_RECYCLE
+
+2011-01-25 16:00
+[%] Галактика: Исправлена ошибка неотображения названий планет с символов "'"
+
+2011-01-25 15:52 work
+[@] Переделаны  обработчики  миссий  для  возвращения  флагов   рекеширования:
+    MT_TRANSPOSRT
+
 2011-01-25 09:56 work v26a4
 [@] Переделаны  обработчики  миссий  для  возвращения  флагов   рекеширования:
-    MT_EXPEDITION, MT_RELOCATE
+    MT_EXPLORE и MT_RELOCATE
 
 2011-01-25 02:04 work v26a3
 [@] Написана система кэширования данных для обработчика  флотов.  Пока  она  не

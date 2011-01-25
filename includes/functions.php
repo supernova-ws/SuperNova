@@ -932,7 +932,7 @@ function sys_random_string($length = 16, $allowed_chars = 'ABCDEFGHJKLMNOPQRSTUV
 
 function js_safe_string($string)
 {
-  return str_replace(array("'", "\\", "\""), array("\'", "\\\\", "\\\""), $string);
+  return str_replace(array("\\", "\"", "'"), array("\\\\", "\\\"", "\'"), $string);
 }
 
 /*
@@ -1075,6 +1075,50 @@ function IsElementBuyable ($CurrentUser, $CurrentPlanet, $Element, $Incremental 
       return false;
 
   return true;
+}
+
+function sys_unit_str2arr($fleet_string)
+{
+  $fleet_array = array();
+  if (!empty($fleet_string))
+  {
+    $arrTemp = explode(';', $fleet_string);
+    foreach ($arrTemp as $temp)
+    {
+      if($temp)
+      {
+        $temp = explode(',', $temp);
+        if (!empty($temp[0]) && !empty($temp[1]))
+        {
+          $fleet_array[$temp[0]] = $temp[1];
+        }
+      }
+    }
+  }
+
+  return $fleet_array;
+}
+
+function sys_fleet_arr2str($fleet_array)
+{
+  $fleet_string = '';
+  if (isset($fleet_array))
+  {
+    if (!is_array($fleet_array))
+    {
+      $fleet_array = array($fleet_array => 1);
+    }
+
+    foreach ($fleet_array as $unit_id => $unit_count)
+    {
+      if ($unit_id && $unit_count)
+      {
+        $fleet_string .= "{$unit_id},{$unit_count};";
+      }
+    }
+  }
+
+  return $fleet_string;
 }
 
 ?>
