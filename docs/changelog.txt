@@ -14,6 +14,9 @@
 [@] Перекинуть ракеты в таблицу флотов
 [@] Добавить поля fleet_start_id и fleet_end_id - ID соответствующих планет
 [@] Все таблицы из MyISAM переконвертировать в InnoDB
+[*] Перенести таблицу /templates в /design
+[*] Добавить в очередь  настройку  BUILD_DELAY  -  вычет  ресурсов  только  при
+    активизации строений
 [*] Сохранять в таблицу пользователей количество активных флотов и экспедиций
 [*] Обновлять данные по производству  ресурсов  только  там,  где  это  реально
     нужно: постройка/удаление  зданий,  найм  офицеров/губернаторов,  изменение
@@ -26,24 +29,15 @@
 [+] Project "SuperNova.WS" Release 26
 [@] Версия БД увеличена до 26
 
-[*] Заставить миссии вовзращать измененные результаты
+[*] Заставить миссии возвращать измененные результаты
 
 [@] Слить таблицы lh_logs и lh_errors в logs. Переделать  logs.  Добавить  поле
     для  machine-readable  данных.  Туда   будет   записываться   данные   типа
     "имя_таблицы,serialize(таблица);"
 ALTER TABLE engine=innodb;
-
-ALTER TABLE mybb_users AUTO_INCREMENT = 100;
-ALTER TABLE tablename AUTO_INCREMENT = 0;
-But it won't work if you have entries in the table.
-
 If you want to re-number rows, and there are no dependencies, you can DROP  and
 then ADD the id column, and it will assign numbers  automatically,  and  remove
 any gaps in the sequence.
-
-If you want to get rid of all the values in the table, and start the  increment
-at 0, then TRUNCATE will drop  and  recreate  the  table,  thus  resetting  the
-counter.
 
 [*] Переделать в использование кэша
       case MT_EXPLORE:
