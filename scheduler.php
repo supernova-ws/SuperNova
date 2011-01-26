@@ -47,14 +47,14 @@ if($next_stat_update > $config->var_stat_update)
       $msg = 'scheduler';
     };
     $msg = "Running stat updates: {$msg}. Config->var_stat_update = " . date(FMT_DATE_TIME, $config->var_stat_update) . ', nextStatUpdate = ' . date(FMT_DATE_TIME, $next_stat_update);
-    $debug->warning($msg, 'Stat update', 100);
+    $debug->warning($msg, 'Stat update', 190);
     $total_time = microtime(true);
 
     SYS_statCalculate();
 
     $total_time = microtime(true) - $total_time;
     $msg = "Stat update complete in {$total_time} seconds.";
-    $debug->warning($msg, 'Stat update', 102);
+    $debug->warning($msg, 'Stat update', 192);
 
     $time_now = time();
     $config->db_saveItem('var_stat_update', $time_now);
