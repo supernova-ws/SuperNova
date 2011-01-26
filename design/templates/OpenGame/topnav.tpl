@@ -33,9 +33,9 @@ input.frameles
   </tr>
   <tr class="header" align=center valign=middle><form name='ressources'> <center>
     <td class="header" align="center" width="150"><b><font color="#FFFF00">{L_tech_storage}</font></b></td>
-    <td class="header" align="right" width="150"><span id='top_metal'>{TOPNAV_METAL}</span></td>
-    <td class="header" align="right" width="150"><span id='top_crystal'>{TOPNAV_CRYSTAL}</span></td>
-    <td class="header" align="right" width="150"><span id='top_deuterium'>{TOPNAV_DEUTERIUM}</span></td>
+    <td class="header" align="right" width="150"><span id='top_metal'>{TOPNAV_METAL_TEXT}</span></td>
+    <td class="header" align="right" width="150"><span id='top_crystal'>{TOPNAV_CRYSTAL_TEXT}</span></td>
+    <td class="header" align="right" width="150"><span id='top_deuterium'>{TOPNAV_DEUTERIUM_TEXT}</span></td>
     <td class="header" align="right" width="150">{ENERGY_BALANCE}</td>
     <td class="header" align="center" width="140" rowspan="2"><font color="green"><b>{TOPNAV_DARK_MATTER}</b></font></td>
     <td class="header" align="center" valign=middle width="140" rowspan="2" ><!-- IF TOPNAV_MESSAGES --><a href="messages.php"><blink>[ {TOPNAV_MESSAGES} ]</blink></a><!-- ELSE -->0<!-- ENDIF --></td>

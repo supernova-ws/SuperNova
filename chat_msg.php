@@ -19,7 +19,7 @@
    1.0 copyright 2008 by e-Zobar for XNova
 */
 
-$doNotUpdateFleet = true;
+$skip_fleet_update = true;
 
 define('INSIDE'  , true);
 define('INSTALL' , false);

@@ -49,8 +49,9 @@ elseif(!empty($_COOKIE[$config->COOKIE_NAME]))
 
   if($user['id'])
   {
+    ob_start();
     header("Location: ./index.{$phpEx}");
-    exit;
+    ob_end_flush();
   }
   die();
 }

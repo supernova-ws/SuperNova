@@ -89,7 +89,7 @@ if(is_array($production))
     }
     else
     {
-      $debug->warning('Supplying wrong ID in production array - attempt to change some field', 'Resource Page', 300);
+      $debug->warning('Supplying wrong ID in production array - attempt to change some field', 'Resource Page', 301);
     }
   }
 

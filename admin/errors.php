@@ -33,35 +33,59 @@ $deleteall = SYS_mysqlSmartEscape($_GET['deleteall']);
 
 // Supprimer les erreurs
 if ($delete) {
-  doquery("DELETE FROM `{{table}}` WHERE `error_id`=$delete", 'errors');
+  doquery("DELETE FROM `{{logs}}` WHERE `log_id` = {$delete} LIMIT 1;");
 } elseif ($deleteall == 'yes') {
-  doquery("TRUNCATE TABLE `{{table}}`", 'errors');
+//  doquery("TRUNCATE TABLE `{{logs}}`");
 }
 
 if($detail){
-  $errorInfo = doquery("SELECT * FROM `{{table}}` WHERE `error_id` = {$detail}", 'errors', true);
-  $errorInfo['error_time'] = date(FMT_DATE_TIME, $errorInfo['error_time']);
-  display(parsetemplate(gettemplate('admin/error_detail'), $errorInfo), "Errors", false, '', true);
+  $errorInfo = doquery("SELECT * FROM `{{logs}}` WHERE `log_id` = {$detail} LIMIT 1;", '', true);
+  $template = gettemplate('admin/error_detail', true);
+  $error_dump = unserialize($errorInfo['log_dump']);
+  foreach($error_dump as $key => $value)
+  {
+    $v = array(
+      'VAR_NAME' => $key,
+      'VAR_VALUE' => $key == 'query_log' ? $value : dump($value, $key)
+    );
+
+    $template->assign_block_vars('vars', $v);
+  }
+  display(parsetemplate($template, $errorInfo), "Errors", false, '', true);
 }else{
+  $template = gettemplate('admin/errors_body', true);
   $parse = $lang;
 
   // Afficher les erreurs
-  $query = doquery("SELECT * FROM `{{table}}`", 'errors');
+  $query = doquery("SELECT * FROM `{{logs}}` ORDER BY log_id DESC LIMIT 100;");
   $i = 0;
-  while ($u = mysql_fetch_array($query)) {
+  while ($u = mysql_fetch_assoc($query)) {
     $i++;
+    /*
     $parse['errors_list'] .= "
-    <tr><td class=n><a href=errors.php?detail={$u['error_id']}><u>{$u['error_id']}</u></a></td>
-    <td class=n>{$u['error_sender']}</td>
-    <td class=n>{$u['error_type']}</td>
-    <td class=n>". date(FMT_DATE_TIME, $u['error_time']) ."</td>
-    <td class=b>{$u['error_page']}</td>
-    <td class=n><a href=\"?delete=". $u['error_id'] ."\"><img src=\"../design/images/r1.png\"></a></td>
+    <tr><th class=n><a href=errors.php?detail={$u['log_id']}><u>{$u['log_id']}</u></a></th>
+    <th class=n>{$u['log_username']}</th>
+    <th class=n>{$u['log_title']}</th>
+    <th class=n>". date(FMT_DATE_TIME, $u['log_time']) ."</th>
+    <th class=b>{$u['log_page']}</th>
+    <th class=n><a href=\"?delete=". $u['log_id'] ."\"><img src=\"../design/images/r1.png\"></a></th>
     </tr>
-    <tr><td colspan=\"6\" class=b>".  nl2br($u['error_text'])."</td></tr>";
+    <tr><td colspan=\"6\" class=b>".  nl2br($u['log_text'])."</td></tr>";
+    */
+
+    foreach($u as $key => $value)
+    {
+      $v[strtoupper($key)] = $value;
+    }
+
+    $template->assign_block_vars('error', $v);
   }
   $parse['errors_num'] = $i;
 
-  display(parsetemplate(gettemplate('admin/errors_body'), $parse), "Errors", false, '', true);
+
+
+
+  display(parsetemplate($template, $parse), "Errors", false, '', true);
 }
+
 ?>

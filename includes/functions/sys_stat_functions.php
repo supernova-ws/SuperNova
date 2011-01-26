@@ -41,7 +41,7 @@ function sta_set_time_limit($sta_update_msg = 'updatins something', $next_step =
   $config->db_saveItem('var_stat_update_msg', $sta_update_msg);
   if($next_step)
   {
-    $debug->warning($sta_update_msg, 'Stat update', 101);
+    $debug->warning($sta_update_msg, 'Stat update', 191);
   }
 }
 
