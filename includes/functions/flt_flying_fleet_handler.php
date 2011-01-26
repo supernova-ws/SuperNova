@@ -331,11 +331,11 @@ foreach($flt_event_cache as $index => $data)
       break;
 
       case MT_SPY:
-        $mission_result = flt_mission_spy($fleet_row);
+        $mission_result = flt_mission_spy($mission_data);
       break;
 
       case MT_HOLD:
-        $mission_result = flt_mission_hold($fleet_row);
+        $mission_result = flt_mission_hold($mission_data);
       break;
 
       case MT_MISSILE:  // Missiles !!
@@ -349,7 +349,6 @@ foreach($flt_event_cache as $index => $data)
     if($attack_result)
     {
       // Case for passed attack
-// pdump($attack_result);
       $attack_result = $attack_result['rw'][0];
       flt_unset_by_attack($attack_result['attackers'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache);
       flt_unset_by_attack($attack_result['defenders'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache);
