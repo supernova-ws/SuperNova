@@ -9,29 +9,18 @@
 
 function flt_mission_recycle($fleet_row)
 {
-  global $pricelist, $lang, $time_now;
+  global $pricelist, $lang;
 
-  if ($fleet_row['fleet_mess'] != 0)
-  {
-    if ($fleet_row['fleet_end_time'] <= $time_now)
-    {
+/*
+
+// Это надо будет вставить наверное в RestoreFleetToPlanet
       $Message         = sprintf( $lang['sys_tran_mess_owner'],
             $StartName, GetStartAdressLink($fleet_row, ''),
             pretty_number($fleet_row['fleet_resource_metal']), $lang['Metal'],
             pretty_number($fleet_row['fleet_resource_crystal']), $lang['Crystal'],
             pretty_number($fleet_row['fleet_resource_deuterium']), $lang['Deuterium'] );
       SendSimpleMessage ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_end_time'], 4, $lang['sys_mess_spy_control'], $lang['sys_mess_fleetback'], $Message);
-      return RestoreFleetToPlanet($fleet_row, true);
-    }
-    return CACHE_NOTHING;
-  }
-  else
-  {
-    if ($fleet_row['fleet_start_time'] > $time_now)
-    {
-      return CACHE_NOTHING;
-    }
-  }
+*/
 
   $QrySelectGalaxy  = "SELECT * FROM `{{table}}` WHERE ";
   $QrySelectGalaxy .= "`galaxy` = '{$fleet_row['fleet_end_galaxy']}' AND ";

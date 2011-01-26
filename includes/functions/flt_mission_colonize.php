@@ -10,40 +10,25 @@
 // ----------------------------------------------------------------------------------------------------------------
 // Mission Case 9: -> Coloniser
 //
-function flt_mission_colonize($fleet_row)
+function flt_mission_colonize($fleet_row, &$source_user, &$destination_planet)
 {
-  // --- This is universal part which should be moved to fleet manager
-  global $lang, $time_now;
+  global $lang;
 
-  if ($fleet_row['fleet_mess'] != 0)
-  {
-    if ($fleet_row['fleet_end_time'] <= $time_now)
-    {
-      return RestoreFleetToPlanet($fleet_row, true);
-    }
-    return CACHE_NOTHING;
-  }
-  else
-  {
-    if ($fleet_row['fleet_start_time'] > $time_now)
-    {
-      return CACHE_NOTHING;
-    }
-  }
+  $TargetAdress = sprintf ($lang['sys_adress_planet'], $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet']);
 
   $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
 
   $TheMessage = $lang['sys_colo_no_colonizer'];
   if($fleet_array[208] >= 1)
   {
-    $TargetAdress = sprintf ($lang['sys_adress_planet'], $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet']);
-
     $TheMessage = $lang['sys_colo_notfree'];
-    $iGalaxyPlace = doquery ("SELECT `id` FROM `{{planets}}` WHERE `galaxy` = '{$fleet_row['fleet_end_galaxy']}' AND `system` = '{$fleet_row['fleet_end_system']}' AND `planet` = '{$fleet_row['fleet_end_planet']}' AND `planet_type` = 1 LIMIT 1;", '', true);
-    if (!$iGalaxyPlace)
+    //$iGalaxyPlace = doquery ("SELECT `id` FROM `{{planets}}` WHERE `galaxy` = '{$fleet_row['fleet_end_galaxy']}' AND `system` = '{$fleet_row['fleet_end_system']}' AND `planet` = '{$fleet_row['fleet_end_planet']}' AND `planet_type` = 1 LIMIT 1;", '', true);
+    //$iGalaxyPlace = $destination_planet;
+    if (!$destination_planet)
     {
-      $iMaxColo = doquery("SELECT `colonisation_tech` + 1 as tech FROM `{{users}}` WHERE `id`='{$fleet_row['fleet_owner']}' LIMIT 1;", '', true);
-      $iMaxColo = $iMaxColo['tech'];
+      //doquery("SELECT `colonisation_tech` + 1 as tech FROM `{{users}}` WHERE `id`='{$fleet_row['fleet_owner']}' LIMIT 1;", '', true);
+      //$iMaxColo = $iMaxColo['tech'];
+      $iMaxColo = $source_user['colonisation_tech'] + 1;
 
       $iPlanetCount = doquery ("SELECT count(*) as `planet_count` FROM `{{planets}}` WHERE `id_owner` = '{$fleet_row['fleet_owner']}' AND `planet_type` = '1';", '', true);
       $iPlanetCount = $iPlanetCount['planet_count'];

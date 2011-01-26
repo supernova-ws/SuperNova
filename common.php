@@ -16,6 +16,7 @@ if($config->game_disable)
   if ($user['authlevel'] < 1)
   {
     message ( sys_bbcodeParse($config->game_disable_reason), $config->game_name );
+    ob_end_flush();
     die();
   }
   else
@@ -28,6 +29,8 @@ if($config->game_disable)
 if(!$user && !$allow_anonymous)
 {
   header('Location: login.php');
+  ob_end_flush();
+  die();
 }
 
 flt_t_flying_fleet_handler();
@@ -62,6 +65,11 @@ if ($user && is_array($user) && isset($user['id']) && !empty($user['id']))
   $planet_id = SetSelectedPlanet($user);
   doquery('START TRANSACTION;');
   $global_data = sys_o_get_updated($user, $planet_id, $time_now);
+  if(!$global_data['planet'])
+  {
+    doquery("UPDATE {{users}} SET `current_planet` = '{$user['id_planet']}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    $global_data = sys_o_get_updated($user, $user['id_planet'], $time_now);
+  }
   doquery('COMMIT;');
 
   if(!$global_data)
@@ -73,8 +81,10 @@ if ($user && is_array($user) && isset($user['id']) && !empty($user['id']))
   if(!($planetrow && isset($planetrow['id']) && $planetrow['id']))
   {
     header('Location: login.php');
+    ob_end_flush();
     die();
   }
+  ob_end_flush();
 
   $que = $global_data['que'];
 
@@ -85,5 +95,6 @@ if ($user && is_array($user) && isset($user['id']) && !empty($user['id']))
     sys_user_vacation($user);
   }
 }
+ob_end_flush();
 
 ?>

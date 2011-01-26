@@ -123,20 +123,6 @@ function flt_mission_spy($fleet_row)
 {
   global $time_now;
 
-  if($fleet_row['fleet_mess'] != 0)
-  {
-    if($fleet_row['fleet_end_time'] <= $time_now)
-    {
-      return RestoreFleetToPlanet($fleet_row, true);
-    }
-    return CACHE_NOTHING;
-  }
-
-  if ($fleet_row['fleet_start_time'] > $time_now)
-  {
-    return CACHE_NOTHING;
-  };
-
   $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
   if($fleet_array[210] >= 1)
   {

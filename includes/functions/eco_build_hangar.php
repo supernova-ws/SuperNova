@@ -133,7 +133,7 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
     {
       case 'cancelqueue':
         $d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User cancelling defense: ' . $CurrentPlanet['b_hangar_id'];
-        $debug->warning($d_m,'Canceling Hangar Que', 300);
+        $debug->warning($d_m,'Canceling Hangar Que', 301);
 
         $ElementQueue = explode(';', $CurrentPlanet['b_hangar_id']);
         foreach($ElementQueue as $ElementLine => $Element)
@@ -188,7 +188,7 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
       if ($Element == 409)
       {
         $d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User building Planet Defense: ' . dump($POST_fmenge);
-        $debug->warning($d_m,'Building Planet Defense', 300);
+        $debug->warning($d_m,'Building Planet Defense', 301);
       }
 
       // On verifie combien on sait faire de cet element au max

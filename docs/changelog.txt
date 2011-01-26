@@ -24,6 +24,7 @@
     возвращать ссылку на хэш И на ИД, что бы избежать дубликатов
 
 [+] Project "SuperNova.WS" Release 26
+[@] Версия БД увеличена до 26
 
 [*] Заставить миссии вовзращать измененные результаты
 
@@ -33,7 +34,7 @@
 ALTER TABLE engine=innodb;
 
 ALTER TABLE mybb_users AUTO_INCREMENT = 100;
-ALTER TABLE tablename AUTO_INCREMENT=0;
+ALTER TABLE tablename AUTO_INCREMENT = 0;
 But it won't work if you have entries in the table.
 
 If you want to re-number rows, and there are no dependencies, you can DROP  and
@@ -43,6 +44,28 @@ any gaps in the sequence.
 If you want to get rid of all the values in the table, and start the  increment
 at 0, then TRUNCATE will drop  and  recreate  the  table,  thus  resetting  the
 counter.
+
+[*] Переделать в использование кэша
+      case MT_EXPLORE:
+      case MT_RELOCATE:
+      case MT_TRANSPORT:
+      case MT_RECYCLE:
+      case MT_SPY:
+      case MT_ATTACK:
+      case MT_AKS:
+      case MT_DESTROY:
+
+2011-01-26 work v26a7
+[%] Устранена ошибка зацикливания перенаправлений при удалении колонии
+[%] Устранена ошибка неначисления опыта/уровня  при  атаках,  если  в  процессе
+    генерации рапорта произошел сбой
+[%] Изменена структура таблицы rw  что  бы  не  возникало  ошибки  при  вставке
+    рапорта с существующим rid
+[@] Обработка возврата флотов работает в теле flying_fleet_handler
+[@] MT_COLONIZE использует кэшированные значения
+[@] MT_HOLD возвращает флаги кэширования и не нуждается в кэше вообще
+[@] Переделаны  обработчики  миссий  для  возвращения  флагов   рекеширования:
+    MT_ATTACK, MT_AKS, MT_DESTROY
 
 2011-01-25 15:52 work v26a6
 [@] Переделаны  обработчики  миссий  для  возвращения  флагов   рекеширования:
