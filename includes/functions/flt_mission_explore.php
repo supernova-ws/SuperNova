@@ -8,9 +8,11 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-function flt_mission_explore($fleet_row)
+function flt_mission_explore($mission_data)
 {
   global $lang, $pricelist, $sn_data;
+
+  $fleet_row = $mission_data['fleet'];
 
   $FleetOwner = $fleet_row['fleet_owner'];
   $MessSender = $lang['sys_mess_qg'];

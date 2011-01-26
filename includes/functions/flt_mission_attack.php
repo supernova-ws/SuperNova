@@ -18,23 +18,28 @@
    * Do not edit this comment block
    */
 
-function flt_mission_attack($fleet_row, $source_user, $source_planet, $destination_user, $destination_planet)
+function flt_mission_attack($mission_data)
 {
   global $lang, $resource, $CombatCaps, $sn_data, $time_now;
 
-  $TargetUserID  = $destination_planet['id_owner'];
+  $fleet_row = $mission_data['fleet'];
+  $destination_user = $mission_data['dst_user'];
+  $destination_planet = $mission_data['dst_planet'];
 
-//  $destination_user = doquery("SELECT * FROM {{users}} WHERE `id` = '{$destination_planet['id_owner']}' LIMIT 1;", '', true);
-//  $destination_planet = sys_o_get_updated($destination_user, $destination_planet, $time_now);
-//  $destination_planet = $destination_planet['planet'];
+  $TargetUserID  = $destination_planet['id_owner'];
 
   $attackFleets = array();
   // ACS function: put all fleet into an array
-  if ($fleet_row['fleet_group'] != 0) {
+  if ($fleet_row['fleet_group'] != 0)
+  {
     $fleets = doquery('SELECT * FROM {{fleets}} WHERE fleet_group='.$fleet_row['fleet_group']);
-    while ($fleet = mysql_fetch_assoc($fleets))
+    while ($fleet = mysql_fetch_array($fleets))
+    {
       BE_attackFleetFill(&$attackFleets, $fleet);
-  } else {
+    }
+  }
+  else
+  {
     BE_attackFleetFill(&$attackFleets, $fleet_row);
   }
 
@@ -55,12 +60,18 @@ function flt_mission_attack($fleet_row, $source_user, $source_planet, $destinati
   );
 
   foreach($sn_data['groups']['combat'] as $combatUnitID)
+  {
     if ($destination_planet[$resource[$combatUnitID]] > 0)
+    {
       $defenseFleets[0]['def'][$combatUnitID] = $destination_planet[$resource[$combatUnitID]];
+    }
+  }
 
   $fleets = doquery('SELECT * FROM {{fleets}} WHERE `fleet_end_galaxy` = '. $fleet_row['fleet_end_galaxy'] .' AND `fleet_end_system` = '. $fleet_row['fleet_end_system'] .' AND `fleet_end_planet` = '. $fleet_row['fleet_end_planet'] . ' AND `fleet_end_type` = '. $fleet_row['fleet_end_type'] .' AND fleet_start_time<'.$time_now.' AND fleet_end_stay>='.$time_now);
   while ($fleet = mysql_fetch_assoc($fleets))
+  {
     BE_attackFleetFill(&$defenseFleets, $fleet, 'def');
+  }
 
   $start = microtime(true);
   $result = calculateAttack($attackFleets, $defenseFleets);
@@ -76,10 +87,13 @@ function flt_mission_attack($fleet_row, $source_user, $source_planet, $destinati
   $loot = BE_calculatePostAttacker($destination_planet, $attackFleets, $result, false);
 
   // Update fleets & planets
-  foreach ($attackFleets as $fleetID => $attacker) {
-    if ($attacker['totalCount'] > 0) {
+  foreach ($attackFleets as $fleetID => $attacker)
+  {
+    if ($attacker['totalCount'] > 0)
+    {
       $sqlQuery  = 'UPDATE {{table}} SET ';
-      if ($result['won'] == 1) {
+      if ($result['won'] == 1)
+      {
         $sqlQuery .= '`fleet_resource_metal` = `fleet_resource_metal` + '. ($attacker['loot']['metal'] + 0) .', ';
         $sqlQuery .= '`fleet_resource_crystal` = `fleet_resource_crystal` + '. ($attacker['loot']['crystal'] + 0) .', ';
         $sqlQuery .= '`fleet_resource_deuterium` = `fleet_resource_deuterium` + '. ($attacker['loot']['deuterium'] + 0) .', ';
@@ -91,28 +105,40 @@ function flt_mission_attack($fleet_row, $source_user, $source_planet, $destinati
     }
   }
 
-  if($fleet_row['mission_type']==MT_AKS AND $fleet_row['fleet_group']!=0){
+  if($fleet_row['mission_type']==MT_AKS AND $fleet_row['fleet_group']!=0)
+  {
     doquery("DELETE FROM {{aks}} WHERE id={$fleet_row['fleet_group']}");
   };
 
-  foreach ($defenseFleets as $fleetID => $defender) {
+  foreach ($defenseFleets as $fleetID => $defender)
+  {
     $fleetArray = '';
     $totalCount = 0;
 
-    if ($fleetID == 0) {
-      foreach ($defender['def'] as $element => $amount) {
+    if ($fleetID == 0)
+    {
+      foreach ($defender['def'] as $element => $amount)
+      {
         $fleetArray .= '`'.$resource[$element].'`='.$amount.', ';
       }
       doquery('UPDATE {{planets}} SET '.$fleetArray.' metal=metal-'.$loot['looted']['metal'].', crystal=crystal-'.$loot['looted']['crystal'].', deuterium=deuterium-'.$loot['looted']['deuterium'].' WHERE id='.$destination_planet['id']);
-    } else {
-      foreach ($defender['def'] as $element => $amount) {
+    }
+    else
+    {
+      foreach ($defender['def'] as $element => $amount)
+      {
         if ($amount)
+        {
           $fleetArray .= $element.','.$amount.';';
+        }
         $totalCount += $amount;
       }
-      if ($totalCount <= 0) {
+      if ($totalCount <= 0)
+      {
         doquery ("DELETE FROM `{{fleets}}` WHERE `fleet_id` = '{$fleetID}'");
-      } else {
+      }
+      else
+      {
         doquery("UPDATE {{fleets}} SET fleet_array = '{$fleetArray}', fleet_amount = {$totalCount}, fleet_mess = 1 WHERE fleet_id = {$fleetID}");
       }
     }
@@ -127,16 +153,20 @@ function flt_mission_attack($fleet_row, $source_user, $source_planet, $destinati
 
   $MoonChance = BE_calculateMoonChance($result);
 
-  if ( (mt_rand(1, 100) <= $MoonChance) && ($galenemyrow['id_luna'] == 0) ){
+  if ( (mt_rand(1, 100) <= $MoonChance) && ($galenemyrow['id_luna'] == 0) )
+  {
     $TargetPlanetName = uni_create_moon ( $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $TargetUserID, $MoonChance);
     $GottenMoon       = sprintf ($lang['sys_moonbuilt'], $TargetPlanetName, $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet']);
   }
 
   // Adjust number of raids made/win/loose and xpraid
   $QryUpdateRaidsCompteur = "UPDATE {{users}} SET `xpraid` = `xpraid` + 1, `raids` = `raids` + 1, ";
-  if ($result['won'] == 1) {
+  if ($result['won'] == 1)
+  {
     $QryUpdateRaidsCompteur .= "`raidswin` = `raidswin` + 1 ";
-  } elseif ($result['won'] == 2 || $result['won'] == 0) {
+  }
+  elseif ($result['won'] == 2 || $result['won'] == 0)
+  {
     $QryUpdateRaidsCompteur .= "`raidsloose` = `raidsloose` + 1 ";
   }
   $QryUpdateRaidsCompteur .= "WHERE id = '{$fleet_row['fleet_owner']}' LIMIT 1;";
@@ -168,11 +198,16 @@ function flt_mission_attack($fleet_row, $source_user, $source_planet, $destinati
   // Colorize report.
   $raport  = '<a href # OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
   $raport .= '<center>';
-  if ($result['won'] == 1) {
+  if ($result['won'] == 1)
+  {
     $raport .= '<font color=\'green\'>';
-  } elseif ($result['won'] == 0) {
+  }
+  elseif ($result['won'] == 0)
+  {
     $raport .= '<font color=\'orange\'>';
-  } elseif ($result['won'] == 2) {
+  }
+  elseif ($result['won'] == 2)
+  {
     $raport .= '<font color=\'red\'>';
   }
   $raport .= $lang['sys_mess_attack_report'] .' ['. $fleet_row['fleet_end_galaxy'] .':'. $fleet_row['fleet_end_system'] .':'. $fleet_row['fleet_end_planet'] .'] </font></a><br /><br />';
@@ -188,11 +223,16 @@ function flt_mission_attack($fleet_row, $source_user, $source_planet, $destinati
   // Coloriize report.
   $raport2  = '<a href # OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
   $raport2 .= '<center>';
-  if       ($result['won'] == 1) {
+  if       ($result['won'] == 1)
+  {
     $raport2 .= '<font color=\'green\'>';
-  } elseif ($result['won'] == 0) {
+  }
+  elseif ($result['won'] == 0)
+  {
     $raport2 .= '<font color=\'orange\'>';
-  } elseif ($result['won'] == 2) {
+  }
+  elseif ($result['won'] == 2)
+  {
     $raport2 .= '<font color=\'red\'>';
   }
   $raport2 .= $lang['sys_mess_attack_report'] .' ['. $fleet_row['fleet_end_galaxy'] .':'. $fleet_row['fleet_end_system'] .':'. $fleet_row['fleet_end_planet'] .'] </font></a><br /><br />';

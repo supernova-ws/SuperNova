@@ -10,9 +10,11 @@
 // ----------------------------------------------------------------------------------------------------------------
 // Mission Case 9: -> Coloniser
 //
-function flt_mission_colonize($fleet_row, &$source_user, &$destination_planet)
+function flt_mission_colonize($mission_data)
 {
   global $lang;
+
+  $fleet_row = &$mission_data['fleet'];
 
   $TargetAdress = sprintf ($lang['sys_adress_planet'], $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet']);
 
@@ -24,11 +26,11 @@ function flt_mission_colonize($fleet_row, &$source_user, &$destination_planet)
     $TheMessage = $lang['sys_colo_notfree'];
     //$iGalaxyPlace = doquery ("SELECT `id` FROM `{{planets}}` WHERE `galaxy` = '{$fleet_row['fleet_end_galaxy']}' AND `system` = '{$fleet_row['fleet_end_system']}' AND `planet` = '{$fleet_row['fleet_end_planet']}' AND `planet_type` = 1 LIMIT 1;", '', true);
     //$iGalaxyPlace = $destination_planet;
-    if (!$destination_planet)
+    if (!$mission_data['dst_planet'])
     {
       //doquery("SELECT `colonisation_tech` + 1 as tech FROM `{{users}}` WHERE `id`='{$fleet_row['fleet_owner']}' LIMIT 1;", '', true);
       //$iMaxColo = $iMaxColo['tech'];
-      $iMaxColo = $source_user['colonisation_tech'] + 1;
+      $iMaxColo = $mission_data['src_user']['colonisation_tech'] + 1;
 
       $iPlanetCount = doquery ("SELECT count(*) as `planet_count` FROM `{{planets}}` WHERE `id_owner` = '{$fleet_row['fleet_owner']}' AND `planet_type` = '1';", '', true);
       $iPlanetCount = $iPlanetCount['planet_count'];

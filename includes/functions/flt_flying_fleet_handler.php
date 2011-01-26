@@ -286,64 +286,56 @@ foreach($flt_event_cache as $index => $data)
       continue;
     }
 
+    $mission_data = array(
+      'fleet' => $flt_fleet_cache[$fleet_event['fleet_id']],
+      'src_user' => $flt_user_cache[$fleet_event['src_user_id']],
+      'src_planet' => $flt_planet_cache[$fleet_event['src_planet_hash']],
+      'dst_user' => $flt_user_cache[$fleet_event['dst_user_id']],
+      'dst_planet' =>$flt_planet_cache[$fleet_event['dst_planet_hash']]
+    );
+
     // Миссии должны возвращать измененные результаты, что бы второй раз не лезть в базу
     unset($mission_result);
     switch ($fleet_row['fleet_mission'])
     {
-      case MT_COLONIZE:
-        $mission_result = flt_mission_colonize(
-          $fleet_row,
-          $flt_user_cache[$fleet_event['src_user_id']],
-          $flt_planet_cache[$fleet_event['dst_planet_hash']]
-        );
-      break;
-
-      case MT_EXPLORE:
-        $mission_result = flt_mission_explore($fleet_row);
-      break;
-
-      case MT_RELOCATE:
-        $mission_result = flt_mission_relocate($fleet_row);
-      break;
-
-      case MT_TRANSPORT:
-        $mission_result = flt_mission_transport($fleet_row);
-      break;
-
-      case MT_RECYCLE:
-        $mission_result = flt_mission_recycle($fleet_row);
-      break;
-
-      case MT_SPY:
-        $mission_result = flt_mission_spy($fleet_row);
-      break;
-
-      case MT_HOLD:
-        $mission_result = flt_mission_hold($fleet_row);
-      break;
-
       // Для боевых атак нужно обновлять по САБу и по холду - таки надо возвращать данные из обработчика миссий!
       case MT_AKS:
       case MT_ATTACK:
-        $attack_result = flt_mission_attack(
-          $fleet_row,
-          $flt_user_cache[$fleet_event['src_user_id']],
-          $flt_planet_cache[$fleet_event['src_planet_hash']],
-          $flt_user_cache[$fleet_event['dst_user_id']],
-          $flt_planet_cache[$fleet_event['dst_planet_hash']]
-        );
+        $attack_result = flt_mission_attack($mission_data);
         $mission_result = CACHE_COMBAT;
       break;
 
       case MT_DESTROY:
-        $attack_result = flt_mission_destroy(
-          $fleet_row,
-          $flt_user_cache[$fleet_event['src_user_id']],
-          $flt_planet_cache[$fleet_event['src_planet_hash']],
-          $flt_user_cache[$fleet_event['dst_user_id']],
-          $flt_planet_cache[$fleet_event['dst_planet_hash']]
-        );
+        $attack_result = flt_mission_destroy($mission_data);
         $mission_result = CACHE_COMBAT;
+      break;
+
+      case MT_COLONIZE:
+        $mission_result = flt_mission_colonize($mission_data);
+      break;
+
+      case MT_EXPLORE:
+        $mission_result = flt_mission_explore($mission_data);
+      break;
+
+      case MT_RELOCATE:
+        $mission_result = flt_mission_relocate($mission_data);
+      break;
+
+      case MT_TRANSPORT:
+        $mission_result = flt_mission_transport($mission_data);
+      break;
+
+      case MT_RECYCLE:
+        $mission_result = flt_mission_recycle($mission_data);
+      break;
+
+      case MT_SPY:
+        $mission_result = flt_mission_spy($mission_data);
+      break;
+
+      case MT_HOLD:
+        $mission_result = flt_mission_hold($mission_data);
       break;
 
       case MT_MISSILE:  // Missiles !!
@@ -357,7 +349,6 @@ foreach($flt_event_cache as $index => $data)
     if($attack_result)
     {
       // Case for passed attack
-// pdump($attack_result);
       $attack_result = $attack_result['rw'][0];
       flt_unset_by_attack($attack_result['attackers'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache);
       flt_unset_by_attack($attack_result['defenders'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache);
