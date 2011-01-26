@@ -1,6 +1,7 @@
 <?php
 define('INSIDE'  , true);
 define('INSTALL' , false);
+define('IN_ADMIN', true);
 
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
