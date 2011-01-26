@@ -40,14 +40,6 @@ then ADD the id column, and it will assign numbers  automatically,  and  remove
 any gaps in the sequence.
 
 [*] Переделать в использование кэша
-      case MT_EXPLORE:
-      case MT_RELOCATE:
-      case MT_TRANSPORT:
-      case MT_RECYCLE:
-      case MT_SPY:
-      case MT_ATTACK:
-      case MT_AKS:
-      case MT_DESTROY:
 
 2011-01-26 01:45
 [#] В топбаре теперь при загрузке страницы показываются ресурсы с разделителями

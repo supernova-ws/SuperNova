@@ -8,8 +8,10 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-function flt_mission_transport($fleet_row)
+function flt_mission_transport($mission_data)
 {
+
+  $fleet_row = $mission_data['fleet'];
 /*
   // flt_mission_transport
   $Message = sprintf($lang['sys_tran_mess_back'], $StartName, GetStartAdressLink($fleet_row, ''));
@@ -17,15 +19,13 @@ function flt_mission_transport($fleet_row)
 */
 
   global $lang;
-
+/*
   $QryStartPlanet   = "SELECT * FROM {{planets}} WHERE ";
   $QryStartPlanet  .= "`galaxy` = '{$fleet_row['fleet_start_galaxy']}' AND ";
   $QryStartPlanet  .= "`system` = '{$fleet_row['fleet_start_system']}' AND ";
   $QryStartPlanet  .= "`planet` = '{$fleet_row['fleet_start_planet']}' AND ";
   $QryStartPlanet  .= "`planet_type` = '{$fleet_row['fleet_start_type']}' LIMIT 1;";
   $StartPlanet      = doquery( $QryStartPlanet, '', true);
-  $StartName        = $StartPlanet['name'];
-  $StartOwner       = $StartPlanet['id_owner'];
 
   $QryTargetPlanet  = "SELECT * FROM {{planets}} WHERE ";
   $QryTargetPlanet .= "`galaxy` = '{$fleet_row['fleet_end_galaxy']}' AND ";
@@ -33,6 +33,13 @@ function flt_mission_transport($fleet_row)
   $QryTargetPlanet .= "`planet` = '{$fleet_row['fleet_end_planet']}' AND ";
   $QryTargetPlanet .= "`planet_type` = '{$fleet_row['fleet_end_type']}' LIMIT 1;";
   $TargetPlanet     = doquery( $QryTargetPlanet, '', true);
+*/
+
+  $StartPlanet      = $mission_data['src_planet'];
+  $TargetPlanet     = $mission_data['dst_planet'];
+
+  $StartName        = $StartPlanet['name'];
+  $StartOwner       = $StartPlanet['id_owner'];
   $TargetName       = $TargetPlanet['name'];
   $TargetOwner      = $TargetPlanet['id_owner'];
 
