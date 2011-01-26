@@ -70,4 +70,5 @@ function MissionCaseDestruction($FleetRow) {
   SendSimpleMessage ( $FleetRow['fleet_owner'], '', $FleetRow['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_moon_destruction_report'], $message );
   SendSimpleMessage ( $TargetPlanet['id_owner'], '', $FleetRow['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_moon_destruction_report'], $message );
 }
+
 ?>

@@ -10,6 +10,8 @@ define('IN_PHPBB', true);
 define('INSTALL' , false);
 define('VERSION' , '2010-10-19-00-03');
 
+ob_start();
+
 set_magic_quotes_runtime(0);
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 

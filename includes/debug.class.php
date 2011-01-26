@@ -48,7 +48,7 @@ class debug
     die();
   }
 
-  function error($message, $title, $error_id = 0)
+  function error($message, $title, $error_id = 500)
   {
     global $config;
 
@@ -103,6 +103,7 @@ class debug
     $error_text  = $message;
     $error_text = mysql_real_escape_string($error_text);
 
+    mysql_query("ROLLBACK;");
     mysql_query("INSERT INTO `{$dbsettings['prefix']}errors`
       SET
         `error_sender` = '{$user['id']}',
@@ -129,7 +130,7 @@ class debug
     }
   }
 
-  function warning($message, $title = "System Message", $log_type = 0)
+  function warning($message, $title = "System Message", $log_type = 300)
   {
     global $link, $user, $phpEx, $ugamela_root_path;
     include("{$ugamela_root_path}config.{$phpEx}");

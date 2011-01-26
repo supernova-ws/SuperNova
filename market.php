@@ -302,7 +302,7 @@ switch($mode)
           if($newrow[$resID] < $resCount)
           {
             $intError = 4;
-            $debug->warning('Trying to use bug in s/h market', 'S/H Ship Market', 300);
+            $debug->warning('Trying to use bug in s/h market', 'S/H Ship Market', 301);
             break;
           }
         }

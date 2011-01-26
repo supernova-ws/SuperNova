@@ -10,26 +10,11 @@
 
 function flt_mission_explore($fleet_row)
 {
-  global $lang, $pricelist, $sn_data, $time_now;
+  global $lang, $pricelist, $sn_data;
 
   $FleetOwner = $fleet_row['fleet_owner'];
   $MessSender = $lang['sys_mess_qg'];
   $MessTitle  = $lang['sys_expe_report'];
-
-  if($fleet_row['fleet_mess'] != 0)
-  {
-    if($fleet_row['fleet_end_time'] <= $time_now)
-    {
-      SendSimpleMessage ( $FleetOwner, '', $fleet_row['fleet_end_time'], 15, $MessSender, $MessTitle, $lang['sys_expe_back_home'] );
-      return RestoreFleetToPlanet($fleet_row, true);
-    }
-    return CACHE_NOTHING;
-  }
-
-  if ($fleet_row['fleet_end_stay'] > $time_now)
-  {
-    return CACHE_NOTHING;
-  };
 
   // La Flotte vient de finir son exploration
   // Table de ratio de points par type de vaisseau

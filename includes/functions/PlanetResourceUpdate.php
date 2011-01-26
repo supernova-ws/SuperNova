@@ -25,7 +25,6 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   global $sn_data;
 
   $suffix = $simulation ? '' : 'FOR UPDATE';
-
   if(is_array($planet))
   {
     if(!(isset($planet['id']) && $planet['id']) || !$simulation)
@@ -70,7 +69,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
         $incCount = min($incCount, max(0, $store_free));
 
         if($planet[$resName]<0){
-          $GLOBALS['debug']->warning("Player ID {$user['id']} have negative resources on ID {$planet['id']}.{$planet['planet_type']} [{$planet['galaxy']}:{$planet['system']}:{$planet['planet']}]. Difference {$planet[$resName]} of {$resName}", 'Negative Resources', 500);
+          $GLOBALS['debug']->warning("Player ID {$user['id']} have negative resources on ID {$planet['id']}.{$planet['planet_type']} [{$planet['galaxy']}:{$planet['system']}:{$planet['planet']}]. Difference {$planet[$resName]} of {$resName}", 'Negative Resources', 501);
         }
         $Caps['planet'][$resName] += $incCount;
         $Caps['planet'][$resName.'_perhour'] = $Caps['real'][$resName.'_perhour'];

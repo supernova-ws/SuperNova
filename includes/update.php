@@ -413,7 +413,21 @@ switch(intval($config->db_version))
   doquery('COMMIT;');
   $new_version = 25;
 
-// Add index on `planet` for `id_owner`
+
+
+  case 25:
+    upd_log_version_update();
+
+    upd_alter_table('rw', array(
+      "DROP COLUMN `a_zestrzelona`",
+      "DROP INDEX `rid`",
+      "ADD COLUMN `report_id` bigint(11) NOT NULL AUTO_INCREMENT FIRST",
+      "ADD PRIMARY KEY (`report_id`)",
+      "ADD INDEX `rid` (`rid`)"
+    ), !$update_tables['rw']['report_id']);
+
+  doquery('COMMIT;');
+//  $new_version = 26;
 
 };
 upd_log_message('Upgrade complete.');
@@ -428,7 +442,7 @@ else
   upd_log_message("DB version didn't changed from {$config->db_version}");
 }
 
-//if ( $user['authlevel'] >= 3 )
+if ( $user['authlevel'] >= 3 )
 {
   print(str_replace("\r\n", '<br>', $upd_log));
 }
