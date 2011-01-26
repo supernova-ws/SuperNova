@@ -413,8 +413,6 @@ switch(intval($config->db_version))
   doquery('COMMIT;');
   $new_version = 25;
 
-
-
   case 25:
     upd_log_version_update();
 
@@ -426,8 +424,47 @@ switch(intval($config->db_version))
       "ADD INDEX `rid` (`rid`)"
     ), !$update_tables['rw']['report_id']);
 
+    if($update_tables['errors'])
+    {
+      upd_add_more_time(300);
+      mysql_query("CREATE TABLE {$config->db_prefix}logs_backup AS (SELECT * FROM logs);");
+
+      $GLOBALS['sys_log_disabled'] = true;
+      upd_alter_table('logs', array(
+        "DROP COLUMN `log_id`",
+        "ADD COLUMN `log_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Human-readable record timestamp' FIRST",
+        "ADD COLUMN `log_username` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'Username' AFTER `log_timestamp`",
+        "MODIFY COLUMN `log_title` VARCHAR(64) NOT NULL DEFAULT 'Log entry' COMMENT 'Short description' AFTER `log_username`",
+        "MODIFY COLUMN `log_page` VARCHAR(512) NOT NULL DEFAULT '' COMMENT 'Page that makes entry to log' AFTER `log_text`",
+        "CHANGE COLUMN `log_type` `log_code` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `log_page`",
+        "MODIFY COLUMN `log_sender` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'User ID which make log record' AFTER `log_code`",
+        "MODIFY COLUMN `log_time` INT(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Machine-readable timestamp' AFTER `log_sender`",
+        "ADD COLUMN `log_dump` TEXT NOT NULL DEFAULT '' COMMENT 'Machine-readable dump of variables' AFTER `log_time`",
+        "ADD INDEX `log_username` (`log_username`)",
+        "ADD INDEX `log_time` (`log_time`)",
+        "ADD INDEX `log_sender` (`log_sender`)",
+        "ADD INDEX `log_code` (`log_code`)",
+        "ADD INDEX `log_page` (`log_page`)",
+        "CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci"
+      ));
+      $GLOBALS['sys_log_disabled'] = false;
+
+      doquery('DELETE FROM `{{logs}}` WHERE `log_code` = 303;');
+
+      upd_do_query('INSERT INTO `{{logs}}` (`log_code`, `log_sender`, `log_title`, `log_text`, `log_page`, `log_time`) SELECT 500, `error_sender`, `error_type`, `error_text`, `error_page`, `error_time` FROM `{{errors}}`;');
+      upd_alter_table('errors', "RENAME TO {$config->db_prefix}errors_backup");
+
+      upd_alter_table('logs', 'ORDER BY log_time');
+      upd_alter_table('logs', array(
+        "ADD COLUMN `log_id` SERIAL",
+        "ADD PRIMARY KEY (`log_id`)"
+      ));
+      upd_do_query('UPDATE `{{logs}}` SET `log_timestamp` = FROM_UNIXTIME(`log_time`);');
+      upd_do_query('UPDATE `{{logs}}` AS l LEFT JOIN `{{users}}` AS u ON u.id = l.log_sender SET l.log_username = u.username WHERE l.log_username IS NOT NULL;');
+    }
+
   doquery('COMMIT;');
-//  $new_version = 26;
+  $new_version = 26;
 
 };
 upd_log_message('Upgrade complete.');
@@ -449,8 +486,6 @@ if ( $user['authlevel'] >= 3 )
 
 function upd_do_query($query)
 {
-  global $config;
-
   upd_add_more_time();
   upd_log_message("Performing query '{$query}'");
 
@@ -501,27 +536,21 @@ function upd_check_key($key, $default_value, $condition = false)
 
 function upd_log_version_update()
 {
-  global $new_version;
-
   doquery('START TRANSACTION;');
   upd_add_more_time();
-  upd_log_message("Detected outdated version {$new_version}. Upgrading...");
+  upd_log_message("Detected outdated version {$GLOBALS['new_version']}. Upgrading...");
 }
 
-function upd_add_more_time()
+function upd_add_more_time($time = 120)
 {
-  global $config, $time_now;
-
-  $config->db_saveItem('var_db_update_end', $time_now + 60);
-  set_time_limit(60);
+  $GLOBALS['config']->db_saveItem('var_db_update_end', $GLOBALS['time_now'] + $time);
+  set_time_limit($time);
 }
 
 function upd_log_message($message)
 {
-  global $upd_log, $debug;
-
-  $upd_log .= "{$message}\r\n";
-  $debug->warning($message, 'Database Update', 103);
+  $GLOBALS['upd_log'] .= "{$message}\r\n";
+  $GLOBALS['debug']->warning($message, 'Database Update', 103);
 }
 
 ?>

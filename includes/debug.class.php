@@ -2,6 +2,11 @@
 /*
  * debug.class.php ::  Clase Debug, maneja reporte de eventos
  *
+ * V4.0 copyright 2010-2011 by Gorlum for http://supernova.ws
+ *  [!] Merged `errors` to `logs`
+ *  [+] Now debugger can work with database detached. All messages would be dumped to page
+ *  [+] Now `logs` has both human-readable and machine-readable fields
+ *
  * V3.0 copyright 2010 by Gorlum for http://supernova.ws
  *  [+] Full rewrtie & optimize
  *  [*] Now there is fallback procedure if no $link to db detected
@@ -48,8 +53,10 @@ class debug
     die();
   }
 
-  function error($message, $title, $error_id = 500)
+  function error($message = 'There is a error on page', $title = 'SQL Error', $error_code = 500)
   {
+    mysql_query("ROLLBACK;");
+
     global $config;
 
     if($config->debug == 1)
@@ -58,7 +65,7 @@ class debug
       echo "<table>{$this->log}</table>";
     }
 
-    global $link, $user, $ugamela_root_path, $phpEx, $planetrow, $sys_stop_log_hit;
+    global $link, $ugamela_root_path, $phpEx, $sys_stop_log_hit;
 
     require("{$ugamela_root_path}config.{$phpEx}");
 
@@ -76,64 +83,68 @@ class debug
 
     $fatal_error = 'Fatal error: cannot write to `errors` table. Please contact Administration...';
 
-    $error_backtrace = debug_backtrace();
-    unset($error_backtrace[0]);
-    $error_backtrace = dump($error_backtrace, 'Error backtrace');
-    $error_backtrace .= "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>\r\n";
-//    if($_GET)
-    {
-      $error_backtrace .= dump($_GET, '$_GET') . "\r\n";
-    }
-//    if($_POST)
-    {
-      $error_backtrace .= dump($_POST, '$_POST') . "\r\n";
-    }
-//    if($_COOKIES)
-    {
-      $error_backtrace .= dump($_COOKIE, '$_COOKIE') . "\r\n";
-    }
-//    if($_SESSION)
-    {
-      $error_backtrace .= dump($_SESSION, '$_SESSION') . "\r\n";
-    }
-    $error_backtrace .= dump($user, '$user') . "\r\n";
-    $error_backtrace .= dump($planetrow, '$planetrow') . "\r\n";
-    $error_backtrace = mysql_real_escape_string($error_backtrace);
+    $error_backtrace['backtrace'] = debug_backtrace();
+    unset($error_backtrace['backtrace'][0]);
+    $error_backtrace['query_log'] = "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>\r\n";
+    $error_backtrace['user'] = $GLOBALS['user'];
+    $error_backtrace['planetrow'] = $GLOBALS['planetrow'];
+    $error_backtrace['$_GET'] = $_GET;
+    $error_backtrace['$_POST'] = $_POST;
+    $error_backtrace['$_COOKIES'] = $_COOKIES;
+    $error_backtrace['$_SESSION'] = $_SESSION;
+    $error_backtrace['$_SERVER'] = $_SERVER;
 
-    $error_text  = $message;
-    $error_text = mysql_real_escape_string($error_text);
+    $error_text = mysql_real_escape_string($message);
 
-    mysql_query("ROLLBACK;");
-    mysql_query("INSERT INTO `{$dbsettings['prefix']}errors`
-      SET
-        `error_sender` = '{$user['id']}',
-        `error_time` = '".time()."',
-        `error_type` = '{$title}' ,
-        `error_text` = '{$error_text}' ,
-        `error_page` = '".mysql_real_escape_string($_SERVER['HTTP_REFERER'])."',
-        `error_backtrace` = '{$error_backtrace}'
-      ;") or die($fatal_error);
-
-    $q = mysql_fetch_array(mysql_query("SELECT max(error_id) AS rows FROM {$dbsettings['prefix']}errors;"))
-      or die($fatal_error);
-
-    $message = "Пожалуйста свяжитесь с админом, если ошибка повториться. Ошибка №: <b>{$q['rows']}</b>";
-
-    $sys_stop_log_hit = true;
-    if (!function_exists('message'))
+    if(!$GLOBALS['sys_log_disabled'])
     {
-      die($message);
+      mysql_query("INSERT INTO `{$dbsettings['prefix']}logs`
+        SET
+          `log_sender` = '{$GLOBALS['user']['id']}',
+          `log_time` = '".time()."',
+          `log_code` = '{$error_code}' ,
+          `log_title` = '{$title}' ,
+          `log_text` = '{$error_text}' ,
+          `log_page` = '".mysql_real_escape_string($_SERVER['HTTP_REFERER'])."',
+          `log_dump` = '" . mysql_real_escape_string(serialize($error_backtrace)) . "'
+        ;") or die($fatal_error);
+
+      $q = mysql_fetch_array(mysql_query("SELECT max(log_id) AS rows FROM {$dbsettings['prefix']}logs;"))
+        or die($fatal_error);
+
+      $message = "Пожалуйста свяжитесь с админом, если ошибка повторится. Ошибка №: <b>{$q['rows']}</b>";
+
+      $sys_stop_log_hit = true;
+      $GLOBALS['sys_log_disabled'] = true;
+      if (!function_exists('message'))
+      {
+        die($message);
+      }
+      else
+      {
+        message($message, 'Ошибка', $dest, 0, false);
+      }
     }
     else
     {
-      message($message, 'Ошибка', $dest, 0, false);
+      ob_start();
+      print("<hr>User ID {$GLOBALS['user']['id']} raised error code {$error_code} titled '{$title}' with text '{$error_text}' on page {$_SERVER['HTTP_REFERER']}");
+
+      foreach($error_backtrace as $name => $value)
+      {
+        print('<hr>');
+        pdump($value, $name);
+      }
+      ob_end_flush();
+      die();
     }
   }
 
-  function warning($message, $title = "System Message", $log_type = 300)
+  function warning($message, $title = 'System Message', $log_code = 300)
   {
     global $link, $user, $phpEx, $ugamela_root_path;
-    include("{$ugamela_root_path}config.{$phpEx}");
+
+    require("{$ugamela_root_path}config.{$phpEx}");
 
     if(!$link)
     {
@@ -142,14 +153,24 @@ class debug
       mysql_select_db($dbsettings['name']);
     }
 
-    $query = "INSERT INTO `{{table}}` SET
-      `log_time` = '".time()."' ,
-      `log_type` = '{$log_type}',
-      `log_sender` = '{$user['id']}' ,
-      `log_title` = '{$title}' ,
-      `log_text` = '".mysql_real_escape_string($message)."' ,
-      `log_page` = '".mysql_real_escape_string($_SERVER['HTTP_REFERER'])."';";
-    $sqlquery = mysql_query(str_replace('{{table}}', "{$dbsettings['prefix']}logs", $query));
+    if(!$GLOBALS['sys_log_disabled'])
+    {
+      $query = "INSERT INTO `{{table}}` SET
+        `log_time` = '".time()."' ,
+        `log_code` = '{$log_code}',
+        `log_sender` = '{$user['id']}' ,
+        `log_username` = '{$user['username']}' ,
+        `log_title` = '{$title}' ,
+        `log_text` = '".mysql_real_escape_string($message)."' ,
+        `log_page` = '".mysql_real_escape_string($_SERVER['HTTP_REFERER'])."';";
+      $sqlquery = mysql_query(str_replace('{{table}}', "{$dbsettings['prefix']}logs", $query));
+    }
+    else
+    {
+      ob_start();
+      print("<hr>User ID {$GLOBALS['user']['id']} made log entry with code {$log_code} titled '{$title}' with text '{$message}' on page {$_SERVER['HTTP_REFERER']}");
+      ob_end_flush();
+    }
   }
 }
 

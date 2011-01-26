@@ -15,8 +15,8 @@ if ( !defined('INSIDE') )
   die('Hacking attempt');
 }
 
-define('DB_VERSION', 25);
-define('SN_VERSION', '26a8');
+define('DB_VERSION', 26);
+define('SN_VERSION', '26b');
 
 define('GAMEURL', "http://{$_SERVER['HTTP_HOST']}/");
 
