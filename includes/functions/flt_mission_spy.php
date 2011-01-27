@@ -130,18 +130,15 @@ function flt_mission_spy($mission_data)
   if($fleet_array[210] >= 1)
   {
     $target_user_row   = $mission_data['dst_user'];
-    $spying_user_row   = $mission_data['src_user'];
-
     $target_planet_row = $mission_data['dst_planet'];
-    $spying_planet_row = $mission_data['src_planet'];
+    $TargetSpyLvl      = mrc_modify_value($target_user_row, $target_planet_row, MRC_SPY, GetSpyLevel($target_user_row));
 
-    $target_user_id    = $fleet_row['fleet_target_owner'];
+    $spying_user_row   = $mission_data['src_user'];
+    $spying_planet_row = $mission_data['src_planet'];
+    $CurrentSpyLvl     = mrc_modify_value($spying_user_row, $spying_planet_row, MRC_SPY, GetSpyLevel($spying_user_row));
 
     $spy_probes = $fleet_array[210];
-    $TargetSpyLvl  = GetSpyLevel($target_user_row);
-    $CurrentSpyLvl = GetSpyLevel($spying_user_row);
-
-    $spy_diff = $CurrentSpyLvl + sqrt($spy_probes) - 1 - $TargetSpyLvl;
+    $spy_diff   = $CurrentSpyLvl + sqrt($spy_probes) - 1 - $TargetSpyLvl;
 
     global $lang, $sn_data;
 
@@ -216,6 +213,7 @@ function flt_mission_spy($mission_data)
     $TargetMessage .= $lang['sys_mess_spy_seen_at'] ." ". $target_planet_row['name'];
     $TargetMessage .= " [". $target_planet_row["galaxy"] .":". $target_planet_row["system"] .":". $target_planet_row["planet"] ."].";
 
+    $target_user_id = $fleet_row['fleet_target_owner'];
     SendSimpleMessage ( $target_user_id, '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $TargetMessage);
 
     if ($spy_detected)

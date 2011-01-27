@@ -232,6 +232,15 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
     return;
   }
 
+  if($fleet_row['fleet_mission'] == MT_RECYCLE || $fleet_row['fleet_mission'] == MT_COLONIZE)
+  {
+    $fleet_row['fleet_end_type'] = PT_PLANET;
+  }
+  elseif($fleet_row['fleet_mission'] == MT_DESTROY)
+  {
+    $fleet_row['fleet_end_type'] = PT_MOON;
+  }
+
   $source = flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
 
   if($fleet_row['fleet_mission'] != MT_EXPLORE)
