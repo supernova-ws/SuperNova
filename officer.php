@@ -91,7 +91,9 @@ if ($mode == 2) {
         doquery( "UPDATE {{users}} SET `{$resource[$Selected]}` = `{$resource[$Selected]}` + 1 WHERE `id` = '{$user['id']}';");
         rpg_points_change($user['id'], -($darkmater_cost), "Spent for officer {$lang['tech'][$Selected]} ID {$Selected}");
         $Message = $lang['off_recruited'];
-        Header("Location: officer.php");
+        header("Location: officer.php");
+        ob_end_flush();
+        die();
       } elseif ( $Result == -1 ) {
         $Message = $lang['off_maxed_out'];
       } elseif ( $Result == 0 ) {
@@ -103,7 +105,7 @@ if ($mode == 2) {
   {
     $Message = $lang['off_no_points'];
   }
-  message($lang['off_no_points'], $lang['tech'][600], "officer.{$phpEx}", 5);
+  message($Message, $lang['tech'][600], "officer.{$phpEx}", 5);
 }
 else
 {
