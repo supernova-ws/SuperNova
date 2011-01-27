@@ -152,6 +152,7 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
       // $source = flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
     } // Otherwise fleet still not arriving and will not in this timeslot
     $skip_fleet_caching = true;
+    //return;
   }
   else // Following code is almost useless - it should never trigger. But let it be
   { // Fleet is heading to destination or on timed mission (MT_HOLD or MT_EXPLORE)
@@ -160,12 +161,14 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
     if ($fleet_row['fleet_start_time'] > $time_now)
     { // Fleet didn't arrive to destination yet. Skipping
       $skip_fleet_caching = true;
+      //return;
     }
 
     // Does fleet has timed mission? If yes - does it complete?
     if ($fleet_row['fleet_end_stay'] && $fleet_row['fleet_end_stay'] > $time_now)
     {
       $skip_fleet_caching = true;
+      //return;
     }
   }
 
@@ -194,7 +197,7 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
     $destination = false;
   }
 
-  if(($cache_mode & CACHE_EVENT) && !$skip_fleet_caching)
+  if(($cache_mode & CACHE_EVENT == CACHE_EVENT) && !$skip_fleet_caching)
   {
     $flt_event_cache[] = array(
       'fleet_id'        => $fleet_row['fleet_id'],
@@ -287,12 +290,15 @@ foreach($flt_event_cache as $index => $data)
       continue;
     }
 
+    // flt_update_cache
+    // Проверяет, что бы все указанные в эвенте объекты (флоты, планеты, юзера)
+    // были в кэше. Если их там нет - перезапрашивает данные из БД
     $mission_data = array(
-      'fleet' => $flt_fleet_cache[$fleet_event['fleet_id']],
-      'src_user' => $flt_user_cache[$fleet_event['src_user_id']],
+      'fleet'      => $flt_fleet_cache[$fleet_event['fleet_id']],
+      'src_user'   => $flt_user_cache[$fleet_event['src_user_id']],
       'src_planet' => $flt_planet_cache[$fleet_event['src_planet_hash']],
-      'dst_user' => $flt_user_cache[$fleet_event['dst_user_id']],
-      'dst_planet' =>$flt_planet_cache[$fleet_event['dst_planet_hash']]
+      'dst_user'   => $flt_user_cache[$fleet_event['dst_user_id']],
+      'dst_planet' => $flt_planet_cache[$fleet_event['dst_planet_hash']]
     );
 
     // Миссии должны возвращать измененные результаты, что бы второй раз не лезть в базу
@@ -356,24 +362,24 @@ foreach($flt_event_cache as $index => $data)
     else
     {
       // Unsetting data that we broken in mission handler
-      if($mission_result & CACHE_FLEET)
+      if($mission_result & CACHE_FLEET == CACHE_FLEET)
       {
         unset($flt_fleet_cache[$fleet_event['fleet_id']]);
         $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = {$fleet_event['fleet_id']} LIMIT 1 FOR UPDATE;", '', true);
       }
-      if($mission_result & CACHE_USER_SRC)
+      if($mission_result & CACHE_USER_SRC == CACHE_USER_SRC)
       {
         unset($flt_user_cache[$fleet_event['src_user_id']]);
       }
-      if($mission_result & CACHE_USER_DST)
+      if($mission_result & CACHE_USER_DST == CACHE_USER_DST)
       {
         unset($flt_user_cache[$fleet_event['dst_user_id']]);
       }
-      if($mission_result & CACHE_PLANET_SRC)
+      if($mission_result & CACHE_PLANET_SRC == CACHE_PLANET_SRC)
       {
         unset($flt_planet_cache[$fleet_event['src_planet_hash']]);
       }
-      if($mission_result & CACHE_PLANET_DST)
+      if($mission_result & CACHE_PLANET_DST == CACHE_PLANET_DST)
       {
         unset($flt_planet_cache[$fleet_event['dst_planet_hash']]);
       }
