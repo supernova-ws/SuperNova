@@ -85,7 +85,6 @@ else
     ob_end_flush();
     die();
   }
-  ob_end_flush();
 
   $que = $global_data['que'];
 
@@ -96,6 +95,5 @@ else
     sys_user_vacation($user);
   }
 }
-ob_end_flush();
 
 ?>
