@@ -17,6 +17,8 @@ $only_resources = true - store only resources
                 = false - store fleet too
 returns         = bitmask for recaching
 */
+
+// ------------------------------------------------------------------
 function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false)
 {
   if(!is_array($fleet_row))
@@ -72,6 +74,20 @@ function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = fals
  * Modified by MadnessRed to support ACS
  */
 
+// ------------------------------------------------------------------
+function flt_flyingFleetsSort($a, $b)
+{
+  return $a['fleet_time'] == $b['fleet_time'] ? 0 : ($a['fleet_time'] > $b['fleet_time'] ? 1 : -1);
+}
+
+// ------------------------------------------------------------------
+function flt_planet_hash($planet_vector, $prefix = '')
+{
+  $type_prefix = $prefix ? $prefix : 'planet_';
+  return 'g' . $planet_vector["{$prefix}galaxy"] . 's' . $planet_vector["{$prefix}system"] . 'p' . $planet_vector["{$prefix}planet"] . 't' . $planet_vector["{$type_prefix}type"];
+}
+
+// ------------------------------------------------------------------
 function flt_unset_by_attack($attack_result, &$flt_user_cache, &$flt_planet_cache, &$flt_fleet_cache, &$flt_event_cache)
 {
   foreach($attack_result as $combat_fleet_id => $combat_record)
@@ -86,20 +102,31 @@ function flt_unset_by_attack($attack_result, &$flt_user_cache, &$flt_planet_cach
   }
 }
 
-function flt_flyingFleetsSort($a, $b)
-{
-  return $a['fleet_time'] == $b['fleet_time'] ? 0 : ($a['fleet_time'] > $b['fleet_time'] ? 1 : -1);
-}
-
-function flt_planet_hash($planet_vector, $prefix = '')
-{
-  $type_prefix = $prefix ? $prefix : 'planet_';
-  return 'g' . $planet_vector["{$prefix}galaxy"] . 's' . $planet_vector["{$prefix}system"] . 'p' . $planet_vector["{$prefix}planet"] . 't' . $planet_vector["{$type_prefix}type"];
-}
-
+// ------------------------------------------------------------------
 function flt_cache_user($flt_user_row, &$flt_user_cache)
 {
-  $flt_user_row_id = isset($flt_user_row['id']) ? $flt_user_row['id'] : 0;
+  if(!$flt_user_row)
+  {
+    return;
+  }
+
+  if(!is_array($flt_user_row))
+  {
+    $flt_user_row_id = $flt_user_row;
+    // Checking if it is cached
+    if(isset($flt_user_row[$flt_user_row_id]))
+    {
+      $flt_user_row = $flt_user_row[$flt_user_row_id];
+    }
+    else
+    {
+      $flt_user_row = doquery("SELECT * FROM {{users}} WHERE `id` = '{$flt_user_row_id}' LIMIT 1 FOR UPDATE;", '', true);
+    }
+  }
+  else
+  {
+    $flt_user_row_id = $flt_user_row['id'];
+  }
 
   if(!isset($flt_user_cache[$flt_user_row_id]))
   {
@@ -109,87 +136,106 @@ function flt_cache_user($flt_user_row, &$flt_user_cache)
   return $flt_user_row_id;
 }
 
+// ------------------------------------------------------------------
 function flt_cache_planet($planet_vector, &$flt_user_cache, &$flt_planet_cache)
 {
-  $planet_hash = flt_planet_hash($planet_vector); //"g{$planet_vector['galaxy']}s{$planet_vector['system']}p{$planet_vector['planet']}t{$planet_vector['planet_type']}";
-  if(!isset($flt_planet_cache[$planet_hash]))
-  {
-//!!!!!!!!!!!!! ќ“ Ћё„»“№ —»ћ”Ћя÷»ё !!!!!!!!!!!!!!!!!!!!!!!!!!
-    $global_data = sys_o_get_updated(false, $planet_vector, $GLOBALS['time_now']);
-    $flt_planet_cache[$planet_hash] = $global_data['planet'];
-
-    flt_cache_user($global_data['user'], &$flt_user_cache);
-  }
-
-  return array('planet_hash' => $planet_hash, 'user_id' => $flt_planet_cache[$planet_hash]['id_owner']);
-}
-
-function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt_fleet_cache, &$flt_event_cache, $cache_mode)
-{
-  $time_now = $GLOBALS['time_now'];
-
-  // Dumping invalid fleet records
-  // By design it should never triggered but let it be
-  if(!$fleet_row || !is_array($fleet_row) || !$fleet_row['fleet_id'])
+  if(!$planet_vector)
   {
     return;
   }
 
-  $skip_fleet_caching = false;
-  // Checking - is there event for selected fleet in this time slot?
+  $planet_hash = flt_planet_hash($planet_vector); //"g{$planet_vector['galaxy']}s{$planet_vector['system']}p{$planet_vector['planet']}t{$planet_vector['planet_type']}";
+  if(!isset($flt_planet_cache[$planet_hash]))
+  {
+    $global_data = sys_o_get_updated(false, $planet_vector, $GLOBALS['time_now']);
+    $flt_planet_cache[$planet_hash] = $global_data['planet'];
+
+    if($flt_planet_cache[$planet_hash])
+    {
+      $flt_user_row_id = flt_cache_user($global_data['user'], &$flt_user_cache);
+    }
+    else
+    {
+      $flt_user_row_id = 0;
+    }
+  }
+  else
+  {
+    $flt_user_row_id = flt_cache_user($flt_planet_cache[$planet_hash]['id_owner'], &$flt_user_cache);
+  }
+
+  return array('planet_hash' => $planet_hash, 'user_id' => $flt_user_row_id);
+}
+
+// ------------------------------------------------------------------
+function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt_fleet_cache, &$flt_event_cache, $cache_mode)
+{
+  $time_now = $GLOBALS['time_now'];
+
+  // Empty $fleet_row - no chance to know anything about it. By design it should never triggered but let it be
+  if(!$fleet_row)
+  {
+    return;
+  }
+
+  // $fleet_row is not an array - may be ONLY fleet ID. Getting $fleet_row from DB by ID
+  if (!is_array($fleet_row))
+  {
+    $fleet_row_id = $fleet_row;
+    // Checking if it is cached
+    if(isset($flt_fleet_cache[$fleet_row_id]))
+    {
+      $fleet_row = $flt_fleet_cache[$fleet_row_id];
+    }
+    else
+    {
+      $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = '{$fleet_row_id}' LIMIT 1 FOR UPDATE;", '', true);
+    }
+  }
+  else
+  {
+    $fleet_row_id = $fleet_row['id'];
+  }
+
+  if(!isset($flt_fleet_cache[$fleet_row_id]))
+  {
+    $flt_fleet_cache[$fleet_row_id] = $fleet_row;
+  }
+
+  // $fleet_row is false - not existing DB record
+  if(!$fleet_row)
+  {
+    return;
+  }
 
   if ($fleet_row['fleet_mess'] != 0)
   { // Fleet is returning to source
     if ($fleet_row['fleet_end_time'] <= $time_now)
     { // Fleet is arrived
-      // Removing fleet source planet record from cache
-      unset($flt_planet_cache[flt_planet_hash($fleet_row, 'fleet_start_')]);
-
       // Restoring fleet to planet
       RestoreFleetToPlanet($fleet_row, true);
 
-      // Recaching changed data
-      // $source = flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
-    } // Otherwise fleet still not arriving and will not in this timeslot
-    $skip_fleet_caching = true;
-    //return;
-  }
-  else // Following code is almost useless - it should never trigger. But let it be
-  { // Fleet is heading to destination or on timed mission (MT_HOLD or MT_EXPLORE)
+      // Tagging record for fleet as not existing in DB
+      $flt_fleet_cache[$fleet_row['fleet_id']] = false;
 
-    // Does fleet even arrive to destination?
-    if ($fleet_row['fleet_start_time'] > $time_now)
-    { // Fleet didn't arrive to destination yet. Skipping
-      $skip_fleet_caching = true;
-      //return;
-    }
-
-    // Does fleet has timed mission? If yes - does it complete?
-    if ($fleet_row['fleet_end_stay'] && $fleet_row['fleet_end_stay'] > $time_now)
-    {
-      $skip_fleet_caching = true;
-      //return;
+      // Removing fleet source planet record from cache
+      unset($flt_planet_cache[flt_planet_hash($fleet_row, 'fleet_start_')]);
+      return;
+      // Changed data will be recached later
     }
   }
-
-  if(!$skip_fleet_caching && !isset($flt_fleet_cache[$fleet_row['fleet_id']]))
+  // Otherwise fleet still not arriving and will not processed in this timeslot
+  // Following code is almost useless - it should never trigger. But let it be just in case
+  //      Does fleet even arrive to destination?     OR  Does fleet has timed mission (MT_HOLD/MT_EXPLORE)? If yes - does it complete?
+  elseif ($fleet_row['fleet_start_time'] > $time_now || ($fleet_row['fleet_end_stay'] && $fleet_row['fleet_end_stay'] > $time_now))
   {
-    $flt_fleet_cache[$fleet_row['fleet_id']] = $fleet_row;
+    return;
   }
 
   $source = flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
 
   if($fleet_row['fleet_mission'] != MT_EXPLORE)
   {
-    if($fleet_row['fleet_mission'] == MT_RECYCLE || $fleet_row['fleet_mission'] == MT_COLONIZE)
-    {
-      $fleet_row['fleet_end_type'] = PT_PLANET;
-    }
-    elseif($fleet_row['fleet_mission'] == MT_DESTROY)
-    {
-      $fleet_row['fleet_end_type'] = PT_MOON;
-    }
-
     $destination = flt_cache_planet(array('galaxy' => $fleet_row['fleet_end_galaxy'], 'system' => $fleet_row['fleet_end_system'], 'planet' => $fleet_row['fleet_end_planet'], 'planet_type' => $fleet_row['fleet_end_type']), &$flt_user_cache, &$flt_planet_cache);
   }
   else
@@ -197,19 +243,20 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
     $destination = false;
   }
 
-  if(($cache_mode & CACHE_EVENT == CACHE_EVENT) && !$skip_fleet_caching)
+  if($cache_mode & CACHE_EVENT == CACHE_EVENT)
   {
     $flt_event_cache[] = array(
       'fleet_id'        => $fleet_row['fleet_id'],
       'fleet_time'      => $fleet_row['fleet_time'],
-      'src_planet_hash' => $source ? $source['planet_hash'] : 0,
+      'src_planet_hash' => $source ? $source['planet_hash'] : '',
       'src_user_id'     => $source ? $source['user_id'] : 0,
-      'dst_planet_hash' => $destination ? $destination['planet_hash'] : 0,
+      'dst_planet_hash' => $destination ? $destination['planet_hash'] : '',
       'dst_user_id'     => $destination ? $destination['user_id'] : 0
     );
   }
 }
 
+// ------------------------------------------------------------------
 function flt_t_flying_fleet_handler()
 {
   // SAFE FALLBACK TO OLD-STYLE HANDLER
@@ -284,15 +331,16 @@ foreach($flt_event_cache as $index => $data)
   unset($attack_result);
   foreach($flt_event_cache as $fleet_event_id => $fleet_event)
   {
+    // Checking data presence in cache
+    flt_cache_fleet($fleet_event['fleet_id'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_ALL ^ CACHE_EVENT);
+
     $fleet_row = $flt_fleet_cache[$fleet_event['fleet_id']];
+    // There is no fleet for this event. It can be for fleets destroyed in battle, lost in expedition etc
     if(!$fleet_row)
     {
       continue;
     }
 
-    // flt_update_cache
-    // ѕровер€ет, что бы все указанные в эвенте объекты (флоты, планеты, юзера)
-    // были в кэше. ≈сли их там нет - перезапрашивает данные из Ѕƒ
     $mission_data = array(
       'fleet'      => $flt_fleet_cache[$fleet_event['fleet_id']],
       'src_user'   => $flt_user_cache[$fleet_event['src_user_id']],
@@ -365,7 +413,7 @@ foreach($flt_event_cache as $index => $data)
       if($mission_result & CACHE_FLEET == CACHE_FLEET)
       {
         unset($flt_fleet_cache[$fleet_event['fleet_id']]);
-        $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = {$fleet_event['fleet_id']} LIMIT 1 FOR UPDATE;", '', true);
+//        $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = {$fleet_event['fleet_id']} LIMIT 1 FOR UPDATE;", '', true);
       }
       if($mission_result & CACHE_USER_SRC == CACHE_USER_SRC)
       {
@@ -384,14 +432,15 @@ foreach($flt_event_cache as $index => $data)
         unset($flt_planet_cache[$fleet_event['dst_planet_hash']]);
       }
 
-      // Reloading fresh data from DB
-      flt_cache_fleet($fleet_row, $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_COMBAT);
+//      // Reloading fresh data from DB
+//      flt_cache_fleet($fleet_row, $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_COMBAT);
     }
 
   }
   doquery('COMMIT;');
 }
 
+// ------------------------------------------------------------------
 function flt_fallback($flt_event_cache)
 {
   foreach($flt_event_cache as $fleet_event)
