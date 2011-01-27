@@ -135,6 +135,7 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
     return;
   }
 
+  $skip_fleet_caching = false;
   // Checking - is there event for selected fleet in this time slot?
 
   if ($fleet_row['fleet_mess'] != 0)
@@ -148,9 +149,9 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
       RestoreFleetToPlanet($fleet_row, true);
 
       // Recaching changed data
-      $source = flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
+      // $source = flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
     } // Otherwise fleet still not arriving and will not in this timeslot
-    return;
+    $skip_fleet_caching = true;
   }
   else // Following code is almost useless - it should never trigger. But let it be
   { // Fleet is heading to destination or on timed mission (MT_HOLD or MT_EXPLORE)
@@ -158,17 +159,17 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
     // Does fleet even arrive to destination?
     if ($fleet_row['fleet_start_time'] > $time_now)
     { // Fleet didn't arrive to destination yet. Skipping
-      return;
+      $skip_fleet_caching = true;
     }
 
     // Does fleet has timed mission? If yes - does it complete?
     if ($fleet_row['fleet_end_stay'] && $fleet_row['fleet_end_stay'] > $time_now)
     {
-      return;
+      $skip_fleet_caching = true;
     }
   }
 
-  if(!isset($flt_fleet_cache[$fleet_row['fleet_id']]))
+  if(!$skip_fleet_caching && !isset($flt_fleet_cache[$fleet_row['fleet_id']]))
   {
     $flt_fleet_cache[$fleet_row['fleet_id']] = $fleet_row;
   }
@@ -193,7 +194,7 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
     $destination = false;
   }
 
-  if($cache_mode & CACHE_EVENT)
+  if(($cache_mode & CACHE_EVENT) && !$skip_fleet_caching)
   {
     $flt_event_cache[] = array(
       'fleet_id'        => $fleet_row['fleet_id'],
@@ -278,7 +279,7 @@ foreach($flt_event_cache as $index => $data)
 //die();
 
   unset($attack_result);
-  foreach($flt_event_cache as $fleet_event)
+  foreach($flt_event_cache as $fleet_event_id => $fleet_event)
   {
     $fleet_row = $flt_fleet_cache[$fleet_event['fleet_id']];
     if(!$fleet_row)
@@ -345,7 +346,6 @@ foreach($flt_event_cache as $index => $data)
         doquery("DELETE FROM `{{fleets}}` WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
       break;
     }
-
     if($attack_result)
     {
       // Case for passed attack
