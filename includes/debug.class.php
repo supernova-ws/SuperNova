@@ -101,6 +101,7 @@ class debug
       mysql_query("INSERT INTO `{$dbsettings['prefix']}logs`
         SET
           `log_sender` = '{$GLOBALS['user']['id']}',
+          `log_username` = '{$GLOBALS['user']['username']}',
           `log_time` = '".time()."',
           `log_code` = '{$error_code}' ,
           `log_title` = '{$title}' ,
@@ -167,9 +168,7 @@ class debug
     }
     else
     {
-      ob_start();
       print("<hr>User ID {$GLOBALS['user']['id']} made log entry with code {$log_code} titled '{$title}' with text '{$message}' on page {$_SERVER['HTTP_REFERER']}");
-      ob_end_flush();
     }
   }
 }
