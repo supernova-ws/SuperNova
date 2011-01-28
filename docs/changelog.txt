@@ -51,8 +51,81 @@
 
 [+] Project "SuperNova.WS" Release 26
 
+Привет нашел небольшой баг
+Вобщем заходишь на чистую луну можно построить  только  одну  постройку  быстро
+кликаешь по зеленому плюсику например фабрики роботов ставится  в  очередь  5ур
+фабрики возвращаешься назад  на  прошлую  страницу  опять  кликаешь  быстро  по
+плюсику ставится еще 5 ур любой постройки больше не получилось  но  и  то  10ур
+фабрики роботов с 1 полем! В обычной  ситуации  в  начале  застройки  может  не
+понадобится но когда луна уже прокачана может пригодится минимум  10  полей  на
+халяву.
+
+
+
+$flt_user_row = integer 1
+$flt_planet_row = integer 5
+$flt_fleet_cache = integer 1
+$flt_event_cache = integer 4
+time_now = integer 1296222682
+array(6)
+        fleet_id => string(4) 6052
+        fleet_time => string(10) 1296222416
+        src_planet_hash => string(11) g3s100p10t1
+        src_user_id => string(2) 26
+        dst_planet_hash => string(9) g1s12p5t1
+        dst_user_id => string(2) 26
+fleet_mission = string(1) 3
+fleet_start_time = string(10) 1296222416
+fleet_end_time = string(10) 1296222733
+fleet_mess = string(1) 1
+
+array(6)
+        fleet_id => string(4) 6056
+        fleet_time => string(10) 1296222416
+        src_planet_hash => string(11) g3s150p10t1
+        src_user_id => string(2) 26
+        dst_planet_hash => string(9) g1s12p5t1
+        dst_user_id => string(2) 26
+fleet_mission = string(1) 3
+fleet_start_time = string(10) 1296222416
+fleet_end_time = string(10) 1296222733
+fleet_mess = string(1) 1
+
+array(6)
+        fleet_id => string(4) 6053
+        fleet_time => string(10) 1296222487
+        src_planet_hash => string(11) g4s100p10t1
+        src_user_id => string(2) 26
+        dst_planet_hash => string(9) g1s12p5t1
+        dst_user_id => string(2) 26
+fleet_mission = string(1) 3
+fleet_start_time = string(10) 1296222487
+fleet_end_time = string(10) 1296222875
+fleet_mess = string(1) 1
+
+array(6)
+        fleet_id => string(4) 6054
+        fleet_time => string(10) 1296222548
+        src_planet_hash => string(11) g5s100p10t1
+        src_user_id => string(2) 26
+        dst_planet_hash => string(9) g1s12p5t1
+        dst_user_id => string(2) 26
+fleet_mission = string(1) 3
+fleet_start_time = string(10) 1296222548
+fleet_end_time = string(10) 1296222997
+fleet_mess = string(1) 1
+
+[*] Похожен при отрицательной энергии начинает капать отрицательная добыча  при
+определенных условиях! Проверить.
+
 -------------------------------------------------------------------------------
 Текущий билд
+
+2011-01-28 21:43 work v26b2
+[%] Исправлена ошибка  невозможности  отправить  переработчики  через  страницу
+    "Флот"
+[%] Флоты: Исправлена ошибка в кэшере,  приводившая  к  многократной  обработки
+    одного и того же флота
 
 2011-01-28 00:08 work
 [%] Spy officer now working correctly

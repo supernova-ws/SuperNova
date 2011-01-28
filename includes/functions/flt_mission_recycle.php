@@ -33,6 +33,8 @@ function flt_mission_recycle($mission_data)
   $QrySelectGalaxy .= "LIMIT 1;";
   $TargetGalaxy     = doquery( $QrySelectGalaxy, 'planets', true);
 */
+
+pdump('recycle');
   $TargetGalaxy = $mission_data['dst_planet'];
 
   $FleetRecord         = explode(";", $fleet_row['fleet_array']);

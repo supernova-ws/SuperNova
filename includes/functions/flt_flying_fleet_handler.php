@@ -175,7 +175,7 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
   // Empty $fleet_row - no chance to know anything about it. By design it should never triggered but let it be
   if(!$fleet_row)
   {
-    return;
+    return false;
   }
 
   // $fleet_row is not an array - may be ONLY fleet ID. Getting $fleet_row from DB by ID
@@ -197,15 +197,11 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
     $fleet_row_id = $fleet_row['id'];
   }
 
-  if(!isset($flt_fleet_cache[$fleet_row_id]))
-  {
-    $flt_fleet_cache[$fleet_row_id] = $fleet_row;
-  }
-
   // $fleet_row is false - not existing DB record
   if(!$fleet_row)
   {
-    return;
+    $flt_fleet_cache[$fleet_row_id] = $fleet_row;
+    return false;
   }
 
   if ($fleet_row['fleet_mess'] != 0)
@@ -220,16 +216,21 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
 
       // Removing fleet source planet record from cache
       unset($flt_planet_cache[flt_planet_hash($fleet_row, 'fleet_start_')]);
-      return;
       // Changed data will be recached later
     }
+    return false;
   }
   // Otherwise fleet still not arriving and will not processed in this timeslot
   // Following code is almost useless - it should never trigger. But let it be just in case
   //      Does fleet even arrive to destination?     OR  Does fleet has timed mission (MT_HOLD/MT_EXPLORE)? If yes - does it complete?
   elseif ($fleet_row['fleet_start_time'] > $time_now || ($fleet_row['fleet_end_stay'] && $fleet_row['fleet_end_stay'] > $time_now))
   {
-    return;
+    return false;
+  }
+
+  if(!isset($flt_fleet_cache[$fleet_row_id]))
+  {
+    $flt_fleet_cache[$fleet_row_id] = $fleet_row;
   }
 
   if($fleet_row['fleet_mission'] == MT_RECYCLE || $fleet_row['fleet_mission'] == MT_COLONIZE)
@@ -263,6 +264,8 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
       'dst_user_id'     => $destination ? $destination['user_id'] : 0
     );
   }
+
+  return true;
 }
 
 // ------------------------------------------------------------------
@@ -324,7 +327,6 @@ function flt_t_flying_fleet_handler()
     doquery("UNLOCK TABLES");
     return;
   }
-/*
 pdump(count($flt_user_cache), '$flt_user_row');
 pdump(count($flt_planet_cache), '$flt_planet_row');
 pdump(count($flt_fleet_cache), '$flt_fleet_cache');
@@ -336,12 +338,26 @@ foreach($flt_event_cache as $index => $data)
 }
 */
 //die();
-
+pdump($GLOBALS['time_now'], 'time_now');
   unset($attack_result);
   foreach($flt_event_cache as $fleet_event_id => $fleet_event)
   {
+    pdump($fleet_event);
+
     // Checking data presence in cache
     flt_cache_fleet($fleet_event['fleet_id'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_ALL ^ CACHE_EVENT);
+/*
+    if (!flt_cache_fleet($fleet_event['fleet_id'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_ALL ^ CACHE_EVENT))
+    {
+      continue;
+    };
+*/
+
+//    pdump($flt_fleet_cache[$fleet_event['fleet_id']], 'fleet');
+    pdump($flt_fleet_cache[$fleet_event['fleet_id']]['fleet_mission'], 'fleet_mission');
+    pdump($flt_fleet_cache[$fleet_event['fleet_id']]['fleet_start_time'], 'fleet_start_time');
+    pdump($flt_fleet_cache[$fleet_event['fleet_id']]['fleet_end_time'], 'fleet_end_time');
+    pdump($flt_fleet_cache[$fleet_event['fleet_id']]['fleet_mess'], 'fleet_mess');
 
     $fleet_row = $flt_fleet_cache[$fleet_event['fleet_id']];
     // There is no fleet for this event. It can be for fleets destroyed in battle, lost in expedition etc
