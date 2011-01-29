@@ -10,6 +10,18 @@
 function flt_mission_recycle($mission_data)
 {
   $fleet_row = $mission_data['fleet'];
+  $TargetGalaxy = $mission_data['dst_planet'];
+
+  if(!$fleet_row)
+  {
+    return CACHE_NOTHING;
+  }
+
+  if(!$TargetGalaxy || !is_array($TargetGalaxy))
+  {
+    doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
+    return CACHE_FLEET;
+  }
 
   global $pricelist, $lang;
 
@@ -34,8 +46,6 @@ function flt_mission_recycle($mission_data)
   $TargetGalaxy     = doquery( $QrySelectGalaxy, 'planets', true);
 */
 
-pdump('recycle');
-  $TargetGalaxy = $mission_data['dst_planet'];
 
   $FleetRecord         = explode(";", $fleet_row['fleet_array']);
   $RecyclerCapacity    = 0;
