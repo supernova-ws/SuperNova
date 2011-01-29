@@ -470,6 +470,8 @@ switch(intval($config->db_version))
   doquery('COMMIT;');
   $new_version = 26;
 
+  // alter table game_counter add index `i_time_id` (`time`, `id`);
+
 };
 upd_log_message('Upgrade complete.');
 
