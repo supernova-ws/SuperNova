@@ -22,7 +22,7 @@ function flt_mission_destroy($mission_data)
     return $result;
   }
 
-  $fleet_row = $mission_data['fleet'];
+  $fleet_row          = $mission_data['fleet'];
   $destination_planet = $mission_data['dst_planet'];
 
   if(!$destination_planet || !is_array($destination_planet))

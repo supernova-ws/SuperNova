@@ -12,8 +12,8 @@
 //
 function flt_mission_colonize($mission_data)
 {
-  $fleet_row = &$mission_data['fleet'];
-  $src_user_row = $mission_data['src_user'];
+  $fleet_row          = $mission_data['fleet'];
+  $src_user_row       = $mission_data['src_user'];
   $destination_planet = $mission_data['dst_planet'];
 
   global $lang;
