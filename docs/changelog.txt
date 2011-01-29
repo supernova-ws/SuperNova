@@ -49,7 +49,6 @@
 Интерфейс
 [*] Добавить окно "последние сообщения чата на (дата обновления)" через XCache
 
-[+] Project "SuperNova.WS" Release 26
 
 Привет нашел небольшой баг
 Вобщем заходишь на чистую луну можно построить  только  одну  постройку  быстро
@@ -61,65 +60,19 @@
 халяву.
 
 
-
-$flt_user_row = integer 1
-$flt_planet_row = integer 5
-$flt_fleet_cache = integer 1
-$flt_event_cache = integer 4
-time_now = integer 1296222682
-array(6)
-        fleet_id => string(4) 6052
-        fleet_time => string(10) 1296222416
-        src_planet_hash => string(11) g3s100p10t1
-        src_user_id => string(2) 26
-        dst_planet_hash => string(9) g1s12p5t1
-        dst_user_id => string(2) 26
-fleet_mission = string(1) 3
-fleet_start_time = string(10) 1296222416
-fleet_end_time = string(10) 1296222733
-fleet_mess = string(1) 1
-
-array(6)
-        fleet_id => string(4) 6056
-        fleet_time => string(10) 1296222416
-        src_planet_hash => string(11) g3s150p10t1
-        src_user_id => string(2) 26
-        dst_planet_hash => string(9) g1s12p5t1
-        dst_user_id => string(2) 26
-fleet_mission = string(1) 3
-fleet_start_time = string(10) 1296222416
-fleet_end_time = string(10) 1296222733
-fleet_mess = string(1) 1
-
-array(6)
-        fleet_id => string(4) 6053
-        fleet_time => string(10) 1296222487
-        src_planet_hash => string(11) g4s100p10t1
-        src_user_id => string(2) 26
-        dst_planet_hash => string(9) g1s12p5t1
-        dst_user_id => string(2) 26
-fleet_mission = string(1) 3
-fleet_start_time = string(10) 1296222487
-fleet_end_time = string(10) 1296222875
-fleet_mess = string(1) 1
-
-array(6)
-        fleet_id => string(4) 6054
-        fleet_time => string(10) 1296222548
-        src_planet_hash => string(11) g5s100p10t1
-        src_user_id => string(2) 26
-        dst_planet_hash => string(9) g1s12p5t1
-        dst_user_id => string(2) 26
-fleet_mission = string(1) 3
-fleet_start_time = string(10) 1296222548
-fleet_end_time = string(10) 1296222997
-fleet_mess = string(1) 1
-
 [*] Похожен при отрицательной энергии начинает капать отрицательная добыча  при
 определенных условиях! Проверить.
 
 -------------------------------------------------------------------------------
+
+[+] Project "SuperNova.WS" Release 26
+[*] Похоже где-то дыра - похоже, можно менять таблицу Planets
+
 Текущий билд
+
+2011-01-29 10:25
+[%] Закрыта дыра, позволяющая поставить  в  очередь  больше  зданий,  чем  есть
+    свободного места на планете
 
 2011-01-28 21:43 work
 [@] Вселенная: Добавлена обработка исключительной ситуации, когда у планеты нет
