@@ -22,8 +22,8 @@ function flt_mission_attack($mission_data)
 {
   global $lang, $resource, $CombatCaps, $sn_data, $time_now;
 
-  $fleet_row = $mission_data['fleet'];
-  $destination_user = $mission_data['dst_user'];
+  $fleet_row          = $mission_data['fleet'];
+  $destination_user   = $mission_data['dst_user'];
   $destination_planet = $mission_data['dst_planet'];
 
   if(!$fleet_row)

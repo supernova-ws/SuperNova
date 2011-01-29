@@ -9,15 +9,15 @@
 
 function flt_mission_recycle($mission_data)
 {
-  $fleet_row = $mission_data['fleet'];
-  $TargetGalaxy = $mission_data['dst_planet'];
+  $fleet_row          = $mission_data['fleet'];
+  $destination_planet = $mission_data['dst_planet'];
 
   if(!$fleet_row)
   {
     return CACHE_NOTHING;
   }
 
-  if(!$TargetGalaxy || !is_array($TargetGalaxy))
+  if(!$destination_planet || !is_array($destination_planet))
   {
     doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
     return CACHE_FLEET;
@@ -43,7 +43,7 @@ function flt_mission_recycle($mission_data)
   $QrySelectGalaxy .= "`planet` = '{$fleet_row['fleet_end_planet']}' AND ";
   $QrySelectGalaxy .= "`planet_type` = 1 ";
   $QrySelectGalaxy .= "LIMIT 1;";
-  $TargetGalaxy     = doquery( $QrySelectGalaxy, 'planets', true);
+  $destination_planet     = doquery( $QrySelectGalaxy, 'planets', true);
 */
 
 
@@ -67,43 +67,43 @@ function flt_mission_recycle($mission_data)
     $RecyclerCapacity -= ($IncomingFleetGoods - $OtherFleetCapacity);
   }
 
-  if (($TargetGalaxy["debris_metal"] + $TargetGalaxy["debris_crystal"]) <= $RecyclerCapacity)
+  if (($destination_planet["debris_metal"] + $destination_planet["debris_crystal"]) <= $RecyclerCapacity)
   {
-    $RecycledGoods["metal"]   = $TargetGalaxy["debris_metal"];
-    $RecycledGoods["crystal"] = $TargetGalaxy["debris_crystal"];
+    $RecycledGoods["metal"]   = $destination_planet["debris_metal"];
+    $RecycledGoods["crystal"] = $destination_planet["debris_crystal"];
   }
   else
   {
-    if (($TargetGalaxy["debris_metal"]   > $RecyclerCapacity / 2) AND
-      ($TargetGalaxy["debris_crystal"] > $RecyclerCapacity / 2))
+    if (($destination_planet["debris_metal"]   > $RecyclerCapacity / 2) AND
+      ($destination_planet["debris_crystal"] > $RecyclerCapacity / 2))
       {
       $RecycledGoods["metal"]   = $RecyclerCapacity / 2;
       $RecycledGoods["crystal"] = $RecyclerCapacity / 2;
     }
     else
     {
-      if ($TargetGalaxy["debris_metal"] > $TargetGalaxy["debris_crystal"])
+      if ($destination_planet["debris_metal"] > $destination_planet["debris_crystal"])
       {
-        $RecycledGoods["crystal"] = $TargetGalaxy["debris_crystal"];
-        if ($TargetGalaxy["debris_metal"] > ($RecyclerCapacity - $RecycledGoods["crystal"]))
+        $RecycledGoods["crystal"] = $destination_planet["debris_crystal"];
+        if ($destination_planet["debris_metal"] > ($RecyclerCapacity - $RecycledGoods["crystal"]))
         {
           $RecycledGoods["metal"] = $RecyclerCapacity - $RecycledGoods["crystal"];
         }
         else
         {
-          $RecycledGoods["metal"] = $TargetGalaxy["debris_metal"];
+          $RecycledGoods["metal"] = $destination_planet["debris_metal"];
         }
       }
       else
       {
-        $RecycledGoods["metal"] = $TargetGalaxy["debris_metal"];
-        if ($TargetGalaxy["debris_crystal"] > ($RecyclerCapacity - $RecycledGoods["metal"]))
+        $RecycledGoods["metal"] = $destination_planet["debris_metal"];
+        if ($destination_planet["debris_crystal"] > ($RecyclerCapacity - $RecycledGoods["metal"]))
         {
           $RecycledGoods["crystal"] = $RecyclerCapacity - $RecycledGoods["metal"];
         }
         else
         {
-          $RecycledGoods["crystal"] = $TargetGalaxy["debris_crystal"];
+          $RecycledGoods["crystal"] = $destination_planet["debris_crystal"];
         }
       }
     }

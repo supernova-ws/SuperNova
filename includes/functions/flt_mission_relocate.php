@@ -14,10 +14,10 @@
 //
 function flt_mission_relocate($mission_data)
 {
-  $fleet_row    = $mission_data['fleet'];
-  $TargetPlanet = $mission_data['dst_planet'];
+  $fleet_row          = $mission_data['fleet'];
+  $destination_planet = $mission_data['dst_planet'];
 
-  if(!$TargetGalaxy || !is_array($TargetGalaxy))
+  if(!$destination_planet || !is_array($destination_planet))
   {
     doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
     return CACHE_FLEET;
@@ -39,7 +39,7 @@ function flt_mission_relocate($mission_data)
 
   global $lang;
 
-  $TargetUserID         = $TargetPlanet['id_owner'];
+  $TargetUserID         = $destination_planet['id_owner'];
 
   $TargetAdress         = sprintf ($lang['sys_adress_planet'], $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet']);
   $TargetAddedGoods     = sprintf ($lang['sys_stay_mess_goods'],
