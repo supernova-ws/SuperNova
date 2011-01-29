@@ -10,12 +10,11 @@
 
 function flt_mission_transport($mission_data)
 {
-  $fleet_row = $mission_data['fleet'];
+  $fleet_row          = $mission_data['fleet'];
+  $source_planet      = $mission_data['src_planet'];
+  $destination_planet = $mission_data['dst_planet'];
 
-  $StartPlanet      = $mission_data['src_planet'];
-  $TargetPlanet     = $mission_data['dst_planet'];
-
-  if(!$TargetPlanet || !is_array($TargetPlanet))
+  if(!$destination_planet || !is_array($destination_planet))
   {
     doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
     return CACHE_FLEET;
@@ -34,20 +33,20 @@ function flt_mission_transport($mission_data)
   $QryStartPlanet  .= "`system` = '{$fleet_row['fleet_start_system']}' AND ";
   $QryStartPlanet  .= "`planet` = '{$fleet_row['fleet_start_planet']}' AND ";
   $QryStartPlanet  .= "`planet_type` = '{$fleet_row['fleet_start_type']}' LIMIT 1;";
-  $StartPlanet      = doquery( $QryStartPlanet, '', true);
+  $source_planet      = doquery( $QryStartPlanet, '', true);
 
   $QryTargetPlanet  = "SELECT * FROM {{planets}} WHERE ";
   $QryTargetPlanet .= "`galaxy` = '{$fleet_row['fleet_end_galaxy']}' AND ";
   $QryTargetPlanet .= "`system` = '{$fleet_row['fleet_end_system']}' AND ";
   $QryTargetPlanet .= "`planet` = '{$fleet_row['fleet_end_planet']}' AND ";
   $QryTargetPlanet .= "`planet_type` = '{$fleet_row['fleet_end_type']}' LIMIT 1;";
-  $TargetPlanet     = doquery( $QryTargetPlanet, '', true);
+  $destination_planet     = doquery( $QryTargetPlanet, '', true);
 */
 
-  $StartName        = $StartPlanet['name'];
-  $StartOwner       = $StartPlanet['id_owner'];
-  $TargetName       = $TargetPlanet['name'];
-  $TargetOwner      = $TargetPlanet['id_owner'];
+  $StartName        = $source_planet['name'];
+  $StartOwner       = $source_planet['id_owner'];
+  $TargetName       = $destination_planet['name'];
+  $TargetOwner      = $destination_planet['id_owner'];
 
   $Message = sprintf( $lang['sys_tran_mess_owner'],
               $TargetName, GetTargetAdressLink($fleet_row, ''),
