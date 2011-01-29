@@ -10,8 +10,17 @@
 
 function flt_mission_transport($mission_data)
 {
-
   $fleet_row = $mission_data['fleet'];
+
+  $StartPlanet      = $mission_data['src_planet'];
+  $TargetPlanet     = $mission_data['dst_planet'];
+
+  if(!$TargetPlanet || !is_array($TargetPlanet))
+  {
+    doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
+    return CACHE_FLEET;
+  }
+
 /*
   // flt_mission_transport
   $Message = sprintf($lang['sys_tran_mess_back'], $StartName, GetStartAdressLink($fleet_row, ''));
@@ -34,9 +43,6 @@ function flt_mission_transport($mission_data)
   $QryTargetPlanet .= "`planet_type` = '{$fleet_row['fleet_end_type']}' LIMIT 1;";
   $TargetPlanet     = doquery( $QryTargetPlanet, '', true);
 */
-
-  $StartPlanet      = $mission_data['src_planet'];
-  $TargetPlanet     = $mission_data['dst_planet'];
 
   $StartName        = $StartPlanet['name'];
   $StartOwner       = $StartPlanet['id_owner'];

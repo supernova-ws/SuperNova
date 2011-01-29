@@ -327,10 +327,13 @@ function flt_t_flying_fleet_handler()
     doquery("UNLOCK TABLES");
     return;
   }
+/*
 pdump(count($flt_user_cache), '$flt_user_row');
 pdump(count($flt_planet_cache), '$flt_planet_row');
 pdump(count($flt_fleet_cache), '$flt_fleet_cache');
 pdump(count($flt_event_cache), '$flt_event_cache');
+pdump($GLOBALS['time_now'], 'time_now');
+
 /*
 foreach($flt_event_cache as $index => $data)
 {
@@ -338,26 +341,18 @@ foreach($flt_event_cache as $index => $data)
 }
 */
 //die();
-pdump($GLOBALS['time_now'], 'time_now');
   unset($attack_result);
   foreach($flt_event_cache as $fleet_event_id => $fleet_event)
   {
-    pdump($fleet_event);
+//    pdump($fleet_event);
 
     // Checking data presence in cache
     flt_cache_fleet($fleet_event['fleet_id'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_ALL ^ CACHE_EVENT);
-/*
-    if (!flt_cache_fleet($fleet_event['fleet_id'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_ALL ^ CACHE_EVENT))
-    {
-      continue;
-    };
-*/
 
-//    pdump($flt_fleet_cache[$fleet_event['fleet_id']], 'fleet');
-    pdump($flt_fleet_cache[$fleet_event['fleet_id']]['fleet_mission'], 'fleet_mission');
-    pdump($flt_fleet_cache[$fleet_event['fleet_id']]['fleet_start_time'], 'fleet_start_time');
-    pdump($flt_fleet_cache[$fleet_event['fleet_id']]['fleet_end_time'], 'fleet_end_time');
-    pdump($flt_fleet_cache[$fleet_event['fleet_id']]['fleet_mess'], 'fleet_mess');
+    //pdump($flt_fleet_cache[$fleet_event['fleet_id']]['fleet_mission'], 'fleet_mission');
+    //pdump($flt_fleet_cache[$fleet_event['fleet_id']]['fleet_start_time'], 'fleet_start_time');
+    //pdump($flt_fleet_cache[$fleet_event['fleet_id']]['fleet_end_time'], 'fleet_end_time');
+    //pdump($flt_fleet_cache[$fleet_event['fleet_id']]['fleet_mess'], 'fleet_mess');
 
     $fleet_row = $flt_fleet_cache[$fleet_event['fleet_id']];
     // There is no fleet for this event. It can be for fleets destroyed in battle, lost in expedition etc

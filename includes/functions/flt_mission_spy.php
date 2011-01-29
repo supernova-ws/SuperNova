@@ -125,16 +125,22 @@ function flt_mission_spy($mission_data)
   global $time_now;
 
   $fleet_row         = $mission_data['fleet'];
+  $target_user_row   = $mission_data['dst_user'];
+  $target_planet_row = $mission_data['dst_planet'];
+  $spying_user_row   = $mission_data['src_user'];
+  $spying_planet_row = $mission_data['src_planet'];
+
+  if(!$target_user_row || !$target_planet_row || !is_array($target_user_row) || !is_array($target_planet_row))
+  {
+    doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
+    return;
+  }
 
   $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
   if($fleet_array[210] >= 1)
   {
-    $target_user_row   = $mission_data['dst_user'];
-    $target_planet_row = $mission_data['dst_planet'];
     $TargetSpyLvl      = mrc_modify_value($target_user_row, $target_planet_row, MRC_SPY, GetSpyLevel($target_user_row));
 
-    $spying_user_row   = $mission_data['src_user'];
-    $spying_planet_row = $mission_data['src_planet'];
     $CurrentSpyLvl     = mrc_modify_value($spying_user_row, $spying_planet_row, MRC_SPY, GetSpyLevel($spying_user_row));
 
     $spy_probes = $fleet_array[210];

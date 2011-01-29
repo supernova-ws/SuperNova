@@ -26,6 +26,17 @@ function flt_mission_attack($mission_data)
   $destination_user = $mission_data['dst_user'];
   $destination_planet = $mission_data['dst_planet'];
 
+  if(!$fleet_row)
+  {
+    return;
+  }
+
+  if(!$destination_user || !$destination_planet || !is_array($destination_user) || !is_array($destination_planet))
+  {
+    doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
+    return;
+  }
+
   $TargetUserID  = $destination_planet['id_owner'];
 
   $attackFleets = array();

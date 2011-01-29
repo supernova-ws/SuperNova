@@ -22,9 +22,16 @@ function flt_mission_destroy($mission_data)
     return $result;
   }
 
-  global $lang;
-
+  $fleet_row = $mission_data['fleet'];
   $destination_planet = $mission_data['dst_planet'];
+
+  if(!$destination_planet || !is_array($destination_planet))
+  {
+    doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
+    return;
+  }
+
+  global $lang;
 
   $MoonSize      = $destination_planet['diameter'];
   $MoonName      = $destination_planet['name'];
@@ -57,7 +64,6 @@ function flt_mission_destroy($mission_data)
      }
   }
 
-  $fleet_row = $mission_data['fleet'];
 
   if ($MoonDestroyed == 1)
   {
