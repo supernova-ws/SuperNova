@@ -175,7 +175,11 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
     || eco_unit_busy($user, $planet, $que, $unit_id)
     || (
         $que_id == QUE_STRUCTURES
-        && max(0, eco_planet_fields_max($planet) - $planet['field_current'] - $que['amounts'][$que_id]) <= 0
+        && (
+             ($build_mode == BUILD_CREATE && max(0, eco_planet_fields_max($planet) - $planet['field_current'] - $que['amounts'][$que_id]) <= 0)
+             ||
+             ($build_mode == BUILD_DESTROY && eco_planet_fields_max($planet) >= $planet['field_current'] - $que['amounts'][$que_id])
+           )
        )
   )
   {
