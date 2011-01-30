@@ -36,17 +36,6 @@ function flt_mission_recycle($mission_data)
       SendSimpleMessage ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_end_time'], 4, $lang['sys_mess_spy_control'], $lang['sys_mess_fleetback'], $Message);
 */
 
-/*
-  $QrySelectGalaxy  = "SELECT * FROM `{{table}}` WHERE ";
-  $QrySelectGalaxy .= "`galaxy` = '{$fleet_row['fleet_end_galaxy']}' AND ";
-  $QrySelectGalaxy .= "`system` = '{$fleet_row['fleet_end_system']}' AND ";
-  $QrySelectGalaxy .= "`planet` = '{$fleet_row['fleet_end_planet']}' AND ";
-  $QrySelectGalaxy .= "`planet_type` = 1 ";
-  $QrySelectGalaxy .= "LIMIT 1;";
-  $destination_planet     = doquery( $QrySelectGalaxy, 'planets', true);
-*/
-
-
   $FleetRecord         = explode(";", $fleet_row['fleet_array']);
   $RecyclerCapacity    = 0;
   $OtherFleetCapacity  = 0;
