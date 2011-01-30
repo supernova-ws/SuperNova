@@ -170,6 +170,7 @@ function flt_cache_planet($planet_vector, &$flt_user_cache, &$flt_planet_cache)
 // ------------------------------------------------------------------
 function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt_fleet_cache, &$flt_event_cache, $cache_mode)
 {
+  global $sn_data;
   $time_now = $GLOBALS['time_now'];
 
   // Empty $fleet_row - no chance to know anything about it. By design it should never triggered but let it be
@@ -242,15 +243,25 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
     $fleet_row['fleet_end_type'] = PT_MOON;
   }
 
-  $source = flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
+  $mission_data = $sn_data['groups']['missions'][$fleet_row['fleet_mission']];
 
-  if($fleet_row['fleet_mission'] != MT_EXPLORE)
+// А здесь надо проверять, какие нужны данные и кэшировать только их
+  $source = array('planet_hash' => '', 'user_id' => 0);
+  if($mission_data['src_planet'] || $mission_data['src_user'])
+  {
+    $source = flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
+  }
+  else
+  {
+  }
+
+  $destination = array('planet_hash' => '', 'user_id' => 0);
+  if($fleet_row['fleet_mission'] != MT_EXPLORE && ($mission_data['dst_planet'] || $mission_data['dst_user']))
   {
     $destination = flt_cache_planet(array('galaxy' => $fleet_row['fleet_end_galaxy'], 'system' => $fleet_row['fleet_end_system'], 'planet' => $fleet_row['fleet_end_planet'], 'planet_type' => $fleet_row['fleet_end_type']), &$flt_user_cache, &$flt_planet_cache);
   }
   else
   {
-    $destination = false;
   }
 
   if($cache_mode & CACHE_EVENT == CACHE_EVENT)
@@ -258,10 +269,10 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
     $flt_event_cache[] = array(
       'fleet_id'        => $fleet_row['fleet_id'],
       'fleet_time'      => $fleet_row['fleet_time'],
-      'src_planet_hash' => $source ? $source['planet_hash'] : '',
-      'src_user_id'     => $source ? $source['user_id'] : 0,
-      'dst_planet_hash' => $destination ? $destination['planet_hash'] : '',
-      'dst_user_id'     => $destination ? $destination['user_id'] : 0
+      'src_planet_hash' => $source['planet_hash'] ? $source['planet_hash'] : '',
+      'src_user_id'     => $source['user_id'] ? $source['user_id'] : 0,
+      'dst_planet_hash' => $destination['planet_hash'] ? $destination['planet_hash'] : '',
+      'dst_user_id'     => $destination['user_id'] ? $destination['user_id'] : 0
     );
   }
 
@@ -271,6 +282,10 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
 // ------------------------------------------------------------------
 function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 {
+  $flt_update_mode = 0;
+  // 0 - old
+  // 1 - new
+
   global $time_now;
 
   /*
@@ -288,16 +303,28 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
     return;
   }
 
-  if($config->flt_lastUpdate)
+  switch($flt_update_mode)
   {
-    if($time_now - $config->flt_lastUpdate <= 15)
-    {
-      return;
-    }
-    else
-    {
-      $GLOBALS['debug']->error('Flying fleet handler is on timeout', 'FFH Error', 504);
-    }
+    case 0:
+      if($time_now - $config->flt_lastUpdate <= 4)
+      {
+        return;
+      }
+    break;
+
+    case 1:
+      if($config->flt_lastUpdate)
+      {
+        if($time_now - $config->flt_lastUpdate <= 15)
+        {
+          return;
+        }
+        else
+        {
+          $GLOBALS['debug']->error('Flying fleet handler is on timeout', 'FFH Error', 504);
+        }
+      }
+    break;
   }
 
   $config->flt_lastUpdate = $time_now;
@@ -454,7 +481,10 @@ die();
 
   }
   doquery('COMMIT;');
-  $config->db_saveItem('flt_lastUpdate', 0);
+  if($flt_update_mode == 1)
+  {
+    $config->db_saveItem('flt_lastUpdate', 0);
+  }
 }
 
 ?>

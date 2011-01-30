@@ -152,17 +152,18 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
   displayP($TopNav);
   displayP($page);
 
-  // Affichage du Debug si necessaire
-  if ($user['authlevel'] == 3 && $config->debug)
-  {
-    $debug->echo_log();
-  }
   echo '</center></div>';
 
   $std_footer = StdFooter();
   displayP($std_footer);
 
   sys_log_hit();
+
+  // Affichage du Debug si necessaire
+  if ($user['authlevel'] == 3 && $config->debug)
+  {
+    $debug->echo_log();
+  }
 
   if (isset($link))
   {
