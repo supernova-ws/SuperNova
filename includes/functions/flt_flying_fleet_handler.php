@@ -306,7 +306,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   switch($flt_update_mode)
   {
     case 0:
-      if($time_now - $config->flt_lastUpdate <= 4)
+      if($time_now - $config->flt_lastUpdate <= 8)
       {
         return;
       }
@@ -481,6 +481,7 @@ die();
 
   }
   doquery('COMMIT;');
+
   if($flt_update_mode == 1)
   {
     $config->db_saveItem('flt_lastUpdate', 0);

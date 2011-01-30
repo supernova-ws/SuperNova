@@ -256,33 +256,6 @@ switch ($mode)
       $list_planet_que = $UserPlanet['que'];
       $UserPlanet      = $UserPlanet['planet'];
 
-      $enemy_fleet = doquery("SELECT count(*) AS fleets_count FROM {{fleets}}
-        WHERE
-          fleet_end_galaxy = {$UserPlanet['galaxy']} AND
-          fleet_end_system = {$UserPlanet['system']} AND
-          fleet_end_planet = {$UserPlanet['planet']} AND
-          fleet_end_type   = ".PT_PLANET." AND
-          fleet_mess       = 0 AND
-          (fleet_mission = ".MT_ATTACK." OR fleet_mission = ".MT_AKS.")", '', true);
-
-      $moon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3;", '', true);
-      if($moon)
-      {
-        $enemy_fleet_moon = doquery("SELECT count(*) AS fleets_count FROM {{fleets}}
-          WHERE
-            fleet_end_galaxy = {$UserPlanet['galaxy']} AND
-            fleet_end_system = {$UserPlanet['system']} AND
-            fleet_end_planet = {$UserPlanet['planet']} AND
-            fleet_end_type   = ".PT_MOON." AND
-            fleet_mess       = 0 AND
-            (fleet_mission = ".MT_ATTACK." OR fleet_mission = ".MT_AKS." OR fleet_mission = ".MT_DESTROY.")", '', true);
-        $moon_fill = min(100, floor($moon['field_current'] / eco_planet_fields_max($moon) * 100));
-      }
-      else
-      {
-        $moon_fill = 0;
-      }
-
       $planet_fleet_id = 0;
       $fleet_list = flt_get_fleets_to_planet($UserPlanet);
       if($fleet_list['own']['count'])
@@ -290,6 +263,15 @@ switch ($mode)
         $planet_fleet_id = "p{$fleet_id}";
         $fleets[] = tpl_parse_fleet_sn($fleet_list['own']['total'], $planet_fleet_id);
         $fleet_id++;
+      }
+      $moon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3 LIMIT 1;", '', true);
+      if($moon)
+      {
+        $moon_fill = min(100, floor($moon['field_current'] / eco_planet_fields_max($moon) * 100));
+      }
+      else
+      {
+        $moon_fill = 0;
       }
 
       $moon_fleets = flt_get_fleets_to_planet($moon);
