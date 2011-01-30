@@ -79,7 +79,7 @@ $template->assign_vars(array(
   'time_now'        => $time_now,
 ));
 
-while ($announce = mysql_fetch_array($allAnnounces)) {
+while ($announce = mysql_fetch_assoc($allAnnounces)) {
   $template->assign_block_vars('announces', array(
     'ID'         => $announce['idAnnounce'],
     'TIME'       => $announce['tsTimeStamp'],

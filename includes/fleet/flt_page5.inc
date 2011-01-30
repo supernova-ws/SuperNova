@@ -198,7 +198,7 @@ $planet_ids = array();
 $colonies = SortUserPlanets ($user, $planetrow, ', metal, crystal, deuterium');
 if (mysql_num_rows($colonies) >= 1)
 {
-  while ($row = mysql_fetch_array($colonies))
+  while ($row = mysql_fetch_assoc($colonies))
   {
     $planet_list[] = array(
       'ID'         => $row['id'],

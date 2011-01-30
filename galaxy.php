@@ -159,7 +159,7 @@ for ($Planet = 1; $Planet < 16; $Planet++) {
 
     $recyclers_incoming = 0;
     $sql_fleets = doquery("SELECT * FROM {{fleets}} WHERE `fleet_end_galaxy` = {$galaxy} AND `fleet_end_system` = {$system} AND `fleet_end_planet` = {$Planet} AND `fleet_end_type` = 2 AND fleet_mess = 0 AND fleet_owner = {$user['id']};");
-    while ($arr_fleet = mysql_fetch_array($sql_fleets)) {
+    while ($arr_fleet = mysql_fetch_assoc($sql_fleets)) {
       $fleet = flt_expand($arr_fleet);
       $recyclers_incoming += $fleet[209];
     }

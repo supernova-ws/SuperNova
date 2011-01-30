@@ -32,7 +32,7 @@ if ($user['authlevel'] < 3)
     $AllActivPlanet = doquery("SELECT * FROM {{table}} WHERE `last_update` >= '". (time()-15 * 60) ."' ORDER BY `id` ASC", 'planets');
     $Count          = 0;
 
-    while ($ActivPlanet = mysql_fetch_array($AllActivPlanet)) {
+    while ($ActivPlanet = mysql_fetch_assoc($AllActivPlanet)) {
       $parse['online_list'] .= "<tr>";
       $parse['online_list'] .= "<td class=b><center><b>". $ActivPlanet['name'] ."</b></center></td>";
       $parse['online_list'] .= "<td class=b><center><b>[". $ActivPlanet['galaxy'] .":". $ActivPlanet['system'] .":". $ActivPlanet['planet'] ."]</b></center></td>";

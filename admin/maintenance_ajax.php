@@ -21,7 +21,7 @@ $msg = '<div align="left"><ul>';
 // Delete users inactive for 45 days
 $query = doquery("SELECT * FROM {{table}} WHERE `onlinetime` < unix_timestamp(now())-(60*60*24*45);", "users");
   $rows += mysql_num_rows($query);
-  while($u = mysql_fetch_array($query)){
+  while($u = mysql_fetch_assoc($query)){
     set_time_limit(30);
     DeleteSelectedUser ( $u['id'] );
   };

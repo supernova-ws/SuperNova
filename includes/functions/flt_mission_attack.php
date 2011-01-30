@@ -44,7 +44,7 @@ function flt_mission_attack($mission_data)
   if ($fleet_row['fleet_group'] != 0)
   {
     $fleets = doquery('SELECT * FROM {{fleets}} WHERE fleet_group='.$fleet_row['fleet_group']);
-    while ($fleet = mysql_fetch_array($fleets))
+    while ($fleet = mysql_fetch_assoc($fleets))
     {
       BE_attackFleetFill(&$attackFleets, $fleet);
     }
