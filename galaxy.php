@@ -55,8 +55,8 @@ $CurrentSystem = $CurrentPlanet['system'];
 $CurrentGalaxy = $CurrentPlanet['galaxy'];
 $CanDestroy    = $CurrentPlanet[$sn_data[214]['name']];
 
-$maxfleet       = doquery("SELECT COUNT(*) FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", 'fleets', true);
-$maxfleet_count = $maxfleet[0];
+$maxfleet       = doquery("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", 'fleets', true);
+$maxfleet_count = $maxfleet['flying_fleet_count'];
 
 CheckPlanetUsedFields($CurrentPlanet);
 

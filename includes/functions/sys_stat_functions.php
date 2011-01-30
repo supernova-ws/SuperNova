@@ -302,8 +302,8 @@ function SYS_statCalculate()
   // doquery ("DELETE FROM {{statpoints}} WHERE stat_code = 2;");
 
   // Counting real user count and updating values
-  $userCount = doquery ( "SELECT COUNT(*) FROM {{users}}", '', true);
-  $config->db_saveItem('users_amount', $userCount[0]);
+  $userCount = doquery ( "SELECT COUNT(*) AS users_online FROM {{users}}", '', true);
+  $config->db_saveItem('users_amount', $userCount['users_online']);
 
   doquery('COMMIT');
 }
