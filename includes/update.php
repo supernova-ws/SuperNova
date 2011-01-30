@@ -508,7 +508,8 @@ function upd_alter_table($table, $alters, $condition = true)
   }
 
   upd_add_more_time();
-  upd_log_message("Altering table '{$table}' with alterations '{$alters}'");
+  $alters_print = is_array($alters) ? dump($alters) : $alters;
+  upd_log_message("Altering table '{$table}' with alterations {$alters_print}");
 
   if(!is_array($alters))
   {
