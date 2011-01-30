@@ -59,9 +59,15 @@ while (($file = readdir($dir)) !== false)
 
 // Initializing global 'cacher' object
 $sn_cache = new classCache($db_prefix);
-if(!isset($sn_cache->tables))
+if(!$sn_cache->tables)
 {
   sys_refresh_tablelist($db_prefix);
+}
+
+if(empty($sn_cache->tables))
+{
+  print('DB error - cannot find any table. Halting...');
+  die();
 }
 
 // Initializing global "config" object
