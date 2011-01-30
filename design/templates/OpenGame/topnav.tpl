@@ -10,7 +10,7 @@ input.frameles
 <table align=center width="722" cellpadding="0" cellspacing="0" class="header" id="resources" style="width: 722px;" padding-right="30"><tbody>
   <tr class="c">
     <td class="c" colspan=5>
-         {TIME_TEXT} <span id="top_time">00:00:00</span>
+         {DATE_TEXT} <span id="top_time">{TIME_TEXT}</span>
     </td>
     <td class="c" colspan=2 align="right">
         {L_top_online} [{USERS_ONLINE}/{USERS_TOTAL}]
