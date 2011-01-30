@@ -16,7 +16,7 @@
     message($lang['fl_fleet_not_exists'], $lang['fl_error']);
   }
 
-  $fleet = mysql_fetch_array($query);
+  $fleet = mysql_fetch_assoc($query);
   if ($fleet['fleet_start_time'] <= $time_now || $fleet['fleet_end_time'] < $time_now || $fleet['fleet_mess'] == 1) {
     message($lang['fl_isback'], $lang['fl_error']);
   }
@@ -94,7 +94,7 @@
   foreach($members as $a => $b) {
     if ($b != '') {
       $member_qry_mr = doquery("SELECT `username` FROM `{{table}}` WHERE `id` ='{$b}' ;",'users');
-      while($row = mysql_fetch_array($member_qry_mr)){
+      while($row = mysql_fetch_assoc($member_qry_mr)){
         $invited .= "<option>".$row['username']."</option>";
       }
     }

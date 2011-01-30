@@ -11,7 +11,7 @@ if ($POST_text) {
   $sq = doquery($sq, "users");
 
   $list = '';
-  while ($u = mysql_fetch_array($sq)) {
+  while ($u = mysql_fetch_assoc($sq)) {
     $sendList[] = $u['id'];
     $list .= "<br>{$u['username']} ";
   }

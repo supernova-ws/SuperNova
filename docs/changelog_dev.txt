@@ -63,6 +63,10 @@
 
 Текущий билд
 
+2011-01-31 00:44
+[~] mysql_fetch_array() заменена на mysql_fetch_assoc()  везде,  где  это  было
+    возможно
+
 2011-01-31 00:34
 [~]  Все  результаты  аггрегатных  функций  MySQL  (sum,   count,   min,   max)
     поименованы. В doquery() mysql_fetch_array заменена на mysql_fetch_assoc. В

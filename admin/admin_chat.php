@@ -41,7 +41,7 @@ $parse = $lang;
     // Affichage des messages
     $query = doquery("SELECT * FROM {{table}} ORDER BY messageid DESC LIMIT 25", 'chat');
     $i = 0;
-    while ($e = mysql_fetch_array($query)) {
+    while ($e = mysql_fetch_assoc($query)) {
       $i++;
       $parse['msg_list'] .= stripslashes("<tr>" .
         "<td class=n>{$e['messageid']}</td>" .
