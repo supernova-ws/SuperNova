@@ -48,7 +48,7 @@ if ($user['authlevel'] < 3)
           $dearth_star       = $_POST['dearth_star'];
           $battleship      = $_POST['battleship'];
         $supernova      = $_POST['supernova'];
-      $QryUpdatePlanet  = "UPDATE {{table}} SET ";
+      $QryUpdatePlanet  = "UPDATE {{planets}} SET ";
       $QryUpdatePlanet .= "`small_ship_cargo` = `small_ship_cargo` + '". $small_ship_cargo ."', ";
       $QryUpdatePlanet .= "`battleship` = `battleship` + '". $battleship ."', ";
       $QryUpdatePlanet .= "`dearth_star` = `dearth_star` + '". $dearth_star ."', ";
@@ -66,7 +66,7 @@ if ($user['authlevel'] < 3)
       $QryUpdatePlanet .= "`supernova` = `supernova` + '". $supernova ."' ";
       $QryUpdatePlanet .= "WHERE ";
       $QryUpdatePlanet .= "`id` = '". $id ."' ";
-      doquery( $QryUpdatePlanet, "planets");
+      doquery( $QryUpdatePlanet);
 
       AdminMessage ( $lang['adm_addship2'], $lang['adm_addship1'] );
     }

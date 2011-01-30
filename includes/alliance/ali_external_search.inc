@@ -8,7 +8,7 @@ $parse['searchtext'] = $POST_searchtext;
 $page = parsetemplate(gettemplate('ali_search'), $parse);
 
 if ($POST_searchtext) {
-  $search = doquery("SELECT * FROM {{table}} WHERE `ally_name` LIKE '%{$POST_searchtext}%' OR `ally_tag` LIKE '%{$POST_searchtext}%' LIMIT 30", "alliance");
+  $search = doquery("SELECT * FROM {{alliance}} WHERE `ally_name` LIKE '%{$POST_searchtext}%' OR `ally_tag` LIKE '%{$POST_searchtext}%' LIMIT 30");
 
   if (mysql_num_rows($search)) {
     $template = gettemplate('ali_search_result_row');

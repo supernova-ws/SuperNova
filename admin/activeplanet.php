@@ -29,7 +29,7 @@ if ($user['authlevel'] < 3)
     $parse['mf']    = '_self';
 
     $PageTPL        = gettemplate('admin/activeplanet_body');
-    $AllActivPlanet = doquery("SELECT * FROM {{table}} WHERE `last_update` >= '". (time()-15 * 60) ."' ORDER BY `id` ASC", 'planets');
+    $AllActivPlanet = doquery("SELECT * FROM {{planets}} WHERE `last_update` >= '". (time()-15 * 60) ."' ORDER BY `id` ASC");
     $Count          = 0;
 
     while ($ActivPlanet = mysql_fetch_assoc($AllActivPlanet)) {

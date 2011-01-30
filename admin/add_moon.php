@@ -32,10 +32,10 @@ if ($mode == 'addit') {
   $PlanetID  = $_POST['user'];
   $MoonName  = $_POST['name'];
 
-  $QrySelectPlanet  = "SELECT * FROM {{table}} ";
+  $QrySelectPlanet  = "SELECT * FROM {{planets}} ";
   $QrySelectPlanet .= "WHERE ";
   $QrySelectPlanet .= "`id` = '". $PlanetID ."';";
-  $PlanetSelected = doquery ( $QrySelectPlanet, 'planets', true);
+  $PlanetSelected = doquery ( $QrySelectPlanet, '', true);
 
   $Galaxy    = $PlanetSelected['galaxy'];
   $System    = $PlanetSelected['system'];
