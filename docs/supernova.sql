@@ -209,7 +209,7 @@ INSERT INTO `sn_config` VALUES ('game_counter', '1');
 INSERT INTO `sn_config` VALUES ('game_default_language', 'ru');
 INSERT INTO `sn_config` VALUES ('game_default_skin', 'skins/EpicBlue/');
 INSERT INTO `sn_config` VALUES ('game_default_template', 'OpenGame');
-INSERT INTO `sn_config` VALUES ('game_disable', '0');
+INSERT INTO `sn_config` VALUES ('game_disable', '1');
 INSERT INTO `sn_config` VALUES ('game_disable_reason', 'SuperNova is in maintenance mode! Please return later!');
 INSERT INTO `sn_config` VALUES ('game_maxGalaxy', '5');
 INSERT INTO `sn_config` VALUES ('game_maxPlanet', '15');
