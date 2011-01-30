@@ -61,7 +61,7 @@ else
 {
   $dpath     = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
-  flt_t_flying_fleet_handler();
+  flt_flying_fleet_handler($config, $skip_fleet_update);
 
   $planet_id = SetSelectedPlanet($user);
   doquery('START TRANSACTION;');

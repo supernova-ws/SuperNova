@@ -466,6 +466,7 @@ switch(intval($config->db_version))
       upd_do_query("UPDATE `{{logs}}` SET `log_code` = 191 WHERE `log_code` = 101 AND `log_title` = 'Stat update';");
       upd_do_query("UPDATE `{{logs}}` SET `log_code` = 192 WHERE `log_code` = 102 AND `log_title` = 'Stat update';");
     }
+    $GLOBALS['config']->db_saveItem('flt_lastUpdate', 0);
 
   doquery('COMMIT;');
   $new_version = 26;
@@ -473,6 +474,7 @@ switch(intval($config->db_version))
   // alter table game_counter add index `i_time_id` (`time`, `id`);
 
 };
+$GLOBALS['config']->db_saveItem('flt_lastUpdate', 0);
 upd_log_message('Upgrade complete.');
 
 if($new_version)
