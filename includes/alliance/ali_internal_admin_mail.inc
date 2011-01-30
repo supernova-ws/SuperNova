@@ -4,11 +4,11 @@ if (!$user_can_send_mails) {
 }
 
 if ($POST_text) {
-  $sq = "SELECT id,username FROM {{table}} WHERE ally_id='{$user['ally_id']}'";
+  $sq = "SELECT id,username FROM {{users}} WHERE ally_id='{$user['ally_id']}'";
   if ($POST_r >= 0) {
     $sq .= " AND ally_rank_id='{$POST_r}'";
   }
-  $sq = doquery($sq, "users");
+  $sq = doquery($sq);
 
   $list = '';
   while ($u = mysql_fetch_assoc($sq)) {

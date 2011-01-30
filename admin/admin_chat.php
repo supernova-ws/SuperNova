@@ -33,13 +33,13 @@ $parse = $lang;
   if ($user['authlevel'] >= 3) {
     // Système de suppression
     if ($delete) {
-      doquery("DELETE FROM {{table}} WHERE `messageid`=$delete", 'chat');
+      doquery("DELETE FROM {{chat}} WHERE `messageid`={$delete};");
     } elseif ($deleteall == 'yes') {
-      doquery("DELETE FROM {{table}}", 'chat');
+      doquery("DELETE FROM {{chat}};");
     }
 
     // Affichage des messages
-    $query = doquery("SELECT * FROM {{table}} ORDER BY messageid DESC LIMIT 25", 'chat');
+    $query = doquery("SELECT * FROM {{chat}} ORDER BY messageid DESC LIMIT 25;");
     $i = 0;
     while ($e = mysql_fetch_assoc($query)) {
       $i++;

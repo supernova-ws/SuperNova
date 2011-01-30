@@ -14,7 +14,7 @@
       }
     }
 
-    doquery("UPDATE {{table}} SET `ranklist` = '{$ranklist}' WHERE `id` ='{$user['ally_id']}';", 'alliance');
+    doquery("UPDATE {{alliance}} SET `ranklist` = '{$ranklist}' WHERE `id` ='{$user['ally_id']}';");
     return $ranklist;
   }
 
@@ -22,7 +22,7 @@
   $rights     = array( 0 => 'name', 1 => 'mail',  2 => 'online',       3 => 'invite',                4 => 'kick', 5 => 'admin',      6 => 'forum',);
   $rights_old = array( 0 => 'name', 1 => 'mails', 2 => 'onlinestatus', 3 => 'bewerbungenbearbeiten', 4 => 'kick', 5 => 'rechtehand',);
 
-  $ally = doquery("SELECT * FROM {{table}} WHERE `id` ='{$user['ally_id']}'", "alliance", true);
+  $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}'", '', true);
 
   // This piece converting old ally data to new one
 //  unset($ally['ranklist']);
@@ -32,7 +32,7 @@
     foreach($ally_ranks as $rank_id => $rank){
       foreach($rights as $key => $value)
         $ranks[$i][$value] = $rank[$rights_old[$key]];
-      doquery("UPDATE {{table}} SET `ally_rank_id` = {$i} WHERE `ally_id` ='{$user['ally_id']}' AND `ally_rank_id`={$rank_id};", "users", true);
+      doquery("UPDATE {{users}} SET `ally_rank_id` = {$i} WHERE `ally_id` ='{$user['ally_id']}' AND `ally_rank_id`={$rank_id};", '', true);
       $i++;
     };
 
@@ -75,7 +75,7 @@
   }
 
   if (!$ally) {
-    doquery("UPDATE {{table}} SET `ally_id` = 0, `ally_name` = '' WHERE `id`='{$user['id']}'", "users");
+    doquery("UPDATE {{users}} SET `ally_id` = 0, `ally_name` = '' WHERE `id`='{$user['id']}';");
     message($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
   }
 

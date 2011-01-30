@@ -21,35 +21,35 @@ if ($isSaveOptions) {
   $ally['ally_image'] = $POST_image;
   $ally['ally_request_notallow'] = $POST_request_notallow;
 
-  doquery("UPDATE {{table}} SET
+  doquery("UPDATE {{alliance}} SET
       `ally_name`='{$ally['ally_name']}',
       `ally_tag`='{$ally['ally_tag']}',
       `ally_owner_range`='{$ally['ally_owner_range']}',
       `ally_image`='{$ally['ally_image']}',
       `ally_web`='{$ally['ally_web']}',
       `ally_request_notallow`='{$ally['ally_request_notallow']}'
-    WHERE `id`='{$ally['id']}'", "alliance");
-  $ally = doquery("SELECT * FROM {{table}} WHERE `id` ='{$user['ally_id']}'", "alliance", true);
+    WHERE `id`='{$ally['id']}' LIMIT 1;");
+  $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}';", '', true);
 } elseif ($isSaveText) {
-  doquery("UPDATE {{table}} SET `{$db_field}`='{$POST_text}' WHERE `id`='{$ally['id']}'", "alliance");
-  $ally = doquery("SELECT * FROM {{table}} WHERE `id` ='{$user['ally_id']}'", "alliance", true);
+  doquery("UPDATE {{alliance}} SET `{$db_field}`='{$POST_text}' WHERE `id`='{$ally['id']}';");
+  $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}';", '', true);
 } elseif ($isTransfer && $idNewLeader){
   if (!$isAllyOwner)
     message($lang['Denied_access'], $lang['ally_admin']);
 
-  $newLeader = doquery("SELECT `ally_id` FROM {{table}} WHERE `id` = '$idNewLeader';", "users", true);
+  $newLeader = doquery("SELECT `ally_id` FROM {{users}} WHERE `id` = '$idNewLeader';", '', true);
   if($newLeader['ally_id'] == $user['ally_id']){
-    doquery("UPDATE {{table}} SET `ally_rank_id`='0' WHERE `id`={$user['id']};", 'users');
-    doquery("UPDATE {{table}} SET `ally_owner`='{$idNewLeader}' WHERE `id`={$user['ally_id']};", 'alliance');
-    doquery("UPDATE {{table}} SET `ally_rank_id`='0' WHERE `id`='{$idNewLeader}';", 'users');
+    doquery("UPDATE {{users}} SET `ally_rank_id`='0' WHERE `id`={$user['id']} LIMIT 1;");
+    doquery("UPDATE {{alliance}} SET `ally_owner`='{$idNewLeader}' WHERE `id`={$user['ally_id']};");
+    doquery("UPDATE {{users}} SET `ally_rank_id`='0' WHERE `id`='{$idNewLeader}';");
     header('Location: alliance.php');
     exit;
   }
 } elseif ($isDisband && $isConfirmDisband){
   if (!$isAllyOwner)
     message($lang['Denied_access'], $lang['ally_admin']);
-  doquery("DELETE FROM {{table}} WHERE id='{$ally['id']}'", "alliance");
-  doquery("UPDATE {{table}} SET `ally_id` = 0, `ally_name` = '', `ally_request` = 0, `ally_rank_id` = 0, `ally_register_time` = 0 WHERE ally_id='{$ally['id']}'", "users");
+  doquery("DELETE FROM {{alliance}} WHERE id='{$ally['id']}';");
+  doquery("UPDATE {{users}} SET `ally_id` = 0, `ally_name` = '', `ally_request` = 0, `ally_rank_id` = 0, `ally_register_time` = 0 WHERE ally_id='{$ally['id']}';");
   header('Location: alliance.php');
   exit;
 };
@@ -59,7 +59,7 @@ $parse['request_type'] = $lang[$text_type];
 
 $parse['t'] = $allyTextID;
 
-$request = doquery("SELECT COUNT(*) AS request_count FROM {{table}} WHERE `id_ally` ='{$ally['id']}'", 'alliance_requests', true);
+$request = doquery("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
 if($request['request_count']){
   $parse['request_count'] = $lang['ali_req_requestCount'] . ': ' . intval($request['request_count']) . '. ' . $lang['ali_req_check'];
 }else{
@@ -83,7 +83,7 @@ foreach($ranks as $rankID => $rank)
 $tmp = substr($tmp, 0, -4);
 
 if(!empty($tmp)){
-  $userAllyAdmins = doquery("SELECT `id`, `username` FROM {{table}} WHERE ({$tmp}) AND `ally_id` = {$ally['id']};", 'users');
+  $userAllyAdmins = doquery("SELECT `id`, `username` FROM {{users}} WHERE ({$tmp}) AND `ally_id` = {$ally['id']};");
   unset($tmp);
   while ($userAllyAdmin = mysql_fetch_assoc($userAllyAdmins))
     $tmp .= "<option value={$userAllyAdmin['id']}>{$userAllyAdmin['username']}</option>";

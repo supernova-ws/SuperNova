@@ -2,9 +2,9 @@
   // Evitamos errores casuales xD
   // query
   if ($tag) {
-    $allyrow = doquery("SELECT * FROM {{table}} WHERE ally_tag='{$tag}'", "alliance", true);
+    $allyrow = doquery("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}'", '', true);
   } elseif ($id_ally) {
-    $allyrow = doquery("SELECT * FROM {{table}} WHERE id='{$id_ally}'", "alliance", true);
+    $allyrow = doquery("SELECT * FROM {{alliance}} WHERE id='{$id_ally}'", '', true);
   }
   // Si no existe
   if (!$allyrow)
