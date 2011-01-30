@@ -38,7 +38,7 @@ if ($user['authlevel'] >= 2) {
     if($id_user){
       if(is_numeric($id_user))
         $queryPart = " or `id` = {$id_user}";
-      $query = doquery("SELECT id, username FROM {{table}} WHERE `username` like '{$id_user}'" . $queryPart, 'users');
+      $query = doquery("SELECT id, username FROM {{users}} WHERE `username` like '{$id_user}'" . $queryPart);
       switch (mysql_num_rows($query)){
         case 0: // Error - no such ID or username
           $message = sprintf($lang['adm_dm_user_none'], $id_user);
@@ -67,7 +67,7 @@ if ($user['authlevel'] >= 2) {
         $error_id = 'adm_dm_planet_conflict_coords';
       };
 
-      $query = doquery("SELECT id, name, id_owner, galaxy, system, planet FROM {{table}} WHERE `name` like '{$id_planet}'" . $queryPart, 'planets');
+      $query = doquery("SELECT id, name, id_owner, galaxy, system, planet FROM {{planets}} WHERE `name` like '{$id_planet}'" . $queryPart);
       switch (mysql_num_rows($query)){
         case 0: // Error - no such planet ID or name or coordinates
           $message = sprintf($lang['adm_dm_planet_none'], $id_planet);
