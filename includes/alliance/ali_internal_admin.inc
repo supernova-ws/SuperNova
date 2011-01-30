@@ -85,7 +85,7 @@ $tmp = substr($tmp, 0, -4);
 if(!empty($tmp)){
   $userAllyAdmins = doquery("SELECT `id`, `username` FROM {{table}} WHERE ({$tmp}) AND `ally_id` = {$ally['id']};", 'users');
   unset($tmp);
-  while ($userAllyAdmin = mysql_fetch_array($userAllyAdmins))
+  while ($userAllyAdmin = mysql_fetch_assoc($userAllyAdmins))
     $tmp .= "<option value={$userAllyAdmin['id']}>{$userAllyAdmin['username']}</option>";
 
   $parse['adminMembers'] = $tmp;

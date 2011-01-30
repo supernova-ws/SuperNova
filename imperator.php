@@ -76,7 +76,7 @@ $OnlineUsersNames2 = doquery("SELECT `username` FROM {{users}} WHERE `onlinetime
 //Последние сообщения чата.
 $mess = doquery("SELECT `user`,`message` FROM {{table}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5", 'chat');
 $msg = '<table>';
-while ($result = mysql_fetch_array($mess)) {
+while ($result = mysql_fetch_assoc($mess)) {
   //$str = substr($result['message'], 0, 85);
   $str = $result['message'];
   $usr = $result['user'];
@@ -90,7 +90,7 @@ if ($config->game_news_overview)
 {
   $lastAnnounces = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now} ORDER BY `tsTimeStamp` DESC LIMIT {$config->game_news_overview}");
 
-  while ($lastAnnounce = mysql_fetch_array($lastAnnounces))
+  while ($lastAnnounce = mysql_fetch_assoc($lastAnnounces))
   {
     $template->assign_block_vars('news', array(
       'TIME'       => $lastAnnounce['tsTimeStamp'],

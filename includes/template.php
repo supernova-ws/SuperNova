@@ -258,7 +258,7 @@ function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet )
     $CurrentPlanet = $CurrentPlanet['planet'];
 
     $ThisUsersPlanets    = SortUserPlanets ( $CurrentUser );
-    while ($CurPlanet = mysql_fetch_array($ThisUsersPlanets)) {
+    while ($CurPlanet = mysql_fetch_assoc($ThisUsersPlanets)) {
       if (!$CurPlanet['destruyed'])
       {
         $template->assign_block_vars('topnav_planets', array(

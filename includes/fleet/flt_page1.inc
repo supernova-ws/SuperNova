@@ -62,7 +62,7 @@
   $colonies = SortUserPlanets ( $user );
   if (mysql_num_rows($colonies) > 1)
   {
-    while ($row = mysql_fetch_array($colonies))
+    while ($row = mysql_fetch_assoc($colonies))
     {
       $template->assign_block_vars('colonies', array(
         'NAME'       => $row['name'],
@@ -79,7 +79,7 @@
   //ACS Start
   //Need to look for acs attacks.
   $aks_madnessred = doquery('SELECT * FROM {{aks}};');
-  while($row = mysql_fetch_array($aks_madnessred))
+  while($row = mysql_fetch_assoc($aks_madnessred))
   {
     $members = explode(',', $row['eingeladen']);
     foreach($members as $a => $b) {

@@ -82,7 +82,7 @@ foreach($friendTables as $tableID => $friendTable){
   else
     $parse['isShowPlaceholder'] = '';
 
-  while ($friend = mysql_fetch_array($friendList)){
+  while ($friend = mysql_fetch_assoc($friendList)){
     $parse = array_merge($parse, $friend);
     if(!$tableID)
       $parse['column4data'] = int_renderLastActiveHTML($time_now - $friend['onlinetime']);

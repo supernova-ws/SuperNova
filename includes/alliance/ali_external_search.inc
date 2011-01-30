@@ -15,7 +15,7 @@ if ($POST_searchtext) {
 
     $entry['ali_req_notAllowed'] = $lang['ali_req_notAllowed'];
     $entry['ali_req_make'] = $lang['ali_req_make'];
-    while ($s = mysql_fetch_array($search)) {
+    while ($s = mysql_fetch_assoc($search)) {
       $entry['ally_id'] = $s['id'];
       $entry['ally_tag'] = $s['ally_tag'];
       $entry['ally_name'] = $s['ally_name'];

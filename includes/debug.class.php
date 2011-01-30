@@ -110,7 +110,7 @@ class debug
           `log_dump` = '" . mysql_real_escape_string(serialize($error_backtrace)) . "'
         ;") or die($fatal_error);
 
-      $q = mysql_fetch_array(mysql_query("SELECT max(log_id) AS rows FROM {$dbsettings['prefix']}logs;"))
+      $q = mysql_fetch_assoc(mysql_query("SELECT max(log_id) AS rows FROM {$dbsettings['prefix']}logs;"))
         or die($fatal_error);
 
       $message = "Пожалуйста свяжитесь с админом, если ошибка повторится. Ошибка №: <b>{$q['rows']}</b>";

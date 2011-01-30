@@ -16,7 +16,7 @@ if($id_user){
 $row = gettemplate('ali_admin_request_row');
 $parse = $lang;
 $query = doquery("SELECT {{table}}.*, {{users}}.username FROM {{table}} LEFT JOIN {{users}} ON {{users}}.id = {{table}}.id_user WHERE id_ally='{$ally['id']}'", 'alliance_requests');
-while ($r = mysql_fetch_array($query)) {
+while ($r = mysql_fetch_assoc($query)) {
   $r['request_time'] = date(FMT_DATE_TIME, $r['request_time']);
   if($r['request_denied']){
     $r['request_text'] = $lang['ali_req_deny_admin'];
