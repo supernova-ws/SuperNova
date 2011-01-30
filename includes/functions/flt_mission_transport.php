@@ -27,21 +27,6 @@ function flt_mission_transport($mission_data)
 */
 
   global $lang;
-/*
-  $QryStartPlanet   = "SELECT * FROM {{planets}} WHERE ";
-  $QryStartPlanet  .= "`galaxy` = '{$fleet_row['fleet_start_galaxy']}' AND ";
-  $QryStartPlanet  .= "`system` = '{$fleet_row['fleet_start_system']}' AND ";
-  $QryStartPlanet  .= "`planet` = '{$fleet_row['fleet_start_planet']}' AND ";
-  $QryStartPlanet  .= "`planet_type` = '{$fleet_row['fleet_start_type']}' LIMIT 1;";
-  $source_planet      = doquery( $QryStartPlanet, '', true);
-
-  $QryTargetPlanet  = "SELECT * FROM {{planets}} WHERE ";
-  $QryTargetPlanet .= "`galaxy` = '{$fleet_row['fleet_end_galaxy']}' AND ";
-  $QryTargetPlanet .= "`system` = '{$fleet_row['fleet_end_system']}' AND ";
-  $QryTargetPlanet .= "`planet` = '{$fleet_row['fleet_end_planet']}' AND ";
-  $QryTargetPlanet .= "`planet_type` = '{$fleet_row['fleet_end_type']}' LIMIT 1;";
-  $destination_planet     = doquery( $QryTargetPlanet, '', true);
-*/
 
   $StartName        = $source_planet['name'];
   $StartOwner       = $source_planet['id_owner'];

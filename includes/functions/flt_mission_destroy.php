@@ -49,37 +49,37 @@ function flt_mission_destroy($mission_data)
 
   if($Rips>0)
   {
-     $MoonDestChance = min(99, round((100 - sqrt($MoonSize)) * sqrt($Rips)));
-     $RipDestChance = round(sqrt($MoonSize) / 2);
-     $UserChance = mt_rand(1, 100);
-     if (($UserChance > 0) AND ($UserChance <= $MoonDestChance))
-     {
-        $RipsKilled = 0;
-        $MoonDestroyed = 1;
-     }
-     elseif (($UserChance > 0) AND ($UserChance <= $RipDestChance))
-     {
-        $RipsKilled = 1;
-        $MoonDestroyed = 0;
-     }
+    $MoonDestChance = min(99, round((100 - sqrt($MoonSize)) * sqrt($Rips)));
+    $RipDestChance = round(sqrt($MoonSize) / 2);
+    $UserChance = mt_rand(1, 100);
+    if (($UserChance > 0) AND ($UserChance <= $MoonDestChance))
+    {
+      $RipsKilled = 0;
+      $MoonDestroyed = 1;
+    }
+    elseif (($UserChance > 0) AND ($UserChance <= $RipDestChance))
+    {
+      $RipsKilled = 1;
+      $MoonDestroyed = 0;
+    }
   }
 
 
   if ($MoonDestroyed == 1)
   {
-     doquery("DELETE FROM {{planets}} WHERE `id` ='{$destination_planet['id']}';");
+    doquery("DELETE FROM {{planets}} WHERE `id` ='{$destination_planet['id']}';");
 
-     $message  = $lang['sys_moon_destroyed'];
+    $message  = $lang['sys_moon_destroyed'];
   }
   elseif($RipsKilled == 1)
   {
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! А нужно удалять все флоты !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = '{$fleet_row["fleet_id"]}';");
-     $message  = $lang['sys_rips_destroyed'];
+    doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = '{$fleet_row["fleet_id"]}';");
+    $message  = $lang['sys_rips_destroyed'];
   }
   else
   {
-     $message  = $lang['sys_rips_come_back'];
+    $message  = $lang['sys_rips_come_back'];
   }
 
   $message .= "<br><br>";
