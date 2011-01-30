@@ -421,7 +421,7 @@ switch(intval($config->db_version))
       "DROP INDEX `rid`",
       "ADD COLUMN `report_id` bigint(11) NOT NULL AUTO_INCREMENT FIRST",
       "ADD PRIMARY KEY (`report_id`)",
-      "ADD INDEX `rid` (`rid`)"
+      "ADD INDEX `i_rid` (`rid`)"
     ), !$update_tables['rw']['report_id']);
 
     if($update_tables['errors'])
@@ -440,11 +440,11 @@ switch(intval($config->db_version))
         "MODIFY COLUMN `log_sender` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'User ID which make log record' AFTER `log_code`",
         "MODIFY COLUMN `log_time` INT(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Machine-readable timestamp' AFTER `log_sender`",
         "ADD COLUMN `log_dump` TEXT NOT NULL DEFAULT '' COMMENT 'Machine-readable dump of variables' AFTER `log_time`",
-        "ADD INDEX `log_username` (`log_username`)",
-        "ADD INDEX `log_time` (`log_time`)",
-        "ADD INDEX `log_sender` (`log_sender`)",
-        "ADD INDEX `log_code` (`log_code`)",
-        "ADD INDEX `log_page` (`log_page`)",
+        "ADD INDEX `i_log_username` (`log_username`)",
+        "ADD INDEX `i_log_time` (`log_time`)",
+        "ADD INDEX `i_log_sender` (`log_sender`)",
+        "ADD INDEX `i_log_code` (`log_code`)",
+        "ADD INDEX `i_log_page` (`log_page`)",
         "CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci"
       ));
       $GLOBALS['sys_log_disabled'] = false;
@@ -471,8 +471,22 @@ switch(intval($config->db_version))
   doquery('COMMIT;');
   $new_version = 26;
 
+  case 26:
+    upd_log_version_update();
+    upd_alter_table('planets', "ADD INDEX `i_parent_planet` (`parent_planet`)", !$update_indexes['planets']['i_parent_planet']);
+    upd_alter_table('messages', array(
+      "DROP INDEX `owner`",
+      "DROP INDEX `owner_type`",
+      "DROP INDEX `sender_type`",
+      "ADD INDEX `i_owner_time` (`message_owner`, `message_time`)",
+      "ADD INDEX `i_sender_time` (`message_sender`, `message_time`)",
+      "ADD INDEX `i_time` (`message_time`)"
+    ), !$update_indexes['messages']['i_owner_time']);
+/*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
-
+  doquery('COMMIT;');
+  //$new_version = 27;
+*/
 };
 //$GLOBALS['config']->db_saveItem('flt_lastUpdate', 0);
 upd_log_message('Upgrade complete.');
