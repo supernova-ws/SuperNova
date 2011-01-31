@@ -122,7 +122,7 @@ while ($userRow = mysql_fetch_assoc($userList)) {
 }
 
 if ($i != $ally['ally_members']) {
-  doquery("UPDATE {{users}} SET `ally_members`='{$i}' WHERE `id`='{$ally['id']}'");
+  doquery("UPDATE {{alliances}} SET `ally_members`='{$i}' WHERE `id`='{$ally['id']}'");
 }
 
 $parse['memberCount'] = mysql_num_rows($userList);
