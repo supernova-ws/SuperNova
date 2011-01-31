@@ -159,14 +159,29 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
   $que_data  = &$que_types[$que_id];
 
   // We do not work with negaitve unit_amounts - hack or cheat
-  if($unit_amount < 1 || !in_array($unit_id, $que_data['unit_list']) || count($que['que'][$que_id]) >= $que_data['length'])
+  if(
+    $unit_amount < 1
+    || !in_array($unit_id, $que_data['unit_list'])
+    || count($que['que'][$que_id]) >= $que_data['length']
+  )
   {
     return $que;
   }
 
   doquery('START TRANSACTION;');
   $planet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = {$planet['id']} LIMIT 1 FOR UPDATE;", '', true);
-  if(!eco_can_build_unit($user, $planet, $unit_id) || eco_unit_busy($user, $planet, $que, $unit_id))
+  if(
+    !eco_can_build_unit($user, $planet, $unit_id)
+    || eco_unit_busy($user, $planet, $que, $unit_id)
+    || (
+        $que_id == QUE_STRUCTURES
+        && (
+             ($build_mode == BUILD_CREATE && max(0, eco_planet_fields_max($planet) - $planet['field_current'] - $que['amounts'][$que_id]) <= 0)
+             ||
+             ($build_mode == BUILD_DESTROY && $planet['field_current'] <= $que['amounts'][$que_id])
+           )
+       )
+  )
   {
     doquery('ROLLBACK;');
     return $que;

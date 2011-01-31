@@ -4,13 +4,13 @@ if (!$user_can_kick && $allianceAdminMode)
 
 // Changing rank for single user
 if($id_user && isset($id_rank) && $user_admin){
-  doquery("UPDATE {{table}} SET `ally_rank_id` = {$id_rank} WHERE `id`= {$id_user};", 'users');
+  doquery("UPDATE {{users}} SET `ally_rank_id` = {$id_rank} WHERE `id`= {$id_user};");
 }
 
 if ($id_kick && $user_can_kick) {
-  $u = doquery("SELECT * FROM {{table}} WHERE `id` ='{$id_kick}' LIMIT 1", 'users', true);
+  $u = doquery("SELECT * FROM {{users}} WHERE `id` ='{$id_kick}' LIMIT 1", '', true);
   if ($u['ally_id'] == $ally['id'] && $u['id'] != $ally['ally_owner']) {
-    doquery("UPDATE {{table}} SET `ally_id`='0', `ally_name` = '' WHERE `id`='{$id_kick}'", 'users');
+    doquery("UPDATE {{users}} SET `ally_id`='0', `ally_name` = '' WHERE `id`='{$id_kick}'");
   }
 }
 
@@ -40,7 +40,7 @@ if ($user_can_kick && $user['id'] != $userRow['id'] && $ally['ally_owner'] != $u
   $parse["colspan"] = 8;
 }
 
-while ($userRow = mysql_fetch_array($userList)) {
+while ($userRow = mysql_fetch_assoc($userList)) {
   $parse = array_merge($parse, $userRow);
 
   $i++;
@@ -122,7 +122,7 @@ while ($userRow = mysql_fetch_array($userList)) {
 }
 
 if ($i != $ally['ally_members']) {
-  doquery("UPDATE {{table}} SET `ally_members`='{$i}' WHERE `id`='{$ally['id']}'", 'alliance');
+  doquery("UPDATE {{alliances}} SET `ally_members`='{$i}' WHERE `id`='{$ally['id']}'");
 }
 
 $parse['memberCount'] = mysql_num_rows($userList);

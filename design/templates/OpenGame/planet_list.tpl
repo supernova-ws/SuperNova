@@ -80,7 +80,7 @@
           </span>
 
           <!-- IF planet.MOON_ENEMY != 0 -->
-            <span style="position: absolute; top: 26%; left: 26%; width: 48%; height: 48%;">
+            <span style="position: absolute; top: 15%; left: 15%; width: 70%; height: 70%;">
               <img src="../design/images/icon_warning.png" height="100%" width="100%" style="border-style: none; cursor: pointer;" onclick="javascript:window.location = '?cp={planet.MOON_ID}&re=0'">
             </span>
           <!-- ENDIF -->

@@ -45,7 +45,7 @@ if ($user['authlevel'] < 3)
         $From    = "<font color=\"". $kolor ."\">". $ranga ." ".$user['username']."</font>";
         $Subject = "<font color=\"". $kolor ."\">". $config->temat ."</font>";
         $Message = "<font color=\"". $kolor ."\"><b>". $config->tresc ."</b></font>";
-        while ($u = mysql_fetch_array($sq)) {
+        while ($u = mysql_fetch_assoc($sq)) {
           SendSimpleMessage ( $u['id'], $user['id'], $Time, 97, $From, $Subject, $Message);
         }
         message("<font color=\"lime\">Wys³a³e¶ wiadomo¶æ do wszystkich graczy</font>", "Complete", "../overview." . $phpEx, 3);

@@ -8,14 +8,14 @@ $parse['searchtext'] = $POST_searchtext;
 $page = parsetemplate(gettemplate('ali_search'), $parse);
 
 if ($POST_searchtext) {
-  $search = doquery("SELECT * FROM {{table}} WHERE `ally_name` LIKE '%{$POST_searchtext}%' OR `ally_tag` LIKE '%{$POST_searchtext}%' LIMIT 30", "alliance");
+  $search = doquery("SELECT * FROM {{alliance}} WHERE `ally_name` LIKE '%{$POST_searchtext}%' OR `ally_tag` LIKE '%{$POST_searchtext}%' LIMIT 30");
 
   if (mysql_num_rows($search)) {
     $template = gettemplate('ali_search_result_row');
 
     $entry['ali_req_notAllowed'] = $lang['ali_req_notAllowed'];
     $entry['ali_req_make'] = $lang['ali_req_make'];
-    while ($s = mysql_fetch_array($search)) {
+    while ($s = mysql_fetch_assoc($search)) {
       $entry['ally_id'] = $s['id'];
       $entry['ally_tag'] = $s['ally_tag'];
       $entry['ally_name'] = $s['ally_name'];

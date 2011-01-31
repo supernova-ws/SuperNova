@@ -129,7 +129,7 @@ switch ($mode)
       "SELECT DISTINCT * FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}' OR `fleet_target_owner` = '{$user['id']}';"
     );
 
-    while ($fleet = mysql_fetch_array($flying_fleets_mysql))
+    while ($fleet = mysql_fetch_assoc($flying_fleets_mysql))
     {
       $planet_start_type = $fleet['fleet_start_type'] == 3 ? 3 : 1;
       $planet_start = doquery(
@@ -183,7 +183,7 @@ switch ($mode)
     // -----------------------------------------------------------------------------------------------
     // Adding missile attacks to fleet event table
     $iraks_query = doquery("SELECT * FROM `{{iraks}}` WHERE `owner` = '{$user['id']}'");
-    while ($irak = mysql_fetch_array ($iraks_query))
+    while ($irak = mysql_fetch_assoc ($iraks_query))
     {
       if ($irak['zeit'] >= $time_now) {
         $irak['fleet_id']             = -$irak['anzahl'];
@@ -250,38 +250,11 @@ switch ($mode)
     $planets_query = doquery("SELECT * FROM {{planets}} WHERE id_owner='{$user['id']}' AND planet_type = 1 ORDER BY {$planetSort};");
 
     $fleet_id = 1;
-    while ($UserPlanet = mysql_fetch_array($planets_query))
+    while ($UserPlanet = mysql_fetch_assoc($planets_query))
     {
       $UserPlanet      = sys_o_get_updated($user, $UserPlanet, $time_now, true);
       $list_planet_que = $UserPlanet['que'];
       $UserPlanet      = $UserPlanet['planet'];
-
-      $enemy_fleet = doquery("SELECT count(*) AS fleets_count FROM {{fleets}}
-        WHERE
-          fleet_end_galaxy = {$UserPlanet['galaxy']} AND
-          fleet_end_system = {$UserPlanet['system']} AND
-          fleet_end_planet = {$UserPlanet['planet']} AND
-          fleet_end_type   = ".PT_PLANET." AND
-          fleet_mess       = 0 AND
-          (fleet_mission = ".MT_ATTACK." OR fleet_mission = ".MT_AKS.")", '', true);
-
-      $moon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3;", '', true);
-      if($moon)
-      {
-        $enemy_fleet_moon = doquery("SELECT count(*) AS fleets_count FROM {{fleets}}
-          WHERE
-            fleet_end_galaxy = {$UserPlanet['galaxy']} AND
-            fleet_end_system = {$UserPlanet['system']} AND
-            fleet_end_planet = {$UserPlanet['planet']} AND
-            fleet_end_type   = ".PT_MOON." AND
-            fleet_mess       = 0 AND
-            (fleet_mission = ".MT_ATTACK." OR fleet_mission = ".MT_AKS." OR fleet_mission = ".MT_DESTROY.")", '', true);
-        $moon_fill = min(100, floor($moon['field_current'] / eco_planet_fields_max($moon) * 100));
-      }
-      else
-      {
-        $moon_fill = 0;
-      }
 
       $planet_fleet_id = 0;
       $fleet_list = flt_get_fleets_to_planet($UserPlanet);
@@ -290,6 +263,15 @@ switch ($mode)
         $planet_fleet_id = "p{$fleet_id}";
         $fleets[] = tpl_parse_fleet_sn($fleet_list['own']['total'], $planet_fleet_id);
         $fleet_id++;
+      }
+      $moon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3 LIMIT 1;", '', true);
+      if($moon)
+      {
+        $moon_fill = min(100, floor($moon['field_current'] / eco_planet_fields_max($moon) * 100));
+      }
+      else
+      {
+        $moon_fill = 0;
       }
 
       $moon_fleets = flt_get_fleets_to_planet($moon);
@@ -339,7 +321,7 @@ switch ($mode)
     $OnlineUsersNames = doquery("SELECT `username` FROM {{table}} WHERE `onlinetime`>'".$time."' AND `ally_id`='".$ally."' AND `ally_id` != '0'",'users');
 
     $names = '';
-    while ($OUNames = mysql_fetch_array($OnlineUsersNames)) {
+    while ($OUNames = mysql_fetch_assoc($OnlineUsersNames)) {
       $names .= $OUNames['username'];
       $names .= ", ";
     }
@@ -349,7 +331,7 @@ switch ($mode)
     //Последние сообщения чата.
     $mess = doquery("SELECT `user`,`message` FROM {{table}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5", 'chat');
     $msg = '<table>';
-    while ($result = mysql_fetch_array($mess)) {
+    while ($result = mysql_fetch_assoc($mess)) {
       //$str = substr($result['message'], 0, 85);
       $str = $result['message'];
       $usr = $result['user'];

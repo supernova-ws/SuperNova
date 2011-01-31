@@ -10,6 +10,8 @@ define('IN_PHPBB', true);
 define('INSTALL' , false);
 define('VERSION' , '2010-10-19-00-03');
 
+ob_start();
+
 set_magic_quotes_runtime(0);
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
@@ -57,9 +59,15 @@ while (($file = readdir($dir)) !== false)
 
 // Initializing global 'cacher' object
 $sn_cache = new classCache($db_prefix);
-if(!isset($sn_cache->tables))
+if(!$sn_cache->tables)
 {
   sys_refresh_tablelist($db_prefix);
+}
+
+if(empty($sn_cache->tables))
+{
+  print('DB error - cannot find any table. Halting...');
+  die();
 }
 
 // Initializing global "config" object

@@ -80,7 +80,7 @@ function coe_o_missile_calculate()
 
   $iraks = doquery("SELECT * FROM {{iraks}} WHERE `zeit` <= '{$time_now}';");
 
-  while ($fleetRow = mysql_fetch_array($iraks))
+  while ($fleetRow = mysql_fetch_assoc($iraks))
   {
     $targetUser  = doquery('SELECT * FROM {{users}} WHERE `id` = '.$fleetRow['zielid'], '', true);
 

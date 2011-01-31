@@ -34,7 +34,10 @@
 [*] На странице инфо для структур учитывать текущих офицеров (?)  и  технологии
     (??) - для электростанции производство точно нужно
 
-
+[*] а то седня я летал в сабе, я создавал, кидал приглашение, но  не  мог  даже
+посмотреть подсоединился игрок или нет к САБу. Было бы  неплохо  видеть,  а  то
+мало ли что.
+Сделать для соаловцев и для союзных альянсов
 
 
 Изложу в одном посте планы по развитию сервера. Если вы читали внимательно форум, то все это вы уже видели.
@@ -170,10 +173,43 @@
 [*] Движок: infos.php - разбить на подпроцедуры
 [*] Интерфейс, RPG: Make empire work only with Emperor
 [*] Движок: проверить файлы в каталоге admin  на  наличие  SQL-injection  через глобальные переменные $_POST
+[*] Модульная система
+
+
+Ссылки
+======
+[*] JWChat - jabber web chat
+    http://www.cgitop.com/2008/02/22/jwchat-jabber-web-chat.html
+[*] PHP - Оптимизация и отладка
+    http://phplens.com/lens/php-book/optimizing-debugging-php.php
+[*] Фильтры - компрессия
+    http://php.net/manual/en/filters.compression.php
+[*] Использовать авторизацию phpBB3
+    http://wiki.phpbb.com/display/DEV/Authentication+plugins
+[*] Использовать интеграцию таблиц phpBB3
+    http://www.phpbb.com/community/viewtopic.php?f=71&t=993475
+[*] Использовать кодепарсер phpBB3
+    http://www.phpbb.com/community/viewtopic.php?f=71&t=614444&start=30
 [*] using phpBB3 for everything (^_^) - custom page
     http://www.phpbb.com/kb/article/add-a-new-custom-page-to-phpbb/
     looks like updated version of upper page:
     http://wiki.phpbb.com/display/MODDOCS/Practical.Add+custom+page
-[*] using php 5.0+ embedded Database Object
+[*] Использовать датабазе абстрактион лаер
+    phpbb
+    http://wiki.phpbb.com/display/DEV/Database+Abstraction+Layer
+    php 5.0+ embedded Database Object
     http://ua2.php.net/manual/en/pdo.connections.php
-[*] Модульная система
+[*] Траффик-анализер на ПХП
+    http://soft.zoneo.net/phpTrafficA/use.php?l=ru
+[*] xdebug
+    http://xdebug.org/index.php
+
+
+Многие системы используют базу данных для хранения паролей и существует несколько способов для хранения паролей.
+Пароли хранятся как есть. При взломе такой базы все пароли станут известны.
+Хранятся только хеши паролей (с помощью MD5, SHA). Найти пароли можно только полным перебором. Но при условии использования несложного, популярного или просто несчастливого пароля (который встречался ранее и занесён в таблицу) такая задача решается за доли секунды. Пароль из таблицы был найден всего за 0,036059 сек.[12]
+Хранятся хеши паролей и несколько случайных символов. К каждому паролю добавляется несколько случайных символов (их ещё называют «salt» или «соль») и результат ещё раз хешируется. Например, md5(md5(pass)+word). Найти пароль с помощью таблиц таким методом не получится.
+Пример базы данныхспособ        id      login   password
+1       5       anton   mydata
+2       5       anton   md5(mydata)
+3       5       anton   md5(md5(mydata)+word) и word

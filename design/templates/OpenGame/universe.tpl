@@ -332,17 +332,14 @@ jQuery.extend(language, {
 });
 
 var users = new Array();
-<!-- BEGIN users -->
-users[{users.ID}] = {name: '{users.NAME_JS}', rank: '{users.RANK}'};
-<!-- END users -->
+<!-- BEGIN users --><!-- IF users.ID -->users[{users.ID}] = {name: '{users.NAME_JS}', rank: '{users.RANK}'};<!-- ENDIF --><!-- END users -->
 
 var allies = new Array();
-<!-- BEGIN alliances -->
-allies[{alliances.ID}] = {name: '{alliances.NAME_JS}', members: '{alliances.MEMBERS}', url: '{alliances.URL}'};
-<!-- END alliances -->
+<!-- BEGIN alliances --><!-- IF alliances.ID -->allies[{alliances.ID}] = {name: '{alliances.NAME_JS}', members: '{alliances.MEMBERS}', url: '{alliances.URL}'};<!-- ENDIF --><!-- END alliances -->
 
 var uni_row = new Array();
-<!-- BEGIN galaxyrow -->uni_row[{galaxyrow.PLANET_NUM}] = 
+<!-- BEGIN galaxyrow --><!-- IF galaxyrow.PLANET_NUM -->
+uni_row[{galaxyrow.PLANET_NUM}] = 
 {
   owner: '{galaxyrow.USER_ID}',
   planet: '{galaxyrow.PLANET_NUM}',
@@ -359,6 +356,6 @@ var uni_row = new Array();
   debris_incoming: '{galaxyrow.DEBRIS_RC_INC}',
   debris_rc_need: '{galaxyrow.DEBRIS_RC_NEED}'
 };
-<!-- END galaxyrow -->
+<!-- ENDIF --><!-- END galaxyrow -->
 
 --></script>

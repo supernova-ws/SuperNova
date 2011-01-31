@@ -131,7 +131,7 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
       if(!$is_building)
       {
         $query = doquery("SELECT * FROM `{{planets}}` WHERE `id_owner` = '{$CurrentUser['id']}';");
-        while($planet = mysql_fetch_array($query)){
+        while($planet = mysql_fetch_assoc($query)){
           if(($planet['que']) || ($planet['b_tech'] && $planet['b_tech']) || ($planet['b_hangar'] && $planet['b_hangar']))
           {
             $is_building = true;
@@ -146,7 +146,7 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
       }
 
       $query = doquery("SELECT * FROM {{planets}} WHERE id_owner = '{$user['id']}' FOR UPDATE;");
-      while($planet = mysql_fetch_array($query))
+      while($planet = mysql_fetch_assoc($query))
       {
         $planet = sys_o_get_updated($user, $planet, $time_now);
         $planet = $planet['planet'];

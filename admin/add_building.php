@@ -49,7 +49,7 @@ if ($user['authlevel'] < 3)
           $ally_deposit      = $_POST['ally_deposit'];
           $silo      = $_POST['silo'];
         $nano      = $_POST['nano'];
-      $QryUpdatePlanet  = "UPDATE {{table}} SET ";
+      $QryUpdatePlanet  = "UPDATE {{planets}} SET ";
       $QryUpdatePlanet .= "`metal_mine` = `metal_mine` + '". $metal_mine ."', ";
       $QryUpdatePlanet .= "`crystal_mine` = `crystal_mine` + '". $crystal_mine ."', ";
       $QryUpdatePlanet .= "`deuterium_sintetizer` = `deuterium_sintetizer` + '". $deuterium_sintetizer ."', ";
@@ -68,7 +68,7 @@ if ($user['authlevel'] < 3)
       $QryUpdatePlanet .= "`silo` = `silo` + '". $silo ."' ";
       $QryUpdatePlanet .= "WHERE ";
       $QryUpdatePlanet .= "`id` = '". $id ."' ";
-      doquery( $QryUpdatePlanet, "planets");
+      doquery( $QryUpdatePlanet);
 
       AdminMessage ( $lang['adm_addbuilding2'], $lang['adm_addbuilding1'] );
     }
