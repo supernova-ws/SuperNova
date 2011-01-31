@@ -32,17 +32,17 @@ $ques = array(
   'DELETE FROM {{messages}} WHERE message_time < unix_timestamp(now()) - (60 * 60 * 24 * 35);',
   'DELETE FROM {{rw}} WHERE time < unix_timestamp(now()) - (60 * 60 * 24 * 14);',
   'DELETE FROM {{chat}} WHERE timestamp < unix_timestamp(now()) - (60 * 60 * 24 * 14);',
-/*
+
   'DELETE FROM {{planets}} WHERE id_owner not in (select id from {{users}});',
   'DELETE FROM {{messages}} WHERE message_owner not in (select id from {{users}});',
   'DELETE FROM {{rw}} WHERE id_owner1 not in (select id from {{users}});',
   'DELETE FROM {{rw}} WHERE id_owner2 not in (select id from {{users}});',
-*/
+/*
   'DELETE {{planets}}.* FROM {{planets}} LEFT JOIN {{users}} ON {{users}}.id = {{planets}}.id_owner WHERE {{users}}.id IS NULL;',
   'DELETE {{messages}}.* FROM {{messages}} LEFT JOIN {{users}} ON {{users}}.id = {{messages}}.message_owner WHERE {{users}}.id IS NULL;',
   'DELETE {{rw}}.* FROM {{rw}} LEFT JOIN {{users}} AS u ON u.id = {{rw}}.id_owner1 WHERE u.id IS NULL;',
   'DELETE {{rw}}.* FROM {{rw}} LEFT JOIN {{users}} AS u ON u.id = {{rw}}.id_owner2 WHERE u.id IS NULL;',
-
+*/
   'DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} group by ally_id);',
   "DELETE FROM {{statpoints}} WHERE stat_type=1 AND id_owner not in (select id from {{users}});",
 
