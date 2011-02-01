@@ -22,7 +22,7 @@ if (!$user_can_send_mails)
   $lang['isCanMassMail'] = 'class="hide"';
 
 // El link para ver las solicitudes
-$request = doquery("SELECT COUNT(*) AS request_count FROM {{table}} WHERE `id_ally` ='{$ally['id']}'", 'alliance_requests', true);
+$request = doquery("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
 if($request['request_count']){
   $lang['request_count'] = $lang['ali_req_requestCount'] . ': ' . intval($request['request_count']);
 }else{

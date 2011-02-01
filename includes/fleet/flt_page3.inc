@@ -75,7 +75,7 @@
   if ($errorlist)
   {
     doquery("ROLLBACK;");
-    message ("<font color=\"red\"><ul>{$errorlist}</ul></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
+    message ("<font color=\"red\"><ul>{$errorlist}</ul></font>", $lang['fl_error'], "fleet.{$phpEx}", false);
   }
 
   // On verifie s'il y a assez de vaisseaux sur la planete !

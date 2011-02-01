@@ -49,19 +49,20 @@ elseif(!empty($_COOKIE[$config->COOKIE_NAME]))
 
   if($user['id'])
   {
+    ob_start();
     header("Location: ./index.{$phpEx}");
-    exit;
+    ob_end_flush();
   }
   die();
 }
 
 $query = doquery('SELECT username FROM {{users}} ORDER BY register_time DESC LIMIT 1;', '', true);
-$query1 = doquery("SELECT COUNT(DISTINCT(id)) FROM {{users}} WHERE onlinetime>" . (time()-900), '', true);
+$query1 = doquery("SELECT COUNT(DISTINCT(id)) AS users_online FROM {{users}} WHERE onlinetime>" . (time()-900), '', true);
 
 $template = gettemplate('login_body', true);
 $template->assign_vars(array(
   'last_user' => $query['username'],
-  'online_users' => $query1[0]
+  'online_users' => $query1['users_online']
 ));
 if($id_ref)
 {

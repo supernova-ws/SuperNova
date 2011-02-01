@@ -55,8 +55,8 @@ $CurrentSystem = $CurrentPlanet['system'];
 $CurrentGalaxy = $CurrentPlanet['galaxy'];
 $CanDestroy    = $CurrentPlanet[$sn_data[214]['name']];
 
-$maxfleet       = doquery("SELECT COUNT(*) FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", 'fleets', true);
-$maxfleet_count = $maxfleet[0];
+$maxfleet       = doquery("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", 'fleets', true);
+$maxfleet_count = $maxfleet['flying_fleet_count'];
 
 CheckPlanetUsedFields($CurrentPlanet);
 
@@ -103,7 +103,8 @@ $PhalanxRange  = GetPhalanxRange($HavePhalanx);
 
 $fleet_id = 1;
 $fleets = array();
-for ($Planet = 1; $Planet < 16; $Planet++) {
+for ($Planet = 1; $Planet < 16; $Planet++)
+{
   unset($GalaxyRowPlanet);
   unset($GalaxyRowMoon);
   unset($GalaxyRowava);
@@ -125,23 +126,35 @@ for ($Planet = 1; $Planet < 16; $Planet++) {
     }else{
       $GalaxyRowUser = doquery("SELECT * FROM {{users}} WHERE `id` = '{$GalaxyRowPlanet['id_owner']}' LIMIT 1;", '', true);
 
-      $User2Points   = doquery("SELECT * FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '{$GalaxyRowUser['id']}' LIMIT 1;", '', true);
+      $User2Points   = doquery("SELECT total_rank, total_points FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '{$GalaxyRowUser['id']}' LIMIT 1;", '', true);
       $GalaxyRowUser['rank']   = intval($User2Points['total_rank']);
       $GalaxyRowUser['points'] = intval($User2Points['total_points']);
 
       $cached['users'][$GalaxyRowUser['id']] = $GalaxyRowUser;
     }
+    if(!$GalaxyRowUser)
+    {
+      $debug->warning("Planet '{$GalaxyRowPlanet['name']}' [{$galaxy}:{$system}:{$Planet}] has no owner!", 'Userless planet', 503);
+      continue;
+    }
+
     $RowUserPoints = $GalaxyRowUser['points'];
 
     if($GalaxyRowUser['id'])
-      if ($GalaxyRowUser['ally_id']) {
+    {
+      if ($GalaxyRowUser['ally_id'])
+      {
         if($cached['allies'][$GalaxyRowUser['ally_id']])
+        {
           $allyquery = $cached['allies'][$GalaxyRowUser['ally_id']];
-        else{
+        }
+        else
+        {
           $allyquery = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$GalaxyRowUser['ally_id']}';", '', true);
           $cached['allies'][$GalaxyRowUser['ally_id']] = $allyquery;
         }
       }
+    }
 
     $fleet_list = flt_get_fleets_to_planet($GalaxyRowPlanet);
     if($fleet_list['own']['count'])
@@ -153,7 +166,7 @@ for ($Planet = 1; $Planet < 16; $Planet++) {
 
     $recyclers_incoming = 0;
     $sql_fleets = doquery("SELECT * FROM {{fleets}} WHERE `fleet_end_galaxy` = {$galaxy} AND `fleet_end_system` = {$system} AND `fleet_end_planet` = {$Planet} AND `fleet_end_type` = 2 AND fleet_mess = 0 AND fleet_owner = {$user['id']};");
-    while ($arr_fleet = mysql_fetch_array($sql_fleets)) {
+    while ($arr_fleet = mysql_fetch_assoc($sql_fleets)) {
       $fleet = flt_expand($arr_fleet);
       $recyclers_incoming += $fleet[209];
     }
@@ -230,21 +243,28 @@ for ($Planet = 1; $Planet < 16; $Planet++) {
 tpl_assign_fleet($template, $fleets);
 
 foreach($cached['users'] as $PlanetUser){
-  $template->assign_block_vars('users', array(
-    'ID'   => $PlanetUser['id'],
-    'NAME' => $PlanetUser['username'],
-    'NAME_JS' => js_safe_string($PlanetUser['username']),
-    'RANK' => $PlanetUser['rank'],
-  ));
+  if($PlanetUser)
+  {
+    $template->assign_block_vars('users', array(
+      'ID'   => $PlanetUser['id'],
+      'NAME' => $PlanetUser['username'],
+      'NAME_JS' => js_safe_string($PlanetUser['username']),
+      'RANK' => $PlanetUser['rank'],
+    ));
+  }
 }
 
-foreach($cached['allies'] as $PlanetAlly){
-  $template->assign_block_vars('alliances', array(
-    'ID'      => $PlanetAlly['id'],
-    'NAME_JS' => js_safe_string($PlanetAlly['ally_name']),
-    'MEMBERS' => $PlanetAlly['ally_members'],
-    'URL'     => $PlanetAlly['ally_web'],
-  ));
+foreach($cached['allies'] as $PlanetAlly)
+{
+  if($PlanetAlly)
+  {
+    $template->assign_block_vars('alliances', array(
+      'ID'      => $PlanetAlly['id'],
+      'NAME_JS' => js_safe_string($PlanetAlly['ally_name']),
+      'MEMBERS' => $PlanetAlly['ally_members'],
+      'URL'     => $PlanetAlly['ally_web'],
+    ));
+  }
 }
 
 $template->assign_vars(array(

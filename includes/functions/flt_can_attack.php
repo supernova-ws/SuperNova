@@ -213,6 +213,11 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     }
   }
 
+  if($mission == MT_DESTROY && $planet_dst['planet_type'] != PT_MOON)
+  {
+    return ATTACK_WRONG_MISSION;
+  }
+
   return ATTACK_ALLOWED;
 }
 

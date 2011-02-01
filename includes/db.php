@@ -139,7 +139,7 @@ function doquery($query, $table = '', $fetch = false){
   $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>$table</th><th>$fetch</th></tr>");
 
   if($fetch){
-    $sqlrow = mysql_fetch_array($sqlquery);
+    $sqlrow = mysql_fetch_assoc($sqlquery);
     return $sqlrow;
   }else{
     return $sqlquery;

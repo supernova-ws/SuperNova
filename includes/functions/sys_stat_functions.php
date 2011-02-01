@@ -3,6 +3,10 @@
 /**
  * sys_stat_functions.php
  *
+ * @version 5 (c) copyright 2010-2011 by Gorlum for http://supernova.ws
+ *   [-] Rid of all procedures - they only called once per loop and make unneeded overhead
+ *   [~] Some optimizations. +6% to script speed on test base
+ *   [~] Wrapped update in transaction. Decreased script execution time by 98%
  * @version 4 (c) copyright 2010 by Gorlum for http://supernova.ws
  *   [~] Now setting time limit also update end time in the DB
  *   [+] Logging more information about update process to simplify error detection
@@ -41,135 +45,29 @@ function sta_set_time_limit($sta_update_msg = 'updatins something', $next_step =
   $config->db_saveItem('var_stat_update_msg', $sta_update_msg);
   if($next_step)
   {
-    $debug->warning($sta_update_msg, 'Stat update', 101);
+    $debug->warning($sta_update_msg, 'Stat update', 191);
   }
 }
 
-function GetPlanetPoints ( $CurrentPlanet ) {
-  global $resource, $pricelist, $reslist, $sn_data, $sn_groups;
-
-  $BuildCounts = 0;
-  $BuildPoints = 0;
-  foreach($reslist['build'] as $n => $Building) {
-    if ( $CurrentPlanet[ $resource[ $Building ] ] > 0 ) {
-      $f = $pricelist[$Building]['factor'];
-      $BuildPoints += ($pricelist[$Building]['metal'] + $pricelist[$Building]['crystal'] + $pricelist[$Building]['deuterium']) * (pow($f, $CurrentPlanet[$resource[$Building]] ) - $f) / ($f - 1);
-      $BuildCounts += $CurrentPlanet[$resource[$Building]] - 1 ;
-    }
-  }
-  $RetValue['BuildCount'] = $BuildCounts;
-  $RetValue['BuildPoint'] = $BuildPoints;
-
-  $DefenseCounts = 0;
-  $DefensePoints = 0;
-  foreach($reslist['defense'] as $n => $Defense) {
-    if ($CurrentPlanet[ $resource[ $Defense ] ] > 0) {
-      $Units          = $pricelist[ $Defense ]['metal'] + $pricelist[ $Defense ]['crystal'] + $pricelist[ $Defense ]['deuterium'];
-      $DefensePoints += ($Units * $CurrentPlanet[ $resource[ $Defense ] ]);
-      $DefenseCounts += $CurrentPlanet[ $resource[ $Defense ] ];
-    }
-  }
-  $RetValue['DefenseCount'] = $DefenseCounts;
-  $RetValue['DefensePoint'] = $DefensePoints;
-
-  $FleetCounts = 0;
-  $FleetPoints = 0;
-  foreach($reslist['fleet'] as $n => $Fleet) {
-    if ($CurrentPlanet[ $resource[ $Fleet ] ] > 0) {
-      $Units          = $pricelist[ $Fleet ]['metal'] + $pricelist[ $Fleet ]['crystal'] + $pricelist[ $Fleet ]['deuterium'];
-      $FleetPoints   += ($Units * $CurrentPlanet[ $resource[ $Fleet ] ]);
-      $FleetCounts   += $CurrentPlanet[ $resource[ $Fleet ] ];
-    }
-  }
-  $RetValue['FleetCount'] = $FleetCounts;
-  $RetValue['FleetPoint'] = $FleetPoints;
-
-  $ResourceCount = 0;
-  $ResourcePoint = 0;
-  foreach($sn_groups['resources_loot'] as $resource_name) {
-    $resource_amount = $CurrentPlanet[$resource[$resource_name]];
-    if ( $resource_amount > 0) {
-      $ResourceCount   += $resource_amount;
-      $ResourcePoint   += $resource_amount;
-    }
-  }
-
-  if($CurrentPlanet['b_hangar_id'])
-  {
-    $ship_list = flt_expand(array('fleet_array' => $CurrentPlanet['b_hangar_id']));
-    foreach($ship_list as $ship_id => $ship_amount)
-    {
-      $data = $sn_data[$ship_id];
-      $ResourcePoint += ($data['metal'] + $data['crystal'] + $data['deuterium']) * $ship_amount;
-      $ResourceCount += ($data['metal'] + $data['crystal'] + $data['deuterium']) * $ship_amount;
-    }
-  }
-  $RetValue['ResourceCount'] = $ResourceCount;
-  $RetValue['ResourcePoint'] = $ResourcePoint;
-
-  return $RetValue;
-}
-
-function GetTechnoPoints ( $CurrentUser ) {
-  global $resource, $pricelist, $reslist;
-
-  $TechCounts = 0;
-  $TechPoints = 0;
-  foreach ( $reslist['tech'] as $n => $Techno ) {
-    if ( $CurrentUser[ $resource[ $Techno ] ] > 0 ) {
-      $f = $pricelist[ $Techno ]['factor'];
-      $Units = $pricelist[ $Techno ]['metal'] + $pricelist[ $Techno ]['crystal'] + $pricelist[ $Techno ]['deuterium'];
-      $TechCounts += $CurrentUser[ $resource[ $Techno ] ] - 1 ;
-      $TechPoints += ($pricelist[ $Techno ]['metal'] + $pricelist[ $Techno ]['crystal'] + $pricelist[ $Techno ]['deuterium']) * (pow($f, $CurrentUser[$resource[$Techno]] ) - $f) / ($f - 1);
-    }
-  }
-  $RetValue['TechCount'] = $TechCounts;
-  $RetValue['TechPoint'] = $TechPoints;
-
-  return $RetValue;
-}
-
-function GetFleetPointsOnTour ( $CurrentFleet ) {
-  global $resource, $pricelist, $reslist, $sn_groups;
-
-  $FleetCounts = 0;
-  $FleetPoints = 0;
-
-  $split = trim(str_replace(';',' ',$CurrentFleet['fleet_array']));
-  $split = explode(' ',$split);
-
-  foreach($split as $ship) {
-    list($typ,$amount) = explode(',',$ship);
-    $Units = $pricelist[ $typ ]['metal'] + $pricelist[ $typ ]['crystal'] + $pricelist[ $typ ]['deuterium'];
-    $FleetPoints   += ($Units * $amount);
-    $FleetCounts   += $amount;
-  }
-  $RetValue['FleetCount'] = $FleetCounts;
-  $RetValue['FleetPoint'] = $FleetPoints;
-
-  $ResourceCount = 0;
-  $ResourcePoint = 0;
-  foreach($sn_groups['resources_loot'] as $resource_name) {
-    $resource_amount = $CurrentFleet["fleet_resource_{$resource[$resource_name]}"];
-    if ( $resource_amount > 0) {
-      $ResourceCount   += $resource_amount;
-      $ResourcePoint   += $resource_amount;
-    }
-  }
-  $RetValue['ResourceCount'] = $ResourceCount;
-  $RetValue['ResourcePoint'] = $ResourcePoint;
-
-  return $RetValue;
-}
-
-function SYS_statCalculate(){
+function SYS_statCalculate()
+{
   global $config, $time_now, $sta_update_step;
+
+  $sn_data = $GLOBALS['sn_data'];
+  $reslist = $GLOBALS['reslist'];
+  $resource = $GLOBALS['resource'];
+  $pricelist = $GLOBALS['pricelist'];
+
+
+  $sn_groups_resources_loot = $sn_data['groups']['resources_loot'];
 
   $StatDate   = $time_now;
 
-  $sta_update_step = 0;
+  $sta_update_step = -1;
 
-//  doquery('START TRANSACTION;');
+  sta_set_time_limit('starting update');
+
+  doquery('START TRANSACTION;');
 
   sta_set_time_limit('archiving old statistic');
   // Statistic rotation
@@ -178,10 +76,10 @@ function SYS_statCalculate(){
 
   sta_set_time_limit('calculating flying fleets stats');
   // Calculation of Fleet-In-Flight
-  $UsrFleets = doquery("SELECT * FROM {{fleets}};");
+  $UsrFleets = doquery("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM {{fleets}};");
   $i = 0;
   $row_num = mysql_num_rows($UsrFleets);
-  while ($CurFleet = mysql_fetch_assoc($UsrFleets))
+  while ($fleet_row = mysql_fetch_assoc($UsrFleets))
   {
     if($i % 100 == 0)
     {
@@ -189,12 +87,35 @@ function SYS_statCalculate(){
     }
     $i++;
 
-    $Points = GetFleetPointsOnTour ( $CurFleet );
-    $counts[$CurFleet['fleet_owner']]['fleet'] += $Points['FleetCount'];
-    $points[$CurFleet['fleet_owner']]['fleet'] += $Points['FleetPoint'] / 1000;
+    $split = trim(str_replace(';',' ',$fleet_row['fleet_array']));
+    $split = explode(' ',$split);
 
-    $counts[$CurFleet['fleet_owner']]['resources'] += $Points['ResourceCount'];
-    $points[$CurFleet['fleet_owner']]['resources'] += $Points['ResourcePoint'] / 1000;
+    $FleetCounts = 0;
+    $FleetPoints = 0;
+    foreach($split as $ship) {
+      list($typ,$amount) = explode(',',$ship);
+      $Units = $pricelist[ $typ ]['metal'] + $pricelist[ $typ ]['crystal'] + $pricelist[ $typ ]['deuterium'];
+      $FleetPoints   += ($Units * $amount);
+      $FleetCounts   += $amount;
+    }
+
+    $ResourceCount = 0;
+    $ResourcePoint = 0;
+    foreach($sn_groups_resources_loot as $resource_name) {
+      $resource_amount = $fleet_row["fleet_resource_{$resource[$resource_name]}"];
+      if ( $resource_amount > 0) {
+        $ResourceCount   += $resource_amount;
+        $ResourcePoint   += $resource_amount;
+      }
+    }
+
+    $user_id = $fleet_row['fleet_owner'];
+
+    $counts[$user_id]['fleet'] += $FleetCounts;
+    $points[$user_id]['fleet'] += $FleetPoints / 1000;
+
+    $counts[$user_id]['resources'] += $ResourceCount;
+    $points[$user_id]['resources'] += $ResourcePoint / 1000;
   }
 
   sta_set_time_limit('calculating planets stats');
@@ -202,46 +123,105 @@ function SYS_statCalculate(){
   $UsrPlanets = doquery("SELECT * FROM {{planets}};");
   $i = 0;
   $row_num = mysql_num_rows($UsrPlanets);
-  while ($CurPlanet = mysql_fetch_assoc($UsrPlanets) ) {
+  while ($planet_row = mysql_fetch_assoc($UsrPlanets) ) {
     if($i % 100 == 0)
     {
       sta_set_time_limit("calculating planets stats (planet {$i}/{$row_num})", false);
     }
     $i++;
 
-    $userID = $CurPlanet['id_owner'];
-    $Points = GetPlanetPoints ( $CurPlanet );
+    $BuildCounts = 0;
+    $BuildPoints = 0;
+    foreach($reslist['build'] as $n => $Building) {
+      if ( $planet_row[ $resource[ $Building ] ] > 0 ) {
+        $f = $pricelist[$Building]['factor'];
+        $BuildPoints += ($pricelist[$Building]['metal'] + $pricelist[$Building]['crystal'] + $pricelist[$Building]['deuterium']) * (pow($f, $planet_row[$resource[$Building]] ) - $f) / ($f - 1);
+        $BuildCounts += $planet_row[$resource[$Building]] - 1 ;
+      }
+    }
 
-    $counts[$userID]['build'] += $Points['BuildCount'];
-    $counts[$userID]['defs']  += $Points['DefenseCount'];
-    $counts[$userID]['fleet'] += $Points['FleetCount'];
-    $counts[$userID]['resources'] += $Points['ResourceCount'];
+    $DefenseCounts = 0;
+    $DefensePoints = 0;
+    foreach($reslist['defense'] as $n => $Defense) {
+      if ($planet_row[ $resource[ $Defense ] ] > 0) {
+        $Units          = $pricelist[ $Defense ]['metal'] + $pricelist[ $Defense ]['crystal'] + $pricelist[ $Defense ]['deuterium'];
+        $DefensePoints += ($Units * $planet_row[ $resource[ $Defense ] ]);
+        $DefenseCounts += $planet_row[ $resource[ $Defense ] ];
+      }
+    }
 
-    $points[$userID]['build'] += $Points['BuildPoint'] / 1000;
-    $points[$userID]['defs']  += $Points['DefensePoint'] / 1000;
-    $points[$userID]['fleet'] += $Points['FleetPoint'] / 1000;
-    $points[$userID]['resources'] += $Points['ResourcePoint'] / 1000;
+    $FleetCounts = 0;
+    $FleetPoints = 0;
+    foreach($reslist['fleet'] as $n => $Fleet) {
+      if ($planet_row[ $resource[ $Fleet ] ] > 0) {
+        $Units          = $pricelist[ $Fleet ]['metal'] + $pricelist[ $Fleet ]['crystal'] + $pricelist[ $Fleet ]['deuterium'];
+        $FleetPoints   += ($Units * $planet_row[ $resource[ $Fleet ] ]);
+        $FleetCounts   += $planet_row[ $resource[ $Fleet ] ];
+      }
+    }
 
-    $PlanetPoints = ($Points['BuildPoint'] + $Points['DefensePoint'] + $Points['FleetPoint'] + $Points['ResourcePoint']) / 1000;
-    doquery ("UPDATE {{planets}} SET `points` = '{$PlanetPoints}' WHERE `id` = '{$CurPlanet['id']}';");
+    $ResourceCount = 0;
+    $ResourcePoint = 0;
+    foreach($sn_groups_resources_loot as $resource_name) {
+      $resource_amount = $planet_row[$resource[$resource_name]];
+      if ( $resource_amount > 0) {
+        $ResourceCount   += $resource_amount;
+        $ResourcePoint   += $resource_amount;
+      }
+    }
+
+    if($planet_row['b_hangar_id'])
+    {
+      $ship_list = flt_expand(array('fleet_array' => $planet_row['b_hangar_id']));
+      foreach($ship_list as $ship_id => $ship_amount)
+      {
+        $data = $sn_data[$ship_id];
+        $ResourcePoint += ($data['metal'] + $data['crystal'] + $data['deuterium']) * $ship_amount;
+        $ResourceCount += ($data['metal'] + $data['crystal'] + $data['deuterium']) * $ship_amount;
+      }
+    }
+
+    $userID = $planet_row['id_owner'];
+
+    $counts[$userID]['build'] += $BuildCounts;
+    $counts[$userID]['defs']  += $DefenseCounts;
+    $counts[$userID]['fleet'] += $FleetCounts;
+    $counts[$userID]['resources'] += $ResourceCount;
+
+    $points[$userID]['build'] += $BuildPoints / 1000;
+    $points[$userID]['defs']  += $DefensePoints / 1000;
+    $points[$userID]['fleet'] += $FleetPoints / 1000;
+    $points[$userID]['resources'] += $ResourcePoint / 1000;
+
+    $PlanetPoints = ($RetValue['BuildPoint'] + $RetValue['DefensePoint'] + $RetValue['FleetPoint'] + $RetValue['ResourcePoint']) / 1000;
+    doquery ("UPDATE {{planets}} SET `points` = '{$PlanetPoints}' WHERE `id` = '{$planet_row['id']}';");
   }
 
   sta_set_time_limit('posting new user stats to DB');
   $GameUsers = doquery("SELECT * FROM {{users}};");
-  while ($CurUser = mysql_fetch_assoc($GameUsers)) {
-    $userID = $CurUser['id'];
+  while ($user_row = mysql_fetch_assoc($GameUsers))
+  {
+    $TechCounts = 0;
+    $TechPoints = 0;
+    foreach ( $reslist['tech'] as $n => $Techno ) {
+      if ( $user_row[ $resource[ $Techno ] ] > 0 ) {
+        $f = $pricelist[ $Techno ]['factor'];
+        $Units = $pricelist[ $Techno ]['metal'] + $pricelist[ $Techno ]['crystal'] + $pricelist[ $Techno ]['deuterium'];
+        $TechCounts += $user_row[ $resource[ $Techno ] ] - 1 ;
+        $TechPoints += ($pricelist[ $Techno ]['metal'] + $pricelist[ $Techno ]['crystal'] + $pricelist[ $Techno ]['deuterium']) * (pow($f, $user_row[$resource[$Techno]] ) - $f) / ($f - 1);
+      }
+    }
 
-    $Points = GetTechnoPoints ( $CurUser );
-
-    $counts[$userID]['tech'] = $Points['TechCount'];
-    $points[$userID]['tech'] = $Points['TechPoint'] / 1000;
+    $userID = $user_row['id'];
+    $counts[$userID]['tech'] = $TechCounts;
+    $points[$userID]['tech'] = $TechPoints / 1000;
 
     $GPoints = array_sum($points[$userID]);
     $GCount  = array_sum($counts[$userID]);
 
     $QryInsertStats  = "INSERT INTO {{statpoints}} SET ";
     $QryInsertStats .= "`id_owner` = '". $userID ."', ";
-    $QryInsertStats .= "`id_ally` = '". $CurUser['ally_id'] ."', ";
+    $QryInsertStats .= "`id_ally` = '". $user_row['ally_id'] ."', ";
     $QryInsertStats .= "`stat_type` = '1', "; // 1 pour joueur , 2 pour alliance
     $QryInsertStats .= "`stat_code` = '1', "; // de 1 a 2 mis a jour de maniere automatique
     $QryInsertStats .= "`tech_points` = '". $points[$userID]['tech'] ."', ";
@@ -322,10 +302,10 @@ function SYS_statCalculate(){
   // doquery ("DELETE FROM {{statpoints}} WHERE stat_code = 2;");
 
   // Counting real user count and updating values
-  $userCount = doquery ( "SELECT COUNT(*) FROM {{users}}", '', true);
-  $config->db_saveItem('users_amount', $userCount[0]);
+  $userCount = doquery ( "SELECT COUNT(*) AS users_online FROM {{users}}", '', true);
+  $config->db_saveItem('users_amount', $userCount['users_online']);
 
-//  doquery('COMMIT');
+  doquery('COMMIT');
 }
 
 ?>
