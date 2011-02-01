@@ -44,21 +44,19 @@ $GET_planet       = intval($_GET['planet']);
 
 includeLang('universe');
 
-$CurrentPlanet = doquery("SELECT * FROM {{table}} WHERE `id` = '". $user['current_planet'] ."';", 'planets', true);
-
 $dpath         = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
 $fleetmax      = GetMaxFleets($user);
-$CurrentPlID   = $CurrentPlanet['id'];
-$CurrentMIP    = $CurrentPlanet['interplanetary_misil'];
-$HavePhalanx   = $CurrentPlanet['phalanx'];
-$CurrentSystem = $CurrentPlanet['system'];
-$CurrentGalaxy = $CurrentPlanet['galaxy'];
-$CanDestroy    = $CurrentPlanet[$sn_data[214]['name']];
+$CurrentPlID   = $planetrow['id'];
+$CurrentMIP    = $planetrow['interplanetary_misil'];
+$HavePhalanx   = $planetrow['phalanx'];
+$CurrentSystem = $planetrow['system'];
+$CurrentGalaxy = $planetrow['galaxy'];
+$CanDestroy    = $planetrow[$sn_data[214]['name']];
 
-$maxfleet       = doquery("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", 'fleets', true);
+$maxfleet       = doquery("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
 $maxfleet_count = $maxfleet['flying_fleet_count'];
 
-CheckPlanetUsedFields($CurrentPlanet);
+CheckPlanetUsedFields($planetrow);
 
 if ($mode == 1) {
   if ($POST_galaxyLeft)
@@ -75,9 +73,9 @@ if ($mode == 1) {
   $system = $GET_system;
   $planet = $GET_planet;
 } else {
-  $galaxy = $CurrentPlanet['galaxy'];
-  $system = $CurrentPlanet['system'];
-  $planet = $CurrentPlanet['planet'];
+  $galaxy = $planetrow['galaxy'];
+  $system = $planetrow['system'];
+  $planet = $planetrow['planet'];
 }
 
 if ($galaxy < 1) $galaxy = 1;
@@ -89,30 +87,51 @@ if ($planet > $config->game_maxPlanet + 1) $planet = $config->game_maxPlanet + 1
 
 $planetcount = 0;
 $lunacount   = 0;
-$CurrentRC   = $CurrentPlanet['recycler'];
+$CurrentRC   = $planetrow['recycler'];
 $cached = array('users' => array(), 'allies' => array());
 
 
 $template = gettemplate('universe', true);
 
-$UserPoints    = doquery("SELECT * FROM `{{table}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."'", 'statpoints', true);
+$UserPoints    = doquery("SELECT * FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."'", '', true);
 $CurrentPoints = $UserPoints['total_points'];
 
 $MissileRange  = get_missile_range();
 $PhalanxRange  = GetPhalanxRange($HavePhalanx);
 
+$planet_precache_query = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$galaxy} AND `system` = {$system};");
+while($planet_row = mysql_fetch_assoc($planet_precache_query))
+{
+  $planet_list[$planet_row['planet']][$planet_row['planet_type']] = $planet_row;
+}
+
+
+$fleet_precache_query = doquery(
+  "SELECT * FROM {{fleets}} WHERE
+    (fleet_start_galaxy = {$galaxy} AND fleet_start_system = {$system} AND fleet_mess = 1)
+    OR
+    (fleet_end_galaxy = {$galaxy} AND fleet_end_system = {$system} AND fleet_mess = 0);"
+);
+while($fleet_row = mysql_fetch_assoc($fleet_precache_query))
+{
+  $fleet_planet = $fleet_row['fleet_mes'] == 0 ? $fleet_row['fleet_end_planet'] : $fleet_row['fleet_start_planet'];
+  $fleet_type   = $fleet_row['fleet_mes'] == 0 ? $fleet_row['fleet_end_type'] : $fleet_row['fleet_start_type'];
+  $fleet_list[$fleet_planet][$fleet_type][] = $fleet_row;
+}
+
+
 $fleet_id = 1;
 $fleets = array();
-for ($Planet = 1; $Planet < 16; $Planet++)
+$config_game_max_planet = $config->game_maxPlanet + 1;
+for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
 {
   unset($GalaxyRowPlanet);
   unset($GalaxyRowMoon);
-  unset($GalaxyRowava);
   unset($GalaxyRowUser);
   unset($GalaxyRowAlly);
   unset($allyquery);
 
-  $GalaxyRowPlanet = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$galaxy} AND `system` = {$system} AND `planet` = {$Planet} AND `planet_type` = 1;", '', true);
+  $GalaxyRowPlanet = $planet_list[$Planet][PT_PLANET];
 
   $RowUserPoints = 0;
   $planet_fleet_id = 0;
@@ -156,22 +175,31 @@ for ($Planet = 1; $Planet < 16; $Planet++)
       }
     }
 
-    $fleet_list = flt_get_fleets_to_planet($GalaxyRowPlanet);
-    if($fleet_list['own']['count'])
+    $fleets_to_planet = flt_get_fleets_to_planet(false, $fleet_list[$Planet][PT_PLANET]);
+    if($fleets_to_planet['own']['count'])
     {
       $planet_fleet_id = $fleet_id;
-      $fleets[] = tpl_parse_fleet_sn($fleet_list['own']['total'], $fleet_id);
+      $fleets[] = tpl_parse_fleet_sn($fleets_to_planet['own']['total'], $fleet_id);
       $fleet_id++;
     }
 
     $recyclers_incoming = 0;
-    $sql_fleets = doquery("SELECT * FROM {{fleets}} WHERE `fleet_end_galaxy` = {$galaxy} AND `fleet_end_system` = {$system} AND `fleet_end_planet` = {$Planet} AND `fleet_end_type` = 2 AND fleet_mess = 0 AND fleet_owner = {$user['id']};");
-    while ($arr_fleet = mysql_fetch_assoc($sql_fleets)) {
-      $fleet = flt_expand($arr_fleet);
-      $recyclers_incoming += $fleet[209];
+    if($fleet_list[$Planet][PT_DEBRIS])
+    {
+      foreach($fleet_list[$Planet][PT_DEBRIS] as $fleet_row)
+      {
+        $fleet_data = flt_expand($fleet_row);
+        $recyclers_incoming += $fleet_data[209];
+      }
     }
+    //$sql_fleets = doquery("SELECT * FROM {{fleets}} WHERE `fleet_end_galaxy` = {$galaxy} AND `fleet_end_system` = {$system} AND `fleet_end_planet` = {$Planet} AND `fleet_end_type` = 2 AND fleet_mess = 0 AND fleet_owner = {$user['id']};");
+    //while ($arr_fleet = mysql_fetch_assoc($sql_fleets)) {
+    //  $fleet = flt_expand($arr_fleet);
+    //  $recyclers_incoming += $fleet[209];
+    //}
 
-    $GalaxyRowMoon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = {$GalaxyRowPlanet['id']};", '', true);
+    $GalaxyRowMoon = $planet_list[$Planet][PT_MOON];
+    //$GalaxyRowMoon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = {$GalaxyRowPlanet['id']};", '', true);
     if ($GalaxyRowMoon['destruyed'])
     {
       CheckAbandonPlanetState($GalaxyRowMoon);
@@ -179,11 +207,11 @@ for ($Planet = 1; $Planet < 16; $Planet++)
     else
     {
       $moon_fleet_id = 0;
-      $fleet_list = flt_get_fleets_to_planet($GalaxyRowMoon);
-      if($fleet_list['own']['count'])
+      $fleets_to_planet = flt_get_fleets_to_planet(false, $fleet_list[$Planet][PT_MOON]);
+      if($fleets_to_planet['own']['count'])
       {
         $moon_fleet_id = $fleet_id;
-        $fleets[] = tpl_parse_fleet_sn($fleet_list['own']['total'], $fleet_id);
+        $fleets[] = tpl_parse_fleet_sn($fleets_to_planet['own']['total'], $fleet_id);
         $fleet_id++;
       }
     }
@@ -270,12 +298,12 @@ foreach($cached['allies'] as $PlanetAlly)
 $template->assign_vars(array(
      'rows'           => $Result,
      'userCount'      => $config->users_amount,
-     'curPlanetID'    => $CurrentPlanet['id'],
-     'curPlanetG'     => $CurrentPlanet['galaxy'],
-     'curPlanetS'     => $CurrentPlanet['system'],
-     'curPlanetP'     => $CurrentPlanet['planet'],
-     'curPlanetPT'    => $CurrentPlanet['planet_type'],
-     'deathStars'     => $CurrentPlanet[$sn_data[214]['name']],
+     'curPlanetID'    => $planetrow['id'],
+     'curPlanetG'     => $planetrow['galaxy'],
+     'curPlanetS'     => $planetrow['system'],
+     'curPlanetP'     => $planetrow['planet'],
+     'curPlanetPT'    => $planetrow['planet_type'],
+     'deathStars'     => $planetrow[$sn_data[214]['name']],
      'galaxy'         => $galaxy,
      'system'         => $system,
      'planet'         => $planet,
@@ -283,8 +311,8 @@ $template->assign_vars(array(
      'MODE'           => $mode,
      'dpath'          => $dpath,
      'planets'        => $planetcount ? ($lang['gal_planets'] . $planetcount) : $lang['gal_planetNone'],
-     'RCs'            => pretty_number($CurrentPlanet['recycler']),
-     'SPs'            => pretty_number($CurrentPlanet['spy_sonde']),
+     'RCs'            => pretty_number($planetrow['recycler']),
+     'SPs'            => pretty_number($planetrow['spy_sonde']),
      'SHOW_ADMIN'     => SHOW_ADMIN,
      'fleet_count'    => $maxfleet_count,
      'fleet_max'      => $fleetmax,
