@@ -174,6 +174,7 @@ $lang = array_merge($lang, array(
   'adm_opt_plan_initial'      => "Размер главной планеты",
   'adm_opt_plan_base_inc'     => "Базовая добыча",
   'adm_opt_game_debugmod'     => "Включить режим отладки",
+  'adm_opt_game_counter'      => "Включить счетчик посещений",
   'adm_opt_game_oth_info'     => "Прочие параметры",
   'adm_opt_int_news_count'    => "Количество новостей",
   'adm_opt_int_page_imperor'  => 'На странице &quot;Император&quot;:',
@@ -192,7 +193,7 @@ $lang = array_merge($lang, array(
   'adm_opt_saved'             => "Настройки игры сохранены успешно",
   'adm_opt_players_online'    => "Игроков на сервере",
   'adm_opt_vacation_mode_is'  => "Режим отпуска",
-  'adm_opt_maintenance'       => "Обслуживание и отладка",
+  'adm_opt_maintenance'       => "Обслуживание сервера",
   'adm_opt_links'             => "Ссылки и баннеры",
                                      
   'adm_opt_universe_size'     => "Размер Вселенной",
