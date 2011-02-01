@@ -67,6 +67,7 @@ if ($_POST['save'])
   $config->advGoogleLeftMenuIsOn   = $_POST['advGoogleLeftMenuIsOn'] ? 1 : 0;
   $config->advGoogleLeftMenuCode   = $_POST['advGoogleLeftMenuCode'];
   $config->debug                   = $_POST['debug'] ? 1 : 0;
+  $config->game_counter            = $_POST['game_counter'] ? 1 : 0;
 
   $config->db_saveAll();
 
@@ -77,6 +78,7 @@ $template->assign_vars(array(
   'game_disable' => $config->game_disable ? 'checked' : '',
   'advGoogleLeftMenuIsOn' => $config->advGoogleLeftMenuIsOn ? 'checked' : '',
   'debug' => $config->debug ? 'checked' : '',
+  'game_counter' => $config->game_counter ? 'checked' : '',
   'user_vacation_disable' => $config->user_vacation_disable ? 'checked' : '',
   'game_mode' => $config->game_mode,
 ));
