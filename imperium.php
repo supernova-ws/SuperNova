@@ -45,7 +45,7 @@ foreach ($planets as $planet_index => &$planet)
   $planet_template = tpl_parse_planet($planet, $list_planet_que);
 
   $planet_fleet_id = 0;
-  $fleet_list = flt_get_fleets_to_planet($planet);
+  $fleet_list = $planet_template['fleet_list'];//flt_get_fleets_to_planet($planet);
   if($fleet_list['own']['count'])
   {
     $planet_fleet_id = "p{$fleet_id}";
