@@ -482,6 +482,7 @@ switch(intval($config->db_version))
       "ADD INDEX `i_sender_time` (`message_sender`, `message_time`)",
       "ADD INDEX `i_time` (`message_time`)"
     ), !$update_indexes['messages']['i_owner_time']);
+    mysql_query("DROP TABLE IF EXISTS {$config->db_prefix}fleet_log;");
 /*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
   doquery('COMMIT;');
