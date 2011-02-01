@@ -137,7 +137,7 @@ function sn_timer() {
 
     switch(timer['type'])
     {
-      case 0: // new que display
+      case 0: // old que display
         var que_item = timer_options['que'][0];
 
         if(que_item[UNIT_TIME] <= timestamp - timer['start_time'])
@@ -195,6 +195,11 @@ function sn_timer() {
 
       case 1: // time-independent counter
         var new_value = timer_options['start_value'] + (timestamp - timer['start_time']) * timer_options['per_second'];
+        if(new_value < 0)
+        {
+          new_value = 0;
+          timer['active'] = false;
+        }
         printData = sn_format_number(new_value, 2, 'white', timer_options['max_value']);
         if(new_value >= timer_options['max_value'])
         {
@@ -210,23 +215,7 @@ function sn_timer() {
           timer['active'] = false;
         }
       break;
-/*
-      case 1: // counter
-        if(timer_options[0] >= timer_options[2]){
-          timer['active'] = false;
-          printData = '<font color=red>' + sn_format_number(timer_options[0], 2) + '</font>';
-        }else{
-          timer_options[0] += Math.floor(timer_options[1] * (timestamp - timer['start_time']) / 36) / 100
-          printData = sn_format_number(timer_options[0], 2);
-          timer['start_time'] = timestamp;
-        };
 
-        if(HTML != null)
-          HTML.innerHTML = printData;
-        else
-          timer['active'] = false;
-      break;
-*/
       case 2: // date&time
         printData = '';
 
