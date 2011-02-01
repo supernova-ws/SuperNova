@@ -24,7 +24,7 @@ if ($user['authlevel'] < 3)
 $parse = $lang;
 $query = doquery("SELECT * FROM {{table}} WHERE planet_type='1'", "planets");
 $i = 0;
-while ($u = mysql_fetch_assoc($query)) {
+while ($u = mysql_fetch_array($query)) {
   $parse['planetes'] .= "<tr>"
   . "<td class=b><center><b>" . $u[0] . "</center></b></td>"
   . "<td class=b><center><b>" . $u[1] . "</center></b></td>"
