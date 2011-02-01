@@ -388,13 +388,13 @@ function BE_calculatePostAttacker($TargetPlanet, &$attackFleets, $result, $isSim
       $attackerTotalCapacity += $attacker['loot']['capacity'];
     }else{
       if (!$isSimulation)
-        doquery ('DELETE FROM {{table}} WHERE `fleet_id`='.$fleetID,'fleets');
+        doquery ('DELETE FROM {{fleets}} WHERE `fleet_id`='.$fleetID);
     };
   };
 
-  $loot['metal'] = $TargetPlanet['metal'] / 2;
-  $loot['crystal'] = $TargetPlanet['crystal'] / 2;
-  $loot['deuterium'] = $TargetPlanet['deuterium'] / 2;
+  $loot['metal'] = max(0, $TargetPlanet['metal'] / 2);
+  $loot['crystal'] = max(0, $TargetPlanet['crystal'] / 2);
+  $loot['deuterium'] = max(0, $TargetPlanet['deuterium'] / 2);
   $loot['all'] = max($loot['metal'] + $loot['crystal'] + $loot['deuterium'], 1);
   $loot['available'] = min($loot['all'], $attackerTotalCapacity);
 
