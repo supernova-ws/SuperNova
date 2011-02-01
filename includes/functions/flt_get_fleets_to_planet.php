@@ -1,23 +1,31 @@
 <?php
-function flt_get_fleets_to_planet($planet)
+function flt_get_fleets_to_planet($planet, $fleet_db_list = 0)
 {
   global $user, $sn_data;
   $sn_groups = &$sn_data['groups'];
 
-  if(!$planet)
+  if(!$planet && !$fleet_db_list)
   {
     return $planet;
   }
 
-  $sql_fleets = doquery(
-    "SELECT * FROM {{fleets}} WHERE
-      (fleet_start_galaxy = {$planet['galaxy']} AND fleet_start_system = {$planet['system']} AND fleet_start_planet = {$planet['planet']} AND fleet_start_type = {$planet['planet_type']} AND fleet_mess = 1)
-      OR
-      (fleet_end_galaxy = {$planet['galaxy']} AND fleet_end_system = {$planet['system']} AND fleet_end_planet = {$planet['planet']} AND fleet_end_type = {$planet['planet_type']} AND fleet_mess = 0);"
-  );
-  $fleet_list['total'] = mysql_num_rows($sql_fleets);
+  if($fleet_db_list === 0)
+  {
+    $sql_fleets = doquery(
+      "SELECT * FROM {{fleets}} WHERE
+        (fleet_start_galaxy = {$planet['galaxy']} AND fleet_start_system = {$planet['system']} AND fleet_start_planet = {$planet['planet']} AND fleet_start_type = {$planet['planet_type']} AND fleet_mess = 1)
+        OR
+        (fleet_end_galaxy = {$planet['galaxy']} AND fleet_end_system = {$planet['system']} AND fleet_end_planet = {$planet['planet']} AND fleet_end_type = {$planet['planet_type']} AND fleet_mess = 0);"
+    );
+    $fleet_db_list = array();
+    while ($fleet = mysql_fetch_assoc($sql_fleets))
+    {
+      $fleet_db_list[] = $fleet;
+    }
+  }
 
-  while ($fleet = mysql_fetch_assoc($sql_fleets))
+//  while ($fleet = mysql_fetch_assoc($sql_fleets))
+  foreach($fleet_db_list as $fleet)
   {
     if($fleet['fleet_owner'] == $user['id'])
     {
