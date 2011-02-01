@@ -79,7 +79,7 @@ if ($confirm)
 }
 elseif ($email)
 {
-  $user_id = doquery("SELECT `id` FROM {{users}} WHERE `email` = '{$email}' LIMIT 1;", '', true);
+  $user_id = doquery("SELECT `id` FROM {{users}} WHERE `email_2` = '{$email}' LIMIT 1;", '', true);
 
   if (!$user_id['id'])
   {
