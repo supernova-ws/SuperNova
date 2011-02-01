@@ -103,7 +103,8 @@ $PhalanxRange  = GetPhalanxRange($HavePhalanx);
 
 $fleet_id = 1;
 $fleets = array();
-for ($Planet = 1; $Planet < 16; $Planet++) {
+for ($Planet = 1; $Planet < 16; $Planet++)
+{
   unset($GalaxyRowPlanet);
   unset($GalaxyRowMoon);
   unset($GalaxyRowava);
@@ -140,14 +141,20 @@ for ($Planet = 1; $Planet < 16; $Planet++) {
     $RowUserPoints = $GalaxyRowUser['points'];
 
     if($GalaxyRowUser['id'])
-      if ($GalaxyRowUser['ally_id']) {
+    {
+      if ($GalaxyRowUser['ally_id'])
+      {
         if($cached['allies'][$GalaxyRowUser['ally_id']])
+        {
           $allyquery = $cached['allies'][$GalaxyRowUser['ally_id']];
-        else{
+        }
+        else
+        {
           $allyquery = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$GalaxyRowUser['ally_id']}';", '', true);
           $cached['allies'][$GalaxyRowUser['ally_id']] = $allyquery;
         }
       }
+    }
 
     $fleet_list = flt_get_fleets_to_planet($GalaxyRowPlanet);
     if($fleet_list['own']['count'])
