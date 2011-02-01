@@ -243,37 +243,42 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
     $fleet_row['fleet_end_type'] = PT_MOON;
   }
 
-  $mission_data = $sn_data['groups']['missions'][$fleet_row['fleet_mission']];
-
-// А здесь надо проверять, какие нужны данные и кэшировать только их
-  $source = array('planet_hash' => '', 'user_id' => 0);
-  if($mission_data['src_planet'] || $mission_data['src_user'])
-  {
-    $source = flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
-  }
-  else
-  {
-  }
-
-  $destination = array('planet_hash' => '', 'user_id' => 0);
-  if($fleet_row['fleet_mission'] != MT_EXPLORE && ($mission_data['dst_planet'] || $mission_data['dst_user']))
-  {
-    $destination = flt_cache_planet(array('galaxy' => $fleet_row['fleet_end_galaxy'], 'system' => $fleet_row['fleet_end_system'], 'planet' => $fleet_row['fleet_end_planet'], 'planet_type' => $fleet_row['fleet_end_type']), &$flt_user_cache, &$flt_planet_cache);
-  }
-  else
-  {
-  }
-
+  // On CACHE_EVENT we will cache only fleet to reduce row lock rate
   if($cache_mode & CACHE_EVENT == CACHE_EVENT)
   {
     $flt_event_cache[] = array(
       'fleet_id'        => $fleet_row['fleet_id'],
       'fleet_time'      => $fleet_row['fleet_time'],
-      'src_planet_hash' => $source['planet_hash'] ? $source['planet_hash'] : '',
-      'src_user_id'     => $source['user_id'] ? $source['user_id'] : 0,
-      'dst_planet_hash' => $destination['planet_hash'] ? $destination['planet_hash'] : '',
-      'dst_user_id'     => $destination['user_id'] ? $destination['user_id'] : 0
+      'src_planet_hash' => flt_planet_hash($fleet_row, 'fleet_start_'),
+      'src_user_id'     => $fleet_row['fleet_owner'],
+      'dst_planet_hash' => flt_planet_hash($fleet_row, 'fleet_end_'),
+      'dst_user_id'     => $fleet_row['fleet_target_owner']
     );
+  }
+  else
+  {
+    $mission_data = $sn_data['groups']['missions'][$fleet_row['fleet_mission']];
+
+// А здесь надо проверять, какие нужны данные и кэшировать только их
+    $source = array('planet_hash' => '', 'user_id' => 0);
+    if($mission_data['src_planet'])
+    {
+      flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
+    }
+    elseif($mission_data['src_user'])
+    {
+      flt_cache_user($fleet_row['fleet_owner'], &$flt_user_cache);
+    }
+
+    $destination = array('planet_hash' => '', 'user_id' => 0);
+    if($mission_data['dst_planet'])
+    {
+      $destination = flt_cache_planet(array('galaxy' => $fleet_row['fleet_end_galaxy'], 'system' => $fleet_row['fleet_end_system'], 'planet' => $fleet_row['fleet_end_planet'], 'planet_type' => $fleet_row['fleet_end_type']), &$flt_user_cache, &$flt_planet_cache);
+    }
+    elseif($mission_data['dst_user'])
+    {
+      flt_cache_user($fleet_row['fleet_target_owner'], &$flt_user_cache);
+    }
   }
 
   return true;
