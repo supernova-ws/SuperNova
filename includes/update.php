@@ -483,6 +483,11 @@ switch(intval($config->db_version))
       "ADD INDEX `i_time` (`message_time`)"
     ), !$update_indexes['messages']['i_owner_time']);
     mysql_query("DROP TABLE IF EXISTS {$config->db_prefix}fleet_log;");
+
+    upd_do_query("UPDATE `{{planets}}` SET `metal` = 0 WHERE `metal` < 0;");
+    upd_do_query("UPDATE `{{planets}}` SET `crystal` = 0 WHERE `crystal` < 0;");
+    upd_do_query("UPDATE `{{planets}}` SET `deuterium` = 0 WHERE `deuterium` < 0;");
+    upd_do_query("DELETE FROM `{{logs}}` WHERE `log_code` = 501;");
 /*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
   doquery('COMMIT;');
