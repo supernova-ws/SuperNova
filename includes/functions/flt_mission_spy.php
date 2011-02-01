@@ -139,13 +139,18 @@ function flt_mission_spy($mission_data)
   $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
   if($fleet_array[210] >= 1)
   {
-    $TargetSpyLvl      = mrc_modify_value($target_user_row, $target_planet_row, MRC_SPY, GetSpyLevel($target_user_row));
-
-    $CurrentSpyLvl     = mrc_modify_value($spying_user_row, $spying_planet_row, MRC_SPY, GetSpyLevel($spying_user_row));
+    $TargetSpyLvl      = GetSpyLevel($target_user_row); //mrc_modify_value($target_user_row, $target_planet_row, MRC_SPY, GetSpyLevel($target_user_row));
+    $CurrentSpyLvl     = GetSpyLevel($spying_user_row); //mrc_modify_value($spying_user_row, $spying_planet_row, MRC_SPY, GetSpyLevel($spying_user_row));
 
     $spy_probes = $fleet_array[210];
     $spy_diff   = $CurrentSpyLvl + sqrt($spy_probes) - 1 - $TargetSpyLvl;
-
+/*
+    pdump($spy_probes, '$spy_probes');
+    pdump($CurrentSpyLvl, '$CurrentSpyLvl');
+    pdump($TargetSpyLvl, '$TargetSpyLvl');
+    pdump(sqrt($spy_probes), 'sqrt($spy_probes)');
+    pdump($spy_diff, '$spy_diff');
+*/
     global $lang, $sn_data;
 
     $spy_resources = flt_spy_scan ( $target_planet_row, 0, $lang['sys_spy_maretials'], $target_user_row['username'] );
@@ -159,8 +164,6 @@ function flt_mission_spy($mission_data)
     $spy_info      = flt_spy_scan ( $target_planet_row, 3, $lang['tech'][0] );
     $spy_buildings = "<div class='spy_long'>{$spy_info}</div>";
 
-    $spy_info      = flt_spy_scan ( $target_user_row, 4, $lang['tech'][100] );
-    $spy_tech      = "<div class='spy_long'>{$spy_info}</div>";
 
     $combat_pack[0] = array(
       RES_METAL => $target_planet_row['metal'],
@@ -177,10 +180,15 @@ function flt_mission_spy($mission_data)
       $spy_message .= $spy_defence;
       coe_compress_add_units($sn_data['groups']['defense_active'], $target_planet_row, $combat_pack[0]);
     }
-    if ($spy_diff >= 5) {
+    if ($spy_diff >= 5)
+    {
       $spy_message .= $spy_buildings;
     }
-    if ($spy_diff >= 7) {
+    if ($spy_diff >= 7)
+    {
+      $spy_info      = flt_spy_scan ( $target_user_row, 4, $lang['tech'][100] );
+      $spy_tech      = "<div class='spy_long'>{$spy_info}</div>";
+
       $spy_message .= $spy_tech;
       coe_compress_add_units(array(109, 110, 111), $target_user_row, $combat_pack[0]);
     }
