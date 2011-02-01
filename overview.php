@@ -256,8 +256,10 @@ switch ($mode)
       $list_planet_que = $UserPlanet['que'];
       $UserPlanet      = $UserPlanet['planet'];
 
+      $template_planet = tpl_parse_planet($UserPlanet, $list_planet_que);
+
       $planet_fleet_id = 0;
-      $fleet_list = flt_get_fleets_to_planet($UserPlanet);
+      $fleet_list = $template_planet['fleet_list'];
       if($fleet_list['own']['count'])
       {
         $planet_fleet_id = "p{$fleet_id}";
@@ -275,7 +277,7 @@ switch ($mode)
       }
 
       $moon_fleets = flt_get_fleets_to_planet($moon);
-      $template->assign_block_vars('planet', array_merge(tpl_parse_planet($UserPlanet, $list_planet_que), array(
+      $template->assign_block_vars('planet', array_merge($template_planet, array(
           'PLANET_FLEET_ID'  => $planet_fleet_id,
 
           'MOON_ID'      => $moon['id'],
