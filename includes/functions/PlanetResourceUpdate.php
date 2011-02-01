@@ -66,9 +66,10 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
         $incCount = ($Caps[$resName.'_perhour'][0] + $Caps['planet'][$resName.'_perhour'] * $Caps['production']) * $ProductionTime / 3600 ;
 
         $store_free = $Caps['planet'][$resName.'_max'] - $Caps['planet'][$resName];
-        $incCount = min($incCount, max(0, $store_free));
+        $incCount = max(0, min($incCount, max(0, $store_free)));
 
-        if($planet[$resName]<0){
+        if($planet[$resName] + $incCount < 0)
+        {
           $GLOBALS['debug']->warning("Player ID {$user['id']} have negative resources on ID {$planet['id']}.{$planet['planet_type']} [{$planet['galaxy']}:{$planet['system']}:{$planet['planet']}]. Difference {$planet[$resName]} of {$resName}", 'Negative Resources', 501);
         }
         $Caps['planet'][$resName] += $incCount;
