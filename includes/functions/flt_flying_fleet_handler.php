@@ -195,7 +195,7 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
   }
   else
   {
-    $fleet_row_id = $fleet_row['id'];
+    $fleet_row_id = $fleet_row['fleet_id'];
   }
 
   // $fleet_row is false - not existing DB record
@@ -244,7 +244,7 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
   }
 
   // On CACHE_EVENT we will cache only fleet to reduce row lock rate
-  if($cache_mode & CACHE_EVENT == CACHE_EVENT)
+  if(($cache_mode & CACHE_EVENT) == CACHE_EVENT)
   {
     $flt_event_cache[] = array(
       'fleet_id'        => $fleet_row['fleet_id'],
@@ -311,7 +311,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   switch($flt_update_mode)
   {
     case 0:
-      if($time_now - $config->flt_lastUpdate <= 8)
+      if($time_now - $config->flt_lastUpdate <= 1)
       {
         return;
       }
@@ -462,23 +462,23 @@ die();
     else
     {
       // Unsetting data that we broken in mission handler
-      if($mission_result & CACHE_FLEET == CACHE_FLEET)
+      if(($mission_result & CACHE_FLEET) == CACHE_FLEET)
       {
         unset($flt_fleet_cache[$fleet_event['fleet_id']]);
       }
-      if($mission_result & CACHE_USER_SRC == CACHE_USER_SRC)
+      if(($mission_result & CACHE_USER_SRC) == CACHE_USER_SRC)
       {
         unset($flt_user_cache[$fleet_event['src_user_id']]);
       }
-      if($mission_result & CACHE_USER_DST == CACHE_USER_DST)
+      if(($mission_result & CACHE_USER_DST) == CACHE_USER_DST)
       {
         unset($flt_user_cache[$fleet_event['dst_user_id']]);
       }
-      if($mission_result & CACHE_PLANET_SRC == CACHE_PLANET_SRC)
+      if(($mission_result & CACHE_PLANET_SRC) == CACHE_PLANET_SRC)
       {
         unset($flt_planet_cache[$fleet_event['src_planet_hash']]);
       }
-      if($mission_result & CACHE_PLANET_DST == CACHE_PLANET_DST)
+      if(($mission_result & CACHE_PLANET_DST) == CACHE_PLANET_DST)
       {
         unset($flt_planet_cache[$fleet_event['dst_planet_hash']]);
       }

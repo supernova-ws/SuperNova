@@ -280,7 +280,7 @@ function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet )
 
     // Подсчет кол-ва онлайн и кто онлайн
     $time = $time_now - 15*60;
-    $OnlineUsersNames2 = doquery("SELECT `username` FROM {{users}} WHERE `onlinetime`>'{$time}'");
+    $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}';", '', true);
 
     $template->assign_vars(array(
       'dpath'      => $dpath,
@@ -288,7 +288,7 @@ function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet )
       'DATE_TEXT'          => "$day_of_week, $day $month $year {$lang['top_of_year']},",
       'TIME_TEXT'          => "{$hour}:{$min}:{$sec}",
 
-      'USERS_ONLINE'         => mysql_num_rows($OnlineUsersNames2),
+      'USERS_ONLINE'         => $online_count['users_online'],
       'USERS_TOTAL'          => $config->users_amount,
 
       'TOPNAV_CURRENT_PLANET' => $CurrentUser['current_planet'],
