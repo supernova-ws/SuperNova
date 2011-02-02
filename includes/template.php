@@ -282,6 +282,10 @@ function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet )
     $time = $time_now - 15*60;
     $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}';", '', true);
 
+    $new_messages_text  = $CurrentUser['mnl_joueur'] ? "<span class=mnl_joueur>{$CurrentUser['mnl_joueur']}</span>/" : '';
+    $new_messages_text .= $CurrentUser['mnl_alliance'] ? "<span class=mnl_alliance>{$CurrentUser['mnl_alliance']}</span>/" : '';
+    $new_messages_text .= $CurrentUser['new_message'];
+
     $template->assign_vars(array(
       'dpath'      => $dpath,
       'TIME_NOW'   => $time_now,
@@ -317,7 +321,8 @@ function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet )
       'ENERGY_BALANCE' => pretty_number($CurrentPlanet['energy_max'] - $CurrentPlanet['energy_used'], true, 0),
       'ENERGY_MAX' => pretty_number($CurrentPlanet['energy_max']),
 
-      'TOPNAV_MESSAGES'    => $CurrentUser['new_message'],
+      'TOPNAV_MESSAGES'    => $new_messages_text,
+      //'TOPNAV_MESSAGES'    => $CurrentUser['new_message'],
     ));
 
     $TopBar = parsetemplate( $template, $parse);
