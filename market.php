@@ -73,6 +73,10 @@ switch($mode)
 
       if(!$intError)
       {
+        doquery('START TRANSACTION;');
+        $global_data = sys_o_get_updated($user, $planetrow, $time_now);
+        $planetrow = $global_data['planet'];
+        $newrow = $planetrow;
         foreach($tradeList as $resource_id => $amount)
         {
           $amount = abs(intval($amount));
@@ -85,11 +89,12 @@ switch($mode)
           else
           {
             $qry .= "`{$sn_data[$resource_id]['name']}` = `{$sn_data[$resource_id]['name']}` - '{$amount}', ";
-            if ($planetrow[$reslist['resources'][$resource_id]] < $amount)
+            if ($planetrow[$sn_data[$resource_id]['name']] < $amount)
             {
               $intError = 2;
+              break;
             }
-            $newrow[$reslist['resources'][$resource_id]] -= $amount;
+            $newrow[$sn_data[$resource_id]['name']] -= $amount;
           }
         }
       }
@@ -108,13 +113,14 @@ switch($mode)
       {
         $rpg_deduct = $config->rpg_cost_trader + $tradeList[3];
         $amountDM = intval($amountDM);
-        $newrow[$reslist['resources'][$exchangeTo]] += $value;
+        $newrow[$sn_data[$exchangeTo]['name']] += $value;
 
         $qry = "UPDATE {{planets}} SET {$qry} `{$sn_data[$exchangeTo]['name']}` = `{$sn_data[$exchangeTo]['name']}` + '{$value}' WHERE `id` = {$planetrow['id']} LIMIT 1;";
         doquery($qry);
 
         $planetrow = $newrow;
       }
+      doquery('COMMIT;');
       $message = parsetemplate(gettemplate('message_body'), array('title' => $intError ? $lang['eco_mrk_error_title'] : $page_title, 'mes' => $error_list[$intError]));
     }
 
