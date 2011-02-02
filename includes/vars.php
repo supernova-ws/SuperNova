@@ -1622,6 +1622,8 @@ if ( defined('INSIDE')) {
       'resources_planet' => array (RES_METAL, RES_CRYSTAL, RES_DEUTERIUM, RES_ENERGY),
       // Resources can be looted from planet
       'resources_loot' => array (RES_METAL, RES_CRYSTAL, RES_DEUTERIUM),
+      // Resources that can be tradeable in market trader
+      'resources_trader' => array(RES_METAL, RES_CRYSTAL, RES_DEUTERIUM, RES_DARK_MATTER),
 
 //      // Ques list
 //      'ques' => array(QUE_STRUCTURES, QUE_HANGAR, QUE_RESEARCH),
