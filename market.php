@@ -21,11 +21,12 @@ includeLang('fleet');
 
 ini_set('display_errors', 1);
 
-$mode = intval($_GET['mode'] ? $_GET['mode'] : $_POST['mode']);
+$mode = sys_get_param_int('mode');
+$action = sys_get_param_int('action');
 $tradeList = $_POST['spend'];
 $shipList  = $_POST['ships'];
 $exchangeTo = intval($_POST['exchangeTo']);
-$exchangeTo = ($exchangeTo<3) ? $exchangeTo : 0 ;
+$exchangeTo = in_array($exchangeTo, $sn_data['groups']['resources_trader']) ? $exchangeTo : 0 ;
 
 $page_title = "{$lang['eco_mrk_title']}";
 
@@ -49,6 +50,13 @@ switch($mode)
     $intError = 0;
     if(is_array($tradeList) && isset($exchangeTo))
     {
+      $rates = array(
+        RES_METAL => $config->rpg_exchange_metal,
+        RES_CRYSTAL => $config->rpg_exchange_crystal,
+        RES_DEUTERIUM => $config->rpg_exchange_deuterium,
+        RES_DARK_MATTER => $config->rpg_exchange_darkMatter
+      );
+
       $total_amount = 0;
       foreach($tradeList as $amount)
       {
@@ -59,54 +67,55 @@ switch($mode)
         }
         else
         {
-          $total_amount += $amount;
+          $total_amount += abs($amount);
         }
       }
+
+      if(!$intError)
+      {
+        foreach($tradeList as $resource_id => $amount)
+        {
+          $amount = abs(intval($amount));
+          $value += $amount * $rates[$resource_id] / $rates[$exchangeTo];
+
+          if($resource_id == RES_DARK_MATTER)
+          {
+            $amountDM = $amount;
+          }
+          else
+          {
+            $qry .= "`{$sn_data[$resource_id]['name']}` = `{$sn_data[$resource_id]['name']}` - '{$amount}', ";
+            if ($planetrow[$reslist['resources'][$resource_id]] < $amount)
+            {
+              $intError = 2;
+            }
+            $newrow[$reslist['resources'][$resource_id]] -= $amount;
+          }
+        }
+      }
+
       if ($total_amount <= 0)
       {
         $intError = 3;
       }
 
-      if($user['rpg_points'] < $config->rpg_cost_trader + $tradeList[3])
+      if($user['rpg_points'] < $config->rpg_cost_trader + $tradeList[RES_DARK_MATTER])
       {
         $intError = 1;
       }
 
       if(!$intError)
       {
-        $rates = array($config->rpg_exchange_metal, $config->rpg_exchange_crystal, $config->rpg_exchange_deuterium, $config->rpg_exchange_darkMatter);
+        $rpg_deduct = $config->rpg_cost_trader + $tradeList[3];
+        $amountDM = intval($amountDM);
+        $newrow[$reslist['resources'][$exchangeTo]] += $value;
 
-        $qry = "UPDATE {{planets}} SET ";
-        foreach($tradeList as $res_name => $amount)
-        {
-          $amount = abs(intval($amount));
-          $value += $amount * $rates[$res_name] / $rates[$exchangeTo];
+        $qry = "UPDATE {{planets}} SET {$qry} `{$sn_data[$exchangeTo]['name']}` = `{$sn_data[$exchangeTo]['name']}` + '{$value}' WHERE `id` = {$planetrow['id']} LIMIT 1;";
+        doquery($qry);
 
-          if($res_name == 3)
-          {
-            $amountDM = $amount;
-          }
-          else
-          {
-            $qry .= "`{$reslist['resources'][$res_name]}` = `{$reslist['resources'][$res_name]}` - {$amount}, ";
-            if($planetrow[$reslist['resources'][$res_name]] < $amount) $intError = 2;
-            $newrow[$reslist['resources'][$res_name]] -= $amount;
-          }
-        }
-
-        if(!$intError)
-        {
-          $rpg_deduct = $config->rpg_cost_trader + $tradeList[3];
-          $amountDM = intval($amountDM);
-          $newrow[$reslist['resources'][$exchangeTo]] += $value;
-
-          $qry .= "`{$reslist['resources'][$exchangeTo]}` = `{$reslist['resources'][$exchangeTo]}` + {$value} WHERE `id` = {$planetrow['id']};";
-          doquery($qry);
-
-          $planetrow = $newrow;
-        }
+        $planetrow = $newrow;
       }
-      $message = parsetemplate(gettemplate('message_body'), array('title' => $lang['eco_mrk_error_title'], 'mes' => $error_list[$intError]));
+      $message = parsetemplate(gettemplate('message_body'), array('title' => $intError ? $lang['eco_mrk_error_title'] : $page_title, 'mes' => $error_list[$intError]));
     }
 
     $template = gettemplate('market_trader', true);
@@ -117,33 +126,35 @@ switch($mode)
       'rpg_exchange_darkMatter' => $config->rpg_exchange_darkMatter,
     ));
 
-    $data = array(
-      'avail' => array( floor($planetrow['metal']), floor($planetrow['crystal']), floor($planetrow['deuterium']), $user['rpg_points'] - $config->rpg_cost_trader, ),
-      'name'=> array( $lang['Metal'], $lang['Crystal'], $lang['Deuterium'], $lang['dark_matter'], ),
-    );
-
-    if($intError)
+    $resource_list = array();
+    foreach($sn_data['groups']['resources_loot'] as $resource_id)
     {
-      for($i=0; $i<=3; $i++)
-      {
-        $data['spend'][$i] = abs(intval($tradeList[$i]));
-      }
-
-      $template->assign_var('exchangeTo', $exchangeTo);
-    }
-
-    for($i=0; $i<=3; $i++)
-    {
+      $config_name = "rpg_exchange_{$sn_data[$resource_id]['name']}";
+      $res_amount = floor($planetrow[$sn_data[$resource_id]['name']]);
       $template->assign_block_vars('resources', array(
-        'ID'    => $i,
-        'NAME'  => $data['name'][$i],
-        'AVAIL' => $data['avail'][$i],
-        'SPEND' => $data['spend'][$i],
+        'ID'    => $resource_id,
+        'NAME'  => $lang['tech'][$resource_id],
+        'AVAIL' => $res_amount,
+        'SPENT' => $intError ? abs(intval($tradeList[$resource_id])) : 0,
+        'RATE'  => $config->$config_name
       ));
-      $avail_res .= $data['avail'][$i] . ', ';
     }
-    $avail_res .= '0';
-    $template->assign_var('resources', $avail_res);
+    $res_amount = $user['rpg_points'] - $config->rpg_cost_trader;
+    $template->assign_block_vars('resources', array(
+      'ID'    => RES_DARK_MATTER,
+      'NAME'  => $lang['tech'][RES_DARK_MATTER],
+      'AVAIL' => $res_amount,
+      'SPENT' => $intError ? abs(intval($tradeList[RES_DARK_MATTER])) : 0,
+      'RATE'  => $config->rpg_exchange_darkMatter
+    ));
+
+    $template->assign_vars(array(
+      'exchangeTo' => $exchangeTo,
+      'RES_METAL' => RES_METAL,
+      'RES_CRYSTAL' => RES_CRYSTAL,
+      'RES_DEUTERIUM' => RES_DEUTERIUM,
+      'RES_DARK_MATTER' => RES_DARK_MATTER
+    ));
   break;
 
   case 2: // Fleet scraper
@@ -153,6 +164,7 @@ switch($mode)
       1 => $lang['eco_mrk_error_noDM'],
       2 => $lang['eco_mrk_error_noShips'],
       3 => $lang['eco_mrk_error_zeroRes'],
+      4 => $lang['eco_mrk_error_not_a_ship'],
     );
 
     if(is_array($shipList))
@@ -171,6 +183,12 @@ switch($mode)
           if($newrow[$sn_data[$shipID]['name']] < $shipCount)
           {
             $intError = 2;
+            break;
+          }
+          if(!in_array($shipID, $sn_data['groups']['fleet']))
+          {
+            $debug->warning('Hack Attempt', 'User supplied non-ship unit ID on Black Market page', 306);
+            $intError = 4;
             break;
           }
           $ship_db_name = $sn_data[$shipID]['name'];
@@ -264,6 +282,7 @@ switch($mode)
       2 => $lang['eco_mrk_error_noStock'],
       3 => $lang['eco_mrk_error_zeroResStock'],
       4 => $lang['eco_mrk_error_noResources'],
+      5 => $lang['eco_mrk_error_not_a_ship'],
     );
 
     if(is_array($shipList))
@@ -279,6 +298,12 @@ switch($mode)
           if($stock[$shipID] < $shipCount)
           {
             $intError = 2;
+            break;
+          }
+          if(!in_array($shipID, $sn_data['groups']['fleet']))
+          {
+            $debug->warning('Hack Attempt', 'User supplied non-ship unit ID on Black Market page', 306);
+            $intError = 5;
             break;
           }
           $qry .= "`{$sn_data[$shipID]['name']}` = `{$sn_data[$shipID]['name']}` + {$shipCount}, ";
