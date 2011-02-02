@@ -164,6 +164,7 @@ switch($mode)
       1 => $lang['eco_mrk_error_noDM'],
       2 => $lang['eco_mrk_error_noShips'],
       3 => $lang['eco_mrk_error_zeroRes'],
+      4 => $lang['eco_mrk_error_not_a_ship'],
     );
 
     if(is_array($shipList))
@@ -182,6 +183,12 @@ switch($mode)
           if($newrow[$sn_data[$shipID]['name']] < $shipCount)
           {
             $intError = 2;
+            break;
+          }
+          if(!in_array($shipID, $sn_data['groups']['fleet']))
+          {
+            $debug->warning('Hack Attempt', 'User supplied non-ship unit ID on Black Market page', 306);
+            $intError = 4;
             break;
           }
           $ship_db_name = $sn_data[$shipID]['name'];
@@ -275,6 +282,7 @@ switch($mode)
       2 => $lang['eco_mrk_error_noStock'],
       3 => $lang['eco_mrk_error_zeroResStock'],
       4 => $lang['eco_mrk_error_noResources'],
+      5 => $lang['eco_mrk_error_not_a_ship'],
     );
 
     if(is_array($shipList))
@@ -290,6 +298,12 @@ switch($mode)
           if($stock[$shipID] < $shipCount)
           {
             $intError = 2;
+            break;
+          }
+          if(!in_array($shipID, $sn_data['groups']['fleet']))
+          {
+            $debug->warning('Hack Attempt', 'User supplied non-ship unit ID on Black Market page', 306);
+            $intError = 5;
             break;
           }
           $qry .= "`{$sn_data[$shipID]['name']}` = `{$sn_data[$shipID]['name']}` + {$shipCount}, ";
