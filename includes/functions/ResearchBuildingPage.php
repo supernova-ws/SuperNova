@@ -8,6 +8,11 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
+function eco_lab_is_building($config, $que)
+{
+  return $que['in_que_abs'][31] && !$config->BuildLabWhileRun ? true : false;
+}
+
 /**
  * GetRestPrice.php
  *

@@ -380,7 +380,7 @@ class classPersistent extends classCache
   {
     if($index)
     {
-      $qry = doquery("SELECT `{$this->sql_value_field}` FROM `{{table}}` WHERE `{$this->sql_index_field}` = '{$index}';", $this->table_name, true);
+      $qry = doquery("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index}';", '', true);
       $this->$index = $qry[$this->sql_value_field];
 
       return $qry[$this->sql_value_field];
@@ -446,8 +446,8 @@ class classPersistent extends classCache
       }
 
       $qry = substr($qry, 0, -1);
-      $qry = "REPLACE INTO `{{table}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES {$qry};";
-      doquery($qry, $this->table_name);
+      $qry = "REPLACE INTO `{{{$this->table_name}}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES {$qry};";
+      doquery($qry);
     };
   }
 }

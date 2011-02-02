@@ -49,7 +49,7 @@ if ($user['authlevel'] < 3)
       $intergalactic_tech     = $_POST['intergalactic_tech'];
       $expedition_tech     = $_POST['expedition_tech'];
       $graviton_tech     = $_POST['graviton_tech'];
-      $QryUpdatePlanet  = "UPDATE {{table}} SET ";
+      $QryUpdatePlanet  = "UPDATE {{users}} SET ";
       $QryUpdatePlanet .= "`spy_tech` = `spy_tech` + '". $spy_tech ."', ";
       $QryUpdatePlanet .= "`computer_tech` = `computer_tech` + '". $computer_tech ."', ";
       $QryUpdatePlanet .= "`military_tech` = `military_tech` + '". $military_tech ."', ";
@@ -68,7 +68,7 @@ if ($user['authlevel'] < 3)
       $QryUpdatePlanet .= "`graviton_tech` = `graviton_tech` + '". $graviton_tech ."' ";
       $QryUpdatePlanet .= "WHERE ";
       $QryUpdatePlanet .= "`id` = '". $id ."' ";
-      doquery( $QryUpdatePlanet, "users");
+      doquery( $QryUpdatePlanet);
 
       AdminMessage ( $lang['adm_addresearch2'], $lang['adm_addresearch1'] );
     }

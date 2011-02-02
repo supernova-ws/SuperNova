@@ -33,8 +33,10 @@ if ($IsUserChecked == false) {
     $Page .= "<body>";
     $Page .= "<center>";
 
-    if (($raportrow["owners"] == $user["id"]) and
-      ($raportrow["a_zestrzelona"] == 1)) {
+    if (
+        ($raportrow["owners"] == $user["id"])
+        //and ($raportrow["a_zestrzelona"] == 1)
+     ) {
       $Page .= "<td>Контакт с флотом был потерян.<br>";
       $Page .= "(Скорее всего флот был уничтожен за 1 раунд.)</td>";
     } else {

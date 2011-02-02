@@ -22,6 +22,7 @@ function flt_build_gathering($planet_ids)
   $SpeedFactor = $GLOBALS['SpeedFactor'];
   $lang_sys_planet_type = $GLOBALS['lang']['sys_planet_type'];
   $lang_fl_attack_error = $GLOBALS['lang']['fl_attack_error'];
+  $time_now = $GLOBALS['time_now'];
 
   $planet_list = array();
 
@@ -42,6 +43,9 @@ function flt_build_gathering($planet_ids)
     $planets_db_list = doquery($query);
     while($planet_db_data = mysql_fetch_assoc($planets_db_list))
     { // begin planet loop
+      $planet_db_data = sys_o_get_updated($user, $planet_db_data, $time_now, true);
+      $planet_db_data = $planet_db_data['planet'];
+
       $planet_id = $planet_db_data['id'];
 
       $planet_list[$planet_id] = array(
@@ -169,7 +173,7 @@ if(!empty($planet_ids))
   {
     if($planet_data['RESULT'] == ATTACK_ALLOWED)
     {
-      $planet_data['RESULT'] = flt_send_fleet($user, $planet_data['PLANET_DB_DATA'], $planetrow, $planet_data['FLEET'], MT_TRANSPORT);
+      $planet_data['RESULT'] = flt_t_send_fleet($user, $planet_data['PLANET_DB_DATA'], $planetrow, $planet_data['FLEET'], MT_TRANSPORT);
     }
 
     $planet_data['MESSAGE'] = $lang['fl_attack_error'][$planet_data['RESULT']];
@@ -194,7 +198,7 @@ $planet_ids = array();
 $colonies = SortUserPlanets ($user, $planetrow, ', metal, crystal, deuterium');
 if (mysql_num_rows($colonies) >= 1)
 {
-  while ($row = mysql_fetch_array($colonies))
+  while ($row = mysql_fetch_assoc($colonies))
   {
     $planet_list[] = array(
       'ID'         => $row['id'],

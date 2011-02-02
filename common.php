@@ -13,66 +13,84 @@ $user = sn_autologin(!$allow_anonymous);
 
 if($config->game_disable)
 {
-  if ($user['authlevel'] < 1)
+  $disable_reason = sys_bbcodeParse($config->game_disable_reason);
+  if ($user['authlevel'] < 1 || !(defined('IN_ADMIN') && IN_ADMIN))
   {
-    message ( sys_bbcodeParse($config->game_disable_reason), $config->game_name );
+    message($disable_reason, $config->game_name);
+    ob_end_flush();
     die();
   }
   else
   {
-    $disable_reason = sys_bbcodeParse($config->game_disable_reason);
     print("<div align=center style='font-size: 24; font-weight: bold; color:red;'>{$disable_reason}</div><br>");
   }
 }
 
-if(!$user && !$allow_anonymous)
+if(
+  !($allow_anonymous || ($user && is_array($user) && isset($user['id']) && $user['id'])) ||
+  (defined('IN_ADMIN') && IN_ADMIN && $user['authlevel'] < 1)
+)
 {
+  setcookie($config->COOKIE_NAME, '', time() - 3600*25);
   header('Location: login.php');
+  ob_end_flush();
+  die();
 }
 
-if ($user && is_array($user) && isset($user['id']) && !empty($user['id']))
+if (defined('IN_ADMIN') && IN_ADMIN)
 {
-  FlyingFleetHandler();
-
-  if ( defined('IN_ADMIN') )
+  $UserSkin  = $user['dpath'];
+  $local     = stristr ( $UserSkin, "http:");
+  if ($local === false)
   {
-    $UserSkin  = $user['dpath'];
-    $local     = stristr ( $UserSkin, "http:");
-    if ($local === false)
+    if (!$user['dpath'])
     {
-      if (!$user['dpath'])
-      {
-        $dpath     = "../". DEFAULT_SKINPATH  ;
-      }
-      else
-      {
-        $dpath     = "../". $user["dpath"];
-      }
+      $dpath     = "../". DEFAULT_SKINPATH  ;
     }
     else
     {
-      $dpath     = $UserSkin;
+      $dpath     = "../". $user["dpath"];
     }
   }
   else
   {
-    $dpath     = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
+    $dpath     = $UserSkin;
   }
+}
+else
+{
+  $dpath     = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
-  SetSelectedPlanet($user);
-  $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$user['current_planet']}' LIMIT 1;", '', true);
-  if(!$planetrow)
+  flt_flying_fleet_handler($config, $skip_fleet_update);
+
+  $planet_id = SetSelectedPlanet($user);
+  doquery('START TRANSACTION;');
+  $global_data = sys_o_get_updated($user, $planet_id, $time_now);
+  if(!$global_data['planet'])
   {
-    $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$user['id_planet']}' LIMIT 1;", '', true);
-    if(!$planetrow)
-    {
-      header('Location: login.php');
-    }
+    doquery("UPDATE {{users}} SET `current_planet` = '{$user['id_planet']}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    $global_data = sys_o_get_updated($user, $user['id_planet'], $time_now);
   }
-  CheckPlanetUsedFields($planetrow);
-  $que = PlanetResourceUpdate($user, $planetrow, $time_now);
+  doquery('COMMIT;');
 
-  if(!$skip_ban_check && !(IN_ADMIN === true))
+  if(!$global_data)
+  {
+    $debug->error("User ID {$user['id']} has no current planet and no homeworld", 'User record error', 502);
+  }
+
+  $planetrow = $global_data['planet'];
+  if(!($planetrow && isset($planetrow['id']) && $planetrow['id']))
+  {
+    header('Location: login.php');
+    ob_end_flush();
+    die();
+  }
+
+  $que = $global_data['que'];
+
+  CheckPlanetUsedFields($planetrow);
+
+  if(!$skip_ban_check)
   {
     sys_user_vacation($user);
   }

@@ -578,16 +578,7 @@ function pretty_number($n, $floor = true, $color = false, $limit = false)
 //
 function eco_planet_fields_max($planet)
 {
-  global $resource;
-
-  if($planet['planet_type'] == PT_PLANET)
-  {
-    return $planet['field_max'] + $planet[$resource[33]] * 5;
-  }
-  elseif($planet['planet_type'] == PT_MOON)
-  {
-    return $planet['field_max'] + $planet[$resource[41]] * 3;
-  }
+  return $planet['field_max'] + ($planet['planet_type'] == PT_PLANET ? $planet[$GLOBALS['sn_data'][33]['name']] * 5 : $planet[$GLOBALS['sn_data'][41]['name']] * 3);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -595,8 +586,7 @@ function eco_planet_fields_max($planet)
 //
 function GetSpyLevel(&$user)
 {
-  global $sn_data;
-  return mrc_modify_value($user, $false, MRC_SPY, $user[$sn_data[106]['name']]);
+  return mrc_modify_value($user, $false, MRC_SPY, $user[$GLOBALS['sn_data'][106]['name']]);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -604,8 +594,7 @@ function GetSpyLevel(&$user)
 //
 function GetMaxFleets(&$user)
 {
-  global $sn_data;
-  return mrc_modify_value($user, false, MRC_COORDINATOR, 1 + $user[$sn_data[108]['name']]);
+  return mrc_modify_value($user, false, MRC_COORDINATOR, 1 + $user[$GLOBALS['sn_data'][108]['name']]);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -613,8 +602,7 @@ function GetMaxFleets(&$user)
 //
 function GetMaxExpeditions(&$user)
 {
-  global $resource;
-  return floor(sqrt($user[$resource[124]]));
+  return floor(sqrt($user[$GLOBALS['sn_data'][124]['name']]));
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -622,9 +610,7 @@ function GetMaxExpeditions(&$user)
 //
 function CheckInputStrings($String)
 {
-  global $ListCensure;
-
-  return (preg_replace( $ListCensure, '*', $String ));
+  return preg_replace($GLOBALS['ListCensure'], '*', $String);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -649,19 +635,15 @@ function PrintPlanetCoords(&$array)
 //
 function sys_log_hit()
 {
-  global $config, $sys_stop_log_hit;
-
-  if(!$config->game_counter || $sys_stop_log_hit)
+  if(!$GLOBALS['config']->game_counter || $GLOBALS['sys_stop_log_hit'])
   {
     return;
   }
 
-  global $time_now, $user, $is_watching;
-
-  $is_watching = true;
+  $GLOBALS['is_watching'] = true;
   $ip = sys_get_user_ip();
-  doquery("INSERT INTO {{counter}} (`time`, `page`, `url`, `user_id`, `ip`, `proxy`) VALUES ('{$time_now}', '{$_SERVER['PHP_SELF']}', '{$_SERVER['REQUEST_URI']}', '{$user['id']}', '{$ip['client']}', '{$ip['proxy']}');");
-  $is_watching = false;
+  doquery("INSERT INTO {{counter}} (`time`, `page`, `url`, `user_id`, `ip`, `proxy`) VALUES ('{$GLOBALS['time_now']}', '{$_SERVER['PHP_SELF']}', '{$_SERVER['REQUEST_URI']}', '{$GLOBALS['user']['id']}', '{$ip['client']}', '{$ip['proxy']}');");
+  $GLOBALS['is_watching'] = false;
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -670,11 +652,9 @@ function sys_log_hit()
 //
 function sys_user_vacation($user)
 {
-  global $time_now;
-
   if(sys_get_param_str('vacation') == 'leave')
   {
-    if($user['vacation'] < $time_now)
+    if($user['vacation'] < $GLOBALS['time_now'])
     {
       doquery("UPDATE {{users}} SET `vacation` = '0' WHERE `id` = '{$user['id']}' LIMIT 1;");
       $user['vacation'] = 0;
@@ -688,7 +668,7 @@ function sys_user_vacation($user)
     $template->assign_vars(array(
       'NAME'         => $user['username'],
       'VACATION_END' => date(FMT_DATE_TIME, $user['vacation']),
-      'CAN_LEAVE'    => $user['vacation'] <= $time_now,
+      'CAN_LEAVE'    => $user['vacation'] <= $GLOBALS['time_now'],
       'RANDOM'       => mt_rand(1, 2),
     ));
 
@@ -785,9 +765,7 @@ function sys_get_param_str($param_name, $default = '')
 
 function get_missile_range()
 {
-  global $sn_data, $user;
-
-  return max(0, $user[$sn_data[117]['name']] * 5 - 1);
+  return max(0, $GLOBALS['user'][$GLOBALS['sn_data'][117]['name']] * 5 - 1);
 }
 
 function GetPhalanxRange($phalanx_level)
@@ -797,15 +775,7 @@ function GetPhalanxRange($phalanx_level)
 
 function CheckAbandonPlanetState (&$planet)
 {
-  global $time_now;
-
-  if(!$planet['destruyed']) return;
-
-  if($planet['planet_type'] == 1 && $planet['destruyed'] <= $time_now)
-  {
-    doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}' LIMIT 1;");
-  }
-  elseif($planet['planet_type'] == 3 && ($planet['destruyed'] + 172800) <= $time_now)
+  if($planet['destruyed'] && $planet['destruyed'] <= $GLOBALS['time_now'])
   {
     doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}' LIMIT 1;");
   }
@@ -866,7 +836,8 @@ function mrc_modify_value($user, $planet = false, $mercenaries, $value)
  * @copyright 2008 By Chlorel for XNova
  */
 
-function SortUserPlanets ( $CurrentUser, $planet = false, $field_list = '' ) {
+function SortUserPlanets ( $CurrentUser, $planet = false, $field_list = '' )
+{
   $Order = ( $CurrentUser['planet_sort_order'] == 1 ) ? "DESC" : "ASC" ;
   $Sort  = $CurrentUser['planet_sort'];
 
@@ -937,7 +908,193 @@ function sys_random_string($length = 16, $allowed_chars = 'ABCDEFGHJKLMNOPQRSTUV
 
 function js_safe_string($string)
 {
-  return str_replace(array("'", "\\", "\""), array("\'", "\\\\", "\\\""), $string);
+  return str_replace(array("\\", "\"", "'"), array("\\\\", "\\\"", "\'"), $string);
+}
+
+/*
+*
+* @function SetSelectedPlanet
+*
+* @history
+*    3 - copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+*      [+] Added handling case when current_planet does not exists or didn't belong to user
+*      [+] Moved from SetSelectedPlanet.php
+*      [+] Function now return
+*      [~] Complies with PCG1
+*    2 - copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+*      [~] Security checked for SQL-injection
+*    1 - copyright 2008 By Chlorel for XNova
+*
+*/
+
+function SetSelectedPlanet(&$user)
+{
+  $selected_planet = intval($_GET['cp']);
+  $restore_planet  = intval($_GET['re']);
+
+  if (isset($selected_planet) && is_numeric($selected_planet) && $selected_planet && isset($restore_planet) && $restore_planet == 0)
+  {
+    $planet_row = doquery("SELECT `id` FROM {{planets}} WHERE `id` = '{$selected_planet}' AND `id_owner` = '{$user['id']}' LIMIT 1;", '', true);
+    if (!$planet_row || !isset($planet_row['id']))
+    {
+      $selected_planet = $user['id_planet'];
+    }
+    doquery("UPDATE {{users}} SET `current_planet` = '{$selected_planet}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    $user['current_planet'] = $selected_planet;
+  }
+
+  return $user['current_planet'];
+}
+
+/**
+ *
+ * @function CheckPlanetUsedFields
+ *
+ * v2.0 Rewrote to utilize foreach()
+ *      Complying with PCG0
+ * v1.1 some optimizations
+ * @version 1
+ * @copyright 2008 By Chlorel for XNova
+ */
+
+// Verification du nombre de cases utilisées sur la planete courrante
+function CheckPlanetUsedFields(&$planet)
+{
+  if(!$planet['id'])
+  {
+    return 0;
+  }
+
+  global $sn_data;
+
+  $planet_fields = 0;
+  foreach($sn_data['groups']['build_allow'][$planet['planet_type']] as $building_id)
+  {
+    $planet_fields += $planet[$sn_data[$building_id]['name']];
+  }
+
+  if($planet['field_current'] != $planet_fields)
+  {
+    $planet['field_current'] = $planet_fields;
+    doquery("UPDATE {{planets}} SET field_current={$planet_fields} WHERE id={$planet['id']} LIMIT 1;");
+  }
+}
+
+function sys_user_options_pack(&$user)
+{
+  global $user_options;
+
+  $options = '';
+  foreach($user_options as $option_name => $option_value)
+  {
+    if(!$user[$option_name])
+    {
+      $user[$option_name] = $option_value;
+    }
+    $options .= "{$option_name}^{$user[$option_name]}|";
+  }
+
+  return $options;
+}
+
+function sys_user_options_unpack(&$user)
+{
+  global $user_options;
+
+  $options = $user_options;
+
+  $opt_unpack = explode('|', $user['options']);
+  foreach($opt_unpack as $option)
+  {
+    if($option)
+    {
+      $option = explode('^', $option);
+      if(isset($options[$option[0]]))
+      {
+        $options[$option[0]] = $option[1];
+        $user[$option[0]] = $option[1];
+      }
+    }
+  }
+
+  return $options;
+}
+
+/**
+ * @function IsElementBuyable
+ *
+ * 1.1 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [*] Now using GetBuildingPrice proc to get building cost
+ * @version 1
+ * @copyright 2008 by Chlorel for XNova
+ */
+
+// Verifie si un element est achetable au moment demandé
+// $CurrentUser   -> Le Joueur lui meme
+// $CurrentPlanet -> La planete sur laquelle l'Element doit etre construit
+// $Element       -> L'Element que l'on convoite
+// $Incremental   -> true  pour un batiment ou une recherche
+//                -> false pour une defense ou un vaisseau
+// $ForDestroy    -> false par defaut pour une construction
+//                -> true pour calculer la demi valeur du niveau en cas de destruction
+//
+// Reponse        -> boolean (oui / non)
+function IsElementBuyable ($CurrentUser, $CurrentPlanet, $Element, $Incremental = true, $ForDestroy = false) {
+  global $pricelist, $resource;
+
+  if ($CurrentUser['vacation'])
+    return false;
+
+  $array = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, $Incremental, $ForDestroy);
+  foreach ($array as $ResType => $resorceNeeded)
+    if ($resorceNeeded > $CurrentPlanet[$ResType])
+      return false;
+
+  return true;
+}
+
+function sys_unit_str2arr($fleet_string)
+{
+  $fleet_array = array();
+  if (!empty($fleet_string))
+  {
+    $arrTemp = explode(';', $fleet_string);
+    foreach ($arrTemp as $temp)
+    {
+      if($temp)
+      {
+        $temp = explode(',', $temp);
+        if (!empty($temp[0]) && !empty($temp[1]))
+        {
+          $fleet_array[$temp[0]] += $temp[1];
+        }
+      }
+    }
+  }
+
+  return $fleet_array;
+}
+
+function sys_unit_arr2str($fleet_array)
+{
+  $fleet_string = '';
+  if (isset($fleet_array))
+  {
+    if (!is_array($fleet_array))
+    {
+      $fleet_array = array($fleet_array => 1);
+    }
+
+    foreach ($fleet_array as $unit_id => $unit_count)
+    {
+      if ($unit_id && $unit_count)
+      {
+        $fleet_string .= "{$unit_id},{$unit_count};";
+      }
+    }
+  }
+
+  return $fleet_string;
 }
 
 ?>

@@ -22,7 +22,7 @@ $template = gettemplate('fleet0', true);
 $i  = 0;
 $fq = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner={$user['id']}");
 
-while ($f = mysql_fetch_array($fq))
+while ($f = mysql_fetch_assoc($fq))
 {
   $i++;
   $fleet_data = tpl_parse_fleet_db($f, $i, $user);

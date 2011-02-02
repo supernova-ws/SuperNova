@@ -1499,6 +1499,86 @@ if ( defined('INSIDE')) {
     ),
 
     'groups' => array(
+      // Missions
+      'missions' => array(
+        MT_ATTACK => array(
+          'src_planet' => 1,
+          'src_user'   => 1,
+          'dst_planet' => 1,
+          'dst_user'   => 1,
+        ),
+
+        MT_AKS => array(
+          'src_planet' => 1,
+          'src_user'   => 1,
+          'dst_planet' => 1,
+          'dst_user'   => 1,
+        ),
+
+        MT_TRANSPORT => array(
+          'src_planet' => 1,
+          'src_user'   => 0,
+          'dst_planet' => 1,
+          'dst_user'   => 0,
+        ),
+
+        MT_RELOCATE => array(
+          'src_planet' => 0,
+          'src_user'   => 0,
+          'dst_planet' => 1,
+          'dst_user'   => 0,
+        ),
+
+        MT_HOLD => array(
+          'src_planet' => 0,
+          'src_user'   => 0,
+          'dst_planet' => 0,
+          'dst_user'   => 0,
+        ),
+
+        MT_SPY => array(
+          'src_planet' => 1,
+          'src_user'   => 1,
+          'dst_planet' => 1,
+          'dst_user'   => 1,
+        ),
+
+        MT_COLONIZE => array(
+          'src_planet' => 0,
+          'src_user'   => 1,
+          'dst_planet' => 1,
+          'dst_user'   => 0,
+        ),
+
+        MT_RECYCLE => array(
+          'src_planet' => 0,
+          'src_user'   => 0,
+          'dst_planet' => 1,
+          'dst_user'   => 0,
+        ),
+
+        MT_DESTROY => array(
+          'src_planet' => 1,
+          'src_user'   => 1,
+          'dst_planet' => 1,
+          'dst_user'   => 1,
+        ),
+
+        MT_MISSILE => array(
+          'src_planet' => 0,
+          'src_user'   => 0,
+          'dst_planet' => 0,
+          'dst_user'   => 0,
+        ),
+
+        MT_EXPLORE => array(
+          'src_planet' => 0,
+          'src_user'   => 1,
+          'dst_planet' => 0,
+          'dst_user'   => 0,
+        ),
+      ),
+
       // Planet structures list
       'structures' => array ( 1, 2, 3, 4, 12, 14, 21, 15, 31, 35, 44, 22, 23, 24, 34, 33, 41, 42, 43 ),
       'build'      => array ( 1, 2, 3, 4, 12, 14, 21, 15, 31, 35, 44, 22, 23, 24, 34, 33, 41, 42, 43 ),

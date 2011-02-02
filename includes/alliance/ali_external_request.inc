@@ -8,10 +8,10 @@ if ($user['ally_id']) {
 }
 
 if ($user_request['id_ally']) {
-  $ally = doquery("SELECT * FROM {{table}} WHERE `id` ='{$user_request['id_ally']}'", "alliance", true);
+  $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user_request['id_ally']}'", '', true);
 
   if ($POST_bcancel) {
-    doquery("DELETE FROM {{table}} WHERE `id_user` = {$user['id']};", "alliance_requests");
+    doquery("DELETE FROM {{alliance_requests}} WHERE `id_user` = {$user['id']};");
     header('Location: alliance.php');
   }
 
@@ -26,7 +26,7 @@ if ($user_request['id_ally']) {
 }
 
 if ($POST_text) {
-  doquery("INSERT INTO {{table}} SET `id_user` = {$user['id']}, `id_ally`='{$id_ally}', request_text ='{$POST_text}', request_time='{$time_now}';", "alliance_requests");
+  doquery("INSERT INTO {{alliance_requests}} SET `id_user` = {$user['id']}, `id_ally`='{$id_ally}', request_text ='{$POST_text}', request_time='{$time_now}';");
   header('Location: alliance.php');
 }
 

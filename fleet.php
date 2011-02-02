@@ -45,9 +45,17 @@ $system = sys_get_param_int('system', $planetrow['system']);
 $planet = sys_get_param_int('planet', $planetrow['planet']);
 
 $target_mission = sys_get_param_int('target_mission');
-if($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE)
+if ($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE)
 {
   $planet_type = PT_PLANET;
+}
+elseif ($target_mission == MT_RECYCLE)
+{
+  $planet_type = PT_DEBRIS;
+}
+elseif ($target_mission == MT_DESTROY)
+{
+  $planet_type = PT_MOON;
 }
 else
 {
@@ -126,7 +134,6 @@ switch ($fleet_page)
 
     $UsedPlanet = false;
     $YourPlanet = false;
-
     $missiontype = array();
     if ($planet > $config->game_maxPlanet)
     {

@@ -12,7 +12,7 @@ $lang['Remember_me'] = 'Запомнить меня';
 $lang['Register'] = 'Регистрация';
 $lang['Login_Error'] = 'Ошибка';
 $lang['PleaseWait'] = 'Подождите';
-$lang['PasswordLost'] = 'Забыли пароль?';
+$lang['PasswordLost'] = 'Восстановить забытый пароль';
 
 $lang['Login_Ok'] = 'Успешное подключение, <a href="./"><blink>перенаправление...</blink></a><br><center><img src="design/images/progressbar.gif"></center>';
 $lang['Login_FailPassword'] = 'Неверное имя и/или пароль<br /><a href="login.php" target="_top">Назад</a>';
@@ -103,9 +103,9 @@ $lang['log_faq'] 	 = 'FAQ по игре';
 $lang['log_forums']	 = 'Форум';
 $lang['log_contacts'] 	 = 'Администрация';
 
-$lang['log_login_page'] 	 = 'Войти в игру';
-$lang['log_reg_already'] = 'Уже есть регистрация? Воспользутесь ссылкой ';
-
+$lang['log_login_page'] 	   = 'Войти в игру';
+$lang['log_reg_already']      = 'Уже есть регистрация? Воспользутесь ссылкой ';
+$lang['log_reg_already_lost'] = 'Не помните пароль? Воспользутесь ссылкой ';
 
 // "Lost password" text strings
 $lang['log_lost_header']       = 'Восстановление пароля';
