@@ -195,7 +195,7 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
   }
   else
   {
-    $fleet_row_id = $fleet_row['id'];
+    $fleet_row_id = $fleet_row['fleet_id'];
   }
 
   // $fleet_row is false - not existing DB record
@@ -243,37 +243,42 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
     $fleet_row['fleet_end_type'] = PT_MOON;
   }
 
-  $mission_data = $sn_data['groups']['missions'][$fleet_row['fleet_mission']];
-
-// А здесь надо проверять, какие нужны данные и кэшировать только их
-  $source = array('planet_hash' => '', 'user_id' => 0);
-  if($mission_data['src_planet'] || $mission_data['src_user'])
-  {
-    $source = flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
-  }
-  else
-  {
-  }
-
-  $destination = array('planet_hash' => '', 'user_id' => 0);
-  if($fleet_row['fleet_mission'] != MT_EXPLORE && ($mission_data['dst_planet'] || $mission_data['dst_user']))
-  {
-    $destination = flt_cache_planet(array('galaxy' => $fleet_row['fleet_end_galaxy'], 'system' => $fleet_row['fleet_end_system'], 'planet' => $fleet_row['fleet_end_planet'], 'planet_type' => $fleet_row['fleet_end_type']), &$flt_user_cache, &$flt_planet_cache);
-  }
-  else
-  {
-  }
-
-  if($cache_mode & CACHE_EVENT == CACHE_EVENT)
+  // On CACHE_EVENT we will cache only fleet to reduce row lock rate
+  if(($cache_mode & CACHE_EVENT) == CACHE_EVENT)
   {
     $flt_event_cache[] = array(
       'fleet_id'        => $fleet_row['fleet_id'],
       'fleet_time'      => $fleet_row['fleet_time'],
-      'src_planet_hash' => $source['planet_hash'] ? $source['planet_hash'] : '',
-      'src_user_id'     => $source['user_id'] ? $source['user_id'] : 0,
-      'dst_planet_hash' => $destination['planet_hash'] ? $destination['planet_hash'] : '',
-      'dst_user_id'     => $destination['user_id'] ? $destination['user_id'] : 0
+      'src_planet_hash' => flt_planet_hash($fleet_row, 'fleet_start_'),
+      'src_user_id'     => $fleet_row['fleet_owner'],
+      'dst_planet_hash' => flt_planet_hash($fleet_row, 'fleet_end_'),
+      'dst_user_id'     => $fleet_row['fleet_target_owner']
     );
+  }
+  else
+  {
+    $mission_data = $sn_data['groups']['missions'][$fleet_row['fleet_mission']];
+
+// А здесь надо проверять, какие нужны данные и кэшировать только их
+    $source = array('planet_hash' => '', 'user_id' => 0);
+    if($mission_data['src_planet'])
+    {
+      flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
+    }
+    elseif($mission_data['src_user'])
+    {
+      flt_cache_user($fleet_row['fleet_owner'], &$flt_user_cache);
+    }
+
+    $destination = array('planet_hash' => '', 'user_id' => 0);
+    if($mission_data['dst_planet'])
+    {
+      $destination = flt_cache_planet(array('galaxy' => $fleet_row['fleet_end_galaxy'], 'system' => $fleet_row['fleet_end_system'], 'planet' => $fleet_row['fleet_end_planet'], 'planet_type' => $fleet_row['fleet_end_type']), &$flt_user_cache, &$flt_planet_cache);
+    }
+    elseif($mission_data['dst_user'])
+    {
+      flt_cache_user($fleet_row['fleet_target_owner'], &$flt_user_cache);
+    }
   }
 
   return true;
@@ -306,7 +311,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   switch($flt_update_mode)
   {
     case 0:
-      if($time_now - $config->flt_lastUpdate <= 8)
+      if($time_now - $config->flt_lastUpdate <= 1)
       {
         return;
       }
@@ -457,23 +462,23 @@ die();
     else
     {
       // Unsetting data that we broken in mission handler
-      if($mission_result & CACHE_FLEET == CACHE_FLEET)
+      if(($mission_result & CACHE_FLEET) == CACHE_FLEET)
       {
         unset($flt_fleet_cache[$fleet_event['fleet_id']]);
       }
-      if($mission_result & CACHE_USER_SRC == CACHE_USER_SRC)
+      if(($mission_result & CACHE_USER_SRC) == CACHE_USER_SRC)
       {
         unset($flt_user_cache[$fleet_event['src_user_id']]);
       }
-      if($mission_result & CACHE_USER_DST == CACHE_USER_DST)
+      if(($mission_result & CACHE_USER_DST) == CACHE_USER_DST)
       {
         unset($flt_user_cache[$fleet_event['dst_user_id']]);
       }
-      if($mission_result & CACHE_PLANET_SRC == CACHE_PLANET_SRC)
+      if(($mission_result & CACHE_PLANET_SRC) == CACHE_PLANET_SRC)
       {
         unset($flt_planet_cache[$fleet_event['src_planet_hash']]);
       }
-      if($mission_result & CACHE_PLANET_DST == CACHE_PLANET_DST)
+      if(($mission_result & CACHE_PLANET_DST) == CACHE_PLANET_DST)
       {
         unset($flt_planet_cache[$fleet_event['dst_planet_hash']]);
       }
