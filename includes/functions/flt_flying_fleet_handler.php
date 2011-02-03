@@ -458,6 +458,7 @@ die();
       flt_unset_by_attack($attack_result['attackers'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache);
       flt_unset_by_attack($attack_result['defenders'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache);
       unset($attack_result);
+      unset($flt_planet_cache[$fleet_event['dst_planet_hash']]);
     }
     else
     {
