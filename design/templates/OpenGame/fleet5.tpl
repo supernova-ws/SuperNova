@@ -46,8 +46,12 @@
         <th><span class="fl"><input type="checkbox" name="resources[{colonies.ID}][{D_RES_METAL}]"     value="1" class="planet_metal planet_{colonies.ID}"></span><span class="fr">{colonies.METAL}</span></th>
         <th><span class="fl"><input type="checkbox" name="resources[{colonies.ID}][{D_RES_CRYSTAL}]"   value="1" class="planet_crystal planet_{colonies.ID}"></span><span class="fr">{colonies.CRYSTAL}</span></th>
         <th><span class="fl"><input type="checkbox" name="resources[{colonies.ID}][{D_RES_DEUTERIUM}]" value="1" class="planet_deuterium planet_{colonies.ID}"></span><span class="fr">{colonies.DEUTERIUM}</span></th>
-        <th><span class="fr">{colonies.FLEET_CAPACITY}</span></th>
+        <!-- IF colonies.FLEET_CAPACITY -->
+        <th><span class="fr">{colonies.FLEET_CAPACITY_TEXT}</span></th>
         <th><span class="fr">{colonies.DURATION}</span></th>
+        <!-- ELSE -->
+        <th colspan=2><span class="negative">{L_flt_no_transports}</span></th>
+        <!-- ENDIF -->
       </tr>
     <!-- BEGINELSE colonies -->
       <th colspan="7">{L_fl_nocolonies}</th>

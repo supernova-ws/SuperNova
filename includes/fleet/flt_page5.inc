@@ -12,7 +12,7 @@
 *
 **/
 
-function flt_build_gathering($planet_ids, $resources_taken = true)
+function flt_build_gathering($resources_taken)
 {
   $transports = $GLOBALS['transports'];
   $sn_data = $GLOBALS['sn_data'];
@@ -27,7 +27,7 @@ function flt_build_gathering($planet_ids, $resources_taken = true)
   $planet_list = array();
 
   $query = '';
-  foreach($planet_ids as $planet_id)
+  foreach($resources_taken as $planet_id => $cork)
   {
     $planet_id = intval($planet_id);
     $query .= $planet_id ? "{$planet_id}," : '';
@@ -83,14 +83,15 @@ function flt_build_gathering($planet_ids, $resources_taken = true)
       $planet_resources = 0;
       foreach($sn_data['groups']['resources_loot'] as $resource_id)
       {
-        if($resources_taken[$planet_id][$resource_id] || $resources_taken === true)
+        if($resources_taken[$planet_id] == 1 || $resources_taken[$planet_id][$resource_id])
         {
           $planet_resources += floor($planet_db_data[$sn_data[$resource_id]['name']]);
         }
       }
 
       $planet_data['RESOURCES'] = pretty_number($planet_resources);
-      $planet_data['FLEET_CAPACITY'] = pretty_number($fleet_capacity, true, -$planet_resources);
+      $planet_data['FLEET_CAPACITY'] = $fleet_capacity;
+      $planet_data['FLEET_CAPACITY_TEXT'] = pretty_number($fleet_capacity, true, -$planet_resources);
 
       $will_take = min($planet_resources, $fleet_capacity);
 
@@ -125,7 +126,7 @@ function flt_build_gathering($planet_ids, $resources_taken = true)
 
           foreach($sn_data['groups']['resources_loot'] as $resource_id)
           {
-            if(!$resources_taken[$planet_id][$resource_id] && $resources_taken !== true)
+            if($resources_taken[$planet_id] != 1 && !$resources_taken[$planet_id][$resource_id])
             {
               continue;
             }
@@ -165,8 +166,7 @@ function flt_build_gathering($planet_ids, $resources_taken = true)
 
 $template = gettemplate('fleet5', true);
 
-$planet_ids     = sys_get_param('planets');
-$resource_taken = sys_get_param('resources');
+$resources_taken = sys_get_param('resources');
 
 foreach($sn_data['groups']['flt_transports'] as $transport_id)
 {
@@ -175,11 +175,11 @@ foreach($sn_data['groups']['flt_transports'] as $transport_id)
 }
 arsort($transports);
 
-if(!empty($planet_ids))
+if(!empty($resources_taken))
 { // begin processing parameters
 
 //pdump($_POST);
-  $planet_list = flt_build_gathering($planet_ids, $resource_taken);
+  $planet_list = flt_build_gathering($resources_taken);
 //pdump($planet_list);
 //die();
 
@@ -207,7 +207,7 @@ if(!empty($planet_ids))
   }
 } // end processing parameters
 
-$planet_ids = array();
+$resources_taken = array();
 // Building list of own planets & moons
 $colonies = SortUserPlanets ($user, $planetrow, ', metal, crystal, deuterium');
 if (mysql_num_rows($colonies) >= 1)
@@ -226,13 +226,13 @@ if (mysql_num_rows($colonies) >= 1)
       'CRYSTAL'    => pretty_number($row['crystal']),
       'DEUTERIUM'  => pretty_number($row['deuterium']),
     );
-    $planet_ids[] = $row['id'];
+    $resources_taken[$row['id']] = 1;
   };
 
-  $planet_list2 = flt_build_gathering($planet_ids);
+  $planet_list2 = flt_build_gathering($resources_taken);
   foreach($planet_list2 as $planet_data)
   {
-    $planet_data['DURATION'] = pretty_time($planet_data['DURATION']);
+    $planet_data['DURATION'] = $planet_data['DURATION'] ? pretty_time($planet_data['DURATION']) : $lang['flt_no_transports'];
     $template->assign_block_vars('colonies', $planet_data);
   }
 };
