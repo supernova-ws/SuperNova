@@ -31,9 +31,9 @@ var eco_market_resources = {};
 
     <tr><td class="c" colspan=5 align=center><input type="submit" name="exchange" value="{L_eco_mrk_trader_to}">
       <select name="exchangeTo" id="exchangeTo" onChange="javascript:reCourse();">
-        <option value="{RES_METAL}">{L_sys_metal}
-        <option value="{RES_CRYSTAL}">{L_sys_crystal}
-        <option value="{RES_DEUTERIUM}">{L_sys_deuterium}
+        <option value="{D_RES_METAL}">{L_sys_metal}
+        <option value="{D_RES_CRYSTAL}">{L_sys_crystal}
+        <option value="{D_RES_DEUTERIUM}">{L_sys_deuterium}
       </select></td></tr>
   </table>
 </form>
@@ -97,7 +97,7 @@ jQuery(document).ready(
     element_cache['exchangeTo'].value = varTemp;
 
     if (originalColor == undefined)
-      originalColor = element_cache['spend{RES_METAL}'].style.backgroundColor;
+      originalColor = element_cache['spend{D_RES_METAL}'].style.backgroundColor;
   
     reCourse();
   }

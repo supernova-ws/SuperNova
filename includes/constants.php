@@ -160,6 +160,28 @@ define('ATTACK_ACS_MISSTARGET' , 25);
 define('ATTACK_WRONG_SPEED'    , 26);
 define('ATTACK_ACS_TOO_LATE'   , 27);
 
+// *** Market variables
+// === Market blocks
+define('MARKET_ENTRY',         0);
+define('MARKET_RESOURCES',     1);
+define('MARKET_SCRAPPER',      2);
+define('MARKET_STOCKMAN',      3);
+define('MARKET_EXCHANGE',      4);
+define('MARKET_BANKER',        5);
+define('MARKET_PAWNSHOP',      6);
+
+// === Market error statuses
+define('MARKET_NOTHING',        0);
+define('MARKET_DEAL',           1);
+define('MARKET_DEAL_TRADE',     2);
+define('MARKET_NO_DM',          3);
+define('MARKET_NO_RESOURCES',   4);
+define('MARKET_ZERO_DEAL',      5);
+define('MARKET_NO_SHIPS',       6);
+define('MARKET_NOT_A_SHIP',     7);
+define('MARKET_NO_STOCK',       8);
+define('MARKET_ZERO_RES_STOCK', 9);
+
 
 // *** Mercenary/talent bonus types
 define('BONUS_NONE',     0);  // No bonus
