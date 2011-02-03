@@ -116,7 +116,7 @@
 
   CheckPlanetUsedFields($planetrow);
   $options = array('fleet_speed_percent' => $speed_percent);
-  if ($target_mission == MT_COLONIZE)
+  if ($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE)
   {
     $TargetPlanet = array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet);
   }
