@@ -50,6 +50,11 @@ ul /* Unmarked list */
   text-align: left;
 }
 
+li
+{
+  padding-bottom: 4px;
+}
+
 .icons
 {
   width: 16px;
