@@ -44,7 +44,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 
   if(!$user || !is_array($user) || !isset($user['id']))
   {
-    $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$planet['id_owner']} LIMIT 1 FOR UPDATE;", '', true);
+    $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$planet['id_owner']} LIMIT 1 {$suffix};", '', true);
     if(!$user)
     {
       return $no_data;

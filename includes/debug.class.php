@@ -53,7 +53,64 @@ class debug
     die();
   }
 
-  function error($message = 'There is a error on page', $title = 'SQL Error', $error_code = 500)
+  function dump($dump = false, $force_base = false)
+  {
+    if($dump === false)
+    {
+      return;
+    }
+
+    $error_backtrace = array();
+    $base_dump = false;
+
+    if($force_base === true)
+    {
+      $base_dump = true;
+    }
+
+    if($dump === true)
+    {
+      $base_dump = true;
+    }
+    else
+    {
+      if(!is_array($dump))
+      {
+        $dump = array('var' => $dump);
+      }
+
+      foreach($dump as $dump_var_name => $dump_var)
+      {
+        if($dump_var_name == 'base_dump')
+        {
+          $base_dump = $dump_var;
+        }
+        else
+        {
+          $error_backtrace[$dump_var_name] = $dump_var;
+        }
+      }
+    }
+
+    if($base_dump)
+    {
+      $error_backtrace['backtrace'] = debug_backtrace();
+      unset($error_backtrace['backtrace'][1]);
+      unset($error_backtrace['backtrace'][0]);
+      $error_backtrace['query_log'] = "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>\r\n";
+      $error_backtrace['user'] = $GLOBALS['user'];
+      $error_backtrace['planetrow'] = $GLOBALS['planetrow'];
+      $error_backtrace['$_GET'] = $_GET;
+      $error_backtrace['$_POST'] = $_POST;
+      $error_backtrace['$_COOKIES'] = $_COOKIES;
+      $error_backtrace['$_SESSION'] = $_SESSION;
+      $error_backtrace['$_SERVER'] = $_SERVER;
+    }
+
+    return $error_backtrace;
+  }
+
+  function error($message = 'There is a error on page', $title = 'Internal Error', $error_code = 500, $dump = true)
   {
     mysql_query("ROLLBACK;");
 
@@ -83,32 +140,23 @@ class debug
 
     $fatal_error = 'Fatal error: cannot write to `errors` table. Please contact Administration...';
 
-    $error_backtrace['backtrace'] = debug_backtrace();
-    unset($error_backtrace['backtrace'][0]);
-    $error_backtrace['query_log'] = "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>\r\n";
-    $error_backtrace['user'] = $GLOBALS['user'];
-    $error_backtrace['planetrow'] = $GLOBALS['planetrow'];
-    $error_backtrace['$_GET'] = $_GET;
-    $error_backtrace['$_POST'] = $_POST;
-    $error_backtrace['$_COOKIES'] = $_COOKIES;
-    $error_backtrace['$_SESSION'] = $_SESSION;
-    $error_backtrace['$_SERVER'] = $_SERVER;
-
     $error_text = mysql_real_escape_string($message);
+    $error_backtrace = $this->dump($dump, true);
 
     if(!$GLOBALS['sys_log_disabled'])
     {
-      mysql_query("INSERT INTO `{$dbsettings['prefix']}logs`
-        SET
-          `log_sender` = '{$GLOBALS['user']['id']}',
-          `log_username` = '{$GLOBALS['user']['username']}',
-          `log_time` = '".time()."',
-          `log_code` = '{$error_code}' ,
-          `log_title` = '{$title}' ,
-          `log_text` = '{$error_text}' ,
-          `log_page` = '".mysql_real_escape_string($_SERVER['HTTP_REFERER'])."',
-          `log_dump` = '" . mysql_real_escape_string(serialize($error_backtrace)) . "'
-        ;") or die($fatal_error);
+      if($error_backtrace)
+      {
+        $error_backtrace = ", `log_dump` = '" . mysql_real_escape_string(serialize($error_backtrace)) . "'";
+      }
+      else
+      {
+        $error_backtrace = '';
+      }
+      mysql_query("INSERT INTO `{$dbsettings['prefix']}logs` SET
+        `log_time` = '".time()."', `log_code` = '{$error_code}', `log_sender` = '{$GLOBALS['user']['id']}', `log_username` = '{$GLOBALS['user']['username']}',
+        `log_title` = '{$title}',  `log_text` = '{$error_text}', `log_page` = '".mysql_real_escape_string($_SERVER['HTTP_REFERER'])."'{$error_backtrace};")
+      or die($fatal_error);
 
       $q = mysql_fetch_assoc(mysql_query("SELECT max(log_id) AS rows FROM {$dbsettings['prefix']}logs;"))
         or die($fatal_error);
@@ -141,7 +189,7 @@ class debug
     }
   }
 
-  function warning($message, $title = 'System Message', $log_code = 300)
+  function warning($message, $title = 'System Message', $log_code = 300, $dump = false)
   {
     global $link, $user, $phpEx, $ugamela_root_path;
 
@@ -154,17 +202,23 @@ class debug
       mysql_select_db($dbsettings['name']);
     }
 
+    $error_backtrace = $this->dump($dump, false);
+
     if(!$GLOBALS['sys_log_disabled'])
     {
-      $query = "INSERT INTO `{{table}}` SET
-        `log_time` = '".time()."' ,
-        `log_code` = '{$log_code}',
-        `log_sender` = '{$user['id']}' ,
-        `log_username` = '{$user['username']}' ,
-        `log_title` = '{$title}' ,
-        `log_text` = '".mysql_real_escape_string($message)."' ,
-        `log_page` = '".mysql_real_escape_string($_SERVER['HTTP_REFERER'])."';";
-      $sqlquery = mysql_query(str_replace('{{table}}', "{$dbsettings['prefix']}logs", $query));
+      if($error_backtrace)
+      {
+        $error_backtrace = ", `log_dump` = '" . mysql_real_escape_string(serialize($error_backtrace)) . "'";
+      }
+      else
+      {
+        $error_backtrace = '';
+      }
+      $query = "INSERT INTO `{$dbsettings['prefix']}logs` SET
+        `log_time` = '".time()."', `log_code` = '{$log_code}', `log_sender` = '{$user['id']}', `log_username` = '{$user['username']}',
+        `log_title` = '{$title}',  `log_text` = '".mysql_real_escape_string($message)."',
+        `log_page` = '".mysql_real_escape_string($_SERVER['HTTP_REFERER'])."'{$error_backtrace};";
+      $sqlquery = mysql_query($query);
     }
     else
     {

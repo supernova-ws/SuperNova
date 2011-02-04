@@ -128,21 +128,28 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
     {
       $is_building = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_owner` = '{$user['id']}' LIMIT 1;", '', true);
 
-      if(!$is_building)
+      if($is_building)
       {
-        $query = doquery("SELECT * FROM `{{planets}}` WHERE `id_owner` = '{$CurrentUser['id']}';");
-        while($planet = mysql_fetch_assoc($query)){
+        message($lang['opt_vacation_err_your_fleet'], $lang['Error'], "options.php", 1);
+      }
+      else
+      {
+        $query = doquery("SELECT * FROM `{{planets}}` WHERE `id_owner` = '{user['id']}' LIMIT 1;");
+        while($planet = mysql_fetch_assoc($query))
+        {
+          $global_data = sys_o_get_updated($user, $planet, $time_now, true);
+          $planet = $global_data['planet'];
           if(($planet['que']) || ($planet['b_tech'] && $planet['b_tech']) || ($planet['b_hangar'] && $planet['b_hangar']))
           {
             $is_building = true;
             break;
           }
         }
-      }
 
-      if($is_building)
-      {
-        message($lang['Building_something'], $lang['Error'], "options.php", 1);
+        if($is_building)
+        {
+          message($lang['opt_vacation_err_building'], $lang['Error'], "options.php", 1);
+        }
       }
 
       $query = doquery("SELECT * FROM {{planets}} WHERE id_owner = '{$user['id']}' FOR UPDATE;");
