@@ -43,8 +43,8 @@ if(is_array($tradeList) && isset($exchangeTo))
     }
   }
 
-  $intError = $value <= 0 ? MARKET_ZERO_DEAL : $intError;
-  $intError = ($user['rpg_points'] < $config->rpg_cost_trader + $tradeList[RES_DARK_MATTER]) ? MARKET_NO_DM : $intError;
+  $intError = ($intError == MARKET_DEAL) && ($value <= 0) ? MARKET_ZERO_DEAL : $intError;
+  $intError = ($intError == MARKET_DEAL) && ($user['rpg_points'] < $config->rpg_cost_trader + $tradeList[RES_DARK_MATTER]) ? MARKET_NO_DM : $intError;
 
   if($intError == MARKET_DEAL)
   {

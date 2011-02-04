@@ -36,6 +36,7 @@ $lang['eco_mrk_errors'] = array(
   MARKET_ZERO_DEAL      => 'Не указано количество ресурсов для обмена',
   MARKET_ZERO_RES       => 'Нужно выбрать корабли для продажи',
   MARKET_ZERO_RES_STOCK => 'Нужно выбрать корабли для покупки',
+  MARKET_NEGATIVE_SHIPS => 'Не надо пытаться продать отрицательное количество кораблей!',
 );
 
 $lang['eco_mrk_trader']          = 'Торговец ресурсами';
