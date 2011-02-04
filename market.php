@@ -37,11 +37,33 @@ switch($mode)
   break;
 
   case MARKET_SCRAPPER: // Fleet scraper
-    require('includes/market/market_scraper.inc');
+    $rpg_cost = $config->rpg_cost_scraper;
+    $submode = 'scraper';
+    $error_no_stock = MARKET_NO_SHIPS;
+    $error_zero_res = MARKET_ZERO_RES;
+
+    $config_rpg_scrape_metal     = $config->rpg_scrape_metal;
+    $config_rpg_scrape_crystal   = $config->rpg_scrape_crystal;
+    $config_rpg_scrape_deuterium = $config->rpg_scrape_deuterium;
+
+    $array = &$reslist['fleet'];
+
+    require('includes/market/market_fleeter.inc');
   break;
 
   case MARKET_STOCKMAN: // S/H ship seller
-    require('includes/market/market_stockman.inc');
+    $rpg_cost = $config->rpg_cost_stockman;
+    $submode = 'stockman';
+    $error_no_stock = MARKET_NO_STOCK;
+    $error_zero_res = MARKET_ZERO_RES_STOCK;
+
+    $config_rpg_scrape_metal     = 1 / $config->rpg_scrape_metal;
+    $config_rpg_scrape_crystal   = 1 / $config->rpg_scrape_crystal;
+    $config_rpg_scrape_deuterium = 1 / $config->rpg_scrape_deuterium;
+
+    $array = &$stock;
+
+    require('includes/market/market_fleeter.inc');
   break;
 
   case MARKET_EXCHANGE: // Cross-player resource exchange

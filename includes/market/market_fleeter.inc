@@ -1,19 +1,15 @@
 <?php
 
-$page_title .= " - {$lang['eco_mrk_scraper']}";
-
-$config_rpg_scrape_metal     = $config->rpg_scrape_metal;
-$config_rpg_scrape_crystal   = $config->rpg_scrape_crystal;
-$config_rpg_scrape_deuterium = $config->rpg_scrape_deuterium;
+$page_title .= ' - ' . $lang["eco_mrk_{$submode}"];
 
 if(is_array($shipList))
 {
-  if($user['rpg_points'] < $config->rpg_cost_scraper)
+  if($user['rpg_points'] < $rpg_cost)
   {
     $intError = MARKET_NO_DM;
   }
 
-  $message .= "{$lang['eco_mrk_scraper_ships']}<ul>";
+  $message .= $lang["eco_mrk_{$submode}_ships"] . '<ul>';
   $qry = '';
   $total = array();
   foreach($shipList as $shipID => $shipCount)
@@ -30,9 +26,18 @@ if(is_array($shipList))
       break;
     }
 
-    if($planetrow[$sn_data[$shipID]['name']] < $shipCount)
+    if($mode == MARKET_SCRAPPER)
     {
-      $intError = MARKET_NO_SHIPS;
+      $amount = $planetrow[$sn_data[$shipID]['name']];
+    }
+    elseif($mode == MARKET_STOCKMAN)
+    {
+      $amount = $stock[$shipID];
+    }
+
+    if($amount < $shipCount)
+    {
+      $intError = $error_no_stock;
       break;
     }
 
@@ -42,10 +47,20 @@ if(is_array($shipList))
       $intError = MARKET_NOT_A_SHIP;
       break;
     }
+
     $ship_db_name = $sn_data[$shipID]['name'];
-    $qry .= "`{$ship_db_name}` = `{$ship_db_name}` - {$shipCount},";
-    $newrow[$ship_db_name] = $planetrow[$ship_db_name] - $shipCount;
-    $newstock[$shipID] += $shipCount;
+    if($mode == MARKET_SCRAPPER)
+    {
+      $qry .= "`{$ship_db_name}` = `{$ship_db_name}` - {$shipCount},";
+      $newrow[$ship_db_name] = $planetrow[$ship_db_name] - $shipCount;
+      $newstock[$shipID] += $shipCount;
+    }
+    elseif($mode == MARKET_STOCKMAN)
+    {
+      $qry .= "`{$ship_db_name}` = `{$ship_db_name}` + {$shipCount},";
+      $newrow[$ship_db_name] = $planetrow[$ship_db_name] + $shipCount;
+      $newstock[$shipID] -= $shipCount;
+    }
 
     $resTemp['metal'] = floor($pricelist[$shipID]['metal'] * $shipCount * $config_rpg_scrape_metal);
     $resTemp['crystal'] = floor($pricelist[$shipID]['crystal'] * $shipCount * $config_rpg_scrape_crystal);
@@ -59,37 +74,50 @@ if(is_array($shipList))
     $message .= "<li>{$lang['tech'][$shipID]}: {$shipCount}";
   }
 
+  if($mode == MARKET_STOCKMAN)
+  {
+    foreach($total as $resID => $resCount)
+    {
+      if($planetrow[$resID] < $resCount)
+      {
+        $intError = MARKET_NO_RESOURCES;
+        $debug->warning('Trying to use bug in s/h market', 'S/H Ship Market', 301);
+        break;
+      }
+    }
+  }
 
-
-
-
-
-
-
-
-
-
-  $intError = ($intError == MARKET_DEAL) && (array_sum($total) <= 0) ? MARKET_ZERO_RES : $intError;
+  $intError = ($intError == MARKET_DEAL) && (array_sum($total) <= 0) ? $error_zero_res : $intError;
 
   if($intError == MARKET_DEAL)
   {
     $message .= "</ul>";
     {
-      $message .= "{$lang['eco_mrk_scraper_res']}<ul>";
+      $message .= $lang["eco_mrk_{$submode}_res"] . '<ul>';
       foreach($total as $resID => $resCount)
       {
         if(!$resCount)
         {
           continue;
         }
-        $newrow[$resID] = $planetrow[$resID] + $resCount;
-        $qry .= "`{$resID}` = `{$resID}` + {$resCount},";
+
+        if($mode == MARKET_SCRAPPER)
+        {
+          $newrow[$resID] = $planetrow[$resID] + $resCount;
+          $qry .= "`{$resID}` = `{$resID}` + {$resCount},";
+        }
+        elseif($mode == MARKET_STOCKMAN)
+        {
+          $newrow[$resID] = $planetrow[$resID] - $resCount;
+          $qry .= "`{$resID}` = `{$resID}` - {$resCount},";
+        }
+
         $message .= "<li>" . $lang['sys_' . $resID] . ": {$resCount}";
       }
       $message .= "</ul>";
       doquery("UPDATE {{planets}} SET {$qry}`id`=`id` WHERE `id` = {$planetrow['id']} LIMIT 1;");
 
-      $rpg_deduct = $config->rpg_cost_scraper;
+      $rpg_deduct = $rpg_cost;
 
       $planetrow = array_merge($planetrow, $newrow);
       $stock = $newstock;
@@ -109,16 +137,27 @@ if(is_array($shipList))
 }
 
 $template = gettemplate('market_fleet', true);
-$template->assign_var('rpg_cost', $config->rpg_cost_scraper);
+$template->assign_var('rpg_cost', $rpg_cost);
 
-
-foreach($reslist['fleet'] as $shipID)
+if(!$array) $array = array();
+foreach($array as $key => $value)
 {
-  if($planetrow[$sn_data[$shipID]['name']] > 0)
+  if($mode == MARKET_SCRAPPER)
+  {
+    $shipID = $value;
+    $amount = $planetrow[$sn_data[$shipID]['name']];
+  }
+  elseif($mode == MARKET_STOCKMAN)
+  {
+    $shipID = $key;
+    $amount = $value;
+  }
+
+  if($amount > 0)
   {
     $template->assign_block_vars('ships', array(
       'ID'        => $shipID,
-      'COUNT'     => $planetrow[$sn_data[$shipID]['name']],
+      'COUNT'     => $amount,
       'NAME'      => $lang['tech'][$shipID],
       'METAL'     => floor($pricelist[$shipID]['metal'] * $config_rpg_scrape_metal),
       'CRYSTAL'   => floor($pricelist[$shipID]['crystal'] * $config_rpg_scrape_crystal),
