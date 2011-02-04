@@ -19,14 +19,9 @@ include("{$ugamela_root_path}common.{$phpEx}");
 includeLang('market');
 includeLang('fleet');
 
-ini_set('display_errors', 1);
-
 $mode = sys_get_param_int('mode');
 $action = sys_get_param_int('action');
-$tradeList = $_POST['spend'];
 $shipList  = $_POST['ships'];
-$exchangeTo = intval($_POST['exchangeTo']);
-$exchangeTo = in_array($exchangeTo, $sn_data['groups']['resources_trader']) ? $exchangeTo : 0 ;
 
 $page_title = "{$lang['eco_mrk_title']}";
 
@@ -34,6 +29,7 @@ $stock = sys_unit_str2arr($config->eco_stockman_fleet);
 
 $newstock = $stock;
 
+$intError = MARKET_DEAL;
 switch($mode)
 {
   case MARKET_RESOURCES: // Resource trader
@@ -291,13 +287,11 @@ if($intError == MARKET_DEAL && $rpg_deduct){
   $user['rpg_points'] -= $rpg_deduct;
 }
 
-$message_id = sys_get_param_int('message_id');
+$message_id = sys_get_param_int('message');
 if($message_id != MARKET_NOTHING)
 {
   $message = parsetemplate(gettemplate('message_body'), array('title' => $page_title, 'mes' => $lang['eco_mrk_errors'][$message_id]));
 }
-
-pdump($_POST);
 
 $template->assign_vars(array(
   'rpg_cost_trader'   => $config->rpg_cost_trader,
