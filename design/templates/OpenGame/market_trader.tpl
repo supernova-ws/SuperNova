@@ -41,7 +41,7 @@ function eco_mrk_recourse()
   rate_for_selected = eco_market_resources[element_cache['exchangeTo'].value]['rate'];
   for (i in eco_market_resources)
   {
-    element_cache['course' + i].innerHTML = sn_format_number(eco_market_resources[i]['rate'] / rate_for_selected);
+    element_cache['course' + i].innerHTML = eco_market_resources[i]['rate'] / rate_for_selected;
     element_cache['spend' + i].value = 0;
   }
   eco_mrk_recalc();
