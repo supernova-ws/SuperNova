@@ -9,12 +9,14 @@
  *
  */
 
-define('INSIDE'  , true);
-define('INSTALL' , false);
+define('INSIDE' , true);
+define('INSTALL', false);
 
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
+
+define('SN_IN_MARKET', true);
 
 includeLang('market');
 includeLang('fleet');
@@ -78,11 +80,6 @@ switch($mode)
   default:
     $template = gettemplate('market', true);
   break;
-}
-
-if($intError == MARKET_DEAL && $rpg_deduct){
-  rpg_points_change($user['id'], -($rpg_deduct), "Using Black Market page {$mode}");
-  $user['rpg_points'] -= $rpg_deduct;
 }
 
 $message_id = sys_get_param_int('message');

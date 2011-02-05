@@ -311,7 +311,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   switch($flt_update_mode)
   {
     case 0:
-      if($time_now - $config->flt_lastUpdate <= 1)
+      if($time_now - $config->flt_lastUpdate <= 4)
       {
         return;
       }
@@ -332,7 +332,6 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
     break;
   }
 
-  $config->flt_lastUpdate = $time_now;
   $config->db_saveItem('flt_lastUpdate', $time_now);
 
   doquery('START TRANSACTION;');

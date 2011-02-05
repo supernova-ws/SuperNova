@@ -5,6 +5,11 @@
 // @version 1.0
 // @copyright 2008 by Chlorel for XNova
 
+if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
+{
+  $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
+}
+
 includeLang('overview');
 
 if (!$planetrow)

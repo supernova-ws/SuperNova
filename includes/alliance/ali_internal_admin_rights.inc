@@ -1,5 +1,10 @@
 <?php
 
+if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
+{
+  $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
+}
+
 if (!$user_admin) {
   message($lang['Denied_access'], $lang['Law_settings']);
 };
@@ -58,4 +63,5 @@ $lang['dpath'] = $dpath;
 $page .= parsetemplate(gettemplate('ali_admin_rights'), $lang);
 
 display($page, $lang['Law_settings']);
+
 ?>
