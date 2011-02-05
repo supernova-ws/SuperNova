@@ -1,5 +1,10 @@
 <?php
 
+if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
+{
+  $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
+}
+
 if (!$user_admin_applications) {
   message($lang['Denied_access'], $lang['requests_admin']);
 }

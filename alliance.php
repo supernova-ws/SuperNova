@@ -21,6 +21,8 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
+define('SN_IN_ALLY', true);
+
 // MINE VARS
 $POST_name = SYS_mysqlSmartEscape($_POST['name']);
 $POST_tag = SYS_mysqlSmartEscape($_POST['tag']);
@@ -50,8 +52,6 @@ $idNewLeader      = intval($_POST['idNewLeader']);
 
 $mode             = SYS_mysqlSmartEscape($_GET['mode']);
 $edit             = SYS_mysqlSmartEscape($_GET['edit']);
-
-
 
 // alliance ID
 $id_ally          = intval($_GET['a']);

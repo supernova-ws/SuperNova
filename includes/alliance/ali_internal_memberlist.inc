@@ -1,4 +1,10 @@
 <?php
+
+if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
+{
+  $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
+}
+
 if (!$user_can_kick && $allianceAdminMode)
   message($lang['Denied_access'], $lang['Members_list']);
 
@@ -131,4 +137,5 @@ $parse['s'] = $sort2;
 $page .= parsetemplate(gettemplate('ali_members'), $parse);
 
 display($page, $lang['members_admin']);
+
 ?>
