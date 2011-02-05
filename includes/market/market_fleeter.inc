@@ -1,5 +1,10 @@
 <?php
 
+if(!defined('SN_IN_MARKET') || SN_IN_MARKET !== true)
+{
+  $debug->error("Attempt to call market page mode {$mode} directly - not from market.php", 'Forbidden', 403);
+}
+
 $page_title .= ' - ' . $lang["eco_mrk_{$submode}"];
 
 if(is_array($shipList))
@@ -8,6 +13,10 @@ if(is_array($shipList))
   {
     $intError = MARKET_NO_DM;
   }
+
+  doquery('START TRANSACTION;');
+  $global_data = sys_o_get_updated($user, $planetrow, $time_now);
+  $planetrow = $global_data['planet'];
 
   $message .= $lang["eco_mrk_{$submode}_ships"] . '<ul>';
   $qry = '';
@@ -21,7 +30,7 @@ if(is_array($shipList))
 
     if($shipCount < 0)
     {
-      $debug->warning('Hack Attempt', 'User supplied negative ship count on Black Market page', 307);
+      $debug->warning('User supplied negative ship count on Black Market page', 'Hack Attempt', 307);
       $intError = MARKET_NEGATIVE_SHIPS;
       break;
     }
@@ -74,7 +83,7 @@ if(is_array($shipList))
     $message .= "<li>{$lang['tech'][$shipID]}: {$shipCount}";
   }
 
-  if($mode == MARKET_STOCKMAN)
+  if($mode == MARKET_STOCKMAN && $intError == MARKET_DEAL)
   {
     foreach($total as $resID => $resCount)
     {
@@ -91,43 +100,43 @@ if(is_array($shipList))
 
   if($intError == MARKET_DEAL)
   {
-    $message .= "</ul>";
+    $message .= '</ul>' . $lang["eco_mrk_{$submode}_res"] . '<ul>';
+    foreach($total as $resID => $resCount)
     {
-      $message .= $lang["eco_mrk_{$submode}_res"] . '<ul>';
-      foreach($total as $resID => $resCount)
+      if(!$resCount)
       {
-        if(!$resCount)
-        {
-          continue;
-        }
-
-        if($mode == MARKET_SCRAPPER)
-        {
-          $newrow[$resID] = $planetrow[$resID] + $resCount;
-          $qry .= "`{$resID}` = `{$resID}` + {$resCount},";
-        }
-        elseif($mode == MARKET_STOCKMAN)
-        {
-          $newrow[$resID] = $planetrow[$resID] - $resCount;
-          $qry .= "`{$resID}` = `{$resID}` - {$resCount},";
-        }
-
-        $message .= "<li>" . $lang['sys_' . $resID] . ": {$resCount}";
+        continue;
       }
-      $message .= "</ul>";
-      doquery("UPDATE {{planets}} SET {$qry}`id`=`id` WHERE `id` = {$planetrow['id']} LIMIT 1;");
 
-      $rpg_deduct = $rpg_cost;
+      if($mode == MARKET_SCRAPPER)
+      {
+        $newrow[$resID] = $planetrow[$resID] + $resCount;
+        $qry .= "`{$resID}` = `{$resID}` + {$resCount},";
+      }
+      elseif($mode == MARKET_STOCKMAN)
+      {
+        $newrow[$resID] = $planetrow[$resID] - $resCount;
+        $qry .= "`{$resID}` = `{$resID}` - {$resCount},";
+      }
 
-      $planetrow = array_merge($planetrow, $newrow);
-      $stock = $newstock;
-
-      $config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str($stock));
+      $message .= "<li>" . $lang['sys_' . $resID] . ": {$resCount}";
     }
+    $message .= "</ul>";
+    doquery("UPDATE {{planets}} SET {$qry}`id`=`id` WHERE `id` = {$planetrow['id']} LIMIT 1;");
+
+    rpg_points_change($user['id'], -($rpg_cost), "Using Black Market page {$mode}");
+    $config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str($newstock));
+    doquery('COMMIT;');
+
+    $stock = $newstock;
+    $user['rpg_points'] -= $rpg_cost;
+    $planetrow = array_merge($planetrow, $newrow);
+
     $message = parsetemplate(gettemplate('message_body'), array('title' => $page_title, 'mes' => "<div align=left>{$message}</div>"));
   }
   else
   {
+    doquery('ROLLBACK;');
     $message = parsetemplate(gettemplate('message_body'), array('title' => $lang['eco_mrk_error_title'], 'mes' => $lang['eco_mrk_errors'][$intError]));
     foreach($shipList as $shipID => $shipCount)
     {

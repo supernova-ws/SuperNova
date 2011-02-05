@@ -34,6 +34,8 @@ if ($IsUserChecked == false) {
   header("Location: login.php");
 }
 
+define('SN_IN_FLEET', true);
+
 includeLang('fleet');
 
 $parse = $lang;
@@ -247,27 +249,27 @@ $parse['planet_type'] = $planet_type;
 switch($fleet_page)
 {
   case 1:
-    include('includes/fleet/flt_page1.inc');
+    require('includes/fleet/flt_page1.inc');
   break;
 
   case 2:
-    include('includes/fleet/flt_page2.inc');
+    require('includes/fleet/flt_page2.inc');
   break;
 
   case 3:
-    include('includes/fleet/flt_page3.inc');
+    require('includes/fleet/flt_page3.inc');
   break;
 
   case 4:
-    include('includes/fleet/flt_page4.inc');
+    require('includes/fleet/flt_page4.inc');
   break;
 
   case 5:
-    include('includes/fleet/flt_page5.inc');
+    require('includes/fleet/flt_page5.inc');
   break;
 
   default:
-    include('includes/fleet/flt_page0.inc');
+    require('includes/fleet/flt_page0.inc');
   break;
 }
 
