@@ -1,5 +1,10 @@
 <?php
 
+if(!defined('SN_IN_MARKET') || SN_IN_MARKET !== true)
+{
+  $debug->error("Attempt to call market page mode {$mode} directly - not from market.php", 'Forbidden', 403);
+}
+
 $page_title .= " - {$lang['eco_mrk_trader']}";
 
 $tradeList = $_POST['spend'];
