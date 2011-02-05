@@ -1,4 +1,10 @@
 <?php
+
+if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
+{
+  $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
+}
+
 if ($ally['ally_owner'] == $user['id']) {
   message($lang['Owner_cant_go_out'], $lang['Alliance']);
 }
@@ -15,4 +21,5 @@ if ($yes == 1) {
 }
 
 display($page);
+
 ?>

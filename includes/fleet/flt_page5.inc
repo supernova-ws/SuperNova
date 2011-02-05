@@ -12,6 +12,11 @@
 *
 **/
 
+if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
+{
+  $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
+}
+
 function flt_build_gathering($resources_taken)
 {
   $transports = $GLOBALS['transports'];
