@@ -8,9 +8,6 @@
  * based on admin/activeplanet.php (c) 2008 for XNova
  */
 
-define('INSIDE', true);
-define('INSTALL' , false);
-
 $skip_ban_check = true;
 
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
