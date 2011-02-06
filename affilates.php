@@ -8,9 +8,6 @@
  * v1 (c) copyright 2010 by Gorlum for http://supernova.ws
  */
 
-define('INSIDE', true);
-define('INSTALL' , false);
-
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 require_once("{$ugamela_root_path}common.{$phpEx}");

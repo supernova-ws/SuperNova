@@ -1,8 +1,5 @@
 <?php
 
-define('INSIDE'  , true);
-define('INSTALL' , false);
-
 $allow_anonymous = true;
 $skip_ban_check = true;
 

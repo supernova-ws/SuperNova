@@ -14,9 +14,6 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
-define('INSIDE'  , true);
-define('INSTALL' , false);
-
 $ugamela_root_path = './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 require_once("{$ugamela_root_path}common.{$phpEx}");
