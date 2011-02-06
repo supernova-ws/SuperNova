@@ -134,7 +134,7 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
       }
       else
       {
-        $query = doquery("SELECT * FROM `{{planets}}` WHERE `id_owner` = '{user['id']}' LIMIT 1;");
+        $query = doquery("SELECT * FROM `{{planets}}` WHERE `id_owner` = '{$user['id']}' LIMIT 1;");
         while($planet = mysql_fetch_assoc($query))
         {
           $global_data = sys_o_get_updated($user, $planet, $time_now, true);
