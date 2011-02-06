@@ -1,4 +1,5 @@
 <?php
-  header('Content-type: text/xml');
-  echo '<time>' . time() . '</time>';
+//  header('Content-type: text/xml');
+//  echo '<time>' . time() . '</time>';
+  echo time();
 ?>
