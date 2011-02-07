@@ -85,7 +85,7 @@ function flt_mission_attack($mission_data)
   }
 
   $start = microtime(true);
-  $result = calculateAttack($attackFleets, $defenseFleets);
+  $result = coe_attack_calculate($attackFleets, $defenseFleets);
   $totaltime = microtime(true) - $start;
 
 
