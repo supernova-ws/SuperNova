@@ -16,10 +16,7 @@
    1.0 copyright 2008 by e-Zobar for XNova
 **/
 
-define('INSIDE'  , true);
-define('INSTALL' , false);
-
-$doNotUpdateFleet = true;
+$skip_fleet_update = true;
 
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);

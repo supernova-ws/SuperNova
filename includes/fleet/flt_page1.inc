@@ -3,6 +3,11 @@
   // @version 1.0
   // @copyright 2008 by Chlorel for XNova
 
+if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
+{
+  $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
+}
+
   $template = gettemplate('fleet1', true);
 
   $ships = $_POST['ships'];
@@ -62,7 +67,7 @@
   $colonies = SortUserPlanets ( $user );
   if (mysql_num_rows($colonies) > 1)
   {
-    while ($row = mysql_fetch_array($colonies))
+    while ($row = mysql_fetch_assoc($colonies))
     {
       $template->assign_block_vars('colonies', array(
         'NAME'       => $row['name'],
@@ -79,7 +84,7 @@
   //ACS Start
   //Need to look for acs attacks.
   $aks_madnessred = doquery('SELECT * FROM {{aks}};');
-  while($row = mysql_fetch_array($aks_madnessred))
+  while($row = mysql_fetch_assoc($aks_madnessred))
   {
     $members = explode(',', $row['eingeladen']);
     foreach($members as $a => $b) {

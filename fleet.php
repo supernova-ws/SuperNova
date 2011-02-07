@@ -22,9 +22,6 @@
   V1.0 Created by Perberos. All rights reversed (C) 2006
 */
 
-define('INSIDE'  , true);
-define('INSTALL' , false);
-
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
@@ -33,6 +30,8 @@ if ($IsUserChecked == false) {
   includeLang('login');
   header("Location: login.php");
 }
+
+define('SN_IN_FLEET', true);
 
 includeLang('fleet');
 
@@ -45,9 +44,17 @@ $system = sys_get_param_int('system', $planetrow['system']);
 $planet = sys_get_param_int('planet', $planetrow['planet']);
 
 $target_mission = sys_get_param_int('target_mission');
-if($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE)
+if ($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE)
 {
   $planet_type = PT_PLANET;
+}
+elseif ($target_mission == MT_RECYCLE)
+{
+  $planet_type = PT_DEBRIS;
+}
+elseif ($target_mission == MT_DESTROY)
+{
+  $planet_type = PT_MOON;
 }
 else
 {
@@ -126,7 +133,6 @@ switch ($fleet_page)
 
     $UsedPlanet = false;
     $YourPlanet = false;
-
     $missiontype = array();
     if ($planet > $config->game_maxPlanet)
     {
@@ -240,27 +246,27 @@ $parse['planet_type'] = $planet_type;
 switch($fleet_page)
 {
   case 1:
-    include('includes/fleet/flt_page1.inc');
+    require('includes/fleet/flt_page1.inc');
   break;
 
   case 2:
-    include('includes/fleet/flt_page2.inc');
+    require('includes/fleet/flt_page2.inc');
   break;
 
   case 3:
-    include('includes/fleet/flt_page3.inc');
+    require('includes/fleet/flt_page3.inc');
   break;
 
   case 4:
-    include('includes/fleet/flt_page4.inc');
+    require('includes/fleet/flt_page4.inc');
   break;
 
   case 5:
-    include('includes/fleet/flt_page5.inc');
+    require('includes/fleet/flt_page5.inc');
   break;
 
   default:
-    include('includes/fleet/flt_page0.inc');
+    require('includes/fleet/flt_page0.inc');
   break;
 }
 

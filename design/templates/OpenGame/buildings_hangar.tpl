@@ -6,7 +6,7 @@
 <table align="top">
 <tr>
 	<td>
-		<form action="buildings.php?mode=defense" method="post">
+		<form action="buildings.php?mode={MODE}" method="post">
 		<table width=530>
 		{buildlist}
 		<tr>

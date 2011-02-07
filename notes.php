@@ -9,9 +9,6 @@
  */
 
 
-define('INSIDE'  , true);
-define('INSTALL' , false);
-
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
@@ -137,7 +134,7 @@ elseif($_POST){//Borrar
     //Loop para crear la lista de notas que el jugador tiene
     $count = 0;
     $parse=$lang;
-    while($note = mysql_fetch_array($notes_query)){
+    while($note = mysql_fetch_assoc($notes_query)){
       $count++;
       //Colorea el titulo dependiendo de la prioridad
       if($note["priority"] == 0){ $parse['NOTE_COLOR'] = "lime";}//Importante

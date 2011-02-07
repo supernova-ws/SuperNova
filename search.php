@@ -10,9 +10,6 @@
  * @copyright 2008 by ??????? for XNova
  */
 
-define('INSIDE'  , true);
-define('INSTALL' , false);
-
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
@@ -98,7 +95,7 @@ switch($type){
 }
 
 if(isset($searchtext) && isset($type)){
-  while($r = mysql_fetch_array($search, MYSQL_BOTH)){
+  while($r = mysql_fetch_assoc($search)){
     if($type=='playername'||$type=='planetname'){
       $s=$r;
       //para obtener el nombre del planeta

@@ -55,7 +55,7 @@ $lang['sys_metal']          = "Металл";
 $lang['sys_metal_sh']       = "М";
 $lang['sys_crystal']        = "Кристалл";
 $lang['sys_crystal_sh']     = "К";
-$lang['sys_deuterium']      = "Дейтрий";
+$lang['sys_deuterium']      = "Дейтерий";
 $lang['sys_deuterium_sh']   = "Д";
 $lang['sys_energy']         = "Энергия";
 $lang['sys_energy_sh']      = "Э";
@@ -120,6 +120,7 @@ $lang['sys_planet_type_sh'] = array(
 );
 
 $lang['sys_capacity'] 			= 'Грузоподъёмность';
+$lang['sys_cargo_bays'] 			= 'Трюмы';
 
 $lang['sys_supernova'] 			= 'Сверхновая';
 $lang['sys_server'] 			= 'Сервер';
@@ -268,6 +269,7 @@ $lang = array_merge($lang, array(
   'sys_colo_allisok' 		=> ', и колонисты начинают осваивать новую планету.',
   'sys_colo_badpos'  			=> ', и колонисты нашли среду мало выгодной для Вашей империи. Миссия колонизации возвращается обратно на планету отправки.',
   'sys_colo_notfree' 			=> ', и колонисты не нашли планету в этих координатах. Они вынуждены проложить дорогу обратно абсолютно обескураженными.',
+  'sys_colo_no_colonizer'     => 'Во флоте нет колонизатора',
   'sys_colo_planet'  		=> ' Планета колонизирована!',
   'sys_expe_report' 		=> 'Отчёт экспедиции',
   'sys_recy_report' 		=> 'Системная информация',
@@ -369,5 +371,7 @@ $lang = array_merge($lang, array(
   'off_dark_matter_hint' => 'При помощи этой субстанции можно нанять офицеров и командиров.',
 
 ));
+
+$lang['flt_gather_all']    = 'Свезти ресурсы';
 
 ?>

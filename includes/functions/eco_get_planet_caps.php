@@ -82,7 +82,7 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
 
   if ($Caps['planet']['energy_used'])
   {
-    $Caps['production'] = min(1, $Caps['planet']['energy_max'] / $Caps['planet']['energy_used']);
+    $Caps['production'] = max(0, min(1, $Caps['planet']['energy_max'] / $Caps['planet']['energy_used']));
   }
   else
   {

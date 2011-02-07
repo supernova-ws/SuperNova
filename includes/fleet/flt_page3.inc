@@ -3,6 +3,11 @@
   // @version 1.0
   // @copyright 2008 by Chlorel for XNova
 
+if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
+{
+  $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
+}
+
   $errorlist .= !is_array($fleetarray) ? $lang['fl_no_fleetarray'] : '';
 
   // Test de coherance de la destination (voir si elle se trouve dans les limites de l'univers connu
@@ -75,7 +80,7 @@
   if ($errorlist)
   {
     doquery("ROLLBACK;");
-    message ("<font color=\"red\"><ul>{$errorlist}</ul></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
+    message ("<font color=\"red\"><ul>{$errorlist}</ul></font>", $lang['fl_error'], "fleet.{$phpEx}", false);
   }
 
   // On verifie s'il y a assez de vaisseaux sur la planete !
@@ -115,8 +120,11 @@
   }
 
   CheckPlanetUsedFields($planetrow);
-
-  $options = array();
+  $options = array('fleet_speed_percent' => $speed_percent);
+  if ($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE)
+  {
+    $TargetPlanet = array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet);
+  }
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
   if($cant_attack != ATTACK_ALLOWED)
   {

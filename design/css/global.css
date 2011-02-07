@@ -50,6 +50,11 @@ ul /* Unmarked list */
   text-align: left;
 }
 
+li
+{
+  padding-top: 4px;
+}
+
 .icons
 {
   width: 16px;
@@ -63,6 +68,7 @@ ul /* Unmarked list */
 .icon-minus { background-position: -16px 0px; }
 .icon-info { background-position: -32px 0px; }
 .icon-cancel { background-position: -48px 0px; }
+.icon-gather { background-position: -64px 0px; }
 
 .icon_alpha, .alpha75 /* Partially transparent background for over-planet-image icons */
 {

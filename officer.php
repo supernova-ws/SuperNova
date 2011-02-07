@@ -56,9 +56,6 @@ function IsOfficierAccessible ($CurrentUser, $Officier) {
   }
 }
 
-define('INSIDE'  , true);
-define('INSTALL' , false);
-
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
@@ -91,7 +88,9 @@ if ($mode == 2) {
         doquery( "UPDATE {{users}} SET `{$resource[$Selected]}` = `{$resource[$Selected]}` + 1 WHERE `id` = '{$user['id']}';");
         rpg_points_change($user['id'], -($darkmater_cost), "Spent for officer {$lang['tech'][$Selected]} ID {$Selected}");
         $Message = $lang['off_recruited'];
-        Header("Location: officer.php");
+        header("Location: officer.php");
+        ob_end_flush();
+        die();
       } elseif ( $Result == -1 ) {
         $Message = $lang['off_maxed_out'];
       } elseif ( $Result == 0 ) {
@@ -103,7 +102,7 @@ if ($mode == 2) {
   {
     $Message = $lang['off_no_points'];
   }
-  message($lang['off_no_points'], $lang['tech'][600], "officer.{$phpEx}", 5);
+  message($Message, $lang['tech'][600], "officer.{$phpEx}", 5);
 }
 else
 {
@@ -136,7 +135,7 @@ else
         'ID'          => $mercenary_id,
         'NAME'        => $lang['tech'][$mercenary_id],
         'DESCRIPTION' => $lang['info'][$mercenary_id]['description'],
-        'DESCRIPTION_SHORT' => $lang['info'][$mercenary_id]['description_short'],
+        'EFFECT'      => $lang['info'][$mercenary_id]['effect'],
         'LEVEL'       => $user[$resource[$mercenary_id]],
         'LEVEL_MAX'   => $mercenary['max'],
         'BONUS'       => $mercenary_bonus,

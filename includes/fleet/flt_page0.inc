@@ -5,6 +5,11 @@
 // @version 1.0
 // @copyright 2008 by Chlorel for XNova
 
+if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
+{
+  $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
+}
+
 includeLang('overview');
 
 if (!$planetrow)
@@ -22,7 +27,7 @@ $template = gettemplate('fleet0', true);
 $i  = 0;
 $fq = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner={$user['id']}");
 
-while ($f = mysql_fetch_array($fq))
+while ($f = mysql_fetch_assoc($fq))
 {
   $i++;
   $fleet_data = tpl_parse_fleet_db($f, $i, $user);

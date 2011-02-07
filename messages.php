@@ -33,9 +33,6 @@
  *
  */
 
-define('INSIDE'  , true);
-define('INSTALL' , false);
-
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
@@ -77,7 +74,7 @@ if ($IsUserChecked == false) {
   }
 
   $UsrMess       = doquery("SELECT message_owner, message_type, COUNT(message_owner) AS message_count FROM {{table}} WHERE `message_owner` = '".$user['id']."' GROUP BY message_owner, message_type ORDER BY message_owner ASC, message_type;", 'messages');
-  while ($CurMess = mysql_fetch_array($UsrMess)) {
+  while ($CurMess = mysql_fetch_assoc($UsrMess)) {
     $TotalMess[$CurMess['message_type']]  = $CurMess['message_count'];
     $TotalMess[100]                      += $CurMess['message_count'];
   }
@@ -203,7 +200,7 @@ if ($IsUserChecked == false) {
         $UsrMess = doquery("SELECT * FROM {{messages}} WHERE `message_owner` = '{$user['id']}' {$SubSelectQry} ORDER BY `message_time` DESC;");
       };
 
-      while ($CurMess = mysql_fetch_array($UsrMess)) {
+      while ($CurMess = mysql_fetch_assoc($UsrMess)) {
         $template->assign_block_vars('messages', array(
           'ID'             => $CurMess['message_id'],
           'DATE'           => date(FMT_DATE_TIME, $CurMess['message_time']),

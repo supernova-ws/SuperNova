@@ -15,8 +15,8 @@ if ( !defined('INSIDE') )
   die('Hacking attempt');
 }
 
-define('DB_VERSION', 25);
-define('SN_VERSION', '25d');
+define('DB_VERSION', 26);
+define('SN_VERSION', '26d');
 
 define('GAMEURL', "http://{$_SERVER['HTTP_HOST']}/");
 
@@ -72,7 +72,7 @@ define('CONFIRM_DELETE', 3);
 $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
 // *** Combat-related constants
-// *** Mission Target constants starts with MT_
+// *** Mission Type constants starts with MT_
 define('MT_ATTACK',    1);
 define('MT_AKS',       2);
 define('MT_TRANSPORT', 3);
@@ -89,6 +89,29 @@ define('MT_EXPLORE',  15);
 define('PT_PLANET', 1);
 define('PT_DEBRIS', 2);
 define('PT_MOON',   3);
+
+// *** Unit locations - shows db table where unit belong
+define('UL_USER',   1);
+define('UL_PLANET', 2);
+
+// *** Caching masks
+define('CACHE_NOTHING',     0);
+define('CACHE_FLEET',       1);
+define('CACHE_PLANET',      2);
+define('CACHE_USER',        4);
+define('CACHE_SOURCE',      8);
+define('CACHE_DESTINATION', 16);
+define('CACHE_EVENT',       32);
+
+define('CACHE_USER_SRC',   CACHE_USER | CACHE_SOURCE);
+define('CACHE_USER_DST',   CACHE_USER | CACHE_DESTINATION);
+define('CACHE_PLANET_SRC', CACHE_PLANET | CACHE_SOURCE);
+define('CACHE_PLANET_DST', CACHE_PLANET | CACHE_DESTINATION);
+define('CACHE_COMBAT',     CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURCE | CACHE_DESTINATION);
+
+define('CACHE_ALL',        CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURCE | CACHE_DESTINATION | CACHE_EVENT);
+
+define('CACHE_NONE', CACHE_NOTHING); // Alias for me
 
 // *** Constants for changing DM
 define('RPG_STRUCTURE', 1);
@@ -137,6 +160,29 @@ define('ATTACK_ACS_MISSTARGET' , 25);
 define('ATTACK_WRONG_SPEED'    , 26);
 define('ATTACK_ACS_TOO_LATE'   , 27);
 
+// *** Market variables
+// === Market blocks
+define('MARKET_ENTRY',         0);
+define('MARKET_RESOURCES',     1);
+define('MARKET_SCRAPPER',      2);
+define('MARKET_STOCKMAN',      3);
+define('MARKET_EXCHANGE',      4);
+define('MARKET_BANKER',        5);
+define('MARKET_PAWNSHOP',      6);
+
+// === Market error statuses
+define('MARKET_NOTHING',         0);
+define('MARKET_DEAL',            1);
+define('MARKET_DEAL_TRADE',      2);
+define('MARKET_NO_DM',           3);
+define('MARKET_NO_RESOURCES',    4);
+define('MARKET_ZERO_DEAL',       5);
+define('MARKET_NO_SHIPS',        6);
+define('MARKET_NOT_A_SHIP',      7);
+define('MARKET_NO_STOCK',        8);
+define('MARKET_ZERO_RES_STOCK',  9);
+define('MARKET_NEGATIVE_SHIPS', 10);
+
 
 // *** Mercenary/talent bonus types
 define('BONUS_NONE',     0);  // No bonus
@@ -148,6 +194,13 @@ define('BONUS_MULTIPLY', 4);  // Multiply by value
 // *** Build type constants
 define('BUILD_CREATE', 1);
 define('BUILD_DESTROY', -1);
+
+// *** Check unit availability codes
+define('BUILD_ALLOWED',      1);
+define('BUILD_AMOUNT_WRONG', 2);
+define('BUILD_QUE_WRONG',    3);
+define('BUILD_QUE_UNIT_WRONG',    4);
+
 
 // *** Que types
 define('QUE_STRUCTURES', 1);

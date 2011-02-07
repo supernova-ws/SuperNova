@@ -9,9 +9,6 @@
  1.0  - copyright 2008 by Chlorel for XNova
 */
 
-define('INSTALL' , false);
-define('INSIDE', true);
-
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 require_once("{$ugamela_root_path}common.{$phpEx}");
@@ -20,6 +17,8 @@ if ($IsUserChecked == false) {
   includeLang('login');
   header("Location: login.php");
 }
+
+define('SN_IN_ALLY', true);
 
 // MINE VARS
 $POST_name = SYS_mysqlSmartEscape($_POST['name']);
@@ -50,8 +49,6 @@ $idNewLeader      = intval($_POST['idNewLeader']);
 
 $mode             = SYS_mysqlSmartEscape($_GET['mode']);
 $edit             = SYS_mysqlSmartEscape($_GET['edit']);
-
-
 
 // alliance ID
 $id_ally          = intval($_GET['a']);

@@ -1,4 +1,10 @@
 <?php
+
+if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
+{
+  $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
+}
+
 // Imagen de la alianza
 if ($ally['ally_image'])
   $ally['ally_image'] = "<tr><th colspan=2><img src=\"{$ally['ally_image']}\"></th></tr>";
@@ -22,7 +28,7 @@ if (!$user_can_send_mails)
   $lang['isCanMassMail'] = 'class="hide"';
 
 // El link para ver las solicitudes
-$request = doquery("SELECT COUNT(*) AS request_count FROM {{table}} WHERE `id_ally` ='{$ally['id']}'", 'alliance_requests', true);
+$request = doquery("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
 if($request['request_count']){
   $lang['request_count'] = $lang['ali_req_requestCount'] . ': ' . intval($request['request_count']);
 }else{
@@ -59,4 +65,5 @@ $lang['ally_members'] = $ally['ally_members'];
 $lang['ally_name'] = $ally['ally_name'];
 
 display(parsetemplate(gettemplate('ali_internal'), $lang), $lang['your_alliance']);
+
 ?>

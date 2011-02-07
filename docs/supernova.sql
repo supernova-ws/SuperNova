@@ -10,8 +10,10 @@ Target Server Type    : MYSQL
 Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2011-01-19 16:12:27
+Date: 2011-02-07 14:30:47
 */
+
+-- SN_DB_VERSION = 26
 
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
@@ -195,7 +197,7 @@ INSERT INTO `sn_config` VALUES ('chat_admin_msgFormat', '[c=purple]$2[/c]');
 INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
-INSERT INTO `sn_config` VALUES ('db_version', '25');
+INSERT INTO `sn_config` VALUES ('db_version', '26');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
@@ -209,7 +211,7 @@ INSERT INTO `sn_config` VALUES ('game_counter', '1');
 INSERT INTO `sn_config` VALUES ('game_default_language', 'ru');
 INSERT INTO `sn_config` VALUES ('game_default_skin', 'skins/EpicBlue/');
 INSERT INTO `sn_config` VALUES ('game_default_template', 'OpenGame');
-INSERT INTO `sn_config` VALUES ('game_disable', '0');
+INSERT INTO `sn_config` VALUES ('game_disable', '1');
 INSERT INTO `sn_config` VALUES ('game_disable_reason', 'SuperNova is in maintenance mode! Please return later!');
 INSERT INTO `sn_config` VALUES ('game_maxGalaxy', '5');
 INSERT INTO `sn_config` VALUES ('game_maxPlanet', '15');
@@ -265,8 +267,8 @@ INSERT INTO `sn_config` VALUES ('url_forum', '/forum/');
 INSERT INTO `sn_config` VALUES ('url_rules', '/rules.php');
 INSERT INTO `sn_config` VALUES ('users_amount', '1');
 INSERT INTO `sn_config` VALUES ('user_vacation_disable', '0');
-INSERT INTO `sn_config` VALUES ('var_db_update', '1295446300');
-INSERT INTO `sn_config` VALUES ('var_db_update_end', '1295446300');
+INSERT INTO `sn_config` VALUES ('var_db_update', '1297081787');
+INSERT INTO `sn_config` VALUES ('var_db_update_end', '1297081787');
 INSERT INTO `sn_config` VALUES ('var_stat_update', '1295446302');
 INSERT INTO `sn_config` VALUES ('var_stat_update_end', '1295446302');
 INSERT INTO `sn_config` VALUES ('var_stat_update_msg', 'Stat update complete in 1.3352279663086 seconds.');
@@ -305,30 +307,12 @@ CREATE TABLE `sn_counter` (
   PRIMARY KEY (`id`),
   KEY `i_user_id` (`user_id`),
   KEY `i_ip` (`ip`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_counter
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `sn_errors`
--- ----------------------------
-DROP TABLE IF EXISTS `sn_errors`;
-CREATE TABLE `sn_errors` (
-  `error_id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `error_sender` varchar(32) NOT NULL DEFAULT '0',
-  `error_time` int(11) NOT NULL DEFAULT '0',
-  `error_type` varchar(32) NOT NULL DEFAULT 'unknown',
-  `error_text` text,
-  `error_page` text,
-  `error_backtrace` text,
-  PRIMARY KEY (`error_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_errors
--- ----------------------------
+INSERT INTO `sn_counter` VALUES ('1', '1297081787', '/overview.php', '/overview.php', '0', '127.0.0.1', '');
 
 -- ----------------------------
 -- Table structure for `sn_fleets`
@@ -376,52 +360,6 @@ CREATE TABLE `sn_fleets` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `sn_fleet_log`
--- ----------------------------
-DROP TABLE IF EXISTS `sn_fleet_log`;
-CREATE TABLE `sn_fleet_log` (
-  `id_owner` int(11) DEFAULT NULL,
-  `last_update` int(11) DEFAULT NULL,
-  `metal` double(132,8) NOT NULL DEFAULT '0.00000000',
-  `crystal` double(132,8) NOT NULL DEFAULT '0.00000000',
-  `deuterium` double(132,8) NOT NULL DEFAULT '0.00000000',
-  `small_ship_cargo` bigint(11) NOT NULL DEFAULT '0',
-  `big_ship_cargo` bigint(11) NOT NULL DEFAULT '0',
-  `light_hunter` bigint(11) NOT NULL DEFAULT '0',
-  `heavy_hunter` bigint(11) NOT NULL DEFAULT '0',
-  `crusher` bigint(11) NOT NULL DEFAULT '0',
-  `battle_ship` bigint(11) NOT NULL DEFAULT '0',
-  `colonizer` bigint(11) NOT NULL DEFAULT '0',
-  `recycler` bigint(11) NOT NULL DEFAULT '0',
-  `spy_sonde` bigint(11) NOT NULL DEFAULT '0',
-  `bomber_ship` bigint(11) NOT NULL DEFAULT '0',
-  `solar_satelit` bigint(11) NOT NULL DEFAULT '0',
-  `destructor` bigint(11) NOT NULL DEFAULT '0',
-  `dearth_star` bigint(11) NOT NULL DEFAULT '0',
-  `battleship` bigint(11) NOT NULL DEFAULT '0',
-  `supernova` bigint(11) NOT NULL DEFAULT '0',
-  `misil_launcher` bigint(11) NOT NULL DEFAULT '0',
-  `small_laser` bigint(11) NOT NULL DEFAULT '0',
-  `big_laser` bigint(11) NOT NULL DEFAULT '0',
-  `gauss_canyon` bigint(11) NOT NULL DEFAULT '0',
-  `ionic_canyon` bigint(11) NOT NULL DEFAULT '0',
-  `buster_canyon` bigint(11) NOT NULL DEFAULT '0',
-  `small_protection_shield` tinyint(1) NOT NULL DEFAULT '0',
-  `big_protection_shield` tinyint(1) NOT NULL DEFAULT '0',
-  `planet_protector` tinyint(1) NOT NULL DEFAULT '0',
-  `interceptor_misil` int(11) NOT NULL DEFAULT '0',
-  `interplanetary_misil` int(11) NOT NULL DEFAULT '0',
-  `phalanx` bigint(11) NOT NULL DEFAULT '0',
-  `sprungtor` bigint(11) NOT NULL DEFAULT '0',
-  `last_jump_time` int(11) NOT NULL DEFAULT '0',
-  `nano` int(11) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_fleet_log
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_iraks`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_iraks`;
@@ -450,14 +388,23 @@ CREATE TABLE `sn_iraks` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_logs`;
 CREATE TABLE `sn_logs` (
-  `log_id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `log_time` int(11) NOT NULL DEFAULT '0',
-  `log_type` int(3) NOT NULL,
-  `log_sender` varchar(32) NOT NULL DEFAULT '0',
-  `log_title` varchar(32) NOT NULL DEFAULT 'unknown',
+  `log_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Human-readable record timestamp',
+  `log_username` varchar(64) NOT NULL DEFAULT '' COMMENT 'Username',
+  `log_title` varchar(64) NOT NULL DEFAULT 'Log entry' COMMENT 'Short description',
   `log_text` text,
-  `log_page` text,
-  PRIMARY KEY (`log_id`)
+  `log_page` varchar(512) NOT NULL DEFAULT '' COMMENT 'Page that makes entry to log',
+  `log_code` int(10) unsigned NOT NULL DEFAULT '0',
+  `log_sender` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'User ID which make log record',
+  `log_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Machine-readable timestamp',
+  `log_dump` text NOT NULL COMMENT 'Machine-readable dump of variables',
+  `log_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`log_id`),
+  UNIQUE KEY `log_id` (`log_id`),
+  KEY `i_log_username` (`log_username`),
+  KEY `i_log_time` (`log_time`),
+  KEY `i_log_sender` (`log_sender`),
+  KEY `i_log_code` (`log_code`),
+  KEY `i_log_page` (`log_page`(255))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -694,17 +641,18 @@ CREATE TABLE `sn_referrals` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_rw`;
 CREATE TABLE `sn_rw` (
+  `report_id` bigint(11) NOT NULL AUTO_INCREMENT,
   `id_owner1` int(11) NOT NULL DEFAULT '0',
   `id_owner2` int(11) NOT NULL DEFAULT '0',
   `rid` varchar(72) NOT NULL DEFAULT '',
   `raport` text NOT NULL,
-  `a_zestrzelona` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `time` int(10) unsigned NOT NULL DEFAULT '0',
   `owners` varchar(255) NOT NULL DEFAULT '0',
-  UNIQUE KEY `rid` (`rid`),
+  PRIMARY KEY (`report_id`),
   KEY `id_owner1` (`id_owner1`,`rid`),
   KEY `id_owner2` (`id_owner2`,`rid`),
-  KEY `time` (`time`)
+  KEY `time` (`time`),
+  KEY `i_rid` (`rid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -756,8 +704,6 @@ CREATE TABLE `sn_statpoints` (
 -- ----------------------------
 -- Records of sn_statpoints
 -- ----------------------------
-INSERT INTO `sn_statpoints` VALUES ('1', '0', '1', '2', '1', '0', '0', '0', '1', '0', '0', '0', '1', '0', '0', '0', '1', '0', '0', '0', '1', '0', '1', '1000', '1294776780', '1', null, '1', '1000');
-INSERT INTO `sn_statpoints` VALUES ('1', '0', '1', '1', '1', '1', '0', '0', '1', '1', '0', '0', '1', '1', '0', '0', '1', '1', '0', '0', '1', '1', '12', '12159', '1295446300', '1', '1', '12', '12159');
 
 -- ----------------------------
 -- Table structure for `sn_users`

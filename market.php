@@ -9,381 +9,69 @@
  *
  */
 
-define('INSIDE'  , true);
-define('INSTALL' , false);
-
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
 
+define('SN_IN_MARKET', true);
+
 includeLang('market');
 includeLang('fleet');
 
-ini_set('display_errors', 1);
-
-$mode = intval($_GET['mode'] ? $_GET['mode'] : $_POST['mode']);
-$tradeList = $_POST['spend'];
+$mode = sys_get_param_int('mode');
+$action = sys_get_param_int('action');
 $shipList  = $_POST['ships'];
-$exchangeTo = intval($_POST['exchangeTo']);
-$exchangeTo = ($exchangeTo<3) ? $exchangeTo : 0 ;
 
 $page_title = "{$lang['eco_mrk_title']}";
 
-$stock = sys_fleetUnPack($config->eco_stockman_fleet);
+$stock = sys_unit_str2arr($config->eco_stockman_fleet);
 
-$newrow = $planetrow;
 $newstock = $stock;
 
+$intError = MARKET_DEAL;
 switch($mode)
 {
-  case 1: // Resource trader
-    $page_title .= " - {$lang['eco_mrk_trader']}";
-
-    $error_list = array(
-      0 => $lang['eco_mrk_trader_ok'],
-      1 => $lang['eco_mrk_error_noDM'],
-      2 => $lang['eco_mrk_error_noResources'],
-      3 => $lang['eco_mrk_error_zero_xchnge'],
-    );
-
-    $intError = 0;
-    if(is_array($tradeList) && isset($exchangeTo))
-    {
-      $total_amount = 0;
-      foreach($tradeList as $amount)
-      {
-        if($amount < 0)
-        {
-          $debug->warning('Trying to supply negative resource amount on Black Market Page: ' . dump($tradeList), 'Hack Attempt', 305);
-          die();
-        }
-        else
-        {
-          $total_amount += $amount;
-        }
-      }
-      if ($total_amount <= 0)
-      {
-        $intError = 3;
-      }
-
-      if($user['rpg_points'] < $config->rpg_cost_trader + $tradeList[3])
-      {
-        $intError = 1;
-      }
-
-      if(!$intError)
-      {
-        $rates = array($config->rpg_exchange_metal, $config->rpg_exchange_crystal, $config->rpg_exchange_deuterium, $config->rpg_exchange_darkMatter);
-
-        $qry = "UPDATE {{planets}} SET ";
-        foreach($tradeList as $res_name => $amount)
-        {
-          $amount = abs(intval($amount));
-          $value += $amount * $rates[$res_name] / $rates[$exchangeTo];
-
-          if($res_name == 3)
-          {
-            $amountDM = $amount;
-          }
-          else
-          {
-            $qry .= "`{$reslist['resources'][$res_name]}` = `{$reslist['resources'][$res_name]}` - {$amount}, ";
-            if($planetrow[$reslist['resources'][$res_name]] < $amount) $intError = 2;
-            $newrow[$reslist['resources'][$res_name]] -= $amount;
-          }
-        }
-
-        if(!$intError)
-        {
-          $rpg_deduct = $config->rpg_cost_trader + $tradeList[3];
-          $amountDM = intval($amountDM);
-          $newrow[$reslist['resources'][$exchangeTo]] += $value;
-
-          $qry .= "`{$reslist['resources'][$exchangeTo]}` = `{$reslist['resources'][$exchangeTo]}` + {$value} WHERE `id` = {$planetrow['id']};";
-          doquery($qry);
-
-          $planetrow = $newrow;
-        }
-      }
-      $message = parsetemplate(gettemplate('message_body'), array('title' => $lang['eco_mrk_error_title'], 'mes' => $error_list[$intError]));
-    }
-
-    $template = gettemplate('market_trader', true);
-    $template->assign_vars(array(
-      'rpg_exchange_metal'      => $config->rpg_exchange_metal,
-      'rpg_exchange_crystal'    => $config->rpg_exchange_crystal,
-      'rpg_exchange_deuterium'  => $config->rpg_exchange_deuterium,
-      'rpg_exchange_darkMatter' => $config->rpg_exchange_darkMatter,
-    ));
-
-    $data = array(
-      'avail' => array( floor($planetrow['metal']), floor($planetrow['crystal']), floor($planetrow['deuterium']), $user['rpg_points'] - $config->rpg_cost_trader, ),
-      'name'=> array( $lang['Metal'], $lang['Crystal'], $lang['Deuterium'], $lang['dark_matter'], ),
-    );
-
-    if($intError)
-    {
-      for($i=0; $i<=3; $i++)
-      {
-        $data['spend'][$i] = abs(intval($tradeList[$i]));
-      }
-
-      $template->assign_var('exchangeTo', $exchangeTo);
-    }
-
-    for($i=0; $i<=3; $i++)
-    {
-      $template->assign_block_vars('resources', array(
-        'ID'    => $i,
-        'NAME'  => $data['name'][$i],
-        'AVAIL' => $data['avail'][$i],
-        'SPEND' => $data['spend'][$i],
-      ));
-      $avail_res .= $data['avail'][$i] . ', ';
-    }
-    $avail_res .= '0';
-    $template->assign_var('resources', $avail_res);
+  case MARKET_RESOURCES: // Resource trader
+    require('includes/market/market_trader.inc');
   break;
 
-  case 2: // Fleet scraper
-    $page_title .= " - {$lang['eco_mrk_scraper']}";
+  case MARKET_SCRAPPER: // Fleet scraper
+    $rpg_cost = $config->rpg_cost_scraper;
+    $submode = 'scraper';
+    $error_no_stock = MARKET_NO_SHIPS;
+    $error_zero_res = MARKET_ZERO_RES;
 
-    $error_list = array(
-      1 => $lang['eco_mrk_error_noDM'],
-      2 => $lang['eco_mrk_error_noShips'],
-      3 => $lang['eco_mrk_error_zeroRes'],
-    );
+    $config_rpg_scrape_metal     = $config->rpg_scrape_metal;
+    $config_rpg_scrape_crystal   = $config->rpg_scrape_crystal;
+    $config_rpg_scrape_deuterium = $config->rpg_scrape_deuterium;
 
-    if(is_array($shipList))
-    {
-      if($user['rpg_points'] >= $config->rpg_cost_scraper)
-      {
-        $message .= "{$lang['eco_mrk_scraper_ships']}<ul>";
-        $qry = "UPDATE {{planets}} SET ";
-        foreach($shipList as $shipID => $shipCount)
-        {
-          $shipCount = abs($shipCount);
-          if($shipCount <= 0)
-          {
-            continue;
-          }
-          if($newrow[$sn_data[$shipID]['name']] < $shipCount)
-          {
-            $intError = 2;
-            break;
-          }
-          $ship_db_name = $sn_data[$shipID]['name'];
-          $qry .= "`{$ship_db_name}` = `{$ship_db_name}` - {$shipCount}, ";
-          $newrow[$ship_db_name] -= $shipCount;
-          $newstock[$shipID] += $shipCount;
+    $array = &$reslist['fleet'];
 
-          $resTemp['metal'] = floor($pricelist[$shipID]['metal']*$shipCount*$config->rpg_scrape_metal);
-          $resTemp['crystal'] = floor($pricelist[$shipID]['crystal']*$shipCount*$config->rpg_scrape_crystal);
-          $resTemp['deuterium'] = floor($pricelist[$shipID]['deuterium']*$shipCount*$config->rpg_scrape_deuterium);
-
-          foreach($resTemp as $resID => $resCount)
-          {
-            $total[$resID] += $resCount;
-          }
-
-          $message .= "<li>{$lang['tech'][$shipID]}: {$shipCount}";
-        }
-
-        if(!$intError)
-        {
-          $message .= "</ul>";
-          if(array_sum($total) > 0)
-          {
-            $message .= "{$lang['eco_mrk_scraper_res']}<ul>";
-            foreach($total as $resID => $resCount)
-            {
-              $newrow[$resID] += $resCount;
-              $qry .= "`{$resID}` = `{$resID}` + {$resCount}, ";
-              $message .= "<li>" . $lang['sys_' . $resID] . ": {$resCount}";
-            }
-            $message .= "</ul>";
-            $qry .= "`id`=`id` WHERE `id` = {$planetrow['id']};";
-            doquery($qry);
-
-            $rpg_deduct = $config->rpg_cost_scraper;
-
-            $planetrow = $newrow;
-            $stock = $newstock;
-
-            $config->eco_stockman_fleet = sys_fleetPack($stock);
-            $config->db_saveItem('eco_stockman_fleet');
-          }
-          else
-          {
-            $intError = 3;
-          }
-        }
-      }else{
-        $intError = 1;
-      }
-
-      if($intError)
-      {
-        $message = parsetemplate(gettemplate('message_body'), array('title' => $lang['eco_mrk_error_title'], 'mes' => $error_list[$intError]));
-        foreach($shipList as $shipID => $shipCount)
-        {
-          $data['ships'][$shipID] = abs(intval($shipCount));
-        }
-      }
-      else
-      {
-        $message = parsetemplate(gettemplate('message_body'), array('title' => $page_title, 'mes' => "<div align=left>{$message}</div>"));
-      }
-    }
-    $template = gettemplate('market_fleet', true);
-    $template->assign_var('rpg_cost', $config->rpg_cost_scraper);
-
-    foreach($reslist['fleet'] as $shipID)
-    {
-      if($planetrow[$sn_data[$shipID]['name']] > 0)
-      {
-        $template->assign_block_vars('ships', array(
-          'ID' => $shipID,
-          'COUNT' => $planetrow[$sn_data[$shipID]['name']],
-          'NAME' => $lang['tech'][$shipID],
-          'METAL' => floor($pricelist[$shipID]['metal']*$config->rpg_scrape_metal),
-          'CRYSTAL' => floor($pricelist[$shipID]['crystal']*$config->rpg_scrape_crystal),
-          'DEUTERIUM' => floor($pricelist[$shipID]['deuterium']*$config->rpg_scrape_deuterium),
-          'AMOUNT' => intval($data['ships'][$shipID]),
-        ));
-      }
-    }
+    require('includes/market/market_fleeter.inc');
   break;
 
-  case 3: // S/H ship seller
-    $page_title .= " - {$lang['eco_mrk_stockman']}";
+  case MARKET_STOCKMAN: // S/H ship seller
+    $rpg_cost = $config->rpg_cost_stockman;
+    $submode = 'stockman';
+    $error_no_stock = MARKET_NO_STOCK;
+    $error_zero_res = MARKET_ZERO_RES_STOCK;
 
-    $error_list = array(
-      1 => $lang['eco_mrk_error_noDM'],
-      2 => $lang['eco_mrk_error_noStock'],
-      3 => $lang['eco_mrk_error_zeroResStock'],
-      4 => $lang['eco_mrk_error_noResources'],
-    );
+    $config_rpg_scrape_metal     = 1 / $config->rpg_scrape_metal;
+    $config_rpg_scrape_crystal   = 1 / $config->rpg_scrape_crystal;
+    $config_rpg_scrape_deuterium = 1 / $config->rpg_scrape_deuterium;
 
-    if(is_array($shipList))
-    {
-      if($user['rpg_points'] >= $config->rpg_cost_stockman)
-      {
-        $message .= "{$lang['eco_mrk_stockman_ships']}<ul>";
-        $qry = "UPDATE {{planets}} SET ";
-        foreach($shipList as $shipID => $shipCount)
-        {
-          $shipCount = abs($shipCount);
-          if($shipCount <= 0) continue;
-          if($stock[$shipID] < $shipCount)
-          {
-            $intError = 2;
-            break;
-          }
-          $qry .= "`{$sn_data[$shipID]['name']}` = `{$sn_data[$shipID]['name']}` + {$shipCount}, ";
-          $newrow[$sn_data[$shipID]['name']] += $shipCount;
-          $newstock[$shipID] -= $shipCount;
+    $array = &$stock;
 
-          $resTemp['metal'] = floor($pricelist[$shipID]['metal']*$shipCount/$config->rpg_scrape_metal);
-          $resTemp['crystal'] = floor($pricelist[$shipID]['crystal']*$shipCount/$config->rpg_scrape_crystal);
-          $resTemp['deuterium'] = floor($pricelist[$shipID]['deuterium']*$shipCount/$config->rpg_scrape_deuterium);
-
-          foreach($resTemp as $resID => $resCount)
-          {
-            $total[$resID] += $resCount;
-          }
-
-          $message .= "<li>{$lang['tech'][$shipID]}: {$shipCount}";
-        }
-
-        foreach($total as $resID => $resCount)
-        {
-          if($newrow[$resID] < $resCount)
-          {
-            $intError = 4;
-            $debug->warning('Trying to use bug in s/h market', 'S/H Ship Market', 300);
-            break;
-          }
-        }
-
-        if(!$intError)
-        {
-          $message .= "</ul>";
-          if(array_sum($total) > 0)
-          {
-            $message .= "{$lang['eco_mrk_stockman_res']}<ul>";
-
-            foreach($total as $resID => $resCount)
-            {
-              $newrow[$resID] -= $resCount;
-              $qry .= "`{$resID}` = `{$resID}` - {$resCount}, ";
-              $message .= "<li>" . $lang['sys_' . $resID] . ": {$resCount}";
-            }
-            $message .= "</ul>";
-            $qry .= "`id`=`id` WHERE `id` = {$planetrow['id']};";
-            doquery($qry);
-
-            $rpg_deduct = $config->rpg_cost_stockman;
-
-            $planetrow = $newrow;
-            $stock = $newstock;
-
-            $config->eco_stockman_fleet = sys_fleetPack($stock);
-            $config->db_saveItem('eco_stockman_fleet');
-          }
-          else
-          {
-            $intError = 3;
-          }
-        }
-      }
-      else
-      {
-        $intError = 1;
-      }
-
-      if($intError)
-      {
-        $message = parsetemplate(gettemplate('message_body'), array('title' => $lang['eco_mrk_error_title'], 'mes' => $error_list[$intError]));
-        foreach($shipList as $shipID => $shipCount)
-        {
-          $data['ships'][$shipID] = abs(intval($shipCount));
-        }
-      }
-      else
-      {
-        $message = parsetemplate(gettemplate('message_body'), array('title' => $page_title, 'mes' => "<div align=left>{$message}</div>"));
-      }
-    }
-
-    $template = gettemplate('market_fleet', true);
-    $template->assign_var('rpg_cost', $config->rpg_cost_stockman);
-
-    if($stock){
-      foreach($stock as $shipID => $shipCount){
-        if($shipCount > 0){
-          $template->assign_block_vars('ships', array(
-            'ID'        => $shipID,
-            'COUNT'     => $shipCount,
-            'NAME'      => $lang['tech'][$shipID],
-            'METAL'     => floor($pricelist[$shipID]['metal']/$config->rpg_scrape_metal),
-            'CRYSTAL'   => floor($pricelist[$shipID]['crystal']/$config->rpg_scrape_crystal),
-            'DEUTERIUM' => floor($pricelist[$shipID]['deuterium']/$config->rpg_scrape_deuterium),
-            'AMOUNT'    => intval($data['ships'][$shipID]),
-          ));
-        }
-      }
-    };
+    require('includes/market/market_fleeter.inc');
   break;
 
-  case 4: // Banker
+  case MARKET_EXCHANGE: // Cross-player resource exchange
   break;
 
-  case 5: // Cross-player resource exchange
+  case MARKET_BANKER: // Banker
   break;
 
-  case 6: // Pawnshop
+  case MARKET_PAWNSHOP: // Pawnshop
   break;
 
   default:
@@ -391,9 +79,10 @@ switch($mode)
   break;
 }
 
-if(!$intError && $rpg_deduct){
-  rpg_points_change($user['id'], -($rpg_deduct), "Using Black Market page {$mode}");
-  $user['rpg_points'] -= $rpg_deduct;
+$message_id = sys_get_param_int('message');
+if($message_id != MARKET_NOTHING)
+{
+  $message = parsetemplate(gettemplate('message_body'), array('title' => $page_title, 'mes' => $lang['eco_mrk_errors'][$message_id]));
 }
 
 $template->assign_vars(array(
@@ -409,24 +98,5 @@ $template->assign_vars(array(
 ));
 
 display($template, $page_title);
-
-function sys_fleetUnPack($strFleet){
-  $arrTemp = explode(';', $strFleet);
-  foreach($arrTemp as $temp){
-    if($temp){
-      $temp = explode(',', $temp);
-      $arrFleet[$temp[0]] = $temp[1];
-    }
-  }
-
-  return $arrFleet;
-}
-
-function sys_fleetPack($arrFleet){
-  foreach($arrFleet as $shipID => $shipCount){
-    $strFleet .= "$shipID,$shipCount;";
-  }
-  return $strFleet;
-}
 
 ?>

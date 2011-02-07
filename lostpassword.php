@@ -13,9 +13,6 @@
  *   [!] Création (Tom)
 **/
 
-define('INSIDE'  , true);
-define('INSTALL' , false);
-
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}includes/init.{$phpEx}");
@@ -79,7 +76,7 @@ if ($confirm)
 }
 elseif ($email)
 {
-  $user_id = doquery("SELECT `id` FROM {{users}} WHERE `email` = '{$email}' LIMIT 1;", '', true);
+  $user_id = doquery("SELECT `id` FROM {{users}} WHERE `email_2` = '{$email}' LIMIT 1;", '', true);
 
   if (!$user_id['id'])
   {

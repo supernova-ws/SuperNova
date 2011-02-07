@@ -1,22 +1,27 @@
 <?php
 
+if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
+{
+  $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
+}
+
 if (!$user_admin_applications) {
   message($lang['Denied_access'], $lang['requests_admin']);
 }
 
 if($d){
-  doquery("UPDATE {{table}} SET `request_denied` = 1, `request_text` = '{$lang['ali_req_deny_reason']}' WHERE `id_user`= {$d};",'alliance_requests');
+  doquery("UPDATE {{alliance_requests}} SET `request_denied` = 1, `request_text` = '{$lang['ali_req_deny_reason']}' WHERE `id_user`= {$d};");
 }
 
 if($id_user){
-  doquery("UPDATE {{table}} SET `ally_id` = '{$ally['id']}', `ally_name` = '{$ally['ally_name']}', `ally_register_time` = {$time_now}, `ally_rank_id` = 0 WHERE `id`= {$id_user};",'users');
-  doquery("DELETE FROM {{table}} WHERE `id_user`= '{$id_user}';",'alliance_requests');
+  doquery("UPDATE {{users}} SET `ally_id` = '{$ally['id']}', `ally_name` = '{$ally['ally_name']}', `ally_register_time` = {$time_now}, `ally_rank_id` = 0 WHERE `id`= {$id_user};");
+  doquery("DELETE FROM {{alliance_requests}} WHERE `id_user`= '{$id_user}';");
 }
 
 $row = gettemplate('ali_admin_request_row');
 $parse = $lang;
-$query = doquery("SELECT {{table}}.*, {{users}}.username FROM {{table}} LEFT JOIN {{users}} ON {{users}}.id = {{table}}.id_user WHERE id_ally='{$ally['id']}'", 'alliance_requests');
-while ($r = mysql_fetch_array($query)) {
+$query = doquery("SELECT {{alliance_requests}}.*, {{users}}.username FROM {{alliance_requests}} LEFT JOIN {{users}} ON {{users}}.id = {{alliance_requests}}.id_user WHERE id_ally='{$ally['id']}'");
+while ($r = mysql_fetch_assoc($query)) {
   $r['request_time'] = date(FMT_DATE_TIME, $r['request_time']);
   if($r['request_denied']){
     $r['request_text'] = $lang['ali_req_deny_admin'];

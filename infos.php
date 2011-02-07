@@ -10,9 +10,6 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-define('INSIDE'  , true);
-define('INSTALL' , false);
-
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
@@ -329,7 +326,7 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
       break;
     }
 
-    $parse['description_short'] = $lang['info'][$BuildID]['description_short'];
+    $parse['EFFECT'] = $lang['info'][$BuildID]['effect'];
     $parse['mercenary_bonus'] = $mercenary_bonus;
     $parse['max_level'] = $mercenary['max'];
   }
@@ -366,7 +363,7 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
       // ---- Destruction
       $NeededRessources     = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $BuildID, true, true);
       $DestroyTime          = GetBuildingTime  ($CurrentUser, $CurrentPlanet, $BuildID) / 2;
-      $parse['destroyurl']  = "buildings.php?cmd=destroy&building=".$BuildID; // Non balisé les balises sont dans le tpl
+      $parse['destroyurl']  = "buildings.php?mode=" . QUE_STRUCTURES . "&action=destroy&unit_id={$BuildID}"; // Non balisé les balises sont dans le tpl
       $parse['levelvalue']  = $CurrentPlanet[$unit_data['name']]; // Niveau du batiment a detruire
       $parse['nfo_metal']   = $lang['Metal'];
       $parse['nfo_crysta']  = $lang['Crystal'];

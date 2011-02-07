@@ -8,9 +8,6 @@
  * v1 (c) copyright 2010 by Gorlum for http://supernova.ws
  */
 
-define('INSIDE', true);
-define('INSTALL' , false);
-
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 require_once("{$ugamela_root_path}common.{$phpEx}");
@@ -22,7 +19,7 @@ $template = gettemplate('affilates', true);
 $rpg_bonus_divisor = $config->rpg_bonus_divisor ? $config->rpg_bonus_divisor : 10;
 
 $affilates = doquery("SELECT r.*, u.username, u.register_time FROM {{referrals}} AS r LEFT JOIN {{users}} AS u ON u.id = r.id WHERE id_partner = {$user['id']};");
-while ($affilate = mysql_fetch_array($affilates))
+while ($affilate = mysql_fetch_assoc($affilates))
 {
   $affilate_gain = floor($affilate['dark_matter']/$rpg_bonus_divisor);
 

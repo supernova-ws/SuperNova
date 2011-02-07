@@ -8,9 +8,6 @@
  * @version 1.0 copyright (c) 2010 by Gorlum for http://supernova.ws
  */
 
-define('INSIDE'  , true);
-define('INSTALL' , false);
-
 $ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include("{$ugamela_root_path}common.{$phpEx}");
@@ -76,7 +73,7 @@ $OnlineUsersNames2 = doquery("SELECT `username` FROM {{users}} WHERE `onlinetime
 //Последние сообщения чата.
 $mess = doquery("SELECT `user`,`message` FROM {{table}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5", 'chat');
 $msg = '<table>';
-while ($result = mysql_fetch_array($mess)) {
+while ($result = mysql_fetch_assoc($mess)) {
   //$str = substr($result['message'], 0, 85);
   $str = $result['message'];
   $usr = $result['user'];
@@ -90,7 +87,7 @@ if ($config->game_news_overview)
 {
   $lastAnnounces = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now} ORDER BY `tsTimeStamp` DESC LIMIT {$config->game_news_overview}");
 
-  while ($lastAnnounce = mysql_fetch_array($lastAnnounces))
+  while ($lastAnnounce = mysql_fetch_assoc($lastAnnounces))
   {
     $template->assign_block_vars('news', array(
       'TIME'       => $lastAnnounce['tsTimeStamp'],
@@ -115,15 +112,15 @@ $template->assign_vars(array(
 
   'NEW_MESSAGES'         => $user['new_message'],
 
-  'builder_xp'           => $user['xpminier'],
-  'builder_lvl'          => $user['lvl_minier'],
-  'builder_lvl_up'       => rpg_get_miner_xp($user['lvl_minier']),
-  'raid_xp'              => $user['xpraid'],
-  'raid_lvl'             => $user['lvl_raid'],
-  'raid_lvl_up'          => rpg_get_raider_xp($user['lvl_raid']),
-  'raids'                => $user['raids'],
-  'raidswin'             => $user['raidswin'],
-  'raidsloose'           => $user['raidsloose'],
+  'builder_xp'           => pretty_number($user['xpminier']),
+  'builder_lvl'          => pretty_number($user['lvl_minier']),
+  'builder_lvl_up'       => pretty_number(rpg_get_miner_xp($user['lvl_minier'])),
+  'raid_xp'              => pretty_number($user['xpraid']),
+  'raid_lvl'             => pretty_number($user['lvl_raid']),
+  'raid_lvl_up'          => pretty_number(rpg_get_raider_xp($user['lvl_raid'])),
+  'raids'                => pretty_number($user['raids']),
+  'raidswin'             => pretty_number($user['raidswin']),
+  'raidsloose'           => pretty_number($user['raidsloose']),
   'user_points'          => pretty_number( $StatRecord['build_points'] ),
   'user_fleet'           => pretty_number( $StatRecord['fleet_points'] ),
   'player_points_tech'   => pretty_number( $StatRecord['tech_points'] ),
