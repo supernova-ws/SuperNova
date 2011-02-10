@@ -295,6 +295,7 @@ foreach($cached['allies'] as $PlanetAlly)
 $template->assign_vars(array(
      'rows'           => $Result,
      'userCount'      => $config->users_amount,
+     'EXPIDITION'     => $config->game_maxPlanet + 1,
      'curPlanetID'    => $planetrow['id'],
      'curPlanetG'     => $planetrow['galaxy'],
      'curPlanetS'     => $planetrow['system'],
