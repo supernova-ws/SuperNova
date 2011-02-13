@@ -490,9 +490,9 @@ switch(intval($config->db_version))
     upd_do_query("DELETE FROM `{{logs}}` WHERE `log_code` = 501;");
 /*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
-  doquery('COMMIT;');
-  //$new_version = 27;
 */
+    doquery('COMMIT;');
+    //$new_version = 27;
 };
 //$GLOBALS['config']->db_saveItem('flt_lastUpdate', 0);
 upd_log_message('Upgrade complete.');

@@ -207,11 +207,11 @@ INSERT INTO `sn_config` VALUES ('Fleet_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('fleet_speed', '1');
 INSERT INTO `sn_config` VALUES ('flt_lastUpdate', '1295446296');
 INSERT INTO `sn_config` VALUES ('game_adminEmail', 'root@localhost');
-INSERT INTO `sn_config` VALUES ('game_counter', '1');
+INSERT INTO `sn_config` VALUES ('game_counter', '0');
 INSERT INTO `sn_config` VALUES ('game_default_language', 'ru');
 INSERT INTO `sn_config` VALUES ('game_default_skin', 'skins/EpicBlue/');
 INSERT INTO `sn_config` VALUES ('game_default_template', 'OpenGame');
-INSERT INTO `sn_config` VALUES ('game_disable', '1');
+INSERT INTO `sn_config` VALUES ('game_disable', '0');
 INSERT INTO `sn_config` VALUES ('game_disable_reason', 'SuperNova is in maintenance mode! Please return later!');
 INSERT INTO `sn_config` VALUES ('game_maxGalaxy', '5');
 INSERT INTO `sn_config` VALUES ('game_maxPlanet', '15');
@@ -271,7 +271,6 @@ INSERT INTO `sn_config` VALUES ('var_db_update', '1297081787');
 INSERT INTO `sn_config` VALUES ('var_db_update_end', '1297081787');
 INSERT INTO `sn_config` VALUES ('var_stat_update', '1295446302');
 INSERT INTO `sn_config` VALUES ('var_stat_update_end', '1295446302');
-INSERT INTO `sn_config` VALUES ('var_stat_update_msg', 'Stat update complete in 1.3352279663086 seconds.');
 
 -- ----------------------------
 -- Table structure for `sn_confirmations`
