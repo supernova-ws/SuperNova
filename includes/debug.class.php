@@ -138,7 +138,7 @@ class debug
       }
     }
 
-    $fatal_error = 'Fatal error: cannot write to `errors` table. Please contact Administration...';
+    $fatal_error = 'Fatal error: cannot write to `logs` table. Please contact Administration...';
 
     $error_text = mysql_real_escape_string($message);
     $error_backtrace = $this->dump($dump, true);
