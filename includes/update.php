@@ -5,10 +5,10 @@
  Automated DB upgrade system
 
  @package supernova
- @version 25
+ @version 26
 
  25 - copyright (c) 2009-2011 Gorlum for http://supernova.ws
-   [!] Now it's all abut transactions...
+   [!] Now it's all about transactions...
    [~] Converted doquery to internal wrapper with logging ability
  24 - copyright (c) 2009-2011 Gorlum for http://supernova.ws
    [+] Converted pre v18 entries to use later implemented functions
@@ -474,20 +474,26 @@ switch(intval($config->db_version))
   case 26:
     upd_log_version_update();
     upd_alter_table('planets', "ADD INDEX `i_parent_planet` (`parent_planet`)", !$update_indexes['planets']['i_parent_planet']);
+    upd_alter_table('messages', "DROP INDEX `owner`", $update_indexes['messages']['owner']);
+    upd_alter_table('messages', "DROP INDEX `owner_type`", $update_indexes['messages']['owner_type']);
+    upd_alter_table('messages', "DROP INDEX `sender_type`", $update_indexes['messages']['sender_type']);
+
     upd_alter_table('messages', array(
-      "DROP INDEX `owner`",
-      "DROP INDEX `owner_type`",
-      "DROP INDEX `sender_type`",
       "ADD INDEX `i_owner_time` (`message_owner`, `message_time`)",
       "ADD INDEX `i_sender_time` (`message_sender`, `message_time`)",
       "ADD INDEX `i_time` (`message_time`)"
     ), !$update_indexes['messages']['i_owner_time']);
+
     mysql_query("DROP TABLE IF EXISTS {$config->db_prefix}fleet_log;");
 
     upd_do_query("UPDATE `{{planets}}` SET `metal` = 0 WHERE `metal` < 0;");
     upd_do_query("UPDATE `{{planets}}` SET `crystal` = 0 WHERE `crystal` < 0;");
     upd_do_query("UPDATE `{{planets}}` SET `deuterium` = 0 WHERE `deuterium` < 0;");
     upd_do_query("DELETE FROM `{{logs}}` WHERE `log_code` = 501;");
+    upd_alter_table('planets', array(
+       "DROP COLUMN `b_building`",
+       "DROP COLUMN `b_building_id`"
+    ), $update_tables['planets']['b_building']);
 /*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
 */
