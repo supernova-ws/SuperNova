@@ -152,7 +152,7 @@ function flt_cache_planet($planet_vector, &$flt_user_cache, &$flt_planet_cache)
 
     if($flt_planet_cache[$planet_hash])
     {
-      $flt_user_row_id = flt_cache_user($global_data['user'], &$flt_user_cache);
+      $flt_user_row_id = flt_cache_user($global_data['user'], $flt_user_cache);
     }
     else
     {
@@ -161,7 +161,7 @@ function flt_cache_planet($planet_vector, &$flt_user_cache, &$flt_planet_cache)
   }
   else
   {
-    $flt_user_row_id = flt_cache_user($flt_planet_cache[$planet_hash]['id_owner'], &$flt_user_cache);
+    $flt_user_row_id = flt_cache_user($flt_planet_cache[$planet_hash]['id_owner'], $flt_user_cache);
   }
 
   return array('planet_hash' => $planet_hash, 'user_id' => $flt_user_row_id);
@@ -263,21 +263,21 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
     $source = array('planet_hash' => '', 'user_id' => 0);
     if($mission_data['src_planet'])
     {
-      flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), &$flt_user_cache, &$flt_planet_cache);
+      flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), $flt_user_cache, $flt_planet_cache);
     }
     elseif($mission_data['src_user'])
     {
-      flt_cache_user($fleet_row['fleet_owner'], &$flt_user_cache);
+      flt_cache_user($fleet_row['fleet_owner'], $flt_user_cache);
     }
 
     $destination = array('planet_hash' => '', 'user_id' => 0);
     if($mission_data['dst_planet'])
     {
-      $destination = flt_cache_planet(array('galaxy' => $fleet_row['fleet_end_galaxy'], 'system' => $fleet_row['fleet_end_system'], 'planet' => $fleet_row['fleet_end_planet'], 'planet_type' => $fleet_row['fleet_end_type']), &$flt_user_cache, &$flt_planet_cache);
+      $destination = flt_cache_planet(array('galaxy' => $fleet_row['fleet_end_galaxy'], 'system' => $fleet_row['fleet_end_system'], 'planet' => $fleet_row['fleet_end_planet'], 'planet_type' => $fleet_row['fleet_end_type']), $flt_user_cache, $flt_planet_cache);
     }
     elseif($mission_data['dst_user'])
     {
-      flt_cache_user($fleet_row['fleet_target_owner'], &$flt_user_cache);
+      flt_cache_user($fleet_row['fleet_target_owner'], $flt_user_cache);
     }
   }
 

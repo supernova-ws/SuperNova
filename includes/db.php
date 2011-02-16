@@ -58,7 +58,7 @@ function doquery($query, $table = '', $fetch = false){
   }
 
   $badword = false;
-  if ((stripos($query, 'RUNCATE TABL') != FALSE) && ($table != 'errors')) {
+  if ((stripos($query, 'RUNCATE TABL') != FALSE) && ($table != 'logs')) {
     $badword = true;
   }elseif (stripos($query, 'ROP TABL') != FALSE) {
     $badword = true;
