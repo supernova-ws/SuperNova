@@ -156,9 +156,15 @@ function flt_mission_explore($mission_data)
         $NewFleetArray   .= "{$Ship},{$Count};";
       }
     }
-    foreach ($FoundShip as $Ship => $Count) {
-      if ($Count != 0) {
-        $FoundShipMess   .= "{$Count} {$lang['tech'][$Ship]},";
+
+    if($FoundShip)
+    {
+      foreach ($FoundShip as $Ship => $Count)
+      {
+        if ($Count != 0)
+        {
+          $FoundShipMess   .= "{$Count} {$lang['tech'][$Ship]},";
+        }
       }
     }
 
