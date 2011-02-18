@@ -19,6 +19,11 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
   };
 
   $fleet_capacity = 0;
+  if(!is_array($fleetarray))
+  {
+    $fleetarray = array();
+  }
+
   foreach ($fleetarray as $Ship => $Count)
   {
     $fleet_capacity += $pricelist[$Ship]['capacity'] * $Count;

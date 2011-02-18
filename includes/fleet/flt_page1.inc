@@ -11,6 +11,11 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
   $template = gettemplate('fleet1', true);
 
   $ships = $_POST['ships'];
+  if(!is_array($ships))
+  {
+    $ships = array();
+  }
+
   foreach ($ships as $ship_id => $ship_count)
   {
     if ($ship_id > 200 && $ship_id < 300 && $ship_count)
