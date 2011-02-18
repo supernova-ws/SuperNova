@@ -113,9 +113,12 @@ function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_f
   {
     global $be_debug_array;
 
-    foreach($be_debug_array as $be_debug_line)
+    if($be_debug_array)
     {
-      $html .= $be_debug_line;
+      foreach($be_debug_array as $be_debug_line)
+      {
+        $html .= $be_debug_line;
+      }
     }
   }
 
