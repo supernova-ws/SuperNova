@@ -167,7 +167,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   // Okay. Now skipping protection checks for inactive longer then 1 week
   if (!$enemy['onlinetime'] || $enemy['onlinetime'] >= ($time_now - 60*60*24*7))
   {
-    if(($enemy_points <= $config->game_noob_points && $user_points > $config->game_noob_points) || $user_points > $enemy_points * $config->game_noob_factor)
+    if(($enemy_points <= $config->game_noob_points && $user_points > $config->game_noob_points) || ($config->game_noob_factor && $user_points > $enemy_points * $config->game_noob_factor))
     {
       return ATTACK_NOOB;
     }
