@@ -164,7 +164,8 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
             }
             break;
           case 'search':
-            if ( !($InResearch || eco_unit_busy($CurrentUser, $CurrentPlanet, false, $Techno)) )
+//            if ( !($InResearch && eco_unit_busy($CurrentUser, $CurrentPlanet, false, $Techno)) )
+            if ( !($InResearch || eco_lab_is_building($config, $que)) )
             {
               if ( eco_can_build_unit($CurrentUser, $WorkingPlanet, $Techno) && IsElementBuyable($CurrentUser, $WorkingPlanet, $Techno) ) {
                 $costs                        = GetBuildingPrice($CurrentUser, $WorkingPlanet, $Techno);
@@ -187,8 +188,14 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
                 $QryUpdatePlanet3 .= "`id` = '".$WorkingPlanet['id']."';";
                 doquery( $QryUpdatePlanet3, 'planets');
               }
-            }else{
+            }
+            elseif($InResearch)
+            {
               $NoResearchMessage = $lang['build_research_in_progress'];
+            }
+            else
+            {
+              $NoResearchMessage = $lang['labo_on_update'];
             };
             break;
         }

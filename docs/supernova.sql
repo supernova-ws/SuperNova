@@ -10,10 +10,10 @@ Target Server Type    : MYSQL
 Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2011-02-07 14:30:47
+Date: 2011-02-14 13:38:44
 */
 
--- SN_DB_VERSION = 26
+-- SN_DB_VERSION = 26e1
 
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
@@ -90,7 +90,7 @@ CREATE TABLE `sn_alliance_requests` (
 DROP TABLE IF EXISTS `sn_annonce`;
 CREATE TABLE `sn_annonce` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user` text NOT NULL,
+  `user` text,
   `galaxie` int(11) NOT NULL DEFAULT '0',
   `systeme` int(11) NOT NULL DEFAULT '0',
   `metala` bigint(11) NOT NULL DEFAULT '0',
@@ -113,7 +113,7 @@ DROP TABLE IF EXISTS `sn_announce`;
 CREATE TABLE `sn_announce` (
   `idAnnounce` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `tsTimeStamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Date & Time of announce',
-  `strAnnounce` text NOT NULL,
+  `strAnnounce` text,
   `detail_url` varchar(250) NOT NULL DEFAULT '' COMMENT 'Link to more details about update',
   PRIMARY KEY (`idAnnounce`),
   KEY `indTimeStamp` (`tsTimeStamp`)
@@ -130,7 +130,7 @@ DROP TABLE IF EXISTS `sn_banned`;
 CREATE TABLE `sn_banned` (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
   `who` varchar(11) NOT NULL DEFAULT '',
-  `theme` text NOT NULL,
+  `theme` text,
   `who2` varchar(11) NOT NULL DEFAULT '',
   `time` int(11) NOT NULL DEFAULT '0',
   `longer` int(11) NOT NULL DEFAULT '0',
@@ -167,7 +167,7 @@ DROP TABLE IF EXISTS `sn_chat`;
 CREATE TABLE `sn_chat` (
   `messageid` int(5) unsigned NOT NULL AUTO_INCREMENT,
   `user` varchar(255) NOT NULL DEFAULT '',
-  `message` text NOT NULL,
+  `message` text,
   `timestamp` int(11) NOT NULL DEFAULT '0',
   `ally_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`messageid`),
@@ -184,7 +184,7 @@ CREATE TABLE `sn_chat` (
 DROP TABLE IF EXISTS `sn_config`;
 CREATE TABLE `sn_config` (
   `config_name` varchar(64) NOT NULL DEFAULT '',
-  `config_value` text NOT NULL,
+  `config_value` text,
   PRIMARY KEY (`config_name`),
   KEY `i_config_name` (`config_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -192,86 +192,6 @@ CREATE TABLE `sn_config` (
 -- ----------------------------
 -- Records of sn_config
 -- ----------------------------
-INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
-INSERT INTO `sn_config` VALUES ('chat_admin_msgFormat', '[c=purple]$2[/c]');
-INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
-INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
-INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
-INSERT INTO `sn_config` VALUES ('db_version', '26');
-INSERT INTO `sn_config` VALUES ('debug', '0');
-INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
-INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
-INSERT INTO `sn_config` VALUES ('eco_stockman_fleet', '');
-INSERT INTO `sn_config` VALUES ('energy_basic_income', '0');
-INSERT INTO `sn_config` VALUES ('Fleet_Cdr', '30');
-INSERT INTO `sn_config` VALUES ('fleet_speed', '1');
-INSERT INTO `sn_config` VALUES ('flt_lastUpdate', '1295446296');
-INSERT INTO `sn_config` VALUES ('game_adminEmail', 'root@localhost');
-INSERT INTO `sn_config` VALUES ('game_counter', '1');
-INSERT INTO `sn_config` VALUES ('game_default_language', 'ru');
-INSERT INTO `sn_config` VALUES ('game_default_skin', 'skins/EpicBlue/');
-INSERT INTO `sn_config` VALUES ('game_default_template', 'OpenGame');
-INSERT INTO `sn_config` VALUES ('game_disable', '1');
-INSERT INTO `sn_config` VALUES ('game_disable_reason', 'SuperNova is in maintenance mode! Please return later!');
-INSERT INTO `sn_config` VALUES ('game_maxGalaxy', '5');
-INSERT INTO `sn_config` VALUES ('game_maxPlanet', '15');
-INSERT INTO `sn_config` VALUES ('game_maxSystem', '199');
-INSERT INTO `sn_config` VALUES ('game_mode', '0');
-INSERT INTO `sn_config` VALUES ('game_name', 'SuperNova');
-INSERT INTO `sn_config` VALUES ('game_news_actual', '259200');
-INSERT INTO `sn_config` VALUES ('game_news_overview', '3');
-INSERT INTO `sn_config` VALUES ('game_noob_factor', '5');
-INSERT INTO `sn_config` VALUES ('game_noob_points', '5000');
-INSERT INTO `sn_config` VALUES ('game_speed', '1');
-INSERT INTO `sn_config` VALUES ('game_user_changename', '0');
-INSERT INTO `sn_config` VALUES ('initial_fields', '163');
-INSERT INTO `sn_config` VALUES ('int_banner_background', 'design/images/banner.png');
-INSERT INTO `sn_config` VALUES ('int_banner_fontInfo', 'terminator.ttf');
-INSERT INTO `sn_config` VALUES ('int_banner_fontRaids', 'klmnfp2005.ttf');
-INSERT INTO `sn_config` VALUES ('int_banner_fontUniverse', 'cristal.ttf');
-INSERT INTO `sn_config` VALUES ('int_banner_showInOverview', '1');
-INSERT INTO `sn_config` VALUES ('int_banner_URL', '/banner.php?type=banner');
-INSERT INTO `sn_config` VALUES ('int_format_date', 'd.m.Y');
-INSERT INTO `sn_config` VALUES ('int_format_time', 'H:i:s');
-INSERT INTO `sn_config` VALUES ('int_userbar_background', 'design/images/userbar.png');
-INSERT INTO `sn_config` VALUES ('int_userbar_font', 'arialbd.ttf');
-INSERT INTO `sn_config` VALUES ('int_userbar_showInOverview', '1');
-INSERT INTO `sn_config` VALUES ('int_userbar_URL', '/banner.php?type=userbar');
-INSERT INTO `sn_config` VALUES ('LastSettedGalaxyPos', '1');
-INSERT INTO `sn_config` VALUES ('LastSettedPlanetPos', '1');
-INSERT INTO `sn_config` VALUES ('LastSettedSystemPos', '1');
-INSERT INTO `sn_config` VALUES ('metal_basic_income', '40');
-INSERT INTO `sn_config` VALUES ('noobprotection', '1');
-INSERT INTO `sn_config` VALUES ('noobprotectionmulti', '5');
-INSERT INTO `sn_config` VALUES ('noobprotectiontime', '5000');
-INSERT INTO `sn_config` VALUES ('player_max_colonies', '9');
-INSERT INTO `sn_config` VALUES ('resource_multiplier', '1');
-INSERT INTO `sn_config` VALUES ('rpg_bonus_divisor', '10');
-INSERT INTO `sn_config` VALUES ('rpg_cost_banker', '1');
-INSERT INTO `sn_config` VALUES ('rpg_cost_exchange', '1');
-INSERT INTO `sn_config` VALUES ('rpg_cost_pawnshop', '1');
-INSERT INTO `sn_config` VALUES ('rpg_cost_scraper', '1');
-INSERT INTO `sn_config` VALUES ('rpg_cost_stockman', '1');
-INSERT INTO `sn_config` VALUES ('rpg_cost_trader', '1');
-INSERT INTO `sn_config` VALUES ('rpg_exchange_crystal', '2');
-INSERT INTO `sn_config` VALUES ('rpg_exchange_darkMatter', '100000');
-INSERT INTO `sn_config` VALUES ('rpg_exchange_deuterium', '4');
-INSERT INTO `sn_config` VALUES ('rpg_exchange_metal', '1');
-INSERT INTO `sn_config` VALUES ('rpg_officer', '3');
-INSERT INTO `sn_config` VALUES ('rpg_scrape_crystal', '0.50');
-INSERT INTO `sn_config` VALUES ('rpg_scrape_deuterium', '0.25');
-INSERT INTO `sn_config` VALUES ('rpg_scrape_metal', '0.75');
-INSERT INTO `sn_config` VALUES ('stats_schedule', 'd@04:00:00');
-INSERT INTO `sn_config` VALUES ('url_dark_matter', '/dark_matter_get.php');
-INSERT INTO `sn_config` VALUES ('url_forum', '/forum/');
-INSERT INTO `sn_config` VALUES ('url_rules', '/rules.php');
-INSERT INTO `sn_config` VALUES ('users_amount', '1');
-INSERT INTO `sn_config` VALUES ('user_vacation_disable', '0');
-INSERT INTO `sn_config` VALUES ('var_db_update', '1297081787');
-INSERT INTO `sn_config` VALUES ('var_db_update_end', '1297081787');
-INSERT INTO `sn_config` VALUES ('var_stat_update', '1295446302');
-INSERT INTO `sn_config` VALUES ('var_stat_update_end', '1295446302');
-INSERT INTO `sn_config` VALUES ('var_stat_update_msg', 'Stat update complete in 1.3352279663086 seconds.');
 
 -- ----------------------------
 -- Table structure for `sn_confirmations`
@@ -307,12 +227,11 @@ CREATE TABLE `sn_counter` (
   PRIMARY KEY (`id`),
   KEY `i_user_id` (`user_id`),
   KEY `i_ip` (`ip`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_counter
 -- ----------------------------
-INSERT INTO `sn_counter` VALUES ('1', '1297081787', '/overview.php', '/overview.php', '0', '127.0.0.1', '');
 
 -- ----------------------------
 -- Table structure for `sn_fleets`
@@ -341,7 +260,7 @@ CREATE TABLE `sn_fleets` (
   `fleet_target_owner` int(11) NOT NULL DEFAULT '0',
   `fleet_group` varchar(15) NOT NULL DEFAULT '0',
   `fleet_mess` int(11) NOT NULL DEFAULT '0',
-  `start_time` int(11) DEFAULT NULL,
+  `start_time` int(11) DEFAULT '0',
   `processing_start` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`fleet_id`),
   KEY `fleet_origin` (`fleet_start_galaxy`,`fleet_start_system`,`fleet_start_planet`),
@@ -396,7 +315,7 @@ CREATE TABLE `sn_logs` (
   `log_code` int(10) unsigned NOT NULL DEFAULT '0',
   `log_sender` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'User ID which make log record',
   `log_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Machine-readable timestamp',
-  `log_dump` text NOT NULL COMMENT 'Machine-readable dump of variables',
+  `log_dump` text COMMENT 'Machine-readable dump of variables',
   `log_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`log_id`),
   UNIQUE KEY `log_id` (`log_id`),
@@ -442,8 +361,9 @@ CREATE TABLE `sn_messages` (
   `message_subject` varchar(48) DEFAULT NULL,
   `message_text` text,
   PRIMARY KEY (`message_id`),
-  KEY `owner_type` (`message_owner`,`message_type`),
-  KEY `sender_type` (`message_sender`,`message_type`)
+  KEY `i_owner_time` (`message_owner`,`message_time`),
+  KEY `i_sender_time` (`message_sender`,`message_time`),
+  KEY `i_time` (`message_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -483,12 +403,10 @@ CREATE TABLE `sn_planets` (
   `last_update` int(11) DEFAULT NULL,
   `planet_type` int(11) NOT NULL DEFAULT '1',
   `destruyed` int(11) NOT NULL DEFAULT '0',
-  `b_building` int(11) NOT NULL DEFAULT '0',
-  `b_building_id` text NOT NULL,
   `b_tech` int(11) NOT NULL DEFAULT '0',
   `b_tech_id` int(11) NOT NULL DEFAULT '0',
   `b_hangar` int(11) NOT NULL DEFAULT '0',
-  `b_hangar_id` text NOT NULL,
+  `b_hangar_id` text,
   `b_hangar_plus` int(11) NOT NULL DEFAULT '0',
   `image` varchar(32) NOT NULL DEFAULT 'normaltempplanet01',
   `diameter` int(11) NOT NULL DEFAULT '12800',
@@ -560,10 +478,10 @@ CREATE TABLE `sn_planets` (
   `phalanx` bigint(11) NOT NULL DEFAULT '0',
   `sprungtor` bigint(11) NOT NULL DEFAULT '0',
   `last_jump_time` int(11) NOT NULL DEFAULT '0',
-  `nano` int(11) DEFAULT '0',
-  `parent_planet` bigint(11) unsigned DEFAULT '0',
-  `debris_metal` bigint(11) unsigned DEFAULT '0',
-  `debris_crystal` bigint(11) unsigned DEFAULT '0',
+  `nano` int(11) NOT NULL DEFAULT '0',
+  `parent_planet` bigint(11) unsigned NOT NULL DEFAULT '0',
+  `debris_metal` bigint(11) unsigned NOT NULL DEFAULT '0',
+  `debris_crystal` bigint(11) unsigned NOT NULL DEFAULT '0',
   `supercargo` bigint(11) NOT NULL DEFAULT '0' COMMENT 'Supercargo ship count',
   `governor` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Planet governor',
   `governor_level` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Governor level',
@@ -618,7 +536,6 @@ CREATE TABLE `sn_planets` (
 -- ----------------------------
 -- Records of sn_planets
 -- ----------------------------
-INSERT INTO `sn_planets` VALUES ('1', 'Planet', '1', '3', '1', '1', '1', '1295446300', '1', '0', '0', '0', '0', '0', '0', '0', '0', 'normaltempplanet01', '12750', '12', '0', '0', '163', '-40', '60', '7939.22222222', '40', '500000', '4219.61111111', '20', '500000', '0.00000000', '0', '500000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '10', '10', '10', '10', '10', '10', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '');
 
 -- ----------------------------
 -- Table structure for `sn_referrals`
@@ -626,7 +543,7 @@ INSERT INTO `sn_planets` VALUES ('1', 'Planet', '1', '3', '1', '1', '1', '129544
 DROP TABLE IF EXISTS `sn_referrals`;
 CREATE TABLE `sn_referrals` (
   `id` bigint(11) unsigned NOT NULL COMMENT 'Referral ID (from table USERS)',
-  `id_partner` bigint(11) unsigned NOT NULL COMMENT 'Partner with whom refferal affilates (from table USERS)',
+  `id_partner` bigint(11) unsigned NOT NULL DEFAULT '1' COMMENT 'Partner with whom refferal affilates (from table USERS)',
   `dark_matter` bigint(11) NOT NULL DEFAULT '0' COMMENT 'How much player have aquired Dark Matter',
   PRIMARY KEY (`id`),
   KEY `id_partner` (`id_partner`)
@@ -645,7 +562,7 @@ CREATE TABLE `sn_rw` (
   `id_owner1` int(11) NOT NULL DEFAULT '0',
   `id_owner2` int(11) NOT NULL DEFAULT '0',
   `rid` varchar(72) NOT NULL DEFAULT '',
-  `raport` text NOT NULL,
+  `raport` text,
   `time` int(10) unsigned NOT NULL DEFAULT '0',
   `owners` varchar(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`report_id`),
@@ -726,7 +643,7 @@ CREATE TABLE `sn_users` (
   `planet` int(11) NOT NULL DEFAULT '0',
   `current_planet` int(11) NOT NULL DEFAULT '0',
   `user_lastip` varchar(250) DEFAULT NULL COMMENT 'User last IP',
-  `user_agent` text NOT NULL,
+  `user_agent` text,
   `register_time` int(11) NOT NULL DEFAULT '0',
   `onlinetime` int(11) NOT NULL DEFAULT '0',
   `dpath` varchar(255) NOT NULL DEFAULT '',
@@ -823,4 +740,87 @@ CREATE TABLE `sn_users` (
 -- ----------------------------
 -- Records of sn_users
 -- ----------------------------
-INSERT INTO `sn_users` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 'ru', '3', '0', '', null, '1', '1', '1', '1', '1', '127.0.0.1', 'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.7.62 Version/11.00', '1294776770', '1295446300', '', '1', '1', '0', '0', '1', '5', '0', '0', '1', '1', '1', '1', '0', '0', '0', null, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '', '0', null, '0', '0', 'red', '#00FF00', 'yellow', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', null, '0', '0', null, null, '0', '', '0');
+
+-- INSERT INTO `sn_planets` VALUES ('1', 'Planet', '1', '3', '1', '1', '1', UNIX_TIMESTAMP(NOW()), '1', '0', '0', '0', '0', '0', '0', 'normaltempplanet01', '12750', '0', '0', '0', '163', '-40', '60', '500', '40', '500000', '500', '20', '500000', '0.00000000', '0', '500000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '10', '10', '10', '10', '10', '10', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '');
+-- INSERT INTO `sn_users` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 'ru', '3', '0', '', null, '1', '1', '1', '1', '1', '', '', UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(NOW()), '', '1', '1', '0', '0', '1', '5', '0', '0', '1', '1', '1', '1', '0', '0', '0', null, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '', '0', null, '0', '0', 'red', '#00FF00', 'yellow', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', null, '0', '0', null, null, '0', '', '0');
+
+INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
+INSERT INTO `sn_config` VALUES ('chat_admin_msgFormat', '[c=purple]$2[/c]');
+INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
+INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
+INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
+INSERT INTO `sn_config` VALUES ('db_version', '26');
+INSERT INTO `sn_config` VALUES ('debug', '0');
+INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
+INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
+INSERT INTO `sn_config` VALUES ('eco_stockman_fleet', '');
+INSERT INTO `sn_config` VALUES ('energy_basic_income', '0');
+INSERT INTO `sn_config` VALUES ('Fleet_Cdr', '30');
+INSERT INTO `sn_config` VALUES ('fleet_speed', '1');
+INSERT INTO `sn_config` VALUES ('flt_lastUpdate', UNIX_TIMESTAMP(NOW()));
+INSERT INTO `sn_config` VALUES ('game_adminEmail', 'root@localhost');
+INSERT INTO `sn_config` VALUES ('game_counter', '0');
+INSERT INTO `sn_config` VALUES ('game_default_language', 'ru');
+INSERT INTO `sn_config` VALUES ('game_default_skin', 'skins/EpicBlue/');
+INSERT INTO `sn_config` VALUES ('game_default_template', 'OpenGame');
+INSERT INTO `sn_config` VALUES ('game_disable', '0');
+INSERT INTO `sn_config` VALUES ('game_disable_reason', 'SuperNova is in maintenance mode! Please return later!');
+INSERT INTO `sn_config` VALUES ('game_maxGalaxy', '5');
+INSERT INTO `sn_config` VALUES ('game_maxPlanet', '15');
+INSERT INTO `sn_config` VALUES ('game_maxSystem', '199');
+INSERT INTO `sn_config` VALUES ('game_mode', '0');
+INSERT INTO `sn_config` VALUES ('game_name', 'SuperNova');
+INSERT INTO `sn_config` VALUES ('game_news_actual', '259200');
+INSERT INTO `sn_config` VALUES ('game_news_overview', '3');
+INSERT INTO `sn_config` VALUES ('game_noob_factor', '5');
+INSERT INTO `sn_config` VALUES ('game_noob_points', '5000');
+INSERT INTO `sn_config` VALUES ('game_speed', '1');
+INSERT INTO `sn_config` VALUES ('game_user_changename', '0');
+INSERT INTO `sn_config` VALUES ('initial_fields', '163');
+INSERT INTO `sn_config` VALUES ('int_banner_background', 'design/images/banner.png');
+INSERT INTO `sn_config` VALUES ('int_banner_fontInfo', 'terminator.ttf');
+INSERT INTO `sn_config` VALUES ('int_banner_fontRaids', 'klmnfp2005.ttf');
+INSERT INTO `sn_config` VALUES ('int_banner_fontUniverse', 'cristal.ttf');
+INSERT INTO `sn_config` VALUES ('int_banner_showInOverview', '1');
+INSERT INTO `sn_config` VALUES ('int_banner_URL', '/banner.php?type=banner');
+INSERT INTO `sn_config` VALUES ('int_format_date', 'd.m.Y');
+INSERT INTO `sn_config` VALUES ('int_format_time', 'H:i:s');
+INSERT INTO `sn_config` VALUES ('int_userbar_background', 'design/images/userbar.png');
+INSERT INTO `sn_config` VALUES ('int_userbar_font', 'arialbd.ttf');
+INSERT INTO `sn_config` VALUES ('int_userbar_showInOverview', '1');
+INSERT INTO `sn_config` VALUES ('int_userbar_URL', '/banner.php?type=userbar');
+INSERT INTO `sn_config` VALUES ('LastSettedGalaxyPos', '1');
+INSERT INTO `sn_config` VALUES ('LastSettedPlanetPos', '1');
+INSERT INTO `sn_config` VALUES ('LastSettedSystemPos', '1');
+INSERT INTO `sn_config` VALUES ('metal_basic_income', '40');
+INSERT INTO `sn_config` VALUES ('player_max_colonies', '9');
+INSERT INTO `sn_config` VALUES ('resource_multiplier', '1');
+INSERT INTO `sn_config` VALUES ('rpg_bonus_divisor', '10');
+INSERT INTO `sn_config` VALUES ('rpg_cost_banker', '1');
+INSERT INTO `sn_config` VALUES ('rpg_cost_exchange', '1');
+INSERT INTO `sn_config` VALUES ('rpg_cost_pawnshop', '1');
+INSERT INTO `sn_config` VALUES ('rpg_cost_scraper', '1');
+INSERT INTO `sn_config` VALUES ('rpg_cost_stockman', '1');
+INSERT INTO `sn_config` VALUES ('rpg_cost_trader', '1');
+INSERT INTO `sn_config` VALUES ('rpg_exchange_crystal', '2');
+INSERT INTO `sn_config` VALUES ('rpg_exchange_darkMatter', '100000');
+INSERT INTO `sn_config` VALUES ('rpg_exchange_deuterium', '4');
+INSERT INTO `sn_config` VALUES ('rpg_exchange_metal', '1');
+INSERT INTO `sn_config` VALUES ('rpg_officer', '3');
+INSERT INTO `sn_config` VALUES ('rpg_scrape_crystal', '0.50');
+INSERT INTO `sn_config` VALUES ('rpg_scrape_deuterium', '0.25');
+INSERT INTO `sn_config` VALUES ('rpg_scrape_metal', '0.75');
+INSERT INTO `sn_config` VALUES ('stats_schedule', 'd@04:00:00');
+INSERT INTO `sn_config` VALUES ('url_dark_matter', '/dark_matter_get.php');
+INSERT INTO `sn_config` VALUES ('url_forum', '/forum/');
+INSERT INTO `sn_config` VALUES ('url_rules', '/rules.php');
+INSERT INTO `sn_config` VALUES ('users_amount', '1');
+INSERT INTO `sn_config` VALUES ('user_vacation_disable', '0');
+INSERT INTO `sn_config` VALUES ('var_db_update', UNIX_TIMESTAMP(NOW()));
+INSERT INTO `sn_config` VALUES ('var_db_update_end', UNIX_TIMESTAMP(NOW()));
+INSERT INTO `sn_config` VALUES ('var_stat_update', UNIX_TIMESTAMP(NOW()));
+INSERT INTO `sn_config` VALUES ('var_stat_update_end', UNIX_TIMESTAMP(NOW()));
+INSERT INTO `sn_config` VALUES ('var_stat_update_msg', '');
+
+INSERT INTO `sn_planets` (`id`, `name`, `id_owner`, `id_level`, `galaxy`, `system`, `planet`, `planet_type`, `last_update`) VALUES (1, 'Planet', 1, 0, 1, 1, 1, 1, UNIX_TIMESTAMP(NOW()));
+INSERT INTO `sn_users` (`id`, `username`, `password`, `email`, `email_2`, `authlevel`, `id_planet`, `galaxy`, `system`, `planet`, `current_planet`, `register_time`, `onlinetime`, `noipcheck`) VALUES (1, 'admin',  '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 3, 1, 1, 1, 1, 1, UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(NOW()), 1);

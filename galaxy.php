@@ -255,8 +255,8 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
      'USER_VACATION' => $GalaxyRowUser['vacation'],
      'USER_ACTIVITY' => floor(($time_now - $GalaxyRowUser['onlinetime'])/(60*60*24)),
      'USER_PROTECTED'=> $RowUserPoints <= $config->game_noob_points,
-     'USER_NOOB'     => $RowUserPoints * $config->game_noob_factor < $CurrentPoints,
-     'USER_STRONG'   => $CurrentPoints * $config->game_noob_factor < $RowUserPoints,
+     'USER_NOOB'     => $RowUserPoints * $config->game_noob_factor < $CurrentPoints && $config->game_noob_factor,
+     'USER_STRONG'   => $CurrentPoints * $config->game_noob_factor < $RowUserPoints && $config->game_noob_factor,
      'USER_AUTH'     => $GalaxyRowUser['authlevel'],
      'USER_ADMIN'    => $lang['user_level_shortcut'][$GalaxyRowUser['authlevel']],
 
@@ -295,6 +295,7 @@ foreach($cached['allies'] as $PlanetAlly)
 $template->assign_vars(array(
      'rows'           => $Result,
      'userCount'      => $config->users_amount,
+     'EXPIDITION'     => $config->game_maxPlanet + 1,
      'curPlanetID'    => $planetrow['id'],
      'curPlanetG'     => $planetrow['galaxy'],
      'curPlanetS'     => $planetrow['system'],

@@ -16,7 +16,7 @@ if ( !defined('INSIDE') )
 }
 
 define('DB_VERSION', 26);
-define('SN_VERSION', '26d');
+define('SN_VERSION', '26e3');
 
 define('GAMEURL', "http://{$_SERVER['HTTP_HOST']}/");
 
@@ -33,8 +33,6 @@ define('MAX_ATTACK_ROUNDS', 10);
 
 // Nombre de colones pour les rapports d'espionnage
 define('SPY_REPORT_ROW'           , 1);
-// Cases données par niveau de Base Lunaire
-define('FIELDS_BY_MOONBASIS_LEVEL', 15);
 // Nombre maximum d'element dans la liste de construction de batiments
 define('MAX_BUILDING_QUEUE_SIZE'  , 5);
 // Nombre maximum d'element dans une ligne de liste de construction flotte et defenses
