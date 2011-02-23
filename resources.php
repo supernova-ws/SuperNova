@@ -76,6 +76,12 @@ if(is_array($production))
 {
   foreach($production as $prod_id => $percent)
   {
+    if($percent > 100 || $percent < 0)
+    {
+      debug->warning('Supplying wrong production percent (less then 0 or greater then 100)', 'Hack attempt', 302, array('base_dump' => true));
+      die();
+    }
+
     $prod_id = intval($prod_id);
     if(in_array($prod_id, $reslist['prod']))
     {
@@ -87,6 +93,7 @@ if(is_array($production))
     else
     {
       $debug->warning('Supplying wrong ID in production array - attempt to change some field', 'Resource Page', 301);
+      die();
     }
   }
 
