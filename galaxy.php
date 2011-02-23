@@ -255,8 +255,8 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
      'USER_VACATION' => $GalaxyRowUser['vacation'],
      'USER_ACTIVITY' => floor(($time_now - $GalaxyRowUser['onlinetime'])/(60*60*24)),
      'USER_PROTECTED'=> $RowUserPoints <= $config->game_noob_points,
-     'USER_NOOB'     => $RowUserPoints * $config->game_noob_factor < $CurrentPoints,
-     'USER_STRONG'   => $CurrentPoints * $config->game_noob_factor < $RowUserPoints,
+     'USER_NOOB'     => $RowUserPoints * $config->game_noob_factor < $CurrentPoints && $config->game_noob_factor,
+     'USER_STRONG'   => $CurrentPoints * $config->game_noob_factor < $RowUserPoints && $config->game_noob_factor,
      'USER_AUTH'     => $GalaxyRowUser['authlevel'],
      'USER_ADMIN'    => $lang['user_level_shortcut'][$GalaxyRowUser['authlevel']],
 
