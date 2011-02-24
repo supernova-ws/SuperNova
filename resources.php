@@ -78,7 +78,7 @@ if(is_array($production))
   {
     if($percent > 100 || $percent < 0)
     {
-      debug->warning('Supplying wrong production percent (less then 0 or greater then 100)', 'Hack attempt', 302, array('base_dump' => true));
+      $debug->warning('Supplying wrong production percent (less then 0 or greater then 100)', 'Hack attempt', 302, array('base_dump' => true));
       die();
     }
 
