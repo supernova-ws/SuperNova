@@ -167,7 +167,7 @@ switch ($fleet_page)
         }
         else
         {
-          message ("<font color=\"red\"><b>". $lang['fl_no_planettype'] ."</b></font>", $lang['fl_error']);
+          message ("<font color=\"red\"><b>". $lang['fl_no_planet_type'] ."</b></font>", $lang['fl_error']);
         }
       }
       else
