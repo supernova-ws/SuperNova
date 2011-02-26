@@ -131,6 +131,7 @@ $lang['res_planet_production'] = 'Производство ресурсов на планете';
 $lang['res_basic_income'] = 'Естественное производство';
 $lang['res_total'] = 'ВСЕГО';
 $lang['res_calculate'] = 'Рассчитать';
+$lang['res_hourly'] = 'В час';
 $lang['res_daily'] = 'За день';
 $lang['res_weekly'] = 'За неделю';
 $lang['res_monthly'] = 'За месяц';
