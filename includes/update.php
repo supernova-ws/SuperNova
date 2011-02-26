@@ -494,6 +494,7 @@ switch(intval($config->db_version))
        "DROP COLUMN `b_building`",
        "DROP COLUMN `b_building_id`"
     ), $update_tables['planets']['b_building']);
+    upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('noobprotection', 'noobprotectionmulti', 'noobprotectiontime');");
 /*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
 */
