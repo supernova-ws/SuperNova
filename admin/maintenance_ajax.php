@@ -41,17 +41,16 @@ $ques = array(
   'DELETE FROM `{{buddy}}`    WHERE `owner`          not in (select id from {{users}});',
   'DELETE FROM `{{annonce}}`  WHERE `user`           not in (select id from {{users}});',
   'DELETE FROM `{{messages}}` WHERE `message_sender` not in (select id from {{users}});',
-
-/*
   'DELETE FROM `{{messages}}` WHERE `message_owner`  not in (select id from {{users}});',
   'DELETE FROM `{{planets}}`  WHERE `id_owner`       not in (select id from {{users}});',
   'DELETE FROM `{{rw}}`       WHERE `id_owner1`      not in (select id from {{users}});',
   'DELETE FROM `{{rw}}`       WHERE `id_owner2`      not in (select id from {{users}});',
-*/
+/*
   'DELETE {{messages}}.* FROM {{messages}} LEFT OUTER JOIN {{users}} ON {{messages}}.message_owner = {{users}}.id WHERE {{users}}.username IS NULL;',
   'DELETE {{planets}}.* FROM {{planets}} LEFT OUTER JOIN {{users}} ON {{planets}}.id_owner = {{users}}.id WHERE {{users}}.username IS NULL;',
   'DELETE {{rw}}.* FROM {{rw}} LEFT OUTER JOIN {{users}} ON {{rw}}.id_owner1 = {{users}}.id WHERE {{users}}.username IS NULL;',
   'DELETE {{rw}}.* FROM {{rw}} LEFT OUTER JOIN {{users}} ON {{rw}}.id_owner2 = {{users}}.id WHERE {{users}}.username IS NULL;',
+*/
 
   'DELETE FROM {{statpoints}} WHERE stat_type=1 AND id_owner not in (select id from {{users}});',
 

@@ -489,12 +489,16 @@ switch(intval($config->db_version))
     upd_do_query("UPDATE `{{planets}}` SET `metal` = 0 WHERE `metal` < 0;");
     upd_do_query("UPDATE `{{planets}}` SET `crystal` = 0 WHERE `crystal` < 0;");
     upd_do_query("UPDATE `{{planets}}` SET `deuterium` = 0 WHERE `deuterium` < 0;");
-    upd_do_query("DELETE FROM `{{logs}}` WHERE `log_code` = 501;");
     upd_alter_table('planets', array(
        "DROP COLUMN `b_building`",
        "DROP COLUMN `b_building_id`"
     ), $update_tables['planets']['b_building']);
+
     upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('noobprotection', 'noobprotectionmulti', 'noobprotectiontime');");
+
+    upd_do_query("DELETE FROM `{{logs}}` WHERE `log_code` = 501;");
+    upd_do_query("DELETE FROM `{{logs}}` WHERE `log_title` IN ('Canceling Hangar Que', 'Building Planet Defense');");
+
 /*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
 */
