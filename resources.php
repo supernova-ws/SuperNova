@@ -56,6 +56,7 @@ function int_calc_storage_bar($resource_name)
 
     'BASIC_INCOME'=> $config->$resource_income_name * $config->resource_multiplier,
 
+    'HOURLY'      => colorNumber(pretty_number($totalProduction)),
     'DAILY'       => colorNumber(pretty_number($totalProduction * 24)),
     'WEEKLY'      => colorNumber(pretty_number($totalProduction * 24 * 7)),
     'MONTHLY'     => colorNumber(pretty_number($totalProduction * 24 * 30)),
