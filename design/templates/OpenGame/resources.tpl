@@ -76,6 +76,7 @@ function res_set_all(obj)
   <tr><td class="c" colspan="4">{Widespread_production}</td></tr>
   <tr>
     <th width="100">&nbsp;</th>
+    <th>{L_res_hourly}</th>
     <th>{L_res_daily}</th>
     <th>{L_res_weekly}</th>
     <th>{L_res_monthly}</th>
@@ -83,9 +84,10 @@ function res_set_all(obj)
   <!-- BEGIN resources -->
     <tr>
       <th>{resources.NAME}</th>
-      <th>{resources.DAILY}</th>
-      <th>{resources.WEEKLY}</th>
-      <th>{resources.MONTHLY}</th>
+      <th><div align="right">{resources.HOURLY}</div></th>
+      <th><div align="right">{resources.DAILY}</div></th>
+      <th><div align="right">{resources.WEEKLY}</div></th>
+      <th><div align="right">{resources.MONTHLY}</div></th>
     </tr>
   <!-- END resources -->
 </tbody></table>
