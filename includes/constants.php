@@ -16,7 +16,7 @@ if ( !defined('INSIDE') )
 }
 
 define('DB_VERSION', 26);
-define('SN_VERSION', '26e3');
+define('SN_VERSION', '26e4');
 
 define('GAMEURL', "http://{$_SERVER['HTTP_HOST']}/");
 
