@@ -141,7 +141,7 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
     $StayDuration = intval($_POST['missiontime']);
     if(!in_array($StayDuration, array(1, 2, 3)))
     {
-      $debug->warning('Supplying wrong mission time (less then 0 or greater then 100)', 'Hack attempt', 302, array('base_dump' => true));
+      $debug->warning('Supplying wrong mission time', 'Hack attempt', 302, array('base_dump' => true));
       die();
     }
     $StayDuration = max(0, $StayDuration) * 3600;
