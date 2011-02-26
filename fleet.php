@@ -131,6 +131,15 @@ switch ($fleet_page)
     $fleet_group_mr = intval($_POST['fleet_group']);
     $fleetarray     = unserialize(base64_decode(str_rot13($_POST["usedfleet"])));
 
+    foreach($fleetarray as $ship_id => $ship_amount)
+    {
+      if(!in_array($ship_id, $sn_data['groups']['fleet']) || intval($ship_amount) != $ship_amount || $ship_amount < 1)
+      {
+        $debug->warning('Supplying wrong ship in ship list on fleet page', 'Hack attempt', 302, array('base_dump' => true));
+        die();
+      }
+    }
+
     $UsedPlanet = false;
     $YourPlanet = false;
     $missiontype = array();
