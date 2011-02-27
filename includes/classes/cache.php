@@ -534,7 +534,7 @@ class classConfig extends classPersistent
 
     // Chat settings
     'chat_timeout'         => 900, // in seconds. Default = 15 min
-    'chat_admin_msgFormat' => '[c=purple]$2[/c]', // formatting message for Admin
+    'chat_admin_highlight' => '<font color=purple>$1</font>', // highlighting admin nick
 
     //Roleplay system
     'rpg_officer'       =>  3, // Cost per officer level

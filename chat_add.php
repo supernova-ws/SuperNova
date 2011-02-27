@@ -39,14 +39,15 @@ $ally_id = $user['ally_id'];
 
 // On récupère les informations du message et de l'envoyeur
 if ($msg && $user['username']) {
-   if ($user['authlevel'] == 3) {
-     $msg = preg_replace("#\[c=(white|blue|yellow|green|pink|red|orange)\](.+)\[/c\]#isU", $config->chat_admin_msgFormat, $msg);
-   }
-   $nick = addslashes ($user['username']);
+   $nick = trim(strip_tags($user['username']));
    if($ally_id && $chat_type != 'ally'){
      $tag = doquery("SELECT ally_tag FROM {{alliance}} WHERE id = {$user['ally_id']}", '', true);
-     $nick .= addslashes ("(" . $tag['ally_tag'] . ")");
+     $nick .= '(' . trim(strip_tags($tag['ally_tag'])) . ')';
    };
+   if ($user['authlevel'] == 3) {
+     $nick = preg_replace("#(.+)#", $config->chat_admin_highlight, $nick); //isU
+   }
+   $nick = addslashes ($nick);
    $msg = iconv('UTF-8', 'CP1251', $msg); // CHANGE IT !!!!!!!!!!!
 } else {
    $msg="";
