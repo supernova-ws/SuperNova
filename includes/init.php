@@ -28,8 +28,8 @@ if(strpos($phpEx, '/') !== false)
 
 //$old_path = $ugamela_root_path;
 
-$sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strpos($_SERVER['PHP_SELF'], '/') + 1);
-$sn_root_physical = $_SERVER['DOCUMENT_ROOT'] . $sn_root_relative;
+$sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/') + 1);
+$sn_root_physical = str_replace(array('//', '//'), '/', $_SERVER['DOCUMENT_ROOT'] . $sn_root_relative);
 $sn_root_virtual  = 'http://' . $_SERVER['HTTP_HOST'] . $sn_root_relative;
 $phpbb_root_path = $sn_root_physical;
 
@@ -38,12 +38,12 @@ $user          = array();
 $lang          = array();
 $IsUserChecked = false;
 
-require("{$sn_root_physical}/config.{$phpEx}");
+require("{$sn_root_physical}config.{$phpEx}");
 $db_prefix = $dbsettings['prefix'];
 $sn_secret_word = $dbsettings['secretword'];
 unset($dbsettings);
 
-require_once("{$sn_root_physical}/includes/constants.{$phpEx}");
+require_once("{$sn_root_physical}includes/constants.{$phpEx}");
 
 // required for db.php
 require_once("{$sn_root_physical}includes/debug.class.{$phpEx}");
