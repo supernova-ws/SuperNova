@@ -47,7 +47,7 @@ class debug
 
   function echo_log()
   {
-    echo "<br><table><tr><td class=k colspan=4><a href=\"" . SN_ROOT_PHYSICAL . . "admin/settings.php\">Debug Log</a>:</td></tr>{$this->log}</table>";
+    echo "<br><table><tr><td class=k colspan=4><a href=\"" . SN_ROOT_PHYSICAL . "admin/settings.php\">Debug Log</a>:</td></tr>{$this->log}</table>";
     die();
   }
 
