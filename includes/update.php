@@ -494,10 +494,12 @@ switch(intval($config->db_version))
        "DROP COLUMN `b_building_id`"
     ), $update_tables['planets']['b_building']);
 
-    upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('noobprotection', 'noobprotectionmulti', 'noobprotectiontime');");
+    upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('noobprotection', 'noobprotectionmulti', 'noobprotectiontime', 'chat_admin_msgFormat');");
 
     upd_do_query("DELETE FROM `{{logs}}` WHERE `log_code` = 501;");
     upd_do_query("DELETE FROM `{{logs}}` WHERE `log_title` IN ('Canceling Hangar Que', 'Building Planet Defense');");
+
+    upd_check_key('chat_admin_highlight', '<font color=purple>$1</font>', !isset($config->chat_admin_highlight));
 
 /*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
