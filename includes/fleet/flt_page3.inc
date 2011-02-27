@@ -139,7 +139,7 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
   $fleet['start_time'] = $duration + $time_now;
   if ($target_mission == MT_EXPLORE OR $target_mission == MT_HOLD) {
     $StayDuration = intval($_POST['missiontime']);
-    if(!in_array($StayDuration, array(1, 2, 3)))
+    if(!in_array($StayDuration, array(1, 2, 4, 8, 16, 32)))
     {
       $debug->warning('Supplying wrong mission time', 'Hack attempt', 302, array('base_dump' => true));
       die();
