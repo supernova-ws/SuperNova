@@ -102,7 +102,7 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
     $target = "g{$galaxy}s{$system}p{$planet}t{$planet_type}";
     if($_POST['acs_target_mr'] == $target){
       //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
-      $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}';",'', true);
+      $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}' LIMIT 1;",'', true);
       if (!$aks){
         $fleet_group = 0;
       }else{

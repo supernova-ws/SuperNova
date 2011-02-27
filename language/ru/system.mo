@@ -145,6 +145,7 @@ $lang['bld_create']  = 'Построить';
 // Imperium page
 $lang['imp_imperator'] = "Император";
 $lang['imp_overview'] = "Обзор Империи";
+$lang['imp_fleets'] = "Флоты в полете";
 $lang['imp_production'] = "Производство";
 $lang['imp_name'] = "Название";
 $lang['sys_fields'] = "Сектора";

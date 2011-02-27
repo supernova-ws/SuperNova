@@ -29,17 +29,17 @@
     <tr><th>{L_sys_planet}</th></tr>
     <tr><td><a href="overview.php" id="lm_overview">{L_Overview}</a></td></tr>
     <tr><td><a href="resources.php">{L_Resources}</a></td></tr>
-    <tr><td><a href="fleet.php" id="lm_fleet">{L_Fleet}</a></td></tr>
-<!--    <tr><td><a href="buildings.php" id="lm_buildings">{L_Buildings}</a></td></tr>-->
+    <tr><td><a href="fleet.php" id="lm_fleet">{L_lm_fleet_orbiting}</a></td></tr>
 
-    <tr><td><a href="buildings.php?mode={QUE_STRUCTURES}" id="lm_buildings">{L_Buildings}</a></td></tr>
+    <tr><td><a href="buildings.php?mode={D_QUE_STRUCTURES}" id="lm_buildings">{L_Buildings}</a></td></tr>
 
-    <tr><td><a href="buildings.php?mode={SUBQUE_FLEET}" id="lm_shipyard">{L_Shipyard}</a></td></tr>
-    <tr><td><a href="buildings.php?mode={SUBQUE_DEFENSE}">{L_Defense}</a></td></tr>
+    <tr><td><a href="buildings.php?mode={D_SUBQUE_FLEET}" id="lm_shipyard">{L_Shipyard}</a></td></tr>
+    <tr><td><a href="buildings.php?mode={D_SUBQUE_DEFENSE}">{L_Defense}</a></td></tr>
 
     <tr><th>{L_Imperium}</th></tr>
     <tr><td><a href="imperator.php" style="color: purple">{L_imp_imperator}</a></th></tr>
     <tr><td><a href="imperium.php">{L_imp_overview}</a></th></tr>
+    <tr><td><a href="flying_fleets.php" id="lm_fleet">{L_imp_fleets}</a></th></tr>
     <tr><td><a href="techtree.php" id="lm_techtree">{L_Technology}</a></td></tr>
     <tr><td><a href="buildings.php?mode=research" id="lm_techtree">{L_Research}</a></td></tr>
     <tr><td><a href="officer.php">{L_tech[600]}</a></td></tr>
