@@ -116,9 +116,9 @@ function flt_mission_attack($mission_data)
     }
   }
 
-  if($fleet_row['mission_type']==MT_AKS AND $fleet_row['fleet_group']!=0)
+  if($fleet_row['mission_type'] == MT_AKS && $fleet_row['fleet_group'])
   {
-    doquery("DELETE FROM {{aks}} WHERE id={$fleet_row['fleet_group']}");
+    doquery("DELETE FROM {{aks}} WHERE id={$fleet_row['fleet_group']} LIMIT 1;");
   };
 
   foreach ($defenseFleets as $fleetID => $defender)

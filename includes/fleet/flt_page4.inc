@@ -31,10 +31,10 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
     message($lang['fl_aks_hack_wrong_fleet'], $lang['fl_error']);
   }
 
-  $aks = doquery("SELECT * from `{{table}}` WHERE `flotten` = {$fleetid};", 'aks', true);
+  $aks = doquery("SELECT * from `{{aks}}` WHERE `flotten` = {$fleetid} LIMIT 1;", '', true);
   // If we got a message to add some1 to attack (MadnessRed code)
   if($userToAdd){
-    $userToAddID = doquery("SELECT `id` FROM `{{table}}` WHERE `username` like '{$userToAdd}';",'users',true);
+    $userToAddID = doquery("SELECT `id` FROM `{{users}}` WHERE `username` like '{$userToAdd}' LIMIT 1;", '', true);
     $userToAddID = $userToAddID['id'];
 
     if($userToAddID){
@@ -56,9 +56,9 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
             `eingeladen` = '" . $user['id'] . "',
             `fleet_end_time` = '" . $fleet['fleet_end_time']. "'",'aks');
 
-          $aks = doquery("SELECT * FROM {{table}} WHERE `flotten` = {$fleetid};", 'aks', true);
+          $aks = doquery("SELECT * FROM {{aks}} WHERE `flotten` = {$fleetid} LIMIT 1;", '', true);
 
-          doquery("UPDATE {{table}} SET fleet_group = '{$aks['id']}', fleet_mission = '" . MT_AKS . "' WHERE fleet_id = '{$fleetid}'", 'fleets');
+          doquery("UPDATE {{fleets}} SET fleet_group = '{$aks['id']}', fleet_mission = '" . MT_AKS . "' WHERE fleet_id = '{$fleetid}'");
           $fleet['fleet_group'] = $aks['id'];
         }else{
           message($lang['fl_aks_already_in_aks'],$lang['fl_error']);
