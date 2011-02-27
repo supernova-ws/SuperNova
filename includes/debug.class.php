@@ -124,7 +124,7 @@ class debug
 
     global $link, $ugamela_root_path, $phpEx, $sys_stop_log_hit;
 
-    require(SN_ROOT_PHYSICAL . "config.{$phpEx}");
+    require("{$ugamela_root_path}config.{$phpEx}");
 
     if(!$link)
     {
@@ -193,7 +193,7 @@ class debug
   {
     global $link, $user, $phpEx, $ugamela_root_path;
 
-    require(SN_ROOT_PHYSICAL . "config.{$phpEx}");
+    require("{$ugamela_root_path}config.{$phpEx}");
 
     if(!$link)
     {
