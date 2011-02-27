@@ -29,6 +29,10 @@ if(strpos($phpEx, '/') !== false)
 //$old_path = $ugamela_root_path;
 
 $sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/') + 1);
+if(strpos($sn_root_relative, 'admin/') !== false)
+{
+  $sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], 'admin/'));
+}
 $sn_root_physical = str_replace(array('//', '//'), '/', $_SERVER['DOCUMENT_ROOT'] . $sn_root_relative);
 $sn_root_virtual  = 'http://' . $_SERVER['HTTP_HOST'] . $sn_root_relative;
 $phpbb_root_path = $sn_root_physical;

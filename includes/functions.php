@@ -227,10 +227,10 @@ function SaveToFile ($filename, $content)
 //
 function includeLang ($filename, $ext = '.mo')
 {
-  global $ugamela_root_path, $lang, $user, $phpEx;
+  global $lang, $user, $phpEx;
 
   $SelLanguage = $user['lang'] ? $user['lang'] : DEFAULT_LANG;
-  include_once("{$sn_root_physical}language/{$SelLanguage}/{$filename}{$ext}");
+  include_once(SN_ROOT_PHYSICAL . "language/{$SelLanguage}/{$filename}{$ext}");
 }
 
 
