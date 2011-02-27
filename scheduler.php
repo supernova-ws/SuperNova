@@ -21,7 +21,7 @@
 include_once('includes/init.php');
 
 includeLang('admin');
-if($_SERVER['HTTP_REFERER'] == "http://{$_SERVER['HTTP_HOST']}/admin/statbuilder.php")
+if($_SERVER['HTTP_REFERER'] == SN_VIRTUAL_ROOT . 'admin/statbuilder.php')
 {
   $is_admin_request = true;
   $next_stat_update = time();

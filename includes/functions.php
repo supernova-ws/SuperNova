@@ -230,7 +230,7 @@ function includeLang ($filename, $ext = '.mo')
   global $ugamela_root_path, $lang, $user, $phpEx;
 
   $SelLanguage = $user['lang'] ? $user['lang'] : DEFAULT_LANG;
-  include_once("{$ugamela_root_path}language/{$SelLanguage}/{$filename}{$ext}");
+  include_once("{$sn_root_physical}language/{$SelLanguage}/{$filename}{$ext}");
 }
 
 

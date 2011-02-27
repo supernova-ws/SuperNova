@@ -191,7 +191,7 @@ else
 function sendpassemail($emailaddress, $password) {
   global $lang, $kod;
 
-  $parse['gameurl']  = GAMEURL;
+  $parse['SN_ROOT_VIRTUAL']  = SN_ROOT_VIRTUAL;
   $parse['password'] = $password;
   $parse['kod']      = $kod;
   $email             = parsetemplate($lang['mail_welcome'], $parse);
