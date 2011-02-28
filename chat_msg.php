@@ -82,7 +82,7 @@ while($v = mysql_fetch_object($query)){
   $nick = htmlentities(strip_tags($v->user), ENT_QUOTES, cp1251);
   $nick = str_replace(strip_tags($v->user), $nick, $v->user);
   if($show_history != 'history'){
-    $nick = "<a href='#' onmousedown=\"addSmiley('[ ".htmlentities(strip_tags($v->user), ENT_QUOTES, cp1251)." ]')\">" . $nick ."</a>";
+    $nick = "<span style=\"cursor: pointer;\" onclick=\"addSmiley('[ ".htmlentities(strip_tags($v->user), ENT_QUOTES, cp1251)." ]')\">" . $nick ."</span>";
   }
 
   $msg = htmlentities($v->message, ENT_QUOTES, cp1251);
