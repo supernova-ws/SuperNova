@@ -95,7 +95,7 @@ function eco_struc_show_unit_info(unit_id, no_color)
   element_cache['unit_destroy_link'].innerHTML = '';
   if(planet['que_has_place'] != 0 && !unit['unit_busy'])
   {
-    var pre_href = '<a href="?mode={QUE_ID}&action=';
+    var pre_href = '<a href="buildings.php?mode={QUE_ID}&action=';
     if(unit['level'] > 0 && unit['destroy_can'] != 0)
     {
       element_cache['unit_destroy_link'].innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '">' + unit_destroy_link + '</a>';
