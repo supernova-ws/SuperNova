@@ -181,8 +181,8 @@ function eco_struc_unborder_unit(unit_id)
 
     <tr>
       <td colspan="5" class="c" align="center">
-        <div class="fl"><a href="?mode={QUE_ID}&action=clear">{L_eco_que_clear}</a></div>
-        <div class="fr"><a href="?mode={QUE_ID}&action=trim">{L_eco_que_trim}</a></div>
+        <div class="fl"><a href="buildings.php?mode={QUE_ID}&action=clear">{L_eco_que_clear}</a></div>
+        <div class="fr"><a href="buildings.php?mode={QUE_ID}&action=trim">{L_eco_que_trim}</a></div>
       </td>
     </tr>
   <!-- ELSE -->
@@ -302,13 +302,13 @@ function eco_struc_unborder_unit(unit_id)
           
           <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY -->
             <!-- IF FIELDS_FREE > 0 && production.BUILD_CAN -->
-              <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='?mode={QUE_ID}&action=create&unit_id={production.ID}'">
+              <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='buildings.php?mode={QUE_ID}&action=create&unit_id={production.ID}'">
                 <div class="icons icon-plus"></div>
               </span>
             <!-- ENDIF -->
 
             <!-- IF production.LEVEL && production.DESTROY_CAN -->
-              <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?mode={QUE_ID}&action=destroy&unit_id={production.ID}'">
+              <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='buildings.php?mode={QUE_ID}&action=destroy&unit_id={production.ID}'">
                 <div class="icons icon-minus" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
               </span>
             <!-- ENDIF -->
