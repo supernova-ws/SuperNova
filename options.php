@@ -257,7 +257,7 @@ $parse['SAVED'] = sys_get_param_str('saved');
 
 $parse['dpath'] = $dpath;
 //-------------------------------
-$skin_dir = dir($ugamela_root_path."skins");
+$skin_dir = dir(SN_ROOT_PHYSICAL . "skins");
 $parse['opt_lst_skin_data']="<option value =\"\">".$lang['select_skin_path']."</option>";
 while (false !== ($entry = $skin_dir->read())) {
   if (is_dir("skins/".$entry) && $entry[0] !=".") {

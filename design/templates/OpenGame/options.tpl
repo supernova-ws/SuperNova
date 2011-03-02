@@ -1,4 +1,4 @@
-<form action="{PHP_SELF}?mode=change" method="post" name="fOptions">
+<form action="options.php?mode=change" method="post" name="fOptions">
   <table width="519">
     <tbody>
       <!-- IF SAVED -->
