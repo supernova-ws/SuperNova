@@ -68,7 +68,7 @@ if($detail){
     <th class=n>{$u['log_title']}</th>
     <th class=n>". date(FMT_DATE_TIME, $u['log_time']) ."</th>
     <th class=b>{$u['log_page']}</th>
-    <th class=n><a href=\"?delete=". $u['log_id'] ."\"><img src=\"../design/images/r1.png\"></a></th>
+    <th class=n><a href=\"errors.php?delete=". $u['log_id'] ."\"><img src=\"../design/images/r1.png\"></a></th>
     </tr>
     <tr><td colspan=\"6\" class=b>".  nl2br($u['log_text'])."</td></tr>";
     */

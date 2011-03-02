@@ -48,7 +48,7 @@ $parse = $lang;
         "<td class=n><center>" . str_replace(' ', '&nbsp;', date(FMT_DATE_TIME, $e['timestamp'])) . "</center></td>" .
         "<td class=n><center>{$e['user']}</center></td>" .
         "<td class=b width=100%>" . nl2br($e['message']) .
-        "<td class=n><center><a href=?delete={$e['messageid']}><img src=\"../design/images/r1.png\"></a></center></td>" .
+        "<td class=n><center><a href=\"admin/admin_chat.php?delete={$e['messageid']}\"><img src=\"design/images/r1.png\"></a></center></td>" .
       "</td></tr>");
     }
     $parse['msg_num'] = $i;
