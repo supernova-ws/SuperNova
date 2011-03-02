@@ -1,5 +1,5 @@
 <br />
-<table width=519><tr><td class=c colspan=7><span class="fl">{laws_config}</span><span class="fr"><a href="?mode=admin">{ali_adm_return}</a></span></td></tr>
+<table width=519><tr><td class=c colspan=7><span class="fl">{laws_config}</span><span class="fr"><a href="alliance.php?mode=admin">{ali_adm_return}</a></span></td></tr>
   <form action="alliance.php?mode=admin&edit=rights" method=POST>
     <tr>
       <th><img src="../design/images/abort.gif" alt="{Delete_range}" title="{Delete_range}" border="0"></th>

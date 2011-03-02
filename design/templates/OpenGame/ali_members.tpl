@@ -1,7 +1,7 @@
 <br />
 <table>
 	<tr>
-	  <td class="c" colspan="{colspan}"><span class="fl">{Members_list} / {ali_sys_totalMembers}: {memberCount}</span><span class="{adminBackLinkClass}"><a href="?mode=admin">{ali_adm_return}</a></span></td>
+	  <td class="c" colspan="{colspan}"><span class="fl">{Members_list} / {ali_sys_totalMembers}: {memberCount}</span><span class="{adminBackLinkClass}"><a href="alliance.php?mode=admin">{ali_adm_return}</a></span></td>
 	</tr>
 	<tr>
 	  <th>{Number}</th>

@@ -23,9 +23,9 @@
   <table width=519>
     <tr><td class="c" colspan=3>{Texts}</td></tr>
     <tr>
-      <th><a href="?mode=admin&edit=ally&t=1">{External_text}</a></th>
-      <th><a href="?mode=admin&edit=ally&t=2">{Internal_text}</a></th>
-      <th><a href="?mode=admin&edit=ally&t=3">{Request_text}</a></th>
+      <th><a href="alliance.php?mode=admin&edit=ally&t=1">{External_text}</a></th>
+      <th><a href="alliance.php?mode=admin&edit=ally&t=2">{Internal_text}</a></th>
+      <th><a href="alliance.php?mode=admin&edit=ally&t=3">{Request_text}</a></th>
     </tr>
     <tr><td class=c colspan=3>{request_type} (<span id="cntChars">0</span> / 5000 {characters})</td></tr>
     <tr><th colspan=3><textarea name="text" cols=70 rows=15 onkeyup="javascript:cntchar(5000)">{text}</textarea></th></tr>
@@ -42,8 +42,8 @@
 <form action="" method="POST">
   <table width=519>
     <tr><td class=c colspan=2>{ally_admin}</td></tr>
-    <tr><th colspan=2><a href="?mode=admin&edit=members">{members_admin}</a></th></tr>
-    <tr><th colspan=2><a href="?mode=admin&edit=rights">{Law_settings}</a></th></tr>
+    <tr><th colspan=2><a href="alliance.php?mode=admin&edit=members">{members_admin}</a></th></tr>
+    <tr><th colspan=2><a href="alliance.php?mode=admin&edit=rights">{Law_settings}</a></th></tr>
     <tr{hideNotOwner}>
       <th>
         {ali_adm_transfer}&nbsp;&nbsp;&nbsp;

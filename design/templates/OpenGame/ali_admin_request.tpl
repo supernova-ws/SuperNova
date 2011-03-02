@@ -1,7 +1,7 @@
 <br />
 <table width=519>
   <tr>
-    <td class=c colspan=5><span class="fl">{Apply_ally_overview} [{ally_tag}]</span><span class="fr"><a href="?mode=admin">{ali_adm_return}</a></span></td>
+    <td class=c colspan=5><span class="fl">{Apply_ally_overview} [{ally_tag}]</span><span class="fr"><a href="alliance.php?mode=admin">{ali_adm_return}</a></span></td>
   </tr>
   {request}
   <tr>

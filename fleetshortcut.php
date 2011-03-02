@@ -114,7 +114,7 @@ else{
 
   $page = '<table border="0" cellpadding="0" cellspacing="1" width="519">
   <tr height="20">
-  <td colspan="2" class="c">Ссылки (<a href="?mode=add">Добавить</a>)</td>
+  <td colspan="2" class="c">Ссылки (<a href="fleetshortcut.php?mode=add">Добавить</a>)</td>
   </tr>';
 
   if($user['fleet_shortcut']){
