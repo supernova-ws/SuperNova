@@ -30,7 +30,7 @@ $lang['Annonces']	= 'Объявления';
 $lang['Technology']	= 'Технологии';
 
 $lang['Galaxy']		= 'Галактика';
-$lang['Fleet']		= 'Флот';
+$lang['lm_fleet_orbiting']		= 'Флот на орбите';
 
 $lang['Alliance']	= 'Ваш Альянс';
 $lang['Allianc']	= 'Альянс';
