@@ -16,7 +16,7 @@ if ( !defined('INSIDE') )
 }
 
 define('DB_VERSION', 26);
-define('SN_VERSION', '26e7');
+define('SN_VERSION', '26e7.2');
 
 define('SN_ROOT_RELATIVE', $sn_root_relative);
 define('SN_ROOT_PHYSICAL', $sn_root_physical);
