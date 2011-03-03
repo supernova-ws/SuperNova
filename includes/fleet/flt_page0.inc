@@ -24,21 +24,6 @@ CheckPlanetUsedFields($planetrow);
 
 $template = gettemplate('fleet0', true);
 
-$i  = 0;
-$fq = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner={$user['id']}");
-
-while ($f = mysql_fetch_assoc($fq))
-{
-  $i++;
-  $fleet_data = tpl_parse_fleet_db($f, $i, $user);
-  $template->assign_block_vars('fleets', $fleet_data['fleet']);
-
-  foreach($fleet_data['ships'] as $ship_data)
-  {
-    $template->assign_block_vars('fleets.ships', $ship_data);
-  }
-}
-
 foreach ($reslist['fleet'] as $n => $i)
 {
   if ($planetrow[$resource[$i]] > 0)
@@ -59,8 +44,9 @@ $template->assign_vars(array(
 
   'FLYING_FLEETS'      => $FlyingFleets,
   'MAX_FLEETS'         => $MaxFleets,
-  'ExpeditionEnCours'  => $FlyingExpeditions,
-  'EnvoiMaxExpedition' => $MaxExpeditions,
+  'FLYING_EXPEDITIONS' => $FlyingExpeditions,
+  'MAX_EXPEDITIONS'    => $MaxExpeditions,
+
   'target_mission'     => $target_mission,
   'MISSION_NAME'		  => $lang['type_mission'][$target_mission],
   'TYPE_NAME'		     => $lang['fl_planettype'][$planet_type],
@@ -73,4 +59,5 @@ $template->assign_vars(array(
 ));
 
 display(parsetemplate($template, $parse), $lang['fl_title']);
+
 ?>
