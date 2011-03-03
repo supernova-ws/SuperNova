@@ -78,11 +78,13 @@ $query = doquery("SELECT * FROM {{chat}} WHERE ally_id = '{$ally_id}' ORDER BY m
 
 $buff = '';
 while($v = mysql_fetch_object($query)){
+
+  $nick = htmlentities(strip_tags($v->user), ENT_QUOTES, cp1251);
+  $nick = str_replace(strip_tags($v->user), $nick, $v->user);
   if($show_history != 'history'){
-    $nick = "<a href='#' onmousedown=\"addSmiley('[ ".htmlentities($v->user, ENT_QUOTES, cp1251)." ]')\">".htmlentities($v->user, ENT_QUOTES, cp1251)."</a>";
-  }else{
-    $nick = htmlentities($v->user, ENT_QUOTES, cp1251);
+    $nick = "<a href='#' onmousedown=\"addSmiley('[ ".htmlentities(strip_tags($v->user), ENT_QUOTES, cp1251)." ]')\">" . $nick ."</a>";
   }
+
   $msg = htmlentities($v->message, ENT_QUOTES, cp1251);
   $msgtimestamp = date(FMT_DATE_TIME, htmlentities($v->timestamp, ENT_QUOTES, cp1251));
 
