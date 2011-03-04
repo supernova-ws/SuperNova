@@ -28,7 +28,7 @@ $script = '
 <script type="text/javascript">
 $(document).ready(function() {
   // send requests
-  $.post("../scheduler.php", {}, function(xml) {
+  $.post("scheduler.php", {}, function(xml) {
     // format result
     var result = [ $("message", xml).text() ];
     // output result
@@ -37,6 +37,6 @@ $(document).ready(function() {
 });
 </script>';
 
-AdminMessage ( "{$script}<img src=../design/images/progressbar.gif><br>{$lang['sys_wait']}", $lang['adm_stat_title'] );
+AdminMessage ( "{$script}<img src=\"design/images/progressbar.gif\"><br>{$lang['sys_wait']}", $lang['adm_stat_title'] );
 
 ?>

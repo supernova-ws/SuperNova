@@ -9,7 +9,7 @@
 <th>{adm_ch_time}</th>
 <th>{adm_ch_play}</th>
 <th>{adm_ch_chat}</th>
-<th width="16px"><img src="../design/images/r1.png"></th>
+<th width="16px"><img src="design/images/r1.png"></th>
 </tr>
 {msg_list}
 <tr><th class=b colspan=5>{msg_num}&nbsp;{adm_ch_nbs}</th></tr>

@@ -42,14 +42,17 @@ if($detail){
   $errorInfo = doquery("SELECT * FROM `{{logs}}` WHERE `log_id` = {$detail} LIMIT 1;", '', true);
   $template = gettemplate('admin/error_detail', true);
   $error_dump = unserialize($errorInfo['log_dump']);
-  foreach($error_dump as $key => $value)
+  if(is_array($error_dump))
   {
-    $v = array(
-      'VAR_NAME' => $key,
-      'VAR_VALUE' => $key == 'query_log' ? $value : dump($value, $key)
-    );
+    foreach($error_dump as $key => $value)
+    {
+      $v = array(
+        'VAR_NAME' => $key,
+        'VAR_VALUE' => $key == 'query_log' ? $value : dump($value, $key)
+      );
 
-    $template->assign_block_vars('vars', $v);
+      $template->assign_block_vars('vars', $v);
+    }
   }
   display(parsetemplate($template, $errorInfo), "Errors", false, '', true);
 }else{
