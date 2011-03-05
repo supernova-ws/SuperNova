@@ -120,9 +120,9 @@ class debug
       echo "<table>{$this->log}</table>";
     }
 
-    global $link, $phpEx, $sys_stop_log_hit;
+    global $link, $sys_stop_log_hit;
 
-    require(SN_ROOT_PHYSICAL . "config.{$phpEx}");
+    require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
 
     if(!$link)
     {
@@ -189,9 +189,9 @@ class debug
 
   function warning($message, $title = 'System Message', $log_code = 300, $dump = false)
   {
-    global $link, $user, $phpEx;
+    global $link, $user;
 
-    require(SN_ROOT_PHYSICAL . "config.{$phpEx}");
+    require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
 
     if(!$link)
     {

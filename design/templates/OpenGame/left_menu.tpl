@@ -11,7 +11,9 @@
 
     <tr><td align="center"><img border="0" src="design/images/supernova.png" alt="supernova.ws"></td></tr>
 
-    {ADMIN_LINK}
+    <!-- IF USER_AUTHLEVEL > 0 -->
+    <tr><th><div><a href="admin/overview.php"><font color="lime">{USER_AUTHLEVEL_NAME}</font></a></div></th></tr>
+    <!-- ENDIF -->
     <tr><th>{L_m_h_rules}</th></tr>
     <tr><td><a href="{C_url_rules}">{L_sys_game_rules}</a></td></tr>
   <!--  <tr><td title="{m_faq_hint}"><a href="http://forum.supernova.ws/phpBB3/viewtopic.php?f=3&t=333">{m_faq}</a></td></tr> -->

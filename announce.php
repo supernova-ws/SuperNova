@@ -66,7 +66,6 @@ $template->assign_vars(array(
   'AUTHLEVEL'       => $user['authlevel'],
   'total'           => mysql_num_rows($allAnnounces),
   'MODE'            => $mode,
-  'dpath'           => $dpath,
   'tsTimeStamp'     => $announce['tsTimeStamp'],
   'strAnnounce'     => $announce['strAnnounce'],
   'DETAIL_URL'      => $announce['detail_url'],

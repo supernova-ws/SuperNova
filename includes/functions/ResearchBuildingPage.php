@@ -106,7 +106,7 @@ function GetRestPrice ($user, $planet, $Element, $userfactor = true) {
 // $InResearch    -> Indicateur qu'il y a une Recherche en cours
 // $ThePlanet     -> Planete sur laquelle se realise la technologie eventuellement
 function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $ThePlanet, $que) {
-  global $lang, $resource, $reslist, $phpEx, $dpath, $_GET, $config;
+  global $lang, $resource, $reslist, $dpath, $_GET, $config;
 
   $TheCommand = SYS_mysqlSmartEscape($_GET['cmd']);
   $Techno     = intval($_GET['tech']);

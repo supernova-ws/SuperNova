@@ -92,7 +92,6 @@ if ($config->game_news_overview)
 }
 
 $template->assign_vars(array(
-  'dpath'                => $dpath,
   'TIME_NOW'             => $time_now,
   'TIME_TEXT'            => "$day_of_week, $day $month $year {$lang['ov_of_year']},",
 

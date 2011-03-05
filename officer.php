@@ -95,7 +95,7 @@ if ($mode == 2) {
   {
     $Message = $lang['off_no_points'];
   }
-  message($Message, $lang['tech'][600], "officer.{$phpEx}", 5);
+  message($Message, $lang['tech'][600], 'officer.' . PHP_EX, 5);
 }
 else
 {

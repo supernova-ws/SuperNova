@@ -59,9 +59,6 @@ if (!count($ranks)) { // si no hay rangos
 }
 
 $lang['list'] = $list;
-$lang['dpath'] = $dpath;
-$page .= parsetemplate(gettemplate('ali_admin_rights'), $lang);
-
-display($page, $lang['Law_settings']);
+display(parsetemplate(gettemplate('ali_admin_rights', true), $lang), $lang['Law_settings']);
 
 ?>

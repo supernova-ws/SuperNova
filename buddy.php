@@ -62,6 +62,8 @@ $friendTables = array(
 
 $parse = $lang;
 $parse['dpath'] = $dpath;
+$parse['PAGE_HINT'] = $lang['bud_hint'];
+
 foreach($friendTables as $tableID => $friendTable){
   $parse = array_merge($parse, $friendTable);
   $renderRow = '';
@@ -94,4 +96,5 @@ foreach($friendTables as $tableID => $friendTable){
 $page .= MessageForm($lang['sys_hint'], $lang['bud_hint'], "", "", true);
 
 display ($page, $lang['bud_listTitle']);
+
 ?>

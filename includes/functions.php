@@ -227,7 +227,7 @@ function SaveToFile ($filename, $content)
 //
 function includeLang ($filename, $ext = '.mo')
 {
-  global $lang, $user, $phpEx;
+  global $lang, $user;
 
   $SelLanguage = $user['lang'] ? $user['lang'] : DEFAULT_LANG;
   include_once(SN_ROOT_PHYSICAL . "language/{$SelLanguage}/{$filename}{$ext}");

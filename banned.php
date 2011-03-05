@@ -16,8 +16,6 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 includeLang('banned');
 
 $parse = $lang;
-$parse['dpath'] = $dpath;
-$parse['mf']    = '_self';
 
 $query = doquery("SELECT * FROM {{table}} ORDER BY `id`;",'banned');
 $i=0;
@@ -33,5 +31,6 @@ while($u = mysql_fetch_array($query)){
 
 $parse['banned_count'] = $i;
 
-display(parsetemplate(gettemplate('banned_body'), $parse), 'Banned');
+display(parsetemplate(gettemplate('banned_body', true), $parse), 'Banned');
+
 ?>

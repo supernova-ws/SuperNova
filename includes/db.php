@@ -14,8 +14,8 @@ if ( !defined('INSIDE') ) {
 
 function sn_db_connect()
 {
-  global $phpEx, $link, $debug, $config;
-  require(SN_ROOT_PHYSICAL . "config.{$phpEx}");
+  global $link, $debug, $config;
+  require(SN_ROOT_PHYSICAL . "config." . PHP_EX);
   if(!$link) {
     $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']) or
       $debug->error(mysql_error(),'DB Error - cannot connect to server');

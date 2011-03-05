@@ -29,8 +29,6 @@ $RowsTPL  = gettemplate('admin/overview_rows');
 
 $parse                      = $lang;
 $parse['dpath']             = $dpath;
-$parse['mf']                = '_self';
-$parse['adm_ov_data_yourv'] = colorRed(VERSION);
 
 $Last15Mins = doquery("SELECT * FROM {{table}} WHERE `onlinetime` >= '". (time() - 15 * 60) ."' ORDER BY `". $TypeSort ."` ASC;", 'users');
 $Count      = 0;
@@ -56,7 +54,6 @@ while ( $TheUser = mysql_fetch_assoc($Last15Mins) ) {
   $Bloc['adm_ov_data_ally']    = $TheUser['ally_name'];
   $Bloc['adm_ov_data_point']   = pretty_number ( $UserPoints['total_points'] );
   $Bloc['adm_ov_data_activ']   = pretty_time ( time() - $TheUser['onlinetime'] );
-  $Bloc['adm_ov_data_pict']    = "m.gif";
   $PrevIP                      = $TheUser['user_lastip'];
 
   $parse['adm_ov_data_table'] .= parsetemplate( $RowsTPL, $Bloc );

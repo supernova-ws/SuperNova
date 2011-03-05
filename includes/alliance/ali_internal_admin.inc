@@ -8,7 +8,6 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 if (!$user_admin)
   message($lang['Denied_access'], $lang['ally_admin']);
 
-$lang['dpath'] = $dpath;
 $parse = $lang;
 
 $text_list = array(
@@ -97,7 +96,6 @@ if(!empty($tmp)){
   $parse['adminMembers'] = $tmp;
 }
 
-$page .= parsetemplate(gettemplate('ali_admin'), $parse);
-display($page, $lang['ally_admin']);
+display(parsetemplate(gettemplate('ali_admin', true), $parse), $lang['ally_admin']);
 
 ?>

@@ -10,8 +10,6 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-$dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
-
 $GET_a = intval($_GET['a']);
 $n = intval($_GET['n']);
 $POST_s = intval($_POST["s"]);
@@ -25,7 +23,7 @@ $lang['Please_Wait'] = "Patientez...";
 //lenguaje
 includeLang('notes');
 
-$lang['PHP_SELF'] = 'notes.'.$phpEx;
+$lang['PHP_SELF'] = 'notes.'. PHP_EX;
 
 if($POST_s == 1 || $POST_s == 2){//Edicion y agregar notas
 
@@ -33,7 +31,7 @@ if($POST_s == 1 || $POST_s == 2){//Edicion y agregar notas
 
   if($POST_s ==1){
     doquery("INSERT INTO {{table}} SET owner={$user['id']}, time=$time, priority=$priority, title='$title', text='$text'","notes");
-    message($lang['NoteAdded'], $lang['Please_Wait'],'notes.'.$phpEx,"3");
+    message($lang['NoteAdded'], $lang['Please_Wait'],'notes.'. PHP_EX,"3");
   }elseif($POST_s == 2){
     /*
       pequeño query para averiguar si la nota que se edita es del propio jugador
@@ -43,7 +41,7 @@ if($POST_s == 1 || $POST_s == 2){//Edicion y agregar notas
     if(!$note_query){ error($lang['notpossiblethisway'],$lang['Notes']); }
 
     doquery("UPDATE {{table}} SET time=$time, priority=$priority, title='$title', text='$text' WHERE id=$id","notes");
-    message($lang['NoteUpdated'], $lang['Please_Wait'], 'notes.'.$phpEx, "3");
+    message($lang['NoteUpdated'], $lang['Please_Wait'], 'notes.'. PHP_EX, "3");
   }
 
 }
@@ -67,8 +65,8 @@ elseif($_POST){//Borrar
   }
   if($deleted){
     $mes = ($deleted == 1) ? $lang['NoteDeleted'] : $lang['NoteDeleteds'];
-    message($mes,$lang['Please_Wait'],'notes.'.$phpEx,"3");
-  }else{header("Location: notes.$phpEx");}
+    message($mes,$lang['Please_Wait'],'notes.'.PHP_EX,"3");
+  }else{header("Location: notes." . PHP_EX);}
 
 }else{//sin post...
   if($GET_a == 1){//crear una nueva nota.

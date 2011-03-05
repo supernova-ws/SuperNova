@@ -15,7 +15,7 @@ setcookie($config->COOKIE_NAME, "", time()-100000, "/", "", 0);
 
 unset($user);
 
-message ( $lang['log_see_you'], $lang['log_session_closed'], "login.{$phpEx}", 5, false );
+message ( $lang['log_see_you'], $lang['log_session_closed'], "login." . PHP_EX, 5, false );
 
 // -----------------------------------------------------------------------------------------------------------
 // History version

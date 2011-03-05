@@ -339,7 +339,6 @@ switch ($mode)
     }
 
     $template->assign_vars(array(
-      'dpath'                => $dpath,
       'TIME_NOW'             => $time_now,
 
       'USER_ID'              => $user['id'],

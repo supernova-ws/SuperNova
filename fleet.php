@@ -66,7 +66,7 @@ $FlyingFleets = doquery("SELECT COUNT(fleet_id) as Number FROM {{fleets}} WHERE 
 $FlyingFleets = $FlyingFleets['Number'];
 if ($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4)
 {
-  message($lang['fl_noslotfree'], $lang['fl_error'], "fleet.{$phpEx}", 5);
+  message($lang['fl_noslotfree'], $lang['fl_error'], "fleet." . PHP_EX, 5);
 }
 
 $MaxExpeditions = GetMaxExpeditions($user);

@@ -41,7 +41,7 @@ if ($_POST && $mode == "change") {
     while ($u = mysql_fetch_assoc($sq)) {
       SendSimpleMessage ( $u['id'], $user['id'], $Time, 97, $From, $Subject, $Message);
     }
-    message("<font color=\"lime\">Wys³a³e¶ wiadomo¶æ do wszystkich graczy</font>", "Complete", "../overview." . $phpEx, 3);
+    message("<font color=\"lime\">Wys³a³e¶ wiadomo¶æ do wszystkich graczy</font>", "Complete", "../overview." . PHP_EX, 3);
   }
 } else {
   $parse['dpath'] = $dpath;

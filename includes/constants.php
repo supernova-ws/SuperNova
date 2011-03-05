@@ -18,10 +18,6 @@ if ( !defined('INSIDE') )
 define('DB_VERSION', 26);
 define('SN_VERSION', '26e8');
 
-define('SN_ROOT_RELATIVE', $sn_root_relative);
-define('SN_ROOT_PHYSICAL', $sn_root_physical);
-define('SN_ROOT_VIRTUAL',  $sn_root_virtual);
-
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
 define('GAME_OGAME',     1);

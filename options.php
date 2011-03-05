@@ -12,7 +12,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('options');
 
-$lang['PHP_SELF'] = 'options.' . $phpEx;
+$lang['PHP_SELF'] = 'options.' . PHP_EX;
 
 $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
 $mode = SYS_mysqlSmartEscape($_GET['mode']);

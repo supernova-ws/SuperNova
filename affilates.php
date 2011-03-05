@@ -41,7 +41,6 @@ $userbarURL .= "id={$user['id']}";
 
 $template->assign_vars(array(
   'GAINED'     => $gained,
-  'dpath'      => $dpath,
   'user_id'    => $user['id'],
   'serverURL'  => SN_ROOT_VIRTUAL,
   'bannerURL'  => $bannerURL,

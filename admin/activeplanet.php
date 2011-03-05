@@ -16,14 +16,13 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 includeLang('admin');
 
 $parse          = $lang;
-$parse['dpath'] = $dpath;
-$parse['mf']    = '_self';
 
-$PageTPL        = gettemplate('admin/activeplanet_body');
+$PageTPL        = gettemplate('admin/activeplanet_body', true);
 $AllActivPlanet = doquery("SELECT * FROM {{planets}} WHERE `last_update` >= '". (time()-15 * 60) ."' ORDER BY `id` ASC");
 $Count          = 0;
 
-while ($ActivPlanet = mysql_fetch_assoc($AllActivPlanet)) {
+while ($ActivPlanet = mysql_fetch_assoc($AllActivPlanet))
+{
   $parse['online_list'] .= "<tr>";
   $parse['online_list'] .= "<td class=b><center><b>". $ActivPlanet['name'] ."</b></center></td>";
   $parse['online_list'] .= "<td class=b><center><b>[". $ActivPlanet['galaxy'] .":". $ActivPlanet['system'] .":". $ActivPlanet['planet'] ."]</b></center></td>";
