@@ -21,6 +21,8 @@ if ($user['authlevel'] < 3)
   die();
 }
 
+includeLang('admin');
+
 $parse = $lang;
 $query = doquery("SELECT * FROM {{table}} WHERE planet_type='1'", "planets");
 $i = 0;

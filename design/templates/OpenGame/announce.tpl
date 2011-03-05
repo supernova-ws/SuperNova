@@ -32,9 +32,9 @@
     <th>{L_news_date}</th>
     <th width="100%">{L_news_announce}</th>
     <!-- IF AUTHLEVEL >= 3 -->
-      <th><img src="../design/images/icon_edit.png"></th>
-      <th><img src="../design/images/icon_copy.gif"></th>
-      <th><img src="../design/images/r1.png"></th>
+      <th><img src="design/images/icon_edit.png"></th>
+      <th><img src="design/images/icon_copy.gif"></th>
+      <th><img src="design/images/r1.png"></th>
     <!-- ENDIF -->
   </tr>
   <!-- BEGIN announces -->
@@ -47,9 +47,9 @@
         <!-- ENDIF -->
       </td>
       <!-- IF AUTHLEVEL >= 3 -->
-        <td><a href="?mode=edit&id={announces.ID}"><img src="../design/images/icon_edit.png"></a></td>
-        <td><a href="?mode=copy&id={announces.ID}"><img src="../design/images/icon_copy.gif"></a></td>
-        <td><a href="?mode=del&id={announces.ID}"><img src="../design/images/r1.png"></a></td>
+        <td><a href="announce.php?mode=edit&id={announces.ID}"><img src="design/images/icon_edit.png"></a></td>
+        <td><a href="announce.php?mode=copy&id={announces.ID}"><img src="design/images/icon_copy.gif"></a></td>
+        <td><a href="announce.php?mode=del&id={announces.ID}"><img src="design/images/r1.png"></a></td>
       <!-- ENDIF -->
     </tr>
   <!-- END announces -->

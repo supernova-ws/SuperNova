@@ -85,7 +85,7 @@ function flt_mission_attack($mission_data)
   }
 
   $start = microtime(true);
-  $result = calculateAttack($attackFleets, $defenseFleets);
+  $result = coe_attack_calculate($attackFleets, $defenseFleets);
   $totaltime = microtime(true) - $start;
 
 
@@ -207,7 +207,7 @@ function flt_mission_attack($mission_data)
   doquery($QryInsertRapport) or die("Error inserting CR to database".mysql_error()."<br /><br />Trying to execute:".mysql_query());
 
   // Colorize report.
-  $raport  = '<a href # OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
+  $raport  = '<span OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
   $raport .= '<center>';
   if ($result['won'] == 1)
   {
@@ -221,7 +221,7 @@ function flt_mission_attack($mission_data)
   {
     $raport .= '<font color=\'red\'>';
   }
-  $raport .= $lang['sys_mess_attack_report'] .' ['. $fleet_row['fleet_end_galaxy'] .':'. $fleet_row['fleet_end_system'] .':'. $fleet_row['fleet_end_planet'] .'] </font></a><br /><br />';
+  $raport .= $lang['sys_mess_attack_report'] .' ['. $fleet_row['fleet_end_galaxy'] .':'. $fleet_row['fleet_end_system'] .':'. $fleet_row['fleet_end_planet'] .'] </font></span><br /><br />';
   $raport .= '<font color=\'red\'>'. $lang['sys_perte_attaquant'] .': '. $result['lost']['att'] .'</font>';
   $raport .= '<font color=\'green\'>   '. $lang['sys_perte_defenseur'] .': '. $result['lost']['def'] .'</font><br />' ;
   $raport .= $lang['sys_gain'] .' '. $lang['Metal'] .':<font color=\'#adaead\'>'. $loot['looted']['metal'] .'</font>   '. $lang['Crystal'] .':<font color=\'#ef51ef\'>'. $loot['looted']['crystal'] .'</font>   '. $lang['Deuterium'] .':<font color=\'#f77542\'>'. $loot['looted']['deuterium'] .'</font><br />';
@@ -232,7 +232,7 @@ function flt_mission_attack($mission_data)
   SendSimpleMessage ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $raport );
 
   // Coloriize report.
-  $raport2  = '<a href # OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
+  $raport2  = '<span OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
   $raport2 .= '<center>';
   if       ($result['won'] == 1)
   {
@@ -246,7 +246,7 @@ function flt_mission_attack($mission_data)
   {
     $raport2 .= '<font color=\'red\'>';
   }
-  $raport2 .= $lang['sys_mess_attack_report'] .' ['. $fleet_row['fleet_end_galaxy'] .':'. $fleet_row['fleet_end_system'] .':'. $fleet_row['fleet_end_planet'] .'] </font></a><br /><br />';
+  $raport2 .= $lang['sys_mess_attack_report'] .' ['. $fleet_row['fleet_end_galaxy'] .':'. $fleet_row['fleet_end_system'] .':'. $fleet_row['fleet_end_planet'] .'] </font></span><br /><br />';
 
   $raport2 .= $st_1 . $st_2;
 

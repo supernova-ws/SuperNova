@@ -1,5 +1,5 @@
 <br />
-<form action="?a=17&sendmail=1" method=post>
+<form action="alliance.php?a=17&sendmail=1" method=post>
   <table width=519>
 	<tr>
 	  <td class=c colspan=2>{Send_circular_mail}</td>

@@ -29,7 +29,7 @@ $script = '
 <script type="text/javascript">
 $(document).ready(function() {
   // send requests
-  $.post("maintenance_ajax.php", {rating: $(this).html()}, function(xml) {
+  $.post("admin/maintenance_ajax.php", {rating: $(this).html()}, function(xml) {
     // format result
     var result = [ $("message", xml).text() ];
     // output result
@@ -38,7 +38,7 @@ $(document).ready(function() {
 });
 </script>';
 
-AdminMessage ( $script . '<img src=../design/images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title'] );
+AdminMessage ( $script . '<img src=design/images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title'] );
 } else {
   AdminMessage( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
 }

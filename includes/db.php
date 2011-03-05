@@ -15,7 +15,7 @@ if ( !defined('INSIDE') ) {
 function sn_db_connect()
 {
   global $ugamela_root_path, $phpEx, $link, $debug, $config;
-  require("{$ugamela_root_path}config.{$phpEx}");
+  require(SN_ROOT_PHYSICAL . "config.{$phpEx}");
   if(!$link) {
     $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']) or
       $debug->error(mysql_error(),'DB Error - cannot connect to server');

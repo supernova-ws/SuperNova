@@ -10,7 +10,7 @@
 
       jQuery(document).ready(function() 
         {
-          jQuery.post("../../../time_probe.php", function(data) 
+          jQuery.post("time_probe.php", function(data) 
             {
               //var result = jQuery("time", xml).text();
               //timeDiff = new Date(result * 1000).valueOf() - new Date().valueOf();

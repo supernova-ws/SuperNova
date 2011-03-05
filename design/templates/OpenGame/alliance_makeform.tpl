@@ -1,5 +1,5 @@
 <br />
-<form action="?a=1&weiter=1" method=POST>
+<form action="alliance.php?a=1&weiter=1" method=POST>
 
 <table width=519><tr><td class=c colspan=2>Crear alianza</td></tr>
 <tr><th>Etiqueta de la alianza (3-8 caracteres)</th>

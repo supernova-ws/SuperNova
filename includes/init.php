@@ -20,40 +20,57 @@ if($_SERVER['SERVER_NAME'] == 'localhost')
   define('BE_DEBUG', true);
 }
 
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
+if(strpos($phpEx, '/') !== false)
+{
+  $phpEx = '';
+}
+
+//$old_path = $ugamela_root_path;
+
+$sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/') + 1);
+if(strpos($sn_root_relative, 'admin/') !== false)
+{
+  $sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], 'admin/'));
+}
+$sn_root_physical = str_replace(array('//', '//'), '/', $_SERVER['DOCUMENT_ROOT'] . $sn_root_relative);
+$sn_root_virtual  = 'http://' . $_SERVER['HTTP_HOST'] . $sn_root_relative;
+$phpbb_root_path = $sn_root_physical;
+
 $time_now      = time();
 $user          = array();
 $lang          = array();
 $IsUserChecked = false;
 
-$old_path = $ugamela_root_path;
-
-$ugamela_root_path = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT']) . '/';
-$phpbb_root_path = $ugamela_root_path;
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-
-require("{$ugamela_root_path}config.{$phpEx}");
+require("{$sn_root_physical}config.{$phpEx}");
 $db_prefix = $dbsettings['prefix'];
 $sn_secret_word = $dbsettings['secretword'];
 unset($dbsettings);
 
-include_once("{$ugamela_root_path}includes/constants.{$phpEx}");
+require_once("{$sn_root_physical}includes/constants.{$phpEx}");
 
 // required for db.php
-include_once("{$ugamela_root_path}includes/debug.class.{$phpEx}");
-include_once("{$ugamela_root_path}includes/db.{$phpEx}");
+require_once("{$sn_root_physical}includes/debug.class.{$phpEx}");
+require_once("{$sn_root_physical}includes/db.{$phpEx}");
 // Initializing global 'debug' object
 $debug = new debug();
 
 //$dbms = 'mysql';
-//include_once("{$ugamela_root_path}includes/db/{$dbms}.{$phpEx}");
+//require_once("{$sn_root_physical}includes/db/{$dbms}.{$phpEx}");
 // $db      = new $sql_db();
 
-$dir = opendir("{$ugamela_root_path}includes/classes");
+$dir_name = "{$sn_root_physical}includes/classes";
+$dir = opendir($dir_name);
 while (($file = readdir($dir)) !== false)
 {
-  $extension = '.' . substr($file, -3);
-  if ($extension == ".{$phpEx}"){
-    require_once "{$ugamela_root_path}includes/classes/{$file}";
+  $extension = substr(strrchr($file, '.'), 1); //$extension = '.' . substr($file, -3);
+  if(strpos($extension, '/') !== false)
+  {
+    $extension = '';
+  }
+
+  if ($extension == $phpEx){
+    require_once("{$dir_name}/{$file}");
   }
 }
 
@@ -89,7 +106,7 @@ if(!defined('BE_DEBUG'))
   }
 }
 
-$update_file = "{$_SERVER['DOCUMENT_ROOT']}/includes/update.{$phpEx}";
+$update_file = "{$sn_root_physical}includes/update.{$phpEx}";
 if(file_exists($update_file))
 {
   if(filemtime($update_file) > $config->var_db_update || $config->db_version < DB_VERSION)
@@ -125,19 +142,19 @@ define('FMT_DATE_TIME'    , FMT_DATE . ' ' . FMT_TIME);
 $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 
 // Now including all functions
-include_once("{$ugamela_root_path}includes/functions.{$phpEx}");
-include_once("{$ugamela_root_path}includes/vars.{$phpEx}");
+require_once("{$sn_root_physical}includes/functions.{$phpEx}");
+require_once("{$sn_root_physical}includes/vars.{$phpEx}");
 
-include_once("{$ugamela_root_path}includes/template.{$phpEx}");
-include_once("{$ugamela_root_path}language/" . DEFAULT_LANG .'/lang_info.cfg');
+require_once("{$sn_root_physical}includes/template.{$phpEx}");
+require_once("{$sn_root_physical}language/" . DEFAULT_LANG .'/lang_info.cfg');
 
-$dir = opendir("{$ugamela_root_path}includes/functions");
+$dir = opendir("{$sn_root_physical}includes/functions");
 while (($file = readdir($dir)) !== false)
 {
   $extension = '.' . substr($file, -3);
   if ($extension == ".{$phpEx}")
   {
-    require_once "{$ugamela_root_path}includes/functions/{$file}";
+    require_once "{$sn_root_physical}includes/functions/{$file}";
   }
 }
 
@@ -162,6 +179,7 @@ function sys_refresh_tablelist($db_prefix)
   $sn_cache->tables = $tl;
 }
 
-$ugamela_root_path = $old_path;
+//$ugamela_root_path = $old_path;
+$ugamela_root_path = $sn_root_virtual;
 
 ?>

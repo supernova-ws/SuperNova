@@ -9,7 +9,7 @@
   <table width="100%" cellspacing="0" cellpadding="0" id="left_menu">
     <tr><th id="server_name">{C_game_name}</th></tr>
 
-    <tr><td align="center"><img border="0" src="../design/images/supernova.png" alt="supernova.ws"></td></tr>
+    <tr><td align="center"><img border="0" src="design/images/supernova.png" alt="supernova.ws"></td></tr>
 
     {ADMIN_LINK}
     <tr><th>{L_m_h_rules}</th></tr>
@@ -70,8 +70,8 @@
     <tr><th><a href="options.php" id="lm_options">{L_Options}</a></th></tr>
     <tr><th><a href="javascript:top.location.href='logout.php'" id="lm_logout">{L_Logout}</a></th></tr>
 
-    <tr><td align="center"><a href="http://games.triolan.ua" target="_blank"><img border="0" src="../design/images/banners/bannergtu.gif" alt="Games @ Triolan.UA"></font></a></td></tr>
-    <tr><th><a href="http://wow.triolan.com.ua/" target="_blank"><img border="0" src="../design/images/banners/wow.gif" width="130" height="25" alt="Wow Triolan Server"></a></th></tr>
+    <tr><td align="center"><a href="http://games.triolan.ua" target="_blank"><img border="0" src="design/images/banners/bannergtu.gif" alt="Games @ Triolan.UA"></font></a></td></tr>
+    <tr><th><a href="http://wow.triolan.com.ua/" target="_blank"><img border="0" src="design/images/banners/wow.gif" width="130" height="25" alt="Wow Triolan Server"></a></th></tr>
     <!-- IF ADV_LEFT_BOTTOM -->
     <tr><td align="center">{ADV_LEFT_BOTTOM}</td></tr>
     <!-- ENDIF -->

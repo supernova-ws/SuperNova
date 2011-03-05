@@ -27,7 +27,7 @@ if ($config->int_banner_showInOverview)
 {
   $delimiter = strpos($config->int_banner_URL, '?') ? '&' : '?';
   $template->assign_vars(array(
-    'BANNER_URL' => "http://{$_SERVER["SERVER_NAME"]}{$config->int_banner_URL}{$delimiter}id={$user['id']}",
+    'BANNER_URL' => SN_ROOT_VIRTUAL . "{$config->int_banner_URL}{$delimiter}id={$user['id']}",
   ));
 }
 
@@ -37,8 +37,8 @@ if ($config->int_userbar_showInOverview)
   $delimiter = strpos($config->int_userbar_URL, '?') ? '&' : '?';
 
   $template->assign_vars(array(
-    'USERBAR_URL' => "http://{$_SERVER["SERVER_NAME"]}{$config->int_userbar_URL}{$delimiter}id={$user['id']}",
-  ));
+    'USERBAR_URL' => SN_ROOT_VIRTUAL . "{$config->int_userbar_URL}{$delimiter}id={$user['id']}",
+  ));pdump($config->int_userbar_URL);
 }
 
 $StatRecord = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."';", 'statpoints', true);

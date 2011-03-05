@@ -33,11 +33,11 @@ while ($affilate = mysql_fetch_assoc($affilates))
   $gained += $affilate_gain;
 }
 
-$bannerURL  = "http://{$_SERVER['SERVER_NAME']}{$config->int_banner_URL}";
+$bannerURL  = SN_ROOT_VIRTUAL . $config->int_banner_URL;
 $bannerURL .= strpos($bannerURL, '?') ? '&' : '?';
 $bannerURL .= "id={$user['id']}";
 
-$userbarURL  = "http://{$_SERVER['SERVER_NAME']}{$config->int_userbar_URL}";
+$userbarURL  = SN_ROOT_VIRTUAL . $config->int_userbar_URL;
 $userbarURL .= strpos($userbarURL, '?') ? '&' : '?';
 $userbarURL .= "id={$user['id']}";
 
@@ -45,7 +45,7 @@ $template->assign_vars(array(
   'GAINED'     => $gained,
   'dpath'      => $dpath,
   'user_id'    => $user['id'],
-  'serverURL'  => "http://{$_SERVER['SERVER_NAME']}",
+  'serverURL'  => SN_ROOT_VIRTUAL,
   'bannerURL'  => $bannerURL,
   'userbarURL' => $userbarURL,
 ));

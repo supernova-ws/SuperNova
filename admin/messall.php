@@ -21,6 +21,8 @@ if ($user['authlevel'] < 3)
   die();
 }
 
+includeLang('admin');
+
   if ($user['authlevel'] >= 1) {
     if ($_POST && $mode == "change") {
       if (isset($_POST["tresc"]) && $_POST["tresc"] != '') {

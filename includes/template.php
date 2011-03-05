@@ -54,7 +54,7 @@ function ShowLeftMenu ( $Level = 0, $Template = 'left_menu') {
     $parse['lm_tx_queue']     = MAX_FLEET_OR_DEFS_PER_ROW;
     $SubFrame                 = parsetemplate( $InfoTPL, $parse );
     $parse['server_info']     = $SubFrame;
-    $parse['game_url']        = GAMEURL;
+    $parse['game_url']        = SN_ROOT_RELATIVE;
     $parse['game_name']       = $config->game_name;
     $rank                     = doquery("SELECT `total_rank` FROM {{table}} WHERE `stat_code` = '1' AND `stat_type` = '1' AND `id_owner` = '". $user['id'] ."';",'statpoints',true);
     $parse['user_rank']       = $rank['total_rank'];
@@ -174,14 +174,14 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
 // Entete de page
 //
 function StdHeader ($title = '', $metatags = '', $Level = 0) {
-  global $user, $dpath, $ugamela_root_path;
+  global $user, $dpath; //, $ugamela_root_path;
 
   $template = gettemplate('simple_header');
 
   $parse['dpath']  = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
   $parse['title']  = $title;
   $parse['-meta-'] = ($metatags) ? $metatags : "";
-  $parse['-path_prefix-'] = $ugamela_root_path;
+  $parse['-path_prefix-'] = SN_ROOT_VIRTUAL;
 
   return parsetemplate($template, $parse);
 }
@@ -333,7 +333,7 @@ function displayP($template)
 {
   if(is_object($template))
   {
-    global $ugamela_root_path, $user;
+    global $user; // $ugamela_root_path,
 
     if($template->parse)
     {
@@ -346,8 +346,8 @@ function displayP($template)
     $dpath = $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH;
     $template->assign_vars(array(
       'dpath'         => $dpath,
-      'SN_ROOT_PATH'  => $ugamela_root_path,
-      '-path_prefix-' => $ugamela_root_path,
+      'SN_ROOT_PATH'  => SN_ROOT_VIRTUAL, //$ugamela_root_path,
+      '-path_prefix-' => SN_ROOT_VIRTUAL, //$ugamela_root_path,
     ));
 
     $template->display('body');
@@ -364,7 +364,7 @@ function parsetemplate ($template, $array = false)
 
   if(is_object($template))
   {
-    global $ugamela_root_path, $user;
+    global $user; // $ugamela_root_path,
 
     if($array)
     {
@@ -376,8 +376,8 @@ function parsetemplate ($template, $array = false)
 
     $template->assign_vars(array(
       'dpath'         => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
-      'SN_ROOT_PATH'  => $ugamela_root_path,
-      '-path_prefix-' => $ugamela_root_path,
+      'SN_ROOT_PATH'  => SN_ROOT_VIRTUAL, //$ugamela_root_path,
+      '-path_prefix-' => SN_ROOT_VIRTUAL, //$ugamela_root_path,
     ));
 //    $template->parse = $array;
 
@@ -403,14 +403,12 @@ function parsetemplate ($template, $array = false)
 
 function gettemplate ($templatename, $is_phpbb = false)
 {
-  global $ugamela_root_path;
-
-  $filename = $ugamela_root_path . TEMPLATE_DIR . TEMPLATE_NAME . '/' . $templatename . ".tpl";
+  $filename = SN_ROOT_PHYSICAL . TEMPLATE_DIR . TEMPLATE_NAME . '/' . $templatename . ".tpl";
 
   if($is_phpbb)
   {
     $template = new template();
-    $template->set_custom_template($ugamela_root_path . TEMPLATE_DIR . '/' . TEMPLATE_NAME, TEMPLATE_NAME);
+    $template->set_custom_template(SN_ROOT_PHYSICAL . TEMPLATE_DIR . '/' . TEMPLATE_NAME, TEMPLATE_NAME);
 
     $template->set_filenames(array(
         'body' => $templatename . ".tpl"
