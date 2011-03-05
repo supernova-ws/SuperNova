@@ -71,7 +71,7 @@ $options['fleets_max'] = GetMaxFleets($user);
 $MaxFleets = GetMaxFleets($user);
 $FlyingFleets = doquery("SELECT COUNT(fleet_id) as Number FROM {{fleets}} WHERE `fleet_owner`='{$user['id']}'", '', true);
 $FlyingFleets = $FlyingFleets['Number'];
-if ($MaxFleets <= $FlyingFleets AND $fleet_page)
+if ($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4)
 {
   message($lang['fl_noslotfree'], $lang['fl_error'], "fleet.{$phpEx}", 5);
 }
