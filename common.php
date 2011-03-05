@@ -28,13 +28,18 @@ if($config->game_disable)
 
 if(
   !($allow_anonymous || ($user && is_array($user) && isset($user['id']) && $user['id'])) ||
-  (defined('IN_ADMIN') && IN_ADMIN && $user['authlevel'] < 1)
+  (defined('IN_ADMIN') && IN_ADMIN && $user['authlevel'] < 3)
 )
 {
   setcookie($config->COOKIE_NAME, '', time() - 3600*25);
   header('Location: login.php');
   ob_end_flush();
   die();
+}
+
+if($user['authlevel'] >= 2 && file_exists("{$sn_root_physical}badqrys.txt") && @filesize("{$sn_root_physical}badqrys.txt") > 0)
+{
+  echo "<a href=\"badqrys.txt\" target=\"_NEW\"><font color=\"red\">{$lang['ov_hack_alert']}</font</a>";
 }
 
 if (defined('IN_ADMIN') && IN_ADMIN)

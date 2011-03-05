@@ -28,31 +28,7 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-if (filesize('config.php') == 0)
-{
-  header('location: install/');
-  exit();
-}
-
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header('Location: login.php');
-}
-
-if($user['authlevel'] >= 2)
-{
-  if(file_exists("{$ugamela_root_path}badqrys.txt"))
-  {
-    if(filesize("{$ugamela_root_path}badqrys.txt") > 0)
-    {
-      echo "<a href=\"badqrys.txt\" target=\"_NEW\"><font color=\"red\">{$lang['ov_hack_alert']}</font</a>";
-    }
-  }
-}
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('overview');
 

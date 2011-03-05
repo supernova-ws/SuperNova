@@ -189,7 +189,7 @@ class debug
 
   function warning($message, $title = 'System Message', $log_code = 300, $dump = false)
   {
-    global $link, $user, $phpEx, $ugamela_root_path;
+    global $link, $user, $phpEx;
 
     require(SN_ROOT_PHYSICAL . "config.{$phpEx}");
 

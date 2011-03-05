@@ -10,16 +10,7 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-$gid  = intval($_GET['gid']);
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header("Location: login.php");
-}
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 // ----------------------------------------------------------------------------------------------------------
 // Creation de la Liste de flotte disponible sur la lune

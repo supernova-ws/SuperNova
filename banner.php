@@ -12,9 +12,7 @@
 *
 */
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-require_once("{$ugamela_root_path}includes/init.{$phpEx}");
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('overview');
 
@@ -23,4 +21,5 @@ $type = SYS_mysqlSmartEscape($_GET['type']);
 $format = SYS_mysqlSmartEscape($_GET['format']);
 
 INT_createBanner($id, $type, $format);
+
 ?>

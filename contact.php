@@ -11,10 +11,7 @@
 
 $allow_anonymous = true;
 $skip_ban_check = true;
-
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('contact');
 
@@ -38,4 +35,5 @@ display(parsetemplate(gettemplate('contact_body'), $parse), $lang['ctc_title']);
 // -----------------------------------------------------------------------------------------------------------
 // History version
 // 1.0 - Mise au propre (Virer tout ce qui ne sert pas a une prise de contact en fait)
+
 ?>

@@ -21,12 +21,7 @@ if($_SERVER['SERVER_NAME'] == 'localhost')
 }
 
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-if(strpos($phpEx, '/') !== false)
-{
-  $phpEx = '';
-}
-
-//$old_path = $ugamela_root_path;
+$phpEx = strpos($phpEx, '/') === false ? $phpEx : '';
 
 $sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/') + 1);
 if(strpos($sn_root_relative, 'admin/') !== false)
@@ -40,6 +35,7 @@ $phpbb_root_path = $sn_root_physical;
 $time_now      = time();
 $user          = array();
 $lang          = array();
+$sn_modules    = array();
 $IsUserChecked = false;
 
 require("{$sn_root_physical}config.{$phpEx}");
@@ -178,8 +174,5 @@ function sys_refresh_tablelist($db_prefix)
   }
   $sn_cache->tables = $tl;
 }
-
-//$ugamela_root_path = $old_path;
-$ugamela_root_path = $sn_root_virtual;
 
 ?>

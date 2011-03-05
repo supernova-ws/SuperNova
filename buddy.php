@@ -10,14 +10,7 @@
  * Idea from buddy.php Created by Perberos. All rights reversed (C) 2006
 **/
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-require_once("{$ugamela_root_path}common.{$phpEx}");
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header("Location: login.php");
-}
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('buddy');
 

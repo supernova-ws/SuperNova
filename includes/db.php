@@ -14,7 +14,7 @@ if ( !defined('INSIDE') ) {
 
 function sn_db_connect()
 {
-  global $ugamela_root_path, $phpEx, $link, $debug, $config;
+  global $phpEx, $link, $debug, $config;
   require(SN_ROOT_PHYSICAL . "config.{$phpEx}");
   if(!$link) {
     $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']) or
@@ -33,7 +33,7 @@ function sn_db_connect()
 }
 
 function doquery($query, $table = '', $fetch = false){
-  global $numqueries, $link, $debug, $ugamela_root_path, $user, $tableList, $sn_cache, $is_watching, $config, $dm_change_legit;
+  global $numqueries, $link, $debug, $user, $tableList, $sn_cache, $is_watching, $config, $dm_change_legit;
 
   if($config->game_watchlist_array)
   {
@@ -112,7 +112,7 @@ function doquery($query, $table = '', $fetch = false){
 
     $report .= "\n--------------------------------------------------------------------------------------------------\n";
 
-    $fp = fopen($ugamela_root_path.'badqrys.txt', 'a');
+    $fp = fopen(SN_ROOT_PHYSICAL . 'badqrys.txt', 'a');
     fwrite($fp, $report);
     fclose($fp);
 
