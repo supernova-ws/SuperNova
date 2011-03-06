@@ -140,7 +140,7 @@ else
 
   $template->assign_var('DM_COST', $darkmater_cost);
 
-  display($template, $lang['tech'][600]);
+  display(parsetemplate($template), $lang['tech'][600]);
 }
 
 ?>
