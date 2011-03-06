@@ -12,15 +12,7 @@
 define('INSIDE'  , true);
 define('INSTALL' , false);
 define('IN_ADMIN', true);
-
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './../';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($user['authlevel'] < 1) {
-  AdminMessage ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-  die();
-};
+require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('admin');
 
@@ -28,7 +20,7 @@ $script = '
 <script type="text/javascript">
 $(document).ready(function() {
   // send requests
-  $.post("../scheduler.php", {}, function(xml) {
+  $.post("scheduler.php", {}, function(xml) {
     // format result
     var result = [ $("message", xml).text() ];
     // output result
@@ -37,6 +29,6 @@ $(document).ready(function() {
 });
 </script>';
 
-AdminMessage ( "{$script}<img src=../design/images/progressbar.gif><br>{$lang['sys_wait']}", $lang['adm_stat_title'] );
+AdminMessage ( "{$script}<img src=\"design/images/progressbar.gif\"><br>{$lang['sys_wait']}", $lang['adm_stat_title'] );
 
 ?>

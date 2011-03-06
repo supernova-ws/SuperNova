@@ -47,9 +47,7 @@ class debug
 
   function echo_log()
   {
-    global $ugamela_root_path;
-
-    echo "<br><table><tr><td class=k colspan=4><a href=\"{$ugamela_root_path}admin/settings.php\">Debug Log</a>:</td></tr>{$this->log}</table>";
+    echo "<br><table><tr><td class=k colspan=4><a href=\"" . SN_ROOT_PHYSICAL . "admin/settings.php\">Debug Log</a>:</td></tr>{$this->log}</table>";
     die();
   }
 
@@ -122,9 +120,9 @@ class debug
       echo "<table>{$this->log}</table>";
     }
 
-    global $link, $ugamela_root_path, $phpEx, $sys_stop_log_hit;
+    global $link, $sys_stop_log_hit;
 
-    require("{$ugamela_root_path}config.{$phpEx}");
+    require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
 
     if(!$link)
     {
@@ -191,9 +189,9 @@ class debug
 
   function warning($message, $title = 'System Message', $log_code = 300, $dump = false)
   {
-    global $link, $user, $phpEx, $ugamela_root_path;
+    global $link, $user;
 
-    require("{$ugamela_root_path}config.{$phpEx}");
+    require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
 
     if(!$link)
     {

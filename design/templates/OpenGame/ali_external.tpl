@@ -1,5 +1,5 @@
 <br />
-<form action="?mode=make" method="POST"><table width=519>
+<form action="alliance.php?mode=make" method="POST"><table width=519>
   <tr><td class="c" colspan=2>{make_alliance}</td></tr>
   <tr>
     <th>{alliance_tag} (3-8 {characters})</th>

@@ -1,9 +1,6 @@
 <?php
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './../';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-
-include_once('../includes/init.php');
+require('../includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
 $user = sn_autologin();
 
@@ -35,16 +32,18 @@ $msg .= sprintf($lang['adm_inactive_removed'], $rows);
 $ques = array(
   'DELETE {{users}}.* FROM {{users}} WHERE `onlinetime` < unix_timestamp(now()) - ( 60 * 60 * 24 * 45);',
 
-  'DELETE FROM `{{notes}}`    WHERE `owner`          not in (select id from {{users}});',
-  'DELETE FROM `{{fleets}}`   WHERE `fleet_owner`    not in (select id from {{users}});',
-  'DELETE FROM `{{buddy}}`    WHERE `sender`         not in (select id from {{users}});',
-  'DELETE FROM `{{buddy}}`    WHERE `owner`          not in (select id from {{users}});',
-  'DELETE FROM `{{annonce}}`  WHERE `user`           not in (select id from {{users}});',
-  'DELETE FROM `{{messages}}` WHERE `message_sender` not in (select id from {{users}});',
-  'DELETE FROM `{{messages}}` WHERE `message_owner`  not in (select id from {{users}});',
-  'DELETE FROM `{{planets}}`  WHERE `id_owner`       not in (select id from {{users}});',
-  'DELETE FROM `{{rw}}`       WHERE `id_owner1`      not in (select id from {{users}});',
-  'DELETE FROM `{{rw}}`       WHERE `id_owner2`      not in (select id from {{users}});',
+  'DELETE FROM `{{notes}}`     WHERE `owner`          not in (select id from {{users}});',
+  'DELETE FROM `{{fleets}}`    WHERE `fleet_owner`    not in (select id from {{users}});',
+  'DELETE FROM `{{buddy}}`     WHERE `sender`         not in (select id from {{users}});',
+  'DELETE FROM `{{buddy}}`     WHERE `owner`          not in (select id from {{users}});',
+  'DELETE FROM `{{annonce}}`   WHERE `user`           not in (select id from {{users}});',
+  'DELETE FROM `{{messages}}`  WHERE `message_sender` not in (select id from {{users}});',
+  'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});',
+  'DELETE FROM `{{planets}}`   WHERE `id_owner`       not in (select id from {{users}});',
+  'DELETE FROM `{{rw}}`        WHERE `id_owner1`      not in (select id from {{users}});',
+  'DELETE FROM `{{rw}}`        WHERE `id_owner2`      not in (select id from {{users}});',
+  'DELETE FROM `{{referrals}}` WHERE `id`             not in (select id from {{users}});',
+  'DELETE FROM `{{referrals}}` WHERE `id_partner`     not in (select id from {{users}});',
 /*
   'DELETE {{messages}}.* FROM {{messages}} LEFT OUTER JOIN {{users}} ON {{messages}}.message_owner = {{users}}.id WHERE {{users}}.username IS NULL;',
   'DELETE {{planets}}.* FROM {{planets}} LEFT OUTER JOIN {{users}} ON {{planets}}.id_owner = {{users}}.id WHERE {{users}}.username IS NULL;',
@@ -78,20 +77,6 @@ foreach($ques as $que) {
   set_time_limit(120);
 }
 $msg .= '</ul></div>';
-
-/*
-  if ( $TheUser['ally_id'] != 0 ) {
-    $TheAlly = doquery ( "SELECT * FROM `{{table}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", 'alliance', true );
-    $TheAlly['ally_members'] -= 1;
-    if ( $TheAlly['ally_members'] > 0 ) {
-      doquery ( "UPDATE `{{table}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';", 'alliance' );
-    } else {
-      doquery ( "DELETE FROM `{{table}}` WHERE `id` = '" . $TheAlly['id'] . "';", 'alliance' );
-      doquery ( "DELETE FROM `{{table}}` WHERE `stat_type` = '2' AND `id_owner` = '" . $TheAlly['id'] . "';", 'statpoints' );
-    }
-  }
-*/
-//  doquery ( "UPDATE `{{table}}` SET `config_value`= `config_value` - 1 WHERE `config_name` = 'users_amount';", 'config' );
 
 doquery('COMMIT;');
 

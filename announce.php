@@ -9,10 +9,7 @@
  */
 
 $skip_ban_check = true;
-
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-require_once("{$ugamela_root_path}common.{$phpEx}");
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $template     = gettemplate('announce', true);
 
@@ -46,7 +43,7 @@ if ($user['authlevel'] >= 3)
   switch($mode)
   {
     case 'del':
-      doquery( "DELETE FROM {{announce}} WHERE `idAnnounce`={$announce_id}");
+      doquery( "DELETE FROM {{announce}} WHERE `idAnnounce`={$announce_id} LIMIT 1;");
       $mode = '';
     break;
 
@@ -54,7 +51,7 @@ if ($user['authlevel'] >= 3)
       $template->assign_var('ID', $announce_id);
 
     case 'copy':
-      $announce = doquery("SELECT * FROM {{table}} WHERE `idAnnounce`={$announce_id};", 'announce', true);
+      $announce = doquery("SELECT * FROM {{announce}} WHERE `idAnnounce`={$announce_id} LIMIT 1;", '', true);
     break;
   }
 }
@@ -69,7 +66,6 @@ $template->assign_vars(array(
   'AUTHLEVEL'       => $user['authlevel'],
   'total'           => mysql_num_rows($allAnnounces),
   'MODE'            => $mode,
-  'dpath'           => $dpath,
   'tsTimeStamp'     => $announce['tsTimeStamp'],
   'strAnnounce'     => $announce['strAnnounce'],
   'DETAIL_URL'      => $announce['detail_url'],

@@ -80,13 +80,13 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
   if ($errorlist)
   {
     doquery("ROLLBACK;");
-    message ("<font color=\"red\"><ul>{$errorlist}</ul></font>", $lang['fl_error'], "fleet.{$phpEx}", false);
+    message ("<font color=\"red\"><ul>{$errorlist}</ul></font>", $lang['fl_error'], 'fleet.' . PHP_EX, false);
   }
 
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach ($fleetarray as $Ship => $Count) {
     if ($Count > $planetrow[$resource[$Ship]]) {
-      message ("<font color=\"red\"><b>{$lang['fl_fleet_err']}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
+      message ("<font color=\"red\"><b>{$lang['fl_fleet_err']}</b></font>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
     }
   }
 
@@ -128,12 +128,12 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
   if($cant_attack != ATTACK_ALLOWED)
   {
-    message("<font color=\"red\"><b>{$lang['fl_attack_error'][$cant_attack]}</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
+    message("<font color=\"red\"><b>{$lang['fl_attack_error'][$cant_attack]}</b></font>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
   }
 
   $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
   if (!in_array($speed_percent, $speed_possible)) {
-    message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
+    message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."</b></font>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
   }
 
   $fleet['start_time'] = $duration + $time_now;
@@ -177,15 +177,15 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
 
   if ( $StorageNeeded > $FleetStorage)
   {
-    message ("<font color=\"red\"><b>". $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
+    message ("<font color=\"red\"><b>". $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) ."</b></font>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
   }
   if ($planetrow['deuterium'] < $TransDeuterium + $consumption)
   {
-    message ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
+    message ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
   }
   if (($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal))
   {
-    message ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], "fleet.{$phpEx}", 2);
+    message ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
   }
 
   // ecriture de l'enregistrement de flotte (a partir de lôå_, y a quelque chose qui vole et c'est toujours sur la planete d'origine)

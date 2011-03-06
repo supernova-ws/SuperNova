@@ -15,15 +15,7 @@ define('INSIDE'  , true);
 define('INSTALL' , false);
 define('IN_ADMIN', true);
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './../';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($user['authlevel'] < 3)
-{
-  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-  die();
-}
+require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('admin');
 
@@ -90,8 +82,8 @@ if ($mode == 'banit') {
   AdminMessage ($DoneMessage, $lang['adm_bn_ttle']);
 }elseif ($mode == 'unbanit') {
   $nam = $_POST['name'];
-  //doquery("DELETE FROM {{table}} WHERE who2='{$nam}'", 'banned');
-  //doquery("UPDATE {{banned}} SET `longer` = {$time_now} WHERE who2='{$nam}'", 'banned');
+  //doquery("DELETE FROM {{banned}} WHERE who2='{$nam}'");
+  //doquery("UPDATE {{banned}} SET `longer` = {$time_now} WHERE who2='{$nam}'");
   doquery("UPDATE {{users}} SET bana=0, banaday=0, `vacation` = {$time_now} WHERE username like '{$nam}';");
   $DoneMessage       = $lang['adm_unbn_thpl'] ." ". $name ." ". $lang['adm_unbn_isbn'];
   AdminMessage ($DoneMessage, $lang['adm_unbn_ttle']);

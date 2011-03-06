@@ -9,9 +9,7 @@
  * @copyright 2008 by ?????? for XNova
  */
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}includes/init.{$phpEx}");
+include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('login');
 includeLang('admin');
@@ -47,7 +45,7 @@ elseif(!empty($_COOKIE[$config->COOKIE_NAME]))
   if($user['id'])
   {
     ob_start();
-    header("Location: ./index.{$phpEx}");
+    header("Location: ./index." . PHP_EX);
     ob_end_flush();
   }
   die();

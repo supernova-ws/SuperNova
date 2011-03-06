@@ -11,16 +11,7 @@
 define('INSIDE'  , true);
 define('INSTALL' , false);
 define('IN_ADMIN', true);
-
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './../';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($user['authlevel'] < 3)
-{
-  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-  die();
-}
+require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $GET_cmd  = SYS_mysqlSmartEscape($_GET['cmd']);
 $GET_user = intval($_GET['user']);
@@ -40,7 +31,7 @@ if ($GET_cmd == 'sort') {
 $PageTPL = gettemplate('admin/userlist_body');
 $RowsTPL = gettemplate('admin/userlist_rows');
 
-$query   = doquery("SELECT * FROM {{table}} ORDER BY `". $TypeSort ."` ASC", 'users');
+$query   = doquery("SELECT * FROM {{users}} ORDER BY `". $TypeSort ."` ASC");
 
 $parse                 = $lang;
 $parse['adm_ul_table'] = "";

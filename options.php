@@ -8,18 +8,11 @@
  * @copyright 2008 by ??????? for XNova
  */
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header("Location: login.php");
-}
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('options');
 
-$lang['PHP_SELF'] = 'options.' . $phpEx;
+$lang['PHP_SELF'] = 'options.' . PHP_EX;
 
 $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
 $mode = SYS_mysqlSmartEscape($_GET['mode']);
@@ -34,9 +27,9 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
   // Gestion des options speciales pour les admins
   if ($user['authlevel'] > 0) {
     if ($_POST['adm_pl_prot'] == 'on') {
-      doquery ("UPDATE {{table}} SET `id_level` = '".$user['authlevel']."' WHERE `id_owner` = '".$user['id']."';", 'planets');
+      doquery ("UPDATE {{planets}} SET `id_level` = '".$user['authlevel']."' WHERE `id_owner` = '".$user['id']."';");
     } else {
-      doquery ("UPDATE {{table}} SET `id_level` = '0' WHERE `id_owner` = '".$user['id']."';", 'planets');
+      doquery ("UPDATE {{planets}} SET `id_level` = '0' WHERE `id_owner` = '".$user['id']."';");
     }
   }
   // Mostrar skin
@@ -231,7 +224,7 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
 
     if ($_POST["newpass1"] == $_POST["newpass2"] && $_POST["newpass1"] != NULL) {
     $newpass = md5($_POST["newpass1"]);
-      doquery("UPDATE {{table}} SET `password` = '{$newpass}' WHERE `id` = '{$user['id']}' LIMIT 1", "users");
+      doquery("UPDATE {{users}} SET `password` = '{$newpass}' WHERE `id` = '{$user['id']}' LIMIT 1");
       setcookie(COOKIE_NAME, "", time()-100000, "/", "", 0); //le da el expire
       message($lang['succeful_changepass'], $lang['changue_pass']);
     }
@@ -239,9 +232,9 @@ if ($_POST && $mode == "change") { // Array ( [db_character]
 
   $username = SYS_mysqlSmartEscape(CheckInputStrings($username));
   if ($user['username'] != $username && $config->game_user_changename) {
-    $query = doquery("SELECT id FROM {{table}} WHERE username='{$POST_db_character}'", 'users', true);
+    $query = doquery("SELECT id FROM {{users}} WHERE username='{$POST_db_character}'", '', true);
     if (!$query) {
-      doquery("UPDATE {{table}} SET username='{$username}' WHERE id='{$user['id']}' LIMIT 1", "users");
+      doquery("UPDATE {{users}} SET username='{$username}' WHERE id='{$user['id']}' LIMIT 1");
       setcookie(COOKIE_NAME, "", time()-100000, "/", "", 0); //le da el expire
       message($lang['succeful_changename'], $lang['changue_name']);
     }
@@ -257,7 +250,7 @@ $parse['SAVED'] = sys_get_param_str('saved');
 
 $parse['dpath'] = $dpath;
 //-------------------------------
-$skin_dir = dir($ugamela_root_path."skins");
+$skin_dir = dir(SN_ROOT_PHYSICAL . "skins");
 $parse['opt_lst_skin_data']="<option value =\"\">".$lang['select_skin_path']."</option>";
 while (false !== ($entry = $skin_dir->read())) {
   if (is_dir("skins/".$entry) && $entry[0] !=".") {

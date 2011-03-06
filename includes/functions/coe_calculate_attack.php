@@ -108,21 +108,26 @@ function BE_calculateRoundFleetHarmPct(&$attArray){
   }
 }
 
-function BE_calculateRound(&$fleets, &$fleetsAttacking, &$fleet_n, &$fleet_shield, &$fleetDmgPerEnemyFleet, &$attackArray, &$defenseArray, &$attackRoundData, &$defenseRoundData, $strFieldName, $round ){
+function BE_calculateRound(&$fleets, &$fleetsAttacking, &$fleet_n, &$fleet_shield, &$fleetDmgPerEnemyFleet, &$attackArray, &$defenseArray, &$attackRoundData, &$defenseRoundData, $strFieldName, $round )
+{
   global $pricelist, $CombatCaps;
 
-  foreach ($fleets as $fleetID => $fleet) {
+  foreach ($fleets as $fleetID => $fleet)
+  {
     $fleet_n[$fleetID] = array();
 
-    foreach($fleet[$strFieldName] as $element => $amount) {
+    foreach($fleet[$strFieldName] as $element => $amount)
+    {
       if ($amount > 0) {
 
         $HarmPctIncoming = $attackArray[$fleetID]['HarmPct'] * $attackArray[$fleetID][$element]['def'] / $attackArray[$fleetID]['def']; // which % of damage came to this partial defending ship type
 
-        foreach($defenseArray as $fleetDefID => $fleetDef){
+        foreach($defenseArray as $fleetDefID => $fleetDef)
+        {
           if (!is_numeric($fleetDefID)) continue;
 
-          foreach($fleetDef as $defenseShipID => $defenseShipData){
+          foreach($fleetDef as $defenseShipID => $defenseShipData)
+          {
             //if ($defenseShipData['def'] <= 0) continue;
             if (!is_numeric($defenseShipID)) continue;
             if ($amount <= 0) continue; // if in loop we destroy all ship of current class - no need in looping more
@@ -138,7 +143,8 @@ function BE_calculateRound(&$fleets, &$fleetsAttacking, &$fleet_n, &$fleet_shiel
 
 BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $attackArray, $fleetID, $HarmPctIncoming, $HarmMade, $FinalHarm, $amount);
 
-            if ($attackArray[$fleetID][$element]['shield'] < $FinalHarm) {          // Does damage enough to penetrate shields? If yes...
+            if ($attackArray[$fleetID][$element]['shield'] < $FinalHarm) // Does damage enough to penetrate shields? If yes...
+            {
               $FinalHarm = $FinalHarm - $attackArray[$fleetID][$element]['shield']; // How much damage passed through shield
               $fleet_shield += $attackArray[$fleetID][$element]['shield'];          // How much damage was absorbed by shield - add to total fleet absorb
               $attackArray[$fleetID][$element]['shield'] = 0;                       // Shield now 0 'cause they all was destroyed by incoming damage
@@ -150,32 +156,39 @@ BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $attackArra
               $amount = $fleet_n[$fleetID][$element];                                                               // Changing $amount for in-loop needs
 
               $attackArray[$fleetID][$element]['def'] = max(0, $attackArray[$fleetID][$element]['def']-$FinalHarm); // Ship structure points reduced by incoming damage
-            } else {                                          //Damage is not enough to penetrate shield
+            }
+            else
+            {                                          //Damage is not enough to penetrate shield
               $fleet_n[$fleetID][$element] = round($amount);     // All ships survive this loop
-              $attackArray[$fleetID][$element]['shield'] = max(0, $attackArray[$fleetID][$element]['shield']-$FinalHarm);  // Shields reduced by incoming damage
+              $attackArray[$fleetID][$element]['shield'] = max(0, $attackArray[$fleetID][$element]['shield'] - $FinalHarm);  // Shields reduced by incoming damage
               $fleet_shield += $FinalHarm;                       // Adding all incoming damage to fleet's shield
               $calculatedDestroyedShip = 0;                      // No ship was destroyed
             }
 BE_DEBUG_closeRow($calculatedDestroyedShip, $fleet_n[$fleetID][$element]);
           }
         }
-      } else {
+      }
+      else
+      {
         $fleet_n[$fleetID][$element] = round($amount);
       }
     }
   }
 }
 
-function calculateAttack (&$attackers, &$defenders, $isSimulated = false) {
+function coe_attack_calculate(&$attackers, &$defenders, $isSimulated = false)
+{
   global $pricelist, $CombatCaps, $resource;
 
   $totalResourcePoints = array('attacker' => 0, 'defender' => 0);
 
   $attackResourcePoints = array('metal' => 0, 'crystal' => 0);
-  foreach ($attackers as $fleetID => $attacker) {
+  foreach ($attackers as $fleetID => $attacker)
+  {
     $attackers[$fleetID]['techs'] = BE_calculateTechs($attacker['user']);
 
-    foreach ($attacker['detail'] as $element => $amount) {
+    foreach ($attacker['detail'] as $element => $amount)
+    {
       $attackResourcePoints['metal'] += $pricelist[$element]['metal'] * $amount;
       $attackResourcePoints['crystal'] += $pricelist[$element]['crystal'] * $amount ;
     }
@@ -184,14 +197,19 @@ function calculateAttack (&$attackers, &$defenders, $isSimulated = false) {
   $totalResourcePoints['attacker'] += $attackResourcePoints['crystal'];
 
   $defenseResourcePoints = array('metal' => 0, 'crystal' => 0);
-  foreach ($defenders as $fleetID => $defender) {
+  foreach ($defenders as $fleetID => $defender)
+  {
     $defenders[$fleetID]['techs'] = BE_calculateTechs($defender['user']);
 
-    foreach ($defender['def'] as $element => $amount) {
-      if ($element < 300) {
-        $defenseResourcePoints['metal'] += $pricelist[$element]['metal'] * $amount ;
-        $defenseResourcePoints['crystal'] += $pricelist[$element]['crystal'] * $amount ;
-      } else {
+    foreach ($defender['def'] as $element => $amount)
+    {
+      if ($element < 300)
+      {
+        $defenseResourcePoints['metal'] += $pricelist[$element]['metal'] * $amount;
+        $defenseResourcePoints['crystal'] += $pricelist[$element]['crystal'] * $amount;
+      }
+      else
+      {
         if (!isset($originalDef[$element])) $originalDef[$element] = 0;
         $originalDef[$element] += $amount;
       }
@@ -203,7 +221,8 @@ function calculateAttack (&$attackers, &$defenders, $isSimulated = false) {
 
 BE_DEBUG_openTable();
 
-  for ($round = 0, $rounds = array(); $round < MAX_ATTACK_ROUNDS; $round++) {
+  for ($round = 0, $rounds = array(); $round < MAX_ATTACK_ROUNDS; $round++)
+  {
     $attArray = array();
     $attackRoundData = array();
     BE_preCalcRoundData($attackers, $attackRoundData, $attArray, 'detail', $isSimulated);
@@ -212,10 +231,10 @@ BE_DEBUG_openTable();
     $defenseRoundData = array();
     BE_preCalcRoundData($defenders, $defenseRoundData, $defArray, 'def', $isSimulated);
 
-
     $rounds[$round] = array('attackers' => unserialize(serialize($attackers)), 'defenders' => unserialize(serialize($defenders)), 'attack' => $attackRoundData['att'], 'defense' => $defenseRoundData['att'], 'attackA' => $attackRoundData['amount'], 'defenseA' => $defenseRoundData['amount'], 'infoA' => $attArray, 'infoD' => $defArray);
 
-    if ($defenseRoundData['amount']['total'] <= 0 || $attackRoundData['amount']['total'] <= 0) {
+    if ($defenseRoundData['amount']['total'] <= 0 || $attackRoundData['amount']['total'] <= 0)
+    {
       break;
     }
 
@@ -224,13 +243,15 @@ BE_DEBUG_openTable();
     BE_calculateRoundFleetHarmPct($defArray);
 
     $attackPctPerFleet = array();
-    foreach ($attackRoundData['amount'] as $fleetID => $amount) {
+    foreach ($attackRoundData['amount'] as $fleetID => $amount)
+    {
       if (!is_numeric($fleetID)) continue;
       $attackPctPerFleet[$fleetID] = $amount / $attackRoundData['amount']['total'];
     }
 
     $defensePctPerFleet = array();
-    foreach ($defenseRoundData['amount'] as $fleetID => $amount) {
+    foreach ($defenseRoundData['amount'] as $fleetID => $amount)
+    {
       if (!is_numeric($fleetID)) continue;
       $defensePctPerFleet[$fleetID] = $amount / $defenseRoundData['amount']['total'];
     }
@@ -246,47 +267,57 @@ BE_DEBUG_openTable();
     $rounds[$round]['attackShield'] = $attacker_shield;
     $rounds[$round]['defShield'] = $defender_shield;
 
-    foreach ($attackers as $fleetID => $attacker) {
+    foreach ($attackers as $fleetID => $attacker)
+    {
       $attackers[$fleetID]['detail'] = array_map('round', $attacker_n[$fleetID]);
     }
 
-    foreach ($defenders as $fleetID => $defender) {
+    foreach ($defenders as $fleetID => $defender)
+    {
       $defenders[$fleetID]['def'] = array_map('round', $defender_n[$fleetID]);
     }
   }
 
 BE_DEBUG_closeTable();
 
-  if ($attackRoundData['amount']['total'] <= 0) {
+  if ($attackRoundData['amount']['total'] <= 0)
+  {
     $won = 2; // defender
-
-  } elseif ($defenseRoundData['amount']['total'] <= 0) {
+  }
+  elseif ($defenseRoundData['amount']['total'] <= 0)
+  {
     $won = 1; // attacker
-
-  } else {
+  }
+  else
+  {
     $won = 0; // draw
     $rounds[count($rounds)] = array('attackers' => $attackers, 'defenders' => $defenders, 'attack' => $attackRoundData['att'], 'def' => $defenseRoundData['att'], 'attackA' => $attackRoundData['amount'], 'defenseA' => $defenseRoundData['amount']);
   }
 
   // Debree
-  foreach ($attackers as $fleetID => $attacker) {
-    foreach ($attacker['detail'] as $element => $amount) {
-      $totalResourcePoints['attacker'] -= $pricelist[$element]['metal'] * $amount ;
-      $totalResourcePoints['attacker'] -= $pricelist[$element]['crystal'] * $amount ;
+  foreach ($attackers as $fleetID => $attacker)
+  {
+    foreach ($attacker['detail'] as $element => $amount)
+    {
+      $totalResourcePoints['attacker'] -= $pricelist[$element]['metal'] * $amount;
+      $totalResourcePoints['attacker'] -= $pricelist[$element]['crystal'] * $amount;
 
-      $attackResourcePoints['metal'] -= $pricelist[$element]['metal'] * $amount ;
-      $attackResourcePoints['crystal'] -= $pricelist[$element]['crystal'] * $amount ;
+      $attackResourcePoints['metal'] -= $pricelist[$element]['metal'] * $amount;
+      $attackResourcePoints['crystal'] -= $pricelist[$element]['crystal'] * $amount;
     }
   }
 
-  foreach ($defenders as $fleetID => $defender) {
-    foreach ($defender['def'] as $element => $amount) {               //Line271
-      if ($element < 300) {
-        $defenseResourcePoints['metal'] -= $pricelist[$element]['metal'] * $amount ;
-        $defenseResourcePoints['crystal'] -= $pricelist[$element]['crystal'] * $amount ;
+  foreach ($defenders as $fleetID => $defender)
+  {
+    foreach ($defender['def'] as $element => $amount)
+    {
+      if ($element < 300)
+      {
+        $defenseResourcePoints['metal'] -= $pricelist[$element]['metal'] * $amount;
+        $defenseResourcePoints['crystal'] -= $pricelist[$element]['crystal'] * $amount;
 
-        $totalResourcePoints['defender'] -= $pricelist[$element]['metal'] * $amount ;
-        $totalResourcePoints['defender'] -= $pricelist[$element]['crystal'] * $amount ;
+        $totalResourcePoints['defender'] -= $pricelist[$element]['metal'] * $amount;
+        $totalResourcePoints['defender'] -= $pricelist[$element]['crystal'] * $amount;
       }
       else
       {
@@ -298,7 +329,7 @@ BE_DEBUG_closeTable();
         }
         else
         {
-          if($originalDef[$element]>10)
+          if($originalDef[$element] > 10)
           { // if there were more then 10 defense elements - mass-calculating giveback
             $giveback = floor($lost * (mt_rand(70*0.8, 70*1.2) / 100));
           }
@@ -345,7 +376,8 @@ BE_DEBUG_closeTable();
   * Partial copyright (c) 2010 by Gorlum for oGame.triolan.com.ua
   */
 
-function BE_calculateMoonChance($result){
+function BE_calculateMoonChance($result)
+{
   $FleetDebris = $result['debree']['att'][0] + $result['debree']['def'][0] + $result['debree']['att'][1] + $result['debree']['def'][1];
 
   $MoonChance = $FleetDebris / 1000000;
@@ -372,25 +404,32 @@ function BE_calculatePostAttacker($TargetPlanet, &$attackFleets, $result, $isSim
   foreach ($attackFleets as $fleetID => &$attacker) {
     $fleetArray = '';
     $totalCount = 0;
-    foreach ($attacker['detail'] as $element => $amount) {
-      if ($amount)
+    foreach ($attacker['detail'] as $element => $amount)
+    {
+      if ($amount > 0)
+      {
         $fleetArray .= $element.','.$amount.';';
-      $totalCount += $amount;
-
-      // !G+ For now we do not count deutrium for return in capacity
-      $attacker['loot']['capacity'] += $pricelist[$element]['capacity'] * $amount;
+        $totalCount += $amount;
+        // !G+ For now we do not count deutrium for return in capacity
+        $attacker['loot']['capacity'] += $pricelist[$element]['capacity'] * $amount;
+      }
     }
 
     // !G+ Some misc calculations
     $attacker['totalCount'] = $totalCount;
-    if ($totalCount>0) {
+    if ($totalCount>0)
+    {
       $attacker['fleetArray'] = $fleetArray;
       $attackerTotalCapacity += $attacker['loot']['capacity'];
-    }else{
+    }
+    else
+    {
       if (!$isSimulation)
+      {
         doquery ('DELETE FROM {{fleets}} WHERE `fleet_id`='.$fleetID);
-    };
-  };
+      }
+    }
+  }
 
   $loot['metal'] = max(0, $TargetPlanet['metal'] / 2);
   $loot['crystal'] = max(0, $TargetPlanet['crystal'] / 2);
@@ -402,27 +441,31 @@ function BE_calculatePostAttacker($TargetPlanet, &$attackFleets, $result, $isSim
 
   $loot['looted'] = array( 'deuterium' => 0, 'crystal' => 0, 'metal' => 0);
 
-  if ($result['won'] == 1) {
-    foreach ($attackFleets as $fleetID => &$attacker) {
-      if ($attacker['totalCount'] > 0) {
-        $attacker_part = $attacker['loot']['capacity'] / $attackerTotalCapacity;
-
-        // Variant 1: loot most expensive resources first deu -> cry -> met
-        //$attacker['loot']['deuterium'] = min(round($loot['deuterium'] * $attacker_part), $attacker['loot']['capacity']);
-        //$attacker['loot']['crystal'] = min(round($loot['crystal'] * $attacker_part), $attacker['loot']['capacity']) - $attacker['loot']['deuterium'];
-        //$attacker['loot']['metal'] = min(round($loot['metal'] * $attacker_part), $attacker['loot']['capacity']) - $attacker['loot']['deuterium'] - $attacker['loot']['crystal'];
-
-        // Variant 2: loot divided in proportion to resources on planet (i.e. 2kk deu 4kk cry 6kk met means loot proportion 1:2:3)
-        $attacker['loot']['deuterium'] = min($loot['deuterium'] * $attacker_part, $attacker['loot']['capacity'] * $loot['deuterium'] / $loot['all']);
-        $attacker['loot']['crystal'] = min($loot['crystal'] * $attacker_part, $attacker['loot']['capacity'] * $loot['crystal'] / $loot['all']);
-        $attacker['loot']['metal'] = min($loot['metal'] * $attacker_part, $attacker['loot']['capacity'] * $loot['metal'] / $loot['all']);
-
-        $attacker['loot'] = array_map('round', $attacker['loot']);
-
-        $loot['looted']['metal'] += $attacker['loot']['metal'];
-        $loot['looted']['crystal'] += $attacker['loot']['crystal'];
-        $loot['looted']['deuterium'] += $attacker['loot']['deuterium'];
+  if ($result['won'] == 1)
+  {
+    foreach ($attackFleets as $fleetID => &$attacker)
+    {
+      if ($attacker['totalCount'] <= 0)
+      {
+        continue;
       }
+      $attacker_part = $attacker['loot']['capacity'] / $attackerTotalCapacity;
+
+      // Variant 1: loot most expensive resources first deu -> cry -> met
+      //$attacker['loot']['deuterium'] = min(round($loot['deuterium'] * $attacker_part), $attacker['loot']['capacity']);
+      //$attacker['loot']['crystal'] = min(round($loot['crystal'] * $attacker_part), $attacker['loot']['capacity']) - $attacker['loot']['deuterium'];
+      //$attacker['loot']['metal'] = min(round($loot['metal'] * $attacker_part), $attacker['loot']['capacity']) - $attacker['loot']['deuterium'] - $attacker['loot']['crystal'];
+
+      // Variant 2: loot divided in proportion to resources on planet (i.e. 2kk deu 4kk cry 6kk met means loot proportion 1:2:3)
+      $attacker['loot']['deuterium'] = min($loot['deuterium'] * $attacker_part, $attacker['loot']['capacity'] * $loot['deuterium'] / $loot['all']);
+      $attacker['loot']['crystal'] = min($loot['crystal'] * $attacker_part, $attacker['loot']['capacity'] * $loot['crystal'] / $loot['all']);
+      $attacker['loot']['metal'] = min($loot['metal'] * $attacker_part, $attacker['loot']['capacity'] * $loot['metal'] / $loot['all']);
+
+      $attacker['loot'] = array_map('round', $attacker['loot']);
+
+      $loot['looted']['metal'] += $attacker['loot']['metal'];
+      $loot['looted']['crystal'] += $attacker['loot']['crystal'];
+      $loot['looted']['deuterium'] += $attacker['loot']['deuterium'];
     }
   }
 

@@ -16,7 +16,7 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
     exit();
   }
 
-  $query = doquery("SELECT * FROM `{{table}}` WHERE fleet_id = '{$fleetid}'", 'fleets');
+  $query = doquery("SELECT * FROM `{{fleets}}` WHERE fleet_id = '{$fleetid}'");
   if (mysql_num_rows($query) != 1) {
     message($lang['fl_fleet_not_exists'], $lang['fl_error']);
   }
@@ -44,7 +44,7 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
         // CheckPlanetUsedFields($planetrow);
 
         if (!$fleet['fleet_group']) {
-          doquery("INSERT INTO {{table}} SET
+          doquery("INSERT INTO {{aks}} SET
             `name` = 'KV{$fleetid}',
             `teilnehmer` = '" . $user['id'] . "',
             `flotten` = '" . $fleetid . "',
@@ -54,7 +54,7 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
             `planet` = '" . $fleet['fleet_end_planet'] . "',
             `planet_type` = '" . $fleet['fleet_end_type'] . "',
             `eingeladen` = '" . $user['id'] . "',
-            `fleet_end_time` = '" . $fleet['fleet_end_time']. "'",'aks');
+            `fleet_end_time` = '" . $fleet['fleet_end_time']. "'");
 
           $aks = doquery("SELECT * FROM {{aks}} WHERE `flotten` = {$fleetid} LIMIT 1;", '', true);
 
@@ -81,7 +81,7 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
       }else{
         print('adding user');
         $add_user_message_mr = sprintf($lang['fl_aks_player_invited'], $userToAdd);
-        doquery("UPDATE `{{table}}` SET `eingeladen` = concat(`eingeladen`, ',{$userToAddID}') WHERE `flotten` = {$fleetid};",'aks')
+        doquery("UPDATE `{{aks}}` SET `eingeladen` = concat(`eingeladen`, ',{$userToAddID}') WHERE `flotten` = {$fleetid};")
           or die(sprintf($lang['fl_aks_adding_error'],mysql_error()));
         $aks['eingeladen'] .= ',' . $userToAddID;
       };
@@ -98,7 +98,7 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
   $members = explode(",", $aks['eingeladen']);
   foreach($members as $a => $b) {
     if ($b != '') {
-      $member_qry_mr = doquery("SELECT `username` FROM `{{table}}` WHERE `id` ='{$b}' ;",'users');
+      $member_qry_mr = doquery("SELECT `username` FROM `{{users}}` WHERE `id` ='{$b}' ;");
       while($row = mysql_fetch_assoc($member_qry_mr)){
         $invited .= "<option>".$row['username']."</option>";
       }

@@ -28,31 +28,7 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-if (filesize('config.php') == 0)
-{
-  header('location: install/');
-  exit();
-}
-
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header('Location: login.php');
-}
-
-if($user['authlevel'] >= 2)
-{
-  if(file_exists("{$ugamela_root_path}badqrys.txt"))
-  {
-    if(filesize("{$ugamela_root_path}badqrys.txt") > 0)
-    {
-      echo "<a href=\"badqrys.txt\" target=\"_NEW\"><font color=\"red\">{$lang['ov_hack_alert']}</font</a>";
-    }
-  }
-}
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('overview');
 
@@ -317,7 +293,7 @@ switch ($mode)
 
 /*
     $ally = $user['ally_id'];
-    $OnlineUsersNames = doquery("SELECT `username` FROM {{table}} WHERE `onlinetime`>'".$time."' AND `ally_id`='".$ally."' AND `ally_id` != '0'",'users');
+    $OnlineUsersNames = doquery("SELECT `username` FROM {{users}} WHERE `onlinetime`>'".$time."' AND `ally_id`='".$ally."' AND `ally_id` != '0'");
 
     $names = '';
     while ($OUNames = mysql_fetch_assoc($OnlineUsersNames)) {
@@ -328,7 +304,7 @@ switch ($mode)
 */
 /*
     //Последние сообщения чата.
-    $mess = doquery("SELECT `user`,`message` FROM {{table}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5", 'chat');
+    $mess = doquery("SELECT `user`,`message` FROM {{chat}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5");
     $msg = '<table>';
     while ($result = mysql_fetch_assoc($mess)) {
       //$str = substr($result['message'], 0, 85);
@@ -363,7 +339,6 @@ switch ($mode)
     }
 
     $template->assign_vars(array(
-      'dpath'                => $dpath,
       'TIME_NOW'             => $time_now,
 
       'USER_ID'              => $user['id'],

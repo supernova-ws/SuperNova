@@ -14,8 +14,8 @@ if ( !defined('INSIDE') ) {
 
 function sn_db_connect()
 {
-  global $ugamela_root_path, $phpEx, $link, $debug, $config;
-  require("{$ugamela_root_path}config.{$phpEx}");
+  global $link, $debug, $config;
+  require(SN_ROOT_PHYSICAL . "config." . PHP_EX);
   if(!$link) {
     $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']) or
       $debug->error(mysql_error(),'DB Error - cannot connect to server');
@@ -33,13 +33,14 @@ function sn_db_connect()
 }
 
 function doquery($query, $table = '', $fetch = false){
-  global $numqueries, $link, $debug, $ugamela_root_path, $user, $tableList, $sn_cache, $is_watching, $config, $dm_change_legit;
+  global $numqueries, $link, $debug, $user, $tableList, $sn_cache, $is_watching, $config, $dm_change_legit;
 
   if($config->game_watchlist_array)
   {
     if(!$is_watching && in_array($user['id'], $config->game_watchlist_array))
     {
-      if(stripos($query, 'SELECT') !== 0)
+//      if(stripos($query, 'SELECT') !== 0)
+      if(!preg_match('/^(select|commit|rollback|start transaction)/i', $query))
       {
         $is_watching = true;
         $msg = "\$query = \"{$query}\"\n\rtable = '{$table}', fetch = '{$fetch}'";
@@ -51,7 +52,7 @@ function doquery($query, $table = '', $fetch = false){
         {
           $msg .= "\n\r" . dump($_GET,'$_GET');
         }
-        $debug->warning($msg,"Watching user {$user['id']}",399);
+        $debug->warning($msg, "Watching user {$user['id']}", 399, array('base_dump' => true));
         $is_watching = false;
       }
     }
@@ -112,7 +113,7 @@ function doquery($query, $table = '', $fetch = false){
 
     $report .= "\n--------------------------------------------------------------------------------------------------\n";
 
-    $fp = fopen($ugamela_root_path.'badqrys.txt', 'a');
+    $fp = fopen(SN_ROOT_PHYSICAL . 'badqrys.txt', 'a');
     fwrite($fp, $report);
     fclose($fp);
 

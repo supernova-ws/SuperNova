@@ -10,26 +10,16 @@ define('INSIDE'  , true);
 define('INSTALL' , false);
 define('IN_ADMIN', true);
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './../';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($user['authlevel'] < 3)
-{
-  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-  die();
-}
+require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('admin');
 $parse = $lang;
-
-if ($user['authlevel'] >= 3) {
 
 $script = '
 <script type="text/javascript">
 $(document).ready(function() {
   // send requests
-  $.post("maintenance_ajax.php", {rating: $(this).html()}, function(xml) {
+  $.post("admin/maintenance_ajax.php", {rating: $(this).html()}, function(xml) {
     // format result
     var result = [ $("message", xml).text() ];
     // output result
@@ -38,8 +28,6 @@ $(document).ready(function() {
 });
 </script>';
 
-AdminMessage ( $script . '<img src=../design/images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title'] );
-} else {
-  AdminMessage( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-}
+AdminMessage ( $script . '<img src=design/images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title'] );
+
 ?>

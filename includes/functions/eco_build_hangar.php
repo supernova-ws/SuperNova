@@ -120,7 +120,7 @@ function GetRestrictedConstructionNum($Planet) {
 
 function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
 {
-  global $sn_data, $lang, $phpEx, $dpath, $debug;
+  global $sn_data, $lang, $dpath, $debug;
 
   $GET_action  = SYS_mysqlSmartEscape($_GET['action']);
   $GET_mode    = SYS_mysqlSmartEscape($_GET['mode']);
@@ -292,10 +292,10 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
       $PageTable .= "\n<tr>";
 
       // Imagette + Link vers la page d'information
-      $PageTable .= "<th class=l><a href=infos.{$phpEx}?gid={$Element}><img border=0 src=\"{$dpath}gebaeude/{$Element}.gif\" align=top width=120 height=120></a></th>";
+      $PageTable .= "<th class=l><a href=\"infos." . PHP_EX . "?gid={$Element}\"><img border=0 src=\"{$dpath}gebaeude/{$Element}.gif\" align=top width=120 height=120></a></th>";
 
       // Description
-      $PageTable .= "<td class=l><a href=infos.{$phpEx}?gid={$Element}>{$ElementName}</a> {$ElementNbre}<br>{$lang['info'][$Element]['description_short']}<br>";
+      $PageTable .= "<td class=l><a href=\"infos." . PHP_EX . "?gid={$Element}\">{$ElementName}</a> {$ElementNbre}<br>{$lang['info'][$Element]['description_short']}<br>";
       // On affiche le 'prix' avec eventuellement ce qui manque en ressource
       $PageTable .= GetElementPrice($CurrentUser, $CurrentPlanet, $Element, false);
 

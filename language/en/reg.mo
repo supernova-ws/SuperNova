@@ -28,7 +28,6 @@ $lang['en']                = 'Angielski';
 $lang['it']                = 'Wіoski';
 
 // Send
-//$lang['mail_welcome'] = 'Thank you for signing up for our game {gameurl}\nYour password is: {password}\n\nGood luck!\n{gameurl}';
 $lang['mail_title'] = 'Ваша регистрация OGame';
 $lang['thanksforregistry'] = 'Thank you register! You will receive an email with your password.';
 $lang['welcome_to_universe'] = 'Welcome to the universe !!';
