@@ -197,7 +197,6 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
   $parse['image']       = $BuildID;
   $parse['description'] = $lang['info'][$BuildID]['description'];
 
-
   if       ($BuildID >=   1 && $BuildID <=   3) {
     // Cas des mines
     $PageTPL              = gettemplate('info_buildings_table');
@@ -376,7 +375,7 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
 // Tout le reste ne sert qu'a la calculer :)
 //
 
-  $page = ShowBuildingInfoPage ($user, $planetrow, $gid);
+  $page = ShowBuildingInfoPage ($user, $planetrow, sys_get_param_int('gid'));
 
   display ($page, $lang['nfo_page_title']);
 
