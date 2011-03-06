@@ -45,7 +45,10 @@ if ($user_can_kick && $user['id'] != $userRow['id'] && $ally['ally_owner'] != $u
   $parse["colspan"] = 8;
 }
 
-while ($userRow = mysql_fetch_assoc($userList)) {
+$parse['dpath'] = SN_ROOT_VIRTUAL . $dpath;
+
+while ($userRow = mysql_fetch_assoc($userList))
+{
   $parse = array_merge($parse, $userRow);
 
   $i++;
