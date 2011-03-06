@@ -37,7 +37,7 @@ $ques = array(
   'DELETE FROM `{{buddy}}`     WHERE `sender`         not in (select id from {{users}});',
   'DELETE FROM `{{buddy}}`     WHERE `owner`          not in (select id from {{users}});',
   'DELETE FROM `{{annonce}}`   WHERE `user`           not in (select id from {{users}});',
-  'DELETE FROM `{{messages}}`  WHERE `message_sender` not in (select id from {{users}});',
+//  'DELETE FROM `{{messages}}`  WHERE `message_sender` not in (select id from {{users}});',
   'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});',
   'DELETE FROM `{{planets}}`   WHERE `id_owner`       not in (select id from {{users}});',
   'DELETE FROM `{{rw}}`        WHERE `id_owner1`      not in (select id from {{users}});',
@@ -57,7 +57,7 @@ $ques = array(
   'DELETE FROM {{statpoints}} WHERE stat_type=2 AND id_owner not in (select id from {{alliance}});',
   "UPDATE {{users}} SET ally_id = 0, ally_name='', ally_rank_id=0 WHERE ally_id not in (select id from {{alliance}});",
 
-  'DELETE FROM {{messages}} WHERE message_time < unix_timestamp(now()) - (60 * 60 * 24 * 35);',
+  'DELETE FROM {{messages}} WHERE message_time < unix_timestamp(now()) - (60 * 60 * 24 * 30);',
   'DELETE FROM {{rw}} WHERE time < unix_timestamp(now()) - (60 * 60 * 24 * 14);',
   'DELETE FROM {{chat}} WHERE timestamp < unix_timestamp(now()) - (60 * 60 * 24 * 14);',
 
