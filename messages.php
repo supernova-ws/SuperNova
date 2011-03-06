@@ -33,14 +33,7 @@
  *
  */
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header("Location: login.php");
-}
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
   includeLang('messages');
 
@@ -66,20 +59,20 @@ if ($IsUserChecked == false) {
   $TitleColor    = array ( -1 => '#FFFFFF', 0 => '#FFFF00', 1 => '#FF6699', 2 => '#FF3300', 3 => '#FF9900', 4 => '#773399', 5 => '#009933', 15 => '#0270FF', 99 => '#007070', 100 => '#ABABAB'  );
   $BackGndColor  = array ( -1 => '#000000', 0 => '#663366', 1 => '#336666', 2 => '#000099', 3 => '#666666', 4 => '#999999', 5 => '#999999', 15 => '#999999', 99 => '#999999', 100 => '#999999'  );
 
-  $UnRead        = doquery("SELECT * FROM {{table}} WHERE `id` = '". $user['id'] ."';", 'users', true);
+  $UnRead        = doquery("SELECT * FROM {{users}} WHERE `id` = '". $user['id'] ."';", '', true);
   foreach($MessageType as $MessType => $msg_class)
   {
     $WaitingMess[$MessType] = $UnRead[$messfields[$MessType]];
     $TotalMess[$MessType]   = 0;
   }
 
-  $UsrMess       = doquery("SELECT message_owner, message_type, COUNT(message_owner) AS message_count FROM {{table}} WHERE `message_owner` = '".$user['id']."' GROUP BY message_owner, message_type ORDER BY message_owner ASC, message_type;", 'messages');
+  $UsrMess       = doquery("SELECT message_owner, message_type, COUNT(message_owner) AS message_count FROM {{messages}} WHERE `message_owner` = '".$user['id']."' GROUP BY message_owner, message_type ORDER BY message_owner ASC, message_type;");
   while ($CurMess = mysql_fetch_assoc($UsrMess)) {
     $TotalMess[$CurMess['message_type']]  = $CurMess['message_count'];
     $TotalMess[100]                      += $CurMess['message_count'];
   }
 
-  $UsrMess       = doquery("SELECT COUNT(message_sender) AS message_count FROM {{table}} WHERE `message_sender` = '".$user['id']."' AND message_type = 1 GROUP BY message_sender;", 'messages', true);
+  $UsrMess       = doquery("SELECT COUNT(message_sender) AS message_count FROM {{messages}} WHERE `message_sender` = '".$user['id']."' AND message_type = 1 GROUP BY message_sender;", '', true);
   $TotalMess[-1] = intval($UsrMess['message_count']);
 
   switch ($MessPageMode) {
@@ -90,13 +83,13 @@ if ($IsUserChecked == false) {
         message ($lang['mess_no_ownerid'], $lang['mess_error']);
       }
 
-      $OwnerRecord = doquery("SELECT * FROM {{table}} WHERE `id` = '".$OwnerID."';", 'users', true);
+      $OwnerRecord = doquery("SELECT * FROM {{users}} WHERE `id` = '".$OwnerID."';", '', true);
 
       if (!$OwnerRecord) {
         message ($lang['mess_no_owner']  , $lang['mess_error']);
       }
 
-      $OwnerHome   = doquery("SELECT * FROM {{table}} WHERE `id` = '". $OwnerRecord["id_planet"] ."';", 'planets', true);
+      $OwnerHome   = doquery("SELECT * FROM {{planets}} WHERE `id` = '". $OwnerRecord["id_planet"] ."';", '', true);
       if (!$OwnerHome) {
         message ($lang['mess_no_ownerpl'], $lang['mess_error']);
       }
@@ -143,14 +136,14 @@ if ($IsUserChecked == false) {
       // -------------------------------------------------------------------------------------------------------
       // Suppression des messages selectionnés
       if       ($DeleteWhat == 'deleteall') {
-        doquery("DELETE FROM {{table}} WHERE `message_owner` = '". $user['id'] ."';", 'messages');
+        doquery("DELETE FROM {{messages}} WHERE `message_owner` = '". $user['id'] ."';");
       } elseif ($DeleteWhat == 'deletemarked') {
         foreach($_POST as $Message => $Answer) {
           if (preg_match("/delmes/i", $Message) && $Answer == 'on') {
             $MessId   = str_replace("delmes", "", $Message);
-            $MessHere = doquery("SELECT * FROM {{table}} WHERE `message_id` = '". $MessId ."' AND `message_owner` = '". $user['id'] ."';", 'messages');
+            $MessHere = doquery("SELECT * FROM {{messages}} WHERE `message_id` = '". $MessId ."' AND `message_owner` = '". $user['id'] ."';");
             if ($MessHere) {
-              doquery("DELETE FROM {{table}} WHERE `message_id` = '".$MessId."';", 'messages');
+              doquery("DELETE FROM {{messages}} WHERE `message_id` = '".$MessId."';");
             }
           }
         }

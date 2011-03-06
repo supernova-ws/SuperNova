@@ -22,14 +22,7 @@
   V1.0 Created by Perberos. All rights reversed (C) 2006
 */
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header("Location: login.php");
-}
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 define('SN_IN_FLEET', true);
 
@@ -71,9 +64,9 @@ $options['fleets_max'] = GetMaxFleets($user);
 $MaxFleets = GetMaxFleets($user);
 $FlyingFleets = doquery("SELECT COUNT(fleet_id) as Number FROM {{fleets}} WHERE `fleet_owner`='{$user['id']}'", '', true);
 $FlyingFleets = $FlyingFleets['Number'];
-if ($MaxFleets <= $FlyingFleets AND $fleet_page)
+if ($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4)
 {
-  message($lang['fl_noslotfree'], $lang['fl_error'], "fleet.{$phpEx}", 5);
+  message($lang['fl_noslotfree'], $lang['fl_error'], "fleet." . PHP_EX, 5);
 }
 
 $MaxExpeditions = GetMaxExpeditions($user);

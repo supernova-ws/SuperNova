@@ -106,7 +106,7 @@ function GetRestPrice ($user, $planet, $Element, $userfactor = true) {
 // $InResearch    -> Indicateur qu'il y a une Recherche en cours
 // $ThePlanet     -> Planete sur laquelle se realise la technologie eventuellement
 function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $ThePlanet, $que) {
-  global $lang, $resource, $reslist, $phpEx, $dpath, $_GET, $config;
+  global $lang, $resource, $reslist, $dpath, $_GET, $config;
 
   $TheCommand = SYS_mysqlSmartEscape($_GET['cmd']);
   $Techno     = intval($_GET['tech']);
@@ -152,7 +152,7 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
               $CurrentUser['b_tech_planet'] = 0;
               $UpdateData                   = true;
               $InResearch                   = false;
-              $QryUpdatePlanet2  = "UPDATE {{table}} SET ";
+              $QryUpdatePlanet2  = "UPDATE {{planets}} SET ";
               $QryUpdatePlanet2 .= "`b_tech_id` = '".$WorkingPlanet['b_tech_id']."', ";
               $QryUpdatePlanet2 .= "`b_tech` = '".$WorkingPlanet['b_tech']."', ";
               $QryUpdatePlanet2 .= "`metal` = '".$WorkingPlanet['metal']."', ";
@@ -160,7 +160,7 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
               $QryUpdatePlanet2 .= "`deuterium` = '".$WorkingPlanet['deuterium']."' ";
               $QryUpdatePlanet2 .= "WHERE ";
               $QryUpdatePlanet2 .= "`id` = '".$WorkingPlanet['id']."';";
-              doquery( $QryUpdatePlanet2, 'planets');
+              doquery( $QryUpdatePlanet2);
             }
             break;
           case 'search':
@@ -178,7 +178,7 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
                 $UpdateData                   = true;
                 $InResearch                   = true;
 
-                $QryUpdatePlanet3  = "UPDATE {{table}} SET ";
+                $QryUpdatePlanet3  = "UPDATE {{planets}} SET ";
                 $QryUpdatePlanet3 .= "`b_tech_id` = '".$WorkingPlanet['b_tech_id']."', ";
                 $QryUpdatePlanet3 .= "`b_tech` = '".$WorkingPlanet['b_tech']."', ";
                 $QryUpdatePlanet3 .= "`metal` = '".$WorkingPlanet['metal']."', ";
@@ -186,7 +186,7 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
                 $QryUpdatePlanet3 .= "`deuterium` = '".$WorkingPlanet['deuterium']."' ";
                 $QryUpdatePlanet3 .= "WHERE ";
                 $QryUpdatePlanet3 .= "`id` = '".$WorkingPlanet['id']."';";
-                doquery( $QryUpdatePlanet3, 'planets');
+                doquery( $QryUpdatePlanet3);
               }
             }
             elseif($InResearch)
@@ -200,11 +200,11 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
             break;
         }
         if ($UpdateData == true) {
-          $QryUpdateUser  = "UPDATE {{table}} SET ";
+          $QryUpdateUser  = "UPDATE {{users}} SET ";
           $QryUpdateUser .= "`b_tech_planet` = '".$CurrentUser['b_tech_planet']."' ";
           $QryUpdateUser .= "WHERE ";
           $QryUpdateUser .= "`id` = '".$CurrentUser['id']."';";
-          doquery( $QryUpdateUser, 'users');
+          doquery( $QryUpdateUser);
         }
         //byo; FIXed by PekopT 05.08.2008 thread   http://forum.ragezone.com/showthread.php?p=3734880#post3734880
         $CurrentPlanet = $WorkingPlanet;

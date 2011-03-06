@@ -17,7 +17,7 @@ if ($yes == 1) {
 } else {
   // se pregunta si se quiere salir
   $lang['Want_go_out'] = str_replace("%s", $ally_name, $lang['Want_go_out']);
-  $page = MessageForm($lang['Want_go_out'], "<br>", "?mode=exit&yes=1", $lang['Ok']);
+  $page = MessageForm($lang['Want_go_out'], "<br>", "alliance.php?mode=exit&yes=1", $lang['Ok']);
 }
 
 display($page);

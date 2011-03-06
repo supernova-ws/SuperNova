@@ -28,7 +28,7 @@ function calc_resources()
    <tr height="20"><td colspan="3" class="c">{Intergalactic_merchant}</td></tr>
    <tbody>
      <tr height="20">
-    	<th rowspan="4" align="center" valign="middle"><img src="../design/images/scrap.jpg" width="120" height="180"></th>
+    	<th rowspan="4" align="center" valign="middle"><img src="design/images/scrap.jpg" width="120" height="180"></th>
     	<th class="1" colspan="2" align="center"><p>{Merchant_text_decript}<br></p></th>
     </tr>
      <tr height="20">

@@ -11,51 +11,44 @@ define('INSIDE'  , true);
 define('INSTALL' , false);
 define('IN_ADMIN', true);
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './../';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
+require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if ($user['authlevel'] < 3)
-{
-  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-  die();
-}
+includeLang('admin');
 
-  includeLang('admin');
-
-  $QrySelectPlanet  = "SELECT `id`, `id_owner`, `b_hangar`, `b_hangar_id` ";
-  $QrySelectPlanet .= "FROM {{table}} ";
-  $QrySelectPlanet .= "WHERE ";
-  $QrySelectPlanet .= "`b_hangar_id` != '0';";
-  $AffectedPlanets  = doquery ($QrySelectPlanet, 'planets');
-  $DeletedQueues    = 0;
-  while ( $ActualPlanet = mysql_fetch_assoc($AffectedPlanets) ) {
-    $HangarQueue = explode (";", $ActualPlanet['b_hangar_id']);
-    $bDelQueue   = false;
-    if (count($HangarQueue)) {
-      for ( $Queue = 0; $Queue < count($HangarQueue); $Queue++) {
-        $InQueue = explode (",", $HangarQueue[$Queue]);
-        if ($InQueue[1] > MAX_FLEET_OR_DEFS_PER_ROW) {
-          $bDelQueue = true;
-        }
+$QrySelectPlanet  = "SELECT `id`, `id_owner`, `b_hangar`, `b_hangar_id` ";
+$QrySelectPlanet .= "FROM {{planets}} ";
+$QrySelectPlanet .= "WHERE ";
+$QrySelectPlanet .= "`b_hangar_id` != '0';";
+$AffectedPlanets  = doquery ($QrySelectPlanet, 'planets');
+$DeletedQueues    = 0;
+while ( $ActualPlanet = mysql_fetch_assoc($AffectedPlanets) ) {
+  $HangarQueue = explode (";", $ActualPlanet['b_hangar_id']);
+  $bDelQueue   = false;
+  if (count($HangarQueue)) {
+    for ( $Queue = 0; $Queue < count($HangarQueue); $Queue++) {
+      $InQueue = explode (",", $HangarQueue[$Queue]);
+      if ($InQueue[1] > MAX_FLEET_OR_DEFS_PER_ROW) {
+        $bDelQueue = true;
       }
     }
-    if ($bDelQueue) {
-      $QryUpdatePlanet  = "UPDATE {{table}} ";
-      $QryUpdatePlanet .= "SET ";
-      $QryUpdatePlanet .= "`b_hangar` = '0', ";
-      $QryUpdatePlanet .= "`b_hangar_id` = '0' ";
-      $QryUpdatePlanet .= "WHERE ";
-      $QryUpdatePlanet .= "`id` = '".$ActualPlanet['id']."';";
-      doquery ($QryUpdatePlanet, 'planets');
-      $DeletedQueues += 1;
-    }
   }
-  if ($DeletedQueues > 0) {
-    $QuitMessage = $lang['adm_cleaned']." ". $DeletedQueues;
-  } else {
-    $QuitMessage = $lang['adm_done'];
+  if ($bDelQueue) {
+    $QryUpdatePlanet  = "UPDATE {{planets}} ";
+    $QryUpdatePlanet .= "SET ";
+    $QryUpdatePlanet .= "`b_hangar` = '0', ";
+    $QryUpdatePlanet .= "`b_hangar_id` = '0' ";
+    $QryUpdatePlanet .= "WHERE ";
+    $QryUpdatePlanet .= "`id` = '".$ActualPlanet['id']."';";
+    doquery ($QryUpdatePlanet);
+    $DeletedQueues += 1;
   }
+}
+if ($DeletedQueues > 0) {
+  $QuitMessage = $lang['adm_cleaned']." ". $DeletedQueues;
+} else {
+  $QuitMessage = $lang['adm_done'];
+}
 
-  AdminMessage ($QuitMessage, $lang['adm_cleaner_title']);
+AdminMessage ($QuitMessage, $lang['adm_cleaner_title']);
+
 ?>

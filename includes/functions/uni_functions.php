@@ -60,12 +60,12 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetN
 
   // Avant tout, on verifie s'il existe deja une planete a cet endroit
   $QrySelectPlanet  = "SELECT `id` ";
-  $QrySelectPlanet .= "FROM `{{table}}` ";
+  $QrySelectPlanet .= "FROM `{{planets}}` ";
   $QrySelectPlanet .= "WHERE ";
   $QrySelectPlanet .= "`galaxy` = '". $Galaxy ."' AND ";
   $QrySelectPlanet .= "`system` = '". $System ."' AND ";
   $QrySelectPlanet .= "`planet` = '". $Position ."';";
-  $PlanetExist = doquery( $QrySelectPlanet, 'planets', true);
+  $PlanetExist = doquery( $QrySelectPlanet, '', true);
 
   // Si $PlanetExist est autre chose que false ... c'est qu'il y a quelque chose là bas ...
   // C'est donc aussi que je ne peux pas m'y poser !!
@@ -145,7 +145,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetN
     }
     $planet['name'] = mysql_real_escape_string(strip_tags(trim($planet['name'])));
 
-    $QryInsertPlanet  = "INSERT INTO `{{table}}` SET ";
+    $QryInsertPlanet  = "INSERT INTO `{{planets}}` SET ";
     $QryInsertPlanet .= "`name` = '".              $planet['name']              ."', ";
     $QryInsertPlanet .= "`id_owner` = '".          $planet['id_owner']          ."', ";
     $QryInsertPlanet .= "`id_level` = '".          $user['authlevel']           ."', ";
@@ -168,7 +168,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetN
     $QryInsertPlanet .= "`deuterium` = '".         $planet['deuterium']         ."', ";
     $QryInsertPlanet .= "`deuterium_perhour` = '". $planet['deuterium_perhour'] ."', ";
     $QryInsertPlanet .= "`deuterium_max` = '".     $planet['deuterium_max']     ."';";
-    doquery( $QryInsertPlanet, 'planets');
+    doquery( $QryInsertPlanet);
 
     // On recupere l'id de planete nouvellement créé
     $QrySelectPlanet  = "SELECT `id` FROM `{{planets}}` WHERE ";

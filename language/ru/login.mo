@@ -70,9 +70,9 @@ $lang['log_reg_text1']    	  = 'Регистрация означает, что вы полность прочли и с
 // Для того чтобы играть вам нужно зарегестрироваться. Введите <strong>Имя пользователя</strong>, <strong>пароль</strong> и <strong>E-Mail адрес</strong>.';
 
 // Отсылается на почту
-$lang['mail_welcome']		= 'Спасибо за регистрацию {gameurl}\n Ваш пароль: {password}\n\n Удачи!\n{gameurl}';
+$lang['mail_welcome']		= "Спасибо за регистрацию {SN_ROOT_VIRTUAL}\n Ваш пароль: {password}\n\n Удачи!\n{SN_ROOT_VIRTUAL}";
 $lang['mail_title']		= 'Ваша регистрация OGame';
-$lang['thanksforregistry'] 	= "Поздравляем вас с успешной регистрацией! Теперь вы можете <a href=overview.{$phpEx}><u>начать игру!</u></a>";
+$lang['thanksforregistry'] 	= "Поздравляем вас с успешной регистрацией! Теперь вы можете <a href=overview." . PHP_EX . "><u>начать игру!</u></a>";
 $lang['welcome_to_universe']	= 'Добро пожаловать в OGame!!!';
 $lang['your_password']		= 'Ваш пароль';
 $lang['please_click_url']	= 'Для того чтобы использовать аккаунт, вы должны активировать его нажав на эту ссылку';

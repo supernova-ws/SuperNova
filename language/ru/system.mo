@@ -151,7 +151,7 @@ $lang['imp_name'] = "Название";
 $lang['sys_fields'] = "Сектора";
 
 // Cookies
-$lang['err_cookie'] = "Ошибка! Невозможно авторизировать пользователя по информации в cookie. <a href='login.{$phpEx}'>Войдите</a> в игру или <a href='reg.{$phpEx}'>зарегестрируйтесь</a>.";
+$lang['err_cookie'] = "Ошибка! Невозможно авторизировать пользователя по информации в cookie. <a href='login." . PHP_EX . "'>Войдите</a> в игру или <a href='reg." . PHP_EX . "'>зарегестрируйтесь</a>.";
 
 // Supported languages
 $lang['ru']              	  = 'Русский';

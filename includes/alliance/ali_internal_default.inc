@@ -18,9 +18,9 @@ if ($ally['ally_owner'] == $user['id']) {
 }
 
 if ($user_admin) {
-  $lang['alliance_admin'] = "<a href=\"?mode=admin&edit=ally\">{$lang['ally_admin']}</a>";
+  $lang['alliance_admin'] = "<a href=\"alliance.php?mode=admin&edit=ally\">{$lang['ally_admin']}</a>";
 } elseif ($user_can_kick){
-  $lang['alliance_admin'] = "<a href=\"?mode=admin&edit=members\">{$lang['members_admin']}</a>";
+  $lang['alliance_admin'] = "<a href=\"alliance.php?mode=admin&edit=members\">{$lang['members_admin']}</a>";
 }
 
 // El link de enviar correo circular
@@ -38,7 +38,7 @@ if (!$user_admin_applications)
     $lang['isShowRequests'] = 'class="hide"';
 
 if ($ally['ally_owner'] != $user['id']) {
-  $lang['ally_owner'] .= MessageForm($lang['Exit_of_this_alliance'], "", "?mode=exit", $lang['Continue']);
+  $lang['ally_owner'] .= MessageForm($lang['Exit_of_this_alliance'], "", "alliance.php?mode=exit", $lang['Continue']);
 }
 
 // La imagen de logotipo

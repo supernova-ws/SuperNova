@@ -11,9 +11,10 @@
 *   @version 1.0 copyright 2008 By e-Zobar for XNova
 */
 
-function INT_createBanner($id, $type = 'userbar', $format = 'png'){
+function int_banner_create($id, $type = 'userbar', $format = 'png')
+{
 // banner.php?id=<userid>&type=<banner|userbar>&format=<png>
-  global $config, $lang, $ugamela_root_path;
+  global $config, $lang;
 
   switch ($type) {
     case 'banner':
@@ -22,9 +23,8 @@ function INT_createBanner($id, $type = 'userbar', $format = 'png'){
     default:
       $img_name = $config->int_userbar_background;
   }
-
-  $size = getimagesize("{$ugamela_root_path}{$img_name}");
-  $im = imagecreatefrompng("{$ugamela_root_path}{$img_name}");
+  $size = getimagesize(SN_ROOT_PHYSICAL . $img_name);
+  $im = imagecreatefrompng(SN_ROOT_PHYSICAL . $img_name);
   $image = imagecreatetruecolor($size[0],$size[1]);
   imagecopy($image,$im,0,0,0,0,$size[0],$size[1]);
   imagedestroy($im);
@@ -41,17 +41,17 @@ function INT_createBanner($id, $type = 'userbar', $format = 'png'){
   $txt_color2 = imagecolorallocatealpha($image, 255, 255, 255, 40);
 
   $fonts = array (
-    'userbar' => $ugamela_root_path . "design/fonts/" . $config->int_userbar_font,
-    'universe' => $ugamela_root_path . "design/fonts/" . $config->int_banner_fontUniverse,
-    'raids' => $ugamela_root_path . "design/fonts/" . $config->int_banner_fontRaids,
-    'info' => $ugamela_root_path . "design/fonts/" . $config->int_banner_fontInfo,
+    'userbar' => SN_ROOT_PHYSICAL . "design/fonts/" . $config->int_userbar_font,
+    'universe' => SN_ROOT_PHYSICAL . "design/fonts/" . $config->int_banner_fontUniverse,
+    'raids' => SN_ROOT_PHYSICAL . "design/fonts/" . $config->int_banner_fontRaids,
+    'info' => SN_ROOT_PHYSICAL . "design/fonts/" . $config->int_banner_fontInfo,
   );
 
-  if (!empty($id)) {
+  if ($id) {
     // Querys
-    $Player = doquery("SELECT * FROM {{table}} WHERE `id` = '".$id."';", 'users', true);
-    $Stats = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '".$id."';", 'statpoints', true);
-    $Planet = doquery("SELECT * FROM {{table}} WHERE `id_owner` = '".$id."' AND `planet_type` = '1' LIMIT 1;", 'planets', true);
+    $Player = doquery("SELECT * FROM {{users}} WHERE `id` = '".$id."' LIMIT 1;", '', true);
+    $Stats = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '".$id."' LIMIT 1;", '', true);
+    $Planet = doquery("SELECT * FROM {{planets}} WHERE `id_owner` = '".$id."' AND `planet_type` = '1' LIMIT 1;", '', true);
 
     // Variables
     $b_user = $Player['username'];

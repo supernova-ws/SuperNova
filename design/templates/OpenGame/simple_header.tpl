@@ -15,6 +15,7 @@
     <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache" />
     {-meta-}
     <!--<style> body, html { margin:0px; padding: 0px; overflow: hidden; font: menu; border: none; } </style>-->
+    <base href="{-path_prefix-}" />
   </head>
 
   <body class="style">
