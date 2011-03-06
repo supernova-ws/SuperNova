@@ -38,6 +38,7 @@ function DeleteSelectedUser ( $UserID ) {
   doquery ( "DELETE FROM `{{buddy}}` WHERE `owner` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{annonce}}` WHERE `user` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{users}}` WHERE `id` = '" . $UserID . "';");
+  doquery ( "DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
   doquery ( "UPDATE `{{config}}` SET `config_value`= `config_value` - 1 WHERE `config_name` = 'users_amount';");
 }
 

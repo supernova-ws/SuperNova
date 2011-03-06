@@ -50,7 +50,7 @@ function rpg_points_change($user_id, $dark_matter, $comment = false)
       }
     }
   }else{
-    $debug->warning("Error adjusting Dark Matter for player ID {$user_id} with {$dark_matter}. Reason: {$comment}", 'Dark Matter Change', 402);
+    $debug->warning("Error adjusting Dark Matter for player ID {$user_id} (Player Not Found) with {$dark_matter}. Reason: {$comment}", 'Dark Matter Change', 402);
   }
 
   $dm_change_legit = false;
@@ -68,6 +68,7 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
       $field_xp = 'xpminier';
       $xp = &$user['xpminier'];
       $b1 = 50;
+      $comment = 'Level Up For Structure Building';
     break;
 
     case RPG_RAID:
@@ -75,6 +76,7 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
       $field_xp = 'xpraid';
       $xp = &$user['xpraid'];
       $b1 = 10;
+      $comment = 'Level Up For Raiding';
     break;
   }
 
@@ -93,7 +95,7 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
   if($level)
   {
     doquery("UPDATE `{{users}}` SET `{$field_level}` = `{$field_level}` + '{$level}' WHERE `id` = '{$user['id']}' LIMIT 1;");
-    rpg_points_change($user['id'], $level, 'Level Up For Structure Building');
+    rpg_points_change($user['id'], $level, $comment);
     $user[$field_level] += $level;
     $user['rpg_points'] += $level;
   }
