@@ -504,6 +504,8 @@ switch(intval($config->db_version))
     upd_check_key('int_banner_URL', 'banner.php?type=banner', $config->int_banner_URL == '/banner.php?type=banner');
     upd_check_key('int_userbar_URL', 'banner.php?type=userbar', $config->int_userbar_URL == '/banner.php?type=userbar');
 
+    doquery('DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});');
+
 /*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
 */

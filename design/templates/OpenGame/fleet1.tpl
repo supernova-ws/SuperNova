@@ -129,7 +129,7 @@ function getStorageFaktor() {
     <tr>
       <!-- BEGIN acss -->       
         <th>
-          <input type="button" onClick="javascript: setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});shortInfo();setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');this.form.submit();" value="{acss.NAME} [{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT}">
+          <input type="button" onClick="javascript: setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});shortInfo();setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');" value="{acss.NAME} [{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT}">
         </th>
         <!-- IF acss.S_ROW_COUNT is odd -->
           </tr><tr>
@@ -140,7 +140,6 @@ function getStorageFaktor() {
         <th colspan="2">{fl_noacss}</th>
       <!-- END acss -->
      </tr>
-    {acss1}
     
   </table>
   <!-- INCLUDE page_hint.tpl -->
