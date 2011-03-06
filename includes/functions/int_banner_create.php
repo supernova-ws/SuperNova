@@ -11,7 +11,8 @@
 *   @version 1.0 copyright 2008 By e-Zobar for XNova
 */
 
-function INT_createBanner($id, $type = 'userbar', $format = 'png'){
+function int_banner_create($id, $type = 'userbar', $format = 'png')
+{
 // banner.php?id=<userid>&type=<banner|userbar>&format=<png>
   global $config, $lang;
 
