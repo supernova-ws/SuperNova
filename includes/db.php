@@ -39,7 +39,8 @@ function doquery($query, $table = '', $fetch = false){
   {
     if(!$is_watching && in_array($user['id'], $config->game_watchlist_array))
     {
-      if(stripos($query, 'SELECT') !== 0)
+//      if(stripos($query, 'SELECT') !== 0)
+      if(!preg_match('/^(select|commit|rollback|start transaction)/i', $query))
       {
         $is_watching = true;
         $msg = "\$query = \"{$query}\"\n\rtable = '{$table}', fetch = '{$fetch}'";
@@ -51,7 +52,7 @@ function doquery($query, $table = '', $fetch = false){
         {
           $msg .= "\n\r" . dump($_GET,'$_GET');
         }
-        $debug->warning($msg,"Watching user {$user['id']}",399);
+        $debug->warning($msg, "Watching user {$user['id']}", 399, array('base_dump' => true));
         $is_watching = false;
       }
     }

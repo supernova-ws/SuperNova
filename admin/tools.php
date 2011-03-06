@@ -14,7 +14,6 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 $mode = intval($_GET['mode'] ? $_GET['mode'] : $_POST['mode']);
 
 includeLang('admin');
-$parse = $lang;
 
 switch($mode){
   case 1:
@@ -33,5 +32,5 @@ switch($mode){
 
 }
 
-display( parsetemplate(gettemplate("admin/admin_tools"), $parse), $lang['adm_bn_ttle'], false, '', true);
+display( parsetemplate(gettemplate("admin/admin_tools", true)), $lang['adm_bn_ttle'], false, '', true);
 ?>
