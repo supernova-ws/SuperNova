@@ -30,17 +30,17 @@ if($POST_s == 1 || $POST_s == 2){//Edicion y agregar notas
   $time = time();
 
   if($POST_s ==1){
-    doquery("INSERT INTO {{table}} SET owner={$user['id']}, time=$time, priority=$priority, title='$title', text='$text'","notes");
+    doquery("INSERT INTO {{notes}} SET owner={$user['id']}, time=$time, priority=$priority, title='$title', text='$text'");
     message($lang['NoteAdded'], $lang['Please_Wait'],'notes.'. PHP_EX,"3");
   }elseif($POST_s == 2){
     /*
       pequeño query para averiguar si la nota que se edita es del propio jugador
     */
-    $note_query = doquery("SELECT * FROM {{table}} WHERE id=$id AND owner=".$user["id"],"notes");
+    $note_query = doquery("SELECT * FROM {{notes}} WHERE id=$id AND owner=".$user["id"]);
 
     if(!$note_query){ error($lang['notpossiblethisway'],$lang['Notes']); }
 
-    doquery("UPDATE {{table}} SET time=$time, priority=$priority, title='$title', text='$text' WHERE id=$id","notes");
+    doquery("UPDATE {{notes}} SET time=$time, priority=$priority, title='$title', text='$text' WHERE id=$id");
     message($lang['NoteUpdated'], $lang['Please_Wait'], 'notes.'. PHP_EX, "3");
   }
 
@@ -55,11 +55,11 @@ elseif($_POST){//Borrar
     if(preg_match("/delmes/i",$a) && $b == "y"){
 
       $id = str_replace("delmes","",$a);
-      $note_query = doquery("SELECT * FROM {{table}} WHERE id=$id AND owner={$user['id']}","notes");
+      $note_query = doquery("SELECT * FROM {{notes}} WHERE id=$id AND owner={$user['id']}");
       //comprobamos,
       if($note_query){
         $deleted++;
-        doquery("DELETE FROM {{table}} WHERE `id`=$id;","notes");// y borramos
+        doquery("DELETE FROM {{notes}} WHERE `id`=$id;");// y borramos
       }
     }
   }
@@ -95,7 +95,7 @@ elseif($_POST){//Borrar
     /*
       Formulario donde se puestra la nota y se puede editar.
     */
-    $note = doquery("SELECT * FROM {{table}} WHERE owner={$user['id']} AND id=$n",'notes',true);
+    $note = doquery("SELECT * FROM {{notes}} WHERE owner={$user['id']} AND id=$n",'',true);
 
     if(!$note){ message($lang['notpossiblethisway'],$lang['Error']); }
 
@@ -120,7 +120,7 @@ elseif($_POST){//Borrar
   }
   else{//default
 
-    $notes_query = doquery("SELECT * FROM {{table}} WHERE owner={$user['id']} ORDER BY time DESC",'notes');
+    $notes_query = doquery("SELECT * FROM {{notes}} WHERE owner={$user['id']} ORDER BY time DESC");
     //Loop para crear la lista de notas que el jugador tiene
     $count = 0;
     $parse=$lang;

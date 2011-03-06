@@ -16,7 +16,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 includeLang('admin');
 
 $parse = $lang;
-$query = doquery("SELECT * FROM {{table}} WHERE planet_type='1'", "planets");
+$query = doquery("SELECT * FROM {{planets}} WHERE planet_type='1'");
 $i = 0;
 while ($u = mysql_fetch_array($query)) {
   $parse['planetes'] .= "<tr>"

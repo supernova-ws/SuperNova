@@ -12,7 +12,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-$users = doquery("SELECT `username`,`galaxy`,`system` FROM {{table}} WHERE `id` ='".$user['id']."';", 'users',true);
+$users = doquery("SELECT `username`,`galaxy`,`system` FROM {{users}} WHERE `id` ='".$user['id']."' LIMIT 1;", '',true);
 $action = intval($_GET['action']);
 $GET_id = intval($_GET['id']);
 
@@ -48,7 +48,7 @@ foreach($_POST as $name => $value){
 $$name=SYS_mysqlSmartEscape($value);
 }
 if(($metalvendre!=0 && $metalsouhait==0) ||($cristalvendre!=0 && $cristalsouhait==0) || ($deutvendre!=0 && $deutsouhait==0)){
-doquery("INSERT INTO {{table}} SET `user` ='{$users['username']}', `galaxie` ='{$users['galaxy']}', `systeme` ='{$users['system']}', `metala` ='{$metalvendre}', `cristala` ='{$cristalvendre}', `deuta` ='{$deutvendre}', `metals` ='{$metalsouhait}', `cristals` ='{$cristalsouhait}', `deuts` ='{$deutsouhait}'" , "annonce");
+doquery("INSERT INTO {{annonce}} SET `user` ='{$users['username']}', `galaxie` ='{$users['galaxy']}', `systeme` ='{$users['system']}', `metala` ='{$metalvendre}', `cristala` ='{$cristalvendre}', `deuta` ='{$deutvendre}', `metals` ='{$metalsouhait}', `cristals` ='{$cristalsouhait}', `deuts` ='{$deutsouhait}'");
 
 message ($lang['Your_announce_was_recorded'], $lang['announce_status'],"annonce.php");
 }
@@ -61,12 +61,12 @@ break;
 
 case 3://Suppression d'annonce
 
-doquery("DELETE FROM {{table}} WHERE `id` = {$GET_id}" , "annonce");
+doquery("DELETE FROM {{annonce}} WHERE `id` = {$GET_id}");
 message ($lang['Your_announce_was_deleted'], $lang['announce_status'],"annonce.php");
 break;
 
 default://Sinon on affiche la liste des annonces
-$annonce = doquery("SELECT * FROM {{table}} ORDER BY `id` DESC ", "annonce");
+$annonce = doquery("SELECT * FROM {{annonce}} ORDER BY `id` DESC ");
 
 $page2 = "<HTML>
 <center>

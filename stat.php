@@ -82,7 +82,7 @@ if       ($type == 1) {
 }
 
 if ($who == 2) {
-  $MaxAllys = doquery ("SELECT COUNT(*) AS `count` FROM {{table}} WHERE 1;", 'alliance', true);
+  $MaxAllys = doquery ("SELECT COUNT(*) AS `count` FROM {{alliance}} WHERE 1;", '', true);
   if ($MaxAllys['count'] > 100) {
     $LastPage = floor($MaxAllys['count'] / 100);
   }
@@ -96,7 +96,7 @@ if ($who == 2) {
   $parse['stat_header'] = parsetemplate(gettemplate('stat_alliancetable_header'), $parse);
 
   $start = floor($range / 100 % 100) * 100;
-  $query = doquery("SELECT @rownum:=@rownum+1 as rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `stat_type` = '2' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;", 'statpoints');
+  $query = doquery("SELECT @rownum:=@rownum+1 as rownum, {{statpoints}}.* FROM (SELECT @rownum:=0) r, {{statpoints}} WHERE `stat_type` = '2' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;");
 
   $start++;
   $parse['stat_date']   = $config->var_stat_update;
@@ -104,7 +104,7 @@ if ($who == 2) {
   while ($StatRow = mysql_fetch_assoc($query)) {
     $parse['ally_rank']       = $start;
 
-    $AllyRow                  = doquery("SELECT * FROM {{table}} WHERE `id` = '". $StatRow['id_owner'] ."';", 'alliance',true);
+    $AllyRow                  = doquery("SELECT * FROM {{alliance}} WHERE `id` = '". $StatRow['id_owner'] ."';", '',true);
 
     $rank_old                 = $StatRow[ $OldRank ];
     $rank_new                 = $StatRow[ $Rank ];
@@ -134,7 +134,7 @@ if ($who == 2) {
     $start++;
   }
 } else {
-  $MaxUsers = doquery ("SELECT COUNT(*) AS `count` FROM {{table}} WHERE `db_deaktjava` = '0';", 'users', true);
+  $MaxUsers = doquery ("SELECT COUNT(*) AS `count` FROM {{users}} WHERE `db_deaktjava` = '0';", '', true);
   if ($MaxUsers['count'] > 100) {
     $LastPage = floor($MaxUsers['count'] / 100);
   }
@@ -149,13 +149,13 @@ if ($who == 2) {
 
   $start = floor($range / 100 % 100) * 100;
   $start1 = $start;
-  $query = doquery("SELECT @rownum:=@rownum+1 rownum, {{table}}.* FROM (SELECT @rownum:=0) r, {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;", 'statpoints');
+  $query = doquery("SELECT @rownum:=@rownum+1 rownum, {{statpoints}}.* FROM (SELECT @rownum:=0) r, {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;");
 
   $start++;
   $parse['stat_date']   = $config->var_stat_update;
   $parse['stat_values'] = "";
   while ($StatRow = mysql_fetch_assoc($query)) {
-    $UsrRow                   = doquery("SELECT * FROM {{table}} WHERE `id` = '". $StatRow['id_owner'] ."';", 'users',true);
+    $UsrRow                   = doquery("SELECT * FROM {{users}} WHERE `id` = '". $StatRow['id_owner'] ."';", '',true);
 
     $parse['stat_date']       = date(FMT_DATE_TIME, $StatRow['stat_date']);
     $parse['player_rank']     = ($StatRow['rownum'] + $start1);

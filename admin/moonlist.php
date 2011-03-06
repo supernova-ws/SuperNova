@@ -17,7 +17,7 @@ includeLang('overview');
 includeLang('admin');
 
 $parse = $lang;
-$query = doquery("SELECT * FROM {{table}} WHERE planet_type='3'", "planets");
+$query = doquery("SELECT * FROM {{planets}} WHERE planet_type='3'");
 $i = 0;
 while ($u = mysql_fetch_array($query)) {
   $parse['moon'] .= "<tr>"

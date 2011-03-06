@@ -31,7 +31,7 @@ if ($GET_cmd == 'sort') {
 $PageTPL = gettemplate('admin/userlist_body');
 $RowsTPL = gettemplate('admin/userlist_rows');
 
-$query   = doquery("SELECT * FROM {{table}} ORDER BY `". $TypeSort ."` ASC", 'users');
+$query   = doquery("SELECT * FROM {{users}} ORDER BY `". $TypeSort ."` ASC");
 
 $parse                 = $lang;
 $parse['adm_ul_table'] = "";

@@ -43,7 +43,7 @@ if       ($Prev   == true) {
         $ViewPage = 1;
     }
 } elseif ($Next   == true) {
-    $Mess      = doquery("SELECT COUNT(*) AS `max` FROM {{table}} WHERE `message_type` = '". $Selected ."';", 'messages', true);
+    $Mess      = doquery("SELECT COUNT(*) AS `max` FROM {{messages}} WHERE `message_type` = '". $Selected ."';", '', true);
     $MaxPage   = ceil ( ($Mess['max'] / 25) );
     $CurrPage += 1;
     if ($CurrPage <= $MaxPage) {
@@ -54,7 +54,7 @@ if       ($Prev   == true) {
 } elseif ($DelSel == true) {
     foreach($_POST['sele'] as $MessId => $Value) {
         if ($Value = "on") {
-            doquery ( "DELETE FROM {{table}} WHERE `message_id` = '". $MessId ."';", 'messages');
+            doquery ( "DELETE FROM {{messages}} WHERE `message_id` = '". $MessId ."';");
         }
     }
 } elseif ($DelDat == true) {
@@ -63,12 +63,12 @@ if       ($Prev   == true) {
     $SelYear   = $_POST['selyear'];
     $LimitDate = mktime (0,0,0, $SelMonth, $SelDay, $SelYear );
     if ($LimitDate != false) {
-        doquery ( "DELETE FROM {{table}} WHERE `message_time` <= '". $LimitDate ."';", 'messages');
-        doquery ( "DELETE FROM {{table}} WHERE `time` <= '". $LimitDate ."';", 'rw');
+        doquery ( "DELETE FROM {{messages}} WHERE `message_time` <= '". $LimitDate ."';");
+        doquery ( "DELETE FROM {{rw}} WHERE `time` <= '". $LimitDate ."';");
     }
 }
 
-$Mess     = doquery("SELECT COUNT(*) AS `max` FROM {{table}} WHERE `message_type` = '". $Selected ."';", 'messages', true);
+$Mess     = doquery("SELECT COUNT(*) AS `max` FROM {{messages}} WHERE `message_type` = '". $Selected ."';", '', true);
 $MaxPage  = ceil ( ($Mess['max'] / 25) );
 
 $parse                      = $lang;
@@ -101,9 +101,9 @@ $parse['tbl_rows']   = "";
 $parse['mlst_title'] = $lang['mlst_title'];
 
 $StartRec           = 1 + (($ViewPage - 1) * 25);
-$Messages           = doquery("SELECT * FROM {{table}} WHERE `message_type` = '". $Selected ."' ORDER BY `message_time` DESC LIMIT ". $StartRec .",25;", 'messages');
+$Messages           = doquery("SELECT * FROM {{messages}} WHERE `message_type` = '". $Selected ."' ORDER BY `message_time` DESC LIMIT ". $StartRec .",25;");
 while ($row = mysql_fetch_assoc($Messages)) {
-  $OwnerData = doquery ("SELECT `username` FROM {{table}} WHERE `id` = '". $row['message_owner'] ."';", 'users',true);
+  $OwnerData = doquery ("SELECT `username` FROM {{users}} WHERE `id` = '". $row['message_owner'] ."';", '',true);
   $bloc['mlst_id']      = $row['message_id'];
   $bloc['mlst_from']    = $row['message_from'];
   $bloc['mlst_to']      = $OwnerData['username'] ." ID:". $row['message_owner'];
@@ -116,7 +116,7 @@ while ($row = mysql_fetch_assoc($Messages)) {
 $display            = parsetemplate($BodyTpl , $parse);
 
 if (isset($_POST['delit'])) {
-  doquery ("DELETE FROM {{table}} WHERE `message_id` = '". $_POST['delit'] ."';", 'messages');
+  doquery ("DELETE FROM {{messages}} WHERE `message_id` = '". $_POST['delit'] ."';");
   AdminMessage ( $lang['mlst_mess_del'] ." ( ". $_POST['delit'] ." )", $lang['mlst_title'], "./messagelist.".PHP_EX, 3);
 }
 display ($display, $lang['mlst_title'], false, '', true);

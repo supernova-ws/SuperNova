@@ -27,13 +27,13 @@ if ($mode == 'addit') {
   $metal       = $_POST['metal'];
   $cristal     = $_POST['cristal'];
   $deut        = $_POST['deut'];
-  $QryUpdatePlanet  = "UPDATE {{table}} SET ";
+  $QryUpdatePlanet  = "UPDATE {{planets}} SET ";
   $QryUpdatePlanet .= "`metal` = `metal` - '". $metal ."', ";
   $QryUpdatePlanet .= "`crystal` = `crystal` - '". $cristal ."', ";
   $QryUpdatePlanet .= "`deuterium` = `deuterium` - '". $deut ."' ";
   $QryUpdatePlanet .= "WHERE ";
   $QryUpdatePlanet .= "`id` = '". $id ."' ";
-  doquery( $QryUpdatePlanet, "planets");
+  doquery( $QryUpdatePlanet);
 
   AdminMessage ( $lang['adm_delmoney2'], $lang['adm_delmoney1'] );
 }

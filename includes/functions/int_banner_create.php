@@ -47,11 +47,11 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
     'info' => SN_ROOT_PHYSICAL . "design/fonts/" . $config->int_banner_fontInfo,
   );
 
-  if (!empty($id)) {
+  if ($id) {
     // Querys
-    $Player = doquery("SELECT * FROM {{table}} WHERE `id` = '".$id."';", 'users', true);
-    $Stats = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '".$id."';", 'statpoints', true);
-    $Planet = doquery("SELECT * FROM {{table}} WHERE `id_owner` = '".$id."' AND `planet_type` = '1' LIMIT 1;", 'planets', true);
+    $Player = doquery("SELECT * FROM {{users}} WHERE `id` = '".$id."' LIMIT 1;", '', true);
+    $Stats = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '".$id."' LIMIT 1;", '', true);
+    $Planet = doquery("SELECT * FROM {{planets}} WHERE `id_owner` = '".$id."' AND `planet_type` = '1' LIMIT 1;", '', true);
 
     // Variables
     $b_user = $Player['username'];

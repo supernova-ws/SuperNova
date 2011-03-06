@@ -34,7 +34,7 @@ if ($mode == 'addit') {
   $big_protection_shield        = $_POST['big_protection_shield'];
   $interceptor_misil       = $_POST['interceptor_misil'];
   $interplanetary_misil      = $_POST['interplanetary_misil'];
-  $QryUpdatePlanet  = "UPDATE {{table}} SET ";
+  $QryUpdatePlanet  = "UPDATE {{planets}} SET ";
   $QryUpdatePlanet .= "`misil_launcher` = `misil_launcher` - '". $misil_launcher ."', ";
   $QryUpdatePlanet .= "`small_laser` = `small_laser` - '". $small_laser ."', ";
   $QryUpdatePlanet .= "`big_laser` = `big_laser` - '". $big_laser ."', ";
@@ -47,7 +47,7 @@ if ($mode == 'addit') {
   $QryUpdatePlanet .= "`interplanetary_misil` = `interplanetary_misil` - '". $interplanetary_misil ."' ";
   $QryUpdatePlanet .= "WHERE ";
   $QryUpdatePlanet .= "`id` = '". $id ."' ";
-  doquery( $QryUpdatePlanet, "planets");
+  doquery( $QryUpdatePlanet);
 
   AdminMessage ( $lang['adm_deldef2'], $lang['adm_deldef1'] );
 }

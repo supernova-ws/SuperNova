@@ -43,7 +43,7 @@ if ($user['authlevel'] >= 3)
   switch($mode)
   {
     case 'del':
-      doquery( "DELETE FROM {{announce}} WHERE `idAnnounce`={$announce_id}");
+      doquery( "DELETE FROM {{announce}} WHERE `idAnnounce`={$announce_id} LIMIT 1;");
       $mode = '';
     break;
 
@@ -51,7 +51,7 @@ if ($user['authlevel'] >= 3)
       $template->assign_var('ID', $announce_id);
 
     case 'copy':
-      $announce = doquery("SELECT * FROM {{table}} WHERE `idAnnounce`={$announce_id};", 'announce', true);
+      $announce = doquery("SELECT * FROM {{announce}} WHERE `idAnnounce`={$announce_id} LIMIT 1;", '', true);
     break;
   }
 }

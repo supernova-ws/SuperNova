@@ -16,7 +16,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 includeLang('admin');
 
 $QrySelectPlanet  = "SELECT `id`, `id_owner`, `b_hangar`, `b_hangar_id` ";
-$QrySelectPlanet .= "FROM {{table}} ";
+$QrySelectPlanet .= "FROM {{planets}} ";
 $QrySelectPlanet .= "WHERE ";
 $QrySelectPlanet .= "`b_hangar_id` != '0';";
 $AffectedPlanets  = doquery ($QrySelectPlanet, 'planets');
@@ -33,13 +33,13 @@ while ( $ActualPlanet = mysql_fetch_assoc($AffectedPlanets) ) {
     }
   }
   if ($bDelQueue) {
-    $QryUpdatePlanet  = "UPDATE {{table}} ";
+    $QryUpdatePlanet  = "UPDATE {{planets}} ";
     $QryUpdatePlanet .= "SET ";
     $QryUpdatePlanet .= "`b_hangar` = '0', ";
     $QryUpdatePlanet .= "`b_hangar_id` = '0' ";
     $QryUpdatePlanet .= "WHERE ";
     $QryUpdatePlanet .= "`id` = '".$ActualPlanet['id']."';";
-    doquery ($QryUpdatePlanet, 'planets');
+    doquery ($QryUpdatePlanet);
     $DeletedQueues += 1;
   }
 }

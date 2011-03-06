@@ -76,20 +76,6 @@ foreach($ques as $que) {
 }
 $msg .= '</ul></div>';
 
-/*
-  if ( $TheUser['ally_id'] != 0 ) {
-    $TheAlly = doquery ( "SELECT * FROM `{{table}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", 'alliance', true );
-    $TheAlly['ally_members'] -= 1;
-    if ( $TheAlly['ally_members'] > 0 ) {
-      doquery ( "UPDATE `{{table}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';", 'alliance' );
-    } else {
-      doquery ( "DELETE FROM `{{table}}` WHERE `id` = '" . $TheAlly['id'] . "';", 'alliance' );
-      doquery ( "DELETE FROM `{{table}}` WHERE `stat_type` = '2' AND `id_owner` = '" . $TheAlly['id'] . "';", 'statpoints' );
-    }
-  }
-*/
-//  doquery ( "UPDATE `{{table}}` SET `config_value`= `config_value` - 1 WHERE `config_name` = 'users_amount';", 'config' );
-
 doquery('COMMIT;');
 
 $totaltime = microtime(true) - $totaltime;

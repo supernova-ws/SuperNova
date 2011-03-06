@@ -65,7 +65,7 @@ includeLang('infos');
 
 // Vérification que le joueur n'a pas un nombre de points négatif
 //  if ($user['rpg_points'] < 0) {
-//    doquery("UPDATE {{table}} SET `rpg_points` = '0' WHERE `id` = '". $user['id'] ."';", 'users');
+//    doquery("UPDATE {{users}} SET `rpg_points` = '0' WHERE `id` = '". $user['id'] ."';");
 //  }
 //darkmater constant
 $darkmater_cost = $config->rpg_officer;

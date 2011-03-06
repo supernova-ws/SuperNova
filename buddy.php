@@ -28,10 +28,10 @@ if($userID){
     message( $lang['bud_sys_cantFriendAgain'], $lang['bud_req_title'], 'buddy.php' );
 
   if($text){
-    doquery( "INSERT INTO `{{table}}` SET `sender` = '{$user['id']}', `owner` = '{$userID}', `active` = '0', `text` = '{$text}';", 'buddy' );
+    doquery( "INSERT INTO `{{buddy}}` SET `sender` = '{$user['id']}', `owner` = '{$userID}', `active` = '0', `text` = '{$text}';");
     message( $lang['Request_sent'], $lang['Buddy_request'], 'buddy.php');
   }else{
-    $friend = doquery( "SELECT `id`, `username` FROM `{{table}}` WHERE `id` = '{$userID}'", "users", true );
+    $friend = doquery( "SELECT `id`, `username` FROM `{{users}}` WHERE `id` = '{$userID}' LIMIT 1;", "", true );
     $friend = array_merge($friend, $lang);
     display( parsetemplate( gettemplate('bud_request'), $friend ), $lang['adm_an_title']);
   }

@@ -33,8 +33,8 @@ $parse['adm_sub_form3'] = "";
 if (isset($GET_result)) {
   switch ($GET_result){
     case 'usr_search':
-      $SelUser = doquery("SELECT * FROM {{table}} WHERE `username` LIKE '%". $Pattern ."%' LIMIT 1;", 'users', true);
-      $UsrMain = doquery("SELECT `name` FROM {{table}} WHERE `id` = '". $SelUser['id_planet'] ."';", 'planets', true);
+      $SelUser = doquery("SELECT * FROM {{users}} WHERE `username` LIKE '%". $Pattern ."%' LIMIT 1;", '', true);
+      $UsrMain = doquery("SELECT `name` FROM {{planets}} WHERE `id` = '". $SelUser['id_planet'] ."';", '', true);
 
       $bloc                   = $lang;
       $bloc['answer1']        = $SelUser['id'];
@@ -50,8 +50,8 @@ if (isset($GET_result)) {
       break;
 
     case 'usr_data':
-      $SelUser = doquery("SELECT * FROM {{table}} WHERE `username` LIKE '%". $Pattern ."%' LIMIT 1;", 'users', true);
-      $UsrMain = doquery("SELECT `name` FROM {{table}} WHERE `id` = '". $SelUser['id_planet'] ."';", 'planets', true);
+      $SelUser = doquery("SELECT * FROM {{users}} WHERE `username` LIKE '%". $Pattern ."%' LIMIT 1;", '', true);
+      $UsrMain = doquery("SELECT `name` FROM {{planets}} WHERE `id` = '". $SelUser['id_planet'] ."';", '', true);
 
       $bloc                    = $lang;
       $bloc['answer1']         = $SelUser['id'];
@@ -67,7 +67,7 @@ if (isset($GET_result)) {
 
       $parse['adm_sub_form2']  = "<table><tbody>";
       $parse['adm_sub_form2'] .= "<tr><td colspan=\"4\" class=\"c\">".$lang['adm_colony']."</td></tr>";
-      $UsrColo = doquery("SELECT * FROM {{table}} WHERE `id_owner` = '". $SelUser['id'] ." ORDER BY `galaxy` ASC, `planet` ASC, `system` ASC, `planet_type` ASC';", 'planets');
+      $UsrColo = doquery("SELECT * FROM {{planets}} WHERE `id_owner` = '". $SelUser['id'] ." ORDER BY `galaxy` ASC, `planet` ASC, `system` ASC, `planet_type` ASC';");
       while ( $Colo = mysql_fetch_assoc($UsrColo) ) {
         if ($Colo['id'] != $SelUser['id_planet']) {
           $parse['adm_sub_form2'] .= "<tr><th>".$Colo['id']."</th>";
@@ -98,7 +98,7 @@ if (isset($GET_result)) {
         die();
       }
 
-      $QryUpdate  = doquery("UPDATE {{table}} SET `authlevel` = '".$NewLvl."' WHERE `username` = '".$Pattern."';", 'users');
+      $QryUpdate  = doquery("UPDATE {{users}} SET `authlevel` = '".$NewLvl."' WHERE `username` = '".$Pattern."';");
       $Message    = $lang['adm_mess_lvl1']. " ". $Pattern ." ".$lang['adm_mess_lvl2'];
       $Message   .= "<font color=\"red\">".$lang['adm_usr_level'][ $NewLvl ]."</font>!";
 
@@ -106,11 +106,11 @@ if (isset($GET_result)) {
       break;
 
     case 'ip_search':
-      $SelUser    = doquery("SELECT * FROM {{table}} WHERE `user_lastip` = '". $ip ."' LIMIT 10;", 'users');
+      $SelUser    = doquery("SELECT * FROM {{users}} WHERE `user_lastip` = '". $ip ."' LIMIT 10;");
       $bloc                   = $lang;
       $bloc['adm_this_ip']    = $ip;
       while ( $Usr = mysql_fetch_assoc($SelUser) ) {
-        $UsrMain = doquery("SELECT `name` FROM {{table}} WHERE `id` = '". $Usr['id_planet'] ."';", 'planets', true);
+        $UsrMain = doquery("SELECT `name` FROM {{planets}} WHERE `id` = '". $Usr['id_planet'] ."';", '', true);
         $bloc['adm_plyer_lst'] .= "<tr><th>".$Usr['username']."</th><th>[".$Usr['galaxy'].":".$Usr['system'].":".$Usr['planet']."] ".$UsrMain['name']."</th></tr>";
       }
       $SubPanelTPL            = gettemplate('admin/admin_panel_asw2');

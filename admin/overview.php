@@ -30,7 +30,7 @@ $RowsTPL  = gettemplate('admin/overview_rows');
 $parse                      = $lang;
 $parse['dpath']             = $dpath;
 
-$Last15Mins = doquery("SELECT * FROM {{table}} WHERE `onlinetime` >= '". (time() - 15 * 60) ."' ORDER BY `". $TypeSort ."` ASC;", 'users');
+$Last15Mins = doquery("SELECT * FROM {{users}} WHERE `onlinetime` >= '". (time() - 15 * 60) ."' ORDER BY `". $TypeSort ."` ASC;");
 $Count      = 0;
 $Color      = "lime";
 while ( $TheUser = mysql_fetch_assoc($Last15Mins) ) {
@@ -42,7 +42,7 @@ while ( $TheUser = mysql_fetch_assoc($Last15Mins) ) {
     }
   }
 
-  $UserPoints = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '" . $TheUser['id'] . "';", 'statpoints', true);
+  $UserPoints = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '" . $TheUser['id'] . "';", '', true);
   $Bloc['dpath']               = $dpath;
   $Bloc['adm_ov_altpm']        = $lang['adm_ov_altpm'];
   $Bloc['adm_ov_wrtpm']        = $lang['adm_ov_wrtpm'];

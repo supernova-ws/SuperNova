@@ -102,7 +102,7 @@ function flt_mission_attack($mission_data)
   {
     if ($attacker['totalCount'] > 0)
     {
-      $sqlQuery  = 'UPDATE {{table}} SET ';
+      $sqlQuery  = 'UPDATE {{fleets}} SET ';
       if ($result['won'] == 1)
       {
         $sqlQuery .= '`fleet_resource_metal` = `fleet_resource_metal` + '. ($attacker['loot']['metal'] + 0) .', ';
@@ -112,7 +112,7 @@ function flt_mission_attack($mission_data)
 
       $sqlQuery .= '`fleet_array` = "'.substr($attacker['fleetArray'], 0, -1).'", ';
       $sqlQuery .= '`fleet_amount` = ' . $attacker['totalCount'] . ', `fleet_mess` = 1 WHERE `fleet_id` = '.$fleetID;
-      doquery($sqlQuery, 'fleets');
+      doquery($sqlQuery);
     }
   }
 

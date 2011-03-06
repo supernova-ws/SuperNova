@@ -107,7 +107,7 @@ function coe_o_missile_calculate()
       $message = '';
       $interceptors = $target_planet_row[$resource[502]]; // Number of interceptors
       $missiles = $fleetRow['anzahl']; // Number of MIP
-      $qUpdate = "UPDATE `{{table}}` SET {$resource[502]} = ";
+      $qUpdate = "UPDATE `{{planets}}` SET {$resource[502]} = ";
       if ($interceptors >= $missiles) {
         $message = $lang['mip_all_destroyed'];
         $qUpdate .= "{$resource[502]} - {$missiles} ";
@@ -133,7 +133,7 @@ function coe_o_missile_calculate()
       };
 
       $qUpdate .= " WHERE `id` = " . $target_planet_row['id'] . ";";
-      doquery($qUpdate, 'planets');
+      doquery($qUpdate);
 
       $sourcePlanet = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '{$fleetRow['galaxy_angreifer']}' AND `system` = '{$fleetRow['system_angreifer']}' AND `planet` = '{$fleetRow['planet_angreifer']}' and planet_type = " . PT_PLANET, '', true);
 

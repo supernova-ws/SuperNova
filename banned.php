@@ -17,7 +17,7 @@ includeLang('banned');
 
 $parse = $lang;
 
-$query = doquery("SELECT * FROM {{table}} ORDER BY `id`;",'banned');
+$query = doquery("SELECT * FROM {{banned}} ORDER BY `id`;");
 $i=0;
 while($u = mysql_fetch_array($query)){
   $parse['banned'] .=

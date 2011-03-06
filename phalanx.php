@@ -66,9 +66,9 @@ function BuildFleetEventTable ( $FleetRow, $Status, $Owner, $Label, $Record )
   $FleetContent   = CreateFleetPopupedFleetLink ( $FleetRow, $lang['ov_fleet'], $FleetPrefix . $FleetStyle[ $MissionType ], $Owner );
   $FleetCapacity  = CreateFleetPopupedMissionLink ( $FleetRow, $lang['type_mission'][ $MissionType ], $FleetPrefix . $FleetStyle[ $MissionType ] );
 
-  $StartPlanet    = doquery("SELECT `name` FROM `{{table}}` WHERE `galaxy` = '".$FleetRow['fleet_start_galaxy']."' AND `system` = '".$FleetRow['fleet_start_system']."' AND `planet` = '".$FleetRow['fleet_start_planet']."' AND `planet_type` = '".$FleetRow['fleet_start_type']."';", 'planets', true);
+  $StartPlanet    = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '".$FleetRow['fleet_start_galaxy']."' AND `system` = '".$FleetRow['fleet_start_system']."' AND `planet` = '".$FleetRow['fleet_start_planet']."' AND `planet_type` = '".$FleetRow['fleet_start_type']."';", '', true);
   $StartType      = $FleetRow['fleet_start_type'];
-  $TargetPlanet   = doquery("SELECT `name` FROM `{{table}}` WHERE `galaxy` = '".$FleetRow['fleet_end_galaxy']."' AND `system` = '".$FleetRow['fleet_end_system']."' AND `planet` = '".$FleetRow['fleet_end_planet']."' AND `planet_type` = '".$FleetRow['fleet_end_type']."';", 'planets', true);
+  $TargetPlanet   = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '".$FleetRow['fleet_end_galaxy']."' AND `system` = '".$FleetRow['fleet_end_system']."' AND `planet` = '".$FleetRow['fleet_end_planet']."' AND `planet_type` = '".$FleetRow['fleet_end_type']."';", '', true);
   $TargetType     = $FleetRow['fleet_end_type'];
 
   if       ($Status != 2) {
@@ -231,17 +231,17 @@ function secureNumeric($value){
   $cost = $sensorLevel * 1000;
 
   if ($planetrow['deuterium'] > $cost){
-    doquery("UPDATE {{table}} SET deuterium=deuterium - " . $cost . " WHERE id='" . $user['current_planet'] . "'", 'planets');
+    doquery("UPDATE {{planets}} SET deuterium=deuterium - " . $cost . " WHERE id='" . $user['current_planet'] . "'");
   }else{
     message ($lang[phalanx_nodeuterium], "phalanx", "", 3);
   }
 
 
-$fq = doquery("SELECT * FROM {{table}} WHERE
+$fq = doquery("SELECT * FROM {{fleets}} WHERE
           ( fleet_start_galaxy='" . $g . "' AND fleet_start_system='" . $s . "' AND fleet_start_planet='" . $i . "' AND fleet_start_type = 1)
           OR
           ( fleet_end_galaxy='" . $g . "' AND fleet_end_system='" . $s . "' AND fleet_end_planet='" . $i . "' AND fleet_start_type = 1)
-        ORDER BY `fleet_start_time`", 'fleets');
+        ORDER BY `fleet_start_time`");
 
 if (mysql_num_rows($fq) == "0") {
   $page .= "<table width=519>

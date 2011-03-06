@@ -68,7 +68,7 @@ if ($mode == 'ainfo') {
   include('includes/alliance/ali_info.inc');
 };
 
-$user_request = doquery("SELECT * FROM {{table}} WHERE `id_user` ='{$user['id']}'", "alliance_requests", true);
+$user_request = doquery("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$user['id']}' LIMIT 1;", '', true);
 
 if (!$user['ally_id']) {
   include('includes/alliance/ali_external.inc');

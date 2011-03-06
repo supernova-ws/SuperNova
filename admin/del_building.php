@@ -39,7 +39,7 @@ if ($mode == 'addit') {
       $terraformer       = $_POST['terraformer'];
       $ally_deposit      = $_POST['ally_deposit'];
       $silo      = $_POST['silo'];
-  $QryUpdatePlanet  = "UPDATE {{table}} SET ";
+  $QryUpdatePlanet  = "UPDATE {{planets}} SET ";
   $QryUpdatePlanet .= "`metal_mine` = `metal_mine` - '". $metal_mine ."', ";
   $QryUpdatePlanet .= "`crystal_mine` = `crystal_mine` - '". $crystal_mine ."', ";
   $QryUpdatePlanet .= "`deuterium_sintetizer` = `deuterium_sintetizer` - '". $deuterium_sintetizer ."', ";
@@ -57,7 +57,7 @@ if ($mode == 'addit') {
   $QryUpdatePlanet .= "`silo` = `silo` - '". $silo ."' ";
   $QryUpdatePlanet .= "WHERE ";
   $QryUpdatePlanet .= "`id` = '". $id ."' ";
-  doquery( $QryUpdatePlanet, "planets");
+  doquery( $QryUpdatePlanet);
 
   AdminMessage ( $lang['adm_delbuilding2'], $lang['adm_delbuilding1'] );
 }

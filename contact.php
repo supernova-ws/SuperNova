@@ -19,9 +19,9 @@ $RowsTPL = gettemplate('contact_body_rows');
 $parse   = $lang;
 
 $QrySelectUser  = "SELECT `username`, `email`, `authlevel` ";
-$QrySelectUser .= "FROM {{table}} ";
+$QrySelectUser .= "FROM {{users}} ";
 $QrySelectUser .= "WHERE `authlevel` != '0' ORDER BY `authlevel` DESC;";
-$GameOps = doquery ( $QrySelectUser, 'users');
+$GameOps = doquery ( $QrySelectUser);
 
 while( $Ops = mysql_fetch_assoc($GameOps) ) {
   $bloc['ctc_data_name']    = $Ops['username'];

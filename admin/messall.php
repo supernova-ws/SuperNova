@@ -33,7 +33,7 @@ if ($_POST && $mode == "change") {
     $ranga = 'SuperGameOperator';
   }
   if ($config->tresc != '' and $config->temat) {
-    $sq      = doquery("SELECT `id` FROM {{table}}", "users");
+    $sq      = doquery("SELECT `id` FROM {{users}}");
     $Time    = time();
     $From    = "<font color=\"". $kolor ."\">". $ranga ." ".$user['username']."</font>";
     $Subject = "<font color=\"". $kolor ."\">". $config->temat ."</font>";

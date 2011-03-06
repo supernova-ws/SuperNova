@@ -293,7 +293,7 @@ switch ($mode)
 
 /*
     $ally = $user['ally_id'];
-    $OnlineUsersNames = doquery("SELECT `username` FROM {{table}} WHERE `onlinetime`>'".$time."' AND `ally_id`='".$ally."' AND `ally_id` != '0'",'users');
+    $OnlineUsersNames = doquery("SELECT `username` FROM {{users}} WHERE `onlinetime`>'".$time."' AND `ally_id`='".$ally."' AND `ally_id` != '0'");
 
     $names = '';
     while ($OUNames = mysql_fetch_assoc($OnlineUsersNames)) {
@@ -304,7 +304,7 @@ switch ($mode)
 */
 /*
     //Последние сообщения чата.
-    $mess = doquery("SELECT `user`,`message` FROM {{table}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5", 'chat');
+    $mess = doquery("SELECT `user`,`message` FROM {{chat}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5");
     $msg = '<table>';
     while ($result = mysql_fetch_assoc($mess)) {
       //$str = substr($result['message'], 0, 85);

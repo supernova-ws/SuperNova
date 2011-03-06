@@ -34,7 +34,7 @@ if ($config->int_userbar_showInOverview)
   ));
 }
 
-$StatRecord = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."';", 'statpoints', true);
+$StatRecord = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."';", '', true);
 
 $ile                           = $StatRecord['total_old_rank'] - $StatRecord['total_rank'];
 if ($ile >= 1)
@@ -64,7 +64,7 @@ $OnlineUsersNames2 = doquery("SELECT `username` FROM {{users}} WHERE `onlinetime
 
 /*
 //Последние сообщения чата.
-$mess = doquery("SELECT `user`,`message` FROM {{table}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5", 'chat');
+$mess = doquery("SELECT `user`,`message` FROM {{chat}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5");
 $msg = '<table>';
 while ($result = mysql_fetch_assoc($mess)) {
   //$str = substr($result['message'], 0, 85);

@@ -32,7 +32,7 @@ if ($sort2){
 if($sort1>5 || $sort1<0) $sort1 = 0;
 $sort = sprintf(' ORDER BY ' . $sort1s[$sort1] . ' %1$s;', $sort2s);
 
-$userList = doquery("SELECT {{table}}.id, {{table}}.username, {{table}}.galaxy, {{table}}.system, {{table}}.planet, {{table}}.onlinetime, {{table}}.ally_rank_id, {{table}}.ally_register_time, {{statpoints}}.total_points FROM {{table}} LEFT JOIN {{statpoints}} on {{statpoints}}.`id_owner`={{table}}.`id` AND `stat_type` = 1 AND `stat_code` = 1 WHERE `ally_id`='{$user['ally_id']}' {$sort}", 'users');
+$userList = doquery("SELECT {{users}}.id, {{users}}.username, {{users}}.galaxy, {{users}}.system, {{users}}.planet, {{users}}.onlinetime, {{users}}.ally_rank_id, {{users}}.ally_register_time, {{statpoints}}.total_points FROM {{users}} LEFT JOIN {{statpoints}} on {{statpoints}}.`id_owner`={{users}}.`id` AND `stat_type` = 1 AND `stat_code` = 1 WHERE `ally_id`='{$user['ally_id']}' {$sort}");
 $parse = $lang;
 $parse["mode"] = $mode . ($edit ? "&edit=" . $edit : "");
 if ($user_can_kick && $user['id'] != $userRow['id'] && $ally['ally_owner'] != $userRow['id'] && $allianceAdminMode) {

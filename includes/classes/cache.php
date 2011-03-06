@@ -391,7 +391,7 @@ class classPersistent extends classCache
   {
     $this->loadDefaults();
 
-    $query = doquery('SELECT * FROM {{table}};', $this->table_name);
+    $query = doquery("SELECT * FROM {{{$this->table_name}}};");
     while ( $row = mysql_fetch_assoc($query) )
     {
       $this->$row[$this->sql_index_field] = $row[$this->sql_value_field];
@@ -683,16 +683,16 @@ class class_db_cache extends classCache
     __call have several forms
 
     Form 1:
-      __call($id, [$force]) - "SELECT * FROM {{table}} WHERE id_field = $id"
+      __call($id, [$force]) - "SELECT * FROM {table} WHERE id_field = $id"
 
     Form 2: (not implemented yet)
-      __call('get', $condition, [$force]) - "SELECT * FROM {{table}} WHERE $condition"
+      __call('get', $condition, [$force]) - "SELECT * FROM {table} WHERE $condition"
 
     Form 3: (not implemented yet)
-      __call('set', $data, [$condition], [$force]) - "UPDATE {{table}} SET $row = $data WHERE $condition"
+      __call('set', $data, [$condition], [$force]) - "UPDATE {table} SET $row = $data WHERE $condition"
 
     Form 4: (not implemented yet)
-      __call('add', $data, [$condition], [$force]) - "UPDATE {{table}} SET $row = $row + $data WHERE $condition"
+      __call('add', $data, [$condition], [$force]) - "UPDATE {table} SET $row = $row + $data WHERE $condition"
   */
 
   public function __call($name, $arguments)
@@ -710,7 +710,7 @@ class class_db_cache extends classCache
       break;
 
       default:
-        // it might be SELECT * FROM {{table}} WHERE id = $main_argument;
+        // it might be SELECT * FROM {table} WHERE id = $main_argument;
         return $this->get_item($name, $main_argument, $arguments[1]);
       break;
     }
@@ -886,8 +886,8 @@ class class_db_cache extends classCache
       }
 
       $qry = substr($qry, 0, -1);
-      $qry = "REPLACE INTO `{{table}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES {$qry};";
-      doquery($qry, $this->table_name);
+      $qry = "REPLACE INTO `{{{$this->table_name}}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES {$qry};";
+      doquery($qry);
     };
   }
 */
