@@ -18,7 +18,7 @@ input.frameles
   </tr>
 
   <tr class="header">
-    <td class="header" align="center" width="150"><select size="1" onChange="eval('location=\''+this.options[this.selectedIndex].value+'\'');">
+    <td class="header" align="center" width="150"><select size="1" onchange="window.location.href = window.location.pathname + this.options[this.selectedIndex].value;">
     {planetlist}
     <!-- BEGIN topnav_planets -->
       <option{topnav_planets.SELECTED} value="?cp={topnav_planets.ID}&mode={TOPNAV_MODE}&re=0">{topnav_planets.NAME}&nbsp;{topnav_planets.COORDS}
