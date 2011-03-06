@@ -11,18 +11,13 @@
 
 $allow_anonymous = true;
 $skip_ban_check = true;
-
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-require_once("{$ugamela_root_path}common.{$phpEx}");
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('banned');
 
 $parse = $lang;
-$parse['dpath'] = $dpath;
-$parse['mf']    = '_self';
 
-$query = doquery("SELECT * FROM {{table}} ORDER BY `id`;",'banned');
+$query = doquery("SELECT * FROM {{banned}} ORDER BY `id`;");
 $i=0;
 while($u = mysql_fetch_array($query)){
   $parse['banned'] .=
@@ -36,5 +31,6 @@ while($u = mysql_fetch_array($query)){
 
 $parse['banned_count'] = $i;
 
-display(parsetemplate(gettemplate('banned_body'), $parse), 'Banned');
+display(parsetemplate(gettemplate('banned_body', true), $parse), 'Banned');
+
 ?>

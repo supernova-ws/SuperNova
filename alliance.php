@@ -9,14 +9,7 @@
  1.0  - copyright 2008 by Chlorel for XNova
 */
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-require_once("{$ugamela_root_path}common.{$phpEx}");
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header("Location: login.php");
-}
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 define('SN_IN_ALLY', true);
 
@@ -75,7 +68,7 @@ if ($mode == 'ainfo') {
   include('includes/alliance/ali_info.inc');
 };
 
-$user_request = doquery("SELECT * FROM {{table}} WHERE `id_user` ='{$user['id']}'", "alliance_requests", true);
+$user_request = doquery("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$user['id']}' LIMIT 1;", '', true);
 
 if (!$user['ally_id']) {
   include('includes/alliance/ali_external.inc');

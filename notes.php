@@ -8,17 +8,7 @@
  * @copyright 2008 by ??????? for XNova
  */
 
-
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header("Location: login.php");
-}
-
-$dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $GET_a = intval($_GET['a']);
 $n = intval($_GET['n']);
@@ -33,25 +23,25 @@ $lang['Please_Wait'] = "Patientez...";
 //lenguaje
 includeLang('notes');
 
-$lang['PHP_SELF'] = 'notes.'.$phpEx;
+$lang['PHP_SELF'] = 'notes.'. PHP_EX;
 
 if($POST_s == 1 || $POST_s == 2){//Edicion y agregar notas
 
   $time = time();
 
   if($POST_s ==1){
-    doquery("INSERT INTO {{table}} SET owner={$user['id']}, time=$time, priority=$priority, title='$title', text='$text'","notes");
-    message($lang['NoteAdded'], $lang['Please_Wait'],'notes.'.$phpEx,"3");
+    doquery("INSERT INTO {{notes}} SET owner={$user['id']}, time=$time, priority=$priority, title='$title', text='$text'");
+    message($lang['NoteAdded'], $lang['Please_Wait'],'notes.'. PHP_EX,"3");
   }elseif($POST_s == 2){
     /*
       pequeño query para averiguar si la nota que se edita es del propio jugador
     */
-    $note_query = doquery("SELECT * FROM {{table}} WHERE id=$id AND owner=".$user["id"],"notes");
+    $note_query = doquery("SELECT * FROM {{notes}} WHERE id=$id AND owner=".$user["id"]);
 
     if(!$note_query){ error($lang['notpossiblethisway'],$lang['Notes']); }
 
-    doquery("UPDATE {{table}} SET time=$time, priority=$priority, title='$title', text='$text' WHERE id=$id","notes");
-    message($lang['NoteUpdated'], $lang['Please_Wait'], 'notes.'.$phpEx, "3");
+    doquery("UPDATE {{notes}} SET time=$time, priority=$priority, title='$title', text='$text' WHERE id=$id");
+    message($lang['NoteUpdated'], $lang['Please_Wait'], 'notes.'. PHP_EX, "3");
   }
 
 }
@@ -65,18 +55,18 @@ elseif($_POST){//Borrar
     if(preg_match("/delmes/i",$a) && $b == "y"){
 
       $id = str_replace("delmes","",$a);
-      $note_query = doquery("SELECT * FROM {{table}} WHERE id=$id AND owner={$user['id']}","notes");
+      $note_query = doquery("SELECT * FROM {{notes}} WHERE id=$id AND owner={$user['id']}");
       //comprobamos,
       if($note_query){
         $deleted++;
-        doquery("DELETE FROM {{table}} WHERE `id`=$id;","notes");// y borramos
+        doquery("DELETE FROM {{notes}} WHERE `id`=$id;");// y borramos
       }
     }
   }
   if($deleted){
     $mes = ($deleted == 1) ? $lang['NoteDeleted'] : $lang['NoteDeleteds'];
-    message($mes,$lang['Please_Wait'],'notes.'.$phpEx,"3");
-  }else{header("Location: notes.$phpEx");}
+    message($mes,$lang['Please_Wait'],'notes.'.PHP_EX,"3");
+  }else{header("Location: notes." . PHP_EX);}
 
 }else{//sin post...
   if($GET_a == 1){//crear una nueva nota.
@@ -105,7 +95,7 @@ elseif($_POST){//Borrar
     /*
       Formulario donde se puestra la nota y se puede editar.
     */
-    $note = doquery("SELECT * FROM {{table}} WHERE owner={$user['id']} AND id=$n",'notes',true);
+    $note = doquery("SELECT * FROM {{notes}} WHERE owner={$user['id']} AND id=$n",'',true);
 
     if(!$note){ message($lang['notpossiblethisway'],$lang['Error']); }
 
@@ -130,7 +120,7 @@ elseif($_POST){//Borrar
   }
   else{//default
 
-    $notes_query = doquery("SELECT * FROM {{table}} WHERE owner={$user['id']} ORDER BY time DESC",'notes');
+    $notes_query = doquery("SELECT * FROM {{notes}} WHERE owner={$user['id']} ORDER BY time DESC");
     //Loop para crear la lista de notas que el jugador tiene
     $count = 0;
     $parse=$lang;

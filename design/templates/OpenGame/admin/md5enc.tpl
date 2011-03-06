@@ -1,6 +1,6 @@
 <br><br>
 <h2>{md5_title}</h2>
-<form method="post" action="md5enc.php">
+<form method="post" action="">
 <table width="305" border="0" cellspacing="2" cellpadding="0" style="color:#FFFFFF">
 <tr>
 	<td class="c" colspan="6">{md5_pswcyp}</td>

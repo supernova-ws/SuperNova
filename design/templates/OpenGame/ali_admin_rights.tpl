@@ -1,15 +1,15 @@
 <br />
-<table width=519><tr><td class=c colspan=7><span class="fl">{laws_config}</span><span class="fr"><a href="?mode=admin">{ali_adm_return}</a></span></td></tr>
+<table width=519><tr><td class=c colspan=7><span class="fl">{laws_config}</span><span class="fr"><a href="alliance.php?mode=admin">{ali_adm_return}</a></span></td></tr>
   <form action="alliance.php?mode=admin&edit=rights" method=POST>
     <tr>
-      <th><img src="../design/images/abort.gif" alt="{Delete_range}" title="{Delete_range}" border="0"></th>
+      <th><img src="design/images/abort.gif" alt="{Delete_range}" title="{Delete_range}" border="0"></th>
       <th>{Range_name}</th>
 <!--      <th><span alt="{ali_frm_write}" title="{ali_frm_write}">Ô</span></th>-->
-      <th><img src=../design/images/r8.png alt="{make_circular}" title="{make_circular}"></th>
-      <th><img src=../design/images/r7.png alt="{memberlist_online}" title="{memberlist_online}"></th>
-      <th><img src=../design/images/r5.png alt="{ali_req_check}" title="{requests_admin}"></th>
-      <th><img src=../design/images/r2.png alt="{Expel_users}" title="{Expel_users}"></th>
-      <th><img src=../design/images/r9.png alt="{Left_hand_text}" title="{Left_hand_text}"></th>
+      <th><img src="design/images/r8.png" alt="{make_circular}" title="{make_circular}"></th>
+      <th><img src="design/images/r7.png" alt="{memberlist_online}" title="{memberlist_online}"></th>
+      <th><img src="design/images/r5.png" alt="{ali_req_check}" title="{requests_admin}"></th>
+      <th><img src="design/images/r2.png" alt="{Expel_users}" title="{Expel_users}"></th>
+      <th><img src="design/images/r9.png" alt="{Left_hand_text}" title="{Left_hand_text}"></th>
     </tr>
     {list}
     <tr><th colspan=7><input type=submit value="{Save}"></th></tr>
@@ -28,11 +28,11 @@
 <table width=519>
 	<tr><td class=c colspan=2>{Law_leyends}</td></tr>
 <!--	<tr><th>Ô</th><th>{ali_frm_write}</th></tr>-->
-	<tr><th><img src=../design/images/r8.png></th><th>{make_circular}</th></tr>
-	<tr><th><img src=../design/images/r7.png></th><th>{memberlist_online}</th></tr>
-	<tr><th><img src=../design/images/r5.png></th><th>{ali_req_check}</th></tr>
-	<tr><th><img src=../design/images/r2.png></th><th>{Expel_users}</th></tr>
-	<tr><th><img src=../design/images/r9.png></th><th>{Left_hand_text}</th></tr>
+	<tr><th><img src="design/images/r8.png"></th><th>{make_circular}</th></tr>
+	<tr><th><img src="design/images/r7.png"></th><th>{memberlist_online}</th></tr>
+	<tr><th><img src="design/images/r5.png"></th><th>{ali_req_check}</th></tr>
+	<tr><th><img src="design/images/r2.png"></th><th>{Expel_users}</th></tr>
+	<tr><th><img src="design/images/r9.png"></th><th>{Left_hand_text}</th></tr>
 	<tr><td class="c" colspan="2"><span class="fr"><a href="alliance.php">{Return_to_overview}</a></span></td></tr>
 </table>
 </form>

@@ -12,10 +12,6 @@ $lang['Multiverse']        = 'Серевр';
 $lang['E-Mail']            = 'e-Mail';
 $lang['signup']            = 'Активация ';
 
-// Send
-$lang['mail_welcome']      = 'Dziekujemy za Aktywacja w naszej grze!!!
-Aby siк zalogowaж wejdј tu: ({gameurl})';
-
 $lang['mail_title']        = 'Активация аккаунта OGame';
 $lang['thanksforregistry'] = 'Вы прошли активацию на нашем проекте! Спасибо. Удачи в игре!';
 

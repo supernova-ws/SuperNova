@@ -8,37 +8,38 @@
  */
 
 function DeleteSelectedUser ( $UserID ) {
-  $TheUser = doquery ( "SELECT * FROM `{{table}}` WHERE `id` = '" . $UserID . "';", 'users', true );
+  $TheUser = doquery ( "SELECT * FROM `{{users}}` WHERE `id` = '" . $UserID . "';", '', true );
   if ( $TheUser['ally_id'] != 0 ) {
-    $TheAlly = doquery ( "SELECT * FROM `{{table}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", 'alliance', true );
+    $TheAlly = doquery ( "SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true );
     $TheAlly['ally_members'] -= 1;
     if ( $TheAlly['ally_members'] > 0 ) {
-      doquery ( "UPDATE `{{table}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';", 'alliance' );
+      doquery ( "UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
     } else {
-      doquery ( "DELETE FROM `{{table}}` WHERE `id` = '" . $TheAlly['id'] . "';", 'alliance' );
-      doquery ( "DELETE FROM `{{table}}` WHERE `stat_type` = '2' AND `id_owner` = '" . $TheAlly['id'] . "';", 'statpoints' );
+      doquery ( "DELETE FROM `{{alliance}}` WHERE `id` = '" . $TheAlly['id'] . "';");
+      doquery ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '2' AND `id_owner` = '" . $TheAlly['id'] . "';");
     }
   }
-  doquery ( "DELETE FROM `{{table}}` WHERE `stat_type` = '1' AND `id_owner` = '" . $UserID . "';", 'statpoints' );
+  doquery ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `id_owner` = '" . $UserID . "';");
 
-  $ThePlanets = doquery ( "SELECT * FROM `{{table}}` WHERE `id_owner` = '" . $UserID . "';", 'planets' );
+  $ThePlanets = doquery ( "SELECT * FROM `{{planets}}` WHERE `id_owner` = '" . $UserID . "';" );
   while ( $OnePlanet = mysql_fetch_assoc ( $ThePlanets ) ) {
     if ( $OnePlanet['planet_type'] == 1 ) {
-      // doquery ( "DELETE FROM `{{table}}` WHERE `galaxy` = '" . $OnePlanet['galaxy'] . "' AND `system` = '" . $OnePlanet['system'] . "' AND `planet` = '" . $OnePlanet['planet'] . "';", 'galaxy' );
+      // doquery ( "DELETE FROM `{{galaxy}}` WHERE `galaxy` = '" . $OnePlanet['galaxy'] . "' AND `system` = '" . $OnePlanet['system'] . "' AND `planet` = '" . $OnePlanet['planet'] . "';" );
     }
-    doquery ( "DELETE FROM `{{table}}` WHERE `id` = '" . $ThePlanets['id'] . "';", 'planets' );
+    doquery ( "DELETE FROM `{{planets}}` WHERE `id` = '" . $ThePlanets['id'] . "';");
   }
-  doquery ( "DELETE FROM `{{table}}` WHERE `message_sender` = '" . $UserID . "';", 'messages' );
-  doquery ( "DELETE FROM `{{table}}` WHERE `message_owner` = '" . $UserID . "';", 'messages' );
-  doquery ( "DELETE FROM `{{table}}` WHERE `owner` = '" . $UserID . "';", 'notes' );
-  doquery ( "DELETE FROM `{{table}}` WHERE `fleet_owner` = '" . $UserID . "';", 'fleets' );
-  doquery ( "DELETE FROM `{{table}}` WHERE `id_owner1` = '" . $UserID . "';", 'rw' );
-  doquery ( "DELETE FROM `{{table}}` WHERE `id_owner2` = '" . $UserID . "';", 'rw' );
-  doquery ( "DELETE FROM `{{table}}` WHERE `sender` = '" . $UserID . "';", 'buddy' );
-  doquery ( "DELETE FROM `{{table}}` WHERE `owner` = '" . $UserID . "';", 'buddy' );
-  doquery ( "DELETE FROM `{{table}}` WHERE `user` = '" . $UserID . "';", 'annonce' );
-  doquery ( "DELETE FROM `{{table}}` WHERE `id` = '" . $UserID . "';", 'users' );
-  doquery ( "UPDATE `{{table}}` SET `config_value`= `config_value` - 1 WHERE `config_name` = 'users_amount';", 'config' );
-
+  doquery ( "DELETE FROM `{{messages}}` WHERE `message_sender` = '" . $UserID . "';");
+  doquery ( "DELETE FROM `{{messages}}` WHERE `message_owner` = '" . $UserID . "';");
+  doquery ( "DELETE FROM `{{notes}}` WHERE `owner` = '" . $UserID . "';");
+  doquery ( "DELETE FROM `{{fleets}}` WHERE `fleet_owner` = '" . $UserID . "';");
+  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner1` = '" . $UserID . "';");
+  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner2` = '" . $UserID . "';");
+  doquery ( "DELETE FROM `{{buddy}}` WHERE `sender` = '" . $UserID . "';");
+  doquery ( "DELETE FROM `{{buddy}}` WHERE `owner` = '" . $UserID . "';");
+  doquery ( "DELETE FROM `{{annonce}}` WHERE `user` = '" . $UserID . "';");
+  doquery ( "DELETE FROM `{{users}}` WHERE `id` = '" . $UserID . "';");
+  doquery ( "DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
+  doquery ( "UPDATE `{{config}}` SET `config_value`= `config_value` - 1 WHERE `config_name` = 'users_amount';");
 }
+
 ?>

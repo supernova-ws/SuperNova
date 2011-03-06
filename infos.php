@@ -10,16 +10,7 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-$gid  = intval($_GET['gid']);
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header("Location: login.php");
-}
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 // ----------------------------------------------------------------------------------------------------------
 // Creation de la Liste de flotte disponible sur la lune
@@ -51,8 +42,8 @@ function BuildFleetListRows ( $CurrentPlanet ) {
 //
 function BuildJumpableMoonCombo ( $CurrentUser, $CurrentPlanet ) {
   global $sn_data;
-  $QrySelectMoons  = "SELECT * FROM {{table}} WHERE `planet_type` = '3' AND `id_owner` = '". $CurrentUser['id'] ."';";
-  $MoonList        = doquery ( $QrySelectMoons, 'planets');
+  $QrySelectMoons  = "SELECT * FROM {{planets}} WHERE `planet_type` = '3' AND `id_owner` = '". $CurrentUser['id'] ."';";
+  $MoonList        = doquery ( $QrySelectMoons);
   $Combo           = "";
   while ( $CurMoon = mysql_fetch_assoc($MoonList) ) {
     if ( $CurMoon['id'] != $CurrentPlanet['id'] ) {
@@ -363,7 +354,7 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
       // ---- Destruction
       $NeededRessources     = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $BuildID, true, true);
       $DestroyTime          = GetBuildingTime  ($CurrentUser, $CurrentPlanet, $BuildID) / 2;
-      $parse['destroyurl']  = "buildings.php?mode=" . QUE_STRUCTURES . "&action=destroy&unit_id={$BuildID}"; // Non balisé les balises sont dans le tpl
+      $parse['destroyurl']  = "buildings.php?mode=" . QUE_STRUCTURES . "&action=destroy&unit_id={$BuildID}"; // Non balisé les balises sont dans le
       $parse['levelvalue']  = $CurrentPlanet[$unit_data['name']]; // Niveau du batiment a detruire
       $parse['nfo_metal']   = $lang['Metal'];
       $parse['nfo_crysta']  = $lang['Crystal'];

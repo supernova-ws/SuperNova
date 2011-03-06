@@ -9,21 +9,11 @@
 define('INSIDE'  , true);
 define('INSTALL' , false);
 define('IN_ADMIN', true);
-
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './../';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($user['authlevel'] < 3)
-{
-  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-  die();
-}
+require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $mode = intval($_GET['mode'] ? $_GET['mode'] : $_POST['mode']);
 
 includeLang('admin');
-$parse = $lang;
 
 switch($mode){
   case 1:
@@ -42,5 +32,5 @@ switch($mode){
 
 }
 
-display( parsetemplate(gettemplate("admin/admin_tools"), $parse), $lang['adm_bn_ttle'], false, '', true);
+display( parsetemplate(gettemplate("admin/admin_tools", true)), $lang['adm_bn_ttle'], false, '', true);
 ?>

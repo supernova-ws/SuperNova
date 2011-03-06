@@ -42,7 +42,7 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
 
   if (!$fleet['fleetlist'])
   {
-    message($lang['fl_err_no_ships'], $lang['fl_error'], "fleet.{$phpEx}", 5);
+    message($lang['fl_err_no_ships'], $lang['fl_error'], 'fleet.' . PHP_EX, 5);
   }
 
   // Building list of shortcuts

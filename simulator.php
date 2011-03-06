@@ -28,9 +28,7 @@
  *
  */
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if(($_GET['BE_DEBUG'] || $_POST['BE_DEBUG']) && !defined('BE_DEBUG'))
 {
@@ -64,9 +62,15 @@ if($_POST['submit'] || $execute)
   $arr_combat_attacker = eco_sym_to_combat($sym_attacker, 'detail');
 
   // Lets calcualte attack...
+
+//pdump($sym_defender);
+
+//pdump($arr_combat_attacker, '$arr_combat_attacker');
+//pdump($arr_combat_defender, '$arr_combat_defender');
   $start = microtime(true);
-  $result = calculateAttack($arr_combat_attacker, $arr_combat_defender, true);
+  $result = coe_attack_calculate($arr_combat_attacker, $arr_combat_defender, true);
   $totaltime = microtime(true) - $start;
+//pdump($result);
 
   // calculating loot per attacking fleet
   $loot = BE_calculatePostAttacker($arr_combat_defender[0]['resources'], $arr_combat_attacker, $result, true);

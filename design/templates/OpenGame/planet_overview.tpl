@@ -291,7 +291,7 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 <script type="text/javascript"><!--
 jQuery(document).bind("ready", function() {
   // send requests
-  jQuery.post("../scheduler.php", {rating: jQuery(this).html()}, function(xml) {
+  jQuery.post("scheduler.php", {rating: jQuery(this).html()}, function(xml) {
     // format result
     var result = [ jQuery("message", xml).text() ];
     // output result

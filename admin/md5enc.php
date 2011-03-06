@@ -11,34 +11,23 @@ define('INSIDE'  , true);
 define('INSTALL' , false);
 define('IN_ADMIN', true);
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './../';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
+require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if ($user['authlevel'] < 3)
-{
-  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-  die();
+includeLang('admin');
+
+$parse   = $lang;
+
+if ($_POST['md5q'] != "") {
+  $parse['md5_md5'] = $_POST['md5q'];
+  $parse['md5_enc'] = md5 ($_POST['md5q']);
+} else {
+  $parse['md5_md5'] = "";
+  $parse['md5_enc'] = md5 ("");
 }
 
-  if ($user['authlevel'] >= "1") {
-    includeLang('admin');
+$PageTpl = gettemplate("admin/md5enc");
+$Page    = parsetemplate( $PageTpl, $parse);
 
-    $parse   = $lang;
+display( $Page, $lang['md5_title'], false, '', true );
 
-    if ($_POST['md5q'] != "") {
-      $parse['md5_md5'] = $_POST['md5q'];
-      $parse['md5_enc'] = md5 ($_POST['md5q']);
-    } else {
-      $parse['md5_md5'] = "";
-      $parse['md5_enc'] = md5 ("");
-    }
-
-    $PageTpl = gettemplate("admin/md5enc");
-    $Page    = parsetemplate( $PageTpl, $parse);
-
-    display( $Page, $lang['md5_title'], false, '', true );
-  } else {
-    message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-  }
 ?>

@@ -32,9 +32,8 @@ if ($sort2){
 if($sort1>5 || $sort1<0) $sort1 = 0;
 $sort = sprintf(' ORDER BY ' . $sort1s[$sort1] . ' %1$s;', $sort2s);
 
-$userList = doquery("SELECT {{table}}.id, {{table}}.username, {{table}}.galaxy, {{table}}.system, {{table}}.planet, {{table}}.onlinetime, {{table}}.ally_rank_id, {{table}}.ally_register_time, {{statpoints}}.total_points FROM {{table}} LEFT JOIN {{statpoints}} on {{statpoints}}.`id_owner`={{table}}.`id` AND `stat_type` = 1 AND `stat_code` = 1 WHERE `ally_id`='{$user['ally_id']}' {$sort}", 'users');
+$userList = doquery("SELECT {{users}}.id, {{users}}.username, {{users}}.galaxy, {{users}}.system, {{users}}.planet, {{users}}.onlinetime, {{users}}.ally_rank_id, {{users}}.ally_register_time, {{statpoints}}.total_points FROM {{users}} LEFT JOIN {{statpoints}} on {{statpoints}}.`id_owner`={{users}}.`id` AND `stat_type` = 1 AND `stat_code` = 1 WHERE `ally_id`='{$user['ally_id']}' {$sort}");
 $parse = $lang;
-$parse["dpath"] = $dpath;
 $parse["mode"] = $mode . ($edit ? "&edit=" . $edit : "");
 if ($user_can_kick && $user['id'] != $userRow['id'] && $ally['ally_owner'] != $userRow['id'] && $allianceAdminMode) {
   $parse["isHideAdmin"] = '';
@@ -46,7 +45,10 @@ if ($user_can_kick && $user['id'] != $userRow['id'] && $ally['ally_owner'] != $u
   $parse["colspan"] = 8;
 }
 
-while ($userRow = mysql_fetch_assoc($userList)) {
+$parse['dpath'] = SN_ROOT_VIRTUAL . $dpath;
+
+while ($userRow = mysql_fetch_assoc($userList))
+{
   $parse = array_merge($parse, $userRow);
 
   $i++;
@@ -134,8 +136,7 @@ if ($i != $ally['ally_members']) {
 $parse['memberCount'] = mysql_num_rows($userList);
 $parse['memberslist'] = $page_list;
 $parse['s'] = $sort2;
-$page .= parsetemplate(gettemplate('ali_members'), $parse);
 
-display($page, $lang['members_admin']);
+display(parsetemplate(gettemplate('ali_members', true), $parse), $lang['members_admin']);
 
 ?>

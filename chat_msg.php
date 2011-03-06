@@ -21,15 +21,7 @@
 
 $skip_fleet_update = true;
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($IsUserChecked == false)
-{
-  includeLang('login');
-  header("Location: login.php");
-}
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $chat_type = SYS_mysqlSmartEscape($_GET['chat_type'] ? $_GET['chat_type'] : $_POST['chat_type']);
 $show_history = SYS_mysqlSmartEscape($_GET['show'] ? $_GET['show'] : $_POST['show']);
@@ -82,7 +74,7 @@ while($v = mysql_fetch_object($query)){
   $nick = htmlentities(strip_tags($v->user), ENT_QUOTES, cp1251);
   $nick = str_replace(strip_tags($v->user), $nick, $v->user);
   if($show_history != 'history'){
-    $nick = "<a href='#' onmousedown=\"addSmiley('[ ".htmlentities(strip_tags($v->user), ENT_QUOTES, cp1251)." ]')\">" . $nick ."</a>";
+    $nick = "<span style=\"cursor: pointer;\" onclick=\"addSmiley('[ ".htmlentities(strip_tags($v->user), ENT_QUOTES, cp1251)." ]')\">" . $nick ."</span>";
   }
 
   $msg = htmlentities($v->message, ENT_QUOTES, cp1251);

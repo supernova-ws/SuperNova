@@ -56,7 +56,7 @@ function show_debris(planet){
     result += "<tr><th>" + language['sys_metal'] + '</th><th style="text-align: right;">' + sn_format_number(uni_row[planet]['debris_metal']) + "</th></tr>";
     result += "<tr><th>" + language['sys_crystal'] + '</th><th style="text-align: right;">' + sn_format_number(uni_row[planet]['debris_crystal']) + "</th></tr>";
     /*result += '<tr><td class="c">' + language['tech_209'] + '</tâ><td class="c" style="text-align: right;">' + sn_format_number(uni_row[planet]['debris_rc_need']) + "</th></tr>";*/
-    result += "<tr><td class=c colspan=2 align=center><a href=# onclick='javascript:doit(8," + uni_galaxy + "," + uni_system + "," + planet + ",2," + uni_row[planet]['debris_recyclers'] + ");'>" + language['type_mission8'] + "</a><br>" + language['tech_209'] + ': ' + uni_row[planet]['debris_recyclers'] + "/" + uni_row[planet]['debris_rc_need'] + "</td></tr>";
+    result += "<tr><td class=c colspan=2 align=center><span style='cursor:pointer'  onclick='doit(8," + uni_galaxy + "," + uni_system + "," + planet + ",2," + uni_row[planet]['debris_recyclers'] + ");'>" + language['type_mission8'] + "</span><br>" + language['tech_209'] + ': ' + uni_row[planet]['debris_recyclers'] + "/" + uni_row[planet]['debris_rc_need'] + "</td></tr>";
     result += "</table>";
 
     uni_row[planet]['cache_debris'] = result;
@@ -109,10 +109,10 @@ function show_planet(planet, planet_type)
     {
       if(uni_phalanx && planet_type == 1)
       {
-        result += '<a href=# onclick=fenster("phalanx.php?galaxy=' + uni_galaxy + '&system=' + uni_system + '&planet=' + planet + '&planettype=' + planet_type + '")>' + language['gl_phalanx'] + '</a><br />';
+        result += '<span style="cursor:pointer" onclick=fenster("phalanx.php?galaxy=' + uni_galaxy + '&system=' + uni_system + '&planet=' + planet + '&planettype=' + planet_type + '")>' + language['gl_phalanx'] + '</span><br />';
       }
 
-      result += '<a href=# onclick="javascript:doit(6, ' + uni_galaxy + ', ' + uni_system + ', ' + planet + ', ' + planet_type + ', ' + uni_spies + ');">' + language['type_mission6'] + '</a><br /><br />';
+      result += '<span style="cursor:pointer" onclick="doit(6, ' + uni_galaxy + ', ' + uni_system + ', ' + planet + ', ' + planet_type + ', ' + uni_spies + ');">' + language['type_mission6'] + '</span><br /><br />';
       result += makeAHREF(planet, planet_type, 1, language['type_mission1']);
       result += makeAHREF(planet, planet_type, 5, language['type_mission5']);
 

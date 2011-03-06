@@ -56,14 +56,7 @@ function IsOfficierAccessible ($CurrentUser, $Officier) {
   }
 }
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header("Location: login.{$phpEx}");
-}
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $mode = $_GET['mode'];
 $offi = $_GET['offi'];
@@ -72,7 +65,7 @@ includeLang('infos');
 
 // Vérification que le joueur n'a pas un nombre de points négatif
 //  if ($user['rpg_points'] < 0) {
-//    doquery("UPDATE {{table}} SET `rpg_points` = '0' WHERE `id` = '". $user['id'] ."';", 'users');
+//    doquery("UPDATE {{users}} SET `rpg_points` = '0' WHERE `id` = '". $user['id'] ."';");
 //  }
 //darkmater constant
 $darkmater_cost = $config->rpg_officer;
@@ -102,7 +95,7 @@ if ($mode == 2) {
   {
     $Message = $lang['off_no_points'];
   }
-  message($Message, $lang['tech'][600], "officer.{$phpEx}", 5);
+  message($Message, $lang['tech'][600], 'officer.' . PHP_EX, 5);
 }
 else
 {

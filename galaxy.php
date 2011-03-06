@@ -17,14 +17,7 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header("Location: login.php");
-}
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $mode             = intval($_GET['mode']);
 $CurrentPlanetID  = intval($_GET['current']);
@@ -41,7 +34,6 @@ $GET_planet       = intval($_GET['planet']);
 
 includeLang('universe');
 
-$dpath         = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
 $fleetmax      = GetMaxFleets($user);
 $CurrentPlID   = $planetrow['id'];
 $CurrentMIP    = $planetrow['interplanetary_misil'];
@@ -307,7 +299,6 @@ $template->assign_vars(array(
      'planet'         => $planet,
      'MIPs'           => $CurrentMIP,
      'MODE'           => $mode,
-     'dpath'          => $dpath,
      'planets'        => $planetcount ? ($lang['gal_planets'] . $planetcount) : $lang['gal_planetNone'],
      'RCs'            => pretty_number($planetrow['recycler']),
      'SPs'            => pretty_number($planetrow['spy_sonde']),
@@ -328,6 +319,6 @@ $template->assign_vars(array(
    )
 );
 
-display ($template, $lang['sys_universe'], true, '', false);
+display (parsetemplate($template), $lang['sys_universe'], true, '', false);
 
 ?>
