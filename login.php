@@ -9,7 +9,7 @@
  * @copyright 2008 by ?????? for XNova
  */
 
-include('common.' . substr(strrchr(__FILE__, '.'), 1));
+include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('login');
 includeLang('admin');

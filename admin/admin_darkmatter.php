@@ -17,7 +17,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 includeLang('admin');
 
 $mode      = $_POST['mode'];
-$PageTpl   = gettemplate("admin/admin_darkmatter");
+$PageTpl   = gettemplate("admin/admin_darkmatter", true);
 $parse     = $lang;
 
 $id_planet = SYS_mysqlSmartEscape($_POST['id_planet']);
