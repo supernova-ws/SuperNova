@@ -12,15 +12,14 @@
 *
 */
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-require_once("{$ugamela_root_path}includes/init.{$phpEx}");
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('overview');
 
-$id = intval($_GET['id']);
-$type = SYS_mysqlSmartEscape($_GET['type']);
-$format = SYS_mysqlSmartEscape($_GET['format']);
+$id = sys_get_param_int('id');
+$type = sys_get_param_str('type', 'userbar');
+$format = sys_get_param_str('format', 'png');
 
-INT_createBanner($id, $type, $format);
+int_banner_create($id, $type, $format);
+
 ?>

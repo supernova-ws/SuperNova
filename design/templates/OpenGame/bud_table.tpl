@@ -11,3 +11,5 @@
   {rows}
   <tr {isShowPlaceholder}><th colspan=6>{empty}</th></tr>
 </table>
+
+<!-- INCLUDE page_hint.tpl -->

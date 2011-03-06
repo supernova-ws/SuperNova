@@ -8,7 +8,6 @@ define('INIT'    , true);
 define('INSIDE'  , true);
 define('IN_PHPBB', true);
 define('INSTALL' , false);
-define('VERSION' , '2010-10-19-00-03');
 
 ob_start();
 
@@ -21,12 +20,7 @@ if($_SERVER['SERVER_NAME'] == 'localhost')
 }
 
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-if(strpos($phpEx, '/') !== false)
-{
-  $phpEx = '';
-}
-
-//$old_path = $ugamela_root_path;
+$phpEx = strpos($phpEx, '/') === false ? $phpEx : '';
 
 $sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/') + 1);
 if(strpos($sn_root_relative, 'admin/') !== false)
@@ -34,12 +28,17 @@ if(strpos($sn_root_relative, 'admin/') !== false)
   $sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], 'admin/'));
 }
 $sn_root_physical = str_replace(array('//', '//'), '/', $_SERVER['DOCUMENT_ROOT'] . $sn_root_relative);
-$sn_root_virtual  = 'http://' . $_SERVER['HTTP_HOST'] . $sn_root_relative;
-$phpbb_root_path = $sn_root_physical;
+$phpbb_root_path  = $sn_root_physical;
+
+define('SN_ROOT_RELATIVE', $sn_root_relative);
+define('SN_ROOT_PHYSICAL', $sn_root_physical);
+define('SN_ROOT_VIRTUAL',  'http://' . $_SERVER['HTTP_HOST'] . $sn_root_relative);
+define('PHP_EX', $phpEx); // PHP extension on this server
 
 $time_now      = time();
 $user          = array();
 $lang          = array();
+$sn_modules    = array();
 $IsUserChecked = false;
 
 require("{$sn_root_physical}config.{$phpEx}");
@@ -131,8 +130,8 @@ if(file_exists($update_file))
 }
 
 // Initializing constants
-define('TEMPLATE_DIR'     , 'design/templates/');
 define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_default_template : 'OpenGame');
+define('TEMPLATE_DIR'     , SN_ROOT_PHYSICAL . 'design/templates/' . TEMPLATE_NAME);
 define('DEFAULT_SKINPATH' , $config->game_default_skin ? $config->game_default_skin : 'skins/EpicBlue/');
 define('DEFAULT_LANG'     , $config->game_default_language ? $config->game_default_language : 'ru');
 define('FMT_DATE'         , $config->int_format_date ? $config->int_format_date : 'd.m.Y');
@@ -178,8 +177,5 @@ function sys_refresh_tablelist($db_prefix)
   }
   $sn_cache->tables = $tl;
 }
-
-//$ugamela_root_path = $old_path;
-$ugamela_root_path = $sn_root_virtual;
 
 ?>

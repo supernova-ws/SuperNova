@@ -9,25 +9,16 @@
 
 define('INSIDE'  , true);
 define('INSTALL' , false);
-
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './../';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($user['authlevel'] < 3)
-{
-  message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-  die();
-}
-
 define('IN_ADMIN', true);
+require('../common.' . substr(strrchr(__FILE__, '.'), 1));
+
 includeLang('admin');
 
 $TableTPL     = gettemplate('admin/fleet_rows');
-$FlyingFleets = doquery ("SELECT * FROM `{{table}}` ORDER BY `fleet_end_time` ASC;", 'fleets');
+$FlyingFleets = doquery ("SELECT * FROM `{{fleets}}` ORDER BY `fleet_end_time` ASC;");
 while ( $CurrentFleet = mysql_fetch_assoc( $FlyingFleets ) ) {
-  $FleetOwner       = doquery("SELECT `username` FROM `{{table}}` WHERE `id` = '". $CurrentFleet['fleet_owner'] ."';", 'users', true);
-  $TargetOwner      = doquery("SELECT `username` FROM `{{table}}` WHERE `id` = '". $CurrentFleet['fleet_target_owner'] ."';", 'users', true);
+  $FleetOwner       = doquery("SELECT `username` FROM `{{users}}` WHERE `id` = '". $CurrentFleet['fleet_owner'] ."';", '', true);
+  $TargetOwner      = doquery("SELECT `username` FROM `{{users}}` WHERE `id` = '". $CurrentFleet['fleet_target_owner'] ."';", '', true);
   $Bloc['Id']       = $CurrentFleet['fleet_id'];
   $Bloc['Mission']  = CreateFleetPopupedMissionLink ( $CurrentFleet, $lang['type_mission'][ $CurrentFleet['fleet_mission'] ], '' );
   $Bloc['Mission'] .= "<br>". (($CurrentFleet['fleet_mess'] == 1) ? "R" : "A" );

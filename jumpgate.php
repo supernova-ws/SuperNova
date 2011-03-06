@@ -10,14 +10,7 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}common.{$phpEx}");
-
-if ($IsUserChecked == false) {
-  includeLang('login');
-  header("Location: login.php");
-}
+include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang ('infos');
 
@@ -29,7 +22,7 @@ if ($_POST) {
   if ( $NextJumpTime == 0 ) {
     // Dit monsieur, ou je veux aller ca existe ???
     $TargetPlanet = intval($_POST['jmpto']);
-    $TargetGate   = doquery ( "SELECT `id`, `sprungtor`, `last_jump_time` FROM {{table}} WHERE `id` = '". $TargetPlanet ."';", 'planets', true);
+    $TargetGate   = doquery ( "SELECT `id`, `sprungtor`, `last_jump_time` FROM {{planets}} WHERE `id` = '". $TargetPlanet ."';", '', true);
     // Dit monsieur, ou je veux aller y a une porte de saut ???
     if ($TargetGate['sprungtor'] > 0) {
       $RestString   = GetNextJumpWaitTime ( $TargetGate );
@@ -56,27 +49,27 @@ if ($_POST) {
         // Dit monsieur, y avait quelque chose a envoyer ???
         if ($SubQueryOri != "") {
           // Soustraction de la lune de depart !
-          $QryUpdateOri  = "UPDATE {{table}} SET ";
+          $QryUpdateOri  = "UPDATE {{planets}} SET ";
           $QryUpdateOri .= $SubQueryOri;
           $QryUpdateOri .= "`last_jump_time` = '". $JumpTime ."' ";
           $QryUpdateOri .= "WHERE ";
           $QryUpdateOri .= "`id` = '". $planetrow['id'] ."';";
-          doquery ( $QryUpdateOri, 'planets');
+          doquery ( $QryUpdateOri);
 
           // Addition à la lune d'arrivée !
-          $QryUpdateDes  = "UPDATE {{table}} SET ";
+          $QryUpdateDes  = "UPDATE {{planets}} SET ";
           $QryUpdateDes .= $SubQueryDes;
           $QryUpdateDes .= "`last_jump_time` = '". $JumpTime ."' ";
           $QryUpdateDes .= "WHERE ";
           $QryUpdateDes .= "`id` = '". $TargetGate['id'] ."';";
-          doquery ( $QryUpdateDes, 'planets');
+          doquery ( $QryUpdateDes);
 
           // Deplacement vers la lune d'arrivée
-          $QryUpdateUsr  = "UPDATE {{table}} SET ";
+          $QryUpdateUsr  = "UPDATE {{users}} SET ";
           $QryUpdateUsr .= "`current_planet` = '". $TargetGate['id'] ."' ";
           $QryUpdateUsr .= "WHERE ";
           $QryUpdateUsr .= "`id` = '". $user['id'] ."';";
-          doquery ( $QryUpdateUsr, 'users');
+          doquery ( $QryUpdateUsr);
 
           $planetrow['last_jump_time'] = $JumpTime;
           $RestString    = GetNextJumpWaitTime ( $planetrow );
