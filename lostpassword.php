@@ -13,7 +13,7 @@
  *   [!] Création (Tom)
 **/
 
-include('common.' . substr(strrchr(__FILE__, '.'), 1));
+include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('login');
 
