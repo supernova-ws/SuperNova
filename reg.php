@@ -10,7 +10,7 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
-include('common.' . substr(strrchr(__FILE__, '.'), 1));
+include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('login');
 
