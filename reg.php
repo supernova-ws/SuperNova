@@ -166,12 +166,12 @@ if ($_POST['submit'])
     else
     {
       $Message .= " (" . htmlentities($email) . ")";
-      $Message .= "<br><br>". $lang['error_mailsend'] ." <b>" . $password . "</b>";
+      $Message .= "<br><br>{$lang['error_mailsend']} <b>{$password}</b>";
     }
     $user = sn_login($username, $password);
     $user = $user['user_row'];
 
-    message( $Message, $lang['reg_welldone']);
+    message( $Message, "{$lang['reg_welldone']}<b>{$password}</b>");
   }
 }
 else
