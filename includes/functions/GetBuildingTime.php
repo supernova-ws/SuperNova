@@ -53,11 +53,11 @@ function GetBuildingTime ($user, $planet, $Element, $for_building = BUILD_CREATE
         FROM
         (
           SELECT laboratory
-            FROM {{table}}
+            FROM {{planets}}
             WHERE id_owner='{$user['id']}' AND laboratory>={$lab_require}
             ORDER BY laboratory DESC
             LIMIT {$limite}
-        ) AS subquery;", 'planets', true);
+        ) AS subquery;", '', true);
       $time = $time / (($inves['laboratorio'] + 1) * 2) * pow(0.5, $planet[$resource['35']]);
 
       /*

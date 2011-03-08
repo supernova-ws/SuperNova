@@ -32,35 +32,27 @@ if ($sort2){
 if($sort1>5 || $sort1<0) $sort1 = 0;
 $sort = sprintf(' ORDER BY ' . $sort1s[$sort1] . ' %1$s;', $sort2s);
 
-$userList = doquery("SELECT {{table}}.id, {{table}}.username, {{table}}.galaxy, {{table}}.system, {{table}}.planet, {{table}}.onlinetime, {{table}}.ally_rank_id, {{table}}.ally_register_time, {{statpoints}}.total_points FROM {{table}} LEFT JOIN {{statpoints}} on {{statpoints}}.`id_owner`={{table}}.`id` AND `stat_type` = 1 AND `stat_code` = 1 WHERE `ally_id`='{$user['ally_id']}' {$sort}", 'users');
-$parse = $lang;
-$parse["dpath"] = $dpath;
-$parse["mode"] = $mode . ($edit ? "&edit=" . $edit : "");
-if ($user_can_kick && $user['id'] != $userRow['id'] && $ally['ally_owner'] != $userRow['id'] && $allianceAdminMode) {
-  $parse["isHideAdmin"] = '';
-  $parse["adminBackLinkClass"] = 'fr';
-  $parse["colspan"] = 9;
-}else{
-  $parse["isHideAdmin"] = 'class="hide"';
-  $parse["adminBackLinkClass"] = 'hide';
-  $parse["colspan"] = 8;
-}
+$template = gettemplate('ali_members', true);
 
-while ($userRow = mysql_fetch_assoc($userList)) {
-  $parse = array_merge($parse, $userRow);
+$userList = doquery("SELECT {{users}}.id, {{users}}.username, {{users}}.galaxy, {{users}}.system, {{users}}.planet, {{users}}.onlinetime, {{users}}.ally_rank_id, {{users}}.ally_register_time, {{statpoints}}.total_points FROM {{users}} LEFT JOIN {{statpoints}} on {{statpoints}}.`id_owner`={{users}}.`id` AND `stat_type` = 1 AND `stat_code` = 1 WHERE `ally_id`='{$user['ally_id']}' {$sort}");
 
+while ($userRow = mysql_fetch_assoc($userList))
+{
   $i++;
-  $parse['i'] = $i;
-  $parse['points'] = "" . pretty_number($userRow['total_points']) . "";
 
-  if (!isset($ranks[$userRow['ally_rank_id']])) {
+  if (!isset($ranks[$userRow['ally_rank_id']]))
+  {
     $userRow['ally_rank_id'] = 0;
   }
 
-  if ($ally['ally_owner'] == $userRow['id']) {
+  if ($ally['ally_owner'] == $userRow['id'])
+  {
     $ally_range = ($ally['ally_owner_range'])?$ally['ally_owner_range']:$lang['Founder'];
-  } else {
-    if($allianceAdminMode && $user_admin){
+  }
+  else
+  {
+    if($allianceAdminMode && $user_admin)
+    {
       $ally_range = '<select onchange="javascript:window.location=\'alliance.php?mode=admin&edit=members&id_user=' . $userRow['id'] . '&id_rank=\' + this.value">';
 
       foreach($ranks as $rankID => $rankArray){
@@ -71,71 +63,102 @@ while ($userRow = mysql_fetch_assoc($userList)) {
         $ally_range .= '</option>';
       }
       $ally_range .= '</select>';
-    }else{
+    }
+    else
+    {
       $ally_range = $ranks[$userRow['ally_rank_id']]['name'];
     }
   }
-  $parse['ally_range'] = $ally_range;
-
-  $parse['ally_register_time'] = date(FMT_DATE_TIME, $userRow['ally_register_time']);
 
   $last_active = time() - $userRow["onlinetime"];
-  if($allianceAdminMode && $user_admin){
-    $parse["onlineMessage"] = $lang['ali_sys_lastActive'];
-    if ( $last_active < 60 ) {
+  if($allianceAdminMode && $user_admin)
+  {
+    if ( $last_active < 60 )
+    {
       $tmp = "lime>{$lang['On']}";
-    } elseif ($last_active < 60 * 60) {
+    }
+    elseif ($last_active < 60 * 60)
+    {
       $last_active = round($last_active / 60);
       $tmp = "lime>{$last_active} {$lang['sys_min_short']}";
-    } elseif ($last_active < 60 * 60 * 24) {
+    }
+    elseif ($last_active < 60 * 60 * 24)
+    {
       $last_active = round( $last_active / (60 * 60));
       $tmp = "green>{$last_active} {$lang['sys_hrs_short']}";
-    } else {
+    }
+    else
+    {
       $last_active = round( $last_active / (60 * 60 * 24));
-      if ($last_active < 7) {
+      if ($last_active < 7)
+      {
         $tmp = "yellow";
-      }elseif ($last_active < 30) {
+      }
+      elseif ($last_active < 30)
+      {
         $tmp = "orange";
-      }else{
+      }
+      else
+      {
         $tmp = "red";
       }
       $tmp .= ">{$last_active} {$lang['sys_day_short']}";
     }
-  }else{
-    $parse["onlineMessage"] = $lang['Online'];
-    if($user_onlinestatus){
-      if ( $last_active < 60 * 5 ) {
+  }
+  else
+  {
+    if($user_onlinestatus)
+    {
+      if ( $last_active < 60 * 5 )
+      {
         $tmp = "lime>{$lang['On']}";
-      } elseif ($last_active < 60 * 15) {
+      }
+      elseif ($last_active < 60 * 15)
+      {
         $tmp = "yellow>{$lang['ali_lessThen15min']}";
-      } else {
+      }
+      else
+      {
         $tmp = "red>{$lang['Off']}";
       }
-    } else {
+    }
+    else
+    {
       $sort1 = max($sort1, 4);
       $tmp = "orange>-";
     }
   }
-  $parse["onlinetime"] = '<font color=' . $tmp . '</font>';
 
-  if ($user['id'] != $userRow['id'] && $ally['ally_owner'] != $userRow['id']) {
-    $parse["isHideOwnerKick"] = '';
-  }else{
-    $parse["isHideOwnerKick"] = 'class="hide"';
-  }
 
-  $page_list .= parsetemplate(gettemplate('ali_members_row'), $parse);
+  $template->assign_block_vars('member', array(
+    'COUNT' => $i,
+    'USER_ID' => $userRow['id'],
+    'USER_NAME' => $userRow['username'],
+    'GALAXY' => $userRow['galaxy'],
+    'SYSTEM' => $userRow['system'],
+    'PLANET' => $userRow['planet'],
+    'POINTS' => pretty_number($userRow['total_points']),
+    'ONLINE' => '<font color=' . $tmp . '</font>',
+    'RANK' => $ally_range,
+    'REGISTER_TIME' => date(FMT_DATE_TIME, $userRow['ally_register_time']),
+    'SHOW_KICK' => $user['id'] != $userRow['id'] && $ally['ally_owner'] != $userRow['id'],
+  ));
 }
 
 if ($i != $ally['ally_members']) {
   doquery("UPDATE {{alliance}} SET `ally_members`='{$i}' WHERE `id`='{$ally['id']}'");
 }
 
-$parse['memberCount'] = mysql_num_rows($userList);
-$parse['memberslist'] = $page_list;
-$parse['s'] = $sort2;
-$page .= parsetemplate(gettemplate('ali_members'), $parse);
+$template->assign_vars(array(
+  'mode' => $mode . ($edit ? "&edit=" . $edit : ""),
+  'ADMIN_MODE' => ($user_can_kick && $allianceAdminMode),
+  'dpath' => SN_ROOT_VIRTUAL . $dpath,
+  'onlineMessage' => $allianceAdminMode && $user_admin ? $lang['ali_sys_lastActive'] : $lang['Online'],
+  'memberCount' => mysql_num_rows($userList),
+  'memberslist' => $page_list,
+  's' => $sort2,
+));
 
-display($page, $lang['members_admin']);
+display(parsetemplate($template), $lang['members_admin']);
 
 ?>

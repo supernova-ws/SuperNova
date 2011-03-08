@@ -1,5 +1,5 @@
 <br />
-<form action="?mode=make&yes=1" method="POST">
+<form action="alliance.php?mode=make&yes=1" method="POST">
 <table width=519>
 	<tr>
 	  <td class="c" colspan=2>{make_alliance}</td>
@@ -13,7 +13,7 @@
 	  <th><input type="text" name="name" size=20 maxlength=30 value=""></th>
 	</tr>
 	<tr>
-	  <th colspan=2><input type="submit" value="{Make}"></th>
+	  <th colspan=2><input type="submit" value="{sys_create}"></th>
 	</tr>
 </table>
 

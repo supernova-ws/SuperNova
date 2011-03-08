@@ -51,7 +51,7 @@ function eco_mrk_recourse()
 {message}
 
 <br />
-<form name="form_trade" action="?mode={D_MARKET_RESOURCES}" method="POST">
+<form name="form_trade" action="market.php?mode={D_MARKET_RESOURCES}" method="POST">
   <table>
     <tr><td class="c" colspan=5><div class="fl">{L_eco_mrk_trader}</div><div class="fr">{L_eco_mrk_service_cost} {C_rpg_cost_trader} {L_eco_mrk_dark_matter_short}</div></td></tr>
     <tr align="center">

@@ -85,7 +85,7 @@ function flt_mission_attack($mission_data)
   }
 
   $start = microtime(true);
-  $result = calculateAttack($attackFleets, $defenseFleets);
+  $result = coe_attack_calculate($attackFleets, $defenseFleets);
   $totaltime = microtime(true) - $start;
 
 
@@ -102,7 +102,7 @@ function flt_mission_attack($mission_data)
   {
     if ($attacker['totalCount'] > 0)
     {
-      $sqlQuery  = 'UPDATE {{table}} SET ';
+      $sqlQuery  = 'UPDATE {{fleets}} SET ';
       if ($result['won'] == 1)
       {
         $sqlQuery .= '`fleet_resource_metal` = `fleet_resource_metal` + '. ($attacker['loot']['metal'] + 0) .', ';
@@ -112,13 +112,14 @@ function flt_mission_attack($mission_data)
 
       $sqlQuery .= '`fleet_array` = "'.substr($attacker['fleetArray'], 0, -1).'", ';
       $sqlQuery .= '`fleet_amount` = ' . $attacker['totalCount'] . ', `fleet_mess` = 1 WHERE `fleet_id` = '.$fleetID;
-      doquery($sqlQuery, 'fleets');
+      doquery($sqlQuery);
     }
   }
 
-  if($fleet_row['mission_type'] == MT_AKS && $fleet_row['fleet_group'])
+  if($fleet_row['fleet_mission'] == MT_AKS && $fleet_row['fleet_group'])
   {
     doquery("DELETE FROM {{aks}} WHERE id={$fleet_row['fleet_group']} LIMIT 1;");
+    doquery("UPDATE {{fleets}} SET fleet_group = 0 WHERE fleet_group = {$fleet_row['fleet_group']} AND fleet_mission = " . MT_AKS . ";");
   };
 
   foreach ($defenseFleets as $fleetID => $defender)
@@ -207,7 +208,7 @@ function flt_mission_attack($mission_data)
   doquery($QryInsertRapport) or die("Error inserting CR to database".mysql_error()."<br /><br />Trying to execute:".mysql_query());
 
   // Colorize report.
-  $raport  = '<a href # OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
+  $raport  = '<span OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
   $raport .= '<center>';
   if ($result['won'] == 1)
   {
@@ -221,7 +222,7 @@ function flt_mission_attack($mission_data)
   {
     $raport .= '<font color=\'red\'>';
   }
-  $raport .= $lang['sys_mess_attack_report'] .' ['. $fleet_row['fleet_end_galaxy'] .':'. $fleet_row['fleet_end_system'] .':'. $fleet_row['fleet_end_planet'] .'] </font></a><br /><br />';
+  $raport .= $lang['sys_mess_attack_report'] .' ['. $fleet_row['fleet_end_galaxy'] .':'. $fleet_row['fleet_end_system'] .':'. $fleet_row['fleet_end_planet'] .'] </font></span><br /><br />';
   $raport .= '<font color=\'red\'>'. $lang['sys_perte_attaquant'] .': '. $result['lost']['att'] .'</font>';
   $raport .= '<font color=\'green\'>   '. $lang['sys_perte_defenseur'] .': '. $result['lost']['def'] .'</font><br />' ;
   $raport .= $lang['sys_gain'] .' '. $lang['Metal'] .':<font color=\'#adaead\'>'. $loot['looted']['metal'] .'</font>   '. $lang['Crystal'] .':<font color=\'#ef51ef\'>'. $loot['looted']['crystal'] .'</font>   '. $lang['Deuterium'] .':<font color=\'#f77542\'>'. $loot['looted']['deuterium'] .'</font><br />';
@@ -232,7 +233,7 @@ function flt_mission_attack($mission_data)
   SendSimpleMessage ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $raport );
 
   // Coloriize report.
-  $raport2  = '<a href # OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
+  $raport2  = '<span OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
   $raport2 .= '<center>';
   if       ($result['won'] == 1)
   {
@@ -246,7 +247,7 @@ function flt_mission_attack($mission_data)
   {
     $raport2 .= '<font color=\'red\'>';
   }
-  $raport2 .= $lang['sys_mess_attack_report'] .' ['. $fleet_row['fleet_end_galaxy'] .':'. $fleet_row['fleet_end_system'] .':'. $fleet_row['fleet_end_planet'] .'] </font></a><br /><br />';
+  $raport2 .= $lang['sys_mess_attack_report'] .' ['. $fleet_row['fleet_end_galaxy'] .':'. $fleet_row['fleet_end_system'] .':'. $fleet_row['fleet_end_planet'] .'] </font></span><br /><br />';
 
   $raport2 .= $st_1 . $st_2;
 

@@ -151,7 +151,7 @@ $lang['imp_name'] = "Название";
 $lang['sys_fields'] = "Сектора";
 
 // Cookies
-$lang['err_cookie'] = "Ошибка! Невозможно авторизировать пользователя по информации в cookie. <a href='login.{$phpEx}'>Войдите</a> в игру или <a href='reg.{$phpEx}'>зарегестрируйтесь</a>.";
+$lang['err_cookie'] = "Ошибка! Невозможно авторизировать пользователя по информации в cookie. <a href='login." . PHP_EX . "'>Войдите</a> в игру или <a href='reg." . PHP_EX . "'>зарегестрируйтесь</a>.";
 
 // Supported languages
 $lang['ru']              	  = 'Русский';
@@ -166,6 +166,10 @@ $lang['sys_no']              = 'Нет';
 
 $lang['sys_on']              = 'Включен';
 $lang['sys_off']             = 'Отключен';
+
+$lang['sys_save']            = 'Сохранить';
+$lang['sys_create']          = 'Создать';
+$lang['sys_write_message']   = 'Написать сообщение';
 
 $lang['sys_game_mode'][0]    = 'Сверхновая';
 $lang['sys_game_mode'][1]    = 'оГейм';

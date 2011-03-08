@@ -42,7 +42,7 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
 
   if (!$fleet['fleetlist'])
   {
-    message($lang['fl_err_no_ships'], $lang['fl_error'], "fleet.{$phpEx}", 5);
+    message($lang['fl_err_no_ships'], $lang['fl_error'], 'fleet.' . PHP_EX, 5);
   }
 
   // Building list of shortcuts
@@ -92,8 +92,10 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
   while($row = mysql_fetch_assoc($aks_madnessred))
   {
     $members = explode(',', $row['eingeladen']);
-    foreach($members as $a => $b) {
-      if ($b == $user['id']) {
+    foreach($members as $a => $b)
+    {
+      if ($b == $user['id'])
+      {
         $template->assign_block_vars('acss', array(
           'ID'         => $row['id'],
           'GALAXY'     => $row['galaxy'],
@@ -103,21 +105,11 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
           'TYPE_PRINT' => $lang['fl_shrtcup'][$row['planet_type']],
           'NAME'       => $row['name'],
         ));
-        $parse['aks_id'] = $row['id'];
-        $parse['aks_galaxy'] = $row['galaxy'];
-        $parse['aks_system'] = $row['system'];
-        $parse['aks_planet'] = $row['planet'];
-        $parse['aks_planet_type'] = $row['planet_type'];
-        $parse['aks_name'] = $row['name'];
-
-        $aks_fleets_mr .= parsetemplate(gettemplate('fleet_aks_row'), $parse);
       }
     }
   }
 
   $template->assign_vars(array(
-    'acss1'           => $aks_fleets_mr, // just data to print
-
     'usedfleet'       => str_rot13(base64_encode(serialize($fleet['fleetarray']))),
 
     'speed_factor'     => $SpeedFactor,

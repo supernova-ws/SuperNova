@@ -10,9 +10,7 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
-$ugamela_root_path = (defined('SN_ROOT_PATH')) ? SN_ROOT_PATH : './';
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-include("{$ugamela_root_path}includes/init.{$phpEx}");
+include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('login');
 
@@ -168,12 +166,12 @@ if ($_POST['submit'])
     else
     {
       $Message .= " (" . htmlentities($email) . ")";
-      $Message .= "<br><br>". $lang['error_mailsend'] ." <b>" . $password . "</b>";
+      $Message .= "<br><br>{$lang['error_mailsend']} <b>{$password}</b>";
     }
     $user = sn_login($username, $password);
     $user = $user['user_row'];
 
-    message( $Message, $lang['reg_welldone']);
+    message( $Message, "{$lang['reg_welldone']}<b>{$password}</b>");
   }
 }
 else
@@ -191,7 +189,7 @@ else
 function sendpassemail($emailaddress, $password) {
   global $lang, $kod;
 
-  $parse['gameurl']  = GAMEURL;
+  $parse['SN_ROOT_VIRTUAL']  = SN_ROOT_VIRTUAL;
   $parse['password'] = $password;
   $parse['kod']      = $kod;
   $email             = parsetemplate($lang['mail_welcome'], $parse);
