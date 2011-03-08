@@ -25,8 +25,7 @@ $lang['characters']		= 'символов';
 
 $lang['Apply']			= 'Применить';
 $lang['Back']			= 'Назад';
-$lang['Save']			= 'Сохранить';
-$lang['Delete']			= 'Удалить';
+$lang['Delete']		= 'Удалить';
 $lang['Reset']			= 'Сброс';
 
 //	
