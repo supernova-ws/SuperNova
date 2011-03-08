@@ -101,7 +101,7 @@ switch ($fleet_page)
     $missiontype = array();
     if ($planet > $config->game_maxPlanet)
     {
-      if(!$fleetarray[210])
+      if(!$fleetarray[SHIP_SPY])
       {
         $target_mission = MT_EXPLORE;
         $missiontype[MT_EXPLORE] = $lang['type_mission'][MT_EXPLORE];
@@ -124,7 +124,7 @@ switch ($fleet_page)
 
       if (!$UsedPlanet)
       {
-        if ($fleetarray[208])
+        if ($fleetarray[SHIP_COLONIZER])
         {
           $missiontype[MT_COLONIZE] = $lang['type_mission'][MT_COLONIZE];
           $target_mission = MT_COLONIZE;
@@ -137,7 +137,7 @@ switch ($fleet_page)
       }
       else
       {
-        if ($fleetarray[209] && $planet_type == PT_DEBRIS)
+        if ($fleetarray[SHIP_RECYCLER] && $planet_type == PT_DEBRIS)
         {
           $target_mission = MT_RECYCLE;
           $missiontype[MT_RECYCLE] = $lang['type_mission'][MT_RECYCLE];
@@ -151,7 +151,7 @@ switch ($fleet_page)
           }
           else // Not Your Planet
           {
-            if ($fleetarray[210]) // Only spy missions if any spy
+            if ($fleetarray[SHIP_SPY]) // Only spy missions if any spy
             {
               $missiontype[MT_SPY] = $lang['type_mission'][MT_SPY];
             }
@@ -168,7 +168,7 @@ switch ($fleet_page)
 
                 $missiontype[MT_HOLD] = $lang['type_mission'][MT_HOLD];
 
-                if ($planet_type == PT_MOON && $fleetarray[214])
+                if ($planet_type == PT_MOON && $fleetarray[SHIP_DEATH_STAR])
                 {
                   $missiontype[MT_DESTROY] = $lang['type_mission'][MT_DESTROY];
                 }

@@ -42,7 +42,7 @@ function flt_mission_recycle($mission_data)
   foreach ($FleetRecord as $Item => $Group) {
     if ($Group != '') {
       $Class        = explode (",", $Group);
-      if ($Class[0] == 209) {
+      if ($Class[0] == SHIP_RECYCLER) {
         $RecyclerCapacity   += $pricelist[$Class[0]]["capacity"] * $Class[1];
       } else {
         $OtherFleetCapacity += $pricelist[$Class[0]]["capacity"] * $Class[1];

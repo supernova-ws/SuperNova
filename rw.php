@@ -31,8 +31,8 @@ if ($allow == 1 || $open) {
     $Page .= "(Скорее всего флот был уничтожен за 1 раунд.)</td>";
   } else {
     $report = stripslashes($raportrow["raport"]);
-    foreach ($lang['tech_rc'] as $id => $s_name) {
-      $str_replace1  = array("[ship[".$id."]]");
+    foreach ($lang['tech'] as $id => $s_name) {
+      $str_replace1  = array("[ship[{$id}]]");
       $str_replace2  = array($s_name);
       $report = str_replace($str_replace1, $str_replace2, $report);
     }
