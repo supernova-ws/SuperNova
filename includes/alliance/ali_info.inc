@@ -8,9 +8,9 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 // Evitamos errores casuales xD
 // query
 if ($tag) {
-  $allyrow = doquery("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}'", '', true);
+  $allyrow = doquery("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}' LIMIT 1;", '', true);
 } elseif ($id_ally) {
-  $allyrow = doquery("SELECT * FROM {{alliance}} WHERE id='{$id_ally}'", '', true);
+  $allyrow = doquery("SELECT * FROM {{alliance}} WHERE id='{$id_ally}' LIMIT 1;", '', true);
 }
 // Si no existe
 if (!$allyrow)
@@ -51,11 +51,12 @@ $ally_description = preg_replace($patterns, $replacements, $ally_description);
 $lang['ally_description'] = nl2br($ally_description);
 $lang['ally_image'] = $ally_image;
 $lang['ally_web'] = $ally_web;
-$lang['ally_id'] = $id_ally;
+$lang['ally_id'] = $id;
 
-if ($user['ally_id'] == 0) {
-} else
+if ($user['ally_id'])
+{
   $lang['ally_application'] = 'class="hide"';
+}
 
 $page .= parsetemplate(gettemplate('ali_external_info'), $lang);
 display($page, str_replace('%s', $ally_name, $lang['Info_of_Alliance']));

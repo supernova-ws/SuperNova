@@ -5,21 +5,23 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }
 
-/* Aca se crean las alianzas... */
 if ($POST_tag) {
-  if (!$POST_name) {
+  if (!$POST_name)
+  {
     message($lang['have_not_name'], $lang['make_alliance']);
   }
 
-  $tagquery = doquery("SELECT * FROM {{alliance}} WHERE `ally_tag` ='{$POST_tag}'", '', true);
+  $allyquery = doquery("SELECT * FROM {{alliance}} WHERE `ally_tag` ='{$POST_tag}'", '', true);
 
-  if ($tagquery) {
+  if ($allyquery)
+  {
     message(str_replace('%s', $POST_tag, $lang['always_exist']), $lang['make_alliance']);
   }
 
-  $tagquery = doquery("SELECT * FROM {{alliance}} WHERE `ally_name` ='{$POST_name}'", '', true);
+  $allyquery = doquery("SELECT * FROM {{alliance}} WHERE `ally_name` ='{$POST_name}'", '', true);
 
-  if ($tagquery) {
+  if ($allyquery)
+  {
     message(str_replace('%s', $POST_name, $lang['always_exist']), $lang['make_alliance']);
   }
 
@@ -40,9 +42,7 @@ if ($POST_tag) {
   `ally_register_time`='" . time() . "'
   WHERE `id`='{$user['id']}'");
 
-  $page = MessageForm(str_replace('%s', $POST_tag, $lang['ally_maked']),
-
-    str_replace('%s', $POST_tag, $lang['ally_been_maked']) . "<br><br>", "", $lang['Ok']);
+  $page = MessageForm(str_replace('%s', $POST_tag, $lang['ally_maked']), str_replace('%s', $POST_tag, $lang['ally_been_maked']) . "<br><br>", "", $lang['Ok']);
 } else {
   $page .= parsetemplate(gettemplate('ali_external_make'), $lang);
 }
