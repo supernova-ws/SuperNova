@@ -7,20 +7,34 @@ $lang['ali_lessThen15min']    = '&lt; 15 м';
 
 $lang['ali_confirm']          = 'Подтвердить';
 $lang['ali_confirmation']     = 'Подтверждение';
+
 $lang['ali_adm_disband']      = 'Распустить Альянс';
 $lang['ali_adm_options']      = 'Настройки Альянса';
 $lang['ali_adm_transfer']     = 'Передать Альянс игроку';
 $lang['ali_adm_return']       = 'Вернуться к управлению Альянсом';
 $lang['ali_adm_kick']         = 'Исключить игрока из Альянса';
+$lang['ali_adm_kick_confirm'] = 'Вы уверенны что хотите исключить игрока из Альнса?';
 $lang['ali_adm_requests']     = 'Заявки';
-
 $lang['ali_adm_newLeader']    = 'ВЫБЕРИТЕ ИГРОКА';
-
 $lang['ali_adm_lastRank']     = 'Нельзя удалить единственное звание!';
+
+$lang['ali_adm_rights_title']       = 'Настройка прав доступа';
+$lang['ali_adm_rights_rank_new']    = 'Новое звание';
+$lang['ali_adm_rights_rank_delete'] = 'Удалить звание';
+$lang['ali_adm_rights_rank_none']   = 'Нет званий';
+$lang['ali_adm_rights_rank_name']   = 'Звание';
+$lang['ali_adm_rights_mass_mail']   = 'Сообщение всему Альянсу';
+$lang['ali_adm_rights_view_online'] = 'Просмотр on-line статуса участников';
+$lang['ali_adm_rights_helper']      = 'Помощник главы (Для передачи необходим ранг основателя)';
+$lang['ali_adm_rights_legend']      = 'Права Альянса';
 
 $lang['ali_leaderRank']       = 'Глава Альянса';
 $lang['ali_defaultRankName']  = 'Новичок';
 
+$lang['ali_make_title']       = 'Создание Альянса';
+$lang['ali_make_tag_length']  = '(от 3 до 8 символов)';
+$lang['ali_make_name_length'] = '(до 35 символов)';
+$lang['ali_make_confirm']     = 'Создать Альянс';
 
 $lang['ali_req_cancel']       = 'Удалить заявку';
 $lang['ali_req_candidate']    = 'Кандидат';
@@ -32,7 +46,7 @@ $lang['ali_req_deny_reason']  = 'Ваш запрос на вступление отклонен';
 $lang['ali_req_emptyList']    = 'Нет заявок для рассмотрения';
 $lang['ali_req_inAlly']       = 'Вы уже являетесь участником Альянса.';
 $lang['ali_req_make']         = 'Подать заявку';
-$lang['ali_req_notAllowed']   = '<font color=red>НЕТ ПРИЕМА</font>';
+$lang['ali_req_not_allowed']  = 'НЕТ ПРИЕМА';
 $lang['ali_req_otherRequest'] = 'Вы уже подали заявку в другой Альянс.';
 $lang['ali_req_template']     = 'Прошу принять меня в ваш Альянс';
 $lang['ali_req_text']         = 'Текст заявки';
@@ -40,15 +54,15 @@ $lang['ali_req_title']        = 'Подача заявки в Альянс';
 $lang['ali_req_waiting']      = 'Ваше заявка на вступление в Альянс [%s] будет расмотренно главой Альянса.<br>Вас оповестят о принятом решении.';
 $lang['ali_req_check']        = 'Управление заявками';
 $lang['ali_req_requestCount'] = 'Заявок';
+$lang['ali_req_admin_title']  = 'Обзор заявок';
+$lang['ali_req_accept']       = 'Принять заявку';
+$lang['ali_req_deny']         = 'Отклонить заявку';
 
-
-
-$lang['ali_searchAlly']       = 'Поиск Альянса';
-$lang['ali_searchAction']     = 'Искать';
-$lang['ali_searchTip']        = 'Поиск можно производить по части имени или обозначения Альянса';
-$lang['ali_searchResultTip']  = 'Кликните на имени или обозначении Альянса, что бы посмотреть информацию о нем.<br>Кликните "Вступить", что бы послать запрос о вступлении.';
-
-
+$lang['ali_search_title']       = 'Поиск Альянса';
+$lang['ali_search_action']      = 'Искать';
+$lang['ali_search_tip']         = 'Поиск можно производить по части имени или обозначения Альянса';
+$lang['ali_search_result_none'] = 'Не найдено Альянсов, соответствующих вашему запросу.';
+$lang['ali_search_result_tip']  = 'Кликните на имени или обозначении Альянса, что бы посмотреть информацию о нем.<br>Кликните "Вступить", что бы послать запрос о вступлении.';
 
 $lang['ali_sys_name']         = 'Название';
 $lang['ali_sys_tag']          = 'Обозначение';
@@ -59,6 +73,8 @@ $lang['ali_sys_points']       = 'Очки';
 $lang['ali_sys_lastActive']   = 'Активность';
 $lang['ali_sys_totalMembers'] = 'Всего';
 $lang['ali_sys_clear']        = 'Сбросить';
+$lang['ali_sys_main_page']    = 'Вернуться на главную страницу Альянса';
+$lang['ali_sys_joined']       = 'Дата вступления';
 
 $lang['ali_frm_write']        = 'Писать на форум';
 
@@ -90,7 +106,6 @@ $lang['always_exist']         = '%s уже существует';
 $lang['Aplication_acepted']      = 'Вы приняты';
 $lang['Aplication_hello']           = 'Приветствую<br>Альянс :';
 $lang['Aplication_rejected']        = 'Ваша заявка на вступление в альянс была отклонена.<br>Причина:<br>';
-$lang['Apply_ally_overview']     = 'Обзор заявок';
 $lang['apply_cantbeadded']       = 'Запрос не удался, попробуйте ещё раз!';
 $lang['apply_registered']     = 'Ваша заявка была отправлена.<br><br><a href=alliance.php>Назад</a>';
 $lang['Back']           = 'Назад';
@@ -103,13 +118,10 @@ $lang['Circular_sended']      = 'Сообщение успешно отправлено';
 $lang['Clear']             = 'Очистить';
 $lang['Click_writerequest']      = 'Нажмите здесь чтобы написать заявку';
 $lang['Continue']          = 'продолжить';
-$lang['Coordinated']          = 'Координаты';
 $lang['Delete_apply']         = 'Отклонить заявку';
-$lang['Delete_range']         = 'Удалить звание';
 $lang['Denied_access']        = 'Доступ запрещён!';
 $lang['Destiny']        = 'Получатель';
 $lang['Exit_of_this_alliance']      = 'Выйти из Альянса';
-$lang['Expel_users']          = 'Удаление игроков';
 $lang['External_text']        = 'Внешний текст';
 $lang['Founder']        = 'Создатель';
 $lang['Founder_name']         = 'Звание основателя';
@@ -121,26 +133,18 @@ $lang['Help']           = 'Помощь';
 $lang['Inactive']          = 'Неактивный';
 $lang['Inner_section']        = 'Внутренний текст';
 $lang['Internal_text']        = 'Внутренний текст';
-$lang['Kick_sure']               = 'Вы уверенны что хотите удалить игрока из Альнса?';
 $lang['knowed_allys']     = 'Существующие Альянсы';
 $lang['laws_config']          = 'Настройка прав доступа';
-$lang['Law_leyends']          = 'Список функций';
-$lang['Law_settings']         = 'Настройка прав доступа';
-$lang['Left_hand_text']          = "'Помощник главы' (Для передачи необходим ранг основателя)";
 $lang['Main_Page']         = 'Домашняя страница';
-$lang['Make']           = 'Создать';
 $lang['make_alliance']        = 'Создание Альянса';
 $lang['make_alliance_owner']  = 'Создать Альянс';
-$lang['make_circular']  = 'Сообщение всему Альянсу';
 $lang['max']            = 'макс.';
 $lang['member']            = 'Участник';
-$lang['memberlist_online']    = 'Просмотр on-line статуса участников';
 $lang['memberlist_view']      = 'Просмотр списка участников';
 $lang['members']        = 'Участники';
 $lang['members_admin']     = 'Управление участниками';
 $lang['Members_list']         = 'Список участников';
 $lang['members_who_recived_message'] = 'Следующие члены Альянса получили сообщение:';
-$lang['Member_from']          = 'Дата вступления';
 $lang['Message']        = 'Сообщение';
 $lang['Motive_optional']      = 'Причина (опционально)';
 $lang['New_name']          = 'Новое обозначение';
@@ -156,8 +160,6 @@ $lang['Options']        = 'Опции';
 $lang['Position']          = 'Статус';
 $lang['Public_text_of_alliance']    = 'Внешний текст';
 $lang['Range']             = 'Звание';
-$lang['Range_make']        = 'Новое звание';
-$lang['Range_name']        = 'Звание';
 $lang['Reject_cand']             = 'Отклонить';
 $lang['Reload']            = 'Пример';
 $lang['Repel']             = 'Repel';
@@ -165,9 +167,7 @@ $lang['requests_view']        = 'Просмотр заявок';
 $lang['Request_answer']       = 'Запрос отклонен';
 $lang['Request_date']      = 'Дата подачи заявки';
 $lang['Request_text']         = 'Текст заявки';
-$lang['Return_to_overview']      = 'Вернуться на главную страницу Альянса';
 $lang['s']           = '[N/A]';
-$lang['Save']           = 'Сохранить';
 $lang['Search']               = 'Поиск';
 $lang['searchd_ally_avail']   = 'Найдены Альянсы:';
 $lang['search_alliance']      = 'Поиск';
@@ -178,14 +178,13 @@ $lang['Set_range']            = 'Изменение ранга';
 $lang['Show_of_request_text']       = 'Текст заявки';
 $lang['Texts']             = 'Редактирование текста';
 $lang['Text_mail']         = 'Отправка сообщения всему Альянсу';
-$lang['There_is_not_range']      = 'Нет рангов';
 $lang['top10alliance']        = 'Топ 10 Альянсов';
 $lang['transfer']             = 'Передача';
 $lang['transfer_ally']           = 'Передача альянса';
 $lang['transfer_to']          = 'Передать альянс игроку:';
 $lang['Want_go_out']          = 'Вы действительно хотите покинуть Альянс ?';
 $lang['write_apply']          = 'Подать заявку';
-$lang['Write_message']     = 'Написать сообщение';
 $lang['your_alliance']        = 'Ваш Альянс';
 $lang['your_apply']        = 'Ваша заявка';
+
 ?>

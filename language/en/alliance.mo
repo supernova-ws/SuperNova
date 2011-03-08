@@ -90,7 +90,6 @@ $lang['Name'] = 'Имя';
 $lang['Number'] = 'Номер';
 $lang['Position'] = 'Позиция';
 $lang['Points'] = 'Очков';
-$lang['Coordinated'] = 'Координаты';
 $lang['Member_from'] = 'Члены из';
 $lang['Write_a_message'] = 'Написать письмо';
 $lang['On'] = 'Включен';
