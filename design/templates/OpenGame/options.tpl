@@ -67,7 +67,7 @@
         </th>
       </tr>
       <tr>
-        <th>{L_skins_example}<!--<br> <a href="http://80.237.203.201/download/" target="_blank">{Download}</a>--></th>
+        <th>{L_skins_example}</th>
         <th><input name="design"{opt_sskin_data} type="checkbox" id="design" /> <label for="design">{L_opt_chk_skin}</label><br>
           <input name="dpath" maxlength="80" size="40" value="{opt_dpath_data}" type="text">&nbsp;<select name="dpaths" size="1" onchange="document.fOptions.dpath.value='skins/'+this.value+'/';">
             {opt_lst_skin_data}

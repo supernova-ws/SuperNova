@@ -1,4 +1,4 @@
-<script type="text/javascript" src="js/fleet.js"></script>
+<!-- INCLUDE fleet_javascript.tpl -->
 
 <br>
 <!-- IF .results -->

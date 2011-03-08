@@ -43,7 +43,7 @@ function flt_mission_destroy($mission_data)
   {
     foreach($fleet['detail'] as $shipID => $shipNum)
     {
-      $Rips += ($shipID == 214) ? $shipNum : 0;
+      $Rips += ($shipID == SHIP_DEATH_STAR) ? $shipNum : 0;
     }
   }
 

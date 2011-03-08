@@ -74,7 +74,7 @@ foreach($lang['tech'] as $Element => $ElementName) {
         $Row['winner']      = ($UserRow['current'] != 0) ? $UserRow['username'] : $lang['rec_rien'];
         $Row['count']       = ($UserRow['current'] != 0) ? pretty_number( $UserRow['current'] ) : $lang['rec_rien'];
         $parse['research'] .= parsetemplate( $TableRows, $Row);
-      } elseif ($Element >= 201 && $Element <= 399) {
+      } elseif (in_array($Element, $sn_data['groups']['fleet'])) {
         // Flotte
         $PlanetRow          = doquery ("SELECT `id_owner`, `". $resource[$Element] ."` AS `current` FROM {{planets}} WHERE `". $resource[$Element]. "` = (SELECT MAX(`". $resource[$Element] ."`) FROM {{planets}} WHERE `id_level` = '0');", '', true);
         $UserRow            = doquery ("SELECT `username` FROM {{users}} WHERE `id` = '".$PlanetRow['id_owner']."' LIMIT 1;", '', true);
