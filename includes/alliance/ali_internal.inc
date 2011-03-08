@@ -24,7 +24,6 @@ function ALI_rankListSave($ranks) {
   return $ranklist;
 }
 
-// query para la allyrow
 $rights     = array( 0 => 'name', 1 => 'mail',  2 => 'online',       3 => 'invite',                4 => 'kick', 5 => 'admin',      6 => 'forum',);
 $rights_old = array( 0 => 'name', 1 => 'mails', 2 => 'onlinestatus', 3 => 'bewerbungenbearbeiten', 4 => 'kick', 5 => 'rechtehand',);
 
@@ -81,20 +80,21 @@ if ($ranks[$user['ally_rank_id']]['admin'] == 1 || $isAllyOwner){
 }
 
 if (!$ally) {
-  doquery("UPDATE {{users}} SET `ally_id` = 0, `ally_name` = '' WHERE `id`='{$user['id']}';");
+  doquery("UPDATE {{users}} SET `ally_id` = 0, `ally_name` = '' WHERE `id`='{$user['id']}' LIMIT 1;");
   message($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
 }
 
 switch ($mode){
   case 'admin':
-  	$allianceAdminMode = true;
+  	 $allianceAdminMode = true;
     switch($edit){
       case 'rights':   include('ali_internal_admin_rights.inc'); break;
       case 'members':  include('ali_internal_memberlist.inc'); break;
       case 'requests': include('ali_internal_admin_request.inc'); break;
       default:         include('ali_internal_admin.inc'); break;
     }
-    break;
+  break;
+
   case 'exit':         include('ali_internal_exit.inc'); break;
   case 'memberslist':  include('ali_internal_memberlist.inc'); break;
   case 'circular':     include('ali_internal_admin_mail.inc'); break;

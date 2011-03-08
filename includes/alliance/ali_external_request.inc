@@ -42,7 +42,7 @@ if(!$ally) {
 }
 
 if($ally['ally_request_notallow']) {
-  message($lang['ali_req_notAllowed'], $lang['ali_req_title']);
+  message($lang['ali_req_not_allowed'], $lang['ali_req_title']);
 }
 
 $text_apply = $ally['ally_request'] ? $ally['ally_request'] : $lang['ali_req_template'];

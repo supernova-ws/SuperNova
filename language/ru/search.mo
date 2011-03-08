@@ -12,7 +12,6 @@ $lang['Alliance_tag'] = 'Обозначение альянса';
 $lang['Members'] = 'Участники';
 $lang['Points'] = 'Очки';
 $lang['PerMember'] = 'На человека';
-$lang['Coordinated'] = 'Координаты';
 $lang['Position'] = 'Место';
 $lang['Search'] = 'Поиску';
 $lang['Search_in_all_game'] = "Поиск по серверу";
