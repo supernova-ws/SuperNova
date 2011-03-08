@@ -167,6 +167,10 @@ $lang['sys_no']              = 'Нет';
 $lang['sys_on']              = 'Включен';
 $lang['sys_off']             = 'Отключен';
 
+$lang['sys_save']            = 'Сохранить';
+$lang['sys_create']          = 'Создать';
+$lang['sys_write_message']   = 'Написать сообщение';
+
 $lang['sys_game_mode'][0]    = 'Сверхновая';
 $lang['sys_game_mode'][1]    = 'оГейм';
 

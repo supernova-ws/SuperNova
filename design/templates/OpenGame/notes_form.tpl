@@ -28,7 +28,7 @@
 	  <td class="c"><a href="{PHP_SELF}">{Back}</a></td>
 	  <td class="c">
 		<input type="reset" value="{Reset}">
-		<input type="submit" value="{Save}">
+		<input type="submit" value="{sys_save}">
 	  </td>
 	</tr>
   </table>

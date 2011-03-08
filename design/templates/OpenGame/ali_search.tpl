@@ -1,10 +1,43 @@
 <br />
 <table width="519">
   <tr>
-    <th>{ali_searchAlly}</th>
+    <th>{L_ali_search_title}</th>
     <th><form action="alliance.php?mode=search" method="POST">
-      <input type="text" name="searchtext" value="{searchtext}" size=65>&nbsp;&nbsp;<input type="submit" value="{ali_searchAction}">
+      <input type="text" name="searchtext" value="{SEARCH_TEXT}" size=50>&nbsp;&nbsp;<input type="submit" value="{L_ali_search_action}">
     </form></th>
   </tr>
-  <tr><td colspan="2" class="c">{ali_searchTip}</td></tr>
+  <tr><td colspan="2" class="c">{L_ali_search_tip}</td></tr>
 </table>
+
+<!-- IF SEARCH_TEXT -->
+<br />
+<table width=519>
+  <tr>
+    <td class=c><center>{L_ali_sys_tag}</center></td>
+    <td class=c><center>{L_ali_sys_name}</center></td>
+    <td class=c><center>{L_ali_sys_members}</center></td>
+    <td class=c><center>{L_ali_req_make}</center></td>
+  </tr>
+
+  <!-- BEGIN alliances -->  
+    <tr>
+      <th><a href="alliance.php?mode=ainfo&a={alliances.ID}">{alliances.TAG}</a></th>
+      <th><a href="alliance.php?mode=ainfo&a={alliances.ID}">{alliances.NAME}</a></th>
+      <th>{alliances.MEMBERS}</th>
+      <th>
+        <!-- IF alliances.NO_REQUESTS -->
+          <font color="red">{L_ali_req_not_allowed}</font>
+        <!-- ELSE -->
+          <a href="alliance.php?mode=apply&a={alliances.ID}">{L_ali_req_make}</a>
+        <!-- ENDIF -->
+      </th>
+    </tr>
+  <!-- BEGINELSE alliances -->  
+    <tr><th colspan="4">{L_ali_search_result_none}</th></tr>
+  <!-- END alliances -->  
+  
+  <tr><td class=c colspan=4>{L_ali_search_result_tip}</td></tr>
+</table>
+<!-- ENDIF -->
+
+<!-- INCLUDE page_hint.tpl -->
