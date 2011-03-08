@@ -82,7 +82,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   // Checking for no planet
   if(!$planet_dst['id_owner'])
   {
-    if($mission == MT_COLONIZE && !$fleet[208])
+    if($mission == MT_COLONIZE && !$fleet[SHIP_COLONIZER])
     {
       return ATTACK_NO_COLONIZER;
     }
@@ -101,7 +101,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
       return ATTACK_NO_DEBRIS;
     }
 
-    if($fleet[209] <= 0)
+    if($fleet[SHIP_RECYCLER] <= 0)
     {
       return ATTACK_NO_RECYCLERS;
     }
@@ -185,7 +185,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
 
   if($mission == MT_SPY)
   {
-    if($fleet[210] >= 1)
+    if($fleet[SHIP_SPY] >= 1)
     {
       return ATTACK_ALLOWED;
     }

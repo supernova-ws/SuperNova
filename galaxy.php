@@ -40,7 +40,7 @@ $CurrentMIP    = $planetrow['interplanetary_misil'];
 $HavePhalanx   = $planetrow['phalanx'];
 $CurrentSystem = $planetrow['system'];
 $CurrentGalaxy = $planetrow['galaxy'];
-$CanDestroy    = $planetrow[$sn_data[214]['name']];
+$CanDestroy    = $planetrow[$sn_data[SHIP_DEATH_STAR]['name']];
 
 $maxfleet       = doquery("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
 $maxfleet_count = $maxfleet['flying_fleet_count'];
@@ -178,14 +178,9 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
       foreach($fleet_list[$Planet][PT_DEBRIS] as $fleet_row)
       {
         $fleet_data = flt_expand($fleet_row);
-        $recyclers_incoming += $fleet_data[209];
+        $recyclers_incoming += $fleet_data[SHIP_RECYCLER];
       }
     }
-    //$sql_fleets = doquery("SELECT * FROM {{fleets}} WHERE `fleet_end_galaxy` = {$galaxy} AND `fleet_end_system` = {$system} AND `fleet_end_planet` = {$Planet} AND `fleet_end_type` = 2 AND fleet_mess = 0 AND fleet_owner = {$user['id']};");
-    //while ($arr_fleet = mysql_fetch_assoc($sql_fleets)) {
-    //  $fleet = flt_expand($arr_fleet);
-    //  $recyclers_incoming += $fleet[209];
-    //}
 
     $GalaxyRowMoon = $planet_list[$Planet][PT_MOON];
     //$GalaxyRowMoon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = {$GalaxyRowPlanet['id']};", '', true);
@@ -207,7 +202,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
   }
 
   if ($GalaxyRowPlanet["debris_metal"] || $GalaxyRowPlanet["debris_crystal"]) {
-    $RecNeeded = ceil(($GalaxyRowPlanet["debris_metal"] + $GalaxyRowPlanet["debris_crystal"]) / $pricelist[209]['capacity']);
+    $RecNeeded = ceil(($GalaxyRowPlanet["debris_metal"] + $GalaxyRowPlanet["debris_crystal"]) / $pricelist[SHIP_RECYCLER]['capacity']);
     if ($RecNeeded < $CurrentRC) {
       $recyclers_sent = $RecNeeded;
     }else{
@@ -215,7 +210,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
     }
   }
 
-  $recyclers_need = ceil(($GalaxyRowPlanet['debris_metal'] + $GalaxyRowPlanet['debris_crystal']) / $sn_data[209]['capacity']);
+  $recyclers_need = ceil(($GalaxyRowPlanet['debris_metal'] + $GalaxyRowPlanet['debris_crystal']) / $sn_data[SHIP_RECYCLER]['capacity']);
 
   $template->assign_block_vars('galaxyrow', array(
      'PLANET_ID'        => $GalaxyRowPlanet['id'],
@@ -293,7 +288,7 @@ $template->assign_vars(array(
      'curPlanetS'     => $planetrow['system'],
      'curPlanetP'     => $planetrow['planet'],
      'curPlanetPT'    => $planetrow['planet_type'],
-     'deathStars'     => $planetrow[$sn_data[214]['name']],
+     'deathStars'     => $planetrow[$sn_data[SHIP_DEATH_STAR]['name']],
      'galaxy'         => $galaxy,
      'system'         => $system,
      'planet'         => $planet,
@@ -316,6 +311,7 @@ $template->assign_vars(array(
      'PLANET_PHALANX' => $HavePhalanx && $galaxy == $CurrentGalaxy &&
                          $system >= $CurrentSystem - $PhalanxRange && $system <= $CurrentSystem + $PhalanxRange,
      'PAGE_HINT'      => $lang['gal_sys_hint'],
+     'LANG_RECYCLERS' => $lang['tech'][SHIP_RECYCLER],
    )
 );
 
