@@ -1,56 +1,48 @@
 <?php
-/*
-#############################################################################
-#  Filename: messages.mo
-#  Create date: Sunday, March 30, 2008	 18:46:57
-#  Project: prethOgame
-#  Description: RPG web based game
-#
-#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright © 2005 - 2008 KGsystem
-#############################################################################
-*/
-$lang['alliance']   = 'Альянс';
-$lang['title']      = "Выбрать тип сообщений";
-$lang['head_type']  = "Тип сообщений";
-$lang['head_count'] = "Непрочитано";
-$lang['head_total'] = "Всего";
-$lang['type'][-1]	  = "Outbound";
-$lang['type'][0]    = "Отчеты шпионажа";
-$lang['type'][1]    = "Личные сообщения";
-$lang['type'][2]    = "Указания";
-$lang['type'][3]    = "Отчеты о битвах";
-$lang['type'][4]    = "Отчеты о производстве";
-$lang['type'][5]    = "Отчеты транспортировки";
-$lang['type'][15]   = "Отчеты экспедиций";
-$lang['type'][99]   = "Отчеты задач строительства";
-$lang['type'][100]  = "Все сообщения";
 
-$lang['mes_sent']			 = "Сообщение отправлено";
-$lang['mess_pagetitle']      = "Послать сообщение";
-$lang['mess_error']          = "Ошибка";
-$lang['mess_no_ownerid']     = "Ошибка! Попробуйте снова, если не получится - обратитесь к администрации";
-$lang['mess_no_ownerpl']     = "Ошибка! У игрока, которому вы хотите отправить письмо - больше нет планет!";
-$lang['mess_no_owner']       = "Игрока не существует.";
-$lang['mess_recipient']      = "Получатель";
-$lang['mess_message']        = "Сообщение";
-$lang['mess_characters']     = "Символов";
-$lang['mess_subject']        = "Тема";
-$lang['mess_envoyer']        = " Отправить ";
-$lang['mess_no_subject']     = "Нет темы.";
-$lang['mess_no_text']        = "Текста нет!";
-$lang['mess_sended']         = "Отправлено !";
-$lang['mess_partialreport']  = "Посмотреть только отчеты о шпионаже";
-$lang['mess_deleteunmarked'] = "Удалить все непомеченные";
-$lang['mess_deletemarked']   = "Удалить все помеченные";
-$lang['mess_deleteall']      = "Удалить все";
-$lang['mess_its_ok']         = " Ок ";
-$lang['mess_from']           = "От кого";
-$lang['mess_action']         = "Действие";
-$lang['mess_date']           = "Дата";
-$lang['mess_answer']         = "Ответить";
-$lang['mess_answer_prefix']  = "Re:";
+$lang['alliance']		= 'Alliance';
+$lang['title']			= "Mailbox";
+$lang['head_type']		= "Category";
+$lang['head_count']		= "Unread";
+$lang['head_total']		= "Total";
+$lang['type'][-1]		= "Sent messages";
+$lang['type'][0]		= "Spy reports";
+$lang['type'][1]		= "Message by players";
+$lang['type'][2]		= "Alliance Communications";
+$lang['type'][3]		= "Military reports";
+$lang['type'][4]		= "Records processing";
+$lang['type'][5]		= "The arrival of the fleet";
+$lang['type'][15]		= "Reports for expeditions";
+$lang['type'][99]		= "Message queue structures";
+$lang['type'][100]  		= "All messages";
 
-$lang['Player_say'] = '<font color="#7f7f7f">Игрок</font> %s <font color="#7f7f7f">Послал следующее сообщение:</font><br>';
+$lang['mes_sent']		= "Message sent";
+$lang['mess_pagetitle']		= "Send a message";
+$lang['mess_error']		= "Error";
+$lang['mess_no_ownerid']	= "Error! Try again, if you fail to contact the Administration";
+$lang['mess_no_ownerpl']	= "Error! The player who you want to send a letter of no more planets!";
+$lang['mess_no_owner']		= "Player does not exist.";
+$lang['mess_recipient']		= "Recipient";
+$lang['mess_message']		= "Message";
+$lang['mess_characters']	= "Characters";
+$lang['mess_subject']		= "Subject";
+$lang['mess_envoyer']		= " Send ";
+$lang['mess_no_subject']	= "Message subject";
+$lang['mess_no_text']		= "We will send an empty message?";
+$lang['mess_sended']		= "Message sent!";
+$lang['mess_partialreport'] 	= "Intelligence show partly";
+$lang['mess_deleteunmarked']	= "Delete unchecked messages";
+$lang['mess_deletemarked']	= "Delete checked messages";
+$lang['mess_deleteall']		= "Delete All";
+$lang['mess_its_ok']		= " ок ";
+$lang['mess_from']		= "From";
+$lang['mess_action']		= "Action";
+$lang['mess_date']		= "Date";
+$lang['mess_answer']		= "Answer";
+$lang['mess_answer_prefix']	= "Reply:";
+
+$lang['Player_say']		= '<font color="#7f7f7f">Player</font> %s <font color="#7f7f7f">wrote:</font><br>';
+
+$lang['mess_comp']		= "To complain of flagged messages";
 
 ?>

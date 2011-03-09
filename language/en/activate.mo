@@ -13,8 +13,8 @@
 if (!defined('INSIDE')) {
 	die("attemp hacking");
 }
-$lang['sucess'] = 'Ваш аккаунт активирован';
-$lang['all_done'] = 'Выполнено';
-$lang['Error'] = 'Ошибка';
-$lang['Wrong_data'] = 'Ваша ссылка просрочена или такого аккаунта не существует';
+$lang['sucess'] = 'Your account is activated';
+$lang['all_done'] = 'Completed';
+$lang['Error'] = 'Erroe';
+$lang['Wrong_data'] = 'Your link has expired or th account does not exist';
 ?>

@@ -139,12 +139,12 @@ function probeConsumption() {
   dist = distance();
   dur = duration();
 
-  if (document.getElementsByName("ship210")[0]) {
-    shipspeed = document.getElementsByName("speed210")[0].value;
+  if (document.getElementsByName("ship" + SHIP_SPY)[0]) {
+    shipspeed = document.getElementsByName("speed" + SHIP_SPY)[0].value;
     spd = 35000 / (dur * speed_factor - 10) * Math.sqrt(dist * 10 / shipspeed);
 
-    basicConsumption = document.getElementsByName("consumption210")[0].value
-    * document.getElementsByName("ship210")[0].value;
+    basicConsumption = document.getElementsByName("consumption" + SHIP_SPY)[0].value
+    * document.getElementsByName("ship" + SHIP_SPY)[0].value;
     consumption += basicConsumption * dist / 35000 * ((spd / 10) + 1) * ((spd / 10) + 1);
   }
 
@@ -153,7 +153,7 @@ function probeConsumption() {
 }
 
 function unusedProbeStorage() {
-  var stor =  document.getElementsByName('capacity210')[0].value * document.getElementsByName('ship210')[0].value - probeConsumption();
+  var stor =  document.getElementsByName('capacity' + SHIP_SPY)[0].value * document.getElementsByName('ship' + SHIP_SPY)[0].value - probeConsumption();
 
   return (stor>0) ? stor : 0;
 }
@@ -277,23 +277,6 @@ function calculateTransportCapacity() {
     document.getElementById("fleet_page2_submit").disabled = false;
   }
   return transportCapacity;
-}
-
-function setShips(s16,s17,s18,s19,s20,s21,s22,s23,s24,s25,s27,s28,s29)
-{
-  setNumber('202',s16);
-  setNumber('203',s17);
-  setNumber('204',s18);
-  setNumber('205',s19);
-  setNumber('206',s20);
-  setNumber('207',s21);
-  setNumber('208',s22);
-  setNumber('209',s23);
-  setNumber('210',s24);
-  setNumber('211',s25);
-  setNumber('213',s27);
-  setNumber('214',s28);
-  setNumber('215',s29);
 }
 
 function setNumber(name,number){

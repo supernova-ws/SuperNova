@@ -1,9 +1,4 @@
-<script type="text/javascript" src="js/fleet.js"></script>
-<script type="text/javascript">
-function getStorageFaktor() {
-    return 1;
-}
-</script>
+<!-- INCLUDE fleet_javascript.tpl -->
 
 <script type="text/javascript"><!--
 var fleet_capacity = {fleet_capacity};

@@ -1,88 +1,159 @@
 <?php
 
-// General
-$lang['cancel'] = 'Отменить';
-$lang['Planet_menu'] = 'Меню планеты';
-$lang['Planet'] = 'Планета';
-$lang['Have_new_message'] = 'У Вас 1 непрочитанное сообщение';
-$lang['Have_new_messages'] = 'У Вас %m непрочитанных сообщений';
-$lang['Have_new_level_mineur'] = 'Вы выиграли одно очко развития офицеров!';
-$lang['Have_new_level_raid'] = 'Вы выиграли одно очко развития офицеров!';
-$lang['Server_time'] = 'Время сервера';
-$lang['Events'] = 'События';
-$lang['Free'] = 'свободно';
-$lang['Diameter'] = 'Диаметр';
-$lang['fields'] = 'место';
-$lang['Developed_fields'] = 'Разработанное место';
-$lang['max_eveloped_fields'] = 'Максимальное количество';
-$lang['Temperature'] = 'Температура';
-$lang['approx'] = 'approx.';
-$lang['to'] = 'to';
-$lang['Centigrade'] = 'C';
-$lang['Position'] = 'Позиция';
-$lang['Points'] = 'Очки';
-$lang['Buildings'] = 'Строения';
-$lang['Fleet'] = 'Флот';
-$lang['Research'] = 'Исследования';
-$lang['Total'] = 'Всего';
-$lang['Experience'] = 'Опыт';
+$lang = array_merge($lang, array(
+  'ov_hack_alert' => 'DATABASE hacking attempt!!!',
 
-$lang['Rank'] = 'Ранг';
-$lang['of'] = 'из';
-$lang['Level'] = 'уровень';
-$lang['Miner'] = 'Геолог';
-$lang['Raider'] = 'Рейдер';
-$lang['Debris_Field'] = 'Debris Field';
+  'ov_you_have'			=> 'Do you have',
+  'ov_new_message'		=> 'one new message',
+  'ov_new_messages'	=> 'new messages',
 
-// Colony
-$lang['rename_and_abandon_planet'] = 'Renaming and abandoning planets';
-$lang['functions'] = 'Function';
-$lang['coords'] = 'Position';
-$lang['your_planet'] = 'Your planet';
-$lang['colony_abandon'] = 'abandon colony';
-$lang['deleteplanet'] = 'Delete planet!';
-$lang['security_query'] = 'Security query';
-$lang['name'] = 'Name';
-$lang['namer'] = 'rename';
-$lang['password'] = 'Password';
-$lang['confirm_planet_delete'] = 'Please confirm planet deletion.';
-$lang['confirmed_with_password'] = 'by entering your password';
+  // General
+  'cancel'				=> 'Cancel',
+  'Planet_menu'			=> 'Buildings on the planet',
+  'Planet'				=> 'Planet',
+  'Have_new_level_mineur'		=> 'For achievements in economy you have won a point development officers!',
+  'Have_new_level_raid'		=> 'For successful attacks you have won a point development officers!',
+  'Server_time'			=> 'Time',
+  'Events'				=> 'Events',
+  'Free'				=> 'Free',
+  'Diameter'			=> 'Diameter',
+  'fields'				=> 'Fields',
+  'Developed_fields'		=> 'Developed Fields',
+  'max_eveloped_fields'		=> 'maximum number of fields',
+  'Temperature'			=> 'Temperature',
+  'approx'				=> 'Approx',
+  'to'				=> 'to',
+  'Centigrade'			=> 'C',
+  'Position'			=> 'Position',
+
+  'Buildings' => 'Buildings',
+  'Fleet' => 'Fleet',
+  'Research' => 'Research',
+  'Total' => 'Total',
+
+  'Rank' => 'Rank',
+  'of' => 'Of',
+  'Miner' => 'Miner',
+  'Raider' => 'Raider',
+  'Debris_Field' => 'Debris Field',
+
+  'rename_and_abandon_planet'	=> 'Rename and abandon planet',
+  'functions'			=> 'Function',
+  'coords'				=> 'Coordinates',
+  'your_planet'			=> 'Your planet',
+  'colony_abandon'			=> 'Abandon Colony',
+  'deleteplanet'			=> 'Remove the planet!',
+  'security_query'			=> 'Security system',
+  'name'				=> 'Name',
+  'namer'				=> 'Change the name',
+  'password'			=> 'Password',
+  'confirm_planet_delete'		=> 'Confirm the deletion of the planet',
+  'confirmed_with_password'	=> 'Confirm the password',
 
 
-// Rename planet
-$lang['deletemessage_ok'] = 'The colony was abandoned';
-$lang['deletemessage_wrong'] = 'You can\'t abandon home planet';
-$lang['deletemessage_fail'] = 'Неправильный пароль!';
+  // 	
+  'ov_delete_ok'			   => 'Colony successfully deleted',
+  'ov_delete_wrong_planet'	=> 'The planet cannot be left! You try to leave your planet or you changed the current planet in another browser window.',
+  'ov_delete_wrong_pass'	=> 'Wrong password!',
 
-// Divers
-$lang['MembersOnline']       = "Игроков в онлайне";
-$lang['ov_news_title']       = "Новости";
+  // 	
+  'MembersOnline'			=> 'Players',
 
-// Gestion des flottes
-$lang['ov_fleet']            = "часть флота";
-$lang['ov_une']              = "Направленная вами ";
-$lang['ov_vennant']          = " направляется ";
-$lang['ov_planet_to']        = "с планеты ";
-$lang['ov_moon_to']          = "на Луну ";
-$lang['ov_atteint']          = " на ";
-$lang['ov_planet_to_target'] = "планету ";
-$lang['ov_moon_to_target']   = "луна ";
-$lang['ov_debris_to_target'] = "заброшенный космос ";
-$lang['ov_explo_to_target']  = "позиция ";
-$lang['ov_mission']          = ". Его миссия: ";
+  // 	
+  'ov_fleet_list'				=> 'Schedule of fleets',
 
-$lang['ov_explo_stay']       = " исследовать ";
-$lang['ov_explo_mission']    = ". Его миссия: ";
+  'ov_fleet'                => 'Fleet',
+  'ov_destination'          => 'Destination',
+  'ov_source'               => 'From Where',
+  'ov_time'                 => 'Time',
+  'ov_mission'              => 'Mission',
+  'ov_event'                => 'Event',
+  'ov_flying_fleets'        => 'The fleets traveling at',
+  'ov_other_planets'        => 'other planets',
 
-$lang['ov_rentrant']         = " возвращается ";
-$lang['ov_planet_from']      = "с Планеты ";
-$lang['ov_moon_from']        = "с Луны ";
-$lang['ov_debris_from']      = "из заброшенного космоса ";
-$lang['ov_explo_from']       = "позиция ";
-$lang['ov_back_planet']      = " на планету ";
-$lang['ov_back_moon']        = " на луну ";
+  'ov_fleet_arrive'         => 'Arrive',
+  'ov_fleet_return'         => 'Return',
+  'ov_fleet_hold'           => 'End Mission',
+  'ov_fleet_rocket'         => 'Missile strike',
 
-$lang['ov_une_hostile']      = "Один ";
-$lang['ov_hostile']          = " враждебный ";
-$lang['ov_message']          = "Написать письмо";
+  'ov_fleet_exploration'    => 'Exploration',
+  'ov_fleet_colonization'   => 'Colonization',
+
+  'ov_fleet_no_flying'      => 'No fleets in flight',
+
+
+
+
+  'ov_vennant'			=> ' posted ',
+  'ov_planet_to'			=> 'with the planet ',
+  'ov_moon_to'			=> 'from the Moon ',
+  'ov_atteint'			=> ' posted at ',
+  'ov_planet_to_target'		=> 'Planet ',
+  'ov_moon_to_target'		=> 'Moon ',
+  'ov_debris_to_target'		=> 'Field debris ',
+  'ov_explo_to_target'		=> 'position ',
+
+  'ov_explo_stay'			=> ' Exploreing ',
+  'ov_explo_mission'		=> '. Mission : ',
+
+  'ov_rentrant'			=> ' Returns ',
+  'ov_planet_from'			=> 'with the planet ',
+  'ov_moon_from'			=> 'from the Moon ',
+  'ov_debris_from'			=> 'from the wreckage ',
+  'ov_explo_from'			=> 'with position ',
+  'ov_back_planet'			=> ' on the planet ',
+  'ov_back_moon'			=> ' to the Moon ',
+
+  'ov_hostile'			=> ' Player ',
+  'ov_message'			=> 'Send a message',
+
+  'user_points_1'			=> 'For construction',
+  'user_points_2'			=> 'For research',
+  'user_points_3'			=> 'For defence',
+  'user_points_4'			=> 'For fleet',
+  'user_points_all'		=> 'Total',
+  'Points_1'			=> 'Field',
+  'km'				=> 'км',
+  'orb'				=> 'Debris in orbit',
+  'buildings_on_planet'		=> 'Building',
+  'NumberOfRaids' => 'Held',
+  'RaidsWin' => 'Won',
+  'RaidsLoose' => 'Lost',
+  'Economica' => 'Economy',
+  'Teching' => 'Research',
+
+
+  'ov_planet_details' => 'Planet Details',
+  'ov_building'       => 'Building',
+  'ov_hangar'         => 'Shipyard',
+  'ov_rank'           => 'Rank',
+
+  'ov_rpg_new_level_miner' => 'For achievements in economy you get Dark Matter.',
+  'ov_rpg_new_level_raid'  => 'For successful attacks you get Dark Matter.',
+
+  'ov_points'              => 'Ponits',
+  'ov_raids'               => 'Raids',
+  'ov_experience'          => 'Experience',
+
+  'ov_player_rpg'          => 'Player statistics',
+
+  'ov_banner'   => 'Banner',
+  'ov_userbar'  => 'Userbar',
+
+  'ov_banner_empty_id' => 'SuperNova - Join The Game!',
+
+  'ov_new'          => 'New',
+
+  'ov_overview'     => 'Overview',
+
+  'ov_manage'     => 'Manage',
+  'ov_return'     => 'Back to overview',
+
+  'ov_rename'     => 'Rename',
+  'ov_new_name'   => 'New name',
+
+  'ov_password'   => 'Your password',
+
+));
+
 ?>
