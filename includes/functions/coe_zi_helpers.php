@@ -39,8 +39,10 @@ function BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $a
   global $CombatCaps;
   global $be_debug_array;
 
-  $SN = array(202 => 'МаТр', 203 => 'БоТр', 201 => 'СуТр', 204 => 'ЛгИс', 205 => 'ТяИс', 206 => 'Крей', 207 => 'Линк', 208 => 'Коло',
-    209 => 'Пере', 210 => 'Шпио', 211 => 'Бомб', 212 => 'СоСп', 213 => 'Уник', 214 => 'ЗвСм', 215 => 'Лине', 216 => 'Нова',
+  $SN = array(SHIP_CARGO_SMALL => 'МаТр', SHIP_CARGO_BIG => 'БоТр', SHIP_CARGO_SUPER => 'СуТр', SHIP_FIGHTER_LIGHT => 'ЛгИс', SHIP_FIGHTER_HEAVY => 'ТяИс',
+    SHIP_DESTROYER => 'Эсми', SHIP_CRUISER => 'Линк', SHIP_COLONIZER => 'Коло', SHIP_RECYCLER => 'Пере', SHIP_SPY => 'Шпио', SHIP_BOMBER => 'Бомб',
+    SHIP_SATTELITE_SOLAR => 'СоСп', SHIP_DESTRUCTOR => 'Уник', SHIP_DEATH_STAR => 'ЗвСм', SHIP_BATTLESHIP => 'Лине', SHIP_SUPERNOVA => 'Нова',
+    SHIP_FIGHTER_ASSAULT => 'Штур',
     401 => 'Раке', 402 => 'ЛеЛа', 403 => 'ТяЛа', 404 => 'Гаус', 405 => 'Ионн', 406 => 'Плаз', 407 => 'МалЩ', 408 => 'БолЩ', 409 => 'План');
 
   $print_data = '<tr>'.

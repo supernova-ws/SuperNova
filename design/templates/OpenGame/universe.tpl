@@ -299,6 +299,11 @@ var uni_phalanx = '{PLANET_PHALANX}';
 var uni_spies = '{ACT_SPIO}';
 var uni_death_stars = '{deathStars}';
 
+var SHIP_COLONIZER = {D_SHIP_COLONIZER};
+var SHIP_CARGO_BIG = {D_SHIP_CARGO_BIG};
+var SHIP_RECYCLER  = {D_SHIP_RECYCLER};
+var SHIP_SPY       = {D_SHIP_SPY};
+
 jQuery.extend(language, {
   debris: '{L_Debris}',
   gal_sys_members: '{L_gal_sys_members}',
@@ -325,7 +330,7 @@ jQuery.extend(language, {
   type_mission8: '{L_type_mission[8]}',
   type_mission9: '{L_type_mission[9]}',
   sys_ships: '{L_uni_incoming_fleets}',
-  tech_209: '{L_tech[209]}',
+  lang_recyclers: '{LANG_RECYCLERS}',
   sys_error: '{L_sys_error}',
   sys_done: '{L_sys_done}'
 });

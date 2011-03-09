@@ -55,8 +55,7 @@ function show_debris(planet){
     result += "<tr><td class=c>" + language['gl_ressource'] + "</td><td class=c>" + sn_format_number(parseInt(uni_row[planet]['debris_metal']) + parseInt(uni_row[planet]['debris_crystal'])) + "</td></tr>";
     result += "<tr><th>" + language['sys_metal'] + '</th><th style="text-align: right;">' + sn_format_number(uni_row[planet]['debris_metal']) + "</th></tr>";
     result += "<tr><th>" + language['sys_crystal'] + '</th><th style="text-align: right;">' + sn_format_number(uni_row[planet]['debris_crystal']) + "</th></tr>";
-    /*result += '<tr><td class="c">' + language['tech_209'] + '</tâ><td class="c" style="text-align: right;">' + sn_format_number(uni_row[planet]['debris_rc_need']) + "</th></tr>";*/
-    result += "<tr><td class=c colspan=2 align=center><span style='cursor:pointer'  onclick='doit(8," + uni_galaxy + "," + uni_system + "," + planet + ",2," + uni_row[planet]['debris_recyclers'] + ");'>" + language['type_mission8'] + "</span><br>" + language['tech_209'] + ': ' + uni_row[planet]['debris_recyclers'] + "/" + uni_row[planet]['debris_rc_need'] + "</td></tr>";
+    result += "<tr><td class=c colspan=2 align=center><span style='cursor:pointer'  onclick='doit(8," + uni_galaxy + "," + uni_system + "," + planet + ",2," + uni_row[planet]['debris_recyclers'] + ");'>" + language['type_mission8'] + "</span><br>" + language['lang_recyclers'] + ': ' + uni_row[planet]['debris_recyclers'] + "/" + uni_row[planet]['debris_rc_need'] + "</td></tr>";
     result += "</table>";
 
     uni_row[planet]['cache_debris'] = result;
@@ -230,16 +229,16 @@ function doit (order, galaxy, system, planet, planettype, shipcount)
   ajax.setVar("planettype", planettype);
   if (order == 6) // Spy
   {
-    ajax.setVar("ship210", shipcount);
+    ajax.setVar("ship" + SHIP_SPY, shipcount);
   }
   if (order == 7) //Colonize
   {
-    ajax.setVar("ship208", 1); // Colonizer
-    ajax.setVar("ship203", 2); // Big Cargo
+    ajax.setVar("ship" + SHIP_COLONIZER, 1); // Colonizer
+    ajax.setVar("ship" + SHIP_CARGO_BIG, 2); // Big Cargo
   }
   if (order == 8) // Recycle
   {
-    ajax.setVar("ship209", shipcount);
+    ajax.setVar("ship" + SHIP_RECYCLER, shipcount);
   }
   if (order == 10) // Missile attack
   {

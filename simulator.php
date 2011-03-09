@@ -91,7 +91,7 @@ if($_POST['submit'] || $execute)
 
   //OK, one change, we won't be getting cr from datbase, instead we will be generating it directly, lets skip the database stage, this is what get generated and put in the database.
   $report = stripslashes($formatted_cr['html']);
-  foreach ($lang['tech_rc'] as $id => $s_name) {
+  foreach ($lang['tech'] as $id => $s_name) {
     $str_replace1  = array("[ship[{$id}]]");
     $str_replace2  = array($s_name);
     $report = str_replace($str_replace1, $str_replace2, $report);

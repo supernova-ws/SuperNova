@@ -1,117 +1,116 @@
 <?php
-/*
-#############################################################################
-#  Filename: leftmenu.mo
-#  Create date: Saturday, March 29, 2008	 16:37:10
-#  Project: prethOgame
-#  Description: RPG web based game
-#
-#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright © 2005 - 2008 KGsystem
-#############################################################################
-*/
 
-// User menu links
-$lang['Multiverse']   = '<b>Сервер</b> Uni';
+//	
+$lang['Multiverse']	= '<b>Sever</b> Uni';
 
 $lang['m_h_rules']		= 'Rules';
-$lang['m_faq']				= 'User''s FAQ';
-$lang['m_faq_hint']		= 'User''s Frequently Asked Questions with answers';
-$lang['m_h_control']		= 'Control';
+$lang['m_faq']				= 'Faq';
+$lang['m_faq_hint']		= 'The most frequently asked customer questions and answers';
+$lang['m_h_control']		= 'Office';
 $lang['m_forum']			= 'Forum';
-$lang['m_others']			= 'Other';
-$lang['m_simulator']		= 'Battle simulator';
-$lang['m_communication']= 'Communication';
-$lang['m_exchange']		= 'Resource exchange';
-$lang['m_affilates']    = 'Affilates';
+$lang['m_others']			= 'Miscellaneous';
+$lang['m_simulator']		= 'Battle Simulator';
+$lang['m_communication']= 'Link & Communication';
+$lang['m_exchange']		= 'Exchange resources';
+$lang['m_affilates']    = '!!!Earn Dark Matter!!!';
 
-$lang['Overview']     = 'Planet overview';
-$lang['Officiers']    = 'Офицеры';
+$lang['Overview']	= 'Overview';
+$lang['Officiers']	= 'Officers';
 
-$lang['Buildings']    = 'Постройки';
-$lang['Building']     = 'Строительство';
-$lang['Research']     = 'Исследования';
-$lang['Shipyard']     = 'Верфь';
-$lang['Defense']      = 'Защита';
+$lang['Buildings']    = 'Construction';
+$lang['Building']     = 'Construction';
+$lang['Research']	= 'Research';
+$lang['Shipyard']	= 'Shipyard';
+$lang['Defense']	= 'Defense';
 
-$lang['Resources']    = 'Ресурсы';
-$lang['Imperium']     = 'Империя';
-$lang['Marchand']     = 'Торговец';
-$lang['Annonces']     = 'Anounces';
-$lang['Technology']   = 'Технология';
+$lang['Resources']	= 'Resource';
+$lang['Imperium']	= 'Imperium';
+$lang['Marchand']	= 'Trader';
+$lang['Annonces']	= 'Ads';
+$lang['Technology']	= 'Technology';
 
-$lang['Galaxy']       = 'Галактика';
-$lang['Fleet']        = 'Флот';
+$lang['Galaxy']		= 'Galaxy';
+$lang['Fleet']		= 'Fleet';
 
-$lang['Alliance']     = 'Alliance';
-$lang['Chat']         = 'Чат';
-$lang['Statistics']   = 'Статистика';
-$lang['Search']       = 'Поиск';
-$lang['blocked']      = 'Забаненные';
-$lang['Records']      = 'Records';
+$lang['Alliance']	= 'Alliance';
+$lang['Allianc']	= 'Alliance';
+$lang['AllyChat']	= 'Alliance Chat';
 
-$lang['Messages']     = 'Сообщения';
-$lang['Notes']        = 'Заметки';
-$lang['Buddylist']    = 'Друзья';
+$lang['Statistics']	= 'Statistics';
+$lang['Search']		= 'Search';
 
-$lang['Board']        = 'Форум';
-$lang['Contact']      = 'К админам';
-$lang['Options']      = 'Настройки';
+$lang['Records']	= 'Highscores';
 
-$lang['Logout']       = ':.Выход.:';
+$lang['Messages']	= 'Messages';
+$lang['Notes']		= 'Notes';
+$lang['Buddylist']	= 'Buddy List';
+$lang['Chat']		= 'Chat';
+$lang['Contact']	= 'Administration';
+$lang['Options']	= 'Settings';
+$lang['Bug']		= 'Bug';
 
-$lang['Help']         = 'Помощь';
-$lang['Rules']        = 'Правила';
+$lang['Logout']		= 'Log out';
 
-// User menu titles
-$lang['devlp']        = 'Развитие';
-$lang['navig']        = 'Information';
-$lang['observ']       = 'Обсерватория';
-$lang['commun']       = 'Administrators';
-$lang['infog']        = 'Информация';
-$lang['rinok']				= 'Black market';
+$lang['Rules']		= 'Rules';
 
-// Administrator menu links
-$lang['adm_over']     = 'Общая информация';
-$lang['adm_announce'] = 'News';
-$lang['adm_conf']     = 'Конфигурация';
-$lang['adm_reset']    = 'Сброс вселенной';
+// 	
+$lang['devlp']		= 'Development';
+$lang['navig']		= 'Information';
+$lang['Economy']        = 'Economy';
+$lang['trade']          = 'Trade';
+$lang['Society']        = 'Society';
+$lang['rinok']       = 'Market';
+$lang['observ']		= 'Observatory';
+$lang['commun']		= 'Administration';
+$lang['infog']		= 'Information';
 
-$lang['adm_plrlst']   = 'Список игроков';
-$lang['adm_plrsch']   = 'Поиск игрока';
-$lang['adm_addres']   = 'Добавить ресурсы';
+//	
+$lang['adm_over']	    = 'Overview';
+$lang['adm_conf']	    = 'Settings';
+$lang['adm_reset']	 = 'Reset';
 
-$lang['adm_pltlst']   = 'Список планет';
-$lang['adm_actplt']   = 'Активные Планеты';
+$lang['adm_plrlst']	= 'Players List';
+$lang['adm_panel']	= 'Admin Panel';
+$lang['adm_plrsch']	= 'Player Search';
+$lang['adm_addres']	= 'Add Resources';
 
-$lang['adm_moonlst']  = 'Список Лун';
-$lang['adm_addmoon']  = 'Добавить луну';
+$lang['adm_pltlst']	= 'Planet List';
+$lang['adm_actplt']	= 'Active Planets';
 
-$lang['adm_fleet']    = 'Флоты в дваижении';
+$lang['adm_moonlst']	= 'Moon List';
+$lang['adm_addmoon']	= 'Add Moon';
 
-$lang['adm_ban']      = 'Баны';
-$lang['adm_unban']    = 'Разбанить';
+$lang['adm_fleet']	= 'Fleets in Flight';
 
-$lang['adm_chat']     = 'Админ-чат';
-$lang['adm_updpt']    = 'Очки';
-$lang['adm_msg']      = 'Список сообщений';
-$lang['adm_md5']      = 'МД5 кодер';
-$lang['adm_build']    = 'Задачи';
+$lang['adm_ban']	= 'Ban';
+$lang['adm_unban']	= 'UnBan';
 
-$lang['adm_error']    = 'Ошибки';
-$lang['adm_help']     = 'Форум помощи';
-$lang['adm_back']     = 'Вернуться в игру';
+$lang['adm_chat']	= 'Chat Editor';
+$lang['adm_updpt']	= 'Update';
+$lang['adm_msg']	= 'Message List';
+$lang['adm_md5']	= 'Encryption';
+$lang['adm_updrank']	= 'Reset Databases';
 
-// Administrator menu titles
-$lang['admin']        = 'Администрация';
-$lang['player']       = 'Игрок';
-$lang['tool']         = 'Tools';
+$lang['adm_error']	= 'Errors';
+$lang['adm_help']	= 'Developers Forum';
+$lang['adm_back']	= 'Return';
 
-// Informations serveur
-$lang['lm_ifo_serv']  = "Ресурсы";
-$lang['lm_ifo_game']  = "Скорость игры";
-$lang['lm_ifo_fleet'] = "Скорость кораблей";
-$lang['lm_ifo_queue'] = "Задачи";
+//	
+$lang['admin']		= 'Administration';
+$lang['player']		= 'Players';
+$lang['tool']		= 'Utilities';
 
-$lang['lm_shortcuts'] = "Shortcuts";
+//	
+$lang['lm_ifo_serv']	= "Raw Materials";
+$lang['lm_ifo_game']	= "Game";
+$lang['lm_ifo_fleet']	= "Fleet";
+$lang['lm_ifo_queue']	= "Queue";
+
+$lang['lm_shortcuts'] = "Shortcut";
+
+$lang['lm_banned']    = "Ban List";
+
+$lang['lm_announce_fresh'] = "Update";
+
+$lang['lm_server_info'] = "Server";
 ?>

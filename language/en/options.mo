@@ -1,72 +1,89 @@
 <?php
 
-// Messages
-$lang['changue_pass'] = "Change Password";
-$lang['Download'] = "Download";
-$lang['Search'] = "Search";
-$lang['succeful_changepass'] = "The password has been changed.<br /> You must login again <a href=\"login.php\" target=\"_top\">Login</a>";
-$lang['succeful_save'] = "The changes were saved successful.<br /><a href=\"options.php\">Back</a>";
+//	
+$lang['changue_pass']			= "Change password";
+$lang['Download']			= "Download";
+$lang['Search']				= "Search";
+$lang['succeful_changepass']		= "Password successfully changed.<br /><a href=\"login.php\" target=\"_top\">Back</a>";
+$lang['succeful_changename']		= "Username successfully changed.<br /><a href=\"login.php\" target=\"_top\">Back</a>";
+$lang['opt_saved']			= "Configuration was successfully changed.";
 
-// Form
-$lang['userdata'] = "User Data";
-$lang['username'] = "Username";
-$lang['lastpassword'] = "Old password";
-$lang['newpassword'] = "New password (min. 8 characters)";
-$lang['newpasswordagain'] = "New password (repeat)";
-$lang['emaildir'] = "Email address";
-$lang['emaildir_tip'] = "This address can be changed at any time. The address will become permanent if there is no changemements during the next 7 days.";
-$lang['permanentemaildir'] = "Permanent Address";
+//	
+$lang['userdata']			= "Информация";
+$lang['username']			= "Имя";
+$lang['lastpassword']			= "Старый пароль";
+$lang['newpassword']			= "Новый пароль<br>(мин. 8 символов)";
+$lang['newpasswordagain']		= "Повторите новый пароль";
+$lang['emaildir']			= "Адрес e-mail";
+$lang['emaildir_tip']			= "Этот адрес может быть изменён в любое время. Адрес станет основным, если он не изменялся в течении 7 дней.";
+$lang['permanentemaildir']		= "Основной адрес e-mail";
 
-$lang['opt_lst_ord']  = "Classer les planetes dans l'ordre suivant :";
-$lang['opt_lst_ord0'] = "Date de colonisation";
-$lang['opt_lst_ord1'] = "Coordinates";
-$lang['opt_lst_ord2'] = "Alphabetic order";
-$lang['opt_lst_cla']  = "Ordre de classement :";
-$lang['opt_lst_cla0'] = "ascendent";
-$lang['opt_lst_cla1'] = "descendent";
-$lang['opt_chk_skin'] = "Show skin";
+$lang['opt_lst_ord']			= "Упорядочить планеты по:";
+$lang['opt_lst_ord0']			= "Времени колонизации";
+$lang['opt_lst_ord1']			= "Координатам";
+$lang['opt_lst_ord2']			= "Алфавитному порядку";
+$lang['opt_lst_cla']			= "Упорядочить по:";
+$lang['opt_lst_cla0']			= "Возрастанию";
+$lang['opt_lst_cla1']			= "Убыванию";
+$lang['opt_chk_skin']			= "Использовать оформление";
 
-// Admin Options
-$lang['opt_adm_title'] = "Options reserved for administrators";
-$lang['opt_adm_planet_prot'] = "Planet Protection";
+// 	
+$lang['opt_adm_title']			= "Опции администрирования";
+$lang['opt_adm_planet_prot']		= "Защита планет";
 
-// General options
-$lang['thanksforregistry'] = "Thank you for registration.<br />	You will receive in few minutes, an e-mail with your password.";
-$lang['general_settings'] = "General Options";
-$lang['skins_example'] = "Skin path (e.g. C:/supernova/skin/)";
-$lang['avatar_example'] = "Avatar (e.g. /img/avatar.jpg)";
-$lang['untoggleip'] = "Disable IP Check";
-$lang['untoggleip_tip'] = "Verification of IP means to conduct a security logout automatically when there will be a change of IP or 2 when people enter the same account using different IPs. Enable Verification IP can be an asset security !";
+// 	
+$lang['thanksforregistry']		= "Спасибо за регистрацию.<br />Через несколько минут вы получите ваше сообщение с паролем.";
+$lang['general_settings']		= "Общие настройки";
+$lang['skins_example']			= "Оформление<br>(например C:/ogame/skin/)";
+$lang['avatar_example']			= "Аватар<br>(например /img/avatar.jpg)";
+$lang['untoggleip']			= "Выключить функцию проверки по IP";
+$lang['untoggleip_tip']			= "Проверка IP означает то, что вы не сможете войти под своим именем с двух разных IP. Проверка даёт вам преимущество в безопасности!";
 
-// Option galaxy
-$lang['galaxyvision_options'] = "Galaxy View Options";
-$lang['spy_cant'] = "Number of espionage probes";
-$lang['spy_cant_tip'] = "Number of espionage probes sent from the galaxy menu, every time when you espionage someone.";
-$lang['tooltip_time'] = "Show tooltip for";
-$lang['mess_ammount_max'] = "Maximum fleet messages";
-$lang['show_ally_logo'] = "Show logo of alliances";
-$lang['seconds'] = "seconds";
+// 	
+$lang['galaxyvision_options']		= "Настройки галактики";
+$lang['spy_cant']			= "Количество зондов";
+$lang['spy_cant_tip']			= "Количество зондов, которое будет отправляться, когда вы будете за кем-то следить.";
+$lang['tooltip_time']			= "Время показа подсказок";
+$lang['mess_ammount_max']		= "Количество максимальных сообщений флота";
+$lang['show_ally_logo']			= "Показывать логотип альянсов";
+$lang['seconds']			= "Секунд(а/ы)";
 
-//Rapport acces
-$lang['shortcut'] = "Shortcuts";
-$lang['show'] = "Display";
-$lang['write_a_messege'] = "Write message";
-$lang['spy'] = "Espionage";
-$lang['add_to_buddylist'] = "Add to buddylist";
-$lang['attack_with_missile'] = "Missiles attack";
-$lang['show_report'] = "Show report";
+//	
+$lang['shortcut']			= "Быстрый доступ";
+$lang['show']				= "Показывать";
+$lang['write_a_messege']		= "Написать сообщение";
+$lang['spy']				= "Шпионаж";
+$lang['add_to_buddylist']		= "Добавить в друзья";
+$lang['attack_with_missile']		= "Ракетная атака";
+$lang['show_report']			= "Просмотреть отчёт";
 
-//Vacations mod
-$lang['delete_vacations'] = "Vacation mode / Delete account";
-$lang['mode_vacations'] = "Enable vacation mode";
-$lang['vacations_tip'] = "The vacation mode is there to protect you during your absence.";
-$lang['deleteaccount'] = "Delete account";
-$lang['deleteaccount_tip'] = "Your account will be completely removed within 7 days.!";
-$lang['save_settings'] = "Save Changes";
+//	
+$lang['delete_vacations']		= "Управление профилем";
+$lang['mode_vacations']			= "Включить режим отпуска";
+$lang['vacations_tip']			= "Режим отпуска нужен для защиты планет во время вашего отсутствия.";
+$lang['deleteaccount']			= "Отключить профиль";
+$lang['deleteaccount_tip']		= "Профиль будет удалён через 45 дней неактивности.";
+$lang['save_settings']			= "Сохранить изменения";
+$lang['Building_something']		= "Вы что-то строите и не можете уйти в режим отпуска.";
+$lang['exit_vacations']			= "Выйти из режима отпуска";
+$lang['Vaccation_mode']			= "Режим отпуска включён. Он продлится до: ";
+$lang['You_cant_exit_vmode']		= "Вы не можете выйти из режима отпуска, пока не истечёт минимальное время";
+$lang['Error']				= "Ошибка";
+$lang['cans_resource']			= "Прекратите добычу ресурсов на планетах";
+$lang['cans_reseach']                   = "Остановите иследования на планетах";
+$lang['cans_build']                     = "Остановите строительство на планетах";
+$lang['cans_fleet_build']               = "Остановите постройку флота и обороны";
+$lang['cans_fly_fleet1']                 = "Флот должен быть на орбите планет";
+$lang['cans_fly_fleet2']                 = "Чужой флот приближается... вы не можите уйти в отпуск";
+$lang['vacations_exit']                 = "Режим отпуска отключен... Перезайдите";
 
-$lang['exit_vacations'] = "Return from Vacation Mode";
-$lang['Vaccation_mode'] = "Vacation mode has been turned on. Vacation until at least: ";
-$lang['You_cant_exit_vmode'] = "You cant exit from V-mode until expire your minimal time";
-$lang['Error'] = "Error";
+$lang['select_skin_path']		= "ВЫБРАТЬ";
+
+$lang['opt_language']         = 'Язык интерфейса';
+
+$lang['opt_compatibility']    = 'Совместимость - старые интерфейсов';
+$lang['opt_compat_structures']= 'Старый интерфейс строительства зданий';
+
+$lang['opt_vacation_min'] = 'минимум до';
 
 ?>

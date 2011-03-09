@@ -1,127 +1,373 @@
 <?php
 
+// System-wide localization
+
 $lang['user_level'] = array (
 	'0' => 'Player',
-	'1' => 'GameOperator',
-	'2' => 'SuperGameOperator',
+	'1' => 'Moderator',
+	'2' => 'Operator',
 	'3' => 'Administrator',
 );
 
-$lang['sys_first_round_crash_1'] = 'Контакт с атакованным флотом потерян.';
-$lang['sys_first_round_crash_2'] = 'Это означает что он был уничтожен в первом раунде боя.';
-
-$lang['sys_overview'] = "Обзор";
-$lang['mod_marchand'] = "Торговец";
-$lang['sys_moon'] = "Луна";
-$lang['sys_error'] = "Ошибка";
-$lang['sys_no_vars'] = "Обратитесь к админу. Случилась критическая ошибка!";
-$lang['sys_attacker_lostunits'] = "Атакующий потерял %s поинтов.";
-$lang['sys_defender_lostunits'] = "Обороняющийся потерял %s поинтов.";
-$lang['sys_gcdrunits'] = "В этих координатах образовалось поле осколков %s %s и %s %s.";
-$lang['sys_moonproba'] = "Шанс образования луны %d%% ";
-$lang['sys_moonbuilt'] = "Столь ненормальное кол-во находясь на орбите планеты собралось и образовало спутник %s [%d:%d:%d] !";
-$lang['sys_attack_title'] = "В этих кооррдинатах (%s) Следующие группировки встретились в битве:";
-$lang['sys_attack_attacker_pos'] = "Атакующий %s ([%s:%s:%s])";
-$lang['sys_attack_techologies'] = "Оружие: %d%% Щиты: %d%% Броня: %d%% ";
-$lang['sys_attack_defender_pos'] = "Защитник %s ([%s:%s:%s])";
-$lang['sys_ship_type'] = "Тип";
-$lang['sys_ship_count'] = "Всего";
-$lang['sys_ship_weapon'] = "Оружие";
-$lang['sys_ship_shield'] = "Щиты";
-$lang['sys_ship_armour'] = "Броня";
-$lang['sys_destroyed'] = "уничтожено!";
-$lang['sys_attack_attack_wave'] = "Атакующий %s раз выстрелил в защищающегося с общей паражающей силой в %s . Щиты защищающегося поглотили %s повреждений.";
-$lang['sys_attack_defend_wave'] = "Обороняющийся %s раз выстрелил в атакующего с общей паражающей силой в %s . Щиты атакующего поглотили %s повреждений.";
-$lang['sys_attacker_won'] = "Атакующий выиграл битву!";
-$lang['sys_defender_won'] = "Обороняющийся выиграл битву!";
-$lang['sys_both_won'] = "Битва окончилась ничьей.";
-$lang['sys_stealed_ressources'] = "Он захватил <br> %s %s, %s %s, и %s %s <br>";
-$lang['sys_rapport_build_time'] = "Отчет сформирован за %s секунд(у)";
-$lang['sys_mess_tower'] = "Space Control";
-$lang['sys_mess_attack_report'] = "Отчет о битве";
-$lang['sys_spy_maretials'] = "Ресурсы";
-$lang['sys_spy_fleet'] = "Флот";
-$lang['sys_spy_defenses'] = "Защита";
-$lang['sys_mess_qg'] = "Fleet command";
-$lang['sys_mess_spy_report'] = "Отчет шпионского дрона";
-$lang['sys_mess_spy_lostproba'] = "Шанс ответного шпионажа: %d %% ";
-$lang['sys_mess_spy_control'] = "Контроль космоса";
-$lang['sys_mess_spy_activity'] = "Шпионская активность";
-$lang['sys_mess_spy_ennemyfleet'] = "Чужой флот с планеты";
-$lang['sys_mess_spy_seen_at'] = "был обнаружен около вашей планеты";
-$lang['sys_mess_spy_destroyed'] = "Шпионские дроны уничтожены !";
-$lang['sys_object_arrival'] = "Прибыл на планету";
-$lang['sys_stay_mess_stay'] = "Fleet Deployment";
-$lang['sys_stay_mess_start'] = "Ваш флот прибыл на планету";
-$lang['sys_stay_mess_back'] = "Ваш флот вернулся ";
-$lang['sys_stay_mess_end'] = " и доставил:";
-$lang['sys_stay_mess_bend'] = " и доставил следующие ресурсы:";
-$lang['sys_adress_planet'] = "[%s:%s:%s]";
-$lang['sys_stay_mess_goods'] = "%s : %s, %s : %s, %s : %s";
-$lang['sys_colo_mess_from'] = "Колонизация";
-$lang['sys_colo_mess_report'] = "Отчет колонизации";
-$lang['sys_colo_defaultname'] = "Колония";
-$lang['sys_colo_arrival'] = "Флот достиг координат";
-$lang['sys_colo_maxcolo'] = ", Вы достигли максимального числа колоний";
-$lang['sys_colo_allisok'] = ", et les colons commencent a developper cette nouvelle partie de l\'empire.";
-$lang['sys_colo_badpos']  = ", et les colons ont trouve un environnement peu propice a l\'extention de votre empire. Ils ont decide de rebrousser chemin totalement degoutes";
-$lang['sys_colo_notfree'] = ", et les colons n\'ont pas trouve de planete a ces coordonnees. Ils sont forces de rebrousser chemin totalement demoralises";
-$lang['sys_colo_planet']  = " planet !";
-$lang['sys_expe_report'] = "Отчет экспедиции";
-$lang['sys_recy_report'] = "Harvesting Report";
-$lang['sys_expe_blackholl_1'] = "La flotte a ete aspiree dans un trou noir, elle est partiellement detruite !";
-$lang['sys_expe_blackholl_2'] = "La flotte a ete aspiree dans un trou noir, elle est entierement detruite !";
+foreach($lang['user_level'] as $ID => $levelName)
+{
+  $lang['user_level_shortcut'][$ID] = $levelName[0];
+}
 
 
+$lang['VacationMode']			= "Your production stopped because you are on vacation";
+$lang['sys_moon_destruction_report'] = "Report of destruction of the Moon";
+$lang['sys_moon_destroyed'] = "Your Deathstar shot a powerful gravitational wave, which destroyed the Moon! ";
+$lang['sys_rips_destroyed'] = "Your Deathstar shot a  powerful gravitational wave, but it was not enough power to destroy the Moon this size. But the gravitational wave reflected from the lunar surface and ruined your fleet.";
+$lang['sys_rips_come_back'] = "Your Deathstar did not have enough power to defeat this moon. Your fleet is not destroying the Moon.";
+$lang['sys_chance_moon_destroy'] = "Chance of Moon destruction: ";
+$lang['sys_chance_rips_destroy'] = "Modify burst destruction: ";
 
-$lang['sys_expe_nothing_1'] = "Vos explorateurs sont passes a c&ocirc;te d\'une superbe SuperNova et ont prit de magnifiques photos. Mais ils n\'ont trouves aucune ressources";
-$lang['sys_expe_nothing_2'] = "Vos explorateurs ont passes tout le temps imparti dans la zone choisie. Mais ils n\'ont trouves ni ressources ni planete.";
-$lang['sys_expe_found_goods'] = "La flotte a decouvert un planete non habitee !<br>Vos explorateurs ont recuperes %s de %s, %s de %s et %s de %s";
-$lang['sys_expe_found_ships'] = "Vos explorateurs ont trouves des vaisseaux abandonnes en parfait etat de marche.<br>Ils ont trouves : ";
-$lang['sys_expe_back_home'] = "Ваш флот вернулся из экспедиции";
-$lang['sys_mess_transport'] = "Флот";
-$lang['sys_tran_mess_owner'] = "Ваш флот прибыл на планету %s %s. и доставил ресурсы: %s  %s , %s %s , %s %s.";
-$lang['sys_tran_mess_user']  = "Союзный флот с %s %s прибыл %s %s и доставил %s %s, %s %s и %s %s.";
-$lang['sys_mess_fleetback'] = "Вернуть флот";
-$lang['sys_tran_mess_back'] = "Часть вашего флота вернулась на %s %s.";
-$lang['sys_recy_gotten'] = "Ваш сборщик собрал %s %s и %s %s.";
-$lang['sys_notenough_money'] = "У вас недостаточно ресурсов чтобы начать строительство %s. У вас есть %s %s, %s %s и %s %s. Стоимость строительства %s %s, %s %s и %s %s.";
-$lang['sys_nomore_level'] = "Вы больше не можете совершенствовать это. Оно достигло макс. уровня ( %s ).";
-$lang['sys_buildlist'] = "Лист задач строительства";
-$lang['sys_buildlist_fail'] = "Постройка нереальна";
-$lang['sys_gain'] = "Получено";
-$lang['sys_perte_attaquant'] = "Атакующий проиграл";
-$lang['sys_perte_defenseur'] = "Защищающийся проиграл";
-$lang['sys_debris'] = "Поля осколков";
-$lang['sys_noaccess'] = "Доступ запрещен";
-$lang['sys_noalloaw'] = "У вас нет достаточно прав для доступа";
+$lang['sys_day'] = "Days";
+$lang['sys_hrs'] = "Hours";
+$lang['sys_min'] = "Minutes";
+$lang['sys_sec'] = "Seconds";
 
-$lang['VacationMode'] = "Ваше производство закрыто, так как вы в Отпуске";
+$lang['sys_day_short'] = "D";
+$lang['sys_hrs_short'] = "H";
+$lang['sys_min_short'] = "M";
+$lang['sys_sec_short'] = "S";
 
-$lang['sys_day'] = "days";
-$lang['sys_hrs'] = "hours";
-$lang['sys_min'] = "minutes";
-$lang['sys_sec'] = "seconds";
-
-$lang['sys_day_short'] = "d";
-$lang['sys_hrs_short'] = "h";
-$lang['sys_min_short'] = "m";
-$lang['sys_sec_short'] = "s";
-
-$lang['copyright'] = '&copy; OGame Triolan 2009-2010 - You can send your questions to';
+$lang['sys_ask_admin'] = 'Questions and suggestions sent to';
 $lang['TranslationBy'] = '';
 
-$lang['sys_wait'] = 'Query in progress. Please wait.';
+$lang['sys_wait'] = 'The query is executed. Please wait.';
 
-$lang['sys_affilates_title'] = "Affilates";
-$lang['sys_affilates_text']  = "Разместите эту ссылку, баннер или юзербар где-нибудь и за каждого пришедшего по ссылке будет что-нибудь хорошее. Что - я пока не придумал. Но все регистрации уже записываются в БД и как только я придумаю бонусы - они будут начислены за каждого приведенного";
-$lang['sys_link_name']       = "Personal link in partnership program";
-$lang['sys_link_bb']         = "Personal link BBCode for use in forums";
-$lang['sys_link_html']       = "Personal link HTML code for use on web pages";
-$lang['sys_banner_name']     = "Banner";
-$lang['sys_banner_bb']       = "Banner BBCode for use in forums";
-$lang['sys_banner_html']     = "Banner HTML code for use on web pages";
-$lang['sys_userbar_name']    = "Userbar";
-$lang['sys_userbar_bb']      = "Userbar BBCode for use in forums";
-$lang['sys_userbar_html']    = "Userbar HTML code for use on web pages";
+$lang['sys_total']           = "Total";
+$lang['sys_register_date']   = 'Registration date';
+
+$lang['sys_attacker'] 		= "Attacker";
+$lang['sys_defender'] 		= "Defender";
+
+$lang['COE_combatSimulator'] = "Battle simulator";
+$lang['COE_simulate']        = "Run the Simulator";
+$lang['COE_fleet']           = "Fleet";
+$lang['COE_defense']         = "Defence";
+$lang['sys_resources']       = "Resources";
+$lang['sys_ships']           = "Ships";
+
+$lang['sys_metal']          = "Metal";
+$lang['sys_metal_sh']       = "M";
+$lang['sys_crystal']        = "Crystal";
+$lang['sys_crystal_sh']     = "C";
+$lang['sys_deuterium']      = "Deuterium";
+$lang['sys_deuterium_sh']   = "D";
+$lang['sys_energy']         = "Energy";
+$lang['sys_energy_sh']      = "E";
+$lang['sys_dark_matter']    = "Dark Matter";
+$lang['sys_dark_matter_sh'] = "DM";
+
+$lang['sys_resource'] = array(
+  1 => $lang['sys_metal'],
+  2 => $lang['sys_crystal'],
+  3 => $lang['sys_deuterium'],
+  4 => $lang['sys_dark_matter'],
+  5 => $lang['sys_energy'],
+);
+
+$lang['sys_reset']           = "Reset";
+$lang['sys_send']            = "Send";
+$lang['sys_characters']      = "Characters";
+$lang['sys_back']            = "Back";
+$lang['sys_return']          = "Return";
+$lang['sys_delete']          = "Delete";
+$lang['sys_writeMessage']    = "Write a message";
+$lang['sys_hint']            = "Tip";
+
+$lang['sys_alliance']        = "Alliance";
+$lang['sys_player']          = "Player";
+$lang['sys_coordinates']     = "Coordinates";
+
+$lang['sys_online']          = "Online";
+$lang['sys_offline']         = "Offline";
+$lang['sys_lessThen15min']   = '&lt; 15 м';
+$lang['sys_status']          = "Status";
+
+$lang['sys_universe']        = "Universe";
+$lang['sys_goto']            = "Go";
+
+$lang['sys_time']            = "Time";
+
+$lang['sys_no_task']         = "No task";
+
+$lang['sys_affilates']       = "Invited players";
+
+$lang['sys_fleet_arrived']   = "Fleet arrived";
+
+$lang['sys_planet_type1']    = "Planet";
+$lang['sys_planet_type2'] 	  = "Field Debris";
+$lang['sys_planet_type3']    = "Moon";
+
+$lang['sys_planet_type'] = array(
+  PT_PLANET => $lang['sys_planet_type1'], 
+  2 => $lang['sys_planet_type2'], 
+  PT_MOON => $lang['sys_planet_type3']
+);
+
+$lang['sys_planet_type_sh1'] = "(П)";
+$lang['sys_planet_type_sh2'] = "(О)";
+$lang['sys_planet_type_sh3'] = "(Л)";
+
+$lang['sys_planet_type_sh'] = array(
+  1 => $lang['sys_planet_type_sh1'], 
+  2 => $lang['sys_planet_type_sh2'], 
+  3 => $lang['sys_planet_type_sh3']
+);
+
+$lang['sys_capacity'] 			= 'Load Capacity';
+
+$lang['sys_supernova'] 			= 'Supernova';
+$lang['sys_server'] 			= 'Server';
+
+
+// Resource page
+$lang['res_planet_production'] = 'Planet Production';
+$lang['res_basic_income'] = 'Basic Income';
+$lang['res_total'] = 'Total';
+$lang['res_calculate'] = 'Calculate';
+$lang['res_daily'] = 'Daily';
+$lang['res_weekly'] = 'Weekly';
+$lang['res_monthly'] = 'Monthly';
+$lang['res_storage_fill'] = 'Storage occupancy';
+$lang['res_hint'] = '<ul><li>Production resources <100% means a shortage of energy. Build more power stations or reduce production resources<li>If your production is 0% likely you came from vacation mode and you want to include all plants<li>What would make the extraction for all plants immediately use the drop-down in the resource table. Especially convenient to use it after the vacation mode</ul>';
+
+// Build page
+$lang['bld_destroy'] = 'Destroy';
+$lang['bld_create']  = 'Build';
+
+// Imperium page
+$lang['imp_imperator'] = "Emperor";
+$lang['imp_overview'] = "Empire Overview";
+$lang['imp_production'] = "Production";
+$lang['imp_name'] = "Name";
+$lang['sys_fields'] = "Fields";
+
+// Cookies
+$lang['err_cookie'] = "Error! You cannot authenticate the user on information in a cookie. <a href='login.{$phpEx}'>Log on</a> in a game or <a href='reg.{$phpEx}'>register new account</a>.";
+
+// Supported languages
+$lang['ru']              	  = 'Russian';
+$lang['en']              	  = 'English';
+
+$lang['sys_vacation']        = 'Your are on vacation until';
+$lang['sys_vacation_leave']  = 'I have got rest - break holiday!';
+$lang['sys_level']           = 'Level';
+
+$lang['sys_yes']             = 'Yes';
+$lang['sys_no']              = 'No';
+
+$lang['sys_on']              = 'Enable';
+$lang['sys_off']             = 'Disable';
+
+$lang['sys_game_mode'][0]    = 'Supernova';
+$lang['sys_game_mode'][1]    = 'оГейм';
+
+// top bar
+$lang['top_of_year'] = 'Year';
+$lang['top_online']			= 'Players online';
+
+$lang['months'] = array(
+	'01'=>'January',
+	'02'=>'February',
+	'03'=>'March',
+	'04'=>'April',
+	'05'=>'May',
+	'06'=>'June',
+	'07'=>'July',
+	'08'=>'August',
+	'09'=>'September',
+	'10'=>'October',
+	'11'=>'November',
+	'12'=>'December'
+);
+
+$lang['weekdays'] = array(
+	'0' => 'Sunday',
+	'1' => 'Monday',
+	'2' => 'Tuesday',
+	'3' => 'Wednesday',
+	'4' => 'Thursday',
+	'5' => 'Friday',
+	'6' => 'Saturday'
+);
+
+$lang = array_merge($lang, array(
+  'sys_first_round_crash_1'	=> 'Contact with the affected fleet lost.',
+  'sys_first_round_crash_2'	=> 'This means that it was destroyed in the first round of the battle.',
+
+  'sys_ques' => array(
+    QUE_STRUCTURES => 'Building',
+    QUE_HANGAR     => 'Shipyard',
+    QUE_RESEARCH   => 'Research',
+  ),
+
+  'eco_que_empty' => 'Queue is empty',
+  'eco_que_clear' => 'Clear queue',
+  'eco_que_trim'  => 'Undo last queue',
+
+  'sys_overview'			=> 'Overview',
+  'mod_marchand'			=> 'Trader',
+  'sys_moon'			=> 'Moon',
+  'sys_planet'			=> 'Planet',
+  'sys_error'			=> 'Error',
+  'sys_done'				=> 'Finish',
+  'sys_no_vars'			=> 'Initialization of variables, see the Administration!',
+  'sys_attacker_lostunits'		=> 'Attacker lost %s units.',
+  'sys_defender_lostunits'		=> 'Defender lost %s units.',
+  'sys_gcdrunits' 			=> 'Now at these coordinates are %s %s и %s %s.',
+  'sys_moonproba' 			=> 'Chance of Moon is: %d %% ',
+  'sys_moonbuilt' 			=> 'Thanks to the huge energy huge chunks of metal and Crystal are joined together and formed new moon %s [%d:%d:%d] !',
+  'sys_attack_title'    		=> '%s. Battle occurred between the following fleets::',
+  'sys_attack_attacker_pos'      	=> 'Attacker %s [%s:%s:%s]',
+  'sys_attack_techologies' 	=> 'Weapons: %d %% Shields: %d %% Armor: %d %% ',
+  'sys_attack_defender_pos' 	=> 'Defender %s [%s:%s:%s]',
+  'sys_ship_type' 			=> 'Type',
+  'sys_ship_count' 		=> 'Count',
+  'sys_ship_weapon' 		=> 'Weapon',
+  'sys_ship_shield' 		=> 'Shield',
+  'sys_ship_armour' 		=> 'Armor',
+  'sys_destroyed' 			=> 'destroyed',
+  'sys_attack_attack_wave' 	=> 'The Attacker is doing shots with a total capacity of %s on the defender. Shields absorb %s of the shots.',
+  'sys_attack_defend_wave'		=> 'The Defender is doing shots with a total capacity of %s on the attacker. Shields absorb %s of the shots.',
+  'sys_attacker_won' 		=> 'The Attacker won the battle!',
+  'sys_defender_won' 		=> 'The Defender won the battle!',
+  'sys_both_won' 			=> 'The battle ended in a draw!',
+  'sys_stealed_ressources' 	=> 'The Attacker gets %s Metal %s %s Crystal %s и %s Deuterium.',
+  'sys_rapport_build_time' 	=> 'Report generation time %s seconds',
+  'sys_mess_tower' 		=> 'Transport',
+  'sys_mess_attack_report' 	=> 'Battle Report',
+  'sys_spy_maretials' 		=> 'Raw material',
+  'sys_spy_fleet' 			=> 'Fleet',
+  'sys_spy_defenses' 		=> 'Defence',
+  'sys_mess_qg' 			=> 'Fleet command',
+  'sys_mess_spy_report' 		=> 'Spy Report',
+  'sys_mess_spy_lostproba' 	=> 'Accuracy of information received by the Spy probe %d %% ',
+  'sys_mess_spy_control' 		=> 'Counter-intelligence',
+  'sys_mess_spy_activity' 		=> 'Spy activity',
+  'sys_mess_spy_ennemyfleet' 	=> 'Alien fleet with planet',
+  'sys_mess_spy_seen_at'		=> 'was discovered near the planet',
+  'sys_mess_spy_destroyed'		=> 'Spy probe was destroyed',
+  'sys_object_arrival'		=> 'Arrived on the planet',
+  'sys_stay_mess_stay' => 'Leave Fleet',
+  'sys_stay_mess_start' 		=> 'Your fleet arrived at the planet',
+  'sys_stay_mess_back'		=> 'Your fleet is back ',
+  'sys_stay_mess_end'		=> ' and delivered:',
+  'sys_stay_mess_bend'		=> ' and delivered the following resources:',
+  'sys_adress_planet' 		=> '[%s:%s:%s]',
+  'sys_stay_mess_goods' 		=> '%s : %s, %s : %s, %s : %s',
+  'sys_colo_mess_from' 		=> 'Colonization',
+  'sys_colo_mess_report' 		=> 'Report about colonization',
+  'sys_colo_defaultname' 		=> 'Colony',
+  'sys_colo_arrival' 		=> 'The fleet reaches the coordinates ',
+  'sys_colo_maxcolo' 		=> ', but you cannot colonize the planet has reached the maximum number of colonies for your level of colonization',
+  'sys_colo_allisok' 		=> ', and colonists are beginning to a new planet.',
+  'sys_colo_badpos'  			=> ', and the colonists found little benefit for the environment of your Empire. The mission colonization back to planet submit.',
+  'sys_colo_notfree' 			=> ', the colonists did not find the planet in these coordinates. They have to pave the way back completely discouraged.',
+  'sys_colo_planet'  		=> ' Planet colonized by!',
+  'sys_expe_report' 		=> 'Expedition Report',
+  'sys_recy_report' 		=> 'Recycler information',
+  'sys_expe_blackholl_1' 		=> 'Your fleet hit the black hole and you lost part of your fleet!',
+  'sys_expe_blackholl_2' 		=> 'Your fleet hit the black hole and your fleet was completely sucked in!',
+  'sys_expe_nothing_1' 		=> 'Your researchers witnessed a Supernova! And your drives are able to take part of the absorption of energy.',
+  'sys_expe_nothing_2' 		=> 'Your researchers found nothing!',
+  'sys_expe_found_goods' 		=> 'Your researchers found a planet rich in raw materials!<br>You got %s %s, %s %s and %s %s',
+  'sys_expe_found_ships' 		=> 'Your researchers found flawlessly new fleet!<br>You got: ',
+  'sys_expe_back_home' 		=> 'Your fleet is back.',
+  'sys_mess_transport' 		=> 'Transport',
+  'sys_tran_mess_owner' 		=> 'One of your fleet reaches the planet %s %s and delivers %s %s, %s  %s and %s %s.',
+  'sys_tran_mess_user'  		=> 'Your fleet sent to the planet %s %s arrived at %s %s and delivered %s %s, %s  %s and %s %s.',
+  'sys_mess_fleetback' 		=> 'Return',
+  'sys_tran_mess_back' 		=> 'One of your fleet returned to planet %s %s.',
+  'sys_recy_gotten' 		=> 'One of your fleets, Nancy a %s %s and %s %s Return to planet.',
+  'sys_notenough_money' 		=> 'You do not have enough resources to build: %s. You now: %s %s , %s %s and %s %s. For construction: %s %s , %s %s and %s %s.',
+  'sys_nomore_level'		=> 'You no longer can improve it. It reached Max. level ( %s ).',
+  'sys_buildlist' 			=> 'Building list',
+  'sys_buildlist_fail' 		=> 'no buildings',
+  'sys_gain' 			=> 'Extraction: ',
+  'sys_perte_attaquant' 		=> 'The Attacker lost',
+  'sys_perte_defenseur' 		=> 'The Defender lost',
+  'sys_debris' 			=> 'Debris: ',
+  'sys_noaccess' 			=> 'Access Denied',
+  'sys_noalloaw' 			=> 'You have access to this zone!',
+  'sys_governor'        => 'Governor',
+
+  // News page & a bit of imperator page
+  'news_title'     => 'News',
+  'news_none'      => 'No news',
+  'news_new'       => 'New',
+  'news_future'    => 'Announcement',
+  'news_more'      => 'Read More...',
+
+  'news_date'      => 'Date',
+  'news_announce'  => 'Table of Contents',
+  'news_total'     => 'Total news: ',
+
+  'news_add'       => 'Submit news',
+  'news_edit'      => 'Edit news',
+  'news_copy'      => 'Copy the news',
+  'news_mode_new'  => 'New',
+  'news_mode_edit' => 'Editing',
+  'news_mode_copy' => 'Copying',
+
+  // Missile-related
+  'mip_h_launched'			=> 'Launch of interplanetary missiles',
+  'mip_launched'				=> 'Launching interplanetary missiles: <b>%s</b>!',
+
+  'mip_no_silo'				=> 'Insufficient level of silos on the planet <b>%s</b>.',
+  'mip_no_impulse'			=> 'You want to investigate pulse motor.',
+  'mip_too_far'				=> 'Rocket cannot fly that far.',
+  'mip_planet_error'			=> 'Error - more than one planet one coordinate',
+  'mip_no_rocket'				=> 'Not enough missiles in the shaft to carry out the attack.',
+  'mip_hack_attempt'			=> ' You an hacker? Another joke and you will be banned. IP address and login I recorded.',
+
+  'mip_all_destroyed' 		=> 'All interplanetary missiles were destroyed missile intercepted<br>',
+  'mip_destroyed'				=> '%s interplanetary missiles were destroyed by intercept missiles.<br>',
+  'mip_defense_destroyed'	=> 'Destroyed following defences:<br />',
+  'mip_recycled'				=> 'Repaired from the debris of defence equipment: ',
+  'mip_no_defense'			=> 'On an affected planet protection!',
+
+  'mip_sender_amd'			=> 'Rocket and space forces',
+  'mip_subject_amd'			=> 'Missile attack',
+  'mip_body_attack'			=> 'Attack of the interplanetary missiles (%1$s шт.) with the planet %2$s <a href="galaxy.php?mode=3&galaxy=%3$d&system=%4$d&planet=%5$d">[%3$d:%4$d:%5$d]</a> on the planet %6$s <a href="galaxy.php?mode=3&galaxy=%7$d&system=%8$d&planet=%9$d">[%7$d:%8$d:%9$d]</a><br><br>',
+  
+  // Misc
+  'sys_game_rules' => 'Rules of the game',
+  'sys_max' => 'Max',
+  'sys_banned_msg' => 'You are banned. For more information please visit <a href="banned.php">here</a>. Time of account ban: ',
+  'sys_total_time' => 'Total time',
+
+  // Univers
+  'uni_moon_of_planet' => 'planet',
+
+  // Dark Matter
+  'sys_dark_matter_get'  => 'Get Dark Matter',
+  'sys_dark_matter_text' => '<h2>What is Dark Matter?</h2>
+    Dark Matter - it is currency, which in the game you can make a variety of operations:
+    <ul><li>Swapping one resource for another</li>
+    <li>Call charge fleet</li>
+    <li>Call seller of used vehicles</li>
+    <li>Hiring officers</li></ul>
+    <h2>Where to get Dark Matter?</h2>
+    You get Dark Matter during the game: gaining experience for raids on other planets and construction of buildings.
+    Also sometimes research cruises can bring Dark Matter.<br>
+    In addition you can purchase Dark Matter for WebMoney. Learn more-see.',
+
+  // Officers
+  'off_no_points'        => 'You do not have enough Dark Matter!',
+  'off_recruited'        => 'The officer was hired! <a href="officer.php">Back</a>',
+  'off_tx_lvl'           => 'Current level: ',
+  'off_points'           => 'Photos of Dark Matter: ',
+  'off_maxed_out'        => 'Maximum level',
+  'off_not_available'    => 'Officer you is not yet available!',
+  'off_hire'             => 'Hire for',
+  'off_dark_matter_desc' => 'Dark matter - using the standard methods of  fabric, which accounts for 23% mass of the universe. From there you can obtain an incredible amount of energy. Because of this, and because of the complexities associated with its extraction, Dark Matter is valued very highly.',
+  'off_dark_matter_hint' => 'With the help of this substance you can hire officers and commanders.',
+
+));
+
 ?>

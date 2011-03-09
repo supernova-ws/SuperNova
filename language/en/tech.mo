@@ -1,159 +1,139 @@
 <?php
-/*
-#############################################################################
-#  Filename: tech.mo
-#  Create date: Friday, March 28, 2008	 19:35:54
-#  Project: prethOgame
-#  Description: RPG web based game
-#
-#  Copyright бL 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright бL 2005 - 2008 KGsystem
-#############################################################################
-*/
-$lang['Tech']         = "Технологии";
-$lang['Requirements'] = "Требования";
-$lang['Metal']        = "Металл";
-$lang['Crystal']      = "Кристалл";
-$lang['Deuterium']    = "Дейтерий";
-$lang['Energy']       = "Энергия";
-$lang['dark_matter']  = "Dark Matter";
-$lang['Message']      = "Сообщения";
-$lang['level']        = "уровень";
+
+$lang['tech_storage_max'] = "Storeage size";
+$lang['tech_storage']     = "In storeage";
+
+$lang['Tech']         = "Technology";
+$lang['Requirements'] = "Requirements";
+$lang['Metal']        = "Metal";
+$lang['Crystal']      = "Crystal";
+$lang['Deuterium']    = "Deuterium";
+$lang['Energy']       = "Energy";
+$lang['dark_matter']  = "Dark matter";
+$lang['ds']		       = "Messages";
+$lang['ds_total']     = "0";
+$lang['Message']      = "Messages";
+$lang['level']        = "Level";
 $lang['treeinfo']     = "[i]";
-$lang['comingsoon']   = "Скоро";
-$lang['te_dt_tx_pre'] = "Pr&eacute;requis pour";
+$lang['comingsoon']   = "Coming Soon";
+$lang['te_dt_tx_pre'] = "Weak production";
 
 
-$lang['type_mission'][1]  = "Атаковать";
-$lang['type_mission'][2]  = "ACS Атака";
-$lang['type_mission'][3]  = "Перевозка";
-$lang['type_mission'][4]  = "Передислокация";
-$lang['type_mission'][5]  = "ACS Защита";
-$lang['type_mission'][6]  = "Шпионаж";
-$lang['type_mission'][7]  = "Колонизация";
-$lang['type_mission'][8]  = "Сбор";
-$lang['type_mission'][9]  = "Уничтожение";
-$lang['type_mission'][10] = "Ракетная атака";
-$lang['type_mission'][15] = "Экспедиция";
-
-// Short names for fight rapport
-$lang['tech_rc'] = array (
-	202 => 'S.Cargo',
-	203 => 'L.Cargo',
-	204 => 'L.Fighter',
-	205 => 'H.Fighter',
-	206 => 'Cruiser',
-	207 => 'Battleship',
-	208 => 'Col. Ship',
-	209 => 'Recy.',
-	210 => 'Esp.Probe',
-	211 => 'Bomber',
-	212 => 'Sol. Sat',
-	213 => 'Dest.',
-	214 => 'Deathstar',
-	215 => 'Battlecr.',
-	
-	401 => 'R.Launcher',
-	402 => 'L.Laser',
-	403 => 'H.Laser',
-	404 => 'Gauss',
-	405 => 'Ion C.',
-	406 => 'Plasma',
-	407 => 'S.Dome',
-	408 => 'L.Dome',
-);
+$lang['type_mission'][1]  = "Attack";
+$lang['type_mission'][2]  = "Joint Attack";
+$lang['type_mission'][3]  = "Transport";
+$lang['type_mission'][4]  = "Deployment";
+$lang['type_mission'][5]  = "Retention";
+$lang['type_mission'][6]  = "Espionage";
+$lang['type_mission'][7]  = "Colonization";
+$lang['type_mission'][8]  = "Recycle";
+$lang['type_mission'][9]  = "Destruction";
+$lang['type_mission'][10] = "Missile attack";
+$lang['type_mission'][15] = "Expedition";
 
 $lang['tech'] = array(
-//Buildings
-	 0 => "Здания",
-	 1 => "Рудник по добыче металла",
-	 2 => "Рудник по добыче кристалла",
-	 3 => "Синтезатор Дейтерия",
-	 4 => "Солнечная электростанция",
-	12 => "Термоядерный реактор",
-	14 => "Фабрика роботов",
-	15 => "Фабрика нанитов",
-	21 => "Верфь",
-	22 => "Склад металла",
-	23 => "Склад кристаллов",
-	24 => "Хранилище дейтерия",
-	31 => "Исследовательская лаборатория",
-	33 => "Терраформер",
-	34 => "Орбитальная станция",
-
-//Lunar Buildings
-	40 => 'Лунные строения',
-	41 => 'Лунная база',
-	42 => 'Планарный сенсор',
-	43 => 'Прыжковые ворота',
-
-	44 => "Ракетная шахта",
+    0 => "Buildings",
+    1 => "Metal mine",
+    2 => "Crystal Mine",
+    3 => "Deuterium Synthesizer",
+    4 => "Solar Plant",
+   12 => "Fusion Reactor",
+   14 => "Robotics Factory",
+   15 => "Nanite Factory",
+   21 => "Shipyard",
+   22 => "Metal Storage",
+   23 => "Crystal Storage",
+   24 => "Deuterium Tank",
+   31 => "Research Lab",
+   33 => "Terraformer",
+   34 => "Alliance Depot",
+   35 => "Special Building",
+   40 => 'Moon Buildings',
+   41 => 'Moon Base',
+   42 => 'Sensor Phalanx',
+   43 => 'Stargate',
+   44 => "Missile Silo",
 
 // Technologies
-	100 => 'Исследовать',
-	106 => 'Шпионаж',
-	108 => 'Нано-компьютеры',
-	109 => 'Оружие следующего поколения',
-	110 => 'Энергетические Щиты',
-	111 => 'Броня',
-	113 => 'Энергетика',
-	114 => 'Гиперпространство',
-	115 => 'Ракетные двигатели',
-	117 => 'Ипульсные двигатели',
-	118 => 'Гиперпространственные двигатели',
-	120 => 'Лазеры',
-	121 => 'Ионные исследования',
-	122 => 'Плазма ',
-	123 => 'Интергалактическая научная сеть',
-	124 => 'Экспедиции',
-	199 => 'Гравитация',
+  100 => 'Technologies',
+  106 => "Espionage Technology",
+  108 => "Computer Technology",
+  109 => "Weapons Technology",
+  110 => "Shielding Technology",
+  111 => "Armor Technology",
+  113 => "Energy Technology",
+  114 => "Hyperspace Technology",
+  115 => "Rocket Engine",
+  117 => "Impulse Engine",
+  118 => "Hyperspace Drive",
+  120 => "Laser Technology",
+  121 => "Ion Technology",
+  122 => "Plasma Technology",
+  123 => "Intergalactic Research Network",
+  124 => 'Expedition Technology',
+  150 => 'Colonization Technology',
+  199 => "Graviton Technology",
 
-//Ships                 
-	200 => 'Корабли',         
-	202 => 'Легкий перевозчик',   
-	203 => 'Тяжелый перевозчик',   
-	204 => 'Легкий Истребитель', 
-	205 => 'Тяжелый истребитель', 
-	206 => 'Крейсер',       
-	207 => 'Линкор',    
-	208 => 'Колонизатор',   
-	209 => 'Сборщик',      
-	210 => 'Шпионский дрон',
-	211 => 'Бомбардировщик',        
-	212 => 'Солнечный спутник',
-	213 => 'Разрушитель',     
-	214 => 'Звезда смерти',     
-	215 => 'Линейный крейсер', 
-                        
-//Defense                        
-	400 => 'Защита',                
-	401 => 'Ракетные установки',        
-	402 => 'Легкий лазер',            
-	403 => 'Тяжелый лазер',            
-	404 => 'Пушка гаусса',           
-	405 => 'Ионная пушка',             
-	406 => 'Плазменные турели',          
-	407 => 'Легкий планетарный щит',      
-	408 => 'Тяжелый планетарный щит',      
-	502 => 'Противоракетная оборона',
-	503 => 'Межпланетные ракеты',
+  SHIP_FLEET => "Ships",
+  SHIP_SATTELITE_SOLAR => "Solar Satellite",
+  SHIP_SPY => "Spy Probe",
+  SHIP_CARGO_SMALL => "Small Cargo",
+  SHIP_CARGO_BIG => "Large Cargo",
+  SHIP_CARGO_SUPER => "Super Cargo",
+  SHIP_RECYCLER => "Recycler",
+  SHIP_COLONIZER => "Colony Ship",
+  SHIP_FIGHTER_LIGHT => "Light Fighter",
+  SHIP_FIGHTER_HEAVY => "Heavy Fighter",
+  SHIP_DESTROYER => "Destroyer",
+  SHIP_CRUISER => "Cruiser",
+  SHIP_BOMBER => "Bomber",
+  SHIP_BATTLESHIP => "Battleship",
+  SHIP_DESTRUCTOR => "Destructor",
+  SHIP_DEATH_STAR => "Deathstar",
+  SHIP_SUPERNOVA => "Cruiser Class &quot;Supernova&quot;",
 
-	MRC_GEOLOGIST => "Геолог",
-	MRC_ADMIRAL => "Адмирал",
-	MRC_POWERMAN => "Энергетик",
-	MRC_CONSTRUCTOR => "Конструктор",
-	MRC_ARCHITECT => "Архитектор",
-	MRC_ACADEMIC => "Академик",
-	MRC_STOCKMAN => "Провайзер",
-	MRC_FORTIFIER => "Фортификатор",
-	MRC_DEFENDER  => "Защитник",
-	MRC_SPY => "Шпион",
-	MRC_COORDINATOR => "Координатор",
-	MRC_DESTRUCTOR => "Уничтожитель",
-	MRC_NAVIGATOR => "Генерал",
-	MRC_ASSASIN => "Рейдер",
-	MRC_EMPEROR => "Император"
+  400 => "Defences",
+  401 => "Rocket Launcher",
+  402 => "Light Laser",
+  403 => "Heavy Laser",
+  404 => "Gauss Cannon",
+  405 => "Ion Cannon",
+  406 => "Plasma Turrent",
+  407 => "Small Shield Dome",
+  408 => "Large Shield Dome",
+  409 => 'Planetary Protection',
 
+  502 => "Interceptor Missiles",
+  503 => "Interplanetary Missiles",
+
+  600 => "Officers",
+  MRC_GEOLOGIST => "Geologist",
+  MRC_POWERMAN => "Power Engineer",
+  MRC_STOCKMAN => "Cargo Master",
+  MRC_ARCHITECT => "Architect",
+  MRC_SPY => "Spy",
+  MRC_COORDINATOR => "Coordinator",
+  MRC_DESTRUCTOR => "Destroyer",
+  MRC_ADMIRAL => "Admiral",
+  MRC_CONSTRUCTOR => "Constructor",
+  MRC_ACADEMIC => "Academician",
+  MRC_FORTIFIER => "Fortifier",
+  MRC_DEFENDER => "Defender",
+  MRC_NAVIGATOR => "Navigator",
+  MRC_ASSASIN => "Assassin",
+//  MRC_EMPEROR => "Emperor",
+
+  900 => $lang['sys_resources'],
+  RES_METAL => $lang['sys_metal'],
+  RES_CRYSTAL => $lang['sys_crystal'],
+  RES_DEUTERIUM => $lang['sys_deuterium'],
+  RES_ENERGY => $lang['sys_energy'],
+  RES_DARK_MATTER => $lang['sys_dark_matter'],
+ 
+// 1000 => 'Governors',
 );
 
+// Created by Perberos. All rights reversed (C) 2006
+// Complet by XNova Team. All rights reversed (C) 2008
+// Ьbersetzt by Dr.Isaacs XNova Team Germany. All rights reversed (C) 2008
 ?>
