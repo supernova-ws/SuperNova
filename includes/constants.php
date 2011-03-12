@@ -16,7 +16,7 @@ if ( !defined('INSIDE') )
 }
 
 define('DB_VERSION', 26);
-define('SN_VERSION', '26e17');
+define('SN_VERSION', '26e18');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
