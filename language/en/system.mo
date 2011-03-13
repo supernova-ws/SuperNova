@@ -271,6 +271,8 @@ $lang = array_merge($lang, array(
   'news_announce'  => 'Table of Contents',
   'news_total'     => 'Total news: ',
 
+  'news_more'      => 'Link to more info',
+
   'news_add'       => 'Submit news',
   'news_edit'      => 'Edit news',
   'news_copy'      => 'Copy the news',

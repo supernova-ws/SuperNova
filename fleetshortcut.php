@@ -28,7 +28,7 @@ if(isset($_GET['mode'])){
     $r = strip_tags($_POST[n]).",".intval($_POST[g]).",".intval($_POST[s]).",".intval($_POST[p]).",".intval($_POST[t])."\r\n";
     $user['fleet_shortcut'] .= mysql_real_escape_string($r);
     doquery("UPDATE `{{users}}` SET fleet_shortcut='{$user[fleet_shortcut]}' WHERE id={$user[id]}");
-    message("Эта ссылка сохранена!","Сохранено","fleetshortcut.php");
+    message("Закладка сохранена!","Сохранено","fleetshortcut.php");
   }
   $page = "<form method=POST><table border=0 cellpadding=0 cellspacing=1 width=519>
   <tr height=20>
@@ -57,7 +57,7 @@ elseif(isset($_GET['a'])){
       unset($scarray[$a]);
       $user['fleet_shortcut'] =  mysql_real_escape_string(implode("\r\n",$scarray));
       doquery("UPDATE `{{users}}` SET fleet_shortcut='{$user[fleet_shortcut]}' WHERE id={$user[id]}");
-      message("Ссылка удаленна","Удаленно","fleetshortcut.php");
+      message("Закладка удаленна","Удаленно","fleetshortcut.php");
     }
     else{
       $r = explode(",",$scarray[$a]);
@@ -69,7 +69,7 @@ elseif(isset($_GET['a'])){
       $scarray[$a] = implode(",",$r);
       $user['fleet_shortcut'] =  mysql_real_escape_string(implode("\r\n",$scarray));
       doquery("UPDATE `{{users}}` SET fleet_shortcut='{$user[fleet_shortcut]}' WHERE id={$user[id]}");
-      message("Ссылка отредактированна !","Редактирование","fleetshortcut.php");
+      message("Закладка отредактирована","Редактирование","fleetshortcut.php");
     }
   }
   if($user['fleet_shortcut']){
@@ -97,17 +97,18 @@ elseif(isset($_GET['a'])){
     <th><input type=\"reset\" value=\"Сбросить\"> <input type=submit value=\"Сохранить\"> <input type=submit name=delete value=\"Удалить\">";
     $page .= "</th></tr>";
 
-  }else{$page .= message("Эта ссылка сохранена !","Сохранено","fleetshortcut.php");}
+  }else{$page .= message("Закладка сохранена","Сохранено","fleetshortcut.php");}
 
-  $page .= '<tr><td colspan=2 class=c><a href=fleetshortcut.php>Управление ссылками</a></td></tr></tr></table></form>';
+  $page .= '<tr><td colspan=2 class=c><a href=fleetshortcut.php>Управление закладками</a></td></tr></tr></table></form>';
 
 
 }
-else{
+else
+{
 
   $page = '<table border="0" cellpadding="0" cellspacing="1" width="519">
   <tr height="20">
-  <td colspan="2" class="c">Ссылки (<a href="fleetshortcut.php?mode=add">Добавить</a>)</td>
+  <td colspan="2" class="c">Закладки (<a href="fleetshortcut.php?mode=add">Добавить</a>)</td>
   </tr>';
 
   if($user['fleet_shortcut']){
@@ -134,7 +135,7 @@ else{
     }
     if($i==1){$page .= "<th></th></tr>";}
 
-  }else{$page .= "<th colspan=\"2\">Нет ссылок</th>";}
+  }else{$page .= "<th colspan=\"2\">Нет закладок</th>";}
 
   $page .= '<tr><td colspan=2 class=c><a href=fleet.php>Управление флотом</a></td></tr></tr></table>';
 }
