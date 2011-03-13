@@ -13,8 +13,6 @@ $allow_anonymous = true;
 $skip_ban_check = true;
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('banned');
-
 $parse = $lang;
 
 $query = doquery("SELECT * FROM {{banned}} ORDER BY `id`;");

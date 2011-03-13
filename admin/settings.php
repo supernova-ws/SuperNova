@@ -72,6 +72,7 @@ $template->assign_vars(array(
   'game_counter' => $config->game_counter ? 'checked' : '',
   'user_vacation_disable' => $config->user_vacation_disable ? 'checked' : '',
   'game_mode' => $config->game_mode,
+  'game_language' => $config->game_default_language,
 ));
 
 foreach($lang['sys_game_mode'] as $mode_id => $mode_name)
@@ -82,5 +83,16 @@ foreach($lang['sys_game_mode'] as $mode_id => $mode_name)
   ));
 }
 
+$lang_list = lng_get_list();
+foreach($lang_list as $lang_id => $lang_data)
+{
+  $template->assign_block_vars('game_languages', array(
+    'ID'   => $lang_id,
+    'NAME' => "{$lang_data['LANG_NAME_NATIVE']} ({$lang_data['LANG_NAME_ENGLISH']})",
+//    'SELECTED' => $lang_id == $config->game_default_language ? 'SELECTED' : '',
+  ));
+}
+
 display(parsetemplate($template), $lang['adm_opt_title'], false, '', true);
+
 ?>

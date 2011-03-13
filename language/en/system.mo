@@ -1,209 +1,165 @@
 <?php
+/**
+*
+* system [English]
+*
+* @package language
+* @version $Id$
+*
+*/
+
+/**
+* DO NOT CHANGE
+*/
+if (!defined('INSIDE'))
+{
+  exit;
+}
+
+if (empty($lang) || !is_array($lang))
+{
+  $lang = array();
+}
 
 // System-wide localization
 
-$lang['user_level'] = array (
-	'0' => 'Player',
-	'1' => 'Moderator',
-	'2' => 'Operator',
-	'3' => 'Administrator',
-);
+$lang = array_merge($lang, array(
+  'VacationMode'			=> "Your production stopped because you are on vacation",
+  'sys_moon_destruction_report' => "Report of destruction of the Moon",
+  'sys_moon_destroyed' => "Your Deathstar shot a powerful gravitational wave, which destroyed the Moon! ",
+  'sys_rips_destroyed' => "Your Deathstar shot a  powerful gravitational wave, but it was not enough power to destroy the Moon this size. But the gravitational wave reflected from the lunar surface and ruined your fleet.",
+  'sys_rips_come_back' => "Your Deathstar did not have enough power to defeat this moon. Your fleet is not destroying the Moon.",
+  'sys_chance_moon_destroy' => "Chance of Moon destruction: ",
+  'sys_chance_rips_destroy' => "Modify burst destruction: ",
 
-foreach($lang['user_level'] as $ID => $levelName)
-{
-  $lang['user_level_shortcut'][$ID] = $levelName[0];
-}
+  'sys_day' => "Days",
+  'sys_hrs' => "Hours",
+  'sys_min' => "Minutes",
+  'sys_sec' => "Seconds",
+  'sys_day_short' => "D",
+  'sys_hrs_short' => "H",
+  'sys_min_short' => "M",
+  'sys_sec_short' => "S",
 
+  'sys_ask_admin' => 'Questions and suggestions sent to',
 
-$lang['VacationMode']			= "Your production stopped because you are on vacation";
-$lang['sys_moon_destruction_report'] = "Report of destruction of the Moon";
-$lang['sys_moon_destroyed'] = "Your Deathstar shot a powerful gravitational wave, which destroyed the Moon! ";
-$lang['sys_rips_destroyed'] = "Your Deathstar shot a  powerful gravitational wave, but it was not enough power to destroy the Moon this size. But the gravitational wave reflected from the lunar surface and ruined your fleet.";
-$lang['sys_rips_come_back'] = "Your Deathstar did not have enough power to defeat this moon. Your fleet is not destroying the Moon.";
-$lang['sys_chance_moon_destroy'] = "Chance of Moon destruction: ";
-$lang['sys_chance_rips_destroy'] = "Modify burst destruction: ";
+  'sys_wait' => 'The query is executed. Please wait.',
 
-$lang['sys_day'] = "Days";
-$lang['sys_hrs'] = "Hours";
-$lang['sys_min'] = "Minutes";
-$lang['sys_sec'] = "Seconds";
+  'sys_total'           => "Total",
+  'sys_register_date'   => 'Registration date',
 
-$lang['sys_day_short'] = "D";
-$lang['sys_hrs_short'] = "H";
-$lang['sys_min_short'] = "M";
-$lang['sys_sec_short'] = "S";
+  'sys_attacker' 		=> "Attacker",
+  'sys_defender' 		=> "Defender",
 
-$lang['sys_ask_admin'] = 'Questions and suggestions sent to';
-$lang['TranslationBy'] = '';
+  'COE_combatSimulator' => "Battle simulator",
+  'COE_simulate'        => "Run the Simulator",
+  'COE_fleet'           => "Fleet",
+  'COE_defense'         => "Defence",
+  'sys_resources'       => "Resources",
+  'sys_ships'           => "Ships",
 
-$lang['sys_wait'] = 'The query is executed. Please wait.';
+  'sys_metal'          => "Metal",
+  'sys_metal_sh'       => "M",
+  'sys_crystal'        => "Crystal",
+  'sys_crystal_sh'     => "C",
+  'sys_deuterium'      => "Deuterium",
+  'sys_deuterium_sh'   => "D",
+  'sys_energy'         => "Energy",
+  'sys_energy_sh'      => "E",
+  'sys_dark_matter'    => "Dark Matter",
+  'sys_dark_matter_sh' => "DM",
 
-$lang['sys_total']           = "Total";
-$lang['sys_register_date']   = 'Registration date';
+  'sys_reset'           => "Reset",
+  'sys_send'            => "Send",
+  'sys_characters'      => "Characters",
+  'sys_back'            => "Back",
+  'sys_return'          => "Return",
+  'sys_delete'          => "Delete",
+  'sys_writeMessage'    => "Write a message",
+  'sys_hint'            => "Tip",
 
-$lang['sys_attacker'] 		= "Attacker";
-$lang['sys_defender'] 		= "Defender";
+  'sys_alliance'        => "Alliance",
+  'sys_player'          => "Player",
+  'sys_coordinates'     => "Coordinates",
 
-$lang['COE_combatSimulator'] = "Battle simulator";
-$lang['COE_simulate']        = "Run the Simulator";
-$lang['COE_fleet']           = "Fleet";
-$lang['COE_defense']         = "Defence";
-$lang['sys_resources']       = "Resources";
-$lang['sys_ships']           = "Ships";
+  'sys_online'          => "Online",
+  'sys_offline'         => "Offline",
+  'sys_status'          => "Status",
 
-$lang['sys_metal']          = "Metal";
-$lang['sys_metal_sh']       = "M";
-$lang['sys_crystal']        = "Crystal";
-$lang['sys_crystal_sh']     = "C";
-$lang['sys_deuterium']      = "Deuterium";
-$lang['sys_deuterium_sh']   = "D";
-$lang['sys_energy']         = "Energy";
-$lang['sys_energy_sh']      = "E";
-$lang['sys_dark_matter']    = "Dark Matter";
-$lang['sys_dark_matter_sh'] = "DM";
+  'sys_universe'        => "Universe",
+  'sys_goto'            => "Go",
 
-$lang['sys_resource'] = array(
-  1 => $lang['sys_metal'],
-  2 => $lang['sys_crystal'],
-  3 => $lang['sys_deuterium'],
-  4 => $lang['sys_dark_matter'],
-  5 => $lang['sys_energy'],
-);
+  'sys_time'            => "Time",
 
-$lang['sys_reset']           = "Reset";
-$lang['sys_send']            = "Send";
-$lang['sys_characters']      = "Characters";
-$lang['sys_back']            = "Back";
-$lang['sys_return']          = "Return";
-$lang['sys_delete']          = "Delete";
-$lang['sys_writeMessage']    = "Write a message";
-$lang['sys_hint']            = "Tip";
+  'sys_no_task'         => "No task",
 
-$lang['sys_alliance']        = "Alliance";
-$lang['sys_player']          = "Player";
-$lang['sys_coordinates']     = "Coordinates";
+  'sys_affilates'       => "Invited players",
 
-$lang['sys_online']          = "Online";
-$lang['sys_offline']         = "Offline";
-$lang['sys_lessThen15min']   = '&lt; 15 ì';
-$lang['sys_status']          = "Status";
+  'sys_fleet_arrived'   => "Fleet arrived",
 
-$lang['sys_universe']        = "Universe";
-$lang['sys_goto']            = "Go";
+  'sys_planet_type1'    => "Planet",
+  'sys_planet_type2' 	  => "Field Debris",
+  'sys_planet_type3'    => "Moon",
 
-$lang['sys_time']            = "Time";
+  'sys_planet_type_sh1' => "(P)",
+  'sys_planet_type_sh2' => "(O)",
+  'sys_planet_type_sh3' => "(L)",
 
-$lang['sys_no_task']         = "No task";
+  'sys_capacity' 			=> 'Load Capacity',
+  'sys_cargo_bays' 			=> 'Holds',
 
-$lang['sys_affilates']       = "Invited players";
-
-$lang['sys_fleet_arrived']   = "Fleet arrived";
-
-$lang['sys_planet_type1']    = "Planet";
-$lang['sys_planet_type2'] 	  = "Field Debris";
-$lang['sys_planet_type3']    = "Moon";
-
-$lang['sys_planet_type'] = array(
-  PT_PLANET => $lang['sys_planet_type1'], 
-  2 => $lang['sys_planet_type2'], 
-  PT_MOON => $lang['sys_planet_type3']
-);
-
-$lang['sys_planet_type_sh1'] = "(P)";
-$lang['sys_planet_type_sh2'] = "(O)";
-$lang['sys_planet_type_sh3'] = "(L)";
-
-$lang['sys_planet_type_sh'] = array(
-  1 => $lang['sys_planet_type_sh1'], 
-  2 => $lang['sys_planet_type_sh2'], 
-  3 => $lang['sys_planet_type_sh3']
-);
-
-$lang['sys_capacity'] 			= 'Load Capacity';
-$lang['sys_cargo_bays'] 			= 'Holds';
-
-$lang['sys_supernova'] 			= 'Supernova';
-$lang['sys_server'] 			= 'Server';
-
+  'sys_supernova' 			=> 'Supernova',
+  'sys_server' 			=> 'Server',
 
 // Resource page
-$lang['res_planet_production'] = 'Planet Production';
-$lang['res_basic_income'] = 'Basic Income';
-$lang['res_total'] = 'Total';
-$lang['res_calculate'] = 'Calculate';
-$lang['res_hourly'] = 'Hourly';
-$lang['res_daily'] = 'Daily';
-$lang['res_weekly'] = 'Weekly';
-$lang['res_monthly'] = 'Monthly';
-$lang['res_storage_fill'] = 'Storage occupancy';
-$lang['res_hint'] = '<ul><li>Production resources <100% means a shortage of energy. Build more power stations or reduce production resources<li>If your production is 0% likely you came from vacation mode and you want to include all plants<li>What would make the extraction for all plants immediately use the drop-down in the resource table. Especially convenient to use it after the vacation mode</ul>';
+  'res_planet_production' => 'Planet Production',
+  'res_basic_income' => 'Basic Income',
+  'res_total' => 'Total',
+  'res_calculate' => 'Calculate',
+  'res_hourly' => 'Hourly',
+  'res_daily' => 'Daily',
+  'res_weekly' => 'Weekly',
+  'res_monthly' => 'Monthly',
+  'res_storage_fill' => 'Storage occupancy',
+  'res_hint' => '<ul><li>Production resources <100% means a shortage of energy. Build more power stations or reduce production resources<li>If your production is 0% likely you came from vacation mode and you want to include all plants<li>What would make the extraction for all plants immediately use the drop-down in the resource table. Especially convenient to use it after the vacation mode</ul>',
 
 // Build page
-$lang['bld_destroy'] = 'Destroy';
-$lang['bld_create']  = 'Build';
+  'bld_destroy' => 'Destroy',
+  'bld_create'  => 'Build',
 
 // Imperium page
-$lang['imp_imperator'] = "Emperor";
-$lang['imp_overview'] = "Empire Overview";
-$lang['imp_fleets'] = "Fleets in flight";
-$lang['imp_production'] = "Production";
-$lang['imp_name'] = "Name";
-$lang['sys_fields'] = "Fields";
+  'imp_imperator' => "Emperor",
+  'imp_overview' => "Empire Overview",
+  'imp_fleets' => "Fleets in flight",
+  'imp_production' => "Production",
+  'imp_name' => "Name",
+  'sys_fields' => "Fields",
 
 // Cookies
-$lang['err_cookie'] = "Error! You cannot authenticate the user on information in a cookie. <a href='login.{$phpEx}'>Log on</a> in a game or <a href='reg.{$phpEx}'>register new account</a>.";
+  'err_cookie' => "Error! You cannot authenticate the user on information in a cookie. <a href='login." . PHP_EX . "'>Log on</a> in a game or <a href='reg." . PHP_EX . "'>register new account</a>.",
 
 // Supported languages
-$lang['ru']              	  = 'Russian';
-$lang['en']              	  = 'English';
+  'ru'              	  => 'Russian',
+  'en'              	  => 'English',
 
-$lang['sys_vacation']        = 'Your are on vacation until';
-$lang['sys_vacation_leave']  = 'I have got rest - break holiday!';
-$lang['sys_level']           = 'Level';
+  'sys_vacation'        => 'Your are on vacation until',
+  'sys_vacation_leave'  => 'I have got rest - break holiday!',
+  'sys_level'           => 'Level',
 
-$lang['sys_yes']             = 'Yes';
-$lang['sys_no']              = 'No';
+  'sys_yes'             => 'Yes',
+  'sys_no'              => 'No',
 
-$lang['sys_on']              = 'Enable';
-$lang['sys_off']             = 'Disable';
+  'sys_on'              => 'Enable',
+  'sys_off'             => 'Disable',
 
-$lang['sys_save']            = 'Save';
-$lang['sys_create']          = 'Create';
-$lang['sys_write_message']   = 'Write a message';
-
-$lang['sys_game_mode'][0]    = 'Supernova';
-$lang['sys_game_mode'][1]    = 'about Game';
+  'sys_save'            => 'Save',
+  'sys_create'          => 'Create',
+  'sys_write_message'   => 'Write a message',
 
 // top bar
-$lang['top_of_year'] = 'Year';
-$lang['top_online']			= 'Players online';
-
-$lang['months'] = array(
-	'01'=>'January',
-	'02'=>'February',
-	'03'=>'March',
-	'04'=>'April',
-	'05'=>'May',
-	'06'=>'June',
-	'07'=>'July',
-	'08'=>'August',
-	'09'=>'September',
-	'10'=>'October',
-	'11'=>'November',
-	'12'=>'December'
-);
-
-$lang['weekdays'] = array(
-	'0' => 'Sunday',
-	'1' => 'Monday',
-	'2' => 'Tuesday',
-	'3' => 'Wednesday',
-	'4' => 'Thursday',
-	'5' => 'Friday',
-	'6' => 'Saturday'
-);
-
-$lang = array_merge($lang, array(
+  'top_of_year' => 'Year',
+  'top_online'			=> 'Players online',
+  
   'sys_first_round_crash_1'	=> 'Contact with the affected fleet lost.',
   'sys_first_round_crash_2'	=> 'This means that it was destroyed in the first round of the battle.',
 
@@ -376,8 +332,125 @@ $lang = array_merge($lang, array(
   'off_dark_matter_desc' => 'Dark matter - using the standard methods of  fabric, which accounts for 23% mass of the universe. From there you can obtain an incredible amount of energy. Because of this, and because of the complexities associated with its extraction, Dark Matter is valued very highly.',
   'off_dark_matter_hint' => 'With the help of this substance you can hire officers and commanders.',
 
+  // Fleet
+  'flt_gather_all'    => 'Gather resources',
+  
+  // Ban system
+  'ban_title'      => 'Black list',
+  'ban_name'       => 'Name',
+  'ban_reason'     => 'The reason for the ban',
+  'ban_from'       => 'Ban data',
+  'ban_to'         => 'Term of Ban',
+  'ban_by'         => 'Issued',
+  'ban_no'         => 'No Banned players',
+  'ban_thereare'   => 'Total',
+  'ban_players'    => 'Banned',
+  'ban_banned'     => 'Players banned: ',
+
+  // Contacts
+  'ctc_title' => 'Administration',
+  'ctc_intro' => 'Here you will find the addresses of all administrators and operators of the games for feeback',
+  'ctc_name'  => 'Name',
+  'ctc_rank'  => 'Rank',
+  'ctc_mail'  => 'E-Mail',
+
+  // Records page
+  'rec_title'  => 'Universe Records',
+  'rec_build'  => 'Building',
+  'rec_specb'  => 'Special Building',
+  'rec_playe'  => 'Player',
+  'rec_defes'  => 'Defence',
+  'rec_fleet'  => 'Fleet',
+  'rec_techn'  => 'Technology',
+  'rec_level'  => 'Level',
+  'rec_nbre'   => 'Number',
+  'rec_rien'   => '-',
+
+  // Credits page
+  'cred_link'    => 'Internet',
+  'cred_site'    => 'Site',
+  'cred_forum'   => 'Forum',
+  'cred_credit'  => 'Authors',
+  'cred_creat'   => 'Director',
+  'cred_prog'    => 'Programmer',
+  'cred_master'  => 'Moderator',
+  'cred_design'  => 'Designerð',
+  'cred_web'     => 'Webmaster',
+  'cred_thx'     => 'Thanks',
+  'cred_based'   => 'Basis for establishing XNova',
+  'cred_start'   => 'Place debut XNova',
+
+  // Arrays
+  'sys_game_mode' => array(
+    GAME_SUPERNOVA => 'SuperNova',
+    GAME_OGAME     => 'oGame',
+  ),
+
+  'months' => array(
+    '01'=>'January',
+    '02'=>'February',
+    '03'=>'March',
+    '04'=>'April',
+    '05'=>'May',
+    '06'=>'June',
+    '07'=>'July',
+    '08'=>'August',
+    '09'=>'September',
+    '10'=>'October',
+    '11'=>'November',
+    '12'=>'December'
+  ),
+
+  'weekdays' => array(
+    0 => 'Sunday',
+    1 => 'Monday',
+    2 => 'Tuesday',
+    3 => 'Wednesday',
+    4 => 'Thursday',
+    5 => 'Friday',
+    6 => 'Saturday'
+  ),
+
+  'user_level' => array(
+    0 => 'Player',
+    1 => 'Moderator',
+    2 => 'Operator',
+    3 => 'Administrator',
+  ),
+
 ));
 
-$lang['flt_gather_all']    = 'Gather resources';
+// You CAN NOT merge those array_merge with previous one!
+$lang = array_merge($lang, array(
+  'sys_lessThen15min'   => '&lt; 15 ' . $lang['sys_min_short'],
+
+  'user_level_shortcut' => array(
+    0 => $lang['user_level'][0][0],
+    1 => $lang['user_level'][1][0],
+    2 => $lang['user_level'][2][0],
+    3 => $lang['user_level'][3][0],
+  ),
+
+  'sys_resource' => array(
+    1 => $lang['sys_metal'],
+    2 => $lang['sys_crystal'],
+    3 => $lang['sys_deuterium'],
+    4 => $lang['sys_dark_matter'],
+    5 => $lang['sys_energy'],
+  ),
+
+  'sys_planet_type' => array(
+    PT_PLANET => $lang['sys_planet_type1'], 
+    PT_DEBRIS => $lang['sys_planet_type2'], 
+    PT_MOON   => $lang['sys_planet_type3']
+  ),
+
+  'sys_planet_type_sh' => array(
+    PT_PLANET => $lang['sys_planet_type_sh1'], 
+    PT_DEBRIS => $lang['sys_planet_type_sh2'], 
+    PT_MOON   => $lang['sys_planet_type_sh3']
+  ),
+
+));
 
 ?>
