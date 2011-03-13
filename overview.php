@@ -269,13 +269,13 @@ switch ($mode)
     $parse                         = $lang;
 
     // --- Gestion de l'affichage d'une lune ---------------------------------------------------------
-    if($planetrow['planet_type'] == 1)
+    if($planetrow['planet_type'] == PT_PLANET)
     {
-      $lune = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$planetrow['id']}' AND `planet_type` = 3;", '', true);
+      $lune = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$planetrow['id']}' AND `planet_type` = " . PT_MOON . " LIMIT 1;", '', true);
     }
     else
     {
-      $lune = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['parent_planet']}' AND `planet_type` = 1;", '', true);
+      $lune = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['parent_planet']}' AND `planet_type` = " . PT_PLANET . " LIMIT 1;", '', true);
     }
 
     if ($lune)
