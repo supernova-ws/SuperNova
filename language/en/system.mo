@@ -109,9 +109,9 @@ $lang['sys_planet_type'] = array(
   PT_MOON => $lang['sys_planet_type3']
 );
 
-$lang['sys_planet_type_sh1'] = "(ֿ)";
-$lang['sys_planet_type_sh2'] = "(־)";
-$lang['sys_planet_type_sh3'] = "(ֻ)";
+$lang['sys_planet_type_sh1'] = "(P)";
+$lang['sys_planet_type_sh2'] = "(O)";
+$lang['sys_planet_type_sh3'] = "(L)";
 
 $lang['sys_planet_type_sh'] = array(
   1 => $lang['sys_planet_type_sh1'], 
@@ -120,6 +120,7 @@ $lang['sys_planet_type_sh'] = array(
 );
 
 $lang['sys_capacity'] 			= 'Load Capacity';
+$lang['sys_cargo_bays'] 			= 'Holds';
 
 $lang['sys_supernova'] 			= 'Supernova';
 $lang['sys_server'] 			= 'Server';
@@ -130,6 +131,7 @@ $lang['res_planet_production'] = 'Planet Production';
 $lang['res_basic_income'] = 'Basic Income';
 $lang['res_total'] = 'Total';
 $lang['res_calculate'] = 'Calculate';
+$lang['res_hourly'] = 'Hourly';
 $lang['res_daily'] = 'Daily';
 $lang['res_weekly'] = 'Weekly';
 $lang['res_monthly'] = 'Monthly';
@@ -143,6 +145,7 @@ $lang['bld_create']  = 'Build';
 // Imperium page
 $lang['imp_imperator'] = "Emperor";
 $lang['imp_overview'] = "Empire Overview";
+$lang['imp_fleets'] = "Fleets in flight";
 $lang['imp_production'] = "Production";
 $lang['imp_name'] = "Name";
 $lang['sys_fields'] = "Fields";
@@ -164,8 +167,12 @@ $lang['sys_no']              = 'No';
 $lang['sys_on']              = 'Enable';
 $lang['sys_off']             = 'Disable';
 
+$lang['sys_save']            = 'Save';
+$lang['sys_create']          = 'Create';
+$lang['sys_write_message']   = 'Write a message';
+
 $lang['sys_game_mode'][0]    = 'Supernova';
-$lang['sys_game_mode'][1]    = 'מֳויל';
+$lang['sys_game_mode'][1]    = 'about Game';
 
 // top bar
 $lang['top_of_year'] = 'Year';
@@ -219,7 +226,7 @@ $lang = array_merge($lang, array(
   'sys_no_vars'			=> 'Initialization of variables, see the Administration!',
   'sys_attacker_lostunits'		=> 'Attacker lost %s units.',
   'sys_defender_lostunits'		=> 'Defender lost %s units.',
-  'sys_gcdrunits' 			=> 'Now at these coordinates are %s %s ט %s %s.',
+  'sys_gcdrunits' 			=> 'Now at these coordinates are %s %s and %s %s.',
   'sys_moonproba' 			=> 'Chance of Moon is: %d %% ',
   'sys_moonbuilt' 			=> 'Thanks to the huge energy huge chunks of metal and Crystal are joined together and formed new moon %s [%d:%d:%d] !',
   'sys_attack_title'    		=> '%s. Battle occurred between the following fleets::',
@@ -237,7 +244,7 @@ $lang = array_merge($lang, array(
   'sys_attacker_won' 		=> 'The Attacker won the battle!',
   'sys_defender_won' 		=> 'The Defender won the battle!',
   'sys_both_won' 			=> 'The battle ended in a draw!',
-  'sys_stealed_ressources' 	=> 'The Attacker gets %s Metal %s %s Crystal %s ט %s Deuterium.',
+  'sys_stealed_ressources' 	=> 'The Attacker gets %s Metal %s %s Crystal %s and %s Deuterium.',
   'sys_rapport_build_time' 	=> 'Report generation time %s seconds',
   'sys_mess_tower' 		=> 'Transport',
   'sys_mess_attack_report' 	=> 'Battle Report',
@@ -268,6 +275,7 @@ $lang = array_merge($lang, array(
   'sys_colo_allisok' 		=> ', and colonists are beginning to a new planet.',
   'sys_colo_badpos'  			=> ', and the colonists found little benefit for the environment of your Empire. The mission colonization back to planet submit.',
   'sys_colo_notfree' 			=> ', the colonists did not find the planet in these coordinates. They have to pave the way back completely discouraged.',
+  'sys_colo_no_colonizer'     => 'In the fleet not colonizer',
   'sys_colo_planet'  		=> ' Planet colonized by!',
   'sys_expe_report' 		=> 'Expedition Report',
   'sys_recy_report' 		=> 'Recycler information',
@@ -323,7 +331,7 @@ $lang = array_merge($lang, array(
   'mip_too_far'				=> 'Rocket cannot fly that far.',
   'mip_planet_error'			=> 'Error - more than one planet one coordinate',
   'mip_no_rocket'				=> 'Not enough missiles in the shaft to carry out the attack.',
-  'mip_hack_attempt'			=> ' You an hacker? Another joke and you will be banned. IP address and login I recorded.',
+  'mip_hack_attempt'			=> ' You an hacker? Another joke and you will be banned. IP address and login Is recorded.',
 
   'mip_all_destroyed' 		=> 'All interplanetary missiles were destroyed missile intercepted<br>',
   'mip_destroyed'				=> '%s interplanetary missiles were destroyed by intercept missiles.<br>',
@@ -333,7 +341,7 @@ $lang = array_merge($lang, array(
 
   'mip_sender_amd'			=> 'Rocket and space forces',
   'mip_subject_amd'			=> 'Missile attack',
-  'mip_body_attack'			=> 'Attack of the interplanetary missiles (%1$s רע.) with the planet %2$s <a href="galaxy.php?mode=3&galaxy=%3$d&system=%4$d&planet=%5$d">[%3$d:%4$d:%5$d]</a> on the planet %6$s <a href="galaxy.php?mode=3&galaxy=%7$d&system=%8$d&planet=%9$d">[%7$d:%8$d:%9$d]</a><br><br>',
+  'mip_body_attack'			=> 'Attack of the interplanetary missiles (%1$s PCs.) with the planet %2$s <a href="galaxy.php?mode=3&galaxy=%3$d&system=%4$d&planet=%5$d">[%3$d:%4$d:%5$d]</a> on the planet %6$s <a href="galaxy.php?mode=3&galaxy=%7$d&system=%8$d&planet=%9$d">[%7$d:%8$d:%9$d]</a><br><br>',
   
   // Misc
   'sys_game_rules' => 'Rules of the game',
@@ -361,7 +369,7 @@ $lang = array_merge($lang, array(
   'off_no_points'        => 'You do not have enough Dark Matter!',
   'off_recruited'        => 'The officer was hired! <a href="officer.php">Back</a>',
   'off_tx_lvl'           => 'Current level: ',
-  'off_points'           => 'Photos of Dark Matter: ',
+  'off_points'           => 'Points of Dark Matter: ',
   'off_maxed_out'        => 'Maximum level',
   'off_not_available'    => 'Officer you is not yet available!',
   'off_hire'             => 'Hire for',
@@ -369,5 +377,7 @@ $lang = array_merge($lang, array(
   'off_dark_matter_hint' => 'With the help of this substance you can hire officers and commanders.',
 
 ));
+
+$lang['flt_gather_all']    = 'Gather resources';
 
 ?>

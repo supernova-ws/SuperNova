@@ -33,8 +33,8 @@ $lang = array_merge($lang, array(
   'nfo_struct_pt'   => 'Structural (life)',
   'nfo_shielf_pt'   => 'Shield',
   'nfo_attack_pt'   => 'Attack power',
-  'nfo_rf_again'    => 'One attack kill amazes',
-  'nfo_rf_from'     => 'one attack kill amazes',
+  'nfo_rf_again'    => 'One attack kill',
+  'nfo_rf_from'     => 'one attack kill',
   'nfo_capacity'    => 'Capacity',
   'nfo_units'       => 'units',
   'nfo_base_speed'  => 'Base speed',
@@ -47,7 +47,7 @@ $lang = array_merge($lang, array(
   'gate_use_gate'   => 'Use Gate',
   'gate_ship_sel'   => 'Select ships',
   'gate_ship_dispo' => 'photos',
-  'gate_jump_btn'   => 'Run jump!!',
+  'gate_jump_btn'   => 'jump!!',
   'gate_jump_done'  => 'Gates are in the process of reloading!<br>Gates will be ready for use through: ',
   'gate_wait_dest'  => 'points of destination Gate is in preparations! gate will be ready for use: ',
   'gate_no_dest_g'  => 'The ultimate destination did not open the gate to move the fleet',
@@ -197,7 +197,7 @@ $lang = array_merge($lang, array(
     ),
 
     118 => array(
-      'description' => "By spatio-temporal curvature in the immediate environment of spacecraft space shrinks, the faster the overcome long distances. The higher developed Hyperspace drive, the higher the compression space, which makes the following ships with each level of 30% faster: bombers, battleships, Destroyers, cruisers, death stars, linear and {$lang['tech'][SHIP_SUPERNOVA]}.",
+      'description' => "By spatio-temporal curvature in the immediate environment of spacecraft space shrinks, the faster the overcome long distances. The higher developed Hyperspace drive, the higher the compression space, which makes the following ships with each level of 30% faster: bombers, battleships, Destroyers, cruisers, death stars, and {$lang['tech'][SHIP_SUPERNOVA]}.",
       'description_short' => 'By spatio-temporal curvature in the immediate environment of spacecraft space shrinks, the faster the overcome long distances. The higher the developed hyperspace drive, the higher the compression space, with each level of the speed of ships rises up 30%.'
     ),
 
@@ -247,7 +247,7 @@ $lang = array_merge($lang, array(
     ),
 
     SHIP_CARGO_SUPER => array(
-      'description' => 'The last word in cargo technology. Supertransport-giant transport ship equipped with impulse engines. Its speed is low and the fuel consumption is very high, but it completely pays off an extraordinary sitting capacity. Supertransport is equipped with a powerful shields, but has only laser turrets for self-defense.',
+      'description' => 'The last word in technology transfer. Supertransport-giant transport ship equipped with impulse engines. Its speed is low and the fuel consumption is very high, but it completely pays off an extraordinary sitting capacity. Supertransport is equipped with a laser turrent, but has a powerful shield.',
       'description_short' => 'A giant self-propelled barge equipped with impulse engines. Equipped with a powerful shield, but of weapons has only laser turrent.'
     ),
 
@@ -262,13 +262,13 @@ $lang = array_merge($lang, array(
     ),
 
     SHIP_DESTROYER => array(
-      'description' => 'With the development of heavy lasers and ion cannons heavy fighter more have been marginalized. Despite the numerous improvements firepower and booking cannot be so modified, to effectively confront these defensive guns. It was therefore decided to build a new class of ships, which unites in itself more bookings and firepower. So a destroyer. Destroyers are almost three times stronger than heavy fighter and have more than twice the firepower. They are very quick. There is no better weapons against medium protection. Nearly a century destroyers unlimited dominated in the universe. With the advent of Gauss guns and shells of their dominance over plasma. But today they eagerly applied against groups of fighters.',
-      'description_short' => 'Destroyers are almost three times stronger than heavy fighter and firepower they surpass heavy fighter almost doubled. They are very fast.'
+      'description' => 'With the development of heavy lasers and ion guns, more and more marginalized by heavy fighters. Despite the many improvements in firepower and armor cannot be so modified to efficiently counter these defensive guns. It was therefore decided to build a new class of ships, which would have more firepower and armor. So were the destroyers. Destroyers protected almost three times stronger than heavy fighters and more than twice the firepower. They are very quick. There is no better weapons against high defense. Nearly a century cruisers unlimited dominated in the universe. With the advent of Gauss guns and plasma guns their rule came to an end. However, today they are used against groups of fighters.',
+      'description_short' => 'Destroyers protected almost three times stronger than heavy fighters and firepower they surpass heavy fighters almost doubled. They are very fast.'
     ),
 
     SHIP_CRUISER => array(
-      'description' => 'Cruisers generally form the backbone of the fleet. Their heavy guns, high speed and large cargo tonnage make them serious opponents.',
-      'description_short' => 'Cruisers generally form the backbone of the fleet. Their heavy guns, high speed and large cargo tonnage make them serious opponents.'
+      'description' => 'Cruisers tend to form the backbone of the fleet. Their heavy guns, high speed and large cargo make them serious opponents.',
+      'description_short' => 'Cruisers tend to form the backbone of the fleet. Their heavy guns, high speed and large cargo make them serious opponents.'
     ),
 
     SHIP_COLONIZER => array(
@@ -297,8 +297,8 @@ $lang = array_merge($lang, array(
     ),
 
     SHIP_DESTRUCTOR => array(
-      'description' => 'Annihilator-King of warships. The ion, plasma and gaussovye turrets can thanks to its advanced sensor pelengacionnym to astound 99% even high-speed mobile that the fighters. Since destructors are very large, their agility is very limited, and in battle they resemble rather a battle station than combat ship. Deuterium consumption are also appreciated as their fighting power.',
-      'description_short' => 'Annihilator-King among military ships.'
+      'description' => 'Destructor - King of warships. The ion, plasma and gauss turrets can thanks to its advanced sensor to a 99% even high-speed mobile that the fighters. Since destroyers are very large, their agility is very limited, and in battle they resemble rather a battle station than combat ship. Deuterium consumption are also appreciated as their fighting power.',
+      'description_short' => 'Destructor - King among military ships.'
     ),
 
     SHIP_DEATH_STAR => array(
@@ -308,11 +308,11 @@ $lang = array_merge($lang, array(
 
     SHIP_BATTLESHIP => array(
       'description' => 'This high-tech ship brings death intruder fleets. Its advanced laser guns keep heavy enemy ships at a distance and can destroy several units one in one gulp. Due to its small size and incredibly powerful weapons, lenght linear Cruiser is very small, but at the expense of hyperspatial engine as little fuel consumption.',
-      'description_short' => 'Battleships specializes in capturing enemy fleets.'
+      'description_short' => 'Starcruiser specializes in capturing enemy fleets.'
     ),
 
     SHIP_SUPERNOVA => array(
-      'description' => 'You are granted a remuneration from the emperor for your skills cruelty.',
+      'description' => 'You are granted a ship from the emperor for your cruelty skills.',
       'description_short' => "{$lang['tech'][SHIP_SUPERNOVA]} - the flagship of the fleet of the Empire. The huge cost of erection with compensated terrible firepower and advanced protection. One ship of this class is able to defeat the average fleet alone."
     ),
 
@@ -373,77 +373,77 @@ $lang = array_merge($lang, array(
 
     MRC_GEOLOGIST => array(
       'description' => 'Geologist is a recognized expert in astromineralogii and crystallography. With his team of Metallurgists and chemists, he supported the interplanetary Government when developing new resources and optimize their treatment.',
-      'description_short' => 'in the extraction of metals, crystals and deuterium for each level.'
+      'effect' => 'in the extraction of metals, crystals and deuterium for each level.'
     ),
 
     MRC_POWERMAN => array(
       'description' => 'Specialist in energy management. In peacetime, it raises the level of energy networks in the colonies.',
-      'description_short' => 'to produce energy for each level.'
+      'effect' => 'to produce energy for each level.'
     ),
 
     MRC_CONSTRUCTOR => array(
       'description' => 'Designers are brilliant scientists, and you can always find where technically possible line ends. The code will never be able to discern any normal person, and one whose presence they inspire scholars Empire.',
-      'description_short' => 'by the time built ships for each level.'
+      'effect' => 'by the time built ships for each level.'
     ),
 
     MRC_ARCHITECT => array(
       'description' => 'Architect-the most up-to-date Builder of the Empire. His DNA was subjected to mutations, which provided him with an extraordinary mind and sverhceloveceskuû force. Architect alone can design and build a city.',
-      'description_short' => 'by the time of construction of buildings for each level.'
+      'effect' => 'by the time of construction of buildings for each level.'
     ),
 
     MRC_ACADEMIC => array(
       'description' => 'Academicians are actors Guild Technocrats. Their mind and scholars degree allow them Excel in their acts even constructors. They specialize in the field of technological progress.',
-      'description_short' => 'by the time of studies for each level.'
+      'effect' => 'by the time of studies for each level.'
     ),
 
     MRC_FORTIFIER => array(
       'description' => 'Fortifikator-Army Engineer. His in-depth knowledge of defensive systems allow you to shorten the defence of the empire building systems.',
-      'description_short' => 'by the time of construction of protective constructions and at each level.'
+      'effect' => 'by the time of construction of protective constructions and at each level.'
     ),
 
     MRC_STOCKMAN => array(
       'description' => 'Cargo-master is a highly skilled specialist in storage. His genius allows you to get the most out of storage resources to increase their effective capacity beyond the builders.',
-      'description_short' => 'size of warehouses for each level.'
+      'effect' => 'size of warehouses for each level.'
     ),
 
     MRC_SPY => array(
       'description' => 'Spy-master person Empire. He had hundreds of thousands of individuals and a million ideas for mask works, defensive networks and fleets. Everyone who saw his real face, is now dead.',
-      'description_short' => 'to the level of spying for each level.'
+      'effect' => 'level of spying for each level.'
     ),
 
     MRC_ADMIRAL => array(
       'description' => 'Admiral is tried by war veteran and a brilliant strategist. Even in the hottest fights he doesn\'t lose a review and maintains contact with commanders fleets. The wise ruler can rely on him in battle and thereby use to battle more ships.',
-      'description_short' => 'the armor, shields and attack ships for each level.'
+      'effect' => 'armor, shields and attack ships for each level.'
     ),
 
     MRC_COORDINATOR => array(
       'description' => 'The Coordinator is an expert in managing fleets. His knowledge can make the most of the fleet management system.',
-      'description_short' => 'additional fleet for each level.'
+      'effect' => 'additional fleet for each level.'
     ),
 
     MRC_NAVIGATOR => array(
       'description' => 'Navigator-genius in calculating the trajectories of fleets. His knowledge of laws warp drive-space device jump-drive and technologies all existing types of engines can speed flying ships.',
-      'description_short' => 'the speed of ships for each level.'
+      'effect' => 'speed of ships for each level.'
     ),
 
     MRC_DEFENDER => array(
       'description' => 'Number of photographs held by you to strengthen the Empire gives you the chance to build a Planetary protection. Planetary Defense-ultra-modern technology solution in all branches of the Empire.',
-      'description_short' => 'Allows you to build a Planetary Protection.'
+      'effect' => 'Allows you to build a Planetary Protection.'
     ),
 
     MRC_DESTRUCTOR => array(
-      'description' => 'Devastator-a ruthless army officer. He suggests how the planets Empire brutal methods. The same Destructor has developed technology manufactures Stars Death.',
-      'description_short' => "Allows you to build shipyard ship {$lang['tech'][MRC_DESTRUCTOR]}."
+      'description' => 'Devastator - a ruthless army officer. He suggests how the planets Empire brutal methods. The same Destructor has developed technology manufactures Stars Death.',
+      'effect' => "Allows you to build shipyard ship {$lang['tech'][SHIP_DESTRUCTOR]}."
     ),
 
     MRC_ASSASIN => array(
       'description' => "Assasin-trusted killer Emperor. But it's not only its quality. However, Disruptor, Assasin has developed {$lang['tech'][SHIP_SUPERNOVA]}. Central computer ships configured to DNA Assasina. Therefore, it is the only person who can manage this ship",
-      'description_short' => "Possibility to build {$lang['tech'][SHIP_SUPERNOVA]} in the shipyard"
+      'effect' => "Possibility to build {$lang['tech'][SHIP_SUPERNOVA]} in the shipyard"
     ),
 
     MRC_EMPEROR => array(
-      'description' => 'Emperor-your personal assistant and Deputy. The accuracy of its reports and punctuality in everything-his best qualities, capable of total control over the Empire.',
-      'description_short' => 'Allows you to change the characteristics of the Emperor'
+      'description' => 'Emperor - your personal assistant and Deputy. The accuracy of its reports and punctuality in everything-his best qualities, capable of total control over the Empire.',
+      'effect' => 'Allows you to change the characteristics of the Emperor'
     )
   )
 ));

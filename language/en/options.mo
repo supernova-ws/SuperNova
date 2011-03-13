@@ -9,81 +9,81 @@ $lang['succeful_changename']		= "Username successfully changed.<br /><a href=\"l
 $lang['opt_saved']			= "Configuration was successfully changed.";
 
 //	
-$lang['userdata']			= "Информация";
-$lang['username']			= "Имя";
-$lang['lastpassword']			= "Старый пароль";
-$lang['newpassword']			= "Новый пароль<br>(мин. 8 символов)";
-$lang['newpasswordagain']		= "Повторите новый пароль";
-$lang['emaildir']			= "Адрес e-mail";
-$lang['emaildir_tip']			= "Этот адрес может быть изменён в любое время. Адрес станет основным, если он не изменялся в течении 7 дней.";
-$lang['permanentemaildir']		= "Основной адрес e-mail";
+$lang['userdata']			= "Information";
+$lang['username']			= "Username";
+$lang['lastpassword']			= "Old password";
+$lang['newpassword']			= "New password<br>(min. 8 characters)";
+$lang['newpasswordagain']		= "Repeat new password";
+$lang['emaildir']			= "E-mail address";
+$lang['emaildir_tip']			= "This address can be changed at any time. Address will be the main, if it has not been modified within 7 days.";
+$lang['permanentemaildir']		= "Main e-mail address";
 
-$lang['opt_lst_ord']			= "Упорядочить планеты по:";
-$lang['opt_lst_ord0']			= "Времени колонизации";
-$lang['opt_lst_ord1']			= "Координатам";
-$lang['opt_lst_ord2']			= "Алфавитному порядку";
-$lang['opt_lst_cla']			= "Упорядочить по:";
-$lang['opt_lst_cla0']			= "Возрастанию";
-$lang['opt_lst_cla1']			= "Убыванию";
-$lang['opt_chk_skin']			= "Использовать оформление";
-
-// 	
-$lang['opt_adm_title']			= "Опции администрирования";
-$lang['opt_adm_planet_prot']		= "Защита планет";
+$lang['opt_lst_ord']			= "View of the universe:";
+$lang['opt_lst_ord0']			= "Time of colonization";
+$lang['opt_lst_ord1']			= "Coordinates";
+$lang['opt_lst_ord2']			= "Alphabetical order";
+$lang['opt_lst_cla']			= "Arrange by:";
+$lang['opt_lst_cla0']			= "Ascending Order";
+$lang['opt_lst_cla1']			= "Descending Order";
+$lang['opt_chk_skin']			= "Use skin";
 
 // 	
-$lang['thanksforregistry']		= "Спасибо за регистрацию.<br />Через несколько минут вы получите ваше сообщение с паролем.";
-$lang['general_settings']		= "Общие настройки";
-$lang['skins_example']			= "Оформление<br>(например C:/ogame/skin/)";
-$lang['avatar_example']			= "Аватар<br>(например /img/avatar.jpg)";
-$lang['untoggleip']			= "Выключить функцию проверки по IP";
-$lang['untoggleip_tip']			= "Проверка IP означает то, что вы не сможете войти под своим именем с двух разных IP. Проверка даёт вам преимущество в безопасности!";
+$lang['opt_adm_title']			= "Administration options";
+$lang['opt_adm_planet_prot']		= "Planetary protection";
 
 // 	
-$lang['galaxyvision_options']		= "Настройки галактики";
-$lang['spy_cant']			= "Количество зондов";
-$lang['spy_cant_tip']			= "Количество зондов, которое будет отправляться, когда вы будете за кем-то следить.";
-$lang['tooltip_time']			= "Время показа подсказок";
-$lang['mess_ammount_max']		= "Количество максимальных сообщений флота";
-$lang['show_ally_logo']			= "Показывать логотип альянсов";
-$lang['seconds']			= "Секунд(а/ы)";
+$lang['thanksforregistry']		= "Thanks for registering.<br />After a few minutes you will receive your message with a password.";
+$lang['general_settings']		= "General settings";
+$lang['skins_example']			= "Skin<br>(for example C:/ogame/skin/)";
+$lang['avatar_example']			= "Avatar<br>(for example /img/avatar.jpg)";
+$lang['untoggleip']			= "Disable IP check";
+$lang['untoggleip_tip']			= "Check IP means that you will not be able to log in under his own name with two different IP. Testing gives you the advantage in security!";
+
+// 	
+$lang['galaxyvision_options']		= "Configuring Galaxy";
+$lang['spy_cant']			= "Number of probes";
+$lang['spy_cant_tip']			= "Number of probes to be sent when you follow someone for.";
+$lang['tooltip_time']			= "Show ToolTips";
+$lang['mess_ammount_max']		= "The number of maximum fleet communications";
+$lang['show_ally_logo']			= "Show logo alliances";
+$lang['seconds']			= "Second(s)";
 
 //	
-$lang['shortcut']			= "Быстрый доступ";
-$lang['show']				= "Показывать";
-$lang['write_a_messege']		= "Написать сообщение";
-$lang['spy']				= "Шпионаж";
-$lang['add_to_buddylist']		= "Добавить в друзья";
-$lang['attack_with_missile']		= "Ракетная атака";
-$lang['show_report']			= "Просмотреть отчёт";
+$lang['shortcut']			= "Quick access";
+$lang['show']				= "Show";
+$lang['write_a_messege']		= "Write a message";
+$lang['spy']				= "Espionage";
+$lang['add_to_buddylist']		= "Add as friend";
+$lang['attack_with_missile']		= "Missile attack";
+$lang['show_report']			= "View report";
 
 //	
-$lang['delete_vacations']		= "Управление профилем";
-$lang['mode_vacations']			= "Включить режим отпуска";
-$lang['vacations_tip']			= "Режим отпуска нужен для защиты планет во время вашего отсутствия.";
-$lang['deleteaccount']			= "Отключить профиль";
-$lang['deleteaccount_tip']		= "Профиль будет удалён через 45 дней неактивности.";
-$lang['save_settings']			= "Сохранить изменения";
-$lang['Building_something']		= "Вы что-то строите и не можете уйти в режим отпуска.";
-$lang['exit_vacations']			= "Выйти из режима отпуска";
-$lang['Vaccation_mode']			= "Режим отпуска включён. Он продлится до: ";
-$lang['You_cant_exit_vmode']		= "Вы не можете выйти из режима отпуска, пока не истечёт минимальное время";
-$lang['Error']				= "Ошибка";
-$lang['cans_resource']			= "Прекратите добычу ресурсов на планетах";
-$lang['cans_reseach']                   = "Остановите иследования на планетах";
-$lang['cans_build']                     = "Остановите строительство на планетах";
-$lang['cans_fleet_build']               = "Остановите постройку флота и обороны";
-$lang['cans_fly_fleet1']                 = "Флот должен быть на орбите планет";
-$lang['cans_fly_fleet2']                 = "Чужой флот приближается... вы не можите уйти в отпуск";
-$lang['vacations_exit']                 = "Режим отпуска отключен... Перезайдите";
+$lang['delete_vacations']		= "Account management";
+$lang['mode_vacations']			= "Turn vacation";
+$lang['vacations_tip']			= "Vacation mode is to protect the planet while you're away.";
+$lang['deleteaccount']			= "Disable Account";
+$lang['deleteaccount_tip']		= "Account will be deleted after 45 days of no login.";
+$lang['save_settings']			= "Save the changes";
+$lang['exit_vacations']			= "Exit leave";
+$lang['Vaccation_mode']			= "Vacation mode is enabled. It runs until: ";
+$lang['You_cant_exit_vmode']		= "You can not exit leaves until time expires";
+$lang['Error']				= "Error";
+$lang['cans_resource']			= "Stop resource extraction on planets";
+$lang['cans_reseach']                   = "Stop research on planets";
+$lang['cans_build']                     = "Stop construction on the planets";
+$lang['cans_fleet_build']               = "Stop the construction of Ships and Defenses";
+$lang['cans_fly_fleet2']                 = "Alien fleet approaches ... You can go on vacation";
+$lang['vacations_exit']                 = "Vacation mode is disabled";
 
-$lang['select_skin_path']		= "ВЫБРАТЬ";
+$lang['select_skin_path']		= "SELECT";
 
-$lang['opt_language']         = 'Язык интерфейса';
+$lang['opt_language']         = 'Interface language';
 
-$lang['opt_compatibility']    = 'Совместимость - старые интерфейсов';
-$lang['opt_compat_structures']= 'Старый интерфейс строительства зданий';
+$lang['opt_compatibility']    = 'Compatibility - old interfaces';
+$lang['opt_compat_structures']= 'The old interface construction';
 
-$lang['opt_vacation_min'] = 'минимум до';
+$lang['opt_vacation_err_your_fleet'] = "Not to leave until the flight is at least one of your fleet";
+$lang['opt_vacation_err_building']   = "You are building or explore and therefore cannot leave on vacation";
+$lang['opt_vacation_min'] = 'a minimum of';
 
 ?>
