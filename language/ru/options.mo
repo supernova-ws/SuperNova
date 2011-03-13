@@ -1,5 +1,7 @@
 <?php
 
+$lang['opt_header'] = 'Настройки пользователя';
+
 //	
 $lang['changue_pass']			= "Сменить пароль";
 $lang['Download']			= "Загрузка";
