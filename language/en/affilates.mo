@@ -11,7 +11,7 @@
 */
 
 if (!defined('INSIDE')) {
-	die("Has attempted to break into!");
+	die("attempt hacking!");
 }
 
 $lang = array_merge($lang, array(
@@ -27,11 +27,11 @@ $lang = array_merge($lang, array(
   'aff_banner_bb'    => 'BBCode for placing a banner on the Forum',
   'aff_banner_html'  => 'HTML code to place a banner on a Web page',
 
-  'aff_userbar'      => 'Userbar 350õ19',
+  'aff_userbar'      => 'Userbar 350x19',
   'aff_userbar_bb'   => 'BBCode for userbar Forum',
   'aff_userbar_html' => 'HTML code to place on the Web page userbar',
 
-  'aff_list'         => 'List of invitees',
+  'aff_list'         => 'List of invited players',
   'aff_none'         => 'Not Invited',
   'aff_gained'       => 'HMS earned player',
   'aff_your_bonus'   => 'Your bonus',

@@ -25,7 +25,6 @@ $lang['characters']		= 'Characters';
 
 $lang['Apply']			= 'Apply';
 $lang['Back']			= 'Back';
-$lang['Save']			= 'Save';
 $lang['Delete']			= 'Delete';
 $lang['Reset']			= 'Reset';
 
