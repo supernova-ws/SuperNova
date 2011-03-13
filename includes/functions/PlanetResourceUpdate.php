@@ -116,6 +116,8 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   {
     foreach ( $Builded as $Element => $Count )
     {
+      $Element = intval($Element);
+      $Count = intval($Count);
       if ($Element)
       {
         $QryUpdatePlanet .= "`{$sn_data[$Element]['name']}` = `{$sn_data[$Element]['name']}` + '{$Count}', ";
