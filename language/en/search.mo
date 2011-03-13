@@ -12,12 +12,11 @@ $lang['Alliance_tag'] = 'Alliance Tag';
 $lang['Members'] = 'Members';
 $lang['Points'] = 'Points';
 $lang['PerMember'] = 'Per Member';
-$lang['Coordinated'] = 'Coordinates';
 $lang['Position'] = 'Position';
 $lang['Search'] = 'Search';
 $lang['Search_in_all_game'] = "Search the server";
 $lang['Back'] = 'Back';
 $lang['Search'] = 'Search';
 $lang['write_a_messege'] = 'Write a message';
-$lang['buddy_request'] = 'Add as Buddy';
+$lang['buddy_request'] = 'Add as Friend';
 ?>

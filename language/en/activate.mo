@@ -11,10 +11,10 @@
 #############################################################################
 */
 if (!defined('INSIDE')) {
-	die("attemp hacking");
+	die("attempt hacking");
 }
 $lang['sucess'] = 'Your account is activated';
 $lang['all_done'] = 'Completed';
-$lang['Error'] = 'Erroe';
-$lang['Wrong_data'] = 'Your link has expired or th account does not exist';
+$lang['Error'] = 'Error';
+$lang['Wrong_data'] = 'Your link has expired or the account does not exist';
 ?>

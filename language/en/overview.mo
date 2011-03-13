@@ -4,8 +4,8 @@ $lang = array_merge($lang, array(
   'ov_hack_alert' => 'DATABASE hacking attempt!!!',
 
   'ov_you_have'			=> 'Do you have',
-  'ov_new_message'		=> 'one new message',
-  'ov_new_messages'	=> 'new messages',
+  'ov_new_message'		=> 'One new message',
+  'ov_new_messages'	=> 'New messages',
 
   // General
   'cancel'				=> 'Cancel',
@@ -113,7 +113,7 @@ $lang = array_merge($lang, array(
   'user_points_4'			=> 'For fleet',
   'user_points_all'		=> 'Total',
   'Points_1'			=> 'Field',
-  'km'				=> 'κμ',
+  'km'				=> 'km',
   'orb'				=> 'Debris in orbit',
   'buildings_on_planet'		=> 'Building',
   'NumberOfRaids' => 'Held',
@@ -131,7 +131,7 @@ $lang = array_merge($lang, array(
   'ov_rpg_new_level_miner' => 'For achievements in economy you get Dark Matter.',
   'ov_rpg_new_level_raid'  => 'For successful attacks you get Dark Matter.',
 
-  'ov_points'              => 'Ponits',
+  'ov_points'              => 'Points',
   'ov_raids'               => 'Raids',
   'ov_experience'          => 'Experience',
 

@@ -14,9 +14,9 @@ $lang['fl_dest_t'] 				= 'Arrival';
 $lang['fl_back_t'] 				= 'Return';
 $lang['fl_back_in'] 				= 'Left';
 $lang['fl_order'] 				= 'Order';
-$lang['fl_get_to'] 				= '(Т)';
+$lang['fl_get_to'] 				= '(T)';
 $lang['fl_get_to_ttl'] 			= 'Roundtrip';
-$lang['fl_back_to'] 				= '(О)';
+$lang['fl_back_to'] 				= '(O)';
 $lang['fl_back_to_ttl'] 		= 'Back';
 $lang['fl_associate'] 			= 'Combat Union';
 $lang['fl_noslotfree'] 			= 'No fleet slots!';
@@ -55,9 +55,9 @@ $lang['fl_deute_need'] 			= 'Fuel consumption';
 $lang['fl_speed_max'] 			= 'Maximum speed';
 $lang['fl_shortcut'] 			= 'Shortcut';
 $lang['fl_shortlnk'] 			= 'Edit shortcuts';
-$lang['fl_shrtcup1'] 			= '(П)';
-$lang['fl_shrtcup2'] 			= '(О)';
-$lang['fl_shrtcup3'] 			= '(Л)';
+$lang['fl_shrtcup1'] 			= '(P)';
+$lang['fl_shrtcup2'] 			= '(O)';
+$lang['fl_shrtcup3'] 			= '(L)';
 $lang['fl_planettype1'] 	   = 'Planet';
 $lang['fl_planettype2'] 	   = 'Field debris';
 $lang['fl_planettype3']       = 'Moon';
@@ -80,7 +80,7 @@ $lang['fl_attack_error'] = array(
   ATTACK_WRONG_MISSION   => 'The task cannot be performed in the specified destination',
   ATTACK_NO_ALLY_DEPOSIT => 'No alliance depot on planet',
   ATTACK_NO_DEBRIS       => 'No debris field here',
-  ATTACK_VACANCY         => 'You cannot attack a player in Vacation Mode',
+  ATTACK_VACATION         => 'You cannot attack a player in Vacation Mode',
   ATTACK_SAME_IP         => 'Cannot trade with players with same IP!<br>Interaction with players with the same IP could be banned',
   ATTACK_BUFFING         => 'Injection - transfer of resources from weak to strong player - is forbidden by the rules',
   ATTACK_ADMIN           => 'You cannot attack the administrator',
@@ -118,7 +118,7 @@ $lang['fl_dont_stay_here']		= 'You cannot land on the enemy planet!'; // !G-
 $lang['fl_no_allydeposit']		= 'No alliance depot on the planet!';
 $lang['fl_no_self_attack'] 	= '<li>You cannot attack your own planet!</li>';
 $lang['fl_no_self_spy'] 		= '<li>You cannot spy on your own planet!</li>';
-$lang['fl_only_stay_at_home']	= '<li>Нельзя передислоцировать флот на чужую планету!</li>';
+$lang['fl_only_stay_at_home']	= '<li>You cannot relocate to another players planet!</li>';
 $lang['fl_cheat_speed']			= 'Trying to cheat! Administration has been messaged!';
 $lang['fl_cheat_origine']		= 'Trying to cheat! Administration has been messaged!';
 $lang['fl_limit_planet']		= '<li>Bad planet !</li>';
@@ -145,9 +145,11 @@ $lang['fl_page0_hint']			= '<ul><li>To create, edit, and remove something  &quot
 $lang['fl_page1_hint']			= '<ul><li>Flight time includes the time for takeoff/landing fleet binding component of any flight,how near or far &quot;shortcut&quot; in the left menu <li>What would join the war with the alliance, please click on the title of any available you union</ul>';
 $lang['fl_page5_hint']			= 
 '<ul>
-  <li>Check the colony, with which you want to dispose of resources for the current planet
-  <li>A check mark in the title bar allows you to put or delete markers directly on all colonies
-  <li>In the transport resources are only transport ships: small ships, large transport and super transport
+  <li>Check in lines colonies types of resources you want to consolidate the current planet.
+  <li>A check mark in the title bar allows you to place or remove flags for the specified type resources on all colonies.
+  <li>Checkboxes in the column to select or clear check for all resources in the colony.
+  <li>Checkboxes in the column TOTAL for ease of interface and <span class="negative">HAVE NO EFFECT</span> of the set of svozimyh resources
+  <li>Transportation resources are involved only transport ships: small transport, a large transport and Supertransport
   <li>Vessels are loaded in descending size hold
 </ul>';
 
@@ -174,6 +176,7 @@ $lang['fl_aks_already_in_aks'] 			= 'Fleet in the battle group!';
 $lang['fl_aks_adding_error']				= 'Error adding party to fleet:<br>%s';
 $lang['fl_aks_hack_wrong_fleet']			= 'Hacking attempt! Manipulation of the alien fleet Message sent to Administrator!';
 $lang['fl_aks_too_slow']					= 'Fleet is too slow and could not join the war Union';
+
 $lang['fl_fleet_not_exists'] 				= 'The fleet was not found';
 $lang['fl_multi_ip_protection']			= 'Protection against multi-accounts!<br>Unable to send resources to the player with same IP!';
 
@@ -186,8 +189,9 @@ $lang['fl_planet_resources']				= 'Resources on the planet';
 
 $lang['fl_fleet_data'] 						= 'Current fleet';
 
-$lang['flt_gather_all']    = 'Gather all the resources';
-$lang['flt_gather_report'] = 'Gathering report';
+$lang['flt_gather_report'] = 'Gathering Report';
 $lang['flt_report']        = 'Report';
+
+$lang['flt_no_transports'] = 'No transports';
 
 ?>
