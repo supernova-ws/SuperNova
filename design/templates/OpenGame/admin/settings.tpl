@@ -129,8 +129,20 @@
     <tr><td class="c" colspan="2">{L_adm_opt_game_defaults}</td></tr>
     <tr>
       <th>{L_adm_opt_game_default_language}</a></th>
-      <th><input name="game_default_language" size="40" maxlength="254" value="{C_game_default_language}" type="text"></th>
+      <th>
+        <select name="game_default_language">
+        <!-- BEGIN game_languages -->
+          <!-- IF game_languages.ID == game_language -->
+            <!-- DEFINE $GAME_LANGUAGE = 'selected' -->
+          <!-- ELSE -->
+            <!-- DEFINE $GAME_LANGUAGE = '' -->
+          <!-- ENDIF -->
+          <option value="{game_languages.ID}" {$GAME_LANGUAGE}>{game_languages.NAME}
+        <!-- END game_languages -->
+        </select>
+      </th>
     </tr>
+
     <tr>
       <th>{L_adm_opt_game_default_skin}</a></th>
       <th><input name="game_default_skin" size="40" maxlength="254" value="{C_game_default_skin}" type="text"></th>

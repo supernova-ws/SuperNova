@@ -40,7 +40,7 @@
         <th>{L_permanentemaildir}</th>
         <th>{opt_mail2_data}</th>
       </tr>
-<!--
+
       <tr> 
         <th>{L_opt_language}</th>
         <th>
@@ -49,7 +49,6 @@
           </select>
         </th>
       </tr>
--->
 
       <tr>
         <td class="c" colspan="2">{L_general_settings}</td>

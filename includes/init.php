@@ -145,7 +145,9 @@ require_once("{$sn_root_physical}includes/functions.{$phpEx}");
 require_once("{$sn_root_physical}includes/vars.{$phpEx}");
 
 require_once("{$sn_root_physical}includes/template.{$phpEx}");
-require_once("{$sn_root_physical}language/" . DEFAULT_LANG .'/lang_info.cfg');
+require_once("{$sn_root_physical}language/" . DEFAULT_LANG .'/language.mo');
+$lang['LANG_INFO'] = $lang_info;
+unset($lang_info);
 
 $dir = opendir("{$sn_root_physical}includes/functions");
 while (($file = readdir($dir)) !== false)
@@ -157,8 +159,8 @@ while (($file = readdir($dir)) !== false)
   }
 }
 
-includeLang ('system');
-includeLang ('tech');
+includeLang('system');
+includeLang('tech');
 
 sn_db_connect();
 
