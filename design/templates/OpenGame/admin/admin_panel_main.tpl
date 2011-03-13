@@ -5,10 +5,10 @@
 	  <td class="c" colspan="6">{adm_panel_ttl}</td>
 	</tr>
 	<tr>
-       <th><a href="?action=usr_search">{adm_search_pl}</a></th>
-	  <th><a href="?action=ip_search">{adm_search_ip}</a></th>
-	  <th><a href="?action=usr_data">{adm_stat_play}</a></th>
-	  <th><a href="?action=usr_level">{adm_mod_level}</a></th>
+       <th><a href="admin\paneladmina.php?action=usr_search">{adm_search_pl}</a></th>
+	  <th><a href="admin\paneladmina.php?action=ip_search">{adm_search_ip}</a></th>
+	  <th><a href="admin\paneladmina.php?action=usr_data">{adm_stat_play}</a></th>
+	  <th><a href="admin\paneladmina.php?action=usr_level">{adm_mod_level}</a></th>
 	</tr>
 </table>
 {adm_sub_form1}

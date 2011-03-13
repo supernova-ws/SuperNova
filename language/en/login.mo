@@ -1,6 +1,6 @@
 <?php
 if (!defined('INSIDE')) {
-	die("Protection against hacking!");
+	die("attempt hacking!");
 }
 
 $lang['Login'] = 'Login';
@@ -70,7 +70,7 @@ $lang['log_reg_text1']    	  = 'Registration means that you have read and fully 
 // In order to play you need to register. Type <strong>User Name</strong>, <strong>Password</strong> and <strong>E-Mail Address</strong>.';
 
 // Sent by mail
-$lang['mail_welcome']		= 'Thanks for posting {gameurl}\n Your password: {password}\n\n Luck!\n{gameurl}';
+$lang['mail_welcome']		= 'Thanks for registering {gameurl}\n Your password: {password}\n\n Luck!\n{gameurl}';
 $lang['mail_title']		= 'Your registration OGame';
 $lang['thanksforregistry'] 	= "Congratulations on your successful registration! Now you can <a href=overview.{$phpEx}><u>start the game!</u></a>";
 $lang['welcome_to_universe']	= 'Welcome to OGame!!!';
@@ -91,7 +91,7 @@ $lang['error_userexist']	= 'This name is already in use !<br />';
 $lang['error_emailexist']	= 'This e-mail is already in use !<br />';
 $lang['error_sex'] 	 	= 'Error in the choice of sex !<br />';
 $lang['error_mailsend']  	= 'Error in sending the email, your password: ';
-$lang['reg_welldone']		= 'Registration complete!';
+$lang['reg_welldone']		= 'Registration complete! Your password was specified when registering the mailbox. Here it is again just in case';
 $lang['error_captcha']		= 'The wrong graphic code !<br/>';
 $lang['error_v']		= 'Try it again !<br />';
 
@@ -105,7 +105,7 @@ $lang['log_contacts'] 	 = 'Administration';
 
 $lang['log_login_page'] 	 = 'Enter the game';
 $lang['log_reg_already'] = 'Already have a registration? ';
-
+$lang['log_reg_already_lost'] = 'Forgot password?';
 
 // "Lost password" text strings
 $lang['log_lost_header']       = 'Password recovery';

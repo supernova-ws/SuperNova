@@ -137,7 +137,7 @@ $lang['adm_dm_user_added'] = 'Number of Dark Matter user: [%s] (ID: %d) has been
 $lang['adm_dm_user_conflict'] = 'Error locating user: looks like the Database is the user and with the same name, and with the same ID';
 
 $lang['adm_dm_planet_none'] = 'Error locating planet: Planet ID is not found, coordinates or name %s';
-$lang['adm_dm_planet_added'] = 'The user ID number “Ã %1$d (owner of planet %4$s %2$s ID %3$d) successfully renamed to %5$d “Ã.';
+$lang['adm_dm_planet_added'] = 'The user ID number DM %1$d (owner of planet %4$s %2$s ID %3$d) successfully renamed to %5$d DM.';
 $lang['adm_dm_planet_conflict'] = 'Non-unique data to search for the planet.<br>This means that the Database at the same time there is a ';
 $lang['adm_dm_planet_conflict_id'] = 'Planet named "%1$s" and the planet with ID %1$s .<br>try using the coordinates of the planet.';
 $lang['adm_dm_planet_conflict_name'] = 'Multiple planets named "%1$s".<br>try using coordinates or ID planet.';
@@ -174,6 +174,7 @@ $lang = array_merge($lang, array(
   'adm_opt_plan_initial'      => "Size of main planet",
   'adm_opt_plan_base_inc'     => "Basic production",
   'adm_opt_game_debugmod'     => "Enable debug mode",
+  'adm_opt_game_counter'      => "Add a hit counter",
   'adm_opt_game_oth_info'     => "Other options",
   'adm_opt_int_news_count'    => "news count",
   'adm_opt_int_page_imperor'  => 'On the page &quot;Emperor&quot;:',
@@ -211,7 +212,7 @@ $lang = array_merge($lang, array(
 
   'adm_opt_game_defaults'         => "Configuring default Game setting",
   'adm_opt_game_default_language' => "Default language",
-  'adm_opt_game_default_skin'     => "Design/Skin",
+  'adm_opt_game_default_skin'     => "Skin",
   'adm_opt_game_default_template' => "Template",
 
   'adm_lm_compensate' => "Compensation",
@@ -219,7 +220,7 @@ $lang = array_merge($lang, array(
 // Planet compensate page
   'adm_pl_comp_title'   => 'Compensation for destroyed planet',
   'adm_pl_comp_src'     => 'Destroy the planet',
-  'adm_pl_comp_dst'     => 'Creidt resources on the planet',
+  'adm_pl_comp_dst'     => 'Credit resources on the planet',
   'adm_pl_comp_bonus'   => 'Bonus player',
   'adm_pl_comp_check'   => 'Check',
   'adm_pl_comp_confirm' => 'Confirm',
@@ -284,7 +285,7 @@ $lang['adm_plyer_wip'] = "Players with IP";
 $lang['adm_frm1_id']   = "ID";
 $lang['adm_frm1_name'] = "Name";
 $lang['adm_frm1_ip']   = "IP";
-$lang['adm_frm1_mail'] = "e-Mail";
+$lang['adm_frm1_mail'] = "E-Mail";
 $lang['adm_frm1_acc']  = "Rank";
 $lang['adm_frm1_gen']  = "Gender";
 $lang['adm_frm1_main'] = "Planet ID";
@@ -344,6 +345,6 @@ $lang['mlst_mess_typ__3'] = "Fights";
 $lang['mlst_mess_typ__4'] = "Operational.";
 $lang['mlst_mess_typ__5'] = "Transport";
 $lang['mlst_mess_typ_15'] = "Expedition";
-$lang['mlst_mess_typ_99'] = "List Batiment";
+$lang['mlst_mess_typ_99'] = "List Building";
 
 ?>
