@@ -2,6 +2,8 @@
 <!-- INCLUDE fleet_javascript.tpl -->
 <script type="text/javascript"> 
 
+var SHIP_RECYCLER = {D_SHIP_RECYCLER};
+
 // fixing bug with sending recycle from planet overview
 // replace sack() with jQuery! Everywhere!!!
 
@@ -32,7 +34,7 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
   ajax.setVar("planet", planet);
   ajax.setVar("planettype", 2);
   if (order == 8)
-    ajax.setVar("ship209", shipcount);
+    ajax.setVar("ship" + SHIP_RECYCLER, shipcount);
   ajax.runAJAX();
 }
 

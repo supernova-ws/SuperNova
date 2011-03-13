@@ -10,5 +10,5 @@
 #  Copyright © 2005 - 2008 KGsystem
 #############################################################################
 */
-$lang['NoFrames'] = "Ваш браузер не поддерживает фреймы. Лучше всего играть в IE или FireFox";
+$lang['NoFrames'] = "Your browser does not support frames. Best in IE or FireFox";
 ?>

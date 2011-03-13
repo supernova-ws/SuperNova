@@ -8,7 +8,7 @@
 <script type="text/javascript"><!--
 var ships = Array();
 <!-- BEGIN ships -->
-  <!-- IF (ships.ID != 212) -->
+  <!-- IF (ships.SPEED > 0) -->
   ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION}, {ships.CAPACITY});
   <!-- ENDIF -->
 <!-- END ships -->

@@ -254,7 +254,7 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
   } elseif (in_array($BuildID, $sn_data['groups']['fleet'])) {
     // Flotte
     $PageTPL              = gettemplate('info_buildings_fleet');
-    $parse['element_typ'] = $lang['tech'][200];
+    $parse['element_typ'] = $lang['tech'][SHIP_FLEET];
     $rapid_fire = eco_render_rapid_fire ($BuildID);
     $parse['rf_info_to']  = $rapid_fire['to'];   // Rapid Fire vers
     $parse['rf_info_fr']  = $rapid_fire['from']; // Rapid Fire de
@@ -265,10 +265,10 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
     $parse['capacity_pt'] = pretty_number ($pricelist[$BuildID]['capacity']); // Capacitée de fret
     $parse['base_speed']  = pretty_number ($pricelist[$BuildID]['speed']);    // Vitesse de base
     $parse['base_conso']  = pretty_number ($pricelist[$BuildID]['consumption']);  // Consommation de base
-    if ($BuildID == 202) {
+    if ($BuildID == SHIP_CARGO_SMALL) {
       $parse['upd_speed']   = "<font color=\"yellow\">(". pretty_number ($pricelist[$BuildID]['speed2']) .")</font>";       // Vitesse rééquipée
       $parse['upd_conso']   = "<font color=\"yellow\">(". pretty_number ($pricelist[$BuildID]['consumption2']) .")</font>"; // Consommation apres rééquipement
-    } elseif ($BuildID == 211) {
+    } elseif ($BuildID == SHIP_BOMBER) {
       $parse['upd_speed']   = "<font color=\"yellow\">(". pretty_number ($pricelist[$BuildID]['speed2']) .")</font>";       // Vitesse rééquipée
     }
   } elseif (in_array($BuildID, $sn_data['groups']['defense_active'])) {

@@ -314,7 +314,7 @@ switch ($mode)
     }
     $msg .= '</table>';
 */
-    $recyclers_send = min(ceil(($planetrow['debris_metal'] + $planetrow['debris_crystal']) / $sn_data[209]['capacity']), $planetrow[$sn_data[209]['name']]);
+    $recyclers_send = min(ceil(($planetrow['debris_metal'] + $planetrow['debris_crystal']) / $sn_data[SHIP_RECYCLER]['capacity']), $planetrow[$sn_data[SHIP_RECYCLER]['name']]);
 
     int_planet_pretemplate($template);
 

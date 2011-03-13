@@ -11,5 +11,6 @@ var fleets = Array();
 var res_names = ['{L_sys_metal}', '{L_sys_crystal}', '{L_sys_deuterium}'];
 jQuery.extend(language, {sys_ships: '{L_sys_ships}', sys_resources: '{L_sys_resources}', sys_capacity: '{L_sys_capacity}'});
 
-//   fleets[{fleets.ID}][0][{ships.ID}] = ['{ships.NAME}', '{ships.AMOUNT}', '{ships.SPEED}', '{ships.CONSUMPTION}', '{ships.CAPACITY}', '{ships.ID}'];
+var SHIP_SPY = {D_SHIP_SPY};
+
 --></script>

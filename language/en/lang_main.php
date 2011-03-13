@@ -10,6 +10,6 @@
 #  Copyright © 2005 - 2008 KGsystem
 #############################################################################
 */
-$langInfos['ENCODING']   = "windows-1251";
-$langInfos['DIRECTION']  = "http://ogame.triolan.com.ua/phpBB3";
+$langInfos['ENCODING']   = "windows-1252";
+$langInfos['DIRECTION']  = "http://ogame.triolan.com.ua/phpBB3/";
 ?>

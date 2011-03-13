@@ -1,11 +1,4 @@
-<script type="text/javascript" src="js/fleet.js"></script>
-<script type="text/javascript">
-function getStorageFaktor() {
-  return 1
-}
-</script>
-
-{vacation}
+<!-- INCLUDE fleet_javascript.tpl -->
 
 <form action="fleet.php?fleet_page=2" method="post">
   <input type="hidden" name="thisgalaxy"      value="{thisgalaxy}" />
@@ -154,7 +147,7 @@ document.getElementById('fleet_speed').innerHTML = sn_format_number(fleet_speed)
 
 var ships = Array();
 <!-- BEGIN ships -->
-  <!-- IF (ships.ID != 212) -->
+  <!-- IF (ships.SPEED > 0) -->
   ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION}, 0);
   <!-- ENDIF -->
 <!-- END ships -->

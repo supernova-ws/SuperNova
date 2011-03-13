@@ -6,269 +6,345 @@
 #  Project: prethOgame
 #  Description: RPG web based game
 #
-#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright © 2005 - 2008 KGsystem
+#  Copyright c 2008 Aleksandar Spasojevic <spalekg@gmail.com>
+#  Copyright c 2005 - 2008 KGsystem
 #  Copyright (c) 2009 Gorlum
 #############################################################################
 */
 if (!defined('INSIDE')) {
-	die("attemp hacking");
+	die("Has attempted to break into!");
 }
-$lang['adm_done']               = "Work complete";
-$lang['adm_done_records']       = 'Work complete. %2$d record(s) processed in %1$01.3f seconds.';
-$lang['adm_stat_title']         = "Обновление статистики";
-$lang['adm_maintenance_title']  = "Database maintenance";
-$lang['adm_cleaner_title']      = "Cтатистика";
-$lang['adm_cleaned']            = "Кол-во удаленных задач: ";
+$lang['adm_done']               = "Successfully completed";
+$lang['adm_inactive_removed']   = '<li>Remove inactive players: %d</li>';
+$lang['adm_stat_title']         = "Update statistics";
+$lang['adm_maintenance_title']  = "Database Services";
+$lang['adm_records']            = "Processed records";
+$lang['adm_cleaner_title']      = "Clean queue structures";
+$lang['adm_cleaned']            = "Number of deleted tasks: ";
 
-$lang['Fix']                    = "Обновлено";
-$lang['Welcome_to_Fix_section'] = "секция патчей";
-$lang['There_is_not_need_fix']  = "Фикс ненужен!";
-$lang['Fix_welldone']           = "Сделано!";
+$lang['adm_schedule_none']      = "There are no tasks in the schedule for now";
 
-$lang['adm_ov_title'] = "Обзор";
-$lang['adm_ov_infos'] = "Информация";
-$lang['adm_ov_yourv'] = "Версия";
-$lang['adm_ov_lastv'] = "Доступная версия";
-$lang['adm_ov_here']  = "здесь";
-$lang['adm_ov_onlin'] = "Онлайн";
-$lang['adm_ov_ally']  = "Альянс";
-$lang['adm_ov_point'] = "Очков";
-$lang['adm_ov_activ'] = "Активность";
-$lang['adm_ov_count'] = " Игроков онлайн";
-$lang['adm_ov_wrtpm'] = "Написать в Личку";
+$lang['Fix']                    = "Updated";
+$lang['Welcome_to_Fix_section'] = "Section Patches";
+$lang['There_is_not_need_fix']  = "Fix unnecessary!";
+$lang['Fix_welldone']           = "Done!";
+
+$lang['adm_ov_title'] = "Overview";
+$lang['adm_ov_infos'] = "Information";
+$lang['adm_ov_yourv'] = "The current version";
+$lang['adm_ov_lastv'] = "Available version";
+$lang['adm_ov_here']  = "Here";
+$lang['adm_ov_onlin'] = "Online";
+$lang['adm_ov_ally']  = "Alliance";
+$lang['adm_ov_point'] = "Point";
+$lang['adm_ov_activ'] = "Active";
+$lang['adm_ov_count'] = "Online players";
+$lang['adm_ov_wrtpm'] = "Write Private Message";
 $lang['adm_ov_altpm'] = "[PM]";
 
-
-$lang['adm_ul_title'] = "Список игроков";
+$lang['adm_ul_title'] = "Players list";
 $lang['adm_ul_ttle2'] = "Players listed";
 $lang['adm_ul_id']    = "ID";
-$lang['adm_ul_name']  = "Имя ";
+$lang['adm_ul_name']  = "Player name";
 $lang['adm_ul_mail']  = "E-mail";
 $lang['adm_ul_adip']  = "IP";
 $lang['adm_ul_regd']  = "Registred from";
-$lang['adm_ul_lconn'] = "Последний логин";
+$lang['adm_ul_lconn'] = "Last login";
 $lang['adm_ul_bana']  = "Ban";
-$lang['adm_ul_detai'] = "Детали";
-$lang['adm_ul_actio'] = "Действия";
-$lang['adm_ul_playe'] = " игроков";
-$lang['adm_ul_yes']   = "Да";
-$lang['adm_ul_no']    = "Нет";
+$lang['adm_ul_detai'] = "Details";
+$lang['adm_ul_actio'] = "Actions";
+$lang['adm_ul_playe'] = " Players";
+$lang['adm_ul_yes']   = "Yes";
+$lang['adm_ul_no']    = "No";
 
-$lang['adm_pl_title'] = "Активность на планетах";
-$lang['adm_pl_activ'] = "Активность планет";
-$lang['adm_pl_name']  = "Имя планеты";
-$lang['adm_pl_posit'] = "Позиция";
-$lang['adm_pl_point'] = "Значение";
-$lang['adm_pl_since'] = "Последний клик";
-$lang['adm_pl_they']  = "Всего";
-$lang['adm_pl_apla']  = "планет активно";
+$lang['adm_pl_title'] = "Active planet";
+$lang['adm_pl_activ'] = "Active planet";
+$lang['adm_pl_name']  = "The name of the planet";
+$lang['adm_pl_posit'] = "Coordinates";
+$lang['adm_pl_point'] = "Value";
+$lang['adm_pl_since'] = "Is Active";
+$lang['adm_pl_they']  = "Total";
+$lang['adm_pl_apla']  = "Planet(s)";
 
-$lang['adm_an_title']     = "Announces";
-$lang['adm_an_date']      = "Date";
-$lang['adm_an_announce']  = "Announce";
-$lang['adm_an_total']     = "Announces total: ";
-$lang['adm_an_add']       = "Add announce";
-$lang['adm_an_edit']      = "Edit announce";
-$lang['adm_an_mode_new']  = "New";
-$lang['adm_an_mode_edit'] = "Editing";
-$lang['adm_an_mode_dupe'] = "Duplicate";
+$lang['adm_am_plid']  = "Planet ID";
+$lang['adm_am_done']  = "Add was successful";
+$lang['adm_am_ttle']  = "Add resources";
+$lang['adm_am_add']   = "Confirm";
+$lang['adm_am_form']  = "One-step add link form resources";
 
-$lang['adm_am_plid']  = "ID планеты";
-$lang['adm_am_done']  = "Добавление прошло успешно";
-$lang['adm_am_ttle']  = "Добавить ресурсы";
-$lang['adm_am_add']   = "Добавить";
-$lang['adm_am_form']  = "Форма добавления ресурсов";
+$lang['adm_bn_ttle']  = "Banned Players";
+$lang['adm_bn_plto']  = "Banned Players";
+$lang['adm_bn_name']  = "Player name";
+$lang['adm_bn_reas']  = "Reason for ban";
+$lang['adm_bn_isvc']  = "Vacation mode";
+$lang['adm_bn_time']  = "Duration of Ban";
+$lang['adm_bn_days']  = "Days";
+$lang['adm_bn_hour']  = "Hours";
+$lang['adm_bn_mins']  = "Mins";
+$lang['adm_bn_secs']  = "Seconds";
+$lang['adm_bn_bnbt']  = "The ban";
+$lang['adm_bn_thpl']  = "Player";
+$lang['adm_bn_isbn']  = "Successfully Banned!";
+$lang['adm_bn_vctn']  = " Vacation mode.";
+$lang['adm_bn_errr']  = "Error locking player! perhaps Name %s not found.";
+$lang['adm_bn_err2']  = "Error disabing production on the planets!";
+$lang['adm_bn_plnt']  = "Production on the planets is disabled.";
 
-$lang['adm_bn_ttle']  = "Банлист";
-$lang['adm_bn_plto']  = "Забанить игрока";
-$lang['adm_bn_name']  = "Имя";
-$lang['adm_bn_reas']  = "Причина";
-$lang['adm_bn_isvc']  = "With vacation mode";
-$lang['adm_bn_time']  = "Длительность";
-$lang['adm_bn_days']  = "Дней";
-$lang['adm_bn_hour']  = "Часов";
-$lang['adm_bn_mins']  = "Минут";
-$lang['adm_bn_secs']  = "Секунд";
-$lang['adm_bn_bnbt']  = "Забанить";
-$lang['adm_bn_thpl']  = "Игрок";
-$lang['adm_bn_isbn']  = "забанен!";
-$lang['adm_bn_vctn']  = " Vacation mode is on.";
-$lang['adm_bn_errr']  = "Ошибка блокировки игрока! Возможно ник %s не найден.";
-$lang['adm_bn_err2']  = "Ошибка отключения производства на планетах!";
-$lang['adm_bn_plnt']  = "Производство на планетах отключено.";
+$lang['adm_unbn_ttle']  = "Unban";
+$lang['adm_unbn_plto']  = "Unban player";
+$lang['adm_unbn_name']  = "Name";
+$lang['adm_unbn_bnbt']  = "Unban";
+$lang['adm_unbn_thpl']  = "Player";
+$lang['adm_unbn_isbn']  = "Unbanned!";
 
-$lang['adm_unbn_ttle']  = "Анбан";
-$lang['adm_unbn_plto']  = "Разбанить игрока";
-$lang['adm_unbn_name']  = "Имя";
-$lang['adm_unbn_bnbt']  = "Разбанить";
-$lang['adm_unbn_thpl']  = "Игрок";
-$lang['adm_unbn_isbn']  = "разбанен!";
-
-$lang['adm_rz_ttle']  = "Обнуление вселенной";
+$lang['adm_rz_ttle']  = "Zeroing universe";
 $lang['adm_rz_done']  = "User(s) of transfer(s)";
-$lang['adm_rz_conf']  = "Подтверждение";
-$lang['adm_rz_text']  = "Нажимая кнопку \'обнулить\' вы уничтожите все данные базы. Вы сделали резервную копию??? Аккаунты удалены не будут...";
-$lang['adm_rz_doit']  = "Обнулить";
+$lang['adm_rz_conf']  = "Confirmation";
+$lang['adm_rz_text']  = "Clicking (reset) You delete all database. You did backup??? Accounts will not be removed...";
+$lang['adm_rz_doit']  = "Zero out";
 
-$lang['adm_ch_ttle']  = "Администрирование чата";
-$lang['adm_ch_list']  = "Список сообщений";
-$lang['adm_ch_clear'] = "Очистить";
+$lang['adm_ch_ttle']  = "Admin chat";
+$lang['adm_ch_list']  = "Message list";
+$lang['adm_ch_clear'] = "Clear";
 $lang['adm_ch_idmsg'] = "ID";
-$lang['adm_ch_delet'] = "удалить";
-$lang['adm_ch_play']  = "Игрок";
-$lang['adm_ch_time']  = "Дата";
-$lang['adm_ch_chat']  = "Reply";
-$lang['adm_ch_nbs']   = "сообщений всего...";
+$lang['adm_ch_delet'] = "Delete";
+$lang['adm_ch_play']  = "Player";
+$lang['adm_ch_time']  = "Date";
+$lang['adm_ch_chat']  = "Chat";
+$lang['adm_ch_nbs']   = "Total messages...";
 
-$lang['adm_er_ttle']  = "Ошибки";
-$lang['adm_er_list']  = "Ошибки полученные в игре";
-$lang['adm_er_clear'] = "Очистить";
+$lang['adm_er_ttle']  = "Errors";
+$lang['adm_er_list']  = "Error list in game";
+$lang['adm_er_clear'] = "Clear";
 $lang['adm_er_idmsg'] = "ID";
-$lang['adm_er_type']  = "Тип";
-$lang['adm_er_play']  = "id Игрока";
-$lang['adm_er_time']  = "Дата";
-$lang['adm_er_page']  = "Page address";
-$lang['adm_er_nbs']   = "ошибок всего...";
-$lang['adm_er_text']  = "Error message";
-$lang['adm_er_bktr']  = "Backtrace";
+$lang['adm_er_type']  = "Type";
+$lang['adm_er_play']  = "Player Id";
+$lang['adm_er_time']  = "Date";
+$lang['adm_er_page']  = "Аddress of the page";
+$lang['adm_er_nbs']   = "Total Errors...";
+$lang['adm_er_text']  = "Error text";
+$lang['adm_er_bktr']  = "Debugging information";
 
-$lang['adm_dm_title'] = "Изменение количества Темной Материи";
-$lang['adm_dm_planet'] = "ID, координаты или название планеты";
-$lang['adm_dm_oruser'] = "ИЛИ";
-$lang['adm_dm_user'] = "ID или имя пользователя";
-$lang['adm_dm_no_quant'] = 'Укажите количество ТМ (положительное - для начисления, отрицательное - для снятия)';
-$lang['adm_dm_no_dest'] = 'Укажите пользователя или планету для изменения ТМ';
-$lang['adm_dm_add_err'] = 'Похоже во время начисления ТМ произошла ошибка.';
-$lang['adm_dm_user_none'] = 'Ошибка при поиске пользователя: не найдено пользователя с ID или именем %s';
-$lang['adm_dm_user_added'] = 'Количество ТМ у пользователя [%s] (ID: %d) успешно изменено на %d ТМ.';
-$lang['adm_dm_user_conflict'] = 'Ошибка при поиске пользователя: похоже, в БД есть пользователь и с таким именем, и с таким ID';
+$lang['adm_dm_title'] = "Change the number of dark matter";
+$lang['adm_dm_planet'] = "ID, Coordinates or name of the planet";
+$lang['adm_dm_oruser'] = "Or";
+$lang['adm_dm_user'] = "ID or username";
+$lang['adm_dm_no_quant'] = 'Specify the number Dark Matter(positive-Negative-for charging, removal)';
+$lang['adm_dm_no_dest'] = 'Specify the user or planet to edit Dark Matter';
+$lang['adm_dm_add_err'] = 'It look like during charging Dark Matter Occured.';
+$lang['adm_dm_user_none'] = 'Error: could not find user with ID or name %s';
+$lang['adm_dm_user_added'] = 'Number of Dark Matter user: [%s] (ID: %d) has been successfully changed to %d Dark Matter.';
+$lang['adm_dm_user_conflict'] = 'Error locating user: looks like the Database is the user and with the same name, and with the same ID';
 
-$lang['adm_dm_planet_none'] = 'Ошибка при поиске планеты: не найдено планеты с ID, координатами или именем %s';
-$lang['adm_dm_planet_added'] = 'Количество ТМ у пользователя ID %1$d (владельца планеты %4$s %2$s ID %3$d) успешно изменено на %5$d ТМ.';
-$lang['adm_dm_planet_conflict'] = 'Неуникальные данные для поиска планеты.<br>Это означает, что в БД одновременно существует ';
-$lang['adm_dm_planet_conflict_id'] = 'планета с именем "%1$s" и планета с ID %1$s .<br>Попробуйте использовать координаты планеты.';
-$lang['adm_dm_planet_conflict_name'] = 'несколько планет с именем "%1$s".<br>Попробуйте использовать координаты или ID планеты.';
-$lang['adm_dm_planet_conflict_coords'] = 'планета с именем "%1$s" и планета с координатами %1$s.<br>Попробуйте использовать ID планеты.';
+$lang['adm_dm_planet_none'] = 'Error locating planet: Planet ID is not found, coordinates or name %s';
+$lang['adm_dm_planet_added'] = 'The user ID number DM %1$d (owner of planet %4$s %2$s ID %3$d) successfully renamed to %5$d DM.';
+$lang['adm_dm_planet_conflict'] = 'Non-unique data to search for the planet.<br>This means that the Database at the same time there is a ';
+$lang['adm_dm_planet_conflict_id'] = 'Planet named "%1$s" and the planet with ID %1$s .<br>try using the coordinates of the planet.';
+$lang['adm_dm_planet_conflict_name'] = 'Multiple planets named "%1$s".<br>try using coordinates or ID planet.';
+$lang['adm_dm_planet_conflict_coords'] = 'Planet named "%1$s" and the planet coordinates %1$s.<br>try using the ID of the planet.';
 
-$lang['adm_apply']    = "Apply";
-$lang['adm_maint']    = "Maintenance";
+$lang['adm_apply'] = "Apply";
+$lang['adm_maint']    = "Servicing";
 $lang['adm_backup']   = "Backup";
 
-$lang['addm_title']    = "Add a moon";
-$lang['addm_addform']  = "Adding Form";
-$lang['addm_playerid'] = "ID of player";
-$lang['addm_moonname'] = "Moon name";
-$lang['addm_moongala'] = "Choose galaxy";
-$lang['addm_moonsyst'] = "Choose system";
-$lang['addm_moonplan'] = "Choose position";
-$lang['addm_moondoit'] = "Add";
-$lang['addm_done']     = "Added";
+$lang['adm_tools']   = "Utilities";
+$lang['adm_tools_reloadConfig'] = 'Recalculate configuration';
 
+$lang['adm_reason']  = "The reason for";
+
+$lang = array_merge($lang, array(
+// Server settings page
+  'adm_opt_title'             => "Configuration of the universe",
+  'adm_opt_game_settings'     => "Universe Parameters",
+  'adm_opt_game_name'         => "Universe name",
+  
+  'adm_opt_speed'             => "Speed",
+  'adm_opt_game_gspeed'       => "Games",
+  'adm_opt_game_fspeed'       => "Fleet",
+  'adm_opt_game_pspeed'       => "Resource",
+
+  'adm_opt_main_not_counted'  => "(Apart from home planet)",
+  'adm_opt_game_speed_normal' => "(1&nbsp;-&nbsp;normal)",
+  'adm_opt_game_forum'        => "Forum address",
+  'adm_opt_game_dark_matter'  => "Reference &quot;Harvest Dark Matter&quot;",
+  'adm_opt_game_copyrigh'     => "Copyright",
+  'adm_opt_game_online'       => "Turn off the game. Users will see the following message:",
+  'adm_opt_game_offreaso'     => "Turn off reason",
+  'adm_opt_plan_settings'     => "Planet settings",
+  'adm_opt_plan_initial'      => "Size of main planet",
+  'adm_opt_plan_base_inc'     => "Basic production",
+  'adm_opt_game_debugmod'     => "Enable debug mode",
+  'adm_opt_game_counter'      => "Add a hit counter",
+  'adm_opt_game_oth_info'     => "Other options",
+  'adm_opt_int_news_count'    => "news count",
+  'adm_opt_int_page_imperor'  => 'On the page &quot;Emperor&quot;:',
+  'adm_opt_game_zero_dsiable' => "(0&nbsp;-&nbsp;Disable)",
+  
+  'adm_opt_game_advertise'    => "Ad units",
+  'adm_opt_game_oth_adds'     => "Enable the ad block in the left menu. Banner code:",
+
+  'adm_opt_game_oth_gala'     => "Galaxy",
+  'adm_opt_game_oth_syst'     => "System",
+  'adm_opt_game_oth_plan'     => "Planet",
+  'adm_opt_btn_save'          => "Save",
+  'adm_opt_vacation_mode'     => "Turn off vacation",
+  'adm_opt_sectors'           => "Fields",
+  'adm_opt_per_hour'          => "per hour",
+  'adm_opt_saved'             => "Game settings saved successfully",
+  'adm_opt_players_online'    => "Players on the server",
+  'adm_opt_vacation_mode_is'  => "Vacation mode",
+  'adm_opt_maintenance'       => "Maintenance and debugging",
+  'adm_opt_links'             => "Links and banners",
+                                     
+  'adm_opt_universe_size'     => "Universe size",
+  'adm_opt_galaxies'          => "Galaxies",
+  'adm_opt_systems'           => "Systems",
+  'adm_opt_planets'           => "Planets",
+  'adm_opt_build_on_research' => "Build on research",
+  'adm_opt_game_rules'        => "Game rules",
+  'adm_opt_max_colonies'      => "Number of colonies",
+  'adm_opt_exchange'          => "Exchange resources",
+  'adm_opt_game_mode'         => "Type of universe",
+
+  'adm_opt_chat'              => "Chat settings",
+  'adm_opt_chat_timeout'      => "Timeout for idle",
+
+
+  'adm_opt_game_defaults'         => "Configuring default Game setting",
+  'adm_opt_game_default_language' => "Default language",
+  'adm_opt_game_default_skin'     => "Skin",
+  'adm_opt_game_default_template' => "Template",
+
+  'adm_lm_compensate' => "Compensation",
+
+// Planet compensate page
+  'adm_pl_comp_title'   => 'Compensation for destroyed planet',
+  'adm_pl_comp_src'     => 'Destroy the planet',
+  'adm_pl_comp_dst'     => 'Credit resources on the planet',
+  'adm_pl_comp_bonus'   => 'Bonus player',
+  'adm_pl_comp_check'   => 'Check',
+  'adm_pl_comp_confirm' => 'Confirm',
+  'adm_pl_comp_done'    => 'Finish',
+
+  'adm_pl_comp_price'   => 'Cost structures',
+  'adm_pl_comp_got'     => 'Be enrolled',
+
+  'adm_pl_com_of_plr'   => 'Player',
+  'adm_pl_comp_will_be' => 'will',
+  'adm_pl_comp_destr'   => 'destroyed.',
+  'adm_pl_comp_recieve' => 'The specified number of resources',
+  'adm_pl_comp_recieve2' => 'enrolled on the planet',
+  
+
+
+  'adm_pl_comp_err_0' => 'Not found to be destroyed planet',
+  'adm_pl_comp_err_1' => 'Planet destroyed',
+  'adm_pl_comp_err_2' => 'Not found, the planet you want to enroll',
+  'adm_pl_comp_err_3' => 'From the planets different owners. Credit resources can only be the same player on the planet',
+  'adm_pl_comp_err_4' => 'Planet belongs to the specified player',
+  'adm_pl_comp_err_5' => 'Planet for -- and for credit resources match',
+
+  'adm_ver_versions'  => 'Version of server components',
+  'adm_ver_version_sn'=> 'Version',
+  'adm_ver_version_db'=> 'Database version',
+));
+
+// Add moon
+$lang['addm_title']    = "Add Moon";
+$lang['addm_addform']  = "Form new moon";
+$lang['addm_playerid'] = "ID world accommodation";
+$lang['addm_moonname'] = "The name of the Moon";
+$lang['addm_moongala'] = "Specify the Galaxy";
+$lang['addm_moonsyst'] = "Specify system";
+$lang['addm_moonplan'] = "Specify position";
+$lang['addm_moondoit'] = "Add";
+$lang['addm_done']     = "The Moon formed";
+
+
+//Admin panel
 $lang['adm_usr_level'][0] = "Player";
-$lang['adm_usr_level'][1] = "GameOperator";
-$lang['adm_usr_level'][2] = "SuperGameOperator";
+$lang['adm_usr_level'][1] = "Operator";
+$lang['adm_usr_level'][2] = "Moderator";
 $lang['adm_usr_level'][3] = "Administrator";
 $lang['adm_usr_genre']['M'] = "Male";
 $lang['adm_usr_genre']['F'] = "Female";
 
 // Admin Strings
-$lang['panel_mainttl'] = "Administration panel";
-
+$lang['panel_mainttl'] = "Admin Panel";
 // Admin Panel A Template 1
-$lang['adm_panel_mnu'] = "Search for a player";
-$lang['adm_panel_ttl'] = "Type of research";
-$lang['adm_search_pl'] = "Find a player";
-$lang['adm_search_ip'] = "Search an IP";
-$lang['adm_stat_play'] = "Statistic of a player";
-$lang['adm_mod_level'] = "Modify access";
+$lang['adm_panel_mnu'] = "Search player";
+$lang['adm_panel_ttl'] = "Type of search";
+$lang['adm_search_pl'] = "Search by name";
+$lang['adm_search_ip'] = "Search by IP";
+$lang['adm_stat_play'] = "Player statistics";
+$lang['adm_mod_level'] = "Access level";
 
 $lang['adm_player_nm'] = "Player name";
-$lang['adm_ip']        = "Players using";
+$lang['adm_ip']        = "IP";
 $lang['adm_plyer_wip'] = "Players with IP";
 $lang['adm_frm1_id']   = "ID";
 $lang['adm_frm1_name'] = "Name";
 $lang['adm_frm1_ip']   = "IP";
-$lang['adm_frm1_mail'] = "E-mail";
-$lang['adm_frm1_acc']  = "Access";
+$lang['adm_frm1_mail'] = "E-Mail";
+$lang['adm_frm1_acc']  = "Rank";
 $lang['adm_frm1_gen']  = "Gender";
-$lang['adm_frm1_main'] = "ID planet";
-$lang['adm_frm1_gpos'] = "Position";
+$lang['adm_frm1_main'] = "Planet ID";
+$lang['adm_frm1_gpos'] = "Coordinates";
 $lang['adm_mess_lvl1'] = "Access level";
-$lang['adm_mess_lvl2'] = "now ";
+$lang['adm_mess_lvl2'] = "&quot;now&quot; ";
 $lang['adm_colony']    = "Colony";
 $lang['adm_planet']    = "Planet";
 $lang['adm_moon']      = "Moon";
-$lang['adm_technos']   = "Research and development";
+$lang['adm_technos']   = "Technology";
 $lang['adm_bt_search'] = "Search";
 $lang['adm_bt_change'] = "Change";
 
+// Admin fleet
 $lang['flt_id']       = "ID";
 $lang['flt_fleet']    = "Fleet";
 $lang['flt_mission']  = "Mission";
 $lang['flt_owner']    = "Owner";
 $lang['flt_planet']   = "Planet";
-$lang['flt_time_st']  = "Start time";
-$lang['flt_e_owner']  = "Destination";
-$lang['flt_time_en']  = "End time";
-$lang['flt_staying']  = "Hold time";
+$lang['flt_time_st']  = "Departure time";
+$lang['flt_e_owner']  = "Arrival";
+$lang['flt_time_en']  = "Time of arrival";
+$lang['flt_staying']  = "Stat.";
 $lang['flt_action']   = "Action";
-$lang['flt_title']    = "Fleets in air";
+$lang['flt_title']    = "Fleets in flight";
 
-$lang['md5_title']  = "md5 password crypting";
-$lang['md5_pswcyp'] = "Password crypting";
+// MD5
+$lang['adm_md5']    = "MD5-hash";
+$lang['md5_title']  = "Encryption utility";
+$lang['md5_pswcyp'] = "Password encryption";
 $lang['md5_psw']    = "Password";
-$lang['md5_pswenc'] = "Crypted password";
-$lang['md5_doit']   = "[ Crypt ]";
+$lang['md5_pswenc'] = "Encrypted password";
+$lang['md5_doit']   = "[ encrypt ]";
 
+// Message list
 $lang['mlst_title']       = "Message list";
 $lang['mlst_mess_del']    = "Delete messages";
-$lang['mlst_hdr_page']    = "Page";
-$lang['mlst_hdr_title']   = " ) of messages :";
+$lang['mlst_hdr_page']    = "Page.";
+$lang['mlst_hdr_title']   = " ) messages :";
 $lang['mlst_hdr_prev']    = "[ &lt;- ]";
 $lang['mlst_hdr_next']    = "[ -&gt; ]";
 $lang['mlst_hdr_id']      = "ID";
 $lang['mlst_hdr_type']    = "Type";
-$lang['mlst_hdr_time']    = "Time";
+$lang['mlst_hdr_time']    = "Here";
 $lang['mlst_hdr_from']    = "From";
 $lang['mlst_hdr_to']      = "To";
-$lang['mlst_hdr_text']    = "Content";
-$lang['mlst_hdr_action']  = "Select";
+$lang['mlst_hdr_text']    = "text";
+$lang['mlst_hdr_action']  = "Action.";
 $lang['mlst_del_mess']    = "Delete";
-$lang['mlst_bt_delsel']   = "Delete Selected";
-$lang['mlst_bt_deldate']  = "Delete from";
-$lang['mlst_hdr_delfrom'] = "Delete from";
-$lang['mlst_mess_typ__0'] = "Espionnage";
-$lang['mlst_mess_typ__1'] = "Player";
-$lang['mlst_mess_typ__2'] = "Alliance";
-$lang['mlst_mess_typ__3'] = "Attack";
-$lang['mlst_mess_typ__4'] = "Exploitation";
+$lang['mlst_bt_delsel']   = "Delete selected";
+$lang['mlst_bt_deldate']  = "Delete message date";
+$lang['mlst_hdr_delfrom'] = "Remove the date";
+$lang['mlst_mess_typ__0'] = "Espionage";
+$lang['mlst_mess_typ__1'] = "Players";
+$lang['mlst_mess_typ__2'] = "Alliances";
+$lang['mlst_mess_typ__3'] = "Fights";
+$lang['mlst_mess_typ__4'] = "Operational.";
 $lang['mlst_mess_typ__5'] = "Transport";
-$lang['mlst_mess_typ_15'] = "Expeditions";
-$lang['mlst_mess_typ_99'] = "Building Queue";
-
-$lang['adm_opt_title']         = "Server configuration";
-$lang['adm_opt_game_settings'] = "Game settings";
-$lang['adm_opt_game_name']     = "Game name";
-$lang['adm_opt_game_gspeed']   = "Game speed";
-$lang['adm_opt_game_fspeed']   = "Fleet speed";
-$lang['adm_opt_game_pspeed']   = "Production speed<br>(normal = 1)";
-$lang['adm_opt_game_forum']    = "Board address";
-$lang['adm_opt_game_copyrigh'] = "Copyright";
-$lang['adm_opt_game_online']   = "On-line Status";
-$lang['adm_opt_game_offreaso'] = "Raison for offline";
-$lang['adm_opt_plan_settings'] = "Planet settings";
-$lang['adm_opt_plan_initial']  = "Initial fields";
-$lang['adm_opt_plan_base_inc'] = "Basic income ";
-$lang['adm_opt_game_debugmod'] = "Debug mode";
-$lang['adm_opt_game_oth_info'] = "Other information";
-$lang['adm_opt_game_oth_news'] = "Show framework News";
-$lang['adm_opt_game_oth_chat'] = "Show external Chat";
-$lang['adm_opt_game_oth_adds'] = "Google AdSense";
-$lang['adm_opt_game_oth_lstc'] = "Last planet coordinates";
-$lang['adm_opt_game_oth_gala'] = "Galaxy";
-$lang['adm_opt_game_oth_syst'] = "System";
-$lang['adm_opt_game_oth_plan'] = "Position";
-$lang['adm_opt_btn_save']      = "Save";
+$lang['mlst_mess_typ_15'] = "Expedition";
+$lang['mlst_mess_typ_99'] = "List Building";
 
 ?>

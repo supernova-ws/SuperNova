@@ -16,7 +16,7 @@ if ( !defined('INSIDE') )
 }
 
 define('DB_VERSION', 26);
-define('SN_VERSION', '26e14');
+define('SN_VERSION', '26e19');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -262,23 +262,24 @@ define('TECH_GRAVITON', 199);
 
 // === Hangar units
 // --- Ships
-define('small_ship_cargo', 202);
-define('big_ship_cargo', 203);
-define('supercargo', 201);
-define('light_hunter', 204);
-define('heavy_hunter', 205);
-define('crusher', 206);
-define('battle_ship', 207);
-define('colonizer', 208);
-define('recycler', 209);
-define('spy_sonde', 210);
-define('bomber_ship', 211);
-define('solar_satelit', 212);
-define('destructor', 213);
-define('dearth_star', 214);
-define('battleship', 215);
-define('supernova', 216);
-define('assault_ship', 217);
+define('SHIP_FLEET', 200);
+define('SHIP_CARGO_SUPER', 201);
+define('SHIP_CARGO_SMALL', 202);
+define('SHIP_CARGO_BIG', 203);
+define('SHIP_FIGHTER_LIGHT', 204);
+define('SHIP_FIGHTER_HEAVY', 205);
+define('SHIP_DESTROYER', 206);
+define('SHIP_CRUISER', 207);
+define('SHIP_COLONIZER', 208);
+define('SHIP_RECYCLER', 209);
+define('SHIP_SPY', 210);
+define('SHIP_BOMBER', 211);
+define('SHIP_SATTELITE_SOLAR', 212);
+define('SHIP_DESTRUCTOR', 213);
+define('SHIP_DEATH_STAR', 214);
+define('SHIP_BATTLESHIP', 215);
+define('SHIP_SUPERNOVA', 216);
+define('SHIP_FIGHTER_ASSAULT', 217);
 // --- Defense
 define('misil_launcher', 401);
 define('small_laser', 402);

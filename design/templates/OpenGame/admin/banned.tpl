@@ -1,6 +1,6 @@
 <br><br>
 <h2>{adm_bn_ttle}</h2>
-<form action="banned.php" method="post">
+<form action="admin/banned.php" method="post">
   <input type="hidden" name="mode" value="banit">
   <table width="409">
     <tr><td class="c" colspan="2">{adm_bn_plto}</td></tr>

@@ -5,20 +5,20 @@ if (!defined('INSIDE')) {
 }
 
 // Registration form
-$lang['registry']          = 'Регистрация';
-$lang['form']              = 'Форма';
-$lang['Register']          = 'Регистрация';
-$lang['Multiverse']        = 'Серевр';
-$lang['E-Mail']            = 'e-Mail';
-$lang['signup']            = 'Активация ';
+$lang['registry']          = 'Registration';
+$lang['form']              = 'Form';
+$lang['Register']          = 'Register';
+$lang['Multiverse']        = 'Server';
+$lang['E-Mail']            = 'E-Mail';
+$lang['signup']            = 'Sign up';
 
-$lang['mail_title']        = 'Активация аккаунта OGame';
-$lang['thanksforregistry'] = 'Вы прошли активацию на нашем проекте! Спасибо. Удачи в игре!';
+$lang['mail_title']        = 'Account activation OGame';
+$lang['thanksforregistry'] = 'You have activated on our game! Thank you. Good luck in the game!';
 
 // Errors
-$lang['error_mail']        = 'Неправильный e-mail!<br />';
-$lang['error_mailsend']    = 'Активационное письмо не отправлено!!!';
-$lang['reg_welldone']      = 'Активация прошла успешно!!!';
+$lang['error_mail']        = 'Invalid E-Mail!<br />';
+$lang['error_mailsend']    = 'Activation E-Mail was not sent!!!';
+$lang['reg_welldone']      = 'Activation was successful!!!';
 
 // Created by Perberos. All rights reversed (C) 2006
 // Complet by XNova Team. All rights reversed (C) 2008

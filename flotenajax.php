@@ -151,8 +151,8 @@ doquery( "UPDATE {{planets}} SET {$FleetSubQRY} `{$sn_data[RES_DEUTERIUM]['name'
 doquery("COMMIT;");
 
 $CurrentFlyingFleets++;
-$UserSpyProbes -= $fleet_array[210];
-$UserRecycles  -= $fleet_array[209];
+$UserSpyProbes -= $fleet_array[SHIP_SPY];
+$UserRecycles  -= $fleet_array[SHIP_RECYCLER];
 $UserMissiles  -= $fleet_array[503];
 
 $ResultMessage  = "{$cant_attack}|{$lang['gs_sending']} {$fleet_ship_count} {$lang['tech'][$Ship]} {$lang['gs_to']} {$target_galaxy}:{$target_system}:{$target_planet}...|";

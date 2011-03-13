@@ -1,23 +1,14 @@
 <?php
-/*
-#############################################################################
-#  Filename: banned.mo
-#  Create date: Saturday, March 15, 2008	 10:18:05
-#  Project: prethOgame
-#  Description: RPG web based game
-#
-#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright © 2005 - 2008 KGsystem
-#############################################################################
-*/
-$lang['ban_title']    = "Список нехороших личностей";
-$lang['ban_name']     = "Имя";
-$lang['ban_reason']   = "Причина";
-$lang['ban_from']     = "Дата";
-$lang['ban_to']       = "Забанен до";
-$lang['ban_by']       = "Админ";
-$lang['ban_no']       = "Нету забаненных";
-$lang['ban_thereare'] = "они";
-$lang['ban_players']  = "забаненных";
-$lang['You_are_banned'] = 'Вы забанены!';
+
+$lang['ban_title']      = "Black list";
+$lang['ban_name']       = "Name";
+$lang['ban_reason']     = "The reason for the ban";
+$lang['ban_from']       = "Ban data";
+$lang['ban_to']         = "Term of Ban";
+$lang['ban_by']         = "Issued";
+$lang['ban_no']         = "No Banned players";
+$lang['ban_thereare']   = "Total";
+$lang['ban_players']    = "Banned";
+$lang['You_are_banned'] = 'You are banned!';
+$lang['ban_banned']     = "Players banned: ";
 ?>

@@ -664,7 +664,7 @@ if ( defined('INSIDE')) {
       'factor' => 3,
     ),
 
-    202 => array(
+    SHIP_CARGO_SMALL => array(
       'name' => 'small_ship_cargo',
       'require' => array(21 => 2, 115 => 2),
       'cost' => array(
@@ -688,13 +688,13 @@ if ( defined('INSIDE')) {
       'consumption2' => 40,
       'shield' => 10,
       'attack' => 5,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 5, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 100.01, 211 => 1, 212 => 210, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 100.01, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 250, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 400,
       'stackable' => true,
     ),
 
-    203 => array(
+    SHIP_CARGO_BIG => array(
       'name' => 'big_ship_cargo',
       'require' => array(21 => 4, 115 => 6),
       'cost' => array(
@@ -714,13 +714,13 @@ if ( defined('INSIDE')) {
       'consumption' => 50,
       'shield' => 25,
       'attack' => 5,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 5, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 100.01, 211 => 1, 212 => 210, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 100.01, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 250, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 1200,
       'stackable' => true,
     ),
 
-    201 => array(
+    SHIP_CARGO_SUPER => array(
       'name' => 'supercargo',
       'require' => array(21 => 8, 117 => 5, MRC_STOCKMAN => 1),
       'cost' => array(
@@ -740,13 +740,13 @@ if ( defined('INSIDE')) {
       'consumption' => 100,
       'shield' => 50,
       'attack' => 10,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 5, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 100.01, 211 => 1, 212 => 210, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 100.01, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 250, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 3000,
       'stackable' => true,
     ),
 
-    204 => array(
+    SHIP_FIGHTER_LIGHT => array(
       'name' => 'light_hunter',
       'require' => array(21 => 1, 115 => 1),
       'cost' => array(
@@ -766,13 +766,13 @@ if ( defined('INSIDE')) {
       'consumption' => 20,
       'shield' => 10,
       'attack' => 50,
-      'sd' => array(201=> 1, 202 => 2, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 5, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(201=> 1, 202 => 16.4, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 10.001, 211 => 1, 212 => 21, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 2, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 16.4, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 10.001, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 21, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 400,
       'stackable' => true,
     ),
 
-    205 => array(
+    SHIP_FIGHTER_HEAVY => array(
       'name' => 'heavy_hunter',
       'require' => array(21 => 3, 111 => 2, 117 => 2),
       'cost' => array(
@@ -792,13 +792,13 @@ if ( defined('INSIDE')) {
       'consumption' => 75,
       'shield' => 25,
       'attack' => 150,
-      'sd' => array(201=> 1, 202 => 3, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 5, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(201=> 1, 202 => 8.2, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 3.33367, 211 => 1, 212 => 7, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 3, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 8.2, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 3.33367, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 7, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 1000,
       'stackable' => true,
     ),
 
-    206 => array(
+    SHIP_DESTROYER => array(
       'name' => 'crusher',
       'require' => array(21 => 5, 117 => 4, 121 => 2),
       'cost' => array(
@@ -818,13 +818,13 @@ if ( defined('INSIDE')) {
       'consumption' => 300,
       'shield' => 50,
       'attack' => 400,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 6, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 5, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 10, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 6.15, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 1.25013, 211 => 1, 212 => 2.625, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 5.5, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 6, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 10, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 6.15, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 1.25013, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 2.625, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 5.5, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 2700,
       'stackable' => true,
     ),
 
-    207 => array(
+    SHIP_CRUISER => array(
       'name' => 'battle_ship',
       'require' => array(21 => 7, 118 => 4),
       'cost' => array(
@@ -844,13 +844,13 @@ if ( defined('INSIDE')) {
       'consumption' => 500,
       'shield' => 200,
       'attack' => 1000,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 5, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 8, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 0.50005, 211 => 1, 212 => 1.05, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1.76, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 8, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 0.50005, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1.05, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1.76, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 6000,
       'stackable' => true,
     ),
 
-    208 => array(
+    SHIP_COLONIZER => array(
       'name' => 'colonizer',
       'require' => array(21 => 4, 117 => 3, 150 => 2),
       'cost' => array(
@@ -870,13 +870,13 @@ if ( defined('INSIDE')) {
       'consumption' => 1000,
       'shield' => 100,
       'attack' => 50,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 5, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 10.001, 211 => 1, 212 => 21, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 10.001, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 21, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 3000,
       'stackable' => true,
     ),
 
-    209 => array(
+    SHIP_RECYCLER => array(
       'name' => 'recycler',
       'require' => array(21 => 4, 115 => 6, 110 => 2),
       'cost' => array(
@@ -896,13 +896,13 @@ if ( defined('INSIDE')) {
       'consumption' => 300,
       'shield' => 10,
       'attack' => 1,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 5, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 500.05, 211 => 1, 212 => 1050, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 500.05, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1050, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 1600,
       'stackable' => true,
     ),
 
-    210 => array(
+    SHIP_SPY => array(
       'name' => 'spy_sonde',
       'require' => array(21 => 3, 115 => 3, 106 => 2),
       'cost' => array(
@@ -922,13 +922,13 @@ if ( defined('INSIDE')) {
       'consumption' => 1,
       'shield' => 0.01,
       'attack' => 0.01,
-      'sd' => array( 201=> 0, 202 => 0, 203 => 0, 204 => 0, 205 => 0, 206 => 0, 207 => 0, 208 => 0, 209 => 0, 210 => 0, 211 => 0, 212 => 0, 213 => 0, 214 => 0, 215 => 0, 216 => 0, 401 => 0, 402 => 0, 403 => 0, 404 => 0, 405 => 0, 406 => 0, 407 => 0, 408 => 0, 409 => 0),
-      'amplify' => array( 201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 1, 211 => 1, 212 => 1, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'sd' => array( SHIP_CARGO_SUPER=> 0, SHIP_CARGO_SMALL => 0, SHIP_CARGO_BIG => 0, SHIP_FIGHTER_LIGHT => 0, SHIP_FIGHTER_HEAVY => 0, SHIP_DESTROYER => 0, SHIP_CRUISER => 0, SHIP_COLONIZER => 0, SHIP_RECYCLER => 0, SHIP_SPY => 0, SHIP_BOMBER => 0, SHIP_SATTELITE_SOLAR => 0, SHIP_DESTRUCTOR => 0, SHIP_DEATH_STAR => 0, SHIP_BATTLESHIP => 0, SHIP_SUPERNOVA => 0, 401 => 0, 402 => 0, 403 => 0, 404 => 0, 405 => 0, 406 => 0, 407 => 0, 408 => 0, 409 => 0),
+      'amplify' => array( SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 1, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 100,
       'stackable' => true,
     ),
 
-    211 => array(
+    SHIP_BOMBER => array(
       'name' => 'bomber_ship',
       'require' => array(117 => 6, 21 => 8, 122 => 5),
       'cost' => array(
@@ -952,13 +952,13 @@ if ( defined('INSIDE')) {
       'consumption2' => 1250,
       'shield' => 500,
       'attack' => 1000,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 5, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 20, 402 => 20, 403 => 10, 404 => 1, 405 => 10, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 0.50005, 211 => 1, 212 => 1.05, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 4.4, 402 => 4.5, 403 => 9, 404 => 1, 405 => 13, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 20, 402 => 20, 403 => 10, 404 => 1, 405 => 10, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 0.50005, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1.05, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 4.4, 402 => 4.5, 403 => 9, 404 => 1, 405 => 13, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 7500,
       'stackable' => true,
     ),
 
-    212 => array(
+    SHIP_SATTELITE_SOLAR => array(
       'name' => 'solar_satelit',
       'require' => array(21 => 1),
       'cost' => array(
@@ -978,8 +978,8 @@ if ( defined('INSIDE')) {
       'consumption' => 0,
       'shield' => 10,
       'attack' => 1,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 1, 211 => 1, 212 => 0, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 0, 402 => 0, 403 => 0, 404 => 0, 405 => 0, 406 => 0, 407 => 0, 408 => 0, 409 => 0),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 1, 211 => 1, 212 => 1, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 1, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 0, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 0, 402 => 0, 403 => 0, 404 => 0, 405 => 0, 406 => 0, 407 => 0, 408 => 0, 409 => 0),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 1, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 200,
       'production' => array(
         RES_METAL     => create_function ('$level, $production_factor, $temperature', 'return 0;'),
@@ -994,7 +994,7 @@ if ( defined('INSIDE')) {
       'stackable' => true,
     ),
 
-    213 => array(
+    SHIP_DESTRUCTOR => array(
       'name' => 'destructor',
       'require' => array(21 => 9, 114 => 5, 118 => 6),
       'cost' => array(
@@ -1014,13 +1014,13 @@ if ( defined('INSIDE')) {
       'consumption' => 1000,
       'shield' => 500,
       'attack' => 2000,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 5, 213 => 1, 214 => 1, 215 => 2, 216 => 1, 401 => 1, 402 => 10, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 0.25003, 211 => 1, 212 => 0.525, 213 => 1, 214 => 1, 215 => 7.4, 216 => 1, 401 => 1, 402 => 1.125, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 2, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 10, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 0.25003, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 0.525, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 7.4, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1.125, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 11000,
       'stackable' => true,
     ),
 
-    214 => array(
+    SHIP_DEATH_STAR => array(
       'name' => 'dearth_star',
       'require' => array(21 => 12, 114 => 6, 118 => 7, 199 => 1, MRC_DESTRUCTOR => 1),
       'cost' => array(
@@ -1040,13 +1040,13 @@ if ( defined('INSIDE')) {
       'consumption' => 1,
       'shield' => 50000,
       'attack' => 200000,
-      'sd' => array(201 => 100, 202 => 200, 203 => 150, 204 => 200, 205 => 100, 206 => 33, 207 => 30, 208 => 250, 209 => 250, 210 => 1250, 211 => 25, 212 => 1250, 213 => 5, 214 => 1, 215 => 15, 216 => 1, 401 => 200, 402 => 200, 403 => 100, 404 => 50, 405 => 100, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array( 201 => 2.025, 202 => 0.41, 203 => 0.91875, 204 => 0.41, 205 => 0.5125, 206 => 0.45375, 207 => 0.93, 208 => 3.875, 209 => 2.0125, 210 => 0.62506, 211 => 1, 212 => 1.3125, 213 => 0.2875, 214 => 1, 215 => 0.03, 216 => 1, 401 => 0.02, 402 => 0.025, 403 => 0.05, 404 => 0.05, 405 => 0.25, 406 => 1, 407 => 1, 408 => 1, 409 => 1 ),
+      'sd' => array(SHIP_CARGO_SUPER => 100, SHIP_CARGO_SMALL => 200, SHIP_CARGO_BIG => 150, SHIP_FIGHTER_LIGHT => 200, SHIP_FIGHTER_HEAVY => 100, SHIP_DESTROYER => 33, SHIP_CRUISER => 30, SHIP_COLONIZER => 250, SHIP_RECYCLER => 250, SHIP_SPY => 1250, SHIP_BOMBER => 25, SHIP_SATTELITE_SOLAR => 1250, SHIP_DESTRUCTOR => 5, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 15, SHIP_SUPERNOVA => 1, 401 => 200, 402 => 200, 403 => 100, 404 => 50, 405 => 100, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array( SHIP_CARGO_SUPER => 2.025, SHIP_CARGO_SMALL => 0.41, SHIP_CARGO_BIG => 0.91875, SHIP_FIGHTER_LIGHT => 0.41, SHIP_FIGHTER_HEAVY => 0.5125, SHIP_DESTROYER => 0.45375, SHIP_CRUISER => 0.93, SHIP_COLONIZER => 3.875, SHIP_RECYCLER => 2.0125, SHIP_SPY => 0.62506, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1.3125, SHIP_DESTRUCTOR => 0.2875, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 0.03, SHIP_SUPERNOVA => 1, 401 => 0.02, 402 => 0.025, 403 => 0.05, 404 => 0.05, 405 => 0.25, 406 => 1, 407 => 1, 408 => 1, 409 => 1 ),
       'armor' => 900000,
       'stackable' => true,
     ),
 
-    215 => array(
+    SHIP_BATTLESHIP => array(
       'name' => 'battleship',
       'require' => array(21 => 8, 114 => 5, 118 => 5, 120 => 12),
       'cost' => array(
@@ -1066,13 +1066,13 @@ if ( defined('INSIDE')) {
       'consumption' => 250,
       'shield' => 400,
       'attack' => 700,
-      'sd' => array( 202 => 5, 203 => 3, 201 => 2, 204 => 1, 205 => 4, 206 => 4, 207 => 7, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 5, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array( 201 => 11.57143, 202 => 2.92857, 203 => 5.25, 204 => 1, 205 => 5.85714, 206 => 15.71429, 207 => 62, 208 => 1, 209 => 1, 210 => 0.71436, 211 => 1, 212 => 1.5, 213 => 1, 214 => 1, 215 => 1, 216 => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1 ),
+      'sd' => array( SHIP_CARGO_SMALL => 5, SHIP_CARGO_BIG => 3, SHIP_CARGO_SUPER => 2, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 4, SHIP_DESTROYER => 4, SHIP_CRUISER => 7, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array( SHIP_CARGO_SUPER => 11.57143, SHIP_CARGO_SMALL => 2.92857, SHIP_CARGO_BIG => 5.25, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 5.85714, SHIP_DESTROYER => 15.71429, SHIP_CRUISER => 62, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 0.71436, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1.5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1 ),
       'armor' => 7000,
       'stackable' => true,
     ),
 
-    216 => array(
+    SHIP_SUPERNOVA => array(
       'name' => 'supernova',
       'require' => array(21 => 15, 114 => 7, 118 => 9, 199 => 1, MRC_ASSASIN => 1),
       'cost' => array(
@@ -1092,13 +1092,13 @@ if ( defined('INSIDE')) {
       'consumption' => 250,
       'shield' => 1000000,
       'attack' => 1000000,
-      'sd' => array( 201 => 150, 202 => 250, 203 => 200, 204 => 200, 205 => 100, 206 => 33, 207 => 30, 208 => 250, 209 => 250, 210 => 1250, 211 => 25, 212 => 1250, 213 => 5, 214 => 1, 215 => 15, 216 => 1, 401 => 200, 402 => 200, 403 => 100, 404 => 50, 405 => 100, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array( 201 => 0.6075, 202 => 0.1025, 203 => 0.245, 204 => 0.082, 205 => 0.1025, 206 => 0.09075, 207 => 0.186, 208 => 0.775, 209 => 0.4025, 210 => 0.12501, 211 => 0.2, 212 => 0.2625, 213 => 0.0575, 214 => 1, 215 => 0.111, 216 => 1, 401 => 0.004, 402 => 0.005, 403 => 0.01, 404 => 0.01, 405 => 0.05, 406 => 1, 407 => 1, 408 => 1, 409 => 1 ),
+      'sd' => array( SHIP_CARGO_SUPER => 150, SHIP_CARGO_SMALL => 250, SHIP_CARGO_BIG => 200, SHIP_FIGHTER_LIGHT => 200, SHIP_FIGHTER_HEAVY => 100, SHIP_DESTROYER => 33, SHIP_CRUISER => 30, SHIP_COLONIZER => 250, SHIP_RECYCLER => 250, SHIP_SPY => 1250, SHIP_BOMBER => 25, SHIP_SATTELITE_SOLAR => 1250, SHIP_DESTRUCTOR => 5, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 15, SHIP_SUPERNOVA => 1, 401 => 200, 402 => 200, 403 => 100, 404 => 50, 405 => 100, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array( SHIP_CARGO_SUPER => 0.6075, SHIP_CARGO_SMALL => 0.1025, SHIP_CARGO_BIG => 0.245, SHIP_FIGHTER_LIGHT => 0.082, SHIP_FIGHTER_HEAVY => 0.1025, SHIP_DESTROYER => 0.09075, SHIP_CRUISER => 0.186, SHIP_COLONIZER => 0.775, SHIP_RECYCLER => 0.4025, SHIP_SPY => 0.12501, SHIP_BOMBER => 0.2, SHIP_SATTELITE_SOLAR => 0.2625, SHIP_DESTRUCTOR => 0.0575, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 0.111, SHIP_SUPERNOVA => 1, 401 => 0.004, 402 => 0.005, 403 => 0.01, 404 => 0.01, 405 => 0.05, 406 => 1, 407 => 1, 408 => 1, 409 => 1 ),
       'armor' => 3500000,
       'stackable' => true,
     ),
 
-    217 => array(
+    SHIP_FIGHTER_ASSAULT => array(
       'name' => 'assault_ship',
     ),
 
@@ -1118,8 +1118,8 @@ if ( defined('INSIDE')) {
       'factor' => 1,
       'shield' => 20,
       'attack' => 80,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 0, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 6.25063, 211 => 1, 212 => 1, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 0, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 6.25063, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
       'armor' => 200,
       'stackable' => true,
     ),
@@ -1140,8 +1140,8 @@ if ( defined('INSIDE')) {
       'factor' => 1,
       'shield' => 25,
       'attack' => 100,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 0, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5.0005, 211 => 1, 212 => 1, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 0, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5.0005, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
       'armor' => 200,
       'stackable' => true,
     ),
@@ -1162,8 +1162,8 @@ if ( defined('INSIDE')) {
       'factor' => 1,
       'shield' => 100,
       'attack' => 250,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 0, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 2.0002, 211 => 1, 212 => 1, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 0, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 2.0002, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
       'armor' => 800,
       'stackable' => true,
     ),
@@ -1184,8 +1184,8 @@ if ( defined('INSIDE')) {
       'factor' => 1,
       'shield' => 200,
       'attack' => 1100,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 0, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 0.45459, 211 => 1, 212 => 1, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 0, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 0.45459, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
       'armor' => 3500,
       'stackable' => true,
     ),
@@ -1206,8 +1206,8 @@ if ( defined('INSIDE')) {
       'factor' => 1,
       'shield' => 500,
       'attack' => 150,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 0, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 3.33367, 211 => 1, 212 => 1, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 0, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 3.33367, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
       'armor' => 800,
       'stackable' => true,
     ),
@@ -1228,8 +1228,8 @@ if ( defined('INSIDE')) {
       'factor' => 1,
       'shield' => 300,
       'attack' => 3000,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 0, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 0.16668, 211 => 1, 212 => 1, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 0, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 0.16668, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
       'armor' => 10000,
       'stackable' => true,
     ),
@@ -1250,8 +1250,8 @@ if ( defined('INSIDE')) {
       'factor' => 1,
       'shield' => 2000,
       'attack' => 1,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 0, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 500.05, 211 => 1, 212 => 1, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 0, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 500.05, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
       'armor' => 2000,
       'stackable' => true,
     ),
@@ -1272,8 +1272,8 @@ if ( defined('INSIDE')) {
       'factor' => 1,
       'shield' => 2000,
       'attack' => 1,
-      'sd' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 5, 211 => 1, 212 => 0, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
-      'amplify' => array(201=> 1, 202 => 1, 203 => 1, 204 => 1, 205 => 1, 206 => 1, 207 => 1, 208 => 1, 209 => 1, 210 => 500.05, 211 => 1, 212 => 1, 213 => 1, 214 => 1, 215 => 1, 216 => 1),
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 0, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 500.05, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
       'armor' => 10000,
       'stackable' => true,
     ),
@@ -1288,8 +1288,8 @@ if ( defined('INSIDE')) {
       'factor'    => 1,
       'shield'    => 1000000,
       'attack'    => 1000000,
-      'sd'        => array( 201=> 50, 202 => 100, 203 => 80, 204 => 75, 205 => 60, 206 => 20, 207 => 20, 208 => 100, 209 => 100, 210 => 500, 211 => 10, 212 => 500, 213 => 2, 214 => 1, 215 => 5, 216 => 1),
-      'amplify'   => array( 201 => 0.2025, 202 => 0.041, 203 => 0.098, 204 => 0.03075, 205 => 0.0615, 206 => 0.055, 207 => 0.124, 208 => 0.31, 209 => 0.161, 210 => 0.05001, 211 => 0.08, 212 => 0.105, 213 => 0.023, 214 => 1, 215 => 0.037, 216 => 1 ),
+      'sd'        => array( SHIP_CARGO_SUPER=> 50, SHIP_CARGO_SMALL => 100, SHIP_CARGO_BIG => 80, SHIP_FIGHTER_LIGHT => 75, SHIP_FIGHTER_HEAVY => 60, SHIP_DESTROYER => 20, SHIP_CRUISER => 20, SHIP_COLONIZER => 100, SHIP_RECYCLER => 100, SHIP_SPY => 500, SHIP_BOMBER => 10, SHIP_SATTELITE_SOLAR => 500, SHIP_DESTRUCTOR => 2, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 5, SHIP_SUPERNOVA => 1),
+      'amplify'   => array( SHIP_CARGO_SUPER => 0.2025, SHIP_CARGO_SMALL => 0.041, SHIP_CARGO_BIG => 0.098, SHIP_FIGHTER_LIGHT => 0.03075, SHIP_FIGHTER_HEAVY => 0.0615, SHIP_DESTROYER => 0.055, SHIP_CRUISER => 0.124, SHIP_COLONIZER => 0.31, SHIP_RECYCLER => 0.161, SHIP_SPY => 0.05001, SHIP_BOMBER => 0.08, SHIP_SATTELITE_SOLAR => 0.105, SHIP_DESTRUCTOR => 0.023, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 0.037, SHIP_SUPERNOVA => 1 ),
       'armor'     => 1500000,
       'stackable' => true,
     ),
@@ -1602,19 +1602,19 @@ if ( defined('INSIDE')) {
       ),
 
       // Spaceships list
-      'fleet'     => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216 ),
+      'fleet'     => array ( SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_FIGHTER_LIGHT, SHIP_FIGHTER_HEAVY, SHIP_DESTROYER, SHIP_CRUISER, SHIP_COLONIZER, SHIP_RECYCLER, SHIP_SPY, SHIP_BOMBER, SHIP_SATTELITE_SOLAR, SHIP_DESTRUCTOR, SHIP_DEATH_STAR, SHIP_BATTLESHIP, SHIP_SUPERNOVA ),
       // Defensive building list
       'defense'   => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409, 502, 503 ),
 
       // Combat units list
-      'combat'    => array ( 202, 203, 201, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
+      'combat'    => array ( SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_FIGHTER_LIGHT, SHIP_FIGHTER_HEAVY, SHIP_DESTROYER, SHIP_CRUISER, SHIP_COLONIZER, SHIP_RECYCLER, SHIP_SPY, SHIP_BOMBER, SHIP_SATTELITE_SOLAR, SHIP_DESTRUCTOR, SHIP_DEATH_STAR, SHIP_BATTLESHIP, SHIP_SUPERNOVA, 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
       // Planet active defense list
       'defense_active' => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
       // Transports
-      'flt_transports' => array ( 202, 203, 201 ),
+      'flt_transports' => array ( SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER ),
 
       // List of units that can produce resources
-      'prod'      => array ( 1, 2, 3, 4, 12, 212 ),
+      'prod'      => array ( 1, 2, 3, 4, 12, SHIP_SATTELITE_SOLAR ),
 
       // Resource list
       'resources' => array ( 0 => 'metal', 1 => 'crystal', 2 => 'deuterium', 3 => 'dark_matter'),

@@ -21,38 +21,44 @@ function flt_mission_explore($mission_data)
   // La Flotte vient de finir son exploration
   // Table de ratio de points par type de vaisseau
   $PointsFlotte = array(
-    202 => 1.0,  // 'Petit transporteur'
-    203 => 1.5,  // 'Grand transporteur'
-    204 => 0.5,  // 'Chasseur léger'
-    205 => 1.5,  // 'Chasseur lourd'
-    206 => 2.0,  // 'Croiseur'
-    207 => 2.5,  // 'Vaisseau de bataille'
-    208 => 0.5,  // 'Vaisseau de colonisation'
-    209 => 1.0,  // 'Recycleur'
-    210 => 0.01, // 'Sonde espionnage'
-    211 => 3.0,  // 'Bombardier'
-    212 => 0.0,  // 'Satellite solaire'
-    213 => 3.5,  // 'Destructeur'
-    214 => 5.0,  // 'Etoile de la mort'
-    215 => 3.2,  // 'Traqueur'
+    SHIP_CARGO_SMALL     => 1.0,
+    SHIP_CARGO_BIG       => 1.5,
+    SHIP_CARGO_SUPER     => 1.0,
+    SHIP_FIGHTER_LIGHT   => 0.5,
+    SHIP_FIGHTER_HEAVY   => 1.5,
+    SHIP_FIGHTER_ASSAULT => 3.0,
+    SHIP_DESTROYER       => 2.0,
+    SHIP_CRUISER         => 2.5,
+    SHIP_COLONIZER       => 0.5,
+    SHIP_RECYCLER        => 1.0,
+    SHIP_SPY             => 0.0,
+    SHIP_BOMBER          => 3.0,
+    SHIP_SATTELITE_SOLAR => 0.0,
+    SHIP_DESTRUCTOR      => 3.5,
+    SHIP_DEATH_STAR      => 5.0,
+    SHIP_BATTLESHIP      => 3.2,
+    SHIP_SUPERNOVA       => 9.9,
   );
 
   // Table de ratio de gains en nombre par type de vaisseau
-  $RatioGain = array (
-    202 => 0.1,     // 'Petit transporteur'
-    203 => 0.1,     // 'Grand transporteur'
-    204 => 0.1,     // 'Chasseur léger'
-    205 => 0.5,     // 'Chasseur lourd'
-    206 => 0.25,    // 'Croiseur'
-    207 => 0.125,   // 'Vaisseau de bataille'
-    208 => 0.5,     // 'Vaisseau de colonisation'
-    209 => 0.1,     // 'Recycleur'
-    210 => 0.1,     // 'Sonde espionnage'
-    211 => 0.0625,  // 'Bombardier'
-    212 => 0.0,     // 'Satellite solaire'
-    213 => 0.0625,  // 'Destructeur'
-    214 => 0.03125, // 'Etoile de la mort'
-    215 => 0.0625,  // 'Traqueur'
+  $RatioGain = array(
+    SHIP_CARGO_SMALL     => 0.1,
+    SHIP_CARGO_BIG       => 0.1,
+    SHIP_FIGHTER_LIGHT   => 0.1,
+    SHIP_FIGHTER_HEAVY   => 0.05,
+    SHIP_FIGHTER_ASSAULT => 0.0125,
+    SHIP_DESTROYER       => 0.25,
+    SHIP_CRUISER         => 0.125,
+    SHIP_COLONIZER       => 0.05,
+    SHIP_CARGO_SUPER     => 0.05,
+    SHIP_RECYCLER        => 0.1,
+    SHIP_SPY             => 0.1,
+    SHIP_BOMBER          => 0.0625,
+    SHIP_SATTELITE_SOLAR => 0.0,
+    SHIP_DESTRUCTOR      => 0.0625,
+    SHIP_DEATH_STAR      => 0.03125,
+    SHIP_BATTLESHIP      => 0.0625,
+    SHIP_SUPERNOVA       => 0.00125,
   );
 
   $FleetStayDuration = ($fleet_row['fleet_end_stay'] - $fleet_row['fleet_start_time']) / 3600;
@@ -141,7 +147,8 @@ function flt_mission_explore($mission_data)
   } elseif ($Hasard >= 8 && $Hasard < 11) {
     // Gain de vaisseaux
     $FoundChance = $FleetPoints / $FleetCount;
-    for ($Ship = 202; $Ship < 216; $Ship++) {
+    foreach($sn_data['groups']['fleet'] as $Ship)
+    {
       if ($LaFlotte[$Ship] != 0) {
         $FoundShip[$Ship] = round($LaFlotte[$Ship] * $RatioGain[$Ship]);
         if ($FoundShip[$Ship] > 0) {

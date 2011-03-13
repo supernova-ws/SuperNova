@@ -1,52 +1,37 @@
 <?php
-/*
-#############################################################################
-#  Filename: notes.mo
-#  Create date: Thursday, April 03, 2008	 16:00:39
-#  Project: prethOgame
-#  Description: RPG web based game
-#
-#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright © 2005 - 2008 KGsystem
-#############################################################################
-*/
 
-$lang['Notes'] = 'Заметки';
+$lang['Notes']			= 'Notes';
 
-$lang['Createnote'] = 'Созадать заметку';
-$lang['MakeNewNote'] = 'Создать еще заметку';
-$lang['Editnote'] = 'Редактировать';
+$lang['Createnote']		= 'Create Notes';
+$lang['MakeNewNote']		= 'Create a new note';
+$lang['Editnote']		= 'Edit Notes';
 
-$lang['Priority'] = 'Приоритет';
+$lang['Priority']		= 'Priority';
 
-$lang['Important'] = 'Важно';
-$lang['Normal'] = 'Нормально';
-$lang['Unimportant'] = 'Неважно';
+$lang['Important']		= 'Important';
+$lang['Normal']			= 'Normal';
+$lang['Unimportant']		= 'UnImportant';
 
-$lang['Subject'] = 'Тема';
-$lang['NoTitle'] = 'Нет заголовка';
-$lang['NoText'] = 'Нет текста';
+$lang['Subject']		= 'Subject';
+$lang['NoTitle']		= 'No Title';
+$lang['NoText']			= 'No Text';
 
-$lang['Date'] = 'Дата';
-$lang['Size'] = 'Размер';
+$lang['Date']			= 'Date';
+$lang['Size']			= 'Size';
 
-$lang['Note'] = 'Заметка';
+$lang['Note']			= 'Note';
 
-$lang['characters'] = 'символов';
+$lang['characters']		= 'Characters';
 
-$lang['Apply'] = 'Применить';
-$lang['Back'] = 'Назад';
-$lang['Save'] = 'Сохранить';
-$lang['Delete'] = 'Удалить';
-$lang['Reset'] = 'Обнулить';
+$lang['Apply']			= 'Apply';
+$lang['Back']			= 'Back';
+$lang['Delete']			= 'Delete';
+$lang['Reset']			= 'Reset';
 
-//mensajes
-$lang['ThereIsNoNote'] = 'Нету заметок пока...';
-
-$lang['NoteUpdated'] = 'Заметка обновлена, <a href="notes.php"><blink>переадресация...</blink></a>';
-
-$lang['NoteAdded'] = 'Note was added, <a href="notes.php"><blink>переадресация...</blink></a>';
-
-$lang['NoteDeleted'] = 'Заметка удалена, <a href="notes.php"><blink>переадресация...</blink></a>';
-$lang['NoteDeleteds'] = 'Заметки удалены, <a href="notes.php"><blink>переадресация...</blink></a>';
+//	
+$lang['ThereIsNoNote']		= 'There are no notes';
+$lang['NoteUpdated']		= 'Note updated. <a href="notes.php"><blink>Please, wait...</blink></a>';
+$lang['NoteAdded']		= 'Note added. <a href="notes.php"><blink>Please, wait...</blink></a>';
+$lang['NoteDeleted']		= 'Note deleted. <a href="notes.php"><blink>Please, wait...</blink></a>';
+$lang['NoteDeleteds']		= 'Note deleted <a href="notes.php"><blink>Please, wait...</blink></a>';
 ?>

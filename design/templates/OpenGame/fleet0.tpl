@@ -8,7 +8,7 @@
 <script type="text/javascript"><!--
 var ships = Array();
 <!-- BEGIN ships -->
-  <!-- IF (ships.ID != 212) -->
+  <!-- IF (ships.SPEED > 0) -->
   ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION}, {ships.CAPACITY});
   <!-- ENDIF -->
 <!-- END ships -->
@@ -52,7 +52,7 @@ var speed_factor   = {speed_factor};
           <th><div class="fl"><a href="infos.php?gid={ships.ID}" title="{L_fl_fleetspeed}{ships.SPEED}"</a>{ships.NAME}</div></th>
           <th>{ships.AMOUNT}</th>
           <th>
-            <!-- IF (ships.ID == 212) || (FLYING_FLEETS >= MAX_FLEETS) -->
+            <!-- IF (ships.SPEED == 0) || (FLYING_FLEETS >= MAX_FLEETS) -->
               &nbsp;
             <!-- ELSE -->
               <script type="text/javascript"><!--

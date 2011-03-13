@@ -137,12 +137,12 @@ function flt_mission_spy($mission_data)
   }
 
   $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
-  if($fleet_array[210] >= 1)
+  if($fleet_array[SHIP_SPY] >= 1)
   {
     $TargetSpyLvl      = GetSpyLevel($target_user_row); //mrc_modify_value($target_user_row, $target_planet_row, MRC_SPY, GetSpyLevel($target_user_row));
     $CurrentSpyLvl     = GetSpyLevel($spying_user_row); //mrc_modify_value($spying_user_row, $spying_planet_row, MRC_SPY, GetSpyLevel($spying_user_row));
 
-    $spy_probes = $fleet_array[210];
+    $spy_probes = $fleet_array[SHIP_SPY];
     $spy_diff   = $CurrentSpyLvl + sqrt($spy_probes) - 1 - $TargetSpyLvl;
 /*
     pdump($spy_probes, '$spy_probes');
@@ -244,8 +244,8 @@ function flt_mission_spy($mission_data)
       }
 
       $QryUpdateGalaxy  = "UPDATE {{planets}} SET ";
-      $QryUpdateGalaxy .= "`debris_metal` = `debris_metal` + '". floor($spy_probes * $sn_data[210]['metal'] * 0.3) ."', ";
-      $QryUpdateGalaxy .= "`debris_crystal` = `debris_crystal` + '". floor($spy_probes * $sn_data[210]['crystal'] * 0.3) ."' ";
+      $QryUpdateGalaxy .= "`debris_metal` = `debris_metal` + '". floor($spy_probes * $sn_data[SHIP_SPY]['metal'] * 0.3) ."', ";
+      $QryUpdateGalaxy .= "`debris_crystal` = `debris_crystal` + '". floor($spy_probes * $sn_data[SHIP_SPY]['crystal'] * 0.3) ."' ";
       $QryUpdateGalaxy .= "WHERE `id` = '{$debris_planet_id}' LIMIT 1;";
       doquery($QryUpdateGalaxy);
 
