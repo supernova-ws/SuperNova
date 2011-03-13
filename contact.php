@@ -13,8 +13,6 @@ $allow_anonymous = true;
 $skip_ban_check = true;
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('contact');
-
 $RowsTPL = gettemplate('contact_body_rows');
 $parse   = $lang;
 

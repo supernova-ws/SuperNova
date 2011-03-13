@@ -18,20 +18,23 @@ $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
 $mode = SYS_mysqlSmartEscape($_GET['mode']);
 $POST_db_character = SYS_mysqlSmartEscape($_POST["db_character"]);
 
-if ($_POST && $mode == "change") { // Array ( [db_character]
+if ($_POST && $mode == "change")  // Array ( [db_character]
+{
+  // Gestion des options speciales pour les admins
+  if ($user['authlevel'] > 0) {
+    if ($_POST['adm_pl_prot'] == 'on') {
+      $planet_protection = $user['authlevel'];
+    } else {
+      $planet_protection = 0;
+    }
+    doquery ("UPDATE {{planets}} SET `id_level` = '{$planet_protection}' WHERE `id_owner` = '{$user['id']}' LIMIT 1;");
+  }
+
   $iduser = $user["id"];
   $avatar = SYS_mysqlSmartEscape($_POST["avatar"]);
   $dpath = SYS_mysqlSmartEscape($_POST["dpath"]);
   $languese = SYS_mysqlSmartEscape($_POST["langer"]);
 
-  // Gestion des options speciales pour les admins
-  if ($user['authlevel'] > 0) {
-    if ($_POST['adm_pl_prot'] == 'on') {
-      doquery ("UPDATE {{planets}} SET `id_level` = '".$user['authlevel']."' WHERE `id_owner` = '".$user['id']."';");
-    } else {
-      doquery ("UPDATE {{planets}} SET `id_level` = '0' WHERE `id_owner` = '".$user['id']."';");
-    }
-  }
   // Mostrar skin
   if (isset($_POST["design"]) && $_POST["design"] == 'on') {
     $design = "1";
@@ -250,14 +253,14 @@ $parse['SAVED'] = sys_get_param_str('saved');
 
 $parse['dpath'] = $dpath;
 //-------------------------------
-$skin_dir = dir(SN_ROOT_PHYSICAL . "skins");
+$dir = dir(SN_ROOT_PHYSICAL . "skins");
 $parse['opt_lst_skin_data']="<option value =\"\">".$lang['select_skin_path']."</option>";
-while (false !== ($entry = $skin_dir->read())) {
+while (false !== ($entry = $dir->read())) {
   if (is_dir("skins/".$entry) && $entry[0] !=".") {
     $parse['opt_lst_skin_data'].="<option value =\"$entry\">$entry</option>";
   }
 }
-$skin_dir->close();
+$dir->close();
 
 //  $parse['opt_lst_skin_data']  = "<option value =\"skins/xnova/\">skins/xnova/</option>";
 $parse['opt_lst_ord_data']   = "<option value =\"0\"". (($user['planet_sort'] == 0) ? " selected": "") .">". $lang['opt_lst_ord0'] ."</option>";
@@ -267,12 +270,26 @@ $parse['opt_lst_ord_data']  .= "<option value =\"2\"". (($user['planet_sort'] ==
 $parse['opt_lst_cla_data']   = "<option value =\"0\"". (($user['planet_sort_order'] == 0) ? " selected": "") .">". $lang['opt_lst_cla0'] ."</option>";
 $parse['opt_lst_cla_data']  .= "<option value =\"1\"". (($user['planet_sort_order'] == 1) ? " selected": "") .">". $lang['opt_lst_cla1'] ."</option>";
 
-$parse['opt_lst_lang_data']   = "<option value =\"ru\"". (($user['lang'] == ru) ? " selected": "") .">". $lang['ru'] ."</option>";
-$parse['opt_lst_lang_data']  .= "<option value =\"en\"". (($user['lang'] == en) ? " selected": "") .">". $lang['en'] ."</option>";
+$lang_list = lng_get_list();
+foreach($lang_list as $lang_id => $lang_data)
+{
+  if($lang_id == $user['lang'])
+  {
+    $selected = 'selected';
+  }
+  else
+  {
+    $selected = '';
+  }
+
+  $parse['opt_lst_lang_data'] .= "<option value =\"{$lang_id}\" {$selected}>{$lang_data['LANG_NAME_NATIVE']}</option>";
+}
+
 if ($user['authlevel'] > 0) {
   $parse['adm_pl_prot_data']    = ($planetrow['id_level'] > 0) ? " checked='checked'/" : '';
   $parse['IS_ADMIN'] = true;
 }
+
 $parse['opt_usern_data'] = $user['username'];
 $parse['opt_mail1_data'] = $user['email'];
 $parse['opt_mail2_data'] = $user['email_2'];
@@ -285,8 +302,6 @@ $parse['opt_sskin_data'] = ($user['design'] == 1) ? " checked='checked'":'';
 $parse['opt_noipc_data'] = ($user['noipcheck'] == 1) ? " checked='checked'":'';
 $parse['opt_allyl_data'] = ($user['settings_allylogo'] == 1) ? " checked='checked'/":'';
 $parse['opt_delac_data'] = ($user['db_deaktjava'] == 1) ? " checked='checked'/":'';
-
-
 
 $parse['user_settings_rep'] = ($user['settings_rep'] == 1) ? " checked='checked'/":'';
 $parse['user_settings_esp'] = ($user['settings_esp'] == 1) ? " checked='checked'/":'';
@@ -307,6 +322,6 @@ $parse['USER_VACATION_DISABLE'] = $config->user_vacation_disable;
 $parse['VACATION_TIME'] = VOCATION_TIME;
 $parse['TIME_NOW'] = $time_now;
 
-display(parsetemplate($template, $parse), 'Options', false);
+display(parsetemplate($template, $parse), $lang['opt_options'], false);
 
 ?>
