@@ -72,7 +72,7 @@ $lang['log_reg_text1']    	  = 'Registration means that you have read and fully 
 // Sent by mail
 $lang['mail_welcome']		= 'Thanks for registering {gameurl}\n Your password: {password}\n\n Luck!\n{gameurl}';
 $lang['mail_title']		= 'Your registration OGame';
-$lang['thanksforregistry'] 	= "Congratulations on your successful registration! Now you can <a href=overview.{$phpEx}><u>start the game!</u></a>";
+$lang['thanksforregistry'] 	= "Congratulations on your successful registration! Now you can <a href=overview." . PHP_EX . "><u>start the game!</u></a>";
 $lang['welcome_to_universe']	= 'Welcome to OGame!!!';
 $lang['your_password']		= 'Your password';
 $lang['please_click_url']	= 'In order to use the account, you must activate it by clicking on this link';

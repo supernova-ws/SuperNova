@@ -12,8 +12,6 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if (HIDE_BUILDING_RECORDS) return;
 
-includeLang('records');
-
 $RecordTpl = gettemplate('records_body');
 $HeaderTpl = gettemplate('records_section_header');
 $TableRows = gettemplate('records_section_rows');
