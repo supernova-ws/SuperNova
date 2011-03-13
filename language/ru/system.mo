@@ -1,209 +1,165 @@
 <?php
+/**
+*
+* system [Russian]
+*
+* @package language
+* @version $Id$
+*
+*/
+
+/**
+* DO NOT CHANGE
+*/
+if (!defined('INSIDE'))
+{
+  exit;
+}
+
+if (empty($lang) || !is_array($lang))
+{
+  $lang = array();
+}
 
 // System-wide localization
 
-$lang['user_level'] = array (
-	'0' => 'Игрок',
-	'1' => 'Модератор',
-	'2' => 'Оператор',
-	'3' => 'Администратор',
-);
+$lang = array_merge($lang, array(
+  'VacationMode'			=> "Ваше производство закрыто, так как вы в Отпуске",
+  'sys_moon_destruction_report' => "Рапорт разрушения луны",
+  'sys_moon_destroyed' => "Ваши Звёзды Смерти произвеои мощную гравитационную волну, которая разрушила луну! ",
+  'sys_rips_destroyed' => "Ваши Звёзды Смерти произвеои мощную гравитационную волну, но её мощности оказалось не достаточно для уничтожения луны такого размера. Но гравитационная волна отразилась от лунной поверхности и разрушила ваш флот.",
+  'sys_rips_come_back' => "Ваши Звёзды Смерти не имеют достаточно энергии, чтоб нанести ущерб этой луне. Ваш флот возвращается не уничтожив луну.",
+  'sys_chance_moon_destroy' => "Изменение лунного уничтожения: ",
+  'sys_chance_rips_destroy' => "Изменение разрывного уничтожения: ",
 
-foreach($lang['user_level'] as $ID => $levelName)
-{
-  $lang['user_level_shortcut'][$ID] = $levelName[0];
-}
+  'sys_day' => "дней",
+  'sys_hrs' => "часов",
+  'sys_min' => "минут",
+  'sys_sec' => "секунд",
+  'sys_day_short' => "д",
+  'sys_hrs_short' => "ч",
+  'sys_min_short' => "м",
+  'sys_sec_short' => "с",
 
+  'sys_ask_admin' => 'Вопросы и предложения направлять по адресу',
 
-$lang['VacationMode']			= "Ваше производство закрыто, так как вы в Отпуске";
-$lang['sys_moon_destruction_report'] = "Рапорт разрушения луны";
-$lang['sys_moon_destroyed'] = "Ваши Звёзды Смерти произвеои мощную гравитационную волну, которая разрушила луну! ";
-$lang['sys_rips_destroyed'] = "Ваши Звёзды Смерти произвеои мощную гравитационную волну, но её мощности оказалось не достаточно для уничтожения луны такого размера. Но гравитационная волна отразилась от лунной поверхности и разрушила ваш флот.";
-$lang['sys_rips_come_back'] = "Ваши Звёзды Смерти не имеют достаточно энергии, чтоб нанести ущерб этой луне. Ваш флот возвращается не уничтожив луну.";
-$lang['sys_chance_moon_destroy'] = "Изменение лунного уничтожения: ";
-$lang['sys_chance_rips_destroy'] = "Изменение разрывного уничтожения: ";
+  'sys_wait' => 'Запрос выполняется. Пожалуйста, подождите.',
 
-$lang['sys_day'] = "дней";
-$lang['sys_hrs'] = "часов";
-$lang['sys_min'] = "минут";
-$lang['sys_sec'] = "секунд";
+  'sys_total'           => "ИТОГО",
+  'sys_register_date'   => 'Дата регистрации',
 
-$lang['sys_day_short'] = "д";
-$lang['sys_hrs_short'] = "ч";
-$lang['sys_min_short'] = "м";
-$lang['sys_sec_short'] = "с";
+  'sys_attacker' 		=> "Атакующий",
+  'sys_defender' 		=> "Обороняющийся",
 
-$lang['sys_ask_admin'] = 'Вопросы и предложения направлять по адресу';
-$lang['TranslationBy'] = '';
+  'COE_combatSimulator' => "Симулятор боя",
+  'COE_simulate'        => "Запуск симулятора",
+  'COE_fleet'           => "Флот",
+  'COE_defense'         => "Оборона",
+  'sys_resources'       => "Ресурсы",
+  'sys_ships'           => "Корабли",
 
-$lang['sys_wait'] = 'Запрос выполняется. Пожалуйста, подождите.';
+  'sys_metal'          => "Металл",
+  'sys_metal_sh'       => "М",
+  'sys_crystal'        => "Кристалл",
+  'sys_crystal_sh'     => "К",
+  'sys_deuterium'      => "Дейтерий",
+  'sys_deuterium_sh'   => "Д",
+  'sys_energy'         => "Энергия",
+  'sys_energy_sh'      => "Э",
+  'sys_dark_matter'    => "Темная Материя",
+  'sys_dark_matter_sh' => "ТМ",
 
-$lang['sys_total']           = "ИТОГО";
-$lang['sys_register_date']   = 'Дата регистрации';
+  'sys_reset'           => "Сбросить",
+  'sys_send'            => "Отправить",
+  'sys_characters'      => "символов",
+  'sys_back'            => "Назад",
+  'sys_return'          => "Вернуться",
+  'sys_delete'          => "Удалить",
+  'sys_writeMessage'    => "Написать сообщение",
+  'sys_hint'            => "Подсказка",
 
-$lang['sys_attacker'] 		= "Атакующий";
-$lang['sys_defender'] 		= "Обороняющийся";
+  'sys_alliance'        => "Альянс",
+  'sys_player'          => "Игрок",
+  'sys_coordinates'     => "Координаты",
 
-$lang['COE_combatSimulator'] = "Симулятор боя";
-$lang['COE_simulate']        = "Запуск симулятора";
-$lang['COE_fleet']           = "Флот";
-$lang['COE_defense']         = "Оборона";
-$lang['sys_resources']       = "Ресурсы";
-$lang['sys_ships']           = "Корабли";
+  'sys_online'          => "Онлайн",
+  'sys_offline'         => "Оффлайн",
+  'sys_status'          => "Статус",
 
-$lang['sys_metal']          = "Металл";
-$lang['sys_metal_sh']       = "М";
-$lang['sys_crystal']        = "Кристалл";
-$lang['sys_crystal_sh']     = "К";
-$lang['sys_deuterium']      = "Дейтерий";
-$lang['sys_deuterium_sh']   = "Д";
-$lang['sys_energy']         = "Энергия";
-$lang['sys_energy_sh']      = "Э";
-$lang['sys_dark_matter']    = "Темная Материя";
-$lang['sys_dark_matter_sh'] = "ТМ";
+  'sys_universe'        => "Вселенная",
+  'sys_goto'            => "Перейти",
 
-$lang['sys_resource'] = array(
-  1 => $lang['sys_metal'],
-  2 => $lang['sys_crystal'],
-  3 => $lang['sys_deuterium'],
-  4 => $lang['sys_dark_matter'],
-  5 => $lang['sys_energy'],
-);
+  'sys_time'            => "Время",
 
-$lang['sys_reset']           = "Сбросить";
-$lang['sys_send']            = "Отправить";
-$lang['sys_characters']      = "символов";
-$lang['sys_back']            = "Назад";
-$lang['sys_return']          = "Вернуться";
-$lang['sys_delete']          = "Удалить";
-$lang['sys_writeMessage']    = "Написать сообщение";
-$lang['sys_hint']            = "Подсказка";
+  'sys_no_task'         => "нет задания",
 
-$lang['sys_alliance']        = "Альянс";
-$lang['sys_player']          = "Игрок";
-$lang['sys_coordinates']     = "Координаты";
+  'sys_affilates'       => "Приглашенные игроки",
 
-$lang['sys_online']          = "Онлайн";
-$lang['sys_offline']         = "Оффлайн";
-$lang['sys_lessThen15min']   = '&lt; 15 м';
-$lang['sys_status']          = "Статус";
+  'sys_fleet_arrived'   => "Флот прибыл",
 
-$lang['sys_universe']        = "Вселенная";
-$lang['sys_goto']            = "Перейти";
+  'sys_planet_type1'    => "Планета",
+  'sys_planet_type2' 	=> "Поле обломков",
+  'sys_planet_type3'    => "Луна",
 
-$lang['sys_time']            = "Время";
+  'sys_planet_type_sh1' => "(П)",
+  'sys_planet_type_sh2' => "(О)",
+  'sys_planet_type_sh3' => "(Л)",
 
-$lang['sys_no_task']         = "нет задания";
+  'sys_capacity' 			=> 'Грузоподъёмность',
+  'sys_cargo_bays' 		=> 'Трюмы',
 
-$lang['sys_affilates']       = "Приглашенные игроки";
-
-$lang['sys_fleet_arrived']   = "Флот прибыл";
-
-$lang['sys_planet_type1']    = "Планета";
-$lang['sys_planet_type2'] 	  = "Поле обломков";
-$lang['sys_planet_type3']    = "Луна";
-
-$lang['sys_planet_type'] = array(
-  PT_PLANET => $lang['sys_planet_type1'], 
-  2 => $lang['sys_planet_type2'], 
-  PT_MOON => $lang['sys_planet_type3']
-);
-
-$lang['sys_planet_type_sh1'] = "(П)";
-$lang['sys_planet_type_sh2'] = "(О)";
-$lang['sys_planet_type_sh3'] = "(Л)";
-
-$lang['sys_planet_type_sh'] = array(
-  1 => $lang['sys_planet_type_sh1'], 
-  2 => $lang['sys_planet_type_sh2'], 
-  3 => $lang['sys_planet_type_sh3']
-);
-
-$lang['sys_capacity'] 			= 'Грузоподъёмность';
-$lang['sys_cargo_bays'] 			= 'Трюмы';
-
-$lang['sys_supernova'] 			= 'Сверхновая';
-$lang['sys_server'] 			= 'Сервер';
-
+  'sys_supernova' 		=> 'Сверхновая',
+  'sys_server' 			=> 'Сервер',
 
 // Resource page
-$lang['res_planet_production'] = 'Производство ресурсов на планете';
-$lang['res_basic_income'] = 'Естественное производство';
-$lang['res_total'] = 'ВСЕГО';
-$lang['res_calculate'] = 'Рассчитать';
-$lang['res_hourly'] = 'В час';
-$lang['res_daily'] = 'За день';
-$lang['res_weekly'] = 'За неделю';
-$lang['res_monthly'] = 'За месяц';
-$lang['res_storage_fill'] = 'Заполненность хранилища';
-$lang['res_hint'] = '<ul><li>Производство ресурсов <100% означает нехватку энергии. Постройте дополнительные электростанции или уменьшите производство ресурсов<li>Если ваше производство равно 0% скорее всего вы вышли из отпуска и вам нужно включить все заводы<li>Что бы выставить добычу для всех заводов сразу используйте дроп-даун в загловке таблицы. Особенно удобно использовать его после выхода из отпуска</ul>';
+  'res_planet_production' => 'Производство ресурсов на планете',
+  'res_basic_income' => 'Естественное производство',
+  'res_total' => 'ВСЕГО',
+  'res_calculate' => 'Рассчитать',
+  'res_hourly' => 'В час',
+  'res_daily' => 'За день',
+  'res_weekly' => 'За неделю',
+  'res_monthly' => 'За месяц',
+  'res_storage_fill' => 'Заполненность хранилища',
+  'res_hint' => '<ul><li>Производство ресурсов <100% означает нехватку энергии. Постройте дополнительные электростанции или уменьшите производство ресурсов<li>Если ваше производство равно 0% скорее всего вы вышли из отпуска и вам нужно включить все заводы<li>Что бы выставить добычу для всех заводов сразу используйте дроп-даун в загловке таблицы. Особенно удобно использовать его после выхода из отпуска</ul>',
 
 // Build page
-$lang['bld_destroy'] = 'Уничтожить';
-$lang['bld_create']  = 'Построить';
+  'bld_destroy' => 'Уничтожить',
+  'bld_create'  => 'Построить',
 
 // Imperium page
-$lang['imp_imperator'] = "Император";
-$lang['imp_overview'] = "Обзор Империи";
-$lang['imp_fleets'] = "Флоты в полете";
-$lang['imp_production'] = "Производство";
-$lang['imp_name'] = "Название";
-$lang['sys_fields'] = "Сектора";
+  'imp_imperator' => "Император",
+  'imp_overview' => "Обзор Империи",
+  'imp_fleets' => "Флоты в полете",
+  'imp_production' => "Производство",
+  'imp_name' => "Название",
+  'sys_fields' => "Сектора",
 
 // Cookies
-$lang['err_cookie'] = "Ошибка! Невозможно авторизировать пользователя по информации в cookie. <a href='login." . PHP_EX . "'>Войдите</a> в игру или <a href='reg." . PHP_EX . "'>зарегестрируйтесь</a>.";
+  'err_cookie' => "Ошибка! Невозможно авторизировать пользователя по информации в cookie. <a href='login." . PHP_EX . "'>Войдите</a> в игру или <a href='reg." . PHP_EX . "'>зарегестрируйтесь</a>.",
 
 // Supported languages
-$lang['ru']              	  = 'Русский';
-$lang['en']              	  = 'Английский';
+  'ru'              	  => 'Русский',
+  'en'              	  => 'Английский',
 
-$lang['sys_vacation']        = 'Вы же в отпуске до';
-$lang['sys_vacation_leave']  = 'Я уже отдохнул - выйти из отпуска!';
-$lang['sys_level']           = 'Уровень';
+  'sys_vacation'        => 'Вы же в отпуске до',
+  'sys_vacation_leave'  => 'Я уже отдохнул - выйти из отпуска!',
+  'sys_level'           => 'Уровень',
 
-$lang['sys_yes']             = 'Да';
-$lang['sys_no']              = 'Нет';
+  'sys_yes'             => 'Да',
+  'sys_no'              => 'Нет',
 
-$lang['sys_on']              = 'Включен';
-$lang['sys_off']             = 'Отключен';
+  'sys_on'              => 'Включен',
+  'sys_off'             => 'Отключен',
 
-$lang['sys_save']            = 'Сохранить';
-$lang['sys_create']          = 'Создать';
-$lang['sys_write_message']   = 'Написать сообщение';
-
-$lang['sys_game_mode'][0]    = 'Сверхновая';
-$lang['sys_game_mode'][1]    = 'оГейм';
+  'sys_save'            => 'Сохранить',
+  'sys_create'          => 'Создать',
+  'sys_write_message'   => 'Написать сообщение',
 
 // top bar
-$lang['top_of_year'] = 'года';
-$lang['top_online']			= 'Игроки on-line';
+  'top_of_year' => 'года',
+  'top_online'			=> 'Игроки on-line',
 
-$lang['months'] = array(
-	'01'=>'Января',
-	'02'=>'Февраля',
-	'03'=>'Марта',
-	'04'=>'Апреля',
-	'05'=>'Мая',
-	'06'=>'Июня',
-	'07'=>'Июля',
-	'08'=>'Августа',
-	'09'=>'Сентября',
-	'10'=>'Октября',
-	'11'=>'Ноября',
-	'12'=>'Декабря'
-);
-
-$lang['weekdays'] = array(
-	'0' => 'Воскресенье',
-	'1' => 'Понедельник',
-	'2' => 'Вторник',
-	'3' => 'Среда',
-	'4' => 'Четверг',
-	'5' => 'Пятница',
-	'6' => 'Суббота'
-);
-
-$lang = array_merge($lang, array(
   'sys_first_round_crash_1'	=> 'Контакт с атакованным флотом потерян.',
   'sys_first_round_crash_2'	=> 'Это означает что он был уничтожен в первом раунде боя.',
 
@@ -376,8 +332,125 @@ $lang = array_merge($lang, array(
   'off_dark_matter_desc' => 'Тёмная материя - необнаружиая стандартными методами небарионная материя, на которую приходится 23% массы Вселенной. Из неё можно добывать невероятное количество энергии. Из-за этого, а так же из-за сложностей, связанных с её добычей, Темная Материя ценится очень высоко.',
   'off_dark_matter_hint' => 'При помощи этой субстанции можно нанять офицеров и командиров.',
 
+  // Fleet
+  'flt_gather_all'    => 'Свезти ресурсы',
+
+  // Ban system
+  'ban_title'      => 'Чёрный список',
+  'ban_name'       => 'Имя',
+  'ban_reason'     => 'Причина блокировки',
+  'ban_from'       => 'Дата блокировки',
+  'ban_to'         => 'Срок блокировки',
+  'ban_by'         => 'Выдал',
+  'ban_no'         => 'Нет заблокированных игроков',
+  'ban_thereare'   => 'Всего',
+  'ban_players'    => 'заблокировано',
+  'ban_banned'     => 'Игроков заблокировано: ',
+
+  // Contacts
+  'ctc_title' => 'Администрация',
+  'ctc_intro' => 'Здесь вы найдёте адреса всех администраторов и операторов игры для обратной связи',
+  'ctc_name'  => 'Имя',
+  'ctc_rank'  => 'Звание',
+  'ctc_mail'  => 'eMail',
+
+  // Records page
+  'rec_title'  => 'Рекорды Вселенной',
+  'rec_build'  => 'Постройки',
+  'rec_specb'  => 'Специальные постройки',
+  'rec_playe'  => 'Игрок',
+  'rec_defes'  => 'Оборона',
+  'rec_fleet'  => 'Флот',
+  'rec_techn'  => 'Технологии',
+  'rec_level'  => 'Уровень',
+  'rec_nbre'   => 'Количество',
+  'rec_rien'   => '-',
+
+  // Credits page
+  'cred_link'    => 'Интернет',
+  'cred_site'    => 'Сайт',
+  'cred_forum'   => 'Форум',
+  'cred_credit'  => 'Авторы',
+  'cred_creat'   => 'Директор',
+  'cred_prog'    => 'Программист',
+  'cred_master'  => 'Ведущий',
+  'cred_design'  => 'Дизайнер',
+  'cred_web'     => 'Вебмастер',
+  'cred_thx'     => 'Благодарности',
+  'cred_based'   => 'Основа для создания XNova',
+  'cred_start'   => 'Место дебюта XNova',
+
+  // Arrays
+  'sys_game_mode' => array(
+    GAME_SUPERNOVA => 'Сверхновая',
+    GAME_OGAME     => 'оГейм',
+  ),
+
+  'months' => array(
+    '01'=>'Января',
+    '02'=>'Февраля',
+    '03'=>'Марта',
+    '04'=>'Апреля',
+    '05'=>'Мая',
+    '06'=>'Июня',
+    '07'=>'Июля',
+    '08'=>'Августа',
+    '09'=>'Сентября',
+    '10'=>'Октября',
+    '11'=>'Ноября',
+    '12'=>'Декабря'
+  ),
+
+  'weekdays' => array(
+    0 => 'Воскресенье',
+    1 => 'Понедельник',
+    2 => 'Вторник',
+    3 => 'Среда',
+    4 => 'Четверг',
+    5 => 'Пятница',
+    6 => 'Суббота'
+  ),
+
+  'user_level' => array(
+    0 => 'Игрок',
+    1 => 'Модератор',
+    2 => 'Оператор',
+    3 => 'Администратор',
+  ),
+
 ));
 
-$lang['flt_gather_all']    = 'Свезти ресурсы';
+// You CAN NOT merge those array_merge with previous one!
+$lang = array_merge($lang, array(
+  'sys_lessThen15min'   => '&lt; 15 ' . $lang['sys_min_short'],
+
+  'user_level_shortcut' => array(
+    0 => $lang['user_level'][0][0],
+    1 => $lang['user_level'][1][0],
+    2 => $lang['user_level'][2][0],
+    3 => $lang['user_level'][3][0],
+  ),
+
+  'sys_resource' => array(
+    1 => $lang['sys_metal'],
+    2 => $lang['sys_crystal'],
+    3 => $lang['sys_deuterium'],
+    4 => $lang['sys_dark_matter'],
+    5 => $lang['sys_energy'],
+  ),
+
+  'sys_planet_type' => array(
+    PT_PLANET => $lang['sys_planet_type1'], 
+    PT_DEBRIS => $lang['sys_planet_type2'], 
+    PT_MOON   => $lang['sys_planet_type3']
+  ),
+
+  'sys_planet_type_sh' => array(
+    PT_PLANET => $lang['sys_planet_type_sh1'], 
+    PT_DEBRIS => $lang['sys_planet_type_sh2'], 
+    PT_MOON   => $lang['sys_planet_type_sh3']
+  ),
+
+));
 
 ?>
