@@ -18,7 +18,7 @@ $ques = array();
 $planet_row_list = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
 while ($planet = mysql_fetch_assoc($planet_row_list))
 {
-  $global_data = sys_o_get_updated($user, $planet['id'], $time_now, true);
+  $global_data = sys_o_get_updated($user, $planet['id'], $time_now);
   $planets[$planet['id']] = $global_data['planet'];
   $ques[$planet['id']] = $global_data['que'];
 }
