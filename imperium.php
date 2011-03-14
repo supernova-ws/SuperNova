@@ -82,7 +82,7 @@ foreach ($planets as $planet_index => &$planet)
 tpl_assign_fleet($template, $fleets);
 
 $template->assign_block_vars('planet', array_merge(array(
-  'NAME'       => 'хрнцн',
+  'NAME'       => $lang['sys_total'],
 
   'FIELDS_CUR' => $total['fields'],
   'FIELDS_MAX' => $total['fields_max'],

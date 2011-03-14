@@ -53,7 +53,7 @@ $lang['Logout']		= 'Log out';
 
 $lang['Rules']		= 'Rules';
 
-// 	
+//
 $lang['devlp']		= 'Development';
 $lang['navig']		= 'Information';
 $lang['Economy']        = 'Economy';
@@ -63,6 +63,8 @@ $lang['rinok']       = 'Market';
 $lang['observ']		= 'Observatory';
 $lang['commun']		= 'Administration';
 $lang['infog']		= 'Information';
+
+$lang['lm_combat_reports']		= 'Combat reports';
 
 //	
 $lang['adm_over']	    = 'Overview';
