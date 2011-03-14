@@ -25,6 +25,7 @@ if ($_POST['save'])
   $config->fleet_speed             = floatval( $_POST['fleet_speed'] );
   $config->resource_multiplier     = floatval( $_POST['resource_multiplier'] );
   $config->user_vacation_disable   = $_POST['user_vacation_disable'] ? 1 : 0;
+  $config->url_faq                 = $_POST['url_faq'];
   $config->url_forum               = $_POST['url_forum'];
   $config->url_rules               = $_POST['url_rules'];
   $config->url_dark_matter         = $_POST['url_dark_matter'];

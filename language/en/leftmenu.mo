@@ -4,7 +4,7 @@
 $lang['Multiverse']	= '<b>Sever</b> Uni';
 
 $lang['m_h_rules']		= 'Rules';
-$lang['m_faq']				= 'Faq';
+$lang['m_faq']				= 'FAQ';
 $lang['m_faq_hint']		= 'The most frequently asked customer questions and answers';
 $lang['m_h_control']		= 'Office';
 $lang['m_forum']			= 'Forum';

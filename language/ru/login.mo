@@ -24,6 +24,7 @@ $lang['log_reg_main'] = 'Регистрируйся сейчас!';
 $lang['log_menu'] = 'Меню';
 $lang['log_stat_menu'] = 'Статистика игроков';
 $lang['log_enter'] = 'Войти';
+$lang['log_news'] = 'Новости сервера';
 $lang['log_cred'] = 'О сервере';
 $lang['log_faq'] = 'FAQ по игре';
 $lang['log_forums'] = 'Форум';

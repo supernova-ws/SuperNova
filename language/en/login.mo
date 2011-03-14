@@ -24,6 +24,7 @@ $lang['log_reg_main'] = 'Rules!';
 $lang['log_menu'] = 'Menu';
 $lang['log_stat_menu'] = 'stat menu';
 $lang['log_enter'] = 'Login';
+$lang['log_news'] = 'Server announces';
 $lang['log_cred'] = 'About server';
 $lang['log_faq'] = 'FAQ on the game';
 $lang['log_forums'] = 'Forum';
