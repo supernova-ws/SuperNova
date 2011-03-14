@@ -53,7 +53,7 @@ $lang['Logout']		= 'Выход';
 
 $lang['Rules']		= 'Правила';
 
-// 	
+//
 $lang['devlp']		= 'Развитие';
 $lang['navig']		= 'Информация';
 $lang['Economy']        = 'Экономика';
@@ -63,6 +63,8 @@ $lang['rinok']       = 'Черный рынок';
 $lang['observ']		= 'Обсерватория';
 $lang['commun']		= 'Администрация';
 $lang['infog']		= 'Информация';
+
+$lang['lm_combat_reports']		= 'Боевые отчеты';
 
 //	
 $lang['adm_over']	    = 'Обзор';
@@ -113,4 +115,5 @@ $lang['lm_banned']    = "Список банов";
 $lang['lm_announce_fresh'] = "ОБНОВЛЕНИЕ";
 
 $lang['lm_server_info'] = "Мировые константы";
+
 ?>

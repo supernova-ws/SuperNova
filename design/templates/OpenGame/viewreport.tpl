@@ -1,33 +1,21 @@
-<center>
-<br><br>
-<form method="get" action="rw.php">
-<table width="517">
-  <tr>
-	<td class="c" colspan="2"><b>{viewcr}</b></td>
-  </tr>
-  <tr>
-    <th>
-    {codeinfo}
-    </th>
-  </tr>
-  <tr>
-    <th>
-    <a href="messages.php?mode=show&messcat=3">{viewmycr}</a>
-    </th>
-  </tr>
-</table>
 <br />
-<table width="517">
-  <tr>
-    <td class="c">{entcode}</td>
-  </tr>
-  <tr>
-    <th>
-		<input type="text" name="raport"><input type="submit" value="{View}">
-    </th>
-  </tr>
-  <tr>
+<form method="get" action="rw.php">
+  <table width="517">
+    <tr>
+      <td class="c">
+        <span class="fl">{L_cr_view_title}</span>
+        <a class="fr link" href="messages.php?mode=show&messcat=3">{L_cr_view_my}</a>
+      </td>
+    </tr>
+  
+    <tr>
+      <th>
+        <span class="fl">{L_cr_view_prompt}</span>
+        <input type="text" name="raport" maxlength=16 size=35>
+        <input class="fr" type="submit" value="{L_cr_view_button}">
+      </th>
+    </tr>
   </table>
- <br />
- </form>
-</center>
+</form>
+
+<!-- INCLUDE page_hint.tpl -->	
