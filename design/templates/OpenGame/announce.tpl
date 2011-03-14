@@ -18,7 +18,7 @@
         <td><textarea name="text" cols=40 rows=5 width="80%">{strAnnounce}</textarea></td>
       </tr>
       <tr>
-        <td>{L_news_more}</td>
+        <td>{L_news_detail_url}</td>
         <td><input name="detail_url" size=60 maxlength="250" value="{DETAIL_URL}"></td>
       </tr>
       <tr><td colspan="2" align="center"><input type=submit value="<!-- IF MODE == 'edit' -->{L_news_edit}<!-- ELSEIF MODE == 'copy' -->{L_news_copy}<!-- ELSE -->{L_news_add}<!-- ENDIF -->"></td></tr>

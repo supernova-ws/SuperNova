@@ -271,7 +271,7 @@ $lang = array_merge($lang, array(
   'news_announce'  => 'Содержание',
   'news_total'     => 'Всего новостей: ',
 
-  'news_more'      => 'Ссылка на подробности',
+  'news_detail_url'=> 'Ссылка на подробности',
 
   'news_add'       => 'Добавить новость',
   'news_edit'      => 'Редактировать новость',
