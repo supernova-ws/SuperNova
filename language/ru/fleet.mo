@@ -61,7 +61,6 @@ $lang['fl_shrtcup3'] 			= '(Л)';
 $lang['fl_planettype1'] 	   = 'Планета';
 $lang['fl_planettype2'] 	   = 'Поле обломков';
 $lang['fl_planettype3']       = 'Луна';
-$lang['fl_noshortc'] 			= 'Нет закладок';
 $lang['fl_myplanets']			= 'Планеты';
 $lang['fl_nocolonies'] 			= 'нет планет';
 $lang['fl_noacss'] 				= 'Нет приглашений в боевые союзы';

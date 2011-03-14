@@ -280,6 +280,19 @@ $lang = array_merge($lang, array(
   'news_mode_edit' => 'Editing',
   'news_mode_copy' => 'Copying',
 
+  // Shortcuts
+  'shortcut_title'     => 'Shortcuts',
+  'shortcut_none'      => 'No shortcuts',
+  'shortcut_new'       => 'NEW',
+  'shortcut_text'      => 'Text',
+
+  'shortcut_add'       => 'Add shortcut',
+  'shortcut_edit'      => 'Edit shortcut',
+  'shortcut_copy'      => 'Copy shortcut',
+  'shortcut_mode_new'  => 'New',
+  'shortcut_mode_edit' => 'Editing',
+  'shortcut_mode_copy' => 'Copying',
+
   // Missile-related
   'mip_h_launched'			=> 'Launch of interplanetary missiles',
   'mip_launched'				=> 'Launching interplanetary missiles: <b>%s</b>!',

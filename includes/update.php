@@ -506,6 +506,63 @@ switch(intval($config->db_version))
 
     doquery('DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});');
 
+    if(!$update_tables['shortcut'])
+    {
+      upd_alter_table('users', 'CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci');
+
+      doquery('set foreign_key_checks = 0;');
+      $result = mysql_query(
+        "CREATE TABLE `{$config->db_prefix}shortcut` (
+          `shortcut_id` SERIAL,
+          `shortcut_user_id` BIGINT(11) UNSIGNED NOT NULL DEFAULT 0,
+          `shortcut_planet_id` bigint(11) NOT NULL DEFAULT 0,
+          `shortcut_galaxy` int(3) NOT NULL DEFAULT 0,
+          `shortcut_system` int(3) NOT NULL DEFAULT 0,
+          `shortcut_planet` int(3) NOT NULL DEFAULT 0,
+          `shortcut_planet_type` tinyint(1) NOT NULL DEFAULT 1,
+          `shortcut_text` NVARCHAR(64) NOT NULL DEFAULT '',
+
+          PRIMARY KEY (`shortcut_id`),
+          KEY `i_shortcut_user_id` (`shortcut_user_id`),
+          KEY `i_shortcut_planet_id` (`shortcut_planet_id`),
+
+          CONSTRAINT `FK_shortcut_user_id` FOREIGN KEY (`shortcut_user_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+      doquery('set foreign_key_checks = 1;');
+
+      sys_refresh_tablelist($config->db_prefix);
+
+      $temp_planet_types = array(PT_PLANET, PT_DEBRIS, PT_MOON);
+
+      $query = doquery("SELECT id, fleet_shortcut FROM {{users}} WHERE fleet_shortcut > '';");
+      while($user_data = mysql_fetch_assoc($query))
+      {
+        $shortcuts = explode("\r\n", $user_data['fleet_shortcut']);
+        foreach($shortcuts as $shortcut)
+        {
+          if(!$shortcut)
+          {
+            continue;
+          }
+
+          $shortcut = explode(',', $shortcut);
+          $shortcut[0] = mysql_real_escape_string($shortcut[0]);
+          $shortcut[1] = intval($shortcut[1]);
+          $shortcut[2] = intval($shortcut[2]);
+          $shortcut[3] = intval($shortcut[3]);
+          $shortcut[4] = intval($shortcut[4]);
+
+          if($shortcut[0] && $shortcut[1] && $shortcut[2] && $shortcut[3] && in_array($shortcut[4], $temp_planet_types))
+          {
+            doquery("INSERT INTO {$config->db_prefix}shortcut (shortcut_user_id, shortcut_galaxy, shortcut_system, shortcut_planet, shortcut_planet_type, shortcut_text) VALUES ({$user_data['id']}, {$shortcut[1]}, {$shortcut[2]}, {$shortcut[3]}, {$shortcut[4]}, '{$shortcut[0]}');");
+          }
+        }
+      }
+
+      upd_alter_table('users', 'DROP COLUMN `fleet_shortcut`');
+    };
 /*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
 */

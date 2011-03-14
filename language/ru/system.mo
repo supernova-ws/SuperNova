@@ -280,6 +280,19 @@ $lang = array_merge($lang, array(
   'news_mode_edit' => 'Редактирование',
   'news_mode_copy' => 'Копия',
 
+  // Shortcuts
+  'shortcut_title'     => 'Закладки',
+  'shortcut_none'      => 'Нет закладок',
+  'shortcut_new'       => 'НОВАЯ',
+  'shortcut_text'      => 'Текст',
+
+  'shortcut_add'       => 'Добавить закладку',
+  'shortcut_edit'      => 'Редактировать закладку',
+  'shortcut_copy'      => 'Скопировать закладку',
+  'shortcut_mode_new'  => 'Новая',
+  'shortcut_mode_edit' => 'Редактирование',
+  'shortcut_mode_copy' => 'Копия',
+
   // Missile-related
   'mip_h_launched'			=> 'Запуск межпланетных ракет',
   'mip_launched'				=> 'Запущено межпланетных ракет: <b>%s</b>!',
