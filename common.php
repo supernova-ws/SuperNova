@@ -26,8 +26,10 @@ if($config->game_disable)
   }
 }
 
+$sys_user_logged_in = $user && is_array($user) && isset($user['id']) && $user['id'];
+
 if(
-  !($allow_anonymous || ($user && is_array($user) && isset($user['id']) && $user['id'])) ||
+  !($allow_anonymous || $sys_user_logged_in) ||
   (defined('IN_ADMIN') && IN_ADMIN && $user['authlevel'] < 3)
 )
 {
@@ -65,7 +67,7 @@ if (defined('IN_ADMIN') && IN_ADMIN)
     $dpath     = $UserSkin;
   }
 }
-else
+elseif($sys_user_logged_in)
 {
   $dpath     = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
@@ -98,7 +100,7 @@ else
 
   CheckPlanetUsedFields($planetrow);
 
-  if(!$skip_ban_check)
+  if(!$allow_anonymous)
   {
     sys_user_vacation($user);
   }

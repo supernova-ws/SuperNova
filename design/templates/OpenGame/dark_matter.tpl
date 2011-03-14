@@ -5,7 +5,8 @@
       <img src="./design/images/DMaterie.jpg" width="120" height="120">
     </td>
     <td>
-      {L_sys_dark_matter_text} <a href="{C_url_dark_matter}">{L_sys_dark_matter_get}</a>.
+      {L_sys_dark_matter_text} 
+      <!-- IF URL_DARK_MATTER --><br />{L_sys_dark_matter_purchase} <a href="{URL_DARK_MATTER}">{L_sys_dark_matter_get}</a>.<!-- ENDIF -->
     </td>
   </tr>
 </table>

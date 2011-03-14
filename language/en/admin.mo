@@ -165,6 +165,7 @@ $lang = array_merge($lang, array(
 
   'adm_opt_main_not_counted'  => "(Apart from home planet)",
   'adm_opt_game_speed_normal' => "(1&nbsp;-&nbsp;normal)",
+  'adm_opt_game_faq'          => "Link to FAQ",
   'adm_opt_game_forum'        => "Forum address",
   'adm_opt_game_dark_matter'  => "Reference &quot;Harvest Dark Matter&quot;",
   'adm_opt_game_copyrigh'     => "Copyright",
