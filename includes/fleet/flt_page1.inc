@@ -46,27 +46,18 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
   }
 
   // Building list of shortcuts
-  if ($user['fleet_shortcut'])
+  $query = doquery("SELECT * FROM {{shortcut}} WHERE shortcut_user_id = {$user['id']};");
+  while($shortcut = mysql_fetch_assoc($query))
   {
-    $shortcuts = explode("\r\n", $user['fleet_shortcut']);
-    foreach ($shortcuts as $shortcut) {
-      if (!$shortcut)
-      {
-        continue;
-      }
-
-      $shortcut_parsed = explode(',', $shortcut);
-
-      $template->assign_block_vars('shortcuts', array(
-        'NAME'       => $shortcut_parsed[0],
-        'GALAXY'     => $shortcut_parsed[1],
-        'SYSTEM'     => $shortcut_parsed[2],
-        'PLANET'     => $shortcut_parsed[3],
-        'TYPE'       => $shortcut_parsed[4],
-        'TYPE_PRINT' => $lang['fl_shrtcup'][$shortcut_parsed[4]],
-      ));
-    }
-  };
+    $template->assign_block_vars('shortcut', array(
+      'NAME'       => $shortcut['shortcut_text'],
+      'GALAXY'     => $shortcut['shortcut_galaxy'],
+      'SYSTEM'     => $shortcut['shortcut_system'],
+      'PLANET'     => $shortcut['shortcut_planet'],
+      'TYPE'       => $shortcut['shortcut_planet_type'],
+      'TYPE_PRINT' => $lang['fl_shrtcup'][$shortcut['shortcut_planet_type']],
+    ));
+  }
 
   // Building list of own planets & moons
   $colonies = SortUserPlanets ( $user );

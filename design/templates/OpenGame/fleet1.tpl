@@ -83,57 +83,64 @@
     </tr>
     
     <tr><th colspan="2"><input type="submit" value="{fl_continue}" /></th></tr>
-
-    <tr><td colspan=2 class=c><div class="fl">{fl_shortcut}</div><a href=fleetshortcut.php class="fr">{fl_shortlnk}</a></td></tr>
+  </table>
+  <br />
+  <table>
     <tr>
-      <!-- BEGIN shortcuts -->       
-        <th>
-          <a href="javascript:setTarget({shortcuts.GALAXY}, {shortcuts.SYSTEM}, {shortcuts.PLANET}, {shortcuts.TYPE}); shortInfo();">
-           {shortcuts.NAME} [{shortcuts.GALAXY}:{shortcuts.SYSTEM}:{shortcuts.PLANET}] {shortcuts.TYPE_PRINT}</a>
-        </th>
-        <!-- IF shortcuts.S_ROW_COUNT is odd -->
-          </tr><tr>
-        <!-- ELSEIF shortcuts.S_LAST_ROW -->
-          <th>&nbsp;</th>
-        <!-- ENDIF -->
-      <!-- BEGINELSE shortcuts -->
-        <th colspan="2">{fl_noshortc}</th>
-      <!-- END shortcuts -->
+      <td valign="top">
+        <table>
+        <tr><td colspan=2 class=c>{fl_myplanets}</td></tr>
+          <!-- BEGIN colonies -->       
+            <tr>
+              <th>
+                <a href="javascript:setTarget({colonies.GALAXY}, {colonies.SYSTEM}, {colonies.PLANET}, {colonies.TYPE}); shortInfo();">
+                 {colonies.NAME} [{colonies.GALAXY}:{colonies.SYSTEM}:{colonies.PLANET}] {colonies.TYPE_PRINT}</a>
+              </th>
+            </tr>
+          <!-- BEGINELSE colonies -->
+            <tr>
+              <th colspan="2">{fl_nocolonies}</th>
+            </tr>
+          <!-- END colonies -->
+        </table>
+      </td>
+
+      <td valign="top">
+        <table>
+          <tr><td class=c>{fl_shortcut}</td></tr>
+          <!-- BEGIN shortcut -->       
+            <tr>
+              <th>
+                <a href="javascript:setTarget({shortcut.GALAXY}, {shortcut.SYSTEM}, {shortcut.PLANET}, {shortcut.TYPE}); shortInfo();">
+                 {shortcut.NAME} [{shortcut.GALAXY}:{shortcut.SYSTEM}:{shortcut.PLANET}] {shortcut.TYPE_PRINT}</a>
+              </th>
+            </tr>
+          <!-- BEGINELSE shortcut -->
+            <tr>
+              <th colspan="2">{L_shortcut_none}</th>
+            </tr>
+          <!-- END shortcut -->
+          <tr><td class=c><a href=fleet_shortcuts.php>{fl_shortlnk}</a></td></tr>
+        </table>
+      </td>
+
+      <td valign="top">
+        <table>
+        <tr><td class=c>{fl_grattack}</td></tr>
+          <!-- BEGIN acss -->       
+            <tr>
+              <th>
+                <input type="button" onClick="javascript: setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});shortInfo();setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');" value="{acss.NAME} [{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT}">
+              </th>
+            </tr>
+          <!-- BEGINELSE acss -->
+            <tr>
+              <th colspan="2">{fl_noacss}</th>
+            </tr>
+          <!-- END acss -->
+        </table>
+      </td>
     </tr>
-
-    <tr><td colspan=2 class=c>{fl_myplanets}</td></tr>
-    <tr>
-      <!-- BEGIN colonies -->       
-        <th>
-          <a href="javascript:setTarget({colonies.GALAXY}, {colonies.SYSTEM}, {colonies.PLANET}, {colonies.TYPE}); shortInfo();">
-           {colonies.NAME} [{colonies.GALAXY}:{colonies.SYSTEM}:{colonies.PLANET}] {colonies.TYPE_PRINT}</a>
-        </th>
-        <!-- IF colonies.S_ROW_COUNT is odd -->
-          </tr><tr>
-        <!-- ELSEIF colonies.S_LAST_ROW -->
-          <th>&nbsp;</th>
-        <!-- ENDIF -->
-      <!-- BEGINELSE colonies -->
-        <th colspan="2">{fl_nocolonies}</th>
-      <!-- END colonies -->
-    </tr>
-
-    <tr><td colspan=2 class=c>{fl_grattack}</td></tr>
-    <tr>
-      <!-- BEGIN acss -->       
-        <th>
-          <input type="button" onClick="javascript: setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});shortInfo();setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');" value="{acss.NAME} [{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT}">
-        </th>
-        <!-- IF acss.S_ROW_COUNT is odd -->
-          </tr><tr>
-        <!-- ELSEIF acss.S_LAST_ROW -->
-          <th>&nbsp;</th>
-        <!-- ENDIF -->
-      <!-- BEGINELSE acss -->
-        <th colspan="2">{fl_noacss}</th>
-      <!-- END acss -->
-     </tr>
-    
   </table>
   <!-- INCLUDE page_hint.tpl -->
 </form>
