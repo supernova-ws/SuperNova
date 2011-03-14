@@ -10,10 +10,10 @@ Target Server Type    : MYSQL
 Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2011-02-14 13:38:44
+Date: 2011-03-14 23:36:14
 */
 
--- SN_DB_VERSION = 26e1
+-- SN_DB_VERSION = 27
 
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
@@ -531,7 +531,7 @@ CREATE TABLE `sn_planets` (
   KEY `i_last_update` (`last_update`),
   KEY `GSPT` (`galaxy`,`system`,`planet`,`planet_type`),
   KEY `i_parent_planet` (`parent_planet`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_planets
@@ -574,6 +574,30 @@ CREATE TABLE `sn_rw` (
 
 -- ----------------------------
 -- Records of sn_rw
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_shortcut`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_shortcut`;
+CREATE TABLE `sn_shortcut` (
+  `shortcut_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `shortcut_user_id` bigint(11) unsigned NOT NULL DEFAULT '0',
+  `shortcut_planet_id` bigint(11) NOT NULL DEFAULT '0',
+  `shortcut_galaxy` int(3) NOT NULL DEFAULT '0',
+  `shortcut_system` int(3) NOT NULL DEFAULT '0',
+  `shortcut_planet` int(3) NOT NULL DEFAULT '0',
+  `shortcut_planet_type` tinyint(1) NOT NULL DEFAULT '1',
+  `shortcut_text` varchar(64) NOT NULL DEFAULT '',
+  PRIMARY KEY (`shortcut_id`),
+  UNIQUE KEY `shortcut_id` (`shortcut_id`),
+  KEY `i_shortcut_user_id` (`shortcut_user_id`),
+  KEY `i_shortcut_planet_id` (`shortcut_planet_id`),
+  CONSTRAINT `FK_shortcut_user_id` FOREIGN KEY (`shortcut_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_shortcut
 -- ----------------------------
 
 -- ----------------------------
@@ -662,7 +686,6 @@ CREATE TABLE `sn_users` (
   `settings_rep` tinyint(4) NOT NULL DEFAULT '0',
   `db_deaktjava` tinyint(4) NOT NULL DEFAULT '0',
   `new_message` int(11) NOT NULL DEFAULT '0',
-  `fleet_shortcut` text,
   `b_tech_planet` int(11) NOT NULL DEFAULT '0',
   `spy_tech` int(11) NOT NULL DEFAULT '0',
   `computer_tech` int(11) NOT NULL DEFAULT '0',
@@ -735,21 +758,23 @@ CREATE TABLE `sn_users` (
   KEY `i_ally_online` (`ally_id`,`onlinetime`),
   KEY `onlinetime` (`onlinetime`),
   KEY `i_register_time` (`register_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_users
 -- ----------------------------
 
--- INSERT INTO `sn_planets` VALUES ('1', 'Planet', '1', '3', '1', '1', '1', UNIX_TIMESTAMP(NOW()), '1', '0', '0', '0', '0', '0', '0', 'normaltempplanet01', '12750', '0', '0', '0', '163', '-40', '60', '500', '40', '500000', '500', '20', '500000', '0.00000000', '0', '500000', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '10', '10', '10', '10', '10', '10', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '');
--- INSERT INTO `sn_users` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 'ru', '3', '0', '', null, '1', '1', '1', '1', '1', '', '', UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(NOW()), '', '1', '1', '0', '0', '1', '5', '0', '0', '1', '1', '1', '1', '0', '0', '0', null, '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '', '0', null, '0', '0', 'red', '#00FF00', 'yellow', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', null, '0', '0', null, null, '0', '', '0');
-
+-- ----------------------------
+-- Default server configuration
+-- ----------------------------
+INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '(Place here code for banner)');
+INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '0');
 INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
 INSERT INTO `sn_config` VALUES ('chat_admin_highlight', '<font color=purple>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
-INSERT INTO `sn_config` VALUES ('db_version', '26');
+INSERT INTO `sn_config` VALUES ('db_version', '27');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
@@ -782,13 +807,13 @@ INSERT INTO `sn_config` VALUES ('int_banner_fontInfo', 'terminator.ttf');
 INSERT INTO `sn_config` VALUES ('int_banner_fontRaids', 'klmnfp2005.ttf');
 INSERT INTO `sn_config` VALUES ('int_banner_fontUniverse', 'cristal.ttf');
 INSERT INTO `sn_config` VALUES ('int_banner_showInOverview', '1');
-INSERT INTO `sn_config` VALUES ('int_banner_URL', '/banner.php?type=banner');
+INSERT INTO `sn_config` VALUES ('int_banner_URL', 'banner.php?type=banner');
 INSERT INTO `sn_config` VALUES ('int_format_date', 'd.m.Y');
 INSERT INTO `sn_config` VALUES ('int_format_time', 'H:i:s');
 INSERT INTO `sn_config` VALUES ('int_userbar_background', 'design/images/userbar.png');
 INSERT INTO `sn_config` VALUES ('int_userbar_font', 'arialbd.ttf');
 INSERT INTO `sn_config` VALUES ('int_userbar_showInOverview', '1');
-INSERT INTO `sn_config` VALUES ('int_userbar_URL', '/banner.php?type=userbar');
+INSERT INTO `sn_config` VALUES ('int_userbar_URL', 'banner.php?type=userbar');
 INSERT INTO `sn_config` VALUES ('LastSettedGalaxyPos', '1');
 INSERT INTO `sn_config` VALUES ('LastSettedPlanetPos', '1');
 INSERT INTO `sn_config` VALUES ('LastSettedSystemPos', '1');
@@ -811,9 +836,10 @@ INSERT INTO `sn_config` VALUES ('rpg_scrape_crystal', '0.50');
 INSERT INTO `sn_config` VALUES ('rpg_scrape_deuterium', '0.25');
 INSERT INTO `sn_config` VALUES ('rpg_scrape_metal', '0.75');
 INSERT INTO `sn_config` VALUES ('stats_schedule', 'd@04:00:00');
-INSERT INTO `sn_config` VALUES ('url_dark_matter', '/dark_matter_get.php');
-INSERT INTO `sn_config` VALUES ('url_forum', '/forum/');
-INSERT INTO `sn_config` VALUES ('url_rules', '/rules.php');
+INSERT INTO `sn_config` VALUES ('url_dark_matter', '');
+INSERT INTO `sn_config` VALUES ('url_faq', '');
+INSERT INTO `sn_config` VALUES ('url_forum', '');
+INSERT INTO `sn_config` VALUES ('url_rules', '');
 INSERT INTO `sn_config` VALUES ('users_amount', '1');
 INSERT INTO `sn_config` VALUES ('user_vacation_disable', '0');
 INSERT INTO `sn_config` VALUES ('var_db_update', UNIX_TIMESTAMP(NOW()));
@@ -822,5 +848,14 @@ INSERT INTO `sn_config` VALUES ('var_stat_update', UNIX_TIMESTAMP(NOW()));
 INSERT INTO `sn_config` VALUES ('var_stat_update_end', UNIX_TIMESTAMP(NOW()));
 INSERT INTO `sn_config` VALUES ('var_stat_update_msg', '');
 
-INSERT INTO `sn_planets` (`id`, `name`, `id_owner`, `id_level`, `galaxy`, `system`, `planet`, `planet_type`, `last_update`) VALUES (1, 'Planet', 1, 0, 1, 1, 1, 1, UNIX_TIMESTAMP(NOW()));
+-- ----------------------------
+-- Administrator's account
+-- Login: admin
+-- Password: admin
+-- ----------------------------
 INSERT INTO `sn_users` (`id`, `username`, `password`, `email`, `email_2`, `authlevel`, `id_planet`, `galaxy`, `system`, `planet`, `current_planet`, `register_time`, `onlinetime`, `noipcheck`) VALUES (1, 'admin',  '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 3, 1, 1, 1, 1, 1, UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(NOW()), 1);
+
+-- ----------------------------
+-- Administrator's planet
+-- ----------------------------
+INSERT INTO `sn_planets` (`id`, `name`, `id_owner`, `id_level`, `galaxy`, `system`, `planet`, `planet_type`, `last_update`) VALUES (1, 'Planet', 1, 0, 1, 1, 1, 1, UNIX_TIMESTAMP(NOW()));

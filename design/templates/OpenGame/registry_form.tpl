@@ -6,7 +6,7 @@
 
 <div id="log_main">
   <div id="log_title">{L_log_reg} - {L_sys_universe} "{C_game_name}"</div>
-  <div id="log_description">{L_log_reg_text0} <a href="{C_url_rules}"><u><font color="red">{L_reg_with_rules}</font></u></a>. {L_log_reg_text1}</div>
+  <div id="log_description">{L_log_reg_text0} <!-- IF URL_RULES --><a href="{URL_RULES}" style="color: red; text-decoration: underline; font-face: bold;"><!-- ENDIF -->{L_reg_with_rules}<!-- IF URL_RULES --></a><!-- ENDIF -->. {L_log_reg_text1}</div>
 
   <form name="registerForm" method="POST" action="" onsubmit="changeAction('register');" >
     <input type="hidden" name="id_ref" value="{id_ref}">
@@ -62,7 +62,7 @@
         <tr>
           <th colspan=2>
             <input type="hidden" name="language" value="ru">
-            <input name="register" type="checkbox" value="1" /> {L_reg_i_agree} <a href="{C_url_rules}"><u><font color="red">{L_reg_with_rules}</font></u></a>
+            <input name="register" type="checkbox" value="1" /> {L_reg_i_agree} <!-- IF URL_RULES --><a href="{URL_RULES}" style="color: red; text-decoration: underline; font-face: bold;"><!-- ENDIF -->{L_reg_with_rules}<!-- IF URL_RULES --></a><!-- ENDIF -->
           </th>
         </tr>
       </tbody>
@@ -73,8 +73,5 @@
   {L_log_reg_already_lost} <a href="lostpassword.php{referral}" class="link">{L_PasswordLost}</a><br>
   <br>
 
-  <div id="log_menu">
-    <a href="login.php{referral}">{L_log_login_page}</a> ::
-    <!-- INCLUDE login_menu.tpl -->
-  </div>
+  <!-- INCLUDE login_menu.tpl -->
 </div>
