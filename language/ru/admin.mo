@@ -165,6 +165,7 @@ $lang = array_merge($lang, array(
 
   'adm_opt_main_not_counted'  => "(не считая главную планету)",
   'adm_opt_game_speed_normal' => "(1&nbsp;-&nbsp;нормальная)",
+  'adm_opt_game_faq'          => "Ссылка на ЧаВо",
   'adm_opt_game_forum'        => "Адрес форума",
   'adm_opt_game_dark_matter'  => "Ссылка &quot;Добыть ТМ&quot;",
   'adm_opt_game_copyrigh'     => "Copyright",

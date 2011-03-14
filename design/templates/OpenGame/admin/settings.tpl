@@ -118,6 +118,10 @@
       <th><input name="url_rules" size="53" maxlength="254" value="{C_url_rules}" type="text"></th>
     </tr>
     <tr>
+      <th>{L_adm_opt_game_faq}<br></th>
+      <th><input name="url_faq" size="53" maxlength="254" value="{C_url_faq}" type="text"></th>
+    </tr>
+    <tr>
       <th>{L_adm_opt_game_forum}<br></th>
       <th><input name="url_forum" size="53" maxlength="254" value="{C_url_forum}" type="text"></th>
     </tr>
