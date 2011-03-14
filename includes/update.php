@@ -563,11 +563,15 @@ switch(intval($config->db_version))
 
       upd_alter_table('users', 'DROP COLUMN `fleet_shortcut`');
     };
+
+    upd_check_key('url_faq', '', !isset($config->url_faq));
+
+    doquery('COMMIT;');
+    $new_version = 27;
+
 /*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
 */
-    doquery('COMMIT;');
-    //$new_version = 27;
 };
 //$GLOBALS['config']->db_saveItem('flt_lastUpdate', 0);
 upd_log_message('Upgrade complete.');

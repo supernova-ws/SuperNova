@@ -107,6 +107,15 @@ elseif ($email)
   message('Le nouveau mot de passe a &eacute;t&eacute; envoy&eacute; avec succ&egrave;s !', 'OK');
 }
 
-display(parsetemplate(gettemplate('lostpassword', true)), $lang['system'], false, '', false, false);
+
+$template = gettemplate('lostpassword', true);
+
+$template->assign_vars(array(
+  'URL_RULES'  => $config->url_rules,
+  'URL_FORUM'  => $config->url_forum,
+  'URL_FAQ'    => $config->url_faq,
+));
+
+display(parsetemplate($template), $lang['system'], false, '', false, false);
 
 ?>

@@ -51,6 +51,9 @@ function ShowLeftMenu($Level = 0)
       'new_announce_count'  => $user['news_lastread'],
       'game_url'            => SN_ROOT_RELATIVE,
       'game_name'           => $config->game_name,
+      'URL_RULES'           => $config->url_rules,
+      'URL_FORUM'           => $config->url_forum,
+      'URL_FAQ'             => $config->url_faq,
       'ADV_LEFT_BOTTOM'     => $config->advGoogleLeftMenuIsOn ? $config->advGoogleLeftMenuCode : '',
     ));
   }

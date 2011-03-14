@@ -471,9 +471,10 @@ class classConfig extends classPersistent
     'energy_basic_income'    => 0,
     'Fleet_Cdr'              => 30,
     'fleet_speed'            => 1,
-    'url_forum'              => '/forum/',
-    'url_rules'              => '/rules.php',
-    'url_dark_matter'        => '/dark_matter_get.php',
+    'url_forum'              => '',
+    'url_faq'                => '',
+    'url_rules'              => '',
+    'url_dark_matter'        => '',
     'initial_fields'         => 163,
     'LastSettedGalaxyPos'    => 1,
     'LastSettedPlanetPos'    => 1,
@@ -482,6 +483,10 @@ class classConfig extends classPersistent
     'resource_multiplier'    => 1,
     'user_vacation_disable'  => 0,
     'users_amount'           => 0,
+
+    // Advet banner
+    'advGoogleLeftMenuIsOn'  => 0,
+    'advGoogleLeftMenuCode'  => '(Place here code for banner)',
 
     // Noob protection
     'game_noob_points'       => 5000, // Below this point user threated as noob. 0 to disable

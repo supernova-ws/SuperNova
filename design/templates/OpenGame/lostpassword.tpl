@@ -42,8 +42,5 @@
     </form>
   </div>
 
-  <div id="log_menu">
-    <a href="reg.php{referral}">{L_log_reg}</a> ::
-    <!-- INCLUDE login_menu.tpl -->
-  </div>
+  <!-- INCLUDE login_menu.tpl -->
 </div>
