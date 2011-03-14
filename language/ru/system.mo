@@ -271,12 +271,27 @@ $lang = array_merge($lang, array(
   'news_announce'  => 'Содержание',
   'news_total'     => 'Всего новостей: ',
 
+  'news_more'      => 'Ссылка на подробности',
+
   'news_add'       => 'Добавить новость',
   'news_edit'      => 'Редактировать новость',
   'news_copy'      => 'Скопировать новость',
   'news_mode_new'  => 'Новая',
   'news_mode_edit' => 'Редактирование',
   'news_mode_copy' => 'Копия',
+
+  // Shortcuts
+  'shortcut_title'     => 'Закладки',
+  'shortcut_none'      => 'Нет закладок',
+  'shortcut_new'       => 'НОВАЯ',
+  'shortcut_text'      => 'Текст',
+
+  'shortcut_add'       => 'Добавить закладку',
+  'shortcut_edit'      => 'Редактировать закладку',
+  'shortcut_copy'      => 'Скопировать закладку',
+  'shortcut_mode_new'  => 'Новая',
+  'shortcut_mode_edit' => 'Редактирование',
+  'shortcut_mode_copy' => 'Копия',
 
   // Missile-related
   'mip_h_launched'			=> 'Запуск межпланетных ракет',

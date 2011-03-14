@@ -9,6 +9,22 @@ define('INSIDE'  , true);
 define('IN_PHPBB', true);
 define('INSTALL' , false);
 
+function sys_refresh_tablelist($db_prefix)
+{
+  global $sn_cache;
+
+  $query = doquery('SHOW TABLES;');
+
+  while ( $row = mysql_fetch_assoc($query) )
+  {
+    foreach($row as $row)
+    {
+      $tl[] = str_replace($db_prefix, '', $row);
+    }
+  }
+  $sn_cache->tables = $tl;
+}
+
 ob_start();
 
 @set_magic_quotes_runtime(0);
@@ -163,21 +179,5 @@ includeLang('system');
 includeLang('tech');
 
 sn_db_connect();
-
-function sys_refresh_tablelist($db_prefix)
-{
-  global $sn_cache;
-
-  $query = doquery('SHOW TABLES;');
-
-  while ( $row = mysql_fetch_assoc($query) )
-  {
-    foreach($row as $row)
-    {
-      $tl[] = str_replace($db_prefix, '', $row);
-    }
-  }
-  $sn_cache->tables = $tl;
-}
 
 ?>

@@ -54,17 +54,16 @@ $lang['fl_time_back'] 			= 'Вернётся (время)';
 $lang['fl_deute_need'] 			= 'Потребление топлива';
 $lang['fl_speed_max'] 			= 'Максимальная скорость';
 $lang['fl_shortcut'] 			= 'Закладки';
-$lang['fl_shortlnk'] 			= 'Редактирование закладок';
+$lang['fl_shortlnk'] 			= 'Редактировать закладки';
 $lang['fl_shrtcup1'] 			= '(П)';
 $lang['fl_shrtcup2'] 			= '(О)';
 $lang['fl_shrtcup3'] 			= '(Л)';
 $lang['fl_planettype1'] 	   = 'Планета';
 $lang['fl_planettype2'] 	   = 'Поле обломков';
 $lang['fl_planettype3']       = 'Луна';
-$lang['fl_noshortc'] 			= 'Нет закладок';
 $lang['fl_myplanets']			= 'Планеты';
 $lang['fl_nocolonies'] 			= 'нет планет';
-$lang['fl_noacss'] 				= 'Вы не приглашены ни в один боевой союз';
+$lang['fl_noacss'] 				= 'Нет приглашений в боевые союзы';
 $lang['fl_grattack'] 			= 'Боевые союзы';
 
 // floten2.php
