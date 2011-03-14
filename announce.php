@@ -8,7 +8,7 @@
  * based on admin/activeplanet.php (c) 2008 for XNova
  */
 
-$skip_ban_check = true;
+$allow_anonymous = true;
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $template     = gettemplate('announce', true);
@@ -19,7 +19,11 @@ $announce_time = SYS_mysqlSmartEscape($_POST['dtDateTime']);
 $detail_url    = SYS_mysqlSmartEscape($_POST['detail_url']);
 $mode          = SYS_mysqlSmartEscape($_GET['mode'] ? $_GET['mode'] : $_POST['mode']);
 
-doquery("UPDATE {{users}} SET `news_lastread` = 0 WHERE `id` = {$user['id']};");
+if($sys_user_logged_in)
+{
+  doquery("UPDATE {{users}} SET `news_lastread` = 0 WHERE `id` = {$user['id']};");
+}
+
 if ($user['authlevel'] >= 3)
 {
   if (!empty($text))

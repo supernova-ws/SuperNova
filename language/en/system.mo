@@ -331,7 +331,6 @@ $lang = array_merge($lang, array(
   'cr_view_hint'   => "This page allows you to view shared Combat Reports. All Combat Reports will have a code at the bottom. To share a Combat Report simply give them that code. Then they can enter it here and view your Combat Report.",
 
   // Dark Matter
-  'sys_dark_matter_get'  => 'Get Dark Matter',
   'sys_dark_matter_text' => '<h2>What is Dark Matter?</h2>
     Dark Matter - it is currency, which in the game you can make a variety of operations:
     <ul><li>Swapping one resource for another</li>
@@ -340,8 +339,9 @@ $lang = array_merge($lang, array(
     <li>Hiring officers</li></ul>
     <h2>Where to get Dark Matter?</h2>
     You get Dark Matter during the game: gaining experience for raids on other planets and construction of buildings.
-    Also sometimes research cruises can bring Dark Matter.<br>
-    In addition you can purchase Dark Matter for WebMoney. Learn more-see.',
+    Also sometimes research cruises can bring Dark Matter.',
+  'sys_dark_matter_purchase' => 'In addition you can purchase Dark Matter for WebMoney.',
+  'sys_dark_matter_get'  => 'Click here to read details.',
 
   // Officers
   'off_no_points'        => 'You do not have enough Dark Matter!',
