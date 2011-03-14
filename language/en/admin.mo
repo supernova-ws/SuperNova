@@ -12,9 +12,9 @@
 #############################################################################
 */
 if (!defined('INSIDE')) {
-	die("Has attempted to break into!");
+	die("attempt hacking!");
 }
-$lang['adm_done']               = "Successfully completed";
+$lang['adm_done']               = "Successfully Completed";
 $lang['adm_inactive_removed']   = '<li>Remove inactive players: %d</li>';
 $lang['adm_stat_title']         = "Update statistics";
 $lang['adm_maintenance_title']  = "Database Services";
@@ -86,7 +86,7 @@ $lang['adm_bn_bnbt']  = "The ban";
 $lang['adm_bn_thpl']  = "Player";
 $lang['adm_bn_isbn']  = "Successfully Banned!";
 $lang['adm_bn_vctn']  = " Vacation mode.";
-$lang['adm_bn_errr']  = "Error: Baning player! perhaps Name %s not found.";
+$lang['adm_bn_errr']  = "Error: Banning player! perhaps Name %s not found.";
 $lang['adm_bn_err2']  = "Error: Unable to stop production on the planets!";
 $lang['adm_bn_plnt']  = "Production on the planets is disabled.";
 
@@ -97,7 +97,7 @@ $lang['adm_unbn_bnbt']  = "Unban";
 $lang['adm_unbn_thpl']  = "Player";
 $lang['adm_unbn_isbn']  = "Unbanned!";
 
-$lang['adm_rz_ttle']  = "Zeroing universe";
+$lang['adm_rz_ttle']  = "Zeroing Universe";
 $lang['adm_rz_done']  = "User(s) of transfer(s)";
 $lang['adm_rz_conf']  = "Confirmation";
 $lang['adm_rz_text']  = "Clicking (reset) You delete all database. You did backup??? Accounts will not be removed...";
