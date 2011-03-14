@@ -67,7 +67,7 @@
     <tr><th>{L_m_others}</th></tr>
     <tr><td><a href="simulator.php" id="lm_simulator">{L_m_simulator}</a></td></tr>
     <tr><td><a href="notes.php">{L_Notes}</a></td></tr>
-    <tr><td><a href="fleetshortcut.php">{L_lm_shortcuts}</a></td></tr>
+    <tr><td><a href="fleet_shortcuts.php">{L_lm_shortcuts}</a></td></tr>
 
     <tr><th><a href="options.php" id="lm_options">{L_Options}</a></th></tr>
     <tr><th><a href="javascript:top.location.href='logout.php'" id="lm_logout">{L_Logout}</a></th></tr>
