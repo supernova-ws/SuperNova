@@ -61,7 +61,6 @@ $lang['fl_shrtcup3'] 			= '(L)';
 $lang['fl_planettype1'] 	   = 'Planet';
 $lang['fl_planettype2'] 	   = 'Field debris';
 $lang['fl_planettype3']       = 'Moon';
-$lang['fl_noshortc'] 			= 'No shortcuts';
 $lang['fl_myplanets']			= 'Planet(s)';
 $lang['fl_nocolonies'] 			= 'No Planets';
 $lang['fl_noacss'] 				= 'No Combat Unions';
