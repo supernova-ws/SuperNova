@@ -9,21 +9,20 @@ input.frameles
 
 <table align=center width="722" cellpadding="0" cellspacing="0" class="header" id="resources" style="width: 722px;" padding-right="30"><tbody>
   <tr class="c">
-    <td class="c" colspan=5>
-         {DATE_TEXT} <span id="top_time">{TIME_TEXT}</span>
+    <td class="c" colspan=7>
+      <span class="fl">{DATE_TEXT}<span id="top_time">{TIME_TEXT}</span></span>
+      <span class="fr">{L_top_online} [{USERS_ONLINE}/{USERS_TOTAL}]</span>
     </td>
-    <td class="c" colspan=2 align="right">
-        {L_top_online} [{USERS_ONLINE}/{USERS_TOTAL}]
-       </td>
   </tr>
 
   <tr class="header">
-    <td class="header" align="center" width="150"><select size="1" onchange="window.location.href = window.location.pathname + this.options[this.selectedIndex].value;">
-    {planetlist}
-    <!-- BEGIN topnav_planets -->
-      <option{topnav_planets.SELECTED} value="?cp={topnav_planets.ID}&mode={TOPNAV_MODE}&re=0">{topnav_planets.NAME}&nbsp;{topnav_planets.COORDS}
-    <!-- END topnav_planets -->
-    </select></td>
+    <td class="header" align="center" width="150">
+      <select size="1" onchange="window.location.href = window.location.pathname + this.options[this.selectedIndex].value;">
+        <!-- BEGIN topnav_planets -->
+          <option{topnav_planets.SELECTED} value="?cp={topnav_planets.ID}&mode={TOPNAV_MODE}&re=0">{topnav_planets.NAME}&nbsp;{topnav_planets.COORDS}
+        <!-- END topnav_planets -->
+      </select>
+    </td>
     <td class="header" align="center" width="150"><A HREF="resources.php"><img src="{dpath}images/metall.gif" border="0" height="22" width="42" alt="{L_sys_metal}" title="{L_sys_metal}"></A></td>
     <td class="header" align="center" width="150"><A HREF="resources.php"><img src="{dpath}images/kristall.gif" border="0" height="22" width="42" alt="{L_sys_crystal}" title="{L_sys_crystal}"></A></td>
     <td class="header" align="center" width="150"><A HREF="resources.php"><img src="{dpath}images/deuterium.gif" border="0" height="22" width="42" alt="{L_sys_deuterium}" title="{L_sys_deuterium}"></A></td>

@@ -62,6 +62,7 @@
     <tr><td><a href="records.php">{L_Records}</a></td></tr>
     <tr><td><a href="banned.php">{L_lm_banned}</a></td></tr>
     <tr><td><a href="contact.php">{L_commun}</a></td></tr>
+    <tr><td><a href="viewreport.php">{L_lm_combat_reports}</a></td></tr>
     <tr><td><a href="server_info.php">{L_lm_server_info}</a></td></tr>
 
     <tr><th>{L_m_others}</th></tr>

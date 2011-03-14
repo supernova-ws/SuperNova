@@ -323,6 +323,13 @@ $lang = array_merge($lang, array(
   // Univers
   'uni_moon_of_planet' => 'planet',
 
+  // Combat reports
+  'cr_view_title'  => "View Combat Reports",
+  'cr_view_button' => "View Report",
+  'cr_view_prompt' => "Enter the code",
+  'cr_view_my'     => "My Combat Records",
+  'cr_view_hint'   => "This page allows you to view shared Combat Reports. All Combat Reports will have a code at the bottom. To share a Combat Report simply give them that code. Then they can enter it here and view your Combat Report.",
+
   // Dark Matter
   'sys_dark_matter_get'  => 'Get Dark Matter',
   'sys_dark_matter_text' => '<h2>What is Dark Matter?</h2>
