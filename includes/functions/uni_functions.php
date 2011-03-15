@@ -148,7 +148,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetN
     $QryInsertPlanet  = "INSERT INTO `{{planets}}` SET ";
     $QryInsertPlanet .= "`name` = '".              $planet['name']              ."', ";
     $QryInsertPlanet .= "`id_owner` = '".          $planet['id_owner']          ."', ";
-    $QryInsertPlanet .= "`id_level` = '".          $user['authlevel']           ."', ";
+//    $QryInsertPlanet .= "`id_level` = '".          $user['authlevel']           ."', ";
     $QryInsertPlanet .= "`galaxy` = '".            $planet['galaxy']            ."', ";
     $QryInsertPlanet .= "`system` = '".            $planet['system']            ."', ";
     $QryInsertPlanet .= "`planet` = '".            $planet['planet']            ."', ";
