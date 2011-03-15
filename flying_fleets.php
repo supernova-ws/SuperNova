@@ -11,23 +11,6 @@ if(sys_get_param_str('return_fleet'))
 
     if ($FleetRow['fleet_owner'] == $user['id'] && $FleetRow['fleet_mess'] == 0)
     {
-/*
-      if ($FleetRow['fleet_end_stay'] != 0)
-      {
-        if ($FleetRow['fleet_start_time'] <= $time_now)
-        {
-          $CurrentFlyingTime = $FleetRow['fleet_start_time'] - $FleetRow['start_time'];
-        }
-        else
-        {
-          $CurrentFlyingTime = $time_now - $FleetRow['start_time'];
-        }
-      }
-      else
-      {
-        $CurrentFlyingTime = $time_now - $FleetRow['start_time'];
-      }
-*/
       $ReturnFlyingTime  = ($FleetRow['fleet_end_stay'] != 0 && $FleetRow['fleet_start_time'] < $time_now ? $FleetRow['fleet_start_time'] : $time_now) - $FleetRow['start_time'] + $time_now + 1;
 
       $QryUpdateFleet  = "UPDATE {{fleets}} SET `fleet_start_time` = '{$time_now}', `fleet_end_stay` = '0', ";

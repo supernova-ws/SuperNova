@@ -98,7 +98,7 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
     'MISSION'            => $fleet['fleet_mission'],
     'MISSION_NAME'       => $lang['type_mission'][$fleet['fleet_mission']],
     'ACS'                => $aks['name'],
-    'AMOUNT'             => pretty_number($fleet['fleet_amount']),
+    'AMOUNT'             => pretty_number($fleet['fleet_amount']) . ($fleet['fleet_resource_metal'] + $fleet['fleet_resource_crystal'] + $fleet['fleet_resource_deuterium'] ? '+' : ''),
 
     'METAL'              => $fleet['fleet_resource_metal'],
     'CRYSTAL'            => $fleet['fleet_resource_crystal'],
