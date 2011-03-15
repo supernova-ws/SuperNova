@@ -93,8 +93,8 @@ function eco_build($que_type, $user, &$planet, $que)
         if ($Element == STRUC_MINE_SOLAR || $Element == STRUC_MINE_FUSION)
         {
           $energy_balance =
-            floor(mrc_modify_value($user, $planet, array(TECH_ENERGY, MRC_POWERMAN), $element_production_energy($element_level + 1, 10, $planet_temp_max) * $config_resource_multiplier)) -
-            floor(mrc_modify_value($user, $planet, array(TECH_ENERGY, MRC_POWERMAN), $element_production_energy($element_level, 10, $planet_temp_max) * $config_resource_multiplier));
+            floor(mrc_modify_value($user, $planet, array(TECH_ENERGY, MRC_POWERMAN), $element_production_energy($element_level + 1, 10, $planet_temp_max) /* * $config_resource_multiplier*/)) -
+            floor(mrc_modify_value($user, $planet, array(TECH_ENERGY, MRC_POWERMAN), $element_production_energy($element_level, 10, $planet_temp_max) /* * $config_resource_multiplier*/));
         }
         $energy_balance = floor($energy_balance);
       }
