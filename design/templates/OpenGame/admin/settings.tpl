@@ -34,20 +34,7 @@
         </select>
       </th>
     </tr>
-<!--
-    <tr>
-      <th>{L_adm_opt_game_gspeed}</th>
-      <th><input name="game_speed" size="10" maxlength="10" value="{C_game_speed}" type="text"> {L_adm_opt_game_speed_normal}</th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_game_fspeed}</th>
-      <th><input name="fleet_speed" size="10" maxlength="10" value="{C_fleet_speed}" type="text"> {L_adm_opt_game_speed_normal}</th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_game_pspeed}</th>
-      <th><input name="resource_multiplier" size="10" maxlength="10" value="{C_resource_multiplier}" type="text"> {L_adm_opt_game_speed_normal}</th>
-    </tr>
--->    
+
     <tr>
       <th>{L_adm_opt_speed} {L_adm_opt_game_speed_normal}</th>
       <th>
@@ -60,14 +47,6 @@
     <tr>
       <th>{L_adm_opt_universe_size}</th>
       <th>
-<!--
-        <div class="fl" style="width: 6em;">{L_adm_opt_galaxies}</div>
-        <div class="fl" style="width: 4.5em;"><input name="game_maxGalaxy" maxlength="5" size="5" value="{C_game_maxGalaxy}" type="text"></div>
-        <div class="fl" style="width: 6em;">{L_adm_opt_systems}</div>
-        <div class="fl" style="width: 4.5em;"><input name="game_maxSystem" maxlength="5" size="5" value="{C_game_maxSystem}" type="text"></div>
-        <div class="fl" style="width: 6em;">{L_adm_opt_planets}</div>
-        <div class="fl"><input name="game_maxPlanet" maxlength="5" size="5" value="{C_game_maxPlanet}" type="text"></div>
--->
         {L_adm_opt_galaxies}&nbsp;&nbsp;&nbsp;<input name="game_maxGalaxy" maxlength="5" size="5" value="{C_game_maxGalaxy}" type="text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         {L_adm_opt_systems}&nbsp;&nbsp;&nbsp;<input name="game_maxSystem" maxlength="5" size="5" value="{C_game_maxSystem}" type="text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         {L_adm_opt_planets}&nbsp;&nbsp;&nbsp;<input name="game_maxPlanet" maxlength="5" size="5" value="{C_game_maxPlanet}" type="text">
