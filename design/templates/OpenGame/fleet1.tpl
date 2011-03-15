@@ -120,7 +120,6 @@
               <th colspan="2">{L_shortcut_none}</th>
             </tr>
           <!-- END shortcut -->
-          <tr><td class=c><a href=fleet_shortcuts.php>{fl_shortlnk}</a></td></tr>
         </table>
       </td>
 
