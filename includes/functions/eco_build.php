@@ -75,6 +75,7 @@ function eco_build($que_type, $user, &$planet, $que)
   $planet_fields_free    = max(0, $planet_fields_max - $planet_fields_current + $planet_fields_que);
   $planet_fields_queable = $planet_fields_free > 0;
   $planet_temp_max       = $planet['temp_max'];
+  $GLOBALS['user_tech_energy'] = $user['energy_tech'];
 
   foreach($planet_type_structs as $Element)
   {
@@ -89,14 +90,15 @@ function eco_build($que_type, $user, &$planet, $que)
       if($element_sn_data['production'])
       {
         $element_production_energy = $element_sn_data['production'][RES_ENERGY];
-        $energy_balance = floor($element_production_energy($element_level + 1, 10, $planet_temp_max)) - floor($element_production_energy($element_level, 10, $planet_temp_max));
+
+        $energy_current = floor($element_production_energy($element_level, 10, $planet_temp_max));
+        $energy_next    = floor($element_production_energy($element_level + 1, 10, $planet_temp_max));
         if ($Element == STRUC_MINE_SOLAR || $Element == STRUC_MINE_FUSION)
         {
-          $energy_balance =
-            floor(mrc_modify_value($user, $planet, array(TECH_ENERGY, MRC_POWERMAN), $element_production_energy($element_level + 1, 10, $planet_temp_max) /* * $config_resource_multiplier*/)) -
-            floor(mrc_modify_value($user, $planet, array(TECH_ENERGY, MRC_POWERMAN), $element_production_energy($element_level, 10, $planet_temp_max) /* * $config_resource_multiplier*/));
+          $energy_current = floor(mrc_modify_value($user, $planet, array(TECH_ENERGY, MRC_POWERMAN), $energy_current));
+          $energy_next    = floor(mrc_modify_value($user, $planet, array(TECH_ENERGY, MRC_POWERMAN), $energy_next));
         }
-        $energy_balance = floor($energy_balance);
+        $energy_balance = floor($energy_next - $energy_current);
       }
       else
       {

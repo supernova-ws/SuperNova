@@ -98,7 +98,9 @@ if(is_array($production))
 }
 
 // -------------------------------------------------------------------------------------------------------
-$BuildTemp                           = $planetrow[ 'temp_max' ];
+$BuildTemp                   = $planetrow[ 'temp_max' ];
+$BuildEnergyTech             = $user['energy_tech'];
+$GLOBALS['user_tech_energy'] = $user['energy_tech'];
 
 for ($Option = 10; $Option >= 0; $Option--)
 {

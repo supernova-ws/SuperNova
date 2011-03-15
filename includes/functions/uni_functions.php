@@ -220,14 +220,14 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
 
       $size      = rand ( $moon_chance * 100 + 1000, $moon_chance * 200 + 2999 );
       $temp_min  = $moon_planet['temp_min'] - rand(10, 45);
-      $temp_max  = $moon_planet['temp_max'] - rand(10, 45);
+      $temp_max  = $temp_min + 40;
       $moon_name = mysql_real_escape_string($moon_name ? $moon_name : "{$lang['sys_moon']} {$lang['uni_moon_of_planet']} {$planet_name}");
 
       doquery(
         "INSERT INTO `{{planets}}` SET
           `id_owner` = '{$user_id}', `name` = '{$moon_name}', `last_update` = '{$time_now}',
           `galaxy` = '{$pos_galaxy}', `system` = '{$pos_system}', `planet` = '{$pos_planet}', `planet_type` = '3', `parent_planet` = '{$moon_planet['id']}',
-          `image` = 'mond', `diameter` = '{$size}', `temp_min` = '{$temp_max}', `temp_max` = '{$temp_min}', `field_max` = '1',
+          `image` = 'mond', `diameter` = '{$size}', `temp_min` = '{$temp_min}', `temp_max` = '{$temp_max}', `field_max` = '1',
           `metal` = '0', `metal_perhour` = '0', `metal_max` = '{$base_storage_size}',
           `crystal` = '0', `crystal_perhour` = '0', `crystal_max` = '{$base_storage_size}',
           `deuterium` = '0', `deuterium_perhour` = '0', `deuterium_max` = '{$base_storage_size}';"
