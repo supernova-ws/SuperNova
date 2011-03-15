@@ -26,11 +26,12 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
 
   // Calcul de production linéaire des divers types
   $BuildTemp = $CurrentPlanet['temp_max'];
+  $BuildEnergyTech = $CurrentUser['energy_tech'];
 
   $Caps['metal_perhour'][0]     = $config->metal_basic_income     * $config_resource_multiplier;
   $Caps['crystal_perhour'][0]   = $config->crystal_basic_income   * $config_resource_multiplier;
   $Caps['deuterium_perhour'][0] = $config->deuterium_basic_income * $config_resource_multiplier;
-  $Caps['energy'][0]            = $config->energy_basic_income/*    * $config_resource_multiplier*/;
+  $Caps['energy'][0]            = $config->energy_basic_income;
   $Caps['planet']['energy_max'] = $Caps['energy'][0];
 
   foreach($sn_groups['prod'] as $ProdID)
@@ -38,10 +39,9 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
     $unit_data = $sn_data[$ProdID];
 
     $BuildLevel       = $CurrentPlanet[ $resource[$ProdID] ];
-    //$BuildLevelFactor = $CurrentPlanet[ $resource[$ProdID]."_porcent" ];
     $BuildLevelFactor = $CurrentPlanet[ "{$resource[$ProdID]}_porcent" ];
 
-    $Caps['energy'][$ProdID] = eval($unit_data['energy_perhour']);
+    $Caps['energy'][$ProdID] = floor(eval($unit_data['energy_perhour']));
     if ($ProdID == 12)
     {
       if ($CurrentPlanet['deuterium'] > 0)
@@ -65,8 +65,7 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
 
     if ($Caps['energy'][$ProdID]>0)
     {
-//      $Caps['energy'][$ProdID] = floor ( $Caps['energy'][$ProdID] * $config_resource_multiplier * ( 1 + $CurrentUser['rpg_ingenieur'] * 0.05 ) * ( 1 + $CurrentUser['energy_tech'] * 0.1 ));
-      $Caps['energy'][$ProdID] = mrc_modify_value($CurrentUser, $CurrentPlanet, array(TECH_ENERGY, MRC_POWERMAN), $Caps['energy'][$ProdID] /* * $config_resource_multiplier*/);
+      $Caps['energy'][$ProdID] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, array(TECH_ENERGY, MRC_POWERMAN), $Caps['energy'][$ProdID]));
 
       $Caps['planet']['energy_max'] += floor($Caps['energy'][$ProdID]);
     }

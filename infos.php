@@ -70,6 +70,7 @@ function ShowProductionTable ($CurrentUser, $CurrentPlanet, $BuildID, $Template)
 
   $BuildLevelFactor = $CurrentPlanet[ $unit_data['name']."_porcent" ];
   $BuildTemp        = $CurrentPlanet[ 'temp_max' ];
+  $BuildEnergyTech  = $CurrentUser['energy_tech'];
   $CurrentBuildtLvl = $CurrentPlanet[ $unit_data['name'] ];
 
   $BuildLevel       = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
