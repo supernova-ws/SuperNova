@@ -125,7 +125,7 @@ if ( defined('INSIDE')) {
       'metal_perhour'     => 'return 0;',
       'crystal_perhour'   => 'return 0;',
       'deuterium_perhour' => 'return 0;',
-      'energy_perhour'    => 'return   (($BuildTemp / 4 + 20) * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
+      'energy_perhour'    => 'return   (($BuildTemp / 20 + 13) * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
       'type' => UNIT_STRUCTURE,
     ),
 
