@@ -49,6 +49,23 @@
     <!-- END planet -->
   </tr>
 
+  <tr>
+    <th>{L_sys_temperature}</th>
+    <!-- BEGIN planet -->
+      <!-- IF planet.TEMP_MAX < 40 --> 
+        <!-- DEFINE $FIELD_COLOR = 'negative' -->
+      <!-- ELSEIF planet.TEMP_MAX > 40 --> 
+        <!-- DEFINE $FIELD_COLOR = 'positive' -->
+      <!-- ELSE -->
+        <!-- DEFINE $FIELD_COLOR = '' -->
+      <!-- ENDIF -->
+
+      <th class="c {$FIELD_COLOR}">
+        {planet.TEMP_MIN} / {planet.TEMP_MAX}
+      </th>
+    <!-- END planet -->
+  </tr>
+
   <td class="c" colspan="{amount}" align="left">{L_sys_resources}</td>
   <tr>
     <th>{L_sys_metal}<br>{L_imp_production}</th>

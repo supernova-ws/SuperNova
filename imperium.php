@@ -29,6 +29,9 @@ $template->assign_var('amount', count($planets) + 2);
 $fleet_id = 1;
 $fleets = array();
 
+$total['temp_min'] = 1000;
+$total['temp_max'] = -999;
+
 foreach ($planets as $planet_index => &$planet)
 {
   $list_planet_que = $ques[$planet_index];
@@ -60,7 +63,11 @@ foreach ($planets as $planet_index => &$planet)
 
     'ENERGY_CUR' => pretty_number($planet['energy_max'] - $planet['energy_used'], true, true),
     'ENERGY_MAX' => pretty_number($planet['energy_max']),
+
+    'TEMP_MIN' => $planet['temp_min'],
+    'TEMP_MAX' => $planet['temp_max'],
   )));
+
   $planet['fleet_list'] = $planet_template['fleet_list'];
   $planet['BUILDING_ID'] = $planet_template['BUILDING_ID'];
   $planet['hangar_que'] = $planet_template['hangar_que'];
@@ -77,6 +84,9 @@ foreach ($planets as $planet_index => &$planet)
   $total['crystal_perhour'] += $planet['crystal_perhour'];
   $total['deuterium_perhour'] += $planet['deuterium_perhour'];
   $total['energy_max'] += $planet['energy_max'];
+
+  $total['temp_min'] = min($planet['temp_min'], $total['temp_min']);
+  $total['temp_max'] = max($planet['temp_max'], $total['temp_max']);
 }
 
 tpl_assign_fleet($template, $fleets);
@@ -98,6 +108,9 @@ $template->assign_block_vars('planet', array_merge(array(
 
   'ENERGY_CUR' => pretty_number($total['energy']),
   'ENERGY_MAX' => pretty_number($total['energy_max']),
+
+  'TEMP_MIN' => $total['temp_min'],
+  'TEMP_MAX' => $total['temp_max'],
 )));
 unset($planet);
 

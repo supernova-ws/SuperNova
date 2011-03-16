@@ -90,6 +90,7 @@ $lang = array_merge($lang, array(
   'sys_goto'            => "Go",
 
   'sys_time'            => "Time",
+  'sys_temperature'		=> 'Temperature',
 
   'sys_no_task'         => "No task",
 
