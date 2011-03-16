@@ -65,7 +65,7 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
 
     if ($Caps['energy'][$ProdID]>0)
     {
-      $Caps['energy'][$ProdID] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, array(TECH_ENERGY, MRC_POWERMAN), $Caps['energy'][$ProdID]));
+      $Caps['energy'][$ProdID] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, array(MRC_POWERMAN), $Caps['energy'][$ProdID]));
 
       $Caps['planet']['energy_max'] += floor($Caps['energy'][$ProdID]);
     }
