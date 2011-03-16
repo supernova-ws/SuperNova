@@ -11,7 +11,7 @@
     <tr>
       <th>
         <span class="fl">{L_cr_view_prompt}</span>
-        <input type="text" name="raport" maxlength=16 size=35>
+        <input type="text" name="raport" maxlength=32 size=35>
         <input class="fr" type="submit" value="{L_cr_view_button}">
       </th>
     </tr>
