@@ -481,8 +481,8 @@ if ( defined('INSIDE')) {
       'deuterium' => 400,
       'energy' => 0,
       'factor' => 2,
-      'bonus' => 10,
-      'bonus_type' => BONUS_PERCENT,
+//      'bonus' => 10,
+//      'bonus_type' => BONUS_PERCENT,
     ),
 
     114 => array(
