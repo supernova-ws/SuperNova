@@ -262,24 +262,27 @@ $lang = array_merge($lang, array(
   'sys_governor'        => 'Губернатор',
 
   // News page & a bit of imperator page
-  'news_title'     => 'Новости',
-  'news_none'      => 'Нет новостей',
-  'news_new'       => 'НОВАЯ',
-  'news_future'    => 'АНОНС',
-  'news_more'      => 'Подробнее...',
+  'news_title'      => 'Новости',
+  'news_none'       => 'Нет новостей',
+  'news_new'        => 'НОВАЯ',
+  'news_future'     => 'АНОНС',
+  'news_more'       => 'Подробнее...',
+                    
+  'news_date'       => 'Дата',
+  'news_announce'   => 'Содержание',
+  'news_detail_url' => 'Ссылка на подробности',
+  'news_mass_mail'  => 'Разослать новость всем игрокам',
 
-  'news_date'      => 'Дата',
-  'news_announce'  => 'Содержание',
-  'news_total'     => 'Всего новостей: ',
+  'news_total'      => 'Всего новостей: ',
+                    
+  'news_add'        => 'Добавить новость',
+  'news_edit'       => 'Редактировать новость',
+  'news_copy'       => 'Скопировать новость',
+  'news_mode_new'   => 'Новая',
+  'news_mode_edit'  => 'Редактирование',
+  'news_mode_copy'  => 'Копия',
 
-  'news_detail_url'=> 'Ссылка на подробности',
-
-  'news_add'       => 'Добавить новость',
-  'news_edit'      => 'Редактировать новость',
-  'news_copy'      => 'Скопировать новость',
-  'news_mode_new'  => 'Новая',
-  'news_mode_edit' => 'Редактирование',
-  'news_mode_copy' => 'Копия',
+  'sys_administration' => 'Администрация сервера',
 
   // Shortcuts
   'shortcut_title'     => 'Закладки',

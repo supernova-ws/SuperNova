@@ -41,6 +41,17 @@ if ($user['authlevel'] >= 3)
     }
     doquery("UPDATE {{users}} SET `news_lastread` = `news_lastread` + 1;");
 
+    if(sys_get_param_int('news_mass_mail'))
+    {
+      if($detail_url)
+      {
+        $text = "{$text} <a href=\"{$detail_url}\">{$lang['news_more']}</a>";
+      }
+
+      doquery("INSERT INTO {{messages}} (message_owner, message_time, message_type, message_from, message_subject, message_text) SELECT `id`, now(), 1, '{$lang['sys_administration']}', '{$lang['news_title']}', '{$text}' FROM {{users}};");
+      doquery("UPDATE {{users}} SET {$messfields[1]} = {$messfields[1]} + 1, {$messfields[100]} = {$messfields[100]} + 1;");
+    }
+
     $mode = '';
   };
 
