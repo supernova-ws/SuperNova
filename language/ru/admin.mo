@@ -72,7 +72,7 @@ $lang['adm_am_ttle']  = "Добавить ресурсы";
 $lang['adm_am_add']   = "Подтвердить";
 $lang['adm_am_form']  = "Форма добавления ресурсов";
 
-$lang['adm_bn_ttle']  = "Забанить игрока";
+$lang['adm_ban_title']  = "Забанить игрока";
 $lang['adm_bn_plto']  = "Забанить игрока";
 $lang['adm_bn_name']  = "Имя игрока";
 $lang['adm_bn_reas']  = "Причина бана";

@@ -19,11 +19,11 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 includeLang('admin');
 
-$mode      = $_POST['mode'];
+$mode = sys_get_param_str('mode', 'banit');
+$name = sys_get_param_str('name');
+$action = sys_get_param_str('action');
 
-$parse     = $lang;
-if ($mode == 'banit') {
-  $name              = $_POST['name'];
+if ($mode == 'banit' && $action) {
   $reas              = $_POST['why'];
   $days              = $_POST['days'];
   $hour              = $_POST['hour'];
@@ -75,29 +75,24 @@ if ($mode == 'banit') {
     }else{
       $DoneMessage .= $lang['adm_bn_err2'];
     };
-  }else{
+  }
+  else
+  {
     $DoneMessage = sprintf($lang['adm_bn_errr'], $name);
   };
 
-  AdminMessage ($DoneMessage, $lang['adm_bn_ttle']);
-}elseif ($mode == 'unbanit') {
-  $nam = $_POST['name'];
-  //doquery("DELETE FROM {{banned}} WHERE who2='{$nam}'");
-  //doquery("UPDATE {{banned}} SET `longer` = {$time_now} WHERE who2='{$nam}'");
-  doquery("UPDATE {{users}} SET bana=0, banaday=0, `vacation` = {$time_now} WHERE username like '{$nam}';");
+  AdminMessage ($DoneMessage, $lang['adm_ban_title']);
+}
+elseif ($mode == 'unbanit' && $action)
+{
+  doquery("UPDATE {{users}} SET bana=0, banaday=0, `vacation` = {$time_now} WHERE username like '{$name}';");
   $DoneMessage       = $lang['adm_unbn_thpl'] ." ". $name ." ". $lang['adm_unbn_isbn'];
   AdminMessage ($DoneMessage, $lang['adm_unbn_ttle']);
 };
 
-$parse['name'] = SYS_mysqlSmartEscape($_GET['name']);
-
-$mode = SYS_mysqlSmartEscape($_GET['mode'] ? $_GET['mode'] : 'banit');
+$parse['name'] = $name;
 $parse['mode'] = $mode;
-$PageTpl = ($mode == 'banit') ? gettemplate("admin/banned") : gettemplate("admin/unbanned");
 
-// adm_bn_username
-
-$Page = parsetemplate($PageTpl, $parse);
-display( $Page, $lang['adm_bn_ttle'], false, '', true);
+display( parsetemplate(gettemplate("admin/admin_ban", true), $parse), $lang['adm_ban_title'], false, '', true);
 
 ?>
