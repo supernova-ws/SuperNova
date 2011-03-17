@@ -262,24 +262,27 @@ $lang = array_merge($lang, array(
   'sys_governor'        => 'Governor',
 
   // News page & a bit of imperator page
-  'news_title'     => 'News',
-  'news_none'      => 'No news',
-  'news_new'       => 'New',
-  'news_future'    => 'Announcement',
-  'news_more'      => 'Read More...',
+  'news_title'      => 'News',
+  'news_none'       => 'No news',
+  'news_new'        => 'New',
+  'news_future'     => 'Announcement',
+  'news_more'       => 'Read More...',
+                    
+  'news_date'       => 'Date',
+  'news_announce'   => 'Table of Contents',
+  'news_detail_url' => 'Link to more info',
+  'news_mass_mail'  => 'Send news to all players',
+                    
+  'news_total'      => 'Total news: ',
+                    
+  'news_add'        => 'Submit news',
+  'news_edit'       => 'Edit news',
+  'news_copy'       => 'Copy the news',
+  'news_mode_new'   => 'New',
+  'news_mode_edit'  => 'Editing',
+  'news_mode_copy'  => 'Copying',
 
-  'news_date'      => 'Date',
-  'news_announce'  => 'Table of Contents',
-  'news_total'     => 'Total news: ',
-
-  'news_detail_url'=> 'Link to more info',
-
-  'news_add'       => 'Submit news',
-  'news_edit'      => 'Edit news',
-  'news_copy'      => 'Copy the news',
-  'news_mode_new'  => 'New',
-  'news_mode_edit' => 'Editing',
-  'news_mode_copy' => 'Copying',
+  'sys_administration' => 'Server Administration',
 
   // Shortcuts
   'shortcut_title'     => 'Shortcuts',

@@ -6,10 +6,10 @@
       <tr>
         <td>{L_news_date}</td>
         <td>
-        <div style="float: left"><input name="dtDateTime" size="19" maxlength="19" value="{tsTimeStamp}"></div>
-        <div style="float: right"><!-- IF MODE == 'edit' -->{L_news_mode_edit}<!-- ELSEIF MODE == 'copy' -->{L_news_mode_copy}<!-- ELSE -->{L_news_new}<!-- ENDIF --></div>
-        <input type="hidden" name="id" value="{ID}">
-        <input type="hidden" name="mode" value="{MODE}">
+          <input class="fl" name="dtDateTime" size="19" maxlength="19" value="{tsTimeStamp}">
+          <span class="fr"><!-- IF MODE == 'edit' -->{L_news_mode_edit}<!-- ELSEIF MODE == 'copy' -->{L_news_mode_copy}<!-- ELSE -->{L_news_new}<!-- ENDIF --></span>
+          <input type="hidden" name="id" value="{ID}">
+          <input type="hidden" name="mode" value="{MODE}">
         </td>
       </tr>
 
@@ -19,9 +19,14 @@
       </tr>
       <tr>
         <td>{L_news_detail_url}</td>
-        <td><input name="detail_url" size=60 maxlength="250" value="{DETAIL_URL}"></td>
+        <td><input name="detail_url" size=62 maxlength="250" value="{DETAIL_URL}"></td>
       </tr>
-      <tr><td colspan="2" align="center"><input type=submit value="<!-- IF MODE == 'edit' -->{L_news_edit}<!-- ELSEIF MODE == 'copy' -->{L_news_copy}<!-- ELSE -->{L_news_add}<!-- ENDIF -->"></td></tr>
+      <tr>
+        <td colspan="2" align="center">
+          <span class="fl"><input type="checkbox" id="news_mass_mail" name="news_mass_mail" value="1">&nbsp;<label for="news_mass_mail">{L_news_mass_mail}</label></span>
+          <input class="fr" type=submit value="<!-- IF MODE == 'edit' -->{L_news_edit}<!-- ELSEIF MODE == 'copy' -->{L_news_copy}<!-- ELSE -->{L_news_add}<!-- ENDIF -->">
+        </td>
+      </tr>
     </form>
   </table>
 <!-- ENDIF -->
