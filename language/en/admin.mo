@@ -72,7 +72,7 @@ $lang['adm_am_ttle']  = "Add resources";
 $lang['adm_am_add']   = "Confirm";
 $lang['adm_am_form']  = "One-step add link form resources";
 
-$lang['adm_bn_ttle']  = "Banned Players";
+$lang['adm_ban_title']  = "Banned Players";
 $lang['adm_bn_plto']  = "Banned Players";
 $lang['adm_bn_name']  = "Player name";
 $lang['adm_bn_reas']  = "Reason for ban";
