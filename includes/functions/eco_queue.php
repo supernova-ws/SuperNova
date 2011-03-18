@@ -2,8 +2,8 @@
 
 function eco_que_process($user, &$planet, $time_left)
 {
-  $sn_data = $GLOBALS['sn_data'];
-  $lang = $GLOBALS['lang'];
+  $sn_data = &$GLOBALS['sn_data'];
+  $lang = &$GLOBALS['lang'];
 
   $que = array();
   $built = array();
@@ -20,6 +20,7 @@ function eco_que_process($user, &$planet, $time_left)
     foreach($que_types as $que_type_id => &$que_type_data)
     {
       $que_type_data['time_left'] = $time_left;
+      $que_type_data['unit_place'] = 0;
     }
     $que_types[QUE_STRUCTURES]['unit_list'] = $sn_data['groups']['build_allow'][$planet['planet_type']];
 
@@ -32,7 +33,7 @@ function eco_que_process($user, &$planet, $time_left)
       {
         continue;
       }
-
+//pdump($que_item_string);
       $que_item = explode(',', $que_item_string);
 
       // Skipping invalid negative values for unit_amount
@@ -52,22 +53,36 @@ function eco_que_process($user, &$planet, $time_left)
         'STRING' => "{$que_item_string};",
       );
 
-      $que_id    = $que_item['QUE'];
-      $que_data  = &$que_types[$que_id];
-
+      $que_id         = $que_item['QUE'];
+      $que_data       = &$que_types[$que_id];
       if(!in_array($unit_id, $que_data['unit_list']))
       {
         // Unit is in wrong que. It can't happens in normal circuimctances - hacked?
         // We will not proceed such units
         continue;
       }
+      $que_unit_place = &$que_data['unit_place'];
+      $time_left = &$que_data['time_left'];
+
+      $unit_db_name = $sn_data[$unit_id]['name'];
 
       $build_mode = $que_item['MODE'] == BUILD_CREATE ? 1 : -1;
       $amount_change = $build_mode * $que_item['AMOUNT'];
 
-      $unit_db_name = $sn_data[$unit_id]['name'];
+$unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $in_que[$unit_id];
+$build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
+$build_data = $build_data[$que_item['MODE']];
+      if($que_unit_place)
+      {
+        $que_item['TIME'] = $build_data[RES_TIME];
+      }
 
-      $time_left = &$que_data['time_left'];
+      $que_unit_place++;
+
+//pdump($unit_level, '$unit_level');
+//pdump($in_que[$unit_id], '$in_que[$unit_id]');
+//pdump($built[$unit_id], '$built[$unit_id]');
+
       if($time_left > 0)
       {  // begin processing que with time left on it
 
@@ -87,9 +102,9 @@ function eco_que_process($user, &$planet, $time_left)
             $amount_to_build *= $build_mode;
             $built[$unit_id] += $amount_to_build;
 
-            $unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $que['in_que'][$unit_id];
-            $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
-            $build_data = $build_data[$que_item['MODE']];
+//            $unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $in_que[$unit_id] + $built[$unit_id];
+//            $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
+//            $build_data = $build_data[$que_item['MODE']];
 
             $xp_incoming = 0;
             foreach($sn_data['groups']['resources_loot'] as $resource_id)
@@ -124,8 +139,8 @@ function eco_que_process($user, &$planet, $time_left)
         $in_que[$unit_id] += $amount_change;
         $in_que_abs[$unit_id] += $que_item['AMOUNT'];
 
-        $que_item['LEVEL']  = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $in_que[$unit_id];
-        $que_item['CHANGE'] = $in_que[$unit_id];
+        $que_item['LEVEL']  = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $in_que[$unit_id] + $built[$unit_id];
+        $que_item['CHANGE'] = $in_que[$unit_id] + $built[$unit_id];
 
         $que[$que_id][] = $que_item;
       }
@@ -135,7 +150,7 @@ function eco_que_process($user, &$planet, $time_left)
 
   $planet['que'] = $query_string;
   $query .= "`que` = '{$query_string}'";
-
+//die();
   return array(
     'que'     => $que,
     'built'   => $built,
