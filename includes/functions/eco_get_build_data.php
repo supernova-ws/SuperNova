@@ -73,7 +73,7 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
         "SELECT SUM(lab) AS effective_level
           FROM
           (
-            SELECT ({$lab_db_name} + 1) * 2 / pow(0.5, {$sn_data[35]['name']}) AS lab
+            SELECT ({$lab_db_name} + 1) * 2 * pow(0.5, {$sn_data[35]['name']}) AS lab
               FROM {{planets}}
                 WHERE id_owner='{$user['id']}' AND {$lab_db_name} >= {$lab_require}
                 ORDER BY {$lab_db_name} DESC
