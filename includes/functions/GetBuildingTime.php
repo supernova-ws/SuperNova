@@ -66,7 +66,7 @@ function GetBuildingTime ($user, $planet, $Element, $for_building = BUILD_CREATE
         "SELECT SUM(lab) AS laboratorio
           FROM
           (
-            SELECT ({$sn_data[31]['name']} + 1) * 2 / pow(0.5, {$sn_data[35]['name']}) AS lab
+            SELECT ({$sn_data[31]['name']} + 1) * 2 * pow(0.5, {$sn_data[35]['name']}) AS lab
               FROM {{planets}}
                 WHERE id_owner='{$user['id']}' AND {$sn_data[31]['name']} >= {$lab_require}
                 ORDER BY {$sn_data[31]['name']} DESC
