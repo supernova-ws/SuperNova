@@ -56,7 +56,7 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
       $lab_db_name = $sn_data[31]['name'];
       $lab_require = intval($unit_data['require'][31]);
       $tech_intergalactic = $tech_intergalactic + 1;
-/*
+
       $inves = doquery("SELECT SUM(`{$lab_db_name}`) AS `laboratorio`
         FROM
         (
@@ -66,20 +66,19 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
             ORDER BY `{$lab_db_name}` DESC
             LIMIT {$tech_intergalactic}
         ) AS subquery;", '', true);
-      $time = $time / (($inves['laboratorio'] + 1) * 2) * pow(0.5, $planet[$sn_data[35]['name']]);
-*/
+//      $time = $time / (($inves['laboratorio'] + 1) * 2) * pow(0.5, $planet[$sn_data[35]['name']]);
 
       $inves = doquery(
         "SELECT SUM(lab) AS effective_level
           FROM
           (
-            SELECT ({$lab_db_name} + 1) * 2 * pow(0.5, {$sn_data[35]['name']}) AS lab
+            SELECT ({$lab_db_name} + 1) * 2 / pow(0.5, {$sn_data[35]['name']}) AS lab
               FROM {{planets}}
                 WHERE id_owner='{$user['id']}' AND {$lab_db_name} >= {$lab_require}
-                ORDER BY {$lab_db_name} DESC
+                ORDER BY lab DESC
                 LIMIT {$tech_intergalactic}
           ) AS subquery;", '', true);
-      $time = $time * 1 / $inves['effective_level'];
+      $time = $time / $inves['effective_level'];
     }
     $mercenary = MRC_ACADEMIC;
   }
