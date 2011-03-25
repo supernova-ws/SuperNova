@@ -49,7 +49,6 @@ function GetBuildingTime ($user, $planet, $Element, $for_building = BUILD_CREATE
       $lab_require = intval($sn_data[$Element]['require'][31]);
       $limite = $intergal_lab + 1;
 
-      /*
       $inves = doquery("SELECT SUM(laboratory) AS laboratorio
         FROM
         (
@@ -59,17 +58,16 @@ function GetBuildingTime ($user, $planet, $Element, $for_building = BUILD_CREATE
             ORDER BY laboratory DESC
             LIMIT {$limite}
         ) AS subquery;", '', true);
-      $time = $time / (($inves['laboratorio'] + 1) * 2) * pow(0.5, $planet[$resource['35']]);
-      */
+//      $time = $time / (($inves['laboratorio'] + 1) * 2) * pow(0.5, $planet[$resource['35']]);
 
       $inves = doquery(
         "SELECT SUM(lab) AS laboratorio
           FROM
           (
-            SELECT ({$sn_data[31]['name']} + 1) * 2 * pow(0.5, {$sn_data[35]['name']}) AS lab
+            SELECT ({$sn_data[31]['name']} + 1) * 2 / pow(0.5, {$sn_data[35]['name']}) AS lab
               FROM {{planets}}
                 WHERE id_owner='{$user['id']}' AND {$sn_data[31]['name']} >= {$lab_require}
-                ORDER BY {$sn_data[31]['name']} DESC
+                ORDER BY lab DESC
                 LIMIT {$limite}
           ) AS subquery;", '', true);
       $time = $time / $inves['laboratorio'];
