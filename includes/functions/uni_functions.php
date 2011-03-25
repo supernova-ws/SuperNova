@@ -130,6 +130,12 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetN
       $planet['temp_max'] = $planet['temp_min'] + 40;
     }
 
+    if($HomeWorld)
+    {
+      $planet['temp_min'] = 0;
+      $planet['temp_max'] = $planet['temp_min'] + 40;
+    }
+
     $planet['image']       = $PlanetType[ rand( 0, count( $PlanetType ) -1 ) ];
     $planet['image']      .= $PlanetClass[ rand( 0, count( $PlanetClass ) - 1 ) ];
     $planet['image']      .= $PlanetDesign[ rand( 0, count( $PlanetDesign ) - 1 ) ];
