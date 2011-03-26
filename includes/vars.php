@@ -120,7 +120,7 @@ if ( defined('INSIDE')) {
         RES_METAL     => create_function ('$level, $production_factor, $temperature', 'return 0;'),
         RES_CRYSTAL   => create_function ('$level, $production_factor, $temperature', 'return 0;'),
         RES_DEUTERIUM => create_function ('$level, $production_factor, $temperature', 'return 0;'),
-        RES_ENERGY    => create_function ('$level, $production_factor, $temperature', 'return  ($temperature / 4 + 20) * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
+        RES_ENERGY    => create_function ('$level, $production_factor, $temperature', 'return  ($temperature / 5 + 15) * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
       ),
       'metal_perhour'     => 'return 0;',
       'crystal_perhour'   => 'return 0;',

@@ -538,8 +538,10 @@ class classConfig extends classPersistent
     'int_userbar_font'           => 'arialbd.ttf',
 
     // Chat settings
-    'chat_timeout'         => 900, // in seconds. Default = 15 min
-    'chat_admin_highlight' => '<font color=purple>$1</font>', // highlighting admin nick
+    'chat_timeout'             => 900, // in seconds. Default = 15 min
+    'chat_highlight_admin'     => '<font color=purple>$1</font>', // highlighting admin nick
+    'chat_highlight_operator'  => '<font color=red>$1</font>', // highlighting operator nick
+    'chat_highlight_moderator' => '<font color=green>$1</font>', // highlighting moderator nick
 
     //Roleplay system
     'rpg_officer'       =>  3, // Cost per officer level

@@ -770,7 +770,9 @@ CREATE TABLE `sn_users` (
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '(Place here code for banner)');
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '0');
 INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
-INSERT INTO `sn_config` VALUES ('chat_admin_highlight', '<font color=purple>$1</font>');
+INSERT INTO `sn_config` VALUES ('chat_highlight_admin', '<font color=purple>$1</font>');
+INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</font>');
+INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');

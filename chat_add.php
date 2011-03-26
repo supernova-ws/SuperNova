@@ -37,7 +37,11 @@ if ($msg && $user['username']) {
      $nick .= '(' . trim(strip_tags($tag['ally_tag'])) . ')';
    };
    if ($user['authlevel'] == 3) {
-     $nick = preg_replace("#(.+)#", $config->chat_admin_highlight, $nick); //isU
+     $nick = preg_replace("#(.+)#", $config->chat_highlight_admin, $nick); //isU
+   } elseif ($user['authlevel'] == 2) {
+     $nick = preg_replace("#(.+)#", $config->chat_highlight_operator, $nick); //isU
+   } elseif ($user['authlevel'] == 1) {
+     $nick = preg_replace("#(.+)#", $config->chat_highlight_moderator, $nick); //isU
    }
    $nick = addslashes ($nick);
    $msg = iconv('UTF-8', 'CP1251', $msg); // CHANGE IT !!!!!!!!!!!
