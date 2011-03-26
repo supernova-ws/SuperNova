@@ -569,6 +569,18 @@ switch(intval($config->db_version))
     doquery('COMMIT;');
     $new_version = 27;
 
+  case 27:
+    upd_log_version_update();
+
+    upd_check_key('chat_highlight_moderator', '<font color=green>$1</font>', !isset($config->chat_highlight_moderator));
+    upd_check_key('chat_highlight_operator', '<font color=red>$1</font>', !isset($config->chat_highlight_operator));
+    upd_check_key('chat_highlight_admin', $config->chat_admin_highlight, !isset($config->chat_highlight_admin));
+
+    upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('chat_admin_highlight');");
+
+  doquery('COMMIT;');
+  // $new_version = 28;
+
 /*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
 */
