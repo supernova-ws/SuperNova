@@ -13,7 +13,10 @@ define('INSTALL' , false);
 define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('admin');
+if($user['authlevel'] < 3)
+{
+  AdminMessage($lang['adm_err_denied']);
+}
 
 $template = gettemplate('admin/settings', true);
 

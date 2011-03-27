@@ -30,11 +30,11 @@ $sys_user_logged_in = $user && is_array($user) && isset($user['id']) && $user['i
 
 if(
   !($allow_anonymous || $sys_user_logged_in) ||
-  (defined('IN_ADMIN') && IN_ADMIN && $user['authlevel'] < 3)
+  (defined('IN_ADMIN') && IN_ADMIN && $user['authlevel'] < 1)
 )
 {
   setcookie($config->COOKIE_NAME, '', time() - 3600*25);
-  header('Location: login.php');
+  header('Location: ' . (IN_ADMIN == true ? '../' : '') .'login.php');
   ob_end_flush();
   die();
 }
@@ -66,6 +66,8 @@ if (defined('IN_ADMIN') && IN_ADMIN)
   {
     $dpath     = $UserSkin;
   }
+
+  includeLang('admin');
 }
 elseif($sys_user_logged_in)
 {

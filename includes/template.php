@@ -38,17 +38,20 @@ function ShowLeftMenu($Level = 0)
 {
   includeLang('leftmenu');
 
-  $template_name = $Level >= 3 ? 'admin/left_menu' : 'left_menu';
+  $template_name = $Level > 0 ? 'admin/left_menu' : 'left_menu';
   $template = gettemplate($template_name, true);
+
+  $template->assign_vars(array(
+    'USER_AUTHLEVEL'      => $GLOBALS['user']['authlevel'],
+    'USER_AUTHLEVEL_NAME' => $GLOBALS['lang']['user_level'][$GLOBALS['user']['authlevel']],
+  ));
 
   if ($Level < 1)
   {
-    global $lang, $user, $config;
+    global $config;
 
     $template->assign_vars(array(
-      'USER_AUTHLEVEL'      => $user['authlevel'],
-      'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
-      'new_announce_count'  => $user['news_lastread'],
+      'new_announce_count'  => $GLOBALS['user']['news_lastread'],
       'game_url'            => SN_ROOT_RELATIVE,
       'game_name'           => $config->game_name,
       'URL_RULES'           => $config->url_rules,

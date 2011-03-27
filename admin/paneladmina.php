@@ -14,13 +14,16 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
+if($user['authlevel'] < 3)
+{
+  AdminMessage($lang['adm_err_denied']);
+}
+
 $GET_action = SYS_mysqlSmartEscape($_GET['action']);
 $GET_result = SYS_mysqlSmartEscape($_GET['result']);
 $Pattern    = SYS_mysqlSmartEscape($_GET['player']);
 $NewLvl     = intval($_GET['authlvl']);
 $ip         = SYS_mysqlSmartEscape($_GET['ip']);
-
-includeLang('admin');
 
 $PanelMainTPL = gettemplate('admin/admin_panel_main');
 
@@ -92,7 +95,7 @@ if (isset($GET_result)) {
     case 'usr_level':
 
       # only for admins
-      if ($user['authlevel'] < 3)
+      if ($user['authlevel'] < 3 || $NewLevel >= $user['authlevel'])
       {
         message($lang['sys_noalloaw'], $lang['sys_noaccess']);
         die();

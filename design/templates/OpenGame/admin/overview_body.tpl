@@ -10,7 +10,6 @@
 <tr>
 	<th><a href="admin/overview.php?cmd=sort&type=id">{adm_ul_id}</a></th>
 	<th><a href="admin/overview.php?cmd=sort&type=username">{adm_ul_name}</a></th>
-	<th><a href="admin/overview.php?cmd=sort&type=user_lastip">{adm_ul_adip}</a></th>
 	<th><a href="admin/overview.php?cmd=sort&type=ally_name">{adm_ov_ally}</a></th>
 	<th>{adm_ov_point}</th>
 	<th><a href="admin/overview.php?cmd=sort&type=onlinetime">{adm_ov_activ}</a></th>
