@@ -13,7 +13,10 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('admin');
+if($user['authlevel'] < 1)
+{
+  AdminMessage($lang['adm_err_denied']);
+}
 
 $parse   = $lang;
 

@@ -14,6 +14,9 @@
 if (!defined('INSIDE')) {
 	die("attempt hacking!");
 }
+
+$lang['adm_err_denied']         = 'Access denied';
+
 $lang['adm_done']               = "Successfully Completed";
 $lang['adm_inactive_removed']   = '<li>Remove inactive players: %d</li>';
 $lang['adm_stat_title']         = "Update statistics";

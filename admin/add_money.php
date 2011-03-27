@@ -13,7 +13,12 @@ define('INSIDE'  , true);
 define('INSTALL' , false);
 define('IN_ADMIN', true);
 
-includeLang('admin');
+require('../common.' . substr(strrchr(__FILE__, '.'), 1));
+
+if($user['authlevel'] < 2)
+{
+  AdminMessage($lang['adm_err_denied']);
+}
 
 $mode      = $_POST['mode'];
 

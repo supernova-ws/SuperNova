@@ -13,6 +13,11 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
+if($user['authlevel'] < 1)
+{
+  AdminMessage($lang['adm_err_denied']);
+}
+
 includeLang('changelog');
 $template = gettemplate('changelog_table');
 

@@ -14,6 +14,9 @@
 if (!defined('INSIDE')) {
 	die("Обнаружена попытка взлома!");
 }
+
+$lang['adm_err_denied']         = 'Доступ запрещен';
+
 $lang['adm_done']               = "Успешно выполнено";
 $lang['adm_inactive_removed']   = '<li>Удалено неактивных записей игроков: %d</li>';
 $lang['adm_stat_title']         = "Обновление статистики";

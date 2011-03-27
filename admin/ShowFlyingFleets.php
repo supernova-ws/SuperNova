@@ -12,7 +12,10 @@ define('INSTALL' , false);
 define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('admin');
+if($user['authlevel'] < 2)
+{
+  AdminMessage($lang['adm_err_denied']);
+}
 
 $TableTPL     = gettemplate('admin/fleet_rows');
 $FlyingFleets = doquery ("SELECT * FROM `{{fleets}}` ORDER BY `fleet_end_time` ASC;");

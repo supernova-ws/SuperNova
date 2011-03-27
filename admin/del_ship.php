@@ -14,7 +14,11 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('admin');
+if($user['authlevel'] < 2)
+{
+  AdminMessage($lang['adm_err_denied']);
+}
+
 $mode      = $_POST['mode'];
 $PageTpl   = gettemplate("admin/del_ship");
 $parse     = $lang;

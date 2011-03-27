@@ -14,7 +14,10 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('admin');
+if($user['authlevel'] < 3)
+{
+  AdminMessage($lang['adm_err_denied']);
+}
 
 $mode      = $_POST['mode'];
 $PageTpl   = gettemplate("admin/admin_darkmatter", true);

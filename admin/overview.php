@@ -14,10 +14,13 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-  $GET_cmd  = SYS_mysqlSmartEscape($_GET['cmd']);
-  $TypeSort = SYS_mysqlSmartEscape($_GET['type']);
+if($user['authlevel'] < 1)
+{
+  AdminMessage($lang['adm_err_denied']);
+}
 
-includeLang('admin');
+$GET_cmd  = SYS_mysqlSmartEscape($_GET['cmd']);
+$TypeSort = SYS_mysqlSmartEscape($_GET['type']);
 
 if ($GET_cmd == 'sort') {
 } else {
@@ -50,7 +53,7 @@ while ( $TheUser = mysql_fetch_assoc($Last15Mins) ) {
   $Bloc['adm_ov_data_name']    = $TheUser['username'];
   $Bloc['adm_ov_data_agen']    = $TheUser['user_agent'];
   $Bloc['adm_ov_data_clip']    = $Color;
-  $Bloc['adm_ov_data_adip']    = $TheUser['user_lastip'];
+//  $Bloc['adm_ov_data_adip']    = $TheUser['user_lastip'];
   $Bloc['adm_ov_data_ally']    = $TheUser['ally_name'];
   $Bloc['adm_ov_data_point']   = pretty_number ( $UserPoints['total_points'] );
   $Bloc['adm_ov_data_activ']   = pretty_time ( time() - $TheUser['onlinetime'] );

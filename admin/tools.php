@@ -11,9 +11,12 @@ define('INSTALL' , false);
 define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-$mode = intval($_GET['mode'] ? $_GET['mode'] : $_POST['mode']);
+if($user['authlevel'] < 1)
+{
+  AdminMessage($lang['adm_err_denied']);
+}
 
-includeLang('admin');
+$mode = intval($_GET['mode'] ? $_GET['mode'] : $_POST['mode']);
 
 switch($mode){
   case 1:
