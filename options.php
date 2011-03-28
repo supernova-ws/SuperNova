@@ -27,7 +27,7 @@ if ($_POST && $mode == "change")  // Array ( [db_character]
     } else {
       $planet_protection = 0;
     }
-    doquery ("UPDATE {{planets}} SET `id_level` = '{$planet_protection}' WHERE `id_owner` = '{$user['id']}' LIMIT 1;");
+    doquery ("UPDATE {{planets}} SET `id_level` = '{$planet_protection}' WHERE `id_owner` = '{$user['id']}';");
   }
 
   $iduser = $user["id"];
@@ -285,9 +285,9 @@ foreach($lang_list as $lang_id => $lang_data)
   $parse['opt_lst_lang_data'] .= "<option value =\"{$lang_id}\" {$selected}>{$lang_data['LANG_NAME_NATIVE']}</option>";
 }
 
-if ($user['authlevel'] > 0) {
+if ($user['authlevel']) {
   $parse['adm_pl_prot_data']    = ($planetrow['id_level'] > 0) ? " checked='checked'/" : '';
-  $parse['IS_ADMIN'] = true;
+  $parse['IS_ADMIN'] = $user['authlevel'];
 }
 
 $parse['opt_usern_data'] = $user['username'];
