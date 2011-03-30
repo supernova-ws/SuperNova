@@ -7,16 +7,17 @@ if(sys_get_param_str('return_fleet'))
   $fleet_id  = sys_get_param_int('fleet_id');
   if($fleet_id)
   {
-    $FleetRow = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = '{$fleet_id}';", '', true);
+    $FleetRow = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = '{$fleet_id}' LIMIT 1;", '', true);
 
     if ($FleetRow['fleet_owner'] == $user['id'] && $FleetRow['fleet_mess'] == 0)
     {
-      $ReturnFlyingTime  = ($FleetRow['fleet_end_stay'] != 0 && $FleetRow['fleet_start_time'] < $time_now ? $FleetRow['fleet_start_time'] : $time_now) - $FleetRow['start_time'] + $time_now + 1;
+      $ReturnFlyingTime = ($FleetRow['fleet_end_stay'] != 0 && $FleetRow['fleet_start_time'] < $time_now ? $FleetRow['fleet_start_time'] : $time_now) - $FleetRow['start_time'] + $time_now + 1;
+      doquery("UPDATE {{fleets}} SET `fleet_start_time` = '{$time_now}', `fleet_end_stay` = '0', `fleet_end_time` = '{$ReturnFlyingTime}', `fleet_target_owner` = '{$user['id']}', `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_id}' LIMIT 1;");
 
-      $QryUpdateFleet  = "UPDATE {{fleets}} SET `fleet_start_time` = '{$time_now}', `fleet_end_stay` = '0', ";
-      $QryUpdateFleet .= "`fleet_end_time` = '{$ReturnFlyingTime}', `fleet_target_owner` = '{$user['id']}', `fleet_mess` = '1' ";
-      $QryUpdateFleet .= "WHERE `fleet_id` = '{$fleet_id}' LIMIT 1;";
-      doquery($QryUpdateFleet);
+      if($FleetRow['fleet_mission'] == MT_AKS)
+      {
+        doquery('DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});');
+      }
     }
     else
     {

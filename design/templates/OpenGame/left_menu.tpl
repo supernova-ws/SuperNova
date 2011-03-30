@@ -79,7 +79,7 @@
     <tr><th><a href="javascript:top.location.href='logout.php'" id="lm_logout">{L_Logout}</a></th></tr>
 
     <tr><td align="center"><a href="http://games.triolan.ua" target="_blank"><img border="0" src="design/images/banners/bannergtu.gif" alt="Games @ Triolan.UA"></font></a></td></tr>
-    <tr><th><a href="http://wow.triolan.com.ua/" target="_blank"><img border="0" src="design/images/banners/wow.gif" width="130" height="25" alt="Wow Triolan Server"></a></th></tr>
+<!--    <tr><th><a href="http://wow.triolan.com.ua/" target="_blank"><img border="0" src="design/images/banners/wow.gif" width="130" height="25" alt="Wow Triolan Server"></a></th></tr> -->
     <!-- IF ADV_LEFT_BOTTOM -->
     <tr><td align="center">{ADV_LEFT_BOTTOM}</td></tr>
     <!-- ENDIF -->
