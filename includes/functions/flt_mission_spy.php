@@ -73,8 +73,8 @@ function flt_spy_scan ( $target_planet, $Mode, $TitleString, $TargetUsername="" 
     $ResTo[0]   = 99;
     $Loops      = 1;
   } elseif ($Mode == 4) {
-    $ResFrom[0] = 100;
-    $ResTo[0]   = 199;
+    $ResFrom[0] = TECH_TECHNOLOGY;
+    $ResTo[0]   = TECH_COLONIZATION;
     $Loops      = 1;
   }
 
@@ -186,11 +186,11 @@ function flt_mission_spy($mission_data)
     }
     if ($spy_diff >= 7)
     {
-      $spy_info      = flt_spy_scan ( $target_user_row, 4, $lang['tech'][100] );
+      $spy_info      = flt_spy_scan ( $target_user_row, 4, $lang['tech'][TECH_TECHNOLOGY] );
       $spy_tech      = "<div class='spy_long'>{$spy_info}</div>";
 
       $spy_message .= $spy_tech;
-      coe_compress_add_units(array(109, 110, 111), $target_user_row, $combat_pack[0]);
+      coe_compress_add_units(array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR), $target_user_row, $combat_pack[0]);
     }
     $simulator_link = eco_sym_encode_replay($combat_pack, 'D');
 

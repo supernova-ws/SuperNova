@@ -106,7 +106,9 @@ function GetRestPrice ($user, $planet, $Element, $userfactor = true) {
 // $InResearch    -> Indicateur qu'il y a une Recherche en cours
 // $ThePlanet     -> Planete sur laquelle se realise la technologie eventuellement
 function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $ThePlanet, $que) {
-  global $lang, $resource, $reslist, $dpath, $_GET, $config;
+  global $lang, $resource, $reslist, $dpath, $config, $sn_data;
+
+  $sn_data_group_tech = $GLOBALS['sn_data']['groups']['tech'];
 
   $TheCommand = SYS_mysqlSmartEscape($_GET['cmd']);
   $Techno     = intval($_GET['tech']);
@@ -225,79 +227,80 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
   $TechRowTPL = gettemplate('buildings_research_row');
   $TechScrTPL = gettemplate('buildings_research_script');
 
-  foreach($lang['tech'] as $Tech => $TechName) {
-    if ($Tech > 105 && $Tech <= 199) {
-      if ( eco_can_build_unit($CurrentUser, $CurrentPlanet, $Tech)) {
-        $RowParse                = $lang;
-        $RowParse['dpath']       = $dpath;
-        $RowParse['tech_id']     = $Tech;
-        $building_level          = $CurrentUser[$resource[$Tech]];
-        $RowParse['tech_level']  = ($building_level == 0) ? "" : "( ". $lang['level']. " ".$building_level." )";
-        $RowParse['tech_name']   = $TechName;
-        $RowParse['tech_descr']  = $lang['info'][$Tech]['description_short'];
-        $RowParse['tech_price']  = GetElementPrice($CurrentUser, $CurrentPlanet, $Tech);
-        $SearchTime              = GetBuildingTime($CurrentUser, $CurrentPlanet, $Tech);
-        $RowParse['search_time'] = ShowBuildTime($SearchTime);
-        $RowParse['tech_restp']  = $lang['Rest_ress'] ." ". GetRestPrice ($CurrentUser, $CurrentPlanet, $Tech, true);
-        $CanBeDone               = IsElementBuyable($CurrentUser, $CurrentPlanet, $Tech);
+//  foreach($lang['tech'] as $Tech => $TechName)
+  foreach($sn_data_group_tech as $Tech)
+  {
+    if ( eco_can_build_unit($CurrentUser, $CurrentPlanet, $Tech))
+    {
+      $RowParse                = $lang;
+      $RowParse['dpath']       = $dpath;
+      $RowParse['tech_id']     = $Tech;
+      $building_level          = $CurrentUser[$resource[$Tech]];
+      $RowParse['tech_level']  = ($building_level == 0) ? "" : "( ". $lang['level']. " ".$building_level." )";
+      $RowParse['tech_name']   = $lang['tech'][$Tech];
+      $RowParse['tech_descr']  = $lang['info'][$Tech]['description_short'];
+      $RowParse['tech_price']  = GetElementPrice($CurrentUser, $CurrentPlanet, $Tech);
+      $SearchTime              = GetBuildingTime($CurrentUser, $CurrentPlanet, $Tech);
+      $RowParse['search_time'] = ShowBuildTime($SearchTime);
+      $RowParse['tech_restp']  = $lang['Rest_ress'] ." ". GetRestPrice ($CurrentUser, $CurrentPlanet, $Tech, true);
+      $CanBeDone               = IsElementBuyable($CurrentUser, $CurrentPlanet, $Tech);
 
-        // Arbre de decision de ce que l'on met dans la derniere case de la ligne
-        if (!$InResearch) {
-          $LevelToDo = 1 + $CurrentUser[$resource[$Tech]];
-          if ($CanBeDone) {
-            if (eco_lab_is_building ( $config, $que )) {
-              // Le laboratoire est cours de construction ou d'evolution
-              // Et dans la config du systeme, on ne permet pas la recherche pendant
-              // que le labo est en construction ou evolution !
-              if ($LevelToDo == 1) {
-                $TechnoLink  = "<font color=#FF0000>". $lang['Rechercher'] ."</font>";
-              } else {
-                $TechnoLink  = "<font color=#FF0000>". $lang['Rechercher'] ."<br>".$lang['level']." ".$LevelToDo."</font>";
-              }
-            } else {
-              $TechnoLink  = "<a href=\"buildings.php?mode=research&cmd=search&tech=".$Tech."\">";
-              if ($LevelToDo == 1) {
-                $TechnoLink .= "<font color=#00FF00>". $lang['Rechercher'] ."</font>";
-              } else {
-                $TechnoLink .= "<font color=#00FF00>". $lang['Rechercher'] ."<br>".$lang['level']." ".$LevelToDo."</font>";
-              }
-              $TechnoLink  .= "</a>";
-            }
-          } else {
+      // Arbre de decision de ce que l'on met dans la derniere case de la ligne
+      if (!$InResearch) {
+        $LevelToDo = 1 + $CurrentUser[$resource[$Tech]];
+        if ($CanBeDone) {
+          if (eco_lab_is_building ( $config, $que )) {
+            // Le laboratoire est cours de construction ou d'evolution
+            // Et dans la config du systeme, on ne permet pas la recherche pendant
+            // que le labo est en construction ou evolution !
             if ($LevelToDo == 1) {
               $TechnoLink  = "<font color=#FF0000>". $lang['Rechercher'] ."</font>";
             } else {
               $TechnoLink  = "<font color=#FF0000>". $lang['Rechercher'] ."<br>".$lang['level']." ".$LevelToDo."</font>";
             }
-          }
-
-        } else {
-          // Y a une construction en cours
-          if ($ThePlanet["b_tech_id"] == $Tech) {
-            // C'est le technologie en cours de recherche
-            $bloc       = $lang;
-            if ($ThePlanet['id'] != $CurrentPlanet['id']) {
-              // Ca se passe sur une autre planete
-              $bloc['tech_time']  = $ThePlanet["b_tech"] - time();
-              $bloc['tech_name']  = $lang['on'] ."<br>". $ThePlanet["name"];
-              $bloc['tech_home']  = $ThePlanet["id"];
-              $bloc['tech_id']    = $ThePlanet["b_tech_id"];
-            } else {
-              // Ca se passe sur la planete actuelle
-              $bloc['tech_time']  = $CurrentPlanet["b_tech"] - time();
-              $bloc['tech_name']  = "";
-              $bloc['tech_home']  = $CurrentPlanet["id"];
-              $bloc['tech_id']    = $CurrentPlanet["b_tech_id"];
-            }
-            $TechnoLink  = parsetemplate($TechScrTPL, $bloc);
           } else {
-            // Technologie pas en cours recherche
-            $TechnoLink  = "<center>-</center>";
+            $TechnoLink  = "<a href=\"buildings.php?mode=research&cmd=search&tech=".$Tech."\">";
+            if ($LevelToDo == 1) {
+              $TechnoLink .= "<font color=#00FF00>". $lang['Rechercher'] ."</font>";
+            } else {
+              $TechnoLink .= "<font color=#00FF00>". $lang['Rechercher'] ."<br>".$lang['level']." ".$LevelToDo."</font>";
+            }
+            $TechnoLink  .= "</a>";
+          }
+        } else {
+          if ($LevelToDo == 1) {
+            $TechnoLink  = "<font color=#FF0000>". $lang['Rechercher'] ."</font>";
+          } else {
+            $TechnoLink  = "<font color=#FF0000>". $lang['Rechercher'] ."<br>".$lang['level']." ".$LevelToDo."</font>";
           }
         }
-        $RowParse['tech_link']  = $TechnoLink;
-        $TechnoList            .= parsetemplate($TechRowTPL, $RowParse);
+
+      } else {
+        // Y a une construction en cours
+        if ($ThePlanet["b_tech_id"] == $Tech) {
+          // C'est le technologie en cours de recherche
+          $bloc       = $lang;
+          if ($ThePlanet['id'] != $CurrentPlanet['id']) {
+            // Ca se passe sur une autre planete
+            $bloc['tech_time']  = $ThePlanet["b_tech"] - time();
+            $bloc['tech_name']  = $lang['on'] ."<br>". $ThePlanet["name"];
+            $bloc['tech_home']  = $ThePlanet["id"];
+            $bloc['tech_id']    = $ThePlanet["b_tech_id"];
+          } else {
+            // Ca se passe sur la planete actuelle
+            $bloc['tech_time']  = $CurrentPlanet["b_tech"] - time();
+            $bloc['tech_name']  = "";
+            $bloc['tech_home']  = $CurrentPlanet["id"];
+            $bloc['tech_id']    = $CurrentPlanet["b_tech_id"];
+          }
+          $TechnoLink  = parsetemplate($TechScrTPL, $bloc);
+        } else {
+          // Technologie pas en cours recherche
+          $TechnoLink  = "<center>-</center>";
+        }
       }
+      $RowParse['tech_link']  = $TechnoLink;
+      $TechnoList            .= parsetemplate($TechRowTPL, $RowParse);
     }
   }
 
@@ -313,4 +316,5 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
 // 1.0 - Release initiale / modularisation / Reecriture / Commentaire / Mise en forme
 // 1.1 - BUG affichage de la techno en cours
 // 1.2 - Restructuration modification pour permettre d'annuller proprement une techno en cours
+
 ?>

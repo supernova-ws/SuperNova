@@ -573,7 +573,7 @@ function eco_planet_fields_max($planet)
 //
 function GetSpyLevel(&$user)
 {
-  return mrc_modify_value($user, $false, MRC_SPY, $user[$GLOBALS['sn_data'][106]['name']]);
+  return mrc_modify_value($user, $false, MRC_SPY, $user[$GLOBALS['sn_data'][TECH_SPY]['name']]);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -581,7 +581,7 @@ function GetSpyLevel(&$user)
 //
 function GetMaxFleets(&$user)
 {
-  return mrc_modify_value($user, false, MRC_COORDINATOR, 1 + $user[$GLOBALS['sn_data'][108]['name']]);
+  return mrc_modify_value($user, false, MRC_COORDINATOR, 1 + $user[$GLOBALS['sn_data'][TECH_COMPUTER]['name']]);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -589,7 +589,7 @@ function GetMaxFleets(&$user)
 //
 function GetMaxExpeditions(&$user)
 {
-  return floor(sqrt($user[$GLOBALS['sn_data'][124]['name']]));
+  return floor(sqrt($user[$GLOBALS['sn_data'][TECH_EXPEDITION]['name']]));
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -752,7 +752,7 @@ function sys_get_param_str($param_name, $default = '')
 
 function get_missile_range()
 {
-  return max(0, $GLOBALS['user'][$GLOBALS['sn_data'][117]['name']] * 5 - 1);
+  return max(0, $GLOBALS['user'][$GLOBALS['sn_data'][TECH_ENIGNE_ION]['name']] * 5 - 1);
 }
 
 function GetPhalanxRange($phalanx_level)

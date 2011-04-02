@@ -115,7 +115,7 @@ if($_POST['submit'] || $execute)
 else
 {
   $template = gettemplate('simulator', true);
-  $techs_and_officers = array(109, 110, 111, MRC_ADMIRAL);
+  $techs_and_officers = array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR, MRC_ADMIRAL);
 
   foreach($techs_and_officers as $tech_id)
   {

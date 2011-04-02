@@ -11,12 +11,12 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
   // $damageTo = 'shield';
   $damageTo = 'structure';
 
-  $MIPDamage = ($MIPs * $CombatCaps[503]['attack']) * (1 + 0.05 * $attackerTech[$resource[109]]);
+  $MIPDamage = ($MIPs * $CombatCaps[503]['attack']) * (1 + 0.05 * $attackerTech[$resource[TECH_WEAPON]]);
 
   foreach ($structures as $key => $structure)
   {
-    $structures[$key]['shield'] = $CombatCaps[$key]['shield'] * (1 + 0.05 * $defenceTech[$resource[111]]);
-    $structures[$key]['structure'] = ($pricelist[$key]['metal'] + $pricelist[$key]['crystal']) * (1 + 0.05 * $defenceTech[$resource[110]]);
+    $structures[$key]['shield'] = $CombatCaps[$key]['shield'] * (1 + 0.05 * $defenceTech[$resource[TECH_SHIELD]]);
+    $structures[$key]['structure'] = ($pricelist[$key]['metal'] + $pricelist[$key]['crystal']) * (1 + 0.05 * $defenceTech[$resource[TECH_ARMOR]]);
   };
 
   $startStructs = $structures;

@@ -16,7 +16,7 @@ if ( !defined('INSIDE') )
 }
 
 define('DB_VERSION', 27);
-define('SN_VERSION', '27a5');
+define('SN_VERSION', '27a6');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -242,6 +242,7 @@ define('STRUC_MOON_PHALANX', 42);
 define('STRUC_MOON_GATE', 43);
 
 // === Techs
+define('TECH_TECHNOLOGY', 100);
 define('TECH_SPY', 106);
 define('TECH_COMPUTER', 108);
 define('TECH_WEAPON', 109);

@@ -174,7 +174,7 @@ if ( defined('INSIDE')) {
 
     15  => array(
       'name' => 'nano_factory',
-      'require' => array(14 => 10, 108 => 10),
+      'require' => array(14 => 10, TECH_COMPUTER => 10),
       'cost' => array(
         RES_METAL     => 1000000,
         RES_CRYSTAL   => 500000,
@@ -355,7 +355,7 @@ if ( defined('INSIDE')) {
 
     43  => array(
       'name' => 'sprungtor',
-      'require' => array(41 => 1, 114 => 7),
+      'require' => array(41 => 1, TECH_HYPERSPACE => 7),
       'cost' => array(
         RES_METAL     => 2000000,
         RES_CRYSTAL   => 4000000,
@@ -372,7 +372,7 @@ if ( defined('INSIDE')) {
 
     44  => array(
       'name' => 'silo',
-      'require' => array(117 => 1),
+      'require' => array(TECH_ENIGNE_ION => 1),
       'cost' => array(
         RES_METAL     => 20000,
         RES_CRYSTAL   => 20000,
@@ -387,7 +387,7 @@ if ( defined('INSIDE')) {
       'type' => UNIT_STRUCTURE,
     ),
 
-    106 => array(
+    TECH_SPY => array(
       'name' => 'spy_tech',
       'require' => array(31 => 3),
       'cost' => array(
@@ -403,7 +403,7 @@ if ( defined('INSIDE')) {
       'factor' => 2,
     ),
 
-    108 => array(
+    TECH_COMPUTER => array(
       'name' => 'computer_tech',
       'require' => array(31 => 1),
       'cost' => array(
@@ -419,7 +419,7 @@ if ( defined('INSIDE')) {
       'factor' => 2,
     ),
 
-    109 => array(
+    TECH_WEAPON => array(
       'name' => 'military_tech',
       'require' => array(31 => 4),
       'cost' => array(
@@ -435,7 +435,7 @@ if ( defined('INSIDE')) {
       'factor' => 2,
     ),
 
-    110 => array(
+    TECH_SHIELD => array(
       'name' => 'shield_tech',
       'require' => array(TECH_ENERGY => 3, 31 => 6),
       'cost' => array(
@@ -451,7 +451,7 @@ if ( defined('INSIDE')) {
       'factor' => 2,
     ),
 
-    111 => array(
+    TECH_ARMOR => array(
       'name' => 'defence_tech',
       'require' => array(31 => 2),
       'cost' => array(
@@ -485,9 +485,9 @@ if ( defined('INSIDE')) {
 //      'bonus_type' => BONUS_PERCENT,
     ),
 
-    114 => array(
+    TECH_HYPERSPACE => array(
       'name' => 'hyperspace_tech',
-      'require' => array(TECH_ENERGY => 5, 110 => 5, 31 => 7),
+      'require' => array(TECH_ENERGY => 5, TECH_SHIELD => 5, 31 => 7),
       'cost' => array(
         RES_METAL     => 0,
         RES_CRYSTAL   => 4000,
@@ -501,7 +501,7 @@ if ( defined('INSIDE')) {
       'factor' => 2,
     ),
 
-    115 => array(
+    TECH_ENGINE_CHEMICAL => array(
       'name' => 'combustion_tech',
       'require' => array(TECH_ENERGY => 1, 31 => 1),
       'cost' => array(
@@ -518,7 +518,7 @@ if ( defined('INSIDE')) {
       'speed_increase' => 0.1,
     ),
 
-    117 => array(
+    TECH_ENIGNE_ION => array(
       'name' => 'impulse_motor_tech',
       'require' => array(TECH_ENERGY => 1, 31 => 2),
       'cost' => array(
@@ -535,9 +535,9 @@ if ( defined('INSIDE')) {
       'speed_increase' => 0.2,
     ),
 
-    118 => array(
+    TECH_ENGINE_HYPER => array(
       'name' => 'hyperspace_motor_tech',
-      'require' => array(114 => 3, 31 => 7),
+      'require' => array(TECH_HYPERSPACE => 3, 31 => 7),
       'cost' => array(
         RES_METAL     => 10000,
         RES_CRYSTAL   => 20000,
@@ -552,7 +552,7 @@ if ( defined('INSIDE')) {
       'speed_increase' => 0.3,
     ),
 
-    120 => array(
+    TECH_LASER => array(
       'name' => 'laser_tech',
       'require' => array(31 => 1, TECH_ENERGY => 2),
       'cost' => array(
@@ -568,9 +568,9 @@ if ( defined('INSIDE')) {
       'factor' => 2,
     ),
 
-    121 => array(
+    TECH_ION => array(
       'name' => 'ionic_tech',
-      'require' => array(31 => 4, 120 => 5, TECH_ENERGY => 4),
+      'require' => array(31 => 4, TECH_LASER => 5, TECH_ENERGY => 4),
       'cost' => array(
         RES_METAL     => 1000,
         RES_CRYSTAL   => 300,
@@ -584,9 +584,9 @@ if ( defined('INSIDE')) {
       'factor' => 2,
     ),
 
-    122 => array(
+    TECH_PLASMA => array(
       'name' => 'buster_tech',
-      'require' => array(31 => 5, TECH_ENERGY => 8, 120 => 10, 121 => 5),
+      'require' => array(31 => 5, TECH_ENERGY => 8, TECH_LASER => 10, TECH_ION => 5),
       'cost' => array(
         RES_METAL     => 2000,
         RES_CRYSTAL   => 4000,
@@ -600,9 +600,9 @@ if ( defined('INSIDE')) {
       'factor' => 2,
     ),
 
-    123 => array(
+    TECH_RESEARCH => array(
       'name' => 'intergalactic_tech',
-      'require' => array(31 => 10, 108 => 8, 114 => 8),
+      'require' => array(31 => 10, TECH_COMPUTER => 8, TECH_HYPERSPACE => 8),
       'cost' => array(
         RES_METAL     => 240000,
         RES_CRYSTAL   => 400000,
@@ -616,9 +616,9 @@ if ( defined('INSIDE')) {
       'factor' => 2,
     ),
 
-    124 => array(
+    TECH_EXPEDITION => array(
       'name' => 'expedition_tech',
-      'require' => array(31 => 3, 108 => 4, 117 => 3),
+      'require' => array(31 => 3, TECH_COMPUTER => 4, TECH_ENIGNE_ION => 3),
       'cost' => array(
         RES_METAL     => 4000,
         RES_CRYSTAL   => 8000,
@@ -632,9 +632,9 @@ if ( defined('INSIDE')) {
       'factor' => 2,
     ),
 
-    150 => array(
+    TECH_COLONIZATION => array(
       'name' => 'colonisation_tech',
-      'require' => array(31 => 3, TECH_ENERGY => 5, 111 => 2),
+      'require' => array(31 => 3, TECH_ENERGY => 5, TECH_ARMOR => 2),
       'cost' => array(
         RES_METAL     => 1000,
         RES_CRYSTAL   => 4000,
@@ -648,7 +648,7 @@ if ( defined('INSIDE')) {
       'factor' => 2,
     ),
 
-    199 => array(
+    TECH_GRAVITON => array(
       'name' => 'graviton_tech',
       'require' => array(31 => 12),
       'cost' => array(
@@ -666,7 +666,7 @@ if ( defined('INSIDE')) {
 
     SHIP_CARGO_SMALL => array(
       'name' => 'small_ship_cargo',
-      'require' => array(21 => 2, 115 => 2),
+      'require' => array(21 => 2, TECH_ENGINE_CHEMICAL => 2),
       'cost' => array(
         RES_METAL     => 2000,
         RES_CRYSTAL   => 2000,
@@ -679,24 +679,24 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 5000,
-      'tech' => 115,
+      'tech' => TECH_ENGINE_CHEMICAL,
       'speed' => 5000,
       'consumption' => 20,
       'tech_level' => 5,
-      'tech2' => 117,
+      'tech2' => TECH_ENIGNE_ION,
       'speed2' => 10000,
       'consumption2' => 40,
       'shield' => 10,
       'attack' => 5,
       'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 100.01, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 250, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 100, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 250, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 400,
       'stackable' => true,
     ),
 
     SHIP_CARGO_BIG => array(
       'name' => 'big_ship_cargo',
-      'require' => array(21 => 4, 115 => 6),
+      'require' => array(21 => 4, TECH_ENGINE_CHEMICAL => 6),
       'cost' => array(
         RES_METAL     => 6000,
         RES_CRYSTAL   => 6000,
@@ -709,20 +709,20 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 25000,
-      'tech' => 115,
+      'tech' => TECH_ENGINE_CHEMICAL,
       'speed' => 7500,
       'consumption' => 50,
       'shield' => 25,
       'attack' => 5,
       'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 100.01, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 250, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 100, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 250, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 1200,
       'stackable' => true,
     ),
 
     SHIP_CARGO_SUPER => array(
       'name' => 'supercargo',
-      'require' => array(21 => 8, 117 => 5, MRC_STOCKMAN => 1),
+      'require' => array(21 => 8, TECH_ENIGNE_ION => 5, MRC_STOCKMAN => 1),
       'cost' => array(
         RES_METAL     => 25000,
         RES_CRYSTAL   => 15000,
@@ -735,20 +735,20 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 100000,
-      'tech' => 117,
+      'tech' => TECH_ENIGNE_ION,
       'speed' => 5000,
       'consumption' => 100,
       'shield' => 50,
       'attack' => 10,
       'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
-      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 100.01, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 250, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 100, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 250, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
       'armor' => 3000,
       'stackable' => true,
     ),
 
     SHIP_FIGHTER_LIGHT => array(
       'name' => 'light_hunter',
-      'require' => array(21 => 1, 115 => 1),
+      'require' => array(21 => 1, TECH_ENGINE_CHEMICAL => 1),
       'cost' => array(
         RES_METAL     => 3000,
         RES_CRYSTAL   => 1000,
@@ -761,7 +761,7 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 50,
-      'tech' => 115,
+      'tech' => TECH_ENGINE_CHEMICAL,
       'speed' => 12500,
       'consumption' => 20,
       'shield' => 10,
@@ -774,7 +774,7 @@ if ( defined('INSIDE')) {
 
     SHIP_FIGHTER_HEAVY => array(
       'name' => 'heavy_hunter',
-      'require' => array(21 => 3, 111 => 2, 117 => 2),
+      'require' => array(21 => 3, TECH_ARMOR => 2, TECH_ENIGNE_ION => 2),
       'cost' => array(
         RES_METAL     => 6000,
         RES_CRYSTAL   => 4000,
@@ -787,7 +787,7 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 100,
-      'tech' => 117,
+      'tech' => TECH_ENIGNE_ION,
       'speed' => 10000,
       'consumption' => 75,
       'shield' => 25,
@@ -800,7 +800,7 @@ if ( defined('INSIDE')) {
 
     SHIP_DESTROYER => array(
       'name' => 'crusher',
-      'require' => array(21 => 5, 117 => 4, 121 => 2),
+      'require' => array(21 => 5, TECH_ENIGNE_ION => 4, TECH_ION => 2),
       'cost' => array(
         RES_METAL     => 20000,
         RES_CRYSTAL   => 7000,
@@ -813,7 +813,7 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 800,
-      'tech' => 117,
+      'tech' => TECH_ENIGNE_ION,
       'speed' => 15000,
       'consumption' => 300,
       'shield' => 50,
@@ -826,7 +826,7 @@ if ( defined('INSIDE')) {
 
     SHIP_CRUISER => array(
       'name' => 'battle_ship',
-      'require' => array(21 => 7, 118 => 4),
+      'require' => array(21 => 7, TECH_ENGINE_HYPER => 4),
       'cost' => array(
         RES_METAL     => 45000,
         RES_CRYSTAL   => 15000,
@@ -839,7 +839,7 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 1500,
-      'tech' => 118,
+      'tech' => TECH_ENGINE_HYPER,
       'speed' => 10000,
       'consumption' => 500,
       'shield' => 200,
@@ -852,7 +852,7 @@ if ( defined('INSIDE')) {
 
     SHIP_COLONIZER => array(
       'name' => 'colonizer',
-      'require' => array(21 => 4, 117 => 3, 150 => 2),
+      'require' => array(21 => 4, TECH_ENIGNE_ION => 3, TECH_COLONIZATION => 2),
       'cost' => array(
         RES_METAL     => 10000,
         RES_CRYSTAL   => 20000,
@@ -865,7 +865,7 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 7500,
-      'tech' => 117,
+      'tech' => TECH_ENIGNE_ION,
       'speed' => 2500,
       'consumption' => 1000,
       'shield' => 100,
@@ -878,7 +878,7 @@ if ( defined('INSIDE')) {
 
     SHIP_RECYCLER => array(
       'name' => 'recycler',
-      'require' => array(21 => 4, 115 => 6, 110 => 2),
+      'require' => array(21 => 4, TECH_ENGINE_CHEMICAL => 6, TECH_SHIELD => 2),
       'cost' => array(
         RES_METAL     => 10000,
         RES_CRYSTAL   => 6000,
@@ -891,7 +891,7 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 20000,
-      'tech' => 115,
+      'tech' => TECH_ENGINE_CHEMICAL,
       'speed' => 2000,
       'consumption' => 300,
       'shield' => 10,
@@ -904,7 +904,7 @@ if ( defined('INSIDE')) {
 
     SHIP_SPY => array(
       'name' => 'spy_sonde',
-      'require' => array(21 => 3, 115 => 3, 106 => 2),
+      'require' => array(21 => 3, TECH_ENGINE_CHEMICAL => 3, TECH_SPY => 2),
       'cost' => array(
         RES_METAL     => 0,
         RES_CRYSTAL   => 1000,
@@ -917,7 +917,7 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 5,
-      'tech' => 115,
+      'tech' => TECH_ENGINE_CHEMICAL,
       'speed' => 100000000,
       'consumption' => 1,
       'shield' => 0.01,
@@ -930,7 +930,7 @@ if ( defined('INSIDE')) {
 
     SHIP_BOMBER => array(
       'name' => 'bomber_ship',
-      'require' => array(117 => 6, 21 => 8, 122 => 5),
+      'require' => array(TECH_ENIGNE_ION => 6, 21 => 8, TECH_PLASMA => 5),
       'cost' => array(
         RES_METAL     => 50000,
         RES_CRYSTAL   => 25000,
@@ -943,11 +943,11 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 500,
-      'tech' => 117,
+      'tech' => TECH_ENIGNE_ION,
       'speed' => 4000,
       'consumption' => 1000,
       'tech_level' => 8,
-      'tech2' => 118,
+      'tech2' => TECH_ENGINE_HYPER,
       'speed2' => 5000,
       'consumption2' => 1250,
       'shield' => 500,
@@ -973,7 +973,7 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 0,
-      'tech' => 115,
+      'tech' => TECH_ENGINE_CHEMICAL,
       'speed' => 0,
       'consumption' => 0,
       'shield' => 10,
@@ -996,7 +996,7 @@ if ( defined('INSIDE')) {
 
     SHIP_DESTRUCTOR => array(
       'name' => 'destructor',
-      'require' => array(21 => 9, 114 => 5, 118 => 6),
+      'require' => array(21 => 9, TECH_HYPERSPACE => 5, TECH_ENGINE_HYPER => 6),
       'cost' => array(
         RES_METAL     => 60000,
         RES_CRYSTAL   => 50000,
@@ -1009,7 +1009,7 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 2000,
-      'tech' => 118,
+      'tech' => TECH_ENGINE_HYPER,
       'speed' => 5000,
       'consumption' => 1000,
       'shield' => 500,
@@ -1022,7 +1022,7 @@ if ( defined('INSIDE')) {
 
     SHIP_DEATH_STAR => array(
       'name' => 'dearth_star',
-      'require' => array(21 => 12, 114 => 6, 118 => 7, 199 => 1, MRC_DESTRUCTOR => 1),
+      'require' => array(21 => 12, TECH_HYPERSPACE => 6, TECH_ENGINE_HYPER => 7, TECH_GRAVITON => 1, MRC_DESTRUCTOR => 1),
       'cost' => array(
         RES_METAL     => 5000000,
         RES_CRYSTAL   => 4000000,
@@ -1035,7 +1035,7 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 1000000,
-      'tech' => 118,
+      'tech' => TECH_ENGINE_HYPER,
       'speed' => 100,
       'consumption' => 1,
       'shield' => 50000,
@@ -1048,7 +1048,7 @@ if ( defined('INSIDE')) {
 
     SHIP_BATTLESHIP => array(
       'name' => 'battleship',
-      'require' => array(21 => 8, 114 => 5, 118 => 5, 120 => 12),
+      'require' => array(21 => 8, TECH_HYPERSPACE => 5, TECH_ENGINE_HYPER => 5, TECH_LASER => 12),
       'cost' => array(
         RES_METAL     => 30000,
         RES_CRYSTAL   => 40000,
@@ -1061,7 +1061,7 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 750,
-      'tech' => 118,
+      'tech' => TECH_ENGINE_HYPER,
       'speed' => 10000,
       'consumption' => 250,
       'shield' => 400,
@@ -1074,7 +1074,7 @@ if ( defined('INSIDE')) {
 
     SHIP_SUPERNOVA => array(
       'name' => 'supernova',
-      'require' => array(21 => 15, 114 => 7, 118 => 9, 199 => 1, MRC_ASSASIN => 1),
+      'require' => array(21 => 15, TECH_HYPERSPACE => 7, TECH_ENGINE_HYPER => 9, TECH_GRAVITON => 1, MRC_ASSASIN => 1),
       'cost' => array(
         RES_METAL     => 20000000,
         RES_CRYSTAL   => 15000000,
@@ -1087,7 +1087,7 @@ if ( defined('INSIDE')) {
       'energy' => 0,
       'factor' => 1,
       'capacity' => 2000000,
-      'tech' => 118,
+      'tech' => TECH_ENGINE_HYPER,
       'speed' => 150,
       'consumption' => 250,
       'shield' => 1000000,
@@ -1126,7 +1126,7 @@ if ( defined('INSIDE')) {
 
     402 => array(
       'name' => 'small_laser',
-      'require' => array(TECH_ENERGY => 1, 21 => 2, 120 => 3),
+      'require' => array(TECH_ENERGY => 1, 21 => 2, TECH_LASER => 3),
       'cost' => array(
         RES_METAL     => 1500,
         RES_CRYSTAL   => 500,
@@ -1148,7 +1148,7 @@ if ( defined('INSIDE')) {
 
     403 => array(
       'name' => 'big_laser',
-      'require' => array(TECH_ENERGY => 3, 21 => 4, 120 => 6),
+      'require' => array(TECH_ENERGY => 3, 21 => 4, TECH_LASER => 6),
       'cost' => array(
         RES_METAL     => 6000,
         RES_CRYSTAL   => 2000,
@@ -1170,7 +1170,7 @@ if ( defined('INSIDE')) {
 
     404 => array(
       'name' => 'gauss_canyon',
-      'require' => array(21 => 6, TECH_ENERGY => 6, 109 => 3, 110 => 1),
+      'require' => array(21 => 6, TECH_ENERGY => 6, TECH_WEAPON => 3, TECH_SHIELD => 1),
       'cost' => array(
         RES_METAL     => 20000,
         RES_CRYSTAL   => 15000,
@@ -1192,7 +1192,7 @@ if ( defined('INSIDE')) {
 
     405 => array(
       'name' => 'ionic_canyon',
-      'require' => array(21 => 4, 121 => 4),
+      'require' => array(21 => 4, TECH_ION => 4),
       'cost' => array(
         RES_METAL     => 2000,
         RES_CRYSTAL   => 6000,
@@ -1214,7 +1214,7 @@ if ( defined('INSIDE')) {
 
     406 => array(
       'name' => 'buster_canyon',
-      'require' => array(21 => 8, 122 => 7),
+      'require' => array(21 => 8, TECH_PLASMA => 7),
       'cost' => array(
         RES_METAL     => 50000,
         RES_CRYSTAL   => 50000,
@@ -1236,7 +1236,7 @@ if ( defined('INSIDE')) {
 
     407 => array(
       'name' => 'small_protection_shield',
-      'require' => array(110 => 2, 21 => 1),
+      'require' => array(TECH_SHIELD => 2, 21 => 1),
       'cost' => array(
         RES_METAL     => 10000,
         RES_CRYSTAL   => 10000,
@@ -1258,7 +1258,7 @@ if ( defined('INSIDE')) {
 
     408 => array(
       'name' => 'big_protection_shield',
-      'require' => array(110 => 6, 21 => 6),
+      'require' => array(TECH_SHIELD => 6, 21 => 6),
       'cost' => array(
         RES_METAL     => 50000,
         RES_CRYSTAL   => 50000,
@@ -1588,7 +1588,10 @@ if ( defined('INSIDE')) {
       ),
 
       // Tech list
-      'tech'      => array ( 106, 108, 109, 110, 111, TECH_ENERGY, 114, 115, 117, 118, 120, 121, 122, 123, 124, 150, 199),
+      'tech'      => array (
+        TECH_SPY, TECH_COMPUTER, TECH_WEAPON, TECH_SHIELD, TECH_ARMOR, TECH_ENERGY, TECH_HYPERSPACE,
+        TECH_ENGINE_CHEMICAL, TECH_ENIGNE_ION, TECH_ENGINE_HYPER, TECH_LASER, TECH_ION, TECH_PLASMA,
+        TECH_RESEARCH, TECH_EXPEDITION, TECH_COLONIZATION, TECH_GRAVITON),
 
       // Mercenary list
       'mercenaries' => array (

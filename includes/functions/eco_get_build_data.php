@@ -46,7 +46,7 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
   }
   elseif (in_array($unit_id, $sn_groups['tech']))
   {
-    $tech_intergalactic = $user[$sn_data[123]['name']];
+    $tech_intergalactic = $user[$sn_data[TECH_RESEARCH]['name']];
     if ( $tech_intergalactic < 1 )
     {
       $time = $time * pow(0.5, $planet[$sn_data[35]['name']]) / (($planet[$sn_data[31]['name']] + 1) * 2);
