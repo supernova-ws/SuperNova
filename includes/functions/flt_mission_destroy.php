@@ -85,8 +85,8 @@ function flt_mission_destroy($mission_data)
   $message .= "<br><br>";
   $message .= $lang['sys_chance_moon_destroy'].intval($MoonDestChance)."%. <br>".$lang['sys_chance_rips_destroy'].intval($RipDestChance)."%";
 
-  SendSimpleMessage ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_moon_destruction_report'], $message );
-  SendSimpleMessage ( $destination_planet['id_owner'], '', $fleet_row['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_moon_destruction_report'], $message );
+  msg_send_simple_message ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_moon_destruction_report'], $message );
+  msg_send_simple_message ( $destination_planet['id_owner'], '', $fleet_row['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_moon_destruction_report'], $message );
 
   return $result;
 }

@@ -65,7 +65,7 @@ while ($shortcut = mysql_fetch_assoc($query))
   $template->assign_block_vars('shortcut', array(
     'ID'          => $shortcut['shortcut_id'],
     'TEXT'        => $shortcut['shortcut_text'],
-    'COORDINATES' => INT_makeCoordinates($shortcut, 'shortcut_'),
+    'COORDINATES' => uni_render_coordinates($shortcut, 'shortcut_'),
     'PLANET_TYPE' => $lang['sys_planet_type'][$shortcut['shortcut_planet_type']],
   ));
 }

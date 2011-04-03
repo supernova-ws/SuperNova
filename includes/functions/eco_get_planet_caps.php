@@ -1,6 +1,6 @@
 <?php
 
-function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
+function ECO_getPlanetCaps($user, &$planet_row)
 {
   global $sn_data, $resource, $config;
 
@@ -9,15 +9,15 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
 
   $storage_overflowed_size = BASE_STORAGE_SIZE * MAX_OVERFLOW;
   $Caps = array( 'planet' => array(
-    'metal'         => $CurrentPlanet['metal'],
-    'crystal'       => $CurrentPlanet['crystal'],
-    'deuterium'     => $CurrentPlanet['deuterium'],
-    'metal_max'     => floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $CurrentPlanet[$resource[22]]))),
-    'crystal_max'   => floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $CurrentPlanet[$resource[23]]))),
-    'deuterium_max' => floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $CurrentPlanet[$resource[24]]))),
+    'metal'         => $planet_row['metal'],
+    'crystal'       => $planet_row['crystal'],
+    'deuterium'     => $planet_row['deuterium'],
+    'metal_max'     => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$resource[22]]))),
+    'crystal_max'   => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$resource[23]]))),
+    'deuterium_max' => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$resource[24]]))),
   ));
 
-  if ($CurrentPlanet['planet_type'] == 3)
+  if ($planet_row['planet_type'] == 3)
   {
     return $Caps;
   }
@@ -25,8 +25,8 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
   $config_resource_multiplier = $config->resource_multiplier;
 
   // Calcul de production linéaire des divers types
-  $BuildTemp = $CurrentPlanet['temp_max'];
-  $BuildEnergyTech = $CurrentUser['energy_tech'];
+  $BuildTemp = $planet_row['temp_max'];
+  $BuildEnergyTech = $user['energy_tech'];
 
   $Caps['metal_perhour'][0]     = $config->metal_basic_income     * $config_resource_multiplier;
   $Caps['crystal_perhour'][0]   = $config->crystal_basic_income   * $config_resource_multiplier;
@@ -38,13 +38,13 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
   {
     $unit_data = $sn_data[$ProdID];
 
-    $BuildLevel       = $CurrentPlanet[ $resource[$ProdID] ];
-    $BuildLevelFactor = $CurrentPlanet[ "{$resource[$ProdID]}_porcent" ];
+    $BuildLevel       = $planet_row[ $resource[$ProdID] ];
+    $BuildLevelFactor = $planet_row[ "{$resource[$ProdID]}_porcent" ];
 
     $Caps['energy'][$ProdID] = floor(eval($unit_data['energy_perhour']));
     if ($ProdID == 12)
     {
-      if ($CurrentPlanet['deuterium'] > 0)
+      if ($planet_row['deuterium'] > 0)
       {
         $Caps['deuterium_perhour'][$ProdID] = floor( eval ( $unit_data['deuterium_perhour'] ));
       }
@@ -57,15 +57,15 @@ function ECO_getPlanetCaps($CurrentUser, &$CurrentPlanet)
     {
       if (in_array($ProdID, $sn_group_structures))
       {
-        $Caps['metal_perhour'][$ProdID]     += floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, eval($unit_data['metal_perhour']) * $config_resource_multiplier));
-        $Caps['crystal_perhour'][$ProdID]   += floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, eval($unit_data['crystal_perhour']) * $config_resource_multiplier));
-        $Caps['deuterium_perhour'][$ProdID] += floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, eval($unit_data['deuterium_perhour']) * $config_resource_multiplier));
+        $Caps['metal_perhour'][$ProdID]     += floor(mrc_modify_value($user, $planet_row, MRC_GEOLOGIST, eval($unit_data['metal_perhour']) * $config_resource_multiplier));
+        $Caps['crystal_perhour'][$ProdID]   += floor(mrc_modify_value($user, $planet_row, MRC_GEOLOGIST, eval($unit_data['crystal_perhour']) * $config_resource_multiplier));
+        $Caps['deuterium_perhour'][$ProdID] += floor(mrc_modify_value($user, $planet_row, MRC_GEOLOGIST, eval($unit_data['deuterium_perhour']) * $config_resource_multiplier));
       }
     };
 
     if ($Caps['energy'][$ProdID]>0)
     {
-      $Caps['energy'][$ProdID] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, array(MRC_POWERMAN), $Caps['energy'][$ProdID]));
+      $Caps['energy'][$ProdID] = floor(mrc_modify_value($user, $planet_row, array(MRC_POWERMAN), $Caps['energy'][$ProdID]));
 
       $Caps['planet']['energy_max'] += floor($Caps['energy'][$ProdID]);
     }

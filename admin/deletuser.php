@@ -6,25 +6,25 @@
  * @version 1.0
  * @copyright 2008 by Tom1991 for XNova
  */
-
-define('INSIDE'  , true);
-define('INSTALL' , false);
+define('INSIDE', true);
+define('INSTALL', false);
 define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 3)
+if ($user['authlevel'] < 3)
 {
   AdminMessage($lang['adm_err_denied']);
 }
 
-$PageTpl = gettemplate( "admin/deletuser" );
+$PageTpl = gettemplate("admin/deletuser");
 
-if ( $mode != "delet" ) {
-        $parse['adm_bt_delet'] = $lang['adm_bt_delet'];
+if ($mode != "delet")
+{
+  $parse['adm_bt_delet'] = $lang['adm_bt_delet'];
 }
 
-$Page = parsetemplate( $PageTpl, $parse );
-display ( $Page, $lang['adminpanel'], false, '', true );
+$Page = parsetemplate($PageTpl, $parse);
+display($Page, $lang['adminpanel'], false, '', true);
 
 ?>

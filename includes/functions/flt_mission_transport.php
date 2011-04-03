@@ -34,21 +34,21 @@ function flt_mission_transport($mission_data)
   $TargetOwner      = $destination_planet['id_owner'];
 
   $Message = sprintf( $lang['sys_tran_mess_owner'],
-              $TargetName, GetTargetAdressLink($fleet_row, ''),
+              $TargetName, uni_render_coordinates_href($fleet_row, 'fleet_end_', 3, ''),
               $fleet_row['fleet_resource_metal'], $lang['Metal'],
               $fleet_row['fleet_resource_crystal'], $lang['Crystal'],
               $fleet_row['fleet_resource_deuterium'], $lang['Deuterium'] );
-  SendSimpleMessage ( $StartOwner, '', $fleet_row['fleet_start_time'], 5, $lang['sys_mess_tower'], $lang['sys_mess_transport'], $Message);
+  msg_send_simple_message ( $StartOwner, '', $fleet_row['fleet_start_time'], 5, $lang['sys_mess_tower'], $lang['sys_mess_transport'], $Message);
 
   if ($TargetOwner <> $StartOwner)
   {
     $Message = sprintf( $lang['sys_tran_mess_user'],
-                $StartName, GetStartAdressLink($fleet_row, ''),
-                $TargetName, GetTargetAdressLink($fleet_row, ''),
+                $StartName, uni_render_coordinates_href($fleet_row, 'fleet_start_', 3, ''),
+                $TargetName, uni_render_coordinates_href($fleet_row, 'fleet_end_', 3, ''),
                 $fleet_row['fleet_resource_metal'], $lang['Metal'],
                 $fleet_row['fleet_resource_crystal'], $lang['Crystal'],
                 $fleet_row['fleet_resource_deuterium'], $lang['Deuterium'] );
-    SendSimpleMessage ( $TargetOwner, '', $fleet_row['fleet_start_time'], 5, $lang['sys_mess_tower'], $lang['sys_mess_transport'], $Message);
+    msg_send_simple_message ( $TargetOwner, '', $fleet_row['fleet_start_time'], 5, $lang['sys_mess_tower'], $lang['sys_mess_transport'], $Message);
   }
 
   return RestoreFleetToPlanet($fleet_row, false, true);

@@ -122,8 +122,8 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
 {
   global $sn_data, $lang, $dpath, $debug;
 
-  $GET_action  = SYS_mysqlSmartEscape($_GET['action']);
-  $GET_mode    = SYS_mysqlSmartEscape($_GET['mode']);
+  $GET_action  = sys_get_param_str('action');
+  $GET_mode    = sys_get_param_str('mode');
   $POST_fmenge = $_POST['fmenge'];
   $parse = $lang;
 

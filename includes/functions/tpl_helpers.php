@@ -108,14 +108,14 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
     'START_COORDS'       => "[{$fleet['fleet_start_galaxy']}:{$fleet['fleet_start_system']}:{$fleet['fleet_start_planet']}]",
     'START_TIME_TEXT'    => date(FMT_DATE_TIME, $fleet['fleet_end_time']),
     'START_LEFT'         => floor($fleet['fleet_end_time'] + 1 - $time_now),
-    'START_URL'          => int_makeCoordinatesLink($fleet, 'fleet_start_', 3),
+    'START_URL'          => uni_render_coordinates_href($fleet, 'fleet_start_', 3),
     'START_NAME'         => $fleet['fleet_start_name'],
 
     'END_TYPE_TEXT_SH'   => $lang['sys_planet_type_sh'][$fleet['fleet_end_type']],
     'END_COORDS'         => "[{$fleet['fleet_end_galaxy']}:{$fleet['fleet_end_system']}:{$fleet['fleet_end_planet']}]",
     'END_TIME_TEXT'      => date(FMT_DATE_TIME, $fleet['fleet_start_time']),
     'END_LEFT'           => floor($fleet['fleet_start_time'] + 1 - $time_now),
-    'END_URL'            => int_makeCoordinatesLink($fleet, 'fleet_end_', 3),
+    'END_URL'            => uni_render_coordinates_href($fleet, 'fleet_end_', 3),
     'END_NAME'           => $fleet['fleet_end_name'],
 
     'STAY_TIME'          => date(FMT_DATE_TIME, $fleet['fleet_end_stay']),
@@ -174,7 +174,7 @@ function tpl_parse_planet($planet, $que)
     'SYSTEM'        => $planet['system'],
     'PLANET'        => $planet['planet'],
     'TYPE'          => $planet['planet_type'],
-    'COORDINATES'   => INT_makeCoordinates($planet),
+    'COORDINATES'   => uni_render_coordinates($planet),
 
     'TECH'          => $planet['b_tech'] ? $lang['tech'][$planet['b_tech_id']] . ' ' . pretty_time($planet['b_tech'] - $time_now) : 0,
     'HANGAR'        => $hangar_build_tip,

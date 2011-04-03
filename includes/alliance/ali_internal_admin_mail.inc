@@ -21,7 +21,7 @@ if ($POST_text) {
     $sendList[] = $u['id'];
     $list .= "<br>{$u['username']} ";
   }
-  SendSimpleMessage($sendList, $user['id'], time(), 2, $ally['ally_tag'], $user['username'], sys_bbcodeParse($POST_text, true));
+  msg_send_simple_message($sendList, $user['id'], time(), 2, $ally['ally_tag'], $user['username'], sys_bbcodeParse($POST_text, true));
 
   $page = MessageForm($lang['Circular_sended'], $lang['members_who_recived_message'] . $list, "alliance.php", "", true);
 }

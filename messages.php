@@ -112,7 +112,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
         $Sender  = $user['id'];
         $From    = $user['username'] ." [".$user['galaxy'].":".$user['system'].":".$user['planet']."]";
         $Subject = $POST_subject;
-        SendSimpleMessage ( $Owner, $Sender, '', 1, $From, $Subject, $Message);
+        msg_send_simple_message ( $Owner, $Sender, '', 1, $From, $Subject, $Message);
         $subject = "";
         $text    = "";
       }

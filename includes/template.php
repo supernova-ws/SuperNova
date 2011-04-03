@@ -158,7 +158,7 @@ function ShowTopNavigationBar ( $user, $planetrow )
 
   global $time_now, $lang, $config;
 
-  $GET_mode = SYS_mysqlSmartEscape($_GET['mode']);
+  $GET_mode = sys_get_param_str('mode');
 
   $template       = gettemplate('topnav', true);
 
@@ -174,7 +174,7 @@ function ShowTopNavigationBar ( $user, $planetrow )
       $template->assign_block_vars('topnav_planets', array(
         'ID'     => $CurPlanet['id'],
         'NAME'   => $CurPlanet['name'],
-        'COORDS' => INT_makeCoordinates($CurPlanet),
+        'COORDS' => uni_render_coordinates($CurPlanet),
         'SELECTED' => $CurPlanet['id'] == $user['current_planet'] ? ' selected' : '',
       ));
     }

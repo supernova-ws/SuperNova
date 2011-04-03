@@ -100,7 +100,7 @@ function flt_mission_explore($mission_data)
     // Message pour annoncer la bonne mauvaise nouvelle
     if ($LostAmount == 100) {
       // Supprimer effectivement la flotte
-      SendSimpleMessage ( $FleetOwner, '', $fleet_row['fleet_end_stay'], 15, $MessSender, $MessTitle, $lang['sys_expe_blackholl_2'] );
+      msg_send_simple_message ( $FleetOwner, '', $fleet_row['fleet_end_stay'], 15, $MessSender, $MessTitle, $lang['sys_expe_blackholl_2'] );
       doquery ("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_row['fleet_id']}");
     } else {
       foreach ($LaFlotte as $Ship => $Count) {
@@ -109,14 +109,14 @@ function flt_mission_explore($mission_data)
       }
 
       doquery("UPDATE {{fleets}} SET `fleet_array` = '{$NewFleetArray}', `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_row['fleet_id']}';");
-      SendSimpleMessage ( $FleetOwner, '', $fleet_row['fleet_end_stay'], 15, $MessSender, $MessTitle, $lang['sys_expe_blackholl_1'] );
+      msg_send_simple_message ( $FleetOwner, '', $fleet_row['fleet_end_stay'], 15, $MessSender, $MessTitle, $lang['sys_expe_blackholl_1'] );
     }
 
   } elseif ($Hasard == 3) {
     // Ah un tour pour rien
     doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = {$fleet_row['fleet_id']}");
     rpg_points_change($fleet_row['fleet_owner'], 1, 'Expedition Bonus');
-    SendSimpleMessage ( $FleetOwner, '', $fleet_row['fleet_end_stay'], 15, $MessSender, $MessTitle, $lang['sys_expe_nothing_1'] );
+    msg_send_simple_message ( $FleetOwner, '', $fleet_row['fleet_end_stay'], 15, $MessSender, $MessTitle, $lang['sys_expe_nothing_1'] );
   } elseif ($Hasard >= 4 && $Hasard < 7) {
     // Gains de ressources
     if ($FleetCapacity > 5000) {
@@ -138,12 +138,12 @@ function flt_mission_explore($mission_data)
         pretty_number($FoundMetal), $lang['Metal'],
         pretty_number($FoundCrist), $lang['Crystal'],
         pretty_number($FoundDeute), $lang['Deuterium']);
-      SendSimpleMessage ( $FleetOwner, '', $fleet_row['fleet_end_stay'], 15, $MessSender, $MessTitle, $Message );
+      msg_send_simple_message ( $FleetOwner, '', $fleet_row['fleet_end_stay'], 15, $MessSender, $MessTitle, $Message );
     }
   } elseif ($Hasard == 7) {
     // Ah un tour pour rien
     doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = {$fleet_row['fleet_id']}");
-    SendSimpleMessage ( $FleetOwner, '', $fleet_row['fleet_end_stay'], 15, $MessSender, $MessTitle, $lang['sys_expe_nothing_2'] );
+    msg_send_simple_message ( $FleetOwner, '', $fleet_row['fleet_end_stay'], 15, $MessSender, $MessTitle, $lang['sys_expe_nothing_2'] );
   } elseif ($Hasard >= 8 && $Hasard < 11) {
     // Gain de vaisseaux
     $FoundChance = $FleetPoints / $FleetCount;
@@ -177,7 +177,7 @@ function flt_mission_explore($mission_data)
 
     doquery("UPDATE {{fleets}} SET `fleet_array` = '{$NewFleetArray}', `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
     $Message = "{$lang['sys_expe_found_ships']}{$FoundShipMess}";
-    SendSimpleMessage ( $FleetOwner, '', $fleet_row['fleet_end_stay'], 15, $MessSender, $MessTitle, $Message );
+    msg_send_simple_message ( $FleetOwner, '', $fleet_row['fleet_end_stay'], 15, $MessSender, $MessTitle, $Message );
   }
 
   return CACHE_FLEET | CACHE_USER_SRC;

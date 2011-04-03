@@ -43,7 +43,7 @@ function flt_mission_colonize($mission_data)
         if ($NewOwnerPlanet)
         {
           $TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_allisok'];
-          SendSimpleMessage ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], 0, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
+          msg_send_simple_message ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], 0, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
 
           $fleet_array[SHIP_COLONIZER]--;
           $fleet_row['fleet_amount']--;
@@ -60,7 +60,7 @@ function flt_mission_colonize($mission_data)
   }
 
   doquery("UPDATE `{{fleets}}` SET `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
-  SendSimpleMessage(
+  msg_send_simple_message(
     $fleet_row['fleet_owner'],
     '',
     $fleet_row['fleet_start_time'],
