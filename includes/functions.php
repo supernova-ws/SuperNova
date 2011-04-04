@@ -490,16 +490,16 @@ function GetMaxFleets(&$user)
   return mrc_modify_value($user, false, MRC_COORDINATOR, 1 + $user[$GLOBALS['sn_data'][TECH_COMPUTER]['name']]);
 }
 
-function flt_get_fleets_flying(&$user, $mission = false)
+function flt_get_fleets_flying(&$user)
 {
   $fleet_flying_list = array();
-  $fleet_flying_query = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner = {$user['id']}" . ($mission ? " AND fleet_mission = {$mission}": ''));
+  $fleet_flying_query = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner = {$user['id']}");
   while($fleet_flying_row = mysql_fetch_assoc($fleet_flying_query))
   {
-    // TODO: Made list for all mission with one query - just linkin fleet to $fleet_list[mission_type]
-    $fleet_flying_list[] = $fleet_flying_row;
+    $fleet_flying_list[0][] = $fleet_flying_row;
+    $fleet_flying_list[$fleet_flying_row['fleet_mission']][] = &$fleet_flying_list[0][count($fleet_flying_list)-1];
   }
-  return array('count' => count($fleet_flying_list), 'fleet_flying_list' => $fleet_flying_list);
+  return $fleet_flying_list;
 }
 
 // ----------------------------------------------------------------------------------------------------------------
