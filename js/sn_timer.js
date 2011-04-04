@@ -2,6 +2,15 @@
 
 SuperNova JavaScript timer system
 
+ 1.6 - copyright (c) 2010-2011 by Gorlum for http://supernova.ws
+   [+] - implemented event list
+
+ 1.5 - copyright (c) 2010-2011 by Gorlum for http://supernova.ws
+   [+] - implemented date&time with delta
+
+ 1.4 - copyright (c) 2010-2011 by Gorlum for http://supernova.ws
+   [+] - implemented pictured que
+
  1.3 - copyright (c) 2010 by Gorlum for http://supernova.ws
    [+] - implemented time-independent counter that works correctly even on browser's "back"
    [~] - simple counter now uses objects instead of arrays
@@ -18,7 +27,13 @@ SuperNova JavaScript timer system
 
 Object structure:
   'id'          - timer ID (name)
-  'type'        - timer type: 0 - que display; 1 - counter; 2 - date&time; 3 - pictured que; 4 - date&time with delta
+  'type'        - timer type:
+                    0 - que display;
+                    1 - counter;
+                    2 - date&time;
+                    3 - pictured que;
+                    4 - date&time with delta
+                    5 - event list
   'active'      - is timer active?
   'start_time'  - start time
   'options'     - timer options
@@ -40,14 +55,14 @@ Options for que display:
   'total'     - reserved for internal use (total que building time)
 
 Options for counter:
-'start_value' - start value
-'per_second'  - delta value per second
-'max_value'   - max value
+  'start_value' - start value
+  'per_second'  - delta value per second
+  'max_value'   - max value
 
 Options for date&time:
-bit 1 - date
-bit 2 - time
-It means: 1 - just date; 2 - just time; 3 - both date & time
+  bit 1 - date
+  bit 2 - time
+  It means: 1 - just date; 2 - just time; 3 - both date & time
 
 Options for date&time with delta:
   'format' - bit 1 - date
@@ -55,6 +70,13 @@ Options for date&time with delta:
              It means: 1 - just date; 2 - just time; 3 - both date & time
   'delta'  - seconds to add or substract
 
+Options for event list:
+  'msg_done'  - inactive message
+  'que'       - que: array
+                [0] - time left for this event
+                [1] - string for this event
+                [2] - hint for this event
+  'unchanged' - reserved for internal use (flag that event text was not changed)
 */
 
 var UNIT_ID       = 0;
@@ -62,6 +84,10 @@ var UNIT_NAME     = 1;
 var UNIT_TIME     = 2;
 var UNIT_AMOUNT   = 3;
 var UNIT_LEVEL    = 4;
+
+var EVENT_TIME   = 0;
+var EVENT_STRING = 1;
+var EVENT_HINT   = 2;
 
 var sn_timers = new Array();
 
@@ -387,6 +413,46 @@ function sn_timer() {
         }
 
       break;
+
+      case 5: // old que display
+        var que_item = timer_options['que'][0];
+
+        if(que_item[EVENT_TIME] <= timestamp - timer['start_time'])
+        {
+          timer_options['que'].shift();
+          timer['start_time'] = timestamp;
+          timer['options']['unchanged'] = false;
+        }
+
+        if(!timer['options']['unchanged'])
+        {
+          infoText = que_item[EVENT_STRING];
+          hintText = que_item[EVENT_HINT];
+        }
+
+        if(!timer_options['que'].length)
+        {
+          timer['active'] = false;
+          infoText = timer_options['msg_done'];
+          hintText = '';
+        }
+
+        if(HTML != null)
+        {
+          HTML.innerHTML = infoText;
+        }
+
+        if(HTML_total != null)
+        {
+          HTML_total.title = hintText;
+        }
+        else
+        {
+          HTML.title = hintText;
+        }
+
+      break;
+
     }
 
     activeTimers++;
