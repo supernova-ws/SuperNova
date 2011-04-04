@@ -61,10 +61,10 @@ input.frameles
   </tr>
   <tr class="c">
     <td class="c_c" colspan=1>
-      {L_sys_fleets} {TOPNAV_FLEETS_FLYING}/{TOPNAV_FLEETS_TOTAL}
+      {L_sys_expeditions} {TOPNAV_EXPEDITIONS_FLYING}/{TOPNAV_EXPEDITIONS_TOTAL}
     </td>
     <td class="c_c" colspan=1>
-      {L_sys_expeditions} {TOPNAV_EXPEDITIONS_FLYING}/{TOPNAV_EXPEDITIONS_TOTAL}
+      {L_sys_fleets} {TOPNAV_FLEETS_FLYING}/{TOPNAV_FLEETS_TOTAL}
     </td>
   </tr>
 </tbody></table>
