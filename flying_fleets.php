@@ -27,8 +27,8 @@ if(sys_get_param_str('return_fleet'))
   }
 }
 
-includeLang('overview');
-includeLang('fleet');
+lng_include('overview');
+lng_include('fleet');
 
 $parse = $lang;
 

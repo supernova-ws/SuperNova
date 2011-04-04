@@ -35,7 +35,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-  includeLang('messages');
+  lng_include('messages');
 
 
   $OwnerID       = intval($_GET['id']);

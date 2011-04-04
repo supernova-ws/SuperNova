@@ -29,7 +29,7 @@ $page = intval($_GET['page'] ? $_GET['page'] : $_POST['page']);
 
 $ally_id = $user['ally_id'];
 
-includeLang('chat');
+lng_include('chat');
 if (($config->_MODE != CACHER_NO_CACHE) && ($config->chat_timeout) && ($config->array_get('users', $user['id'], 'chat_lastUpdate') + $config->chat_timeout < $time_now))
 {
   print(iconv('CP1251', 'UTF-8', $lang['chat_timeout']));

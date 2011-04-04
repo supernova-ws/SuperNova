@@ -215,7 +215,7 @@ function ShowBuildingInfoPage($CurrentUser, $CurrentPlanet, $BuildID)
   $sn_groups = $sn_data['groups'];
   $unit_data = $sn_data[$BuildID];
 
-  includeLang('infos');
+  lng_include('infos');
 
   $GateTPL = '';
   $DestroyTPL = '';

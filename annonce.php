@@ -16,7 +16,7 @@ $users = doquery("SELECT `username`,`galaxy`,`system` FROM {{users}} WHERE `id` 
 $action = intval($_GET['action']);
 $GET_id = intval($_GET['id']);
 
-includeLang('announce');
+lng_include('announce');
 switch($action){
 case 1://on veut poster une annonce
 $page .='<HTML>

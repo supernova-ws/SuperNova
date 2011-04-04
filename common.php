@@ -39,8 +39,8 @@ if(
   die();
 }
 
-includeLang('system');
-includeLang('tech');
+lng_include('system');
+lng_include('tech');
 
 if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0)
 {
@@ -67,7 +67,7 @@ if (defined('IN_ADMIN') && IN_ADMIN)
     $dpath     = $UserSkin;
   }
 
-  includeLang('admin');
+  lng_include('admin');
 }
 elseif($sys_user_logged_in)
 {

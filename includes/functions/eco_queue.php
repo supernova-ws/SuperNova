@@ -21,6 +21,7 @@ function eco_que_process($user, &$planet, $time_left)
     {
       $que_type_data['time_left'] = $time_left;
       $que_type_data['unit_place'] = 0;
+      $que_type_data['que_changed'] = false;
     }
     $que_types[QUE_STRUCTURES]['unit_list'] = $sn_data['groups']['build_allow'][$planet['planet_type']];
 
@@ -69,9 +70,9 @@ function eco_que_process($user, &$planet, $time_left)
       $build_mode = $que_item['MODE'] == BUILD_CREATE ? 1 : -1;
       $amount_change = $build_mode * $que_item['AMOUNT'];
 
-$unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $in_que[$unit_id];
-$build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
-$build_data = $build_data[$que_item['MODE']];
+      $unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $in_que[$unit_id];
+      $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
+      $build_data = $build_data[$que_item['MODE']];
       if($que_unit_place)
       {
         $que_item['TIME'] = $build_data[RES_TIME];
@@ -79,13 +80,8 @@ $build_data = $build_data[$que_item['MODE']];
 
       $que_unit_place++;
 
-//pdump($unit_level, '$unit_level');
-//pdump($in_que[$unit_id], '$in_que[$unit_id]');
-//pdump($built[$unit_id], '$built[$unit_id]');
-
       if($time_left > 0)
       {  // begin processing que with time left on it
-
         $build_time = $que_item['TIME'];
         $amount_to_build = min($que_item['AMOUNT'], floor($time_left / $build_time));
 
@@ -102,10 +98,6 @@ $build_data = $build_data[$que_item['MODE']];
             $amount_to_build *= $build_mode;
             $built[$unit_id] += $amount_to_build;
 
-//            $unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $in_que[$unit_id] + $built[$unit_id];
-//            $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
-//            $build_data = $build_data[$que_item['MODE']];
-
             $xp_incoming = 0;
             foreach($sn_data['groups']['resources_loot'] as $resource_id)
             {
@@ -115,6 +107,7 @@ $build_data = $build_data[$que_item['MODE']];
             $xp[RPG_STRUCTURE] += round(($xp_incoming > 0 ? $xp_incoming : 0)/1000);
             $planet[$unit_db_name] += min($planet[$unit_db_name], $amount_to_build); // Prevents neagative unit on planet
             $query .= "`{$unit_db_name}` = `{$unit_db_name}` + '{$amount_to_build}',";
+            $que_type_data['que_changed'] = true;
           }
 
         }
@@ -150,7 +143,7 @@ $build_data = $build_data[$que_item['MODE']];
 
   $planet['que'] = $query_string;
   $query .= "`que` = '{$query_string}'";
-//die();
+
   return array(
     'que'     => $que,
     'built'   => $built,

@@ -37,7 +37,20 @@ input.frameles
     <td class="header" align="right" width="150"><span id='top_deuterium'>{TOPNAV_DEUTERIUM_TEXT}</span></td>
     <td class="header" align="right" width="150">{ENERGY_BALANCE}</td>
     <td class="header" align="center" width="140" rowspan="2"><font color="green"><b>{TOPNAV_DARK_MATTER}</b></font></td>
-    <td class="header" align="center" valign=middle width="140" rowspan="2" ><!-- IF TOPNAV_MESSAGES --><a href="messages.php"><blink>[ {TOPNAV_MESSAGES} ]</blink></a><!-- ELSE -->0<!-- ENDIF --></td>
+
+    <td class="header" align="center" valign=middle width="140" rowspan="2" >
+      <a href="messages.php">
+        <!-- IF TOPNAV_MESSAGES_ALL -->
+          <!-- IF TOPNAV_MESSAGES_PLAYER + TOPNAV_MESSAGES_ALLIANCE -->
+            <div>
+              <!-- IF TOPNAV_MESSAGES_PLAYER --><span class=mnl_joueur>[ {TOPNAV_MESSAGES_PLAYER} ]</span>&nbsp;<!-- ENDIF -->
+              <!-- IF TOPNAV_MESSAGES_ALLIANCE --><span class=mnl_alliance>[ {TOPNAV_MESSAGES_ALLIANCE} ]</span><!-- ENDIF -->
+            </div>
+          <!-- ENDIF -->
+          <blink>[ {TOPNAV_MESSAGES_ALL} ]</blink>
+        <!-- ELSE -->0<!-- ENDIF -->
+      </a>
+    </td>
   </form></tr>
   <tr class="header">
     <td class="header" align="center" width="150"><b><font color="#FFFF00">{L_tech_storage_max}</font></b></td>
@@ -45,6 +58,14 @@ input.frameles
     <td class="header" align="right" width="150">{TOPNAV_CRYSTAL_MAX_TEXT}</td>
     <td class="header" align="right" width="150">{TOPNAV_DEUTERIUM_MAX_TEXT}</td>
     <td class="header" align="right" width="150"><font color="#00ff00">{ENERGY_MAX}</font></td>
+  </tr>
+  <tr class="c">
+    <td class="c_c" colspan=1>
+      {L_sys_fleets} {TOPNAV_FLEETS_FLYING}/{TOPNAV_FLEETS_TOTAL}
+    </td>
+    <td class="c_c" colspan=1>
+      {L_sys_expeditions} {TOPNAV_EXPEDITIONS_FLYING}/{TOPNAV_EXPEDITIONS_TOTAL}
+    </td>
   </tr>
 </tbody></table>
 

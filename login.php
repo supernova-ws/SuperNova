@@ -11,8 +11,8 @@
 
 include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('login');
-includeLang('admin');
+lng_include('login');
+lng_include('admin');
 
 $id_ref = sys_get_param_int('id_ref');
 $username = sys_get_param('username');

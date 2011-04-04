@@ -14,7 +14,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('overview');
+lng_include('overview');
 
 $id = sys_get_param_int('id');
 $type = sys_get_param_str('type', 'userbar');

@@ -36,7 +36,7 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
 
 function ShowLeftMenu($Level = 0)
 {
-  includeLang('leftmenu');
+  lng_include('leftmenu');
 
   $template_name = $Level > 0 ? 'admin/left_menu' : 'left_menu';
   $template = gettemplate($template_name, true);
@@ -168,7 +168,8 @@ function ShowTopNavigationBar ( $user, $planetrow )
   $planetrow = $planetrow['planet'];
 
   $ThisUsersPlanets = SortUserPlanets ( $user );
-  while ($CurPlanet = mysql_fetch_assoc($ThisUsersPlanets)) {
+  while ($CurPlanet = mysql_fetch_assoc($ThisUsersPlanets))
+  {
     if (!$CurPlanet['destruyed'])
     {
       $template->assign_block_vars('topnav_planets', array(
@@ -191,10 +192,6 @@ function ShowTopNavigationBar ( $user, $planetrow )
   // Подсчет кол-ва онлайн и кто онлайн
   $time = $time_now - 15*60;
   $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}';", '', true);
-
-  $new_messages_text  = $user['mnl_joueur'] ? "<span class=mnl_joueur>{$user['mnl_joueur']}</span>/" : '';
-  $new_messages_text .= $user['mnl_alliance'] ? "<span class=mnl_alliance>{$user['mnl_alliance']}</span>/" : '';
-  $new_messages_text .= $user['new_message'];
 
   $template->assign_vars(array(
     'TIME_NOW'   => $time_now,
@@ -230,9 +227,16 @@ function ShowTopNavigationBar ( $user, $planetrow )
     'ENERGY_BALANCE' => pretty_number($planetrow['energy_max'] - $planetrow['energy_used'], true, 0),
     'ENERGY_MAX' => pretty_number($planetrow['energy_max']),
 
-    'TOPNAV_MESSAGES'    => $new_messages_text,
-  ));
+    'TOPNAV_MESSAGES_PLAYER'   => $user['mnl_joueur'],
+    'TOPNAV_MESSAGES_ALLIANCE' => $user['mnl_alliance'],
+    'TOPNAV_MESSAGES_ALL'      => $user['new_message'],
 
+    'TOPNAV_FLEETS_FLYING' => flt_get_fleets_flying($user),
+    'TOPNAV_FLEETS_TOTAL' => GetMaxFleets($user),
+    'TOPNAV_EXPEDITIONS_FLYING' => flt_get_expeditions_flying($user),
+    'TOPNAV_EXPEDITIONS_TOTAL' => GetMaxExpeditions($user),
+  ));
+    
   return $template;
 }
 

@@ -9,7 +9,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('login');
+lng_include('login');
 
 setcookie($config->COOKIE_NAME, "", time()-100000, "/", "", 0);
 

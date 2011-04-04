@@ -10,7 +10,7 @@ if(SN_IN_FLEET !== true)
   $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
 }
 
-includeLang('overview');
+lng_include('overview');
 
 if (!$planetrow)
 {

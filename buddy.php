@@ -74,7 +74,7 @@ function int_renderLastActiveHTML($last_active = 0, $isAllowed = true, $isAdmin 
   }
   return "<font color={$tmp}</font>";
 }
-includeLang('buddy');
+lng_include('buddy');
 
 $userID = intval(isset($_GET['u']) ? $_GET['u'] : $_POST['u']);
 $buddyID = intval(isset($_GET['buddyID']) ? $_GET['buddyID'] : $_POST['buddyID']);

@@ -10,7 +10,7 @@ if ($user['authlevel'] < 3)
   die();
 }
 
-includeLang('admin');
+lng_include('admin');
 
 $totaltime = microtime(true);
 $msg = '<div align="left"><ul>';

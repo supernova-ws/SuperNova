@@ -20,7 +20,7 @@ $skip_fleet_update = true;
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('chat');
+lng_include('chat');
 
 $nick = $user['username'];
 $parse = $lang;

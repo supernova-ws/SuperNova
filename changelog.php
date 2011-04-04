@@ -9,7 +9,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('changelog');
+lng_include('changelog');
 
 $template = gettemplate('changelog_table');
 

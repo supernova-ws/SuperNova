@@ -222,7 +222,7 @@ function SaveToFile($filename, $content)
 //
 // Gestion de la localisation des chaines
 //
-function includeLang($filename, $ext = '.mo')
+function lng_include($filename, $ext = '.mo')
 {
   global $lang, $user;
 
@@ -416,7 +416,7 @@ function pretty_number($n, $floor = true, $color = false, $limit = false)
 
   if ($limit)
   {
-    
+
     if ($ret > 0)
     {
       while ($ret > $limit)
@@ -444,7 +444,7 @@ function pretty_number($n, $floor = true, $color = false, $limit = false)
     {
       $color = 0;
     }
-    
+
     if ($color > 0)
     {
       $class = $n == $color ? 'zero' : ($n < $color ? 'positive' : 'negative');
@@ -454,13 +454,13 @@ function pretty_number($n, $floor = true, $color = false, $limit = false)
       $class = $n == -$color ? 'zero' : (-$n < $color ? 'positive' : 'negative');
     }
     /*
-    if ($color < 0)
-    {
+      if ($color < 0)
+      {
       $n = -$n;
-    }
-    $class = $n == $color ? 'zero' : ($n < $color ? 'positive' : 'negative');
-    */
-    
+      }
+      $class = $n == $color ? 'zero' : ($n < $color ? 'positive' : 'negative');
+     */
+
     $ret = "<span class='{$class}'>{$ret}</span>";
   }
 
@@ -485,19 +485,27 @@ function GetSpyLevel(&$user)
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-//
-//
 function GetMaxFleets(&$user)
 {
   return mrc_modify_value($user, false, MRC_COORDINATOR, 1 + $user[$GLOBALS['sn_data'][TECH_COMPUTER]['name']]);
 }
 
+function flt_get_fleets_flying(&$user)
+{
+  $fleets_flying = doquery("SELECT COUNT(*) AS fleets_flying FROM {{fleets}} WHERE fleet_owner = {$user['id']}", '', true);
+  return $fleets_flying['fleets_flying'];
+}
+
 // ----------------------------------------------------------------------------------------------------------------
-//
-//
 function GetMaxExpeditions(&$user)
 {
   return floor(sqrt($user[$GLOBALS['sn_data'][TECH_EXPEDITION]['name']]));
+}
+
+function flt_get_expeditions_flying(&$user)
+{
+  $expeditions_flying = doquery("SELECT COUNT(*) AS expeditions_flying FROM {{fleets}} WHERE fleet_owner = {$user['id']} AND fleet_mission = ". MT_EXPLORE, '', true);
+  return $expeditions_flying['expeditions_flying'];
 }
 
 // ----------------------------------------------------------------------------------------------------------------

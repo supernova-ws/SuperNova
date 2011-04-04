@@ -174,8 +174,8 @@ function BuildFleetEventTable ( $FleetRow, $Status, $Owner, $Label, $Record )
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('overview');
-includeLang('universe');
+lng_include('overview');
+lng_include('universe');
 
 function secureNumericGet(){
   if(!$_GET) return false;

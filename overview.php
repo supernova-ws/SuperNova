@@ -30,7 +30,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('overview');
+lng_include('overview');
 
 $mode            = $_GET['mode'];
 switch ($mode)

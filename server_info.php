@@ -3,7 +3,7 @@
 $allow_anonymous = true;
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('admin');
+lng_include('admin');
 
 $template = gettemplate('server_info', true);
 

@@ -15,7 +15,7 @@
 
 include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('login');
+lng_include('login');
 
 $email   = sys_get_param_str('email');
 $confirm = sys_get_param_str('confirm');

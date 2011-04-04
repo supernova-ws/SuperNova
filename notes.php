@@ -21,7 +21,7 @@ $id = intval($_POST["n"]);
 $lang['Please_Wait'] = "Patientez...";
 
 //lenguaje
-includeLang('notes');
+lng_include('notes');
 
 $lang['PHP_SELF'] = 'notes.'. PHP_EX;
 

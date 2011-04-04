@@ -17,7 +17,7 @@ if ($user['authlevel'] < 1)
   AdminMessage($lang['adm_err_denied']);
 }
 
-includeLang('changelog');
+lng_include('changelog');
 $template = gettemplate('changelog_table');
 
 $parse = $lang;

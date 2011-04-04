@@ -12,7 +12,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('infos');
+lng_include('infos');
 
 if ($_POST) {
   $RestString   = GetNextJumpWaitTime ( $planetrow );

@@ -61,7 +61,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 $mode = $_GET['mode'];
 $offi = $_GET['offi'];
 
-includeLang('infos');
+lng_include('infos');
 
 // Vérification que le joueur n'a pas un nombre de points négatif
 //  if ($user['rpg_points'] < 0) {

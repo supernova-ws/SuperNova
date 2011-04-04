@@ -44,6 +44,8 @@ $lang = array_merge($lang, array(
   'sys_ask_admin' => 'Вопросы и предложения направлять по адресу',
 
   'sys_wait' => 'Запрос выполняется. Пожалуйста, подождите.',
+  'sys_fleets' => 'Флоты',
+  'sys_expeditions' => 'Экспедиции',
 
   'sys_total'           => "ИТОГО",
   'sys_register_date'   => 'Дата регистрации',

@@ -21,7 +21,7 @@ $GET_cmd = SYS_mysqlSmartEscape($_GET['cmd']);
 $GET_user = intval($_GET['user']);
 $TypeSort = SYS_mysqlSmartEscape($_GET['type']);
 
-includeLang('admin');
+lng_include('admin');
 
 if ($GET_cmd == 'dele')
 {

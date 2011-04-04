@@ -32,7 +32,7 @@ $GET_galaxy       = intval($_GET['galaxy']);
 $GET_system       = intval($_GET['system']);
 $GET_planet       = intval($_GET['planet']);
 
-includeLang('universe');
+lng_include('universe');
 
 $fleetmax      = GetMaxFleets($user);
 $CurrentPlID   = $planetrow['id'];
