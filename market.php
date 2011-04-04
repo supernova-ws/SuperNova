@@ -13,8 +13,8 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 define('SN_IN_MARKET', true);
 
-includeLang('market');
-includeLang('fleet');
+lng_include('market');
+lng_include('fleet');
 
 $mode = sys_get_param_int('mode');
 $action = sys_get_param_int('action');

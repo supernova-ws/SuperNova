@@ -61,7 +61,7 @@ $POST_further = SYS_mysqlSmartEscape($_POST['further']);
 $POST_bcancel = SYS_mysqlSmartEscape($_POST['bcancel']);
 $POST_newleader = SYS_mysqlSmartEscape($_POST['newleader']);
 
-includeLang('alliance');
+lng_include('alliance');
 
 if ($mode == 'ainfo') {
   include('includes/alliance/ali_info.inc');

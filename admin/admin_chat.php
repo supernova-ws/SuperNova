@@ -8,14 +8,13 @@
  * @version 1
  * @copyright 2008 By e-Zobar for XNova
  */
-
-define('INSIDE'  , true);
-define('INSTALL' , false);
+define('INSIDE', true);
+define('INSTALL', false);
 define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 3)
+if ($user['authlevel'] < 3)
 {
   AdminMessage($lang['adm_err_denied']);
 }
@@ -23,20 +22,24 @@ if($user['authlevel'] < 3)
 $parse = $lang;
 
 // extract($_GET);
-$delete    = intval($_GET['delete']);
+$delete = intval($_GET['delete']);
 $deleteall = SYS_mysqlSmartEscape($_GET['deleteall']);
 
 // Système de suppression
-if ($delete) {
+if ($delete)
+{
   doquery("DELETE FROM {{chat}} WHERE `messageid`={$delete};");
-} elseif ($deleteall == 'yes') {
+}
+elseif ($deleteall == 'yes')
+{
   doquery("DELETE FROM {{chat}};");
 }
 
 // Affichage des messages
 $query = doquery("SELECT * FROM {{chat}} ORDER BY messageid DESC LIMIT 25;");
 $i = 0;
-while ($e = mysql_fetch_assoc($query)) {
+while ($e = mysql_fetch_assoc($query))
+{
   $i++;
   $parse['msg_list'] .= stripslashes("<tr>" .
     "<td class=n>{$e['messageid']}</td>" .
@@ -44,7 +47,7 @@ while ($e = mysql_fetch_assoc($query)) {
     "<td class=n><center>{$e['user']}</center></td>" .
     "<td class=b width=100%>" . nl2br($e['message']) .
     "<td class=n><center><a href=\"admin/admin_chat.php?delete={$e['messageid']}\"><img src=\"design/images/r1.png\"></a></center></td>" .
-  "</td></tr>");
+    "</td></tr>");
 }
 $parse['msg_num'] = $i;
 

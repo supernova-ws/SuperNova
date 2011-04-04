@@ -151,87 +151,87 @@ $lang = array_merge($lang, array(
       'description_short' => 'Missile silo allows firing rockets and missile plus storage.'
     ),
 
-    106 => array(
+    TECH_SPY => array(
       'description' => 'Espionage is designed to explore new and better sensors. The higher is this technology, the more information the player has in his neighborhood. Difference in levels of espionage an opponent plays a crucial role to play-the more we investigate own spyware technology, the more information can be found in the intelligence and the less chance of being detected. The more sent probes, the more details about the enemy, is collected but is in danger of being discovered. The espionage improves locating foreign fleets. Also important is the level of development of own spying. Starting with the second level of development when a denial you also reports about the attack and also shows the total number of attacking ships. The fourth level detected by type of attacking ships, as well as their total number, but from the eighth to the exact number of each type of ships. For nalëtcikov this technology is very important because it provides information about whether the victim has invoiced fleet and/or protection or not, so you should investigate it as soon as possible. Best-after studies of small transports.',
       'description_short' => 'Using this technology produces data on other planets.'
     ),
 
-    108 => array(
+    TECH_COMPUTER => array(
       'description' => 'Computer technology is designed to increase availability of computer power. As a result of the planet are more productive and efficient computer systems, increasing processing power and speed of computing processes. With the increasing power of computers you can command the entire of fleets. Each level of development of computer technology makes it possible to command + 1 fleet. The more sent fleets, the more you can do  and thus capture more raw materials. Naturally, this technology is useful and traders, as it enables them to simultaneously send larger merchant fleets. For this reason, you should constantly develop computer technology throughout the entire game.',
       'description_short' => 'With the increasing power of computers you can command the entire many fleets. Each level of computer technology increases the maximum number of fleets by 1.'
     ),
 
-    109 => array(
+    TECH_WEAPON => array(
       'description' => 'Weapon technology focuses on the further development of weapons systems. Particular importance is attached to implementing existing systems more energy and more precisely this energy channel. The weapons systems become more efficient, and weapons causes more devastation. Each level increases the power of weapons technology weapons military units by 10%. Weapons technology is important in competitive content of parts. Why should constantly develop throughout the game.',
       'description_short' => 'Weapon technology makes weapons systems more efficient. Each level increases power weapons military units at 10% of the basic.'
     ),
 
-    110 => array(
+    TECH_SHIELD => array(
       'description' => 'Development of this technology allows you to increase the supply of energy shields and shielding, which in turn increases their resilience and ability to absorb or reflect energy attacks of the enemy. Thanks to this with each passing level effectiveness of ship\'s shields and stationary shield generators increases by 10% of the rated power.',
       'description_short' => 'This technology examines more new features greater energy shields that make them more efficient. Thanks to this with each passing level effectiveness of shields is increased by 10%.'
     ),
 
-    111 => array(
+    TECH_ARMOR => array(
       'description' => 'Special alloys improve armor spacecraft. Once found very resistant alloy, special beams are changing the molecular structure of a spacecraft, and brings it to a known alloy. The sustainability of armor can increase with each level at 10%.',
       'description_short' => 'Special alloys improve armor spacecraft. With each level strength armor increased by 10 % of the base value.'
     ),
 
-    113 => array(
+    TECH_ENERGY => array(
       'description' => 'Energy technology is a further development of transmission systems and energy storage that are required for many new technologies.',
       'description_short' => 'Study of energy technology improves impact energy and power.'
     ),
 
-    114 => array(
+    TECH_HYPERSPACE => array(
       'description' => 'By Plexus 4th and 5th dimension has become possible to explore new, more economical and efficient engine.',
       'description_short' => 'By Plexus 4th and 5th dimension has become possible to explore new, more economical and efficient engine.'
     ),
 
-    115 => array(
+    TECH_ENGINE_CHEMICAL => array(
       'description' => 'Jet engine is based on the principle of effectiveness. Fabric, hot to elevated temperatures, thrown in the opposite direction and gives faster ship. The effectiveness of these engines is small enough, but they are quite reliable, cheap production and services. Furthermore they take up much less space on the ship than the other engines, so they are still quite often can be found on small ships. Because the rocket engines are the foundation of any flight into space, should examine them as soon as possible. Further development of these engines makes the following ships with each level at 10% faster: small transports (until a researched pulse engine the 5th level), large transports, light fighters, processors and spy probes.',
       'description_short' => 'Further development of these engines makes some ships faster, but each level increases the speed of only 10%.'
     ),
 
-    117 => array(
+    TECH_ENIGNE_ION => array(
       'description' => 'Impulse engine is based on the principle of effectiveness, and warming up of matter are the nuclear reaction. You can also inject additional mass. Further development of these engines makes the following ships with each level to 20% faster: small transportation, bombers (until a researched hyperspace engine 8th level), cruisers, heavy fighter and colonizers. Each level increases the reach of interplanetary missiles.',
       'description_short' => 'Impulse engine is based on the principle of effectiveness. Further development of these engines makes some ships faster, but with each level increases the speed of only 20%.'
     ),
 
-    118 => array(
+    TECH_ENGINE_HYPER => array(
       'description' => "By spatio-temporal curvature in the immediate environment of spacecraft space shrinks, the faster the overcome long distances. The higher developed Hyperspace drive, the higher the compression space, which makes the following ships with each level of 30% faster: bombers, battleships, Destroyers, cruisers, death stars, and {$lang['tech'][SHIP_SUPERNOVA]}.",
       'description_short' => 'By spatio-temporal curvature in the immediate environment of spacecraft space shrinks, the faster the overcome long distances. The higher the developed hyperspace drive, the higher the compression space, with each level of the speed of ships rises up 30%.'
     ),
 
-    120 => array(
+    TECH_LASER => array(
       'description' => 'Laser (light amplification using induced emission of radiation) produces rich energy beam of coherent light. These devices are used in all areas of optical computers before heavy lasers that freely cut armor spacecraft. Laser technology is an important element for the study of further weapons technology.',
       'description_short' => 'Thanks to focus light rays that occurs when an object causes him injury.'
     ),
 
-    121 => array(
+    TECH_ION => array(
       'description' => 'Truly deadly beam of accelerated ions. In contact with an object they cause immense damage.',
       'description_short' => 'Truly deadly beam of accelerated ions. In contact with an object they cause immense damage.'
     ),
 
-    122 => array(
+    TECH_PLASMA => array(
       'description' => 'Further development of the ion technology which accelerates the ions, and energetic plasma. She has had a devastating effect in contact with an object.',
       'description_short' => 'Further development of the ion technology which accelerates the ions, and not vysokoènergeticeskuû plasma. She has had a devastating effect in contact with an object.'
     ),
 
-    123 => array(
+    TECH_RESEARCH => array(
       'description' => 'This network enables communication scientists working in research laboratories from different planets. Each new level allows you to attach to the network for additional laboratory (primarily attached laboratory senior levels). Of all United in a network of laboratories in each study involved only those that are sufficient to conduct the study level. Speed study FY08 levels involved in it laboratories.',
       'description_short' => 'This network enables communication scientists working in research laboratories from different planets. Each new level allows you to attach to the network for additional laboratory.'
     ),
 
-    124 => array(
+    TECH_EXPEDITION => array(
       'description' => 'Expedition technology encompasses various scanning technology and makes it possible to equip the ships of different classes of research module. It contains a database, a small mobile laboratory, as well as various biokletki and vessels for samples. For the safety of the ship when investigating hazardous objects research module is equipped with an autonomous energy and generator of energy field, which in extreme cases can surround a powerful energy field research module.',
       'description_short' => 'Now you can equip ships providing research module processing the collected data in long flights.'
     ),
 
-    150 => array(
+    TECH_COLONIZATION => array(
       'description' => 'Ruler with many colonies, has more advantages over others.',
       'description_short' => 'This technology is very important that you could build your Empire with many colonies.'
     ),
 
-    199 => array(
+    TECH_GRAVITON => array(
       'description' => 'Graviton is a particle that has neither mass nor charge and determines the force of attraction. By launching the concentrated charge gravitonov can create artificial gravitational field that, like a black hole, dragging a ton, so you can destroy ships or even the moon. To produce a sufficient quantity of gravitonov requires huge amounts of energy.',
       'description_short' => 'Graviton is a particle that has neither mass nor charge and determines the force of attraction. By launching the concentrated charge gravitonov can create artificial gravitational field that, like a black hole, dragging a ton, so you can destroy ships or even the Moon.'
     ),

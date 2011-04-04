@@ -26,7 +26,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 define('SN_IN_FLEET', true);
 
-includeLang('fleet');
+lng_include('fleet');
 
 $parse = $lang;
 

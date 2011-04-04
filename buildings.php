@@ -18,8 +18,8 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $mode = sys_get_param_escaped('mode');
 
-includeLang('buildings');
-includeLang('infos');
+lng_include('buildings');
+lng_include('infos');
 
 $IsWorking = HandleTechnologieBuild ($planetrow, $user);
 

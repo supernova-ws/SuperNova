@@ -13,10 +13,10 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $searchtext = mysql_real_escape_string($_POST['searchtext']);
-$type = SYS_mysqlSmartEscape($_POST['type']);
+$type = sys_get_param_str('type');
 $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
 
-includeLang('search');
+lng_include('search');
 $i = 0;
 
 //creamos la query

@@ -175,8 +175,8 @@ while (($file = readdir($dir)) !== false)
   }
 }
 
-includeLang('system');
-includeLang('tech');
+lng_include('system');
+lng_include('tech');
 
 sn_db_connect();
 

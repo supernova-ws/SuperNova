@@ -20,7 +20,7 @@
 
 require_once('includes/init.php');
 
-includeLang('admin');
+lng_include('admin');
 
 if($_SERVER['HTTP_REFERER'] == SN_ROOT_VIRTUAL . 'admin/statbuilder.php')
 {

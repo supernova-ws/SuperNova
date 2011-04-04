@@ -56,11 +56,34 @@ th
   padding-right: 3px;
 }
 
-td.c
+th, th.c_l, th.c_r, th.c_c
 {
-  font-weight     : bold;
-  padding-left    : 3px;
-  background-image: url(img/bg1.gif);
+  text-align           : center;
+  padding-left         : 3px;
+  padding-right        : 3px;
+}
+
+td.c, td.c_l, td.c_r, td.c_c
+{
+  font-weight          : bold;
+  padding-left         : 3px;
+  padding-right        : 3px;
+  background-image     : url(img/bg1.gif);
+}
+
+th.c_c, td.c_c
+{
+  text-align: center;
+}
+
+th.c_l, td.c_l
+{
+  text-align: left;
+}
+
+th.c_r, td.c_r
+{
+  text-align: right;
 }
 
 td.l

@@ -40,7 +40,7 @@
 <!-- ELSE -->
 <h2>{L_adm_unbn_ttle}</h2>
 
-<form action="admin\banned.php" method="post">
+<form action="admin/banned.php" method="post">
   <input type="hidden" name="mode" value="unbanit">
   <input type="hidden" name="action" value="unbanit">
   <table width="409" style="color:#FFFFFF"><tbody>

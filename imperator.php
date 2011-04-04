@@ -10,8 +10,8 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('affilates');
-includeLang('overview');
+lng_include('affilates');
+lng_include('overview');
 
 $template = gettemplate('imperator', true);
 

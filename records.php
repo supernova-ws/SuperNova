@@ -65,7 +65,7 @@ foreach($lang['tech'] as $Element => $ElementName) {
         $Row['winner']      = ($PlanetRow['current'] != 0) ? $UserRow['username'] : $lang['rec_rien'];
         $Row['count']       = ($PlanetRow['current'] != 0) ? pretty_number( $PlanetRow['current'] ) : $lang['rec_rien'];
         $parse['buildspe'] .= parsetemplate( $TableRows, $Row);
-      } elseif ($Element >= 101 && $Element <= 199) {
+      } elseif (in_array($Element, $sn_data['groups']['tech'])) {
         // Techno
         $UserRow            = doquery ("SELECT `username`, `". $resource[$Element] ."` AS `current` FROM {{users}} WHERE `". $resource[$Element] ."` = (SELECT MAX(`". $resource[$Element] ."`) FROM {{users}} WHERE `authlevel` = '0');", '', true);
         $Row['element']     = $ElementName;

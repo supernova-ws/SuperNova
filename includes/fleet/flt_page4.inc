@@ -3,7 +3,7 @@
   // @version 1.0
   // @copyright 2008 by ??????? for XNova
 
-if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
+if(SN_IN_FLEET !== true)
 {
   $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
 }
@@ -85,7 +85,7 @@ if(!defined('SN_IN_FLEET') || SN_IN_FLEET !== true)
           or die(sprintf($lang['fl_aks_adding_error'],mysql_error()));
         $aks['eingeladen'] .= ',' . $userToAddID;
       };
-      SendSimpleMessage ( $userToAddID, $user['id'], $time_now, 1, $user['username'],
+      msg_send_simple_message ( $userToAddID, $user['id'], $time_now, 1, $user['username'],
         $lang['fl_aks_invite_message_header'], sprintf( $lang['fl_aks_invite_message'], $user['username']));
     }else{
       $add_user_message_mr = sprintf($lang['fl_aks_player_error'], $userToAdd);

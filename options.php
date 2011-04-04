@@ -10,7 +10,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('options');
+lng_include('options');
 
 $lang['PHP_SELF'] = 'options.' . PHP_EX;
 

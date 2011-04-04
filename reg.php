@@ -12,7 +12,7 @@
 
 include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('login');
+lng_include('login');
 
 $wylosuj = rand(100000,9000000);
 $kod = md5($wylosuj);

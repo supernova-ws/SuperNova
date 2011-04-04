@@ -10,7 +10,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('affilates');
+lng_include('affilates');
 
 $template = gettemplate('affilates', true);
 

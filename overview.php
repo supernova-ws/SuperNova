@@ -30,7 +30,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('overview');
+lng_include('overview');
 
 $mode            = $_GET['mode'];
 switch ($mode)
@@ -39,10 +39,10 @@ switch ($mode)
     $template        = gettemplate('planet_manage', true);
     $planet_id       = sys_get_param_int('planet_id');
 
-    $rename          = SYS_mysqlSmartEscape($_POST['rename']);
-    $new_name        = strip_tags(trim(sys_get_param('new_name', 'Colony')));
+    $rename          = sys_get_param_str('rename');
+    $new_name        = sys_get_param_str('new_name', 'Colony');
 
-    $abandon         = SYS_mysqlSmartEscape($_POST['abandon']);
+    $abandon         = sys_get_param_str('abandon');
     $abandon_confirm = $_POST['abandon_confirm'];
 
     if ($rename && $new_name)

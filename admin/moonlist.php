@@ -18,7 +18,7 @@ if($user['authlevel'] < 2)
   AdminMessage($lang['adm_err_denied']);
 }
 
-includeLang('overview');
+lng_include('overview');
 
 $parse = $lang;
 $query = doquery("SELECT * FROM {{planets}} WHERE planet_type='3'");

@@ -16,7 +16,7 @@ $allow_anonymous = true;
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('stat');
+lng_include('stat');
 
 $parse = $lang;
 $who   = (isset($_POST['who']))   ? $_POST['who']   : $_GET['who'];

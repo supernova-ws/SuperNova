@@ -73,8 +73,8 @@ function flt_spy_scan ( $target_planet, $Mode, $TitleString, $TargetUsername="" 
     $ResTo[0]   = 99;
     $Loops      = 1;
   } elseif ($Mode == 4) {
-    $ResFrom[0] = 100;
-    $ResTo[0]   = 199;
+    $ResFrom[0] = TECH_TECHNOLOGY;
+    $ResTo[0]   = TECH_COLONIZATION;
     $Loops      = 1;
   }
 
@@ -186,11 +186,11 @@ function flt_mission_spy($mission_data)
     }
     if ($spy_diff >= 7)
     {
-      $spy_info      = flt_spy_scan ( $target_user_row, 4, $lang['tech'][100] );
+      $spy_info      = flt_spy_scan ( $target_user_row, 4, $lang['tech'][TECH_TECHNOLOGY] );
       $spy_tech      = "<div class='spy_long'>{$spy_info}</div>";
 
       $spy_message .= $spy_tech;
-      coe_compress_add_units(array(109, 110, 111), $target_user_row, $combat_pack[0]);
+      coe_compress_add_units(array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR), $target_user_row, $combat_pack[0]);
     }
     $simulator_link = eco_sym_encode_replay($combat_pack, 'D');
 
@@ -219,7 +219,7 @@ function flt_mission_spy($mission_data)
     $spy_message .= "<center>".$DestProba."</center>";
     // End of link generation
 
-    SendSimpleMessage ( $spying_user_row['id'], '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_qg'], $lang['sys_mess_spy_report'], $spy_message);
+    msg_send_simple_message ( $spying_user_row['id'], '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_qg'], $lang['sys_mess_spy_report'], $spy_message);
 
     $TargetMessage  = $lang['sys_mess_spy_ennemyfleet'] ." ". $spying_planet_row['name'];
     $TargetMessage .= "<a href=\"galaxy.php?mode=3&galaxy=". $spying_planet_row["galaxy"] ."&system=". $spying_planet_row["system"] ."\">";
@@ -228,7 +228,7 @@ function flt_mission_spy($mission_data)
     $TargetMessage .= " [". $target_planet_row["galaxy"] .":". $target_planet_row["system"] .":". $target_planet_row["planet"] ."].";
 
     $target_user_id = $fleet_row['fleet_target_owner'];
-    SendSimpleMessage ( $target_user_id, '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $TargetMessage);
+    msg_send_simple_message ( $target_user_id, '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $TargetMessage);
 
     if ($spy_detected)
     {
@@ -249,7 +249,7 @@ function flt_mission_spy($mission_data)
       $QryUpdateGalaxy .= "WHERE `id` = '{$debris_planet_id}' LIMIT 1;";
       doquery($QryUpdateGalaxy);
 
-      SendSimpleMessage ( $target_user_id, '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], 'Ваш шпионский флот уничтожен');
+      msg_send_simple_message ( $target_user_id, '', $fleet_row['fleet_start_time'], 0, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], 'Ваш шпионский флот уничтожен');
 
       return CACHE_FLEET | CACHE_PLANET_DST;
     }

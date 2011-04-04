@@ -39,7 +39,7 @@ function GetBuildingTime ($user, $planet, $Element, $for_building = BUILD_CREATE
   elseif (in_array($Element, $reslist['tech']))
   {
     // Pour une recherche
-    $intergal_lab = $user[$resource[123]];
+    $intergal_lab = $user[$resource[TECH_RESEARCH]];
     if ( $intergal_lab < 1 )
     {
       $time = $time / (($planet[$resource['31']] + 1) * 2) * pow(0.5, $planet[$resource['35']]);

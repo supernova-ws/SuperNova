@@ -231,7 +231,7 @@
   color: lime;
 }
 
-.notice {
+.notice, .zero, .neutral {
   color: yellow;
 }
 

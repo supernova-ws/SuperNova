@@ -1,18 +1,18 @@
 <?php
+
 /**
  * maintenance.php
  *
  * @version 1.0
  * @copyright 2009 by Gorlum for http://oGame.Triolan.COM.UA
  */
-
-define('INSIDE'  , true);
-define('INSTALL' , false);
+define('INSIDE', true);
+define('INSTALL', false);
 define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 3)
+if ($user['authlevel'] < 3)
 {
   AdminMessage($lang['adm_err_denied']);
 }
@@ -32,6 +32,6 @@ $(document).ready(function() {
 });
 </script>';
 
-AdminMessage ( $script . '<img src=design/images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title'] );
+AdminMessage($script . '<img src=design/images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title']);
 
 ?>

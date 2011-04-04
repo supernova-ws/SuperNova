@@ -230,7 +230,7 @@ function flt_mission_attack($mission_data)
 
   $raport .= $st_1 . $st_2;
 
-  SendSimpleMessage ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $raport );
+  msg_send_simple_message ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $raport );
 
   // Coloriize report.
   $raport2  = '<span OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
@@ -255,7 +255,7 @@ function flt_mission_attack($mission_data)
   {
     if ($id != $fleet_row['fleet_owner'] && $id != 0)
     {
-      SendSimpleMessage ( $id, '', $fleet_row['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $raport2 );
+      msg_send_simple_message ( $id, '', $fleet_row['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $raport2 );
     }
   }
 

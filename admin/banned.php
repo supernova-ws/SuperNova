@@ -10,14 +10,13 @@
  * @version 1.0  - copyright 2008 by Chlorel for XNova
  *
  */
-
-define('INSIDE'  , true);
-define('INSTALL' , false);
+define('INSIDE', true);
+define('INSTALL', false);
 define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 1)
+if ($user['authlevel'] < 1)
 {
   AdminMessage($lang['adm_err_denied']);
 }
@@ -26,45 +25,48 @@ $mode = sys_get_param_str('mode', 'banit');
 $name = sys_get_param_str('name');
 $action = sys_get_param_str('action');
 
-if ($mode == 'banit' && $action) {
-  $reas              = $_POST['why'];
-  $days              = $_POST['days'];
-  $hour              = $_POST['hour'];
-  $mins              = $_POST['mins'];
-  $secs              = $_POST['secs'];
-  $isVacation        = $_POST['isVacation'];
+if ($mode == 'banit' && $action)
+{
+  $reas = $_POST['why'];
+  $days = $_POST['days'];
+  $hour = $_POST['hour'];
+  $mins = $_POST['mins'];
+  $secs = $_POST['secs'];
+  $isVacation = $_POST['isVacation'];
 
-  $admin             = $user['username'];
-  $mail              = $user['email'];
+  $admin = $user['username'];
+  $mail = $user['email'];
 
-  $Now               = time();
-  $BanTime           = $days * 86400;
-  $BanTime          += $hour * 3600;
-  $BanTime          += $mins * 60;
-  $BanTime          += $secs;
-  $BannedUntil       = $Now + $BanTime;
+  $Now = time();
+  $BanTime = $days * 86400;
+  $BanTime += $hour * 3600;
+  $BanTime += $mins * 60;
+  $BanTime += $secs;
+  $BannedUntil = $Now + $BanTime;
 
-  $QryUpdateUser     = "UPDATE {{users}} SET ";
-  $QryUpdateUser    .= "`bana` = '1', ";
-  $QryUpdateUser    .= "`banaday` = '". $BannedUntil ."' ";
-  if($isVacation){
-    $QryUpdateUser    .= ", `vacation` = '{$BannedUntil}' ";
+  $QryUpdateUser = "UPDATE {{users}} SET ";
+  $QryUpdateUser .= "`bana` = '1', ";
+  $QryUpdateUser .= "`banaday` = '" . $BannedUntil . "' ";
+  if ($isVacation)
+  {
+    $QryUpdateUser .= ", `vacation` = '{$BannedUntil}' ";
   }
-  $QryUpdateUser    .= "WHERE ";
-  $QryUpdateUser    .= "`username` = \"". $name ."\" LIMIT 1;";
+  $QryUpdateUser .= "WHERE ";
+  $QryUpdateUser .= "`username` = \"" . $name . "\" LIMIT 1;";
 
-  $QryResult = doquery( $QryUpdateUser);
+  $QryResult = doquery($QryUpdateUser);
 
-  if($QryResult){
+  if ($QryResult)
+  {
     doquery("INSERT INTO {{banned}} SET `who` = \"{$name}\", `theme` = '{$reas}', `who2` = '{$name}', `time` = '{$Now}', `longer` = '{$BannedUntil}', `author` = '{$admin}', `email` = '{$mail}';");
 
     $DoneMessage = "{$lang['adm_bn_thpl']} {$name} {$lang['adm_bn_isbn']}";
-    if($isVacation)
+    if ($isVacation)
     {
       $DoneMessage .= $lang['adm_bn_vctn'];
     }
 
-    $QryResult = doquery( "SELECT `id` FROM {{users}} WHERE `username` = \"". $name ."\" LIMIT 1;", '', true);
+    $QryResult = doquery("SELECT `id` FROM {{users}} WHERE `username` = \"" . $name . "\" LIMIT 1;", '', true);
 
     $QryResult =
       doquery("UPDATE {{planets}}
@@ -73,9 +75,12 @@ if ($mode == 'banit' && $action) {
          `solar_plant_porcent` = '0', `fusion_plant_porcent` = '0', `solar_satelit_porcent` = '0', `que` = ''
        WHERE `id_owner` = {$QryResult['id']};");
 
-    if($QryResult){
+    if ($QryResult)
+    {
       $DoneMessage .= $lang['adm_bn_plnt'];
-    }else{
+    }
+    else
+    {
       $DoneMessage .= $lang['adm_bn_err2'];
     };
   }
@@ -84,18 +89,18 @@ if ($mode == 'banit' && $action) {
     $DoneMessage = sprintf($lang['adm_bn_errr'], $name);
   };
 
-  AdminMessage ($DoneMessage, $lang['adm_ban_title']);
+  AdminMessage($DoneMessage, $lang['adm_ban_title']);
 }
 elseif ($mode == 'unbanit' && $action)
 {
   doquery("UPDATE {{users}} SET bana=0, banaday=0, `vacation` = {$time_now} WHERE username like '{$name}';");
-  $DoneMessage       = $lang['adm_unbn_thpl'] ." ". $name ." ". $lang['adm_unbn_isbn'];
-  AdminMessage ($DoneMessage, $lang['adm_unbn_ttle']);
+  $DoneMessage = $lang['adm_unbn_thpl'] . " " . $name . " " . $lang['adm_unbn_isbn'];
+  AdminMessage($DoneMessage, $lang['adm_unbn_ttle']);
 };
 
 $parse['name'] = $name;
 $parse['mode'] = $mode;
 
-display( parsetemplate(gettemplate("admin/admin_ban", true), $parse), $lang['adm_ban_title'], false, '', true);
+display(parsetemplate(gettemplate("admin/admin_ban", true), $parse), $lang['adm_ban_title'], false, '', true);
 
 ?>

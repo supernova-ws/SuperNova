@@ -9,19 +9,19 @@
  */
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
-
+// TODO: Rewrote notes
 $GET_a = intval($_GET['a']);
 $n = intval($_GET['n']);
 $POST_s = intval($_POST["s"]);
 $priority = intval($_POST["u"]);
-$title = ($_POST["title"]) ? SYS_mysqlSmartEscape(strip_tags($_POST["title"])) : $lang['NoTitle'];
-$text = ($_POST["text"]) ? SYS_mysqlSmartEscape(strip_tags($_POST["text"])) : $lang['NoText'];
+$title = sys_get_param_str('title', $lang['NoTitle']);
+$text = sys_get_param_str('text', $lang['NoText']);
 $id = intval($_POST["n"]);
 
 $lang['Please_Wait'] = "Patientez...";
 
 //lenguaje
-includeLang('notes');
+lng_include('notes');
 
 $lang['PHP_SELF'] = 'notes.'. PHP_EX;
 

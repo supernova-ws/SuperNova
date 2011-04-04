@@ -18,8 +18,8 @@ header("Content-type: text/html; charset=windows-1251");
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('universe');
-includeLang('fleet');
+lng_include('universe');
+lng_include('fleet');
 
 doquery("START TRANSACTION;");
 $planetrow = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['current_planet']}' LIMIT 1 FOR UPDATE;", '',true);

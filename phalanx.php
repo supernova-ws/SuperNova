@@ -36,6 +36,13 @@ uniquement le decompteur de temps de vol
 2:37:27   Attaque de missiles (10) de Guernica [9:486:5] ‡ Prison Break [9:487:4] cible primaire Lanceur de plasma.
 
 */
+// Cr√©ation d'un lien pour le joueur hostile
+function BuildHostileFleetPlayerLink ( $FleetRow ) {
+  global $lang, $dpath;
+
+  $PlayerName = doquery ("SELECT `username` FROM {{users}} WHERE `id` = '{$FleetRow['fleet_owner']}' LIMIT 1;", '', true);
+  return "{$PlayerName['username']} <a href=\"messages.php?mode=write&id={$FleetRow['fleet_owner']}\"><img src=\"{$dpath}/img/m.gif\" alt=\"{$lang['ov_message']}\" title=\"{$lang['ov_message']}\" border=\"0\"></a>";
+}
 
 function BuildFleetEventTable ( $FleetRow, $Status, $Owner, $Label, $Record )
 {
@@ -78,7 +85,7 @@ function BuildFleetEventTable ( $FleetRow, $Status, $Owner, $Label, $Record )
       $StartID  = $lang['ov_moon_to'];
     }
     $StartID .= $StartPlanet['name'] ." ";
-    $StartID .= GetStartAdressLink ( $FleetRow, $FleetPrefix . $FleetStyle[ $MissionType ] );
+    $StartID .= uni_render_coordinates_href($FleetRow, 'fleet_start_', 3, $FleetPrefix . $FleetStyle[ $MissionType ]);
 
     if ( $MissionType != 15 ) {
       if       ($TargetType == 1) {
@@ -92,7 +99,7 @@ function BuildFleetEventTable ( $FleetRow, $Status, $Owner, $Label, $Record )
       $TargetID  = $lang['ov_explo_to_target'];
     }
     $TargetID .= $TargetPlanet['name'] ." ";
-    $TargetID .= GetTargetAdressLink ( $FleetRow, $FleetPrefix . $FleetStyle[ $MissionType ] );
+    $TargetID .= uni_render_coordinates_href($FleetRow, 'fleet_end_', 3, $FleetPrefix . $FleetStyle[ $MissionType ]);
   } else {
     if       ($StartType == 1) {
       $StartID  = $lang['ov_back_planet'];
@@ -100,7 +107,7 @@ function BuildFleetEventTable ( $FleetRow, $Status, $Owner, $Label, $Record )
       $StartID  = $lang['ov_back_moon'];
     }
     $StartID .= $StartPlanet['name'] ." ";
-    $StartID .= GetStartAdressLink ( $FleetRow, $FleetPrefix . $FleetStyle[ $MissionType ] );
+    $StartID .= uni_render_coordinates_href($FleetRow, 'fleet_start_', 3, $FleetPrefix . $FleetStyle[ $MissionType ]);
 
     if ( $MissionType != 15 ) {
       if       ($TargetType == 1) {
@@ -114,7 +121,7 @@ function BuildFleetEventTable ( $FleetRow, $Status, $Owner, $Label, $Record )
       $TargetID  = $lang['ov_explo_from'];
     }
     $TargetID .= $TargetPlanet['name'] ." ";
-    $TargetID .= GetTargetAdressLink ( $FleetRow, $FleetPrefix . $FleetStyle[ $MissionType ] );
+    $TargetID .= uni_render_coordinates_href($FleetRow, 'fleet_end_', 3, $FleetPrefix . $FleetStyle[ $MissionType ]);
   }
 
   if ($Owner == true) {
@@ -167,8 +174,8 @@ function BuildFleetEventTable ( $FleetRow, $Status, $Owner, $Label, $Record )
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-includeLang('overview');
-includeLang('universe');
+lng_include('overview');
+lng_include('universe');
 
 function secureNumericGet(){
   if(!$_GET) return false;

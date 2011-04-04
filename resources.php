@@ -48,10 +48,10 @@ function int_calc_storage_bar($resource_name)
 
     'BASIC_INCOME'=> $config->$resource_income_name * $config->resource_multiplier,
 
-    'HOURLY'      => colorNumber(pretty_number($totalProduction)),
-    'DAILY'       => colorNumber(pretty_number($totalProduction * 24)),
-    'WEEKLY'      => colorNumber(pretty_number($totalProduction * 24 * 7)),
-    'MONTHLY'     => colorNumber(pretty_number($totalProduction * 24 * 30)),
+    'HOURLY'      => pretty_number($totalProduction, true, true),
+    'WEEKLY'      => pretty_number($totalProduction * 24 * 7, true, true),
+    'DAILY'       => pretty_number($totalProduction * 24, true, true),
+    'MONTHLY'     => pretty_number($totalProduction * 24 * 30, true, true),
 
     'STORAGE'     => intval($storage_fill),
     'BAR'         => min($storage_fill, 100),
@@ -115,10 +115,10 @@ $ProdID = 0;
 $template->assign_block_vars('production', array(
   'TYPE'           => $lang['res_basic_income'],
 
-  'METAL_TYPE'     => colorNumber(pretty_number($caps['metal_perhour'][$ProdID])),
-  'CRYSTAL_TYPE'   => colorNumber(pretty_number($caps['crystal_perhour'][$ProdID])),
-  'DEUTERIUM_TYPE' => colorNumber(pretty_number($caps['deuterium_perhour'][$ProdID])),
-  'ENERGY_TYPE'    => colorNumber(pretty_number($caps['energy'][$ProdID])),
+  'METAL_TYPE'     => pretty_number($caps['metal_perhour'][$ProdID], true, true),
+  'CRYSTAL_TYPE'   => pretty_number($caps['crystal_perhour'][$ProdID], true, true),
+  'DEUTERIUM_TYPE' => pretty_number($caps['deuterium_perhour'][$ProdID], true, true),
+  'ENERGY_TYPE'    => pretty_number($caps['energy'][$ProdID], true, true),
 ));
 
 foreach($reslist['prod'] as $ProdID)
@@ -133,10 +133,10 @@ foreach($reslist['prod'] as $ProdID)
      'LEVEL'          => $planetrow[ $resource[$ProdID] ],
      'LEVEL_TYPE'     => ($ProdID > 200) ? $lang['quantity'] : $lang['level'],
 
-     'METAL_TYPE'     => colorNumber(pretty_number($caps['metal_perhour'][$ProdID]     * $caps['production'])),
-     'CRYSTAL_TYPE'   => colorNumber(pretty_number($caps['crystal_perhour'][$ProdID]   * $caps['production'])),
-     'DEUTERIUM_TYPE' => colorNumber(pretty_number($caps['deuterium_perhour'][$ProdID] * $caps['production'])),
-     'ENERGY_TYPE'    => colorNumber(pretty_number($caps['energy'][$ProdID])),
+     'METAL_TYPE'     => pretty_number($caps['metal_perhour'][$ProdID]     * $caps['production'], true, true),
+     'CRYSTAL_TYPE'   => pretty_number($caps['crystal_perhour'][$ProdID]   * $caps['production'], true, true),
+     'DEUTERIUM_TYPE' => pretty_number($caps['deuterium_perhour'][$ProdID] * $caps['production'], true, true),
+     'ENERGY_TYPE'    => pretty_number($caps['energy'][$ProdID], true, true),
 
      'SELECT'         => $row_select,
    ));
@@ -146,10 +146,10 @@ foreach($reslist['prod'] as $ProdID)
 $template->assign_block_vars('production', array(
   'TYPE'           => $lang['res_total'],
 
-  'METAL_TYPE'     => colorNumber(pretty_number(floor($caps['planet']['metal_perhour'] * $caps['production'] + $caps['metal_perhour'][0]))),
-  'CRYSTAL_TYPE'   => colorNumber(pretty_number(floor($caps['planet']['crystal_perhour'] * $caps['production'] + $caps['crystal_perhour'][0]))),
-  'DEUTERIUM_TYPE' => colorNumber(pretty_number(floor($caps['planet']['deuterium_perhour'] * $caps['production'] + $caps['deuterium_perhour'][0]))),
-  'ENERGY_TYPE'    => colorNumber(pretty_number($caps['planet']['energy_max'] - $caps['planet']['energy_used'])),
+  'METAL_TYPE'     => pretty_number($caps['planet']['metal_perhour'] * $caps['production'] + $caps['metal_perhour'][0], true, true),
+  'CRYSTAL_TYPE'   => pretty_number($caps['planet']['crystal_perhour'] * $caps['production'] + $caps['crystal_perhour'][0], true, true),
+  'DEUTERIUM_TYPE' => pretty_number($caps['planet']['deuterium_perhour'] * $caps['production'] + $caps['deuterium_perhour'][0], true, true),
+  'ENERGY_TYPE'    => pretty_number($caps['planet']['energy_max'] - $caps['planet']['energy_used'], true, true),
 ));
 
 int_calc_storage_bar('metal');
