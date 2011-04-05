@@ -60,11 +60,11 @@ input.frameles
     <td class="header" align="right" width="150"><font color="#00ff00">{ENERGY_MAX}</font></td>
   </tr>
   <tr class="c">
-    <td class="c_c" colspan=1>
-      {L_sys_expeditions} {TOPNAV_EXPEDITIONS_FLYING}/{TOPNAV_EXPEDITIONS_TOTAL}
+    <td class="c_c" colspan=1 id="topnav_expedition_counter_total">
+      {L_sys_expeditions} <span id='topnav_expedition_counter'>{TOPNAV_EXPEDITIONS_FLYING}</span>/{TOPNAV_EXPEDITIONS_TOTAL}
     </td>
-    <td class="c_c" colspan=1>
-      {L_sys_fleets} {TOPNAV_FLEETS_FLYING}/{TOPNAV_FLEETS_TOTAL}
+    <td class="c_c" colspan=1 id='topnav_fleet_counter_total'>
+      {L_sys_fleets} <span id='topnav_fleet_counter'>{TOPNAV_FLEETS_FLYING}</span>/{TOPNAV_FLEETS_TOTAL}
     </td>
   </tr>
 </tbody></table>
@@ -76,4 +76,28 @@ input.frameles
   sn_timers.unshift({id: 'top_deuterium', type: 1, active: true, start_time: {TIME_NOW}, options: {start_value: {TOPNAV_DEUTERIUM}, per_second: {TOPNAV_DEUTERIUM_PERHOUR} / 3600, max_value: {TOPNAV_DEUTERIUM_MAX}}});
 
   sn_timers.unshift({id: 'top_time', type: 2, active: true, start_time: {TIME_NOW}, options: 2});
+
+  sn_timers.unshift({id: 'topnav_fleet_counter', type: 5, active: true, start_time: {TIME_NOW},             
+            options: 
+              {msg_done: '0',
+                que:
+                  [
+                    <!-- BEGIN flying_fleets -->
+                      [{flying_fleets.TIME}, '{flying_fleets.TEXT}', '{flying_fleets.HINT}'],
+                    <!-- END flying_fleets -->
+                  ]
+              }
+ });
+
+ sn_timers.unshift({id: 'topnav_expedition_counter', type: 5, active: true, start_time: {TIME_NOW},             
+            options: 
+              {msg_done: '0',
+                que:
+                  [
+                    <!-- BEGIN flying_expeditions -->
+                      [{flying_expeditions.TIME}, '{flying_expeditions.TEXT}', '{flying_expeditions.HINT}'],
+                    <!-- END flying_expeditions -->
+                  ]
+              }
+ });
 // --></script>

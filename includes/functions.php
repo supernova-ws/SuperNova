@@ -492,20 +492,20 @@ function GetMaxFleets(&$user)
 
 function flt_get_fleets_flying(&$user)
 {
-  $fleets_flying = doquery("SELECT COUNT(*) AS fleets_flying FROM {{fleets}} WHERE fleet_owner = {$user['id']}", '', true);
-  return $fleets_flying['fleets_flying'];
+  $fleet_flying_list = array();
+  $fleet_flying_query = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner = {$user['id']}");
+  while($fleet_flying_row = mysql_fetch_assoc($fleet_flying_query))
+  {
+    $fleet_flying_list[0][] = $fleet_flying_row;
+    $fleet_flying_list[$fleet_flying_row['fleet_mission']][] = &$fleet_flying_list[0][count($fleet_flying_list)-1];
+  }
+  return $fleet_flying_list;
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 function GetMaxExpeditions(&$user)
 {
   return floor(sqrt($user[$GLOBALS['sn_data'][TECH_EXPEDITION]['name']]));
-}
-
-function flt_get_expeditions_flying(&$user)
-{
-  $expeditions_flying = doquery("SELECT COUNT(*) AS expeditions_flying FROM {{fleets}} WHERE fleet_owner = {$user['id']} AND fleet_mission = ". MT_EXPLORE, '', true);
-  return $expeditions_flying['expeditions_flying'];
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -622,7 +622,7 @@ function flt_expand($target)
   }
   elseif ($target['field_max']) // it's a planet!
   {
-    
+
   }
 
   return $arr_fleet;

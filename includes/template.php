@@ -149,7 +149,43 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
  * @copyright 2008 By Chlorel for XNova
  */
 
-function ShowTopNavigationBar ( $user, $planetrow )
+function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
+{
+  global $lang, $user, $time_now;
+
+  $fleet_flying_events = array();
+  foreach($fleet_flying_list as $fleet_flying_row)
+  {
+    if($fleet_flying_row['fleet_mess'] == 0)
+    {
+      if($fleet_flying_row['fleet_start_time'] >= $time_now) // cut fleets on Hold and Expedition
+      {
+        $fleet_flying_events["{$fleet_flying_row['fleet_id']} {$lang['sys_event_arrive']} " . uni_render_coordinates($fleet_flying_row, $prefix = 'fleet_end_')] = $fleet_flying_row['fleet_start_time'];
+      }
+      if($fleet_flying_row['fleet_end_stay'])
+      {
+        $fleet_flying_events["{$fleet_flying_row['fleet_id']} {$lang['sys_event_stay']} " . uni_render_coordinates($fleet_flying_row, $prefix = 'fleet_end_')] = $fleet_flying_row['fleet_end_stay'];
+      }
+    }
+    $fleet_flying_events["{$fleet_flying_row['fleet_id']} {$lang['sys_event_return']} " . uni_render_coordinates($fleet_flying_row, $prefix = 'fleet_start_')] = $fleet_flying_row['fleet_end_time'];
+  }
+  asort($fleet_flying_events);
+  $fleet_flying_count = count($fleet_flying_list);
+  foreach($fleet_flying_events as $fleet_event => $fleet_time)
+  {
+    $template->assign_block_vars("flying_{$type}s", array(
+      'TIME' => max(0, $fleet_time - $time_now),
+      'TEXT' => $fleet_flying_count,
+      'HINT' => date(FMT_DATE_TIME, $fleet_time) . " - {$lang['sys_fleet']} {$fleet_event}",
+    ));
+    if(strpos($fleet_event, $lang['sys_event_return']) !== false)
+    {
+      $fleet_flying_count--;
+    }
+  }
+}
+
+function ShowTopNavigationBar($user, $planetrow)
 {
   if (!is_array($user))
   {
@@ -188,6 +224,11 @@ function ShowTopNavigationBar ( $user, $planetrow )
   $hour        = date('H');
   $min         = date('i');
   $sec         = date('s');
+
+  // Количество флотов и экспедиций, а так же события флотов
+  $fleet_flying_list = flt_get_fleets_flying($user);
+  tpl_topnav_event_build($template, $fleet_flying_list[0]);
+  tpl_topnav_event_build($template, $fleet_flying_list[MT_EXPLORE], 'expedition');
 
   // Подсчет кол-ва онлайн и кто онлайн
   $time = $time_now - 15*60;
@@ -231,12 +272,12 @@ function ShowTopNavigationBar ( $user, $planetrow )
     'TOPNAV_MESSAGES_ALLIANCE' => $user['mnl_alliance'],
     'TOPNAV_MESSAGES_ALL'      => $user['new_message'],
 
-    'TOPNAV_FLEETS_FLYING' => flt_get_fleets_flying($user),
-    'TOPNAV_FLEETS_TOTAL' => GetMaxFleets($user),
-    'TOPNAV_EXPEDITIONS_FLYING' => flt_get_expeditions_flying($user),
-    'TOPNAV_EXPEDITIONS_TOTAL' => GetMaxExpeditions($user),
+    'TOPNAV_FLEETS_FLYING'      => count($fleet_flying_list[0]),
+    'TOPNAV_FLEETS_TOTAL'       => GetMaxFleets($user),
+    'TOPNAV_EXPEDITIONS_FLYING' => count($fleet_flying_list[MT_EXPLORE]),
+    'TOPNAV_EXPEDITIONS_TOTAL'  => GetMaxExpeditions($user),
   ));
-    
+
   return $template;
 }
 
