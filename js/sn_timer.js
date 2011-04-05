@@ -415,26 +415,29 @@ function sn_timer() {
       break;
 
       case 5: // old que display
-        var que_item = timer_options['que'][0];
-
-        if(que_item[EVENT_TIME] <= timestamp - timer['start_time'])
-        {
-          timer_options['que'].shift();
-          timer['start_time'] = timestamp;
-          timer['options']['unchanged'] = false;
-        }
-
-        if(!timer['options']['unchanged'])
-        {
-          infoText = que_item[EVENT_STRING];
-          hintText = que_item[EVENT_HINT];
-        }
-
         if(!timer_options['que'].length)
         {
           timer['active'] = false;
           infoText = timer_options['msg_done'];
           hintText = '';
+        }
+        else
+        {
+          var que_item = timer_options['que'][0];
+
+          if(!timer['options']['unchanged'])
+          {
+            infoText = que_item[EVENT_STRING];
+            hintText = que_item[EVENT_HINT];
+            timer['options']['unchanged'] = true;
+          }
+
+          if(que_item[EVENT_TIME] <= timestamp - timer['start_time'])
+          {
+            timer_options['que'].shift();
+            timer['start_time'] = timestamp;
+            timer['options']['unchanged'] = false;
+          }
         }
 
         if(HTML != null)

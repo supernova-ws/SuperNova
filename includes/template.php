@@ -151,6 +151,11 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
 
 function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
 {
+  if(empty($fleet_flying_list))
+  {
+    return;
+  }
+
   global $lang, $user, $time_now;
 
   $fleet_flying_events = array();
