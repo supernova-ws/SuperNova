@@ -77,6 +77,7 @@ input.frameles
 
   sn_timers.unshift({id: 'top_time', type: 2, active: true, start_time: {TIME_NOW}, options: 2});
 
+ <!-- IF .flying_fleets -->
   sn_timers.unshift({id: 'topnav_fleet_counter', type: 5, active: true, start_time: {TIME_NOW},             
             options: 
               {msg_done: '0',
@@ -88,7 +89,9 @@ input.frameles
                   ]
               }
  });
+ <!-- ENDIF -->
 
+ <!-- IF .flying_expeditions -->
  sn_timers.unshift({id: 'topnav_expedition_counter', type: 5, active: true, start_time: {TIME_NOW},             
             options: 
               {msg_done: '0',
@@ -100,4 +103,5 @@ input.frameles
                   ]
               }
  });
+ <!-- ENDIF -->
 // --></script>
