@@ -98,7 +98,7 @@ function ECO_getPlanetCaps($user, &$planet_row)
     $Caps['real']['units']['crystal_perhour'][$element]   = floor($Caps['crystal_perhour'][$element] * $Caps['production']);
     $Caps['real']['units']['deuterium_perhour'][$element] = floor($Caps['deuterium_perhour'][$element] * $Caps['production']);
   }
-pdump($Caps);
+
   return $Caps;
 }
 

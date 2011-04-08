@@ -131,7 +131,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 
   $QryUpdatePlanet .= "WHERE `id` = '{$planet['id']}' LIMIT 1;";
   doquery($QryUpdatePlanet);
-pdump($QryUpdatePlanet);
+
   if(!empty($que['xp']))
   {
     foreach($que['xp'] as $xp_type => $xp_amount)
