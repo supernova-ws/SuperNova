@@ -227,7 +227,7 @@ function sn_timer() {
           timer['active'] = false;
         }
         printData = sn_format_number(new_value, 2, 'white', timer_options['max_value']);
-        if(new_value >= timer_options['max_value'])
+        if(new_value >= timer_options['max_value'] && timer_options['per_second'] > 0)
         {
           timer['active'] = false;
         };

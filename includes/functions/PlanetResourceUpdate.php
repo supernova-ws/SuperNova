@@ -62,11 +62,12 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     case PT_PLANET:
       foreach($incRes as $resName => &$incCount)
       {
-        $Caps['planet'][$resName] = max(0, $Caps['planet'][$resName]);
+//        $Caps['planet'][$resName] = max(0, $Caps['planet'][$resName]);
         $incCount = ($Caps[$resName.'_perhour'][0] + $Caps['planet'][$resName.'_perhour'] * $Caps['production']) * $ProductionTime / 3600 ;
 
         $store_free = $Caps['planet'][$resName.'_max'] - $Caps['planet'][$resName];
-        $incCount = max(0, min($incCount, max(0, $store_free)));
+//        $incCount = max(0, min($incCount, max(0, $store_free)));
+        $incCount = min($incCount, max(0, $store_free));
 
         if($planet[$resName] + $incCount < 0)
         {
@@ -130,7 +131,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 
   $QryUpdatePlanet .= "WHERE `id` = '{$planet['id']}' LIMIT 1;";
   doquery($QryUpdatePlanet);
-
+pdump($QryUpdatePlanet);
   if(!empty($que['xp']))
   {
     foreach($que['xp'] as $xp_type => $xp_amount)
