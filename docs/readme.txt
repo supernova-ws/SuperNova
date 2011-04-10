@@ -46,8 +46,9 @@ GIT-репозиторий:
 ќн же по HTTP:
   https://github.com/supernova-ws/SuperNova#
 
-—сылка на архив:
+јрхивы инсталл€ции всех релизов через HTTP:
   https://github.com/supernova-ws/SuperNova/archives/master
+(кнопка "download .zip" скачает самый свежий релиз)
 
 SVN-интерфейс к репозиторию:
   http://svn.github.com/supernova-ws/SuperNova.git
@@ -66,6 +67,12 @@ SVN-интерфейс к репозиторию:
 безрассудных. Ёто - копи€ моей рабочей  ветки.  ќна  содержит  то,  над  чем  €
 работаю в данный момент. ¬ общем - € даже не гарантирую,  что  чекаут  из  этой
 ветки  вообще запуститс€. »спользуйте еЄ на свой страх и риск. я предупредил.
+
+«агрузка исходников из ветки trunk одним архивом через HTTP:
+  https://github.com/supernova-ws/SuperNova/archives/trunk
+
+«агрузка исходников из ветки test одним архивом через HTTP:
+  https://github.com/supernova-ws/SuperNova/archives/test
 
 SourceForge
 -----------

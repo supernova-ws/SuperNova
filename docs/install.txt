@@ -218,12 +218,13 @@ git reset --hard
 Сверхновая на github
 --------------------
 Страница проекта: http://github.com/supernova-ws/SuperNova
-Загрузка движка: http://sourceforge.net/projects/supernova-ws/files/
+Загрузка движка: https://github.com/supernova-ws/SuperNova/archives/master
 Репозиторий: git://github.com/supernova-ws/SuperNova.git
 
 Сверхновая на sourceforge
 --------------------
 Страница проекта: http://sourceforge.net/projects/supernova-ws/
+Загрузка движка: http://sourceforge.net/projects/supernova-ws/files/
 Репозиторий: git://supernova-ws.git.sourceforge.net/gitroot/supernova-ws/supernova-ws
 
 
