@@ -50,7 +50,7 @@ foreach ($planets as $planet_index => &$planet)
     'PLANET_FLEET_ID'   => $planet_fleet_id,
 
     'FIELDS_CUR'        => $planet['field_current'],
-    'FIELDS_MAX'        => $planet['field_max'] + $planet[$sn_data[33]['name']] * 5,
+    'FIELDS_MAX'        => eco_planet_fields_max($planet),
 
     'METAL_CUR'         => pretty_number($planet['metal'], true, $planet['metal_max']),
     'METAL_PROD'        => pretty_number($planet['metal_perhour']),
