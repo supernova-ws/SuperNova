@@ -70,25 +70,52 @@
   <tr>
     <th>{L_sys_metal}<br>{L_imp_production}</th>
     <!-- BEGIN planet -->
-    <th class="c">
-      <a href="resources.php?cp={planet.ID}&re=0&planettype={planet.TYPE}">{planet.METAL_CUR}<br>{planet.METAL_PROD}</a>
-    </th>
+      <!-- IF planet.METAL_PERCENT < 50 --> 
+        <!-- DEFINE $FIELD_COLOR = 'negative' -->
+      <!-- ELSEIF planet.METAL_PERCENT < 80 --> 
+        <!-- DEFINE $FIELD_COLOR = 'warning' -->
+      <!-- ELSEIF planet.METAL_PERCENT < 100 --> 
+        <!-- DEFINE $FIELD_COLOR = 'neutral' -->
+      <!-- ELSE -->
+        <!-- DEFINE $FIELD_COLOR = 'positive' -->
+      <!-- ENDIF -->
+      <th class="c">
+        <a href="resources.php?cp={planet.ID}&re=0&planettype={planet.TYPE}">{planet.METAL_CUR}<br><span class="{$FIELD_COLOR}">{planet.METAL_PROD}</span></a>
+      </th>
     <!-- END planet -->
   </tr>
   <tr>
     <th>{L_sys_crystal}<br>{L_imp_production}</th>
     <!-- BEGIN planet -->
-    <th class="c">
-      <a href="resources.php?cp={planet.ID}&re=0&planettype={planet.TYPE}">{planet.CRYSTAL_CUR}<br>{planet.CRYSTAL_PROD}</a>
-    </th>
+      <!-- IF planet.CRYSTAL_PERCENT < 50 --> 
+        <!-- DEFINE $FIELD_COLOR = 'negative' -->
+      <!-- ELSEIF planet.CRYSTAL_PERCENT < 80 --> 
+        <!-- DEFINE $FIELD_COLOR = 'warning' -->
+      <!-- ELSEIF planet.CRYSTAL_PERCENT < 100 --> 
+        <!-- DEFINE $FIELD_COLOR = 'neutral' -->
+      <!-- ELSE -->
+        <!-- DEFINE $FIELD_COLOR = 'positive' -->
+      <!-- ENDIF -->
+      <th class="c">
+        <a href="resources.php?cp={planet.ID}&re=0&planettype={planet.TYPE}">{planet.CRYSTAL_CUR}<br><span class="{$FIELD_COLOR}">{planet.CRYSTAL_PROD}</span></a>
+      </th>
     <!-- END planet -->
   </tr>
   <tr>
     <th>{L_sys_deuterium}<br>{L_imp_production}</th>
     <!-- BEGIN planet -->
-    <th class="c">
-      <a href="resources.php?cp={planet.ID}&re=0&planettype={planet.TYPE}">{planet.DEUTERIUM_CUR}<br>{planet.DEUTERIUM_PROD}</a>
-    </th>
+      <!-- IF planet.DEUTERIUM_PERCENT < 50 --> 
+        <!-- DEFINE $FIELD_COLOR = 'negative' -->
+      <!-- ELSEIF planet.DEUTERIUM_PERCENT < 80 --> 
+        <!-- DEFINE $FIELD_COLOR = 'warning' -->
+      <!-- ELSEIF planet.DEUTERIUM_PERCENT < 100 --> 
+        <!-- DEFINE $FIELD_COLOR = 'neutral' -->
+      <!-- ELSE -->
+        <!-- DEFINE $FIELD_COLOR = 'positive' -->
+      <!-- ENDIF -->
+      <th class="c">
+        <a href="resources.php?cp={planet.ID}&re=0&planettype={planet.TYPE}">{planet.DEUTERIUM_CUR}<br><span class="{$FIELD_COLOR}">{planet.DEUTERIUM_PROD}</span></a>
+      </th>
     <!-- END planet -->
   </tr>
   <tr>

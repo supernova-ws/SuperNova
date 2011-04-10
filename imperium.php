@@ -47,25 +47,25 @@ foreach ($planets as $planet_index => &$planet)
   }
 
   $template->assign_block_vars('planet', array_merge($planet_template, array(
-    'PLANET_FLEET_ID'  => $planet_fleet_id,
+    'PLANET_FLEET_ID'   => $planet_fleet_id,
 
-    'FIELDS_CUR' => $planet['field_current'],
-    'FIELDS_MAX' => $planet['field_max'] + $planet[$sn_data[33]['name']] * 5,
+    'FIELDS_CUR'        => $planet['field_current'],
+    'FIELDS_MAX'        => $planet['field_max'] + $planet[$sn_data[33]['name']] * 5,
 
-    'METAL_CUR'  => pretty_number($planet['metal'], true, $planet['metal_max']),
-    'METAL_PROD' => pretty_number($planet['metal_perhour']),
+    'METAL_CUR'         => pretty_number($planet['metal'], true, $planet['metal_max']),
+    'METAL_PROD'        => pretty_number($planet['metal_perhour']),
 
-    'CRYSTAL_CUR'  => pretty_number($planet['crystal'], true, $planet['crystal_max']),
-    'CRYSTAL_PROD' => pretty_number($planet['crystal_perhour']),
+    'CRYSTAL_CUR'       => pretty_number($planet['crystal'], true, $planet['crystal_max']),
+    'CRYSTAL_PROD'      => pretty_number($planet['crystal_perhour']),
 
-    'DEUTERIUM_CUR'  => pretty_number($planet['deuterium'], true, $planet['deuterium_max']),
-    'DEUTERIUM_PROD' => pretty_number($planet['deuterium_perhour']),
+    'DEUTERIUM_CUR'     => pretty_number($planet['deuterium'], true, $planet['deuterium_max']),
+    'DEUTERIUM_PROD'    => pretty_number($planet['deuterium_perhour']),
 
-    'ENERGY_CUR' => pretty_number($planet['energy_max'] - $planet['energy_used'], true, true),
-    'ENERGY_MAX' => pretty_number($planet['energy_max']),
+    'ENERGY_CUR'        => pretty_number($planet['energy_max'] - $planet['energy_used'], true, true),
+    'ENERGY_MAX'        => pretty_number($planet['energy_max']),
 
-    'TEMP_MIN' => $planet['temp_min'],
-    'TEMP_MAX' => $planet['temp_max'],
+    'TEMP_MIN'          => $planet['temp_min'],
+    'TEMP_MAX'          => $planet['temp_max'],
   )));
 
   $planet['fleet_list'] = $planet_template['fleet_list'];

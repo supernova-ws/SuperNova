@@ -197,7 +197,7 @@ $lang = array_merge($lang, array(
     ),
 
     TECH_ENGINE_HYPER => array(
-      'description' => "By spatio-temporal curvature in the immediate environment of spacecraft space shrinks, the faster the overcome long distances. The higher developed Hyperspace drive, the higher the compression space, which makes the following ships with each level of 30% faster: bombers, battleships, Destroyers, cruisers, death stars, and {$lang['tech'][SHIP_SUPERNOVA]}.",
+      'description' => "By spatio-temporal curvature in the immediate environment of spacecraft space shrinks, the faster the overcome long distances. The higher developed Hyperspace drive, the higher the compression space, which makes the following ships with each level of 30% faster: {$lang['tech'][SHIP_CRUISER]}, {$lang['tech'][SHIP_BOMBER]}, {$lang['tech'][SHIP_DESTRUCTOR]}, {$lang['tech'][SHIP_DEATH_STAR]}, {$lang['tech'][SHIP_BATTLESHIP]} and {$lang['tech'][SHIP_SUPERNOVA]}.",
       'description_short' => 'By spatio-temporal curvature in the immediate environment of spacecraft space shrinks, the faster the overcome long distances. The higher the developed hyperspace drive, the higher the compression space, with each level of the speed of ships rises up 30%.'
     ),
 
