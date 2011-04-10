@@ -243,6 +243,55 @@
   color: red;
 }
 
+.success_bg, .positive_bg {
+  background-color: lime;
+}
+
+.notice_bg, .zero_bg, .neutral_bg {
+  background-color: yellow;
+}
+
+.warning_bg {
+  background-color: orange;
+}
+
+.error_bg, .negative_bg {
+  background-color: red;
+}
+
 .errormessage a, .success a, .notice a, .warning a, .error a {
   text-decoration: underline;
+}
+
+/* Resources color coding*/
+.metal{
+  color: darkgrey;
+}
+
+.crystal{
+  color: cyan;
+}
+
+.deuterium{
+  color: #800080;
+}
+
+.overall{
+  color: white;
+}
+
+.metal_bg{
+  background-color: darkgrey;
+}
+
+.crystal_bg{
+  background-color: cyan;
+}
+
+.deuterium_bg{
+  background-color: #800080;
+}
+
+.overall_ng{
+  background-color: white;
 }

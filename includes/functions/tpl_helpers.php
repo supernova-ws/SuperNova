@@ -176,6 +176,10 @@ function tpl_parse_planet($planet, $que)
     'TYPE'          => $planet['planet_type'],
     'COORDINATES'   => uni_render_coordinates($planet),
 
+    'METAL_PERCENT'     => $planet['metal_mine_porcent'] * 10,
+    'CRYSTAL_PERCENT'   => $planet['crystal_mine_porcent'] * 10,
+    'DEUTERIUM_PERCENT' => $planet['deuterium_sintetizer_porcent'] * 10,
+
     'TECH'          => $planet['b_tech'] ? $lang['tech'][$planet['b_tech_id']] . ' ' . pretty_time($planet['b_tech'] - $time_now) : 0,
     'HANGAR'        => $hangar_build_tip,
     'hangar_que'    => $hangar_que,
