@@ -49,8 +49,9 @@ GIT-repository:
 GIT-repository through HTTP:
   https://github.com/supernova-ws/SuperNova#
 
-Archive:
+Release archives:
   https://github.com/supernova-ws/SuperNova/archives/master
+(button "download .zip" will download most recent release archive)
 
 SVN-interface (SVN-interface on GitHub works is very unstable):
   http://svn.github.com/supernova-ws/SuperNova.git
@@ -66,7 +67,7 @@ SourceForge
 GIT-repository on SourceForge:
   git://supernova-ws.git.sourceforge.net/gitroot/supernova-ws/supernova-ws
 
-Archive:
+Release archives:
   http://sourceforge.net/projects/supernova-ws/files/
 
 Support
