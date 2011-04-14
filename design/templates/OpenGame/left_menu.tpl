@@ -1,18 +1,11 @@
 <div id="left_menu_wrapper">
-  <script language="JavaScript">
-  function f(target_url,win_name) {
-    var new_win = window.open(target_url,win_name,'resizable=yes,scrollbars=yes,menubar=no,toolbar=no,width=550,height=280,top=0,left=0');
-    new_win.focus();
-  }
-  </script>
-
-  <table width="100%" cellspacing="0" cellpadding="0" id="left_menu">
+  <table width="100%" cellspacing="0" cellpadding="0" id="left_menu" align="left">
     <tr><th id="server_name">{C_game_name}</th></tr>
 
     <tr><td align="center"><img border="0" src="design/images/supernova.png" alt="supernova.ws"></td></tr>
 
     <!-- IF USER_AUTHLEVEL > 0 -->
-    <tr><th><div><a href="admin/overview.php"><font color="lime">{USER_AUTHLEVEL_NAME}</font></a></div></th></tr>
+    <tr><th><a href="admin/overview.php" style="color: lime;">{USER_AUTHLEVEL_NAME}</a></th></tr>
     <!-- ENDIF -->
     <tr><th>{L_m_h_rules}</th></tr>
     <!-- IF URL_RULES -->
@@ -24,7 +17,7 @@
     <tr>
       <td><a href="announce.php">{L_news_title}
       <!-- IF new_announce_count -->
-      <font color=red><strong><blink>{L_lm_announce_fresh}</blink></strong></font>
+      <span style="color: red; text-decoration: blink; font-weight: bold;">{L_lm_announce_fresh}</span>
       <!-- ENDIF -->
       </a>
       </td>
@@ -37,14 +30,13 @@
     <tr><td><a href="fleet.php" id="lm_fleet">{L_lm_fleet_orbiting}</a></td></tr>
 
     <tr><td><a href="buildings.php?mode={D_QUE_STRUCTURES}" id="lm_buildings">{L_Buildings}</a></td></tr>
-
     <tr><td><a href="buildings.php?mode={D_SUBQUE_FLEET}" id="lm_shipyard">{L_Shipyard}</a></td></tr>
     <tr><td><a href="buildings.php?mode={D_SUBQUE_DEFENSE}">{L_Defense}</a></td></tr>
 
     <tr><th>{L_Imperium}</th></tr>
-    <tr><td><a href="imperator.php" style="color: purple">{L_imp_imperator}</a></th></tr>
-    <tr><td><a href="imperium.php">{L_imp_overview}</a></th></tr>
-    <tr><td><a href="flying_fleets.php" id="lm_fleet">{L_imp_fleets}</a></th></tr>
+    <tr><td><a href="imperator.php" style="color: purple">{L_imp_imperator}</a></td></tr>
+    <tr><td><a href="imperium.php">{L_imp_overview}</a></td></tr>
+    <tr><td><a href="flying_fleets.php" id="lm_fleet">{L_imp_fleets}</a></td></tr>
     <tr><td><a href="techtree.php" id="lm_techtree">{L_Technology}</a></td></tr>
     <tr><td><a href="buildings.php?mode=research" id="lm_techtree">{L_Research}</a></td></tr>
     <tr><td><a href="officer.php">{L_tech[600]}</a></td></tr>
@@ -78,7 +70,7 @@
     <tr><th><a href="options.php" id="lm_options">{L_Options}</a></th></tr>
     <tr><th><a href="javascript:top.location.href='logout.php'" id="lm_logout">{L_Logout}</a></th></tr>
 
-    <tr><td align="center"><a href="http://games.triolan.ua" target="_blank"><img border="0" src="design/images/banners/bannergtu.gif" alt="Games @ Triolan.UA"></font></a></td></tr>
+    <tr><td align="center"><a href="http://games.triolan.ua" target="_blank"><img border="0" src="design/images/banners/bannergtu.gif" alt="Games @ Triolan.UA"></a></td></tr>
 <!--    <tr><th><a href="http://wow.triolan.com.ua/" target="_blank"><img border="0" src="design/images/banners/wow.gif" width="130" height="25" alt="Wow Triolan Server"></a></th></tr> -->
     <!-- IF ADV_LEFT_BOTTOM -->
     <tr><td align="center">{ADV_LEFT_BOTTOM}</td></tr>

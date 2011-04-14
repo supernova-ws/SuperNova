@@ -179,7 +179,7 @@ h1
 #left_menu_wrapper {
   float:left;
   width: 130px;
-  text-align: center;
+/*  text-align: center;*/
   padding-left:5px;
   padding-right:5px;
 }
