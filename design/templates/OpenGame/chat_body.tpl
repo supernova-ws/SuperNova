@@ -6,6 +6,7 @@
 
 <script type="text/javascript" src="js/chat.js"></script>
 <br />
+<form name="chat_form">
 <table id="chat_box"><tbody>
 
   <tr><td class="c"><span class="fl"><b>{chat_disc}</b></span><span class="fr"><a href=# onClick="MessageHistory()">{chat_history}</a></span></td></tr>
@@ -64,3 +65,4 @@
     </th>
   </tr>
 </table>
+</form>
