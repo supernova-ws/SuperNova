@@ -21,7 +21,8 @@
   	<option value="pink">pink</option>
   	<option value="red">red</option>
   	<option value="orange">orange</option>
-  </select>&nbsp;<input name="msg" type="text" id="msg" style="width:70%" maxlength="120" onKeyPress="if(event.keyCode == 13){ addMessage(); } if (event.keyCode==60 || event.keyCode==62) event.returnValue = false; if (event.which==60 || event.which==62) return false;">&nbsp;<input type="button" name="send" value="{chat_send}" id="send" onClick="addMessage()"> 
+  </select>&nbsp;
+  <input name="msg" type="text" id="msg" style="width:70%" maxlength="120" onKeyPress="if(event.keyCode == 13){ addMessage(); event.returnValue = false; } if (event.keyCode==60 || event.keyCode==62) event.returnValue = false; if (event.which==60 || event.which==62) return false;">&nbsp;<input type="button" name="send" value="{chat_send}" id="send" onClick="addMessage()"> 
   </th></tr>
 
   <tr>
