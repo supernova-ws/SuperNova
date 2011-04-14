@@ -88,7 +88,7 @@ function flt_mission_explore($mission_data)
   $FleetCount = $fleet_row['fleet_amount'];
 
   // Bon on les mange comment ces explorateurs ???
-  $Hasard = rand(0, 10);
+  $Hasard = mt_rand(0, 10);
 
   $MessSender = "{$lang['sys_mess_qg']} ({$Hasard})";
 

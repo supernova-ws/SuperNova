@@ -34,9 +34,9 @@
     <tr><td><a href="buildings.php?mode={D_SUBQUE_DEFENSE}">{L_Defense}</a></td></tr>
 
     <tr><th>{L_Imperium}</th></tr>
-    <tr><td><a href="imperator.php" style="color: purple">{L_imp_imperator}</a></th></tr>
-    <tr><td><a href="imperium.php">{L_imp_overview}</a></th></tr>
-    <tr><td><a href="flying_fleets.php" id="lm_fleet">{L_imp_fleets}</a></th></tr>
+    <tr><td><a href="imperator.php" style="color: purple">{L_imp_imperator}</a></td></tr>
+    <tr><td><a href="imperium.php">{L_imp_overview}</a></td></tr>
+    <tr><td><a href="flying_fleets.php" id="lm_fleet">{L_imp_fleets}</a></td></tr>
     <tr><td><a href="techtree.php" id="lm_techtree">{L_Technology}</a></td></tr>
     <tr><td><a href="buildings.php?mode=research" id="lm_techtree">{L_Research}</a></td></tr>
     <tr><td><a href="officer.php">{L_tech[600]}</a></td></tr>
@@ -70,7 +70,7 @@
     <tr><th><a href="options.php" id="lm_options">{L_Options}</a></th></tr>
     <tr><th><a href="javascript:top.location.href='logout.php'" id="lm_logout">{L_Logout}</a></th></tr>
 
-    <tr><td align="center"><a href="http://games.triolan.ua" target="_blank"><img border="0" src="design/images/banners/bannergtu.gif" alt="Games @ Triolan.UA"></font></a></td></tr>
+    <tr><td align="center"><a href="http://games.triolan.ua" target="_blank"><img border="0" src="design/images/banners/bannergtu.gif" alt="Games @ Triolan.UA"></a></td></tr>
 <!--    <tr><th><a href="http://wow.triolan.com.ua/" target="_blank"><img border="0" src="design/images/banners/wow.gif" width="130" height="25" alt="Wow Triolan Server"></a></th></tr> -->
     <!-- IF ADV_LEFT_BOTTOM -->
     <tr><td align="center">{ADV_LEFT_BOTTOM}</td></tr>
