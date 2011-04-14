@@ -16,7 +16,7 @@ function descendreTchat(){
 
 // Ajout de message
 function addMessage(){
-  if(msg.value>""){
+  if(document.chat_form.msg.value>""){
     var x_object = null;
     var cc_obj = document.getElementById("chat_color");
     var color = cc_obj.options[cc_obj.selectedIndex].value;
@@ -31,13 +31,13 @@ function addMessage(){
 
     x_object.open("POST","chat_add.php",true);
     x_object.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    msg.value=msg.value.replace(/\+/g,"plus");
+    document.chat_form.msg.value=document.chat_form.msg.value.replace(/\+/g,"plus");
     if(color>""){
       // msg.value = "[c="+color+"]"+msg.value+"[/c]";
-      msg.value = "[c="+color+"]"+msg.value.replace("&","%26")+"[/c]";
+      document.chat_form.msg.value = "[c="+color+"]"+document.chat_form.msg.value.replace("&","%26")+"[/c]";
     }
-    x_object.send("chat_type="+chat_type+"&ally_id="+ally_id+"&nick="+nick+"&msg="+msg.value);
-    msg.value = "";
+    x_object.send("chat_type="+chat_type+"&ally_id="+ally_id+"&nick="+nick+"&msg="+document.chat_form.msg.value);
+    document.chat_form.msg.value = "";
     showMessage(true);
   }
 }
@@ -78,8 +78,8 @@ var x_object2 = null;
 
 // Raccourcis des smileys
 function addSmiley(smiley){
-  msg.value=msg.value+smiley;
-  msg.focus();
+  document.chat_form.msg.value=document.chat_form.msg.value+smiley;
+  document.chat_form.msg.focus();
 }
 
 // Intervalle entre les messages
@@ -90,6 +90,6 @@ window.setTimeout(showMessage, 5000);
 
 // Add Nick by Click
 function addNick(obj){
- msg.value=msg.value+' ['+obj.innerText+'] ';
- msg.focus();
+ document.chat_form.msg.value=msg.value+' ['+obj.innerText+'] ';
+ document.chat_form.msg.focus();
 }
