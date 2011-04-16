@@ -149,6 +149,22 @@ function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage
  * @copyright 2008 By Chlorel for XNova
  */
 
+function tpl_topnav_event_build_helper($time, $event, $msg, $prefix, $is_decrease, $fleet_flying_row, &$fleet_flying_sorter, &$fleet_flying_events, &$fleet_event_count)
+{
+  global $lang;
+
+  $fleet_flying_sorter[$fleet_event_count] = $time;
+  $fleet_flying_events[$fleet_event_count] = array(
+    'ROW'  => $fleet_flying_row,
+    'FLEET_ID' => $fleet_flying_row['fleet_id'],
+    'EVENT' => $event,
+    'COORDINATES' => uni_render_coordinates($fleet_flying_row, $prefix),
+    'TEXT' => "{$msg}",
+    'DECREASE' => $is_decrease
+  );
+  $fleet_event_count++;
+}
+
 function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
 {
   if(empty($fleet_flying_list))
@@ -158,32 +174,43 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
 
   global $lang, $user, $time_now;
 
+  $fleet_event_count = 0;
+  $fleet_flying_sorter = array();
   $fleet_flying_events = array();
-  foreach($fleet_flying_list as $fleet_flying_row)
+  foreach($fleet_flying_list as &$fleet_flying_row)
   {
+    $will_return = true;
     if($fleet_flying_row['fleet_mess'] == 0)
     {
       if($fleet_flying_row['fleet_start_time'] >= $time_now) // cut fleets on Hold and Expedition
       {
-        $fleet_flying_events["{$fleet_flying_row['fleet_id']} {$lang['sys_event_arrive']} " . uni_render_coordinates($fleet_flying_row, $prefix = 'fleet_end_')] = $fleet_flying_row['fleet_start_time'];
+        if($fleet_flying_row['fleet_mission'] == MT_RELOCATE)
+        {
+          $will_return = false;
+        }
+        tpl_topnav_event_build_helper($fleet_flying_row['fleet_start_time'], EVENT_FLEET_ARRIVE, $lang['sys_event_arrive'], 'fleet_end_', !$will_return, $fleet_flying_row, &$fleet_flying_sorter, &$fleet_flying_events, &$fleet_event_count);
       }
       if($fleet_flying_row['fleet_end_stay'])
       {
-        $fleet_flying_events["{$fleet_flying_row['fleet_id']} {$lang['sys_event_stay']} " . uni_render_coordinates($fleet_flying_row, $prefix = 'fleet_end_')] = $fleet_flying_row['fleet_end_stay'];
+        tpl_topnav_event_build_helper($fleet_flying_row['fleet_end_stay'], EVENT_FLEET_STAY, $lang['sys_event_stay'], 'fleet_end_', false, $fleet_flying_row, &$fleet_flying_sorter, &$fleet_flying_events, &$fleet_event_count);
       }
     }
-    $fleet_flying_events["{$fleet_flying_row['fleet_id']} {$lang['sys_event_return']} " . uni_render_coordinates($fleet_flying_row, $prefix = 'fleet_start_')] = $fleet_flying_row['fleet_end_time'];
+    if($will_return)
+    {
+      tpl_topnav_event_build_helper($fleet_flying_row['fleet_end_time'], EVENT_FLEET_RETURN, $lang['sys_event_return'], 'fleet_start_', true, $fleet_flying_row, &$fleet_flying_sorter, &$fleet_flying_events, &$fleet_event_count);
+    }
   }
-  asort($fleet_flying_events);
+  asort($fleet_flying_sorter);
   $fleet_flying_count = count($fleet_flying_list);
-  foreach($fleet_flying_events as $fleet_event => $fleet_time)
+  foreach($fleet_flying_sorter as $fleet_event_id => $fleet_time)
   {
+    $fleet_event = &$fleet_flying_events[$fleet_event_id];
     $template->assign_block_vars("flying_{$type}s", array(
       'TIME' => max(0, $fleet_time - $time_now),
       'TEXT' => $fleet_flying_count,
-      'HINT' => date(FMT_DATE_TIME, $fleet_time) . " - {$lang['sys_fleet']} {$fleet_event}",
+      'HINT' => date(FMT_DATE_TIME, $fleet_time) . " - {$lang['sys_fleet']} {$fleet_event['TEXT']} {$fleet_event['COORDINATES']} {$lang['type_mission'][$fleet_event['ROW']['fleet_mission']]}",
     ));
-    if(strpos($fleet_event, $lang['sys_event_return']) !== false)
+    if($fleet_event['DECREASE'])
     {
       $fleet_flying_count--;
     }
