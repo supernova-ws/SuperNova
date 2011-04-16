@@ -16,7 +16,7 @@ if ( !defined('INSIDE') )
 }
 
 define('DB_VERSION', 27);
-define('SN_VERSION', '27a13');
+define('SN_VERSION', '27a14');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -108,6 +108,11 @@ define('CACHE_COMBAT',     CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURC
 define('CACHE_ALL',        CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURCE | CACHE_DESTINATION | CACHE_EVENT);
 
 define('CACHE_NONE', CACHE_NOTHING); // Alias for me
+
+// *** Event types
+define('EVENT_FLEET_ARRIVE', 1);
+define('EVENT_FLEET_STAY', 2);
+define('EVENT_FLEET_RETURN', 3);
 
 // *** Constants for changing DM
 define('RPG_STRUCTURE', 1);
