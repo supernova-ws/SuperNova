@@ -274,10 +274,14 @@ function eco_struc_unborder_unit(unit_id)
             {production.NAME}
           </span>
 
-          <span style="position: absolute; bottom: 2px; right: 18px; width: 84%; font-size: 100%; text-align: left;" class="icon_alpha">
+          <span style="position: absolute; bottom: 2px; right: 18px; width: 70%; font-size: 100%; text-align: left;" class="icon_alpha">
             <div class="fr">{production.TIME}</div>
           </span>
-
+<!--
+          <span style="position: absolute; bottom: 0; left: 0; cursor: pointer;" title="{L_flt_gather_all}" class="icon_alpha" onclick="document.location='fleet.php?fleet_page=5&cp={planet.ID}&re=0&metal={production.METAL_REST_NUM}&crystal={production.CRYSTAL_REST_NUM}&deuterium={production.DEUTERIUM_REST_NUM}'">
+            <div class="icons icon-gather"></div>
+          </span>
+-->
           <span style="position: absolute; bottom: 0px; right: 0px;" class="icon_alpha" onclick="document.location='infos.php?gid={production.ID}'">
             <div class="icons icon-info"></div>
           </span>
