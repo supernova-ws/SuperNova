@@ -83,7 +83,7 @@ th.c_c, td.c_c
   text-align: center;
 }
 
-th.c_l, td.c_l
+th.c_l, td.c_l, td.c
 {
   text-align: left;
 }

@@ -66,16 +66,12 @@ var speed_factor   = {speed_factor};
       <!-- END ships -->
       <!-- IF FLYING_FLEETS < MAX_FLEETS -->
       <tr>
-          <th colspan="2">&nbsp;</th>
+          <th><input type="button" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';"></th>
+          <th><input type="submit" value="{L_fl_continue}" /></th>
           <th>
               <div class="fl"><input type="button" value="{fl_unselectall}" onclick="javascript:zero_fleet();"></div>
               <div class="fr"><input type="button" value="{fl_selectall}" onclick="javascript:max_fleet();"></div>
             <div class="fr"></div>
-          </th>
-      </tr>
-      <tr>
-          <th colspan="3">
-          <input type="submit" value="{L_fl_continue}" />
           </th>
       </tr>
         <!-- ELSE -->
