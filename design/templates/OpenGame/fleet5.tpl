@@ -99,14 +99,26 @@ function reCalcGathering()
     <!-- BEGINELSE colonies -->
       <th colspan="8">{L_fl_nocolonies}</th>
     <!-- END colonies -->
+    <!-- IF METAL_NEED > 0 || CRYSTAL_NEED > 0 || DEUTERIUM_NEED > 0 -->
+      <!-- DEFINE $ROWSPAN = 2 -->
+    <!-- ENDIF -->
     <tr>
       <td class="c_l" colspan="2">{L_sys_total}</td>
       <td class="c_r"><span id="ga_0_{D_RES_METAL}"></span></td>
       <td class="c_r"><span id="ga_0_{D_RES_CRYSTAL}"></span></td>
       <td class="c_r"><span id="ga_0_{D_RES_DEUTERIUM}"></span></td>
       <td class="c_r"><span id="ga_0_0"></span></td>
-      <td class="c_c" colspan="2"><input type="submit" value="{L_flt_gather_all}" /></td>
+      <td class="c_c" colspan="2" rowspan="{$ROWSPAN}"><input type="submit" value="{L_flt_gather_all}" /></td>
     </tr>
+    <!-- IF $ROWSPAN -->
+    <tr>
+      <td class="c_l" colspan="2">{L_sys_need}</td>
+      <td class="c_r">{METAL_NEED}</td>
+      <td class="c_r">{CRYSTAL_NEED}</td>
+      <td class="c_r">{DEUTERIUM_NEED}</td>
+      <td class="c_r"></td>
+    </tr>
+    <!-- ENDIF -->
   </table>
   <!-- INCLUDE page_hint.tpl -->
 </form>
