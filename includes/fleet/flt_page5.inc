@@ -38,8 +38,6 @@ function flt_build_gathering($resources_taken)
     $query .= $planet_id ? "{$planet_id}," : '';
   }
 
-//pdump($query);
-
   if($query)
   { // begin processing query
     // Caching $sn_data names for quick access
@@ -63,9 +61,12 @@ function flt_build_gathering($resources_taken)
         'PLANET'         => $planet_db_data['planet'],
         'TYPE'           => $planet_db_data['planet_type'],
         'TYPE_PRINT'     => $lang_sys_planet_type[$planet_db_data['planet_type']],
-        'METAL'          => pretty_number($planet_db_data['metal']),
-        'CRYSTAL'        => pretty_number($planet_db_data['crystal']),
-        'DEUTERIUM'      => pretty_number($planet_db_data['deuterium']),
+        'METAL'          => floor($planet_db_data['metal']),
+        'CRYSTAL'        => floor($planet_db_data['crystal']),
+        'DEUTERIUM'      => floor($planet_db_data['deuterium']),
+        'METAL_TEXT'     => pretty_number($planet_db_data['metal']),
+        'CRYSTAL_TEXT'   => pretty_number($planet_db_data['crystal']),
+        'DEUTERIUM_TEXT' => pretty_number($planet_db_data['deuterium']),
         'PLANET_DB_DATA' => $planet_db_data
       );
 
@@ -94,7 +95,8 @@ function flt_build_gathering($resources_taken)
         }
       }
 
-      $planet_data['RESOURCES'] = pretty_number($planet_resources);
+      $planet_data['RESOURCES'] = $planet_resources;
+      $planet_data['RESOURCES_TEXT'] = pretty_number($planet_resources);
       $planet_data['FLEET_CAPACITY'] = $fleet_capacity;
       $planet_data['FLEET_CAPACITY_TEXT'] = pretty_number($fleet_capacity, true, -$planet_resources);
 
@@ -220,16 +222,19 @@ if (mysql_num_rows($colonies) >= 1)
   while ($row = mysql_fetch_assoc($colonies))
   {
     $planet_list[] = array(
-      'ID'         => $row['id'],
-      'NAME'       => $row['name'],
-      'GALAXY'     => $row['galaxy'],
-      'SYSTEM'     => $row['system'],
-      'PLANET'     => $row['planet'],
-      'TYPE'       => $row['planet_type'],
-      'TYPE_PRINT' => $lang['sys_planet_type'][$row['planet_type']],
-      'METAL'      => pretty_number($row['metal']),
-      'CRYSTAL'    => pretty_number($row['crystal']),
-      'DEUTERIUM'  => pretty_number($row['deuterium']),
+      'ID'             => $row['id'],
+      'NAME'           => $row['name'],
+      'GALAXY'         => $row['galaxy'],
+      'SYSTEM'         => $row['system'],
+      'PLANET'         => $row['planet'],
+      'TYPE'           => $row['planet_type'],
+      'TYPE_PRINT'     => $lang['sys_planet_type'][$row['planet_type']],
+      'METAL'          => $row['metal'],
+      'CRYSTAL'        => $row['crystal'],
+      'DEUTERIUM'      => $row['deuterium'],
+      'METAL_TEXT'     => pretty_number($row['metal']),
+      'CRYSTAL_TEXT'   => pretty_number($row['crystal']),
+      'DEUTERIUM_TEXT' => pretty_number($row['deuterium']),
     );
     $resources_taken[$row['id']] = 1;
   };
