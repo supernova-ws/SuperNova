@@ -248,7 +248,10 @@ if (mysql_num_rows($colonies) >= 1)
 };
 
 $template->assign_vars(array(
-  'PAGE_HINT'       => $lang['fl_page5_hint'],
+  'PAGE_HINT'      => $lang['fl_page5_hint'],
+  'METAL_NEED'     => pretty_number(max(0, -sys_get_param_int('metal'))),
+  'CRYSTAL_NEED'   => pretty_number(max(0, -sys_get_param_int('crystal'))),
+  'DEUTERIUM_NEED' => pretty_number(max(0, -sys_get_param_int('deuterium'))),
 ));
 
 display(parsetemplate($template, $parse), $lang['fl_title']);

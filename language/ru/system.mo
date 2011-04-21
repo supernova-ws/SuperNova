@@ -55,6 +55,7 @@ $lang = array_merge($lang, array(
   'sys_event_return' => 'вернется',
 
   'sys_total'           => "ИТОГО",
+  'sys_need'				=> 'Нужно',
   'sys_register_date'   => 'Дата регистрации',
 
   'sys_attacker' 		=> "Атакующий",
