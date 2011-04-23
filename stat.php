@@ -80,6 +80,8 @@ if       ($type == 1) {
   $OldRank = "res_old_rank";
 }
 
+$parse['stat_date'] = date(FMT_DATE_TIME, $config->var_stat_update);
+
 if ($who == 2) {
   $MaxAllys = doquery ("SELECT COUNT(*) AS `count` FROM {{alliance}} WHERE 1;", '', true);
   if ($MaxAllys['count'] > 100) {
@@ -98,7 +100,6 @@ if ($who == 2) {
   $query = doquery("SELECT @rownum:=@rownum+1 as rownum, {{statpoints}}.* FROM (SELECT @rownum:=0) r, {{statpoints}} WHERE `stat_type` = '2' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;");
 
   $start++;
-  $parse['stat_date']   = $config->var_stat_update;
   $parse['stat_values'] = "";
   while ($StatRow = mysql_fetch_assoc($query)) {
     $parse['ally_rank']       = $start;
@@ -151,12 +152,10 @@ if ($who == 2) {
   $query = doquery("SELECT @rownum:=@rownum+1 rownum, {{statpoints}}.* FROM (SELECT @rownum:=0) r, {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;");
 
   $start++;
-  $parse['stat_date']   = $config->var_stat_update;
   $parse['stat_values'] = "";
   while ($StatRow = mysql_fetch_assoc($query)) {
     $UsrRow                   = doquery("SELECT * FROM {{users}} WHERE `id` = '". $StatRow['id_owner'] ."';", '',true);
 
-    $parse['stat_date']       = date(FMT_DATE_TIME, $StatRow['stat_date']);
     $parse['player_rank']     = ($StatRow['rownum'] + $start1);
 
     $parse['player_rank']     = $StatRow[ $Rank ];
