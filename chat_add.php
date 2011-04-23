@@ -39,9 +39,9 @@ else
 if ($message && $user['username'])
 {
   $nick = trim(strip_tags($user['username']));
-  if($ally_id)
+  if($user['ally_id'])
   {
-    $tag = doquery("SELECT ally_tag FROM {{alliance}} WHERE id = {$ally_id}", '', true);
+    $tag = doquery("SELECT ally_tag FROM {{alliance}} WHERE id = {$user['ally_id']}", '', true);
     $nick .= '(' . trim(strip_tags($tag['ally_tag'])) . ')';
   };
 
