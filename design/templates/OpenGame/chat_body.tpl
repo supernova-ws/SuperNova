@@ -1,7 +1,6 @@
 <!--[if IE]><style type="text/css"><!-- #chat_box {width: 80%;} --></style><![endif]-->
 <script type="text/javascript">
-  var chat_type = "{chat_type}";
-  var ally_id = "{ally_id}";
+  var ally_id = "{ALLY}";
 </script>
 
 <script type="text/javascript" src="js/chat.js"></script>
@@ -9,21 +8,20 @@
 <form name="chat_form">
 <table id="chat_box"><tbody>
 
-  <tr><td class="c"><span class="fl"><b>{chat_disc}</b></span><span class="fr"><a href=# onClick="MessageHistory()">{chat_history}</a></span></td></tr>
+  <tr><td class="c"><span class="fl"><b><!-- IF ALLY -->{L_chat_ally}<!-- ELSE -->{L_chat_common}<!-- ENDIF --></b></span><span class="fr"><a onClick="window.open('chat_msg.php?ally=' + ally_id + '&history=history', 'ChatHistory', '');">{L_chat_history}</a></span></td></tr>
 
   <tr><th><div id="shoutbox" style="margin: 5px; vertical-align: text-top; height: 380px; overflow:auto;"></div></th></tr>
 
-  <tr><th nowrap>{chat_message}:&nbsp;<select name="color" id="chat_color">
-  	<option value="white">white</option>
-  	<option value="blue">blue</option>
-  	<option value="yellow">yellow</option>
-  	<option value="green">green</option>
-  	<option value="pink">pink</option>
-  	<option value="red">red</option>
-  	<option value="orange">orange</option>
-  </select>&nbsp;
-  <input name="msg" type="text" id="msg" style="width:70%" maxlength="120" onKeyPress="if(event.keyCode == 13){ addMessage(); event.returnValue = false; } if (event.keyCode==60 || event.keyCode==62) event.returnValue = false; if (event.which==60 || event.which==62) return false;">&nbsp;<input type="button" name="send" value="{chat_send}" id="send" onClick="addMessage()"> 
-  </th></tr>
+  <tr><th nowrap>{L_chat_message}:&nbsp;<select name="color" id="chat_color">
+      <option value="white">white</option>
+      <option value="blue">blue</option>
+      <option value="yellow">yellow</option>
+      <option value="green">green</option>
+      <option value="pink">pink</option>
+      <option value="red">red</option>
+      <option value="orange">orange</option>
+    </select>&nbsp;<input name="msg" type="text" id="msg" style="width:70%" maxlength="120" onKeyPress="if(event.keyCode == 13){document.chat_form.send.click();event.returnValue = false;return false;}">&nbsp;<input type="button" name="send" value="{L_chat_send}" id="send" onClick="addMessage();event.returnValue = false;return false;"></th>
+  </tr>
 
   <tr>
     <th nowrap>

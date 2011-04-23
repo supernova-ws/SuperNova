@@ -416,6 +416,15 @@ $lang = array_merge($lang, array(
   'cred_based'   => 'Basis for establishing XNova',
   'cred_start'   => 'Place debut XNova',
 
+  // Built-in chat
+  'chat_common'  => 'Common chat',
+  'chat_ally'    => 'Ally chat',
+  'chat_history' => 'History',
+  'chat_message' => 'Message',
+  'chat_send'    => 'Send',
+  'chat_page'    => 'Page',
+  'chat_timeout' => 'Chat is disabled from your inactivity. Refresh the page.',
+
   // Arrays
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'SuperNova',

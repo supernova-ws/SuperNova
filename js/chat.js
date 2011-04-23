@@ -1,95 +1,68 @@
-// * chat.js
-// *
-// * @version 1.0
-// * @version 1.2 by Ihor
-// * @copyright 2008 by e-Zobar for XNova
-
+/*
+ * chat.js
+ *
+ 3.0 copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+   [!] Full rewrite
+   [!] Using jQuery for AJAX
+   [+] Complies with PCG1
+ * @version 2.0 by Gorlum for http://supernova.ws
+ * @version 1.2 by Ihor
+ * @version 1.0 copyright 2008 by e-Zobar for XNova
+*/
 // Définition du pseudo
-var nick="<?php print $nick; ?>";
-var nick=nick.replace(/\+/,"plus");
-
-// Scrolling automatique
-function descendreTchat(){
-  var elDiv =document.getElementById('shoutbox');
-  elDiv.scrollTop = elDiv.scrollHeight-elDiv.offsetHeight;
-}
-
-// Ajout de message
-function addMessage(){
-  if(document.chat_form.msg.value>""){
-    var x_object = null;
-    var cc_obj = document.getElementById("chat_color");
-    var color = cc_obj.options[cc_obj.selectedIndex].value;
-    if(window.XMLHttpRequest){
-      x_object = new XMLHttpRequest();
-    }else if(window.ActiveXObject){
-      x_object = new ActiveXObject("Microsoft.XMLHTTP");
-    }else{
-      alert('AJAX Error');
-      return;
-    }
-
-    x_object.open("POST","chat_add.php",true);
-    x_object.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    document.chat_form.msg.value=document.chat_form.msg.value.replace(/\+/g,"plus");
-    if(color>""){
-      // msg.value = "[c="+color+"]"+msg.value+"[/c]";
-      document.chat_form.msg.value = "[c="+color+"]"+document.chat_form.msg.value.replace("&","%26")+"[/c]";
-    }
-    x_object.send("chat_type="+chat_type+"&ally_id="+ally_id+"&nick="+nick+"&msg="+document.chat_form.msg.value);
-    document.chat_form.msg.value = "";
-    showMessage(true);
-  }
-}
-function MessageHistory(){
-  var WinH = window.open("chat_msg.php?chat_type="+chat_type+"&ally_id="+ally_id+"&show=history","ChatHistory","");
-}
-
-// Affichage des messages
-function showMessage(norefresh){
-var x_object2 = null;
-  if(window.XMLHttpRequest){
-    x_object2 = new XMLHttpRequest();
-  }else if(window.ActiveXObject){
-    x_object2 = new ActiveXObject("Microsoft.XMLHTTP");
-  }else{
-    alert('AJAX Error');
-  return;
-  }
-  x_object2.open("POST","chat_msg.php",true);
-  x_object2.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-  x_object2.send("chat_type="+chat_type+"&ally_id="+ally_id+"");
-
-  x_object2.onreadystatechange = function()
-  {
-    if(x_object2.readyState==4)
-    {
-      if(x_object2.status==200){
-        document.getElementById('shoutbox').innerHTML = x_object2.responseText;
-        descendreTchat();
-      }
-      if(!norefresh)
-      {
-        window.setTimeout(showMessage, 5000);
-      }
-    }
-  }
-}
+var chat_refreshing = false;
 
 // Raccourcis des smileys
-function addSmiley(smiley){
-  document.chat_form.msg.value=document.chat_form.msg.value+smiley;
+function addSmiley(smiley)
+{
+  document.chat_form.msg.value = document.chat_form.msg.value + smiley;
   document.chat_form.msg.focus();
 }
 
-// Intervalle entre les messages
-showMessage();
-// chatIntervalID = setInterval(showMessage,5000);
-window.setTimeout(showMessage, 5000);
+function addMessage()
+{
+  var message = document.chat_form.msg.value;//.replace("&","%26");
+  document.chat_form.msg.value = '';
+  if(message)
+  {
+    var color = document.getElementById("chat_color");
+    color = color.options[color.selectedIndex].value;
 
+    if(color)
+    {
+      message = "[c="+color+"]" + message + "[/c]";
+    }
 
-// Add Nick by Click
-function addNick(obj){
- document.chat_form.msg.value=msg.value+' ['+obj.innerText+'] ';
- document.chat_form.msg.focus();
+    jQuery.post("chat_add.php", {'ally': ally_id, 'message': message}, function(data)
+      {
+        showMessage();
+      }
+    );
+  }
 }
+
+function showMessage(norefresh)
+{
+  if(!chat_refreshing)
+  {
+    chat_refreshing = true;
+    jQuery.post("chat_msg.php", {'ally': ally_id}, function(data)
+      {
+        if(data)
+        {
+          var shoutbox = document.getElementById('shoutbox');
+          shoutbox.innerHTML = data;
+          shoutbox.scrollTop = shoutbox.scrollHeight - shoutbox.offsetHeight;
+        }
+        chat_refreshing = false;
+        window.setTimeout(showMessage, 5000);
+      }
+    );
+  }
+}
+
+jQuery(document).ready(function()
+  {
+    showMessage();
+  }
+);
