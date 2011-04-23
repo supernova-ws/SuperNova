@@ -73,7 +73,7 @@ function ShowLeftMenu($Level = 0)
 // $topnav    -> Affichage des ressources ? oui ou non ??
 // $metatags  -> S'il y a quelques actions particulieres a faire ...
 // $AdminPage -> Si on est dans la section admin ... faut le dire ...
-function display ($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true)
+function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true)
 {
   global $link, $debug, $user, $planetrow, $IsUserChecked, $time_now, $config, $lang;
 

@@ -50,7 +50,7 @@
     <tr><td><a href="messages.php">{L_Messages}</a></td></tr>
     <tr><td><a href="chat.php" id="lm_chat">{L_Chat}</a></td></tr>
     <tr><td><a href="alliance.php">{L_Alliance}</a></td></tr>
-    <tr><td><a href="chat.php?chat_type=ally" id="lm_chatally">{L_AllyChat}</a></td></tr>
+    <tr><td><a href="chat.php?ally=ally" id="lm_chatally">{L_AllyChat}</a></td></tr>
     <tr><td><a href="buddy.php">{L_Buddylist}</a></td></tr>
     <tr><td><a href="search.php" id="lm_search">{L_Search}</a></td></tr>
 

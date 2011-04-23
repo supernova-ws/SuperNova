@@ -4,38 +4,38 @@
    Main chat window
 
  Changelog:
-   2.0 copyright (c) 2009-2001 by Gorlum for http://supernova.ws
+   3.0 copyright (c) 2009-2011 Gorlum for http://supernova.ws
+     [!] Almost full rewrote
+     [+] Complies with PCG1
+   2.0 copyright (c) 2009-2010 Gorlum for http://supernova.ws
      [+] Rewrote to remove unnecessary code dupes
-   1.5 copyright (c) 2009-2001 by Gorlum for http://supernova.ws
+   1.5 copyright (c) 2009-2010 Gorlum for http://supernova.ws
      [~] More DDoS-realted fixes
-   1.4 copyright (c) 2009-2001 by Gorlum for http://supernova.ws
+   1.4 copyright (c) 2009-2010 Gorlum for http://supernova.ws
      [~] DDoS-realted fixes
-   1.3 copyright (c) 2009-2001 by Gorlum for http://supernova.ws
+   1.3 copyright (c) 2009-2010 Gorlum for http://supernova.ws
      [~] Security checks for SQL-injection
    1.2 by Ihor
-   1.0 copyright 2008 by e-Zobar for XNova
+   1.0 Shoutbox copyright 2008 by e-Zobar for XNova
 **/
-
-$skip_fleet_update = true;
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-lng_include('chat');
+$template = gettemplate('chat_body', true);
 
-$nick = $user['username'];
-$parse = $lang;
-
-if ($_GET) {
-  if($_GET["chat_type"]=="ally"){
-    $parse['chat_type'] = $_GET["chat_type"];
-    $parse['ally_id']   = $user['ally_id'];
-  }
+$ally = sys_get_param_str('ally');
+if ($ally)
+{
+  $template->assign_var('ALLY', intval($user['ally_id']));
+  $page_title = $lang['chat_ally'];
+}
+else
+{
+  $page_title = $lang['chat_common'];
 }
 
-$config->array_set('users', $user['id'], 'chat_lastUpdate', $time_now);
+$config->array_set('users', $user['id'], 'chat_last_activity', $microtime);
+$config->array_set('users', $user['id'], 'chat_last_refresh', 0);
+display($template, $page_title);
 
-$page = parsetemplate(gettemplate('chat_body'), $parse);
-display($page, $lang['Chat']);
-
-// Shoutbox by e-Zobar - Copyright XNova Team 2008
 ?>

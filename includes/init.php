@@ -52,6 +52,7 @@ define('SN_ROOT_VIRTUAL',  'http://' . $_SERVER['HTTP_HOST'] . $sn_root_relative
 define('PHP_EX', $phpEx); // PHP extension on this server
 
 $time_now      = time();
+$microtime     = microtime(true);
 $user          = array();
 $lang          = array();
 $sn_modules    = array();

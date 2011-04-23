@@ -278,9 +278,14 @@ function dump($value,$varname = "",$level=0,$dumper = "")
   return $dumper;
 }
 
-function pdump($value,$varname = "",$level=0,$dumper = "")
+function pdump($value, $varname = '')
 {
-  print('<span style="text-align: left">' . dump($value,$varname,$level,$dumper) . '</span>');
+  print('<span style="text-align: left">' . dump($value, $varname) . '</span>');
+}
+
+function debug($value, $varname = '')
+{
+  return pdump($value, $varname);
 }
 
 function pr($prePrint = false){
