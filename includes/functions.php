@@ -811,6 +811,11 @@ function js_safe_string($string)
 //  return str_replace(array("\\", "\"", "'"), array("\\\\", "\\\"", "\'"), $string);
   return addslashes($string);
 }
+
+function sys_safe_output($string)
+{
+  return str_replace(array("&", "\"", "<", ">", "'"), array("&amp;", "&quot;", "&lt;", "&gt;", "&apos;"), $string);
+}
 /*
  *
  * @function SetSelectedPlanet

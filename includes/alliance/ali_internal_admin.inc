@@ -18,13 +18,14 @@ $text_list = array(
 if ($allyTextID<1 || $allyTextID>3) $allyTextID = 1;
 extract($text_list[$allyTextID]);
 
-if ($isSaveOptions) {
-  $ally['ally_name'] = $POST_name;
-  $ally['ally_tag']  = $POST_tag;
-  $ally['ally_owner_range'] = $POST_owner_range;
-  $ally['ally_web'] = $POST_web;
-  $ally['ally_image'] = $POST_image;
-  $ally['ally_request_notallow'] = $POST_request_notallow;
+if ($isSaveOptions)
+{
+  $ally['ally_name'] = sys_get_param_str('name');
+  $ally['ally_tag']  = sys_get_param_str('tag');
+  $ally['ally_owner_range'] = sys_get_param_str('owner_range');
+  $ally['ally_web'] = sys_get_param_str('web');
+  $ally['ally_image'] = sys_get_param_str('image');
+  $ally['ally_request_notallow'] = sys_get_param_str('request_notallow');
 
   doquery("UPDATE {{alliance}} SET
       `ally_name`='{$ally['ally_name']}',
@@ -71,13 +72,13 @@ if($request['request_count']){
   $parse['request_count'] = $lang['ali_req_emptyList'];
 }
 
-$parse['ally_name'] = $ally['ally_name'];
-$parse['ally_tag'] = $ally['ally_tag'];
-$parse['ally_web'] = $ally['ally_web'];
-$parse['ally_image'] = $ally['ally_image'];
+$parse['ally_name'] = htmlspecialchars($ally['ally_name']);
+$parse['ally_tag'] = htmlspecialchars($ally['ally_tag']);
+$parse['ally_web'] = htmlspecialchars($ally['ally_web']);
+$parse['ally_image'] = htmlspecialchars($ally['ally_image']);
 $parse['ally_request_notallow_0'] = (( $ally['ally_request_notallow']) ? ' SELECTED' : '');
 $parse['ally_request_notallow_1'] = ((!$ally['ally_request_notallow']) ? ' SELECTED' : '');
-$parse['ally_owner_range'] = $ally['ally_owner_range'];
+$parse['ally_owner_range'] = htmlspecialchars($ally['ally_owner_range']);
 if($ally['ally_owner'] != $user['id'])
   $parse['hideNotOwner'] = ' style="hide"';
 
