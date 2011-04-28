@@ -273,6 +273,8 @@ $lang = array_merge($lang, array(
   'sys_noalloaw' 			=> 'Вам закрыт доступ в эту зону!',
   'sys_governor'        => 'Губернатор',
 
+  'sys_from'		  => 'с',
+
   // News page & a bit of imperator page
   'news_title'      => 'Новости',
   'news_none'       => 'Нет новостей',

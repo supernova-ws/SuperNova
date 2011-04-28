@@ -103,6 +103,7 @@ $template->assign_vars(array(
   'user_username'        => $user['username'],
 
   'NEW_MESSAGES'         => $user['new_message'],
+  'REGISTRATION_DATE'    => date(FMT_DATE_TIME, $user['register_time']),
 
   'builder_xp'           => pretty_number($user['xpminier']),
   'builder_lvl'          => pretty_number($user['lvl_minier']),

@@ -273,6 +273,8 @@ $lang = array_merge($lang, array(
   'sys_noalloaw' 			=> 'You have access to this zone!',
   'sys_governor'        => 'Governor',
 
+  'sys_from'		  => 'from',
+
   // News page & a bit of imperator page
   'news_title'      => 'News',
   'news_none'       => 'No news',
