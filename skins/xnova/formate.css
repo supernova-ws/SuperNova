@@ -41,6 +41,8 @@ th, td, input, select, textarea
 th, td
 {
   background-color: #000000;
+  padding-left : 3px;
+  padding-right: 3px;
 }
 
 input, select, textarea, div.z
@@ -52,8 +54,6 @@ input, select, textarea, div.z
 th
 {
   text-align   : center;
-  padding-left : 3px;
-  padding-right: 3px;
 }
 
 th, th.c_l, th.c_r, th.c_c
@@ -71,17 +71,17 @@ td.c, td.c_l, td.c_r, td.c_c
   background-image     : url(img/bg1.gif);
 }
 
-th.c_c, td.c_c
+th.c_c, td.c_c, .cell_center
 {
   text-align: center;
 }
 
-th.c_l, td.c_l, td.c
+th.c_l, td.c_l, td.c, .cell_left
 {
   text-align: left;
 }
 
-th.c_r, td.c_r
+th.c_r, td.c_r, .cell_right
 {
   text-align: right;
 }
