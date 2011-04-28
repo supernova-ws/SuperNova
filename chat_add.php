@@ -66,7 +66,7 @@ if ($message && $user['username'])
   }
 
   $nick = mysql_real_escape_string($nick);
-  $message = mysql_real_escape_string(iconv('UTF-8', 'CP1251', $message)); // CHANGE IT !!!!!!!!!!!
+  $message = iconv('UTF-8', 'CP1251', $message); // CHANGE IT !!!!!!!!!!!
 
   $query = doquery("INSERT INTO {{chat}} (user, ally_id, message, timestamp) VALUES ('{$nick}', '{$ally_id}', '{$message}', '{$time_now}');");
   $config->array_set('users', $user['id'], 'chat_last_activity', $microtime);
