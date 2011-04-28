@@ -19,9 +19,9 @@ if(sys_get_param_str('return_fleet'))
         doquery('DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});');
       }
     }
-    else
+    elseif ($FleetRow['fleet_id'] && $FleetRow['fleet_owner'] != $user['id'])
     {
-      $debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array('base_dump' => true));
+      $debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array('base_dump' => true, 'fleet_row' => $FleetRow));
       die();
     }
   }
