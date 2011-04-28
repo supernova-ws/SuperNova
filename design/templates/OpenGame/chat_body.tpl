@@ -53,7 +53,7 @@
         <img src="design/images/smileys/rofl.gif" align="absmiddle" title=":rofl" alt=":rofl" onClick="addSmiley(':rofl')">
         <img src="design/images/smileys/blackeye.gif" align="absmiddle" title=":eye" alt=":eye" onClick="addSmiley(':eye')">
         <img src="design/images/smileys/tongue.gif" align="absmiddle" title=":p" alt=":p" onClick="addSmiley(':p')">
-        <img src="design/images/smileys/wink.gif" align="absmiddle" title=";)" alt=";)" onClick="addSmiley(';)')">                
+<!--        <img src="design/images/smileys/wink.gif" align="absmiddle" title=";)" alt=";)" onClick="addSmiley(';)')">                -->
 
         <img src="design/images/smileys/yahoo.gif" align="absmiddle" title=":yahoo:" alt=":yahoo:" onClick="addSmiley(':yahoo:')">
         <img src="design/images/smileys/mill.gif" align="absmiddle" title=":tratata:" alt=":tratata:" onClick="addSmiley(':tratata:')">
