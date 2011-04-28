@@ -91,7 +91,7 @@ while($chat_row = mysql_fetch_object($query))
   $chat[] = array(
     'TIME' => date(FMT_DATE_TIME, htmlentities($chat_row->timestamp, ENT_QUOTES, 'cp1251')),
     'NICK' => $nick,
-    'TEXT' => $chat_row->message . CHT_messageParse(htmlentities($chat_row->message, ENT_QUOTES, 'cp1251'))
+    'TEXT' => CHT_messageParse(htmlentities($chat_row->message, ENT_QUOTES, 'cp1251'))
   );
 }
 
