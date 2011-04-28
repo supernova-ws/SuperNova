@@ -122,6 +122,8 @@ $lang = array_merge($lang, array(
   'sys_supernova' 		=> 'Сверхновая',
   'sys_server' 			=> 'Сервер',
 
+  'sys_unbanned'			=> 'Разблокирован',
+
 // Resource page
   'res_planet_production' => 'Производство ресурсов на планете',
   'res_basic_income' => 'Естественное производство',

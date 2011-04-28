@@ -1,6 +1,5 @@
-<br />
+<h2>{L_ban_title}</h2>
 <table>
-  <tr><td class="c" colspan="5">{L_ban_title}</td></tr>
   <tr align="center">
     <td class=c>{L_ban_name}</td>
     <td class=c>{L_ban_reason}</td>
@@ -8,6 +7,14 @@
     <td class=c>{L_ban_to}</td>
     <td class=c>{L_ban_by}</td>
   </tr>
-  {banned}
-  <tr><td class=c colspan=5 align=center>{L_ban_banned}{banned_count}</td></tr>
+  <!-- BEGIN banlist -->
+    <tr align=center>
+      <td class=cell_left><b>{banlist.USER_NAME}</b></td>
+      <td class=cell_left><b>{banlist.REASON}</b></td>
+      <td class=b><b>{banlist.FROM}</b></td>
+      <td class=b><b>{banlist.UNTIL}</b></td>
+      <td class=cell_left><b>{banlist.ISSUER_NAME}</b></td>
+    </tr>
+  <!-- END banlist -->
+  <tr><td class="c" colspan="5">{L_ban_banned}{BANNED_COUNT}</td></tr>
 </table>

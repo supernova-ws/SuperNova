@@ -34,9 +34,6 @@ if ($mode == 'banit' && $action)
   $secs = $_POST['secs'];
   $isVacation = $_POST['isVacation'];
 
-  $admin = $user['username'];
-  $mail = $user['email'];
-
   $Now = time();
   $BanTime = $days * 86400;
   $BanTime += $hour * 3600;
@@ -58,7 +55,7 @@ if ($mode == 'banit' && $action)
 
   if ($QryResult)
   {
-    doquery("INSERT INTO {{banned}} SET `who` = \"{$name}\", `theme` = '{$reas}', `who2` = '{$name}', `time` = '{$Now}', `longer` = '{$BannedUntil}', `author` = '{$admin}', `email` = '{$mail}';");
+    doquery("INSERT INTO {{banned}} SET `ban_user_name` = '{$name}', `ban_reason` = '{$reas}', `ban_time` = '{$Now}', `ban_until` = '{$BannedUntil}', `ban_issuer_name` = '{$user['username']}', `ban_issuer_email` = '{$user['email']}';");
 
     $DoneMessage = "{$lang['adm_bn_thpl']} {$name} {$lang['adm_bn_isbn']}";
     if ($isVacation)
@@ -94,6 +91,7 @@ if ($mode == 'banit' && $action)
 elseif ($mode == 'unbanit' && $action)
 {
   doquery("UPDATE {{users}} SET bana=0, banaday=0, `vacation` = {$time_now} WHERE username like '{$name}';");
+  doquery("INSERT INTO {{banned}} SET `ban_user_name` = \"{$name}\", `ban_reason` = '{$lang['sys_unbanned']}', `ban_time` = 0, `ban_until` = '{$time_now}', `ban_issuer_name` = '{$user['username']}', `ban_issuer_email` = '{$user['email']}';");
   $DoneMessage = $lang['adm_unbn_thpl'] . " " . $name . " " . $lang['adm_unbn_isbn'];
   AdminMessage($DoneMessage, $lang['adm_unbn_ttle']);
 };

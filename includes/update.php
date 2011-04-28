@@ -578,6 +578,20 @@ switch(intval($config->db_version))
 
     upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('chat_admin_highlight');");
 
+    upd_alter_table('banned', array(
+      "CHANGE COLUMN id ban_id bigint(20) unsigned NOT NULL AUTO_INCREMENT",
+      "CHANGE COLUMN `who` `ban_user_name` VARCHAR(64) NOT NULL DEFAULT ''",
+      "CHANGE COLUMN `theme` `ban_reason` VARCHAR(128) NOT NULL DEFAULT ''",
+      "CHANGE COLUMN `time` `ban_time` int(11) NOT NULL DEFAULT 0",
+      "CHANGE COLUMN `longer` `ban_until` int(11) NOT NULL DEFAULT 0",
+      "CHANGE COLUMN `author` `ban_issuer_name` VARCHAR(64) NOT NULL DEFAULT ''",
+      "CHANGE COLUMN `email` `ban_issuer_email` VARCHAR(64) NOT NULL DEFAULT ''",
+      "DROP COLUMN who2",
+      "ADD PRIMARY KEY (`ban_id`)"/*,
+      "RENAME TO {$config->db_prefix}ban"*/
+    ), !$update_tables['banned']['ban_id']);
+    print(mysql_error());
+
   doquery('COMMIT;');
   // $new_version = 28;
 
