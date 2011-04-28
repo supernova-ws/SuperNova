@@ -15,7 +15,7 @@ function CHT_messageParse($msg){
     ':smile' => 'smile', ':shok:' => 'shok', ':rofl' => 'rofl', ':eye' => 'blackeye',
     ':p' => 'tongue', ':wink:' => 'wink', ':yahoo:' => 'yahoo', ':tratata:' => 'mill',
     ':fr' => 'friends', ':dr' => 'drinks', ':tease:' => 'tease',
-    '\;\)' => 'wink', '\:\(' => 'mellow'
+    '\;\)' => 'wink', '\:\(' => 'mellow', '\:\)' => 'smile',
   );
 
   foreach ($BBCodes as $key => $html)
