@@ -416,11 +416,12 @@ function sn_timer() {
 
       case 5: // old que display
         var que_item = timer_options['que'][0];
+        var finalText = '';
 
         if(que_item[EVENT_TIME] <= timestamp - timer['start_time'])
         {
           timer_options['que'].shift();
-          timer['start_time'] = timestamp;
+//          timer['start_time'] = timestamp;
           timer['options']['unchanged'] = false;
         }
 
@@ -433,22 +434,28 @@ function sn_timer() {
         if(!timer_options['que'].length)
         {
           timer['active'] = false;
-          infoText = timer_options['msg_done'];
-          hintText = '';
+          infoText  = timer_options['msg_done'];
+          hintText  = '';
+          timer['options']['unchanged'] = false;
         }
 
-        if(HTML != null)
+        if(!timer['options']['unchanged'])
         {
-          HTML.innerHTML = infoText;
-        }
+          timer['options']['unchanged'] = true;
 
-        if(HTML_total != null)
-        {
-          HTML_total.title = hintText;
-        }
-        else
-        {
-          HTML.title = hintText;
+          if(HTML != null)
+          {
+            HTML.innerHTML = infoText;
+          }
+
+          if(HTML_total != null)
+          {
+            HTML_total.title = hintText;
+          }
+          else
+          {
+            HTML.title = hintText;
+          }
         }
 
       break;
