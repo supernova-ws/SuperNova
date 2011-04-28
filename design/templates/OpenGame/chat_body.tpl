@@ -44,7 +44,7 @@
         <img src="design/images/smileys/good.gif" align="absmiddle" title=":good:" alt=":good:" onClick="addSmiley(':good:')">
         <img src="design/images/smileys/huh.gif" align="absmiddle" title=":huh:" alt=":huh:" onClick="addSmiley(':huh:')">
         <img src="design/images/smileys/lol.gif" align="absmiddle" title=":D" alt=":D" onClick="addSmiley(':D:')"><br>
-        <img src="design/images/smileys/mellow.gif" align="absmiddle" title=":/" alt=":/" onClick="addSmiley(':/')"> 
+        <img src="design/images/smileys/mellow.gif" align="absmiddle" title=":(" alt=":(" onClick="addSmiley(':(')"> 
         <img src="design/images/smileys/yu.gif" align="absmiddle" title=":yu" alt=":yu" onClick="addSmiley(':yu')">
         <img src="design/images/smileys/unknw.gif" align="absmiddle" title=":unknw:" alt=":unknw:" onClick="addSmiley(':unknw:')">
         <img src="design/images/smileys/sad.gif" align="absmiddle" title=":(" alt=":(" onClick="addSmiley(':sad')">
