@@ -16,7 +16,7 @@ if ( !defined('INSIDE') )
 }
 
 define('DB_VERSION', 27);
-define('SN_VERSION', '27a19');
+define('SN_VERSION', '27a20');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -59,13 +59,22 @@ define('SHOW_ADMIN', 1);
 
 define('VOCATION_TIME', 2*24*60*60); // 48 hours
 
+// Mot qui sont interdit a la saisie !
+$ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
+
 // Confirmation record types
 define('CONFIRM_REGISTRATION', 1);
 define('CONFIRM_PASSWORD_RESET', 2);
 define('CONFIRM_DELETE', 3);
 
-// Mot qui sont interdit a la saisie !
-$ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
+// Ally diplomacy statuses
+define('ALLY_DIPLOMACY_NEUTRAL',    'neutral');
+define('ALLY_DIPLOMACY_WAR',        'war');
+define('ALLY_DIPLOMACY_FEDERATION', 'federation');
+define('ALLY_DIPLOMACY_UNION',      'union');
+define('ALLY_DIPLOMACY_SLAVE',      'slave');
+
+define('ALLY_DIPLOMACY_PROPOSE_SEND', 0);
 
 // *** Combat-related constants
 // *** Mission Type constants starts with MT_

@@ -22,6 +22,7 @@ if ($newRankName)
   $ranks[] = $newRank;
 }
 
+$rankListInput = sys_get_param('u');
 if (is_array($rankListInput))
 {
   unset($ranks);

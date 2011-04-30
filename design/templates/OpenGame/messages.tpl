@@ -30,9 +30,9 @@
     </tr>
   
     <tr>
-      <td class="c">{L_mess_action}</td>
+      <td class="c" width="20"><input type="checkbox"></td>
     <!-- ENDIF -->
-      <td class="c">{L_mess_date}</td>
+      <td class="c" width="120">{L_mess_date}</td>
       <td class="c">
         <!-- IF MSG_CATEGORY == -1 -->
           {L_mess_recipient}
@@ -68,7 +68,7 @@
         &nbsp;
       </td>
       <!-- ENDIF -->    	
-      <td class="{messages.STYLE}" class="b" colspan="3">
+      <td class="{messages.STYLE} c_l" class="b" colspan="3">
         {messages.TEXT}
       </td>
     </tr>

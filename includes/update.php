@@ -590,7 +590,70 @@ switch(intval($config->db_version))
       "ADD PRIMARY KEY (`ban_id`)"/*,
       "RENAME TO {$config->db_prefix}ban"*/
     ), !$update_tables['banned']['ban_id']);
-    print(mysql_error());
+
+
+    if(!$update_indexes['alliance']['i_ally_name'])
+    {
+      mysql_query(
+        "ALTER TABLE {$config->db_prefix}alliance
+          MODIFY COLUMN `id` SERIAL,
+          ADD CONSTRAINT UNIQUE KEY `i_ally_name` (`ally_name`),
+          CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci,
+          ENGINE=InnoDB;"
+      );
+      print(mysql_error());
+    }
+
+    if(!$update_tables['alliance_diplomacy'])
+    {
+      mysql_query(
+        "CREATE TABLE `{$config->db_prefix}alliance_diplomacy` (
+          `alliance_diplomacy_id` SERIAL,
+          `alliance_diplomacy_ally_id` bigint(11) UNSIGNED DEFAULT NULL,
+          `alliance_diplomacy_contr_ally_id` bigint(11) UNSIGNED DEFAULT NULL,
+          `alliance_diplomacy_contr_ally_name` varchar(32) DEFAULT '',
+          `alliance_diplomacy_relation` SET('neutral', 'war', 'federation', 'union', 'slave') NOT NULL default 'neutral',
+          `alliance_diplomacy_time` INT(11) NOT NULL DEFAULT 0,
+
+          PRIMARY KEY (`alliance_diplomacy_id`),
+          KEY (`alliance_diplomacy_ally_id`, `alliance_diplomacy_relation`),
+          KEY (`alliance_diplomacy_contr_ally_id`, `alliance_diplomacy_relation`),
+          KEY (`alliance_diplomacy_contr_ally_name`),
+
+          CONSTRAINT  `FK_diplomacy_ally_id`         FOREIGN KEY (`alliance_diplomacy_ally_id`)         REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          ,CONSTRAINT `FK_diplomacy_contr_ally_id`   FOREIGN KEY (`alliance_diplomacy_contr_ally_id`)   REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+          ,CONSTRAINT `FK_diplomacy_contr_ally_name` FOREIGN KEY (`alliance_diplomacy_contr_ally_name`) REFERENCES `{$config->db_prefix}alliance` (`ally_name`) ON UPDATE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
+      );
+      print(mysql_error());
+    }
+
+    if(!$update_tables['alliance_negotiation'])
+    {
+      mysql_query(
+        "CREATE TABLE `{$config->db_prefix}alliance_negotiation` (
+          `alliance_diplomacy_id` SERIAL,
+          `alliance_diplomacy_ally_id` bigint(11) UNSIGNED DEFAULT NULL,
+          `alliance_diplomacy_contr_ally_id` bigint(11) UNSIGNED DEFAULT NULL,
+          `alliance_diplomacy_contr_ally_name` varchar(32) DEFAULT '',
+          `alliance_diplomacy_relation` SET('neutral', 'war', 'federation', 'union', 'slave') NOT NULL default 'neutral',
+          `alliance_diplomacy_time` INT(11) NOT NULL DEFAULT 0,
+          `alliance_diplomacy_propose` TEXT,
+          `alliance_diplomacy_response` TEXT,
+          `alliance_diplomacy_status` SMALLINT NOT NULL DEFAULT 0,
+
+          PRIMARY KEY (`alliance_diplomacy_id`),
+          KEY (`alliance_diplomacy_ally_id`, `alliance_diplomacy_relation`),
+          KEY (`alliance_diplomacy_contr_ally_id`, `alliance_diplomacy_relation`),
+          KEY (`alliance_diplomacy_contr_ally_name`),
+
+          CONSTRAINT  `FK_negotiation_ally_id`         FOREIGN KEY (`alliance_diplomacy_ally_id`)         REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          ,CONSTRAINT `FK_negotiation_contr_ally_id`   FOREIGN KEY (`alliance_diplomacy_contr_ally_id`)   REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          ,CONSTRAINT `FK_negotiation_contr_ally_name` FOREIGN KEY (`alliance_diplomacy_contr_ally_name`) REFERENCES `{$config->db_prefix}alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
+      );
+      print(mysql_error());
+    }
 
   doquery('COMMIT;');
   // $new_version = 28;

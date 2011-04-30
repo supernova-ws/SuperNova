@@ -24,6 +24,33 @@
 // $Subject -> Sujet
 // $Message -> Le message lui meme !!
 //
+
+function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0)
+{
+  global $user;
+
+  if(!$ally_id)
+  {
+    $ally_id = $user['ally_id'];
+  }
+
+  $query = "SELECT id, username FROM {{users}} WHERE ally_id = '{$ally_id}'";
+  if ($ally_rank_id >= 0) {
+    $query .= " AND ally_rank_id = {$ally_rank_id}";
+  }
+  $query = doquery($query);
+
+  $list = '';
+  while ($u = mysql_fetch_assoc($query)) {
+    $sendList[] = $u['id'];
+    $list .= "<br>{$u['username']} ";
+  }
+
+  msg_send_simple_message($sendList, $GLOBALS['user']['id'], $GLOBALS['time_now'], 2, $GLOBALS['user']['username'], $subject, sys_bbcodeParse($message, true));
+
+  return $list;
+}
+
 function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false)
 {
   global $messfields, $user;

@@ -9,21 +9,24 @@ if (!$user_can_send_mails) {
   message($lang['Denied_access'], $lang['Send_circular_mail']);
 }
 
-if ($POST_text) {
-  $sq = "SELECT id,username FROM {{users}} WHERE ally_id='{$user['ally_id']}'";
-  if ($POST_r >= 0) {
-    $sq .= " AND ally_rank_id='{$POST_r}'";
+if ($POST_text)
+{
+/*
+  $ally_rank_id = sys_get_param_int('r');
+  $query = "SELECT id, username FROM {{users}} WHERE ally_id = '{$user['ally_id']}'";
+  if ($ally_rank_id >= 0) {
+    $query .= " AND ally_rank_id = {$ally_rank_id}";
   }
-  $sq = doquery($sq);
+  $query = doquery($query);
 
   $list = '';
-  while ($u = mysql_fetch_assoc($sq)) {
+  while ($u = mysql_fetch_assoc($query)) {
     $sendList[] = $u['id'];
     $list .= "<br>{$u['username']} ";
   }
   msg_send_simple_message($sendList, $user['id'], time(), 2, $ally['ally_tag'], $user['username'], sys_bbcodeParse($POST_text, true));
-
-  $page = MessageForm($lang['Circular_sended'], $lang['members_who_recived_message'] . $list, "alliance.php", "", true);
+*/
+  $page = MessageForm($lang['Circular_sended'], $lang['members_who_recived_message'] . msg_ali_send($POST_text, $lang['ali_adm_msg_subject'], sys_get_param_int('r')), "alliance.php", "", true);
 }
 
 $lang['r_list'] = "<option value=\"-1\">{$lang['All_players']}</option>";

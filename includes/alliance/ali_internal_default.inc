@@ -5,10 +5,18 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }
 
-// Imagen de la alianza
-if ($ally['ally_image'])
-  $ally['ally_image'] = "<tr><th colspan=2><img src=\"{$ally['ally_image']}\"></th></tr>";
+$template = gettemplate('ali_internal', true);
 
+$lang['ALLY_ADMIN'] = $user_admin;
+$lang['ALLY_CAN_KICK'] = $user_can_kick;
+$lang['MASS_MAIL'] = $user_can_send_mails;
+$lang['MANAGE_REQUESTS'] = $user_admin_applications;
+$lang['ALLY_NEGOTIATE'] = $user_can_negotiate;
+
+$request = doquery("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
+$lang['ALLY_REQUESTS'] = $request['request_count'] = 5;
+
+// Imagen de la alianza
 if ($ally['ally_owner'] == $user['id']) {
   $range = ($ally['ally_owner_range'] != '')?$lang['Founder']:$ally['ally_owner_range'];
 } elseif ($user['ally_rank_id'] != 0 && isset($ranks[$user['ally_rank_id']]['name'])) {
@@ -16,34 +24,13 @@ if ($ally['ally_owner'] == $user['id']) {
 } else {
   $range = $lang['member'];
 }
-
-if ($user_admin) {
-  $lang['alliance_admin'] = "<a href=\"alliance.php?mode=admin&edit=ally\">{$lang['ally_admin']}</a>";
-} elseif ($user_can_kick){
-  $lang['alliance_admin'] = "<a href=\"alliance.php?mode=admin&edit=members\">{$lang['members_admin']}</a>";
-}
-
-// El link de enviar correo circular
-if (!$user_can_send_mails)
-  $lang['isCanMassMail'] = 'class="hide"';
-
-// El link para ver las solicitudes
-$request = doquery("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
-if($request['request_count']){
-  $lang['request_count'] = $lang['ali_req_requestCount'] . ': ' . intval($request['request_count']);
-}else{
-  $lang['request_count'] = $lang['ali_req_emptyList'];
-}
-if (!$user_admin_applications)
-    $lang['isShowRequests'] = 'class="hide"';
-
+$lang['range'] = $range;
 if ($ally['ally_owner'] != $user['id']) {
   $lang['ally_owner'] .= MessageForm($lang['Exit_of_this_alliance'], "", "alliance.php?mode=exit", $lang['Continue']);
 }
 
-// La imagen de logotipo
-$lang['ally_image'] = $ally['ally_image'] ? $ally['ally_image'] :'';
-$lang['range'] = $range;
+$lang['ally_image'] = $ally['ally_image'];// ? $ally['ally_image'] :'';
+
 // codigo raro
 $patterns[] = "#\[fc\]([a-z0-9\#]+)\[/fc\](.*?)\[/f\]#Ssi";
 $replacements[] = '<font color="\1">\2</font>';
@@ -64,6 +51,55 @@ $lang['ally_tag'] = $ally['ally_tag'];
 $lang['ally_members'] = $ally['ally_members'];
 $lang['ally_name'] = $ally['ally_name'];
 
-display(parsetemplate(gettemplate('ali_internal'), $lang), $lang['your_alliance']);
+//    if(alliance_diplomacy_contr_ally_id = {$user['ally_id']}, alliance_diplomacy_ally_id, alliance_diplomacy_contr_ally_id) AS contr_ally_id,
+/*
+$query = doquery(
+  "SELECT
+    alliance_diplomacy_ally_id,
+    alliance_diplomacy_contr_ally_id,
+    alliance_diplomacy_contr_ally_name,
+    alliance_diplomacy_relation,
+    max(alliance_diplomacy_time) as alliance_diplomacy_time
+  FROM
+    {{alliance_diplomacy}}
+  WHERE
+    alliance_diplomacy_ally_id = {$user['ally_id']}
+    OR alliance_diplomacy_contr_ally_id = {$user['ally_id']};"
+);
+*/
+$query = doquery(
+  "SELECT
+    alliance_diplomacy_ally_id,
+    alliance_diplomacy_contr_ally_id,
+    alliance_diplomacy_contr_ally_name,
+    alliance_diplomacy_relation,
+    alliance_diplomacy_time
+  FROM
+    {{alliance_diplomacy}}
+  WHERE
+    alliance_diplomacy_ally_id = {$user['ally_id']}
+    OR alliance_diplomacy_contr_ally_id = {$user['ally_id']}
+  ORDER BY alliance_diplomacy_time, alliance_diplomacy_id;"
+);
+
+while($relation = mysql_fetch_assoc($query))
+{
+  if($relation['alliance_diplomacy_contr_ally_id'] == $user['ally_id'])
+  {
+    $contr_ally = doquery("SELECT ally_name FROM {{alliance}} WHERE `id` = {$relation['alliance_diplomacy_ally_id']} LIMIT 1;", '', true);
+    $relation['alliance_diplomacy_contr_ally_name'] = $contr_ally['ally_name'];
+  }
+
+  if($relation['alliance_diplomacy_contr_ally_id'] && $relation['alliance_diplomacy_ally_id'])
+  {
+    $template->assign_block_vars('relation', array(
+      'NAME'     => $relation['alliance_diplomacy_contr_ally_name'],
+      'RELATION' => $lang['ali_dip_relations'][$relation['alliance_diplomacy_relation']],
+      'TIME'     => date(FMT_DATE_TIME, $relation['alliance_diplomacy_time']),
+    ));
+  }
+}
+
+display(parsetemplate($template, $lang), $lang['your_alliance']);
 
 ?>

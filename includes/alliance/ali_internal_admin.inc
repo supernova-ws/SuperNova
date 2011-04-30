@@ -6,7 +6,9 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 }
 
 if (!$user_admin)
+{
   message($lang['Denied_access'], $lang['ally_admin']);
+}
 
 $parse = $lang;
 

@@ -3,6 +3,48 @@ if (!defined('INSIDE')) {
 	die("attempt hacking!");
 }
 
+$lang['ali_dip_title'] = 'Diplomacy';
+$lang['ali_dip_negotiate'] = 'Negotiations';
+
+$lang['ali_adm_msg_subject']   = 'Alliance Maillist';
+
+$lang['ali_dip_offers_your']   = 'Your offers';
+$lang['ali_dip_offers_to_you'] = 'Offers to you';
+$lang['ali_dip_offer_none']    = 'No offers';
+$lang['ali_dip_offer']         = 'Offer';
+$lang['ali_dip_offers']        = 'Offers';
+$lang['ali_dip_offer_new']     = 'Start negotiations';
+$lang['ali_dip_offer_to_ally'] = 'Offer to Alliance';
+$lang['ali_dip_offer_make']    = 'Start negotiations';
+$lang['ali_dip_offer_answer']      = 'Alliance declined your offer';
+$lang['ali_dip_offer_deny_reason'] = 'You declared offer'; // . Причина отказа:
+$lang['ali_dip_offer_to']          = 'To Alliance';
+$lang['ali_dip_offer_from']        = 'From Alliance';
+
+$lang['ali_dip_offer_deny']          = 'Declare offer';
+$lang['ali_dip_offer_accept']        = 'Accept offer';
+$lang['ali_dip_offer_delete']        = 'Withdraw offer';
+
+$lang['ali_dip_err_no_ally']       = 'There is no such Alliance';
+$lang['ali_dip_err_wrong_offer']   = 'You can not make THIS offer';
+$lang['ali_dip_err_offer_none']    = 'No such offer';
+$lang['ali_dip_err_offer_alien']   = 'This offer was made not for you!'; // hack
+$lang['ali_dip_err_offer_accept_own'] = 'You can not accept own offer!'; // hack
+$lang['ali_dip_err_offer_empty']      = 'Offer not defined'; // hack
+
+$lang['ali_dip_relation_none']    = 'No relations';
+$lang['ali_dip_relation_change']  = 'We accept offer of Alliance';
+$lang['ali_dip_relation_change_to']  = 'change relations to';
+$lang['ali_dip_relation_accept']  = 'accepted your offer to change relations to';
+
+$lang['ali_dip_relations'] = array(
+  ALLY_DIPLOMACY_NEUTRAL    => 'Neutral',
+  ALLY_DIPLOMACY_WAR        => 'War',
+  ALLY_DIPLOMACY_FEDERATION => 'Federation',
+  ALLY_DIPLOMACY_UNION      => 'Union',
+  ALLY_DIPLOMACY_SLAVE      => 'Slave'
+);
+
 $lang['ali_lessThen15min']    = '&lt; 15 min';
 
 $lang['ali_confirm']          = 'Confirm';

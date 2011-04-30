@@ -23,6 +23,14 @@ if ( defined('INSIDE')) {
     100 => 'new_message'
   );
 
+  $sn_diplomacy_relation_list = array(
+    ALLY_DIPLOMACY_NEUTRAL => ALLY_DIPLOMACY_NEUTRAL,
+    ALLY_DIPLOMACY_WAR => ALLY_DIPLOMACY_WAR/*,
+    ALLY_DIPLOMACY_FEDERATION => ALLY_DIPLOMACY_FEDERATION,
+    ALLY_DIPLOMACY_UNION => ALLY_DIPLOMACY_UNION,
+    ALLY_DIPLOMACY_SLAVE => ALLY_DIPLOMACY_SLAVE*/
+  );
+
   // factor -> price_factor, perhour_factor
   $sn_data = array(
     1   => array(

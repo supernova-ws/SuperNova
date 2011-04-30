@@ -124,6 +124,11 @@ $lang = array_merge($lang, array(
 
   'sys_unbanned'			=> 'Unbanned',
 
+  'sys_date_time'			=> 'Date and time',
+  'sys_from_person'	   => 'From',
+
+  'sys_from'		  => 'from',
+
 // Resource page
   'res_planet_production' => 'Planet Production',
   'res_basic_income' => 'Basic Income',
@@ -272,8 +277,6 @@ $lang = array_merge($lang, array(
   'sys_noaccess' 			=> 'Access Denied',
   'sys_noalloaw' 			=> 'You have access to this zone!',
   'sys_governor'        => 'Governor',
-
-  'sys_from'		  => 'from',
 
   // News page & a bit of imperator page
   'news_title'      => 'News',
