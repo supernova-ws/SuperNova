@@ -145,8 +145,8 @@ if($accept_offer)
         (alliance_negotiation_ally_id = {$user['ally_id']} AND alliance_negotiation_contr_ally_id = {$negotiation['alliance_negotiation_ally_id']});"
   );
 
-  msg_ali_send("{$lang['ali_dip_relation_change']} [{$negotiation['alliance_negotiation_contr_ally_name']}] {$lang['ali_dip_relation_change_to']} {$lang['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", $lang['ali_dip_relation_change']);
-  msg_ali_send("{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}] {$lang['ali_dip_relation_accept']} {$lang['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", '', -1, $negotiation['alliance_negotiation_contr_ally_id']);
+  msg_ali_send("{$lang['ali_dip_relation_change']} [{$negotiation['alliance_negotiation_ally_name']}] {$lang['ali_dip_relation_change_to']} {$lang['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", "{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_ally_name']}]");
+  msg_ali_send("{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}] {$lang['ali_dip_relation_accept']} {$lang['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", "{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}]", -1, $negotiation['alliance_negotiation_ally_id']);
   doquery('COMMIT;');
 }
 
