@@ -1,6 +1,6 @@
 <br><br>
 <h2>{adm_rz_ttle}</h2>
-<form action="XNovaResetUnivers.php" method="post">
+<form action="admin/XNovaResetUnivers.php" method="post">
 <input type="hidden" name="mode" value="reset">
 <table width="500">
 <tbody>
