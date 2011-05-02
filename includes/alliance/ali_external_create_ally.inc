@@ -1,51 +1,54 @@
 <?php
+// Pretty Safe
+// TODO: Add ally_tag to usertable
 
 if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 {
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }
 
-if ($POST_tag) {
-  if (!$POST_name)
+list($ally_tag_raw, $ally_tag)   = sys_get_param_str_both('tag');
+list($ally_name_raw, $ally_name) = sys_get_param_str_both('name');
+
+if($ally_tag)
+{
+  if(!$ally_name)
   {
     message($lang['have_not_name'], $lang['make_alliance']);
   }
 
-  $allyquery = doquery("SELECT * FROM {{alliance}} WHERE `ally_tag` ='{$POST_tag}'", '', true);
-
-  if ($allyquery)
+  $query = doquery("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' LIMIT 1;", '', true);
+  if($query)
   {
-    message(str_replace('%s', $POST_tag, $lang['always_exist']), $lang['make_alliance']);
+    message(str_replace('%s', $ally_tag_raw, $lang['always_exist']), $lang['make_alliance']);
   }
 
-  $allyquery = doquery("SELECT * FROM {{alliance}} WHERE `ally_name` ='{$POST_name}'", '', true);
-
-  if ($allyquery)
+  $query = doquery("SELECT * FROM {{alliance}} WHERE `ally_name` ='{$ally_name}'", '', true);
+  if ($query)
   {
-    message(str_replace('%s', $POST_name, $lang['always_exist']), $lang['make_alliance']);
+    message(str_replace('%s', $ally_name_raw, $lang['always_exist']), $lang['make_alliance']);
   }
 
   doquery("INSERT INTO {{alliance}} SET
-  `ally_name`='{$POST_name}',
-  `ally_tag`='{$POST_tag}' ,
-  `ally_owner`='{$user['id']}',
-  `ally_owner_range`='{$lang['ali_leaderRank']}',
-  `ally_members`='1',
-  `ranklist` = '{$lang['ali_defaultRankName']},0,0,0,0,0',
-  `ally_register_time`=" . time());
+    `ally_name` = '{$ally_name}',
+  	 `ally_tag` = '{$ally_tag}' ,
+    `ally_owner` = '{$user['id']}',
+    `ally_owner_range` = '{$lang['ali_leaderRank']}',
+    `ally_members` = 1,
+    `ranklist` = '{$lang['ali_defaultRankName']},0,0,0,0,0',
+    `ally_register_time`= {$time_now}"
+  );
 
-  $allyquery = doquery("SELECT * FROM {{alliance}} WHERE `ally_tag` ='{$POST_tag}'", '', true);
+  $query = doquery("SELECT id FROM {{alliance}} WHERE `ally_tag` ='{$ally_tag}' LIMIT 1;", '', true);
+  doquery("UPDATE {{users}} SET `ally_id`='{$query['id']}', `ally_name`='{$ally_name}', `ally_register_time`= {$time_now} WHERE `id`= {$user['id']} LIMIT 1;");
 
-  doquery("UPDATE {{users}} SET
-  `ally_id`='{$allyquery['id']}',
-  `ally_name`='{$allyquery['ally_name']}',
-  `ally_register_time`='" . time() . "'
-  WHERE `id`='{$user['id']}'");
-
-  $page = MessageForm(str_replace('%s', $POST_tag, $lang['ally_maked']), str_replace('%s', $POST_tag, $lang['ally_been_maked']) . "<br><br>", "", $lang['Ok']);
-} else {
+  $page = MessageForm(str_replace('%s', $ally_tag_raw, $lang['ally_maked']), str_replace('%s', $ally_tag_raw, $lang['ally_been_maked']) . "<br><br>", "", $lang['Ok']);
+}
+else
+{
   $page .= parsetemplate(gettemplate('ali_external_make'), $lang);
 }
 
 display($page, $lang['make_alliance']);
+
 ?>

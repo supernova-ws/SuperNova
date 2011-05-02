@@ -1,0 +1,74 @@
+<h2>{L_ali_dip_title} - {L_ali_dip_negotiate}</h2>
+<table width=519>
+  <tr class="c_l"><th>{L_ali_dip_offer_new}</th></tr>
+
+  <tr class="c_l">
+    <td>
+      <form action="alliance.php?mode=admin&edit=diplomacy" name="ali_dip_offer" method="post">
+      {L_ali_dip_offer_to_ally} 
+      <select name="alliance_negotiation_contr_ally_id">
+        <!-- BEGIN alliance -->
+          <option value="{alliance.ID}">{alliance.NAME} [{alliance.TAG}]</option>
+        <!-- END alliance -->
+      </select>
+
+      <select name="alliance_negotiation_relation">
+        <!-- BEGIN relation -->
+          <option value="{relation.ID}">{relation.TEXT}</option>
+        <!-- END relation -->
+      </select>
+      
+      <br />
+      {L_ali_dip_offer}
+      <textarea name="alliance_negotiation_propose" style="width:98%"></textarea>
+    </td>
+  </tr>
+  <tr><th class="c_c"><input type="submit" name="ali_dip_offer_make" value="{L_ali_dip_offer_make}"></th></tr>
+</table>
+
+<h2>{L_ali_dip_offers}</h2>
+
+<table width=519>
+<!--
+  <tr>
+    <td class=c><center><a href="alliance.php?mode=admin&edit=requests&show=0&sort=1">{L_sys_date_time}</a></center></td>
+    <td class=c><center><a href="alliance.php?mode=admin&edit=requests&show=0&sort=0">{L_sys_from_person}</a></center></td>
+    <td class=c><center>{L_ali_dip_offer}</center></td>
+    <td class=c><center><img src="design/images/r4.png" alt="{L_ali_req_accept}" title="{L_ali_req_accept}" border="0"></center></td>
+    <td class=c><center><img src="design/images/r1.png" alt="{L_ali_req_deny}" title="{L_ali_req_deny}" border="0"></center></td>
+  </tr>
+-->
+  <!-- BEGIN offer -->  
+    <tr class="c_c">
+      <th>{offer.TIME}</th>
+      <th><!-- IF offer.OWNER -->{L_ali_dip_offer_to}<!-- ELSE -->{L_ali_dip_offer_from}<!-- ENDIF -->:&nbsp;{offer.NAME}</th>
+      <th>{offer.RELATION}</th>
+      <th><!-- IF offer.OWNER -->&nbsp;<!-- ELSE --><a href="alliance.php?mode=admin&edit=diplomacy&answer=accept&offer_id={offer.ID}"><img src="design/images/icon_accept.png" width="16" height="16" alt="{L_ali_dip_offer_accept}" title="{L_ali_dip_offer_accept}" border="0"></a><!-- ENDIF --></th>
+      <th>
+		  <!-- IF offer.OWNER -->
+          <a href="alliance.php?mode=admin&edit=diplomacy&answer=deny&offer_id={offer.ID}"><img src="design/images/icon_deny.png" alt="{L_ali_dip_offer_delete}" title="{L_ali_dip_offer_delete}" border="0"></a>
+		  <!-- ELSE -->      
+          <a href="alliance.php?mode=admin&edit=diplomacy&answer=deny&offer_id={offer.ID}"><img src="design/images/icon_deny.png" alt="{L_ali_dip_offer_deny}" title="{L_ali_dip_offer_deny}" border="0"></a>
+        <!-- ENDIF -->
+      </th>
+    </tr>
+    <tr>
+      <td colspan=5 class="c_l">
+         {offer.TEXT}&nbsp;
+    <!-- IF offer.STATUS -->
+    <hr /><span class="negative"><!-- IF offer.OWNER -->{L_ali_dip_offer_answer}<!-- ELSE -->{L_ali_dip_offer_deny_reason}<!-- ENDIF --></span>
+      <!-- <hr />{offer.RESPONSE} -->
+    <!-- ENDIF -->
+      </td>
+    </tr>
+  <!-- BEGINELSE offer -->  
+    <tr><th colspan=5>{L_ali_dip_offer_none}</th></tr>
+  <!-- END offer -->  
+  
+  <tr>
+    <td class=c colspan=5>
+		<a class="link fl" href="alliance.php?mode=admin">{L_ali_adm_return}</a>
+      <a class="link fr" href="alliance.php">{L_ali_sys_main_page}</a>
+    </td>
+  </tr>
+</table>

@@ -3,6 +3,52 @@ if (!defined('INSIDE')) {
 	die("Обнаружена попытка взлома!");
 }
 
+$lang['ali_dip_title'] = 'Дипломатия';
+$lang['ali_dip_negotiate'] = 'Переговоры';
+
+$lang['ali_adm_msg_subject']   = 'Рассылка Альянса';
+
+$lang['ali_dip_offers_your']   = 'Ваши предложения';
+$lang['ali_dip_offers_to_you'] = 'Предложения вам';
+$lang['ali_dip_offer_none']    = 'Нет предложений';
+$lang['ali_dip_offer']         = 'Предложение';
+$lang['ali_dip_offers']        = 'Предложения';
+$lang['ali_dip_offer_new']     = 'Вступить в переговоры';
+$lang['ali_dip_offer_to_ally'] = 'Предложить Альянсу';
+$lang['ali_dip_offer_make']    = 'Начать переговоры';
+$lang['ali_dip_offer_answer']      = 'Альянс отклонил ваше предложение';
+$lang['ali_dip_offer_deny_reason'] = 'Вы отклонили предложение'; // . Причина отказа:
+$lang['ali_dip_offer_to']          = 'Альянсу';
+$lang['ali_dip_offer_from']        = 'От Альянса';
+
+$lang['ali_dip_offer_deny']          = 'Отклонить предложение';
+$lang['ali_dip_offer_accept']        = 'Принять предложение';
+$lang['ali_dip_offer_delete']        = 'Отозвать предложение';
+
+$lang['ali_dip_err_no_ally']          = 'Нет такого Альянса';
+$lang['ali_dip_err_wrong_offer']      = 'Нельзя сделать ТАКОЕ предложение';
+$lang['ali_dip_err_offer_none']       = 'Нет такого предложения';
+$lang['ali_dip_err_offer_same']       = 'Вы уже находитесь с этим Альянсом в отношениях %s';
+$lang['ali_dip_err_offer_alien']      = 'Это предложение делали не вам!'; // hack
+$lang['ali_dip_err_offer_accept_own'] = 'Нельзя принять за другого свое предложение!'; // hack
+$lang['ali_dip_err_offer_empty']      = 'Не указано предложение'; // hack
+
+$lang['ali_dip_relation_none']    = 'Нет отношений';
+$lang['ali_dip_relation_change']  = 'Мы приняли предложение Альянса';
+$lang['ali_dip_relation_change_to']  = 'изменить отношения на';
+$lang['ali_dip_relation_accept']  = 'принял наше предложение изменить отношения на';
+
+$lang['ali_dip_relations'] = array(
+  ALLY_DIPLOMACY_NEUTRAL       => 'Нейтралитет',
+  ALLY_DIPLOMACY_WAR           => 'Война',
+  ALLY_DIPLOMACY_PEACE         => 'Мир',
+  ALLY_DIPLOMACY_CONFEDERATION => 'Конфедерация',
+  ALLY_DIPLOMACY_FEDERATION    => 'Федерация',
+  ALLY_DIPLOMACY_UNION         => 'Объединение',
+  ALLY_DIPLOMACY_MASTER        => 'Ведущий',
+  ALLY_DIPLOMACY_SLAVE         => 'Ведомый'
+);
+
 $lang['ali_lessThen15min']    = '&lt; 15 м';
 
 $lang['ali_confirm']          = 'Подтвердить';

@@ -653,9 +653,20 @@ function sys_get_param_safe($param_name, $default = '')
   return mysql_real_escape_string(strip_tags(sys_get_param($param_name, $default)));
 }
 
+function sys_get_param_str_raw($param_name, $default = '')
+{
+  return strip_tags(trim(sys_get_param($param_name, $default)));
+}
+
 function sys_get_param_str($param_name, $default = '')
 {
-  return mysql_real_escape_string(strip_tags(trim(sys_get_param($param_name, $default))));
+  return mysql_real_escape_string(sys_get_param_str_raw($param_name, $default));
+}
+
+function sys_get_param_str_both($param_name, $default = '')
+{
+  $param = strip_tags(trim(sys_get_param($param_name, $default)));
+  return array('raw' => $param, 'str' => mysql_real_escape_string($param));
 }
 
 function get_missile_range()

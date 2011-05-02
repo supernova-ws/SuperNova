@@ -147,4 +147,48 @@ function doquery($query, $table = '', $fetch = false){
   }
 }
 
+function sn_db_perform($table, $values, $type = 'insert', $options = false)
+{
+  $mass_perform = false;
+
+  $field_set = '';
+  $value_set = '';
+
+  switch($type)
+  {
+    case 'delete':
+      $query = 'DELETE FROM';
+    break;
+
+    case 'insert':
+      $query = 'INSERT INTO';
+      if(isset($options['__multi']))
+      {
+        // Here we generate mass-insert set
+        break;
+      }
+    case 'update':
+      if(!$query)
+      {
+        $query = 'UPDATE';
+      }
+
+      foreach($values as $field => &$value)
+      {
+        $value_type = gettype($value);
+        if ($value_type == 'string')
+        {
+          $value = "'" . mysql_real_escape_string($value) . "'";
+        }
+        $value = "`{$field}` = {$value}";
+      }
+      $field_set = 'SET ' . implode(', ', $values);
+    break;
+
+  };
+
+  $query .= " {$table} {$field_set}";
+  return doquery($query);
+}
+
 ?>

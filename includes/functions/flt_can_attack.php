@@ -1,5 +1,105 @@
 <?php
 
+function flt_bashing_check($user, $enemy, $planet_dst, $mission, $fleet_group = 0)
+{
+  $time_now = &$GLOBALS['time_now'];
+  $config = &$GLOBALS['config'];
+
+  $config_bashing_attacks = $config->fleet_bashing_attacks;
+  $config_bashing_interval = $config->fleet_bashing_interval;
+  if(!$config_bashing_attacks)
+  {
+    // Bashing allowed - protection disabled
+    return ATTACK_ALLOWED;
+  }
+
+  $bashing_result = ATTACK_BASHING;
+  if($user['ally_id'] && $enemy['ally_id'])
+  {
+    $relations = ali_relations($user['ally_id'], $enemy['ally_id']);
+    if(!empty($relations))
+    {
+      $relations = $relations[$enemy['ally_id']];
+      switch($relations['alliance_diplomacy_relation'])
+      {
+        case ALLY_DIPLOMACY_WAR:
+          if($time_now - $relations['alliance_diplomacy_time'] <= $config->fleet_bashing_war_delay)
+          {
+            $bashing_result = ATTACK_BASHING_WAR_DELAY;
+          }
+          else
+          {
+            return ATTACK_ALLOWED;
+          }
+        break;
+        // Here goes other relations
+
+/*
+        default:
+          return ATTACK_ALLOWED;
+        break;
+*/
+      }
+    }
+  }
+
+  $time_now = $GLOBALS['time_now'];
+  $time_limit = $time_now - $config->fleet_bashing_scope;
+  $bashing_list = array($time_now);
+
+  // Retrieving flying fleets
+  $flying_fleets = array();
+  $query = doquery("SELECT fleet_group, fleet_end_time FROM {{fleets}} WHERE
+  fleet_end_galaxy = {$planet_dst['galaxy']} AND
+  fleet_end_system = {$planet_dst['system']} AND
+  fleet_end_planet = {$planet_dst['planet']} AND
+  fleet_end_type   = {$planet_dst['planet_type']} AND
+  fleet_owner = {$user['id']} AND fleet_mission IN (" . MT_ATTACK . "," . MT_AKS . "," . MT_DESTROY . ") AND fleet_mess = 0;");
+  while($bashing_fleets = mysql_fetch_assoc($query))
+  {
+    // Checking for ACS - each ACS count only once
+    if($bashing_fleets['fleet_group'])
+    {
+      $bashing_list["{$user['id']}_{$bashing_fleets['fleet_group']}"] = $bashing_fleets['fleet_end_time'];
+    }
+    else
+    {
+      $bashing_list[] = $bashing_fleets['fleet_end_time'];
+    }
+  }
+
+  // Check for joining to ACS - if there are already fleets in ACS no checks should be done
+  if($mission == MT_AKS && $bashing_list["{$user['id']}_{$fleet_group}"])
+  {
+    return ATTACK_ALLOWED;
+  }
+
+  $query = doquery("SELECT bashing_time FROM {{bashing}} WHERE bashing_user_id = {$user['id']} AND bashing_planet_id = {$planet_dst['id']} AND bashing_time >= {$time_limit};");
+  while($bashing_row = mysql_fetch_assoc($query))
+  {
+    $bashing_list[] = $bashing_row['bashing_time'];
+  }
+
+  sort($bashing_list);
+
+  $last_attack = 0;
+  $wave = 0;
+  $attack = 1;
+  foreach($bashing_list as &$bash_time)
+  {
+    $attack++;
+    if($bash_time - $last_attack > $config_bashing_interval || $attack > $config_bashing_attacks)
+    {
+      $attack = 1;
+      $wave++;
+    }
+
+    $last_attack = $bash_time;
+  }
+
+  return ($wave <= $config->fleet_bashing_waves ? ATTACK_ALLOWED : $bashing_result);
+}
+
 function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false)
 {
   global $config, $sn_data, $user, $time_now;
@@ -46,11 +146,11 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   {
     if($mission != MT_AKS)
     {
-      return ATTACK_WRONG_MISISON;
+      return ATTACK_WRONG_MISSION;
     };
 
     $acs = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}' LIMIT 1;", '', true);
-    if ($acs['id'])
+    if (!$acs['id'])
     {
       return ATTACK_NO_ACS;
     }
@@ -64,8 +164,6 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     {
       return ATTACK_ACS_TOO_LATE;
     }
-//    $fleet_start_time = $aks['ankunft'];
-//    $fleet_end_time = $aks['ankunft'] + $duration;
   }
 
   $flying_fleets = $options['flying_fleets'];
@@ -216,6 +314,11 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   if($mission == MT_DESTROY && $planet_dst['planet_type'] != PT_MOON)
   {
     return ATTACK_WRONG_MISSION;
+  }
+
+  if($mission == MT_ATTACK || $mission == MT_AKS || $mission == MT_DESTROY)
+  {
+    return flt_bashing_check($user, $enemy, $planet_dst, $mission, $fleet_group);
   }
 
   return ATTACK_ALLOWED;

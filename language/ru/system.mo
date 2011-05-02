@@ -124,6 +124,11 @@ $lang = array_merge($lang, array(
 
   'sys_unbanned'			=> 'Разблокирован',
 
+  'sys_date_time'			=> 'Дата и время',
+  'sys_from_person'	   => 'От кого',
+
+  'sys_from'		  => 'с',
+
 // Resource page
   'res_planet_production' => 'Производство ресурсов на планете',
   'res_basic_income' => 'Естественное производство',
@@ -272,8 +277,6 @@ $lang = array_merge($lang, array(
   'sys_noaccess' 			=> 'В доступе отказано',
   'sys_noalloaw' 			=> 'Вам закрыт доступ в эту зону!',
   'sys_governor'        => 'Губернатор',
-
-  'sys_from'		  => 'с',
 
   // News page & a bit of imperator page
   'news_title'      => 'Новости',

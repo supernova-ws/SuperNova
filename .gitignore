@@ -12,8 +12,9 @@ dirinfo
 /xcache/
 /xcache-admin/
 
-# Ignore test folder and test files
+# Ignore local folder, test folder and test files
 /test/
+/.local/
 t.*
 
 # Ignore CMD-files

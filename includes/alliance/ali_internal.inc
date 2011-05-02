@@ -24,7 +24,7 @@ function ALI_rankListSave($ranks) {
   return $ranklist;
 }
 
-$rights     = array( 0 => 'name', 1 => 'mail',  2 => 'online',       3 => 'invite',                4 => 'kick', 5 => 'admin',      6 => 'forum',);
+$rights     = array( 0 => 'name', 1 => 'mail',  2 => 'online',       3 => 'invite',                4 => 'kick', 5 => 'admin',      6 => 'forum', 7 => 'diplomacy');
 $rights_old = array( 0 => 'name', 1 => 'mails', 2 => 'onlinestatus', 3 => 'bewerbungenbearbeiten', 4 => 'kick', 5 => 'rechtehand',);
 
 $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}'", '', true);
@@ -74,6 +74,9 @@ if ($ranks[$user['ally_rank_id']]['invite'] == 1 || $isAllyOwner)
 if ($ranks[$user['ally_rank_id']]['kick'] == 1 || $isAllyOwner)
   $user_can_kick = true;
 
+if ($ranks[$user['ally_rank_id']]['diplomacy'] == 1 || $isAllyOwner)
+  $user_can_negotiate = true;
+
 if ($ranks[$user['ally_rank_id']]['admin'] == 1 || $isAllyOwner){
   $user_can_edit_rights = true;
   $user_admin = true;
@@ -87,11 +90,13 @@ if (!$ally) {
 switch ($mode){
   case 'admin':
   	 $allianceAdminMode = true;
-    switch($edit){
-      case 'rights':   include('ali_internal_admin_rights.inc'); break;
-      case 'members':  include('ali_internal_memberlist.inc'); break;
-      case 'requests': include('ali_internal_admin_request.inc'); break;
-      default:         include('ali_internal_admin.inc'); break;
+    switch($edit)
+    {
+      case 'rights':    include('ali_internal_admin_rights.inc'); break;
+      case 'members':   include('ali_internal_memberlist.inc'); break;
+      case 'requests':  include('ali_internal_admin_request.inc'); break;
+      case 'diplomacy': include('ali_internal_admin_diplomacy.inc'); break;
+      default:          include('ali_internal_admin.inc'); break;
     }
   break;
 

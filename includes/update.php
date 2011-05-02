@@ -590,7 +590,106 @@ switch(intval($config->db_version))
       "ADD PRIMARY KEY (`ban_id`)"/*,
       "RENAME TO {$config->db_prefix}ban"*/
     ), !$update_tables['banned']['ban_id']);
-    print(mysql_error());
+
+    if(!$update_indexes['alliance']['i_ally_name'])
+    {
+      mysql_query(
+        "ALTER TABLE {$config->db_prefix}alliance
+          MODIFY COLUMN `id` SERIAL,
+          ADD CONSTRAINT UNIQUE KEY `i_ally_name` (`ally_name`),
+          CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci,
+          ENGINE=InnoDB;"
+      );
+    }
+
+    $upd_relation_types = "'neutral', 'war', 'peace', 'confederation', 'federation', 'union', 'master', 'slave'";
+    if(!$update_tables['alliance_diplomacy'])
+    {
+      mysql_query(
+        "CREATE TABLE `{$config->db_prefix}alliance_diplomacy` (
+          `alliance_diplomacy_id` SERIAL,
+          `alliance_diplomacy_ally_id` bigint(11) UNSIGNED DEFAULT NULL,
+          `alliance_diplomacy_contr_ally_id` bigint(11) UNSIGNED DEFAULT NULL,
+          `alliance_diplomacy_contr_ally_name` varchar(32) DEFAULT '',
+          `alliance_diplomacy_relation` SET({$upd_relation_types}) NOT NULL default 'neutral',
+          `alliance_diplomacy_relation_last` SET({$upd_relation_types}) NOT NULL default 'neutral',
+          `alliance_diplomacy_time` INT(11) NOT NULL DEFAULT 0,
+
+          PRIMARY KEY (`alliance_diplomacy_id`),
+          KEY (`alliance_diplomacy_ally_id`, `alliance_diplomacy_contr_ally_id`, `alliance_diplomacy_time`),
+          KEY (`alliance_diplomacy_ally_id`, `alliance_diplomacy_time`),
+
+          CONSTRAINT  `FK_diplomacy_ally_id`         FOREIGN KEY (`alliance_diplomacy_ally_id`)         REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          ,CONSTRAINT `FK_diplomacy_contr_ally_id`   FOREIGN KEY (`alliance_diplomacy_contr_ally_id`)   REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+          ,CONSTRAINT `FK_diplomacy_contr_ally_name` FOREIGN KEY (`alliance_diplomacy_contr_ally_name`) REFERENCES `{$config->db_prefix}alliance` (`ally_name`) ON UPDATE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
+      );
+    }
+
+    if(!$update_tables['alliance_negotiation'])
+    {
+      mysql_query(
+        "CREATE TABLE `{$config->db_prefix}alliance_negotiation` (
+          `alliance_negotiation_id` SERIAL,
+          `alliance_negotiation_ally_id` bigint(11) UNSIGNED DEFAULT NULL,
+          `alliance_negotiation_ally_name` varchar(32) DEFAULT '',
+          `alliance_negotiation_contr_ally_id` bigint(11) UNSIGNED DEFAULT NULL,
+          `alliance_negotiation_contr_ally_name` varchar(32) DEFAULT '',
+          `alliance_negotiation_relation` SET({$upd_relation_types}) NOT NULL default 'neutral',
+          `alliance_negotiation_time` INT(11) NOT NULL DEFAULT 0,
+          `alliance_negotiation_propose` TEXT,
+          `alliance_negotiation_response` TEXT,
+          `alliance_negotiation_status` SMALLINT NOT NULL DEFAULT 0,
+
+          PRIMARY KEY (`alliance_negotiation_id`),
+          KEY (`alliance_negotiation_ally_id`, `alliance_negotiation_contr_ally_id`, `alliance_negotiation_time`),
+          KEY (`alliance_negotiation_ally_id`, `alliance_negotiation_time`),
+
+          CONSTRAINT  `FK_negotiation_ally_id`         FOREIGN KEY (`alliance_negotiation_ally_id`)         REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          ,CONSTRAINT `FK_negotiation_ally_name`       FOREIGN KEY (`alliance_negotiation_ally_name`)       REFERENCES `{$config->db_prefix}alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
+          ,CONSTRAINT `FK_negotiation_contr_ally_id`   FOREIGN KEY (`alliance_negotiation_contr_ally_id`)   REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          ,CONSTRAINT `FK_negotiation_contr_ally_name` FOREIGN KEY (`alliance_negotiation_contr_ally_name`) REFERENCES `{$config->db_prefix}alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
+      );
+    }
+
+    mysql_query(
+      "ALTER TABLE {$config->db_prefix}planets
+        MODIFY COLUMN `id` SERIAL,
+        CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"
+    );
+
+    mysql_query(
+      "ALTER TABLE {$config->db_prefix}users
+        MODIFY COLUMN `id` SERIAL,
+        CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"
+    );
+
+    if(!$update_tables['bashing'])
+    {
+      mysql_query(
+        "CREATE TABLE `{$config->db_prefix}bashing` (
+          `bashing_id` SERIAL,
+          `bashing_user_id` bigint(11) UNSIGNED DEFAULT NULL,
+          `bashing_planet_id` bigint(11) UNSIGNED DEFAULT NULL,
+          `bashing_time` INT(11) NOT NULL DEFAULT 0,
+
+          PRIMARY KEY (`bashing_id`),
+          KEY (`bashing_user_id`, `bashing_planet_id`, `bashing_time`),
+          KEY (`bashing_planet_id`),
+          KEY (`bashing_time`),
+
+          CONSTRAINT  `FK_bashing_user_id`   FOREIGN KEY (`bashing_user_id`)   REFERENCES `{$config->db_prefix}users`   (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          ,CONSTRAINT `FK_bashing_planet_id` FOREIGN KEY (`bashing_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
+      );
+    }
+
+    upd_check_key('fleet_bashing_war_delay', 12 * 60 * 60, !isset($config->fleet_bashing_war_delay));
+    upd_check_key('fleet_bashing_scope', 24 * 60 * 60, !isset($config->fleet_bashing_scope));
+    upd_check_key('fleet_bashing_interval', 30 * 60, !isset($config->fleet_bashing_interval));
+    upd_check_key('fleet_bashing_waves', 3, !isset($config->fleet_bashing_waves));
+    upd_check_key('fleet_bashing_attacks', 3, !isset($config->fleet_bashing_attacks));
 
   doquery('COMMIT;');
   // $new_version = 28;

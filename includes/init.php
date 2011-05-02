@@ -43,6 +43,10 @@ if(strpos($sn_root_relative, 'admin/') !== false)
 {
   $sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], 'admin/'));
 }
+if(strpos($sn_root_relative, '.local/') !== false)
+{
+  $sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '.local/'));
+}
 $sn_root_physical = str_replace(array('//', '//'), '/', $_SERVER['DOCUMENT_ROOT'] . $sn_root_relative);
 $phpbb_root_path  = $sn_root_physical;
 
