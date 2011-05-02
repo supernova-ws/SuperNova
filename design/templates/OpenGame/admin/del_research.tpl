@@ -1,6 +1,6 @@
 <br><br>
 <h2>{adm_researchdel1}</h2>
-<form action="del_research.php" method="post">
+<form action="" method="post">
 <input type="hidden" name="mode" value="addit">
 <table width="404">
   <tbody>

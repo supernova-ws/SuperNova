@@ -1,7 +1,7 @@
 
 <br><br>
 <h2>{adm_defdel1}</h2>
-<form action="del_def.php" method="post">
+<form action="" method="post">
 <input type="hidden" name="mode" value="addit">
 <table width="404">
   <tbody>

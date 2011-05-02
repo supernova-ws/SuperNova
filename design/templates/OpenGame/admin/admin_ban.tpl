@@ -1,6 +1,6 @@
 <!-- IF mode == 'banit' -->
 <h2>{L_adm_ban_title}</h2>
-<form action="admin/banned.php" method="post">
+<form action="" method="post">
   <input type="hidden" name="mode" value="banit">
   <input type="hidden" name="action" value="banit">
   <table width="409">

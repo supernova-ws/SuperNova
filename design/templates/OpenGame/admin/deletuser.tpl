@@ -1,5 +1,5 @@
 <center>
-<form action="deletuser.php?mode=delet">
+<form action="admin/deletuser.php?mode=delet">
 <input type="text" name="name" />
 <input type="submit" value="{Delet}" />
 </form>

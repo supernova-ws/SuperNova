@@ -1,6 +1,6 @@
 <br><br>
 <h2>{addm_title}</h2>
-<form action="add_moon.php" method="post">
+<form action="" method="post">
 <input type="hidden" name="mode" value="addit">
 <table width="320" border="0" cellspacing="2" cellpadding="0" style="color:#FFFFFF">
 <tr>
