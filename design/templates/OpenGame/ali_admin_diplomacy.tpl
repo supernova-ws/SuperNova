@@ -6,13 +6,13 @@
     <td>
       <form action="alliance.php?mode=admin&edit=diplomacy" name="ali_dip_offer" method="post">
       {L_ali_dip_offer_to_ally} 
-      <select name="alliance_diplomacy_contr_ally_id">
+      <select name="alliance_negotiation_contr_ally_id">
         <!-- BEGIN alliance -->
           <option value="{alliance.ID}">{alliance.NAME} [{alliance.TAG}]</option>
         <!-- END alliance -->
       </select>
 
-      <select name="alliance_diplomacy_relation">
+      <select name="alliance_negotiation_relation">
         <!-- BEGIN relation -->
           <option value="{relation.ID}">{relation.TEXT}</option>
         <!-- END relation -->
@@ -20,7 +20,7 @@
       
       <br />
       {L_ali_dip_offer}
-      <textarea name="alliance_diplomacy_propose" style="width:98%"></textarea>
+      <textarea name="alliance_negotiation_propose" style="width:98%"></textarea>
     </td>
   </tr>
   <tr><th class="c_c"><input type="submit" name="ali_dip_offer_make" value="{L_ali_dip_offer_make}"></th></tr>

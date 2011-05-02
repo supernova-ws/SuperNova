@@ -79,7 +79,7 @@ $lang['fl_attack_error'] = array(
   ATTACK_WRONG_MISSION   => 'The task cannot be performed in the specified destination',
   ATTACK_NO_ALLY_DEPOSIT => 'No alliance depot on planet',
   ATTACK_NO_DEBRIS       => 'No debris field here',
-  ATTACK_VACATION         => 'You cannot attack a player in Vacation Mode',
+  ATTACK_VACATION        => 'You cannot attack a player in Vacation Mode',
   ATTACK_SAME_IP         => 'Cannot trade with players with same IP!<br>Interaction with players with the same IP could be banned',
   ATTACK_BUFFING         => 'Injection - transfer of resources from weak to strong player - is forbidden by the rules',
   ATTACK_ADMIN           => 'You cannot attack the administrator',
@@ -101,6 +101,8 @@ $lang['fl_attack_error'] = array(
   ATTACK_ACS_MISSTARGET  => 'Does not match the destination and the purpose of ACS',
   ATTACK_WRONG_SPEED     => 'Incorrect speed',
   ATTACK_ACS_TOO_LATE    => 'Fleet to slow - it will not catch with the Group ACS',
+  ATTACK_BASHING         => 'Bashing protection. Number of allowed attacks per day per planet already reached',
+  ATTACK_BASHING_WAR_DELAY => 'Bashing protection. War to this Alliance already declared but did not started yet. Look at your Alliance page to see war begin date',
 );
 
 $lang['fl_fleet_err']			= 'Error!';

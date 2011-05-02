@@ -16,7 +16,8 @@ if ( !defined('INSIDE') )
 }
 
 define('DB_VERSION', 27);
-define('SN_VERSION', '27a20');
+define('SN_RELEASE', '28');
+define('SN_VERSION', '28c');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -68,11 +69,15 @@ define('CONFIRM_PASSWORD_RESET', 2);
 define('CONFIRM_DELETE', 3);
 
 // Ally diplomacy statuses
-define('ALLY_DIPLOMACY_NEUTRAL',    'neutral');
-define('ALLY_DIPLOMACY_WAR',        'war');
-define('ALLY_DIPLOMACY_FEDERATION', 'federation');
-define('ALLY_DIPLOMACY_UNION',      'union');
-define('ALLY_DIPLOMACY_SLAVE',      'slave');
+define('ALLY_DIPLOMACY_SELF',          'self');
+define('ALLY_DIPLOMACY_NEUTRAL',       'neutral');
+define('ALLY_DIPLOMACY_WAR',           'war');
+define('ALLY_DIPLOMACY_PEACE',         'peace');
+define('ALLY_DIPLOMACY_CONFEDERATION', 'confederation');
+define('ALLY_DIPLOMACY_FEDERATION',    'federation');
+define('ALLY_DIPLOMACY_UNION',         'union');
+define('ALLY_DIPLOMACY_MASTER',        'master');
+define('ALLY_DIPLOMACY_SLAVE',         'slave');
 
 define('ALLY_DIPLOMACY_PROPOSE_SEND', 0);
 
@@ -141,34 +146,36 @@ define('LOGIN_ERROR_ACTIVE'          , 5);
 define('LOGIN_ERROR_EXTERNAL_AUTH'   , 6);
 
 // Attack verification statuses
-define('ATTACK_ALLOWED'        ,  0);
-define('ATTACK_NO_TARGET'      ,  1);
-define('ATTACK_OWN'            ,  2);
-define('ATTACK_WRONG_MISSION'  ,  3);
-define('ATTACK_NO_ALLY_DEPOSIT',  4);
-define('ATTACK_NO_DEBRIS'      ,  5);
-define('ATTACK_VACATION'       ,  6);
-define('ATTACK_SAME_IP'        ,  7);
-define('ATTACK_BUFFING'        ,  8);
-define('ATTACK_ADMIN'          ,  9);
-define('ATTACK_NOOB'           , 10);
-define('ATTACK_OWN_VACATION'   , 11);
-define('ATTACK_NO_SILO'        , 12);
-define('ATTACK_NO_MISSILE'     , 13);
-define('ATTACK_NO_FLEET'       , 14);
-define('ATTACK_NO_SLOTS'       , 15);
-define('ATTACK_NO_SHIPS'       , 16);
-define('ATTACK_NO_RECYCLERS'   , 17);
-define('ATTACK_NO_SPIES'       , 18);
-define('ATTACK_NO_COLONIZER'   , 19);
-define('ATTACK_MISSILE_TOO_FAR', 20);
-define('ATTACK_WRONG_STRUCTURE', 21);
-define('ATTACK_NO_FUEL'        , 22);
-define('ATTACK_NO_RESOURCES'   , 23);
-define('ATTACK_NO_ACS'         , 24);
-define('ATTACK_ACS_MISSTARGET' , 25);
-define('ATTACK_WRONG_SPEED'    , 26);
-define('ATTACK_ACS_TOO_LATE'   , 27);
+define('ATTACK_ALLOWED'          ,  0);
+define('ATTACK_NO_TARGET'        ,  1);
+define('ATTACK_OWN'              ,  2);
+define('ATTACK_WRONG_MISSION'    ,  3);
+define('ATTACK_NO_ALLY_DEPOSIT'  ,  4);
+define('ATTACK_NO_DEBRIS'        ,  5);
+define('ATTACK_VACATION'         ,  6);
+define('ATTACK_SAME_IP'          ,  7);
+define('ATTACK_BUFFING'          ,  8);
+define('ATTACK_ADMIN'            ,  9);
+define('ATTACK_NOOB'             , 10);
+define('ATTACK_OWN_VACATION'     , 11);
+define('ATTACK_NO_SILO'          , 12);
+define('ATTACK_NO_MISSILE'       , 13);
+define('ATTACK_NO_FLEET'         , 14);
+define('ATTACK_NO_SLOTS'         , 15);
+define('ATTACK_NO_SHIPS'         , 16);
+define('ATTACK_NO_RECYCLERS'     , 17);
+define('ATTACK_NO_SPIES'         , 18);
+define('ATTACK_NO_COLONIZER'     , 19);
+define('ATTACK_MISSILE_TOO_FAR'  , 20);
+define('ATTACK_WRONG_STRUCTURE'  , 21);
+define('ATTACK_NO_FUEL'          , 22);
+define('ATTACK_NO_RESOURCES'     , 23);
+define('ATTACK_NO_ACS'           , 24);
+define('ATTACK_ACS_MISSTARGET'   , 25);
+define('ATTACK_WRONG_SPEED'      , 26);
+define('ATTACK_ACS_TOO_LATE'     , 27);
+define('ATTACK_BASHING'          , 28);
+define('ATTACK_BASHING_WAR_DELAY', 29);
 
 // *** Market variables
 // === Market blocks

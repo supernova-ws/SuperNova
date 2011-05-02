@@ -58,11 +58,17 @@ if($next_stat_update > $config->var_stat_update)
     $debug->warning($msg, 'Stat update', 192);
 
     $time_now = time();
+
+    $msg = "{$lang['adm_done']}: {$total_time} {$lang['sys_sec']}.";
+
+    // TODO: Analyze maintenance result. Add record to log if error. Add record to log if OK
+    $maintenance_result = sys_maintenance();
+
+    $time_now = time();
+
     $config->db_saveItem('var_stat_update', $time_now);
     $config->db_saveItem('var_stat_update_end', $time_now);
     $config->db_saveItem('var_stat_update_msg', $msg);
-
-    $msg = "{$lang['adm_done']}: {$total_time} {$lang['sys_sec']}.";
   }
   elseif($next_stat_update > $config->var_stat_update)
   {

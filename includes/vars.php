@@ -24,11 +24,48 @@ if ( defined('INSIDE')) {
   );
 
   $sn_diplomacy_relation_list = array(
-    ALLY_DIPLOMACY_NEUTRAL => ALLY_DIPLOMACY_NEUTRAL,
-    ALLY_DIPLOMACY_WAR => ALLY_DIPLOMACY_WAR/*,
-    ALLY_DIPLOMACY_FEDERATION => ALLY_DIPLOMACY_FEDERATION,
-    ALLY_DIPLOMACY_UNION => ALLY_DIPLOMACY_UNION,
-    ALLY_DIPLOMACY_SLAVE => ALLY_DIPLOMACY_SLAVE*/
+    ALLY_DIPLOMACY_NEUTRAL       => array(
+      'relation_id' => ALLY_DIPLOMACY_NEUTRAL,
+      'enter_delay' => 0,
+      'exit_delay'  => 0,
+    ),
+    ALLY_DIPLOMACY_WAR           => array(
+      'relation_id' => ALLY_DIPLOMACY_WAR,
+      'enter_delay' => $config->fleet_bashing_war_delay,
+      'exit_delay'  => -1,
+    ),
+    ALLY_DIPLOMACY_PEACE         => array(
+      'relation_id' => ALLY_DIPLOMACY_PEACE,
+      'enter_delay' => -1,
+      'exit_delay'  => 0,
+    ),
+    /*
+    ALLY_DIPLOMACY_CONFEDERATION => array(
+      'relation_id' => ALLY_DIPLOMACY_CONFEDERATION,
+      'enter_delay' => -1,
+      'exit_delay'  => $config->fleet_bashing_war_delay,
+    ),
+    ALLY_DIPLOMACY_FEDERATION    => array(
+      'relation_id' => ALLY_DIPLOMACY_FEDERATION,
+      'enter_delay' => -1,
+      'exit_delay'  => $config->fleet_bashing_war_delay,
+    ),
+    ALLY_DIPLOMACY_UNION         => array(
+      'relation_id' => ALLY_DIPLOMACY_UNION,
+      'enter_delay' => -1,
+      'exit_delay'  => $config->fleet_bashing_war_delay,
+    ),
+    ALLY_DIPLOMACY_MASTER        => array(
+      'relation_id' => ALLY_DIPLOMACY_MASTER,
+      'enter_delay' => -1,
+      'exit_delay'  => 0,
+    ),
+    ALLY_DIPLOMACY_SLAVE         => array(
+      'relation_id' => ALLY_DIPLOMACY_SLAVE,
+      'enter_delay' => -1,
+      'exit_delay'  => $config->fleet_bashing_war_delay,
+    )
+    */
   );
 
   // factor -> price_factor, perhour_factor

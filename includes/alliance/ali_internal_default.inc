@@ -51,38 +51,8 @@ $lang['ally_tag'] = $ally['ally_tag'];
 $lang['ally_members'] = $ally['ally_members'];
 $lang['ally_name'] = $ally['ally_name'];
 
-//    if(alliance_diplomacy_contr_ally_id = {$user['ally_id']}, alliance_diplomacy_ally_id, alliance_diplomacy_contr_ally_id) AS contr_ally_id,
-/*
-$query = doquery(
-  "SELECT
-    alliance_diplomacy_ally_id,
-    alliance_diplomacy_contr_ally_id,
-    alliance_diplomacy_contr_ally_name,
-    alliance_diplomacy_relation,
-    max(alliance_diplomacy_time) as alliance_diplomacy_time
-  FROM
-    {{alliance_diplomacy}}
-  WHERE
-    alliance_diplomacy_ally_id = {$user['ally_id']}
-    OR alliance_diplomacy_contr_ally_id = {$user['ally_id']};"
-);
-*/
-$query = doquery(
-  "SELECT
-    alliance_diplomacy_ally_id,
-    alliance_diplomacy_contr_ally_id,
-    alliance_diplomacy_contr_ally_name,
-    alliance_diplomacy_relation,
-    alliance_diplomacy_time
-  FROM
-    {{alliance_diplomacy}}
-  WHERE
-    alliance_diplomacy_ally_id = {$user['ally_id']}
-    OR alliance_diplomacy_contr_ally_id = {$user['ally_id']}
-  ORDER BY alliance_diplomacy_time, alliance_diplomacy_id;"
-);
-
-while($relation = mysql_fetch_assoc($query))
+$relations = ali_relations($user['ally_id']);
+foreach($relations as $relation)
 {
   if($relation['alliance_diplomacy_contr_ally_id'] == $user['ally_id'])
   {

@@ -47,7 +47,7 @@ img
   border               : 0px;
 }
 
-tr, th, td, input, select, textarea
+th, td, input, select, textarea
 {
   border               : 1px #415680 solid;
   background-color     : #344566;

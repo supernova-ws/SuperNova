@@ -25,10 +25,11 @@ $lang['ali_dip_offer_deny']          = 'Отклонить предложение';
 $lang['ali_dip_offer_accept']        = 'Принять предложение';
 $lang['ali_dip_offer_delete']        = 'Отозвать предложение';
 
-$lang['ali_dip_err_no_ally']       = 'Нет такого Альянса';
-$lang['ali_dip_err_wrong_offer']   = 'Нельзя сделать ТАКОЕ предложение';
-$lang['ali_dip_err_offer_none']    = 'Нет такого предложения';
-$lang['ali_dip_err_offer_alien']   = 'Это предложение делали не вам!'; // hack
+$lang['ali_dip_err_no_ally']          = 'Нет такого Альянса';
+$lang['ali_dip_err_wrong_offer']      = 'Нельзя сделать ТАКОЕ предложение';
+$lang['ali_dip_err_offer_none']       = 'Нет такого предложения';
+$lang['ali_dip_err_offer_same']       = 'Вы уже находитесь с этим Альянсом в отношениях %s';
+$lang['ali_dip_err_offer_alien']      = 'Это предложение делали не вам!'; // hack
 $lang['ali_dip_err_offer_accept_own'] = 'Нельзя принять за другого свое предложение!'; // hack
 $lang['ali_dip_err_offer_empty']      = 'Не указано предложение'; // hack
 
@@ -38,11 +39,14 @@ $lang['ali_dip_relation_change_to']  = 'изменить отношения на';
 $lang['ali_dip_relation_accept']  = 'принял наше предложение изменить отношения на';
 
 $lang['ali_dip_relations'] = array(
-  ALLY_DIPLOMACY_NEUTRAL    => 'Нейтралитет',
-  ALLY_DIPLOMACY_WAR        => 'Война',
-  ALLY_DIPLOMACY_FEDERATION => 'Федерация',
-  ALLY_DIPLOMACY_UNION      => 'Союз',
-  ALLY_DIPLOMACY_SLAVE      => 'Подчинение'
+  ALLY_DIPLOMACY_NEUTRAL       => 'Нейтралитет',
+  ALLY_DIPLOMACY_WAR           => 'Война',
+  ALLY_DIPLOMACY_PEACE         => 'Мир',
+  ALLY_DIPLOMACY_CONFEDERATION => 'Конфедерация',
+  ALLY_DIPLOMACY_FEDERATION    => 'Федерация',
+  ALLY_DIPLOMACY_UNION         => 'Объединение',
+  ALLY_DIPLOMACY_MASTER        => 'Ведущий',
+  ALLY_DIPLOMACY_SLAVE         => 'Ведомый'
 );
 
 $lang['ali_lessThen15min']    = '&lt; 15 м';

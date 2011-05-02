@@ -25,10 +25,11 @@ $lang['ali_dip_offer_deny']          = 'Declare offer';
 $lang['ali_dip_offer_accept']        = 'Accept offer';
 $lang['ali_dip_offer_delete']        = 'Withdraw offer';
 
-$lang['ali_dip_err_no_ally']       = 'There is no such Alliance';
-$lang['ali_dip_err_wrong_offer']   = 'You can not make THIS offer';
-$lang['ali_dip_err_offer_none']    = 'No such offer';
-$lang['ali_dip_err_offer_alien']   = 'This offer was made not for you!'; // hack
+$lang['ali_dip_err_no_ally']          = 'There is no such Alliance';
+$lang['ali_dip_err_wrong_offer']      = 'You can not make THIS offer';
+$lang['ali_dip_err_offer_none']       = 'No such offer';
+$lang['ali_dip_err_offer_same']       = 'You already have relation %s with this Alliance';
+$lang['ali_dip_err_offer_alien']      = 'This offer was made not for you!'; // hack
 $lang['ali_dip_err_offer_accept_own'] = 'You can not accept own offer!'; // hack
 $lang['ali_dip_err_offer_empty']      = 'Offer not defined'; // hack
 
@@ -38,11 +39,14 @@ $lang['ali_dip_relation_change_to']  = 'change relations to';
 $lang['ali_dip_relation_accept']  = 'accepted your offer to change relations to';
 
 $lang['ali_dip_relations'] = array(
-  ALLY_DIPLOMACY_NEUTRAL    => 'Neutral',
-  ALLY_DIPLOMACY_WAR        => 'War',
-  ALLY_DIPLOMACY_FEDERATION => 'Federation',
-  ALLY_DIPLOMACY_UNION      => 'Union',
-  ALLY_DIPLOMACY_SLAVE      => 'Slave'
+  ALLY_DIPLOMACY_NEUTRAL       => 'Neutral',
+  ALLY_DIPLOMACY_WAR           => 'War',
+  ALLY_DIPLOMACY_PEACE         => 'Peace',
+  ALLY_DIPLOMACY_CONFEDERATION => 'Confederation',
+  ALLY_DIPLOMACY_FEDERATION    => 'Federation',
+  ALLY_DIPLOMACY_UNION         => 'Union',
+  ALLY_DIPLOMACY_MASTER        => 'Master',
+  ALLY_DIPLOMACY_SLAVE         => 'Slave'
 );
 
 $lang['ali_lessThen15min']    = '&lt; 15 min';

@@ -498,12 +498,20 @@ class classConfig extends classPersistent
     'game_speed' => 1,           // Game speed
 
     // Universe size
-    'game_maxGalaxy' => '5',
-    'game_maxSystem' => '199',
-    'game_maxPlanet' => '15',
+    'game_maxGalaxy' => 5,
+    'game_maxSystem' => 199,
+    'game_maxPlanet' => 15,
 
     'game_adminEmail' => 'root@localhost',    // Admin's email to show to users
-    'game_counter' => 1,  // Does built-in page hit counter is on?
+
+    'game_counter' => 0,  // Does built-in page hit counter is on?
+
+    // Bashing protection settings
+    'fleet_bashing_war_delay' => 43200,  // Delay before start bashing after declaring war to alliance - 12h by default
+    'fleet_bashing_scope'     => 86400,  // Interval on which bashing waves counts - 24h by default
+    'fleet_bashing_interval'  => 1800,   // Maximum interval between attacks when they still count as one wave - 30m by default
+    'fleet_bashing_waves'     => 3,      // Max amount of waves per day - 3 by default
+    'fleet_bashing_attacks'   => 3,      // Max amount of attack per wave - 3 by default
 
     // Defaults
     'game_default_language' => 'ru',

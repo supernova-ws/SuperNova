@@ -188,18 +188,24 @@ function flt_mission_attack($mission_data)
   $formatted_cr = formatCR($result,$loot['looted'],$MoonChance,$GottenMoon,$totaltime);
   $raport = $formatted_cr['html'];
 
-  $rid = md5($raport);
-  $QryInsertRapport  = 'INSERT INTO `{{rw}}` SET ';
-  $QryInsertRapport .= '`time` = UNIX_TIMESTAMP(), ';
-  foreach ($attackFleets as $fleetID => $attacker)
-  {
-    $users2[$attacker['user']['id']] = $attacker['user']['id'];
-  }
-
+  $bashing_list = array();
   foreach ($defenseFleets as $fleetID => $defender)
   {
     $users2[$defender['user']['id']] = $defender['user']['id'];
   }
+
+  foreach ($attackFleets as $fleetID => $attacker)
+  {
+    $users2[$attacker['user']['id']] = $attacker['user']['id'];
+    // Generating attackers list for bashing table
+    $bashing_list[$attacker['user']['id']] = "({$attacker['user']['id']}, {$destination_planet['id']}, {$time_now})";
+  }
+  $bashing_list = implode(',', $bashing_list);
+  doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
+
+  $rid = md5($raport);
+  $QryInsertRapport  = 'INSERT INTO `{{rw}}` SET ';
+  $QryInsertRapport .= '`time` = UNIX_TIMESTAMP(), ';
   $QryInsertRapport .= '`owners` = "'.implode(',', $users2).'", ';
   $QryInsertRapport .= '`id_owner1` = "'.$attacker['user']['id'].'", ';
   $QryInsertRapport .= '`id_owner2` = "'.$defender['user']['id'].'", ';
