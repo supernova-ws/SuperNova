@@ -7,8 +7,10 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }
 
-list($ally_tag_raw, $ally_tag)   = sys_get_param_str_both('tag');
-list($ally_name_raw, $ally_name) = sys_get_param_str_both('name');
+$ally_tag_raw = sys_get_param_str_raw('tag');
+$ally_tag     = mysql_real_escape_string($ally_tag_raw);
+$ally_name_raw = sys_get_param_str_raw('name');
+$ally_name     = mysql_real_escape_string($ally_name_raw);
 
 if($ally_tag)
 {
@@ -23,7 +25,7 @@ if($ally_tag)
     message(str_replace('%s', $ally_tag_raw, $lang['always_exist']), $lang['make_alliance']);
   }
 
-  $query = doquery("SELECT * FROM {{alliance}} WHERE `ally_name` ='{$ally_name}'", '', true);
+  $query = doquery("SELECT * FROM {{alliance}} WHERE `ally_name` = '{$ally_name}' LIMIT 1;", '', true);
   if ($query)
   {
     message(str_replace('%s', $ally_name_raw, $lang['always_exist']), $lang['make_alliance']);
