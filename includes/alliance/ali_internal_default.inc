@@ -14,7 +14,7 @@ $lang['MANAGE_REQUESTS'] = $user_admin_applications;
 $lang['ALLY_NEGOTIATE'] = $user_can_negotiate;
 
 $request = doquery("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
-$lang['ALLY_REQUESTS'] = $request['request_count'] = 5;
+$lang['ALLY_REQUESTS'] = $request['request_count'];
 
 // Imagen de la alianza
 if ($ally['ally_owner'] == $user['id']) {
