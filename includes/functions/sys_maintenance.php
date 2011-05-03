@@ -2,6 +2,9 @@
 
 function sys_maintenance()
 {
+  $time_now = &$GLOBALS['time_now'];
+  $bashing_time_limit = $time_now - BASH_INTERVAL;
+
   // TODO: Move here some cleaning procedures from admin/maintenance.php
   $queries = array(
     // Cleaning outdated records from bashing table
@@ -9,9 +12,6 @@ function sys_maintenance()
     // Cleaning ACS table from empty records
     array('query' => 'DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});', 'result' => false, 'error' => '', 'affected_rows' => 0),
   );
-
-  $time_now = &$GLOBALS['time_now'];
-  $bashing_time_limit = $time_now - BASH_INTERVAL;
 
   foreach($queries as &$query)
   {
