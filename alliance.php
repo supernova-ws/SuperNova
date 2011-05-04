@@ -21,6 +21,7 @@ $isConfirmDisband = !empty($_POST['isConfirmDisband']);
 $isTransfer       = !empty($_POST['isTransfer']);
 
 $edit = sys_get_param_str('edit');
+$mode = sys_get_param_str('mode');
 
 lng_include('alliance');
 
