@@ -162,18 +162,18 @@ elseif(!$user_request['id_user'])
       $allianceAdminMode = true;
       switch($edit)
       {
-        case 'rights':    require('ali_internal_admin_rights.inc'); break;
-        case 'members':   require('ali_internal_memberlist.inc'); break;
-        case 'requests':  require('ali_internal_admin_request.inc'); break;
-        case 'diplomacy': require('ali_internal_admin_diplomacy.inc'); break;
-        default:          require('ali_internal_admin.inc'); break;
+        case 'rights':    require('includes/alliance/ali_internal_admin_rights.inc'); break;
+        case 'members':   require('includes/alliance/ali_internal_memberlist.inc'); break;
+        case 'requests':  require('includes/alliance/ali_internal_admin_request.inc'); break;
+        case 'diplomacy': require('includes/alliance/ali_internal_admin_diplomacy.inc'); break;
+        default:          require('includes/alliance/ali_internal_admin.inc'); break;
       }
     break;
 
-    case 'exit':         require('ali_internal_exit.inc'); break;
-    case 'memberslist':  require('ali_internal_memberlist.inc'); break;
-    case 'circular':     require('ali_internal_admin_mail.inc'); break;
-    default:             require('ali_internal_default.inc'); break;
+    case 'exit':         require('includes/alliance/ali_internal_exit.inc'); break;
+    case 'memberslist':  require('includes/alliance/ali_internal_memberlist.inc'); break;
+    case 'circular':     require('includes/alliance/ali_internal_admin_mail.inc'); break;
+    default:             require('includes/alliance/ali_internal_default.inc'); break;
   }
 }
 
