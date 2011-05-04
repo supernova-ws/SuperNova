@@ -123,6 +123,10 @@ $lang['ali_sys_main_page']    = 'Вернуться на главную страницу Альянса';
 $lang['ali_sys_joined']       = 'Дата вступления';
 
 $lang['ali_frm_write']        = 'Писать на форум';
+$lang['ali_info_title']       = 'Информация об Альянсе';
+$lang['ali_info_internal']    = 'Внутрення информация';
+$lang['ali_info_leave']       = 'Покинуть Альянс';
+
 
 $lang['Name']           = 'Название';
 $lang['Tag']            = 'Обозначение';

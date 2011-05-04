@@ -7,31 +7,66 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 
 $template = gettemplate('ali_internal', true);
 
-$lang['ALLY_ADMIN'] = $user_admin;
-$lang['ALLY_CAN_KICK'] = $user_can_kick;
-$lang['MASS_MAIL'] = $user_can_send_mails;
-$lang['MANAGE_REQUESTS'] = $user_admin_applications;
-$lang['ALLY_NEGOTIATE'] = $user_can_negotiate;
+if($mode == 'ainfo')
+{
+  $tag = sys_get_param_str('tag');
+  $id_ally = sys_get_param_int('a');
+  if($tag)
+  {
+    $ally = doquery("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}' LIMIT 1;", '', true);
+  }
+  elseif($id_ally)
+  {
+    $ally = doquery("SELECT * FROM {{alliance}} WHERE id='{$id_ally}' LIMIT 1;", '', true);
+  }
 
-$request = doquery("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
-$lang['ALLY_REQUESTS'] = $request['request_count'];
+  if(!$ally)
+  {
+    message($lang['ali_sys_notFound'], $lang['Ally_info_1']);
+  }
 
-// Imagen de la alianza
-if ($ally['ally_owner'] == $user['id']) {
-  $range = ($ally['ally_owner_range'] != '')?$lang['Founder']:$ally['ally_owner_range'];
-} elseif ($user['ally_rank_id'] != 0 && isset($ranks[$user['ally_rank_id']]['name'])) {
-  $range = $ranks[$user['ally_rank_id']]['name'];
-} else {
-  $range = $lang['member'];
+  if(!$ally['ally_description'])
+  {
+    $ally['ally_description'] = $lang['Ally_nodescription'];
+  }
+
+  $lang['EXTERNAL']     = true;
+  $lang['USER_ALLY_ID'] = $user['ally_id'];
+  $page_header          = $lang['sys_alliance'];
 }
-$lang['range'] = $range;
-if ($ally['ally_owner'] != $user['id']) {
-  $lang['ally_owner'] .= MessageForm($lang['Exit_of_this_alliance'], "", "alliance.php?mode=exit", $lang['Continue']);
+else
+{
+  $page_header = $lang['your_alliance'];
+
+  $lang['ALLY_ADMIN'] = $user_admin;
+  $lang['ALLY_CAN_KICK'] = $user_can_kick;
+  $lang['MASS_MAIL'] = $user_can_send_mails;
+  $lang['MANAGE_REQUESTS'] = $user_admin_applications;
+  $lang['ALLY_NEGOTIATE'] = $user_can_negotiate;
+
+  if($ally['ally_owner'] == $user['id'])
+  {
+    $range = ($ally['ally_owner_range'] != '') ? $lang['Founder'] : $ally['ally_owner_range'];
+  }
+  elseif($user['ally_rank_id'] != 0 && isset($ranks[$user['ally_rank_id']]['name']))
+  {
+    $range = $ranks[$user['ally_rank_id']]['name'];
+  }
+  else
+  {
+    $range = $lang['member'];
+  }
+  $lang['range'] = $range;
+
+  $request = doquery("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
+  $lang['ALLY_REQUESTS'] = $request['request_count'];
 }
 
-$lang['ally_image'] = $ally['ally_image'];// ? $ally['ally_image'] :'';
+if(!$ally['ally_description'])
+{
+  $ally['ally_description'] = $lang['Ally_nodescription'];
+}
 
-// codigo raro
 $patterns[] = "#\[fc\]([a-z0-9\#]+)\[/fc\](.*?)\[/f\]#Ssi";
 $replacements[] = '<font color="\1">\2</font>';
 $patterns[] = '#\[img\](.*?)\[/img\]#Smi';
@@ -40,26 +75,26 @@ $patterns[] = "#\[fc\]([a-z0-9\#\ \[\]]+)\[/fc\]#Ssi";
 $replacements[] = '<font color="\1">';
 $patterns[] = "#\[/f\]#Ssi";
 $replacements[] = '</font>';
-$ally['ally_description'] = preg_replace($patterns, $replacements, $ally['ally_description']);
-$lang['ally_description'] = nl2br($ally['ally_description']);
+$lang['ALLY_DESCRIPTION'] = nl2br(preg_replace($patterns, $replacements, $ally['ally_description']));
+$lang['ALLY_TEXT']    = nl2br(preg_replace($patterns, $replacements, $ally['ally_text']));
 
-$ally['ally_text'] = preg_replace($patterns, $replacements, $ally['ally_text']);
-$lang['ally_text'] = nl2br($ally['ally_text']);
-
-$lang['ally_web'] = $ally['ally_web'];
-$lang['ally_tag'] = $ally['ally_tag'];
+$lang['ally_id']      = $ally['id'];
 $lang['ally_members'] = $ally['ally_members'];
-$lang['ally_name'] = $ally['ally_name'];
+$lang['ally_web']     = $ally['ally_web'];
+$lang['ally_tag']     = $ally['ally_tag'];
+$lang['ally_image']   = $ally['ally_image'];
+$lang['ally_name']    = $ally['ally_name'];
 
-$relations = ali_relations($user['ally_id']);
+$relations = ali_relations($ally['id']);
 foreach($relations as $relation)
 {
+  /*
   if($relation['alliance_diplomacy_contr_ally_id'] == $user['ally_id'])
   {
     $contr_ally = doquery("SELECT ally_name FROM {{alliance}} WHERE `id` = {$relation['alliance_diplomacy_ally_id']} LIMIT 1;", '', true);
     $relation['alliance_diplomacy_contr_ally_name'] = $contr_ally['ally_name'];
   }
-
+  */
   if($relation['alliance_diplomacy_contr_ally_id'] && $relation['alliance_diplomacy_ally_id'])
   {
     $template->assign_block_vars('relation', array(
@@ -70,6 +105,6 @@ foreach($relations as $relation)
   }
 }
 
-display(parsetemplate($template, $lang), $lang['your_alliance']);
+display(parsetemplate($template, $lang), "{$lang['your_alliance']} [{$ally['ally_name']}]");
 
 ?>

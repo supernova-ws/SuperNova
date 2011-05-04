@@ -9,27 +9,40 @@ if (!$user_can_kick && $allianceAdminMode)
   message($lang['Denied_access'], $lang['Members_list']);
 
 // Changing rank for single user
+$id_user = sys_get_param_int('id_user');
+if(isset($_GET['id_rank']))
+{
+  $id_rank = sys_get_param_int('id_rank');
+}
 if($id_user && isset($id_rank) && $user_admin){
   doquery("UPDATE {{users}} SET `ally_rank_id` = {$id_rank} WHERE `id`= {$id_user};");
 }
 
-if ($id_kick && $user_can_kick) {
+$id_kick = sys_get_param_int('kick');
+if ($id_kick && $user_can_kick)
+{
   $u = doquery("SELECT * FROM {{users}} WHERE `id` ='{$id_kick}' LIMIT 1", '', true);
-  if ($u['ally_id'] == $ally['id'] && $u['id'] != $ally['ally_owner']) {
+  if ($u['ally_id'] == $ally['id'] && $u['id'] != $ally['ally_owner'])
+  {
     doquery("UPDATE {{users}} SET `ally_id`='0', `ally_name` = '' WHERE `id`='{$id_kick}'");
   }
 }
 
-$sort1s = array(0 => "`ally_rank_id`", 1 => "`username`", 2 => "`total_points`", 3 => '`galaxy` %1$s, `system` %1$s, `planet`', 4 => "`ally_register_time`", 5 => "`onlinetime`");
-if ($sort2){
+$sort2 = sys_get_param_int('sort2');
+if ($sort2)
+{
   $sort2s = "DESC";
   $sort2 = 0;
-} else {
+}
+else
+{
   $sort2s = "ASC";
   $sort2 = 1;
 }
 
+$sort1 = sys_get_param_int('sort1');
 if($sort1>5 || $sort1<0) $sort1 = 0;
+$sort1s = array(0 => "`ally_rank_id`", 1 => "`username`", 2 => "`total_points`", 3 => '`galaxy` %1$s, `system` %1$s, `planet`', 4 => "`ally_register_time`", 5 => "`onlinetime`");
 $sort = sprintf(' ORDER BY ' . $sort1s[$sort1] . ' %1$s;', $sort2s);
 
 $template = gettemplate('ali_members', true);
@@ -145,7 +158,8 @@ while ($userRow = mysql_fetch_assoc($userList))
   ));
 }
 
-if ($i != $ally['ally_members']) {
+if ($i != $ally['ally_members'])
+{
   doquery("UPDATE {{alliance}} SET `ally_members`='{$i}' WHERE `id`='{$ally['id']}'");
 }
 

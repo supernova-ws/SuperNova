@@ -123,6 +123,10 @@ $lang['ali_sys_main_page']    = 'Return to the home page of the Alliance';
 $lang['ali_sys_joined']       = 'Date of entry';
 
 $lang['ali_frm_write']        = 'Write in the Forum';
+$lang['ali_info_title']       = 'Information about the Alliance';
+$lang['ali_info_internal']    = 'Internal information';
+$lang['ali_info_leave']       = 'Leave Alliance';
+
 
 $lang['Name']           = 'The Name';
 $lang['Tag']            = 'Tag';
