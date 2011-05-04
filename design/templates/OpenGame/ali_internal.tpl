@@ -14,7 +14,7 @@
   <tr><th>{L_Name}</th><th>{ally_name}</th></tr>
   <tr><th>{L_Main_Page}</th><th><a href="{ally_web}">{ally_web}</a></th></tr>
   <tr><th>{L_Members}</th><th>{ally_members}<!-- IF ! EXTERNAL -->&nbsp;(<a href="alliance.php?mode=memberslist">{Members_list}</a>)<!-- ENDIF --></th></tr>
-  <!-- IF ! USER_ALLY_ID -->
+  <!-- IF EXTERNAL && ! USER_ALLY_ID -->
     <tr>
       <th>{L_ali_req_make}</th>
       <th><a href="alliance.php?mode=apply&a={ally_id}">{Click_writerequest}</a></th>
