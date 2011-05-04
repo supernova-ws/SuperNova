@@ -1,5 +1,22 @@
 <?php
 
+function ALI_rankListSave($ranks)
+{
+  global $user;
+
+  if(!empty($ranks))
+  {
+    foreach($ranks as $rank => $rights)
+    {
+      $rights = implode(',', $rights);
+      $ranklist .= $rights . ';';
+    }
+  }
+
+  doquery("UPDATE {{alliance}} SET `ranklist` = '{$ranklist}' WHERE `id` ='{$user['ally_id']}';");
+  return $ranklist;
+}
+
 function ali_relations($ally_from, $ally_to = 0)
 {
   $ally_to = intval($ally_to);

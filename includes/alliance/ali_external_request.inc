@@ -12,17 +12,22 @@ if ($user['ally_id']) {
   message($lang['ali_req_inAlly'], $lang['ali_req_title']);
 }
 
-if ($user_request['id_ally']) {
+if ($user_request['id_ally'])
+{
   $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user_request['id_ally']}'", '', true);
 
-  if ($POST_bcancel) {
+  if (sys_get_param_str('bcancel'))
+  {
     doquery("DELETE FROM {{alliance_requests}} WHERE `id_user` = {$user['id']};");
     header('Location: alliance.php');
   }
 
-  if($user_request['request_denied']){
+  if($user_request['request_denied'])
+  {
     $lang['request_text'] = sprintf($lang['ali_req_deny_msg'], $ally['ally_tag'], $user_request['request_text']);
-  }else{
+  }
+  else
+  {
     $lang['request_text'] = sprintf($lang['ali_req_waiting'], $ally['ally_tag']);
   }
   $page = parsetemplate(gettemplate('ali_request_waiting'), $lang);
@@ -30,18 +35,23 @@ if ($user_request['id_ally']) {
   display($page, $lang['ali_req_title']);
 }
 
-if ($POST_text) {
+$POST_text = sys_get_param_str('text');
+if ($POST_text)
+{
+  $id_ally = sys_get_param_int('a');
   doquery("INSERT INTO {{alliance_requests}} SET `id_user` = {$user['id']}, `id_ally`='{$id_ally}', request_text ='{$POST_text}', request_time='{$time_now}';");
   header('Location: alliance.php');
 }
 
 $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$id_ally}'", '', true);
 
-if(!$ally) {
+if(!$ally)
+{
   message($lang['ali_sys_notFound'], $lang['ali_req_title']);
 }
 
-if($ally['ally_request_notallow']) {
+if($ally['ally_request_notallow'])
+{
   message($lang['ali_req_not_allowed'], $lang['ali_req_title']);
 }
 

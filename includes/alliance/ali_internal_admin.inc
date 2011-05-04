@@ -12,11 +12,15 @@ if (!$user_admin)
 
 $parse = $lang;
 
+$idNewLeader = sys_get_param_int('idNewLeader');
+
 $text_list = array(
-  1 => array ( 'db_field' => 'ally_description', 'text_type' => 'Public_text_of_alliance'),
-  2 => array ( 'db_field' => 'ally_text', 'text_type' => 'Internal_text'),
-  3 => array ( 'db_field' => 'ally_request', 'text_type' => 'Show_of_request_text'),
+  1 => array ('db_field' => 'ally_description', 'text_type' => 'Public_text_of_alliance'),
+  2 => array ('db_field' => 'ally_text', 'text_type' => 'Internal_text'),
+  3 => array ('db_field' => 'ally_request', 'text_type' => 'Show_of_request_text'),
 );
+
+$allyTextID  = sys_get_param_int('t');
 if ($allyTextID<1 || $allyTextID>3) $allyTextID = 1;
 extract($text_list[$allyTextID]);
 
@@ -39,6 +43,7 @@ if ($isSaveOptions)
     WHERE `id`='{$ally['id']}' LIMIT 1;");
   $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}';", '', true);
 } elseif ($isSaveText) {
+  $POST_text = sys_get_param_str('text');
   doquery("UPDATE {{alliance}} SET `{$db_field}`='{$POST_text}' WHERE `id`='{$ally['id']}';");
   $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}';", '', true);
 } elseif ($isTransfer && $idNewLeader){

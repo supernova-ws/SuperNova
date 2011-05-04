@@ -9,6 +9,7 @@ if (!$user_can_send_mails) {
   message($lang['Denied_access'], $lang['Send_circular_mail']);
 }
 
+$POST_text = sys_get_param_str('text');
 if ($POST_text)
 {
 /*
