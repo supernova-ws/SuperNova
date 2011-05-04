@@ -35,10 +35,10 @@ if ($user_request['id_ally'])
   display($page, $lang['ali_req_title']);
 }
 
+$id_ally = sys_get_param_int('a');
 $POST_text = sys_get_param_str('text');
 if ($POST_text)
 {
-  $id_ally = sys_get_param_int('a');
   doquery("INSERT INTO {{alliance_requests}} SET `id_user` = {$user['id']}, `id_ally`='{$id_ally}', request_text ='{$POST_text}', request_time='{$time_now}';");
   header('Location: alliance.php');
 }

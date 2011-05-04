@@ -12,7 +12,7 @@
 Следующий релиз
 ===============
 
-Текущая версия V28c4
+Текущая версия V28c6
 ====================
 
 Project "SuperNova.WS" Release 28 Release Candidate
