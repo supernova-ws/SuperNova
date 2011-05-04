@@ -1,8 +1,8 @@
 <?php
 
-function flt_bashing_check($user, $enemy, $planet_dst, $mission, $fleet_group = 0)
+function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duration, $fleet_group = 0)
 {
-  $time_now = &$GLOBALS['time_now'];
+  $time_now = $GLOBALS['time_now'];
   $config = &$GLOBALS['config'];
 
   $config_bashing_attacks = $config->fleet_bashing_attacks;
@@ -43,13 +43,13 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $fleet_group = 
     }
   }
 
-  $time_now = $GLOBALS['time_now'];
+  $time_now += $flight_duration;
   $time_limit = $time_now - $config->fleet_bashing_scope;
   $bashing_list = array($time_now);
 
   // Retrieving flying fleets
   $flying_fleets = array();
-  $query = doquery("SELECT fleet_group, fleet_end_time FROM {{fleets}} WHERE
+  $query = doquery("SELECT fleet_group, fleet_start_time FROM {{fleets}} WHERE
   fleet_end_galaxy = {$planet_dst['galaxy']} AND
   fleet_end_system = {$planet_dst['system']} AND
   fleet_end_planet = {$planet_dst['planet']} AND
@@ -60,11 +60,11 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $fleet_group = 
     // Checking for ACS - each ACS count only once
     if($bashing_fleets['fleet_group'])
     {
-      $bashing_list["{$user['id']}_{$bashing_fleets['fleet_group']}"] = $bashing_fleets['fleet_end_time'];
+      $bashing_list["{$user['id']}_{$bashing_fleets['fleet_group']}"] = $bashing_fleets['fleet_start_time'];
     }
     else
     {
-      $bashing_list[] = $bashing_fleets['fleet_end_time'];
+      $bashing_list[] = $bashing_fleets['fleet_start_time'];
     }
   }
 
@@ -97,7 +97,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $fleet_group = 
     $last_attack = $bash_time;
   }
 
-  return ($wave <= $config->fleet_bashing_waves ? ATTACK_ALLOWED : $bashing_result);
+  return ($wave > $config->fleet_bashing_waves ? $bashing_result : ATTACK_ALLOWED);
 }
 
 function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false)
@@ -318,7 +318,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
 
   if($mission == MT_ATTACK || $mission == MT_AKS || $mission == MT_DESTROY)
   {
-    return flt_bashing_check($user, $enemy, $planet_dst, $mission, $fleet_group);
+    return flt_bashing_check($user, $enemy, $planet_dst, $mission, $duration, $fleet_group);
   }
 
   return ATTACK_ALLOWED;
