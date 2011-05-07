@@ -60,9 +60,9 @@ function qst_render_page()
         else
         {
           sn_db_perform('{{quest}}', array(
-              'quest_name' => $quest_name,
+              'quest_name' => stripslashes($quest_name),
               'quest_type' => $quest_type,
-              'quest_description' => $quest_description,
+              'quest_description' => stripslashes($quest_description),
               'quest_conditions' => $quest_conditions,
               'quest_rewards' => $quest_rewards,
           ));
