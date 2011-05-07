@@ -44,9 +44,9 @@
 <!-- ENDIF -->
 
 <!-- IF USER_ID -->
-  <!-- DEFINE $COLSPAN = 5 -->
+  <!-- DEFINE $COLSPAN = 4 -->
 <!-- ELSE -->
-  <!-- DEFINE $COLSPAN = 8 -->
+  <!-- DEFINE $COLSPAN = 6 -->
 <!-- ENDIF -->
 
 <table width="800">
@@ -54,6 +54,7 @@
     <div class="fl">{L_qst_quests}</div>
     <div class="fr">{L_qst_total}:&nbsp;{TOTAL}</div>
   </td></tr>
+<!--
   <tr>
     <th class="c_c">{L_qst_name}</th>
     <th class="c_c" width="100%">{L_qst_description}</th>
@@ -68,20 +69,23 @@
       <th class="c_c"><img src="design/images/r1.png"></th>
     <!-- ENDIF -->
   </tr>
+-->
   <!-- BEGIN quest -->
     <tr>
-      <td class="c_c" width="100">{quest.QUEST_NAME}</td>
-      <td align=justify>{quest.QUEST_DESCRIPTION}</td>
-      <td>{quest.QUEST_UNIT_AMOUNT}&nbsp;x&nbsp;{quest.QUEST_UNIT_NAME}</td>
-      <td>{quest.QUEST_REWARDS_AMOUNT}&nbsp;{quest.QUEST_REWARDS_NAME}</td>
+      <th class="c_c">{quest.QUEST_NAME}</th>
+      <th class="c_c" width="240">{quest.QUEST_UNIT_AMOUNT}&nbsp;x&nbsp;{quest.QUEST_UNIT_NAME}</th>
+      <th class="c_c" width="120">{quest.QUEST_REWARDS_AMOUNT}&nbsp;{quest.QUEST_REWARDS_NAME}</th>
       <!-- IF USER_ID -->
-        <td class="c_c">{quest.QUEST_STATUS_NAME}</td>
+        <th class="c_c" width="80">{quest.QUEST_STATUS_NAME}</th>
       <!-- ENDIF -->
       <!-- IF IN_ADMIN && ! USER_ID -->
-        <td><a href="admin/adm_quest.php?mode=edit&id={quest.QUEST_ID}"><img src="design/images/icon_edit.png"></a></td>
-        <td><a href="admin/adm_quest.php?mode=copy&id={quest.QUEST_ID}"><img src="design/images/icon_copy.gif"></a></td>
-        <td><a href="admin/adm_quest.php?mode=del&id={quest.QUEST_ID}"><img src="design/images/r1.png"></a></td>
+        <th class="c_c" width="22"><a href="admin/adm_quest.php?mode=edit&id={quest.QUEST_ID}"><img src="design/images/icon_edit.png"></a></th>
+        <th class="c_c" width="22"><a href="admin/adm_quest.php?mode=copy&id={quest.QUEST_ID}"><img src="design/images/icon_copy.gif"></a></th>
+        <th class="c_c" width="22"><a href="admin/adm_quest.php?mode=del&id={quest.QUEST_ID}"><img src="design/images/r1.png"></a></th>
       <!-- ENDIF -->
+    </tr>
+    <tr>
+      <td align=justify colspan="{$COLSPAN}">{quest.QUEST_DESCRIPTION}</td>
     </tr>
   <!-- END quest -->
 </table>
