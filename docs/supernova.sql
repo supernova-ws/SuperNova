@@ -771,8 +771,8 @@ INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '(Place here code for b
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '0');
 INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
 INSERT INTO `sn_config` VALUES ('chat_highlight_admin', '<font color=purple>$1</font>');
-INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');
+INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
@@ -784,6 +784,11 @@ INSERT INTO `sn_config` VALUES ('eco_stockman_fleet', '');
 INSERT INTO `sn_config` VALUES ('energy_basic_income', '0');
 INSERT INTO `sn_config` VALUES ('Fleet_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('fleet_speed', '1');
+INSERT INTO `sn_config` VALUES ('fleet_bashing_war_delay', 12 * 60 * 60),
+INSERT INTO `sn_config` VALUES ('fleet_bashing_scope', 24 * 60 * 60),
+INSERT INTO `sn_config` VALUES ('fleet_bashing_interval', 30 * 60),
+INSERT INTO `sn_config` VALUES ('fleet_bashing_waves', 3),
+INSERT INTO `sn_config` VALUES ('fleet_bashing_attacks', 3),
 INSERT INTO `sn_config` VALUES ('flt_lastUpdate', UNIX_TIMESTAMP(NOW()));
 INSERT INTO `sn_config` VALUES ('game_adminEmail', 'root@localhost');
 INSERT INTO `sn_config` VALUES ('game_counter', '0');
@@ -821,6 +826,7 @@ INSERT INTO `sn_config` VALUES ('LastSettedPlanetPos', '1');
 INSERT INTO `sn_config` VALUES ('LastSettedSystemPos', '1');
 INSERT INTO `sn_config` VALUES ('metal_basic_income', '40');
 INSERT INTO `sn_config` VALUES ('player_max_colonies', '9');
+INSERT INTO `sn_config` VALUES ('quest_total', '0');
 INSERT INTO `sn_config` VALUES ('resource_multiplier', '1');
 INSERT INTO `sn_config` VALUES ('rpg_bonus_divisor', '10');
 INSERT INTO `sn_config` VALUES ('rpg_cost_banker', '1');

@@ -30,41 +30,46 @@ input.frameles
     <td class="header" align="center" width="140"><A HREF="dark_matter.php"><img src="{dpath}images/dm_klein_2.jpg" border="0" height="22" width="42" alt="{L_sys_dark_matter}" title="{L_sys_dark_matter}"></A></td>
     <td class="header" align="center" width="140"><A HREF="messages.php"><img src="{dpath}images/message.gif" border="0" height="22" width="42" alt="{L_Message}" title="{L_Message}"></A></td>
   </tr>
-  <tr class="header" align=center valign=middle><form name='ressources'> <center>
-    <td class="header" align="center" width="150"><b><font color="#FFFF00">{L_tech_storage}</font></b></td>
-    <td class="header" align="right" width="150"><span id='top_metal'>{TOPNAV_METAL_TEXT}</span></td>
-    <td class="header" align="right" width="150"><span id='top_crystal'>{TOPNAV_CRYSTAL_TEXT}</span></td>
-    <td class="header" align="right" width="150"><span id='top_deuterium'>{TOPNAV_DEUTERIUM_TEXT}</span></td>
-    <td class="header" align="right" width="150">{ENERGY_BALANCE}</td>
-    <td class="header" align="center" width="140" rowspan="2"><font color="green"><b>{TOPNAV_DARK_MATTER}</b></font></td>
+  <tr valign=middle><form name='ressources'> <center>
+    <td class="c_c" width="150"><b><font color="#FFFF00">{L_tech_storage}</font></b></td>
+    <td class="c_r" width="150"><span id='top_metal'>{TOPNAV_METAL_TEXT}</span></td>
+    <td class="c_r" width="150"><span id='top_crystal'>{TOPNAV_CRYSTAL_TEXT}</span></td>
+    <td class="c_r" width="150"><span id='top_deuterium'>{TOPNAV_DEUTERIUM_TEXT}</span></td>
+    <td class="c_r" width="150">{ENERGY_BALANCE}</td>
+    <td class="c_c" width="140" rowspan="2"><font color="green"><b>{TOPNAV_DARK_MATTER}</b></font></td>
 
-    <td class="header" align="center" valign=middle width="140" rowspan="2" >
+    <td class="c_c" valign=middle width="140" rowspan="2" >
       <a href="messages.php">
         <!-- IF TOPNAV_MESSAGES_ALL -->
           <!-- IF TOPNAV_MESSAGES_PLAYER + TOPNAV_MESSAGES_ALLIANCE -->
             <div>
-              <!-- IF TOPNAV_MESSAGES_PLAYER --><span class=mnl_joueur>[ {TOPNAV_MESSAGES_PLAYER} ]</span>&nbsp;<!-- ENDIF -->
-              <!-- IF TOPNAV_MESSAGES_ALLIANCE --><span class=mnl_alliance>[ {TOPNAV_MESSAGES_ALLIANCE} ]</span><!-- ENDIF -->
+              <!-- IF TOPNAV_MESSAGES_PLAYER --><span class=mnl_joueur>[ {TOPNAV_MESSAGES_PLAYER} ]</span><!-- ENDIF -->
+              <!-- IF TOPNAV_MESSAGES_ALLIANCE -->&nbsp;<span class=mnl_alliance>[ {TOPNAV_MESSAGES_ALLIANCE} ]</span><!-- ENDIF -->
             </div>
           <!-- ENDIF -->
           <blink>[ {TOPNAV_MESSAGES_ALL} ]</blink>
-        <!-- ELSE -->0<!-- ENDIF -->
+        <!-- ELSE -->
+          0
+        <!-- ENDIF -->
       </a>
     </td>
   </form></tr>
-  <tr class="header">
-    <td class="header" align="center" width="150"><b><font color="#FFFF00">{L_tech_storage_max}</font></b></td>
-    <td class="header" align="right" width="150">{TOPNAV_METAL_MAX_TEXT}</td>
-    <td class="header" align="right" width="150">{TOPNAV_CRYSTAL_MAX_TEXT}</td>
-    <td class="header" align="right" width="150">{TOPNAV_DEUTERIUM_MAX_TEXT}</td>
-    <td class="header" align="right" width="150"><font color="#00ff00">{ENERGY_MAX}</font></td>
+  <tr>
+    <td class="header c_c" width="150"><b><font color="#FFFF00">{L_tech_storage_max}</font></b></td>
+    <td class="header c_r" width="150">{TOPNAV_METAL_MAX_TEXT}</td>
+    <td class="header c_r" width="150">{TOPNAV_CRYSTAL_MAX_TEXT}</td>
+    <td class="header c_r" width="150">{TOPNAV_DEUTERIUM_MAX_TEXT}</td>
+    <td class="header c_r" width="150"><font color="#00ff00">{ENERGY_MAX}</font></td>
   </tr>
-  <tr class="c">
-    <td class="c_c" colspan=1 id="topnav_expedition_counter_total">
+  <tr class="c_c">
+    <td colspan=1 id="topnav_expedition_counter_total">
       {L_sys_expeditions} <span id='topnav_expedition_counter'>{TOPNAV_EXPEDITIONS_FLYING}</span>/{TOPNAV_EXPEDITIONS_TOTAL}
     </td>
-    <td class="c_c" colspan=1 id='topnav_fleet_counter_total'>
+    <td colspan=1 id='topnav_fleet_counter_total'>
       {L_sys_fleets} <span id='topnav_fleet_counter'>{TOPNAV_FLEETS_FLYING}</span>/{TOPNAV_FLEETS_TOTAL}
+    </td>
+    <td class="c_c" colspan=1>
+      <a href="quest.php">{L_qst_quests} {TOPNAV_QUEST_COMPLETE}/{C_quest_total}</a>
     </td>
   </tr>
 </tbody></table>

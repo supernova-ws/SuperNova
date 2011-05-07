@@ -42,6 +42,7 @@
     <tr><td><a href="officer.php">{L_tech[600]}</a></td></tr>
     <tr><td><a href="market.php">{L_rinok}</a></td></tr>
     <tr><td><a href="galaxy.php?mode=0" id="lm_universe">{L_sys_universe}</a></td></tr>
+    <tr><td><a href="quest.php">{L_qst_quests}</a></td></tr>
 
     <tr><th>{L_m_communication}</th></tr>
     <!-- IF URL_FORUM -->

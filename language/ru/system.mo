@@ -432,6 +432,13 @@ $lang = array_merge($lang, array(
   'chat_page'     => 'Страница',
   'chat_timeout'  => 'Чат отключен из-за вашей неактивности. Обновите страницу.',
 
+  // quests
+  'qst_quests'       => 'Квесты',
+  'qst_msg_complete_subject' => 'Вы выполнили квест!',
+  'qst_msg_complete_body'    => 'Вы получили %d ТМ за выполнение квеста "%s"',
+
+  'msg_from_admin' => 'Администрация Вселенной',
+
   // Arrays
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'Сверхновая',

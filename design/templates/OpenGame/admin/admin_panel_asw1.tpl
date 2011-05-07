@@ -24,9 +24,14 @@
 </tr><tr>
 	<th align="center" class="">{adm_frm1_main}</th>
 	<th align="center" class=""><a href""></a>{answer7}</th>
-</tr><tr>
+</tr>
+<tr>
 	<th align="center" class="">{adm_frm1_gpos}</th>
 	<th align="center" class=""><a href""></a>{answer8}</th>
+</tr>
+<tr>
+	<th align="center" class="">{qst_quests}</th>
+	<th align="center" class=""><a href="admin/adm_quest.php?user_id={user_id}">{qst_quest_complete}</a></th>
 </tr>
 </tbody>
 </table>

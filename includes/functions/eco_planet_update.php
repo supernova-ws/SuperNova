@@ -15,14 +15,14 @@
 
 function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 {
+  global $time_now, $sn_data;
+
   $no_data = array('user' => false, 'planet' => false, 'que' => false);
 
   if(!$planet)
   {
     return $no_data;
   }
-
-  global $sn_data;
 
   $suffix = $simulation ? '' : 'FOR UPDATE';
   if(is_array($planet))
@@ -113,9 +113,9 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 
   $Builded = eco_bld_handle_que($user, $planet, $ProductionTime);
   $QryUpdatePlanet .= "`b_hangar_id` = '{$planet['b_hangar_id']}', ";
-  if ($Builded)
+  if($Builded)
   {
-    foreach ( $Builded as $Element => $Count )
+    foreach($Builded as $Element => $Count)
     {
       $Element = intval($Element);
       $Count = intval($Count);
@@ -139,6 +139,8 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
       rpg_level_up($user, $xp_type, $xp_amount);
     }
   }
+
+  qst_reward($user, $que['rewards'], $que['quests']);
 
   return array('user' => $user, 'planet' => $planet, 'que' => $que);
 }

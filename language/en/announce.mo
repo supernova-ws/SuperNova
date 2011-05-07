@@ -1,5 +1,10 @@
 <?php
 
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 $lang['add_announce']                = 'Add announcement';
 $lang['metal']                       = 'Metal';
 $lang['crystal']                     = 'Crystal';

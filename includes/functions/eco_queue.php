@@ -5,6 +5,10 @@ function eco_que_process($user, &$planet, $time_left)
   $sn_data = &$GLOBALS['sn_data'];
   $lang = &$GLOBALS['lang'];
 
+  $quest_list = qst_get_quests($user['id']);
+  $quest_triggers = qst_active_triggers($quest_list);
+  $quest_rewards = array();
+
   $que = array();
   $built = array();
   $xp = array();
@@ -108,6 +112,16 @@ function eco_que_process($user, &$planet, $time_left)
             $planet[$unit_db_name] += min($planet[$unit_db_name], $amount_to_build); // Prevents neagative unit on planet
             $query .= "`{$unit_db_name}` = `{$unit_db_name}` + '{$amount_to_build}',";
             $que_type_data['que_changed'] = true;
+
+            // TODO: Check mutiply condition quests
+            $quest_trigger_list = array_keys($quest_triggers, $unit_id);
+            foreach($quest_trigger_list as $quest_id)
+            {
+              if($quest_list[$quest_id]['quest_unit_amount'] <= $planet[$unit_db_name])
+              {
+                $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards_amount'];
+              }
+            }
           }
 
         }
@@ -150,9 +164,11 @@ function eco_que_process($user, &$planet, $time_left)
     'xp'      => $xp,
     'amounts' => $que_amounts,
     'in_que'  => $in_que,
-    'in_que_abs'  => $in_que_abs,
+    'in_que_abs' => $in_que_abs,
     'string'  => $query_string,
     'query'   => $query,
+    'rewards' => $quest_rewards,
+    'quests'  => $quest_list,
     'processed' => true
   );
 }

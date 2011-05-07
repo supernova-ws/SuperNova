@@ -48,6 +48,8 @@ if (isset($GET_result)) {
       $bloc['answer6']        = $lang['adm_usr_genre'][ $SelUser['sex'] ];
       $bloc['answer7']        = "[".$SelUser['id_planet']."] ".$UsrMain['name'];
       $bloc['answer8']        = "[".$SelUser['galaxy'].":".$SelUser['system'].":".$SelUser['planet']."] ";
+      $bloc['qst_quest_complete'] = get_quest_amount_complete($SelUser['id']);
+      $bloc['user_id'] = $SelUser['id'];
       $SubPanelTPL            = gettemplate('admin/admin_panel_asw1');
       $parse['adm_sub_form2'] = parsetemplate( $SubPanelTPL, $bloc );
       break;
@@ -65,6 +67,8 @@ if (isset($GET_result)) {
       $bloc['answer6']         = $lang['adm_usr_genre'][ $SelUser['sex'] ];
       $bloc['answer7']         = "[".$SelUser['id_planet']."] ".$UsrMain['name'];
       $bloc['answer8']         = "[".$SelUser['galaxy'].":".$SelUser['system'].":".$SelUser['planet']."] ";
+      $bloc['qst_quest_complete'] = get_quest_amount_complete($SelUser['id']);
+      $bloc['user_id'] = $SelUser['id'];
       $SubPanelTPL             = gettemplate('admin/admin_panel_asw1');
       $parse['adm_sub_form1']  = parsetemplate( $SubPanelTPL, $bloc );
 

@@ -1,5 +1,10 @@
 <?php
 
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 $lang['fl_title'] 				= 'Fleets';
 $lang['fl_expttl'] 				= 'Expedition';
 $lang['fl_id'] 					= '¹';

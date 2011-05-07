@@ -11,6 +11,11 @@
 #  Copyright © 2005 - 2008 KGsystem
 #############################################################################
 */
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 global $config;
 
 $lang = array_merge($lang, array(
