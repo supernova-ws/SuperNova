@@ -63,10 +63,10 @@ input.frameles
   </tr>
   <tr class="c_c">
     <td colspan=1 id="topnav_expedition_counter_total">
-      {L_sys_expeditions} <span id='topnav_expedition_counter'>{TOPNAV_EXPEDITIONS_FLYING}</span>/{TOPNAV_EXPEDITIONS_TOTAL}
+      <a href="flying_fleets.php">{L_sys_expeditions} <span id='topnav_expedition_counter'>{TOPNAV_EXPEDITIONS_FLYING}</span>/{TOPNAV_EXPEDITIONS_TOTAL}</a>
     </td>
     <td colspan=1 id='topnav_fleet_counter_total'>
-      {L_sys_fleets} <span id='topnav_fleet_counter'>{TOPNAV_FLEETS_FLYING}</span>/{TOPNAV_FLEETS_TOTAL}
+      <a href="flying_fleets.php">{L_sys_fleets} <span id='topnav_fleet_counter'>{TOPNAV_FLEETS_FLYING}</span>/{TOPNAV_FLEETS_TOTAL}</a>
     </td>
     <td class="c_c" colspan=1>
       <a href="quest.php">{L_qst_quests} {TOPNAV_QUEST_COMPLETE}/{C_quest_total}</a>
