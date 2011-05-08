@@ -109,7 +109,7 @@ function eco_que_process($user, &$planet, $time_left)
             }
 
             $xp[RPG_STRUCTURE] += round(($xp_incoming > 0 ? $xp_incoming : 0)/1000);
-            $planet[$unit_db_name] += min($planet[$unit_db_name], $amount_to_build); // Prevents neagative unit on planet
+            $planet[$unit_db_name] += $amount_to_build;
             $query .= "`{$unit_db_name}` = `{$unit_db_name}` + '{$amount_to_build}',";
             $que_type_data['que_changed'] = true;
 
