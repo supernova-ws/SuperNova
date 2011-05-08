@@ -44,7 +44,7 @@ function HandleTechnologieBuild ( &$CurrentPlanet, &$CurrentUser ) {
       $unit_id = $planet['b_tech_id'];
       $unit_db_name = $resource[$unit_id];
 
-      $quest_list = qst_get_quests($CurrentUser['id']);
+      $quest_list = qst_get_quests($user['id']);
       $quest_triggers = qst_active_triggers($quest_list);
       $quest_rewards = array();
 
@@ -52,9 +52,10 @@ function HandleTechnologieBuild ( &$CurrentPlanet, &$CurrentUser ) {
       $quest_trigger_list = array_keys($quest_triggers, $unit_id);
       foreach($quest_trigger_list as $quest_id)
       {
-        if($quest_list[$quest_id]['quest_unit_amount'] <= $user[$unit_db_name])
+        if($quest_list[$quest_id]['quest_unit_amount'] <= $user[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
         {
           $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards_amount'];
+          $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
         }
       }
 

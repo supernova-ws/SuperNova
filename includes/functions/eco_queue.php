@@ -117,9 +117,10 @@ function eco_que_process($user, &$planet, $time_left)
             $quest_trigger_list = array_keys($quest_triggers, $unit_id);
             foreach($quest_trigger_list as $quest_id)
             {
-              if($quest_list[$quest_id]['quest_unit_amount'] <= $planet[$unit_db_name])
+              if($quest_list[$quest_id]['quest_unit_amount'] <= $planet[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
               {
                 $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards_amount'];
+                $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
               }
             }
           }

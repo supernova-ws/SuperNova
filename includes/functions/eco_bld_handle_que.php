@@ -24,10 +24,18 @@ function eco_bld_handle_que($user, &$planet, $production_time)
 {
   global $resource;
 
+  $quest_rewards = array();
   if ($planet['b_hangar_id'] != 0)
   {
     $hangar_time = $planet['b_hangar'] + $production_time;
     $que = explode(';', $planet['b_hangar_id']);
+
+    $quest_list = qst_get_quests($user['id']);
+    $quest_triggers = qst_active_triggers($quest_list);
+/*
+
+      qst_reward($user, $quest_rewards, $quest_list);
+*/
 
     $built = array();
     $new_hangar = '';
@@ -38,21 +46,34 @@ function eco_bld_handle_que($user, &$planet, $production_time)
       {
         $que_data = explode(',', $que_string);
 
-        $unit  = $que_data[0];
+        $unit_id  = $que_data[0];
         $count = $que_data[1];
-        $build_time = GetBuildingTime($user, $planet, $unit);
+        $build_time = GetBuildingTime($user, $planet, $unit_id);
 
         if(!$skip_rest)
         {
-          $planet_unit = $planet[$resource[$unit]];
+          $unit_db_name = $resource[$unit_id];
+
+          $planet_unit = $planet[$unit_db_name];
           while ($hangar_time >= $build_time && $count > 0)
           {
             $hangar_time -= $build_time;
             $count--;
-            $built[$unit]++;
+            $built[$unit_id]++;
             $planet_unit++;
           }
-          $planet[$resource[$unit]] = $planet_unit;
+          $planet[$unit_db_name] = $planet_unit;
+
+          // TODO: Check mutiply condition quests
+          $quest_trigger_list = array_keys($quest_triggers, $unit_id);
+          foreach($quest_trigger_list as $quest_id)
+          {
+            if($quest_list[$quest_id]['quest_unit_amount'] <= $planet[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
+            {
+              $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards_amount'];
+              $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
+            }
+          }
 
           if($count)
           {
@@ -61,7 +82,7 @@ function eco_bld_handle_que($user, &$planet, $production_time)
         }
         if($count > 0)
         {
-          $new_hangar .= "{$unit},{$count};";
+          $new_hangar .= "{$unit_id},{$count};";
         }
       }
     }
@@ -76,7 +97,10 @@ function eco_bld_handle_que($user, &$planet, $production_time)
     $planet['b_hangar'] = 0;
   }
 
-  return $built;
+  return array(
+    'built' => $built,
+    'rewards' => $quest_rewards,
+  );
 }
 
 ?>

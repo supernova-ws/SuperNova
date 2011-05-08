@@ -7,7 +7,7 @@ function qst_render_page()
   $user_id = sys_get_param_int('user_id', false);
   $mode    = sys_get_param_str('mode');
 
-  $quest_units_allowed = array_merge($sn_data['groups']['structures'], $sn_data['groups']['tech']);
+  $quest_units_allowed = array_merge($sn_data['groups']['structures'], $sn_data['groups']['tech'], $sn_data['groups']['fleet'], $sn_data['groups']['defense']);
 
   $in_admin = defined('IN_ADMIN') && IN_ADMIN == true;
 
@@ -15,10 +15,10 @@ function qst_render_page()
   if($in_admin)
   {
     $quest_id = sys_get_param_int('id');
-    $quest_description = sys_get_param_str('QUEST_DESCRIPTION');
-    if (!empty($quest_description))
+    $quest_name = sys_get_param_str('QUEST_NAME');
+    if (!empty($quest_name))
     {
-      $quest_name = sys_get_param_str('QUEST_NAME');
+      $quest_description = sys_get_param_str('QUEST_DESCRIPTION');
       try
       {
         $quest_rewards_amount = sys_get_param_int('QUEST_REWARDS_AMOUNT');
@@ -249,4 +249,13 @@ function get_quest_amount_complete($user_id)
   // TODO: Make it faster - rewrite SQL?
   return count(qst_get_quests($user_id, QUEST_STATUS_COMPLETE));
 }
+
+// TODO: Move here quest comlpletion checks
+// TODO: Check mutiply condition quests
+/*
+function qst_check_completion(&$user, &$planet, )
+{
+}
+*/
+
 ?>
