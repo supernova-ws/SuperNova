@@ -10,10 +10,8 @@ Target Server Type    : MYSQL
 Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2011-03-14 23:36:14
+Date: 2011-05-10 22:26:43
 */
-
--- SN_DB_VERSION = 27
 
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
@@ -44,7 +42,7 @@ CREATE TABLE `sn_aks` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_alliance`;
 CREATE TABLE `sn_alliance` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `ally_name` varchar(32) DEFAULT '',
   `ally_tag` varchar(8) DEFAULT '',
   `ally_owner` int(11) NOT NULL DEFAULT '0',
@@ -60,11 +58,72 @@ CREATE TABLE `sn_alliance` (
   `ally_ranks` text,
   `ally_members` int(11) NOT NULL DEFAULT '0',
   `ranklist` text,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  UNIQUE KEY `i_ally_name` (`ally_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_alliance
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_alliance_diplomacy`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_alliance_diplomacy`;
+CREATE TABLE `sn_alliance_diplomacy` (
+  `alliance_diplomacy_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `alliance_diplomacy_ally_id` bigint(11) unsigned DEFAULT NULL,
+  `alliance_diplomacy_contr_ally_id` bigint(11) unsigned DEFAULT NULL,
+  `alliance_diplomacy_contr_ally_name` varchar(32) DEFAULT '',
+  `alliance_diplomacy_relation` set('neutral','war','peace','confederation','federation','union','master','slave') NOT NULL DEFAULT 'neutral',
+  `alliance_diplomacy_relation_last` set('neutral','war','peace','confederation','federation','union','master','slave') NOT NULL DEFAULT 'neutral',
+  `alliance_diplomacy_time` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`alliance_diplomacy_id`),
+  UNIQUE KEY `alliance_diplomacy_id` (`alliance_diplomacy_id`),
+  KEY `alliance_diplomacy_ally_id` (`alliance_diplomacy_ally_id`,`alliance_diplomacy_contr_ally_id`,`alliance_diplomacy_time`),
+  KEY `alliance_diplomacy_ally_id_2` (`alliance_diplomacy_ally_id`,`alliance_diplomacy_time`),
+  KEY `FK_diplomacy_contr_ally_id` (`alliance_diplomacy_contr_ally_id`),
+  KEY `FK_diplomacy_contr_ally_name` (`alliance_diplomacy_contr_ally_name`),
+  CONSTRAINT `FK_diplomacy_ally_id` FOREIGN KEY (`alliance_diplomacy_ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_diplomacy_contr_ally_id` FOREIGN KEY (`alliance_diplomacy_contr_ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_diplomacy_contr_ally_name` FOREIGN KEY (`alliance_diplomacy_contr_ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_alliance_diplomacy
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_alliance_negotiation`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_alliance_negotiation`;
+CREATE TABLE `sn_alliance_negotiation` (
+  `alliance_negotiation_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `alliance_negotiation_ally_id` bigint(11) unsigned DEFAULT NULL,
+  `alliance_negotiation_ally_name` varchar(32) DEFAULT '',
+  `alliance_negotiation_contr_ally_id` bigint(11) unsigned DEFAULT NULL,
+  `alliance_negotiation_contr_ally_name` varchar(32) DEFAULT '',
+  `alliance_negotiation_relation` set('neutral','war','peace','confederation','federation','union','master','slave') NOT NULL DEFAULT 'neutral',
+  `alliance_negotiation_time` int(11) NOT NULL DEFAULT '0',
+  `alliance_negotiation_propose` text,
+  `alliance_negotiation_response` text,
+  `alliance_negotiation_status` smallint(6) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`alliance_negotiation_id`),
+  UNIQUE KEY `alliance_negotiation_id` (`alliance_negotiation_id`),
+  KEY `alliance_negotiation_ally_id` (`alliance_negotiation_ally_id`,`alliance_negotiation_contr_ally_id`,`alliance_negotiation_time`),
+  KEY `alliance_negotiation_ally_id_2` (`alliance_negotiation_ally_id`,`alliance_negotiation_time`),
+  KEY `FK_negotiation_ally_name` (`alliance_negotiation_ally_name`),
+  KEY `FK_negotiation_contr_ally_id` (`alliance_negotiation_contr_ally_id`),
+  KEY `FK_negotiation_contr_ally_name` (`alliance_negotiation_contr_ally_name`),
+  CONSTRAINT `FK_negotiation_ally_id` FOREIGN KEY (`alliance_negotiation_ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_negotiation_ally_name` FOREIGN KEY (`alliance_negotiation_ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_negotiation_contr_ally_id` FOREIGN KEY (`alliance_negotiation_contr_ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_negotiation_contr_ally_name` FOREIGN KEY (`alliance_negotiation_contr_ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_alliance_negotiation
 -- ----------------------------
 
 -- ----------------------------
@@ -128,19 +187,41 @@ CREATE TABLE `sn_announce` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_banned`;
 CREATE TABLE `sn_banned` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `who` varchar(11) NOT NULL DEFAULT '',
-  `theme` text,
-  `who2` varchar(11) NOT NULL DEFAULT '',
-  `time` int(11) NOT NULL DEFAULT '0',
-  `longer` int(11) NOT NULL DEFAULT '0',
-  `author` varchar(11) NOT NULL DEFAULT '',
-  `email` varchar(20) NOT NULL DEFAULT '',
-  KEY `ID` (`id`)
+  `ban_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `ban_user_name` varchar(64) NOT NULL DEFAULT '',
+  `ban_reason` varchar(128) NOT NULL DEFAULT '',
+  `ban_time` int(11) NOT NULL DEFAULT '0',
+  `ban_until` int(11) NOT NULL DEFAULT '0',
+  `ban_issuer_name` varchar(64) NOT NULL DEFAULT '',
+  `ban_issuer_email` varchar(64) NOT NULL DEFAULT '',
+  PRIMARY KEY (`ban_id`),
+  KEY `ID` (`ban_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_banned
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_bashing`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_bashing`;
+CREATE TABLE `sn_bashing` (
+  `bashing_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `bashing_user_id` bigint(11) unsigned DEFAULT NULL,
+  `bashing_planet_id` bigint(11) unsigned DEFAULT NULL,
+  `bashing_time` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`bashing_id`),
+  UNIQUE KEY `bashing_id` (`bashing_id`),
+  KEY `bashing_user_id` (`bashing_user_id`,`bashing_planet_id`,`bashing_time`),
+  KEY `bashing_planet_id` (`bashing_planet_id`),
+  KEY `bashing_time` (`bashing_time`),
+  CONSTRAINT `FK_bashing_user_id` FOREIGN KEY (`bashing_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_bashing_planet_id` FOREIGN KEY (`bashing_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_bashing
 -- ----------------------------
 
 -- ----------------------------
@@ -188,10 +269,6 @@ CREATE TABLE `sn_config` (
   PRIMARY KEY (`config_name`),
   KEY `i_config_name` (`config_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_config
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_confirmations`
@@ -327,10 +404,6 @@ CREATE TABLE `sn_logs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_logs
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_mercenaries`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_mercenaries`;
@@ -393,7 +466,7 @@ CREATE TABLE `sn_notes` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_planets`;
 CREATE TABLE `sn_planets` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `id_owner` int(11) DEFAULT NULL,
   `id_level` int(11) NOT NULL DEFAULT '0',
@@ -487,6 +560,7 @@ CREATE TABLE `sn_planets` (
   `governor_level` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Governor level',
   `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'Planet que',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
   KEY `owner_type` (`id_owner`,`planet_type`),
   KEY `i_metal` (`metal`),
   KEY `id_level` (`id_level`),
@@ -532,10 +606,6 @@ CREATE TABLE `sn_planets` (
   KEY `GSPT` (`galaxy`,`system`,`planet`,`planet_type`),
   KEY `i_parent_planet` (`parent_planet`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_planets
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_referrals`
@@ -651,7 +721,7 @@ CREATE TABLE `sn_statpoints` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_users`;
 CREATE TABLE `sn_users` (
-  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(64) NOT NULL DEFAULT '',
   `password` varchar(64) NOT NULL DEFAULT '',
   `email` varchar(64) NOT NULL DEFAULT '',
@@ -754,15 +824,12 @@ CREATE TABLE `sn_users` (
   `user_proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)',
   `vacation` int(11) NOT NULL DEFAULT '0' COMMENT 'Time when user can leave vacation mode',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
   KEY `i_username` (`username`),
   KEY `i_ally_online` (`ally_id`,`onlinetime`),
   KEY `onlinetime` (`onlinetime`),
   KEY `i_register_time` (`register_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_users
--- ----------------------------
 
 -- ----------------------------
 -- Default server configuration
@@ -771,17 +838,22 @@ INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '(Place here code for b
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '0');
 INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
 INSERT INTO `sn_config` VALUES ('chat_highlight_admin', '<font color=purple>$1</font>');
-INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');
+INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
-INSERT INTO `sn_config` VALUES ('db_version', '27');
+INSERT INTO `sn_config` VALUES ('db_version', '28');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
 INSERT INTO `sn_config` VALUES ('eco_stockman_fleet', '');
 INSERT INTO `sn_config` VALUES ('energy_basic_income', '0');
+INSERT INTO `sn_config` VALUES ('fleet_bashing_war_delay', 12 * 60 * 60),
+INSERT INTO `sn_config` VALUES ('fleet_bashing_scope', 24 * 60 * 60),
+INSERT INTO `sn_config` VALUES ('fleet_bashing_interval', 30 * 60),
+INSERT INTO `sn_config` VALUES ('fleet_bashing_waves', 3),
+INSERT INTO `sn_config` VALUES ('fleet_bashing_attacks', 3),
 INSERT INTO `sn_config` VALUES ('Fleet_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('fleet_speed', '1');
 INSERT INTO `sn_config` VALUES ('flt_lastUpdate', UNIX_TIMESTAMP(NOW()));
@@ -821,6 +893,7 @@ INSERT INTO `sn_config` VALUES ('LastSettedPlanetPos', '1');
 INSERT INTO `sn_config` VALUES ('LastSettedSystemPos', '1');
 INSERT INTO `sn_config` VALUES ('metal_basic_income', '40');
 INSERT INTO `sn_config` VALUES ('player_max_colonies', '9');
+INSERT INTO `sn_config` VALUES ('quest_total', '0');
 INSERT INTO `sn_config` VALUES ('resource_multiplier', '1');
 INSERT INTO `sn_config` VALUES ('rpg_bonus_divisor', '10');
 INSERT INTO `sn_config` VALUES ('rpg_cost_banker', '1');
