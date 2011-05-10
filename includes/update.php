@@ -690,9 +690,10 @@ switch(intval($config->db_version))
     upd_check_key('fleet_bashing_interval', 30 * 60, !isset($config->fleet_bashing_interval));
     upd_check_key('fleet_bashing_waves', 3, !isset($config->fleet_bashing_waves));
     upd_check_key('fleet_bashing_attacks', 3, !isset($config->fleet_bashing_attacks));
+    upd_check_key('quest_total', 0, !isset($config->quest_total));
 
   doquery('COMMIT;');
-  // $new_version = 28;
+  $new_version = 28;
 
 /*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
