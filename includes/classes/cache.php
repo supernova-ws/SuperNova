@@ -554,6 +554,9 @@ class classConfig extends classPersistent
     'chat_highlight_operator'  => '<font color=red>$1</font>', // highlighting operator nick
     'chat_highlight_moderator' => '<font color=green>$1</font>', // highlighting moderator nick
 
+    // Quest system
+    'quest_total'       =>  0, // Total quest amount
+
     //Roleplay system
     'rpg_officer'       =>  3, // Cost per officer level
     'rpg_bonus_divisor' => 10, // Amount of DM referral shoud get for partner have 1 DM bonus
