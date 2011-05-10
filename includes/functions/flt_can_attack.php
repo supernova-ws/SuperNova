@@ -44,7 +44,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   }
 
   $time_now += $flight_duration;
-  $time_limit = $time_now - $config->fleet_bashing_scope;
+  $time_limit = $time_now - $config->fleet_bashing_scope;debug($config->fleet_bashing_scope);
   $bashing_list = array($time_now);
 
   // Retrieving flying fleets
@@ -81,12 +81,14 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   }
 
   sort($bashing_list);
-
+debug($bashing_list);
+debug($config_bashing_interval);
   $last_attack = 0;
   $wave = 0;
   $attack = 1;
   foreach($bashing_list as &$bash_time)
   {
+debug($bash_time - $last_attack);
     $attack++;
     if($bash_time - $last_attack > $config_bashing_interval || $attack > $config_bashing_attacks)
     {
