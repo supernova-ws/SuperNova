@@ -1,5 +1,10 @@
 <?php
 
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 $lang['tech_storage_max'] = "Storeage size";
 $lang['tech_storage']     = "In storeage";
 

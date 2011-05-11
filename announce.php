@@ -45,6 +45,7 @@ if ($user['authlevel'] >= 3)
     {
       if($detail_url)
       {
+        // TODO: Move merging detail url to template
         $text = "{$text} <a href=\"{$detail_url}\">{$lang['news_more']}</a>";
       }
 

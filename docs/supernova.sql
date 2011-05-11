@@ -856,6 +856,11 @@ INSERT INTO `sn_config` VALUES ('fleet_bashing_waves', 3),
 INSERT INTO `sn_config` VALUES ('fleet_bashing_attacks', 3),
 INSERT INTO `sn_config` VALUES ('Fleet_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('fleet_speed', '1');
+INSERT INTO `sn_config` VALUES ('fleet_bashing_war_delay', 12 * 60 * 60),
+INSERT INTO `sn_config` VALUES ('fleet_bashing_scope', 24 * 60 * 60),
+INSERT INTO `sn_config` VALUES ('fleet_bashing_interval', 30 * 60),
+INSERT INTO `sn_config` VALUES ('fleet_bashing_waves', 3),
+INSERT INTO `sn_config` VALUES ('fleet_bashing_attacks', 3),
 INSERT INTO `sn_config` VALUES ('flt_lastUpdate', UNIX_TIMESTAMP(NOW()));
 INSERT INTO `sn_config` VALUES ('game_adminEmail', 'root@localhost');
 INSERT INTO `sn_config` VALUES ('game_counter', '0');

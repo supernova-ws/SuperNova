@@ -15,14 +15,14 @@
 
 function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 {
+  global $time_now, $sn_data;
+
   $no_data = array('user' => false, 'planet' => false, 'que' => false);
 
   if(!$planet)
   {
     return $no_data;
   }
-
-  global $sn_data;
 
   $suffix = $simulation ? '' : 'FOR UPDATE';
   if(is_array($planet))
@@ -111,11 +111,10 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   $QryUpdatePlanet .= "`energy_used` = '{$planet['energy_used']}', ";
   $QryUpdatePlanet .= "`energy_max` = '{$planet['energy_max']}', ";
 
-  $Builded = eco_bld_handle_que($user, $planet, $ProductionTime);
-  $QryUpdatePlanet .= "`b_hangar_id` = '{$planet['b_hangar_id']}', ";
-  if ($Builded)
+  $built = eco_bld_handle_que($user, $planet, $ProductionTime);
+  if($built['built'])
   {
-    foreach ( $Builded as $Element => $Count )
+    foreach($built['built'] as $Element => $Count)
     {
       $Element = intval($Element);
       $Count = intval($Count);
@@ -125,6 +124,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
       }
     }
   }
+  $QryUpdatePlanet .= "`b_hangar_id` = '{$planet['b_hangar_id']}', ";
   $QryUpdatePlanet .= "`b_hangar` = '{$planet['b_hangar']}' ";
 
   $QryUpdatePlanet .= $que['query'] != $planet['que'] ? ",{$que['query']} " : '';
@@ -139,6 +139,15 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
       rpg_level_up($user, $xp_type, $xp_amount);
     }
   }
+
+  // Can't use array_merge here - it will broke numeric array indexes those broke quest_id
+  // TODO: Make own function for this
+  foreach($built['rewards'] as $quest_id => $quest_reward)
+  {
+    $que['rewards'][$quest_id] = $quest_reward;
+  }
+
+  qst_reward($user, $que['rewards'], $que['quests']);
 
   return array('user' => $user, 'planet' => $planet, 'que' => $que);
 }

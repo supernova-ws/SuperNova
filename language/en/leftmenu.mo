@@ -1,5 +1,10 @@
 <?php
 
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 //	
 $lang['Multiverse']	= '<b>Sever</b> Uni';
 

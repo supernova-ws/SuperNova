@@ -531,6 +531,9 @@ class classConfig extends classPersistent
 
     'player_max_colonies'  => 9, // Max player planet count (NOT including main planet)
 
+    // Quests
+    'quest_total'          => 0, // Total number of quests
+
     // Interface - UserBanner
     'int_banner_showInOverview'  => 1,
     'int_banner_background'      => 'design/images/banner.png',

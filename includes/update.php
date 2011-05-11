@@ -34,6 +34,7 @@ if($config->db_version == DB_VERSION)
 
 if($config->db_version > DB_VERSION)
 {
+  $GLOBALS['config']->db_saveItem('var_db_update_end', $GLOBALS['time_now']);
   die('Internal error! Auotupdater detects DB version greater then can be handled!<br>Possible you have out-of-date SuperNova version<br>Pleas upgrade your server from <a href="http://github.com/supernova-ws/SuperNova">GIT repository</a>.');
 }
 
@@ -653,20 +654,20 @@ switch(intval($config->db_version))
       );
     }
 
-    mysql_query(
-      "ALTER TABLE {$config->db_prefix}planets
-        MODIFY COLUMN `id` SERIAL,
-        CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"
-    );
-
-    mysql_query(
-      "ALTER TABLE {$config->db_prefix}users
-        MODIFY COLUMN `id` SERIAL,
-        CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"
-    );
-
     if(!$update_tables['bashing'])
     {
+      mysql_query(
+        "ALTER TABLE {$config->db_prefix}users
+          MODIFY COLUMN `id` SERIAL,
+          CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"
+      );
+
+      mysql_query(
+        "ALTER TABLE {$config->db_prefix}planets
+          MODIFY COLUMN `id` SERIAL,
+          CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"
+      );
+
       mysql_query(
         "CREATE TABLE `{$config->db_prefix}bashing` (
           `bashing_id` SERIAL,
@@ -690,11 +691,59 @@ switch(intval($config->db_version))
     upd_check_key('fleet_bashing_interval', 30 * 60, !isset($config->fleet_bashing_interval));
     upd_check_key('fleet_bashing_waves', 3, !isset($config->fleet_bashing_waves));
     upd_check_key('fleet_bashing_attacks', 3, !isset($config->fleet_bashing_attacks));
-    upd_check_key('quest_total', 0, !isset($config->quest_total));
 
   doquery('COMMIT;');
   $new_version = 28;
 
+  case 28: upd_log_version_update();
+    if(!$update_tables['quest'])
+    {
+      mysql_query(
+        "CREATE TABLE `{$config->db_prefix}quest` (
+          `quest_id` SERIAL,
+          `quest_name` VARCHAR(255) DEFAULT NULL,
+          `quest_description` TEXT,
+          `quest_conditions` TEXT,
+          `quest_rewards` TEXT,
+          `quest_type` TINYINT DEFAULT NULL,
+          `quest_order` INT NOT NULL DEFAULT 0,
+
+          PRIMARY KEY (`quest_id`)
+          ,KEY (`quest_type`, `quest_order`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
+      );
+    }
+    else
+    {
+      // mysql_query('alter table {$config->db_prefix}quest add           KEY (`quest_type`, `quest_order`)');
+    }
+
+    if(!$update_tables['quest_status'])
+    {
+      mysql_query(
+        "CREATE TABLE `{$config->db_prefix}quest_status` (
+          `quest_status_id` SERIAL,
+          `quest_status_quest_id` bigint(20) UNSIGNED DEFAULT NULL,
+          `quest_status_user_id` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
+          `quest_status_progress` VARCHAR(255) NOT NULL DEFAULT '',
+          `quest_status_status` TINYINT NOT NULL DEFAULT 1,
+
+          PRIMARY KEY (`quest_status_id`)
+          ,KEY (`quest_status_user_id`, `quest_status_quest_id`, `quest_status_status`)
+          ,CONSTRAINT `FK_quest_status_quest_id` FOREIGN KEY (`quest_status_quest_id`) REFERENCES `{$config->db_prefix}quest` (`quest_id`) ON DELETE CASCADE ON UPDATE CASCADE
+          ,CONSTRAINT `FK_quest_status_user_id`  FOREIGN KEY (`quest_status_user_id`)  REFERENCES `{$config->db_prefix}users` (`id`)       ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
+      );
+    }
+    else
+    {
+      // mysql_query('alter table {$config->db_prefix}quest_status modify column `quest_status_status` TINYINT DEFAULT 1;');
+    }
+
+    upd_check_key('quest_total', 0, !isset($config->quest_total));
+
+  doquery('COMMIT;');
+  // $new_version = 28.1;
 /*
   // alter table game_counter add index `i_time_id` (`time`, `id`);
 */

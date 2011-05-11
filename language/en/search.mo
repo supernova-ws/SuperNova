@@ -1,4 +1,9 @@
 <?php
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 $lang['Position'] = 'Position';
 $lang['Player'] = 'Player';
 $lang['Name'] = 'Name';

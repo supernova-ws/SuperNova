@@ -1,4 +1,10 @@
 <?php
+
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 // Language file for Statistic module
 $lang['stat_title']    = "Statistics";
 $lang['stat_show']     = "Show";
