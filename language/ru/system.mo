@@ -170,6 +170,7 @@ $lang = array_merge($lang, array(
   'sys_on'              => 'Включен',
   'sys_off'             => 'Отключен',
 
+  'sys_confirm'         => 'Подтвердить',
   'sys_save'            => 'Сохранить',
   'sys_create'          => 'Создать',
   'sys_write_message'   => 'Написать сообщение',
