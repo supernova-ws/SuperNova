@@ -11,8 +11,10 @@
 #  Copyright (c) 2009 Gorlum
 #############################################################################
 */
-if (!defined('INSIDE')) {
-	die("attempt hacking!");
+
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
 }
 
 $lang['adm_err_denied']         = 'Access denied';

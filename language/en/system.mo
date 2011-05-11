@@ -11,9 +11,9 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('INSIDE'))
+if (!defined('INSIDE')) 
 {
-  exit;
+	die('Hack attempt!');
 }
 
 if (empty($lang) || !is_array($lang))
@@ -170,6 +170,7 @@ $lang = array_merge($lang, array(
   'sys_on'              => 'Enable',
   'sys_off'             => 'Disable',
 
+  'sys_confirm'         => 'Confirm',
   'sys_save'            => 'Save',
   'sys_create'          => 'Create',
   'sys_write_message'   => 'Write a message',
@@ -431,6 +432,13 @@ $lang = array_merge($lang, array(
   'chat_send'    => 'Send',
   'chat_page'    => 'Page',
   'chat_timeout' => 'Chat is disabled from your inactivity. Refresh the page.',
+
+  // quests
+  'qst_quests'       => 'Quests',
+  'qst_msg_complete_subject' => 'You completed quest!',
+  'qst_msg_complete_body'    => 'You awarder %d DM for completing quest "%s"',
+
+  'msg_from_admin' => 'Universe Administration',
 
   // Arrays
   'sys_game_mode' => array(

@@ -1,4 +1,10 @@
 <?php
+
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 $lang['Version']     = 'Version';
 $lang['Description'] = 'Description';
 $lang['changelog']   = array(

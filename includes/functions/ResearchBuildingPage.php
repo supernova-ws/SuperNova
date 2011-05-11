@@ -108,7 +108,7 @@ function GetRestPrice ($user, $planet, $Element, $userfactor = true) {
 function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $ThePlanet, $que) {
   global $lang, $resource, $reslist, $dpath, $config, $sn_data;
 
-  $sn_data_group_tech = $GLOBALS['sn_data']['groups']['tech'];
+  $sn_data_group_tech = $sn_data['groups']['tech'];
 
   $TheCommand = SYS_mysqlSmartEscape($_GET['cmd']);
   $Techno     = intval($_GET['tech']);
@@ -131,7 +131,6 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
       $debug->error("Buguser: ".$user['username']." (".$user['id'].")<br />Free research","Bug use");
       die();
     };
-
 
     if ( is_numeric($Techno) ) {
       if ( in_array($Techno, $reslist['tech']) ) {

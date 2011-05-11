@@ -170,6 +170,7 @@ $lang = array_merge($lang, array(
   'sys_on'              => 'Âêëş÷åí',
   'sys_off'             => 'Îòêëş÷åí',
 
+  'sys_confirm'         => 'Ïîäòâåğäèòü',
   'sys_save'            => 'Ñîõğàíèòü',
   'sys_create'          => 'Ñîçäàòü',
   'sys_write_message'   => 'Íàïèñàòü ñîîáùåíèå',
@@ -431,6 +432,13 @@ $lang = array_merge($lang, array(
   'chat_send'     => 'Îòïğàâèòü',
   'chat_page'     => 'Ñòğàíèöà',
   'chat_timeout'  => '×àò îòêëş÷åí èç-çà âàøåé íåàêòèâíîñòè. Îáíîâèòå ñòğàíèöó.',
+
+  // quests
+  'qst_quests'       => 'Êâåñòû',
+  'qst_msg_complete_subject' => 'Âû âûïîëíèëè êâåñò!',
+  'qst_msg_complete_body'    => 'Âû ïîëó÷èëè %d ÒÌ çà âûïîëíåíèå êâåñòà "%s"',
+
+  'msg_from_admin' => 'Àäìèíèñòğàöèÿ Âñåëåííîé',
 
   // Arrays
   'sys_game_mode' => array(

@@ -1,5 +1,10 @@
 <?php
 
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 $lang['bud_sys_cantFriendYourself'] = 'You cannot request friendship to yourself';
 $lang['bud_sys_cantFriendAgain']    = 'You have already sent a friendship request to that user';
 $lang['bud_req_title']              = 'Request to make friends';

@@ -1,5 +1,10 @@
 <?php
 
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 $lang['mrkt_title']		= "Market";
 $lang['mrkt_merchant']	= "Resource Trader";
 $lang['mrkt_scraper']	= "Cornerman fleet";

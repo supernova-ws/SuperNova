@@ -1,5 +1,10 @@
 <?php
 
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 $lang['alliance']		= 'Alliance';
 $lang['title']			= "Mailbox";
 $lang['head_type']		= "Category";

@@ -1,5 +1,10 @@
 <?php
 
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 $lang = array_merge($lang, array(
   'ov_hack_alert' => 'DATABASE hacking attempt!!!',
 

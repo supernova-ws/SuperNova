@@ -308,6 +308,8 @@ function ShowTopNavigationBar($user, $planetrow)
     'TOPNAV_FLEETS_TOTAL'       => GetMaxFleets($user),
     'TOPNAV_EXPEDITIONS_FLYING' => count($fleet_flying_list[MT_EXPLORE]),
     'TOPNAV_EXPEDITIONS_TOTAL'  => GetMaxExpeditions($user),
+
+    'TOPNAV_QUEST_COMPLETE'     => get_quest_amount_complete($user['id']),
   ));
 
   return $template;

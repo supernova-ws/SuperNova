@@ -17,7 +17,7 @@
 //     ['OnWork'] -> Boolean .. Vrai ou Faux
 //     ['WorkOn'] -> Table de l'enregistrement de la planete sur laquelle s'effectue la techno
 function HandleTechnologieBuild ( &$CurrentPlanet, &$CurrentUser ) {
-  global $resource;
+  global $resource, $sn_data;
 
   if ($CurrentUser['b_tech_planet'] != 0) {
     // Y a une technologie en cours sur une de mes colonies
@@ -36,6 +36,33 @@ function HandleTechnologieBuild ( &$CurrentPlanet, &$CurrentUser ) {
       $ThePlanet['b_tech_id'] != 0) {
       // La recherche en cours est terminée ...
       $CurrentUser[$resource[$ThePlanet['b_tech_id']]]++;
+
+
+
+      $user = &$CurrentUser;
+      $planet = &$ThePlanet;
+      $unit_id = $planet['b_tech_id'];
+      $unit_db_name = $resource[$unit_id];
+
+      $quest_list = qst_get_quests($user['id']);
+      $quest_triggers = qst_active_triggers($quest_list);
+      $quest_rewards = array();
+
+      // TODO: Check mutiply condition quests
+      $quest_trigger_list = array_keys($quest_triggers, $unit_id);
+      foreach($quest_trigger_list as $quest_id)
+      {
+        if($quest_list[$quest_id]['quest_unit_amount'] <= $user[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
+        {
+          $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards_amount'];
+          $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
+        }
+      }
+
+      qst_reward($user, $quest_rewards, $quest_list);
+
+
+
       // Mise a jour de la planete sur laquelle la technologie a été recherchée
       $QryUpdatePlanet  = "UPDATE `{{planets}}` SET ";
       $QryUpdatePlanet .= "`b_tech` = '0', ";
