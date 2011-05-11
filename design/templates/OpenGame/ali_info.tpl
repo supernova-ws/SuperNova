@@ -40,7 +40,18 @@
   <tr><th width=150>{Range}</th><th>{range}</th></tr>
   <!-- IF MANAGE_REQUESTS --><tr><th>{ali_req_check}</th><th><a href="alliance.php?mode=admin&edit=requests"><!-- IF ALLY_REQUESTS -->{L_ali_req_requestCount}:&nbsp;{ALLY_REQUESTS}<!-- ELSE -->{L_ali_req_emptyList}<!-- ENDIF --></a></th></tr><!-- ENDIF -->
   <!-- IF MASS_MAIL --><tr><th>{Circular_message}</th><th><a href="alliance.php?mode=circular">{Send_circular_mail}</a></th></tr><!-- ENDIF -->
-  <!-- IF ! ALLY_ADMIN --><tr><th>{L_ali_info_leave}</th><th><form action="alliance.php?mode=exit" method=get><input type=submit value="{L_Continue}"></form></th></tr><!-- ENDIF -->
+  <!-- IF ! ALLY_ADMIN -->
+    <tr>
+      <th>{L_ali_info_leave}</th>
+      <th>
+        <form action="alliance.php" method="post">
+          <input type="checkbox" name="ali_info_leave_confirm" value="1"> {L_ali_info_leave} 
+          <input type="hidden" name="mode" value="exit">
+          <input type="submit" value="{L_sys_confirm}">
+        </form>
+      </th>
+    </tr>
+  <!-- ENDIF -->
   <!-- IF ALLY_TEXT --><tr><th colspan=2>{ALLY_TEXT}</th></tr><!-- ENDIF -->
 </table>
 <!-- ENDIF -->

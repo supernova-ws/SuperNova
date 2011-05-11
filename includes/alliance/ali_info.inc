@@ -5,9 +5,28 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }
 
-$template = gettemplate('ali_internal', true);
+$template = gettemplate('ali_info', true);
 
-if($mode == 'ainfo')
+if($mode == 'exit')
+{
+  if ($ally['ally_owner'] == $user['id'])
+  {
+    message($lang['Owner_cant_go_out'], $lang['Alliance']);
+  }
+
+  if (sys_get_param_int('ali_info_leave_confirm'))
+  {
+    doquery('START TRANSACTION;');
+    doquery("UPDATE {{alliance}} SET `ally_members` = `ally_members` - 1 WHERE `id` = {$user['ally_id']} LIMIT 1;");
+    doquery("UPDATE {{users}} SET `ally_id` = 0, `ally_name` = '', `ally_register_time` = 0, `ally_rank_id` = 0 WHERE `id` = {$user['id']} LIMIT 1;");
+    doquery('COMMIT;');
+    $lang['Go_out_welldone'] = str_replace("%s", $ally_name, $lang['Go_out_welldone']);
+    $page = MessageForm($lang['sys_alliance'], sprintf($lang['ali_info_leave_success'], $ally['ally_name']), $PHP_SELF, $lang['Ok']);
+  }
+
+  display($page);
+}
+elseif($mode == 'ainfo')
 {
   $tag = sys_get_param_str('tag');
   $id_ally = sys_get_param_int('a');

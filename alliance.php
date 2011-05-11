@@ -27,7 +27,7 @@ lng_include('alliance');
 
 if($mode == 'ainfo')
 {
-  include('includes/alliance/ali_internal_default.inc');
+  include('includes/alliance/ali_info.inc');
 };
 
 $user_request = doquery("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$user['id']}' LIMIT 1;", '', true);
@@ -42,10 +42,6 @@ if (!$user['ally_id'])
   {
     switch($mode)
     {
-      case 'make':
-        require('includes/alliance/ali_external_create_ally.inc');
-      break;
-
       case 'search':
         require('includes/alliance/ali_external_search.inc');
       break;
@@ -171,10 +167,9 @@ elseif(!$user_request['id_user'])
       }
     break;
 
-    case 'exit':         require('includes/alliance/ali_internal_exit.inc'); break;
     case 'memberslist':  require('includes/alliance/ali_internal_memberlist.inc'); break;
     case 'circular':     require('includes/alliance/ali_internal_admin_mail.inc'); break;
-    default:             require('includes/alliance/ali_internal_default.inc'); break;
+    default:             require('includes/alliance/ali_info.inc'); break;
   }
 }
 
