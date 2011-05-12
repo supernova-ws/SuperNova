@@ -132,15 +132,28 @@
      <!-- ENDIF -->
      
      <!-- BEGIN planet -->
-     <th style="cursor: pointer;" onclick="document.location='buildings.php?mode={prods.MODE}&cp={prods.planet.ID}&re=0&planettype={prods.planet.TYPE}';">
+     <th style="cursor: pointer; position: relative;" onclick="document.location='buildings.php?mode={prods.MODE}&cp={prods.planet.ID}&re=0&planettype={prods.planet.TYPE}';">
 
        <!-- IF prods.planet.LEVEL_PLUS_GREEN > 0 -->
          <!-- DEFINE $PLUS_CLASS = 'positive' -->
        <!-- ELSEIF prods.planet.LEVEL_PLUS_GREEN < 0 -->
          <!-- DEFINE $PLUS_CLASS = 'negative' -->
        <!-- ENDIF -->
-         
-       {prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><font color="yellow">{prods.planet.LEVEL_PLUS_YELLOW}</font><!-- ENDIF -->
+       
+       <!-- IF prods.planet.PERCENT < 0 || prods.planet.LEVEL == 0 -->
+         <!-- DEFINE $FIELD_COLOR = '' -->
+       <!-- ELSEIF prods.planet.PERCENT < 50 --> 
+         <!-- DEFINE $FIELD_COLOR = 'negative_bg' -->
+       <!-- ELSEIF prods.planet.PERCENT < 80 --> 
+         <!-- DEFINE $FIELD_COLOR = 'warning_bg' -->
+       <!-- ELSEIF prods.planet.PERCENT < 100 --> 
+         <!-- DEFINE $FIELD_COLOR = 'neutral_bg' -->
+       <!-- ELSE -->
+         <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
+       <!-- ENDIF -->
+
+       <div style="position: absolute; top: 0px; left: 0px; width: {prods.planet.PERCENT}%; height:100%;" class="{$FIELD_COLOR}"></div>
+       <div style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; vertical-align: middle;">{prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><font color="yellow">{prods.planet.LEVEL_PLUS_YELLOW}</font><!-- ENDIF --></div>
      </th>
      <!-- END planet -->
    </tr>

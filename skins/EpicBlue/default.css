@@ -243,19 +243,19 @@
 }
 
 .success_bg, .positive_bg {
-  background-color: lime;
+  background-color: darkgreen;
 }
 
 .notice_bg, .zero_bg, .neutral_bg {
-  background-color: yellow;
+  background-color: #CCCC00;
 }
 
 .warning_bg {
-  background-color: orange;
+  background-color: #B26200;
 }
 
 .error_bg, .negative_bg {
-  background-color: red;
+  background-color: darkred;
 }
 
 .errormessage a, .success a, .notice a, .warning a, .error a {
