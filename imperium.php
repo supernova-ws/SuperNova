@@ -146,13 +146,21 @@ foreach ($sn_data as $unit_id => $res) {
     {
       $level_plus['LEVEL_PLUS_YELLOW'] = 0;
       $level_plus['LEVEL_PLUS_GREEN'] = 0;
+      if(in_array($unit_id, $sn_data['groups']['prod']))
+      {
+        $level_plus['PERCENT'] = $planet["{$sn_data[$unit_id]['name']}_porcent"] * 10;
+      }
+      else
+      {
+        $level_plus['PERCENT'] = -1;
+      }
       switch($mode)
       {
         case 'buildings':
           $level_plus_build = $planet['full_que']['in_que'][$unit_id];
           if($level_plus_build)
           {
-            $level_plus['LEVEL_PLUS_GREEN'] = $level_plus_build<0 ? $level_plus_build : "+{$level_plus_build}";
+            $level_plus['LEVEL_PLUS_GREEN'] = $level_plus_build < 0 ? $level_plus_build : "+{$level_plus_build}";
           }
         break;
 
