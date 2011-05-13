@@ -160,12 +160,12 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
   </table>
 
   <table width="519">
-    <tr align="center">
-      <td class="c">{L_ov_time}</td>
-      <td class="c">{L_ov_fleet}</td>
-      <td class="c">{L_ov_destination}</td>
-      <td class="c">{L_ov_source}</td>
-      <td class="c">{L_ov_mission}</td>
+    <tr class="c_c">
+      <th>{L_ov_time}</th>
+      <th>{L_ov_fleet}</th>
+      <th>{L_ov_destination}</th>
+      <th>{L_ov_source}</th>
+      <th>{L_ov_mission}</th>
     </tr>
 
     <!-- BEGIN fleets -->
