@@ -17,7 +17,10 @@ var speed_factor   = {speed_factor};
 
 <!-- INCLUDE fleet_javascript.tpl -->
 
-<br>
+<h2>{fl_new_miss}</h2>
+<!-- IF MISSION_NAME -->
+  <h3>{TYPE_NAME} [{galaxy}:{system}:{planet}], {MISSION_NAME}</h3>
+<!-- ENDIF -->
 <form action="fleet.php?fleet_page=1" method="post">
   <input type="hidden" name="thisgalaxy"      value="{thisgalaxy}" />
   <input type="hidden" name="thissystem"      value="{thissystem}" />
@@ -31,17 +34,10 @@ var speed_factor   = {speed_factor};
   <input type="hidden" name="target_mission" value="{target_mission}">
 
   <table border="0" cellpadding="0" cellspacing="1">
-    <tr><td colspan="3" class="c">
-      <div class="fl">{fl_new_miss}</div>
-      <!-- IF MISSION_NAME -->
-        <div class="fr">{TYPE_NAME} [{galaxy}:{system}:{planet}], {MISSION_NAME}</div>
-      <!-- ENDIF -->
-    </td></tr>
-
-    <tr>
-      <td class="c">{fl_fleet_typ}</td>
-      <td class="c">{L_fl_orbiting}</rd>
-      <td class="c">{L_fl_to_fly}</td>
+    <tr class="c_c">
+      <th>{fl_fleet_typ}</th>
+      <th>{L_fl_orbiting}</th>
+      <th>{L_fl_to_fly}</th>
     </tr>
 
     {ErrorNoPlanetRow}
@@ -65,7 +61,7 @@ var speed_factor   = {speed_factor};
         </tr>
       <!-- END ships -->
       <!-- IF FLYING_FLEETS < MAX_FLEETS -->
-      <tr>
+      <tr class="c_c">
           <th><input type="button" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';"></th>
           <th><input type="submit" value="{L_fl_continue}" /></th>
           <th>

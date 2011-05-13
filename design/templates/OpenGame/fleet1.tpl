@@ -1,5 +1,5 @@
 <!-- INCLUDE fleet_javascript.tpl -->
-
+<h2>{L_fl_floten1_ttl}</h2>
 <form action="fleet.php?fleet_page=2" method="post">
   <input type="hidden" name="thisgalaxy"      value="{thisgalaxy}" />
   <input type="hidden" name="thissystem"      value="{thissystem}" />
@@ -9,10 +9,8 @@
   <input type="hidden" name="target_mission"  value="{target_mission}" />
 
   <input type="hidden" name="usedfleet"       value="{usedfleet}" />
-  <br>
 
   <table width="519" border="0" cellpadding="0" cellspacing="1">
-    <tr><td colspan="2" class="c">{fl_floten1_ttl}</td></tr>
     <tr>
       <th width="50%">{fl_dest}</th>
       <th>
@@ -82,7 +80,7 @@
       <th><div id="capacity">-</div></th>
     </tr>
     
-    <tr><th colspan="2"><input type="submit" value="{fl_continue}" /></th></tr>
+    <tr><th colspan="2" class="c_c"><input type="submit" value="{fl_continue}" /></th></tr>
   </table>
   <br />
   <table>

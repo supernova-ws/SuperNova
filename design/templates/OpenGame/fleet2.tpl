@@ -7,7 +7,8 @@ var fleet_slide_changing = false;
 
 --></script>
 
-<br>
+<h2>{L_flt_page2_title}</h2>
+<h3>{TableTitle}</h3>
 <form action="fleet.php?fleet_page=3" method="post">
   <input type="hidden" name="galaxy"          value="{galaxy}" />
   <input type="hidden" name="system"          value="{system}" />
@@ -29,54 +30,48 @@ var fleet_slide_changing = false;
   <input type="hidden" name="speedallsmin"    value="{speedallsmin}" />
   <input type="hidden" name="speedfactor"     value="{speedfactor}" />
 
-  <table border="0" cellpadding="0" cellspacing="1"><tbody>
-    <tr align="left"><td class="c">{TableTitle}</td></tr>
-    <tr align="left" valign="top">
-      <th>
-        <table border="0" cellpadding="0" cellspacing="0" width="100%" align="left"><tbody>
-          <tr><td class="c" colspan="2">{fl_mission}</td></tr>
+  <table border="0" cellpadding="0" cellspacing="0">
+    <tr><td class="c" colspan="2">{fl_mission}</td></tr>
 
-          <!-- BEGIN missions -->
-            <tr><th><div align=left>
-              <input id="target_mission{missions.ID}" type="radio" name="target_mission" class="frameless" value="{missions.ID}" <!-- IF missions.CHECKED -->checked <!-- ENDIF --> onChange="javascript:changeMission(this);" onClick="javascript:changeMission(this);">
-              <label for="target_mission{missions.ID}">{missions.NAME}</label>
-              <!-- IF missions.ID == 5 || missions.ID == 15 -->
-                &nbsp;&nbsp;<select name="missiontime">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="4">4</option>
-                <option value="8">8</option>
-                <option value="16">16</option>
-                <option value="32">32</option>
-                </select>&nbsp;&nbsp;{L_fl_expe_hours}
-              <!-- ENDIF -->
-            </div></th></tr>
-            <!-- IF missions.ID == 15 -->
-              <tr><th>
-                <font color="red">{fl_expe_warning}</font>
-              </th></tr>
-            <!-- ENDIF -->
-          <!-- BEGINELSE missions -->
-            <tr><th><font color="red">{L_fl_bad_mission}</font></th></tr>
-          <!-- END missions -->
-        </tbody></table>
-      </th>
-    </tr>
-    <tr><th><input id="fleet_page2_submit" value="{fl_continue}" type="submit"></th></tr>
-  </tbody></table><br>
+    <!-- BEGIN missions -->
+      <tr><th><div align=left>
+        <input id="target_mission{missions.ID}" type="radio" name="target_mission" class="frameless" value="{missions.ID}" <!-- IF missions.CHECKED -->checked <!-- ENDIF --> onChange="javascript:changeMission(this);" onClick="javascript:changeMission(this);">
+        <label for="target_mission{missions.ID}">{missions.NAME}</label>
+        <!-- IF missions.ID == 5 || missions.ID == 15 -->
+          &nbsp;&nbsp;<select name="missiontime">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="4">4</option>
+          <option value="8">8</option>
+          <option value="16">16</option>
+          <option value="32">32</option>
+          </select>&nbsp;&nbsp;{L_fl_expe_hours}
+        <!-- ENDIF -->
+      </div></th></tr>
+      <!-- IF missions.ID == 15 -->
+        <tr><th>
+          <font color="red">{fl_expe_warning}</font>
+        </th></tr>
+      <!-- ENDIF -->
+    <!-- BEGINELSE missions -->
+      <tr><th><font color="red">{L_fl_bad_mission}</font></th></tr>
+    <!-- END missions -->
+    <tr><th class="c_c"><input id="fleet_page2_submit" value="{fl_continue}" type="submit"></th></tr>
+  </table>
+<br />
 
   <table id="resTable" border="0" cellpadding="0" cellspacing="0"><tbody>
-    <tr>
-      <td class="c">{L_sys_resources}</td>
-      <td class="c">{L_fl_on_stores}</td>
-      <td class="c">{L_fl_load_cargo}</td>
-      <td class="c">{L_fl_rest_on_planet}</td>
+    <tr class="c_c">
+      <th>{L_sys_resources}</th>
+      <th>{L_fl_on_stores}</th>
+      <th>{L_fl_load_cargo}</th>
+      <th>{L_fl_rest_on_planet}</th>
     </tr>
     <!-- BEGIN resources -->
       <tr>
-        <th>{resources.NAME}</th>
-        <th align=right>{resources.ON_PLANET}</th>
-        <th>
+        <td class="c_l">{resources.NAME}</td>
+        <td class="c_r">{resources.ON_PLANET}</td>
+        <td class="c_c">
           <script type="text/javascript"><!--
             sn_ainput_make('resource{resources.ID}', {max: Math.min({resources.ON_PLANET}, {fleet_capacity}), step: 1000});
 
@@ -106,18 +101,18 @@ var fleet_slide_changing = false;
               }
             );
           --></script>
-        </th>
-        <th align=right><div id="rest_res{resources.ID}" class="fr">{resources.ON_PLANET}</div></th>
+        </td>
+        <td id="rest_res{resources.ID}" class="c_r">{resources.ON_PLANET}</td>
       </tr>
     <!-- END resources -->
 
     <tr>
-      <th colspan="2">{fl_space_left}</th>
-      <th>
+      <th colspan="2" class="c_l">{fl_space_left}</th>
+      <th class="c_c">
         <div class="fl"><input type="button" onclick="javascript:zero_resources()" value="{L_fl_none_resources}"></div>
         <div class="fr"><input type="button" onclick="javascript:max_resources()" value="{L_fl_allressources}"></div>
       </th>
-      <th><div id="remainingresources" class="fr">-</div></th>
+      <th id="remainingresources" class="c_r">-</th>
     </tr>
   </tbody></table>
 </form>

@@ -3,7 +3,7 @@
 $lang['mrkt_title']		= "Черный рынок";
 $lang['mrkt_merchant']	= "Торговец ресурсами";
 $lang['mrkt_scraper']	= "Скупщик флота";
-$lang['mrkt_call_cost']	= "Стоимость вызова: ";
+$lang['mrkt_call_cost']	= "Стоимость вызова";
 $lang['mrkt_call']		= "Вызвать";
 
 $lang['mod_ma_title'] = "Торговец";
@@ -46,7 +46,7 @@ $lang['eco_mrk_trader_to']       = 'Обменять на';
 $lang['eco_mrk_trader_course']   = 'Курс';
 $lang['eco_mrk_trader_left']     = 'Остаток';
 
-$lang['eco_mrk_scraper']         = 'Переработать корабли на лом';
+$lang['eco_mrk_scraper']         = 'Скупка кораблей';
 $lang['eco_mrk_scraper_price']   = 'Выход лома';
 $lang['eco_mrk_scraper_perShip'] = 'с корабля';
 $lang['eco_mrk_scraper_total']   = 'Всего';
