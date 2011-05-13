@@ -3,14 +3,14 @@
 <table border="0" cellpadding="0" cellspacing="1" align=center><tbody>
   <td class="c" colspan="{amount}" align="left">{L_sys_empire}</td>
   <tr>
-    <th width=130>&nbsp;</th>
+    <th width="130px">&nbsp;</th>
     <!-- INCLUDE planet_list.tpl -->
   </tr>
 
   <tr>
     <th>{L_imp_name}</th>
     <!-- BEGIN planet -->
-      <th class="c" width="75" style="width: 75">
+      <th class="c" width="75px" style="width: 75px;">
         <!-- IF planet.ID -->
           <a href="overview.php?cp={planet.ID}&re=0">{planet.NAME}</a>
         <!-- ELSE -->
