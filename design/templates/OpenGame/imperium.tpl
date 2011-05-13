@@ -132,7 +132,7 @@
      <!-- ENDIF -->
      
      <!-- BEGIN planet -->
-     <th style="cursor: pointer; position: relative;" onclick="document.location='buildings.php?mode={prods.MODE}&cp={prods.planet.ID}&re=0&planettype={prods.planet.TYPE}';">
+     <th style="cursor: pointer; position: relative; height: 100%;" onclick="document.location='buildings.php?mode={prods.MODE}&cp={prods.planet.ID}&re=0&planettype={prods.planet.TYPE}';">
 
        <!-- IF prods.planet.LEVEL_PLUS_GREEN > 0 -->
          <!-- DEFINE $PLUS_CLASS = 'positive' -->
@@ -152,8 +152,10 @@
          <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
        <!-- ENDIF -->
 
-       <div style="position: absolute; top: 0px; left: 0px; width: {prods.planet.PERCENT}%; height:100%;" class="{$FIELD_COLOR}"></div>
-       <div style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; vertical-align: middle;">{prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><font color="yellow">{prods.planet.LEVEL_PLUS_YELLOW}</font><!-- ENDIF --></div>
+       <div style="position: relative; width: 100%; height: 13px;">
+         <span style="position: absolute; top: 0px; left: 0px; width: {prods.planet.PERCENT}%; height:100%;" class="{$FIELD_COLOR}"> </span>
+         <span style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; vertical-align: middle;">{prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><font color="yellow">{prods.planet.LEVEL_PLUS_YELLOW}</font><!-- ENDIF --></span>
+       </div>
      </th>
      <!-- END planet -->
    </tr>
