@@ -1,5 +1,7 @@
 <?php
 
+$lang['flt_page2_title']      = 'Выбор задания';
+
 $lang['fl_title'] 				= 'Флоты';
 $lang['fl_expttl'] 				= 'Экспедиции';
 $lang['fl_id'] 					= '№';
@@ -41,7 +43,7 @@ $lang['fl_to_fly']	 			= 'Отправить';
 $lang['fl_no_flying_fleets']	= 'Нет флотов в полете';
 
 //	
-$lang['fl_floten1_ttl'] 		= 'Отправление флота';
+$lang['fl_floten1_ttl'] 		= 'Выбор точки назначения';
 $lang['fl_noenought']			= 'Недостаточно кораблей!';
 $lang['fl_speed'] 			   = 'Скорость';
 $lang['fl_planet'] 			   = 'Планета';

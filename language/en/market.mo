@@ -8,7 +8,7 @@ if (!defined('INSIDE'))
 $lang['mrkt_title']		= "Market";
 $lang['mrkt_merchant']	= "Resource Trader";
 $lang['mrkt_scraper']	= "Cornerman fleet";
-$lang['mrkt_call_cost']	= "The cost of the call: ";
+$lang['mrkt_call_cost']	= "The cost of the call";
 $lang['mrkt_call']		= "Call";
 
 $lang['mod_ma_title'] = "Trader";

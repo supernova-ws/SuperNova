@@ -5,6 +5,8 @@ if (!defined('INSIDE'))
 	die('Hack attempt!');
 }
 
+$lang['flt_page2_title']      = 'Mission selection';
+
 $lang['fl_title'] 				= 'Fleets';
 $lang['fl_expttl'] 				= 'Expedition';
 $lang['fl_id'] 					= '¹';
@@ -46,7 +48,7 @@ $lang['fl_to_fly']	 			= 'Send';
 $lang['fl_no_flying_fleets']	= 'No Fleets out';
 
 //	
-$lang['fl_floten1_ttl'] 		= 'Administration of fleet';
+$lang['fl_floten1_ttl'] 		= 'Fleet destination';
 $lang['fl_noenought']			= 'Little ships!';
 $lang['fl_speed'] 			   = 'Speed';
 $lang['fl_planet'] 			   = 'Planet';
