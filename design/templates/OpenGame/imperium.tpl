@@ -1,12 +1,9 @@
 <!-- INCLUDE fleet_javascript.tpl -->
-<br>
+<h2>{L_imp_overview}</h2>
 <table border="0" cellpadding="0" cellspacing="1" align=center><tbody>
-  <tr valign="left">
-    <td class="c" colspan="{amount}">{L_imp_overview}</td>
-  </tr>
-
+  <td class="c" colspan="{amount}" align="left">{L_sys_empire}</td>
   <tr>
-    <th>&nbsp;</th>
+    <th width=130>&nbsp;</th>
     <!-- INCLUDE planet_list.tpl -->
   </tr>
 
