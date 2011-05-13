@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '28');
 define('SN_RELEASE', '28.1');
-define('SN_VERSION', '28.1a2');
+define('SN_VERSION', '28.1a3');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -249,6 +249,14 @@ define('UNIT_DEFENSE'  , 4);
 define('UNIT_MISSILE'  , 5);
 define('UNIT_MERCENARY', 6);
 define('UNIT_RESOURCE' , 9);
+
+// *** Sort options
+define('SORT_ASCENDING' , 0);
+define('SORT_DESCENDING', 1);
+define('SORT_ID'        , 0);
+define('SORT_LOCATION'  , 1);
+define('SORT_NAME'      , 2);
+define('SORT_SIZE'      , 3);
 
 // === Structures
 define('STRUC_MINE_METAL', 1);

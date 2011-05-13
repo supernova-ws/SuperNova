@@ -15,7 +15,8 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 $planets = array();
 $ques = array();
 
-$planet_row_list = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
+//$planet_row_list = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
+$planet_row_list = SortUserPlanets($user);
 while ($planet = mysql_fetch_assoc($planet_row_list))
 {
   $global_data = sys_o_get_updated($user, $planet['id'], $time_now);
@@ -48,9 +49,6 @@ foreach ($planets as $planet_index => &$planet)
 
   $template->assign_block_vars('planet', array_merge($planet_template, array(
     'PLANET_FLEET_ID'   => $planet_fleet_id,
-
-    'FIELDS_CUR'        => $planet['field_current'],
-    'FIELDS_MAX'        => eco_planet_fields_max($planet),
 
     'METAL_CUR'         => pretty_number($planet['metal'], true, $planet['metal_max']),
     'METAL_PROD'        => pretty_number($planet['metal_perhour']),

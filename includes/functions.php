@@ -743,29 +743,38 @@ function mrc_modify_value($user, $planet = false, $mercenaries, $value)
  */
 function SortUserPlanets($CurrentUser, $planet = false, $field_list = '')
 {
-  $Order = ( $CurrentUser['planet_sort_order'] == 1 ) ? "DESC" : "ASC";
+  $Order = ( $CurrentUser['planet_sort_order'] == SORT_DESCENDING ) ? "DESC" : "ASC";
   $Sort = $CurrentUser['planet_sort'];
 
-  $QryPlanets = "SELECT `id`, `name`, `galaxy`, `system`, `planet`, `planet_type`{$field_list} FROM {{planets}} WHERE `id_owner` = '{$CurrentUser['id']}' ";
+  if($field_list != '*')
+  {
+    $field_list = "`id`, `name`, `galaxy`, `system`, `planet`, `planet_type`{$field_list}";
+  }
+
+  $QryPlanets = "SELECT {$field_list} FROM {{planets}} WHERE `id_owner` = '{$CurrentUser['id']}' ";
   if ($planet)
   {
     $QryPlanets .= "AND `id` <> {$planet['id']} ";
   }
 
   $QryPlanets .= 'ORDER BY ';
-  if ($Sort == 0)
+  if ($Sort == SORT_ID)
   {
     $QryPlanets .= "`id` {$Order}";
   }
-  elseif ($Sort == 1)
+  elseif ($Sort == SORT_LOCATION)
   {
     $QryPlanets .= "`galaxy`, `system`, `planet`, `planet_type` {$Order}";
   }
-  elseif ($Sort == 2)
+  elseif ($Sort == SORT_NAME)
   {
     $QryPlanets .= "`name` {$Order}";
   }
-  $Planets = doquery($QryPlanets, '');
+  elseif ($Sort == SORT_SIZE)
+  {
+    $QryPlanets .= "(`field_max` + `terraformer` * 5 + `mondbasis` * 3) {$Order}";
+  }
+  $Planets = doquery($QryPlanets);
 
   return $Planets;
 }

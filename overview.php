@@ -196,6 +196,7 @@ switch ($mode)
     // -----------------------------------------------------------------------------------------------
     // --- Gestion de la liste des planetes ----------------------------------------------------------
     // Planetes ...
+    /*
     switch($user['planet_sort'])
     {
       case 1:
@@ -219,8 +220,9 @@ switch ($mode)
     {
       $planetSort = sprintf($planetSort, 'ASC');
     }
-
     $planets_query = doquery("SELECT * FROM {{planets}} WHERE id_owner='{$user['id']}' AND planet_type = 1 ORDER BY {$planetSort};");
+    */
+    $planets_query = SortUserPlanets($user, false, '*');
 
     $fleet_id = 1;
     while ($UserPlanet = mysql_fetch_assoc($planets_query))

@@ -139,12 +139,18 @@
       <div class="{$FIELD_COLOR}" style="position: absolute; top: 0px; left: {$DEUTERIUM_BAR}px; height: {$PLANET_IMG_SIZE}px; width: {$RESOURCE_BAR}px; overflow: hidden;">
         <div class="deuterium_bg" style="position: absolute; bottom: 0px; left: 0px; width: 100%; height: {planet.DEUTERIUM_PERCENT}%"></div>
       </div>
-  		<!--
-      <div class="{$FIELD_COLOR}" style="position: absolute; top: 0px; left: {$OVERALL_BAR}px; height: {$PLANET_IMG_SIZE}px; width: {$RESOURCE_BAR}px; overflow: hidden;">
-      </div>
-  		-->
-      <div style="width: {$PLANET_IMG_SIZE}px; height: 4px; overflow: hidden; top: {$PLANET_IMG_SIZE}px; left: 0px; position: absolute;">
-        <div class="fl" style="position: relative; left: 0px; top: 0px; height: 100%; width: {planet.FILL}%; background-color: <!-- IF planet.FILL >= 100 -->red<!-- ELSEIF planet.FILL > 80 -->yellow<!-- ELSE -->green<!-- ENDIF -->;"></div>
+      <!-- IF planet.FILL < 50 --> 
+        <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
+      <!-- ELSEIF planet.FILL < 80 --> 
+        <!-- DEFINE $FIELD_COLOR = 'neutral_bg' -->
+      <!-- ELSEIF planet.FILL < 100 --> 
+        <!-- DEFINE $FIELD_COLOR = 'warning_bg' -->
+      <!-- ELSE -->
+        <!-- DEFINE $FIELD_COLOR = 'negative_bg' -->
+      <!-- ENDIF -->
+      <div style="width: {$PLANET_IMG_SIZE}px; height: 9px; overflow: hidden; top: {$PLANET_IMG_SIZE}px; left: 0px; position: absolute;">
+        <div style="position: absolute; left: 0px; top: 0px; height: 100%; width: {planet.FILL}%;" class="{$FIELD_COLOR}"></div>
+        <div style="position: absolute; left: 0px; top: -1px; height: 100%; width: 100%; font-size: 9px; font-weight: bold;">{planet.FIELDS_CUR}&nbsp;/&nbsp;{planet.FIELDS_MAX}</div>
       </div>
     </div>
 
