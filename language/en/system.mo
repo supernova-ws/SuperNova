@@ -24,6 +24,7 @@ if (empty($lang) || !is_array($lang))
 // System-wide localization
 
 $lang = array_merge($lang, array(
+  'sys_empire'          => 'Empire',
   'VacationMode'			=> "Your production stopped because you are on vacation",
   'sys_moon_destruction_report' => "Report of destruction of the Moon",
   'sys_moon_destroyed' => "Your Deathstar shot a powerful gravitational wave, which destroyed the Moon! ",
