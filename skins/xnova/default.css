@@ -62,7 +62,7 @@
 }
 
 *.ownfederation {
-  color: 33CC00;
+  color: #33CC00;
 }
 
 *.owndestroy {
@@ -149,7 +149,7 @@
 }
 
 *.federation {
-  color: CC0000;
+  color: #CC0000;
 }
 
 .flight .federation a {
@@ -223,7 +223,7 @@
 
 .new_message
 {
-  background-color: #99999;
+  background-color: #999999;
 }
 
 /* Message & numbers color coding */
