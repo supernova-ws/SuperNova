@@ -24,6 +24,7 @@ $lang['opt_lst_ord']			= "Упорядочить планеты по:";
 $lang['opt_lst_ord0']			= "Времени колонизации";
 $lang['opt_lst_ord1']			= "Координатам";
 $lang['opt_lst_ord2']			= "Алфавитному порядку";
+$lang['opt_lst_ord3']			= "Количеству полей";
 $lang['opt_lst_cla']			= "Упорядочить по:";
 $lang['opt_lst_cla0']			= "Возрастанию";
 $lang['opt_lst_cla1']			= "Убыванию";

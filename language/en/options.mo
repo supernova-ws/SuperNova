@@ -29,16 +29,17 @@ $lang['opt_lst_ord']			= "View of the universe:";
 $lang['opt_lst_ord0']			= "Time of colonization";
 $lang['opt_lst_ord1']			= "Coordinates";
 $lang['opt_lst_ord2']			= "Alphabetical order";
+$lang['opt_lst_ord3']			= "Maximum fields";
 $lang['opt_lst_cla']			= "Arrange by:";
 $lang['opt_lst_cla0']			= "Ascending Order";
 $lang['opt_lst_cla1']			= "Descending Order";
 $lang['opt_chk_skin']			= "Use skin";
 
-// 	
+//
 $lang['opt_adm_title']			= "Administration options";
 $lang['opt_adm_planet_prot']		= "Planetary protection";
 
-// 	
+//
 $lang['thanksforregistry']		= "Thanks for registering.<br />After a few minutes you will receive your message with a password.";
 $lang['general_settings']		= "General settings";
 $lang['skins_example']			= "Skin<br>(for example C:/ogame/skin/)";

@@ -248,11 +248,11 @@
 }
 
 .notice_bg, .zero_bg, .neutral_bg {
-  background-color: #CCCC00;
+  background-color: #AAAA00;
 }
 
 .warning_bg {
-  background-color: #B26200;
+  background-color: #924200;
 }
 
 .error_bg, .negative_bg {

@@ -1,3 +1,4 @@
+<h2>{L_opt_header}</h2>
 <form action="options.php?mode=change" method="post" name="fOptions">
   <table width="519">
     <tbody>
@@ -126,7 +127,7 @@
       </th>
       </tr>
       <tr>
-      <td class="c" align="center" colspan="2"><input value="{L_save_settings}" type="submit"></td>
+      <th class="c_c" colspan="2"><input value="{L_save_settings}" type="submit"></th>
       </tr>
     </tbody>
   </table>
