@@ -15,10 +15,10 @@ function qst_render_page()
   if($in_admin)
   {
     $quest_id = sys_get_param_int('id');
-    $quest_name = sys_get_param_str('QUEST_NAME');
+    $quest_name = sys_get_param_str_raw('QUEST_NAME');
     if (!empty($quest_name))
     {
-      $quest_description = sys_get_param_str('QUEST_DESCRIPTION');
+      $quest_description = sys_get_param_str_raw('QUEST_DESCRIPTION');
       try
       {
         $quest_rewards_id = sys_get_param_int('QUEST_REWARDS_ID');
@@ -53,6 +53,8 @@ function qst_render_page()
 
         if($mode == 'edit')
         {
+          $quest_name        = mysql_real_escape_string($quest_name);
+          $quest_description = mysql_real_escape_string($quest_description);
           doquery(
             "UPDATE {{quest}} SET
               `quest_name` = '{$quest_name}',
@@ -66,9 +68,9 @@ function qst_render_page()
         else
         {
           sn_db_perform('{{quest}}', array(
-              'quest_name' => stripslashes($quest_name),
+              'quest_name' => $quest_name,
               'quest_type' => $quest_type,
-              'quest_description' => stripslashes($quest_description),
+              'quest_description' => $quest_description,
               'quest_conditions' => $quest_conditions,
               'quest_rewards' => $quest_rewards,
           ));
@@ -130,14 +132,14 @@ function qst_render_page()
 
   if($quest)
   {
-    $templatized = array_merge(qst_templatize(qst_quest_parse($quest)), $templatized);
+    $templatized = array_merge(qst_templatize(qst_quest_parse($quest), false), $templatized);
   }
 
   $template->assign_vars($templatized);
 
   foreach($quest_list as $quest)
   {
-    $template->assign_block_vars('quest', qst_templatize($quest));
+    $template->assign_block_vars('quest', qst_templatize($quest, true));
   }
 
   foreach($quest_units_allowed as $unit_id)
@@ -202,7 +204,7 @@ function qst_quest_parse($quest)
   return $quest;
 }
 
-function qst_templatize($quest)
+function qst_templatize($quest, $for_display = true)
 {
   global $lang;
 
@@ -210,7 +212,7 @@ function qst_templatize($quest)
     'QUEST_ID'             => $quest['quest_id'],
     'QUEST_NAME'           => $quest['quest_name'],
     'QUEST_TYPE'           => $quest['quest_type'],
-    'QUEST_DESCRIPTION'    => sys_bbcodeParse($quest['quest_description']),
+    'QUEST_DESCRIPTION'    => $for_display ? sys_bbcodeParse($quest['quest_description']) : $quest['quest_description'],
     'QUEST_CONDITIONS'     => $quest['quest_condition'],
     'QUEST_REWARDS_ID'     => $quest['quest_rewards_id'],
     'QUEST_REWARDS_NAME'   => $lang['tech'][$quest['quest_rewards_id']],
