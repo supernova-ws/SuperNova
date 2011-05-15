@@ -50,6 +50,10 @@ if (!$user['ally_id'])
         require('includes/alliance/ali_external_request.inc');
       break;
 
+      case 'make':
+        require('includes/alliance/ali_external_create_ally.inc');
+      break;
+
       default:
         display(parsetemplate(gettemplate('ali_external', true)), $lang['alliance']);
       break;
