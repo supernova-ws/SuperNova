@@ -740,6 +740,8 @@ switch(intval($config->db_version))
       // mysql_query('alter table {$config->db_prefix}quest_status modify column `quest_status_status` TINYINT DEFAULT 1;');
     }
 
+    upd_alter_table('users', "CHANGE COLUMN `rpg_points` `dark_matter` int(11) DEFAULT 0", $update_tables['users']['rpg_points']);
+
     upd_check_key('quest_total', 0, !isset($config->quest_total));
 
   doquery('COMMIT;');

@@ -9,7 +9,7 @@ $page_title .= ' - ' . $lang["eco_mrk_{$submode}"];
 
 if(is_array($shipList))
 {
-  if($user['rpg_points'] < $rpg_cost)
+  if($user[$sn_data[RES_DARK_MATTER]['name']] < $rpg_cost)
   {
     $intError = MARKET_NO_DM;
   }
@@ -129,7 +129,7 @@ if(is_array($shipList))
     doquery('COMMIT;');
 
     $stock = $newstock;
-    $user['rpg_points'] -= $rpg_cost;
+    $user[$sn_data[RES_DARK_MATTER]['name']] -= $rpg_cost;
     $planetrow = array_merge($planetrow, $newrow);
 
     $message = parsetemplate(gettemplate('message_body'), array('title' => $page_title, 'mes' => "<div align=left>{$message}</div>"));

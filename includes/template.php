@@ -224,7 +224,7 @@ function ShowTopNavigationBar($user, $planetrow)
     return '';
   }
 
-  global $time_now, $lang, $config;
+  global $time_now, $lang, $config, $sn_data;
 
   $GET_mode = sys_get_param_str('mode');
 
@@ -295,7 +295,7 @@ function ShowTopNavigationBar($user, $planetrow)
     'TOPNAV_DEUTERIUM_TEXT' => pretty_number($planetrow["deuterium"], 2),
     'TOPNAV_DEUTERIUM_MAX_TEXT' => pretty_number($planetrow["deuterium_max"], 2, -$planetrow["deuterium"]),
 
-    'TOPNAV_DARK_MATTER' => pretty_number($user['rpg_points']),
+    'TOPNAV_DARK_MATTER' => pretty_number($user[$sn_data[RES_DARK_MATTER]['name']]),
 
     'ENERGY_BALANCE' => pretty_number($planetrow['energy_max'] - $planetrow['energy_used'], true, 0),
     'ENERGY_MAX' => pretty_number($planetrow['energy_max']),

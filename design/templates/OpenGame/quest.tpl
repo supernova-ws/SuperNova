@@ -21,17 +21,24 @@
       <tr class="c_l">
         <td>{L_qst_conditions}</td>
         <td class="c_l">
-          <input name="QUEST_UNIT_AMOUNT" size=10 maxlength="10" value="{QUEST_UNIT_AMOUNT}"> x 
+          <input name="QUEST_UNIT_AMOUNT" size="15" maxlength="15" value="{QUEST_UNIT_AMOUNT}"> x 
           <select name="QUEST_UNIT_ID">
-            <!-- BEGIN unit -->
-              <option value="{unit.ID}"<!-- IF unit.ID == QUEST_UNIT_ID --> selected<!-- ENDIF -->>{unit.NAME}</option>
-            <!-- END unit -->
+            <!-- BEGIN allowed_unit -->
+              <option value="{allowed_unit.ID}"<!-- IF allowed_unit.ID == QUEST_UNIT_ID --> selected<!-- ENDIF -->>{allowed_unit.NAME}</option>
+            <!-- END allowed_unit -->
           </select>
         </td>
       </tr>
       <tr class="c_l">
         <td>{L_qst_rewards}</td>
-        <td>{L_sys_dark_matter}&nbsp;<input name="QUEST_REWARDS_AMOUNT" size="10" maxlength="10" value="{QUEST_REWARDS_AMOUNT}"></td>
+        <td>
+          <input name="QUEST_REWARDS_AMOUNT" size="15" maxlength="15" value="{QUEST_REWARDS_AMOUNT}"> x 
+          <select name="QUEST_REWARDS_ID">
+            <!-- BEGIN allowed_reward -->
+              <option value="{allowed_reward.ID}"<!-- IF allowed_reward.ID == QUEST_REWARDS_ID --> selected<!-- ENDIF -->>{allowed_reward.NAME}</option>
+            <!-- END allowed_reward -->
+          </select>
+        </td>
       </tr>
       <tr>
         <td colspan="2" class="c_c">

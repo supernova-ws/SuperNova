@@ -1,7 +1,8 @@
 <?php
 
-if (!defined('INSIDE')) {
-	die('Обнаружена попытка взлома!');
+if (!defined('INSIDE')) 
+{
+  die('Обнаружена попытка взлома!');
 }
 
 $lang = array_merge($lang, array(
@@ -30,6 +31,7 @@ $lang = array_merge($lang, array(
   'qst_adm_err_unit_id'       => 'Неправильный юнит',
   'qst_adm_err_unit_amount'   => 'Неправильное количество юнитов',
   'qst_adm_err_reward_amount' => 'Неправильный размер награды',
+  'qst_adm_err_reward_type'   => 'Неправильный тип награды',
 ));
 
 ?>

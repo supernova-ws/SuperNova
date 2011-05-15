@@ -146,8 +146,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   {
     $que['rewards'][$quest_id] = $quest_reward;
   }
-
-  qst_reward($user, $que['rewards'], $que['quests']);
+  qst_reward($user, $planet, $que['rewards'], $que['quests']);
 
   return array('user' => $user, 'planet' => $planet, 'que' => $que);
 }

@@ -63,21 +63,18 @@ $offi = $_GET['offi'];
 
 lng_include('infos');
 
-// Vérification que le joueur n'a pas un nombre de points négatif
-//  if ($user['rpg_points'] < 0) {
-//    doquery("UPDATE {{users}} SET `rpg_points` = '0' WHERE `id` = '". $user['id'] ."';");
-//  }
 //darkmater constant
 $darkmater_cost = $config->rpg_officer;
+$sn_data_dark_matter_db_name = $sn_data[RES_DARK_MATTER]['name'];
 // Si recrutement d'un officier
 if ($mode == 2) {
-  if ($user['rpg_points'] >= $darkmater_cost) {
+  if ($user[$sn_data_dark_matter_db_name] >= $darkmater_cost) {
     $Selected    = $offi;
     if ( in_array($Selected, $reslist['mercenaries']) ) {
       $Result = IsOfficierAccessible ( $user, $Selected );
       if ( $Result == 1 ) {
         $user[$resource[$Selected]] += 1;
-        $user['rpg_points']         -= $darkmater_cost;
+        $user[$sn_data_dark_matter_db_name]         -= $darkmater_cost;
         doquery( "UPDATE {{users}} SET `{$resource[$Selected]}` = `{$resource[$Selected]}` + 1 WHERE `id` = '{$user['id']}';");
         rpg_points_change($user['id'], -($darkmater_cost), "Spent for officer {$lang['tech'][$Selected]} ID {$Selected}");
         $Message = $lang['off_recruited'];

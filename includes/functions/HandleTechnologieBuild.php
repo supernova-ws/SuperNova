@@ -54,12 +54,11 @@ function HandleTechnologieBuild ( &$CurrentPlanet, &$CurrentUser ) {
       {
         if($quest_list[$quest_id]['quest_unit_amount'] <= $user[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
         {
-          $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards_amount'];
+          $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards'];
           $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
         }
       }
-
-      qst_reward($user, $quest_rewards, $quest_list);
+      qst_reward($user, $planet, $quest_rewards, $quest_list);
 
 
 
