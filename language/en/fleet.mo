@@ -201,5 +201,6 @@ $lang['flt_gather_report'] = 'Gathering Report';
 $lang['flt_report']        = 'Report';
 
 $lang['flt_no_transports'] = 'No transports';
+$lang['flt_no_fuel']       = 'No fuel';
 
 ?>

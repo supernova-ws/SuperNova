@@ -196,5 +196,6 @@ $lang['flt_gather_report'] = 'Отчет о выполнении';
 $lang['flt_report']        = 'Отчет';
 
 $lang['flt_no_transports'] = 'нет транспорта';
+$lang['flt_no_fuel']       = 'нет топлива';
 
 ?>

@@ -185,4 +185,70 @@ function eco_build($que_type, $user, &$planet, $que)
   display(parsetemplate($template), $lang['Builds']);
 }
 
+/**
+ * @function IsElementBuyable
+ *
+ * 1.1 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *     [*] Now using GetBuildingPrice proc to get building cost
+ * @version 1
+ * @copyright 2008 by Chlorel for XNova
+ */
+// Verifie si un element est achetable au moment demandé
+// $CurrentUser   -> Le Joueur lui meme
+// $CurrentPlanet -> La planete sur laquelle l'Element doit etre construit
+// $Element       -> L'Element que l'on convoite
+// $Incremental   -> true  pour un batiment ou une recherche
+//                -> false pour une defense ou un vaisseau
+// $ForDestroy    -> false par defaut pour une construction
+//                -> true pour calculer la demi valeur du niveau en cas de destruction
+//
+// Reponse        -> boolean (oui / non)
+function IsElementBuyable($CurrentUser, $CurrentPlanet, $Element, $Incremental = true, $ForDestroy = false)
+{
+  global $pricelist, $resource;
+
+  if ($CurrentUser['vacation'])
+    return false;
+
+  $array = GetBuildingPrice($CurrentUser, $CurrentPlanet, $Element, $Incremental, $ForDestroy);
+  foreach ($array as $ResType => $resorceNeeded)
+    if ($resorceNeeded > $CurrentPlanet[$ResType])
+      return false;
+
+  return true;
+}
+
+/**
+ *
+ * @function CheckPlanetUsedFields
+ *
+ * v2.0 Rewrote to utilize foreach()
+ *      Complying with PCG0
+ * v1.1 some optimizations
+ * @version 1
+ * @copyright 2008 By Chlorel for XNova
+ */
+// Verification du nombre de cases utilisées sur la planete courrante
+function CheckPlanetUsedFields(&$planet)
+{
+  if (!$planet['id'])
+  {
+    return 0;
+  }
+
+  global $sn_data;
+
+  $planet_fields = 0;
+  foreach ($sn_data['groups']['build_allow'][$planet['planet_type']] as $building_id)
+  {
+    $planet_fields += $planet[$sn_data[$building_id]['name']];
+  }
+
+  if ($planet['field_current'] != $planet_fields)
+  {
+    $planet['field_current'] = $planet_fields;
+    doquery("UPDATE {{planets}} SET field_current={$planet_fields} WHERE id={$planet['id']} LIMIT 1;");
+  }
+}
+
 ?>

@@ -244,4 +244,84 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
   return $planet_name;
 }
 
+/*
+ *
+ * @function SetSelectedPlanet
+ *
+ * @history
+ *    3 - copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+ *      [+] Added handling case when current_planet does not exists or didn't belong to user
+ *      [+] Moved from SetSelectedPlanet.php
+ *      [+] Function now return
+ *      [~] Complies with PCG1
+ *    2 - copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+ *      [~] Security checked for SQL-injection
+ *    1 - copyright 2008 By Chlorel for XNova
+ *
+ */
+function SetSelectedPlanet(&$user)
+{
+  $selected_planet = intval($_GET['cp']);
+  $restore_planet = intval($_GET['re']);
+
+  if (isset($selected_planet) && is_numeric($selected_planet) && $selected_planet && isset($restore_planet) && $restore_planet == 0)
+  {
+    $planet_row = doquery("SELECT `id` FROM {{planets}} WHERE `id` = '{$selected_planet}' AND `id_owner` = '{$user['id']}' LIMIT 1;", '', true);
+    if (!$planet_row || !isset($planet_row['id']))
+    {
+      $selected_planet = $user['id_planet'];
+    }
+    doquery("UPDATE {{users}} SET `current_planet` = '{$selected_planet}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    $user['current_planet'] = $selected_planet;
+  }
+
+  return $user['current_planet'];
+}
+
+/**
+ * SortUserPlanets.php
+ *
+ * @version 1.0
+ * @copyright 2008 By Chlorel for XNova
+ */
+function SortUserPlanets($CurrentUser, $planet = false, $field_list = '', $conditions = '')
+{
+  $Order = ( $CurrentUser['planet_sort_order'] == SORT_DESCENDING ) ? "DESC" : "ASC";
+  $Sort = $CurrentUser['planet_sort'];
+
+  if($field_list != '*')
+  {
+    $field_list = "`id`, `name`, `galaxy`, `system`, `planet`, `planet_type`{$field_list}";
+  }
+
+  $QryPlanets = "SELECT {$field_list} FROM {{planets}} WHERE `id_owner` = '{$CurrentUser['id']}' {$conditions} ";
+  if ($planet)
+  {
+    $QryPlanets .= "AND `id` <> {$planet['id']} ";
+  }
+
+  $QryPlanets .= 'ORDER BY ';
+  if ($Sort == SORT_ID)
+  {
+    $QryPlanets .= "`id` {$Order}";
+  }
+  elseif ($Sort == SORT_LOCATION)
+  {
+    $QryPlanets .= "`galaxy`, `system`, `planet`, `planet_type` {$Order}";
+  }
+  elseif ($Sort == SORT_NAME)
+  {
+    $QryPlanets .= "`name` {$Order}";
+  }
+  elseif ($Sort == SORT_SIZE)
+  {
+    $QryPlanets .= "(`field_max` + `terraformer` * 5 + `mondbasis` * 3) {$Order}";
+  }
+
+  $Planets = doquery($QryPlanets);
+  return $Planets;
+}
+
+
+
 ?>
