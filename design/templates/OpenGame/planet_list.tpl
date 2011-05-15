@@ -6,7 +6,7 @@
   <!-- IF $OVERVIEW -->
    <tr>
   <!-- ENDIF -->
-  <th valign="top" {$CELL_CLASS}><center>
+  <th valign="top" {$CELL_CLASS} width="{$CELL_PLANET}"><center>
   <!-- IF planet.ID -->
     <!-- IF $OVERVIEW -->
       <!-- IF planet.MOON_ID == PLANET_ID -->{L_sys_moon} {planet.MOON_NAME}<!-- ELSE -->{planet.NAME}<!-- ENDIF --> [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]<br>
