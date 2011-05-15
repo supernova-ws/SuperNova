@@ -7,11 +7,11 @@ function qst_render_page()
   $user_id = sys_get_param_int('user_id', false);
   $mode    = sys_get_param_str('mode');
 
-  $quest_units_allowed = array_merge($sn_data['groups']['structures'], $sn_data['groups']['tech'], $sn_data['groups']['fleet'], $sn_data['groups']['defense']);
+  $quest_units_allowed   = array_merge($sn_data['groups']['structures'], $sn_data['groups']['tech'], $sn_data['groups']['fleet'], $sn_data['groups']['defense']);
+  $quest_reward_allowed = &$sn_data['groups']['quest_rewards'];
 
   $in_admin = defined('IN_ADMIN') && IN_ADMIN == true;
 
-//  if($user['authlevel'] >= 3)
   if($in_admin)
   {
     $quest_id = sys_get_param_int('id');
@@ -21,21 +21,27 @@ function qst_render_page()
       $quest_description = sys_get_param_str('QUEST_DESCRIPTION');
       try
       {
+        $quest_rewards_id = sys_get_param_int('QUEST_REWARDS_ID');
+        if(!in_array($quest_rewards_id, $quest_reward_allowed))
+        {
+          throw new Exception($lang['qst_adm_err_reward_type']);
+        }
+
         $quest_rewards_amount = sys_get_param_int('QUEST_REWARDS_AMOUNT');
         if($quest_rewards_amount <= 0)
         {
           throw new Exception($lang['qst_adm_err_reward_amount']);
         }
 
-        $quest_rewards = RES_DARK_MATTER . ",{$quest_rewards_amount}";
+        $quest_rewards = "{$quest_rewards_id},{$quest_rewards_amount}";
 
-        $quest_unit_id        = sys_get_param_int('QUEST_UNIT_ID');
+        $quest_unit_id = sys_get_param_int('QUEST_UNIT_ID');
         if(!in_array($quest_unit_id, $quest_units_allowed))
         {
           throw new Exception($lang['qst_adm_err_unit_id']);
         }
 
-        $quest_unit_amount    = sys_get_param_int('QUEST_UNIT_AMOUNT');
+        $quest_unit_amount = sys_get_param_int('QUEST_UNIT_AMOUNT');
         if($quest_unit_amount <= 0)
         {
           throw new Exception($lang['qst_adm_err_unit_amount']);
@@ -136,7 +142,15 @@ function qst_render_page()
 
   foreach($quest_units_allowed as $unit_id)
   {
-    $template->assign_block_vars('unit', array(
+    $template->assign_block_vars('allowed_unit', array(
+      'ID'   => $unit_id,
+      'NAME' => $lang['tech'][$unit_id],
+    ));
+  }
+
+  foreach($quest_reward_allowed as $unit_id)
+  {
+    $template->assign_block_vars('allowed_reward', array(
       'ID'   => $unit_id,
       'NAME' => $lang['tech'][$unit_id],
     ));
@@ -224,15 +238,69 @@ function qst_active_triggers($quest_list)
   return $quest_triggers;
 }
 
-function qst_reward(&$user, &$rewards, &$quest_list)
+function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
 {
-  global $lang;
+  global $lang, $sn_data;
 
-  foreach($rewards as $quest_id => $reward_amount)
+  foreach($rewards as $quest_id => $rewards_list_string)
   {
-    $comment = sprintf($lang['qst_msg_complete_body'], $reward_amount, $quest_list[$quest_id]['quest_name']);
-    rpg_points_change($user['id'], $reward_amount, $comment);
-    msg_send_simple_message($user['id'], 0, $time_now, 1, $lang['msg_from_admin'], $lang['qst_msg_complete_subject'], $comment);
+    $comment_reward = array();
+    $planet_reward  = array();
+    $user_reward    = array();
+    $user_reward_dm = 0;
+    $comment = sprintf($lang['qst_msg_complete_body'], $quest_list[$quest_id]['quest_name']);
+
+    $rewards_list_array = explode(';', $rewards_list_string);
+    foreach($rewards_list_array as $reward_string)
+    {
+      list($reward_id, $reward_amount) = explode(',', $reward_string);
+      $reward_db_name = $sn_data[$reward_id]['name'];
+      $reward_db_string = "`{$reward_db_name}` = `{$reward_db_name}` + {$reward_amount}";
+
+      if($reward_id == RES_DARK_MATTER)
+      {
+        $user_reward_dm = $reward_amount;
+      }
+
+      if($sn_data[$reward_id]['location'] == LOC_USER)
+      {
+        $user[$reward_db_name] += $reward_amount;
+        $user_reward[] = $reward_db_string;
+      }
+      elseif($sn_data[$reward_id]['location'] == LOC_PLANET)
+      {
+        $planet[$reward_db_name] += $reward_amount;
+        $planet_reward[] = $reward_db_string;
+      }
+      else
+      {
+        continue;
+      }
+
+      $comment_reward[] = $reward_amount . ' ' . $lang['tech'][$reward_id];
+    }
+
+    if(!empty($comment_reward))
+    {
+      $comment .= " {$lang['qst_msg_your_reward']} " . implode(',', $comment_reward);
+
+      if(!empty($user_reward))
+      {
+        $user_reward = implode(',', $user_reward);
+        doquery("UPDATE {{users}} SET {$user_reward} WHERE `id` = {$user['id']} LIMIT 1;");
+
+        if($user_reward_dm)
+        {
+          rpg_points_change($user['id'], $user_reward_dm, $comment, true);
+        }
+      }
+
+      if(!empty($planet_reward))
+      {
+        $planet_reward = implode(',', $planet_reward);
+        doquery("UPDATE {{planets}} SET {$planet_reward} WHERE `id` = {$planet['id']} LIMIT 1;");
+      }
+    }
 
     sn_db_perform('{{quest_status}}', array(
       'quest_status_quest_id' => $quest_id,
@@ -240,7 +308,7 @@ function qst_reward(&$user, &$rewards, &$quest_list)
       'quest_status_status'   => QUEST_STATUS_COMPLETE
     ));
 
-    $user['rpg_points'] += $reward_amount;
+    msg_send_simple_message($user['id'], 0, $time_now, 1, $lang['msg_from_admin'], $lang['qst_msg_complete_subject'], $comment);
   }
 }
 

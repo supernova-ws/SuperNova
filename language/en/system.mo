@@ -435,9 +435,10 @@ $lang = array_merge($lang, array(
   'chat_timeout' => 'Chat is disabled from your inactivity. Refresh the page.',
 
   // quests
-  'qst_quests'       => 'Quests',
+  'qst_quests'               => 'Quests',
   'qst_msg_complete_subject' => 'You completed quest!',
-  'qst_msg_complete_body'    => 'You awarder %d DM for completing quest "%s"',
+  'qst_msg_complete_body'    => 'You completed quest "%s".',
+  'qst_msg_your_reward'      => 'Your reward: ',
 
   'msg_from_admin' => 'Universe Administration',
 

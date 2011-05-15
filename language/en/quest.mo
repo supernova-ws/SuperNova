@@ -2,7 +2,7 @@
 
 if (!defined('INSIDE')) 
 {
-	die('Hack attempt!');
+  die('Hack attempt!');
 }
 
 $lang = array_merge($lang, array(
@@ -31,6 +31,7 @@ $lang = array_merge($lang, array(
   'qst_adm_err_unit_id'       => 'Unsupported unit',
   'qst_adm_err_unit_amount'   => 'Wrong unit amount',
   'qst_adm_err_reward_amount' => 'Wrong reward amount',
+  'qst_adm_err_reward_type'   => 'Wrong reward type',
 ));
 
 ?>

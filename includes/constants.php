@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '28');
 define('SN_RELEASE', '28.1');
-define('SN_VERSION', '28.1a4');
+define('SN_VERSION', '28.1a5');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -109,8 +109,8 @@ define('PT_DEBRIS', 2);
 define('PT_MOON'  , 3);
 
 // *** Unit locations - shows db table where unit belong
-define('UL_USER',   1);
-define('UL_PLANET', 2);
+define('LOC_USER',   1);
+define('LOC_PLANET', 2);
 
 // *** Caching masks
 define('CACHE_NOTHING'    ,  0);

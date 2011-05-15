@@ -435,9 +435,10 @@ $lang = array_merge($lang, array(
   'chat_timeout'  => 'Чат отключен из-за вашей неактивности. Обновите страницу.',
 
   // quests
-  'qst_quests'       => 'Квесты',
-  'qst_msg_complete_subject' => 'Вы выполнили квест!',
-  'qst_msg_complete_body'    => 'Вы получили %d ТМ за выполнение квеста "%s"',
+  'qst_quests'               => 'Квесты',
+  'qst_msg_complete_subject' => 'Квест закончен',
+  'qst_msg_complete_body'    => 'Вы выполнили квест "%s".',
+  'qst_msg_your_reward'      => 'Ваша награда:',
 
   'msg_from_admin' => 'Администрация Вселенной',
 
