@@ -103,9 +103,9 @@ var speed_factor   = {speed_factor};
   <!-- END fleets -->
 
   <!-- IF FLEETS_FLYING >= FLEETS_MAX -->
-    <tr><td class="c" colspan="8" align="center"><font color="red">{fl_noslotfree}</font></td></tr>
+    <tr><th class="c_c negative" colspan="8">{fl_noslotfree}</th></tr>
   <!-- ELSE -->
-    <tr><td class="c" colspan="8" align="center"><input type="button" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';"></th></tr>
+    <tr><th class="c_c" colspan="8"><input type="button" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';"></th></tr>
   <!-- ENDIF -->
 </table><br>
 
