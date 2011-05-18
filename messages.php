@@ -217,7 +217,7 @@ switch ($mode)
         'DATE'           => date(FMT_DATE_TIME, $message_row['message_time']),
         'FROM'           => htmlspecialchars($message_row['message_from']),
         'SUBJ'           => htmlspecialchars($message_row['message_subject']),
-        'TEXT'           => in_array($message_row['message_type'], array(MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE)) && !$message_row['message_sender'] ? nl2br(htmlspecialchars($message_row['message_text'])) : $message_row['message_text'],
+        'TEXT'           => in_array($message_row['message_type'], array(MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE)) && $message_row['message_sender'] ? nl2br(htmlspecialchars($message_row['message_text'])) : $message_row['message_text'],
 
         'FROM_ID'        => $message_row['message_sender'],
         'SUBJ_SANITIZED' => htmlspecialchars($message_row['message_subject']),
