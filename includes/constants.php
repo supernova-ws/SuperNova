@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '28');
 define('SN_RELEASE', '28.1');
-define('SN_VERSION', '28.1a5');
+define('SN_VERSION', '28.1a6');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -153,6 +153,18 @@ define('LOGIN_ERROR_PASSWORD'        , 3);
 define('LOGIN_ERROR_USERNAME'        , 4);
 define('LOGIN_ERROR_ACTIVE'          , 5);
 define('LOGIN_ERROR_EXTERNAL_AUTH'   , 6);
+
+// Login statuses
+define('MSG_TYPE_OUTBOX'   ,  -1);
+define('MSG_TYPE_SPY'      ,   0);
+define('MSG_TYPE_PLAYER'   ,   1);
+define('MSG_TYPE_ALLIANCE' ,   2);
+define('MSG_TYPE_COMBAT'   ,   3);
+define('MSG_TYPE_RECYCLE'  ,   4);
+define('MSG_TYPE_TRANSPORT',   5);
+define('MSG_TYPE_EXPLORE'  ,  15);
+define('MSG_TYPE_QUE'      ,  99);
+define('MSG_TYPE_NEW'      , 100);
 
 // Attack verification statuses
 define('ATTACK_ALLOWED'          ,  0);

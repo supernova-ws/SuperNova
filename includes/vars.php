@@ -7,20 +7,59 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
-if ( defined('INSIDE')) {
+if (!defined('INSIDE'))
+{
+  die('Hack attempt!');
+}
+
   // Liste de champs pour l'indication des messages en attante
   $messfields = array (
-     -1 => 'mnl_outbox',
-      0 => 'mnl_spy',
-      1 => 'mnl_joueur',
-      2 => 'mnl_alliance',
-      3 => 'mnl_attaque',
-      4 => 'mnl_exploit',
-      5 => 'mnl_transport',
-     15 => 'mnl_expedition',
-//     97 => 'mnl_general',
-     99 => 'mnl_buildlist',
-    100 => 'new_message'
+     MSG_TYPE_OUTBOX => 'mnl_outbox',
+     MSG_TYPE_SPY => 'mnl_spy',
+     MSG_TYPE_PLAYER => 'mnl_joueur',
+     MSG_TYPE_ALLIANCE => 'mnl_alliance',
+     MSG_TYPE_COMBAT => 'mnl_attaque',
+     MSG_TYPE_RECYCLE => 'mnl_exploit',
+     MSG_TYPE_TRANSPORT => 'mnl_transport',
+     MSG_TYPE_EXPLORE => 'mnl_expedition',
+     //     97 => 'mnl_general',
+     MSG_TYPE_QUE => 'mnl_buildlist',
+     MSG_TYPE_NEW => 'new_message'
+  );
+
+  // Liste de champs pour l'indication des messages en attante
+  $sn_message_class_list = array(
+     MSG_TYPE_OUTBOX => array(
+       'name' => 'mnl_outbox',
+     ),
+     MSG_TYPE_SPY => array(
+       'name' => 'mnl_spy',
+     ),
+     MSG_TYPE_PLAYER => array(
+       'name' => 'mnl_joueur',
+     ),
+     MSG_TYPE_ALLIANCE => array(
+       'name' => 'mnl_alliance',
+     ),
+     MSG_TYPE_COMBAT => array(
+       'name' => 'mnl_attaque',
+     ),
+     MSG_TYPE_RECYCLE => array(
+       'name' => 'mnl_exploit',
+     ),
+     MSG_TYPE_TRANSPORT => array(
+       'name' => 'mnl_transport',
+     ),
+     MSG_TYPE_EXPLORE => array(
+       'name' => 'mnl_expedition',
+     ),
+     //     97 => 'mnl_general',
+     MSG_TYPE_QUE => array(
+       'name' => 'mnl_buildlist',
+     ),
+     MSG_TYPE_NEW => array(
+       'name' => 'new_message',
+     ),
   );
 
   $sn_diplomacy_relation_list = array(
@@ -1919,5 +1958,5 @@ if ( defined('INSIDE')) {
     print(" );<br>");
   }
 */
-}
+
 ?>

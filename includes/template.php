@@ -336,6 +336,11 @@ function displayP($template)
       '-path_prefix-' => SN_ROOT_VIRTUAL, //$ugamela_root_path,
     ));
 */
+    if(!$template->parsed)
+    {
+      parsetemplate($template);
+    }
+
     $template->display('body');
   }
   else
@@ -363,6 +368,8 @@ function parsetemplate($template, $array = false)
       'SN_ROOT_PATH'  => SN_ROOT_VIRTUAL, //$ugamela_root_path,
       '-path_prefix-' => SN_ROOT_VIRTUAL, //$ugamela_root_path,
     ));
+
+    $template->parsed = true;
 
     return $template;
   }

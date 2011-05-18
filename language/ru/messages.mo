@@ -1,5 +1,31 @@
 <?php
 
+$lang = array_merge($lang, array(
+  'msg_page_header' => 'Личные сообщения',
+
+  'msg_mark_select'      => '-- ВЫБЕРИТЕ ДИАПАЗОН --',
+  'msg_mark_checked'     => 'Отмеченные сообщения',
+  'msg_mark_unchecked'   => 'Неотмеченные сообщения',
+  'msg_mark_class'       => 'Все сообщения данной категории',
+  'msg_mark_all'         => 'ВСЕ личные сообщения',
+  
+  'msg_compose'     => 'Написать сообщение',
+  'msg_recipient'   => 'Кому',
+  'msg_subject'     => 'Тема сообщения',
+  'msg_text'        => 'Текст сообщения',
+
+  'msg_subject_default'  => 'Новое сообщение',
+
+  'msg_not_message_sent' => 'Сообщение отослано',
+
+  'msg_warn_no_messages' => 'Нет сообщений в данной категории',
+
+  'msg_err_player_not_found' => 'Игрок не найден',
+  'msg_err_no_text'          => 'Нельзя отправить пустое сообщение',
+  'msg_err_self_send'        => 'Нельзя отправить сообщение самому себе',
+));
+
+
 $lang['alliance']		= 'Альянс';
 $lang['title']			= "Почтовый ящик";
 $lang['head_type']		= "Категории";
