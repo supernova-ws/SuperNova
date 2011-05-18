@@ -200,12 +200,13 @@ switch ($mode)
       }
       else
       {
-        $user[$sn_message_class_list[MSG_TYPE_NEW]['name']] -= $user[$sn_message_class_list[$current_class]['name']];
-        $user[$sn_message_class_list[$current_class]['name']] = 0;
-
         $SubUpdateQry = "`{$sn_message_class_list[$current_class]['name']}` = '0', `{$sn_message_class_list[MSG_TYPE_NEW]['name']}` = `{$sn_message_class_list[MSG_TYPE_NEW]['name']}` - '{$user[$sn_message_class_list[$current_class]['name']]}'";
         $SubSelectQry = "AND `message_type` = '{$current_class}'";
+
+        $user[$sn_message_class_list[MSG_TYPE_NEW]['name']] -= $user[$sn_message_class_list[$current_class]['name']];
+        $user[$sn_message_class_list[$current_class]['name']] = 0;
       }
+
       doquery("UPDATE {{users}} SET {$SubUpdateQry}  WHERE `id` = '{$user['id']}' LIMIT 1;");
       $message_query = doquery("SELECT * FROM {{messages}} WHERE `message_owner` = '{$user['id']}' {$SubSelectQry} ORDER BY `message_time` DESC;");
     };
