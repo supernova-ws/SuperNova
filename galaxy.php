@@ -103,11 +103,10 @@ $fleet_precache_query = doquery(
 );
 while($fleet_row = mysql_fetch_assoc($fleet_precache_query))
 {
-  $fleet_planet = $fleet_row['fleet_mes'] == 0 ? $fleet_row['fleet_end_planet'] : $fleet_row['fleet_start_planet'];
-  $fleet_type   = $fleet_row['fleet_mes'] == 0 ? $fleet_row['fleet_end_type'] : $fleet_row['fleet_start_type'];
+  $fleet_planet = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_planet'] : $fleet_row['fleet_start_planet'];
+  $fleet_type   = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_type'] : $fleet_row['fleet_start_type'];
   $fleet_list[$fleet_planet][$fleet_type][] = $fleet_row;
 }
-
 
 $fleet_id = 1;
 $fleets = array();
@@ -147,7 +146,6 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
     }
 
     $RowUserPoints = $GalaxyRowUser['points'];
-
     if($GalaxyRowUser['id'])
     {
       if ($GalaxyRowUser['ally_id'])
@@ -183,7 +181,6 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
     }
 
     $GalaxyRowMoon = $planet_list[$Planet][PT_MOON];
-    //$GalaxyRowMoon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = {$GalaxyRowPlanet['id']};", '', true);
     if ($GalaxyRowMoon['destruyed'])
     {
       CheckAbandonPlanetState($GalaxyRowMoon);
