@@ -591,7 +591,7 @@ class classConfig extends classPersistent
 
     'var_db_update'     => 0,  // Time of last DB update
     'var_db_update_end' => 0,  // Time when last DB update should end. Need to prevent duplicate update
-
+    'upd_lock_time'     => 60, // How long update will lock table. Also update increment time when it requires
   );
 
   public function __construct($gamePrefix = 'sn_')

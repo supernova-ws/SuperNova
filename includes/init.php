@@ -133,7 +133,7 @@ if(file_exists($update_file))
   {
     if($time_now >= $config->var_db_update_end)
     {
-      $config->db_saveItem('var_db_update_end', $time_now + 60);
+      $config->db_saveItem('var_db_update_end', $time_now + $config->upd_lock_time);
 
       require_once($update_file);
       sys_refresh_tablelist($db_prefix);

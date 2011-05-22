@@ -98,7 +98,7 @@ switch ($mode)
         $error_list[] = array('TEXT' => $lang['msg_not_message_sent'], 'CLASS' => 'success');
 
         $recipient_name = mysql_real_escape_string($recipient_name);
-        msg_send_simple_message($recipient_id, $user['id'], $time_now, MSG_TYPE_PLAYER, "{$recipient_name} [{$user['galaxy']}:{$user['system']}:{$user['planet']}]", $subject, $text, true);
+        msg_send_simple_message($recipient_id, $user['id'], $time_now, MSG_TYPE_PLAYER, "{$user['username']} [{$user['galaxy']}:{$user['system']}:{$user['planet']}]", $subject, $text, true);
 
         $recipient_id = 0;
         $recipient_name = '';
@@ -107,14 +107,15 @@ switch ($mode)
 
         $msg_sent = true;
       }
+      else
+      {
+        $recipient_name = sys_get_param_str_raw('recipient_name');
+        $subject = sys_get_param_str_raw('subject');
+        $text = sys_get_param_str_raw('text');
+      }
     }
 
-    if(!$msg_sent)
-    {
-      $recipient_name = sys_get_param_str_raw('recipient_name');
-      $subject = sys_get_param_str_raw('subject');
-      $text = sys_get_param_str_raw('text');
-    }
+    $subject = $subject ? $subject : $lang['msg_subject_default'];
 
     $template->assign_vars(array(
       'RECIPIENT_ID'   => $recipient_id,
