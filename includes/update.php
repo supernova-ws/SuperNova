@@ -429,52 +429,48 @@ switch($new_version)
       "ADD INDEX `i_rid` (`rid`)"
     ), !$update_tables['rw']['report_id']);
 
-    if(!$update_tables['logs']['log_timestamp'])
+    upd_add_more_time();
+    if(!$update_tables['logs_backup'])
     {
-      upd_add_more_time(300);
-      if(!$update_tables['logs_backup'])
-      {
-        mysql_query("CREATE TABLE {$config->db_prefix}logs_backup AS (SELECT * FROM logs);");
-      }
-
-      mysql_query("ALTER TABLE {$config->db_prefix}logs
-        DROP COLUMN `log_id`,
-        ADD COLUMN `log_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Human-readable record timestamp' FIRST,
-        ADD COLUMN `log_username` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'Username' AFTER `log_timestamp`,
-        MODIFY COLUMN `log_title` VARCHAR(64) NOT NULL DEFAULT 'Log entry' COMMENT 'Short description' AFTER `log_username`,
-        MODIFY COLUMN `log_page` VARCHAR(512) NOT NULL DEFAULT '' COMMENT 'Page that makes entry to log' AFTER `log_text`,
-        CHANGE COLUMN `log_type` `log_code` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `log_page`,
-        MODIFY COLUMN `log_sender` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'User ID which make log record' AFTER `log_code`,
-        MODIFY COLUMN `log_time` INT(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Machine-readable timestamp' AFTER `log_sender`,
-        ADD COLUMN `log_dump` TEXT NOT NULL DEFAULT '' COMMENT 'Machine-readable dump of variables' AFTER `log_time`,
-        ADD INDEX `i_log_username` (`log_username`),
-        ADD INDEX `i_log_time` (`log_time`),
-        ADD INDEX `i_log_sender` (`log_sender`),
-        ADD INDEX `i_log_code` (`log_code`),
-        ADD INDEX `i_log_page` (`log_page`),
-        CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci"
-      );
-
-      doquery('DELETE FROM `{{logs}}` WHERE `log_code` = 303;');
-
-      if($update_tables['errors'])
-      {
-        upd_do_query('INSERT INTO `{{logs}}` (`log_code`, `log_sender`, `log_title`, `log_text`, `log_page`, `log_time`) SELECT 500, `error_sender`, `error_type`, `error_text`, `error_page`, `error_time` FROM `{{errors}}`;');
-        doquery("ALTER TABLE {{errors} RENAME TO {$config->db_prefix}errors_backup;");
-      }
-
-      upd_alter_table('logs', 'ORDER BY log_time');
-      upd_alter_table('logs', array(
-        "ADD COLUMN `log_id` SERIAL",
-        "ADD PRIMARY KEY (`log_id`)"
-      ));
-      upd_do_query('UPDATE `{{logs}}` SET `log_timestamp` = FROM_UNIXTIME(`log_time`);');
-      upd_do_query('UPDATE `{{logs}}` AS l LEFT JOIN `{{users}}` AS u ON u.id = l.log_sender SET l.log_username = u.username WHERE l.log_username IS NOT NULL;');
-
-      upd_do_query("UPDATE `{{logs}}` SET `log_code` = 190 WHERE `log_code` = 100 AND `log_title` = 'Stat update';");
-      upd_do_query("UPDATE `{{logs}}` SET `log_code` = 191 WHERE `log_code` = 101 AND `log_title` = 'Stat update';");
-      upd_do_query("UPDATE `{{logs}}` SET `log_code` = 192 WHERE `log_code` = 102 AND `log_title` = 'Stat update';");
+      mysql_query("CREATE TABLE {$config->db_prefix}logs_backup AS (SELECT * FROM logs);");
     }
+
+    upd_alter_table('logs', array(
+      "DROP COLUMN `log_id`",
+      "ADD COLUMN `log_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Human-readable record timestamp' FIRST",
+      "ADD COLUMN `log_username` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'Username' AFTER `log_timestamp`",
+      "MODIFY COLUMN `log_title` VARCHAR(64) NOT NULL DEFAULT 'Log entry' COMMENT 'Short description' AFTER `log_username`",
+      "MODIFY COLUMN `log_page` VARCHAR(512) NOT NULL DEFAULT '' COMMENT 'Page that makes entry to log' AFTER `log_text`",
+      "CHANGE COLUMN `log_type` `log_code` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `log_page`",
+      "MODIFY COLUMN `log_sender` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'User ID which make log record' AFTER `log_code`",
+      "MODIFY COLUMN `log_time` INT(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Machine-readable timestamp' AFTER `log_sender`",
+      "ADD COLUMN `log_dump` TEXT NOT NULL DEFAULT '' COMMENT 'Machine-readable dump of variables' AFTER `log_time`",
+      "ADD INDEX `i_log_username` (`log_username`)",
+      "ADD INDEX `i_log_time` (`log_time`)",
+      "ADD INDEX `i_log_sender` (`log_sender`)",
+      "ADD INDEX `i_log_code` (`log_code`)",
+      "ADD INDEX `i_log_page` (`log_page`)",
+      "CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci"
+    ), !$update_tables['logs']['log_timestamp']);
+    doquery('DELETE FROM `{{logs}}` WHERE `log_code` = 303;');
+
+    if($update_tables['errors'])
+    {
+      upd_do_query('INSERT INTO `{{logs}}` (`log_code`, `log_sender`, `log_title`, `log_text`, `log_page`, `log_time`) SELECT 500, `error_sender`, `error_type`, `error_text`, `error_page`, `error_time` FROM `{{errors}}`;');
+      upd_alter_table('errors', "RENAME TO {$config->db_prefix}errors_backup;");
+    }
+
+    upd_alter_table('logs', 'ORDER BY log_time');
+    upd_alter_table('logs', array(
+      "ADD COLUMN `log_id` SERIAL",
+      "ADD PRIMARY KEY (`log_id`)"
+    ));
+    upd_do_query('UPDATE `{{logs}}` SET `log_timestamp` = FROM_UNIXTIME(`log_time`);');
+    upd_do_query('UPDATE `{{logs}}` AS l LEFT JOIN `{{users}}` AS u ON u.id = l.log_sender SET l.log_username = u.username WHERE l.log_username IS NOT NULL;');
+
+    upd_do_query("UPDATE `{{logs}}` SET `log_code` = 190 WHERE `log_code` = 100 AND `log_title` = 'Stat update';");
+    upd_do_query("UPDATE `{{logs}}` SET `log_code` = 191 WHERE `log_code` = 101 AND `log_title` = 'Stat update';");
+    upd_do_query("UPDATE `{{logs}}` SET `log_code` = 192 WHERE `log_code` = 102 AND `log_title` = 'Stat update';");
     $GLOBALS['sys_log_disabled'] = false;
 
   doquery('COMMIT;');
@@ -809,21 +805,16 @@ switch($new_version)
       ), true);
     }
 
-/*
-    $result = upd_alter_table('users', array(
-       'ADD CONSTRAINT `FK_users_ally_id` FOREIGN KEY (`ally_id`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE SET NULL ON UPDATE CASCADE',
-       'ADD CONSTRAINT `FK_users_ally_name` FOREIGN KEY (`ally_name`) REFERENCES `{$config->db_prefix}alliance` (`ally_name`) ON DELETE SET NULL ON UPDATE CASCADE',
-    ), true);
-*/
-
-
+    $illegal_moon_query = doquery("SELECT id FROM `{{planets}}` WHERE `id_owner` <> 0 AND `planet_type` = 3 AND `parent_planet` <> 0 AND `parent_planet` NOT IN (SELECT `id` FROM {{planets}} WHERE `planet_type` = 1);");
+    while($illegal_moon_row = mysql_fetch_assoc($illegal_moon_query))
+    {
+      doquery("DELETE FROM {{planets}} WHERE id = {$illegal_moon_row['id']} LIMIT 1;");
+    }
   doquery('COMMIT;');
   // $new_version = 28.1;
-/*
-  // alter table game_counter add index `i_time_id` (`time`, `id`);
-*/
+
+//  case 28.1: upd_log_version_update();
 };
-//$GLOBALS['config']->db_saveItem('flt_lastUpdate', 0);
 upd_log_message('Upgrade complete.');
 
 if($new_version)
@@ -902,11 +893,11 @@ function upd_log_version_update()
   upd_log_message("Detected outdated version {$GLOBALS['new_version']}. Upgrading...");
 }
 
-function upd_add_more_time($time = 120)
+function upd_add_more_time($time = 0)
 {
   if(!$GLOBALS['sys_log_disabled'])
   {
-    $GLOBALS['config']->db_saveItem('var_db_update_end', $GLOBALS['time_now'] + $time);
+    $GLOBALS['config']->db_saveItem('var_db_update_end', $GLOBALS['time_now'] + ($time ? $time : ($config->upd_lock_time ? $config->upd_lock_time : 30)));
   }
   set_time_limit($time);
 }

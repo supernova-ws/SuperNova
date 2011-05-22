@@ -24,7 +24,6 @@ function flt_get_fleets_to_planet($planet, $fleet_db_list = 0)
     }
   }
 
-//  while ($fleet = mysql_fetch_assoc($sql_fleets))
   foreach($fleet_db_list as $fleet)
   {
     if($fleet['fleet_owner'] == $user['id'])
