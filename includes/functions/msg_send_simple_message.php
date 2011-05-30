@@ -60,9 +60,6 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
   $timestamp = $timestamp ? $timestamp : $GLOBALS['time_now'];
 
   $message_class_name = $sn_message_class_list[$message_type]['name'];
-  debug($user["opt_{$message_class_name}"]);
-  debug($user);
-  debug("opt_{$message_class_name}");
   if(!$user["opt_{$message_class_name}"])
   {
     return;
