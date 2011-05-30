@@ -241,7 +241,7 @@ function sn_timer() {
           timer['active'] = false;
         }
       break;
-
+// TODO: Merge case 2 and case 4 together
       case 2: // date&time
         printData = '';
 
@@ -273,11 +273,12 @@ function sn_timer() {
       case 4: // date&time with delta
         printData = '';
 
-        local_time.setTime(local_time.valueOf() + (timer['options']['delta'] * 1000));
+        var local_time_plus = new Date();
+        local_time_plus.setTime(local_time.valueOf() + (timer['options']['delta'] * 1000));
 
         if(timer['options']['format'] & 1)
         {
-          printData += local_time.toLocaleDateString();
+          printData += local_time_plus.toLocaleDateString();
         }
 
         if(timer['options']['format'] & 3)
@@ -287,7 +288,7 @@ function sn_timer() {
 
         if(timer['options']['format'] & 2)
         {
-          printData += local_time.toTimeString().substring(0,8);
+          printData += local_time_plus.toTimeString().substring(0,8);
         }
 
         if(HTML != null)

@@ -104,12 +104,13 @@ function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage 
   }
 
   echo '<center>';
-  // topnav
-  if ($topnav)
+  if($topnav)
   {
     displayP(parsetemplate(ShowTopNavigationBar($user, $planetrow)));
   }
+
   displayP($page);
+
   echo '</center></div>';
 
   // Global footer

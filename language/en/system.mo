@@ -101,7 +101,7 @@ $lang = array_merge($lang, array(
   'sys_goto'            => "Go",
 
   'sys_time'            => "Time",
-  'sys_temperature'		=> 'Temperature',
+  'sys_temperature'     => 'Temperature',
 
   'sys_no_task'         => "No task",
 
@@ -109,13 +109,17 @@ $lang = array_merge($lang, array(
 
   'sys_fleet_arrived'   => "Fleet arrived",
 
-  'sys_planet_type1'    => "Planet",
-  'sys_planet_type2' 	  => "Field Debris",
-  'sys_planet_type3'    => "Moon",
+  'sys_planet_type' => array(
+    PT_PLANET => 'Planet', 
+    PT_DEBRIS => 'Debris Field', 
+    PT_MOON   => 'Moon',
+  ),
 
-  'sys_planet_type_sh1' => "(P)",
-  'sys_planet_type_sh2' => "(O)",
-  'sys_planet_type_sh3' => "(L)",
+  'sys_planet_type_sh' => array(
+    PT_PLANET => '(P)', 
+    PT_DEBRIS => '(D)', 
+    PT_MOON   => '(M)',
+  ),
 
   'sys_capacity' 			=> 'Load Capacity',
   'sys_cargo_bays' 			=> 'Holds',
@@ -440,7 +444,20 @@ $lang = array_merge($lang, array(
   'qst_msg_complete_body'    => 'You completed quest "%s".',
   'qst_msg_your_reward'      => 'Your reward: ',
 
+  // Messages
   'msg_from_admin' => 'Universe Administration',
+  'msg_class' => array(
+    MSG_TYPE_OUTBOX => 'Sent messages',
+    MSG_TYPE_SPY => 'Spy reports',
+    MSG_TYPE_PLAYER => 'Message by players',
+    MSG_TYPE_ALLIANCE => 'Alliance Communications',
+    MSG_TYPE_COMBAT => 'Military reports',
+    MSG_TYPE_RECYCLE => 'Records processing',
+    MSG_TYPE_TRANSPORT => 'The arrival of the fleet',
+    MSG_TYPE_EXPLORE => 'Reports for expeditions',
+    MSG_TYPE_QUE => 'Message queue structures',
+    MSG_TYPE_NEW => 'All messages',
+  ),
 
   // Arrays
   'sys_game_mode' => array(
@@ -493,6 +510,8 @@ $lang = array_merge($lang, array(
     3 => $lang['user_level'][3][0],
   ),
 
+// Compatibility layer - to work with old files
+/*
   'sys_resource' => array(
     1 => $lang['sys_metal'],
     2 => $lang['sys_crystal'],
@@ -501,18 +520,15 @@ $lang = array_merge($lang, array(
     5 => $lang['sys_energy'],
   ),
 
-  'sys_planet_type' => array(
-    PT_PLANET => $lang['sys_planet_type1'], 
-    PT_DEBRIS => $lang['sys_planet_type2'], 
-    PT_MOON   => $lang['sys_planet_type3']
-  ),
+  'sys_planet_type1'    => "Planet",
+  'sys_planet_type2' 	  => "Debris Field",
+  'sys_planet_type3'    => "Moon",
 
-  'sys_planet_type_sh' => array(
-    PT_PLANET => $lang['sys_planet_type_sh1'], 
-    PT_DEBRIS => $lang['sys_planet_type_sh2'], 
-    PT_MOON   => $lang['sys_planet_type_sh3']
-  ),
+  'sys_planet_type_sh1' => "(P)",
+  'sys_planet_type_sh2' => "(D)",
+  'sys_planet_type_sh3' => "(M)",
 
+*/
 ));
 
 ?>

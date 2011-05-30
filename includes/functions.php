@@ -582,7 +582,10 @@ function sys_get_param($param_name, $default = '')
 
 function sys_get_param_int($param_name, $default = 0)
 {
-  return intval(sys_get_param($param_name, $default));
+  $value = sys_get_param($param_name, $default);
+  return $value === 'on' ? 1 : ($value === 'off' ? $default : intval($value));
+
+//  return intval(sys_get_param($param_name, $default));
 }
 
 function sys_get_param_float($param_name, $default = 0)
@@ -699,7 +702,6 @@ function sys_random_string($length = 16, $allowed_chars = 'ABCDEFGHJKLMNOPQRSTUV
 
 function js_safe_string($string)
 {
-//  return str_replace(array("\\", "\"", "'"), array("\\\\", "\\\"", "\'"), $string);
   return addslashes($string);
 }
 
@@ -710,38 +712,60 @@ function sys_safe_output($string)
 
 function sys_user_options_pack(&$user)
 {
+  global $user_option_list;
+
   $options = '';
-  foreach ($GLOBALS['user_options'] as $option_name => $option_value)
+  $option_list = array();
+  foreach($user_option_list as $option_group_id => $option_group)
   {
-    if (!$user[$option_name])
+    $option_list[$option_group_id] = array();
+    foreach($option_group as $option_name => $option_value)
     {
-      $user[$option_name] = $option_value;
+      if (!isset($user[$option_name]))
+      {
+        $user[$option_name] = $option_value;
+      }
+      $options .= "{$option_name}^{$user[$option_name]}|";
+      $option_list[$option_group_id][$option_name] = $user[$option_name];
     }
-    $options .= "{$option_name}^{$user[$option_name]}|";
   }
+
+  $user['options'] = $options;
+  $user['option_list'] = $option_list;
 
   return $options;
 }
 
 function sys_user_options_unpack(&$user)
 {
-  $options = $GLOBALS['user_options'];
+  global $user_option_list;
 
-  $opt_unpack = explode('|', $user['options']);
-  foreach ($opt_unpack as $option)
+  $option_list = array();
+  $option_string_list = explode('|', $user['options']);
+
+  foreach($option_string_list as $option_string)
   {
-    if ($option)
+    list($option_name, $option_value) = explode('^', $option_string);
+    $option_list[$option_name] = $option_value;
+  }
+
+  $final_list = array();
+  foreach($user_option_list as $option_group_id => $option_group)
+  {
+    $final_list[$option_group_id] = array();
+    foreach($option_group as $option_name => $option_value)
     {
-      $option = explode('^', $option);
-      if (isset($options[$option[0]]))
+      if(!isset($option_list[$option_name]))
       {
-        $options[$option[0]] = $option[1];
-        $user[$option[0]] = $option[1];
+        $option_list[$option_name] = $option_value;
       }
+      $user[$option_name] = $final_list[$option_group_id][$option_name] = $option_list[$option_name];
     }
   }
 
-  return $options;
+  $user['option_list'] = $final_list;
+
+  return $final_list;
 }
 
 function sys_unit_str2arr($fleet_string)

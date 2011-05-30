@@ -12,22 +12,11 @@ if (!defined('INSIDE'))
   die('Hack attempt!');
 }
 
-  // Liste de champs pour l'indication des messages en attante
-  $messfields = array (
-     MSG_TYPE_OUTBOX => 'mnl_outbox',
-     MSG_TYPE_SPY => 'mnl_spy',
-     MSG_TYPE_PLAYER => 'mnl_joueur',
-     MSG_TYPE_ALLIANCE => 'mnl_alliance',
-     MSG_TYPE_COMBAT => 'mnl_attaque',
-     MSG_TYPE_RECYCLE => 'mnl_exploit',
-     MSG_TYPE_TRANSPORT => 'mnl_transport',
-     MSG_TYPE_EXPLORE => 'mnl_expedition',
-     //     97 => 'mnl_general',
-     MSG_TYPE_QUE => 'mnl_buildlist',
-     MSG_TYPE_NEW => 'new_message'
+  $tableList = array( 'aks', 'alliance', 'alliance_requests', 'announce', 'annonce', 'banned', 'buddy', 'chat', 'config', 'counter',
+    'errors', 'fleets', 'fleet_log', 'galaxy', 'iraks', 'logs', 'messages', 'notes', 'planets', 'referrals', 'rw', 'statpoints',
+    'users'
   );
 
-  // Liste de champs pour l'indication des messages en attante
   $sn_message_class_list = array(
      MSG_TYPE_OUTBOX => array(
        'name' => 'mnl_outbox',
@@ -61,6 +50,19 @@ if (!defined('INSIDE'))
        'name' => 'new_message',
      ),
   );
+
+  $sn_message_groups = array(
+    'switchable' => array(MSG_TYPE_SPY, MSG_TYPE_COMBAT, MSG_TYPE_RECYCLE, MSG_TYPE_TRANSPORT, MSG_TYPE_EXPLORE, MSG_TYPE_QUE),
+  );
+
+  // Default user option list as 'option_name' => 'option_list'
+  $user_option_list = array();
+
+  $user_option_list[OPT_MESSAGE] = array();
+  foreach($sn_message_groups['switchable'] as $option_id)
+  {
+    $user_option_list[OPT_MESSAGE]["opt_{$sn_message_class_list[$option_id]['name']}"] = 1;
+  }
 
   $sn_diplomacy_relation_list = array(
     ALLY_DIPLOMACY_NEUTRAL       => array(
@@ -1869,13 +1871,6 @@ if (!defined('INSIDE'))
 
   $sn_groups = &$sn_data['groups'];
   $reslist   = &$sn_groups;
-
-  $user_options = array();
-
-  $tableList = array( 'aks', 'alliance', 'alliance_requests', 'announce', 'annonce', 'banned', 'buddy', 'chat', 'config', 'counter',
-    'errors', 'fleets', 'fleet_log', 'galaxy', 'iraks', 'logs', 'messages', 'notes', 'planets', 'referrals', 'rw', 'statpoints',
-    'users'
-  );
 
   // Parsing united $sn_data table to old-style tables for compatibility
   // -------------------------------------------------------------------

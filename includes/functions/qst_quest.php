@@ -68,26 +68,20 @@ function qst_render_page()
         else
         {
           sn_db_perform('{{quest}}', array(
-              'quest_name' => $quest_name,
-              'quest_type' => $quest_type,
-              'quest_description' => $quest_description,
-              'quest_conditions' => $quest_conditions,
-              'quest_rewards' => $quest_rewards,
+            'quest_name' => $quest_name,
+            'quest_type' => $quest_type,
+            'quest_description' => $quest_description,
+            'quest_conditions' => $quest_conditions,
+            'quest_rewards' => $quest_rewards,
           ));
         }
         // doquery("UPDATE {{users}} SET `news_lastread` = `news_lastread` + 1;");
 
-        /*
         // TODO: Add mass mail for new quests
+        /*
         if(sys_get_param_int('news_mass_mail'))
         {
-          if($detail_url)
-          {
-            $text = "{$text} <a href=\"{$detail_url}\">{$lang['news_more']}</a>";
-          }
-
-          doquery("INSERT INTO {{messages}} (message_owner, message_time, message_type, message_from, message_subject, message_text) SELECT `id`, unix_timestamp(now()), 1, '{$lang['sys_administration']}', '{$lang['news_title']}', '{$text}' FROM {{users}};");
-          doquery("UPDATE {{users}} SET {$messfields[1]} = {$messfields[1]} + 1, {$messfields[100]} = {$messfields[100]} + 1;");
+          msg_send_simple_message('*', 0, 0, MSG_TYPE_PLAYER, $lang['sys_administration'], $lang['news_title'], $text);
         }
         */
       }

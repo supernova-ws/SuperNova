@@ -1,11 +1,25 @@
 <h2>{L_opt_header}</h2>
+<!-- IF SAVED -->
+  <h3 class="positive">{L_opt_msg_saved}</h3>
+<!-- ENDIF -->
+
+<!-- IF CHANGE_NAME -->
+  <h3 class="positive">{L_opt_msg_name_changed}</h3>
+<!-- ENDIF -->
+
+<!-- IF CHANGE_PASS -->
+  <!-- IF CHANGE_PASS == -1 -->
+    <h3 class="positive">{L_opt_msg_pass_changed}</h3>
+  <!-- ELSEIF CHANGE_PASS == 1  -->
+    <h3 class="negative">{L_opt_err_pass_wrong}</h3>
+  <!-- ELSEIF CHANGE_PASS == 2  -->
+    <h3 class="negative">{L_opt_err_pass_unmatched}</h3>
+  <!-- ENDIF -->
+<!-- ENDIF -->
+
 <form action="options.php?mode=change" method="post" name="fOptions">
   <table width="519">
     <tbody>
-      <!-- IF SAVED -->
-        <tr><td class="c positive" colspan=2 align=center>{L_opt_saved}</td></tr>
-      <!-- ENDIF -->
-
       <!-- IF IS_ADMIN -->
         <tr><td class="c" colspan="2">{L_opt_adm_title}</td></tr>
         <tr>
@@ -113,9 +127,25 @@
 <!--      <img src="{dpath}img/s.gif" alt="{show_report}"> {L_show_report} <input name="settings_rep"{user_settings_rep} type="checkbox" /> -->
       </th>
       </tr>
-      
+
+      <!-- IF .options_1 -->
       <tr>
-      <td class="c" colspan="2">{L_delete_vacations}</td>
+        <th class="c_l" colspan="2">{L_opt_messages}</th>
+      </tr>
+
+        <!-- BEGIN options_1 -->
+          <tr>
+            <td class="c_c"><label for="{options_1.NAME}">{options_1.TEXT}</label></td>
+            <td class="c_c">
+<!--              <input type="hidden" name="{options_1.NAME}" value="off" > -->
+              <input type="checkbox" name="{options_1.NAME}" value="1" id="{options_1.NAME}" <!-- IF options_1.VALUE --> checked<!-- ENDIF -->>
+            </td>
+          </tr>
+        <!-- END options_1 -->
+      <!-- ENDIF -->
+
+      <tr>
+        <td class="c" colspan="2">{L_delete_vacations}</td>
       </tr>
 <!-- IF ! USER_VACATION_DISABLE -->
       <tr title="{L_vacations_tip}">
@@ -123,7 +153,7 @@
       </tr>
 <!-- ENDIF -->
       <tr>
-      <th colspan=2><span class="fl"><input name="db_deaktjava"{opt_delac_data} type="checkbox" id="db_deaktjava" /> <label for="db_deaktjava">{L_deleteaccount}. {L_deleteaccount_tip}</span></label></th>
+      <th colspan=2><span class="fl"><input name="db_deaktjava"{opt_delac_data} type="checkbox" id="db_deaktjava" /> <label for="db_deaktjava">{L_deleteaccount}. {L_deleteaccount_tip}</span><span id="delete_on"></span></label></th>
       </th>
       </tr>
       <tr>
@@ -134,4 +164,5 @@
 </form>
 <script type="text/javascript"><!--
   sn_timers.unshift({id: 'vacancy_to', type: 4, active: true, start_time: '{TIME_NOW}', options: {format: 3, delta: '{VACATION_TIME}'}});
+  sn_timers.unshift({id: 'delete_on', type: 4, active: true, start_time: '{TIME_NOW}', options: {format: 3, delta: '{DELETE_TIME}'}});
 // --></script>

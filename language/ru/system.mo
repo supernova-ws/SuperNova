@@ -109,13 +109,17 @@ $lang = array_merge($lang, array(
 
   'sys_fleet_arrived'   => "Флот прибыл",
 
-  'sys_planet_type1'    => "Планета",
-  'sys_planet_type2' 	=> "Поле обломков",
-  'sys_planet_type3'    => "Луна",
+  'sys_planet_type' => array(
+    PT_PLANET => 'Планета', 
+    PT_DEBRIS => 'Поле обломков', 
+    PT_MOON   => 'Луна',
+  ),
 
-  'sys_planet_type_sh1' => "(П)",
-  'sys_planet_type_sh2' => "(О)",
-  'sys_planet_type_sh3' => "(Л)",
+  'sys_planet_type_sh' => array(
+    PT_PLANET => '(П)',
+    PT_DEBRIS => '(О)',
+    PT_MOON   => '(Л)',
+  ),
 
   'sys_capacity' 			=> 'Грузоподъёмность',
   'sys_cargo_bays' 		=> 'Трюмы',
@@ -440,7 +444,20 @@ $lang = array_merge($lang, array(
   'qst_msg_complete_body'    => 'Вы выполнили квест "%s".',
   'qst_msg_your_reward'      => 'Ваша награда:',
 
+  // Messages
   'msg_from_admin' => 'Администрация Вселенной',
+  'msg_class' => array(
+    MSG_TYPE_OUTBOX => 'Отправленные сообщения',
+    MSG_TYPE_SPY => 'Шпионские отчёты',
+    MSG_TYPE_PLAYER => 'Сообщения от игроков',
+    MSG_TYPE_ALLIANCE => 'Сообщения альянса',
+    MSG_TYPE_COMBAT => 'Военные отчёты',
+    MSG_TYPE_RECYCLE => 'Отчеты переработки',
+    MSG_TYPE_TRANSPORT => 'Прибытие флота',
+    MSG_TYPE_EXPLORE => 'Отчёты экспедиций',
+    MSG_TYPE_QUE => 'Сообщения очереди построек',
+    MSG_TYPE_NEW => 'Все сообщения',
+  ),
 
   // Arrays
   'sys_game_mode' => array(
@@ -493,6 +510,8 @@ $lang = array_merge($lang, array(
     3 => $lang['user_level'][3][0],
   ),
 
+// Compatibility layer - to work with old files
+/*
   'sys_resource' => array(
     1 => $lang['sys_metal'],
     2 => $lang['sys_crystal'],
@@ -501,18 +520,14 @@ $lang = array_merge($lang, array(
     5 => $lang['sys_energy'],
   ),
 
-  'sys_planet_type' => array(
-    PT_PLANET => $lang['sys_planet_type1'], 
-    PT_DEBRIS => $lang['sys_planet_type2'], 
-    PT_MOON   => $lang['sys_planet_type3']
-  ),
+  'sys_planet_type1' => $lang['sys_planet_type'][1],
+  'sys_planet_type2' => $lang['sys_planet_type'][2],
+  'sys_planet_type3' => $lang['sys_planet_type'][3],
 
-  'sys_planet_type_sh' => array(
-    PT_PLANET => $lang['sys_planet_type_sh1'], 
-    PT_DEBRIS => $lang['sys_planet_type_sh2'], 
-    PT_MOON   => $lang['sys_planet_type_sh3']
-  ),
-
+  'sys_planet_type_sh1' => $lang['sys_planet_type_sh'][1],
+  'sys_planet_type_sh2' => $lang['sys_planet_type_sh'][2],
+  'sys_planet_type_sh3' => $lang['sys_planet_type_sh'][3],
+*/
 ));
 
 ?>

@@ -49,8 +49,13 @@ if ($user['authlevel'] >= 3)
         $text = "{$text} <a href=\"{$detail_url}\">{$lang['news_more']}</a>";
       }
 
+      msg_send_simple_message('*', 0, 0, MSG_TYPE_PLAYER, $lang['sys_administration'], $lang['news_title'], $text);
+/*
+      $message_class_name = $sn_message_class_list[MSG_TYPE_PLAYER]['name'];
+      $message_class_name_total = $sn_message_class_list[MSG_TYPE_NEW]['name'];
       doquery("INSERT INTO {{messages}} (message_owner, message_time, message_type, message_from, message_subject, message_text) SELECT `id`, unix_timestamp(now()), 1, '{$lang['sys_administration']}', '{$lang['news_title']}', '{$text}' FROM {{users}};");
-      doquery("UPDATE {{users}} SET {$messfields[1]} = {$messfields[1]} + 1, {$messfields[100]} = {$messfields[100]} + 1;");
+      doquery("UPDATE {{users}} SET {$message_class_name} = {$message_class_name} + 1, {$message_class_name_total} = {$message_class_name_total} + 1;");
+*/
     }
 
     $mode = '';
