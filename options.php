@@ -11,111 +11,21 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('options');
+lng_include('messages');
 
-$lang['PHP_SELF'] = 'options.' . PHP_EX;
+$template = gettemplate('options', true);
 
-$dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
 $mode = SYS_mysqlSmartEscape($_GET['mode']);
-$POST_db_character = SYS_mysqlSmartEscape($_POST["db_character"]);
-
-if ($_POST && $mode == "change")  // Array ( [db_character]
+if($mode == 'change')
 {
   // Gestion des options speciales pour les admins
-  if ($user['authlevel'] > 0) {
-    if ($_POST['adm_pl_prot'] == 'on') {
-      $planet_protection = $user['authlevel'];
-    } else {
-      $planet_protection = 0;
-    }
+  if($user['authlevel'] > 0)
+  {
+    $planet_protection = sys_get_param_int('adm_pl_prot') ? $user['authlevel'] : 0;
     doquery ("UPDATE {{planets}} SET `id_level` = '{$planet_protection}' WHERE `id_owner` = '{$user['id']}';");
   }
 
-  $iduser = $user["id"];
-  $avatar = SYS_mysqlSmartEscape($_POST["avatar"]);
-  $dpath = SYS_mysqlSmartEscape($_POST["dpath"]);
-  $languese = SYS_mysqlSmartEscape($_POST["langer"]);
-
-  // Mostrar skin
-  if (isset($_POST["design"]) && $_POST["design"] == 'on') {
-    $design = "1";
-  } else {
-    $design = "0";
-  }
-  // Desactivar comprobaci? de IP
-  if (isset($_POST["noipcheck"]) && $_POST["noipcheck"] == 'on') {
-    $noipcheck = "1";
-  } else {
-    $noipcheck = "0";
-  }
-  // Nombre de usuario
-  if (isset($POST_db_character) && $POST_db_character && $config->game_user_changename) {
-    $username = CheckInputStrings ( $_POST['db_character'] );
-  } else {
-    $username = $user['username'];
-  }
-  // Adresse e-Mail
-  if (isset($_POST["db_email"]) && $_POST["db_email"] != '') {
-    $db_email = $_POST['db_email'];
-  } else {
-    $db_email = $user['email'];
-  }
-  // Cantidad de sondas de espionaje
-  if (isset($_POST["spio_anz"]) && is_numeric($_POST["spio_anz"])) {
-    $spio_anz = intval($_POST["spio_anz"]);
-  } else {
-    $spio_anz = "1";
-  }
-  // Mostrar tooltip durante
-  if (isset($_POST["settings_tooltiptime"]) && is_numeric($_POST["settings_tooltiptime"])) {
-    $settings_tooltiptime = intval($_POST["settings_tooltiptime"]);
-  } else {
-    $settings_tooltiptime = "1";
-  }
-  // Maximo mensajes de flotas
-  if (isset($_POST["settings_fleetactions"]) && is_numeric($_POST["settings_fleetactions"])) {
-    $settings_fleetactions = intval($_POST["settings_fleetactions"]);
-  } else {
-    $settings_fleetactions = "1";
-  } //
-  // Mostrar logos de los aliados
-  if (isset($_POST["settings_allylogo"]) && $_POST["settings_allylogo"] == 'on') {
-    $settings_allylogo = "1";
-  } else {
-    $settings_allylogo = "0";
-  }
-  // Espionaje
-  if (isset($_POST["settings_esp"]) && $_POST["settings_esp"] == 'on') {
-    $settings_esp = "1";
-  } else {
-    $settings_esp = "0";
-  }
-  // Escribir mensaje
-  if (isset($_POST["settings_wri"]) && $_POST["settings_wri"] == 'on') {
-    $settings_wri = "1";
-  } else {
-    $settings_wri = "0";
-  }
-  // A?dir a lista de amigos
-  if (isset($_POST["settings_bud"]) && $_POST["settings_bud"] == 'on') {
-    $settings_bud = "1";
-  } else {
-    $settings_bud = "0";
-  }
-  // Ataque con misiles
-  if (isset($_POST["settings_mis"]) && $_POST["settings_mis"] == 'on') {
-    $settings_mis = "1";
-  } else {
-    $settings_mis = "0";
-  }
-  // Ver reporte
-  if (isset($_POST["settings_rep"]) && $_POST["settings_rep"] == 'on') {
-    $settings_rep = "1";
-  } else {
-    $settings_rep = "0";
-  }
-
-  // Modo vacaciones
-  if ($_POST['vacation'] == 'on' && !$config->user_vacation_disable)
+  if(sys_get_param_int('vacation') && !$config->user_vacation_disable)
   {
     if($user['authlevel'] < 3)
     {
@@ -123,7 +33,7 @@ if ($_POST && $mode == "change")  // Array ( [db_character]
 
       if($is_building)
       {
-        message($lang['opt_vacation_err_your_fleet'], $lang['Error'], "options.php", 1);
+        message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'options.php', 1);
       }
       else
       {
@@ -141,7 +51,7 @@ if ($_POST && $mode == "change")  // Array ( [db_character]
 
         if($is_building)
         {
-          message($lang['opt_vacation_err_building'], $lang['Error'], "options.php", 1);
+          message($lang['opt_vacation_err_building'], $lang['Error'], 'options.php', 1);
         }
       }
 
@@ -166,98 +76,129 @@ if ($_POST && $mode == "change")  // Array ( [db_character]
           solar_satelit_porcent = '0'
         WHERE id = '{$planet['id']}' LIMIT 1;");
       }
-      $user['vacation'] = $time_now + VOCATION_TIME;
+      $user['vacation'] = $time_now + VACATION_TIME;
     }
     else
     {
       $user['vacation'] = $time_now;
     }
 
-    doquery("UPDATE {{users}} SET `vacation` = '{$user['vacation']}' WHERE `id` = '{$iduser}' LIMIT 1;");
+//    doquery("UPDATE {{users}} SET `vacation` = '{$user['vacation']}' WHERE `id` = '{$user['id']}' LIMIT 1;");
   }
 
-  // Borrar cuenta
-  if (isset($_POST["db_deaktjava"]) && $_POST["db_deaktjava"] == 'on')
+  foreach($user_option_list as $option_group_id => $option_group)
   {
-    $db_deaktjava = "1";
-    $Del_Time = time()+604800;
+    foreach($option_group as $option_name => $option_value)
+    {
+      if($user[$option_name] !== null)
+      {
+        $user[$option_name] = sys_get_param_str($option_name);
+      }
+      else
+      {
+        $user[$option_name] = $option_value;
+      }
+    }
+  }
+  $options = sys_user_options_pack($user);
+
+  $username = sys_get_param_str_raw('username');
+  if($username && $user['username'] != $username && $config->game_user_changename)
+  {
+    $user['username'] = $username;
+    $username = mysql_real_escape_string($username);
+    // TODO: Change cookie to not force user relogin
+    setcookie(COOKIE_NAME, '', time()-100000, '/', '', 0); //le da el expire
+    $template->assign_var('CHANGE_NAME', true);
   }
   else
   {
-    $db_deaktjava = "0";
-    $Del_Time = "0";
+    $username = mysql_real_escape_string($user['username']);
   }
-  $SetSort  = intval($_POST['settings_sort']);
-  $SetOrder = intval($_POST['settings_order']);
 
-  $options = sys_user_options_pack($user);
+  $new_password = sys_get_param('newpass1');
+  if($new_password)
+  {
+    try
+    {
+      if(sys_get_param('password') != $user['password'])
+      {
+        throw new Exception('', 1);
+      }
 
-  $db_email = SYS_mysqlSmartEscape(CheckInputStrings($db_email));
-  $languese = SYS_mysqlSmartEscape(CheckInputStrings($languese));
-  $avatar   = SYS_mysqlSmartEscape(CheckInputStrings($avatar));
-  $dpath    = SYS_mysqlSmartEscape(CheckInputStrings($dpath));
+      if($new_password != sys_get_param('newpass2'))
+      {
+        throw new Exception('', 2);
+      }
+
+      $user['password'] = md5($new_password);
+      // TODO: Change cookie to not force user relogin
+      setcookie(COOKIE_NAME, '', time()-100000, '/', '', 0); //le da el expire
+      $template->assign_var('CHANGE_PASS', -1);
+    }
+    catch (Exception $e)
+    {
+      $template->assign_var('CHANGE_PASS', $e->getCode());
+    }
+  }
+
+  $user['email'] = sys_get_param_str('db_email');
+  $user['dpath']  = sys_get_param_str('dpath');
+  $user['lang']   = sys_get_param_str('langer');
+  $user['avatar'] = sys_get_param_str('avatar');
+
+  $user['design'] = sys_get_param_int('design');
+  $user['noipcheck'] = sys_get_param_int('noipcheck');
+  $user['spio_anz'] = sys_get_param_int('spio_anz');
+  $user['settings_tooltiptime'] = sys_get_param_int('settings_tooltiptime');
+  $user['settings_fleetactions'] = sys_get_param_int('settings_fleetactions', 1);
+  $user['settings_allylogo'] = sys_get_param_int('settings_allylogo');
+  $user['settings_esp'] = sys_get_param_int('settings_esp');
+  $user['settings_wri'] = sys_get_param_int('settings_wri');
+  $user['settings_bud'] = sys_get_param_int('settings_bud');
+  $user['settings_mis'] = sys_get_param_int('settings_mis');
+  $user['settings_rep'] = sys_get_param_int('settings_rep');
+  $user['planet_sort']  = sys_get_param_int('settings_sort');
+  $user['planet_sort_order'] = sys_get_param_int('settings_order');
+  $user['deltime'] = !sys_get_param_int('db_deaktjava') ? 0 : ($user['deltime'] ? $user['deltime'] : $time_now + 604800);
 
   doquery("UPDATE {{users}} SET
-  `email` = '{$db_email}',
-  `lang` = '{$languese}',
-  `avatar` = '{$avatar}',
-  `dpath` = '{$dpath}',
-  `design` = '{$design}',
-  `noipcheck` = '$noipcheck',
-  `planet_sort` = '$SetSort',
-  `planet_sort_order` = '$SetOrder',
-  `spio_anz` = '$spio_anz',
-  `settings_tooltiptime` = '$settings_tooltiptime',
-  `settings_fleetactions` = '$settings_fleetactions',
-  `settings_allylogo` = '$settings_allylogo',
-  `settings_esp` = '$settings_esp',
-  `settings_wri` = '$settings_wri',
-  `settings_bud` = '$settings_bud',
-  `settings_mis` = '$settings_mis',
-  `settings_rep` = '$settings_rep',
-  `db_deaktjava` = '$db_deaktjava',
-  `kolorminus` = '$kolorminus',
-  `kolorplus` = '$kolorplus',
-  `kolorpoziom` = '$kolorpoziom',
-  `options` = '$options',
-  `deltime` = '$Del_Time'
-  WHERE `id` = '$iduser' LIMIT 1");
+    `username` = '{$username}',
+    `password` = '{$user['password']}',
+    `email` = '{$user['email']}',
+    `lang` = '{$user['lang']}',
+    `avatar` = '{$user['avatar']}',
+    `dpath` = '{$user['dpath']}',
+    `design` = '{$design}',
+    `noipcheck` = '{$user['noipcheck']}',
+    `planet_sort` = '{$user['planet_sort']}',
+    `planet_sort_order` = '{$user['planet_sort_order']}',
+    `spio_anz` = '{$user['spio_anz']}',
+    `settings_tooltiptime` = '{$user['settings_tooltiptime']}',
+    `settings_fleetactions` = '{$user['settings_fleetactions']}',
+    `settings_allylogo` = '{$user['settings_allylogo']}',
+    `settings_esp` = '{$user['settings_esp']}',
+    `settings_wri` = '{$user['settings_wri']}',
+    `settings_bud` = '{$user['settings_bud']}',
+    `settings_mis` = '{$user['settings_mis']}',
+    `settings_rep` = '{$user['settings_rep']}',
+    `deltime` = '{$user['deltime']}',
+    `kolorminus` = '{$user['kolorminus']}',
+    `kolorplus` = '{$user['kolorplus']}',
+    `kolorpoziom` = '{$user['kolorpoziom']}',
+    `vacation` = '{$user['vacation']}',
+    `options` = '{$user['options']}'
+  WHERE `id` = '{$user['id']}' LIMIT 1");
 
-  if (isset($_POST["db_password"]) && md5($_POST["db_password"]) == $user["password"]) {
-
-    if ($_POST["newpass1"] == $_POST["newpass2"] && $_POST["newpass1"] != NULL) {
-    $newpass = md5($_POST["newpass1"]);
-      doquery("UPDATE {{users}} SET `password` = '{$newpass}' WHERE `id` = '{$user['id']}' LIMIT 1");
-      setcookie(COOKIE_NAME, "", time()-100000, "/", "", 0); //le da el expire
-      message($lang['succeful_changepass'], $lang['changue_pass']);
-    }
-  }
-
-  $username = SYS_mysqlSmartEscape(CheckInputStrings($username));
-  if ($user['username'] != $username && $config->game_user_changename) {
-    $query = doquery("SELECT id FROM {{users}} WHERE username='{$POST_db_character}'", '', true);
-    if (!$query) {
-      doquery("UPDATE {{users}} SET username='{$username}' WHERE id='{$user['id']}' LIMIT 1");
-      setcookie(COOKIE_NAME, "", time()-100000, "/", "", 0); //le da el expire
-      message($lang['succeful_changename'], $lang['changue_name']);
-    }
-  }
-
-  header("Location: options.php?saved=true");
+  $parse['SAVED'] = true;
 }
 
-$template = gettemplate('options', true);
-
-//$parse = $lang;
-$parse['SAVED'] = sys_get_param_str('saved');
-
-$parse['dpath'] = $dpath;
 //-------------------------------
-$dir = dir(SN_ROOT_PHYSICAL . "skins");
-$parse['opt_lst_skin_data']="<option value =\"\">".$lang['select_skin_path']."</option>";
+$dir = dir(SN_ROOT_PHYSICAL . 'skins');
+$parse['opt_lst_skin_data']="<option value =\"\">{$lang['select_skin_path']}</option>";
 while (false !== ($entry = $dir->read())) {
-  if (is_dir("skins/".$entry) && $entry[0] !=".") {
-    $parse['opt_lst_skin_data'].="<option value =\"$entry\">$entry</option>";
+  if (is_dir("skins/{$entry}") && $entry[0] !='.') {
+    $parse['opt_lst_skin_data'].="<option value =\"{$entry}\">{$entry}</option>";
   }
 }
 $dir->close();
@@ -286,42 +227,52 @@ foreach($lang_list as $lang_id => $lang_data)
   $parse['opt_lst_lang_data'] .= "<option value =\"{$lang_id}\" {$selected}>{$lang_data['LANG_NAME_NATIVE']}</option>";
 }
 
-if ($user['authlevel']) {
-  $parse['adm_pl_prot_data']    = ($planetrow['id_level'] > 0) ? " checked='checked'/" : '';
-  $parse['IS_ADMIN'] = $user['authlevel'];
-}
-
-$parse['opt_usern_data'] = $user['username'];
-$parse['opt_mail1_data'] = $user['email'];
-$parse['opt_mail2_data'] = $user['email_2'];
-$parse['opt_dpath_data'] = $user['dpath'];
-$parse['opt_avata_data'] = $user['avatar'];
-$parse['opt_probe_data'] = $user['spio_anz'];
-$parse['opt_toolt_data'] = $user['settings_tooltiptime'];
-$parse['opt_fleet_data'] = $user['settings_fleetactions'];
-$parse['opt_sskin_data'] = ($user['design'] == 1) ? " checked='checked'":'';
-$parse['opt_noipc_data'] = ($user['noipcheck'] == 1) ? " checked='checked'":'';
-$parse['opt_allyl_data'] = ($user['settings_allylogo'] == 1) ? " checked='checked'/":'';
-$parse['opt_delac_data'] = ($user['db_deaktjava'] == 1) ? " checked='checked'/":'';
-
-$parse['user_settings_rep'] = ($user['settings_rep'] == 1) ? " checked='checked'/":'';
-$parse['user_settings_esp'] = ($user['settings_esp'] == 1) ? " checked='checked'/":'';
-$parse['user_settings_wri'] = ($user['settings_wri'] == 1) ? " checked='checked'/":'';
-$parse['user_settings_mis'] = ($user['settings_mis'] == 1) ? " checked='checked'/":'';
-$parse['user_settings_bud'] = ($user['settings_bud'] == 1) ? " checked='checked'/":'';
-$parse['kolorminus']  = $user['kolorminus'];
-$parse['kolorplus']   = $user['kolorplus'];
-$parse['kolorpoziom'] = $user['kolorpoziom'];
-
-$options = sys_user_options_unpack($user);
-foreach($options as $option_name => $option_value)
+if ($user['authlevel'])
 {
-  $parse[$option_name] = $user[$option_name];
+  $parse['adm_pl_prot_data'] = ($planetrow['id_level'] > 0) ? " checked='checked'" : '';
 }
 
-$parse['USER_VACATION_DISABLE'] = $config->user_vacation_disable;
-$parse['VACATION_TIME'] = VOCATION_TIME;
-$parse['TIME_NOW'] = $time_now;
+$template->assign_vars(array(
+  'IS_ADMIN'       => $user['authlevel'],
+  'opt_usern_data' => $user['username'],
+  'opt_mail1_data' => $user['email'],
+  'opt_mail2_data' => $user['email_2'],
+  'opt_dpath_data' => $user['dpath'],
+  'opt_avata_data' => $user['avatar'],
+  'opt_probe_data' => $user['spio_anz'],
+  'opt_toolt_data' => $user['settings_tooltiptime'],
+  'opt_fleet_data' => $user['settings_fleetactions'],
+  'opt_sskin_data' => ($user['design'] == 1) ? " checked='checked'":'',
+  'opt_noipc_data' => ($user['noipcheck'] == 1) ? " checked='checked'":'',
+  'opt_allyl_data' => ($user['settings_allylogo'] == 1) ? " checked='checked'/":'',
+  'opt_delac_data' => ($user['db_deaktjava'] == 1) ? " checked='checked'/":'',
+
+  'user_settings_rep' => ($user['settings_rep'] == 1) ? " checked='checked'/":'',
+  'user_settings_esp' => ($user['settings_esp'] == 1) ? " checked='checked'/":'',
+  'user_settings_wri' => ($user['settings_wri'] == 1) ? " checked='checked'/":'',
+  'user_settings_mis' => ($user['settings_mis'] == 1) ? " checked='checked'/":'',
+  'user_settings_bud' => ($user['settings_bud'] == 1) ? " checked='checked'/":'',
+  'kolorminus'        => $user['kolorminus'],
+  'kolorplus'         => $user['kolorplus'],
+  'kolorpoziom'       => $user['kolorpoziom'],
+
+  'USER_VACATION_DISABLE' => $config->user_vacation_disable,
+  'VACATION_TIME' => VACATION_TIME,
+  'DELETE_TIME' => 45*24*60*60,
+  'TIME_NOW' => $time_now,
+));
+
+foreach($user_option_list as $option_group_id => $option_group)
+{
+  foreach($option_group as $option_name => $option_value)
+  {
+    $template->assign_block_vars("options_{$option_group_id}", array(
+      'NAME'  => $option_name,
+      'TEXT'  => $lang['opt_custom'][$option_name],
+      'VALUE' => $user[$option_name],
+    ));
+  }
+}
 
 display(parsetemplate($template, $parse), $lang['opt_options'], false);
 

@@ -148,6 +148,8 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   }
   qst_reward($user, $planet, $que['rewards'], $que['quests']);
 
+  $planet['planet_caps'] = $Caps;
+
   return array('user' => $user, 'planet' => $planet, 'que' => $que);
 }
 

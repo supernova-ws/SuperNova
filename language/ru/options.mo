@@ -1,16 +1,37 @@
 <?php
 
-$lang['opt_header'] = 'Настройки пользователя';
+if (!defined('INSIDE'))
+{
+  die("Попытка взлома!");
+}
 
-//	
-$lang['changue_pass']			= "Сменить пароль";
-$lang['Download']			= "Загрузка";
-$lang['Search']				= "Поиск";
-$lang['succeful_changepass']		= "Пароль успешно изменён.<br /><a href=\"login.php\" target=\"_top\">Назад</a>";
-$lang['succeful_changename']		= "Имя пользователя успешно изменено.<br /><a href=\"login.php\" target=\"_top\">Назад</a>";
-$lang['opt_saved']			= "Настройки успешно изменены.";
+global $sn_message_groups, $sn_message_class_list;
+$lang['opt_custom'] = $lang['opt_custom'] === null ? array() : $lang['opt_custom'];
+foreach($sn_message_groups['switchable'] as $option_id)
+{
+  $option_name = $sn_message_class_list[$option_id]['name'];
+  $lang['opt_custom']["opt_{$option_name}"] = &$lang['msg_class'][$option_id];
+}
 
-//	
+$lang = array_merge($lang, array(
+  'opt_header'           => 'Настройки пользователя',
+
+  'opt_messages'         => 'Автоматические уведомления',
+  'opt_msg_saved'        => 'Настройки успешно изменены',
+  'opt_msg_name_changed' => 'Имя пользователя успешно изменено.<br /><a href="login.php" target="_top">Назад</a>',
+  'opt_msg_pass_changed' => 'Пароль успешно изменен.<br /><a href="login.php" target="_top">Назад</a>',
+  'opt_err_pass_wrong'   => 'Неправильный текущий пароль. Пароль не был изменен',
+  'opt_err_pass_unmatched' => 'Введенный пароль не совпадает с подтвержденим пароля. Пароль не был изменен',
+
+));
+
+//
+$lang['changue_pass']        = "Сменить пароль";
+$lang['Download']            = "Загрузка";
+$lang['Search']              = "Поиск";
+$lang['succeful_changepass'] = "Пароль успешно изменён.<br /><a href=\"login.php\" target=\"_top\">Назад</a>";
+
+//
 $lang['userdata']			= "Информация";
 $lang['username']			= "Имя";
 $lang['lastpassword']			= "Старый пароль";

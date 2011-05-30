@@ -1,25 +1,40 @@
 <?php
 
-if (!defined('INSIDE')) 
+if(!defined('INSIDE'))
 {
-	die('Hack attempt!');
+  die('Hack attempt!');
 }
+
+$lang = array_merge($lang, array(
+  'msg_page_header' => 'Personal messges',
+
+  'msg_mark_select'      => '-- SELECT RANGE --',
+  'msg_mark_checked'     => 'Marked messages',
+  'msg_mark_unchecked'   => 'Unmarked messages',
+  'msg_mark_class'       => 'All messages in current category',
+  'msg_mark_all'         => 'ALL PERSONAL MESSAGES',
+  
+  'msg_compose'     => 'Write message',
+  'msg_recipient'   => 'To',
+  'msg_subject'     => 'Subject',
+  'msg_text'        => 'Message',
+
+  'msg_subject_default'  => 'New message',
+
+  'msg_not_message_sent' => 'Message succesfully sent',
+
+  'msg_warn_no_messages' => 'No messages in this category',
+
+  'msg_err_player_not_found' => 'Player not found',
+  'msg_err_no_text'          => 'You can not sent empty message',
+  'msg_err_self_send'        => 'You can not sent message to yourself',
+));
 
 $lang['alliance']		= 'Alliance';
 $lang['title']			= "Mailbox";
 $lang['head_type']		= "Category";
 $lang['head_count']		= "Unread";
 $lang['head_total']		= "Total";
-$lang['type'][-1]		= "Sent messages";
-$lang['type'][0]		= "Spy reports";
-$lang['type'][1]		= "Message by players";
-$lang['type'][2]		= "Alliance Communications";
-$lang['type'][3]		= "Military reports";
-$lang['type'][4]		= "Records processing";
-$lang['type'][5]		= "The arrival of the fleet";
-$lang['type'][15]		= "Reports for expeditions";
-$lang['type'][99]		= "Message queue structures";
-$lang['type'][100]  		= "All messages";
 
 $lang['mes_sent']		= "Message sent";
 $lang['mess_pagetitle']		= "Send a message";

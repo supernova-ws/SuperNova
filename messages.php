@@ -174,7 +174,7 @@ switch ($mode)
 
   case 'show':
     $template = gettemplate('msg_message_list', true);
-    $current_class_text = $lang['type'][$current_class];
+    $current_class_text = $lang['msg_class'][$current_class];
 
     if($current_class == MSG_TYPE_OUTBOX)
     {
@@ -251,7 +251,7 @@ switch ($mode)
       $template->assign_block_vars('message_class', array(
         'ID'     => $message_class_id,
         'STYLE'  => $message_class['name'],
-        'TEXT'   => $lang['type'][$message_class_id],
+        'TEXT'   => $lang['msg_class'][$message_class_id],
         'UNREAD' => $user[$message_class['name']],
         'TOTAL'  => intval($messages_total[$message_class_id]),
       ));

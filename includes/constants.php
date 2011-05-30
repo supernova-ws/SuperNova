@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '28');
 define('SN_RELEASE', '28.1');
-define('SN_VERSION', '28.1a6');
+define('SN_VERSION', '28.1a8');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -57,7 +57,7 @@ define('DARKMATER_COST', 3);
 //galaxy_show_admins
 define('SHOW_ADMIN', 1);
 
-define('VOCATION_TIME', 2*24*60*60); // 48 hours
+define('VACATION_TIME', 2*24*60*60); // 48 hours
 
 // Mot qui sont interdit a la saisie !
 $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
@@ -154,7 +154,12 @@ define('LOGIN_ERROR_USERNAME'        , 4);
 define('LOGIN_ERROR_ACTIVE'          , 5);
 define('LOGIN_ERROR_EXTERNAL_AUTH'   , 6);
 
-// Login statuses
+// Option groups
+define('OPT_ALL',      0);
+define('OPT_MESSAGE',  1);
+define('OPT_UNIVERSE', 2);
+
+// Message classes
 define('MSG_TYPE_OUTBOX'   ,  -1);
 define('MSG_TYPE_SPY'      ,   0);
 define('MSG_TYPE_PLAYER'   ,   1);
