@@ -55,12 +55,12 @@ function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0)
 
 function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false)
 {
-  global $sn_message_class_list, $user;
+  global $sn_message_class_list, $sn_message_groups, $user;
 
   $timestamp = $timestamp ? $timestamp : $GLOBALS['time_now'];
 
   $message_class_name = $sn_message_class_list[$message_type]['name'];
-  if(!$user["opt_{$message_class_name}"])
+  if(in_array($message_type, $sn_message_groups['switchable']) && !$user["opt_{$message_class_name}"])
   {
     return;
   }
