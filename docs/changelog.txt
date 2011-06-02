@@ -114,6 +114,7 @@
 [@] Системное: sys_get_param_int_val теперь так же  обрабатывает  непрописанные
     чекбоксы - те, которые возвращают "on"  и  "off".  Для  таких  значение  он
     возвращаеет соответственно "1" и "{$default}"
+[@] SQL: Исправлен SQL-файл
 
 
 Project "SuperNova.WS" Release 28 "Chatting Diplomacy Alliance Bashing"
