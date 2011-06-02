@@ -17,24 +17,27 @@
     Rewrite and optimization by Gorlum for http://ogame.triolan.com.ua
   */
 
-function formatCR_Fleet(&$dataInc, $isAttacker, $isLastRound)
+function formatCR_Fleet(&$dataInc, &$data_prev, $isAttacker, $isLastRound)
 {
   global $lang;
 
   if ($isAttacker){
     $dataA = $dataInc['attackers'];
     $dataB = $dataInc['infoA'];
+    $data_prevA = $data_prev['attackers'];
     $strField = 'detail';
-    $strType = 'Атакующий';
+    $strType = $lang['sys_attacker'];
   }else{
     $dataA = $dataInc['defenders'];
     $dataB = $dataInc['infoD'];
+    $data_prevA = $data_prev['defenders'];
     $strField = 'def';
-    $strType = 'Обороняющийся';
+    $strType = $lang['sys_defender'];
     $Coord = $dataInc['defCoord'];
   };
 
-  foreach( $dataA as $fleet_id => $data2){ //25
+  foreach($dataA as $fleet_id => $data2)
+  {
     //Player Information
     $weap = ($data2['user']['military_tech'] * 10);
     $shie = ($data2['user']['shield_tech'] * 10);
@@ -43,42 +46,42 @@ function formatCR_Fleet(&$dataInc, $isAttacker, $isLastRound)
     //And html output player information
     $fl_info1  = "<table><tr><th>";
 
-    if($isAttacker){
+    if($isAttacker)
+    {
       $Coord = "[".
         intval($data2['fleet']['fleet_start_galaxy']).":".
         intval($data2['fleet']['fleet_start_system']).":".
         intval($data2['fleet']['fleet_start_planet'])."]";
     }
 
-    $fl_info1 .= $strType . " ".$data2['user']['username']." (".$Coord.")<br />";
-/*
-    $fl_info1 .= $strType . " ".$data2['user']['username']." ([".
-      intval($data2['fleet']['fleet_'.$strPoint.'_galaxy']).":".
-      intval($data2['fleet']['fleet_'.$strPoint.'_system']).":".
-      intval($data2['fleet']['fleet_'.$strPoint.'_planet'])."])<br />";
-*/
-    $fl_info1 .= "Оружие: ".$weap."% Щиты: ".$shie."% Броня: ".$armr."%";
+    $fl_info1 .= "{$strType} {$data2['user']['username']} ({$Coord})<br />";
+    $fl_info1 .= "{$lang['sys_ship_weapon']}: {$weap}% {$lang['sys_ship_shield']}: {$shie} {$lang['sys_ship_armour']}: {$armr}%";
 
     //Start the table rows.
-    $ships1  = "<tr><th>Тип корабля</th>";
-    $count1  = "<tr><th>Кол-во</th>";
-    $weap1  = "<tr><th>Оружие</th>";
-    $shields1  = "<tr><th>Щиты</th>";
-    $armour1  = "<tr><th>Броня</th>";
+    $ships1  = "<tr><th>{$lang['sys_ship_type']}</th>";
+    $count1  = "<tr><th>{$lang['sys_ship_count']}</th>";
+    $weap1  = "<tr><th>{$lang['sys_ship_weapon']}</th>";
+    $shields1  = "<tr><th>{$lang['sys_ship_shield']}</th>";
+    $armour1  = "<tr><th>{$lang['sys_ship_armour']}</th>";
 
     //And now the data columns "foreach" ship
-    foreach( $data2[$strField] as $ship_id => $ship_count1){
-      if ($ship_count1 > 0){
+    foreach($data2[$strField] as $ship_id => $ship_count1)
+    {
+      if ($ship_count1 > 0)
+      {
 //        $ships1 .= "<th>[ship[".$ship_id."]]</th>";
+        $ships_destroyed = !empty($data_prevA) ? $ship_count1 - $data_prevA[$fleet_id][$strField][$ship_id] : 0;
         $ships1 .= "<th>{$lang['tech'][$ship_id]}</th>";
-        $count1 .= "<th>".$ship_count1."</th>";
+        $count1 .= "<th>".$ship_count1." ".($ships_destroyed ? "<span style=\"color:red\">{$ships_destroyed}</span>" : '')."</th>";
 
-        if (!$isLastRound) {
+        if (!$isLastRound)
+        {
           $ship_points = $dataB[$fleet_id][$ship_id];
-          if ($ship_points['def'] > 0){
-            $weap1 .= "<th>".$ship_points['att']."</th>";
-            $shields1 .= "<th>".$ship_points['shield']."</th>";
-            $armour1 .= "<th>".$ship_points['def']."</th>";
+          if ($ship_points['def'] > 0)
+          {
+            $weap1 .= "<th>{$ship_points['att']}</th>";
+            $shields1 .= "<th>{$ship_points['shield']}</th>";
+            $armour1 .= "<th>{$ship_points['def']}</th>";
           }
         }
       }
@@ -99,6 +102,7 @@ function formatCR_Fleet(&$dataInc, $isAttacker, $isLastRound)
       $html .= $weap1.$shields1.$armour1;
     $html .= "</table></th></tr></table><br />";
   }
+
   return $html;
 };
 
@@ -123,7 +127,7 @@ function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_f
   }
 
   //And lets start the CR. And admin message like asking them to give the cr. Nope, well moving on give the time and date ect.
-  $html .= "Флоты соперников встретились ".date(FMT_DATE_TIME)."<br /><br />";
+  $html .= "{$lang['sys_coe_combat_start']} ".date(FMT_DATE_TIME)."<br /><br />";
 
   $data = $result_array['rw'][0]['attackers'];
   $dataKey = array_keys($data);
@@ -134,22 +138,23 @@ function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_f
   for ($round_no = 1; $round_no <= $rw_count; $round_no++) {
     $isLastRound = ($round_no == $rw_count);
     if ($isLastRound){
-      $html .= "Результат боя:<br /><br />";
+      $html .= "{$lang['sys_coe_combat_end']}:<br /><br />";
     }else{
-      $html .= "Раунд ".$round_no.":<br /><br />";
+      $html .= "{$lang['sys_coe_round']} ".$round_no.":<br /><br />";
     };
 
     //Now whats that attackers and defenders data
     $data = $result_array['rw'][$round_no-1];
+    $data_prev = $round_no == 1 ? false : $result_array['rw'][$round_no-2];
     $data['defCoord'] = $defenderCoord;
 
-    $html .= formatCR_Fleet($data, true, $isLastRound);
-    $html .= formatCR_Fleet($data, false, $isLastRound);
+    $html .= formatCR_Fleet($data, $data_prev, true, $isLastRound);
+    $html .= formatCR_Fleet($data, $data_prev, false, $isLastRound);
 
     //HTML What happens?
     if (!$isLastRound){
-      $html .= "Атакующий делает выстрелы общей мощностью ".$data['attack']['total'].". Щиты обороняющегося поглощают ".$data['defShield']." выстрелов.<br />";
-      $html .= "Обороняющийся делает выстрелы общей мощностью ".$data['defense']['total'].". Щиты атакующего поглощают ".$data['attackShield']." выстрелов.<br /><br /><br />";
+      $html .= sprintf($lang['sys_coe_attacker_turn'], $data['attack']['total'], $data['defShield']);
+      $html .= sprintf($lang['sys_coe_defender_turn'], $data['defense']['total'], $data['attackShield']);
     }
   }
 
@@ -158,14 +163,14 @@ function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_f
   //Who won?
   if ($result_array['won'] == 2){
     //Defender wins
-    $result1  = "Обороняющийся выиграл битву!<br />";
+    $result1  = $lang['sys_coe_outcome_win'];
   }elseif ($result_array['won'] == 1){
     //Attacker wins
-    $result1  = "Атакующий выиграл битву!<br />";
-    $result1 .= "Он получает ".$steal_array['metal']." металла, ".$steal_array['crystal']." кристаллов, and ".$steal_array['deuterium']." дейтерия<br />";
+    $result1  = $lang['sys_coe_outcome_loss'];
+    $result1 .= sprintf($lang['sys_coe_outcome_loot'], $steal_array['metal'], $steal_array['crystal'], $steal_array['deuterium']);
   }else{
     //Battle was a draw
-    $result1  = "Бой закончился ничьёй.<br />";
+    $result1  = $lang['sys_coe_outcome_draw'];
   }
 
 
@@ -176,16 +181,15 @@ function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_f
 
   $debirs_meta = ($result_array['debree']['att'][0] + $result_array['debree']['def'][0]);
   $debirs_crys = ($result_array['debree']['att'][1] + $result_array['debree']['def'][1]);
-  $html .= "Атакующий потерял ".$result_array['lost']['att']." единиц.<br />";
-  $html .= "Обороняющийся потерял ".$result_array['lost']['def']." единиц.<br />";
-  $html .= "Теперь на этих пространственных координатах находятся ".$debirs_meta." металла и ".$debirs_crys." кристаллов.<br /><br />";
+  $html .= sprintf($lang['sys_coe_attacker_lost'], $result_array['lost']['att']);
+  $html .= sprintf($lang['sys_coe_defender_lost'], $result_array['lost']['def']);
+  $html .= sprintf($lang['sys_coe_debris_left'], $debirs_meta, $debirs_crys);
+  $html .= sprintf($lang['sys_coe_moon_chance'], $moon_int);
+  $html .= "{$moon_string}<br /><br />";
 
-  $html .= "Шанс появления луны составляет ".$moon_int."%<br />";
-  $html .= $moon_string."<br /><br />";
+  $html .= sprintf($lang['sys_coe_rw_time'], $time_float);
 
-  $html .= "Время генерации страницы ".$time_float." секунд<br />";
-
-  //return array('html' => $html, 'bbc' => $bbc, 'extra' => $extra);
   return array('html' => $html, 'bbc' => $bbc);
 }
+
 ?>
