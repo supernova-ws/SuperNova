@@ -58,13 +58,6 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
   global $sn_message_class_list, $sn_message_groups, $user;
 
   $timestamp = $timestamp ? $timestamp : $GLOBALS['time_now'];
-
-  $message_class_name = $sn_message_class_list[$message_type]['name'];
-  if(in_array($message_type, $sn_message_groups['switchable']) && !$user["opt_{$message_class_name}"])
-  {
-    return;
-  }
-
   if (!is_array($owners))
   {
     $owners = array($owners);
@@ -98,8 +91,27 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
     foreach ($owners as $owner)
     {
 //      $insert_values[] = "('{$owner}', '{$sender}', '{$timestamp}', '{$message_type}', '{$from}', '{$subject}', '{$text}')";
-      $insert_values[] = sprintf($insert_template, $owner);
+      if($user['id'] != $owner)
+      {
+        $owner_row = doquery("SELECT * FROM {{users}} WHERE id = {$owner} LIMIT 1;", '', true);
+        sys_user_options_unpack($owner_row);
+      }
+      else
+      {
+        $owner_row = &$user;
+      }
+
+      if(!in_array($message_type, $sn_message_groups['switchable']) || $owner_row["opt_{$message_class_name}"])
+      {
+        $insert_values[] = sprintf($insert_template, $owner);
+      }
     }
+
+    if(empty($insert_values))
+    {
+      return;
+    }
+
     $QryInsertMessage .= 'VALUES ' . implode(',', $insert_values) . ';';
     $QryUpdateUser .= 'WHERE `id` IN (' . implode(',', $owners) . ');';
   }
