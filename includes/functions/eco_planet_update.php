@@ -15,7 +15,7 @@
 
 function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 {
-  global $time_now, $sn_data;
+  global $time_now, $sn_data, $lang;
 
   $no_data = array('user' => false, 'planet' => false, 'que' => false);
 
@@ -97,19 +97,10 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     return array('user' => $user, 'planet' => $planet, 'que' => $que);
   }
 
-  $QryUpdatePlanet  = "UPDATE {{planets}} SET ";
-  $QryUpdatePlanet .= "`last_update` = '{$planet['last_update']}', ";
-
-  $QryUpdatePlanet .= "`metal`     = `metal`     + '{$incRes['metal']}', ";
-  $QryUpdatePlanet .= "`crystal`   = `crystal`   + '{$incRes['crystal']}', ";
-  $QryUpdatePlanet .= "`deuterium` = `deuterium` + '{$incRes['deuterium']}', ";
-
-  $QryUpdatePlanet .= "`metal_perhour` = '{$planet['metal_perhour']}', ";
-  $QryUpdatePlanet .= "`crystal_perhour` = '{$planet['crystal_perhour']}', ";
-  $QryUpdatePlanet .= "`deuterium_perhour` = '{$planet['deuterium_perhour']}', ";
-
-  $QryUpdatePlanet .= "`energy_used` = '{$planet['energy_used']}', ";
-  $QryUpdatePlanet .= "`energy_max` = '{$planet['energy_max']}', ";
+  $QryUpdatePlanet  = "UPDATE {{planets}} SET `last_update` = '{$planet['last_update']}', ";
+  $QryUpdatePlanet .= "`metal`     = `metal`     + '{$incRes['metal']}', `crystal`   = `crystal`   + '{$incRes['crystal']}', `deuterium` = `deuterium` + '{$incRes['deuterium']}', ";
+  $QryUpdatePlanet .= "`metal_perhour` = '{$planet['metal_perhour']}', `crystal_perhour` = '{$planet['crystal_perhour']}', `deuterium_perhour` = '{$planet['deuterium_perhour']}', ";
+  $QryUpdatePlanet .= "`energy_used` = '{$planet['energy_used']}', `energy_max` = '{$planet['energy_max']}', ";
 
   $built = eco_bld_handle_que($user, $planet, $ProductionTime);
   if($built['built'])
@@ -118,16 +109,38 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     {
       $Element = intval($Element);
       $Count = intval($Count);
-      if ($Element)
+      if($Element)
       {
         $QryUpdatePlanet .= "`{$sn_data[$Element]['name']}` = `{$sn_data[$Element]['name']}` + '{$Count}', ";
       }
     }
+    if(!$planet['b_hangar'])
+    {
+      msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_planet_from'], $lang['msg_que_hangar_subject'], sprintf($lang['msg_que_hangar_message'], uni_render_planet($planet)));
+    }
   }
+
   $QryUpdatePlanet .= "`b_hangar_id` = '{$planet['b_hangar_id']}', ";
   $QryUpdatePlanet .= "`b_hangar` = '{$planet['b_hangar']}' ";
 
   $QryUpdatePlanet .= $que['query'] != $planet['que'] ? ",{$que['query']} " : '';
+
+  if(!empty($que['built']))
+  {
+    $message = '';
+    foreach($que['built'] as $unit_id => $built_count)
+    {
+      if($built_count > 0)
+      {
+        $message .= sprintf($lang['msg_que_built_message'], uni_render_planet($planet), $lang['tech'][$unit_id], $built_count);
+      }
+      else
+      {
+        $message .= sprintf($lang['msg_que_destroy_message'], uni_render_planet($planet), $lang['tech'][$unit_id], -$built_count);
+      }
+    }
+    msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_planet_from'], $lang['msg_que_built_subject'], $message);
+  }
 
   $QryUpdatePlanet .= "WHERE `id` = '{$planet['id']}' LIMIT 1;";
   doquery($QryUpdatePlanet);

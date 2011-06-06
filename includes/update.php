@@ -810,7 +810,13 @@ switch($new_version)
     {
       doquery("DELETE FROM {{planets}} WHERE id = {$illegal_moon_row['id']} LIMIT 1;");
     }
+
+    upd_alter_table('users', array(
+      "ADD `msg_admin` bigint(11) unsigned DEFAULT '0' AFTER mnl_buildlist"
+    ), !$update_tables['users']['msg_admin']);
+
   doquery('COMMIT;');
+
   // $new_version = 28.1;
 
 //  case 28.1: upd_log_version_update();

@@ -41,10 +41,11 @@ input.frameles
     <td class="c_c" valign=middle width="140" rowspan="2" >
       <a href="messages.php">
         <!-- IF TOPNAV_MESSAGES_ALL -->
-          <!-- IF TOPNAV_MESSAGES_PLAYER + TOPNAV_MESSAGES_ALLIANCE -->
+          <!-- IF TOPNAV_MESSAGES_PLAYER + TOPNAV_MESSAGES_ALLIANCE + TOPNAV_MESSAGES_ADMIN -->
             <div>
-              <!-- IF TOPNAV_MESSAGES_PLAYER --><span class=mnl_joueur>[ {TOPNAV_MESSAGES_PLAYER} ]</span><!-- ENDIF -->
-              <!-- IF TOPNAV_MESSAGES_ALLIANCE -->&nbsp;<span class=mnl_alliance>[ {TOPNAV_MESSAGES_ALLIANCE} ]</span><!-- ENDIF -->
+              <!-- IF TOPNAV_MESSAGES_ADMIN --><span class="msg_admin">[{TOPNAV_MESSAGES_ADMIN}]</span><!-- ENDIF -->
+              <!-- IF TOPNAV_MESSAGES_PLAYER -->&nbsp;<span class="mnl_joueur">[{TOPNAV_MESSAGES_PLAYER}]</span><!-- ENDIF -->
+              <!-- IF TOPNAV_MESSAGES_ALLIANCE -->&nbsp;<span class="mnl_alliance">[{TOPNAV_MESSAGES_ALLIANCE}]</span><!-- ENDIF -->
             </div>
           <!-- ENDIF -->
           <blink>[ {TOPNAV_MESSAGES_ALL} ]</blink>

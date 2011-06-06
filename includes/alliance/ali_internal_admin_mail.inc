@@ -12,21 +12,6 @@ if (!$user_can_send_mails) {
 $POST_text = sys_get_param_str('text');
 if ($POST_text)
 {
-/*
-  $ally_rank_id = sys_get_param_int('r');
-  $query = "SELECT id, username FROM {{users}} WHERE ally_id = '{$user['ally_id']}'";
-  if ($ally_rank_id >= 0) {
-    $query .= " AND ally_rank_id = {$ally_rank_id}";
-  }
-  $query = doquery($query);
-
-  $list = '';
-  while ($u = mysql_fetch_assoc($query)) {
-    $sendList[] = $u['id'];
-    $list .= "<br>{$u['username']} ";
-  }
-  msg_send_simple_message($sendList, $user['id'], time(), 2, $ally['ally_tag'], $user['username'], sys_bbcodeParse($POST_text, true));
-*/
   $page = MessageForm($lang['Circular_sended'], $lang['members_who_recived_message'] . msg_ali_send($POST_text, $lang['ali_adm_msg_subject'], sys_get_param_int('r')), "alliance.php", "", true);
 }
 

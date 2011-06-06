@@ -144,8 +144,8 @@ function coe_o_missile_calculate()
       if (empty($message))
         $message = $lang['mip_no_defense'];
 
-      msg_send_simple_message ( $fleetRow['owner'], '', $time_now, 0, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
-      msg_send_simple_message ( $fleetRow['zielid'], '', $time_now, 0, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
+      msg_send_simple_message ( $fleetRow['owner'], '', $time_now, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
+      msg_send_simple_message ( $fleetRow['zielid'], '', $time_now, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
     };
     doquery("DELETE FROM {{iraks}} WHERE id = '{$fleetRow['id']}';");
   };

@@ -38,7 +38,7 @@ function flt_mission_transport($mission_data)
               $fleet_row['fleet_resource_metal'], $lang['Metal'],
               $fleet_row['fleet_resource_crystal'], $lang['Crystal'],
               $fleet_row['fleet_resource_deuterium'], $lang['Deuterium'] );
-  msg_send_simple_message ( $StartOwner, '', $fleet_row['fleet_start_time'], 5, $lang['sys_mess_tower'], $lang['sys_mess_transport'], $Message);
+  msg_send_simple_message ( $StartOwner, '', $fleet_row['fleet_start_time'], MSG_TYPE_TRANSPORT, $lang['sys_mess_tower'], $lang['sys_mess_transport'], $Message);
 
   if ($TargetOwner <> $StartOwner)
   {
@@ -48,7 +48,7 @@ function flt_mission_transport($mission_data)
                 $fleet_row['fleet_resource_metal'], $lang['Metal'],
                 $fleet_row['fleet_resource_crystal'], $lang['Crystal'],
                 $fleet_row['fleet_resource_deuterium'], $lang['Deuterium'] );
-    msg_send_simple_message ( $TargetOwner, '', $fleet_row['fleet_start_time'], 5, $lang['sys_mess_tower'], $lang['sys_mess_transport'], $Message);
+    msg_send_simple_message ( $TargetOwner, '', $fleet_row['fleet_start_time'], MSG_TYPE_TRANSPORT, $lang['sys_mess_tower'], $lang['sys_mess_transport'], $Message);
   }
 
   return RestoreFleetToPlanet($fleet_row, false, true);

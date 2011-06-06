@@ -39,6 +39,9 @@ if (!defined('INSIDE'))
      MSG_TYPE_TRANSPORT => array(
        'name' => 'mnl_transport',
      ),
+     MSG_TYPE_ADMIN => array(
+       'name' => 'msg_admin',
+     ),
      MSG_TYPE_EXPLORE => array(
        'name' => 'mnl_expedition',
      ),

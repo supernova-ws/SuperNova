@@ -301,6 +301,7 @@ function ShowTopNavigationBar($user, $planetrow)
     'ENERGY_BALANCE' => pretty_number($planetrow['energy_max'] - $planetrow['energy_used'], true, 0),
     'ENERGY_MAX' => pretty_number($planetrow['energy_max']),
 
+    'TOPNAV_MESSAGES_ADMIN'    => $user['msg_admin'],
     'TOPNAV_MESSAGES_PLAYER'   => $user['mnl_joueur'],
     'TOPNAV_MESSAGES_ALLIANCE' => $user['mnl_alliance'],
     'TOPNAV_MESSAGES_ALL'      => $user['new_message'],
