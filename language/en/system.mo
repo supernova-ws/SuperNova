@@ -469,10 +469,24 @@ $lang = array_merge($lang, array(
     MSG_TYPE_COMBAT => 'Military reports',
     MSG_TYPE_RECYCLE => 'Records processing',
     MSG_TYPE_TRANSPORT => 'The arrival of the fleet',
+    MSG_TYPE_ADMIN => 'Administrative messages',
     MSG_TYPE_EXPLORE => 'Reports for expeditions',
     MSG_TYPE_QUE => 'Message queue structures',
     MSG_TYPE_NEW => 'All messages',
   ),
+
+  'msg_que_research_from'    => 'Scientists',
+  'msg_que_research_subject' => 'Scientific discovery',
+  'msg_que_research_message' => 'New technology "%s" level %d was discovered',
+
+  'msg_que_planet_from'    => 'Governor',
+
+  'msg_que_hangar_subject' => 'Building on hangar complete',
+  'msg_que_hangar_message' => "Hangar on %s complete his work",
+
+  'msg_que_built_subject'   => 'Planetary build work complete',
+  'msg_que_built_message'   => "Building of '%2\$s' on %1\$s complete. Levels built: %3\$d\r\n",
+  'msg_que_destroy_message' => "Denolition of '%2\$s' on %1\$s complete. Levels demolished: %3\$d\r\n",
 
   // Arrays
   'sys_game_mode' => array(

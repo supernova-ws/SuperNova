@@ -304,7 +304,7 @@ function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
       'quest_status_status'   => QUEST_STATUS_COMPLETE
     ));
 
-    msg_send_simple_message($user['id'], 0, $time_now, 1, $lang['msg_from_admin'], $lang['qst_msg_complete_subject'], $comment);
+    msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_ADMIN, $lang['msg_from_admin'], $lang['qst_msg_complete_subject'], $comment);
   }
 }
 

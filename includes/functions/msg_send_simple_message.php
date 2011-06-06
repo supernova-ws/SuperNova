@@ -81,7 +81,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
     {
       return false;
     }
-    $QryInsertMessage .= "SELECT `id`, 0, unix_timestamp(now()), 1, '{$from}', '{$subject}', '{$text}' FROM {{users}}; ";
+    $QryInsertMessage .= "SELECT `id`, 0, unix_timestamp(now()), {$message_type}, '{$from}', '{$subject}', '{$text}' FROM {{users}}; ";
   }
   else
   {
@@ -115,7 +115,6 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
     $QryInsertMessage .= 'VALUES ' . implode(',', $insert_values) . ';';
     $QryUpdateUser .= 'WHERE `id` IN (' . implode(',', $owners) . ');';
   }
-
   doquery($QryInsertMessage);
   doquery($QryUpdateUser);
 

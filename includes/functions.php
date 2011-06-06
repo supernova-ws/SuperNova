@@ -340,6 +340,11 @@ function uni_render_coordinates($from, $prefix = '')
   return "[{$from[$prefix . 'galaxy']}:{$from[$prefix . 'system']}:{$from[$prefix . 'planet']}]";
 }
 
+function uni_render_planet($from)
+{
+  return "{$from['name']} [{$from['galaxy']}:{$from['system']}:{$from['planet']}]";
+}
+
 function uni_render_coordinates_url($from, $prefix = '', $mode = 0)
 {
   return "galaxy.php?mode={$mode}&galaxy={$from[$prefix . 'galaxy']}&system={$from[$prefix . 'system']}&planet={$from[$prefix . 'planet']}";

@@ -469,10 +469,24 @@ $lang = array_merge($lang, array(
     MSG_TYPE_COMBAT => 'Âîåííûå îò÷¸òû',
     MSG_TYPE_RECYCLE => 'Îò÷åòû ïåğåğàáîòêè',
     MSG_TYPE_TRANSPORT => 'Ïğèáûòèå ôëîòà',
+    MSG_TYPE_ADMIN => 'Ñîîáùåíèÿ Àäìèíèñòğàöèè',
     MSG_TYPE_EXPLORE => 'Îò÷¸òû ıêñïåäèöèé',
     MSG_TYPE_QUE => 'Ñîîáùåíèÿ î÷åğåäè ïîñòğîåê',
     MSG_TYPE_NEW => 'Âñå ñîîáùåíèÿ',
   ),
+
+  'msg_que_research_from'    => 'Íàó÷íî-èññëåäîâàòåëüñêèé èíñòèòóò',
+  'msg_que_research_subject' => 'Íîâàÿ òåõíîëîãèÿ',
+  'msg_que_research_message' => 'Èññëåäîâàíà íîâàÿ òåõíîëîãèÿ \'%s\'. Íîâûé óğîâåíü - %d',
+
+  'msg_que_planet_from'    => 'Ãóáåğíàòîğ',
+
+  'msg_que_hangar_subject' => 'Ğàáîòà íà âåğôè çàâåğøåíà',
+  'msg_que_hangar_message' => "Âåğôü íà %s çàâåğøèëà ğàáîòó",
+
+  'msg_que_built_subject'   => 'Ïëàíåòàğíûå ğàáîòû çàâåğøåíû',
+  'msg_que_built_message'   => "Çàâåğøåíî ñòğîèòåëüñòâî çäàíèÿ '%2\$s' íà %1\$s. Ïîñòğîåíî óğîâíåé: %3\$d\r\n",
+  'msg_que_destroy_message' => "Çàâåğøåíî ğàçğóøåíèå çäàíèÿ '%2\$s' íà %1\$s. Ğàçğóøåíî óğîâíåé: %3\$d\r\n",
 
   // Arrays
   'sys_game_mode' => array(

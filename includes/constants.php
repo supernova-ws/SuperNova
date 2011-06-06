@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '28');
 define('SN_RELEASE', '28.1');
-define('SN_VERSION', '28.1a10');
+define('SN_VERSION', '28.1a11');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -167,6 +167,7 @@ define('MSG_TYPE_ALLIANCE' ,   2);
 define('MSG_TYPE_COMBAT'   ,   3);
 define('MSG_TYPE_RECYCLE'  ,   4);
 define('MSG_TYPE_TRANSPORT',   5);
+define('MSG_TYPE_ADMIN'    ,   6);
 define('MSG_TYPE_EXPLORE'  ,  15);
 define('MSG_TYPE_QUE'      ,  99);
 define('MSG_TYPE_NEW'      , 100);

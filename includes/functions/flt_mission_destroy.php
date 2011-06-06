@@ -73,7 +73,7 @@ function flt_mission_destroy($mission_data)
   }
   elseif($RipsKilled == 1)
   {
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! А нужно удалять все флоты !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! А нужно удалять все флоты !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = '{$fleet_row["fleet_id"]}';");
     $message  = $lang['sys_rips_destroyed'];
   }
@@ -85,8 +85,8 @@ function flt_mission_destroy($mission_data)
   $message .= "<br><br>";
   $message .= $lang['sys_chance_moon_destroy'].intval($MoonDestChance)."%. <br>".$lang['sys_chance_rips_destroy'].intval($RipDestChance)."%";
 
-  msg_send_simple_message ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_moon_destruction_report'], $message );
-  msg_send_simple_message ( $destination_planet['id_owner'], '', $fleet_row['fleet_start_time'], 3, $lang['sys_mess_tower'], $lang['sys_moon_destruction_report'], $message );
+  msg_send_simple_message ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_COMBAT, $lang['sys_mess_tower'], $lang['sys_moon_destruction_report'], $message );
+  msg_send_simple_message ( $destination_planet['id_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_COMBAT, $lang['sys_mess_tower'], $lang['sys_moon_destruction_report'], $message );
 
   return $result;
 }
