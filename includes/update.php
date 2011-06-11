@@ -883,7 +883,8 @@ function upd_check_key($key, $default_value, $condition = false)
 {
   global $config;
 
-  if($condition || !$config->db_loadItem($key))
+  $config->db_loadItem($key);
+  if($condition || !isset($config->$key))
   {
     upd_add_more_time();
     if(!$GLOBALS['sys_log_disabled'])

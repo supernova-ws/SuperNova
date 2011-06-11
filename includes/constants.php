@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '28');
 define('SN_RELEASE', '28.1');
-define('SN_VERSION', '28.1a12');
+define('SN_VERSION', '28.1a13');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -203,6 +203,7 @@ define('ATTACK_WRONG_SPEED'      , 26);
 define('ATTACK_ACS_TOO_LATE'     , 27);
 define('ATTACK_BASHING'          , 28);
 define('ATTACK_BASHING_WAR_DELAY', 29);
+define('ATTACK_ACS_WRONG_TARGET' , 30);
 
 // *** Market variables
 // === Market blocks

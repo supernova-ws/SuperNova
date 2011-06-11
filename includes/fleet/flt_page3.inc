@@ -126,7 +126,8 @@ if(SN_IN_FLEET !== true)
     $TargetPlanet = array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet);
   }
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
-  if($cant_attack != ATTACK_ALLOWED)
+
+  if($cant_attack !== ATTACK_ALLOWED)
   {
     message("<font color=\"red\"><b>{$lang['fl_attack_error'][$cant_attack]}</b></font>", $lang['fl_error'], 'fleet.' . PHP_EX, 99);
   }
