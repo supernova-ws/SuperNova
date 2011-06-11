@@ -162,7 +162,7 @@ $lang = array_merge($lang, array(
   'adm_opt_title'             => "Configuration of the universe",
   'adm_opt_game_settings'     => "Universe Parameters",
   'adm_opt_game_name'         => "Universe name",
-  
+
   'adm_opt_speed'             => "Speed",
   'adm_opt_game_gspeed'       => "Games",
   'adm_opt_game_fspeed'       => "Fleet",
@@ -185,7 +185,7 @@ $lang = array_merge($lang, array(
   'adm_opt_int_news_count'    => "News count",
   'adm_opt_int_page_imperor'  => 'On the page &quot;Emperor&quot;:',
   'adm_opt_game_zero_dsiable' => "(0&nbsp;-&nbsp;Disable)",
-  
+
   'adm_opt_game_advertise'    => "Ad units",
   'adm_opt_game_oth_adds'     => "Enable the ad block in the left menu. Banner code:",
 
@@ -201,7 +201,7 @@ $lang = array_merge($lang, array(
   'adm_opt_vacation_mode_is'  => "Vacation mode",
   'adm_opt_maintenance'       => "Maintenance and debugging",
   'adm_opt_links'             => "Links and banners",
-                                     
+
   'adm_opt_universe_size'     => "Universe size",
   'adm_opt_galaxies'          => "Galaxies",
   'adm_opt_systems'           => "Systems",
@@ -215,6 +215,7 @@ $lang = array_merge($lang, array(
   'adm_opt_chat'              => "Chat settings",
   'adm_opt_chat_timeout'      => "Timeout for idle",
 
+  'adm_opt_fleet_buffing_check' => 'Forbid buffing',
 
   'adm_opt_game_defaults'         => "Configuring default Game setting",
   'adm_opt_game_default_language' => "Default language",

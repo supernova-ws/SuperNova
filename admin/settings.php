@@ -20,49 +20,51 @@ if($user['authlevel'] < 3)
 
 $template = gettemplate('admin/settings', true);
 
-if ($_POST['save'])
+if(sys_get_param('save'))
 {
-  $config->game_name               = $_POST['game_name'];
-  $config->game_mode               = intval($_POST['game_mode']);
-  $config->game_speed              = floatval( $_POST['game_speed'] );
-  $config->fleet_speed             = floatval( $_POST['fleet_speed'] );
-  $config->resource_multiplier     = floatval( $_POST['resource_multiplier'] );
-  $config->user_vacation_disable   = $_POST['user_vacation_disable'] ? 1 : 0;
-  $config->url_faq                 = $_POST['url_faq'];
-  $config->url_forum               = $_POST['url_forum'];
-  $config->url_rules               = $_POST['url_rules'];
-  $config->url_dark_matter         = $_POST['url_dark_matter'];
-  $config->game_disable            = $_POST['game_disable'] ? 1 : 0;
-  $config->game_disable_reason     = strip_tags($_POST['game_disable_reason']);
+  $config->game_name               = sys_get_param_str_raw('game_name');
+  $config->game_mode               = sys_get_param_int('game_mode');
+  $config->game_speed              = sys_get_param_float('game_speed', 1);
+  $config->fleet_speed             = sys_get_param_float('fleet_speed', 1);
+  $config->resource_multiplier     = sys_get_param_float('resource_multiplier', 1);
+  $config->user_vacation_disable   = sys_get_param_int('user_vacation_disable', 0);
+  $config->url_faq                 = sys_get_param_str_raw('url_faq');
+  $config->url_forum               = sys_get_param_str_raw('url_forum');
+  $config->url_rules               = sys_get_param_str_raw('url_rules');
+  $config->url_dark_matter         = sys_get_param_str_raw('url_dark_matter');
+  $config->game_disable            = sys_get_param_int('game_disable');
+  $config->game_disable_reason     = sys_get_param_str_raw('game_disable_reason');
 
-  $config->game_default_language   = $_POST['game_default_language'];
-  $config->game_default_skin       = $_POST['game_default_skin'];
-  $config->game_default_template   = $_POST['game_default_template'];
+  $config->game_default_language   = sys_get_param_str_raw('game_default_language', DEFAULT_LANG);
+  $config->game_default_skin       = sys_get_param_str_raw('game_default_skin', DEFAULT_SKINPATH);
+  $config->game_default_template   = sys_get_param_str_raw('game_default_template', TEMPLATE_NAME);
 
-  $config->game_maxGalaxy          = intval($_POST['game_maxGalaxy']) ? intval($_POST['game_maxGalaxy']) : 5;
-  $config->game_maxSystem          = intval($_POST['game_maxSystem']) ? intval($_POST['game_maxSystem']) : 199;
-  $config->game_maxPlanet          = intval($_POST['game_maxPlanet']) ? intval($_POST['game_maxPlanet']) : 15;
+  $config->game_maxGalaxy          = sys_get_param_int('game_maxGalaxy', 5);
+  $config->game_maxSystem          = sys_get_param_int('game_maxSystem', 199);
+  $config->game_maxPlanet          = sys_get_param_int('game_maxPlanet', 15);
 
-  $config->player_max_colonies     = intval($_POST['player_max_colonies']);
+  $config->player_max_colonies     = sys_get_param_int('player_max_colonies', 9);
 
-  $config->rpg_exchange_metal      = intval($_POST['rpg_exchange_metal']) ? intval($_POST['rpg_exchange_metal']) : 1;
-  $config->rpg_exchange_crystal    = intval($_POST['rpg_exchange_crystal']) ? intval($_POST['rpg_exchange_crystal']) : 2;
-  $config->rpg_exchange_deuterium  = intval($_POST['rpg_exchange_deuterium']) ? intval($_POST['rpg_exchange_deuterium']) : 4;
-  $config->rpg_exchange_darkMatter = intval($_POST['rpg_exchange_darkMatter']) ? intval($_POST['rpg_exchange_darkMatter']) : 100000;
+  $config->fleet_buffing_check     = sys_get_param_int('fleet_buffing_check');
 
-  $config->initial_fields          = intval($_POST['initial_fields']);
-  $config->metal_basic_income      = intval($_POST['metal_basic_income']);
-  $config->crystal_basic_income    = intval($_POST['crystal_basic_income']);
-  $config->deuterium_basic_income  = intval($_POST['deuterium_basic_income']);
-  $config->energy_basic_income     = intval($_POST['energy_basic_income']);
+  $config->rpg_exchange_metal      = sys_get_param_int('rpg_exchange_metal', 1);
+  $config->rpg_exchange_crystal    = sys_get_param_int('rpg_exchange_crystal', 2);
+  $config->rpg_exchange_deuterium  = sys_get_param_int('rpg_exchange_deuterium', 4);
+  $config->rpg_exchange_darkMatter = sys_get_param_int('rpg_exchange_darkMatter', 1000);
 
-  $config->chat_timeout            = intval($_POST['chat_timeout']);
+  $config->initial_fields          = sys_get_param_int('initial_fields', 200);
+  $config->metal_basic_income      = sys_get_param_int('metal_basic_income', 40);
+  $config->crystal_basic_income    = sys_get_param_int('crystal_basic_income', 20);
+  $config->deuterium_basic_income  = sys_get_param_int('deuterium_basic_income', 10);
+  $config->energy_basic_income     = sys_get_param_int('energy_basic_income');
 
-  $config->game_news_overview      = intval($_POST['game_news_overview']);
-  $config->advGoogleLeftMenuIsOn   = $_POST['advGoogleLeftMenuIsOn'] ? 1 : 0;
-  $config->advGoogleLeftMenuCode   = $_POST['advGoogleLeftMenuCode'];
-  $config->debug                   = $_POST['debug'] ? 1 : 0;
-  $config->game_counter            = $_POST['game_counter'] ? 1 : 0;
+  $config->chat_timeout            = sys_get_param_int('chat_timeout', 5);
+
+  $config->game_news_overview      = sys_get_param_int('game_news_overview', 5);
+  $config->advGoogleLeftMenuIsOn   = sys_get_param_int('advGoogleLeftMenuIsOn');
+  $config->advGoogleLeftMenuCode   = sys_get_param('advGoogleLeftMenuCode');
+  $config->debug                   = sys_get_param_int('debug');
+  $config->game_counter            = sys_get_param_int('game_counter');
 
   $config->db_saveAll();
 
@@ -75,6 +77,7 @@ $template->assign_vars(array(
   'debug' => $config->debug ? 'checked' : '',
   'game_counter' => $config->game_counter ? 'checked' : '',
   'user_vacation_disable' => $config->user_vacation_disable ? 'checked' : '',
+  'FLEET_BUFFING_CHECK' => $config->fleet_buffing_check,
   'game_mode' => $config->game_mode,
   'game_language' => $config->game_default_language,
 ));

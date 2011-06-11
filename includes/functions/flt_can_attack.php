@@ -155,7 +155,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
       return ATTACK_NO_ACS;
     }
 
-    if ($to['galaxy'] != $acs['galaxy'] || $to['system'] != $acs['system'] || $to['planet'] != $acs['planet'] || $to['planet_type'] != $acs['planet_type'])
+    if ($planet_dst['galaxy'] != $acs['galaxy'] || $planet_dst['system'] != $acs['system'] || $planet_dst['planet'] != $acs['planet'] || $planet_dst['planet_type'] != $acs['planet_type'])
     {
       return ATTACK_ACS_WRONG_TARGET;
     }
@@ -244,7 +244,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   // Is it transport? If yes - checking for buffing to prevent mega-alliance destroyer
   if($mission == MT_TRANSPORT)
   {
-    if($user_points >= $enemy_points)
+    if($user_points >= $enemy_points || !$config->fleet_buffing_check)
     {
       return ATTACK_ALLOWED;
     }

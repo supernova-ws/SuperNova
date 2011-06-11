@@ -513,6 +513,8 @@ class classConfig extends classPersistent
     'fleet_bashing_waves'     => 3,      // Max amount of waves per day - 3 by default
     'fleet_bashing_attacks'   => 3,      // Max amount of attack per wave - 3 by default
 
+    'fleet_buffing_check'     => 1,      // Enable buffing check for TRANSPORT missions
+
     // Defaults
     'game_default_language' => 'ru',
     'game_default_skin'     => 'skins/EpicBlue/',

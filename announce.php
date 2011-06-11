@@ -43,6 +43,7 @@ if ($user['authlevel'] >= 3)
 
     if(sys_get_param_int('news_mass_mail'))
     {
+      $text = $_POST['text'];
       if($detail_url)
       {
         // TODO: Move merging detail url to template
