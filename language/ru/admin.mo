@@ -183,7 +183,7 @@ $lang = array_merge($lang, array(
   'adm_opt_int_news_count'    => "Количество новостей",
   'adm_opt_int_page_imperor'  => 'На странице &quot;Император&quot;:',
   'adm_opt_game_zero_dsiable' => "(0&nbsp;-&nbsp;отключить)",
-  
+
   'adm_opt_game_advertise'    => "Рекламные блоки",
   'adm_opt_game_oth_adds'     => "Включить рекламный блок в левом меню. Код баннера:",
 
@@ -199,7 +199,7 @@ $lang = array_merge($lang, array(
   'adm_opt_vacation_mode_is'  => "Режим отпуска",
   'adm_opt_maintenance'       => "Обслуживание сервера",
   'adm_opt_links'             => "Ссылки и баннеры",
-                                     
+
   'adm_opt_universe_size'     => "Размер Вселенной",
   'adm_opt_galaxies'          => "Галактик",
   'adm_opt_systems'           => "Систем",
@@ -213,6 +213,7 @@ $lang = array_merge($lang, array(
   'adm_opt_chat'              => "Настройки чата",
   'adm_opt_chat_timeout'      => "Таймаут по неактивности",
 
+  'adm_opt_fleet_buffing_check' => 'Запретить прокачку',
 
   'adm_opt_game_defaults'         => "Настройки игрока по умолчанию",
   'adm_opt_game_default_language' => "Язык интерфейса",

@@ -815,6 +815,8 @@ switch($new_version)
       "ADD `msg_admin` bigint(11) unsigned DEFAULT '0' AFTER mnl_buildlist"
     ), !$update_tables['users']['msg_admin']);
 
+    upd_check_key('fleet_buffing_check', 1, !isset($config->fleet_buffing_check));
+
   doquery('COMMIT;');
 
   // $new_version = 28.1;

@@ -142,7 +142,7 @@
     <tr><td class="c" colspan="2">{L_adm_opt_game_advertise}</td></tr>
     <tr>
       <th colspan=2>
-        <input name="advGoogleLeftMenuIsOn" {advGoogleLeftMenuIsOn} type="checkbox" value="1" /> {L_adm_opt_game_oth_adds}
+        <input name="advGoogleLeftMenuIsOn" type="checkbox" value="1" {advGoogleLeftMenuIsOn} /> {L_adm_opt_game_oth_adds}
         <textarea name="advGoogleLeftMenuCode" rows="10">{C_advGoogleLeftMenuCode}</textarea>
       </th>
     </tr>
@@ -151,6 +151,10 @@
     <tr> 
       <th>{L_adm_opt_vacation_mode}</th> 
       <th><input name="user_vacation_disable" type="checkbox" value="1" {user_vacation_disable} /></th> 
+    </tr>
+    <tr> 
+      <th>{L_adm_opt_fleet_buffing_check}</th> 
+      <th><input name="fleet_buffing_check" type="checkbox" value="1" <!-- IF FLEET_BUFFING_CHECK -->checked<!-- ENDIF --> /></th> 
     </tr>
     <tr>
       <th>{L_adm_opt_game_debugmod}</a></th>

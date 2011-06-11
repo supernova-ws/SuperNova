@@ -244,7 +244,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   // Is it transport? If yes - checking for buffing to prevent mega-alliance destroyer
   if($mission == MT_TRANSPORT)
   {
-    if($user_points >= $enemy_points)
+    if($user_points >= $enemy_points || !$config->fleet_buffing_check)
     {
       return ATTACK_ALLOWED;
     }
