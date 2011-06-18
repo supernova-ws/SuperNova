@@ -39,20 +39,18 @@ input.frameles
     <td class="c_c" width="140" rowspan="2"><font color="green"><b>{TOPNAV_DARK_MATTER}</b></font></td>
 
     <td class="c_c" valign=middle width="140" rowspan="2" >
-      <a href="messages.php">
-        <!-- IF TOPNAV_MESSAGES_ALL -->
-          <!-- IF TOPNAV_MESSAGES_PLAYER + TOPNAV_MESSAGES_ALLIANCE + TOPNAV_MESSAGES_ADMIN -->
-            <div>
-              <!-- IF TOPNAV_MESSAGES_ADMIN --><span class="msg_admin">[{TOPNAV_MESSAGES_ADMIN}]</span><!-- ENDIF -->
-              <!-- IF TOPNAV_MESSAGES_PLAYER -->&nbsp;<span class="mnl_joueur">[{TOPNAV_MESSAGES_PLAYER}]</span><!-- ENDIF -->
-              <!-- IF TOPNAV_MESSAGES_ALLIANCE -->&nbsp;<span class="mnl_alliance">[{TOPNAV_MESSAGES_ALLIANCE}]</span><!-- ENDIF -->
-            </div>
-          <!-- ENDIF -->
-          <blink>[ {TOPNAV_MESSAGES_ALL} ]</blink>
-        <!-- ELSE -->
-          0
-        <!-- ENDIF -->
-      </a>
+      <!-- IF TOPNAV_MESSAGES_PLAYER + TOPNAV_MESSAGES_ALLIANCE + TOPNAV_MESSAGES_ADMIN -->
+        <div>
+          <!-- IF TOPNAV_MESSAGES_ADMIN --><a href="messages.php?mode=show&message_class={D_MSG_TYPE_ADMIN}"><span class="msg_admin">[{TOPNAV_MESSAGES_ADMIN}]</span></a><!-- ENDIF -->
+          <!-- IF TOPNAV_MESSAGES_PLAYER -->&nbsp;<a href="messages.php?mode=show&message_class={D_MSG_TYPE_PLAYER}"><span class="mnl_joueur">[{TOPNAV_MESSAGES_PLAYER}]</span></a><!-- ENDIF -->
+          <!-- IF TOPNAV_MESSAGES_ALLIANCE -->&nbsp;<a href="messages.php?mode=show&message_class={D_MSG_TYPE_ALLIANCE}"><span class="mnl_alliance">[{TOPNAV_MESSAGES_ALLIANCE}]</span></a><!-- ENDIF -->
+        </div>
+      <!-- ENDIF -->
+      <!-- IF TOPNAV_MESSAGES_ALL -->
+        <a href="messages.php"><blink>[ {TOPNAV_MESSAGES_ALL} ]</blink></a>
+      <!-- ELSE -->
+        <a href="messages.php">0</a>
+      <!-- ENDIF -->
     </td>
   </form></tr>
   <tr>
