@@ -2,14 +2,20 @@
   <!-- DEFINE $CELL_CLASS = 'class="tr"' -->
 <!-- ENDIF -->
 
+<!-- IF $OVERVIEW && .planet > 5 -->
+  <!-- DEFINE $TWO_COLUMN = true -->
+<!-- ENDIF -->
+
 <!-- BEGIN planet -->
+  <!-- IF ($TWO_COLUMN && planet.S_ROW_COUNT is even) || ( $OVERVIEW && ! $TWO_COLUMN) -->
   <!-- IF $OVERVIEW -->
+  <!-- ENDIF -->
    <tr>
   <!-- ENDIF -->
   <th valign="top" {$CELL_CLASS} width="{$CELL_PLANET}"><center>
   <!-- IF planet.ID -->
     <!-- IF $OVERVIEW -->
-      <!-- IF planet.MOON_ID == PLANET_ID -->{L_sys_moon} {planet.MOON_NAME}<!-- ELSE -->{planet.NAME}<!-- ENDIF --> [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]<br>
+      <!-- IF planet.MOON_ID == PLANET_ID -->{L_sys_moon} {planet.MOON_NAME}<!-- ELSE -->{planet.NAME}<!-- ENDIF --><br />[{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]<br>
     <!-- ENDIF -->
     
     <!-- IF planet.ID == PLANET_ID || (planet.MOON_ID == PLANET_ID && $OVERVIEW) -->
@@ -31,7 +37,7 @@
     <!-- ENDIF -->
 
     <!-- IF planet.MOON_ID == PLANET_ID -->
-      <!-- DEFINE $MOON_IMG_SIZE = '50%' -->
+      <!-- DEFINE $MOON_IMG_SIZE = '66%' -->
     <!-- ELSE -->
       <!-- DEFINE $MOON_IMG_SIZE = '32%' -->
     <!-- ENDIF -->
@@ -162,7 +168,9 @@
     <!-- ENDIF -->
   <!-- ENDIF -->
   </center></th>
+  <!-- IF ($TWO_COLUMN && planet.S_ROW_COUNT is odd) || ( $OVERVIEW && ! $TWO_COLUMN) -->
   <!-- IF $OVERVIEW -->
+  <!-- ENDIF -->
     </tr>
   <!-- ENDIF -->
 <!-- END planet -->
