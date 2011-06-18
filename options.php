@@ -191,6 +191,8 @@ if($mode == 'change')
   WHERE `id` = '{$user['id']}' LIMIT 1");
 
   $parse['SAVED'] = true;
+
+  sys_user_vacation($user);
 }
 
 //-------------------------------
