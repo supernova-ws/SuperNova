@@ -1,4 +1,5 @@
 <?php
+
 if(defined('INIT'))
 {
   return;
@@ -27,7 +28,10 @@ function sys_refresh_tablelist($db_prefix)
 
 ob_start();
 
-@set_magic_quotes_runtime(0);
+if(function_exists('set_magic_quotes_runtime'))
+{
+  @set_magic_quotes_runtime(0);
+}
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
 if($_SERVER['SERVER_NAME'] == 'localhost')
