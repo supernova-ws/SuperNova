@@ -202,6 +202,11 @@ switch ($mode)
     $fleet_id = 1;
     while ($UserPlanet = mysql_fetch_assoc($planets_query))
     {
+      if($UserPlanet['planet_type'] == PT_MOON)
+      {
+        continue;
+      }
+
       $UserPlanet      = sys_o_get_updated($user, $UserPlanet, $time_now, true);
       $list_planet_que = $UserPlanet['que'];
       $UserPlanet      = $UserPlanet['planet'];
