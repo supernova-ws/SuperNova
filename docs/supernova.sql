@@ -836,6 +836,8 @@ CREATE TABLE `sn_users` (
 -- ----------------------------
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '(Place here code for banner)');
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '0');
+INSERT INTO `sn_config` VALUES ('allow_buffing', '0');
+INSERT INTO `sn_config` VALUES ('ally_help_weak', '0');
 INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
 INSERT INTO `sn_config` VALUES ('chat_highlight_admin', '<font color=purple>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');

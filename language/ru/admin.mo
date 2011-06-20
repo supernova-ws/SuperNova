@@ -213,7 +213,8 @@ $lang = array_merge($lang, array(
   'adm_opt_chat'              => "Настройки чата",
   'adm_opt_chat_timeout'      => "Таймаут по неактивности",
 
-  'adm_opt_fleet_buffing_check' => 'Запретить прокачку',
+  'adm_opt_allow_buffing'     => 'Разрешить прокачку',
+  'adm_opt_ally_help_weak'    => 'Разрешить удержание на слабом соаловце',
 
   'adm_opt_game_defaults'         => "Настройки игрока по умолчанию",
   'adm_opt_game_default_language' => "Язык интерфейса",

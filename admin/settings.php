@@ -45,7 +45,8 @@ if(sys_get_param('save'))
 
   $config->player_max_colonies     = sys_get_param_int('player_max_colonies', 9);
 
-  $config->fleet_buffing_check     = sys_get_param_int('fleet_buffing_check');
+  $config->allow_buffing           = sys_get_param_int('allow_buffing');
+  $config->ally_help_weak          = sys_get_param_int('ally_help_weak');
 
   $config->rpg_exchange_metal      = sys_get_param_int('rpg_exchange_metal', 1);
   $config->rpg_exchange_crystal    = sys_get_param_int('rpg_exchange_crystal', 2);
@@ -77,7 +78,8 @@ $template->assign_vars(array(
   'debug' => $config->debug ? 'checked' : '',
   'game_counter' => $config->game_counter ? 'checked' : '',
   'user_vacation_disable' => $config->user_vacation_disable ? 'checked' : '',
-  'FLEET_BUFFING_CHECK' => $config->fleet_buffing_check,
+  'ALLOW_BUFFING' => $config->allow_buffing,
+  'ALLY_HELP_WEAK' => $config->ally_help_weak,
   'game_mode' => $config->game_mode,
   'game_language' => $config->game_default_language,
 ));
