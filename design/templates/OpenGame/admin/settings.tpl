@@ -148,13 +148,17 @@
     </tr>
 
     <tr><td class="c" colspan="2">{L_adm_opt_game_oth_info}</td></tr>
-    <tr> 
+    <tr>
       <th>{L_adm_opt_vacation_mode}</th> 
       <th><input name="user_vacation_disable" type="checkbox" value="1" {user_vacation_disable} /></th> 
     </tr>
-    <tr> 
-      <th>{L_adm_opt_fleet_buffing_check}</th> 
-      <th><input name="fleet_buffing_check" type="checkbox" value="1" <!-- IF FLEET_BUFFING_CHECK -->checked<!-- ENDIF --> /></th> 
+    <tr>
+      <th>{L_adm_opt_allow_buffing}</th> 
+      <th><input name="allow_buffing" type="checkbox" value="1" <!-- IF ALLOW_BUFFING -->checked<!-- ENDIF --> /></th> 
+    </tr>
+    <tr>
+      <th>{L_adm_opt_ally_help_weak}</th> 
+      <th><input name="ally_help_weak" type="checkbox" value="1" <!-- IF ALLY_HELP_WEAK -->checked<!-- ENDIF --> /></th> 
     </tr>
     <tr>
       <th>{L_adm_opt_game_debugmod}</a></th>

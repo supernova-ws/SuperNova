@@ -513,7 +513,8 @@ class classConfig extends classPersistent
     'fleet_bashing_waves'     => 3,      // Max amount of waves per day - 3 by default
     'fleet_bashing_attacks'   => 3,      // Max amount of attack per wave - 3 by default
 
-    'fleet_buffing_check'     => 1,      // Enable buffing check for TRANSPORT missions
+    'allow_buffing'           => 0,      // Disable buffing check for TRANSPORT missions
+    'ally_help_weak'           => 0,     // Allow strong players to HOLD on weak co-ally planets
 
     // Defaults
     'game_default_language' => 'ru',

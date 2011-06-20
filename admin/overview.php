@@ -50,14 +50,14 @@ while ( $TheUser = mysql_fetch_assoc($Last15Mins) ) {
   $Bloc['adm_ov_altpm']        = $lang['adm_ov_altpm'];
   $Bloc['adm_ov_wrtpm']        = $lang['adm_ov_wrtpm'];
   $Bloc['adm_ov_data_id']      = $TheUser['id'];
-  $Bloc['adm_ov_data_name']    = htmlentities($TheUser['username']);
+  $Bloc['adm_ov_data_name']    = ($TheUser['username']);
   $Bloc['adm_ov_data_agen']    = htmlentities($TheUser['user_agent']);
   $Bloc['adm_ov_data_clip']    = $Color;
 //  $Bloc['adm_ov_data_adip']    = $TheUser['user_lastip'];
-  $Bloc['adm_ov_data_ally']    = htmlentities($TheUser['ally_name']);
+  $Bloc['adm_ov_data_ally']    = ($TheUser['ally_name']);
   $Bloc['adm_ov_data_point']   = pretty_number ( $UserPoints['total_points'] );
   $Bloc['adm_ov_data_activ']   = pretty_time ( time() - $TheUser['onlinetime'] );
-  $PrevIP                      = htmlentities($TheUser['user_lastip']);
+  $PrevIP                      = ($TheUser['user_lastip']);
 
   $parse['adm_ov_data_table'] .= parsetemplate( $RowsTPL, $Bloc );
   $Count++;

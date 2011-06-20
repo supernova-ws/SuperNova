@@ -244,7 +244,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   // Is it transport? If yes - checking for buffing to prevent mega-alliance destroyer
   if($mission == MT_TRANSPORT)
   {
-    if($user_points >= $enemy_points || !$config->fleet_buffing_check)
+    if($user_points >= $enemy_points || $config->allow_buffing)
     {
       return ATTACK_ALLOWED;
     }
@@ -257,15 +257,19 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   // Only aggresive missions passed to this point. HOLD counts as passive but aggresive
 
   // Is it admin with planet protection?
-  if ($planet_dst['id_level'] > $user['authlevel'])
+  if($planet_dst['id_level'] > $user['authlevel'])
   {
     return ATTACK_ADMIN;
   }
 
   // Okay. Now skipping protection checks for inactive longer then 1 week
-  if (!$enemy['onlinetime'] || $enemy['onlinetime'] >= ($time_now - 60*60*24*7))
+  if(!$enemy['onlinetime'] || $enemy['onlinetime'] >= ($time_now - 60*60*24*7))
   {
-    if(($enemy_points <= $config->game_noob_points && $user_points > $config->game_noob_points) || ($config->game_noob_factor && $user_points > $enemy_points * $config->game_noob_factor))
+    if(
+      ($enemy_points <= $config->game_noob_points && $user_points > $config->game_noob_points)
+      || ($config->game_noob_factor && $user_points > $enemy_points * $config->game_noob_factor)
+      || !($mission == MT_HOLD && $user['ally_id'] && $user['ally_id'] == $enemy['ally_id'] && $config->ally_help_weak)
+    )
     {
       return ATTACK_NOOB;
     }

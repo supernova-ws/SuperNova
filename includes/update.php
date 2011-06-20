@@ -749,8 +749,6 @@ switch($new_version)
 
     upd_check_key('quest_total', 0, !isset($config->quest_total));
 
-    upd_do_query("UPDATE {{users}} SET `ally_id` = null, ally_name = null, ally_register_time = 0, ally_rank_id = 0 WHERE `ally_id` NOT IN (SELECT id FROM {{alliance}});");
-
     upd_alter_table('alliance', array(
        'DROP INDEX `id_2`',
        'DROP INDEX `id_3`',
@@ -798,11 +796,6 @@ switch($new_version)
         'ADD UNIQUE INDEX `i_ally_id` (`ally_id`)',
         'ADD UNIQUE INDEX `i_ally_name` (`ally_name`)',
       ), true);
-
-      upd_alter_table('users', array(
-         'ADD CONSTRAINT `FK_users_ally_id` FOREIGN KEY (`ally_id`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE SET NULL ON UPDATE CASCADE',
-         'ADD CONSTRAINT `FK_users_ally_name` FOREIGN KEY (`ally_name`) REFERENCES `{$config->db_prefix}alliance` (`ally_name`) ON DELETE SET NULL ON UPDATE CASCADE',
-      ), true);
     }
 
     $illegal_moon_query = doquery("SELECT id FROM `{{planets}}` WHERE `id_owner` <> 0 AND `planet_type` = 3 AND `parent_planet` <> 0 AND `parent_planet` NOT IN (SELECT `id` FROM {{planets}} WHERE `planet_type` = 1);");
@@ -815,7 +808,25 @@ switch($new_version)
       "ADD `msg_admin` bigint(11) unsigned DEFAULT '0' AFTER mnl_buildlist"
     ), !$update_tables['users']['msg_admin']);
 
-    upd_check_key('fleet_buffing_check', 1, !isset($config->fleet_buffing_check));
+    upd_check_key('allow_buffing', isset($config->fleet_buffing_check) ? !$config->fleet_buffing_check : 0, !isset($config->allow_buffing));
+    upd_check_key('ally_help_weak', 0, !isset($config->ally_help_weak));
+
+    if(!$update_indexes['users']['FK_users_ally_id'])
+    {
+      upd_do_query("UPDATE {{users}} SET `ally_id` = null, ally_name = null, ally_register_time = 0, ally_rank_id = 0 WHERE `ally_id` NOT IN (SELECT id FROM {{alliance}});");
+      upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.ally_id = a.id SET u.ally_name = a.ally_name WHERE u.ally_id IS NOT NULL;");
+      upd_do_query('DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} group by ally_id);');
+
+      upd_alter_table('users', array(
+        'MODIFY COLUMN `ally_name` VARCHAR(32) DEFAULT NULL',
+        'MODIFY COLUMN `ally_id` BIGINT(20) UNSIGNED DEFAULT NULL',
+      ), true);
+
+      upd_alter_table('users', array(
+         "ADD CONSTRAINT `FK_users_ally_id` FOREIGN KEY (`ally_id`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+         "ADD CONSTRAINT `FK_users_ally_name` FOREIGN KEY (`ally_name`) REFERENCES `{$config->db_prefix}alliance` (`ally_name`) ON DELETE SET NULL ON UPDATE CASCADE",
+      ), true);
+    }
 
   doquery('COMMIT;');
 
