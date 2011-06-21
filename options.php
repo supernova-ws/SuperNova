@@ -121,7 +121,7 @@ if($mode == 'change')
   {
     try
     {
-      if(sys_get_param('password') != $user['password'])
+      if(md5(sys_get_param('db_password')) != $user['password'])
       {
         throw new Exception('', 1);
       }
