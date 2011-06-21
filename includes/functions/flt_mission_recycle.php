@@ -106,7 +106,7 @@ function flt_mission_recycle($mission_data)
   doquery( $QryUpdateGalaxy);
 
   $Message = sprintf($lang['sys_recy_gotten'], pretty_number($RecycledGoods["metal"]), $lang['Metal'], pretty_number($RecycledGoods["crystal"]), $lang['Crystal']);
-  msg_send_simple_message ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], 4, $lang['sys_mess_spy_control'], $lang['sys_recy_report'], $Message);
+  msg_send_simple_message ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_RECYCLE, $lang['sys_mess_spy_control'], $lang['sys_recy_report'], $Message);
 
   $QryUpdateFleet  = "UPDATE {{fleets}} SET `fleet_mess` = 1,`fleet_resource_metal` = '{$NewCargo['Metal']}',`fleet_resource_crystal` = '{$NewCargo['Crystal']}',`fleet_resource_deuterium` = '{$NewCargo['Deuterium']}' ";
   $QryUpdateFleet .= "WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;";

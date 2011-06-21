@@ -154,12 +154,12 @@ class debug
       mysql_query("INSERT INTO `{$dbsettings['prefix']}logs` SET
         `log_time` = '".time()."', `log_code` = '{$error_code}', `log_sender` = '{$GLOBALS['user']['id']}', `log_username` = '{$GLOBALS['user']['username']}',
         `log_title` = '{$title}',  `log_text` = '{$error_text}', `log_page` = '".mysql_real_escape_string($_SERVER['HTTP_REFERER'])."'{$error_backtrace};")
-      or die($fatal_error);
-
+      or die($fatal_error . mysql_error());
+/*
       $q = mysql_fetch_assoc(mysql_query("SELECT max(log_id) AS rows FROM {$dbsettings['prefix']}logs;"))
         or die($fatal_error);
-
-      $message = "Пожалуйста свяжитесь с админом, если ошибка повторится. Ошибка №: <b>{$q['rows']}</b>";
+*/
+      $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . mysql_insert_id() . "</b>";
 
       $sys_stop_log_hit = true;
       $GLOBALS['sys_log_disabled'] = true;

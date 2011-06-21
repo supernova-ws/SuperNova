@@ -836,6 +836,8 @@ CREATE TABLE `sn_users` (
 -- ----------------------------
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '(Place here code for banner)');
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '0');
+INSERT INTO `sn_config` VALUES ('allow_buffing', '0');
+INSERT INTO `sn_config` VALUES ('ally_help_weak', '0');
 INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
 INSERT INTO `sn_config` VALUES ('chat_highlight_admin', '<font color=purple>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');
@@ -849,11 +851,12 @@ INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
 INSERT INTO `sn_config` VALUES ('eco_stockman_fleet', '');
 INSERT INTO `sn_config` VALUES ('energy_basic_income', '0');
-INSERT INTO `sn_config` VALUES ('fleet_bashing_war_delay', 12 * 60 * 60),
-INSERT INTO `sn_config` VALUES ('fleet_bashing_scope', 24 * 60 * 60),
-INSERT INTO `sn_config` VALUES ('fleet_bashing_interval', 30 * 60),
-INSERT INTO `sn_config` VALUES ('fleet_bashing_waves', 3),
-INSERT INTO `sn_config` VALUES ('fleet_bashing_attacks', 3),
+INSERT INTO `sn_config` VALUES ('fleet_bashing_war_delay', 12 * 60 * 60);
+INSERT INTO `sn_config` VALUES ('fleet_bashing_scope', 24 * 60 * 60);
+INSERT INTO `sn_config` VALUES ('fleet_bashing_interval', 30 * 60);
+INSERT INTO `sn_config` VALUES ('fleet_bashing_waves', 3);
+INSERT INTO `sn_config` VALUES ('fleet_bashing_attacks', 3);
+INSERT INTO `sn_config` VALUES ('fleet_buffing_check', 1);
 INSERT INTO `sn_config` VALUES ('Fleet_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('fleet_speed', '1');
 INSERT INTO `sn_config` VALUES ('flt_lastUpdate', UNIX_TIMESTAMP(NOW()));

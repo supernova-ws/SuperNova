@@ -40,5 +40,7 @@ t.*
 # Ignore backups
 /admin/backup/*.gz
 /admin/backup/*.bz2
+/admin/backup/*.sql
 /admin/sxd/backup/*.gz
 /admin/sxd/backup/*.bz2
+/admin/sxd/backup/*.sql

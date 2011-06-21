@@ -62,7 +62,7 @@
 }
 
 *.ownfederation {
-  color: 33CC00;
+  color: #33CC00;
 }
 
 *.owndestroy {
@@ -149,7 +149,7 @@
 }
 
 *.federation {
-  color: CC0000;
+  color: #CC0000;
 }
 
 .flight .federation a {
@@ -220,9 +220,13 @@
   background-color: #446666;
 }
 
+.msg_admin {
+  color: #FF0080;
+}
+
 .new_message
 {
-  background-color: #99999;
+  background-color: #999999;
 }
 
 /* Message & numbers color coding */
@@ -243,19 +247,19 @@
 }
 
 .success_bg, .positive_bg {
-  background-color: lime;
+  background-color: darkgreen;
 }
 
 .notice_bg, .zero_bg, .neutral_bg {
-  background-color: yellow;
+  background-color: #AAAA00;
 }
 
 .warning_bg {
-  background-color: orange;
+  background-color: #924200;
 }
 
 .error_bg, .negative_bg {
-  background-color: red;
+  background-color: darkred;
 }
 
 .errormessage a, .success a, .notice a, .warning a, .error a {

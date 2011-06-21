@@ -1,20 +1,5 @@
 <?php
 
-/**
- * HandleElementBuildingQueue.php
- *
- * @package supernova
- * @version 24
- *
- * Revision History
- * ================
- *   24 - copyright (c) 2010 by Gorlum for http://supernova.ws
- *      [!] Many, many, many changes
- *      [~] Rewrote all functions about vacation mode to single sys_user_vacation
- *
- *    1 - copyright 2008 By Chlorel for XNova
- *    0 - Created by Perberos. All rights reversed (C) 2006
- */
 // ----------------------------------------------------------------------------------------------------------------
 //
 // Routine pour la gestion de flottes a envoyer
@@ -220,18 +205,6 @@ function SaveToFile($filename, $content)
 
 // ----------------------------------------------------------------------------------------------------------------
 //
-// Gestion de la localisation des chaines
-//
-function lng_include($filename, $ext = '.mo')
-{
-  global $lang, $user;
-
-  $SelLanguage = $user['lang'] ? $user['lang'] : DEFAULT_LANG;
-  include_once(SN_ROOT_PHYSICAL . "language/{$SelLanguage}/{$filename}{$ext}");
-}
-
-// ----------------------------------------------------------------------------------------------------------------
-//
 function GetNextJumpWaitTime($CurMoon)
 {
   global $resource;
@@ -365,6 +338,11 @@ function SYS_mysqlSmartEscape($string)
 function uni_render_coordinates($from, $prefix = '')
 {
   return "[{$from[$prefix . 'galaxy']}:{$from[$prefix . 'system']}:{$from[$prefix . 'planet']}]";
+}
+
+function uni_render_planet($from)
+{
+  return "{$from['name']} [{$from['galaxy']}:{$from['system']}:{$from['planet']}]";
 }
 
 function uni_render_coordinates_url($from, $prefix = '', $mode = 0)
@@ -602,32 +580,6 @@ function sys_get_user_ip()
   return array_map('mysql_real_escape_string', $ip);
 }
 
-function flt_expand($target)
-{
-  $arr_fleet = array();
-  if ($target['fleet_array']) // it's a fleet!
-  {
-    $arr_fleet_lines = explode(';', $target['fleet_array']);
-    foreach ($arr_fleet_lines as $str_fleet_line)
-    {
-      if ($str_fleet_line)
-      {
-        $arr_ship_data = explode(',', $str_fleet_line);
-        $arr_fleet[$arr_ship_data[0]] = $arr_ship_data[1];
-      }
-    }
-    $arr_fleet[RES_METAL] = $target['fleet_resource_metal'];
-    $arr_fleet[RES_CRYSTAL] = $target['fleet_resource_crystal'];
-    $arr_fleet[RES_DEUTERIUM] = $target['fleet_resource_deuterium'];
-  }
-  elseif ($target['field_max']) // it's a planet!
-  {
-
-  }
-
-  return $arr_fleet;
-}
-
 function sys_get_param($param_name, $default = '')
 {
   return $_POST[$param_name] !== NULL ? $_POST[$param_name] : ($_GET[$param_name] !== NULL ? $_GET[$param_name] : $default);
@@ -635,7 +587,10 @@ function sys_get_param($param_name, $default = '')
 
 function sys_get_param_int($param_name, $default = 0)
 {
-  return intval(sys_get_param($param_name, $default));
+  $value = sys_get_param($param_name, $default);
+  return $value === 'on' ? 1 : ($value === 'off' ? $default : intval($value));
+
+//  return intval(sys_get_param($param_name, $default));
 }
 
 function sys_get_param_float($param_name, $default = 0)
@@ -735,73 +690,6 @@ function mrc_modify_value($user, $planet = false, $mercenaries, $value)
   return $value;
 }
 
-/**
- * SortUserPlanets.php
- *
- * @version 1.0
- * @copyright 2008 By Chlorel for XNova
- */
-function SortUserPlanets($CurrentUser, $planet = false, $field_list = '')
-{
-  $Order = ( $CurrentUser['planet_sort_order'] == 1 ) ? "DESC" : "ASC";
-  $Sort = $CurrentUser['planet_sort'];
-
-  $QryPlanets = "SELECT `id`, `name`, `galaxy`, `system`, `planet`, `planet_type`{$field_list} FROM {{planets}} WHERE `id_owner` = '{$CurrentUser['id']}' ";
-  if ($planet)
-  {
-    $QryPlanets .= "AND `id` <> {$planet['id']} ";
-  }
-
-  $QryPlanets .= 'ORDER BY ';
-  if ($Sort == 0)
-  {
-    $QryPlanets .= "`id` {$Order}";
-  }
-  elseif ($Sort == 1)
-  {
-    $QryPlanets .= "`galaxy`, `system`, `planet`, `planet_type` {$Order}";
-  }
-  elseif ($Sort == 2)
-  {
-    $QryPlanets .= "`name` {$Order}";
-  }
-  $Planets = doquery($QryPlanets, '');
-
-  return $Planets;
-}
-
-function mymail($to, $title, $body, $from = '')
-{
-  global $config;
-
-  $from = trim($from);
-
-  if (!$from)
-  {
-    $from = $config->game_adminEmail;
-  }
-
-  $rp = $config->game_adminEmail;
-
-  $head = '';
-  $head .= "Content-Type: text/plain; charset=utf-8 \r\n";
-  $head .= "Date: " . date('r') . " \r\n";
-  $head .= "Return-Path: $rp \r\n";
-  $head .= "From: $from \r\n";
-  $head .= "Sender: $from \r\n";
-  $head .= "Reply-To: $from \r\n";
-  $head .= "Organization: $org \r\n";
-  $head .= "X-Sender: $from \r\n";
-  $head .= "X-Priority: 3 \r\n";
-  $body = str_replace("\r\n", "\n", $body);
-  $body = str_replace("\n", "\r\n", $body);
-  $body = iconv('CP1251', 'UTF-8', $body);
-
-  $title = '=?UTF-8?B?' . base64_encode(iconv('CP1251', 'UTF-8', $title)) . '?=';
-
-  return mail($to, $title, $body, $head);
-}
-
 // Generates random string of $length symbols from $allowed_chars charset
 // Usefull for password and confirmation code generation
 function sys_random_string($length = 16, $allowed_chars = 'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz023456789')
@@ -819,7 +707,6 @@ function sys_random_string($length = 16, $allowed_chars = 'ABCDEFGHJKLMNOPQRSTUV
 
 function js_safe_string($string)
 {
-//  return str_replace(array("\\", "\"", "'"), array("\\\\", "\\\"", "\'"), $string);
   return addslashes($string);
 }
 
@@ -827,141 +714,63 @@ function sys_safe_output($string)
 {
   return str_replace(array("&", "\"", "<", ">", "'"), array("&amp;", "&quot;", "&lt;", "&gt;", "&apos;"), $string);
 }
-/*
- *
- * @function SetSelectedPlanet
- *
- * @history
- *    3 - copyright (c) 2009-2011 by Gorlum for http://supernova.ws
- *      [+] Added handling case when current_planet does not exists or didn't belong to user
- *      [+] Moved from SetSelectedPlanet.php
- *      [+] Function now return
- *      [~] Complies with PCG1
- *    2 - copyright (c) 2009-2011 by Gorlum for http://supernova.ws
- *      [~] Security checked for SQL-injection
- *    1 - copyright 2008 By Chlorel for XNova
- *
- */
-
-function SetSelectedPlanet(&$user)
-{
-  $selected_planet = intval($_GET['cp']);
-  $restore_planet = intval($_GET['re']);
-
-  if (isset($selected_planet) && is_numeric($selected_planet) && $selected_planet && isset($restore_planet) && $restore_planet == 0)
-  {
-    $planet_row = doquery("SELECT `id` FROM {{planets}} WHERE `id` = '{$selected_planet}' AND `id_owner` = '{$user['id']}' LIMIT 1;", '', true);
-    if (!$planet_row || !isset($planet_row['id']))
-    {
-      $selected_planet = $user['id_planet'];
-    }
-    doquery("UPDATE {{users}} SET `current_planet` = '{$selected_planet}' WHERE `id` = '{$user['id']}' LIMIT 1;");
-    $user['current_planet'] = $selected_planet;
-  }
-
-  return $user['current_planet'];
-}
-
-/**
- *
- * @function CheckPlanetUsedFields
- *
- * v2.0 Rewrote to utilize foreach()
- *      Complying with PCG0
- * v1.1 some optimizations
- * @version 1
- * @copyright 2008 By Chlorel for XNova
- */
-// Verification du nombre de cases utilisées sur la planete courrante
-function CheckPlanetUsedFields(&$planet)
-{
-  if (!$planet['id'])
-  {
-    return 0;
-  }
-
-  global $sn_data;
-
-  $planet_fields = 0;
-  foreach ($sn_data['groups']['build_allow'][$planet['planet_type']] as $building_id)
-  {
-    $planet_fields += $planet[$sn_data[$building_id]['name']];
-  }
-
-  if ($planet['field_current'] != $planet_fields)
-  {
-    $planet['field_current'] = $planet_fields;
-    doquery("UPDATE {{planets}} SET field_current={$planet_fields} WHERE id={$planet['id']} LIMIT 1;");
-  }
-}
 
 function sys_user_options_pack(&$user)
 {
+  global $user_option_list;
+
   $options = '';
-  foreach ($GLOBALS['user_options'] as $option_name => $option_value)
+  $option_list = array();
+  foreach($user_option_list as $option_group_id => $option_group)
   {
-    if (!$user[$option_name])
+    $option_list[$option_group_id] = array();
+    foreach($option_group as $option_name => $option_value)
     {
-      $user[$option_name] = $option_value;
+      if (!isset($user[$option_name]))
+      {
+        $user[$option_name] = $option_value;
+      }
+      $options .= "{$option_name}^{$user[$option_name]}|";
+      $option_list[$option_group_id][$option_name] = $user[$option_name];
     }
-    $options .= "{$option_name}^{$user[$option_name]}|";
   }
+
+  $user['options'] = $options;
+  $user['option_list'] = $option_list;
 
   return $options;
 }
 
 function sys_user_options_unpack(&$user)
 {
-  $options = $GLOBALS['user_options'];
+  global $user_option_list;
 
-  $opt_unpack = explode('|', $user['options']);
-  foreach ($opt_unpack as $option)
+  $option_list = array();
+  $option_string_list = explode('|', $user['options']);
+
+  foreach($option_string_list as $option_string)
   {
-    if ($option)
+    list($option_name, $option_value) = explode('^', $option_string);
+    $option_list[$option_name] = $option_value;
+  }
+
+  $final_list = array();
+  foreach($user_option_list as $option_group_id => $option_group)
+  {
+    $final_list[$option_group_id] = array();
+    foreach($option_group as $option_name => $option_value)
     {
-      $option = explode('^', $option);
-      if (isset($options[$option[0]]))
+      if(!isset($option_list[$option_name]))
       {
-        $options[$option[0]] = $option[1];
-        $user[$option[0]] = $option[1];
+        $option_list[$option_name] = $option_value;
       }
+      $user[$option_name] = $final_list[$option_group_id][$option_name] = $option_list[$option_name];
     }
   }
 
-  return $options;
-}
+  $user['option_list'] = $final_list;
 
-/**
- * @function IsElementBuyable
- *
- * 1.1 - copyright (c) 2010 by Gorlum for http://supernova.ws
- *     [*] Now using GetBuildingPrice proc to get building cost
- * @version 1
- * @copyright 2008 by Chlorel for XNova
- */
-// Verifie si un element est achetable au moment demandé
-// $CurrentUser   -> Le Joueur lui meme
-// $CurrentPlanet -> La planete sur laquelle l'Element doit etre construit
-// $Element       -> L'Element que l'on convoite
-// $Incremental   -> true  pour un batiment ou une recherche
-//                -> false pour une defense ou un vaisseau
-// $ForDestroy    -> false par defaut pour une construction
-//                -> true pour calculer la demi valeur du niveau en cas de destruction
-//
-// Reponse        -> boolean (oui / non)
-function IsElementBuyable($CurrentUser, $CurrentPlanet, $Element, $Incremental = true, $ForDestroy = false)
-{
-  global $pricelist, $resource;
-
-  if ($CurrentUser['vacation'])
-    return false;
-
-  $array = GetBuildingPrice($CurrentUser, $CurrentPlanet, $Element, $Incremental, $ForDestroy);
-  foreach ($array as $ResType => $resorceNeeded)
-    if ($resorceNeeded > $CurrentPlanet[$ResType])
-      return false;
-
-  return true;
+  return $final_list;
 }
 
 function sys_unit_str2arr($fleet_string)
@@ -1008,29 +817,36 @@ function sys_unit_arr2str($fleet_array)
   return $fleet_string;
 }
 
-function lng_get_list()
+function mymail($to, $title, $body, $from = '')
 {
-  $lang_list = array();
+  global $config;
 
-  $path = SN_ROOT_PHYSICAL . "language/";
-  $dir = dir($path);
-  while (false !== ($entry = $dir->read()))
+  $from = trim($from);
+
+  if (!$from)
   {
-    if (is_dir($path . $entry) && $entry[0] != ".")
-    {
-      if (file_exists($path . $entry . '/language.mo'))
-      {
-        include($path . $entry . '/language.mo');
-        if ($lang_info['LANG_NAME_ISO2'] == $entry)
-        {
-          $lang_list[$lang_info['LANG_NAME_ISO2']] = $lang_info;
-        }
-      }
-    }
+    $from = $config->game_adminEmail;
   }
-  $dir->close();
 
-  return $lang_list;
+  $rp = $config->game_adminEmail;
+
+  $head = '';
+  $head .= "Content-Type: text/plain; charset=utf-8 \r\n";
+  $head .= "Date: " . date('r') . " \r\n";
+  $head .= "Return-Path: $rp \r\n";
+  $head .= "From: $from \r\n";
+  $head .= "Sender: $from \r\n";
+  $head .= "Reply-To: $from \r\n";
+  $head .= "Organization: $org \r\n";
+  $head .= "X-Sender: $from \r\n";
+  $head .= "X-Priority: 3 \r\n";
+  $body = str_replace("\r\n", "\n", $body);
+  $body = str_replace("\n", "\r\n", $body);
+  $body = iconv('CP1251', 'UTF-8', $body);
+
+  $title = '=?UTF-8?B?' . base64_encode(iconv('CP1251', 'UTF-8', $title)) . '?=';
+
+  return mail($to, $title, $body, $head);
 }
 
 ?>

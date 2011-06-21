@@ -42,7 +42,7 @@ if ($_POST && $mode == "change") {
     $Subject = "<font color=\"". $kolor ."\">". $config->temat ."</font>";
     $Message = "<font color=\"". $kolor ."\"><b>". $config->tresc ."</b></font>";
     while ($u = mysql_fetch_assoc($sq)) {
-      msg_send_simple_message ( $u['id'], $user['id'], $Time, 97, $From, $Subject, $Message);
+      msg_send_simple_message ($u['id'], $user['id'], $Time, MSG_TYPE_ADMIN, $From, $Subject, $Message);
     }
     message("<font color=\"lime\">Wys³a³e¶ wiadomo¶æ do wszystkich graczy</font>", "Complete", "../overview." . PHP_EX, 3);
   }

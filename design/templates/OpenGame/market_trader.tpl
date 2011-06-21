@@ -41,25 +41,22 @@ function eco_mrk_recourse()
   rate_for_selected = eco_market_resources[element_cache['exchangeTo'].value]['rate'];
   for (i in eco_market_resources)
   {
-    element_cache['course' + i].innerHTML = eco_market_resources[i]['rate'] / rate_for_selected;
+    element_cache['course' + i].innerHTML = eco_market_resources[i]['rate'] / rate_for_selected + " : 1";
     element_cache['spend' + i].value = 0;
   }
   eco_mrk_recalc();
 }
 //--></script>
-
+<h2>{L_eco_mrk_title}:&nbsp;{L_eco_mrk_trader}</h2>
 {message}
-
-<br />
 <form name="form_trade" action="market.php?mode={D_MARKET_RESOURCES}" method="POST">
   <table>
-    <tr><td class="c" colspan=5><div class="fl">{L_eco_mrk_trader}</div><div class="fr">{L_eco_mrk_service_cost} {C_rpg_cost_trader} {L_eco_mrk_dark_matter_short}</div></td></tr>
-    <tr align="center">
-      <td class="c">{L_sys_resources}</td>
-      <td class="c">{L_fl_on_stores}</td>
-      <td class="c">{L_eco_mrk_trader_exchange}</td>
-      <td class="c">{L_eco_mrk_trader_left}</td>
-      <td class="c">{L_eco_mrk_trader_course}</td>
+    <tr class="c_c">
+      <th>{L_sys_resources}</th>
+      <th>{L_fl_on_stores}</th>
+      <th>{L_eco_mrk_trader_exchange}</th>
+      <th>{L_eco_mrk_trader_left}</th>
+      <th>{L_eco_mrk_trader_course}</th>
     </tr>
 
     <!-- BEGIN resources -->    
@@ -75,12 +72,19 @@ function eco_mrk_recourse()
       </tr>
     <!-- END resources -->    
 
-    <tr><td class="c" colspan=5 align=center><input type="submit" id="submit_trade" name="exchange" value="{L_eco_mrk_trader_to}" onclick = "document.form_trade.exchange.disabled = true; document.form_trade.submit();">
-      <select name="exchangeTo" id="exchangeTo" onChange="javascript:eco_mrk_recourse();">
-        <option value="{D_RES_METAL}">{L_sys_metal}
-        <option value="{D_RES_CRYSTAL}">{L_sys_crystal}
-        <option value="{D_RES_DEUTERIUM}">{L_sys_deuterium}
-      </select></td></tr>
+    <tr><th class="c_c" colspan=5 align=center>
+	   <div class="fl">{L_eco_mrk_service_cost} {C_rpg_cost_trader} {L_eco_mrk_dark_matter_short}</div>    
+	   <div class="fr">
+        <input type="submit" id="submit_trade" name="exchange" value="{L_eco_mrk_trader_to}" onclick = "document.form_trade.exchange.disabled = true; document.form_trade.submit();">
+        <select name="exchangeTo" id="exchangeTo" onChange="javascript:eco_mrk_recourse();">
+          <option value="{D_RES_METAL}">{L_sys_metal}
+          <option value="{D_RES_CRYSTAL}">{L_sys_crystal}
+          <option value="{D_RES_DEUTERIUM}">{L_sys_deuterium}
+        </select>
+	   </div>
+	   
+    
+    </th></tr>
   </table>
 </form>
 

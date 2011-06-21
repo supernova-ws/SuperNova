@@ -33,7 +33,7 @@
     <tr><td><a href="buildings.php?mode={D_SUBQUE_FLEET}" id="lm_shipyard">{L_Shipyard}</a></td></tr>
     <tr><td><a href="buildings.php?mode={D_SUBQUE_DEFENSE}">{L_Defense}</a></td></tr>
 
-    <tr><th>{L_Imperium}</th></tr>
+    <tr><th>{L_sys_empire}</th></tr>
     <tr><td><a href="imperator.php" style="color: purple">{L_imp_imperator}</a></td></tr>
     <tr><td><a href="imperium.php">{L_imp_overview}</a></td></tr>
     <tr><td><a href="flying_fleets.php" id="lm_fleet">{L_imp_fleets}</a></td></tr>
@@ -42,6 +42,7 @@
     <tr><td><a href="officer.php">{L_tech[600]}</a></td></tr>
     <tr><td><a href="market.php">{L_rinok}</a></td></tr>
     <tr><td><a href="galaxy.php?mode=0" id="lm_universe">{L_sys_universe}</a></td></tr>
+    <tr><td><a href="quest.php">{L_qst_quests}</a></td></tr>
 
     <tr><th>{L_m_communication}</th></tr>
     <!-- IF URL_FORUM -->

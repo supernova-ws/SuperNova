@@ -12,6 +12,8 @@ $template->assign_vars(array(
   'fleet_speed' => get_fleet_speed(),
   'game_build_and_research' => $config->BuildLabWhileRun,
   'USER_VACATION_DISABLE' => $config->user_vacation_disable,
+  'ALLOW_BUFFING' => $config->allow_buffing,
+  'ALLY_HELP_WEAK' => $config->ally_help_weak,
   'DB_VERSION' => DB_VERSION,
   'SN_VERSION' => SN_VERSION,
 ));

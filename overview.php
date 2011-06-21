@@ -59,6 +59,7 @@ switch ($mode)
         {
           $destruyed        = $time_now + 60 * 60 * 24;
           doquery("UPDATE {{planets}} SET `destruyed`='{$destruyed}', `id_owner`='0' WHERE `id`='{$user['current_planet']}' LIMIT 1;");
+          doquery("UPDATE {{planets}} SET `destruyed`='{$destruyed}', `id_owner`='0' WHERE `parent_planet`='{$user['current_planet']}' LIMIT 1;");
           doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = '{$user['id']}' LIMIT 1");
           message($lang['ov_delete_ok'], $lang['colony_abandon'], 'overview.php?mode=manage');
         }
@@ -137,11 +138,11 @@ switch ($mode)
         $fleet['fleet_end_name'] = $planet_end['name'];
       }
 
-      if($fleet['fleet_start_time'] > $time_now)
+      if($fleet['fleet_start_time'] > $time_now && $fleet['fleet_mess'] == 0)
       {
         int_assign_event($fleet, 0);
       }
-      if($fleet['fleet_end_stay'] > $time_now)
+      if($fleet['fleet_end_stay'] > $time_now && $fleet['fleet_mess'] == 0)
       {
         int_assign_event($fleet, 1);
       }
@@ -196,35 +197,16 @@ switch ($mode)
     // -----------------------------------------------------------------------------------------------
     // --- Gestion de la liste des planetes ----------------------------------------------------------
     // Planetes ...
-    switch($user['planet_sort'])
-    {
-      case 1:
-        $planetSort = '`galaxy` %1$s, `system` %1$s, `planet` %1$s';
-      break;
-
-      case 2:
-        $planetSort = '`name` %s';
-      break;
-
-      default:
-        $planetSort = '`id` %s';
-      break;
-    }
-
-    if($user['planet_sort_order'])
-    {
-      $planetSort = sprintf($planetSort, 'DESC');
-    }
-    else
-    {
-      $planetSort = sprintf($planetSort, 'ASC');
-    }
-
-    $planets_query = doquery("SELECT * FROM {{planets}} WHERE id_owner='{$user['id']}' AND planet_type = 1 ORDER BY {$planetSort};");
+    $planets_query = SortUserPlanets($user, false, '*');
 
     $fleet_id = 1;
     while ($UserPlanet = mysql_fetch_assoc($planets_query))
     {
+      if($UserPlanet['planet_type'] == PT_MOON)
+      {
+        continue;
+      }
+
       $UserPlanet      = sys_o_get_updated($user, $UserPlanet, $time_now, true);
       $list_planet_que = $UserPlanet['que'];
       $UserPlanet      = $UserPlanet['planet'];
@@ -318,9 +300,6 @@ switch ($mode)
 
     int_planet_pretemplate($template);
 
-
-
-//    foreach($sn_data['groups']['ques'] as $que_id => $que_type_data)
     foreach(array(QUE_STRUCTURES => $sn_data['groups']['ques'][QUE_STRUCTURES]) as $que_id => $que_type_data)
     {
       $template->assign_block_vars('ques', array(

@@ -1,4 +1,5 @@
 <?php
+
 if(defined('INIT'))
 {
   return;
@@ -27,7 +28,10 @@ function sys_refresh_tablelist($db_prefix)
 
 ob_start();
 
-@set_magic_quotes_runtime(0);
+if(function_exists('set_magic_quotes_runtime'))
+{
+  @set_magic_quotes_runtime(0);
+}
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
 if($_SERVER['SERVER_NAME'] == 'localhost')
@@ -133,7 +137,7 @@ if(file_exists($update_file))
   {
     if($time_now >= $config->var_db_update_end)
     {
-      $config->db_saveItem('var_db_update_end', $time_now + 60);
+      $config->db_saveItem('var_db_update_end', $time_now + $config->upd_lock_time);
 
       require_once($update_file);
       sys_refresh_tablelist($db_prefix);

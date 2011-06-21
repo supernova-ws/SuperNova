@@ -85,7 +85,7 @@ if(SN_IN_FLEET !== true)
           or die(sprintf($lang['fl_aks_adding_error'],mysql_error()));
         $aks['eingeladen'] .= ',' . $userToAddID;
       };
-      msg_send_simple_message ( $userToAddID, $user['id'], $time_now, 1, $user['username'],
+      msg_send_simple_message ( $userToAddID, $user['id'], $time_now, MSG_TYPE_COMBAT, $user['username'],
         $lang['fl_aks_invite_message_header'], sprintf( $lang['fl_aks_invite_message'], $user['username']));
     }else{
       $add_user_message_mr = sprintf($lang['fl_aks_player_error'], $userToAdd);

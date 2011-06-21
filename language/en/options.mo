@@ -1,16 +1,36 @@
 <?php
 
-$lang['opt_header'] = 'User options';
+if (!defined('INSIDE')) 
+{
+  die('Hack attempt!');
+}
 
-//	
+global $sn_message_groups, $sn_message_class_list;
+$lang['opt_custom'] = $lang['opt_custom'] === null ? array() : $lang['opt_custom'];
+foreach($sn_message_groups['switchable'] as $option_id)
+{
+  $option_name = $sn_message_class_list[$option_id]['name'];
+  $lang['opt_custom']["opt_{$option_name}"] = &$lang['msg_class'][$option_id];
+}
+
+$lang = array_merge($lang, array(
+  'opt_header' => 'User options',
+
+  'opt_messages' => 'Automatic alerts',
+  'opt_msg_saved'        => 'Options succesfully saved',
+  'opt_msg_name_changed' => 'Username sucessfully changed.<br /><a href="login.php" target="_top">Back</a>',
+  'opt_msg_pass_changed' => 'Password sucessfully changed.<br /><a href="login.php" target="_top">Back</a>',
+  'opt_err_pass_wrong'   => 'Wrong old password. Password was not changed',
+  'opt_err_pass_unmatched' => 'New password confirmation is not identical to new password. Password was not changed',
+
+));
+
+//
 $lang['changue_pass']			= "Change password";
 $lang['Download']			= "Download";
 $lang['Search']				= "Search";
-$lang['succeful_changepass']		= "Password successfully changed.<br /><a href=\"login.php\" target=\"_top\">Back</a>";
-$lang['succeful_changename']		= "Username successfully changed.<br /><a href=\"login.php\" target=\"_top\">Back</a>";
-$lang['opt_saved']			= "Configuration was successfully changed.";
 
-//	
+//
 $lang['userdata']			= "Information";
 $lang['username']			= "Username";
 $lang['lastpassword']			= "Old password";
@@ -24,16 +44,17 @@ $lang['opt_lst_ord']			= "View of the universe:";
 $lang['opt_lst_ord0']			= "Time of colonization";
 $lang['opt_lst_ord1']			= "Coordinates";
 $lang['opt_lst_ord2']			= "Alphabetical order";
+$lang['opt_lst_ord3']			= "Maximum fields";
 $lang['opt_lst_cla']			= "Arrange by:";
 $lang['opt_lst_cla0']			= "Ascending Order";
 $lang['opt_lst_cla1']			= "Descending Order";
 $lang['opt_chk_skin']			= "Use skin";
 
-// 	
+//
 $lang['opt_adm_title']			= "Administration options";
 $lang['opt_adm_planet_prot']		= "Planetary protection";
 
-// 	
+//
 $lang['thanksforregistry']		= "Thanks for registering.<br />After a few minutes you will receive your message with a password.";
 $lang['general_settings']		= "General settings";
 $lang['skins_example']			= "Skin<br>(for example C:/ogame/skin/)";
@@ -41,7 +62,7 @@ $lang['avatar_example']			= "Avatar<br>(for example /img/avatar.jpg)";
 $lang['untoggleip']			= "Disable IP check";
 $lang['untoggleip_tip']			= "Check IP means that you will not be able to log in under his own name with two different IP. Testing gives you the advantage in security!";
 
-// 	
+//
 $lang['galaxyvision_options']		= "Configuring Galaxy";
 $lang['spy_cant']			= "Number of probes";
 $lang['spy_cant_tip']			= "Number of probes to be sent when you follow someone for.";
@@ -50,7 +71,7 @@ $lang['mess_ammount_max']		= "The number of maximum fleet communications";
 $lang['show_ally_logo']			= "Show logo alliances";
 $lang['seconds']			= "Second(s)";
 
-//	
+//
 $lang['shortcut']			= "Quick access";
 $lang['show']				= "Show";
 $lang['write_a_messege']		= "Write a message";
@@ -59,7 +80,7 @@ $lang['add_to_buddylist']		= "Add as friend";
 $lang['attack_with_missile']		= "Missile attack";
 $lang['show_report']			= "View report";
 
-//	
+//
 $lang['delete_vacations']		= "Account management";
 $lang['mode_vacations']			= "Turn vacation";
 $lang['vacations_tip']			= "Vacation mode is to protect the planet while you're away.";

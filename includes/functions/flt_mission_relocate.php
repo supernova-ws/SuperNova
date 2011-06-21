@@ -50,7 +50,7 @@ function flt_mission_relocate($mission_data)
   $TargetMessage        = $lang['sys_stay_mess_start'] ."<a href=\"galaxy.php?mode=3&galaxy=". $fleet_row['fleet_end_galaxy'] ."&system=". $fleet_row['fleet_end_system'] ."\">";
   $TargetMessage       .= $TargetAdress. "</a>". $lang['sys_stay_mess_end'] ."<br />". $TargetAddedGoods;
 
-  msg_send_simple_message ( $TargetUserID, '', $fleet_row['fleet_start_time'], 5, $lang['sys_mess_qg'], $lang['sys_stay_mess_stay'], $TargetMessage);
+  msg_send_simple_message ( $TargetUserID, '', $fleet_row['fleet_start_time'], MSG_TYPE_TRANSPORT, $lang['sys_mess_qg'], $lang['sys_stay_mess_stay'], $TargetMessage);
   return RestoreFleetToPlanet ($fleet_row, false);
 }
 

@@ -11,9 +11,9 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('INSIDE'))
+if (!defined('INSIDE')) 
 {
-  exit;
+	die('Hack attempt!');
 }
 
 if (empty($lang) || !is_array($lang))
@@ -24,6 +24,7 @@ if (empty($lang) || !is_array($lang))
 // System-wide localization
 
 $lang = array_merge($lang, array(
+  'sys_empire'          => 'Empire',
   'VacationMode'			=> "Your production stopped because you are on vacation",
   'sys_moon_destruction_report' => "Report of destruction of the Moon",
   'sys_moon_destroyed' => "Your Deathstar shot a powerful gravitational wave, which destroyed the Moon! ",
@@ -65,9 +66,24 @@ $lang = array_merge($lang, array(
   'COE_simulate'        => "Run the Simulator",
   'COE_fleet'           => "Fleet",
   'COE_defense'         => "Defence",
+  'sys_coe_combat_start'=> "Combat begins",
+  'sys_coe_combat_end'  => "Combat outcome",
+  'sys_coe_round'       => "Round",
+
+  'sys_coe_attacker_turn'=> 'Attacker make shots for %1$s. Defender''s shield absorbs %2$s<br />',
+  'sys_coe_defender_turn'=> 'Defender make shots for %1$s. Attacker''s shield absorbs %2$s<br /><br /><br />',
+  'sys_coe_outcome_win'  => 'Defender wons combat!<br />',
+  'sys_coe_outcome_loss' => 'Attacker wons combat!<br />',
+  'sys_coe_outcome_loot' => 'He''s lootin %1$s metall, %1$s crystal, %2$s deuterium<br />',
+  'sys_coe_outcome_draw' => 'Combat end with draw...<br />',
+  'sys_coe_attacker_lost'=> 'Attacker lost %1$s units<br />',
+  'sys_coe_defender_lost'=> 'Defender lost %1$s units<br />',
+  'sys_coe_debris_left'  => 'There is %1$s metall and %2$s crystall floating in debris around planet.<br /><br />',
+  'sys_coe_moon_chance'  => 'Moon creation chance is %1$s%%<br />',
+  'sys_coe_rw_time'      => 'Reprot generated in %1$s seconds<br />',
+
   'sys_resources'       => "Resources",
   'sys_ships'           => "Ships",
-
   'sys_metal'          => "Metal",
   'sys_metal_sh'       => "M",
   'sys_crystal'        => "Crystal",
@@ -100,7 +116,7 @@ $lang = array_merge($lang, array(
   'sys_goto'            => "Go",
 
   'sys_time'            => "Time",
-  'sys_temperature'		=> 'Temperature',
+  'sys_temperature'     => 'Temperature',
 
   'sys_no_task'         => "No task",
 
@@ -108,13 +124,17 @@ $lang = array_merge($lang, array(
 
   'sys_fleet_arrived'   => "Fleet arrived",
 
-  'sys_planet_type1'    => "Planet",
-  'sys_planet_type2' 	  => "Field Debris",
-  'sys_planet_type3'    => "Moon",
+  'sys_planet_type' => array(
+    PT_PLANET => 'Planet', 
+    PT_DEBRIS => 'Debris Field', 
+    PT_MOON   => 'Moon',
+  ),
 
-  'sys_planet_type_sh1' => "(P)",
-  'sys_planet_type_sh2' => "(O)",
-  'sys_planet_type_sh3' => "(L)",
+  'sys_planet_type_sh' => array(
+    PT_PLANET => '(P)', 
+    PT_DEBRIS => '(D)', 
+    PT_MOON   => '(M)',
+  ),
 
   'sys_capacity' 			=> 'Load Capacity',
   'sys_cargo_bays' 			=> 'Holds',
@@ -170,6 +190,7 @@ $lang = array_merge($lang, array(
   'sys_on'              => 'Enable',
   'sys_off'             => 'Disable',
 
+  'sys_confirm'         => 'Confirm',
   'sys_save'            => 'Save',
   'sys_create'          => 'Create',
   'sys_write_message'   => 'Write a message',
@@ -432,6 +453,41 @@ $lang = array_merge($lang, array(
   'chat_page'    => 'Page',
   'chat_timeout' => 'Chat is disabled from your inactivity. Refresh the page.',
 
+  // quests
+  'qst_quests'               => 'Quests',
+  'qst_msg_complete_subject' => 'You completed quest!',
+  'qst_msg_complete_body'    => 'You completed quest "%s".',
+  'qst_msg_your_reward'      => 'Your reward: ',
+
+  // Messages
+  'msg_from_admin' => 'Universe Administration',
+  'msg_class' => array(
+    MSG_TYPE_OUTBOX => 'Sent messages',
+    MSG_TYPE_SPY => 'Spy reports',
+    MSG_TYPE_PLAYER => 'Message by players',
+    MSG_TYPE_ALLIANCE => 'Alliance Communications',
+    MSG_TYPE_COMBAT => 'Military reports',
+    MSG_TYPE_RECYCLE => 'Records processing',
+    MSG_TYPE_TRANSPORT => 'The arrival of the fleet',
+    MSG_TYPE_ADMIN => 'Administrative messages',
+    MSG_TYPE_EXPLORE => 'Reports for expeditions',
+    MSG_TYPE_QUE => 'Message queue structures',
+    MSG_TYPE_NEW => 'All messages',
+  ),
+
+  'msg_que_research_from'    => 'Scientists',
+  'msg_que_research_subject' => 'Scientific discovery',
+  'msg_que_research_message' => 'New technology "%s" level %d was discovered',
+
+  'msg_que_planet_from'    => 'Governor',
+
+  'msg_que_hangar_subject' => 'Building on hangar complete',
+  'msg_que_hangar_message' => "Hangar on %s complete his work",
+
+  'msg_que_built_subject'   => 'Planetary build work complete',
+  'msg_que_built_message'   => "Building of '%2\$s' on %1\$s complete. Levels built: %3\$d\r\n",
+  'msg_que_destroy_message' => "Denolition of '%2\$s' on %1\$s complete. Levels demolished: %3\$d\r\n",
+
   // Arrays
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'SuperNova',
@@ -483,6 +539,8 @@ $lang = array_merge($lang, array(
     3 => $lang['user_level'][3][0],
   ),
 
+// Compatibility layer - to work with old files
+/*
   'sys_resource' => array(
     1 => $lang['sys_metal'],
     2 => $lang['sys_crystal'],
@@ -491,18 +549,15 @@ $lang = array_merge($lang, array(
     5 => $lang['sys_energy'],
   ),
 
-  'sys_planet_type' => array(
-    PT_PLANET => $lang['sys_planet_type1'], 
-    PT_DEBRIS => $lang['sys_planet_type2'], 
-    PT_MOON   => $lang['sys_planet_type3']
-  ),
+  'sys_planet_type1'    => "Planet",
+  'sys_planet_type2' 	  => "Debris Field",
+  'sys_planet_type3'    => "Moon",
 
-  'sys_planet_type_sh' => array(
-    PT_PLANET => $lang['sys_planet_type_sh1'], 
-    PT_DEBRIS => $lang['sys_planet_type_sh2'], 
-    PT_MOON   => $lang['sys_planet_type_sh3']
-  ),
+  'sys_planet_type_sh1' => "(P)",
+  'sys_planet_type_sh2' => "(D)",
+  'sys_planet_type_sh3' => "(M)",
 
+*/
 ));
 
 ?>

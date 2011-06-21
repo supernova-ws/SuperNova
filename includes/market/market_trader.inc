@@ -49,7 +49,7 @@ if(is_array($tradeList) && isset($exchangeTo))
   }
 
   $intError = ($intError == MARKET_DEAL) && ($value <= 0) ? MARKET_ZERO_DEAL : $intError;
-  $intError = ($intError == MARKET_DEAL) && ($user['rpg_points'] < $config->rpg_cost_trader + $tradeList[RES_DARK_MATTER]) ? MARKET_NO_DM : $intError;
+  $intError = ($intError == MARKET_DEAL) && ($user[$sn_data[RES_DARK_MATTER]['name']] < $config->rpg_cost_trader + $tradeList[RES_DARK_MATTER]) ? MARKET_NO_DM : $intError;
 
   if($intError == MARKET_DEAL)
   {
@@ -76,7 +76,7 @@ foreach($sn_data['groups']['resources_trader'] as $resource_id)
 {
   if($resource_id == RES_DARK_MATTER)
   {
-    $amount = floor($user['rpg_points'] - $config->rpg_cost_trader);
+    $amount = floor($user[$sn_data[RES_DARK_MATTER]['name']] - $config->rpg_cost_trader);
   }
   else
   {
