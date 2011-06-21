@@ -268,7 +268,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     if(
       ($enemy_points <= $config->game_noob_points && $user_points > $config->game_noob_points)
       || ($config->game_noob_factor && $user_points > $enemy_points * $config->game_noob_factor)
-      || !($mission == MT_HOLD && $user['ally_id'] && $user['ally_id'] == $enemy['ally_id'] && $config->ally_help_weak)
+      || ($mission == MT_HOLD && !($user['ally_id'] && $user['ally_id'] == $enemy['ally_id'] && $config->ally_help_weak))
     )
     {
       return ATTACK_NOOB;
