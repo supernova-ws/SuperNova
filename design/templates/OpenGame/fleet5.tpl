@@ -1,9 +1,8 @@
 <!-- INCLUDE fleet_javascript.tpl -->
-
-<br>
+<h2>{L_flt_gather_all}</h2>
 <!-- IF .results -->
+  <h3>{L_flt_gather_report}</h3>
   <table border="0" cellpadding="0" cellspacing="1">
-    <tr><td colspan="2" class="c">{L_flt_gather_report}</td></tr>
     <tr>
       <td class="c">{L_fl_from}</td>
       <td class="c">{L_flt_report}</td>
@@ -38,12 +37,23 @@ function reCalcGathering()
   resourceGrid[0] = 0;
   for(colony in colonies)
   {
+    resourceGrid[colony] = 0;
     if(document.getElementsByName('resources[' + colony + '][{D_RES_METAL}]')[0].checked)
+    {
       resourceGrid[{D_RES_METAL}] += parseInt(colonies[colony][0]);
+      resourceGrid[colony] += parseInt(colonies[colony][0]);
+    }
     if(document.getElementsByName('resources[' + colony + '][{D_RES_CRYSTAL}]')[0].checked)
+    {
       resourceGrid[{D_RES_CRYSTAL}] += parseInt(colonies[colony][1]);
+      resourceGrid[colony] += parseInt(colonies[colony][1]);
+    }
     if(document.getElementsByName('resources[' + colony + '][{D_RES_DEUTERIUM}]')[0].checked)
+    {
       resourceGrid[{D_RES_DEUTERIUM}] += parseInt(colonies[colony][2]);
+      resourceGrid[colony] += parseInt(colonies[colony][2]);
+    }
+    document.getElementById('ga_' + colony + '_0').innerHTML = sn_format_number(resourceGrid[colony]);
   }
   document.getElementById('ga_0_{D_RES_METAL}').innerHTML = sn_format_number(resourceGrid[{D_RES_METAL}]);
   document.getElementById('ga_0_{D_RES_CRYSTAL}').innerHTML = sn_format_number(resourceGrid[{D_RES_CRYSTAL}]);
@@ -54,7 +64,6 @@ function reCalcGathering()
 
 <form action="fleet.php?fleet_page=5" method="post">
   <table border="0" cellpadding="0" cellspacing="1">
-    <tr><td colspan="8" class="c">{L_flt_gather_all}</td></tr>
     <tr>
       <td class="c">{L_sys_coordinates}</td>
       <td class="c">{L_fl_from}</td>
@@ -103,20 +112,20 @@ function reCalcGathering()
       <!-- DEFINE $ROWSPAN = 2 -->
     <!-- ENDIF -->
     <tr>
-      <td class="c_l" colspan="2">{L_sys_total}</td>
-      <td class="c_r"><span id="ga_0_{D_RES_METAL}"></span></td>
-      <td class="c_r"><span id="ga_0_{D_RES_CRYSTAL}"></span></td>
-      <td class="c_r"><span id="ga_0_{D_RES_DEUTERIUM}"></span></td>
-      <td class="c_r"><span id="ga_0_0"></span></td>
-      <td class="c_c" colspan="2" rowspan="{$ROWSPAN}"><input type="submit" value="{L_flt_gather_all}" /></td>
+      <th class="c_l" colspan="2">{L_sys_total}</th>
+      <th class="c_r"><span id="ga_0_{D_RES_METAL}"></span></th>
+      <th class="c_r"><span id="ga_0_{D_RES_CRYSTAL}"></span></th>
+      <th class="c_r"><span id="ga_0_{D_RES_DEUTERIUM}"></span></th>
+      <th class="c_r"><span id="ga_0_0"></span></th>
+      <th class="c_c" colspan="2" rowspan="{$ROWSPAN}"><input type="submit" value="{L_flt_gather_all}" /></th>
     </tr>
     <!-- IF $ROWSPAN -->
     <tr>
-      <td class="c_l" colspan="2">{L_sys_need}</td>
-      <td class="c_r">{METAL_NEED}</td>
-      <td class="c_r">{CRYSTAL_NEED}</td>
-      <td class="c_r">{DEUTERIUM_NEED}</td>
-      <td class="c_r"></td>
+      <th class="c_l" colspan="2">{L_sys_need}</th>
+      <th class="c_r">{METAL_NEED}</th>
+      <th class="c_r">{CRYSTAL_NEED}</th>
+      <th class="c_r">{DEUTERIUM_NEED}</th>
+      <th class="c_r"></th>
     </tr>
     <!-- ENDIF -->
   </table>

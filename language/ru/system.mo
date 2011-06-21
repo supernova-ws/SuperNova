@@ -24,6 +24,7 @@ if (empty($lang) || !is_array($lang))
 // System-wide localization
 
 $lang = array_merge($lang, array(
+  'sys_empire'          => 'Империя',
   'VacationMode'			=> "Ваше производство закрыто, так как вы в Отпуске",
   'sys_moon_destruction_report' => "Рапорт разрушения луны",
   'sys_moon_destroyed' => "Ваши Звёзды Смерти произвеои мощную гравитационную волну, которая разрушила луну! ",
@@ -65,9 +66,24 @@ $lang = array_merge($lang, array(
   'COE_simulate'        => "Запуск симулятора",
   'COE_fleet'           => "Флот",
   'COE_defense'         => "Оборона",
+  'sys_coe_combat_start'=> "Флоты соперников встретились",
+  'sys_coe_combat_end'  => "Результаты боя",
+  'sys_coe_round'       => "Раунд",
+
+  'sys_coe_attacker_turn'=> 'Атакующий делает выстрелы общей мощностью %1$s. Щиты обороняющегося поглощают %2$s выстрелов<br />',
+  'sys_coe_defender_turn'=> 'Обороняющийся делает выстрелы общей мощностью %1$s. Щиты атакующего поглощают %2$s выстрелов<br /><br /><br />',
+  'sys_coe_outcome_win'  => 'Обороняющийся выиграл битву!<br />',
+  'sys_coe_outcome_loss' => 'Атакующий выиграл битву!<br />',
+  'sys_coe_outcome_loot' => 'Он получает %1$s металла, %1$s кристаллов, %2$s дейтерия<br />',
+  'sys_coe_outcome_draw' => 'Бой закончился ничьёй.<br />',
+  'sys_coe_attacker_lost'=> 'Атакующий потерял %1$s единиц.<br />',
+  'sys_coe_defender_lost'=> 'Обороняющийся потерял %1$s единиц.<br />',
+  'sys_coe_debris_left'  => 'Теперь на этих пространственных координатах находятся %1$s металла и %2$s кристаллов.<br /><br />',
+  'sys_coe_moon_chance'  => 'Шанс появления луны составляет %1$s%%<br />',
+  'sys_coe_rw_time'      => 'Время генерации страницы %1$s секунд<br />',
+
   'sys_resources'       => "Ресурсы",
   'sys_ships'           => "Корабли",
-
   'sys_metal'          => "Металл",
   'sys_metal_sh'       => "М",
   'sys_crystal'        => "Кристалл",
@@ -108,13 +124,17 @@ $lang = array_merge($lang, array(
 
   'sys_fleet_arrived'   => "Флот прибыл",
 
-  'sys_planet_type1'    => "Планета",
-  'sys_planet_type2' 	=> "Поле обломков",
-  'sys_planet_type3'    => "Луна",
+  'sys_planet_type' => array(
+    PT_PLANET => 'Планета', 
+    PT_DEBRIS => 'Поле обломков', 
+    PT_MOON   => 'Луна',
+  ),
 
-  'sys_planet_type_sh1' => "(П)",
-  'sys_planet_type_sh2' => "(О)",
-  'sys_planet_type_sh3' => "(Л)",
+  'sys_planet_type_sh' => array(
+    PT_PLANET => '(П)',
+    PT_DEBRIS => '(О)',
+    PT_MOON   => '(Л)',
+  ),
 
   'sys_capacity' 			=> 'Грузоподъёмность',
   'sys_cargo_bays' 		=> 'Трюмы',
@@ -170,6 +190,7 @@ $lang = array_merge($lang, array(
   'sys_on'              => 'Включен',
   'sys_off'             => 'Отключен',
 
+  'sys_confirm'         => 'Подтвердить',
   'sys_save'            => 'Сохранить',
   'sys_create'          => 'Создать',
   'sys_write_message'   => 'Написать сообщение',
@@ -432,6 +453,41 @@ $lang = array_merge($lang, array(
   'chat_page'     => 'Страница',
   'chat_timeout'  => 'Чат отключен из-за вашей неактивности. Обновите страницу.',
 
+  // quests
+  'qst_quests'               => 'Квесты',
+  'qst_msg_complete_subject' => 'Квест закончен',
+  'qst_msg_complete_body'    => 'Вы выполнили квест "%s".',
+  'qst_msg_your_reward'      => 'Ваша награда:',
+
+  // Messages
+  'msg_from_admin' => 'Администрация Вселенной',
+  'msg_class' => array(
+    MSG_TYPE_OUTBOX => 'Отправленные сообщения',
+    MSG_TYPE_SPY => 'Шпионские отчёты',
+    MSG_TYPE_PLAYER => 'Сообщения от игроков',
+    MSG_TYPE_ALLIANCE => 'Сообщения альянса',
+    MSG_TYPE_COMBAT => 'Военные отчёты',
+    MSG_TYPE_RECYCLE => 'Отчеты переработки',
+    MSG_TYPE_TRANSPORT => 'Прибытие флота',
+    MSG_TYPE_ADMIN => 'Сообщения Администрации',
+    MSG_TYPE_EXPLORE => 'Отчёты экспедиций',
+    MSG_TYPE_QUE => 'Сообщения очереди построек',
+    MSG_TYPE_NEW => 'Все сообщения',
+  ),
+
+  'msg_que_research_from'    => 'Научно-исследовательский институт',
+  'msg_que_research_subject' => 'Новая технология',
+  'msg_que_research_message' => 'Исследована новая технология \'%s\'. Новый уровень - %d',
+
+  'msg_que_planet_from'    => 'Губернатор',
+
+  'msg_que_hangar_subject' => 'Работа на верфи завершена',
+  'msg_que_hangar_message' => "Верфь на %s завершила работу",
+
+  'msg_que_built_subject'   => 'Планетарные работы завершены',
+  'msg_que_built_message'   => "Завершено строительство здания '%2\$s' на %1\$s. Построено уровней: %3\$d\r\n",
+  'msg_que_destroy_message' => "Завершено разрушение здания '%2\$s' на %1\$s. Разрушено уровней: %3\$d\r\n",
+
   // Arrays
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'Сверхновая',
@@ -483,6 +539,8 @@ $lang = array_merge($lang, array(
     3 => $lang['user_level'][3][0],
   ),
 
+// Compatibility layer - to work with old files
+/*
   'sys_resource' => array(
     1 => $lang['sys_metal'],
     2 => $lang['sys_crystal'],
@@ -491,18 +549,14 @@ $lang = array_merge($lang, array(
     5 => $lang['sys_energy'],
   ),
 
-  'sys_planet_type' => array(
-    PT_PLANET => $lang['sys_planet_type1'], 
-    PT_DEBRIS => $lang['sys_planet_type2'], 
-    PT_MOON   => $lang['sys_planet_type3']
-  ),
+  'sys_planet_type1' => $lang['sys_planet_type'][1],
+  'sys_planet_type2' => $lang['sys_planet_type'][2],
+  'sys_planet_type3' => $lang['sys_planet_type'][3],
 
-  'sys_planet_type_sh' => array(
-    PT_PLANET => $lang['sys_planet_type_sh1'], 
-    PT_DEBRIS => $lang['sys_planet_type_sh2'], 
-    PT_MOON   => $lang['sys_planet_type_sh3']
-  ),
-
+  'sys_planet_type_sh1' => $lang['sys_planet_type_sh'][1],
+  'sys_planet_type_sh2' => $lang['sys_planet_type_sh'][2],
+  'sys_planet_type_sh3' => $lang['sys_planet_type_sh'][3],
+*/
 ));
 
 ?>

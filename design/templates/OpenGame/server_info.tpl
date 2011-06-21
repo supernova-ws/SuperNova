@@ -93,6 +93,26 @@
       <!-- ENDIF -->
     </th>
   </tr>
+  <tr>
+    <th>{L_adm_opt_allow_buffing}</th>
+    <th>
+      <!-- IF ALLOW_BUFFING -->
+        {L_sys_yes}
+      <!-- ELSE -->
+        {L_sys_no}
+      <!-- ENDIF -->
+    </th>
+  </tr>
+  <tr>
+    <th>{L_adm_opt_ally_help_weak}</th>
+    <th>
+      <!-- IF ALLY_HELP_WEAK -->
+        {L_sys_yes}
+      <!-- ELSE -->
+        {L_sys_no}
+      <!-- ENDIF -->
+    </th>
+  </tr>
 
   <tr><td class="c" colspan="2">{L_adm_ver_versions}</td></tr>
   <tr>

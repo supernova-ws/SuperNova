@@ -104,12 +104,13 @@ function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage 
   }
 
   echo '<center>';
-  // topnav
-  if ($topnav)
+  if($topnav)
   {
     displayP(parsetemplate(ShowTopNavigationBar($user, $planetrow)));
   }
+
   displayP($page);
+
   echo '</center></div>';
 
   // Global footer
@@ -224,7 +225,7 @@ function ShowTopNavigationBar($user, $planetrow)
     return '';
   }
 
-  global $time_now, $lang, $config;
+  global $time_now, $lang, $config, $sn_data;
 
   $GET_mode = sys_get_param_str('mode');
 
@@ -295,11 +296,12 @@ function ShowTopNavigationBar($user, $planetrow)
     'TOPNAV_DEUTERIUM_TEXT' => pretty_number($planetrow["deuterium"], 2),
     'TOPNAV_DEUTERIUM_MAX_TEXT' => pretty_number($planetrow["deuterium_max"], 2, -$planetrow["deuterium"]),
 
-    'TOPNAV_DARK_MATTER' => pretty_number($user['rpg_points']),
+    'TOPNAV_DARK_MATTER' => pretty_number($user[$sn_data[RES_DARK_MATTER]['name']]),
 
     'ENERGY_BALANCE' => pretty_number($planetrow['energy_max'] - $planetrow['energy_used'], true, 0),
     'ENERGY_MAX' => pretty_number($planetrow['energy_max']),
 
+    'TOPNAV_MESSAGES_ADMIN'    => $user['msg_admin'],
     'TOPNAV_MESSAGES_PLAYER'   => $user['mnl_joueur'],
     'TOPNAV_MESSAGES_ALLIANCE' => $user['mnl_alliance'],
     'TOPNAV_MESSAGES_ALL'      => $user['new_message'],
@@ -308,6 +310,8 @@ function ShowTopNavigationBar($user, $planetrow)
     'TOPNAV_FLEETS_TOTAL'       => GetMaxFleets($user),
     'TOPNAV_EXPEDITIONS_FLYING' => count($fleet_flying_list[MT_EXPLORE]),
     'TOPNAV_EXPEDITIONS_TOTAL'  => GetMaxExpeditions($user),
+
+    'TOPNAV_QUEST_COMPLETE'     => get_quest_amount_complete($user['id']),
   ));
 
   return $template;
@@ -334,6 +338,11 @@ function displayP($template)
       '-path_prefix-' => SN_ROOT_VIRTUAL, //$ugamela_root_path,
     ));
 */
+    if(!$template->parsed)
+    {
+      parsetemplate($template);
+    }
+
     $template->display('body');
   }
   else
@@ -361,6 +370,8 @@ function parsetemplate($template, $array = false)
       'SN_ROOT_PATH'  => SN_ROOT_VIRTUAL, //$ugamela_root_path,
       '-path_prefix-' => SN_ROOT_VIRTUAL, //$ugamela_root_path,
     ));
+
+    $template->parsed = true;
 
     return $template;
   }

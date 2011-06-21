@@ -26,9 +26,9 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('INSIDE'))
+if (!defined('INSIDE')) 
 {
-  exit;
+	die('Hack attempt!');
 }
 
 $lang_info = array(

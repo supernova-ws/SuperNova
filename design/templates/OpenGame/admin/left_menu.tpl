@@ -7,6 +7,7 @@
     <!-- IF USER_AUTHLEVEL >= 3 -->
     <tr><td><a href="admin/settings.php">{L_adm_conf}</a></td></tr>
     <tr><td><a href="admin/admin_darkmatter.php">{L_dark_matter}</a></td></tr>
+    <tr><td><a href="admin/adm_quest.php">{L_qst_quests}</a></td></tr>
     <!-- ENDIF -->
 
     <tr><td align=center class="c">{L_player}</td></tr>

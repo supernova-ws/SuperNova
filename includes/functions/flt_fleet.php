@@ -3,7 +3,7 @@
 $user - actual user record
 $from - actual planet record
 $to - actual planet record
-$fleet_array - array of records $unit_id -> $amount
+$fleet - array of records $unit_id -> $amount
 $mission - fleet mission
 */
 
@@ -98,8 +98,8 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
   if(BE_DEBUG)
   {
-    pdump($QryInsertFleet);
-    pdump($QryUpdatePlanet);
+    debug($QryInsertFleet);
+    debug($QryUpdatePlanet);
   }
 
   doquery("COMMIT;");
@@ -108,6 +108,32 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
   return ATTACK_ALLOWED;
 //ini_set('error_reporting', E_ALL ^ E_NOTICE);
+}
+
+function flt_expand($target)
+{
+  $arr_fleet = array();
+  if ($target['fleet_array']) // it's a fleet!
+  {
+    $arr_fleet_lines = explode(';', $target['fleet_array']);
+    foreach ($arr_fleet_lines as $str_fleet_line)
+    {
+      if ($str_fleet_line)
+      {
+        $arr_ship_data = explode(',', $str_fleet_line);
+        $arr_fleet[$arr_ship_data[0]] = $arr_ship_data[1];
+      }
+    }
+    $arr_fleet[RES_METAL] = $target['fleet_resource_metal'];
+    $arr_fleet[RES_CRYSTAL] = $target['fleet_resource_crystal'];
+    $arr_fleet[RES_DEUTERIUM] = $target['fleet_resource_deuterium'];
+  }
+  elseif ($target['field_max']) // it's a planet!
+  {
+
+  }
+
+  return $arr_fleet;
 }
 
 ?>

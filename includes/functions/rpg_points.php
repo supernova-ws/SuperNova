@@ -18,9 +18,9 @@
 * @package rpg
 *
 */
-function rpg_points_change($user_id, $dark_matter, $comment = false)
+function rpg_points_change($user_id, $dark_matter, $comment = false, $already_changed = false)
 {
-  global $debug, $config, $dm_change_legit;
+  global $debug, $config, $dm_change_legit, $sn_data;
 
   if(!$user_id)
   {
@@ -28,8 +28,17 @@ function rpg_points_change($user_id, $dark_matter, $comment = false)
   }
 
   $dm_change_legit = true;
-  doquery("UPDATE {{users}} SET rpg_points = rpg_points + '{$dark_matter}' WHERE `id` = {$user_id} LIMIT 1;");
-  $rows_affected = mysql_affected_rows();
+  $sn_data_dark_matter_db_name = $sn_data[RES_DARK_MATTER]['name'];
+  if($already_changed)
+  {
+    $rows_affected = 1;
+  }
+  else
+  {
+    doquery("UPDATE {{users}} SET `{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}' WHERE `id` = {$user_id} LIMIT 1;");
+    $rows_affected = mysql_affected_rows();
+  }
+
   if($rows_affected)
   {
     $debug->warning("Player ID {$user_id} Dark Matter was adjusted with {$dark_matter}. Reason: {$comment}", 'Dark Matter Change', 102);
@@ -49,7 +58,9 @@ function rpg_points_change($user_id, $dark_matter, $comment = false)
         }
       }
     }
-  }else{
+  }
+  else
+  {
     $debug->warning("Error adjusting Dark Matter for player ID {$user_id} (Player Not Found) with {$dark_matter}. Reason: {$comment}", 'Dark Matter Change', 402);
   }
 
@@ -97,7 +108,7 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
     doquery("UPDATE `{{users}}` SET `{$field_level}` = `{$field_level}` + '{$level}' WHERE `id` = '{$user['id']}' LIMIT 1;");
     rpg_points_change($user['id'], $level, $comment);
     $user[$field_level] += $level;
-    $user['rpg_points'] += $level;
+    $user[$sn_data_dark_matter_db_name] += $level;
   }
 }
 

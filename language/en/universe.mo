@@ -1,5 +1,10 @@
 <?php
 
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 $lang['Galaxy']			= 'Galaxy';
 $lang['Solar_system']		= 'Solar System';
 $lang['Show']			= 'Show';

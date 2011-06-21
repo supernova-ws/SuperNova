@@ -10,7 +10,7 @@ body
   margin-top           : 5px;
   margin-left          : 1px;
   background-color     : #000000;
-  background-image     :  url(img/background2.jpg);
+  background-image     : url(img/background2.jpg);
   background-attachment: fixed;
   background-repeat    : no-repeat;
   background-position  : top;
@@ -29,6 +29,17 @@ img
   border               : 0px;
 }
 
+input, select, textarea, div.z
+{
+  color          : #FFFFFF;
+  background-color: #1c1c1c;
+}
+
+textarea
+{
+  width                : 98%;
+}
+
 th, td, input, select, textarea
 {
   border         : 1px #415680 solid;
@@ -43,12 +54,6 @@ th, td
   background-color: #000000;
   padding-left : 3px;
   padding-right: 3px;
-}
-
-input, select, textarea, div.z
-{
-  color          : #FFFFFF;
-  background-color: #1c1c1c;
 }
 
 th
@@ -86,11 +91,6 @@ td.l
 {
   vertical-align       : top;
   padding              : 3px;
-}
-
-textarea
-{
-  width                : 100%;
 }
 
 div.z
@@ -315,10 +315,10 @@ div .ui-dialog-content table { background: #040e1e; }
 /* Pseudoelement to use colors from CSS in JS */
 #style_probe
 {
-  border-top-color: #666666;  /*  Reserved for unit_preview border color*/
+  border-top-color: #666666;  /* Reserved for unit_preview border color */
 }
 
-#off_dark_matter_hint {color: #00CCFF; font-weight: bold; floating: left}
+#off_dark_matter_hint {color: #00CCFF; font-weight: bold; float: left}
 #off_get_dark_matter { color: #ff8900; font-weight: bold;}
 
 .ui-widget-content

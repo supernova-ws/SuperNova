@@ -513,6 +513,9 @@ class classConfig extends classPersistent
     'fleet_bashing_waves'     => 3,      // Max amount of waves per day - 3 by default
     'fleet_bashing_attacks'   => 3,      // Max amount of attack per wave - 3 by default
 
+    'allow_buffing'           => 0,      // Disable buffing check for TRANSPORT missions
+    'ally_help_weak'           => 0,     // Allow strong players to HOLD on weak co-ally planets
+
     // Defaults
     'game_default_language' => 'ru',
     'game_default_skin'     => 'skins/EpicBlue/',
@@ -530,6 +533,9 @@ class classConfig extends classPersistent
     'game_news_actual'     => 259200, // How long announcement would be marked as "New". In seconds. Default - 3 days
 
     'player_max_colonies'  => 9, // Max player planet count (NOT including main planet)
+
+    // Quests
+    'quest_total'          => 0, // Total number of quests
 
     // Interface - UserBanner
     'int_banner_showInOverview'  => 1,
@@ -588,7 +594,7 @@ class classConfig extends classPersistent
 
     'var_db_update'     => 0,  // Time of last DB update
     'var_db_update_end' => 0,  // Time when last DB update should end. Need to prevent duplicate update
-
+    'upd_lock_time'     => 60, // How long update will lock table. Also update increment time when it requires
   );
 
   public function __construct($gamePrefix = 'sn_')

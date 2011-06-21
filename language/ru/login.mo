@@ -1,6 +1,8 @@
 <?php
-if (!defined('INSIDE')) {
-	die("Защита от взлома!");
+
+if (!defined('INSIDE'))
+{
+  die("Попытка взлома!");
 }
 
 $lang['Login'] = 'Логин';

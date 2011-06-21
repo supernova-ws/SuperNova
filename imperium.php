@@ -15,7 +15,8 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 $planets = array();
 $ques = array();
 
-$planet_row_list = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
+//$planet_row_list = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
+$planet_row_list = SortUserPlanets($user);
 while ($planet = mysql_fetch_assoc($planet_row_list))
 {
   $global_data = sys_o_get_updated($user, $planet['id'], $time_now);
@@ -48,9 +49,6 @@ foreach ($planets as $planet_index => &$planet)
 
   $template->assign_block_vars('planet', array_merge($planet_template, array(
     'PLANET_FLEET_ID'   => $planet_fleet_id,
-
-    'FIELDS_CUR'        => $planet['field_current'],
-    'FIELDS_MAX'        => eco_planet_fields_max($planet),
 
     'METAL_CUR'         => pretty_number($planet['metal'], true, $planet['metal_max']),
     'METAL_PROD'        => pretty_number($planet['metal_perhour']),
@@ -146,13 +144,21 @@ foreach ($sn_data as $unit_id => $res) {
     {
       $level_plus['LEVEL_PLUS_YELLOW'] = 0;
       $level_plus['LEVEL_PLUS_GREEN'] = 0;
+      if(in_array($unit_id, $sn_data['groups']['prod']))
+      {
+        $level_plus['PERCENT'] = $planet["{$sn_data[$unit_id]['name']}_porcent"] * 10;
+      }
+      else
+      {
+        $level_plus['PERCENT'] = -1;
+      }
       switch($mode)
       {
         case 'buildings':
           $level_plus_build = $planet['full_que']['in_que'][$unit_id];
           if($level_plus_build)
           {
-            $level_plus['LEVEL_PLUS_GREEN'] = $level_plus_build<0 ? $level_plus_build : "+{$level_plus_build}";
+            $level_plus['LEVEL_PLUS_GREEN'] = $level_plus_build < 0 ? $level_plus_build : "+{$level_plus_build}";
           }
         break;
 

@@ -51,7 +51,7 @@ function ECO_getPlanetCaps($user, &$planet_row)
       else
       {
         $Caps['energy'][$ProdID] = 0;
-      };
+      }
     }
     else
     {

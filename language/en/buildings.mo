@@ -1,5 +1,10 @@
 <?php
 
+if (!defined('INSIDE')) 
+{
+	die('Hack attempt!');
+}
+
 $lang['Fleet']			= "Fleet";
 $lang['fleet']			= "Fleet";
 $lang['Defense']		= "Defence";
