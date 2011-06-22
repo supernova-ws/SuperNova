@@ -18,7 +18,7 @@ if($mode == 'exit')
   {
     doquery('START TRANSACTION;');
     doquery("UPDATE {{alliance}} SET `ally_members` = `ally_members` - 1 WHERE `id` = {$user['ally_id']} LIMIT 1;");
-    doquery("UPDATE {{users}} SET `ally_id` = 0, `ally_name` = '', `ally_register_time` = 0, `ally_rank_id` = 0 WHERE `id` = {$user['id']} LIMIT 1;");
+    doquery("UPDATE {{users}} SET `ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0 WHERE `id` = {$user['id']} LIMIT 1;");
     doquery('COMMIT;');
     $lang['Go_out_welldone'] = str_replace("%s", $ally_name, $lang['Go_out_welldone']);
     $page = MessageForm($lang['sys_alliance'], sprintf($lang['ali_info_leave_success'], $ally['ally_name']), $PHP_SELF, $lang['Ok']);
