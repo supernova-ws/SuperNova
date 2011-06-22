@@ -24,7 +24,7 @@ if ($id_kick && $user_can_kick)
   $u = doquery("SELECT * FROM {{users}} WHERE `id` ='{$id_kick}' LIMIT 1", '', true);
   if ($u['ally_id'] == $ally['id'] && $u['id'] != $ally['ally_owner'])
   {
-    doquery("UPDATE {{users}} SET `ally_id`='0', `ally_name` = '' WHERE `id`='{$id_kick}'");
+    doquery("UPDATE {{users}} SET `ally_id`= null, `ally_name` = null,  ally_register_time = 0, ally_rank_id = 0 WHERE `id`='{$id_kick}'");
   }
 }
 
