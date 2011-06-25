@@ -63,6 +63,15 @@ while($row = mysql_fetch_row($query))
     $update_indexes[$tableName][$r1['Key_name']] .= "{$r1['Column_name']},";
   }
 }
+
+$query = doquery("select * FROM information_schema.KEY_COLUMN_USAGE where REFERENCED_TABLE_NAME is not null;");
+while($row = mysql_fetch_assoc($query))
+{
+  $tableName = str_replace($config->db_prefix, '', $row['TABLE_NAME']);
+  $table_referenced = str_replace($config->db_prefix, '', $row['REFERENCED_TABLE_NAME']);
+
+  $update_foreigns[$tableName][$row['CONSTRAINT_NAME']] .= "{$row['COLUMN_NAME']},{$table_referenced},{$row['REFERENCED_COLUMN_NAME']};";
+}
 upd_log_message('Table info loaded. Now looking DB for upgrades...');
 
 switch($new_version)
@@ -766,37 +775,37 @@ switch($new_version)
        'MODIFY COLUMN `ranklist` TEXT',
     ), $update_indexes['alliance']['id_2']);
 
-    if($update_tables['users']['ally_request_text'])
-    {
-      upd_alter_table('users', array(
-        'DROP INDEX `id_2`',
-        'DROP INDEX `id_3`',
-        'DROP INDEX `id_4`',
-        'DROP INDEX `id_5`',
-        'DROP INDEX `id_6`',
-        'DROP INDEX `id_7`',
-        'DROP INDEX `id_8`',
-        'DROP INDEX `id_9`',
-        'DROP INDEX `id_10`',
-        'DROP INDEX `id_11`',
-        'DROP INDEX `id_12`',
-        'DROP INDEX `id_13`',
-        'DROP INDEX `id_14`',
-        'DROP INDEX `id_15`',
-        'DROP INDEX `id_16`',
-        'DROP INDEX `id_17`',
-        'DROP INDEX `id_18`',
-        'DROP INDEX `id_19`',
-        'DROP INDEX `id_20`',
-        'DROP INDEX `id_21`',
-        'DROP COLUMN `ally_request`',
-        'DROP COLUMN `ally_request_text`',
-        'MODIFY COLUMN `ally_name` VARCHAR(32) DEFAULT NULL',
-        'MODIFY COLUMN `ally_id` BIGINT(20) UNSIGNED DEFAULT NULL',
-        'ADD UNIQUE INDEX `i_ally_id` (`ally_id`)',
-        'ADD UNIQUE INDEX `i_ally_name` (`ally_name`)',
-      ), true);
-    }
+    upd_alter_table('users', array(
+      'DROP INDEX `id_2`',
+      'DROP INDEX `id_3`',
+      'DROP INDEX `id_4`',
+      'DROP INDEX `id_5`',
+      'DROP INDEX `id_6`',
+      'DROP INDEX `id_7`',
+      'DROP INDEX `id_8`',
+      'DROP INDEX `id_9`',
+      'DROP INDEX `id_10`',
+      'DROP INDEX `id_11`',
+      'DROP INDEX `id_12`',
+      'DROP INDEX `id_13`',
+      'DROP INDEX `id_14`',
+      'DROP INDEX `id_15`',
+      'DROP INDEX `id_16`',
+      'DROP INDEX `id_17`',
+      'DROP INDEX `id_18`',
+      'DROP INDEX `id_19`',
+      'DROP INDEX `id_20`',
+      'DROP INDEX `id_21`',
+    ), $update_tables['users']['id_2']);
+
+    upd_alter_table('users', array(
+      'DROP COLUMN `ally_request`',
+      'DROP COLUMN `ally_request_text`',
+      'MODIFY COLUMN `ally_name` VARCHAR(32) DEFAULT NULL',
+      'MODIFY COLUMN `ally_id` BIGINT(20) UNSIGNED DEFAULT NULL',
+      'ADD UNIQUE INDEX `i_ally_id` (`ally_id`)',
+      'ADD UNIQUE INDEX `i_ally_name` (`ally_name`)',
+    ), $update_tables['users']['ally_request_text']);
 
     $illegal_moon_query = doquery("SELECT id FROM `{{planets}}` WHERE `id_owner` <> 0 AND `planet_type` = 3 AND `parent_planet` <> 0 AND `parent_planet` NOT IN (SELECT `id` FROM {{planets}} WHERE `planet_type` = 1);");
     while($illegal_moon_row = mysql_fetch_assoc($illegal_moon_query))
@@ -811,7 +820,7 @@ switch($new_version)
     upd_check_key('allow_buffing', isset($config->fleet_buffing_check) ? !$config->fleet_buffing_check : 0, !isset($config->allow_buffing));
     upd_check_key('ally_help_weak', 0, !isset($config->ally_help_weak));
 
-    if(!$update_indexes['users']['FK_users_ally_id'])
+    if(!$update_foreigns['users']['FK_users_ally_id'])
     {
       upd_do_query('DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} group by ally_id);');
       upd_do_query("UPDATE {{users}} SET `ally_id` = null, ally_name = null, ally_register_time = 0, ally_rank_id = 0 WHERE `ally_id` NOT IN (SELECT id FROM {{alliance}});");
@@ -830,7 +839,7 @@ switch($new_version)
 
   doquery('COMMIT;');
 
-  // $new_version = 28.1;
+//  $new_version = 29;
 
 //  case 28.1: upd_log_version_update();
 };
@@ -856,7 +865,14 @@ function upd_do_query($query)
   upd_add_more_time();
   upd_log_message("Performing query '{$query}'");
 
-  return doquery($query);
+  $result = doquery($query);
+  $error = mysql_error();
+  if($error)
+  {
+    die($query . ': ' . $error);
+  }
+
+  return $result;
 }
 
 function upd_alter_table($table, $alters, $condition = true)
@@ -887,7 +903,14 @@ function upd_alter_table($table, $alters, $condition = true)
   }
   $qry = substr($qry, 0, -1) . ';';
 
-  return mysql_query($qry);
+  $result = mysql_query($qry);
+  $error = mysql_error();
+  if($error)
+  {
+    die($table . ': ' . $error);
+  }
+
+  return $result;
 }
 
 function upd_check_key($key, $default_value, $condition = false)
