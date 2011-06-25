@@ -153,7 +153,7 @@ elseif(!$user_request['id_user'])
 
   if(!$ally)
   {
-    doquery("UPDATE {{users}} SET `ally_id` = 0, `ally_name` = '' WHERE `id`='{$user['id']}' LIMIT 1;");
+    doquery("UPDATE {{users}} SET `ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0  WHERE `id`='{$user['id']}' LIMIT 1;");
     message($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
   }
 

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2011-05-10 22:26:43
+Date: 2011-06-25 22:52:56
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -404,6 +404,10 @@ CREATE TABLE `sn_logs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sn_logs
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_mercenaries`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_mercenaries`;
@@ -605,7 +609,50 @@ CREATE TABLE `sn_planets` (
   KEY `i_last_update` (`last_update`),
   KEY `GSPT` (`galaxy`,`system`,`planet`,`planet_type`),
   KEY `i_parent_planet` (`parent_planet`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for `sn_quest`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_quest`;
+CREATE TABLE `sn_quest` (
+  `quest_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `quest_name` varchar(255) DEFAULT NULL,
+  `quest_description` text,
+  `quest_conditions` text,
+  `quest_rewards` text,
+  `quest_type` tinyint(4) DEFAULT NULL,
+  `quest_order` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`quest_id`),
+  UNIQUE KEY `quest_id` (`quest_id`),
+  KEY `quest_type` (`quest_type`,`quest_order`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_quest
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_quest_status`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_quest_status`;
+CREATE TABLE `sn_quest_status` (
+  `quest_status_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `quest_status_quest_id` bigint(20) unsigned DEFAULT NULL,
+  `quest_status_user_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `quest_status_progress` varchar(255) NOT NULL DEFAULT '',
+  `quest_status_status` tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`quest_status_id`),
+  UNIQUE KEY `quest_status_id` (`quest_status_id`),
+  KEY `quest_status_user_id` (`quest_status_user_id`,`quest_status_quest_id`,`quest_status_status`),
+  KEY `FK_quest_status_quest_id` (`quest_status_quest_id`),
+  CONSTRAINT `FK_quest_status_quest_id` FOREIGN KEY (`quest_status_quest_id`) REFERENCES `sn_quest` (`quest_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_quest_status_user_id` FOREIGN KEY (`quest_status_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_quest_status
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_referrals`
@@ -774,10 +821,8 @@ CREATE TABLE `sn_users` (
   `expedition_tech` int(11) NOT NULL DEFAULT '0',
   `colonisation_tech` int(11) NOT NULL DEFAULT '0',
   `graviton_tech` int(11) NOT NULL DEFAULT '0',
-  `ally_id` int(11) NOT NULL DEFAULT '0',
-  `ally_name` varchar(32) DEFAULT '',
-  `ally_request` int(11) NOT NULL DEFAULT '0',
-  `ally_request_text` text,
+  `ally_id` bigint(20) unsigned DEFAULT NULL,
+  `ally_name` varchar(32) DEFAULT NULL,
   `ally_register_time` int(11) NOT NULL DEFAULT '0',
   `ally_rank_id` int(11) NOT NULL DEFAULT '0',
   `kolorminus` varchar(11) NOT NULL DEFAULT 'red',
@@ -791,7 +836,7 @@ CREATE TABLE `sn_users` (
   `rpg_constructeur` int(11) NOT NULL DEFAULT '0',
   `rpg_scientifique` int(11) NOT NULL DEFAULT '0',
   `rpg_commandant` int(11) NOT NULL DEFAULT '0',
-  `rpg_points` int(11) NOT NULL DEFAULT '0',
+  `dark_matter` int(11) DEFAULT '0',
   `rpg_stockeur` int(11) NOT NULL DEFAULT '0',
   `rpg_defenseur` int(11) NOT NULL DEFAULT '0',
   `rpg_destructeur` int(11) NOT NULL DEFAULT '0',
@@ -815,6 +860,7 @@ CREATE TABLE `sn_users` (
   `mnl_transport` int(11) NOT NULL DEFAULT '0',
   `mnl_expedition` int(11) NOT NULL DEFAULT '0',
   `mnl_buildlist` int(11) NOT NULL DEFAULT '0',
+  `msg_admin` bigint(11) unsigned DEFAULT '0',
   `bana` int(11) DEFAULT NULL,
   `deltime` int(11) NOT NULL DEFAULT '0',
   `deleteme` int(11) NOT NULL DEFAULT '0',
@@ -825,11 +871,15 @@ CREATE TABLE `sn_users` (
   `vacation` int(11) NOT NULL DEFAULT '0' COMMENT 'Time when user can leave vacation mode',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
+  UNIQUE KEY `i_ally_id` (`ally_id`),
+  UNIQUE KEY `i_ally_name` (`ally_name`),
   KEY `i_username` (`username`),
   KEY `i_ally_online` (`ally_id`,`onlinetime`),
   KEY `onlinetime` (`onlinetime`),
-  KEY `i_register_time` (`register_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `i_register_time` (`register_time`),
+  CONSTRAINT `FK_users_ally_id` FOREIGN KEY (`ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `FK_users_ally_name` FOREIGN KEY (`ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Default server configuration
@@ -851,11 +901,11 @@ INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
 INSERT INTO `sn_config` VALUES ('eco_stockman_fleet', '');
 INSERT INTO `sn_config` VALUES ('energy_basic_income', '0');
-INSERT INTO `sn_config` VALUES ('fleet_bashing_war_delay', 12 * 60 * 60);
-INSERT INTO `sn_config` VALUES ('fleet_bashing_scope', 24 * 60 * 60);
-INSERT INTO `sn_config` VALUES ('fleet_bashing_interval', 30 * 60);
-INSERT INTO `sn_config` VALUES ('fleet_bashing_waves', 3);
 INSERT INTO `sn_config` VALUES ('fleet_bashing_attacks', 3);
+INSERT INTO `sn_config` VALUES ('fleet_bashing_interval', 30 * 60);
+INSERT INTO `sn_config` VALUES ('fleet_bashing_scope', 24 * 60 * 60);
+INSERT INTO `sn_config` VALUES ('fleet_bashing_war_delay', 12 * 60 * 60);
+INSERT INTO `sn_config` VALUES ('fleet_bashing_waves', 3);
 INSERT INTO `sn_config` VALUES ('fleet_buffing_check', 1);
 INSERT INTO `sn_config` VALUES ('Fleet_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('fleet_speed', '1');

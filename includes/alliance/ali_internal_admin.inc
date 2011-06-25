@@ -60,9 +60,11 @@ if ($isSaveOptions)
   }
 } elseif ($isDisband && $isConfirmDisband){
   if (!$isAllyOwner)
+  {
     message($lang['Denied_access'], $lang['ally_admin']);
+  }
   doquery("DELETE FROM {{alliance}} WHERE id='{$ally['id']}';");
-  doquery("UPDATE {{users}} SET `ally_id` = 0, `ally_name` = '', `ally_rank_id` = 0, `ally_register_time` = 0 WHERE ally_id='{$ally['id']}';");
+  doquery("UPDATE {{users}} SET `ally_id` = null, `ally_name` = null, `ally_rank_id` = 0, `ally_register_time` = 0 WHERE ally_id='{$ally['id']}';");
   header('Location: alliance.php');
   exit;
 };
