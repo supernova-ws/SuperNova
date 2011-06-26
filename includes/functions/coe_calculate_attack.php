@@ -51,12 +51,18 @@ function BE_calculateTechs(&$user)
 function BE_preCalcRoundData(&$fleets, &$fleetRoundData, &$fleetArray, $strFieldName, $isSimulated = false){
   global $pricelist, $CombatCaps;
 
-  foreach ($fleets as $fleetID => $fleet) {
+  foreach ($fleets as $fleetID => $fleet)
+  {
     $fleetRoundData['att'][$fleetID] = 0;
     $fleetRoundData['shield'][$fleetID] = 0;
     $fleetRoundData['amount'][$fleetID] = 0;
 
-    foreach ($fleet[$strFieldName] as $element => $amount) {
+    if(!is_array($fleet[$strFieldName]))
+    {
+      $fleet[$strFieldName] = array();
+    }
+    foreach ($fleet[$strFieldName] as $element => $amount)
+    {
       $thisArmor  = ($pricelist[$element]['metal'] + $pricelist[$element]['crystal']) / 10;
 
       $thisDef    = $amount * $thisArmor * $fleet['techs']['def'];
@@ -187,6 +193,10 @@ function coe_attack_calculate(&$attackers, &$defenders, $isSimulated = false)
   {
     $attackers[$fleetID]['techs'] = BE_calculateTechs($attacker['user']);
 
+    if(!is_array($attacker['detail']))
+    {
+      $attacker['detail'] = array();
+    }
     foreach ($attacker['detail'] as $element => $amount)
     {
       $attackResourcePoints['metal'] += $pricelist[$element]['metal'] * $amount;
@@ -201,6 +211,10 @@ function coe_attack_calculate(&$attackers, &$defenders, $isSimulated = false)
   {
     $defenders[$fleetID]['techs'] = BE_calculateTechs($defender['user']);
 
+    if(!is_array($defender['def']))
+    {
+      $defender['def'] = array();
+    }
     foreach ($defender['def'] as $element => $amount)
     {
       if ($element < 300)
@@ -217,7 +231,6 @@ function coe_attack_calculate(&$attackers, &$defenders, $isSimulated = false)
   }
   $totalResourcePoints['defender'] += $defenseResourcePoints['metal'];
   $totalResourcePoints['defender'] += $defenseResourcePoints['crystal'];
-
 
 BE_DEBUG_openTable();
 
@@ -297,6 +310,10 @@ BE_DEBUG_closeTable();
   // Debree
   foreach ($attackers as $fleetID => $attacker)
   {
+    if(!is_array($attacker['detail']))
+    {
+      $attacker['detail'] = array();
+    }
     foreach ($attacker['detail'] as $element => $amount)
     {
       $totalResourcePoints['attacker'] -= $pricelist[$element]['metal'] * $amount;
@@ -309,6 +326,10 @@ BE_DEBUG_closeTable();
 
   foreach ($defenders as $fleetID => $defender)
   {
+    if(!is_array($defender['def']))
+    {
+      $defender['def'] = array();
+    }
     foreach ($defender['def'] as $element => $amount)
     {
       if ($element < 300)
@@ -404,6 +425,10 @@ function BE_calculatePostAttacker($TargetPlanet, &$attackFleets, $result, $isSim
   foreach ($attackFleets as $fleetID => &$attacker) {
     $fleetArray = '';
     $totalCount = 0;
+    if(!is_array($attacker['detail']))
+    {
+      $attacker['detail'] = array();
+    }
     foreach ($attacker['detail'] as $element => $amount)
     {
       if ($amount > 0)

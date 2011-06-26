@@ -175,8 +175,11 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
     {
       foreach($fleet_list[$Planet][PT_DEBRIS] as $fleet_row)
       {
-        $fleet_data = flt_expand($fleet_row);
-        $recyclers_incoming += $fleet_data[SHIP_RECYCLER];
+        if($fleet_row['fleet_owner'] == $user['id'])
+        {
+          $fleet_data = flt_expand($fleet_row);
+          $recyclers_incoming += $fleet_data[SHIP_RECYCLER];
+        }
       }
     }
 

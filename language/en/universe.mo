@@ -144,5 +144,8 @@ $lang['uni_debris']           = 'Debris';
 
 $lang['uni_need']           = 'Need';
 
+$lang['uni_flying']           = 'Flying';
+
 $lang['uni_incoming_fleets']  = 'Incoming Fleet';
+
 ?>
