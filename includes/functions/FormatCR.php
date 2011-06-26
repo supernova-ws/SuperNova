@@ -65,6 +65,10 @@ function formatCR_Fleet(&$dataInc, &$data_prev, $isAttacker, $isLastRound)
     $armour1  = "<tr><th>{$lang['sys_ship_armour']}</th>";
 
     //And now the data columns "foreach" ship
+    if(!is_array($data2[$strField]))
+    {
+      $data2[$strField] = array();
+    }
     foreach($data2[$strField] as $ship_id => $ship_count1)
     {
       if ($ship_count1 > 0)
