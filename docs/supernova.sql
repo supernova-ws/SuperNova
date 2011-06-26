@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2011-06-25 22:52:56
+Date: 2011-06-26 13:10:44
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -59,8 +59,8 @@ CREATE TABLE `sn_alliance` (
   `ally_members` int(11) NOT NULL DEFAULT '0',
   `ranklist` text,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `i_ally_name` (`ally_name`)
+  UNIQUE KEY `i_ally_name` (`ally_name`),
+  UNIQUE KEY `i_ally_tag` (`ally_tag`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -216,8 +216,8 @@ CREATE TABLE `sn_bashing` (
   KEY `bashing_user_id` (`bashing_user_id`,`bashing_planet_id`,`bashing_time`),
   KEY `bashing_planet_id` (`bashing_planet_id`),
   KEY `bashing_time` (`bashing_time`),
-  CONSTRAINT `FK_bashing_user_id` FOREIGN KEY (`bashing_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_bashing_planet_id` FOREIGN KEY (`bashing_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_bashing_planet_id` FOREIGN KEY (`bashing_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_bashing_user_id` FOREIGN KEY (`bashing_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -269,6 +269,10 @@ CREATE TABLE `sn_config` (
   PRIMARY KEY (`config_name`),
   KEY `i_config_name` (`config_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_config
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_confirmations`
@@ -870,7 +874,6 @@ CREATE TABLE `sn_users` (
   `user_proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)',
   `vacation` int(11) NOT NULL DEFAULT '0' COMMENT 'Time when user can leave vacation mode',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
   UNIQUE KEY `i_ally_id` (`ally_id`),
   UNIQUE KEY `i_ally_name` (`ally_name`),
   KEY `i_username` (`username`),
@@ -895,7 +898,7 @@ INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</
 INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
-INSERT INTO `sn_config` VALUES ('db_version', '28');
+INSERT INTO `sn_config` VALUES ('db_version', '29');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');

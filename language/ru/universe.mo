@@ -139,5 +139,8 @@ $lang['uni_debris']           = 'Обломки';
 
 $lang['uni_need']           = 'Нужно';
 
+$lang['uni_flying']           = 'Летит';
+
 $lang['uni_incoming_fleets']  = 'Состав прибывающих флотов';
+
 ?>

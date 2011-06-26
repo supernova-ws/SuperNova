@@ -332,7 +332,8 @@ jQuery.extend(language, {
   sys_ships: '{L_uni_incoming_fleets}',
   lang_recyclers: '{LANG_RECYCLERS}',
   sys_error: '{L_sys_error}',
-  sys_done: '{L_sys_done}'
+  sys_done: '{L_sys_done}',
+  uni_flying: '{L_uni_flying}'
 });
 
 var users = new Array();
