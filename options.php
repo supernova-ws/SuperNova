@@ -33,25 +33,21 @@ if($mode == 'change')
 
       if($is_building)
       {
-        message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'options.php', 1);
+        message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'options.php', 5);
+        die();
       }
       else
       {
-        $query = doquery("SELECT * FROM `{{planets}}` WHERE `id_owner` = '{$user['id']}' LIMIT 1;");
+        $query = doquery("SELECT * FROM `{{planets}}` WHERE `id_owner` = '{$user['id']}';");
         while($planet = mysql_fetch_assoc($query))
         {
           $global_data = sys_o_get_updated($user, $planet, $time_now, true);
           $planet = $global_data['planet'];
-          if(($planet['que']) || ($planet['b_tech'] && $planet['b_tech']) || ($planet['b_hangar'] && $planet['b_hangar']))
+          if(($planet['que']) || ($planet['b_tech'] || $planet['b_tech_id']) || ($planet['b_hangar'] || $planet['b_hangar_id']))
           {
-            $is_building = true;
-            break;
+            message(sprintf($lang['opt_vacation_err_building'], $planet['name']), $lang['Error'], 'options.php', 5);
+            die();
           }
-        }
-
-        if($is_building)
-        {
-          message($lang['opt_vacation_err_building'], $lang['Error'], 'options.php', 1);
         }
       }
 

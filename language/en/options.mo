@@ -106,7 +106,7 @@ $lang['opt_compatibility']    = 'Compatibility - old interfaces';
 $lang['opt_compat_structures']= 'The old interface construction';
 
 $lang['opt_vacation_err_your_fleet'] = "Not to leave until the flight is at least one of your fleet";
-$lang['opt_vacation_err_building']   = "You are building or explore and therefore cannot leave on vacation";
+$lang['opt_vacation_err_building']   = 'You are building or explore on %s and therefore cannot leave on vacation';
 $lang['opt_vacation_min'] = 'a minimum of';
 
 ?>
