@@ -579,22 +579,58 @@ switch($new_version)
     upd_check_key('quest_total', 0, !isset($config->quest_total));
 
     upd_alter_table('alliance', array('DROP INDEX `id`',), $update_indexes['alliance']['id']);
-    upd_alter_table('alliance', array('DROP INDEX `id_2`', 'DROP INDEX `id_3`', 'DROP INDEX `id_4`', 'DROP INDEX `id_5`', 'DROP INDEX `id_6`',
-      'DROP INDEX `id_7`', 'DROP INDEX `id_8`', 'DROP INDEX `id_9`', 'DROP INDEX `id_10`', 'DROP INDEX `id_11`', 'DROP INDEX `id_12`',
-    ), $update_indexes['alliance']['id_2']);
+    upd_alter_table('alliance', array('DROP INDEX `id_2`',), $update_indexes['alliance']['id_2']);
+    upd_alter_table('alliance', array('DROP INDEX `id_3`',), $update_indexes['alliance']['id_3']);
+    upd_alter_table('alliance', array('DROP INDEX `id_4`',), $update_indexes['alliance']['id_4']);
+    upd_alter_table('alliance', array('DROP INDEX `id_5`',), $update_indexes['alliance']['id_5']);
+    upd_alter_table('alliance', array('DROP INDEX `id_6`',), $update_indexes['alliance']['id_6']);
+    upd_alter_table('alliance', array('DROP INDEX `id_7`',), $update_indexes['alliance']['id_7']);
+    upd_alter_table('alliance', array('DROP INDEX `id_8`',), $update_indexes['alliance']['id_8']);
+    upd_alter_table('alliance', array('DROP INDEX `id_9`',), $update_indexes['alliance']['id_9']);
+    upd_alter_table('alliance', array('DROP INDEX `id_10`',), $update_indexes['alliance']['id_10']);
+    upd_alter_table('alliance', array('DROP INDEX `id_11`',), $update_indexes['alliance']['id_11']);
+    upd_alter_table('alliance', array('DROP INDEX `id_12`',), $update_indexes['alliance']['id_12']);
+    upd_alter_table('alliance', array('DROP INDEX `id_13`',), $update_indexes['alliance']['id_13']);
+    upd_alter_table('alliance', array('DROP INDEX `id_14`',), $update_indexes['alliance']['id_14']);
+    upd_alter_table('alliance', array('DROP INDEX `id_15`',), $update_indexes['alliance']['id_15']);
+    upd_alter_table('alliance', array('DROP INDEX `id_16`',), $update_indexes['alliance']['id_16']);
+    upd_alter_table('alliance', array('DROP INDEX `id_17`',), $update_indexes['alliance']['id_17']);
+    upd_alter_table('alliance', array('DROP INDEX `id_18`',), $update_indexes['alliance']['id_18']);
+    upd_alter_table('alliance', array('DROP INDEX `id_19`',), $update_indexes['alliance']['id_19']);
+    upd_alter_table('alliance', array('DROP INDEX `id_20`',), $update_indexes['alliance']['id_20']);
+    upd_alter_table('alliance', array('DROP INDEX `id_21`',), $update_indexes['alliance']['id_21']);
+    upd_alter_table('alliance', array('DROP INDEX `id_22`',), $update_indexes['alliance']['id_22']);
+    upd_alter_table('alliance', array('DROP INDEX `id_23`',), $update_indexes['alliance']['id_23']);
+    upd_alter_table('alliance', array('DROP INDEX `id_24`',), $update_indexes['alliance']['id_24']);
     upd_alter_table('alliance', array('DROP INDEX `ally_name`',), $update_indexes['alliance']['ally_name']);
 
     upd_alter_table('alliance', array('ADD UNIQUE INDEX `i_ally_tag` (`ally_tag`)',), !$update_indexes['alliance']['i_ally_tag']);
     upd_alter_table('alliance', array('MODIFY COLUMN `ranklist` TEXT',), true);
 
     upd_alter_table('users', array('DROP INDEX `id`',), $update_indexes['users']['id']);
-    upd_alter_table('users', array('DROP INDEX `id_2`', 'DROP INDEX `id_3`', 'DROP INDEX `id_4`',
-      'DROP INDEX `id_5`', 'DROP INDEX `id_6`', 'DROP INDEX `id_7`', 'DROP INDEX `id_8`',
-      'DROP INDEX `id_9`', 'DROP INDEX `id_10`', 'DROP INDEX `id_11`', 'DROP INDEX `id_12`', 'DROP INDEX `id_13`'
-    ), $update_indexes['users']['id_2']);
-    upd_alter_table('users', array('DROP INDEX `id_14`', 'DROP INDEX `id_15`', 'DROP INDEX `id_16`',
-      'DROP INDEX `id_17`', 'DROP INDEX `id_18`', 'DROP INDEX `id_19`', 'DROP INDEX `id_20`', 'DROP INDEX `id_21`',
-    ), $update_indexes['users']['id_14']);
+    upd_alter_table('users', array('DROP INDEX `id_2`',), $update_indexes['users']['id_2']);
+    upd_alter_table('users', array('DROP INDEX `id_3`',), $update_indexes['users']['id_3']);
+    upd_alter_table('users', array('DROP INDEX `id_4`',), $update_indexes['users']['id_4']);
+    upd_alter_table('users', array('DROP INDEX `id_5`',), $update_indexes['users']['id_5']);
+    upd_alter_table('users', array('DROP INDEX `id_6`',), $update_indexes['users']['id_6']);
+    upd_alter_table('users', array('DROP INDEX `id_7`',), $update_indexes['users']['id_7']);
+    upd_alter_table('users', array('DROP INDEX `id_8`',), $update_indexes['users']['id_8']);
+    upd_alter_table('users', array('DROP INDEX `id_9`',), $update_indexes['users']['id_9']);
+    upd_alter_table('users', array('DROP INDEX `id_10`',), $update_indexes['users']['id_10']);
+    upd_alter_table('users', array('DROP INDEX `id_11`',), $update_indexes['users']['id_11']);
+    upd_alter_table('users', array('DROP INDEX `id_12`',), $update_indexes['users']['id_12']);
+    upd_alter_table('users', array('DROP INDEX `id_13`',), $update_indexes['users']['id_13']);
+    upd_alter_table('users', array('DROP INDEX `id_14`',), $update_indexes['users']['id_14']);
+    upd_alter_table('users', array('DROP INDEX `id_15`',), $update_indexes['users']['id_15']);
+    upd_alter_table('users', array('DROP INDEX `id_16`',), $update_indexes['users']['id_16']);
+    upd_alter_table('users', array('DROP INDEX `id_17`',), $update_indexes['users']['id_17']);
+    upd_alter_table('users', array('DROP INDEX `id_18`',), $update_indexes['users']['id_18']);
+    upd_alter_table('users', array('DROP INDEX `id_19`',), $update_indexes['users']['id_19']);
+    upd_alter_table('users', array('DROP INDEX `id_20`',), $update_indexes['users']['id_20']);
+    upd_alter_table('users', array('DROP INDEX `id_21`',), $update_indexes['users']['id_21']);
+    upd_alter_table('users', array('DROP INDEX `id_22`',), $update_indexes['users']['id_22']);
+    upd_alter_table('users', array('DROP INDEX `id_23`',), $update_indexes['users']['id_23']);
+    upd_alter_table('users', array('DROP INDEX `id_24`',), $update_indexes['users']['id_24']);
 
     upd_alter_table('users', "CHANGE COLUMN `rpg_points` `dark_matter` int(11) DEFAULT 0", $update_tables['users']['rpg_points']);
 
