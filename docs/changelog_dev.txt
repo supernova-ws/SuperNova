@@ -203,7 +203,10 @@ TODO:
 
 [*] Переименовать все "mnl_" в "msg_", а в БД - засунуть в одно поле (?)
 
-2011-06-26 16:28 V29c3 Project "SuperNova.WS" Release 29 Release Candidate 3
+2011-06-26 17:44 V29c4 Project "SuperNova.WS" Release 29 Release Candidate 4
+[~] Шпионаж: Изменены сообщения при уничтожении разведфлота
+
+2011-06-26 16:52 V29c3 Project "SuperNova.WS" Release 29 Release Candidate 3
 [%] Настройки: Исправлена  ошибка,  позволяющая  уйти  в  отпуск  когда  что-то
     строится или исследуется на неосновной планете
 
