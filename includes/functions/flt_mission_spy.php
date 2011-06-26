@@ -137,7 +137,7 @@ function flt_mission_spy($mission_data)
   }
 
   $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
-  if($fleet_array[SHIP_SPY] >= 1)
+  if($fleet_array[SHIP_SPY] > 0)
   {
     $TargetSpyLvl      = GetSpyLevel($target_user_row); //mrc_modify_value($target_user_row, $target_planet_row, MRC_SPY, GetSpyLevel($target_user_row));
     $CurrentSpyLvl     = GetSpyLevel($spying_user_row); //mrc_modify_value($spying_user_row, $spying_planet_row, MRC_SPY, GetSpyLevel($spying_user_row));
@@ -204,7 +204,7 @@ function flt_mission_spy($mission_data)
 
     if (mt_rand(0, 99) > $spy_detected)
     {
-      $DestProba = sprintf($lang['sys_mess_spy_lostproba'], $spy_detected);
+      $DestProba = sprintf($lang['sys_mess_spy_detect_chance'], $spy_detected);
       $spy_detected = false;
     }
     else
@@ -228,7 +228,6 @@ function flt_mission_spy($mission_data)
     $TargetMessage .= " [". $target_planet_row["galaxy"] .":". $target_planet_row["system"] .":". $target_planet_row["planet"] ."].";
 
     $target_user_id = $fleet_row['fleet_target_owner'];
-    msg_send_simple_message ( $target_user_id, '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $TargetMessage);
 
     if ($spy_detected)
     {
@@ -249,14 +248,25 @@ function flt_mission_spy($mission_data)
       $QryUpdateGalaxy .= "WHERE `id` = '{$debris_planet_id}' LIMIT 1;";
       doquery($QryUpdateGalaxy);
 
-      msg_send_simple_message ( $target_user_id, '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], 'Ваш шпионский флот уничтожен');
+      $TargetMessage .= "<br />{$lang['sys_mess_spy_destroyed_enemy']}";
 
-      return CACHE_FLEET | CACHE_PLANET_DST;
+//      msg_send_simple_message ( $target_user_id, '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $TargetMessage . );
+
+      $result = CACHE_FLEET | CACHE_PLANET_DST;
     }
+    else
+    {
+      $result = CACHE_FLEET;
+    }
+    msg_send_simple_message ( $target_user_id, '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $TargetMessage);
   }
 
-  doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
-  return CACHE_FLEET;
+  if(!$spy_detected)
+  {
+    doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
+  }
+
+  return $result;
 }
 
 ?>
