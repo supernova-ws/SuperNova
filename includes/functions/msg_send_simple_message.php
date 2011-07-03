@@ -70,8 +70,10 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
     $text = mysql_real_escape_string($text);
   }
 
+  $text_unescaped = stripslashes($text);
+
   $message_class = $sn_message_class_list[$message_type];
-  $message_class_email = $message_class['switchable'];
+  $message_class_email = $message_class['email'];
   $message_class_switchable = $message_class['switchable'];
   $message_class_name = $message_class['name'];
 
@@ -111,7 +113,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
 
       if($message_class_email && $config->game_email_pm && $owner_row["opt_email_{$message_class_name}"])
       {
-        @$result = mymail($owner_row['email'], $subject, $text);
+        @$result = mymail($owner_row['email'], $subject, $text_unescaped, '', true);
       }
     }
 
