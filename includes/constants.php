@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '29');
 define('SN_RELEASE', '29');
-define('SN_VERSION', '29d2');
+define('SN_VERSION', '29d3');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -137,6 +137,7 @@ define('EVENT_FLEET_STAY'  , 2);
 define('EVENT_FLEET_RETURN', 3);
 
 // *** Constants for changing DM
+define('RPG_NONE', 0);
 define('RPG_STRUCTURE', 1);
 define('RPG_RAID', 2);
 define('RPG_TECH', 3);
@@ -145,6 +146,8 @@ define('RPG_BUY', 5);
 define('RPG_MARKET', 6);
 define('RPG_MERCENARY', 7);
 define('RPG_QUEST', 8);
+define('RPG_EXPEDITION', 9);
+define('RPG_REFERRAL', 10);
 
 // Login statuses
 define('LOGIN_SUCCESS'               , 1);

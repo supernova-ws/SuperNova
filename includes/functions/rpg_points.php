@@ -18,7 +18,7 @@
 * @package rpg
 *
 */
-function rpg_points_change($user_id, $dark_matter, $comment = false, $already_changed = false)
+function rpg_points_change($user_id, $change_type, $dark_matter, $comment = false, $already_changed = false)
 {
   global $debug, $config, $dm_change_legit, $sn_data;
 
@@ -41,7 +41,23 @@ function rpg_points_change($user_id, $dark_matter, $comment = false, $already_ch
 
   if($rows_affected)
   {
-    $debug->warning("Player ID {$user_id} Dark Matter was adjusted with {$dark_matter}. Reason: {$comment}", 'Dark Matter Change', 102);
+    $page_url = mysql_real_escape_string($_SERVER['SCRIPT_NAME']);
+    $row = doquery("SELECT username FROM {{users}} WHERE id = {$user_id} LIMIT 1;", '', true);
+    doquery(
+      "INSERT INTO {{log_dark_matter}} (`log_dark_matter_username`, `log_dark_matter_reason`,
+        `log_dark_matter_amount`, `log_dark_matter_comment`, `log_dark_matter_page`, `log_dark_matter_sender`)
+      VALUES (
+        '{$row['username']}',
+        {$change_type},
+        {$dark_matter},
+        '{$comment}',
+        '{$page_url}',
+        {$user_id}
+      );", true
+    );
+
+
+//    $debug->warning("Player ID {$user_id} Dark Matter was adjusted with {$dark_matter}. Reason: {$comment}", 'Dark Matter Change', 102);
 
     if($dark_matter>0)
     {
@@ -54,7 +70,7 @@ function rpg_points_change($user_id, $dark_matter, $comment = false, $already_ch
         $partner_bonus = floor($new_referral['dark_matter']/$config->rpg_bonus_divisor) - floor($old_referral['dark_matter']/$config->rpg_bonus_divisor);
         if($partner_bonus > 0)
         {
-          rpg_points_change($new_referral['id_partner'], $partner_bonus, "Incoming From Referral ID {$user_id}");
+          rpg_points_change($new_referral['id_partner'], RPG_REFERRAL, $partner_bonus, "Incoming From Referral ID {$user_id}");
         }
       }
     }
@@ -103,10 +119,10 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
     $level++;
   }
   $level -= $user[$field_level];
-  if($level)
+  if($level > 0)
   {
     doquery("UPDATE `{{users}}` SET `{$field_level}` = `{$field_level}` + '{$level}' WHERE `id` = '{$user['id']}' LIMIT 1;");
-    rpg_points_change($user['id'], $level, $comment);
+    rpg_points_change($user['id'], $type, $level, $comment);
     $user[$field_level] += $level;
     $user[$sn_data_dark_matter_db_name] += $level;
   }

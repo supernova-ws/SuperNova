@@ -287,7 +287,7 @@ function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
 
         if($user_reward_dm)
         {
-          rpg_points_change($user['id'], $user_reward_dm, $comment, true);
+          rpg_points_change($user['id'], RPG_QUEST,$user_reward_dm, $comment, true);
         }
       }
 

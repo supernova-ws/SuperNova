@@ -76,7 +76,7 @@ if ($mode == 2) {
         $user[$resource[$Selected]] += 1;
         $user[$sn_data_dark_matter_db_name]         -= $darkmater_cost;
         doquery( "UPDATE {{users}} SET `{$resource[$Selected]}` = `{$resource[$Selected]}` + 1 WHERE `id` = '{$user['id']}';");
-        rpg_points_change($user['id'], -($darkmater_cost), "Spent for officer {$lang['tech'][$Selected]} ID {$Selected}");
+        rpg_points_change($user['id'], RPG_MERCENARY, -($darkmater_cost), "Spent for officer {$lang['tech'][$Selected]} ID {$Selected}");
         $Message = $lang['off_recruited'];
         header("Location: officer.php");
         ob_end_flush();
