@@ -127,19 +127,19 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 
   if(!empty($que['built']))
   {
-    $message = '';
+    $message = array();
     foreach($que['built'] as $unit_id => $built_count)
     {
       if($built_count > 0)
       {
-        $message .= sprintf($lang['msg_que_built_message'], uni_render_planet($planet), $lang['tech'][$unit_id], $built_count);
+        $message[] = sprintf($lang['msg_que_built_message'], uni_render_planet($planet), $lang['tech'][$unit_id], $built_count);
       }
       else
       {
-        $message .= sprintf($lang['msg_que_destroy_message'], uni_render_planet($planet), $lang['tech'][$unit_id], -$built_count);
+        $message[] = sprintf($lang['msg_que_destroy_message'], uni_render_planet($planet), $lang['tech'][$unit_id], -$built_count);
       }
     }
-    msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_planet_from'], $lang['msg_que_built_subject'], $message);
+    msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_planet_from'], $lang['msg_que_built_subject'], implode('<br />', $message));
   }
 
   $QryUpdatePlanet .= "WHERE `id` = '{$planet['id']}' LIMIT 1;";

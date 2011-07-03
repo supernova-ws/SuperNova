@@ -137,8 +137,12 @@
           <tr>
             <td class="c_c"><label for="{options_1.NAME}">{options_1.TEXT}</label></td>
             <td class="c_c">
-<!--              <input type="hidden" name="{options_1.NAME}" value="off" > -->
-              <input type="checkbox" name="{options_1.NAME}" value="1" id="{options_1.NAME}" <!-- IF options_1.VALUE --> checked<!-- ENDIF -->>
+              <!-- IF options_1.PM != -1 -->
+                <input type="checkbox" id="opt_{options_1.NAME}" name="opt_{options_1.NAME}" value="1" id="{options_1.NAME}"<!-- IF options_1.PM --> checked<!-- ENDIF -->>&nbsp;<label for="opt_{options_1.NAME}"><img src="{dpath}img/m.gif" alt="{write_a_messege}" />&nbsp;{L_msg_personal_messages}</label>
+              <!-- ENDIF -->
+              <!-- IF options_1.EMAIL != -1 -->
+                <input type="checkbox" id="opt_email_{options_1.NAME}" name="opt_email_{options_1.NAME}" value="1" id="{options_1.NAME}"<!-- IF options_1.EMAIL --> checked<!-- ENDIF -->>&nbsp;<label for="opt_email_{options_1.NAME}">@ e-mail</label>
+              <!-- ENDIF -->
             </td>
           </tr>
         <!-- END options_1 -->

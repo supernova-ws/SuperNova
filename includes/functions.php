@@ -817,7 +817,7 @@ function sys_unit_arr2str($fleet_array)
   return $fleet_string;
 }
 
-function mymail($to, $title, $body, $from = '')
+function mymail($to, $title, $body, $from = '', $html = false)
 {
   global $config;
 
@@ -831,7 +831,7 @@ function mymail($to, $title, $body, $from = '')
   $rp = $config->game_adminEmail;
 
   $head = '';
-  $head .= "Content-Type: text/plain; charset=utf-8 \r\n";
+  $head .= "Content-Type: text/" . ($html ? 'html' : 'plain'). "; charset=utf-8 \r\n";
   $head .= "Date: " . date('r') . " \r\n";
   $head .= "Return-Path: $rp \r\n";
   $head .= "From: $from \r\n";
@@ -843,6 +843,11 @@ function mymail($to, $title, $body, $from = '')
   $body = str_replace("\r\n", "\n", $body);
   $body = str_replace("\n", "\r\n", $body);
   $body = iconv('CP1251', 'UTF-8', $body);
+
+  if($html)
+  {
+    $body = '<html><head><base href="' . SN_ROOT_VIRTUAL . '"></head><body>' . nl2br($body) . '</body></html>';
+  }
 
   $title = '=?UTF-8?B?' . base64_encode(iconv('CP1251', 'UTF-8', $title)) . '?=';
 

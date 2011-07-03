@@ -487,8 +487,10 @@ $lang = array_merge($lang, array(
   'msg_que_hangar_message' => "Hangar on %s complete his work",
 
   'msg_que_built_subject'   => 'Planetary build work complete',
-  'msg_que_built_message'   => "Building of '%2\$s' on %1\$s complete. Levels built: %3\$d\r\n",
-  'msg_que_destroy_message' => "Denolition of '%2\$s' on %1\$s complete. Levels demolished: %3\$d\r\n",
+  'msg_que_built_message'   => "Building of '%2\$s' on %1\$s complete. Levels built: %3\$d",
+  'msg_que_destroy_message' => "Demolition of '%2\$s' on %1\$s complete. Levels demolished: %3\$d",
+
+  'msg_personal_messages' => 'Personal Messages',
 
   // Arrays
   'sys_game_mode' => array(

@@ -47,6 +47,7 @@ if(sys_get_param('save'))
 
   $config->allow_buffing           = sys_get_param_int('allow_buffing');
   $config->ally_help_weak          = sys_get_param_int('ally_help_weak');
+  $config->game_email_pm           = sys_get_param_int('game_email_pm');
 
   $config->rpg_exchange_metal      = sys_get_param_int('rpg_exchange_metal', 1);
   $config->rpg_exchange_crystal    = sys_get_param_int('rpg_exchange_crystal', 2);
@@ -80,6 +81,7 @@ $template->assign_vars(array(
   'user_vacation_disable' => $config->user_vacation_disable ? 'checked' : '',
   'ALLOW_BUFFING' => $config->allow_buffing,
   'ALLY_HELP_WEAK' => $config->ally_help_weak,
+  'GAME_EMAIL_PM' => $config->game_email_pm,
   'game_mode' => $config->game_mode,
   'game_language' => $config->game_default_language,
 ));
