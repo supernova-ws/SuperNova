@@ -846,7 +846,7 @@ function mymail($to, $title, $body, $from = '', $html = false)
 
   if($html)
   {
-    $body = '<html><head><base href="' . SN_ROOT_VIRTUAL . '"></head><body>' . $body . '</body></html>';
+    $body = '<html><head><base href="' . SN_ROOT_VIRTUAL . '"></head><body>' . nl2br($body) . '</body></html>';
   }
 
   $title = '=?UTF-8?B?' . base64_encode(iconv('CP1251', 'UTF-8', $title)) . '?=';
