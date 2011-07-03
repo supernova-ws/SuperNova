@@ -70,7 +70,11 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
     $text = mysql_real_escape_string($text);
   }
 
-  $message_class_name = $sn_message_class_list[$message_type]['name'];
+  $message_class = $sn_message_class_list[$message_type];
+  $message_class_email = $message_class['switchable'];
+  $message_class_switchable = $message_class['switchable'];
+  $message_class_name = $message_class['name'];
+
   $message_class_name_total = $sn_message_class_list[MSG_TYPE_NEW]['name'];
 
   $QryInsertMessage = 'INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ';
@@ -90,7 +94,6 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
 
     foreach ($owners as $owner)
     {
-//      $insert_values[] = "('{$owner}', '{$sender}', '{$timestamp}', '{$message_type}', '{$from}', '{$subject}', '{$text}')";
       if($user['id'] != $owner)
       {
         $owner_row = doquery("SELECT * FROM {{users}} WHERE id = {$owner} LIMIT 1;", '', true);
@@ -101,9 +104,14 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
         $owner_row = &$user;
       }
 
-      if(!in_array($message_type, $sn_message_groups['switchable']) || $owner_row["opt_{$message_class_name}"])
+      if(!$message_class_switchable || $owner_row["opt_{$message_class_name}"])
       {
         $insert_values[] = sprintf($insert_template, $owner);
+      }
+
+      if($message_class_email && $config->game_email_pm && $owner_row["opt_email_{$message_class_name}"])
+      {
+        @$result = mymail($owner_row['email'], $subject, $text);
       }
     }
 

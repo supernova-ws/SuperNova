@@ -682,8 +682,10 @@ switch($new_version)
   doquery('COMMIT;');
   $new_version = 29;
 
-//  case 29: upd_log_version_update();
-//  doquery('COMMIT;');
+  case 29: upd_log_version_update();
+    upd_check_key('game_email_pm', 0, !isset($config->game_email_pm));
+  doquery('COMMIT;');
+//  $new_version = 29;
 
 };
 upd_log_message('Upgrade complete.');
@@ -698,7 +700,7 @@ else
   upd_log_message("DB version didn't changed from {$config->db_version}");
 }
 
-if ( $user['authlevel'] >= 3 )
+if($user['authlevel'] >= 3)
 {
   print(str_replace("\r\n", '<br>', $upd_log));
 }

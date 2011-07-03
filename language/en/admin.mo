@@ -215,8 +215,9 @@ $lang = array_merge($lang, array(
   'adm_opt_chat'              => "Chat settings",
   'adm_opt_chat_timeout'      => "Timeout for idle",
 
-  'adm_opt_allow_buffing'       => 'Allow buffing',
-  'adm_opt_ally_help_weak'      => 'Allow HOLD on weak co-ally',
+  'adm_opt_allow_buffing'     => 'Allow buffing',
+  'adm_opt_ally_help_weak'    => 'Allow HOLD on weak co-ally',
+  'adm_opt_email_pm'          => 'Enables sending PM to e-mail',
 
   'adm_opt_game_defaults'         => "Configuring default Game setting",
   'adm_opt_game_default_language' => "Default language",

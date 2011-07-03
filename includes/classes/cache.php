@@ -526,6 +526,8 @@ class classConfig extends classPersistent
 
     'game_user_changename' => 0, // Is user allowed to change name after registration?
 
+    'game_email_pm'        => 0, // Is allowed forwarding messages from PM to e-mail?
+
     'int_format_date'      => 'd.m.Y', // Date default format
     'int_format_time'      => 'H:i:s', // Time default format
 

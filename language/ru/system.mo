@@ -490,6 +490,8 @@ $lang = array_merge($lang, array(
   'msg_que_built_message'   => "Завершено строительство здания '%2\$s' на %1\$s. Построено уровней: %3\$d\r\n",
   'msg_que_destroy_message' => "Завершено разрушение здания '%2\$s' на %1\$s. Разрушено уровней: %3\$d\r\n",
 
+  'msg_personal_messages' => 'Личные сообщения',
+
   // Arrays
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'Сверхновая',

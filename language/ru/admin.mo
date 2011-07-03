@@ -215,6 +215,7 @@ $lang = array_merge($lang, array(
 
   'adm_opt_allow_buffing'     => 'Разрешить прокачку',
   'adm_opt_ally_help_weak'    => 'Разрешить удержание на слабом соаловце',
+  'adm_opt_email_pm'          => 'Разрешить пересылку ЛС на e-mail',
 
   'adm_opt_game_defaults'         => "Настройки игрока по умолчанию",
   'adm_opt_game_default_language' => "Язык интерфейса",

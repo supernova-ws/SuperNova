@@ -161,6 +161,10 @@
       <th><input name="ally_help_weak" type="checkbox" value="1" <!-- IF ALLY_HELP_WEAK -->checked<!-- ENDIF --> /></th> 
     </tr>
     <tr>
+      <th>{L_adm_opt_email_pm}</th> 
+      <th><input name="game_email_pm" type="checkbox" value="1" <!-- IF GAME_EMAIL_PM -->checked<!-- ENDIF --> /></th> 
+    </tr>
+    <tr>
       <th>{L_adm_opt_game_debugmod}</a></th>
       <th><input name="debug" {debug} type="checkbox" value="1" /></th>
     </tr>

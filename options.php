@@ -262,13 +262,44 @@ $template->assign_vars(array(
 
 foreach($user_option_list as $option_group_id => $option_group)
 {
-  foreach($option_group as $option_name => $option_value)
+  if($option_group_id == OPT_MESSAGE)
   {
-    $template->assign_block_vars("options_{$option_group_id}", array(
-      'NAME'  => $option_name,
-      'TEXT'  => $lang['opt_custom'][$option_name],
-      'VALUE' => $user[$option_name],
-    ));
+    foreach($sn_message_class_list as $message_class_id => $message_class_data)
+    {
+      if($message_class_data['switchable'] || ($message_class_data['email'] && $config->game_email_pm))
+      {
+        $option_name = $message_class_data['name'];
+
+        $template->assign_block_vars("options_{$option_group_id}", array(
+          'NAME'  => $message_class_data['name'],
+          'TEXT'  => $lang['msg_class'][$message_class_id], // $lang['opt_custom'][$option_name],
+          'PM' => $message_class_data['switchable'] ? $user["opt_{$option_name}"] : -1,
+          'EMAIL' => $message_class_data['email'] && $config->game_email_pm ? $user["opt_email_{$option_name}"] : -1,
+        ));//debug($message_class_data['switchable']);debug($user["opt_{$option_name}"]);debug("opt_{$option_name}");
+      }
+/*
+      if($message_class_data['switchable'])
+      {
+        $user_option_list[OPT_MESSAGE]["opt_{$message_class_data['name']}"] = 1;
+      }
+
+      if($message_class_data['email'])
+      {
+        $user_option_list[OPT_MESSAGE]["opt_email_{$message_class_data['name']}"] = 0;
+      }
+*/
+    }
+  }
+  else
+  {
+    foreach($option_group as $option_name => $option_value)
+    {
+      $template->assign_block_vars("options_{$option_group_id}", array(
+        'NAME'  => $option_name,
+        'TEXT'  => $lang['opt_custom'][$option_name],
+        'VALUE' => $user[$option_name],
+      ));
+    }
   }
 }
 
