@@ -63,14 +63,14 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
     $owners = array($owners);
   }
 
-  if (!$escaped)
+  if(!$escaped)
   {
     $from = mysql_real_escape_string($from);
     $subject = mysql_real_escape_string($subject);
     $text = mysql_real_escape_string($text);
   }
 
-  $text_unescaped = stripslashes($text);
+  $text_unescaped = stripslashes(str_replace(array('\r\n', "\r\n"), "<br />", $text));
 
   $message_class = $sn_message_class_list[$message_type];
   $message_class_email = $message_class['email'];
