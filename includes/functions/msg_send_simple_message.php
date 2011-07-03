@@ -55,7 +55,7 @@ function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0)
 
 function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false)
 {
-  global $sn_message_class_list, $sn_message_groups, $user;
+  global $config, $user, $sn_message_class_list;
 
   $timestamp = $timestamp ? $timestamp : $GLOBALS['time_now'];
   if (!is_array($owners))
