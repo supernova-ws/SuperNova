@@ -994,4 +994,7 @@ function upd_create_table($table_name, $declaration)
 
 $config->debug = $debug_value;
 
+unset($sn_cache->tables);
+sys_refresh_tablelist($config->db_prefix);
+
 ?>
