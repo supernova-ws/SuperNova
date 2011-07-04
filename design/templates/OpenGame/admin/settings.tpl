@@ -84,7 +84,7 @@
         <div><input name="energy_basic_income" maxlength="10" size="9" value="{C_energy_basic_income}" type="text"> {L_adm_opt_per_hour}</div>
       </th>
     </tr>
-  
+
     <tr><td class="c" colspan="2">{L_adm_opt_chat}</td></tr>
     <tr>
       <th>{L_adm_opt_chat_timeout}</th>
@@ -137,6 +137,28 @@
     <tr>
       <th>{L_adm_opt_int_news_count}<br>{L_adm_opt_game_zero_dsiable}</th>
       <th>{L_adm_opt_int_page_imperor} <input name="game_news_overview" type="text" size=3 maxlength=3 value="{C_game_news_overview}" /></th>
+    </tr>
+
+    <tr><td class="c" colspan="2">{L_sys_opt_bash_info}</td></tr>
+    <tr>
+      <th>{L_sys_opt_bash_attacks}</th>
+      <th><input name="fleet_bashing_attacks" maxlength="10" size="10" value="{C_fleet_bashing_attacks}" type="text"> {L_adm_opt_game_zero_dsiable}</th>
+    </tr>
+    <tr>
+      <th>{L_sys_opt_bash_waves}</th>
+      <th><input name="fleet_bashing_waves" maxlength="10" size="10" value="{C_fleet_bashing_waves}" type="text"></th>
+    </tr>
+    <tr>
+      <th>{L_sys_opt_bash_interval}</th>
+      <th><input name="fleet_bashing_interval" maxlength="10" size="10" value="{C_fleet_bashing_interval}" type="text"> {L_sys_sec}</th>
+    </tr>
+    <tr>
+      <th>{L_sys_opt_bash_scope}</th>
+      <th><input name="fleet_bashing_scope" maxlength="10" size="10" value="{C_fleet_bashing_scope}" type="text"> {L_sys_sec}</th>
+    </tr>
+    <tr>
+      <th>{L_sys_opt_bash_war_delay}</th>
+      <th><input name="fleet_bashing_war_delay" maxlength="10" size="10" value="{C_fleet_bashing_war_delay}" type="text"> {L_sys_sec}</th>
     </tr>
 
     <tr><td class="c" colspan="2">{L_adm_opt_game_advertise}</td></tr>

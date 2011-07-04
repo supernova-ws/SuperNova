@@ -854,4 +854,31 @@ function mymail($to, $title, $body, $from = '', $html = false)
   return mail($to, $title, $body, $head);
 }
 
+function sys_time_human($time, $full = false)
+{
+  global $lang;
+
+debug($time);
+
+  $seconds = $time % 60;
+  $time = floor($time/60);
+  $minutes = $time % 60;
+  $time = floor($time/60);
+  $hours = $time % 24;
+  $time = floor($time/24);
+
+debug($seconds);
+debug($minutes);
+debug($hours);
+debug($time);
+
+  return
+    ($time || $full ? "{$time} {$lang['sys_day']}&nbsp;" : '') .
+    ($hours || $full ? "{$hours} {$lang['sys_hrs']}&nbsp;" : '') .
+    ($minutes || $full ? "{$minutes} {$lang['sys_min']}&nbsp;" : '') .
+    ($seconds || $full ? "{$seconds} {$lang['sys_sec']}" : '');
+
+
+}
+
 ?>

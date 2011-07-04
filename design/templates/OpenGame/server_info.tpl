@@ -68,6 +68,33 @@
     <th>{C_player_max_colonies}</th>
   </tr>
 
+    <tr><td class="c" colspan="2">{L_sys_opt_bash_info}</td></tr>
+    <!-- IF FLEET_BASHING_ATTACKS -->
+    <tr>
+      <th>{L_sys_opt_bash_attacks}</th>
+      <th>{C_fleet_bashing_attacks}</th>
+    </tr>
+    <tr>
+      <th>{L_sys_opt_bash_waves}</th>
+      <th>{C_fleet_bashing_waves}</th>
+    </tr>
+    <tr>
+      <th>{L_sys_opt_bash_interval}</th>
+      <th>{fleet_bashing_interval}</th>
+    </tr>
+    <tr>
+      <th>{L_sys_opt_bash_scope}</th>
+      <th>{fleet_bashing_scope}</th>
+    </tr>
+    <tr>
+      <th>{L_sys_opt_bash_war_delay}</th>
+      <th>{fleet_bashing_war_delay}</th>
+    </tr>
+    <!-- ELSE -->
+      <tr><td style="c_l" colspan=2>{L_sys_opt_bash_disabled}</td></tr>
+    <!-- ENDIF -->
+
+
   <tr><td class="c" colspan="2">{L_adm_opt_game_oth_info}</td></tr>
   <tr>
     <th>{L_adm_opt_exchange}</th>
