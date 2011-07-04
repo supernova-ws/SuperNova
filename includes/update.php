@@ -26,6 +26,9 @@ if(!defined('INIT'))
   include_once('init.php');
 }
 
+$debug_value = $config->debug;
+$config->debug = 0;
+
 $config->db_loadItem('db_version');
 if($config->db_version == DB_VERSION)
 {
@@ -48,7 +51,7 @@ upd_check_key('upd_lock_time', 60, !isset($config->upd_lock_time));
 upd_log_message('Update starting. Loading table info...');
 $update_tables  = array();
 $update_indexes = array();
-$query = doquery('SHOW TABLES;');
+$query = upd_do_query('SHOW TABLES;');
 while($row = mysql_fetch_row($query))
 {
   upd_load_table_info($row[0]);
@@ -141,7 +144,7 @@ switch($new_version)
     );
 
     $dm_change_legit = false;
-  doquery('COMMIT;');
+  upd_do_query('COMMIT;', true);
   $new_version = 10;
 
   case 10:
@@ -214,7 +217,7 @@ switch($new_version)
       'game_date_withTime', 'player_max_planets', 'OverviewNewsFrame', 'forum_url', 'rules_url'
     );");
 
-  doquery('COMMIT;');
+  upd_do_query('COMMIT;', true);
   $new_version = 22;
 
   case 22:
@@ -248,7 +251,7 @@ switch($new_version)
         $old_que_item[3] = $old_que_item[3] > $planet_data['last_update'] ? $old_que_item[3] - $planet_data['last_update'] : 1;
         $planet_data['que'] = "{$old_que_item[0]},1,{$old_que_item[3]},{$old_que_item[4]},{$const_que_structures};{$planet_data['que']}";
       }
-      upd_do_query("UPDATE {{planets}} SET `que` = '{$planet_data['que']}', `b_building` = '0', `b_building_id` = '0' WHERE `id` = '{$planet_data['id']}' LIMIT 1;");
+      upd_do_query("UPDATE {{planets}} SET `que` = '{$planet_data['que']}', `b_building` = '0', `b_building_id` = '0' WHERE `id` = '{$planet_data['id']}' LIMIT 1;", true);
     }
 
     upd_create_table('mercenaries',
@@ -262,7 +265,7 @@ switch($new_version)
         KEY `i_user_mercenary_time` (`id_user`, `mercenary`, `time_start`, `time_finish`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     );
-  doquery('COMMIT;');
+  upd_do_query('COMMIT;', true);
   $new_version = 23;
 
   case 23:
@@ -291,7 +294,7 @@ switch($new_version)
     upd_check_key('user_vacation_disable', $config->urlaubs_modus_erz, !isset($config->user_vacation_disable));
     upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('urlaubs_modus_erz');");
 
-  doquery('COMMIT;');
+  upd_do_query('COMMIT;', true);
   $new_version = 25;
 
   case 25:
@@ -306,7 +309,29 @@ switch($new_version)
     ), !$update_tables['rw']['report_id']);
 
     upd_add_more_time();
-    upd_create_table('logs_backup', "AS (SELECT * FROM logs);");
+    upd_create_table('logs_backup', "AS (SELECT * FROM {$config->db_prefix}logs);");
+
+    upd_alter_table('logs', array(
+      "MODIFY COLUMN `log_id` INT(1)",
+      "DROP PRIMARY KEY"
+    ), !$update_tables['logs']['log_timestamp']);
+
+/*
+    mysql_query('commit');
+    upd_do_query('COMMIT;', true);
+debug($update_tables['logs'], 2);
+
+    upd_do_query('START TRANSACTION;', true);
+    upd_alter_table('logs', array(
+      "DROP COLUMN `log_id`"
+    ), !$update_tables['logs']['log_timestamp']);
+    upd_do_query('COMMIT;', true);
+debug($update_tables['logs'], 3);
+die();
+debug($update_tables['logs']['log_id'], 31);
+    upd_do_query('START TRANSACTION;', true);
+*/
+
     upd_alter_table('logs', array(
       "DROP COLUMN `log_id`",
       "ADD COLUMN `log_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Human-readable record timestamp' FIRST",
@@ -324,15 +349,21 @@ switch($new_version)
       "ADD INDEX `i_log_page` (`log_page`)",
       "CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci"
     ), !$update_tables['logs']['log_timestamp']);
-    doquery('DELETE FROM `{{logs}}` WHERE `log_code` = 303;');
+    upd_do_query('DELETE FROM `{{logs}}` WHERE `log_code` = 303;');
 
     if($update_tables['errors'])
     {
       upd_do_query('INSERT INTO `{{logs}}` (`log_code`, `log_sender`, `log_title`, `log_text`, `log_page`, `log_time`) SELECT 500, `error_sender`, `error_type`, `error_text`, `error_page`, `error_time` FROM `{{errors}}`;');
-      upd_alter_table('errors', "RENAME TO {$config->db_prefix}errors_backup;");
+      if($update_tables['errors_backup'])
+      {
+        upd_drop_table('errors_backup');
+      }
+      mysql_query("ALTER TABLE {$config->db_prefix}errors RENAME TO {$config->db_prefix}errors_backup;");
       upd_drop_table('errors');
     }
+
     upd_alter_table('logs', 'ORDER BY log_time');
+
     upd_alter_table('logs', array("ADD COLUMN `log_id` SERIAL", "ADD PRIMARY KEY (`log_id`)"), !$update_tables['logs']['log_id']);
 
     upd_do_query('UPDATE `{{logs}}` SET `log_timestamp` = FROM_UNIXTIME(`log_time`);');
@@ -343,7 +374,7 @@ switch($new_version)
     upd_do_query("UPDATE `{{logs}}` SET `log_code` = 192 WHERE `log_code` = 102 AND `log_title` = 'Stat update';");
     $GLOBALS['sys_log_disabled'] = false;
 
-  doquery('COMMIT;');
+  upd_do_query('COMMIT;', true);
   $new_version = 26;
 
   case 26:
@@ -380,7 +411,7 @@ switch($new_version)
     upd_check_key('int_banner_URL', 'banner.php?type=banner', $config->int_banner_URL == '/banner.php?type=banner');
     upd_check_key('int_userbar_URL', 'banner.php?type=userbar', $config->int_userbar_URL == '/banner.php?type=userbar');
 
-    doquery('DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});');
+    upd_do_query('DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});');
 
     upd_alter_table('users', 'CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci');
 
@@ -408,7 +439,7 @@ switch($new_version)
 
       $temp_planet_types = array(PT_PLANET, PT_DEBRIS, PT_MOON);
 
-      $query = doquery("SELECT id, fleet_shortcut FROM {{users}} WHERE fleet_shortcut > '';");
+      $query = upd_do_query("SELECT id, fleet_shortcut FROM {{users}} WHERE fleet_shortcut > '';");
       while($user_data = mysql_fetch_assoc($query))
       {
         $shortcuts = explode("\r\n", $user_data['fleet_shortcut']);
@@ -428,7 +459,7 @@ switch($new_version)
 
           if($shortcut[0] && $shortcut[1] && $shortcut[2] && $shortcut[3] && in_array($shortcut[4], $temp_planet_types))
           {
-            doquery("INSERT INTO {$config->db_prefix}shortcut (shortcut_user_id, shortcut_galaxy, shortcut_system, shortcut_planet, shortcut_planet_type, shortcut_text) VALUES ({$user_data['id']}, {$shortcut[1]}, {$shortcut[2]}, {$shortcut[3]}, {$shortcut[4]}, '{$shortcut[0]}');");
+            upd_do_query("INSERT INTO {$config->db_prefix}shortcut (shortcut_user_id, shortcut_galaxy, shortcut_system, shortcut_planet, shortcut_planet_type, shortcut_text) VALUES ({$user_data['id']}, {$shortcut[1]}, {$shortcut[2]}, {$shortcut[3]}, {$shortcut[4]}, '{$shortcut[0]}');", true);
           }
         }
       }
@@ -438,7 +469,7 @@ switch($new_version)
 
     upd_check_key('url_faq', '', !isset($config->url_faq));
 
-    doquery('COMMIT;');
+    upd_do_query('COMMIT;', true);
     $new_version = 27;
 
   case 27:
@@ -541,7 +572,7 @@ switch($new_version)
     upd_check_key('fleet_bashing_waves', 3, !isset($config->fleet_bashing_waves));
     upd_check_key('fleet_bashing_attacks', 3, !isset($config->fleet_bashing_attacks));
 
-  doquery('COMMIT;');
+  upd_do_query('COMMIT;', true);
   $new_version = 28;
 
   case 28:
@@ -578,60 +609,18 @@ switch($new_version)
 
     upd_check_key('quest_total', 0, !isset($config->quest_total));
 
-    upd_alter_table('alliance', array('DROP INDEX `id`',), $update_indexes['alliance']['id']);
-    upd_alter_table('alliance', array('DROP INDEX `id_2`',), $update_indexes['alliance']['id_2']);
-    upd_alter_table('alliance', array('DROP INDEX `id_3`',), $update_indexes['alliance']['id_3']);
-    upd_alter_table('alliance', array('DROP INDEX `id_4`',), $update_indexes['alliance']['id_4']);
-    upd_alter_table('alliance', array('DROP INDEX `id_5`',), $update_indexes['alliance']['id_5']);
-    upd_alter_table('alliance', array('DROP INDEX `id_6`',), $update_indexes['alliance']['id_6']);
-    upd_alter_table('alliance', array('DROP INDEX `id_7`',), $update_indexes['alliance']['id_7']);
-    upd_alter_table('alliance', array('DROP INDEX `id_8`',), $update_indexes['alliance']['id_8']);
-    upd_alter_table('alliance', array('DROP INDEX `id_9`',), $update_indexes['alliance']['id_9']);
-    upd_alter_table('alliance', array('DROP INDEX `id_10`',), $update_indexes['alliance']['id_10']);
-    upd_alter_table('alliance', array('DROP INDEX `id_11`',), $update_indexes['alliance']['id_11']);
-    upd_alter_table('alliance', array('DROP INDEX `id_12`',), $update_indexes['alliance']['id_12']);
-    upd_alter_table('alliance', array('DROP INDEX `id_13`',), $update_indexes['alliance']['id_13']);
-    upd_alter_table('alliance', array('DROP INDEX `id_14`',), $update_indexes['alliance']['id_14']);
-    upd_alter_table('alliance', array('DROP INDEX `id_15`',), $update_indexes['alliance']['id_15']);
-    upd_alter_table('alliance', array('DROP INDEX `id_16`',), $update_indexes['alliance']['id_16']);
-    upd_alter_table('alliance', array('DROP INDEX `id_17`',), $update_indexes['alliance']['id_17']);
-    upd_alter_table('alliance', array('DROP INDEX `id_18`',), $update_indexes['alliance']['id_18']);
-    upd_alter_table('alliance', array('DROP INDEX `id_19`',), $update_indexes['alliance']['id_19']);
-    upd_alter_table('alliance', array('DROP INDEX `id_20`',), $update_indexes['alliance']['id_20']);
-    upd_alter_table('alliance', array('DROP INDEX `id_21`',), $update_indexes['alliance']['id_21']);
-    upd_alter_table('alliance', array('DROP INDEX `id_22`',), $update_indexes['alliance']['id_22']);
-    upd_alter_table('alliance', array('DROP INDEX `id_23`',), $update_indexes['alliance']['id_23']);
-    upd_alter_table('alliance', array('DROP INDEX `id_24`',), $update_indexes['alliance']['id_24']);
-    upd_alter_table('alliance', array('DROP INDEX `ally_name`',), $update_indexes['alliance']['ally_name']);
+    for($i = 0; $i < 25; $i++)
+    {
+      upd_alter_table('alliance', array("DROP INDEX `id_{$i}`",), $update_indexes['alliance']["id_{$i}"]);
+      upd_alter_table('users', array("DROP INDEX `id_{$i}`",), $update_indexes['users']["id_{$i}"]);
+    }
 
+    upd_alter_table('alliance', array('DROP INDEX `id`',), $update_indexes['alliance']['id']);
+    upd_alter_table('alliance', array('DROP INDEX `ally_name`',), $update_indexes['alliance']['ally_name']);
     upd_alter_table('alliance', array('ADD UNIQUE INDEX `i_ally_tag` (`ally_tag`)',), !$update_indexes['alliance']['i_ally_tag']);
     upd_alter_table('alliance', array('MODIFY COLUMN `ranklist` TEXT',), true);
 
     upd_alter_table('users', array('DROP INDEX `id`',), $update_indexes['users']['id']);
-    upd_alter_table('users', array('DROP INDEX `id_2`',), $update_indexes['users']['id_2']);
-    upd_alter_table('users', array('DROP INDEX `id_3`',), $update_indexes['users']['id_3']);
-    upd_alter_table('users', array('DROP INDEX `id_4`',), $update_indexes['users']['id_4']);
-    upd_alter_table('users', array('DROP INDEX `id_5`',), $update_indexes['users']['id_5']);
-    upd_alter_table('users', array('DROP INDEX `id_6`',), $update_indexes['users']['id_6']);
-    upd_alter_table('users', array('DROP INDEX `id_7`',), $update_indexes['users']['id_7']);
-    upd_alter_table('users', array('DROP INDEX `id_8`',), $update_indexes['users']['id_8']);
-    upd_alter_table('users', array('DROP INDEX `id_9`',), $update_indexes['users']['id_9']);
-    upd_alter_table('users', array('DROP INDEX `id_10`',), $update_indexes['users']['id_10']);
-    upd_alter_table('users', array('DROP INDEX `id_11`',), $update_indexes['users']['id_11']);
-    upd_alter_table('users', array('DROP INDEX `id_12`',), $update_indexes['users']['id_12']);
-    upd_alter_table('users', array('DROP INDEX `id_13`',), $update_indexes['users']['id_13']);
-    upd_alter_table('users', array('DROP INDEX `id_14`',), $update_indexes['users']['id_14']);
-    upd_alter_table('users', array('DROP INDEX `id_15`',), $update_indexes['users']['id_15']);
-    upd_alter_table('users', array('DROP INDEX `id_16`',), $update_indexes['users']['id_16']);
-    upd_alter_table('users', array('DROP INDEX `id_17`',), $update_indexes['users']['id_17']);
-    upd_alter_table('users', array('DROP INDEX `id_18`',), $update_indexes['users']['id_18']);
-    upd_alter_table('users', array('DROP INDEX `id_19`',), $update_indexes['users']['id_19']);
-    upd_alter_table('users', array('DROP INDEX `id_20`',), $update_indexes['users']['id_20']);
-    upd_alter_table('users', array('DROP INDEX `id_21`',), $update_indexes['users']['id_21']);
-    upd_alter_table('users', array('DROP INDEX `id_22`',), $update_indexes['users']['id_22']);
-    upd_alter_table('users', array('DROP INDEX `id_23`',), $update_indexes['users']['id_23']);
-    upd_alter_table('users', array('DROP INDEX `id_24`',), $update_indexes['users']['id_24']);
-
     upd_alter_table('users', "CHANGE COLUMN `rpg_points` `dark_matter` int(11) DEFAULT 0", $update_tables['users']['rpg_points']);
 
     upd_alter_table('users', array(
@@ -650,14 +639,14 @@ switch($new_version)
 
     if(!$update_foreigns['users']['FK_users_ally_id'])
     {
-      upd_do_query('DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} group by ally_id);');
-      upd_do_query("UPDATE {{users}} SET `ally_id` = null, ally_name = null, ally_register_time = 0, ally_rank_id = 0 WHERE `ally_id` NOT IN (SELECT id FROM {{alliance}});");
-      upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.ally_id = a.id SET u.ally_name = a.ally_name WHERE u.ally_id IS NOT NULL;");
-
       upd_alter_table('users', array(
         'MODIFY COLUMN `ally_name` VARCHAR(32) DEFAULT NULL',
         'MODIFY COLUMN `ally_id` BIGINT(20) UNSIGNED DEFAULT NULL',
       ), strtoupper($update_tables['users']['ally_id']['Type']) != 'BIGINT(20) UNSIGNED');
+
+      upd_do_query('DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} group by ally_id);');
+      upd_do_query("UPDATE {{users}} SET `ally_id` = null, ally_name = null, ally_register_time = 0, ally_rank_id = 0 WHERE `ally_id` NOT IN (SELECT id FROM {{alliance}});");
+      upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.ally_id = a.id SET u.ally_name = a.ally_name WHERE u.ally_id IS NOT NULL;");
 
       upd_alter_table('users', array(
          "ADD CONSTRAINT `FK_users_ally_id` FOREIGN KEY (`ally_id`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
@@ -670,21 +659,124 @@ switch($new_version)
       "MODIFY COLUMN `debris_crystal` BIGINT(20) UNSIGNED DEFAULT 0",
     ), strtoupper($update_tables['planets']['debris_metal']['Type']) != 'BIGINT(20) UNSIGNED');
 
-    $illegal_moon_query = doquery("SELECT id FROM `{{planets}}` WHERE `id_owner` <> 0 AND `planet_type` = 3 AND `parent_planet` <> 0 AND `parent_planet` NOT IN (SELECT `id` FROM {{planets}} WHERE `planet_type` = 1);");
+    $illegal_moon_query = upd_do_query("SELECT id FROM `{{planets}}` WHERE `id_owner` <> 0 AND `planet_type` = 3 AND `parent_planet` <> 0 AND `parent_planet` NOT IN (SELECT `id` FROM {{planets}} WHERE `planet_type` = 1);");
     while($illegal_moon_row = mysql_fetch_assoc($illegal_moon_query))
     {
-      doquery("DELETE FROM {{planets}} WHERE id = {$illegal_moon_row['id']} LIMIT 1;");
+      upd_do_query("DELETE FROM {{planets}} WHERE id = {$illegal_moon_row['id']} LIMIT 1;", true);
     }
 
     upd_check_key('allow_buffing', isset($config->fleet_buffing_check) ? !$config->fleet_buffing_check : 0, !isset($config->allow_buffing));
     upd_check_key('ally_help_weak', 0, !isset($config->ally_help_weak));
 
-  doquery('COMMIT;');
+  upd_do_query('COMMIT;', true);
   $new_version = 29;
 
   case 29: upd_log_version_update();
     upd_check_key('game_email_pm', 0, !isset($config->game_email_pm));
-  doquery('COMMIT;');
+
+    upd_create_table('log_dark_matter',
+      "(
+        `log_dark_matter_id` SERIAL,
+        `log_dark_matter_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Human-readable record timestamp',
+        `log_dark_matter_username` varchar(64) NOT NULL DEFAULT '' COMMENT 'Username',
+        `log_dark_matter_reason` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Reason ID for dark matter adjustment',
+        `log_dark_matter_amount` INT(10) NOT NULL DEFAULT 0 COMMENT 'Amount of dark matter change',
+        `log_dark_matter_comment` TEXT COMMENT 'Comments',
+        `log_dark_matter_page` varchar(512) NOT NULL DEFAULT '' COMMENT 'Page that makes entry to log',
+        `log_dark_matter_sender` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'User ID which make log record',
+
+        PRIMARY KEY (`log_dark_matter_id`),
+        KEY `i_log_dark_matter_sender_id` (`log_dark_matter_sender`, `log_dark_matter_id`),
+        KEY `i_log_dark_matter_reason_sender_id` (`log_dark_matter_reason`, `log_dark_matter_sender`, `log_dark_matter_id`),
+        KEY `i_log_dark_matter_amount` (`log_dark_matter_amount`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
+    );
+    upd_do_query('COMMIT;', true);
+
+    $tests = array();
+    $row = true;
+    while($row)
+    {
+      upd_do_query('START TRANSACTION;', true);
+      $query = upd_do_query("SELECT * FROM {{logs}} WHERE log_code = 102 order by log_id LIMIT 1000;");
+      while($row = mysql_fetch_assoc($query))
+      {
+        $row['log_username'] = mysql_real_escape_string($row['log_username']);
+        $row['log_page'] = mysql_real_escape_string($row['log_page']);
+
+        $result = preg_match('/^Player ID (\d+) Dark Matter was adjusted with (\-?\d+). Reason: (.+)$/', $row['log_text'], $matches);
+
+        $reason = RPG_NONE;
+        $comment = $matches[3];
+        switch($matches[3])
+        {
+          case 'Level Up For Structure Building':
+            $reason = RPG_STRUCTURE;
+          break;
+
+          case 'Level Up For Raiding':
+          case 'Level Up For Raids':
+            $reason = RPG_RAID;
+            $comment = 'Level Up For Raiding';
+          break;
+
+          case 'Expedition Bonus':
+            $reason = RPG_EXPEDITION;
+          break;
+
+          default:
+            if(preg_match('/^Using Black Market page (\d+)$/', $comment, $matches2))
+            {
+              $reason = RPG_MARKET;
+            }
+            elseif(preg_match('/^Spent for officer (.+) ID (\d+)$/', $comment, $matches2))
+            {
+              $reason = RPG_MERCENARY;
+              $comment = "Spent for mercenary {$matches2[1]} GUID {$matches2[2]}";
+            }
+            elseif(preg_match('/^Incoming From Referral ID\ ?(\d+)$/', $comment, $matches2))
+            {
+              $reason = RPG_REFERRAL;
+              $comment = "Incoming from referral ID {$matches[1]}";
+            }
+            elseif(preg_match('/^Through admin interface for user .* ID \d+ (.*)$/', $comment, $matches2))
+            {
+              $reason = RPG_ADMIN;
+              $comment = $matches2[1];
+            }
+  /*
+            else
+            {
+              if(!isset($tests[$matches[3]]))
+              {
+                $tests[$matches[3]] = 1;
+              }
+            }
+  */
+          break;
+        }
+
+        $comment = mysql_real_escape_string($comment);
+
+        upd_do_query(
+          "INSERT INTO {{log_dark_matter}} (`log_dark_matter_timestamp`, `log_dark_matter_username`, `log_dark_matter_reason`,
+            `log_dark_matter_amount`, `log_dark_matter_comment`, `log_dark_matter_page`, `log_dark_matter_sender`)
+          VALUES (
+            '{$row['log_timestamp']}', '{$row['log_username']}', {$reason},
+            {$matches[2]}, '{$comment}', '{$row['log_page']}', {$row['log_sender']});"
+        , true);
+      }
+
+      upd_do_query("DELETE FROM {{logs}} WHERE log_code = 102 LIMIT 1000;", true);
+      upd_do_query('COMMIT;', true);
+    }
+
+    foreach($update_tables as $table_name => $cork)
+    {
+      upd_alter_table($table_name, 'CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci, ENGINE=InnoDB', true);
+    }
+
+  upd_do_query('COMMIT;', true);
 //  $new_version = 29;
 
 };
@@ -705,17 +797,27 @@ if($user['authlevel'] >= 3)
   print(str_replace("\r\n", '<br>', $upd_log));
 }
 
-function upd_do_query($query)
+function upd_do_query($query, $no_log = false)
 {
-  upd_add_more_time();
-  upd_log_message("Performing query '{$query}'");
+  global $update_tables;
 
-  $result = doquery($query);
-  $error = mysql_error();
-  if($error)
+  upd_add_more_time();
+  if(!$no_log)
   {
-    die('Query error for ' . $query . ': ' . $error);
+    upd_log_message("Performing query '{$query}'");
   }
+
+  $db_prefix = sn_db_connect($query);
+  if(!(strpos($query, '{{') === false) )
+  {
+    foreach($update_tables as $tableName => $cork)
+    {
+      $query = str_replace("{{{$tableName}}}", $db_prefix.$tableName, $query);
+    }
+  }
+
+  $result = mysql_query($query) or
+    die('Query error for ' . $query . ': ' . mysql_error());
 
   return $result;
 }
@@ -769,20 +871,21 @@ function upd_unset_table_info($table_name)
 {
   global $update_tables, $update_indexes, $update_foreigns;
 
-  if(isset($update_tables[$tableName]))
+  if(isset($update_tables[$table_name]))
   {
-    unset($update_tables[$tableName]);
+    unset($update_tables[$table_name]);
   }
 
-  if(isset($update_indexes[$tableName]))
+  if(isset($update_indexes[$table_name]))
   {
-    unset($update_indexes[$tableName]);
+    unset($update_indexes[$table_name]);
   }
 
-  if(isset($update_foreigns[$tableName]))
+  if(isset($update_foreigns[$table_name]))
   {
-    unset($update_foreigns[$tableName]);
+    unset($update_foreigns[$table_name]);
   }
+
 }
 
 function upd_load_table_info($prefix_table_name, $prefixed = true)
@@ -851,7 +954,10 @@ function upd_alter_table($table, $alters, $condition = true)
     die("Altering error for table `{$table}`: {$error}<br />{$alters_print}");
   }
 
-  upd_load_table_info($table, false);
+//  if(strpos('RENAME TO', strtoupper(implode(',', $alters))) === false)
+  {
+    upd_load_table_info($table, false);
+  }
 
   return $result;
 }
@@ -873,6 +979,11 @@ function upd_create_table($table_name, $declaration)
   {
     doquery('set foreign_key_checks = 0;');
     $result = mysql_query("CREATE TABLE `{$config->db_prefix}{$table_name}` {$declaration}");
+    $error = mysql_error();
+    if($error)
+    {
+      die("Creating error for table `{$table_name}`: {$error}<br />" . dump($declaration));
+    }
     doquery('set foreign_key_checks = 1;');
     upd_load_table_info($table_name, false);
     sys_refresh_tablelist($config->db_prefix);
@@ -880,5 +991,7 @@ function upd_create_table($table_name, $declaration)
 
   return $result;
 }
+
+$config->debug = $debug_value;
 
 ?>

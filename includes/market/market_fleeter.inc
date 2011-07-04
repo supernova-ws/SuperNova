@@ -124,7 +124,7 @@ if(is_array($shipList))
     $message .= "</ul>";
     doquery("UPDATE {{planets}} SET {$qry}`id`=`id` WHERE `id` = {$planetrow['id']} LIMIT 1;");
 
-    rpg_points_change($user['id'], -($rpg_cost), "Using Black Market page {$mode}");
+    rpg_points_change($user['id'], RPG_MARKET, -($rpg_cost), "Using Black Market page {$mode}");
     $config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str($newstock));
     doquery('COMMIT;');
 

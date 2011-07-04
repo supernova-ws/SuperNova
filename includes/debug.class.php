@@ -153,7 +153,7 @@ class debug
       }
       mysql_query("INSERT INTO `{$dbsettings['prefix']}logs` SET
         `log_time` = '".time()."', `log_code` = '{$error_code}', `log_sender` = '{$GLOBALS['user']['id']}', `log_username` = '{$GLOBALS['user']['username']}',
-        `log_title` = '{$title}',  `log_text` = '{$error_text}', `log_page` = '".mysql_real_escape_string($_SERVER['HTTP_REFERER'])."'{$error_backtrace};")
+        `log_title` = '{$title}',  `log_text` = '{$error_text}', `log_page` = '".mysql_real_escape_string($_SERVER['SCRIPT_NAME'])."'{$error_backtrace};")
       or die($fatal_error . mysql_error());
 /*
       $q = mysql_fetch_assoc(mysql_query("SELECT max(log_id) AS rows FROM {$dbsettings['prefix']}logs;"))
@@ -175,7 +175,7 @@ class debug
     else
     {
       ob_start();
-      print("<hr>User ID {$GLOBALS['user']['id']} raised error code {$error_code} titled '{$title}' with text '{$error_text}' on page {$_SERVER['HTTP_REFERER']}");
+      print("<hr>User ID {$GLOBALS['user']['id']} raised error code {$error_code} titled '{$title}' with text '{$error_text}' on page {$_SERVER['SCRIPT_NAME']}");
 
       foreach($error_backtrace as $name => $value)
       {
@@ -215,12 +215,12 @@ class debug
       $query = "INSERT INTO `{$dbsettings['prefix']}logs` SET
         `log_time` = '".time()."', `log_code` = '{$log_code}', `log_sender` = '{$user['id']}', `log_username` = '{$user['username']}',
         `log_title` = '{$title}',  `log_text` = '".mysql_real_escape_string($message)."',
-        `log_page` = '".mysql_real_escape_string($_SERVER['HTTP_REFERER'])."'{$error_backtrace};";
+        `log_page` = '".mysql_real_escape_string($_SERVER['SCRIPT_NAME'])."'{$error_backtrace};";
       $sqlquery = mysql_query($query);
     }
     else
     {
-      print("<hr>User ID {$GLOBALS['user']['id']} made log entry with code {$log_code} titled '{$title}' with text '{$message}' on page {$_SERVER['HTTP_REFERER']}");
+      print("<hr>User ID {$GLOBALS['user']['id']} made log entry with code {$log_code} titled '{$title}' with text '{$message}' on page {$_SERVER['SCRIPT_NAME']}");
     }
   }
 }

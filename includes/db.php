@@ -108,6 +108,7 @@ function doquery($query, $table = '', $fetch = false){
     $report .= "\tUser Agent - ".$_SERVER['HTTP_USER_AGENT']."\n";
     $report .= "\tRequest Method - ".$_SERVER['REQUEST_METHOD']."\n";
     $report .= "\tCame From - ".$_SERVER['HTTP_REFERER']."\n";
+    $report .= "\tPage is - ".$_SERVER['SCRIPT_NAME']."\n";
     $report .= "\tUses Port - ".$_SERVER['REMOTE_PORT']."\n";
     $report .= "\tServer Protocol - ".$_SERVER['SERVER_PROTOCOL']."\n";
 
@@ -133,11 +134,14 @@ function doquery($query, $table = '', $fetch = false){
   $sqlquery = mysql_query($sql) or
     $debug->error(mysql_error()."<br />$sql<br />",'SQL Error');
 
-  $numqueries++;
-  $arr = debug_backtrace();
-  $file = end(explode('/',$arr[0]['file']));
-  $line = $arr[0]['line'];
-  $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>$table</th><th>$fetch</th></tr>");
+  if($config->debug)
+  {
+    $numqueries++;
+    $arr = debug_backtrace();
+    $file = end(explode('/',$arr[0]['file']));
+    $line = $arr[0]['line'];
+    $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>$table</th><th>$fetch</th></tr>");
+  }
 
   if($fetch){
     $sqlrow = mysql_fetch_assoc($sqlquery);

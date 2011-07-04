@@ -54,7 +54,7 @@ if(is_array($tradeList) && isset($exchangeTo))
   if($intError == MARKET_DEAL)
   {
     doquery("UPDATE {{planets}} SET {$qry} `{$sn_data[$exchangeTo]['name']}` = `{$sn_data[$exchangeTo]['name']}` + '{$value}' WHERE `id` = {$planetrow['id']} LIMIT 1;");
-    rpg_points_change($user['id'], -($config->rpg_cost_trader + $tradeList[RES_DARK_MATTER]), "Using Black Market page {$lang['eco_mrk_trader']}");
+    rpg_points_change($user['id'], RPG_MARKET, -($config->rpg_cost_trader + $tradeList[RES_DARK_MATTER]), "Using Black Market page {$lang['eco_mrk_trader']}");
     doquery('COMMIT;');
 
 //    $newrow[$sn_data[$exchangeTo]['name']] = $planetrow[$sn_data[$exchangeTo]['name']] + $value;

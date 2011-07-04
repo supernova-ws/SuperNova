@@ -165,7 +165,7 @@ if($mode == 'change')
     `lang` = '{$user['lang']}',
     `avatar` = '{$user['avatar']}',
     `dpath` = '{$user['dpath']}',
-    `design` = '{$design}',
+    `design` = '{$user['design']}',
     `noipcheck` = '{$user['noipcheck']}',
     `planet_sort` = '{$user['planet_sort']}',
     `planet_sort_order` = '{$user['planet_sort_order']}',
