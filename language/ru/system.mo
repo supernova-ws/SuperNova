@@ -492,6 +492,14 @@ $lang = array_merge($lang, array(
 
   'msg_personal_messages' => 'Личные сообщения',
 
+  'sys_opt_bash_info'    => 'Настройки системы антибашинга',
+  'sys_opt_bash_attacks' => 'Количество атак в одной волне',
+  'sys_opt_bash_interval' => 'Интервал между волнами',
+  'sys_opt_bash_scope' => 'Период расчета башинга',
+  'sys_opt_bash_war_delay' => 'Мораторий после объявления войны',
+  'sys_opt_bash_waves' => 'Количество волн за один период',
+  'sys_opt_bash_disabled'    => 'Система антибашинга отключена',
+
   // Arrays
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'Сверхновая',

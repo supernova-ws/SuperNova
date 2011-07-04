@@ -492,6 +492,14 @@ $lang = array_merge($lang, array(
 
   'msg_personal_messages' => 'Personal Messages',
 
+  'sys_opt_bash_info'    => 'Antibashing settings',
+  'sys_opt_bash_attacks' => 'Attacks per wave',
+  'sys_opt_bash_interval' => 'Interval between waves',
+  'sys_opt_bash_scope' => 'Bashing calculate period',
+  'sys_opt_bash_war_delay' => 'Moratory after declaring war',
+  'sys_opt_bash_waves' => 'Waves per period',
+  'sys_opt_bash_disabled'    => 'Antibashing system disabled',
+
   // Arrays
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'SuperNova',

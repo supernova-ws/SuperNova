@@ -45,6 +45,12 @@ if(sys_get_param('save'))
 
   $config->player_max_colonies     = sys_get_param_int('player_max_colonies', 9);
 
+  $config->fleet_bashing_attacks   = sys_get_param_int('fleet_bashing_attacks', 3);
+  $config->fleet_bashing_interval  = sys_get_param_int('fleet_bashing_interval', 30 * 60);
+  $config->fleet_bashing_scope     = sys_get_param_int('fleet_bashing_scope', 24 * 60 * 60);
+  $config->fleet_bashing_war_delay = sys_get_param_int('fleet_bashing_war_delay', 12 * 60 * 60);
+  $config->fleet_bashing_waves     = sys_get_param_int('fleet_bashing_waves', 3);
+
   $config->allow_buffing           = sys_get_param_int('allow_buffing');
   $config->ally_help_weak          = sys_get_param_int('ally_help_weak');
   $config->game_email_pm           = sys_get_param_int('game_email_pm');
@@ -85,7 +91,7 @@ $template->assign_vars(array(
   'game_mode' => $config->game_mode,
   'game_language' => $config->game_default_language,
 ));
-
+debug($config->fleet_bashing_war_delay);
 foreach($lang['sys_game_mode'] as $mode_id => $mode_name)
 {
   $template->assign_block_vars('game_modes', array(
