@@ -773,7 +773,15 @@ debug($update_tables['logs']['log_id'], 31);
 
     foreach($update_tables as $table_name => $cork)
     {
-      upd_alter_table($table_name, 'CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci, ENGINE=InnoDB', true);
+      $row = mysql_fetch_assoc(upd_do_query("SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = '{$db_name}' AND TABLE_NAME = '{$config->db_prefix}{$table_name}';"));
+      if($row['ENGINE'] != 'InnoDB')
+      {
+        upd_alter_table($table_name, 'ENGINE=InnoDB', true);
+      }
+      if($row['TABLE_COLLATION'] != 'utf8_general_ci')
+      {
+        upd_alter_table($table_name, 'CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci', true);
+      }
     }
 
   upd_do_query('COMMIT;', true);

@@ -68,6 +68,7 @@ $IsUserChecked = false;
 
 require("{$sn_root_physical}config.{$phpEx}");
 $db_prefix = $dbsettings['prefix'];
+$db_name = $dbsettings['name'];
 $sn_secret_word = $dbsettings['secretword'];
 unset($dbsettings);
 
@@ -153,6 +154,7 @@ if(file_exists($update_file))
     }
   }
 }
+unset($db_name);
 
 // Initializing constants
 define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_default_template : 'OpenGame');
