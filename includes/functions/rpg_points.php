@@ -42,7 +42,9 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
   if($rows_affected)
   {
     $page_url = mysql_real_escape_string($_SERVER['SCRIPT_NAME']);
+    $comment = mysql_real_escape_string($comment);
     $row = doquery("SELECT username FROM {{users}} WHERE id = {$user_id} LIMIT 1;", '', true);
+    $row['username'] = mysql_real_escape_string($row['username']);
     doquery(
       "INSERT INTO {{log_dark_matter}} (`log_dark_matter_username`, `log_dark_matter_reason`,
         `log_dark_matter_amount`, `log_dark_matter_comment`, `log_dark_matter_page`, `log_dark_matter_sender`)
