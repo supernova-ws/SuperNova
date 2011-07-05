@@ -773,7 +773,7 @@ debug($update_tables['logs']['log_id'], 31);
 
     foreach($update_tables as $table_name => $cork)
     {
-      $row = mysql_fetch_assoc(upd_do_query("SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = '{$db_name}' AND TABLE_NAME = '{$config->db_prefix}{$table_name}';"));
+      $row = mysql_fetch_assoc(upd_do_query("SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = '{$db_name}' AND TABLE_NAME = '{$config->db_prefix}{$table_name}';", true));
       if($row['ENGINE'] != 'InnoDB')
       {
         upd_alter_table($table_name, 'ENGINE=InnoDB', true);
