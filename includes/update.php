@@ -917,7 +917,7 @@ function upd_load_table_info($prefix_table_name, $prefixed = true)
     $update_indexes[$tableName][$r1['Key_name']] .= "{$r1['Column_name']},";
   }
 
-  $q1 = doquery("select * FROM information_schema.KEY_COLUMN_USAGE where TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;");
+  $q1 = doquery("select * FROM information_schema.KEY_COLUMN_USAGE where TABLE_SCHEMA = '{$db_name}' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;");
   while($r1 = mysql_fetch_assoc($q1))
   {
     $table_referenced = str_replace($config->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
