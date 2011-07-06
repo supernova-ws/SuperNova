@@ -31,7 +31,7 @@ $msg .= sprintf($lang['adm_inactive_removed'], $rows);
 
 $ques = array(
   'DELETE {{users}}.* FROM {{users}} WHERE `onlinetime` < unix_timestamp(now()) - ( 60 * 60 * 24 * 45);',
-  
+
   'DELETE FROM `{{notes}}`     WHERE `owner`          not in (select id from {{users}});',
   'DELETE FROM `{{fleets}}`    WHERE `fleet_owner`    not in (select id from {{users}});',
   'DELETE FROM `{{buddy}}`     WHERE `sender`         not in (select id from {{users}});',
@@ -52,11 +52,11 @@ $ques = array(
    */
 
   'DELETE FROM {{statpoints}} WHERE stat_type=1 AND id_owner not in (select id from {{users}});',
-  
+
   'DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} group by ally_id);',
   'DELETE FROM {{statpoints}} WHERE stat_type=2 AND id_owner not in (select id from {{alliance}});',
-  "UPDATE {{users}} SET ally_id = 0, ally_name='', ally_rank_id=0 WHERE ally_id not in (select id from {{alliance}});",
-  
+  "UPDATE {{users}} SET ally_id = null, ally_name = null, ally_rank_id=0 WHERE ally_id not in (select id from {{alliance}});",
+
   'DELETE FROM {{messages}} WHERE message_time < unix_timestamp(now()) - (60 * 60 * 24 * 30);',
   'DELETE FROM {{rw}} WHERE time < unix_timestamp(now()) - (60 * 60 * 24 * 14);',
   'DELETE FROM {{chat}} WHERE timestamp < unix_timestamp(now()) - (60 * 60 * 24 * 14);',
