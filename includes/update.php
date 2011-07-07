@@ -136,12 +136,15 @@ switch($new_version)
     );
     upd_add_more_time();
 
-    upd_do_query(
-      "UPDATE {{users}} AS u
-        RIGHT JOIN {{referrals}} AS r
-          ON r.id_partner = u.id AND r.dark_matter >= {$config->rpg_bonus_divisor}
-      SET u.rpg_points = u.rpg_points + FLOOR(r.dark_matter/{$config->rpg_bonus_divisor});"
-    );
+    if($update_tables['users']['rpg_points'])
+    {
+      upd_do_query(
+        "UPDATE {{users}} AS u
+          RIGHT JOIN {{referrals}} AS r
+            ON r.id_partner = u.id AND r.dark_matter >= {$config->rpg_bonus_divisor}
+        SET u.rpg_points = u.rpg_points + FLOOR(r.dark_matter/{$config->rpg_bonus_divisor});"
+      );
+    }
 
     $dm_change_legit = false;
   upd_do_query('COMMIT;', true);
@@ -226,32 +229,35 @@ switch($new_version)
     upd_alter_table('planets', "ADD `governor_level` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Governor level'", !$update_tables['planets']['governor_level']);
     upd_alter_table('planets', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'Planet que'", !$update_tables['planets']['que']);
 
-    $planet_query = upd_do_query('SELECT * FROM {{planets}} WHERE `b_building` <> 0;');
-    $const_que_structures = QUE_STRUCTURES;
-    while($planet_data = mysql_fetch_assoc($planet_query))
+    if($update_tables['planets']['b_building'])
     {
-      $old_que = explode(';', $planet_data['b_building_id']);
-      foreach($old_que as $old_que_item_string)
+      $planet_query = upd_do_query('SELECT * FROM {{planets}} WHERE `b_building` <> 0;');
+      $const_que_structures = QUE_STRUCTURES;
+      while($planet_data = mysql_fetch_assoc($planet_query))
       {
-        if(!$old_que_item_string)
+        $old_que = explode(';', $planet_data['b_building_id']);
+        foreach($old_que as $old_que_item_string)
         {
-          continue;
-        }
+          if(!$old_que_item_string)
+          {
+            continue;
+          }
 
-        $old_que_item = explode(',', $old_que_item_string);
-        if($old_que_item[4] == 'build')
-        {
-          $old_que_item[4] = BUILD_CREATE;
-        }
-        else
-        {
-          $old_que_item[4] = BUILD_DESTROY;
-        }
+          $old_que_item = explode(',', $old_que_item_string);
+          if($old_que_item[4] == 'build')
+          {
+            $old_que_item[4] = BUILD_CREATE;
+          }
+          else
+          {
+            $old_que_item[4] = BUILD_DESTROY;
+          }
 
-        $old_que_item[3] = $old_que_item[3] > $planet_data['last_update'] ? $old_que_item[3] - $planet_data['last_update'] : 1;
-        $planet_data['que'] = "{$old_que_item[0]},1,{$old_que_item[3]},{$old_que_item[4]},{$const_que_structures};{$planet_data['que']}";
+          $old_que_item[3] = $old_que_item[3] > $planet_data['last_update'] ? $old_que_item[3] - $planet_data['last_update'] : 1;
+          $planet_data['que'] = "{$old_que_item[0]},1,{$old_que_item[3]},{$old_que_item[4]},{$const_que_structures};{$planet_data['que']}";
+        }
+        upd_do_query("UPDATE {{planets}} SET `que` = '{$planet_data['que']}', `b_building` = '0', `b_building_id` = '0' WHERE `id` = '{$planet_data['id']}' LIMIT 1;", true);
       }
-      upd_do_query("UPDATE {{planets}} SET `que` = '{$planet_data['que']}', `b_building` = '0', `b_building_id` = '0' WHERE `id` = '{$planet_data['id']}' LIMIT 1;", true);
     }
 
     upd_create_table('mercenaries',
@@ -899,7 +905,7 @@ function upd_unset_table_info($table_name)
 
 function upd_load_table_info($prefix_table_name, $prefixed = true)
 {
-  global $config, $update_tables, $update_indexes, $update_foreigns;
+  global $config, $update_tables, $update_indexes, $update_foreigns, $db_name;
 
   $tableName = $prefixed ? str_replace($config->db_prefix, '', $prefix_table_name) : $prefix_table_name;
   $prefix_table_name = $prefixed ? $prefix_table_name : $config->db_prefix . $prefix_table_name;

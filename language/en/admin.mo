@@ -256,6 +256,8 @@ $lang = array_merge($lang, array(
   'adm_ver_versions'  => 'Version of server components',
   'adm_ver_version_sn'=> 'Version',
   'adm_ver_version_db'=> 'Database version',
+
+  'adm_update_force' => 'Force Update',
 ));
 
 // Add moon

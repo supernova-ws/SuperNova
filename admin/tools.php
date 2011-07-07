@@ -16,7 +16,7 @@ if($user['authlevel'] < 1)
   AdminMessage($lang['adm_err_denied']);
 }
 
-$mode = intval($_GET['mode'] ? $_GET['mode'] : $_POST['mode']);
+$mode = sys_get_param_int('mode');
 
 switch($mode){
   case 1:
@@ -31,6 +31,11 @@ switch($mode){
     {
       unset($config->game_watchlist_array);
     }
+  break;
+
+  case 2:
+    $config->db_saveItem('db_version', 0);
+    require_once('../includes/update.php');
   break;
 
 }
