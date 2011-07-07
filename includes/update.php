@@ -694,11 +694,12 @@ debug($update_tables['logs']['log_id'], 31);
     upd_do_query('COMMIT;', true);
 
     $tests = array();
-    $query = true;
-    while($query)
+    $records = 1;
+    while($records)
     {
       upd_do_query('START TRANSACTION;', true);
       $query = upd_do_query("SELECT * FROM {{logs}} WHERE log_code = 102 order by log_id LIMIT 1000;");
+      $records = mysql_numrows($query);
       while($row = mysql_fetch_assoc($query))
       {
         $row['log_username'] = mysql_real_escape_string($row['log_username']);
