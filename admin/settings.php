@@ -91,7 +91,7 @@ $template->assign_vars(array(
   'game_mode' => $config->game_mode,
   'game_language' => $config->game_default_language,
 ));
-debug($config->fleet_bashing_war_delay);
+
 foreach($lang['sys_game_mode'] as $mode_id => $mode_name)
 {
   $template->assign_block_vars('game_modes', array(

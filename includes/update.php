@@ -694,8 +694,8 @@ debug($update_tables['logs']['log_id'], 31);
     upd_do_query('COMMIT;', true);
 
     $tests = array();
-    $row = true;
-    while($row)
+    $query = true;
+    while($query)
     {
       upd_do_query('START TRANSACTION;', true);
       $query = upd_do_query("SELECT * FROM {{logs}} WHERE log_code = 102 order by log_id LIMIT 1000;");
