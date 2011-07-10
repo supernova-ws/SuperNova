@@ -1,5 +1,7 @@
 <?php
 
+$lang['built']			= "Построено";
+
 $lang['Fleet']			= "Флот";
 $lang['fleet']			= "Флот";
 $lang['Defense']		= "Оборона";

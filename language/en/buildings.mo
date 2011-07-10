@@ -5,6 +5,8 @@ if (!defined('INSIDE'))
 	die('Hack attempt!');
 }
 
+$lang['built']			= "Built";
+
 $lang['Fleet']			= "Fleet";
 $lang['fleet']			= "Fleet";
 $lang['Defense']		= "Defence";
