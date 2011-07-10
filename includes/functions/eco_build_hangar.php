@@ -139,7 +139,7 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
         $ElementQueue = explode(';', $planet['b_hangar_id']);
         foreach($ElementQueue as $ElementLine => $Element)
         {
-          if ($Element != '')
+          if($Element != '')
           {
             $Element = explode(',', $Element);
 
@@ -275,16 +275,12 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
   {
     $unit_message = '';
 
-    $ElementName = $lang['tech'][$Element];
-    if (eco_can_build_unit($user, $planet, $Element))
+    if(eco_can_build_unit($user, $planet, $Element))
     {
       // On regarde si on peut en acheter au moins 1
       $CanBuildOne         = IsElementBuyable($user, $planet, $Element, false);
-      // On regarde combien de temps il faut pour construire l'element
-      $BuildOneElementTime = GetBuildingTime($user, $planet, $Element);
       // Disponibilité actuelle
       $ElementCount        = $planet[$sn_data[$Element]['name']];
-      $ElementNbre         = ($ElementCount == 0) ? "" : " (".$lang['dispo'].": " . pretty_number($ElementCount) . ")";
 
       // On affiche le temps de construction (c'est toujours tellement plus joli)
       $baubar= GetMaxConstructibleElements ( $Element, $planet );
@@ -324,60 +320,60 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
           $unit_message = $lang['fleet_on_update'];
         }
       }
+
+      $build_data = eco_get_build_data($user, $planet, $Element, 0);
+
+      $temp[RES_METAL]     = floor($planet['metal'] - $build_data[BUILD_CREATE][RES_METAL]); // + $fleet_list['own']['total'][RES_METAL]
+      $temp[RES_CRYSTAL]   = floor($planet['crystal'] - $build_data[BUILD_CREATE][RES_CRYSTAL]); // + $fleet_list['own']['total'][RES_CRYSTAL]
+      $temp[RES_DEUTERIUM] = floor($planet['deuterium'] - $build_data[BUILD_CREATE][RES_DEUTERIUM]); // + $fleet_list['own']['total'][RES_DEUTERIUM]
+
+      $template->assign_block_vars('production', array(
+          'ID'                => $Element,
+          'NAME'              => $lang['tech'][$Element],
+          'DESCRIPTION'       => $lang['info'][$Element]['description_short'],
+          'LEVEL'             => $ElementCount,
+          'LEVEL_OLD'         => $CurentPlanet[$sn_data[$Element]['name']],
+          'LEVEL_CHANGE'      => $que['in_que'][$Element],
+
+          'BUILD_CAN'         => $build_data['CAN'][BUILD_CREATE],
+          'TIME'              => pretty_time($build_data[BUILD_CREATE][RES_TIME]),
+          'METAL'             => $build_data[BUILD_CREATE][RES_METAL],
+          'CRYSTAL'           => $build_data[BUILD_CREATE][RES_CRYSTAL],
+          'DEUTERIUM'         => $build_data[BUILD_CREATE][RES_DEUTERIUM],
+
+          'DESTROY_CAN'       => $build_data['CAN'][BUILD_DESTROY],
+          'DESTROY_TIME'      => pretty_time($build_data[BUILD_DESTROY][RES_TIME]),
+          'DESTROY_METAL'     => $build_data[BUILD_DESTROY][RES_METAL],
+          'DESTROY_CRYSTAL'   => $build_data[BUILD_DESTROY][RES_CRYSTAL],
+          'DESTROY_DEUTERIUM' => $build_data[BUILD_DESTROY][RES_DEUTERIUM],
+
+          'METAL_REST'        => pretty_number($temp[RES_METAL], true, true),
+          'CRYSTAL_REST'      => pretty_number($temp[RES_CRYSTAL], true, true),
+          'DEUTERIUM_REST'    => pretty_number($temp[RES_DEUTERIUM], true, true),
+          'METAL_REST_NUM'    => $temp[RES_METAL],
+          'CRYSTAL_REST_NUM'  => $temp[RES_CRYSTAL],
+          'DEUTERIUM_REST_NUM'=> $temp[RES_DEUTERIUM],
+
+          'METAL_BALANCE'     => $caps['metal_perhour'][$Element],
+          'CRYSTAL_BALANCE'   => $caps['crystal_perhour'][$Element],
+          'DEUTERIUM_BALANCE' => $caps['deuterium_perhour'][$Element],
+          'ENERGY_BALANCE'    => $energy_balance,
+
+          'ARMOR'  => $sn_data[$Element]['armor'],
+          'SHIELD' => $sn_data[$Element]['shield'],
+          'WEAPON' => $sn_data[$Element]['attack'],
+
+          'TABINDEX' => $TabIndex,
+
+          'MESSAGE' => $unit_message,
+
+  //        'UNIT_BUSY'         => eco_unit_busy($user, $CurentPlanet, $que, $Element),
+      ));
     }
-
-    $build_data = eco_get_build_data($user, $planet, $Element, 0);
-
-    $temp[RES_METAL]     = floor($planet['metal'] - $build_data[BUILD_CREATE][RES_METAL]); // + $fleet_list['own']['total'][RES_METAL]
-    $temp[RES_CRYSTAL]   = floor($planet['crystal'] - $build_data[BUILD_CREATE][RES_CRYSTAL]); // + $fleet_list['own']['total'][RES_CRYSTAL]
-    $temp[RES_DEUTERIUM] = floor($planet['deuterium'] - $build_data[BUILD_CREATE][RES_DEUTERIUM]); // + $fleet_list['own']['total'][RES_DEUTERIUM]
-
-    $template->assign_block_vars('production', array(
-        'ID'                => $Element,
-        'NAME'              => $lang['tech'][$Element],
-        'DESCRIPTION'       => $lang['info'][$Element]['description_short'],
-        'LEVEL'             => $ElementCount,
-        'LEVEL_OLD'         => $CurentPlanet[$sn_data[$Element]['name']],
-        'LEVEL_CHANGE'      => $que['in_que'][$Element],
-
-        'BUILD_CAN'         => $build_data['CAN'][BUILD_CREATE],
-        'TIME'              => pretty_time($build_data[BUILD_CREATE][RES_TIME]),
-        'METAL'             => $build_data[BUILD_CREATE][RES_METAL],
-        'CRYSTAL'           => $build_data[BUILD_CREATE][RES_CRYSTAL],
-        'DEUTERIUM'         => $build_data[BUILD_CREATE][RES_DEUTERIUM],
-
-        'DESTROY_CAN'       => $build_data['CAN'][BUILD_DESTROY],
-        'DESTROY_TIME'      => pretty_time($build_data[BUILD_DESTROY][RES_TIME]),
-        'DESTROY_METAL'     => $build_data[BUILD_DESTROY][RES_METAL],
-        'DESTROY_CRYSTAL'   => $build_data[BUILD_DESTROY][RES_CRYSTAL],
-        'DESTROY_DEUTERIUM' => $build_data[BUILD_DESTROY][RES_DEUTERIUM],
-
-        'METAL_REST'        => pretty_number($temp[RES_METAL], true, true),
-        'CRYSTAL_REST'      => pretty_number($temp[RES_CRYSTAL], true, true),
-        'DEUTERIUM_REST'    => pretty_number($temp[RES_DEUTERIUM], true, true),
-        'METAL_REST_NUM'    => $temp[RES_METAL],
-        'CRYSTAL_REST_NUM'  => $temp[RES_CRYSTAL],
-        'DEUTERIUM_REST_NUM'=> $temp[RES_DEUTERIUM],
-
-        'METAL_BALANCE'     => $caps['metal_perhour'][$Element],
-        'CRYSTAL_BALANCE'   => $caps['crystal_perhour'][$Element],
-        'DEUTERIUM_BALANCE' => $caps['deuterium_perhour'][$Element],
-        'ENERGY_BALANCE'    => $energy_balance,
-
-        'ARMOR'  => $sn_data[$Element]['armor'],
-        'SHIELD' => $sn_data[$Element]['shield'],
-        'WEAPON' => $sn_data[$Element]['attack'],
-
-        'TABINDEX' => $TabIndex,
-
-        'MESSAGE' => $unit_message,
-
-//        'UNIT_BUSY'         => eco_unit_busy($user, $CurentPlanet, $que, $Element),
-    ));
   }
 
   $template->assign_vars(array(
-    'buildinglist' => $planet['b_hangar_id'] != '' ? ElementBuildListBox($user, $planet, $que_type) : '',
+    'buildinglist' => $planet['b_hangar_id'] ? ElementBuildListBox($user, $planet, $que_type) : '',
     'noresearch' => $NoFleetMessage,
     'error_msg' => $page_error,
     'MODE' => $que_type,
