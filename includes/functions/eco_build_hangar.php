@@ -58,21 +58,26 @@ function GetMaxConstructibleElements ($Element, &$Ressources) {
  * @version 1.0
  * @copyright 2009 By Gorlum for http://ogame.triolan.com.ua
  */
-function GetRestrictedConstructionNum($Planet) {
+function GetRestrictedConstructionNum($planet)
+{
   global $resource;
 
   $limited = array(407 => 0, 408 =>0, 409 =>0, 502 => 0, 503 => 0);
 
-  foreach($limited as $key => $value){
-    $limited[$key] += $Planet[$resource[$key]];
+  foreach($limited as $key => $value)
+  {
+    $limited[$key] += $planet[$resource[$key]];
   }
 
-  $BuildQueue = $Planet['b_hangar_id'];
-  if ($BuildQueue){
+  $BuildQueue = $planet['b_hangar_id'];
+  if($BuildQueue)
+  {
     $BuildArray = explode (";", $BuildQueue);
-    foreach($BuildArray as $BuildArrayElement){
+    foreach($BuildArray as $BuildArrayElement)
+    {
       $building = explode (",", $BuildArrayElement);
-      if(array_key_exists($building[0], $limited)){
+      if(array_key_exists($building[0], $limited))
+      {
         $limited[$building[0]] += $building[1];
       }
     }
@@ -105,37 +110,33 @@ function GetRestrictedConstructionNum($Planet) {
  * @version 1.2
  * @copyright 2008 By Chlorel for XNova
  * version 1.2 by F.E.A.R. aka PekopT, www.kodportal.ru, 2008
-// - 1.0 Modularisation
 // - 1.1 Correction mise en place d'une limite max d'elements constructibles par ligne
+// - 1.0 Modularisation
 //
  * (adding  Del Fleet&Defense Queue)
  */
 
 // Page de Construction d'Elements de Flotte
-// $CurrentPlanet -> Planete sur laquelle la construction est lancée
+// $planet -> Planete sur laquelle la construction est lancée
 //                   Parametre passé par adresse, cela permet de mettre les valeurs a jours
 //                   dans le programme appelant
-// $CurrentUser   -> Utilisateur qui a lancé la construction
+// $user   -> Utilisateur qui a lancé la construction
 //
 
-function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
+function eco_build_hangar($que_type, $user, &$planet, $que)
 {
   global $sn_data, $lang, $dpath, $debug;
 
   $GET_action  = sys_get_param_str('action');
   $GET_mode    = sys_get_param_str('mode');
   $POST_fmenge = $_POST['fmenge'];
-  $parse = $lang;
 
   if(isset($GET_action))
   {
     switch($GET_action)
     {
       case 'cancelqueue':
-        //$d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User cancelling defense: ' . $CurrentPlanet['b_hangar_id'];
-        //$debug->warning($d_m,'Canceling Hangar Que', 301);
-
-        $ElementQueue = explode(';', $CurrentPlanet['b_hangar_id']);
+        $ElementQueue = explode(';', $planet['b_hangar_id']);
         foreach($ElementQueue as $ElementLine => $Element)
         {
           if ($Element != '')
@@ -151,7 +152,7 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
         doquery(
           "UPDATE `{{planets}}` SET
             `metal` = metal + '{$ResourcesToUpd['metal']}', `crystal` = crystal + '{$ResourcesToUpd['crystal']}', `deuterium` = deuterium + '{$ResourcesToUpd['deuterium']}',
-            `b_hangar` = '', `b_hangar_id` = '' WHERE `id` = '{$CurrentPlanet['id']}' LIMIT 1;");
+            `b_hangar` = '', `b_hangar_id` = '' WHERE `id` = '{$planet['id']}' LIMIT 1;");
 
         // PREVENT SUBMITS?
         header("location: {$_SERVER['PHP_SELF']}?mode={$GET_mode}");
@@ -161,18 +162,19 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
     }
   }
 
+  $page_error = '';
   $page_mode = $que_type == SUBQUE_FLEET ? 'fleet' : 'defense';
   $sn_data_group = $sn_data['groups'][$page_mode];
   if (isset($POST_fmenge) && !eco_hangar_is_building ( $que ))
   {
     doquery('START TRANSACTION;');
-    $CurrentPlanet = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$CurrentPlanet['id']}' LIMIT 1 FOR UPDATE;", '', true);
+    $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planet['id']}' LIMIT 1 FOR UPDATE;", '', true);
 
     $units_cost = array();
 
-    $hangar = $CurrentPlanet['b_hangar_id'];
-    $built = GetRestrictedConstructionNum($CurrentPlanet);
-    $SiloSpace = max(0, $CurrentPlanet[ $sn_data[44]['name'] ] * 10 - $built[502] - $built[503] * 2);
+    $hangar = $planet['b_hangar_id'];
+    $built = GetRestrictedConstructionNum($planet);
+    $SiloSpace = max(0, $planet[ $sn_data[44]['name'] ] * 10 - $built[502] - $built[503] * 2);
 
     foreach($POST_fmenge as $Element => $Count)
     {
@@ -180,19 +182,13 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
 
       $Count   = min(max(0, intval($Count)), MAX_FLEET_OR_DEFS_PER_ROW);
 
-      if (!(($Count) && ($Element) && in_array($Element, $sn_data_group) && eco_can_build_unit ($CurrentUser, $CurrentPlanet, $Element) ))
+      if (!(($Count) && ($Element) && in_array($Element, $sn_data_group) && eco_can_build_unit ($user, $planet, $Element) ))
       {
         continue;
       }
-      /*
-      if ($Element == 409)
-      {
-        $d_m = 'Canceled hangar que with Planet Defense in it multiplies resources.<br>User building Planet Defense: ' . dump($POST_fmenge);
-        $debug->warning($d_m,'Building Planet Defense', 301);
-      }
-      */
+
       // On verifie combien on sait faire de cet element au max
-      $MaxElements = GetMaxConstructibleElements ( $Element, $CurrentPlanet );
+      $MaxElements = GetMaxConstructibleElements ( $Element, $planet );
 
       switch ($Element) {
         case 502:
@@ -220,12 +216,12 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
         $units_cost[$res_name] += $res_amount;
       }
 
-      $hangar .= "". $Element .",". $Count .";";
+      $hangar .= "{$Element},{$Count};";
     }
 
-    if ($hangar != $CurrentPlanet['b_hangar_id'])
+    if ($hangar != $planet['b_hangar_id'])
     {
-      $new_planet_data = $CurrentPlanet;
+      $new_planet_data = $planet;
 
       $can_build_def = true;
       $query_string = '';
@@ -236,10 +232,10 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
           continue;
         }
 
-        if($CurrentPlanet[$res_name] < $res_amount)
+        if($planet[$res_name] < $res_amount)
         {
           $can_build_def = false;
-          $parse['error_msg'] = $lang['eco_bld_resources_not_enough'];
+          $page_error = $lang['eco_bld_resources_not_enough'];
           break;
         }
         $new_planet_data[$res_name] -= $res_amount;
@@ -248,12 +244,12 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
 
       if($can_build_def && $query_string)
       {
-        $CurrentPlanet = $new_planet_data;
-        $CurrentPlanet['b_hangar_id'] = $hangar;
+        $planet = $new_planet_data;
+        $planet['b_hangar_id'] = $hangar;
 
         $query_string .= "`b_hangar_id` = '{$hangar}'";
 
-        doquery("UPDATE {{planets}} SET {$query_string} WHERE `id` = '{$CurrentPlanet['id']}' LIMIT 1;");
+        doquery("UPDATE {{planets}} SET {$query_string} WHERE `id` = '{$planet['id']}' LIMIT 1;");
       }
     }
     doquery('COMMIT');
@@ -261,47 +257,37 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
 
   // -------------------------------------------------------------------------------------------------------
   // S'il n'y a pas de Chantier ...
-  if ($CurrentPlanet[$sn_data[21]['name']] == 0)
+  if ($planet[$sn_data[21]['name']] == 0)
   {
     // Veuillez avoir l'obligeance de construire le Chantier Spacial !!
     message($lang['need_hangar'], $lang['tech'][21]);
   }
 
-  $built = GetRestrictedConstructionNum($CurrentPlanet);
-  $SiloSpace = max(0, $CurrentPlanet[ $sn_data[44]['name'] ] * 10 - $built[502] - $built[503] * 2);
+  $built = GetRestrictedConstructionNum($planet);
+  $SiloSpace = max(0, $planet[$sn_data[44]['name'] ] * 10 - $built[502] - $built[503] * 2);
+
+  $template = gettemplate("buildings_hangar", true);
 
   // -------------------------------------------------------------------------------------------------------
   // Construction de la page du Chantier (car si j'arrive ici ... c'est que j'ai tout ce qu'il faut pour ...
   $TabIndex  = 0;
-  $PageTable = '';
   foreach($sn_data_group as $Element)
   {
+    $unit_message = '';
+
     $ElementName = $lang['tech'][$Element];
-    if (eco_can_build_unit($CurrentUser, $CurrentPlanet, $Element))
+    if (eco_can_build_unit($user, $planet, $Element))
     {
       // On regarde si on peut en acheter au moins 1
-      $CanBuildOne         = IsElementBuyable($CurrentUser, $CurrentPlanet, $Element, false);
+      $CanBuildOne         = IsElementBuyable($user, $planet, $Element, false);
       // On regarde combien de temps il faut pour construire l'element
-      $BuildOneElementTime = GetBuildingTime($CurrentUser, $CurrentPlanet, $Element);
+      $BuildOneElementTime = GetBuildingTime($user, $planet, $Element);
       // Disponibilité actuelle
-      $ElementCount        = $CurrentPlanet[$sn_data[$Element]['name']];
+      $ElementCount        = $planet[$sn_data[$Element]['name']];
       $ElementNbre         = ($ElementCount == 0) ? "" : " (".$lang['dispo'].": " . pretty_number($ElementCount) . ")";
 
-      // Construction des 3 cases de la ligne d'un element dans la page d'achat !
-      // Début de ligne
-      $PageTable .= "\n<tr>";
-
-      // Imagette + Link vers la page d'information
-      $PageTable .= "<th class=l><a href=\"infos." . PHP_EX . "?gid={$Element}\"><img border=0 src=\"{$dpath}gebaeude/{$Element}.gif\" align=top width=120 height=120></a></th>";
-
-      // Description
-      $PageTable .= "<td class=l><a href=\"infos." . PHP_EX . "?gid={$Element}\">{$ElementName}</a> {$ElementNbre}<br>{$lang['info'][$Element]['description_short']}<br>";
-      // On affiche le 'prix' avec eventuellement ce qui manque en ressource
-      $PageTable .= GetElementPrice($CurrentUser, $CurrentPlanet, $Element, false);
-
       // On affiche le temps de construction (c'est toujours tellement plus joli)
-      $PageTable .= ShowBuildTime($BuildOneElementTime);
-      $baubar= GetMaxConstructibleElements ( $Element, $CurrentPlanet );
+      $baubar= GetMaxConstructibleElements ( $Element, $planet );
 
       switch ($Element) {
         case 502:
@@ -323,43 +309,81 @@ function eco_build_hangar($que_type, $CurrentUser, &$CurrentPlanet, $que)
           break;
       }
 
-      $PageTable .= "<br><br>".$lang['can_build']."<font color=lime><strong>" . pretty_number ($baubar) . "</strong></font>";
-
       // Case nombre d'elements a construire
-      $PageTable .= "<th class=k>";
       if ($CanBuildOne) {
         if (!eco_hangar_is_building ( $que ))
         {
           if ($restrict == 2 AND $baubar == 0) {
-            $PageTable .= "<font color=\"red\">".$lang['only_one']."</font>";
+            $unit_message .= $lang['only_one'];
           } elseif ($restrict == 1 AND !$baubar) {
-            $PageTable .= "<font color=\"red\">".$lang['b_no_silo_space']."</font>";
+            $unit_message .= $lang['b_no_silo_space'];
           } else {
             $TabIndex++;
-            $PageTable .= "<input type=text name=fmenge[".$Element."] alt='".$lang['tech'][$Element]."' size=5 maxlength=5 value=0 tabindex=".$TabIndex.">";
           }
         }else {
-          $NoFleetMessage = $lang['fleet_on_update'];
+          $unit_message = $lang['fleet_on_update'];
         }
       }
-
-      $PageTable .= "</th>";
-      // Fin de ligne (les 3 cases sont construites !!
-      $PageTable .= '</tr>';
     }
+
+    $build_data = eco_get_build_data($user, $planet, $Element, 0);
+
+    $temp[RES_METAL]     = floor($planet['metal'] - $build_data[BUILD_CREATE][RES_METAL]); // + $fleet_list['own']['total'][RES_METAL]
+    $temp[RES_CRYSTAL]   = floor($planet['crystal'] - $build_data[BUILD_CREATE][RES_CRYSTAL]); // + $fleet_list['own']['total'][RES_CRYSTAL]
+    $temp[RES_DEUTERIUM] = floor($planet['deuterium'] - $build_data[BUILD_CREATE][RES_DEUTERIUM]); // + $fleet_list['own']['total'][RES_DEUTERIUM]
+
+    $template->assign_block_vars('production', array(
+        'ID'                => $Element,
+        'NAME'              => $lang['tech'][$Element],
+        'DESCRIPTION'       => $lang['info'][$Element]['description_short'],
+        'LEVEL'             => $ElementCount,
+        'LEVEL_OLD'         => $CurentPlanet[$sn_data[$Element]['name']],
+        'LEVEL_CHANGE'      => $que['in_que'][$Element],
+
+        'BUILD_CAN'         => $build_data['CAN'][BUILD_CREATE],
+        'TIME'              => pretty_time($build_data[BUILD_CREATE][RES_TIME]),
+        'METAL'             => $build_data[BUILD_CREATE][RES_METAL],
+        'CRYSTAL'           => $build_data[BUILD_CREATE][RES_CRYSTAL],
+        'DEUTERIUM'         => $build_data[BUILD_CREATE][RES_DEUTERIUM],
+
+        'DESTROY_CAN'       => $build_data['CAN'][BUILD_DESTROY],
+        'DESTROY_TIME'      => pretty_time($build_data[BUILD_DESTROY][RES_TIME]),
+        'DESTROY_METAL'     => $build_data[BUILD_DESTROY][RES_METAL],
+        'DESTROY_CRYSTAL'   => $build_data[BUILD_DESTROY][RES_CRYSTAL],
+        'DESTROY_DEUTERIUM' => $build_data[BUILD_DESTROY][RES_DEUTERIUM],
+
+        'METAL_REST'        => pretty_number($temp[RES_METAL], true, true),
+        'CRYSTAL_REST'      => pretty_number($temp[RES_CRYSTAL], true, true),
+        'DEUTERIUM_REST'    => pretty_number($temp[RES_DEUTERIUM], true, true),
+        'METAL_REST_NUM'    => $temp[RES_METAL],
+        'CRYSTAL_REST_NUM'  => $temp[RES_CRYSTAL],
+        'DEUTERIUM_REST_NUM'=> $temp[RES_DEUTERIUM],
+
+        'METAL_BALANCE'     => $caps['metal_perhour'][$Element],
+        'CRYSTAL_BALANCE'   => $caps['crystal_perhour'][$Element],
+        'DEUTERIUM_BALANCE' => $caps['deuterium_perhour'][$Element],
+        'ENERGY_BALANCE'    => $energy_balance,
+
+        'ARMOR'  => $sn_data[$Element]['armor'],
+        'SHIELD' => $sn_data[$Element]['shield'],
+        'WEAPON' => $sn_data[$Element]['attack'],
+
+        'TABINDEX' => $TabIndex,
+
+        'MESSAGE' => $unit_message,
+
+//        'UNIT_BUSY'         => eco_unit_busy($user, $CurentPlanet, $que, $Element),
+    ));
   }
 
-  if ($CurrentPlanet['b_hangar_id'] != '')
-  {
-    $parse['buildinglist'] = ElementBuildListBox( $CurrentUser, $CurrentPlanet, $que_type);
-  }
-  // La page se trouve dans $PageTable;
-  $parse['buildlist']    = $PageTable;
-  $parse['noresearch']   = $NoFleetMessage;
-  $parse['MODE']         = $que_type;
-  $page .= parsetemplate(gettemplate("buildings_hangar"), $parse);
+  $template->assign_vars(array(
+    'buildinglist' => $planet['b_hangar_id'] != '' ? ElementBuildListBox($user, $planet, $que_type) : '',
+    'noresearch' => $NoFleetMessage,
+    'error_msg' => $page_error,
+    'MODE' => $que_type,
+  ));
 
-  display($page, $lang[$page_mode]);
+  display(parsetemplate($template), $lang[$page_mode]);
 }
 
 ?>

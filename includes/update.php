@@ -225,6 +225,7 @@ switch($new_version)
 
   case 22:
     upd_log_version_update();
+
     upd_alter_table('planets', "ADD `governor` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Planet governor'", !$update_tables['planets']['governor']);
     upd_alter_table('planets', "ADD `governor_level` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Governor level'", !$update_tables['planets']['governor_level']);
     upd_alter_table('planets', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'Planet que'", !$update_tables['planets']['que']);
@@ -277,6 +278,7 @@ switch($new_version)
   case 23:
   case 24:
     upd_log_version_update();
+
     upd_create_table('confirmations',
       "(
         `id` bigint(11) NOT NULL AUTO_INCREMENT,
@@ -384,8 +386,10 @@ debug($update_tables['logs']['log_id'], 31);
   $new_version = 26;
 
   case 26:
-    $GLOBALS['sys_log_disabled'] = false;
     upd_log_version_update();
+
+    $GLOBALS['sys_log_disabled'] = false;
+
     upd_alter_table('planets', "ADD INDEX `i_parent_planet` (`parent_planet`)", !$update_indexes['planets']['i_parent_planet']);
     upd_alter_table('messages', "DROP INDEX `owner`", $update_indexes['messages']['owner']);
     upd_alter_table('messages', "DROP INDEX `owner_type`", $update_indexes['messages']['owner_type']);
@@ -582,7 +586,9 @@ debug($update_tables['logs']['log_id'], 31);
   $new_version = 28;
 
   case 28:
-  case 28.1: upd_log_version_update();
+  case 28.1:
+    upd_log_version_update();
+
     upd_create_table('quest',
       "(
         `quest_id` SERIAL,
@@ -677,7 +683,9 @@ debug($update_tables['logs']['log_id'], 31);
   upd_do_query('COMMIT;', true);
   $new_version = 29;
 
-  case 29: upd_log_version_update();
+  case 29:
+    upd_log_version_update();
+
     upd_check_key('game_email_pm', 0, !isset($config->game_email_pm));
 
     upd_create_table('log_dark_matter',
@@ -699,7 +707,6 @@ debug($update_tables['logs']['log_id'], 31);
     );
     upd_do_query('COMMIT;', true);
 
-    $tests = array();
     $records = 1;
     while($records)
     {
@@ -708,9 +715,6 @@ debug($update_tables['logs']['log_id'], 31);
       $records = mysql_numrows($query);
       while($row = mysql_fetch_assoc($query))
       {
-        $row['log_username'] = mysql_real_escape_string($row['log_username']);
-        $row['log_page'] = mysql_real_escape_string($row['log_page']);
-
         $result = preg_match('/^Player ID (\d+) Dark Matter was adjusted with (\-?\d+). Reason: (.+)$/', $row['log_text'], $matches);
 
         $reason = RPG_NONE;
@@ -751,27 +755,23 @@ debug($update_tables['logs']['log_id'], 31);
               $reason = RPG_ADMIN;
               $comment = $matches2[1];
             }
-  /*
-            else
-            {
-              if(!isset($tests[$matches[3]]))
-              {
-                $tests[$matches[3]] = 1;
-              }
-            }
-  */
           break;
         }
 
-        $comment = mysql_real_escape_string($comment);
+        if($matches[2])
+        {
+          $row['log_username'] = mysql_real_escape_string($row['log_username']);
+          $row['log_page'] = mysql_real_escape_string($row['log_page']);
+          $comment = mysql_real_escape_string($comment);
 
-        upd_do_query(
-          "INSERT INTO {{log_dark_matter}} (`log_dark_matter_timestamp`, `log_dark_matter_username`, `log_dark_matter_reason`,
-            `log_dark_matter_amount`, `log_dark_matter_comment`, `log_dark_matter_page`, `log_dark_matter_sender`)
-          VALUES (
-            '{$row['log_timestamp']}', '{$row['log_username']}', {$reason},
-            {$matches[2]}, '{$comment}', '{$row['log_page']}', {$row['log_sender']});"
-        , true);
+          upd_do_query(
+            "INSERT INTO {{log_dark_matter}} (`log_dark_matter_timestamp`, `log_dark_matter_username`, `log_dark_matter_reason`,
+              `log_dark_matter_amount`, `log_dark_matter_comment`, `log_dark_matter_page`, `log_dark_matter_sender`)
+            VALUES (
+              '{$row['log_timestamp']}', '{$row['log_username']}', {$reason},
+              {$matches[2]}, '{$comment}', '{$row['log_page']}', {$row['log_sender']});"
+          , true);
+        }
       }
 
       upd_do_query("DELETE FROM {{logs}} WHERE log_code = 102 LIMIT 1000;", true);
@@ -792,7 +792,13 @@ debug($update_tables['logs']['log_id'], 31);
     }
 
   upd_do_query('COMMIT;', true);
-//  $new_version = 29;
+//  $new_version = 29.1;
+
+//  case 29.1:
+//    upd_log_version_update();
+//
+//  upd_do_query('COMMIT;', true);
+//  $new_version = 29.1;
 
 };
 upd_log_message('Upgrade complete.');
@@ -823,7 +829,7 @@ function upd_do_query($query, $no_log = false)
   }
 
   $db_prefix = sn_db_connect($query);
-  if(!(strpos($query, '{{') === false) )
+  if(!(strpos($query, '{{') === false))
   {
     foreach($update_tables as $tableName => $cork)
     {
@@ -862,9 +868,13 @@ function upd_log_version_update()
 
 function upd_add_more_time($time = 0)
 {
+  global $config, $time_now;
+
+  $time = $time ? $time : ($config->upd_lock_time ? $config->upd_lock_time : 30);
+
   if(!$GLOBALS['sys_log_disabled'])
   {
-    $GLOBALS['config']->db_saveItem('var_db_update_end', $GLOBALS['time_now'] + ($time ? $time : ($config->upd_lock_time ? $config->upd_lock_time : 30)));
+    $config->db_saveItem('var_db_update_end', $time_now + $time);
   }
   set_time_limit($time);
 }
@@ -952,16 +962,7 @@ function upd_alter_table($table, $alters, $condition = true)
   }
 
   $qry = "ALTER TABLE {$config->db_prefix}{$table} " . implode(',', $alters) . ';';
-/*
-  foreach($alters as $alteration)
-  {
-    if($alteration)
-    {
-      $qry .= " {$alteration},";
-    }
-  }
-  $qry = substr($qry, 0, -1) . ';';
-*/
+
   $result = mysql_query($qry);
   $error = mysql_error();
   if($error)
