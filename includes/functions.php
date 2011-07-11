@@ -352,7 +352,7 @@ function uni_render_coordinates_url($from, $prefix = '', $mode = 0)
 
 function uni_render_coordinates_href($from, $prefix = '', $mode = 0, $fleet_type = '')
 {
-  return '<a href="' . uni_render_coordinates_url($from, $prefix, $mode) . '" "{$fleet_type}">' . uni_render_coordinates($from, $prefix) . '</a>';
+  return '<a href="' . uni_render_coordinates_url($from, $prefix, $mode) . '"' . ($fleet_type ? " {$fleet_type}" : '') . '>' . uni_render_coordinates($from, $prefix) . '</a>';
 }
 
 /**
