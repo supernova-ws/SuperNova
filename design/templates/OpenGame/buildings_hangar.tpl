@@ -21,10 +21,10 @@
           <tr>
             <td align=justify valign="top" style="border: 0">{production.DESCRIPTION}</td>
             <td valign=top style="border: 0">
-              <table valign=top>
+              <table valign=top width=165>
                 <tr>
                   <th class="c_l">{L_sys_ship_armour}</th>
-                  <td class="c_r">{production.ARMOR}</td>
+                  <td class="c_r" width=65>{production.ARMOR}</td>
                 </tr>
                 <tr>
                   <th class="c_l">{L_sys_ship_shield}</th>
@@ -55,18 +55,18 @@
               </table>
             </td>
             <td valign=top style="border: 0">
-              <table align="center">
+              <table align="center" width=165>
                 <tr>
                   <th class="c_l">{L_sys_metal}</th>
-                  <td class="c_r">{production.METAL_REST}</td>
+                  <td class="c_r" width=65>{production.METAL_PRINT}</td>
                 </tr>
                 <tr>
                   <th class="c_l">{L_sys_crystal}</th>
-                  <td class="c_r">{production.CRYSTAL_REST}</td>
+                  <td class="c_r">{production.CRYSTAL_PRINT}</td>
                 </tr>
                 <tr>
                   <th class="c_l">{L_sys_deuterium}</th>
-                  <td class="c_r">{production.DEUTERIUM_REST}</td>
+                  <td class="c_r">{production.DEUTERIUM_PRINT}</td>
                 </tr>
               </table>
             </td>
