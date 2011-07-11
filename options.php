@@ -225,13 +225,13 @@ foreach($lang_list as $lang_id => $lang_data)
   $parse['opt_lst_lang_data'] .= "<option value =\"{$lang_id}\" {$selected}>{$lang_data['LANG_NAME_NATIVE']}</option>";
 }
 
-if ($user['authlevel'])
+if($user['authlevel'] >= 3)
 {
   $parse['adm_pl_prot_data'] = ($planetrow['id_level'] > 0) ? " checked='checked'" : '';
 }
 
 $template->assign_vars(array(
-  'IS_ADMIN'       => $user['authlevel'],
+  'IS_ADMIN'       => $user['authlevel'] >= 3,
   'opt_usern_data' => $user['username'],
   'opt_mail1_data' => $user['email'],
   'opt_mail2_data' => $user['email_2'],
@@ -275,19 +275,8 @@ foreach($user_option_list as $option_group_id => $option_group)
           'TEXT'  => $lang['msg_class'][$message_class_id], // $lang['opt_custom'][$option_name],
           'PM' => $message_class_data['switchable'] ? $user["opt_{$option_name}"] : -1,
           'EMAIL' => $message_class_data['email'] && $config->game_email_pm ? $user["opt_email_{$option_name}"] : -1,
-        ));//debug($message_class_data['switchable']);debug($user["opt_{$option_name}"]);debug("opt_{$option_name}");
+        ));
       }
-/*
-      if($message_class_data['switchable'])
-      {
-        $user_option_list[OPT_MESSAGE]["opt_{$message_class_data['name']}"] = 1;
-      }
-
-      if($message_class_data['email'])
-      {
-        $user_option_list[OPT_MESSAGE]["opt_email_{$message_class_data['name']}"] = 0;
-      }
-*/
     }
   }
   else
