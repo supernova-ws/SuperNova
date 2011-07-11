@@ -2,7 +2,7 @@
 
 function int_get_fleet_to_planet($fleet_list, $phalanx = false)
 {
-  global $config, $user, $fleets, $fleet_number;
+  global $config, $user, $fleets, $fleet_number, $lang;
 
   $fleets = array();
   $fleet_number = 0;
