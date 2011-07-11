@@ -341,6 +341,10 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
           'CRYSTAL'           => $build_data[BUILD_CREATE][RES_CRYSTAL],
           'DEUTERIUM'         => $build_data[BUILD_CREATE][RES_DEUTERIUM],
 
+          'METAL_PRINT'       => pretty_number($build_data[BUILD_CREATE][RES_METAL], true, $planet['metal']),
+          'CRYSTAL_PRINT'     => pretty_number($build_data[BUILD_CREATE][RES_CRYSTAL], true, $planet['crystal']),
+          'DEUTERIUM_PRINT'   => pretty_number($build_data[BUILD_CREATE][RES_DEUTERIUM], true, $planet['deuterium']),
+
           'DESTROY_CAN'       => $build_data['CAN'][BUILD_DESTROY],
           'DESTROY_TIME'      => pretty_time($build_data[BUILD_DESTROY][RES_TIME]),
           'DESTROY_METAL'     => $build_data[BUILD_DESTROY][RES_METAL],
@@ -359,9 +363,9 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
           'DEUTERIUM_BALANCE' => $caps['deuterium_perhour'][$Element],
           'ENERGY_BALANCE'    => $energy_balance,
 
-          'ARMOR'  => $sn_data[$Element]['armor'],
-          'SHIELD' => $sn_data[$Element]['shield'],
-          'WEAPON' => $sn_data[$Element]['attack'],
+          'ARMOR'  => pretty_number($sn_data[$Element]['armor']),
+          'SHIELD' => pretty_number($sn_data[$Element]['shield']),
+          'WEAPON' => pretty_number($sn_data[$Element]['attack']),
 
           'TABINDEX' => $TabIndex,
 
