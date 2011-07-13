@@ -2,7 +2,7 @@
 
 function int_get_fleet_to_planet($fleet_list, $phalanx = false)
 {
-  global $config, $user, $fleets, $fleet_number, $lang;
+  global $config, $user, $fleets, $fleet_number, $lang, $time_now;
 
   $fleets = array();
   $fleet_number = 0;
@@ -64,7 +64,7 @@ function int_get_fleet_to_planet($fleet_list, $phalanx = false)
       int_assign_event($fleet, 0, $phalanx);
     }
 
-    if($fleet['fleet_end_stay'] && $fleet['fleet_end_stay'] > $time_now && $fleet['fleet_mess'] == 0)
+    if($fleet['fleet_end_stay'] > $time_now && $fleet['fleet_mess'] == 0)
     {
       int_assign_event($fleet, 1, $phalanx);
     }
