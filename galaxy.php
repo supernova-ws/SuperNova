@@ -170,19 +170,6 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
       $fleet_id++;
     }
 
-    $recyclers_incoming = 0;
-    if($fleet_list[$Planet][PT_DEBRIS])
-    {
-      foreach($fleet_list[$Planet][PT_DEBRIS] as $fleet_row)
-      {
-        if($fleet_row['fleet_owner'] == $user['id'])
-        {
-          $fleet_data = flt_expand($fleet_row);
-          $recyclers_incoming += $fleet_data[SHIP_RECYCLER];
-        }
-      }
-    }
-
     $GalaxyRowMoon = $planet_list[$Planet][PT_MOON];
     if ($GalaxyRowMoon['destruyed'])
     {
@@ -201,16 +188,27 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
     }
   }
 
-  if ($GalaxyRowPlanet["debris_metal"] || $GalaxyRowPlanet["debris_crystal"]) {
-    $RecNeeded = ceil(($GalaxyRowPlanet["debris_metal"] + $GalaxyRowPlanet["debris_crystal"]) / $pricelist[SHIP_RECYCLER]['capacity']);
-    if ($RecNeeded < $CurrentRC) {
-      $recyclers_sent = $RecNeeded;
-    }else{
-      $recyclers_sent = $CurrentRC;
+  $recyclers_incoming = 0;
+  $recyclers_to_send = 0;
+  $recyclers_need = 0;
+  if ($GalaxyRowPlanet["debris_metal"] || $GalaxyRowPlanet["debris_crystal"])
+  {
+    if($fleet_list[$Planet][PT_DEBRIS])
+    {
+      foreach($fleet_list[$Planet][PT_DEBRIS] as $fleet_row)
+      {
+        if($fleet_row['fleet_owner'] == $user['id'])
+        {
+          $fleet_data = flt_expand($fleet_row);
+          $recyclers_incoming += $fleet_data[SHIP_RECYCLER];
+        }
+      }
     }
+
+    $recyclers_need = ceil(($GalaxyRowPlanet['debris_metal'] + $GalaxyRowPlanet['debris_crystal']) / $sn_data[SHIP_RECYCLER]['capacity']);
+    $recyclers_to_send = min($CurrentRC, max(0, $recyclers_need - $recyclers_incoming));
   }
 
-  $recyclers_need = ceil(($GalaxyRowPlanet['debris_metal'] + $GalaxyRowPlanet['debris_crystal']) / $sn_data[SHIP_RECYCLER]['capacity']);
 
   $template->assign_block_vars('galaxyrow', array(
      'PLANET_ID'        => $GalaxyRowPlanet['id'],
@@ -231,7 +229,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
      'DEBRIS_METAL'   => $GalaxyRowPlanet['debris_metal'],
      'DEBRIS_CRYSTAL' => $GalaxyRowPlanet['debris_crystal'],
      'DEBRIS_RC_INC'  => $recyclers_incoming,
-     'DEBRIS_RC_SEND' => $recyclers_sent <= $recyclers_incoming ? 0 : $recyclers_sent - $recyclers_incoming,
+     'DEBRIS_RC_SEND' => $recyclers_to_send, // <= $recyclers_incoming ? 0 : $recyclers_to_send - $recyclers_incoming,
      'DEBRIS_RC_NEED' => $recyclers_need,
 
      'USER_ID'       => $GalaxyRowUser['id'],
@@ -254,7 +252,8 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
 
 tpl_assign_fleet($template, $fleets);
 
-foreach($cached['users'] as $PlanetUser){
+foreach($cached['users'] as $PlanetUser)
+{
   if($PlanetUser)
   {
     $template->assign_block_vars('users', array(
