@@ -112,6 +112,8 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
       <th width=100>
         <!-- IF ques.LENGTH -->
         <div id="ov_{ques.ID}"></div>
+        <!-- DEFINE $QUE_ID = '{ques.ID}' -->
+        <!-- INCLUDE eco_queue.tpl -->
         <!-- ELSE -->
         {ques.NAME}<br>
         <!-- ENDIF -->
@@ -121,42 +123,8 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
       <th colspan=3 id="ov_{ques.ID}_que">
         {L_eco_que_empty}
       </th>
-      <!-- DEFINE $QUE_ID = '{ques.ID}' -->
-      <!-- INCLUDE eco_queue.tpl -->
     </tr>
     <!-- END ques -->
-
-    <tr>
-      <th>{L_ov_hangar}</th>
-      <!-- IF HANGAR -->
-        <th>
-          {HANGAR}<span id="ov_hangar_timer" style="color: lime"></span>
-        </th>
-        <th colspan="2">
-          <span id="ov_hangar"></span>
-        </th>
-      <!-- ELSE -->
-        <th colspan="3">
-          {L_Free}
-        </th>
-      <!-- ENDIF -->
-    </tr>
-    
-    <tr>
-      <th>{Teching}</th>
-      <!-- IF TECH -->
-        <th>
-          {TECH}<span id="ov_tech_timer" style="color: lime"></span>
-        </th>
-        <th colspan="2">
-          <span id="ov_tech"></span>
-        </th>
-      <!-- ELSE -->
-        <th colspan="3">
-          {L_Free}
-        </th>
-      <!-- ENDIF -->
-    </tr>
   </table>
 
   <!-- INCLUDE planet_fleet_list.tpl -->

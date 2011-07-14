@@ -19,7 +19,7 @@ sn_timers.unshift(
     que: [
       <!-- BEGIN que -->
         <!-- IF $QUE_ID == que.QUE  -->
-          ['{que.ID}', '{que.NAME}', {que.TIME}, {que.AMOUNT}, '{que.LEVEL}'],
+          ['{que.ID}', '{que.NAME}', {que.TIME}, {que.AMOUNT}, {que.LEVEL}, {que.TIME_FULL}],
           <!-- DEFINE $QUE_NOT_EMPTY = true -->
         <!-- ENDIF -->
       <!-- END que -->

@@ -1,5 +1,7 @@
 <br />
-{buildinglist}
+
+<!-- DEFINE $QUE_ID = '{QUE_ID}' -->
+<!-- INCLUDE eco_queue.tpl -->
 
 <div>{error_msg}</div>
 
@@ -8,6 +10,38 @@
 <form action="buildings.php?mode={MODE}" method="post">
   <!-- IF .production -->
   <table valign="top" align="center" width="600px">
+    <!-- IF $QUE_NOT_EMPTY -->
+      <tr>
+        <th colspan="2" class="c" align="center">
+          <table width=100% class="noborder">
+            <tr>
+              <th width=120px>
+              <div id="ov_{QUE_ID}"></div>
+              <div id="ov_{QUE_ID}_timer" style="color: lime"></div>
+              <div>{L_sys_total_time}</div>
+              <div id="ov_{QUE_ID}_total" style="color: red"></div>
+            </th>
+            <th id="ov_{QUE_ID}_que">
+              </th>
+            </tr>
+          </table>
+        </th>
+      </tr>
+
+      <tr>
+        <td colspan="2" class="c" align="center">
+          <div class="fl"><a href="buildings.php?mode={QUE_ID}&action=clear">{L_eco_que_clear}</a></div>
+          <div class="fr"><a href="buildings.php?mode={QUE_ID}&action=trim">{L_eco_que_trim}</a></div>
+        </td>
+      </tr>
+    <!-- ELSE -->
+      <tr>
+        <th colspan="2" class="c_c" align="center">
+          {L_eco_que_empty}
+        </th>
+      </tr>
+    <!-- ENDIF -->
+
     <!-- BEGIN production -->
     <tr>
       <th>
@@ -73,19 +107,12 @@
           </tr>
         </table>
         <!-- IF production.BUILD_CAN && ! production.MESSAGE-->
-          {L_Construire}: <input type=text name=fmenge[{production.ID}] alt='{production.NAME}' size=5 maxlength=5 value=0 tabindex="{production.TABINDEX}"> / {production.BUILD_CAN}
+          <input type=text name=fmenge[{production.ID}] alt='{production.NAME}' size=5 maxlength=5 value=0 tabindex="{production.TABINDEX}"> / {production.BUILD_CAN} <input type="submit" value="{L_Construire}">
         <!-- ELSEIF production.MESSAGE -->
           <span class="error">{production.MESSAGE}</span>
         <!-- ENDIF -->
-
-
     </tr>
     <!-- END production -->
-    <tr>
-     <th class="c_c" colspan="2">
-       <input type="submit" value="{L_Construire}">
-     </th>
-   </tr>
   </table>
   <!-- ELSE -->
   <!-- ENDIF -->

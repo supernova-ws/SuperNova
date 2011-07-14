@@ -125,7 +125,7 @@ function GetRestrictedConstructionNum($planet)
 
 function eco_build_hangar($que_type, $user, &$planet, $que)
 {
-  global $sn_data, $lang, $dpath, $debug;
+  global $sn_data, $lang, $dpath, $debug, $time_now;
 
   $GET_action  = sys_get_param_str('action');
   $GET_mode    = sys_get_param_str('mode');
@@ -135,7 +135,36 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
   {
     switch($GET_action)
     {
-      case 'cancelqueue':
+      case 'trim':
+        $ElementQueue = explode(';', $planet['b_hangar_id']);
+        while(!empty($ElementQueue) && $ElementLine == '')
+        {
+          $ElementIndex = count($ElementQueue) - 1;
+          $ElementLine = $ElementQueue[$ElementIndex];
+          unset($ElementQueue[$ElementIndex]);
+        }
+
+        if($ElementLine)
+        {
+          $Element = explode(',', $ElementLine);
+
+          $ResourcesToUpd[metal] += floor($sn_data[$Element[0]]['metal'] * $Element[1]);
+          $ResourcesToUpd[crystal] += floor($sn_data[$Element[0]]['crystal'] * $Element[1]);
+          $ResourcesToUpd[deuterium] += floor($sn_data[$Element[0]]['deuterium'] * $Element[1]);
+
+          doquery(
+            "UPDATE `{{planets}}` SET
+              `metal` = metal + '{$ResourcesToUpd['metal']}', `crystal` = crystal + '{$ResourcesToUpd['crystal']}', `deuterium` = deuterium + '{$ResourcesToUpd['deuterium']}',".
+              (empty($ElementQueue) ? '`b_hangar` = 0,' : '') . "`b_hangar_id` = '" . implode(';', $ElementQueue) . "' WHERE `id` = '{$planet['id']}' LIMIT 1;");
+        }
+
+        // PREVENT SUBMITS?
+        header("location: {$_SERVER['PHP_SELF']}?mode={$GET_mode}");
+        exit;
+
+      break;
+
+      case 'clear':
         $ElementQueue = explode(';', $planet['b_hangar_id']);
         foreach($ElementQueue as $ElementLine => $Element)
         {
@@ -377,13 +406,50 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
   }
 
   $template->assign_vars(array(
-    'buildinglist' => $planet['b_hangar_id'] ? ElementBuildListBox($user, $planet, $que_type) : '',
     'noresearch' => $NoFleetMessage,
     'error_msg' => $page_error,
     'MODE' => $que_type,
+
+    'QUE_ID' => $que_type,
+    'TIME_NOW'           => $time_now,
   ));
 
+  tpl_assign_hangar($que_type, $planet, $template);
+
   display(parsetemplate($template), $lang[$page_mode]);
+}
+
+function tpl_assign_hangar($que_type, $planet, &$template)
+{
+  global $user, $lang;
+
+  $que_length = 0;
+  $hangar_que_strings = explode(';', $planet['b_hangar_id']);
+  foreach($hangar_que_strings as $hangar_que_string_id => $hangar_que_string)
+  {
+    if(!$hangar_que_string)
+    {
+      continue;
+    }
+
+    list($unit_id, $unit_amount) = explode(',', $hangar_que_string);
+
+    $unit_data = eco_get_build_data($user, $planet, $unit_id, 0);
+
+    $template->assign_block_vars('que', array(
+      'ID' => $unit_id,
+      'QUE' => $que_type,
+      'NAME' => $lang['tech'][$unit_id],
+      'TIME' => $unit_data[BUILD_CREATE][RES_TIME] - ($hangar_que_string_id ? 0 : $planet['b_hangar']),
+      'TIME_FULL' => $unit_data[BUILD_CREATE][RES_TIME],
+      'AMOUNT' => $unit_amount,
+      'LEVEL' => 0,
+    ));
+
+    $que_length++;
+  }
+
+  return($que_length);
 }
 
 ?>
