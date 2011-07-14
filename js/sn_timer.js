@@ -79,11 +79,12 @@ Options for event list:
   'unchanged' - reserved for internal use (flag that event text was not changed)
 */
 
-var UNIT_ID       = 0;
-var UNIT_NAME     = 1;
-var UNIT_TIME     = 2;
-var UNIT_AMOUNT   = 3;
-var UNIT_LEVEL    = 4;
+var UNIT_ID        = 0;
+var UNIT_NAME      = 1;
+var UNIT_TIME      = 2;
+var UNIT_AMOUNT    = 3;
+var UNIT_LEVEL     = 4;
+var UNIT_TIME_FULL = 5;
 
 var EVENT_TIME   = 0;
 var EVENT_STRING = 1;
@@ -101,9 +102,9 @@ function sn_timer_compile_que(timer_options)
 
   for(que_id in que)
   {
-    if(que_id != 0)
+//    if(que_id != 0)
     {
-      total += que[que_id][UNIT_TIME];
+      total += (que[que_id][UNIT_AMOUNT] - 1) * que[que_id][UNIT_TIME_FULL]; // que[que_id][UNIT_TIME] +
     }
 
     temp = timer_options['template'].replace('[UNIT_ID]', que[que_id][UNIT_ID]);
@@ -115,11 +116,16 @@ function sn_timer_compile_que(timer_options)
       unit_name += ' (' + que[que_id][UNIT_AMOUNT] + ')';
       temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_AMOUNT]);
     }
-    if(que[que_id][UNIT_LEVEL] >= 0)
-    {
-      unit_name += ' (' + que[que_id][UNIT_LEVEL] + ')';
-      temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_LEVEL]);
-    }
+    else
+      if(que[que_id][UNIT_LEVEL] > 0)
+      {
+        unit_name += ' (' + que[que_id][UNIT_LEVEL] + ')';
+        temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_LEVEL]);
+      }
+      else
+      {
+        temp = temp.replace('[UNIT_LEVEL]', '');
+      }
     temp = temp.replace('[UNIT_NAME]', unit_name);
     compiled += temp;
   }
@@ -329,6 +335,10 @@ function sn_timer() {
             timer_options['que'].shift();
             que_item = timer_options['que'][0];
           }
+          else
+          {
+            que_item[UNIT_TIME] = que_item[UNIT_TIME_FULL];
+          }
           timer['start_time'] = timestamp;
           sn_timers[timerID]['que_compiled'] = sn_timer_compile_que(timer_options);
 //          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
@@ -354,10 +364,11 @@ function sn_timer() {
           {
             infoText += ' (' + que_item[UNIT_AMOUNT] + ')';
           }
-          if(que_item[UNIT_LEVEL] > 1)
-          {
-            infoText += ' (' + que_item[UNIT_LEVEL] + ')';
-          }
+          else
+            if(que_item[UNIT_LEVEL] > 1)
+            {
+              infoText += ' (' + que_item[UNIT_LEVEL] + ')';
+            }
           timerText = sn_timestampToString(timeLeft);
         }
         else

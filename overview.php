@@ -226,6 +226,32 @@ switch ($mode)
       }
     }
 
+    $que_hangar_length = tpl_assign_hangar(QUE_HANGAR, $planetrow, $template);
+    $template->assign_block_vars('ques', array(
+      ID     => QUE_HANGAR,
+      NAME   => $lang['sys_ques'][QUE_HANGAR],
+      LENGTH => $que_hangar_length,
+    ));
+
+    $template->assign_block_vars('ques', array(
+      ID     => QUE_RESEARCH,
+      NAME   => $lang['sys_ques'][QUE_RESEARCH],
+      LENGTH => intval($planetrow['b_tech_id']),
+    ));
+    $unit_id = intval($planetrow['b_tech_id']);
+    if($unit_id)
+    {
+      $template->assign_block_vars('que', array(
+        'ID' => $unit_id,
+        'QUE' => QUE_RESEARCH,
+        'NAME' => $lang['tech'][$unit_id],
+        'TIME' => $planetrow['b_tech'] - $time_now,
+        'TIME_FULL' => $planetrow['b_tech'] - $time_now,
+        'AMOUNT' => 1,
+        'LEVEL' => $user[$sn_data[$unit_id]['name']] + 1,
+      ));
+    }
+
     $template->assign_vars(array(
       'TIME_NOW'             => $time_now,
 
@@ -237,9 +263,9 @@ switch ($mode)
       'NEW_LEVEL_MINER'      => $level_miner,
       'NEW_LEVEL_RAID'       => $level_raid,
 
-      'BUILDING'             => int_buildCounter($planetrow, 'building', '', $que),
-      'HANGAR'               => int_buildCounter($planetrow, 'hangar'),
-      'TECH'                 => int_buildCounter($planetrow, 'tech'),
+//      'BUILDING'             => int_buildCounter($planetrow, 'building', '', $que),
+//      'HANGAR'               => int_buildCounter($planetrow, 'hangar'),
+//      'TECH'                 => int_buildCounter($planetrow, 'tech'),
       'planet_diameter'      => pretty_number($planetrow['diameter']),
       'planet_field_current' => $planetrow['field_current'],
       'planet_field_max'     => eco_planet_fields_max($planetrow),

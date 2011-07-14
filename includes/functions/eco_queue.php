@@ -52,6 +52,7 @@ function eco_que_process($user, &$planet, $time_left)
         'ID'     => $que_item[0], // unit ID
         'AMOUNT' => $que_item[1] > 0 ? $que_item[1] : 0, // unit amount
         'TIME'   => $que_item[2] > 0 ? $que_item[2] : 0, // build time left (in seconds)
+        'TIME_FULL'   => $que_item[2] > 0 ? $que_item[2] : 0, // build time left (in seconds)
         'MODE'   => $que_item[3], // build/destroy
         'QUE'    => $que_item[4], // que ID
         'NAME'   => $lang['tech'][$unit_id],
@@ -81,6 +82,7 @@ function eco_que_process($user, &$planet, $time_left)
       {
         $que_item['TIME'] = $build_data[RES_TIME];
       }
+      $que_item['TIME_FULL'] = $build_data[RES_TIME];
 
       $que_unit_place++;
 
@@ -233,6 +235,7 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
         'ID'     => $unit_id, // unit ID
         'AMOUNT' => $unit_amount, // unit amount
         'TIME'   => $unit_time, // build time left (in seconds)
+        'TIME_FULL'   => $unit_time, // build time left (in seconds)
         'MODE'   => $build_mode, // build/destroy
         'NAME'   => $lang['tech'][$unit_id],
         'QUE'    => $que_id, // que ID
