@@ -13,6 +13,10 @@
     <tr><td align=center class="c">{L_player}</td></tr>
     <tr><td><a href="admin/banned.php">{L_adm_ban}</a></td></tr>
     <tr><td><a href="admin/banned.php?mode=unbanit">{L_adm_unban}</a></td></tr>
+    <!-- IF USER_AUTHLEVEL >= 2 -->
+    <tr><td><a href="admin/add_research.php">Add Research</a></td></tr>
+    <tr><td><a href="admin/del_research.php">Del Research</a></td></tr>
+    <!-- ENDIF -->
     <!-- IF USER_AUTHLEVEL >= 3 -->
     <tr><td><a href="admin/userlist.php">{L_adm_plrlst}</a></td></tr>
     <tr><td><a href="admin/paneladmina.php">{L_adm_panel}</a></td></tr>
@@ -21,29 +25,18 @@
     <tr><td align=center class="c">{L_sys_planet}</td></tr>
     <tr><td><a href="admin/planetlist.php">{L_adm_pltlst}</a></td></tr>
     <tr><td><a href="admin/activeplanet.php">{L_adm_actplt}</a></td></tr>
+    <!-- IF USER_AUTHLEVEL >= 2 -->
+    <tr><td><a href="admin/planet_edit.php">{L_adm_lm_planet_edit}</a></td></tr>
+    <!-- ENDIF -->
     <!-- IF USER_AUTHLEVEL >= 3 -->
     <tr><td><a href="admin/planet_compensate.php">{L_adm_lm_compensate}</a></td></tr>
     <!-- ENDIF -->
 
     <!-- IF USER_AUTHLEVEL >= 2 -->
-    <tr><td align=center class="c">Add Menu</td></tr>
-    <tr><td><a href="admin/add_building.php">Add Building </a></td></tr>
-    <tr><td><a href="admin/add_def.php">Add Def </a></td></tr>
-    <tr><td><a href="admin/add_money.php">Add Money </a></td></tr>
-    <tr><td><a href="admin/add_research.php">Add Research</a></td></tr>
-    <tr><td><a href="admin/add_ship.php">Add Ships </a></td></tr>
-
-    <tr><td align=center class="c">Delete Menu</td></tr>
-    <tr><td><a href="admin/del_building.php">Del Building </a></td></tr>
-    <tr><td><a href="admin/del_def.php">Del Def </a></td></tr>
-    <tr><td><a href="admin/del_money.php">Del Money </a></td></tr>
-    <tr><td><a href="admin/del_research.php">Del Research</a></td></tr>
-    <tr><td><a href="admin/del_ship.php">Del Ships </a></td></tr>
-
     <tr><td align=center class="c">{L_sys_moon}</td></tr>
     <tr><td><a href="admin/moonlist.php">{L_adm_moonlst}</a></td></tr>
     <tr><td><a href="admin/add_moon.php">{L_adm_addmoon}</a></td></tr>
-    
+
     <tr><td style="background-color:#FFFFFF" height="1px"></td></tr>
     <tr><td><a href="admin/ShowFlyingFleets.php">{L_adm_fleet}</a></td></tr>
     <tr><td style="background-color:#FFFFFF" height="1px"></td></tr>

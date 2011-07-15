@@ -257,7 +257,20 @@ $lang = array_merge($lang, array(
   'adm_ver_version_sn'=> 'Version',
   'adm_ver_version_db'=> 'Database version',
 
-  'adm_update_force' => 'Force Update',
+  'adm_update_force'  => 'Force Update',
+
+  'adm_planet_edit'   => 'Edit planet',
+  'adm_planet_id'     => 'Planet ID',
+
+  'adm_name' => 'Name',
+  'adm_on_planet' => 'On planet',
+  'adm_planet_change' => 'Change',
+
+  'adm_planet_edit_hint' => '<ul>
+    <li>Entering planet ID and pressing "Confirm" on empty page will print info about planet: type, name, coordinates and current amount of units/resources of
+    selected type</li>
+    <li>To remove units/resources from planet enter negative value</li>
+  </ul>',
 ));
 
 // Add moon
