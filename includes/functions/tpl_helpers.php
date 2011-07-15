@@ -75,7 +75,7 @@ function tpl_parse_fleet_sn($fleet, $fleet_id)
 
 function tpl_parse_fleet_db($fleet, $index, $user_data = false)
 {
-  global $lang, $time_now, $user, $pricelist;
+  global $lang, $time_now, $user, $pricelist, $sn_data;
 
   if(!$user_data)
   {
@@ -86,6 +86,8 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
   {
     $aks = doquery("SELECT * FROM {{aks}} WHERE id={$fleet['fleet_group']} LIMIT 1;", '', true);
   };
+
+  $spy_level = $user['id'] == $fleet['fleet_owner'] ? 100 : ($user[$sn_data[TECH_SPY]['name']] + $user[$sn_data[MRC_SPY]['name']]);
 
   $return['fleet'] = array(
     'NUMBER'             => $index,
@@ -98,11 +100,11 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
     'MISSION'            => $fleet['fleet_mission'],
     'MISSION_NAME'       => $lang['type_mission'][$fleet['fleet_mission']],
     'ACS'                => $aks['name'],
-    'AMOUNT'             => pretty_number($fleet['fleet_amount']) . ($fleet['fleet_resource_metal'] + $fleet['fleet_resource_crystal'] + $fleet['fleet_resource_deuterium'] ? '+' : ''),
+    'AMOUNT'             => $spy_level >= 4 ? (pretty_number($fleet['fleet_amount']) . ($fleet['fleet_resource_metal'] + $fleet['fleet_resource_crystal'] + $fleet['fleet_resource_deuterium'] ? '+' : '')) : '?',
 
-    'METAL'              => $fleet['fleet_resource_metal'],
-    'CRYSTAL'            => $fleet['fleet_resource_crystal'],
-    'DEUTERIUM'          => $fleet['fleet_resource_deuterium'],
+    'METAL'              => $spy_level >= 8 ? $fleet['fleet_resource_metal'] : 0,
+    'CRYSTAL'            => $spy_level >= 8 ? $fleet['fleet_resource_crystal'] : 0,
+    'DEUTERIUM'          => $spy_level >= 8 ? $fleet['fleet_resource_deuterium'] : 0,
 
     'START_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$fleet['fleet_start_type']],
     'START_COORDS'       => "[{$fleet['fleet_start_galaxy']}:{$fleet['fleet_start_system']}:{$fleet['fleet_start_planet']}]",
@@ -128,19 +130,37 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
   );
 
   $ship_list = explode(';', $fleet['fleet_array']);
-  foreach ($ship_list as $ship_record)
+
+  if($spy_level >= 6)
   {
-    if ($ship_record)
+    foreach($ship_list as $ship_record)
     {
-      $ship_data = explode(',', $ship_record);
-      $return['ships'][$ship_data[0]] = array(
-        'ID'          => $ship_data[0],
-        'NAME'        => $lang['tech'][$ship_data[0]],
-        'AMOUNT'      => $ship_data[1],
-        'CONSUMPTION' => GetShipConsumption($ship_data[0], $user_data),
-        'SPEED'       => get_ship_speed($ship_data[0], $user_data),
-        'CAPACITY'    => $pricelist[$ship_data[0]]['capacity'],
-      );
+      if($ship_record)
+      {
+        $ship_data = explode(',', $ship_record);
+        if($spy_level >= 10)
+        {
+          $return['ships'][$ship_data[0]] = array(
+            'ID'          => $ship_data[0],
+            'NAME'        => $lang['tech'][$ship_data[0]],
+            'AMOUNT'      => $ship_data[1],
+            'CONSUMPTION' => GetShipConsumption($ship_data[0], $user_data),
+            'SPEED'       => get_ship_speed($ship_data[0], $user_data),
+            'CAPACITY'    => $pricelist[$ship_data[0]]['capacity'],
+          );
+        }
+        else
+        {
+          $return['ships'][$ship_data[0]] = array(
+            'ID'          => $ship_id++,
+            'NAME'        => $lang['tech'][SHIP_FLEET],
+            'AMOUNT'      => $ship_data[1],
+            'CONSUMPTION' => 0,
+            'SPEED'       => 0,
+            'CAPACITY'    => 0,
+          );
+        }
+      }
     }
   }
 

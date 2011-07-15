@@ -27,7 +27,7 @@ if ($planetrow['planet_type'] != PT_MOON) {
 $scan_galaxy  = sys_get_param_int('galaxy');
 $scan_system  = sys_get_param_int('system');
 $scan_planet  = sys_get_param_int('planet');
-$scan_planet_type  = sys_get_param_int('planettype');
+$scan_planet_type  = 1; // sys_get_param_int('planettype');
 $id = sys_get_param_int('id');
 
 $source_galaxy = $planetrow['galaxy'];
@@ -72,7 +72,7 @@ $template = gettemplate('planet_fleet_list', true);
 
 $planet_scanned = doquery("SELECT * FROM {{planets}} WHERE galaxy = {$scan_galaxy} AND system = {$scan_system} AND planet = {$scan_planet} AND planet_type = {$scan_planet_type} LIMIT 1;", '', true);
 
-int_get_fleet_to_planet(flt_get_fleets_to_planet_db($planet_scanned), true);
+int_get_fleet_to_planet(flt_get_fleets_to_planet_db($planet_scanned, true), $planet_scanned);
 int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE galaxy = {$scan_galaxy} AND system = {$scan_system} AND planet = {$scan_planet};", true);
 tpl_assign_fleet($template, $fleets);
 
