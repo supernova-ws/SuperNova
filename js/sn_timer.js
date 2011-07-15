@@ -104,7 +104,7 @@ function sn_timer_compile_que(timer_options)
   {
 //    if(que_id != 0)
     {
-      total += (que[que_id][UNIT_AMOUNT] - 1) * que[que_id][UNIT_TIME_FULL]; // que[que_id][UNIT_TIME] +
+      total += (que[que_id][UNIT_AMOUNT] - (que_id != 0 ? 0 : 1)) * que[que_id][UNIT_TIME_FULL]; // que[que_id][UNIT_TIME] +
     }
 
     temp = timer_options['template'].replace('[UNIT_ID]', que[que_id][UNIT_ID]);

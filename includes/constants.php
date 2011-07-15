@@ -51,13 +51,8 @@ define('HIDE_1ST_FROM_STATS', 0);
 //deny access to building records page
 define('HIDE_BUILDING_RECORDS', 0);
 
-//darkmater
-define('DARKMATER_COST', 3);
-
 //galaxy_show_admins
 define('SHOW_ADMIN', 1);
-
-define('VACATION_TIME', 2*24*60*60); // 48 hours
 
 // Mot qui sont interdit a la saisie !
 $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');

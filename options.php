@@ -72,7 +72,7 @@ if($mode == 'change')
           solar_satelit_porcent = '0'
         WHERE id = '{$planet['id']}' LIMIT 1;");
       }
-      $user['vacation'] = $time_now + VACATION_TIME;
+      $user['vacation'] = $time_now + $config->player_vacation_time;
     }
     else
     {
@@ -255,8 +255,6 @@ $template->assign_vars(array(
   'kolorpoziom'       => $user['kolorpoziom'],
 
   'USER_VACATION_DISABLE' => $config->user_vacation_disable,
-  'VACATION_TIME' => VACATION_TIME,
-  'DELETE_TIME' => 45*24*60*60,
   'TIME_NOW' => $time_now,
 ));
 
