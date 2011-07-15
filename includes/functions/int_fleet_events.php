@@ -1,6 +1,6 @@
 <?php
 
-function int_get_fleet_to_planet($fleet_list, $phalanx = false)
+function int_get_fleet_to_planet($fleet_list, $planet_scanned = false)
 {
   global $config, $user, $fleets, $fleet_number, $lang, $time_now;
 
@@ -59,26 +59,34 @@ function int_get_fleet_to_planet($fleet_list, $phalanx = false)
       $fleet['fleet_end_name'] = $planet_end['name'];
     }
 
-    if($fleet['fleet_start_time'] > $time_now && $fleet['fleet_mess'] == 0)
+    if($fleet['fleet_start_time'] > $time_now && $fleet['fleet_mess'] == 0 
+      && ($fleet['fleet_mission'] != MT_RELOCATE || !(is_array($planet_scanned) &&
+           $planet_scanned['galaxy'] == $fleet['fleet_start_galaxy'] &&
+           $planet_scanned['system'] == $fleet['fleet_start_system'] &&
+           $planet_scanned['planet'] == $fleet['fleet_start_planet'] &&
+           $planet_scanned['planet_type'] == $planet_start_type
+           )
+         )
+    )
     {
-      int_assign_event($fleet, 0, $phalanx);
+      int_assign_event($fleet, 0, $planet_scanned);
     }
 
     if($fleet['fleet_end_stay'] > $time_now && $fleet['fleet_mess'] == 0)
     {
-      int_assign_event($fleet, 1, $phalanx);
+      int_assign_event($fleet, 1, $planet_scanned);
     }
 
     if($fleet['fleet_end_time'] > $time_now && $fleet['fleet_owner'] == $user['id'] &&
       !($fleet['fleet_mess'] == 0 &&
-        ($fleet['fleet_mission'] == MT_RELOCATE || $fleet['fleet_mission'] == MT_COLONIZE)))
+        ($fleet['fleet_mission'] == MT_RELOCATE || $fleet['fleet_mission'] == MT_COLONIZE || ($planet_scanned != false && $fleet['fleet_mission'] == MT_HOLD))))
     {
-      int_assign_event($fleet, 2, $phalanx);
+      int_assign_event($fleet, 2, $planet_scanned);
     }
   }
 }
 
-function int_get_missile_to_planet($query, $phalanx = false)
+function int_get_missile_to_planet($query, $planet_scanned = false)
 {
   global $time_now;
 
@@ -130,12 +138,12 @@ function int_get_missile_to_planet($query, $phalanx = false)
       $irak['fleet_start_name']     = $planet_start['name'];
       //$irak['fleet_start_time']   = $irak['zeit'];
 
-      int_assign_event($irak, 3, $phalanx);
+      int_assign_event($irak, 3, $planet_scanned);
     }
   }
 }
 
-function int_assign_event($fleet, $ov_label, $phalanx = false)
+function int_assign_event($fleet, $ov_label, $planet_scanned = false)
 {
   global $user, $planetrow, $fleets, $fleet_number, $planet_end_type;
 
@@ -171,7 +179,7 @@ function int_assign_event($fleet, $ov_label, $phalanx = false)
 
   }
 
-  $fleet['ov_this_planet'] = $is_this_planet || $phalanx;
+  $fleet['ov_this_planet'] = $is_this_planet || $planet_scanned != false;
 
   if($fleet['fleet_owner'] == $user['id'])
   {
