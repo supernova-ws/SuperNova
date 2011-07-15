@@ -72,7 +72,7 @@
             </td>
           </tr>
           <tr>
-            <td align=left valign=top style="border: 0">
+            <td align=center valign=top style="border: 0">
               <table align="center">
                 <tr>
                   <th class="c_l">{L_ConstructionTime}</th>
@@ -82,35 +82,43 @@
                   <th class="c_l">{L_built}</th>
                   <td class="c_r">{production.LEVEL}</td>
                 </tr>
+<!--
                 <tr>
                   <th class="c_l">{L_can_build}</th>
                   <td class="c_r">{production.BUILD_CAN}</td>
                 </tr>
+-->
               </table>
+              <!-- IF production.BUILD_CAN && ! production.MESSAGE-->
+                <input type=text name=fmenge[{production.ID}] alt='{production.NAME}' size=5 maxlength=5 value=0 tabindex="{production.TABINDEX}"> / {production.BUILD_CAN} <input type="submit" value="{L_Construire}">
+              <!-- ELSEIF production.MESSAGE -->
+                <span class="error">{production.MESSAGE}</span>
+              <!-- ENDIF -->
             </td>
             <td valign=top style="border: 0">
               <table align="center" width=165>
+                <!-- IF production.METAL -->
                 <tr>
                   <th class="c_l">{L_sys_metal}</th>
                   <td class="c_r" width=65>{production.METAL_PRINT}</td>
                 </tr>
+                <!-- ENDIF -->
+                <!-- IF production.CRYSTAL -->
                 <tr>
                   <th class="c_l">{L_sys_crystal}</th>
                   <td class="c_r">{production.CRYSTAL_PRINT}</td>
                 </tr>
+                <!-- ENDIF -->
+                <!-- IF production.DEUTERIUM -->
                 <tr>
                   <th class="c_l">{L_sys_deuterium}</th>
                   <td class="c_r">{production.DEUTERIUM_PRINT}</td>
                 </tr>
+                <!-- ENDIF -->
               </table>
             </td>
           </tr>
         </table>
-        <!-- IF production.BUILD_CAN && ! production.MESSAGE-->
-          <input type=text name=fmenge[{production.ID}] alt='{production.NAME}' size=5 maxlength=5 value=0 tabindex="{production.TABINDEX}"> / {production.BUILD_CAN} <input type="submit" value="{L_Construire}">
-        <!-- ELSEIF production.MESSAGE -->
-          <span class="error">{production.MESSAGE}</span>
-        <!-- ENDIF -->
     </tr>
     <!-- END production -->
   </table>
