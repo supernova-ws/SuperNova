@@ -151,22 +151,22 @@
       <tr>
         <td class="c" colspan="2">{L_delete_vacations}</td>
       </tr>
-<!-- IF ! USER_VACATION_DISABLE -->
-      <tr title="{L_vacations_tip}">
-      <th colspan=2><span class="fl"><input name="vacation"{opt_modev_data} type="checkbox" id="vacation" /> <label for="vacation">{L_mode_vacations} {L_opt_vacation_min} <span id="vacancy_to"></span></label></span></th>
-      </tr>
-<!-- ENDIF -->
+      <!-- IF ! USER_VACATION_DISABLE -->
+        <tr title="{L_vacations_tip}">
+          <th colspan=2><span class="fl"><input name="vacation"{opt_modev_data} type="checkbox" id="vacation" /> <label for="vacation">{L_mode_vacations} {L_opt_vacation_min} <span id="vacancy_to"></span></label></span></th>
+        </tr>
+      <!-- ENDIF -->
       <tr>
-      <th colspan=2><span class="fl"><input name="db_deaktjava"{opt_delac_data} type="checkbox" id="db_deaktjava" /> <label for="db_deaktjava">{L_deleteaccount}. {L_deleteaccount_tip}</span><span id="delete_on"></span></label></th>
+        <th colspan=2><span class="fl"><input name="db_deaktjava"{opt_delac_data} type="checkbox" id="db_deaktjava" /> <label for="db_deaktjava">{L_deleteaccount}. {L_deleteaccount_tip}</span><span id="delete_on"></span></label></th>
       </th>
       </tr>
       <tr>
-      <th class="c_c" colspan="2"><input value="{L_save_settings}" type="submit"></th>
+        <th class="c_c" colspan="2"><input value="{L_save_settings}" type="submit"></th>
       </tr>
     </tbody>
   </table>
 </form>
 <script type="text/javascript"><!--
-  sn_timers.unshift({id: 'vacancy_to', type: 4, active: true, start_time: '{TIME_NOW}', options: {format: 3, delta: '{VACATION_TIME}'}});
-  sn_timers.unshift({id: 'delete_on', type: 4, active: true, start_time: '{TIME_NOW}', options: {format: 3, delta: '{DELETE_TIME}'}});
+  sn_timers.unshift({id: 'vacancy_to', type: 4, active: true, start_time: '{TIME_NOW}', options: {format: 3, delta: '{C_player_vacation_time}'}});
+  sn_timers.unshift({id: 'delete_on', type: 4, active: true, start_time: '{TIME_NOW}', options: {format: 3, delta: '{C_player_delete_time}'}});
 // --></script>

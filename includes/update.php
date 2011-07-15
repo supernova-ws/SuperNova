@@ -687,6 +687,8 @@ debug($update_tables['logs']['log_id'], 31);
     upd_log_version_update();
 
     upd_check_key('game_email_pm', 0, !isset($config->game_email_pm));
+    upd_check_key('player_vacation_time', 2*24*60*60, !isset($config->player_vacation_time));
+    upd_check_key('player_delete_time', 45*24*60*60, !isset($config->player_delete_time));
 
     upd_create_table('log_dark_matter',
       "(
