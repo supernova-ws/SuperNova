@@ -500,6 +500,9 @@ $lang = array_merge($lang, array(
   'sys_opt_bash_waves' => 'Количество волн за один период',
   'sys_opt_bash_disabled'    => 'Система антибашинга отключена',
 
+  'sys_id' => 'ИД',
+  'sys_identifier' => 'Идентификатор',
+
   // Arrays
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'Сверхновая',
