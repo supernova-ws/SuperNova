@@ -233,20 +233,22 @@ switch ($mode)
       LENGTH => $que_hangar_length,
     ));
 
+    $unit_id = intval($planetrow['b_tech_id']);
+    $time_rest = $planetrow['b_tech'] - $time_now;
+    $time_rest = $time_rest >= 0 ? $time_rest : 0;
     $template->assign_block_vars('ques', array(
       ID     => QUE_RESEARCH,
       NAME   => $lang['sys_ques'][QUE_RESEARCH],
-      LENGTH => intval($planetrow['b_tech_id']),
+      LENGTH => $unit_id && $time_rest ? 1 : 0,
     ));
-    $unit_id = intval($planetrow['b_tech_id']);
-    if($unit_id)
+    if($unit_id && $time_rest)
     {
       $template->assign_block_vars('que', array(
         'ID' => $unit_id,
         'QUE' => QUE_RESEARCH,
         'NAME' => $lang['tech'][$unit_id],
-        'TIME' => $planetrow['b_tech'] - $time_now,
-        'TIME_FULL' => $planetrow['b_tech'] - $time_now,
+        'TIME' => $time_rest,
+        'TIME_FULL' => $time_rest,
         'AMOUNT' => 1,
         'LEVEL' => $user[$sn_data[$unit_id]['name']] + 1,
       ));
