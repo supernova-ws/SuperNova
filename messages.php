@@ -173,16 +173,13 @@ switch ($mode)
     }
 
   case 'show':
-    $template = gettemplate('msg_message_list', true);
-    $current_class_text = $lang['msg_class'][$current_class];
-
     if($current_class == MSG_TYPE_OUTBOX)
     {
-      $message_query = doquery(
+      $message_query = 
         "SELECT {{messages}}.message_id, {{messages}}.message_owner, {{users}}.id AS message_sender, {{messages}}.message_time,
           {{messages}}.message_type, {{users}}.username AS message_from, {{messages}}.message_subject, {{messages}}.message_text
        FROM
-         {{messages}} LEFT JOIN {{users}} ON {{users}}.id = {{messages}}.message_owner WHERE `message_sender` = '{$user['id']}' AND `message_type` = 1 ORDER BY `message_time` DESC;");
+         {{messages}} LEFT JOIN {{users}} ON {{users}}.id = {{messages}}.message_owner WHERE `message_sender` = '{$user['id']}' AND `message_type` = 1 ORDER BY `message_time` DESC;";
     }
     else
     {
@@ -209,9 +206,17 @@ switch ($mode)
       }
 
       doquery("UPDATE {{users}} SET {$SubUpdateQry}  WHERE `id` = '{$user['id']}' LIMIT 1;");
-      $message_query = doquery("SELECT * FROM {{messages}} WHERE `message_owner` = '{$user['id']}' {$SubSelectQry} ORDER BY `message_time` DESC;");
+      $message_query = "SELECT * FROM {{messages}} WHERE `message_owner` = '{$user['id']}' {$SubSelectQry} ORDER BY `message_time` DESC;";
     };
 
+    if(sys_get_param_int('return'))
+    {
+      header('Location: messages.php');
+      die();
+    }
+
+    $template = gettemplate('msg_message_list', true);
+    $message_query = doquery($message_query);
     while ($message_row = mysql_fetch_assoc($message_query))
     {
       $template->assign_block_vars('messages', array(
@@ -227,13 +232,17 @@ switch ($mode)
       ));
     }
 
+    $current_class_text = $lang['msg_class'][$current_class];
+
     $template->assign_vars(array(
       "MESSAGE_CLASS"      => $current_class,
       "MESSAGE_CLASS_TEXT" => $current_class_text,
     ));
   break;
+}
 
-  default:
+  if(!$template)
+  {
     $template = gettemplate('msg_message_class', true);
 
     $query = doquery("SELECT message_owner, message_type, COUNT(message_owner) AS message_count FROM {{messages}} WHERE `message_owner` = {$user['id']} GROUP BY message_owner, message_type ORDER BY message_owner ASC, message_type;");
@@ -256,9 +265,11 @@ switch ($mode)
         'TOTAL'  => intval($messages_total[$message_class_id]),
       ));
     }
-  break;
 
-}
+    $template->assign_vars(array(
+      'PAGE_HINT' => $lang['msg_page_hint_class'],
+    ));
+  }
 
 display($template, $lang['msg_page_header']);
 

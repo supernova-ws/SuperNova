@@ -40,15 +40,15 @@
         <input type="checkbox" onchange="jQuery('.msg_checkbox').attr('checked', jQuery(this).is(':checked'));">
       </th>
     <!-- ENDIF -->
-      <th class="c_c" width="120">{L_mess_date}</th>
+      <th class="c_c" width="120">{L_msg_date}</th>
       <th class="c_c">
         <!-- IF MESSAGE_CLASS == -1 -->
-          {L_mess_recipient}
+          {L_msg_recipient}
         <!-- ELSE -->
-          {L_mess_from}
+          {L_msg_from}
         <!-- ENDIF -->
       </th>
-      <th class="c_c">{L_mess_subject}</th>
+      <th class="c_c">{L_msg_subject}</th>
     </tr>
   <!-- BEGIN messages -->
     <tr>
@@ -60,8 +60,8 @@
       <th>{messages.DATE}</th>
       <th>
         <!-- IF messages.FROM_ID -->
-          <a href="messages.php?mode=write&id={messages.FROM_ID}&subject={L_mess_answer_prefix}{messages.SUBJ_SANITIZED}">
-            <img src="{dpath}img/m.gif" alt="{L_mess_answer}" border="0">
+          <a href="messages.php?mode=write&id={messages.FROM_ID}&subject={L_msg_answer_prefix}{messages.SUBJ_SANITIZED}">
+            <img src="{dpath}img/m.gif" alt="{L_msg_answer}" border="0">
           </a>
         <!-- ENDIF -->
         {messages.FROM}
