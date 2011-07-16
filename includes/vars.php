@@ -18,14 +18,14 @@ if (!defined('INSIDE'))
   );
 
   $sn_message_class_list = array(
-     MSG_TYPE_OUTBOX => array(
-       'name' => 'mnl_outbox',
+     MSG_TYPE_NEW => array(
+       'name' => 'new_message',
        'switchable' => false,
        'email' => false,
      ),
-     MSG_TYPE_SPY => array(
-       'name' => 'mnl_spy',
-       'switchable' => true,
+     MSG_TYPE_ADMIN => array(
+       'name' => 'msg_admin',
+       'switchable' => false,
        'email' => true,
      ),
      MSG_TYPE_PLAYER => array(
@@ -38,13 +38,13 @@ if (!defined('INSIDE'))
        'switchable' => false,
        'email' => true,
      ),
-     MSG_TYPE_COMBAT => array(
-       'name' => 'mnl_attaque',
+     MSG_TYPE_SPY => array(
+       'name' => 'mnl_spy',
        'switchable' => true,
        'email' => true,
      ),
-     MSG_TYPE_RECYCLE => array(
-       'name' => 'mnl_exploit',
+     MSG_TYPE_COMBAT => array(
+       'name' => 'mnl_attaque',
        'switchable' => true,
        'email' => true,
      ),
@@ -53,9 +53,9 @@ if (!defined('INSIDE'))
        'switchable' => true,
        'email' => true,
      ),
-     MSG_TYPE_ADMIN => array(
-       'name' => 'msg_admin',
-       'switchable' => false,
+     MSG_TYPE_RECYCLE => array(
+       'name' => 'mnl_exploit',
+       'switchable' => true,
        'email' => true,
      ),
      MSG_TYPE_EXPLORE => array(
@@ -69,8 +69,8 @@ if (!defined('INSIDE'))
        'switchable' => true,
        'email' => true,
      ),
-     MSG_TYPE_NEW => array(
-       'name' => 'new_message',
+     MSG_TYPE_OUTBOX => array(
+       'name' => 'mnl_outbox',
        'switchable' => false,
        'email' => false,
      ),
