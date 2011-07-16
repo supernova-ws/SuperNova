@@ -24,11 +24,11 @@
       <th width=120>
         {officer.NAME}<br>
         <img src="{dpath}gebaeude/{officer.ID}.jpg" align="top" width="120" height="120" /><br>
+        {L_sys_level} {officer.LEVEL}/{officer.LEVEL_MAX}<br>
         <!-- IF officer.CAN_BUY == 1 -->
-          {L_sys_level} {officer.LEVEL}/{officer.LEVEL_MAX}<br>
           <a href="officer.php?mode=2&offi={officer.ID}"><span class="positive">{L_off_hire} {DM_COST} {L_sys_dark_matter_sh}</span>
         <!-- ELSE -->
-          <span class="negative">{L_off_maxed_out}</span>
+          <span class="negative">{L_sys_maximum_level}</span>
         <!-- ENDIF -->
       </th>
 

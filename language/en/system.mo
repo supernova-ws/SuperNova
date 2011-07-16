@@ -392,7 +392,6 @@ $lang = array_merge($lang, array(
   'off_recruited'        => 'The officer was hired! <a href="officer.php">Back</a>',
   'off_tx_lvl'           => 'Current level: ',
   'off_points'           => 'Points of Dark Matter: ',
-  'off_maxed_out'        => 'Maximum level',
   'off_not_available'    => 'Officer you is not yet available!',
   'off_hire'             => 'Hire for',
   'off_dark_matter_desc' => 'Dark matter - using the standard methods of  fabric, which accounts for 23% mass of the universe. From there you can obtain an incredible amount of energy. Because of this, and because of the complexities associated with its extraction, Dark Matter is valued very highly.',
@@ -502,6 +501,10 @@ $lang = array_merge($lang, array(
 
   'sys_id' => 'ID',
   'sys_identifier' => 'Identifier',
+
+  'sys_max' => 'Max',
+  'sys_maximum' => 'Maximum',
+  'sys_maximum_level' => 'Max level',
 
   // Arrays
   'sys_game_mode' => array(
