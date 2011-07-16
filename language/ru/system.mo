@@ -214,8 +214,12 @@ $lang = array_merge($lang, array(
 
   'sys_overview'			=> 'Îáçîğ',
   'mod_marchand'			=> 'Òîğãîâåö',
-  'sys_moon'			=> 'Ëóíà',
+  'sys_galaxy'			=> 'Ãàëàêòèêà',
+  'sys_system'			=> 'Ñèñòåìà',
   'sys_planet'			=> 'Ïëàíåòà',
+  'sys_planet_title'			=> 'Òèï ïëàíåòû',
+  'sys_planet_title_short'			=> 'Òèï',
+  'sys_moon'			=> 'Ëóíà',
   'sys_error'			=> 'Îøèáêà',
   'sys_done'				=> 'Ãîòîâî',
   'sys_no_vars'			=> 'Îøèáêà èíèöèàëèçàöèè ïåğåìåííûõ, îáğàòèòåñü ê àäìèíèñòğàöèè!',
@@ -505,6 +509,12 @@ $lang = array_merge($lang, array(
   'sys_max' => 'Ìàêñ',
   'sys_maximum' => 'Ìàêñèìóì',
   'sys_maximum_level' => 'Ìàêñèìàëüíûé óğîâåíü',
+
+  'sys_user_name' => 'Èìÿ ïîëüçîâàòåëÿ',
+  'sys_user_name_short' => 'Èìÿ',
+
+  'sys_planets' => 'Ïëàíåòû',
+  'sys_moons' => 'Ëóíû',
 
   // Arrays
   'sys_game_mode' => array(

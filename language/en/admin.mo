@@ -12,9 +12,9 @@
 #############################################################################
 */
 
-if (!defined('INSIDE')) 
+if(!defined('INSIDE'))
 {
-	die('Hack attempt!');
+  die('Hack attempt!');
 }
 
 $lang['adm_err_denied']         = 'Access denied';
@@ -266,11 +266,18 @@ $lang = array_merge($lang, array(
   'adm_on_planet' => 'On planet',
   'adm_planet_change' => 'Change',
 
+  'adm_planet_parent' => 'Parent Planet',
+  'adm_planet_active' => 'Active Planets',
+
   'adm_planet_edit_hint' => '<ul>
     <li>Entering planet ID and pressing "Confirm" on empty page will print info about planet: type, name, coordinates and current amount of units/resources of
     selected type</li>
     <li>To remove units/resources from planet enter negative value</li>
   </ul>',
+
+  'adm_planet_list_title' => 'Planet List',
+  'adm_sys_owner' => 'Owner',
+  'adm_sys_owner_id' => 'Onwer ID',
 ));
 
 // Add moon
