@@ -197,38 +197,38 @@
   color: orange;
 }
 
-.mnl_outbox *
+.mnl_outbox, .mnl_outbox *
 {
   background-color: #000000;
 }
 
-.mnl_joueur *
+.mnl_joueur, .mnl_joueur *
 {
   background-color: #114444;
 }
 
-.mnl_exploit *
+.mnl_exploit, .mnl_exploit *
 {
 /*  background-color: #999999;*/
 }
 
-.mnl_buildlist *
+.mnl_buildlist, .mnl_buildlist *
 {
   color: #0033ff;
 }
 
-.mnl_alliance *
+.mnl_alliance, .mnl_alliance *
 {
   background-color: #446666;
 }
 
-.msg_admin *, a .msg_admin
+.msg_admin, .msg_admin *
 {
   color: #9900ff;
   background-color: #ffffff;
 }
 
-.new_message *
+.new_message, .new_message *
 {
   color: #000000;
   background-color: #ffffff;

@@ -1,5 +1,5 @@
-<!-- IF mode == 'banit' -->
 <h2>{L_adm_ban_title}</h2>
+
 <form action="" method="post">
   <input type="hidden" name="mode" value="banit">
   <input type="hidden" name="action" value="banit">
@@ -15,12 +15,12 @@
     </tr>
     <tr>
       <th>{L_adm_bn_isvc}</th>
-      <th><input name="isVacation" type="checkbox"></th>
+      <th><input name="isVacation" type="checkbox" checked></th>
     </tr>
     <tr><td class="c" colspan="2">{L_adm_bn_time}</td></tr>
     <tr>
       <th>{L_adm_bn_days}</th>
-      <th><input name="days" type="text" value="0" size="5" /></th>
+      <th><input name="days" type="text" value="3" size="5" /></th>
     </tr>
     <tr>
       <th>{L_adm_bn_hour}</th>
@@ -37,7 +37,7 @@
     <tr><th colspan="2"><input type="submit" value="{L_adm_bn_bnbt}" /></th></tr>
   </table>
 </form>
-<!-- ELSE -->
+
 <h2>{L_adm_unbn_ttle}</h2>
 
 <form action="admin/banned.php" method="post">
@@ -56,4 +56,3 @@
     </tr>
   </tbody></table>
 </form>
-<!-- ENDIF -->

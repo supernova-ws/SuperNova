@@ -36,12 +36,15 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
 
 function ShowLeftMenu($Level = 0)
 {
+  global $time_now;
+
   lng_include('leftmenu');
 
   $template_name = $Level > 0 ? 'admin/left_menu' : 'left_menu';
   $template = gettemplate($template_name, true);
 
   $template->assign_vars(array(
+    'SERVER_TIME' => $time_now,
     'USER_AUTHLEVEL'      => $GLOBALS['user']['authlevel'],
     'USER_AUTHLEVEL_NAME' => $GLOBALS['lang']['user_level'][$GLOBALS['user']['authlevel']],
   ));

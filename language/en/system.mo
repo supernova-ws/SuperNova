@@ -214,8 +214,12 @@ $lang = array_merge($lang, array(
 
   'sys_overview'			=> 'Overview',
   'mod_marchand'			=> 'Trader',
-  'sys_moon'			=> 'Moon',
+  'sys_galaxy'			=> 'Galaxy',
+  'sys_system'			=> 'System',
   'sys_planet'			=> 'Planet',
+  'sys_planet_title'			=> 'Planet Type',
+  'sys_planet_title_short'			=> 'Type',
+  'sys_moon'			=> 'Moon',
   'sys_error'			=> 'Error',
   'sys_done'				=> 'Finish',
   'sys_no_vars'			=> 'Initialization of variables, see the Administration!',
@@ -505,6 +509,12 @@ $lang = array_merge($lang, array(
   'sys_max' => 'Max',
   'sys_maximum' => 'Maximum',
   'sys_maximum_level' => 'Max level',
+
+  'sys_user_name' => 'User Name',
+  'sys_user_name_short' => 'Name',
+
+  'sys_planets' => 'Planets',
+  'sys_moons' => 'Moons',
 
   // Arrays
   'sys_game_mode' => array(
