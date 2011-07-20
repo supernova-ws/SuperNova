@@ -24,9 +24,9 @@
 
     <tr><td align=center class="c">{L_sys_universe}</td></tr>
     <tr><td><a href="admin/adm_planet_list.php?planet_active=1">{L_adm_planet_active}</a></td></tr>
-    <tr><td><a href="admin/adm_planet_list.php?planet_type=1">{L_adm_pltlst}</a></td></tr>
+    <tr><td><a href="admin/adm_planet_list.php?planet_type={D_PT_PLANET}">{L_adm_pltlst}</a></td></tr>
+    <tr><td><a href="admin/adm_planet_list.php?planet_type={D_PT_MOON}">{L_adm_moonlst}</a></td></tr>
     <!-- IF USER_AUTHLEVEL >= 2 -->
-    <tr><td><a href="admin/adm_planet_list.php?planet_type=3">{L_adm_moonlst}</a></td></tr>
     <tr><td><a href="admin/add_moon.php">{L_adm_addmoon}</a></td></tr>
     <tr><td><a href="admin/planet_edit.php">{L_adm_lm_planet_edit}</a></td></tr>
     <!-- ENDIF -->
