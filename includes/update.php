@@ -996,7 +996,7 @@ function upd_create_table($table_name, $declaration)
   if(!$update_tables[$table_name])
   {
     doquery('set foreign_key_checks = 0;');
-    $result = mysql_query("CREATE TABLE `{$config->db_prefix}{$table_name}` {$declaration}");
+    $result = mysql_query("CREATE TABLE IF NOT EXISTS `{$config->db_prefix}{$table_name}` {$declaration}");
     $error = mysql_error();
     if($error)
     {

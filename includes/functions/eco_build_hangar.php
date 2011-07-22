@@ -364,7 +364,7 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
           'LEVEL_OLD'         => $CurentPlanet[$sn_data[$Element]['name']],
           'LEVEL_CHANGE'      => $que['in_que'][$Element],
 
-          'BUILD_CAN'         => $build_data['CAN'][BUILD_CREATE],
+          'BUILD_CAN'         => min($baubar, $build_data['CAN'][BUILD_CREATE]),
           'TIME'              => pretty_time($build_data[BUILD_CREATE][RES_TIME]),
           'METAL'             => $build_data[BUILD_CREATE][RES_METAL],
           'CRYSTAL'           => $build_data[BUILD_CREATE][RES_CRYSTAL],
