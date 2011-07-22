@@ -235,7 +235,7 @@
 }
 
 /* Message & numbers color coding */
-.success, .positive {
+.ok, .success, .positive {
   color: lime;
 }
 
@@ -251,7 +251,7 @@
   color: red;
 }
 
-.success_bg, .positive_bg {
+.ok_bg, .success_bg, .positive_bg {
   background-color: darkgreen;
 }
 
