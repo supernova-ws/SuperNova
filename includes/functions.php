@@ -423,7 +423,7 @@ function pretty_number($n, $floor = true, $color = false, $limit = false)
     {
       $class = $n == 0 ? 'zero' : ($n > 0 ? 'positive' : 'negative');
     }
-    elseif($color >= 0)
+    elseif($color > 0)
     {
       $class = $n == $color ? 'zero' : ($n < $color ? 'positive' : 'negative');
     }
