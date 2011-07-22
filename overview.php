@@ -265,9 +265,6 @@ switch ($mode)
       'NEW_LEVEL_MINER'      => $level_miner,
       'NEW_LEVEL_RAID'       => $level_raid,
 
-//      'BUILDING'             => int_buildCounter($planetrow, 'building', '', $que),
-//      'HANGAR'               => int_buildCounter($planetrow, 'hangar'),
-//      'TECH'                 => int_buildCounter($planetrow, 'tech'),
       'planet_diameter'      => pretty_number($planetrow['diameter']),
       'planet_field_current' => $planetrow['field_current'],
       'planet_field_max'     => eco_planet_fields_max($planetrow),

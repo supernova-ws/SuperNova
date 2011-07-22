@@ -56,7 +56,7 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
       $lab_db_name = $sn_data[31]['name'];
       $lab_require = intval($unit_data['require'][31]);
       $tech_intergalactic = $tech_intergalactic + 1;
-
+/*
       $inves = doquery("SELECT SUM(`{$lab_db_name}`) AS `laboratorio`
         FROM
         (
@@ -67,7 +67,8 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
             LIMIT {$tech_intergalactic}
         ) AS subquery;", '', true);
 //      $time = $time / (($inves['laboratorio'] + 1) * 2) * pow(0.5, $planet[$sn_data[35]['name']]);
-
+*/
+      // TODO: Fix bug with counting building labs/nanolabs
       $inves = doquery(
         "SELECT SUM(lab) AS effective_level
           FROM
