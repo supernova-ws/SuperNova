@@ -366,7 +366,8 @@ function uni_render_coordinates_href($from, $prefix = '', $mode = 0, $fleet_type
 //   true      - floors number before format
 //   otherwise - floors to 2 numbers after decimal points
 // $color:
-//   0/true  - colors number to green if positive or zero; red if negative
+//   true    - colors number to green if positive or zero; red if negative
+//   0
 //   numeric - colors number to green if less then $color; red if greater
 // $limit:
 //   0/false - proceed with $floor
@@ -416,17 +417,22 @@ function pretty_number($n, $floor = true, $color = false, $limit = false)
   $ret = number_format($ret, $floor, ',', '.');
   $ret .= $suffix;
 
-  if ($color !== false)
+  if($color !== false)
   {
-    if (!is_numeric($color))
+    if($color === true)
     {
-      $color = 0;
+      $class = $n == 0 ? 'zero' : ($n > 0 ? 'positive' : 'negative');
     }
-
-    if ($color > 0)
+    elseif($color >= 0)
     {
       $class = $n == $color ? 'zero' : ($n < $color ? 'positive' : 'negative');
     }
+/*
+    elseif($color == 0)
+    {
+      $class = $n == $color ? 'zero' : ($n >= $color ? 'positive' : 'negative');
+    }
+*/
     else
     {
       $class = $n == -$color ? 'zero' : (-$n < $color ? 'positive' : 'negative');

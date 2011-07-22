@@ -19,7 +19,7 @@ function eco_build($que_type, $user, &$planet, $que)
 
 // start transaction here
 
-  $template = gettemplate('buildings_builds_new', true);
+  $template = gettemplate('buildings_builds', true);
 
   // Caching values that used more then one time into local variables
   $config_resource_multiplier = $config->resource_multiplier;

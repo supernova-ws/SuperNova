@@ -1,4 +1,3 @@
-<center>
 <br />
 <!-- IF MESSAGE --><span class="error">{MESSAGE}</span><!-- ENDIF -->
 <table width=530>
@@ -10,9 +9,8 @@
       </a>
     </td>
     <td class="c_c">
-      <a href="infos.php?gid={production.ID}">{production.NAME}</a>
-      {production.LEVEL}<br>
-      {production.DESCRIPTION}<br>
+      <div><a href="infos.php?gid={production.ID}">{production.NAME}<!-- IF production.LEVEL -->&nbsp;{production.LEVEL}<!-- ENDIF --></a></div>
+      <div style="text-align: justify;">{production.DESCRIPTION}</div>
       <table width="100%" border=0>
         <tr>
           <td valign="middle" style="border: 0">
@@ -54,7 +52,25 @@
             </table>
           </td>
           <td valign="middle" style="border: 0">
-            {production.TECH_LINK}
+            <!-- IF RESEARCH_ONGOING -->
+              <!-- IF RESEARCH_TECH == production.ID -->
+                <span id="research_timer_timer">2</span><br />
+                <a href=buildings.php?cp={RESEARCH_HOME_ID}&mode=research&cmd=cancel&tech={production.ID}  id="research_timer"></a>
+                <script type="text/javascript"><!--
+                  sn_timers.unshift({id: 'research_timer', type: 0, active: true, start_time: {TIME_NOW}, options: { msg_done: '<a href=buildings.php?mode=research&cp={RESEARCH_HOME_ID}>{L_continue}</a>', que: [
+                    ['0', '{L_cancel}<!-- IF RESEARCH_HOME_NAME --><br>{RESEARCH_HOME_NAME}<!-- ENDIF -->', {RESEARCH_TIME}, '0']
+                  ]}});
+                --></script>
+              <!-- ELSE -->
+               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <!-- ENDIF -->
+            <!-- ELSE -->
+              <!-- IF production.BUILD_CAN2 -->
+                <a href="buildings.php?mode=research&cmd=search&tech={production.ID}"><span class="ok">{L_Rechercher}<br />{L_level} {production.LEVEL_NEXT}</span></a>
+              <!-- ELSE -->
+                <span class="error">{L_Rechercher}<br />{L_level} {production.LEVEL_NEXT}</span>
+              <!-- ENDIF -->
+            <!-- ENDIF -->
           </td>
         </tr>
       </table>

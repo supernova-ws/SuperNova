@@ -356,9 +356,10 @@ function displayP($template)
 
 function parsetemplate($template, $array = false)
 {
+
   if(is_object($template))
   {
-    global $user; // $ugamela_root_path,
+    global $time_now, $user; // $ugamela_root_path,
 
     if($array)
     {
@@ -372,6 +373,7 @@ function parsetemplate($template, $array = false)
       'dpath'         => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
       'SN_ROOT_PATH'  => SN_ROOT_VIRTUAL, //$ugamela_root_path,
       '-path_prefix-' => SN_ROOT_VIRTUAL, //$ugamela_root_path,
+      'TIME_NOW'      => $time_now,
     ));
 
     $template->parsed = true;
