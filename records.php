@@ -46,12 +46,12 @@ $parse['defenses']  = parsetemplate( $HeaderTpl, $bloc);
 
 foreach($lang['tech'] as $Element => $ElementName) {
   if ($ElementName != "") {
-    if ($resource[$Element] != "") {
+    if ($sn_data[$Element]['name'] != "") {
       // Je sais bien qu'il n'y a aucune raison de blinder ce test ...
       // Mais avec les zozos qui vont le pomper ... Mieux vaut prevoir que guerir !!
       if       ($Element >=   1 && $Element <=  39 || $Element == 44) {
         // Batiment
-        $PlanetRow          = doquery ("SELECT `id_owner`, `". $resource[$Element] ."` AS `current` FROM {{planets}} WHERE `". $resource[$Element]. "` = (SELECT MAX(`". $resource[$Element] ."`) FROM {{planets}} WHERE `id_level` = '0');", '', true);
+        $PlanetRow          = doquery ("SELECT `id_owner`, `". $sn_data[$Element]['name'] ."` AS `current` FROM {{planets}} WHERE `". $sn_data[$Element]['name']. "` = (SELECT MAX(`". $sn_data[$Element]['name'] ."`) FROM {{planets}} WHERE `id_level` = '0');", '', true);
         $UserRow            = doquery ("SELECT `username` FROM {{users}} WHERE `id` = '".$PlanetRow['id_owner']."';", '', true);
         $Row['element']     = $ElementName;
         $Row['winner']      = ($PlanetRow['current'] != 0) ? $UserRow['username'] : $lang['rec_rien'];
@@ -59,7 +59,7 @@ foreach($lang['tech'] as $Element => $ElementName) {
         $parse['building'] .= parsetemplate( $TableRows, $Row);
       } elseif ($Element >=  41 && $Element <=  99 && $Element != 44) {
         // Batiment spéciaux
-        $PlanetRow          = doquery ("SELECT `id_owner`, `". $resource[$Element] ."` AS `current` FROM {{planets}} WHERE `". $resource[$Element]. "` = (SELECT MAX(`". $resource[$Element] ."`) FROM {{planets}} WHERE `id_level` = '0');", '', true);
+        $PlanetRow          = doquery ("SELECT `id_owner`, `". $sn_data[$Element]['name'] ."` AS `current` FROM {{planets}} WHERE `". $sn_data[$Element]['name']. "` = (SELECT MAX(`". $sn_data[$Element]['name'] ."`) FROM {{planets}} WHERE `id_level` = '0');", '', true);
         $UserRow            = doquery ("SELECT `username` FROM {{users}} WHERE `id` = '".$PlanetRow['id_owner']."' LIMIT 1;", '', true);
         $Row['element']     = $ElementName;
         $Row['winner']      = ($PlanetRow['current'] != 0) ? $UserRow['username'] : $lang['rec_rien'];
@@ -67,14 +67,14 @@ foreach($lang['tech'] as $Element => $ElementName) {
         $parse['buildspe'] .= parsetemplate( $TableRows, $Row);
       } elseif (in_array($Element, $sn_data['groups']['tech'])) {
         // Techno
-        $UserRow            = doquery ("SELECT `username`, `". $resource[$Element] ."` AS `current` FROM {{users}} WHERE `". $resource[$Element] ."` = (SELECT MAX(`". $resource[$Element] ."`) FROM {{users}} WHERE `authlevel` = '0');", '', true);
+        $UserRow            = doquery ("SELECT `username`, `". $sn_data[$Element]['name'] ."` AS `current` FROM {{users}} WHERE `". $sn_data[$Element]['name'] ."` = (SELECT MAX(`". $sn_data[$Element]['name'] ."`) FROM {{users}} WHERE `authlevel` = '0');", '', true);
         $Row['element']     = $ElementName;
         $Row['winner']      = ($UserRow['current'] != 0) ? $UserRow['username'] : $lang['rec_rien'];
         $Row['count']       = ($UserRow['current'] != 0) ? pretty_number( $UserRow['current'] ) : $lang['rec_rien'];
         $parse['research'] .= parsetemplate( $TableRows, $Row);
       } elseif (in_array($Element, $sn_data['groups']['fleet'])) {
         // Flotte
-        $PlanetRow          = doquery ("SELECT `id_owner`, `". $resource[$Element] ."` AS `current` FROM {{planets}} WHERE `". $resource[$Element]. "` = (SELECT MAX(`". $resource[$Element] ."`) FROM {{planets}} WHERE `id_level` = '0');", '', true);
+        $PlanetRow          = doquery ("SELECT `id_owner`, `". $sn_data[$Element]['name'] ."` AS `current` FROM {{planets}} WHERE `". $sn_data[$Element]['name']. "` = (SELECT MAX(`". $sn_data[$Element]['name'] ."`) FROM {{planets}} WHERE `id_level` = '0');", '', true);
         $UserRow            = doquery ("SELECT `username` FROM {{users}} WHERE `id` = '".$PlanetRow['id_owner']."' LIMIT 1;", '', true);
         $Row['element']     = $ElementName;
         $Row['winner']      = ($PlanetRow['current'] != 0) ? $UserRow['username'] : $lang['rec_rien'];
@@ -82,7 +82,7 @@ foreach($lang['tech'] as $Element => $ElementName) {
         $parse['fleet']    .= parsetemplate( $TableRows, $Row);
       } elseif ($Element >= 401 && $Element <= 599) {
         // Défenses
-        $PlanetRow          = doquery ("SELECT `id_owner`, `". $resource[$Element] ."` AS `current` FROM {{planets}} WHERE `". $resource[$Element]. "` = (SELECT MAX(`". $resource[$Element] ."`) FROM {{planets}} WHERE `id_level` = '0');", '', true);
+        $PlanetRow          = doquery ("SELECT `id_owner`, `". $sn_data[$Element]['name'] ."` AS `current` FROM {{planets}} WHERE `". $sn_data[$Element]['name']. "` = (SELECT MAX(`". $sn_data[$Element]['name'] ."`) FROM {{planets}} WHERE `id_level` = '0');", '', true);
         $UserRow            = doquery ("SELECT `username` FROM {{users}} WHERE `id` = '".$PlanetRow['id_owner']."';", '', true);
         $Row['element']     = $ElementName;
         $Row['winner']      = ($PlanetRow['current'] != 0) ? $UserRow['username'] : $lang['rec_rien'];

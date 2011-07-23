@@ -5,18 +5,18 @@
 // V1
 //
 function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $targetedStructure = '0') {
-  global $CombatCaps, $pricelist, $resource;
+  global $sn_data;
 
   // Here we select which part of defense should take damage: structure or shield
   // $damageTo = 'shield';
   $damageTo = 'structure';
 
-  $MIPDamage = ($MIPs * $CombatCaps[503]['attack']) * (1 + 0.05 * $attackerTech[$resource[TECH_WEAPON]]);
+  $MIPDamage = ($MIPs * $sn_data[503]['attack']) * (1 + 0.05 * $attackerTech[$sn_data[TECH_WEAPON]['name']]);
 
   foreach ($structures as $key => $structure)
   {
-    $structures[$key]['shield'] = $CombatCaps[$key]['shield'] * (1 + 0.05 * $defenceTech[$resource[TECH_SHIELD]]);
-    $structures[$key]['structure'] = ($pricelist[$key]['metal'] + $pricelist[$key]['crystal']) * (1 + 0.05 * $defenceTech[$resource[TECH_ARMOR]]);
+    $structures[$key]['shield'] = $sn_data[$key]['shield'] * (1 + 0.05 * $defenceTech[$sn_data[TECH_SHIELD]['name']]);
+    $structures[$key]['structure'] = ($sn_data[$key]['metal'] + $sn_data[$key]['crystal']) * (1 + 0.05 * $defenceTech[$sn_data[TECH_ARMOR]['name']]);
   };
 
   $startStructs = $structures;
@@ -52,8 +52,8 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
   foreach ($structures as $key => $structure)
   {
     $destroyed = $startStructs[$key][0]-$structure[0];
-    $metal += $destroyed*$pricelist[$key]['metal']/2;
-    $crystal += $destroyed*$pricelist[$key]['crystal']/4;
+    $metal += $destroyed*$sn_data[$key]['metal']/2;
+    $crystal += $destroyed*$sn_data[$key]['crystal']/4;
   };
 
   $return['structures'] = $structures;     // Structures left after attack
@@ -76,7 +76,7 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
 
 function coe_o_missile_calculate()
 {
-  global $time_now, $resource, $lang;
+  global $time_now, $sn_data, $lang;
 
   $iraks = doquery("SELECT * FROM {{iraks}} WHERE `zeit` <= '{$time_now}';");
 
@@ -90,27 +90,28 @@ function coe_o_missile_calculate()
     $rowAttacker = doquery("SELECT `military_tech` FROM `{{users}}` WHERE `id` = '{$fleetRow['owner']}' LIMIT 1;", '', true);
 
     if ($target_planet_row['id'])
-    {
+    {                                    
       $planetDefense = array(
         400 => array( 0, 'shield' => 0, 'structure' => 0),
-        401 => array( $target_planet_row[$resource[401]], 'shield' => 0, 'structure' => 0),
-        402 => array( $target_planet_row[$resource[402]], 'shield' => 0, 'structure' => 0),
-        403 => array( $target_planet_row[$resource[403]], 'shield' => 0, 'structure' => 0),
-        404 => array( $target_planet_row[$resource[404]], 'shield' => 0, 'structure' => 0),
-        405 => array( $target_planet_row[$resource[405]], 'shield' => 0, 'structure' => 0),
-        406 => array( $target_planet_row[$resource[406]], 'shield' => 0, 'structure' => 0),
-        407 => array( $target_planet_row[$resource[407]], 'shield' => 0, 'structure' => 0),
-        408 => array( $target_planet_row[$resource[408]], 'shield' => 0, 'structure' => 0),
-        409 => array( $target_planet_row[$resource[409]], 'shield' => 0, 'structure' => 0),
+        401 => array( $target_planet_row[$sn_data[401]['name']], 'shield' => 0, 'structure' => 0),
+        402 => array( $target_planet_row[$sn_data[402]['name']], 'shield' => 0, 'structure' => 0),
+        403 => array( $target_planet_row[$sn_data[403]['name']], 'shield' => 0, 'structure' => 0),
+        404 => array( $target_planet_row[$sn_data[404]['name']], 'shield' => 0, 'structure' => 0),
+        405 => array( $target_planet_row[$sn_data[405]['name']], 'shield' => 0, 'structure' => 0),
+        406 => array( $target_planet_row[$sn_data[406]['name']], 'shield' => 0, 'structure' => 0),
+        407 => array( $target_planet_row[$sn_data[407]['name']], 'shield' => 0, 'structure' => 0),
+        408 => array( $target_planet_row[$sn_data[408]['name']], 'shield' => 0, 'structure' => 0),
+        409 => array( $target_planet_row[$sn_data[409]['name']], 'shield' => 0, 'structure' => 0),
       );
 
       $message = '';
-      $interceptors = $target_planet_row[$resource[502]]; // Number of interceptors
+      $interceptor_db_name = $sn_data[502]['name'];
+      $interceptors = $target_planet_row[$interceptor_db_name]; // Number of interceptors
       $missiles = $fleetRow['anzahl']; // Number of MIP
-      $qUpdate = "UPDATE `{{planets}}` SET {$resource[502]} = ";
+      $qUpdate = "UPDATE `{{planets}}` SET {$interceptor_db_name} = ";
       if ($interceptors >= $missiles) {
         $message = $lang['mip_all_destroyed'];
-        $qUpdate .= "{$resource[502]} - {$missiles} ";
+        $qUpdate .= "{$interceptor_db_name} - {$missiles} ";
       } else {
         if ($interceptors) {
           $message = sprintf($lang['mip_destroyed'], $interceptors);
@@ -124,7 +125,7 @@ function coe_o_missile_calculate()
           $destroyed = $planetDefense[$key][0] - $structure[0];
           if ($key > 400 && $destroyed) {
             $message .= "&nbsp;&nbsp;{$lang['tech'][$key]} - {$destroyed} {$lang['quantity']}<br>";
-            $qUpdate .= ", `{$resource[$key]}` = {$structure[0]}";
+            $qUpdate .= ", `{$sn_data[$key]['name']}` = {$structure[0]}";
           };
         };
 

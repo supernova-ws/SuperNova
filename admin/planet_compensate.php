@@ -90,7 +90,7 @@ if($galaxy_src)
       killer_add_planet($moon);
     }
 
-    foreach($sn_groups['resources_loot'] as $resource_id)
+    foreach($sn_data['groups']['resources_loot'] as $resource_id)
     {
       $resource_name = $sn_data[$resource_id]['name'];
       $template->assign_var("{$resource_name}_cost", $final_cost[$resource_id]);
@@ -132,17 +132,18 @@ display(parsetemplate($template, $parse), $lang['adm_pl_comp_title'], false, '',
 
 function killer_add_planet($planet)
 {
-  global $sn_groups, $sn_data, $final_cost, $pricelist;
+  global $sn_data, $final_cost;
+  $sn_groups = &$sn_data['groups'];
 
   foreach($sn_groups['build'] as $unit)
   {
     $build_level = $planet[$sn_data[$unit]['name']];
     if($build_level > 0)
     {
-      $factor = $pricelist[$unit]['factor'];
+      $factor = $sn_data[$unit]['factor'];
       foreach($sn_groups['resources_loot'] as $resource_id)
       {
-        $base_price = $pricelist[$unit][$sn_data[$resource_id]['name']];
+        $base_price = $sn_data[$unit][$sn_data[$resource_id]['name']];
         if($base_price > 0)
         {
           if($factor != 1)
@@ -168,7 +169,7 @@ function killer_add_planet($planet)
     {
       foreach($sn_groups['resources_loot'] as $resource_id)
       {
-        $final_cost[$resource_id] += floor($pricelist[$unit][$sn_data[$resource_id]['name']] * $unit_count);
+        $final_cost[$resource_id] += floor($sn_data[$unit][$sn_data[$resource_id]['name']] * $unit_count);
       }
     }
   }

@@ -20,7 +20,7 @@
 
 function flt_mission_attack($mission_data)
 {
-  global $lang, $resource, $CombatCaps, $sn_data, $time_now;
+  global $lang, $sn_data, $time_now;
 
   $fleet_row          = $mission_data['fleet'];
   $destination_user   = $mission_data['dst_user'];
@@ -72,9 +72,9 @@ function flt_mission_attack($mission_data)
 
   foreach($sn_data['groups']['combat'] as $combatUnitID)
   {
-    if ($destination_planet[$resource[$combatUnitID]] > 0)
+    if ($destination_planet[$sn_data[$combatUnitID]['name']] > 0)
     {
-      $defenseFleets[0]['def'][$combatUnitID] = $destination_planet[$resource[$combatUnitID]];
+      $defenseFleets[0]['def'][$combatUnitID] = $destination_planet[$sn_data[$combatUnitID]['name']];
     }
   }
 
@@ -141,9 +141,9 @@ function flt_mission_attack($mission_data)
     {
       foreach ($defender['def'] as $element => $amount)
       {
-        $fleetArray .= '`'.$resource[$element].'`='.$amount.', ';
+        $fleetArray .= "`{$sn_data[$element]['name']}` = '{$amount}', ";
       }
-      doquery('UPDATE {{planets}} SET '.$fleetArray.' metal=metal-'.$loot['looted']['metal'].', crystal=crystal-'.$loot['looted']['crystal'].', deuterium=deuterium-'.$loot['looted']['deuterium'].' WHERE id='.$destination_planet['id']);
+      doquery('UPDATE {{planets}} SET '.$fleetArray.' metal = metal - '.$loot['looted']['metal'].', crystal = crystal - '.$loot['looted']['crystal'].', deuterium=deuterium-'.$loot['looted']['deuterium'].' WHERE id='.$destination_planet['id']);
     }
     else
     {

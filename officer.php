@@ -36,20 +36,22 @@
 //  1 => Tout va tres bien on peut le faire celui là
 // -1 => On pouvait le faire, mais on est déja au level max
 function IsOfficierAccessible ($CurrentUser, $Officier) {
-  global $requeriments, $resource, $pricelist;
+  global $sn_data;
 
-  if (isset($requeriments[$Officier])) {
+  if (isset($sn_data[$Officier]['require'])) {
     $enabled = true;
-    foreach($requeriments[$Officier] as $ReqOfficier => $OfficierLevel) {
-      if ($CurrentUser[$resource[$ReqOfficier]] &&
-        $CurrentUser[$resource[$ReqOfficier]] >= $OfficierLevel) {
+    foreach($sn_data[$Officier]['require'] as $ReqOfficier => $OfficierLevel) 
+    {
+      $unit_db_name = $sn_data[$ReqOfficier]['name'];
+      if ($CurrentUser[$unit_db_name] &&
+        $CurrentUser[$unit_db_name] >= $OfficierLevel) {
         $enabled = 1;
       } else {
         return 0;
       }
     }
   }
-  if ($CurrentUser[$resource[$Officier]] < $pricelist[$Officier]['max']  ) {
+  if ($CurrentUser[$sn_data[$Officier]['name']] < $sn_data[$Officier]['max']  ) {
     return 1;
   } else {
     return -1;
@@ -70,12 +72,13 @@ $sn_data_dark_matter_db_name = $sn_data[RES_DARK_MATTER]['name'];
 if ($mode == 2) {
   if ($user[$sn_data_dark_matter_db_name] >= $darkmater_cost) {
     $Selected    = $offi;
-    if ( in_array($Selected, $reslist['mercenaries']) ) {
+    if ( in_array($Selected, $sn_data['groups']['mercenaries']) ) {
       $Result = IsOfficierAccessible ( $user, $Selected );
       if ( $Result == 1 ) {
-        $user[$resource[$Selected]] += 1;
+        $selected_db_name = $sn_data[$Selected]['name'];
+        $user[$selected_db_name] += 1;
         $user[$sn_data_dark_matter_db_name]         -= $darkmater_cost;
-        doquery( "UPDATE {{users}} SET `{$resource[$Selected]}` = `{$resource[$Selected]}` + 1 WHERE `id` = '{$user['id']}';");
+        doquery( "UPDATE {{users}} SET `{$selected_db_name}` = `{$selected_db_name}` + 1 WHERE `id` = '{$user['id']}';");
         rpg_points_change($user['id'], RPG_MERCENARY, -($darkmater_cost), "Spent for officer {$lang['tech'][$Selected]} ID {$Selected}");
         $Message = $lang['off_recruited'];
         header("Location: officer.php");
@@ -97,7 +100,7 @@ if ($mode == 2) {
 else
 {
   $template = gettemplate('officer', true);
-  foreach ($sn_groups['mercenaries'] as $mercenary_id) {
+  foreach($sn_data['groups']['mercenaries'] as $mercenary_id) {
     $Result = IsOfficierAccessible ( $user, $mercenary_id );
     if($Result)
     {
@@ -126,7 +129,7 @@ else
         'NAME'        => $lang['tech'][$mercenary_id],
         'DESCRIPTION' => $lang['info'][$mercenary_id]['description'],
         'EFFECT'      => $lang['info'][$mercenary_id]['effect'],
-        'LEVEL'       => $user[$resource[$mercenary_id]],
+        'LEVEL'       => $user[$sn_data[$mercenary_id]['name']],
         'LEVEL_MAX'   => $mercenary['max'],
         'BONUS'       => $mercenary_bonus,
         'BONUS_TYPE'  => $mercenary['bonus_type'],

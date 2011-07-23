@@ -210,10 +210,10 @@ function eco_render_rapid_fire($unit_id)
 //
 function ShowBuildingInfoPage($CurrentUser, $CurrentPlanet, $BuildID)
 {
-  global $dpath, $lang, $pricelist, $CombatCaps, $sn_data;
+  global $dpath, $lang, $sn_data;
 
-  $sn_groups = $sn_data['groups'];
-  $unit_data = $sn_data[$BuildID];
+  $sn_groups = &$sn_data['groups'];
+  $unit_data = &$sn_data[$BuildID];
 
   lng_include('infos');
 
@@ -315,20 +315,20 @@ function ShowBuildingInfoPage($CurrentUser, $CurrentPlanet, $BuildID)
     $parse['rf_info_to'] = $rapid_fire['to'];   // Rapid Fire vers
     $parse['rf_info_fr'] = $rapid_fire['from']; // Rapid Fire de
 
-    $parse['hull_pt'] = pretty_number(($pricelist[$BuildID]['metal'] + $pricelist[$BuildID]['crystal']) / 10); // Points de Structure
-    $parse['shield_pt'] = pretty_number($CombatCaps[$BuildID]['shield']);  // Points de Bouclier
-    $parse['attack_pt'] = pretty_number($CombatCaps[$BuildID]['attack']);  // Points d'Attaque
-    $parse['capacity_pt'] = pretty_number($pricelist[$BuildID]['capacity']); // Capacitée de fret
-    $parse['base_speed'] = pretty_number($pricelist[$BuildID]['speed']);    // Vitesse de base
-    $parse['base_conso'] = pretty_number($pricelist[$BuildID]['consumption']);  // Consommation de base
+    $parse['hull_pt'] = pretty_number(($sn_data[$BuildID]['metal'] + $sn_data[$BuildID]['crystal']) / 10); // Points de Structure
+    $parse['shield_pt'] = pretty_number($sn_data[$BuildID]['shield']);  // Points de Bouclier
+    $parse['attack_pt'] = pretty_number($sn_data[$BuildID]['attack']);  // Points d'Attaque
+    $parse['capacity_pt'] = pretty_number($sn_data[$BuildID]['capacity']); // Capacitée de fret
+    $parse['base_speed'] = pretty_number($sn_data[$BuildID]['speed']);    // Vitesse de base
+    $parse['base_conso'] = pretty_number($sn_data[$BuildID]['consumption']);  // Consommation de base
     if ($BuildID == SHIP_CARGO_SMALL)
     {
-      $parse['upd_speed'] = "<font color=\"yellow\">(" . pretty_number($pricelist[$BuildID]['speed2']) . ")</font>";       // Vitesse rééquipée
-      $parse['upd_conso'] = "<font color=\"yellow\">(" . pretty_number($pricelist[$BuildID]['consumption2']) . ")</font>"; // Consommation apres rééquipement
+      $parse['upd_speed'] = "<font color=\"yellow\">(" . pretty_number($sn_data[$BuildID]['speed2']) . ")</font>";       // Vitesse rééquipée
+      $parse['upd_conso'] = "<font color=\"yellow\">(" . pretty_number($sn_data[$BuildID]['consumption2']) . ")</font>"; // Consommation apres rééquipement
     }
     elseif ($BuildID == SHIP_BOMBER)
     {
-      $parse['upd_speed'] = "<font color=\"yellow\">(" . pretty_number($pricelist[$BuildID]['speed2']) . ")</font>";       // Vitesse rééquipée
+      $parse['upd_speed'] = "<font color=\"yellow\">(" . pretty_number($sn_data[$BuildID]['speed2']) . ")</font>";       // Vitesse rééquipée
     }
   }
   elseif (in_array($BuildID, $sn_data['groups']['defense_active']))
@@ -341,18 +341,18 @@ function ShowBuildingInfoPage($CurrentUser, $CurrentPlanet, $BuildID)
     $parse['rf_info_to'] = $rapid_fire['to'];   // Rapid Fire vers
     $parse['rf_info_fr'] = $rapid_fire['from']; // Rapid Fire de
 
-    $parse['hull_pt'] = pretty_number(($pricelist[$BuildID]['metal'] + $pricelist[$BuildID]['crystal']) / 10); // Points de Structure
-    $parse['shield_pt'] = pretty_number($CombatCaps[$BuildID]['shield']);  // Points de Bouclier
-    $parse['attack_pt'] = pretty_number($CombatCaps[$BuildID]['attack']);  // Points d'Attaque
+    $parse['hull_pt'] = pretty_number(($sn_data[$BuildID]['metal'] + $sn_data[$BuildID]['crystal']) / 10); // Points de Structure
+    $parse['shield_pt'] = pretty_number($sn_data[$BuildID]['shield']);  // Points de Bouclier
+    $parse['attack_pt'] = pretty_number($sn_data[$BuildID]['attack']);  // Points d'Attaque
   }
   elseif ($BuildID >= 502 && $BuildID <= 503)
   {
     // Misilles
     $PageTPL = gettemplate('info_buildings_defense');
     $parse['element_typ'] = $lang['tech'][400];
-    $parse['hull_pt'] = pretty_number($pricelist[$BuildID]['metal'] + $pricelist[$BuildID]['crystal']); // Points de Structure
-    $parse['shield_pt'] = pretty_number($CombatCaps[$BuildID]['shield']);  // Points de Bouclier
-    $parse['attack_pt'] = pretty_number($CombatCaps[$BuildID]['attack']);  // Points d'Attaque
+    $parse['hull_pt'] = pretty_number($sn_data[$BuildID]['metal'] + $sn_data[$BuildID]['crystal']); // Points de Structure
+    $parse['shield_pt'] = pretty_number($sn_data[$BuildID]['shield']);  // Points de Bouclier
+    $parse['attack_pt'] = pretty_number($sn_data[$BuildID]['attack']);  // Points d'Attaque
   }
   elseif (in_array($BuildID, $sn_data['groups']['mercenaries']))
   {

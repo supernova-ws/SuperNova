@@ -10,7 +10,7 @@
 
 function flt_mission_explore($mission_data)
 {
-  global $lang, $pricelist, $sn_data;
+  global $lang, $sn_data;
 
   $fleet_row = $mission_data['fleet'];
 
@@ -74,7 +74,7 @@ function flt_mission_explore($mission_data)
       $LaFlotte[$TypeVaisseau] = $NbreVaisseau;
 
       //On calcul les ressources maximum qui peuvent être récupéré
-      $FleetCapacity += $pricelist[$TypeVaisseau]['capacity'];
+      $FleetCapacity += $sn_data[$TypeVaisseau]['capacity'];
       // Maintenant on calcul en points toute la flotte
       $FleetPoints   += ($NbreVaisseau * $PointsFlotte[$TypeVaisseau]);
     }

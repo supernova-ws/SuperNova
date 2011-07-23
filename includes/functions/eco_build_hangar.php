@@ -21,29 +21,29 @@ function eco_hangar_is_building($que)
 // $Ressources -> Un table contenant metal, crystal, deuterium, energy de la planete
 //                sur laquelle on veut construire l'Element
 function GetMaxConstructibleElements ($Element, &$Ressources) {
-  global $pricelist;
+  global $sn_data;
 
   // On test les 4 Type de ressource pour voir si au moins on sait en construire 1
-  if ($pricelist[$Element]['metal']) {
-    $MaxElements = floor($Ressources["metal"] / $pricelist[$Element]['metal']);
+  if ($sn_data[$Element]['metal']) {
+    $MaxElements = floor($Ressources["metal"] / $sn_data[$Element]['metal']);
   };
 
-  if ($pricelist[$Element]['crystal']) {
-    $Buildable = floor($Ressources["crystal"] / $pricelist[$Element]['crystal']);
+  if ($sn_data[$Element]['crystal']) {
+    $Buildable = floor($Ressources["crystal"] / $sn_data[$Element]['crystal']);
   }
   if ((isset($Buildable) AND $MaxElements > $Buildable)OR(!isset($MaxElements))) {
     $MaxElements      = $Buildable;
   }
 
-  if ($pricelist[$Element]['deuterium']) {
-    $Buildable        = floor($Ressources["deuterium"] / $pricelist[$Element]['deuterium']);
+  if ($sn_data[$Element]['deuterium']) {
+    $Buildable        = floor($Ressources["deuterium"] / $sn_data[$Element]['deuterium']);
   }
   if ((isset($Buildable) AND $MaxElements > $Buildable)OR(!isset($MaxElements))) {
     $MaxElements      = $Buildable;
   }
 
-  if ($pricelist[$Element]['energy']) {
-    $Buildable        = floor($Ressources["energy_max"] / $pricelist[$Element]['energy']);
+  if ($sn_data[$Element]['energy']) {
+    $Buildable        = floor($Ressources["energy_max"] / $sn_data[$Element]['energy']);
     if ($Buildable < 1) {
       $MaxElements      = 0;
     }
@@ -60,13 +60,13 @@ function GetMaxConstructibleElements ($Element, &$Ressources) {
  */
 function GetRestrictedConstructionNum($planet)
 {
-  global $resource;
+  global $sn_data;
 
   $limited = array(407 => 0, 408 =>0, 409 =>0, 502 => 0, 503 => 0);
 
   foreach($limited as $key => $value)
   {
-    $limited[$key] += $planet[$resource[$key]];
+    $limited[$key] += $planet[$sn_data[$key]['name']];
   }
 
   $BuildQueue = $planet['b_hangar_id'];

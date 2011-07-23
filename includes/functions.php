@@ -46,7 +46,7 @@ function get_game_speed()
 // TODO: Unification of get_ship_speed, flt_fleet_speed, GetFleetMaxSpeed
 function get_ship_speed($ship_id, $user)
 {
-  global $resource, $sn_data;
+  global $sn_data;
 
   if (!in_array($ship_id, $sn_data['groups']['fleet']))
   {
@@ -207,9 +207,9 @@ function SaveToFile($filename, $content)
 //
 function GetNextJumpWaitTime($CurMoon)
 {
-  global $resource;
+  global $sn_data;
 
-  $JumpGateLevel = $CurMoon[$resource[43]];
+  $JumpGateLevel = $CurMoon[$sn_data[43]['name']];
   $LastJumpTime = $CurMoon['last_jump_time'];
   if ($JumpGateLevel > 0)
   {
@@ -526,17 +526,6 @@ function CheckAbandonPlanetState(&$planet)
   {
     doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}' LIMIT 1;");
   }
-}
-
-function GetElementRessources($Element, $Count)
-{
-  global $pricelist;
-
-  $ResType['metal'] = ($pricelist[$Element]['metal'] * $Count);
-  $ResType['crystal'] = ($pricelist[$Element]['crystal'] * $Count);
-  $ResType['deuterium'] = ($pricelist[$Element]['deuterium'] * $Count);
-
-  return $ResType;
 }
 
 function mrc_modify_value($user, $planet = false, $mercenaries, $value)

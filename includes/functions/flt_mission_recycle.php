@@ -23,7 +23,7 @@ function flt_mission_recycle($mission_data)
     return CACHE_FLEET;
   }
 
-  global $pricelist, $lang;
+  global $sn_data, $lang;
 
 /*
 
@@ -43,9 +43,9 @@ function flt_mission_recycle($mission_data)
     if ($Group != '') {
       $Class        = explode (",", $Group);
       if ($Class[0] == SHIP_RECYCLER) {
-        $RecyclerCapacity   += $pricelist[$Class[0]]["capacity"] * $Class[1];
+        $RecyclerCapacity   += $sn_data[$Class[0]]["capacity"] * $Class[1];
       } else {
-        $OtherFleetCapacity += $pricelist[$Class[0]]["capacity"] * $Class[1];
+        $OtherFleetCapacity += $sn_data[$Class[0]]["capacity"] * $Class[1];
       }
     }
   }

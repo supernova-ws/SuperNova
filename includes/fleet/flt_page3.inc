@@ -85,7 +85,7 @@ if(SN_IN_FLEET !== true)
 
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach ($fleetarray as $Ship => $Count) {
-    if ($Count > $planetrow[$resource[$Ship]]) {
+    if ($Count > $planetrow[$sn_data[$Ship]['name']]) {
       message ("<font color=\"red\"><b>{$lang['fl_fleet_err']}</b></font>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
     }
   }
@@ -169,10 +169,10 @@ if(SN_IN_FLEET !== true)
   $FleetSubQRY         = "";
   foreach ($fleetarray as $Ship => $Count)
   {
-    $FleetStorage    += $pricelist[$Ship]["capacity"] * $Count;
+    $FleetStorage    += $sn_data[$Ship]["capacity"] * $Count;
     $FleetShipCount  += $Count;
     $fleet_array     .= "{$Ship},{$Count};";
-    $FleetSubQRY     .= "`{$resource[$Ship]}` = `{$resource[$Ship]}` - {$Count} , ";
+    $FleetSubQRY     .= "`{$sn_data[$Ship]['name']}` = `{$sn_data[$Ship]['name']}` - {$Count} , ";
   }
   $FleetStorage        -= $consumption;
 

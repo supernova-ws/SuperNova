@@ -43,7 +43,7 @@ switch($mode)
     $config_rpg_scrape_crystal   = $config->rpg_scrape_crystal;
     $config_rpg_scrape_deuterium = $config->rpg_scrape_deuterium;
 
-    $array = &$reslist['fleet'];
+    $array = &$sn_data['groups']['fleet'];
 
     require('includes/market/market_fleeter.inc');
   break;

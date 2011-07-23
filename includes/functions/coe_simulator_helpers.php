@@ -2,8 +2,6 @@
 
 function eco_sym_encode_replay($combat, $type)
 {
-  global $reslist;
-
   $strPacked = "{$type}!";
 
   foreach($combat as $fleetID => $fleetCompress)
@@ -21,7 +19,7 @@ function eco_sym_encode_replay($combat, $type)
 
 function eco_sym_decode_replay($str_data)
 {
-  global $reslist, $sn_groups;
+  global $sn_data;
 
   $fleet_id = 0;
 
@@ -62,7 +60,7 @@ function eco_sym_decode_replay($str_data)
 
 function eco_sym_to_combat($arr_sym_data, $str_fleet_type)
 {
-  global $reslist, $sn_data, $sn_groups;
+  global $sn_data;
   $combat = array();
 
   foreach($arr_sym_data as $int_fleet_id => $arr_sym_fleet)
@@ -74,15 +72,15 @@ function eco_sym_to_combat($arr_sym_data, $str_fleet_type)
         continue;
       }
 
-      if(in_array($int_unit_id, $sn_groups['tech']) || $int_unit_id == MRC_ADMIRAL)
+      if(in_array($int_unit_id, $sn_data['groups']['tech']) || $int_unit_id == MRC_ADMIRAL)
       {
         $combat[$int_fleet_id]['user'][$sn_data[$int_unit_id]['name']] = intval($int_unit_count);
       }
-      elseif(in_array($int_unit_id, $sn_groups['resources_loot']))
+      elseif(in_array($int_unit_id, $sn_data['groups']['resources_loot']))
       {
         $combat[$int_fleet_id]['resources'][$sn_data[$int_unit_id]['name']] = $int_unit_count;
       }
-      elseif(in_array($int_unit_id, $sn_groups['combat']))
+      elseif(in_array($int_unit_id, $sn_data['groups']['combat']))
       {
         $combat[$int_fleet_id][$str_fleet_type][$int_unit_id] = $int_unit_count;
       }

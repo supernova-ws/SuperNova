@@ -49,7 +49,7 @@ function BE_calculateTechs(&$user)
 */
 
 function BE_preCalcRoundData(&$fleets, &$fleetRoundData, &$fleetArray, $strFieldName, $isSimulated = false){
-  global $pricelist, $CombatCaps;
+  global $sn_data;
 
   foreach ($fleets as $fleetID => $fleet)
   {
@@ -63,11 +63,11 @@ function BE_preCalcRoundData(&$fleets, &$fleetRoundData, &$fleetArray, $strField
     }
     foreach ($fleet[$strFieldName] as $element => $amount)
     {
-      $thisArmor  = ($pricelist[$element]['metal'] + $pricelist[$element]['crystal']) / 10;
+      $thisArmor  = ($sn_data[$element]['metal'] + $sn_data[$element]['crystal']) / 10;
 
       $thisDef    = $amount * $thisArmor * $fleet['techs']['def'];
-      $thisShield = $amount * ($CombatCaps[$element]['shield']) * $fleet['techs']['shield'];
-      $thisAtt    = $amount * ($CombatCaps[$element]['attack']) * $fleet['techs']['att'];
+      $thisShield = $amount * ($sn_data[$element]['shield']) * $fleet['techs']['shield'];
+      $thisAtt    = $amount * ($sn_data[$element]['attack']) * $fleet['techs']['att'];
 
       if (!$isSimulated){
         $thisDef    *= mt_rand(80, 120) / 100;
@@ -82,7 +82,7 @@ function BE_preCalcRoundData(&$fleets, &$fleetRoundData, &$fleetArray, $strField
       $fleetRoundData['shield'][$fleetID] += $thisDef;
       $fleetRoundData['amount'][$fleetID] += $amount;
 
-      foreach ($CombatCaps[$element]['sd'] as $element2 => $amount2){
+      foreach ($sn_data[$element]['sd'] as $element2 => $amount2){
         $aTemp = max($amount, $amount*$amount2);
 
         $fleetRoundData['rf'][$fleetID][$element2] += $aTemp;
@@ -116,7 +116,7 @@ function BE_calculateRoundFleetHarmPct(&$attArray){
 
 function BE_calculateRound(&$fleets, &$fleetsAttacking, &$fleet_n, &$fleet_shield, &$fleetDmgPerEnemyFleet, &$attackArray, &$defenseArray, &$attackRoundData, &$defenseRoundData, $strFieldName, $round )
 {
-  global $pricelist, $CombatCaps;
+  global $sn_data;
 
   foreach ($fleets as $fleetID => $fleet)
   {
@@ -144,7 +144,7 @@ function BE_calculateRound(&$fleets, &$fleetsAttacking, &$fleet_n, &$fleet_shiel
             $PctHarmMade = $HarmPctIncoming ; // which % of damage came to defending ship from attacker's ship
             $HarmMade = round($PctHarmMade * $defenseShipData['att']); // which damage came to defending ship from attacker's ship
 
-            $FinalHarm = round($HarmMade * $CombatCaps[$defenseShipID]['amplify'][$element]); // method 2 - Amplification (RapidFire) applies BEFORE shields
+            $FinalHarm = round($HarmMade * $sn_data[$defenseShipID]['amplify'][$element]); // method 2 - Amplification (RapidFire) applies BEFORE shields
             // $FinalHarm = $HarmMade; // method 3 - Amplification applies AFTER shields
 
 BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $attackArray, $fleetID, $HarmPctIncoming, $HarmMade, $FinalHarm, $amount);
@@ -155,7 +155,7 @@ BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $attackArra
               $fleet_shield += $attackArray[$fleetID][$element]['shield'];          // How much damage was absorbed by shield - add to total fleet absorb
               $attackArray[$fleetID][$element]['shield'] = 0;                       // Shield now 0 'cause they all was destroyed by incoming damage
 
-              //$FinalHarm = $FinalHarm * $CombatCaps[$defenseShipID]['amplify'][$element]; // method 3 - Amplification (RapidFire) applies AFTER shields
+              //$FinalHarm = $FinalHarm * $sn_data[$defenseShipID]['amplify'][$element]; // method 3 - Amplification (RapidFire) applies AFTER shields
 
               $calculatedDestroyedShip = floor($FinalHarm / ($attackArray[$fleetID][$element]['def'] / $amount));   // How much ships was destroyed by incoming harm
               $fleet_n[$fleetID][$element] = max(0, ceil($amount - $calculatedDestroyedShip));                      // How much ships left in fleet
@@ -184,7 +184,7 @@ BE_DEBUG_closeRow($calculatedDestroyedShip, $fleet_n[$fleetID][$element]);
 
 function coe_attack_calculate(&$attackers, &$defenders, $isSimulated = false)
 {
-  global $pricelist, $CombatCaps, $resource;
+  global $sn_data;
 
   $totalResourcePoints = array('attacker' => 0, 'defender' => 0);
 
@@ -199,8 +199,8 @@ function coe_attack_calculate(&$attackers, &$defenders, $isSimulated = false)
     }
     foreach ($attacker['detail'] as $element => $amount)
     {
-      $attackResourcePoints['metal'] += $pricelist[$element]['metal'] * $amount;
-      $attackResourcePoints['crystal'] += $pricelist[$element]['crystal'] * $amount ;
+      $attackResourcePoints['metal'] += $sn_data[$element]['metal'] * $amount;
+      $attackResourcePoints['crystal'] += $sn_data[$element]['crystal'] * $amount ;
     }
   }
   $totalResourcePoints['attacker'] += $attackResourcePoints['metal'];
@@ -219,8 +219,8 @@ function coe_attack_calculate(&$attackers, &$defenders, $isSimulated = false)
     {
       if ($element < 300)
       {
-        $defenseResourcePoints['metal'] += $pricelist[$element]['metal'] * $amount;
-        $defenseResourcePoints['crystal'] += $pricelist[$element]['crystal'] * $amount;
+        $defenseResourcePoints['metal'] += $sn_data[$element]['metal'] * $amount;
+        $defenseResourcePoints['crystal'] += $sn_data[$element]['crystal'] * $amount;
       }
       else
       {
@@ -316,11 +316,11 @@ BE_DEBUG_closeTable();
     }
     foreach ($attacker['detail'] as $element => $amount)
     {
-      $totalResourcePoints['attacker'] -= $pricelist[$element]['metal'] * $amount;
-      $totalResourcePoints['attacker'] -= $pricelist[$element]['crystal'] * $amount;
+      $totalResourcePoints['attacker'] -= $sn_data[$element]['metal'] * $amount;
+      $totalResourcePoints['attacker'] -= $sn_data[$element]['crystal'] * $amount;
 
-      $attackResourcePoints['metal'] -= $pricelist[$element]['metal'] * $amount;
-      $attackResourcePoints['crystal'] -= $pricelist[$element]['crystal'] * $amount;
+      $attackResourcePoints['metal'] -= $sn_data[$element]['metal'] * $amount;
+      $attackResourcePoints['crystal'] -= $sn_data[$element]['crystal'] * $amount;
     }
   }
 
@@ -334,11 +334,11 @@ BE_DEBUG_closeTable();
     {
       if ($element < 300)
       {
-        $defenseResourcePoints['metal'] -= $pricelist[$element]['metal'] * $amount;
-        $defenseResourcePoints['crystal'] -= $pricelist[$element]['crystal'] * $amount;
+        $defenseResourcePoints['metal'] -= $sn_data[$element]['metal'] * $amount;
+        $defenseResourcePoints['crystal'] -= $sn_data[$element]['crystal'] * $amount;
 
-        $totalResourcePoints['defender'] -= $pricelist[$element]['metal'] * $amount;
-        $totalResourcePoints['defender'] -= $pricelist[$element]['crystal'] * $amount;
+        $totalResourcePoints['defender'] -= $sn_data[$element]['metal'] * $amount;
+        $totalResourcePoints['defender'] -= $sn_data[$element]['crystal'] * $amount;
       }
       else
       {
@@ -420,7 +420,7 @@ function BE_calculateMoonChance($result)
 */
 
 function BE_calculatePostAttacker($TargetPlanet, &$attackFleets, $result, $isSimulation = true){
-  global $pricelist;
+  global $sn_data;
 
   foreach ($attackFleets as $fleetID => &$attacker) {
     $fleetArray = '';
@@ -436,7 +436,7 @@ function BE_calculatePostAttacker($TargetPlanet, &$attackFleets, $result, $isSim
         $fleetArray .= $element.','.$amount.';';
         $totalCount += $amount;
         // !G+ For now we do not count deutrium for return in capacity
-        $attacker['loot']['capacity'] += $pricelist[$element]['capacity'] * $amount;
+        $attacker['loot']['capacity'] += $sn_data[$element]['capacity'] * $amount;
       }
     }
 
