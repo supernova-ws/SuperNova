@@ -21,29 +21,29 @@ function eco_hangar_is_building($que)
 // $Ressources -> Un table contenant metal, crystal, deuterium, energy de la planete
 //                sur laquelle on veut construire l'Element
 function GetMaxConstructibleElements ($Element, &$Ressources) {
-  global $pricelist;
+  global $sn_data;
 
   // On test les 4 Type de ressource pour voir si au moins on sait en construire 1
-  if ($pricelist[$Element]['metal']) {
-    $MaxElements = floor($Ressources["metal"] / $pricelist[$Element]['metal']);
+  if ($sn_data[$Element]['metal']) {
+    $MaxElements = floor($Ressources["metal"] / $sn_data[$Element]['metal']);
   };
 
-  if ($pricelist[$Element]['crystal']) {
-    $Buildable = floor($Ressources["crystal"] / $pricelist[$Element]['crystal']);
+  if ($sn_data[$Element]['crystal']) {
+    $Buildable = floor($Ressources["crystal"] / $sn_data[$Element]['crystal']);
   }
   if ((isset($Buildable) AND $MaxElements > $Buildable)OR(!isset($MaxElements))) {
     $MaxElements      = $Buildable;
   }
 
-  if ($pricelist[$Element]['deuterium']) {
-    $Buildable        = floor($Ressources["deuterium"] / $pricelist[$Element]['deuterium']);
+  if ($sn_data[$Element]['deuterium']) {
+    $Buildable        = floor($Ressources["deuterium"] / $sn_data[$Element]['deuterium']);
   }
   if ((isset($Buildable) AND $MaxElements > $Buildable)OR(!isset($MaxElements))) {
     $MaxElements      = $Buildable;
   }
 
-  if ($pricelist[$Element]['energy']) {
-    $Buildable        = floor($Ressources["energy_max"] / $pricelist[$Element]['energy']);
+  if ($sn_data[$Element]['energy']) {
+    $Buildable        = floor($Ressources["energy_max"] / $sn_data[$Element]['energy']);
     if ($Buildable < 1) {
       $MaxElements      = 0;
     }
@@ -60,13 +60,13 @@ function GetMaxConstructibleElements ($Element, &$Ressources) {
  */
 function GetRestrictedConstructionNum($planet)
 {
-  global $resource;
+  global $sn_data;
 
   $limited = array(407 => 0, 408 =>0, 409 =>0, 502 => 0, 503 => 0);
 
   foreach($limited as $key => $value)
   {
-    $limited[$key] += $planet[$resource[$key]];
+    $limited[$key] += $planet[$sn_data[$key]['name']];
   }
 
   $BuildQueue = $planet['b_hangar_id'];
@@ -223,19 +223,22 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
         case 502:
           $Count = min($SiloSpace, $Count, $MaxElements);
           $SiloSpace -= $Count;
-          break;
+        break;
+
         case 503:
           $Count = min(floor($SiloSpace/2), $Count, $MaxElements);
           $SiloSpace -= $Count * 2;
-          break;
+        break;
+
         case 407:
         case 408:
         case 409:
           $Count = $built[$Element] >= 1 ? 0 : 1;
-          break;
+        break;
+
         default:
           $Count = min($Count, $MaxElements);
-          break;
+        break;
       };
 
       $unit_resources = GetElementRessources ( $Element, $Count );
@@ -318,20 +321,23 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
         case 502:
           $baubar = min($SiloSpace, $baubar);
           $restrict = 1;
-          break;
+        break;
+
         case 503:
           $baubar = min(floor($SiloSpace/2), $baubar);
           $restrict = 1;
-          break;
+        break;
+
         case 407:
         case 408:
         case 409:
           $baubar = $built[$Element] >= 1 ? 0 : min(1, $baubar);
           $restrict = 2;
-          break;
+        break;
+
         default:
           $restrict = 0;
-          break;
+        break;
       }
 
       // Case nombre d'elements a construire
@@ -357,50 +363,50 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
       $temp[RES_DEUTERIUM] = floor($planet['deuterium'] - $build_data[BUILD_CREATE][RES_DEUTERIUM]); // + $fleet_list['own']['total'][RES_DEUTERIUM]
 
       $template->assign_block_vars('production', array(
-          'ID'                => $Element,
-          'NAME'              => $lang['tech'][$Element],
-          'DESCRIPTION'       => $lang['info'][$Element]['description_short'],
-          'LEVEL'             => $ElementCount,
-          'LEVEL_OLD'         => $CurentPlanet[$sn_data[$Element]['name']],
-          'LEVEL_CHANGE'      => $que['in_que'][$Element],
+        'ID'                => $Element,
+        'NAME'              => $lang['tech'][$Element],
+        'DESCRIPTION'       => $lang['info'][$Element]['description_short'],
+        'LEVEL'             => $ElementCount,
+        'LEVEL_OLD'         => $CurentPlanet[$sn_data[$Element]['name']],
+        'LEVEL_CHANGE'      => $que['in_que'][$Element],
 
-          'BUILD_CAN'         => min($baubar, $build_data['CAN'][BUILD_CREATE]),
-          'TIME'              => pretty_time($build_data[BUILD_CREATE][RES_TIME]),
-          'METAL'             => $build_data[BUILD_CREATE][RES_METAL],
-          'CRYSTAL'           => $build_data[BUILD_CREATE][RES_CRYSTAL],
-          'DEUTERIUM'         => $build_data[BUILD_CREATE][RES_DEUTERIUM],
+        'BUILD_CAN'         => min($baubar, $build_data['CAN'][BUILD_CREATE]),
+        'TIME'              => pretty_time($build_data[BUILD_CREATE][RES_TIME]),
+        'METAL'             => $build_data[BUILD_CREATE][RES_METAL],
+        'CRYSTAL'           => $build_data[BUILD_CREATE][RES_CRYSTAL],
+        'DEUTERIUM'         => $build_data[BUILD_CREATE][RES_DEUTERIUM],
 
-          'METAL_PRINT'       => pretty_number($build_data[BUILD_CREATE][RES_METAL], true, $planet['metal']),
-          'CRYSTAL_PRINT'     => pretty_number($build_data[BUILD_CREATE][RES_CRYSTAL], true, $planet['crystal']),
-          'DEUTERIUM_PRINT'   => pretty_number($build_data[BUILD_CREATE][RES_DEUTERIUM], true, $planet['deuterium']),
+        'METAL_PRINT'       => pretty_number($build_data[BUILD_CREATE][RES_METAL], true, $planet['metal']),
+        'CRYSTAL_PRINT'     => pretty_number($build_data[BUILD_CREATE][RES_CRYSTAL], true, $planet['crystal']),
+        'DEUTERIUM_PRINT'   => pretty_number($build_data[BUILD_CREATE][RES_DEUTERIUM], true, $planet['deuterium']),
 
-          'DESTROY_CAN'       => $build_data['CAN'][BUILD_DESTROY],
-          'DESTROY_TIME'      => pretty_time($build_data[BUILD_DESTROY][RES_TIME]),
-          'DESTROY_METAL'     => $build_data[BUILD_DESTROY][RES_METAL],
-          'DESTROY_CRYSTAL'   => $build_data[BUILD_DESTROY][RES_CRYSTAL],
-          'DESTROY_DEUTERIUM' => $build_data[BUILD_DESTROY][RES_DEUTERIUM],
+        'DESTROY_CAN'       => $build_data['CAN'][BUILD_DESTROY],
+        'DESTROY_TIME'      => pretty_time($build_data[BUILD_DESTROY][RES_TIME]),
+        'DESTROY_METAL'     => $build_data[BUILD_DESTROY][RES_METAL],
+        'DESTROY_CRYSTAL'   => $build_data[BUILD_DESTROY][RES_CRYSTAL],
+        'DESTROY_DEUTERIUM' => $build_data[BUILD_DESTROY][RES_DEUTERIUM],
 
-          'METAL_REST'        => pretty_number($temp[RES_METAL], true, true),
-          'CRYSTAL_REST'      => pretty_number($temp[RES_CRYSTAL], true, true),
-          'DEUTERIUM_REST'    => pretty_number($temp[RES_DEUTERIUM], true, true),
-          'METAL_REST_NUM'    => $temp[RES_METAL],
-          'CRYSTAL_REST_NUM'  => $temp[RES_CRYSTAL],
-          'DEUTERIUM_REST_NUM'=> $temp[RES_DEUTERIUM],
+        'METAL_REST'        => pretty_number($temp[RES_METAL], true, true),
+        'CRYSTAL_REST'      => pretty_number($temp[RES_CRYSTAL], true, true),
+        'DEUTERIUM_REST'    => pretty_number($temp[RES_DEUTERIUM], true, true),
+        'METAL_REST_NUM'    => $temp[RES_METAL],
+        'CRYSTAL_REST_NUM'  => $temp[RES_CRYSTAL],
+        'DEUTERIUM_REST_NUM'=> $temp[RES_DEUTERIUM],
 
-          'METAL_BALANCE'     => $caps['metal_perhour'][$Element],
-          'CRYSTAL_BALANCE'   => $caps['crystal_perhour'][$Element],
-          'DEUTERIUM_BALANCE' => $caps['deuterium_perhour'][$Element],
-          'ENERGY_BALANCE'    => $energy_balance,
+        'METAL_BALANCE'     => $caps['metal_perhour'][$Element],
+        'CRYSTAL_BALANCE'   => $caps['crystal_perhour'][$Element],
+        'DEUTERIUM_BALANCE' => $caps['deuterium_perhour'][$Element],
+        'ENERGY_BALANCE'    => $energy_balance,
 
-          'ARMOR'  => pretty_number($sn_data[$Element]['armor']),
-          'SHIELD' => pretty_number($sn_data[$Element]['shield']),
-          'WEAPON' => pretty_number($sn_data[$Element]['attack']),
+        'ARMOR'  => pretty_number($sn_data[$Element]['armor']),
+        'SHIELD' => pretty_number($sn_data[$Element]['shield']),
+        'WEAPON' => pretty_number($sn_data[$Element]['attack']),
 
-          'TABINDEX' => $TabIndex,
+        'TABINDEX' => $TabIndex,
 
-          'MESSAGE' => $unit_message,
+        'MESSAGE' => $unit_message,
 
-  //        'UNIT_BUSY'         => eco_unit_busy($user, $CurentPlanet, $que, $Element),
+//        'UNIT_BUSY'         => eco_unit_busy($user, $CurentPlanet, $que, $Element),
       ));
     }
   }

@@ -15,7 +15,7 @@ lng_include('messages');
 
 $template = gettemplate('options', true);
 
-$mode = SYS_mysqlSmartEscape($_GET['mode']);
+$mode = sys_get_param_str('mode');
 if($mode == 'change')
 {
   // Gestion des options speciales pour les admins

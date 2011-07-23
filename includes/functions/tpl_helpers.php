@@ -43,7 +43,7 @@ function tpl_assign_fleet(&$template, $fleets, $js_name = 'fleets')
 // function that parses internal fleet representation (as array(id => count))
 function tpl_parse_fleet_sn($fleet, $fleet_id)
 {
-  global $lang, $time_now, $user, $pricelist, $sn_groups;
+  global $lang, $time_now, $user, $sn_data;
 
   $user_data = &$user;
 
@@ -57,7 +57,7 @@ function tpl_parse_fleet_sn($fleet, $fleet_id)
 
   foreach ($fleet as $ship_id => $ship_amount)
   {
-    if(in_array($ship_id, $sn_groups['fleet']))
+    if(in_array($ship_id, $sn_data['groups']['fleet']))
     {
       $return['ships'][$ship_id] = array(
         'ID'          => $ship_id,
@@ -65,7 +65,7 @@ function tpl_parse_fleet_sn($fleet, $fleet_id)
         'AMOUNT'      => $ship_amount,
         'CONSUMPTION' => GetShipConsumption($ship_id, $user_data),
         'SPEED'       => get_ship_speed($ship_id, $user_data),
-        'CAPACITY'    => $pricelist[$ship_id]['capacity'],
+        'CAPACITY'    => $sn_data[$ship_id]['capacity'],
       );
     }
   }
@@ -75,7 +75,7 @@ function tpl_parse_fleet_sn($fleet, $fleet_id)
 
 function tpl_parse_fleet_db($fleet, $index, $user_data = false)
 {
-  global $lang, $time_now, $user, $pricelist, $sn_data;
+  global $lang, $time_now, $user, $sn_data;
 
   if(!$user_data)
   {
@@ -146,7 +146,7 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
             'AMOUNT'      => $ship_data[1],
             'CONSUMPTION' => GetShipConsumption($ship_data[0], $user_data),
             'SPEED'       => get_ship_speed($ship_data[0], $user_data),
-            'CAPACITY'    => $pricelist[$ship_data[0]]['capacity'],
+            'CAPACITY'    => $sn_data[$ship_data[0]]['capacity'],
           );
         }
         else

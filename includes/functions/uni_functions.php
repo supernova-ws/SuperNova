@@ -321,6 +321,25 @@ function SortUserPlanets($CurrentUser, $planet = false, $field_list = '', $condi
   return $Planets;
 }
 
+// ----------------------------------------------------------------------------------------------------------------
+function uni_render_coordinates($from, $prefix = '')
+{
+  return "[{$from[$prefix . 'galaxy']}:{$from[$prefix . 'system']}:{$from[$prefix . 'planet']}]";
+}
 
+function uni_render_planet($from)
+{
+  return "{$from['name']} [{$from['galaxy']}:{$from['system']}:{$from['planet']}]";
+}
+
+function uni_render_coordinates_url($from, $prefix = '', $mode = 0)
+{
+  return "galaxy.php?mode={$mode}&galaxy={$from[$prefix . 'galaxy']}&system={$from[$prefix . 'system']}&planet={$from[$prefix . 'planet']}";
+}
+
+function uni_render_coordinates_href($from, $prefix = '', $mode = 0, $fleet_type = '')
+{
+  return '<a href="' . uni_render_coordinates_url($from, $prefix, $mode) . '"' . ($fleet_type ? " {$fleet_type}" : '') . '>' . uni_render_coordinates($from, $prefix) . '</a>';
+}
 
 ?>

@@ -205,8 +205,6 @@ function eco_build($que_type, $user, &$planet, $que)
 // Reponse        -> boolean (oui / non)
 function IsElementBuyable($CurrentUser, $CurrentPlanet, $Element, $Incremental = true, $ForDestroy = false)
 {
-  global $pricelist, $resource;
-
   if ($CurrentUser['vacation'])
     return false;
 

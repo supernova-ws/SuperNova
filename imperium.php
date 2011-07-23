@@ -114,11 +114,11 @@ unset($planet);
 
 $last = -1000;
 foreach ($sn_data as $unit_id => $res) {
-  if (in_array($unit_id, $reslist['build']))
+  if (in_array($unit_id, $sn_data['groups']['build']))
     $mode = 'buildings';
-  elseif (in_array($unit_id, $reslist['fleet']))
+  elseif (in_array($unit_id, $sn_data['groups']['fleet']))
     $mode = 'fleet';
-  elseif (in_array($unit_id, $reslist['defense']))
+  elseif (in_array($unit_id, $sn_data['groups']['defense']))
     $mode = 'defense';
   else
     $mode = '';
@@ -134,7 +134,7 @@ foreach ($sn_data as $unit_id => $res) {
 
     $template->assign_block_vars('prods', array(
       'ID'    => $unit_id,
-      'FIELD' => $resource[$unit_id],
+      'FIELD' => $sn_data[$unit_id]['name'],
       'NAME'  => $lang['tech'][$unit_id],
       'MODE'  => $mode,
     ));
@@ -176,12 +176,13 @@ foreach ($sn_data as $unit_id => $res) {
         break;
       }
 
+      $unit_db_name = $sn_data[$unit_id]['name'];
       $template->assign_block_vars('prods.planet', array_merge($level_plus, array(
         'ID'         => $planet['id'],
         'TYPE'       => $planet['planet_type'],
-        'LEVEL'      => $planet[$resource[$unit_id]] == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : $planet[$resource[$unit_id]],
+        'LEVEL'      => $planet[$unit_db_name] == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : $planet[$unit_db_name],
       )));
-      $unit_count += $planet[$resource[$unit_id]];
+      $unit_count += $planet[$unit_db_name];
     }
 
     $template->assign_block_vars('prods.planet', array(

@@ -41,7 +41,7 @@ function coe_compress_add_units($unit_group, $target, &$compress_data)
 //                  0 -> Ressources, 1 -> Flotte, 2 ->Defenses, 3 -> Batiments, 4 -> Technologies
 // $TitleString  -> Chaine definissant le titre ou la parcelle de titre a afficher
 function flt_spy_scan ( $target_planet, $Mode, $TitleString, $TargetUsername="" ) {
-  global $lang, $resource, $time_now;
+  global $lang, $sn_data, $time_now;
 
   $LookAtLoop = true;
   if       ($Mode == 0) {
@@ -85,15 +85,15 @@ function flt_spy_scan ( $target_planet, $Mode, $TitleString, $TargetUsername="" 
     while ($CurrentLook < $Loops) {
       $row     = 0;
       for ($Item = $ResFrom[$CurrentLook]; $Item <= $ResTo[$CurrentLook]; $Item++) {
-        if ( $target_planet[$resource[$Item]] > 0) {
+        if ( $target_planet[$sn_data[$Item]['name']] > 0) {
           if ($row == 0) {
             $String  .= "<tr>";
           }
-          $String  .= "<td align=left>".$lang['tech'][$Item]."</td><td align=right>".$target_planet[$resource[$Item]]."</td>";
+          $String  .= "<td align=left>".$lang['tech'][$Item]."</td><td align=right>".$target_planet[$sn_data[$Item]['name']]."</td>";
           if ($row < SPY_REPORT_ROW - 1) {
             $String  .= "<td>&nbsp;</td>";
           }
-          $Count   += $target_planet[$resource[$Item]];
+          $Count   += $target_planet[$sn_data[$Item]['name']];
           $row++;
           if ($row == SPY_REPORT_ROW) {
             $String  .= "</tr>";

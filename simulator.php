@@ -125,7 +125,7 @@ else
     }
   }
 
-  foreach(array_merge($techs_and_officers, $sn_groups['combat'], $sn_groups['resources_loot']) as $unit_id)
+  foreach(array_merge($techs_and_officers, $sn_data['groups']['combat'], $sn_data['groups']['resources_loot']) as $unit_id)
   {
     $tab++;
 
@@ -139,7 +139,7 @@ else
       ));
     }
 
-    if(in_array($unit_id, $sn_groups['tech']) || $unit_id == MRC_ADMIRAL)
+    if(in_array($unit_id, $sn_data['groups']['tech']) || $unit_id == MRC_ADMIRAL)
     {
       $value = $user[$sn_data[$unit_id]['name']];
     }

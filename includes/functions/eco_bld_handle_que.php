@@ -22,7 +22,7 @@
 
 function eco_bld_handle_que($user, &$planet, $production_time)
 {
-  global $resource;
+  global $sn_data;
 
   $quest_rewards = array();
   if ($planet['b_hangar_id'] != 0)
@@ -48,7 +48,7 @@ function eco_bld_handle_que($user, &$planet, $production_time)
 
         if(!$skip_rest)
         {
-          $unit_db_name = $resource[$unit_id];
+          $unit_db_name = $sn_data[$unit_id]['name'];
 
           $planet_unit = $planet[$unit_db_name];
           while ($hangar_time >= $build_time && $count > 0)

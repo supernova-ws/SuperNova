@@ -1,4 +1,5 @@
 <?php
+
 /**
 * INT_createBanner.php
 * @version 1.0
@@ -152,4 +153,5 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
   imagepng($im_result);
   imagedestroy($im_result);
 }
+
 ?>

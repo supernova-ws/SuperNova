@@ -19,11 +19,11 @@ if($user['authlevel'] < 3)
   AdminMessage($lang['adm_err_denied']);
 }
 
-$GET_action = SYS_mysqlSmartEscape($_GET['action']);
-$GET_result = SYS_mysqlSmartEscape($_GET['result']);
-$Pattern    = SYS_mysqlSmartEscape($_GET['player']);
+$GET_action = sys_get_param_str('action');
+$GET_result = sys_get_param_str('result');
+$Pattern    = sys_get_param_str('player');
 $NewLvl     = intval($_GET['authlvl']);
-$ip         = SYS_mysqlSmartEscape($_GET['ip']);
+$ip         = sys_get_param_str('ip');
 
 $PanelMainTPL = gettemplate('admin/admin_panel_main');
 
@@ -90,7 +90,7 @@ if (isset($GET_result)) {
       foreach($sn_data['groups']['tech'] as $Item)
       {
         $parse['adm_sub_form3'] .= "<tr><th>".$lang['tech'][$Item]."</th>";
-        $parse['adm_sub_form3'] .= "<th>".$SelUser[$resource[$Item]]."</th></tr>";
+        $parse['adm_sub_form3'] .= "<th>".$SelUser[$sn_data[$Item]['name']]."</th></tr>";
       }
       $parse['adm_sub_form3'] .= "</tbody></table>";
       break;

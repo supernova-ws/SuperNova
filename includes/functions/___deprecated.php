@@ -22,7 +22,7 @@
 //
 // Reponse        -> un tableau avec les couts de construction (a ajouter ou retirer des ressources)
 function GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, $Incremental = true, $ForDestroy = false) {
-  global $pricelist, $sn_data;
+  global $sn_data;
 
   $unit_factor = $sn_data[$Element]['factor'];
   $unit_name = $sn_data[$Element]['name'];
@@ -45,7 +45,7 @@ function GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, $Incremental 
   $price_increase = pow($unit_factor, $level);
   foreach ($cost as $ResType => &$resCount)
   {
-    $resCount = $pricelist[$Element][$ResType];
+    $resCount = $sn_data[$Element][$ResType];
     if ($Incremental)
     {
       $resCount = $resCount * $price_increase;
@@ -79,31 +79,32 @@ function GetBuildingPrice ($CurrentUser, $CurrentPlanet, $Element, $Incremental 
 // $Element    -> L'Element que l'on convoite
 function GetBuildingTime ($user, $planet, $Element, $for_building = BUILD_CREATE, $level = false)
 {
-  global $pricelist, $resource, $reslist, $config, $sn_data;
+  global $config, $sn_data;
 
-  $isDefense = in_array($Element, $reslist['defense']);
-  $isFleet = in_array($Element, $reslist['fleet']);
+  $isDefense = in_array($Element, $sn_data['groups']['defense']);
+  $isFleet = in_array($Element, $sn_data['groups']['fleet']);
 
   if($level === false)
   {
-    $level = ($planet[$resource[$Element]]) ? $planet[$resource[$Element]] : $user[$resource[$Element]];
+    $unit_db_name = $sn_data[$Element]['name'];
+    $level = ($planet[$unit_db_name]) ? $planet[$unit_db_name] : $user[$unit_db_name];
     $level = (($level) AND !($isDefense OR $isFleet)) ? $level : 1;
   }
-  $time = ($pricelist[$Element]['metal'] + $pricelist[$Element]['crystal'] + $pricelist[$Element]['deuterium']) * pow($pricelist[$Element]['factor'], $level) / get_game_speed() / 2500;
+  $time = ($sn_data[$Element]['metal'] + $sn_data[$Element]['crystal'] + $sn_data[$Element]['deuterium']) * pow($sn_data[$Element]['factor'], $level) / get_game_speed() / 2500;
 
-  if (in_array($Element, $reslist['build']))
+  if (in_array($Element, $sn_data['groups']['structures']))
   {
     // Pour un batiment ...
-    $time = $time * (1 / ($planet[$resource['14']] + 1)) * pow(0.5, $planet[$resource['15']]);
+    $time = $time * (1 / ($planet[$sn_data['14']['name']] + 1)) * pow(0.5, $planet[$sn_data['15']['name']]);
     $time = floor(mrc_modify_value($user, $planet, MRC_ARCHITECT, $time * 60 * 60));
   }
-  elseif (in_array($Element, $reslist['tech']))
+  elseif (in_array($Element, $sn_data['groups']['tech']))
   {
     // Pour une recherche
-    $intergal_lab = $user[$resource[TECH_RESEARCH]];
+    $intergal_lab = $user[$sn_data[TECH_RESEARCH]['name']];
     if ( $intergal_lab < 1 )
     {
-      $time = $time / (($planet[$resource['31']] + 1) * 2) * pow(0.5, $planet[$resource['35']]);
+      $time = $time / (($planet[$sn_data['31']['name']] + 1) * 2) * pow(0.5, $planet[$sn_data['35']['name']]);
     }
     else
     {
@@ -119,7 +120,7 @@ function GetBuildingTime ($user, $planet, $Element, $for_building = BUILD_CREATE
             ORDER BY laboratory DESC
             LIMIT {$limite}
         ) AS subquery;", '', true);
-//      $time = $time / (($inves['laboratorio'] + 1) * 2) * pow(0.5, $planet[$resource['35']]);
+//      $time = $time / (($inves['laboratorio'] + 1) * 2) * pow(0.5, $planet[$sn_data[35]['name']]);
 
       $inves = doquery(
         "SELECT SUM(lab) AS laboratorio
@@ -138,12 +139,12 @@ function GetBuildingTime ($user, $planet, $Element, $for_building = BUILD_CREATE
   elseif ($isDefense)
   {
     // Pour les defenses ou la flotte 'tarif fixe' durée adaptée a u niveau nanite et usine robot
-    $time = $time * (1 / ($planet[$resource['21']] + 1)) * pow(1 / 2, $planet[$resource['15']]);
+    $time = $time * (1 / ($planet[$sn_data[21]['name']] + 1)) * pow(1 / 2, $planet[$sn_data[15]['name']]);
     $time = floor(mrc_modify_value($user, $planet, MRC_FORTIFIER, $time * 60 * 60));
   }
   elseif ($isFleet)
   {
-    $time = $time * (1 / ($planet[$resource['21']] + 1)) * pow(1 / 2, $planet[$resource['15']]);
+    $time = $time * (1 / ($planet[$sn_data[21]['name']] + 1)) * pow(1 / 2, $planet[$sn_data[15]['name']]);
     $time = floor(mrc_modify_value($user, $planet, MRC_CONSTRUCTOR, $time * 60 * 60));
   }
 
@@ -250,5 +251,16 @@ function MessageForm ($Title, $Message, $Goto = '', $Button = ' ok ', $TwoLines 
 
 // Release History
 // - 1.0 Mise en fonction, Documentation
+
+function GetElementRessources($Element, $Count)
+{
+  global $sn_data;
+
+  $ResType['metal'] = ($sn_data[$Element]['metal'] * $Count);
+  $ResType['crystal'] = ($sn_data[$Element]['crystal'] * $Count);
+  $ResType['deuterium'] = ($sn_data[$Element]['deuterium'] * $Count);
+
+  return $ResType;
+}
 
 ?>

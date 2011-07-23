@@ -71,9 +71,9 @@ if(is_array($shipList))
       $newstock[$shipID] -= $shipCount;
     }
 
-    $resTemp['metal'] = floor($pricelist[$shipID]['metal'] * $shipCount * $config_rpg_scrape_metal);
-    $resTemp['crystal'] = floor($pricelist[$shipID]['crystal'] * $shipCount * $config_rpg_scrape_crystal);
-    $resTemp['deuterium'] = floor($pricelist[$shipID]['deuterium'] * $shipCount * $config_rpg_scrape_deuterium);
+    $resTemp['metal'] = floor($sn_data[$shipID]['metal'] * $shipCount * $config_rpg_scrape_metal);
+    $resTemp['crystal'] = floor($sn_data[$shipID]['crystal'] * $shipCount * $config_rpg_scrape_crystal);
+    $resTemp['deuterium'] = floor($sn_data[$shipID]['deuterium'] * $shipCount * $config_rpg_scrape_deuterium);
 
     foreach($resTemp as $resID => $resCount)
     {
@@ -168,9 +168,9 @@ foreach($array as $key => $value)
       'ID'        => $shipID,
       'COUNT'     => $amount,
       'NAME'      => $lang['tech'][$shipID],
-      'METAL'     => floor($pricelist[$shipID]['metal'] * $config_rpg_scrape_metal),
-      'CRYSTAL'   => floor($pricelist[$shipID]['crystal'] * $config_rpg_scrape_crystal),
-      'DEUTERIUM' => floor($pricelist[$shipID]['deuterium'] * $config_rpg_scrape_deuterium),
+      'METAL'     => floor($sn_data[$shipID]['metal'] * $config_rpg_scrape_metal),
+      'CRYSTAL'   => floor($sn_data[$shipID]['crystal'] * $config_rpg_scrape_crystal),
+      'DEUTERIUM' => floor($sn_data[$shipID]['deuterium'] * $config_rpg_scrape_deuterium),
       'AMOUNT'    => intval($data['ships'][$shipID]),
     ));
   }

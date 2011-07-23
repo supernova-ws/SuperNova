@@ -23,7 +23,7 @@ if ($user['authlevel'] < 3)
 
 $delete = intval($_GET['delete']);
 $detail = intval($_GET['detail']);
-$deleteall = SYS_mysqlSmartEscape($_GET['deleteall']);
+$deleteall = sys_get_param_str('deleteall');
 
 // Supprimer les erreurs
 if ($delete)

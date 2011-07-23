@@ -23,10 +23,10 @@ foreach($lang['tech'] as $Element => $ElementName)
   }
   else
   {
-    if (isset($requeriments[$Element]))
+    if (isset($sn_data[$Element]['require']))
     {
       $parse['required_list'] = "";
-      foreach($requeriments[$Element] as $ResClass => $Level)
+      foreach($sn_data[$Element]['require'] as $ResClass => $Level)
       {
         if(isset($user[$sn_data[$ResClass]['name']]) && $user[$sn_data[$ResClass]['name']] >= $Level)
         {

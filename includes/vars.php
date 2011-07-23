@@ -1915,73 +1915,32 @@ if (!defined('INSIDE'))
     ),
   );
 
-  $sn_groups = &$sn_data['groups'];
-  $reslist   = &$sn_groups;
-
-  // Parsing united $sn_data table to old-style tables for compatibility
-  // -------------------------------------------------------------------
-  $pricelist_fields = array('metal', 'crystal', 'deuterium','energy', 'factor', 'capacity', 'tech', 'speed', 'consumption', 'consumption2',
-    'energy_max', 'max', 'speed2', 'speed_increase', 'tech2', 'tech_level');
-
-  $combatcaps_fields = array('shield', 'attack', 'sd', 'amplify');
-
-  foreach($sn_data as $unit_id => $unit_data)
+  foreach ($sn_data as $unitID => $unitData)
   {
-    // Filling $resource table
-    $resource[$unit_id] = $unit_data['name'];
-
-    // Filling requeriments table
-    if(isset($unit_data['require']))
-    {
-      $requeriments[$unit_id] = $unit_data['require'];
-    }
-
-    // Filling pricelist table
-    foreach($pricelist_fields as $price_field_name)
-    {
-      if(isset($unit_data[$price_field_name]))
-      {
-        $pricelist[$unit_id][$price_field_name] = $unit_data[$price_field_name];
-      }
-    }
-
-    // Filling combat caps table
-    foreach($combatcaps_fields as $combat_field_name)
-    {
-      if(isset($unit_data[$combat_field_name]))
-      {
-        $CombatCaps[$unit_id][$combat_field_name] = $unit_data[$combat_field_name];
-      }
-    }
-  }
-  // END parse
-
-  foreach ($CombatCaps as $unitID => $unitData)
-  {
-    $CombatCaps[$unitID]['armor'] = ($pricelist[$unitID]['metal'] + $pricelist[$unitID]['crystal'])/10;
+    $sn_data[$unitID]['armor'] = ($sn_data[$unitID]['metal'] + $sn_data[$unitID]['crystal'])/10;
 /*
     foreach ($unitData['sd'] as $enemyID => $SPD)
     {
       if ($SPD>1)
       {
 
-        // $enemyArmor = ($pricelist[$enemyID]['metal'] + $pricelist[$enemyID]['crystal'])/10;
-        // $a1 = ($enemyArmor + $CombatCaps[$enemyID]['shield']) * $SPD / $unitData['attack'];
+        // $enemyArmor = ($sn_data[$enemyID]['metal'] + $sn_data[$enemyID]['crystal'])/10;
+        // $a1 = ($enemyArmor + $sn_data[$enemyID]['shield']) * $SPD / $unitData['attack'];
 
-        $a1 = ($CombatCaps[$enemyID]['armor'] + $CombatCaps[$enemyID]['shield']) * $SPD / $unitData['attack'];
-        $CombatCaps[$unitID]['amplify'][$enemyID] = $a1;
+        $a1 = ($sn_data[$enemyID]['armor'] + $sn_data[$enemyID]['shield']) * $SPD / $unitData['attack'];
+        $sn_data[$unitID]['amplify'][$enemyID] = $a1;
       }
       elseif ($SPD == 1)
       {
-        $CombatCaps[$unitID]['amplify'][$enemyID] = 1;
+        $sn_data[$unitID]['amplify'][$enemyID] = 1;
       }
       elseif ($SPD < 0)
       {
-        $CombatCaps[$unitID]['amplify'][$enemyID] = -$SPD;
+        $sn_data[$unitID]['amplify'][$enemyID] = -$SPD;
       }
       elseif ($SPD == 0 || $SPD<1 || !is_numeric($SPD))
       {
-        $CombatCaps[$unitID]['amplify'][$enemyID] = 0;
+        $sn_data[$unitID]['amplify'][$enemyID] = 0;
       }
     }
 */
@@ -1989,7 +1948,7 @@ if (!defined('INSIDE'))
 
 /*
   // Procedure to dump new 'amplify' values delivered from rapidfire
-  foreach ($CombatCaps as $unitID => $unitData)
+  foreach ($sn_data as $unitID => $unitData)
   {
     print("  $"."CombatCaps[" . $unitID . "]['amplify'] = array( ");
     foreach ($unitData['amplify'] as $enemyID => $SPD)

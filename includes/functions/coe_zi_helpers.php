@@ -36,8 +36,7 @@ function BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $a
     return;
   }
 
-  global $CombatCaps;
-  global $be_debug_array;
+  global $sn_data, $be_debug_array;
 
   $SN = array(SHIP_CARGO_SMALL => 'Ã‡“', SHIP_CARGO_BIG => '¡Ó“', SHIP_CARGO_SUPER => '—Û“', SHIP_FIGHTER_LIGHT => 'À„»Ò', SHIP_FIGHTER_HEAVY => '“ˇ»Ò',
     SHIP_DESTROYER => '›ÒÏË', SHIP_CRUISER => 'ÀËÌÍ', SHIP_COLONIZER => ' ÓÎÓ', SHIP_RECYCLER => 'œÂÂ', SHIP_SPY => 'ÿÔËÓ', SHIP_BOMBER => '¡ÓÏ·',
@@ -49,16 +48,16 @@ function BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $a
     '<td>'.$round.'</td>'.
     '<td>'.$SN[$defenseShipID].'</td>'.
     '<td>'.$defenseShipData['att'].'</td>'.
-    '<td>'.$CombatCaps[$defenseShipID]['sd'][$element].'</td>'.
+    '<td>'.$sn_data[$defenseShipID]['sd'][$element].'</td>'.
     '<td>'.$SN[$element].'</td>'.
     '<td>'.$attackArray[$fleetID][$element]['shield'].'</td>'.
     '<td>'.round($HarmPctIncoming,3).'</td>'.
   //  '<td>'.round($PctHarmFromThisShip,3).'</td>'.
   //  '<td>'.round($PctHarmMade,3).'</td>'.
     '<td>'.$HarmMade.'</td>'.
-    '<td>'.$CombatCaps[$defenseShipID]['amplify'][$element].'</td>'.
+    '<td>'.$sn_data[$defenseShipID]['amplify'][$element].'</td>'.
     '<td>'.$FinalHarm.'</td>'.
-  // '<td>'.$CombatCaps[$defenseShipID]['amplify'][$element].' '.$defenseShipID.' '.$element.''.'</td>'.
+  // '<td>'.$sn_data[$defenseShipID]['amplify'][$element].' '.$defenseShipID.' '.$element.''.'</td>'.
     '<td>'.($FinalHarm-$attackArray[$fleetID][$element]['shield']).'</td>'.
     '<td>'.round($attackArray[$fleetID][$element]['def'] / $amount).'</td>'.
   '';

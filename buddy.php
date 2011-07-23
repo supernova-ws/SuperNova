@@ -78,8 +78,8 @@ lng_include('buddy');
 
 $userID = intval(isset($_GET['u']) ? $_GET['u'] : $_POST['u']);
 $buddyID = intval(isset($_GET['buddyID']) ? $_GET['buddyID'] : $_POST['buddyID']);
-$text = SYS_mysqlSmartEscape(sys_bbcodeParse(strip_tags($_POST['text'])));
-$mode = SYS_mysqlSmartEscape(isset($_GET['mode']) ? $_GET['mode'] : $_POST['mode']);
+$text = mysql_real_escape_string(sys_bbcodeParse(strip_tags($_POST['text'])));
+$mode = mysql_real_escape_string(isset($_GET['mode']) ? $_GET['mode'] : $_POST['mode']);
 
 if ($userID)
 {

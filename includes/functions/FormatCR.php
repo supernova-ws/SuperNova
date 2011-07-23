@@ -112,7 +112,7 @@ function formatCR_Fleet(&$dataInc, &$data_prev, $isAttacker, $isLastRound)
 
 function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_float) {
 
-  global $pricelist, $lang, $resource, $CombatCaps;
+  global $lang;
 
   $html = "";
   $bbc = "";

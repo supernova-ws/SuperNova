@@ -22,8 +22,8 @@ if ($user['authlevel'] < 3)
 $parse = $lang;
 
 // extract($_GET);
-$delete = intval($_GET['delete']);
-$deleteall = SYS_mysqlSmartEscape($_GET['deleteall']);
+$delete = sys_get_param_str('delete');
+$deleteall = sys_get_param_str('deleteall');
 
 // Système de suppression
 if ($delete)

@@ -13,22 +13,22 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $template     = gettemplate('announce', true);
 
-$announce_id   = intval($_GET['id']);
-$text          = SYS_mysqlSmartEscape($_POST['text']);
-$announce_time = SYS_mysqlSmartEscape($_POST['dtDateTime']);
-$detail_url    = SYS_mysqlSmartEscape($_POST['detail_url']);
-$mode          = SYS_mysqlSmartEscape($_GET['mode'] ? $_GET['mode'] : $_POST['mode']);
+$announce_id   = sys_get_param_int('id');
+$text          = sys_get_param_str('text');
+$announce_time = sys_get_param_str('dtDateTime');
+$detail_url    = sys_get_param_str('detail_url');
+$mode          = sys_get_param_str('mode');
 
 if($sys_user_logged_in)
 {
-  doquery("UPDATE {{users}} SET `news_lastread` = 0 WHERE `id` = {$user['id']};");
+  doquery("UPDATE {{users}} SET `news_lastread` = 0 WHERE `id` = {$user['id']} LIMIT 1;");
 }
 
 if ($user['authlevel'] >= 3)
 {
   if (!empty($text))
   {
-    $idAnnounce = intval(mysql_real_escape_string($_POST['id']));
+    $idAnnounce = sys_get_param_int('id');
     $dtDateTime = empty($announce_time) ? ("FROM_UNIXTIME(".time().")") : "'{$announce_time}'";
 
     if ($mode == 'edit')
@@ -51,16 +51,10 @@ if ($user['authlevel'] >= 3)
       }
 
       msg_send_simple_message('*', 0, 0, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['news_title'], $text);
-/*
-      $message_class_name = $sn_message_class_list[MSG_TYPE_PLAYER]['name'];
-      $message_class_name_total = $sn_message_class_list[MSG_TYPE_NEW]['name'];
-      doquery("INSERT INTO {{messages}} (message_owner, message_time, message_type, message_from, message_subject, message_text) SELECT `id`, unix_timestamp(now()), 1, '{$lang['sys_administration']}', '{$lang['news_title']}', '{$text}' FROM {{users}};");
-      doquery("UPDATE {{users}} SET {$message_class_name} = {$message_class_name} + 1, {$message_class_name_total} = {$message_class_name_total} + 1;");
-*/
     }
 
     $mode = '';
-  };
+  }
 
   switch($mode)
   {
@@ -94,7 +88,8 @@ $template->assign_vars(array(
   'time_now'        => $time_now,
 ));
 
-while ($announce = mysql_fetch_assoc($allAnnounces)) {
+while ($announce = mysql_fetch_assoc($allAnnounces))
+{
   $template->assign_block_vars('announces', array(
     'ID'         => $announce['idAnnounce'],
     'TIME'       => $announce['tsTimeStamp'],

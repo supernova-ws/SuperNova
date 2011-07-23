@@ -2,7 +2,7 @@
 
 function ECO_getPlanetCaps($user, &$planet_row)
 {
-  global $sn_data, $resource, $config;
+  global $sn_data, $config;
 
   $sn_groups = $sn_data['groups'];
   $sn_group_structures = $sn_groups['structures'];
@@ -12,9 +12,9 @@ function ECO_getPlanetCaps($user, &$planet_row)
     'metal'         => $planet_row['metal'],
     'crystal'       => $planet_row['crystal'],
     'deuterium'     => $planet_row['deuterium'],
-    'metal_max'     => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$resource[22]]))),
-    'crystal_max'   => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$resource[23]]))),
-    'deuterium_max' => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$resource[24]]))),
+    'metal_max'     => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$sn_data[22]['name']]))),
+    'crystal_max'   => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$sn_data[23]['name']]))),
+    'deuterium_max' => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$sn_data[24]['name']]))),
   ));
 
   if ($planet_row['planet_type'] == 3)
@@ -38,8 +38,8 @@ function ECO_getPlanetCaps($user, &$planet_row)
   {
     $unit_data = $sn_data[$ProdID];
 
-    $BuildLevel       = $planet_row[ $resource[$ProdID] ];
-    $BuildLevelFactor = $planet_row[ "{$resource[$ProdID]}_porcent" ];
+    $BuildLevel       = $planet_row[ $sn_data[$ProdID]['name'] ];
+    $BuildLevelFactor = $planet_row[ "{$sn_data[$ProdID]['name']}_porcent" ];
 
     $Caps['energy'][$ProdID] = floor(eval($unit_data['energy_perhour']));
     if ($ProdID == 12)

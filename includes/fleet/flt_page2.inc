@@ -26,7 +26,7 @@ if(SN_IN_FLEET !== true)
 
   foreach ($fleetarray as $Ship => $Count)
   {
-    $fleet_capacity += $pricelist[$Ship]['capacity'] * $Count;
+    $fleet_capacity += $sn_data[$Ship]['capacity'] * $Count;
   }
 
   $TableTitle  = "[{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}] ";
@@ -61,8 +61,8 @@ if(SN_IN_FLEET !== true)
   for($i = 0; $i<3; $i++){
     $template->assign_block_vars('resources', array(
       'ID' => $i,
-      'ON_PLANET' => floor($planetrow[$reslist['resources'][$i]] - ($i == 2 ? $consumption : 0)),
-      'NAME' => $lang['sys_' . $reslist['resources'][$i]],
+      'ON_PLANET' => floor($planetrow[$sn_data['groups']['resources'][$i]] - ($i == 2 ? $consumption : 0)),
+      'NAME' => $lang['sys_' . $sn_data['groups']['resources'][$i]],
     ));
   }
 

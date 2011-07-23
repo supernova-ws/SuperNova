@@ -49,7 +49,7 @@ $fleet_array    = array();
 $FleetDBArray   = '';
 $FleetSubQRY    = '';
 $fleet_ship_count = 0;
-foreach (array_merge($sn_groups['fleet'], array(503)) as $ship_id)
+foreach (array_merge($sn_data['groups']['fleet'], array(503)) as $ship_id)
 {
   $ship_count = intval($_POST["ship{$ship_id}"]);
   if(!$ship_count)
@@ -79,7 +79,7 @@ $consumption = 0;
 if($target_mission == MT_MISSILE)
 {
   $target_structure = intval($_POST['structures']);
-  if ($target_structure && !in_array($target_structure, $sn_groups['defense_active']))
+  if ($target_structure && !in_array($target_structure, $sn_data['groups']['defense_active']))
   {
     $cant_attack = ATTACK_WRONG_STRUCTURE;
     die("{$cant_attack}|{$lang['fl_attack_error'][$cant_attack]}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}");
@@ -115,9 +115,9 @@ else
   $SpeedFactor         = get_fleet_speed();
   foreach ($fleet_array as $Ship => $Count)
   {
-    $ShipSpeed        = $pricelist[$Ship]["speed"];
+    $ShipSpeed        = $sn_data[$Ship]["speed"];
     $spd              = 35000 / ($Duration * $SpeedFactor - 10) * sqrt($Distance * 10 / $ShipSpeed);
-    $basicConsumption = $pricelist[$Ship]["consumption"] * $Count ;
+    $basicConsumption = $sn_data[$Ship]["consumption"] * $Count ;
     $consumption     += $basicConsumption * $Distance / 35000 * (($spd / 10) + 1) * (($spd / 10) + 1);
   }
   $consumption = round($consumption) + 1;

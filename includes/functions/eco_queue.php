@@ -178,7 +178,7 @@ function eco_que_process($user, &$planet, $time_left)
 
 function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1, $build_mode = BUILD_CREATE)
 {
-  global $lang, $resource, $time_now, $sn_data;
+  global $lang, $time_now, $sn_data;
 
   $que_types = $sn_data['groups']['ques'];
   $que_types[QUE_STRUCTURES]['unit_list'] = $sn_data['groups']['build_allow'][$planet['planet_type']];

@@ -20,7 +20,7 @@ if(SN_IN_FLEET !== true)
   {
     if ($ship_id > 200 && $ship_id < 300 && $ship_count)
     {
-      if ($ship_count > $planetrow[$resource[$ship_id]])
+      if ($ship_count > $planetrow[$sn_data[$ship_id]['name']])
       {
         $page .= $lang['fl_noenought'];
       }
@@ -30,7 +30,7 @@ if(SN_IN_FLEET !== true)
         $fleet['fleetlist']            .= "{$ship_id},{$ship_count};";
         $fleet['amount']               += $ship_count;
       }
-      $fleet['capacity'] += $pricelist[$ship_id]['capacity'] * $ship_count;
+      $fleet['capacity'] += $sn_data[$ship_id]['capacity'] * $ship_count;
       $template->assign_block_vars('ships', array(
         'ID'          => $ship_id,
         'AMOUNT'      => $ship_count,

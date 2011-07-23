@@ -24,17 +24,17 @@ CheckPlanetUsedFields($planetrow);
 
 $template = gettemplate('fleet0', true);
 
-foreach ($reslist['fleet'] as $n => $i)
+foreach ($sn_data['groups']['fleet'] as $n => $i)
 {
-  if ($planetrow[$resource[$i]] > 0)
+  if ($planetrow[$sn_data[$i]['name']] > 0)
   {
     $template->assign_block_vars('ships', array(
       'ID'          => $i,
       'NAME'        => $lang['tech'][$i],
-		'AMOUNT'      => $planetrow[$resource[$i]],
+      'AMOUNT'      => $planetrow[$sn_data[$i]['name']],
       'CONSUMPTION' => GetShipConsumption ( $i, $user ),
       'SPEED'       => get_ship_speed($i, $user),
-      'CAPACITY'    => $pricelist[$i]['capacity'],
+      'CAPACITY'    => $sn_data[$i]['capacity'],
     ));
   }
 }
