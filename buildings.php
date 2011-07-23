@@ -21,15 +21,14 @@ $mode = sys_get_param_escaped('mode');
 lng_include('buildings');
 lng_include('infos');
 
-$IsWorking = HandleTechnologieBuild ($planetrow, $user);
-
 $mode = (!$mode || $mode == 'buildings') ? QUE_STRUCTURES : ($mode == 'fleet' ? SUBQUE_FLEET : ($mode == 'defense' ? SUBQUE_DEFENSE : $mode));
 
 switch ($mode)
 {
   case 'research':
+  case QUE_RESEARCH:
     // --------------------------------------------------------------------------------------------------
-    ResearchBuildingPage ( $planetrow, $user, $IsWorking['OnWork'], $IsWorking['WorkOn'], $que);
+    ResearchBuildingPage($user, $planetrow, $que);
   break;
 
   case SUBQUE_FLEET:
