@@ -324,7 +324,7 @@ BE_DEBUG_closeTable();
     }
   }
 
-  foreach ($defenders as $fleetID => $defender)
+  foreach($defenders as $fleetID => $defender)
   {
     if(!is_array($defender['def']))
     {
