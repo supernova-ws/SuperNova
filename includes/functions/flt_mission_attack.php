@@ -90,12 +90,22 @@ function flt_mission_attack($mission_data)
 
 
   // Update galaxy (debree)
-  if ($destination_user['authlevel'] == 0) {
-    doquery('UPDATE {{planets}} SET `debris_metal` = `debris_metal` + '.($result['debree']['att'][0]+$result['debree']['def'][0]).' , debris_crystal = debris_crystal+'.($result['debree']['att'][1]+$result['debree']['def'][1]).' WHERE `galaxy` = '. $fleet_row['fleet_end_galaxy'] .' AND `system` = '. $fleet_row['fleet_end_system'] .' AND `planet` = '. $fleet_row['fleet_end_planet'] . ' AND `planet_type` = 1');
+  if ($destination_user['authlevel'] == 0)
+  {
+    doquery('UPDATE {{planets}} SET `debris_metal` = `debris_metal` + '.($result['debree']['att'][0]+$result['debree']['def'][0]).' , debris_crystal = debris_crystal+'.($result['debree']['att'][1]+$result['debree']['def'][1]).' WHERE `galaxy` = '. $fleet_row['fleet_end_galaxy'] .' AND `system` = '. $fleet_row['fleet_end_system'] .' AND `planet` = '. $fleet_row['fleet_end_planet'] . ' AND `planet_type` = 1 LIMIT 1;');
   };
 
   // !G+ post-calculation for Attackers: fleet left and possible loot
   $loot = BE_calculatePostAttacker($destination_planet, $attackFleets, $result, false);
+
+  if($result['won'] == 2 && count($result['rw']) == 2)
+  {
+    $one_round_loss = true;
+  }
+  else
+  {
+    $one_round_loss = false;
+  }
 
   // Update fleets & planets
   foreach ($attackFleets as $fleetID => $attacker)
@@ -151,58 +161,44 @@ function flt_mission_attack($mission_data)
       }
       else
       {
-        doquery("UPDATE {{fleets}} SET fleet_array = '{$fleetArray}', fleet_amount = {$totalCount}, fleet_mess = 1 WHERE fleet_id = {$fleetID}");
+        doquery("UPDATE {{fleets}} SET fleet_array = '{$fleetArray}', fleet_amount = {$totalCount}" . ($one_round_loss ? '' : ', fleet_mess = 1') . " WHERE fleet_id = {$fleetID} LIMIT 1;");
       }
     }
   }
   // TvdW (c) 2008
 
-  // FROM HERE THE SCRIPT WAS IMPORTED (not TvdW code anymore)
-  $StrAttackerUnits = sprintf ($lang['sys_attacker_lostunits'], $result['lost']['att']);
-  $StrDefenderUnits = sprintf ($lang['sys_defender_lostunits'], $result['lost']['def']);
-  $StrRuins         = sprintf ($lang['sys_gcdrunits'], $result['debree']['def'][0] + $result['debree']['att'][0], $lang['Metal'], $result['debree']['def'][1] + $result['debree']['att'][1], $lang['Crystal']);
-  $DebrisField      = $StrAttackerUnits ."<br />". $StrDefenderUnits ."<br />". $StrRuins;
+  $planet_coordinates = uni_render_coordinates($fleet_row, 'fleet_end_');
 
+  // FROM HERE THE SCRIPT WAS IMPORTED (not TvdW code anymore)
   $MoonChance = BE_calculateMoonChance($result);
 
-  if ( (mt_rand(1, 100) <= $MoonChance) && ($galenemyrow['id_luna'] == 0) )
+  if((mt_rand(1, 100) <= $MoonChance) && ($TargetPlanetName = uni_create_moon($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $TargetUserID, $MoonChance)))
   {
-    $TargetPlanetName = uni_create_moon ( $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $TargetUserID, $MoonChance);
-    $GottenMoon       = sprintf ($lang['sys_moonbuilt'], $TargetPlanetName, $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet']);
+    $GottenMoon = sprintf($lang['sys_moonbuilt'], $TargetPlanetName, $planet_coordinates);
   }
 
   // Adjust number of raids made/win/loose and xpraid
-  $QryUpdateRaidsCompteur = "UPDATE {{users}} SET `xpraid` = `xpraid` + 1, `raids` = `raids` + 1, ";
-  if ($result['won'] == 1)
-  {
-    $QryUpdateRaidsCompteur .= "`raidswin` = `raidswin` + 1 ";
-  }
-  elseif ($result['won'] == 2 || $result['won'] == 0)
-  {
-    $QryUpdateRaidsCompteur .= "`raidsloose` = `raidsloose` + 1 ";
-  }
-  $QryUpdateRaidsCompteur .= "WHERE id = '{$fleet_row['fleet_owner']}' LIMIT 1;";
-  doquery($QryUpdateRaidsCompteur);
-
-  //MadnessRed CR Creation.
-  $formatted_cr = formatCR($result,$loot['looted'],$MoonChance,$GottenMoon,$totaltime);
-  $raport = $formatted_cr['html'];
+  $str_loose_or_win = $result['won'] == 1 ? 'raidswin' : 'raidsloose';
+  doquery("UPDATE {{users}} SET `xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1 WHERE id = '{$fleet_row['fleet_owner']}' LIMIT 1;");
 
   $bashing_list = array();
   foreach ($defenseFleets as $fleetID => $defender)
   {
-    $users2[$defender['user']['id']] = $defender['user']['id'];
+    $users2[$defender['user']['id']] = $users_defender[$defender['user']['id']] = $defender['user']['id'];
   }
 
   foreach ($attackFleets as $fleetID => $attacker)
   {
-    $users2[$attacker['user']['id']] = $attacker['user']['id'];
+    $users2[$attacker['user']['id']] = $users_attacker[$attacker['user']['id']] = $attacker['user']['id'];
     // Generating attackers list for bashing table
     $bashing_list[$attacker['user']['id']] = "({$attacker['user']['id']}, {$destination_planet['id']}, {$fleet_row['fleet_end_time']})";
   }
   $bashing_list = implode(',', $bashing_list);
   doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
 
+  //MadnessRed CR Creation.
+  $raport = formatCR($result, $loot['looted'], $MoonChance, $GottenMoon, $totaltime);
+  $raport = $raport['html'];
   $rid = md5($raport);
   $QryInsertRapport  = 'INSERT INTO `{{rw}}` SET ';
   $QryInsertRapport .= '`time` = UNIX_TIMESTAMP(), ';
@@ -213,55 +209,51 @@ function flt_mission_attack($mission_data)
   $QryInsertRapport .= '`raport` = "'. mysql_real_escape_string( $raport ) .'"';
   doquery($QryInsertRapport) or die("Error inserting CR to database".mysql_error()."<br /><br />Trying to execute:".mysql_query());
 
-  // Colorize report.
-  $raport  = '<span OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
-  $raport .= '<center>';
-  if ($result['won'] == 1)
+  switch($result['won'])
   {
-    $raport .= '<font color=\'green\'>';
-  }
-  elseif ($result['won'] == 0)
-  {
-    $raport .= '<font color=\'orange\'>';
-  }
-  elseif ($result['won'] == 2)
-  {
-    $raport .= '<font color=\'red\'>';
-  }
-  $raport .= $lang['sys_mess_attack_report'] .' ['. $fleet_row['fleet_end_galaxy'] .':'. $fleet_row['fleet_end_system'] .':'. $fleet_row['fleet_end_planet'] .'] </font></span><br /><br />';
-  $raport .= '<font color=\'red\'>'. $lang['sys_perte_attaquant'] .': '. $result['lost']['att'] .'</font>';
-  $raport .= '<font color=\'green\'>   '. $lang['sys_perte_defenseur'] .': '. $result['lost']['def'] .'</font><br />' ;
-  $raport .= $lang['sys_gain'] .' '. $lang['Metal'] .':<font color=\'#adaead\'>'. $loot['looted']['metal'] .'</font>   '. $lang['Crystal'] .':<font color=\'#ef51ef\'>'. $loot['looted']['crystal'] .'</font>   '. $lang['Deuterium'] .':<font color=\'#f77542\'>'. $loot['looted']['deuterium'] .'</font><br />';
-  $raport .= $lang['sys_debris'] .' '. $lang['Metal'] .': <font color=\'#adaead\'>'. ($result['debree']['att'][0]+$result['debree']['def'][0]) .'</font>   '. $lang['Crystal'] .': <font color=\'#ef51ef\'>'. ($result['debree']['att'][1]+$result['debree']['def'][1]) .'</font><br /></center>';
+    case 0:
+      $color_attackers = $color_defenders = 'orange';
+    break;
 
-  $raport .= $st_1 . $st_2;
+    case 1:
+      $color_attackers = 'green';
+      $color_defenders = 'red';
+    break;
 
-  msg_send_simple_message ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_COMBAT, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $raport );
-
-  // Coloriize report.
-  $raport2  = '<span OnClick=\'f( "rw.php?raport='. $rid .'", "");\' >';
-  $raport2 .= '<center>';
-  if       ($result['won'] == 1)
-  {
-    $raport2 .= '<font color=\'green\'>';
+    case 2:
+      $color_attackers = 'red';
+      $color_defenders = 'green';
+    break;
   }
-  elseif ($result['won'] == 0)
-  {
-    $raport2 .= '<font color=\'orange\'>';
-  }
-  elseif ($result['won'] == 2)
-  {
-    $raport2 .= '<font color=\'red\'>';
-  }
-  $raport2 .= $lang['sys_mess_attack_report'] .' ['. $fleet_row['fleet_end_galaxy'] .':'. $fleet_row['fleet_end_system'] .':'. $fleet_row['fleet_end_planet'] .'] </font></span><br /><br />';
 
-  $raport2 .= $st_1 . $st_2;
+  $raport_part1 = '<span OnClick=\'f("rw.php?raport='. $rid .'", "");\' ><center><font color=';
+  $raport_part2 = ">{$lang['sys_mess_attack_report']} {$planet_coordinates}</font></span><br /><br />" . 
+    "<font color=\"red\">{$lang['sys_perte_attaquant']}: " . pretty_number($result['lost']['att'], true) . "</font>&nbsp;<font color=\"green\">{$lang['sys_perte_defenseur']}: " . pretty_number($result['lost']['def'], true) . "</font><br />" .
+    "{$lang['sys_debris']} {$lang['Metal']} <font color=\"#adaead\">" . pretty_number($result['debree']['att'][0] + $result['debree']['def'][0], true) . "</font> {$lang['Crystal']} <font color=\"#ef51ef\">" . pretty_number($result['debree']['att'][1] + $result['debree']['def'][1], true) .'</font><br />' .
+    ($result['won'] == 1 ? ("{$lang['sys_gain']} " .
+      "{$lang['Metal']} <font color=\"#adaead\">". pretty_number($loot['looted']['metal'], true) .'</font> ' .
+      "{$lang['Crystal']} <font color=\"#ef51ef\">" . pretty_number($loot['looted']['crystal'], true) . '</font> ' .
+      "{$lang['Deuterium']} <font color=\"#f77542\">" . pretty_number($loot['looted']['deuterium'], true) .'</font><br />') : '') . 
+    "{$st_1}{$st_2}</center>";
 
-  foreach ($users2 as $id)
+  $raport_acs = $one_round_loss 
+    ? "<center><span class=\"negative\">{$lang['sys_mess_attack_report']} {$planet_coordinates}\r\n{$lang['sys_coe_lost_contact']}</span></center>" 
+    : "{$raport_part1}{$color_attackers}{$raport_part2}";
+  foreach ($users_attacker as $id)
   {
-    if ($id != $fleet_row['fleet_owner'] && $id != 0)
+//    if ($id != $fleet_row['fleet_owner'] && $id != 0)
+    if($id)
     {
-      msg_send_simple_message ( $id, '', $fleet_row['fleet_start_time'], MSG_TYPE_COMBAT, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $raport2 );
+      msg_send_simple_message ( $id, '', $fleet_row['fleet_start_time'], MSG_TYPE_COMBAT, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $raport_acs);
+    }
+  }
+
+  $raport_hold = "{$raport_part1}{$color_defenders}{$raport_part2}";
+  foreach ($users_defender as $id)
+  {
+    if ($id && $id != $fleet_row['fleet_owner'])
+    {
+      msg_send_simple_message($id, '', $fleet_row['fleet_start_time'], MSG_TYPE_COMBAT, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $raport_hold);
     }
   }
 
