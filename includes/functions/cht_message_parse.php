@@ -1,5 +1,7 @@
 <?php
-function CHT_messageParse($msg){
+function CHT_messageParse($msg)
+{
+
   $BBCodes = array (
     "^\[c=(white|blue|yellow|green|pink|red|orange|purple)\](.+)\[/c\]$" => "<font color=\"$1\">$2</font>",
     "\[a=(ft|https?://)(.+)\](.+)\[/a\]" => "<a href=\"$1$2\" target=\"_blank\"><u>$3</u></a>",
@@ -29,4 +31,5 @@ function CHT_messageParse($msg){
 
   return $msg;
 }
+
 ?>

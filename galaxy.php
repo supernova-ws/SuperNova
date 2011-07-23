@@ -19,18 +19,18 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-$mode             = intval($_GET['mode']);
-$CurrentPlanetID  = intval($_GET['current']);
-$galaxy           = intval($_POST['galaxy']);
-$system           = intval($_POST['system']);
-$planet           = intval($_POST['planet']);
-$POST_galaxyLeft  = SYS_mysqlSmartEscape($_POST['galaxyLeft']);
-$POST_galaxyRight = SYS_mysqlSmartEscape($_POST['galaxyRight']);
-$POST_systemLeft  = SYS_mysqlSmartEscape($_POST['systemLeft']);
-$POST_systemRight = SYS_mysqlSmartEscape($_POST['systemRight']);
-$GET_galaxy       = intval($_GET['galaxy']);
-$GET_system       = intval($_GET['system']);
-$GET_planet       = intval($_GET['planet']);
+$mode             = sys_get_param_int('mode');
+$CurrentPlanetID  = sys_get_param_int('current');
+$galaxy           = sys_get_param_int('galaxy');
+$system           = sys_get_param_int('system');
+$planet           = sys_get_param_int('planet');
+$POST_galaxyLeft  = sys_get_param_str('galaxyLeft');
+$POST_galaxyRight = sys_get_param_str('galaxyRight');
+$POST_systemLeft  = sys_get_param_str('systemLeft');
+$POST_systemRight = sys_get_param_str('systemRight');
+$GET_galaxy       = sys_get_param_int('galaxy');
+$GET_system       = sys_get_param_int('system');
+$GET_planet       = sys_get_param_int('planet');
 
 lng_include('universe');
 

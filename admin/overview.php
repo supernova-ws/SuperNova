@@ -19,8 +19,8 @@ if($user['authlevel'] < 1)
   AdminMessage($lang['adm_err_denied']);
 }
 
-$GET_cmd  = SYS_mysqlSmartEscape($_GET['cmd']);
-$TypeSort = SYS_mysqlSmartEscape($_GET['type']);
+$GET_cmd  = sys_get_param_str('cmd');
+$TypeSort = sys_get_param_str('type');
 
 if ($GET_cmd == 'sort') {
 } else {

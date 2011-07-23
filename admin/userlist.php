@@ -17,9 +17,9 @@ if ($user['authlevel'] < 3)
   AdminMessage($lang['adm_err_denied']);
 }
 
-$GET_cmd = SYS_mysqlSmartEscape($_GET['cmd']);
+$GET_cmd = sys_get_param_str('cmd');
 $GET_user = intval($_GET['user']);
-$TypeSort = SYS_mysqlSmartEscape($_GET['type']);
+$TypeSort = sys_get_param_str('type');
 
 lng_include('admin');
 

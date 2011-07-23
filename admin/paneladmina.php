@@ -19,11 +19,11 @@ if($user['authlevel'] < 3)
   AdminMessage($lang['adm_err_denied']);
 }
 
-$GET_action = SYS_mysqlSmartEscape($_GET['action']);
-$GET_result = SYS_mysqlSmartEscape($_GET['result']);
-$Pattern    = SYS_mysqlSmartEscape($_GET['player']);
+$GET_action = sys_get_param_str('action');
+$GET_result = sys_get_param_str('result');
+$Pattern    = sys_get_param_str('player');
 $NewLvl     = intval($_GET['authlvl']);
-$ip         = SYS_mysqlSmartEscape($_GET['ip']);
+$ip         = sys_get_param_str('ip');
 
 $PanelMainTPL = gettemplate('admin/admin_panel_main');
 
