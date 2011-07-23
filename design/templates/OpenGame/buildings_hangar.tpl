@@ -16,13 +16,12 @@
           <table width=100% class="noborder">
             <tr>
               <th width=120px>
-              <div id="ov_{QUE_ID}"></div>
-              <div id="ov_{QUE_ID}_timer" style="color: lime"></div>
-              <div>{L_sys_total_time}</div>
-              <div id="ov_{QUE_ID}_total" style="color: red"></div>
-            </th>
-            <th id="ov_{QUE_ID}_que">
+                <div id="ov_{QUE_ID}"></div>
+                <div id="ov_{QUE_ID}_timer" style="color: lime"></div>
+                <div>{L_sys_total_time}</div>
+                <div id="ov_{QUE_ID}_total" style="color: red"></div>
               </th>
+              <th id="ov_{QUE_ID}_que"></th>
             </tr>
           </table>
         </th>

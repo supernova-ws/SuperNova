@@ -32,28 +32,23 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('overview');
 
-$mode            = $_GET['mode'];
-switch ($mode)
+$mode            = sys_get_param_str('mode');
+switch($mode)
 {
   case 'manage':
-    $template        = gettemplate('planet_manage', true);
-    $planet_id       = sys_get_param_int('planet_id');
+    $template  = gettemplate('planet_manage', true);
+    $planet_id = sys_get_param_int('planet_id');
 
-    $rename          = sys_get_param_str('rename');
-    $new_name        = sys_get_param_str('new_name', 'Colony');
-
-    $abandon         = sys_get_param_str('abandon');
-    $abandon_confirm = $_POST['abandon_confirm'];
-
-    if ($rename && $new_name)
+    if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name'))
     {
       $planetrow['name'] = $new_name;
       $new_name = mysql_real_escape_string($new_name);
       doquery("UPDATE {{planets}} SET `name` = '{$new_name}' WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
     }
-    elseif ($abandon)
+    elseif(sys_get_param_str('abandon'))
     {
-      if (md5($abandon_confirm) == $user['password'])
+      $abandon_confirm = $_POST['abandon_confirm'];
+      if(md5($abandon_confirm) == $user['password'])
       {
         if($user['id_planet'] != $user['current_planet'] && $user['current_planet'] == $planet_id)
         {
@@ -87,28 +82,16 @@ switch ($mode)
   break;
 
   default:
-    // --- Gestion des messages ----------------------------------------------------------------------
     $template = gettemplate('planet_overview', true);
 
-    // --- Gestion Officiers -------------------------------------------------------------------------
-    // Passage au niveau suivant, ajout du point de compétence et affichage du passage au nouveau level
     rpg_level_up($user, RPG_STRUCTURE);
     rpg_level_up($user, RPG_RAID);
 
-    // -----------------------------------------------------------------------------------------------
-    // Filling table with fleet events relating to current users
+    $fleet_id = 1;
     int_get_fleet_to_planet("SELECT DISTINCT * FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}' OR `fleet_target_owner` = '{$user['id']}';");
-
-    // -----------------------------------------------------------------------------------------------
-    // Adding missile attacks to fleet event table
     int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE `owner` = '{$user['id']}'");
 
-    // -----------------------------------------------------------------------------------------------
-    // --- Gestion de la liste des planetes ----------------------------------------------------------
-    // Planetes ...
     $planets_query = SortUserPlanets($user, false, '*');
-
-    $fleet_id = 1;
     while ($UserPlanet = mysql_fetch_assoc($planets_query))
     {
       if($UserPlanet['planet_type'] == PT_MOON)
@@ -156,10 +139,8 @@ switch ($mode)
 
     tpl_assign_fleet($template, $fleets);
 
-    // -----------------------------------------------------------------------------------------------
-    $parse                         = $lang;
+    $parse = $lang;
 
-    // --- Gestion de l'affichage d'une lune ---------------------------------------------------------
     if($planetrow['planet_type'] == PT_PLANET)
     {
       $lune = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$planetrow['id']}' AND `planet_type` = " . PT_MOON . " LIMIT 1;", '', true);

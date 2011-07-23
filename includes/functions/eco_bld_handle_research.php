@@ -16,24 +16,22 @@
 // Tableau de 2 elements
 //     ['OnWork'] -> Boolean .. Vrai ou Faux
 //     ['WorkOn'] -> Table de l'enregistrement de la planete sur laquelle s'effectue la techno
-function HandleTechnologieBuild(&$planetrow, &$user)
+function HandleTechnologieBuild(&$user, &$planetrow)
 {
   global $resource, $sn_data, $time_now, $lang;
 
-  if ($user['b_tech_planet'] != 0)
+  if($user['b_tech_planet'])
   {
-    if ($user['b_tech_planet'] != $planetrow['id'])
+    if($user['b_tech_planet'] != $planetrow['id'])
     {
-      $WorkingPlanet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['b_tech_planet']}' LIMIT 1;", '', true);
+      $planet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['b_tech_planet']}' LIMIT 1;", '', true);
     }
-
-    if ($WorkingPlanet) {
-      $planet = $WorkingPlanet;
-    } else {
+    else
+    {
       $planet = $planetrow;
     }
 
-    if ($planet['b_tech'] <= time() && $planet['b_tech_id'] != 0)
+    if($planet['b_tech'] && $planet['b_tech'] <= $time_now && $planet['b_tech_id'])
     {
       $user[$resource[$planet['b_tech_id']]]++;
       msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_research_from'], $lang['msg_que_research_subject'], sprintf($lang['msg_que_research_message'], $lang['tech'][$planet['b_tech_id']], $user[$resource[$planet['b_tech_id']]]));
@@ -58,13 +56,6 @@ function HandleTechnologieBuild(&$planetrow, &$user)
       doquery("UPDATE `{{planets}}` SET `b_tech` = '0', `b_tech_id` = '0' WHERE `id` = '{$planet['id']}' LIMIT 1;");
       doquery("UPDATE `{{users}}` SET `{$resource[$planet['b_tech_id']]}` = '{$user[$resource[$planet['b_tech_id']]]}', `b_tech_planet` = '0' WHERE `id` = '{$user['id']}' LIMIT 1;");
       $planet["b_tech_id"] = 0;
-      if (isset($WorkingPlanet)) {
-        $WorkingPlanet = $planet;
-      } else {
-        $planetrow = $planet;
-      }
-      $Result['WorkOn'] = "";
-      $Result['OnWork'] = false;
     }
     elseif ($planet["b_tech_id"] == 0)
     {
@@ -72,24 +63,12 @@ function HandleTechnologieBuild(&$planetrow, &$user)
       // Pas de Technologie en cours devait y avoir un bug lors de la derniere connexion
       // On met l'enregistrement informant d'une techno en cours de recherche a jours
       doquery("UPDATE `{{users}}` SET `b_tech_planet` = '0'  WHERE `id` = '{$user['id']}' LIMIT 1;");
-      $Result['WorkOn'] = "";
-      $Result['OnWork'] = false;
     }
-    else
-    {
-      // Bin on bosse toujours ici ... Alors ne nous derangez pas !!!
-      $Result['WorkOn'] = $planet;
-      $Result['OnWork'] = true;
-    }
-  } else {
-    $Result['WorkOn'] = "";
-    $Result['OnWork'] = false;
   }
-
-  return $Result;
 }
 
 // History revision
 // 1.0 - mise en forme modularisation version initiale
 // 1.1 - Correction retour de fonction (retourne un tableau a la place d'un flag)
+
 ?>

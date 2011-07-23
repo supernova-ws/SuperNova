@@ -102,6 +102,8 @@ elseif($sys_user_logged_in)
 
   CheckPlanetUsedFields($planetrow);
 
+  HandleTechnologieBuild($user, $planetrow);
+
   if(!$allow_anonymous)
   {
     sys_user_vacation($user);
