@@ -27,10 +27,7 @@ if ($mode == 'addit')
   $PlanetID = $_POST['user'];
   $MoonName = $_POST['name'];
 
-  $QrySelectPlanet = "SELECT * FROM {{planets}} ";
-  $QrySelectPlanet .= "WHERE ";
-  $QrySelectPlanet .= "`id` = '" . $PlanetID . "';";
-  $PlanetSelected = doquery($QrySelectPlanet, '', true);
+  $PlanetSelected = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$PlanetID}' LIMIT 1;", '', true);
 
   $Galaxy = $PlanetSelected['galaxy'];
   $System = $PlanetSelected['system'];

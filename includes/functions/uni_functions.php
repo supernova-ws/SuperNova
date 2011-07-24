@@ -236,7 +236,11 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
           `crystal` = '0', `crystal_perhour` = '0', `crystal_max` = '{$base_storage_size}',
           `deuterium` = '0', `deuterium_perhour` = '0', `deuterium_max` = '{$base_storage_size}';"
       );
-      doquery("UPDATE {{planets}} SET `debris_metal` = 0, `debris_crystal` = 0 WHERE `id` = {$moon_planet['id']} LIMIT 1;");
+      $debris_spent = $moon_chance * 1000000;
+      $metal_spent  = min($moon_planet['debris_metal'], $debris_spent * mt_rand(50, 75) / 100);
+      $crystal_spent = min($moon_planet['debris_crystal'], $debris_spent - $metal_spent);
+      $metal_spent = min($moon_planet['debris_metal'], $debris_spent - $crystal_spent); // Need if crystal less then their part
+      doquery("UPDATE {{planets}} SET `debris_metal` = GREATEST(0, `debris_metal` - {$metal_spent}), `debris_crystal` = GREATEST(0, `debris_crystal` - {$crystal_spent}) WHERE `id` = {$moon_planet['id']} LIMIT 1;");
     }
   }
 
