@@ -794,9 +794,9 @@ debug($update_tables['logs']['log_id'], 31);
     }
 
   upd_do_query('COMMIT;', true);
-//  $new_version = 29.1;
+  $new_version = 30;
 
-//  case 29.1:
+  case 30:
 //    upd_log_version_update();
 //
 //  upd_do_query('COMMIT;', true);

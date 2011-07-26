@@ -2,18 +2,19 @@
 Navicat MySQL Data Transfer
 
 Source Server         : localhost
-Source Server Version : 50141
+Source Server Version : 50158
 Source Host           : localhost:3306
 Source Database       : supernova
 
 Target Server Type    : MYSQL
-Target Server Version : 50141
+Target Server Version : 50158
 File Encoding         : 65001
 
-Date: 2011-06-26 13:10:44
+Date: 2011-07-27 01:13:10
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
 -- ----------------------------
 -- Table structure for `sn_aks`
 -- ----------------------------
@@ -412,6 +413,30 @@ CREATE TABLE `sn_logs` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for `sn_log_dark_matter`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_log_dark_matter`;
+CREATE TABLE `sn_log_dark_matter` (
+  `log_dark_matter_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `log_dark_matter_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Human-readable record timestamp',
+  `log_dark_matter_username` varchar(64) NOT NULL DEFAULT '' COMMENT 'Username',
+  `log_dark_matter_reason` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Reason ID for dark matter adjustment',
+  `log_dark_matter_amount` int(10) NOT NULL DEFAULT '0' COMMENT 'Amount of dark matter change',
+  `log_dark_matter_comment` text COMMENT 'Comments',
+  `log_dark_matter_page` varchar(512) NOT NULL DEFAULT '' COMMENT 'Page that makes entry to log',
+  `log_dark_matter_sender` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'User ID which make log record',
+  PRIMARY KEY (`log_dark_matter_id`),
+  UNIQUE KEY `log_dark_matter_id` (`log_dark_matter_id`),
+  KEY `i_log_dark_matter_sender_id` (`log_dark_matter_sender`,`log_dark_matter_id`),
+  KEY `i_log_dark_matter_reason_sender_id` (`log_dark_matter_reason`,`log_dark_matter_sender`,`log_dark_matter_id`),
+  KEY `i_log_dark_matter_amount` (`log_dark_matter_amount`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_log_dark_matter
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_mercenaries`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_mercenaries`;
@@ -614,6 +639,10 @@ CREATE TABLE `sn_planets` (
   KEY `GSPT` (`galaxy`,`system`,`planet`,`planet_type`),
   KEY `i_parent_planet` (`parent_planet`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_planets
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_quest`
@@ -885,6 +914,10 @@ CREATE TABLE `sn_users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sn_users
+-- ----------------------------
+
+-- ----------------------------
 -- Default server configuration
 -- ----------------------------
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '(Place here code for banner)');
@@ -918,13 +951,13 @@ INSERT INTO `sn_config` VALUES ('game_counter', '0');
 INSERT INTO `sn_config` VALUES ('game_default_language', 'ru');
 INSERT INTO `sn_config` VALUES ('game_default_skin', 'skins/EpicBlue/');
 INSERT INTO `sn_config` VALUES ('game_default_template', 'OpenGame');
-INSERT INTO `sn_config` VALUES ('game_disable', '0');
+INSERT INTO `sn_config` VALUES ('game_disable', 0);
 INSERT INTO `sn_config` VALUES ('game_disable_reason', 'SuperNova is in maintenance mode! Please return later!');
 INSERT INTO `sn_config` VALUES ('game_email_pm', 0);
-INSERT INTO `sn_config` VALUES ('game_maxGalaxy', '5');
-INSERT INTO `sn_config` VALUES ('game_maxPlanet', '15');
-INSERT INTO `sn_config` VALUES ('game_maxSystem', '199');
-INSERT INTO `sn_config` VALUES ('game_mode', '0');
+INSERT INTO `sn_config` VALUES ('game_maxGalaxy', 5);
+INSERT INTO `sn_config` VALUES ('game_maxPlanet', 15);
+INSERT INTO `sn_config` VALUES ('game_maxSystem', 199);
+INSERT INTO `sn_config` VALUES ('game_mode', 0);
 INSERT INTO `sn_config` VALUES ('game_name', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('game_news_actual', '259200');
 INSERT INTO `sn_config` VALUES ('game_news_overview', '3');
@@ -949,7 +982,9 @@ INSERT INTO `sn_config` VALUES ('LastSettedGalaxyPos', '1');
 INSERT INTO `sn_config` VALUES ('LastSettedPlanetPos', '1');
 INSERT INTO `sn_config` VALUES ('LastSettedSystemPos', '1');
 INSERT INTO `sn_config` VALUES ('metal_basic_income', '40');
+INSERT INTO `sn_config` VALUES ('player_delete_time', 45 * 24*60*60);
 INSERT INTO `sn_config` VALUES ('player_max_colonies', '9');
+INSERT INTO `sn_config` VALUES ('player_vacation_time', 2 * 24*60*60);
 INSERT INTO `sn_config` VALUES ('quest_total', '0');
 INSERT INTO `sn_config` VALUES ('resource_multiplier', '1');
 INSERT INTO `sn_config` VALUES ('rpg_bonus_divisor', '10');

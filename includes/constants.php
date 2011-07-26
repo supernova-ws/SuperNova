@@ -14,9 +14,9 @@ if(!defined('INSIDE'))
   die('Hacking attempt');
 }
 
-define('DB_VERSION', '29');
-define('SN_RELEASE', '29');
-define('SN_VERSION', '29d25');
+define('DB_VERSION', '30');
+define('SN_RELEASE', '30RC0');
+define('SN_VERSION', '30c0');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
