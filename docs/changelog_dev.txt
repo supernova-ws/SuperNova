@@ -208,7 +208,7 @@ TODO:
 Текущий билд
 ============
 
-2011-07-27 00:42 V30c0
+2011-07-27 01:48 V30c0
 [!] Project "SuperNova.WS" Release 30 "Emailing phalanx research antiSSF" RC0
 
 2011-07-24 14:27 29d25

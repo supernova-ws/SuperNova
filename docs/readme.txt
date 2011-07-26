@@ -1310,4 +1310,4 @@ Project "SuperNova.WS" copyright (c) 2009-2011 by Gorlum for http://supernova.ws
 Based on xNova RageRepack v226
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Updated: 2011-07-27 00:46 Project "SuperNova.WS" Release 30
+Updated: 2011-07-27 01:48 Project "SuperNova.WS" Release 30
