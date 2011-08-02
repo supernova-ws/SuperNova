@@ -138,6 +138,7 @@ Project "SuperNova.WS" Release 30 "Emailing phalanx research antiSSF" RC0
 [@] Общие: Устаревшая функция SYS_mysqlSmartEscape заменена на соответствующие
 [@] Общие: Устаревшие массивы  $pricelist,  $resources,  $reslist,  $sn_groups,
     $CombatCaps заменены в коде на $sn_data 
+[@] Обслуживание: Корректно пересчитывается количество аккаунтов в БД
 
 
 Project "SuperNova.WS" Release 29 "Quest messaging"

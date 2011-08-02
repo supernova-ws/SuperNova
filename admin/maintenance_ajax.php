@@ -83,6 +83,9 @@ foreach ($ques as $que)
 }
 $msg .= '</ul></div>';
 
+$user_count = doquery("SELECT COUNT(*) AS user_count FROM {{users}};", '', true);
+$config->db_saveItem('users_amount', $user_count['user_count']);
+
 doquery('COMMIT;');
 
 $totaltime = microtime(true) - $totaltime;
