@@ -69,6 +69,8 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
     $planet_sub_query .= "`{$sn_data[$unit_id]['name']}` = `{$sn_data[$unit_id]['name']}` - {$amount},";
   }
 
+  $to['id_owner'] = intval($to['id_owner']);
+
   $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
   $QryInsertFleet .= "`fleet_owner` = '{$user['id']}', ";
   $QryInsertFleet .= "`fleet_mission` = '{$mission}', ";
