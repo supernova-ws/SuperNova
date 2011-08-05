@@ -123,7 +123,7 @@ if(SN_IN_FLEET !== true)
   $options = array('fleet_speed_percent' => $speed_percent, 'fleet_group' => $fleet_group);
   if ($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE)
   {
-    $TargetPlanet = array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet);
+    $TargetPlanet = array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet, 'id_owner' => 0);
   }
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
 
@@ -209,7 +209,7 @@ if(SN_IN_FLEET !== true)
   $QryInsertFleet .= "`fleet_resource_metal` = '". $TransMetal ."', ";
   $QryInsertFleet .= "`fleet_resource_crystal` = '". $TransCrystal ."', ";
   $QryInsertFleet .= "`fleet_resource_deuterium` = '". $TransDeuterium ."', ";
-  $QryInsertFleet .= "`fleet_target_owner` = '". $TargetPlanet['id_owner'] ."', ";
+  $QryInsertFleet .= "`fleet_target_owner` = '". intval($TargetPlanet['id_owner']) ."', ";
   $QryInsertFleet .= "`fleet_group` = '". $fleet_group ."', ";
   $QryInsertFleet .= "`start_time` = '". $time_now ."';";
   doquery( $QryInsertFleet);

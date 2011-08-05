@@ -208,13 +208,16 @@ TODO:
 Текущий билд
 ============
 
-2011-08-05 01:45 V30d0
+2011-08-05 13:08 30d1
+[%] Отправка флотов: Исправлена ошибка на mySQL серверах со STRICT_TRANS_TABLES
+
+2011-08-05 01:45 30d0
 [!] Project "SuperNova.WS" Release 30 "Emailing phalanx research antiSSF"
 
 2011-08-02 21:35
 [@] Обслуживание: Корректно пересчитывается количество аккаунтов в БД
 
-2011-07-27 01:48 V30c0
+2011-07-27 01:48 30c0
 [!] Project "SuperNova.WS" Release 30 "Emailing phalanx research antiSSF" RC0
 
 2011-07-24 14:27 29d25
