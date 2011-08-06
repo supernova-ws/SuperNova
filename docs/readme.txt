@@ -1283,6 +1283,8 @@ Sypex Dumper
 
 Инструкции по установке (на русском):
   /docs/install.txt
+Инструкции по установке (английский, google-translated):
+  /docs/install-en.txt
 
 Документация для администраторов и разработчиков (на русском):
   /docs/html/developer.html
