@@ -29,35 +29,30 @@
 
 function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0)
 {
-  global $user;
+  global $time_now, $user;
 
-  if(!$ally_id)
-  {
-    $ally_id = $user['ally_id'];
-  }
+  $ally_id = $ally_id ? $ally_id : $user['ally_id'];
 
-  $query = "SELECT id, username FROM {{users}} WHERE ally_id = '{$ally_id}'";
-  if ($ally_rank_id >= 0) {
-    $query .= " AND ally_rank_id = {$ally_rank_id}";
-  }
-  $query = doquery($query);
+  $query = doquery("SELECT id, username FROM {{users}} WHERE ally_id = '{$ally_id}'" . ($ally_rank_id >= 0 ? " AND ally_rank_id = {$ally_rank_id}" : ''));
 
   $list = '';
-  while ($u = mysql_fetch_assoc($query)) {
+  while ($u = mysql_fetch_assoc($query))
+  {
     $sendList[] = $u['id'];
     $list .= "<br>{$u['username']} ";
   }
 
-  msg_send_simple_message($sendList, $GLOBALS['user']['id'], $GLOBALS['time_now'], MSG_TYPE_ALLIANCE, $GLOBALS['user']['username'], $subject, sys_bbcodeParse($message, true));
+  msg_send_simple_message($sendList, $user['id'], $time_now, MSG_TYPE_ALLIANCE, $user['username'], $subject, sys_bbcodeParse($message, true));
 
   return $list;
 }
 
 function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false)
 {
-  global $config, $user, $sn_message_class_list;
+  global $config, $user, $sn_message_class_list, $time_now;
 
-  $timestamp = $timestamp ? $timestamp : $GLOBALS['time_now'];
+  $timestamp = $timestamp ? $timestamp : $time_now;
+  $sender = intval($sender);
   if (!is_array($owners))
   {
     $owners = array($owners);

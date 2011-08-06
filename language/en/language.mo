@@ -36,6 +36,7 @@ $lang_info = array(
 
   'LANG_NAME_NATIVE'  => 'English',
   'LANG_NAME_ENGLISH' => 'English',
+  'LANG_FLAG'         => 'en.png',
   'LANG_NAME_ISO2'    => 'en',
   'LANG_NAME_ISO3'    => 'eng',
   'LANG_ENCODING'     => 'windows-1252',

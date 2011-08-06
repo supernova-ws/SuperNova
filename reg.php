@@ -30,7 +30,6 @@ if ($_POST['submit'])
   $password = strip_tags($_POST['password']);
   $email = mysql_real_escape_string(strip_tags($_POST['email']));
   $planet_name = strip_tags(trim($_POST['planet_name']));
-  $language = mysql_real_escape_string(strip_tags($_POST['language']));
   $sex = mysql_real_escape_string(strip_tags($_POST['sex']));
 
 
@@ -81,12 +80,6 @@ if ($_POST['submit'])
     $errors++;
   }
 
-  if ($language != 'ru')
-  {
-    $errorlist .= $lang['error_lang'];
-    $errors++;
-  }
-
   if (!$_POST['register']) {
     $errorlist .= $lang['error_rgt'];
     $errors++;
@@ -99,6 +92,8 @@ if ($_POST['submit'])
   else
   {
     $md5pass = md5($password);
+
+    $language = $language ? $language : DEFAULT_LANG;
 
     doquery(
       "INSERT INTO {{users}} SET
@@ -180,12 +175,13 @@ else
   $template = gettemplate('registry_form', true);
   $template->assign_vars(array(
     'id_ref'     => $id_ref,
-    'referral'   => "?id_ref=$id_ref",
     'servername' => $config->game_name,
     'URL_RULES'  => $config->url_rules,
     'URL_FORUM'  => $config->url_forum,
     'URL_FAQ'    => $config->url_faq,
   ));
+
+  tpl_login_lang($template, $id_ref);
 
   display(parsetemplate($template), $lang['registry'], false, '', false, false);
 }

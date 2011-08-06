@@ -140,7 +140,8 @@ if($mode == 'change')
 
   $user['email'] = sys_get_param_str('db_email');
   $user['dpath']  = sys_get_param_str('dpath');
-  $user['lang']   = sys_get_param_str('langer');
+  $user['lang']   = $language = sys_get_param_str('langer', $language);
+
   $user['avatar'] = sys_get_param_str('avatar');
 
   $user['design'] = sys_get_param_int('design');

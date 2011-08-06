@@ -10,6 +10,8 @@
 require_once('includes/init.php');
 
 $user = sn_autologin(!$allow_anonymous);
+$language = $language ? $language : $user['lang'];
+$sys_user_logged_in = $user && is_array($user) && isset($user['id']) && $user['id'];
 
 if($config->game_disable)
 {
@@ -26,8 +28,6 @@ if($config->game_disable)
   }
 }
 
-$sys_user_logged_in = $user && is_array($user) && isset($user['id']) && $user['id'];
-
 if(
   !($allow_anonymous || $sys_user_logged_in) ||
   (defined('IN_ADMIN') && IN_ADMIN && $user['authlevel'] < 1)
@@ -38,9 +38,6 @@ if(
   ob_end_flush();
   die();
 }
-
-lng_include('system');
-lng_include('tech');
 
 if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0)
 {

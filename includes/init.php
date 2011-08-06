@@ -186,9 +186,11 @@ while (($file = readdir($dir)) !== false)
   }
 }
 
+sn_db_connect();
+
+$language = sys_get_param_str('lang');
+
 lng_include('system');
 lng_include('tech');
-
-sn_db_connect();
 
 ?>
