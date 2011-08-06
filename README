@@ -81,15 +81,21 @@ GIT-repository on SourceForge:
   git://supernova-ws.git.sourceforge.net/gitroot/supernova-ws/supernova-ws
 
 Release archives:
-  http://sourceforge.net/projects/supernova-ws/files/
+  http://sourceforge.net/projects/supernova-ws/files/releases/
+
+DIFFs
+  http://sourceforge.net/projects/supernova-ws/files/diffs/
+
+Patches (archive of differences between indicated versions)
+  http://sourceforge.net/projects/supernova-ws/files/patches/
 
 Support
 -------
 Forum (Russian and English):
   http://forum.supernova.ws/viewforum.php?f=73
 
-Live Universes
---------------
+Live Demo Universes
+-------------------
 SuperNova (x1):
   http://supernova.ws
 
@@ -114,6 +120,9 @@ User-level changelog (Russian):
 
 Installation instructions (Russian):
   /docs/install.txt
+Installation instructions (English, google-translated):
+  /docs/install-en.txt
+
 
 Documentation for developers & administrators (Russian):
   /docs/html/developer.html
