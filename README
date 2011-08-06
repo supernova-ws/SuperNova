@@ -81,7 +81,13 @@ GIT-repository on SourceForge:
   git://supernova-ws.git.sourceforge.net/gitroot/supernova-ws/supernova-ws
 
 Release archives:
-  http://sourceforge.net/projects/supernova-ws/files/
+  http://sourceforge.net/projects/supernova-ws/files/releases/
+
+DIFFs
+  http://sourceforge.net/projects/supernova-ws/files/diffs/
+
+Patches (archive of differences between indicated versions)
+  http://sourceforge.net/projects/supernova-ws/files/patches/
 
 Support
 -------
