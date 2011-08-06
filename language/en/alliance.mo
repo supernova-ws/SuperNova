@@ -19,7 +19,7 @@ $lang['ali_dip_offer_new']     = 'Start negotiations';
 $lang['ali_dip_offer_to_ally'] = 'Offer to Alliance';
 $lang['ali_dip_offer_make']    = 'Start negotiations';
 $lang['ali_dip_offer_answer']      = 'Alliance declined your offer';
-$lang['ali_dip_offer_deny_reason'] = 'You declared offer'; // . Причина отказа:
+$lang['ali_dip_offer_deny_reason'] = 'You declared offer'; // . пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ:
 $lang['ali_dip_offer_to']          = 'To Alliance';
 $lang['ali_dip_offer_from']        = 'From Alliance';
 
@@ -112,7 +112,7 @@ $lang['ali_search_tip']         = 'Search can be performed on the part of the na
 $lang['ali_search_result_none'] = 'No items found matching your search for Alliances.';
 $lang['ali_search_result_tip']  = 'Click on the name or tag of the Alliance that would see information about it.<br>Click "Enter" to send a request to join.';
 
-$lang['ali_sys_name']         = 'The Name';
+$lang['ali_sys_name']         = 'Name';
 $lang['ali_sys_tag']          = 'Tag';
 $lang['ali_sys_members']      = 'Members';
 $lang['ali_sys_notFound']     = 'The Alliance does not exist';
@@ -130,7 +130,7 @@ $lang['ali_info_internal']    = 'Internal information';
 $lang['ali_info_leave']       = 'Leave Alliance';
 
 
-$lang['Name']           = 'The Name';
+$lang['Name']           = 'Name';
 $lang['Tag']            = 'Tag';
 $lang['Members']        = 'Members';
 
@@ -207,13 +207,13 @@ $lang['Number']            = 'Number';
 $lang['Off']            = 'Offline';
 $lang['Ok']             = 'Ok';
 $lang['On']             = 'Online';
-$lang['Online']            = 'Status';
+$lang['Online']            = 'Online';
 $lang['Options']        = 'Options';
-$lang['Position']          = 'Status';
+$lang['Position']          = 'Position';
 $lang['Public_text_of_alliance']    = 'External text';
 $lang['Range']             = 'Rank';
 $lang['Reject_cand']             = 'Reject';
-$lang['Reload']            = 'Example';
+$lang['Reload']            = 'Reload';
 $lang['Repel']             = 'Repel';
 $lang['requests_view']        = 'Viewing applications';
 $lang['Request_answer']       = 'Request rejected';
