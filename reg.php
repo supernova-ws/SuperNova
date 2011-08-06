@@ -12,11 +12,6 @@
 
 include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
-if(!$user['lang'])
-{
-  $user['lang'] = sys_get_param_str('lang', DEFAULT_LANG);
-}
-
 lng_include('login');
 
 $wylosuj = rand(100000,9000000);
@@ -35,7 +30,6 @@ if ($_POST['submit'])
   $password = strip_tags($_POST['password']);
   $email = mysql_real_escape_string(strip_tags($_POST['email']));
   $planet_name = strip_tags(trim($_POST['planet_name']));
-  $language = mysql_real_escape_string(strip_tags($_POST['language']));
   $sex = mysql_real_escape_string(strip_tags($_POST['sex']));
 
 
@@ -86,12 +80,6 @@ if ($_POST['submit'])
     $errors++;
   }
 
-  if ($language != 'ru')
-  {
-    $errorlist .= $lang['error_lang'];
-    $errors++;
-  }
-
   if (!$_POST['register']) {
     $errorlist .= $lang['error_rgt'];
     $errors++;
@@ -104,6 +92,8 @@ if ($_POST['submit'])
   else
   {
     $md5pass = md5($password);
+
+    $language = $language ? $language : DEFAULT_LANG;
 
     doquery(
       "INSERT INTO {{users}} SET

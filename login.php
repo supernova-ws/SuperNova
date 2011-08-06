@@ -11,11 +11,6 @@
 
 include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
-if(!$user['lang'])
-{
-  $user['lang'] = sys_get_param_str('lang', DEFAULT_LANG);
-}
-
 lng_include('login');
 lng_include('admin');
 

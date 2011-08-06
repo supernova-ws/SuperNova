@@ -2,8 +2,8 @@
 
 function eco_que_process($user, &$planet, $time_left)
 {
+  global $lang;
   $sn_data = &$GLOBALS['sn_data'];
-  $lang = &$GLOBALS['lang'];
 
   $quest_list = qst_get_quests($user['id']);
   $quest_triggers = qst_active_triggers($quest_list);

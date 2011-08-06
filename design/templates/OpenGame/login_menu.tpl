@@ -13,17 +13,17 @@
   <!-- IF URL_RULES -->
   <a href="{URL_RULES}">{L_log_rules}</a> ::
   <!-- ENDIF -->
-  <a href="server_info.php">{L_log_cred}</a> ::
-  <a href="stat.php">{L_log_stat_menu}</a>
+  <a href="server_info.php{LANG}">{L_log_cred}</a> ::
+  <a href="stat.php{LANG}">{L_log_stat_menu}</a>
   <!-- IF URL_FAQ -->
   :: <a href="{URL_FAQ}">{L_log_faq}</a>
   <!-- ENDIF -->
   <br />
 
-  <a href="announce.php">{L_log_news}</a> ::
+  <a href="announce.php{LANG}">{L_log_news}</a> ::
   <!-- IF URL_FORUM -->
   <a href="{URL_FORUM}">{L_log_forums}</a> ::
   <!-- ENDIF -->
-  <a href="banned.php">{L_log_banned}</a> ::
-  <a href="contact.php">{L_log_contacts}</a>
+  <a href="banned.php{LANG}">{L_log_banned}</a> ::
+  <a href="contact.php{LANG}">{L_log_contacts}</a>
 </div>

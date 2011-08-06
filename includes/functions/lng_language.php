@@ -6,9 +6,9 @@
 //
 function lng_include($filename, $ext = '.mo')
 {
-  global $lang, $user;
+  global $lang, $language;
 
-  $SelLanguage = $user['lang'] ? $user['lang'] : DEFAULT_LANG;
+  $SelLanguage = $language ? $language : DEFAULT_LANG;
   include_once(SN_ROOT_PHYSICAL . "language/{$SelLanguage}/{$filename}{$ext}");
 }
 

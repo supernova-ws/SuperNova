@@ -696,24 +696,17 @@ function mymail($to, $title, $body, $from = '', $html = false)
 {
   global $config;
 
-  $from = trim($from);
-
-  if (!$from)
-  {
-    $from = $config->game_adminEmail;
-  }
-
-  $rp = $config->game_adminEmail;
+  $from = trim($from ? $from : $config->game_adminEmail);
 
   $head = '';
   $head .= "Content-Type: text/" . ($html ? 'html' : 'plain'). "; charset=utf-8 \r\n";
   $head .= "Date: " . date('r') . " \r\n";
-  $head .= "Return-Path: $rp \r\n";
-  $head .= "From: $from \r\n";
-  $head .= "Sender: $from \r\n";
-  $head .= "Reply-To: $from \r\n";
-  $head .= "Organization: $org \r\n";
-  $head .= "X-Sender: $from \r\n";
+  $head .= "Return-Path: {$config->game_adminEmail} \r\n";
+  $head .= "From: {$from} \r\n";
+  $head .= "Sender: {$from} \r\n";
+  $head .= "Reply-To: {$from} \r\n";
+  $head .= "Organization: {$org} \r\n";
+  $head .= "X-Sender: {$from} \r\n";
   $head .= "X-Priority: 3 \r\n";
   $body = str_replace("\r\n", "\n", $body);
   $body = str_replace("\n", "\r\n", $body);
@@ -726,7 +719,7 @@ function mymail($to, $title, $body, $from = '', $html = false)
 
   $title = '=?UTF-8?B?' . base64_encode(iconv('CP1251', 'UTF-8', $title)) . '?=';
 
-  return mail($to, $title, $body, $head);
+  return @mail($to, $title, $body, $head);
 }
 
 function sys_time_human($time, $full = false)
@@ -741,10 +734,10 @@ function sys_time_human($time, $full = false)
   $time = floor($time/24);
 
   return
-    ($time || $full ? "{$time} {$lang['sys_day']}&nbsp;" : '') .
-    ($hours || $full ? "{$hours} {$lang['sys_hrs']}&nbsp;" : '') .
-    ($minutes || $full ? "{$minutes} {$lang['sys_min']}&nbsp;" : '') .
-    ($seconds || $full ? "{$seconds} {$lang['sys_sec']}" : '');
+    ($full || $time    ? "{$time} {$lang['sys_day']}&nbsp;" : '') .
+    ($full || $hours   ? "{$hours} {$lang['sys_hrs']}&nbsp;" : '') .
+    ($full || $minutes ? "{$minutes} {$lang['sys_min']}&nbsp;" : '') .
+    ($full || $seconds ? "{$seconds} {$lang['sys_sec']}" : '');
 }
 
 ?>
