@@ -1,7 +1,13 @@
 <div id="log_menu">
-  <a href="login.php{referral}">{L_log_login_page}</a> ::
-  <a href="reg.php{referral}">{L_log_reg}</a> ::
-  <a href="lostpassword.php{referral}">{L_PasswordLost}</a>
+  <!-- BEGIN language -->
+    <a href="{FILENAME}?lang={language.LANG_NAME_ISO2}{referral}"><img src="language/{language.LANG_NAME_ISO2}/{language.LANG_FLAG}" /></a>
+  <!-- END language -->
+</div>
+
+<div id="log_menu">
+  <a href="login.php{LANG}{referral}">{L_log_login_page}</a> ::
+  <a href="reg.php{LANG}{referral}">{L_log_reg}</a> ::
+  <a href="lostpassword.php{LANG}{referral}">{L_PasswordLost}</a>
   </br>
 
   <!-- IF URL_RULES -->

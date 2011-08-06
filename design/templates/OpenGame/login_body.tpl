@@ -17,7 +17,7 @@
 
   <div id="log_description">{L_log_desc}</div>
 
-  <div id="log_register" onclick="document.location.href='./reg.php{referral}';">
+  <div id="log_register" onclick="document.location.href='./reg.php{LANG}{referral}';">
     {L_log_reg_main}
   </div>
 
@@ -26,7 +26,7 @@
   </div>
 
   <div id="log_form">
-    <form action="login.php" method="post">
+    <form action="login.php{LANG}{referral}" method="post">
       <div class="log_input_wrapper">
         {L_User_name}<br>
         <input name="username" type="text" value="" class="log_input" />
@@ -36,7 +36,7 @@
         <input name="password" type="password" value="" class="log_input" /> 
       </div><br>
       <div class="log_input_wrapper">
-        <a href="lostpassword.php" class="link">{L_PasswordLost}</a>
+        <a href="lostpassword.php{LANG}{referral}" class="link">{L_PasswordLost}</a>
       </div>
       <div class="log_input_wrapper" style="text-align: right">
         <div class="fl"><input name="rememberme" type="checkbox" value="1"> {L_Remember_me}</div>

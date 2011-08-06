@@ -15,8 +15,14 @@
 
 include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
+if(!$user['lang'])
+{
+  $user['lang'] = sys_get_param_str('lang', DEFAULT_LANG);
+}
+
 lng_include('login');
 
+$id_ref = sys_get_param_int('id_ref');
 $email   = sys_get_param_str('email');
 $confirm = sys_get_param_str('confirm');
 
@@ -115,6 +121,8 @@ $template->assign_vars(array(
   'URL_FORUM'  => $config->url_forum,
   'URL_FAQ'    => $config->url_faq,
 ));
+
+tpl_login_lang($template, $id_ref);
 
 display(parsetemplate($template), $lang['system'], false, '', false, false);
 

@@ -12,6 +12,11 @@
 
 include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
+if(!$user['lang'])
+{
+  $user['lang'] = sys_get_param_str('lang', DEFAULT_LANG);
+}
+
 lng_include('login');
 
 $wylosuj = rand(100000,9000000);
@@ -180,12 +185,13 @@ else
   $template = gettemplate('registry_form', true);
   $template->assign_vars(array(
     'id_ref'     => $id_ref,
-    'referral'   => "?id_ref=$id_ref",
     'servername' => $config->game_name,
     'URL_RULES'  => $config->url_rules,
     'URL_FORUM'  => $config->url_forum,
     'URL_FAQ'    => $config->url_faq,
   ));
+
+  tpl_login_lang($template, $id_ref);
 
   display(parsetemplate($template), $lang['registry'], false, '', false, false);
 }

@@ -11,6 +11,11 @@
 
 include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
+if(!$user['lang'])
+{
+  $user['lang'] = sys_get_param_str('lang', DEFAULT_LANG);
+}
+
 lng_include('login');
 lng_include('admin');
 
@@ -62,10 +67,8 @@ $template->assign_vars(array(
   'URL_FORUM'    => $config->url_forum,
   'URL_FAQ'      => $config->url_faq,
 ));
-if($id_ref)
-{
-  $template->assign_var('referral', "?id_ref={$id_ref}");
-}
+
+tpl_login_lang($template, $id_ref);
 
 display(parsetemplate($template, $parse), $lang['Login'], false, '', false, false);
 

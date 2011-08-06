@@ -35,6 +35,7 @@ $lang_info = array(
 
   'LANG_NAME_NATIVE'  => 'Русский',
   'LANG_NAME_ENGLISH' => 'Russian',
+  'LANG_FLAG'         => 'ru.png',
   'LANG_NAME_ISO2'    => 'ru',
   'LANG_NAME_ISO3'    => 'rus',
   'LANG_ENCODING'     => 'windows-1251',

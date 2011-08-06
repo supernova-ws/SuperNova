@@ -424,4 +424,20 @@ function gettemplate($templatename, $is_phpbb = false)
   }
 }
 
+function tpl_login_lang(&$template, $id_ref)
+{
+  global $user;
+
+  $template->assign_vars(array(
+    'LANG'         => "?lang={$user['lang']}",
+    'referral'     => $id_ref ? "&id_ref={$id_ref}" : '',
+    'FILENAME'     => basename($_SERVER['PHP_SELF']),
+  ));
+
+  foreach(lng_get_list() as $lng_id => $lng_data)
+  {
+    $template->assign_block_vars('language', $lng_data);
+  }
+}
+
 ?>
