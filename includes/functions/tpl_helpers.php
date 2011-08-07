@@ -59,13 +59,14 @@ function tpl_parse_fleet_sn($fleet, $fleet_id)
   {
     if(in_array($ship_id, $sn_data['groups']['fleet']))
     {
+      $single_ship_data = get_ship_data($ship_id, $user_data);
       $return['ships'][$ship_id] = array(
         'ID'          => $ship_id,
         'NAME'        => $lang['tech'][$ship_id],
         'AMOUNT'      => $ship_amount,
-        'CONSUMPTION' => GetShipConsumption($ship_id, $user_data),
-        'SPEED'       => get_ship_speed($ship_id, $user_data),
-        'CAPACITY'    => $sn_data[$ship_id]['capacity'],
+        'CONSUMPTION' => $single_ship_data['consumption'],
+        'SPEED'       => $single_ship_data['speed'],
+        'CAPACITY'    => $single_ship_data['capacity'],
       );
     }
   }
@@ -140,13 +141,14 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
         $ship_data = explode(',', $ship_record);
         if($spy_level >= 10)
         {
+          $single_ship_data = get_ship_data($ship_data[0], $user_data);
           $return['ships'][$ship_data[0]] = array(
             'ID'          => $ship_data[0],
             'NAME'        => $lang['tech'][$ship_data[0]],
             'AMOUNT'      => $ship_data[1],
-            'CONSUMPTION' => GetShipConsumption($ship_data[0], $user_data),
-            'SPEED'       => get_ship_speed($ship_data[0], $user_data),
-            'CAPACITY'    => $sn_data[$ship_data[0]]['capacity'],
+            'CONSUMPTION' => $single_ship_data['consumption'],
+            'SPEED'       => $single_ship_data['speed'],
+            'CAPACITY'    => $single_ship_data['capacity'],
           );
         }
         else
@@ -217,13 +219,7 @@ function tpl_parse_planet($planet, $que)
 
   if(!empty($que))
   {
-    $que_item = $que['que'][QUE_STRUCTURES][0];
-    if($que_item)
-    {
-      $result['BUILDING_ID']  = $que_item['ID'];
-      $result['BUILDING_TIP'] = $que_item['NAME'];
-      $result['BUILDING']     = int_buildCounter($planet, 'building', $planet['id'], $que);
-    }
+    $result['building_que'] = $que['que'][QUE_STRUCTURES];
   }
 
   return $result;

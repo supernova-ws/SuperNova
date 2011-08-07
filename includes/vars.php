@@ -843,6 +843,20 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 5000,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENGINE_CHEMICAL,
+          'speed' => 5000,
+          'consumption' => 20,
+          'min_level' => 2,
+        ), 
+        array(
+          'tech' => TECH_ENIGNE_ION,
+          'speed' => 10000,
+          'consumption' => 40,
+          'min_level' => 5,
+        ), 
+      ),
       'tech' => TECH_ENGINE_CHEMICAL,
       'speed' => 5000,
       'consumption' => 20,
@@ -874,6 +888,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 25000,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENGINE_CHEMICAL,
+          'speed' => 7500,
+          'consumption' => 50,
+          'min_level' => 6,
+        ), 
+      ), 
       'tech' => TECH_ENGINE_CHEMICAL,
       'speed' => 7500,
       'consumption' => 50,
@@ -901,6 +923,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 100000,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENIGNE_ION,
+          'speed' => 5000,
+          'consumption' => 100,
+          'min_level' => 5,
+        ), 
+      ), 
       'tech' => TECH_ENIGNE_ION,
       'speed' => 5000,
       'consumption' => 100,
@@ -928,6 +958,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 50,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENGINE_CHEMICAL,
+          'speed' => 12500,
+          'consumption' => 20,
+          'min_level' => 1,
+        ), 
+      ), 
       'tech' => TECH_ENGINE_CHEMICAL,
       'speed' => 12500,
       'consumption' => 20,
@@ -955,6 +993,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 100,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENIGNE_ION,
+          'speed' => 10000,
+          'consumption' => 75,
+          'min_level' => 2,
+        ), 
+      ), 
       'tech' => TECH_ENIGNE_ION,
       'speed' => 10000,
       'consumption' => 75,
@@ -982,6 +1028,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 800,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENIGNE_ION,
+          'speed' => 15000,
+          'consumption' => 300,
+          'min_level' => 4,
+        ), 
+      ), 
       'tech' => TECH_ENIGNE_ION,
       'speed' => 15000,
       'consumption' => 300,
@@ -1009,6 +1063,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 1500,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENGINE_HYPER,
+          'speed' => 10000,
+          'consumption' => 500,
+          'min_level' => 4,
+        ), 
+      ), 
       'tech' => TECH_ENGINE_HYPER,
       'speed' => 10000,
       'consumption' => 500,
@@ -1036,6 +1098,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 7500,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENIGNE_ION,
+          'speed' => 2500,
+          'consumption' => 1000,
+          'min_level' => 3,
+        ), 
+      ), 
       'tech' => TECH_ENIGNE_ION,
       'speed' => 2500,
       'consumption' => 1000,
@@ -1063,6 +1133,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 20000,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENGINE_CHEMICAL,
+          'speed' => 2000,
+          'consumption' => 300,
+          'min_level' => 6,
+        ), 
+      ), 
       'tech' => TECH_ENGINE_CHEMICAL,
       'speed' => 2000,
       'consumption' => 300,
@@ -1090,6 +1168,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 5,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENGINE_CHEMICAL,
+          'speed' => 100000000,
+          'consumption' => 1,
+          'min_level' => 3,
+        ), 
+      ), 
       'tech' => TECH_ENGINE_CHEMICAL,
       'speed' => 100000000,
       'consumption' => 1,
@@ -1117,6 +1203,20 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 500,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENIGNE_ION,
+          'speed' => 4000,
+          'consumption' => 1000,
+          'min_level' => 6,
+        ), 
+        array(
+          'tech' => TECH_ENGINE_HYPER,
+          'speed' => 5000,
+          'consumption' => 1250,
+          'min_level' => 8,
+        ), 
+      ), 
       'tech' => TECH_ENIGNE_ION,
       'speed' => 4000,
       'consumption' => 1000,
@@ -1148,6 +1248,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 0,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENGINE_CHEMICAL,
+          'speed' => 0,
+          'consumption' => 0,
+          'min_level' => 0,
+        ), 
+      ), 
       'tech' => TECH_ENGINE_CHEMICAL,
       'speed' => 0,
       'consumption' => 0,
@@ -1185,6 +1293,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 2000,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENGINE_HYPER,
+          'speed' => 5000,
+          'consumption' => 1000,
+          'min_level' => 6,
+        ), 
+      ), 
       'tech' => TECH_ENGINE_HYPER,
       'speed' => 5000,
       'consumption' => 1000,
@@ -1212,6 +1328,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 1000000,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENGINE_HYPER,
+          'speed' => 100,
+          'consumption' => 1,
+          'min_level' => 7,
+        ), 
+      ), 
       'tech' => TECH_ENGINE_HYPER,
       'speed' => 100,
       'consumption' => 1,
@@ -1239,6 +1363,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 750,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENGINE_HYPER,
+          'speed' => 10000,
+          'consumption' => 250,
+          'min_level' => 5,
+        ), 
+      ), 
       'tech' => TECH_ENGINE_HYPER,
       'speed' => 10000,
       'consumption' => 250,
@@ -1266,6 +1398,14 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 1,
       'capacity' => 2000000,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENGINE_HYPER,
+          'speed' => 150,
+          'consumption' => 250,
+          'min_level' => 9,
+        ), 
+      ), 
       'tech' => TECH_ENGINE_HYPER,
       'speed' => 150,
       'consumption' => 250,

@@ -18,17 +18,6 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   $from = sys_o_get_updated($user, $from['id'], $GLOBALS['time_now']);
   $from = $from['planet'];
 
-  $speed_factor = get_fleet_speed();
-  $distance     = GetTargetDistance($from['galaxy'], $to['galaxy'], $from['system'], $to['system'], $from['planet'], $to['planet']);
-  $fleet_speed  = min(GetFleetMaxSpeed($fleet, 0, $user));
-  $duration     = GetMissionDuration(10, $fleet_speed, $distance, $speed_factor);
-  $consumption  = GetFleetConsumption($fleet, $speed_factor, $duration, $distance, $fleet_speed, $user);
-
-//!!
-  $fleet_group = 0;
-//!!
-
-  $options = array();
   $can_attack = flt_can_attack($from, $to, $fleet, $mission, $options);
   if($can_attack != ATTACK_ALLOWED)
   {
@@ -38,7 +27,12 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
   global $time_now, $sn_data;
 
-  $fleet_start_time = $time_now + $duration;
+  $fleet_group = isset($options['fleet_group']) ? intval($options['fleet_group']) : 0;
+
+  $travel_data  = flt_travel_data($user, $from, $to, $fleet, $speed_percent);
+
+  $fleet_start_time = $time_now + $travel_data['duration'];
+
   if ($mission == MT_EXPLORE OR $mission == MT_HOLD)
   {
     $stay_duration = $options['stay_time'] * 3600;
@@ -49,7 +43,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
     $stay_duration = 0;
     $stay_time     = 0;
   }
-  $fleet_end_time = $fleet_start_time + $duration + $stay_duration;
+  $fleet_end_time = $fleet_start_time + $travel_data['duration'] + $stay_duration;
 
   $fleet_ship_count  = 0;
   $fleet_string      = '';
@@ -95,7 +89,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   $QryInsertFleet .= "`start_time` = '{$time_now}';";
   doquery( $QryInsertFleet);
 
-  $QryUpdatePlanet  = "UPDATE {{planets}} SET {$planet_sub_query} `deuterium` = `deuterium` - '{$consumption}' WHERE `id` = '{$from['id']}' LIMIT 1;";
+  $QryUpdatePlanet  = "UPDATE {{planets}} SET {$planet_sub_query} `deuterium` = `deuterium` - '{$travel_data['consumption']}' WHERE `id` = '{$from['id']}' LIMIT 1;";
   doquery ($QryUpdatePlanet);
 
   if(BE_DEBUG)

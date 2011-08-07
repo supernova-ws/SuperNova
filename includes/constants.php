@@ -15,8 +15,8 @@ if(!defined('INSIDE'))
 }
 
 define('DB_VERSION', '30');
-define('SN_RELEASE', '30');
-define('SN_VERSION', '30d4');
+define('SN_RELEASE', '31');
+define('SN_VERSION', '31a0');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -319,11 +319,12 @@ define('TECH_GRAVITON', 199);
 // === Hangar units
 // --- Ships
 define('SHIP_FLEET', 200);
-define('SHIP_CARGO_SUPER', 201);
 define('SHIP_CARGO_SMALL', 202);
 define('SHIP_CARGO_BIG', 203);
+define('SHIP_CARGO_SUPER', 201);
 define('SHIP_FIGHTER_LIGHT', 204);
 define('SHIP_FIGHTER_HEAVY', 205);
+define('SHIP_FIGHTER_ASSAULT', 217);
 define('SHIP_DESTROYER', 206);
 define('SHIP_CRUISER', 207);
 define('SHIP_COLONIZER', 208);
@@ -335,7 +336,6 @@ define('SHIP_DESTRUCTOR', 213);
 define('SHIP_DEATH_STAR', 214);
 define('SHIP_BATTLESHIP', 215);
 define('SHIP_SUPERNOVA', 216);
-define('SHIP_FIGHTER_ASSAULT', 217);
 // --- Defense
 define('misil_launcher', 401);
 define('small_laser', 402);

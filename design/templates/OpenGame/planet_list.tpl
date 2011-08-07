@@ -52,12 +52,12 @@
           <!-- ENDIF -->
         </span>
 
-        <!-- IF planet.BUILDING -->
-          <span title="{planet.BUILDING_TIP}" style="position: absolute; top: 0px; left: 0px; width: 25%; height: 25%" class="icon_alpha">
+        <!-- IF .planet.building_que -->
+          <span style="position: absolute; top: 0px; left: 0px; width: 25%; height: 25%" class="icon_alpha">
             <a href="buildings.php?cp={planet.ID}&re=0"><img src="{D_SN_ROOT_VIRTUAL}design/images/build_building.png" height="100%" width="100%"></a>
           </span>
         <!-- ENDIF -->
-        
+
         <!-- IF planet.TECH -->
           <span title="{planet.TECH}" style="position: absolute; top: 25%; left: 0px; width: 25%; height: 25%" class="icon_alpha">
             <a href="buildings.php?mode=research&cp={planet.ID}&re=0"><img src="{D_SN_ROOT_VIRTUAL}design/images/build_tech.png" height="100%" width="100%"></a>
@@ -89,7 +89,7 @@
         <!-- IF planet.MOON_ID -->
           <div style="position: absolute; top: 0; right: 0; width: {$MOON_IMG_SIZE}; height: {$MOON_IMG_SIZE};">
             <a href="overview.php?cp={planet.MOON_ID}&re=0" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img style="border-style: none;" src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" height="100%" width="100%"></a>
-            
+
             <span style="position: absolute; bottom: 0; right: 0; cursor: pointer;" title="{L_flt_gather_all}" class="icon_alpha" onclick="document.location='fleet.php?fleet_page=5&cp={planet.MOON_ID}&re=0'">
               <div class="icons icon-gather"></div>
             </span>
@@ -160,9 +160,17 @@
       </div>
     </div>
 
-    
-    <!-- IF planet.BUILDING -->{planet.BUILDING}<div style="width: 75; white-space: normal;" id="ov_building{planet.ID}"></div>
-      <div id="ov_building{planet.ID}_timer" style="color: darkgrey;"></div><!-- ELSE -->{L_sys_no_task}<!-- ENDIF -->
+    <!-- IF .planet.building_que -->
+      <div style="width: 75; white-space: normal;" id="ov_building{planet.ID}"></div>
+      <div id="ov_building{planet.ID}_timer" style="color: darkgrey;"></div>
+
+      <script type='text/javascript'>
+        sn_timers.unshift({id: 'ov_building{planet.ID}', type: 0, active: true, start_time: {TIME_NOW}, options: { msg_done: '{L_sys_no_task}', que: [
+          <!-- BEGIN building_que -->['{building_que.ID}', '{building_que.NAME} ({building_que.LEVEL})', {building_que.TIME}, '{building_que.AMOUNT}'],<!-- END building_que -->
+        ]}});
+      </script>
+    <!-- ELSE -->{L_sys_no_task}<!-- ENDIF -->
+
     <!-- IF $OVERVIEW -->
     <br><br>
     <!-- ENDIF -->

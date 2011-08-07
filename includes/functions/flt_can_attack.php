@@ -122,24 +122,20 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     }
   }
 
-  $speed = $options['speed'];
+  $speed = $options['fleet_speed_percent'];
   if($speed && ($speed != intval($speed) || $speed < 1 || $speed > 10))
   {
     return ATTACK_WRONG_SPEED;
   }
 
-  $speed_factor = get_fleet_speed();
-  $distance     = GetTargetDistance($planet_src['galaxy'], $planet_dst['galaxy'], $planet_src['system'], $planet_dst['system'], $planet_src['planet'], $planet_dst['planet']);
-  $fleet_speed  = min(GetFleetMaxSpeed($fleet, 0, $user));
-  $fleet_speed_percent = $options['fleet_speed_percent'] ? $options['fleet_speed_percent'] : 10;
-  $duration     = GetMissionDuration($fleet_speed_percent, $fleet_speed, $distance, $speed_factor);
-  $consumption  = GetFleetConsumption($fleet, $speed_factor, $duration, $distance, $fleet_speed, $user, $fleet_speed_percent);
-  if($planet_src[$sn_data[RES_DEUTERIUM]['name']] < $fleet[RES_DEUTERIUM] + $consumption)
+  $travel_data = flt_travel_data($user_row, $planet_src, $planet_dst, $fleet, $options['fleet_speed_percent']);
+
+  if($planet_src[$sn_data[RES_DEUTERIUM]['name']] < $fleet[RES_DEUTERIUM] + $travel_data['consumption'])
   {
     return ATTACK_NO_FUEL;
   }
 
-  $fleet_start_time = $time_now + $duration;
+  $fleet_start_time = $time_now + $travel_data['duration'];
 
   $fleet_group = $options['fleet_group'];
   if($fleet_group)
@@ -329,7 +325,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
 
   if($mission == MT_ATTACK || $mission == MT_AKS || $mission == MT_DESTROY)
   {
-    return flt_bashing_check($user, $enemy, $planet_dst, $mission, $duration, $fleet_group);
+    return flt_bashing_check($user, $enemy, $planet_dst, $mission, $travel_data['duration'], $fleet_group);
   }
 
   return ATTACK_ALLOWED;

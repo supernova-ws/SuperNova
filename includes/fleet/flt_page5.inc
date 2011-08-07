@@ -121,12 +121,14 @@ function flt_build_gathering($resources_taken = '')
       }
     }
 
-    $planet_data['DISTANCE']    = GetTargetDistance ( $planetrow['galaxy'], $planet_db_data['galaxy'], $planetrow['system'], $planet_db_data['system'], $planetrow['planet'], $planet_db_data['planet'] );
-    $planet_data['FLEET_SPEED'] = flt_fleet_speed($user, $fleet);
-    $planet_data['DURATION']    = GetMissionDuration ( 10, $planet_data['FLEET_SPEED'], $planet_data['DISTANCE'], $SpeedFactor);
     if(!empty($fleet))
     {
-      $planet_data['CONSUMPTION'] = GetFleetConsumption ( $fleet, $SpeedFactor, $planet_data['DURATION'], $planet_data['DISTANCE'], $planet_data['FLEET_SPEED'], $user);
+      $planet_data['FLEET_SPEED'] = flt_fleet_speed($user, $fleet);
+
+      $travel_data = flt_travel_data($user, $planetrow, $planet_db_data, $fleet, 10);
+      $planet_data['DISTANCE']    = $travel_data['distance'];
+      $planet_data['DURATION']    = $travel_data['duration'];
+      $planet_data['CONSUMPTION'] = $travel_data['consumption'];
 
       if(floor($planet_db_data[$deuterium_db_name]) >= $planet_data['CONSUMPTION'])
       {

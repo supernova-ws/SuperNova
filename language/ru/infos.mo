@@ -16,6 +16,10 @@ global $config;
 $lang = array_merge($lang, array(
   // ----------------------------------------------------------------------------------------------------------
   // Interface !
+  'info_title_param'  => 'Характеристика',
+  'info_title_base'   => 'Базовая',
+  'info_title_actual' => 'Текущая',
+
   'nfo_page_title'  => 'Информация',
   'nfo_title_head'  => 'Информация',
   'nfo_name'        => 'Имя',

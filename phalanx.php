@@ -44,19 +44,6 @@ if($system_distance > $sensorRange || $scan_galaxy != $source_galaxy)
 }
 
 $cost = $sensorLevel * 1000;
-/*
-debug(GetTargetDistance($source_galaxy, $scan_galaxy, $source_system, $scan_system, $source_planet, $scan_planet) / $sensorLevel * 10);
-debug(GetPhalanxRange(1), 1);
-debug(GetPhalanxRange(2), 2);
-debug(GetPhalanxRange(3), 3);
-debug(GetPhalanxRange(4), 4);
-debug(GetPhalanxRange(5), 5);
-debug(GetPhalanxRange(6), 6);
-debug(GetPhalanxRange(7), 7);
-debug(GetPhalanxRange(8), 8);
-debug(GetPhalanxRange(9), 9);
-debug(GetPhalanxRange(10), 10);
-*/
 
 if ($planetrow['deuterium'] > $cost)
 {

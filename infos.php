@@ -310,6 +310,10 @@ function ShowBuildingInfoPage($CurrentUser, $CurrentPlanet, $BuildID)
   {
     // Flotte
     $PageTPL = gettemplate('info_buildings_fleet');
+
+    $ship_data = get_ship_data($BuildID, $CurrentUser);
+    debug($ship_data);
+
     $parse['element_typ'] = $lang['tech'][SHIP_FLEET];
     $rapid_fire = eco_render_rapid_fire($BuildID);
     $parse['rf_info_to'] = $rapid_fire['to'];   // Rapid Fire vers
@@ -319,16 +323,20 @@ function ShowBuildingInfoPage($CurrentUser, $CurrentPlanet, $BuildID)
     $parse['shield_pt'] = pretty_number($sn_data[$BuildID]['shield']);  // Points de Bouclier
     $parse['attack_pt'] = pretty_number($sn_data[$BuildID]['attack']);  // Points d'Attaque
     $parse['capacity_pt'] = pretty_number($sn_data[$BuildID]['capacity']); // Capacitée de fret
-    $parse['base_speed'] = pretty_number($sn_data[$BuildID]['speed']);    // Vitesse de base
-    $parse['base_conso'] = pretty_number($sn_data[$BuildID]['consumption']);  // Consommation de base
-    if ($BuildID == SHIP_CARGO_SMALL)
+    $parse['base_speed'] = pretty_number($sn_data[$BuildID]['engine'][0]['speed']);    // Vitesse de base
+    $parse['base_conso'] = pretty_number($sn_data[$BuildID]['engine'][0]['consumption']);  // Consommation de base
+
+
+    $parse['ACTUAL_ARMOR'] = pretty_number(($sn_data[$BuildID]['metal'] + $sn_data[$BuildID]['crystal']) / 10 * mrc_modify_value($CurrentUser, false, MRC_ADMIRAL, 1 + 0.1 * $CurrentUser['defence_tech']));
+    $parse['ACTUAL_SHIELD'] = pretty_number($sn_data[$BuildID]['shield'] * mrc_modify_value($CurrentUser, false, MRC_ADMIRAL, 1 + 0.1 * $CurrentUser['shield_tech']));
+    $parse['ACTUAL_WEAPON'] = pretty_number($sn_data[$BuildID]['attack'] * mrc_modify_value($CurrentUser, false, MRC_ADMIRAL, 1 + 0.1 * $CurrentUser['military_tech']));
+    $parse['ACTUAL_CAPACITY'] = pretty_number($ship_data['capacity']);
+    $parse['ACTUAL_SPEED'] = pretty_number($ship_data['speed']);
+    $parse['ACTUAL_CONSUMPTION'] = pretty_number($ship_data['consumption']);
+    if(count($sn_data[$BuildID]['engine']) > 1)
     {
-      $parse['upd_speed'] = "<font color=\"yellow\">(" . pretty_number($sn_data[$BuildID]['speed2']) . ")</font>";       // Vitesse rééquipée
-      $parse['upd_conso'] = "<font color=\"yellow\">(" . pretty_number($sn_data[$BuildID]['consumption2']) . ")</font>"; // Consommation apres rééquipement
-    }
-    elseif ($BuildID == SHIP_BOMBER)
-    {
-      $parse['upd_speed'] = "<font color=\"yellow\">(" . pretty_number($sn_data[$BuildID]['speed2']) . ")</font>";       // Vitesse rééquipée
+      $parse['upd_speed'] = "<font color=\"yellow\">(" . pretty_number($sn_data[$BuildID]['engine'][1]['speed']) . ")</font>";       // Vitesse rééquipée
+      $parse['upd_conso'] = "<font color=\"yellow\">(" . pretty_number($sn_data[$BuildID]['engine'][1]['consumption']) . ")</font>"; // Consommation apres rééquipement
     }
   }
   elseif (in_array($BuildID, $sn_data['groups']['defense_active']))

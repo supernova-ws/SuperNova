@@ -168,7 +168,7 @@ switch ($fleet_page)
 
                 $missiontype[MT_HOLD] = $lang['type_mission'][MT_HOLD];
 
-                if ($planet_type == PT_MOON && $fleetarray[SHIP_DEATH_STAR])
+                if($planet_type == PT_MOON && $fleetarray[SHIP_DEATH_STAR])
                 {
                   $missiontype[MT_DESTROY] = $lang['type_mission'][MT_DESTROY];
                 }
@@ -186,11 +186,11 @@ switch ($fleet_page)
 
     ksort($missiontype);
 
-    $speed_percent = intval($_POST['speed']);
-    $fleet_speed   = min(GetFleetMaxSpeed ($fleetarray, 0, $user));
-    $distance      = GetTargetDistance ( $planetrow['galaxy'], $galaxy, $planetrow['system'], $system, $planetrow['planet'], $planet );
-    $duration      = GetMissionDuration ( $speed_percent, $fleet_speed, $distance, $SpeedFactor );
-    $consumption   = GetFleetConsumption ( $fleetarray, $SpeedFactor, $duration, $distance, $fleet_speed, $user, $speed_percent );
+    $travel_data   = flt_travel_data($user, $planetrow, array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet), $fleetarray, sys_get_param_int('speed', 10));
+
+    $distance      = $travel_data['distance'];
+    $duration      = $travel_data['duration'];
+    $consumption   = $travel_data['consumption'];
   // No Break
 
   case 1:
