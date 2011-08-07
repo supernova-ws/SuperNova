@@ -224,7 +224,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
       $temp_min  = $moon_planet['temp_min'] - rand(10, 45);
       $temp_max  = $temp_min + 40;
 
-      $moon_name = $moon_name ? $moon_name : "{$lang['sys_moon']} {$lang['uni_moon_of_planet']} {$moon_planet['name']}";
+      $moon_name = $moon_name ? $moon_name : "{$moon_planet['name']} {$lang['sys_moon']}";
       $moon_name_safe = mysql_real_escape_string($moon_name);
 
       doquery(
