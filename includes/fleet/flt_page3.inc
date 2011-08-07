@@ -120,11 +120,11 @@ if(SN_IN_FLEET !== true)
   }
 
   CheckPlanetUsedFields($planetrow);
-  $options = array('fleet_speed_percent' => $speed_percent, 'fleet_group' => $fleet_group);
   if ($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE)
   {
     $TargetPlanet = array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet, 'id_owner' => 0);
   }
+  $options = array('fleet_speed_percent' => $speed_percent, 'fleet_group' => $fleet_group);
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
 
   if($cant_attack !== ATTACK_ALLOWED)

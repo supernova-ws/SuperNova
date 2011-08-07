@@ -28,13 +28,14 @@ foreach ($sn_data['groups']['fleet'] as $n => $i)
 {
   if ($planetrow[$sn_data[$i]['name']] > 0)
   {
+    $ship_data = get_ship_data( $i, $user );
     $template->assign_block_vars('ships', array(
       'ID'          => $i,
       'NAME'        => $lang['tech'][$i],
       'AMOUNT'      => $planetrow[$sn_data[$i]['name']],
-      'CONSUMPTION' => GetShipConsumption ( $i, $user ),
-      'SPEED'       => get_ship_speed($i, $user),
-      'CAPACITY'    => $sn_data[$i]['capacity'],
+      'CONSUMPTION' => $ship_data['consumption'],
+      'SPEED'       => $ship_data['speed'],
+      'CAPACITY'    => $ship_data['capacity'],
     ));
   }
 }

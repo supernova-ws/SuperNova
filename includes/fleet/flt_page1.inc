@@ -31,11 +31,12 @@ if(SN_IN_FLEET !== true)
         $fleet['amount']               += $ship_count;
       }
       $fleet['capacity'] += $sn_data[$ship_id]['capacity'] * $ship_count;
+      $ship_base_data = get_ship_data($ship_id, $user);
       $template->assign_block_vars('ships', array(
         'ID'          => $ship_id,
         'AMOUNT'      => $ship_count,
-        'CONSUMPTION' => GetShipConsumption ( $ship_id, $user ),
-        'SPEED'       => get_ship_speed($ship_id, $user),
+        'CONSUMPTION' => $ship_base_data['consumption'],
+        'SPEED'       => $ship_base_data['speed'],
       ));
     }
   }
@@ -110,7 +111,7 @@ if(SN_IN_FLEET !== true)
 
     'ships'           => str_rot13(base64_encode(serialize($ships))),
 
-    'fleet_speed'     => round(min(GetFleetMaxSpeed($fleet['fleetarray'], false, $user))),
+    'fleet_speed'     => flt_fleet_speed($user, $fleet['fleetarray']),
     'fleet_capacity'  => $fleet['capacity'],
 
     'PAGE_HINT'       => $lang['fl_page1_hint'],
