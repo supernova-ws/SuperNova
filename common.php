@@ -10,8 +10,11 @@
 require_once('includes/init.php');
 
 $user = sn_autologin(!$allow_anonymous);
-$language = $language ? $language : $user['lang'];
 $sys_user_logged_in = $user && is_array($user) && isset($user['id']) && $user['id'];
+
+$language = $language ? $language : $user['lang'];
+lng_include('system');
+lng_include('tech');
 
 if($config->game_disable)
 {
