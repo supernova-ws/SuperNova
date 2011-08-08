@@ -186,7 +186,9 @@ switch ($fleet_page)
 
     ksort($missiontype);
 
-    $travel_data   = flt_travel_data($user, $planetrow, array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet), $fleetarray, sys_get_param_int('speed', 10));
+    $speed_percent = sys_get_param_int('speed', 10);
+    $fleet_speed   = flt_fleet_speed($user, $fleetarray);
+    $travel_data   = flt_travel_data($user, $planetrow, array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet), $fleetarray, $speed_percent);
 
     $distance      = $travel_data['distance'];
     $duration      = $travel_data['duration'];
