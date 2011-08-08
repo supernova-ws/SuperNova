@@ -29,7 +29,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
   $fleet_group = isset($options['fleet_group']) ? intval($options['fleet_group']) : 0;
 
-  $travel_data  = flt_travel_data($user, $from, $to, $fleet, $speed_percent);
+  $travel_data  = flt_travel_data($user, $from, $to, $fleet, $options['fleet_speed_percent']);
 
   $fleet_start_time = $time_now + $travel_data['duration'];
 

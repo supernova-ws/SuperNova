@@ -26,7 +26,7 @@ function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 1
   $fleet_speed = flt_fleet_speed($user_row, $fleet_array);
   if(!empty($fleet_array) && $fleet_speed && $game_fleet_speed)
   {
-    $speed_percent = max(min($speed_percent, 10), 1);
+    $speed_percent = $speed_percent ? max(min($speed_percent, 10), 1) : 10;
     $real_speed = $speed_percent * sqrt($fleet_speed);
 
     $duration = max(1, round((35000 / $speed_percent * sqrt($distance * 10 / $fleet_speed) + 10) / $game_fleet_speed));
