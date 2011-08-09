@@ -23,8 +23,8 @@ $parse = $lang;
 $PageTpl = gettemplate("admin/admin_darkmatter", true);
 
 $mode      = sys_get_param_str('mode');
-$id_planet = sys_get_param_int('id_planet');
-$id_user   = sys_get_param_int('id_user');
+$id_planet = sys_get_param_str('id_planet');
+$id_user   = sys_get_param_str('id_user');
 $points    = sys_get_param_int('points');
 $reason    = $_POST['reason'];
 
