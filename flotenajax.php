@@ -43,7 +43,7 @@ if($target_galaxy > $config->game_maxGalaxy || $target_galaxy < 1 ||
 }
 $target_planet_type = intval($_POST['planettype']);
 
-$target_mission = intval($_POST['mission']);
+$target_mission = sys_get_param_int('mission');
 
 $fleet_array    = array();
 $FleetDBArray   = '';
@@ -109,6 +109,7 @@ if($target_mission == MT_MISSILE)
   $FleetSubQRY = "`{$sn_data[503]['name']}` = `{$sn_data[503]['name']}` - '{$mips_sent}', ";
   $Ship = 503;
   //doquery("UPDATE `{{planets}}` SET  WHERE `id` = '{$user['current_planet']}' LIMIT 1;");
+  $travel_data['consumption'] = 0;
 }
 else
 {
