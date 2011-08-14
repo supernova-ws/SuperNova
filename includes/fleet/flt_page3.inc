@@ -206,9 +206,9 @@ if(SN_IN_FLEET !== true)
   $QryInsertFleet .= "`fleet_end_system` = '". $system ."', ";
   $QryInsertFleet .= "`fleet_end_planet` = '". $planet ."', ";
   $QryInsertFleet .= "`fleet_end_type` = '". $planet_type ."', ";
-  $QryInsertFleet .= "`fleet_resource_metal` = '". $TransMetal ."', ";
-  $QryInsertFleet .= "`fleet_resource_crystal` = '". $TransCrystal ."', ";
-  $QryInsertFleet .= "`fleet_resource_deuterium` = '". $TransDeuterium ."', ";
+  $QryInsertFleet .= "`fleet_resource_metal` = '". intval($TransMetal) ."', ";
+  $QryInsertFleet .= "`fleet_resource_crystal` = '". intval($TransCrystal) ."', ";
+  $QryInsertFleet .= "`fleet_resource_deuterium` = '". intval($TransDeuterium) ."', ";
   $QryInsertFleet .= "`fleet_target_owner` = '". intval($TargetPlanet['id_owner']) ."', ";
   $QryInsertFleet .= "`fleet_group` = '". $fleet_group ."', ";
   $QryInsertFleet .= "`start_time` = '". $time_now ."';";
