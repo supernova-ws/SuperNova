@@ -12,23 +12,26 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-lng_include('infos');
+//lng_include('infos');
 
-if ($_POST) {
-  $RestString   = GetNextJumpWaitTime ( $planetrow );
-  $NextJumpTime = $RestString['value'];
-  $JumpTime     = time();
+$parse = $lang;
+
+$TargetPlanet = sys_get_param_int('jmpto');
+
+if($TargetPlanet)
+{
+  $NextJumpTime = GetNextJumpWaitTime($planetrow);
   // Dit monsieur, j'ai le droit de sauter ???
-  if ( $NextJumpTime == 0 ) {
+  if(!$NextJumpTime)
+  {
     // Dit monsieur, ou je veux aller ca existe ???
-    $TargetPlanet = intval($_POST['jmpto']);
     $TargetGate   = doquery ( "SELECT `id`, `sprungtor`, `last_jump_time` FROM {{planets}} WHERE `id` = '". $TargetPlanet ."';", '', true);
     // Dit monsieur, ou je veux aller y a une porte de saut ???
     if ($TargetGate['sprungtor'] > 0) {
-      $RestString   = GetNextJumpWaitTime ( $TargetGate );
-      $NextDestTime = $RestString['value'];
+      $NextDestTime = GetNextJumpWaitTime ( $TargetGate );
       // Dit monsieur, chez toi aussi peut y avoir un saut ???
-      if ( $NextDestTime == 0 ) {
+      if(!$NextDestTime)
+      {
         // Bon j'ai eu toutes les autorisations, donc je compte les radis !!!
         $ShipArray   = array();
         $SubQueryOri = "";
@@ -51,7 +54,7 @@ if ($_POST) {
           // Soustraction de la lune de depart !
           $QryUpdateOri  = "UPDATE {{planets}} SET ";
           $QryUpdateOri .= $SubQueryOri;
-          $QryUpdateOri .= "`last_jump_time` = '". $JumpTime ."' ";
+          $QryUpdateOri .= "`last_jump_time` = '". $time_now ."' ";
           $QryUpdateOri .= "WHERE ";
           $QryUpdateOri .= "`id` = '". $planetrow['id'] ."';";
           doquery ( $QryUpdateOri);
@@ -59,7 +62,7 @@ if ($_POST) {
           // Addition à la lune d'arrivée !
           $QryUpdateDes  = "UPDATE {{planets}} SET ";
           $QryUpdateDes .= $SubQueryDes;
-          $QryUpdateDes .= "`last_jump_time` = '". $JumpTime ."' ";
+          $QryUpdateDes .= "`last_jump_time` = '". $time_now ."' ";
           $QryUpdateDes .= "WHERE ";
           $QryUpdateDes .= "`id` = '". $TargetGate['id'] ."';";
           doquery ( $QryUpdateDes);
@@ -71,28 +74,81 @@ if ($_POST) {
           $QryUpdateUsr .= "`id` = '". $user['id'] ."';";
           doquery ( $QryUpdateUsr);
 
-          $planetrow['last_jump_time'] = $JumpTime;
-          $RestString    = GetNextJumpWaitTime ( $planetrow );
-          $RetMessage    = $lang['gate_jump_done'] ." - ". $RestString['string'];
+          $planetrow['last_jump_time'] = $time_now;
+          $RetMessage    = $lang['gate_jump_done'] ." - ". pretty_time(GetNextJumpWaitTime($planetrow));
         } else {
           $RetMessage = $lang['gate_wait_data'];
         }
       } else {
-        $RetMessage = $lang['gate_wait_dest'] ." - ". $RestString['string'];
+        $RetMessage = $lang['gate_wait_dest'] ." - ". pretty_time($NextDestTime);
       }
     } else {
       $RetMessage = $lang['gate_no_dest_g'];
     }
   } else {
-    $RetMessage = $lang['gate_wait_star'] ." - ". $RestString['string'];
+    $RetMessage = $lang['gate_wait_star'] ." - ". pretty_time($NextJumpTime);
   }
+  message ($RetMessage, $lang['tech'][43], "jumpgate.php", 10);
 } else {
-  $RetMessage = $lang['gate_wait_data'];
+  $GateTPL = gettemplate('gate_fleet_table', true);
+  if($planetrow[$sn_data[43]['name']] > 0)
+  {
+    $NextJumpTime = GetNextJumpWaitTime($planetrow);
+    $parse['GATE_JUMP_REST_TIME'] = $NextJumpTime;
+    $parse['gate_start_name'] = $planetrow['name'];
+    $parse['gate_start_link'] = uni_render_coordinates_href($planetrow, '', 3);
+    $parse['TIME_NOW'] = $time_now;
+
+    $QrySelectMoons = "SELECT * FROM {{planets}} WHERE `planet_type` = '3' AND `id_owner` = '" . $user['id'] . "';";
+    $MoonList = doquery($QrySelectMoons);
+    $Combo = "";
+    while ($CurMoon = mysql_fetch_assoc($MoonList))
+    {
+      if ($CurMoon['id'] != $planetrow['id'])
+      {
+        $NextJumpTime = GetNextJumpWaitTime($CurMoon);
+        if ($CurMoon[$sn_data[43]['name']] >= 1)
+        {
+          $Combo .= "<option value=\"" . $CurMoon['id'] . "\">[" . $CurMoon['galaxy'] . ":" . $CurMoon['system'] . ":" . $CurMoon['planet'] . "] " . $CurMoon['name'] . ' ' . ($NextJumpTime ? pretty_time($NextJumpTime) : '') . "</option>\n";
+        }
+      }
+    }
+    $parse['gate_dest_moons'] = $Combo; // BuildJumpableMoonCombo($user, $planetrow);
+
+    $RowsTPL = gettemplate('gate_fleet_rows');
+    $CurrIdx = 1;
+    $ship_list = "";
+    for ($Ship = 300; $Ship > 200; $Ship--)
+    {
+      if ($sn_data[$Ship]['name'] != "")
+      {
+        if ($planetrow[$sn_data[$Ship]['name']] > 0)
+        {
+          $bloc['idx'] = $CurrIdx;
+          $bloc['fleet_id'] = $Ship;
+          $bloc['fleet_name'] = $lang['tech'][$Ship];
+          $bloc['fleet_max'] = pretty_number($planetrow[$sn_data[$Ship]['name']]);
+          $bloc['gate_ship_dispo'] = $lang['gate_ship_dispo'];
+          $ship_list .= parsetemplate($RowsTPL, $bloc);
+          $CurrIdx++;
+        }
+      }
+    }
+
+    $parse['gate_fleet_rows'] = $ship_list;
+    $page = parsetemplate($GateTPL, $parse);
+
+    display($page, $lang['tech'][43]);
+  }
+  else
+  {
+    message($lang['gate_no_src_ga'], $lang['tech'][43], "overview.php", 10);
+  }
 }
 
-message ($RetMessage, $lang['tech'][43], "infos.php?gid=43", 4);
 
 // -----------------------------------------------------------------------------------------------------------
 // History version
 // 1.0 - Version from scrap .. y avait pas ... bin maintenant y a !!
+
 ?>

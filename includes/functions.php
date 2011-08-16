@@ -50,34 +50,16 @@ function SaveToFile($filename, $content)
 //
 function GetNextJumpWaitTime($CurMoon)
 {
-  global $sn_data;
+  global $sn_data, $time_now;
 
   $JumpGateLevel = $CurMoon[$sn_data[43]['name']];
-  $LastJumpTime = $CurMoon['last_jump_time'];
-  if ($JumpGateLevel > 0)
+  if($JumpGateLevel)
   {
-    $WaitBetweenJmp = (60 * 60) * (1 / $JumpGateLevel);
-    $NextJumpTime = $LastJumpTime + $WaitBetweenJmp;
-    if ($NextJumpTime >= time())
-    {
-      $RestWait = $NextJumpTime - time();
-      $RestString = " " . pretty_time($RestWait);
-    }
-    else
-    {
-      $RestWait = 0;
-      $RestString = "";
-    }
+    $NextJumpTime = $CurMoon['last_jump_time'] + abs(60 * 60 / $JumpGateLevel);
+    $RestWait = $NextJumpTime > $time_now ? $NextJumpTime - $time_now : 0;
   }
-  else
-  {
-    $RestWait = 0;
-    $RestString = "";
-  }
-  $RetValue['string'] = $RestString;
-  $RetValue['value'] = $RestWait;
 
-  return $RetValue;
+  return isset($RestWait) ? $RestWait : 0;
 }
 
 /**

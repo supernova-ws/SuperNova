@@ -459,6 +459,23 @@ $lang = array_merge($lang, array(
   'chat_page'    => 'Page',
   'chat_timeout' => 'Chat is disabled from your inactivity. Refresh the page.',
 
+  // ----------------------------------------------------------------------------------------------------------
+  // Interface of Jump Gate
+  'gate_start_moon' => 'Home Moon',
+  'gate_dest_moon'  => 'Destination Moon',
+  'gate_use_gate'   => 'Use Gate',
+  'gate_ship_sel'   => 'Select ships',
+  'gate_ship_dispo' => 'photos',
+  'gate_jump_btn'   => 'jump!!',
+  'gate_jump_done'  => 'Gates are in the process of reloading!<br>Gates will be ready for use through: ',
+  'gate_wait_dest'  => 'points of destination Gate is in preparations! gate will be ready for use: ',
+  'gate_no_dest_g'  => 'The ultimate destination did not open the gate to move the fleet',
+  'gate_no_src_ga'  => 'There is no gates on current moon',
+  'gate_wait_star'  => 'Gates are in the process of reloading!<br>Gates will be ready for use: ',
+  'gate_wait_data'  => 'error, no data to make jump!',
+  'gate_vacation'   => 'Error, you cannot leap because you are in Vacation Mode!',
+  'gate_ready'      => 'Gate ready to jump',
+
   // quests
   'qst_quests'               => 'Quests',
   'qst_msg_complete_subject' => 'You completed quest!',

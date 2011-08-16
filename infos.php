@@ -11,116 +11,6 @@
  */
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-/**
- * InsertJavaScriptChronoApplet.php
- *
- * @version 1.0
- * @copyright 2008 By Chlorel for XNova
- */
-// ----------------------------------------------------------------------------------------------------------------
-//
-// Injection de JavaScript pour les compteurs
-//
-function InsertJavaScriptChronoApplet($Type, $Ref, $Value, $Init)
-{
-  if($Init)
-  {
-    $JavaString  = "<script type=\"text/javascript\">\n";
-    $JavaString .= "function t". $Type . $Ref ."() {\n";
-    $JavaString .= "v = new Date();\n";
-    $JavaString .= "var bxx". $Type . $Ref ." = document.getElementById('bxx". $Type . $Ref ."');\n";
-    $JavaString .= "n = new Date();\n";
-    $JavaString .= "ss". $Type . $Ref ." = pp". $Type . $Ref .";\n";
-    $JavaString .= "ss". $Type . $Ref ." = ss". $Type . $Ref ." - Math.round((n.getTime() - v.getTime()) / 1000.);\n";
-    $JavaString .= "m". $Type . $Ref ." = 0;\n";
-    $JavaString .= "h". $Type . $Ref ." = 0;\n";
-    $JavaString .= "if (ss". $Type . $Ref ." < 0) {\n";
-    $JavaString .= "	bxx". $Type . $Ref .".innerHTML = \"-\";\n";
-    $JavaString .= "} else {\n";
-    $JavaString .= "	if (ss". $Type . $Ref ." > 59) {\n";
-    $JavaString .= "		m". $Type . $Ref ." = Math.floor(ss". $Type . $Ref ." / 60);\n";
-    $JavaString .= "		ss". $Type . $Ref ." = ss". $Type . $Ref ." - m". $Type . $Ref ." * 60;\n";
-    $JavaString .= "	}\n";
-    $JavaString .= "	if (m". $Type . $Ref ." > 59) {\n";
-    $JavaString .= "		h". $Type . $Ref ." = Math.floor(m". $Type . $Ref ." / 60);\n";
-    $JavaString .= "		m". $Type . $Ref ." = m". $Type . $Ref ." - h". $Type . $Ref ." * 60;\n";
-    $JavaString .= "	}\n";
-    $JavaString .= "	if (ss". $Type . $Ref ." < 10) {\n";
-    $JavaString .= "		ss". $Type . $Ref ." = \"0\" + ss". $Type . $Ref .";\n";
-    $JavaString .= "	}\n";
-    $JavaString .= "	if (m". $Type . $Ref ." < 10) {\n";
-    $JavaString .= "		m". $Type . $Ref ." = \"0\" + m". $Type . $Ref .";\n";
-    $JavaString .= "	}\n";
-    $JavaString .= "	bxx". $Type . $Ref .".innerHTML = h". $Type . $Ref ." + \":\" + m". $Type . $Ref ." + \":\" + ss". $Type . $Ref .";\n";
-    $JavaString .= "}\n";
-    $JavaString .= "pp". $Type . $Ref ." = pp". $Type . $Ref ." - 1;\n";
-    $JavaString .= "window.setTimeout(\"t". $Type . $Ref ."();\", 999);\n";
-    $JavaString .= "}\n";
-    $JavaString .= "</script>\n";
-  }
-  else
-  {
-    $JavaString  = "<script language=\"JavaScript\">\n";
-    $JavaString .= "pp". $Type . $Ref ." = ". $Value .";\n";
-    $JavaString .= "t". $Type . $Ref ."();\n";
-    $JavaString .= "</script>\n";
-  }
-
-  return $JavaString;
-}
-
-// ----------------------------------------------------------------------------------------------------------
-// Creation de la Liste de flotte disponible sur la lune
-//
-function BuildFleetListRows($CurrentPlanet)
-{
-  global $sn_data, $lang;
-
-  $RowsTPL = gettemplate('gate_fleet_rows');
-  $CurrIdx = 1;
-  $Result = "";
-  for ($Ship = 300; $Ship > 200; $Ship--)
-  {
-    if ($sn_data[$Ship]['name'] != "")
-    {
-      if ($CurrentPlanet[$sn_data[$Ship]['name']] > 0)
-      {
-        $bloc['idx'] = $CurrIdx;
-        $bloc['fleet_id'] = $Ship;
-        $bloc['fleet_name'] = $lang['tech'][$Ship];
-        $bloc['fleet_max'] = pretty_number($CurrentPlanet[$sn_data[$Ship]['name']]);
-        $bloc['gate_ship_dispo'] = $lang['gate_ship_dispo'];
-        $Result .= parsetemplate($RowsTPL, $bloc);
-        $CurrIdx++;
-      }
-    }
-  }
-  return $Result;
-}
-
-// ----------------------------------------------------------------------------------------------------------
-// Creation de la combo de selection de Lune d'arrivé
-//
-function BuildJumpableMoonCombo($CurrentUser, $CurrentPlanet)
-{
-  global $sn_data;
-  $QrySelectMoons = "SELECT * FROM {{planets}} WHERE `planet_type` = '3' AND `id_owner` = '" . $CurrentUser['id'] . "';";
-  $MoonList = doquery($QrySelectMoons);
-  $Combo = "";
-  while ($CurMoon = mysql_fetch_assoc($MoonList))
-  {
-    if ($CurMoon['id'] != $CurrentPlanet['id'])
-    {
-      $RestString = GetNextJumpWaitTime($CurMoon);
-      if ($CurMoon[$sn_data[43]['name']] >= 1)
-      {
-        $Combo .= "<option value=\"" . $CurMoon['id'] . "\">[" . $CurMoon['galaxy'] . ":" . $CurMoon['system'] . ":" . $CurMoon['planet'] . "] " . $CurMoon['name'] . $RestString['string'] . "</option>\n";
-      }
-    }
-  }
-  return $Combo;
-}
-
 // ----------------------------------------------------------------------------------------------------------
 // Creation du tableau de production de ressources
 // Tient compte du parametrage de la planete (si la production n'est pas affectée a 100% par exemple
@@ -273,7 +163,6 @@ $unit_data = &$sn_data[$unit_id];
 
 lng_include('infos');
 
-$GateTPL = '';
 $DestroyTPL = '';
 $TableHeadTPL = '';
 
@@ -354,7 +243,6 @@ elseif ($unit_id == 43)
 {
   // Porte de Saut
   $PageTPL = gettemplate('info_buildings_general');
-  $GateTPL = gettemplate('gate_fleet_table');
   $DestroyTPL = gettemplate('info_buildings_destroy');
 }
 elseif (in_array($unit_id, $sn_data['groups']['tech']))
@@ -457,55 +345,29 @@ if ($TableHeadTPL != '')
 
 // La page principale
 $page = parsetemplate($PageTPL, $parse);
-if ($GateTPL != '')
+if ($DestroyTPL != '' && $planetrow[$unit_data['name']] > 0)
 {
-  if ($planetrow[$unit_data['name']] > 0)
-  {
-    $RestString = GetNextJumpWaitTime($planetrow);
-    $parse['gate_start_link'] = uni_render_coordinates_href($planetrow, '', 3);
-    if ($RestString['value'] != 0)
-    {
-      $parse['gate_time_script'] = InsertJavaScriptChronoApplet("Gate", "1", $RestString['value'], true);
-      $parse['gate_wait_time'] = "<div id=\"bxx" . "Gate" . "1" . "\"></div>";
-      $parse['gate_script_go'] = InsertJavaScriptChronoApplet("Gate", "1", $RestString['value'], false);
-    }
-    else
-    {
-      $parse['gate_time_script'] = "";
-      $parse['gate_wait_time'] = "";
-      $parse['gate_script_go'] = "";
-    }
-    $parse['gate_dest_moons'] = BuildJumpableMoonCombo($user, $planetrow);
-    $parse['gate_fleet_rows'] = BuildFleetListRows($planetrow);
-    $page .= parsetemplate($GateTPL, $parse);
-  }
-}
-
-if ($DestroyTPL != '')
-{
-  if ($planetrow[$unit_data['name']] > 0)
-  {
-    // ---- Destruction
-    $NeededRessources = GetBuildingPrice($user, $planetrow, $unit_id, true, true);
-    $DestroyTime = GetBuildingTime($user, $planetrow, $unit_id) / 2;
-    $parse['destroyurl'] = "buildings.php?mode=" . QUE_STRUCTURES . "&action=destroy&unit_id={$unit_id}"; // Non balisé les balises sont dans le
-    $parse['levelvalue'] = $planetrow[$unit_data['name']]; // Niveau du batiment a detruire
-    $parse['nfo_metal'] = $lang['Metal'];
-    $parse['nfo_crysta'] = $lang['Crystal'];
-    $parse['nfo_deuter'] = $lang['Deuterium'];
-    $parse['metal'] = pretty_number($NeededRessources['metal']);     // Cout en metal de la destruction
-    $parse['crystal'] = pretty_number($NeededRessources['crystal']);   // Cout en cristal de la destruction
-    $parse['deuterium'] = pretty_number($NeededRessources['deuterium']); // Cout en deuterium de la destruction
-    $parse['destroytime'] = pretty_time($DestroyTime);                   // Durée de la destruction
-    // L'insert de destruction
-    $page .= parsetemplate($DestroyTPL, $parse);
-  }
+  // ---- Destruction
+  $NeededRessources = GetBuildingPrice($user, $planetrow, $unit_id, true, true);
+  $DestroyTime = GetBuildingTime($user, $planetrow, $unit_id) / 2;
+  $parse['destroyurl'] = "buildings.php?mode=" . QUE_STRUCTURES . "&action=destroy&unit_id={$unit_id}"; // Non balisé les balises sont dans le
+  $parse['levelvalue'] = $planetrow[$unit_data['name']]; // Niveau du batiment a detruire
+  $parse['nfo_metal'] = $lang['Metal'];
+  $parse['nfo_crysta'] = $lang['Crystal'];
+  $parse['nfo_deuter'] = $lang['Deuterium'];
+  $parse['metal'] = pretty_number($NeededRessources['metal']);     // Cout en metal de la destruction
+  $parse['crystal'] = pretty_number($NeededRessources['crystal']);   // Cout en cristal de la destruction
+  $parse['deuterium'] = pretty_number($NeededRessources['deuterium']); // Cout en deuterium de la destruction
+  $parse['destroytime'] = pretty_time($DestroyTime);                   // Durée de la destruction
+  // L'insert de destruction
+  $page .= parsetemplate($DestroyTPL, $parse);
 }
 
 display($page, $lang['nfo_page_title']);
 
 // -----------------------------------------------------------------------------------------------------------
 // History version
+// 2.0 - Using sn_timer instead of script generated by InsertScriptChronoApplet
 // 1.1 - Ajout JumpGate pour la porte de saut comme la présente OGame ... Enfin un peu mieux quand meme !
 // 1.0 - Réécriture (réinventation de l'eau tiède)
 
