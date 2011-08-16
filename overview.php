@@ -257,6 +257,9 @@ switch($mode)
       'planet_temp_min'      => $planetrow['temp_min'],
       'planet_temp_max'      => $planetrow['temp_max'],
 
+      'GATE_LEVEL'           => $planetrow[$sn_data[43]['name']],
+      'GATE_JUMP_REST_TIME'  => GetNextJumpWaitTime($planetrow),
+
       'ADMIN_EMAIL'          => $config->game_adminEmail,
 
       //'LastChat'       => CHT_messageParse($msg),

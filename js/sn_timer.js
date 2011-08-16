@@ -185,8 +185,8 @@ function sn_timer() {
 
         if(timer_options['que'].length && que_item[UNIT_ID])
         {
-          timeFinish = timer['start_time'] + que_item[UNIT_TIME];
-          timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp;
+          timeFinish = parseInt(timer['start_time']) + parseInt(que_item[UNIT_TIME]);
+          timeLeft = parseInt(timer['start_time']) + parseInt(que_item[UNIT_TIME]) - timestamp;
           infoText = que_item[UNIT_NAME];
           if(que_item[UNIT_AMOUNT] > 1)
           {
@@ -226,13 +226,19 @@ function sn_timer() {
       break;
 
       case 1: // time-independent counter
-        var new_value = timer_options['start_value'] + (timestamp - timer['start_time']) * timer_options['per_second'];
+        var new_value = parseInt(timer_options['start_value']) + (timestamp - parseInt(timer['start_time'])) * parseFloat(timer_options['per_second']);
+/*
+        if(timer_options['round'] === undefined)
+        {
+          timer_options['round'] = 2;
+        }
+*/
         if(new_value < 0)
         {
           new_value = 0;
           timer['active'] = false;
         }
-        printData = sn_format_number(new_value, 2, 'white', timer_options['max_value']);
+        printData = sn_format_number(new_value, timer_options['round'], 'white', timer_options['max_value']);
         if(new_value >= timer_options['max_value'] && timer_options['per_second'] > 0)
         {
           timer['active'] = false;

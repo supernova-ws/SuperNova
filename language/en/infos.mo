@@ -49,21 +49,6 @@ $lang = array_merge($lang, array(
   'nfo_base_speed'  => 'Base speed',
   'nfo_consumption' => 'Fuel consumption (Deuterium)',
 
-  // ----------------------------------------------------------------------------------------------------------
-  // Interface of Jump Gate
-  'gate_start_moon' => 'Home Moon',
-  'gate_dest_moon'  => 'Destination Moon:',
-  'gate_use_gate'   => 'Use Gate',
-  'gate_ship_sel'   => 'Select ships',
-  'gate_ship_dispo' => 'photos',
-  'gate_jump_btn'   => 'jump!!',
-  'gate_jump_done'  => 'Gates are in the process of reloading!<br>Gates will be ready for use through: ',
-  'gate_wait_dest'  => 'points of destination Gate is in preparations! gate will be ready for use: ',
-  'gate_no_dest_g'  => 'The ultimate destination did not open the gate to move the fleet',
-  'gate_wait_star'  => 'Gates are in the process of reloading!<br>Gates will be ready for use: ',
-  'gate_wait_data'  => 'error, no data to make jump!',
-  'gate_vacation'   => 'Error, you cannot leap because you are in Vacation Mode!',
-
   'info' => array(
     1 => array(
       'description' => 'The main supplier of raw materials for the construction of load-bearing structures of buildings and ships. Metal is the most inexpensive raw material, but takes more than everything else. For production of metal requires less total energy. Than mines more deeper. on most planets metal is at great depths, deeper mines you can obtain more metals, production increases. At the same time, larger mines require more energy.',
