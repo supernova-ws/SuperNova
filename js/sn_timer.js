@@ -227,12 +227,10 @@ function sn_timer() {
 
       case 1: // time-independent counter
         var new_value = parseInt(timer_options['start_value']) + (timestamp - parseInt(timer['start_time'])) * parseFloat(timer_options['per_second']);
-/*
         if(timer_options['round'] === undefined)
         {
           timer_options['round'] = 2;
         }
-*/
         if(new_value < 0)
         {
           new_value = 0;
