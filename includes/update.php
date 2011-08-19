@@ -797,10 +797,14 @@ debug($update_tables['logs']['log_id'], 31);
   $new_version = 30;
 
   case 30:
-//    upd_log_version_update();
-//
-//  upd_do_query('COMMIT;', true);
-//  $new_version = 29.1;
+    upd_log_version_update();
+
+    upd_alter_table('users', array(
+      "ADD `player_que` TEXT"
+    ), !$update_tables['users']['player_que']);
+
+  upd_do_query('COMMIT;', true);
+//  $new_version = 31;
 
 };
 upd_log_message('Upgrade complete.');

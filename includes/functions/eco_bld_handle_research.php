@@ -20,51 +20,53 @@ function HandleTechnologieBuild(&$user, &$planetrow)
 {
   global $sn_data, $time_now, $lang;
 
-  if($user['b_tech_planet'])
+  if(!$user['b_tech_planet'])
   {
-    if($user['b_tech_planet'] != $planetrow['id'])
-    {
-      $planet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['b_tech_planet']}' LIMIT 1;", '', true);
-    }
-    else
-    {
-      $planet = $planetrow;
-    }
+    return;
+  }
 
-    if($planet['b_tech'] && $planet['b_tech_id'] && $planet['b_tech'] <= $time_now)
+  if($user['b_tech_planet'] != $planetrow['id'])
+  {
+    $planet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['b_tech_planet']}' LIMIT 1;", '', true);
+  }
+  else
+  {
+    $planet = $planetrow;
+  }
+
+  if($planet['b_tech'] && $planet['b_tech_id'] && $planet['b_tech'] <= $time_now)
+  {
+    $unit_id = $planet['b_tech_id'];
+    $unit_db_name = $sn_data[$unit_id]['name'];
+
+    $user[$unit_db_name]++;
+    msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_research_from'], $lang['msg_que_research_subject'], sprintf($lang['msg_que_research_message'], $lang['tech'][$planet['b_tech_id']], $user[$unit_db_name]));
+
+    $quest_list = qst_get_quests($user['id']);
+    $quest_triggers = qst_active_triggers($quest_list);
+    $quest_rewards = array();
+    // TODO: Check mutiply condition quests
+    $quest_trigger_list = array_keys($quest_triggers, $unit_id);
+    foreach($quest_trigger_list as $quest_id)
     {
-      $unit_id = $planet['b_tech_id'];
-      $unit_db_name = $sn_data[$unit_id]['name'];
-
-      $user[$unit_db_name]++;
-      msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_research_from'], $lang['msg_que_research_subject'], sprintf($lang['msg_que_research_message'], $lang['tech'][$planet['b_tech_id']], $user[$unit_db_name]));
-
-      $quest_list = qst_get_quests($user['id']);
-      $quest_triggers = qst_active_triggers($quest_list);
-      $quest_rewards = array();
-      // TODO: Check mutiply condition quests
-      $quest_trigger_list = array_keys($quest_triggers, $unit_id);
-      foreach($quest_trigger_list as $quest_id)
+      if($quest_list[$quest_id]['quest_unit_amount'] <= $user[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
       {
-        if($quest_list[$quest_id]['quest_unit_amount'] <= $user[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
-        {
-          $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards'];
-          $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
-        }
+        $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards'];
+        $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
       }
-      qst_reward($user, $planet, $quest_rewards, $quest_list);
+    }
+    qst_reward($user, $planet, $quest_rewards, $quest_list);
 
-      doquery("UPDATE `{{planets}}` SET `b_tech` = '0', `b_tech_id` = '0' WHERE `id` = '{$planet['id']}' LIMIT 1;");
-      doquery("UPDATE `{{users}}` SET `{$unit_db_name}` = `{$unit_db_name}` + 1, `b_tech_planet` = '0' WHERE `id` = '{$user['id']}' LIMIT 1;");
-      $planet["b_tech_id"] = 0;
-    }
-    elseif ($planet["b_tech_id"] == 0)
-    {
-      // Il n'y a rien a l'ouest ...
-      // Pas de Technologie en cours devait y avoir un bug lors de la derniere connexion
-      // On met l'enregistrement informant d'une techno en cours de recherche a jours
-      doquery("UPDATE `{{users}}` SET `b_tech_planet` = '0'  WHERE `id` = '{$user['id']}' LIMIT 1;");
-    }
+    doquery("UPDATE `{{planets}}` SET `b_tech` = '0', `b_tech_id` = '0' WHERE `id` = '{$planet['id']}' LIMIT 1;");
+    doquery("UPDATE `{{users}}` SET `{$unit_db_name}` = `{$unit_db_name}` + 1, `b_tech_planet` = '0' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    $planet["b_tech_id"] = 0;
+  }
+  elseif ($planet["b_tech_id"] == 0)
+  {
+    // Il n'y a rien a l'ouest ...
+    // Pas de Technologie en cours devait y avoir un bug lors de la derniere connexion
+    // On met l'enregistrement informant d'une techno en cours de recherche a jours
+    doquery("UPDATE `{{users}}` SET `b_tech_planet` = '0'  WHERE `id` = '{$user['id']}' LIMIT 1;");
   }
 }
 
