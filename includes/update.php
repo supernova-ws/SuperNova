@@ -803,6 +803,25 @@ debug($update_tables['logs']['log_id'], 31);
       "ADD `player_que` TEXT"
     ), !$update_tables['users']['player_que']);
 
+    upd_alter_table('planets', array(
+      "CHANGE COLUMN `governor` `PLANET_GOVERNOR_ID` SMALLINT(5) NOT NULL DEFAULT 0",
+      "CHANGE COLUMN `governor_level` `PLANET_GOVERNOR_LEVEL` SMALLINT(5) NOT NULL DEFAULT 0",
+    ), $update_tables['planets']['governor']);
+
+    if($update_tables['users']['rpg_geologue'])
+    {
+      doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` + (`rpg_geologue` + `rpg_ingenieur` + `rpg_constructeur` + `rpg_technocrate` + `rpg_scientifique` + `rpg_defenseur`) * 3;");
+
+      upd_alter_table('users', array(
+        "DROP COLUMN `rpg_geologue`",
+        "DROP COLUMN `rpg_ingenieur`",
+        "DROP COLUMN `rpg_constructeur`",
+        "DROP COLUMN `rpg_technocrate`",
+        "DROP COLUMN `rpg_scientifique`",
+        "DROP COLUMN `rpg_defenseur`",
+      ), $update_tables['users']['rpg_geologue']);
+    }
+
   upd_do_query('COMMIT;', true);
 //  $new_version = 31;
 

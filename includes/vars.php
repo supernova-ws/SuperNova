@@ -1671,31 +1671,99 @@ if (!defined('INSIDE'))
       'stackable' => true,
     ),
 
+
+
     MRC_GEOLOGIST => array(
       'name' => 'rpg_geologue',
-      'location' => LOC_USER,
+      'location' => LOC_PLANET,
+      'cost' => array(
+        RES_DARK_MATTER => 1,
+        'factor' => 1.1,
+      ),
       'dark_matter' => 3,
       'factor' => 1,
-      'max' => 20,
       'bonus' => 5,
       'bonus_type' => BONUS_PERCENT,
     ),
 
     MRC_POWERMAN => array(
       'name' => 'rpg_ingenieur',
-      'location' => LOC_USER,
-      'require' => array(MRC_GEOLOGIST => 5),
+      'location' => LOC_PLANET,
+      'cost' => array(
+        RES_DARK_MATTER => 1,
+        'factor' => 1.025,
+      ),
       'dark_matter' => 3,
       'factor' => 1,
-      'max' => 10,
       'bonus' => 5,
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    MRC_STOCKMAN => array( // MRC_STOCKMAN
+    MRC_ARCHITECT => array(
+      'name' => 'rpg_constructeur',
+      'location' => LOC_PLANET,
+      'cost' => array(
+        RES_DARK_MATTER => 0.6,
+        'factor' => 1.2,
+      ),
+      'dark_matter' => 3,
+      'factor' => 1,
+      'max' => 15,
+      'bonus' => -5,
+      'bonus_type' => BONUS_PERCENT,
+    ),
+
+    MRC_CONSTRUCTOR => array(
+      'name' => 'rpg_technocrate',
+      'location' => LOC_PLANET,
+      'cost' => array(
+        RES_DARK_MATTER => 0.2,
+        'factor' => 1.3,
+      ),
+      'dark_matter' => 3,
+      'factor' => 1,
+      'max' => 15,
+      'bonus' => -5,
+      'bonus_type' => BONUS_PERCENT,
+    ),
+
+    MRC_ACADEMIC => array(
+      'name' => 'rpg_scientifique',
+      'location' => LOC_PLANET,
+      'cost' => array(
+        RES_DARK_MATTER => 0.2,
+        'factor' => 1.3,
+      ),
+      'dark_matter' => 3,
+      'factor' => 1,
+      'max' => 15,
+      'bonus' => -5,
+      'bonus_type' => BONUS_PERCENT,
+    ),
+
+    MRC_FORTIFIER => array(
+      'name' => 'rpg_defenseur',
+      'location' => LOC_PLANET,
+      'cost' => array(
+        RES_DARK_MATTER => 2,
+        'factor' => 1,
+      ),
+      'dark_matter' => 3,
+      'factor' => 1,
+      'max' => 8,
+      'bonus' => -10,
+      'bonus_type' => BONUS_PERCENT,
+    ),
+
+
+
+    MRC_STOCKMAN => array(
       'name' => 'rpg_stockeur',
       'location' => LOC_USER,
-      'require' => array(MRC_GEOLOGIST => 10, MRC_POWERMAN => 5),
+      'cost' => array(
+        RES_DARK_MATTER => 3,
+        'factor' => 1,
+      ),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 10,
@@ -1703,21 +1771,14 @@ if (!defined('INSIDE'))
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    MRC_ARCHITECT => array(
-      'name' => 'rpg_constructeur',
-      'location' => LOC_USER,
-      'require' => array(MRC_POWERMAN => 10, MRC_STOCKMAN => 5),
-      'dark_matter' => 3,
-      'factor' => 1,
-      'max' => 5,
-      'bonus' => -5,
-      'bonus_type' => BONUS_PERCENT,
-    ),
-
     MRC_SPY => array(
       'name' => 'rpg_espion',
       'location' => LOC_USER,
-      'require' => array(MRC_STOCKMAN => 10, MRC_ARCHITECT => 5),
+      'require' => array(MRC_STOCKMAN => 5),
+      'cost' => array(
+        RES_DARK_MATTER => 3,
+        'factor' => 1,
+      ),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 5,
@@ -1728,7 +1789,11 @@ if (!defined('INSIDE'))
     MRC_COORDINATOR => array(
       'name' => 'rpg_commandant',
       'location' => LOC_USER,
-      'require' => array(MRC_GEOLOGIST => 15, MRC_SPY => 5),
+      'require' => array(MRC_SPY => 5),
+      'cost' => array(
+        RES_DARK_MATTER => 3,
+        'factor' => 1,
+      ),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 5,
@@ -1739,7 +1804,11 @@ if (!defined('INSIDE'))
     MRC_DESTRUCTOR => array(
       'name' => 'rpg_destructeur',
       'location' => LOC_USER,
-      'require' => array(MRC_GEOLOGIST => 20, MRC_FORTIFIER => 5, MRC_COORDINATOR => 5),
+      'require' => array(MRC_COORDINATOR => 5, MRC_NAVIGATOR => 5),
+      'cost' => array(
+        RES_DARK_MATTER => 3,
+        'factor' => 1,
+      ),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
@@ -1749,6 +1818,10 @@ if (!defined('INSIDE'))
     MRC_ADMIRAL => array(
       'name' => 'rpg_amiral',
       'location' => LOC_USER,
+      'cost' => array(
+        RES_DARK_MATTER => 3,
+        'factor' => 1,
+      ),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 20,
@@ -1756,43 +1829,14 @@ if (!defined('INSIDE'))
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    MRC_CONSTRUCTOR => array(
-      'name' => 'rpg_technocrate',
-      'location' => LOC_USER,
-      'require' => array(MRC_ADMIRAL => 5),
-      'dark_matter' => 3,
-      'factor' => 1,
-      'max' => 10,
-      'bonus' => -5,
-      'bonus_type' => BONUS_PERCENT,
-    ),
-
-    MRC_ACADEMIC => array(
-      'name' => 'rpg_scientifique',
-      'location' => LOC_USER,
-      'require' => array(MRC_ADMIRAL => 10, MRC_CONSTRUCTOR => 5),
-      'dark_matter' => 3,
-      'factor' => 1,
-      'max' => 10,
-      'bonus' => -5,
-      'bonus_type' => BONUS_PERCENT,
-    ),
-
-    MRC_FORTIFIER => array(
-      'name' => 'rpg_defenseur',
-      'location' => LOC_USER,
-      'require' => array(MRC_CONSTRUCTOR => 10, MRC_ACADEMIC => 5),
-      'dark_matter' => 3,
-      'factor' => 1,
-      'max' => 5,
-      'bonus' => -10,
-      'bonus_type' => BONUS_PERCENT,
-    ),
-
     MRC_DEFENDER => array(
       'name' => 'rpg_bunker',
       'location' => LOC_USER,
-      'require' => array(MRC_ACADEMIC => 10, MRC_FORTIFIER => 5),
+      'require' => array(MRC_ADMIRAL => 10),
+      'cost' => array(
+        RES_DARK_MATTER => 3,
+        'factor' => 1,
+      ),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
@@ -1803,6 +1847,10 @@ if (!defined('INSIDE'))
       'name' => 'rpg_general',
       'location' => LOC_USER,
       'require' => array(MRC_ADMIRAL => 15, MRC_DEFENDER => 1),
+      'cost' => array(
+        RES_DARK_MATTER => 3,
+        'factor' => 1,
+      ),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 10,
@@ -1813,7 +1861,11 @@ if (!defined('INSIDE'))
     MRC_ASSASIN => array(
       'name' => 'rpg_raideur',
       'location' => LOC_USER,
-      'require' => array(MRC_ADMIRAL => 20, MRC_ARCHITECT => 5, MRC_NAVIGATOR => 10),
+      'require' => array(MRC_COORDINATOR => 5, MRC_NAVIGATOR => 5),
+      'cost' => array(
+        RES_DARK_MATTER => 3,
+        'factor' => 1,
+      ),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
@@ -1824,6 +1876,10 @@ if (!defined('INSIDE'))
       'name' => 'rpg_empereur',
       'location' => LOC_USER,
       'require' => array(MRC_ASSASIN => 1, MRC_DEFENDER => 1),
+      'cost' => array(
+        RES_DARK_MATTER => 3,
+        'factor' => 1,
+      ),
       'dark_matter' => 3,
       'factor' => 1,
       'max' => 1,
@@ -1952,13 +2008,12 @@ if (!defined('INSIDE'))
 
       // Mercenary list
       'mercenaries' => array (
-        MRC_GEOLOGIST, MRC_POWERMAN, MRC_STOCKMAN, MRC_ARCHITECT, MRC_SPY, MRC_COORDINATOR, MRC_DESTRUCTOR,
-        MRC_ADMIRAL, MRC_CONSTRUCTOR, MRC_ACADEMIC,
-        MRC_FORTIFIER, MRC_DEFENDER, MRC_NAVIGATOR,
+        MRC_GEOLOGIST, MRC_POWERMAN, MRC_ARCHITECT, MRC_CONSTRUCTOR, MRC_ACADEMIC, MRC_FORTIFIER, 
+        MRC_STOCKMAN, MRC_SPY, MRC_COORDINATOR, MRC_DESTRUCTOR, MRC_ADMIRAL, MRC_DEFENDER, MRC_NAVIGATOR,
         MRC_ASSASIN //, MRC_EMPEROR
       ),
       'governors' => array(
-        MRC_GEOLOGIST, MRC_POWERMAN, MRC_CONSTRUCTOR, MRC_ARCHITECT, MRC_ACADEMIC, MRC_FORTIFIER
+        MRC_GEOLOGIST, MRC_POWERMAN, MRC_ARCHITECT, MRC_CONSTRUCTOR, MRC_ACADEMIC, MRC_FORTIFIER
       ),
 
       // Spaceships list

@@ -88,6 +88,11 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
     <!-- ENDIF -->
 
     <tr>
+      <td class="c_c" width="120" rowspan="7">
+        <!-- DEFINE $PLANET_ID = '{PLANET_ID}' -->
+        <!-- INCLUDE planet_governor.tpl -->
+      </td>
+
       <th width=100 align="center">{buildings_on_planet}</th>
       <th colspan="3" style="position: relative; border: 1px solid rgb(153, 153, 255); padding: 0px; height: 100%;">
         <div style="position: relative; width: 100%; height: 100%;">
@@ -123,7 +128,7 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
     <tr><td colspan=4 class="c">{L_Planet_menu}</td></tr>
     <!-- BEGIN ques -->
     <tr>
-      <th width=100>
+      <th width=100 height=33%>
         <!-- IF ques.LENGTH -->
         <div id="ov_{ques.ID}"></div>
         <!-- DEFINE $QUE_ID = '{ques.ID}' -->

@@ -9,30 +9,31 @@
         <div class="fr"><a href="overview.php"><font color="green">[{L_ov_return}]</font></a></td></div>
       </td>
     </tr>
-<!--
+
     <tr>
       <th class="c">
-        {L_sys_governor}<br>
-        <!-- INCLUDE planet_governor.tpl --
+        <!-- DEFINE $PLANET_ID = '{PLANET_ID}' -->
+        <!-- INCLUDE planet_governor.tpl -->
       </th>
       <th class="c" colspan=3>
         <table>
           <tr>
-            <!-- BEGIN governors --
+            <!-- BEGIN governors -->
               <th>
-                {governors.NAME}<br>
-                <img src="{dpath}gebaeude/{governors.ID}.jpg" align="top" width="120" height="120" />
+                {governors.NAME}<br />
+                <a href="infos.php?gid={governors.ID}"><img src="{dpath}gebaeude/{governors.ID}.jpg" align="top" width="120" height="120" /></a><br />
+                <a href="overview.php?mode=manage&hire={governors.ID}">{L_off_hire} {governors.COST} {L_sys_dark_matter_sh}</a>
               </th>
-              <!-- IF (governors.S_ROW_COUNT + 1) mod 3 == 0 --
+              <!-- IF (governors.S_ROW_COUNT + 1) mod 3 == 0 -->
                 </tr><tr>
-              <!-- ENDIF --
+              <!-- ENDIF -->
 
-            <!-- END governors --
+            <!-- END governors -->
           </tr>
         </table>
       </th>
     </tr>
--->
+
     <tr>
       <th>{L_ov_new_name}</th>
       <th><input type="text" name="new_name" size=25 maxlength=20 value="{PLANET_NAME}"></th>
@@ -46,3 +47,5 @@
      </tr>
   </table>
 </form>
+
+<!-- INCLUDE page_hint.tpl -->

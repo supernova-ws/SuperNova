@@ -25,13 +25,18 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
     $cost[BUILD_CREATE][$resource_id] = floor($resource_cost);
     $cost[BUILD_DESTROY][$resource_id] = floor($resource_cost / 2);
 
-    if($resource_id != RES_ENERGY && $resource_id != RES_DARK_MATTER)
+    if(in_array($resource_id, $sn_groups['resources_loot']) && $resource_cost)
     {
-      if($resource_cost != 0)
-      {
-        $can_build = min($can_build, $planet[$sn_data[$resource_id]['name']] / $resource_cost);
-      }
+      $can_build = min($can_build, $planet[$sn_data[$resource_id]['name']] / $resource_cost);
       $time += $resource_cost;
+    }
+    elseif($resource_id == RES_DARK_MATTER && $resource_cost)
+    {
+      $resource_cost = floor($resource_amount * pow($unit_data['cost']['factor'], $unit_level));
+      $resource_cost = $resource_cost ? $resource_cost : 1;
+      $cost[BUILD_CREATE][$resource_id] = floor($resource_cost);
+      $cost[BUILD_DESTROY][$resource_id] = floor($resource_cost / 2);
+      $can_build = min($can_build, $user[$sn_data[$resource_id]['name']] / $resource_cost) ;
     }
   }
   $cost['CAN'][BUILD_DESTROY] = floor($can_build * 2);
@@ -99,7 +104,7 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
     $time = mrc_modify_value($user, $planet, $mercenary, $time);
   }
 
-  $time = ($time >= 2) ? $time : 2;
+  $time = ($time >= 2) ? $time : (in_array($unit_id, $sn_groups['governors']) ? 0 : 2);
   $cost[BUILD_CREATE][RES_TIME]  = floor($time);
   $cost[BUILD_DESTROY][RES_TIME] = floor($time / 2);
 

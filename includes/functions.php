@@ -366,7 +366,7 @@ function mrc_modify_value($user, $planet = false, $mercenaries, $value)
   {
     $mercenary = $sn_data[$mercenary_id];
     $mercenary_bonus = $mercenary['bonus'];
-    $mercenary_level = $user[$mercenary['name']];
+    $mercenary_level = !in_array($mercenary_id, $sn_data['groups']['governors']) ? $user[$mercenary['name']] : ($planet['PLANET_GOVERNOR_ID'] == $mercenary_id ? $planet['PLANET_GOVERNOR_LEVEL'] : 0);
 
     switch ($mercenary['bonus_type'])
     {

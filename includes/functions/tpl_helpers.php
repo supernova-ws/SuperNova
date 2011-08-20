@@ -171,7 +171,7 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
 
 function tpl_parse_planet($planet, $que)
 {
-  global $lang, $config, $time_now;
+  global $lang, $config, $time_now, $sn_data;
 
   $fleet_list = flt_get_fleets_to_planet($planet);
 
@@ -215,6 +215,11 @@ function tpl_parse_planet($planet, $que)
     'FLEET_NEUTRAL' => $fleet_list['neutral']['count'],
 
     'fleet_list'    => $fleet_list,
+
+    'PLANET_GOVERNOR_ID' => $planet['PLANET_GOVERNOR_ID'],
+    'PLANET_GOVERNOR_NAME' => $lang['tech'][$planet['PLANET_GOVERNOR_ID']],
+    'PLANET_GOVERNOR_LEVEL' => $planet['PLANET_GOVERNOR_LEVEL'],
+    'PLANET_GOVERNOR_LEVEL_MAX' => $sn_data[$planet['PLANET_GOVERNOR_ID']]['max'],
   );
 
   if(!empty($que))

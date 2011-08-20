@@ -333,7 +333,7 @@ elseif (in_array($unit_id, $sn_data['groups']['mercenaries']))
 
   $parse['EFFECT'] = $lang['info'][$unit_id]['effect'];
   $parse['mercenary_bonus'] = $mercenary_bonus;
-  $parse['max_level'] = $mercenary['max'];
+  $parse['max_level'] = $lang['sys_level'] . ' ' . ($mercenary['location'] == LOC_USER ? $user[$sn_data[$unit_id]['name']] : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0)) . (isset($mercenary['max']) ? "/{$mercenary['max']}" : '');
 }
 
 // ---- Tableau d'evolution
