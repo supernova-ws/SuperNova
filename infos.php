@@ -306,7 +306,7 @@ elseif ($unit_id >= 502 && $unit_id <= 503)
   $parse['shield_pt'] = pretty_number($sn_data[$unit_id]['shield']);  // Points de Bouclier
   $parse['attack_pt'] = pretty_number($sn_data[$unit_id]['attack']);  // Points d'Attaque
 }
-elseif (in_array($unit_id, $sn_data['groups']['mercenaries']))
+elseif (in_array($unit_id, $sn_data['groups']['mercenaries']) || in_array($unit_id, $sn_data['groups']['governors']))
 {
   // Officiers
   $PageTPL = gettemplate('info_officiers_general');
