@@ -32,7 +32,7 @@
 <!-- ENDIF -->
 <br>
 <table width="519">
-  <tr><td class="c" colspan="<!-- IF AUTHLEVEL >= 3 -->5<!-- ELSE -->2<!-- ENDIF -->"><div class="fl">{L_news_title}</div><div class="fr">{L_news_total} {total}</div></td></tr>
+  <tr><td class="c" colspan="<!-- IF AUTHLEVEL >= 3 -->5<!-- ELSE -->2<!-- ENDIF -->"><div class="fl">{L_news_title}</div><div class="fr">{L_news_total} {NEWS_COUNT}</div></td></tr>
   <tr>
     <th>{L_news_date}</th>
     <th width="100%">{L_news_announce}</th>
@@ -42,20 +42,5 @@
       <th><img src="design/images/r1.png"></th>
     <!-- ENDIF -->
   </tr>
-  <!-- BEGIN announces -->
-    <tr>
-      <td align="center" width="100"><!-- IF announces.FUTURE --><font color=red><strong>{L_news_future}</strong></font><br><!-- ELSEIF announces.NEW --><font color=red><strong>{L_news_new}</strong></font><br><!-- ENDIF -->{announces.TIME}</td>
-      <td align=justify>
-        {announces.ANNOUNCE}
-        <!-- IF announces.DETAIL_URL -->
-         <a href="{announces.DETAIL_URL}"><u><font color="green">{L_news_more}</font></u></a>
-        <!-- ENDIF -->
-      </td>
-      <!-- IF AUTHLEVEL >= 3 -->
-        <td><a href="announce.php?mode=edit&id={announces.ID}"><img src="design/images/icon_edit.png"></a></td>
-        <td><a href="announce.php?mode=copy&id={announces.ID}"><img src="design/images/icon_copy.gif"></a></td>
-        <td><a href="announce.php?mode=del&id={announces.ID}"><img src="design/images/r1.png"></a></td>
-      <!-- ENDIF -->
-    </tr>
-  <!-- END announces -->
+  <!-- INCLUDE news_list.tpl -->
 </table>

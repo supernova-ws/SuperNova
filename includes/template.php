@@ -36,7 +36,7 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
 
 function ShowLeftMenu($Level = 0)
 {
-  global $time_now;
+  global $user, $lang, $time_now;
 
   lng_include('leftmenu');
 
@@ -54,7 +54,7 @@ function ShowLeftMenu($Level = 0)
     global $config;
 
     $template->assign_vars(array(
-      'new_announce_count'  => $GLOBALS['user']['news_lastread'],
+      'NEWS_UNREAD'         => $user['news_lastread'] < $config->var_news_last,
       'game_url'            => SN_ROOT_RELATIVE,
       'game_name'           => $config->game_name,
       'URL_RULES'           => $config->url_rules,

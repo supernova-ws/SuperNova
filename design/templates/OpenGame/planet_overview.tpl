@@ -43,26 +43,36 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 
 <br>
 <table><tr><th valign=top class="tr">
-  <table width="519">
-    <!-- IF NEW_MESSAGES -->
-      <tr><th colspan=2><a href=messages.php>
-        {L_ov_you_have}
-        <!-- IF NEW_MESSAGES == 1 -->
-          {L_ov_new_message}
-        <!-- ELSE -->
-          {NEW_MESSAGES} {L_ov_new_messages}
-        <!-- ENDIF -->
-      </a></th></tr>
-    <!-- ENDIF -->
 
-    <!-- IF NEW_LEVEL_MINER -->
-      <tr><th colspan=2><a href=officer.php>{L_ov_rpg_new_level_miner}</a></th></tr>
-    <!-- ENDIF -->
-    
-    <!-- IF NEW_LEVEL_RAID -->
-      <tr><th colspan=2><a href=officer.php>{L_ov_rpg_new_level_raid}</a></th></tr>
-    <!-- ENDIF -->
-  </table>    
+    <!-- IF .announces -->
+    <table width=519>
+      <tr><td colspan=2 class="c">{L_news_title}</td></tr>
+      <!-- INCLUDE news_list.tpl -->
+    </table>
+  <!-- ENDIF -->
+
+  <!-- IF NEW_MESSAGES || NEW_LEVEL_MINER || NEW_LEVEL_RAID -->
+    <table width="519">
+      <!-- IF NEW_MESSAGES -->
+        <tr><th colspan=2><a href=messages.php>
+          {L_ov_you_have}
+          <!-- IF NEW_MESSAGES == 1 -->
+            {L_ov_new_message}
+          <!-- ELSE -->
+            {NEW_MESSAGES} {L_ov_new_messages}
+          <!-- ENDIF -->
+        </a></th></tr>
+      <!-- ENDIF -->
+
+      <!-- IF NEW_LEVEL_MINER -->
+        <tr><th colspan=2><a href=officer.php>{L_ov_rpg_new_level_miner}</a></th></tr>
+      <!-- ENDIF -->
+
+      <!-- IF NEW_LEVEL_RAID -->
+        <tr><th colspan=2><a href=officer.php>{L_ov_rpg_new_level_raid}</a></th></tr>
+      <!-- ENDIF -->
+    </table>
+  <!-- ENDIF -->
 
   <table width="519">
     <tr>

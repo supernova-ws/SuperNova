@@ -319,6 +319,8 @@ switch($mode)
       //'LastChat'       => CHT_messageParse($msg),
     ));
 
+    nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) <= {$time_now} AND UNIX_TIMESTAMP(`tsTimeStamp`) + {$config->game_news_actual} >= {$time_now}", $config->game_news_overview);
+
     display(parsetemplate($template, $parse), "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");
   break;
 }

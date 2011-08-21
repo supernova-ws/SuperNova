@@ -22,7 +22,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
 {
   global $debug, $config, $dm_change_legit, $sn_data;
 
-  if(!$user_id)
+  if(!$user_id || !$dark_matter)
   {
     return false;
   }
