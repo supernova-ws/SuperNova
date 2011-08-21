@@ -19,10 +19,16 @@
         <table>
           <tr>
             <!-- BEGIN governors -->
-              <th>
+              <th valign="top">
                 {governors.NAME}<br />
                 <a href="infos.php?gid={governors.ID}"><img src="{dpath}gebaeude/{governors.ID}.jpg" align="top" width="120" height="120" /></a><br />
-                <a href="overview.php?mode=manage&hire={governors.ID}">{L_off_hire} {governors.COST} {L_sys_dark_matter_sh}</a>
+                <!-- IF governors.MAX && governors.LEVEL >= governors.MAX -->
+                  <span class="negative">{L_sys_maximum_level}</span>
+                <!-- ELSEIF governors.COST <= DARK_MATTER -->
+                  <a href="overview.php?mode=manage&hire={governors.ID}"><span class="positive">{L_off_hire} {governors.COST} {L_sys_dark_matter_sh}</span></a>
+                <!-- ELSE -->
+                  <span class="negative">{L_off_hire} {governors.COST} {L_sys_dark_matter_sh}</span>
+                <!-- ENDIF -->
               </th>
               <!-- IF (governors.S_ROW_COUNT + 1) mod 3 == 0 -->
                 </tr><tr>

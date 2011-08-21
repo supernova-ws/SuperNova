@@ -74,8 +74,8 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 
     <!-- IF GATE_LEVEL -->
     <tr>
-      <th colspan="2">{L_tech[43]}</th>
-      <td class="c_c" colspan="2"><a href="jumpgate.php" id="gate_jump_time">
+      <td class="c_c" colspan="2">{L_tech[43]}</td>
+      <td class="c_c" colspan="3"><a href="jumpgate.php" id="gate_jump_time">
         <!-- IF GATE_JUMP_REST_TIME -->
         <script type="text/javascript"><!--
           sn_timers.unshift({id: 'gate_jump_time', type: 0, active: true, start_time: '{TIME_NOW}', options: {msg_done: '{L_gate_ready}', que: [['1', '', {GATE_JUMP_REST_TIME}, '1']]}});

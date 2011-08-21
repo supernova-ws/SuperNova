@@ -70,6 +70,15 @@
           </span>
         <!-- ENDIF -->
 
+        <!-- IF planet.PLANET_GOVERNOR_ID && planet.PLANET_GOVERNOR_LEVEL -->
+          <span title="{planet.HANGAR}" style="position: absolute; top: 75%; left: 0px; width: 25%; height: 25%;" class="icon_alpha">
+            <a href="overview.php?mode=manage&cp={planet.ID}&re=0">
+              <img src="{dpath}gebaeude/{planet.PLANET_GOVERNOR_ID}.jpg" height="100%" width="100%">
+              <span title="{planet.HANGAR}" style="position: absolute; bottom: 0px; left: 0px; width: 100%; height: 100%;">{planet.PLANET_GOVERNOR_LEVEL}</span>
+            </a>
+          </span>
+        <!-- ENDIF -->
+
         <span style="position: absolute; bottom: 0; right: 0; cursor: pointer;" title="{L_flt_gather_all}" class="icon_alpha" onclick="document.location='fleet.php?fleet_page=5&cp={planet.ID}&re=0'">
           <div class="icons icon-gather"></div>
         </span>

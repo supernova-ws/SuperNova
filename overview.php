@@ -106,16 +106,26 @@ switch($mode)
     int_planet_pretemplate($planetrow, $template);
     foreach($sn_data['groups']['governors'] as $governor_id)
     {
-      $build_data = eco_get_build_data($user, $planetrow, $governor_id, $planetrow['PLANET_GOVERNOR_ID'] == $governor_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0);
+      if($planetrow['planet_type'] == PT_MOON && $governor_id == MRC_TECHNOLOGIST)
+      {
+        continue;
+      }
+
+      $governor_level = $planetrow['PLANET_GOVERNOR_ID'] == $governor_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0;
+      $build_data = eco_get_build_data($user, $planetrow, $governor_id, $governor_level);
       $template->assign_block_vars('governors', array(
         'ID'   => $governor_id,
         'NAME' => $lang['tech'][$governor_id],
         'COST' => $build_data[BUILD_CREATE][RES_DARK_MATTER],
+        'MAX'  => $sn_data[$governor_id]['max'],
+        'LEVEL' => $governor_level,
       ));
     }
 
     $template->assign_vars(array(
-      'PAGE_HINT' => $lang['ov_manage_page_hint'],
+      'DARK_MATTER' => $user['dark_matter'],
+
+      'PAGE_HINT'   => $lang['ov_manage_page_hint'],
     ));
 
     display($template, $lang['rename_and_abandon_planet']);
