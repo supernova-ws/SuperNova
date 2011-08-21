@@ -534,7 +534,7 @@ $lang = array_merge($lang, array(
   'sys_planets' => 'Planets',
   'sys_moons' => 'Moons',
 
-  'sys_no_governor' => 'No governor',
+  'sys_no_governor' => 'Hire governor',
 
   // Arrays
   'sys_game_mode' => array(
