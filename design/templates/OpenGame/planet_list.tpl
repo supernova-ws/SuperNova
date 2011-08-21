@@ -71,10 +71,10 @@
         <!-- ENDIF -->
 
         <!-- IF planet.PLANET_GOVERNOR_ID && planet.PLANET_GOVERNOR_LEVEL -->
-          <span title="{planet.HANGAR}" style="position: absolute; top: 75%; left: 0px; width: 25%; height: 25%;" class="icon_alpha">
+          <span title="{planet.PLANET_GOVERNOR_NAME} {planet.PLANET_GOVERNOR_LEVEL}" style="position: absolute; top: 75%; left: 0px; width: 25%; height: 25%;" class="icon_alpha">
             <a href="overview.php?mode=manage&cp={planet.ID}&re=0">
               <img src="{dpath}gebaeude/{planet.PLANET_GOVERNOR_ID}.jpg" height="100%" width="100%">
-              <span title="{planet.HANGAR}" style="position: absolute; bottom: 0px; left: 0px; width: 100%; height: 100%;">{planet.PLANET_GOVERNOR_LEVEL}</span>
+              <span style="position: absolute; bottom: 0px; left: 0px;" class="icon_alpha">{planet.PLANET_GOVERNOR_LEVEL}</span>
             </a>
           </span>
         <!-- ENDIF -->
