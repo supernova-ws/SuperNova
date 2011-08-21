@@ -807,7 +807,7 @@ debug($update_tables['logs']['log_id'], 31);
     upd_alter_table('planets', array(
       "CHANGE COLUMN `governor` `PLANET_GOVERNOR_ID` SMALLINT(5) NOT NULL DEFAULT 0",
       "CHANGE COLUMN `governor_level` `PLANET_GOVERNOR_LEVEL` SMALLINT(5) NOT NULL DEFAULT 0",
-    ), $update_tables['planets']['governor']);
+    ), !$update_tables['planets']['PLANET_GOVERNOR_ID']);
 
     if($update_tables['users']['rpg_geologue'])
     {
