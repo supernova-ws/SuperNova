@@ -625,6 +625,7 @@ debug($update_tables['logs']['log_id'], 31);
     {
       upd_alter_table('alliance', array("DROP INDEX `id_{$i}`",), $update_indexes['alliance']["id_{$i}"]);
       upd_alter_table('users', array("DROP INDEX `id_{$i}`",), $update_indexes['users']["id_{$i}"]);
+      upd_alter_table('planets', array("DROP INDEX `id_{$i}`",), $update_indexes['planets']["id_{$i}"]);
     }
 
     upd_alter_table('alliance', array('DROP INDEX `id`',), $update_indexes['alliance']['id']);

@@ -38,6 +38,11 @@ switch($mode){
     require_once('../includes/update.php');
   break;
 
+  case 3:
+    $config->db_saveItem('db_version', floor($config->db_version - 1));
+    require_once('../includes/update.php');
+  break;
+
 }
 
 display( parsetemplate(gettemplate("admin/admin_tools", true)), $lang['adm_bn_ttle'], false, '', true);

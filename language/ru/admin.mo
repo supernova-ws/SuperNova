@@ -255,7 +255,8 @@ $lang = array_merge($lang, array(
   'adm_ver_version_sn'=> 'Версия движка',
   'adm_ver_version_db'=> 'Версии базы данных',
 
-  'adm_update_force'  => 'Форсировать обновление',
+  'adm_update_force'  => 'Форсировать обновление с нуля',
+  'adm_update_repeat' => 'Повторить предыдущее обновление',
 
   'adm_lm_planet_edit' => 'Редактировать',
 
