@@ -16,7 +16,7 @@
     <!-- ENDIF -->
     <tr>
       <td><a href="announce.php">{L_news_title}
-      <!-- IF new_announce_count -->
+      <!-- IF NEWS_UNREAD -->
       <span style="color: red; text-decoration: blink; font-weight: bold;">{L_lm_announce_fresh}</span>
       <!-- ENDIF -->
       </a>

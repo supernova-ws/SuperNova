@@ -192,7 +192,7 @@ switch($new_version)
     upd_alter_table('users', array("DROP COLUMN `aktywnosc`", "DROP COLUMN `time_aktyw`", "DROP COLUMN `kiler`",
       "DROP COLUMN `kod_aktywujacy`", "DROP COLUMN `ataker`", "DROP COLUMN `atakin`"), $update_tables['users']['ataker']);
     upd_alter_table('users', "ADD `options` TEXT COMMENT 'Packed user options'", !$update_tables['users']['options']);
-    upd_alter_table('users', "ADD `news_lastread` int(11) NOT NULL DEFAULT '0' COMMENT 'News last read tag'", !$update_tables['users']['news_lastread']);
+    upd_alter_table('users', "ADD `news_lastread` int(11) NOT NULL DEFAULT '0' COMMENT 'News last read date'", !$update_tables['users']['news_lastread']);
     upd_alter_table('users', array("MODIFY `user_lastip` VARCHAR(250) COMMENT 'User last IP'", "ADD `user_proxy` VARCHAR(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)'"), !$update_tables['users']['user_proxy']);
 
     upd_drop_table('update');

@@ -21,7 +21,8 @@ $mode          = sys_get_param_str('mode');
 
 if($sys_user_logged_in)
 {
-  doquery("UPDATE {{users}} SET `news_lastread` = 0 WHERE `id` = {$user['id']} LIMIT 1;");
+  doquery("UPDATE {{users}} SET `news_lastread` = {$time_now} WHERE `id` = {$user['id']} LIMIT 1;");
+  $users['news_lastread'] = $time_now;
 }
 
 if ($user['authlevel'] >= 3)
@@ -29,28 +30,38 @@ if ($user['authlevel'] >= 3)
   if (!empty($text))
   {
     $idAnnounce = sys_get_param_int('id');
-    $dtDateTime = empty($announce_time) ? ("FROM_UNIXTIME(".time().")") : "'{$announce_time}'";
+    $announce_time = strtotime($announce_time);
+    $announce_time = $announce_time ? $announce_time : $time_now; // ("FROM_UNIXTIME(".time().")")
 
     if ($mode == 'edit')
     {
-      doquery( "UPDATE {{announce}} SET `tsTimeStamp`={$dtDateTime}, `strAnnounce`='{$text}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$idAnnounce}");
+      doquery( "UPDATE {{announce}} SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$idAnnounce}");
     }
     else
     {
-      doquery( "INSERT INTO {{announce}} SET `tsTimeStamp`={$dtDateTime}, `strAnnounce`='{$text}', detail_url = '{$detail_url}'");
+      doquery( "INSERT INTO {{announce}} SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}'");
     }
-    doquery("UPDATE {{users}} SET `news_lastread` = `news_lastread` + 1;");
 
-    if(sys_get_param_int('news_mass_mail'))
+    if($announce_time <= $time_now)
     {
-      $text = $_POST['text'];
-      if($detail_url)
+      if($announce_time > $config->var_news_last)
       {
-        // TODO: Move merging detail url to template
-        $text = "{$text} <a href=\"{$detail_url}\">{$lang['news_more']}</a>";
+        $config->db_saveItem('var_news_last', $announce_time);
       }
 
-      msg_send_simple_message('*', 0, 0, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['news_title'], $text);
+//      doquery("UPDATE {{users}} SET `news_lastread` = {$time_now}");//" WHERE `id` <> {$user['id']};");
+
+      if(sys_get_param_int('news_mass_mail'))
+      {
+        $text = $_POST['text'];
+        if($detail_url)
+        {
+          // TODO: Move merging detail url to template
+          $text = "{$text} <a href=\"{$detail_url}\"><span class=\"positive\">{$lang['news_more']}</span></a>";
+        }
+
+        msg_send_simple_message('*', 0, 0, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['news_title'], $text);
+      }
     }
 
     $mode = '';
@@ -76,29 +87,17 @@ else
   $annQuery = 'WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<=' . intval($time_now);
 }
 
-$allAnnounces = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} {$annQuery} ORDER BY `tsTimeStamp` DESC");
+nws_render($template, $annQuery);
 
 $template->assign_vars(array(
   'AUTHLEVEL'       => $user['authlevel'],
-  'total'           => mysql_num_rows($allAnnounces),
+//  'total'           => mysql_num_rows($allAnnounces),
   'MODE'            => $mode,
   'tsTimeStamp'     => $announce['tsTimeStamp'],
   'strAnnounce'     => $announce['strAnnounce'],
   'DETAIL_URL'      => $announce['detail_url'],
   'time_now'        => $time_now,
 ));
-
-while ($announce = mysql_fetch_assoc($allAnnounces))
-{
-  $template->assign_block_vars('announces', array(
-    'ID'         => $announce['idAnnounce'],
-    'TIME'       => $announce['tsTimeStamp'],
-    'ANNOUNCE'   => sys_bbcodeParse($announce['strAnnounce']),
-    'DETAIL_URL' => $announce['detail_url'],
-    'NEW'        => $announce['unix_time'] + $config->game_news_actual > $time_now,
-    'FUTURE'     => $announce['unix_time'] > $time_now,
-  ));
-}
 
 display($template, $lang['news_title']);
 

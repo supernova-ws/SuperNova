@@ -78,17 +78,7 @@ $msg .= '</table>';
 // News Frame ...
 if ($config->game_news_overview)
 {
-  $lastAnnounces = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now} ORDER BY `tsTimeStamp` DESC LIMIT {$config->game_news_overview}");
-
-  while ($lastAnnounce = mysql_fetch_assoc($lastAnnounces))
-  {
-    $template->assign_block_vars('news', array(
-      'TIME'       => $lastAnnounce['tsTimeStamp'],
-      'ANNOUNCE'   => sys_bbcodeParse($lastAnnounce['strAnnounce']),
-      'DETAIL_URL' => $lastAnnounce['detail_url'],
-      'IS_NEW'     => $lastAnnounce['unix_time'] + $config->game_news_actual > $time_now,
-    ));
-  }
+  nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now}", $config->game_news_overview);
 }
 
 $template->assign_vars(array(
