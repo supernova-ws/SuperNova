@@ -38,6 +38,7 @@ switch($mode)
   case 'manage':
     $template  = gettemplate('planet_manage', true);
     $planet_id = sys_get_param_int('planet_id');
+    $hire = sys_get_param_int('hire');
 
     if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name'))
     {
@@ -68,17 +69,66 @@ switch($mode)
         message($lang['ov_delete_wrong_pass'] , $lang['colony_abandon'], 'overview.php?mode=manage');
       }
     }
+    elseif(
+      $hire
+      && in_array($hire, $sn_data['groups']['governors'])
+      && (
+        !isset($sn_data[$hire]['max']) ||
+        ($planetrow['PLANET_GOVERNOR_ID'] != $hire) ||
+        (
+          $planetrow['PLANET_GOVERNOR_ID'] == $hire &&
+          $planetrow['PLANET_GOVERNOR_LEVEL'] < $sn_data[$hire]['max']
+        )
+      )
+    )
+    {
+      $build_data = eco_get_build_data($user, $planetrow, $hire, $planetrow['PLANET_GOVERNOR_ID'] == $hire ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0);
+      if($build_data['CAN'][BUILD_CREATE])
+      {
+        if($planetrow['PLANET_GOVERNOR_ID'] == $hire)
+        {
+          $planetrow['PLANET_GOVERNOR_LEVEL']++;
+          $query = '`PLANET_GOVERNOR_LEVEL` + 1';
+        }
+        else
+        {
+          $planetrow['PLANET_GOVERNOR_LEVEL'] = 1;
+          $planetrow['PLANET_GOVERNOR_ID'] = $hire;
+          $query = '1';
+        }
+        doquery('START TRANSACTION;');
+        doquery("UPDATE {{planets}} SET `PLANET_GOVERNOR_ID` = {$hire}, `PLANET_GOVERNOR_LEVEL` = {$query} WHERE `id` = {$planetrow['id']} LIMIT 1;");
+        rpg_points_change($user['id'], RPG_MERCENARY, -$build_data[BUILD_CREATE][RES_DARK_MATTER]);
+        doquery('COMMIT;');
+      }
+    }
 
     int_planet_pretemplate($planetrow, $template);
     foreach($sn_data['groups']['governors'] as $governor_id)
     {
+      if($planetrow['planet_type'] == PT_MOON && $governor_id == MRC_TECHNOLOGIST)
+      {
+        continue;
+      }
+
+      $governor_level = $planetrow['PLANET_GOVERNOR_ID'] == $governor_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0;
+      $build_data = eco_get_build_data($user, $planetrow, $governor_id, $governor_level);
       $template->assign_block_vars('governors', array(
-        'ID' => $governor_id,
+        'ID'   => $governor_id,
         'NAME' => $lang['tech'][$governor_id],
+        'COST' => $build_data[BUILD_CREATE][RES_DARK_MATTER],
+        'MAX'  => $sn_data[$governor_id]['max'],
+        'LEVEL' => $governor_level,
       ));
     }
 
-    display(parsetemplate($template), $lang['rename_and_abandon_planet']);
+    $template->assign_vars(array(
+      'DARK_MATTER' => $user['dark_matter'],
+
+      'PAGE_HINT'   => $lang['ov_manage_page_hint'],
+    ));
+
+    display($template, $lang['rename_and_abandon_planet']);
   break;
 
   default:
@@ -236,31 +286,35 @@ switch($mode)
     }
 
     $template->assign_vars(array(
-      'TIME_NOW'             => $time_now,
+      'TIME_NOW'              => $time_now,
+                              
+      'USER_ID'               => $user['id'],
+      'user_username'         => $user['username'],
+      'USER_AUTHLEVEL'        => $user['authlevel'],
+                              
+      'NEW_MESSAGES'          => $user['new_message'],
+      'NEW_LEVEL_MINER'       => $level_miner,
+      'NEW_LEVEL_RAID'        => $level_raid,
+                              
+      'planet_diameter'       => pretty_number($planetrow['diameter']),
+      'planet_field_current'  => $planetrow['field_current'],
+      'planet_field_max'      => eco_planet_fields_max($planetrow),
+      'PLANET_FILL'           => floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100),
+      'PLANET_FILL_BAR'       => $planet_fill,
+      'metal_debris'          => pretty_number($planetrow['debris_metal']),
+      'crystal_debris'        => pretty_number($planetrow['debris_crystal']),
+      'RECYCLERS_SEND'        => $recyclers_send,
+      'planet_temp_min'       => $planetrow['temp_min'],
+      'planet_temp_max'       => $planetrow['temp_max'],
+                              
+      'GATE_LEVEL'            => $planetrow[$sn_data[43]['name']],
+      'GATE_JUMP_REST_TIME'   => GetNextJumpWaitTime($planetrow),
+                              
+      'ADMIN_EMAIL'           => $config->game_adminEmail,
 
-      'USER_ID'              => $user['id'],
-      'user_username'        => $user['username'],
-      'USER_AUTHLEVEL'       => $user['authlevel'],
-
-      'NEW_MESSAGES'         => $user['new_message'],
-      'NEW_LEVEL_MINER'      => $level_miner,
-      'NEW_LEVEL_RAID'       => $level_raid,
-
-      'planet_diameter'      => pretty_number($planetrow['diameter']),
-      'planet_field_current' => $planetrow['field_current'],
-      'planet_field_max'     => eco_planet_fields_max($planetrow),
-      'PLANET_FILL'          => floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100),
-      'PLANET_FILL_BAR'      => $planet_fill,
-      'metal_debris'         => pretty_number($planetrow['debris_metal']),
-      'crystal_debris'       => pretty_number($planetrow['debris_crystal']),
-      'RECYCLERS_SEND'       => $recyclers_send,
-      'planet_temp_min'      => $planetrow['temp_min'],
-      'planet_temp_max'      => $planetrow['temp_max'],
-
-      'GATE_LEVEL'           => $planetrow[$sn_data[43]['name']],
-      'GATE_JUMP_REST_TIME'  => GetNextJumpWaitTime($planetrow),
-
-      'ADMIN_EMAIL'          => $config->game_adminEmail,
+      'PLANET_GOVERNOR_ID'    => $planetrow['PLANET_GOVERNOR_ID'],
+      'PLANET_GOVERNOR_LEVEL' => $planetrow['PLANET_GOVERNOR_LEVEL'],
+      'PLANET_GOVERNOR_NAME'  => $lang['tech'][$planetrow['PLANET_GOVERNOR_ID']],
 
       //'LastChat'       => CHT_messageParse($msg),
     ));

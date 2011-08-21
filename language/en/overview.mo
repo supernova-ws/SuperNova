@@ -159,6 +159,16 @@ $lang = array_merge($lang, array(
 
   'ov_password'   => 'Your password',
 
+  'ov_manage_page_hint' => '
+  <li class="warning">WARNING! WHen hiring different governor his starting level will become 1 WITHOUT COMPENSATION SPENT DARK MATTER for previous one!
+  It\'s essential to plan your Empire, choosing right governor for each planet depending of it role!</li>
+  <li>Governors are mercenaries that manage one planet and granting certain bonuses to it</li>
+  <li>Click on governor\'s image in list to see description and granted bonuses</li>
+  <li>To hire governor click on "Hire"</li>
+  <li>Hiring current governor will increase his level - and thus increase his bonuses on planet</li>
+  <li>Some governors has limit by level. Some - has not</li>
+  ',
+
 ));
 
 ?>

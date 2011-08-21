@@ -28,28 +28,25 @@ foreach($lang['tech'] as $Element => $ElementName)
       $parse['required_list'] = "";
       foreach($sn_data[$Element]['require'] as $ResClass => $Level)
       {
-        if(isset($user[$sn_data[$ResClass]['name']]) && $user[$sn_data[$ResClass]['name']] >= $Level)
+        $actual_level = 0;
+        if(isset($user[$sn_data[$ResClass]['name']]))
         {
-          $parse['required_list'] .= "<font color=\"#00ff00\">";
+          $actual_level = $user[$sn_data[$ResClass]['name']];
         }
-        elseif ( isset($planetrow[$sn_data[$ResClass]['name']] ) && $planetrow[$sn_data[$ResClass]['name']] >= $Level)
+        elseif(isset($planetrow[$sn_data[$ResClass]['name']]))
         {
-          $parse['required_list'] .= "<font color=\"#00ff00\">";
+          $actual_level = $planetrow[$sn_data[$ResClass]['name']];
         }
-        else
+        elseif(in_array($ResClass, $sn_data['groups']['governors']) && $planetrow['PLANET_GOVERNOR_ID'] == $ResClass)
         {
-          $parse['required_list'] .= "<font color=\"#ff0000\">";
+          $actual_level = $planetrow['PLANET_GOVERNOR_LEVEL'];
         }
-        //$parse['required_list'] .= $lang['tech'][$ResClass] ." (". $lang['level'] ." ". $Level .")";
-        $parse['required_list'] .= $lang['tech'][$ResClass] ." ( ". $lang['level'] ." ". $user[$sn_data[$ResClass]['name']] ." ". $planetrow[$sn_data[$ResClass]['name']] ." / ". $Level ." )";
-        $parse['required_list'] .= "</font><br>";
+        $parse['required_list'] .= "<font color=\"" . ($actual_level >= $Level ? '#00ff00' : '#ff0000') . "\">{$lang['tech'][$ResClass]} ( {$lang['level']} {$actual_level} / {$Level} )</font><br>";
       }
-      // $parse['tt_detail']      = "<a href=\"techdetails.php?techid=". $Element ."\">" .$lang['treeinfo'] ."</a>";
     }
     else
     {
       $parse['required_list'] = "";
-      $parse['tt_detail']     = "";
     }
     $parse['tt_info']   = $Element;
     $page              .= parsetemplate($RowTpl, $parse);
@@ -65,4 +62,5 @@ display(parsetemplate(gettemplate('techtree_body'), $parse), $lang['Tech']);
 // - 1.0 mise en conformité code avec skin XNova
 // - 1.1 ajout lien pour les details des technos
 // - 1.2 suppression du lien details ou il n'est pas necessaire
+
 ?>

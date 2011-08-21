@@ -57,15 +57,15 @@ function ECO_getPlanetCaps($user, &$planet_row)
     {
       if (in_array($ProdID, $sn_group_structures))
       {
-        $Caps['metal_perhour'][$ProdID]     += floor(mrc_modify_value($user, $planet_row, MRC_GEOLOGIST, eval($unit_data['metal_perhour']) * $config_resource_multiplier));
-        $Caps['crystal_perhour'][$ProdID]   += floor(mrc_modify_value($user, $planet_row, MRC_GEOLOGIST, eval($unit_data['crystal_perhour']) * $config_resource_multiplier));
-        $Caps['deuterium_perhour'][$ProdID] += floor(mrc_modify_value($user, $planet_row, MRC_GEOLOGIST, eval($unit_data['deuterium_perhour']) * $config_resource_multiplier));
+        $Caps['metal_perhour'][$ProdID]     += floor(mrc_modify_value($user, $planet_row, MRC_TECHNOLOGIST, eval($unit_data['metal_perhour']) * $config_resource_multiplier));
+        $Caps['crystal_perhour'][$ProdID]   += floor(mrc_modify_value($user, $planet_row, MRC_TECHNOLOGIST, eval($unit_data['crystal_perhour']) * $config_resource_multiplier));
+        $Caps['deuterium_perhour'][$ProdID] += floor(mrc_modify_value($user, $planet_row, MRC_TECHNOLOGIST, eval($unit_data['deuterium_perhour']) * $config_resource_multiplier));
       }
     };
 
     if ($Caps['energy'][$ProdID]>0)
     {
-      $Caps['energy'][$ProdID] = floor(mrc_modify_value($user, $planet_row, array(MRC_POWERMAN), $Caps['energy'][$ProdID]));
+      $Caps['energy'][$ProdID] = floor(mrc_modify_value($user, $planet_row, array(MRC_TECHNOLOGIST), $Caps['energy'][$ProdID]));
 
       $Caps['planet']['energy_max'] += floor($Caps['energy'][$ProdID]);
     }

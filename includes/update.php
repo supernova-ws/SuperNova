@@ -797,10 +797,51 @@ debug($update_tables['logs']['log_id'], 31);
   $new_version = 30;
 
   case 30:
-//    upd_log_version_update();
-//
-//  upd_do_query('COMMIT;', true);
-//  $new_version = 29.1;
+    upd_log_version_update();
+
+    upd_alter_table('users', array(
+      "ADD `player_que` TEXT"
+    ), !$update_tables['users']['player_que']);
+
+    upd_alter_table('planets', array(
+      "CHANGE COLUMN `governor` `PLANET_GOVERNOR_ID` SMALLINT(5) NOT NULL DEFAULT 0",
+      "CHANGE COLUMN `governor_level` `PLANET_GOVERNOR_LEVEL` SMALLINT(5) NOT NULL DEFAULT 0",
+    ), $update_tables['planets']['governor']);
+
+    if($update_tables['users']['rpg_geologue'])
+    {
+      doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` + (`rpg_geologue` + `rpg_ingenieur` + `rpg_constructeur` + `rpg_technocrate` + `rpg_scientifique` + `rpg_defenseur`) * 3;");
+
+      upd_alter_table('users', array(
+        "DROP COLUMN `rpg_geologue`",
+        "DROP COLUMN `rpg_ingenieur`",
+        "DROP COLUMN `rpg_constructeur`",
+        "DROP COLUMN `rpg_technocrate`",
+        "DROP COLUMN `rpg_scientifique`",
+        "DROP COLUMN `rpg_defenseur`",
+      ), $update_tables['users']['rpg_geologue']);
+    }
+
+    if($update_tables['users']['rpg_bunker'])
+    {
+      doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` + (`rpg_bunker`) * 3;");
+
+      upd_alter_table('users', array(
+        "DROP COLUMN `rpg_bunker`",
+      ), $update_tables['users']['rpg_bunker']);
+    }
+
+    upd_alter_table('users', array(
+      "DROP COLUMN `p_infligees`",
+      "MODIFY COLUMN `dark_matter` BIGINT(20) DEFAULT '0' AFTER `lvl_raid`",
+    ), $update_tables['users']['p_infligees']);
+
+    upd_alter_table('users', array(
+      "ADD COLUMN `mrc_academic` SMALLINT(3) DEFAULT 0 AFTER rpg_amiral",
+    ), !$update_tables['users']['mrc_academic']);
+
+  upd_do_query('COMMIT;', true);
+//  $new_version = 31;
 
 };
 upd_log_message('Upgrade complete.');

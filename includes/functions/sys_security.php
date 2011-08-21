@@ -78,9 +78,10 @@ function sn_autologin($abort = true)
     if ($user['banaday'] > $time_now)
     {
       $bantime = date(FMT_DATE_TIME, $user['banaday']);
+      // Add ban reason. Add vacation time
       die ("{$lang['sys_banned_msg']} {$bantime}");
     }
-    doquery("UPDATE {{users}} SET bana=0, `vacation` = '{$time_now}', banaday=0 WHERE id='{$user['id']}' LIMIT 1;");
+    doquery("UPDATE {{users}} SET `vacation` = '{$time_now}', banaday=0 WHERE id='{$user['id']}' LIMIT 1;");
   }
 
   $IsUserChecked = is_array($user);

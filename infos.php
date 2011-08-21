@@ -32,10 +32,10 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
   $BuildLevel = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
 
 
-  $Prod[1] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])));
-  $Prod[2] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])));
-  $Prod[3] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour'])));
-  $Prod[4] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_POWERMAN, /* $config_resource_multiplier * */ eval($unit_data['energy_perhour'])));
+  $Prod[1] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])));
+  $Prod[2] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])));
+  $Prod[3] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour'])));
+  $Prod[4] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, /* $config_resource_multiplier * */ eval($unit_data['energy_perhour'])));
 
   $ActualProd = floor($Prod[$BuildID]);
   if ($BuildID != 12)
@@ -58,10 +58,10 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
   {
     if ($BuildID != 42)
     {
-      $Prod[1] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])));
-      $Prod[2] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])));
-      $Prod[3] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_GEOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour'])));
-      $Prod[4] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_POWERMAN, /* $config_resource_multiplier * */ eval($unit_data['energy_perhour'])));
+      $Prod[1] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])));
+      $Prod[2] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])));
+      $Prod[3] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour'])));
+      $Prod[4] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, /* $config_resource_multiplier * */ eval($unit_data['energy_perhour'])));
 
       $bloc['build_lvl'] = ($CurrentBuildtLvl == $BuildLevel) ? "<font color=\"#ff0000\">" . $BuildLevel . "</font>" : $BuildLevel;
       if ($ProdFirst > 0)
@@ -306,7 +306,7 @@ elseif ($unit_id >= 502 && $unit_id <= 503)
   $parse['shield_pt'] = pretty_number($sn_data[$unit_id]['shield']);  // Points de Bouclier
   $parse['attack_pt'] = pretty_number($sn_data[$unit_id]['attack']);  // Points d'Attaque
 }
-elseif (in_array($unit_id, $sn_data['groups']['mercenaries']))
+elseif (in_array($unit_id, $sn_data['groups']['mercenaries']) || in_array($unit_id, $sn_data['groups']['governors']))
 {
   // Officiers
   $PageTPL = gettemplate('info_officiers_general');
@@ -333,7 +333,7 @@ elseif (in_array($unit_id, $sn_data['groups']['mercenaries']))
 
   $parse['EFFECT'] = $lang['info'][$unit_id]['effect'];
   $parse['mercenary_bonus'] = $mercenary_bonus;
-  $parse['max_level'] = $mercenary['max'];
+  $parse['max_level'] = $lang['sys_level'] . ' ' . ($mercenary['location'] == LOC_USER ? $user[$sn_data[$unit_id]['name']] : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0)) . (isset($mercenary['max']) ? "/{$mercenary['max']}" : '');
 }
 
 // ---- Tableau d'evolution

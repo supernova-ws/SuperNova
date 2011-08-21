@@ -225,6 +225,7 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
 
   $unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $que['in_que'][$unit_id];
   $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
+
   $unit_level += $build_mode * $unit_amount;
   if($build_data['CAN'][$build_mode] >= $unit_amount && $unit_level >= 0)
   {
@@ -232,19 +233,19 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
     $que_item_string = "{$unit_id},{$unit_amount},{$unit_time},{$build_mode},{$que_id};";
 
     $que['que'][$que_id][] = array(
-        'ID'     => $unit_id, // unit ID
-        'AMOUNT' => $unit_amount, // unit amount
-        'TIME'   => $unit_time, // build time left (in seconds)
-        'TIME_FULL'   => $unit_time, // build time left (in seconds)
-        'MODE'   => $build_mode, // build/destroy
-        'NAME'   => $lang['tech'][$unit_id],
-        'QUE'    => $que_id, // que ID
-        'STRING' => $que_item_string,
-        'LEVEL'  => $unit_level
+        'ID'        => $unit_id, // unit ID
+        'AMOUNT'    => $unit_amount, // unit amount
+        'TIME'      => $unit_time, // build time left (in seconds)
+        'TIME_FULL' => $unit_time, // build time full (in seconds)
+        'MODE'      => $build_mode, // build/destroy
+        'NAME'      => $lang['tech'][$unit_id],
+        'QUE'       => $que_id, // que ID
+        'STRING'    => $que_item_string,
+        'LEVEL'     => $unit_level
     );
+    $que['amounts'][$que_id] += $unit_amount * $build_mode;
     $que['in_que'][$unit_id] += $unit_amount * $build_mode;
     $que['in_que_abs'][$unit_id] += $unit_amount;
-    $que['amounts'][$que_id] += $unit_amount * $build_mode;
     $que['string'] .= $que_item_string;
     $que['query'] = "`que` = '{$que['string']}'";
 
@@ -253,9 +254,7 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
     {
       $resource_db_name = $sn_data[$resource_id]['name'];
       $resource_change = $build_data[$build_mode][$resource_id] * $unit_amount;
-
       $planet[$resource_db_name] -= $resource_change;
-
       $que['query'] = "`$resource_db_name` = `$resource_db_name` - '{$resource_change}',{$que['query']}";
     }
     doquery("UPDATE {{planets}} SET {$que['query']} WHERE `id` = '{$planet['id']}' LIMIT 1;");
@@ -266,84 +265,57 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
   return $que;
 }
 
-function eco_que_trim($user, &$planet, &$que, $que_id, $que_item, &$resource_change)
-{
-  global $sn_data;
-
-  $sn_data_groups_resources_loot = $sn_data['groups']['resources_loot'];
-
-  $unit_id = $que_item['ID'];
-  $build_mode = $que_item['MODE'];
-
-  $build_data = eco_get_build_data($user, $planet, $unit_id, $que_item['LEVEL'] - $build_mode);
-
-  $unit_amount = $que_item['AMOUNT'];
-  foreach($sn_data_groups_resources_loot as $resource_id)
-  {
-    $resource_change[$resource_id] += $build_data[$build_mode][$resource_id] * $unit_amount;
-  }
-  $que['in_que'][$unit_id] -= $build_mode * $unit_amount;
-  $que['in_que_abs'][$unit_id] -= $unit_amount;
-  $que['amounts'][$que_id] -= $build_mode * $unit_amount;
-}
-
 function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
 {
   global $sn_data;
 
   $que_string = '';
+  $que_query = '';
 
   foreach($que['que'] as $que_data_id => &$que_data)
   {
-
-    if($que_data_id == $que_id)
+    // TODO: MAY BE NOT ALL QUES CAN BE CLEARED - ADD CHECK FOR CLEAREBILITY!
+    if($que_data_id == $que_id && count($que_data))
     {
-      // This que is those we want to clear
-      // ADD CHECK FOR CLEAREBILITY!
-      if($only_one)
+      $resource_change = array();
+      for($i = ($only_one ? 0 : count($que_data) - 1); $i >= 0; $i--)
       {
-        if (count($que_data) > 0)
+        $que_item = $que_data[count($que_data) - 1];
+
+        $unit_id = $que_item['ID'];
+        $build_mode = $que_item['MODE'];
+        $unit_amount = $que_item['AMOUNT'];
+
+        $build_data = eco_get_build_data($user, $planet, $unit_id, $que_item['LEVEL'] - $build_mode);
+        foreach($sn_data['groups']['resources_loot'] as $resource_id)
         {
-          eco_que_trim($user, &$planet, $que, $que_id, $que_data[count($que_data) - 1], &$resource_change);
-          unset($que_data[count($que_data) - 1]);
+          $resource_change[$resource_id] += $build_data[$build_mode][$resource_id] * $unit_amount;
         }
-      }
-      else
-      {
-        foreach($que_data as $que_item)
-        {
-          eco_que_trim($user, &$planet, $que, $que_id, $que_item, &$resource_change);
-        }
-        $que['que'][$que_id] = array();
+
+        $que['amounts'][$que_id] -= $build_mode * $unit_amount;
+        $que['in_que'][$unit_id] -= $build_mode * $unit_amount;
+        $que['in_que_abs'][$unit_id] -= $unit_amount;
+
+        unset($que_data[count($que_data) - 1]);
       }
 
-      foreach($que_data as $que_item)
-      {
-        $que_string .= $que_item['STRING'];
-      }
-
-      $que_query = '';
       foreach($resource_change as $resource_id => $resource_amount)
       {
         $resource_db_name = $sn_data[$resource_id]['name'];
         $planet[$resource_db_name] += $resource_amount;
-
         $que_query .= "`$resource_db_name` = `$resource_db_name` + '{$resource_amount}', ";
       }
-      $que_query = "{$que_query}`que` = '{$que_string}'";
-      $que['string'] = $que_string;
-      $que['query'] = $que_query;
-      $planet['que'] = $que_string;
     }
-    else
+
+    foreach($que_data as $que_item)
     {
-      // This que just passed by
-      foreach($que_data as $que_item)
-      {
-        $que_string .= $que_item['STRING'];
-      }
+      $que_string .= $que_item['STRING'];
     }
   }
+
+  $que['query'] = "{$que_query}`que` = '{$que_string}'";
+  $que['string'] = $planet['que'] = $que_string;
+
   doquery("UPDATE {{planets}} SET {$que['query']} WHERE `id` = '{$planet['id']}' LIMIT 1;");
 
   return $que;

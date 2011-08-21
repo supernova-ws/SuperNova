@@ -42,7 +42,6 @@ if ($mode == 'banit' && $action)
   $BannedUntil = $Now + $BanTime;
 
   $QryUpdateUser = "UPDATE {{users}} SET ";
-  $QryUpdateUser .= "`bana` = '1', ";
   $QryUpdateUser .= "`banaday` = '" . $BannedUntil . "' ";
   if ($isVacation)
   {
@@ -90,7 +89,7 @@ if ($mode == 'banit' && $action)
 }
 elseif ($mode == 'unbanit' && $action)
 {
-  doquery("UPDATE {{users}} SET bana=0, banaday=0, `vacation` = {$time_now} WHERE username like '{$name}';");
+  doquery("UPDATE {{users}} SET banaday=0, `vacation` = {$time_now} WHERE username like '{$name}';");
   doquery("INSERT INTO {{banned}} SET `ban_user_name` = \"{$name}\", `ban_reason` = '{$lang['sys_unbanned']}', `ban_time` = 0, `ban_until` = '{$time_now}', `ban_issuer_name` = '{$user['username']}', `ban_issuer_email` = '{$user['email']}';");
   $DoneMessage = $lang['adm_unbn_thpl'] . " " . $name . " " . $lang['adm_unbn_isbn'];
   AdminMessage($DoneMessage, $lang['adm_unbn_ttle']);

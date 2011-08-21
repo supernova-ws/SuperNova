@@ -534,6 +534,8 @@ $lang = array_merge($lang, array(
   'sys_planets' => 'Планеты',
   'sys_moons' => 'Луны',
 
+  'sys_no_governor' => 'Нет губернатора',
+
   // Arrays
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'Сверхновая',

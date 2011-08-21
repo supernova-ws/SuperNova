@@ -197,7 +197,7 @@ function int_planet_pretemplate($planetrow, &$template)
 {
   global $lang, $sn_data;
 
-  $governor_id = $planetrow['governor'];
+  $governor_id = $planetrow['PLANET_GOVERNOR_ID'];
 
   $template->assign_vars(array(
     'PLANET_ID'          => $planetrow['id'],
@@ -208,10 +208,10 @@ function int_planet_pretemplate($planetrow, &$template)
     'PLANET_TYPE'        => $planetrow['planet_type'],
     'PLANET_TYPE_TEXT'   => $lang['sys_planet_type'][$planetrow['planet_type']],
 
-    'GOVERNOR_ID'        => $governor_id,
-    'GOVERNOR_NAME'      => $lang['tech'][$governor_id],
-    'GOVERNOR_LEVEL'     => $planetrow['governor_level'],
-    'GOVERNOR_LEVEL_MAX' => $sn_data[$governor_id]['max'],
+    'PLANET_GOVERNOR_ID'        => $governor_id,
+    'PLANET_GOVERNOR_NAME'      => $lang['tech'][$governor_id],
+    'PLANET_GOVERNOR_LEVEL'     => $planetrow['PLANET_GOVERNOR_LEVEL'],
+    'PLANET_GOVERNOR_LEVEL_MAX' => $sn_data[$governor_id]['max'],
   ));
 }
 

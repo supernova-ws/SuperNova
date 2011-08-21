@@ -74,8 +74,8 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 
     <!-- IF GATE_LEVEL -->
     <tr>
-      <th colspan="2">{L_tech[43]}</th>
-      <td class="c_c" colspan="2"><a href="jumpgate.php" id="gate_jump_time">
+      <td class="c_c" colspan="2">{L_tech[43]}</td>
+      <td class="c_c" colspan="3"><a href="jumpgate.php" id="gate_jump_time">
         <!-- IF GATE_JUMP_REST_TIME -->
         <script type="text/javascript"><!--
           sn_timers.unshift({id: 'gate_jump_time', type: 0, active: true, start_time: '{TIME_NOW}', options: {msg_done: '{L_gate_ready}', que: [['1', '', {GATE_JUMP_REST_TIME}, '1']]}});
@@ -88,6 +88,11 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
     <!-- ENDIF -->
 
     <tr>
+      <td class="c_c" width="120" rowspan="7">
+        <!-- DEFINE $PLANET_ID = '{PLANET_ID}' -->
+        <!-- INCLUDE planet_governor.tpl -->
+      </td>
+
       <th width=100 align="center">{buildings_on_planet}</th>
       <th colspan="3" style="position: relative; border: 1px solid rgb(153, 153, 255); padding: 0px; height: 100%;">
         <div style="position: relative; width: 100%; height: 100%;">
@@ -123,7 +128,7 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
     <tr><td colspan=4 class="c">{L_Planet_menu}</td></tr>
     <!-- BEGIN ques -->
     <tr>
-      <th width=100>
+      <th width=100 height=33%>
         <!-- IF ques.LENGTH -->
         <div id="ov_{ques.ID}"></div>
         <!-- DEFINE $QUE_ID = '{ques.ID}' -->
