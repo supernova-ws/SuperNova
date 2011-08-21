@@ -96,7 +96,7 @@ function GetBuildingTime ($user, $planet, $Element, $for_building = BUILD_CREATE
   {
     // Pour un batiment ...
     $time = $time * (1 / ($planet[$sn_data['14']['name']] + 1)) * pow(0.5, $planet[$sn_data['15']['name']]);
-    $time = floor(mrc_modify_value($user, $planet, MRC_ARCHITECT, $time * 60 * 60));
+    $time = floor(mrc_modify_value($user, $planet, MRC_ENGINEER, $time * 60 * 60));
   }
   elseif (in_array($Element, $sn_data['groups']['tech']))
   {
@@ -145,7 +145,7 @@ function GetBuildingTime ($user, $planet, $Element, $for_building = BUILD_CREATE
   elseif ($isFleet)
   {
     $time = $time * (1 / ($planet[$sn_data[21]['name']] + 1)) * pow(1 / 2, $planet[$sn_data[15]['name']]);
-    $time = floor(mrc_modify_value($user, $planet, MRC_CONSTRUCTOR, $time * 60 * 60));
+    $time = floor(mrc_modify_value($user, $planet, MRC_ENGINEER, $time * 60 * 60));
   }
 
   if($for_building == BUILD_DESTROY)

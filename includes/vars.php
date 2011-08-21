@@ -263,7 +263,7 @@ if (!defined('INSIDE'))
     12  => array(
       'name' => 'fusion_plant',
       'location' => LOC_PLANET,
-      'require' => array(3 => 5, TECH_ENERGY => 3),
+      'require' => array(3 => 5, TECH_ENERGY => 3, MRC_TECHNOLOGIST => 5),
       'cost' => array(
         RES_METAL     => 900,
         RES_CRYSTAL   => 360,
@@ -1609,7 +1609,7 @@ if (!defined('INSIDE'))
     409 => array(
       'name'      => 'planet_protector',
       'location' => LOC_PLANET,
-      'require'   => array(MRC_DEFENDER => 1),
+      'require'   => array(MRC_FORTIFIER => 3),
       'cost' => array(
         RES_METAL     => 10000000,
         RES_CRYSTAL   => 5000000,
@@ -1672,13 +1672,12 @@ if (!defined('INSIDE'))
     ),
 
 
-
-    MRC_GEOLOGIST => array(
+    MRC_TECHNOLOGIST => array(
       'name' => 'rpg_geologue',
       'location' => LOC_PLANET,
       'cost' => array(
         RES_DARK_MATTER => 1,
-        'factor' => 1.1,
+        'factor' => 1.06,
       ),
       'dark_matter' => 3,
       'factor' => 1,
@@ -1686,53 +1685,12 @@ if (!defined('INSIDE'))
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    MRC_POWERMAN => array(
-      'name' => 'rpg_ingenieur',
-      'location' => LOC_PLANET,
-      'cost' => array(
-        RES_DARK_MATTER => 1,
-        'factor' => 1.025,
-      ),
-      'dark_matter' => 3,
-      'factor' => 1,
-      'bonus' => 5,
-      'bonus_type' => BONUS_PERCENT,
-    ),
-
-    MRC_ARCHITECT => array(
+    MRC_ENGINEER => array(
       'name' => 'rpg_constructeur',
       'location' => LOC_PLANET,
       'cost' => array(
-        RES_DARK_MATTER => 0.6,
-        'factor' => 1.2,
-      ),
-      'dark_matter' => 3,
-      'factor' => 1,
-      'max' => 15,
-      'bonus' => -5,
-      'bonus_type' => BONUS_PERCENT,
-    ),
-
-    MRC_CONSTRUCTOR => array(
-      'name' => 'rpg_technocrate',
-      'location' => LOC_PLANET,
-      'cost' => array(
-        RES_DARK_MATTER => 0.2,
-        'factor' => 1.3,
-      ),
-      'dark_matter' => 3,
-      'factor' => 1,
-      'max' => 15,
-      'bonus' => -5,
-      'bonus_type' => BONUS_PERCENT,
-    ),
-
-    MRC_ACADEMIC => array(
-      'name' => 'rpg_scientifique',
-      'location' => LOC_PLANET,
-      'cost' => array(
-        RES_DARK_MATTER => 0.2,
-        'factor' => 1.3,
+        RES_DARK_MATTER => 0.5,
+        'factor' => 1.25,
       ),
       'dark_matter' => 3,
       'factor' => 1,
@@ -1766,7 +1724,7 @@ if (!defined('INSIDE'))
       ),
       'dark_matter' => 3,
       'factor' => 1,
-      'max' => 10,
+      'max' => 20,
       'bonus' => 20,
       'bonus_type' => BONUS_PERCENT,
     ),
@@ -1786,25 +1744,25 @@ if (!defined('INSIDE'))
       'bonus_type' => BONUS_ADD,
     ),
 
-    MRC_COORDINATOR => array(
-      'name' => 'rpg_commandant',
+    MRC_ACADEMIC => array(
+      'name' => 'mrc_academic',
       'location' => LOC_USER,
-      'require' => array(MRC_SPY => 5),
+      'require' => array(MRC_STOCKMAN => 10, MRC_SPY => 5),
       'cost' => array(
         RES_DARK_MATTER => 3,
         'factor' => 1,
       ),
       'dark_matter' => 3,
       'factor' => 1,
-      'max' => 5,
-      'bonus' => 1,
-      'bonus_type' => BONUS_ADD,
+      'max' => 10,
+      'bonus' => -5,
+      'bonus_type' => BONUS_PERCENT,
     ),
 
     MRC_DESTRUCTOR => array(
       'name' => 'rpg_destructeur',
       'location' => LOC_USER,
-      'require' => array(MRC_COORDINATOR => 5, MRC_NAVIGATOR => 5),
+      'require' => array(MRC_STOCKMAN => 20, MRC_ACADEMIC => 10, MRC_NAVIGATOR => 1),
       'cost' => array(
         RES_DARK_MATTER => 3,
         'factor' => 1,
@@ -1814,6 +1772,7 @@ if (!defined('INSIDE'))
       'max' => 1,
       'bonus_type' => BONUS_ABILITY,
     ),
+
 
     MRC_ADMIRAL => array(
       'name' => 'rpg_amiral',
@@ -1829,24 +1788,25 @@ if (!defined('INSIDE'))
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    MRC_DEFENDER => array(
-      'name' => 'rpg_bunker',
+    MRC_COORDINATOR => array(
+      'name' => 'rpg_commandant',
       'location' => LOC_USER,
-      'require' => array(MRC_ADMIRAL => 10),
+      'require' => array(MRC_ADMIRAL => 5),
       'cost' => array(
         RES_DARK_MATTER => 3,
         'factor' => 1,
       ),
       'dark_matter' => 3,
       'factor' => 1,
-      'max' => 1,
-      'bonus_type' => BONUS_ABILITY,
+      'max' => 5,
+      'bonus' => 1,
+      'bonus_type' => BONUS_ADD,
     ),
 
     MRC_NAVIGATOR => array(
       'name' => 'rpg_general',
       'location' => LOC_USER,
-      'require' => array(MRC_ADMIRAL => 15, MRC_DEFENDER => 1),
+      'require' => array(MRC_ADMIRAL => 10, MRC_COORDINATOR => 5),
       'cost' => array(
         RES_DARK_MATTER => 3,
         'factor' => 1,
@@ -1861,7 +1821,7 @@ if (!defined('INSIDE'))
     MRC_ASSASIN => array(
       'name' => 'rpg_raideur',
       'location' => LOC_USER,
-      'require' => array(MRC_COORDINATOR => 5, MRC_NAVIGATOR => 5),
+      'require' => array(MRC_ADMIRAL => 20, MRC_NAVIGATOR => 10, MRC_ACADEMIC => 1),
       'cost' => array(
         RES_DARK_MATTER => 3,
         'factor' => 1,
@@ -2008,26 +1968,27 @@ if (!defined('INSIDE'))
 
       // Mercenary list
       'mercenaries' => array (
-//        MRC_GEOLOGIST, MRC_POWERMAN, MRC_ARCHITECT, MRC_CONSTRUCTOR, MRC_ACADEMIC, MRC_FORTIFIER, 
-        MRC_STOCKMAN, MRC_SPY, MRC_COORDINATOR, MRC_DESTRUCTOR, MRC_ADMIRAL, MRC_DEFENDER, MRC_NAVIGATOR,
-        MRC_ASSASIN //, MRC_EMPEROR
+        MRC_STOCKMAN, MRC_SPY, MRC_ACADEMIC,
+        MRC_ADMIRAL, MRC_COORDINATOR, MRC_NAVIGATOR,
+        MRC_DESTRUCTOR, MRC_ASSASIN //, MRC_EMPEROR
       ),
       'governors' => array(
-        MRC_GEOLOGIST, MRC_POWERMAN, MRC_ARCHITECT, MRC_CONSTRUCTOR, MRC_ACADEMIC, MRC_FORTIFIER
+        MRC_TECHNOLOGIST, MRC_ENGINEER, MRC_FORTIFIER
       ),
 
       // Spaceships list
       'fleet'     => array(
-      SHIP_FIGHTER_LIGHT, SHIP_FIGHTER_HEAVY, SHIP_DESTROYER, SHIP_CRUISER,
-      SHIP_BOMBER, SHIP_BATTLESHIP, SHIP_DESTRUCTOR, SHIP_DEATH_STAR, SHIP_SUPERNOVA,
-      SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_RECYCLER, SHIP_COLONIZER,
-      SHIP_SPY, SHIP_SATTELITE_SOLAR
+        SHIP_FIGHTER_LIGHT, SHIP_FIGHTER_HEAVY, SHIP_DESTROYER, SHIP_CRUISER,
+        SHIP_BOMBER, SHIP_BATTLESHIP, SHIP_DESTRUCTOR, SHIP_DEATH_STAR, SHIP_SUPERNOVA,
+        SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_RECYCLER, SHIP_COLONIZER,
+        SHIP_SPY, SHIP_SATTELITE_SOLAR
        ),
       // Defensive building list
       'defense'   => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409, 502, 503 ),
 
       // Combat units list
-      'combat'    => array ( SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_FIGHTER_LIGHT, SHIP_FIGHTER_HEAVY, SHIP_DESTROYER, SHIP_CRUISER, SHIP_COLONIZER, SHIP_RECYCLER, SHIP_SPY, SHIP_BOMBER, SHIP_SATTELITE_SOLAR, SHIP_DESTRUCTOR, SHIP_DEATH_STAR, SHIP_BATTLESHIP, SHIP_SUPERNOVA, 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
+      'combat'    => array(
+        SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_FIGHTER_LIGHT, SHIP_FIGHTER_HEAVY, SHIP_DESTROYER, SHIP_CRUISER, SHIP_COLONIZER, SHIP_RECYCLER, SHIP_SPY, SHIP_BOMBER, SHIP_SATTELITE_SOLAR, SHIP_DESTRUCTOR, SHIP_DEATH_STAR, SHIP_BATTLESHIP, SHIP_SUPERNOVA, 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
       // Planet active defense list
       'defense_active' => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
       // Transports
@@ -2059,14 +2020,14 @@ if (!defined('INSIDE'))
     QUE_STRUCTURES => array(
       'unit_list' => $sn_data['groups']['structures'],
       'length' => 5,
-      'mercenary' => MRC_ARCHITECT,
+      'mercenary' => MRC_ENGINEER,
       'que' => QUE_STRUCTURES,
     ),
 
     QUE_HANGAR => array(
       'unit_list' => array_merge($sn_data['groups']['fleet'], $sn_data['groups']['defense']),
       'length' => 10,
-      'mercenary' => MRC_CONSTRUCTOR,
+      'mercenary' => MRC_ENGINEER,
       'que' => QUE_HANGAR,
     ),
 
@@ -2081,19 +2042,19 @@ if (!defined('INSIDE'))
   $sn_data['groups']['subques'] = array(
     SUBQUE_PLANET => array(
       'que' => QUE_STRUCTURES,
-      'mercenary' => MRC_ARCHITECT,
+      'mercenary' => MRC_ENGINEER,
       'unit_list' => $sn_data['groups']['build_allow'][PT_PLANET],
     ),
 
     SUBQUE_MOON => array(
       'que' => QUE_STRUCTURES,
-      'mercenary' => MRC_ARCHITECT,
+      'mercenary' => MRC_ENGINEER,
       'unit_list' => $sn_data['groups']['build_allow'][PT_MOON],
     ),
 
     SUBQUE_FLEET => array(
       'que' => QUE_HANGAR,
-      'mercenary' => MRC_CONSTRUCTOR,
+      'mercenary' => MRC_ENGINEER,
       'unit_list' => $sn_data['groups']['fleet'],
     ),
 

@@ -365,74 +365,62 @@ $lang = array_merge($lang, array(
       'description_short' => 'Interplanetary missiles destroy enemy defenses'
     ),
 
-    MRC_GEOLOGIST => array(
-      'description' => 'Geologist is a recognized expert in astromineralogii and crystallography. With his team of Metallurgists and chemists, he supported the interplanetary Government when developing new resources and optimize their treatment.',
-      'effect' => 'in the extraction of metals, crystals and deuterium for each level.'
+
+    MRC_TECHNOLOGIST => array(
+      'description' => 'Technologist is a recognized expert in astromineralogy and crystallography. With his team of Metallurgists and chemists, he supported the interplanetary Government when developing new resources and optimize their refinery.',
+      'effect' => 'to metal, crystal and deuterium production, to energy production on solar and fusion stations each level.<br>At 5th level allows to build fusion station'
     ),
 
-    MRC_POWERMAN => array(
-      'description' => 'Specialist in energy management. In peacetime, it raises the level of energy networks in the colonies.',
-      'effect' => 'to produce energy for each level.'
-    ),
-
-    MRC_CONSTRUCTOR => array(
-      'description' => 'Designers are brilliant scientists, and you can always find where technically possible line ends. The code will never be able to discern any normal person, and one whose presence they inspire scholars Empire.',
-      'effect' => 'by the time built ships for each level.'
-    ),
-
-    MRC_ARCHITECT => array(
-      'description' => 'Architect-the most up-to-date Builder of the Empire. His DNA was subjected to mutations, which provided him with an extraordinary mind and sverhceloveceskuû force. Architect alone can design and build a city.',
-      'effect' => 'by the time of construction of buildings for each level.'
-    ),
-
-    MRC_ACADEMIC => array(
-      'description' => 'Academicians are actors Guild Technocrats. Their mind and scholars degree allow them Excel in their acts even constructors. They specialize in the field of technological progress.',
-      'effect' => 'by the time of studies for each level.'
+    MRC_ENGINEER => array(
+      'description' => 'Engineer-the most up-to-date Builder of the Empire. His DNA was subjected to mutations, which provided him with an extraordinary mind and sverhceloveceskuû force. Architect alone can design and build a city.',
+      'effect' => 'to construction time of buildings and ships each level'
     ),
 
     MRC_FORTIFIER => array(
-      'description' => 'Fortifikator-Army Engineer. His in-depth knowledge of defensive systems allow you to shorten the defence of the empire building systems.',
-      'effect' => 'by the time of construction of protective constructions and at each level.'
+      'description' => 'Fortifier - Army Engineer. His in-depth knowledge of defensive systems allow you to shorten planet defense building time',
+      'effect' => 'to construction time of missiles and defense structures<br />At 3rd level allows building of Planetary Defense'
     ),
+
 
     MRC_STOCKMAN => array(
       'description' => 'Cargo-master is a highly skilled specialist in storage. His genius allows you to get the most out of storage resources to increase their effective capacity beyond the builders.',
-      'effect' => 'size of warehouses for each level.'
+      'effect' => 'size of warehouses for each level'
     ),
 
     MRC_SPY => array(
       'description' => 'Spy-master person Empire. He had hundreds of thousands of individuals and a million ideas for mask works, defensive networks and fleets. Everyone who saw his real face, is now dead.',
-      'effect' => 'level of spying for each level.'
+      'effect' => 'level of spying for each level'
     ),
 
-    MRC_ADMIRAL => array(
-      'description' => 'Admiral is tried by war veteran and a brilliant strategist. Even in the hottest fights he doesn\'t lose a review and maintains contact with commanders fleets. The wise ruler can rely on him in battle and thereby use to battle more ships.',
-      'effect' => 'armor, shields and attack ships for each level.'
-    ),
-
-    MRC_COORDINATOR => array(
-      'description' => 'The Coordinator is an expert in managing fleets. His knowledge can make the most of the fleet management system.',
-      'effect' => 'additional fleet for each level.'
-    ),
-
-    MRC_NAVIGATOR => array(
-      'description' => 'Navigator-genius in calculating the trajectories of fleets. His knowledge of laws warp drive-space device jump-drive and technologies all existing types of engines can speed flying ships.',
-      'effect' => 'speed of ships for each level.'
-    ),
-
-    MRC_DEFENDER => array(
-      'description' => 'Number of photographs held by you to strengthen the Empire gives you the chance to build a Planetary protection. Planetary Defense-ultra-modern technology solution in all branches of the Empire.',
-      'effect' => 'Allows you to build a Planetary Protection.'
+    MRC_ACADEMIC => array(
+      'description' => 'Academicians are actors Guild Technocrats. Their mind and scholars degree allow them Excel in their acts even constructors. They specialize in the field of technological progress.',
+      'effect' => 'by the time of studies for each level'
     ),
 
     MRC_DESTRUCTOR => array(
       'description' => 'Devastator - a ruthless army officer. He suggests how the planets Empire brutal methods. The same Destructor has developed technology manufactures Stars Death.',
-      'effect' => "Allows you to build shipyard ship {$lang['tech'][SHIP_DESTRUCTOR]}."
+      'effect' => "Allows to build {$lang['tech'][SHIP_DESTRUCTOR]} in the shipyard"
+    ),
+
+
+    MRC_ADMIRAL => array(
+      'description' => 'Admiral is tried by war veteran and a brilliant strategist. Even in the hottest fights he doesn\'t lose a review and maintains contact with commanders fleets. The wise ruler can rely on him in battle and thereby use to battle more ships.',
+      'effect' => 'armor, shields and attack ships for each level'
+    ),
+
+    MRC_COORDINATOR => array(
+      'description' => 'The Coordinator is an expert in managing fleets. His knowledge can make the most of the fleet management system.',
+      'effect' => 'additional fleet for each level'
+    ),
+
+    MRC_NAVIGATOR => array(
+      'description' => 'Navigator-genius in calculating the trajectories of fleets. His knowledge of laws warp drive-space device jump-drive and technologies all existing types of engines can speed flying ships.',
+      'effect' => 'speed of ships for each level'
     ),
 
     MRC_ASSASIN => array(
       'description' => "Assasin-trusted killer Emperor. But it's not only its quality. However, Disruptor, Assasin has developed {$lang['tech'][SHIP_SUPERNOVA]}. Central computer ships configured to DNA Assasina. Therefore, it is the only person who can manage this ship",
-      'effect' => "Possibility to build {$lang['tech'][SHIP_SUPERNOVA]} in the shipyard"
+      'effect' => "Allows to build {$lang['tech'][SHIP_SUPERNOVA]} in the shipyard"
     ),
 
     MRC_EMPEROR => array(

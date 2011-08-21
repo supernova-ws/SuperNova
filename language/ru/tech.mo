@@ -107,22 +107,22 @@ $lang['tech'] = array(
   502 => 'Ракета-перехватчик',
   503 => 'Межпланетная ракета',
 
-  MRC_MERCENARIES => 'Наемники',
-  MRC_GEOLOGIST   => 'Геолог',
-  MRC_POWERMAN    => 'Энергетик',
-  MRC_ARCHITECT   => 'Архитектор',
-  MRC_CONSTRUCTOR => 'Конструктор',
-  MRC_ACADEMIC    => 'Академик',
-  MRC_FORTIFIER   => 'Фортификатор',
+  MRC_MERCENARIES  => 'Наемники',
 
-  MRC_STOCKMAN    => 'Карго-мастер',
-  MRC_SPY         => 'Шпион',
-  MRC_COORDINATOR => 'Координатор',
-  MRC_DESTRUCTOR  => 'Разрушитель',
-  MRC_ADMIRAL     => 'Адмирал',
-  MRC_DEFENDER    => 'Защитник',
-  MRC_NAVIGATOR   => 'Навигатор',
-  MRC_ASSASIN     => 'Ассасин',
+  MRC_TECHNOLOGIST => 'Технолог',
+  MRC_ENGINEER     => 'Инженер',
+  MRC_FORTIFIER    => 'Фортификатор',
+
+  MRC_STOCKMAN     => 'Карго-мастер',
+  MRC_SPY          => 'Шпион',
+  MRC_ACADEMIC     => 'Академик',
+  MRC_DESTRUCTOR   => 'Разрушитель',
+
+  MRC_ADMIRAL      => 'Адмирал',
+  MRC_COORDINATOR  => 'Координатор',
+  MRC_NAVIGATOR    => 'Навигатор',
+  MRC_ASSASIN      => 'Ассасин',
+
 //  MRC_EMPEROR => 'Император',
 
   RES_RESOURCES   => $lang['sys_resources'],

@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '30');
 define('SN_RELEASE', '31');
-define('SN_VERSION', '31a3');
+define('SN_VERSION', '31a3.1');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -357,15 +357,16 @@ define('MRT_ADVISOR', 2);  // Advisor has imperium-wide effects
 
 // --- Mercenary list
 define('MRC_MERCENARIES', 600);
-define('MRC_GEOLOGIST', 601);
-define('MRC_ADMIRAL', 602);
-define('MRC_POWERMAN', 603);
-define('MRC_CONSTRUCTOR', 604);
-define('MRC_ARCHITECT', 605);
-define('MRC_ACADEMIC', 606);
-define('MRC_STOCKMAN', 607);
+define('MRC_TECHNOLOGIST', 601); // MRC_TECHNOLOGIST
+
+define('MRC_ENGINEER', 605);   // MRC_ENGINEER
+
+define('MRC_ACADEMIC', 606); // 
 define('MRC_FORTIFIER', 608);
-define('MRC_DEFENDER', 609);
+
+define('MRC_ADMIRAL', 602);
+define('MRC_STOCKMAN', 607);
+// define('MRC_DEFENDER', 609);
 define('MRC_SPY', 610);
 define('MRC_COORDINATOR', 611);
 define('MRC_DESTRUCTOR', 612);

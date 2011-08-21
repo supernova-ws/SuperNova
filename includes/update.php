@@ -822,6 +822,24 @@ debug($update_tables['logs']['log_id'], 31);
       ), $update_tables['users']['rpg_geologue']);
     }
 
+    if($update_tables['users']['rpg_bunker'])
+    {
+      doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` + (`rpg_bunker`) * 3;");
+
+      upd_alter_table('users', array(
+        "DROP COLUMN `rpg_bunker`",
+      ), $update_tables['users']['rpg_bunker']);
+    }
+
+    upd_alter_table('users', array(
+      "DROP COLUMN `p_infligees`",
+      "MODIFY COLUMN `dark_matter` BIGINT(20) DEFAULT '0' AFTER `lvl_raid`",
+    ), $update_tables['users']['p_infligees']);
+
+    upd_alter_table('users', array(
+      "ADD COLUMN `mrc_academic` SMALLINT(3) DEFAULT 0 AFTER rpg_amiral",
+    ), !$update_tables['users']['mrc_academic']);
+
   upd_do_query('COMMIT;', true);
 //  $new_version = 31;
 

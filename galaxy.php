@@ -236,7 +236,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
      'USER_NAME'     => $GalaxyRowUser['username'],
      'USER_NAME_JS'  => js_safe_string($GalaxyRowUser['username']),
      'USER_RANK'     => $GalaxyRowUser['rank'],
-     'USER_BANNED'   => $GalaxyRowUser['bana'],
+     'USER_BANNED'   => $GalaxyRowUser['banaday'],
      'USER_VACATION' => $GalaxyRowUser['vacation'],
      'USER_ACTIVITY' => floor(($time_now - $GalaxyRowUser['onlinetime'])/(60*60*24)),
      'USER_PROTECTED'=> $RowUserPoints <= $config->game_noob_points,

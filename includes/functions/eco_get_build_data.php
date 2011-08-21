@@ -47,7 +47,7 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
   if (in_array($unit_id, $sn_groups['structures']))
   {
     $time = $time * pow(0.5, $planet[$sn_data[15]['name']]) / ($planet[$sn_data[14]['name']] + 1);
-    $mercenary = MRC_ARCHITECT;
+    $mercenary = MRC_ENGINEER;
   }
   elseif (in_array($unit_id, $sn_groups['tech']))
   {
@@ -96,7 +96,7 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
   elseif (in_array($unit_id, $sn_groups['fleet']))
   {
     $time = $time * pow(0.5, $planet[$sn_data[15]['name']]) / ($planet[$sn_data[21]['name']] + 1);
-    $mercenary = MRC_CONSTRUCTOR;
+    $mercenary = MRC_ENGINEER;
   }
 
   if($mercenary)
