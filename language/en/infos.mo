@@ -378,7 +378,9 @@ $lang = array_merge($lang, array(
 
     MRC_FORTIFIER => array(
       'description' => 'Fortifier - Army Engineer. His in-depth knowledge of defensive systems allow you to shorten planet defense building time',
-      'effect' => 'to construction time of missiles and defense structures<br />At 3rd level allows building of Planetary Defense'
+      'effect' => 'to construction time of missiles and defense structures<br />
+        +10% to atack, armor and shields when defending planet<br />
+        At 3rd level allows building of Planetary Defense'
     ),
 
 
