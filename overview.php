@@ -70,8 +70,7 @@ switch($mode)
       }
     }
     elseif(
-      $hire
-      && in_array($hire, $sn_data['groups']['governors'])
+      $hire && in_array($hire, $sn_data['groups']['governors'])
       && (
         !isset($sn_data[$hire]['max']) ||
         ($planetrow['PLANET_GOVERNOR_ID'] != $hire) ||
@@ -102,6 +101,9 @@ switch($mode)
         rpg_points_change($user['id'], RPG_MERCENARY, -$build_data[BUILD_CREATE][RES_DARK_MATTER]);
       }
       doquery('COMMIT;');
+      header("Location: overview.php?mode=manage");
+      ob_end_flush();
+      die();
     }
 
     int_planet_pretemplate($planetrow, $template);
