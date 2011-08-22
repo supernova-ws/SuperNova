@@ -90,7 +90,7 @@ doquery('COMMIT;');
 
 $totaltime = microtime(true) - $totaltime;
 
-$msg = iconv($lang['LANG_INFO']['LANG_ENCODING'], 'UTF-8', htmlspecialchars($msg));
+$msg = iconv($lang['LANG_INFO']['LANG_ENCODING'] ? $lang['LANG_INFO']['LANG_ENCODING'] : DEFAULT_ENCODING, 'UTF-8', htmlspecialchars($msg));
 $xml = "<message>" . $msg . ' ' . $totaltime . "</message>";
 
 header('Content-type: text/xml');
