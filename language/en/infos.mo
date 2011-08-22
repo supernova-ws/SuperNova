@@ -368,18 +368,18 @@ $lang = array_merge($lang, array(
 
     MRC_TECHNOLOGIST => array(
       'description' => 'Technologist is a recognized expert in astromineralogy and crystallography. With his team of Metallurgists and chemists, he supported the interplanetary Government when developing new resources and optimize their refinery.',
-      'effect' => 'to metal, crystal and deuterium production, to energy production on solar and fusion stations each level.<br>At 5th level allows to build fusion station'
+      'effect' => 'per level to metal, crystal and deuterium production, to energy production on solar and fusion stations each level.<br>At 5th level allows to build fusion station'
     ),
 
     MRC_ENGINEER => array(
       'description' => 'Engineer-the most up-to-date Builder of the Empire. His DNA was subjected to mutations, which provided him with an extraordinary mind and sverhceloveceskuû force. Architect alone can design and build a city.',
-      'effect' => 'to construction time of buildings and ships each level'
+      'effect' => 'per level to construction time of buildings and ships each level'
     ),
 
     MRC_FORTIFIER => array(
       'description' => 'Fortifier - Army Engineer. His in-depth knowledge of defensive systems allow you to shorten planet defense building time',
-      'effect' => 'to construction time of missiles and defense structures<br />
-        +10% to atack, armor and shields when defending planet<br />
+      'effect' => 'per level to construction time of missiles and defense structures<br />
+        +10% per level to attack, armor and shields when defending planet<br />
         At 3rd level allows building of Planetary Defense'
     ),
 
