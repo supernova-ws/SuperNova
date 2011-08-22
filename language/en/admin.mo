@@ -259,6 +259,8 @@ $lang = array_merge($lang, array(
 
   'adm_update_force'  => 'Force Update',
 
+  'adm_lm_planet_edit' => 'Edit planet',
+
   'adm_planet_edit'   => 'Edit planet',
   'adm_planet_id'     => 'Planet ID',
 
