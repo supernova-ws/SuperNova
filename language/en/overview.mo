@@ -159,6 +159,11 @@ $lang = array_merge($lang, array(
 
   'ov_password'   => 'Your password',
 
+  'ov_mrc_confirm_1' => 'Do you confirm replacement of governor ',
+  'ov_mrc_confirm_2' => 'level',
+  'ov_mrc_confirm_3' => 'to governor',
+  'ov_mrc_confirm_4' => 'first level? All your Dark Matter invested in current governor WILL BE LOST!',
+
   'ov_manage_page_hint' => '
   <li class="warning">WARNING! WHen hiring different governor his starting level will become 1 WITHOUT COMPENSATION SPENT DARK MATTER for previous one!
   It\'s essential to plan your Empire, choosing right governor for each planet depending of it role!</li>

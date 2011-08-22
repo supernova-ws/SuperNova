@@ -25,7 +25,11 @@
                 <!-- IF governors.MAX && governors.LEVEL >= governors.MAX -->
                   <span class="negative">{L_sys_maximum_level}</span>
                 <!-- ELSEIF governors.COST <= DARK_MATTER -->
-                  <a href="overview.php?mode=manage&hire={governors.ID}"><span class="positive">{L_off_hire} {governors.COST} {L_sys_dark_matter_sh}</span></a>
+                  <!-- IF ! PLANET_GOVERNOR_ID || governors.ID == PLANET_GOVERNOR_ID -->
+                    <a href="overview.php?mode=manage&hire={governors.ID}"><span class="positive">{L_off_hire} {governors.COST} {L_sys_dark_matter_sh}</span></a>
+                  <!-- ELSE -->
+                    <a onclick="if(confirm('{L_ov_mrc_confirm_1} {PLANET_GOVERNOR_NAME} {L_ov_mrc_confirm_2} {PLANET_GOVERNOR_LEVEL} {L_ov_mrc_confirm_3} {governors.NAME} {L_ov_mrc_confirm_4}'))window.location='overview.php?mode=manage&hire={governors.ID}';"><span class="positive">{L_off_hire} {governors.COST} {L_sys_dark_matter_sh}</span></a> <!-- href="overview.php?mode=manage&hire={governors.ID}" -->
+                  <!-- ENDIF -->
                 <!-- ELSE -->
                   <span class="negative">{L_off_hire} {governors.COST} {L_sys_dark_matter_sh}</span>
                 <!-- ENDIF -->
