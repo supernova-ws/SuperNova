@@ -260,7 +260,10 @@ function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
 
       if($sn_data[$reward_id]['location'] == LOC_USER)
       {
-        $user[$reward_db_name] += $reward_amount;
+        if($reward_id != RES_DARK_MATTER)
+        {
+          $user[$reward_db_name] += $reward_amount;
+        }
         $user_reward[] = $reward_db_string;
       }
       elseif($sn_data[$reward_id]['location'] == LOC_PLANET)

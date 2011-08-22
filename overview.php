@@ -82,6 +82,8 @@ switch($mode)
       )
     )
     {
+      doquery('START TRANSACTION;');
+      $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", '', true);
       $build_data = eco_get_build_data($user, $planetrow, $hire, $planetrow['PLANET_GOVERNOR_ID'] == $hire ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0);
       if($build_data['CAN'][BUILD_CREATE])
       {
@@ -96,11 +98,10 @@ switch($mode)
           $planetrow['PLANET_GOVERNOR_ID'] = $hire;
           $query = '1';
         }
-        doquery('START TRANSACTION;');
         doquery("UPDATE {{planets}} SET `PLANET_GOVERNOR_ID` = {$hire}, `PLANET_GOVERNOR_LEVEL` = {$query} WHERE `id` = {$planetrow['id']} LIMIT 1;");
         rpg_points_change($user['id'], RPG_MERCENARY, -$build_data[BUILD_CREATE][RES_DARK_MATTER]);
-        doquery('COMMIT;');
       }
+      doquery('COMMIT;');
     }
 
     int_planet_pretemplate($planetrow, $template);
