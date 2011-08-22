@@ -84,7 +84,7 @@ elseif($is_admin_request)
 
 if($msg)
 {
-  $msg = iconv($lang['LANG_INFO']['LANG_ENCODING'], 'UTF-8', $msg);
+  $msg = iconv($lang['LANG_INFO']['LANG_ENCODING'] ? $lang['LANG_INFO']['LANG_ENCODING'] : DEFAULT_ENCODING, 'UTF-8', $msg);
   $msg = "<message>{$msg}</message>";
 
   header('Content-type: text/xml');

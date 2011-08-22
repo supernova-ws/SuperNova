@@ -161,6 +161,7 @@ define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_defau
 define('TEMPLATE_DIR'     , SN_ROOT_PHYSICAL . 'design/templates/' . TEMPLATE_NAME);
 define('DEFAULT_SKINPATH' , $config->game_default_skin ? $config->game_default_skin : 'skins/EpicBlue/');
 define('DEFAULT_LANG'     , $config->game_default_language ? $config->game_default_language : 'ru');
+define('DEFAULT_ENCODING' , $config->game_default_encoding ? $config->game_default_encoding : 'cp1251');
 define('FMT_DATE'         , $config->int_format_date ? $config->int_format_date : 'd.m.Y');
 define('FMT_TIME'         , $config->int_format_time ? $config->int_format_time : 'H:i:s');
 define('FMT_DATE_TIME'    , FMT_DATE . ' ' . FMT_TIME);

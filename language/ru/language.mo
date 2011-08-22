@@ -38,7 +38,7 @@ $lang_info = array(
   'LANG_FLAG'         => 'ru.png',
   'LANG_NAME_ISO2'    => 'ru',
   'LANG_NAME_ISO3'    => 'rus',
-  'LANG_ENCODING'     => 'windows-1251',
+  'LANG_ENCODING'     => 'cp1251',
 
   'LANG_MAINTAINER'   => 'Gorlum',
   'LANG_HOMEPAGE'     => 'http://forum.supernova.ws/viewforum.php?f=73',
