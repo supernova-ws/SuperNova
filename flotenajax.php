@@ -14,9 +14,9 @@
  * @copyright 2008 By Chlorel for XNova
 **/
 
-header("Content-type: text/html; charset=windows-1251");
-
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
+
+header("Content-type: text/html; charset={$lang['LANG_INFO']['LANG_ENCODING']}");
 
 lng_include('universe');
 lng_include('fleet');

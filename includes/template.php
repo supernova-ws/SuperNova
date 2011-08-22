@@ -91,6 +91,8 @@ function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage 
   $template->assign_vars(array(
     'title'         => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
     '-meta-'        => $metatags,
+    'LANGUAGE'      => $lang['LANG_INFO']['LANG_NAME_ISO2'],
+    'ENCODING'      => $lang['LANG_INFO']['LANG_ENCODING'],
   ));
   displayP(parsetemplate($template));
 

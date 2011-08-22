@@ -18,7 +18,7 @@ if ($allow == 1 || $open) {
   $Page  = "<html>";
   $Page .= "<head>";
   $Page .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$dpath."/formate.css\">";
-  $Page .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=windows-1251\" />";
+  $Page .= "<meta http-equiv=\"content-type\" content=\"text/html; charset={$lang['LANG_INFO']['LANG_ENCODING']}\" />";
   $Page .= "</head>";
   $Page .= "<body>";
   $Page .= "<center>";
