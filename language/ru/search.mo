@@ -1,22 +1,24 @@
 <?php
-$lang['Position'] = 'Ìåñòî';
-$lang['Player'] = 'Èãðîê';
-$lang['Name'] = 'Èìÿ';
-$lang['Player_name'] = 'Èìÿ èãðîêà';
-$lang['Planet'] = 'Ïëàíåòà';
-$lang['Planet_name'] = 'Èìÿ ïëàíåòû';
-$lang['Alliance'] = 'Àëüÿíñ';
-$lang['Alliance_name'] = 'Èìÿ àëüÿíñà';
-$lang['Tag'] = 'Îáîçíà÷åíèå';
-$lang['Alliance_tag'] = 'Îáîçíà÷åíèå àëüÿíñà';
-$lang['Members'] = 'Ó÷àñòíèêè';
-$lang['Points'] = 'Î÷êè';
-$lang['PerMember'] = 'Íà ÷åëîâåêà';
-$lang['Position'] = 'Ìåñòî';
-$lang['Search'] = 'Ïîèñêó';
-$lang['Search_in_all_game'] = "Ïîèñê ïî ñåðâåðó";
-$lang['Back'] = 'Íàçàä';
-$lang['Search'] = 'Ïîèñê';
-$lang['write_a_messege'] = 'Íàïèñàòü ñîîáùåíèå';
-$lang['buddy_request'] = 'Äîáàâèòü â äðóçüÿ';
+
+$lang['Position'] = 'ÐœÐµÑÑ‚Ð¾';
+$lang['Player'] = 'Ð˜Ð³Ñ€Ð¾Ðº';
+$lang['Name'] = 'Ð˜Ð¼Ñ';
+$lang['Player_name'] = 'Ð˜Ð¼Ñ Ð¸Ð³Ñ€Ð¾ÐºÐ°';
+$lang['Planet'] = 'ÐŸÐ»Ð°Ð½ÐµÑ‚Ð°';
+$lang['Planet_name'] = 'Ð˜Ð¼Ñ Ð¿Ð»Ð°Ð½ÐµÑ‚Ñ‹';
+$lang['Alliance'] = 'ÐÐ»ÑŒÑÐ½Ñ';
+$lang['Alliance_name'] = 'Ð˜Ð¼Ñ Ð°Ð»ÑŒÑÐ½ÑÐ°';
+$lang['Tag'] = 'ÐžÐ±Ð¾Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ';
+$lang['Alliance_tag'] = 'ÐžÐ±Ð¾Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ Ð°Ð»ÑŒÑÐ½ÑÐ°';
+$lang['Members'] = 'Ð£Ñ‡Ð°ÑÑ‚Ð½Ð¸ÐºÐ¸';
+$lang['Points'] = 'ÐžÑ‡ÐºÐ¸';
+$lang['PerMember'] = 'ÐÐ° Ñ‡ÐµÐ»Ð¾Ð²ÐµÐºÐ°';
+$lang['Position'] = 'ÐœÐµÑÑ‚Ð¾';
+$lang['Search'] = 'ÐŸÐ¾Ð¸ÑÐºÑƒ';
+$lang['Search_in_all_game'] = "ÐŸÐ¾Ð¸ÑÐº Ð¿Ð¾ ÑÐµÑ€Ð²ÐµÑ€Ñƒ";
+$lang['Back'] = 'ÐÐ°Ð·Ð°Ð´';
+$lang['Search'] = 'ÐŸÐ¾Ð¸ÑÐº';
+$lang['write_a_messege'] = 'ÐÐ°Ð¿Ð¸ÑÐ°Ñ‚ÑŒ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ';
+$lang['buddy_request'] = 'Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ð² Ð´Ñ€ÑƒÐ·ÑŒÑ';
+
 ?>

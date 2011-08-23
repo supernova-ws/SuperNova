@@ -1,5 +1,5 @@
 <?php
-// print(iconv('CP1251', 'UTF-8', 'Чат временно отключен'));
+// print(iconv('CP1251', 'UTF-8', 'Chat temporary disabled'));
 // die();
 
 /*
@@ -28,8 +28,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if ($config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && $microtime - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
 {
-  print(iconv($lang['LANG_INFO']['LANG_ENCODING'], 'UTF-8', $lang['chat_timeout']));
-  die();
+  die($lang['chat_timeout']);
 }
 
 $history = sys_get_param_str('history');
@@ -81,7 +80,7 @@ $query = doquery("SELECT * FROM {{chat}} WHERE ally_id = '{$alliance}' ORDER BY 
 while($chat_row = mysql_fetch_object($query))
 {
   // Little magik here - to retain HTML codes from DB and stripping HTML codes from nick
-  $nick_stripped = htmlentities(strip_tags($chat_row->user), ENT_QUOTES, $lang['LANG_INFO']['LANG_ENCODING']);
+  $nick_stripped = htmlentities(strip_tags($chat_row->user), ENT_QUOTES, 'utf8');
   $nick = str_replace(strip_tags($chat_row->user), $nick_stripped, $chat_row->user);
   if(!$history)
   {
@@ -89,9 +88,9 @@ while($chat_row = mysql_fetch_object($query))
   }
 
   $chat[] = array(
-    'TIME' => date(FMT_DATE_TIME, htmlentities($chat_row->timestamp, ENT_QUOTES, $lang['LANG_INFO']['LANG_ENCODING'])),
+    'TIME' => date(FMT_DATE_TIME, htmlentities($chat_row->timestamp, ENT_QUOTES, 'utf8')),
     'NICK' => $nick,
-    'TEXT' => CHT_messageParse(htmlentities($chat_row->message, ENT_QUOTES, $lang['LANG_INFO']['LANG_ENCODING']))
+    'TEXT' => CHT_messageParse(htmlentities($chat_row->message, ENT_QUOTES, 'utf8')),
   );
 }
 

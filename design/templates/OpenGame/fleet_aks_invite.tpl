@@ -2,7 +2,7 @@
 <center>
   {vacation}
   <table width="519" border="0" cellpadding="0" cellspacing="1">
-   <tr height="20"><td class="c">Игроки в САБ</td><td class="c">Приглашение игрока</td></tr>
+   <tr height="20"><td class="c">РРіСЂРѕРєРё РІ РЎРђР‘</td><td class="c">РџСЂРёРіР»Р°С€РµРЅРёРµ РёРіСЂРѕРєР°</td></tr>
    <tr>
      <td width="50%" align="center"><select size="5">{members}</select></td>
 

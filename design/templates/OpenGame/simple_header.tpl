@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="{LANGUAGE}" xml:lang="{LANGUAGE}">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="{LANG_DIRECTION}" lang="{LANG_LANGUAGE}" xml:lang="{LANG_LANGUAGE}">
   <head>
     <title>{title}</title>
     <link rel="shortcut icon" href="{-path_prefix-}favicon.ico" />
@@ -10,9 +10,9 @@
     <![endif]-->
     <link rel="stylesheet" type="text/css" href="{-path_prefix-}{dpath}default.css" />
     <link rel="stylesheet" type="text/css" href="{-path_prefix-}{dpath}formate.css" />
-    <meta name="keywords" content="ogame,îãåéì,îãà,supernova,ñâåðõíîâàÿ,áåñïëàòíàÿ,free,áðàóçåðêà,îíëàéí ñòðàòåãèÿ,îíëàéíîâàÿ ñòðàòåãèÿ,èãðàòü,èãðà,ogame ñêðèïò,xnova" />
-    <meta name="description" content="Ñâåðõíîâàÿ - îíëàéí ñòðàòåãèÿ áðàóçåðêà îãåéì äîñòóïíà èãðàòü áåñïëàòíî" />
-    <meta http-equiv="content-type" content="text/html; charset={ENCODING}" />
+    <meta name="keywords" content="ogame,Ð¾Ð³ÐµÐ¹Ð¼,Ð¾Ð³Ð°,supernova,ÑÐ²ÐµÑ€Ñ…Ð½Ð¾Ð²Ð°Ñ,Ð±ÐµÑÐ¿Ð»Ð°Ñ‚Ð½Ð°Ñ,free,Ð±Ñ€Ð°ÑƒÐ·ÐµÑ€ÐºÐ°,Ð¾Ð½Ð»Ð°Ð¹Ð½ ÑÑ‚Ñ€Ð°Ñ‚ÐµÐ³Ð¸Ñ,Ð¾Ð½Ð»Ð°Ð¹Ð½Ð¾Ð²Ð°Ñ ÑÑ‚Ñ€Ð°Ñ‚ÐµÐ³Ð¸Ñ,Ð¸Ð³Ñ€Ð°Ñ‚ÑŒ,Ð¸Ð³Ñ€Ð°,ogame ÑÐºÑ€Ð¸Ð¿Ñ‚,xnova" />
+    <meta name="description" content="Ð¡Ð²ÐµÑ€Ñ…Ð½Ð¾Ð²Ð°Ñ - Ð¾Ð½Ð»Ð°Ð¹Ð½ ÑÑ‚Ñ€Ð°Ñ‚ÐµÐ³Ð¸Ñ Ð±Ñ€Ð°ÑƒÐ·ÐµÑ€ÐºÐ° Ð¾Ð³ÐµÐ¹Ð¼ Ð´Ð¾ÑÑ‚ÑƒÐ¿Ð½Ð° Ð¸Ð³Ñ€Ð°Ñ‚ÑŒ Ð±ÐµÑÐ¿Ð»Ð°Ñ‚Ð½Ð¾" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta http-equiv="Cache-Control" content="no-cache" />
     {-meta-}
     <!--<style> body, html { margin:0px; padding: 0px; overflow: hidden; font: menu; border: none; } </style>-->

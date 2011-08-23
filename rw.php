@@ -18,7 +18,7 @@ if ($allow == 1 || $open) {
   $Page  = "<html>";
   $Page .= "<head>";
   $Page .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$dpath."/formate.css\">";
-  $Page .= "<meta http-equiv=\"content-type\" content=\"text/html; charset={$lang['LANG_INFO']['LANG_ENCODING']}\" />";
+  $Page .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />";
   $Page .= "</head>";
   $Page .= "<body>";
   $Page .= "<center>";
@@ -27,8 +27,8 @@ if ($allow == 1 || $open) {
       ($raportrow["owners"] == $user["id"])
       //and ($raportrow["a_zestrzelona"] == 1)
    ) {
-    $Page .= "<td>Контакт с флотом был потерян.<br>";
-    $Page .= "(Скорее всего флот был уничтожен за 1 раунд.)</td>";
+    $Page .= "<td>РљРѕРЅС‚Р°РєС‚ СЃ С„Р»РѕС‚РѕРј Р±С‹Р» РїРѕС‚РµСЂСЏРЅ.<br>";
+    $Page .= "(РЎРєРѕСЂРµРµ РІСЃРµРіРѕ С„Р»РѕС‚ Р±С‹Р» СѓРЅРёС‡С‚РѕР¶РµРЅ Р·Р° 1 СЂР°СѓРЅРґ.)</td>";
   } else {
     $report = stripslashes($raportrow["raport"]);
     foreach ($lang['tech'] as $id => $s_name) {
@@ -36,8 +36,8 @@ if ($allow == 1 || $open) {
       $str_replace2  = array($s_name);
       $report = str_replace($str_replace1, $str_replace2, $report);
     }
-    $no_fleet = "<table border=1 align=\"center\"><tr><th>Тип</th></tr><tr><th>Всего</th></tr><tr><th>Оружие</th></tr><tr><th>Щиты</th></tr><tr><th>Броня</th></tr></table>";
-    $destroyed = "<table border=1 align=\"center\"><tr><th><font color=\"red\"><strong>Уничтожены!</strong></font></th></tr></table>";
+    $no_fleet = "<table border=1 align=\"center\"><tr><th>РўРёРї</th></tr><tr><th>Р’СЃРµРіРѕ</th></tr><tr><th>РћСЂСѓР¶РёРµ</th></tr><tr><th>Р©РёС‚С‹</th></tr><tr><th>Р‘СЂРѕРЅСЏ</th></tr></table>";
+    $destroyed = "<table border=1 align=\"center\"><tr><th><font color=\"red\"><strong>РЈРЅРёС‡С‚РѕР¶РµРЅС‹!</strong></font></th></tr></table>";
     $str_replace1  = array($no_fleet);
     $str_replace2  = array($destroyed);
     $report = str_replace($str_replace1, $str_replace2, $report);

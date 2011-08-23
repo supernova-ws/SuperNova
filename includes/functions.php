@@ -535,14 +535,13 @@ function mymail($to, $title, $body, $from = '', $html = false)
   $head .= "X-Priority: 3 \r\n";
   $body = str_replace("\r\n", "\n", $body);
   $body = str_replace("\n", "\r\n", $body);
-  $body = iconv($lang['LANG_INFO']['LANG_ENCODING'] ? $lang['LANG_INFO']['LANG_ENCODING'] : DEFAULT_ENCODING, 'UTF-8', $body);
 
   if($html)
   {
     $body = '<html><head><base href="' . SN_ROOT_VIRTUAL . '"></head><body>' . nl2br($body) . '</body></html>';
   }
 
-  $title = '=?UTF-8?B?' . base64_encode(iconv($lang['LANG_INFO']['LANG_ENCODING'] ? $lang['LANG_INFO']['LANG_ENCODING'] : DEFAULT_ENCODING, 'UTF-8', $title)) . '?=';
+  $title = '=?UTF-8?B?' . base64_encode($title) . '?=';
 
   return @mail($to, $title, $body, $head);
 }

@@ -16,7 +16,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-header("Content-type: text/html; charset={$lang['LANG_INFO']['LANG_ENCODING']}");
+header("Content-type: text/html; charset=utf-8");
 
 lng_include('universe');
 lng_include('fleet');

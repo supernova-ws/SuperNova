@@ -84,7 +84,7 @@ if($_POST['submit'] || $execute)
   $Page  = '<html>';
   $Page .= '<head>';
   $Page .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"{$dpath}/formate.css\">";
-  $Page .= '<meta http-equiv="content-type" content="text/html; charset=' . $lang['LANG_INFO']['LANG_ENCODING'] . '" />';
+  $Page .= '<meta http-equiv="content-type" content="text/html; charset=utf-8" />';
   $Page .= '</head>';
   $Page .= '<body>';
   $Page .= '<center>';

@@ -1,23 +1,23 @@
 <?php
 
-$lang['add_announce']                = 'Äîáàâèòü îáúÿâëåíèå';
-$lang['metal']                       = 'Ìåòàëë';
-$lang['crystal']                     = 'Êðèñòàëë';
-$lang['deuterium']                   = 'Äåéòåðèé';
-$lang['Resources_to_be_sold']        = 'Ïðåäëàãàåìûå ðåñóðñû';
-$lang['Desired_resources']           = 'Òðåáóþùèåñÿ ðåñóðñû';
-$lang['send']                        = 'Îòïðàâèòü';
-$lang['Your_announce_was_recorded']  = 'Âàøå îáúÿâëåíèå óñïåøíî îòïðàâëåíî';
-$lang['return_to_announce']          = 'Âåðíóòñÿ íà ñòðàíèöó îáúÿâëåíèé';
-$lang['Classifieds']                 = 'Îïóáëèêîâàííûå îáúÿâëåíèÿ';
-$lang['Action']                      = 'Äåéñòâèå';
-$lang['Galaxy']                      = 'Ãàëàêòèêà';
-$lang['Solar_system']                = 'Ñîëíå÷íàÿ ñèñòåìà';
-$lang['Infos_of_delivery']           = 'Èíôîðìàöèÿ òîðãîâöà';
-$lang['Salesman']                    = 'Èãðîê';
-$lang['Delete']                      = 'Óäàëèòü';
-$lang['announce_status']             = 'Ñòàòóñ îáúÿâëåíèÿ';
-$lang['Your_announce_not_recorded']  = 'Âàøå îáúÿâëåíèå íå îòïðàâëåíî';
-$lang['Your_announce_was_deleted']   = 'Âàøå îáúÿâëåíèå óñïåøíî óäàëåíî';
+$lang['add_announce']                = 'Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ð¾Ð±ÑŠÑÐ²Ð»ÐµÐ½Ð¸Ðµ';
+$lang['metal']                       = 'ÐœÐµÑ‚Ð°Ð»Ð»';
+$lang['crystal']                     = 'ÐšÑ€Ð¸ÑÑ‚Ð°Ð»Ð»';
+$lang['deuterium']                   = 'Ð”ÐµÐ¹Ñ‚ÐµÑ€Ð¸Ð¹';
+$lang['Resources_to_be_sold']        = 'ÐŸÑ€ÐµÐ´Ð»Ð°Ð³Ð°ÐµÐ¼Ñ‹Ðµ Ñ€ÐµÑÑƒÑ€ÑÑ‹';
+$lang['Desired_resources']           = 'Ð¢Ñ€ÐµÐ±ÑƒÑŽÑ‰Ð¸ÐµÑÑ Ñ€ÐµÑÑƒÑ€ÑÑ‹';
+$lang['send']                        = 'ÐžÑ‚Ð¿Ñ€Ð°Ð²Ð¸Ñ‚ÑŒ';
+$lang['Your_announce_was_recorded']  = 'Ð’Ð°ÑˆÐµ Ð¾Ð±ÑŠÑÐ²Ð»ÐµÐ½Ð¸Ðµ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾ Ð¾Ñ‚Ð¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¾';
+$lang['return_to_announce']          = 'Ð’ÐµÑ€Ð½ÑƒÑ‚ÑÑ Ð½Ð° ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñƒ Ð¾Ð±ÑŠÑÐ²Ð»ÐµÐ½Ð¸Ð¹';
+$lang['Classifieds']                 = 'ÐžÐ¿ÑƒÐ±Ð»Ð¸ÐºÐ¾Ð²Ð°Ð½Ð½Ñ‹Ðµ Ð¾Ð±ÑŠÑÐ²Ð»ÐµÐ½Ð¸Ñ';
+$lang['Action']                      = 'Ð”ÐµÐ¹ÑÑ‚Ð²Ð¸Ðµ';
+$lang['Galaxy']                      = 'Ð“Ð°Ð»Ð°ÐºÑ‚Ð¸ÐºÐ°';
+$lang['Solar_system']                = 'Ð¡Ð¾Ð»Ð½ÐµÑ‡Ð½Ð°Ñ ÑÐ¸ÑÑ‚ÐµÐ¼Ð°';
+$lang['Infos_of_delivery']           = 'Ð˜Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ Ñ‚Ð¾Ñ€Ð³Ð¾Ð²Ñ†Ð°';
+$lang['Salesman']                    = 'Ð˜Ð³Ñ€Ð¾Ðº';
+$lang['Delete']                      = 'Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ';
+$lang['announce_status']             = 'Ð¡Ñ‚Ð°Ñ‚ÑƒÑ Ð¾Ð±ÑŠÑÐ²Ð»ÐµÐ½Ð¸Ñ';
+$lang['Your_announce_not_recorded']  = 'Ð’Ð°ÑˆÐµ Ð¾Ð±ÑŠÑÐ²Ð»ÐµÐ½Ð¸Ðµ Ð½Ðµ Ð¾Ñ‚Ð¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¾';
+$lang['Your_announce_was_deleted']   = 'Ð’Ð°ÑˆÐµ Ð¾Ð±ÑŠÑÐ²Ð»ÐµÐ½Ð¸Ðµ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾ ÑƒÐ´Ð°Ð»ÐµÐ½Ð¾';
 
 ?>

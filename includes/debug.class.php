@@ -127,7 +127,7 @@ class debug
     if(!$link)
     {
       $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
-      mysql_query('/*!40101 SET NAMES \'' . $lang['LANG_INFO']['LANG_ENCODING'] . '\' */');
+      mysql_query("/*!40101 SET NAMES 'utf8' */");
       mysql_select_db($dbsettings['name']);
 
       if(!$link)
@@ -196,7 +196,7 @@ class debug
     if(!$link)
     {
       $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
-      mysql_query('/*!40101 SET NAMES \'' . $lang['LANG_INFO']['LANG_ENCODING'] . '\' */');
+      mysql_query('/*!40101 SET NAMES \'utf8\' */');
       mysql_select_db($dbsettings['name']);
     }
 

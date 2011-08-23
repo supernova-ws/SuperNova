@@ -131,8 +131,6 @@ if(!defined('BE_DEBUG'))
   }
 }
 
-define('DEFAULT_ENCODING' , $config->game_default_encoding ? $config->game_default_encoding : 'cp1251');
-
 $update_file = "{$sn_root_physical}includes/update.{$phpEx}";
 if(file_exists($update_file))
 {
@@ -152,7 +150,7 @@ if(file_exists($update_file))
     elseif(filemtime($update_file) > $config->var_db_update)
     {
       $timeout = $config->var_db_update_end - $time_now;
-      die("Обновляется база данных. Рассчетное время окончания - {$timeout} секунд (время обновления может увеличиваться). Пожалуйста, подождите...<br>Obnovljaetsja baza dannyh. Rasschetnoe vremya okonchanija - {$timeout} secund. Pozhalujsta, podozhdute...<br>Database update in progress. Estimated update time {$timeout} seconds (can increase depending on update process). Please wait...");
+      die("РћР±РЅРѕРІР»СЏРµС‚СЃСЏ Р±Р°Р·Р° РґР°РЅРЅС‹С…. Р Р°СЃСЃС‡РµС‚РЅРѕРµ РІСЂРµРјСЏ РѕРєРѕРЅС‡Р°РЅРёСЏ - {$timeout} СЃРµРєСѓРЅРґ (РІСЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ РјРѕР¶РµС‚ СѓРІРµР»РёС‡РёРІР°С‚СЊСЃСЏ). РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РїРѕРґРѕР¶РґРёС‚Рµ...<br>Obnovljaetsja baza dannyh. Rasschetnoe vremya okonchanija - {$timeout} secund. Pozhalujsta, podozhdute...<br>Database update in progress. Estimated update time {$timeout} seconds (can increase depending on update process). Please wait...");
     }
   }
 }

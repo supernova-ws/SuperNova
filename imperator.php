@@ -58,12 +58,12 @@ $hour        = date('H');
 $min         = date('i');
 $sec         = date('s');
 
-//Подсчет кол-ва онлайн и кто онлайн
+// Online count
 $time = $time_now - 15*60;
 $OnlineUsersNames2 = doquery("SELECT `username` FROM {{users}} WHERE `onlinetime`>'{$time}'");
 
 /*
-//Последние сообщения чата.
+// Last chat messages
 $mess = doquery("SELECT `user`,`message` FROM {{chat}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5");
 $msg = '<table>';
 while ($result = mysql_fetch_assoc($mess)) {

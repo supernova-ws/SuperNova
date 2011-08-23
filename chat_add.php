@@ -66,7 +66,6 @@ if ($message && $user['username'])
   }
 
   $nick = mysql_real_escape_string($nick);
-  $message = iconv('UTF-8', $lang['LANG_INFO']['LANG_ENCODING'], $message); // CHANGE IT !!!!!!!!!!!
 
   $message = preg_replace("#(?:http\:\/\/(?:.+)?\/rw\.php\?raport\=([0-9a-fA-F]{32}))#", "[rw=$1]", $message);
 

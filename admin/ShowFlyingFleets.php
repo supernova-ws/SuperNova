@@ -59,7 +59,7 @@ display(parsetemplate($PageTPL, $parse), $lang['flt_title'], false, '', true);
 
 // ----------------------------------------------------------------------------------------------------------------
 //
-// Создаёт состав флота (используеться в обзоре) при наведении, показывает
+// 
 function CreateFleetPopupedFleetLink($FleetRow, $Texte, $FleetType, $Owner)
 {
   global $lang, $user;
@@ -95,7 +95,7 @@ function CreateFleetPopupedFleetLink($FleetRow, $Texte, $FleetType, $Owner)
   if (!$Owner && $admin == 3)
   {
     $FleetPopup .= "<tr><td width=80% align=left><font color=white>" . $lang['tech'][$Ship[0]] . ":<font></td><td width=20% align=right><font color=white>" . pretty_number($Ship[1]) . "<font></td></tr>";
-    $FleetPopup .= "<td width=100% align=center><font color=red>Все видящее Админское око :-D<font></td>";
+    $FleetPopup .= "<td width=100% align=center><font color=red>Р’СЃРµ РІРёРґСЏС‰РµРµ РђРґРјРёРЅСЃРєРѕРµ РѕРєРѕ :-D<font></td>";
   }
   $FleetPopup .= "</table>";
   $FleetPopup .= "');\" onmouseout=\"popup_hide();\" class=\"" . $FleetType . "\">" . $Texte . "</span>";
@@ -105,7 +105,7 @@ function CreateFleetPopupedFleetLink($FleetRow, $Texte, $FleetType, $Owner)
 
 // ----------------------------------------------------------------------------------------------------------------
 //
-// CГ©ation du lien avec popup pour le type de mission avec ou non les ressources si disponibles
+// CР“В©ation du lien avec popup pour le type de mission avec ou non les ressources si disponibles
 function CreateFleetPopupedMissionLink($FleetRow, $Texte, $FleetType)
 {
   global $lang;

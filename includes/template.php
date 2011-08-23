@@ -89,10 +89,11 @@ function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage 
   // Global header
   $template = gettemplate('simple_header', true);
   $template->assign_vars(array(
-    'title'         => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
-    '-meta-'        => $metatags,
-    'LANGUAGE'      => $lang['LANG_INFO']['LANG_NAME_ISO2'],
-    'ENCODING'      => $lang['LANG_INFO']['LANG_ENCODING'],
+    'title'          => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
+    '-meta-'         => $metatags,
+    'LANG_LANGUAGE'  => $lang['LANG_INFO']['LANG_NAME_ISO2'],
+    'LANG_ENCODING'  => 'utf-8',
+    'LANG_DIRECTION' => $lang['LANG_INFO']['LANG_DIRECTION'],
   ));
   displayP(parsetemplate($template));
 
@@ -263,12 +264,10 @@ function ShowTopNavigationBar($user, $planetrow)
   $min         = date('i');
   $sec         = date('s');
 
-  // Количество флотов и экспедиций, а так же события флотов
   $fleet_flying_list = flt_get_fleets_flying($user);
   tpl_topnav_event_build($template, $fleet_flying_list[0]);
   tpl_topnav_event_build($template, $fleet_flying_list[MT_EXPLORE], 'expedition');
 
-  // Подсчет кол-ва онлайн и кто онлайн
   $time = $time_now - 15*60;
   $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}';", '', true);
 

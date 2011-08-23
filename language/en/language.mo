@@ -39,7 +39,7 @@ $lang_info = array(
   'LANG_FLAG'         => 'en.png',
   'LANG_NAME_ISO2'    => 'en',
   'LANG_NAME_ISO3'    => 'eng',
-  'LANG_ENCODING'     => 'windows-1252',
+  'LANG_DIRECTION'    => 'ltr',
 
   'LANG_MAINTAINER'   => 'madmax1991',
   'LANG_HOMEPAGE'     => 'http://forum.supernova.ws/viewforum.php?f=73',

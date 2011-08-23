@@ -33,7 +33,7 @@
 // Verification si l'on a le droit ou non a un officier
 // Retour:
 //  0 => pas les Officiers necessaires
-//  1 => Tout va tres bien on peut le faire celui là
+//  1 => Tout va tres bien on peut le faire celui la
 // -1 => On pouvait le faire, mais on est déja au level max
 function IsOfficierAccessible ($CurrentUser, $Officier) {
   global $sn_data;

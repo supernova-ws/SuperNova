@@ -20,7 +20,7 @@ function sn_db_connect()
     $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']) or
       $debug->error(mysql_error(),'DB Error - cannot connect to server');
 
-    mysql_query("/*!40101 SET NAMES '" . ($lang['LANG_INFO']['LANG_ENCODING'] ? $lang['LANG_INFO']['LANG_ENCODING'] : DEFAULT_ENCODING) . "' */") or
+    mysql_query("/*!40101 SET NAMES 'utf8' */") or
       die('Error: ' . mysql_error());
     mysql_select_db($dbsettings['name']) or
       $debug->error(mysql_error(), 'DB error - cannot find DB on server');
