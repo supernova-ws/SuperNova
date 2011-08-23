@@ -80,7 +80,7 @@ $query = doquery("SELECT * FROM {{chat}} WHERE ally_id = '{$alliance}' ORDER BY 
 while($chat_row = mysql_fetch_object($query))
 {
   // Little magik here - to retain HTML codes from DB and stripping HTML codes from nick
-  $nick_stripped = htmlentities(strip_tags($chat_row->user), ENT_QUOTES, 'utf8');
+  $nick_stripped = htmlentities(strip_tags($chat_row->user), ENT_QUOTES, 'utf-8');
   $nick = str_replace(strip_tags($chat_row->user), $nick_stripped, $chat_row->user);
   if(!$history)
   {
@@ -88,9 +88,9 @@ while($chat_row = mysql_fetch_object($query))
   }
 
   $chat[] = array(
-    'TIME' => date(FMT_DATE_TIME, htmlentities($chat_row->timestamp, ENT_QUOTES, 'utf8')),
+    'TIME' => date(FMT_DATE_TIME, htmlentities($chat_row->timestamp, ENT_QUOTES, 'utf-8')),
     'NICK' => $nick,
-    'TEXT' => CHT_messageParse(htmlentities($chat_row->message, ENT_QUOTES, 'utf8')),
+    'TEXT' => CHT_messageParse(htmlentities($chat_row->message, ENT_QUOTES, 'utf-8')),
   );
 }
 
