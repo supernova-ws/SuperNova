@@ -1,27 +1,27 @@
 <?php
 // Language file for Statistic module
-$lang['stat_title']    = "Ñòàòèñòèêà";
-$lang['stat_show']     = "Óïîðÿäî÷èòü";
-$lang['stat_by']       = "ïî";
-$lang['stat_range']    = "Ìåñòî";
+$lang['stat_title']    = "Ð¡Ñ‚Ð°Ñ‚Ð¸ÑÑ‚Ð¸ÐºÐ°";
+$lang['stat_show']     = "Ð£Ð¿Ð¾Ñ€ÑÐ´Ð¾Ñ‡Ð¸Ñ‚ÑŒ";
+$lang['stat_by']       = "Ð¿Ð¾";
+$lang['stat_range']    = "ÐœÐµÑÑ‚Ð¾";
 
-$lang['stat_player']   = "èãðîêè";
-$lang['stat_allys']    = "àëüÿíñû";
-$lang['stat_main']     = "Îáùàÿ";
-$lang['stat_fleet']    = "Ôëîò";
-$lang['stat_research'] = "Èññëåäîâàíèÿ";
-$lang['stat_building'] = "Ïîñòðîéêè";
-$lang['stat_defenses'] = "Îáîðîíà";
-$lang['stat_resources'] = "Ðåñóðñû";
+$lang['stat_player']   = "Ð¸Ð³Ñ€Ð¾ÐºÐ¸";
+$lang['stat_allys']    = "Ð°Ð»ÑŒÑÐ½ÑÑ‹";
+$lang['stat_main']     = "ÐžÐ±Ñ‰Ð°Ñ";
+$lang['stat_fleet']    = "Ð¤Ð»Ð¾Ñ‚";
+$lang['stat_research'] = "Ð˜ÑÑÐ»ÐµÐ´Ð¾Ð²Ð°Ð½Ð¸Ñ";
+$lang['stat_building'] = "ÐŸÐ¾ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ¸";
+$lang['stat_defenses'] = "ÐžÐ±Ð¾Ñ€Ð¾Ð½Ð°";
+$lang['stat_resources'] = "Ð ÐµÑÑƒÑ€ÑÑ‹";
 
 
-$lang['Position']      = "Ìåñòî";
-$lang['Difference']    = "Èçì.";
-$lang['Player']        = "Èãðîê";
-$lang['Alliance']      = "Àëüÿíñ";
-$lang['Points']        = "Î÷êè";
-$lang['Members']       = "Ó÷àñòíèêè";
-$lang['PerMember']     = "Íà ÷åëîâåêà";
-$lang['Ecrire']        = "Íàïèñàòü ñîîáùåíèå";
+$lang['Position']      = "ÐœÐµÑÑ‚Ð¾";
+$lang['Difference']    = "Ð˜Ð·Ð¼.";
+$lang['Player']        = "Ð˜Ð³Ñ€Ð¾Ðº";
+$lang['Alliance']      = "ÐÐ»ÑŒÑÐ½Ñ";
+$lang['Points']        = "ÐžÑ‡ÐºÐ¸";
+$lang['Members']       = "Ð£Ñ‡Ð°ÑÑ‚Ð½Ð¸ÐºÐ¸";
+$lang['PerMember']     = "ÐÐ° Ñ‡ÐµÐ»Ð¾Ð²ÐµÐºÐ°";
+$lang['Ecrire']        = "ÐÐ°Ð¿Ð¸ÑÐ°Ñ‚ÑŒ ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ";
 
 ?>

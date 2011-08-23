@@ -38,11 +38,11 @@ function BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $a
 
   global $sn_data, $be_debug_array;
 
-  $SN = array(SHIP_CARGO_SMALL => 'ÌàÒð', SHIP_CARGO_BIG => 'ÁîÒð', SHIP_CARGO_SUPER => 'ÑóÒð', SHIP_FIGHTER_LIGHT => 'ËãÈñ', SHIP_FIGHTER_HEAVY => 'ÒÿÈñ',
-    SHIP_DESTROYER => 'Ýñìè', SHIP_CRUISER => 'Ëèíê', SHIP_COLONIZER => 'Êîëî', SHIP_RECYCLER => 'Ïåðå', SHIP_SPY => 'Øïèî', SHIP_BOMBER => 'Áîìá',
-    SHIP_SATTELITE_SOLAR => 'ÑîÑï', SHIP_DESTRUCTOR => 'Óíèê', SHIP_DEATH_STAR => 'ÇâÑì', SHIP_BATTLESHIP => 'Ëèíå', SHIP_SUPERNOVA => 'Íîâà',
-    SHIP_FIGHTER_ASSAULT => 'Øòóð',
-    401 => 'Ðàêå', 402 => 'ËåËà', 403 => 'ÒÿËà', 404 => 'Ãàóñ', 405 => 'Èîíí', 406 => 'Ïëàç', 407 => 'ÌàëÙ', 408 => 'ÁîëÙ', 409 => 'Ïëàí');
+  $SN = array(SHIP_CARGO_SMALL => 'ÐœÐ°Ð¢Ñ€', SHIP_CARGO_BIG => 'Ð‘Ð¾Ð¢Ñ€', SHIP_CARGO_SUPER => 'Ð¡ÑƒÐ¢Ñ€', SHIP_FIGHTER_LIGHT => 'Ð›Ð³Ð˜Ñ', SHIP_FIGHTER_HEAVY => 'Ð¢ÑÐ˜Ñ',
+    SHIP_DESTROYER => 'Ð­ÑÐ¼Ð¸', SHIP_CRUISER => 'Ð›Ð¸Ð½Ðº', SHIP_COLONIZER => 'ÐšÐ¾Ð»Ð¾', SHIP_RECYCLER => 'ÐŸÐµÑ€Ðµ', SHIP_SPY => 'Ð¨Ð¿Ð¸Ð¾', SHIP_BOMBER => 'Ð‘Ð¾Ð¼Ð±',
+    SHIP_SATTELITE_SOLAR => 'Ð¡Ð¾Ð¡Ð¿', SHIP_DESTRUCTOR => 'Ð£Ð½Ð¸Ðº', SHIP_DEATH_STAR => 'Ð—Ð²Ð¡Ð¼', SHIP_BATTLESHIP => 'Ð›Ð¸Ð½Ðµ', SHIP_SUPERNOVA => 'ÐÐ¾Ð²Ð°',
+    SHIP_FIGHTER_ASSAULT => 'Ð¨Ñ‚ÑƒÑ€',
+    401 => 'Ð Ð°ÐºÐµ', 402 => 'Ð›ÐµÐ›Ð°', 403 => 'Ð¢ÑÐ›Ð°', 404 => 'Ð“Ð°ÑƒÑ', 405 => 'Ð˜Ð¾Ð½Ð½', 406 => 'ÐŸÐ»Ð°Ð·', 407 => 'ÐœÐ°Ð»Ð©', 408 => 'Ð‘Ð¾Ð»Ð©', 409 => 'ÐŸÐ»Ð°Ð½');
 
   $print_data = '<tr>'.
     '<td>'.$round.'</td>'.

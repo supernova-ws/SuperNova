@@ -84,7 +84,6 @@ elseif($is_admin_request)
 
 if($msg)
 {
-  $msg = iconv('CP1251', 'UTF-8', $msg);
   $msg = "<message>{$msg}</message>";
 
   header('Content-type: text/xml');

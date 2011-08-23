@@ -6,10 +6,10 @@
 #  Project: SuperNova.WS
 #  Description: Massive Multiplayer Online Browser Spave Startegy Game
 #
-#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
-#  Copyright © 2009 MSW
-#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright © 2005 - 2008 KGsystem
+#  Copyright Â© 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright Â© 2009 MSW
+#  Copyright Â© 2008 Aleksandar Spasojevic <spalekg@gmail.com>
+#  Copyright Â© 2005 - 2008 KGsystem
 #############################################################################
 */
 
@@ -33,12 +33,12 @@ if (!defined('INSIDE'))
 $lang_info = array(
   'LANG_VERSION'      => 'V26e20',
 
-  'LANG_NAME_NATIVE'  => 'Ðóññêèé',
+  'LANG_NAME_NATIVE'  => 'Ð ÑƒÑÑÐºÐ¸Ð¹',
   'LANG_NAME_ENGLISH' => 'Russian',
   'LANG_FLAG'         => 'ru.png',
   'LANG_NAME_ISO2'    => 'ru',
   'LANG_NAME_ISO3'    => 'rus',
-  'LANG_ENCODING'     => 'windows-1251',
+  'LANG_DIRECTION'    => 'ltr',
 
   'LANG_MAINTAINER'   => 'Gorlum',
   'LANG_HOMEPAGE'     => 'http://forum.supernova.ws/viewforum.php?f=73',

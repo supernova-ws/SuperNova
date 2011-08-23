@@ -2,36 +2,36 @@
 
 if (!defined('INSIDE')) 
 {
-  die('Îáíàðóæåíà ïîïûòêà âçëîìà!');
+  die('ÐžÐ±Ð½Ð°Ñ€ÑƒÐ¶ÐµÐ½Ð° Ð¿Ð¾Ð¿Ñ‹Ñ‚ÐºÐ° Ð²Ð·Ð»Ð¾Ð¼Ð°!');
 }
 
 $lang = array_merge($lang, array(
-  'qst_quest'       => 'Êâåñò',
-  'qst_quest_of'    => 'êâåñòà',
-  'qst_name'        => 'Íàçâàíèå',
-  'qst_description' => 'Îïèñàíèå',
-  'qst_conditions'  => 'Óñëîâèå',
-  'qst_rewards'     => 'Íàãðàäà',
-  'qst_total'       => 'Êâåñòîâ',
-  'qst_status'      => 'Ñòàòóñ',
+  'qst_quest'       => 'ÐšÐ²ÐµÑÑ‚',
+  'qst_quest_of'    => 'ÐºÐ²ÐµÑÑ‚Ð°',
+  'qst_name'        => 'ÐÐ°Ð·Ð²Ð°Ð½Ð¸Ðµ',
+  'qst_description' => 'ÐžÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ',
+  'qst_conditions'  => 'Ð£ÑÐ»Ð¾Ð²Ð¸Ðµ',
+  'qst_rewards'     => 'ÐÐ°Ð³Ñ€Ð°Ð´Ð°',
+  'qst_total'       => 'ÐšÐ²ÐµÑÑ‚Ð¾Ð²',
+  'qst_status'      => 'Ð¡Ñ‚Ð°Ñ‚ÑƒÑ',
   'qst_status_list' => array(
-    QUEST_STATUS_NOT_STARTED => 'Íå&nbsp;íà÷àò',
-    QUEST_STATUS_STARTED     => 'Íà÷àò',
-    QUEST_STATUS_COMPLETE    => 'Çàâåðøåí',
+    QUEST_STATUS_NOT_STARTED => 'ÐÐµ&nbsp;Ð½Ð°Ñ‡Ð°Ñ‚',
+    QUEST_STATUS_STARTED     => 'ÐÐ°Ñ‡Ð°Ñ‚',
+    QUEST_STATUS_COMPLETE    => 'Ð—Ð°Ð²ÐµÑ€ÑˆÐµÐ½',
   ),
 
-  'qst_add'         => 'Äîáàâëåíèå êâåñòà',
-  'qst_edit'        => 'Ðåäàêòèðîâàíèå êâåñòà',
-  'qst_copy'        => 'Êîïèðîâàíèå êâåñòà',
+  'qst_add'         => 'Ð”Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ ÐºÐ²ÐµÑÑ‚Ð°',
+  'qst_edit'        => 'Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ ÐºÐ²ÐµÑÑ‚Ð°',
+  'qst_copy'        => 'ÐšÐ¾Ð¿Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ ÐºÐ²ÐµÑÑ‚Ð°',
 
-  'qst_mode_add'    => 'Äîáàâëåíèå',
-  'qst_mode_edit'   => 'Ðåäàêòèðîâàíèå',
-  'qst_mode_copy'   => 'Êîïèðîâàíèå',
+  'qst_mode_add'    => 'Ð”Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ',
+  'qst_mode_edit'   => 'Ð ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ',
+  'qst_mode_copy'   => 'ÐšÐ¾Ð¿Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ',
 
-  'qst_adm_err_unit_id'       => 'Íåïðàâèëüíûé þíèò',
-  'qst_adm_err_unit_amount'   => 'Íåïðàâèëüíîå êîëè÷åñòâî þíèòîâ',
-  'qst_adm_err_reward_amount' => 'Íåïðàâèëüíûé ðàçìåð íàãðàäû',
-  'qst_adm_err_reward_type'   => 'Íåïðàâèëüíûé òèï íàãðàäû',
+  'qst_adm_err_unit_id'       => 'ÐÐµÐ¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ñ‹Ð¹ ÑŽÐ½Ð¸Ñ‚',
+  'qst_adm_err_unit_amount'   => 'ÐÐµÐ¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ð¾Ðµ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ ÑŽÐ½Ð¸Ñ‚Ð¾Ð²',
+  'qst_adm_err_reward_amount' => 'ÐÐµÐ¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ñ‹Ð¹ Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð½Ð°Ð³Ñ€Ð°Ð´Ñ‹',
+  'qst_adm_err_reward_type'   => 'ÐÐµÐ¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ñ‹Ð¹ Ñ‚Ð¸Ð¿ Ð½Ð°Ð³Ñ€Ð°Ð´Ñ‹',
 ));
 
 ?>

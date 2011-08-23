@@ -1,119 +1,119 @@
 <?php
 
 //	
-$lang['Multiverse']	= '<b>Сервер</b> Uni';
+$lang['Multiverse']	= '<b>РЎРµСЂРІРµСЂ</b> Uni';
 
-$lang['m_h_rules']		= 'Правила';
-$lang['m_faq']				= 'ЧаВо';
-$lang['m_faq_hint']		= 'Наиболее часто задаваемые вопросы пользователей и ответы на них';
-$lang['m_h_control']		= 'Управление';
-$lang['m_forum']			= 'Форум';
-$lang['m_others']			= 'Прочее';
-$lang['m_simulator']		= 'Симулятор боя';
-$lang['m_communication']= 'Связь & Общение';
-$lang['m_exchange']		= 'Биржа ресурсов';
-$lang['m_affilates']    = '!!!ЗАРАБОТАЙ ТМ!!!';
+$lang['m_h_rules']		= 'РџСЂР°РІРёР»Р°';
+$lang['m_faq']				= 'Р§Р°Р’Рѕ';
+$lang['m_faq_hint']		= 'РќР°РёР±РѕР»РµРµ С‡Р°СЃС‚Рѕ Р·Р°РґР°РІР°РµРјС‹Рµ РІРѕРїСЂРѕСЃС‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ Рё РѕС‚РІРµС‚С‹ РЅР° РЅРёС…';
+$lang['m_h_control']		= 'РЈРїСЂР°РІР»РµРЅРёРµ';
+$lang['m_forum']			= 'Р¤РѕСЂСѓРј';
+$lang['m_others']			= 'РџСЂРѕС‡РµРµ';
+$lang['m_simulator']		= 'РЎРёРјСѓР»СЏС‚РѕСЂ Р±РѕСЏ';
+$lang['m_communication']= 'РЎРІСЏР·СЊ & РћР±С‰РµРЅРёРµ';
+$lang['m_exchange']		= 'Р‘РёСЂР¶Р° СЂРµСЃСѓСЂСЃРѕРІ';
+$lang['m_affilates']    = '!!!Р—РђР РђР‘РћРўРђР™ РўРњ!!!';
 
-$lang['Overview']	= 'Обзор планеты';
-$lang['Officiers']	= 'Офицеры';
+$lang['Overview']	= 'РћР±Р·РѕСЂ РїР»Р°РЅРµС‚С‹';
+$lang['Officiers']	= 'РћС„РёС†РµСЂС‹';
 
-$lang['Buildings']    = 'Постройки';
-$lang['Building']     = 'Строительство';
-$lang['Research']	= 'Исследования';
-$lang['Shipyard']	= 'Верфь';
-$lang['Defense']	= 'Оборона';
+$lang['Buildings']    = 'РџРѕСЃС‚СЂРѕР№РєРё';
+$lang['Building']     = 'РЎС‚СЂРѕРёС‚РµР»СЊСЃС‚РІРѕ';
+$lang['Research']	= 'РСЃСЃР»РµРґРѕРІР°РЅРёСЏ';
+$lang['Shipyard']	= 'Р’РµСЂС„СЊ';
+$lang['Defense']	= 'РћР±РѕСЂРѕРЅР°';
 
-$lang['Resources']	= 'Ресурсы';
-$lang['Imperium']	= 'Империя';
-$lang['Marchand']	= 'Торговец';
-$lang['Annonces']	= 'Объявления';
-$lang['Technology']	= 'Технологии';
+$lang['Resources']	= 'Р РµСЃСѓСЂСЃС‹';
+$lang['Imperium']	= 'РРјРїРµСЂРёСЏ';
+$lang['Marchand']	= 'РўРѕСЂРіРѕРІРµС†';
+$lang['Annonces']	= 'РћР±СЉСЏРІР»РµРЅРёСЏ';
+$lang['Technology']	= 'РўРµС…РЅРѕР»РѕРіРёРё';
 
-$lang['Galaxy']		= 'Галактика';
-$lang['lm_fleet_orbiting']		= 'Флот на орбите';
+$lang['Galaxy']		= 'Р“Р°Р»Р°РєС‚РёРєР°';
+$lang['lm_fleet_orbiting']		= 'Р¤Р»РѕС‚ РЅР° РѕСЂР±РёС‚Рµ';
 
-$lang['Alliance']	= 'Ваш Альянс';
-$lang['Allianc']	= 'Альянс';
-$lang['AllyChat']	= 'Чат Альянса';
+$lang['Alliance']	= 'Р’Р°С€ РђР»СЊСЏРЅСЃ';
+$lang['Allianc']	= 'РђР»СЊСЏРЅСЃ';
+$lang['AllyChat']	= 'Р§Р°С‚ РђР»СЊСЏРЅСЃР°';
 
-$lang['Statistics']	= 'Статистика';
-$lang['Search']		= 'Поиск';
+$lang['Statistics']	= 'РЎС‚Р°С‚РёСЃС‚РёРєР°';
+$lang['Search']		= 'РџРѕРёСЃРє';
 
-$lang['Records']	= 'Рекорды';
+$lang['Records']	= 'Р РµРєРѕСЂРґС‹';
 
-$lang['Messages']	= 'Сообщения';
-$lang['Notes']		= 'Заметки';
-$lang['Buddylist']	= 'Друзья';
-$lang['Chat']		= 'Чат';
-$lang['Contact']	= 'Администрация';
-$lang['Options']	= 'Настройки';
-$lang['Bug']		= 'Тех. помощь';
+$lang['Messages']	= 'РЎРѕРѕР±С‰РµРЅРёСЏ';
+$lang['Notes']		= 'Р—Р°РјРµС‚РєРё';
+$lang['Buddylist']	= 'Р”СЂСѓР·СЊСЏ';
+$lang['Chat']		= 'Р§Р°С‚';
+$lang['Contact']	= 'РђРґРјРёРЅРёСЃС‚СЂР°С†РёСЏ';
+$lang['Options']	= 'РќР°СЃС‚СЂРѕР№РєРё';
+$lang['Bug']		= 'РўРµС…. РїРѕРјРѕС‰СЊ';
 
-$lang['Logout']		= 'Выход';
+$lang['Logout']		= 'Р’С‹С…РѕРґ';
 
-$lang['Rules']		= 'Правила';
+$lang['Rules']		= 'РџСЂР°РІРёР»Р°';
 
 //
-$lang['devlp']		= 'Развитие';
-$lang['navig']		= 'Информация';
-$lang['Economy']        = 'Экономика';
-$lang['trade']          = 'Торговля';
-$lang['Society']        = 'Общество';
-$lang['rinok']       = 'Черный рынок';
-$lang['observ']		= 'Обсерватория';
-$lang['commun']		= 'Администрация';
-$lang['infog']		= 'Информация';
+$lang['devlp']		= 'Р Р°Р·РІРёС‚РёРµ';
+$lang['navig']		= 'РРЅС„РѕСЂРјР°С†РёСЏ';
+$lang['Economy']        = 'Р­РєРѕРЅРѕРјРёРєР°';
+$lang['trade']          = 'РўРѕСЂРіРѕРІР»СЏ';
+$lang['Society']        = 'РћР±С‰РµСЃС‚РІРѕ';
+$lang['rinok']       = 'Р§РµСЂРЅС‹Р№ СЂС‹РЅРѕРє';
+$lang['observ']		= 'РћР±СЃРµСЂРІР°С‚РѕСЂРёСЏ';
+$lang['commun']		= 'РђРґРјРёРЅРёСЃС‚СЂР°С†РёСЏ';
+$lang['infog']		= 'РРЅС„РѕСЂРјР°С†РёСЏ';
 
-$lang['lm_combat_reports']		= 'Боевые отчеты';
-
-//	
-$lang['adm_over']	    = 'Обзор';
-$lang['adm_conf']	    = 'Настройки';
-$lang['adm_reset']	 = 'Обнуление';
-
-$lang['adm_plrlst']	= 'Список игроков';
-$lang['adm_panel']	= 'Панель администратора';
-$lang['adm_plrsch']	= 'Поиск игрока';
-$lang['adm_addres']	= 'Добавить ресурсы';
-
-$lang['adm_pltlst']	= 'Список планет';
-$lang['adm_actplt']	= 'Активные планеты';
-
-$lang['adm_moonlst']	= 'Список лун';
-$lang['adm_addmoon']	= 'Добавить луну';
-
-$lang['adm_fleet']	= 'Флоты в полёте';
-
-$lang['adm_ban']	= 'Забанить';
-$lang['adm_unban']	= 'Разбанить';
-
-$lang['adm_chat']	= 'Редактор чата';
-$lang['adm_updpt']	= 'Обновление';
-$lang['adm_msg']	= 'Список сообщений';
-$lang['adm_md5']	= 'Шифрование';
-$lang['adm_updrank']	= 'Обнуление базы';
-
-$lang['adm_error']	= 'Ошибки';
-$lang['adm_help']	= 'Форум разработчиков';
-$lang['adm_back']	= 'Вернуться';
+$lang['lm_combat_reports']		= 'Р‘РѕРµРІС‹Рµ РѕС‚С‡РµС‚С‹';
 
 //	
-$lang['admin']		= 'Администрирование';
-$lang['player']		= 'Игроки';
-$lang['tool']		= 'Утилиты';
+$lang['adm_over']	    = 'РћР±Р·РѕСЂ';
+$lang['adm_conf']	    = 'РќР°СЃС‚СЂРѕР№РєРё';
+$lang['adm_reset']	 = 'РћР±РЅСѓР»РµРЅРёРµ';
+
+$lang['adm_plrlst']	= 'РЎРїРёСЃРѕРє РёРіСЂРѕРєРѕРІ';
+$lang['adm_panel']	= 'РџР°РЅРµР»СЊ Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР°';
+$lang['adm_plrsch']	= 'РџРѕРёСЃРє РёРіСЂРѕРєР°';
+$lang['adm_addres']	= 'Р”РѕР±Р°РІРёС‚СЊ СЂРµСЃСѓСЂСЃС‹';
+
+$lang['adm_pltlst']	= 'РЎРїРёСЃРѕРє РїР»Р°РЅРµС‚';
+$lang['adm_actplt']	= 'РђРєС‚РёРІРЅС‹Рµ РїР»Р°РЅРµС‚С‹';
+
+$lang['adm_moonlst']	= 'РЎРїРёСЃРѕРє Р»СѓРЅ';
+$lang['adm_addmoon']	= 'Р”РѕР±Р°РІРёС‚СЊ Р»СѓРЅСѓ';
+
+$lang['adm_fleet']	= 'Р¤Р»РѕС‚С‹ РІ РїРѕР»С‘С‚Рµ';
+
+$lang['adm_ban']	= 'Р—Р°Р±Р°РЅРёС‚СЊ';
+$lang['adm_unban']	= 'Р Р°Р·Р±Р°РЅРёС‚СЊ';
+
+$lang['adm_chat']	= 'Р РµРґР°РєС‚РѕСЂ С‡Р°С‚Р°';
+$lang['adm_updpt']	= 'РћР±РЅРѕРІР»РµРЅРёРµ';
+$lang['adm_msg']	= 'РЎРїРёСЃРѕРє СЃРѕРѕР±С‰РµРЅРёР№';
+$lang['adm_md5']	= 'РЁРёС„СЂРѕРІР°РЅРёРµ';
+$lang['adm_updrank']	= 'РћР±РЅСѓР»РµРЅРёРµ Р±Р°Р·С‹';
+
+$lang['adm_error']	= 'РћС€РёР±РєРё';
+$lang['adm_help']	= 'Р¤РѕСЂСѓРј СЂР°Р·СЂР°Р±РѕС‚С‡РёРєРѕРІ';
+$lang['adm_back']	= 'Р’РµСЂРЅСѓС‚СЊСЃСЏ';
 
 //	
-$lang['lm_ifo_serv']	= "Сырьё";
-$lang['lm_ifo_game']	= "Игра";
-$lang['lm_ifo_fleet']	= "Флот";
-$lang['lm_ifo_queue']	= "Очередь";
+$lang['admin']		= 'РђРґРјРёРЅРёСЃС‚СЂРёСЂРѕРІР°РЅРёРµ';
+$lang['player']		= 'РРіСЂРѕРєРё';
+$lang['tool']		= 'РЈС‚РёР»РёС‚С‹';
 
-$lang['lm_shortcuts'] = "Закладки";
+//	
+$lang['lm_ifo_serv']	= "РЎС‹СЂСЊС‘";
+$lang['lm_ifo_game']	= "РРіСЂР°";
+$lang['lm_ifo_fleet']	= "Р¤Р»РѕС‚";
+$lang['lm_ifo_queue']	= "РћС‡РµСЂРµРґСЊ";
 
-$lang['lm_banned']    = "Список банов";
+$lang['lm_shortcuts'] = "Р—Р°РєР»Р°РґРєРё";
 
-$lang['lm_announce_fresh'] = "ОБНОВЛЕНИЕ";
+$lang['lm_banned']    = "РЎРїРёСЃРѕРє Р±Р°РЅРѕРІ";
 
-$lang['lm_server_info'] = "Мировые константы";
+$lang['lm_announce_fresh'] = "РћР‘РќРћР’Р›Р•РќРР•";
+
+$lang['lm_server_info'] = "РњРёСЂРѕРІС‹Рµ РєРѕРЅСЃС‚Р°РЅС‚С‹";
 
 ?>

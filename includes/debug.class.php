@@ -120,14 +120,14 @@ class debug
       echo "<table>{$this->log}</table>";
     }
 
-    global $link, $sys_stop_log_hit;
+    global $link, $sys_stop_log_hit, $lang;
 
     require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
 
     if(!$link)
     {
       $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
-      mysql_query('/*!40101 SET NAMES \'cp1251\' */');
+      mysql_query("/*!40101 SET NAMES 'utf8' */");
       mysql_select_db($dbsettings['name']);
 
       if(!$link)
@@ -189,14 +189,14 @@ class debug
 
   function warning($message, $title = 'System Message', $log_code = 300, $dump = false)
   {
-    global $link, $user;
+    global $link, $user, $lang;
 
     require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
 
     if(!$link)
     {
       $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
-      mysql_query('/*!40101 SET NAMES \'cp1251\' */');
+      mysql_query('/*!40101 SET NAMES \'utf8\' */');
       mysql_select_db($dbsettings['name']);
     }
 

@@ -1,74 +1,74 @@
 <?php
 
-$lang['mrkt_title']		= "×åðíûé ðûíîê";
-$lang['mrkt_merchant']	= "Òîðãîâåö ðåñóðñàìè";
-$lang['mrkt_scraper']	= "Ñêóïùèê ôëîòà";
-$lang['mrkt_call_cost']	= "Ñòîèìîñòü âûçîâà";
-$lang['mrkt_call']		= "Âûçâàòü";
+$lang['mrkt_title']		= "Ð§ÐµÑ€Ð½Ñ‹Ð¹ Ñ€Ñ‹Ð½Ð¾Ðº";
+$lang['mrkt_merchant']	= "Ð¢Ð¾Ñ€Ð³Ð¾Ð²ÐµÑ† Ñ€ÐµÑÑƒÑ€ÑÐ°Ð¼Ð¸";
+$lang['mrkt_scraper']	= "Ð¡ÐºÑƒÐ¿Ñ‰Ð¸Ðº Ñ„Ð»Ð¾Ñ‚Ð°";
+$lang['mrkt_call_cost']	= "Ð¡Ñ‚Ð¾Ð¸Ð¼Ð¾ÑÑ‚ÑŒ Ð²Ñ‹Ð·Ð¾Ð²Ð°";
+$lang['mrkt_call']		= "Ð’Ñ‹Ð·Ð²Ð°Ñ‚ÑŒ";
 
-$lang['mod_ma_title'] = "Òîðãîâåö";
-$lang['mod_ma_typer'] = "Âû õîòèòå ïðîäàòü";
-$lang['mod_ma_rates'] = "Êóðñû îáìåíà ìàòåðèàëîâ 2/1/0.5";
-$lang['mod_ma_buton'] = "Âûçâàòü òîðãîâöà";
-$lang['mod_ma_noten'] = "Íå äîñòàòî÷íî";
-$lang['mod_ma_done']  = "Îáìåí ïðîø¸ë óñïåøíî!";
-$lang['mod_ma_error'] = "Îøèáêà";
-$lang['mod_ma_donet'] = "Îáìåí ïðîø¸ë óñïåøíî!";
-$lang['mod_ma_excha'] = "Îáìåíÿòü";
-$lang['mod_ma_cours'] = "Êóðñ îáìåíà";
-$lang['mod_ma_nbre']  = "Ìîæíî ââîäèòü òîëüêî ÷èñëà!!!";
+$lang['mod_ma_title'] = "Ð¢Ð¾Ñ€Ð³Ð¾Ð²ÐµÑ†";
+$lang['mod_ma_typer'] = "Ð’Ñ‹ Ñ…Ð¾Ñ‚Ð¸Ñ‚Ðµ Ð¿Ñ€Ð¾Ð´Ð°Ñ‚ÑŒ";
+$lang['mod_ma_rates'] = "ÐšÑƒÑ€ÑÑ‹ Ð¾Ð±Ð¼ÐµÐ½Ð° Ð¼Ð°Ñ‚ÐµÑ€Ð¸Ð°Ð»Ð¾Ð² 2/1/0.5";
+$lang['mod_ma_buton'] = "Ð’Ñ‹Ð·Ð²Ð°Ñ‚ÑŒ Ñ‚Ð¾Ñ€Ð³Ð¾Ð²Ñ†Ð°";
+$lang['mod_ma_noten'] = "ÐÐµ Ð´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾";
+$lang['mod_ma_done']  = "ÐžÐ±Ð¼ÐµÐ½ Ð¿Ñ€Ð¾ÑˆÑ‘Ð» ÑƒÑÐ¿ÐµÑˆÐ½Ð¾!";
+$lang['mod_ma_error'] = "ÐžÑˆÐ¸Ð±ÐºÐ°";
+$lang['mod_ma_donet'] = "ÐžÐ±Ð¼ÐµÐ½ Ð¿Ñ€Ð¾ÑˆÑ‘Ð» ÑƒÑÐ¿ÐµÑˆÐ½Ð¾!";
+$lang['mod_ma_excha'] = "ÐžÐ±Ð¼ÐµÐ½ÑÑ‚ÑŒ";
+$lang['mod_ma_cours'] = "ÐšÑƒÑ€Ñ Ð¾Ð±Ð¼ÐµÐ½Ð°";
+$lang['mod_ma_nbre']  = "ÐœÐ¾Ð¶Ð½Ð¾ Ð²Ð²Ð¾Ð´Ð¸Ñ‚ÑŒ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ñ‡Ð¸ÑÐ»Ð°!!!";
 
-$lang['eco_mrk_title']             = '×åðíûé Ðûíîê';
-$lang['eco_mrk_services']          = 'Óñëóãè';
-$lang['eco_mrk_dark_matter_short'] = 'ÒÌ';
-$lang['eco_mrk_service_cost']      = 'Ñòîèìîñòü óñëóãè';
+$lang['eco_mrk_title']             = 'Ð§ÐµÑ€Ð½Ñ‹Ð¹ Ð Ñ‹Ð½Ð¾Ðº';
+$lang['eco_mrk_services']          = 'Ð£ÑÐ»ÑƒÐ³Ð¸';
+$lang['eco_mrk_dark_matter_short'] = 'Ð¢Ðœ';
+$lang['eco_mrk_service_cost']      = 'Ð¡Ñ‚Ð¾Ð¸Ð¼Ð¾ÑÑ‚ÑŒ ÑƒÑÐ»ÑƒÐ³Ð¸';
 
-$lang['eco_mrk_error_title']        = $lang['eco_mrk_title'] . ' - Îøèáêà';
+$lang['eco_mrk_error_title']        = $lang['eco_mrk_title'] . ' - ÐžÑˆÐ¸Ð±ÐºÐ°';
 
 $lang['eco_mrk_errors'] = array(
-  MARKET_DEAL           => 'Îïåðàöèÿ ïðîøëà óñïåøíî',
-  MARKET_DEAL_TRADE     => 'Îáìåí ðåñóðñîâ ïðîèçîøåë óñïåøíî',
-  MARKET_NOT_A_SHIP     => 'Íå íàäî ïûòàòüñÿ ïðîäàòü ÷òî-íèáóäü, îòëè÷íîå îò êîðàáëÿ!',
-  MARKET_NO_DM          => 'Íå õâàòàåò Òåìíîé Ìàòåðèè äëÿ çàâåðøåíèÿ îïåðàöèè',
-  MARKET_NO_RESOURCES   => 'Íå õâàòàåò ðåñóðñîâ äëÿ çàâåðøåíèÿ îïåðàöèè',
-  MARKET_NO_SHIPS       => 'Âû ïûòàåòåñü ïóñòèòü íà ëîì áîëüøå êîðàáëåé, ÷åì åñòü íà îðáèòå',
-  MARKET_NO_STOCK       => 'Âû ïûòàåòåñü êóïèòü áîëüøå êîðàáëåé, ÷åì åñòü ó ïðîäàâöà. Âîçìîæíî, ïîêà âû âûáèðàëè êîðàáëè, êòî-òî äðóãîé óæå êóïèë èõ',
-  MARKET_ZERO_DEAL      => 'Íå óêàçàíî êîëè÷åñòâî ðåñóðñîâ äëÿ îáìåíà',
-  MARKET_ZERO_RES       => 'Íóæíî âûáðàòü êîðàáëè äëÿ ïðîäàæè',
-  MARKET_ZERO_RES_STOCK => 'Íóæíî âûáðàòü êîðàáëè äëÿ ïîêóïêè',
-  MARKET_NEGATIVE_SHIPS => 'Íå íàäî ïûòàòüñÿ ïðîäàòü îòðèöàòåëüíîå êîëè÷åñòâî êîðàáëåé!',
+  MARKET_DEAL           => 'ÐžÐ¿ÐµÑ€Ð°Ñ†Ð¸Ñ Ð¿Ñ€Ð¾ÑˆÐ»Ð° ÑƒÑÐ¿ÐµÑˆÐ½Ð¾',
+  MARKET_DEAL_TRADE     => 'ÐžÐ±Ð¼ÐµÐ½ Ñ€ÐµÑÑƒÑ€ÑÐ¾Ð² Ð¿Ñ€Ð¾Ð¸Ð·Ð¾ÑˆÐµÐ» ÑƒÑÐ¿ÐµÑˆÐ½Ð¾',
+  MARKET_NOT_A_SHIP     => 'ÐÐµ Ð½Ð°Ð´Ð¾ Ð¿Ñ‹Ñ‚Ð°Ñ‚ÑŒÑÑ Ð¿Ñ€Ð¾Ð´Ð°Ñ‚ÑŒ Ñ‡Ñ‚Ð¾-Ð½Ð¸Ð±ÑƒÐ´ÑŒ, Ð¾Ñ‚Ð»Ð¸Ñ‡Ð½Ð¾Ðµ Ð¾Ñ‚ ÐºÐ¾Ñ€Ð°Ð±Ð»Ñ!',
+  MARKET_NO_DM          => 'ÐÐµ Ñ…Ð²Ð°Ñ‚Ð°ÐµÑ‚ Ð¢ÐµÐ¼Ð½Ð¾Ð¹ ÐœÐ°Ñ‚ÐµÑ€Ð¸Ð¸ Ð´Ð»Ñ Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð¸Ñ Ð¾Ð¿ÐµÑ€Ð°Ñ†Ð¸Ð¸',
+  MARKET_NO_RESOURCES   => 'ÐÐµ Ñ…Ð²Ð°Ñ‚Ð°ÐµÑ‚ Ñ€ÐµÑÑƒÑ€ÑÐ¾Ð² Ð´Ð»Ñ Ð·Ð°Ð²ÐµÑ€ÑˆÐµÐ½Ð¸Ñ Ð¾Ð¿ÐµÑ€Ð°Ñ†Ð¸Ð¸',
+  MARKET_NO_SHIPS       => 'Ð’Ñ‹ Ð¿Ñ‹Ñ‚Ð°ÐµÑ‚ÐµÑÑŒ Ð¿ÑƒÑÑ‚Ð¸Ñ‚ÑŒ Ð½Ð° Ð»Ð¾Ð¼ Ð±Ð¾Ð»ÑŒÑˆÐµ ÐºÐ¾Ñ€Ð°Ð±Ð»ÐµÐ¹, Ñ‡ÐµÐ¼ ÐµÑÑ‚ÑŒ Ð½Ð° Ð¾Ñ€Ð±Ð¸Ñ‚Ðµ',
+  MARKET_NO_STOCK       => 'Ð’Ñ‹ Ð¿Ñ‹Ñ‚Ð°ÐµÑ‚ÐµÑÑŒ ÐºÑƒÐ¿Ð¸Ñ‚ÑŒ Ð±Ð¾Ð»ÑŒÑˆÐµ ÐºÐ¾Ñ€Ð°Ð±Ð»ÐµÐ¹, Ñ‡ÐµÐ¼ ÐµÑÑ‚ÑŒ Ñƒ Ð¿Ñ€Ð¾Ð´Ð°Ð²Ñ†Ð°. Ð’Ð¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾, Ð¿Ð¾ÐºÐ° Ð²Ñ‹ Ð²Ñ‹Ð±Ð¸Ñ€Ð°Ð»Ð¸ ÐºÐ¾Ñ€Ð°Ð±Ð»Ð¸, ÐºÑ‚Ð¾-Ñ‚Ð¾ Ð´Ñ€ÑƒÐ³Ð¾Ð¹ ÑƒÐ¶Ðµ ÐºÑƒÐ¿Ð¸Ð» Ð¸Ñ…',
+  MARKET_ZERO_DEAL      => 'ÐÐµ ÑƒÐºÐ°Ð·Ð°Ð½Ð¾ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ñ€ÐµÑÑƒÑ€ÑÐ¾Ð² Ð´Ð»Ñ Ð¾Ð±Ð¼ÐµÐ½Ð°',
+  MARKET_ZERO_RES       => 'ÐÑƒÐ¶Ð½Ð¾ Ð²Ñ‹Ð±Ñ€Ð°Ñ‚ÑŒ ÐºÐ¾Ñ€Ð°Ð±Ð»Ð¸ Ð´Ð»Ñ Ð¿Ñ€Ð¾Ð´Ð°Ð¶Ð¸',
+  MARKET_ZERO_RES_STOCK => 'ÐÑƒÐ¶Ð½Ð¾ Ð²Ñ‹Ð±Ñ€Ð°Ñ‚ÑŒ ÐºÐ¾Ñ€Ð°Ð±Ð»Ð¸ Ð´Ð»Ñ Ð¿Ð¾ÐºÑƒÐ¿ÐºÐ¸',
+  MARKET_NEGATIVE_SHIPS => 'ÐÐµ Ð½Ð°Ð´Ð¾ Ð¿Ñ‹Ñ‚Ð°Ñ‚ÑŒÑÑ Ð¿Ñ€Ð¾Ð´Ð°Ñ‚ÑŒ Ð¾Ñ‚Ñ€Ð¸Ñ†Ð°Ñ‚ÐµÐ»ÑŒÐ½Ð¾Ðµ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ ÐºÐ¾Ñ€Ð°Ð±Ð»ÐµÐ¹!',
 );
 
-$lang['eco_mrk_trader']          = 'Òîðãîâåö ðåñóðñàìè';
-$lang['eco_mrk_trader_cost']     = 'Ñòîèìîñòü îáìåíà ðåñóðñîâ';
-$lang['eco_mrk_trader_exchange'] = 'Îáìåí';
-$lang['eco_mrk_trader_to']       = 'Îáìåíÿòü íà';
-$lang['eco_mrk_trader_course']   = 'Êóðñ';
-$lang['eco_mrk_trader_left']     = 'Îñòàòîê';
+$lang['eco_mrk_trader']          = 'Ð¢Ð¾Ñ€Ð³Ð¾Ð²ÐµÑ† Ñ€ÐµÑÑƒÑ€ÑÐ°Ð¼Ð¸';
+$lang['eco_mrk_trader_cost']     = 'Ð¡Ñ‚Ð¾Ð¸Ð¼Ð¾ÑÑ‚ÑŒ Ð¾Ð±Ð¼ÐµÐ½Ð° Ñ€ÐµÑÑƒÑ€ÑÐ¾Ð²';
+$lang['eco_mrk_trader_exchange'] = 'ÐžÐ±Ð¼ÐµÐ½';
+$lang['eco_mrk_trader_to']       = 'ÐžÐ±Ð¼ÐµÐ½ÑÑ‚ÑŒ Ð½Ð°';
+$lang['eco_mrk_trader_course']   = 'ÐšÑƒÑ€Ñ';
+$lang['eco_mrk_trader_left']     = 'ÐžÑÑ‚Ð°Ñ‚Ð¾Ðº';
 
-$lang['eco_mrk_scraper']         = 'Ñêóïêà êîðàáëåé';
-$lang['eco_mrk_scraper_price']   = 'Âûõîä ëîìà';
-$lang['eco_mrk_scraper_perShip'] = 'ñ êîðàáëÿ';
-$lang['eco_mrk_scraper_total']   = 'Âñåãî';
-$lang['eco_mrk_scraper_cost']    = 'Ïðîäàòü êîðàáëè íà ëîì ñòîèò';
-$lang['eco_mrk_scraper_onOrbit'] = 'Íà îðáèòå';
-$lang['eco_mrk_scraper_to']      = 'Ïóñòèòü íà ñëîì';
-$lang['eco_mrk_scraper_res']     = 'Ïîëó÷åí ñëåäóþùèé ëîì:';
-$lang['eco_mrk_scraper_ships']   = 'Ïóùåíû íà ëîì ñëåäóþùèå êîðàáëè:';
-$lang['eco_mrk_scraper_noShip']  = 'Íà îðáèòå íåò êîðàáëåé';
+$lang['eco_mrk_scraper']         = 'Ð¡ÐºÑƒÐ¿ÐºÐ° ÐºÐ¾Ñ€Ð°Ð±Ð»ÐµÐ¹';
+$lang['eco_mrk_scraper_price']   = 'Ð’Ñ‹Ñ…Ð¾Ð´ Ð»Ð¾Ð¼Ð°';
+$lang['eco_mrk_scraper_perShip'] = 'Ñ ÐºÐ¾Ñ€Ð°Ð±Ð»Ñ';
+$lang['eco_mrk_scraper_total']   = 'Ð’ÑÐµÐ³Ð¾';
+$lang['eco_mrk_scraper_cost']    = 'ÐŸÑ€Ð¾Ð´Ð°Ñ‚ÑŒ ÐºÐ¾Ñ€Ð°Ð±Ð»Ð¸ Ð½Ð° Ð»Ð¾Ð¼ ÑÑ‚Ð¾Ð¸Ñ‚';
+$lang['eco_mrk_scraper_onOrbit'] = 'ÐÐ° Ð¾Ñ€Ð±Ð¸Ñ‚Ðµ';
+$lang['eco_mrk_scraper_to']      = 'ÐŸÑƒÑÑ‚Ð¸Ñ‚ÑŒ Ð½Ð° ÑÐ»Ð¾Ð¼';
+$lang['eco_mrk_scraper_res']     = 'ÐŸÐ¾Ð»ÑƒÑ‡ÐµÐ½ ÑÐ»ÐµÐ´ÑƒÑŽÑ‰Ð¸Ð¹ Ð»Ð¾Ð¼:';
+$lang['eco_mrk_scraper_ships']   = 'ÐŸÑƒÑ‰ÐµÐ½Ñ‹ Ð½Ð° Ð»Ð¾Ð¼ ÑÐ»ÐµÐ´ÑƒÑŽÑ‰Ð¸Ðµ ÐºÐ¾Ñ€Ð°Ð±Ð»Ð¸:';
+$lang['eco_mrk_scraper_noShip']  = 'ÐÐ° Ð¾Ñ€Ð±Ð¸Ñ‚Ðµ Ð½ÐµÑ‚ ÐºÐ¾Ñ€Ð°Ð±Ð»ÐµÐ¹';
 
-$lang['eco_mrk_stockman']         = 'Ïðîäàâåö ïîäåðæàííûõ êîðàáëåé';
-$lang['eco_mrk_stockman_price']   = 'Öåíà';
-$lang['eco_mrk_stockman_perShip'] = 'êîðàáëÿ';
-$lang['eco_mrk_stockman_onStock'] = 'Ó ïðîäàâöà';
-$lang['eco_mrk_stockman_buy']     = 'Êóïèòü êîðàáëè';
-$lang['eco_mrk_stockman_res']     = 'Ñòîèìîñòü êóïëåííûõ êîðàáëåé:';
-$lang['eco_mrk_stockman_ships']   = 'Êóïëåíû ñëåäóþùèå êîðàáëè:';
-$lang['eco_mrk_stockman_noShip']  = 'Ó ïðîäàâöà ñåé÷àñ íåò êîðàáëåé äëÿ ïðîäàæè';
+$lang['eco_mrk_stockman']         = 'ÐŸÑ€Ð¾Ð´Ð°Ð²ÐµÑ† Ð¿Ð¾Ð´ÐµÑ€Ð¶Ð°Ð½Ð½Ñ‹Ñ… ÐºÐ¾Ñ€Ð°Ð±Ð»ÐµÐ¹';
+$lang['eco_mrk_stockman_price']   = 'Ð¦ÐµÐ½Ð°';
+$lang['eco_mrk_stockman_perShip'] = 'ÐºÐ¾Ñ€Ð°Ð±Ð»Ñ';
+$lang['eco_mrk_stockman_onStock'] = 'Ð£ Ð¿Ñ€Ð¾Ð´Ð°Ð²Ñ†Ð°';
+$lang['eco_mrk_stockman_buy']     = 'ÐšÑƒÐ¿Ð¸Ñ‚ÑŒ ÐºÐ¾Ñ€Ð°Ð±Ð»Ð¸';
+$lang['eco_mrk_stockman_res']     = 'Ð¡Ñ‚Ð¾Ð¸Ð¼Ð¾ÑÑ‚ÑŒ ÐºÑƒÐ¿Ð»ÐµÐ½Ð½Ñ‹Ñ… ÐºÐ¾Ñ€Ð°Ð±Ð»ÐµÐ¹:';
+$lang['eco_mrk_stockman_ships']   = 'ÐšÑƒÐ¿Ð»ÐµÐ½Ñ‹ ÑÐ»ÐµÐ´ÑƒÑŽÑ‰Ð¸Ðµ ÐºÐ¾Ñ€Ð°Ð±Ð»Ð¸:';
+$lang['eco_mrk_stockman_noShip']  = 'Ð£ Ð¿Ñ€Ð¾Ð´Ð°Ð²Ñ†Ð° ÑÐµÐ¹Ñ‡Ð°Ñ Ð½ÐµÑ‚ ÐºÐ¾Ñ€Ð°Ð±Ð»ÐµÐ¹ Ð´Ð»Ñ Ð¿Ñ€Ð¾Ð´Ð°Ð¶Ð¸';
 
-$lang['eco_mrk_exchange'] = 'Áèðæà îáìåíà ðåñóðñîâ';
+$lang['eco_mrk_exchange'] = 'Ð‘Ð¸Ñ€Ð¶Ð° Ð¾Ð±Ð¼ÐµÐ½Ð° Ñ€ÐµÑÑƒÑ€ÑÐ¾Ð²';
 
-$lang['eco_mrk_banker']   = 'Áàíêèð';
-$lang['eco_mrk_pawnshop'] = 'Ëîìáàðä';
+$lang['eco_mrk_banker']   = 'Ð‘Ð°Ð½ÐºÐ¸Ñ€';
+$lang['eco_mrk_pawnshop'] = 'Ð›Ð¾Ð¼Ð±Ð°Ñ€Ð´';
 
 ?>

@@ -150,7 +150,7 @@ if(file_exists($update_file))
     elseif(filemtime($update_file) > $config->var_db_update)
     {
       $timeout = $config->var_db_update_end - $time_now;
-      die("Обновляется база данных. Рассчетное время окончания - {$timeout} секунд (время обновления может увеличиваться). Пожалуйста, подождите...<br>Obnovljaetsja baza dannyh. Rasschetnoe vremya okonchanija - {$timeout} secund. Pozhalujsta, podozhdute...<br>Database update in progress. Estimated update time {$timeout} seconds (can increase depending on update process). Please wait...");
+      die("РћР±РЅРѕРІР»СЏРµС‚СЃСЏ Р±Р°Р·Р° РґР°РЅРЅС‹С…. Р Р°СЃСЃС‡РµС‚РЅРѕРµ РІСЂРµРјСЏ РѕРєРѕРЅС‡Р°РЅРёСЏ - {$timeout} СЃРµРєСѓРЅРґ (РІСЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ РјРѕР¶РµС‚ СѓРІРµР»РёС‡РёРІР°С‚СЊСЃСЏ). РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РїРѕРґРѕР¶РґРёС‚Рµ...<br>Obnovljaetsja baza dannyh. Rasschetnoe vremya okonchanija - {$timeout} secund. Pozhalujsta, podozhdute...<br>Database update in progress. Estimated update time {$timeout} seconds (can increase depending on update process). Please wait...");
     }
   }
 }
@@ -172,9 +172,9 @@ require_once("{$sn_root_physical}includes/functions.{$phpEx}");
 require_once("{$sn_root_physical}includes/vars.{$phpEx}");
 
 require_once("{$sn_root_physical}includes/template.{$phpEx}");
-require_once("{$sn_root_physical}language/" . DEFAULT_LANG .'/language.mo');
-$lang['LANG_INFO'] = $lang_info;
-unset($lang_info);
+// require_once("{$sn_root_physical}language/" . DEFAULT_LANG .'/language.mo');
+//$lang['LANG_INFO'] = $lang_info;
+//unset($lang_info);
 
 $dir = opendir("{$sn_root_physical}includes/functions");
 while (($file = readdir($dir)) !== false)
@@ -188,9 +188,7 @@ while (($file = readdir($dir)) !== false)
 
 sn_db_connect();
 
-$language = sys_get_param_str('lang');
-
-lng_include('system');
-lng_include('tech');
+$force_lang = sys_get_param_str('lang');
+lng_switch($force_lang);
 
 ?>

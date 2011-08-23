@@ -67,7 +67,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetN
   $QrySelectPlanet .= "`planet` = '". $Position ."';";
   $PlanetExist = doquery( $QrySelectPlanet, '', true);
 
-  // Si $PlanetExist est autre chose que false ... c'est qu'il y a quelque chose là bas ...
+  // Si $PlanetExist est autre chose que false ... c'est qu'il y a quelque chose la bas ...
   // C'est donc aussi que je ne peux pas m'y poser !!
   if (!$PlanetExist) {
     $planet                      = PlanetSizeRandomiser ($Position, $HomeWorld);

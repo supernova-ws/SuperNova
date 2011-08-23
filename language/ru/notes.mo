@@ -1,37 +1,38 @@
 <?php
 
-$lang['Notes']			= 'Заметки';
+$lang['Notes']			= 'Р—Р°РјРµС‚РєРё';
 
-$lang['Createnote']		= 'Создать заметки';
-$lang['MakeNewNote']		= 'Создать новую заметку';
-$lang['Editnote']		= 'Редактировать заметки';
+$lang['Createnote']		= 'РЎРѕР·РґР°С‚СЊ Р·Р°РјРµС‚РєРё';
+$lang['MakeNewNote']		= 'РЎРѕР·РґР°С‚СЊ РЅРѕРІСѓСЋ Р·Р°РјРµС‚РєСѓ';
+$lang['Editnote']		= 'Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ Р·Р°РјРµС‚РєРё';
 
-$lang['Priority']		= 'Приоритет';
+$lang['Priority']		= 'РџСЂРёРѕСЂРёС‚РµС‚';
 
-$lang['Important']		= 'Важно';
-$lang['Normal']			= 'Обычно';
-$lang['Unimportant']		= 'Неважно';
+$lang['Important']		= 'Р’Р°Р¶РЅРѕ';
+$lang['Normal']			= 'РћР±С‹С‡РЅРѕ';
+$lang['Unimportant']		= 'РќРµРІР°Р¶РЅРѕ';
 
-$lang['Subject']		= 'Тема';
-$lang['NoTitle']		= 'Без заголовка';
-$lang['NoText']			= 'Без содеражния';
+$lang['Subject']		= 'РўРµРјР°';
+$lang['NoTitle']		= 'Р‘РµР· Р·Р°РіРѕР»РѕРІРєР°';
+$lang['NoText']			= 'Р‘РµР· СЃРѕРґРµСЂР°Р¶РЅРёСЏ';
 
-$lang['Date']			= 'Дата';
-$lang['Size']			= 'Размер';
+$lang['Date']			= 'Р”Р°С‚Р°';
+$lang['Size']			= 'Р Р°Р·РјРµСЂ';
 
-$lang['Note']			= 'Заметка';
+$lang['Note']			= 'Р—Р°РјРµС‚РєР°';
 
-$lang['characters']		= 'символов';
+$lang['characters']		= 'СЃРёРјРІРѕР»РѕРІ';
 
-$lang['Apply']			= 'Применить';
-$lang['Back']			= 'Назад';
-$lang['Delete']		= 'Удалить';
-$lang['Reset']			= 'Сброс';
+$lang['Apply']			= 'РџСЂРёРјРµРЅРёС‚СЊ';
+$lang['Back']			= 'РќР°Р·Р°Рґ';
+$lang['Delete']		= 'РЈРґР°Р»РёС‚СЊ';
+$lang['Reset']			= 'РЎР±СЂРѕСЃ';
 
 //	
-$lang['ThereIsNoNote']		= 'Нет заметок';
-$lang['NoteUpdated']		= 'Заметка обновлена. <a href="notes.php"><blink>Пожалуйста, подождите...</blink></a>';
-$lang['NoteAdded']		= 'Заметка добавлена. <a href="notes.php"><blink>Пожалуйста, подождите...</blink></a>';
-$lang['NoteDeleted']		= 'Заметка удалена. <a href="notes.php"><blink>Пожалуйста, подождите...</blink></a>';
-$lang['NoteDeleteds']		= 'Заметки удалены <a href="notes.php"><blink>Пожалуйста, подождите...</blink></a>';
+$lang['ThereIsNoNote']		= 'РќРµС‚ Р·Р°РјРµС‚РѕРє';
+$lang['NoteUpdated']		= 'Р—Р°РјРµС‚РєР° РѕР±РЅРѕРІР»РµРЅР°. <a href="notes.php"><blink>РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РїРѕРґРѕР¶РґРёС‚Рµ...</blink></a>';
+$lang['NoteAdded']		= 'Р—Р°РјРµС‚РєР° РґРѕР±Р°РІР»РµРЅР°. <a href="notes.php"><blink>РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РїРѕРґРѕР¶РґРёС‚Рµ...</blink></a>';
+$lang['NoteDeleted']		= 'Р—Р°РјРµС‚РєР° СѓРґР°Р»РµРЅР°. <a href="notes.php"><blink>РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РїРѕРґРѕР¶РґРёС‚Рµ...</blink></a>';
+$lang['NoteDeleteds']		= 'Р—Р°РјРµС‚РєРё СѓРґР°Р»РµРЅС‹ <a href="notes.php"><blink>РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РїРѕРґРѕР¶РґРёС‚Рµ...</blink></a>';
+
 ?>

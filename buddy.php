@@ -117,7 +117,7 @@ if ($buddyID)
       case 'accept':
         doquery("UPDATE {{buddy}} SET `active` = 1 WHERE `id` = '{$buddyID}'");
         doquery("DELETE FROM {{buddy}} WHERE `sender` = '{$friend['owner']}' AND `owner` = {$friend['sender']};");
-        doquery("INSERT INTO {{buddy}} (`sender`, `owner`, `active`, `text`) VALUES ({$friend['owner']},{$friend['sender']},1,'Ответная дружба');");
+        doquery("INSERT INTO {{buddy}} (`sender`, `owner`, `active`, `text`) VALUES ({$friend['owner']},{$friend['sender']},1,'РћС‚РІРµС‚РЅР°СЏ РґСЂСѓР¶Р±Р°');");
         break;
     }
   }

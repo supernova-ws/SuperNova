@@ -519,7 +519,7 @@ function sys_unit_arr2str($fleet_array)
 
 function mymail($to, $title, $body, $from = '', $html = false)
 {
-  global $config;
+  global $config, $lang;
 
   $from = trim($from ? $from : $config->game_adminEmail);
 
@@ -535,14 +535,13 @@ function mymail($to, $title, $body, $from = '', $html = false)
   $head .= "X-Priority: 3 \r\n";
   $body = str_replace("\r\n", "\n", $body);
   $body = str_replace("\n", "\r\n", $body);
-  $body = iconv('CP1251', 'UTF-8', $body);
 
   if($html)
   {
     $body = '<html><head><base href="' . SN_ROOT_VIRTUAL . '"></head><body>' . nl2br($body) . '</body></html>';
   }
 
-  $title = '=?UTF-8?B?' . base64_encode(iconv('CP1251', 'UTF-8', $title)) . '?=';
+  $title = '=?UTF-8?B?' . base64_encode($title) . '?=';
 
   return @mail($to, $title, $body, $head);
 }

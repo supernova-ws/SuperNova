@@ -228,7 +228,7 @@ switch($mode)
     $parse['MembersOnline2'] = $names;
 */
 /*
-    //Последние сообщения чата.
+    // Last chat message
     $mess = doquery("SELECT `user`,`message` FROM {{chat}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5");
     $msg = '<table>';
     while ($result = mysql_fetch_assoc($mess)) {
