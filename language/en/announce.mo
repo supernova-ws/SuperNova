@@ -1,28 +1,27 @@
 <?php
 
-if (!defined('INSIDE')) 
-{
-	die('Hack attempt!');
-}
+if (!defined('INSIDE')) die();
 
-$lang['add_announce']                = 'Add announcement';
-$lang['metal']                       = 'Metal';
-$lang['crystal']                     = 'Crystal';
-$lang['deuterium']                   = 'Deuterium';
-$lang['Resources_to_be_sold']        = 'Proposed resources';
-$lang['Desired_resources']           = 'Required resources';
-$lang['send']                        = 'Send';
-$lang['Your_announce_was_recorded']  = 'Your ad successfully sent';
-$lang['return_to_announce']          = 'Return to page ads';
-$lang['Classifieds']                 = 'Published ads';
-$lang['Action']                      = 'Action';
-$lang['Galaxy']                      = 'Galaxy';
-$lang['Solar_system']                = 'The solar system';
-$lang['Infos_of_delivery']           = 'Information dealer';
-$lang['Salesman']                    = 'Player';
-$lang['Delete']                      = 'Delete';
-$lang['announce_status']             = 'Ad status';
-$lang['Your_announce_not_recorded']  = 'Your ad was not sent';
-$lang['Your_announce_was_deleted']   = 'Your announcement was successfully removed';
+$lang = array_merge($lang, array(
+  'add_announce' => 'Add announcement',
+  'metal' => 'Metal',
+  'crystal' => 'Crystal',
+  'deuterium' => 'Deuterium',
+  'Resources_to_be_sold' => 'Proposed resources',
+  'Desired_resources' => 'Required resources',
+  'send' => 'Send',
+  'Your_announce_was_recorded' => 'Your ad successfully sent',
+  'return_to_announce' => 'Return to page ads',
+  'Classifieds' => 'Published ads',
+  'Action' => 'Action',
+  'Galaxy' => 'Galaxy',
+  'Solar_system' => 'The solar system',
+  'Infos_of_delivery' => 'Information dealer',
+  'Salesman' => 'Player',
+  'Delete' => 'Delete',
+  'announce_status' => 'Ad status',
+  'Your_announce_not_recorded' => 'Your ad was not sent',
+  'Your_announce_was_deleted' => 'Your announcement was successfully removed',
+));
 
 ?>

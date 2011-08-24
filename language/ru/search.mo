@@ -1,24 +1,26 @@
 <?php
 
-$lang['Position'] = 'Место';
-$lang['Player'] = 'Игрок';
-$lang['Name'] = 'Имя';
-$lang['Player_name'] = 'Имя игрока';
-$lang['Planet'] = 'Планета';
-$lang['Planet_name'] = 'Имя планеты';
-$lang['Alliance'] = 'Альянс';
-$lang['Alliance_name'] = 'Имя альянса';
-$lang['Tag'] = 'Обозначение';
-$lang['Alliance_tag'] = 'Обозначение альянса';
-$lang['Members'] = 'Участники';
-$lang['Points'] = 'Очки';
-$lang['PerMember'] = 'На человека';
-$lang['Position'] = 'Место';
-$lang['Search'] = 'Поиску';
-$lang['Search_in_all_game'] = "Поиск по серверу";
-$lang['Back'] = 'Назад';
-$lang['Search'] = 'Поиск';
-$lang['write_a_messege'] = 'Написать сообщение';
-$lang['buddy_request'] = 'Добавить в друзья';
+if (!defined('INSIDE')) die();
+
+$lang = array_merge($lang, array(
+  'Position' => 'Место',
+  'Player' => 'Игрок',
+  'Name' => 'Имя',
+  'Player_name' => 'Имя игрока',
+  'Planet' => 'Планета',
+  'Planet_name' => 'Имя планеты',
+  'Alliance' => 'Альянс',
+  'Alliance_name' => 'Имя альянса',
+  'Tag' => 'Обозначение',
+  'Alliance_tag' => 'Обозначение альянса',
+  'Members' => 'Участники',
+  'Points' => 'Очки',
+  'PerMember' => 'На человека',
+  'Search' => 'Поиск',
+  'Search_in_all_game' => 'Поиск по серверу',
+  'Back' => 'Назад',
+  'write_a_messege' => 'Написать сообщение',
+  'buddy_request' => 'Добавить в друзья',
+));
 
 ?>

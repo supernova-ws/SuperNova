@@ -80,7 +80,7 @@ define('QUEST_TYPE_BUILD'   , 1);
 define('QUEST_TYPE_RESEARCH', 2);
 define('QUEST_TYPE_COMBAT'  , 3);
 
-define('QUEST_STATUS_NOT_STARTED' , null);
+define('QUEST_STATUS_NOT_STARTED' , 0);
 define('QUEST_STATUS_STARTED'     , 1);
 define('QUEST_STATUS_COMPLETE'    , 2);
 

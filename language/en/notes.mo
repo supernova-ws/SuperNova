@@ -1,42 +1,32 @@
 <?php
 
-if (!defined('INSIDE')) 
-{
-	die('Hack attempt!');
-}
+if (!defined('INSIDE')) die();
 
-$lang['Notes']			= 'Notes';
+$lang = array_merge($lang, array(
+  'Notes' => 'Notes',
+  'Createnote' => 'Create Notes',
+  'MakeNewNote' => 'Create a new note',
+  'Editnote' => 'Edit Notes',
+  'Priority' => 'Priority',
+  'Important' => 'Important',
+  'Normal' => 'Normal',
+  'Unimportant' => 'UnImportant',
+  'Subject' => 'Subject',
+  'NoTitle' => 'No Title',
+  'NoText' => 'No Text',
+  'Date' => 'Date',
+  'Size' => 'Size',
+  'Note' => 'Note',
+  'characters' => 'Characters',
+  'Apply' => 'Apply',
+  'Back' => 'Back',
+  'Delete' => 'Delete',
+  'Reset' => 'Reset',
+  'ThereIsNoNote' => 'There are no notes',
+  'NoteUpdated' => 'Note updated. <a href="notes.php"><blink>Please, wait...</blink></a>',
+  'NoteAdded' => 'Note added. <a href="notes.php"><blink>Please, wait...</blink></a>',
+  'NoteDeleted' => 'Note deleted. <a href="notes.php"><blink>Please, wait...</blink></a>',
+  'NoteDeleteds' => 'Note deleted <a href="notes.php"><blink>Please, wait...</blink></a>',
+));
 
-$lang['Createnote']		= 'Create Notes';
-$lang['MakeNewNote']		= 'Create a new note';
-$lang['Editnote']		= 'Edit Notes';
-
-$lang['Priority']		= 'Priority';
-
-$lang['Important']		= 'Important';
-$lang['Normal']			= 'Normal';
-$lang['Unimportant']		= 'UnImportant';
-
-$lang['Subject']		= 'Subject';
-$lang['NoTitle']		= 'No Title';
-$lang['NoText']			= 'No Text';
-
-$lang['Date']			= 'Date';
-$lang['Size']			= 'Size';
-
-$lang['Note']			= 'Note';
-
-$lang['characters']		= 'Characters';
-
-$lang['Apply']			= 'Apply';
-$lang['Back']			= 'Back';
-$lang['Delete']			= 'Delete';
-$lang['Reset']			= 'Reset';
-
-//	
-$lang['ThereIsNoNote']		= 'There are no notes';
-$lang['NoteUpdated']		= 'Note updated. <a href="notes.php"><blink>Please, wait...</blink></a>';
-$lang['NoteAdded']		= 'Note added. <a href="notes.php"><blink>Please, wait...</blink></a>';
-$lang['NoteDeleted']		= 'Note deleted. <a href="notes.php"><blink>Please, wait...</blink></a>';
-$lang['NoteDeleteds']		= 'Note deleted <a href="notes.php"><blink>Please, wait...</blink></a>';
 ?>
