@@ -21,3 +21,9 @@ lang-files - including substitution of values in  infos.mo!  As  result  simple
 replacing old locale file with new one can somewhat cripple localization files!
 For some files it may be necessary to make manual merge between old and new one
 files!
+7. Following domains contains additional PHP-code and  REQUIRE  manual  merging
+after editing language files: fleet, infos, login, market,  messages,  options,
+system
+8. Following domains using constants: alliance,  tech,  quest.  Manual  editing
+recommended to maintain compatibility with possible  future  constants  changes
+but currently didn't required
