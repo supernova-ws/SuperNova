@@ -153,7 +153,7 @@ if($domain && !empty($language_domains[$domain]))
       fwrite($files[$lang_id], "));\r\n\r\n?>\r\n");
       fclose($files[$lang_id]);
     }
-    header("Location: adm_locale.php?domain={$domain}");
+    header("Location: admin_locale.php?domain={$domain}");
     die();
   }
 

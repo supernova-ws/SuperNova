@@ -6,9 +6,9 @@
 #  Project: prethOgame
 #  Description: RPG web based game
 #
+#  Copyright (c) 2009 Gorlum
 #  Copyright c 2008 Aleksandar Spasojevic <spalekg@gmail.com>
 #  Copyright c 2005 - 2008 KGsystem
-#  Copyright (c) 2009 Gorlum
 #############################################################################
 */
 
