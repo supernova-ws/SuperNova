@@ -378,4 +378,10 @@ $lang['mlst_mess_typ__5'] = "Трансорт";
 $lang['mlst_mess_typ_15'] = "Экспедиции";
 $lang['mlst_mess_typ_99'] = "Список Batiment";
 
+// 31a9
+$lang['adm_lng_title']    = 'Локализация';
+$lang['adm_lng_warning']    = 'ВНИМАНИЕ! Редактор локализаций находится в состоянии pre-alpha! Используйте его на свой страх и риск!';
+$lang['adm_lng_domain']    = 'Домен';
+$lang['adm_lng_string_name']    = 'Имя строки';
+
 ?>

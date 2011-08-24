@@ -841,6 +841,28 @@ debug($update_tables['logs']['log_id'], 31);
       "ADD COLUMN `mrc_academic` SMALLINT(3) DEFAULT 0 AFTER rpg_amiral",
     ), !$update_tables['users']['mrc_academic']);
 
+//    $config->eco_inflation = $config->eco_inflation ? $config->eco_inflation : 1;
+
+    if($config->rpg_exchange_darkMatter < 1000)
+    {
+      /*
+$config->db_saveItem('db_version', 0);
+
+$inflation_rate = 1000;
+
+$config->db_saveItem('rpg_cost_banker', $config->rpg_cost_banker * $inflation_rate);
+$config->db_saveItem('rpg_cost_exchange', $config->rpg_cost_exchange * $inflation_rate);
+$config->db_saveItem('rpg_cost_pawnshop', $config->rpg_cost_pawnshop * $inflation_rate);
+$config->db_saveItem('rpg_cost_scraper', $config->rpg_cost_scraper * $inflation_rate);
+$config->db_saveItem('rpg_cost_stockman', $config->rpg_cost_stockman * $inflation_rate);
+$config->db_saveItem('rpg_cost_trader', $config->rpg_cost_trader * $inflation_rate);
+$config->db_saveItem('rpg_exchange_darkMatter', $config->rpg_exchange_darkMatter / $inflation_rate);
+
+
+
+      */
+    }
+
   upd_do_query('COMMIT;', true);
 //  $new_version = 31;
 

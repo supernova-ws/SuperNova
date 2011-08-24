@@ -380,4 +380,10 @@ $lang['mlst_mess_typ__5'] = "Transport";
 $lang['mlst_mess_typ_15'] = "Expedition";
 $lang['mlst_mess_typ_99'] = "Building List";
 
+// 31a9
+$lang['adm_lng_title']       = 'Localization';
+$lang['adm_lng_warning']     = 'WARNING! Locale editor is in pre-alpha stage! Use it on your own risk!';
+$lang['adm_lng_domain']      = 'Domain';
+$lang['adm_lng_string_name'] = 'String name';
+
 ?>

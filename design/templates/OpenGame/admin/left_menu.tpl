@@ -39,6 +39,7 @@
 
     <tr><td align=center class="c link"><a href="admin/tools.php">{L_tool}</a></td></tr>
     <tr><td><a href="admin/statbuilder.php">{L_adm_updpt}</a></td></tr>
+    <tr><td><a href="admin/admin_locale.php">{L_adm_lng_title}</a></td></tr>
     <!-- IF USER_AUTHLEVEL >= 3 -->
     <tr><td><a href="admin/maintenance.php">{L_adm_maint}</a></td></tr>
     <tr><td><a href="admin/sxd/index.php">{L_adm_backup}</a></td></tr>
