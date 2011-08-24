@@ -8,7 +8,7 @@ function lng_include($filename, $ext = '.mo')
 {
   global $lang, $language;
   $SelLanguage = $language ? $language : DEFAULT_LANG;
-  require_once(SN_ROOT_PHYSICAL . "language/{$SelLanguage}/{$filename}{$ext}");
+  require(SN_ROOT_PHYSICAL . "language/{$SelLanguage}/{$filename}{$ext}");
 }
 
 function lng_get_list()
