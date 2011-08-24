@@ -1,119 +1,116 @@
 <?php
 
-//	
-$lang['Multiverse']	= '<b>Сервер</b> Uni';
+/*
+#############################################################################
+#  Filename: leftmenu.mo
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2009 MSW
+#############################################################################
+*/
 
-$lang['m_h_rules']		= 'Правила';
-$lang['m_faq']				= 'ЧаВо';
-$lang['m_faq_hint']		= 'Наиболее часто задаваемые вопросы пользователей и ответы на них';
-$lang['m_h_control']		= 'Управление';
-$lang['m_forum']			= 'Форум';
-$lang['m_others']			= 'Прочее';
-$lang['m_simulator']		= 'Симулятор боя';
-$lang['m_communication']= 'Связь & Общение';
-$lang['m_exchange']		= 'Биржа ресурсов';
-$lang['m_affilates']    = '!!!ЗАРАБОТАЙ ТМ!!!';
+/**
+*
+* @package language
+* @system [Russian]
+* @version 31a9
+*
+*/
 
-$lang['Overview']	= 'Обзор планеты';
-$lang['Officiers']	= 'Офицеры';
+/**
+* DO NOT CHANGE
+*/
 
-$lang['Buildings']    = 'Постройки';
-$lang['Building']     = 'Строительство';
-$lang['Research']	= 'Исследования';
-$lang['Shipyard']	= 'Верфь';
-$lang['Defense']	= 'Оборона';
+if (!defined('INSIDE')) die();
 
-$lang['Resources']	= 'Ресурсы';
-$lang['Imperium']	= 'Империя';
-$lang['Marchand']	= 'Торговец';
-$lang['Annonces']	= 'Объявления';
-$lang['Technology']	= 'Технологии';
 
-$lang['Galaxy']		= 'Галактика';
-$lang['lm_fleet_orbiting']		= 'Флот на орбите';
-
-$lang['Alliance']	= 'Ваш Альянс';
-$lang['Allianc']	= 'Альянс';
-$lang['AllyChat']	= 'Чат Альянса';
-
-$lang['Statistics']	= 'Статистика';
-$lang['Search']		= 'Поиск';
-
-$lang['Records']	= 'Рекорды';
-
-$lang['Messages']	= 'Сообщения';
-$lang['Notes']		= 'Заметки';
-$lang['Buddylist']	= 'Друзья';
-$lang['Chat']		= 'Чат';
-$lang['Contact']	= 'Администрация';
-$lang['Options']	= 'Настройки';
-$lang['Bug']		= 'Тех. помощь';
-
-$lang['Logout']		= 'Выход';
-
-$lang['Rules']		= 'Правила';
-
-//
-$lang['devlp']		= 'Развитие';
-$lang['navig']		= 'Информация';
-$lang['Economy']        = 'Экономика';
-$lang['trade']          = 'Торговля';
-$lang['Society']        = 'Общество';
-$lang['rinok']       = 'Черный рынок';
-$lang['observ']		= 'Обсерватория';
-$lang['commun']		= 'Администрация';
-$lang['infog']		= 'Информация';
-
-$lang['lm_combat_reports']		= 'Боевые отчеты';
-
-//	
-$lang['adm_over']	    = 'Обзор';
-$lang['adm_conf']	    = 'Настройки';
-$lang['adm_reset']	 = 'Обнуление';
-
-$lang['adm_plrlst']	= 'Список игроков';
-$lang['adm_panel']	= 'Панель администратора';
-$lang['adm_plrsch']	= 'Поиск игрока';
-$lang['adm_addres']	= 'Добавить ресурсы';
-
-$lang['adm_pltlst']	= 'Список планет';
-$lang['adm_actplt']	= 'Активные планеты';
-
-$lang['adm_moonlst']	= 'Список лун';
-$lang['adm_addmoon']	= 'Добавить луну';
-
-$lang['adm_fleet']	= 'Флоты в полёте';
-
-$lang['adm_ban']	= 'Забанить';
-$lang['adm_unban']	= 'Разбанить';
-
-$lang['adm_chat']	= 'Редактор чата';
-$lang['adm_updpt']	= 'Обновление';
-$lang['adm_msg']	= 'Список сообщений';
-$lang['adm_md5']	= 'Шифрование';
-$lang['adm_updrank']	= 'Обнуление базы';
-
-$lang['adm_error']	= 'Ошибки';
-$lang['adm_help']	= 'Форум разработчиков';
-$lang['adm_back']	= 'Вернуться';
-
-//	
-$lang['admin']		= 'Администрирование';
-$lang['player']		= 'Игроки';
-$lang['tool']		= 'Утилиты';
-
-//	
-$lang['lm_ifo_serv']	= "Сырьё";
-$lang['lm_ifo_game']	= "Игра";
-$lang['lm_ifo_fleet']	= "Флот";
-$lang['lm_ifo_queue']	= "Очередь";
-
-$lang['lm_shortcuts'] = "Закладки";
-
-$lang['lm_banned']    = "Список банов";
-
-$lang['lm_announce_fresh'] = "ОБНОВЛЕНИЕ";
-
-$lang['lm_server_info'] = "Мировые константы";
+$lang = array_merge($lang, array(
+  'Multiverse' => '<b>Сервер</b> Uni',
+  'm_h_rules' => 'Правила',
+  'm_faq' => 'ЧаВо',
+  'm_faq_hint' => 'Наиболее часто задаваемые вопросы пользователей и ответы на них',
+  'm_h_control' => 'Управление',
+  'm_forum' => 'Форум',
+  'm_others' => 'Прочее',
+  'm_simulator' => 'Симулятор боя',
+  'm_communication' => 'Связь & Общение',
+  'm_exchange' => 'Биржа ресурсов',
+  'm_affilates' => '!!!ЗАРАБОТАЙ ТМ!!!',
+  'Overview' => 'Обзор планеты',
+  'Officiers' => 'Офицеры',
+  'Buildings' => 'Постройки',
+  'Building' => 'Строительство',
+  'Research' => 'Исследования',
+  'Shipyard' => 'Верфь',
+  'Defense' => 'Оборона',
+  'Resources' => 'Ресурсы',
+  'Imperium' => 'Империя',
+  'Marchand' => 'Торговец',
+  'Annonces' => 'Объявления',
+  'Technology' => 'Технологии',
+  'Galaxy' => 'Галактика',
+  'lm_fleet_orbiting' => 'Флот на орбите',
+  'Alliance' => 'Ваш Альянс',
+  'Allianc' => 'Альянс',
+  'AllyChat' => 'Чат Альянса',
+  'Statistics' => 'Статистика',
+  'Search' => 'Поиск',
+  'Records' => 'Рекорды',
+  'Messages' => 'Сообщения',
+  'Notes' => 'Заметки',
+  'Buddylist' => 'Друзья',
+  'Chat' => 'Чат',
+  'Contact' => 'Администрация',
+  'Options' => 'Настройки',
+  'Bug' => 'Тех. помощь',
+  'Logout' => 'Выход',
+  'Rules' => 'Правила',
+  'devlp' => 'Развитие',
+  'navig' => 'Информация',
+  'Economy' => 'Экономика',
+  'trade' => 'Торговля',
+  'Society' => 'Общество',
+  'rinok' => 'Черный рынок',
+  'observ' => 'Обсерватория',
+  'commun' => 'Администрация',
+  'infog' => 'Информация',
+  'lm_combat_reports' => 'Боевые отчеты',
+  'adm_over' => 'Обзор',
+  'adm_conf' => 'Настройки',
+  'adm_reset' => 'Обнуление',
+  'adm_plrlst' => 'Список игроков',
+  'adm_panel' => 'Панель администратора',
+  'adm_plrsch' => 'Поиск игрока',
+  'adm_addres' => 'Добавить ресурсы',
+  'adm_pltlst' => 'Список планет',
+  'adm_actplt' => 'Активные планеты',
+  'adm_moonlst' => 'Список лун',
+  'adm_addmoon' => 'Добавить луну',
+  'adm_fleet' => 'Флоты в полёте',
+  'adm_ban' => 'Забанить',
+  'adm_unban' => 'Разбанить',
+  'adm_chat' => 'Редактор чата',
+  'adm_updpt' => 'Обновление',
+  'adm_msg' => 'Список сообщений',
+  'adm_md5' => 'Шифрование',
+  'adm_updrank' => 'Обнуление базы',
+  'adm_error' => 'Ошибки',
+  'adm_help' => 'Форум разработчиков',
+  'adm_back' => 'Вернуться',
+  'admin' => 'Администрирование',
+  'player' => 'Игроки',
+  'tool' => 'Утилиты',
+  'lm_ifo_serv' => 'Сырьё',
+  'lm_ifo_game' => 'Игра',
+  'lm_ifo_fleet' => 'Флот',
+  'lm_ifo_queue' => 'Очередь',
+  'lm_shortcuts' => 'Закладки',
+  'lm_banned' => 'Список банов',
+  'lm_announce_fresh' => 'ОБНОВЛЕНИЕ',
+  'lm_server_info' => 'Мировые константы',
+));
 
 ?>

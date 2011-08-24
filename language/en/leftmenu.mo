@@ -1,123 +1,118 @@
 <?php
 
-if (!defined('INSIDE')) 
-{
-	die('Hack attempt!');
-}
+/*
+#############################################################################
+#  Filename: leftmenu.mo
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#
+#  Copyright © 2011 madmax1991 for Project "SuperNova.WS"
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
+#  Copyright © 2005 - 2008 KGsystem
+#############################################################################
+*/
 
-//	
-$lang['Multiverse']	= '<b>Sever</b> Uni';
+/**
+*
+* @package language
+* @system [English]
+* @version 31a9
+*
+*/
 
-$lang['m_h_rules']		= 'Rules';
-$lang['m_faq']				= 'FAQ';
-$lang['m_faq_hint']		= 'The most frequently asked customer questions and answers';
-$lang['m_h_control']		= 'Office';
-$lang['m_forum']			= 'Forum';
-$lang['m_others']			= 'Miscellaneous';
-$lang['m_simulator']		= 'Battle Simulator';
-$lang['m_communication']= 'Link & Communication';
-$lang['m_exchange']		= 'Exchange resources';
-$lang['m_affilates']    = '!!!Earn Dark Matter!!!';
+/**
+* DO NOT CHANGE
+*/
 
-$lang['Overview']	= 'Overview';
-$lang['Officiers']	= 'Officers';
+if (!defined('INSIDE')) die();
 
-$lang['Buildings']    = 'Construction';
-$lang['Building']     = 'Construction';
-$lang['Research']	= 'Research';
-$lang['Shipyard']	= 'Shipyard';
-$lang['Defense']	= 'Defense';
 
-$lang['Resources']	= 'Resource';
-$lang['Imperium']	= 'Imperium';
-$lang['Marchand']	= 'Trader';
-$lang['Annonces']	= 'Ads';
-$lang['Technology']	= 'Technology';
+$lang = array_merge($lang, array(
+  'Multiverse' => '<b>Sever</b> Uni',
+  'm_h_rules' => 'Rules',
+  'm_faq' => 'FAQ',
+  'm_faq_hint' => 'The most frequently asked customer questions and answers',
+  'm_h_control' => 'Office',
+  'm_forum' => 'Forum',
+  'm_others' => 'Miscellaneous',
+  'm_simulator' => 'Battle Simulator',
+  'm_communication' => 'Link & Communication',
+  'm_exchange' => 'Exchange resources',
+  'm_affilates' => '!!!Earn Dark Matter!!!',
+  'Overview' => 'Overview',
+  'Officiers' => 'Officers',
+  'Buildings' => 'Construction',
+  'Building' => 'Construction',
+  'Research' => 'Research',
+  'Shipyard' => 'Shipyard',
+  'Defense' => 'Defense',
+  'Resources' => 'Resource',
+  'Imperium' => 'Imperium',
+  'Marchand' => 'Trader',
+  'Annonces' => 'Ads',
+  'Technology' => 'Technology',
+  'Galaxy' => 'Galaxy',
+  'lm_fleet_orbiting' => 'Fleet in orbit',
+  'Alliance' => 'Alliance',
+  'Allianc' => 'Alliance',
+  'AllyChat' => 'Alliance Chat',
+  'Statistics' => 'Statistics',
+  'Search' => 'Search',
+  'Records' => 'Highscores',
+  'Messages' => 'Messages',
+  'Notes' => 'Notes',
+  'Buddylist' => 'Buddy List',
+  'Chat' => 'Chat',
+  'Contact' => 'Administration',
+  'Options' => 'Settings',
+  'Bug' => 'Bug',
+  'Logout' => 'Log out',
+  'Rules' => 'Rules',
+  'devlp' => 'Development',
+  'navig' => 'Information',
+  'Economy' => 'Economy',
+  'trade' => 'Trade',
+  'Society' => 'Society',
+  'rinok' => 'Market',
+  'observ' => 'Observatory',
+  'commun' => 'Administration',
+  'infog' => 'Information',
+  'lm_combat_reports' => 'Combat reports',
+  'adm_over' => 'Overview',
+  'adm_conf' => 'Settings',
+  'adm_reset' => 'Reset',
+  'adm_plrlst' => 'Players List',
+  'adm_panel' => 'Admin Panel',
+  'adm_plrsch' => 'Player Search',
+  'adm_addres' => 'Add Resources',
+  'adm_pltlst' => 'Planet List',
+  'adm_actplt' => 'Active Planets',
+  'adm_moonlst' => 'Moon List',
+  'adm_addmoon' => 'Add Moon',
+  'adm_fleet' => 'Fleets in Flight',
+  'adm_ban' => 'Ban',
+  'adm_unban' => 'UnBan',
+  'adm_chat' => 'Chat Editor',
+  'adm_updpt' => 'Update',
+  'adm_msg' => 'Message List',
+  'adm_md5' => 'Encryption',
+  'adm_updrank' => 'Reset Databases',
+  'adm_error' => 'Errors',
+  'adm_help' => 'Developers Forum',
+  'adm_back' => 'Return',
+  'admin' => 'Administration',
+  'player' => 'Players',
+  'tool' => 'Utilities',
+  'lm_ifo_serv' => 'Raw Materials',
+  'lm_ifo_game' => 'Game',
+  'lm_ifo_fleet' => 'Fleet',
+  'lm_ifo_queue' => 'Queue',
+  'lm_shortcuts' => 'Shortcut',
+  'lm_banned' => 'Ban List',
+  'lm_announce_fresh' => 'Update',
+  'lm_server_info' => 'Server',
+));
 
-$lang['Galaxy']		= 'Galaxy';
-$lang['lm_fleet_orbiting']		= 'Fleet in orbit';
-
-$lang['Alliance']	= 'Alliance';
-$lang['Allianc']	= 'Alliance';
-$lang['AllyChat']	= 'Alliance Chat';
-
-$lang['Statistics']	= 'Statistics';
-$lang['Search']		= 'Search';
-
-$lang['Records']	= 'Highscores';
-
-$lang['Messages']	= 'Messages';
-$lang['Notes']		= 'Notes';
-$lang['Buddylist']	= 'Buddy List';
-$lang['Chat']		= 'Chat';
-$lang['Contact']	= 'Administration';
-$lang['Options']	= 'Settings';
-$lang['Bug']		= 'Bug';
-
-$lang['Logout']		= 'Log out';
-
-$lang['Rules']		= 'Rules';
-
-//
-$lang['devlp']		= 'Development';
-$lang['navig']		= 'Information';
-$lang['Economy']        = 'Economy';
-$lang['trade']          = 'Trade';
-$lang['Society']        = 'Society';
-$lang['rinok']       = 'Market';
-$lang['observ']		= 'Observatory';
-$lang['commun']		= 'Administration';
-$lang['infog']		= 'Information';
-
-$lang['lm_combat_reports']		= 'Combat reports';
-
-//	
-$lang['adm_over']	    = 'Overview';
-$lang['adm_conf']	    = 'Settings';
-$lang['adm_reset']	 = 'Reset';
-
-$lang['adm_plrlst']	= 'Players List';
-$lang['adm_panel']	= 'Admin Panel';
-$lang['adm_plrsch']	= 'Player Search';
-$lang['adm_addres']	= 'Add Resources';
-
-$lang['adm_pltlst']	= 'Planet List';
-$lang['adm_actplt']	= 'Active Planets';
-
-$lang['adm_moonlst']	= 'Moon List';
-$lang['adm_addmoon']	= 'Add Moon';
-
-$lang['adm_fleet']	= 'Fleets in Flight';
-
-$lang['adm_ban']	= 'Ban';
-$lang['adm_unban']	= 'UnBan';
-
-$lang['adm_chat']	= 'Chat Editor';
-$lang['adm_updpt']	= 'Update';
-$lang['adm_msg']	= 'Message List';
-$lang['adm_md5']	= 'Encryption';
-$lang['adm_updrank']	= 'Reset Databases';
-
-$lang['adm_error']	= 'Errors';
-$lang['adm_help']	= 'Developers Forum';
-$lang['adm_back']	= 'Return';
-
-//	
-$lang['admin']		= 'Administration';
-$lang['player']		= 'Players';
-$lang['tool']		= 'Utilities';
-
-//	
-$lang['lm_ifo_serv']	= "Raw Materials";
-$lang['lm_ifo_game']	= "Game";
-$lang['lm_ifo_fleet']	= "Fleet";
-$lang['lm_ifo_queue']	= "Queue";
-
-$lang['lm_shortcuts'] = "Shortcut";
-
-$lang['lm_banned']    = "Ban List";
-
-$lang['lm_announce_fresh'] = "Update";
-
-$lang['lm_server_info'] = "Server";
 ?>

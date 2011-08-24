@@ -6,11 +6,11 @@
 #  Project: SuperNova.WS
 #  Description: Massive Multiplayer Online Browser Spave Startegy Game
 #
-#  Copyright © 2011 madmax1991 for Project "SuperNova.WS"
-#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
-#  Copyright © 2009 MSW
-#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright © 2005 - 2008 KGsystem
+#  Copyright Â© 2011 madmax1991 for Project "SuperNova.WS"
+#  Copyright Â© 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright Â© 2009 MSW
+#  Copyright Â© 2008 Aleksandar Spasojevic <spalekg@gmail.com>
+#  Copyright Â© 2005 - 2008 KGsystem
 #############################################################################
 */
 

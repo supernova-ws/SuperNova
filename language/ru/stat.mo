@@ -1,27 +1,53 @@
 <?php
-// Language file for Statistic module
-$lang['stat_title']    = "Статистика";
-$lang['stat_show']     = "Упорядочить";
-$lang['stat_by']       = "по";
-$lang['stat_range']    = "Место";
 
-$lang['stat_player']   = "игроки";
-$lang['stat_allys']    = "альянсы";
-$lang['stat_main']     = "Общая";
-$lang['stat_fleet']    = "Флот";
-$lang['stat_research'] = "Исследования";
-$lang['stat_building'] = "Постройки";
-$lang['stat_defenses'] = "Оборона";
-$lang['stat_resources'] = "Ресурсы";
+/*
+#############################################################################
+#  Filename: stat.mo
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2009 MSW
+#############################################################################
+*/
+
+/**
+*
+* @package language
+* @system [Russian]
+* @version 31a9
+*
+*/
+
+/**
+* DO NOT CHANGE
+*/
+
+if (!defined('INSIDE')) die();
 
 
-$lang['Position']      = "Место";
-$lang['Difference']    = "Изм.";
-$lang['Player']        = "Игрок";
-$lang['Alliance']      = "Альянс";
-$lang['Points']        = "Очки";
-$lang['Members']       = "Участники";
-$lang['PerMember']     = "На человека";
-$lang['Ecrire']        = "Написать сообщение";
+$lang = array_merge($lang, array(
+  'stat_title' => 'Статистика',
+  'stat_show' => 'Упорядочить',
+  'stat_by' => 'по',
+  'stat_range' => 'Место',
+  'stat_player' => 'игроки',
+  'stat_allys' => 'альянсы',
+  'stat_main' => 'Общая',
+  'stat_fleet' => 'Флот',
+  'stat_research' => 'Исследования',
+  'stat_building' => 'Постройки',
+  'stat_defenses' => 'Оборона',
+  'stat_resources' => 'Ресурсы',
+  'Position' => 'Место',
+  'Difference' => 'Изм.',
+  'Player' => 'Игрок',
+  'Alliance' => 'Альянс',
+  'Points' => 'Очки',
+  'Members' => 'Участники',
+  'PerMember' => 'На человека',
+  'Ecrire' => 'Написать сообщение',
+));
 
 ?>

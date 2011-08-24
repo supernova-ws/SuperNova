@@ -4,12 +4,9 @@
 #  Filename: language.mo
 #  Create date: Sunday, March 30, 2008   19:56:23
 #  Project: SuperNova.WS
-#  Description: Massive Multiplayer Online Browser Spave Startegy Game
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
 #
-#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
-#  Copyright © 2009 MSW
-#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright © 2005 - 2008 KGsystem
+#  Copyright © 2011 Gorlum for Project "SuperNova.WS"
 #############################################################################
 */
 

@@ -7,6 +7,12 @@
  *
  */
 
+define('INSIDE'  , true);
+define('INSTALL' , false);
+define('IN_ADMIN'  , true);
+
+require('../common.' . substr(strrchr(__FILE__, '.'), 1));
+
 function adm_lng_assign_string($lang_id, $locale_string_name, $value)
 {
   global $locale_string_template, $languages_info, $languages, $domain;
@@ -28,44 +34,6 @@ function adm_lng_assign_string($lang_id, $locale_string_name, $value)
   }
 }
 
-function adm_lng_save_string($string_name, $string_value, $ident = '  ')
-{
-  global $files, $languages_info;
-
-  $first_element = current($string_value);
-
-  if(is_array($first_element))
-  {
-    foreach($languages_info as $lang_id => $cork)
-    {
-      fwrite($files[$lang_id], "{$ident}'{$string_name}' => array(\r\n");
-    }
-    foreach($string_value as $arr_name => $arr_data)
-    {
-      adm_lng_save_string($arr_name, $arr_data, $ident . '  ');
-    }
-    foreach($languages_info as $lang_id => $cork)
-    {
-      fwrite($files[$lang_id], "{$ident}),\r\n\r\n");
-    }
-  }
-  else
-  {
-    foreach($languages_info as $lang_id => $cork)
-    {
-      $safe_string = addslashes($string_value[$lang_id]);
-      fwrite($files[$lang_id], "{$ident}'{$string_name}' => '{$safe_string}',\r\n");
-    }
-  }
-}
-
-define('INSIDE'  , true);
-define('INSTALL' , false);
-define('IN_ADMIN'  , true);
-require('../common.' . substr(strrchr(__FILE__, '.'), 1));
-
-$template = gettemplate('admin/admin_locale', true);
-
 function adm_lng_load($full_filename)
 {
 //  $lang_old = $lang;
@@ -77,6 +45,105 @@ function adm_lng_load($full_filename)
   return $lang;
 }
 
+function adm_lng_parse_string($string_name, $string_value, $ident = '  ')
+{
+  global $domain, $lang_id;
+
+  $return = "{$ident}'{$string_name}' => ";
+  if(isset($string_value[$lang_id]) && !is_array($string_value[$lang_id]))
+  {
+    $return .= "'" . str_replace(array("\\", "'"), array('\\\\', "\\'"), $string_value[$lang_id]) . "',";
+  }
+  else
+  {
+    $return .= "array(\r\n";
+    foreach($string_value as $arr_name => $arr_data)
+    {
+      $return .= adm_lng_parse_string($arr_name, $arr_data, $ident . '  ');
+    }
+    $return .= "{$ident}),\r\n";
+  }
+
+  return $return . "\r\n";
+}
+
+$honor_constants = array(
+  'alliance' => array(
+    '[ali_dip_relations]' => 'ALLY_DIPLOMACY_',
+  ),
+
+  'fleet' => array(
+    '[fl_attack_error]' => 'ATTACK_',
+    '[fl_shrtcup]' => 'PT_',
+    '[fl_planettype]' => 'PT_',
+  ),
+
+  'infos' => array(
+    '[info]' => array('TECH_', 'MRC_', 'SHIP_', 'RES_'), 
+  ),
+
+  'market' => array(
+    '[eco_mrk_errors]' => 'MARKET_', 
+  ),
+
+  'quest' => array(
+    '[qst_status_list]' => 'QUEST_STATUS_', 
+  ),
+
+  'tech' => array(
+    '[type_mission]' => 'MT_', 
+    '[tech]' => array('TECH_', 'MRC_', 'SHIP_', 'RES_'), 
+  ),
+
+);
+
+function adm_lng_write_string($string_name, $string_value, $ident = '  ', $string_name_prefix = '')
+{
+  global $lang_id, $file_handler, $constants, $honor_constants, $domain;
+
+  $string_name_new = false;
+//  debug($string_name_prefix);
+  if(isset($honor_constants[$domain][$string_name_prefix])) // is_integer($string_name) && 
+  {
+    $found_constants = array_keys($constants, $string_name);
+    foreach($found_constants as $constant_name)
+    {
+      $honor_prefix_list = is_array($honor_constants[$domain][$string_name_prefix]) ? $honor_constants[$domain][$string_name_prefix] : array($honor_constants[$domain][$string_name_prefix]);
+      foreach($honor_prefix_list as $honor_prefix)
+      {
+        if(strpos($constant_name, $honor_prefix) === 0)
+        {
+          $string_name_new = $constant_name;
+  //        debug($string_name_new);
+          break;
+        }
+      }
+    }
+//    debug($found_constants);
+  }
+
+  $string_name_new = $string_name_new ? $string_name_new : "'{$string_name}'";
+  fwrite($file_handler, "{$ident}{$string_name_new} => ");
+  if(isset($string_value[$lang_id]) && !is_array($string_value[$lang_id]))
+  {
+    fwrite($file_handler, "'" . str_replace(array("\\", "'"), array('\\\\', "\\'"), $string_value[$lang_id]) . "',");
+  }
+  else
+  {
+    $string_name_prefix = $string_name_prefix . "[{$string_name}]";
+    fwrite($file_handler, "array(\r\n");
+    foreach($string_value as $arr_name => $arr_data)
+    {
+      adm_lng_write_string($arr_name, $arr_data, $ident . '  ', $string_name_prefix);
+    }
+    fwrite($file_handler, "{$ident}),\r\n");
+  }
+
+  fwrite($file_handler, "\r\n");
+}
+
+$template = gettemplate('admin/admin_locale', true);
+
 lng_include('system');
 lng_include('tech');
 lng_include('admin');
@@ -84,102 +151,55 @@ lng_include('admin');
 $languages = array();
 $language_domains = array();
 $languages_info = lng_get_list();
-
-$path = SN_ROOT_PHYSICAL . "language/";
-$dir = dir($path);
-while (false !== ($lang_id = $dir->read()))
-{
-  $full_path = $path . $lang_id;
-  if($lang_id[0] != "." && is_dir($full_path))
-  {
-    $lang_file_list = dir($full_path);
-    while (false !== ($filename = $lang_file_list->read()))
-    {
-      if(substr($filename, strlen($filename) - 3, 3) == '.mo')
-      {
-        $lang_domain = substr($filename, 0, strlen($filename) - 3);
-        if($lang_domain != 'language')
-        {
-          if(empty($languages[$lang_id][$lang_domain]))
-          {
-            $language_domains[$lang_domain] = $lang_domain;
-            $full_filename = "{$full_path}/{$filename}";
-            $languages[$lang_id][$lang_domain] = adm_lng_load($full_filename);
-          }
-        }
-        else
-        {
-        }
-      }
-      elseif(substr($filename, strlen($filename) - 7, 7) == '.mo.new')
-      {
-        $lang_domain = substr($filename, 0, strlen($filename) - 7);
-        if($lang_domain != 'language')
-        {
-          $language_domains[$lang_domain] = $lang_domain;
-          $full_filename = "{$full_path}/{$filename}";
-          $languages[$lang_id][$lang_domain] = adm_lng_load($full_filename);
-        }
-        else
-        {
-        }
-      }
-    }
-  }
-}
-$dir->close();
-
 $domain = sys_get_param_str('domain');
 
-if($domain && !empty($language_domains[$domain]))
+if($domain)
 {
   $lang_new = sys_get_param('lang_new');
   if(!empty($lang_new))
   {
-    $files = array();
-    foreach($languages_info as $lang_id => $cork)
+    $constants = get_defined_constants(true);
+    $constants = $constants['user'];
+    ksort($constants);
+    foreach($languages_info as $lang_id => $land_data)
     {
-      $files[$lang_id] = fopen(SN_ROOT_PHYSICAL . "language/{$lang_id}/{$domain}.mo.new", 'w');
-      fwrite($files[$lang_id], "<?php\r\n\r\nif (!defined('INSIDE')) die();\r\n\r\n\$lang = array_merge(\$lang, array(\r\n");
+      $file_handler = fopen(SN_ROOT_PHYSICAL . "language/{$lang_id}/{$domain}.mo.new", 'w');
+      fwrite($file_handler, "<?php\r\n\r\n/*\r\n#############################################################################
+#  Filename: {$domain}.mo
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game\r\n#\r\n");
+//debug($land_data['LANG_COPYRIGHT']);die();
+      foreach($land_data['LANG_COPYRIGHT'] as $lang_copyright)
+      {
+        $lang_copyright = str_replace(array('&copy;', '&quot;', '&lt;', '&gt;'), array('©', '"', '<', '>'), $lang_copyright);
+        fwrite($file_handler, "#  {$lang_copyright}\r\n");
+      }
+      fwrite($file_handler, "#############################################################################\r\n*/\r\n
+/**\r\n*\r\n* @package language\r\n* @system [{$land_data['LANG_NAME_ENGLISH']}]\r\n* @version " . SN_VERSION . "\r\n*\r\n*/\r\n
+/**\r\n* DO NOT CHANGE\r\n*/\r\n\r\nif (!defined('INSIDE')) die();\r\n
+\$lang = array_merge(\$lang, array(\r\n");
+      foreach($lang_new as $string_name => $string_value)
+      {
+        adm_lng_write_string($string_name, $string_value);
+      }
+      fwrite($file_handler, "));\r\n\r\n?>\r\n");
+      fclose($file_handler);
     }
-
-    foreach($lang_new as $string_name => $string_value)
-    {
-      adm_lng_save_string($string_name, $string_value);
-    }
-
-    foreach($languages_info as $lang_id => $cork)
-    {
-      fwrite($files[$lang_id], "));\r\n\r\n?>\r\n");
-      fclose($files[$lang_id]);
-    }
-    header("Location: adm_locale.php?domain={$domain}");
+//    die();
+    header("Location: admin_locale.php?domain={$domain}");
     die();
   }
 
   foreach($languages_info as $lang_id => $lang_data)
   {
     $template->assign_block_vars('language', $lang_data);
-  }
-
-  foreach($languages['ru'][$domain] as $locale_string_name => $cork)
-  {
-    foreach($languages_info as $lang_id => $cork2)
+    $full_filename = SN_ROOT_PHYSICAL . "language/{$lang_id}/{$domain}.mo";
+    $languages[$lang_id] = adm_lng_load($full_filename . (file_exists($full_filename . '.new') ? '.new' : ''));
+    foreach($languages[$lang_id] as $locale_string_name => $cork)
     {
-      adm_lng_assign_string($lang_id, "[{$locale_string_name}]", $languages[$lang_id][$domain][$locale_string_name]);
+      adm_lng_assign_string($lang_id, "[{$locale_string_name}]", $languages[$lang_id][$locale_string_name]);
     }
-  }
-
-  foreach($locale_string_template as $string_id => $cork)
-  {
-    foreach($languages_info as $lang_id => $cork2)
-    {
-      if(!isset($locale_string_template[$string_id]["[{$lang_id}]"]))
-      {
-        $locale_string_template[$string_id]["[{$lang_id}]"] = '';
-      }
-    }
-    ksort($locale_string_template[$string_id]);
   }
 
   foreach($locale_string_template as $locale_string_name => $locale_string_list)
@@ -188,11 +208,11 @@ if($domain && !empty($language_domains[$domain]))
       'NAME' => $locale_string_name,
     ));
 
-    foreach($locale_string_list as $string_lang_id => $string_lang_value)
+    foreach($languages_info as $lang_id => $cork2)
     {
       $template->assign_block_vars('string.locale', array(
-        'LANG' => $string_lang_id,
-        'VALUE' => $string_lang_value,
+        'LANG' => $lang_id,
+        'VALUE' => $locale_string_list["[{$lang_id}]"],
       ));
     }
   }
@@ -203,6 +223,41 @@ if($domain && !empty($language_domains[$domain]))
 }
 else
 {
+  $path = SN_ROOT_PHYSICAL . "language/";
+  $dir = dir($path);
+  while (false !== ($lang_id = $dir->read()))
+  {
+    $full_path = $path . $lang_id;
+    if($lang_id[0] != "." && is_dir($full_path))
+    {
+      $lang_file_list = dir($full_path);
+      while (false !== ($filename = $lang_file_list->read()))
+      {
+        $lang_domain = strtolower(substr($filename, 0, strpos($filename, '.')));
+        if(!$lang_domain)
+        {
+          continue;
+        }
+
+        $file_ext = strtolower(substr($filename, strpos($filename, '.')));
+        if($lang_domain != 'language')
+        {
+          if($file_ext == '.mo.new' || ($file_ext == '.mo' && empty($languages[$lang_id][$lang_domain])))
+          {
+            $language_domains[$lang_domain] = $lang_domain;
+            $languages[$lang_id][$lang_domain] = $lang_domain;
+//            $full_filename = "{$full_path}/{$filename}";
+//            $languages[$lang_id][$lang_domain] = adm_lng_load($full_filename);
+          }
+        }
+        else
+        {
+        }
+      }
+    }
+  }
+  $dir->close();
+
   foreach($language_domains as $lang_domain)
   {
     $template->assign_block_vars('domain', array(

@@ -1,16 +1,31 @@
 <?php
+
+/*
+#############################################################################
+#  Filename: system.mo
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#
+#  Copyright © 2011 madmax1991 for Project "SuperNova.WS"
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
+#  Copyright © 2005 - 2008 KGsystem
+#############################################################################
+*/
+
 /**
 *
-* system [English]
-*
 * @package language
-* @version $Id$
+* @system [English]
+* @version 31a9
 *
 */
 
 /**
 * DO NOT CHANGE
 */
+
 if (!defined('INSIDE')) 
 {
 	die('Hack attempt!');
@@ -444,7 +459,7 @@ $lang = array_merge($lang, array(
   'cred_creat'   => 'Director',
   'cred_prog'    => 'Programmer',
   'cred_master'  => 'Moderator',
-  'cred_design'  => 'Designer�',
+  'cred_design'  => 'Designerр',
   'cred_web'     => 'Webmaster',
   'cred_thx'     => 'Thanks',
   'cred_based'   => 'Basis for establishing XNova',

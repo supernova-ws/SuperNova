@@ -1,38 +1,57 @@
 <?php
 
-$lang['Notes']			= 'Заметки';
+/*
+#############################################################################
+#  Filename: notes.mo
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2009 MSW
+#############################################################################
+*/
 
-$lang['Createnote']		= 'Создать заметки';
-$lang['MakeNewNote']		= 'Создать новую заметку';
-$lang['Editnote']		= 'Редактировать заметки';
+/**
+*
+* @package language
+* @system [Russian]
+* @version 31a9
+*
+*/
 
-$lang['Priority']		= 'Приоритет';
+/**
+* DO NOT CHANGE
+*/
 
-$lang['Important']		= 'Важно';
-$lang['Normal']			= 'Обычно';
-$lang['Unimportant']		= 'Неважно';
+if (!defined('INSIDE')) die();
 
-$lang['Subject']		= 'Тема';
-$lang['NoTitle']		= 'Без заголовка';
-$lang['NoText']			= 'Без содеражния';
 
-$lang['Date']			= 'Дата';
-$lang['Size']			= 'Размер';
-
-$lang['Note']			= 'Заметка';
-
-$lang['characters']		= 'символов';
-
-$lang['Apply']			= 'Применить';
-$lang['Back']			= 'Назад';
-$lang['Delete']		= 'Удалить';
-$lang['Reset']			= 'Сброс';
-
-//	
-$lang['ThereIsNoNote']		= 'Нет заметок';
-$lang['NoteUpdated']		= 'Заметка обновлена. <a href="notes.php"><blink>Пожалуйста, подождите...</blink></a>';
-$lang['NoteAdded']		= 'Заметка добавлена. <a href="notes.php"><blink>Пожалуйста, подождите...</blink></a>';
-$lang['NoteDeleted']		= 'Заметка удалена. <a href="notes.php"><blink>Пожалуйста, подождите...</blink></a>';
-$lang['NoteDeleteds']		= 'Заметки удалены <a href="notes.php"><blink>Пожалуйста, подождите...</blink></a>';
+$lang = array_merge($lang, array(
+  'Notes' => 'Заметки',
+  'Createnote' => 'Создать заметки',
+  'MakeNewNote' => 'Создать новую заметку',
+  'Editnote' => 'Редактировать заметки',
+  'Priority' => 'Приоритет',
+  'Important' => 'Важно',
+  'Normal' => 'Обычно',
+  'Unimportant' => 'Неважно',
+  'Subject' => 'Тема',
+  'NoTitle' => 'Без заголовка',
+  'NoText' => 'Без содеражния',
+  'Date' => 'Дата',
+  'Size' => 'Размер',
+  'Note' => 'Заметка',
+  'characters' => 'символов',
+  'Apply' => 'Применить',
+  'Back' => 'Назад',
+  'Delete' => 'Удалить',
+  'Reset' => 'Сброс',
+  'ThereIsNoNote' => 'Нет заметок',
+  'NoteUpdated' => 'Заметка обновлена. <a href="notes.php"><blink>Пожалуйста, подождите...</blink></a>',
+  'NoteAdded' => 'Заметка добавлена. <a href="notes.php"><blink>Пожалуйста, подождите...</blink></a>',
+  'NoteDeleted' => 'Заметка удалена. <a href="notes.php"><blink>Пожалуйста, подождите...</blink></a>',
+  'NoteDeleteds' => 'Заметки удалены <a href="notes.php"><blink>Пожалуйста, подождите...</blink></a>',
+));
 
 ?>

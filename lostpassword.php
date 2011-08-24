@@ -46,8 +46,8 @@ if ($confirm)
     $result = doquery("UPDATE {{users}} SET `password` = '{$md5}' WHERE `id` = '{$last_confirm['id_user']}' LIMIT 1;");
     if($result)
     {
-      $message = sprintf($lang['log_lost_email_pass'], $new_password);
-      @$result = mymail($last_confirm['email'], $lang['log_lost_email_title'], htmlspecialchars($message));
+      $message = sprintf($lang['log_lost_email_pass'], $config->game_name, $new_password);
+      @$result = mymail($last_confirm['email'], sprintf($lang['log_lost_email_title'], $config->game_name), htmlspecialchars($message));
       $message = sys_bbcodeParse($message) . '<br><br>';
 
       if($result)
@@ -91,7 +91,7 @@ elseif ($email)
 
     $confirm_code = sys_random_string();
 
-    @$result = mymail($email, $lang['log_lost_email_title'], sprintf($lang['log_lost_email_code'], SN_ROOT_VIRTUAL . $_SERVER['PHP_SELF'], $confirm_code, date(FMT_DATE_TIME, $time_now + 3*24*60*60)));
+    @$result = mymail($email, sprintf($lang['log_lost_email_title'], $config->game_name), sprintf($lang['log_lost_email_code'], SN_ROOT_VIRTUAL . $_SERVER['PHP_SELF'], $confirm_code, date(FMT_DATE_TIME, $time_now + 3*24*60*60), $config->game_name));
 
     doquery("INSERT INTO {{confirmations}} SET `id_user`= '{$user_id['id']}', `type` = '{$confirm_password_reset}', `code` = '{$confirm_code}', `email` = '{$email}';");
 

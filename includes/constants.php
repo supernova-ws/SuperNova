@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '30');
 define('SN_RELEASE', '31');
-define('SN_VERSION', '31a9');
+define('SN_VERSION', '31a10');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -80,7 +80,7 @@ define('QUEST_TYPE_BUILD'   , 1);
 define('QUEST_TYPE_RESEARCH', 2);
 define('QUEST_TYPE_COMBAT'  , 3);
 
-define('QUEST_STATUS_NOT_STARTED' , null);
+define('QUEST_STATUS_NOT_STARTED' , 0);
 define('QUEST_STATUS_STARTED'     , 1);
 define('QUEST_STATUS_COMPLETE'    , 2);
 
