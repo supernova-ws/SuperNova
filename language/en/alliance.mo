@@ -1,6 +1,33 @@
 <?php
 
+/*
+#############################################################################
+#  Filename: alliance.mo
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#
+#  Copyright © 2011 madmax1991 for Project "SuperNova.WS"
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
+#  Copyright © 2005 - 2008 KGsystem
+#############################################################################
+*/
+
+/**
+*
+* @package language
+* @system [English]
+* @version 31a9
+*
+*/
+
+/**
+* DO NOT CHANGE
+*/
+
 if (!defined('INSIDE')) die();
+
 
 $lang = array_merge($lang, array(
   'ali_dip_title' => 'Diplomacy',
@@ -33,14 +60,12 @@ $lang = array_merge($lang, array(
   'ali_dip_relation_change_to' => 'change relations to',
   'ali_dip_relation_accept' => 'accepted your offer to change relations to',
   'ali_dip_relations' => array(
-    ALLY_DIPLOMACY_NEUTRAL => 'Neutral',
-    ALLY_DIPLOMACY_PROPOSE_SEND => 'War',
-    ALLY_DIPLOMACY_PEACE => 'Peace',
-    ALLY_DIPLOMACY_CONFEDERATION => 'Confederation',
-    ALLY_DIPLOMACY_FEDERATION => 'Federation',
-    ALLY_DIPLOMACY_PROPOSE_SEND => 'Union',
-    ALLY_DIPLOMACY_MASTER => 'Master',
-    ALLY_DIPLOMACY_PROPOSE_SEND => 'Slave',
+    ALLY_DIPLOMACY_PROPOSE_SEND => 'Neutral',
+    ALLY_DIPLOMACY_WAR => 'Slave',
+    ALLY_DIPLOMACY_PROPOSE_SEND => 'Peace',
+    ALLY_DIPLOMACY_PROPOSE_SEND => 'Confederation',
+    ALLY_DIPLOMACY_PROPOSE_SEND => 'Federation',
+    ALLY_DIPLOMACY_PROPOSE_SEND => 'Master',
   ),
 
   'ali_lessThen15min' => '&lt; 15 min',

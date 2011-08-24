@@ -1,18 +1,31 @@
 <?php
+
 /*
 #############################################################################
 #  Filename: infos.mo
-#  Create date: Saturday, March 29, 2008	 21:58:24
-#  Project: prethOgame
-#  Description: RPG web based game
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
 #
-#  Copyright © 2009 - 2010 Gorlum for http://supernova.ws
-#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright © 2005 - 2008 KGsystem
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2009 MSW
 #############################################################################
 */
 
+/**
+*
+* @package language
+* @system [Russian]
+* @version 31a9
+*
+*/
+
+/**
+* DO NOT CHANGE
+*/
+
 if (!defined('INSIDE')) die();
+
 
 $lang = array_merge($lang, array(
   'info_title_param' => 'Характеристика',

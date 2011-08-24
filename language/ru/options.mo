@@ -1,5 +1,29 @@
 <?php
 
+/*
+#############################################################################
+#  Filename: options.mo
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2009 MSW
+#############################################################################
+*/
+
+/**
+*
+* @package language
+* @system [Russian]
+* @version 31a10
+*
+*/
+
+/**
+* DO NOT CHANGE
+*/
+
 if (!defined('INSIDE')) die();
 
 global $sn_message_groups, $sn_message_class_list;

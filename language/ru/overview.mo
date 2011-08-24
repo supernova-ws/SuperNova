@@ -1,6 +1,31 @@
 <?php
 
+/*
+#############################################################################
+#  Filename: overview.mo
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2009 MSW
+#############################################################################
+*/
+
+/**
+*
+* @package language
+* @system [Russian]
+* @version 31a9
+*
+*/
+
+/**
+* DO NOT CHANGE
+*/
+
 if (!defined('INSIDE')) die();
+
 
 $lang = array_merge($lang, array(
   'ov_hack_alert' => 'Попытка взлома БД!!!',

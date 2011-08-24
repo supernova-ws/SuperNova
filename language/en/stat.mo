@@ -1,33 +1,55 @@
 <?php
 
-if (!defined('INSIDE')) 
-{
-	die('Hack attempt!');
-}
+/*
+#############################################################################
+#  Filename: stat.mo
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#
+#  Copyright © 2011 madmax1991 for Project "SuperNova.WS"
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
+#  Copyright © 2005 - 2008 KGsystem
+#############################################################################
+*/
 
-// Language file for Statistic module
-$lang['stat_title']    = "Statistics";
-$lang['stat_show']     = "Show";
-$lang['stat_by']       = "By";
-$lang['stat_range']    = "Place";
+/**
+*
+* @package language
+* @system [English]
+* @version 31a9
+*
+*/
 
-$lang['stat_player']   = "Players";
-$lang['stat_allys']    = "Alliances";
-$lang['stat_main']     = "Total";
-$lang['stat_fleet']    = "Fleet";
-$lang['stat_research'] = "Research";
-$lang['stat_building'] = "Buildings";
-$lang['stat_defenses'] = "Defences";
-$lang['stat_resources'] = "Resources";
+/**
+* DO NOT CHANGE
+*/
+
+if (!defined('INSIDE')) die();
 
 
-$lang['Position']      = "Position";
-$lang['Difference']    = "Difference";
-$lang['Player']        = "Player";
-$lang['Alliance']      = "Alliance";
-$lang['Points']        = "Points";
-$lang['Members']       = "Members";
-$lang['PerMember']     = "Per Member";
-$lang['Ecrire']        = "Write a message";
+$lang = array_merge($lang, array(
+  'stat_title' => 'Statistics',
+  'stat_show' => 'Show',
+  'stat_by' => 'By',
+  'stat_range' => 'Place',
+  'stat_player' => 'Players',
+  'stat_allys' => 'Alliances',
+  'stat_main' => 'Total',
+  'stat_fleet' => 'Fleet',
+  'stat_research' => 'Research',
+  'stat_building' => 'Buildings',
+  'stat_defenses' => 'Defences',
+  'stat_resources' => 'Resources',
+  'Position' => 'Position',
+  'Difference' => 'Difference',
+  'Player' => 'Player',
+  'Alliance' => 'Alliance',
+  'Points' => 'Points',
+  'Members' => 'Members',
+  'PerMember' => 'Per Member',
+  'Ecrire' => 'Write a message',
+));
 
 ?>

@@ -1,21 +1,33 @@
 <?php
+
 /*
 #############################################################################
 #  Filename: admin.mo
-#  Create date: Wednesday, April 02, 2008	 19:18:25
-#  Project: prethOgame
-#  Description: RPG web based game
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
 #
-#  Copyright c 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright c 2005 - 2008 KGsystem
-#  Copyright (c) 2009 Gorlum
+#  Copyright © 2011 madmax1991 for Project "SuperNova.WS"
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
+#  Copyright © 2005 - 2008 KGsystem
 #############################################################################
 */
 
-if(!defined('INSIDE'))
-{
-  die('Hack attempt!');
-}
+/**
+*
+* @package language
+* @system [English]
+* @version 31a9
+*
+*/
+
+/**
+* DO NOT CHANGE
+*/
+
+if (!defined('INSIDE')) die();
+
 
 $lang = array_merge($lang, array(
   'adm_err_denied' => 'Access denied',
@@ -324,7 +336,7 @@ $lang = array_merge($lang, array(
   'mlst_mess_typ_15' => 'Expedition',
   'mlst_mess_typ_99' => 'Building List',
   'adm_lng_title' => 'Localization',
-  'adm_lng_warning' => 'WARNING! Locale editor is in pre-alpha stage! Use it on your own risk!',
+  'adm_lng_warning' => 'WARNING! Locale editor is in alpha stage! Use it on your own risk!',
   'adm_lng_domain' => 'Domain',
   'adm_lng_string_name' => 'String name',
   'adm_lng_string_add' => 'Add string',

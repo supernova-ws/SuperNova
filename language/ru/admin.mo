@@ -3,20 +3,29 @@
 /*
 #############################################################################
 #  Filename: admin.mo
-#  Create date: Wednesday, April 02, 2008	 19:18:25
-#  Project: prethOgame
-#  Description: RPG web based game
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
 #
-#  Copyright (c) 2009 Gorlum
-#  Copyright c 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright c 2005 - 2008 KGsystem
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2009 MSW
 #############################################################################
 */
 
-if(!defined('INSIDE'))
-{
-  die("Обнаружена попытка взлома!");
-}
+/**
+*
+* @package language
+* @system [Russian]
+* @version 31a9
+*
+*/
+
+/**
+* DO NOT CHANGE
+*/
+
+if (!defined('INSIDE')) die();
+
 
 $lang = array_merge($lang, array(
   'adm_err_denied' => 'Доступ запрещен',
@@ -244,7 +253,6 @@ $lang = array_merge($lang, array(
   'addm_moonplan' => 'Укажите позицию',
   'addm_moondoit' => 'Добавить',
   'addm_done' => 'Луна создана',
-
   'adm_usr_level' => array(
     '0' => 'Игрок',
     '1' => 'Оператор',
@@ -326,7 +334,7 @@ $lang = array_merge($lang, array(
   'mlst_mess_typ_15' => 'Экспедиции',
   'mlst_mess_typ_99' => 'Список Batiment',
   'adm_lng_title' => 'Локализация',
-  'adm_lng_warning' => 'ВНИМАНИЕ! Редактор локализаций находится в состоянии pre-alpha! Используйте его на свой страх и риск!',
+  'adm_lng_warning' => 'ВНИМАНИЕ! Это alpha-версия редактор локализаций! Используйте его на свой страх и риск!',
   'adm_lng_domain' => 'Домен',
   'adm_lng_string_name' => 'Имя строки',
   'adm_lng_string_add' => 'Добавить строку',

@@ -7,8 +7,8 @@
 #  Website: http://www.supernova.ws
 #  Description: Massive Multiplayer Online Browser Space Startegy Game
 #
-#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
-#  Copyright © 2009 MSW
+#  Copyright Â© 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright Â© 2009 MSW
 #############################################################################
 */
 

@@ -177,7 +177,7 @@ if($domain)
       }
       fwrite($file_handler, "#############################################################################\r\n*/\r\n
 /**\r\n*\r\n* @package language\r\n* @system [{$land_data['LANG_NAME_ENGLISH']}]\r\n* @version " . SN_VERSION . "\r\n*\r\n*/\r\n
-/**\r\n* DO NOT CHANGE\r\n*/\r\n\r\nif (!defined('INSIDE')) die();\r\n\r\n
+/**\r\n* DO NOT CHANGE\r\n*/\r\n\r\nif (!defined('INSIDE')) die();\r\n
 \$lang = array_merge(\$lang, array(\r\n");
       foreach($lang_new as $string_name => $string_value)
       {

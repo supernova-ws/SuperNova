@@ -1,6 +1,33 @@
 <?php
 
+/*
+#############################################################################
+#  Filename: messages.mo
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#
+#  Copyright © 2011 madmax1991 for Project "SuperNova.WS"
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
+#  Copyright © 2005 - 2008 KGsystem
+#############################################################################
+*/
+
+/**
+*
+* @package language
+* @system [English]
+* @version 31a9
+*
+*/
+
+/**
+* DO NOT CHANGE
+*/
+
 if (!defined('INSIDE')) die();
+
 
 $lang = array_merge($lang, array(
   'msg_page_header' => 'Personal messges',

@@ -1,6 +1,31 @@
 <?php
 
+/*
+#############################################################################
+#  Filename: universe.mo
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2009 MSW
+#############################################################################
+*/
+
+/**
+*
+* @package language
+* @system [Russian]
+* @version 31a9
+*
+*/
+
+/**
+* DO NOT CHANGE
+*/
+
 if (!defined('INSIDE')) die();
+
 
 $lang = array_merge($lang, array(
   'Galaxy' => 'Галактика',
@@ -44,7 +69,6 @@ $lang = array_merge($lang, array(
   'aava' => 'Аватар',
   'Player' => 'Игрок (статус)',
   'AllyInfoText' => 'Альянс %n на месте %r содержит %m членов',
-  'Planets_count' => '( %n планет(а, ы) заселено )',
   'Sending_fleet' => 'Отправление флота...',
   'Sent_fleet' => 'Отправить флот...',
   'Obtaining_data' => 'Проверка',
@@ -125,6 +149,7 @@ $lang = array_merge($lang, array(
   'uni_need' => 'Нужно',
   'uni_flying' => 'Летит',
   'uni_incoming_fleets' => 'Состав прибывающих флотов',
+  'Planets_count' => '( %n планет(а, ы) заселено )',
 ));
 
 ?>

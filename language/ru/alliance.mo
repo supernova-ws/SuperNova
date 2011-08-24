@@ -1,6 +1,31 @@
 <?php
 
+/*
+#############################################################################
+#  Filename: alliance.mo
+#  Project: SuperNova.WS
+#  Website: http://www.supernova.ws
+#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#
+#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright © 2009 MSW
+#############################################################################
+*/
+
+/**
+*
+* @package language
+* @system [Russian]
+* @version 31a9
+*
+*/
+
+/**
+* DO NOT CHANGE
+*/
+
 if (!defined('INSIDE')) die();
+
 
 $lang = array_merge($lang, array(
   'ali_dip_title' => 'Дипломатия',
@@ -33,14 +58,12 @@ $lang = array_merge($lang, array(
   'ali_dip_relation_change_to' => 'изменить отношения на',
   'ali_dip_relation_accept' => 'принял наше предложение изменить отношения на',
   'ali_dip_relations' => array(
-    ALLY_DIPLOMACY_NEUTRAL => 'Нейтралитет',
-    ALLY_DIPLOMACY_PROPOSE_SEND => 'Война',
-    ALLY_DIPLOMACY_PEACE => 'Мир',
-    ALLY_DIPLOMACY_CONFEDERATION => 'Конфедерация',
-    ALLY_DIPLOMACY_FEDERATION => 'Федерация',
-    ALLY_DIPLOMACY_PROPOSE_SEND => 'Объединение',
-    ALLY_DIPLOMACY_MASTER => 'Ведущий',
-    ALLY_DIPLOMACY_PROPOSE_SEND => 'Ведомый',
+    ALLY_DIPLOMACY_PROPOSE_SEND => 'Нейтралитет',
+    ALLY_DIPLOMACY_WAR => 'Ведомый',
+    ALLY_DIPLOMACY_PROPOSE_SEND => 'Мир',
+    ALLY_DIPLOMACY_PROPOSE_SEND => 'Конфедерация',
+    ALLY_DIPLOMACY_PROPOSE_SEND => 'Федерация',
+    ALLY_DIPLOMACY_PROPOSE_SEND => 'Ведущий',
   ),
 
   'ali_lessThen15min' => '&lt; 15 м',
