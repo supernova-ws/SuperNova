@@ -60,33 +60,46 @@ function IsOfficierAccessible ($CurrentUser, $Officier) {
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-$mode = $_GET['mode'];
-$offi = $_GET['offi'];
+$mode = sys_get_param_int('mode');
+$offi = sys_get_param_int('offi');
 
 lng_include('infos');
 
 //darkmater constant
-$darkmater_cost = $config->rpg_officer;
 $sn_data_dark_matter_db_name = $sn_data[RES_DARK_MATTER]['name'];
 // Si recrutement d'un officier
-if ($mode == 2) {
-  if ($user[$sn_data_dark_matter_db_name] >= $darkmater_cost) {
+if($mode == 2)
+{
+  $build_data = eco_get_build_data($user, $planetrow, $offi, $user[$sn_data[$offi]['name']]);
+  $darkmater_cost = $build_data[BUILD_CREATE][RES_DARK_MATTER];
+
+  if($user[$sn_data_dark_matter_db_name] >= $darkmater_cost)
+  {
     $Selected    = $offi;
-    if ( in_array($Selected, $sn_data['groups']['mercenaries']) ) {
+    if(in_array($Selected, $sn_data['groups']['mercenaries']))
+    {
       $Result = IsOfficierAccessible ( $user, $Selected );
-      if ( $Result == 1 ) {
+      if ( $Result == 1 )
+      {
         $selected_db_name = $sn_data[$Selected]['name'];
-        $user[$selected_db_name] += 1;
-        $user[$sn_data_dark_matter_db_name]         -= $darkmater_cost;
+//debug($selected_db_name);
+//debug($darkmater_cost);
+//die();
         doquery( "UPDATE {{users}} SET `{$selected_db_name}` = `{$selected_db_name}` + 1 WHERE `id` = '{$user['id']}';");
         rpg_points_change($user['id'], RPG_MERCENARY, -($darkmater_cost), "Spent for officer {$lang['tech'][$Selected]} ID {$Selected}");
-        $Message = $lang['off_recruited'];
-        header("Location: officer.php");
+//        $Message = $lang['off_recruited'];
+//        $user[$selected_db_name] += 1;
+//        $user[$sn_data_dark_matter_db_name]         -= $darkmater_cost;
+        header("Location: officer.php?goto={$offi}");
         ob_end_flush();
         die();
-      } elseif ( $Result == -1 ) {
+      } 
+      elseif ( $Result == -1 )
+      {
         $Message = $lang['off_maxed_out'];
-      } elseif ( $Result == 0 ) {
+      }
+      elseif ( $Result == 0 )
+      {
         $Message = $lang['off_not_available'];
       }
     }
@@ -124,11 +137,14 @@ else
         break;
       }
 
+      $build_data = eco_get_build_data($user, $planetrow, $mercenary_id, $user[$sn_data[$mercenary_id]['name']]);
+
       $template->assign_block_vars('officer', array(
         'ID'          => $mercenary_id,
         'NAME'        => $lang['tech'][$mercenary_id],
         'DESCRIPTION' => $lang['info'][$mercenary_id]['description'],
         'EFFECT'      => $lang['info'][$mercenary_id]['effect'],
+        'COST'        => $build_data[BUILD_CREATE][RES_DARK_MATTER],
         'LEVEL'       => $user[$sn_data[$mercenary_id]['name']],
         'LEVEL_MAX'   => $mercenary['max'],
         'BONUS'       => $mercenary_bonus,
@@ -137,8 +153,6 @@ else
       ));
     }
   }
-
-  $template->assign_var('DM_COST', $darkmater_cost);
 
   display(parsetemplate($template), $lang['tech'][600]);
 }

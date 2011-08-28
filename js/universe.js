@@ -25,8 +25,10 @@ function show_alliance(id)
 {
   if(!allies[id]['cache'])
   {
-    var result = "<table><tr><td class=c><center>" + language['sys_alliance'] + "&nbsp;";
-    result += allies[id]['name'] + "<br>" + language['gal_sys_members'] + allies[id]['members'] + "</center></td></tr>";
+    var result = "<table><tr><td class=c><center>" + language['sys_alliance'] + "&nbsp;" + allies[id]['name'];
+    result += "<br>" + language['place'] + "&nbsp;" + allies[id]['rank'] + "/" + game_ally_count;
+    result += "<br>" + language['gal_sys_members'] + allies[id]['members'];
+    result += "</center></td></tr>";
     result += "<tr><th><a href=alliance.php?mode=ainfo&a=" + id + ">" + language['gl_ally_internal'] + "</a></th></tr>";
     result += "<tr><th><a href=stat.php?start=1&who=ally>" + language['gl_stats'] + "</a></th></tr>";
     if (allies[id]['url'])

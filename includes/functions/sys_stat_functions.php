@@ -54,6 +54,8 @@ function SYS_statCalculate()
   global $config, $time_now, $sta_update_step, $sn_data;
 
   $sn_groups_resources_loot = &$sn_data['groups']['resources_loot'];
+  $crystal_rate = $config->rpg_exchange_crystal / $config->rpg_exchange_metal;
+  $deuterium_rate = $config->rpg_exchange_deterium / $config->rpg_exchange_metal;
 
   $StatDate   = $time_now;
 
@@ -88,7 +90,7 @@ function SYS_statCalculate()
     $FleetPoints = 0;
     foreach($split as $ship) {
       list($typ,$amount) = explode(',',$ship);
-      $Units = $sn_data[ $typ ]['metal'] + $sn_data[ $typ ]['crystal'] + $sn_data[ $typ ]['deuterium'];
+      $Units = $sn_data[ $typ ]['metal'] + $sn_data[ $typ ]['crystal'] * $crystal_rate + $sn_data[ $typ ]['deuterium'] * $deuterium_rate;
       $FleetPoints   += ($Units * $amount);
       $FleetCounts   += $amount;
     }
@@ -132,7 +134,7 @@ function SYS_statCalculate()
       if ( $planet_row[$unit_db_name] > 0 )
       {
         $f = $sn_data[$Building]['factor'];
-        $BuildPoints += ($sn_data[$Building]['metal'] + $sn_data[$Building]['crystal'] + $sn_data[$Building]['deuterium']) * (pow($f, $planet_row[$unit_db_name] ) - $f) / ($f - 1);
+        $BuildPoints += ($sn_data[$Building]['metal'] + $sn_data[$Building]['crystal'] * $crystal_rate + $sn_data[$Building]['deuterium'] * $deuterium_rate) * (pow($f, $planet_row[$unit_db_name] ) - $f) / ($f - 1);
         $BuildCounts += $planet_row[$unit_db_name] - 1 ;
       }
     }
@@ -144,7 +146,7 @@ function SYS_statCalculate()
       $unit_db_name = $sn_data[$Defense]['name'];
       if ($planet_row[$unit_db_name] > 0)
       {
-        $Units          = $sn_data[ $Defense ]['metal'] + $sn_data[ $Defense ]['crystal'] + $sn_data[ $Defense ]['deuterium'];
+        $Units          = $sn_data[ $Defense ]['metal'] + $sn_data[ $Defense ]['crystal'] * $crystal_rate + $sn_data[ $Defense ]['deuterium'] * $deuterium_rate;
         $DefensePoints += ($Units * $planet_row[ $unit_db_name ]);
         $DefenseCounts += $planet_row[ $unit_db_name ];
       }
@@ -157,7 +159,7 @@ function SYS_statCalculate()
       $unit_db_name = $sn_data[$Fleet]['name'];
       if ($planet_row[$unit_db_name] > 0)
       {
-        $Units          = $sn_data[ $Fleet ]['metal'] + $sn_data[ $Fleet ]['crystal'] + $sn_data[ $Fleet ]['deuterium'];
+        $Units          = $sn_data[ $Fleet ]['metal'] + $sn_data[ $Fleet ]['crystal'] * $crystal_rate + $sn_data[ $Fleet ]['deuterium'] * $deuterium_rate;
         $FleetPoints   += ($Units * $planet_row[ $unit_db_name ]);
         $FleetCounts   += $planet_row[ $unit_db_name ];
       }
@@ -181,8 +183,8 @@ function SYS_statCalculate()
       foreach($ship_list as $ship_id => $ship_amount)
       {
         $data = $sn_data[$ship_id];
-        $ResourcePoint += ($data['metal'] + $data['crystal'] + $data['deuterium']) * $ship_amount;
-        $ResourceCount += ($data['metal'] + $data['crystal'] + $data['deuterium']) * $ship_amount;
+        $ResourcePoint += ($data['metal'] + $data['crystal'] * $crystal_rate + $data['deuterium'] * $deuterium_rate) * $ship_amount;
+        $ResourceCount += ($data['metal'] + $data['crystal'] * $crystal_rate + $data['deuterium'] * $deuterium_rate) * $ship_amount;
       }
     }
 
@@ -214,9 +216,9 @@ function SYS_statCalculate()
       if ( $user_row[$unit_db_name] > 0 )
       {
         $f = $sn_data[ $Techno ]['factor'];
-        $Units = $sn_data[ $Techno ]['metal'] + $sn_data[ $Techno ]['crystal'] + $sn_data[ $Techno ]['deuterium'];
+//        $Units = $sn_data[ $Techno ]['metal'] + $sn_data[ $Techno ]['crystal'] * $crystal_rate + $sn_data[ $Techno ]['deuterium'] * $deuterium_rate;
         $TechCounts += $user_row[$unit_db_name] - 1 ;
-        $TechPoints += ($sn_data[ $Techno ]['metal'] + $sn_data[ $Techno ]['crystal'] + $sn_data[ $Techno ]['deuterium']) * (pow($f, $user_row[$unit_db_name] ) - $f) / ($f - 1);
+        $TechPoints += ($sn_data[ $Techno ]['metal'] + $sn_data[ $Techno ]['crystal'] * $crystal_rate + $sn_data[ $Techno ]['deuterium'] * $deuterium_rate) * (pow($f, $user_row[$unit_db_name] ) - $f) / ($f - 1);
       }
     }
 
@@ -305,7 +307,13 @@ function SYS_statCalculate()
     doquery ( sprintf($qryFormat, $rankName, 2) );
   }
 
-  sta_set_time_limit('purging outdated statistics from archive');
+  sta_set_time_limit('updating player\'s current rank and points');
+  doquery("UPDATE {{users}} AS u JOIN {{statpoints}} AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points;");
+
+  sta_set_time_limit('updating Ally\'s current rank and points');
+  doquery("UPDATE {{alliance}} AS a JOIN {{statpoints}} AS sp ON sp.id_owner = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
+
+  // sta_set_time_limit('purging outdated statistics from archive');
   // Deleting old stat_code
   // doquery ("DELETE FROM {{statpoints}} WHERE stat_code = 2;");
 

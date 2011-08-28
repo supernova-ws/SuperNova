@@ -38,12 +38,7 @@ else
 
 if ($message && $user['username'])
 {
-  $nick = trim(strip_tags($user['username']));
-  if($user['ally_id'])
-  {
-    $tag = doquery("SELECT ally_tag FROM {{alliance}} WHERE id = {$user['ally_id']}", '', true);
-    $nick .= '(' . trim(strip_tags($tag['ally_tag'])) . ')';
-  };
+  $nick = trim(strip_tags($user['username'])) . ($user['ally_tag'] ? '(' . trim(strip_tags($user['ally_tag'])) . ')' : '');
 
   if($user['authlevel'])
   {
@@ -62,7 +57,7 @@ if ($message && $user['username'])
       break;
     }
 
-    $nick = preg_replace("#(.+)#", $highlight, $nick);
+    $nick = preg_replace("#(.+)#", $highlight ? $highlight : '$1', $nick);
   }
 
   $nick = mysql_real_escape_string($nick);

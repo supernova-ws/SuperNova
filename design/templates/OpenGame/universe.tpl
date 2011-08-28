@@ -12,6 +12,85 @@ var uni_galaxy = "{galaxy}";
 var uni_system = "{system}";
 // --></script>
 
+<script LANGUAGE='JavaScript'><!--
+var uni_galaxy = {galaxy};
+var uni_system = {system};
+
+var user_id = {USER_ID};
+var game_user_count = {userCount};
+var game_ally_count = {ALLY_COUNT};
+var dpath = "{dpath}";
+var uni_phalanx = '{PLANET_PHALANX}';
+var uni_spies = '{ACT_SPIO}';
+var uni_death_stars = '{deathStars}';
+
+var SHIP_COLONIZER = {D_SHIP_COLONIZER};
+var SHIP_CARGO_BIG = {D_SHIP_CARGO_BIG};
+var SHIP_RECYCLER  = {D_SHIP_RECYCLER};
+var SHIP_SPY       = {D_SHIP_SPY};
+
+jQuery.extend(language, {
+  debris: '{L_Debris}',
+  gal_sys_members: '{L_gal_sys_members}',
+  gl_action: '{L_gl_action}',
+  gl_ally_internal: '{L_gl_ally_internal}',
+  gl_ally_web: '{L_gl_ally_web}',
+  gl_buddyreq: '{L_gl_buddyreq}', 
+  gl_phalanx: '{L_gl_phalanx}',
+  gl_ressource: '{L_gl_ressource}',
+  gl_sendmess: '{L_gl_sendmess}', 
+  gl_stats: '{L_gl_stats}',
+  place: '{L_Place}', 
+  sys_alliance: '{L_sys_alliance}',
+  sys_crystal: '{L_sys_crystal}',
+  sys_metal: '{L_sys_metal}',
+  sys_moon: '{L_Moon}',
+  sys_planet: '{L_gl_planet}',
+  sys_player: '{L_sys_player}', 
+  type_mission1: '{L_type_mission[1]}',
+  type_mission3: '{L_type_mission[3]}',
+  type_mission4: '{L_type_mission[4]}',
+  type_mission5: '{L_type_mission[5]}',
+  type_mission6: '{L_type_mission[6]}',
+  type_mission8: '{L_type_mission[8]}',
+  type_mission9: '{L_type_mission[9]}',
+  sys_ships: '{L_uni_incoming_fleets}',
+  lang_recyclers: '{LANG_RECYCLERS}',
+  sys_error: '{L_sys_error}',
+  sys_done: '{L_sys_done}',
+  uni_flying: '{L_uni_flying}'
+});
+
+var users = new Array();
+<!-- BEGIN users --><!-- IF users.ID -->users[{users.ID}] = {name: '{users.NAME_JS}', rank: '{users.RANK}'};<!-- ENDIF --><!-- END users -->
+
+var allies = new Array();
+<!-- BEGIN alliances --><!-- IF alliances.ID -->allies[{alliances.ID}] = {'name': '{alliances.NAME_JS}', 'rank' : '{alliances.RANK}','members': '{alliances.MEMBERS}', 'url': '{alliances.URL}'};
+<!-- ENDIF --><!-- END alliances -->
+
+var uni_row = new Array();
+<!-- BEGIN galaxyrow --><!-- IF galaxyrow.PLANET_NUM -->
+uni_row[{galaxyrow.PLANET_NUM}] = 
+{
+  owner: '{galaxyrow.USER_ID}',
+  planet: '{galaxyrow.PLANET_NUM}',
+  planet_name: '{galaxyrow.PLANET_NAME_JS}',
+  planet_image: '{galaxyrow.PLANET_IMAGE}',
+  planet_fleet_id: '{galaxyrow.PLANET_FLEET_ID}',
+  moon_name: '{galaxyrow.MOON_NAME_JS}',
+  moon_diameter: '{galaxyrow.MOON_DIAMETER}',
+  moon_image: 'mond',
+  moon_fleet_id: '{galaxyrow.MOON_FLEET_ID}',
+  debris_metal: '{galaxyrow.DEBRIS_METAL}',
+  debris_crystal: '{galaxyrow.DEBRIS_CRYSTAL}',
+  debris_recyclers: '{galaxyrow.DEBRIS_RC_SEND}',
+  debris_incoming: '{galaxyrow.DEBRIS_RC_INC}',
+  debris_rc_need: '{galaxyrow.DEBRIS_RC_NEED}'
+};
+<!-- ENDIF --><!-- END galaxyrow -->
+
+--></script>
+
 <br />
 <form action="galaxy.php?mode=1" method="post" id="galaxy_form">
   <table><tbody>
@@ -287,80 +366,3 @@ var uni_system = "{system}";
   </table>
 </form>
 <!-- INCLUDE page_hint.tpl -->
-
-<script LANGUAGE='JavaScript'><!--
-var uni_galaxy = {galaxy};
-var uni_system = {system};
-
-var user_id = {USER_ID};
-var game_user_count = {userCount};
-var dpath = "{dpath}";
-var uni_phalanx = '{PLANET_PHALANX}';
-var uni_spies = '{ACT_SPIO}';
-var uni_death_stars = '{deathStars}';
-
-var SHIP_COLONIZER = {D_SHIP_COLONIZER};
-var SHIP_CARGO_BIG = {D_SHIP_CARGO_BIG};
-var SHIP_RECYCLER  = {D_SHIP_RECYCLER};
-var SHIP_SPY       = {D_SHIP_SPY};
-
-jQuery.extend(language, {
-  debris: '{L_Debris}',
-  gal_sys_members: '{L_gal_sys_members}',
-  gl_action: '{L_gl_action}',
-  gl_ally_internal: '{L_gl_ally_internal}',
-  gl_ally_web: '{L_gl_ally_web}',
-  gl_buddyreq: '{L_gl_buddyreq}', 
-  gl_phalanx: '{L_gl_phalanx}',
-  gl_ressource: '{L_gl_ressource}',
-  gl_sendmess: '{L_gl_sendmess}', 
-  gl_stats: '{L_gl_stats}',
-  place: '{L_Place}', 
-  sys_alliance: '{L_sys_alliance}',
-  sys_crystal: '{L_sys_crystal}',
-  sys_metal: '{L_sys_metal}',
-  sys_moon: '{L_Moon}',
-  sys_planet: '{L_gl_planet}',
-  sys_player: '{L_sys_player}', 
-  type_mission1: '{L_type_mission[1]}',
-  type_mission3: '{L_type_mission[3]}',
-  type_mission4: '{L_type_mission[4]}',
-  type_mission5: '{L_type_mission[5]}',
-  type_mission6: '{L_type_mission[6]}',
-  type_mission8: '{L_type_mission[8]}',
-  type_mission9: '{L_type_mission[9]}',
-  sys_ships: '{L_uni_incoming_fleets}',
-  lang_recyclers: '{LANG_RECYCLERS}',
-  sys_error: '{L_sys_error}',
-  sys_done: '{L_sys_done}',
-  uni_flying: '{L_uni_flying}'
-});
-
-var users = new Array();
-<!-- BEGIN users --><!-- IF users.ID -->users[{users.ID}] = {name: '{users.NAME_JS}', rank: '{users.RANK}'};<!-- ENDIF --><!-- END users -->
-
-var allies = new Array();
-<!-- BEGIN alliances --><!-- IF alliances.ID -->allies[{alliances.ID}] = {name: '{alliances.NAME_JS}', members: '{alliances.MEMBERS}', url: '{alliances.URL}'};<!-- ENDIF --><!-- END alliances -->
-
-var uni_row = new Array();
-<!-- BEGIN galaxyrow --><!-- IF galaxyrow.PLANET_NUM -->
-uni_row[{galaxyrow.PLANET_NUM}] = 
-{
-  owner: '{galaxyrow.USER_ID}',
-  planet: '{galaxyrow.PLANET_NUM}',
-  planet_name: '{galaxyrow.PLANET_NAME_JS}',
-  planet_image: '{galaxyrow.PLANET_IMAGE}',
-  planet_fleet_id: '{galaxyrow.PLANET_FLEET_ID}',
-  moon_name: '{galaxyrow.MOON_NAME_JS}',
-  moon_diameter: '{galaxyrow.MOON_DIAMETER}',
-  moon_image: 'mond',
-  moon_fleet_id: '{galaxyrow.MOON_FLEET_ID}',
-  debris_metal: '{galaxyrow.DEBRIS_METAL}',
-  debris_crystal: '{galaxyrow.DEBRIS_CRYSTAL}',
-  debris_recyclers: '{galaxyrow.DEBRIS_RC_SEND}',
-  debris_incoming: '{galaxyrow.DEBRIS_RC_INC}',
-  debris_rc_need: '{galaxyrow.DEBRIS_RC_NEED}'
-};
-<!-- ENDIF --><!-- END galaxyrow -->
-
---></script>

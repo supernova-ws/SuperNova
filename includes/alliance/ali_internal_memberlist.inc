@@ -47,7 +47,7 @@ $sort = sprintf(' ORDER BY ' . $sort1s[$sort1] . ' %1$s;', $sort2s);
 
 $template = gettemplate('ali_members', true);
 
-$userList = doquery("SELECT {{users}}.id, {{users}}.username, {{users}}.galaxy, {{users}}.system, {{users}}.planet, {{users}}.onlinetime, {{users}}.ally_rank_id, {{users}}.ally_register_time, {{statpoints}}.total_points FROM {{users}} LEFT JOIN {{statpoints}} on {{statpoints}}.`id_owner`={{users}}.`id` AND `stat_type` = 1 AND `stat_code` = 1 WHERE `ally_id`='{$user['ally_id']}' {$sort}");
+$userList = doquery("SELECT id, username, galaxy, system, planet, onlinetime, ally_rank_id, ally_register_time, total_points FROM {{users}} WHERE `ally_id`='{$user['ally_id']}' {$sort}");
 
 while ($userRow = mysql_fetch_assoc($userList))
 {

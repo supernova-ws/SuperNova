@@ -214,8 +214,8 @@ function qst_templatize($quest, $for_display = true)
     'QUEST_UNIT_ID'        => $quest['quest_unit_id'],
     'QUEST_UNIT_NAME'      => $lang['tech'][$quest['quest_unit_id']],
     'QUEST_UNIT_AMOUNT'    => $quest['quest_unit_amount'],
-    'QUEST_STATUS'         => $quest['quest_status_status'],
-    'QUEST_STATUS_NAME'    => $lang['qst_status_list'][$quest['quest_status_status']],
+    'QUEST_STATUS'         => intval($quest['quest_status_status']),
+    'QUEST_STATUS_NAME'    => $lang['qst_status_list'][intval($quest['quest_status_status'])],
   );
 }
 

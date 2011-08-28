@@ -129,7 +129,7 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
   if($level > 0)
   {
     doquery("UPDATE `{{users}}` SET `{$field_level}` = `{$field_level}` + '{$level}' WHERE `id` = '{$user['id']}' LIMIT 1;");
-    rpg_points_change($user['id'], $type, $level, $comment);
+    rpg_points_change($user['id'], $type, $level * 1000, $comment);
     $user[$field_level] += $level;
 //    $user[$sn_data_dark_matter_db_name] += $level;
   }
