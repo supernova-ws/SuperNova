@@ -10,7 +10,7 @@
 
 function flt_mission_explore($mission_data)
 {
-  global $lang, $sn_data;
+  global $lang, $sn_data, $config;
 
   $fleet_row = $mission_data['fleet'];
 
