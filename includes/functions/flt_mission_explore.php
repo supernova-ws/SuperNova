@@ -115,7 +115,7 @@ function flt_mission_explore($mission_data)
   } elseif ($Hasard == 3) {
     // Ah un tour pour rien
     doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = {$fleet_row['fleet_id']}");
-    rpg_points_change($fleet_row['fleet_owner'], RPG_EXPEDITION, 1, 'Expedition Bonus');
+    rpg_points_change($fleet_row['fleet_owner'], RPG_EXPEDITION, $config->rpg_flt_explore, 'Expedition Bonus');
     msg_send_simple_message ( $FleetOwner, '', $fleet_row['fleet_end_stay'], MSG_TYPE_EXPLORE, $MessSender, $MessTitle, $lang['sys_expe_nothing_1'] );
   } elseif ($Hasard >= 4 && $Hasard < 7) {
     // Gains de ressources

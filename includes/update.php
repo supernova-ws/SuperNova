@@ -487,7 +487,7 @@ debug($update_tables['logs']['log_id'], 31);
 
     upd_check_key('chat_highlight_moderator', '<font color=green>$1</font>', !isset($config->chat_highlight_moderator));
     upd_check_key('chat_highlight_operator', '<font color=red>$1</font>', !isset($config->chat_highlight_operator));
-    upd_check_key('chat_highlight_admin', $config->chat_admin_highlight, !isset($config->chat_highlight_admin));
+    upd_check_key('chat_highlight_admin', $config->chat_admin_highlight ? $config->chat_admin_highlight : '<font color=puple>$1</font>', !isset($config->chat_highlight_admin));
 
     upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('chat_admin_highlight');");
 
@@ -841,26 +841,86 @@ debug($update_tables['logs']['log_id'], 31);
       "ADD COLUMN `mrc_academic` SMALLINT(3) DEFAULT 0 AFTER rpg_amiral",
     ), !$update_tables['users']['mrc_academic']);
 
-//    $config->eco_inflation = $config->eco_inflation ? $config->eco_inflation : 1;
+    upd_alter_table('users', array(
+      "DROP COLUMN `db_deaktjava`",
+      "DROP COLUMN `kolorminus`",
+      "DROP COLUMN `kolorplus`",
+      "DROP COLUMN `kolorpoziom`",
+      "DROP COLUMN `deleteme`",
 
-    if($config->rpg_exchange_darkMatter < 1000)
+      "MODIFY COLUMN `xpraid` BIGINT(20) UNSIGNED DEFAULT '0'",
+      "MODIFY COLUMN `xpminier` BIGINT(20) UNSIGNED DEFAULT '0'",
+      "MODIFY COLUMN `raids` BIGINT(20) UNSIGNED DEFAULT '0'",
+      "MODIFY COLUMN `raidsloose` BIGINT(20) UNSIGNED DEFAULT '0'",
+      "MODIFY COLUMN `raidswin` BIGINT(20) UNSIGNED DEFAULT '0'",
+
+      "MODIFY COLUMN `register_time` INT(10) UNSIGNED DEFAULT '0'",
+      "MODIFY COLUMN `onlinetime` INT(10) UNSIGNED DEFAULT '0'",
+      "MODIFY COLUMN `news_lastread` INT(10) UNSIGNED DEFAULT '0'",
+      "MODIFY COLUMN `deltime` INT(10) UNSIGNED DEFAULT '0'",
+      "MODIFY COLUMN `banaday` INT(10) UNSIGNED DEFAULT '0'",
+      "MODIFY COLUMN `vacation` INT(10) UNSIGNED DEFAULT '0'",
+    ), strtoupper($update_tables['users']['xpraid']['Type']) != 'BIGINT(20) UNSIGNED');
+
+    upd_alter_table('users', array(
+      "ADD COLUMN `total_rank` INT(10) UNSIGNED NOT NULL DEFAULT 0",
+      "ADD COLUMN `total_points` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
+    ), !isset($update_tables['users']['total_rank']));
+    doquery("UPDATE {{users}} AS u JOIN {{statpoints}} AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points;");
+
+    upd_alter_table('alliance', array(
+      "ADD COLUMN `total_rank` INT(10) UNSIGNED NOT NULL DEFAULT 0",
+      "ADD COLUMN `total_points` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
+    ), !isset($update_tables['alliance']['total_rank']));
+    doquery("UPDATE {{alliance}} AS a JOIN {{statpoints}} AS sp ON sp.id_owner = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
+
+    upd_alter_table('users', array(
+      "ADD COLUMN `ally_tag` varchar(8) DEFAULT NULL AFTER `ally_id`",
+    ), !isset($update_tables['users']['ally_tag']));
+    doquery("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_tag = a.ally_tag;");
+    upd_alter_table('users', array(
+      "ADD CONSTRAINT `FK_users_ally_tag` FOREIGN KEY (`ally_tag`) REFERENCES `{$config->db_prefix}alliance` (`ally_tag`) ON DELETE SET NULL ON UPDATE CASCADE",
+    ), !$update_foreigns['users']['FK_users_ally_tag']);
+
+    if(!$config->rpg_flt_explore)
     {
-      /*
-$config->db_saveItem('db_version', 0);
+      $inflation_rate = 1000;
 
-$inflation_rate = 1000;
+      $config->db_saveItem('rpg_cost_banker', $config->rpg_cost_banker * $inflation_rate);
+      $config->db_saveItem('rpg_cost_exchange', $config->rpg_cost_exchange * $inflation_rate);
+      $config->db_saveItem('rpg_cost_pawnshop', $config->rpg_cost_pawnshop * $inflation_rate);
+      $config->db_saveItem('rpg_cost_scraper', $config->rpg_cost_scraper * $inflation_rate);
+      $config->db_saveItem('rpg_cost_stockman', $config->rpg_cost_stockman * $inflation_rate);
+      $config->db_saveItem('rpg_cost_trader', $config->rpg_cost_trader * $inflation_rate);
 
-$config->db_saveItem('rpg_cost_banker', $config->rpg_cost_banker * $inflation_rate);
-$config->db_saveItem('rpg_cost_exchange', $config->rpg_cost_exchange * $inflation_rate);
-$config->db_saveItem('rpg_cost_pawnshop', $config->rpg_cost_pawnshop * $inflation_rate);
-$config->db_saveItem('rpg_cost_scraper', $config->rpg_cost_scraper * $inflation_rate);
-$config->db_saveItem('rpg_cost_stockman', $config->rpg_cost_stockman * $inflation_rate);
-$config->db_saveItem('rpg_cost_trader', $config->rpg_cost_trader * $inflation_rate);
-$config->db_saveItem('rpg_exchange_darkMatter', $config->rpg_exchange_darkMatter / $inflation_rate);
+      $config->db_saveItem('rpg_exchange_darkMatter', $config->rpg_exchange_darkMatter / $inflation_rate * 4);
 
+      $config->db_saveItem('rpg_bonus_divisor', $config->rpg_bonus_divisor * $inflation_rate);
 
+      $config->db_saveItem('rpg_flt_explore', $inflation_rate);
 
-      */
+      doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` * {$inflation_rate};");
+
+      $query = doquery("SELECT * FROM {{quest}}");
+      while($row = mysql_fetch_assoc($query))
+      {
+        $query_add = '';
+        $quest_reward_list = explode(';', $row['quest_rewards']);
+        foreach($quest_reward_list as &$quest_reward)
+        {
+          list($reward_resource, $reward_amount) = explode(',', $quest_reward);
+          if($reward_resource == RES_DARK_MATTER)
+          {
+            $quest_reward = "{$reward_resource}," . $reward_amount * 1000;
+          }
+        }
+        $new_rewards = implode(';', $quest_reward_list);
+        if($new_rewards != $row['quest_rewards'])
+        {
+          doquery("UPDATE {{quest}} SET `quest_rewards` = '{$new_rewards}' WHERE quest_id = {$row['quest_id']} LIMIT 1;");
+        }
+      }
+
     }
 
   upd_do_query('COMMIT;', true);

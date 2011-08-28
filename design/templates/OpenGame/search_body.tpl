@@ -10,8 +10,7 @@
     <select name="type">
      <option value="playername"{type_playername}>{Player_name}</option>
      <option value="planetname"{type_planetname}>{Planet_name}</option>
-     <option value="allytag"{type_allytag}>{Alliance_tag}</option>
-     <option value="allyname"{type_allyname}>{Alliance_name}</option>
+     <option value="ally"{type_ally}>{Alliance}</option>
     </select>
     &nbsp;&nbsp;
     <input type="text" name="searchtext" value="{searchtext}"/>

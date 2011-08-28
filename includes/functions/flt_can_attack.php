@@ -232,10 +232,8 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     return ATTACK_SAME_IP;
   }
 
-  $user_points = doquery("SELECT total_points FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '{$user['id']}';", '', true);
-  $user_points = $user_points['total_points'];
-  $enemy_points = doquery("SELECT total_points FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '{$enemy['id']}';", '', true);
-  $enemy_points = $enemy_points['total_points'];
+  $user_points = $user['total_points'];
+  $enemy_points = $enemy['total_points'];
 
   // Is it transport? If yes - checking for buffing to prevent mega-alliance destroyer
   if($mission == MT_TRANSPORT)

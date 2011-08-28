@@ -83,7 +83,7 @@
       <th class="c_c" width="240">{quest.QUEST_UNIT_AMOUNT}&nbsp;x&nbsp;{quest.QUEST_UNIT_NAME}</th>
       <th class="c_c" width="120">{quest.QUEST_REWARDS_AMOUNT}&nbsp;{quest.QUEST_REWARDS_NAME}</th>
       <!-- IF USER_ID -->
-        <th class="c_c" width="80">{quest.QUEST_STATUS_NAME}</th>
+        <th class="c_c <!-- IF quest.QUEST_STATUS == 2 -->success<!-- ELSE -->notice<!-- ENDIF -->" width="80">{quest.QUEST_STATUS_NAME}</th>
       <!-- ENDIF -->
       <!-- IF IN_ADMIN && ! USER_ID -->
         <th class="c_c" width="22"><a href="admin/adm_quest.php?mode=edit&id={quest.QUEST_ID}"><img src="design/images/icon_edit.png"></a></th>

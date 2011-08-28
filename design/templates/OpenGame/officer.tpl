@@ -32,7 +32,7 @@
           <div class="positive" align="center">{officer.BONUS} {officer.EFFECT}</div><br />
           <div>{L_sys_level} {officer.LEVEL}/{officer.LEVEL_MAX}</div>
           <!-- IF officer.CAN_BUY == 1 -->
-            <a href="officer.php?mode=2&offi={officer.ID}"><span class="positive">{L_off_hire} {DM_COST} {L_sys_dark_matter_sh}</span></a>
+            <a href="officer.php?mode=2&offi={officer.ID}"><span class="positive">{L_off_hire} {officer.COST} {L_sys_dark_matter_sh}</span></a>
           <!-- ELSE -->
             <span class="negative">{L_sys_maximum_level}</span>
           <!-- ENDIF -->

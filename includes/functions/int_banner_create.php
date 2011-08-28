@@ -17,12 +17,17 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
 // banner.php?id=<userid>&type=<banner|userbar>&format=<png>
   global $config, $lang;
 
-  switch ($type) {
+  $id = intval($id);
+
+  switch ($type)
+  {
     case 'banner':
       $img_name = $config->int_banner_background;
-      break;
+    break;
+
     default:
       $img_name = $config->int_userbar_background;
+    break;
   }
   $size = getimagesize(SN_ROOT_PHYSICAL . $img_name);
   $im = imagecreatefrompng(SN_ROOT_PHYSICAL . $img_name);
@@ -51,7 +56,7 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
   if ($id) {
     // Querys
     $Player = doquery("SELECT * FROM {{users}} WHERE `id` = '".$id."' LIMIT 1;", '', true);
-    $Stats = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '".$id."' LIMIT 1;", '', true);
+//    $Stats = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '".$id."' LIMIT 1;", '', true);
     $Planet = doquery("SELECT * FROM {{planets}} WHERE `id_owner` = '".$id."' AND `planet_type` = '1' LIMIT 1;", '', true);
 
     // Variables
@@ -59,14 +64,14 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
     $b_ally = $Player['ally_name'];
     $b_planet = $Planet['name'];
     $b_xyz = "[".$Planet['galaxy'].":".$Planet['system'].":".$Planet['planet']."]";
-    $Stats['total_rank'] = $Stats['total_rank'] ? $Stats['total_rank'] : $config->users_amount;
-    $b_lvl = $Stats['total_rank']."/".$config->users_amount;
+    $b_lvl = ($Player['total_rank'] ? $Player['total_rank'] : $config->users_amount) ."/{$config->users_amount}";
   }else{
     $b_user = $lang['ov_banner_empty_id'];
   }
 
   $b_univ = $config->game_name;
-  switch ($type) {
+  switch ($type)
+  {
     case 'banner':
       // Banner size 416 x 58
       $fsize = 15;
@@ -79,7 +84,8 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
       imagettftext($image, 11, 0, 8, 26, $txt_shadow, $fonts['info'], $b_user);
       imagettftext($image, 11, 0, 6, 23, $txt_color, $fonts['info'], $b_user);
 
-      if (!empty($id)){
+      if($id)
+      {
         // Player level - right-alligned
         $is = imagettfbbox(11, 0, $fonts['info'], $b_lvl);
         imagettftext($image, 11, 0, $size[0] - 4 - $is[2], 25, $txt_shadow, $fonts['info'], $b_lvl);
@@ -95,7 +101,7 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
         imagettftext($image, 6, 0, 6, 9, $txt_color2, $fonts['raids'], $b_planet." ".$b_xyz."");
 
         //StatPoint
-        $b_points = $lang['ov_points'].": ".pretty_number($Stats['total_points'])."";
+        $b_points = $lang['ov_points'].": ".pretty_number($Player['total_points'])."";
         $is = imagettfbbox(8, 0, $fonts['info'], $b_points);
         imagettftext($image, 8, 0, 412-$is[2], 11, $txt_shadow, $fonts['info'], $b_points);
         imagettftext($image, 8, 0, 410-$is[2], 9, $txt_color, $fonts['info'], $b_points);
@@ -122,7 +128,8 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
         imagettftext($image, 6, 0, 59, 55, $txt_color2, $fonts['raids'], $b_points);
       }
 
-      break;
+    break;
+
     default:
       // Userbar 350 x 19
       $b_univ = strtoupper($b_univ);
@@ -136,7 +143,8 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
       imagettftext($image, 9, 0, 4, $size[1] - 4, $txt_shadow, $fonts['userbar'], $b_user);
       imagettftext($image, 9, 0, 2, $size[1] - 6, $txt_color, $fonts['userbar'], $b_user);
 
-      if (!empty($id)){
+      if($id)
+      {
         // Player level - right-alligned
         $isp = imagettfbbox(9, 0, $fonts['userbar'], $b_lvl);
         imagettftext($image, 9, 0, $is-$isp[2] - 10, $size[1] - 4, $txt_shadow, $fonts['userbar'], $b_lvl);
@@ -149,7 +157,9 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
   imagecopy($im_result,$image,0,0,0,0,$size[0],$size[1]);
   imagedestroy($image);
   //And save it
-  header ("Content-type: image/png");
+  $imagetypes = imagetypes();
+  // TODO: Add support to different image types
+  header("Content-type: image/png");
   imagepng($im_result);
   imagedestroy($im_result);
 }

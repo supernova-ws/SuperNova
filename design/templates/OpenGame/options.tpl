@@ -157,7 +157,7 @@
         </tr>
       <!-- ENDIF -->
       <tr>
-        <th colspan=2><span class="fl"><input name="db_deaktjava"{opt_delac_data} type="checkbox" id="db_deaktjava" /> <label for="db_deaktjava">{L_deleteaccount}. {L_deleteaccount_tip}</span><span id="delete_on"></span></label></th>
+        <th colspan=2><span class="fl"><input name="deltime"{opt_delac_data} type="checkbox" id="deltime" /> <label for="deltime">{L_deleteaccount}. {L_deleteaccount_tip}</span><span id="delete_on"></span></label></th>
       </th>
       </tr>
       <tr>

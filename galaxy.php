@@ -82,8 +82,8 @@ $cached = array('users' => array(), 'allies' => array());
 
 $template = gettemplate('universe', true);
 
-$UserPoints    = doquery("SELECT * FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."'", '', true);
-$CurrentPoints = $UserPoints['total_points'];
+// $UserPoints    = doquery("SELECT * FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."'", '', true);
+$CurrentPoints = $user['total_points'];
 
 $MissileRange  = get_missile_range();
 $PhalanxRange  = GetPhalanxRange($HavePhalanx);
@@ -121,7 +121,6 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
 
   $GalaxyRowPlanet = $planet_list[$Planet][PT_PLANET];
 
-  $RowUserPoints = 0;
   $planet_fleet_id = 0;
   if ($GalaxyRowPlanet['destruyed']) {
     CheckAbandonPlanetState ($GalaxyRowPlanet);
@@ -132,23 +131,18 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
       $GalaxyRowUser = $cached['users'][$GalaxyRowPlanet['id_owner']];
     }else{
       $GalaxyRowUser = doquery("SELECT * FROM {{users}} WHERE `id` = '{$GalaxyRowPlanet['id_owner']}' LIMIT 1;", '', true);
-
-      $User2Points   = doquery("SELECT total_rank, total_points FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '{$GalaxyRowUser['id']}' LIMIT 1;", '', true);
-      $GalaxyRowUser['rank']   = intval($User2Points['total_rank']);
-      $GalaxyRowUser['points'] = intval($User2Points['total_points']);
-
       $cached['users'][$GalaxyRowUser['id']] = $GalaxyRowUser;
     }
+
     if(!$GalaxyRowUser)
     {
       $debug->warning("Planet '{$GalaxyRowPlanet['name']}' [{$galaxy}:{$system}:{$Planet}] has no owner!", 'Userless planet', 503);
       continue;
     }
 
-    $RowUserPoints = $GalaxyRowUser['points'];
     if($GalaxyRowUser['id'])
     {
-      if ($GalaxyRowUser['ally_id'])
+      if($GalaxyRowUser['ally_id'])
       {
         if($cached['allies'][$GalaxyRowUser['ally_id']])
         {
@@ -209,7 +203,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
     $recyclers_to_send = min($CurrentRC, max(0, $recyclers_need - $recyclers_incoming));
   }
 
-
+  $RowUserPoints = $GalaxyRowUser['total_points'];
   $template->assign_block_vars('galaxyrow', array(
      'PLANET_ID'        => $GalaxyRowPlanet['id'],
      'PLANET_NUM'       => $Planet,
@@ -235,7 +229,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
      'USER_ID'       => $GalaxyRowUser['id'],
      'USER_NAME'     => $GalaxyRowUser['username'],
      'USER_NAME_JS'  => js_safe_string($GalaxyRowUser['username']),
-     'USER_RANK'     => $GalaxyRowUser['rank'],
+     'USER_RANK'     => $GalaxyRowUser['total_rank'],
      'USER_BANNED'   => $GalaxyRowUser['banaday'],
      'USER_VACATION' => $GalaxyRowUser['vacation'],
      'USER_ACTIVITY' => floor(($time_now - $GalaxyRowUser['onlinetime'])/(60*60*24)),
@@ -245,8 +239,8 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
      'USER_AUTH'     => $GalaxyRowUser['authlevel'],
      'USER_ADMIN'    => $lang['user_level_shortcut'][$GalaxyRowUser['authlevel']],
 
-     'ALLY_ID'       => $allyquery['id'],
-     'ALLY_TAG'      => $allyquery['ally_tag'],
+     'ALLY_ID'       => $GalaxyRowUser['ally_id'],
+     'ALLY_TAG'      => $GalaxyRowUser['ally_tag'],
   ));
 }
 
@@ -260,7 +254,7 @@ foreach($cached['users'] as $PlanetUser)
       'ID'   => $PlanetUser['id'],
       'NAME' => $PlanetUser['username'],
       'NAME_JS' => js_safe_string($PlanetUser['username']),
-      'RANK' => $PlanetUser['rank'],
+      'RANK' => $PlanetUser['total_rank'],
     ));
   }
 }
@@ -274,13 +268,16 @@ foreach($cached['allies'] as $PlanetAlly)
       'NAME_JS' => js_safe_string($PlanetAlly['ally_name']),
       'MEMBERS' => $PlanetAlly['ally_members'],
       'URL'     => $PlanetAlly['ally_web'],
+      'RANK'    => $PlanetAlly['total_rank'],
     ));
   }
 }
 
+$ally_count = doquery("SELECT COUNT(*) AS ally_count FROM {{alliance}};", '', true);
 $template->assign_vars(array(
      'rows'           => $Result,
      'userCount'      => $config->users_amount,
+     'ALLY_COUNT'     => $ally_count['ally_count'],
      'EXPIDITION'     => $config->game_maxPlanet + 1,
      'curPlanetID'    => $planetrow['id'],
      'curPlanetG'     => $planetrow['galaxy'],

@@ -45,7 +45,7 @@ while ( $TheUser = mysql_fetch_assoc($Last15Mins) ) {
     }
   }
 
-  $UserPoints = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '" . $TheUser['id'] . "';", '', true);
+//  $UserPoints = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '" . $TheUser['id'] . "';", '', true);
   $Bloc['dpath']               = $dpath;
   $Bloc['adm_ov_altpm']        = $lang['adm_ov_altpm'];
   $Bloc['adm_ov_wrtpm']        = $lang['adm_ov_wrtpm'];
@@ -55,7 +55,7 @@ while ( $TheUser = mysql_fetch_assoc($Last15Mins) ) {
   $Bloc['adm_ov_data_clip']    = $Color;
 //  $Bloc['adm_ov_data_adip']    = $TheUser['user_lastip'];
   $Bloc['adm_ov_data_ally']    = ($TheUser['ally_name']);
-  $Bloc['adm_ov_data_point']   = pretty_number ( $UserPoints['total_points'] );
+  $Bloc['adm_ov_data_point']   = pretty_number ( $TheUser['total_points'] );
   $Bloc['adm_ov_data_activ']   = pretty_time ( time() - $TheUser['onlinetime'] );
   $PrevIP                      = ($TheUser['user_lastip']);
 

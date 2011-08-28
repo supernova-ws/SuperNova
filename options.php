@@ -157,7 +157,7 @@ if($mode == 'change')
   $user['settings_rep'] = sys_get_param_int('settings_rep');
   $user['planet_sort']  = sys_get_param_int('settings_sort');
   $user['planet_sort_order'] = sys_get_param_int('settings_order');
-  $user['deltime'] = !sys_get_param_int('db_deaktjava') ? 0 : ($user['deltime'] ? $user['deltime'] : $time_now + 604800);
+  $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : $time_now + $config->player_delete_time);
 
   doquery("UPDATE {{users}} SET
     `username` = '{$username}',
@@ -180,9 +180,6 @@ if($mode == 'change')
     `settings_mis` = '{$user['settings_mis']}',
     `settings_rep` = '{$user['settings_rep']}',
     `deltime` = '{$user['deltime']}',
-    `kolorminus` = '{$user['kolorminus']}',
-    `kolorplus` = '{$user['kolorplus']}',
-    `kolorpoziom` = '{$user['kolorpoziom']}',
     `vacation` = '{$user['vacation']}',
     `options` = '{$user['options']}'
   WHERE `id` = '{$user['id']}' LIMIT 1");
@@ -244,16 +241,13 @@ $template->assign_vars(array(
   'opt_sskin_data' => ($user['design'] == 1) ? " checked='checked'":'',
   'opt_noipc_data' => ($user['noipcheck'] == 1) ? " checked='checked'":'',
   'opt_allyl_data' => ($user['settings_allylogo'] == 1) ? " checked='checked'/":'',
-  'opt_delac_data' => ($user['db_deaktjava'] == 1) ? " checked='checked'/":'',
+  'opt_delac_data' => ($user['deltime'] == 1) ? " checked='checked'/":'',
 
   'user_settings_rep' => ($user['settings_rep'] == 1) ? " checked='checked'/":'',
   'user_settings_esp' => ($user['settings_esp'] == 1) ? " checked='checked'/":'',
   'user_settings_wri' => ($user['settings_wri'] == 1) ? " checked='checked'/":'',
   'user_settings_mis' => ($user['settings_mis'] == 1) ? " checked='checked'/":'',
   'user_settings_bud' => ($user['settings_bud'] == 1) ? " checked='checked'/":'',
-  'kolorminus'        => $user['kolorminus'],
-  'kolorplus'         => $user['kolorplus'],
-  'kolorpoziom'       => $user['kolorpoziom'],
 
   'USER_VACATION_DISABLE' => $config->user_vacation_disable,
   'TIME_NOW' => $time_now,

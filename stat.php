@@ -134,7 +134,7 @@ if ($who == 2) {
     $start++;
   }
 } else {
-  $MaxUsers = doquery ("SELECT COUNT(*) AS `count` FROM {{users}} WHERE `db_deaktjava` = '0';", '', true);
+  $MaxUsers = doquery ("SELECT COUNT(*) AS `count` FROM {{users}} WHERE `deltime` = '0';", '', true);
   if ($MaxUsers['count'] > 100) {
     $LastPage = floor($MaxUsers['count'] / 100);
   }
