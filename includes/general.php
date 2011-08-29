@@ -11,31 +11,7 @@ function get_game_speed()
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-//
-// Mise en forme de chaines pour affichage
-//
-// Mise en forme de la durée sous forme xj xxh xxm xxs
-function pretty_time($seconds)
-{
-  global $lang;
-
-  $day = floor($seconds / (24 * 3600));
-  return sprintf("%s%02d:%02d:%02d", $day ? "{$day}{$lang['sys_day_short']} " : '', floor($seconds / 3600 % 24), floor($seconds / 60 % 60), floor($seconds / 1 % 60));
-}
-
-// Mise en forme du temps de construction (avec la phrase de description)
-function ShowBuildTime($time)
-{
-  global $lang;
-
-  $time = pretty_time($time);
-  return "{$lang['ConstructionTime']}: {$time}";
-}
-
-// ----------------------------------------------------------------------------------------------------------------
-//
 // Fonction de lecture / ecriture / exploitation de templates
-//
 function ReadFromFile($filename)
 {
   return @file_get_contents($filename);
@@ -134,28 +110,24 @@ function pretty_number($n, $floor = true, $color = false, $limit = false)
     {
       $class = $n == $color ? 'zero' : ($n < $color ? 'positive' : 'negative');
     }
-/*
-    elseif($color == 0)
-    {
-      $class = $n == $color ? 'zero' : ($n >= $color ? 'positive' : 'negative');
-    }
-*/
     else
     {
       $class = $n == -$color ? 'zero' : (-$n < $color ? 'positive' : 'negative');
     }
-    /*
-      if ($color < 0)
-      {
-      $n = -$n;
-      }
-      $class = $n == $color ? 'zero' : ($n < $color ? 'positive' : 'negative');
-     */
 
     $ret = "<span class='{$class}'>{$ret}</span>";
   }
 
   return $ret;
+}
+
+// ----------------------------------------------------------------------------------------------------------------
+function pretty_time($seconds)
+{
+  global $lang;
+
+  $day = floor($seconds / (24 * 3600));
+  return sprintf("%s%02d:%02d:%02d", $day ? "{$day}{$lang['sys_day_short']} " : '', floor($seconds / 3600 % 24), floor($seconds / 60 % 60), floor($seconds / 1 % 60));
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -168,8 +140,6 @@ function eco_planet_fields_max($planet)
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-//
-//
 function GetSpyLevel(&$user)
 {
   return mrc_modify_value($user, false, MRC_SPY, $user[$GLOBALS['sn_data'][TECH_SPY]['name']]);
@@ -476,15 +446,15 @@ function sys_user_options_unpack(&$user)
 function sys_unit_str2arr($fleet_string)
 {
   $fleet_array = array();
-  if (!empty($fleet_string))
+  if(!empty($fleet_string))
   {
     $arrTemp = explode(';', $fleet_string);
-    foreach ($arrTemp as $temp)
+    foreach($arrTemp as $temp)
     {
-      if ($temp)
+      if($temp)
       {
         $temp = explode(',', $temp);
-        if (!empty($temp[0]) && !empty($temp[1]))
+        if(!empty($temp[0]) && !empty($temp[1]))
         {
           $fleet_array[$temp[0]] += $temp[1];
         }
@@ -495,26 +465,26 @@ function sys_unit_str2arr($fleet_string)
   return $fleet_array;
 }
 
-function sys_unit_arr2str($fleet_array)
+function sys_unit_arr2str($unit_list)
 {
-  $fleet_string = '';
-  if (isset($fleet_array))
+  $fleet_string = array();
+  if(isset($unit_list))
   {
-    if (!is_array($fleet_array))
+    if(!is_array($unit_list))
     {
-      $fleet_array = array($fleet_array => 1);
+      $unit_list = array($unit_list => 1);
     }
 
-    foreach ($fleet_array as $unit_id => $unit_count)
+    foreach($unit_list as $unit_id => $unit_count)
     {
-      if ($unit_id && $unit_count)
+      if($unit_id && $unit_count)
       {
-        $fleet_string .= "{$unit_id},{$unit_count};";
+        $fleet_string[] = "{$unit_id},{$unit_count}";
       }
     }
   }
 
-  return $fleet_string;
+  return implode(';', $fleet_string);
 }
 
 function mymail($to, $title, $body, $from = '', $html = false)
@@ -523,7 +493,7 @@ function mymail($to, $title, $body, $from = '', $html = false)
 
   $from = trim($from ? $from : $config->game_adminEmail);
 
-  $head = '';
+  $head  = '';
   $head .= "Content-Type: text/" . ($html ? 'html' : 'plain'). "; charset=utf-8 \r\n";
   $head .= "Date: " . date('r') . " \r\n";
   $head .= "Return-Path: {$config->game_adminEmail} \r\n";
@@ -572,7 +542,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 0)
 
   $template->assign_var('NEWS_COUNT', mysql_num_rows($announce_list));
 
-  while ($announce = mysql_fetch_assoc($announce_list))
+  while($announce = mysql_fetch_assoc($announce_list))
   {
     $template->assign_block_vars('announces', array(
       'ID'         => $announce['idAnnounce'],

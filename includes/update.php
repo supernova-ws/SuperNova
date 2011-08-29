@@ -923,6 +923,10 @@ debug($update_tables['logs']['log_id'], 31);
 
     }
 
+    upd_alter_table('users', array(
+      "ADD COLUMN `player_artifact_list` TEXT",
+    ), !isset($update_tables['users']['player_artifact_list']));
+
   upd_do_query('COMMIT;', true);
 //  $new_version = 31;
 

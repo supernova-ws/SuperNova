@@ -40,6 +40,7 @@
     <tr><td><a href="techtree.php" id="lm_techtree">{L_Technology}</a></td></tr>
     <tr><td><a href="buildings.php?mode=research" id="lm_techtree">{L_Research}</a></td></tr>
     <tr><td><a href="officer.php">{L_tech[600]}</a></td></tr>
+    <tr><td><a href="artifacts.php">{L_tech[1000]}</a></td></tr>
     <tr><td><a href="market.php">{L_rinok}</a></td></tr>
     <tr><td><a href="galaxy.php?mode=0" id="lm_universe">{L_sys_universe}</a></td></tr>
     <tr><td><a href="quest.php">{L_qst_quests}</a></td></tr>

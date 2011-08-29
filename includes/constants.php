@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '30');
 define('SN_RELEASE', '31');
-define('SN_VERSION', '31a11');
+define('SN_VERSION', '31a12');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -143,6 +143,7 @@ define('RPG_MERCENARY', 7);
 define('RPG_QUEST', 8);
 define('RPG_EXPEDITION', 9);
 define('RPG_REFERRAL', 10);
+define('RPG_ARTIFACT', 11);
 
 // Login statuses
 define('LOGIN_SUCCESS'               , 1);
@@ -234,9 +235,13 @@ define('BONUS_ADD'     , 2);  // Add
 define('BONUS_ABILITY' , 3);  // Some ability
 define('BONUS_MULTIPLY', 4);  // Multiply by value
 
-// *** Build type constants
+// *** Action constat (build should be replaced with ACTION)
 define('BUILD_CREATE' ,  1);
 define('BUILD_DESTROY', -1);
+define('ACTION_SELL',    -1);
+define('ACTION_NOTHING',  0);
+define('ACTION_BUY' ,     1);
+define('ACTION_USE',      2);
 
 // *** Check unit availability codes
 define('BUILD_ALLOWED'       , 1);
@@ -382,5 +387,15 @@ define('RES_DEUTERIUM', 903);
 define('RES_ENERGY', 904);
 define('RES_DARK_MATTER', 905);
 define('RES_TIME', 999);
+
+// === Artifacts
+define('ART_ARTIFACTS', 1000);
+define('ART_LHC', 1001);      // Additional moon chance
+define('ART_NANOBOTS_SMALL', 1002); // Speed up building
+define('ART_SUPERCOMPUTER', 1003); // Speed up research
+define('ART_PLANET_GATE', 1004);   // Planet gate
+define('ART_COLONY_SMALL', 1005);   // Set of buildings up to 20th level
+
+
 
 ?>

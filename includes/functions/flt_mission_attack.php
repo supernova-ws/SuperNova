@@ -171,8 +171,7 @@ function flt_mission_attack($mission_data)
   $planet_coordinates = uni_render_coordinates($fleet_row, 'fleet_end_');
 
   // FROM HERE THE SCRIPT WAS IMPORTED (not TvdW code anymore)
-  $MoonChance = BE_calculateMoonChance($result);
-
+  $MoonChance = BE_calculateMoonChance($result['debree']['att'][0] + $result['debree']['def'][0] + $result['debree']['att'][1] + $result['debree']['def'][1]);
   if((mt_rand(1, 100) <= $MoonChance) && ($TargetPlanetName = uni_create_moon($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $TargetUserID, $MoonChance)))
   {
     $GottenMoon = sprintf($lang['sys_moonbuilt'], $TargetPlanetName, $planet_coordinates);

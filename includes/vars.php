@@ -1871,6 +1871,19 @@ if (!defined('INSIDE'))
       'location' => LOC_USER,
     ),
 
+    ART_LHC => array(
+      'name' => 'art_lhc',
+      'location' => LOC_USER,
+      'cost' => array(
+        RES_DARK_MATTER => 25000,
+        'factor' => 1,
+      ),
+//      'dark_matter' => 3,
+//      'factor' => 1,
+//      'max' => 5,
+      'bonus_type' => BONUS_ABILITY,
+    ),
+
     'groups' => array(
       // Missions
       'missions' => array(
@@ -1993,6 +2006,8 @@ if (!defined('INSIDE'))
       'defense_active' => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
       // Transports
       'flt_transports' => array ( SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER ),
+
+      'artifacts' => array(ART_LHC),
 
       // List of units that can produce resources
       'prod'      => array ( 1, 2, 3, 4, 12, SHIP_SATTELITE_SOLAR ),
