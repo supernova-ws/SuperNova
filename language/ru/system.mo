@@ -548,6 +548,14 @@ $lang = array_merge($lang, array(
 
   'sys_no_governor' => 'Нанять губернатора',
 
+  'sys_quantity' => 'Количество',
+  'sys_quantity_maximum' => 'Максимальное количество',
+  'sys_qty' => 'К-во',
+
+  'sys_buy_for' => 'Купить за',
+
+  'sys_eco_lack_dark_matter' => 'Не хватает Темной Материи',
+
   // Arrays
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'Сверхновая',

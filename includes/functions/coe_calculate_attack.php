@@ -397,12 +397,10 @@ BE_DEBUG_closeTable();
   * Partial copyright (c) 2010 by Gorlum for oGame.triolan.com.ua
   */
 
-function BE_calculateMoonChance($result)
+function BE_calculateMoonChance($FleetDebris)
 {
-  $FleetDebris = $result['debree']['att'][0] + $result['debree']['def'][0] + $result['debree']['att'][1] + $result['debree']['def'][1];
-
   $MoonChance = $FleetDebris / 1000000;
-  return ($MoonChance<1) ? 0 : ($MoonChance>30 ? 30 : $MoonChance);
+  return ($MoonChance < 1) ? 0 : ($MoonChance>30 ? 30 : $MoonChance);
 }
 
 /**

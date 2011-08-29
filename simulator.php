@@ -76,7 +76,7 @@ if($_POST['submit'] || $execute)
   $loot = BE_calculatePostAttacker($arr_combat_defender[0]['resources'], $arr_combat_attacker, $result, true);
 
   // Calculating Moon Chance
-  $MoonChance = BE_calculateMoonChance($result);
+  $MoonChance = BE_calculateMoonChance($result['debree']['att'][0] + $result['debree']['def'][0] + $result['debree']['att'][1] + $result['debree']['def'][1]);
 
   $formatted_cr = formatCR($result, $loot['looted'], $MoonChance, '', $totaltime);
 

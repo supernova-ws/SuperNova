@@ -432,6 +432,11 @@ $lang = array_merge($lang, array(
       'effect' => 'Allows you to change the characteristics of the Emperor',
     ),
 
+    ART_LHC => array(
+        'description' => 'LHC creates waves of gravitons that forces debris to concentrate in one place<br /><span class="warning">WARNING! Using of LHC is not a guarantee to creation of new moon!</span>',
+      'effect' => 'Allows another chance to create moon<br />1% per 1.000.000 of debris but not more then 30%',
+    ),
+
   ),
 
 ));

@@ -168,7 +168,7 @@ define('FMT_DATE_TIME'    , FMT_DATE . ' ' . FMT_TIME);
 $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 
 // Now including all functions
-require_once("{$sn_root_physical}includes/functions.{$phpEx}");
+require_once("{$sn_root_physical}includes/general.{$phpEx}");
 require_once("{$sn_root_physical}includes/vars.{$phpEx}");
 
 require_once("{$sn_root_physical}includes/template.{$phpEx}");

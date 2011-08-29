@@ -144,6 +144,9 @@ $lang = array_merge($lang, array(
     RES_DEUTERIUM => 'Дейтерий',
     RES_ENERGY => 'Энергия',
     RES_DARK_MATTER => 'Темная Материя',
+
+    ART_ARTIFACTS => 'Артефакты',
+    ART_LHC => 'Большой Адронный Коллайдер',
   ),
 
 ));

@@ -551,6 +551,14 @@ $lang = array_merge($lang, array(
 
   'sys_no_governor' => 'Hire governor',
 
+  'sys_quantity' => 'Quantity',
+  'sys_quantity_maximum' => 'Maximum quantity',
+  'sys_qty' => 'Qty',
+
+  'sys_buy_for' => 'Buy for',
+
+  'sys_eco_lack_dark_matter' => 'Not enough Dark Matter',
+
   // Arrays
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'SuperNova',
