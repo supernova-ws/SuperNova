@@ -26,6 +26,8 @@ function sys_refresh_tablelist($db_prefix)
   $sn_cache->tables = $tl;
 }
 
+header('Content-type: text/html; charset=utf-8');
+
 ob_start();
 
 if(function_exists('set_magic_quotes_runtime'))

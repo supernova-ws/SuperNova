@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{-path_prefix-}{dpath}formate.css" />
     <meta name="keywords" content="ogame,огейм,ога,supernova,сверхновая,бесплатная,free,браузерка,онлайн стратегия,онлайновая стратегия,играть,игра,ogame скрипт,xnova" />
     <meta name="description" content="Сверхновая - онлайн стратегия браузерка огейм доступна играть бесплатно" />
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="Cache-Control" content="no-cache" />
     {-meta-}
     <!--<style> body, html { margin:0px; padding: 0px; overflow: hidden; font: menu; border: none; } </style>-->
