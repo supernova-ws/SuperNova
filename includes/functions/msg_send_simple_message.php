@@ -94,12 +94,12 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
       if($user['id'] != $owner)
       {
         $owner_row = doquery("SELECT * FROM {{users}} WHERE id = {$owner} LIMIT 1;", '', true);
-        sys_user_options_unpack($owner_row);
       }
       else
       {
         $owner_row = &$user;
       }
+      sys_user_options_unpack($owner_row);
 
       if(!$message_class_switchable || $owner_row["opt_{$message_class_name}"])
       {

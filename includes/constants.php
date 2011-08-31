@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '30');
 define('SN_RELEASE', '31');
-define('SN_VERSION', '31a12');
+define('SN_VERSION', '31a13');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -391,11 +391,11 @@ define('RES_TIME', 999);
 // === Artifacts
 define('ART_ARTIFACTS', 1000);
 define('ART_LHC', 1001);      // Additional moon chance
-define('ART_NANOBOTS_SMALL', 1002); // Speed up building
-define('ART_SUPERCOMPUTER', 1003); // Speed up research
-define('ART_PLANET_GATE', 1004);   // Planet gate
-define('ART_COLONY_SMALL', 1005);   // Set of buildings up to 20th level
-
-
+define('ART_RCD_SMALL', 1002);   // Rapid Colony Deployment - Set of buildings up to 10th level - 10/14/ 3/0 -   405 TM
+define('ART_RCD_MEDIUM', 1003);  // Rapid Colony Deployment - Set of buildings up to 15th level - 15/20/ 8/0 -  4704 ÒÌ
+define('ART_RCD_LARGE', 1004);   // Rapid Colony Deployment - Set of buildings up to 20th level - 20/25/10/1 - 39790 ÒÌ
+//define('ART_SUPERCOMPUTER', 1005); // Speed up research
+//define('ART_PLANET_GATE', 1006);   // Planet gate
+//define('ART_NANOBOTS_SMALL', 1007); // Speed up building
 
 ?>

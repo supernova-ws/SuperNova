@@ -24,9 +24,9 @@ $unit_id = sys_get_param_int('unit_id');
 $sn_data_dark_matter_db_name = $sn_data[RES_DARK_MATTER]['name'];
 
 $artifact_list = sys_unit_str2arr($user['player_artifact_list']);
-foreach($sn_data['groups']['artifacts'] as $unit_id)
+foreach($sn_data['groups']['artifacts'] as $artifact_unit_id)
 {
-  $user[$sn_data[$unit_id]['name']] = isset($artifact_list[$unit_id]) ? $artifact_list[$unit_id] : 0;
+  $user[$sn_data[$artifact_unit_id]['name']] = isset($artifact_list[$artifact_unit_id]) ? $artifact_list[$artifact_unit_id] : 0;
 }
 
 if($action && in_array($unit_id, $sn_data['groups']['artifacts']))
