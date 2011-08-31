@@ -79,7 +79,7 @@ $honor_constants = array(
   ),
 
   'infos' => array(
-    '[info]' => array('TECH_', 'MRC_', 'SHIP_', 'RES_'), 
+    '[info]' => array('TECH_', 'MRC_', 'SHIP_', 'RES_', 'ART_'),
   ),
 
   'market' => array(
@@ -92,7 +92,7 @@ $honor_constants = array(
 
   'tech' => array(
     '[type_mission]' => 'MT_', 
-    '[tech]' => array('TECH_', 'MRC_', 'SHIP_', 'RES_'), 
+    '[tech]' => array('TECH_', 'MRC_', 'SHIP_', 'RES_', 'ART_'),
   ),
 
 );

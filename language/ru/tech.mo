@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 31a9
+* @version 31a13
 *
 */
 
@@ -147,6 +147,9 @@ $lang = array_merge($lang, array(
 
     ART_ARTIFACTS => 'Артефакты',
     ART_LHC => 'Большой Адронный Коллайдер',
+    ART_RCD_SMALL  => 'Малый АКК',
+    ART_RCD_MEDIUM => 'Средний АКК',
+    ART_RCD_LARGE  => 'Большой АКК',
   ),
 
 ));

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 31a9
+* @version 31a13
 *
 */
 
@@ -27,7 +27,6 @@
 */
 
 if (!defined('INSIDE')) die();
-
 
 $lang = array_merge($lang, array(
   'tech_storage_max' => 'Storeage size',
@@ -149,7 +148,10 @@ $lang = array_merge($lang, array(
 
     ART_ARTIFACTS => 'Artifacts',
     ART_LHC => 'Large Hadron Collider',
-),
+    ART_RCD_SMALL => 'Small RCD',
+    ART_RCD_MEDIUM => 'Medium RCD',
+    ART_RCD_LARGE => 'Large RCD',
+  ),
 
 ));
 

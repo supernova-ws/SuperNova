@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 31a9
+* @version 31a13
 *
 */
 
@@ -435,6 +435,27 @@ $lang = array_merge($lang, array(
     ART_LHC => array(
         'description' => 'LHC creates waves of gravitons that forces debris to concentrate in one place<br /><span class="warning">WARNING! Using of LHC is not a guarantee to creation of new moon!</span>',
       'effect' => 'Allows another chance to create moon<br />1% per 1.000.000 of debris but not more then 30%',
+    ),
+
+    ART_RCD_SMALL => array(
+      'description' => 'Small Rapid Colony Deployer (RCD) is a set of ready constructions and programs that allows deploy on planet basic colony in no time<br />
+        If there are buildings on planet they will be upgraded or left intact - if their level higher then RCD\'s programming. RCD can be fully deployed on planet even when there is lack of free sectors. RCD can not be deployed on moon.<br />
+        Basic colony includes Metal Mine, Crystal Mine and Deuterium Synthetizer of level 10, Solar Plant of level 14 and Robotics Factory level 4',
+      'effect' => 'Instantly deploys basic colony on planet',
+    ),
+
+    ART_RCD_MEDIUM => array(
+      'description' => 'Medium Rapid Colony Deployer (RCD) is a set of ready constructions and programs that allows deploy on planet advanced colony in no time<br />
+        If there are buildings on planet they will be upgraded or left intact - if their level higher then RCD\'s programming. RCD can be fully deployed on planet even when there is lack of free sectors. RCD can not be deployed on moon.<br />
+        Advanced colony includes Metal Mine, Crystal Mine and Deuterium Synthetizer of level 15, Solar Plant of level 20 and Robotics Factory level 8',
+      'effect' => 'Instantly deploys advanced colony on planet',
+    ),
+
+    ART_RCD_LARGE => array(
+      'description' => 'Medium Rapid Colony Deployer (RCD) is a set of ready constructions and programs that allows deploy on planet improved colony in no time<br />
+        If there are buildings on planet they will be upgraded or left intact - if their level higher then RCD\'s programming. RCD can be fully deployed on planet even when there is lack of free sectors. RCD can not be deployed on moon.<br />
+        Improved colony includes Metal Mine, Crystal Mine and Deuterium Synthetizer of level 20, Solar Plant of level 25, Robotics Factory level 10 and Nanite Factory level 1',
+      'effect' => 'Instantly deploys improved colony on planet',
     ),
 
   ),

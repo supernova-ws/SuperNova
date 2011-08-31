@@ -152,7 +152,7 @@ if (!defined('INSIDE'))
 
   // factor -> price_factor, perhour_factor
   $sn_data = array(
-    1   => array(
+    STRUC_MINE_METAL => array(
       'name' => 'metal_mine',
       'location' => LOC_PLANET,
       'cost' => array(
@@ -179,7 +179,7 @@ if (!defined('INSIDE'))
       'type' => UNIT_STRUCTURE,
     ),
 
-    2   => array(
+    STRUC_MINE_CRYSTAL => array(
       'name' => 'crystal_mine',
       'location' => LOC_PLANET,
       'cost' => array(
@@ -206,7 +206,7 @@ if (!defined('INSIDE'))
       'type' => UNIT_STRUCTURE,
     ),
 
-    3   => array(
+    STRUC_MINE_DEUTERIUM => array(
       'name' => 'deuterium_sintetizer',
       'location' => LOC_PLANET,
       'cost' => array(
@@ -233,7 +233,7 @@ if (!defined('INSIDE'))
       'type' => UNIT_STRUCTURE,
     ),
 
-    4   => array(
+    STRUC_MINE_SOLAR => array(
       'name' => 'solar_plant',
       'location' => LOC_PLANET,
       'cost' => array(
@@ -288,7 +288,7 @@ if (!defined('INSIDE'))
       'type' => UNIT_STRUCTURE,
     ),
 
-    14  => array(
+    STRUC_FACTORY_ROBOT => array(
       'name' => 'robot_factory',
       'location' => LOC_PLANET,
       'cost' => array(
@@ -305,7 +305,7 @@ if (!defined('INSIDE'))
       'type' => UNIT_STRUCTURE,
     ),
 
-    15  => array(
+    STRUC_FACTORY_NANO => array(
       'name' => 'nano_factory',
       'location' => LOC_PLANET,
       'require' => array(14 => 10, TECH_COMPUTER => 10),
@@ -1884,6 +1884,67 @@ if (!defined('INSIDE'))
       'bonus_type' => BONUS_ABILITY,
     ),
 
+    ART_RCD_SMALL => array(
+      'name' => 'art_rcd_small',
+      'location' => LOC_USER,
+      'cost' => array(
+        RES_DARK_MATTER => 5000,
+        'factor' => 1,
+      ),
+//      'dark_matter' => 3,
+//      'factor' => 1,
+//      'max' => 5,
+      'bonus_type' => BONUS_ABILITY,
+      'deploy' => array(
+        STRUC_MINE_METAL => 10,
+        STRUC_MINE_CRYSTAL => 10,
+        STRUC_MINE_DEUTERIUM => 10,
+        STRUC_MINE_SOLAR => 14,
+        STRUC_FACTORY_ROBOT => 3,
+      ),
+    ),
+
+    ART_RCD_MEDIUM => array(
+      'name' => 'art_rcd_medium',
+      'location' => LOC_USER,
+      'cost' => array(
+        RES_DARK_MATTER => 25000,
+        'factor' => 1,
+      ),
+//      'dark_matter' => 3,
+//      'factor' => 1,
+//      'max' => 5,
+      'bonus_type' => BONUS_ABILITY,
+      'deploy' => array(
+        STRUC_MINE_METAL => 15,
+        STRUC_MINE_CRYSTAL => 15,
+        STRUC_MINE_DEUTERIUM => 15,
+        STRUC_MINE_SOLAR => 20,
+        STRUC_FACTORY_ROBOT => 8,
+      ),
+    ),
+
+    ART_RCD_LARGE => array(
+      'name' => 'art_rcd_large',
+      'location' => LOC_USER,
+      'cost' => array(
+        RES_DARK_MATTER => 60000,
+        'factor' => 1,
+      ),
+//      'dark_matter' => 3,
+//      'factor' => 1,
+//      'max' => 5,
+      'bonus_type' => BONUS_ABILITY,
+      'deploy' => array(
+        STRUC_MINE_METAL => 20,
+        STRUC_MINE_CRYSTAL => 20,
+        STRUC_MINE_DEUTERIUM => 20,
+        STRUC_MINE_SOLAR => 25,
+        STRUC_FACTORY_ROBOT => 10,
+        STRUC_FACTORY_NANO => 1,
+      ),
+    ),
+
     'groups' => array(
       // Missions
       'missions' => array(
@@ -2007,7 +2068,7 @@ if (!defined('INSIDE'))
       // Transports
       'flt_transports' => array ( SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER ),
 
-      'artifacts' => array(ART_LHC),
+      'artifacts' => array(ART_LHC, ART_RCD_SMALL, ART_RCD_MEDIUM, ART_RCD_LARGE),
 
       // List of units that can produce resources
       'prod'      => array ( 1, 2, 3, 4, 12, SHIP_SATTELITE_SOLAR ),
