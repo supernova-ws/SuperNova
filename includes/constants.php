@@ -73,7 +73,7 @@ define('ALLY_DIPLOMACY_UNION'        , 'union');
 define('ALLY_DIPLOMACY_MASTER'       , 'master');
 define('ALLY_DIPLOMACY_SLAVE'        , 'slave');
 
-define('ALLY_DIPLOMACY_PROPOSE_SEND', 0);
+define('ALLY_PROPOSE_SEND', 0);
 
 // Quest types
 define('QUEST_TYPE_BUILD'   , 1);
