@@ -53,7 +53,7 @@ if(sys_get_param_str('ali_dip_offer_make'))
         'alliance_negotiation_relation' => $alliance_negotiation_relation,
         'alliance_negotiation_time' => $time_now,
         'alliance_negotiation_propose' => $alliance_negotiation_propose,
-        'alliance_negotiation_status' =>  ALLY_DIPLOMACY_PROPOSE_SEND
+        'alliance_negotiation_status' =>  ALLY_PROPOSE_SEND
       )
 	 );
 
@@ -192,14 +192,14 @@ $query = doquery(
 while($offer = mysql_fetch_assoc($query))
 {
   $template->assign_block_vars('offer', array(
-    'ID'   		=> $offer['alliance_negotiation_id'],
+    'ID'       => $offer['alliance_negotiation_id'],
     'NAME'     => $offer['ally_name'],
     'RELATION' => $lang['ali_dip_relations'][$offer['alliance_negotiation_relation']],
-    'TIME'		=> date(FMT_DATE_TIME, $offer['alliance_negotiation_time']),
+    'TIME'     => date(FMT_DATE_TIME, $offer['alliance_negotiation_time']),
     'TEXT'     => CHT_messageParse($offer['alliance_negotiation_propose']),
     'RESPONSE' => CHT_messageParse($offer['alliance_negotiation_response']),
     'STATUS'   => $offer['alliance_negotiation_status'],
-    'OWNER'		=> $offer['owner'],
+    'OWNER'    => $offer['owner'],
   ));
 }
 
