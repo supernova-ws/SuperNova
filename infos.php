@@ -256,7 +256,6 @@ elseif (in_array($unit_id, $sn_data['groups']['fleet']))
   $PageTPL = gettemplate('info_buildings_fleet');
 
   $ship_data = get_ship_data($unit_id, $user);
-  debug($ship_data);
 
   $parse['element_typ'] = $lang['tech'][SHIP_FLEET];
   $rapid_fire = eco_render_rapid_fire($unit_id);
