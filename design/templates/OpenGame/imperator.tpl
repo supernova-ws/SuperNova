@@ -25,7 +25,7 @@
   <tr>
     <td colspan=4 class="c">
       <span class="fl">{L_imp_imperator} {user_username} {L_sys_from} {REGISTRATION_DATE}</span>
-      <span class="fr"><strong>{L_ov_rank}: <a href="stat.php?start={user_rank}"><span class="ov_user_rank">{user_rank} ({RANK_DIFF})</span> из <span class="ov_user_total">{USERS_TOTAL}</span></strong></a></strong></span>
+      <span class="fr"><strong>{L_ov_rank}: <a href="stat.php?start={user_rank}"><span class="ov_user_rank">{user_rank} ({RANK_DIFF})</span>/<span class="ov_user_total">{USERS_TOTAL}</span></strong></a></strong></span>
     </td>
   </tr>
   <tr>
