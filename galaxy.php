@@ -90,7 +90,7 @@ $PhalanxRange  = GetPhalanxRange($HavePhalanx);
 
 $planet_precache_query = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$galaxy} AND `system` = {$system};");
 while($planet_row = mysql_fetch_assoc($planet_precache_query))
-{
+{//                debug($planet_row);
   $planet_list[$planet_row['planet']][$planet_row['planet_type']] = $planet_row;
 }
 
@@ -122,62 +122,71 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
   $GalaxyRowPlanet = $planet_list[$Planet][PT_PLANET];
 
   $planet_fleet_id = 0;
-  if ($GalaxyRowPlanet['destruyed']) {
+  if ($GalaxyRowPlanet['destruyed'])
+  {
     CheckAbandonPlanetState ($GalaxyRowPlanet);
-  } elseif ($GalaxyRowPlanet['id']) {
-    $planetcount++;
-
-    if($cached['users'][$GalaxyRowPlanet['id_owner']]){
+  }
+  elseif($GalaxyRowPlanet['id'])
+  {
+    if($cached['users'][$GalaxyRowPlanet['id_owner']])
+    {
       $GalaxyRowUser = $cached['users'][$GalaxyRowPlanet['id_owner']];
-    }else{
+    }
+    else
+    {
       $GalaxyRowUser = doquery("SELECT * FROM {{users}} WHERE `id` = '{$GalaxyRowPlanet['id_owner']}' LIMIT 1;", '', true);
       $cached['users'][$GalaxyRowUser['id']] = $GalaxyRowUser;
     }
 
-    if(!$GalaxyRowUser)
+    if(!$GalaxyRowUser['id'])
     {
       $debug->warning("Planet '{$GalaxyRowPlanet['name']}' [{$galaxy}:{$system}:{$Planet}] has no owner!", 'Userless planet', 503);
-      continue;
+      $GalaxyRowPlanet['destruyed'] = $time_now + 60 * 60 * 24;
+      $GalaxyRowPlanet['id_owner'] = 0;
+      doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = {$GalaxyRowPlanet['destruyed']} WHERE `id` = {$GalaxyRowPlanet['id']} LIMIT 1;");
     }
 
-    if($GalaxyRowUser['id'])
     {
-      if($GalaxyRowUser['ally_id'])
+      if($GalaxyRowUser['id'])
       {
-        if($cached['allies'][$GalaxyRowUser['ally_id']])
+        $planetcount++;
+        if($GalaxyRowUser['ally_id'])
         {
-          $allyquery = $cached['allies'][$GalaxyRowUser['ally_id']];
-        }
-        else
-        {
-          $allyquery = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$GalaxyRowUser['ally_id']}';", '', true);
-          $cached['allies'][$GalaxyRowUser['ally_id']] = $allyquery;
+          if($cached['allies'][$GalaxyRowUser['ally_id']])
+          {
+            $allyquery = $cached['allies'][$GalaxyRowUser['ally_id']];
+          }
+          else
+          {
+            $allyquery = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$GalaxyRowUser['ally_id']}';", '', true);
+            $cached['allies'][$GalaxyRowUser['ally_id']] = $allyquery;
+          }
         }
       }
-    }
 
-    $fleets_to_planet = flt_get_fleets_to_planet(false, $fleet_list[$Planet][PT_PLANET]);
-    if($fleets_to_planet['own']['count'])
-    {
-      $planet_fleet_id = $fleet_id;
-      $fleets[] = tpl_parse_fleet_sn($fleets_to_planet['own']['total'], $fleet_id);
-      $fleet_id++;
-    }
-
-    $GalaxyRowMoon = $planet_list[$Planet][PT_MOON];
-    if ($GalaxyRowMoon['destruyed'])
-    {
-      CheckAbandonPlanetState($GalaxyRowMoon);
-    }
-    else
-    {
-      $moon_fleet_id = 0;
-      $fleets_to_planet = flt_get_fleets_to_planet(false, $fleet_list[$Planet][PT_MOON]);
+      $fleets_to_planet = flt_get_fleets_to_planet(false, $fleet_list[$Planet][PT_PLANET]);
       if($fleets_to_planet['own']['count'])
       {
-        $moon_fleet_id = $fleet_id;
+        $planet_fleet_id = $fleet_id;
         $fleets[] = tpl_parse_fleet_sn($fleets_to_planet['own']['total'], $fleet_id);
         $fleet_id++;
+      }
+
+      $GalaxyRowMoon = $planet_list[$Planet][PT_MOON];
+      if ($GalaxyRowMoon['destruyed'])
+      {
+        CheckAbandonPlanetState($GalaxyRowMoon);
+      }
+      else
+      {
+        $moon_fleet_id = 0;
+        $fleets_to_planet = flt_get_fleets_to_planet(false, $fleet_list[$Planet][PT_MOON]);
+        if($fleets_to_planet['own']['count'])
+        {
+          $moon_fleet_id = $fleet_id;
+          $fleets[] = tpl_parse_fleet_sn($fleets_to_planet['own']['total'], $fleet_id);
+          $fleet_id++;
+        }
       }
     }
   }
