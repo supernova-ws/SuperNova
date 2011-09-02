@@ -895,7 +895,6 @@ debug($update_tables['logs']['log_id'], 31);
 
       $config->db_saveItem('rpg_exchange_darkMatter', $config->rpg_exchange_darkMatter / $inflation_rate * 4);
 
-      $config->db_saveItem('rpg_bonus_divisor', $config->rpg_bonus_divisor * $inflation_rate);
 
       $config->db_saveItem('rpg_flt_explore', $inflation_rate);
 
