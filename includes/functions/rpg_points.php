@@ -75,9 +75,9 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
         $new_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1;", '', true);
 
         $partner_bonus = floor($new_referral['dark_matter']/$config->rpg_bonus_divisor) - floor($old_referral['dark_matter']/$config->rpg_bonus_divisor);
-        if($partner_bonus > 0)
+        if($partner_bonus > 0 && $new_referral['dark_matter'] >= $config->rpg_bonus_minimum)
         {
-          rpg_points_change($new_referral['id_partner'], RPG_REFERRAL, $partner_bonus, "Incoming From Referral ID {$user_id}");
+          rpg_points_change($new_referral['id_partner'], RPG_REFERRAL, $partner_bonus * 1000, "Incoming From Referral ID {$user_id}");
         }
       }
     }
