@@ -923,6 +923,8 @@ debug($update_tables['logs']['log_id'], 31);
 
     }
 
+    $config->db_saveItem('rpg_bonus_minimum', 10000, !isset($config->rpg_bonus_minimum));
+
     upd_alter_table('users', array(
       "ADD COLUMN `player_artifact_list` TEXT",
     ), !isset($update_tables['users']['player_artifact_list']));
