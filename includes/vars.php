@@ -810,6 +810,23 @@ if (!defined('INSIDE'))
       'factor' => 2,
     ),
 
+    TECH_ASTROTECH => array(
+      'name' => 'tech_astro',
+      'location' => LOC_USER,
+      'require' => array(31 => 3, TECH_ENERGY => 5, TECH_ARMOR => 2),
+      'cost' => array(
+        RES_METAL     => 4000,
+        RES_CRYSTAL   => 7000,
+        RES_DEUTERIUM => 4000,
+        RES_ENERGY    => 0,
+      ),
+      'metal' => 4000,
+      'crystal' => 7000,
+      'deuterium' => 4000,
+      'energy' => 0,
+      'factor' => 1.9,
+    ),
+
     TECH_GRAVITON => array(
       'name' => 'graviton_tech',
       'location' => LOC_USER,

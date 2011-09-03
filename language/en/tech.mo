@@ -59,7 +59,7 @@ $lang = array_merge($lang, array(
   ),
 
   'tech' => array(
-    '0' => 'Buildings',
+    STRUC_STRUCTURES => 'Buildings',
     '1' => 'Metal mine',
     '2' => 'Crystal Mine',
     '3' => 'Deuterium Synthesizer',

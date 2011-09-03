@@ -336,14 +336,14 @@ function uni_render_planet($from)
   return "{$from['name']} [{$from['galaxy']}:{$from['system']}:{$from['planet']}]";
 }
 
-function uni_render_coordinates_url($from, $prefix = '', $mode = 0)
+function uni_render_coordinates_url($from, $prefix = '', $page = 'galaxy.php')
 {
-  return "galaxy.php?mode={$mode}&galaxy={$from[$prefix . 'galaxy']}&system={$from[$prefix . 'system']}&planet={$from[$prefix . 'planet']}";
+  return "{$page}" . (strpos($page, '?') === false ? '?' : '&') . "galaxy={$from[$prefix . 'galaxy']}&system={$from[$prefix . 'system']}&planet={$from[$prefix . 'planet']}";
 }
 
 function uni_render_coordinates_href($from, $prefix = '', $mode = 0, $fleet_type = '')
 {
-  return '<a href="' . uni_render_coordinates_url($from, $prefix, $mode) . '"' . ($fleet_type ? " {$fleet_type}" : '') . '>' . uni_render_coordinates($from, $prefix) . '</a>';
+  return '<a href="' . uni_render_coordinates_url($from, $prefix, "galaxy.php?mode={$mode}") . '"' . ($fleet_type ? " {$fleet_type}" : '') . '>' . uni_render_coordinates($from, $prefix) . '</a>';
 }
 
 ?>
