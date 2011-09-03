@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '30');
 define('SN_RELEASE', '31');
-define('SN_VERSION', '31a13');
+define('SN_VERSION', '31a14');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -29,8 +29,6 @@ define('SCHEDULER_PREG', '/^(?:(?:(?:(?:(?:(2\d\d\d)-)?(1[0-2]|0[1-9])-)?(?:(3[0
 
 define('MAX_ATTACK_ROUNDS', 10);
 
-// Nombre de colones pour les rapports d'espionnage
-define('SPY_REPORT_ROW'           , 1);
 // Nombre maximum d'element dans la liste de construction de batiments
 define('MAX_BUILDING_QUEUE_SIZE'  , 5);
 // Nombre maximum d'element dans une ligne de liste de construction flotte et defenses
@@ -281,6 +279,7 @@ define('SORT_NAME'      , 2);
 define('SORT_SIZE'      , 3);
 
 // === Structures
+define('STRUC_STRUCTURES', 0);
 define('STRUC_MINE_METAL', 1);
 define('STRUC_MINE_CRYSTAL', 2);
 define('STRUC_MINE_DEUTERIUM', 3);
@@ -319,6 +318,7 @@ define('TECH_PLASMA', 122);
 define('TECH_RESEARCH', 123);
 define('TECH_EXPEDITION', 124);
 define('TECH_COLONIZATION', 150);
+define('TECH_ASTRO', 151);
 define('TECH_GRAVITON', 199);
 
 // === Hangar units
@@ -342,6 +342,7 @@ define('SHIP_DEATH_STAR', 214);
 define('SHIP_BATTLESHIP', 215);
 define('SHIP_SUPERNOVA', 216);
 // --- Defense
+define('DEF_DEFENCE', 400);
 define('misil_launcher', 401);
 define('small_laser', 402);
 define('big_laser', 403);

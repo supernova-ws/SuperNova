@@ -79,7 +79,7 @@ $honor_constants = array(
   ),
 
   'infos' => array(
-    '[info]' => array('TECH_', 'MRC_', 'SHIP_', 'RES_', 'ART_'),
+    '[info]' => array('TECH_', 'MRC_', 'SHIP_', 'RES_', 'ART_', 'STRUC_'),
   ),
 
   'market' => array(
@@ -92,7 +92,7 @@ $honor_constants = array(
 
   'tech' => array(
     '[type_mission]' => 'MT_', 
-    '[tech]' => array('TECH_', 'MRC_', 'SHIP_', 'RES_', 'ART_'),
+    '[tech]' => array('TECH_', 'MRC_', 'SHIP_', 'RES_', 'ART_', 'STRUC_'),
   ),
 
 );
@@ -102,8 +102,8 @@ function adm_lng_write_string($string_name, $string_value, $ident = '  ', $strin
   global $lang_id, $file_handler, $constants, $honor_constants, $domain;
 
   $string_name_new = false;
-//  debug($string_name_prefix);
-  if(isset($honor_constants[$domain][$string_name_prefix])) // is_integer($string_name) && 
+
+  if(isset($honor_constants[$domain][$string_name_prefix]))
   {
     $found_constants = array_keys($constants, $string_name);
     foreach($found_constants as $constant_name)
@@ -114,12 +114,10 @@ function adm_lng_write_string($string_name, $string_value, $ident = '  ', $strin
         if(strpos($constant_name, $honor_prefix) === 0)
         {
           $string_name_new = $constant_name;
-  //        debug($string_name_new);
           break;
         }
       }
     }
-//    debug($found_constants);
   }
 
   $string_name_new = $string_name_new ? $string_name_new : "'{$string_name}'";
@@ -169,7 +167,7 @@ if($domain)
 #  Project: SuperNova.WS
 #  Website: http://www.supernova.ws
 #  Description: Massive Multiplayer Online Browser Space Startegy Game\r\n#\r\n");
-//debug($land_data['LANG_COPYRIGHT']);die();
+
       foreach($land_data['LANG_COPYRIGHT'] as $lang_copyright)
       {
         $lang_copyright = str_replace(array('&copy;', '&quot;', '&lt;', '&gt;'), array('©', '"', '<', '>'), $lang_copyright);
@@ -186,7 +184,7 @@ if($domain)
       fwrite($file_handler, "));\r\n\r\n?>\r\n");
       fclose($file_handler);
     }
-//    die();
+
     header("Location: admin_locale.php?domain={$domain}");
     die();
   }
@@ -246,8 +244,6 @@ else
           {
             $language_domains[$lang_domain] = $lang_domain;
             $languages[$lang_id][$lang_domain] = $lang_domain;
-//            $full_filename = "{$full_path}/{$filename}";
-//            $languages[$lang_id][$lang_domain] = adm_lng_load($full_filename);
           }
         }
         else
