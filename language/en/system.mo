@@ -89,11 +89,11 @@ $lang = array_merge($lang, array(
   'sys_coe_defender_turn'=> 'Defender make shots for %1$s. Attacker\'s shield absorbs %2$s<br /><br /><br />',
   'sys_coe_outcome_win'  => 'Defender wons combat!<br />',
   'sys_coe_outcome_loss' => 'Attacker wons combat!<br />',
-  'sys_coe_outcome_loot' => 'He\'s lootin %1$s metall, %2$s crystal, %3$s deuterium<br />',
+  'sys_coe_outcome_loot' => 'He\'s lootin %1$s metal, %2$s crystal, %3$s deuterium<br />',
   'sys_coe_outcome_draw' => 'Combat end with draw...<br />',
   'sys_coe_attacker_lost'=> 'Attacker lost %1$s units<br />',
   'sys_coe_defender_lost'=> 'Defender lost %1$s units<br />',
-  'sys_coe_debris_left'  => 'There is %1$s metall and %2$s crystall floating in debris around planet.<br /><br />',
+  'sys_coe_debris_left'  => 'There is %1$s metal and %2$s crystal floating in debris around planet.<br /><br />',
   'sys_coe_moon_chance'  => 'Moon creation chance is %1$s%%<br />',
   'sys_coe_rw_time'      => 'Reprot generated in %1$s seconds<br />',
 

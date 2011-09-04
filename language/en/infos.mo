@@ -129,7 +129,7 @@ $lang = array_merge($lang, array(
 
     '35' => array(
       'description' => 'Reduce time to research stage doubled.',
-      'description_short' => 'Nanobots equipped with the latest technology. Heavy duty crystalline computers and super-precise nanosbots accelerated by any study by twice.',
+      'description_short' => 'Nanobots equipped with the latest technology. Heavy duty crystaline computers and super-precise nanosbots accelerated by any study by twice.',
     ),
 
     '41' => array(
@@ -373,7 +373,7 @@ $lang = array_merge($lang, array(
     ),
 
     MRC_TECHNOLOGIST => array(
-      'description' => 'Technologist is a recognized expert in astromineralogy and crystallography. With his team of Metallurgists and chemists, he supported the interplanetary Government when developing new resources and optimize their refinery.',
+      'description' => 'Technologist is a recognized expert in astromineralogy and crystalography. With his team of Metalurgists and chemists, he supported the interplanetary Government when developing new resources and optimize their refinery.',
       'effect' => 'per level to metal, crystal and deuterium production, to energy production on solar and fusion stations each level.<br>At 5th level allows to build fusion station',
     ),
 

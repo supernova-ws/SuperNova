@@ -139,6 +139,7 @@ Project "SuperNova.WS" Release 31 "Artifact governors edit localized inflation"
 [%] Локализация:  Добавлен  патч  для  серверов  с   неправильно   настроенной
     кодировкой в HTTP-заголовке
 [%] Шпионаж: Корректно выставляется время шпионского рапорта
+[%] Локализация/EN: Исправлены ошибки с двумя l в "Metall" и "Crystall"
 
 [@] SYS: Устаревшие функции заменены актуальными аналогами:
       int_buildCounter => tpl_parse_planet
