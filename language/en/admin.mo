@@ -195,6 +195,7 @@ $lang = array_merge($lang, array(
   'adm_opt_systems' => 'Systems',
   'adm_opt_planets' => 'Planets',
   'adm_opt_build_on_research' => 'Build on research',
+  'adm_opt_eco_scale_storage' => 'Scale storages with production speed',
   'adm_opt_game_rules' => 'Game rules',
   'adm_opt_max_colonies' => 'Number of colonies',
   'adm_opt_exchange' => 'Exchange resources',

@@ -193,6 +193,7 @@ $lang = array_merge($lang, array(
   'adm_opt_systems' => 'Систем',
   'adm_opt_planets' => 'Планет',
   'adm_opt_build_on_research' => 'Строить лабораторию во время исследования',
+  'adm_opt_eco_scale_storage' => 'Масштабировать склады от скорости добычи',
   'adm_opt_game_rules' => 'Ссылка на правила',
   'adm_opt_max_colonies' => 'Количество колоний',
   'adm_opt_exchange' => 'Курс обмена ресурсов',

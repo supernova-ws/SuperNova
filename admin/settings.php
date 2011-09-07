@@ -35,6 +35,8 @@ if(sys_get_param('save'))
   $config->game_disable            = sys_get_param_int('game_disable');
   $config->game_disable_reason     = sys_get_param_str_raw('game_disable_reason');
 
+  $config->eco_scale_storage       = sys_get_param_int('eco_scale_storage');
+
   $config->game_default_language   = sys_get_param_str_raw('game_default_language', DEFAULT_LANG);
   $config->game_default_skin       = sys_get_param_str_raw('game_default_skin', DEFAULT_SKINPATH);
   $config->game_default_template   = sys_get_param_str_raw('game_default_template', TEMPLATE_NAME);
@@ -80,16 +82,17 @@ if(sys_get_param('save'))
 }
 
 $template->assign_vars(array(
-  'game_disable' => $config->game_disable ? 'checked' : '',
-  'advGoogleLeftMenuIsOn' => $config->advGoogleLeftMenuIsOn ? 'checked' : '',
-  'debug' => $config->debug ? 'checked' : '',
-  'game_counter' => $config->game_counter ? 'checked' : '',
-  'user_vacation_disable' => $config->user_vacation_disable ? 'checked' : '',
   'ALLOW_BUFFING' => $config->allow_buffing,
   'ALLY_HELP_WEAK' => $config->ally_help_weak,
   'GAME_EMAIL_PM' => $config->game_email_pm,
   'game_mode' => $config->game_mode,
   'game_language' => $config->game_default_language,
+  'ECO_SCALE_STORAGE' => $config->eco_scale_storage,
+  'USER_VACATION_DISABLE' => $config->user_vacation_disable,
+  'ADV_LEFT_MENU' => $config->advGoogleLeftMenuIsOn,
+  'GAME_DISABLE' => $config->game_disable,
+  'GAME_DEBUG' => $config->debug,
+  'GAME_COUNTER' => $config->game_counter,
 ));
 
 foreach($lang['sys_game_mode'] as $mode_id => $mode_name)

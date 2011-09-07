@@ -6,7 +6,7 @@
   <table style="color:#FFFFFF;" class="table"><tbody>
     <tr><td class="c" colspan="2">{L_adm_opt_maintenance}</td></tr>
     <tr>
-      <th colspan=2><input name="game_disable" type="checkbox" value="1" {game_disable} /> {L_adm_opt_game_online}<br>
+      <th colspan=2><input name="game_disable" type="checkbox" value="1"<!-- IF GAME_DISABLE --> checked<!-- ENDIF -->/> {L_adm_opt_game_online}<br>
         <input name="game_disable_reason" size="82" value="{C_game_disable_reason}" type="text">
         <!--
         <textarea name="game_disable_reason" cols="50" rows="2" size="50" >{C_game_disable_reason}</textarea>
@@ -164,7 +164,7 @@
     <tr><td class="c" colspan="2">{L_adm_opt_game_advertise}</td></tr>
     <tr>
       <th colspan=2>
-        <input name="advGoogleLeftMenuIsOn" type="checkbox" value="1" {advGoogleLeftMenuIsOn} /> {L_adm_opt_game_oth_adds}
+        <input name="advGoogleLeftMenuIsOn" type="checkbox" value="1"<!-- IF ADV_LEFT_MENU --> checked<!-- ENDIF -->/> {L_adm_opt_game_oth_adds}
         <textarea name="advGoogleLeftMenuCode" rows="10">{C_advGoogleLeftMenuCode}</textarea>
       </th>
     </tr>
@@ -172,7 +172,11 @@
     <tr><td class="c" colspan="2">{L_adm_opt_game_oth_info}</td></tr>
     <tr>
       <th>{L_adm_opt_vacation_mode}</th> 
-      <th><input name="user_vacation_disable" type="checkbox" value="1" {user_vacation_disable} /></th> 
+      <th><input name="user_vacation_disable" type="checkbox" value="1"<!-- IF USER_VACATION_DISABLE --> checked<!-- ENDIF -->/></th> 
+    </tr>
+    <tr>
+      <th>{L_adm_opt_eco_scale_storage}</th>
+      <th><input name="eco_scale_storage" type="checkbox" value="1"<!-- IF ECO_SCALE_STORAGE --> checked<!-- ENDIF -->/></th> 
     </tr>
     <tr>
       <th>{L_adm_opt_allow_buffing}</th> 
@@ -188,11 +192,11 @@
     </tr>
     <tr>
       <th>{L_adm_opt_game_debugmod}</a></th>
-      <th><input name="debug" {debug} type="checkbox" value="1" /></th>
+      <th><input name="debug" type="checkbox" value="1"<!-- IF GAME_DEBUG --> checked<!-- ENDIF --> /></th>
     </tr>
     <tr>
       <th>{L_adm_opt_game_counter}</a></th>
-      <th><input name="game_counter" {game_counter} type="checkbox" value="1" /></th>
+      <th><input name="game_counter" type="checkbox" value="1"<!-- IF GAME_COUNTER --> checked<!-- ENDIF --> /></th>
     </tr>
 
     <tr><td class="c" colspan="2"><center><input name="save" value="{L_adm_opt_btn_save}" type="submit"></center></td></tr>
