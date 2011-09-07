@@ -929,6 +929,8 @@ debug($update_tables['logs']['log_id'], 31);
       "ADD COLUMN `player_artifact_list` TEXT",
     ), !isset($update_tables['users']['player_artifact_list']));
 
+    $config->db_saveItem('eco_scale_storage', 0, !isset($config->eco_scale_storage));
+
   upd_do_query('COMMIT;', true);
 //  $new_version = 31;
 

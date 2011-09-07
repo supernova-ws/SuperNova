@@ -31,7 +31,7 @@ if (!defined('INSIDE')) die();
 
 $lang = array_merge($lang, array(
   'ov_hack_alert' => 'DATABASE hacking attempt!!!',
-  'ov_you_have' => 'Do you have',
+  'ov_you_have' => 'You have',
   'ov_new_message' => 'One new message',
   'ov_new_messages' => 'New messages',
   'cancel' => 'Cancel',

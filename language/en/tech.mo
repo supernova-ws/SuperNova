@@ -29,8 +29,8 @@
 if (!defined('INSIDE')) die();
 
 $lang = array_merge($lang, array(
-  'tech_storage_max' => 'Storeage size',
-  'tech_storage' => 'In storeage',
+  'tech_storage_max' => 'Storage size',
+  'tech_storage' => 'In storage',
   'Tech' => 'Technology',
   'Requirements' => 'Requirements',
   'Metal' => 'Metal',
