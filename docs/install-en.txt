@@ -5,8 +5,8 @@ production-use! Code is provided "as-is". You use at your own risk! The  author
 is not liable for material, moral, karmic, spiritual,  and  any  other  damages
 caused you to use, non-, the very existence of this code or any other way.
 
-WARNING! Although heart failure is a clone oGeym, it is not  OFFLAYK!  Ie  many
-aspects of the game differ from the official oGeyma as well  as  from  the  RR.
+WARNING! Although Supernova is a oGame clone, it is not  OFFLAYK!  Ie  many
+aspects of the game differ from the official oGame as well  as  from  the  RR.
 Slider changed, that would fit my understanding of an  interesting  game.  Take
 With this in mind when deciding - to install this engine yourself or not.
 
@@ -244,7 +244,7 @@ Fault diagnosis engine
 The latest and most current version of the engine (with the most recent and relevant bugs)
 can be downloaded at this link:
 https://github.com/supernova-ws/SuperNova/archives/trunk
-Click on «Download. Zip» and download archives trunk. At what exactly should go on
+Click on ï¿½Download. Zipï¿½ and download archives trunk. At what exactly should go on
 link above and click the button there. Go direct link to the download
 - Does not work.
 To pay attention to the file name is not necessary.
