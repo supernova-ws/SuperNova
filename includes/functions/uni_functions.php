@@ -338,7 +338,7 @@ function uni_render_planet($from)
 
 function uni_render_coordinates_url($from, $prefix = '', $page = 'galaxy.php')
 {
-  return "{$page}" . (strpos($page, '?') === false ? '?' : '&') . "galaxy={$from[$prefix . 'galaxy']}&system={$from[$prefix . 'system']}&planet={$from[$prefix . 'planet']}";
+  return $page . (strpos($page, '?') === false ? '?' : '&') . "galaxy={$from[$prefix . 'galaxy']}&system={$from[$prefix . 'system']}&planet={$from[$prefix . 'planet']}";
 }
 
 function uni_render_coordinates_href($from, $prefix = '', $mode = 0, $fleet_type = '')
