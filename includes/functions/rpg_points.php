@@ -100,7 +100,6 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
     case RPG_STRUCTURE:
       $field_level = 'lvl_minier';
       $field_xp = 'xpminier';
-      $xp = &$user['xpminier'];
       $b1 = 50;
       $comment = 'Level Up For Structure Building';
     break;
@@ -108,11 +107,20 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
     case RPG_RAID:
       $field_level = 'lvl_raid';
       $field_xp = 'xpraid';
-      $xp = &$user['xpraid'];
       $b1 = 10;
       $comment = 'Level Up For Raiding';
     break;
+
+    case RPG_TECH:
+      $field_level = 'player_rpg_tech_level';
+      $field_xp = 'player_rpg_tech_xp';
+      $b1 = 50;
+      $comment = 'Level Up For Research';
+    break;
+
   }
+
+  $xp = &$user[$field_xp];
 
   if($xp_to_add)
   {
@@ -121,7 +129,7 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
   }
 
   $level = $user[$field_level];
-  while ($xp >= rpg_xp_for_level($level, $b1, $q))
+  while($xp > rpg_xp_for_level($level + 1, $b1, $q))
   {
     $level++;
   }
@@ -146,6 +154,11 @@ function rpg_get_miner_xp($level)
 }
 
 function RPG_get_raider_xp($level)
+{
+  return rpg_xp_for_level($level, 10, 1.03);
+}
+
+function RPG_get_tech_xp($level)
 {
   return rpg_xp_for_level($level, 10, 1.03);
 }

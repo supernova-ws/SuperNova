@@ -139,6 +139,7 @@ switch($mode)
 
     rpg_level_up($user, RPG_STRUCTURE);
     rpg_level_up($user, RPG_RAID);
+    rpg_level_up($user, RPG_TECH);
 
     $fleet_id = 1;
     int_get_fleet_to_planet("SELECT DISTINCT * FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}' OR `fleet_target_owner` = '{$user['id']}';");

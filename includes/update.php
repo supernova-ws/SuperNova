@@ -931,6 +931,16 @@ debug($update_tables['logs']['log_id'], 31);
 
     $config->db_saveItem('eco_scale_storage', 0, !isset($config->eco_scale_storage));
 
+    if(!isset($update_tables['users']['player_rpg_tech_xp']))
+    {
+      upd_alter_table('users', array(
+        "ADD COLUMN `player_rpg_tech_level` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `dark_matter`",
+        "ADD COLUMN `player_rpg_tech_xp` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `dark_matter`",
+      ), !isset($update_tables['users']['player_rpg_tech_xp']));
+
+      doquery("UPDATE {{users}} AS u LEFT JOIN {{statpoints}} AS s ON s.id_owner = u.id AND s.stat_type = 1 AND s.stat_code = 1 SET u.player_rpg_tech_xp = s.tech_points;");
+    }
+
   upd_do_query('COMMIT;', true);
 //  $new_version = 31;
 
