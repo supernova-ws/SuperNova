@@ -59,6 +59,17 @@ function HandleTechnologieBuild(&$user, &$planetrow)
 
     doquery("UPDATE `{{planets}}` SET `b_tech` = '0', `b_tech_id` = '0' WHERE `id` = '{$planet['id']}' LIMIT 1;");
     doquery("UPDATE `{{users}}` SET `{$unit_db_name}` = `{$unit_db_name}` + 1, `b_tech_planet` = '0' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    $user = doquery("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1;", '', true);
+
+    $build_data = eco_get_build_data($user, $planet, $unit_id, $user[$sn_data[$unit_id]['name']] - 1);
+    $build_data = $build_data[BUILD_CREATE];
+    $xp_incoming = 0;
+    foreach($sn_data['groups']['resources_loot'] as $resource_id)
+    {
+      $xp_incoming += $build_data[$resource_id];
+    }
+    rpg_level_up($user, RPG_TECH, $xp_incoming / 1000);
+
     $planet["b_tech_id"] = 0;
   }
   elseif ($planet["b_tech_id"] == 0)
