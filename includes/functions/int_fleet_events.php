@@ -25,7 +25,7 @@ function int_get_fleet_to_planet($fleet_list, $planet_scanned = false)
 
   foreach($fleet_list as $fleet)
   {
-    $planet_start_type = $fleet['fleet_start_type'] == 3 ? 3 : 1;
+    $planet_start_type = $fleet['fleet_start_type'] == PT_MOON ? PT_MOON : PT_PLANET;
     $planet_start = doquery(
       "SELECT `name` FROM {{planets}}
         WHERE
@@ -46,7 +46,7 @@ function int_get_fleet_to_planet($fleet_list, $planet_scanned = false)
     }
     else
     {
-      $planet_end_type = $fleet['fleet_end_type'] == 3 ? 3 : 1;
+      $planet_end_type = $fleet['fleet_end_type'] == PT_MOON ? PT_MOON : PT_PLANET;
 
       $planet_end = doquery(
         "SELECT `name` FROM {{planets}}
@@ -59,27 +59,38 @@ function int_get_fleet_to_planet($fleet_list, $planet_scanned = false)
       $fleet['fleet_end_name'] = $planet_end['name'];
     }
 
-    if($fleet['fleet_start_time'] > $time_now && $fleet['fleet_mess'] == 0 
-      && ($fleet['fleet_mission'] != MT_RELOCATE || !(is_array($planet_scanned) &&
-           $planet_scanned['galaxy'] == $fleet['fleet_start_galaxy'] &&
-           $planet_scanned['system'] == $fleet['fleet_start_system'] &&
-           $planet_scanned['planet'] == $fleet['fleet_start_planet'] &&
-           $planet_scanned['planet_type'] == $planet_start_type
-           )
-         )
+    if($fleet['fleet_start_time'] > $time_now && $fleet['fleet_mess'] == 0 && 
+      ($planet_scanned === false
+        ||
+        (
+          $planet_scanned !== false 
+          && $planet_scanned['galaxy'] == $fleet['fleet_end_galaxy'] && $planet_scanned['system'] == $fleet['fleet_end_system'] && $planet_scanned['planet'] == $fleet['fleet_end_planet'] && $planet_scanned['planet_type'] == $planet_end_type 
+          && $fleet['fleet_mission'] != MT_HOLD
+        )
+      )
     )
     {
       int_assign_event($fleet, 0, $planet_scanned, $planet_end_type);
     }
 
-    if($fleet['fleet_end_stay'] > $time_now && $fleet['fleet_mess'] == 0)
+    if($fleet['fleet_end_stay'] > $time_now && $fleet['fleet_mess'] == 0 && $planet_scanned === false)
     {
       int_assign_event($fleet, 1, $planet_scanned, $planet_end_type);
     }
 
-    if($fleet['fleet_end_time'] > $time_now && $fleet['fleet_owner'] == $user['id'] &&
-      !($fleet['fleet_mess'] == 0 &&
-        ($fleet['fleet_mission'] == MT_RELOCATE || $fleet['fleet_mission'] == MT_COLONIZE || ($planet_scanned != false && $fleet['fleet_mission'] == MT_HOLD))))
+    if(
+      $fleet['fleet_end_time'] > $time_now && ($fleet['fleet_mess'] == 1 || ($fleet['fleet_mission'] != MT_RELOCATE && $fleet['fleet_mission'] != MT_COLONIZE)) && 
+      (
+        ($planet_scanned === false && $fleet['fleet_owner'] == $user['id'])
+        ||
+        (
+          $planet_scanned !== false
+          && $fleet['fleet_mission'] != MT_RELOCATE
+          && $planet_start_type != PT_MOON
+          && $planet_scanned['galaxy'] == $fleet['fleet_start_galaxy'] && $planet_scanned['system'] == $fleet['fleet_start_system'] && $planet_scanned['planet'] == $fleet['fleet_start_planet'] && $planet_scanned['planet_type'] == $planet_start_type
+        )
+      )
+    )
     {
       int_assign_event($fleet, 2, $planet_scanned, $planet_end_type);
     }
