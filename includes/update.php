@@ -929,10 +929,10 @@ debug($update_tables['logs']['log_id'], 31);
       "ADD COLUMN `player_artifact_list` TEXT",
     ), !isset($update_tables['users']['player_artifact_list']));
 
-    $config->db_saveItem('eco_scale_storage', 0, !isset($config->eco_scale_storage));
-
     if(!isset($update_tables['users']['player_rpg_tech_xp']))
     {
+      $config->db_saveItem('eco_scale_storage', 0, !isset($config->eco_scale_storage));
+
       upd_alter_table('users', array(
         "ADD COLUMN `player_rpg_tech_level` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `dark_matter`",
         "ADD COLUMN `player_rpg_tech_xp` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `dark_matter`",

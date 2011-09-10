@@ -56,7 +56,8 @@ function flt_mission_attack($mission_data)
 
   $db_admiral_name = $sn_data[MRC_ADMIRAL]['name'];
 
-  $fortifier_bonus = 1 - ($destination_planet['PLANET_GOVERNOR_ID'] == MRC_FORTIFIER ? $destination_planet['PLANET_GOVERNOR_LEVEL'] : 0) * $sn_data[MRC_FORTIFIER]['bonus'] / 100;
+//  $fortifier_bonus = 1 - ($destination_planet['PLANET_GOVERNOR_ID'] == MRC_FORTIFIER ? $destination_planet['PLANET_GOVERNOR_LEVEL'] : 0) * $sn_data[MRC_FORTIFIER]['bonus'] / 100;
+  $fortifier_bonus = $destination_planet['PLANET_GOVERNOR_ID'] == MRC_FORTIFIER ? $destination_planet['PLANET_GOVERNOR_LEVEL'] : 0;
   $defenseFleets = array(
     0 => array(
       'def' => array(),
@@ -64,9 +65,9 @@ function flt_mission_attack($mission_data)
         'id'             => $destination_user['id'],
         'username'       => $destination_user['username'],
         $db_admiral_name => $destination_user[$db_admiral_name],
-        'defence_tech'   => floor($destination_user['defence_tech'] * $fortifier_bonus),
-        'shield_tech'    => floor($destination_user['shield_tech'] * $fortifier_bonus),
-        'military_tech'  => floor($destination_user['military_tech'] * $fortifier_bonus),
+        'defence_tech'   => floor($destination_user['defence_tech'] + $fortifier_bonus),
+        'shield_tech'    => floor($destination_user['shield_tech'] + $fortifier_bonus),
+        'military_tech'  => floor($destination_user['military_tech'] + $fortifier_bonus),
       ),
     )
   );
