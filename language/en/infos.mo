@@ -403,8 +403,8 @@ $lang = array_merge($lang, array(
     ),
 
     MRC_DESTRUCTOR => array(
-      'description' => 'Devastator - a ruthless army officer. He suggests how the planets Empire brutal methods. The same Destructor has developed technology manufactures Stars Death.',
-      'effect' => 'Allows to build  in the shipyard',
+      'description' => 'Devastator - a ruthless army officer. He suggests how the planets Empire brutal methods. The same Destructor has developed technology manufactures Deathstars.',
+      'effect' => 'Allows to build Deathstars in the shipyard',
     ),
 
     MRC_ADMIRAL => array(
@@ -423,8 +423,8 @@ $lang = array_merge($lang, array(
     ),
 
     MRC_ASSASIN => array(
-      'description' => 'Assasin-trusted killer Emperor. But it\'s not only its quality. However, Disruptor, Assasin has developed . Central computer ships configured to DNA Assasina. Therefore, it is the only person who can manage this ship',
-      'effect' => 'Allows to build  in the shipyard',
+      'description' => 'Assasin-trusted killer Emperor. But it\'s not only its quality. However, Disruptor, Assasin has developed new cruiser class Supernova. Central computer ships configured to DNA Assasina. Therefore, it is the only person who can manage this ship',
+      'effect' => 'Allows to build Supernova Cruisers in the shipyard',
     ),
 
     MRC_EMPEROR => array(
@@ -433,7 +433,7 @@ $lang = array_merge($lang, array(
     ),
 
     ART_LHC => array(
-        'description' => 'LHC creates waves of gravitons that forces debris to concentrate in one place<br /><span class="warning">WARNING! Using of LHC is not a guarantee to creation of new moon!</span>',
+      'description' => 'LHC creates waves of gravitons that forces debris to concentrate in one place<br /><span class="warning">WARNING! Using of LHC is not a guarantee to creation of new moon!</span>',
       'effect' => 'Allows another chance to create moon<br />1% per 1.000.000 of debris but not more then 30%',
     ),
 
