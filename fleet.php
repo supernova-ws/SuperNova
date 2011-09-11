@@ -77,8 +77,6 @@ if($MaxExpeditions){
   $FlyingExpeditions = 0;
 };
 
-$SpeedFactor = get_fleet_speed();
-
 switch ($fleet_page)
 {
   case 3:

@@ -1,6 +1,6 @@
 <?php
 
-function BE_attackFleetFill(&$attackFleets, $fleet, $strField = 'detail')
+function coe_attack_fleet_fill(&$attackFleets, $fleet, $strField = 'detail')
 {
   global $sn_data;
 
@@ -30,7 +30,7 @@ function BE_attackFleetFill(&$attackFleets, $fleet, $strField = 'detail')
  * "rp" stands for "ResourcePoints"
 */
 
-function BE_calculateTechs(&$user)
+function coe_calculate_techs(&$user)
 {
   global $sn_data;
 
@@ -48,7 +48,7 @@ function BE_calculateTechs(&$user)
  * "rp" stands for "ResourcePoints"
 */
 
-function BE_preCalcRoundData(&$fleets, &$fleetRoundData, &$fleetArray, $strFieldName, $isSimulated = false){
+function coe_precalc_round_data(&$fleets, &$fleetRoundData, &$fleetArray, $strFieldName, $isSimulated = false){
   global $sn_data;
 
   foreach ($fleets as $fleetID => $fleet)
@@ -107,7 +107,7 @@ function BE_preCalcRoundData(&$fleets, &$fleetRoundData, &$fleetArray, $strField
   }
 }
 
-function BE_calculateRoundFleetHarmPct(&$attArray){
+function coe_calc_round_fleet_harm_percent(&$attArray){
   foreach ($attArray as $fleetID => $fleet) {
     if (!is_numeric($fleetID)) continue;
     $attArray[$fleetID]['HarmPct'] = $attArray[$fleetID]['def'] / $attArray['total']['def'];
@@ -191,7 +191,7 @@ function coe_attack_calculate(&$attackers, &$defenders, $isSimulated = false)
   $attackResourcePoints = array('metal' => 0, 'crystal' => 0);
   foreach ($attackers as $fleetID => $attacker)
   {
-    $attackers[$fleetID]['techs'] = BE_calculateTechs($attacker['user']);
+    $attackers[$fleetID]['techs'] = coe_calculate_techs($attacker['user']);
 
     if(!is_array($attacker['detail']))
     {
@@ -209,7 +209,7 @@ function coe_attack_calculate(&$attackers, &$defenders, $isSimulated = false)
   $defenseResourcePoints = array('metal' => 0, 'crystal' => 0);
   foreach ($defenders as $fleetID => $defender)
   {
-    $defenders[$fleetID]['techs'] = BE_calculateTechs($defender['user']);
+    $defenders[$fleetID]['techs'] = coe_calculate_techs($defender['user']);
 
     if(!is_array($defender['def']))
     {
@@ -238,11 +238,11 @@ BE_DEBUG_openTable();
   {
     $attArray = array();
     $attackRoundData = array();
-    BE_preCalcRoundData($attackers, $attackRoundData, $attArray, 'detail', $isSimulated);
+    coe_precalc_round_data($attackers, $attackRoundData, $attArray, 'detail', $isSimulated);
 
     $defArray = array();
     $defenseRoundData = array();
-    BE_preCalcRoundData($defenders, $defenseRoundData, $defArray, 'def', $isSimulated);
+    coe_precalc_round_data($defenders, $defenseRoundData, $defArray, 'def', $isSimulated);
 
     $rounds[$round] = array('attackers' => unserialize(serialize($attackers)), 'defenders' => unserialize(serialize($defenders)), 'attack' => $attackRoundData['att'], 'defense' => $defenseRoundData['att'], 'attackA' => $attackRoundData['amount'], 'defenseA' => $defenseRoundData['amount'], 'infoA' => $attArray, 'infoD' => $defArray);
 
@@ -252,8 +252,8 @@ BE_DEBUG_openTable();
     }
 
     // Calculate hit percentages (ACS only but ok)
-    BE_calculateRoundFleetHarmPct($attArray);
-    BE_calculateRoundFleetHarmPct($defArray);
+    coe_calc_round_fleet_harm_percent($attArray);
+    coe_calc_round_fleet_harm_percent($defArray);
 
     $attackPctPerFleet = array();
     foreach ($attackRoundData['amount'] as $fleetID => $amount)

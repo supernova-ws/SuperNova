@@ -98,7 +98,12 @@ function eco_struc_show_unit_info(unit_id, no_color)
     var pre_href = '<a href="buildings.php?mode={QUE_ID}&action=';
     if(unit['level'] > 0 && unit['destroy_can'] != 0)
     {
-      element_cache['unit_destroy_link'].innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '">' + unit_destroy_link + '</a>';
+      element_cache['unit_destroy_link'].innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '">' + unit_destroy_link + '<br />'
+      + language['sys_metal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_metal']), 0, 'lime') + ' ' 
+      + language['sys_crystal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_crystal']), 0, 'lime') + ' ' 
+      + language['sys_deuterium'][0] + ':' + sn_format_number(parseFloat(unit['destroy_deuterium']), 0, 'lime') + ' '
+      + unit['destroy_time']
+      + '</a>';
     }
     if(planet['fields_free'] > 0 && unit['build_can'] != 0)
     {

@@ -19,7 +19,7 @@ if(SN_IN_FLEET !== true)
 
 function flt_build_gathering($resources_taken = '')
 {
-  global $time_now, $SpeedFactor, $planetrow, $name_to_id, $user, $sn_data, $transports, $lang;
+  global $time_now, $planetrow, $name_to_id, $user, $sn_data, $transports, $lang;
   $lang_sys_planet_type = $lang['sys_planet_type'];
   $lang_fl_attack_error = $lang['fl_attack_error'];
 

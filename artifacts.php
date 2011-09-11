@@ -18,6 +18,8 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 lng_include('infos');
 lng_include('artifacts');
 
+include('includes/includes/art_artifact.php');
+
 $action = sys_get_param_int('action');
 $unit_id = sys_get_param_int('unit_id');
 

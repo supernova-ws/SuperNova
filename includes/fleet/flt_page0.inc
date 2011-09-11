@@ -20,8 +20,6 @@ if (!$planetrow)
   $parse['ErrorNoPlanetRow'] = parsetemplate(gettemplate('message_body'), $parse_err);
 }
 
-CheckPlanetUsedFields($planetrow);
-
 $template = gettemplate('fleet0', true);
 
 foreach ($sn_data['groups']['fleet'] as $n => $i)
@@ -54,7 +52,7 @@ $template->assign_vars(array(
 
   'ShipList'           => $ShipList,
 
-  'speed_factor'       => $SpeedFactor,
+  'speed_factor'       => get_fleet_speed(),
 
   'PLANET_RESOURCES'   => pretty_number(floor($planetrow['metal'] + $planetrow['crystal'] + $planetrow['deuterium'])),
 ));

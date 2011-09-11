@@ -29,7 +29,7 @@ if($_SERVER['HTTP_REFERER'] == SN_ROOT_VIRTUAL . 'admin/statbuilder.php')
 }
 else
 {
-  $next_stat_update = SYS_scheduleGetNextRun($config->stats_schedule, $config->var_stat_update, $time_now);
+  $next_stat_update = sys_schedule_get_next_run($config->stats_schedule, $config->var_stat_update, $time_now);
 }
 
 if($next_stat_update > $config->var_stat_update)

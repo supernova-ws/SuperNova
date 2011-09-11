@@ -119,7 +119,6 @@ if(SN_IN_FLEET !== true)
     $target_mission = MT_ATTACK;
   }
 
-  CheckPlanetUsedFields($planetrow);
   if ($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE)
   {
     $TargetPlanet = array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet, 'id_owner' => 0);

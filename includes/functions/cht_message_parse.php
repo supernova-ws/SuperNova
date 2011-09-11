@@ -1,5 +1,5 @@
 <?php
-function CHT_messageParse($msg)
+function cht_message_parse($msg)
 {
 
   $BBCodes = array (

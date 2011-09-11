@@ -1,6 +1,6 @@
 <?php
 
-function eco_sym_encode_replay($combat, $type)
+function coe_sym_encode_replay($combat, $type)
 {
   $strPacked = "{$type}!";
 
@@ -17,7 +17,7 @@ function eco_sym_encode_replay($combat, $type)
   return $strPacked;
 }
 
-function eco_sym_decode_replay($str_data)
+function coe_sym_decode_replay($str_data)
 {
   global $sn_data;
 
@@ -58,7 +58,7 @@ function eco_sym_decode_replay($str_data)
   return $unpacked;
 }
 
-function eco_sym_to_combat($arr_sym_data, $str_fleet_type)
+function coe_sym_to_combat($arr_sym_data, $str_fleet_type)
 {
   global $sn_data;
   $combat = array();

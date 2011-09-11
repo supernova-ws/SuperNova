@@ -49,7 +49,7 @@ if ($d && isset($ranks[$d]))
   doquery("UPDATE {{users}} SET `ally_rank_id`=`ally_rank_id` - 1 WHERE `ally_id`={$ally['id']} AND `ally_rank_id` >= {$d}");
 }
 
-ALI_rankListSave($ranks);
+ali_rank_list_save($ranks);
 
 if (count($ranks))
 {

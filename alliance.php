@@ -101,7 +101,7 @@ elseif(!$user_request['id_user'])
 
     if(!empty($ranks))
     {
-      ALI_rankListSave($ranks);
+      ali_rank_list_save($ranks);
     }
   }
 

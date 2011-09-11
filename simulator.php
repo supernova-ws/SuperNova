@@ -42,7 +42,7 @@ $sym_attacker = $_POST['attacker'] ? $_POST['attacker'] : array();
 
 if($replay)
 {
-  $unpacked = eco_sym_decode_replay($replay);
+  $unpacked = coe_sym_decode_replay($replay);
 
   $sym_defender = $unpacked['D'];
   $sym_attacker = $unpacked['A'];
@@ -55,11 +55,11 @@ else
 
 if($_POST['submit'] || $execute)
 {
-  $replay = eco_sym_encode_replay($sym_defender, 'D');
-  $replay .= eco_sym_encode_replay($sym_attacker, 'A');
+  $replay = coe_sym_encode_replay($sym_defender, 'D');
+  $replay .= coe_sym_encode_replay($sym_attacker, 'A');
 
-  $arr_combat_defender = eco_sym_to_combat($sym_defender, 'def');
-  $arr_combat_attacker = eco_sym_to_combat($sym_attacker, 'detail');
+  $arr_combat_defender = coe_sym_to_combat($sym_defender, 'def');
+  $arr_combat_attacker = coe_sym_to_combat($sym_attacker, 'detail');
 
   // Lets calcualte attack...
 
@@ -78,7 +78,7 @@ if($_POST['submit'] || $execute)
   // Calculating Moon Chance
   $MoonChance = BE_calculateMoonChance($result['debree']['att'][0] + $result['debree']['def'][0] + $result['debree']['att'][1] + $result['debree']['def'][1]);
 
-  $formatted_cr = formatCR($result, $loot['looted'], $MoonChance, '', $totaltime);
+  $formatted_cr = coe_report_format($result, $loot['looted'], $MoonChance, '', $totaltime);
 
   // Well lets just copy rw.php code. If I am showing a cr why re-inent the wheel???
   $Page  = '<html>';

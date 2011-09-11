@@ -344,23 +344,6 @@ if ($TableHeadTPL != '')
 
 // La page principale
 $page = parsetemplate($PageTPL, $parse);
-if ($DestroyTPL != '' && $planetrow[$unit_data['name']] > 0)
-{
-  // ---- Destruction
-  $NeededRessources = GetBuildingPrice($user, $planetrow, $unit_id, true, true);
-  $DestroyTime = GetBuildingTime($user, $planetrow, $unit_id) / 2;
-  $parse['destroyurl'] = "buildings.php?mode=" . QUE_STRUCTURES . "&action=destroy&unit_id={$unit_id}"; // Non balisé les balises sont dans le
-  $parse['levelvalue'] = $planetrow[$unit_data['name']]; // Niveau du batiment a detruire
-  $parse['nfo_metal'] = $lang['Metal'];
-  $parse['nfo_crysta'] = $lang['Crystal'];
-  $parse['nfo_deuter'] = $lang['Deuterium'];
-  $parse['metal'] = pretty_number($NeededRessources['metal']);     // Cout en metal de la destruction
-  $parse['crystal'] = pretty_number($NeededRessources['crystal']);   // Cout en cristal de la destruction
-  $parse['deuterium'] = pretty_number($NeededRessources['deuterium']); // Cout en deuterium de la destruction
-  $parse['destroytime'] = pretty_time($DestroyTime);                   // Durée de la destruction
-  // L'insert de destruction
-  $page .= parsetemplate($DestroyTPL, $parse);
-}
 
 display($page, $lang['nfo_page_title']);
 

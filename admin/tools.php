@@ -43,6 +43,10 @@ switch($mode){
     require_once('../includes/update.php');
   break;
 
+  case 4:
+    phpinfo();
+  break;
+
 }
 
 display( parsetemplate(gettemplate("admin/admin_tools", true)), $lang['adm_bn_ttle'], false, '', true);

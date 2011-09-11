@@ -68,22 +68,6 @@ function art_use(&$user, &$planetrow, $unit_id)
             $message = sprintf($lang['art_rcd_ok'], $lang['tech'][$unit_id], $planetrow['name'], uni_render_coordinates($planetrow));
             msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_rcd_subj'], $lang['art_rcd_subj'], $message);
           }
-//die();
-
-          /*
-          $moon_chance = BE_calculateMoonChance($planetrow['debris_metal'] + $planetrow['debris_crystal']);
-          $random = mt_rand(1, 100);
-          if($random <= $moon_chance)
-          {
-            $new_moon_name = uni_create_moon($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], $user['id'], $moon_chance);
-            $message = sprintf($lang['art_lhc_moon_create'], $new_moon_name, uni_render_coordinates($planetrow));
-          }
-          else
-          {
-            $message = $lang['art_lhc_moon_fail'];
-          }
-          msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_ADMIN, $lang['art_rcd_from'], $lang['art_rcd_subj'], $message);
-          */
         }
         else
         {

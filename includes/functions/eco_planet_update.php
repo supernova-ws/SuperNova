@@ -102,7 +102,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   $QryUpdatePlanet .= "`metal_perhour` = '{$planet['metal_perhour']}', `crystal_perhour` = '{$planet['crystal_perhour']}', `deuterium_perhour` = '{$planet['deuterium_perhour']}', ";
   $QryUpdatePlanet .= "`energy_used` = '{$planet['energy_used']}', `energy_max` = '{$planet['energy_max']}', ";
 
-  $built = eco_bld_handle_que($user, $planet, $ProductionTime);
+  $built = eco_bld_que_hangar($user, $planet, $ProductionTime);
   if($built['built'])
   {
     foreach($built['built'] as $Element => $Count)

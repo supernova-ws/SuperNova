@@ -321,4 +321,190 @@ function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
   return $que;
 }
 
+/**
+ * HandleTechnologieBuild.php
+ *
+ * @version 1.1
+ * @copyright 2008 by Chlorel for XNova
+ */
+
+// -----------------------------------------------------------------------------------------------------------
+// Teste s'il y a une technologie en cours de realisation
+// Paramatres :
+// $planetrow -> Planete sur laquelle on entre dans le laboratoire
+// $user   -> Joueur
+// Reponse :
+// Tableau de 2 elements
+//     ['OnWork'] -> Boolean .. Vrai ou Faux
+//     ['WorkOn'] -> Table de l'enregistrement de la planete sur laquelle s'effectue la techno
+function HandleTechnologieBuild(&$user, &$planetrow)
+{
+  global $sn_data, $time_now, $lang;
+
+  if(!$user['b_tech_planet'])
+  {
+    return;
+  }
+
+  if($user['b_tech_planet'] != $planetrow['id'])
+  {
+    $planet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['b_tech_planet']}' LIMIT 1;", '', true);
+  }
+  else
+  {
+    $planet = $planetrow;
+  }
+
+  if($planet['b_tech'] && $planet['b_tech_id'] && $planet['b_tech'] <= $time_now)
+  {
+    $unit_id = $planet['b_tech_id'];
+    $unit_db_name = $sn_data[$unit_id]['name'];
+
+    $user[$unit_db_name]++;
+    msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_research_from'], $lang['msg_que_research_subject'], sprintf($lang['msg_que_research_message'], $lang['tech'][$planet['b_tech_id']], $user[$unit_db_name]));
+
+    $quest_list = qst_get_quests($user['id']);
+    $quest_triggers = qst_active_triggers($quest_list);
+    $quest_rewards = array();
+    // TODO: Check mutiply condition quests
+    $quest_trigger_list = array_keys($quest_triggers, $unit_id);
+    foreach($quest_trigger_list as $quest_id)
+    {
+      if($quest_list[$quest_id]['quest_unit_amount'] <= $user[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
+      {
+        $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards'];
+        $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
+      }
+    }
+    qst_reward($user, $planet, $quest_rewards, $quest_list);
+
+    doquery("UPDATE `{{planets}}` SET `b_tech` = '0', `b_tech_id` = '0' WHERE `id` = '{$planet['id']}' LIMIT 1;");
+    doquery("UPDATE `{{users}}` SET `{$unit_db_name}` = `{$unit_db_name}` + 1, `b_tech_planet` = '0' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    $user = doquery("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1;", '', true);
+
+    $build_data = eco_get_build_data($user, $planet, $unit_id, $user[$sn_data[$unit_id]['name']] - 1);
+    $build_data = $build_data[BUILD_CREATE];
+    $xp_incoming = 0;
+    foreach($sn_data['groups']['resources_loot'] as $resource_id)
+    {
+      $xp_incoming += $build_data[$resource_id];
+    }
+    rpg_level_up($user, RPG_TECH, $xp_incoming / 1000);
+
+    $planet["b_tech_id"] = 0;
+  }
+  elseif ($planet["b_tech_id"] == 0)
+  {
+    // Il n'y a rien a l'ouest ...
+    // Pas de Technologie en cours devait y avoir un bug lors de la derniere connexion
+    // On met l'enregistrement informant d'une techno en cours de recherche a jours
+    doquery("UPDATE `{{users}}` SET `b_tech_planet` = '0'  WHERE `id` = '{$user['id']}' LIMIT 1;");
+  }
+}
+
+// History revision
+// 1.0 - mise en forme modularisation version initiale
+// 1.1 - Correction retour de fonction (retourne un tableau a la place d'un flag)
+
+/**
+ * eco_bld_handle_que.php
+ * Handles building in hangar
+ *
+ * @oldname HandleElementBuildingQueue.php
+ * @package economic
+ * @version 2
+ *
+ * Revision History
+ * ================
+ *    2 - copyright (c) 2010 by Gorlum for http://supernova.ws
+ *      [!] Full rewrite
+ *      [%] Fixed stupid bug that allows to build several fast-build
+ *          units utilizing build-time of slow-build units upper in que
+ *      [~] Some optimizations and speedups
+ *      [~] Complies with PCG1
+ *
+ *    1 - copyright 2008 By Chlorel for XNova
+ */
+
+function eco_bld_que_hangar($user, &$planet, $production_time)
+{
+  global $sn_data;
+
+  $quest_rewards = array();
+  if ($planet['b_hangar_id'] != 0)
+  {
+    $hangar_time = $planet['b_hangar'] + $production_time;
+    $que = explode(';', $planet['b_hangar_id']);
+
+    $quest_list = qst_get_quests($user['id']);
+    $quest_triggers = qst_active_triggers($quest_list);
+
+    $built = array();
+    $new_hangar = '';
+    $skip_rest = false;
+    foreach ($que as $que_string)
+    {
+      if ($que_string)
+      {
+        $que_data = explode(',', $que_string);
+
+        $unit_id  = $que_data[0];
+        $count = $que_data[1];
+        $build_data = eco_get_build_data($user, $planet, $unit_id);
+        $build_time = $build_data[BUILD_CREATE][RES_TIME];
+//        $build_time = GetBuildingTime($user, $planet, $unit_id);
+
+        if(!$skip_rest)
+        {
+          $unit_db_name = $sn_data[$unit_id]['name'];
+
+          $planet_unit = $planet[$unit_db_name];
+          while ($hangar_time >= $build_time && $count > 0)
+          {
+            $hangar_time -= $build_time;
+            $count--;
+            $built[$unit_id]++;
+            $planet_unit++;
+          }
+          $planet[$unit_db_name] = $planet_unit;
+
+          // TODO: Check mutiply condition quests
+          $quest_trigger_list = array_keys($quest_triggers, $unit_id);
+          foreach($quest_trigger_list as $quest_id)
+          {
+            if($quest_list[$quest_id]['quest_unit_amount'] <= $planet[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
+            {
+              $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards'];
+              $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
+            }
+          }
+
+          if($count)
+          {
+            $skip_rest = true;
+          }
+        }
+        if($count > 0)
+        {
+          $new_hangar .= "{$unit_id},{$count};";
+        }
+      }
+    }
+    if(!$new_hangar)
+    {
+      $hangar_time = 0;
+    }
+    $planet['b_hangar']    = $hangar_time;
+    $planet['b_hangar_id'] = $new_hangar;
+  } else {
+    $built = '';
+    $planet['b_hangar'] = 0;
+  }
+
+  return array(
+    'built' => $built,
+    'rewards' => $quest_rewards,
+  );
+}
+
 ?>

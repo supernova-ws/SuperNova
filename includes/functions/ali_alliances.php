@@ -1,6 +1,6 @@
 <?php
 
-function ALI_rankListSave($ranks)
+function ali_rank_list_save($ranks)
 {
   global $user;
 

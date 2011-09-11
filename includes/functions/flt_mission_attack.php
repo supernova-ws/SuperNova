@@ -46,12 +46,12 @@ function flt_mission_attack($mission_data)
     $fleets = doquery('SELECT * FROM {{fleets}} WHERE fleet_group='.$fleet_row['fleet_group']);
     while ($fleet = mysql_fetch_assoc($fleets))
     {
-      BE_attackFleetFill(&$attackFleets, $fleet);
+      coe_attack_fleet_fill(&$attackFleets, $fleet);
     }
   }
   else
   {
-    BE_attackFleetFill(&$attackFleets, $fleet_row);
+    coe_attack_fleet_fill(&$attackFleets, $fleet_row);
   }
 
   $db_admiral_name = $sn_data[MRC_ADMIRAL]['name'];
@@ -83,7 +83,7 @@ function flt_mission_attack($mission_data)
   $fleets = doquery('SELECT * FROM {{fleets}} WHERE `fleet_end_galaxy` = '. $fleet_row['fleet_end_galaxy'] .' AND `fleet_end_system` = '. $fleet_row['fleet_end_system'] .' AND `fleet_end_planet` = '. $fleet_row['fleet_end_planet'] . ' AND `fleet_end_type` = '. $fleet_row['fleet_end_type'] .' AND fleet_start_time<'.$time_now.' AND fleet_end_stay>='.$time_now);
   while ($fleet = mysql_fetch_assoc($fleets))
   {
-    BE_attackFleetFill(&$defenseFleets, $fleet, 'def');
+    coe_attack_fleet_fill(&$defenseFleets, $fleet, 'def');
   }
 
   $start = microtime(true);
@@ -198,7 +198,7 @@ function flt_mission_attack($mission_data)
   doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
 
   //MadnessRed CR Creation.
-  $raport = formatCR($result, $loot['looted'], $MoonChance, $GottenMoon, $totaltime);
+  $raport = coe_report_format($result, $loot['looted'], $MoonChance, $GottenMoon, $totaltime);
   $raport = $raport['html'];
   $rid = md5($raport);
   $QryInsertRapport  = 'INSERT INTO `{{rw}}` SET ';

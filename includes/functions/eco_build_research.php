@@ -51,13 +51,13 @@ function ResearchBuildingPage(&$user, &$planet, $que)
     
     case 'build':
       $tech_id = sys_get_param_int('tech');
+      $build_data            = eco_get_build_data($user, $planet, $tech_id, $user[$sn_data[$tech_id]['name']]);
       if($build_planet['b_tech_id'])
       {
         $message = $lang['build_research_in_progress'];
       }
-      elseif(!eco_lab_is_building($que) && in_array($tech_id, $sn_data['groups']['tech']) && eco_can_build_unit($user, $planet, $tech_id) && IsElementBuyable($user, $planet, $tech_id))
+      elseif(!eco_lab_is_building($que) && in_array($tech_id, $sn_data['groups']['tech']) && eco_can_build_unit($user, $planet, $tech_id) && $build_data['CAN'][BUILD_CREATE])
       {
-        $build_data            = eco_get_build_data($user, $planet, $tech_id, $user[$sn_data[$tech_id]['name']]);
         $build_time_end        = $build_data[BUILD_CREATE][RES_TIME] + $time_now;
         doquery("UPDATE {{planets}} SET `b_tech_id` = '{$tech_id}', `b_tech` = '{$build_time_end}', 
           `metal` = `metal` - {$build_data[BUILD_CREATE][RES_METAL]}, `crystal` = `crystal` - '{$build_data[BUILD_CREATE][RES_CRYSTAL]}', `deuterium` = `deuterium` - '{$build_data[BUILD_CREATE][RES_DEUTERIUM]}' 
@@ -118,7 +118,8 @@ function ResearchBuildingPage(&$user, &$planet, $que)
       'CRYSTAL_FLEET'      => pretty_number($temp[RES_CRYSTAL] + $fleet_list['own']['total'][RES_CRYSTAL], true, true),
       'DEUTERIUM_FLEET'    => pretty_number($temp[RES_DEUTERIUM] + $fleet_list['own']['total'][RES_DEUTERIUM], true, true),
 
-      'BUILD_CAN2'         => IsElementBuyable($user, $planet, $Tech) && !eco_lab_is_building($que),
+//      'BUILD_CAN2'         => IsElementBuyable($user, $planet, $Tech) && !eco_lab_is_building($que),
+      'BUILD_CAN2'         => $build_data['CAN'][BUILD_CREATE], // ($user, $planet, $Tech) && !eco_lab_is_building($que),
     ));
   }
 
