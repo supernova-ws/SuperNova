@@ -5,8 +5,8 @@ production-use! Code is provided "as-is". You use at your own risk! The  author
 is not liable for material, moral, karmic, spiritual,  and  any  other  damages
 caused you to use, non-, the very existence of this code or any other way.
 
-WARNING! Although heart failure is a clone oGeym, it is not  OFFLAYK!  Ie  many
-aspects of the game differ from the official oGeyma as well  as  from  the  RR.
+WARNING! Although Supernova is a oGame clone, it is not like offical  game!  Ie
+many aspects of the game differ from the official oGame as well as from the RR.
 Slider changed, that would fit my understanding of an  interesting  game.  Take
 With this in mind when deciding - to install this engine yourself or not.
 
