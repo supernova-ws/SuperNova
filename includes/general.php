@@ -1,10 +1,5 @@
 <?php
 
-function get_fleet_speed()
-{
-  return $GLOBALS['config']->fleet_speed;
-}
-
 function get_game_speed()
 {
   return $GLOBALS['config']->game_speed;
@@ -12,30 +7,14 @@ function get_game_speed()
 
 // ----------------------------------------------------------------------------------------------------------------
 // Fonction de lecture / ecriture / exploitation de templates
-function ReadFromFile($filename)
+function sys_file_read($filename)
 {
   return @file_get_contents($filename);
 }
 
-function SaveToFile($filename, $content)
+function sys_file_write($filename, $content)
 {
   return @file_put_contents($filename, $content);
-}
-
-// ----------------------------------------------------------------------------------------------------------------
-//
-function GetNextJumpWaitTime($CurMoon)
-{
-  global $sn_data, $time_now;
-
-  $JumpGateLevel = $CurMoon[$sn_data[43]['name']];
-  if($JumpGateLevel)
-  {
-    $NextJumpTime = $CurMoon['last_jump_time'] + abs(60 * 60 / $JumpGateLevel);
-    $RestWait = $NextJumpTime > $time_now ? $NextJumpTime - $time_now : 0;
-  }
-
-  return isset($RestWait) ? $RestWait : 0;
 }
 
 /**
@@ -149,18 +128,6 @@ function GetSpyLevel(&$user)
 function GetMaxFleets(&$user)
 {
   return mrc_modify_value($user, false, MRC_COORDINATOR, 1 + $user[$GLOBALS['sn_data'][TECH_COMPUTER]['name']]);
-}
-
-function flt_get_fleets_flying(&$user)
-{
-  $fleet_flying_list = array();
-  $fleet_flying_query = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner = {$user['id']}");
-  while($fleet_flying_row = mysql_fetch_assoc($fleet_flying_query))
-  {
-    $fleet_flying_list[0][] = $fleet_flying_row;
-    $fleet_flying_list[$fleet_flying_row['fleet_mission']][] = &$fleet_flying_list[0][count($fleet_flying_list)-1];
-  }
-  return $fleet_flying_list;
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -303,11 +270,6 @@ function sys_get_param_str_both($param_name, $default = '')
 {
   $param = strip_tags(trim(sys_get_param($param_name, $default)));
   return array('raw' => $param, 'str' => mysql_real_escape_string($param));
-}
-
-function get_missile_range()
-{
-  return max(0, $GLOBALS['user'][$GLOBALS['sn_data'][TECH_ENIGNE_ION]['name']] * 5 - 1);
 }
 
 function GetPhalanxRange($phalanx_level)
@@ -532,27 +494,6 @@ function sys_time_human($time, $full = false)
     ($full || $hours   ? "{$hours} {$lang['sys_hrs']}&nbsp;" : '') .
     ($full || $minutes ? "{$minutes} {$lang['sys_min']}&nbsp;" : '') .
     ($full || $seconds ? "{$seconds} {$lang['sys_sec']}" : '');
-}
-
-function nws_render(&$template, $query_where = '', $query_limit = 0)
-{
-  global $config, $time_now;
-
-  $announce_list = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} {$query_where} ORDER BY `tsTimeStamp` DESC" . ($query_limit ? " LIMIT {$query_limit}" : ''));
-
-  $template->assign_var('NEWS_COUNT', mysql_num_rows($announce_list));
-
-  while($announce = mysql_fetch_assoc($announce_list))
-  {
-    $template->assign_block_vars('announces', array(
-      'ID'         => $announce['idAnnounce'],
-      'TIME'       => $announce['tsTimeStamp'],
-      'ANNOUNCE'   => sys_bbcodeParse($announce['strAnnounce']),
-      'DETAIL_URL' => $announce['detail_url'],
-      'NEW'        => $announce['unix_time'] + $config->game_news_actual >= $time_now,
-      'FUTURE'     => $announce['unix_time'] > $time_now,
-    ));
-  }
 }
 
 ?>

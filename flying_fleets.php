@@ -42,8 +42,6 @@ if (!$planetrow)
   $parse['ErrorNoPlanetRow'] = parsetemplate(gettemplate('message_body'), $parse_err);
 }
 
-CheckPlanetUsedFields($planetrow);
-
 $template = gettemplate('flying_fleets', true);
 
 $i  = 0;

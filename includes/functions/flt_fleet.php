@@ -132,4 +132,23 @@ function flt_expand($target)
   return $arr_fleet;
 }
 
+function flt_gate_time_to_jump($CurMoon)
+{
+  global $sn_data, $time_now;
+
+  $JumpGateLevel = $CurMoon[$sn_data[43]['name']];
+  if($JumpGateLevel)
+  {
+    $NextJumpTime = $CurMoon['last_jump_time'] + abs(60 * 60 / $JumpGateLevel);
+    $RestWait = $NextJumpTime > $time_now ? $NextJumpTime - $time_now : 0;
+  }
+
+  return isset($RestWait) ? $RestWait : 0;
+}
+
+function flt_get_missile_range()
+{
+  return max(0, $GLOBALS['user'][$GLOBALS['sn_data'][TECH_ENIGNE_ION]['name']] * 5 - 1);
+}
+
 ?>

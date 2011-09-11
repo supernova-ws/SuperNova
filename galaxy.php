@@ -45,8 +45,6 @@ $CanDestroy    = $planetrow[$sn_data[SHIP_DEATH_STAR]['name']];
 $maxfleet       = doquery("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
 $maxfleet_count = $maxfleet['flying_fleet_count'];
 
-CheckPlanetUsedFields($planetrow);
-
 if ($mode == 1) {
   if ($POST_galaxyLeft)
     $galaxy--;
@@ -85,7 +83,7 @@ $template = gettemplate('universe', true);
 // $UserPoints    = doquery("SELECT * FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."'", '', true);
 $CurrentPoints = $user['total_points'];
 
-$MissileRange  = get_missile_range();
+$MissileRange  = flt_get_missile_range();
 $PhalanxRange  = GetPhalanxRange($HavePhalanx);
 
 $planet_precache_query = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$galaxy} AND `system` = {$system};");

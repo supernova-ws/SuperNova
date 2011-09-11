@@ -17,7 +17,7 @@
     Rewrite and optimization by Gorlum for http://ogame.triolan.com.ua
   */
 
-function formatCR_Fleet(&$dataInc, &$data_prev, $isAttacker, $isLastRound)
+function coe_report_format_fleet(&$dataInc, &$data_prev, $isAttacker, $isLastRound)
 {
   global $lang;
 
@@ -110,7 +110,7 @@ function formatCR_Fleet(&$dataInc, &$data_prev, $isAttacker, $isLastRound)
   return $html;
 };
 
-function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_float) {
+function coe_report_format (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_float) {
 
   global $lang;
 
@@ -152,8 +152,8 @@ function formatCR (&$result_array,&$steal_array,&$moon_int,$moon_string,&$time_f
     $data_prev = $round_no == 1 ? false : $result_array['rw'][$round_no-2];
     $data['defCoord'] = $defenderCoord;
 
-    $html .= formatCR_Fleet($data, $data_prev, true, $isLastRound);
-    $html .= formatCR_Fleet($data, $data_prev, false, $isLastRound);
+    $html .= coe_report_format_fleet($data, $data_prev, true, $isLastRound);
+    $html .= coe_report_format_fleet($data, $data_prev, false, $isLastRound);
 
     //HTML What happens?
     if (!$isLastRound){

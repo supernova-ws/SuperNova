@@ -241,8 +241,10 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
         break;
       };
 
-      $unit_resources = GetElementRessources ( $Element, $Count );
-
+      $unit_resources['metal'] = $sn_data[$Element]['metal'] * $Count;
+      $unit_resources['crystal'] = $sn_data[$Element]['crystal'] * $Count;
+      $unit_resources['deuterium'] = $sn_data[$Element]['deuterium'] * $Count;
+      
       foreach($unit_resources as $res_name => $res_amount)
       {
         $units_cost[$res_name] += $res_amount;
@@ -310,7 +312,9 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
     if(eco_can_build_unit($user, $planet, $Element))
     {
       // On regarde si on peut en acheter au moins 1
-      $CanBuildOne         = IsElementBuyable($user, $planet, $Element, false);
+      $build_data = eco_get_build_data($user, $planet, $Element);
+      $CanBuildOne         = $build_data['CAN'][BUILD_CREATE];//IsElementBuyable($user, $planet, $Element, false);
+
       // Disponibilité actuelle
       $ElementCount        = $planet[$sn_data[$Element]['name']];
 
@@ -344,9 +348,9 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
       if ($CanBuildOne) {
         if (!eco_hangar_is_building ( $que ))
         {
-          if ($restrict == 2 AND $baubar == 0) {
+          if ($restrict == 2 && $baubar == 0) {
             $unit_message .= $lang['only_one'];
-          } elseif ($restrict == 1 AND !$baubar) {
+          } elseif ($restrict == 1 && !$baubar) {
             $unit_message .= $lang['b_no_silo_space'];
           } else {
             $TabIndex++;
@@ -356,7 +360,7 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
         }
       }
 
-      $build_data = eco_get_build_data($user, $planet, $Element, 0);
+//      $build_data = eco_get_build_data($user, $planet, $Element, 0);
 
       $temp[RES_METAL]     = floor($planet['metal'] - $build_data[BUILD_CREATE][RES_METAL]); // + $fleet_list['own']['total'][RES_METAL]
       $temp[RES_CRYSTAL]   = floor($planet['crystal'] - $build_data[BUILD_CREATE][RES_CRYSTAL]); // + $fleet_list['own']['total'][RES_CRYSTAL]

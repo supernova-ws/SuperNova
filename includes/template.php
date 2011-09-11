@@ -264,7 +264,7 @@ function ShowTopNavigationBar($user, $planetrow)
   $min         = date('i');
   $sec         = date('s');
 
-  $fleet_flying_list = flt_get_fleets_flying($user);
+  $fleet_flying_list = tpl_get_fleets_flying($user);
   tpl_topnav_event_build($template, $fleet_flying_list[0]);
   tpl_topnav_event_build($template, $fleet_flying_list[MT_EXPLORE], 'expedition');
 
@@ -421,7 +421,7 @@ function gettemplate($templatename, $is_phpbb = false)
   }
   else
   {
-    return ReadFromFile(TEMPLATE_DIR . '/' . $templatename);
+    return sys_file_read(TEMPLATE_DIR . '/' . $templatename);
   }
 }
 
@@ -439,6 +439,18 @@ function tpl_login_lang(&$template, $id_ref)
   {
     $template->assign_block_vars('language', $lng_data);
   }
+}
+
+function tpl_get_fleets_flying(&$user)
+{
+  $fleet_flying_list = array();
+  $fleet_flying_query = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner = {$user['id']}");
+  while($fleet_flying_row = mysql_fetch_assoc($fleet_flying_query))
+  {
+    $fleet_flying_list[0][] = $fleet_flying_row;
+    $fleet_flying_list[$fleet_flying_row['fleet_mission']][] = &$fleet_flying_list[0][count($fleet_flying_list)-1];
+  }
+  return $fleet_flying_list;
 }
 
 ?>

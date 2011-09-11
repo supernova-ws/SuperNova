@@ -309,7 +309,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     }
 
     $distance = abs($planet_dst['system'] - $planet_src['system']);
-    $mip_range = get_missile_range();
+    $mip_range = flt_get_missile_range();
     if($distance > $mip_range || $planet_dst['galaxy'] != $planet_src['galaxy'])
     {
       return ATTACK_MISSILE_TOO_FAR;

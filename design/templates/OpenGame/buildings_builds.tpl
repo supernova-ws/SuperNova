@@ -98,7 +98,12 @@ function eco_struc_show_unit_info(unit_id, no_color)
     var pre_href = '<a href="buildings.php?mode={QUE_ID}&action=';
     if(unit['level'] > 0 && unit['destroy_can'] != 0)
     {
-      element_cache['unit_destroy_link'].innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '">' + unit_destroy_link + '</a>';
+      element_cache['unit_destroy_link'].innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '">' + unit_destroy_link + '<br />'
+      + language['sys_metal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_metal']), 0, 'lime') + ' ' 
+      + language['sys_crystal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_crystal']), 0, 'lime') + ' ' 
+      + language['sys_deuterium'][0] + ':' + sn_format_number(parseFloat(unit['destroy_deuterium']), 0, 'lime') + ' '
+      + unit['destroy_time']
+      + '</a>';
     }
     if(planet['fields_free'] > 0 && unit['build_can'] != 0)
     {
@@ -193,7 +198,7 @@ function eco_struc_unborder_unit(unit_id)
     </tr>
   <!-- ENDIF -->
 
-  <!-- IF METAL > 99999999999 || CRYSTAL > 9999999999 || DEUTERIUM > 9999999999 -->
+  <!-- IF METAL > 99999999999 || CRYSTAL > 9999999999 || DEUTERIUM > 9999999999 || METAL < -9999999999 || CRYSTAL < -999999999 || DEUTERIUM < -999999999-->
     <!-- DEFINE $FONT_SIZE = '80%' -->
   <!-- ELSE -->
     <!-- DEFINE $FONT_SIZE = '100%' -->
@@ -285,10 +290,10 @@ function eco_struc_unborder_unit(unit_id)
           <span style="position: absolute; bottom: 0px; right: 0px;" class="icon_alpha" onclick="document.location='infos.php?gid={production.ID}'">
             <div class="icons icon-info"></div>
           </span>
-          
-          <!-- IF     production.METAL_REST_NUM >= 100000000000 || production.CRYSTAL_REST_NUM >= 100000000000 || production.DEUTERIUM_REST_NUM >= 100000000000 -->
+
+          <!-- IF     production.METAL_REST_NUM > 999999999 || production.CRYSTAL_REST_NUM > 999999999 || production.DEUTERIUM_REST_NUM > 999999999 || production.METAL_REST_NUM < -99999999 || production.CRYSTAL_REST_NUM < -99999999 || production.DEUTERIUM_REST_NUM < -99999999 -->
             <!-- DEFINE $FONT_SIZE = '80%' -->
-          <!-- ELSEIF production.METAL_REST_NUM >= 1000000000   || production.CRYSTAL_REST_NUM >= 1000000000   || production.DEUTERIUM_REST_NUM >= 1000000000 -->
+          <!-- ELSEIF production.METAL_REST_NUM > 99999999  || production.CRYSTAL_REST_NUM > 99999999  || production.DEUTERIUM_REST_NUM > 99999999  || production.METAL_REST_NUM < -9999999  || production.CRYSTAL_REST_NUM < -9999999  || production.DEUTERIUM_REST_NUM < -9999999  -->
             <!-- DEFINE $FONT_SIZE = '90%' -->
           <!-- ELSE -->
             <!-- DEFINE $FONT_SIZE = '100%' -->

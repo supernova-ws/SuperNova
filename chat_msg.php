@@ -90,7 +90,7 @@ while($chat_row = mysql_fetch_object($query))
   $chat[] = array(
     'TIME' => date(FMT_DATE_TIME, htmlentities($chat_row->timestamp, ENT_QUOTES, 'utf-8')),
     'NICK' => $nick,
-    'TEXT' => CHT_messageParse(htmlentities($chat_row->message, ENT_QUOTES, 'utf-8')),
+    'TEXT' => cht_message_parse(htmlentities($chat_row->message, ENT_QUOTES, 'utf-8')),
   );
 }
 

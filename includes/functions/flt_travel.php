@@ -47,7 +47,7 @@ function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 1
     $consumption = round($distance * $consumption / 35000) + 1;
   }
 
-  return array('distance' => $distance, 'duration' => $duration, 'consumption' => $consumption);
+  return array('fleet_speed' => $fleet_speed,'distance' => $distance, 'duration' => $duration, 'consumption' => $consumption);
 }
 
 function get_ship_data($ship_id, $user)
@@ -96,6 +96,11 @@ function flt_fleet_speed($user, $fleet)
   }
 
   return empty($speeds) ? 0 : min($speeds);
+}
+
+function get_fleet_speed()
+{
+  return $GLOBALS['config']->fleet_speed;
 }
 
 ?>

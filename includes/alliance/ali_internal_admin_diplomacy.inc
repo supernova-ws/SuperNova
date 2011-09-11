@@ -196,8 +196,8 @@ while($offer = mysql_fetch_assoc($query))
     'NAME'     => $offer['ally_name'],
     'RELATION' => $lang['ali_dip_relations'][$offer['alliance_negotiation_relation']],
     'TIME'     => date(FMT_DATE_TIME, $offer['alliance_negotiation_time']),
-    'TEXT'     => CHT_messageParse($offer['alliance_negotiation_propose']),
-    'RESPONSE' => CHT_messageParse($offer['alliance_negotiation_response']),
+    'TEXT'     => cht_message_parse($offer['alliance_negotiation_propose']),
+    'RESPONSE' => cht_message_parse($offer['alliance_negotiation_response']),
     'STATUS'   => $offer['alliance_negotiation_status'],
     'OWNER'    => $offer['owner'],
   ));

@@ -28,14 +28,6 @@
 
 if (!defined('INSIDE')) die();
 
-global $sn_message_groups, $sn_message_class_list;
-$lang['opt_custom'] = $lang['opt_custom'] === null ? array() : $lang['opt_custom'];
-foreach($sn_message_groups['switchable'] as $option_id)
-{
-  $option_name = $sn_message_class_list[$option_id]['name'];
-  $lang['opt_custom']["opt_{$option_name}"] = &$lang['msg_class'][$option_id];
-}
-
 $lang = array_merge($lang, array(
   'opt_header' => 'User options',
   'opt_messages' => 'Automatic alerts',
