@@ -597,38 +597,15 @@ $lang = array_merge($lang, array(
     3 => 'Administrator',
   ),
 
-));
-
-// You CAN NOT merge those array_merge with previous one!
-$lang = array_merge($lang, array(
-  'sys_lessThen15min'   => '&lt; 15 ' . $lang['sys_min_short'],
-
   'user_level_shortcut' => array(
-    0 => $lang['user_level'][0][0],
-    1 => $lang['user_level'][1][0],
-    2 => $lang['user_level'][2][0],
-    3 => $lang['user_level'][3][0],
+    0 => 'P',
+    1 => 'M',
+    2 => 'O',
+    3 => 'A',
   ),
 
-// Compatibility layer - to work with old files
-/*
-  'sys_resource' => array(
-    1 => $lang['sys_metal'],
-    2 => $lang['sys_crystal'],
-    3 => $lang['sys_deuterium'],
-    4 => $lang['sys_dark_matter'],
-    5 => $lang['sys_energy'],
-  ),
+  'sys_lessThen15min'   => '&lt; 15 min',
 
-  'sys_planet_type1'    => "Planet",
-  'sys_planet_type2' 	  => "Debris Field",
-  'sys_planet_type3'    => "Moon",
-
-  'sys_planet_type_sh1' => "(P)",
-  'sys_planet_type_sh2' => "(D)",
-  'sys_planet_type_sh3' => "(M)",
-
-*/
 ));
 
 ?>

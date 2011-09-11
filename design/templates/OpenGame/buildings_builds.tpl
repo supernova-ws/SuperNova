@@ -193,7 +193,7 @@ function eco_struc_unborder_unit(unit_id)
     </tr>
   <!-- ENDIF -->
 
-  <!-- IF METAL > 99999999999 || CRYSTAL > 9999999999 || DEUTERIUM > 9999999999 -->
+  <!-- IF METAL > 99999999999 || CRYSTAL > 9999999999 || DEUTERIUM > 9999999999 || METAL < -9999999999 || CRYSTAL < -999999999 || DEUTERIUM < -999999999-->
     <!-- DEFINE $FONT_SIZE = '80%' -->
   <!-- ELSE -->
     <!-- DEFINE $FONT_SIZE = '100%' -->
@@ -285,10 +285,10 @@ function eco_struc_unborder_unit(unit_id)
           <span style="position: absolute; bottom: 0px; right: 0px;" class="icon_alpha" onclick="document.location='infos.php?gid={production.ID}'">
             <div class="icons icon-info"></div>
           </span>
-          
-          <!-- IF     production.METAL_REST_NUM >= 100000000000 || production.CRYSTAL_REST_NUM >= 100000000000 || production.DEUTERIUM_REST_NUM >= 100000000000 -->
+
+          <!-- IF     production.METAL_REST_NUM > 999999999 || production.CRYSTAL_REST_NUM > 999999999 || production.DEUTERIUM_REST_NUM > 999999999 || production.METAL_REST_NUM < -99999999 || production.CRYSTAL_REST_NUM < -99999999 || production.DEUTERIUM_REST_NUM < -99999999 -->
             <!-- DEFINE $FONT_SIZE = '80%' -->
-          <!-- ELSEIF production.METAL_REST_NUM >= 1000000000   || production.CRYSTAL_REST_NUM >= 1000000000   || production.DEUTERIUM_REST_NUM >= 1000000000 -->
+          <!-- ELSEIF production.METAL_REST_NUM > 99999999  || production.CRYSTAL_REST_NUM > 99999999  || production.DEUTERIUM_REST_NUM > 99999999  || production.METAL_REST_NUM < -9999999  || production.CRYSTAL_REST_NUM < -9999999  || production.DEUTERIUM_REST_NUM < -9999999  -->
             <!-- DEFINE $FONT_SIZE = '90%' -->
           <!-- ELSE -->
             <!-- DEFINE $FONT_SIZE = '100%' -->
