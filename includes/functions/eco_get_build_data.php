@@ -38,6 +38,10 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
       $cost[BUILD_DESTROY][$resource_id] = floor($resource_cost / 2);
       $can_build = min($can_build, $user[$sn_data[$resource_id]['name']] / $resource_cost) ;
     }
+    elseif($resource_id == RES_ENERGY && $resource_cost)
+    {
+      $can_build = min($can_build, $planet[$sn_data[$resource_id]['name']] / $resource_cost);
+    }
   }
   $cost['CAN'][BUILD_DESTROY] = floor($can_build * 2);
   $cost['CAN'][BUILD_CREATE]  = floor($can_build);
