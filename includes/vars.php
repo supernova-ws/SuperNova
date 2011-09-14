@@ -533,23 +533,6 @@ if (!defined('INSIDE'))
       'type' => UNIT_STRUCTURE,
     ),
 
-    TECH_SPY => array(
-      'name' => 'spy_tech',
-      'location' => LOC_USER,
-      'require' => array(31 => 3),
-      'cost' => array(
-        RES_METAL     => 200,
-        RES_CRYSTAL   => 1000,
-        RES_DEUTERIUM => 200,
-        RES_ENERGY    => 0,
-      ),
-      'metal' => 200,
-      'crystal' => 1000,
-      'deuterium' => 200,
-      'energy' => 0,
-      'factor' => 2,
-    ),
-
     TECH_COMPUTER => array(
       'name' => 'computer_tech',
       'location' => LOC_USER,
@@ -563,6 +546,23 @@ if (!defined('INSIDE'))
       'metal' => 0,
       'crystal' => 400,
       'deuterium' => 600,
+      'energy' => 0,
+      'factor' => 2,
+    ),
+
+    TECH_SPY => array(
+      'name' => 'spy_tech',
+      'location' => LOC_USER,
+      'require' => array(31 => 3),
+      'cost' => array(
+        RES_METAL     => 200,
+        RES_CRYSTAL   => 1000,
+        RES_DEUTERIUM => 200,
+        RES_ENERGY    => 0,
+      ),
+      'metal' => 200,
+      'crystal' => 1000,
+      'deuterium' => 200,
       'energy' => 0,
       'factor' => 2,
     ),
@@ -587,7 +587,7 @@ if (!defined('INSIDE'))
     TECH_SHIELD => array(
       'name' => 'shield_tech',
       'location' => LOC_USER,
-      'require' => array(TECH_ENERGY => 3, 31 => 6),
+      'require' => array(31 => 6, TECH_ENERGY => 3),
       'cost' => array(
         RES_METAL     => 200,
         RES_CRYSTAL   => 600,
@@ -640,7 +640,7 @@ if (!defined('INSIDE'))
     TECH_HYPERSPACE => array(
       'name' => 'hyperspace_tech',
       'location' => LOC_USER,
-      'require' => array(TECH_ENERGY => 5, TECH_SHIELD => 5, 31 => 7),
+      'require' => array(31 => 7, TECH_ENERGY => 10, TECH_SHIELD => 5),
       'cost' => array(
         RES_METAL     => 0,
         RES_CRYSTAL   => 4000,
@@ -657,7 +657,7 @@ if (!defined('INSIDE'))
     TECH_ENGINE_CHEMICAL => array(
       'name' => 'combustion_tech',
       'location' => LOC_USER,
-      'require' => array(TECH_ENERGY => 1, 31 => 1),
+      'require' => array(31 => 1, TECH_ENERGY => 1),
       'cost' => array(
         RES_METAL     => 400,
         RES_CRYSTAL   => 0,
@@ -675,7 +675,7 @@ if (!defined('INSIDE'))
     TECH_ENIGNE_ION => array(
       'name' => 'impulse_motor_tech',
       'location' => LOC_USER,
-      'require' => array(TECH_ENERGY => 1, 31 => 2),
+      'require' => array(31 => 4, TECH_ION => 1),
       'cost' => array(
         RES_METAL     => 2000,
         RES_CRYSTAL   => 4000,
@@ -688,24 +688,6 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 2,
       'speed_increase' => 0.2,
-    ),
-
-    TECH_ENGINE_HYPER => array(
-      'name' => 'hyperspace_motor_tech',
-      'location' => LOC_USER,
-      'require' => array(TECH_HYPERSPACE => 3, 31 => 7),
-      'cost' => array(
-        RES_METAL     => 10000,
-        RES_CRYSTAL   => 20000,
-        RES_DEUTERIUM => 6000,
-        RES_ENERGY    => 0,
-      ),
-      'metal' => 10000,
-      'crystal' => 20000,
-      'deuterium' => 6000,
-      'energy' => 0,
-      'factor' => 2,
-      'speed_increase' => 0.3,
     ),
 
     TECH_LASER => array(
@@ -728,7 +710,7 @@ if (!defined('INSIDE'))
     TECH_ION => array(
       'name' => 'ionic_tech',
       'location' => LOC_USER,
-      'require' => array(31 => 4, TECH_LASER => 5, TECH_ENERGY => 4),
+      'require' => array(31 => 3, TECH_ENERGY => 4, TECH_LASER => 5),
       'cost' => array(
         RES_METAL     => 1000,
         RES_CRYSTAL   => 300,
@@ -757,6 +739,24 @@ if (!defined('INSIDE'))
       'deuterium' => 1000,
       'energy' => 0,
       'factor' => 2,
+    ),
+
+    TECH_ENGINE_HYPER => array(
+      'name' => 'hyperspace_motor_tech',
+      'location' => LOC_USER,
+      'require' => array(31 => 8, TECH_HYPERSPACE => 3),
+      'cost' => array(
+        RES_METAL     => 10000,
+        RES_CRYSTAL   => 20000,
+        RES_DEUTERIUM => 6000,
+        RES_ENERGY    => 0,
+      ),
+      'metal' => 10000,
+      'crystal' => 20000,
+      'deuterium' => 6000,
+      'energy' => 0,
+      'factor' => 2,
+      'speed_increase' => 0.3,
     ),
 
     TECH_RESEARCH => array(
@@ -2053,9 +2053,9 @@ if (!defined('INSIDE'))
 
       // Tech list
       'tech'      => array (
-        TECH_SPY, TECH_COMPUTER, TECH_WEAPON, TECH_SHIELD, TECH_ARMOR, TECH_ENERGY, TECH_HYPERSPACE,
-        TECH_ENGINE_CHEMICAL, TECH_ENIGNE_ION, TECH_ENGINE_HYPER, TECH_LASER, TECH_ION, TECH_PLASMA,
-        TECH_RESEARCH, TECH_EXPEDITION, TECH_COLONIZATION, TECH_GRAVITON),
+        TECH_ENERGY, TECH_COMPUTER, TECH_ARMOR, TECH_WEAPON, TECH_SHIELD, 
+        TECH_ENGINE_CHEMICAL, TECH_ENIGNE_ION, TECH_ENGINE_HYPER, TECH_LASER, TECH_ION, TECH_PLASMA, TECH_HYPERSPACE,
+        TECH_SPY, TECH_EXPEDITION, TECH_COLONIZATION, TECH_GRAVITON, TECH_RESEARCH),
 
       // Mercenary list
       'mercenaries' => array (
