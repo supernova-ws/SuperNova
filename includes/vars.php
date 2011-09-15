@@ -958,11 +958,11 @@ if (!defined('INSIDE'))
       'armor' => 3000,
       'stackable' => true,
     ),
-/*
+
     SHIP_CARGO_HYPER => array(
       'name' => 'planet_cargo_hyper',
       'location' => LOC_PLANET,
-      'require' => array(21 => 10, TECH_ENIGNE_HYPER => 5, MRC_STOCKMAN => 10),
+      'require' => array(21 => 10, TECH_ENGINE_HYPER => 5, MRC_STOCKMAN => 10),
       'cost' => array(
         RES_METAL     => 500000,
         RES_CRYSTAL   => 200000,
@@ -977,13 +977,13 @@ if (!defined('INSIDE'))
       'capacity' => 1000000,
       'engine' => array(
         array(
-          'tech' => TECH_ENIGNE_HYPER,
+          'tech' => TECH_ENGINE_HYPER,
           'speed' => 2000,
           'consumption' => 1000,
           'min_level' => 5,
         ), 
       ), 
-      'tech' => TECH_ENIGNE_HYPER,
+      'tech' => TECH_ENGINE_HYPER,
       'speed' => 2000,
       'consumption' => 1000,
       'shield' => 200,
@@ -993,7 +993,7 @@ if (!defined('INSIDE'))
       'armor' => 70000,
       'stackable' => true,
     ),
-*/
+
     SHIP_FIGHTER_LIGHT => array(
       'name' => 'light_hunter',
       'location' => LOC_PLANET,
@@ -2106,19 +2106,19 @@ if (!defined('INSIDE'))
       'fleet'     => array(
         SHIP_FIGHTER_LIGHT, SHIP_FIGHTER_HEAVY, SHIP_DESTROYER, SHIP_CRUISER,
         SHIP_BOMBER, SHIP_BATTLESHIP, SHIP_DESTRUCTOR, SHIP_DEATH_STAR, SHIP_SUPERNOVA,
-        SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_RECYCLER, SHIP_COLONIZER,
-        SHIP_SPY, SHIP_SATTELITE_SOLAR
+        SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_CARGO_HYPER, 
+        SHIP_RECYCLER, SHIP_COLONIZER, SHIP_SPY, SHIP_SATTELITE_SOLAR
        ),
       // Defensive building list
       'defense'   => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409, 502, 503 ),
 
       // Combat units list
       'combat'    => array(
-        SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_FIGHTER_LIGHT, SHIP_FIGHTER_HEAVY, SHIP_DESTROYER, SHIP_CRUISER, SHIP_COLONIZER, SHIP_RECYCLER, SHIP_SPY, SHIP_BOMBER, SHIP_SATTELITE_SOLAR, SHIP_DESTRUCTOR, SHIP_DEATH_STAR, SHIP_BATTLESHIP, SHIP_SUPERNOVA, 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
+        SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_CARGO_HYPER, SHIP_FIGHTER_LIGHT, SHIP_FIGHTER_HEAVY, SHIP_DESTROYER, SHIP_CRUISER, SHIP_COLONIZER, SHIP_RECYCLER, SHIP_SPY, SHIP_BOMBER, SHIP_SATTELITE_SOLAR, SHIP_DESTRUCTOR, SHIP_DEATH_STAR, SHIP_BATTLESHIP, SHIP_SUPERNOVA, 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
       // Planet active defense list
       'defense_active' => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
       // Transports
-      'flt_transports' => array ( SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER ),
+      'flt_transports' => array ( SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_CARGO_HYPER),
 
       'artifacts' => array(ART_LHC, ART_RCD_SMALL, ART_RCD_MEDIUM, ART_RCD_LARGE),
 

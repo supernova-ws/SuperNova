@@ -941,6 +941,10 @@ debug($update_tables['logs']['log_id'], 31);
       doquery("UPDATE {{users}} AS u LEFT JOIN {{statpoints}} AS s ON s.id_owner = u.id AND s.stat_type = 1 AND s.stat_code = 1 SET u.player_rpg_tech_xp = s.tech_points;");
     }
 
+    upd_alter_table('planets', array(
+      "ADD COLUMN `planet_cargo_hyper` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
+    ), !isset($update_tables['planets']['planet_cargo_hyper']));
+
   upd_do_query('COMMIT;', true);
 //  $new_version = 31;
 

@@ -103,6 +103,7 @@ $lang = array_merge($lang, array(
     SHIP_CARGO_SMALL => 'Малый транспорт',
     SHIP_CARGO_BIG => 'Большой транспорт',
     SHIP_CARGO_SUPER => 'Супертранспорт',
+    SHIP_CARGO_HYPER => 'Гипертранспорт',
     SHIP_RECYCLER => 'Переработчик',
     SHIP_COLONIZER => 'Колонизатор',
     SHIP_FIGHTER_LIGHT => 'Лёгкий истребитель',

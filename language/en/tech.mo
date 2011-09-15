@@ -104,6 +104,7 @@ $lang = array_merge($lang, array(
     SHIP_CARGO_SMALL => 'Small Cargo',
     SHIP_CARGO_BIG => 'Large Cargo',
     SHIP_CARGO_SUPER => 'Super Cargo',
+    SHIP_CARGO_HYPER => 'Hypercargo',
     SHIP_RECYCLER => 'Recycler',
     SHIP_COLONIZER => 'Colony Ship',
     SHIP_FIGHTER_LIGHT => 'Light Fighter',

@@ -24,6 +24,7 @@ function flt_mission_explore($mission_data)
     SHIP_CARGO_SMALL     => 1.0,
     SHIP_CARGO_BIG       => 1.5,
     SHIP_CARGO_SUPER     => 1.0,
+    SHIP_CARGO_HYPER     => 1.0,
     SHIP_FIGHTER_LIGHT   => 0.5,
     SHIP_FIGHTER_HEAVY   => 1.5,
     SHIP_FIGHTER_ASSAULT => 3.0,
@@ -44,6 +45,8 @@ function flt_mission_explore($mission_data)
   $RatioGain = array(
     SHIP_CARGO_SMALL     => 0.1,
     SHIP_CARGO_BIG       => 0.1,
+    SHIP_CARGO_SUPER     => 0.1,
+    SHIP_CARGO_HYPER     => 0.1,
     SHIP_FIGHTER_LIGHT   => 0.1,
     SHIP_FIGHTER_HEAVY   => 0.05,
     SHIP_FIGHTER_ASSAULT => 0.0125,

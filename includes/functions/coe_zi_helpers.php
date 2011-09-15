@@ -38,7 +38,7 @@ function BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $a
 
   global $sn_data, $be_debug_array;
 
-  $SN = array(SHIP_CARGO_SMALL => 'МаТр', SHIP_CARGO_BIG => 'БоТр', SHIP_CARGO_SUPER => 'СуТр', SHIP_FIGHTER_LIGHT => 'ЛгИс', SHIP_FIGHTER_HEAVY => 'ТяИс',
+  $SN = array(SHIP_CARGO_SMALL => 'МаТр', SHIP_CARGO_BIG => 'БоТр', SHIP_CARGO_SUPER => 'СуТр', SHIP_CARGO_HYPER => 'ГпТр', SHIP_FIGHTER_LIGHT => 'ЛгИс', SHIP_FIGHTER_HEAVY => 'ТяИс',
     SHIP_DESTROYER => 'Эсми', SHIP_CRUISER => 'Линк', SHIP_COLONIZER => 'Коло', SHIP_RECYCLER => 'Пере', SHIP_SPY => 'Шпио', SHIP_BOMBER => 'Бомб',
     SHIP_SATTELITE_SOLAR => 'СоСп', SHIP_DESTRUCTOR => 'Уник', SHIP_DEATH_STAR => 'ЗвСм', SHIP_BATTLESHIP => 'Лине', SHIP_SUPERNOVA => 'Нова',
     SHIP_FIGHTER_ASSAULT => 'Штур',
