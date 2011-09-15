@@ -958,7 +958,42 @@ if (!defined('INSIDE'))
       'armor' => 3000,
       'stackable' => true,
     ),
-
+/*
+    SHIP_CARGO_HYPER => array(
+      'name' => 'planet_cargo_hyper',
+      'location' => LOC_PLANET,
+      'require' => array(21 => 10, TECH_ENIGNE_HYPER => 5, MRC_STOCKMAN => 10),
+      'cost' => array(
+        RES_METAL     => 500000,
+        RES_CRYSTAL   => 200000,
+        RES_DEUTERIUM => 100000,
+        RES_ENERGY    => 0,
+      ),
+      'metal' =>     500000,
+      'crystal' =>   200000,
+      'deuterium' => 100000,
+      'energy' => 0,
+      'factor' => 1,
+      'capacity' => 1000000,
+      'engine' => array(
+        array(
+          'tech' => TECH_ENIGNE_HYPER,
+          'speed' => 2000,
+          'consumption' => 1000,
+          'min_level' => 5,
+        ), 
+      ), 
+      'tech' => TECH_ENIGNE_HYPER,
+      'speed' => 2000,
+      'consumption' => 1000,
+      'shield' => 200,
+      'attack' => 50,
+      'sd' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 5, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 5, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'amplify' => array(SHIP_CARGO_SUPER=> 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 100, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 250, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1, 401 => 1, 402 => 1, 403 => 1, 404 => 1, 405 => 1, 406 => 1, 407 => 1, 408 => 1, 409 => 1),
+      'armor' => 70000,
+      'stackable' => true,
+    ),
+*/
     SHIP_FIGHTER_LIGHT => array(
       'name' => 'light_hunter',
       'location' => LOC_PLANET,
@@ -1917,7 +1952,7 @@ if (!defined('INSIDE'))
         STRUC_MINE_CRYSTAL => 10,
         STRUC_MINE_DEUTERIUM => 10,
         STRUC_MINE_SOLAR => 14,
-        STRUC_FACTORY_ROBOT => 3,
+        STRUC_FACTORY_ROBOT => 4,
       ),
     ),
 
