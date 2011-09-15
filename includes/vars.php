@@ -977,13 +977,13 @@ if (!defined('INSIDE'))
       'capacity' => 1000000,
       'engine' => array(
         array(
-          'tech' => TECH_ENIGNE_HYPER,
+          'tech' => TECH_ENGINE_HYPER,
           'speed' => 2000,
           'consumption' => 1000,
           'min_level' => 5,
         ), 
       ), 
-      'tech' => TECH_ENIGNE_HYPER,
+      'tech' => TECH_ENGINE_HYPER,
       'speed' => 2000,
       'consumption' => 1000,
       'shield' => 200,
