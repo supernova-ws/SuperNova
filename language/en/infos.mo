@@ -252,6 +252,11 @@ $lang = array_merge($lang, array(
       'description_short' => 'A giant self-propelled barge equipped with impulse engines. Equipped with a powerful shield, but of weapons has only laser turrent.',
     ),
 
+    SHIP_CARGO_HYPER => array(
+      'description' => 'If Supercargo was "last word in transportation technology" then Hypertransport would be a final point. "Giant" is too weak word to describe this ship. Sized as small moon this transport able to transfer enormeous amount of resources. Only hyperdrives can move fully loaded ship. They allow Hypertransport to slide through Universe with acceptable speed. But price is very high - cost of one ship is about ten times cost of Destructor. Moreover - fuel consumption of this transport will made almost any Emperor cry like a baby. Thou Hypertransport is a ship for a large and powerfull Empires which need to transfer several millions tons of resources at once',
+      'description_short' => 'Cargo ship sized as small moon. Equiped with hyperdrives and able to transfer million ton of resources at once',
+    ),
+
     SHIP_FIGHTER_LIGHT => array(
       'description' => 'Lightweight fighter is highly maneuverable craft, which can be found on almost every planet. Cost is not too big, but the shielding power and capacity of very small.',
       'description_short' => 'Lightweight fighter is highly maneuverable craft, which can be found on almost every planet. Cost is not too big, but the shielding power and capacity of very small.',
