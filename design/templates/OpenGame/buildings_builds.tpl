@@ -291,16 +291,16 @@ function eco_struc_unborder_unit(unit_id)
             <div class="icons icon-info"></div>
           </span>
 
-          <!-- IF     production.METAL_REST_NUM > 999999999 || production.CRYSTAL_REST_NUM > 999999999 || production.DEUTERIUM_REST_NUM > 999999999 || production.METAL_REST_NUM < -99999999 || production.CRYSTAL_REST_NUM < -99999999 || production.DEUTERIUM_REST_NUM < -99999999 -->
+          <!-- IF     (production.METAL && (production.METAL_REST_NUM > 999999999 || production.METAL_REST_NUM < -99999999)) || (production.CRYSTAL && (production.CRYSTAL_REST_NUM > 999999999)) || production.CRYSTAL_REST_NUM < -99999999 || (production.DEUTERIUM && (production.DEUTERIUM_REST_NUM > 999999999  || production.DEUTERIUM_REST_NUM < -99999999)) -->
             <!-- DEFINE $FONT_SIZE = '80%' -->
-          <!-- ELSEIF production.METAL_REST_NUM > 99999999  || production.CRYSTAL_REST_NUM > 99999999  || production.DEUTERIUM_REST_NUM > 99999999  || production.METAL_REST_NUM < -9999999  || production.CRYSTAL_REST_NUM < -9999999  || production.DEUTERIUM_REST_NUM < -9999999  -->
+          <!-- ELSEIF (production.METAL && (production.METAL_REST_NUM > 99999999  || production.METAL_REST_NUM < -9999999 )) || (production.CRYSTAL && (production.CRYSTAL_REST_NUM > 99999999 )) || production.CRYSTAL_REST_NUM < -9999999  || (production.DEUTERIUM && (production.DEUTERIUM_REST_NUM > 99999999   || production.DEUTERIUM_REST_NUM < -9999999 )) -->
             <!-- DEFINE $FONT_SIZE = '90%' -->
           <!-- ELSE -->
             <!-- DEFINE $FONT_SIZE = '100%' -->
           <!-- ENDIF -->
           <span style="position: absolute; top: 45px; left: 0px; width: 100%; font-size: {$FONT_SIZE}; text-align: left;" class="icon_alpha"> <!--  onclick="eco_struc_select_unit({production.ID})" onmouseout="eco_struc_unborder_unit({production.ID})" onmouseover="eco_struc_show_unit_info({production.ID})"> -->
             <!-- IF production.METAL --><div><div style="left: 0px; position: absolute;"><!-- IF $FONT_SIZE == '80%' -->{L_sys_metal_sh}<!-- ELSE -->{L_sys_metal}<!-- ENDIF --></div><div class="fr">{production.METAL_REST}</div></div><br><!-- ENDIF -->
-            <!-- IF production.CRYSTAL --><div><div style="left: 0px; position: absolute;"><!-- IF $FONT_SIZE == '80%' -->{L_sys_crystal_sh}<!-- ELSE -->L_sys_crystal}<!-- ENDIF --></div><div class="fr">{production.CRYSTAL_REST}</div></div><br><!-- ENDIF -->
+            <!-- IF production.CRYSTAL --><div><div style="left: 0px; position: absolute;"><!-- IF $FONT_SIZE == '80%' -->{L_sys_crystal_sh}<!-- ELSE -->{L_sys_crystal}<!-- ENDIF --></div><div class="fr">{production.CRYSTAL_REST}</div></div><br><!-- ENDIF -->
             <!-- IF production.DEUTERIUM --><div><div style="left: 0px; position: absolute;"><!-- IF $FONT_SIZE == '80%' -->{L_sys_deuterium_sh}<!-- ELSE -->{L_sys_deuterium}<!-- ENDIF --></div><div class="fr">{production.DEUTERIUM_REST}</div></div><!-- ENDIF -->
           </span>
 
