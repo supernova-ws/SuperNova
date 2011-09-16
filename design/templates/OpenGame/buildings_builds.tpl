@@ -299,9 +299,9 @@ function eco_struc_unborder_unit(unit_id)
             <!-- DEFINE $FONT_SIZE = '100%' -->
           <!-- ENDIF -->
           <span style="position: absolute; top: 45px; left: 0px; width: 100%; font-size: {$FONT_SIZE}; text-align: left;" class="icon_alpha"> <!--  onclick="eco_struc_select_unit({production.ID})" onmouseout="eco_struc_unborder_unit({production.ID})" onmouseover="eco_struc_show_unit_info({production.ID})"> -->
-            <!-- IF production.METAL --><div><div style="left: 0px; position: absolute;">{L_sys_metal}</div><div class="fr">{production.METAL_REST}</div></div><br><!-- ENDIF -->
-            <!-- IF production.CRYSTAL --><div><div style="left: 0px; position: absolute;">{L_sys_crystal}</div><div class="fr">{production.CRYSTAL_REST}</div></div><br><!-- ENDIF -->
-            <!-- IF production.DEUTERIUM --><div><div style="left: 0px; position: absolute;">{L_sys_deuterium}</div><div class="fr">{production.DEUTERIUM_REST}</div></div><!-- ENDIF -->
+            <!-- IF production.METAL --><div><div style="left: 0px; position: absolute;"><!-- IF $FONT_SIZE == '80%' -->{L_sys_metal_sh}<!-- ELSE -->{L_sys_metal}<!-- ENDIF --></div><div class="fr">{production.METAL_REST}</div></div><br><!-- ENDIF -->
+            <!-- IF production.CRYSTAL --><div><div style="left: 0px; position: absolute;"><!-- IF $FONT_SIZE == '80%' -->{L_sys_crystal_sh}<!-- ELSE -->L_sys_crystal}<!-- ENDIF --></div><div class="fr">{production.CRYSTAL_REST}</div></div><br><!-- ENDIF -->
+            <!-- IF production.DEUTERIUM --><div><div style="left: 0px; position: absolute;"><!-- IF $FONT_SIZE == '80%' -->{L_sys_deuterium_sh}<!-- ELSE -->{L_sys_deuterium}<!-- ENDIF --></div><div class="fr">{production.DEUTERIUM_REST}</div></div><!-- ENDIF -->
           </span>
 
           <span style="position: absolute; top: 0; left: 20%; width: 60%; height: 16px; text-align: center; font-size: 120%;" class="icon_alpha">
