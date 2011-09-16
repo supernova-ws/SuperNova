@@ -27,12 +27,14 @@
         </div>
       </th>
     </tr>
+    <!-- IF .unit -->
     <tr>
       <th class="c_c">{L_sys_id}</th>
       <th class="c_c">{L_adm_name}</th>
       <th class="c_c">{L_adm_on_planet}</th>
       <th class="c_c">{L_adm_planet_change}</th>
     </tr>
+    <!-- ENDIF -->
     <!-- BEGIN unit -->
       <tr>
         <td class="c_r">{unit.ID}</td>
