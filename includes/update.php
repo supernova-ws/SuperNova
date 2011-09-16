@@ -942,7 +942,7 @@ debug($update_tables['logs']['log_id'], 31);
     }
 
     upd_alter_table('planets', array(
-      "ADD COLUMN `planet_cargo_hyper` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
+      "ADD COLUMN `planet_cargo_hyper` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `big_ship_cargo`",
     ), !isset($update_tables['planets']['planet_cargo_hyper']));
 
   upd_do_query('COMMIT;', true);
