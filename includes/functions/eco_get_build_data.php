@@ -43,7 +43,7 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
       $can_build = min($can_build, ($planet['energy_max'] - $planet['energy_used']) / $resource_cost);
     }
   }
-  $can_build = $can_build > 0 ? ceil($can_build) : 0;
+  $can_build = $can_build > 0 ? floor($can_build) : 0;
   $cost['CAN'][BUILD_DESTROY] = floor($can_build * 2);
   $cost['CAN'][BUILD_CREATE]  = floor($can_build);
   $time = $time * 60 * 60 / get_game_speed() / 2500;
