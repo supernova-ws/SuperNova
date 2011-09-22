@@ -159,7 +159,7 @@ class debug
       $q = mysql_fetch_assoc(mysql_query("SELECT max(log_id) AS rows FROM {$dbsettings['prefix']}logs;"))
         or die($fatal_error);
 */
-      $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . mysql_insert_id() . "</b>";
+      $message = "РџРѕР¶Р°Р»СѓР№СЃС‚Р°, СЃРІСЏР¶РёС‚РµСЃСЊ СЃ Р°РґРјРёРЅРѕРј, РµСЃР»Рё РѕС€РёР±РєР° РїРѕРІС‚РѕСЂРёС‚СЃСЏ. РћС€РёР±РєР° в„–: <b>" . mysql_insert_id() . "</b>";
 
       $sys_stop_log_hit = true;
       $GLOBALS['sys_log_disabled'] = true;
@@ -169,7 +169,7 @@ class debug
       }
       else
       {
-        message($message, 'Ошибка', $dest, 0, false);
+        message($message, 'РћС€РёР±РєР°', $dest, 0, false);
       }
     }
     else
