@@ -463,6 +463,31 @@ $lang = array_merge($lang, array(
       'effect' => 'Instantly deploys improved colony on planet',
     ),
 
+    RES_METAL => array(
+      'description' => 'Metametallic iron-normed energy-neutraul compound (shortly "metal") is a basic raw material from which nanobots produces all materials and details used in construction and research. Metal comes in ignots. Each ignot volume is 127 litres and weights 1 metric tonn including protective case. "Iron-normed" means that standard pack of nanobot will produce from 1 ignot 1 tonn of pure iron. "Energy-neutral" means that nanobots will use exact amount of energy which can be extracted from ignot. "Metametallic compaund" means that ignot can include simple and complex chemical substances. Composition of metal ignot can differ from planet to planet and from mine to mine - but their physical characteristics remain the same. Usually metal is slightly radioactive',
+      'effect' => '',
+    ),
+
+    RES_CRYSTAL => array(
+      'description' => 'Crystal is a complex termoplastic polymer which demonstrates Superlight Conduction Effect. SCE - increasing photon speed in a crystall above 300000 km/s. All modern computers uses crystall as material for processing and memory units. Residuals ("anomal assemblies" - i.e. polymers that has same formula but didn\'t demonstrates SCE) used in solar panels whose efficiency is about 100%. Specially selected crystal is a main part of jump-drive - device which allow faster-then-light travels',
+      'effect' => '',
+    ),
+
+    RES_DEUTERIUM => array(
+      'description' => 'Deuterium, also called heavy hydrogen, is one of two stable isotopes of hydrogen. The nucleus of deuterium, called a deuteron, contains one proton and one neutron, whereas the far more common hydrogen isotope, protium, has no neutron in the nucleus. Deuterium used as fuel for termonuclear reactors and all types of ship engines. It is stored in liquefied form in a standard thermally insulated containers which also is a fuel cells for reactors and engines. Ship cargo bays with automatic feeders also serves as "fuel tank" for any ship',
+      'effect' => '',
+    ),
+
+    RES_ENERGY => array(
+      'description' => 'Electric energy - unified type of energy that used everywhere. On planets it\'s usually produced on solar stations and solar sattelites. On space ships and some colonies too far from sun it\'s produced on termonuclear reactors and plants - respectivly',
+      'effect' => '',
+    ),
+
+    RES_DARK_MATTER => array(
+      'description' => 'Dark Matter is matter that neither emits nor scatters light or other electromagnetic radiation, and so cannot be directly detected via optical or radio astronomy. From it we can get an incredible amount of energy. Because of this, and also because of the complexities associated with its production of dark matter is highly appreciated',
+      'effect' => '',
+    ),
+
   ),
 
 ));

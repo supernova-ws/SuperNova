@@ -1901,26 +1901,31 @@ if (!defined('INSIDE'))
     RES_METAL => array(
       'name' => 'metal',
       'location' => LOC_PLANET,
+      'bonus_type' => BONUS_ABILITY,
     ),
 
     RES_CRYSTAL => array(
       'name' => 'crystal',
       'location' => LOC_PLANET,
+      'bonus_type' => BONUS_ABILITY,
     ),
 
     RES_DEUTERIUM => array(
       'name' => 'deuterium',
       'location' => LOC_PLANET,
+      'bonus_type' => BONUS_ABILITY,
     ),
 
     RES_ENERGY => array(
       'name' => 'energy',
       'location' => LOC_PLANET,
+      'bonus_type' => BONUS_ABILITY,
     ),
 
     RES_DARK_MATTER => array(
       'name' => 'dark_matter',
       'location' => LOC_USER,
+      'bonus_type' => BONUS_ABILITY,
     ),
 
     ART_LHC => array(
@@ -2127,6 +2132,8 @@ if (!defined('INSIDE'))
 
       // Resource list
       'resources' => array ( 0 => 'metal', 1 => 'crystal', 2 => 'deuterium', 3 => 'dark_matter'),
+      // Resources all
+      'resources_all' => array (RES_METAL, RES_CRYSTAL, RES_DEUTERIUM, RES_ENERGY, RES_DARK_MATTER),
       // Resources can be produced on planet
       'resources_planet' => array (RES_METAL, RES_CRYSTAL, RES_DEUTERIUM, RES_ENERGY),
       // Resources can be looted from planet

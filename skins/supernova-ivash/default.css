@@ -1,0 +1,310 @@
+/* Universe status styles */
+.allymember {
+  color: lime;
+}
+
+.myplanet {
+  color: red;
+}
+
+.noob {
+  color: #a0ffa0;
+}
+
+.protected {
+  color: yellow;
+}
+
+.strong {
+  color: #ffa0a0;
+}
+
+.vacation {
+  color: skyblue;
+}
+
+.player_active {
+  font-weight: bold;
+}
+
+.inactive {
+/*  color: CCCCCC;*/
+  font-weight: normal;
+}
+
+.longinactive {
+/*  color: 999999;*/
+  font-weight: normal;
+  font-style: italic;
+}
+
+.banned {
+  text-decoration: line-through;
+}
+
+.admin {
+  text-decoration: blink;
+  color: purple;
+}
+
+/* Flying fleet & message color coding */
+.flight {
+}
+
+.return {
+}
+
+.holding {
+}
+
+*.ownattack, .mnl_attaque {
+  color: yellow;
+}
+
+*.ownfederation {
+  color: #33CC00;
+}
+
+*.owndestroy {
+  color: gold;
+}
+
+*.ownhold {
+  color: #80a0C0;
+}
+
+*.ownmissile {
+  color: sienna;
+}
+
+*.ownespionage, *.mnl_spy, .mnl_spy td {
+  color: orange;
+}
+
+*.owntransport, .mnl_transport {
+  color: lime;
+}
+
+*.owndeploy {
+  color: lightgreen;
+}
+
+*.ownharvest, .mnl_exploit {
+  color: green;
+}
+
+*.owncolony {
+  color: blue;
+}
+
+*.ownexpedition, .mnl_expedition {
+  color: lightblue;
+}
+
+.flight .ownattack a, .flight .owncolony a, .flight .owndeploy a, .flight .owndestroy a,
+.flight .ownespionage a, .flight .ownfederation a, .flight .ownharvest a, .flight .ownhold a,
+.flight .ownmissile a, .flight .owntransport a, .flight .ownexpedition a
+{
+  color: #E6EBFB;
+}
+
+*.attack {
+  color: red;
+}
+
+.flight .attack a {
+  color: #E6EBFB;
+}
+
+*.colony {
+  color: lime;
+}
+
+.flight .colony a {
+  color: #E6EBFB;
+}
+
+*.deploy {
+  color: lime;
+}
+
+.flight .deploy a {
+  color: #E6EBFB;
+}
+
+*.destroy {
+  color: gold;
+}
+
+.flight .destroy a {
+  color: #E6EBFB;
+}
+
+*.espionage {
+  color: red;
+}
+
+.flight .espionage a {
+  color: #E6EBFB;
+}
+
+*.federation {
+  color: #CC0000;
+}
+
+.flight .federation a {
+  color: #E6EBFB;
+}
+
+*.harvest {
+  color: lime;
+}
+
+.flight .harvest a {
+  color: #E6EBFB;
+}
+
+*.hold {
+  color: #80a0C0;
+}
+
+.flight .hold a {
+  color: #E6EBFB;
+}
+
+*.missile {
+  color: red;
+}
+
+*.transport {
+  color: lime;
+}
+
+.flight .transport a {
+  color: #E6EBFB;
+}
+
+.combatreport {
+  color: red;
+}
+
+.espionagereport {
+  color: orange;
+}
+
+.timeremaining {
+  color: orange;
+}
+
+.mnl_outbox, .mnl_outbox *
+{
+  background-color: #000000;
+}
+
+.mnl_joueur, .mnl_joueur *
+{
+  background-color: #114444;
+}
+
+.mnl_exploit, .mnl_exploit *
+{
+/*  background-color: #999999;*/
+}
+
+.mnl_buildlist, .mnl_buildlist *
+{
+  color: #000066;
+}
+
+.mnl_alliance, .mnl_alliance *
+{
+  background-color: #446666;
+}
+
+.msg_admin, .msg_admin *
+{
+  color: #9900ff !important;
+  background-color: #ffffff;
+}
+
+.new_message, .new_message *
+{
+  color: #000000;
+  background-color: #ffffff;
+}
+
+/* Message & numbers color coding */
+.ok, .success, .positive {
+  color: lime;
+}
+
+.notice, .zero, .neutral {
+  color: yellow;
+}
+
+.warning {
+  color: orange;
+}
+
+.error, .negative {
+  color: red;
+}
+
+.ok_bg, .success_bg, .positive_bg {
+  background-color: darkgreen;
+}
+
+.notice_bg, .zero_bg, .neutral_bg {
+  background-color: #AAAA00;
+}
+
+.warning_bg {
+  background-color: #924200;
+}
+
+.error_bg, .negative_bg {
+  background-color: darkred;
+}
+
+.errormessage a, .success a, .notice a, .warning a, .error a {
+  text-decoration: underline;
+}
+
+/* Resources color coding*/
+.metal{
+  color: darkgrey;
+}
+
+.crystal{
+  color: cyan;
+}
+
+.deuterium{
+  color: #800080;
+}
+
+.overall{
+  color: white;
+}
+
+.metal_bg{
+  background-color: darkgrey;
+}
+
+.crystal_bg{
+  background-color: cyan;
+}
+
+.deuterium_bg{
+  background-color: #800080;
+}
+
+.overall_ng{
+  background-color: white;
+}
+
+.battle_report_link
+{
+  color: black;
+  background-color: white;
+}

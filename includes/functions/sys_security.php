@@ -75,13 +75,23 @@ function sn_autologin($abort = true)
 
   if(!$GLOBALS['skip_ban_check'] && $user['banaday'])
   {
-    if ($user['banaday'] > $time_now)
+    if($user['banaday'] > $time_now)
     {
       $bantime = date(FMT_DATE_TIME, $user['banaday']);
       // Add ban reason. Add vacation time
-      die ("{$lang['sys_banned_msg']} {$bantime}");
+      if($abort)
+      {
+        die("{$lang['sys_banned_msg']} {$bantime}");
+      }
+      else
+      {
+        unset($user);
+      }
     }
-    doquery("UPDATE {{users}} SET `vacation` = '{$time_now}', banaday=0 WHERE id='{$user['id']}' LIMIT 1;");
+    else
+    {
+      doquery("UPDATE {{users}} SET `vacation` = '{$time_now}', banaday=0 WHERE id='{$user['id']}' LIMIT 1;");
+    }
   }
 
   $IsUserChecked = is_array($user);
