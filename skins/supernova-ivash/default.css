@@ -94,7 +94,7 @@
 }
 
 *.owncolony {
-  color: blue;
+  color: #C76838;
 }
 
 *.ownexpedition, .mnl_expedition {
@@ -213,7 +213,7 @@
 
 .mnl_buildlist, .mnl_buildlist *
 {
-  color: #000066;
+  color: #00B7F3;
 }
 
 .mnl_alliance, .mnl_alliance *
