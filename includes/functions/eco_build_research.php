@@ -105,7 +105,7 @@ function ResearchBuildingPage(&$user, &$planet, $que)
       'METAL_PRINT'        => pretty_number($build_data[BUILD_CREATE][RES_METAL], true, $planet['metal']),
       'CRYSTAL_PRINT'      => pretty_number($build_data[BUILD_CREATE][RES_CRYSTAL], true, $planet['crystal']),
       'DEUTERIUM_PRINT'    => pretty_number($build_data[BUILD_CREATE][RES_DEUTERIUM], true, $planet['deuterium']),
-      'ENERGY_PRINT'       => pretty_number($build_data[BUILD_CREATE][RES_ENERGY], true, $planet['energy_max']),
+      'ENERGY_PRINT'       => pretty_number($build_data[BUILD_CREATE][RES_ENERGY], true, max(1, $planet['energy_max'] - $planet['energy_used'])),
 
       'METAL_REST'         => pretty_number($temp[RES_METAL], true, true),
       'CRYSTAL_REST'       => pretty_number($temp[RES_CRYSTAL], true, true),

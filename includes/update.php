@@ -931,7 +931,7 @@ debug($update_tables['logs']['log_id'], 31);
 
     if(!isset($update_tables['users']['player_rpg_tech_xp']))
     {
-      $config->db_saveItem('eco_scale_storage', 0, !isset($config->eco_scale_storage));
+      $config->db_saveItem('eco_scale_storage', 1, !isset($config->eco_scale_storage));
 
       upd_alter_table('users', array(
         "ADD COLUMN `player_rpg_tech_level` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `dark_matter`",
@@ -946,8 +946,12 @@ debug($update_tables['logs']['log_id'], 31);
     ), !isset($update_tables['planets']['planet_cargo_hyper']));
 
   upd_do_query('COMMIT;', true);
-//  $new_version = 31;
+  $new_version = 31;
 
+  case 31:
+//    upd_log_version_update();
+//    upd_do_query('COMMIT;', true);
+//  $new_version = 31;
 };
 upd_log_message('Upgrade complete.');
 

@@ -305,7 +305,7 @@ elseif ($unit_id >= 502 && $unit_id <= 503)
   $parse['shield_pt'] = pretty_number($sn_data[$unit_id]['shield']);  // Points de Bouclier
   $parse['attack_pt'] = pretty_number($sn_data[$unit_id]['attack']);  // Points d'Attaque
 }
-elseif (in_array($unit_id, $sn_data['groups']['mercenaries']) || in_array($unit_id, $sn_data['groups']['governors']))
+elseif(in_array($unit_id, $sn_data['groups']['mercenaries']) || in_array($unit_id, $sn_data['groups']['governors']) || in_array($unit_id, $sn_data['groups']['artifacts']) || in_array($unit_id, $sn_data['groups']['resources_all']))
 {
   // Officiers
   $PageTPL = gettemplate('info_officiers_general');
@@ -332,7 +332,10 @@ elseif (in_array($unit_id, $sn_data['groups']['mercenaries']) || in_array($unit_
 
   $parse['EFFECT'] = $lang['info'][$unit_id]['effect'];
   $parse['mercenary_bonus'] = $mercenary_bonus;
-  $parse['max_level'] = $lang['sys_level'] . ' ' . ($mercenary['location'] == LOC_USER ? $user[$sn_data[$unit_id]['name']] : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0)) . (isset($mercenary['max']) ? "/{$mercenary['max']}" : '');
+  if(!(in_array($unit_id, $sn_data['groups']['artifacts']) || in_array($unit_id, $sn_data['groups']['resources_all'])))
+  {
+    $parse['max_level'] = $lang['sys_level'] . ' ' . ($mercenary['location'] == LOC_USER ? $user[$sn_data[$unit_id]['name']] : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0)) . (isset($mercenary['max']) ? "/{$mercenary['max']}" : '');
+  }
 }
 
 // ---- Tableau d'evolution
