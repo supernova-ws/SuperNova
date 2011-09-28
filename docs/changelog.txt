@@ -9,10 +9,10 @@
  [@] Эта информация будет интересна только админам и/или разработчикам
  [*] ToDo - см. changelog.todo
 
-Project "SuperNova.WS" Release 31 RC3 "Artifact governors edit localized inflation"
+Project "SuperNova.WS" Release 31 RC4 "Artifact governors edit localized inflation"
 ===================================================================================
 
-Текущая версия 31c3
+Текущая версия 31c4
 -------------------
 
 [!] Скины: Новый скин "supernova-ivash". Автор - Ivash

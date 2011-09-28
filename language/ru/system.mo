@@ -183,6 +183,7 @@ $lang = array_merge($lang, array(
   'imp_fleets' => "Флоты в полете",
   'imp_production' => "Производство",
   'imp_name' => "Название",
+  'imp_research' => "Исследования",
   'sys_fields' => "Сектора",
 
 // Cookies
