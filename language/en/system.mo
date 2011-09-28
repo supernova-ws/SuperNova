@@ -186,6 +186,7 @@ $lang = array_merge($lang, array(
   'imp_fleets' => "Fleets in flight",
   'imp_production' => "Production",
   'imp_name' => "Name",
+  'imp_research' => "Research",
   'sys_fields' => "Fields",
 
 // Cookies

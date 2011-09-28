@@ -158,9 +158,9 @@ function RPG_get_raider_xp($level)
   return rpg_xp_for_level($level, 10, 1.03);
 }
 
-function RPG_get_tech_xp($level)
+function rpg_get_tech_xp($level)
 {
-  return rpg_xp_for_level($level, 10, 1.03);
+  return rpg_xp_for_level($level, 50, 1.03);
 }
 
 ?>
