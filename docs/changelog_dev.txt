@@ -206,6 +206,9 @@ TODO:
 Текущий билд
 ============
 
+2011-10-03 19:08 32a0
+[~] Скины: СН/Иваш - заменен бэкграунд в ячейках заголовка таблицы
+
 2011-09-30 11:10 31d0
 [!] Project "SuperNova.WS" Release 31 "Artifact governors edit localized inflation"
 
