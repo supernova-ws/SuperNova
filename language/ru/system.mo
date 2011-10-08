@@ -558,6 +558,17 @@ $lang = array_merge($lang, array(
   'sys_eco_lack_dark_matter' => 'Не хватает Темной Материи',
 
   // Arrays
+  'sys_build_result' => array(
+    BUILD_ALLOWED => 'Можно построить',
+    BUILD_REQUIRE_NOT_MEET => 'Требования не удовлетворены',
+    BUILD_AMOUNT_WRONG => 'Слишком много',
+    BUILD_QUE_WRONG => 'Несуществующая очередь',
+    BUILD_QUE_UNIT_WRONG => 'Неправильная очередь',
+    BUILD_INDESTRUCTABLE => 'Нельзя уничтожить',
+    BUILD_NO_RESOURCES => 'Не хватает ресурсов',
+    BUILD_NO_UNITS => 'Нет юнитов',
+  ),
+
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'Сверхновая',
     GAME_OGAME     => 'оГейм',

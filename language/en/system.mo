@@ -561,6 +561,17 @@ $lang = array_merge($lang, array(
   'sys_eco_lack_dark_matter' => 'Not enough Dark Matter',
 
   // Arrays
+  'sys_build_result' => array(
+    BUILD_ALLOWED => 'Can be built',
+    BUILD_REQUIRE_NOT_MEET => 'Requirements not met',
+    BUILD_AMOUNT_WRONG => 'Too much',
+    BUILD_QUE_WRONG => 'Queue not exists',
+    BUILD_QUE_UNIT_WRONG => 'Wrong queue',
+    BUILD_INDESTRUCTABLE => 'Can not be destroyed',
+    BUILD_NO_RESOURCES => 'Not enough resources',
+    BUILD_NO_UNITS => 'No units',
+  ),
+
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'SuperNova',
     GAME_OGAME     => 'oGame',

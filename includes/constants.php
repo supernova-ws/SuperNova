@@ -15,8 +15,8 @@ if(!defined('INSIDE'))
 }
 
 define('DB_VERSION', '31');
-define('SN_RELEASE', '31');
-define('SN_VERSION', '32a0');
+define('SN_RELEASE', '32');
+define('SN_VERSION', '32a1');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -242,10 +242,14 @@ define('ACTION_BUY' ,     1);
 define('ACTION_USE',      2);
 
 // *** Check unit availability codes
-define('BUILD_ALLOWED'       , 1);
-define('BUILD_AMOUNT_WRONG'  , 2);
-define('BUILD_QUE_WRONG'     , 3);
-define('BUILD_QUE_UNIT_WRONG', 4);
+define('BUILD_ALLOWED'         , 0); // HARDCODE! DO NOT CHANGE!
+define('BUILD_REQUIRE_NOT_MEET', 1);
+define('BUILD_AMOUNT_WRONG'    , 2);
+define('BUILD_QUE_WRONG'       , 3);
+define('BUILD_QUE_UNIT_WRONG'  , 4);
+define('BUILD_INDESTRUCTABLE'  , 5);
+define('BUILD_NO_RESOURCES'    , 6);
+define('BUILD_NO_UNITS'        , 7);
 
 
 // *** Que types
