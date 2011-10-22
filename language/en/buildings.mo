@@ -75,7 +75,11 @@ $lang = array_merge($lang, array(
   'fleet_on_update' => 'Shipyard busy!',
   'Total_techs' => 'Total Techs',
   'build_research_in_progress' => 'research in progress.',
-  'eco_bld_page_hint' => '<li>To view information about an individual Item, simply move your mouse over the picture.<li>Click on the image will select the unit. Repeated clicks on the same choice lift redeemed in units.<li>Detailed desription of the unit and its characteristics can be found by clicking on the blue icon &quot;i&quot; the circle in the lower right corner of the Description.<li>Build an defence, you can either click on the plus button in the upper-right corner or clicking &quot;Build&quot; in the description.<li>Destroy the building you can click on the minus sign in the upper left corner of the image, either on the appropriate link from the description.',
+  'eco_bld_page_hint' => '<li>To view information about an individual Item, simply move your mouse over the picture
+  <li>Click on the image will select the unit. Repeated clicks on the same choice lift redeemed in units
+  <li>Detailed desription of the unit and its characteristics can be found by clicking on the blue icon &quot;i&quot; in the circle
+  <li>Build an defence, you can either click on the plus button in the upper-right corner or clicking &quot;Build&quot; in the description
+  <li>Destroy the building you can click on the minus sign in the upper left corner of the image, either on the appropriate link from the description',
   'eco_price' => 'Price',
   'eco_left' => 'Balance',
   'eco_left_fleet' => '+ fleets',

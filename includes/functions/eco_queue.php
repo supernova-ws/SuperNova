@@ -198,7 +198,7 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
   doquery('START TRANSACTION;');
   $planet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = {$planet['id']} LIMIT 1 FOR UPDATE;", '', true);
   if(
-    !eco_can_build_unit($user, $planet, $unit_id)
+    eco_can_build_unit($user, $planet, $unit_id) != BUILD_ALLOWED
     || eco_unit_busy($user, $planet, $que, $unit_id)
     || (
         $que_id == QUE_STRUCTURES

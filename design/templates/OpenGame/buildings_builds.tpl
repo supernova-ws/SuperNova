@@ -96,7 +96,7 @@ function eco_struc_show_unit_info(unit_id, no_color)
   if(planet['que_has_place'] != 0 && !unit['unit_busy'])
   {
     var pre_href = '<a href="buildings.php?mode={QUE_ID}&action=';
-    if(unit['level'] > 0 && unit['destroy_can'] != 0)
+    if(unit['level'] > 0 && unit['destroy_can'] != 0 && unit['destroy_result'] == 0)
     {
       element_cache['unit_destroy_link'].innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '">' + unit_destroy_link + '<br />'
       + language['sys_metal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_metal']), 0, 'lime') + ' ' 
@@ -105,7 +105,7 @@ function eco_struc_show_unit_info(unit_id, no_color)
       + unit['destroy_time']
       + '</a>';
     }
-    if(planet['fields_free'] > 0 && unit['build_can'] != 0)
+    if(planet['fields_free'] > 0 && unit['build_can'] != 0 && unit['build_result'] == 0)
     {
       element_cache['unit_create_link'].innerHTML = pre_href + 'create&unit_id=' + unit['id'] + '">' + language['bld_create'] + ' ' + language['level'] + ' ' + (parseInt(unit['level']) + 1) + '</a>';
     }
@@ -283,14 +283,6 @@ function eco_struc_unborder_unit(unit_id)
             <div class="fr">{production.TIME}</div>
           </span>
 
-          <span style="position: absolute; bottom: 0; left: 0; cursor: pointer;" title="{L_flt_gather_all}" class="icon_alpha" onclick="document.location='fleet.php?fleet_page=5&cp={planet.ID}&re=0&metal={production.METAL_REST_NUM}&crystal={production.CRYSTAL_REST_NUM}&deuterium={production.DEUTERIUM_REST_NUM}'">
-            <div class="icons icon-gather"></div>
-          </span>
-
-          <span style="position: absolute; bottom: 0px; right: 0px;" class="icon_alpha" onclick="document.location='infos.php?gid={production.ID}'">
-            <div class="icons icon-info"></div>
-          </span>
-
           <!-- IF     (production.METAL && (production.METAL_REST_NUM > 999999999 || production.METAL_REST_NUM < -99999999)) || (production.CRYSTAL && (production.CRYSTAL_REST_NUM > 999999999)) || production.CRYSTAL_REST_NUM < -99999999 || (production.DEUTERIUM && (production.DEUTERIUM_REST_NUM > 999999999  || production.DEUTERIUM_REST_NUM < -99999999)) -->
             <!-- DEFINE $FONT_SIZE = '80%' -->
           <!-- ELSEIF (production.METAL && (production.METAL_REST_NUM > 99999999  || production.METAL_REST_NUM < -9999999 )) || (production.CRYSTAL && (production.CRYSTAL_REST_NUM > 99999999 )) || production.CRYSTAL_REST_NUM < -9999999  || (production.DEUTERIUM && (production.DEUTERIUM_REST_NUM > 99999999   || production.DEUTERIUM_REST_NUM < -9999999 )) -->
@@ -308,20 +300,34 @@ function eco_struc_unborder_unit(unit_id)
             <!-- IF production.LEVEL_OLD -->{production.LEVEL_OLD}<!-- ENDIF --><!-- IF production.LEVEL_CHANGE --><!-- IF production.LEVEL_CHANGE > 0 -->+<!-- ENDIF -->{production.LEVEL_CHANGE}<!-- ENDIF -->
           </span>
 
-          
           <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY -->
-            <!-- IF FIELDS_FREE > 0 && production.BUILD_CAN -->
+            <!-- IF FIELDS_FREE > 0 && production.BUILD_CAN && production.BUILD_RESULT == 0 -->
               <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='buildings.php?mode={QUE_ID}&action=create&unit_id={production.ID}'">
                 <div class="icons icon-plus"></div>
               </span>
             <!-- ENDIF -->
 
-            <!-- IF production.LEVEL && production.DESTROY_CAN -->
+            <!-- IF production.LEVEL && production.DESTROY_CAN && production.DESTROY_RESULT == 0 -->
               <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='buildings.php?mode={QUE_ID}&action=destroy&unit_id={production.ID}'">
                 <div class="icons icon-minus" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
               </span>
             <!-- ENDIF -->
           <!-- ENDIF -->
+
+          <!-- IF production.BUILD_RESULT != 0 -->
+            <span style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%" class="icon_alpha" onclick="document.location='buildings.php?mode={QUE_ID}&action=destroy&unit_id={production.ID}'">
+              <span style="position: absolute; top: 77px; left: 0px; width: 100%; height: 20%" >{production.BUILD_RESULT_TEXT}</span>
+            </span>
+          <!-- ENDIF -->
+
+          <span style="position: absolute; bottom: 0; right: 0; cursor: pointer;" title="{L_flt_gather_all}" class="icon_alpha" onclick="document.location='fleet.php?fleet_page=5&cp={planet.ID}&re=0&metal={production.METAL_REST_NUM}&crystal={production.CRYSTAL_REST_NUM}&deuterium={production.DEUTERIUM_REST_NUM}'">
+            <div class="icons icon-gather"></div>
+          </span>
+
+          <span style="position: absolute; bottom: 0px; left: 0px;" class="icon_alpha" onclick="document.location='infos.php?gid={production.ID}'">
+            <div class="icons icon-info"></div>
+          </span>
+
         </div>
       </td>
 
@@ -344,12 +350,14 @@ function eco_struc_unborder_unit(unit_id)
         deuterium: '{production.DEUTERIUM}',
         time: '{production.TIME}',
         build_can: '{production.BUILD_CAN}',
+        build_result: '{production.BUILD_RESULT}',
 
         destroy_metal: '{production.DESTROY_METAL}',
         destroy_crystal: '{production.DESTROY_CRYSTAL}',
         destroy_deuterium: '{production.DESTROY_DEUTERIUM}',
         destroy_time: '{production.DESTROY_TIME}',
         destroy_can: '{production.DESTROY_CAN}',
+        destroy_result: '{production.DESTROY_RESULT}',
 
         metal_balance: '{production.METAL_BALANCE}',
         crystal_balance: '{production.CRYSTAL_BALANCE}',

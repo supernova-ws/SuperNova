@@ -56,7 +56,7 @@ function ResearchBuildingPage(&$user, &$planet, $que)
       {
         $message = $lang['build_research_in_progress'];
       }
-      elseif(!eco_lab_is_building($que) && in_array($tech_id, $sn_data['groups']['tech']) && eco_can_build_unit($user, $planet, $tech_id) && $build_data['CAN'][BUILD_CREATE])
+      elseif(!eco_lab_is_building($que) && in_array($tech_id, $sn_data['groups']['tech']) && eco_can_build_unit($user, $planet, $tech_id) == BUILD_ALLOWED && $build_data['CAN'][BUILD_CREATE])
       {
         $build_time_end        = $build_data[BUILD_CREATE][RES_TIME] + $time_now;
         doquery("UPDATE {{planets}} SET `b_tech_id` = '{$tech_id}', `b_tech` = '{$build_time_end}', 
@@ -76,7 +76,7 @@ function ResearchBuildingPage(&$user, &$planet, $que)
 
   foreach($sn_data['groups']['tech'] as $Tech)
   {
-    if(!eco_can_build_unit($user, $planet, $Tech))
+    if(eco_can_build_unit($user, $planet, $Tech) != BUILD_ALLOWED)
     {
       continue;
     }

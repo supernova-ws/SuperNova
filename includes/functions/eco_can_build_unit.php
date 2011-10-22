@@ -14,8 +14,8 @@ function eco_can_build_unit($user, $planet, $unit_id)
 {
   global $sn_data;
 
-  $accessible = true;
-  if (isset($sn_data[$unit_id]['require']))
+  $accessible = BUILD_ALLOWED;
+  if(isset($sn_data[$unit_id]['require']))
   {
     foreach($sn_data[$unit_id]['require'] as $require_id => $require_level)
     {
@@ -24,7 +24,7 @@ function eco_can_build_unit($user, $planet, $unit_id)
 
       if($data < $require_level)
       {
-        $accessible = false;
+        $accessible = BUILD_REQUIRE_NOT_MEET;
         break;
       }
     }

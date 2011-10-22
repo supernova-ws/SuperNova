@@ -49,19 +49,19 @@ $fleet_array    = array();
 $FleetDBArray   = '';
 $FleetSubQRY    = '';
 $fleet_ship_count = 0;
-foreach (array_merge($sn_data['groups']['fleet'], array(503)) as $ship_id)
+foreach(array_merge($sn_data['groups']['fleet'], array(503)) as $ship_id)
 {
-  $ship_count = intval($_POST["ship{$ship_id}"]);
+  $ship_count = max(0, intval($_POST["ship{$ship_id}"]));
   if(!$ship_count)
   {
     continue;
   }
-  if ($ship_count > $planetrow[$sn_data[$ship_id]['name']] && $target_mission != MT_MISSILE)
+  if($ship_count > $planetrow[$sn_data[$ship_id]['name']] && $target_mission != MT_MISSILE)
   {
     $ship_count = $planetrow[$sn_data[$ship_id]['name']];
   }
   $fleet_array[$ship_id]  = $ship_count;
-  $fleet_ship_count        += $ship_count;
+  $fleet_ship_count      += $ship_count;
   $FleetDBArray          .= "{$ship_id},{$ship_count};";
   $FleetSubQRY           .= "`{$sn_data[$ship_id]['name']}` = `{$sn_data[$ship_id]['name']}` - {$ship_count}, ";
 }

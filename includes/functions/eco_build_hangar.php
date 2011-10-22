@@ -211,7 +211,7 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
 
       $Count   = min(max(0, intval($Count)), MAX_FLEET_OR_DEFS_PER_ROW);
 
-      if (!(($Count) && ($Element) && in_array($Element, $sn_data_group) && eco_can_build_unit ($user, $planet, $Element) ))
+      if (!(($Count) && ($Element) && in_array($Element, $sn_data_group) && eco_can_build_unit($user, $planet, $Element) == BUILD_ALLOWED))
       {
         continue;
       }
@@ -309,7 +309,7 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
   {
     $unit_message = '';
 
-    if(eco_can_build_unit($user, $planet, $Element))
+    if(eco_can_build_unit($user, $planet, $Element) == BUILD_ALLOWED)
     {
       // On regarde si on peut en acheter au moins 1
       $build_data = eco_get_build_data($user, $planet, $Element);

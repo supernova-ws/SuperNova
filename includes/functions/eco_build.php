@@ -79,11 +79,13 @@ function eco_build($que_type, $user, &$planet, $que)
 
   foreach($planet_type_structs as $Element)
   {
-    if (eco_can_build_unit($user, $planet, $Element))
+//    if(eco_can_build_unit($user, $planet, $Element) == BUILD_ALLOWED)
     {
       $element_name    = $lang['tech'][$Element];
       $element_sn_data = &$sn_data[$Element];
       $element_level   = $planet[$sn_data[$Element]['name']] + $que['in_que'][$Element];
+
+      $build_data = eco_get_build_data($user, $planet, $Element, $element_level);
 
       // show energy on BuildingPage
       //================================
@@ -106,7 +108,6 @@ function eco_build($que_type, $user, &$planet, $que)
       }
 
       //================================
-      $build_data = eco_get_build_data($user, $planet, $Element, $element_level);
       $temp[RES_METAL]     = floor($planet['metal'] + $fleet_list['own']['total'][RES_METAL] - $build_data[BUILD_CREATE][RES_METAL]);
       $temp[RES_CRYSTAL]   = floor($planet['crystal'] + $fleet_list['own']['total'][RES_CRYSTAL] - $build_data[BUILD_CREATE][RES_CRYSTAL]);
       $temp[RES_DEUTERIUM] = floor($planet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_data[BUILD_CREATE][RES_DEUTERIUM]);
@@ -118,12 +119,15 @@ function eco_build($que_type, $user, &$planet, $que)
         'LEVEL_OLD'         => $planet[$sn_data[$Element]['name']],
         'LEVEL_CHANGE'      => $que['in_que'][$Element],
 
+        'BUILD_RESULT'      => $build_data['RESULT'][BUILD_CREATE],
+        'BUILD_RESULT_TEXT' => $lang['sys_build_result'][$build_data['RESULT'][BUILD_CREATE]],
         'BUILD_CAN'         => $build_data['CAN'][BUILD_CREATE],
         'TIME'              => pretty_time($build_data[BUILD_CREATE][RES_TIME]),
         'METAL'             => $build_data[BUILD_CREATE][RES_METAL],
         'CRYSTAL'           => $build_data[BUILD_CREATE][RES_CRYSTAL],
         'DEUTERIUM'         => $build_data[BUILD_CREATE][RES_DEUTERIUM],
 
+        'DESTROY_RESULT'    => $build_data['RESULT'][BUILD_DESTROY],
         'DESTROY_CAN'       => $build_data['CAN'][BUILD_DESTROY],
         'DESTROY_TIME'      => pretty_time($build_data[BUILD_DESTROY][RES_TIME]),
         'DESTROY_METAL'     => $build_data[BUILD_DESTROY][RES_METAL],

@@ -48,13 +48,32 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
   $cost['CAN'][BUILD_CREATE]  = floor($can_build);
   $time = $time * 60 * 60 / get_game_speed() / 2500;
 
+  $cost['RESULT'][BUILD_CREATE] = BUILD_ALLOWED;
+  if(isset($sn_data[$unit_id]['require']))
+  {
+    foreach($sn_data[$unit_id]['require'] as $require_id => $require_level)
+    {
+      $db_name = $sn_data[$require_id]['name'];
+      $data = isset($planet[$db_name]) ? $planet[$db_name] : (isset($user[$db_name]) ? $user[$db_name] : ($require_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0));
+
+      if($data < $require_level)
+      {
+        $cost['RESULT'][BUILD_CREATE] = BUILD_REQUIRE_NOT_MEET;
+        break;
+      }
+    }
+  }
+  $cost['RESULT'][BUILD_CREATE] = $cost['RESULT'][BUILD_CREATE] == BUILD_ALLOWED ? ($cost['CAN'][BUILD_CREATE] ? BUILD_ALLOWED : BUILD_NO_RESOURCES) : $cost['RESULT'][BUILD_CREATE];
+
   $mercenary = 0;
-  if (in_array($unit_id, $sn_groups['structures']))
+  $cost['RESULT'][BUILD_DESTROY] = BUILD_INDESTRUCTABLE;
+  if(in_array($unit_id, $sn_groups['structures']))
   {
     $time = $time * pow(0.5, $planet[$sn_data[15]['name']]) / ($planet[$sn_data[14]['name']] + 1);
     $mercenary = MRC_ENGINEER;
+    $cost['RESULT'][BUILD_DESTROY] = $planet[$unit_db_name] ? ($cost['CAN'][BUILD_DESTROY] ? BUILD_ALLOWED : BUILD_NO_RESOURCES) : BUILD_NO_UNITS;
   }
-  elseif (in_array($unit_id, $sn_groups['tech']))
+  elseif(in_array($unit_id, $sn_groups['tech']))
   {
     $tech_intergalactic = $user[$sn_data[TECH_RESEARCH]['name']];
     if ( $tech_intergalactic < 1 )
