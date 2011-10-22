@@ -42,7 +42,7 @@ if($ally_tag)
   );
 
   $query = doquery("SELECT id FROM {{alliance}} WHERE `ally_tag` ='{$ally_tag}' LIMIT 1;", '', true);
-  doquery("UPDATE {{users}} SET `ally_id`='{$query['id']}', `ally_name`='{$ally_name}', `ally_register_time`= {$time_now} WHERE `id`= {$user['id']} LIMIT 1;");
+  doquery("UPDATE {{users}} SET `ally_tag` = '{$ally_tag}', `ally_id`='{$query['id']}', `ally_name`='{$ally_name}', `ally_register_time`= {$time_now} WHERE `id`= {$user['id']} LIMIT 1;");
 
   $page = MessageForm(str_replace('%s', $ally_tag_raw, $lang['ally_maked']), str_replace('%s', $ally_tag_raw, $lang['ally_been_maked']) . "<br><br>", "", $lang['Ok']);
 }
