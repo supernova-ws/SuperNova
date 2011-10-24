@@ -949,8 +949,15 @@ debug($update_tables['logs']['log_id'], 31);
   $new_version = 31;
 
   case 31:
-//    upd_log_version_update();
-//    upd_do_query('COMMIT;', true);
+    upd_log_version_update();
+
+    upd_alter_table('fleets', array(
+      "MODIFY COLUMN `fleet_resource_metal` BIGINT(20) DEFAULT '0'",
+      "MODIFY COLUMN `fleet_resource_crystal` BIGINT(20) DEFAULT '0'",
+      "MODIFY COLUMN `fleet_resource_deuterium` BIGINT(20) DEFAULT '0'",
+    ), strtoupper($update_tables['fleets']['fleet_resource_metal']['Type']) != 'BIGINT(20)');
+
+    upd_do_query('COMMIT;', true);
 //  $new_version = 31;
 };
 upd_log_message('Upgrade complete.');
