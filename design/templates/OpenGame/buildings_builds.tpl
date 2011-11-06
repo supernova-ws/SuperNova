@@ -98,7 +98,7 @@ function eco_struc_show_unit_info(unit_id, no_color)
     var pre_href = '<a href="buildings.php?mode={QUE_ID}&action=';
     if(unit['level'] > 0 && unit['destroy_can'] != 0 && unit['destroy_result'] == 0)
     {
-      element_cache['unit_destroy_link'].innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '">' + unit_destroy_link + '<br />'
+      element_cache['unit_destroy_link'].innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '"><span class="negative">' + unit_destroy_link + '</span><br />'
       + language['sys_metal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_metal']), 0, 'lime') + ' ' 
       + language['sys_crystal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_crystal']), 0, 'lime') + ' ' 
       + language['sys_deuterium'][0] + ':' + sn_format_number(parseFloat(unit['destroy_deuterium']), 0, 'lime') + ' '
@@ -107,7 +107,7 @@ function eco_struc_show_unit_info(unit_id, no_color)
     }
     if(planet['fields_free'] > 0 && unit['build_can'] != 0 && unit['build_result'] == 0)
     {
-      element_cache['unit_create_link'].innerHTML = pre_href + 'create&unit_id=' + unit['id'] + '">' + language['bld_create'] + ' ' + language['level'] + ' ' + (parseInt(unit['level']) + 1) + '</a>';
+      element_cache['unit_create_link'].innerHTML = pre_href + 'create&unit_id=' + unit['id'] + '"><span class="positive">' + language['bld_create'] + ' ' + language['level'] + ' ' + (parseInt(unit['level']) + 1) + '</span></a>';
     }
   }
 
@@ -225,7 +225,7 @@ function eco_struc_unborder_unit(unit_id)
           </th>
 
           <th valign=top width=240px>
-            <div class="fl">{L_ConstructionTime}<span id="unit_time"></span></div>   
+            <div id="unit_create_link"></div>
             <table style="margin: 0px;">
               <tr>
                 <td class=c style="font-size: {$FONT_SIZE}" width=45>{L_sys_resources}</td>
@@ -252,7 +252,8 @@ function eco_struc_unborder_unit(unit_id)
                 <td style="font-size: {$FONT_SIZE}" id="deuterium_fleet" hide_no_fleet="yes" align="right">0</td>
               </tr>
             </table>
-            <div id="unit_create_link"></div>
+            <div>{L_ConstructionTime}<span id="unit_time"></span></div>
+            <div>&nbsp;</div>
             <div id="unit_destroy_link"></div>
           </th>
           <th width=240px>
@@ -275,10 +276,6 @@ function eco_struc_unborder_unit(unit_id)
             <img border="0" src="{dpath}gebaeude/{production.ID}.gif" align="top" width="100%" height="100%">
           </span>
 
-          <span style="position: absolute; top: 18px; left: 0px; width: 100%; height: 5ex; font-size: 100%;" class="icon_alpha"> 
-            {production.NAME}
-          </span>
-
           <span style="position: absolute; bottom: 2px; right: 18px; width: 70%; font-size: 100%; text-align: left;" class="icon_alpha">
             <div class="fr">{production.TIME}</div>
           </span>
@@ -296,28 +293,35 @@ function eco_struc_unborder_unit(unit_id)
             <!-- IF production.DEUTERIUM --><div><div style="left: 0px; position: absolute;"><!-- IF $FONT_SIZE == '80%' -->{L_sys_deuterium_sh}<!-- ELSE -->{L_sys_deuterium}<!-- ENDIF --></div><div class="fr">{production.DEUTERIUM_REST}</div></div><!-- ENDIF -->
           </span>
 
-          <span style="position: absolute; top: 0; left: 20%; width: 60%; height: 16px; text-align: center; font-size: 120%;" class="icon_alpha">
-            <!-- IF production.LEVEL_OLD -->{production.LEVEL_OLD}<!-- ENDIF --><!-- IF production.LEVEL_CHANGE --><!-- IF production.LEVEL_CHANGE > 0 -->+<!-- ENDIF -->{production.LEVEL_CHANGE}<!-- ENDIF -->
-          </span>
-
           <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY -->
             <!-- IF FIELDS_FREE > 0 && production.BUILD_CAN && production.BUILD_RESULT == 0 -->
               <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='buildings.php?mode={QUE_ID}&action=create&unit_id={production.ID}'">
                 <div class="icons icon-plus"></div>
               </span>
             <!-- ENDIF -->
+          <!-- ENDIF -->
 
+          <!-- IF production.BUILD_RESULT != 0 -->
+            <span style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%" class="icon_alpha">
+              <span style="position: absolute; top: 77px; left: 0px; width: 100%; height: 20%" >{production.BUILD_RESULT_TEXT}</span>
+            </span>
+          <!-- ENDIF -->
+
+
+          <span style="position: absolute; top: 18px; left: 0px; width: 100%; height: 5ex; font-size: 100%;" class="icon_alpha"> 
+            {production.NAME}
+          </span>
+
+          <span style="position: absolute; top: 0; left: 20%; width: 60%; height: 16px; text-align: center; font-size: 120%;" class="icon_alpha">
+            <!-- IF production.LEVEL_OLD -->{production.LEVEL_OLD}<!-- ENDIF --><!-- IF production.LEVEL_CHANGE --><!-- IF production.LEVEL_CHANGE > 0 -->+<!-- ENDIF -->{production.LEVEL_CHANGE}<!-- ENDIF -->
+          </span>
+
+          <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY -->
             <!-- IF production.LEVEL && production.DESTROY_CAN && production.DESTROY_RESULT == 0 -->
               <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='buildings.php?mode={QUE_ID}&action=destroy&unit_id={production.ID}'">
                 <div class="icons icon-minus" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
               </span>
             <!-- ENDIF -->
-          <!-- ENDIF -->
-
-          <!-- IF production.BUILD_RESULT != 0 -->
-            <span style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%" class="icon_alpha" onclick="document.location='buildings.php?mode={QUE_ID}&action=destroy&unit_id={production.ID}'">
-              <span style="position: absolute; top: 77px; left: 0px; width: 100%; height: 20%" >{production.BUILD_RESULT_TEXT}</span>
-            </span>
           <!-- ENDIF -->
 
           <span style="position: absolute; bottom: 0; right: 0; cursor: pointer;" title="{L_flt_gather_all}" class="icon_alpha" onclick="document.location='fleet.php?fleet_page=5&cp={planet.ID}&re=0&metal={production.METAL_REST_NUM}&crystal={production.CRYSTAL_REST_NUM}&deuterium={production.DEUTERIUM_REST_NUM}'">

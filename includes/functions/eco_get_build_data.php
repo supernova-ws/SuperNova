@@ -19,15 +19,17 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
 
   $price_increase = pow($unit_factor, $unit_level);
   $can_build   = 1000000000000;
+  $can_destroy = 1000000000000;
   foreach($unit_data['cost'] as $resource_id => $resource_amount)
   {
     $resource_cost = $resource_amount * $price_increase;
-    $cost[BUILD_CREATE][$resource_id] = floor($resource_cost);
-    $cost[BUILD_DESTROY][$resource_id] = floor($resource_cost / 2);
+    $res_to_build = $cost[BUILD_CREATE][$resource_id] = floor($resource_cost);
+    $res_to_destroy = $cost[BUILD_DESTROY][$resource_id] = floor($resource_cost / 2);
 
     if(in_array($resource_id, $sn_groups['resources_loot']) && $resource_cost)
     {
       $can_build = min($can_build, $planet[$sn_data[$resource_id]['name']] / $resource_cost);
+      $can_destroy = min($can_destroy, $planet[$sn_data[$resource_id]['name']] / $res_to_destroy);
       $time += $resource_cost;
     }
     elseif($resource_id == RES_DARK_MATTER && $resource_cost)
@@ -37,15 +39,20 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
       $cost[BUILD_CREATE][$resource_id] = floor($resource_cost);
       $cost[BUILD_DESTROY][$resource_id] = floor($resource_cost / 2);
       $can_build = min($can_build, $user[$sn_data[$resource_id]['name']] / $resource_cost) ;
+      $can_destroy = min($can_destroy, $user[$sn_data[$resource_id]['name']] / $res_to_destroy);
     }
     elseif($resource_id == RES_ENERGY && $resource_cost)
     {
       $can_build = min($can_build, ($planet['energy_max'] - $planet['energy_used']) / $resource_cost);
+      $can_destroy = min($can_destroy, ($planet['energy_max'] - $planet['energy_used']) / $res_to_destroy);
     }
   }
   $can_build = $can_build > 0 ? floor($can_build) : 0;
-  $cost['CAN'][BUILD_DESTROY] = floor($can_build * 2);
   $cost['CAN'][BUILD_CREATE]  = floor($can_build);
+
+  $can_destroy = $can_destroy > 0 ? floor($can_destroy) : 0;
+  $cost['CAN'][BUILD_DESTROY] = floor($can_destroy);
+
   $time = $time * 60 * 60 / get_game_speed() / 2500;
 
   $cost['RESULT'][BUILD_CREATE] = BUILD_ALLOWED;
