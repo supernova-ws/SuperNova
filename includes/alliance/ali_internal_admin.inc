@@ -12,7 +12,7 @@ if (!$user_admin)
 
 $parse = $lang;
 
-$idNewLeader = sys_get_param_int('idNewLeader');
+$idNewLeader = sys_get_param_id('idNewLeader');
 
 $text_list = array(
   1 => array ('db_field' => 'ally_description', 'text_type' => 'Public_text_of_alliance'),

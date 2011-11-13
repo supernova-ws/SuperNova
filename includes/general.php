@@ -230,9 +230,19 @@ function sys_get_user_ip()
   return array_map('mysql_real_escape_string', $ip);
 }
 
+function is_id($value)
+{
+  return preg_match('/^\d+$/', $value);
+}
+
 function sys_get_param($param_name, $default = '')
 {
   return $_POST[$param_name] !== NULL ? $_POST[$param_name] : ($_GET[$param_name] !== NULL ? $_GET[$param_name] : $default);
+}
+
+function sys_get_param_id($param_name, $default = 0)
+{
+  return is_id($value = sys_get_param($param_name, $default)) ? $value : $default;
 }
 
 function sys_get_param_int($param_name, $default = 0)

@@ -78,16 +78,16 @@ function coe_o_missile_calculate()
 {
   global $time_now, $sn_data, $lang;
 
-  $iraks = doquery("SELECT * FROM {{iraks}} WHERE `zeit` <= '{$time_now}';");
+  $iraks = doquery("SELECT * FROM {{iraks}} WHERE `fleet_end_time` <= '{$time_now}';");
 
   while ($fleetRow = mysql_fetch_assoc($iraks))
   {
-    $targetUser  = doquery('SELECT * FROM {{users}} WHERE `id` = '.$fleetRow['zielid'], '', true);
+    $targetUser  = doquery('SELECT * FROM {{users}} WHERE `id` = '.$fleetRow['fleet_target_owner'], '', true);
 
-    $target_planet_row = sys_o_get_updated($targetUser, array('galaxy' => $fleetRow['galaxy'], 'system' => $fleetRow['system'], 'planet' => $fleetRow['planet'], 'planet_type' => PT_PLANET), $time_now);
+    $target_planet_row = sys_o_get_updated($targetUser, array('galaxy' => $fleetRow['fleet_end_galaxy'], 'system' => $fleetRow['fleet_end_system'], 'planet' => $fleetRow['fleet_end_planet'], 'planet_type' => PT_PLANET), $time_now);
     $target_planet_row = $target_planet_row['planet'];
 
-    $rowAttacker = doquery("SELECT `military_tech` FROM `{{users}}` WHERE `id` = '{$fleetRow['owner']}' LIMIT 1;", '', true);
+    $rowAttacker = doquery("SELECT `military_tech` FROM `{{users}}` WHERE `id` = '{$fleetRow['fleet_owner']}' LIMIT 1;", '', true);
 
     if ($target_planet_row['id'])
     {                                    
@@ -107,7 +107,7 @@ function coe_o_missile_calculate()
       $message = '';
       $interceptor_db_name = $sn_data[502]['name'];
       $interceptors = $target_planet_row[$interceptor_db_name]; // Number of interceptors
-      $missiles = $fleetRow['anzahl']; // Number of MIP
+      $missiles = $fleetRow['fleet_amount']; // Number of MIP
       $qUpdate = "UPDATE `{{planets}}` SET {$interceptor_db_name} = ";
       if ($interceptors >= $missiles) {
         $message = $lang['mip_all_destroyed'];
@@ -136,17 +136,17 @@ function coe_o_missile_calculate()
       $qUpdate .= " WHERE `id` = " . $target_planet_row['id'] . ";";
       doquery($qUpdate);
 
-      $sourcePlanet = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '{$fleetRow['galaxy_angreifer']}' AND `system` = '{$fleetRow['system_angreifer']}' AND `planet` = '{$fleetRow['planet_angreifer']}' and planet_type = " . PT_PLANET, '', true);
+      $sourcePlanet = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '{$fleetRow['fleet_start_galaxy']}' AND `system` = '{$fleetRow['fleet_start_system']}' AND `planet` = '{$fleetRow['fleet_start_planet']}' and planet_type = " . PT_PLANET, '', true);
 
-      $message_vorlage = sprintf($lang['mip_body_attack'], $fleetRow['anzahl'],
-        addslashes($sourcePlanet['name']), $fleetRow['galaxy_angreifer'], $fleetRow['system_angreifer'], $fleetRow['planet_angreifer'],
-        addslashes($target_planet_row['name']), $fleetRow['galaxy'], $fleetRow['system'], $fleetRow['planet']);
+      $message_vorlage = sprintf($lang['mip_body_attack'], $fleetRow['fleet_amount'],
+        addslashes($sourcePlanet['name']), $fleetRow['fleet_start_galaxy'], $fleetRow['fleet_start_system'], $fleetRow['fleet_start_planet'],
+        addslashes($target_planet_row['name']), $fleetRow['fleet_end_galaxy'], $fleetRow['fleet_end_system'], $fleetRow['fleet_end_planet']);
 
       if (empty($message))
         $message = $lang['mip_no_defense'];
 
-      msg_send_simple_message ( $fleetRow['owner'], '', $time_now, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
-      msg_send_simple_message ( $fleetRow['zielid'], '', $time_now, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
+      msg_send_simple_message ( $fleetRow['fleet_owner'], '', $time_now, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
+      msg_send_simple_message ( $fleetRow['fleet_target_owner'], '', $time_now, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
     };
     doquery("DELETE FROM {{iraks}} WHERE id = '{$fleetRow['id']}';");
   };

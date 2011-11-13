@@ -13,7 +13,7 @@ if ($user['authlevel'] < 2)
 $mode = sys_get_param_str('mode');
 $mode = in_array($mode, array('structures', 'fleet', 'defense', 'resources_loot')) ? $mode : 'structures';
 
-$planet_id = sys_get_param_int('planet_id');
+$planet_id = sys_get_param_id('planet_id');
 
 $unit_list = sys_get_param('unit_list');
 if(sys_get_param('change_data') && !empty($unit_list))

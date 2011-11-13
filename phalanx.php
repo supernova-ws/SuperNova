@@ -28,7 +28,7 @@ $scan_galaxy  = sys_get_param_int('galaxy');
 $scan_system  = sys_get_param_int('system');
 $scan_planet  = sys_get_param_int('planet');
 $scan_planet_type  = 1; // sys_get_param_int('planettype');
-$id = sys_get_param_int('id');
+$id = sys_get_param_id('id');
 
 $source_galaxy = $planetrow['galaxy'];
 $source_system = $planetrow['system'];

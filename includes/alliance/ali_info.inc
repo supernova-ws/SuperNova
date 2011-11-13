@@ -29,7 +29,7 @@ if($mode == 'exit')
 elseif($mode == 'ainfo')
 {
   $tag = sys_get_param_str('tag');
-  $id_ally = sys_get_param_int('a');
+  $id_ally = sys_get_param_id('a');
   if($tag)
   {
     $ally = doquery("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}' LIMIT 1;", '', true);

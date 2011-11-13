@@ -115,35 +115,17 @@ function int_get_missile_to_planet($query, $planet_scanned = false)
 
   foreach($fleet_list as $irak)
   {
-    if($irak['zeit'] >= $time_now)
+    if($irak['fleet_end_time'] >= $time_now)
     {
-      $irak['fleet_id']             = -$irak['anzahl'];
-      $irak['fleet_owner']          = $irak['owner'];
+      $planet_start = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '{$irak['fleet_start_galaxy']}' AND `system` = '{$irak['fleet_start_system']}' AND `planet` = '{$irak['fleet_start_planet']}' AND `planet_type` = '1'", '', true);
+      $planet_end   = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '{$irak['fleet_end_galaxy']}'   AND `system` = '{$irak['fleet_end_system']}'   AND `planet` = '{$irak['fleet_end_planet']}'   AND `planet_type` = '1'", '', true);
+
+      $irak['fleet_id']             = -$irak['id'];
       $irak['fleet_mission']        = MT_MISSILE;
-      $irak['fleet_array']          = "503,{$irak['anzahl']};";
-      $irak['fleet_amount']         = $irak['anzahl'];
-
-      $planet_end = doquery("SELECT `name` FROM `{{planets}}` WHERE
-        `galaxy` = '{$irak['galaxy']}' AND
-        `system` = '{$irak['system']}' AND
-        `planet` = '{$irak['planet']}' AND
-        `planet_type` = '1'", '', true);
-      $irak['fleet_end_galaxy']     = $irak['galaxy'];
-      $irak['fleet_end_system']     = $irak['system'];
-      $irak['fleet_end_planet']     = $irak['planet'];
-      $irak['fleet_end_type']       = 1;
-      $irak['fleet_end_time']       = $irak['zeit'];
+      $irak['fleet_array']          = "503,{$irak['fleet_amount']};";
+      $irak['fleet_end_type']       = PT_PLANET;
+      $irak['fleet_start_type']     = PT_PLANET;
       $irak['fleet_end_name']       = $planet_end['name'];
-
-      $planet_start = doquery("SELECT `name` FROM `{{planets}}` WHERE
-        `galaxy` = '{$irak['galaxy_angreifer']}' AND
-        `system` = '{$irak['system_angreifer']}' AND
-        `planet` = '{$irak['planet_angreifer']}' AND
-        `planet_type` = '1'", '', true);
-      $irak['fleet_start_galaxy']   = $irak['galaxy_angreifer'];
-      $irak['fleet_start_system']   = $irak['system_angreifer'];
-      $irak['fleet_start_planet']   = $irak['planet_angreifer'];
-      $irak['fleet_start_type']     = 1;
       $irak['fleet_start_name']     = $planet_start['name'];
 
       int_assign_event($irak, 3, $planet_scanned, $irak['fleet_end_type']);

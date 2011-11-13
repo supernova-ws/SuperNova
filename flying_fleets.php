@@ -4,7 +4,8 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if(sys_get_param_str('return_fleet'))
 {
-  $fleet_id  = sys_get_param_int('fleet_id');
+  $fleet_id  = sys_get_param_id('fleet_id');
+
   if($fleet_id)
   {
     $FleetRow = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = '{$fleet_id}' LIMIT 1;", '', true);

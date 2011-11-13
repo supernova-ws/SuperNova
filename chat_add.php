@@ -27,7 +27,7 @@ if($config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && $microtime - $c
 }
 
 $message = sys_get_param_str('message');
-if(sys_get_param_int('ally'))
+if(sys_get_param_id('ally'))
 {
   $ally_id = $user['ally_id'];
 }

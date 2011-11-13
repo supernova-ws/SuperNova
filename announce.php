@@ -13,7 +13,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $template     = gettemplate('announce', true);
 
-$announce_id   = sys_get_param_int('id');
+$announce_id   = sys_get_param_id('id');
 $text          = sys_get_param_str('text');
 $announce_time = sys_get_param_str('dtDateTime');
 $detail_url    = sys_get_param_str('detail_url');
@@ -29,7 +29,7 @@ if ($user['authlevel'] >= 3)
 {
   if (!empty($text))
   {
-    $idAnnounce = sys_get_param_int('id');
+    $idAnnounce = sys_get_param_id('id');
     $announce_time = strtotime($announce_time);
     $announce_time = $announce_time ? $announce_time : $time_now; // ("FROM_UNIXTIME(".time().")")
 
@@ -53,13 +53,7 @@ if ($user['authlevel'] >= 3)
 
       if(sys_get_param_int('news_mass_mail'))
       {
-        $text = $_POST['text'];
-        if($detail_url)
-        {
-          // TODO: Move merging detail url to template
-          $text = "{$text} <a href=\"{$detail_url}\"><span class=\"positive\">{$lang['news_more']}</span></a>";
-        }
-
+        $text = sys_get_param['text'] . ($detail_url ? " <a href=\"{$detail_url}\"><span class=\"positive\">{$lang['news_more']}</span></a>" : '');
         msg_send_simple_message('*', 0, 0, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['news_title'], $text);
       }
     }

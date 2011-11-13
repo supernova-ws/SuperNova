@@ -48,10 +48,6 @@ if(SN_IN_FLEET !== true)
   }
   $parse['TableTitle'] = $TableTitle;
 
-//  $parse['MsgExpedition'] = $lang['type_mission'][MT_EXPLORE];
-//  if ( $missiontype[5] == '' )
-//    $parse['HideTransport']  = 'display: none;';
-
   $parse['speedallsmin'] = floatval($_POST['speedallsmin']) ;
   $parse['speed'] = intval($_POST['speed']) ;
 

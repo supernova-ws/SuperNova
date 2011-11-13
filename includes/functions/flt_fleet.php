@@ -27,7 +27,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
   global $time_now, $sn_data;
 
-  $fleet_group = isset($options['fleet_group']) ? intval($options['fleet_group']) : 0;
+  $fleet_group = isset($options['fleet_group']) ? floatval($options['fleet_group']) : 0;
 
   $travel_data  = flt_travel_data($user, $from, $to, $fleet, $options['fleet_speed_percent']);
 
@@ -81,9 +81,9 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   $QryInsertFleet .= "`fleet_end_system` = '{$to['system']}', ";
   $QryInsertFleet .= "`fleet_end_planet` = '{$to['planet']}', ";
   $QryInsertFleet .= "`fleet_end_type` = '{$to['planet_type']}', ";
-  $QryInsertFleet .= "`fleet_resource_metal` = " . intval($fleet[RES_METAL]) . ", ";
-  $QryInsertFleet .= "`fleet_resource_crystal` = " . intval($fleet[RES_CRYSTAL]) . ", ";
-  $QryInsertFleet .= "`fleet_resource_deuterium` = " . intval($fleet[RES_DEUTERIUM]) . ", ";
+  $QryInsertFleet .= "`fleet_resource_metal` = " . floatval($fleet[RES_METAL]) . ", ";
+  $QryInsertFleet .= "`fleet_resource_crystal` = " . floatval($fleet[RES_CRYSTAL]) . ", ";
+  $QryInsertFleet .= "`fleet_resource_deuterium` = " . floatval($fleet[RES_DEUTERIUM]) . ", ";
   $QryInsertFleet .= "`fleet_target_owner` = '{$to['id_owner']}', ";
   $QryInsertFleet .= "`fleet_group` = '{$fleet_group}', ";
   $QryInsertFleet .= "`start_time` = '{$time_now}';";

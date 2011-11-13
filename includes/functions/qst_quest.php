@@ -4,7 +4,7 @@ function qst_render_page()
 {
   global $sn_data, $lang, $user, $template, $config;
 
-  $user_id = sys_get_param_int('user_id', false);
+  $user_id = sys_get_param_id('user_id', false);
   $mode    = sys_get_param_str('mode');
 
   $quest_units_allowed   = array_merge($sn_data['groups']['structures'], $sn_data['groups']['tech'], $sn_data['groups']['fleet'], $sn_data['groups']['defense']);
@@ -14,7 +14,7 @@ function qst_render_page()
 
   if($in_admin)
   {
-    $quest_id = sys_get_param_int('id');
+    $quest_id = sys_get_param_id('id');
     $quest_name = sys_get_param_str_raw('QUEST_NAME');
     if (!empty($quest_name))
     {
@@ -27,7 +27,7 @@ function qst_render_page()
           throw new Exception($lang['qst_adm_err_reward_type']);
         }
 
-        $quest_rewards_amount = sys_get_param_int('QUEST_REWARDS_AMOUNT');
+        $quest_rewards_amount = sys_get_param_float('QUEST_REWARDS_AMOUNT');
         if($quest_rewards_amount <= 0)
         {
           throw new Exception($lang['qst_adm_err_reward_amount']);
@@ -41,7 +41,7 @@ function qst_render_page()
           throw new Exception($lang['qst_adm_err_unit_id']);
         }
 
-        $quest_unit_amount = sys_get_param_int('QUEST_UNIT_AMOUNT');
+        $quest_unit_amount = sys_get_param_float('QUEST_UNIT_AMOUNT');
         if($quest_unit_amount <= 0)
         {
           throw new Exception($lang['qst_adm_err_unit_amount']);

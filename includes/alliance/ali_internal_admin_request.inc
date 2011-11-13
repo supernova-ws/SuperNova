@@ -10,13 +10,13 @@ if (!$user_admin_applications)
   message($lang['Denied_access'], $lang['requests_admin']);
 }
 
-$d = sys_get_param_int('d');
+$d = sys_get_param_id('d');
 if($d)
 {
   doquery("UPDATE {{alliance_requests}} SET `request_denied` = 1, `request_text` = '{$lang['ali_req_deny_reason']}' WHERE `id_user`= {$d} LIMIT 1;");
 }
 
-$id_user = sys_get_param_int('id_user');
+$id_user = sys_get_param_id('id_user');
 if($id_user)
 {
   doquery("UPDATE {{users}} SET `ally_id` = '{$ally['id']}', `ally_name` = '{$ally['ally_name']}', `ally_register_time` = {$time_now}, `ally_rank_id` = 0 WHERE `id`= {$id_user} LIMIT 1;");

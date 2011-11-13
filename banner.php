@@ -16,7 +16,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('overview');
 
-$id = sys_get_param_int('id');
+$id = sys_get_param_id('id');
 $type = sys_get_param_str('type', 'userbar');
 $format = sys_get_param_str('format', 'png');
 

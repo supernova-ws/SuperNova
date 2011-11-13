@@ -31,9 +31,9 @@ $UserRecycles   = $planetrow['recycler'];
 $UserDeuterium  = $planetrow['deuterium'];
 $UserMissiles   = $planetrow['interplanetary_misil'];
 
-$target_galaxy = intval($_POST['galaxy']);
-$target_system = intval($_POST['system']);
-$target_planet = intval($_POST['planet']);
+$target_galaxy = sys_get_param_int('galaxy');
+$target_system = sys_get_param_int('system');
+$target_planet = sys_get_param_int('planet');
 if($target_galaxy > $config->game_maxGalaxy || $target_galaxy < 1 ||
    $target_system > $config->game_maxSystem || $target_system < 1 ||
    $target_planet > $config->game_maxPlanet || $target_planet < 1)
@@ -41,7 +41,7 @@ if($target_galaxy > $config->game_maxGalaxy || $target_galaxy < 1 ||
   $ResultMessage = "02|{$lang['gs_c02']}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}";
   die ( $ResultMessage );
 }
-$target_planet_type = intval($_POST['planettype']);
+$target_planet_type = sys_get_param_int('planettype');
 
 $target_mission = sys_get_param_int('mission');
 
@@ -51,7 +51,7 @@ $FleetSubQRY    = '';
 $fleet_ship_count = 0;
 foreach(array_merge($sn_data['groups']['fleet'], array(503)) as $ship_id)
 {
-  $ship_count = max(0, intval($_POST["ship{$ship_id}"]));
+  $ship_count = max(0, sys_get_param_float("ship{$ship_id}"));
   if(!$ship_count)
   {
     continue;
@@ -87,7 +87,7 @@ if($cant_attack != ATTACK_ALLOWED)
 
 if($target_mission == MT_MISSILE)
 {
-  $target_structure = intval($_POST['structures']);
+  $target_structure = sys_get_param_int('structures');
   if ($target_structure && !in_array($target_structure, $sn_data['groups']['defense_active']))
   {
     $cant_attack = ATTACK_WRONG_STRUCTURE;
@@ -102,9 +102,9 @@ if($target_mission == MT_MISSILE)
   $arrival = $time_now + round((30 + (60 * $distance)) / get_fleet_speed());
 
   doquery("INSERT INTO `{{iraks}}` SET
-     `zielid` = '{$TargetRow['id_owner']}', `galaxy` = '{$target_galaxy}', `system` = '{$target_system}', `planet` = '{$target_planet}',
-     `owner` = '{$user['id']}', `galaxy_angreifer` = '{$planetrow['galaxy']}', `system_angreifer` = '{$planetrow['system']}', `planet_angreifer` = '{$planetrow['planet']}',
-     `zeit` = '{$arrival}', `anzahl` = '{$mips_sent}', `primaer` = '{$target_structure}';");
+     `fleet_target_owner` = '{$TargetRow['id_owner']}', `fleet_end_galaxy` = '{$target_galaxy}', `fleet_end_system` = '{$target_system}', `fleet_end_planet` = '{$target_planet}',
+     `fleet_owner` = '{$user['id']}', `fleet_start_galaxy` = '{$planetrow['galaxy']}', `fleet_start_system` = '{$planetrow['system']}', `fleet_start_planet` = '{$planetrow['planet']}',
+     `fleet_end_time` = '{$arrival}', `fleet_amount` = '{$mips_sent}', `primaer` = '{$target_structure}';");
 
   $FleetSubQRY = "`{$sn_data[503]['name']}` = `{$sn_data[503]['name']}` - '{$mips_sent}', ";
   $Ship = 503;

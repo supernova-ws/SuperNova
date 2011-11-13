@@ -12,8 +12,6 @@ if($user['authlevel'] < 3)
 
 $template = gettemplate('admin/planet_compensate', true);
 
-// http://localhost/admin/t.php?g=1&s=19&p=10&g1=1&s1=2&p1=8&u=gorlum&f=1.1&c=1
-
 $galaxy_src = sys_get_param_int('galaxy_src');
 $system_src = sys_get_param_int('system_src');
 $planet_src = sys_get_param_int('planet_src');
