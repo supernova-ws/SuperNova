@@ -53,7 +53,7 @@ if ($user['authlevel'] >= 3)
 
       if(sys_get_param_int('news_mass_mail'))
       {
-        $text = sys_get_param['text'] . ($detail_url ? " <a href=\"{$detail_url}\"><span class=\"positive\">{$lang['news_more']}</span></a>" : '');
+        $text = sys_get_param('text') . ($detail_url ? " <a href=\"{$detail_url}\"><span class=\"positive\">{$lang['news_more']}</span></a>" : '');
         msg_send_simple_message('*', 0, 0, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['news_title'], $text);
       }
     }
