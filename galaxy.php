@@ -20,7 +20,7 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $mode             = sys_get_param_int('mode');
-$CurrentPlanetID  = sys_get_param_int('current');
+$CurrentPlanetID  = sys_get_param_id('current');
 $galaxy           = sys_get_param_int('galaxy');
 $system           = sys_get_param_int('system');
 $planet           = sys_get_param_int('planet');

@@ -129,7 +129,7 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
 
   $GET_action  = sys_get_param_str('action');
   $GET_mode    = sys_get_param_str('mode');
-  $POST_fmenge = $_POST['fmenge'];
+  $POST_fmenge = sys_get_param('fmenge');
 
   if(isset($GET_action))
   {

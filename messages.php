@@ -57,7 +57,7 @@ switch ($mode)
 
     if(!$recipient_row)
     {
-      $recipient_id = sys_get_param_int('id');
+      $recipient_id = sys_get_param_id('id');
       $recipient_row = doquery("SELECT * FROM {{users}} WHERE `id` = {$recipient_id};", '', true);
       if (!$recipient_row)
       {

@@ -82,8 +82,8 @@ switch ($fleet_page)
   case 3:
 
   case 2:
-    $fleet_group_mr = intval($_POST['fleet_group']);
-    $fleetarray     = unserialize(base64_decode(str_rot13($_POST["usedfleet"])));
+    $fleet_group_mr = sys_get_param_id('fleet_group');
+    $fleetarray     = unserialize(base64_decode(str_rot13(sys_get_param('usedfleet'))));
 
     foreach($fleetarray as $ship_id => $ship_amount)
     {

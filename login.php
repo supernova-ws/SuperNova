@@ -14,7 +14,7 @@ include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 lng_include('login');
 lng_include('admin');
 
-$id_ref = sys_get_param_int('id_ref');
+$id_ref = sys_get_param_id('id_ref');
 $username = sys_get_param('username');
 $password = sys_get_param('password');
 if ($username)

@@ -9,7 +9,7 @@ if (!$user_can_kick && $allianceAdminMode)
   message($lang['Denied_access'], $lang['Members_list']);
 
 // Changing rank for single user
-$id_user = sys_get_param_int('id_user');
+$id_user = sys_get_param_id('id_user');
 if(isset($_GET['id_rank']))
 {
   $id_rank = sys_get_param_int('id_rank');
@@ -18,7 +18,7 @@ if($id_user && isset($id_rank) && $user_admin){
   doquery("UPDATE {{users}} SET `ally_rank_id` = {$id_rank} WHERE `id`= {$id_user};");
 }
 
-$id_kick = sys_get_param_int('kick');
+$id_kick = sys_get_param_id('kick');
 if ($id_kick && $user_can_kick)
 {
   $u = doquery("SELECT * FROM {{users}} WHERE `id` ='{$id_kick}' LIMIT 1", '', true);

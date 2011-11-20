@@ -76,10 +76,10 @@ function int_renderLastActiveHTML($last_active = 0, $isAllowed = true, $isAdmin 
 }
 lng_include('buddy');
 
-$userID = intval(isset($_GET['u']) ? $_GET['u'] : $_POST['u']);
-$buddyID = intval(isset($_GET['buddyID']) ? $_GET['buddyID'] : $_POST['buddyID']);
-$text = mysql_real_escape_string(sys_bbcodeParse(strip_tags($_POST['text'])));
-$mode = mysql_real_escape_string(isset($_GET['mode']) ? $_GET['mode'] : $_POST['mode']);
+$userID = sys_get_param_id('u');
+$buddyID = sys_get_param_id('buddyID');
+$text = mysql_real_escape_string(sys_bbcodeParse(strip_tags(sys_get_param('text'))));
+$mode = sys_get_param_str('mode');
 
 if ($userID)
 {

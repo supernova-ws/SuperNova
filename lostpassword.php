@@ -17,7 +17,7 @@ include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('login');
 
-$id_ref = sys_get_param_int('id_ref');
+$id_ref = sys_get_param_id('id_ref');
 $email   = sys_get_param_str('email');
 $confirm = sys_get_param_str('confirm');
 

@@ -35,7 +35,7 @@ if ($user_request['id_ally'])
   display($page, $lang['ali_req_title']);
 }
 
-$id_ally = sys_get_param_int('a');
+$id_ally = sys_get_param_id('a');
 $POST_text = sys_get_param_str('text');
 if ($POST_text)
 {

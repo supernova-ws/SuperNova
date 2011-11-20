@@ -26,6 +26,10 @@ if(!defined('INIT'))
   include_once('init.php');
 }
 
+define('IN_UPDATE', true);
+
+require('update/upd_helpers.php');
+
 $debug_value = $config->debug;
 $config->debug = 0;
 
@@ -951,11 +955,462 @@ debug($update_tables['logs']['log_id'], 31);
   case 31:
     upd_log_version_update();
 
+    upd_alter_table('aks', array(
+      "MODIFY COLUMN `planet_type` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0",
+    ), strtoupper($update_tables['aks']['planet_type']['Type']) != 'TINYINT(1) UNSIGNED');
+
+    upd_alter_table('alliance', array(
+      "MODIFY COLUMN `ally_request_notallow` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0",
+      "MODIFY COLUMN `ally_owner` BIGINT(20) UNSIGNED DEFAULT NULL",
+    ), strtoupper($update_tables['alliance']['ally_owner']['Type']) != 'BIGINT(20) UNSIGNED');
+
+    if(strtoupper($update_tables['alliance_diplomacy']['alliance_diplomacy_ally_id']['Type']) != 'BIGINT(20) UNSIGNED')
+    {
+      upd_alter_table('alliance_diplomacy', array(
+        "DROP FOREIGN KEY `FK_diplomacy_ally_id`",
+        "DROP FOREIGN KEY `FK_diplomacy_contr_ally_id`"
+      ), true);
+
+      upd_alter_table('alliance_diplomacy', array(
+        "MODIFY COLUMN `alliance_diplomacy_ally_id` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "MODIFY COLUMN `alliance_diplomacy_contr_ally_id` BIGINT(20) UNSIGNED DEFAULT NULL",
+
+        "ADD CONSTRAINT `FK_diplomacy_ally_id`       FOREIGN KEY (`alliance_diplomacy_ally_id`)       REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_diplomacy_contr_ally_id` FOREIGN KEY (`alliance_diplomacy_contr_ally_id`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+    }
+
+    if(strtoupper($update_tables['alliance_negotiation']['alliance_negotiation_ally_id']['Type']) != 'BIGINT(20) UNSIGNED')
+    {
+      upd_alter_table('alliance_negotiation', array(
+        "DROP FOREIGN KEY `FK_negotiation_ally_id`",
+        "DROP FOREIGN KEY `FK_negotiation_contr_ally_id`"
+      ), true);
+
+      upd_alter_table('alliance_negotiation', array(
+        "MODIFY COLUMN `alliance_negotiation_status` TINYINT(1) NOT NULL DEFAULT 0",
+        "MODIFY COLUMN `alliance_negotiation_ally_id` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "MODIFY COLUMN `alliance_negotiation_contr_ally_id` BIGINT(20) UNSIGNED DEFAULT NULL",
+
+        "ADD CONSTRAINT `FK_negotiation_ally_id`       FOREIGN KEY (`alliance_negotiation_ally_id`)       REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_negotiation_contr_ally_id` FOREIGN KEY (`alliance_negotiation_contr_ally_id`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+    }
+
+    if(strtoupper($update_tables['alliance_requests']['id_user']['Type']) != 'BIGINT(20) UNSIGNED')
+    {
+      upd_do_query('DELETE FROM {{alliance_requests}} WHERE id_user NOT IN (SELECT id FROM {{users}}) OR id_ally NOT IN (SELECT id FROM {{alliance}});', true);
+
+      upd_alter_table('alliance_requests', array(
+        "MODIFY COLUMN `id_user` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "MODIFY COLUMN `id_ally` BIGINT(20) UNSIGNED DEFAULT NULL",
+
+        "ADD KEY `I_alliance_requests_id_ally` (`id_ally`, `id_user`)",
+
+        "ADD CONSTRAINT `FK_alliance_request_user_id` FOREIGN KEY (`id_user`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_alliance_request_ally_id` FOREIGN KEY (`id_ally`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+    }
+
+    if(strtoupper($update_tables['annonce']['id']['Type']) != 'BIGINT(20) UNSIGNED')
+    {
+      upd_do_query('DELETE FROM {{annonce}} WHERE user NOT IN (SELECT username FROM {{users}});', true);
+
+      upd_alter_table('annonce', array(
+        "MODIFY COLUMN `id` SERIAL",
+        "MODIFY COLUMN `user` VARCHAR(64) DEFAULT NULL",
+
+        "ADD KEY `I_annonce_user` (`user`, `id`)",
+
+        "ADD CONSTRAINT `FK_annonce_user` FOREIGN KEY (`user`) REFERENCES `{$config->db_prefix}users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+    }
+
+    if(strtoupper($update_tables['bashing']['bashing_user_id']['Type']) != 'BIGINT(20) UNSIGNED')
+    {
+      upd_alter_table('bashing', array(
+        "DROP FOREIGN KEY `FK_bashing_user_id`",
+        "DROP FOREIGN KEY `FK_bashing_planet_id`",
+      ), true);
+
+      upd_alter_table('bashing', array(
+        "MODIFY COLUMN `bashing_user_id` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "MODIFY COLUMN `bashing_planet_id` BIGINT(20) UNSIGNED DEFAULT NULL",
+
+        "ADD CONSTRAINT `FK_bashing_user_id`   FOREIGN KEY (`bashing_user_id`)   REFERENCES `{$config->db_prefix}users`   (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_bashing_planet_id` FOREIGN KEY (`bashing_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+    }
+
+    if(strtoupper($update_tables['buddy']['id']['Type']) != 'BIGINT(20) UNSIGNED')
+    {
+      upd_do_query('DELETE FROM {{buddy}} WHERE sender NOT IN (SELECT id FROM {{users}}) OR owner NOT IN (SELECT id FROM {{users}});', true);
+
+      upd_alter_table('buddy', array(
+        "MODIFY COLUMN `id` SERIAL",
+        "MODIFY COLUMN `sender` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "MODIFY COLUMN `owner` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "MODIFY COLUMN `active` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0",
+
+        "ADD KEY `I_buddy_sender` (`sender`)",
+        "ADD KEY `I_buddy_owner` (`owner`)",
+
+        "ADD CONSTRAINT `FK_buddy_sender_id` FOREIGN KEY (`sender`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_buddy_owner_id`  FOREIGN KEY (`owner`)  REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+    }
+
+    upd_alter_table('chat', array(
+      "MODIFY COLUMN `messageid` SERIAL",
+    ), strtoupper($update_tables['chat']['messageid']['Type']) != 'BIGINT(20) UNSIGNED');
+
+    upd_alter_table('counter', array(
+      "CHANGE COLUMN `id` `counter_id` SERIAL",
+
+      "MODIFY COLUMN `user_id` BIGINT(20) UNSIGNED DEFAULT 0",
+
+      "ADD COLUMN `user_name` VARCHAR(64) DEFAULT '' AFTER `user_id`",
+
+      "ADD KEY `I_counter_user_name` (`user_name`)",
+    ), strtoupper($update_tables['counter']['counter_id']['Type']) != 'BIGINT(20) UNSIGNED');
+
     upd_alter_table('fleets', array(
-      "MODIFY COLUMN `fleet_resource_metal` BIGINT(20) DEFAULT '0'",
-      "MODIFY COLUMN `fleet_resource_crystal` BIGINT(20) DEFAULT '0'",
-      "MODIFY COLUMN `fleet_resource_deuterium` BIGINT(20) DEFAULT '0'",
-    ), strtoupper($update_tables['fleets']['fleet_resource_metal']['Type']) != 'BIGINT(20)');
+      "MODIFY COLUMN `fleet_id` SERIAL",
+      "MODIFY COLUMN `fleet_resource_metal` DECIMAL(65,0) DEFAULT '0'",
+      "MODIFY COLUMN `fleet_resource_crystal` DECIMAL(65,0) DEFAULT '0'",
+      "MODIFY COLUMN `fleet_resource_deuterium` DECIMAL(65,0) DEFAULT '0'",
+    ), strtoupper($update_tables['fleets']['fleet_resource_metal']['Type']) != 'DECIMAL(65,0)');
+
+    if(strtoupper($update_tables['iraks']['fleet_owner']['Type']) != 'BIGINT(20) UNSIGNED')
+    {
+      upd_do_query('DELETE FROM {{iraks}} WHERE owner NOT IN (SELECT id FROM {{users}}) OR zielid NOT IN (SELECT id FROM {{users}});', true);
+
+      upd_alter_table('iraks', array(
+        "CHANGE COLUMN `zeit` `fleet_end_time` INT(11) UNSIGNED NOT NULL DEFAULT 0",
+        "CHANGE COLUMN `zielid` `fleet_target_owner` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "CHANGE COLUMN `owner` `fleet_owner` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "CHANGE COLUMN `anzahl` `fleet_amount` BIGINT(20) UNSIGNED DEFAULT 0",
+        "CHANGE COLUMN `galaxy_angreifer` `fleet_start_galaxy` INT(2) UNSIGNED DEFAULT 0",
+        "CHANGE COLUMN `system_angreifer` `fleet_start_system` INT(4) UNSIGNED DEFAULT 0",
+        "CHANGE COLUMN `planet_angreifer` `fleet_start_planet` INT(2) UNSIGNED DEFAULT 0",
+
+        "CHANGE COLUMN `galaxy` `fleet_end_galaxy` INT(2) UNSIGNED DEFAULT 0",
+        "CHANGE COLUMN `system` `fleet_end_system` INT(4) UNSIGNED DEFAULT 0",
+        "CHANGE COLUMN `planet` `fleet_end_planet` INT(2) UNSIGNED DEFAULT 0",
+
+        "ADD KEY `I_iraks_fleet_owner` (`fleet_owner`)",
+        "ADD KEY `I_iraks_fleet_target_owner` (`fleet_target_owner`)",
+
+        "ADD CONSTRAINT `FK_iraks_fleet_owner` FOREIGN KEY (`fleet_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_iraks_fleet_target_owner` FOREIGN KEY (`fleet_target_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+    }
+
+    if(strtoupper($update_tables['notes']['owner']['Type']) != 'BIGINT(20) UNSIGNED')
+    {
+      upd_do_query('DELETE FROM {{notes}} WHERE owner NOT IN (SELECT id FROM {{users}});', true);
+
+      upd_alter_table('notes', array(
+        "MODIFY COLUMN id SERIAL",
+        "MODIFY COLUMN `owner` BIGINT(20) UNSIGNED DEFAULT NULL",
+
+        "ADD KEY `I_notes_owner` (`owner`)",
+
+        "ADD CONSTRAINT `FK_notes_owner` FOREIGN KEY (`owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+    }
+
+    upd_alter_table('planets', array(
+      "MODIFY COLUMN `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT",
+      "MODIFY COLUMN `name` VARCHAR(64) DEFAULT 'Planet' NOT NULL",
+      "MODIFY COLUMN `id_owner` BIGINT(20) UNSIGNED DEFAULT NULL",
+      "MODIFY COLUMN `galaxy` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `system` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `planet` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `planet_type` TINYINT NOT NULL DEFAULT '1'",
+
+      "MODIFY COLUMN `metal` DECIMAL(65,5) NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `crystal` DECIMAL(65,5) NOT NULL DEFAULT '0' AFTER `metal`",
+      "MODIFY COLUMN `deuterium` DECIMAL(65,5) NOT NULL DEFAULT '0' AFTER `crystal`",
+      "MODIFY COLUMN `energy_max` DECIMAL(65,0) NOT NULL DEFAULT '0' AFTER `deuterium`",
+      "MODIFY COLUMN `energy_used` DECIMAL(65,0) NOT NULL DEFAULT '0' AFTER `energy_max`",
+
+      "MODIFY COLUMN `metal_mine` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `crystal_mine` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `deuterium_sintetizer` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `solar_plant` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `fusion_plant` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `robot_factory` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `nano_factory` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `hangar` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `metal_store` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `crystal_store` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `deuterium_store` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `laboratory` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `nano` SMALLINT DEFAULT '0' AFTER `laboratory`",
+      "MODIFY COLUMN `terraformer` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `ally_deposit` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `silo` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `mondbasis` SMALLINT NOT NULL DEFAULT '0' AFTER `silo`",
+      "MODIFY COLUMN `phalanx` SMALLINT NOT NULL DEFAULT '0' AFTER `mondbasis`",
+      "MODIFY COLUMN `sprungtor` SMALLINT NOT NULL DEFAULT '0' AFTER `phalanx`",
+      "MODIFY COLUMN `last_jump_time` int(11) NOT NULL DEFAULT '0' AFTER `sprungtor`",
+
+      "MODIFY COLUMN `small_ship_cargo` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `big_ship_cargo` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `supercargo` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Supercargo ship count' AFTER `big_ship_cargo`",
+      "MODIFY COLUMN `planet_cargo_hyper` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' AFTER `supercargo`",
+      "MODIFY COLUMN `recycler` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' AFTER `planet_cargo_hyper`",
+      "MODIFY COLUMN `colonizer` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' AFTER `recycler`",
+      "MODIFY COLUMN `spy_sonde` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' AFTER `colonizer`",
+      "MODIFY COLUMN `solar_satelit` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' AFTER `spy_sonde`",
+
+      "MODIFY COLUMN `light_hunter` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `heavy_hunter` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `crusher` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `battle_ship` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `bomber_ship` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `battleship` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' AFTER `bomber_ship`",
+      "MODIFY COLUMN `destructor` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `dearth_star` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `supernova` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+
+      "MODIFY COLUMN `misil_launcher` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `small_laser` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `big_laser` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `gauss_canyon` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `ionic_canyon` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `buster_canyon` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+
+      "MODIFY COLUMN `small_protection_shield` tinyint(1) NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `big_protection_shield` tinyint(1) NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `planet_protector` tinyint(1) NOT NULL DEFAULT '0'",
+
+      "MODIFY COLUMN `interceptor_misil` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `interplanetary_misil` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0'",
+
+      "MODIFY COLUMN `metal_perhour` INT NOT NULL DEFAULT '0' AFTER `interplanetary_misil`",
+      "MODIFY COLUMN `crystal_perhour` INT NOT NULL DEFAULT '0' AFTER `metal_perhour`",
+      "MODIFY COLUMN `deuterium_perhour` INT NOT NULL DEFAULT '0' AFTER `crystal_perhour`",
+
+      "MODIFY COLUMN `metal_mine_porcent` TINYINT UNSIGNED NOT NULL DEFAULT '10'",
+      "MODIFY COLUMN `crystal_mine_porcent` TINYINT UNSIGNED NOT NULL DEFAULT '10'",
+      "MODIFY COLUMN `deuterium_sintetizer_porcent` TINYINT UNSIGNED NOT NULL DEFAULT '10'",
+      "MODIFY COLUMN `solar_plant_porcent` TINYINT UNSIGNED NOT NULL DEFAULT '10'",
+      "MODIFY COLUMN `fusion_plant_porcent` TINYINT UNSIGNED NOT NULL DEFAULT '10'",
+      "MODIFY COLUMN `solar_satelit_porcent` TINYINT UNSIGNED NOT NULL DEFAULT '10'",
+
+      "MODIFY COLUMN `que` TEXT COMMENT 'Planet que' AFTER `solar_satelit_porcent`",
+      "MODIFY COLUMN `b_tech` INT(11) NOT NULL DEFAULT 0 AFTER `que`",
+      "MODIFY COLUMN `b_tech_id` SMALLINT NOT NULL DEFAULT 0 AFTER `b_tech`",
+      "MODIFY COLUMN `b_hangar` INT(11) NOT NULL DEFAULT '0' AFTER `b_tech_id`",
+      "MODIFY COLUMN `b_hangar_id` TEXT AFTER `b_hangar`",
+      "MODIFY COLUMN `last_update` INT(11) DEFAULT NULL AFTER `b_hangar_id`",
+
+      "MODIFY COLUMN `image` varchar(64) NOT NULL DEFAULT 'normaltempplanet01' AFTER `last_update`",
+      "MODIFY COLUMN `points` bigint(20) DEFAULT '0' AFTER `image`",
+      "MODIFY COLUMN `ranks` bigint(20) DEFAULT '0' AFTER `points`",
+      "MODIFY COLUMN `id_level` TINYINT NOT NULL DEFAULT '0' AFTER `ranks`",
+      "MODIFY COLUMN `destruyed` int(11) NOT NULL DEFAULT '0' AFTER `id_level`",
+      "MODIFY COLUMN `diameter` int(11) NOT NULL DEFAULT '12800' AFTER `destruyed`",
+      "MODIFY COLUMN `field_max` SMALLINT UNSIGNED NOT NULL DEFAULT '163' AFTER `diameter`",
+      "MODIFY COLUMN `field_current` SMALLINT UNSIGNED NOT NULL DEFAULT '0' AFTER `field_max`",
+      "MODIFY COLUMN `temp_min` SMALLINT NOT NULL DEFAULT '0' AFTER `field_current`",
+      "MODIFY COLUMN `temp_max` SMALLINT NOT NULL DEFAULT '40' AFTER `temp_min`",
+
+      "MODIFY COLUMN `metal_max` DECIMAL(65,0) DEFAULT '100000' AFTER `temp_max`",
+      "MODIFY COLUMN `crystal_max` DECIMAL(65,0) DEFAULT '100000' AFTER `metal_max`",
+      "MODIFY COLUMN `deuterium_max` DECIMAL(65,0) DEFAULT '100000' AFTER `crystal_max`",
+
+      "MODIFY COLUMN `debris_metal` bigint(20) unsigned DEFAULT '0'",
+      "MODIFY COLUMN `debris_crystal` bigint(20) unsigned DEFAULT '0'",
+      "MODIFY COLUMN `PLANET_GOVERNOR_ID` SMALLINT NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `PLANET_GOVERNOR_LEVEL` SMALLINT NOT NULL DEFAULT '0'",
+
+      "MODIFY COLUMN `parent_planet` BIGINT(20) unsigned DEFAULT '0'",
+
+      "DROP COLUMN `b_hangar_plus`",
+    ), isset($update_tables['planets']['b_hangar_plus']));
+
+    if(strtoupper($update_tables['referrals']['id_partner']['Type']) != 'BIGINT(20) UNSIGNED')
+    {
+      upd_do_query('DELETE FROM {{referrals}} WHERE id NOT IN (SELECT id FROM {{users}}) OR id_partner NOT IN (SELECT id FROM {{users}});', true);
+
+      upd_alter_table('referrals', array(
+        "MODIFY COLUMN `id` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "MODIFY COLUMN `id_partner` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "MODIFY COLUMN `dark_matter` DECIMAL(65,0) NOT NULL DEFAULT '0'",
+
+        "ADD CONSTRAINT `FK_referrals_id` FOREIGN KEY (`id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_referrals_id_partner` FOREIGN KEY (`id_partner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+    }
+
+    upd_alter_table('rw', array(
+      "MODIFY COLUMN `report_id` SERIAL",
+      "MODIFY COLUMN `id_owner1` BIGINT(20) UNSIGNED",
+      "MODIFY COLUMN `id_owner2` BIGINT(20) UNSIGNED",
+    ), strtoupper($update_tables['rw']['id_owner1']['Type']) != 'BIGINT(20) UNSIGNED');
+
+    if(strtoupper($update_tables['shortcut']['shortcut_user_id']['Type']) != 'BIGINT(20) UNSIGNED')
+    {
+      upd_do_query('DELETE FROM {{shortcut}} WHERE shortcut_user_id NOT IN (SELECT id FROM {{users}}) OR shortcut_planet_id NOT IN (SELECT id FROM {{planets}});', true);
+
+      upd_alter_table('shortcut', array(
+        "MODIFY COLUMN `shortcut_id` SERIAL",
+        "MODIFY COLUMN `shortcut_user_id` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "MODIFY COLUMN `shortcut_planet_id` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "MODIFY COLUMN `shortcut_galaxy` TINYINT UNSIGNED DEFAULT 0",
+        "MODIFY COLUMN `shortcut_system` SMALLINT UNSIGNED DEFAULT 0",
+        "MODIFY COLUMN `shortcut_planet` TINYINT UNSIGNED DEFAULT 0",
+
+        "ADD CONSTRAINT `FK_shortcut_planet_id` FOREIGN KEY (`shortcut_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+    }
+
+    if(strtoupper($update_tables['statpoints']['id_owner']['Type']) != 'BIGINT(20) UNSIGNED')
+    {
+      upd_do_query('DELETE FROM {{statpoints}} WHERE id_owner NOT IN (SELECT id FROM {{users}}) OR id_ally NOT IN (SELECT id FROM {{alliance}});', true);
+
+      upd_alter_table('statpoints', array(
+       "MODIFY COLUMN `stat_date` int(11) NOT NULL DEFAULT '0' FIRST",
+       "MODIFY COLUMN `id_owner` BIGINT(20) UNSIGNED DEFAULT NULL",
+       "MODIFY COLUMN `id_ally` BIGINT(20) UNSIGNED DEFAULT NULL",
+       "MODIFY COLUMN `stat_type` TINYINT UNSIGNED DEFAULT 0",
+       "MODIFY COLUMN `stat_code` TINYINT UNSIGNED NOT NULL DEFAULT '0'",
+
+       "MODIFY COLUMN `tech_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `tech_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `tech_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `tech_count` DECIMAL(65,0) UNSIGNED UNSIGNED NOT NULL DEFAULT '0'",
+
+       "MODIFY COLUMN `build_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `build_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `build_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `build_count` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+
+       "MODIFY COLUMN `defs_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `defs_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `defs_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `defs_count` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+
+       "MODIFY COLUMN `fleet_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `fleet_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `fleet_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `fleet_count` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+
+       "MODIFY COLUMN `res_rank` INT(11) UNSIGNED DEFAULT '0' COMMENT 'Rank by resources' AFTER `fleet_count`",
+       "MODIFY COLUMN `res_old_rank` INT(11) UNSIGNED DEFAULT '0' COMMENT 'Old rank by resources'AFTER `res_rank`",
+       "MODIFY COLUMN `res_points` DECIMAL(65,0) UNSIGNED DEFAULT '0' COMMENT 'Resource stat points' AFTER `res_old_rank`",
+       "MODIFY COLUMN `res_count` DECIMAL(65,0) UNSIGNED DEFAULT '0' COMMENT 'Resource count' AFTER `res_points`",
+
+       "MODIFY COLUMN `total_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `total_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `total_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+       "MODIFY COLUMN `total_count` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+
+       "ADD KEY `I_stats_id_ally` (`id_ally`)",
+
+       "ADD CONSTRAINT `FK_stats_id_owner` FOREIGN KEY (`id_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+       "ADD CONSTRAINT `FK_stats_id_ally` FOREIGN KEY (`id_ally`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+    }
+
+    upd_alter_table('users', array(
+      "MODIFY COLUMN `authlevel` tinyint unsigned NOT NULL DEFAULT '0' AFTER `username`",
+      "MODIFY COLUMN `vacation` int(11) unsigned DEFAULT '0' AFTER `authlevel`",
+      "MODIFY COLUMN `banaday` int(11) unsigned DEFAULT '0' AFTER `vacation`",
+      "MODIFY COLUMN `dark_matter` bigint(20) DEFAULT '0' AFTER `banaday`",
+      "MODIFY COLUMN `spy_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `computer_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `military_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `defence_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `shield_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `energy_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `hyperspace_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `combustion_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `impulse_motor_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `hyperspace_motor_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `laser_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `ionic_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `buster_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `intergalactic_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `expedition_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `colonisation_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `graviton_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `rpg_amiral` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `mrc_academic` SMALLINT UNSIGNED DEFAULT '0'",
+      "MODIFY COLUMN `rpg_espion` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `rpg_commandant` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `rpg_stockeur` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `rpg_destructeur` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `rpg_general` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `rpg_raideur` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `rpg_empereur` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `player_artifact_list` text AFTER `rpg_empereur`",
+      "MODIFY COLUMN `ally_id` bigint(20) unsigned DEFAULT NULL AFTER `player_artifact_list`",
+      "MODIFY COLUMN `ally_tag` varchar(8) DEFAULT NULL AFTER `ally_id`",
+      "MODIFY COLUMN `ally_name` varchar(32) DEFAULT NULL AFTER `ally_tag`",
+      "MODIFY COLUMN `ally_register_time` int(11) NOT NULL DEFAULT '0' AFTER `ally_name`",
+      "MODIFY COLUMN `ally_rank_id` int(11) NOT NULL DEFAULT '0' AFTER `ally_register_time`",
+      "MODIFY COLUMN `player_que` text AFTER `ally_rank_id`",
+      "MODIFY COLUMN `lvl_minier` bigint(20) unsigned NOT NULL DEFAULT '1'",
+      "MODIFY COLUMN `xpminier` bigint(20) unsigned DEFAULT '0' AFTER `lvl_minier`",
+      "MODIFY COLUMN `player_rpg_tech_xp` bigint(20) unsigned NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `player_rpg_tech_level` bigint(20) unsigned NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `lvl_raid` bigint(20) unsigned NOT NULL DEFAULT '1' AFTER `player_rpg_tech_level`",
+      "MODIFY COLUMN `xpraid` bigint(20) unsigned DEFAULT '0'",
+      "MODIFY COLUMN `raids` bigint(20) unsigned DEFAULT '0'",
+      "MODIFY COLUMN `raidsloose` bigint(20) unsigned DEFAULT '0'",
+      "MODIFY COLUMN `raidswin` bigint(20) unsigned DEFAULT '0'",
+      "MODIFY COLUMN `new_message` int(11) NOT NULL DEFAULT '0' AFTER `raidswin`",
+      "MODIFY COLUMN `mnl_alliance` int(11) NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `mnl_joueur` int(11) NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `mnl_attaque` int(11) NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `mnl_spy` int(11) NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `mnl_exploit` int(11) NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `mnl_transport` int(11) NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `mnl_expedition` int(11) NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `mnl_buildlist` int(11) NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `msg_admin` bigint(11) unsigned DEFAULT '0'",
+      "MODIFY COLUMN `b_tech_planet` int(11) NOT NULL DEFAULT '0' AFTER `msg_admin`",
+      "MODIFY COLUMN `deltime` int(10) unsigned DEFAULT '0'",
+      "MODIFY COLUMN `news_lastread` int(10) unsigned DEFAULT '0'",
+      "MODIFY COLUMN `total_rank` int(10) unsigned NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `total_points` bigint(20) unsigned NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `password` varchar(64) NOT NULL DEFAULT '' AFTER `total_points`",
+      "MODIFY COLUMN `email` varchar(64) NOT NULL DEFAULT '' AFTER `password`",
+      "MODIFY COLUMN `email_2` varchar(64) NOT NULL DEFAULT '' AFTER `email`",
+      "MODIFY COLUMN `lang` varchar(8) NOT NULL DEFAULT 'ru' AFTER `email_2`",
+      "MODIFY COLUMN `sex` char(1) DEFAULT NULL AFTER `lang`",
+      "MODIFY COLUMN `avatar` varchar(255) NOT NULL DEFAULT '' AFTER `sex`",
+      "MODIFY COLUMN `sign` mediumtext AFTER `avatar`",
+      "MODIFY COLUMN `id_planet` int(11) NOT NULL DEFAULT '0' AFTER `sign`",
+      "MODIFY COLUMN `galaxy` int(11) NOT NULL DEFAULT '0' AFTER `id_planet`",
+      "MODIFY COLUMN `system` int(11) NOT NULL DEFAULT '0' AFTER `galaxy`",
+      "MODIFY COLUMN `planet` int(11) NOT NULL DEFAULT '0' AFTER `system`",
+      "MODIFY COLUMN `current_planet` int(11) NOT NULL DEFAULT '0' AFTER `planet`",
+      "MODIFY COLUMN `user_agent` mediumtext NOT NULL AFTER `current_planet`",
+      "MODIFY COLUMN `user_lastip` varchar(250) DEFAULT NULL COMMENT 'User last IP' AFTER `user_agent`",
+      "MODIFY COLUMN `user_proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)' AFTER `user_lastip`",
+      "MODIFY COLUMN `register_time` int(10) unsigned DEFAULT '0' AFTER `user_proxy`",
+      "MODIFY COLUMN `onlinetime` int(10) unsigned DEFAULT '0' AFTER `register_time`",
+      "MODIFY COLUMN `dpath` varchar(255) NOT NULL DEFAULT '' AFTER `onlinetime`",
+      "MODIFY COLUMN `design` tinyint(4) unsigned NOT NULL DEFAULT '1' AFTER `dpath`",
+      "MODIFY COLUMN `noipcheck` tinyint(4) unsigned NOT NULL DEFAULT '1' AFTER `design`",
+      "MODIFY COLUMN `options` mediumtext COMMENT 'Packed user options' AFTER `noipcheck`",
+      "MODIFY COLUMN `planet_sort` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `options`",
+      "MODIFY COLUMN `planet_sort_order` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `planet_sort`",
+      "MODIFY COLUMN `spio_anz` tinyint(1) unsigned NOT NULL DEFAULT '1' AFTER `planet_sort_order`",
+      "MODIFY COLUMN `settings_tooltiptime` tinyint(1) unsigned NOT NULL DEFAULT '5' AFTER `spio_anz`",
+      "MODIFY COLUMN `settings_fleetactions` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `settings_tooltiptime`",
+      "MODIFY COLUMN `settings_allylogo` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `settings_fleetactions`",
+      "MODIFY COLUMN `settings_esp` tinyint(1) unsigned NOT NULL DEFAULT '1' AFTER `settings_allylogo`",
+      "MODIFY COLUMN `settings_wri` tinyint(1) unsigned NOT NULL DEFAULT '1' AFTER `settings_esp`",
+      "MODIFY COLUMN `settings_bud` tinyint(1) unsigned NOT NULL DEFAULT '1' AFTER `settings_wri`",
+      "MODIFY COLUMN `settings_mis` tinyint(1) unsigned NOT NULL DEFAULT '1' AFTER `settings_bud`",
+      "MODIFY COLUMN `settings_rep` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `settings_mis`",
+    ), strtoupper($update_tables['users']['id_owner']['Type']) != 'BIGINT(20) UNSIGNED');
 
     upd_do_query('COMMIT;', true);
 //  $new_version = 31;
@@ -975,196 +1430,6 @@ else
 if($user['authlevel'] >= 3)
 {
   print(str_replace("\r\n", '<br>', $upd_log));
-}
-
-function upd_do_query($query, $no_log = false)
-{
-  global $update_tables;
-
-  upd_add_more_time();
-  if(!$no_log)
-  {
-    upd_log_message("Performing query '{$query}'");
-  }
-
-  $db_prefix = sn_db_connect($query);
-  if(!(strpos($query, '{{') === false))
-  {
-    foreach($update_tables as $tableName => $cork)
-    {
-      $query = str_replace("{{{$tableName}}}", $db_prefix.$tableName, $query);
-    }
-  }
-
-  $result = mysql_query($query) or
-    die('Query error for ' . $query . ': ' . mysql_error());
-
-  return $result;
-}
-
-function upd_check_key($key, $default_value, $condition = false)
-{
-  global $config;
-
-  $config->db_loadItem($key);
-  if($condition || !isset($config->$key))
-  {
-    upd_add_more_time();
-    if(!$GLOBALS['sys_log_disabled'])
-    {
-      upd_log_message("Updating config key '{$key}' with value '{$default_value}'");
-    }
-    $config->db_saveItem($key, $default_value);
-  }
-}
-
-function upd_log_version_update()
-{
-  doquery('START TRANSACTION;');
-  upd_add_more_time();
-  upd_log_message("Detected outdated version {$GLOBALS['new_version']}. Upgrading...");
-}
-
-function upd_add_more_time($time = 0)
-{
-  global $config, $time_now;
-
-  $time = $time ? $time : ($config->upd_lock_time ? $config->upd_lock_time : 30);
-
-  if(!$GLOBALS['sys_log_disabled'])
-  {
-    $config->db_saveItem('var_db_update_end', $time_now + $time);
-  }
-  set_time_limit($time);
-}
-
-function upd_log_message($message)
-{
-  if($GLOBALS['sys_log_disabled'])
-  {
-//    print("{$message}<br />");
-  }
-  else
-  {
-    $GLOBALS['upd_log'] .= "{$message}\r\n";
-    $GLOBALS['debug']->warning($message, 'Database Update', 103);
-  }
-}
-
-function upd_unset_table_info($table_name)
-{
-  global $update_tables, $update_indexes, $update_foreigns;
-
-  if(isset($update_tables[$table_name]))
-  {
-    unset($update_tables[$table_name]);
-  }
-
-  if(isset($update_indexes[$table_name]))
-  {
-    unset($update_indexes[$table_name]);
-  }
-
-  if(isset($update_foreigns[$table_name]))
-  {
-    unset($update_foreigns[$table_name]);
-  }
-
-}
-
-function upd_load_table_info($prefix_table_name, $prefixed = true)
-{
-  global $config, $update_tables, $update_indexes, $update_foreigns, $db_name;
-
-  $tableName = $prefixed ? str_replace($config->db_prefix, '', $prefix_table_name) : $prefix_table_name;
-  $prefix_table_name = $prefixed ? $prefix_table_name : $config->db_prefix . $prefix_table_name;
-
-  upd_unset_table_info($tableName);
-
-  $q1 = doquery("SHOW COLUMNS FROM {$prefix_table_name};");
-  while($r1 = mysql_fetch_assoc($q1))
-  {
-    $update_tables[$tableName][$r1['Field']] = $r1;
-  }
-
-  $q1 = doquery("SHOW INDEX FROM {$prefix_table_name};");
-  while($r1 = mysql_fetch_assoc($q1))
-  {
-    $update_indexes[$tableName][$r1['Key_name']] .= "{$r1['Column_name']},";
-  }
-
-  $q1 = doquery("select * FROM information_schema.KEY_COLUMN_USAGE where TABLE_SCHEMA = '{$db_name}' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;");
-  while($r1 = mysql_fetch_assoc($q1))
-  {
-    $table_referenced = str_replace($config->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
-
-    $update_foreigns[$tableName][$r1['CONSTRAINT_NAME']] .= "{$r1['COLUMN_NAME']},{$table_referenced},{$r1['REFERENCED_COLUMN_NAME']};";
-  }
-}
-
-function upd_alter_table($table, $alters, $condition = true)
-{
-  global $config;
-
-  if(!$condition)
-  {
-    return;
-  }
-
-  upd_add_more_time();
-  $alters_print = is_array($alters) ? dump($alters) : $alters;
-  upd_log_message("Altering table '{$table}' with alterations {$alters_print}");
-
-  if(!is_array($alters))
-  {
-    $alters = array($alters);
-  }
-
-  $qry = "ALTER TABLE {$config->db_prefix}{$table} " . implode(',', $alters) . ';';
-
-  $result = mysql_query($qry);
-  $error = mysql_error();
-  if($error)
-  {
-    die("Altering error for table `{$table}`: {$error}<br />{$alters_print}");
-  }
-
-//  if(strpos('RENAME TO', strtoupper(implode(',', $alters))) === false)
-  {
-    upd_load_table_info($table, false);
-  }
-
-  return $result;
-}
-
-function upd_drop_table($table_name)
-{
-  global $config;
-
-  mysql_query("DROP TABLE IF EXISTS {$config->db_prefix}{$table_name};");
-
-  upd_unset_table_info($table_name);
-}
-
-function upd_create_table($table_name, $declaration)
-{
-  global $config, $update_tables;
-
-  if(!$update_tables[$table_name])
-  {
-    doquery('set foreign_key_checks = 0;');
-    $result = mysql_query("CREATE TABLE IF NOT EXISTS `{$config->db_prefix}{$table_name}` {$declaration}");
-    $error = mysql_error();
-    if($error)
-    {
-      die("Creating error for table `{$table_name}`: {$error}<br />" . dump($declaration));
-    }
-    doquery('set foreign_key_checks = 1;');
-    upd_load_table_info($table_name, false);
-    sys_refresh_tablelist($config->db_prefix);
-  }
-
-  return $result;
 }
 
 $config->debug = $debug_value;

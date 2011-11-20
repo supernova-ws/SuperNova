@@ -30,7 +30,7 @@ function flt_build_gathering($resources_taken = '')
   {
     foreach($resources_taken as $planet_id => $cork)
     {
-      $planet_id = intval($planet_id);
+      $planet_id = max(0, floatval($planet_id));
       $query .= $planet_id ? "{$planet_id}," : '';
     }
     $query = substr($query, 0, -1);
@@ -222,9 +222,9 @@ foreach($planet_list as $planet_data)
 
 $template->assign_vars(array(
   'PAGE_HINT'      => $lang['fl_page5_hint'],
-  'METAL_NEED'     => pretty_number(max(0, -sys_get_param_int('metal'))),
-  'CRYSTAL_NEED'   => pretty_number(max(0, -sys_get_param_int('crystal'))),
-  'DEUTERIUM_NEED' => pretty_number(max(0, -sys_get_param_int('deuterium'))),
+  'METAL_NEED'     => pretty_number(max(0, -sys_get_param_float('metal'))),
+  'CRYSTAL_NEED'   => pretty_number(max(0, -sys_get_param_float('crystal'))),
+  'DEUTERIUM_NEED' => pretty_number(max(0, -sys_get_param_float('deuterium'))),
 ));
 
 display(parsetemplate($template), $lang['fl_title']);

@@ -28,9 +28,9 @@ if(SN_IN_FLEET !== true)
     $errorlist .= $lang['fl_bad_mission'];
   }
 
-  $TransMetal      = max(0, intval($_POST['resource0']));
-  $TransCrystal    = max(0, intval($_POST['resource1']));
-  $TransDeuterium  = max(0, intval($_POST['resource2']));
+  $TransMetal      = max(0, sys_get_param_float('resource0'));
+  $TransCrystal    = max(0, sys_get_param_float('resource1'));
+  $TransDeuterium  = max(0, sys_get_param_float('resource2'));
   $StorageNeeded   = $TransMetal + $TransCrystal + $TransDeuterium;
 
   if (!$StorageNeeded && $target_mission == MT_TRANSPORT) {
@@ -205,10 +205,10 @@ if(SN_IN_FLEET !== true)
   $QryInsertFleet .= "`fleet_end_system` = '". $system ."', ";
   $QryInsertFleet .= "`fleet_end_planet` = '". $planet ."', ";
   $QryInsertFleet .= "`fleet_end_type` = '". $planet_type ."', ";
-  $QryInsertFleet .= "`fleet_resource_metal` = '". intval($TransMetal) ."', ";
-  $QryInsertFleet .= "`fleet_resource_crystal` = '". intval($TransCrystal) ."', ";
-  $QryInsertFleet .= "`fleet_resource_deuterium` = '". intval($TransDeuterium) ."', ";
-  $QryInsertFleet .= "`fleet_target_owner` = '". intval($TargetPlanet['id_owner']) ."', ";
+  $QryInsertFleet .= "`fleet_resource_metal` = '". $TransMetal ."', ";
+  $QryInsertFleet .= "`fleet_resource_crystal` = '". $TransCrystal ."', ";
+  $QryInsertFleet .= "`fleet_resource_deuterium` = '". $TransDeuterium ."', ";
+  $QryInsertFleet .= "`fleet_target_owner` = '". $TargetPlanet['id_owner'] ."', ";
   $QryInsertFleet .= "`fleet_group` = '". $fleet_group ."', ";
   $QryInsertFleet .= "`start_time` = '". $time_now ."';";
   doquery( $QryInsertFleet);

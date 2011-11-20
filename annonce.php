@@ -46,10 +46,12 @@ switch($action)
   break;
 
   case 2:// On vient d'envoyer une annonce, on l'enregistre et on affiche un message comme quoi on l'a bien fait
-    foreach($_POST as $name => $value)
-    {
-      $$name = mysql_real_escape_string($value);
-    }
+    $metalvendre = sys_get_param_float('metalvendre');
+    $metalsouhait = sys_get_param_float('metalsouhait');
+    $cristalvendre = sys_get_param_float('cristalvendre');
+    $cristalsouhait = sys_get_param_float('cristalsouhait');
+    $deutvendre = sys_get_param_float('deutvendre');
+    $deutsouhait = sys_get_param_float('deutsouhait');
 
     if(($metalvendre!=0 && $metalsouhait==0) ||($cristalvendre!=0 && $cristalsouhait==0) || ($deutvendre!=0 && $deutsouhait==0))
     {
@@ -60,7 +62,6 @@ switch($action)
     {
       message ($lang['Your_announce_not_recorded'], $lang['announce_status'],"annonce.php?action=1");
     }
-
   break;
 
   case 3://Suppression d'annonce

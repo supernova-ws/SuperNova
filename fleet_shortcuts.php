@@ -13,7 +13,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 $template = gettemplate('fleet_shortcuts', true);
 
 $mode        = sys_get_param_str('mode');
-$shortcut_id = sys_get_param_int('id');
+$shortcut_id = sys_get_param_id('id');
 $text        = sys_get_param_str('text');
 if (!empty($text))
 {

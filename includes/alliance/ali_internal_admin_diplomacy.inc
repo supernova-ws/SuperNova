@@ -22,7 +22,7 @@ if(sys_get_param_str('ali_dip_offer_make'))
     message($lang['ali_dip_err_wrong_offer'], $page_title);
   }
 
-  $alliance_negotiation_contr_ally_id = sys_get_param_int('alliance_negotiation_contr_ally_id');
+  $alliance_negotiation_contr_ally_id = sys_get_param_id('alliance_negotiation_contr_ally_id');
   $contr_ally_row = doquery("SELECT `ally_name` FROM {{alliance}} WHERE `id` = {$alliance_negotiation_contr_ally_id} LIMIT 1;", '', true);
   if(!$contr_ally_row)
   {
@@ -55,25 +55,25 @@ if(sys_get_param_str('ali_dip_offer_make'))
         'alliance_negotiation_propose' => $alliance_negotiation_propose,
         'alliance_negotiation_status' =>  ALLY_PROPOSE_SEND
       )
-	 );
+  );
 
-	 $accept_offer = false;
+  $accept_offer = false;
   }
   else
   {
-	 $accept_offer = true;
-	 $negotiation = array(
+    $accept_offer = true;
+    $negotiation = array(
       'alliance_negotiation_ally_id' => $alliance_negotiation_contr_ally_id,
       'alliance_negotiation_ally_name' => $contr_ally_row['ally_name'],
       'alliance_negotiation_contr_ally_id' => $user['ally_id'],
       'alliance_negotiation_contr_ally_name' => $user['ally_name'],
       'alliance_negotiation_relation' => $alliance_negotiation_relation,
-	 );
+    );
   }
 }
 else
 {
-  $offer_id = sys_get_param_int('offer_id');
+  $offer_id = sys_get_param_id('offer_id');
   if($offer_id)
   {
     $offer_answer = sys_get_param_str('answer');
@@ -167,17 +167,6 @@ while($alliance = mysql_fetch_assoc($query))
     'TAG'  => js_safe_string($alliance['ally_tag']),
   ));
 }
-
-//    if(alliance_negotiation_ally_id = {$user['ally_id']}, alliance_negotiation_ally_id, alliance_negotiation_contr_ally_id) AS ally_id,
-//    if(alliance_negotiation_ally_id = {$user['ally_id']}, alliance_negotiation_contr_ally_id, alliance_negotiation_ally_id) AS contr_ally_id,
-    /*
-    alliance_negotiation_id,
-    alliance_negotiation_relation,
-    alliance_negotiation_time,
-    alliance_negotiation_propose,
-    alliance_negotiation_response,
-    alliance_negotiation_status
-    */
 
 $query = doquery(
   "SELECT

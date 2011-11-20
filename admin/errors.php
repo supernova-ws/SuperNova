@@ -65,17 +65,6 @@ else
   while ($u = mysql_fetch_assoc($query))
   {
     $i++;
-    /*
-      $parse['errors_list'] .= "
-      <tr><th class=n><a href=errors.php?detail={$u['log_id']}><u>{$u['log_id']}</u></a></th>
-      <th class=n>{$u['log_username']}</th>
-      <th class=n>{$u['log_title']}</th>
-      <th class=n>". date(FMT_DATE_TIME, $u['log_time']) ."</th>
-      <th class=b>{$u['log_page']}</th>
-      <th class=n><a href=\"errors.php?delete=". $u['log_id'] ."\"><img src=\"../design/images/r1.png\"></a></th>
-      </tr>
-      <tr><td colspan=\"6\" class=b>".  nl2br($u['log_text'])."</td></tr>";
-     */
 
     foreach ($u as $key => $value)
     {
@@ -85,9 +74,6 @@ else
     $template->assign_block_vars('error', $v);
   }
   $parse['errors_num'] = $i;
-
-
-
 
   display(parsetemplate($template, $parse), "Errors", false, '', true);
 }

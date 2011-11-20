@@ -37,7 +37,7 @@ switch($mode)
 {
   case 'manage':
     $template  = gettemplate('planet_manage', true);
-    $planet_id = sys_get_param_int('planet_id');
+    $planet_id = sys_get_param_id('planet_id');
     $hire = sys_get_param_int('hire');
 
     if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name'))
@@ -143,7 +143,7 @@ switch($mode)
 
     $fleet_id = 1;
     int_get_fleet_to_planet("SELECT DISTINCT * FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}' OR `fleet_target_owner` = '{$user['id']}';");
-    int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE `owner` = '{$user['id']}'");
+    int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE `fleet_owner` = '{$user['id']}'");
 
     $planets_query = SortUserPlanets($user, false, '*');
     while ($UserPlanet = mysql_fetch_assoc($planets_query))

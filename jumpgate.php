@@ -16,7 +16,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $parse = $lang;
 
-$TargetPlanet = sys_get_param_int('jmpto');
+$TargetPlanet = sys_get_param_id('jmpto');
 
 if($TargetPlanet)
 {

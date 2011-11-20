@@ -19,18 +19,9 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 lng_include('stat');
 
 $parse = $lang;
-$who   = (isset($_POST['who']))   ? $_POST['who']   : $_GET['who'];
-if (!isset($who)) {
-  $who   = 1;
-}
-$type  = (isset($_POST['type']))  ? $_POST['type']  : $_GET['type'];
-if (!isset($type)) {
-  $type  = 1;
-}
-$range = (isset($_POST['range'])) ? $_POST['range'] : $_GET['range'];
-if (!isset($range)) {
-  $range = 1;
-}
+$who = ($who = sys_get_param_int('who')) ? $who : 1;
+$type = ($type = sys_get_param_int('type')) ? $type : 1;
+$range = ($range = sys_get_param_int('range')) ? $range : 1;
 
 $parse['who']    = "<option value=\"1\"". (($who == "1") ? " SELECTED" : "") .">". $lang['stat_player'] ."</option>";
 $parse['who']   .= "<option value=\"2\"". (($who == "2") ? " SELECTED" : "") .">". $lang['stat_allys']  ."</option>";
