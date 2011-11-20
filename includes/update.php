@@ -878,13 +878,17 @@ debug($update_tables['logs']['log_id'], 31);
     ), !isset($update_tables['alliance']['total_rank']));
     doquery("UPDATE {{alliance}} AS a JOIN {{statpoints}} AS sp ON sp.id_owner = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
 
-    upd_alter_table('users', array(
-      "ADD COLUMN `ally_tag` varchar(8) DEFAULT NULL AFTER `ally_id`",
-    ), !isset($update_tables['users']['ally_tag']));
-    doquery("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_tag = a.ally_tag;");
-    upd_alter_table('users', array(
-      "ADD CONSTRAINT `FK_users_ally_tag` FOREIGN KEY (`ally_tag`) REFERENCES `{$config->db_prefix}alliance` (`ally_tag`) ON DELETE SET NULL ON UPDATE CASCADE",
-    ), !$update_foreigns['users']['FK_users_ally_tag']);
+    if(!isset($update_tables['users']['ally_tag']))
+    {
+      upd_alter_table('users', array(
+        "ADD COLUMN `ally_tag` varchar(8) DEFAULT NULL AFTER `ally_id`",
+      ), !isset($update_tables['users']['ally_tag']));
+      doquery("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_tag = a.ally_tag, u.ally_name = a.ally_name;");
+      doquery("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_id = NULL, u.ally_tag = NULL, u.ally_name = NULL, u.ally_register_time = 0, ally_rank_id = 0 WHERE a.id is NULL;");
+      upd_alter_table('users', array(
+        "ADD CONSTRAINT `FK_users_ally_tag` FOREIGN KEY (`ally_tag`) REFERENCES `{$config->db_prefix}alliance` (`ally_tag`) ON DELETE SET NULL ON UPDATE CASCADE",
+      ), !$update_foreigns['users']['FK_users_ally_tag']);
+    }
 
     if(!$config->rpg_flt_explore)
     {
@@ -900,7 +904,7 @@ debug($update_tables['logs']['log_id'], 31);
       $config->db_saveItem('rpg_exchange_darkMatter', $config->rpg_exchange_darkMatter / $inflation_rate * 4);
 
       $config->db_saveItem('rpg_bonus_divisor', $config->rpg_bonus_divisor * $inflation_rate);
-
+      
       $config->db_saveItem('rpg_flt_explore', $inflation_rate);
 
       doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` * {$inflation_rate};");
