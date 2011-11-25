@@ -226,12 +226,14 @@ function SYS_statCalculate()
     $counts[$userID]['tech'] = $TechCounts;
     $points[$userID]['tech'] = $TechPoints / 1000;
 
+    array_walk($points[$userID], 'floor');
+
     $GPoints = array_sum($points[$userID]);
     $GCount  = array_sum($counts[$userID]);
 
     $QryInsertStats  = "INSERT INTO {{statpoints}} SET ";
     $QryInsertStats .= "`id_owner` = '". $userID ."', ";
-    $QryInsertStats .= "`id_ally` = '". $user_row['ally_id'] ."', ";
+    $QryInsertStats .= "`id_ally` = ". ($user_row['ally_id'] ? $user_row['ally_id'] : 'NULL') .", ";
     $QryInsertStats .= "`stat_type` = '1', "; // 1 pour joueur , 2 pour alliance
     $QryInsertStats .= "`stat_code` = '1', "; // de 1 a 2 mis a jour de maniere automatique
     $QryInsertStats .= "`tech_points` = '". $points[$userID]['tech'] ."', ";
@@ -267,7 +269,7 @@ function SYS_statCalculate()
 
   // Some variables we need to update ranks
   $qryResetRowNum = 'SET @rownum=0;';
-  $qryFormat = 'UPDATE {{statpoints}} SET `%1$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = %2$d AND `stat_code` = 1 ORDER BY `%1$s_points` DESC, `id_owner` ASC;';
+  $qryFormat = 'UPDATE {{statpoints}} SET `%1$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = %2$d AND `stat_code` = 1 ORDER BY `%1$s_points` DESC, `id_owner` ASC, `id_ally` ASC;';
   $rankNames = array( 'tech', 'build', 'defs', 'fleet', 'res', 'total');
 
   sta_set_time_limit("updating ranks for players");
@@ -291,10 +293,10 @@ function SYS_statCalculate()
         SUM(u.`tech_points`), SUM(u.`tech_count`), SUM(u.`build_points`), SUM(u.`build_count`), SUM(u.`defs_points`),
         SUM(u.`defs_count`), SUM(u.`fleet_points`), SUM(u.`fleet_count`), SUM(u.`res_points`), SUM(u.`res_count`),
         SUM(u.`total_points`), SUM(u.`total_count`),
-        {$StatDate}, u.`id_ally`, 0, 2, 1,
+        {$StatDate}, NULL, u.`id_ally`, 2, 1,
         a.tech_rank, a.build_rank, a.defs_rank, a.fleet_rank, a.res_rank, a.total_rank
       FROM {{statpoints}} as u
-        LEFT JOIN {{statpoints}} as a ON a.id_owner = u.id_ally AND a.stat_code = 2 AND a.stat_type = 2
+        LEFT JOIN {{statpoints}} as a ON a.id_ally = u.id_ally AND a.stat_code = 2 AND a.stat_type = 2
       WHERE u.`stat_type` = 1 AND u.stat_code = 1 AND u.id_ally<>0
       GROUP BY u.`id_ally`";
   doquery ( $QryInsertStats );
@@ -311,7 +313,7 @@ function SYS_statCalculate()
   doquery("UPDATE {{users}} AS u JOIN {{statpoints}} AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points;");
 
   sta_set_time_limit('updating Ally\'s current rank and points');
-  doquery("UPDATE {{alliance}} AS a JOIN {{statpoints}} AS sp ON sp.id_owner = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
+  doquery("UPDATE {{alliance}} AS a JOIN {{statpoints}} AS sp ON sp.id_ally = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
 
   // sta_set_time_limit('purging outdated statistics from archive');
   // Deleting old stat_code
