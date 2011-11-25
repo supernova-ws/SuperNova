@@ -88,38 +88,34 @@ if ($who == 2) {
   $parse['stat_header'] = parsetemplate(gettemplate('stat_alliancetable_header'), $parse);
 
   $start = floor($range / 100 % 100) * 100;
-  $query = doquery("SELECT @rownum:=@rownum+1 as rownum, {{statpoints}}.* FROM (SELECT @rownum:=0) r, {{statpoints}} WHERE `stat_type` = '2' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;");
+  $query = doquery("SELECT @rownum:=@rownum+1 as rownum, sp.*, a.id, a.ally_name, a.ally_tag, a.ally_members FROM (SELECT @rownum:=0) r, {{statpoints}} AS sp
+  LEFT JOIN {{alliance}} AS a ON a.id = sp.id_ally
+  WHERE `stat_type` = '2' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_ally LIMIT ". $start .",100;");
 
   $start++;
   $parse['stat_values'] = "";
   while ($StatRow = mysql_fetch_assoc($query)) {
-    $parse['ally_rank']       = $start;
-
-    $AllyRow                  = doquery("SELECT * FROM {{alliance}} WHERE `id` = '". $StatRow['id_owner'] ."';", '',true);
-
-    $rank_old                 = $StatRow[ $OldRank ];
-    $rank_new                 = $StatRow[ $Rank ];
-    $ranking                  = $rank_old - $rank_new;
-    if ($ranking == "0") {
+    $ranking                  = $StatRow[ $OldRank ] - $StatRow[ $Rank ];
+    if ($ranking == 0) {
       $parse['ally_rankplus']   = "<font color=\"#87CEEB\">*</font>";
-    }elseif ($ranking < "0") {
+    }elseif ($ranking < 0) {
       $parse['ally_rankplus']   = "<font color=\"red\">".$ranking."</font>";
-    }elseif ($ranking > "0") {
+    }elseif ($ranking > 0) {
       $parse['ally_rankplus']   = "<font color=\"green\">+".$ranking."</font>";
     }
-    $parse['ally_tag']        = $AllyRow['ally_tag'];
-
-    if ($AllyRow['ally_name'] == $user['ally_name']) {
-      $parse['ally_name'] = "<font color=\"#33CCFF\">".$AllyRow['ally_name']."</font>";
+    if ($StatRow['ally_name'] == $user['ally_name']) {
+      $parse['ally_name'] = "<font color=\"#33CCFF\">".$StatRow['ally_name']."</font>";
     } else {
-      $parse['ally_name'] = $AllyRow['ally_name'];
+      $parse['ally_name'] = $StatRow['ally_name'];
     }
-//      $parse['ally_name']       = $AllyRow['ally_name'];
-    $parse['ally_id']         = $AllyRow['id'];
+
+    $parse['ally_rank']       = $start;
+    $parse['ally_tag']        = $StatRow['ally_tag'];
+    $parse['ally_id']         = $StatRow['id'];
     $parse['ally_mes']        = '';
-    $parse['ally_members']    = $AllyRow['ally_members'];
+    $parse['ally_members']    = $StatRow['ally_members'];
     $parse['ally_points']     = pretty_number( $StatRow[ $Order ] );
-    $parse['ally_members_points'] =  pretty_number( floor($StatRow[ $Order ] / $AllyRow['ally_members']) );
+    $parse['ally_members_points'] =  pretty_number( floor($StatRow[ $Order ] / $StatRow['ally_members']) );
 
     $parse['stat_values']    .= parsetemplate(gettemplate('stat_alliancetable'), $parse);
     $start++;
