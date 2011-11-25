@@ -484,6 +484,8 @@ class classConfig extends classPersistent
     'user_vacation_disable'  => 0,
     'users_amount'           => 0,
 
+    'eco_scale_storage'      => 1,
+
     // Advet banner
     'advGoogleLeftMenuIsOn'  => 0,
     'advGoogleLeftMenuCode'  => '(Place here code for banner)',
