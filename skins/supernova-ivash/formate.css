@@ -4,14 +4,14 @@
                                  €€€±                                                  €€€±
                                  €€€±                SuperNova: SuperNova              €€€±
                                  €€€±                                                  €€€±
-                                 €€€±                      V 1.0                       €€€±
+                                 €€€±                      V 2.0                       €€€±
                                  €€€±                                                  €€€±
-                                 €€€±    Skin fuer "SuperNova" ogame.supernova.ws      €€€±
+                                 €€€±    Skin for "SuperNova.ws" ogame.supernova.ws    €€€±
                                  €€€±                                                  €€€±
                                  €€€±                                                  €€€±
-                                 €€€±    Viel Spass                                    €€€±
+                                 €€€±     The Emperor with 08.08.2009 22:44:47 Ivash   €€€±
+                                 €€€±            Alliance: NewSTAR                     €€€±
                                  €€€±                                                  €€€±
-                                 €€€±                                            Ivash €€€±
                                  €€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€±
                                   ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
 */
@@ -49,7 +49,7 @@ img
 
 input, select, textarea, div.z
 {
- color                : #E6EBFB;
+ color                : #D58000;
 }
 
 textarea
@@ -59,7 +59,7 @@ textarea
 
 th, td, input, select, textarea
 {
-  border               : 1px 	#80605D solid;
+  border               : 1px #483634 solid;
   background-color     : #242424;
   padding-left         : 3px;
   padding-right        : 3px;
@@ -133,7 +133,7 @@ a:hover
 
 .style div a
 {
-  color                : #f2f2f2;
+  color                : #00AA00;
 }
 
 .style div a:link
@@ -307,7 +307,7 @@ div .ui-dialog-content table { background: #344055; }
 {
   cursor: pointer;
 
-  border: 3px solid #80605D;
+  border: 3px solid #483634;
 
   position: relative;
   height: 120px;
