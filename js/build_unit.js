@@ -72,16 +72,16 @@ function eco_struc_show_unit_info(unit_id, no_color)
   element_cache['unit_balance'].innerHTML = '';
   if(unit['energy_balance'] != 0)
   {
-    result += '<font color=';
+    result += '<span class=';
     if(unit['energy_balance'] > 0)
     {
-      result += 'lime';
+      result += 'positive';
     }
     else
     {
-      result += 'red';
+      result += 'negative';
     }
-    result += '>' + language['sys_energy'] + ': ' + unit['energy_balance'] + '</font>';
+    result += '>' + language['sys_energy'] + ': ' + unit['energy_balance'] + '</span>';
 
     element_cache['unit_balance'].innerHTML += result;
   }
