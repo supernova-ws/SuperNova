@@ -97,7 +97,7 @@ var que_id = '{QUE_ID}';
     <td colspan=6 id="unit_info" style="vertical-align: top;">
       <table cellspacing=0 cellpadding=0 valign=top style="vertical-align: top; border: 0;" class="noborder" width=100%>
         <tr>
-          <th width=150px valign=top>
+          <th width=120px valign=top>
             <div id="unit_name"></div>
           </th>
           <th colspan=3 valign=top>
@@ -107,11 +107,12 @@ var que_id = '{QUE_ID}';
 
         <tr>
           <th>
-            <div style="width: 150px; height: 150px; vertical-align: middle"><img id="unit_image" border="0" src="" align="top"></div>
+            <div style="height: 132px; vertical-align: middle"><img id="unit_image" border="0" src="" align="top"></div>
           </th>
 
-          <th valign=top width=240px>
+          <th valign=top width=270px>
             <div id="unit_create_link"></div>
+            <div>{L_ConstructionTime}<span id="unit_time"></span></div>
             <table style="margin: 0px;">
               <tr>
                 <td class=c style="font-size: {$FONT_SIZE}" width=45>{L_sys_resources}</td>
@@ -138,11 +139,9 @@ var que_id = '{QUE_ID}';
                 <td style="font-size: {$FONT_SIZE}" id="deuterium_fleet" hide_no_fleet="yes" align="right">0</td>
               </tr>
             </table>
-            <div>{L_ConstructionTime}<span id="unit_time"></span></div>
-            <div>&nbsp;</div>
             <div id="unit_destroy_link"></div>
           </th>
-          <th width=240px>
+          <th width=270px>
             <div id="unit_balance"></div>
           </th>
         </tr>
