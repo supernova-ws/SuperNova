@@ -9,6 +9,7 @@ language =
 {
   eco_que_empty: '{L_eco_que_empty}',
   level: '{L_level}',
+  level_short: '{L_sys_level_short}',
   bld_create: '{L_bld_create}',
   bld_destroy: '{L_bld_destroy}',
   construction_time: '{L_ConstructionTime}',
@@ -26,7 +27,7 @@ language =
 planet =
 {
   fleet_own: '{FLEET_OWN}',
-  
+
   metal: '{METAL}',
   crystal: '{CRYSTAL}',
   deuterium: '{DEUTERIUM}',
@@ -168,7 +169,7 @@ var que_id = '{QUE_ID}';
           <!-- ELSE -->
             <!-- DEFINE $FONT_SIZE = '100%' -->
           <!-- ENDIF -->
-          <span style="position: absolute; top: 45px; left: 0px; width: 100%; font-size: {$FONT_SIZE}; text-align: left;" class="icon_alpha"> <!--  onclick="eco_struc_select_unit({production.ID})" onmouseout="eco_struc_unborder_unit({production.ID})" onmouseover="eco_struc_show_unit_info({production.ID})"> -->
+          <span style="position: absolute; top: 48px; left: 0px; width: 100%; text-align: left; font-size: {$FONT_SIZE};" class="icon_alpha"> <!--  onclick="eco_struc_select_unit({production.ID})" onmouseout="eco_struc_unborder_unit({production.ID})" onmouseover="eco_struc_show_unit_info({production.ID})"> -->
             <!-- IF production.METAL --><div><div style="left: 0px; position: absolute;"><!-- IF $FONT_SIZE == '80%' -->{L_sys_metal_sh}<!-- ELSE -->{L_sys_metal}<!-- ENDIF --></div><div class="fr">{production.METAL_REST}</div></div><br><!-- ENDIF -->
             <!-- IF production.CRYSTAL --><div><div style="left: 0px; position: absolute;"><!-- IF $FONT_SIZE == '80%' -->{L_sys_crystal_sh}<!-- ELSE -->{L_sys_crystal}<!-- ENDIF --></div><div class="fr">{production.CRYSTAL_REST}</div></div><br><!-- ENDIF -->
             <!-- IF production.DEUTERIUM --><div><div style="left: 0px; position: absolute;"><!-- IF $FONT_SIZE == '80%' -->{L_sys_deuterium_sh}<!-- ELSE -->{L_sys_deuterium}<!-- ENDIF --></div><div class="fr">{production.DEUTERIUM_REST}</div></div><!-- ENDIF -->
@@ -244,10 +245,23 @@ var que_id = '{QUE_ID}';
         destroy_can: '{production.DESTROY_CAN}',
         destroy_result: '{production.DESTROY_RESULT}',
 
-        metal_balance: '{production.METAL_BALANCE}',
-        crystal_balance: '{production.CRYSTAL_BALANCE}',
-        deuterium_balance: '{production.DEUTERIUM_BALANCE}',
-        energy_balance: '{production.ENERGY_BALANCE}'
+        <!-- IF .production.resource -->
+          resource_map: [
+          <!-- BEGIN resource -->
+            {
+              level: '{resource.LEVEL}',
+              metal: '{resource.METAL}',
+              metal_diff: '{resource.METAL_DIFF}',
+              'crystal': '{resource.CRYSTAL}',
+              'crystal_diff': '{resource.CRYSTAL_DIFF}',
+              'deuterium': '{resource.DEUTERIUM}',
+              'deuterium_diff': '{resource.DEUTERIUM_DIFF}',
+              'energy': '{resource.ENERGY}',
+              'energy_diff': '{resource.ENERGY_DIFF}'
+            },
+          <!-- END resource -->
+          ]
+        <!-- ENDIF -->
       };
       --></script>
     <!-- END production -->

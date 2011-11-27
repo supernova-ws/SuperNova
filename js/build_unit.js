@@ -17,6 +17,14 @@ function eco_struc_make_resource_row(resource_name, value, value_destroy)
   }
 }
 
+var balance_translate = {
+  'level': language['level'],
+  'metal': language['sys_metal'],
+  'crystal': language['sys_crystal'],
+  'deuterium': language['sys_deuterium'],
+  'energy': language['sys_energy']
+};
+
 function eco_struc_show_unit_info(unit_id, no_color)
 {
   if(!no_color)
@@ -70,18 +78,48 @@ function eco_struc_show_unit_info(unit_id, no_color)
   }
 
   element_cache['unit_balance'].innerHTML = '';
-  if(unit['energy_balance'] != 0)
+  if(unit['resource_map'])
   {
-    result += '<span class=';
-    if(unit['energy_balance'] > 0)
+    var balance_header = '';
+    var has_header = false;
+    for(i in unit['resource_map'])
     {
-      result += 'positive';
+      result += '<tr class="c_r">';
+      for(j in unit['resource_map'][i])
+      {
+        if(unit['resource_map'][i][j])
+        {
+          if(!has_header)
+          {
+            switch(j)
+            {
+              case 'level':
+                balance_header += '<th class="c_l">' + language['level_short'] + '</th>';
+              break;
+
+              case 'metal':
+              case 'crystal':
+              case 'deuterium':
+              case 'energy':
+                balance_header += '<th class="c_c" colspan="2">' + balance_translate[j];
+              break;
+
+              case 'metal_diff':
+              case 'crystal_diff':
+              case 'deuterium_diff':
+              case 'energy_diff':
+                balance_header += '</th>';
+              break;
+            }
+          }
+          result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][i][j]), 0, 'lime', j == 'level' ? -unit['level'] : 0) + '</td>';
+        }
+      }
+      result += '</tr>';
+      has_header = true;
     }
-    else
-    {
-      result += 'negative';
-    }
-    result += '>' + language['sys_energy'] + ': ' + unit['energy_balance'] + '</span>';
+
+    result = '<table><tr>' + balance_header + '</tr>' + result + '</table>';
 
     element_cache['unit_balance'].innerHTML += result;
   }

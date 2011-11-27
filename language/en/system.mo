@@ -199,6 +199,7 @@ $lang = array_merge($lang, array(
   'sys_vacation'        => 'Your are on vacation until',
   'sys_vacation_leave'  => 'I have got rest - break holiday!',
   'sys_level'           => 'Level',
+  'sys_level_short'     => 'Lvl',
 
   'sys_yes'             => 'Yes',
   'sys_no'              => 'No',

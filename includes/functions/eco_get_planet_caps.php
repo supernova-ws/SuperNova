@@ -32,7 +32,7 @@ function ECO_getPlanetCaps($user, &$planet_row)
   $Caps['metal_perhour'][0]     = $config->metal_basic_income     * $config_resource_multiplier;
   $Caps['crystal_perhour'][0]   = $config->crystal_basic_income   * $config_resource_multiplier;
   $Caps['deuterium_perhour'][0] = $config->deuterium_basic_income * $config_resource_multiplier;
-  $Caps['energy'][0]            = $config->energy_basic_income;
+  $Caps['energy'][0]            = $config->energy_basic_income    * $config_resource_multiplier;
   $Caps['planet']['energy_max'] = $Caps['energy'][0];
 
   foreach($sn_groups['prod'] as $ProdID)
@@ -42,7 +42,7 @@ function ECO_getPlanetCaps($user, &$planet_row)
     $BuildLevel       = $planet_row[ $sn_data[$ProdID]['name'] ];
     $BuildLevelFactor = $planet_row[ "{$sn_data[$ProdID]['name']}_porcent" ];
 
-    $Caps['energy'][$ProdID] = floor(eval($unit_data['energy_perhour']));
+    $Caps['energy'][$ProdID] = floor(eval($unit_data['energy_perhour']) * $config_resource_multiplier);
     if ($ProdID == 12)
     {
       if ($planet_row['deuterium'] > 0)
