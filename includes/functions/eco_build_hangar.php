@@ -397,11 +397,6 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
         'CRYSTAL_REST_NUM'  => $temp[RES_CRYSTAL],
         'DEUTERIUM_REST_NUM'=> $temp[RES_DEUTERIUM],
 
-        'METAL_BALANCE'     => $caps['metal_perhour'][$Element],
-        'CRYSTAL_BALANCE'   => $caps['crystal_perhour'][$Element],
-        'DEUTERIUM_BALANCE' => $caps['deuterium_perhour'][$Element],
-        'ENERGY_BALANCE'    => $energy_balance,
-
         'ARMOR'  => pretty_number($sn_data[$Element]['armor']),
         'SHIELD' => pretty_number($sn_data[$Element]['shield']),
         'WEAPON' => pretty_number($sn_data[$Element]['attack']),

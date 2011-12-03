@@ -196,6 +196,7 @@ $lang = array_merge($lang, array(
   'sys_vacation'        => 'Вы же в отпуске до',
   'sys_vacation_leave'  => 'Я уже отдохнул - выйти из отпуска!',
   'sys_level'           => 'Уровень',
+  'sys_level_short'     => 'Ур',
 
   'sys_yes'             => 'Да',
   'sys_no'              => 'Нет',

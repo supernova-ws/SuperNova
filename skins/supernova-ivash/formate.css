@@ -59,7 +59,7 @@ textarea
 
 th, td, input, select, textarea
 {
-  border               : 1px #483634 solid;
+  border               : 1px 	#483634 solid;
   background-color     : #242424;
   padding-left         : 3px;
   padding-right        : 3px;

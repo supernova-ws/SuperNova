@@ -67,31 +67,23 @@ function sn_format_number(number, precission, color, max)
   {
     ret_val = '-' + ret_val;
   }
+
   if(color)
   {
-    if(max)
+    if(number == Math.abs(max))
     {
-      if(-number <= -max)
-      {
-        ret_val = '<font color="red">' + ret_val + '</font>';
-      }
-      else
-      {
-        ret_val = '<font color="' + color + '">' + ret_val + '</font>';
-      }
+      ret_val = '<span class="neutral">' + ret_val + '</span>';
+    }
+    else if((max > 0 && -number < -max) || (!max && number < 0) || (max < 0 && number < -max))
+    {
+      ret_val = '<span class="negative">' + ret_val + '</span>';
     }
     else
     {
-      if(number < 0)
-      {
-        ret_val = '<font color="red">' + ret_val + '</font>';
-      }
-      else
-      {
-        ret_val = '<font color="' + color + '">' + ret_val + '</font>';
-      }
+      ret_val = '<font color="' + color + '">' + ret_val + '</font>';
     }
   }
+
   return ret_val;
 }
 
