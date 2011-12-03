@@ -108,7 +108,7 @@ var que_id = '{QUE_ID}';
 
         <tr>
           <th>
-            <div style="height: 132px; vertical-align: middle"><img id="unit_image" border="0" src="" align="top"></div>
+            <div style="height: 140px; vertical-align: middle"><img id="unit_image" border="0" src="" align="top"></div>
           </th>
 
           <th valign=top width=270px>
