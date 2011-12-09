@@ -194,7 +194,11 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
   $page_error = '';
   $page_mode = $que_type == SUBQUE_FLEET ? 'fleet' : 'defense';
   $sn_data_group = $sn_data['groups'][$page_mode];
-  if (isset($POST_fmenge) && !eco_hangar_is_building ( $que ))
+
+  $que_array = explode(';', $planet['b_hangar_id']);
+  $que_count = count($que_array);
+  $que_count = $que_count && $que_array[$que_count - 1] ? $que_count : $que_count - 1;
+  if(!empty($POST_fmenge) && !eco_hangar_is_building ( $que ) && $que_count < MAX_BUILDING_QUEUE_SIZE)
   {
     doquery('START TRANSACTION;');
     $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planet['id']}' LIMIT 1 FOR UPDATE;", '', true);
