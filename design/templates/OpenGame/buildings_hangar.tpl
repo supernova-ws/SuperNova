@@ -9,7 +9,7 @@
 
 <form action="buildings.php?mode={MODE}" method="post">
   <!-- IF .production -->
-  <table valign="top" align="center" width="600px">
+  <table valign="top" align="center" width="708px">
     <!-- IF $QUE_NOT_EMPTY -->
       <tr>
         <th colspan="2" class="c" align="center">
@@ -43,7 +43,7 @@
 
     <!-- BEGIN production -->
     <tr>
-      <th>
+      <th width="120px">
         <a href="infos.php?gid={production.ID}">
           {production.NAME}<br />
           <img border=0 src="{dpath}gebaeude/{production.ID}.gif" align=top width=120 height=120>
@@ -52,7 +52,7 @@
       <td valign="top">
         <table border=0 valign=top>
           <tr>
-            <td align=justify valign="top" style="border: 0">{production.DESCRIPTION}</td>
+            <td align=justify valign="top" style="border: 0" width="383px">{production.DESCRIPTION}</td>
             <td valign=top style="border: 0">
               <table valign=top width=165>
                 <tr>
