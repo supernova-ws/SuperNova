@@ -63,11 +63,11 @@ function SYS_statCalculate()
 
   sta_set_time_limit('starting update');
 
-  doquery('START TRANSACTION;');
+//  doquery('START TRANSACTION;');
 
   sta_set_time_limit('archiving old statistic');
   // Statistic rotation
-  doquery ( "DELETE FROM {{statpoints}} WHERE `stat_code` = 2;");
+  doquery ( "DELETE FROM {{statpoints}} WHERE `stat_code` = 10;");
   doquery ( "UPDATE {{statpoints}} SET `stat_code` = `stat_code` + 1;");
 
   sta_set_time_limit('calculating flying fleets stats');
@@ -323,7 +323,7 @@ function SYS_statCalculate()
   $userCount = doquery ( "SELECT COUNT(*) AS users_online FROM {{users}}", '', true);
   $config->db_saveItem('users_amount', $userCount['users_online']);
 
-  doquery('COMMIT');
+//  doquery('COMMIT');
 }
 
 ?>
