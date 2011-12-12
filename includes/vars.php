@@ -195,14 +195,14 @@ if (!defined('INSIDE'))
       'factor' => 1.6,
       'production' => array(
         RES_METAL     => create_function ('$level, $production_factor, $temperature', 'return 0;'),
-        RES_CRYSTAL   => create_function ('$level, $production_factor, $temperature', 'return  20 * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
+        RES_CRYSTAL   => create_function ('$level, $production_factor, $temperature', 'return  32 * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
         RES_DEUTERIUM => create_function ('$level, $production_factor, $temperature', 'return 0;'),
-        RES_ENERGY    => create_function ('$level, $production_factor, $temperature', 'return -10 * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
+        RES_ENERGY    => create_function ('$level, $production_factor, $temperature', 'return -16 * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
       ),
       'metal_perhour'     => 'return 0;',
-      'crystal_perhour'   => 'return   (20 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
+      'crystal_perhour'   => 'return   (32 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
       'deuterium_perhour' => 'return 0;',
-      'energy_perhour'    => 'return - (10 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
+      'energy_perhour'    => 'return - (16 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
       'type' => UNIT_STRUCTURE,
     ),
 
