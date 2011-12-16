@@ -92,6 +92,7 @@ if($mode == 2)
 //        $Message = $lang['off_recruited'];
 //        $user[$selected_db_name] += 1;
 //        $user[$sn_data_dark_matter_db_name]         -= $darkmater_cost;
+        doquery('COMMIT;');
         header("Location: officer.php?goto={$offi}");
         ob_end_flush();
         die();
@@ -110,7 +111,7 @@ if($mode == 2)
   {
     $Message = $lang['off_no_points'];
   }
-  doquery('COMMIT;');
+  doquery('ROLLBACK;');
   message($Message, $lang['tech'][600], 'officer.' . PHP_EX, 5);
 }
 else
