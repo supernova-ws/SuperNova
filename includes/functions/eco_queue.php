@@ -272,6 +272,8 @@ function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
   $que_string = '';
   $que_query = '';
 
+  doquery('START TRANSACTION;');
+  $planet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = {$planet['id']} LIMIT 1 FOR UPDATE;", '', true);
   foreach($que['que'] as $que_data_id => &$que_data)
   {
     // TODO: MAY BE NOT ALL QUES CAN BE CLEARED - ADD CHECK FOR CLEAREBILITY!
@@ -317,6 +319,7 @@ function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
   $que['string'] = $planet['que'] = $que_string;
 
   doquery("UPDATE {{planets}} SET {$que['query']} WHERE `id` = '{$planet['id']}' LIMIT 1;");
+  doquery('COMMIT');
 
   return $que;
 }
@@ -346,14 +349,8 @@ function HandleTechnologieBuild(&$user, &$planetrow)
     return;
   }
 
-  if($user['b_tech_planet'] != $planetrow['id'])
-  {
-    $planet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['b_tech_planet']}' LIMIT 1;", '', true);
-  }
-  else
-  {
-    $planet = $planetrow;
-  }
+  doquery('START TRANSACTION;');
+  $planet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['b_tech_planet']}' LIMIT 1 FOR UPDATE;", '', true);
 
   if($planet['b_tech'] && $planet['b_tech_id'] && $planet['b_tech'] <= $time_now)
   {
@@ -400,6 +397,7 @@ function HandleTechnologieBuild(&$user, &$planetrow)
     // On met l'enregistrement informant d'une techno en cours de recherche a jours
     doquery("UPDATE `{{users}}` SET `b_tech_planet` = '0'  WHERE `id` = '{$user['id']}' LIMIT 1;");
   }
+  doquery('COMMIT');
 }
 
 // History revision

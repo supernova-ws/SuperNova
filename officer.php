@@ -70,6 +70,8 @@ $sn_data_dark_matter_db_name = $sn_data[RES_DARK_MATTER]['name'];
 // Si recrutement d'un officier
 if($mode == 2)
 {
+  doquery('START TRANSACTION;');
+  $user = doquery("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1 FOR UPDATE;", '', true);
   $build_data = eco_get_build_data($user, $planetrow, $offi, $user[$sn_data[$offi]['name']]);
   $darkmater_cost = $build_data[BUILD_CREATE][RES_DARK_MATTER];
 
@@ -108,6 +110,7 @@ if($mode == 2)
   {
     $Message = $lang['off_no_points'];
   }
+  doquery('COMMIT;');
   message($Message, $lang['tech'][600], 'officer.' . PHP_EX, 5);
 }
 else
