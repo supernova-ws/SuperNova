@@ -136,6 +136,8 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
     switch($GET_action)
     {
       case 'trim':
+        doquery('START TRANSACTION;');
+        $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planet['id']}' LIMIT 1 FOR UPDATE;", '', true);
         $ElementQueue = explode(';', $planet['b_hangar_id']);
         while(!empty($ElementQueue) && $ElementLine == '')
         {
@@ -157,14 +159,16 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
               `metal` = metal + '{$ResourcesToUpd['metal']}', `crystal` = crystal + '{$ResourcesToUpd['crystal']}', `deuterium` = deuterium + '{$ResourcesToUpd['deuterium']}',".
               (empty($ElementQueue) ? '`b_hangar` = 0,' : '') . "`b_hangar_id` = '" . implode(';', $ElementQueue) . "' WHERE `id` = '{$planet['id']}' LIMIT 1;");
         }
+        doquery('COMMIT;');
 
-        // PREVENT SUBMITS?
         header("location: {$_SERVER['PHP_SELF']}?mode={$GET_mode}");
         exit;
 
       break;
 
       case 'clear':
+        doquery('START TRANSACTION;');
+        $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planet['id']}' LIMIT 1 FOR UPDATE;", '', true);
         $ElementQueue = explode(';', $planet['b_hangar_id']);
         foreach($ElementQueue as $ElementLine => $Element)
         {
@@ -182,8 +186,8 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
           "UPDATE `{{planets}}` SET
             `metal` = metal + '{$ResourcesToUpd['metal']}', `crystal` = crystal + '{$ResourcesToUpd['crystal']}', `deuterium` = deuterium + '{$ResourcesToUpd['deuterium']}',
             `b_hangar` = '', `b_hangar_id` = '' WHERE `id` = '{$planet['id']}' LIMIT 1;");
+        doquery('COMMIT;');
 
-        // PREVENT SUBMITS?
         header("location: {$_SERVER['PHP_SELF']}?mode={$GET_mode}");
         exit;
 
