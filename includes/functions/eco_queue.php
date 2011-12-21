@@ -77,7 +77,6 @@ function eco_que_process($user, &$planet, $time_left)
 
       $unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $in_que[$unit_id];
       $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
-      $build_data = $build_data[$que_item['MODE']];
       $build_data_time = $build_data[RES_TIME][$que_item['MODE']];
       if($que_unit_place)
       {
@@ -85,6 +84,7 @@ function eco_que_process($user, &$planet, $time_left)
       }
       $que_item['TIME_FULL'] = $build_data_time;
 
+      $build_data = $build_data[$que_item['MODE']];
       $que_unit_place++;
 
       if($time_left > 0)
