@@ -340,7 +340,7 @@ debug($update_tables['logs'], 2);
     upd_do_query('COMMIT;', true);
 debug($update_tables['logs'], 3);
 die();
-debug($update_tables['logs']['log_id'], 31);
+debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_do_query('START TRANSACTION;', true);
 */
 
@@ -1417,7 +1417,7 @@ debug($update_tables['logs']['log_id'], 31);
     ), strtoupper($update_tables['users']['id_owner']['Type']) != 'BIGINT(20) UNSIGNED');
 
     upd_do_query('COMMIT;', true);
-//  $new_version = 31;
+//  $new_version = 32;
 };
 upd_log_message('Upgrade complete.');
 

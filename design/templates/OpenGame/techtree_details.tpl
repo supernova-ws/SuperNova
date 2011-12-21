@@ -24,7 +24,7 @@
 		<tbody>
 		<tr>
 			<td align="left"><font color="#00ff00">Laboratoire de recherche (Niveau 1)</font></td>
-			<td align="right"><a href="techdetails.php?techid=31">[i]</a></td>
+			<td align="right"><a href="techdetails.php?techid={D_STRUC_LABORATORY}">[i]</a></td>
 		</tr>
 		</tbody>
 		</table>

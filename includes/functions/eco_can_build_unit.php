@@ -42,12 +42,12 @@ function eco_unit_busy($user, $planet, $que, $unit_id)
 
   switch($unit_id)
   {
-    case 21:
+    case STRUC_FACTORY_HANGAR:
       $return = $hangar_busy;
     break;
 
-    case 31:
-    case 35:
+    case STRUC_LABORATORY:
+    case STRUC_LABORATORY_NANO:
       $return = $lab_busy;
     break;
 
@@ -56,7 +56,7 @@ function eco_unit_busy($user, $planet, $que, $unit_id)
     break;
   }
 
-//  return (($unit_id == 31 || $unit_id == 35) && $lab_busy) || ($unit_id == 21 && $hangar_busy);
+//  return (($unit_id == STRUC_LABORATORY || $unit_id == STRUC_LABORATORY_NANO) && $lab_busy) || ($unit_id == STRUC_FACTORY_HANGAR && $hangar_busy);
   return $return;
 }
 
@@ -94,12 +94,12 @@ function eco_unit_buildable($user, $planet, $que, $que_id, $unit_id, $unit_amoun
 
   switch($unit_id)
   {
-    case 21:
+    case STRUC_FACTORY_HANGAR:
       $return = $hangar_busy;
     break;
 
-    case 31:
-    case 35:
+    case STRUC_LABORATORY:
+    case STRUC_LABORATORY_NANO:
       $return = $lab_busy;
     break;
 
@@ -108,7 +108,7 @@ function eco_unit_buildable($user, $planet, $que, $que_id, $unit_id, $unit_amoun
     break;
   }
 
-//  return (($unit_id == 31 || $unit_id == 35) && $lab_busy) || ($unit_id == 21 && $hangar_busy);
+//  return (($unit_id == STRUC_LABORATORY || $unit_id == STRUC_LABORATORY_NANO) && $lab_busy) || ($unit_id == STRUC_FACTORY_HANGAR && $hangar_busy);
   return $return;
 */
 

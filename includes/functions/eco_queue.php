@@ -78,11 +78,12 @@ function eco_que_process($user, &$planet, $time_left)
       $unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $in_que[$unit_id];
       $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
       $build_data = $build_data[$que_item['MODE']];
+      $build_data_time = $build_data[RES_TIME][$que_item['MODE']];
       if($que_unit_place)
       {
-        $que_item['TIME'] = $build_data[RES_TIME];
+        $que_item['TIME'] = $build_data_time;
       }
-      $que_item['TIME_FULL'] = $build_data[RES_TIME];
+      $que_item['TIME_FULL'] = $build_data_time;
 
       $que_unit_place++;
 
@@ -229,7 +230,7 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
   $unit_level += $build_mode * $unit_amount;
   if($build_data['CAN'][$build_mode] >= $unit_amount && $unit_level >= 0)
   {
-    $unit_time       = $build_data[$build_mode][RES_TIME];
+    $unit_time       = $build_data[RES_TIME][$build_mode];
     $que_item_string = "{$unit_id},{$unit_amount},{$unit_time},{$build_mode},{$que_id};";
 
     $que['que'][$que_id][] = array(
@@ -449,7 +450,7 @@ function eco_bld_que_hangar($user, &$planet, $production_time)
         $unit_id  = $que_data[0];
         $count = $que_data[1];
         $build_data = eco_get_build_data($user, $planet, $unit_id);
-        $build_time = $build_data[BUILD_CREATE][RES_TIME];
+        $build_time = $build_data[RES_TIME][BUILD_CREATE];
 //        $build_time = GetBuildingTime($user, $planet, $unit_id);
 
         if(!$skip_rest)

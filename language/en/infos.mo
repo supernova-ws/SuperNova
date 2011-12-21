@@ -56,98 +56,98 @@ $lang = array_merge($lang, array(
   'nfo_base_speed' => 'Base speed',
   'nfo_consumption' => 'Fuel consumption (Deuterium)',
   'info' => array(
-    '1' => array(
+    STRUC_MINE_METAL => array(
       'description' => 'The main supplier of raw materials for the construction of load-bearing structures of buildings and ships. Metal is the most inexpensive raw material, but takes more than everything else. For production of metal requires less total energy. Than mines more deeper. on most planets metal is at great depths, deeper mines you can obtain more metals, production increases. At the same time, larger mines require more energy.',
       'description_short' => 'The main supplier of raw materials for the construction of load-bearing structures of buildings and ships.',
     ),
 
-    '2' => array(
+    STRUC_MINE_CRYSTAL => array(
       'description' => 'For the synthesis of crystals requires approximately twicw more enery than for extraction of metal, so it therefore appreciated more. Crystals-main part of any modern computers and a key componet of warp drive-engines. Therefore, it is required for all ships and almost all buildings. Improving synth increases the number of produced crystals.',
       'description_short' => 'The main supplier of raw materials for computer systems and warp-drives.',
     ),
 
-    '3' => array(
+    STRUC_MINE_DEUTERIUM => array(
       'description' => 'Deuterium is heavy hydrogen. Because of this, as in the mains, more large stockpiles are at the bottom of the sea. Improving synth also contributes to development of these deep deposits of deuterium. Deuterium is needed as fuel for ships, nearly all studies, see the galaxies, and use sensor phalanx',
       'description_short' => 'Extracts from the water on the planet, a small percentage of deuterium.',
     ),
 
-    '4' => array(
+    STRUC_MINE_SOLAR => array(
       'description' => 'To ensure energy mines and synthesizers are huge solar power plants. The more built stations,the greater the surface is covered with solar panels that transform light energy into electricity. Solar power plants are the foundation of the energy world.',
       'description_short' => 'Produces energy from sunlight. Energy is required for the majority of buildings.',
     ),
 
-    '12' => array(
+    STRUC_MINE_FUSION => array(
       'description_short' => 'Extracts energy from education Atom helium two heavy hydrogen atoms.',
       'description' => '',
     ),
 
-    '14' => array(
+    STRUC_FACTORY_ROBOT => array(
       'description' => 'Provides a simple labor, which can be used in the construction of a global infrastructure. Each level increases the speed of factory building.',
       'description_short' => 'Manufactures machines and mechanisms that are used in construction of a global infrastructure. Each level increases the speed of development of factory building.',
     ),
 
-    '15' => array(
+    STRUC_FACTORY_NANO => array(
       'description' => 'nanobots are the final evolution of robotic factories. The only equipment-nanobots to manipulate individual molecules and even atoms of matter. Since their invention made possible the production of virtually any material with predefined properties. Moreover, thanks to nanobots you can quickly produce finished parts of any forms and configurations. But invention nanobots revoke conventional plants. Although nanobots can produce any design, many things still energetically more favorable to &quot;old fashioned&quot;. But even with such restrictions each level nanobots shortens the time of construction of any buildings, defences, and ships by half.',
       'description_short' => 'Nanobots are specialized complexes to construct objects from individual molecules and atoms. Each level increases the speed of buildings, defences, and ships by twice.',
       'effect' => '',
     ),
 
-    '21' => array(
+    STRUC_FACTORY_HANGAR => array(
       'description' => 'Shipyard can produce all types of ships and defences. The faster you can build more complex and larger ships and defensive structures. By constructing factories nanites factory are simplified many chains that can dramatically improve the performance of the shipyard.',
       'description_short' => 'Shipyard produces spaceships, orbital structures and defences.',
     ),
 
-    '22' => array(
+    STRUC_STORE_METAL => array(
       'description' => 'Great location for extracted ores. The higher the level, the more metal you can store in it. If it is filled up, the extraction of metal ends.',
       'description_short' => 'Storage for metal.',
     ),
 
-    '23' => array(
+    STRUC_STORE_CRYSTAL => array(
       'description' => 'Great location for extracted ores. The higher the level, the more crystal you can store in it. If it is filled up, the extraction of crystal ends.',
       'description_short' => 'Storage for crystal.',
     ),
 
-    '24' => array(
+    STRUC_STORE_DEUTERIUM => array(
       'description' => 'Great location for extracted fuels. The higher the level, the more deuterium you can store in it. If it is filled up, the extraction of deuterium ends.',
       'description_short' => 'Storage for deuterium.',
     ),
 
-    '31' => array(
+    STRUC_LABORATORY => array(
       'description' => 'To study new technologies requires a working research station. Level of development research station is critical factor in how quickly could be developed new technologies. The higher the level of development research laboratory, the more can be researched new technologies. In order to complete as soon as the research work on the same planet, it sends all available scientists and then leave their planet. Once the technology is investigated, the scientists are returning to their home planet and carry with them knowledge about it. So new technologies can be applied on other planets.',
       'description_short' => 'Laboratory is for researching new technologies.',
     ),
 
-    '33' => array(
+    STRUC_TERRAFORMER => array(
       'description' => 'As more and more important building planets became the limited usable space. Traditional methods such as construction skyward and inside were insufficient. A small group of physicists and nanotehnikov found the solution-terraformer.<br><br>Spending large amounts of energy terraformer can convert vast areas and even the entire continents, making them suitable for construction. This structure is constantly produced special nanity, responsible for the constant quality of soil.',
       'description_short' => 'Terraformer can transform a huge territory, increasing the number of construction fields.',
     ),
 
-    '34' => array(
+    STRUC_ALLY_DEPOSIT => array(
       'description' => 'Alliance depot provides a way to ensure fuel friendly fleets that help with defense and are in orbit. The higher the level of development, the more deuterium can be sent to fleets in orbit.',
       'description_short' => 'Alliance depot provides a way to ensure fuel to friendly fleets that help with defense and are in orbit.',
     ),
 
-    '35' => array(
+    STRUC_LABORATORY_NANO => array(
       'description' => 'Reduce time to research stage doubled.',
       'description_short' => 'Nanobots equipped with the latest technology. Heavy duty crystaline computers and super-precise nanosbots accelerated by any study by twice.',
     ),
 
-    '41' => array(
+    STRUC_MOON_STATION => array(
       'description' => 'The moon has no atmosphere, therefore before the planned stay is required to build Lunar bases. It provides the necessary air, Gravitation and warmth. The higher the level of development of the lunar base, the more secure the biosphere area. Each level of the lunar base can build 3 sector, up to a maximum total square of the moon. It is 2 (diameter of the Moon/1000) ^ 2, each level lunar base itself occupies one field.',
       'description_short' => 'The moon has no atmosphere, therefore before the planned stay is required to build lunar base.',
     ),
 
-    '42' => array(
+    STRUC_MOON_PHALANX => array(
       'description' => 'High frequency sensors full browsing frequency spectrum by all the falangu radiations. Powerful computers combines tiny fluctuations in energy and thus gain information about the movements of ships at the distant planets. To view the Moon should be given the energy in the form of deuterium (5 000 per view). View is the transition from the Moon menu Galaxy and the title enemy planet located in range sensors (formula: (level phalanges) ^ 2-1).',
       'description_short' => 'High frequency sensors full browsing frequency spectrum by all the ship fuel radiation.',
     ),
 
-    '43' => array(
+    STRUC_MOON_GATE => array(
       'description' => 'Gate is a huge teleportery that can transmit between the fleets of all sizes without time-consuming. These teleportery do not require deuterium, but between two hops must undergo one hour, or gate recharge. Is also forwarding resources. The entire process requires very highly developed technology.',
       'description_short' => 'Gate is a huge teleportery that can transmit between the fleets of all sizes without time-consuming.',
     ),
 
-    '44' => array(
+    STRUC_SILO => array(
       'description' => 'Missile silo serve for storing missiles. With each level you can store five interplanetary or ten interceptor missiles anymore. One interplanetary missiles require space twice the interceptor missile. May be any combination of different types of missiles.',
       'description_short' => 'Missile silo allows firing rockets and missile plus storage.',
     ),

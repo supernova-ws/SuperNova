@@ -64,7 +64,7 @@ while ($fleet_row = mysql_fetch_assoc($fleet_query))
 $MaxExpeditions = GetMaxExpeditions($user);
 if($MaxExpeditions)
 {
-  $FlyingExpeditions  = doquery("SELECT COUNT(fleet_owner) AS `expedi` FROM {{fleets}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '15';", '', true);
+  $FlyingExpeditions  = doquery("SELECT COUNT(fleet_owner) AS `expedi` FROM {{fleets}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '" . MT_EXPLORE . "';", '', true);
   $FlyingExpeditions  = $FlyingExpeditions['expedi'];
 }
 else

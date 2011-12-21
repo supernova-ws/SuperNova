@@ -279,7 +279,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   // Is it HOLD mission? If yes - there should be ally deposit
   if($mission == MT_HOLD)
   {
-    if($planet_dst[$sn_data[34]['name']])
+    if($planet_dst[$sn_data[STRUC_ALLY_DEPOSIT]['name']])
     {
       return ATTACK_ALLOWED;
     }
@@ -298,7 +298,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   // Is it MISSILE mission?
   if($mission == MT_MISSILE)
   {
-    if($planet_src[$sn_data[44]['name']] < $sn_data[503]['require'][44])
+    if($planet_src[$sn_data[STRUC_SILO]['name']] < $sn_data[503]['require'][STRUC_SILO])
     {
       return ATTACK_NO_SILO;
     }

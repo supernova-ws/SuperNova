@@ -77,7 +77,7 @@ foreach ($planets as $planet_index => &$planet)
   $total['deuterium'] += $planet['deuterium'];
   $total['energy'] += $planet['energy_max'] - $planet['energy_used'];
 
-  $total['fields_max'] += $planet['field_max'] + $planet[$sn_data[33]['name']] * 5;
+  $total['fields_max'] += $planet['field_max'] + $planet[$sn_data[STRUC_TERRAFORMER]['name']] * 5;
   $total['metal_perhour'] += $planet['metal_perhour'];
   $total['crystal_perhour'] += $planet['crystal_perhour'];
   $total['deuterium_perhour'] += $planet['deuterium_perhour'];
@@ -114,7 +114,7 @@ unset($planet);
 
 $last = -1000;
 foreach ($sn_data as $unit_id => $res) {
-  if (in_array($unit_id, $sn_data['groups']['build']))
+  if (in_array($unit_id, $sn_data['groups']['structures']))
     $mode = 'buildings';
   elseif (in_array($unit_id, $sn_data['groups']['fleet']))
     $mode = 'fleet';

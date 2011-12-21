@@ -133,7 +133,7 @@ function killer_add_planet($planet)
   global $sn_data, $final_cost;
   $sn_groups = &$sn_data['groups'];
 
-  foreach($sn_groups['build'] as $unit)
+  foreach($sn_groups['structures'] as $unit)
   {
     $build_level = $planet[$sn_data[$unit]['name']];
     if($build_level > 0)
