@@ -270,7 +270,7 @@ function SYS_statCalculate()
   // Some variables we need to update ranks
   $qryResetRowNum = 'SET @rownum=0;';
   $qryFormat = 'UPDATE {{statpoints}} SET `%1$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = %2$d AND `stat_code` = 1 ORDER BY `%1$s_points` DESC, `id_owner` ASC, `id_ally` ASC;';
-  $rankNames = array( 'tech', 'structures', 'defs', 'fleet', 'res', 'total');
+  $rankNames = array( 'tech', 'build', 'defs', 'fleet', 'res', 'total');
 
   sta_set_time_limit("updating ranks for players");
   // Updating player's ranks
