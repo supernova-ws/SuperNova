@@ -1,4 +1,4 @@
-<h2>{L_tech[43]}</h2>
+<h2>{L_tech[D_STRUC_MOON_GATE]}</h2>
 <form action="jumpgate.php" method="post">
   <table><tbody>
     <tr>

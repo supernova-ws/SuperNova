@@ -76,7 +76,7 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
   $cost['RESULT'][BUILD_DESTROY] = BUILD_INDESTRUCTABLE;
   if(in_array($unit_id, $sn_groups['structures']))
   {
-    $time = $time * pow(0.5, $planet[$sn_data[15]['name']]) / ($planet[$sn_data[14]['name']] + 1);
+    $time = $time * pow(0.5, $planet[$sn_data[STRUC_FACTORY_NANO]['name']]) / ($planet[$sn_data[STRUC_FACTORY_ROBOT]['name']] + 1);
     $mercenary = MRC_ENGINEER;
     $cost['RESULT'][BUILD_DESTROY] = $planet[$unit_db_name] ? ($cost['CAN'][BUILD_DESTROY] ? BUILD_ALLOWED : BUILD_NO_RESOURCES) : BUILD_NO_UNITS;
   }
@@ -85,12 +85,12 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
     $tech_intergalactic = $user[$sn_data[TECH_RESEARCH]['name']];
     if ( $tech_intergalactic < 1 )
     {
-      $time = $time * pow(0.5, $planet[$sn_data[35]['name']]) / (($planet[$sn_data[31]['name']] + 1) * 2);
+      $time = $time * pow(0.5, $planet[$sn_data[STRUC_LABORATORY_NANO]['name']]) / (($planet[$sn_data[STRUC_LABORATORY]['name']] + 1) * 2);
     }
     else
     {
-      $lab_db_name = $sn_data[31]['name'];
-      $lab_require = intval($unit_data['require'][31]);
+      $lab_db_name = $sn_data[STRUC_LABORATORY]['name'];
+      $lab_require = intval($unit_data['require'][STRUC_LABORATORY]);
       $tech_intergalactic = $tech_intergalactic + 1;
 /*
       $inves = doquery("SELECT SUM(`{$lab_db_name}`) AS `laboratorio`
@@ -102,14 +102,14 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
             ORDER BY `{$lab_db_name}` DESC
             LIMIT {$tech_intergalactic}
         ) AS subquery;", '', true);
-//      $time = $time / (($inves['laboratorio'] + 1) * 2) * pow(0.5, $planet[$sn_data[35]['name']]);
+//      $time = $time / (($inves['laboratorio'] + 1) * 2) * pow(0.5, $planet[$sn_data[STRUC_LABORATORY_NANO]['name']]);
 */
       // TODO: Fix bug with counting building labs/nanolabs
       $inves = doquery(
         "SELECT SUM(lab) AS effective_level
           FROM
           (
-            SELECT ({$lab_db_name} + 1) * 2 / pow(0.5, {$sn_data[35]['name']}) AS lab
+            SELECT ({$lab_db_name} + 1) * 2 / pow(0.5, {$sn_data[STRUC_LABORATORY_NANO]['name']}) AS lab
               FROM {{planets}}
                 WHERE id_owner='{$user['id']}' AND {$lab_db_name} >= {$lab_require}
                 ORDER BY lab DESC
@@ -121,12 +121,12 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
   }
   elseif (in_array($unit_id, $sn_groups['defense']))
   {
-    $time = $time * pow(0.5, $planet[$sn_data[15]['name']]) / ($planet[$sn_data[21]['name']] + 1) ;
+    $time = $time * pow(0.5, $planet[$sn_data[STRUC_FACTORY_NANO]['name']]) / ($planet[$sn_data[STRUC_FACTORY_HANGAR]['name']] + 1) ;
     $mercenary = MRC_FORTIFIER;
   }
   elseif (in_array($unit_id, $sn_groups['fleet']))
   {
-    $time = $time * pow(0.5, $planet[$sn_data[15]['name']]) / ($planet[$sn_data[21]['name']] + 1);
+    $time = $time * pow(0.5, $planet[$sn_data[STRUC_FACTORY_NANO]['name']]) / ($planet[$sn_data[STRUC_FACTORY_HANGAR]['name']] + 1);
     $mercenary = MRC_ENGINEER;
   }
 
@@ -136,8 +136,8 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
   }
 
   $time = ($time >= 2) ? $time : (in_array($unit_id, $sn_groups['governors']) ? 0 : 2);
-  $cost[BUILD_CREATE][RES_TIME]  = floor($time);
-  $cost[BUILD_DESTROY][RES_TIME] = floor($time / 2);
+  $cost[RES_TIME][BUILD_CREATE]  = floor($time);
+  $cost[RES_TIME][BUILD_DESTROY] = floor($time / 2);
 
   return $cost;
 }

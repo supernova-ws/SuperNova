@@ -81,33 +81,33 @@ input.frameles
 
   sn_timers.unshift({'id': 'top_time', 'type': 2, 'active': true, 'start_time': {TIME_NOW}, options: 2});
 
- <!-- IF .flying_fleets -->
-  sn_timers.unshift({'id': 'topnav_fleet_counter', 'type': 5, 'active': true, 'start_time': {TIME_NOW},             
-            'options': 
-              {'msg_done': '0',
-                'unchanged': false,
-                'que':
-                  [
-                    <!-- BEGIN flying_fleets -->
-                      [{flying_fleets.TIME}, '{flying_fleets.TEXT}', '{flying_fleets.HINT}'],
-                    <!-- END flying_fleets -->
-                  ]
-              }
- });
- <!-- ENDIF -->
+  <!-- IF .flying_fleets -->
+   sn_timers.unshift({'id': 'topnav_fleet_counter', 'type': 5, 'active': true, 'start_time': {TIME_NOW},
+     'options': 
+       {'msg_done': '0',
+         'unchanged': false,
+         'que':
+           [
+             <!-- BEGIN flying_fleets -->
+               [{flying_fleets.TIME}, '{flying_fleets.TEXT}', '{flying_fleets.HINT}'],
+             <!-- END flying_fleets -->
+           ]
+       }
+  });
+  <!-- ENDIF -->
 
- <!-- IF .flying_expeditions -->
- sn_timers.unshift({'id': 'topnav_expedition_counter', 'type': 5, 'active': true, 'start_time': {TIME_NOW},             
-            'options':
-              {'msg_done': '0',
-                'unchanged': false,
-                'que':
-                  [
-                    <!-- BEGIN flying_expeditions -->
-                      [{flying_expeditions.TIME}, '{flying_expeditions.TEXT}', '{flying_expeditions.HINT}'],
-                    <!-- END flying_expeditions -->
-                  ]
-              }
- });
- <!-- ENDIF -->
+  <!-- IF .flying_expeditions -->
+  sn_timers.unshift({'id': 'topnav_expedition_counter', 'type': 5, 'active': true, 'start_time': {TIME_NOW},
+    'options':
+      {'msg_done': '0',
+        'unchanged': false,
+        'que':
+          [
+            <!-- BEGIN flying_expeditions -->
+              [{flying_expeditions.TIME}, '{flying_expeditions.TEXT}', '{flying_expeditions.HINT}'],
+            <!-- END flying_expeditions -->
+          ]
+      }
+  });
+  <!-- ENDIF -->
 // --></script>

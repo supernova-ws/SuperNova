@@ -17,14 +17,14 @@ function eco_lab_is_building($que)
 {
   global $config;
 
-  return $que['in_que_abs'][31] && !$config->BuildLabWhileRun ? true : false;
+  return $que['in_que_abs'][STRUC_LABORATORY] && !$config->BuildLabWhileRun ? true : false;
 }
 
 function ResearchBuildingPage(&$user, &$planet, $que)
 {
   global $config, $sn_data, $lang, $time_now;
 
-  if(!$planet[$sn_data[31]['name']])
+  if(!$planet[$sn_data[STRUC_LABORATORY]['name']])
   {
     message($lang['no_laboratory'], $lang['tech'][TECH_TECHNOLOGY]);
   }
@@ -58,7 +58,7 @@ function ResearchBuildingPage(&$user, &$planet, $que)
       }
       elseif(!eco_lab_is_building($que) && in_array($tech_id, $sn_data['groups']['tech']) && eco_can_build_unit($user, $planet, $tech_id) == BUILD_ALLOWED && $build_data['CAN'][BUILD_CREATE])
       {
-        $build_time_end        = $build_data[BUILD_CREATE][RES_TIME] + $time_now;
+        $build_time_end        = $build_data[RES_TIME][BUILD_CREATE] + $time_now;
         doquery("UPDATE {{planets}} SET `b_tech_id` = '{$tech_id}', `b_tech` = '{$build_time_end}', 
           `metal` = `metal` - {$build_data[BUILD_CREATE][RES_METAL]}, `crystal` = `crystal` - '{$build_data[BUILD_CREATE][RES_CRYSTAL]}', `deuterium` = `deuterium` - '{$build_data[BUILD_CREATE][RES_DEUTERIUM]}' 
           WHERE `id` = '{$planet['id']}' LIMIT 1;");
@@ -96,7 +96,7 @@ function ResearchBuildingPage(&$user, &$planet, $que)
       'DESCRIPTION'        => $lang['info'][$Tech]['description_short'],
 
       'BUILD_CAN'          => $build_data['CAN'][BUILD_CREATE],
-      'TIME'               => pretty_time($build_data[BUILD_CREATE][RES_TIME]),
+      'TIME'               => pretty_time($build_data[RES_TIME][BUILD_CREATE]),
       'METAL'              => $build_data[BUILD_CREATE][RES_METAL],
       'CRYSTAL'            => $build_data[BUILD_CREATE][RES_CRYSTAL],
       'DEUTERIUM'          => $build_data[BUILD_CREATE][RES_DEUTERIUM],
@@ -134,7 +134,7 @@ function ResearchBuildingPage(&$user, &$planet, $que)
       'QUE' => QUE_RESEARCH,
       'NAME' => $lang['tech'][$unit_id],
       'TIME' => $build_planet['b_tech'] - $time_now,
-      'TIME_FULL' => $unit_data[BUILD_CREATE][RES_TIME],
+      'TIME_FULL' => $unit_data[RES_TIME][BUILD_CREATE],
       'AMOUNT' => 1,
       'LEVEL' => $user[$sn_data[$unit_id]['name']] + 1,
     ));

@@ -115,7 +115,7 @@ function pretty_time($seconds)
 //
 function eco_planet_fields_max($planet)
 {
-  return $planet['field_max'] + ($planet['planet_type'] == PT_PLANET ? $planet[$GLOBALS['sn_data'][33]['name']] * 5 : $planet[$GLOBALS['sn_data'][41]['name']] * 3);
+  return $planet['field_max'] + ($planet['planet_type'] == PT_PLANET ? $planet[$GLOBALS['sn_data'][STRUC_TERRAFORMER]['name']] * 5 : $planet[$GLOBALS['sn_data'][STRUC_MOON_STATION]['name']] * 3);
 }
 
 // ----------------------------------------------------------------------------------------------------------------

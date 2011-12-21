@@ -128,7 +128,7 @@ function SYS_statCalculate()
 
     $BuildCounts = 0;
     $BuildPoints = 0;
-    foreach($sn_data['groups']['build'] as $n => $Building)
+    foreach($sn_data['groups']['structures'] as $n => $Building)
     {
       $unit_db_name = $sn_data[ $Building ]['name'];
       if ( $planet_row[$unit_db_name] > 0 )
@@ -190,12 +190,12 @@ function SYS_statCalculate()
 
     $userID = $planet_row['id_owner'];
 
-    $counts[$userID]['build'] += $BuildCounts;
+    $counts[$userID]['structures'] += $BuildCounts;
     $counts[$userID]['defs']  += $DefenseCounts;
     $counts[$userID]['fleet'] += $FleetCounts;
     $counts[$userID]['resources'] += $ResourceCount;
 
-    $points[$userID]['build'] += $BuildPoints / 1000;
+    $points[$userID]['structures'] += $BuildPoints / 1000;
     $points[$userID]['defs']  += $DefensePoints / 1000;
     $points[$userID]['fleet'] += $FleetPoints / 1000;
     $points[$userID]['resources'] += $ResourcePoint / 1000;
@@ -238,8 +238,8 @@ function SYS_statCalculate()
     $QryInsertStats .= "`stat_code` = '1', "; // de 1 a 2 mis a jour de maniere automatique
     $QryInsertStats .= "`tech_points` = '". $points[$userID]['tech'] ."', ";
     $QryInsertStats .= "`tech_count` = '". $counts[$userID]['tech'] ."', ";
-    $QryInsertStats .= "`build_points` = '". $points[$userID]['build'] ."', ";
-    $QryInsertStats .= "`build_count` = '". $counts[$userID]['build'] ."', ";
+    $QryInsertStats .= "`build_points` = '". $points[$userID]['structures'] ."', ";
+    $QryInsertStats .= "`build_count` = '". $counts[$userID]['structures'] ."', ";
     $QryInsertStats .= "`defs_points` = '". $points[$userID]['defs'] ."', ";
     $QryInsertStats .= "`defs_count` = '". $counts[$userID]['defs'] ."', ";
     $QryInsertStats .= "`fleet_points` = '". $points[$userID]['fleet'] ."', ";
@@ -270,7 +270,7 @@ function SYS_statCalculate()
   // Some variables we need to update ranks
   $qryResetRowNum = 'SET @rownum=0;';
   $qryFormat = 'UPDATE {{statpoints}} SET `%1$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = %2$d AND `stat_code` = 1 ORDER BY `%1$s_points` DESC, `id_owner` ASC, `id_ally` ASC;';
-  $rankNames = array( 'tech', 'build', 'defs', 'fleet', 'res', 'total');
+  $rankNames = array( 'tech', 'structures', 'defs', 'fleet', 'res', 'total');
 
   sta_set_time_limit("updating ranks for players");
   // Updating player's ranks

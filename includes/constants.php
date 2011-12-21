@@ -284,6 +284,7 @@ define('SORT_SIZE'      , 3);
 
 // === Structures
 define('STRUC_STRUCTURES', 0);
+define('STRUC_STRUCTURES_SPECIAL', 40);
 define('STRUC_MINE_METAL', 1);
 define('STRUC_MINE_CRYSTAL', 2);
 define('STRUC_MINE_DEUTERIUM', 3);
@@ -368,16 +369,13 @@ define('MRT_ADVISOR', 2);  // Advisor has imperium-wide effects
 
 // --- Mercenary list
 define('MRC_MERCENARIES', 600);
-define('MRC_TECHNOLOGIST', 601); // MRC_TECHNOLOGIST
-
-define('MRC_ENGINEER', 605);   // MRC_ENGINEER
-
-define('MRC_ACADEMIC', 606); // 
+define('MRC_TECHNOLOGIST', 601);
+define('MRC_ENGINEER', 605);
 define('MRC_FORTIFIER', 608);
 
+define('MRC_ACADEMIC', 606);
 define('MRC_ADMIRAL', 602);
 define('MRC_STOCKMAN', 607);
-// define('MRC_DEFENDER', 609);
 define('MRC_SPY', 610);
 define('MRC_COORDINATOR', 611);
 define('MRC_DESTRUCTOR', 612);

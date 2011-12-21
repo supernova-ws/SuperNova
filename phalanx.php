@@ -17,11 +17,11 @@ lng_include('overview');
 lng_include('universe');
 
 if (!intval($planetrow['phalanx'])) {
-  message ($lang['phalanx_nosensoravailable'], $lang['tech'][42], "", 3);
+  message ($lang['phalanx_nosensoravailable'], $lang['tech'][STRUC_MOON_PHALANX], "", 3);
 }
 
 if ($planetrow['planet_type'] != PT_MOON) {
-  message ($lang['phalanx_onlyformoons'], $lang['tech'][42], "", 3);
+  message ($lang['phalanx_onlyformoons'], $lang['tech'][STRUC_MOON_PHALANX], "", 3);
 }
 
 $scan_galaxy  = sys_get_param_int('galaxy');
@@ -40,7 +40,7 @@ $sensorRange = GetPhalanxRange($sensorLevel);
 $system_distance = abs($source_system - $scan_system);
 if($system_distance > $sensorRange || $scan_galaxy != $source_galaxy)
 {
-  message ($lang['phalanx_rangeerror'], $lang['tech'][42], "", 3);
+  message ($lang['phalanx_rangeerror'], $lang['tech'][STRUC_MOON_PHALANX], "", 3);
 }
 
 $cost = $sensorLevel * 1000;
@@ -69,6 +69,6 @@ $template->assign_vars(array(
 
 $page = parsetemplate($template, $parse);
 
-display($page, $lang['tech'][42], false, '', false, false);
+display($page, $lang['tech'][STRUC_MOON_PHALANX], false, '', false, false);
 
 ?>

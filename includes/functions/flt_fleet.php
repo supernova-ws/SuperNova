@@ -136,7 +136,7 @@ function flt_gate_time_to_jump($CurMoon)
 {
   global $sn_data, $time_now;
 
-  $JumpGateLevel = $CurMoon[$sn_data[43]['name']];
+  $JumpGateLevel = $CurMoon[$sn_data[STRUC_MOON_GATE]['name']];
   if($JumpGateLevel)
   {
     $NextJumpTime = $CurMoon['last_jump_time'] + abs(60 * 60 / $JumpGateLevel);

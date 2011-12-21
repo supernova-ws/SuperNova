@@ -71,7 +71,7 @@ if ($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4)
 
 $MaxExpeditions = GetMaxExpeditions($user);
 if($MaxExpeditions){
-  $FlyingExpeditions  = doquery("SELECT COUNT(fleet_owner) AS `expedi` FROM {{fleets}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '15';", '', true);
+  $FlyingExpeditions  = doquery("SELECT COUNT(fleet_owner) AS `expedi` FROM {{fleets}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '" . MT_EXPLORE . "';", '', true);
   $FlyingExpeditions  = $FlyingExpeditions['expedi'];
 }else{
   $FlyingExpeditions = 0;

@@ -2,7 +2,7 @@
 
 function eco_hangar_is_building($que)
 {
-  return $que['in_que_abs'][21] ? true : false;
+  return $que['in_que_abs'][STRUC_FACTORY_HANGAR] ? true : false;
 }
 
 /**
@@ -199,19 +199,19 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
   $page_mode = $que_type == SUBQUE_FLEET ? 'fleet' : 'defense';
   $sn_data_group = $sn_data['groups'][$page_mode];
 
+  doquery('START TRANSACTION;');
+  $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planet['id']}' LIMIT 1 FOR UPDATE;", '', true);
+
   $que_array = explode(';', $planet['b_hangar_id']);
   $que_count = count($que_array);
   $que_count = $que_count && $que_array[$que_count - 1] ? $que_count : $que_count - 1;
   if(!empty($POST_fmenge) && !eco_hangar_is_building ( $que ) && $que_count < MAX_BUILDING_QUEUE_SIZE)
   {
-    doquery('START TRANSACTION;');
-    $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planet['id']}' LIMIT 1 FOR UPDATE;", '', true);
-
     $units_cost = array();
 
     $hangar = $planet['b_hangar_id'];
     $built = GetRestrictedConstructionNum($planet);
-    $SiloSpace = max(0, $planet[ $sn_data[44]['name'] ] * 10 - $built[502] - $built[503] * 2);
+    $SiloSpace = max(0, $planet[ $sn_data[STRUC_SILO]['name'] ] * 10 - $built[502] - $built[503] * 2);
 
     foreach($POST_fmenge as $Element => $Count)
     {
@@ -296,17 +296,21 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
     }
     doquery('COMMIT');
   }
+  else
+  {
+    doquery('ROLLBACK;');
+  }
 
   // -------------------------------------------------------------------------------------------------------
   // S'il n'y a pas de Chantier ...
-  if ($planet[$sn_data[21]['name']] == 0)
+  if ($planet[$sn_data[STRUC_FACTORY_HANGAR]['name']] == 0)
   {
     // Veuillez avoir l'obligeance de construire le Chantier Spacial !!
-    message($lang['need_hangar'], $lang['tech'][21]);
+    message($lang['need_hangar'], $lang['tech'][STRUC_FACTORY_HANGAR]);
   }
 
   $built = GetRestrictedConstructionNum($planet);
-  $SiloSpace = max(0, $planet[$sn_data[44]['name'] ] * 10 - $built[502] - $built[503] * 2);
+  $SiloSpace = max(0, $planet[$sn_data[STRUC_SILO]['name'] ] * 10 - $built[502] - $built[503] * 2);
 
   $template = gettemplate("buildings_hangar", true);
 
@@ -383,7 +387,7 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
         'LEVEL_CHANGE'      => $que['in_que'][$Element],
 
         'BUILD_CAN'         => min($baubar, $build_data['CAN'][BUILD_CREATE]),
-        'TIME'              => pretty_time($build_data[BUILD_CREATE][RES_TIME]),
+        'TIME'              => pretty_time($build_data[RES_TIME][BUILD_CREATE]),
         'METAL'             => $build_data[BUILD_CREATE][RES_METAL],
         'CRYSTAL'           => $build_data[BUILD_CREATE][RES_CRYSTAL],
         'DEUTERIUM'         => $build_data[BUILD_CREATE][RES_DEUTERIUM],
@@ -393,7 +397,7 @@ function eco_build_hangar($que_type, $user, &$planet, $que)
         'DEUTERIUM_PRINT'   => pretty_number($build_data[BUILD_CREATE][RES_DEUTERIUM], true, $planet['deuterium']),
 
         'DESTROY_CAN'       => $build_data['CAN'][BUILD_DESTROY],
-        'DESTROY_TIME'      => pretty_time($build_data[BUILD_DESTROY][RES_TIME]),
+        'DESTROY_TIME'      => pretty_time($build_data[RES_TIME][BUILD_DESTROY]),
         'DESTROY_METAL'     => $build_data[BUILD_DESTROY][RES_METAL],
         'DESTROY_CRYSTAL'   => $build_data[BUILD_DESTROY][RES_CRYSTAL],
         'DESTROY_DEUTERIUM' => $build_data[BUILD_DESTROY][RES_DEUTERIUM],
@@ -453,8 +457,8 @@ function tpl_assign_hangar($que_type, $planet, &$template)
       'ID' => $unit_id,
       'QUE' => $que_type,
       'NAME' => $lang['tech'][$unit_id],
-      'TIME' => $unit_data[BUILD_CREATE][RES_TIME] - ($hangar_que_string_id ? 0 : $planet['b_hangar']),
-      'TIME_FULL' => $unit_data[BUILD_CREATE][RES_TIME],
+      'TIME' => $unit_data[RES_TIME][BUILD_CREATE] - ($hangar_que_string_id ? 0 : $planet['b_hangar']),
+      'TIME_FULL' => $unit_data[RES_TIME][BUILD_CREATE],
       'AMOUNT' => $unit_amount,
       'LEVEL' => 0,
     ));

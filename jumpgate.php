@@ -13,7 +13,6 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 //lng_include('infos');
-
 $parse = $lang;
 
 $TargetPlanet = sys_get_param_id('jmpto');
@@ -88,10 +87,10 @@ if($TargetPlanet)
   } else {
     $RetMessage = $lang['gate_wait_star'] ." - ". pretty_time($NextJumpTime);
   }
-  message ($RetMessage, $lang['tech'][43], "jumpgate.php", 10);
+  message ($RetMessage, $lang['tech'][STRUC_MOON_GATE], "jumpgate.php", 10);
 } else {
   $GateTPL = gettemplate('gate_fleet_table', true);
-  if($planetrow[$sn_data[43]['name']] > 0)
+  if($planetrow[$sn_data[STRUC_MOON_GATE]['name']] > 0)
   {
     $NextJumpTime = flt_gate_time_to_jump($planetrow);
     $parse['GATE_JUMP_REST_TIME'] = $NextJumpTime;
@@ -107,7 +106,7 @@ if($TargetPlanet)
       if ($CurMoon['id'] != $planetrow['id'])
       {
         $NextJumpTime = flt_gate_time_to_jump($CurMoon);
-        if ($CurMoon[$sn_data[43]['name']] >= 1)
+        if ($CurMoon[$sn_data[STRUC_MOON_GATE]['name']] >= 1)
         {
           $Combo .= "<option value=\"" . $CurMoon['id'] . "\">[" . $CurMoon['galaxy'] . ":" . $CurMoon['system'] . ":" . $CurMoon['planet'] . "] " . $CurMoon['name'] . ' ' . ($NextJumpTime ? pretty_time($NextJumpTime) : '') . "</option>\n";
         }
@@ -138,11 +137,11 @@ if($TargetPlanet)
     $parse['gate_fleet_rows'] = $ship_list;
     $page = parsetemplate($GateTPL, $parse);
 
-    display($page, $lang['tech'][43]);
+    display($page, $lang['tech'][STRUC_MOON_GATE]);
   }
   else
   {
-    message($lang['gate_no_src_ga'], $lang['tech'][43], "overview.php", 10);
+    message($lang['gate_no_src_ga'], $lang['tech'][STRUC_MOON_GATE], "overview.php", 10);
   }
 }
 

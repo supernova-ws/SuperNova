@@ -15,12 +15,12 @@ function ECO_getPlanetCaps($user, &$planet_row)
     'metal'         => $planet_row['metal'],
     'crystal'       => $planet_row['crystal'],
     'deuterium'     => $planet_row['deuterium'],
-    'metal_max'     => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$sn_data[22]['name']])) * $storage_scale),
-    'crystal_max'   => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$sn_data[23]['name']])) * $storage_scale),
-    'deuterium_max' => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$sn_data[24]['name']])) * $storage_scale),
+    'metal_max'     => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$sn_data[STRUC_STORE_METAL]['name']])) * $storage_scale),
+    'crystal_max'   => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$sn_data[STRUC_STORE_CRYSTAL]['name']])) * $storage_scale),
+    'deuterium_max' => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow (1.5, $planet_row[$sn_data[STRUC_STORE_DEUTERIUM]['name']])) * $storage_scale),
   ));
 
-  if ($planet_row['planet_type'] == 3)
+  if ($planet_row['planet_type'] == PT_MOON)
   {
     return $Caps;
   }
@@ -43,7 +43,7 @@ function ECO_getPlanetCaps($user, &$planet_row)
     $BuildLevelFactor = $planet_row[ "{$sn_data[$ProdID]['name']}_porcent" ];
 
     $Caps['energy'][$ProdID] = floor(eval($unit_data['energy_perhour']) * $config_resource_multiplier);
-    if ($ProdID == 12)
+    if ($ProdID == STRUC_MINE_FUSION)
     {
       if ($planet_row['deuterium'] > 0)
       {

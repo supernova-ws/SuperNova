@@ -32,19 +32,19 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
   $BuildLevel = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
 
 
-  $Prod[1] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])));
-  $Prod[2] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])));
-  $Prod[3] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour'])));
-  $Prod[4] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, /* $config_resource_multiplier * */ eval($unit_data['energy_perhour'])));
+  $Prod[STRUC_MINE_METAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])));
+  $Prod[STRUC_MINE_CRYSTAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])));
+  $Prod[STRUC_MINE_DEUTERIUM] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour'])));
+  $Prod[STRUC_MINE_SOLAR] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, /* $config_resource_multiplier * */ eval($unit_data['energy_perhour'])));
 
   $ActualProd = floor($Prod[$BuildID]);
-  if ($BuildID != 12)
+  if ($BuildID != STRUC_MINE_FUSION)
   {
-    $ActualNeed = floor($Prod[4]);
+    $ActualNeed = floor($Prod[STRUC_MINE_SOLAR]);
   }
   else
   {
-    $ActualNeed = floor($Prod[3]);
+    $ActualNeed = floor($Prod[STRUC_MINE_DEUTERIUM]);
   }
 
   $BuildStartLvl = $CurrentBuildtLvl - 2;
@@ -56,52 +56,52 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
   $ProdFirst = 0;
   for ($BuildLevel = $BuildStartLvl; $BuildLevel < $BuildStartLvl + 10; $BuildLevel++)
   {
-    if ($BuildID != 42)
+    if ($BuildID != STRUC_MOON_PHALANX)
     {
-      $Prod[1] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])));
-      $Prod[2] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])));
-      $Prod[3] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour'])));
-      $Prod[4] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, /* $config_resource_multiplier * */ eval($unit_data['energy_perhour'])));
+      $Prod[STRUC_MINE_METAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])));
+      $Prod[STRUC_MINE_CRYSTAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])));
+      $Prod[STRUC_MINE_DEUTERIUM] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour'])));
+      $Prod[STRUC_MINE_SOLAR] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, /* $config_resource_multiplier * */ eval($unit_data['energy_perhour'])));
 
       $bloc['build_lvl'] = ($CurrentBuildtLvl == $BuildLevel) ? "<font color=\"#ff0000\">" . $BuildLevel . "</font>" : $BuildLevel;
       if ($ProdFirst > 0)
       {
-        if ($BuildID != 12)
+        if ($BuildID != STRUC_MINE_FUSION)
         {
           $bloc['build_gain'] = "<font color=\"lime\">(" . pretty_number(floor($Prod[$BuildID] - $ProdFirst)) . ")</font>";
         }
         else
         {
-          $bloc['build_gain'] = "<font color=\"lime\">(" . pretty_number(floor($Prod[4] - $ProdFirst)) . ")</font>";
+          $bloc['build_gain'] = "<font color=\"lime\">(" . pretty_number(floor($Prod[STRUC_MINE_SOLAR] - $ProdFirst)) . ")</font>";
         }
       }
       else
       {
         $bloc['build_gain'] = "";
       }
-      if ($BuildID != 12)
+      if ($BuildID != STRUC_MINE_FUSION)
       {
         $bloc['build_prod'] = pretty_number(floor($Prod[$BuildID]));
         $bloc['build_prod_diff'] = pretty_number(floor($Prod[$BuildID] - $ActualProd), true, true);
-        $bloc['build_need'] = pretty_number(floor($Prod[4]), true, true);
-        $bloc['build_need_diff'] = pretty_number(floor($Prod[4] - $ActualNeed), true, true);
+        $bloc['build_need'] = pretty_number(floor($Prod[STRUC_MINE_SOLAR]), true, true);
+        $bloc['build_need_diff'] = pretty_number(floor($Prod[STRUC_MINE_SOLAR] - $ActualNeed), true, true);
       }
       else
       {
-        $bloc['build_prod'] = pretty_number(floor($Prod[4]));
-        $bloc['build_prod_diff'] = pretty_number(floor($Prod[4] - $ActualProd), true, true);
-        $bloc['build_need'] = pretty_number(floor($Prod[3]), true, true);
-        $bloc['build_need_diff'] = pretty_number(floor($Prod[3] - $ActualNeed), true, true);
+        $bloc['build_prod'] = pretty_number(floor($Prod[STRUC_MINE_SOLAR]));
+        $bloc['build_prod_diff'] = pretty_number(floor($Prod[STRUC_MINE_SOLAR] - $ActualProd), true, true);
+        $bloc['build_need'] = pretty_number(floor($Prod[STRUC_MINE_DEUTERIUM]), true, true);
+        $bloc['build_need_diff'] = pretty_number(floor($Prod[STRUC_MINE_DEUTERIUM] - $ActualNeed), true, true);
       }
       if ($ProdFirst == 0)
       {
-        if ($BuildID != 12)
+        if ($BuildID != STRUC_MINE_FUSION)
         {
           $ProdFirst = floor($Prod[$BuildID]);
         }
         else
         {
-          $ProdFirst = floor($Prod[4]);
+          $ProdFirst = floor($Prod[STRUC_MINE_SOLAR]);
         }
       }
     }
@@ -189,7 +189,7 @@ elseif ($unit_id == 4)
   $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_prod_energy}</td><td class=\"c\">{nfo_difference}</td></tr>";
   $TableTPL = "<tr><th>{build_lvl}</th><th>{build_prod} {build_gain}</th><th>{build_prod_diff}</th></tr>";
 }
-elseif ($unit_id == 12)
+elseif ($unit_id == STRUC_MINE_FUSION)
 {
   // Centrale Fusion
   $PageTPL = gettemplate('info_buildings_table');
@@ -197,41 +197,41 @@ elseif ($unit_id == 12)
   $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_prod_energy}</td><td class=\"c\">{nfo_difference}</td><td class=\"c\">{nfo_used_deuter}</td><td class=\"c\">{nfo_difference}</td></tr>";
   $TableTPL = "<tr><th>{build_lvl}</th><th>{build_prod} {build_gain}</th><th>{build_prod_diff}</th><th>{build_need}</th><th>{build_need_diff}</th></tr>";
 }
-elseif ($unit_id >= 14 && $unit_id <= 32)
+elseif ($unit_id >= STRUC_FACTORY_ROBOT && $unit_id <= 32)
 {
   // Batiments Generaux
   $PageTPL = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
 }
-elseif ($unit_id == 33)
+elseif ($unit_id == STRUC_TERRAFORMER)
 {
   // Batiments Terraformer
   $PageTPL = gettemplate('info_buildings_general');
 }
-elseif ($unit_id == 34)
+elseif ($unit_id == STRUC_ALLY_DEPOSIT)
 {
   // Dépot d'alliance
   $PageTPL = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
 }
-elseif ($unit_id == 35)
+elseif ($unit_id == STRUC_LABORATORY_NANO)
 {
   // nano
   $PageTPL = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
 }
-elseif ($unit_id == 44)
+elseif ($unit_id == STRUC_SILO)
 {
   // Silo de missiles
   $PageTPL = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
 }
-elseif ($unit_id == 41)
+elseif ($unit_id == STRUC_MOON_STATION)
 {
   // Batiments lunaires
   $PageTPL = gettemplate('info_buildings_general');
 }
-elseif ($unit_id == 42)
+elseif ($unit_id == STRUC_MOON_PHALANX)
 {
   // Phalange
   $PageTPL = gettemplate('info_buildings_table');
@@ -239,7 +239,7 @@ elseif ($unit_id == 42)
   $TableTPL = "<tr><th>{build_lvl}</th><th>{build_range}</th></tr>";
   $DestroyTPL = gettemplate('info_buildings_destroy');
 }
-elseif ($unit_id == 43)
+elseif ($unit_id == STRUC_MOON_GATE)
 {
   // Porte de Saut
   $PageTPL = gettemplate('info_buildings_general');

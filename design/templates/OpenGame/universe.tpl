@@ -323,7 +323,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
   </tr>
 <!-- END galaxyrow -->
   <tr>
-    <th colspan=8><a href="fleet.php?galaxy={galaxy}&system={system}&planet={EXPIDITION}&planettype=1&target_mission=15">{L_gf_unknowsp}</a></th>
+    <th colspan=8><a href="fleet.php?galaxy={galaxy}&system={system}&planet={EXPIDITION}&planettype=1&target_mission={D_MT_EXPLORE}">{L_gf_unknowsp}</a></th>
   </tr>
   <tr>
     <td class=c colspan=3><span id="missiles">{MIPs}</span> {L_gf_mi_title}</td>

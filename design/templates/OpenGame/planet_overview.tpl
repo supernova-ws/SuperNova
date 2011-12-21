@@ -84,7 +84,7 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 
     <!-- IF GATE_LEVEL -->
     <tr>
-      <td class="c_c" colspan="2">{L_tech[43]}</td>
+      <td class="c_c" colspan="2">{L_tech[D_STRUC_MOON_GATE]}</td>
       <td class="c_c" colspan="3"><a href="jumpgate.php" id="gate_jump_time">
         <!-- IF GATE_JUMP_REST_TIME -->
         <script type="text/javascript"><!--
