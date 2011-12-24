@@ -89,7 +89,7 @@ function eco_que_process($user, &$planet, $time_left)
 
       if($time_left > 0)
       {  // begin processing que with time left on it
-        $build_time = $que_item['TIME'];
+        $build_time = max(0, $que_item['TIME']);
         $amount_to_build = min($que_item['AMOUNT'], floor($time_left / $build_time));
 
         if($amount_to_build > 0)
@@ -101,7 +101,7 @@ function eco_que_process($user, &$planet, $time_left)
           {
             $que_item['AMOUNT'] -= $amount_to_build;
 
-            $time_left -= min($time_left, $amount_to_build * $build_time); // prevents negative times and cycling
+            $time_left -= max(0, min($time_left, $amount_to_build * $build_time)); // prevents negative times and cycling
             $amount_to_build *= $build_mode;
             $built[$unit_id] += $amount_to_build;
 
@@ -132,7 +132,7 @@ function eco_que_process($user, &$planet, $time_left)
 
         if($que_item['AMOUNT'] > 0)
         {
-          $que_item['TIME'] -= $time_left;
+          $que_item['TIME'] = $time_left > $que_item['TIME'] ? 0 : $que_item['TIME'] - $time_left; // Prevents negative time left
           $que_item['STRING'] = "{$unit_id},{$que_item['AMOUNT']},{$que_item['TIME']},{$que_item['MODE']},{$que_item['QUE']};";
 
           $time_left = 0;
