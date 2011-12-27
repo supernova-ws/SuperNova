@@ -1417,7 +1417,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     ), strtoupper($update_tables['users']['id_owner']['Type']) != 'BIGINT(20) UNSIGNED');
 
     upd_do_query('COMMIT;', true);
-//  $new_version = 32;
+    $new_version = 32;
 };
 upd_log_message('Upgrade complete.');
 

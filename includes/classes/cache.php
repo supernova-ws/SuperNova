@@ -565,8 +565,9 @@ class classConfig extends classPersistent
     'quest_total'       =>  0, // Total quest amount
 
     //Roleplay system
-    'rpg_officer'       =>  3, // Cost per officer level
-    'rpg_bonus_divisor' => 10, // Amount of DM referral shoud get for partner have 1 DM bonus
+    'rpg_officer'       =>  3,    // Cost per officer level
+    'rpg_bonus_divisor' => 10,    // Amount of DM referral shoud get for partner have 1 DM bonus
+    'rpg_bonus_minimum' => 10000, // Minimum DM ammount for starting paying bonuses to affiliate
 
     // Black Market - General
     'rpg_cost_trader'    => 1,     // Trader trades between resources

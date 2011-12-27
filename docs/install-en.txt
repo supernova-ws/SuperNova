@@ -139,41 +139,43 @@ The installation, base
 10. Set up the game on the page/admin/settings.php
 11. Supernova is ready to launch!
 
-WARNING! Scrap with team members (auth_level> 0) do not fall out! It's not a bug, it's
-made specifically to enhance the security of the server! For the game, and
-Administration need to use different accounts!
+WARNING! Scrap with team members (auth_level> 0) do not fall out!  It's  not  a
+bug, it's made specifically to enhance the security  of  the  server!  For  the
+game, and Administration need to  use  different  accounts!  Also  server  team
+members do  not  participate  in  Records  calculation  (but  do  in  statistic
+calculation)
 
 
 Installation, an advanced version
 ================================
 Settings for database access are in the file /config.php
-Game Settings are in the table <db_prefix> config. Appointment Settings
-intuitive names of variables
+Game Settings  are  in  the  table  <db_prefix>  config.  Appointment  Settings
+intuitive names of variables 
 Just some game settings are stored in file/includes/constants.php
 All changes - at your own risk
 WARNING! If you have changed the table prefix ('sn_' by default), then the same
-need to change the names of the tables before pouring the file/docs/supernova.sql!
+need   to   change   the   names   of   the   tables   before    pouring    the
+file/docs/supernova.sql!
 
 Multiple universes for a single server
 ------------------------------------
-CH supports multiple universes on a single server. Different universes
-must have distinct prefixes within the same space of variables
-xCache
+CH supports multiple universes on a single  server.  Different  universes  must
+have distinct prefixes within the same space of variables xCache
 
 
 Short educational program on the GIT
 ====================================
 Create a local copy of the supernova in the current directory (do not forget to
-point end!)
+point at end!)
   git clone git://github.com/supernova-ws/SuperNova.git .
-In the current directory will be the latest copy of the supernova from the branch master.
-Now you want to copy the contents to the root server. In general,
-encouraged to do so once on the server - to avoid problems with
-copy (this was already the case). But not all hosting companies are allowed to run
-program locally, so you can first make a copy on your local drive.
-In fact, have nothing else:) However, if you do modifications
-engine useful to you sleduyushaya team. Roll back all changes made to
-Local copy:
+In the current directory will be the latest copy  of  the  supernova  from  the
+branch master. 
+Now you want to copy the contents to the root server. In general, encouraged to
+do so once on the server - to avoid problems with copy (this  was  already  the
+case). But not all hosting companies are allowed to run program locally, so you
+can first make a copy on your local drive.
+In fact, have nothing else:) However, if you do modifications engine useful  to
+you sleduyushaya team. Roll back all changes made to Local copy:
   git reset -=hard
 
 
@@ -194,27 +196,26 @@ Upgrading to the latest version
         directory, run game
           git pull
    4.2. In any other case - to upload an updated version of the engine
-5. Wait for the NEW version of the engine is on the server! An attempt to update
-   in the process of copying files or downloading them from the repository can GIT
-   lead to unpredictable results
-6. Switch to the browser in which you are logged in as administrator and
-   select "Browse." Wait for the page - this time
-   updates the database
-7. And finally, after all this is a game you can again turn
-   (Admin -> Options, uncheck "Turn off the game" and keep
-   changes).
+5. Wait for the NEW version of the engine is  on  the  server!  An  attempt  to
+   update in the  process  of  copying  files  or  downloading  them  from  the
+   repository can GIT lead to unpredictable results
+6. Switch to the browser in which you are logged in as administrator and select
+   "Browse." Wait for the page - this time updates the database
+7. And finally, after all this is a game you can again turn (Admin ->  Options,
+   uncheck "Turn off the game" and keep changes).
 
 Upgrade from RR
 ------------
-Automatic upgrade from bases in the development of RR. Partially upgrade done
+Automatic upgrade from bases in the development of RR. Partially  upgrade  done
 automatically launch the file update.php
 
-In heart failure with respect to RR changed location banner. Earlier reference was
+In heart failure with respect to RR changed location banner. Earlier  reference
+was 
  /Scripts/createbanner.php
 New Links
  /Banner.php
 
-Use the tools the web server (mod_rewrite) to redirect requests. In
+Use  the  tools  the  web  server  (mod_rewrite)  to  redirect   requests.   In
 Specifically, the rule for lighttpd is as follows:
 
 # Redirects old-style banners to new one
@@ -225,24 +226,22 @@ url.rewrite-once = (
 
 If you have problems with updating ...
 ---------------------------------------
-It is impossible to predict all possible combinations of settings, PHP, MySQL and
-Web server. CH focuses on the "default settings". Therefore, in some
-cases, possible failures in the upgrade procedure. An algorithm for automatic
-Pack is designed for a single run. However, in some
-configurations during the upgrade, errors occur. Some of them -
-critical, and some can fix restarting procedure (with or without
-editing database). Run the update again be using
-select "Force update" menu "Utilities" page of the Administrator. Please
-pay attention! Using the forced update may lead to
-damage to the database (if the update itself over the previously successful)!
-Forced update should be used only if
-standard update procedure was not successful! If it did not help -
-should go to Diagnostiek fault
+It is impossible to predict all possible combinations of settings,  PHP,  MySQL
+and Web server. CH focuses on the "default settings". Therefore, in some cases,
+possible failures in the upgrade procedure. An algorithm for automatic Pack  is
+designed for a single run. However, in some configurations during the  upgrade,
+errors occur. Some of them - critical, and some can  fix  restarting  procedure
+(with or without editing database). Run the update again be using select "Force
+update" menu "Utilities" page of the Administrator. Please pay attention! Using
+the forced update may lead to damage to the database (if the update itself over
+the previously successful)! Forced update  should  be  used  only  if  standard
+update procedure was not successful!  If  it  did  not  help  -  should  go  to
+Diagnostiek fault 
 
 Fault diagnosis engine
 =================================
-The latest and most current version of the engine (with the most recent and relevant bugs)
-can be downloaded at this link:
+The latest and most current version of the engine (with  the  most  recent  and
+relevant bugs) can be downloaded at this link: 
 https://github.com/supernova-ws/SuperNova/archives/trunk
 Click on «Download. Zip» and download archives trunk. At what exactly should go on
 link above and click the button there. Go direct link to the download
@@ -316,5 +315,5 @@ I a small commission.
 
 Remember! Nothing strengthens the belief in the usefulness to work as a donation!
 
-
-Updated: 2011-06-03 22:38 V28.1a10
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Updated: 2011-12-27 16:07 V32ñ0

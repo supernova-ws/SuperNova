@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50158
 File Encoding         : 65001
 
-Date: 2011-07-27 01:13:10
+Date: 2011-12-27 15:39:08
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -28,7 +28,7 @@ CREATE TABLE `sn_aks` (
   `galaxy` int(2) DEFAULT NULL,
   `system` int(4) DEFAULT NULL,
   `planet` int(2) DEFAULT NULL,
-  `planet_type` int(11) NOT NULL DEFAULT '1',
+  `planet_type` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `eingeladen` varchar(50) DEFAULT NULL,
   `fleet_end_time` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
@@ -46,7 +46,7 @@ CREATE TABLE `sn_alliance` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `ally_name` varchar(32) DEFAULT '',
   `ally_tag` varchar(8) DEFAULT '',
-  `ally_owner` int(11) NOT NULL DEFAULT '0',
+  `ally_owner` bigint(20) unsigned DEFAULT NULL,
   `ally_register_time` int(11) NOT NULL DEFAULT '0',
   `ally_description` text,
   `ally_web` varchar(255) DEFAULT '',
@@ -54,11 +54,13 @@ CREATE TABLE `sn_alliance` (
   `ally_image` varchar(255) DEFAULT '',
   `ally_request` text,
   `ally_request_waiting` text,
-  `ally_request_notallow` tinyint(4) NOT NULL DEFAULT '0',
+  `ally_request_notallow` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `ally_owner_range` varchar(32) DEFAULT '',
   `ally_ranks` text,
   `ally_members` int(11) NOT NULL DEFAULT '0',
   `ranklist` text,
+  `total_rank` int(10) unsigned NOT NULL DEFAULT '0',
+  `total_points` bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `i_ally_name` (`ally_name`),
   UNIQUE KEY `i_ally_tag` (`ally_tag`)
@@ -74,8 +76,8 @@ CREATE TABLE `sn_alliance` (
 DROP TABLE IF EXISTS `sn_alliance_diplomacy`;
 CREATE TABLE `sn_alliance_diplomacy` (
   `alliance_diplomacy_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `alliance_diplomacy_ally_id` bigint(11) unsigned DEFAULT NULL,
-  `alliance_diplomacy_contr_ally_id` bigint(11) unsigned DEFAULT NULL,
+  `alliance_diplomacy_ally_id` bigint(20) unsigned DEFAULT NULL,
+  `alliance_diplomacy_contr_ally_id` bigint(20) unsigned DEFAULT NULL,
   `alliance_diplomacy_contr_ally_name` varchar(32) DEFAULT '',
   `alliance_diplomacy_relation` set('neutral','war','peace','confederation','federation','union','master','slave') NOT NULL DEFAULT 'neutral',
   `alliance_diplomacy_relation_last` set('neutral','war','peace','confederation','federation','union','master','slave') NOT NULL DEFAULT 'neutral',
@@ -101,15 +103,15 @@ CREATE TABLE `sn_alliance_diplomacy` (
 DROP TABLE IF EXISTS `sn_alliance_negotiation`;
 CREATE TABLE `sn_alliance_negotiation` (
   `alliance_negotiation_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `alliance_negotiation_ally_id` bigint(11) unsigned DEFAULT NULL,
+  `alliance_negotiation_ally_id` bigint(20) unsigned DEFAULT NULL,
   `alliance_negotiation_ally_name` varchar(32) DEFAULT '',
-  `alliance_negotiation_contr_ally_id` bigint(11) unsigned DEFAULT NULL,
+  `alliance_negotiation_contr_ally_id` bigint(20) unsigned DEFAULT NULL,
   `alliance_negotiation_contr_ally_name` varchar(32) DEFAULT '',
   `alliance_negotiation_relation` set('neutral','war','peace','confederation','federation','union','master','slave') NOT NULL DEFAULT 'neutral',
   `alliance_negotiation_time` int(11) NOT NULL DEFAULT '0',
   `alliance_negotiation_propose` text,
   `alliance_negotiation_response` text,
-  `alliance_negotiation_status` smallint(6) NOT NULL DEFAULT '0',
+  `alliance_negotiation_status` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`alliance_negotiation_id`),
   UNIQUE KEY `alliance_negotiation_id` (`alliance_negotiation_id`),
   KEY `alliance_negotiation_ally_id` (`alliance_negotiation_ally_id`,`alliance_negotiation_contr_ally_id`,`alliance_negotiation_time`),
@@ -118,8 +120,8 @@ CREATE TABLE `sn_alliance_negotiation` (
   KEY `FK_negotiation_contr_ally_id` (`alliance_negotiation_contr_ally_id`),
   KEY `FK_negotiation_contr_ally_name` (`alliance_negotiation_contr_ally_name`),
   CONSTRAINT `FK_negotiation_ally_id` FOREIGN KEY (`alliance_negotiation_ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_negotiation_ally_name` FOREIGN KEY (`alliance_negotiation_ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_negotiation_contr_ally_id` FOREIGN KEY (`alliance_negotiation_contr_ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_negotiation_ally_name` FOREIGN KEY (`alliance_negotiation_ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_negotiation_contr_ally_name` FOREIGN KEY (`alliance_negotiation_contr_ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -132,12 +134,15 @@ CREATE TABLE `sn_alliance_negotiation` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_alliance_requests`;
 CREATE TABLE `sn_alliance_requests` (
-  `id_user` int(11) NOT NULL,
-  `id_ally` int(11) NOT NULL DEFAULT '0',
+  `id_user` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `id_ally` bigint(20) unsigned NOT NULL DEFAULT '0',
   `request_text` text,
   `request_time` int(11) NOT NULL DEFAULT '0',
   `request_denied` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_user`,`id_ally`)
+  PRIMARY KEY (`id_user`,`id_ally`),
+  KEY `I_alliance_requests_id_ally` (`id_ally`,`id_user`),
+  CONSTRAINT `FK_alliance_request_user_id` FOREIGN KEY (`id_user`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_alliance_request_ally_id` FOREIGN KEY (`id_ally`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -149,8 +154,8 @@ CREATE TABLE `sn_alliance_requests` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_annonce`;
 CREATE TABLE `sn_annonce` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user` text,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user` varchar(64) DEFAULT NULL,
   `galaxie` int(11) NOT NULL DEFAULT '0',
   `systeme` int(11) NOT NULL DEFAULT '0',
   `metala` bigint(11) NOT NULL DEFAULT '0',
@@ -159,7 +164,10 @@ CREATE TABLE `sn_annonce` (
   `metals` bigint(11) NOT NULL DEFAULT '0',
   `cristals` bigint(11) NOT NULL DEFAULT '0',
   `deuts` bigint(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `I_annonce_user` (`user`,`id`),
+  CONSTRAINT `FK_annonce_user` FOREIGN KEY (`user`) REFERENCES `sn_users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -209,16 +217,16 @@ CREATE TABLE `sn_banned` (
 DROP TABLE IF EXISTS `sn_bashing`;
 CREATE TABLE `sn_bashing` (
   `bashing_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `bashing_user_id` bigint(11) unsigned DEFAULT NULL,
-  `bashing_planet_id` bigint(11) unsigned DEFAULT NULL,
+  `bashing_user_id` bigint(20) unsigned DEFAULT NULL,
+  `bashing_planet_id` bigint(20) unsigned DEFAULT NULL,
   `bashing_time` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`bashing_id`),
   UNIQUE KEY `bashing_id` (`bashing_id`),
   KEY `bashing_user_id` (`bashing_user_id`,`bashing_planet_id`,`bashing_time`),
   KEY `bashing_planet_id` (`bashing_planet_id`),
   KEY `bashing_time` (`bashing_time`),
-  CONSTRAINT `FK_bashing_planet_id` FOREIGN KEY (`bashing_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_bashing_user_id` FOREIGN KEY (`bashing_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_bashing_user_id` FOREIGN KEY (`bashing_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_bashing_planet_id` FOREIGN KEY (`bashing_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -230,12 +238,17 @@ CREATE TABLE `sn_bashing` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_buddy`;
 CREATE TABLE `sn_buddy` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `sender` int(11) NOT NULL DEFAULT '0',
-  `owner` int(11) NOT NULL DEFAULT '0',
-  `active` tinyint(3) NOT NULL DEFAULT '0',
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `sender` bigint(20) unsigned DEFAULT NULL,
+  `owner` bigint(20) unsigned DEFAULT NULL,
+  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `text` text,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `I_buddy_sender` (`sender`),
+  KEY `I_buddy_owner` (`owner`),
+  CONSTRAINT `FK_buddy_sender_id` FOREIGN KEY (`sender`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_buddy_owner_id` FOREIGN KEY (`owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -247,12 +260,13 @@ CREATE TABLE `sn_buddy` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_chat`;
 CREATE TABLE `sn_chat` (
-  `messageid` int(5) unsigned NOT NULL AUTO_INCREMENT,
+  `messageid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user` varchar(255) NOT NULL DEFAULT '',
   `message` text,
   `timestamp` int(11) NOT NULL DEFAULT '0',
   `ally_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`messageid`),
+  UNIQUE KEY `messageid` (`messageid`),
   KEY `i_ally_idmess` (`ally_id`,`messageid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -270,10 +284,6 @@ CREATE TABLE `sn_config` (
   PRIMARY KEY (`config_name`),
   KEY `i_config_name` (`config_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_config
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_confirmations`
@@ -299,16 +309,19 @@ CREATE TABLE `sn_confirmations` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_counter`;
 CREATE TABLE `sn_counter` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `counter_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `time` int(11) NOT NULL DEFAULT '0',
   `page` varchar(255) DEFAULT '0',
   `url` varchar(255) DEFAULT '0',
-  `user_id` bigint(11) DEFAULT '0',
+  `user_id` bigint(20) unsigned DEFAULT '0',
+  `user_name` varchar(64) DEFAULT '',
   `ip` varchar(250) DEFAULT NULL COMMENT 'User last IP',
   `proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`counter_id`),
+  UNIQUE KEY `counter_id` (`counter_id`),
   KEY `i_user_id` (`user_id`),
-  KEY `i_ip` (`ip`)
+  KEY `i_ip` (`ip`),
+  KEY `I_counter_user_name` (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -320,7 +333,7 @@ CREATE TABLE `sn_counter` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_fleets`;
 CREATE TABLE `sn_fleets` (
-  `fleet_id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `fleet_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `fleet_owner` int(11) NOT NULL DEFAULT '0',
   `fleet_mission` int(11) NOT NULL DEFAULT '0',
   `fleet_amount` bigint(11) NOT NULL DEFAULT '0',
@@ -336,15 +349,16 @@ CREATE TABLE `sn_fleets` (
   `fleet_end_system` int(11) NOT NULL DEFAULT '0',
   `fleet_end_planet` int(11) NOT NULL DEFAULT '0',
   `fleet_end_type` int(11) NOT NULL DEFAULT '0',
-  `fleet_resource_metal` bigint(11) NOT NULL DEFAULT '0',
-  `fleet_resource_crystal` bigint(11) NOT NULL DEFAULT '0',
-  `fleet_resource_deuterium` bigint(11) NOT NULL DEFAULT '0',
+  `fleet_resource_metal` decimal(65,0) DEFAULT '0',
+  `fleet_resource_crystal` decimal(65,0) DEFAULT '0',
+  `fleet_resource_deuterium` decimal(65,0) DEFAULT '0',
   `fleet_target_owner` int(11) NOT NULL DEFAULT '0',
   `fleet_group` varchar(15) NOT NULL DEFAULT '0',
   `fleet_mess` int(11) NOT NULL DEFAULT '0',
   `start_time` int(11) DEFAULT '0',
   `processing_start` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`fleet_id`),
+  UNIQUE KEY `fleet_id` (`fleet_id`),
   KEY `fleet_origin` (`fleet_start_galaxy`,`fleet_start_system`,`fleet_start_planet`),
   KEY `fleet_dest` (`fleet_end_galaxy`,`fleet_end_system`,`fleet_end_planet`),
   KEY `fleet_start_time` (`fleet_start_time`),
@@ -366,18 +380,22 @@ CREATE TABLE `sn_fleets` (
 DROP TABLE IF EXISTS `sn_iraks`;
 CREATE TABLE `sn_iraks` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `zeit` int(32) DEFAULT NULL,
-  `galaxy` int(2) DEFAULT NULL,
-  `system` int(4) DEFAULT NULL,
-  `planet` int(2) DEFAULT NULL,
-  `galaxy_angreifer` int(2) DEFAULT NULL,
-  `system_angreifer` int(4) DEFAULT NULL,
-  `planet_angreifer` int(2) DEFAULT NULL,
-  `owner` int(32) DEFAULT NULL,
-  `zielid` int(32) DEFAULT NULL,
-  `anzahl` int(32) DEFAULT NULL,
+  `fleet_end_time` int(11) unsigned NOT NULL DEFAULT '0',
+  `fleet_end_galaxy` int(2) unsigned DEFAULT '0',
+  `fleet_end_system` int(4) unsigned DEFAULT '0',
+  `fleet_end_planet` int(2) unsigned DEFAULT '0',
+  `fleet_start_galaxy` int(2) unsigned DEFAULT '0',
+  `fleet_start_system` int(4) unsigned DEFAULT '0',
+  `fleet_start_planet` int(2) unsigned DEFAULT '0',
+  `fleet_owner` bigint(20) unsigned DEFAULT NULL,
+  `fleet_target_owner` bigint(20) unsigned DEFAULT NULL,
+  `fleet_amount` bigint(20) unsigned DEFAULT '0',
   `primaer` int(32) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `I_iraks_fleet_owner` (`fleet_owner`),
+  KEY `I_iraks_fleet_target_owner` (`fleet_target_owner`),
+  CONSTRAINT `FK_iraks_fleet_owner` FOREIGN KEY (`fleet_owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_iraks_fleet_target_owner` FOREIGN KEY (`fleet_target_owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -481,13 +499,16 @@ CREATE TABLE `sn_messages` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_notes`;
 CREATE TABLE `sn_notes` (
-  `id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `owner` int(11) DEFAULT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `owner` bigint(20) unsigned DEFAULT NULL,
   `time` int(11) DEFAULT NULL,
   `priority` tinyint(1) DEFAULT NULL,
   `title` varchar(32) DEFAULT NULL,
   `text` text,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `I_notes_owner` (`owner`),
+  CONSTRAINT `FK_notes_owner` FOREIGN KEY (`owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -500,98 +521,98 @@ CREATE TABLE `sn_notes` (
 DROP TABLE IF EXISTS `sn_planets`;
 CREATE TABLE `sn_planets` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `id_owner` int(11) DEFAULT NULL,
-  `id_level` int(11) NOT NULL DEFAULT '0',
-  `galaxy` int(11) NOT NULL DEFAULT '0',
-  `system` int(11) NOT NULL DEFAULT '0',
-  `planet` int(11) NOT NULL DEFAULT '0',
-  `last_update` int(11) DEFAULT NULL,
-  `planet_type` int(11) NOT NULL DEFAULT '1',
-  `destruyed` int(11) NOT NULL DEFAULT '0',
-  `b_tech` int(11) NOT NULL DEFAULT '0',
-  `b_tech_id` int(11) NOT NULL DEFAULT '0',
-  `b_hangar` int(11) NOT NULL DEFAULT '0',
-  `b_hangar_id` text,
-  `b_hangar_plus` int(11) NOT NULL DEFAULT '0',
-  `image` varchar(32) NOT NULL DEFAULT 'normaltempplanet01',
-  `diameter` int(11) NOT NULL DEFAULT '12800',
-  `points` bigint(20) DEFAULT '0',
-  `ranks` bigint(20) DEFAULT '0',
-  `field_current` int(11) NOT NULL DEFAULT '0',
-  `field_max` int(11) NOT NULL DEFAULT '163',
-  `temp_min` int(3) NOT NULL DEFAULT '-17',
-  `temp_max` int(3) NOT NULL DEFAULT '23',
-  `metal` double(132,8) NOT NULL DEFAULT '0.00000000',
-  `metal_perhour` int(11) NOT NULL DEFAULT '0',
-  `metal_max` bigint(20) DEFAULT '100000',
-  `crystal` double(132,8) NOT NULL DEFAULT '0.00000000',
-  `crystal_perhour` int(11) NOT NULL DEFAULT '0',
-  `crystal_max` bigint(20) DEFAULT '100000',
-  `deuterium` double(132,8) NOT NULL DEFAULT '0.00000000',
-  `deuterium_perhour` int(11) NOT NULL DEFAULT '0',
-  `deuterium_max` bigint(20) DEFAULT '100000',
-  `energy_used` int(11) NOT NULL DEFAULT '0',
-  `energy_max` int(11) NOT NULL DEFAULT '0',
-  `metal_mine` int(11) NOT NULL DEFAULT '0',
-  `crystal_mine` int(11) NOT NULL DEFAULT '0',
-  `deuterium_sintetizer` int(11) NOT NULL DEFAULT '0',
-  `solar_plant` int(11) NOT NULL DEFAULT '0',
-  `fusion_plant` int(11) NOT NULL DEFAULT '0',
-  `robot_factory` int(11) NOT NULL DEFAULT '0',
-  `nano_factory` int(11) NOT NULL DEFAULT '0',
-  `hangar` int(11) NOT NULL DEFAULT '0',
-  `metal_store` int(11) NOT NULL DEFAULT '0',
-  `crystal_store` int(11) NOT NULL DEFAULT '0',
-  `deuterium_store` int(11) NOT NULL DEFAULT '0',
-  `laboratory` int(11) NOT NULL DEFAULT '0',
-  `terraformer` int(11) NOT NULL DEFAULT '0',
-  `ally_deposit` int(11) NOT NULL DEFAULT '0',
-  `silo` int(11) NOT NULL DEFAULT '0',
-  `small_ship_cargo` bigint(11) NOT NULL DEFAULT '0',
-  `big_ship_cargo` bigint(11) NOT NULL DEFAULT '0',
-  `light_hunter` bigint(11) NOT NULL DEFAULT '0',
-  `heavy_hunter` bigint(11) NOT NULL DEFAULT '0',
-  `crusher` bigint(11) NOT NULL DEFAULT '0',
-  `battle_ship` bigint(11) NOT NULL DEFAULT '0',
-  `colonizer` bigint(11) NOT NULL DEFAULT '0',
-  `recycler` bigint(11) NOT NULL DEFAULT '0',
-  `spy_sonde` bigint(11) NOT NULL DEFAULT '0',
-  `bomber_ship` bigint(11) NOT NULL DEFAULT '0',
-  `solar_satelit` bigint(11) NOT NULL DEFAULT '0',
-  `destructor` bigint(11) NOT NULL DEFAULT '0',
-  `dearth_star` bigint(11) NOT NULL DEFAULT '0',
-  `battleship` bigint(11) NOT NULL DEFAULT '0',
-  `supernova` bigint(11) NOT NULL DEFAULT '0',
-  `misil_launcher` bigint(11) NOT NULL DEFAULT '0',
-  `small_laser` bigint(11) NOT NULL DEFAULT '0',
-  `big_laser` bigint(11) NOT NULL DEFAULT '0',
-  `gauss_canyon` bigint(11) NOT NULL DEFAULT '0',
-  `ionic_canyon` bigint(11) NOT NULL DEFAULT '0',
-  `buster_canyon` bigint(11) NOT NULL DEFAULT '0',
+  `name` varchar(64) NOT NULL DEFAULT 'Planet',
+  `id_owner` bigint(20) unsigned DEFAULT NULL,
+  `galaxy` smallint(6) NOT NULL DEFAULT '0',
+  `system` smallint(6) NOT NULL DEFAULT '0',
+  `planet` smallint(6) NOT NULL DEFAULT '0',
+  `planet_type` tinyint(4) NOT NULL DEFAULT '1',
+  `metal` decimal(65,5) NOT NULL DEFAULT '0.00000',
+  `crystal` decimal(65,5) NOT NULL DEFAULT '0.00000',
+  `deuterium` decimal(65,5) NOT NULL DEFAULT '0.00000',
+  `energy_max` decimal(65,0) NOT NULL DEFAULT '0',
+  `energy_used` decimal(65,0) NOT NULL DEFAULT '0',
+  `metal_mine` smallint(6) NOT NULL DEFAULT '0',
+  `crystal_mine` smallint(6) NOT NULL DEFAULT '0',
+  `deuterium_sintetizer` smallint(6) NOT NULL DEFAULT '0',
+  `solar_plant` smallint(6) NOT NULL DEFAULT '0',
+  `fusion_plant` smallint(6) NOT NULL DEFAULT '0',
+  `robot_factory` smallint(6) NOT NULL DEFAULT '0',
+  `nano_factory` smallint(6) NOT NULL DEFAULT '0',
+  `hangar` smallint(6) NOT NULL DEFAULT '0',
+  `metal_store` smallint(6) NOT NULL DEFAULT '0',
+  `crystal_store` smallint(6) NOT NULL DEFAULT '0',
+  `deuterium_store` smallint(6) NOT NULL DEFAULT '0',
+  `laboratory` smallint(6) NOT NULL DEFAULT '0',
+  `nano` smallint(6) DEFAULT '0',
+  `terraformer` smallint(6) NOT NULL DEFAULT '0',
+  `ally_deposit` smallint(6) NOT NULL DEFAULT '0',
+  `silo` smallint(6) NOT NULL DEFAULT '0',
+  `mondbasis` smallint(6) NOT NULL DEFAULT '0',
+  `phalanx` smallint(6) NOT NULL DEFAULT '0',
+  `sprungtor` smallint(6) NOT NULL DEFAULT '0',
+  `last_jump_time` int(11) NOT NULL DEFAULT '0',
+  `small_ship_cargo` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `big_ship_cargo` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `supercargo` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Supercargo ship count',
+  `planet_cargo_hyper` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `recycler` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `colonizer` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `spy_sonde` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `solar_satelit` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `light_hunter` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `heavy_hunter` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `crusher` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `battle_ship` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `bomber_ship` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `battleship` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `destructor` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `dearth_star` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `supernova` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `misil_launcher` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `small_laser` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `big_laser` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `gauss_canyon` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `ionic_canyon` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `buster_canyon` bigint(20) unsigned NOT NULL DEFAULT '0',
   `small_protection_shield` tinyint(1) NOT NULL DEFAULT '0',
   `big_protection_shield` tinyint(1) NOT NULL DEFAULT '0',
   `planet_protector` tinyint(1) NOT NULL DEFAULT '0',
-  `interceptor_misil` int(11) NOT NULL DEFAULT '0',
-  `interplanetary_misil` int(11) NOT NULL DEFAULT '0',
-  `metal_mine_porcent` int(11) NOT NULL DEFAULT '10',
-  `crystal_mine_porcent` int(11) NOT NULL DEFAULT '10',
-  `deuterium_sintetizer_porcent` int(11) NOT NULL DEFAULT '10',
-  `solar_plant_porcent` int(11) NOT NULL DEFAULT '10',
-  `fusion_plant_porcent` int(11) NOT NULL DEFAULT '10',
-  `solar_satelit_porcent` int(11) NOT NULL DEFAULT '10',
-  `mondbasis` bigint(11) NOT NULL DEFAULT '0',
-  `phalanx` bigint(11) NOT NULL DEFAULT '0',
-  `sprungtor` bigint(11) NOT NULL DEFAULT '0',
-  `last_jump_time` int(11) NOT NULL DEFAULT '0',
-  `nano` int(11) NOT NULL DEFAULT '0',
-  `parent_planet` bigint(11) unsigned NOT NULL DEFAULT '0',
-  `debris_metal` bigint(11) unsigned NOT NULL DEFAULT '0',
-  `debris_crystal` bigint(11) unsigned NOT NULL DEFAULT '0',
-  `supercargo` bigint(11) NOT NULL DEFAULT '0' COMMENT 'Supercargo ship count',
-  `governor` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Planet governor',
-  `governor_level` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Governor level',
-  `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'Planet que',
+  `interceptor_misil` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `interplanetary_misil` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `metal_perhour` int(11) NOT NULL DEFAULT '0',
+  `crystal_perhour` int(11) NOT NULL DEFAULT '0',
+  `deuterium_perhour` int(11) NOT NULL DEFAULT '0',
+  `metal_mine_porcent` tinyint(3) unsigned NOT NULL DEFAULT '10',
+  `crystal_mine_porcent` tinyint(3) unsigned NOT NULL DEFAULT '10',
+  `deuterium_sintetizer_porcent` tinyint(3) unsigned NOT NULL DEFAULT '10',
+  `solar_plant_porcent` tinyint(3) unsigned NOT NULL DEFAULT '10',
+  `fusion_plant_porcent` tinyint(3) unsigned NOT NULL DEFAULT '10',
+  `solar_satelit_porcent` tinyint(3) unsigned NOT NULL DEFAULT '10',
+  `que` text COMMENT 'Planet que',
+  `b_tech` int(11) NOT NULL DEFAULT '0',
+  `b_tech_id` smallint(6) NOT NULL DEFAULT '0',
+  `b_hangar` int(11) NOT NULL DEFAULT '0',
+  `b_hangar_id` text,
+  `last_update` int(11) DEFAULT NULL,
+  `image` varchar(64) NOT NULL DEFAULT 'normaltempplanet01',
+  `points` bigint(20) DEFAULT '0',
+  `ranks` bigint(20) DEFAULT '0',
+  `id_level` tinyint(4) NOT NULL DEFAULT '0',
+  `destruyed` int(11) NOT NULL DEFAULT '0',
+  `diameter` int(11) NOT NULL DEFAULT '12800',
+  `field_max` smallint(5) unsigned NOT NULL DEFAULT '163',
+  `field_current` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `temp_min` smallint(6) NOT NULL DEFAULT '0',
+  `temp_max` smallint(6) NOT NULL DEFAULT '40',
+  `metal_max` decimal(65,0) DEFAULT '100000',
+  `crystal_max` decimal(65,0) DEFAULT '100000',
+  `deuterium_max` decimal(65,0) DEFAULT '100000',
+  `parent_planet` bigint(20) unsigned DEFAULT '0',
+  `debris_metal` bigint(20) unsigned DEFAULT '0',
+  `debris_crystal` bigint(20) unsigned DEFAULT '0',
+  `PLANET_GOVERNOR_ID` smallint(6) NOT NULL DEFAULT '0',
+  `PLANET_GOVERNOR_LEVEL` smallint(6) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `owner_type` (`id_owner`,`planet_type`),
@@ -641,10 +662,6 @@ CREATE TABLE `sn_planets` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_planets
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_quest`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_quest`;
@@ -692,11 +709,13 @@ CREATE TABLE `sn_quest_status` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_referrals`;
 CREATE TABLE `sn_referrals` (
-  `id` bigint(11) unsigned NOT NULL COMMENT 'Referral ID (from table USERS)',
-  `id_partner` bigint(11) unsigned NOT NULL DEFAULT '1' COMMENT 'Partner with whom refferal affilates (from table USERS)',
-  `dark_matter` bigint(11) NOT NULL DEFAULT '0' COMMENT 'How much player have aquired Dark Matter',
+  `id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `id_partner` bigint(20) unsigned DEFAULT NULL,
+  `dark_matter` decimal(65,0) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `id_partner` (`id_partner`)
+  KEY `id_partner` (`id_partner`),
+  CONSTRAINT `FK_referrals_id` FOREIGN KEY (`id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_referrals_id_partner` FOREIGN KEY (`id_partner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -708,14 +727,15 @@ CREATE TABLE `sn_referrals` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_rw`;
 CREATE TABLE `sn_rw` (
-  `report_id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `id_owner1` int(11) NOT NULL DEFAULT '0',
-  `id_owner2` int(11) NOT NULL DEFAULT '0',
+  `report_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_owner1` bigint(20) unsigned DEFAULT NULL,
+  `id_owner2` bigint(20) unsigned DEFAULT NULL,
   `rid` varchar(72) NOT NULL DEFAULT '',
   `raport` text,
   `time` int(10) unsigned NOT NULL DEFAULT '0',
   `owners` varchar(255) NOT NULL DEFAULT '0',
   PRIMARY KEY (`report_id`),
+  UNIQUE KEY `report_id` (`report_id`),
   KEY `id_owner1` (`id_owner1`,`rid`),
   KEY `id_owner2` (`id_owner2`,`rid`),
   KEY `time` (`time`),
@@ -732,17 +752,19 @@ CREATE TABLE `sn_rw` (
 DROP TABLE IF EXISTS `sn_shortcut`;
 CREATE TABLE `sn_shortcut` (
   `shortcut_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `shortcut_user_id` bigint(11) unsigned NOT NULL DEFAULT '0',
-  `shortcut_planet_id` bigint(11) NOT NULL DEFAULT '0',
-  `shortcut_galaxy` int(3) NOT NULL DEFAULT '0',
-  `shortcut_system` int(3) NOT NULL DEFAULT '0',
-  `shortcut_planet` int(3) NOT NULL DEFAULT '0',
+  `shortcut_user_id` bigint(20) unsigned DEFAULT NULL,
+  `shortcut_planet_id` bigint(20) unsigned DEFAULT NULL,
+  `shortcut_galaxy` tinyint(3) unsigned DEFAULT '0',
+  `shortcut_system` smallint(5) unsigned DEFAULT '0',
+  `shortcut_planet` tinyint(3) unsigned DEFAULT '0',
   `shortcut_planet_type` tinyint(1) NOT NULL DEFAULT '1',
   `shortcut_text` varchar(64) NOT NULL DEFAULT '',
   PRIMARY KEY (`shortcut_id`),
   UNIQUE KEY `shortcut_id` (`shortcut_id`),
+  UNIQUE KEY `shortcut_id_2` (`shortcut_id`),
   KEY `i_shortcut_user_id` (`shortcut_user_id`),
   KEY `i_shortcut_planet_id` (`shortcut_planet_id`),
+  CONSTRAINT `FK_shortcut_planet_id` FOREIGN KEY (`shortcut_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_shortcut_user_id` FOREIGN KEY (`shortcut_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -755,41 +777,44 @@ CREATE TABLE `sn_shortcut` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_statpoints`;
 CREATE TABLE `sn_statpoints` (
-  `id_owner` int(11) NOT NULL DEFAULT '0',
-  `id_ally` int(11) NOT NULL DEFAULT '0',
-  `stat_type` int(2) NOT NULL DEFAULT '0',
-  `stat_code` int(11) NOT NULL DEFAULT '0',
-  `tech_rank` int(11) NOT NULL DEFAULT '0',
-  `tech_old_rank` int(11) NOT NULL DEFAULT '0',
-  `tech_points` bigint(20) NOT NULL DEFAULT '0',
-  `tech_count` int(11) NOT NULL DEFAULT '0',
-  `build_rank` int(11) NOT NULL DEFAULT '0',
-  `build_old_rank` int(11) NOT NULL DEFAULT '0',
-  `build_points` bigint(20) NOT NULL DEFAULT '0',
-  `build_count` int(11) NOT NULL DEFAULT '0',
-  `defs_rank` int(11) NOT NULL DEFAULT '0',
-  `defs_old_rank` int(11) NOT NULL DEFAULT '0',
-  `defs_points` bigint(20) NOT NULL DEFAULT '0',
-  `defs_count` int(11) NOT NULL DEFAULT '0',
-  `fleet_rank` int(11) NOT NULL DEFAULT '0',
-  `fleet_old_rank` int(11) NOT NULL DEFAULT '0',
-  `fleet_points` bigint(20) NOT NULL DEFAULT '0',
-  `fleet_count` int(11) NOT NULL DEFAULT '0',
-  `total_rank` int(11) NOT NULL DEFAULT '0',
-  `total_old_rank` int(11) NOT NULL DEFAULT '0',
-  `total_points` bigint(20) NOT NULL DEFAULT '0',
-  `total_count` int(11) NOT NULL DEFAULT '0',
   `stat_date` int(11) NOT NULL DEFAULT '0',
-  `res_rank` int(11) DEFAULT '0' COMMENT 'Rank by resources',
-  `res_old_rank` int(11) DEFAULT '0' COMMENT 'Old rank by resources',
-  `res_points` bigint(20) DEFAULT '0' COMMENT 'Resource stat points',
-  `res_count` bigint(20) DEFAULT '0' COMMENT 'Old rank by resources',
+  `id_owner` bigint(20) unsigned DEFAULT NULL,
+  `id_ally` bigint(20) unsigned DEFAULT NULL,
+  `stat_type` tinyint(3) unsigned DEFAULT '0',
+  `stat_code` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `tech_rank` int(11) unsigned NOT NULL DEFAULT '0',
+  `tech_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
+  `tech_points` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+  `tech_count` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+  `build_rank` int(11) unsigned NOT NULL DEFAULT '0',
+  `build_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
+  `build_points` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+  `build_count` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+  `defs_rank` int(11) unsigned NOT NULL DEFAULT '0',
+  `defs_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
+  `defs_points` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+  `defs_count` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+  `fleet_rank` int(11) unsigned NOT NULL DEFAULT '0',
+  `fleet_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
+  `fleet_points` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+  `fleet_count` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+  `res_rank` int(11) unsigned DEFAULT '0' COMMENT 'Rank by resources',
+  `res_old_rank` int(11) unsigned DEFAULT '0' COMMENT 'Old rank by resources',
+  `res_points` decimal(65,0) unsigned DEFAULT '0' COMMENT 'Resource stat points',
+  `res_count` decimal(65,0) unsigned DEFAULT '0' COMMENT 'Resource count',
+  `total_rank` int(11) unsigned NOT NULL DEFAULT '0',
+  `total_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
+  `total_points` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+  `total_count` decimal(65,0) unsigned NOT NULL DEFAULT '0',
   KEY `TECH` (`tech_points`),
   KEY `BUILDS` (`build_points`),
   KEY `DEFS` (`defs_points`),
   KEY `FLEET` (`fleet_points`),
   KEY `TOTAL` (`total_points`),
-  KEY `i_stats_owner` (`id_owner`,`stat_type`,`stat_code`,`tech_rank`,`build_rank`,`defs_rank`,`fleet_rank`,`total_rank`)
+  KEY `i_stats_owner` (`id_owner`,`stat_type`,`stat_code`,`tech_rank`,`build_rank`,`defs_rank`,`fleet_rank`,`total_rank`),
+  KEY `I_stats_id_ally` (`id_ally`),
+  CONSTRAINT `FK_stats_id_owner` FOREIGN KEY (`id_owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_stats_id_ally` FOREIGN KEY (`id_ally`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -803,88 +828,53 @@ DROP TABLE IF EXISTS `sn_users`;
 CREATE TABLE `sn_users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(64) NOT NULL DEFAULT '',
-  `password` varchar(64) NOT NULL DEFAULT '',
-  `email` varchar(64) NOT NULL DEFAULT '',
-  `email_2` varchar(64) NOT NULL DEFAULT '',
-  `lang` varchar(8) NOT NULL DEFAULT 'ru',
-  `authlevel` tinyint(4) NOT NULL DEFAULT '0',
-  `sex` char(1) DEFAULT NULL,
-  `avatar` varchar(255) NOT NULL DEFAULT '',
-  `sign` text,
-  `id_planet` int(11) NOT NULL DEFAULT '0',
-  `galaxy` int(11) NOT NULL DEFAULT '0',
-  `system` int(11) NOT NULL DEFAULT '0',
-  `planet` int(11) NOT NULL DEFAULT '0',
-  `current_planet` int(11) NOT NULL DEFAULT '0',
-  `user_lastip` varchar(250) DEFAULT NULL COMMENT 'User last IP',
-  `user_agent` text,
-  `register_time` int(11) NOT NULL DEFAULT '0',
-  `onlinetime` int(11) NOT NULL DEFAULT '0',
-  `dpath` varchar(255) NOT NULL DEFAULT '',
-  `design` tinyint(4) NOT NULL DEFAULT '1',
-  `noipcheck` tinyint(4) NOT NULL DEFAULT '1',
-  `planet_sort` tinyint(1) NOT NULL DEFAULT '0',
-  `planet_sort_order` tinyint(1) NOT NULL DEFAULT '0',
-  `spio_anz` tinyint(4) NOT NULL DEFAULT '1',
-  `settings_tooltiptime` tinyint(4) NOT NULL DEFAULT '5',
-  `settings_fleetactions` tinyint(4) NOT NULL DEFAULT '0',
-  `settings_allylogo` tinyint(4) NOT NULL DEFAULT '0',
-  `settings_esp` tinyint(4) NOT NULL DEFAULT '1',
-  `settings_wri` tinyint(4) NOT NULL DEFAULT '1',
-  `settings_bud` tinyint(4) NOT NULL DEFAULT '1',
-  `settings_mis` tinyint(4) NOT NULL DEFAULT '1',
-  `settings_rep` tinyint(4) NOT NULL DEFAULT '0',
-  `db_deaktjava` tinyint(4) NOT NULL DEFAULT '0',
-  `new_message` int(11) NOT NULL DEFAULT '0',
-  `b_tech_planet` int(11) NOT NULL DEFAULT '0',
-  `spy_tech` int(11) NOT NULL DEFAULT '0',
-  `computer_tech` int(11) NOT NULL DEFAULT '0',
-  `military_tech` int(11) NOT NULL DEFAULT '0',
-  `defence_tech` int(11) NOT NULL DEFAULT '0',
-  `shield_tech` int(11) NOT NULL DEFAULT '0',
-  `energy_tech` int(11) NOT NULL DEFAULT '0',
-  `hyperspace_tech` int(11) NOT NULL DEFAULT '0',
-  `combustion_tech` int(11) NOT NULL DEFAULT '0',
-  `impulse_motor_tech` int(11) NOT NULL DEFAULT '0',
-  `hyperspace_motor_tech` int(11) NOT NULL DEFAULT '0',
-  `laser_tech` int(11) NOT NULL DEFAULT '0',
-  `ionic_tech` int(11) NOT NULL DEFAULT '0',
-  `buster_tech` int(11) NOT NULL DEFAULT '0',
-  `intergalactic_tech` int(11) NOT NULL DEFAULT '0',
-  `expedition_tech` int(11) NOT NULL DEFAULT '0',
-  `colonisation_tech` int(11) NOT NULL DEFAULT '0',
-  `graviton_tech` int(11) NOT NULL DEFAULT '0',
+  `authlevel` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `vacation` int(11) unsigned DEFAULT '0',
+  `banaday` int(11) unsigned DEFAULT '0',
+  `dark_matter` bigint(20) DEFAULT '0',
+  `spy_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `computer_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `military_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `defence_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `shield_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `energy_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `hyperspace_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `combustion_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `impulse_motor_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `hyperspace_motor_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `laser_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `ionic_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `buster_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `intergalactic_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `expedition_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `colonisation_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `graviton_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `rpg_amiral` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `mrc_academic` smallint(5) unsigned DEFAULT '0',
+  `rpg_espion` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `rpg_commandant` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `rpg_stockeur` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `rpg_destructeur` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `rpg_general` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `rpg_raideur` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `rpg_empereur` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `player_artifact_list` text,
   `ally_id` bigint(20) unsigned DEFAULT NULL,
+  `ally_tag` varchar(8) DEFAULT NULL,
   `ally_name` varchar(32) DEFAULT NULL,
   `ally_register_time` int(11) NOT NULL DEFAULT '0',
   `ally_rank_id` int(11) NOT NULL DEFAULT '0',
-  `kolorminus` varchar(11) NOT NULL DEFAULT 'red',
-  `kolorplus` varchar(11) NOT NULL DEFAULT '#00FF00',
-  `kolorpoziom` varchar(11) NOT NULL DEFAULT 'yellow',
-  `rpg_geologue` int(11) NOT NULL DEFAULT '0',
-  `rpg_amiral` int(11) NOT NULL DEFAULT '0',
-  `rpg_ingenieur` int(11) NOT NULL DEFAULT '0',
-  `rpg_technocrate` int(11) NOT NULL DEFAULT '0',
-  `rpg_espion` int(11) NOT NULL DEFAULT '0',
-  `rpg_constructeur` int(11) NOT NULL DEFAULT '0',
-  `rpg_scientifique` int(11) NOT NULL DEFAULT '0',
-  `rpg_commandant` int(11) NOT NULL DEFAULT '0',
-  `dark_matter` int(11) DEFAULT '0',
-  `rpg_stockeur` int(11) NOT NULL DEFAULT '0',
-  `rpg_defenseur` int(11) NOT NULL DEFAULT '0',
-  `rpg_destructeur` int(11) NOT NULL DEFAULT '0',
-  `rpg_general` int(11) NOT NULL DEFAULT '0',
-  `rpg_bunker` int(11) NOT NULL DEFAULT '0',
-  `rpg_raideur` int(11) NOT NULL DEFAULT '0',
-  `rpg_empereur` int(11) NOT NULL DEFAULT '0',
-  `lvl_minier` int(11) NOT NULL DEFAULT '1',
-  `lvl_raid` int(11) NOT NULL DEFAULT '1',
-  `xpraid` int(11) NOT NULL DEFAULT '0',
-  `xpminier` int(11) NOT NULL DEFAULT '0',
-  `raids` bigint(20) NOT NULL DEFAULT '0',
-  `raidsloose` bigint(20) NOT NULL DEFAULT '0',
-  `raidswin` bigint(20) NOT NULL DEFAULT '0',
-  `p_infligees` bigint(20) NOT NULL DEFAULT '0',
+  `player_que` text,
+  `lvl_minier` bigint(20) unsigned NOT NULL DEFAULT '1',
+  `xpminier` bigint(20) unsigned DEFAULT '0',
+  `player_rpg_tech_xp` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `player_rpg_tech_level` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `lvl_raid` bigint(20) unsigned NOT NULL DEFAULT '1',
+  `xpraid` bigint(20) unsigned DEFAULT '0',
+  `raids` bigint(20) unsigned DEFAULT '0',
+  `raidsloose` bigint(20) unsigned DEFAULT '0',
+  `raidswin` bigint(20) unsigned DEFAULT '0',
+  `new_message` int(11) NOT NULL DEFAULT '0',
   `mnl_alliance` int(11) NOT NULL DEFAULT '0',
   `mnl_joueur` int(11) NOT NULL DEFAULT '0',
   `mnl_attaque` int(11) NOT NULL DEFAULT '0',
@@ -894,14 +884,44 @@ CREATE TABLE `sn_users` (
   `mnl_expedition` int(11) NOT NULL DEFAULT '0',
   `mnl_buildlist` int(11) NOT NULL DEFAULT '0',
   `msg_admin` bigint(11) unsigned DEFAULT '0',
+  `b_tech_planet` int(11) NOT NULL DEFAULT '0',
   `bana` int(11) DEFAULT NULL,
-  `deltime` int(11) NOT NULL DEFAULT '0',
-  `deleteme` int(11) NOT NULL DEFAULT '0',
-  `banaday` int(11) DEFAULT NULL,
-  `options` text COMMENT 'Packed user options',
-  `news_lastread` int(11) NOT NULL DEFAULT '0' COMMENT 'News last read tag',
+  `deltime` int(10) unsigned DEFAULT '0',
+  `news_lastread` int(10) unsigned DEFAULT '0',
+  `total_rank` int(10) unsigned NOT NULL DEFAULT '0',
+  `total_points` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `password` varchar(64) NOT NULL DEFAULT '',
+  `email` varchar(64) NOT NULL DEFAULT '',
+  `email_2` varchar(64) NOT NULL DEFAULT '',
+  `lang` varchar(8) NOT NULL DEFAULT 'ru',
+  `sex` char(1) DEFAULT NULL,
+  `avatar` varchar(255) NOT NULL DEFAULT '',
+  `sign` mediumtext,
+  `id_planet` int(11) NOT NULL DEFAULT '0',
+  `galaxy` int(11) NOT NULL DEFAULT '0',
+  `system` int(11) NOT NULL DEFAULT '0',
+  `planet` int(11) NOT NULL DEFAULT '0',
+  `current_planet` int(11) NOT NULL DEFAULT '0',
+  `user_agent` mediumtext NOT NULL,
+  `user_lastip` varchar(250) DEFAULT NULL COMMENT 'User last IP',
   `user_proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)',
-  `vacation` int(11) NOT NULL DEFAULT '0' COMMENT 'Time when user can leave vacation mode',
+  `register_time` int(10) unsigned DEFAULT '0',
+  `onlinetime` int(10) unsigned DEFAULT '0',
+  `dpath` varchar(255) NOT NULL DEFAULT '',
+  `design` tinyint(4) unsigned NOT NULL DEFAULT '1',
+  `noipcheck` tinyint(4) unsigned NOT NULL DEFAULT '1',
+  `options` mediumtext COMMENT 'Packed user options',
+  `planet_sort` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `planet_sort_order` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `spio_anz` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `settings_tooltiptime` tinyint(1) unsigned NOT NULL DEFAULT '5',
+  `settings_fleetactions` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `settings_allylogo` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `settings_esp` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `settings_wri` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `settings_bud` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `settings_mis` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `settings_rep` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `i_ally_id` (`ally_id`),
   KEY `i_ally_name` (`ally_name`),
@@ -909,13 +929,11 @@ CREATE TABLE `sn_users` (
   KEY `i_ally_online` (`ally_id`,`onlinetime`),
   KEY `onlinetime` (`onlinetime`),
   KEY `i_register_time` (`register_time`),
+  KEY `FK_users_ally_tag` (`ally_tag`),
   CONSTRAINT `FK_users_ally_id` FOREIGN KEY (`ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `FK_users_ally_name` FOREIGN KEY (`ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `FK_users_ally_name` FOREIGN KEY (`ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `FK_users_ally_tag` FOREIGN KEY (`ally_tag`) REFERENCES `sn_alliance` (`ally_tag`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_users
--- ----------------------------
 
 -- ----------------------------
 -- Default server configuration
@@ -931,10 +949,11 @@ INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</
 INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
-INSERT INTO `sn_config` VALUES ('db_version', '29');
+INSERT INTO `sn_config` VALUES ('db_version', '32');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
-INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
+INSERT INTO `sn_config` VALUES ('deuterium_basic_income', 0);
+INSERT INTO `sn_config` VALUES ('eco_scale_storage', 1);
 INSERT INTO `sn_config` VALUES ('eco_stockman_fleet', '');
 INSERT INTO `sn_config` VALUES ('energy_basic_income', '0');
 INSERT INTO `sn_config` VALUES ('fleet_bashing_attacks', 3);
@@ -988,6 +1007,7 @@ INSERT INTO `sn_config` VALUES ('player_vacation_time', 2 * 24*60*60);
 INSERT INTO `sn_config` VALUES ('quest_total', '0');
 INSERT INTO `sn_config` VALUES ('resource_multiplier', '1');
 INSERT INTO `sn_config` VALUES ('rpg_bonus_divisor', '10');
+INSERT INTO `sn_config` VALUES ('rpg_bonus_minimum', '10000');
 INSERT INTO `sn_config` VALUES ('rpg_cost_banker', '1');
 INSERT INTO `sn_config` VALUES ('rpg_cost_exchange', '1');
 INSERT INTO `sn_config` VALUES ('rpg_cost_pawnshop', '1');
