@@ -213,3 +213,61 @@
 1       5       anton   mydata
 2       5       anton   md5(mydata)
 3       5       anton   md5(md5(mydata)+word) è word
+
+
+
+procedure PROCESS_TRANS(p_account_id in number,
+                         p_operator_id in number,
+                         p_sum         in number,
+                         o_result     out number) is
+
+    l_cnt  number;
+
+    cursor cur_account is
+     select id
+        from pay_account
+      where id = p_account_id
+         for update of balance;
+
+    cursor cur_operator is
+     select id
+        from pay_operator
+      where id = p_operator_id
+         and total >= p_sum
+         for update of total;
+
+begin
+  o_result := -1;  -- tansaction begins
+
+  -- if such operator exist?
+  select count(1) into l_cnt from pay_operator opr where opr.id = p_operator_id;
+
+  if (l_cnt != 1) then
+    o_result := -2; -- Operator not found!
+    return;
+  end if;
+
+  open cur_account;
+  open cur_operator;
+
+  fetch cur_account into l_cnt; -- need to fetch to update rows later
+  fetch cur_operator into l_cnt; -- 0/1 row in cursor as selected by prim_key
+
+  if cur_account%notfound then
+    o_result := -3; -- Account not found!
+  elsif cur_operator%notfound then
+    o_result := -4; -- Operator has not enough money
+  else
+
+    update pay_account set balance = (balance + p_sum) where current of cur_account;
+    update pay_operator set total = (total - p_sum) where current of cur_operator;
+
+    insert into pay_transaction (id, account_id, operator_id, money, datetime)
+      values (pay_transaction_seq.nextval, p_account_id, p_operator_id, p_sum, sysdate );
+    commit;
+    o_result := 1;    -- transaction successfully finished!
+  end if;
+
+  close cur_account;
+  close cur_operator;
+end;
