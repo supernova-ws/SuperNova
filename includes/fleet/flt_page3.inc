@@ -190,33 +190,19 @@ if(SN_IN_FLEET !== true)
 
   // ecriture de l'enregistrement de flotte (a partir de lôå_, y a quelque chose qui vole et c'est toujours sur la planete d'origine)
   $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
-  $QryInsertFleet .= "`fleet_owner` = '". $user['id'] ."', ";
-  $QryInsertFleet .= "`fleet_mission` = '". $target_mission ."', ";
-  $QryInsertFleet .= "`fleet_amount` = '". $FleetShipCount ."', ";
-  $QryInsertFleet .= "`fleet_array` = '". $fleet_array ."', ";
-  $QryInsertFleet .= "`fleet_start_time` = '". $fleet['start_time'] ."', ";
+  $QryInsertFleet .= "`fleet_owner` = '{$user['id']}', `fleet_mission` = '{$target_mission}', ";
+  $QryInsertFleet .= "`fleet_amount` = '{$FleetShipCount}', `fleet_array` = '{$fleet_array}', `fleet_start_time` = '{$fleet['start_time']}', ";
   $QryInsertFleet .= "`fleet_start_galaxy` = '". intval($planetrow['galaxy']) ."', ";
   $QryInsertFleet .= "`fleet_start_system` = '". intval($planetrow['system']) ."', ";
   $QryInsertFleet .= "`fleet_start_planet` = '". intval($planetrow['planet']) ."', ";
   $QryInsertFleet .= "`fleet_start_type` = '". intval($planetrow['planet_type']) ."', ";
-  $QryInsertFleet .= "`fleet_end_time` = '". $fleet['end_time'] ."', ";
-  $QryInsertFleet .= "`fleet_end_stay` = '". $StayTime ."', ";
-  $QryInsertFleet .= "`fleet_end_galaxy` = '". $galaxy ."', ";
-  $QryInsertFleet .= "`fleet_end_system` = '". $system ."', ";
-  $QryInsertFleet .= "`fleet_end_planet` = '". $planet ."', ";
-  $QryInsertFleet .= "`fleet_end_type` = '". $planet_type ."', ";
-  $QryInsertFleet .= "`fleet_resource_metal` = '". $TransMetal ."', ";
-  $QryInsertFleet .= "`fleet_resource_crystal` = '". $TransCrystal ."', ";
-  $QryInsertFleet .= "`fleet_resource_deuterium` = '". $TransDeuterium ."', ";
-  $QryInsertFleet .= "`fleet_target_owner` = '". $TargetPlanet['id_owner'] ."', ";
-  $QryInsertFleet .= "`fleet_group` = '". $fleet_group ."', ";
-  $QryInsertFleet .= "`start_time` = '". $time_now ."';";
+  $QryInsertFleet .= "`fleet_end_time` = '{$fleet['end_time']}', `fleet_end_stay` = '{$StayTime}', ";
+  $QryInsertFleet .= "`fleet_end_galaxy` = '{$galaxy}', `fleet_end_system` = '{$system}', `fleet_end_planet` = '{$planet}', `fleet_end_type` = '{$planet_type}', ";
+  $QryInsertFleet .= "`fleet_resource_metal` = '{$TransMetal}', `fleet_resource_crystal` = '{$TransCrystal}', `fleet_resource_deuterium` = '{$TransDeuterium}', ";
+  $QryInsertFleet .= "`fleet_target_owner` = '{$TargetPlanet['id_owner']}', `fleet_group` = '{$fleet_group}', `start_time` = '{$time_now}';";
   doquery( $QryInsertFleet);
 
-  $QryUpdatePlanet  = "UPDATE {{planets}} SET {$FleetSubQRY}";
-  $QryUpdatePlanet .= "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption} ";
-  $QryUpdatePlanet .= "WHERE `id` = '{$planetrow['id']}' LIMIT 1;";
-  doquery ($QryUpdatePlanet);
+  doquery("UPDATE {{planets}} SET {$FleetSubQRY} `metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
 
   $parse["mission"] = $lang['type_mission'][$target_mission];
   if ($target_mission == MT_EXPLORE OR $target_mission == MT_HOLD) {
