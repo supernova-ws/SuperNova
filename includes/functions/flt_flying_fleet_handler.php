@@ -30,8 +30,8 @@ function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = fals
 
   if(!$only_resources)
   {
-    $planet_arrival = doquery("SELECT `id` FROM {{planets}}  WHERE `galaxy` = '" . $fleet_row["fleet_{$prefix}_galaxy"] . "' AND `system` = '". $fleet_row["fleet_{$prefix}_system"] ."' AND `planet` = '". $fleet_row["fleet_{$prefix}_planet"] ."' AND `planet_type` = '". $fleet_row["fleet_{$prefix}_type"] ."' LIMIT 1;", '', true);
-    if($fleet_row['fleet_owner'] != $planet_arrival['id'])
+    $planet_arrival = doquery("SELECT `id_owner` FROM {{planets}}  WHERE `galaxy` = '" . $fleet_row["fleet_{$prefix}_galaxy"] . "' AND `system` = '". $fleet_row["fleet_{$prefix}_system"] ."' AND `planet` = '". $fleet_row["fleet_{$prefix}_planet"] ."' AND `planet_type` = '". $fleet_row["fleet_{$prefix}_type"] ."' LIMIT 1;", '', true);
+    if($fleet_row['fleet_owner'] != $planet_arrival['id_owner'])
     {
       doquery("DELETE FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
       return CACHE_FLEET;
