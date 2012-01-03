@@ -111,7 +111,7 @@ var que_id = '{QUE_ID}';
             <div style="height: 140px; vertical-align: middle"><img id="unit_image" border="0" src="" align="top"></div>
           </th>
 
-          <th valign=top width=270px>
+          <th valign=top width="50%">
             <div id="unit_create_link"></div>
             <div>{L_ConstructionTime}<span id="unit_time"></span></div>
             <table style="margin: 0px;">
@@ -142,7 +142,7 @@ var que_id = '{QUE_ID}';
             </table>
             <div id="unit_destroy_link"></div>
           </th>
-          <th width=270px>
+          <th width="50%">
             <div id="unit_balance"></div>
           </th>
         </tr>
@@ -152,7 +152,7 @@ var que_id = '{QUE_ID}';
 
   <tr>
     <!-- BEGIN production -->
-      <td class="l" align="center">
+      <td class="l" align="center" width="20%">
         <div class="unit_preview" style="" id="unit{production.ID}" unit_id="{production.ID}">
           <span style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%">
             <img border="0" src="{dpath}gebaeude/{production.ID}.gif" align="top" width="100%" height="100%">
@@ -302,6 +302,12 @@ jQuery(document).ready(
     }
 
     eco_bld_style_probe = sn_probe_style(element_cache['style_probe'], 'border-top-color');
+
+    for(production_id in production)
+    {
+      eco_struc_show_unit_info(production_id, true);
+      // break;
+    }
 
     for(production_id in production)
     {
