@@ -15,11 +15,12 @@ lng_include('affilates');
 $template = gettemplate('affilates', true);
 
 $rpg_bonus_divisor = $config->rpg_bonus_divisor ? $config->rpg_bonus_divisor : 10;
+$rpg_bonus_minimum = $config->rpg_bonus_minimum;
 
 $affilates = doquery("SELECT r.*, u.username, u.register_time FROM {{referrals}} AS r LEFT JOIN {{users}} AS u ON u.id = r.id WHERE id_partner = {$user['id']};");
 while ($affilate = mysql_fetch_assoc($affilates))
 {
-  $affilate_gain = floor($affilate['dark_matter']/$rpg_bonus_divisor);
+  $affilate_gain = $affilate['dark_matter'] >= $rpg_bonus_minimum ? floor($affilate['dark_matter']/$rpg_bonus_divisor) * 1000 : 0;
 
   $template->assign_block_vars('affilates', array(
     'REGISTERED'  => date(FMT_DATE_TIME, $affilate['register_time']),

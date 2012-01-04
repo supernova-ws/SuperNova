@@ -45,15 +45,15 @@
  <!-- IF .affilates -->
  <!-- BEGIN affilates -->
  <tr>
-   <th>{affilates.USERNAME}</th>
-   <th>{affilates.REGISTERED}</th>
-   <th>{affilates.DARK_MATTER}</th>
-   <th>{affilates.GAINED}</th>
+   <td class="c_l">{affilates.USERNAME}</td>
+   <td class="c_c">{affilates.REGISTERED}</td>
+   <td class="c_r">{affilates.DARK_MATTER}</td>
+   <td class="c_r">{affilates.GAINED}</td>
  </tr>
  <!-- END affilates -->
  <tr>
-   <td colspan=3 class="c">{L_sys_total}</td>
-   <td class="c" align="center">{GAINED}</td>
+   <th colspan=3 class="c_l">{L_sys_total}</th>
+   <th class="c_r" align="center">{GAINED}</th>
  </tr>
  <!-- ELSE -->
  <tr><th colspan=4>{L_aff_none}</th></tr>
