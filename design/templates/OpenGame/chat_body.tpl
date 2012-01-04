@@ -1,6 +1,7 @@
 <!--[if IE]><style type="text/css"><!-- #chat_box {width: 80%;} --></style><![endif]-->
 <script type="text/javascript">
   var ally_id = "{ALLY}";
+  var language = {'chat_timeout': '{L_chat_timeout}'};
 </script>
 
 <script type="text/javascript" src="js/chat.js"></script>

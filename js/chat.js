@@ -48,9 +48,14 @@ function showMessage(norefresh)
     chat_refreshing = true;
     jQuery.post("chat_msg.php", {'ally': ally_id}, function(data)
       {
-        if(data)
+        var shoutbox = document.getElementById('shoutbox');
+        if(data == 'disable')
         {
-          var shoutbox = document.getElementById('shoutbox');
+          shoutbox.innerHTML = language['chat_timeout'];
+          return;
+        }
+        else if(data)
+        {
           shoutbox.innerHTML = data;
           shoutbox.scrollTop = shoutbox.scrollHeight - shoutbox.offsetHeight;
         }

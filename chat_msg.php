@@ -28,18 +28,10 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if ($config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && $microtime - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
 {
-  die($lang['chat_timeout']);
+  die('disable');
 }
 
 $history = sys_get_param_str('history');
-
-/*
-if(!$history && $microtime - $config->array_get('users', $user['id'], 'chat_last_refresh') < 1)
-{
-// print($microtime - $config->array_get('users', $user['id'], 'chat_last_refresh'));
- die();
-}
-*/
 
 $template = gettemplate('chat_messages', true);
 
