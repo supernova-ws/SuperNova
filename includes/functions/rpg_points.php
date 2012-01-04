@@ -63,9 +63,6 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
       $user['dark_matter'] += $dark_matter;
     }
 
-
-//    $debug->warning("Player ID {$user_id} Dark Matter was adjusted with {$dark_matter}. Reason: {$comment}", 'Dark Matter Change', 102);
-
     if($dark_matter>0)
     {
       $old_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1;", '', true);
@@ -139,7 +136,6 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
     doquery("UPDATE `{{users}}` SET `{$field_level}` = `{$field_level}` + '{$level}' WHERE `id` = '{$user['id']}' LIMIT 1;");
     rpg_points_change($user['id'], $type, $level * 1000, $comment);
     $user[$field_level] += $level;
-//    $user[$sn_data_dark_matter_db_name] += $level;
   }
 }
 
