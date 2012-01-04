@@ -12,7 +12,6 @@
  * 1.0 - @copyright 2008 By Chlorel for XNova
  *     [*] Mise en module initiale
  */
-
 function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 {
   global $time_now, $sn_data, $lang;
@@ -54,8 +53,8 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   $ProductionTime = max(0, $UpdateTime - $planet['last_update']);
   $planet['last_update'] += $ProductionTime;
 
-  $Caps = ECO_getPlanetCaps($user, $planet);
-  $incRes = array ('metal' => 0, 'crystal' => 0, 'deuterium' => 0);
+  $Caps = eco_get_planet_caps($user, $planet);
+  $incRes = array('metal' => 0, 'crystal' => 0, 'deuterium' => 0);
 
   switch($planet['planet_type'])
   {
@@ -63,9 +62,9 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
       foreach($incRes as $resName => &$incCount)
       {
 //        $Caps['planet'][$resName] = max(0, $Caps['planet'][$resName]);
-        $incCount = ($Caps[$resName.'_perhour'][0] + $Caps['planet'][$resName.'_perhour'] * $Caps['production']) * $ProductionTime / 3600 ;
+        $incCount = ($Caps[$resName . '_perhour'][0] + $Caps['planet'][$resName . '_perhour'] * $Caps['production']) * $ProductionTime / 3600;
 
-        $store_free = $Caps['planet'][$resName.'_max'] - $Caps['planet'][$resName];
+        $store_free = $Caps['planet'][$resName . '_max'] - $Caps['planet'][$resName];
 //        $incCount = max(0, min($incCount, max(0, $store_free)));
         $incCount = min($incCount, max(0, $store_free));
 
@@ -74,30 +73,30 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
           $GLOBALS['debug']->warning("Player ID {$user['id']} have negative resources on ID {$planet['id']}.{$planet['planet_type']} [{$planet['galaxy']}:{$planet['system']}:{$planet['planet']}]. Difference {$planet[$resName]} of {$resName}", 'Negative Resources', 501);
         }
         $Caps['planet'][$resName] += $incCount;
-        $Caps['planet'][$resName.'_perhour'] = $Caps['real'][$resName.'_perhour'];
+        $Caps['planet'][$resName . '_perhour'] = $Caps['real'][$resName . '_perhour'];
       }
-    break;
+      break;
 
     case PT_MOON:
     default:
-      $planet['metal_perhour']        = 0;
-      $planet['crystal_perhour']      = 0;
-      $planet['deuterium_perhour']    = 0;
-      $planet['energy_used']          = 0;
-      $planet['energy_max']           = 0;
-    break;
+      $planet['metal_perhour'] = 0;
+      $planet['crystal_perhour'] = 0;
+      $planet['deuterium_perhour'] = 0;
+      $planet['energy_used'] = 0;
+      $planet['energy_max'] = 0;
+      break;
   }
 
   $planet = array_merge($planet, $Caps['planet']);
 
   $que = eco_que_process($user, $planet, $ProductionTime);
 
-  if ($simulation)
+  if($simulation)
   {
     return array('user' => $user, 'planet' => $planet, 'que' => $que);
   }
 
-  $QryUpdatePlanet  = "UPDATE {{planets}} SET `last_update` = '{$planet['last_update']}', ";
+  $QryUpdatePlanet = "UPDATE {{planets}} SET `last_update` = '{$planet['last_update']}', ";
   $QryUpdatePlanet .= "`metal`     = `metal`     + '{$incRes['metal']}', `crystal`   = `crystal`   + '{$incRes['crystal']}', `deuterium` = `deuterium` + '{$incRes['deuterium']}', ";
   $QryUpdatePlanet .= "`metal_perhour` = '{$planet['metal_perhour']}', `crystal_perhour` = '{$planet['crystal_perhour']}', `deuterium_perhour` = '{$planet['deuterium_perhour']}', ";
   $QryUpdatePlanet .= "`energy_used` = '{$planet['energy_used']}', `energy_max` = '{$planet['energy_max']}', ";
