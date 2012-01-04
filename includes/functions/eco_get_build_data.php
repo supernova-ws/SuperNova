@@ -9,13 +9,15 @@
 
 function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0, $only_cost = false)
 {
-  global $sn_data;
+  global $sn_data, $config;
 
   $sn_groups = $sn_data['groups'];
 
   $unit_data = $sn_data[$unit_id];
   $unit_db_name = $unit_data['name'];
   $unit_factor = $unit_data['cost']['factor'] ? $unit_data['cost']['factor'] : 1;
+
+  $rpg_exchange_deuterium = $config->rpg_exchange_deuterium;
 
   $price_increase = pow($unit_factor, $unit_level);
   $can_build   = 1000000000000;
@@ -40,7 +42,7 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0, $only_cos
     {
       $can_build = min($can_build, $planet[$sn_data[$resource_id]['name']] / $resource_cost);
       $can_destroy = min($can_destroy, $planet[$sn_data[$resource_id]['name']] / $res_to_destroy);
-      $time += $resource_cost;
+      $time += $resource_cost * $config->__get("rpg_exchange_{$sn_data[$resource_id]['name']}")/ $rpg_exchange_deuterium;
     }
     elseif($resource_id == RES_DARK_MATTER)
     {
