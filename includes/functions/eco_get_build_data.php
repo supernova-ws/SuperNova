@@ -54,7 +54,7 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0, $only_cos
     }
   }
  
-  if(!$only_cost)
+  if($only_cost)
   {
     return $cost;
   }
