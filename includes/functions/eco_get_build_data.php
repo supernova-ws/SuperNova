@@ -7,7 +7,7 @@
  * @version 1.0
  */
 
-function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
+function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0, $only_cost = false)
 {
   global $sn_data;
 
@@ -15,38 +15,50 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0)
 
   $unit_data = $sn_data[$unit_id];
   $unit_db_name = $unit_data['name'];
-  $unit_factor = $unit_data['factor'] ? $unit_data['factor'] : 1;
+  $unit_factor = $unit_data['cost']['factor'] ? $unit_data['cost']['factor'] : 1;
 
   $price_increase = pow($unit_factor, $unit_level);
   $can_build   = 1000000000000;
   $can_destroy = 1000000000000;
   foreach($unit_data['cost'] as $resource_id => $resource_amount)
   {
+    if($resource_id === 'factor')
+    {
+      continue;
+    }
+    
     $resource_cost = $resource_amount * $price_increase;
     $res_to_build = $cost[BUILD_CREATE][$resource_id] = floor($resource_cost);
     $res_to_destroy = $cost[BUILD_DESTROY][$resource_id] = floor($resource_cost / 2);
+    
+    if($only_cost || !$resource_cost)
+    {
+      continue;
+    }
 
-    if(in_array($resource_id, $sn_groups['resources_loot']) && $resource_cost)
+    if(in_array($resource_id, $sn_groups['resources_loot']))
     {
       $can_build = min($can_build, $planet[$sn_data[$resource_id]['name']] / $resource_cost);
       $can_destroy = min($can_destroy, $planet[$sn_data[$resource_id]['name']] / $res_to_destroy);
       $time += $resource_cost;
     }
-    elseif($resource_id == RES_DARK_MATTER && $resource_cost)
+    elseif($resource_id == RES_DARK_MATTER)
     {
-      $resource_cost = floor($resource_amount * pow($unit_data['cost']['factor'], $unit_level));
-      $resource_cost = $resource_cost ? $resource_cost : 1;
-      $cost[BUILD_CREATE][$resource_id] = floor($resource_cost);
-      $cost[BUILD_DESTROY][$resource_id] = floor($resource_cost / 2);
       $can_build = min($can_build, $user[$sn_data[$resource_id]['name']] / $resource_cost) ;
       $can_destroy = min($can_destroy, $user[$sn_data[$resource_id]['name']] / $res_to_destroy);
     }
-    elseif($resource_id == RES_ENERGY && $resource_cost)
+    elseif($resource_id == RES_ENERGY)
     {
       $can_build = min($can_build, ($planet['energy_max'] - $planet['energy_used']) / $resource_cost);
       $can_destroy = min($can_destroy, ($planet['energy_max'] - $planet['energy_used']) / $res_to_destroy);
     }
   }
+ 
+  if(!$only_cost)
+  {
+    return $cost;
+  }
+   
   $can_build = $can_build > 0 ? floor($can_build) : 0;
   $cost['CAN'][BUILD_CREATE]  = floor($can_build);
 

@@ -29,33 +29,37 @@
     </td>
   </tr>
   <tr>
+    <th>{L_Economica}</th>
+    <th colspan="1" align="center">{L_ov_experience}: {builder_xp}/{builder_lvl_up}</th>
+    <th colspan="2" align="center">{L_sys_level}: {builder_lvl}</th>
+  </tr>
+  <tr>
+    <th>{L_imp_research}</th>
+    <th colspan="1" align="center">{L_ov_experience}: {tech_xp}/{tech_lvl_up}</th>
+    <th colspan="2" align="center">{L_sys_level}: {tech_lvl}</th>
+  </tr>
+  <tr>
     <th rowspan=2>{L_ov_raids}</th>
+    <th colspan="1" align="center">{L_ov_experience}: {raid_xp}/{raid_lvl_up}</th>
+    <th colspan="2" align="center">{L_sys_level}: {raid_lvl}</th>
+  </tr>
+  <tr>
     <th>{L_NumberOfRaids}: {raids}</th>
     <th>{L_RaidsWin}: {raidswin}</th>
     <th>{L_RaidsLoose}: {raidsloose}</th>
   </tr>
-  <tr>
-    <th colspan="1" align="center">{L_sys_level}: {raid_lvl}</th>
-    <th colspan="2" align="center">{L_ov_experience}: {raid_xp}/{raid_lvl_up}</th>
-  </tr>
-  <tr>
-    <th>{L_Economica}</th>
-    <th colspan="1" align="center">{L_sys_level}: {builder_lvl}</th>
-    <th colspan="2" align="center">{L_ov_experience}: {builder_xp}/{builder_lvl_up}</th>
-  </tr>
-  <tr>
-    <th>{L_imp_research}</th>
-    <th colspan="1" align="center">{L_sys_level}: {tech_lvl}</th>
-    <th colspan="2" align="center">{L_ov_experience}: {tech_xp}/{tech_lvl_up}</th>
-  </tr>
   <tr align="center" class="c">
-    <th rowspan=2>{L_ov_points}</th>
-    <th>{L_user_points_1}: {user_points}</th>
-    <th colspan=2>{L_user_points_4}: {user_fleet}</th>
+    <th rowspan=3>{L_ov_points}</th>
+    <th>{L_imp_user_points_struc}: {build_points}</th>
+    <th colspan=2>{L_imp_user_points_tech}: {tech_points}</th>
   </tr>
   <tr>
-    <th>{L_user_points_3}: {user_defs_points}</th>
-    <th colspan="2">{L_user_points_all}: {total_points}</th>
+    <th>{L_imp_user_points_fleet}: {fleet_points}</th>
+    <th colspan="2">{L_imp_user_points_def}: {defs_points}</th>
+  </tr>
+  <tr>
+    <th>{L_imp_user_points_res}: {res_points}</th>
+    <th colspan="2">{L_imp_user_points_all}: {total_points}</th>
   </tr>
 </table>
 

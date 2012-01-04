@@ -16,7 +16,7 @@ lng_include('overview');
 $template = gettemplate('imperator', true);
 
 // SuperNova's banner for users to use
-if ($config->int_banner_showInOverview)
+if($config->int_banner_showInOverview)
 {
   $delimiter = strpos($config->int_banner_URL, '?') ? '&' : '?';
   $template->assign_vars(array(
@@ -25,7 +25,7 @@ if ($config->int_banner_showInOverview)
 }
 
 // SuperNova's userbar to use on forums
-if ($config->int_userbar_showInOverview)
+if($config->int_userbar_showInOverview)
 {
   $delimiter = strpos($config->int_userbar_URL, '?') ? '&' : '?';
 
@@ -35,7 +35,7 @@ if ($config->int_userbar_showInOverview)
 }
 
 $StatRecord = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."';", '', true);
-
+/*
 $ile                           = $StatRecord['total_old_rank'] - $StatRecord['total_rank'];
 if ($ile >= 1)
 {
@@ -49,7 +49,8 @@ elseif ($ile == 0)
 {
   $parse['ile']              = "<font color=lightblue>" . $ile . "</font>";
 }
-
+*/
+/*
 $day_of_week = $lang['weekdays'][date('w')];
 $day         = date('d');
 $month       = $lang['months'][date('m')];
@@ -57,11 +58,12 @@ $year        = date('Y');
 $hour        = date('H');
 $min         = date('i');
 $sec         = date('s');
-
+*/
+/*
 // Online count
 $time = $time_now - 15*60;
 $OnlineUsersNames2 = doquery("SELECT `username` FROM {{users}} WHERE `onlinetime`>'{$time}'");
-
+*/
 /*
 // Last chat messages
 $mess = doquery("SELECT `user`,`message` FROM {{chat}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5");
@@ -82,14 +84,14 @@ if ($config->game_news_overview)
 }
 
 $template->assign_vars(array(
-  'TIME_NOW'             => $time_now,
-  'TIME_TEXT'            => "$day_of_week, $day $month $year {$lang['ov_of_year']},",
+//  'TIME_NOW'             => $time_now,
+//  'TIME_TEXT'            => "$day_of_week, $day $month $year {$lang['ov_of_year']},",
 
-  'USERS_ONLINE'         => mysql_num_rows($OnlineUsersNames2),
+//  'USERS_ONLINE'         => mysql_num_rows($OnlineUsersNames2),
   'USERS_TOTAL'          => $config->users_amount,
 
-  'USER_ID'              => $user['id'],
-  'USER_AUTHLEVEL'       => $user['authlevel'],
+//  'USER_ID'              => $user['id'],
+//  'USER_AUTHLEVEL'       => $user['authlevel'],
   'user_username'        => $user['username'],
 
   'NEW_MESSAGES'         => $user['new_message'],
@@ -107,10 +109,11 @@ $template->assign_vars(array(
   'tech_xp'              => pretty_number($user['player_rpg_tech_xp']),
   'tech_lvl'             => pretty_number($user['player_rpg_tech_level']),
   'tech_lvl_up'          => pretty_number(rpg_get_tech_xp($user['player_rpg_tech_level']+1)),
-  'user_points'          => pretty_number( $StatRecord['build_points'] ),
-  'user_fleet'           => pretty_number( $StatRecord['fleet_points'] ),
-  'player_points_tech'   => pretty_number( $StatRecord['tech_points'] ),
-  'user_defs_points'     => pretty_number( $StatRecord['defs_points'] ),
+  'build_points'         => pretty_number( $StatRecord['build_points'] ),
+  'tech_points'          => pretty_number( $StatRecord['tech_points'] ),
+  'fleet_points'         => pretty_number( $StatRecord['fleet_points'] ),
+  'defs_points'          => pretty_number( $StatRecord['defs_points'] ),
+  'res_points'           => pretty_number( $StatRecord['res_points'] ),
   'total_points'         => pretty_number( $StatRecord['total_points'] ),
   'user_rank'            => $StatRecord['total_rank'],
   'RANK_DIFF'            => $StatRecord['total_old_rank'] - $StatRecord['total_rank'],
@@ -120,5 +123,6 @@ $template->assign_vars(array(
   //'LastChat'       => CHT_messageParse($msg),
 ));
 
-display(parsetemplate($template, $parse), "{$lang['imp_imperator']} {$user['username']}");
+display(parsetemplate($template), "{$lang['imp_imperator']} {$user['username']}");
+
 ?>

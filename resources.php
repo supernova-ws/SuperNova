@@ -76,7 +76,7 @@ if(is_array($production))
     }
 
     $prod_id = intval($prod_id);
-    if(in_array($prod_id, $sn_data['groups']['prod']))
+    if(in_array($prod_id, $sn_data['groups']['factories']))
     {
       $field_name              = "{$sn_data[$prod_id]['name']}_porcent";
       $percent                 = floor($percent / 10);
@@ -109,7 +109,7 @@ for ($Option = 10; $Option >= 0; $Option--)
  ));
 }
 
-$caps = ECO_getPlanetCaps($user, $planetrow);
+$caps = eco_get_planet_caps($user, $planetrow);
 
 $ProdID = 0;
 $template->assign_block_vars('production', array(
@@ -121,7 +121,7 @@ $template->assign_block_vars('production', array(
   'ENERGY_TYPE'    => pretty_number($caps['energy'][$ProdID], true, true),
 ));
 
-foreach($sn_data['groups']['prod'] as $ProdID)
+foreach($sn_data['groups']['factories'] as $ProdID)
 {
   $resource_db_name = $sn_data[$ProdID]['name'];
   if($planetrow[$resource_db_name] > 0 && isset($sn_data[$ProdID]))

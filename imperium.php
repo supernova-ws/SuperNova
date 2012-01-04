@@ -144,7 +144,7 @@ foreach ($sn_data as $unit_id => $res) {
     {
       $level_plus['LEVEL_PLUS_YELLOW'] = 0;
       $level_plus['LEVEL_PLUS_GREEN'] = 0;
-      if(in_array($unit_id, $sn_data['groups']['prod']))
+      if(in_array($unit_id, $sn_data['groups']['factories']))
       {
         $level_plus['PERCENT'] = $planet["{$sn_data[$unit_id]['name']}_porcent"] * 10;
       }
