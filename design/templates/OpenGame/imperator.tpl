@@ -2,17 +2,9 @@
   jQuery.noConflict(); 
 </script> 
 
-<br>
-<table width=519>
-  <!-- IF GAME_NEWS_OVERVIEW -->
-    <tr><td colspan=2 class="c">{L_news_title}</td></tr>
-    <!-- INCLUDE news_list.tpl -->
-  <!-- ENDIF -->
-</table>
-
 <table width=519>
   <!-- IF NEW_MESSAGES -->
-    <tr><th colspan=4><a href=messages.php>
+    <tr><th class="c_c"><a href=messages.php>
       {L_ov_you_have}
       <!-- IF NEW_MESSAGES == 1 -->
         {L_ov_new_message}
@@ -21,12 +13,34 @@
       <!-- ENDIF -->
     </a></th></tr>
   <!-- ENDIF -->
+</table>
 
+<!-- IF GAME_NEWS_OVERVIEW -->
+  <table width=519>
+    <tr><td colspan=2 class="c">{L_news_title}</td></tr>
+    <!-- INCLUDE news_list.tpl -->
+  </table>
+<!-- ENDIF -->
+
+<table width=519>
   <tr>
-    <td colspan=4 class="c">
-      <span class="fl">{L_imp_imperator} {user_username} {L_sys_from} {REGISTRATION_DATE}</span>
+    <th colspan=4 class="c_c">
+      <span class="fl">{L_imp_imperator} {user_username} <img src="{D_SN_ROOT_VIRTUAL}{dpath}images/sex_{user_sex}.png"> {L_sys_from} {REGISTRATION_DATE}</span>
+      <span class="fr"></span>
+    </th>
+  </tr>
+  <!-- IF USER_AVATAR -->
+    <tr>
+      <td class="c_c" colspan="4">
+          <img src="{D_SN_ROOT_VIRTUAL}/images/avatar/avatar_{USER_ID}.png">
+      </td>
+    </tr>
+  <!-- ENDIF -->
+  <tr>
+    <th colspan=4 class="c_c">
+      <span class="fl">{L_imp_statistics}</span>
       <span class="fr"><strong>{L_ov_rank}: <a href="stat.php?start={user_rank}"><span class="ov_user_rank">{user_rank} ({RANK_DIFF})</span>/<span class="ov_user_total">{USERS_TOTAL}</span></strong></a></strong></span>
-    </td>
+    </th>
   </tr>
   <tr>
     <th>{L_Economica}</th>

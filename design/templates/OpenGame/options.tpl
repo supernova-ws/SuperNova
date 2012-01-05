@@ -1,10 +1,15 @@
 <h2>{L_opt_header}</h2>
-<!-- IF SAVED -->
-  <h3 class="positive">{L_opt_msg_saved}</h3>
-<!-- ENDIF -->
-
-<!-- IF CHANGE_NAME -->
-  <h3 class="positive">{L_opt_msg_name_changed}</h3>
+<!-- IF .result -->
+  <!-- BEGIN result -->
+    <!-- IF result.STATUS == 0 -->
+      <!-- DEFINE $RESULT_CLASS = 'positive' -->
+    <!-- ELSEIF result.STATUS == 1 -->
+      <!-- DEFINE $RESULT_CLASS = 'warning' -->
+    <!-- ELSE -->
+      <!-- DEFINE $RESULT_CLASS = 'error' -->
+    <!-- ENDIF -->
+    <h3 class="{$RESULT_CLASS}">{result.MESSAGE}</h3>
+  <!-- END result -->
 <!-- ENDIF -->
 
 <!-- IF CHANGE_PASS -->
@@ -17,7 +22,7 @@
   <!-- ENDIF -->
 <!-- ENDIF -->
 
-<form action="options.php?mode=change" method="post" name="fOptions">
+<form action="options.php?mode=change" method="post" name="fOptions" enctype="multipart/form-data">
   <table width="519">
     <tbody>
       <!-- IF IS_ADMIN -->
@@ -89,10 +94,20 @@
         </th>
       </tr>
       <tr>
-        <th>{L_avatar_example}<br> </th>
-        <th><input name="avatar" maxlength="80" size="40" value="{opt_avata_data}" type="text">&nbsp;<a href="http://www.google.com.ar/imghp" target="_blank">{Search}</a></th>
+        <th>{L_opt_avatar}</th>
+        <th>
+          <label for="avatar">{L_opt_upload}</label>&nbsp;<input type="file" name="avatar" size="38"><br />
+          <span class="fl">
+            <!-- IF opt_avatar -->
+              <img src="{D_SN_ROOT_VIRTUAL}/images/avatar/avatar_{USER_ID}.png"><br />
+              <input name="avatar_remove" type="checkbox" id="avatar_remove" /><label for="avatar_remove">{L_opt_avatar_remove}</label>
+            <!-- ELSE -->
+              <a href="http://www.google.com.ar/imghp" target="_blank">{L_opt_avatar_search}</a>
+            <!-- ENDIF -->
+          </span>
+        </th>
       </tr>
-      
+
 <!--
       <tr title="{L_untoggleip_tip}">
         <th><label for="noipcheck">{L_untoggleip}</label></th>

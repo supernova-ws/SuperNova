@@ -65,6 +65,7 @@ Web server must be allowed to write in separate files/folders. Below list  of
 subsystems and associated files/folders 
 [*] Cache subsystem template - directory /cache. Without these templates  every
     time will be rendered anew 
+[*] Avatar subsystem - directory /images/avatar
 [*] For the subsystem warning about attempts to hack  the  web  server  account
     should be allowed to write to the disk file/badqrys.txt.  Without  this
     "Bad" requests will not be saved 

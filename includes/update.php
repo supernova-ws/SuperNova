@@ -1418,6 +1418,19 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
     upd_do_query('COMMIT;', true);
     $new_version = 32;
+
+  case 32:
+    upd_log_version_update();
+
+    $config->db_saveItem('avatar_max_height', 128, !isset($config->avatar_max_height));
+    $config->db_saveItem('avatar_max_width', 128, !isset($config->avatar_max_width));
+
+    upd_alter_table('users', array(
+      "MODIFY COLUMN `avatar` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `username`",
+    ), strtoupper($update_tables['users']['avatar']['Type']) != 'TINYINT(1) UNSIGNED');
+
+    upd_do_query('COMMIT;', true);
+//    $new_version = 32;
 };
 upd_log_message('Upgrade complete.');
 
