@@ -26,6 +26,9 @@ t.*
 # Ignore cache folder
 /cache/
 
+# Ignore cache folder
+/images/avatar/
+
 # Ignore backup folder
 /admin/sxd/cfg.php
 /admin/sxd/error.log

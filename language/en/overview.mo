@@ -118,6 +118,7 @@ $lang = array_merge($lang, array(
   'imp_user_points_def' => 'For defence',
   'imp_user_points_res' => 'For resources',
   'imp_user_points_all' => 'Total',
+  'imp_statistics' => 'Statistics',
 
   'Points_1' => 'Field',
   'km' => 'km',

@@ -121,6 +121,7 @@ $lang = array_merge($lang, array(
   'RaidsLoose' => 'Проиграно',
   'Economica' => 'Постройки',
   'Teching' => 'Иследования',
+  'imp_statistics' => 'Статистика',
 
   'Points_1' => 'сектора',
   'km' => 'км',

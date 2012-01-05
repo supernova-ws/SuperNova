@@ -38,7 +38,6 @@ $lang = array_merge($lang, array(
   'opt_err_pass_unmatched' => 'New password confirmation is not identical to new password. Password was not changed',
   'changue_pass' => 'Change password',
   'Download' => 'Download',
-  'Search' => 'Search',
   'userdata' => 'Information',
   'username' => 'Username',
   'lastpassword' => 'Old password',
@@ -61,7 +60,21 @@ $lang = array_merge($lang, array(
   'thanksforregistry' => 'Thanks for registering.<br />After a few minutes you will receive your message with a password.',
   'general_settings' => 'General settings',
   'skins_example' => 'Skin<br>(for example C:/ogame/skin/)',
-  'avatar_example' => 'Avatar<br>(for example /img/avatar.jpg)',
+
+  'opt_avatar' => 'Avatar',
+  'opt_avatar_remove' => 'Remove avatar',
+  'opt_avatar_search' => 'Seatch in Google',
+  'opt_upload' => 'Upload',
+
+  'opt_msg_avatar_removed' => 'Avatar succesfully removed',
+  'opt_msg_avatar_uploaded' => 'Avatar succesfully changed',
+  'opt_msg_avatar_error_delete' => 'Error deleting avatar file. Please, contact server Administration',
+  'opt_msg_avatar_error_writing' => 'Error saving avatar file. Please, contact server Administration',
+  'opt_msg_avatar_error_upload' => 'Error loading avatar image %1. Please, contact server Administration',
+  'opt_msg_avatar_error_unsupported' => 'Uploaded image format not supported. Only supported JPG, GIF, PNG up to 200KB',
+
+
+
   'untoggleip' => 'Disable IP check',
   'untoggleip_tip' => 'Check IP means that you will not be able to log in under his own name with two different IP. Testing gives you the advantage in security!',
   'galaxyvision_options' => 'Configuring Galaxy',

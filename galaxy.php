@@ -262,6 +262,8 @@ foreach($cached['users'] as $PlanetUser)
       'NAME' => $PlanetUser['username'],
       'NAME_JS' => js_safe_string($PlanetUser['username']),
       'RANK' => $PlanetUser['total_rank'],
+      'SEX'      => $PlanetUser['sex'] == 'F' ? 'female' : 'male',
+      'AVATAR'   => $PlanetUser['avatar'],
     ));
   }
 }

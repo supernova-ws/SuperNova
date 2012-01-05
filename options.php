@@ -105,7 +105,10 @@ if($mode == 'change')
     $username = mysql_real_escape_string($username);
     // TODO: Change cookie to not force user relogin
     setcookie(COOKIE_NAME, '', time()-100000, '/', '', 0); //le da el expire
-    $template->assign_var('CHANGE_NAME', true);
+    $template->assign_block_vars('result', array(
+      'STATUS'  => ERR_NONE,
+      'MESSAGE' => $lang['opt_msg_name_changed']
+    ));
   }
   else
   {
@@ -119,30 +122,31 @@ if($mode == 'change')
     {
       if(md5(sys_get_param('db_password')) != $user['password'])
       {
-        throw new Exception('', 1);
+        throw new Exception($lang['opt_err_pass_wrong'], ERR_WARNING);
       }
 
       if($new_password != sys_get_param('newpass2'))
       {
-        throw new Exception('', 2);
+        throw new Exception($lang['opt_err_pass_unmatched'], ERR_WARNING);
       }
 
       $user['password'] = md5($new_password);
       // TODO: Change cookie to not force user relogin
       setcookie(COOKIE_NAME, '', time()-100000, '/', '', 0); //le da el expire
-      $template->assign_var('CHANGE_PASS', -1);
+      throw new Exception($lang['opt_msg_pass_changed'], ERR_NONE);
     }
     catch (Exception $e)
     {
-      $template->assign_var('CHANGE_PASS', $e->getCode());
+      $template->assign_block_vars('result', array(
+        'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
+        'MESSAGE' => $e->getMessage()
+      ));
     }
   }
 
   $user['email'] = sys_get_param_str('db_email');
   $user['dpath']  = sys_get_param_str('dpath');
   $user['lang']   = $language = sys_get_param_str('langer', $language);
-
-  $user['avatar'] = sys_get_param_str('avatar');
 
   $user['design'] = sys_get_param_int('design');
   $user['noipcheck'] = sys_get_param_int('noipcheck');
@@ -158,6 +162,71 @@ if($mode == 'change')
   $user['planet_sort']  = sys_get_param_int('settings_sort');
   $user['planet_sort_order'] = sys_get_param_int('settings_order');
   $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : $time_now + $config->player_delete_time);
+
+  try
+  {
+    $avatar_filename = SN_ROOT_PHYSICAL . 'images/avatar/avatar_' . $user['id']. '.png';
+    if(sys_get_param_int('avatar_remove'))
+    {
+      if(file_exists($avatar_filename) && !unlink($avatar_filename))
+      {
+        throw new Exception($lang['opt_msg_avatar_error_delete'], ERR_ERROR);
+      }
+      $user['avatar'] = 0;
+      throw new Exception($lang['opt_msg_avatar_removed'], ERR_NONE);
+    }
+    elseif($_FILES['avatar']['size'])
+    {
+      if(!in_array($_FILES['avatar']['type'], array('image/gif', 'image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png')) || $_FILES['avatar']['size'] > 204800)
+      {
+        throw new Exception($lang['opt_msg_avatar_error_unsupported'], ERR_WARNING);
+      }
+
+      if($_FILES['avatar']['error'])
+      {
+        throw new Exception(sprintf($lang['opt_msg_avatar_error_upload'], $_FILES['avatar']['error']), ERR_ERROR);
+      }
+
+      if(!($avatar_image = imagecreatefromstring(file_get_contents($_FILES['avatar']['tmp_name']))))
+      {
+        throw new Exception($lang['opt_msg_avatar_error_unsupported'], ERR_WARNING);
+      }
+
+      $avatar_size = getimagesize($_FILES['avatar']['tmp_name']);
+      $avatar_max_width  = $config-> avatar_max_width;
+      $avatar_max_height = $config-> avatar_max_height;
+      if($avatar_size[0] > $avatar_max_width || $avatar_size[1] > $avatar_max_height)
+      {
+        $aspect_ratio = min($avatar_max_width / $avatar_size[0], $avatar_max_height / $avatar_size[1]);
+        $avatar_image_new = imagecreatetruecolor($avatar_size[0] * $aspect_ratio, $avatar_size[0] * $aspect_ratio);
+        $result = imagecopyresized($avatar_image_new, $avatar_image, 0, 0, 0, 0, $avatar_size[0] * $aspect_ratio, $avatar_size[0] * $aspect_ratio, $avatar_size[0], $avatar_size[1]);
+        imagedestroy($avatar_image);
+        $avatar_image = $avatar_image_new;
+      }
+
+      $avatar_filename = SN_ROOT_PHYSICAL . 'images/avatar/avatar_' . $user['id']. '.png';
+      if(file_exists($avatar_filename) && !unlink($avatar_filename))
+      {
+        throw new Exception($lang['opt_msg_avatar_error_delete'], ERR_ERROR);
+      }
+
+      if(!imagepng($avatar_image, $avatar_filename, 9))
+      {
+        throw new Exception($lang['opt_msg_avatar_error_writing'], ERR_ERROR);
+      }
+
+      $user['avatar'] = 1;
+      imagedestroy($avatar_image);
+      throw new Exception($lang['opt_msg_avatar_uploaded'], ERR_NONE);
+    }
+  }
+  catch (Exception $e)
+  {
+    $template->assign_block_vars('result', array(
+      'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
+      'MESSAGE' => $e->getMessage()
+    ));
+  }
 
   doquery("UPDATE {{users}} SET
     `username` = '{$username}',
@@ -184,7 +253,10 @@ if($mode == 'change')
     `options` = '{$user['options']}'
   WHERE `id` = '{$user['id']}' LIMIT 1");
 
-  $parse['SAVED'] = true;
+  $template->assign_block_vars('result', array(
+    'STATUS'  => ERR_NONE,
+    'MESSAGE' => $lang['opt_msg_saved']
+  ));
 
   sys_user_vacation($user);
 }
@@ -229,12 +301,13 @@ if($user['authlevel'] >= 3)
 }
 
 $template->assign_vars(array(
+  'USER_ID'        => $user['id'],
+
   'IS_ADMIN'       => $user['authlevel'] >= 3,
   'opt_usern_data' => $user['username'],
   'opt_mail1_data' => $user['email'],
   'opt_mail2_data' => $user['email_2'],
   'opt_dpath_data' => $user['dpath'],
-  'opt_avata_data' => $user['avatar'],
   'opt_probe_data' => $user['spio_anz'],
   'opt_toolt_data' => $user['settings_tooltiptime'],
   'opt_fleet_data' => $user['settings_fleetactions'],
@@ -242,6 +315,8 @@ $template->assign_vars(array(
   'opt_noipc_data' => ($user['noipcheck'] == 1) ? " checked='checked'":'',
   'opt_allyl_data' => ($user['settings_allylogo'] == 1) ? " checked='checked'/":'',
   'opt_delac_data' => ($user['deltime'] == 1) ? " checked='checked'/":'',
+
+  'opt_avatar'     => $user['avatar'],
 
   'user_settings_rep' => ($user['settings_rep'] == 1) ? " checked='checked'/":'',
   'user_settings_esp' => ($user['settings_esp'] == 1) ? " checked='checked'/":'',

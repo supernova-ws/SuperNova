@@ -2,7 +2,12 @@ function show_user(id)
 {
   if(!users[id]['cache'])
   {
-    var result = "<table width=190><tr><td class=c><center>" + language['sys_player'] + "&nbsp;" + users[id]['name'] + "<br>" + language['place'] + "&nbsp;" + users[id]['rank'] + "/" + game_user_count + "</center></td></tr>";
+    var result = "<table><tr>";
+    if(users[id]['avatar'] == 1)
+    {
+      result += "<td rowspan=\"4\"><img src=\"" + sn_path_prefix + "images/avatar/avatar_" + id + ".png\" height=75 width=75 /></td>";
+    }
+    result += "<td class=c><center>" + language['sys_player'] + "&nbsp;" + users[id]['name'] + "<img src=\"" + dpath + "images/sex_" + (users[id]['sex'] == 'female' ? 'female' : 'male') + ".png\" />" + "<br>" + language['place'] + "&nbsp;" + users[id]['rank'] + "/" + game_user_count + "</center></td></tr>";
 
     if (id != user_id)
     {

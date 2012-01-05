@@ -36,35 +36,6 @@ if($config->int_userbar_showInOverview)
 
 $StatRecord = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."';", '', true);
 /*
-$ile                           = $StatRecord['total_old_rank'] - $StatRecord['total_rank'];
-if ($ile >= 1)
-{
-  $parse['ile']              = "<font color=lime>+" . $ile . "</font>";
-}
-elseif ($ile < 0)
-{
-  $parse['ile']              = "<font color=red>-" . $ile . "</font>";
-}
-elseif ($ile == 0)
-{
-  $parse['ile']              = "<font color=lightblue>" . $ile . "</font>";
-}
-*/
-/*
-$day_of_week = $lang['weekdays'][date('w')];
-$day         = date('d');
-$month       = $lang['months'][date('m')];
-$year        = date('Y');
-$hour        = date('H');
-$min         = date('i');
-$sec         = date('s');
-*/
-/*
-// Online count
-$time = $time_now - 15*60;
-$OnlineUsersNames2 = doquery("SELECT `username` FROM {{users}} WHERE `onlinetime`>'{$time}'");
-*/
-/*
 // Last chat messages
 $mess = doquery("SELECT `user`,`message` FROM {{chat}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5");
 $msg = '<table>';
@@ -84,15 +55,12 @@ if ($config->game_news_overview)
 }
 
 $template->assign_vars(array(
-//  'TIME_NOW'             => $time_now,
-//  'TIME_TEXT'            => "$day_of_week, $day $month $year {$lang['ov_of_year']},",
-
-//  'USERS_ONLINE'         => mysql_num_rows($OnlineUsersNames2),
   'USERS_TOTAL'          => $config->users_amount,
 
-//  'USER_ID'              => $user['id'],
-//  'USER_AUTHLEVEL'       => $user['authlevel'],
+  'USER_ID'              => $user['id'],
   'user_username'        => $user['username'],
+  'user_sex'             => $user['sex'] == 'F' ? 'female' : 'male',
+  'USER_AVATAR'          => $user['avatar'],
 
   'NEW_MESSAGES'         => $user['new_message'],
   'REGISTRATION_DATE'    => date(FMT_DATE_TIME, $user['register_time']),

@@ -36,7 +36,6 @@ $lang = array_merge($lang, array(
   'opt_err_pass_unmatched' => 'Введенный пароль не совпадает с подтвержденим пароля. Пароль не был изменен',
   'changue_pass' => 'Сменить пароль',
   'Download' => 'Загрузка',
-  'Search' => 'Поиск',
   'userdata' => 'Информация',
   'username' => 'Имя',
   'lastpassword' => 'Старый пароль',
@@ -59,7 +58,23 @@ $lang = array_merge($lang, array(
   'thanksforregistry' => 'Спасибо за регистрацию.<br />Через несколько минут вы получите ваше сообщение с паролем.',
   'general_settings' => 'Общие настройки',
   'skins_example' => 'Оформление<br>(например C:/ogame/skin/)',
-  'avatar_example' => 'Аватар<br>(например /img/avatar.jpg)',
+
+
+
+  'opt_avatar' => 'Аватар',
+  'opt_avatar_search' => 'Искать в Google',
+  'opt_avatar_remove' => 'Удалить аватар',
+  'opt_upload' => 'Загрузить',
+
+  'opt_msg_avatar_removed' => 'Аватар удален',
+  'opt_msg_avatar_uploaded' => 'Аватар изменен успешно',
+  'opt_msg_avatar_error_delete' => 'Ошибка удаления файла аватара. Обратитесь к Администрации сервера',
+  'opt_msg_avatar_error_writing' => 'Ошибка сохранения файла аватара. Обратитесь к Администрации сервера',
+  'opt_msg_avatar_error_upload' => 'Ошибка загрузки изображения %1. Обратитесь к Администрации сервера',
+  'opt_msg_avatar_error_unsupported' => 'Формат загруженного изображения не поддерживается. Поддерживаются только файлы JPG, GIF, PNG размером до 200КБ',
+
+
+
   'untoggleip' => 'Выключить функцию проверки по IP',
   'untoggleip_tip' => 'Проверка IP означает то, что вы не сможете войти под своим именем с двух разных IP. Проверка даёт вам преимущество в безопасности!',
   'galaxyvision_options' => 'Настройки галактики',

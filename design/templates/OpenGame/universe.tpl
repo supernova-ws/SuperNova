@@ -19,7 +19,8 @@ var uni_system = {system};
 var user_id = {USER_ID};
 var game_user_count = {userCount};
 var game_ally_count = {ALLY_COUNT};
-var dpath = "{dpath}";
+// var dpath = "{dpath}";
+// var SN_PATH_VIRTUAL = "{D_SN_PATH_VIRTUAL}";
 var uni_phalanx = '{PLANET_PHALANX}';
 var uni_spies = '{ACT_SPIO}';
 var uni_death_stars = '{deathStars}';
@@ -62,7 +63,7 @@ jQuery.extend(language, {
 });
 
 var users = new Array();
-<!-- BEGIN users --><!-- IF users.ID -->users[{users.ID}] = {name: '{users.NAME_JS}', rank: '{users.RANK}'};<!-- ENDIF --><!-- END users -->
+<!-- BEGIN users --><!-- IF users.ID -->users[{users.ID}] = {name: '{users.NAME_JS}', rank: '{users.RANK}', sex: '{users.SEX}', avatar: '{users.AVATAR}'};<!-- ENDIF --><!-- END users -->
 
 var allies = new Array();
 <!-- BEGIN alliances --><!-- IF alliances.ID -->allies[{alliances.ID}] = {'name': '{alliances.NAME_JS}', 'rank' : '{alliances.RANK}','members': '{alliances.MEMBERS}', 'url': '{alliances.URL}'};
