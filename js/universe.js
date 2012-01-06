@@ -3,7 +3,7 @@ function show_user(id)
   if(!users[id]['cache'])
   {
     var result = "<table><tr>";
-    if(users[id]['avatar'] == 1)
+    if(opt_uni_avatar_user && users[id]['avatar'] == 1)
     {
       result += "<td rowspan=\"4\"><img src=\"" + sn_path_prefix + "images/avatar/avatar_" + id + ".png\" height=75 width=75 /></td>";
     }
@@ -30,7 +30,12 @@ function show_alliance(id)
 {
   if(!allies[id]['cache'])
   {
-    var result = "<table><tr><td class=c><center>" + language['sys_alliance'] + "&nbsp;" + allies[id]['name'];
+    var result = "<table><tr>";
+    if(opt_uni_avatar_ally && allies[id]['avatar'] == 1)
+    {
+      result += "<td rowspan=\"4\"><img src=\"" + sn_path_prefix + "images/avatar/ally_" + id + ".png\" height=75 width=75 /></td>";
+    }
+    result += "<td class=c><center>" + language['sys_alliance'] + "&nbsp;" + allies[id]['name'];
     result += "<br>" + language['place'] + "&nbsp;" + allies[id]['rank'] + "/" + game_ally_count;
     result += "<br>" + language['gal_sys_members'] + allies[id]['members'];
     result += "</center></td></tr>";

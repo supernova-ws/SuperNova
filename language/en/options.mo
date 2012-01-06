@@ -82,7 +82,6 @@ $lang = array_merge($lang, array(
   'spy_cant_tip' => 'Number of probes to be sent when you follow someone for.',
   'tooltip_time' => 'Show ToolTips',
   'mess_ammount_max' => 'The number of maximum fleet communications',
-  'show_ally_logo' => 'Show logo alliances',
   'seconds' => 'Second(s)',
   'shortcut' => 'Quick access',
   'show' => 'Show',
@@ -115,6 +114,11 @@ $lang = array_merge($lang, array(
   'opt_vacation_err_building' => 'You are building or explore on %s and therefore cannot leave on vacation',
   'opt_vacation_min' => 'a minimum of',
   'succeful_changepass' => '',
+
+  'opt_custom' => array(
+    'opt_uni_avatar_user' => 'Show user avatar',
+    'opt_uni_avatar_ally' => 'Show Ally logo',
+  ),
 ));
 
 ?>

@@ -278,6 +278,7 @@ foreach($cached['allies'] as $PlanetAlly)
       'MEMBERS' => $PlanetAlly['ally_members'],
       'URL'     => $PlanetAlly['ally_web'],
       'RANK'    => $PlanetAlly['total_rank'],
+      'AVATAR'  => $PlanetAlly['ally_image'],
     ));
   }
 }
@@ -311,10 +312,10 @@ $template->assign_vars(array(
      'ACT_SPIO'       => $user['spio_anz'],
      'ACT_WRITE'      => $user['settings_wri'],
      'ACT_FRIEND'     => $user['settings_bud'],
-     'ACT_MISSILE'    => $user["settings_mis"] && ($CurrentMIP > 0) && ($galaxy == $CurrentGalaxy) &&
-                         ($system >= $CurrentSystem - $MissileRange) && ($system <= $CurrentSystem + $MissileRange),
-     'PLANET_PHALANX' => $HavePhalanx && $galaxy == $CurrentGalaxy &&
-                         $system >= $CurrentSystem - $PhalanxRange && $system <= $CurrentSystem + $PhalanxRange,
+     'opt_uni_avatar_user'     => $user['opt_uni_avatar_user'],
+     'opt_uni_avatar_ally'     => $user['opt_uni_avatar_ally'],
+     'ACT_MISSILE'    => $user["settings_mis"] && ($CurrentMIP > 0) && ($galaxy == $CurrentGalaxy) && ($system >= $CurrentSystem - $MissileRange) && ($system <= $CurrentSystem + $MissileRange),
+     'PLANET_PHALANX' => $HavePhalanx && $galaxy == $CurrentGalaxy && $system >= $CurrentSystem - $PhalanxRange && $system <= $CurrentSystem + $PhalanxRange,
      'PAGE_HINT'      => $lang['gal_sys_hint'],
      'LANG_RECYCLERS' => $lang['tech'][SHIP_RECYCLER],
    )

@@ -1408,7 +1408,6 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       "MODIFY COLUMN `spio_anz` tinyint(1) unsigned NOT NULL DEFAULT '1' AFTER `planet_sort_order`",
       "MODIFY COLUMN `settings_tooltiptime` tinyint(1) unsigned NOT NULL DEFAULT '5' AFTER `spio_anz`",
       "MODIFY COLUMN `settings_fleetactions` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `settings_tooltiptime`",
-      "MODIFY COLUMN `settings_allylogo` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `settings_fleetactions`",
       "MODIFY COLUMN `settings_esp` tinyint(1) unsigned NOT NULL DEFAULT '1' AFTER `settings_allylogo`",
       "MODIFY COLUMN `settings_wri` tinyint(1) unsigned NOT NULL DEFAULT '1' AFTER `settings_esp`",
       "MODIFY COLUMN `settings_bud` tinyint(1) unsigned NOT NULL DEFAULT '1' AFTER `settings_wri`",
@@ -1422,12 +1421,20 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
   case 32:
     upd_log_version_update();
 
-    $config->db_saveItem('avatar_max_height', 128, !isset($config->avatar_max_height));
     $config->db_saveItem('avatar_max_width', 128, !isset($config->avatar_max_width));
+    $config->db_saveItem('avatar_max_height', 128, !isset($config->avatar_max_height));
 
     upd_alter_table('users', array(
-      "MODIFY COLUMN `avatar` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `username`",
+      "MODIFY COLUMN `avatar` tinyint(1) unsigned NOT NULL DEFAULT '0'",
     ), strtoupper($update_tables['users']['avatar']['Type']) != 'TINYINT(1) UNSIGNED');
+
+    upd_alter_table('alliance', array(
+      "MODIFY COLUMN `ally_image` tinyint(1) unsigned NOT NULL DEFAULT '0'",
+    ), strtoupper($update_tables['alliance']['ally_image']['Type']) != 'TINYINT(1) UNSIGNED');
+
+    upd_alter_table('users', array(
+      "DROP COLUMN `settings_allylogo`",
+    ), isset($update_tables['users']['settings_allylogo']));
 
     upd_do_query('COMMIT;', true);
 //    $new_version = 32;

@@ -82,7 +82,6 @@ $lang = array_merge($lang, array(
   'spy_cant_tip' => 'Количество зондов, которое будет отправляться, когда вы будете за кем-то следить.',
   'tooltip_time' => 'Время показа подсказок',
   'mess_ammount_max' => 'Количество максимальных сообщений флота',
-  'show_ally_logo' => 'Показывать логотип альянсов',
   'seconds' => 'Секунд(а/ы)',
   'shortcut' => 'Быстрый доступ',
   'show' => 'Показывать',
@@ -115,6 +114,11 @@ $lang = array_merge($lang, array(
   'opt_vacation_err_building' => 'Вы что-то строите или исследуете на %s и поэтому не можете уйти в отпуск',
   'opt_vacation_min' => 'минимум до',
   'succeful_changepass' => 'Пароль успешно изменён.<br /><a href="login.php" target="_top">Назад</a>',
+
+  'opt_custom' => array(
+    'opt_uni_avatar_user' => 'Показывать аватар пользователя',
+    'opt_uni_avatar_ally' => 'Показывать логотип Альянса',
+  ),
 ));
 
 ?>

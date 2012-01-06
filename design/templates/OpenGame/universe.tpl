@@ -25,6 +25,9 @@ var uni_phalanx = '{PLANET_PHALANX}';
 var uni_spies = '{ACT_SPIO}';
 var uni_death_stars = '{deathStars}';
 
+var opt_uni_avatar_user = '{opt_uni_avatar_user}';
+var opt_uni_avatar_ally = '{opt_uni_avatar_ally}';
+
 var SHIP_COLONIZER = {D_SHIP_COLONIZER};
 var SHIP_CARGO_BIG = {D_SHIP_CARGO_BIG};
 var SHIP_RECYCLER  = {D_SHIP_RECYCLER};
@@ -66,7 +69,7 @@ var users = new Array();
 <!-- BEGIN users --><!-- IF users.ID -->users[{users.ID}] = {name: '{users.NAME_JS}', rank: '{users.RANK}', sex: '{users.SEX}', avatar: '{users.AVATAR}'};<!-- ENDIF --><!-- END users -->
 
 var allies = new Array();
-<!-- BEGIN alliances --><!-- IF alliances.ID -->allies[{alliances.ID}] = {'name': '{alliances.NAME_JS}', 'rank' : '{alliances.RANK}','members': '{alliances.MEMBERS}', 'url': '{alliances.URL}'};
+<!-- BEGIN alliances --><!-- IF alliances.ID -->allies[{alliances.ID}] = {'name': '{alliances.NAME_JS}', 'rank' : '{alliances.RANK}','members': '{alliances.MEMBERS}', 'url': '{alliances.URL}', avatar: '{alliances.AVATAR}'};
 <!-- ENDIF --><!-- END alliances -->
 
 var uni_row = new Array();

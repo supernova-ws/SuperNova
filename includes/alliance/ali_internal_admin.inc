@@ -24,13 +24,19 @@ $allyTextID  = sys_get_param_int('t');
 if ($allyTextID<1 || $allyTextID>3) $allyTextID = 1;
 extract($text_list[$allyTextID]);
 
-if ($isSaveOptions)
+if($isSaveOptions)
 {
+  require_once('includes/includes/sys_avatar.php');
+
+  $avatar_upload_result = sys_avatar_upload($ally['id'], $ally['ally_image'], 'ally');
+  $parse['AVATAR_UPLOAD_STATUS'] = $avatar_upload_result['STATUS'];
+  $parse['AVATAR_UPLOAD_MESSAGE'] = $avatar_upload_result['MESSAGE'];
+//  $template->assign_block_vars('result', $avatar_upload_result);
+
   $ally['ally_name'] = sys_get_param_str('name');
   $ally['ally_tag']  = sys_get_param_str('tag');
   $ally['ally_owner_range'] = sys_get_param_str('owner_range');
   $ally['ally_web'] = sys_get_param_str('web');
-  $ally['ally_image'] = sys_get_param_str('image');
   $ally['ally_request_notallow'] = sys_get_param_str('request_notallow');
 
   doquery("UPDATE {{alliance}} SET
@@ -81,10 +87,12 @@ if($request['request_count']){
   $parse['request_count'] = $lang['ali_req_emptyList'];
 }
 
+$parse['ALLY_ID'] = $ally['id'];
+$parse['ALLY_IMAGE'] = $ally['ally_image'];
+
 $parse['ally_name'] = htmlspecialchars($ally['ally_name']);
 $parse['ally_tag'] = htmlspecialchars($ally['ally_tag']);
 $parse['ally_web'] = htmlspecialchars($ally['ally_web']);
-$parse['ally_image'] = htmlspecialchars($ally['ally_image']);
 $parse['ally_request_notallow_0'] = (( $ally['ally_request_notallow']) ? ' SELECTED' : '');
 $parse['ally_request_notallow_1'] = ((!$ally['ally_request_notallow']) ? ' SELECTED' : '');
 $parse['ally_owner_range'] = htmlspecialchars($ally['ally_owner_range']);

@@ -9,7 +9,7 @@
       <!-- ENDIF -->
     </td>
   </tr>
-  <!-- IF ally_image --><tr><th colspan=2><img src="{ally_image}"></th></tr><!-- ENDIF -->
+  <!-- IF ally_image --><tr><th colspan=2><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/ally_{ally_id}.png"></th></tr><!-- ENDIF -->
   <tr><th width=150>{L_Tag}</th><th>{ally_tag}</th></tr>
   <tr><th>{L_Name}</th><th>{ally_name}</th></tr>
   <tr><th>{L_Main_Page}</th><th><a href="{ally_web}">{ally_web}</a></th></tr>
