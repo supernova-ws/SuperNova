@@ -1,11 +1,27 @@
 <br />
-<form action="" method="POST">
+<form action="" method="POST" enctype="multipart/form-data">
   <table width=519>
     <tr><td class=c colspan=2><span class="fl">{ali_adm_options}</span><span class="fr"><a href="alliance.php">{ali_sys_main_page}</a></span></td></tr>
     <tr><th>{Name}</th><th><input type=text name="name" value="{ally_name}" size="70"></th></tr>
     <tr><th>{Tag}</th><th><input type=text name="tag" value="{ally_tag}" size="70"></th></tr>
     <tr><th>{Main_Page}</th><th><input type=text name="web" value="{ally_web}" size="70"></th></tr>
-    <tr><th>{Alliance_logo}</th><th><input type=text name="image" value="{ally_image}" size="70"></th></tr>
+    <tr>
+      <th>{Alliance_logo}</th>
+      <td class="c_l">
+        <!-- IF AVATAR_UPLOAD_MESSAGE -->
+          <span class="<!-- IF AVATAR_UPLOAD_STATUS == 0 -->success<!-- ELSEIF AVATAR_UPLOAD_STATUS == 1 -->warning<!-- ELSE -->error<!-- ENDIF -->">{AVATAR_UPLOAD_MESSAGE}</span><br />
+        <!-- ENDIF -->
+        <label for="avatar">{L_opt_upload}</label>&nbsp;<input type="file" name="avatar" size="50"><br />
+        <span class="fl">
+          <!-- IF ALLY_IMAGE -->
+            <img src="{D_SN_ROOT_VIRTUAL}/images/avatar/ally_{ALLY_ID}.png"><br />
+            <input name="avatar_remove" type="checkbox" id="avatar_remove" /><label for="avatar_remove">{L_opt_avatar_remove}</label>
+          <!-- ELSE -->
+            <a href="http://www.google.com.ar/imghp" target="_blank">{L_opt_avatar_search}</a>
+          <!-- ENDIF -->
+        </span>
+      </td>
+    </tr>
     <tr>
       <th>{ali_adm_requests}</th>
       <th>

@@ -245,6 +245,19 @@ $lang = array_merge($lang, array(
   'your_alliance' => 'Your Alliance',
   'your_apply' => 'Your application',
   'ali_info_leave_success' => '',
+
+
+  'opt_avatar' => 'Logo',
+  'opt_avatar_remove' => 'Remove logo',
+  'opt_avatar_search' => 'Seatch in Google',
+  'opt_upload' => 'Upload',
+
+  'opt_msg_avatar_removed' => 'Logo succesfully removed',
+  'opt_msg_avatar_uploaded' => 'Logo succesfully changed',
+  'opt_msg_avatar_error_delete' => 'Error deleting logo file. Please, contact server Administration',
+  'opt_msg_avatar_error_writing' => 'Error saving logo file. Please, contact server Administration',
+  'opt_msg_avatar_error_upload' => 'Error loading logo image %1. Please, contact server Administration',
+  'opt_msg_avatar_error_unsupported' => 'Uploaded image format not supported. Only supported JPG, GIF, PNG up to 200KB',
 ));
 
 ?>

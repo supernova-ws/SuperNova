@@ -99,6 +99,11 @@ if (!defined('INSIDE'))
     }
   }
 
+  $user_option_list[OPT_UNIVERSE] = array(
+    'opt_uni_avatar_user' => 1,
+    'opt_uni_avatar_ally' => 1,
+  );
+
 /*
   foreach($sn_message_groups['switchable'] as $option_id)
   {

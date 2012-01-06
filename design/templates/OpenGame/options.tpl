@@ -114,10 +114,22 @@
         <th><input name="noipcheck"{opt_noipc_data} type="checkbox" id="noipcheck" /></th>
       </tr>
 -->
-      
+
+      <!-- IF .options_2 -->
       <tr>
-        <td class="c" colspan="2">{L_galaxyvision_options}</td>
+        <th class="c_l" colspan="2">{L_galaxyvision_options}</th>
       </tr>
+
+        <!-- BEGIN options_2 -->
+          <tr>
+            <td class="c_c"><label for="{options_2.NAME}">{options_2.TEXT}</label></td>
+            <td class="c_c">
+              <input type="checkbox" id="{options_2.NAME}" name="{options_2.NAME}" value="1" <!-- IF options_2.VALUE --> checked<!-- ENDIF -->>
+            </td>
+          </tr>
+        <!-- END options_2 -->
+      <!-- ENDIF -->
+
       <tr title="{L_spy_cant_tip}">
         <th>{L_spy_cant}</th>
         <th><input name="spio_anz" maxlength="2" size="2" value="{opt_probe_data}" type="text"></th>
@@ -129,10 +141,8 @@
       <tr>
       <th>{L_mess_ammount_max}</th>
       <th><input name="settings_fleetactions" maxlength="2" size="2" value="{opt_fleet_data}" type="text"></th>
-      </tr><tr>
-      <th><label for="settings_allylogo">{L_show_ally_logo}</label></th>
-      <th><input name="settings_allylogo"{opt_allyl_data} type="checkbox" id="settings_allylogo" /></th>
-      </tr><tr>
+      </tr>
+      <tr>
       <th>{L_shortcut}</th>
       <th>
         <input name="settings_esp"{user_settings_esp} type="checkbox" id="settings_esp" />&nbsp;<label for="settings_esp"><img src="{dpath}img/e.gif" alt="{spy}" />&nbsp;{L_spy}</label>
