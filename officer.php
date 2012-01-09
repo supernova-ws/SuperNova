@@ -23,18 +23,6 @@
  *
  */
 
-/**
- * IsOfficierAccessible.php
- *
- * @version 1.0
- * @copyright 2008 By Chlorel for XNova
- */
-
-// Verification si l'on a le droit ou non a un officier
-// Retour:
-//  0 => pas les Officiers necessaires
-//  1 => Tout va tres bien on peut le faire celui la
-// -1 => On pouvait le faire, mais on est déja au level max
 function mrc_officer_accessible(&$user, $mercenary_id)
 {
   global $sn_data;
@@ -80,7 +68,7 @@ if($mercenary_id = sys_get_param_int('mercenary_id'))
       throw new Exception($lang['mrc_msg_error_wrong_mercenary'], ERR_ERROR);
     }
 
-    if(mrc_officer_accessible($user, $mercenary_id) != 1)
+    if(!$config->empire_mercenary_temporary && mrc_officer_accessible($user, $mercenary_id) != 1)
     {
       throw new Exception($lang['mrc_msg_error_requirements'], ERR_ERROR);
     }
@@ -135,7 +123,6 @@ if($mercenary_id = sys_get_param_int('mercenary_id'))
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
       'MESSAGE' => $e->getMessage()
     );
-    debug($operation_result);
   }
 }
 
@@ -143,7 +130,7 @@ $template = gettemplate('officer', true);
 
 if(!empty($operation_result))
 {
-  $template->assign_block_vars($result, $operation_result);
+  $template->assign_block_vars('result', $operation_result);
 }
 
 foreach($mrc_hire_discount as $hire_period => $hire_discount)

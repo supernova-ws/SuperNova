@@ -7,6 +7,6 @@
     <!-- ELSE -->
       <!-- DEFINE $RESULT_CLASS = 'error' -->
     <!-- ENDIF -->
-    <h3 class="{$RESULT_CLASS}">{result.MESSAGE}</h3>
+    <h3 class="c_c {$RESULT_CLASS}">{result.MESSAGE}</h3>
   <!-- END result -->
 <!-- ENDIF -->
