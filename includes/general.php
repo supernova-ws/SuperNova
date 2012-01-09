@@ -341,7 +341,7 @@ function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false)
   }
   elseif(in_array($unit_id, $sn_data['groups']['governors']))
   {
-    $mercenary_level = $unit_id != $planet['PLANET_GOVERNOR_ID'] ? 0 : $planet[$sn_data[$unit_id]['name']];
+    $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
   }
 
   return $mercenary_level;
