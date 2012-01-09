@@ -634,6 +634,7 @@ $lang = array_merge($lang, array(
 
   'mrc_up_to' => 'up to',
   'mrc_hire' => 'Hire',
+  'mrc_hire_for' => 'Hire for',
   'mrc_msg_error_wrong_mercenary' => 'Wrong mercenary',
   'mrc_msg_error_wrong_level' => 'Wrong mercenary level - too big or too small',
   'mrc_msg_error_wrong_period' => 'Unacceptable hire period',
