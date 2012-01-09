@@ -334,7 +334,9 @@ elseif(in_array($unit_id, $sn_data['groups']['mercenaries']) || in_array($unit_i
   $parse['mercenary_bonus'] = $mercenary_bonus;
   if(!(in_array($unit_id, $sn_data['groups']['artifacts']) || in_array($unit_id, $sn_data['groups']['resources_all'])))
   {
-    $parse['max_level'] = $lang['sys_level'] . ' ' . ($mercenary['location'] == LOC_USER ? $user[$sn_data[$unit_id]['name']] : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0)) . (isset($mercenary['max']) ? "/{$mercenary['max']}" : '');
+    $parse['max_level'] = $lang['sys_level'] . ' ' . 
+    (in_array($unit_id, $sn_data['groups']['mercenaries']) ? mrc_get_level($user, $planetrow, $unit_id) : ($mercenary['location'] == LOC_USER ? $user[$sn_data[$unit_id]['name']] : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0))) 
+    . (isset($mercenary['max']) ? "/{$mercenary['max']}" : '');
   }
 }
 
