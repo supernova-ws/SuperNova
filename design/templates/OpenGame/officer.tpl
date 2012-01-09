@@ -1,3 +1,5 @@
+<!-- INCLUDE _result_message.tpl -->
+
 <table width="530">
   <tr>
     <td colspan="2" class="c">{L_sys_dark_matter}</td>
@@ -18,8 +20,30 @@
   <tr>
     <td width="535" colspan="2" class="c">{L_tech[600]}</td>
   </tr>
+<script language="javascript">
+  var mrc_cost_array = Array();
+  var mrc_discount_array = Array();
+  <!-- BEGIN period -->
+  mrc_discount_array[{period.LENGTH}] = {period.DISCOUNT};
+  <!-- END period -->
+</script>
+
+
+<script type="text/javascript">
+function mrc_change(mercenary_id)
+{
+  var period_element = document.getElementById('period_' + mercenary_id);
+  var period = mrc_discount_array[period_element.value]; // mrc_discount_array[discount_element.options[discount_element.selectedIndex].value];
+  var mrc_price = mrc_cost_array[mercenary_id][document.getElementById('level_' + mercenary_id).value] * period;
+
+  document.getElementById('final_cost_' + mercenary_id).innerHTML = Math.ceil(mrc_price);
+}
+</script>
 
   <!-- BEGIN officer -->
+<script language="javascript">
+  mrc_cost_array[{officer.ID}] = Array();
+</script>
     <tr>
       <th width=120>
         {officer.NAME}<br>
@@ -30,12 +54,40 @@
         {officer.DESCRIPTION}<br><br>
         <div align="center">
           <div class="positive" align="center">{officer.BONUS} {officer.EFFECT}</div><br />
-          <div>{L_sys_level} {officer.LEVEL}/{officer.LEVEL_MAX}</div>
-          <!-- IF officer.CAN_BUY == 1 -->
-            <a href="officer.php?mode=2&offi={officer.ID}"><span class="positive">{L_off_hire} {officer.COST} {L_sys_dark_matter_sh}</span></a>
-          <!-- ELSE -->
-            <span class="negative">{L_sys_maximum_level}</span>
+          <!-- IF officer.LEVEL -->
+            <div>{L_sys_level} {officer.LEVEL}/{officer.LEVEL_MAX}<!-- IF officer.HIRE_END --> {L_mrc_up_to} {officer.HIRE_END}<!-- ENDIF --></div>
           <!-- ENDIF -->
+
+          <!-- IF ! EMPIRE_MERCENARY_TEMPORARY && officer.LEVEL >= officer.LEVEL_MAX -->
+            <span class="neutral">{L_sys_maximum_level}</span>
+          <!-- ELSEIF ! EMPIRE_MERCENARY_TEMPORARY && ! officer.CAN_BUY -->
+            <a href="techtree.php"><span class="error">{L_mrc_msg_error_requirements}</span></a>
+          <!--ELSEIF (EMPIRE_MERCENARY_TEMPORARY && ! officer.LEVEL) || (officer.CAN_BUY && ! EMPIRE_MERCENARY_TEMPORARY && (officer.LEVEL < officer.LEVEL_MAX)) -->
+          <!-- ELSEIF ! EMPIRE_MERCENARY_TEMPORARY || ! officer.LEVEL -->
+            <form action="" method="post">
+              <input type="hidden" value="{officer.ID}" name="mercenary_id">
+              {L_sys_level}
+
+              <select name="mercenary_level" id="level_{officer.ID}" onchange="javascript:mrc_change({officer.ID});">
+                <!-- BEGIN level -->
+                <option value="{level.VALUE}"<!-- IF officer.LEVEL == level.VALUE --> selected<!-- ENDIF -->>{level.VALUE}</option><script language="javascript">mrc_cost_array[{officer.ID}][{level.VALUE}] = {level.PRICE};</script>
+                <!-- END level -->
+              </select>
+
+              <!-- IF EMPIRE_MERCENARY_TEMPORARY -->
+                <select name="mercenary_period" id="period_{officer.ID}" onchange="javascript:mrc_change({officer.ID});">
+                  <!-- BEGIN !period -->
+                  <option value="{period.LENGTH}"<!-- IF period.SELECTED --> selected<!-- ENDIF -->>{period.TEXT}</option>
+                  <!-- END period -->
+                </select>
+              <!-- ELSE -->
+                <input type="hidden" name="mercenary_period" id="period_{officer.ID}" value="{C_empire_mercenary_base_period}");">
+              <!-- ENDIF -->
+              <span id="final_cost_{officer.ID}">{officer.COST}</span> {L_sys_dark_matter_sh}
+              <input type="submit" value="{L_mrc_hire}">
+            </form>
+          <!-- ENDIF -->
+
         </div>
       </th>
     </tr>

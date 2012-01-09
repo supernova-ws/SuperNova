@@ -6,7 +6,7 @@
   <table style="color:#FFFFFF;" class="table"><tbody>
     <tr><td class="c" colspan="2">{L_adm_opt_maintenance}</td></tr>
     <tr>
-      <th colspan=2><input name="game_disable" type="checkbox" value="1"<!-- IF GAME_DISABLE --> checked<!-- ENDIF -->/> {L_adm_opt_game_online}<br>
+      <th colspan=2><input name="game_disable" id="game_disable" type="checkbox" value="1"<!-- IF GAME_DISABLE --> checked<!-- ENDIF -->/> <label for="game_disable">{L_adm_opt_game_online}</label><br />
         <input name="game_disable_reason" size="82" value="{C_game_disable_reason}" type="text">
         <!--
         <textarea name="game_disable_reason" cols="50" rows="2" size="50" >{C_game_disable_reason}</textarea>
@@ -33,6 +33,13 @@
         <!-- END game_mode -->
         </select>
       </th>
+    </tr>
+    <tr>
+      <th colspan="2">
+        <div style="width: 670px">
+        <input name="empire_mercenary_temporary" id="empire_mercenary_temporary" type="checkbox" value="1"<!-- IF EMPIRE_MERCENARY_TEMPORARY --> checked<!-- ENDIF -->/> <label for="empire_mercenary_temporary">{L_adm_opt_empire_mercenary_temporary}</label><br />
+        {L_adm_opt_empire_mercenary_temporary_base} <input type="text" name="empire_mercenary_base_period" value="{C_empire_mercenary_base_period}"><br />
+        {L_adm_opt_empire_mercenary_temporary_hint}</div></th>
     </tr>
 
     <tr>
@@ -164,39 +171,39 @@
     <tr><td class="c" colspan="2">{L_adm_opt_game_advertise}</td></tr>
     <tr>
       <th colspan=2>
-        <input name="advGoogleLeftMenuIsOn" type="checkbox" value="1"<!-- IF ADV_LEFT_MENU --> checked<!-- ENDIF -->/> {L_adm_opt_game_oth_adds}
+        <input name="advGoogleLeftMenuIsOn" id="advGoogleLeftMenuIsOn" type="checkbox" value="1"<!-- IF ADV_LEFT_MENU --> checked<!-- ENDIF -->/> <label for="advGoogleLeftMenuIsOn">{L_adm_opt_game_oth_adds}</label>
         <textarea name="advGoogleLeftMenuCode" rows="10">{C_advGoogleLeftMenuCode}</textarea>
       </th>
     </tr>
 
     <tr><td class="c" colspan="2">{L_adm_opt_game_oth_info}</td></tr>
     <tr>
-      <th>{L_adm_opt_vacation_mode}</th> 
-      <th><input name="user_vacation_disable" type="checkbox" value="1"<!-- IF USER_VACATION_DISABLE --> checked<!-- ENDIF -->/></th> 
+      <th><label for="user_vacation_disable">{L_adm_opt_vacation_mode}</label></th>
+      <th><input name="user_vacation_disable" id="user_vacation_disable" type="checkbox" value="1"<!-- IF USER_VACATION_DISABLE --> checked<!-- ENDIF -->/></th> 
     </tr>
     <tr>
-      <th>{L_adm_opt_eco_scale_storage}</th>
-      <th><input name="eco_scale_storage" type="checkbox" value="1"<!-- IF ECO_SCALE_STORAGE --> checked<!-- ENDIF -->/></th> 
+      <th><label for="eco_scale_storage">{L_adm_opt_eco_scale_storage}</label></th>
+      <th><input name="eco_scale_storage" id="eco_scale_storage" type="checkbox" value="1"<!-- IF ECO_SCALE_STORAGE --> checked<!-- ENDIF -->/></th> 
     </tr>
     <tr>
-      <th>{L_adm_opt_allow_buffing}</th> 
-      <th><input name="allow_buffing" type="checkbox" value="1" <!-- IF ALLOW_BUFFING -->checked<!-- ENDIF --> /></th> 
+      <th><label for="allow_buffing">{L_adm_opt_allow_buffing}</label></th>
+      <th><input name="allow_buffing" id="allow_buffing" type="checkbox" value="1" <!-- IF ALLOW_BUFFING -->checked<!-- ENDIF --> /></th> 
     </tr>
     <tr>
-      <th>{L_adm_opt_ally_help_weak}</th> 
-      <th><input name="ally_help_weak" type="checkbox" value="1" <!-- IF ALLY_HELP_WEAK -->checked<!-- ENDIF --> /></th> 
+      <th><label for="ally_help_weak">{L_adm_opt_ally_help_weak}</label></th>
+      <th><input name="ally_help_weak" id="ally_help_weak" type="checkbox" value="1" <!-- IF ALLY_HELP_WEAK -->checked<!-- ENDIF --> /></th> 
     </tr>
     <tr>
-      <th>{L_adm_opt_email_pm}</th> 
-      <th><input name="game_email_pm" type="checkbox" value="1" <!-- IF GAME_EMAIL_PM -->checked<!-- ENDIF --> /></th> 
+      <th><label for="game_email_pm">{L_adm_opt_email_pm}</label></th>
+      <th><input name="game_email_pm" id="game_email_pm" type="checkbox" value="1" <!-- IF GAME_EMAIL_PM -->checked<!-- ENDIF --> /></th> 
     </tr>
     <tr>
-      <th>{L_adm_opt_game_debugmod}</a></th>
-      <th><input name="debug" type="checkbox" value="1"<!-- IF GAME_DEBUG --> checked<!-- ENDIF --> /></th>
+      <th><label for="debug">{L_adm_opt_game_debugmod}</label></th>
+      <th><input name="debug" id="debug" type="checkbox" value="1"<!-- IF GAME_DEBUG --> checked<!-- ENDIF --> /></th>
     </tr>
     <tr>
-      <th>{L_adm_opt_game_counter}</a></th>
-      <th><input name="game_counter" type="checkbox" value="1"<!-- IF GAME_COUNTER --> checked<!-- ENDIF --> /></th>
+      <th><label for="game_counter">{L_adm_opt_game_counter}</label></th>
+      <th><input name="game_counter" id="game_counter" type="checkbox" value="1"<!-- IF GAME_COUNTER --> checked<!-- ENDIF --> /></th>
     </tr>
 
     <tr><td class="c" colspan="2"><center><input name="save" value="{L_adm_opt_btn_save}" type="submit"></center></td></tr>

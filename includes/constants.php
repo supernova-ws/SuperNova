@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '32');
 define('SN_RELEASE', '33');
-define('SN_VERSION', '33a6');
+define('SN_VERSION', '33a7');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -59,6 +59,23 @@ $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/jav
 define('CONFIRM_REGISTRATION'  , 1);
 define('CONFIRM_PASSWORD_RESET', 2);
 define('CONFIRM_DELETE'        , 3);
+
+// Date & time range constants
+define('DATE_FOREVER', 2000000000);
+
+define('PERIOD_MINUTE', 60);
+define('PERIOD_HOUR', PERIOD_MINUTE * 60);
+define('PERIOD_DAY', PERIOD_HOUR * 24);
+define('PERIOD_WEEK', PERIOD_DAY * 7);
+define('PERIOD_MONTH', PERIOD_DAY * 30);
+
+define('PERIOD_MINUTE_3' , PERIOD_MINUTE * 3);
+define('PERIOD_MINUTE_5' , PERIOD_MINUTE * 5);
+define('PERIOD_MINUTE_10', PERIOD_MINUTE * 10);
+define('PERIOD_DAY_3'    , PERIOD_DAY * 3);
+define('PERIOD_WEEK_2'   , PERIOD_WEEK * 2);
+define('PERIOD_MONTH_2'  , PERIOD_MONTH * 2);
+define('PERIOD_MONTH_3'  , PERIOD_MONTH * 3);
 
 // Ally diplomacy statuses
 define('ALLY_DIPLOMACY_SELF'         , 'self');

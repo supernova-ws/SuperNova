@@ -409,16 +409,6 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase' => 'In addition you can purchase Dark Matter for WebMoney.',
   'sys_dark_matter_get'  => 'Click here to read details.',
 
-  // Officers
-  'off_no_points'        => 'You do not have enough Dark Matter!',
-  'off_recruited'        => 'The officer was hired! <a href="officer.php">Back</a>',
-  'off_tx_lvl'           => 'Current level: ',
-  'off_points'           => 'Points of Dark Matter: ',
-  'off_not_available'    => 'Officer you is not yet available!',
-  'off_hire'             => 'Hire for',
-  'off_dark_matter_desc' => 'Dark matter - using the standard methods of  fabric, which accounts for 23% mass of the universe. From there you can obtain an incredible amount of energy. Because of this, and because of the complexities associated with its extraction, Dark Matter is valued very highly.',
-  'off_dark_matter_hint' => 'With the help of this substance you can hire officers and commanders.',
-
   // Fleet
   'flt_gather_all'    => 'Gather resources',
   
@@ -619,6 +609,37 @@ $lang = array_merge($lang, array(
 
   'sys_lessThen15min'   => '&lt; 15 min',
 
+  'mrc_period_list' => array(
+    PERIOD_MINUTE    => '1 minute',
+    PERIOD_MINUTE_3  => '3 minutes',
+    PERIOD_MINUTE_5  => '5 minutes',
+    PERIOD_MINUTE_10 => '10 minutes',
+    PERIOD_DAY       => '1 day',
+    PERIOD_DAY_3     => '3 days',
+    PERIOD_WEEK      => '1 week',
+    PERIOD_WEEK_2    => '2 weeks',
+    PERIOD_MONTH     => '30 days',
+    PERIOD_MONTH_2   => '60 days',
+    PERIOD_MONTH_3   => '90 days',
+  ),
+
+  // Officers
+  'off_no_points'        => 'You do not have enough Dark Matter!',
+  'off_recruited'        => 'The officer was hired! <a href="officer.php">Back</a>',
+  'off_tx_lvl'           => 'Current level: ',
+  'off_points'           => 'Points of Dark Matter: ',
+  'off_not_available'    => 'Officer you is not yet available!',
+  'off_dark_matter_desc' => 'Dark matter - using the standard methods of  fabric, which accounts for 23% mass of the universe. From there you can obtain an incredible amount of energy. Because of this, and because of the complexities associated with its extraction, Dark Matter is valued very highly.',
+  'off_dark_matter_hint' => 'With the help of this substance you can hire officers and commanders.',
+
+  'mrc_up_to' => 'up to',
+  'mrc_hire' => 'Hire',
+  'mrc_msg_error_wrong_mercenary' => 'Wrong mercenary',
+  'mrc_msg_error_wrong_level' => 'Wrong mercenary level - too big or too small',
+  'mrc_msg_error_wrong_period' => 'Unacceptable hire period',
+  'mrc_msg_error_already_hired' => 'Mercenary already hired. Wait until hire period ends',
+  'mrc_msg_error_no_resource' => 'Not enough Dark Matter to hire mercenary',
+  'mrc_msg_error_requirements' => 'Requirements not meet',
 ));
 
 ?>

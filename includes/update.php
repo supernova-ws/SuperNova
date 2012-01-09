@@ -1436,6 +1436,57 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       "DROP COLUMN `settings_allylogo`",
     ), isset($update_tables['users']['settings_allylogo']));
 
+    if(isset($update_tables['mercenaries']))
+    {
+      upd_do_query("DROP TABLE IF EXISTS {$config->db_prefix}mercenaries;");
+
+      upd_create_table('powerup',
+        "(
+          `powerup_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+          `powerup_user_id` bigint(20) UNSIGNED NULL DEFAULT NULL,
+          `powerup_planet_id` bigint(20) UNSIGNED NULL DEFAULT NULL,
+          `powerup_unit_id` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0',
+          `powerup_unit_level` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
+          `powerup_time_start` int(11) NOT NULL DEFAULT '0',
+          `powerup_time_finish` int(11) NOT NULL DEFAULT '0',
+
+          PRIMARY KEY (`powerup_id`),
+          KEY `I_powerup_user_id` (`powerup_user_id`),
+          KEY `I_powerup_planet_id` (`powerup_planet_id`),
+          KEY `I_user_powerup_time` (`powerup_user_id`, `powerup_unit_id`, `powerup_time_start`, `powerup_time_finish`),
+          KEY `I_planet_powerup_time` (`powerup_planet_id`, `powerup_unit_id`, `powerup_time_start`, `powerup_time_finish`),
+
+          CONSTRAINT `FK_powerup_user_id` FOREIGN KEY (`powerup_user_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+          CONSTRAINT `FK_powerup_planet_id` FOREIGN KEY (`powerup_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+
+      $config->db_saveItem('empire_mercenary_temporary', 0, !isset($config->empire_mercenary_temporary));
+      $config->db_saveItem('empire_mercenary_base_period', PERIOD_MONTH, !isset($config->empire_mercenary_base_period));
+
+      $update_query_template = "UPDATE {{users}} SET id = id %s WHERE id = %d LIMIT 1;";
+      $user_list = upd_do_query("SELECT * FROM {{users}};");
+      while($user_row = mysql_fetch_assoc($user_list))
+      {
+        $update_query_str = '';
+        foreach($sn_data['groups']['mercenaries'] as $mercenary_id)
+        {
+          $mercenary_data_name = $sn_data[$mercenary_id]['name'];
+          if($mercenary_level = $user_row[$mercenary_data_name])
+          {
+            $update_query_str = ", `{$mercenary_data_name}` = 0";
+            upd_do_query("DELETE FROM {{powerup}} WHERE powerup_user_id = {$user_row['id']} AND powerup_unit_id = {$mercenary_id} LIMIT 1;");
+            upd_do_query("INSERT {{powerup}} SET powerup_user_id = {$user_row['id']}, powerup_unit_id = {$mercenary_id}, powerup_unit_level = {$mercenary_level};");
+          }
+        }
+
+        if($update_query_str)
+        {
+          upd_do_query(sprintf($update_query_template, $update_query_str, $user_row['id']));
+        }
+      }
+    }
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 32;
 };

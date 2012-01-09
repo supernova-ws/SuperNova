@@ -23,13 +23,17 @@ foreach($lang['tech'] as $Element => $ElementName)
   }
   else
   {
-    if (isset($sn_data[$Element]['require']))
+    if(isset($sn_data[$Element]['require']) && !(in_array($Element, $sn_data['groups']['mercenaries']) && $config->empire_mercenary_temporary))
     {
       $parse['required_list'] = "";
       foreach($sn_data[$Element]['require'] as $ResClass => $Level)
       {
         $actual_level = 0;
-        if(isset($user[$sn_data[$ResClass]['name']]))
+        if(in_array($ResClass, $sn_data['groups']['mercenaries']))
+        {
+          $actual_level = mrc_get_level($user, $planetrow, $ResClass);
+        }
+        elseif(isset($user[$sn_data[$ResClass]['name']]))
         {
           $actual_level = $user[$sn_data[$ResClass]['name']];
         }

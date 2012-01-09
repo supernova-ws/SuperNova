@@ -486,6 +486,9 @@ class classConfig extends classPersistent
 
     'eco_scale_storage'      => 1,
 
+    'empire_mercenary_temporary' => 0, // Temporary empire-wide mercenaries
+    'empire_mercenary_base_period' => PERIOD_MONTH, // Base
+
     // Advet banner
     'advGoogleLeftMenuIsOn'  => 0,
     'advGoogleLeftMenuCode'  => '(Place here code for banner)',
@@ -921,4 +924,5 @@ class class_db_cache extends classCache
   }
 */
 }
+
 ?>
