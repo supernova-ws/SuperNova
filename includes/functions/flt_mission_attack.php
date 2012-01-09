@@ -65,7 +65,7 @@ function flt_mission_attack($mission_data)
       'user' => array(
         'id'             => $destination_user['id'],
         'username'       => $destination_user['username'],
-        $db_admiral_name => $mrc_get_level($destination_user, $destination_planet, MRC_ADMIRAL), // destination_user[$db_admiral_name]
+        $db_admiral_name => mrc_get_level($destination_user, $destination_planet, MRC_ADMIRAL), // destination_user[$db_admiral_name]
         'defence_tech'   => floor($destination_user['defence_tech'] + $fortifier_bonus),
         'shield_tech'    => floor($destination_user['shield_tech'] + $fortifier_bonus),
         'military_tech'  => floor($destination_user['military_tech'] + $fortifier_bonus),
