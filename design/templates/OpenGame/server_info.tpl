@@ -17,6 +17,18 @@
 
     </th>
   </tr>
+
+  <tr>
+    <th>{L_adm_opt_empire_mercenary_temporary}</th>
+    <th>
+      <!-- IF EMPIRE_MERCENARY_TEMPORARY -->
+        {L_sys_yes}
+      <!-- ELSE -->
+        {L_sys_no}
+      <!-- ENDIF -->
+    </th>
+  </tr>
+
   <tr>
     <th>{L_adm_opt_speed} {L_adm_opt_game_gspeed}</th>
     <th>x&nbsp;{game_speed}</th>

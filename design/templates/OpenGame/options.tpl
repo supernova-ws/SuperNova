@@ -1,16 +1,5 @@
 <h2>{L_opt_header}</h2>
-<!-- IF .result -->
-  <!-- BEGIN result -->
-    <!-- IF result.STATUS == 0 -->
-      <!-- DEFINE $RESULT_CLASS = 'positive' -->
-    <!-- ELSEIF result.STATUS == 1 -->
-      <!-- DEFINE $RESULT_CLASS = 'warning' -->
-    <!-- ELSE -->
-      <!-- DEFINE $RESULT_CLASS = 'error' -->
-    <!-- ENDIF -->
-    <h3 class="{$RESULT_CLASS}">{result.MESSAGE}</h3>
-  <!-- END result -->
-<!-- ENDIF -->
+<!-- INCLUDE _result_message.tpl -->
 
 <!-- IF CHANGE_PASS -->
   <!-- IF CHANGE_PASS == -1 -->

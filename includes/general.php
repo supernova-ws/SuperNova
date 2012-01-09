@@ -295,7 +295,59 @@ function CheckAbandonPlanetState(&$planet)
   }
 }
 
-function mrc_modify_value($user, $planet = false, $mercenaries, $value)
+function eco_get_total_cost($unit_id, $unit_level)
+{
+  global $sn_data, $config;
+
+  $rate[RES_METAL] = $config->rpg_exchange_metal;
+  $rate[RES_CRYSTAL] = $config->rpg_exchange_crystal / $config->rpg_exchange_metal;
+  $rate[RES_DEUTERIUM] = $config->rpg_exchange_deterium / $config->rpg_exchange_metal;
+
+  $unit_cost_data = &$sn_data[$unit_id]['cost'];
+  $factor = $unit_cost_data['factor'];
+  $cost_array = array(BUILD_CREATE => array(), 'total' => 0);
+  $unit_level = $unit_level > 0 ? $unit_level : 0;
+  foreach($unit_cost_data as $resource_id => $resource_amount)
+  {
+    if(!in_array($resource_id, $sn_data['groups']['resources_all']))
+    {
+      continue;
+    }
+
+    $cost_array[BUILD_CREATE][$resource_id] = $resource_amount * ($factor == 1 ? $unit_level : ((pow($factor, $unit_level) - $factor) / ($factor - 1)));
+    if(in_array($resource_id, $sn_data['groups']['resources_loot']))
+    {
+      $cost_array['total'] += $cost_array[BUILD_CREATE][$resource_id] * $rate[$resource_id];
+    }
+  }
+
+  return $cost_array;
+}
+
+function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false)
+{
+  global $config, $sn_data, $time_now;
+
+  $mercenary_level = 0;
+  if(in_array($unit_id, $sn_data['groups']['mercenaries']))
+  {
+    if($for_update || !isset($user[$unit_id]))
+    {
+      $time_restriction = $config->empire_mercenary_temporary ? " AND powerup_time_start <= {$time_now} AND powerup_time_finish >= {$time_now} " : '';
+      $mercenary_level = doquery("SELECT * FROM {{powerup}} WHERE powerup_user_id = {$user['id']} AND powerup_unit_id = {$unit_id} {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
+      $user[$unit_id] = $mercenary_level;
+    }
+    $mercenary_level = intval($user[$unit_id]['powerup_unit_level']);
+  }
+  elseif(in_array($unit_id, $sn_data['groups']['governors']))
+  {
+    $mercenary_level = $unit_id != $planet['PLANET_GOVERNOR_ID'] ? 0 : $planet[$sn_data[$unit_id]['name']];
+  }
+
+  return $mercenary_level;
+}
+
+function mrc_modify_value($user, $planet = array(), $mercenaries, $value)
 {
   global $sn_data;
 
@@ -308,7 +360,7 @@ function mrc_modify_value($user, $planet = false, $mercenaries, $value)
   {
     $mercenary = $sn_data[$mercenary_id];
     $mercenary_bonus = $mercenary['bonus'];
-    $mercenary_level = !in_array($mercenary_id, $sn_data['groups']['governors']) ? $user[$mercenary['name']] : ($planet['PLANET_GOVERNOR_ID'] == $mercenary_id ? $planet['PLANET_GOVERNOR_LEVEL'] : 0);
+    $mercenary_level = mrc_get_level($user, $planet, $mercenary_id);
 
     switch ($mercenary['bonus_type'])
     {

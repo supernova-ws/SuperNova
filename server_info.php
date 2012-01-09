@@ -20,6 +20,7 @@ $template->assign_vars(array(
   'fleet_bashing_interval' => sys_time_human($config->fleet_bashing_interval),
   'fleet_bashing_scope' => sys_time_human($config->fleet_bashing_scope),
   'fleet_bashing_war_delay' => sys_time_human($config->fleet_bashing_war_delay),
+  'EMPIRE_MERCENARY_TEMPORARY' => $config->empire_mercenary_temporary,
 ));
 
 display(parsetemplate($template));

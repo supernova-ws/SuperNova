@@ -76,6 +76,24 @@ if(sys_get_param('save'))
   $config->debug                   = sys_get_param_int('debug');
   $config->game_counter            = sys_get_param_int('game_counter');
 
+  $config->empire_mercenary_base_period = sys_get_param_int('empire_mercenary_base_period');
+  if($config->empire_mercenary_temporary != sys_get_param_int('empire_mercenary_temporary'))
+  {
+    $mercenaries_string = implode(',', $sn_data['groups']['mercenaries']);
+    if($config->empire_mercenary_temporary)
+    {
+      doquery("DELETE FROM {{powerup}} WHERE powerup_time_finish > 0 AND powerup_time_finish <= {$time_now} AND powerup_unit_id IN ({$mercenaries_string});");
+      doquery("UPDATE {{powerup}} SET powerup_time_start = 0, powerup_time_finish = 0 WHERE powerup_unit_id IN ({$mercenaries_string});");
+    }
+    else
+    {
+      $time_end = $time_now + $config->empire_mercenary_base_period;
+      doquery("UPDATE {{powerup}} SET powerup_time_start = {$time_now}, powerup_time_finish = {$time_end} WHERE powerup_unit_id IN ({$mercenaries_string});");
+    }
+
+    $config->empire_mercenary_temporary = sys_get_param_int('empire_mercenary_temporary');
+  }
+
   $config->db_saveAll();
 
   $template->assign_var('MESSAGE', $lang['adm_opt_saved']);
@@ -93,6 +111,7 @@ $template->assign_vars(array(
   'GAME_DISABLE' => $config->game_disable,
   'GAME_DEBUG' => $config->debug,
   'GAME_COUNTER' => $config->game_counter,
+  'EMPIRE_MERCENARY_TEMPORARY' => $config->empire_mercenary_temporary,
 ));
 
 foreach($lang['sys_game_mode'] as $mode_id => $mode_name)

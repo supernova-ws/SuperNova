@@ -133,6 +133,8 @@ if(!defined('BE_DEBUG'))
   }
 }
 
+require_once("{$sn_root_physical}includes/vars.{$phpEx}");
+
 $update_file = "{$sn_root_physical}includes/update.{$phpEx}";
 if(file_exists($update_file))
 {
@@ -171,7 +173,6 @@ $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 
 // Now including all functions
 require_once("{$sn_root_physical}includes/general.{$phpEx}");
-require_once("{$sn_root_physical}includes/vars.{$phpEx}");
 
 require_once("{$sn_root_physical}includes/template.{$phpEx}");
 // require_once("{$sn_root_physical}language/" . DEFAULT_LANG .'/language.mo');

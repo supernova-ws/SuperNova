@@ -83,7 +83,7 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
     $user_data = $user;
   }
 
-  if ($fleet['fleet_mess'] == 0 && $fleet['fleet_mission'] == 2)
+  if ($fleet['fleet_mess'] == 0 && $fleet['fleet_mission'] == MT_AKS)
   {
     $aks = doquery("SELECT * FROM {{aks}} WHERE id={$fleet['fleet_group']} LIMIT 1;", '', true);
   };
