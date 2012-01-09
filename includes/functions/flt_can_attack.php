@@ -128,7 +128,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     return ATTACK_WRONG_SPEED;
   }
 
-  $travel_data = flt_travel_data($user_row, $planet_src, $planet_dst, $fleet, $options['fleet_speed_percent']);
+  $travel_data = flt_travel_data($user, $planet_src, $planet_dst, $fleet, $options['fleet_speed_percent']);
 
   if($planet_src[$sn_data[RES_DEUTERIUM]['name']] < $fleet[RES_DEUTERIUM] + $travel_data['consumption'])
   {
