@@ -344,6 +344,8 @@ $lang = array_merge($lang, array(
   'adm_lng_domain' => 'Domain',
   'adm_lng_string_name' => 'String name',
   'adm_lng_string_add' => 'Add string',
+  'adm_uni_price_galaxy' => 'Base galactic rename cost',
+  'adm_uni_price_system' => 'Base system rename cost',
 ));
 
 ?>

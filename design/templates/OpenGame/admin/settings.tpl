@@ -91,6 +91,14 @@
         <div><input name="energy_basic_income" maxlength="10" size="9" value="{C_energy_basic_income}" type="text"> {L_adm_opt_per_hour}</div>
       </th>
     </tr>
+    <tr>
+      <th>{L_adm_uni_price_galaxy}</a></th>
+      <th><input name="uni_price_galaxy" maxlength="20" size="20" value="{C_uni_price_galaxy}" type="text"></th>
+    </tr>
+    <tr>
+      <th>{L_adm_uni_price_system}</a></th>
+      <th><input name="uni_price_system" maxlength="20" size="20" value="{C_uni_price_system}" type="text"></th>
+    </tr>
 
     <tr><td class="c" colspan="2">{L_adm_opt_chat}</td></tr>
     <tr>

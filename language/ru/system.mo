@@ -638,6 +638,8 @@ $lang = array_merge($lang, array(
   'mrc_msg_error_already_hired' => 'Наемник уже рекрутирован. Дождитесь окончания срока найма',
   'mrc_msg_error_no_resource' => 'Не хватает Темной Материи для найма',
   'mrc_msg_error_requirements' => 'Не удовлетворены требования',
+
+  'sys_msg_err_update_dm' => 'Ошибка обновления количества ТМ!',
 ));
 
 ?>

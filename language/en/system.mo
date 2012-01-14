@@ -641,6 +641,8 @@ $lang = array_merge($lang, array(
   'mrc_msg_error_already_hired' => 'Mercenary already hired. Wait until hire period ends',
   'mrc_msg_error_no_resource' => 'Not enough Dark Matter to hire mercenary',
   'mrc_msg_error_requirements' => 'Requirements not meet',
+
+  'sys_msg_err_update_dm' => 'Error updating DM quantity!',
 ));
 
 ?>

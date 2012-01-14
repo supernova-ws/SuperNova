@@ -76,6 +76,9 @@ if(sys_get_param('save'))
   $config->debug                   = sys_get_param_int('debug');
   $config->game_counter            = sys_get_param_int('game_counter');
 
+  $config->uni_price_galaxy        = sys_get_param_float('uni_price_galaxy');
+  $config->uni_price_system        = sys_get_param_float('uni_price_system');
+
   $config->empire_mercenary_base_period = sys_get_param_int('empire_mercenary_base_period');
   if($config->empire_mercenary_temporary != sys_get_param_int('empire_mercenary_temporary'))
   {

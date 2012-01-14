@@ -484,6 +484,9 @@ class classConfig extends classPersistent
     'user_vacation_disable'  => 0,
     'users_amount'           => 0,
 
+    'uni_price_galaxy'       => 10000,
+    'uni_price_system'       => 1000,
+
     'eco_scale_storage'      => 1,
 
     'empire_mercenary_temporary' => 0, // Temporary empire-wide mercenaries

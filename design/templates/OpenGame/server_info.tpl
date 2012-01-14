@@ -14,10 +14,8 @@
       <!-- ELSE -->
         {L_sys_game_mode[0]}
       <!-- ENDIF -->
-
     </th>
   </tr>
-
   <tr>
     <th>{L_adm_opt_empire_mercenary_temporary}</th>
     <th>
@@ -28,7 +26,6 @@
       <!-- ENDIF -->
     </th>
   </tr>
-
   <tr>
     <th>{L_adm_opt_speed} {L_adm_opt_game_gspeed}</th>
     <th>x&nbsp;{game_speed}</th>
@@ -52,6 +49,14 @@
   <tr>
     <th class="c">{L_adm_opt_planets}</th>
     <th class="c">{C_game_maxPlanet}</th>
+  </tr>
+  <tr>
+    <td class="c_c">{L_adm_uni_price_galaxy}</th>
+    <td class="c_c">{C_uni_price_galaxy}</th>
+  </tr>
+  <tr>
+    <td class="c_c">{L_adm_uni_price_system}</th>
+    <td class="c_c">{C_uni_price_system}</th>
   </tr>
 
   <tr><td class="c" colspan="2">{L_adm_opt_plan_settings}</td></tr>

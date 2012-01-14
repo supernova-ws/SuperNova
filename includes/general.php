@@ -562,4 +562,11 @@ function sys_time_human($time, $full = false)
     ($full || $seconds ? "{$seconds} {$lang['sys_sec']}" : '');
 }
 
+function sys_redirect($url)
+{
+  header("Location: {$url}");
+  ob_end_flush();
+  die();
+}
+
 ?>

@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '32');
 define('SN_RELEASE', '33');
-define('SN_VERSION', '33a7');
+define('SN_VERSION', '33a8');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -159,11 +159,14 @@ define('RPG_QUEST', 8);
 define('RPG_EXPEDITION', 9);
 define('RPG_REFERRAL', 10);
 define('RPG_ARTIFACT', 11);
+define('RPG_RENAME', 12);
 
 // Operation results
 define('ERR_NONE'               , 0);
 define('ERR_WARNING'            , 1);
 define('ERR_ERROR'              , 2);
+define('ERR_OK'                 , 3);
+define('ERR_HACK'               , 4);
 
 // Login statuses
 define('LOGIN_SUCCESS'               , 1);

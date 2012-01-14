@@ -1487,6 +1487,26 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       }
     }
 
+//    upd_do_query("DROP TABLE IF EXISTS {$config->db_prefix}universe;");
+    if(!isset($update_tables['universe']))
+    {
+      upd_create_table('universe',
+        "(
+          `universe_galaxy` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
+          `universe_system` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
+          `universe_name` varchar(32) NOT NULL DEFAULT '',
+          `universe_price` bigint(20) NOT NULL DEFAULT 0,
+
+          PRIMARY KEY (`universe_galaxy`, `universe_system`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+//          `universe_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+//           PRIMARY KEY (`universe_id`),
+
+      $config->db_saveItem('uni_price_galaxy', 10000, !isset($config->uni_price_galaxy));
+      $config->db_saveItem('uni_price_system', 1000, !isset($config->uni_price_system));
+    }
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 32;
 };

@@ -19,10 +19,18 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-$mode             = sys_get_param_int('mode');
+lng_include('universe');
+
+$mode       = sys_get_param_str('mode');
+$uni_galaxy = sys_get_param_int('galaxy');
+$uni_system = sys_get_param_int('system');
+
+if($mode == 'name')
+{
+  require_once('includes/includes/uni_rename.php');
+}
+
 $CurrentPlanetID  = sys_get_param_id('current');
-$galaxy           = sys_get_param_int('galaxy');
-$system           = sys_get_param_int('system');
 $planet           = sys_get_param_int('planet');
 $POST_galaxyLeft  = sys_get_param_str('galaxyLeft');
 $POST_galaxyRight = sys_get_param_str('galaxyRight');
@@ -31,8 +39,6 @@ $POST_systemRight = sys_get_param_str('systemRight');
 $GET_galaxy       = sys_get_param_int('galaxy');
 $GET_system       = sys_get_param_int('system');
 $GET_planet       = sys_get_param_int('planet');
-
-lng_include('universe');
 
 $fleetmax      = GetMaxFleets($user);
 $CurrentPlID   = $planetrow['id'];
@@ -47,28 +53,28 @@ $maxfleet_count = $maxfleet['flying_fleet_count'];
 
 if ($mode == 1) {
   if ($POST_galaxyLeft)
-    $galaxy--;
+    $uni_galaxy--;
   elseif ($POST_galaxyRight)
-    $galaxy++;
+    $uni_galaxy++;
 
   if ($POST_systemLeft)
-    $system--;
+    $uni_system--;
   elseif ($POST_systemRight)
-    $system++;
+    $uni_system++;
 } elseif ($mode == 2 || $mode == 3) {
-  $galaxy = $GET_galaxy;
-  $system = $GET_system;
+  $uni_galaxy = $GET_galaxy;
+  $uni_system = $GET_system;
   $planet = $GET_planet;
 } else {
-  $galaxy = $planetrow['galaxy'];
-  $system = $planetrow['system'];
+  $uni_galaxy = $planetrow['galaxy'];
+  $uni_system = $planetrow['system'];
   $planet = $planetrow['planet'];
 }
 
-if ($galaxy < 1) $galaxy = 1;
-if ($galaxy > $config->game_maxGalaxy) $galaxy = $config->game_maxGalaxy;
-if ($system < 1) $system = 1;
-if ($system > $config->game_maxSystem) $system = $config->game_maxSystem;
+if ($uni_galaxy < 1) $uni_galaxy = 1;
+if ($uni_galaxy > $config->game_maxGalaxy) $uni_galaxy = $config->game_maxGalaxy;
+if ($uni_system < 1) $uni_system = 1;
+if ($uni_system > $config->game_maxSystem) $uni_system = $config->game_maxSystem;
 if ($planet < 1) $planet = 1;
 if ($planet > $config->game_maxPlanet + 1) $planet = $config->game_maxPlanet + 1;
 
@@ -86,7 +92,7 @@ $CurrentPoints = $user['total_points'];
 $MissileRange  = flt_get_missile_range();
 $PhalanxRange  = GetPhalanxRange($HavePhalanx);
 
-$planet_precache_query = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$galaxy} AND `system` = {$system};");
+$planet_precache_query = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$uni_galaxy} AND `system` = {$uni_system};");
 while($planet_row = mysql_fetch_assoc($planet_precache_query))
 {//                debug($planet_row);
   $planet_list[$planet_row['planet']][$planet_row['planet_type']] = $planet_row;
@@ -95,9 +101,9 @@ while($planet_row = mysql_fetch_assoc($planet_precache_query))
 
 $fleet_precache_query = doquery(
   "SELECT * FROM {{fleets}} WHERE
-    (fleet_start_galaxy = {$galaxy} AND fleet_start_system = {$system} AND fleet_mess = 1)
+    (fleet_start_galaxy = {$uni_galaxy} AND fleet_start_system = {$uni_system} AND fleet_mess = 1)
     OR
-    (fleet_end_galaxy = {$galaxy} AND fleet_end_system = {$system} AND fleet_mess = 0);"
+    (fleet_end_galaxy = {$uni_galaxy} AND fleet_end_system = {$uni_system} AND fleet_mess = 0);"
 );
 while($fleet_row = mysql_fetch_assoc($fleet_precache_query))
 {
@@ -111,53 +117,53 @@ $fleets = array();
 $config_game_max_planet = $config->game_maxPlanet + 1;
 for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
 {
-  unset($GalaxyRowPlanet);
-  unset($GalaxyRowMoon);
-  unset($GalaxyRowUser);
-  unset($GalaxyRowAlly);
+  unset($uni_galaxyRowPlanet);
+  unset($uni_galaxyRowMoon);
+  unset($uni_galaxyRowUser);
+  unset($uni_galaxyRowAlly);
   unset($allyquery);
 
-  $GalaxyRowPlanet = $planet_list[$Planet][PT_PLANET];
+  $uni_galaxyRowPlanet = $planet_list[$Planet][PT_PLANET];
 
   $planet_fleet_id = 0;
-  if ($GalaxyRowPlanet['destruyed'])
+  if ($uni_galaxyRowPlanet['destruyed'])
   {
-    CheckAbandonPlanetState ($GalaxyRowPlanet);
+    CheckAbandonPlanetState ($uni_galaxyRowPlanet);
   }
-  elseif($GalaxyRowPlanet['id'])
+  elseif($uni_galaxyRowPlanet['id'])
   {
-    if($cached['users'][$GalaxyRowPlanet['id_owner']])
+    if($cached['users'][$uni_galaxyRowPlanet['id_owner']])
     {
-      $GalaxyRowUser = $cached['users'][$GalaxyRowPlanet['id_owner']];
+      $uni_galaxyRowUser = $cached['users'][$uni_galaxyRowPlanet['id_owner']];
     }
     else
     {
-      $GalaxyRowUser = doquery("SELECT * FROM {{users}} WHERE `id` = '{$GalaxyRowPlanet['id_owner']}' LIMIT 1;", '', true);
-      $cached['users'][$GalaxyRowUser['id']] = $GalaxyRowUser;
+      $uni_galaxyRowUser = doquery("SELECT * FROM {{users}} WHERE `id` = '{$uni_galaxyRowPlanet['id_owner']}' LIMIT 1;", '', true);
+      $cached['users'][$uni_galaxyRowUser['id']] = $uni_galaxyRowUser;
     }
 
-    if(!$GalaxyRowUser['id'])
+    if(!$uni_galaxyRowUser['id'])
     {
-      $debug->warning("Planet '{$GalaxyRowPlanet['name']}' [{$galaxy}:{$system}:{$Planet}] has no owner!", 'Userless planet', 503);
-      $GalaxyRowPlanet['destruyed'] = $time_now + 60 * 60 * 24;
-      $GalaxyRowPlanet['id_owner'] = 0;
-      doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = {$GalaxyRowPlanet['destruyed']} WHERE `id` = {$GalaxyRowPlanet['id']} LIMIT 1;");
+      $debug->warning("Planet '{$uni_galaxyRowPlanet['name']}' [{$uni_galaxy}:{$uni_system}:{$Planet}] has no owner!", 'Userless planet', 503);
+      $uni_galaxyRowPlanet['destruyed'] = $time_now + 60 * 60 * 24;
+      $uni_galaxyRowPlanet['id_owner'] = 0;
+      doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = {$uni_galaxyRowPlanet['destruyed']} WHERE `id` = {$uni_galaxyRowPlanet['id']} LIMIT 1;");
     }
 
     {
-      if($GalaxyRowUser['id'])
+      if($uni_galaxyRowUser['id'])
       {
         $planetcount++;
-        if($GalaxyRowUser['ally_id'])
+        if($uni_galaxyRowUser['ally_id'])
         {
-          if($cached['allies'][$GalaxyRowUser['ally_id']])
+          if($cached['allies'][$uni_galaxyRowUser['ally_id']])
           {
-            $allyquery = $cached['allies'][$GalaxyRowUser['ally_id']];
+            $allyquery = $cached['allies'][$uni_galaxyRowUser['ally_id']];
           }
           else
           {
-            $allyquery = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$GalaxyRowUser['ally_id']}';", '', true);
-            $cached['allies'][$GalaxyRowUser['ally_id']] = $allyquery;
+            $allyquery = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$uni_galaxyRowUser['ally_id']}';", '', true);
+            $cached['allies'][$uni_galaxyRowUser['ally_id']] = $allyquery;
           }
         }
       }
@@ -170,10 +176,10 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
         $fleet_id++;
       }
 
-      $GalaxyRowMoon = $planet_list[$Planet][PT_MOON];
-      if ($GalaxyRowMoon['destruyed'])
+      $uni_galaxyRowMoon = $planet_list[$Planet][PT_MOON];
+      if ($uni_galaxyRowMoon['destruyed'])
       {
-        CheckAbandonPlanetState($GalaxyRowMoon);
+        CheckAbandonPlanetState($uni_galaxyRowMoon);
       }
       else
       {
@@ -192,7 +198,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
   $recyclers_incoming = 0;
   $recyclers_to_send = 0;
   $recyclers_need = 0;
-  if ($GalaxyRowPlanet["debris_metal"] || $GalaxyRowPlanet["debris_crystal"])
+  if ($uni_galaxyRowPlanet["debris_metal"] || $uni_galaxyRowPlanet["debris_crystal"])
   {
     if($fleet_list[$Planet][PT_DEBRIS])
     {
@@ -206,48 +212,48 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
       }
     }
 
-    $recyclers_need = ceil(($GalaxyRowPlanet['debris_metal'] + $GalaxyRowPlanet['debris_crystal']) / $sn_data[SHIP_RECYCLER]['capacity']);
+    $recyclers_need = ceil(($uni_galaxyRowPlanet['debris_metal'] + $uni_galaxyRowPlanet['debris_crystal']) / $sn_data[SHIP_RECYCLER]['capacity']);
     $recyclers_to_send = min($CurrentRC, max(0, $recyclers_need - $recyclers_incoming));
   }
 
-  $RowUserPoints = $GalaxyRowUser['total_points'];
+  $RowUserPoints = $uni_galaxyRowUser['total_points'];
   $template->assign_block_vars('galaxyrow', array(
-     'PLANET_ID'        => $GalaxyRowPlanet['id'],
+     'PLANET_ID'        => $uni_galaxyRowPlanet['id'],
      'PLANET_NUM'       => $Planet,
-     'PLANET_NAME'      => $GalaxyRowPlanet['name'],
-     'PLANET_NAME_JS'   => js_safe_string($GalaxyRowPlanet['name']),
-     'PLANET_DESTROYED' => $GalaxyRowPlanet["destruyed"],
-     'PLANET_TYPE'      => $GalaxyRowPlanet["planet_type"],
-     'PLANET_ACTIVITY'  => floor(($time_now - $GalaxyRowPlanet['last_update'])/60),
-     'PLANET_IMAGE'     => $GalaxyRowPlanet['image'],
+     'PLANET_NAME'      => $uni_galaxyRowPlanet['name'],
+     'PLANET_NAME_JS'   => js_safe_string($uni_galaxyRowPlanet['name']),
+     'PLANET_DESTROYED' => $uni_galaxyRowPlanet["destruyed"],
+     'PLANET_TYPE'      => $uni_galaxyRowPlanet["planet_type"],
+     'PLANET_ACTIVITY'  => floor(($time_now - $uni_galaxyRowPlanet['last_update'])/60),
+     'PLANET_IMAGE'     => $uni_galaxyRowPlanet['image'],
      'PLANET_FLEET_ID'  => $planet_fleet_id,
 
-     'MOON_NAME_JS'   => js_safe_string($GalaxyRowMoon['name']),
-     'MOON_DIAMETER'  => number_format($GalaxyRowMoon['diameter'], 0, '', '.'),
-     'MOON_TEMP'      => number_format($GalaxyRowMoon['temp_min'], 0, '', '.'),
+     'MOON_NAME_JS'   => js_safe_string($uni_galaxyRowMoon['name']),
+     'MOON_DIAMETER'  => number_format($uni_galaxyRowMoon['diameter'], 0, '', '.'),
+     'MOON_TEMP'      => number_format($uni_galaxyRowMoon['temp_min'], 0, '', '.'),
      'MOON_FLEET_ID'  => $moon_fleet_id,
 
-     'DEBRIS_METAL'   => $GalaxyRowPlanet['debris_metal'],
-     'DEBRIS_CRYSTAL' => $GalaxyRowPlanet['debris_crystal'],
+     'DEBRIS_METAL'   => $uni_galaxyRowPlanet['debris_metal'],
+     'DEBRIS_CRYSTAL' => $uni_galaxyRowPlanet['debris_crystal'],
      'DEBRIS_RC_INC'  => $recyclers_incoming,
      'DEBRIS_RC_SEND' => $recyclers_to_send, // <= $recyclers_incoming ? 0 : $recyclers_to_send - $recyclers_incoming,
      'DEBRIS_RC_NEED' => $recyclers_need,
 
-     'USER_ID'       => $GalaxyRowUser['id'],
-     'USER_NAME'     => $GalaxyRowUser['username'],
-     'USER_NAME_JS'  => js_safe_string($GalaxyRowUser['username']),
-     'USER_RANK'     => $GalaxyRowUser['total_rank'],
-     'USER_BANNED'   => $GalaxyRowUser['banaday'],
-     'USER_VACATION' => $GalaxyRowUser['vacation'],
-     'USER_ACTIVITY' => floor(($time_now - $GalaxyRowUser['onlinetime'])/(60*60*24)),
+     'USER_ID'       => $uni_galaxyRowUser['id'],
+     'USER_NAME'     => $uni_galaxyRowUser['username'],
+     'USER_NAME_JS'  => js_safe_string($uni_galaxyRowUser['username']),
+     'USER_RANK'     => $uni_galaxyRowUser['total_rank'],
+     'USER_BANNED'   => $uni_galaxyRowUser['banaday'],
+     'USER_VACATION' => $uni_galaxyRowUser['vacation'],
+     'USER_ACTIVITY' => floor(($time_now - $uni_galaxyRowUser['onlinetime'])/(60*60*24)),
      'USER_PROTECTED'=> $RowUserPoints <= $config->game_noob_points,
      'USER_NOOB'     => $RowUserPoints * $config->game_noob_factor < $CurrentPoints && $config->game_noob_factor,
      'USER_STRONG'   => $CurrentPoints * $config->game_noob_factor < $RowUserPoints && $config->game_noob_factor,
-     'USER_AUTH'     => $GalaxyRowUser['authlevel'],
-     'USER_ADMIN'    => $lang['user_level_shortcut'][$GalaxyRowUser['authlevel']],
+     'USER_AUTH'     => $uni_galaxyRowUser['authlevel'],
+     'USER_ADMIN'    => $lang['user_level_shortcut'][$uni_galaxyRowUser['authlevel']],
 
-     'ALLY_ID'       => $GalaxyRowUser['ally_id'],
-     'ALLY_TAG'      => $GalaxyRowUser['ally_tag'],
+     'ALLY_ID'       => $uni_galaxyRowUser['ally_id'],
+     'ALLY_TAG'      => $uni_galaxyRowUser['ally_tag'],
   ));
 }
 
@@ -284,6 +290,8 @@ foreach($cached['allies'] as $PlanetAlly)
 }
 
 $ally_count = doquery("SELECT COUNT(*) AS ally_count FROM {{alliance}};", '', true);
+$galaxy_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = 0 limit 1;", '', true);
+$system_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;", '', true);
 $template->assign_vars(array(
      'rows'           => $Result,
      'userCount'      => $config->users_amount,
@@ -295,12 +303,12 @@ $template->assign_vars(array(
      'curPlanetP'     => $planetrow['planet'],
      'curPlanetPT'    => $planetrow['planet_type'],
      'deathStars'     => $planetrow[$sn_data[SHIP_DEATH_STAR]['name']],
-     'galaxy'         => $galaxy,
-     'system'         => $system,
+     'galaxy'         => $uni_galaxy,
+     'system'         => $uni_system,
      'planet'         => $planet,
      'MIPs'           => $CurrentMIP,
      'MODE'           => $mode,
-     'planets'        => $planetcount ? ($lang['gal_planets'] . $planetcount) : $lang['gal_planetNone'],
+     'planets'        => $planetcount, //  ? ($lang['gal_planets'] . $planetcount) : $lang['gal_planetNone']
      'RCs'            => pretty_number($planetrow['recycler']),
      'SPs'            => pretty_number($planetrow['spy_sonde']),
      'SHOW_ADMIN'     => SHOW_ADMIN,
@@ -314,10 +322,12 @@ $template->assign_vars(array(
      'ACT_FRIEND'     => $user['settings_bud'],
      'opt_uni_avatar_user'     => $user['opt_uni_avatar_user'],
      'opt_uni_avatar_ally'     => $user['opt_uni_avatar_ally'],
-     'ACT_MISSILE'    => $user["settings_mis"] && ($CurrentMIP > 0) && ($galaxy == $CurrentGalaxy) && ($system >= $CurrentSystem - $MissileRange) && ($system <= $CurrentSystem + $MissileRange),
-     'PLANET_PHALANX' => $HavePhalanx && $galaxy == $CurrentGalaxy && $system >= $CurrentSystem - $PhalanxRange && $system <= $CurrentSystem + $PhalanxRange,
+     'ACT_MISSILE'    => $user["settings_mis"] && ($CurrentMIP > 0) && ($uni_galaxy == $CurrentGalaxy) && ($uni_system >= $CurrentSystem - $MissileRange) && ($uni_system <= $CurrentSystem + $MissileRange),
+     'PLANET_PHALANX' => $HavePhalanx && $uni_galaxy == $CurrentGalaxy && $uni_system >= $CurrentSystem - $PhalanxRange && $uni_system <= $CurrentSystem + $PhalanxRange,
      'PAGE_HINT'      => $lang['gal_sys_hint'],
      'LANG_RECYCLERS' => $lang['tech'][SHIP_RECYCLER],
+     'GALAXY_NAME'    => $galaxy_name['universe_name'],
+     'SYSTEM_NAME'    => $system_name['universe_name'],
    )
 );
 

@@ -121,27 +121,33 @@ uni_row[{galaxyrow.PLANET_NUM}] =
 </form>
 
 <table width=569><tbody>
-  <tr><td class=c colspan=8><span class="fl">{L_Solar_system} [{galaxy}:{system}] - {planets}</span>
-    <span class="fr" style="cursor: pointer;" onmouseout='popup_hide();' onmouseover='popup_show("\
-    <table>\
-    <tr><td class=c colspan=2>{L_sys_planet}</td></tr>\
-    <tr class=myplanet><td colspan=2>{L_uni_legend_myplanet}</td></tr>\
-    <tr class=allymember><td colspan=2>{L_uni_legend_allyplanet}</td></tr>\
-    <tr><td class=c colspan=2>{L_sys_player}</td></tr>\
-    <tr class=protected><td>{L_uni_protected_player}</td><td>{L_uni_protected_player_shortcut}</td></tr>\
-    <tr class=noob><td>{L_Weak_player}</td><td>{L_weak_player_shortcut}</td></tr>\
-    <tr class=strong><td>{L_Strong_player}</td><td>{L_strong_player_shortcut}</td></tr>\
-    <tr class=vacation><td>{L_Way_vacation}</td><td>{L_vacation_shortcut}</td></tr>\
-    <tr class=banned><td>{L_Pendent_user}</td><td>{L_banned_shortcut}</td></tr>\
-    <tr class=player_active><td>{L_Active}</td><td>{L_active_shortcut}</td></tr>\
-    <tr class=inactive><td>{L_Inactive_7_days}</td><td>{L_inactif_7_shortcut}</td></tr>\
-    <tr class=longinactive><td>{L_Inactive_28_days}</td><td>{L_inactif_28_shortcut}</td></tr>\
-    <!-- IF SHOW_ADMIN --><tr class=admin><td>{L_user_level[3]}</td><td>{L_user_level_shortcut[3]}</td></tr>\
-    <tr class=admin><td>{L_user_level[2]}</td><td>{L_user_level_shortcut[2]}</td></tr>\
-    <tr class=admin><td>{L_user_level[1]}</td><td>{L_user_level_shortcut[1]}</td></tr><!-- ENDIF -->\
-    </table>");'>{L_Legend}</span>
+  <tr><th class="c_l" colspan="8">{L_sys_galaxy} {galaxy} <span class="ok">{GALAXY_NAME}</span> <a class="link" href="galaxy.php?mode=name&galaxy={galaxy}&system=0"><!-- IF GALAXY_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a>
+    <span class="fr ok link" style="cursor: pointer;" onmouseout='popup_hide();' onmouseover='popup_show("\
+      <table>\
+      <tr><td class=c colspan=2>{L_sys_planet}</td></tr>\
+      <tr class=myplanet><td colspan=2>{L_uni_legend_myplanet}</td></tr>\
+      <tr class=allymember><td colspan=2>{L_uni_legend_allyplanet}</td></tr>\
+      <tr><td class=c colspan=2>{L_sys_player}</td></tr>\
+      <tr class=protected><td>{L_uni_protected_player}</td><td>{L_uni_protected_player_shortcut}</td></tr>\
+      <tr class=noob><td>{L_Weak_player}</td><td>{L_weak_player_shortcut}</td></tr>\
+      <tr class=strong><td>{L_Strong_player}</td><td>{L_strong_player_shortcut}</td></tr>\
+      <tr class=vacation><td>{L_Way_vacation}</td><td>{L_vacation_shortcut}</td></tr>\
+      <tr class=banned><td>{L_Pendent_user}</td><td>{L_banned_shortcut}</td></tr>\
+      <tr class=player_active><td>{L_Active}</td><td>{L_active_shortcut}</td></tr>\
+      <tr class=inactive><td>{L_Inactive_7_days}</td><td>{L_inactif_7_shortcut}</td></tr>\
+      <tr class=longinactive><td>{L_Inactive_28_days}</td><td>{L_inactif_28_shortcut}</td></tr>\
+      <!-- IF SHOW_ADMIN --><tr class=admin><td>{L_user_level[3]}</td><td>{L_user_level_shortcut[3]}</td></tr>\
+      <tr class=admin><td>{L_user_level[2]}</td><td>{L_user_level_shortcut[2]}</td></tr>\
+      <tr class=admin><td>{L_user_level[1]}</td><td>{L_user_level_shortcut[1]}</td></tr><!-- ENDIF -->\
+      </table>");'>{L_Legend}
+    </span>
+  </th></tr>
+
+  <tr><th class="c_l" colspan=8>{L_sys_system} [{galaxy}:{system}] <span class="ok">{SYSTEM_NAME}</span> <a class="link" href="galaxy.php?mode=name&galaxy={galaxy}&system={system}"><!-- IF SYSTEM_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a>
+  <span class="fr"><!-- IF planets -->{L_gal_planets} {planets}<!-- ELSE -->{L_gal_planetNone}<!-- ENDIF --></span>
     </td>
   </tr>
+
   <tr align="center">
     <td class=c>{L_Pos}</td>
     <td class=c>{L_Planet}</td>

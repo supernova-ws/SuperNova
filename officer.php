@@ -112,9 +112,7 @@ if($mercenary_id = sys_get_param_int('mercenary_id'))
 
     rpg_points_change($user['id'], RPG_MERCENARY, -($darkmater_cost), "Spent for officer {$lang['tech'][$mercenary_id]} ID {$mercenary_id}");
     doquery('COMMIT;');
-    header("Location: officer.php?goto={$mercenary_id}");
-    ob_end_flush();
-    die();
+    sys_redirect("officer.php?goto={$mercenary_id}");
   }
   catch (Exception $e)
   {
