@@ -150,21 +150,19 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
       doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = {$uni_galaxyRowPlanet['destruyed']} WHERE `id` = {$uni_galaxyRowPlanet['id']} LIMIT 1;");
     }
 
+    if($uni_galaxyRowUser['id'])
     {
-      if($uni_galaxyRowUser['id'])
+      $planetcount++;
+      if($uni_galaxyRowUser['ally_id'])
       {
-        $planetcount++;
-        if($uni_galaxyRowUser['ally_id'])
+        if($cached['allies'][$uni_galaxyRowUser['ally_id']])
         {
-          if($cached['allies'][$uni_galaxyRowUser['ally_id']])
-          {
-            $allyquery = $cached['allies'][$uni_galaxyRowUser['ally_id']];
-          }
-          else
-          {
-            $allyquery = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$uni_galaxyRowUser['ally_id']}';", '', true);
-            $cached['allies'][$uni_galaxyRowUser['ally_id']] = $allyquery;
-          }
+          $allyquery = $cached['allies'][$uni_galaxyRowUser['ally_id']];
+        }
+        else
+        {
+          $allyquery = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$uni_galaxyRowUser['ally_id']}';", '', true);
+          $cached['allies'][$uni_galaxyRowUser['ally_id']] = $allyquery;
         }
       }
 
@@ -263,6 +261,23 @@ foreach($cached['users'] as $PlanetUser)
 {
   if($PlanetUser)
   {
+    $user_ally = $cached['allies'][$PlanetUser['ally_id']];
+    if(isset($user_ally))
+    {
+      if($PlanetUser['id'] == $user_ally['ally_owner'])
+      {
+        $user_rank_title = $user_ally['ally_owner_range'];
+      }
+      else
+      {
+        $ally_ranks = explode(';', $user_ally['ranklist']);
+        list($user_rank_title) = explode(',', $ally_ranks[$PlanetUser['ally_rank_id']]);
+      }
+    }
+    else
+    {
+      $user_rank_title = '';
+    }
     $template->assign_block_vars('users', array(
       'ID'   => $PlanetUser['id'],
       'NAME' => $PlanetUser['username'],
@@ -270,6 +285,8 @@ foreach($cached['users'] as $PlanetUser)
       'RANK' => $PlanetUser['total_rank'],
       'SEX'      => $PlanetUser['sex'] == 'F' ? 'female' : 'male',
       'AVATAR'   => $PlanetUser['avatar'],
+      'ALLY_TAG' => js_safe_string($user_ally['ally_tag']),
+      'ALLY_TITLE' => str_replace(' ', '&nbsp', js_safe_string($user_rank_title)),
     ));
   }
 }

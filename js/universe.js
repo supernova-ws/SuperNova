@@ -7,7 +7,15 @@ function show_user(id)
     {
       result += "<td rowspan=\"4\"><img src=\"" + sn_path_prefix + "images/avatar/avatar_" + id + ".png\" height=75 width=75 /></td>";
     }
-    result += "<td class=c><center>" + language['sys_player'] + "&nbsp;" + users[id]['name'] + "<img src=\"" + dpath + "images/sex_" + (users[id]['sex'] == 'female' ? 'female' : 'male') + ".png\" />" + "<br>" + language['place'] + "&nbsp;" + users[id]['rank'] + "/" + game_user_count + "</center></td></tr>";
+    result += "<td class=c><center>";
+    result += language['sys_player'] + "&nbsp;" + users[id]['name'] + "<img src=\"" + dpath + "images/sex_" + (users[id]['sex'] == 'female' ? 'female' : 'male') + ".png\" />" + "<br>";
+    if(users[id]['ally_title'] && users[id]['ally_title'] != undefined)
+    {
+//      result += language['place'] + "&nbsp;" + users[id]['ally_title'] + "/" + game_user_count + "<br>";
+      result += users[id]['ally_title'] + "[" + users[id]['ally_tag'] + "]<br>";
+    }
+    result += language['place'] + "&nbsp;" + users[id]['rank'] + "/" + game_user_count;
+    result += "</center></td></tr>";
 
     if (id != user_id)
     {

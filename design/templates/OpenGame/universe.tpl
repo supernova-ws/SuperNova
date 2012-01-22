@@ -66,7 +66,7 @@ jQuery.extend(language, {
 });
 
 var users = new Array();
-<!-- BEGIN users --><!-- IF users.ID -->users[{users.ID}] = {name: '{users.NAME_JS}', rank: '{users.RANK}', sex: '{users.SEX}', avatar: '{users.AVATAR}'};<!-- ENDIF --><!-- END users -->
+<!-- BEGIN users --><!-- IF users.ID -->users[{users.ID}] = {name: '{users.NAME_JS}', rank: '{users.RANK}', ally_title: '{users.ALLY_TITLE}', ally_tag: '{users.ALLY_TAG}', sex: '{users.SEX}', avatar: '{users.AVATAR}'};<!-- ENDIF --><!-- END users -->
 
 var allies = new Array();
 <!-- BEGIN alliances --><!-- IF alliances.ID -->allies[{alliances.ID}] = {'name': '{alliances.NAME_JS}', 'rank' : '{alliances.RANK}','members': '{alliances.MEMBERS}', 'url': '{alliances.URL}', avatar: '{alliances.AVATAR}'};
@@ -121,7 +121,8 @@ uni_row[{galaxyrow.PLANET_NUM}] =
 </form>
 
 <table width=569><tbody>
-  <tr><th class="c_l" colspan="8">{L_sys_galaxy} {galaxy} <span class="ok">{GALAXY_NAME}</span> <a class="link" href="galaxy.php?mode=name&galaxy={galaxy}&system=0"><!-- IF GALAXY_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a>
+  <tr><th class="c_l" colspan="8">
+    <span class="fl">{L_sys_galaxy} {galaxy} <span class="ok">{GALAXY_NAME}</span> <a class="link" href="galaxy.php?mode=name&galaxy={galaxy}&system=0"><!-- IF GALAXY_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a></span>
     <span class="fr ok link" style="cursor: pointer;" onmouseout='popup_hide();' onmouseover='popup_show("\
       <table>\
       <tr><td class=c colspan=2>{L_sys_planet}</td></tr>\
@@ -143,10 +144,10 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     </span>
   </th></tr>
 
-  <tr><th class="c_l" colspan=8>{L_sys_system} [{galaxy}:{system}] <span class="ok">{SYSTEM_NAME}</span> <a class="link" href="galaxy.php?mode=name&galaxy={galaxy}&system={system}"><!-- IF SYSTEM_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a>
-  <span class="fr"><!-- IF planets -->{L_gal_planets} {planets}<!-- ELSE -->{L_gal_planetNone}<!-- ENDIF --></span>
-    </td>
-  </tr>
+  <tr><th class="c_l" colspan=8>
+    <span class="fl">{L_sys_system} [{galaxy}:{system}] <span class="ok">{SYSTEM_NAME}</span> <a class="link" href="galaxy.php?mode=name&galaxy={galaxy}&system={system}"><!-- IF SYSTEM_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a></span>
+    <span class="fr"><!-- IF planets -->{L_gal_planets} {planets}<!-- ELSE -->{L_gal_planetNone}<!-- ENDIF --></span>
+  </th></tr>
 
   <tr align="center">
     <td class=c>{L_Pos}</td>
