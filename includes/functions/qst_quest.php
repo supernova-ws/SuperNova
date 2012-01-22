@@ -16,24 +16,32 @@ function qst_render_page()
   {
     $quest_id = sys_get_param_id('id');
     $quest_name = sys_get_param_str_raw('QUEST_NAME');
-    if (!empty($quest_name))
+    if(!empty($quest_name))
     {
       $quest_description = sys_get_param_str_raw('QUEST_DESCRIPTION');
       try
       {
-        $quest_rewards_id = sys_get_param_int('QUEST_REWARDS_ID');
-        if(!in_array($quest_rewards_id, $quest_reward_allowed))
+        $quest_rewards_list = sys_get_param('QUEST_REWARDS_LIST');
+        $quest_rewards = array();
+        foreach($quest_rewards_list as $quest_rewards_id => $quest_rewards_amount)
         {
-          throw new Exception($lang['qst_adm_err_reward_type']);
+          if(!in_array($quest_rewards_id, $quest_reward_allowed))
+          {
+            throw new Exception($lang['qst_adm_err_reward_type']);
+          }
+
+          if($quest_rewards_amount <= 0)
+          {
+            throw new Exception($lang['qst_adm_err_reward_amount']);
+          }
+          $quest_rewards[] = "{$quest_rewards_id},{$quest_rewards_amount}";
+        }
+        if(empty($quest_rewards))
+        {
+          throw new Exception($lang['qst_adm_err_reward_empty']);
         }
 
-        $quest_rewards_amount = sys_get_param_float('QUEST_REWARDS_AMOUNT');
-        if($quest_rewards_amount <= 0)
-        {
-          throw new Exception($lang['qst_adm_err_reward_amount']);
-        }
-
-        $quest_rewards = "{$quest_rewards_id},{$quest_rewards_amount}";
+        $quest_rewards = implode(';', $quest_rewards);
 
         $quest_unit_id = sys_get_param_int('QUEST_UNIT_ID');
         if(!in_array($quest_unit_id, $quest_units_allowed))
@@ -116,37 +124,55 @@ function qst_render_page()
   }
 
   $quest_list = qst_get_quests($user_id);
-  $templatized = array(
+  $template->assign_vars(array(
     'AUTHLEVEL' => $user['authlevel'],
     'TOTAL'     => count($quest_list),
     'mode'      => $mode,
     'USER_ID'   => $user_id,
     'IN_ADMIN'  => $in_admin,
-  );
+  ));
 
   if($quest)
   {
-    $templatized = array_merge(qst_templatize(qst_quest_parse($quest), false), $templatized);
+    $quest_templatized = qst_templatize(qst_quest_parse($quest, false));
+  }
+  else
+  {
+    $quest_templatized['quest_rewards_list'] = array();
   }
 
-  $template->assign_vars($templatized);
-
-  foreach($quest_list as $quest)
+  foreach($quest_reward_allowed as $unit_id)
   {
-    $template->assign_block_vars('quest', qst_templatize($quest, true));
+    $found = false;
+    foreach($quest_templatized['quest_rewards_list'] as $quest_templatized_reward)
+    {
+      if($quest_templatized_reward['ID'] == $unit_id)
+      {
+        $found = true;
+        break;
+      }
+    }
+
+    if(!$found)
+    {
+      $quest_templatized['quest_rewards_list'][$unit_id] = array(
+        'ID'     => $unit_id,
+        'NAME'   => $lang['tech'][$unit_id],
+        'AMOUNT' => 0,
+      );
+    }
+  }
+
+  qst_assign_to_template(&$template, $quest_templatized);
+
+  foreach($quest_list as $quest_data)
+  {
+    qst_assign_to_template(&$template, qst_templatize($quest_data, true), 'quest');
   }
 
   foreach($quest_units_allowed as $unit_id)
   {
     $template->assign_block_vars('allowed_unit', array(
-      'ID'   => $unit_id,
-      'NAME' => $lang['tech'][$unit_id],
-    ));
-  }
-
-  foreach($quest_reward_allowed as $unit_id)
-  {
-    $template->assign_block_vars('allowed_reward', array(
       'ID'   => $unit_id,
       'NAME' => $lang['tech'][$unit_id],
     ));
@@ -190,10 +216,36 @@ function qst_get_quests($user_id = false, $status = false)
   return $quest_list;
 }
 
+function qst_assign_to_template(&$template, $quest_templatized, $block_name = false)
+{
+  if($block_name)
+  {
+    $template->assign_block_vars($block_name, $quest_templatized);
+  }
+  else
+  {
+    $template->assign_vars($quest_templatized);
+    if(!empty($quest_templatized['quest_rewards_list']))
+    {
+      foreach($quest_templatized['quest_rewards_list'] as $quest_reward)
+      {
+        $template->assign_block_vars(($block_name ? $block_name . '.' : '') . 'quest_rewards_list', $quest_reward);
+      }
+    }
+  }
+}
+
 function qst_quest_parse($quest)
 {
   list($quest['quest_unit_id'], $quest['quest_unit_amount']) = explode(',', $quest['quest_conditions']);
-  list($quest['quest_rewards_id'], $quest['quest_rewards_amount']) = explode(',', $quest['quest_rewards']);
+
+  $tmp = explode(';', $quest['quest_rewards']);
+  $quest['quest_rewards_list'] = array();
+  foreach($tmp as $quest_reward_str)
+  {
+    list($quest_reward_id, $quest_reward_amount) = explode(',', $quest_reward_str);
+    $quest['quest_rewards_list'][$quest_reward_id] = $quest_reward_amount;
+  }
 
   return $quest;
 }
@@ -202,20 +254,28 @@ function qst_templatize($quest, $for_display = true)
 {
   global $lang;
 
+  $tmp = array();
+  foreach($quest['quest_rewards_list'] as $quest_reward_id => $quest_reward_amount)
+  {
+    $tmp[] = array(
+      'ID'     => $quest_reward_id,
+      'NAME'   => $for_display ? str_replace(' ', '&nbsp;', $lang['tech'][$quest_reward_id]) : $lang['tech'][$quest_reward_id],
+      'AMOUNT' => $quest_reward_amount,
+    );
+  }
+
   return array(
-    'QUEST_ID'             => $quest['quest_id'],
-    'QUEST_NAME'           => $quest['quest_name'],
-    'QUEST_TYPE'           => $quest['quest_type'],
-    'QUEST_DESCRIPTION'    => $for_display ? sys_bbcodeParse($quest['quest_description']) : $quest['quest_description'],
-    'QUEST_CONDITIONS'     => $quest['quest_condition'],
-    'QUEST_REWARDS_ID'     => $quest['quest_rewards_id'],
-    'QUEST_REWARDS_NAME'   => $lang['tech'][$quest['quest_rewards_id']],
-    'QUEST_REWARDS_AMOUNT' => $quest['quest_rewards_amount'],
-    'QUEST_UNIT_ID'        => $quest['quest_unit_id'],
-    'QUEST_UNIT_NAME'      => $lang['tech'][$quest['quest_unit_id']],
-    'QUEST_UNIT_AMOUNT'    => $quest['quest_unit_amount'],
-    'QUEST_STATUS'         => intval($quest['quest_status_status']),
-    'QUEST_STATUS_NAME'    => $lang['qst_status_list'][intval($quest['quest_status_status'])],
+    'QUEST_ID'           => $quest['quest_id'],
+    'QUEST_NAME'         => $quest['quest_name'],
+    'QUEST_TYPE'         => $quest['quest_type'],
+    'QUEST_DESCRIPTION'  => $for_display ? sys_bbcodeParse($quest['quest_description']) : $quest['quest_description'],
+    'QUEST_CONDITIONS'   => $quest['quest_condition'],
+    'QUEST_UNIT_ID'      => $quest['quest_unit_id'],
+    'QUEST_UNIT_NAME'    => $lang['tech'][$quest['quest_unit_id']],
+    'QUEST_UNIT_AMOUNT'  => $quest['quest_unit_amount'],
+    'QUEST_STATUS'       => intval($quest['quest_status_status']),
+    'QUEST_STATUS_NAME'  => $lang['qst_status_list'][intval($quest['quest_status_status'])],
+    'quest_rewards_list' => $tmp,
   );
 }
 

@@ -32,6 +32,12 @@
       <tr class="c_l">
         <td>{L_qst_rewards}</td>
         <td>
+          <!-- BEGIN quest_rewards_list -->
+            <input name="QUEST_REWARDS_LIST[{quest_rewards_list.ID}]" size="15" maxlength="15" value="{quest_rewards_list.AMOUNT}"> {quest_rewards_list.NAME}<br/>
+          <!-- END quest_rewards_list -->
+        </td>
+        <!-- IF false -->
+        <td>
           <input name="QUEST_REWARDS_AMOUNT" size="15" maxlength="15" value="{QUEST_REWARDS_AMOUNT}"> x 
           <select name="QUEST_REWARDS_ID">
             <!-- BEGIN allowed_reward -->
@@ -39,6 +45,7 @@
             <!-- END allowed_reward -->
           </select>
         </td>
+        <!-- ENDIF -->
       </tr>
       <tr>
         <td colspan="2" class="c_c">
@@ -81,7 +88,11 @@
     <tr>
       <th class="c_c">{quest.QUEST_NAME}</th>
       <th class="c_c" width="240">{quest.QUEST_UNIT_AMOUNT}&nbsp;x&nbsp;{quest.QUEST_UNIT_NAME}</th>
-      <th class="c_c" width="120">{quest.QUEST_REWARDS_AMOUNT}&nbsp;{quest.QUEST_REWARDS_NAME}</th>
+      <th class="c_c" width="120">
+          <!-- BEGIN quest_rewards_list -->
+            {quest_rewards_list.AMOUNT}&nbsp;x&nbsp;{quest_rewards_list.NAME}<br/>
+          <!-- END quest_rewards_list -->
+      </th>
       <!-- IF USER_ID -->
         <th class="c_c <!-- IF quest.QUEST_STATUS == 2 -->success<!-- ELSE -->notice<!-- ENDIF -->" width="80">{quest.QUEST_STATUS_NAME}</th>
       <!-- ENDIF -->

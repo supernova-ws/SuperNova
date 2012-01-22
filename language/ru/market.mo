@@ -69,6 +69,8 @@ $lang = array_merge($lang, array(
   'eco_mrk_trader_to' => 'Обменять на',
   'eco_mrk_trader_course' => 'Курс',
   'eco_mrk_trader_left' => 'Остаток',
+  'eco_mrk_trader_resources_all' => 'Все ресурсы',
+
   'eco_mrk_scraper' => 'Скупка кораблей',
   'eco_mrk_scraper_price' => 'Выход лома',
   'eco_mrk_scraper_perShip' => 'с корабля',
@@ -79,6 +81,7 @@ $lang = array_merge($lang, array(
   'eco_mrk_scraper_res' => 'Получен следующий лом:',
   'eco_mrk_scraper_ships' => 'Пущены на лом следующие корабли:',
   'eco_mrk_scraper_noShip' => 'На орбите нет кораблей',
+
   'eco_mrk_stockman' => 'Продавец подержанных кораблей',
   'eco_mrk_stockman_price' => 'Цена',
   'eco_mrk_stockman_perShip' => 'корабля',
@@ -87,6 +90,7 @@ $lang = array_merge($lang, array(
   'eco_mrk_stockman_res' => 'Стоимость купленных кораблей:',
   'eco_mrk_stockman_ships' => 'Куплены следующие корабли:',
   'eco_mrk_stockman_noShip' => 'У продавца сейчас нет кораблей для продажи',
+
   'eco_mrk_exchange' => 'Биржа обмена ресурсов',
   'eco_mrk_banker' => 'Банкир',
   'eco_mrk_pawnshop' => 'Ломбард',

@@ -71,6 +71,8 @@ $lang = array_merge($lang, array(
   'eco_mrk_trader_to' => 'Exchanged for',
   'eco_mrk_trader_course' => 'Course',
   'eco_mrk_trader_left' => 'Balance',
+  'eco_mrk_trader_resources_all' => 'All resources',
+
   'eco_mrk_scraper' => 'Reworked ships for scrap',
   'eco_mrk_scraper_price' => 'Scrap output',
   'eco_mrk_scraper_perShip' => 'from ship',
@@ -81,6 +83,7 @@ $lang = array_merge($lang, array(
   'eco_mrk_scraper_res' => 'The following scrap:',
   'eco_mrk_scraper_ships' => 'Put the following ships for scrap:',
   'eco_mrk_scraper_noShip' => 'There spacecrafts in orbit',
+
   'eco_mrk_stockman' => 'Seller of used vehicles',
   'eco_mrk_stockman_price' => 'Price',
   'eco_mrk_stockman_perShip' => 'Ship',
@@ -89,6 +92,7 @@ $lang = array_merge($lang, array(
   'eco_mrk_stockman_res' => 'Cost of purchased ships:',
   'eco_mrk_stockman_ships' => 'Purchased the following ships:',
   'eco_mrk_stockman_noShip' => 'The seller now has no ships for sale',
+
   'eco_mrk_exchange' => 'Resource Exchange',
   'eco_mrk_banker' => 'Banker',
   'eco_mrk_pawnshop' => 'Pawnshop',

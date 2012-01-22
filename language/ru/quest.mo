@@ -52,6 +52,7 @@ $lang = array_merge($lang, array(
   'qst_adm_err_unit_amount' => 'Неправильное количество юнитов',
   'qst_adm_err_reward_amount' => 'Неправильный размер награды',
   'qst_adm_err_reward_type' => 'Неправильный тип награды',
+  'qst_adm_err_reward_empty' => 'Пустая награда квеста',
 ));
 
 ?>
