@@ -4,6 +4,8 @@
     <title>{title}</title>
     <link rel="shortcut icon" href="{-path_prefix-}favicon.ico" />
     <link rel="stylesheet" type="text/css" href="{-path_prefix-}design/css/jquery.css" />
+    <link rel="stylesheet" type="text/css" href="{-path_prefix-}{dpath}jquery.css" />
+
     <link rel="stylesheet" type="text/css" href="{-path_prefix-}design/css/global.css" />
     <!--[if IE]>
     <link rel="stylesheet" type="text/css" href="{-path_prefix-}design/css/global-ie.css" />
