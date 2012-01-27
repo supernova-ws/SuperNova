@@ -453,4 +453,37 @@ function tpl_get_fleets_flying(&$user)
   return $fleet_flying_list;
 }
 
+function tpl_assign_hangar($que_type, $planet, &$template)
+{
+  global $user, $lang;
+
+  $que_length = 0;
+  $hangar_que_strings = explode(';', $planet['b_hangar_id']);
+  foreach($hangar_que_strings as $hangar_que_string_id => $hangar_que_string)
+  {
+    if(!$hangar_que_string)
+    {
+      continue;
+    }
+
+    list($unit_id, $unit_amount) = explode(',', $hangar_que_string);
+
+    $unit_data = eco_get_build_data($user, $planet, $unit_id, 0);
+
+    $template->assign_block_vars('que', array(
+      'ID' => $unit_id,
+      'QUE' => $que_type,
+      'NAME' => $lang['tech'][$unit_id],
+      'TIME' => $unit_data[RES_TIME][BUILD_CREATE] - ($hangar_que_string_id ? 0 : $planet['b_hangar']),
+      'TIME_FULL' => $unit_data[RES_TIME][BUILD_CREATE],
+      'AMOUNT' => $unit_amount,
+      'LEVEL' => 0,
+    ));
+
+    $que_length++;
+  }
+
+  return($que_length);
+}
+
 ?>
