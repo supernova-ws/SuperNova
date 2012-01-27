@@ -27,17 +27,19 @@ switch ($mode)
 {
   case 'research':
   case QUE_RESEARCH:
-    // --------------------------------------------------------------------------------------------------
-    ResearchBuildingPage($user, $planetrow, $que);
+    require_once('includes/includes/eco_bld_tech.php');
+    eco_bld_tech($user, $planetrow, $que);
   break;
 
   case SUBQUE_FLEET:
   case SUBQUE_DEFENSE:
+    require_once('includes/includes/eco_bld_hangar.php');
     eco_build_hangar($mode, $user, $planetrow, $que);
   break;
 
   case QUE_STRUCTURES:
   default:
+    require_once('includes/includes/eco_bld_structures.php');
     eco_build(QUE_STRUCTURES, $user, $planetrow, $que);
   break;
 }

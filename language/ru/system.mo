@@ -222,6 +222,7 @@ $lang = array_merge($lang, array(
     QUE_RESEARCH   => 'Исследования',
   ),
 
+  'eco_que' => 'Очередь',
   'eco_que_empty' => 'Очередь пуста',
   'eco_que_clear' => 'Очистить очередь',
   'eco_que_trim'  => 'Отменить последнее',

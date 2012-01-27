@@ -59,17 +59,10 @@ if($mode == 'change')
 
         doquery("UPDATE {{planets}} SET
           last_update = '{$time_now}',
-          metal_perhour = '{$config->metal_basic_income}',
-          crystal_perhour = '{$config->crystal_basic_income}',
-          deuterium_perhour = '{$config->deuterium_basic_income}',
-          energy_used = '0',
-          energy_max = '0',
-          metal_mine_porcent = '0',
-          crystal_mine_porcent = '0',
-          deuterium_sintetizer_porcent = '0',
-          solar_plant_porcent = '0',
-          fusion_plant_porcent = '0',
-          solar_satelit_porcent = '0'
+          metal_perhour = '{$config->metal_basic_income}', crystal_perhour = '{$config->crystal_basic_income}', deuterium_perhour = '{$config->deuterium_basic_income}',
+          energy_used = '0', energy_max = '0',
+          metal_mine_porcent = '0', crystal_mine_porcent = '0', deuterium_sintetizer_porcent = '0', solar_plant_porcent = '0',
+          fusion_plant_porcent = '0', solar_satelit_porcent = '0'
         WHERE id = '{$planet['id']}' LIMIT 1;");
       }
       $user['vacation'] = $time_now + $config->player_vacation_time;
@@ -78,8 +71,6 @@ if($mode == 'change')
     {
       $user['vacation'] = $time_now;
     }
-
-//    doquery("UPDATE {{users}} SET `vacation` = '{$user['vacation']}' WHERE `id` = '{$user['id']}' LIMIT 1;");
   }
 
   foreach($user_option_list as $option_group_id => $option_group)

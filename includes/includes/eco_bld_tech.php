@@ -20,7 +20,7 @@ function eco_lab_is_building($que)
   return $que['in_que_abs'][STRUC_LABORATORY] && !$config->BuildLabWhileRun ? true : false;
 }
 
-function ResearchBuildingPage(&$user, &$planet, $que)
+function eco_bld_tech(&$user, &$planet, $que)
 {
   global $config, $sn_data, $lang, $time_now;
 

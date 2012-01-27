@@ -104,6 +104,9 @@ if (!defined('INSIDE'))
     'opt_uni_avatar_ally' => 1,
   );
 
+  $user_option_list[OPT_INTERFACE] = array(
+    'opt_int_struc_vertical' => 0,
+  );
 /*
   foreach($sn_message_groups['switchable'] as $option_id)
   {

@@ -115,9 +115,12 @@ $lang = array_merge($lang, array(
   'opt_vacation_min' => 'минимум до',
   'succeful_changepass' => 'Пароль успешно изменён.<br /><a href="login.php" target="_top">Назад</a>',
 
+  'opt_int_options' => 'Настройки интерфейса',
+
   'opt_custom' => array(
     'opt_uni_avatar_user' => 'Показывать аватар пользователя',
     'opt_uni_avatar_ally' => 'Показывать логотип Альянса',
+    'opt_int_struc_vertical' => 'Вертикальная очередь построек',
   ),
 ));
 

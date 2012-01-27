@@ -48,45 +48,26 @@ var que_id = '{QUE_ID}';
 
 <!-- DEFINE $QUE_ID = '{QUE_ID}' -->
 <!-- INCLUDE eco_queue.tpl -->
+<!-- IF U_opt_int_struc_vertical && $QUE_NOT_EMPTY -->
+  <!-- DEFINE $COLSPAN = 6 -->
+<!-- ELSE -->
+  <!-- DEFINE $COLSPAN = 5 -->
+<!-- ENDIF -->
 
-<table width=530 id="unit_table">
+<table width="650px" id="unit_table">
   <tr>
-    <td colspan="5" class="c" align="center">
+    <td colspan="{$COLSPAN}" class="c" align="center">
       {L_bld_theyare} {L_bld_cellfree} {FIELDS_FREE} (<!-- IF FIELDS_QUE != 0 --><span style="color: yellow;">{FIELDS_QUE}</span>/<!-- ENDIF --><span class="negative">{FIELDS_CURRENT}</span>/<span class="positive">{FIELDS_MAX}</span>)
     </td>
   </tr>
 
-  <!-- IF $QUE_NOT_EMPTY -->
+    <!-- IF ! U_opt_int_struc_vertical && $QUE_NOT_EMPTY -->
     <tr>
-      <th colspan="5" class="c" align="center">
-        <table width=100% class="noborder">
-          <tr>
-            <th width=120px>
-            <div id="ov_{QUE_ID}"></div>
-            <div id="ov_{QUE_ID}_timer" style="color: lime"></div>
-            <div>{L_sys_total_time}</div>
-            <div id="ov_{QUE_ID}_total" style="color: red"></div>
-          </th>
-          <th id="ov_{QUE_ID}_que">
-            </th>
-          </tr>
-        </table>
-      </th>
-    </tr>
-
-    <tr>
-      <td colspan="5" class="c" align="center">
-        <div class="fl"><a href="buildings.php?mode={QUE_ID}&action=clear">{L_eco_que_clear}</a></div>
-        <div class="fr"><a href="buildings.php?mode={QUE_ID}&action=trim">{L_eco_que_trim}</a></div>
+      <td colspan="5" class="c_c" align="center">
+<!-- INCLUDE eco_bld_queue_list.tpl -->
       </td>
     </tr>
-  <!-- ELSE -->
-    <tr>
-      <th colspan="5" class="c" align="center">
-        {L_eco_que_empty}
-      </th>
-    </tr>
-  <!-- ENDIF -->
+    <!-- ENDIF -->
 
   <!-- IF METAL > 99999999999 || CRYSTAL > 9999999999 || DEUTERIUM > 9999999999 || METAL < -9999999999 || CRYSTAL < -999999999 || DEUTERIUM < -999999999-->
     <!-- DEFINE $FONT_SIZE = '80%' -->
@@ -95,7 +76,7 @@ var que_id = '{QUE_ID}';
   <!-- ENDIF -->
 
   <tr>
-    <td colspan=6 id="unit_info" style="vertical-align: top;">
+    <td colspan="5" id="unit_info" style="vertical-align: top;">
       <table cellspacing=0 cellpadding=0 valign=top style="vertical-align: top; border: 0;" class="noborder" width=100%>
         <tr>
           <th width=120px valign=top>
@@ -148,6 +129,12 @@ var que_id = '{QUE_ID}';
         </tr>
       </table>
     </td>
+
+    <!-- IF U_opt_int_struc_vertical && $QUE_NOT_EMPTY -->
+      <td rowspan="5" class="c_c" align="center" valign="top" width="120px">
+<!-- INCLUDE eco_bld_queue_list.tpl -->
+      </td>
+    <!-- ENDIF -->
   </tr>
 
   <tr>

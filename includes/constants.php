@@ -180,6 +180,7 @@ define('LOGIN_ERROR_EXTERNAL_AUTH'   , 6);
 define('OPT_ALL',      0);
 define('OPT_MESSAGE',  1);
 define('OPT_UNIVERSE', 2);
+define('OPT_INTERFACE', 3);
 
 // Message classes
 define('MSG_TYPE_OUTBOX'   ,  -1);

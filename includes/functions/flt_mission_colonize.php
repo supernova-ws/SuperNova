@@ -39,7 +39,7 @@ function flt_mission_colonize($mission_data)
       {
         // Yes, we can colonize
         $TheMessage = $lang['sys_colo_badpos'];
-        $NewOwnerPlanet = uni_create_planet($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $fleet_row['fleet_owner'], "{$lang['sys_colo_defaultname']} ¹{$iPlanetCount}");
+        $NewOwnerPlanet = uni_create_planet($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $fleet_row['fleet_owner'], "{$lang['sys_colo_defaultname']} {$iPlanetCount}");
         if ($NewOwnerPlanet)
         {
           $TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_allisok'];

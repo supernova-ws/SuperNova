@@ -193,6 +193,8 @@ function eco_build($que_type, $user, &$planet, $que)
     'FLEET_OWN'          => $fleet_list['own']['count'],
 
     'PAGE_HINT'          => $lang['eco_bld_page_hint'],
+
+    'U_opt_int_struc_vertical' => $user['option_list'][OPT_INTERFACE]['opt_int_struc_vertical'],
   ));
 
   display(parsetemplate($template), $lang['Builds']);

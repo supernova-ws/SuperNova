@@ -50,7 +50,7 @@
         <th>{opt_mail2_data}</th>
       </tr>
 
-      <tr> 
+      <tr>
         <th>{L_opt_language}</th>
         <th>
           <select name="langer">
@@ -62,7 +62,7 @@
       <tr>
         <td class="c" colspan="2">{L_general_settings}</td>
       </tr>
-      
+
       <tr>
         <th>{L_opt_lst_ord}</th>
         <th>
@@ -97,17 +97,25 @@
         </th>
       </tr>
 
-<!--
-      <tr title="{L_untoggleip_tip}">
-        <th><label for="noipcheck">{L_untoggleip}</label></th>
-        <th><input name="noipcheck"{opt_noipc_data} type="checkbox" id="noipcheck" /></th>
-      </tr>
--->
+      <!-- IF .options_3 -->
+        <tr>
+          <th class="c_l" colspan="2">{L_opt_int_options}</th>
+        </tr>
+
+        <!-- BEGIN options_3 -->
+          <tr>
+            <td class="c_c"><label for="{options_3.NAME}">{options_3.TEXT}</label></td>
+            <td class="c_c">
+              <input type="checkbox" id="{options_3.NAME}" name="{options_3.NAME}" value="1" <!-- IF options_3.VALUE --> checked<!-- ENDIF -->>
+            </td>
+          </tr>
+        <!-- END options_3 -->
+      <!-- ENDIF -->
 
       <!-- IF .options_2 -->
-      <tr>
-        <th class="c_l" colspan="2">{L_galaxyvision_options}</th>
-      </tr>
+        <tr>
+          <th class="c_l" colspan="2">{L_galaxyvision_options}</th>
+        </tr>
 
         <!-- BEGIN options_2 -->
           <tr>
@@ -143,9 +151,9 @@
       </tr>
 
       <!-- IF .options_1 -->
-      <tr>
-        <th class="c_l" colspan="2">{L_opt_messages}</th>
-      </tr>
+        <tr>
+          <th class="c_l" colspan="2">{L_opt_messages}</th>
+        </tr>
 
         <!-- BEGIN options_1 -->
           <tr>
