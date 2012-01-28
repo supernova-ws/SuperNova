@@ -51,7 +51,8 @@ if($next_stat_update > $config->var_stat_update)
     $debug->warning($msg, 'Stat update', 190);
     $total_time = microtime(true);
 
-    SYS_statCalculate();
+    require_once('includes/includes/sys_stat.php');
+    sys_stat_calculate();
 
     $total_time = microtime(true) - $total_time;
     $msg = "Stat update complete in {$total_time} seconds.";

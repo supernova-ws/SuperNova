@@ -50,7 +50,7 @@ function sta_set_time_limit($sta_update_msg = 'updatins something', $next_step =
   }
 }
 
-function SYS_statCalculate()
+function sys_stat_calculate()
 {
   global $config, $time_now, $sta_update_step, $sn_data;
 
