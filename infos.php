@@ -31,7 +31,6 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
 
   $BuildLevel = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
 
-
   $Prod[STRUC_MINE_METAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['metal_perhour'])));
   $Prod[STRUC_MINE_CRYSTAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['crystal_perhour'])));
   $Prod[STRUC_MINE_DEUTERIUM] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, MRC_TECHNOLOGIST, $config_resource_multiplier * eval($unit_data['deuterium_perhour'])));

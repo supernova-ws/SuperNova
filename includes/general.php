@@ -355,33 +355,34 @@ function mrc_modify_value($user, $planet = array(), $mercenaries, $value)
 {
   global $sn_data;
 
-  if (!is_array($mercenaries))
+  if(!is_array($mercenaries))
   {
     $mercenaries = array($mercenaries);
   }
 
-  foreach ($mercenaries as $mercenary_id)
+  foreach($mercenaries as $mercenary_id)
   {
-    $mercenary = $sn_data[$mercenary_id];
-    $mercenary_bonus = $mercenary['bonus'];
     $mercenary_level = mrc_get_level($user, $planet, $mercenary_id);
 
-    switch ($mercenary['bonus_type'])
+    $mercenary = $sn_data[$mercenary_id];
+    $mercenary_bonus = $mercenary['bonus'];
+
+    switch($mercenary['bonus_type'])
     {
       case BONUS_PERCENT:
         $value *= 1 + $mercenary_level * $mercenary_bonus / 100;
-        break;
+      break;
 
       case BONUS_ADD:
         $value += $mercenary_level * $mercenary_bonus;
-        break;
+      break;
 
       case BONUS_ABILITY:
         $value = $mercenary_level ? $mercenary_level : 0;
-        break;
+      break;
 
       default:
-        break;
+      break;
     }
   }
 
