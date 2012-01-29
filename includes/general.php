@@ -31,7 +31,8 @@ function sn_function_call($func_name, $func_arg = array())
 // Wrappers for functions that supports wrapping
 function mrc_modify_value($user, $planet = array(), $mercenaries, $value)
 {
-  return sn_function_call('mrc_modify_value', func_get_args());
+  $func_args = func_get_args();
+  return sn_function_call('mrc_modify_value', $func_args);
 }
 
 function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false)

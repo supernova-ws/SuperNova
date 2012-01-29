@@ -2,7 +2,8 @@
 // Wrappers for functions
 function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true)
 {
-  return sn_function_call('display', func_get_args());
+  $func_args = func_get_args();
+  return sn_function_call('display', $func_args);
 }
 
 /**

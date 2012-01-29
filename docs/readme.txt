@@ -1497,7 +1497,8 @@ Sypex Dumper
 Теперь добавляем в тот же файл функцию-оболочку:
   function eco_planet_fields_max($planet)
   {
-    return sn_function_call('eco_planet_fields_max', func_get_args());
+    $func_args = func_get_args(); // Для совместимости с PHP <= 5.2.x
+    return sn_function_call('eco_planet_fields_max', $func_args);
   }
 В кавычках указывается имя перекрываемой  функции.  Параметры  функции-оболочки
 должны быть идентичны параметрам  оригинальной  функции.  Теперь  движок  может
@@ -1533,7 +1534,8 @@ PROFIT!
   function the_test(&$var1, $var2)
   {
     // ЭТОТ КОД НЕ БУДЕТ КОРРЕКТНО РАБОТАТЬ В PHP 5.3.1!
-    return sn_function_call('test', func_get_args());
+    $func_args = func_get_args();
+    return sn_function_call('test', $func_args);
 
     // ЧТО БЫ ПОДДЕРЖИВАТЬ СОВМЕСТИМОСТЬ С PHP 5.3.1, ИСПОЛЬЗУЙТЕ КОД
     return sn_function_call('test', array(&$var1, $var2));
