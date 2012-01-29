@@ -121,7 +121,7 @@ else
   {
     if(!$sym_attacker[1][$tech_id])
     {
-      $sym_attacker[1][$tech_id] = $user[$sn_data[$tech_id]['name']];
+      $sym_attacker[1][$tech_id] = mrc_get_level($user, false, $tech_id);
     }
   }
 
@@ -141,7 +141,7 @@ else
 
     if(in_array($unit_id, $sn_data['groups']['tech']) || $unit_id == MRC_ADMIRAL)
     {
-      $value = mrc_get_level($user, $planetrow, $unit_id); // $user[$sn_data[$unit_id]['name']];
+      $value = mrc_get_level($user, $planetrow, $unit_id);
     }
     else
     {
