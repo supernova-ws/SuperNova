@@ -14,21 +14,15 @@ $ally_name     = mysql_real_escape_string($ally_name_raw);
 
 if($ally_tag)
 {
-  if(!$ally_name)
+  if(!$ally_name_raw || !$ally_tag_raw)
   {
     message($lang['have_not_name'], $lang['make_alliance']);
   }
 
-  $query = doquery("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' LIMIT 1;", '', true);
+  $query = doquery("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' or `ally_name` = '{$ally_name}' LIMIT 1;", '', true);
   if($query)
   {
-    message(str_replace('%s', $ally_tag_raw, $lang['always_exist']), $lang['make_alliance']);
-  }
-
-  $query = doquery("SELECT * FROM {{alliance}} WHERE `ally_name` = '{$ally_name}' LIMIT 1;", '', true);
-  if ($query)
-  {
-    message(str_replace('%s', $ally_name_raw, $lang['always_exist']), $lang['make_alliance']);
+    message(str_replace('%s', $query['ally_tag'] == $ally_tag_raw ? $ally_tag_raw : $ally_name_raw, $lang['always_exist']), $lang['make_alliance']);
   }
 
   doquery("INSERT INTO {{alliance}} SET
@@ -40,9 +34,12 @@ if($ally_tag)
     `ranklist` = '{$lang['ali_defaultRankName']},0,0,0,0,0',
     `ally_register_time`= {$time_now}"
   );
+  $ally_id = mysql_insert_id();
+  doquery("UPDATE {{users}} SET `ally_tag` = '{$ally_tag}', `ally_id`='{$ally_id}', `ally_name`='{$ally_name}', `ally_register_time`= {$time_now} WHERE `id`= {$user['id']} LIMIT 1;");
 
-  $query = doquery("SELECT id FROM {{alliance}} WHERE `ally_tag` ='{$ally_tag}' LIMIT 1;", '', true);
-  doquery("UPDATE {{users}} SET `ally_tag` = '{$ally_tag}', `ally_id`='{$query['id']}', `ally_name`='{$ally_name}', `ally_register_time`= {$time_now} WHERE `id`= {$user['id']} LIMIT 1;");
+  doquery("INSERT INTO {{users}} SET `register_time` = {$time_now}, `user_as_ally` = {$ally_id};");
+  $ally_user_id = mysql_insert_id();
+  doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_id} LIMIT 1;");
 
   $page = MessageForm(str_replace('%s', $ally_tag_raw, $lang['ally_maked']), str_replace('%s', $ally_tag_raw, $lang['ally_been_maked']) . "<br><br>", "", $lang['Ok']);
 }

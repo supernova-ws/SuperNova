@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '32');
 define('SN_RELEASE', '33');
-define('SN_VERSION', '33a11');
+define('SN_VERSION', '33a12');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -253,11 +253,13 @@ define('MARKET_NEGATIVE_SHIPS', 10);
 
 
 // *** Mercenary/talent bonus types
-define('BONUS_NONE'    , 0);  // No bonus
-define('BONUS_PERCENT' , 1);  // Percent
-define('BONUS_ADD'     , 2);  // Add
-define('BONUS_ABILITY' , 3);  // Some ability
-define('BONUS_MULTIPLY', 4);  // Multiply by value
+define('BONUS_NONE'    ,            0);  // No bonus
+define('BONUS_PERCENT' ,            1);  // Percent on base value
+define('BONUS_ADD'     ,            2);  // Add
+define('BONUS_ABILITY' ,            3);  // Some ability
+define('BONUS_MULTIPLY',            4);  // Multiply by value
+define('BONUS_PERCENT_CUMULATIVE' , 5);  // Cumulative percent on base value
+define('BONUS_PERCENT_DEGRADED' ,   6);  // Bonus amount degraded with increase as pow(bonus, level) (?)
 
 // *** Action constat (build should be replaced with ACTION)
 define('BUILD_CREATE' ,  1);

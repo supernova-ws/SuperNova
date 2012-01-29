@@ -106,13 +106,13 @@ function sn_login($username, $password, $remember_me = '1')
   $username = mysql_real_escape_string($username);
 
   $login = doquery("SELECT * FROM {{users}} WHERE `username` = '{$username}' LIMIT 1;", '', true);
-  if (!$login)
+  if(!$username || !$login)
   {
     $status = LOGIN_ERROR_USERNAME;
     $error_msg = $lang['Login_FailUser'];
     $login = array();
   }
-  elseif ($login['password'] != md5($password))
+  elseif(!$login['password'] || $login['password'] != md5($password))
   {
     $status = LOGIN_ERROR_PASSWORD;
     $error_msg = $lang['Login_FailPassword'];

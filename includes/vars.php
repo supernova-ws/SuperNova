@@ -17,6 +17,10 @@ if (!defined('INSIDE'))
     'quest_status', 'referrals', 'rw', 'statpoints', 'users'
   );
 
+  $functions = array(
+//    'test' => 'sn_test',
+  );
+
   $sn_message_class_list = array(
      MSG_TYPE_NEW => array(
        'name' => 'new_message',
@@ -576,6 +580,9 @@ if (!defined('INSIDE'))
       'deuterium' => 600,
       'energy' => 0,
       'factor' => 2,
+
+      'bonus' => 1,
+      'bonus_type' => BONUS_ADD,
     ),
 
     TECH_SPY => array(
@@ -594,6 +601,9 @@ if (!defined('INSIDE'))
       'deuterium' => 200,
       'energy' => 0,
       'factor' => 2,
+
+      'bonus' => 1,
+      'bonus_type' => BONUS_ADD,
     ),
 
     TECH_WEAPON => array(
@@ -612,6 +622,9 @@ if (!defined('INSIDE'))
       'deuterium' => 0,
       'energy' => 0,
       'factor' => 2,
+
+      'bonus' => 10,
+      'bonus_type' => BONUS_PERCENT,
     ),
 
     TECH_SHIELD => array(
@@ -630,6 +643,9 @@ if (!defined('INSIDE'))
       'deuterium' => 0,
       'energy' => 0,
       'factor' => 2,
+
+      'bonus' => 10,
+      'bonus_type' => BONUS_PERCENT,
     ),
 
     TECH_ARMOR => array(
@@ -648,6 +664,9 @@ if (!defined('INSIDE'))
       'deuterium' => 0,
       'energy' => 0,
       'factor' => 2,
+
+      'bonus' => 10,
+      'bonus_type' => BONUS_PERCENT,
     ),
 
     TECH_ENERGY => array(
@@ -704,6 +723,8 @@ if (!defined('INSIDE'))
       'deuterium' => 600,
       'energy' => 0,
       'factor' => 2,
+      'bonus' => 10,
+      'bonus_type' => BONUS_PERCENT,
       'speed_increase' => 0.1,
     ),
 
@@ -723,7 +744,30 @@ if (!defined('INSIDE'))
       'deuterium' => 600,
       'energy' => 0,
       'factor' => 2,
+      'bonus' => 20,
+      'bonus_type' => BONUS_PERCENT,
       'speed_increase' => 0.2,
+    ),
+
+    TECH_ENGINE_HYPER => array(
+      'name' => 'hyperspace_motor_tech',
+      'location' => LOC_USER,
+      'require' => array(STRUC_LABORATORY => 8, TECH_HYPERSPACE => 3),
+      'cost' => array(
+        RES_METAL     => 10000,
+        RES_CRYSTAL   => 20000,
+        RES_DEUTERIUM => 6000,
+        RES_ENERGY    => 0,
+        'factor' => 2,
+      ),
+      'metal' => 10000,
+      'crystal' => 20000,
+      'deuterium' => 6000,
+      'energy' => 0,
+      'factor' => 2,
+      'bonus' => 30,
+      'bonus_type' => BONUS_PERCENT,
+      'speed_increase' => 0.3,
     ),
 
     TECH_LASER => array(
@@ -778,25 +822,6 @@ if (!defined('INSIDE'))
       'deuterium' => 1000,
       'energy' => 0,
       'factor' => 2,
-    ),
-
-    TECH_ENGINE_HYPER => array(
-      'name' => 'hyperspace_motor_tech',
-      'location' => LOC_USER,
-      'require' => array(STRUC_LABORATORY => 8, TECH_HYPERSPACE => 3),
-      'cost' => array(
-        RES_METAL     => 10000,
-        RES_CRYSTAL   => 20000,
-        RES_DEUTERIUM => 6000,
-        RES_ENERGY    => 0,
-        'factor' => 2,
-      ),
-      'metal' => 10000,
-      'crystal' => 20000,
-      'deuterium' => 6000,
-      'energy' => 0,
-      'factor' => 2,
-      'speed_increase' => 0.3,
     ),
 
     TECH_RESEARCH => array(
@@ -2129,7 +2154,7 @@ if (!defined('INSIDE'))
 
       // Tech list
       'tech'      => array (
-        TECH_ENERGY, TECH_COMPUTER, TECH_ARMOR, TECH_WEAPON, TECH_SHIELD, 
+        TECH_ENERGY, TECH_COMPUTER, TECH_ARMOR, TECH_WEAPON, TECH_SHIELD,
         TECH_ENGINE_CHEMICAL, TECH_ENIGNE_ION, TECH_ENGINE_HYPER, TECH_LASER, TECH_ION, TECH_PLASMA, TECH_HYPERSPACE,
         TECH_SPY, TECH_EXPEDITION, TECH_COLONIZATION, TECH_GRAVITON, TECH_RESEARCH),
 

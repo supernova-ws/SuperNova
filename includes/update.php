@@ -1507,6 +1507,48 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       $config->db_saveItem('uni_price_system', 1000, !isset($config->uni_price_system));
     }
 
+
+
+
+    if(strtoupper($update_tables['users']['user_as_ally']['Type']) != 'BIGINT(20) UNSIGNED')
+    {
+      upd_alter_table('users', array(
+        "ADD COLUMN user_as_ally BIGINT(20) UNSIGNED DEFAULT NULL",
+
+        "ADD KEY `I_user_user_as_ally` (`user_as_ally`)",
+
+        "ADD CONSTRAINT `FK_user_user_as_ally` FOREIGN KEY (`user_as_ally`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+
+      upd_alter_table('alliance', array(
+        "ADD COLUMN ally_user_id BIGINT(20) UNSIGNED DEFAULT NULL",
+
+        "ADD KEY `I_ally_user_id` (`ally_user_id`)",
+
+        "ADD CONSTRAINT `FK_ally_ally_user_id` FOREIGN KEY (`ally_user_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+
+    }
+
+      $ally_row_list = doquery("SELECT id FROM {{alliance}} WHERE ally_user_id IS NULL;");
+      while($ally_row = mysql_fetch_assoc($ally_row_list))
+      {
+//             `username` = '{$username_safe}', `email` = '{$email}', `email_2` = '{$email}', `lang` = '{$language}', `sex` = '{$sex}', `id_planet` = '0', `password` = '{$md5pass}',
+        doquery("INSERT INTO {{users}} SET `register_time` = {$time_now}, `user_as_ally` = {$ally_row['id']};");
+        $ally_user_id = mysql_insert_id();
+        doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_row['id']} LIMIT 1;");
+      }
+
+
+/*
+    upd_alter_table('users', array(
+      "MODIFY COLUMN `avatar` tinyint(1) unsigned NOT NULL DEFAULT '0'",
+    ), strtoupper($update_tables['users']['avatar']['Type']) != 'TINYINT(1) UNSIGNED');
+
+    upd_alter_table('alliance', array(
+      "MODIFY COLUMN `ally_image` tinyint(1) unsigned NOT NULL DEFAULT '0'",
+    ), strtoupper($update_tables['alliance']['ally_image']['Type']) != 'TINYINT(1) UNSIGNED');
+*/
     upd_do_query('COMMIT;', true);
 //    $new_version = 32;
 };

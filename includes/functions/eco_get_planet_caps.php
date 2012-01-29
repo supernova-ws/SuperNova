@@ -8,17 +8,17 @@ function eco_get_planet_caps($user, &$planet_row)
   $sn_group_structures = $sn_groups['structures'];
 
   $config_resource_multiplier = $config->resource_multiplier;
-  $storage_scale = $config->eco_scale_storage ? $config_resource_multiplier : 1;
 
-  $storage_overflowed_size = BASE_STORAGE_SIZE * MAX_OVERFLOW;
+  $storage_overflowed_size = BASE_STORAGE_SIZE * MAX_OVERFLOW * ($config->eco_scale_storage ? $config_resource_multiplier : 1);
+
   $Caps = array('planet' => array(
-      'metal' => $planet_row['metal'],
-      'crystal' => $planet_row['crystal'],
-      'deuterium' => $planet_row['deuterium'],
-      'metal_max' => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow(1.5, $planet_row[$sn_data[STRUC_STORE_METAL]['name']])) * $storage_scale),
-      'crystal_max' => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow(1.5, $planet_row[$sn_data[STRUC_STORE_CRYSTAL]['name']])) * $storage_scale),
-      'deuterium_max' => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow(1.5, $planet_row[$sn_data[STRUC_STORE_DEUTERIUM]['name']])) * $storage_scale),
-      ));
+    'metal' => $planet_row['metal'],
+    'crystal' => $planet_row['crystal'],
+    'deuterium' => $planet_row['deuterium'],
+    'metal_max' => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow(1.5, $planet_row[$sn_data[STRUC_STORE_METAL]['name']]))),
+    'crystal_max' => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow(1.5, $planet_row[$sn_data[STRUC_STORE_CRYSTAL]['name']]))),
+    'deuterium_max' => floor(mrc_modify_value($user, $planet_row, MRC_STOCKMAN, $storage_overflowed_size * pow(1.5, $planet_row[$sn_data[STRUC_STORE_DEUTERIUM]['name']]))),
+  ));
 
   if($planet_row['planet_type'] == PT_MOON)
   {

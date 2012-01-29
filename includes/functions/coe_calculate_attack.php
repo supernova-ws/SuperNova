@@ -34,13 +34,11 @@ function coe_attack_fleet_fill(&$attackFleets, $fleet, $strField = 'detail')
 
 function coe_calculate_techs(&$user)
 {
-  global $sn_data;
-
-  $armor_tech  = mrc_modify_value($user, false, MRC_ADMIRAL, 1 + 0.1 * $user['defence_tech']);
-  $shield_tech = mrc_modify_value($user, false, MRC_ADMIRAL, 1 + 0.1 * $user['shield_tech']);
-  $weapon_tech = mrc_modify_value($user, false, MRC_ADMIRAL, 1 + 0.1 * $user['military_tech']);
-
-  return array('def' => $armor_tech, 'shield' => $shield_tech, 'att' => $weapon_tech);
+  return array(
+    'def'    => mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), 1),
+    'shield' => mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), 1),
+    'att'    => mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), 1),
+  );
 }
 
 /**

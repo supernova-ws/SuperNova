@@ -1,9 +1,44 @@
 <?php
 
-function get_game_speed()
+/*
+Function wrapping
+
+WARNING! Due to bug in PHP 5.3.1 when using sn_function_call and passing
+variables by reference - you should NOT use func_get_args() for params
+and should EXPLICITLY declare argument array with all variables!
+Reference: https://bugs.php.net/bug.php?id=50394
+Example:
+
+function the_test(&$var1, $var2)
 {
-  return $GLOBALS['config']->game_speed;
+  // THIS WILL NOT WORK IN PHP 5.3.1!
+  return sn_function_call('sn_test', func_get_args());
+  // TO MAINTAIN CODE COMPATIBILITY WITH PHP 5.3.1 USE THIS FORM:
+  return sn_function_call('sn_test', array(&$var1, $var2));
 }
+
+*/
+function sn_function_call($func_name, $func_arg = array())
+{
+  global $functions;
+
+  $func_name = isset($functions[$func_name]) && function_exists($functions[$func_name]) ? $functions[$func_name] : ('sn_' . $func_name);
+
+  return call_user_func_array($func_name, $func_arg);
+}
+
+// ----------------------------------------------------------------------------------------------------------------
+// Wrappers for functions that supports wrapping
+function mrc_modify_value($user, $planet = array(), $mercenaries, $value)
+{
+  return sn_function_call('mrc_modify_value', func_get_args());
+}
+
+function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false)
+{
+  return sn_function_call('mrc_get_level', array(&$user, $planet, $unit_id, $for_update));
+}
+
 
 // ----------------------------------------------------------------------------------------------------------------
 // Fonction de lecture / ecriture / exploitation de templates
@@ -15,6 +50,11 @@ function sys_file_read($filename)
 function sys_file_write($filename, $content)
 {
   return @file_put_contents($filename, $content);
+}
+
+function get_game_speed()
+{
+  return $GLOBALS['config']->game_speed;
 }
 
 /**
@@ -121,13 +161,13 @@ function eco_planet_fields_max($planet)
 // ----------------------------------------------------------------------------------------------------------------
 function GetSpyLevel(&$user)
 {
-  return mrc_modify_value($user, false, MRC_SPY, $user[$GLOBALS['sn_data'][TECH_SPY]['name']]);
+  return mrc_modify_value($user, false, array(MRC_SPY, TECH_SPY), 0);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 function GetMaxFleets(&$user)
 {
-  return mrc_modify_value($user, false, MRC_COORDINATOR, 1 + $user[$GLOBALS['sn_data'][TECH_COMPUTER]['name']]);
+  return mrc_modify_value($user, false, array(MRC_COORDINATOR, TECH_COMPUTER), 1);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -324,7 +364,7 @@ function eco_get_total_cost($unit_id, $unit_level)
   return $cost_array;
 }
 
-function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false)
+function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false)
 {
   global $config, $sn_data, $time_now;
 
@@ -347,11 +387,15 @@ function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false)
   {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
   }
+  elseif(in_array($unit_id, $sn_data['groups']['tech']))
+  {
+    $mercenary_level = $user[$sn_data[$unit_id]['name']];
+  }
 
   return $mercenary_level;
 }
 
-function mrc_modify_value($user, $planet = array(), $mercenaries, $value)
+function sn_mrc_modify_value($user, $planet = array(), $mercenaries, $value, $base_value = null)
 {
   global $sn_data;
 
@@ -360,17 +404,23 @@ function mrc_modify_value($user, $planet = array(), $mercenaries, $value)
     $mercenaries = array($mercenaries);
   }
 
+  $base_value = isset($base_value) ? $base_value : $value;
+
   foreach($mercenaries as $mercenary_id)
   {
     $mercenary_level = mrc_get_level($user, $planet, $mercenary_id);
 
-    $mercenary = $sn_data[$mercenary_id];
+    $mercenary = &$sn_data[$mercenary_id];
     $mercenary_bonus = $mercenary['bonus'];
 
     switch($mercenary['bonus_type'])
     {
-      case BONUS_PERCENT:
+      case BONUS_PERCENT_CUMULATIVE:
         $value *= 1 + $mercenary_level * $mercenary_bonus / 100;
+      break;
+
+      case BONUS_PERCENT:
+        $value += $base_value * $mercenary_level * $mercenary_bonus / 100;
       break;
 
       case BONUS_ADD:

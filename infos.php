@@ -254,8 +254,6 @@ elseif (in_array($unit_id, $sn_data['groups']['fleet']))
   // Flotte
   $PageTPL = gettemplate('info_buildings_fleet');
 
-  $ship_data = get_ship_data($unit_id, $user);
-
   $parse['element_typ'] = $lang['tech'][SHIP_FLEET];
   $rapid_fire = eco_render_rapid_fire($unit_id);
   $parse['rf_info_to'] = $rapid_fire['to'];   // Rapid Fire vers
@@ -268,10 +266,11 @@ elseif (in_array($unit_id, $sn_data['groups']['fleet']))
   $parse['base_speed'] = pretty_number($sn_data[$unit_id]['engine'][0]['speed']);    // Vitesse de base
   $parse['base_conso'] = pretty_number($sn_data[$unit_id]['engine'][0]['consumption']);  // Consommation de base
 
+  $parse['ACTUAL_ARMOR'] = pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), ($sn_data[$unit_id]['metal'] + $sn_data[$unit_id]['crystal']) / 10));
+  $parse['ACTUAL_SHIELD'] = pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $sn_data[$unit_id]['shield']));
+  $parse['ACTUAL_WEAPON'] = pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), $sn_data[$unit_id]['attack']));
 
-  $parse['ACTUAL_ARMOR'] = pretty_number(($sn_data[$unit_id]['metal'] + $sn_data[$unit_id]['crystal']) / 10 * mrc_modify_value($user, false, MRC_ADMIRAL, 1 + 0.1 * $user['defence_tech']));
-  $parse['ACTUAL_SHIELD'] = pretty_number($sn_data[$unit_id]['shield'] * mrc_modify_value($user, false, MRC_ADMIRAL, 1 + 0.1 * $user['shield_tech']));
-  $parse['ACTUAL_WEAPON'] = pretty_number($sn_data[$unit_id]['attack'] * mrc_modify_value($user, false, MRC_ADMIRAL, 1 + 0.1 * $user['military_tech']));
+  $ship_data = get_ship_data($unit_id, $user);
   $parse['ACTUAL_CAPACITY'] = pretty_number($ship_data['capacity']);
   $parse['ACTUAL_SPEED'] = pretty_number($ship_data['speed']);
   $parse['ACTUAL_CONSUMPTION'] = pretty_number($ship_data['consumption']);

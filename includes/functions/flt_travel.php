@@ -64,9 +64,8 @@ function get_ship_data($ship_id, $user)
         $ship_data = $engine_info;
       }
     }
+    $ship_data['speed'] = floor(mrc_modify_value($user, false, array(MRC_NAVIGATOR, $ship_data['tech']), $ship_data['speed']));
 
-    $sn_data_ship_tech = $sn_data[$ship_data['tech']];
-    $ship_data['speed'] = mrc_modify_value($user, false, MRC_NAVIGATOR, $ship_data['speed'] * (1 + $user[$sn_data_ship_tech['name']] * $sn_data_ship_tech['speed_increase']));
     $ship_data['capacity'] = $sn_data[$ship_id]['capacity'];
   }
 

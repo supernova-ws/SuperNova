@@ -17,16 +17,6 @@ $msg = '<div align="left"><ul>';
 
 doquery('START TRANSACTION;');
 
-// Delete users inactive for 45 days
-/*
-  $query = doquery("SELECT * FROM {{users}} WHERE `onlinetime` < unix_timestamp(now()) - ( 60 * 60 * 24 * 45);");
-  $rows += mysql_num_rows($query);
-  while($u = mysql_fetch_assoc($query)){
-  set_time_limit(30);
-  DeleteSelectedUser ( $u['id'] );
-  };
- */
-
 $msg .= sprintf($lang['adm_inactive_removed'], $rows);
 
 $ques = array(
@@ -51,6 +41,7 @@ $ques = array(
     'DELETE {{rw}}.* FROM {{rw}} LEFT OUTER JOIN {{users}} ON {{rw}}.id_owner2 = {{users}}.id WHERE {{users}}.username IS NULL;',
    */
 
+  // 
   'DELETE FROM {{statpoints}} WHERE stat_type=1 AND id_owner not in (select id from {{users}});',
 
   'DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} group by ally_id);',
@@ -61,6 +52,9 @@ $ques = array(
   'DELETE FROM {{rw}} WHERE time < unix_timestamp(now()) - (60 * 60 * 24 * 14);',
   'DELETE FROM {{chat}} WHERE timestamp < unix_timestamp(now()) - (60 * 60 * 24 * 14);',
   'DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});',
+
+  // Recalculate Alliance members
+  "UPDATE {{alliance}} as a LEFT JOIN (SELECT ally_id, count(*) as ally_memeber_count FROM {{users}} WHERE ally_id IS NOT NULL GROUP BY ally_id) as u ON u.ally_id = a.id SET a.`ally_members` = u.ally_memeber_count;",
 );
 
 foreach ($ques as $que)

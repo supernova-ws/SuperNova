@@ -141,7 +141,7 @@ else
 
     if(in_array($unit_id, $sn_data['groups']['tech']) || $unit_id == MRC_ADMIRAL)
     {
-      $value = $user[$sn_data[$unit_id]['name']];
+      $value = mrc_get_level($user, $planetrow, $unit_id); // $user[$sn_data[$unit_id]['name']];
     }
     else
     {
