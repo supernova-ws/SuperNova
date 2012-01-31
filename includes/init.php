@@ -119,18 +119,16 @@ $config = new classConfig($db_prefix);
 $config->db_prefix = $db_prefix;
 $config->secret_word = $sn_secret_word;
 
-if(!defined('BE_DEBUG'))
+if(defined('BE_DEBUG') || $config->debug)
 {
-  if($config->debug)
-  {
-    define('BE_DEBUG', true);
-    ini_set('display_errors', 1);
-  }
-  else
-  {
-    define('BE_DEBUG', false);
-    ini_set('display_errors', 0);
-  }
+  define('BE_DEBUG', true);
+  ini_set('display_errors', 1);
+  error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
+}
+else
+{
+  define('BE_DEBUG', false);
+  ini_set('display_errors', 0);
 }
 
 require_once("{$sn_root_physical}includes/vars.{$phpEx}");
