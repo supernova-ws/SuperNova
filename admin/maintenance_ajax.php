@@ -20,7 +20,7 @@ doquery('START TRANSACTION;');
 $msg .= sprintf($lang['adm_inactive_removed'], $rows);
 
 $ques = array(
-  'DELETE {{users}}.* FROM {{users}} WHERE `onlinetime` < unix_timestamp(now()) - ( 60 * 60 * 24 * 45) and `user_as_ally` IS NULL;',
+//  'DELETE {{users}}.* FROM {{users}} WHERE `onlinetime` < unix_timestamp(now()) - ( 60 * 60 * 24 * 45) and `user_as_ally` IS NULL;',
 
   'DELETE FROM `{{notes}}`     WHERE `owner`          not in (select id from {{users}});',
   'DELETE FROM `{{fleets}}`    WHERE `fleet_owner`    not in (select id from {{users}});',
