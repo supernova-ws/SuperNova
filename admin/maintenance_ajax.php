@@ -20,7 +20,7 @@ doquery('START TRANSACTION;');
 $msg .= sprintf($lang['adm_inactive_removed'], $rows);
 
 $ques = array(
-//  'DELETE {{users}}.* FROM {{users}} WHERE `onlinetime` < unix_timestamp(now()) - ( 60 * 60 * 24 * 45) and `user_as_ally` IS NULL;',
+  'DELETE {{users}}.* FROM {{users}} WHERE `user_as_ally` IS NULL and `onlinetime` < unix_timestamp(now()) - ( 60 * 60 * 24 * 45);',
 
   'DELETE FROM `{{notes}}`     WHERE `owner`          not in (select id from {{users}});',
   'DELETE FROM `{{fleets}}`    WHERE `fleet_owner`    not in (select id from {{users}});',
@@ -44,7 +44,7 @@ $ques = array(
   // 
   'DELETE FROM {{statpoints}} WHERE stat_type=1 AND id_owner not in (select id from {{users}});',
 
-  'DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} group by ally_id);',
+  'DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} WHERE `user_as_ally` IS NOT NULL group by ally_id);',
   'DELETE FROM {{statpoints}} WHERE stat_type=2 AND id_owner not in (select id from {{alliance}});',
   "UPDATE {{users}} SET ally_id = null, ally_name = null, ally_rank_id=0 WHERE ally_id not in (select id from {{alliance}});",
 
@@ -77,7 +77,7 @@ foreach ($ques as $que)
 }
 $msg .= '</ul></div>';
 
-$user_count = doquery("SELECT COUNT(*) AS user_count FROM {{users}};", '', true);
+$user_count = doquery("SELECT COUNT(*) AS user_count FROM {{users}} WHERE user_as_ally IS NULL;", '', true);
 $config->db_saveItem('users_amount', $user_count['user_count']);
 
 doquery('COMMIT;');

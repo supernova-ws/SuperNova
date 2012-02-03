@@ -199,7 +199,7 @@ function sys_stat_calculate()
   }
 
   sta_set_time_limit('posting new user stats to DB');
-  $GameUsers = doquery("SELECT * FROM {{users}};");
+  $GameUsers = doquery("SELECT * FROM {{users}} where user_as_ally IS NULL;");
   while($user_row = mysql_fetch_assoc($GameUsers))
   {
     $user_id = $user_row['id'];
@@ -312,7 +312,7 @@ function sys_stat_calculate()
   doquery("UPDATE {{alliance}} AS a JOIN {{statpoints}} AS sp ON sp.id_ally = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
 
   // Counting real user count and updating values
-  $userCount = doquery("SELECT COUNT(*) AS users_online FROM {{users}}", '', true);
+  $userCount = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE user_as_ally IS NULL;", '', true);
   $config->db_saveItem('users_amount', $userCount['users_online']);
 
 //  doquery('COMMIT');
