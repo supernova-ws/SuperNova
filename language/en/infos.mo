@@ -179,7 +179,7 @@ $lang = array_merge($lang, array(
 
     TECH_ENERGY => array(
       'description' => 'Energy technology is a further development of transmission systems and energy storage that are required for many new technologies.',
-      'description_short' => 'Study of energy technology improves impact energy and power.',
+      'description_short' => 'Study of energy technology improves impact outcome of thermonuclear electrostations.',
     ),
 
     TECH_HYPERSPACE => array(

@@ -6,10 +6,10 @@
   <tr>
     <th width="120" ><img src="design/images/DMaterie.jpg" width="120" height="120"></th>
     <th width="314" >
-      <p align="justify">{L_off_dark_matter_desc}</p>
+      <p align="justify">{L_sys_dark_matter_desc}</p>
       <div>
         <div class="fl"><img src="design/images/dm_klein_1.jpg"></div>
-        <div align="left" id="off_dark_matter_hint">{L_off_dark_matter_hint}</div>
+        <div align="left" id="sys_dark_matter_hint">{L_sys_dark_matter_hint}</div>
       </div>
       <A HREF="dark_matter.php" id="off_get_dark_matter">{L_sys_dark_matter_get}</A>
     </th>

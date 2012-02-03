@@ -8,17 +8,17 @@
   <tr>
     <th width="120" ><img src="design/images/DMaterie.jpg" width="120" height="120"></th>
     <th width="314" >
-      <p align="justify">{L_off_dark_matter_desc}</p>
+      <p align="justify">{L_sys_dark_matter_desc}</p>
       <div>
         <div class="fl"><img src="design/images/dm_klein_1.jpg"></div>
-        <div align="left" id="off_dark_matter_hint">{L_off_dark_matter_hint}</div>
+        <div align="left" id="sys_dark_matter_hint">{L_sys_dark_matter_hint}</div>
       </div>
       <A HREF="dark_matter.php" id="off_get_dark_matter">{L_sys_dark_matter_get}</A>
     </th>
   </tr>
 
   <tr>
-    <td width="535" colspan="2" class="c">{L_tech[600]}</td>
+    <td width="535" colspan="2" class="c">{L_tech[D_MRC_MERCENARIES]}</td>
   </tr>
 <script language="javascript">
   var mrc_cost_array = Array();
@@ -55,7 +55,7 @@ function mrc_change(mercenary_id)
         <div align="center">
           <div class="positive" align="center">{officer.BONUS} {officer.EFFECT}</div><br />
           <!-- IF officer.LEVEL -->
-            <div>{L_sys_level} {officer.LEVEL}/{officer.LEVEL_MAX}<!-- IF officer.HIRE_END --> {L_mrc_up_to} {officer.HIRE_END}<!-- ENDIF --></div>
+            <div>{L_sys_level} {officer.LEVEL}/{officer.LEVEL_MAX}<!-- IF officer.HIRE_END --> {L_mrc_up_to} {officer.HIRE_END} <input type="button" value="{L_mrc_dismiss}" onclick="javascript:if(confirm('{LA_mrc_dismiss_confirm}'))document.location = 'officer.php?mercenary_id={officer.ID}';"><!-- ENDIF --></div>
           <!-- ENDIF -->
 
           <!-- IF ! EMPIRE_MERCENARY_TEMPORARY && officer.LEVEL >= officer.LEVEL_MAX -->

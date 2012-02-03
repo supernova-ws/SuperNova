@@ -66,7 +66,7 @@ if($action && in_array($unit_id, $sn_data['groups']['artifacts']))
       }
       else
       {
-        $Message = $lang['off_no_points'];
+        $Message = $lang['sys_no_points'];
       }
     break;
 
