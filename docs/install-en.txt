@@ -35,7 +35,7 @@ configuring web servers.
 Requirements
 ==========
 MySQL 5.x - STRICT_TRANS_TABLES mode must be disabled
-PHP> = 5.2.h
+PHP> = 5.2.x - NOT COMPATIBLE WITH PHP 5.3.1!
 Web-server
 XCache> = 1.2.h - optional, but very, very desirable. Without XCache not
                   will work some chips and increase significantly the load

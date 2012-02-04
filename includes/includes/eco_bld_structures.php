@@ -67,7 +67,7 @@ function eco_build($que_type, $user, &$planet, $que)
 
 
   $fleet_list            = flt_get_fleets_to_planet($planet);
-  $caps                  = eco_get_planet_caps($user, &$planet);
+  $caps                  = eco_get_planet_caps($user, $planet);
 
   $planet_fields_max     = eco_planet_fields_max($planet);
   $planet_fields_current = $planet['field_current'];
