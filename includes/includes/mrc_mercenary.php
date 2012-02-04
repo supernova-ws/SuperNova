@@ -68,6 +68,10 @@ function mrc_mercenary_hire($user, $mercenary_id)
     {
       throw new Exception($lang['mrc_msg_error_already_hired'], ERR_ERROR);
     }
+    elseif($config->empire_mercenary_temporary && !$mercenary_level_old && !$mercenary_level)
+    {
+      throw new Exception('', ERR_NONE);
+    }
 
     if($mercenary_level)
     {

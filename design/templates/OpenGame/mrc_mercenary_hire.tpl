@@ -55,7 +55,7 @@ function mrc_change(mercenary_id)
         <div align="center">
           <div class="positive" align="center">{officer.BONUS} {officer.EFFECT}</div><br />
           <!-- IF officer.LEVEL -->
-            <div>{L_sys_level} {officer.LEVEL}/{officer.LEVEL_MAX}<!-- IF officer.HIRE_END --> {L_mrc_up_to} {officer.HIRE_END} <input type="button" value="{L_mrc_dismiss}" onclick="javascript:if(confirm('{LA_mrc_dismiss_confirm}'))document.location = 'officer.php?mercenary_id={officer.ID}';"><!-- ENDIF --></div>
+            <div>{L_sys_level} {officer.LEVEL}/{officer.LEVEL_MAX}<!-- IF officer.HIRE_END --> {L_mrc_up_to} {officer.HIRE_END} <form method=post><input type="hidden" name="mercenary_id" value="{officer.ID}"><input type="button" value="{L_mrc_dismiss}" onclick="javascript:if(confirm('{LA_mrc_dismiss_confirm}'))this.form.submit();"></form><!-- ENDIF --></div>
           <!-- ENDIF -->
 
           <!-- IF ! EMPIRE_MERCENARY_TEMPORARY && officer.LEVEL >= officer.LEVEL_MAX -->

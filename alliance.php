@@ -22,6 +22,8 @@ $isTransfer       = !empty($_POST['isTransfer']);
 
 lng_include('alliance');
 
+$mode = sys_get_param_str('mode');
+
 if($mode == 'ainfo')
 {
   include('includes/alliance/ali_info.inc');
@@ -134,7 +136,6 @@ $user_can_negotiate = $ranks[$user['ally_rank_id']]['diplomacy'] == 1 || $isAlly
 $user_can_edit_rights = $user_admin = $ranks[$user['ally_rank_id']]['admin'] == 1 || $isAllyOwner;
 
 $edit = sys_get_param_str('edit');
-$mode = sys_get_param_str('mode');
 
 ally_pre_call();
 
