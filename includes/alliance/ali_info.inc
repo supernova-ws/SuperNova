@@ -66,7 +66,7 @@ else
 
   if($ally['ally_owner'] == $user['id'])
   {
-    $range = ($ally['ally_owner_range'] != '') ? $lang['Founder'] : $ally['ally_owner_range'];
+    $range = $ally['ally_owner_range'] ? $ally['ally_owner_range'] : $lang['Founder'];
   }
   elseif($user['ally_rank_id'] != 0 && isset($ranks[$user['ally_rank_id']]['name']))
   {
