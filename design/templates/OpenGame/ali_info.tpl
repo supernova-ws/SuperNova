@@ -1,7 +1,12 @@
+<!-- IF ally_image -->
+  <!-- DEFINE $COLSPAN = 3 -->
+<!-- ELSE -->
+  <!-- DEFINE $COLSPAN = 2 -->
+<!-- ENDIF -->
 <br />
 <table width=519>
   <tr>
-    <td class=c colspan=2>
+    <td class=c colspan="{$COLSPAN}">
       <!-- IF EXTERNAL -->
         {L_ali_info_title}
       <!-- ELSE -->
@@ -9,8 +14,7 @@
       <!-- ENDIF -->
     </td>
   </tr>
-  <!-- IF ally_image --><tr><th colspan=2><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/ally_{ally_id}.png"></th></tr><!-- ENDIF -->
-  <tr><th width=150>{L_Tag}</th><th>{ally_tag}</th></tr>
+  <tr><th width=150>{L_Tag}</th><th>{ally_tag}</th><!-- IF ally_image --><th rowspan="5"><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/ally_{ally_id}.png"></th><!-- ENDIF --></tr>
   <tr><th>{L_Name}</th><th>{ally_name}</th></tr>
   <tr><th>{L_Main_Page}</th><th><a href="{ally_web}">{ally_web}</a></th></tr>
   <tr><th>{L_Members}</th><th>{ally_members}<!-- IF ! EXTERNAL -->&nbsp;(<a href="alliance.php?mode=memberslist">{Members_list}</a>)<!-- ENDIF --></th></tr>
