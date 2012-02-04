@@ -17,7 +17,7 @@ lng_include('login');
 $wylosuj = rand(100000,9000000);
 $kod = md5($wylosuj);
 
-$id_ref = intval($_GET['id_ref'] ? $_GET['id_ref'] : $_POST['id_ref']);
+$id_ref = sys_get_param_int('id_ref');
 
 if ($_POST['submit'])
 {
@@ -25,12 +25,12 @@ if ($_POST['submit'])
   $errors    = 0;
   $errorlist = '';
 
-  $username = strip_tags($_POST['username']);
-  $username_safe = mysql_real_escape_string($username);
-  $password = strip_tags($_POST['password']);
-  $email = mysql_real_escape_string(strip_tags($_POST['email']));
-  $planet_name = strip_tags(trim($_POST['planet_name']));
-  $sex = mysql_real_escape_string(strip_tags($_POST['sex']));
+  $username = sys_get_param_str_raw('username');
+  $username_safe = sys_get_param_str('username');
+  $password = sys_get_param('password');
+  $email = sys_get_param_str('email');
+  $planet_name = sys_get_param_str_raw('planet_name');
+  $sex = sys_get_param_str('sex');
 
 
   if (!$username)
