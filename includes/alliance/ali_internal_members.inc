@@ -4,10 +4,10 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 {
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }
-
+/*
 if (!$user_can_kick)
   message($lang['Denied_access'], $lang['Members_list']);
-
+*/
 // Changing rank for single user
 $id_user = sys_get_param_id('id_user');
 if(isset($_GET['id_rank']))
