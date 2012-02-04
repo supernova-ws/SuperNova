@@ -106,6 +106,7 @@ switch($mode)
       die();
     }
 
+    lng_include('mrc_mercenary');
     int_planet_pretemplate($planetrow, $template);
     foreach($sn_data['groups']['governors'] as $governor_id)
     {
