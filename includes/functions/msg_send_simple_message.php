@@ -97,7 +97,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
       }
       else
       {
-        $owner_row = &$user;
+        $owner_row = $user;
       }
       sys_user_options_unpack($owner_row);
 
