@@ -163,11 +163,11 @@ function qst_render_page()
     }
   }
 
-  qst_assign_to_template(&$template, $quest_templatized);
+  qst_assign_to_template($template, $quest_templatized);
 
   foreach($quest_list as $quest_data)
   {
-    qst_assign_to_template(&$template, qst_templatize($quest_data, true), 'quest');
+    qst_assign_to_template($template, qst_templatize($quest_data, true), 'quest');
   }
 
   foreach($quest_units_allowed as $unit_id)
