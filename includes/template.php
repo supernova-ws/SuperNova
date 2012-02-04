@@ -122,7 +122,14 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     displayP(parsetemplate(ShowTopNavigationBar($user, $planetrow)));
   }
 
-  displayP($page);
+  if(!is_array($page))
+  {
+    $page = array($page);
+  }
+  foreach($page as $page_item)
+  {
+    displayP($page_item);
+  }
 
   echo '</center></div>';
 
@@ -231,7 +238,7 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
   }
 }
 
-function ShowTopNavigationBar($user, $planetrow)
+function ShowTopNavigationBar(&$user, $planetrow)
 {
   if (!is_array($user))
   {
@@ -411,14 +418,14 @@ function parsetemplate($template, $array = false)
   }
 }
 
-function gettemplate($templatename, $is_phpbb = false)
+function gettemplate($templatename, $is_phpbb = false, $template_path = false)
 {
   $templatename .= '.tpl';
 
   if($is_phpbb)
   {
     $template = new template();
-    $template->set_custom_template(TEMPLATE_DIR, TEMPLATE_NAME);
+    $template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME);
 
     $template->set_filenames(array(
         'body' => $templatename

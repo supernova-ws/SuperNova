@@ -616,6 +616,9 @@ $lang = array_merge($lang, array(
 
   'sys_msg_err_update_dm' => 'Error updating DM quantity!',
 
+  'sys_na' => 'Not available',
+  'sys_na_short' => 'N/A',
+
 ));
 
 ?>

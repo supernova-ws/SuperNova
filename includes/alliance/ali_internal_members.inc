@@ -5,7 +5,7 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }
 
-if (!$user_can_kick && $allianceAdminMode)
+if (!$user_can_kick)
   message($lang['Denied_access'], $lang['Members_list']);
 
 // Changing rank for single user
@@ -65,7 +65,7 @@ while ($userRow = mysql_fetch_assoc($userList))
   }
   else
   {
-    if($allianceAdminMode && $user_admin)
+    if($user_admin)
     {
       $ally_range = '<select onchange="javascript:window.location=\'alliance.php?mode=admin&edit=members&id_user=' . $userRow['id'] . '&id_rank=\' + this.value">';
 
@@ -85,7 +85,7 @@ while ($userRow = mysql_fetch_assoc($userList))
   }
 
   $last_active = time() - $userRow["onlinetime"];
-  if($allianceAdminMode && $user_admin)
+  if($user_admin)
   {
     if ( $last_active < 60 )
     {
@@ -166,9 +166,9 @@ if ($i != $ally['ally_members'])
 
 $template->assign_vars(array(
   'mode' => $mode . ($edit ? "&edit=" . $edit : ""),
-  'ADMIN_MODE' => ($user_can_kick && $allianceAdminMode),
+  'ADMIN_MODE' => $user_can_kick,
   'dpath' => SN_ROOT_VIRTUAL . $dpath,
-  'onlineMessage' => $allianceAdminMode && $user_admin ? $lang['ali_sys_lastActive'] : $lang['Online'],
+  'onlineMessage' => $user_admin ? $lang['ali_sys_lastActive'] : $lang['Online'],
   'memberCount' => mysql_num_rows($userList),
   'memberslist' => $page_list,
   's' => $sort2,

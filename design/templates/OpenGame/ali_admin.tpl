@@ -58,8 +58,9 @@
 <form action="" method="POST">
   <table width=519>
     <tr><td class=c colspan=2>{ally_admin}</td></tr>
-    <tr><th colspan=2><a href="alliance.php?mode=admin&edit=members">{members_admin}</a></th></tr>
-    <tr><th colspan=2><a href="alliance.php?mode=admin&edit=rights">{ali_adm_rights_title}</a></th></tr>
+    <!-- BEGIN admin_actions -->
+    <tr><th colspan=2><a href="alliance.php?mode=admin&edit={admin_actions.ACTION}">{admin_actions.LOCALE}</a></th></tr>
+    <!-- END admin_actions -->
     <tr{hideNotOwner}>
       <th>
         {ali_adm_transfer}&nbsp;&nbsp;&nbsp;

@@ -29,17 +29,16 @@ function sn_function_call($func_name, $func_arg = array())
 
 // ----------------------------------------------------------------------------------------------------------------
 // Wrappers for functions that supports wrapping
-function mrc_modify_value($user, $planet = array(), $mercenaries, $value)
+function mrc_modify_value(&$user, $planet = array(), $mercenaries, $value)
 {
   $func_args = func_get_args();
-  return sn_function_call('mrc_modify_value', $func_args);
+  return sn_function_call('mrc_modify_value', array(&$user, $planet = array(), $mercenaries, $value));
 }
 
 function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false)
 {
   return sn_function_call('mrc_get_level', array(&$user, $planet, $unit_id, $for_update));
 }
-
 
 // ----------------------------------------------------------------------------------------------------------------
 // Fonction de lecture / ecriture / exploitation de templates
@@ -367,6 +366,7 @@ function eco_get_total_cost($unit_id, $unit_level)
 
 function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false)
 {
+// TODO: Add caching for known items
   global $config, $sn_data, $time_now;
 
   $mercenary_level = 0;
@@ -388,7 +388,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
   }
-  elseif(in_array($unit_id, $sn_data['groups']['tech']))
+  elseif(in_array($unit_id, $sn_data['groups']['tech']) || $unit_id == RES_DARK_MATTER)
   {
     $mercenary_level = $user[$sn_data[$unit_id]['name']];
   }

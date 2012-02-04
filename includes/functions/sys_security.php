@@ -106,6 +106,7 @@ function sn_login($username, $password, $remember_me = '1')
   $username = mysql_real_escape_string($username);
 
   $login = doquery("SELECT * FROM {{users}} WHERE `username` = '{$username}' LIMIT 1;", '', true);
+
   if(!$username || !$login)
   {
     $status = LOGIN_ERROR_USERNAME;

@@ -22,7 +22,7 @@ function mrc_officer_accessible(&$user, $mercenary_id)
 
   if(isset($sn_data[$mercenary_id]['require']))
   {
-    foreach($sn_data[$mercenary_id]['require'] as $unit_id => $unit_level) 
+    foreach($sn_data[$mercenary_id]['require'] as $unit_id => $unit_level)
     {
       if(mrc_get_level($user, null, $unit_id) < $unit_level)
       {
@@ -99,7 +99,7 @@ function mrc_mercenary_hire($user, $mercenary_id)
       rpg_points_change($user['id'], RPG_MERCENARY, -($darkmater_cost), "Spent for officer {$lang['tech'][$mercenary_id]} ID {$mercenary_id}");
     }
     doquery('COMMIT;');
-    sys_redirect("officer.php?goto={$mercenary_id}&uid={$user['id']}");
+    sys_redirect($_SERVER['REQUEST_URI']);
   }
   catch (Exception $e)
   {
@@ -191,6 +191,10 @@ function mrc_mercenary_render($user)
       for($i = $config->empire_mercenary_temporary ? 1 : $mercenary_level + 1; $i <= $mercenary['max']; $i++)
       {
         $total_cost = eco_get_total_cost($mercenary_id, $i);
+        if(!$config->empire_mercenary_temporary && $total_cost[BUILD_CREATE][RES_DARK_MATTER] > $user[$sn_data[RES_DARK_MATTER]['name']])
+        {
+          break;
+        }
         $template->assign_block_vars('officer.level', array(
           'VALUE' => $i,
           'PRICE' => $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old,

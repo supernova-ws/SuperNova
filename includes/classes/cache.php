@@ -489,6 +489,8 @@ class classConfig extends classPersistent
 
     'eco_scale_storage'      => 1,
 
+    'ali_members_bonus'      => 10, // Minumum alliace size to start using bonus
+
     'empire_mercenary_temporary' => 0, // Temporary empire-wide mercenaries
     'empire_mercenary_base_period' => PERIOD_MONTH, // Base
 

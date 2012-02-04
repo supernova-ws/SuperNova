@@ -45,7 +45,7 @@
       <th>{L_ali_info_leave}</th>
       <th>
         <form action="alliance.php" method="post">
-          <input type="checkbox" name="ali_info_leave_confirm" value="1"> {L_ali_info_leave} 
+          <input type="checkbox" name="ali_info_leave_confirm" value="1"> {L_ali_info_leave}
           <input type="hidden" name="mode" value="exit">
           <input type="submit" value="{L_sys_confirm}">
         </form>

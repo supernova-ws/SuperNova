@@ -613,6 +613,9 @@ $lang = array_merge($lang, array(
 
   'sys_msg_err_update_dm' => 'Ошибка обновления количества ТМ!',
 
+  'sys_na' => 'Не доступен',
+  'sys_na_short' => 'Н/Д',
+
 ));
 
 ?>

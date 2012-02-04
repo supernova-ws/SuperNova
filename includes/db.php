@@ -35,11 +35,15 @@ function sn_db_connect()
 function doquery($query, $table = '', $fetch = false){
   global $numqueries, $link, $debug, $user, $tableList, $sn_cache, $is_watching, $config, $dm_change_legit;
 
+  if(!is_string($table))
+  {
+    $fetch = $table;
+  }
+
   if($config->game_watchlist_array)
   {
     if(!$is_watching && in_array($user['id'], $config->game_watchlist_array))
     {
-//      if(stripos($query, 'SELECT') !== 0)
       if(!preg_match('/^(select|commit|rollback|start transaction)/i', $query))
       {
         $is_watching = true;
@@ -78,6 +82,7 @@ function doquery($query, $table = '', $fetch = false){
   }elseif (stripos($query, 'AUTHLEVEL') != FALSE && $user['authlevel'] < 3 && stripos($query, 'SELECT') !== 0) {
     $badword = true;
   }
+
   if ($badword) {
     $message = 'Привет, я не знаю то, что Вы пробовали сделать, но команда, которую Вы только послали базе данных, не выглядела очень дружественной и она была заблокированна.<br /><br />Ваш IP, и другие данные переданны администрации сервера. Удачи!.';
 

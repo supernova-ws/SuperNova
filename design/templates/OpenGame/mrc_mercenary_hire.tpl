@@ -64,28 +64,32 @@ function mrc_change(mercenary_id)
             <a href="techtree.php"><span class="error">{L_mrc_msg_error_requirements}</span></a>
           <!--ELSEIF (EMPIRE_MERCENARY_TEMPORARY && ! officer.LEVEL) || (officer.CAN_BUY && ! EMPIRE_MERCENARY_TEMPORARY && (officer.LEVEL < officer.LEVEL_MAX)) -->
           <!-- ELSEIF ! EMPIRE_MERCENARY_TEMPORARY || ! officer.LEVEL -->
-            <form action="" method="post">
-              <input type="hidden" value="{officer.ID}" name="mercenary_id">
-              {L_sys_level}
+            <!-- IF .officer.level -->
+              <form action="" method="post">
+                <input type="hidden" value="{officer.ID}" name="mercenary_id">
+                {L_sys_level}
 
-              <select name="mercenary_level" id="level_{officer.ID}" onchange="javascript:mrc_change({officer.ID});">
-                <!-- BEGIN level -->
-                <option value="{level.VALUE}"<!-- IF officer.LEVEL == level.VALUE --> selected<!-- ENDIF -->>{level.VALUE}</option><script language="javascript">mrc_cost_array[{officer.ID}][{level.VALUE}] = {level.PRICE};</script>
-                <!-- END level -->
-              </select>
-
-              <!-- IF EMPIRE_MERCENARY_TEMPORARY -->
-                <select name="mercenary_period" id="period_{officer.ID}" onchange="javascript:mrc_change({officer.ID});">
-                  <!-- BEGIN !period -->
-                  <option value="{period.LENGTH}"<!-- IF period.SELECTED --> selected<!-- ENDIF -->>{period.TEXT}</option>
-                  <!-- END period -->
+                <select name="mercenary_level" id="level_{officer.ID}" onchange="javascript:mrc_change({officer.ID});">
+                  <!-- BEGIN level -->
+                  <option value="{level.VALUE}"<!-- IF officer.LEVEL == level.VALUE --> selected<!-- ENDIF -->>{level.VALUE}</option><script language="javascript">mrc_cost_array[{officer.ID}][{level.VALUE}] = {level.PRICE};</script>
+                  <!-- END level -->
                 </select>
-              <!-- ELSE -->
-                <input type="hidden" name="mercenary_period" id="period_{officer.ID}" value="{C_empire_mercenary_base_period}");">
-              <!-- ENDIF -->
-              <span id="final_cost_{officer.ID}">{officer.COST}</span> {L_sys_dark_matter_sh}
-              <input type="submit" value="{L_mrc_hire}">
-            </form>
+
+                <!-- IF EMPIRE_MERCENARY_TEMPORARY -->
+                  <select name="mercenary_period" id="period_{officer.ID}" onchange="javascript:mrc_change({officer.ID});">
+                    <!-- BEGIN !period -->
+                    <option value="{period.LENGTH}"<!-- IF period.SELECTED --> selected<!-- ENDIF -->>{period.TEXT}</option>
+                    <!-- END period -->
+                  </select>
+                <!-- ELSE -->
+                  <input type="hidden" name="mercenary_period" id="period_{officer.ID}" value="{C_empire_mercenary_base_period}");">
+                <!-- ENDIF -->
+                <span id="final_cost_{officer.ID}">{officer.COST}</span> {L_sys_dark_matter_sh}
+                <input type="submit" value="{L_mrc_hire}">
+              </form>
+            <!-- ELSE -->
+              <span class="error">{L_mrc_msg_error_no_resource}</span>
+            <!-- ENDIF -->
           <!-- ENDIF -->
 
         </div>

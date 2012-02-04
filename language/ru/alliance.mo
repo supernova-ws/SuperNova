@@ -255,6 +255,17 @@ $lang = array_merge($lang, array(
   'opt_msg_avatar_error_writing' => 'Ошибка сохранения файла логотипа. Обратитесь к Администрации сервера',
   'opt_msg_avatar_error_upload' => 'Ошибка загрузки изображения %1. Обратитесь к Администрации сервера',
   'opt_msg_avatar_error_unsupported' => 'Формат загруженного изображения не поддерживается. Поддерживаются только файлы JPG, GIF, PNG размером до 200КБ',
+
+  'ali_admin_mercenaries' => 'Наемники Альянса',
+
+  'ali_res_title' => 'Ресурсы Альянса',
+  'ali_res_player_bonus' => 'Бонус участника',
+  'ali_res_transfer' => 'Перевести',
+  'ali_res_transfer_long' => 'Перевести на счет Альянса',
+  'ali_res_no_resources' => 'У Альянса нет ресурсов',
+  'ali_res_transfer_dm_log' => 'Участник \'%s\' перевел %d ТМ на счет Альянса [%s]',
+
+  'ali_res_err_not_enough' => 'У вас нет столько ТМ!',
 ));
 
 ?>

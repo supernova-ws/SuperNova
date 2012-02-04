@@ -1,6 +1,6 @@
 <?php
 
-function eco_get_planet_caps($user, &$planet_row)
+function eco_get_planet_caps(&$user, &$planet_row)
 {
   global $sn_data, $config;
 

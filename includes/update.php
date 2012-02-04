@@ -1541,15 +1541,8 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
       upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.ally_id = a.id SET u.ally_name = a.ally_name, u.ally_tag = a.ally_tag WHERE u.ally_id IS NOT NULL;");
 
-/*
-    upd_alter_table('users', array(
-      "MODIFY COLUMN `avatar` tinyint(1) unsigned NOT NULL DEFAULT '0'",
-    ), strtoupper($update_tables['users']['avatar']['Type']) != 'TINYINT(1) UNSIGNED');
+      $config->db_saveItem('ali_members_bonus', 10, !isset($config->ali_members_bonus));
 
-    upd_alter_table('alliance', array(
-      "MODIFY COLUMN `ally_image` tinyint(1) unsigned NOT NULL DEFAULT '0'",
-    ), strtoupper($update_tables['alliance']['ally_image']['Type']) != 'TINYINT(1) UNSIGNED');
-*/
     upd_do_query('COMMIT;', true);
 //    $new_version = 32;
 };

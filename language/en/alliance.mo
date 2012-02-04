@@ -258,6 +258,18 @@ $lang = array_merge($lang, array(
   'opt_msg_avatar_error_writing' => 'Error saving logo file. Please, contact server Administration',
   'opt_msg_avatar_error_upload' => 'Error loading logo image %1. Please, contact server Administration',
   'opt_msg_avatar_error_unsupported' => 'Uploaded image format not supported. Only supported JPG, GIF, PNG up to 200KB',
+
+  'ali_admin_mercenaries' => 'Alliance\'s mercenaries',
+
+  'ali_res_title' => 'Alliance\'s resources',
+  'ali_res_player_bonus' => 'Member\s bonus',
+  'ali_res_transfer' => 'Transfer',
+  'ali_res_transfer_long' => 'Transfer to Alliance',
+  'ali_res_no_resources' => 'Alliance has no resources',
+  'ali_res_transfer_dm_log' => 'Member \'%s\' transferred %d DM to account of Alliance [%s]',
+
+  'ali_res_err_not_enough' => 'Ypu don\'t have enough DM!',
+
 ));
 
 ?>

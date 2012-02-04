@@ -125,6 +125,16 @@ foreach($relations as $relation)
   }
 }
 
-display(parsetemplate($template, $lang), "{$lang['your_alliance']} [{$ally['ally_name']}]");
+$template = parsetemplate($template, $lang);
+
+if(is_array($sn_ali_render))
+{
+  foreach($sn_ali_render as $render_func_name)
+  {
+    call_user_func($render_func_name);
+  }
+}
+
+display($template, "{$lang['your_alliance']} [{$ally['ally_name']}]");
 
 ?>
