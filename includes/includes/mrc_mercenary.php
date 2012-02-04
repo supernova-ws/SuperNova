@@ -195,7 +195,7 @@ function mrc_mercenary_render($user)
       for($i = $config->empire_mercenary_temporary ? 1 : $mercenary_level + 1; $i <= $mercenary['max']; $i++)
       {
         $total_cost = eco_get_total_cost($mercenary_id, $i);
-        if(!$config->empire_mercenary_temporary && $total_cost[BUILD_CREATE][RES_DARK_MATTER] > $user[$sn_data[RES_DARK_MATTER]['name']])
+        if(!$config->empire_mercenary_temporary && $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old > $user[$sn_data[RES_DARK_MATTER]['name']])
         {
           break;
         }
