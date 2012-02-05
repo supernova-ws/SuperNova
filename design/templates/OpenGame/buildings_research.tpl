@@ -1,8 +1,9 @@
 <h2>{PAGE_HEADER}</h2>
+
+<!-- INCLUDE _result_message.tpl -->
+
 <!-- DEFINE $QUE_ID = '{QUE_ID}' -->
 <!-- INCLUDE eco_queue.tpl -->
-
-<!-- IF MESSAGE --><span class="error">{MESSAGE}</span><!-- ENDIF -->
 
 <table width=530>
   <!-- IF $QUE_NOT_EMPTY -->
@@ -15,7 +16,6 @@
               <div id="ov_{QUE_ID}_timer" style="color: lime"></div>
               <div>{L_sys_total_time}</div>
               <div id="ov_{QUE_ID}_total" style="color: red"></div>
-              <!-- IF RESEARCH_HOME_NAME --><div>{L_on}&nbsp;{RESEARCH_HOME_NAME}</div><!-- ENDIF -->
             </th>
             <th id="ov_{QUE_ID}_que"></th>
           </tr>

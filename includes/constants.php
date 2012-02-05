@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '32');
 define('SN_RELEASE', '33');
-define('SN_VERSION', '33a15.2');
+define('SN_VERSION', '33a16');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -285,6 +285,13 @@ define('BUILD_NO_UNITS'        , 7);
 define('QUE_STRUCTURES', 1);
 define('QUE_HANGAR'    , 4);
 define('QUE_RESEARCH'  , 7);
+
+// *** Que items
+define('QI_UNIT_ID', 0);
+define('QI_AMOUNT' , 1);
+define('QI_TIME'   , 2);
+define('QI_MODE'   , 3);
+define('QI_QUE_ID' , 4);
 
 // *** Subque types
 define('SUBQUE_PLANET'  , 1);

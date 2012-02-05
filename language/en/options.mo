@@ -111,7 +111,8 @@ $lang = array_merge($lang, array(
   'opt_compatibility' => 'Compatibility - old interfaces',
   'opt_compat_structures' => 'The old interface construction',
   'opt_vacation_err_your_fleet' => 'Not to leave until the flight is at least one of your fleet',
-  'opt_vacation_err_building' => 'You are building or explore on %s and therefore cannot leave on vacation',
+  'opt_vacation_err_building' => 'You are building or explore on %s and therefore you cannot leave on vacation',
+  'opt_vacation_err_research' => 'Your scientists do some research and therefore you cannot leave on vacation',
   'opt_vacation_min' => 'a minimum of',
   'succeful_changepass' => '',
 

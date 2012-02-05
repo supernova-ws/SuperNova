@@ -7,7 +7,20 @@
  * @version 1.0
  */
 
-function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0, $only_cost = false)
+function eco_get_lab_max_effective_level(&$user)
+{
+  global $sn_data;
+
+  if(!isset($user[$sn_data[STRUC_LABORATORY]['name']]))
+  {
+    $lab_level = doquery("SELECT MAX(({$sn_data[STRUC_LABORATORY]['name']} + 1) * 2 / pow(0.5, {$sn_data[STRUC_LABORATORY_NANO]['name']})) as lab_level FROM {{planets}} WHERE `id_owner` = {$user['id']};", true);
+    $user[$lab_db_name] = floor($lab_level['lab_level']);
+  }
+
+  return $user[$lab_db_name];
+}
+
+function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_cost = false)
 {
   global $sn_data, $config;
 
@@ -55,12 +68,12 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0, $only_cos
       $can_destroy = min($can_destroy, ($planet['energy_max'] - $planet['energy_used']) / $res_to_destroy);
     }
   }
- 
+
   if($only_cost)
   {
     return $cost;
   }
-   
+
   $can_build = $can_build > 0 ? floor($can_build) : 0;
   $cost['CAN'][BUILD_CREATE]  = floor($can_build);
 
@@ -96,14 +109,18 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0, $only_cos
   }
   elseif(in_array($unit_id, $sn_groups['tech']))
   {
+    $lab_db_name = $sn_data[STRUC_LABORATORY]['name'];
+    $nanolab_db_name = $sn_data[STRUC_LABORATORY_NANO]['name'];
+
     $tech_intergalactic = $user[$sn_data[TECH_RESEARCH]['name']];
-    if ( $tech_intergalactic < 1 )
+
+    if(!$tech_intergalactic)
     {
-      $time = $time * pow(0.5, $planet[$sn_data[STRUC_LABORATORY_NANO]['name']]) / (($planet[$sn_data[STRUC_LABORATORY]['name']] + 1) * 2);
+      $lab_level = eco_get_lab_max_effective_level($user); // isset($planet[$lab_db_name]) ? $planet[$lab_db_name] : 1;
+      $time = $time / $lab_level;
     }
     else
     {
-      $lab_db_name = $sn_data[STRUC_LABORATORY]['name'];
       $lab_require = intval($unit_data['require'][STRUC_LABORATORY]);
       $tech_intergalactic = $tech_intergalactic + 1;
 /*
@@ -118,12 +135,11 @@ function eco_get_build_data($user, $planet, $unit_id, $unit_level = 0, $only_cos
         ) AS subquery;", '', true);
 //      $time = $time / (($inves['laboratorio'] + 1) * 2) * pow(0.5, $planet[$sn_data[STRUC_LABORATORY_NANO]['name']]);
 */
-      // TODO: Fix bug with counting building labs/nanolabs
       $inves = doquery(
         "SELECT SUM(lab) AS effective_level
           FROM
           (
-            SELECT ({$lab_db_name} + 1) * 2 / pow(0.5, {$sn_data[STRUC_LABORATORY_NANO]['name']}) AS lab
+            SELECT ({$lab_db_name} + 1) * 2 / pow(0.5, {$nanolab_db_name}) AS lab
               FROM {{planets}}
                 WHERE id_owner='{$user['id']}' AND {$lab_db_name} >= {$lab_require}
                 ORDER BY lab DESC

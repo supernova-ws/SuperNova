@@ -36,6 +36,11 @@ if($mode == 'change')
         message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'options.php', 5);
         die();
       }
+      elseif($user['que'])
+      {
+        message($lang['opt_vacation_err_research'], $lang['Error'], 'options.php', 5);
+        die();
+      }
       else
       {
         $query = doquery("SELECT * FROM `{{planets}}` WHERE `id_owner` = '{$user['id']}';");
@@ -43,7 +48,7 @@ if($mode == 'change')
         {
           $global_data = sys_o_get_updated($user, $planet, $time_now, true);
           $planet = $global_data['planet'];
-          if(($planet['que']) || ($planet['b_tech'] || $planet['b_tech_id']) || ($planet['b_hangar'] || $planet['b_hangar_id']))
+          if(($planet['que']) || ($planet['b_hangar'] || $planet['b_hangar_id']))
           {
             message(sprintf($lang['opt_vacation_err_building'], $planet['name']), $lang['Error'], 'options.php', 5);
             die();

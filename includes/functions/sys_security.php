@@ -107,7 +107,7 @@ function sn_login($username, $password, $remember_me = '1')
 
   $login = doquery("SELECT * FROM {{users}} WHERE `username` = '{$username}' LIMIT 1;", '', true);
 
-  if(!$username || !$login)
+  if(!$username || !$login || $login['user_as_ally'])
   {
     $status = LOGIN_ERROR_USERNAME;
     $error_msg = $lang['Login_FailUser'];

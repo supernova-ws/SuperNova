@@ -100,7 +100,7 @@ elseif($sys_user_logged_in)
 
   CheckPlanetUsedFields($planetrow);
 
-  HandleTechnologieBuild($user, $planetrow);
+  eco_bld_que_tech($user, $planetrow);
 
   if(!$allow_anonymous)
   {

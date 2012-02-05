@@ -1205,9 +1205,9 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       "MODIFY COLUMN `solar_satelit_porcent` TINYINT UNSIGNED NOT NULL DEFAULT '10'",
 
       "MODIFY COLUMN `que` TEXT COMMENT 'Planet que' AFTER `solar_satelit_porcent`",
-      "MODIFY COLUMN `b_tech` INT(11) NOT NULL DEFAULT 0 AFTER `que`",
-      "MODIFY COLUMN `b_tech_id` SMALLINT NOT NULL DEFAULT 0 AFTER `b_tech`",
-      "MODIFY COLUMN `b_hangar` INT(11) NOT NULL DEFAULT '0' AFTER `b_tech_id`",
+//      "MODIFY COLUMN `b_tech` INT(11) NOT NULL DEFAULT 0 AFTER `que`",
+//      "MODIFY COLUMN `b_tech_id` SMALLINT NOT NULL DEFAULT 0 AFTER `b_tech`",
+      "MODIFY COLUMN `b_hangar` INT(11) NOT NULL DEFAULT '0' AFTER `que`",
       "MODIFY COLUMN `b_hangar_id` TEXT AFTER `b_hangar`",
       "MODIFY COLUMN `last_update` INT(11) DEFAULT NULL AFTER `b_hangar_id`",
 
@@ -1342,16 +1342,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       "MODIFY COLUMN `expedition_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
       "MODIFY COLUMN `colonisation_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
       "MODIFY COLUMN `graviton_tech` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
-      "MODIFY COLUMN `rpg_amiral` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
-      "MODIFY COLUMN `mrc_academic` SMALLINT UNSIGNED DEFAULT '0'",
-      "MODIFY COLUMN `rpg_espion` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
-      "MODIFY COLUMN `rpg_commandant` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
-      "MODIFY COLUMN `rpg_stockeur` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
-      "MODIFY COLUMN `rpg_destructeur` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
-      "MODIFY COLUMN `rpg_general` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
-      "MODIFY COLUMN `rpg_raideur` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
-      "MODIFY COLUMN `rpg_empereur` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
-      "MODIFY COLUMN `player_artifact_list` text AFTER `rpg_empereur`",
+      "MODIFY COLUMN `player_artifact_list` text AFTER `graviton_tech`",
       "MODIFY COLUMN `ally_id` bigint(20) unsigned DEFAULT NULL AFTER `player_artifact_list`",
       "MODIFY COLUMN `ally_tag` varchar(8) DEFAULT NULL AFTER `ally_id`",
       "MODIFY COLUMN `ally_name` varchar(32) DEFAULT NULL AFTER `ally_tag`",
@@ -1377,7 +1368,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       "MODIFY COLUMN `mnl_expedition` int(11) NOT NULL DEFAULT '0'",
       "MODIFY COLUMN `mnl_buildlist` int(11) NOT NULL DEFAULT '0'",
       "MODIFY COLUMN `msg_admin` bigint(11) unsigned DEFAULT '0'",
-      "MODIFY COLUMN `b_tech_planet` int(11) NOT NULL DEFAULT '0' AFTER `msg_admin`",
+//      "MODIFY COLUMN `b_tech_planet` int(11) NOT NULL DEFAULT '0' AFTER `msg_admin`",
       "MODIFY COLUMN `deltime` int(10) unsigned DEFAULT '0'",
       "MODIFY COLUMN `news_lastread` int(10) unsigned DEFAULT '0'",
       "MODIFY COLUMN `total_rank` int(10) unsigned NOT NULL DEFAULT '0'",
@@ -1414,7 +1405,17 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       "MODIFY COLUMN `settings_mis` tinyint(1) unsigned NOT NULL DEFAULT '1' AFTER `settings_bud`",
       "MODIFY COLUMN `settings_rep` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `settings_mis`",
     ), strtoupper($update_tables['users']['id_owner']['Type']) != 'BIGINT(20) UNSIGNED');
-
+/*
+      "MODIFY COLUMN `rpg_amiral` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `mrc_academic` SMALLINT UNSIGNED DEFAULT '0'",
+      "MODIFY COLUMN `rpg_espion` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `rpg_commandant` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `rpg_stockeur` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `rpg_destructeur` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `rpg_general` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `rpg_raideur` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+      "MODIFY COLUMN `rpg_empereur` SMALLINT UNSIGNED NOT NULL DEFAULT '0'",
+*/
     upd_do_query('COMMIT;', true);
     $new_version = 32;
 
@@ -1542,6 +1543,41 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.ally_id = a.id SET u.ally_name = a.ally_name, u.ally_tag = a.ally_tag WHERE u.ally_id IS NOT NULL;");
 
       $config->db_saveItem('ali_members_bonus', 10, !isset($config->ali_members_bonus));
+
+      upd_alter_table('users', array(
+        "DROP COLUMN `rpg_amiral`",
+        "DROP COLUMN `mrc_academic`",
+        "DROP COLUMN `rpg_espion`",
+        "DROP COLUMN `rpg_commandant`",
+        "DROP COLUMN `rpg_stockeur`",
+        "DROP COLUMN `rpg_destructeur`",
+        "DROP COLUMN `rpg_general`",
+        "DROP COLUMN `rpg_raideur`",
+        "DROP COLUMN `rpg_empereur`",
+
+        "ADD COLUMN `metal` decimal(65,5) NOT NULL DEFAULT '0.00000'",
+        "ADD COLUMN `crystal` decimal(65,5) NOT NULL DEFAULT '0.00000'",
+        "ADD COLUMN `deuterium` decimal(65,5) NOT NULL DEFAULT '0.00000'",
+      ), $update_tables['users']['rpg_amiral']);
+
+      if($update_tables['users']['b_tech_planet'])
+      {
+        $query = doquery("SELECT * FROM {{planets}} WHERE `b_tech_id` <> 0;");
+        while($planet_row = mysql_fetch_assoc($query))
+        {
+          $que_item_string = "{$planet_row['b_tech_id']},1," . max(0, $planet_row['b_tech'] - $time_now) . "," . BUILD_CREATE . "," . QUE_RESEARCH;
+          doquery("UPDATE {{users}} SET `que` = '{$que_item_string}' WHERE `id` = {$planet_row['id_owner']} LIMIT 1;");
+        }
+
+        upd_alter_table('planets', array(
+          "DROP COLUMN `b_tech`",
+          "DROP COLUMN `b_tech_id`",
+        ), $update_tables['planets']['b_tech']);
+
+        upd_alter_table('users', "DROP COLUMN `b_tech_planet`", $update_tables['users']['b_tech_planet']);
+      }
+
+      upd_alter_table('users', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'User que'", !$update_tables['users']['que']);
 
     upd_do_query('COMMIT;', true);
 //    $new_version = 32;

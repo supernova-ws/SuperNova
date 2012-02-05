@@ -55,8 +55,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
         '{$comment}',
         '{$page_url}',
         {$user_id}
-      );", true
-    );
+      );");
 
     if($user['id'] == $user_id)
     {

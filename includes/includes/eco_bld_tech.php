@@ -1,23 +1,80 @@
 <?php
 
-/**
- * ResearchBuildingPage.php
- *
- * 2.0 - full rewrite
- * @version 1.2s - Security checked for SQL-injection by Gorlum for http://supernova.ws
- * @version 1.2
- * @copyright 2008 by Chlorel for XNova
- */
-// History revision
-// 1.0 - Release initiale / modularisation / Reecriture / Commentaire / Mise en forme
-// 1.1 - BUG affichage de la techno en cours
-// 1.2 - Restructuration modification pour permettre d'annuller proprement une techno en cours
-
-function eco_lab_is_building($que)
+function eco_bld_tech_research($user, $planet)
 {
-  global $config;
+  global $lang, $sn_data;
 
-  return $que['in_que_abs'][STRUC_LABORATORY] && !$config->BuildLabWhileRun ? true : false;
+  try
+  {
+    doquery('START TRANSACTION;');
+
+    $tech_id    = sys_get_param_int('tech');
+    $user = doquery("SELECT * FROM {{users}} WHERE `id` ={$user['id']} LIMIT 1 FOR UPDATE;", true);
+//    $build_data = eco_get_build_data($user, $planet, $tech_id, mrc_get_level($user, $planet, $tech_id, false, true));
+    $build_data = eco_get_build_data($user, $planet, $tech_id, $user[$sn_data[$tech_id]['name']]);
+
+    if($user['que'])
+    {
+      throw new Exception($lang['eco_bld_msg_err_research_in_progress'], ERR_ERROR);
+    }
+    if(!in_array($tech_id, $sn_data['groups']['tech']))
+    {
+      // TODO: Hack attempt - warning here. Normally non-tech can't be passed from build page
+      throw new Exception($lang['eco_bld_msg_err_not_research'], ERR_ERROR);
+    }
+    if(eco_can_build_unit($user, $planet, $tech_id) != BUILD_ALLOWED)
+    {
+      // TODO: Hack attempt - warning here. Normally requirements check should be done on build page
+      throw new Exception($lang['eco_bld_msg_err_requirements_not_meet'], ERR_ERROR);
+    }
+    if(!$build_data['CAN'][BUILD_CREATE])
+    {
+      throw new Exception($lang['eco_bld_resources_not_enough'], ERR_ERROR);
+    }
+
+    $que_item_string = "{$tech_id},1,{$build_data[RES_TIME][BUILD_CREATE]}," . BUILD_CREATE . "," . QUE_RESEARCH;
+    doquery("UPDATE {{planets}} SET 
+      `metal` = `metal` - {$build_data[BUILD_CREATE][RES_METAL]}, `crystal` = `crystal` - '{$build_data[BUILD_CREATE][RES_CRYSTAL]}', `deuterium` = `deuterium` - '{$build_data[BUILD_CREATE][RES_DEUTERIUM]}' 
+      WHERE `id` = '{$planet['id']}' LIMIT 1;");
+    doquery("UPDATE {{users}} SET `que` = '{$que_item_string}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    doquery('COMMIT;');
+
+    sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . QUE_RESEARCH);
+  }
+  catch (Exception $e)
+  {
+    doquery('ROLLBACK;');
+    $operation_result = array(
+      'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
+      'MESSAGE' => $e->getMessage()
+    );
+  }
+
+  return $operation_result;
+}
+
+function eco_bld_tech_que_clear($user_id, $planet_id)
+{
+  global $sn_data;
+
+  doquery('START TRANSACTION;');
+  $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE;", true);
+  $que_item = $user['que'] ? explode(',', $user['que']) : array();
+  if(!empty($que_item))
+  {
+    $tech_id = $que_item[QI_UNIT_ID];
+    $build_data = eco_get_build_data($user, false, $tech_id, $user[$sn_data[$tech_id]['name']], true);
+    doquery("UPDATE {{planets}} SET 
+      `metal` = `metal` + {$build_data[BUILD_CREATE][RES_METAL]}, `crystal` = `crystal` + '{$build_data[BUILD_CREATE][RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$build_data[BUILD_CREATE][RES_DEUTERIUM]}' 
+      WHERE `id` = '{$planet_id}' LIMIT 1;");
+    doquery("UPDATE {{users}} SET `que` = '' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    doquery('COMMIT;');
+  }
+  else
+  {
+    doquery('ROLLBACK;');
+  }
+  sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . QUE_RESEARCH);
 }
 
 function eco_bld_tech(&$user, &$planet, $que)
@@ -29,49 +86,24 @@ function eco_bld_tech(&$user, &$planet, $que)
     message($lang['no_laboratory'], $lang['tech'][TECH_TECHNOLOGY]);
   }
 
-  $build_planet = !$user['b_tech_planet'] || $user['b_tech_planet'] == $planet['id'] ? $planet : doquery("SELECT * FROM {{planets}} WHERE `id` = {$user['b_tech_planet']} LIMIT 1;", '', true);
-
-  $message = '';
   switch(sys_get_param_str('action'))
   {
     case 'clear':
     case 'trim':
-      $tech_id = $build_planet['b_tech_id'];
-      if($tech_id)
-      {
-        $build_data = eco_get_build_data($user, $build_planet, $tech_id, $user[$sn_data[$tech_id]['name']]);
-        doquery("UPDATE {{planets}} SET `b_tech_id` = '0', `b_tech` = '0', 
-          `metal` = `metal` + {$build_data[BUILD_CREATE][RES_METAL]}, `crystal` = `crystal` + '{$build_data[BUILD_CREATE][RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$build_data[BUILD_CREATE][RES_DEUTERIUM]}' 
-          WHERE `id` = '{$build_planet['id']}' LIMIT 1;");
-        doquery("UPDATE {{users}} SET `b_tech_planet` = '0' WHERE `id` = '{$user['id']}' LIMIT 1;");
-        header("Location: {$_SERVER['PHP_SELF']}?mode=" . QUE_RESEARCH);
-        die();
-      }
+      eco_bld_tech_que_clear($user['id'], $planet['id']);
     break;
-    
-    case 'build':
-      $tech_id = sys_get_param_int('tech');
-      $build_data            = eco_get_build_data($user, $planet, $tech_id, $user[$sn_data[$tech_id]['name']]);
-      if($build_planet['b_tech_id'])
-      {
-        $message = $lang['build_research_in_progress'];
-      }
-      elseif(!eco_lab_is_building($que) && in_array($tech_id, $sn_data['groups']['tech']) && eco_can_build_unit($user, $planet, $tech_id) == BUILD_ALLOWED && $build_data['CAN'][BUILD_CREATE])
-      {
-        $build_time_end        = $build_data[RES_TIME][BUILD_CREATE] + $time_now;
-        doquery("UPDATE {{planets}} SET `b_tech_id` = '{$tech_id}', `b_tech` = '{$build_time_end}', 
-          `metal` = `metal` - {$build_data[BUILD_CREATE][RES_METAL]}, `crystal` = `crystal` - '{$build_data[BUILD_CREATE][RES_CRYSTAL]}', `deuterium` = `deuterium` - '{$build_data[BUILD_CREATE][RES_DEUTERIUM]}' 
-          WHERE `id` = '{$planet['id']}' LIMIT 1;");
-        doquery("UPDATE {{users}} SET `b_tech_planet` = '{$planet['id']}' WHERE `id` = '{$user['id']}' LIMIT 1;");
 
-        header("Location: {$_SERVER['PHP_SELF']}?mode=" . QUE_RESEARCH);
-        die();
-      }
+    case 'build':
+      $operation_result = eco_bld_tech_research($user, $planet);
     break;
   }
-  $message = $message ? $message : (eco_lab_is_building($que) ? $lang['labo_on_update'] : '');
 
   $template = gettemplate('buildings_research', true);
+  if(!empty($operation_result))
+  {
+    $template->assign_block_vars('result', $operation_result);
+  }
+
   $fleet_list            = flt_get_fleets_to_planet($planet);
 
   foreach($sn_data['groups']['tech'] as $Tech)
@@ -84,9 +116,9 @@ function eco_bld_tech(&$user, &$planet, $que)
     $building_level      = $user[$sn_data[$Tech]['name']];
     $build_data          = eco_get_build_data($user, $planet, $Tech, $building_level);
 
-    $temp[RES_METAL]     = floor($planet['metal'] - $build_data[BUILD_CREATE][RES_METAL]); // + $fleet_list['own']['total'][RES_METAL]
-    $temp[RES_CRYSTAL]   = floor($planet['crystal'] - $build_data[BUILD_CREATE][RES_CRYSTAL]); // + $fleet_list['own']['total'][RES_CRYSTAL]
-    $temp[RES_DEUTERIUM] = floor($planet['deuterium'] - $build_data[BUILD_CREATE][RES_DEUTERIUM]); // + $fleet_list['own']['total'][RES_DEUTERIUM]
+    $temp[RES_METAL]     = floor($planet['metal'] - $build_data[BUILD_CREATE][RES_METAL]);
+    $temp[RES_CRYSTAL]   = floor($planet['crystal'] - $build_data[BUILD_CREATE][RES_CRYSTAL]);
+    $temp[RES_DEUTERIUM] = floor($planet['deuterium'] - $build_data[BUILD_CREATE][RES_DEUTERIUM]);
 
     $template->assign_block_vars('production', array(
       'ID'                 => $Tech,
@@ -118,22 +150,22 @@ function eco_bld_tech(&$user, &$planet, $que)
       'CRYSTAL_FLEET'      => pretty_number($temp[RES_CRYSTAL] + $fleet_list['own']['total'][RES_CRYSTAL], true, true),
       'DEUTERIUM_FLEET'    => pretty_number($temp[RES_DEUTERIUM] + $fleet_list['own']['total'][RES_DEUTERIUM], true, true),
 
-//      'BUILD_CAN2'         => IsElementBuyable($user, $planet, $Tech) && !eco_lab_is_building($que),
-      'BUILD_CAN2'         => $build_data['CAN'][BUILD_CREATE], // ($user, $planet, $Tech) && !eco_lab_is_building($que),
+      'BUILD_CAN2'         => $build_data['CAN'][BUILD_CREATE],
     ));
   }
 
   $que_length = 0;
-  if($build_planet['b_tech_id'])
+  if($user['que'])
   {
-    $unit_id = $build_planet['b_tech_id'];
-    $unit_data = eco_get_build_data($user, $build_planet, $unit_id, $user[$sn_data[$unit_id]['name']]);
+    $que_item = $user['que'] ? explode(',', $user['que']) : array();
+    $unit_id = $que_item[QI_UNIT_ID];
+    $unit_data = eco_get_build_data($user, $planet, $unit_id, $user[$sn_data[$unit_id]['name']]);
 
     $template->assign_block_vars('que', array(
       'ID' => $unit_id,
       'QUE' => QUE_RESEARCH,
       'NAME' => $lang['tech'][$unit_id],
-      'TIME' => $build_planet['b_tech'] - $time_now,
+      'TIME' => $que_item[QI_TIME],
       'TIME_FULL' => $unit_data[RES_TIME][BUILD_CREATE],
       'AMOUNT' => 1,
       'LEVEL' => $user[$sn_data[$unit_id]['name']] + 1,
@@ -144,15 +176,10 @@ function eco_bld_tech(&$user, &$planet, $que)
 
   $template->assign_vars(array(
     'PAGE_HEADER'        => $lang['tech'][TECH_TECHNOLOGY],
-    'MESSAGE'            => $message,
     'FLEET_OWN_COUNT'    => $fleet_list['own']['count'],
     'QUE_ID'             => QUE_RESEARCH,
 
-    'RESEARCH_ONGOING'   => $build_planet['b_tech_id'],
-    'RESEARCH_TECH'      => $build_planet['b_tech_id'],
-    'RESEARCH_TIME'      => $build_planet['b_tech'] - $time_now,
-    'RESEARCH_HOME_ID'   => $build_planet['id'],
-    'RESEARCH_HOME_NAME' => $build_planet['id'] != $planet['id'] ? $build_planet['name'] : '',
+    'RESEARCH_ONGOING'   => (boolean)$user['que'],
   ));
 
   display(parsetemplate($template), $lang['tech'][TECH_TECHNOLOGY]);

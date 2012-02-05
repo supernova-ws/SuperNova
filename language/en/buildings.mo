@@ -74,7 +74,6 @@ $lang = array_merge($lang, array(
   'labo_on_update' => 'Lab busy!',
   'fleet_on_update' => 'Shipyard busy!',
   'Total_techs' => 'Total Techs',
-  'build_research_in_progress' => 'research in progress.',
   'eco_bld_page_hint' => '<li>To view information about an individual Item, simply move your mouse over the picture
   <li>Click on the image will select the unit. Repeated clicks on the same choice lift redeemed in units
   <li>Detailed desription of the unit and its characteristics can be found by clicking on the blue icon &quot;i&quot; in the circle
@@ -83,7 +82,11 @@ $lang = array_merge($lang, array(
   'eco_price' => 'Price',
   'eco_left' => 'Balance',
   'eco_left_fleet' => '+ fleets',
+
   'eco_bld_resources_not_enough' => 'Lack the resources to build units ordered',
+  'eco_bld_msg_err_research_in_progress' => 'Scientists of empire already researching other technology',
+  'eco_bld_msg_err_not_research' => 'Can not research in laboratory other than technology',
+  'eco_bld_msg_err_requirements_not_meet' => 'Requirements for technology research not meet',
 ));
 
 ?>

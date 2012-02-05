@@ -187,6 +187,11 @@ function tpl_parse_planet($planet, $que)
   }
   $hangar_build_tip = $hangar_que['que'][0]['id'] ? $lang[tech][$hangar_que['que'][0]['id']] : '';
 
+  if($user['que'])
+  {
+    $tech_que = explode(',', $user['que']);
+  }
+
   $result = array(
     'ID'            => $planet['id'],
     'NAME'          => $planet['name'],
@@ -202,7 +207,8 @@ function tpl_parse_planet($planet, $que)
     'CRYSTAL_PERCENT'   => $planet['crystal_mine_porcent'] * 10,
     'DEUTERIUM_PERCENT' => $planet['deuterium_sintetizer_porcent'] * 10,
 
-    'TECH'          => $planet['b_tech'] ? $lang['tech'][$planet['b_tech_id']] . ' ' . pretty_time($planet['b_tech'] - $time_now) : 0,
+//    'TECH'          => $planet['b_tech'] ? $lang['tech'][$planet['b_tech_id']] . ' ' . pretty_time($planet['b_tech'] - $time_now) : 0,
+    'TECH'          => $user['que'] ? $lang['tech'][$tech_que[QI_UNIT_ID]] . ' ' . pretty_time($tech_que[QI_TIME]) : 0,
     'HANGAR'        => $hangar_build_tip,
     'hangar_que'    => $hangar_que,
 

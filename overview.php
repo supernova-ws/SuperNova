@@ -263,14 +263,16 @@ switch($mode)
     }
 
     $que_hangar_length = tpl_assign_hangar(QUE_HANGAR, $planetrow, $template);
+
     $template->assign_block_vars('ques', array(
       ID     => QUE_HANGAR,
       NAME   => $lang['sys_ques'][QUE_HANGAR],
       LENGTH => $que_hangar_length,
     ));
 
-    $unit_id = intval($planetrow['b_tech_id']);
-    $time_rest = $planetrow['b_tech'] - $time_now;
+    $tech_que_item = explode(',', $user['que']);
+    $unit_id = intval($tech_que_item[QI_UNIT_ID]);
+    $time_rest = $tech_que_item[QI_TIME];
     $time_rest = $time_rest >= 0 ? $time_rest : 0;
     $template->assign_block_vars('ques', array(
       ID     => QUE_RESEARCH,

@@ -111,7 +111,8 @@ $lang = array_merge($lang, array(
   'opt_compatibility' => 'Совместимость - старые интерфейсов',
   'opt_compat_structures' => 'Старый интерфейс строительства зданий',
   'opt_vacation_err_your_fleet' => 'Нельзя уйти в отпуск пока в полете находится хотя бы один ваш флот',
-  'opt_vacation_err_building' => 'Вы что-то строите или исследуете на %s и поэтому не можете уйти в отпуск',
+  'opt_vacation_err_building' => 'Вы что-то строите или исследуете на %s и поэтому вы не можете уйти в отпуск',
+  'opt_vacation_err_research' => 'Ваши ученные исследует технологию и поэтому вы не можете уйти в отпуск',
   'opt_vacation_min' => 'минимум до',
   'succeful_changepass' => 'Пароль успешно изменён.<br /><a href="login.php" target="_top">Назад</a>',
 

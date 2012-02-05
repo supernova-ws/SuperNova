@@ -41,14 +41,12 @@ if ($mode == 'banit' && $action)
   $BanTime += $secs;
   $BannedUntil = $Now + $BanTime;
 
-  $QryUpdateUser = "UPDATE {{users}} SET ";
-  $QryUpdateUser .= "`banaday` = '" . $BannedUntil . "' ";
+  $QryUpdateUser = "UPDATE {{users}} SET `banaday` = '" . $BannedUntil . "', `que` = '' ";
   if ($isVacation)
   {
     $QryUpdateUser .= ", `vacation` = '{$BannedUntil}' ";
   }
-  $QryUpdateUser .= "WHERE ";
-  $QryUpdateUser .= "`username` = \"" . $name . "\" LIMIT 1;";
+  $QryUpdateUser .= "WHERE `username` = \"" . $name . "\" LIMIT 1;";
 
   $QryResult = doquery($QryUpdateUser);
 

@@ -51,6 +51,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   }
 
   $ProductionTime = max(0, $UpdateTime - $planet['last_update']);
+  $planet['prev_update'] = $planet['last_update'];
   $planet['last_update'] += $ProductionTime;
 
   $Caps = eco_get_planet_caps($user, $planet);

@@ -35,9 +35,9 @@ function mrc_modify_value(&$user, $planet = array(), $mercenaries, $value)
   return sn_function_call('mrc_modify_value', array(&$user, $planet, $mercenaries, $value));
 }
 
-function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false)
+function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false)
 {
-  return sn_function_call('mrc_get_level', array(&$user, $planet, $unit_id, $for_update));
+  return sn_function_call('mrc_get_level', array(&$user, $planet, $unit_id, $for_update, $plain));
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -364,7 +364,7 @@ function eco_get_total_cost($unit_id, $unit_level)
   return $cost_array;
 }
 
-function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false)
+function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false)
 {
 // TODO: Add caching for known items
   global $config, $sn_data, $time_now;
