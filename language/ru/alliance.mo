@@ -257,6 +257,7 @@ $lang = array_merge($lang, array(
   'opt_msg_avatar_error_unsupported' => 'Формат загруженного изображения не поддерживается. Поддерживаются только файлы JPG, GIF, PNG размером до 200КБ',
 
   'ali_admin_mercenaries' => 'Наемники Альянса',
+  'ali_admin_techs' => 'Технологии Альянса',
 
   'ali_res_title' => 'Ресурсы Альянса',
   'ali_res_player_bonus' => 'Бонус участника',
@@ -265,7 +266,9 @@ $lang = array_merge($lang, array(
   'ali_res_no_resources' => 'У Альянса нет ресурсов',
   'ali_res_transfer_dm_log' => 'Участник \'%s\' перевел %d ТМ на счет Альянса [%s]',
 
-  'ali_res_err_not_enough' => 'У вас нет столько ТМ!',
+  'ali_res_err_not_enough' => 'Не хватает ресурса %s!',
+  'ali_res_err_wrong_unit' => 'На счет Альянса можно передавать только ресурсы!',
+
 ));
 
 ?>

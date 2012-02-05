@@ -28,19 +28,6 @@ function sn_function_call($func_name, $func_arg = array())
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-// Wrappers for functions that supports wrapping
-function mrc_modify_value(&$user, $planet = array(), $mercenaries, $value)
-{
-//  $func_args = func_get_args();
-  return sn_function_call('mrc_modify_value', array(&$user, $planet, $mercenaries, $value));
-}
-
-function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false)
-{
-  return sn_function_call('mrc_get_level', array(&$user, $planet, $unit_id, $for_update, $plain));
-}
-
-// ----------------------------------------------------------------------------------------------------------------
 // Fonction de lecture / ecriture / exploitation de templates
 function sys_file_read($filename)
 {
@@ -364,17 +351,19 @@ function eco_get_total_cost($unit_id, $unit_level)
   return $cost_array;
 }
 
+function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false){return sn_function_call('mrc_get_level', array(&$user, $planet, $unit_id, $for_update, $plain));}
 function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false)
 {
 // TODO: Add caching for known items
   global $config, $sn_data, $time_now;
 
   $mercenary_level = 0;
+  $unit_db_name = $sn_data[$unit_id]['name'];
   if(in_array($unit_id, $sn_data['groups']['mercenaries']))
   {
     if(!$user['id'])
     {
-      $user[$unit_id]['powerup_unit_level'] = $user[$sn_data[$unit_id]['name']];
+      $user[$unit_id]['powerup_unit_level'] = $user[$unit_db_name];
     }
     elseif($for_update || !isset($user[$unit_id]))
     {
@@ -390,12 +379,17 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   }
   elseif(in_array($unit_id, $sn_data['groups']['tech']) || $unit_id == RES_DARK_MATTER)
   {
-    $mercenary_level = $user[$sn_data[$unit_id]['name']];
+    $mercenary_level = $user[$unit_db_name];
+  }
+  elseif(in_array($unit_id, $sn_data['groups']['resources_loot']))
+  {
+    $mercenary_level =  !empty($planet) ? $planet[$unit_db_name] : $user[$unit_db_name];
   }
 
   return $mercenary_level;
 }
 
+function mrc_modify_value(&$user, $planet = array(), $mercenaries, $value) {return sn_function_call('mrc_modify_value', array(&$user, $planet, $mercenaries, $value));}
 function sn_mrc_modify_value($user, $planet = array(), $mercenaries, $value, $base_value = null)
 {
   global $sn_data;
@@ -442,12 +436,12 @@ function sn_mrc_modify_value($user, $planet = array(), $mercenaries, $value, $ba
 
 // Generates random string of $length symbols from $allowed_chars charset
 // Usefull for password and confirmation code generation
-function sys_random_string($length = 16, $allowed_chars = 'ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz023456789')
+function sys_random_string($length = 16, $allowed_chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789')
 {
   $allowed_length = strlen($allowed_chars);
 
   $random_string = '';
-  for ($i = 0; $i < $length; $i++)
+  for($i = 0; $i < $length; $i++)
   {
     $random_string .= $allowed_chars[mt_rand(0, $allowed_length - 1)];
   }
@@ -619,6 +613,14 @@ function sys_redirect($url)
   header("Location: {$url}");
   ob_end_flush();
   die();
+}
+
+function sys_get_unit_location($user, $planet, $unit_id){return sn_function_call('sys_get_unit_location', array($user, $planet, $unit_id));}
+function sn_sys_get_unit_location($user, $planet, $unit_id)
+{
+  global $sn_data;
+
+  return $sn_data[$unit_id]['location'];
 }
 
 ?>

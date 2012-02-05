@@ -1508,9 +1508,13 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       $config->db_saveItem('uni_price_system', 1000, !isset($config->uni_price_system));
     }
 
+    // ========================================================================
+    // Ally player
+    // Adding config variable
+    $config->db_saveItem('ali_members_bonus', 10, !$config->ali_members_bonus);
 
-
-
+    // ------------------------------------------------------------------------
+    // Modifying tables
     if(strtoupper($update_tables['users']['user_as_ally']['Type']) != 'BIGINT(20) UNSIGNED')
     {
       upd_alter_table('users', array(
@@ -1528,59 +1532,76 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
         "ADD CONSTRAINT `FK_ally_ally_user_id` FOREIGN KEY (`ally_user_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
-
     }
 
-      $ally_row_list = doquery("SELECT id FROM {{alliance}} WHERE ally_user_id IS NULL;");
-      while($ally_row = mysql_fetch_assoc($ally_row_list))
+    // ------------------------------------------------------------------------
+    // Creating players for allies
+    $ally_row_list = doquery("SELECT `id`, `ally_tag` FROM {{alliance}} WHERE ally_user_id IS NULL;");
+    while($ally_row = mysql_fetch_assoc($ally_row_list))
+    {
+      // `email` = '{$email}', `email_2` = '{$email}', `lang` = '{$language}', `sex` = '{$sex}', `id_planet` = '0', `password` = '{$md5pass}',
+      $ally_user_name = mysql_escape_string("[{$ally_row['ally_tag']}]");
+      doquery("INSERT INTO {{users}} SET `username` = '{$ally_user_name}', `register_time` = {$time_now}, `user_as_ally` = {$ally_row['id']};");
+      $ally_user_id = mysql_insert_id();
+      doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_row['id']} LIMIT 1;");
+    }
+    // Renaming old ally players TODO: Remove on release
+    upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.user_as_ally = a.id SET u.username = CONCAT('[', a.ally_tag, ']') WHERE u.user_as_ally IS NOT NULL AND u.username = '';");
+
+    // ------------------------------------------------------------------------
+    // Creating planets for allies
+    $ally_user_list = doquery("SELECT `id`, `username` FROM {{users}} WHERE `user_as_ally` IS NOT NULL AND `id_planet` = 0;");
+    while($ally_user_row = mysql_fetch_assoc($ally_user_list))
+    {
+      $ally_planet_name = mysql_escape_string($ally_user_row['username']);
+      doquery("INSERT INTO {{planets}} SET `name` = '{$ally_planet_name}', `last_update` = {$time_now}, `id_owner` = {$ally_user_row['id']};");
+      $ally_planet_id = mysql_insert_id();
+      doquery("UPDATE {{users}} SET `id_planet` = {$ally_planet_id} WHERE `id` = {$ally_user_row['id']} LIMIT 1;");
+    }
+
+    upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.ally_id = a.id SET u.ally_name = a.ally_name, u.ally_tag = a.ally_tag WHERE u.ally_id IS NOT NULL;");
+
+    upd_alter_table('users', array(
+      "DROP COLUMN `rpg_amiral`",
+      "DROP COLUMN `mrc_academic`",
+      "DROP COLUMN `rpg_espion`",
+      "DROP COLUMN `rpg_commandant`",
+      "DROP COLUMN `rpg_stockeur`",
+      "DROP COLUMN `rpg_destructeur`",
+      "DROP COLUMN `rpg_general`",
+      "DROP COLUMN `rpg_raideur`",
+      "DROP COLUMN `rpg_empereur`",
+
+      "ADD COLUMN `metal` decimal(65,5) NOT NULL DEFAULT '0.00000'",
+      "ADD COLUMN `crystal` decimal(65,5) NOT NULL DEFAULT '0.00000'",
+      "ADD COLUMN `deuterium` decimal(65,5) NOT NULL DEFAULT '0.00000'",
+    ), $update_tables['users']['rpg_amiral']);
+
+
+    // ========================================================================
+    // User que
+    // Adding db field
+    upd_alter_table('users', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'User que'", !$update_tables['users']['que']);
+    // Converting old data to new one and dropping old fields
+    if($update_tables['users']['b_tech_planet'])
+    {
+      $query = doquery("SELECT * FROM {{planets}} WHERE `b_tech_id` <> 0;");
+      while($planet_row = mysql_fetch_assoc($query))
       {
-//             `username` = '{$username_safe}', `email` = '{$email}', `email_2` = '{$email}', `lang` = '{$language}', `sex` = '{$sex}', `id_planet` = '0', `password` = '{$md5pass}',
-        doquery("INSERT INTO {{users}} SET `register_time` = {$time_now}, `user_as_ally` = {$ally_row['id']};");
-        $ally_user_id = mysql_insert_id();
-        doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_row['id']} LIMIT 1;");
+        $que_item_string = "{$planet_row['b_tech_id']},1," . max(0, $planet_row['b_tech'] - $time_now) . "," . BUILD_CREATE . "," . QUE_RESEARCH;
+        doquery("UPDATE {{users}} SET `que` = '{$que_item_string}' WHERE `id` = {$planet_row['id_owner']} LIMIT 1;");
       }
 
-      upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.ally_id = a.id SET u.ally_name = a.ally_name, u.ally_tag = a.ally_tag WHERE u.ally_id IS NOT NULL;");
+      upd_alter_table('planets', array(
+        "DROP COLUMN `b_tech`",
+        "DROP COLUMN `b_tech_id`",
+      ), $update_tables['planets']['b_tech']);
 
-      $config->db_saveItem('ali_members_bonus', 10, !isset($config->ali_members_bonus));
-
-      upd_alter_table('users', array(
-        "DROP COLUMN `rpg_amiral`",
-        "DROP COLUMN `mrc_academic`",
-        "DROP COLUMN `rpg_espion`",
-        "DROP COLUMN `rpg_commandant`",
-        "DROP COLUMN `rpg_stockeur`",
-        "DROP COLUMN `rpg_destructeur`",
-        "DROP COLUMN `rpg_general`",
-        "DROP COLUMN `rpg_raideur`",
-        "DROP COLUMN `rpg_empereur`",
-
-        "ADD COLUMN `metal` decimal(65,5) NOT NULL DEFAULT '0.00000'",
-        "ADD COLUMN `crystal` decimal(65,5) NOT NULL DEFAULT '0.00000'",
-        "ADD COLUMN `deuterium` decimal(65,5) NOT NULL DEFAULT '0.00000'",
-      ), $update_tables['users']['rpg_amiral']);
-
-      upd_alter_table('users', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'User que'", !$update_tables['users']['que']);
-
-      if($update_tables['users']['b_tech_planet'])
-      {
-        $query = doquery("SELECT * FROM {{planets}} WHERE `b_tech_id` <> 0;");
-        while($planet_row = mysql_fetch_assoc($query))
-        {
-          $que_item_string = "{$planet_row['b_tech_id']},1," . max(0, $planet_row['b_tech'] - $time_now) . "," . BUILD_CREATE . "," . QUE_RESEARCH;
-          doquery("UPDATE {{users}} SET `que` = '{$que_item_string}' WHERE `id` = {$planet_row['id_owner']} LIMIT 1;");
-        }
-
-        upd_alter_table('planets', array(
-          "DROP COLUMN `b_tech`",
-          "DROP COLUMN `b_tech_id`",
-        ), $update_tables['planets']['b_tech']);
-
-        upd_alter_table('users', "DROP COLUMN `b_tech_planet`", $update_tables['users']['b_tech_planet']);
-      }
+      upd_alter_table('users', "DROP COLUMN `b_tech_planet`", $update_tables['users']['b_tech_planet']);
+    }
 
     upd_do_query('COMMIT;', true);
-//    $new_version = 32;
+//    $new_version = 33;
 };
 upd_log_message('Upgrade complete.');
 

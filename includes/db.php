@@ -156,6 +156,65 @@ function doquery($query, $table = '', $fetch = false){
   }
 }
 
+/*
+// Adjust query depending on params
+function db_change_units_adjust($user, $planet = array(), &$query){return sn_function_call('db_change_units_adjust', array($user, $planet, &$query));}
+function sn_db_change_units_adjust($user, $planet, &$query)
+{
+  $query[LOC_USER] = $user['id'] ? $query[LOC_USER] : array();
+  $query[LOC_PLANET] = $planet['id'] ? $query[LOC_PLANET] : array();
+}
+*/
+
+function db_change_units_perform($query, $tablename, $object_id)
+{
+  $query = implode(',', $query);
+  if($query && $object_id)
+  {
+    return doquery("UPDATE {{{$tablename}}} SET {$query} WHERE `id` = '{$object_id}' LIMIT 1;");
+  }
+}
+
+function db_change_units(&$user, &$planet, $unit_list = array())
+// $unit_list should have unique entrances! Recompress non-uniq entrances before pass param!
+{
+  global $sn_data;
+
+  $query = array(
+    LOC_USER => array(),
+    LOC_PLANET => array(),
+  );
+
+  foreach($unit_list as $unit_id => $unit_amount)
+  {
+    if(!$unit_amount)
+    {
+      continue;
+    }
+
+    $unit_db_name = $sn_data[$unit_id]['name'];
+
+    $unit_location = sys_get_unit_location($user, $planet, $unit_id);
+
+    // Changing value in object
+    switch($unit_location)
+    {
+      case LOC_USER:
+        $user[$unit_db_name] += $unit_amount;
+      break;
+      case LOC_PLANET:
+        $planet[$unit_db_name] += $unit_amount;
+      break;
+    }
+
+    $unit_amount = $unit_amount < 0 ? $unit_amount : "+{$unit_amount}"; // Converting positive unit_amount to string '+unit_amount'
+    $query[$unit_location][$unit_id] = "`{$unit_db_name}`=`{$unit_db_name}`{$unit_amount}";
+  }
+
+  db_change_units_perform($query[LOC_USER], 'users', $user['id']);
+  db_change_units_perform($query[LOC_PLANET], 'planets', $planet['id']);
+}
+
 function sn_db_perform($table, $values, $type = 'insert', $options = false)
 {
   $mass_perform = false;

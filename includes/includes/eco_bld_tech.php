@@ -10,7 +10,7 @@ function eco_bld_tech_research($user, $planet)
 
     $tech_id    = sys_get_param_int('tech');
     $user = doquery("SELECT * FROM {{users}} WHERE `id` ={$user['id']} LIMIT 1 FOR UPDATE;", true);
-//    $build_data = eco_get_build_data($user, $planet, $tech_id, mrc_get_level($user, $planet, $tech_id, false, true));
+    //$build_data = eco_get_build_data($user, $planet, $tech_id, mrc_get_level($user, $planet, $tech_id, false, true));
     $build_data = eco_get_build_data($user, $planet, $tech_id, $user[$sn_data[$tech_id]['name']]);
 
     if($user['que'])
@@ -33,13 +33,17 @@ function eco_bld_tech_research($user, $planet)
     }
 
     $que_item_string = "{$tech_id},1,{$build_data[RES_TIME][BUILD_CREATE]}," . BUILD_CREATE . "," . QUE_RESEARCH;
-    doquery("UPDATE {{planets}} SET 
-      `metal` = `metal` - {$build_data[BUILD_CREATE][RES_METAL]}, `crystal` = `crystal` - '{$build_data[BUILD_CREATE][RES_CRYSTAL]}', `deuterium` = `deuterium` - '{$build_data[BUILD_CREATE][RES_DEUTERIUM]}' 
-      WHERE `id` = '{$planet['id']}' LIMIT 1;");
+
+    db_change_units($user, $planet, array(
+      RES_METAL     => -$build_data[BUILD_CREATE][RES_METAL],
+      RES_CRYSTAL   => -$build_data[BUILD_CREATE][RES_CRYSTAL],
+      RES_DEUTERIUM => -$build_data[BUILD_CREATE][RES_DEUTERIUM],
+    ));
+
     doquery("UPDATE {{users}} SET `que` = '{$que_item_string}' WHERE `id` = '{$user['id']}' LIMIT 1;");
     doquery('COMMIT;');
 
-    sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . QUE_RESEARCH);
+    sys_redirect($_SERVER['REQUEST_URI']);
   }
   catch (Exception $e)
   {
@@ -53,20 +57,25 @@ function eco_bld_tech_research($user, $planet)
   return $operation_result;
 }
 
-function eco_bld_tech_que_clear($user_id, $planet_id)
+function eco_bld_tech_que_clear($user_id, $planet)
 {
   global $sn_data;
 
   doquery('START TRANSACTION;');
   $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE;", true);
   $que_item = $user['que'] ? explode(',', $user['que']) : array();
+
   if(!empty($que_item))
   {
     $tech_id = $que_item[QI_UNIT_ID];
     $build_data = eco_get_build_data($user, false, $tech_id, $user[$sn_data[$tech_id]['name']], true);
-    doquery("UPDATE {{planets}} SET 
-      `metal` = `metal` + {$build_data[BUILD_CREATE][RES_METAL]}, `crystal` = `crystal` + '{$build_data[BUILD_CREATE][RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$build_data[BUILD_CREATE][RES_DEUTERIUM]}' 
-      WHERE `id` = '{$planet_id}' LIMIT 1;");
+    
+    db_change_units($user, $planet, array(
+      RES_METAL     => $build_data[BUILD_CREATE][RES_METAL],
+      RES_CRYSTAL   => $build_data[BUILD_CREATE][RES_CRYSTAL],
+      RES_DEUTERIUM => $build_data[BUILD_CREATE][RES_DEUTERIUM],
+    ));
+
     doquery("UPDATE {{users}} SET `que` = '' WHERE `id` = '{$user['id']}' LIMIT 1;");
     doquery('COMMIT;');
   }
@@ -74,12 +83,15 @@ function eco_bld_tech_que_clear($user_id, $planet_id)
   {
     doquery('ROLLBACK;');
   }
-  sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . QUE_RESEARCH);
+  sys_redirect($_SERVER['REQUEST_URI']);
 }
 
-function eco_bld_tech(&$user, &$planet, $que)
+function eco_bld_tech(&$user, &$planet, $que = array())
 {
   global $config, $sn_data, $lang, $time_now;
+
+  lng_include('buildings');
+  lng_include('infos');
 
   if(!$planet[$sn_data[STRUC_LABORATORY]['name']])
   {
@@ -90,7 +102,7 @@ function eco_bld_tech(&$user, &$planet, $que)
   {
     case 'clear':
     case 'trim':
-      eco_bld_tech_que_clear($user['id'], $planet['id']);
+      eco_bld_tech_que_clear($user['id'], $planet);
     break;
 
     case 'build':

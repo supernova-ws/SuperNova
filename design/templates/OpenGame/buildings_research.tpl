@@ -25,8 +25,10 @@
 
     <tr>
       <td colspan="2" class="c" align="center">
-        <div class="fl"><a href="buildings.php?mode={QUE_ID}&action=clear">{L_eco_que_clear}</a></div>
-        <div class="fr"><a href="buildings.php?mode={QUE_ID}&action=trim">{L_eco_que_trim}</a></div>
+        <div class="fl"><form method="post"><input type="submit" value="{L_eco_que_clear}"><input type="hidden" name="action" value="clear"></form></div>
+<!--
+        <div class="fr"><form method="post"><input type="submit" value="{L_eco_que_trim}"><input type="hidden" name="action" value="trim"></form></div>
+-->
       </td>
     </tr>
   <!-- ELSE -->
@@ -98,7 +100,7 @@
       </table>
       {L_ConstructionTime}:&nbsp;{production.TIME}
       <!-- IF ! RESEARCH_ONGOING && production.BUILD_CAN2 -->
-        <a href="buildings.php?mode=research&action=build&tech={production.ID}"><span class="ok">{L_Rechercher} {L_level} {production.LEVEL_NEXT}</span></a>
+        <form method="post"><input type="submit" value="{L_Rechercher} {L_level} {production.LEVEL_NEXT}" class="ok"><input type="hidden" name="action" value="build"><input type="hidden" name="tech" value="{production.ID}"></form>
       <!-- ELSE -->
         <span class="error">{L_Rechercher} {L_level} {production.LEVEL_NEXT}</span>
       <!-- ENDIF -->

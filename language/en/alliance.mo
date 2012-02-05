@@ -260,6 +260,7 @@ $lang = array_merge($lang, array(
   'opt_msg_avatar_error_unsupported' => 'Uploaded image format not supported. Only supported JPG, GIF, PNG up to 200KB',
 
   'ali_admin_mercenaries' => 'Alliance\'s mercenaries',
+  'ali_admin_techs' => 'Alliance\'s technologies',
 
   'ali_res_title' => 'Alliance\'s resources',
   'ali_res_player_bonus' => 'Member\s bonus',
@@ -268,7 +269,8 @@ $lang = array_merge($lang, array(
   'ali_res_no_resources' => 'Alliance has no resources',
   'ali_res_transfer_dm_log' => 'Member \'%s\' transferred %d DM to account of Alliance [%s]',
 
-  'ali_res_err_not_enough' => 'Ypu don\'t have enough DM!',
+  'ali_res_err_not_enough' => 'Ypu don\'t have enough %s!',
+  'ali_res_err_wrong_unit' => 'You can only transfer resources to Ally!',
 
 ));
 

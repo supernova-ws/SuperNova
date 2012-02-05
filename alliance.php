@@ -1,13 +1,4 @@
 <?php
-/**
- alliance.php
- Alliance manager
-
- History
- 2.0  - Full rewrite by Gorlum for http://supernova.ws
- 1.0s - Security checked for SQL-injection by Gorlum for http://supernova.ws
- 1.0  - copyright 2008 by Chlorel for XNova
-*/
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
@@ -142,18 +133,18 @@ ally_pre_call();
 switch($mode)
 {
   case 'admin':
-    if(!array_key_exists($edit , $ali_internal_admin))
+    if(!array_key_exists($edit , $sn_ali_admin_internal))
     {
       $edit = 'default';
     }
-    if($ali_internal_admin[$edit]['include'])
+    if($sn_ali_admin_internal[$edit]['include'])
     {
-      require("includes/{$ali_internal_admin[$edit]['include']}");
+      require("includes/{$sn_ali_admin_internal[$edit]['include']}");
     }
 
-    if($ali_internal_admin[$edit]['function'])
+    if($sn_ali_admin_internal[$edit]['function'])
     {
-      call_user_func($ali_internal_admin[$edit]['function']);
+      call_user_func($sn_ali_admin_internal[$edit]['function']);
     }
   break;
 
@@ -170,10 +161,10 @@ function ally_pre_call()
 
 function sn_ally_pre_call()
 {
-  global $ali_internal_admin;
+  global $sn_ali_admin_internal;
 
-  $ali_internal_admin = isset($ali_internal_admin) ? $ali_internal_admin : array();
-  $ali_internal_admin = array_merge($ali_internal_admin, array(
+  $sn_ali_admin_internal = isset($sn_ali_admin_internal) ? $sn_ali_admin_internal : array();
+  $sn_ali_admin_internal = array_merge($sn_ali_admin_internal, array(
     'rights' => array(
       'include' => 'alliance/ali_internal_admin_rights.inc',
       'function' => '',

@@ -259,13 +259,13 @@ function flt_get_fleets_to_planet_db($planet, $phalanx = false)
 
 function flt_get_fleets_to_planet($planet, $fleet_db_list = 0)
 {
-  global $user, $sn_data;
-  $sn_groups = &$sn_data['groups'];
-
-  if(!$planet && !$fleet_db_list)
+  if(!($planet && $planet['id']) && !$fleet_db_list)
   {
     return $planet;
   }
+
+  global $user, $sn_data;
+  $sn_groups = &$sn_data['groups'];
 
   if($fleet_db_list === 0)
   {
