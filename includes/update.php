@@ -1560,6 +1560,8 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
         "ADD COLUMN `deuterium` decimal(65,5) NOT NULL DEFAULT '0.00000'",
       ), $update_tables['users']['rpg_amiral']);
 
+      upd_alter_table('users', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'User que'", !$update_tables['users']['que']);
+
       if($update_tables['users']['b_tech_planet'])
       {
         $query = doquery("SELECT * FROM {{planets}} WHERE `b_tech_id` <> 0;");
@@ -1576,8 +1578,6 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
         upd_alter_table('users', "DROP COLUMN `b_tech_planet`", $update_tables['users']['b_tech_planet']);
       }
-
-      upd_alter_table('users', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'User que'", !$update_tables['users']['que']);
 
     upd_do_query('COMMIT;', true);
 //    $new_version = 32;
