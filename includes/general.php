@@ -160,7 +160,8 @@ function GetMaxFleets(&$user)
 // ----------------------------------------------------------------------------------------------------------------
 function GetMaxExpeditions(&$user)
 {
-  return floor(sqrt($user[$GLOBALS['sn_data'][TECH_EXPEDITION]['name']]));
+  return floor(sqrt(mrc_get_level($user, false, TECH_EXPEDITION)));
+//  return floor(sqrt($user[$GLOBALS['sn_data'][TECH_EXPEDITION]['name']]));
 }
 
 // ----------------------------------------------------------------------------------------------------------------

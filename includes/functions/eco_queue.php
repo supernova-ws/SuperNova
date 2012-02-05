@@ -325,14 +325,15 @@ function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
   return $que;
 }
 
-function eco_bld_que_tech(&$user, &$planetrow)
+//function eco_bld_que_tech(&$user, &$planetrow)
+function eco_bld_que_tech(&$user)
 {
-  global $sn_data, $time_now, $lang;
-
   if(!$user['que'])
   {
     return;
   }
+
+  global $sn_data, $time_now, $lang;
 
   $time_left = max(0, $time_now - $user['onlinetime']);
 
@@ -349,21 +350,24 @@ function eco_bld_que_tech(&$user, &$planetrow)
     $user[$unit_db_name]++;
     msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_research_from'], $lang['msg_que_research_subject'], sprintf($lang['msg_que_research_message'], $lang['tech'][$unit_id], $user[$unit_db_name]));
 
-    // TODO: Disable quests for Alliances for now
-    $quest_list = qst_get_quests($user['id']);
-    $quest_triggers = qst_active_triggers($quest_list);
-    $quest_rewards = array();
-    // TODO: Check mutiply condition quests
-    $quest_trigger_list = array_keys($quest_triggers, $unit_id);
-    foreach($quest_trigger_list as $quest_id)
+    // TODO: Re-enable quests for Alliances
+    if(!$user['user_as_ally'])
     {
-      if($quest_list[$quest_id]['quest_unit_amount'] <= $user[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
+      $quest_list = qst_get_quests($user['id']);
+      $quest_triggers = qst_active_triggers($quest_list);
+      $quest_rewards = array();
+      // TODO: Check mutiply condition quests
+      $quest_trigger_list = array_keys($quest_triggers, $unit_id);
+      foreach($quest_trigger_list as $quest_id)
       {
-        $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards'];
-        $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
+        if($quest_list[$quest_id]['quest_unit_amount'] <= $user[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
+        {
+          $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards'];
+          $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
+        }
       }
+      qst_reward($user, $planet, $quest_rewards, $quest_list);
     }
-    qst_reward($user, $planet, $quest_rewards, $quest_list);
 
     $update_add = "`{$unit_db_name}` = `{$unit_db_name}` + 1, ";
 

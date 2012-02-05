@@ -1511,7 +1511,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     // ========================================================================
     // Ally player
     // Adding config variable
-    $config->db_saveItem('ali_members_bonus', 10, !$config->ali_members_bonus);
+    $config->db_saveItem('ali_members_bonus', 10, !isset($config->ali_members_bonus));
 
     // ------------------------------------------------------------------------
     // Modifying tables
@@ -1547,6 +1547,8 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     }
     // Renaming old ally players TODO: Remove on release
     upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.user_as_ally = a.id SET u.username = CONCAT('[', a.ally_tag, ']') WHERE u.user_as_ally IS NOT NULL AND u.username = '';");
+    // Setting last online time to old ally players TODO: Remove on release
+    upd_do_query("UPDATE {{users}} SET `onlinetime` = {$time_now} WHERE onlinetime = 0;");
 
     // ------------------------------------------------------------------------
     // Creating planets for allies

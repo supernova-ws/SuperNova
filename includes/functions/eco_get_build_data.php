@@ -112,7 +112,8 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $lab_db_name = $sn_data[STRUC_LABORATORY]['name'];
     $nanolab_db_name = $sn_data[STRUC_LABORATORY_NANO]['name'];
 
-    $tech_intergalactic = $user[$sn_data[TECH_RESEARCH]['name']];
+//    $tech_intergalactic = $user[$sn_data[TECH_RESEARCH]['name']];
+    $tech_intergalactic = mrc_get_level($user, false, TECH_RESEARCH);
 
     if(!$tech_intergalactic)
     {

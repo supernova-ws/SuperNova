@@ -51,7 +51,7 @@ function mrc_mercenary_hire($user, $mercenary_id)
     }
 
     $mercenary_level = sys_get_param_int('mercenary_level');
-    if($mercenary_level < 0 || $mercenary_level > $sn_data[$mercenary_id])
+    if($mercenary_level < 0 || $mercenary_level > $sn_data[$mercenary_id]['max'])
     {
       throw new Exception($lang['mrc_msg_error_wrong_level'], ERR_ERROR);
     }
@@ -63,14 +63,14 @@ function mrc_mercenary_hire($user, $mercenary_id)
 
     doquery('START TRANSACTION;');
 
-    $mercenary_level_old = mrc_get_level($user, $planetrow, $mercenary_id, true);
+    $mercenary_level_old = mrc_get_level($user, $planetrow, $mercenary_id, true, true);
     if($config->empire_mercenary_temporary && $mercenary_level_old && $mercenary_level)
     {
-      throw new Exception($lang['mrc_msg_error_already_hired'], ERR_ERROR);
+      throw new Exception($lang['mrc_msg_error_already_hired'], ERR_ERROR); // Can't hire already hired temp mercenary - dismiss first
     }
     elseif($config->empire_mercenary_temporary && !$mercenary_level_old && !$mercenary_level)
     {
-      throw new Exception('', ERR_NONE);
+      throw new Exception('', ERR_NONE); // Can't dismiss (!$mercenary_level) not hired (!$mercenary_level_old) temp mercenary. But no error
     }
 
     if($mercenary_level)
@@ -152,7 +152,7 @@ function mrc_mercenary_render($user)
     {
       $mercenary = $sn_data[$mercenary_id];
       $mercenary_bonus = $mercenary['bonus'];
-      $mercenary_bonus = $mercenary_bonus>=0 ? "+{$mercenary_bonus}" : "{$mercenary_bonus}";
+      $mercenary_bonus = $mercenary_bonus >= 0 ? "+{$mercenary_bonus}" : "{$mercenary_bonus}";
       switch($mercenary['bonus_type'])
       {
         case BONUS_PERCENT:
@@ -170,7 +170,7 @@ function mrc_mercenary_render($user)
         break;
       }
 
-      $mercenary_level = mrc_get_level($user, null, $mercenary_id);
+      $mercenary_level = mrc_get_level($user, null, $mercenary_id, false, true);
       if(!$config->empire_mercenary_temporary)
       {
         $total_cost_old = eco_get_total_cost($mercenary_id, $mercenary_level);

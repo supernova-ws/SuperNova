@@ -133,7 +133,7 @@ if(SN_IN_FLEET !== true)
 
   $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
   if (!in_array($speed_percent, $speed_possible)) {
-    message ("123<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."</b></font>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
+    message ("<font color=\"red\"><b>". $lang['fl_cheat_speed'] ."</b></font>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
   }
 
   $fleet['start_time'] = $duration + $time_now;

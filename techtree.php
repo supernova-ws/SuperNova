@@ -33,6 +33,10 @@ foreach($lang['tech'] as $Element => $ElementName)
         {
           $actual_level = mrc_get_level($user, $planetrow, $ResClass);
         }
+        elseif(in_array($ResClass, $sn_data['groups']['tech']))
+        {
+          $actual_level = mrc_get_level($user, $planetrow, $ResClass);
+        }
         elseif(isset($user[$sn_data[$ResClass]['name']]))
         {
           $actual_level = $user[$sn_data[$ResClass]['name']];

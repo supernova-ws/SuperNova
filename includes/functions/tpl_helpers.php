@@ -88,7 +88,7 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
     $aks = doquery("SELECT * FROM {{aks}} WHERE id={$fleet['fleet_group']} LIMIT 1;", '', true);
   };
 
-  $spy_level = $user['id'] == $fleet['fleet_owner'] ? 100 : ($user[$sn_data[TECH_SPY]['name']] + $user[$sn_data[MRC_SPY]['name']]);
+  $spy_level = $user['id'] == $fleet['fleet_owner'] ? 100 : GetSpyLevel($user);
 
   $return['fleet'] = array(
     'NUMBER'             => $index,

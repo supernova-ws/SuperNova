@@ -1,5 +1,5 @@
 <?php
-// Copyright (c) 2009-2010 by Gorlum for http://supernova.ws
+// Copyright (c) 2009-2012 by Gorlum for http://supernova.ws
 // Date 2009-08-08
 // Open Source
 // V1
@@ -11,12 +11,15 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
   // $damageTo = 'shield';
   $damageTo = 'structure';
 
-  $MIPDamage = ($MIPs * $sn_data[503]['attack']) * (1 + 0.05 * $attackerTech[$sn_data[TECH_WEAPON]['name']]);
-
-  foreach ($structures as $key => $structure)
+  //$MIPDamage = ($MIPs * $sn_data[503]['attack']) * (1 + 0.1 * $attackerTech[$sn_data[TECH_WEAPON]['name']]);
+  $MIPDamage = mrc_modify_value($attackerTech, false, TECH_WEAPON, $MIPs * $sn_data[503]['attack']);
+  foreach($structures as $key => $structure)
   {
-    $structures[$key]['shield'] = $sn_data[$key]['shield'] * (1 + 0.05 * $defenceTech[$sn_data[TECH_SHIELD]['name']]);
-    $structures[$key]['structure'] = ($sn_data[$key]['metal'] + $sn_data[$key]['crystal']) * (1 + 0.05 * $defenceTech[$sn_data[TECH_ARMOR]['name']]);
+    $structures[$key]['shield'] = mrc_modify_value($defenceTech, false, TECH_SHIELD, $sn_data[$key]['shield']);
+    $structures[$key]['structure'] = mrc_modify_value($defenceTech, false, TECH_ARMOR, ($sn_data[$key]['metal'] + $sn_data[$key]['crystal']) / 10);
+
+    //$structures[$key]['shield'] = $sn_data[$key]['shield'] * (1 + 0.10 * $defenceTech[$sn_data[TECH_SHIELD]['name']]);
+    //$structures[$key]['structure'] = ($sn_data[$key]['metal'] + $sn_data[$key]['crystal']) / 10 * (1 + 0.10 * $defenceTech[$sn_data[TECH_ARMOR]['name']]);
   };
 
   $startStructs = $structures;
@@ -87,10 +90,10 @@ function coe_o_missile_calculate()
     $target_planet_row = sys_o_get_updated($targetUser, array('galaxy' => $fleetRow['fleet_end_galaxy'], 'system' => $fleetRow['fleet_end_system'], 'planet' => $fleetRow['fleet_end_planet'], 'planet_type' => PT_PLANET), $time_now);
     $target_planet_row = $target_planet_row['planet'];
 
-    $rowAttacker = doquery("SELECT `military_tech` FROM `{{users}}` WHERE `id` = '{$fleetRow['fleet_owner']}' LIMIT 1;", '', true);
+    $rowAttacker = doquery("SELECT * FROM `{{users}}` WHERE `id` = '{$fleetRow['fleet_owner']}' LIMIT 1;", '', true);
 
     if ($target_planet_row['id'])
-    {                                    
+    {
       $planetDefense = array(
         400 => array( 0, 'shield' => 0, 'structure' => 0),
         401 => array( $target_planet_row[$sn_data[401]['name']], 'shield' => 0, 'structure' => 0),
