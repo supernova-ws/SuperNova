@@ -119,7 +119,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   echo '<center>';
   if($topnav)
   {
-    displayP(parsetemplate(ShowTopNavigationBar($user, $planetrow)));
+    displayP(parsetemplate(tpl_render_topnav($user, $planetrow)));
   }
 
   if(!is_array($page))
@@ -159,7 +159,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 }
 
 /**
- * ShowTopNavigationBar.php
+ * tpl_render_topnav.php
  *
  * @version 2.0 - Security checked for SQL-injection by Gorlum for http://supernova.ws
  *   [+] Complies with PCG
@@ -238,7 +238,8 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
   }
 }
 
-function ShowTopNavigationBar(&$user, $planetrow)
+function tpl_render_topnav(&$user, $planetrow){return sn_function_call('tpl_render_topnav', array($user, $planetrow));}
+function sn_tpl_render_topnav(&$user, $planetrow)
 {
   if (!is_array($user))
   {
