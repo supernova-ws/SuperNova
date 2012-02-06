@@ -14,7 +14,7 @@
       <!-- ENDIF -->
     </td>
   </tr>
-  <tr><th width=150>{L_Tag}</th><th>{ally_tag}</th><!-- IF ally_image --><th rowspan="5"><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/ally_{ally_id}.png"></th><!-- ENDIF --></tr>
+  <tr><th width=150>{L_Tag}</th><th>{ally_tag}</th><!-- IF ally_image --><th rowspan="5" valign="top"><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/ally_{ally_id}.png"></th><!-- ENDIF --></tr>
   <tr><th>{L_Name}</th><th>{ally_name}</th></tr>
   <tr><th>{L_Main_Page}</th><th><a href="{ally_web}">{ally_web}</a></th></tr>
   <tr><th>{L_Members}</th><th>{ally_members}<!-- IF ! EXTERNAL -->&nbsp;(<a href="alliance.php?mode=memberslist">{Members_list}</a>)<!-- ENDIF --></th></tr>

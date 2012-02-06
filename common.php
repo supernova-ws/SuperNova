@@ -100,12 +100,13 @@ elseif($sys_user_logged_in)
 
   CheckPlanetUsedFields($planetrow);
 
-  eco_bld_que_tech($user);
+  eco_bld_que_tech($user, $planetrow);
 
   $tech = mrc_get_level($user, $planetrow, MRC_STOCKMAN);
   if(isset($user['ally']['player']))
   {
-    eco_bld_que_tech($user['ally']['player']);
+    $temp = array();
+    eco_bld_que_tech($user['ally']['player'], $temp);
     doquery("UPDATE `{{users}}` SET `onlinetime` = {$time_now} WHERE `id` = '{$user['ally']['player']['id']}' LIMIT 1;");
   }
 

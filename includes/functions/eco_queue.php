@@ -325,8 +325,8 @@ function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
   return $que;
 }
 
-//function eco_bld_que_tech(&$user, &$planetrow)
-function eco_bld_que_tech(&$user)
+function eco_bld_que_tech(&$user, &$planetrow)
+//function eco_bld_que_tech(&$user)
 {
   if(!$user['que'])
   {
@@ -351,7 +351,7 @@ function eco_bld_que_tech(&$user)
     msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_research_from'], $lang['msg_que_research_subject'], sprintf($lang['msg_que_research_message'], $lang['tech'][$unit_id], $user[$unit_db_name]));
 
     // TODO: Re-enable quests for Alliances
-    if(!$user['user_as_ally'])
+    if(!$user['user_as_ally'] && $planetrow['id'])
     {
       $quest_list = qst_get_quests($user['id']);
       $quest_triggers = qst_active_triggers($quest_list);
