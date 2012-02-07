@@ -624,4 +624,18 @@ function sn_sys_get_unit_location($user, $planet, $unit_id)
   return $sn_data[$unit_id]['location'];
 }
 
+function sn_ali_fill_user_ally(&$user)
+{
+  if(!isset($user['ally']))
+  {
+// TODO: Check why there is several queries to DB instead of one
+    $user['ally'] = doquery("SELECT * FROM {{alliance}} WHERE `id` = {$user['ally_id']} LIMIT 1;", true);
+  }
+
+  if(!isset($user['ally']['player']))
+  {
+    $user['ally']['player'] = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['ally']['ally_user_id']} LIMIT 1;", true);
+  }
+}
+
 ?>

@@ -236,8 +236,8 @@ function sn_timer() {
           new_value = 0;
           timer['active'] = false;
         }
-        printData = sn_format_number(new_value, timer_options['round'], 'white', timer_options['max_value']);
-        if(new_value >= timer_options['max_value'] && timer_options['per_second'] > 0)
+        printData = sn_format_number(new_value, timer_options['round'], 'positive', timer_options['max_value']);
+        if((new_value >= timer_options['max_value'] && timer_options['per_second'] > 0) || (timer_options['per_second'] == 0))
         {
           timer['active'] = false;
         };

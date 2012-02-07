@@ -616,6 +616,9 @@ $lang = array_merge($lang, array(
   'sys_na' => 'Не доступен',
   'sys_na_short' => 'Н/Д',
 
+  'sys_ali_res_title' => 'Ресурсы Альянса',
+
+  'sys_bonus' => 'Бонус',
 ));
 
 ?>

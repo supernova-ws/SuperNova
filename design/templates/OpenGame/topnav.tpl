@@ -43,7 +43,7 @@ input.frameles
         <div>
           <!-- IF TOPNAV_MESSAGES_ADMIN --><a href="messages.php?mode=show&message_class={D_MSG_TYPE_ADMIN}"><span class="msg_admin">[{TOPNAV_MESSAGES_ADMIN}]</span></a><!-- ENDIF -->
           <!-- IF TOPNAV_MESSAGES_PLAYER -->&nbsp;<a href="messages.php?mode=show&message_class={D_MSG_TYPE_PLAYER}"><span class="mnl_joueur">[{TOPNAV_MESSAGES_PLAYER}]</span></a><!-- ENDIF -->
-          <!-- IF TOPNAV_MESSAGES_ALLIANCE -->&nbsp;<a href="messages.php?mode=show&message_class={D_MSG_TYPE_ALLIANCE}"><span class="mnl_alliance">[{TOPNAV_MESSAGES_ALLIANCE}]</span></a><!-- ENDIF -->
+          <!-- IF TOPNAV_MESSAGES_ALLIANCE && ! TOPNAV_ALLY -->&nbsp;<a href="messages.php?mode=show&message_class={D_MSG_TYPE_ALLIANCE}"><span class="mnl_alliance">[{TOPNAV_MESSAGES_ALLIANCE}]</span></a><!-- ENDIF -->
         </div>
       <!-- ENDIF -->
       <!-- IF TOPNAV_MESSAGES_ALL -->
@@ -53,6 +53,7 @@ input.frameles
       <!-- ENDIF -->
     </td>
   </form></tr>
+
   <tr>
     <td class="header c_c" width="150"><b><font color="#FFFF00">{L_tech_storage_max}</font></b></td>
     <td class="header c_r" width="150">{TOPNAV_METAL_MAX_TEXT}</td>
@@ -60,6 +61,19 @@ input.frameles
     <td class="header c_r" width="150">{TOPNAV_DEUTERIUM_MAX_TEXT}</td>
     <td class="header c_r" width="150"><font color="#00ff00">{ENERGY_MAX}</font></td>
   </tr>
+
+<!-- IF TOPNAV_ALLY -->
+  <tr valign=middle>
+    <td class="c_c" width="150"><b><font color="#FFFF00">{L_sys_ali_res_title}</font></b></td>
+    <td class="c_r" width="150">{TOPNAV_ALLY_METAL}</td>
+    <td class="c_r" width="150">{TOPNAV_ALLY_CRYSTAL}</td>
+    <td class="c_r" width="150">{TOPNAV_ALLY_DEUTERIUM}</td>
+    <td class="c_r <!-- IF TOPNAV_ALLY_BONUS -->positive<!-- ELSE -->negative<!-- ENDIF -->" width="150">{L_sys_bonus}:&nbsp;<!-- IF TOPNAV_ALLY_BONUS -->{L_sys_yes}<!-- ELSE -->{L_sys_no}<!-- ENDIF --></td>
+    <td class="c_c" width="150">{TOPNAV_ALLY_DARK_MATTER}</td>
+    <td class="c_c" width="150"><!-- IF TOPNAV_MESSAGES_ALLIANCE --><a href="messages.php?mode=show&message_class={D_MSG_TYPE_ALLIANCE}"><span class="mnl_alliance">[{TOPNAV_MESSAGES_ALLIANCE}]</span></a><!-- ENDIF --></td>
+  </tr>
+<!-- ENDIF -->
+
   <tr class="c_c">
     <td colspan=1 id="topnav_expedition_counter_total">
       <a href="flying_fleets.php">{L_sys_expeditions} <span id='topnav_expedition_counter'>{TOPNAV_EXPEDITIONS_FLYING}</span>/{TOPNAV_EXPEDITIONS_TOTAL}</a>

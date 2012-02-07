@@ -619,6 +619,9 @@ $lang = array_merge($lang, array(
   'sys_na' => 'Not available',
   'sys_na_short' => 'N/A',
 
+  'sys_ali_res_title' => 'Alliance\'s resources',
+
+  'sys_bonus' => 'Bonus',
 ));
 
 ?>

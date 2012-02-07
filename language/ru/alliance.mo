@@ -259,7 +259,6 @@ $lang = array_merge($lang, array(
   'ali_admin_mercenaries' => 'Наемники Альянса',
   'ali_admin_techs' => 'Технологии Альянса',
 
-  'ali_res_title' => 'Ресурсы Альянса',
   'ali_res_player_bonus' => 'Бонус участника',
   'ali_res_transfer' => 'Перевести',
   'ali_res_transfer_long' => 'Перевести на счет Альянса',

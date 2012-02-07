@@ -15,7 +15,7 @@ function cntchar(m) {
   e.childNodes[0].data = window.document.forms[0].text.value.length;
 }
 
-function sn_format_number(number, precission, color, max)
+function sn_format_number(number, precission, style, max)
 {
   if(!precission)
   {
@@ -68,7 +68,7 @@ function sn_format_number(number, precission, color, max)
     ret_val = '-' + ret_val;
   }
 
-  if(color)
+  if(style)
   {
     if(number == Math.abs(max))
     {
@@ -80,7 +80,7 @@ function sn_format_number(number, precission, color, max)
     }
     else
     {
-      ret_val = '<font color="' + color + '">' + ret_val + '</font>';
+      ret_val = '<span class="' + style + '">' + ret_val + '</span>';
     }
   }
 
