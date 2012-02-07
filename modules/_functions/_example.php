@@ -1,4 +1,4 @@
-<?
+<?php
 // This example demonstarte function wrapping (for functions, that support wrapping)
 // Uncomment next line to override standard 'display' function with your own
 // $GLOBALS['functions']['display'] = 'display_mine';
