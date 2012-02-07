@@ -74,6 +74,22 @@ elseif($sys_user_logged_in)
   flt_flying_fleet_handler($config, $skip_fleet_update);
 
   $planet_id = SetSelectedPlanet($user);
+
+  doquery('START TRANSACTION;');
+  eco_bld_que_tech($user);
+
+  if($user['ally_id'])
+  {
+    sn_ali_fill_user_ally($user);
+    if(!$user['ally']['player']['id'])
+    {
+      $debug->error("User ID {$user['id']} has ally ID {$user['ally_id']} but no ally info", 'User record error', 502);
+    }
+    eco_bld_que_tech($user['ally']['player']);
+    doquery("UPDATE `{{users}}` SET `onlinetime` = {$time_now} WHERE `id` = '{$user['ally']['player']['id']}' LIMIT 1;");
+  }
+  doquery('COMMIT;');
+
   doquery('START TRANSACTION;');
   $global_data = sys_o_get_updated($user, $planet_id, $time_now);
   if(!$global_data['planet'])
@@ -99,16 +115,6 @@ elseif($sys_user_logged_in)
   $que = $global_data['que'];
 
   CheckPlanetUsedFields($planetrow);
-
-  eco_bld_que_tech($user, $planetrow);
-
-  $tech = mrc_get_level($user, $planetrow, MRC_STOCKMAN);
-  if(isset($user['ally']['player']))
-  {
-    $temp = array();
-    eco_bld_que_tech($user['ally']['player'], $temp);
-    doquery("UPDATE `{{users}}` SET `onlinetime` = {$time_now} WHERE `id` = '{$user['ally']['player']['id']}' LIMIT 1;");
-  }
 
   if(!$allow_anonymous)
   {

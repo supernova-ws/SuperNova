@@ -325,8 +325,7 @@ function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
   return $que;
 }
 
-function eco_bld_que_tech(&$user, &$planetrow)
-//function eco_bld_que_tech(&$user)
+function eco_bld_que_tech(&$user)
 {
   if(!$user['que'])
   {
@@ -339,6 +338,7 @@ function eco_bld_que_tech(&$user, &$planetrow)
 
   doquery('START TRANSACTION;');
   $user_row = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
+  $planet = array('id' => $user['id_planet']);
 
   $update_add = '';
   $que_item = $user['que'] ? explode(',', $user['que']) : array();
@@ -351,7 +351,7 @@ function eco_bld_que_tech(&$user, &$planetrow)
     msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_research_from'], $lang['msg_que_research_subject'], sprintf($lang['msg_que_research_message'], $lang['tech'][$unit_id], $user[$unit_db_name]));
 
     // TODO: Re-enable quests for Alliances
-    if(!$user['user_as_ally'] && $planetrow['id'])
+    if(!$user['user_as_ally'] && $planet['id'])
     {
       $quest_list = qst_get_quests($user['id']);
       $quest_triggers = qst_active_triggers($quest_list);

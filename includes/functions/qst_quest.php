@@ -30,11 +30,14 @@ function qst_render_page()
             throw new Exception($lang['qst_adm_err_reward_type']);
           }
 
-          if($quest_rewards_amount <= 0)
+          if($quest_rewards_amount < 0)
           {
             throw new Exception($lang['qst_adm_err_reward_amount']);
           }
-          $quest_rewards[] = "{$quest_rewards_id},{$quest_rewards_amount}";
+          elseif($quest_rewards_amount > 0)
+          {
+            $quest_rewards[] = "{$quest_rewards_id},{$quest_rewards_amount}";
+          }
         }
         if(empty($quest_rewards))
         {

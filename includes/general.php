@@ -626,6 +626,11 @@ function sn_sys_get_unit_location($user, $planet, $unit_id)
 
 function sn_ali_fill_user_ally(&$user)
 {
+  if(!$user['ally_id'])
+  {
+    return;
+  }
+
   if(!isset($user['ally']))
   {
 // TODO: Check why there is several queries to DB instead of one
