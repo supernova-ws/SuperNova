@@ -1,14 +1,27 @@
 <?php
+//define('BE_DEBUG', true);
 
 if(defined('INIT'))
 {
   return;
 }
 
-define('INIT'    , true);
-define('INSIDE'  , true);
-define('IN_PHPBB', true);
-define('INSTALL' , false);
+define('INIT', true);
+
+if(!defined('INSIDE'))
+{
+  define('INSIDE', true);
+}
+
+if(!defined('INSTALL'))
+{
+  define('INSTALL', false);
+}
+
+if(!defined('IN_PHPBB'))
+{
+  define('IN_PHPBB', true);
+}
 
 function sys_refresh_tablelist($db_prefix)
 {
