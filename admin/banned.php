@@ -3,7 +3,7 @@
 /**
  * banned.php
  *
- * @version 1.3  copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+ * @version 1.3  copyright (c) 2009 by Gorlum for http://supernova.ws
  *   [~] Optimized SQL-queries
  * @version 1.2 - Security checked for SQL-injection by Gorlum for http://supernova.ws
  * @version 1.1  - (c) Copyright by Gorlum for http://supernova.ws

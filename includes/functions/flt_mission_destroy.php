@@ -1,6 +1,6 @@
 <?php
 /*
- * Partial copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+ * Partial copyright (c) 2009 by Gorlum for http://supernova.ws
 
 Based on original code:
 #############################################################################

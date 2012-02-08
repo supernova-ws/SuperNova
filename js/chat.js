@@ -1,7 +1,7 @@
 /*
  * chat.js
  *
- 3.0 copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+ 3.0 copyright (c) 2009 by Gorlum for http://supernova.ws
    [!] Full rewrite
    [!] Using jQuery for AJAX
    [+] Complies with PCG1

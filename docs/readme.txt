@@ -1624,8 +1624,8 @@ Coding Gudelines для разработчиков (на английском):
 
 Copyright
 =========
-Сверхновая copyright (c) 2009-2011 Gorlum для http://supernova.ws
-Project "SuperNova.WS" copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+Сверхновая copyright (c) 2009 Gorlum для http://supernova.ws
+Project "SuperNova.WS" copyright (c) 2009 by Gorlum for http://supernova.ws
 
 Based on xNova 0.8b RageRepack v226
 
