@@ -84,7 +84,7 @@
         </span>
 
         <!-- IF planet.FLEET_OWN -->
-          <span style="position: absolute; top: 0px; left: 25%; width: 25%; height: 25%; cursor: pointer;" class="icon_alpha" onmouseover="fleet_dialog_show(this, '{planet.PLANET_FLEET_ID}')"  onclick="document.location='fleet.php?cp={planet.ID}&re=0'">
+          <span style="position: absolute; top: 0px; left: 25%; width: 25%; height: 25%; cursor: pointer;" class="icon_alpha" onmouseover="fleet_dialog_show(this, '{planet.PLANET_FLEET_ID}')"  onclick="document.location='flying_fleets.php?cp={planet.ID}'">
             <img src="{D_SN_ROOT_VIRTUAL}design/images/icon_fleet_own.png" height="100%" width="100%">
           </span>
         <!-- ENDIF -->

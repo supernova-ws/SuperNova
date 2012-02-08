@@ -17,7 +17,7 @@ function flt_mission_recycle($mission_data)
     return CACHE_NOTHING;
   }
 
-  if(!$destination_planet || !is_array($destination_planet))
+  if(!isset($destination_planet['id']))
   {
     doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
     return CACHE_FLEET;

@@ -89,7 +89,8 @@ function eco_que_process($user, &$planet, $time_left)
 
       if($time_left > 0)
       {  // begin processing que with time left on it
-        $build_time = max(0, $que_item['TIME']);
+        // TODO: Next 2 lines will not work with unit que! Change it!
+        $build_time = max(1, $que_item['TIME']);
         $amount_to_build = min($que_item['AMOUNT'], floor($time_left / $build_time));
 
         if($amount_to_build > 0)

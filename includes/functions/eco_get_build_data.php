@@ -11,13 +11,13 @@ function eco_get_lab_max_effective_level(&$user)
 {
   global $sn_data;
 
-  if(!isset($user[$sn_data[STRUC_LABORATORY]['name']]))
+  if(!isset($user[STRUC_LABORATORY]))
   {
     $lab_level = doquery("SELECT MAX(({$sn_data[STRUC_LABORATORY]['name']} + 1) * 2 / pow(0.5, {$sn_data[STRUC_LABORATORY_NANO]['name']})) as lab_level FROM {{planets}} WHERE `id_owner` = {$user['id']};", true);
-    $user[$lab_db_name] = floor($lab_level['lab_level']);
+    $user[STRUC_LABORATORY] = floor($lab_level['lab_level']);
   }
 
-  return $user[$lab_db_name];
+  return $user[STRUC_LABORATORY] ? $user[STRUC_LABORATORY] : 1;
 }
 
 function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_cost = false)
@@ -41,44 +41,48 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     {
       continue;
     }
-    
+
     $resource_cost = $resource_amount * $price_increase;
-    $res_to_build = $cost[BUILD_CREATE][$resource_id] = floor($resource_cost);
-    $res_to_destroy = $cost[BUILD_DESTROY][$resource_id] = floor($resource_cost / 2);
-    
-    if($only_cost || !$resource_cost)
+    if(!$resource_cost)
     {
       continue;
     }
 
+    $cost[BUILD_CREATE][$resource_id] = floor($resource_cost);
+    $cost[BUILD_DESTROY][$resource_id] = floor($resource_cost / 2);
+
     if(in_array($resource_id, $sn_groups['resources_loot']))
     {
-      $can_build = min($can_build, $planet[$sn_data[$resource_id]['name']] / $resource_cost);
-      $can_destroy = min($can_destroy, $planet[$sn_data[$resource_id]['name']] / $res_to_destroy);
-      $time += $resource_cost * $config->__get("rpg_exchange_{$sn_data[$resource_id]['name']}")/ $rpg_exchange_deuterium;
+      $time += $resource_cost * $config->__get("rpg_exchange_{$sn_data[$resource_id]['name']}") / $rpg_exchange_deuterium;
+      $resource_got = $planet[$sn_data[$resource_id]['name']];
     }
     elseif($resource_id == RES_DARK_MATTER)
     {
-      $can_build = min($can_build, $user[$sn_data[$resource_id]['name']] / $resource_cost) ;
-      $can_destroy = min($can_destroy, $user[$sn_data[$resource_id]['name']] / $res_to_destroy);
+      $resource_got = $user[$sn_data[$resource_id]['name']];
     }
     elseif($resource_id == RES_ENERGY)
     {
-      $can_build = min($can_build, ($planet['energy_max'] - $planet['energy_used']) / $resource_cost);
-      $can_destroy = min($can_destroy, ($planet['energy_max'] - $planet['energy_used']) / $res_to_destroy);
+      $resource_got = max(0, $planet['energy_max'] - $planet['energy_used']);
     }
+    else
+    {
+      $resource_got = 0;
+    }
+
+    $can_build = min($can_build, $resource_got / $cost[BUILD_CREATE][$resource_id]);
+    $can_destroy = min($can_destroy, $resource_got / $cost[BUILD_DESTROY][$resource_id]);
   }
+
+  $can_build = $can_build > 0 ? floor($can_build) : 0;
+  $cost['CAN'][BUILD_CREATE]  = $can_build;
+
+  $can_destroy = $can_destroy > 0 ? floor($can_destroy) : 0;
+  $cost['CAN'][BUILD_DESTROY] = $can_destroy;
 
   if($only_cost)
   {
     return $cost;
   }
-
-  $can_build = $can_build > 0 ? floor($can_build) : 0;
-  $cost['CAN'][BUILD_CREATE]  = floor($can_build);
-
-  $can_destroy = $can_destroy > 0 ? floor($can_destroy) : 0;
-  $cost['CAN'][BUILD_DESTROY] = floor($can_destroy);
 
   $time = $time * 60 * 60 / get_game_speed() / 2500;
 
