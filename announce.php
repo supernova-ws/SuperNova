@@ -35,16 +35,16 @@ if ($user['authlevel'] >= 3)
 
     if ($mode == 'edit')
     {
-      doquery( "UPDATE {{announce}} SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$idAnnounce}");
+      doquery("UPDATE {{announce}} SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$idAnnounce}");
     }
     else
     {
-      doquery( "INSERT INTO {{announce}} SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}'");
+      doquery("INSERT INTO {{announce}} SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}'");
     }
 
     if($announce_time <= $time_now)
     {
-      if($announce_time > $config->var_news_last)
+      if($announce_time > $config->var_news_last && $announce_time == $time_now)
       {
         $config->db_saveItem('var_news_last', $announce_time);
       }

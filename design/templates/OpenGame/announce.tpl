@@ -23,7 +23,7 @@
       </tr>
       <tr>
         <td colspan="2" align="center">
-          <span class="fl"><input type="checkbox" id="news_mass_mail" name="news_mass_mail" value="1" checked>&nbsp;<label for="news_mass_mail">{L_news_mass_mail}</label></span>
+          <span class="fl"><input type="checkbox" id="news_mass_mail" name="news_mass_mail" value="1" <!-- IF MODE != 'edit' -->checked<!-- ENDIF -->>&nbsp;<label for="news_mass_mail">{L_news_mass_mail}</label></span>
           <input class="fr" type=submit value="<!-- IF MODE == 'edit' -->{L_news_edit}<!-- ELSEIF MODE == 'copy' -->{L_news_copy}<!-- ELSE -->{L_news_add}<!-- ENDIF -->">
         </td>
       </tr>
