@@ -2066,6 +2066,14 @@ if (!defined('INSIDE'))
 
     'groups' => array(
       // Missions
+/*
+mission = array(
+  'DESTINATION' => EMPTY/SAME/PLAYER/ALLY
+  'ONE_WAY' => true/false, // Is it mission one-way like Transport/Colonize?
+  'DURATION' => array(duration list  in  second)/false,  //  List  of  possible durations
+  'AGGRESIVE' => true/false, // Should aggresive trigger rise?
+);
+*/
       'missions' => array(
         MT_ATTACK => array(
           'src_planet' => 1,

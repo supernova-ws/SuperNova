@@ -32,7 +32,7 @@ function eco_bld_tech_research($user, $planet)
       throw new Exception($lang['eco_bld_resources_not_enough'], ERR_ERROR);
     }
 
-    $que_item_string = "{$tech_id},1,{$build_data[RES_TIME][BUILD_CREATE]}," . BUILD_CREATE . "," . QUE_RESEARCH;
+    $que_item_string = "{$tech_id},1,{$build_data[RES_TIME][BUILD_CREATE]}," . BUILD_CREATE . "," . QUE_RESEARCH . ",{$planet['id']}";
 
     db_change_units($user, $planet, array(
       RES_METAL     => -$build_data[BUILD_CREATE][RES_METAL],
@@ -69,7 +69,12 @@ function eco_bld_tech_que_clear($user_id, $planet)
   {
     $tech_id = $que_item[QI_UNIT_ID];
     $build_data = eco_get_build_data($user, false, $tech_id, $user[$sn_data[$tech_id]['name']], true);
-    
+
+    if($que_item[QI_PLANET_ID])
+    {
+      $planet['id'] = $que_item[QI_PLANET_ID];
+    }
+
     db_change_units($user, $planet, array(
       RES_METAL     => $build_data[BUILD_CREATE][RES_METAL],
       RES_CRYSTAL   => $build_data[BUILD_CREATE][RES_CRYSTAL],

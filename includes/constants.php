@@ -287,11 +287,12 @@ define('QUE_HANGAR'    , 4);
 define('QUE_RESEARCH'  , 7);
 
 // *** Que items
-define('QI_UNIT_ID', 0);
-define('QI_AMOUNT' , 1);
-define('QI_TIME'   , 2);
-define('QI_MODE'   , 3);
-define('QI_QUE_ID' , 4);
+define('QI_UNIT_ID'   , 0);
+define('QI_AMOUNT'    , 1);
+define('QI_TIME'      , 2);
+define('QI_MODE'      , 3);
+define('QI_QUE_ID'    , 4);
+define('QI_PLANET_ID' , 5);
 
 // *** Subque types
 define('SUBQUE_PLANET'  , 1);
