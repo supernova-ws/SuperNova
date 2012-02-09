@@ -4,11 +4,11 @@ function eco_struc_make_resource_row(resource_name, value, value_destroy)
   {
     document.getElementById('unit_' + resource_name).style.display = "table-row";
 
-    document.getElementById(resource_name + '_price').innerHTML = sn_format_number(value, 0, 'lime', planet[resource_name]);
-    document.getElementById(resource_name + '_left').innerHTML = sn_format_number(parseFloat(planet[resource_name]) - parseFloat(value), 0, 'lime');
+    document.getElementById(resource_name + '_price').innerHTML = sn_format_number(value, 0, 'positive', planet[resource_name]);
+    document.getElementById(resource_name + '_left').innerHTML = sn_format_number(parseFloat(planet[resource_name]) - parseFloat(value), 0, 'positive');
     if(planet['fleet_own'])
     {
-      document.getElementById(resource_name + '_fleet').innerHTML = sn_format_number(parseFloat(planet[resource_name]) + parseFloat(planet[resource_name + '_incoming']) - parseFloat(value), 0, 'lime');
+      document.getElementById(resource_name + '_fleet').innerHTML = sn_format_number(parseFloat(planet[resource_name]) + parseFloat(planet[resource_name + '_incoming']) - parseFloat(value), 0, 'positive');
     }
   }
   else
@@ -74,9 +74,9 @@ function eco_struc_show_unit_info(unit_id, no_color)
     if(unit['level'] > 0 && unit['destroy_can'] != 0 && unit['destroy_result'] == 0)
     {
       document.getElementById('unit_destroy_link').innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '"><span class="negative">' + unit_destroy_link + '</span><br />'
-      + language['sys_metal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_metal']), 0, 'lime') + ' ' 
-      + language['sys_crystal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_crystal']), 0, 'lime') + ' ' 
-      + language['sys_deuterium'][0] + ':' + sn_format_number(parseFloat(unit['destroy_deuterium']), 0, 'lime') + ' '
+      + language['sys_metal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_metal']), 0, 'positive') + ' ' 
+      + language['sys_crystal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_crystal']), 0, 'positive') + ' ' 
+      + language['sys_deuterium'][0] + ':' + sn_format_number(parseFloat(unit['destroy_deuterium']), 0, 'positive') + ' '
       + unit['destroy_time']
       + '</a>';
     }
@@ -121,7 +121,7 @@ function eco_struc_show_unit_info(unit_id, no_color)
               break;
             }
           }
-          result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][i][j]), 0, 'lime', j == 'level' ? -unit['level'] : 0) + '</td>';
+          result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][i][j]), 0, 'positive', j == 'level' ? -unit['level'] : 0) + '</td>';
         }
       }
       result += '</tr>';

@@ -201,13 +201,13 @@ function shortInfo() {
   element = document.getElementById("consumption");
   if(element)
   {
-    element.innerHTML = sn_format_number(cons, 0, 'lime');
+    element.innerHTML = sn_format_number(cons, 0, 'positive');
   }
 
   element = document.getElementById("capacity");
   if(element)
   {
-    element.innerHTML = sn_format_number(fleet_capacity - cons, 0, 'lime');
+    element.innerHTML = sn_format_number(fleet_capacity - cons, 0, 'positive');
   }
 }
 
@@ -266,7 +266,7 @@ function fl_calc_stats(event, ui) {
 function calculateTransportCapacity() {
   transportCapacity = fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2);
 
-  document.getElementById("remainingresources").innerHTML = sn_format_number(transportCapacity, 0, 'lime');
+  document.getElementById("remainingresources").innerHTML = sn_format_number(transportCapacity, 0, 'positive');
 
   if(transportCapacity<0)
   {
@@ -321,7 +321,7 @@ function check_resource(id)
     zi_res = 0;
   }
 
-  document.getElementById('rest_res' + id).innerHTML = sn_format_number(resource_max[id] - zi_res, 0, 'white');
+  document.getElementById('rest_res' + id).innerHTML = sn_format_number(resource_max[id] - zi_res, 0, 'zero');
 
   return zi_res;
 }
@@ -408,7 +408,7 @@ function fleet_table_make(fleet_id)
 
     if(fleet_capacity)
     {
-      fleet_html += '<tr><td class="c">' + language['sys_capacity'] + '</td><td class="c" style="padding-right: 3px;">' + sn_format_number(fleet_capacity, 0, 'white') + '</td></tr>';
+      fleet_html += '<tr><td class="c">' + language['sys_capacity'] + '</td><td class="c" style="padding-right: 3px;">' + sn_format_number(fleet_capacity, 0, 'zero') + '</td></tr>';
     }
 
     var resources_total = parseInt(resources[0]) + parseInt(resources[1]) + parseInt(resources[2]);
@@ -418,11 +418,11 @@ function fleet_table_make(fleet_id)
       {
         if(parseInt(resources[res_id]))
         {
-          fleet_html += '<tr><th class=c><div style="text-align: left">' + res_names[res_id] + '</div></th><th><div style="text-align: right;">' + sn_format_number(parseInt(resources[res_id]), 0, 'white') + '</div></th></tr>';
+          fleet_html += '<tr><th class=c><div style="text-align: left">' + res_names[res_id] + '</div></th><th><div style="text-align: right;">' + sn_format_number(parseInt(resources[res_id]), 0, 'zero') + '</div></th></tr>';
         }
       }
 
-      fleet_html += '<tr><td class=c>' + language['sys_resources'] + '</td><td class=c style="text-align: right; padding-right: 3px;">' + sn_format_number(resources_total, 0, 'white') + '</td></tr>';
+      fleet_html += '<tr><td class=c>' + language['sys_resources'] + '</td><td class=c style="text-align: right; padding-right: 3px;">' + sn_format_number(resources_total, 0, 'zero') + '</td></tr>';
     }
 
     fleet_html += '</table>';
