@@ -3,19 +3,8 @@
 /*
 Function wrapping
 
-WARNING! Due to bug in PHP 5.3.1 when using sn_function_call and passing
-variables by reference - you should NOT use func_get_args() for params
-and should EXPLICITLY declare argument array with all variables!
+Due glitch in PHP 5.3.1 SuperNova is incompatible with this version
 Reference: https://bugs.php.net/bug.php?id=50394
-Example:
-
-function the_test(&$var1, $var2)
-{
-  // THIS WILL NOT WORK IN PHP 5.3.1!
-  return sn_function_call('sn_test', func_get_args());
-  // TO MAINTAIN CODE COMPATIBILITY WITH PHP 5.3.1 USE THIS FORM:
-  return sn_function_call('sn_test', array(&$var1, $var2));
-}
 
 */
 function sn_function_call($func_name, $func_arg = array())

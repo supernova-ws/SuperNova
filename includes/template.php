@@ -145,7 +145,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   sys_log_hit();
 
   // Affichage du Debug si necessaire
-  if ($user['authlevel'] == 3 && $config->debug)
+  if ($user['authlevel'] >= 3 && $config->debug)
   {
     $debug->echo_log();
   }
@@ -157,18 +157,6 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
   die();
 }
-
-/**
- * tpl_render_topnav.php
- *
- * @version 2.0 - Security checked for SQL-injection by Gorlum for http://supernova.ws
- *   [+] Complies with PCG
- *   [+] Utilize PTE
- *   [+] Heavy optimization
- * @version 1.1 - Security checked for SQL-injection by Gorlum for http://supernova.ws
- * @version 1
- * @copyright 2008 By Chlorel for XNova
- */
 
 function tpl_topnav_event_build_helper($time, $event, $msg, $prefix, $is_decrease, $fleet_flying_row, &$fleet_flying_sorter, &$fleet_flying_events, &$fleet_event_count)
 {
@@ -238,7 +226,7 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
   }
 }
 
-function tpl_render_topnav(&$user, $planetrow){return sn_function_call('tpl_render_topnav', array($user, $planetrow));}
+function tpl_render_topnav(&$user, $planetrow){return sn_function_call('tpl_render_topnav', array(&$user, $planetrow));}
 function sn_tpl_render_topnav(&$user, $planetrow)
 {
   if (!is_array($user))

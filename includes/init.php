@@ -6,6 +6,11 @@ if(defined('INIT'))
   return;
 }
 
+if(version_compare(PHP_VERSION, '5.3.1', '=='))
+{
+  die('FATAL ERROR: you using PHP 5.3.1. Due to bug in PHP 5.3.1 SuperNova is incompatible with this version. Please upgrade or downgrade your PHP. Read more <a href="https://bugs.php.net/bug.php?id=50394">here</a>.');
+}
+
 define('INIT', true);
 
 if(!defined('INSIDE'))
