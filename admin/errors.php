@@ -75,6 +75,9 @@ else
   }
   $parse['errors_num'] = $i;
 
+  $query = doquery("SELECT COUNT(*) AS LOG_SIZE FROM `{{logs}}`;", true);
+  $parse['LOG_SIZE'] = $query['LOG_SIZE'];
+
   display(parsetemplate($template, $parse), "Errors", false, '', true);
 }
 

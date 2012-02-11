@@ -39,7 +39,9 @@
       {
         throw new exception($lang['sys_msg_err_update_dm'], ERR_ERROR);
       }
+
       doquery("replace {{universe}} set `universe_galaxy` = {$uni_galaxy}, `universe_system` = {$uni_system}, `universe_name` = '{$uni_row['universe_name']}', `universe_price` = {$uni_row['universe_price']};");
+      $debug->warning(sprintf($lang['uni_msg_admin_rename'], $user['id'], $user['username'], $uni_price, $uni_system ? $lang['uni_system_of'] : $lang['uni_galaxy_of'], $uni_galaxy, $uni_system ? ":{$uni_system}" : '', strip_tags(sys_get_param_str_raw('uni_name'))), $lang['uni_naming'], LOG_INFO_UNI_RENAME);
       doquery('COMMIT;');
       sys_redirect("galaxy.php?mode=name&galaxy={$uni_galaxy}&system={$uni_system}");
     }
@@ -57,7 +59,7 @@
     'GALAXY' => $uni_galaxy,
     'SYSTEM' => $uni_system,
 
-    'NAME'   => $uni_row['universe_name'],
+    'NAME'   => sys_safe_output($uni_row['universe_name']),
     'PRICE'  => $uni_row['universe_price'],
 
     'PAGE_HINT'   => $lang['uni_name_page_hint'],
@@ -65,4 +67,5 @@
 
 
   display($template, $lang['sys_universe'] . ' - ' . $lang['uni_naming'], true, '', false);
+
 ?>

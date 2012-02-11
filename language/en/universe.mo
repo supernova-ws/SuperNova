@@ -171,6 +171,11 @@ $lang = array_merge($lang, array(
     <li>
     Why you can choose to increase naming price? Next player that wish to rename galaxy or system after you should pay your naming price plus base price for galaxy or system. So paying higher prce will protect (in some degree) galaxy or system from further renaming</li>
   ",
+
+  'uni_galaxy_of' => 'galaxy',
+  'uni_system_of' => 'system',
+  'uni_msg_admin_rename' => 'Player ID %d [%s] for %d DM gives to %s at [%s%s] new name: %s',
+
 ));
 
 ?>

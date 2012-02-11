@@ -228,7 +228,7 @@ foreach($output as $chapter)
 
 
 file_put_contents('html/' . $filename . '.html', $output_buffer);
-
+print($output_buffer);
 /*
 
 foreach($output as $line)

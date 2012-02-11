@@ -1806,8 +1806,8 @@ if (!defined('INSIDE'))
       'cost' => array(
         RES_METAL     => 12500,
         RES_CRYSTAL   => 2500,
-        RES_DEUTERIUM => 10000,
-        RES_ENERGY    => 0,
+        RES_DEUTERIUM => 10000,       // 57500*70 = 4025000 - rocket    damage - 120000*70 = 8 400 000
+        RES_ENERGY    => 0,           // 10000000+5000000*2+2500000*4 = 30000000    PP        defense 15 000 000
         'factor' => 1,
       ),
       'metal' => 12500,

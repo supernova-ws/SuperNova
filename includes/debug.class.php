@@ -153,7 +153,7 @@ class debug
       }
       mysql_query("INSERT INTO `{$dbsettings['prefix']}logs` SET
         `log_time` = '".time()."', `log_code` = '{$error_code}', `log_sender` = '{$GLOBALS['user']['id']}', `log_username` = '{$GLOBALS['user']['username']}',
-        `log_title` = '{$title}',  `log_text` = '{$error_text}', `log_page` = '".mysql_real_escape_string($_SERVER['SCRIPT_NAME'])."'{$error_backtrace};")
+        `log_title` = '{$title}',  `log_text` = '{$error_text}', `log_page` = '".mysql_real_escape_string(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'{$error_backtrace};")
       or die($fatal_error . mysql_error());
 
       $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . mysql_insert_id() . "</b>";
@@ -212,7 +212,7 @@ class debug
       $query = "INSERT INTO `{$dbsettings['prefix']}logs` SET
         `log_time` = '".time()."', `log_code` = '{$log_code}', `log_sender` = '{$user['id']}', `log_username` = '{$user['username']}',
         `log_title` = '{$title}',  `log_text` = '".mysql_real_escape_string($message)."',
-        `log_page` = '".mysql_real_escape_string($_SERVER['SCRIPT_NAME'])."'{$error_backtrace};";
+        `log_page` = '".mysql_real_escape_string(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'{$error_backtrace};";
       $sqlquery = mysql_query($query);
     }
     else
