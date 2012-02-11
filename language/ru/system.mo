@@ -619,6 +619,8 @@ $lang = array_merge($lang, array(
   'sys_ali_res_title' => 'Ресурсы Альянса',
 
   'sys_bonus' => 'Бонус',
+
+  'sys_of_ally' => 'Альянса',
 ));
 
 ?>

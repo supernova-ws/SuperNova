@@ -62,7 +62,14 @@ class template_compile
     // Try and open template for read
     if (!file_exists($this->template->files[$handle]))
     {
-      trigger_error("template->_tpl_load_file(): File {$this->template->files[$handle]} does not exist or is empty", E_USER_ERROR);
+      if (!file_exists($this->template->files_inherit[$handle]))
+      {
+        trigger_error("template->_tpl_load_file(): File {$this->template->files[$handle]} does not exist or is empty", E_USER_ERROR);
+      }
+      else
+      {
+        $this->template->files[$handle] = $this->template->files_inherit[$handle];
+      }
     }
 
     $this->template->compiled_code[$handle] = $this->compile(trim(@file_get_contents($this->template->files[$handle])));

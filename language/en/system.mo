@@ -622,6 +622,8 @@ $lang = array_merge($lang, array(
   'sys_ali_res_title' => 'Alliance\'s resources',
 
   'sys_bonus' => 'Bonus',
+
+  'sys_of_ally' => 'of Alliance',
 ));
 
 ?>

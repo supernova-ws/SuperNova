@@ -192,14 +192,14 @@ function eco_bld_tech(&$user, &$planet, $que = array())
   }
 
   $template->assign_vars(array(
-    'PAGE_HEADER'        => $lang['tech'][TECH_TECHNOLOGY],
+    'PAGE_HEADER'        => $page_header = $lang['tech'][TECH_TECHNOLOGY] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : ''),
     'FLEET_OWN_COUNT'    => $fleet_list['own']['count'],
     'QUE_ID'             => QUE_RESEARCH,
 
     'RESEARCH_ONGOING'   => (boolean)$user['que'],
   ));
 
-  display(parsetemplate($template), $lang['tech'][TECH_TECHNOLOGY]);
+  display(parsetemplate($template), $page_header);
 }
 
 ?>

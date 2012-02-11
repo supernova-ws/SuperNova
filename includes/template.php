@@ -414,7 +414,7 @@ function gettemplate($templatename, $is_phpbb = false, $template_path = false)
   if($is_phpbb)
   {
     $template = new template();
-    $template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME);
+    $template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
 
     $template->set_filenames(array(
         'body' => $templatename
