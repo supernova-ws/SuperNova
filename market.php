@@ -63,6 +63,10 @@ switch($mode)
     require('includes/market/market_fleeter.inc');
   break;
 
+  case MARKET_INFO: // Infotrader
+    require('includes/market/market_info.inc');
+  break;
+
   case MARKET_EXCHANGE: // Cross-player resource exchange
   break;
 
@@ -86,8 +90,10 @@ if($message_id != MARKET_NOTHING)
 $template->assign_vars(array(
   'rpg_cost_trader'   => $config->rpg_cost_trader,
   'rpg_cost_scraper'  => $config->rpg_cost_scraper,
-  'rpg_cost_banker'   => $config->rpg_cost_banker,
   'rpg_cost_stockman' => $config->rpg_cost_stockman,
+  'rpg_cost_info'     => $config->rpg_cost_info,
+
+  'rpg_cost_banker'   => $config->rpg_cost_banker,
   'rpg_cost_exchange' => $config->rpg_cost_exchange,
   'rpg_cost_pawnshop' => $config->rpg_cost_pawnshop,
 

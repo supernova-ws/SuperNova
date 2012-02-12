@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '32');
 define('SN_RELEASE', '33');
-define('SN_VERSION', '33a22.2');
+define('SN_VERSION', '33a23');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -277,19 +277,28 @@ define('MARKET_STOCKMAN'     , 3);
 define('MARKET_EXCHANGE'     , 4);
 define('MARKET_BANKER'       , 5);
 define('MARKET_PAWNSHOP'     , 6);
+define('MARKET_INFO'         , 7);
 
 // === Market error statuses
-define('MARKET_NOTHING'       ,  0);
-define('MARKET_DEAL'          ,  1);
-define('MARKET_DEAL_TRADE'    ,  2);
-define('MARKET_NO_DM'         ,  3);
-define('MARKET_NO_RESOURCES'  ,  4);
-define('MARKET_ZERO_DEAL'     ,  5);
-define('MARKET_NO_SHIPS'      ,  6);
-define('MARKET_NOT_A_SHIP'    ,  7);
-define('MARKET_NO_STOCK'      ,  8);
-define('MARKET_ZERO_RES_STOCK',  9);
-define('MARKET_NEGATIVE_SHIPS', 10);
+define('MARKET_NOTHING'              ,  0);
+define('MARKET_DEAL'                 ,  1);
+define('MARKET_DEAL_TRADE'           ,  2);
+define('MARKET_NO_DM'                ,  3);
+define('MARKET_NO_RESOURCES'         ,  4);
+define('MARKET_ZERO_DEAL'            ,  5);
+define('MARKET_NO_SHIPS'             ,  6);
+define('MARKET_NOT_A_SHIP'           ,  7);
+define('MARKET_NO_STOCK'             ,  8);
+define('MARKET_ZERO_RES_STOCK'       ,  9);
+define('MARKET_NEGATIVE_SHIPS'       , 10);
+
+define('MARKET_INFO_PLAYER'          , 12);
+define('MARKET_INFO_WRONG'           , 11);
+define('MARKET_INFO_PLAYER_NOT_FOUND', 13);
+define('MARKET_INFO_PLAYER_WRONG'    , 14);
+define('MARKET_INFO_PLAYER_SAME'     , 15);
+
+
 
 
 // *** Mercenary/talent bonus types

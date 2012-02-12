@@ -569,27 +569,25 @@ class classConfig extends classPersistent
     'chat_highlight_operator'  => '<font color=red>$1</font>', // highlighting operator nick
     'chat_highlight_moderator' => '<font color=green>$1</font>', // highlighting moderator nick
 
-    // Quest system
-    'quest_total'       =>  0, // Total quest amount
-
     //Roleplay system
-    'rpg_officer'       =>  3,    // Cost per officer level
+    'rpg_officer'       =>  3000,    // Cost per officer level
     'rpg_bonus_divisor' => 10,    // Amount of DM referral shoud get for partner have 1 DM bonus
     'rpg_bonus_minimum' => 10000, // Minimum DM ammount for starting paying bonuses to affiliate
 
     // Black Market - General
-    'rpg_cost_trader'    => 1,     // Trader trades between resources
-    'rpg_cost_scraper'   => 1,     // Scrapper buys ship for fraction of cost
-    'rpg_cost_stockman'  => 1,     // Stockman resells ship that was scrapped
-    'rpg_cost_banker'    => 1,     // Banker can hold some resources
-    'rpg_cost_exchange'  => 1,     // Exchange allows resource trade between players
-    'rpg_cost_pawnshop'  => 1,     // You can get loan in pawnshop
+    'rpg_cost_trader'    =>  1000,     // Trader trades between resources
+    'rpg_cost_scraper'   =>  1000,     // Scrapper buys ship for fraction of cost
+    'rpg_cost_stockman'  =>  1000,     // Stockman resells ship that was scrapped
+    'rpg_cost_info'      => 10000,     // Infotrader sells valuable information about users, alliances and universe
+    'rpg_cost_banker'    =>  1000,     // Banker can hold some resources
+    'rpg_cost_exchange'  =>  1000,     // Exchange allows resource trade between players
+    'rpg_cost_pawnshop'  =>  1000,     // You can get loan in pawnshop
 
     // Black Market - Resource exachange rates
-    'rpg_exchange_metal'      =>      1,
-    'rpg_exchange_crystal'    =>      2,
-    'rpg_exchange_deuterium'  =>      4,
-    'rpg_exchange_darkMatter' => 100000,
+    'rpg_exchange_metal'      =>   1,
+    'rpg_exchange_crystal'    =>   2,
+    'rpg_exchange_deuterium'  =>   4,
+    'rpg_exchange_darkMatter' => 400,
 
     // Black Market - Scraper rates for ship pre resource
     'rpg_scrape_metal'     => 0.75,

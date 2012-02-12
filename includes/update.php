@@ -931,7 +931,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
     }
 
-    $config->db_saveItem('rpg_bonus_minimum', 10000, !isset($config->rpg_bonus_minimum));
+    upd_check_key('rpg_bonus_minimum', 10000, !isset($config->rpg_bonus_minimum));
 
     upd_alter_table('users', array(
       "ADD COLUMN `player_artifact_list` TEXT",
@@ -939,7 +939,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
     if(!isset($update_tables['users']['player_rpg_tech_xp']))
     {
-      $config->db_saveItem('eco_scale_storage', 1, !isset($config->eco_scale_storage));
+      upd_check_key('eco_scale_storage', 1, !isset($config->eco_scale_storage));
 
       upd_alter_table('users', array(
         "ADD COLUMN `player_rpg_tech_level` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `dark_matter`",
@@ -1422,8 +1422,8 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
   case 32:
     upd_log_version_update();
 
-    $config->db_saveItem('avatar_max_width', 128, !isset($config->avatar_max_width));
-    $config->db_saveItem('avatar_max_height', 128, !isset($config->avatar_max_height));
+    upd_check_key('avatar_max_width', 128, !isset($config->avatar_max_width));
+    upd_check_key('avatar_max_height', 128, !isset($config->avatar_max_height));
 
     upd_alter_table('users', array(
       "MODIFY COLUMN `avatar` tinyint(1) unsigned NOT NULL DEFAULT '0'",
@@ -1462,8 +1462,8 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
 
-      $config->db_saveItem('empire_mercenary_temporary', 0, !isset($config->empire_mercenary_temporary));
-      $config->db_saveItem('empire_mercenary_base_period', PERIOD_MONTH, !isset($config->empire_mercenary_base_period));
+      upd_check_key('empire_mercenary_temporary', 0, !isset($config->empire_mercenary_temporary));
+      upd_check_key('empire_mercenary_base_period', PERIOD_MONTH, !isset($config->empire_mercenary_base_period));
 
       $update_query_template = "UPDATE {{users}} SET id = id %s WHERE id = %d LIMIT 1;";
       $user_list = upd_do_query("SELECT * FROM {{users}};");
@@ -1504,14 +1504,14 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 //          `universe_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 //           PRIMARY KEY (`universe_id`),
 
-      $config->db_saveItem('uni_price_galaxy', 10000, !isset($config->uni_price_galaxy));
-      $config->db_saveItem('uni_price_system', 1000, !isset($config->uni_price_system));
+      upd_check_key('uni_price_galaxy', 10000, !isset($config->uni_price_galaxy));
+      upd_check_key('uni_price_system', 1000, !isset($config->uni_price_system));
     }
 
     // ========================================================================
     // Ally player
     // Adding config variable
-    $config->db_saveItem('ali_members_bonus', 10, !isset($config->ali_members_bonus));
+    upd_check_key('ali_members_bonus', 10, !isset($config->ali_members_bonus));
 
     // ------------------------------------------------------------------------
     // Modifying tables
@@ -1601,6 +1601,8 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
       upd_alter_table('users', "DROP COLUMN `b_tech_planet`", $update_tables['users']['b_tech_planet']);
     }
+
+    upd_check_key('rpg_cost_info', 10000, !isset($config->rpg_cost_info));
 
     upd_do_query('COMMIT;', true);
 //    $new_version = 33;

@@ -66,6 +66,22 @@ $lang = array_merge($lang, array(
   'eco_mrk_banker' => 'Banker',
   'eco_mrk_pawnshop' => 'Pawnshop',
 
+  'eco_mrk_info' => 'Infotrader',
+  'eco_mrk_info_description' => 'You discover in your inbox letter from unknown source. It says exactly:',
+  'eco_mrk_info_description_2' => 'I have access to plenty of interest information. I can share it with your... for a reward, of course. On request will cost you only',
+  'eco_mrk_info_buy' => 'Buy infopacket',
+
+  'eco_mrk_info_player' => 'Info about player',
+  'eco_mrk_info_player_description' => 'I can tell you which Mercenaries currently working under player\'s rule',
+  'eco_mrk_info_player_message' => 'As far as I know list of player ID %1$d [%2$s] Mercenaries for now looks like this:',
+
+  'eco_mrk_info_not_hired' => 'not hired',
+
+  'eco_mrk_info_ally' => 'Info about Alliance',
+  'eco_mrk_info_online' => 'Current activity on Universe',
+
+  'eco_mrk_info_msg_from' => 'Untracible source',
+
   'eco_mrk_error_title' => 'Market - Error',
   'eco_mrk_errors' => array(
     MARKET_RESOURCES => 'The operation was a success',
@@ -79,6 +95,13 @@ $lang = array_merge($lang, array(
     MARKET_NOTHING => 'Select ships for sale',
     MARKET_ZERO_RES_STOCK => 'Select ships for purchase',
     MARKET_NEGATIVE_SHIPS => 'Do not try to sell a negative number of ships!',
+
+    MARKET_NO_DM => 'There is not enough DM to complete operation',
+    MARKET_INFO_WRONG => 'I did not sell this kind of information',
+    MARKET_INFO_PLAYER => 'Information bought succesfully. Check your Personal Mail',
+    MARKET_INFO_PLAYER_WRONG => 'You should specify player name or ID',
+    MARKET_INFO_PLAYER_NOT_FOUND => 'Can not identify player. If player name consists from unreadable symbols or plain numbers - try to use player ID',
+    MARKET_INFO_PLAYER_SAME => 'Why would you like to pay for info about yourself?',
   ),
 
 ));

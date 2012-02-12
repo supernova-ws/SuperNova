@@ -1,6 +1,7 @@
 <script type="text/javascript"><!--
   var eco_market_resources = {};
   var res_resource_dm = {D_RES_DARK_MATTER};
+  var res_resource_metal = {D_RES_METAL};
   var rpg_cost_trader = {C_rpg_cost_trader};
 //--></script>
 
@@ -89,6 +90,25 @@ function eco_mrk_trader_recourse()
 }
 //--></script>
 
+<script type="text/javascript"><!--
+var original_color;
+jQuery(document).ready(
+  function()
+  {
+    varTemp = '{exchangeTo}';
+    if(varTemp == '') varTemp = 0;
+    element_cache['exchangeTo'].value = varTemp;
+
+    if(original_color == undefined)
+    {
+      original_color = element_cache['spend' + res_resource_metal].style.backgroundColor;
+    }
+
+    eco_mrk_trader_recourse();
+  }
+);
+//--></script>
+
 <h2>{L_eco_mrk_title}:&nbsp;{L_eco_mrk_trader}</h2>
 
 {message}
@@ -129,22 +149,3 @@ function eco_mrk_trader_recourse()
     </th></tr>
   </table>
 </form>
-
-<script type="text/javascript"><!--
-var original_color;
-jQuery(document).ready(
-  function()
-  {
-    varTemp = '{exchangeTo}';
-    if(varTemp == '') varTemp = 0;
-    element_cache['exchangeTo'].value = varTemp;
-
-    if(original_color == undefined)
-    {
-      original_color = element_cache['spend{D_RES_METAL}'].style.backgroundColor;
-    }
-
-    eco_mrk_trader_recourse();
-  }
-);
-//--></script>

@@ -536,7 +536,8 @@ $lang = array_merge($lang, array(
   'sys_maximum' => 'Maximum',
   'sys_maximum_level' => 'Max level',
 
-  'sys_user_name' => 'User Name',
+  'sys_user_name' => 'User name',
+  'sys_player_name' => 'Player name',
   'sys_user_name_short' => 'Name',
 
   'sys_planets' => 'Planets',
@@ -624,6 +625,10 @@ $lang = array_merge($lang, array(
   'sys_bonus' => 'Bonus',
 
   'sys_of_ally' => 'of Alliance',
+
+  'sys_hint_player_name' => 'You can search player by his ID or name. If player name consists from strange symbols or only from numbers - you should use player ID for search.',
+  'sys_hint_ally_name' => 'You can search Alliance by his ID, tag or name. If Alliance\'s tag or name consists from strange symbols or only from numbers - you should use ally ID for search.',
+
 ));
 
 ?>
