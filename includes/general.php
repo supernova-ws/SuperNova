@@ -380,7 +380,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
 }
 
 function mrc_modify_value(&$user, $planet = array(), $mercenaries, $value) {return sn_function_call('mrc_modify_value', array(&$user, $planet, $mercenaries, $value));}
-function sn_mrc_modify_value($user, $planet = array(), $mercenaries, $value, $base_value = null)
+function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $base_value = null)
 {
   global $sn_data;
 

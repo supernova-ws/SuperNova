@@ -7,7 +7,7 @@ function coe_attack_fleet_fill(&$attackFleets, $fleet, $strField = 'detail')
   $attackFleets[$fleet['fleet_id']]['fleet'] = $fleet;
 
   $attackFleets[$fleet['fleet_id']]['user'] = doquery(
-    "SELECT `id`, `username`, `defence_tech`, `shield_tech`, `military_tech` FROM `{{users}}` WHERE `id` = '{$fleet['fleet_owner']}';"
+    "SELECT `id`, `username`, `defence_tech`, `shield_tech`, `military_tech`, `ally_id`, `user_as_ally` FROM `{{users}}` WHERE `id` = '{$fleet['fleet_owner']}';"
   , '', true);
 
   $attackFleets[$fleet['fleet_id']]['user'][$sn_data[MRC_ADMIRAL]['name']] = mrc_get_level($attackFleets[$fleet['fleet_id']]['user'], null, MRC_ADMIRAL);
