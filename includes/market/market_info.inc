@@ -34,7 +34,7 @@ if($info_action)
         }
         if(!is_array($user_info))
         {
-          $user_info = doquery("SELECT `id`, `username` FROM {{users}} WHERE `username` = '{$user_info_name}' AND `user_as_ally` IS NULL LIMIT 1 FOR UPDATE;", true);
+          $user_info = doquery("SELECT `id`, `username` FROM {{users}} WHERE `username` LIKE '{$user_info_name}' AND `user_as_ally` IS NULL LIMIT 1 FOR UPDATE;", true);
         }
         if(!is_array($user_info))
         {
@@ -52,7 +52,7 @@ if($info_action)
         }
         $msg_text = sprintf($lang['eco_mrk_info_player_message'], $user_info['id'], $user_info['username']) . "\r\n" . implode("\r\n", $msg_text);
 
-        msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_SPY, $lang['eco_mrk_info_msg_from'], "{$lang['eco_mrk_info_player']} ID {$user_info['id']} [{$user_info['username']}]", $msg_text);
+        msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_SPY, $lang['eco_mrk_info_msg_from'], "{$lang['eco_mrk_info_player']} ID {$user_info['id']} [{$user_info['username']}]", $msg_text, false, true);
       break;
 
       default:

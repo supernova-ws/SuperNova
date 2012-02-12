@@ -47,7 +47,7 @@ function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0)
   return $list;
 }
 
-function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false)
+function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false, $force = false)
 {
   global $config, $user, $sn_message_class_list, $time_now;
 
@@ -101,7 +101,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
       }
       sys_user_options_unpack($owner_row);
 
-      if(!$message_class_switchable || $owner_row["opt_{$message_class_name}"])
+      if($force || !$message_class_switchable || $owner_row["opt_{$message_class_name}"])
       {
         $insert_values[] = sprintf($insert_template, $owner);
       }
