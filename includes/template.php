@@ -328,23 +328,6 @@ function displayP($template)
 {
   if(is_object($template))
   {
-/*
-    global $user; // $ugamela_root_path,
-
-    if($template->parse)
-    {
-      foreach($template->parse as $key => $data)
-      {
-        $template->assign_var($key, $data);
-      }
-    }
-
-    $template->assign_vars(array(
-      'dpath'         => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
-      'SN_ROOT_PATH'  => SN_ROOT_VIRTUAL, //$ugamela_root_path,
-      '-path_prefix-' => SN_ROOT_VIRTUAL, //$ugamela_root_path,
-    ));
-*/
     if(!$template->parsed)
     {
       parsetemplate($template);

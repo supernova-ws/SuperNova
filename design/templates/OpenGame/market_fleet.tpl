@@ -11,8 +11,10 @@ ships[{ships.ID}] =
   element: null
 };
 <!-- END ships -->
+//--></script>
 
-function eco_market_recalc()
+<script type="text/javascript"><!--
+function eco_mrk_ship_recalc()
 {
   var t = Array(0,0,0);
 
@@ -36,6 +38,8 @@ function eco_market_recalc()
 <h2>{L_eco_mrk_title}:&nbsp;<!-- IF MODE == 2 -->{L_eco_mrk_scraper}<!-- ELSE -->{L_eco_mrk_stockman}<!-- ENDIF --></h2>
 {message}
 <form action="" method="POST">
+  <input type="hidden" name="mode" value="{MODE}">
+
   <table>
     <tr rowspan=2>
       <th class="c_l" rowspan=2>{L_sys_ships}</th>
@@ -77,7 +81,7 @@ function eco_market_recalc()
           <script type="text/javascript"><!--
             sn_ainput_make('ships[{ships.ID}]', {max: ships[{ships.ID}]['count'], value: '{ships.AMOUNT}'});
 
-            jQuery('#ships{ships.ID}slide').bind('slide slidechange', eco_market_recalc);
+            jQuery('#ships{ships.ID}slide').bind('slide slidechange', eco_mrk_ship_recalc);
           --></script>
         </td>
       </tr>
@@ -100,7 +104,7 @@ function eco_market_recalc()
       <th class="c_r"><span id="total_crystal">0</span></th>
       <th class="c_r"><span id="total_deuterium">0</span></th>
       <th class="c_c" colspan=2>
-		  <div class="fr">
+        <div class="fr">
           <!-- IF MODE == 2 -->
             <input type="submit" name="scrape" value="{L_eco_mrk_scraper_to}">
           <!-- ELSE -->
@@ -108,11 +112,11 @@ function eco_market_recalc()
           <!-- ENDIF -->
         </div>
         <div class="fl">
-          {L_eco_mrk_service_cost}&nbsp;{rpg_cost}&nbsp;{L_eco_mrk_dark_matter_short}
+          {L_eco_mrk_service_cost}&nbsp;{rpg_cost}&nbsp;{L_sys_dark_matter_sh}
         </div>
       </th>
     </tr>
     <!-- ENDIF -->
+
   </table>
-  <input type="hidden" name="mode" value="{MODE}">
 </form>
