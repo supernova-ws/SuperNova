@@ -3,12 +3,12 @@
 lng_include('mrc_mercenary');
 
 $sn_mrc_hire_discount = array(
-  PERIOD_MINUTE    => 1,
-  PERIOD_MINUTE_3  => 1,
-  PERIOD_MINUTE_5  => 1,
-  PERIOD_MINUTE_10 => 1,
-  PERIOD_DAY       => 3,
-  PERIOD_DAY_3     => 2,
+//  PERIOD_MINUTE    => 1,
+//  PERIOD_MINUTE_3  => 1,
+//  PERIOD_MINUTE_5  => 1,
+//  PERIOD_MINUTE_10 => 1,
+//  PERIOD_DAY       => 3,
+//  PERIOD_DAY_3     => 2,
   PERIOD_WEEK      => 1.5,
   PERIOD_WEEK_2    => 1.2,
   PERIOD_MONTH     => 1,
