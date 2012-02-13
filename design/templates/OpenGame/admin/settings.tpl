@@ -37,9 +37,11 @@
     <tr>
       <th colspan="2">
         <div style="width: 670px">
-        <input name="empire_mercenary_temporary" id="empire_mercenary_temporary" type="checkbox" value="1"<!-- IF EMPIRE_MERCENARY_TEMPORARY --> checked<!-- ENDIF -->/> <label for="empire_mercenary_temporary">{L_adm_opt_empire_mercenary_temporary}</label><br />
-        {L_adm_opt_empire_mercenary_temporary_base} <input type="text" name="empire_mercenary_base_period" value="{C_empire_mercenary_base_period}"><br />
-        {L_adm_opt_empire_mercenary_temporary_hint}</div></th>
+          <input name="empire_mercenary_temporary" id="empire_mercenary_temporary" type="checkbox" value="1"<!-- IF EMPIRE_MERCENARY_TEMPORARY --> checked<!-- ENDIF -->/> <label for="empire_mercenary_temporary">{L_adm_opt_empire_mercenary_temporary}</label><br />
+          {L_adm_opt_empire_mercenary_temporary_base} <input type="text" name="empire_mercenary_base_period" value="{C_empire_mercenary_base_period}"><br />
+          {L_adm_opt_empire_mercenary_temporary_hint}
+        </div>
+      </th>
     </tr>
 
     <tr>
@@ -213,6 +215,14 @@
       <th><label for="game_counter">{L_adm_opt_game_counter}</label></th>
       <th><input name="game_counter" id="game_counter" type="checkbox" value="1"<!-- IF GAME_COUNTER --> checked<!-- ENDIF --> /></th>
     </tr>
+
+    <tr><td class="c" colspan="2">{L_adm_opt_experimental}</td></tr>
+    <th colspan="2">
+     <div style="width: 670px">
+       <input name="tpl_minifier" id="tpl_minifier" type="checkbox" value="1"<!-- IF TPL_MINIFIER --> checked<!-- ENDIF --> />&nbsp;<label for="tpl_minifier">{L_adm_opt_tpl_minifier}</label><br />
+       <label for="tpl_minifier">{L_adm_opt_tpl_minifier_hint}</label>
+     </div>
+   </th>
 
     <tr><td class="c" colspan="2"><center><input name="save" value="{L_adm_opt_btn_save}" type="submit"></center></td></tr>
   </tbody></table>

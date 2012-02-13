@@ -74,9 +74,9 @@ function eco_struc_show_unit_info(unit_id, no_color)
     if(unit['level'] > 0 && unit['destroy_can'] != 0 && unit['destroy_result'] == 0)
     {
       document.getElementById('unit_destroy_link').innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '"><span class="negative">' + unit_destroy_link + '</span><br />'
-      + language['sys_metal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_metal']), 0, 'positive') + ' ' 
-      + language['sys_crystal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_crystal']), 0, 'positive') + ' ' 
-      + language['sys_deuterium'][0] + ':' + sn_format_number(parseFloat(unit['destroy_deuterium']), 0, 'positive') + ' '
+      + (unit['destroy_metal'] ? language['sys_metal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_metal']), 0, 'positive') + ' ' : '')
+      + (unit['destroy_crystal'] ? language['sys_crystal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_crystal']), 0, 'positive') + ' ' : '')
+      + (unit['destroy_deuterium'] ? language['sys_deuterium'][0] + ':' + sn_format_number(parseFloat(unit['destroy_deuterium']), 0, 'positive') + ' ' : '')
       + unit['destroy_time']
       + '</a>';
     }

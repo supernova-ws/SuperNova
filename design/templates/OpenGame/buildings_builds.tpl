@@ -217,7 +217,7 @@ var que_id = '{QUE_ID}';
         change: '{production.CHANGE}',
         description: '{production.DESCRIPTION}', 
         unit_busy: '{production.UNIT_BUSY}',
-        
+
         metal: '{production.METAL}',
         crystal: '{production.CRYSTAL}',
         deuterium: '{production.DEUTERIUM}',

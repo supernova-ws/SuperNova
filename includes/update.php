@@ -1603,6 +1603,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     }
 
     upd_check_key('rpg_cost_info', 10000, !isset($config->rpg_cost_info));
+    upd_check_key('tpl_minifier', 0, !isset($config->tpl_minifier));
 
     upd_do_query('COMMIT;', true);
 //    $new_version = 33;

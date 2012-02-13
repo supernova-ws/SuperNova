@@ -60,13 +60,15 @@ if(sys_get_param('save'))
   $config->rpg_exchange_metal      = sys_get_param_int('rpg_exchange_metal', 1);
   $config->rpg_exchange_crystal    = sys_get_param_int('rpg_exchange_crystal', 2);
   $config->rpg_exchange_deuterium  = sys_get_param_int('rpg_exchange_deuterium', 4);
-  $config->rpg_exchange_darkMatter = sys_get_param_int('rpg_exchange_darkMatter', 1000);
+  $config->rpg_exchange_darkMatter = sys_get_param_int('rpg_exchange_darkMatter', 400);
+
+  $config->tpl_minifier            = sys_get_param_int('tpl_minifier', 0);
 
   $config->initial_fields          = sys_get_param_int('initial_fields', 200);
   $config->metal_basic_income      = sys_get_param_float('metal_basic_income', 40);
   $config->crystal_basic_income    = sys_get_param_float('crystal_basic_income', 20);
   $config->deuterium_basic_income  = sys_get_param_float('deuterium_basic_income', 10);
-  $config->energy_basic_income     = sys_get_param_float('energy_basic_income');
+  $config->energy_basic_income     = sys_get_param_float('energy_basic_income', 0);
 
   $config->chat_timeout            = sys_get_param_int('chat_timeout', 5);
 
@@ -114,6 +116,7 @@ $template->assign_vars(array(
   'GAME_DISABLE' => $config->game_disable,
   'GAME_DEBUG' => $config->debug,
   'GAME_COUNTER' => $config->game_counter,
+  'TPL_MINIFIER' => $config->tpl_minifier,
   'EMPIRE_MERCENARY_TEMPORARY' => $config->empire_mercenary_temporary,
 ));
 

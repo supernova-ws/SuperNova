@@ -24,21 +24,7 @@
     <th width="{$CELL_HEADER}">&nbsp;</th>
     <!-- INCLUDE planet_list.tpl -->
   </tr>
-<!--
-  <tr>
-    <th width="{$CELL_HEADER}">{L_imp_name}</th>
-    <!-- BEGIN planet --
-      <!-- DEFINE $PLANET_GOVERNOR_ID = '{planet.PLANET_GOVERNOR_ID}' --
-      <!-- DEFINE $PLANET_GOVERNOR_NAME = '{planet.PLANET_GOVERNOR_NAME}' --
-      <!-- DEFINE $PLANET_GOVERNOR_LEVEL = '{planet.PLANET_GOVERNOR_LEVEL}' --
-      <!-- DEFINE $PLANET_GOVERNOR_LEVEL_MAX = '{planet.PLANET_GOVERNOR_LEVEL_MAX}' --
-      <!-- DEFINE $PLANET_ID = '{planet.ID}' --
-      <th class="c" width="{$CELL_PLANET}" style="width: 75px;">
-        <!-- INCLUDE planet_governor.tpl --
-      </th>
-    <!-- END planet --
-  </tr>
--->
+
   <tr>
     <th width="{$CELL_HEADER}">{L_sys_coordinates}</th>
     <!-- BEGIN planet -->

@@ -594,6 +594,8 @@ class classConfig extends classPersistent
     'rpg_scrape_crystal'   => 0.50,
     'rpg_scrape_deuterium' => 0.25,
 
+    'tpl_minifier' => 0, // EXPERIMENTAL! Template minifier
+
     // Black Market - Starting amount of s/h ship merchant to sell
     'eco_stockman_fleet' => '',
 

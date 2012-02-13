@@ -72,7 +72,9 @@ class template_compile
       }
     }
 
-    $this->template->compiled_code[$handle] = $this->compile(trim(@file_get_contents($this->template->files[$handle])));
+    $html = $this->minify(@file_get_contents($this->template->files[$handle]));
+
+    $this->template->compiled_code[$handle] = $this->compile(trim($html));
 
     // Actually compile the code now.
     $this->compile_write($handle, $this->template->compiled_code[$handle]);
@@ -836,6 +838,41 @@ class template_compile
 
     return;
   }
+
+  // Gorlum's minifier BOF
+  /**
+  * Minifies template w/i PHP code by removing extra spaces
+  * @access private
+  */
+  function minify($html)
+  {
+    if(!$GLOBALS['config']->tpl_minifier)
+    {
+      return $html;
+    }
+
+    // TODO: Match <code> and <pre> too - in separate arrays
+    preg_match_all('/(<script[^>]*?>.*?<\/script>)/si', $html, $pre);
+    $html = preg_replace('/(<script[^>]*?>.*?<\/script>)/si', '#pre#', $html);
+    //$html = preg_replace('#<!-[^\[].+->#', '', $html);
+    //$html = preg_replace('/[\r\n\t]+/', ' ', $html);
+    $html = preg_replace('/>[\s]*</', '><', $html); // Strip spacechars between tags
+    $html = preg_replace('/[\s]+/', ' ', $html); // Replace several spacechars with one space
+    if(!empty($pre[0]))
+    {
+      foreach($pre[0] as $tag)
+      {
+        $tag = preg_replace('/^\ *\/\/[^\<]*?$/m', ' ', $tag); // Strips comments - except those that contains HTML comment inside
+        $tag = preg_replace('/[\ \t]{2,}/', ' ', $tag); // Replace several spaces by one
+        $tag = preg_replace('/\s{2,}/', "\r\n", $tag); // Replace several linefeeds by one
+        $html = preg_replace('/#pre#/', $tag, $html,1);
+      }
+    }
+
+    return $html;
+  }
+  // Gorlum's minifier EOF
+
 }
 
 ?>
