@@ -70,10 +70,10 @@
     <tr><td><a href="fleet_shortcuts.php">{L_lm_shortcuts}</a></td></tr>
 
     <tr><th><a href="options.php" id="lm_options">{L_Options}</a></th></tr>
-    <tr><th><a href="javascript:top.location.href='logout.php'" id="lm_logout">{L_Logout}</a></th></tr>
+    <tr><th><a href="logout.php" id="lm_logout">{L_Logout}</a></th></tr>
 
-    <tr><td align="center"><a href="http://games.triolan.ua" target="_blank"><img border="0" src="design/images/banners/bannergtu.gif" alt="Games @ Triolan.UA"></a></td></tr>
-<!--    <tr><th><a href="http://wow.triolan.com.ua/" target="_blank"><img border="0" src="design/images/banners/wow.gif" width="130" height="25" alt="Wow Triolan Server"></a></th></tr> -->
+    <tr><td class="c_c"><a href="http://www.triolan.com/" target="_blank"><img src="images/triolan.gif" alt="Triolan.COM" /></a></td></tr>
+
     <!-- IF ADV_LEFT_BOTTOM -->
     <tr><td align="center">{ADV_LEFT_BOTTOM}</td></tr>
     <!-- ENDIF -->

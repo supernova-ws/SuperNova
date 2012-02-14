@@ -272,7 +272,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
   tpl_topnav_event_build($template, $fleet_flying_list[MT_EXPLORE], 'expedition');
 
   $time = $time_now - 15*60;
-  $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}';", '', true);
+  $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}' AND `user_as_ally` IS NULL;", '', true);
 
   $template->assign_vars(array(
     'TIME_NOW'   => $time_now,
