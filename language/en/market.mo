@@ -30,7 +30,7 @@ if (!defined('INSIDE')) die();
 
 $lang = array_merge($lang, array(
   'eco_mrk_title' => 'Market',
-  'eco_mrk_description' => 'Very strange but you can not recognize any mention of this menu item in documentation. Where it came from?'
+  'eco_mrk_description' => 'Very strange but you can not recognize any mention of this menu item in documentation. Where it came from?',
   'eco_mrk_service' => 'Service',
   'eco_mrk_service_cost' => 'Serivce cost',
 
