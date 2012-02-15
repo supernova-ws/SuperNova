@@ -1437,7 +1437,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       "DROP COLUMN `settings_allylogo`",
     ), isset($update_tables['users']['settings_allylogo']));
 
-    if(isset($update_tables['mercenaries']))
+    if(!isset($update_tables['powerup']))
     {
       upd_do_query("DROP TABLE IF EXISTS {$config->db_prefix}mercenaries;");
 
