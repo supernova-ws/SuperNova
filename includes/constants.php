@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '32');
 define('SN_RELEASE', '33');
-define('SN_VERSION', '33a24.2');
+define('SN_VERSION', '33a24.3');
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -486,5 +486,13 @@ define('ART_RCD_LARGE', 1004);   // Rapid Colony Deployment - Set of buildings u
 //define('ART_SUPERCOMPUTER', 1005); // Speed up research
 //define('ART_PLANET_GATE', 1006);   // Planet gate
 //define('ART_NANOBOTS_SMALL', 1007); // Speed up building
+
+define('SNC_VER_FUTURE', -2);
+define('SNC_VER_INVALID', -1);
+define('SNC_VER_EXACT', 0);
+define('SNC_VER_LESS', 1);
+define('SNC_VER_LESS_ALPHA', 2);
+define('SNC_VER_RELEASE_ALPHA', 3);
+define('SNC_VER_STRANGE', 99);
 
 ?>

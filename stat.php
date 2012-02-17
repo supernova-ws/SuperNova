@@ -159,6 +159,7 @@ if ($who == 2) {
     } else {
       $parse['player_name']     = $UsrRow['username'];
     }
+    $parse['player_name'] = '<img src="' . SN_ROOT_VIRTUAL . $dpath . 'images/sex_' . ($UsrRow['sex'] == 'M' ? 'male' : 'female') . '.png">' . $parse['player_name'];
     if ($IsUserChecked)
       $parse['player_mes']      = "<a href=\"messages.php?mode=write&id=" . $UsrRow['id'] . "\"><img src=\"" . $dpath . "img/m.gif\" border=\"0\" alt=\"". $lang['Ecrire'] ."\" /></a>";
     if ($UsrRow['ally_name'] == $user['ally_name']) {

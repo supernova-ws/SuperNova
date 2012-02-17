@@ -632,4 +632,24 @@ function sn_ali_fill_user_ally(&$user)
   }
 }
 
+function sn_get_url_contents($url)
+{
+  if(function_exists('curl_init'))
+  {
+    $crl = curl_init();
+    $timeout = 5;
+    curl_setopt ($crl, CURLOPT_URL,$url);
+    curl_setopt ($crl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt ($crl, CURLOPT_CONNECTTIMEOUT, $timeout);
+    $return = curl_exec($crl);
+    curl_close($crl);
+  }
+  else
+  {
+    $return = @file_get_contents($url);
+  }
+
+  return $return;
+}
+
 ?>
