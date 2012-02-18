@@ -894,7 +894,7 @@ CREATE TABLE `sn_users` (
   `email` varchar(64) NOT NULL DEFAULT '',
   `email_2` varchar(64) NOT NULL DEFAULT '',
   `lang` varchar(8) NOT NULL DEFAULT 'ru',
-  `sex` char(1) DEFAULT NULL,
+  `sex` char(1) DEFAULT 'M',
   `avatar` varchar(255) NOT NULL DEFAULT '',
   `sign` mediumtext,
   `id_planet` int(11) NOT NULL DEFAULT '0',
@@ -1040,7 +1040,7 @@ INSERT INTO `sn_config` VALUES ('var_stat_update_msg', '');
 -- Login: admin
 -- Password: admin
 -- ----------------------------
-INSERT INTO `sn_users` (`id`, `username`, `password`, `email`, `email_2`, `authlevel`, `id_planet`, `galaxy`, `system`, `planet`, `current_planet`, `register_time`, `onlinetime`, `noipcheck`) VALUES (1, 'admin',  '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 3, 1, 1, 1, 1, 1, UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(NOW()), 1);
+INSERT INTO `sn_users` (`id`, `username`, `password`, `email`, `email_2`, `authlevel`, `id_planet`, `galaxy`, `system`, `planet`, `current_planet`, `register_time`, `onlinetime`, `noipcheck`, `sex`) VALUES (1, 'admin',  '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 3, 1, 1, 1, 1, 1, UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(NOW()), 1, 'M');
 
 -- ----------------------------
 -- Administrator's planet

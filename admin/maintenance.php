@@ -23,7 +23,7 @@ $script = '
 <script type="text/javascript">
 $(document).ready(function() {
   // send requests
-  $.post("admin/maintenance_ajax.php", {rating: $(this).html()}, function(xml) {
+  $.post("admin/ajax_maintenance.php", {rating: $(this).html()}, function(xml) {
     // format result
     var result = [ $("message", xml).text() ];
     // output result

@@ -2,8 +2,41 @@
 <!-- IF MESSAGE -->
 {MESSAGE}<br>
 <!-- ENDIF -->
+
 <form action="" method="post">
   <table style="color:#FFFFFF;" class="table"><tbody>
+    <tr><th class="c_l" colspan="2">{L_adm_opt_ver_check}</th></tr>
+    <tr>
+      <td class="c_c" colspan="2">
+        <div class="c_l" style="width: 670px">{L_adm_opt_ver_check_hint}</div>
+        <input type="button" value="{LA_adm_opt_ver_check_do}" id="version_check_button">
+        <script type="text/javascript">
+          var lang = Array();
+          <!-- BEGIN ver_response -->
+            lang[{ver_response.ID}] = '{ver_response.NAME}';
+          <!-- END ver_response -->
+        </script>
+
+        <script type="text/javascript">
+          jQuery("#version_check_button").click(
+            function()
+            {
+              // send requests
+              jQuery.post("admin/ajax_version_check.php", {}, 
+                function(data)
+                {
+                  // output result
+                  data = !data ? {D_SNC_VER_ERROR_CONNECT} : (isNaN(data) || lang[data] == undefined ? {D_SNC_VER_ERROR_SERVER} : data);
+                  $("#version_check_result").html(lang[data]);
+                }
+              );
+            }
+          );
+        </script>
+        <div class="c_c" id="version_check_result" style="width: 670px"></div>
+      </td>
+    </tr>
+
     <tr><td class="c" colspan="2">{L_adm_opt_maintenance}</td></tr>
     <tr>
       <th colspan=2><input name="game_disable" id="game_disable" type="checkbox" value="1"<!-- IF GAME_DISABLE --> checked<!-- ENDIF -->/> <label for="game_disable">{L_adm_opt_game_online}</label><br />

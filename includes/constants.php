@@ -16,7 +16,9 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '32');
 define('SN_RELEASE', '33');
-define('SN_VERSION', '33a24.3');
+define('SN_VERSION', '33a25');
+
+define('SN_RELEASE_STABLE', '32d0'); // Latest stable release
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -468,6 +470,10 @@ define('MRC_NAVIGATOR', 613);
 define('MRC_ASSASIN', 614);
 define('MRC_EMPEROR', 615);
 
+// Bonus category
+define('BONUS_SERVER', 0);
+define('BONUS_MERCENARY', MRC_MERCENARIES); // DO NOT MOVE ABOVE MERCENARIES SECTION!
+
 // === Resources
 define('RES_RESOURCES', 900);
 define('RES_METAL', 901);
@@ -487,12 +493,16 @@ define('ART_RCD_LARGE', 1004);   // Rapid Colony Deployment - Set of buildings u
 //define('ART_PLANET_GATE', 1006);   // Planet gate
 //define('ART_NANOBOTS_SMALL', 1007); // Speed up building
 
-define('SNC_VER_FUTURE', -2);
-define('SNC_VER_INVALID', -1);
-define('SNC_VER_EXACT', 0);
-define('SNC_VER_LESS', 1);
-define('SNC_VER_LESS_ALPHA', 2);
-define('SNC_VER_RELEASE_ALPHA', 3);
+define('SNC_VER_ERROR_CONNECT', 0);
+define('SNC_VER_EXACT', 1);
+define('SNC_VER_LESS', 2);
+define('SNC_VER_FUTURE', 3);
+define('SNC_VER_RELEASE_EXACT', 10);
+define('SNC_VER_RELEASE_MINOR', 11);
+define('SNC_VER_RELEASE_MAJOR', 12);
+define('SNC_VER_RELEASE_ALPHA', 13);
+define('SNC_VER_INVALID', 98);
 define('SNC_VER_STRANGE', 99);
+define('SNC_VER_ERROR_SERVER', 100);
 
 ?>

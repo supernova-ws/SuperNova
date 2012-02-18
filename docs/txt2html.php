@@ -1,5 +1,72 @@
 <?php
 
+function dump($value,$varname = "",$level=0,$dumper = "")
+{
+  if ($varname) $varname .= " = ";
+
+  if ($level==-1)
+  {
+    $trans[' ']='&there4;';
+    $trans["\t"]='&rArr;';
+    $trans["\n"]='&para;;';
+    $trans["\r"]='&lArr;';
+    $trans["\0"]='&oplus;';
+    return strtr(htmlspecialchars($value),$trans);
+  }
+  if ($level==0) $dumper = '<pre>' . $varname;
+
+  $type = gettype($value);
+  $dumper .= $type;
+
+  if ($type=='string')
+  {
+    $dumper .= '('.strlen($value).')';
+    $value = dump($value,"",-1);
+  }
+  elseif ($type=='boolean') $value= ($value?'true':'false');
+  elseif ($type=='object')
+  {
+    $props= get_class_vars(get_class($value));
+    $dumper .= '('.count($props).') <u>'.get_class($value).'</u>';
+    foreach($props as $key=>$val)
+    {
+      $dumper .= "\n".str_repeat("\t",$level+1).$key.' => ';
+      $dumper .= dump($value->$key,"",$level+1);
+    }
+    $value= '';
+  }
+  elseif ($type=='array')
+  {
+    $dumper .= '('.count($value).')';
+    foreach($value as $key=>$val)
+    {
+      $dumper .= "\n".str_repeat("\t",$level+1).dump($key,"",-1).' => ';
+      $dumper .= dump($val,"",$level+1);
+    }
+    $value= '';
+  }
+  $dumper .= " <b>$value</b>";
+  if ($level==0) $dumper .= '</pre>';
+  return $dumper;
+}
+
+function pdump($value, $varname = '')
+{
+  print('<span style="text-align: left">' . dump($value, $varname) . '</span>');
+}
+
+function debug($value, $varname = '')
+{
+  return pdump($value, $varname);
+}
+
+function buf_print($string)
+{
+  global $output_buffer;
+
+  $output_buffer .= $string;
+}
+
 $output_buffer = '';
 
 $filename = 'changelog';
@@ -26,7 +93,7 @@ while(strpos($input, "===") !== false)
 $input = str_replace("\r\n==", "==", $input);
 
 $input = preg_split("/\r\n(.+)[\~\=]{2}/", $input, -1, PREG_SPLIT_DELIM_CAPTURE + PREG_SPLIT_NO_EMPTY); // 
-//$input = preg_split("/\r\n(.+)\r\n[\~\=+]/", $input, -1, PREG_SPLIT_DELIM_CAPTURE + PREG_SPLIT_NO_EMPTY); // 
+
 $output = array();
 $buffer = array();
 foreach($input as &$chapter)
@@ -79,9 +146,6 @@ foreach($input as &$chapter)
         }
 
         $new_note = false;
-          //79 char 
-          //$line = $line . mb_strlen($line, 'utf-8');
-//        $note_out['lines'][] = $line;
       }
       $buffer['content'][] = $note_out;
     }
@@ -123,16 +187,6 @@ $styles = array(
   'D' => 'date',
 );
 
-/*
-[!] Важные нововведения
-[+] Добавлено
-[-] Убрано
-[~] Изменено
-[%] Исправление - багфикс
-[@] Эта информация будет интересна только админам и/или разработчикам
-[#] Модуль, не входящий в публичную версию
-[*] ToDo - см. changelog.todo
-*/
 foreach($output as $chapter)
 {
   if(!$chapter)
@@ -144,12 +198,6 @@ foreach($output as $chapter)
   foreach($chapter['content'] as $block)
   {
     buf_print("<div class=\"{$styles[$block['style']]}\">" . ($block['style'] != 'D' ? "[{$block['style']}]&nbsp;" : ''));
-    /*
-    if($name_pos = strpos(': ', $block['name']) != false)
-    {
-      
-    }
-    */
     buf_print(preg_replace("/\s{2,10}/", " ", $block['name']) . '<br />');
     if(isset($block['lines']))
     {
@@ -219,108 +267,11 @@ foreach($output as $chapter)
         }
       }
     }
-    //debug($block['lines']);
     buf_print("</div>");
   }
 }
 
-//debug($output);
-
-
 file_put_contents('html/' . $filename . '.html', $output_buffer);
 print($output_buffer);
-/*
-
-foreach($output as $line)
-{
-  buf_print($line);
-}
-
-
-
-
-function buffer_flush($buffer_item)
-{
-  global $output, $buffer;
-
-  $output[] = $buffer_item . "\r\n";
-  $buffer = '';
-}
-
-*/
-
-
-
-
-
-
-
-function dump($value,$varname = "",$level=0,$dumper = "")
-{
-  if ($varname) $varname .= " = ";
-
-  if ($level==-1)
-  {
-    $trans[' ']='&there4;';
-    $trans["\t"]='&rArr;';
-    $trans["\n"]='&para;;';
-    $trans["\r"]='&lArr;';
-    $trans["\0"]='&oplus;';
-    return strtr(htmlspecialchars($value),$trans);
-  }
-  if ($level==0) $dumper = '<pre>' . $varname;
-
-  $type = gettype($value);
-  $dumper .= $type;
-
-  if ($type=='string')
-  {
-    $dumper .= '('.strlen($value).')';
-    $value = dump($value,"",-1);
-  }
-  elseif ($type=='boolean') $value= ($value?'true':'false');
-  elseif ($type=='object')
-  {
-    $props= get_class_vars(get_class($value));
-    $dumper .= '('.count($props).') <u>'.get_class($value).'</u>';
-    foreach($props as $key=>$val)
-    {
-      $dumper .= "\n".str_repeat("\t",$level+1).$key.' => ';
-      $dumper .= dump($value->$key,"",$level+1);
-    }
-    $value= '';
-  }
-  elseif ($type=='array')
-  {
-    $dumper .= '('.count($value).')';
-    foreach($value as $key=>$val)
-    {
-      $dumper .= "\n".str_repeat("\t",$level+1).dump($key,"",-1).' => ';
-      $dumper .= dump($val,"",$level+1);
-    }
-    $value= '';
-  }
-  $dumper .= " <b>$value</b>";
-  if ($level==0) $dumper .= '</pre>';
-  return $dumper;
-}
-
-function pdump($value, $varname = '')
-{
-  print('<span style="text-align: left">' . dump($value, $varname) . '</span>');
-}
-
-function debug($value, $varname = '')
-{
-  return pdump($value, $varname);
-}
-
-
-function buf_print($string)
-{
-  global $output_buffer;
-
-  $output_buffer .= $string;
-}
 
 ?>

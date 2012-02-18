@@ -128,6 +128,14 @@ foreach($lang['sys_game_mode'] as $mode_id => $mode_name)
   ));
 }
 
+foreach($lang['adm_opt_ver_response'] as $ver_id => $ver_response)
+{
+  $template->assign_block_vars('ver_response', array(
+    'ID'   => $ver_id,
+    'NAME' => js_safe_string($ver_response),
+  ));
+}
+
 $lang_list = lng_get_list();
 foreach($lang_list as $lang_id => $lang_data)
 {

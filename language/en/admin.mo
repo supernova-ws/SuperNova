@@ -348,6 +348,28 @@ $lang = array_merge($lang, array(
   'adm_lng_string_add' => 'Add string',
   'adm_uni_price_galaxy' => 'Base galactic rename cost',
   'adm_uni_price_system' => 'Base system rename cost',
+
+  'adm_opt_ver_check' => 'Version check',
+  'adm_opt_ver_check_hint' => 'Version check activated only by admin by pressing button "Check version" below. This action is transferring only anonymous data: current DB version, release and full game version.',
+  'adm_opt_ver_check_do' => 'Check version',
+
+  'adm_opt_ver_response' => array(
+    SNC_VER_ERROR_CONNECT => 'Version check error. Game can not communicate with version check server. Be sure you do not have restriction in PHP to communicate with remote servers or that you have installed CURL and activated it on PHP',
+    SNC_VER_ERROR_SERVER => 'Fatal version check server error! Immediatly contact developer to diagnose and fix this problem!',
+
+    SNC_VER_EXACT => 'You have latest alpha version of incoming release. Thanks for participate in testing!',
+    SNC_VER_LESS => 'You using alpha version of incoming release. However there is more recent alpha! You can update your game if you want to have fixes for errors in current version and participate in testing new features of game.',
+    SNC_VER_FUTURE => 'You have game version from future! Immediatly contact develpoer and pass him this version! Also be prpeated to Time Militias visit for broking space-time continuum and violating laws of causality...',
+
+    SNC_VER_RELEASE_EXACT => 'You have most recent version of latest release',
+    SNC_VER_RELEASE_MINOR => 'Your game version is outdated - there is new version of your release. Most luckely it contains some bugfixes to current release. It is recomeded to update your game.',
+    SNC_VER_RELEASE_MAJOR => 'You have very outdated game version - there is available new release. It is provide new features and bugfixes. Please update your game version!',
+    SNC_VER_RELEASE_ALPHA => 'You have most recent version of latest release. However there is alpha version of next release. May be you would like to explore and test new features of upcoming release?',
+
+    SNC_VER_INVALID => 'I just can not understand which version of game you have. Please contact developer to diagnose and fix this problem.',
+    SNC_VER_STRANGE => 'You should not see this message. If you saw this message - something going terrible wrong. Please contact developer to diagnose and fix this problem.',
+  ),
+
 ));
 
 ?>

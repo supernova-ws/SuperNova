@@ -1446,6 +1446,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
           `powerup_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
           `powerup_user_id` bigint(20) UNSIGNED NULL DEFAULT NULL,
           `powerup_planet_id` bigint(20) UNSIGNED NULL DEFAULT NULL,
+          `powerup_category` SMALLINT NOT NULL DEFAULT 0,
           `powerup_unit_id` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0',
           `powerup_unit_level` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
           `powerup_time_start` int(11) NOT NULL DEFAULT '0',
@@ -1600,6 +1601,13 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       ), $update_tables['planets']['b_tech']);
 
       upd_alter_table('users', "DROP COLUMN `b_tech_planet`", $update_tables['users']['b_tech_planet']);
+    }
+
+    if(!$update_tables['powerup']['powerup_category'])
+    {
+      upd_alter_table('powerup', "ADD COLUMN `powerup_category` SMALLINT NOT NULL DEFAULT 0 AFTER `powerup_planet_id`", !$update_tables['powerup']['powerup_category']);
+
+      doquery("UPDATE {{powerup}} SET powerup_category = " . BONUS_MERCENARY);
     }
 
     upd_check_key('rpg_cost_info', 10000, !isset($config->rpg_cost_info));
