@@ -219,4 +219,9 @@ sn_db_connect();
 $force_lang = sys_get_param_str('lang');
 lng_switch($force_lang);
 
+if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= $time_now)
+{
+  include(SN_ROOT_PHYSICAL . 'ajax_version_check.php');
+}
+
 ?>

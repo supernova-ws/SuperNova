@@ -350,12 +350,15 @@ $lang = array_merge($lang, array(
   'adm_uni_price_system' => 'Base system rename cost',
 
   'adm_opt_ver_check' => 'Version check',
-  'adm_opt_ver_check_hint' => 'Version check activated only by admin by pressing button "Check version" below. This action is transferring only anonymous data: current DB version, release and full game version.',
+  'adm_opt_ver_check_hint' => 'Version check activated by admin by pressing button "Check version" below. This action is transferring only anonymous data: current DB version, release and full game version.',
   'adm_opt_ver_check_do' => 'Check version',
+  'adm_opt_ver_check_last' => 'Last version check was performed at',
+  'adm_opt_ver_check_auto' => 'Automatic version check',
+  'adm_opt_ver_check_auto_hint' => 'You can enable automatic game version check. Data transferred to update server will be exact the same as when you use manual version check. But with automatic check engine will check version by itself once in period of time (by default - once per day). More info in documentation',
 
   'adm_opt_ver_response' => array(
-    SNC_VER_ERROR_CONNECT => 'Version check error. Game can not communicate with version check server. Be sure you do not have restriction in PHP to communicate with remote servers or that you have installed CURL and activated it on PHP',
-    SNC_VER_ERROR_SERVER => 'Fatal version check server error! Immediatly contact developer to diagnose and fix this problem!',
+    SNC_VER_ERROR_CONNECT => 'Version check error. Game can not communicate with update server. Be sure you do not have restriction in PHP to communicate with remote servers or that you have installed CURL and activated it on PHP',
+    SNC_VER_ERROR_SERVER => 'Fatal update server error! Immediatly contact developer to diagnose and fix this problem!',
 
     SNC_VER_EXACT => 'You have latest alpha version of incoming release. Thanks for participate in testing!',
     SNC_VER_LESS => 'You using alpha version of incoming release. However there is more recent alpha! You can update your game if you want to have fixes for errors in current version and participate in testing new features of game.',
@@ -368,6 +371,25 @@ $lang = array_merge($lang, array(
 
     SNC_VER_INVALID => 'I just can not understand which version of game you have. Please contact developer to diagnose and fix this problem.',
     SNC_VER_STRANGE => 'You should not see this message. If you saw this message - something going terrible wrong. Please contact developer to diagnose and fix this problem.',
+  ),
+
+  'adm_opt_ver_response_short' => array(
+    SNC_VER_NEVER => 'Never made',
+
+    SNC_VER_ERROR_CONNECT => 'Error connect',
+    SNC_VER_ERROR_SERVER => 'Server error',
+
+    SNC_VER_EXACT => 'Latest alpha',
+    SNC_VER_LESS => 'Old alpha',
+    SNC_VER_FUTURE => 'Future alpha',
+
+    SNC_VER_RELEASE_EXACT => 'Freshest release',
+    SNC_VER_RELEASE_MINOR => 'Update recomended',
+    SNC_VER_RELEASE_MAJOR => 'Update mandatory',
+    SNC_VER_RELEASE_ALPHA => 'Fresh release',
+
+    SNC_VER_INVALID => 'Version error',
+    SNC_VER_STRANGE => 'Unpredictable shit',
   ),
 
 ));

@@ -34,6 +34,7 @@ if(sys_get_param('save'))
   $config->url_dark_matter         = sys_get_param_str_raw('url_dark_matter');
   $config->game_disable            = sys_get_param_int('game_disable');
   $config->game_disable_reason     = sys_get_param_str_raw('game_disable_reason');
+  $config->server_updater_check_auto = sys_get_param_int('server_updater_check_auto');
 
   $config->eco_scale_storage       = sys_get_param_int('eco_scale_storage');
 
@@ -118,6 +119,11 @@ $template->assign_vars(array(
   'GAME_COUNTER' => $config->game_counter,
   'TPL_MINIFIER' => $config->tpl_minifier,
   'EMPIRE_MERCENARY_TEMPORARY' => $config->empire_mercenary_temporary,
+
+  'SERVER_UPDATE_CHECK_AUTO' => $config->server_updater_check_auto,
+  'CHECK_DATE' => $config->server_updater_check_last ? date(FMT_DATE_TIME, $config->server_updater_check_last) : 0,
+  'CHECK_RESULT' => $lang['adm_opt_ver_response'][$config->server_updater_check_result],
+  'CHECK_CLASS' => $sn_version_check_class[$config->server_updater_check_result],
 ));
 
 foreach($lang['sys_game_mode'] as $mode_id => $mode_name)

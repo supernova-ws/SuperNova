@@ -546,6 +546,11 @@ class classConfig extends classPersistent
 
     'player_max_colonies'  => 9, // Max player planet count (NOT including main planet)
 
+    'server_updater_check_auto' => 0, // Server autocheck version
+    'server_updater_check_period' => PERIOD_DAY, // Server autocheck period
+    'server_updater_check_last' => 0, // Server last check time
+    'server_updater_check_result' => SNC_VER_NEVER, // Server last check result
+
     // Quests
     'quest_total'          => 0, // Total number of quests
 

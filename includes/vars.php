@@ -12,6 +12,21 @@ if (!defined('INSIDE'))
   die('Hack attempt!');
 }
 
+  $sn_version_check_class = array(
+    SNC_VER_NEVER => 'warning',
+    SNC_VER_ERROR_CONNECT => 'error',
+    SNC_VER_ERROR_SERVER => 'error',
+    SNC_VER_EXACT => 'ok',
+    SNC_VER_LESS => 'notice',
+    SNC_VER_FUTURE => 'error',
+    SNC_VER_RELEASE_EXACT => 'ok',
+    SNC_VER_RELEASE_MINOR => 'notice',
+    SNC_VER_RELEASE_MAJOR => 'warning',
+    SNC_VER_RELEASE_ALPHA => 'ok',
+    SNC_VER_INVALID => 'error',
+    SNC_VER_STRANGE => 'error',
+  );
+
   $tableList = array( 'aks', 'alliance', 'alliance_requests', 'announce', 'annonce', 'banned', 'buddy', 'chat', 'config', 'counter',
     'errors', 'fleets', 'fleet_log', 'galaxy', 'iraks', 'logs', 'log_dark_matter', 'messages', 'notes', 'planets', 'quest',
     'quest_status', 'referrals', 'rw', 'statpoints', 'users'

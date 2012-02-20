@@ -43,7 +43,7 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
 
 function tpl_render_menu()
 {
-  global $user, $lang, $time_now;
+  global $config, $user, $lang, $time_now;
 
   lng_include('leftmenu');
 
@@ -56,10 +56,23 @@ function tpl_render_menu()
     'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
   ));
 
-  if(IN_ADMIN !== true)
+  if(IN_ADMIN === true && $user['authlevel'] > 0)
   {
-    global $config;
+    global $sn_version_check_class;
 
+    $template->assign_vars(array(
+      'CHECK_DATE' => $config->server_updater_check_last ? date(FMT_DATE, $config->server_updater_check_last) : 0,
+      'CHECK_RESULT' => $lang['adm_opt_ver_response_short'][$config->server_updater_check_result],
+      'CHECK_CLASS' => $sn_version_check_class[$config->server_updater_check_result],
+    ));
+/*
+$config->db_saveItem('server_updater_check_last', $time_now);
+$config->db_saveItem('server_updater_check_result', $check_result);
+*/
+
+  }
+  else
+  {
     $template->assign_vars(array(
       'NEWS_UNREAD'         => $user['news_lastread'] < $config->var_news_last,
       'game_url'            => SN_ROOT_RELATIVE,

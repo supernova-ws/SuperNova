@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '32');
 define('SN_RELEASE', '33');
-define('SN_VERSION', '33a27');
+define('SN_VERSION', '33a28');
 
 define('SN_RELEASE_STABLE', '32d0'); // Latest stable release
 
@@ -493,6 +493,7 @@ define('ART_RCD_LARGE', 1004);   // Rapid Colony Deployment - Set of buildings u
 //define('ART_PLANET_GATE', 1006);   // Planet gate
 //define('ART_NANOBOTS_SMALL', 1007); // Speed up building
 
+define('SNC_VER_NEVER', -1);
 define('SNC_VER_ERROR_CONNECT', 0);
 define('SNC_VER_EXACT', 1);
 define('SNC_VER_LESS', 2);

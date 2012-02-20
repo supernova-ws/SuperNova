@@ -1613,6 +1613,11 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_check_key('rpg_cost_info', 10000, !isset($config->rpg_cost_info));
     upd_check_key('tpl_minifier', 0, !isset($config->tpl_minifier));
 
+    upd_check_key('server_updater_check_auto', 0, !isset($config->server_updater_check_auto));
+    upd_check_key('server_updater_check_period', PERIOD_DAY, !isset($config->server_updater_check_period));
+    upd_check_key('server_updater_check_last', 0, !isset($config->server_updater_check_last));
+    upd_check_key('server_updater_check_result', SNC_VER_NEVER, !isset($config->server_updater_check_result));
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 33;
 };

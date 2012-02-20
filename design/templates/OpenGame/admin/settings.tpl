@@ -22,7 +22,7 @@
             function()
             {
               // send requests
-              jQuery.post("admin/ajax_version_check.php", {}, 
+              jQuery.post("ajax_version_check.php", {ajax: 1},
                 function(data)
                 {
                   // output result
@@ -33,7 +33,16 @@
             }
           );
         </script>
-        <div class="c_c" id="version_check_result" style="width: 670px"></div>
+        <div class="c_c" id="version_check_result" style="width: 670px">
+          <!-- IF CHECK_DATE -->{L_adm_opt_ver_check_last}&nbsp;{CHECK_DATE}<!-- ENDIF -->
+          <div class="{CHECK_CLASS}">{CHECK_RESULT}</div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="c_l" colspan="2">
+        <input name="server_updater_check_auto" id="server_updater_check_auto" type="checkbox" value="1"<!-- IF SERVER_UPDATE_CHECK_AUTO --> checked<!-- ENDIF -->/>&nbsp;<label for="server_updater_check_auto">{L_adm_opt_ver_check_auto}</label><br />
+        <div style="width: 670px">{L_adm_opt_ver_check_auto_hint}</div>
       </td>
     </tr>
 

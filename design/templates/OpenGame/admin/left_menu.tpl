@@ -1,7 +1,14 @@
 <div id="sn_menu">
   <table width="130" cellspacing="0" cellpadding="0" id="left_menu">
-    <tr><td class="c_c"><strong>{C_game_name}</strong></td></tr>
-    <tr><th id="server_time"></td></tr>
+    <tr><th class="c_c"><strong>{C_game_name}</strong></th></tr>
+    <tr><td class="c_c" id="server_time"></td></tr>
+    <tr><th class="c_c">{L_adm_opt_ver_check}</th></tr>
+    <tr>
+      <td class="c_c">
+        <!-- IF CHECK_DATE -->{CHECK_DATE}<!-- ENDIF -->
+        <div class="{CHECK_CLASS}">{CHECK_RESULT}</div>
+      </td>
+    </tr>
 
     <tr><td align=center class="c">{USER_AUTHLEVEL_NAME}</td></tr>
     <tr><td><a href="admin/overview.php">{L_adm_over}</a></td></tr>
