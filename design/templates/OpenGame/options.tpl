@@ -12,7 +12,7 @@
 <!-- ENDIF -->
 
 <form action="options.php?mode=change" method="post" name="fOptions" enctype="multipart/form-data">
-  <table width="519">
+  <table width="519px">
     <tbody>
       <!-- IF IS_ADMIN -->
         <tr><td class="c" colspan="2">{L_opt_adm_title}</td></tr>
@@ -21,7 +21,7 @@
           <th><input name="adm_pl_prot"{adm_pl_prot_data} type="checkbox" id="adm_pl_prot" /></th>
         </tr>
       <!-- ENDIF -->
-      
+
       <tr>
         <td class="c" colspan="2">{L_userdata}</td>
       </tr>
@@ -76,24 +76,24 @@
       </tr>
       <tr>
         <th>{L_skins_example}</th>
-        <th><input name="design"{opt_sskin_data} type="checkbox" id="design" /> <label for="design">{L_opt_chk_skin}</label><br>
-          <input name="dpath" maxlength="80" size="40" value="{opt_dpath_data}" type="text">&nbsp;<select name="dpaths" size="1" onchange="document.fOptions.dpath.value='skins/'+this.value+'/';">
+        <td class="c_l"><input name="design"{opt_sskin_data} type="checkbox" id="design" /> <label for="design">{L_opt_chk_skin}</label><br>
+          <input name="dpath" maxlength="80" size="28" value="{opt_dpath_data}" type="text">&nbsp;<select name="dpaths" size="1" onchange="document.fOptions.dpath.value='skins/'+this.value+'/';">
             {opt_lst_skin_data}
           </select>
-        </th>
+        </td>
       </tr>
       <tr>
         <th>{L_opt_avatar}</th>
         <th>
-          <label for="avatar">{L_opt_upload}</label>&nbsp;<input type="file" name="avatar" size="38"><br />
-          <span class="fl">
+          <label for="avatar">{L_opt_upload}</label>&nbsp;<input type="file" name="avatar" size="26"><br />
+          <div>
             <!-- IF opt_avatar -->
               <img src="{D_SN_ROOT_VIRTUAL}/images/avatar/avatar_{USER_ID}.png"><br />
               <input name="avatar_remove" type="checkbox" id="avatar_remove" /><label for="avatar_remove">{L_opt_avatar_remove}</label>
             <!-- ELSE -->
               <a href="http://www.google.com.ar/imghp" target="_blank">{L_opt_avatar_search}</a>
             <!-- ENDIF -->
-          </span>
+          </div>
         </th>
       </tr>
 
@@ -106,7 +106,12 @@
           <tr>
             <td class="c_c"><label for="{options_3.NAME}">{options_3.TEXT}</label></td>
             <td class="c_c">
-              <input type="checkbox" id="{options_3.NAME}" name="{options_3.NAME}" value="1" <!-- IF options_3.VALUE --> checked<!-- ENDIF -->>
+              <!-- IF options_3.TYPE == 'integer' -->
+                <input type="text" id="{options_3.NAME}" name="{options_3.NAME}" value="{options_3.VALUE}" />
+                <!-- IF options_3.HINT --><br />{options_3.HINT}<!-- ENDIF -->
+              <!-- ELSE -->
+                <input type="checkbox" id="{options_3.NAME}" name="{options_3.NAME}" value="1" <!-- IF options_3.VALUE --> checked<!-- ENDIF --> />
+              <!-- ENDIF -->
             </td>
           </tr>
         <!-- END options_3 -->
@@ -143,8 +148,8 @@
       <th>{L_shortcut}</th>
       <th>
         <input name="settings_esp"{user_settings_esp} type="checkbox" id="settings_esp" />&nbsp;<label for="settings_esp"><img src="{dpath}img/e.gif" alt="{spy}" />&nbsp;{L_spy}</label>
-        <input name="settings_mis"{user_settings_mis} type="checkbox" id="settings_mis" />&nbsp;<label for="settings_mis"><img src="{dpath}img/r.gif" alt="{attack_with_missile}" />&nbsp;{L_attack_with_missile}</label><br />
         <input name="settings_wri"{user_settings_wri} type="checkbox" id="settings_wri" />&nbsp;<label for="settings_wri"><img src="{dpath}img/m.gif" alt="{write_a_messege}" />&nbsp;{L_write_a_messege}</label>
+        <input name="settings_mis"{user_settings_mis} type="checkbox" id="settings_mis" />&nbsp;<label for="settings_mis"><img src="{dpath}img/r.gif" alt="{attack_with_missile}" />&nbsp;{L_attack_with_missile}</label>
         <input name="settings_bud"{user_settings_bud} type="checkbox" id="settings_bud" />&nbsp;<label for="settings_bud"><img src="{dpath}img/b.gif" alt="{add_to_buddylist}">&nbsp;{L_add_to_buddylist}</label>
 <!--      <img src="{dpath}img/s.gif" alt="{show_report}"> {L_show_report} <input name="settings_rep"{user_settings_rep} type="checkbox" /> -->
       </th>
@@ -179,8 +184,10 @@
         </tr>
       <!-- ENDIF -->
       <tr>
-        <th colspan=2><span class="fl"><input name="deltime"{opt_delac_data} type="checkbox" id="deltime" /> <label for="deltime">{L_deleteaccount}. {L_deleteaccount_tip}</span><span id="delete_on"></span></label></th>
-      </th>
+        <td class="c_l" colspan="2">
+          <input name="deltime"{opt_delac_data} type="checkbox" id="deltime" /> <label for="deltime">{L_deleteaccount}. {L_deleteaccount_tip}</label>
+          <span id="delete_on"></span>
+        </td>
       </tr>
       <tr>
         <th class="c_c" colspan="2"><input value="{L_save_settings}" type="submit"></th>

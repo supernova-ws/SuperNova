@@ -1,34 +1,35 @@
 /* Login and Registration screens */
 @media screen
 {
-  body {
+  body 
+  {
       background-image: url(../images/bg-unauthorized.jpg);
       background-repeat: no-repeat;
   }
 
-  #log_skipper {
+  #log_skipper
+  {
     height: 200px;
   }
 
-#log_title
-{
-  font-size: 20px;
-}
+  #log_title
+  {
+    font-size: 20px;
+  }
 
-#log_description
-{
-  margin: 20px;
-}
+  #log_description
+  {
+    margin: 20px;
+  }
 
-#log_register {
-  margin:20px;
-}
+  #log_register {
+    margin:20px;
+  }
 
-#log_menu {
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
+  #log_menu {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
 }
 
 body {

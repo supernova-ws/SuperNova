@@ -146,6 +146,7 @@ switch($mode)
     int_get_fleet_to_planet("SELECT DISTINCT * FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}' OR `fleet_target_owner` = '{$user['id']}';");
     int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE `fleet_owner` = '{$user['id']}'");
 
+    $planet_count = 0;
     $planets_query = SortUserPlanets($user, false, '*');
     while ($UserPlanet = mysql_fetch_assoc($planets_query))
     {
@@ -190,6 +191,8 @@ switch($mode)
 
           'MOON_PLANET'  => $moon['parent_planet'],
       )));
+
+      $planet_count++;
     }
 
     tpl_assign_fleet($template, $fleets);
@@ -292,6 +295,21 @@ switch($mode)
       ));
     }
 
+
+$overview_planet_rows = $user['opt_int_overview_planet_rows'];
+$overview_planet_columns = $user['opt_int_overview_planet_columns'];
+
+if($overview_planet_rows <= 0 && $overview_planet_columns <= 0)
+{
+  $overview_planet_rows = $user_option_list[OPT_INTERFACE]['opt_int_overview_planet_rows'];
+  $overview_planet_columns = $user_option_list[OPT_INTERFACE]['opt_int_overview_planet_columns'];
+}
+
+if($overview_planet_rows > 0 && $overview_planet_columns <= 0)
+{
+  $overview_planet_columns = ceil($planet_count / $overview_planet_rows);
+}
+
     $template->assign_vars(array(
       'TIME_NOW'              => $time_now,
                               
@@ -322,6 +340,9 @@ switch($mode)
       'PLANET_GOVERNOR_ID'    => $planetrow['PLANET_GOVERNOR_ID'],
       'PLANET_GOVERNOR_LEVEL' => $planetrow['PLANET_GOVERNOR_LEVEL'],
       'PLANET_GOVERNOR_NAME'  => $lang['tech'][$planetrow['PLANET_GOVERNOR_ID']],
+
+      'LIST_ROW_COUNT'        => $overview_planet_rows,
+      'LIST_COLUMN_COUNT'     => $overview_planet_columns,
 
       //'LastChat'       => CHT_messageParse($msg),
     ));

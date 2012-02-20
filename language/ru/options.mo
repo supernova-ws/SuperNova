@@ -122,6 +122,10 @@ $lang = array_merge($lang, array(
     'opt_uni_avatar_user' => 'Показывать аватар пользователя',
     'opt_uni_avatar_ally' => 'Показывать логотип Альянса',
     'opt_int_struc_vertical' => 'Вертикальная очередь построек',
+    'opt_int_overview_planet_columns' => 'Количество колонок в списке планет',
+    'opt_int_overview_planet_columns_hint' => '0 - рассчитать по максимальному количество рядов',
+    'opt_int_overview_planet_rows' => 'Максимальное количество рядов в списке планет',
+    'opt_int_overview_planet_rows_hint' => 'Игнорируется, если указано количество колонок',
   ),
 ));
 

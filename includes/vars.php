@@ -110,6 +110,13 @@ if (!defined('INSIDE'))
 
   $user_option_list[OPT_INTERFACE] = array(
     'opt_int_struc_vertical' => 0,
+    'opt_int_overview_planet_columns' => 0,
+    'opt_int_overview_planet_rows' => 5,
+  );
+
+  $user_option_types = array(
+    'opt_int_overview_planet_columns' => 'integer',
+    'opt_int_overview_planet_rows' => 'integer',
   );
 /*
   foreach($sn_message_groups['switchable'] as $option_id)

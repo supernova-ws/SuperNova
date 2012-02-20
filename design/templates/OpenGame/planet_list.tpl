@@ -3,13 +3,11 @@
 <!-- ENDIF -->
 
 <!-- IF $OVERVIEW && .planet > 5 -->
-  <!-- DEFINE $TWO_COLUMN = true -->
+  <!-- DEFINE $COLUMN_COUNT = 2 -->
 <!-- ENDIF -->
 
 <!-- BEGIN planet -->
-  <!-- IF ($TWO_COLUMN && planet.S_ROW_COUNT is even) || ( $OVERVIEW && ! $TWO_COLUMN) -->
-  <!-- IF $OVERVIEW -->
-  <!-- ENDIF -->
+  <!-- IF $OVERVIEW && (! LIST_COLUMN_COUNT || planet.S_ROW_COUNT % LIST_COLUMN_COUNT == 0)  -->
    <tr>
   <!-- ENDIF -->
   <th valign="top" {$CELL_CLASS} width="{$CELL_PLANET}"><center>
@@ -17,7 +15,7 @@
     <!-- IF $OVERVIEW -->
       <!-- IF planet.MOON_ID == PLANET_ID -->{L_sys_moon} {planet.MOON_NAME}<!-- ELSE -->{planet.NAME}<!-- ENDIF --><br />[{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]<br>
     <!-- ENDIF -->
-    
+
     <!-- IF planet.ID == PLANET_ID || (planet.MOON_ID == PLANET_ID && $OVERVIEW) -->
       <!-- DEFINE $PLANET_IMG_SIZE = 100 -->
       <!-- DEFINE $RESOURCE_BAR = 4 -->
@@ -185,9 +183,7 @@
     <!-- ENDIF -->
   <!-- ENDIF -->
   </center></th>
-  <!-- IF ($TWO_COLUMN && planet.S_ROW_COUNT is odd) || ( $OVERVIEW && ! $TWO_COLUMN) -->
-  <!-- IF $OVERVIEW -->
-  <!-- ENDIF -->
+  <!-- IF $OVERVIEW && (! LIST_COLUMN_COUNT || (planet.S_ROW_COUNT + 1) % LIST_COLUMN_COUNT == 0 || planet.S_LAST_ROW)  -->
     </tr>
   <!-- ENDIF -->
 <!-- END planet -->

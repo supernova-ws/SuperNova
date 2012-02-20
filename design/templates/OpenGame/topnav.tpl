@@ -1,13 +1,5 @@
-<style type="text/css" media="screen">
-input.frameles
-{
-  border               : #ff0000;
-  text-align           : center;
-  font-size            : 11px;
-}
-</style>
-
-<table align=center width="722" cellpadding="0" cellspacing="0" class="header" id="resources" style="width: 722px;" padding-right="30"><tbody>
+<div id="sn_navbar">
+<table width="720px" cellpadding="0" cellspacing="0" class="header c_c" id="resources"><tbody>
   <tr class="c">
     <td class="c" colspan=7>
       <span class="fl">{DATE_TEXT}<span id="top_time">{TIME_TEXT}</span></span>
@@ -86,8 +78,8 @@ input.frameles
     </td>
   </tr>
 </tbody></table>
+</div>
 
-<div id="debug" style="text-align: left"></div>
 <script LANGUAGE='JavaScript'><!--
   sn_timers.unshift({id: 'top_metal', type: 1, active: true, start_time: {TIME_NOW}, options: {start_value: {TOPNAV_METAL}, per_second: {TOPNAV_METAL_PERHOUR} / 3600, max_value: {TOPNAV_METAL_MAX}}});
   sn_timers.unshift({id: 'top_crystal', type: 1, active: true, start_time: {TIME_NOW}, options: {start_value: {TOPNAV_CRYSTAL}, per_second: {TOPNAV_CRYSTAL_PERHOUR} / 3600, max_value: {TOPNAV_CRYSTAL_MAX}}});

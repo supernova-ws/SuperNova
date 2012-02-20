@@ -1,9 +1,9 @@
-    <center>
-      <div id="copyright" style="padding-top: 2ex;">
-        Project &quot;SuperNova.WS&quot; Release {D_SN_RELEASE} V{D_SN_VERSION} &copy; 2009-2012 Gorlum<br>
-        Based on XNova RageRepack v226
-      </div>
-    </center>
+    <div id="copyright" style="padding-top: 2ex;">
+      Project &quot;SuperNova.WS&quot; Release {D_SN_RELEASE} V{D_SN_VERSION} &copy; 2009-2012 Gorlum<br>
+      Based on XNova RageRepack v226
+    </div>
+
+    <div id="debug" style="text-align: left"></div>
 
     <script type="text/javascript"><!--
       var localTime = new Date();

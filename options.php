@@ -284,9 +284,20 @@ foreach($user_option_list as $option_group_id => $option_group)
   {
     foreach($option_group as $option_name => $option_value)
     {
+      if(array_key_exists($option_name, $user_option_types))
+      {
+        $option_type = $user_option_types[$option_name];
+      }
+      else
+      {
+        $option_type = 'switch';
+      }
+
       $template->assign_block_vars("options_{$option_group_id}", array(
         'NAME'  => $option_name,
+        'TYPE'  => $option_type,
         'TEXT'  => $lang['opt_custom'][$option_name],
+        'HINT'  => $lang['opt_custom']["{$option_name}_hint"],
         'VALUE' => $user[$option_name],
       ));
     }

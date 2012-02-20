@@ -172,22 +172,6 @@ h1
 .ov_user_total {color: #FF0000}
 .ov_user_rank {color: #FFFF00}
 
-#page_body
-{
-  margin-left: 150px;
-  padding-left: 10px;
-  padding-right: 10px;
-  width: auto;
-}
-
-#left_menu_wrapper {
-  float:left;
-  width: 130px;
-/*  text-align: center;*/
-  padding-left:5px;
-  padding-right:5px;
-}
-
 #left_menu {
   font-weight: bold;
   width: 100%;

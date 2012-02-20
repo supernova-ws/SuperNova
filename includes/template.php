@@ -41,22 +41,22 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
   display ($page, $title, $show_header, (($dest != "") ? "<meta http-equiv=\"refresh\" content=\"{$time};url={$dest}\">" : ""), false);
 }
 
-function ShowLeftMenu($Level = 0)
+function tpl_render_menu()
 {
   global $user, $lang, $time_now;
 
   lng_include('leftmenu');
 
-  $template_name = $Level > 0 ? 'admin/left_menu' : 'left_menu';
+  $template_name = IN_ADMIN === true ? 'admin/left_menu' : 'left_menu';
   $template = gettemplate($template_name, true);
 
   $template->assign_vars(array(
-    'SERVER_TIME' => $time_now,
-    'USER_AUTHLEVEL'      => $GLOBALS['user']['authlevel'],
-    'USER_AUTHLEVEL_NAME' => $GLOBALS['lang']['user_level'][$GLOBALS['user']['authlevel']],
+    'SERVER_TIME'         => $time_now,
+    'USER_AUTHLEVEL'      => $user['authlevel'],
+    'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
   ));
 
-  if ($Level < 1)
+  if(IN_ADMIN !== true)
   {
     global $config;
 
@@ -104,24 +104,18 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   ));
   displayP(parsetemplate($template));
 
-  // Left menu
-  if ($isDisplayMenu)
+  if($isDisplayMenu)
   {
     $AdminPage = $AdminPage ? $user['authlevel'] : 0;
-    displayP(parsetemplate(ShowLeftMenu ( $AdminPage )));
-    echo '<div id="page_body">';
-  }
-  else
-  {
-    echo '<div>';
+    displayP(parsetemplate(tpl_render_menu($AdminPage)));
   }
 
-  echo '<center>';
   if($topnav)
   {
     displayP(parsetemplate(tpl_render_topnav($user, $planetrow)));
   }
 
+  echo '<div id="page_body"><center>';
   if(!is_array($page))
   {
     $page = array($page);
@@ -130,8 +124,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   {
     displayP($page_item);
   }
-
-  echo '</center></div>';
+  echo '</div></center>';
 
   // Global footer
   $template = gettemplate('simple_footer', true);

@@ -1,4 +1,4 @@
-<div id="left_menu_wrapper">
+<div id="sn_menu">
   <table width="130" cellspacing="0" cellpadding="0" id="left_menu">
     <tr><td class="c_c"><strong>{C_game_name}</strong></td></tr>
     <tr><th id="server_time"></td></tr>
