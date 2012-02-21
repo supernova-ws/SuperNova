@@ -27,11 +27,6 @@
 
     <tr><th><a href="affilates.php" id="lm_affilates">[{L_m_affilates}]</a></th></tr>
 
-    <tr><th>{L_m_communication}</th></tr>
-    <tr><td><a href="messages.php">{L_Messages}</a></td></tr>
-    <tr><td><a href="chat.php" id="lm_chat">{L_Chat}</a></td></tr>
-    <!-- IF URL_FORUM --><tr><td><a href="{URL_FORUM}" id="lm_forum">{L_m_forum}</a></td></tr><!-- ENDIF -->
-
     <tr><th>{L_sys_planet}</th></tr>
     <tr><td><a href="overview.php" id="lm_overview">{L_Overview}</a></td></tr>
     <tr><td><a href="resources.php">{L_Resources}</a></td></tr>
@@ -55,6 +50,11 @@
     <tr><th>{L_sys_alliance}</th></tr>
     <tr><td><a href="alliance.php">{L_sys_alliance}</a></td></tr>
     <tr><td><a href="chat.php?ally=ally" id="lm_chatally">{L_AllyChat}</a></td></tr>
+
+    <tr><th>{L_m_communication}</th></tr>
+    <tr><td><a href="messages.php">{L_Messages}</a></td></tr>
+    <tr><td><a href="chat.php" id="lm_chat">{L_Chat}</a></td></tr>
+    <!-- IF URL_FORUM --><tr><td><a href="{URL_FORUM}" id="lm_forum">{L_m_forum}</a></td></tr><!-- ENDIF -->
 
     <tr><th>{L_m_others}</th></tr>
     <tr><td><a href="simulator.php" id="lm_simulator">{L_m_simulator}</a></td></tr>
