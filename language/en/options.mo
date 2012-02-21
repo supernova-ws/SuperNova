@@ -63,7 +63,7 @@ $lang = array_merge($lang, array(
 
   'opt_avatar' => 'Avatar',
   'opt_avatar_remove' => 'Remove avatar',
-  'opt_avatar_search' => 'Seatch in Google',
+  'opt_avatar_search' => 'Search in Google',
   'opt_upload' => 'Upload',
 
   'opt_msg_avatar_removed' => 'Avatar succesfully removed',
