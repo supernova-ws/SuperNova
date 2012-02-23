@@ -101,11 +101,15 @@ if ($_POST['submit'])
         `lang` = '{$language}', `sex` = '{$sex}', `id_planet` = '0', `register_time` = '{$time_now}', `password` = '{$md5pass}',
         `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^1|opt_email_mnl_joueur^1|opt_email_mnl_alliance^1|opt_mnl_attaque^1|opt_email_mnl_attaque^1|opt_mnl_exploit^1|opt_email_mnl_exploit^1|opt_mnl_transport^1|opt_email_mnl_transport^1|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^1|opt_mnl_buildlist^1|opt_email_mnl_buildlist^1|';");
 
-    $user = doquery("SELECT `id` FROM {{users}} WHERE `username` = '{$username_safe}' LIMIT 1;", '', true);
+    $user = doquery("SELECT `id` FROM {{users}} WHERE `username` = '{$username_safe}' LIMIT 1;", true);
 
-    if ($id_ref)
+    if($id_ref)
     {
-      doquery( "INSERT INTO {{referrals}} SET `id` = {$user['id']}, `id_partner` = {$id_ref}");
+      $referral_row = doquery("SELECT `id` FROM {{users}} WHERE `id` = '{$id_ref}' LIMIT 1;", true);
+      if($referral_row)
+      {
+        doquery("INSERT INTO {{referrals}} SET `id` = {$user['id']}, `id_partner` = {$id_ref}");
+      }
     }
 
     $galaxy = $config->LastSettedGalaxyPos;

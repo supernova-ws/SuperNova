@@ -143,11 +143,13 @@ switch($mode)
     rpg_level_up($user, RPG_TECH);
 
     $fleet_id = 1;
+
     int_get_fleet_to_planet("SELECT DISTINCT * FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}' OR `fleet_target_owner` = '{$user['id']}';");
     int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE `fleet_owner` = '{$user['id']}'");
 
     $planet_count = 0;
     $planets_query = SortUserPlanets($user, false, '*');
+
     while ($UserPlanet = mysql_fetch_assoc($planets_query))
     {
       if($UserPlanet['planet_type'] == PT_MOON)
@@ -165,9 +167,9 @@ switch($mode)
       $fleet_list = $template_planet['fleet_list'];
       if($fleet_list['own']['count'])
       {
-        $planet_fleet_id = "p{$fleet_id}";
-        $fleets[] = tpl_parse_fleet_sn($fleet_list['own']['total'], $planet_fleet_id);
-        $fleet_id++;
+        $planet_fleet_id = "p{$UserPlanet['id']}";
+        $fleets_to_planet[$UserPlanet['id']] = tpl_parse_fleet_sn($fleet_list['own']['total'], $planet_fleet_id);
+//        $fleet_id++;
       }
       $moon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3 LIMIT 1;", '', true);
       if($moon)
@@ -195,7 +197,7 @@ switch($mode)
       $planet_count++;
     }
 
-    tpl_assign_fleet($template, $fleets);
+    tpl_assign_fleet($template, $fleets_to_planet);
 
     $parse = $lang;
 
@@ -312,15 +314,15 @@ if($overview_planet_rows > 0 && $overview_planet_columns <= 0)
 
     $template->assign_vars(array(
       'TIME_NOW'              => $time_now,
-                              
+
       'USER_ID'               => $user['id'],
       'user_username'         => $user['username'],
       'USER_AUTHLEVEL'        => $user['authlevel'],
-                              
+
       'NEW_MESSAGES'          => $user['new_message'],
       'NEW_LEVEL_MINER'       => $level_miner,
       'NEW_LEVEL_RAID'        => $level_raid,
-                              
+
       'planet_diameter'       => pretty_number($planetrow['diameter']),
       'planet_field_current'  => $planetrow['field_current'],
       'planet_field_max'      => eco_planet_fields_max($planetrow),
@@ -331,10 +333,10 @@ if($overview_planet_rows > 0 && $overview_planet_columns <= 0)
       'RECYCLERS_SEND'        => $recyclers_send,
       'planet_temp_min'       => $planetrow['temp_min'],
       'planet_temp_max'       => $planetrow['temp_max'],
-                              
+
       'GATE_LEVEL'            => $planetrow[$sn_data[STRUC_MOON_GATE]['name']],
       'GATE_JUMP_REST_TIME'   => flt_gate_time_to_jump($planetrow),
-                              
+
       'ADMIN_EMAIL'           => $config->game_adminEmail,
 
       'PLANET_GOVERNOR_ID'    => $planetrow['PLANET_GOVERNOR_ID'],
@@ -346,7 +348,7 @@ if($overview_planet_rows > 0 && $overview_planet_columns <= 0)
 
       //'LastChat'       => CHT_messageParse($msg),
     ));
-
+    tpl_set_resource_info($template, $planetrow, $fleets_to_planet, 2);
     nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user['news_lastread']}", $config->game_news_overview); //  AND UNIX_TIMESTAMP(`tsTimeStamp`) + {$config->game_news_actual} >= {$time_now}
 
     display(parsetemplate($template, $parse), "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");

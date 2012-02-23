@@ -244,7 +244,6 @@ $lang = array_merge($lang, array(
   'adm_planet_edit' => 'Edit planet',
   'adm_planet_id' => 'Planet ID',
   'adm_name' => 'Name',
-  'adm_on_planet' => 'On planet',
   'adm_planet_change' => 'Change',
   'adm_planet_parent' => 'Parent Planet',
   'adm_planet_active' => 'Active Planets',

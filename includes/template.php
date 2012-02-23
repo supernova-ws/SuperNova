@@ -291,28 +291,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     'TOPNAV_CURRENT_PLANET' => $user['current_planet'],
     'TOPNAV_MODE' => $GET_mode,
 
-    'TOPNAV_METAL' => round($planetrow["metal"], 2),
-    'TOPNAV_METAL_MAX' => round($planetrow["metal_max"]),
-    'TOPNAV_METAL_PERHOUR' => round($planetrow["metal_perhour"], 5),
-    'TOPNAV_METAL_TEXT' => pretty_number($planetrow["metal"], 2),
-    'TOPNAV_METAL_MAX_TEXT' => pretty_number($planetrow["metal_max"], 2, -$planetrow["metal"]),
-
-    'TOPNAV_CRYSTAL' => round($planetrow["crystal"], 2),
-    'TOPNAV_CRYSTAL_MAX' => round($planetrow["crystal_max"]),
-    'TOPNAV_CRYSTAL_PERHOUR' => round($planetrow["crystal_perhour"], 5),
-    'TOPNAV_CRYSTAL_TEXT' => pretty_number($planetrow["crystal"], 2),
-    'TOPNAV_CRYSTAL_MAX_TEXT' => pretty_number($planetrow["crystal_max"], 2, -$planetrow["crystal"]),
-
-    'TOPNAV_DEUTERIUM' => round($planetrow["deuterium"], 2),
-    'TOPNAV_DEUTERIUM_MAX' => round($planetrow["deuterium_max"]),
-    'TOPNAV_DEUTERIUM_PERHOUR' => round($planetrow["deuterium_perhour"], 5),
-    'TOPNAV_DEUTERIUM_TEXT' => pretty_number($planetrow["deuterium"], 2),
-    'TOPNAV_DEUTERIUM_MAX_TEXT' => pretty_number($planetrow["deuterium_max"], 2, -$planetrow["deuterium"]),
-
     'TOPNAV_DARK_MATTER' => pretty_number($user[$sn_data[RES_DARK_MATTER]['name']]),
-
-    'ENERGY_BALANCE' => pretty_number($planetrow['energy_max'] - $planetrow['energy_used'], true, 0),
-    'ENERGY_MAX' => pretty_number($planetrow['energy_max']),
 
     'TOPNAV_MESSAGES_ADMIN'    => $user['msg_admin'],
     'TOPNAV_MESSAGES_PLAYER'   => $user['mnl_joueur'],
@@ -326,6 +305,12 @@ function sn_tpl_render_topnav(&$user, $planetrow)
 
     'TOPNAV_QUEST_COMPLETE'     => get_quest_amount_complete($user['id']),
   ));
+
+  if(defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true)
+  {
+    tpl_set_resource_info($template, $planetrow);
+    $template->assign_var('SN_RENDER_NAVBAR_PLANET', true);
+  }
 
   return $template;
 }
@@ -398,7 +383,7 @@ function parsetemplate($template, $array = false)
 
 function gettemplate($templatename, $is_phpbb = false, $template_path = false)
 {
-  $templatename .= '.tpl';
+  $templatename .= '.tpl.html';
 
   if($is_phpbb)
   {

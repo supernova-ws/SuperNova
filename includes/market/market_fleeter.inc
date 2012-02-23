@@ -146,9 +146,17 @@ if(is_array($shipList))
 }
 
 $template = gettemplate('market_fleet', true);
-$template->assign_var('rpg_cost', $rpg_cost);
+$template->assign_vars(array(
+  'rpg_cost' => $rpg_cost,
+));
 
-if(!$array) $array = array();
+tpl_set_resource_info($template, $planetrow, array());
+
+if(!$array)
+{
+  $array = array();
+}
+
 foreach($array as $key => $value)
 {
   if($mode == MARKET_SCRAPPER)

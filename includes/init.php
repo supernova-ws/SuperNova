@@ -28,6 +28,11 @@ if(!defined('IN_PHPBB'))
   define('IN_PHPBB', true);
 }
 
+if(function_exists('set_magic_quotes_runtime'))
+{
+  @set_magic_quotes_runtime(0);
+}
+
 function sys_refresh_tablelist($db_prefix)
 {
   global $sn_cache;
@@ -44,14 +49,26 @@ function sys_refresh_tablelist($db_prefix)
   $sn_cache->tables = $tl;
 }
 
+function sn_load_php_files($dir_name, $phpEx = 'php')
+{
+  if(file_exists($dir_name))
+  {
+    $dir = opendir($dir_name);
+    while(($file = readdir($dir)) !== false)
+    {
+      $extension = substr($file, -strlen($phpEx));
+      if($extension == $phpEx)
+      {
+        require_once("{$dir_name}{$file}");
+      }
+    }
+  }
+}
+
 header('Content-type: text/html; charset=utf-8');
 
 ob_start();
 
-if(function_exists('set_magic_quotes_runtime'))
-{
-  @set_magic_quotes_runtime(0);
-}
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
 if($_SERVER['SERVER_NAME'] == 'localhost')
@@ -194,22 +211,6 @@ require_once("{$sn_root_physical}includes/template.{$phpEx}");
 // require_once("{$sn_root_physical}language/" . DEFAULT_LANG .'/language.mo');
 //$lang['LANG_INFO'] = $lang_info;
 //unset($lang_info);
-
-function sn_load_php_files($dir_name, $phpEx = 'php')
-{
-  if(file_exists($dir_name))
-  {
-    $dir = opendir($dir_name);
-    while(($file = readdir($dir)) !== false)
-    {
-      $extension = substr($file, -strlen($phpEx));
-      if($extension == $phpEx)
-      {
-        require_once("{$dir_name}{$file}");
-      }
-    }
-  }
-}
 
 sn_load_php_files("{$sn_root_physical}includes/functions/", $phpEx);
 sn_load_php_files("{$sn_root_physical}modules/_functions/", $phpEx);

@@ -1,10 +1,9 @@
 <?php
 
 /**
-* INT_createBanner.php
-* @version 1.0
-*
-* @copyright 2010 by Gorlum for http://supernova.ws
+* int_banner_create.php
+* @version 2.0
+* @copyright 2010 Gorlum for http://supernova.ws
 *
 * heavily based on
 *   CreateBanner.php
@@ -53,19 +52,21 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
     'info' => SN_ROOT_PHYSICAL . "design/fonts/" . $config->int_banner_fontInfo,
   );
 
-  if ($id) {
+  if($id)
+  {
     // Querys
-    $Player = doquery("SELECT * FROM {{users}} WHERE `id` = '".$id."' LIMIT 1;", '', true);
-//    $Stats = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '".$id."' LIMIT 1;", '', true);
-    $Planet = doquery("SELECT * FROM {{planets}} WHERE `id_owner` = '".$id."' AND `planet_type` = '1' LIMIT 1;", '', true);
+    $user = doquery("SELECT * FROM {{users}} WHERE `id` = '".$id."' LIMIT 1;", '', true);
+    $planet_row = doquery("SELECT * FROM {{planets}} WHERE `id_owner` = '".$id."' AND `planet_type` = '1' LIMIT 1;", '', true);
 
     // Variables
-    $b_user = $Player['username'];
-    $b_ally = $Player['ally_name'];
-    $b_planet = $Planet['name'];
-    $b_xyz = "[".$Planet['galaxy'].":".$Planet['system'].":".$Planet['planet']."]";
-    $b_lvl = ($Player['total_rank'] ? $Player['total_rank'] : $config->users_amount) ."/{$config->users_amount}";
-  }else{
+    $b_user = $user['username'];
+    $b_ally = $user['ally_name'];
+    $b_planet = $planet_row['name'];
+    $b_xyz = "[".$planet_row['galaxy'].":".$planet_row['system'].":".$planet_row['planet']."]";
+    $b_lvl = ($user['total_rank'] ? $user['total_rank'] : $config->users_amount) ."/{$config->users_amount}";
+  }
+  else
+  {
     $b_user = $lang['ov_banner_empty_id'];
   }
 
@@ -101,7 +102,7 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
         imagettftext($image, 6, 0, 6, 9, $txt_color2, $fonts['raids'], $b_planet." ".$b_xyz."");
 
         //StatPoint
-        $b_points = $lang['ov_points'].": ".pretty_number($Player['total_points'])."";
+        $b_points = $lang['ov_points'].": ".pretty_number($user['total_points'])."";
         $is = imagettfbbox(8, 0, $fonts['info'], $b_points);
         imagettftext($image, 8, 0, 412-$is[2], 11, $txt_shadow, $fonts['info'], $b_points);
         imagettftext($image, 8, 0, 410-$is[2], 9, $txt_color, $fonts['info'], $b_points);
@@ -109,21 +110,21 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
         //Raids Total
         imagettftext($image, 6, 0, 8, 37, $txt_shadow2, $fonts['raids'], $lang['NumberOfRaids']);
         imagettftext($image, 6, 0, 6, 35, $txt_color2, $fonts['raids'], $lang['NumberOfRaids']);
-        $b_points = ": ".pretty_number($Player['raids']);
+        $b_points = ": ".pretty_number($user['raids']);
         imagettftext($image, 6, 0, 61, 37, $txt_shadow2, $fonts['raids'], $b_points);
         imagettftext($image, 6, 0, 59, 35, $txt_color2, $fonts['raids'], $b_points);
 
         //Raids Won
         imagettftext($image, 6, 0, 8, 47, $txt_shadow2, $fonts['raids'], $lang['RaidsWin']);
         imagettftext($image, 6, 0, 6, 45, $txt_color2, $fonts['raids'], $lang['RaidsWin']);
-        $b_points = ": ".pretty_number($Player['raidswin']);
+        $b_points = ": ".pretty_number($user['raidswin']);
         imagettftext($image, 6, 0, 61, 47, $txt_shadow2, $fonts['raids'], $b_points);
         imagettftext($image, 6, 0, 59, 45, $txt_color2, $fonts['raids'], $b_points);
 
         //Raids Lost
         imagettftext($image, 6, 0, 8, 57, $txt_shadow2, $fonts['raids'], $lang['RaidsLoose']);
         imagettftext($image, 6, 0, 6, 55, $txt_color2, $fonts['raids'], $lang['RaidsLoose']);
-        $b_points = ": ".pretty_number($Player['raidsloose']);
+        $b_points = ": ".pretty_number($user['raidsloose']);
         imagettftext($image, 6, 0, 61, 57, $txt_shadow2, $fonts['raids'], $b_points);
         imagettftext($image, 6, 0, 59, 55, $txt_color2, $fonts['raids'], $b_points);
       }

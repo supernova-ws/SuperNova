@@ -16,6 +16,8 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+define('SN_RENDER_NAVBAR_PLANET', true);
+
 $mode = sys_get_param_escaped('mode');
 
 lng_include('buildings');

@@ -81,7 +81,6 @@ $lang = array_merge($lang, array(
   <li>Destroy the building you can click on the minus sign in the upper left corner of the image, either on the appropriate link from the description',
   'eco_price' => 'Price',
   'eco_left' => 'Balance',
-  'eco_left_fleet' => '+ fleets',
 
   'eco_bld_resources_not_enough' => 'Lack the resources to build units ordered',
   'eco_bld_msg_err_research_in_progress' => 'Scientists of empire already researching other technology',

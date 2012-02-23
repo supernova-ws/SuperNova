@@ -242,7 +242,6 @@ $lang = array_merge($lang, array(
   'adm_planet_edit' => 'Редактирование планеты',
   'adm_planet_id' => 'Идентификатор планеты',
   'adm_name' => 'Название',
-  'adm_on_planet' => 'На планете',
   'adm_planet_change' => 'Изменение',
   'adm_planet_parent' => 'Родительская планета',
   'adm_planet_active' => 'Активные планеты',

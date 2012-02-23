@@ -20,20 +20,20 @@ if($user['authlevel'] < 1)
 }
 
 $GET_cmd  = sys_get_param_str('cmd');
-$TypeSort = sys_get_param_str('type');
-
+$TypeSort = sys_get_param_str('type', 'id');
+/*
 if ($GET_cmd == 'sort') {
 } else {
   $TypeSort = "id";
 }
-
+*/
 $PageTPL  = gettemplate('admin/overview_body');
 $RowsTPL  = gettemplate('admin/overview_rows');
 
 $parse                      = $lang;
 $parse['dpath']             = $dpath;
 
-$Last15Mins = doquery("SELECT * FROM {{users}} WHERE `onlinetime` >= '". (time() - 15 * 60) ."' ORDER BY `". $TypeSort ."` ASC;");
+$Last15Mins = doquery("SELECT * FROM {{users}} WHERE `onlinetime` >= '". (time() - 15 * 60) ."' ORDER BY user_as_ally, `". $TypeSort ."` ASC;");
 $Count      = 0;
 $Color      = "lime";
 while ( $TheUser = mysql_fetch_assoc($Last15Mins) ) {

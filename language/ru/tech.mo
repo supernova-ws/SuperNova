@@ -28,7 +28,7 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
-  'tech_storage_max' => 'Размер хранилища',
+  'tech_storage_max' => 'Хранилища',
   'tech_storage' => 'В хранилищах',
   'Tech' => 'Технология',
   'Requirements' => 'Требуется',

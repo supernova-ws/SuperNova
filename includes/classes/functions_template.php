@@ -141,6 +141,13 @@ class template_compile
 
     preg_match_all('#<!-- INCLUDE (\{\$?[A-Z0-9\-_]+\}|[a-zA-Z0-9\_\-\+\./]+) -->#', $code, $matches);
     $include_blocks = $matches[1];
+    if($include_blocks)
+    {
+      foreach($include_blocks as &$included_file)
+      {
+        $included_file .= '.tpl.html';
+      }
+    }
     $code = preg_replace('#<!-- INCLUDE (?:\{\$?[A-Z0-9\-_]+\}|[a-zA-Z0-9\_\-\+\./]+) -->#', '<!-- INCLUDE -->', $code);
 
     preg_match_all('#<!-- INCLUDEPHP ([a-zA-Z0-9\_\-\+\./]+) -->#', $code, $matches);

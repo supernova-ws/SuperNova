@@ -229,7 +229,7 @@ function sn_timer() {
         var new_value = parseInt(timer_options['start_value']) + (timestamp - parseInt(timer['start_time'])) * parseFloat(timer_options['per_second']);
         if(timer_options['round'] === undefined)
         {
-          timer_options['round'] = 2;
+          timer_options['round'] = 0;
         }
         if(new_value < 0)
         {

@@ -1,0 +1,106 @@
+<!-- NAVBAR START -->
+
+<div id="sn_navbar">
+  <table width="700px" cellpadding="0" cellspacing="0" class="header c_c" id="resources"><tbody>
+    <tr class="c_c">
+      <th colspan=7>
+        <select class="fl" style="margin-right: 20px" size="1" onchange="window.location.href = window.location.pathname + this.options[this.selectedIndex].value;">
+          <!-- BEGIN topnav_planets -->
+            <option{topnav_planets.SELECTED} value="?cp={topnav_planets.ID}&mode={TOPNAV_MODE}&re=0">{topnav_planets.NAME}&nbsp;{topnav_planets.COORDS}
+          <!-- END topnav_planets -->
+        </select>
+
+        {DATE_TEXT}<span id="top_time">{TIME_TEXT}</span>
+
+        <span class="fr" style="margin-left: 20px" >{L_top_online} [{USERS_ONLINE}/{USERS_TOTAL}]</span>
+      </td>
+    </tr>
+
+    <tr class="ñ_ñ">
+      <td width="150">{L_sys_expeditions}</td>
+      <td width="150">{L_sys_fleets}</td>
+      <td width="150">{L_qst_quests}</td>
+      <td width="150"><A HREF="dark_matter.php"><img src="{dpath}images/dm_klein_2.jpg" border="0" height="22" width="42" alt="{L_sys_dark_matter}" title="{L_sys_dark_matter}"></A></td>
+      <td width="150"><A HREF="messages.php"><img src="{dpath}images/message.gif" border="0" height="22" width="42" alt="{L_Message}" title="{L_Message}"></A></td>
+    </tr>
+
+    <tr class="c_c">
+      <td id="topnav_expedition_counter_total">
+        <a href="flying_fleets.php"><span id='topnav_expedition_counter'>{TOPNAV_EXPEDITIONS_FLYING}</span>/{TOPNAV_EXPEDITIONS_TOTAL}</a>
+      </td>
+      <td id='topnav_fleet_counter_total'>
+        <a href="flying_fleets.php"><span id='topnav_fleet_counter'>{TOPNAV_FLEETS_FLYING}</span>/{TOPNAV_FLEETS_TOTAL}</a>
+      </td>
+      <td><a href="quest.php">{TOPNAV_QUEST_COMPLETE}/{C_quest_total}</a></td>
+      <td class="ok">{TOPNAV_DARK_MATTER}</td>
+
+      <td>
+        <!-- IF TOPNAV_MESSAGES_ALL -->
+          <a href="messages.php"><blink>[&nbsp;{TOPNAV_MESSAGES_ALL}&nbsp;]</blink></a>
+          <!-- IF TOPNAV_MESSAGES_PLAYER + TOPNAV_MESSAGES_ALLIANCE + TOPNAV_MESSAGES_ADMIN -->
+            <!-- IF TOPNAV_MESSAGES_ADMIN -->&nbsp;<a href="messages.php?mode=show&message_class={D_MSG_TYPE_ADMIN}"><span class="msg_admin">[{TOPNAV_MESSAGES_ADMIN}]</span></a><!-- ENDIF -->
+            <!-- IF TOPNAV_MESSAGES_PLAYER -->&nbsp;<a href="messages.php?mode=show&message_class={D_MSG_TYPE_PLAYER}"><span class="mnl_joueur">[{TOPNAV_MESSAGES_PLAYER}]</span></a><!-- ENDIF -->
+            <!-- IF TOPNAV_MESSAGES_ALLIANCE && ! TOPNAV_ALLY -->&nbsp;<a href="messages.php?mode=show&message_class={D_MSG_TYPE_ALLIANCE}"><span class="mnl_alliance">[{TOPNAV_MESSAGES_ALLIANCE}]</span></a><!-- ENDIF -->
+          <!-- ENDIF -->
+        <!-- ELSE -->
+          <a href="messages.php">0</a>
+        <!-- ENDIF -->
+      </td>
+    </tr>
+  </tbody></table>
+  <!-- IF SN_RENDER_NAVBAR_PLANET -->
+    <table align="center">
+    <!-- INCLUDE planet_resources -->
+    </table>
+  <!-- ENDIF -->
+</div>
+
+<script LANGUAGE='JavaScript'><!--
+  sn_timers.unshift({
+    'id': 'top_time',
+    'type': 2,
+    'active': true,
+    'start_time': {TIME_NOW},
+    options: 2
+  });
+
+  <!-- IF .flying_fleets -->
+  sn_timers.unshift({
+    'id': 'topnav_fleet_counter',
+    'type': 5,
+    'active': true,
+    'start_time': {TIME_NOW},
+    'options':
+      {'msg_done': '0',
+        'unchanged': false,
+        'que':
+          [
+            <!-- BEGIN flying_fleets -->
+              [{flying_fleets.TIME}, '{flying_fleets.TEXT}', '{flying_fleets.HINT}'],
+            <!-- END flying_fleets -->
+          ]
+      }
+  });
+  <!-- ENDIF -->
+
+  <!-- IF .flying_expeditions -->
+  sn_timers.unshift({
+    'id': 'topnav_expedition_counter',
+    'type': 5,
+    'active': true,
+    'start_time': {TIME_NOW},
+    'options':
+      {'msg_done': '0',
+        'unchanged': false,
+        'que':
+          [
+            <!-- BEGIN flying_expeditions -->
+              [{flying_expeditions.TIME}, '{flying_expeditions.TEXT}', '{flying_expeditions.HINT}'],
+            <!-- END flying_expeditions -->
+          ]
+      }
+  });
+  <!-- ENDIF -->
+// --></script>
+
+<!-- NAVBAR END -->

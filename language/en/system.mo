@@ -629,6 +629,9 @@ $lang = array_merge($lang, array(
   'sys_hint_player_name' => 'You can search player by his ID or name. If player name consists from strange symbols or only from numbers - you should use player ID for search.',
   'sys_hint_ally_name' => 'You can search Alliance by his ID, tag or name. If Alliance\'s tag or name consists from strange symbols or only from numbers - you should use ally ID for search.',
 
+  'sys_fleet_and' => '+ fleets',
+  'sys_on_planet' => 'On planet',
+
 ));
 
 ?>
