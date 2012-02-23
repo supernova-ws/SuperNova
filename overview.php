@@ -198,6 +198,7 @@ switch($mode)
     }
 
     tpl_assign_fleet($template, $fleets_to_planet);
+    tpl_assign_fleet($template, $fleets);
 
     $parse = $lang;
 
@@ -298,19 +299,19 @@ switch($mode)
     }
 
 
-$overview_planet_rows = $user['opt_int_overview_planet_rows'];
-$overview_planet_columns = $user['opt_int_overview_planet_columns'];
+    $overview_planet_rows = $user['opt_int_overview_planet_rows'];
+    $overview_planet_columns = $user['opt_int_overview_planet_columns'];
 
-if($overview_planet_rows <= 0 && $overview_planet_columns <= 0)
-{
-  $overview_planet_rows = $user_option_list[OPT_INTERFACE]['opt_int_overview_planet_rows'];
-  $overview_planet_columns = $user_option_list[OPT_INTERFACE]['opt_int_overview_planet_columns'];
-}
+    if($overview_planet_rows <= 0 && $overview_planet_columns <= 0)
+    {
+      $overview_planet_rows = $user_option_list[OPT_INTERFACE]['opt_int_overview_planet_rows'];
+      $overview_planet_columns = $user_option_list[OPT_INTERFACE]['opt_int_overview_planet_columns'];
+    }
 
-if($overview_planet_rows > 0 && $overview_planet_columns <= 0)
-{
-  $overview_planet_columns = ceil($planet_count / $overview_planet_rows);
-}
+    if($overview_planet_rows > 0 && $overview_planet_columns <= 0)
+    {
+      $overview_planet_columns = ceil($planet_count / $overview_planet_rows);
+    }
 
     $template->assign_vars(array(
       'TIME_NOW'              => $time_now,
