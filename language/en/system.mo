@@ -161,6 +161,7 @@ $lang = array_merge($lang, array(
 
   'sys_date_time'			=> 'Date and time',
   'sys_from_person'	   => 'From',
+  'sys_from_speed'	   => 'from',
 
   'sys_from'		  => 'from',
 

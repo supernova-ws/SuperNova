@@ -205,6 +205,9 @@ $lang = array_merge($lang, array(
   'flt_no_fuel' => 'No fuel',
   'fl_id' => '№',
   'fl_ressources' => 'Resources',
+
+  'fl_fuel_on_planet' => 'Fuel on planet',
+
 ));
 
 ?>

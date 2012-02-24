@@ -83,30 +83,34 @@ var speed_factor   = {speed_factor};
 <!-- IF FLYING_FLEETS < MAX_FLEETS && .ships -->
   <br>
   <table>
-    <tr><td class="c" colspan=2>{L_fl_fleet_data}</td></tr>
+    <tr><th class="c_l" colspan=2>{L_fl_fleet_data}</th></tr>
     <tr>
-        <th>{L_fl_speed}</th>
-        <th width="100"><span id='int_fleet_speed'>-</span></th>
+        <td class="c_l">{L_fl_speed}</td>
+        <td class="c_r" width="100" id='int_fleet_speed'>-</th>
     </tr>
     <tr>
-        <th>{L_fl_dist}</th>
-        <th><span id='distance'>0</span></th>
+        <td class="c_l">{L_fl_dist}</td>
+        <td class="c_r" id='distance'>0</dh>
     </tr>
     <tr>
-        <th>{L_fl_fltime}</th>
-        <th><span id='duration'>-</span></th>
+        <td class="c_l">{L_fl_fltime}</td>
+        <td class="c_r" id='duration'>-</span></td>
     </tr>
     <tr>
-        <th>{L_fl_deute_need}</th>
-        <th><span id='int_fleet_consumption'>0</span></th>
+        <td class="c_l">{L_fl_deute_need}</td>
+        <td class="c_r" id='int_fleet_consumption'>0</td>
     </tr>
     <tr>
-        <th>{L_sys_capacity}</th>
-        <th><span id='int_fleet_capacity'>0</span></th>
+        <td class="c_l">{L_fl_fuel_on_planet}</td>
+        <td class="c_r zero">{PLANET_DEUTERIUM}</td>
     </tr>
     <tr>
-        <th>{L_fl_planet_resources}</th>
-        <th>{PLANET_RESOURCES}</th>
+        <td class="c_l">{L_sys_capacity}</td>
+        <td class="c_r" id='int_fleet_capacity'>0</td>
+    </tr>
+    <tr>
+        <td class="c_l">{L_fl_planet_resources}</td>
+        <td class="c_r zero">{PLANET_RESOURCES}</td>
     </tr>
   </table>
 <!-- ENDIF -->

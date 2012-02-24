@@ -309,7 +309,10 @@ function sn_tpl_render_topnav(&$user, $planetrow)
   if(defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true)
   {
     tpl_set_resource_info($template, $planetrow);
-    $template->assign_var('SN_RENDER_NAVBAR_PLANET', true);
+    $template->assign_vars(array(
+      'SN_RENDER_NAVBAR_PLANET' => true,
+      'SN_NAVBAR_HIDE_FLEETS' => true,
+    ));
   }
 
   return $template;

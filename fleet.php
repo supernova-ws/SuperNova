@@ -87,7 +87,7 @@ switch ($fleet_page)
 
     foreach($fleetarray as $ship_id => $ship_amount)
     {
-      if(!in_array($ship_id, $sn_data['groups']['fleet']) || intval($ship_amount) != $ship_amount || $ship_amount < 1)
+      if(!in_array($ship_id, $sn_data['groups']['fleet']) || floatval($ship_amount) != $ship_amount || $ship_amount < 1)
       {
         $debug->warning('Supplying wrong ship in ship list on fleet page', 'Hack attempt', 302, array('base_dump' => true));
         die();
@@ -211,27 +211,27 @@ $parse['planet_type'] = $planet_type;
 switch($fleet_page)
 {
   case 1:
-    require('includes/fleet/flt_page1.inc');
+    require('includes/includes/flt_page1.inc');
   break;
 
   case 2:
-    require('includes/fleet/flt_page2.inc');
+    require('includes/includes/flt_page2.inc');
   break;
 
   case 3:
-    require('includes/fleet/flt_page3.inc');
+    require('includes/includes/flt_page3.inc');
   break;
 
   case 4:
-    require('includes/fleet/flt_page4.inc');
+    require('includes/includes/flt_page4.inc');
   break;
 
   case 5:
-    require('includes/fleet/flt_page5.inc');
+    require('includes/includes/flt_page5.inc');
   break;
 
   default:
-    require('includes/fleet/flt_page0.inc');
+    require('includes/includes/flt_page0.inc');
   break;
 }
 

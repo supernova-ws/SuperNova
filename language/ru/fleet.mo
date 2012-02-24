@@ -203,6 +203,9 @@ $lang = array_merge($lang, array(
   'flt_no_fuel' => 'нет топлива',
   'fl_id' => '№',
   'fl_ressources' => 'Сырьё',
+
+  'fl_fuel_on_planet' => 'Запас топлива на планете',
+
 ));
 
 ?>

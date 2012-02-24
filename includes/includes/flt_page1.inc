@@ -114,6 +114,8 @@ if(SN_IN_FLEET !== true)
     'fleet_speed'     => flt_fleet_speed($user, $fleet['fleetarray']),
     'fleet_capacity'  => $fleet['capacity'],
 
+    'PLANET_DEUTERIUM'   => pretty_number($planetrow['deuterium']),
+
     'PAGE_HINT'       => $lang['fl_page1_hint'],
   ));
 

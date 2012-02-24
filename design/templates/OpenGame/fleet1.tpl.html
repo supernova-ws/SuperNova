@@ -26,7 +26,7 @@
         <input name="acs_target_mr" type="hidden" onChange="shortInfo()" onKeyUp="shortInfo()" value="0:0:0" />
       </th>
     </tr>
-    
+
     <tr>
       <th>{fl_speed}</th>
       <th>
@@ -41,45 +41,44 @@
           <option value="3">30</option>
           <option value="2">20</option>
           <option value="1">10</option>
-        </select> %
-      </th>
+        </select>% {L_sys_from_speed} <span id="fleet_speed" class="ok">0</span>
     </tr>
 
     <tr>
       <th>{fl_dist}</th>
       <th><div id="distance">-</div></th>
     </tr>
-    
+
     <tr>
       <th>{L_fl_fltime}</th>
       <th><div id="duration">-</div></th>
     </tr>
-    
+
     <tr>
       <th>{L_fl_dest_t}</th>
       <th><div id="time_dst">-</div></th>
     </tr>
-    
+
     <tr>
       <th>{L_fl_back_t}</th>
       <th><div id="time_src">-</div></th>
     </tr>
-    
+
     <tr>
       <th>{L_fl_deute_need}</th>
       <th><div id="consumption">-</div></th>
     </tr>
-    
+
     <tr>
-      <th>{L_fl_speed_max}</th>
-      <th><div id="fleet_speed">0</div></th>
+        <td class="c_c">{L_fl_fuel_on_planet}</td>
+        <td class="c_c zero">{PLANET_DEUTERIUM}</td>
     </tr>
-    
+
     <tr>
       <th>{L_sys_capacity}</th>
       <th><div id="capacity">-</div></th>
     </tr>
-    
+
     <tr><th colspan="2" class="c_c"><input type="submit" value="{fl_continue}" /></th></tr>
   </table>
   <br />
@@ -88,7 +87,7 @@
       <td valign="top">
         <table>
         <tr><td colspan=2 class=c>{fl_myplanets}</td></tr>
-          <!-- BEGIN colonies -->       
+          <!-- BEGIN colonies -->
             <tr>
               <th>
                 <a href="javascript:setTarget({colonies.GALAXY}, {colonies.SYSTEM}, {colonies.PLANET}, {colonies.TYPE}); shortInfo();">
@@ -106,7 +105,7 @@
       <td valign="top">
         <table>
           <tr><td class=c>{fl_shortcut}</td></tr>
-          <!-- BEGIN shortcut -->       
+          <!-- BEGIN shortcut -->
             <tr>
               <th>
                 <a href="javascript:setTarget({shortcut.GALAXY}, {shortcut.SYSTEM}, {shortcut.PLANET}, {shortcut.TYPE}); shortInfo();">
@@ -124,7 +123,7 @@
       <td valign="top">
         <table>
         <tr><td class=c>{fl_grattack}</td></tr>
-          <!-- BEGIN acss -->       
+          <!-- BEGIN acss -->
             <tr>
               <th>
                 <input type="button" onClick="javascript: setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});shortInfo();setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');" value="{acss.NAME} [{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT}">

@@ -158,6 +158,7 @@ $lang = array_merge($lang, array(
 
   'sys_date_time'			=> 'Дата и время',
   'sys_from_person'	   => 'От кого',
+  'sys_from_speed'	   => 'от',
 
   'sys_from'		  => 'с',
 

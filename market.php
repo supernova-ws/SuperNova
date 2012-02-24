@@ -30,7 +30,7 @@ $intError = MARKET_DEAL;
 switch($mode)
 {
   case MARKET_RESOURCES: // Resource trader
-    require('includes/market/market_trader.inc');
+    require('includes/includes/market_trader.inc');
   break;
 
   case MARKET_SCRAPPER: // Fleet scraper
@@ -45,7 +45,7 @@ switch($mode)
 
     $array = &$sn_data['groups']['fleet'];
 
-    require('includes/market/market_fleeter.inc');
+    require('includes/includes/market_fleeter.inc');
   break;
 
   case MARKET_STOCKMAN: // S/H ship seller
@@ -60,11 +60,11 @@ switch($mode)
 
     $array = &$stock;
 
-    require('includes/market/market_fleeter.inc');
+    require('includes/includes/market_fleeter.inc');
   break;
 
   case MARKET_INFO: // Infotrader
-    require('includes/market/market_info.inc');
+    require('includes/includes/market_info.inc');
   break;
 
   case MARKET_EXCHANGE: // Cross-player resource exchange

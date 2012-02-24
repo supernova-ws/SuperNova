@@ -108,7 +108,7 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
     <!-- ENDIF -->
 
     <tr>
-      <td class="c_c" width="120" rowspan="8">
+      <td class="c_c" width="120" rowspan="7">
         <!-- DEFINE $PLANET_ID = '{PLANET_ID}' -->
         <!-- INCLUDE planet_governor -->
       </td>
@@ -143,8 +143,6 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
       <th colspan="2">{Temperature}&nbsp;{planet_temp_min}&deg;C&nbsp;/&nbsp;{planet_temp_max}&deg;C</th>
     </tr>
 
-    <!-- INCLUDE planet_resources -->
-
     </tr>
     <tr><td colspan=5 class="c">{L_Planet_menu}</td></tr>
     <!-- BEGIN ques -->
@@ -165,6 +163,9 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
       </th>
     </tr>
     <!-- END ques -->
+
+    <!-- INCLUDE planet_resources -->
+
   </table>
 
   <!-- INCLUDE planet_fleet_list -->
@@ -180,12 +181,6 @@ function doit (order, galaxy, system, planet, planettype, shipcount) {
 </table>
 
 <div id="admin_message"></div>
-
-<script LANGUAGE='JavaScript'><!--
-  sn_timers.unshift({id: 'top_metal', type: 1, active: true, start_time: {TIME_NOW}, options: {start_value: {PLANET_METAL}, per_second: {PLANET_METAL_PERHOUR} / 3600, max_value: {PLANET_METAL_MAX}, round: 2}});
-  sn_timers.unshift({id: 'top_crystal', type: 1, active: true, start_time: {TIME_NOW}, options: {start_value: {PLANET_CRYSTAL}, per_second: {PLANET_CRYSTAL_PERHOUR} / 3600, max_value: {PLANET_CRYSTAL_MAX}, round: 2}});
-  sn_timers.unshift({id: 'top_deuterium', type: 1, active: true, start_time: {TIME_NOW}, options: {start_value: {PLANET_DEUTERIUM}, per_second: {PLANET_DEUTERIUM_PERHOUR} / 3600, max_value: {PLANET_DEUTERIUM_MAX}, round: 2}});
-// --></script>
 
 <script type="text/javascript"><!--
 jQuery(document).bind("ready", function() {

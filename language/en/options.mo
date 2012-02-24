@@ -116,6 +116,8 @@ $lang = array_merge($lang, array(
   'opt_vacation_min' => 'a minimum of',
   'succeful_changepass' => '',
 
+  'opt_int_options' => 'Interface Settings',
+
   'opt_custom' => array(
     'opt_uni_avatar_user' => 'Show user avatar',
     'opt_uni_avatar_ally' => 'Show Ally logo',

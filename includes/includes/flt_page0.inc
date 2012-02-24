@@ -54,7 +54,8 @@ $template->assign_vars(array(
 
   'speed_factor'       => get_fleet_speed(),
 
-  'PLANET_RESOURCES'   => pretty_number(floor($planetrow['metal'] + $planetrow['crystal'] + $planetrow['deuterium'])),
+  'PLANET_RESOURCES'   => pretty_number($planetrow['metal'] + $planetrow['crystal'] + $planetrow['deuterium']),
+  'PLANET_DEUTERIUM'   => pretty_number($planetrow['deuterium']),
 ));
 
 display(parsetemplate($template, $parse), $lang['fl_title']);
