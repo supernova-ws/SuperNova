@@ -28,6 +28,8 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
+define('SN_RENDER_NAVBAR_PLANET', false);
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('overview');

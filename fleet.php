@@ -231,6 +231,8 @@ switch($fleet_page)
   break;
 
   default:
+    define('SN_RENDER_NAVBAR_PLANET', true);
+
     require('includes/includes/flt_page0.inc');
   break;
 }

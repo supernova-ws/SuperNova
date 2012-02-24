@@ -122,6 +122,7 @@ $lang = array_merge($lang, array(
     'opt_uni_avatar_user' => 'Show user avatar',
     'opt_uni_avatar_ally' => 'Show Ally logo',
     'opt_int_struc_vertical' => 'Vertical structures que',
+    'opt_int_navbar_resource_force' => 'Always show planet navbar',
     'opt_int_overview_planet_columns' => 'Column count in planet list',
     'opt_int_overview_planet_columns_hint' => '0 - calculate by maximum row count',
     'opt_int_overview_planet_rows' => 'Maximum row count in planet list',

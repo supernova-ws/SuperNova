@@ -125,6 +125,7 @@ if (!defined('INSIDE'))
 
   $user_option_list[OPT_INTERFACE] = array(
     'opt_int_struc_vertical' => 0,
+    'opt_int_navbar_resource_force' => 0,
     'opt_int_overview_planet_columns' => 0,
     'opt_int_overview_planet_rows' => 5,
   );

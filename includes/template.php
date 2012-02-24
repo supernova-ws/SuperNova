@@ -306,7 +306,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     'TOPNAV_QUEST_COMPLETE'     => get_quest_amount_complete($user['id']),
   ));
 
-  if(defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true)
+  if((defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true) || ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && SN_RENDER_NAVBAR_PLANET !== false))
   {
     tpl_set_resource_info($template, $planetrow);
     $template->assign_vars(array(
