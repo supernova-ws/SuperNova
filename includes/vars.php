@@ -14,15 +14,21 @@ if (!defined('INSIDE'))
 
   $sn_version_check_class = array(
     SNC_VER_NEVER => 'warning',
+
     SNC_VER_ERROR_CONNECT => 'error',
     SNC_VER_ERROR_SERVER => 'error',
+
     SNC_VER_EXACT => 'ok',
     SNC_VER_LESS => 'notice',
     SNC_VER_FUTURE => 'error',
+
     SNC_VER_RELEASE_EXACT => 'ok',
     SNC_VER_RELEASE_MINOR => 'notice',
     SNC_VER_RELEASE_MAJOR => 'warning',
     SNC_VER_RELEASE_ALPHA => 'ok',
+
+    SNC_VER_MAINTENANCE => 'notice',
+    SNC_VER_UNKNOWN_RESPONSE => 'warning',
     SNC_VER_INVALID => 'error',
     SNC_VER_STRANGE => 'error',
   );

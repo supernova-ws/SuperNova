@@ -356,8 +356,10 @@ $lang = array_merge($lang, array(
   'adm_opt_ver_check_auto_hint' => 'You can enable automatic game version check. Data transferred to update server will be exact the same as when you use manual version check. But with automatic check engine will check version by itself once in period of time (by default - once per day). More info in documentation',
 
   'adm_opt_ver_response' => array(
+    SNC_VER_NEVER => 'Version check was never performed',
+
     SNC_VER_ERROR_CONNECT => 'Version check error. Game can not communicate with update server. Be sure you do not have restriction in PHP to communicate with remote servers or that you have installed CURL and activated it on PHP',
-    SNC_VER_ERROR_SERVER => 'Fatal update server error! Immediatly contact developer to diagnose and fix this problem!',
+    SNC_VER_ERROR_SERVER => 'Fatal update server error! Check - if there is newer version of game with advanced update server support. Otherwise immediatly contact developer to diagnose and fix this problem!',
 
     SNC_VER_EXACT => 'You have latest alpha version of incoming release. Thanks for participate in testing!',
     SNC_VER_LESS => 'You using alpha version of incoming release. However there is more recent alpha! You can update your game if you want to have fixes for errors in current version and participate in testing new features of game.',
@@ -368,6 +370,8 @@ $lang = array_merge($lang, array(
     SNC_VER_RELEASE_MAJOR => 'You have very outdated game version - there is available new release. It is provide new features and bugfixes. Please update your game version!',
     SNC_VER_RELEASE_ALPHA => 'You have most recent version of latest release. However there is alpha version of next release. May be you would like to explore and test new features of upcoming release?',
 
+    SNC_VER_MAINTENANCE => 'Update server currently turned off for maintenance. Please check again later',
+    SNC_VER_UNKNOWN_RESPONSE => 'Update server gives unknown response. In most ases it means that there is new game version with more advanced update server support. Also it can mean error in update server. Please check and update your game or contact developer to diagnose and fix problem.',
     SNC_VER_INVALID => 'I just can not understand which version of game you have. Please contact developer to diagnose and fix this problem.',
     SNC_VER_STRANGE => 'You should not see this message. If you saw this message - something going terrible wrong. Please contact developer to diagnose and fix this problem.',
   ),
@@ -387,6 +391,8 @@ $lang = array_merge($lang, array(
     SNC_VER_RELEASE_MAJOR => 'Update mandatory',
     SNC_VER_RELEASE_ALPHA => 'Fresh release',
 
+    SNC_VER_MAINTENANCE => 'Maintenance',
+    SNC_VER_UNKNOWN_RESPONSE => 'Unknown response',
     SNC_VER_INVALID => 'Version error',
     SNC_VER_STRANGE => 'Unpredictable shit',
   ),

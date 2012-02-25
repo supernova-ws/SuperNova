@@ -227,6 +227,8 @@ $template->assign_vars(array(
   'DEUTERIUM_NEED' => pretty_number(max(0, -sys_get_param_float('deuterium'))),
 ));
 
+tpl_set_resource_info($template, $planetrow, array());
+
 display(parsetemplate($template), $lang['fl_title']);
 
 ?>

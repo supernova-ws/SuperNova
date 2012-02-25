@@ -109,6 +109,8 @@ function reCalcGathering()
       <th colspan="8">{L_fl_nocolonies}</th>
     <!-- END colonies -->
     <!-- IF METAL_NEED > 0 || CRYSTAL_NEED > 0 || DEUTERIUM_NEED > 0 -->
+      <!-- DEFINE $ROWSPAN = 3 -->
+    <!-- ELSE -->
       <!-- DEFINE $ROWSPAN = 2 -->
     <!-- ENDIF -->
     <tr>
@@ -119,15 +121,22 @@ function reCalcGathering()
       <th class="c_r"><span id="ga_0_0"></span></th>
       <th class="c_c" colspan="2" rowspan="{$ROWSPAN}"><input type="submit" value="{L_flt_gather_all}" /></th>
     </tr>
-    <!-- IF $ROWSPAN -->
+    <!-- IF $ROWSPAN > 2 -->
     <tr>
       <th class="c_l" colspan="2">{L_sys_need}</th>
       <th class="c_r">{METAL_NEED}</th>
       <th class="c_r">{CRYSTAL_NEED}</th>
       <th class="c_r">{DEUTERIUM_NEED}</th>
-      <th class="c_r"></th>
+      <th class="c_r">&nbsp;</th>
     </tr>
     <!-- ENDIF -->
+    <tr>
+      <th class="c_l" colspan="2">{L_sys_on_planet}</th>
+      <th class="c_r">{PLANET_METAL_TEXT}</th>
+      <th class="c_r">{PLANET_CRYSTAL_TEXT}</th>
+      <th class="c_r">{PLANET_DEUTERIUM_TEXT}</th>
+      <th class="c_r">&nbsp;</th>
+    </tr>
   </table>
   <!-- INCLUDE page_hint -->
 </form>

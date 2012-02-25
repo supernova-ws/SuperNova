@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '32');
 define('SN_RELEASE', '33');
-define('SN_VERSION', '33a29.2');
+define('SN_VERSION', '33a29.3');
 
 define('SN_RELEASE_STABLE', '32d0'); // Latest stable release
 
@@ -486,9 +486,9 @@ define('RES_TIME', 999);
 // === Artifacts
 define('ART_ARTIFACTS', 1000);
 define('ART_LHC', 1001);      // Additional moon chance
-define('ART_RCD_SMALL', 1002);   // Rapid Colony Deployment - Set of buildings up to 10th level - 10/14/ 3/0 -   405 TM
-define('ART_RCD_MEDIUM', 1003);  // Rapid Colony Deployment - Set of buildings up to 15th level - 15/20/ 8/0 -  4704 ТМ
-define('ART_RCD_LARGE', 1004);   // Rapid Colony Deployment - Set of buildings up to 20th level - 20/25/10/1 - 39790 ТМ
+define('ART_RCD_SMALL', 1002);   // Rapid Colony Deployment - Set of buildings up to 10th level - 10/14/ 3/0 -   405 DM
+define('ART_RCD_MEDIUM', 1003);  // Rapid Colony Deployment - Set of buildings up to 15th level - 15/20/ 8/0 -  4704 DM
+define('ART_RCD_LARGE', 1004);   // Rapid Colony Deployment - Set of buildings up to 20th level - 20/25/10/1 - 39790 DM
 //define('ART_SUPERCOMPUTER', 1005); // Speed up research
 //define('ART_PLANET_GATE', 1006);   // Planet gate
 //define('ART_NANOBOTS_SMALL', 1007); // Speed up building
@@ -502,8 +502,12 @@ define('SNC_VER_RELEASE_EXACT', 10);
 define('SNC_VER_RELEASE_MINOR', 11);
 define('SNC_VER_RELEASE_MAJOR', 12);
 define('SNC_VER_RELEASE_ALPHA', 13);
+define('SNC_VER_MAINTENANCE', 96);
+define('SNC_VER_UNKNOWN_RESPONSE', 97);
 define('SNC_VER_INVALID', 98);
 define('SNC_VER_STRANGE', 99);
 define('SNC_VER_ERROR_SERVER', 100);
+
+define('SNC_MODE_VERSION_CHECK', 0);
 
 ?>
