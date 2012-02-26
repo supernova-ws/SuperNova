@@ -33,7 +33,6 @@ function eco_build($que_type, $user, &$planet, $que)
 
   $que_type = ($que_type == SUBQUE_FLEET || $que_type == SUBQUE_DEFENSE) ? QUE_HANGAR : $que_type;
 
-  CheckPlanetUsedFields($planet);
   if($action)
   {
     switch($action)

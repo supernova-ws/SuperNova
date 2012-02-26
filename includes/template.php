@@ -15,7 +15,7 @@ function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage 
 
 // ----------------------------------------------------------------------------------------------------------------
 //
-// Routine Affichage d'un message administrateur avec saut vers une autre page si souhaité
+// Routine Affichage d'un message administrateur avec saut vers une autre page si souhaitÃ©
 //
 function AdminMessage ($mes, $title = 'Error', $dest = "", $time = "3") {
 //  $parse['color'] = $color;
@@ -29,7 +29,7 @@ function AdminMessage ($mes, $title = 'Error', $dest = "", $time = "3") {
 
 // ----------------------------------------------------------------------------------------------------------------
 //
-// Routine Affichage d'un message avec saut vers une autre page si souhaité
+// Routine Affichage d'un message avec saut vers une autre page si souhaitÃ©
 //
 function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header = true)
 {
@@ -89,7 +89,7 @@ $config->db_saveItem('server_updater_check_result', $check_result);
 
 // ----------------------------------------------------------------------------------------------------------------
 //
-// Routine d'affichage d'une page dans un cadre donné
+// Routine d'affichage d'une page dans un cadre donnÃ©
 //
 // $page      -> la page
 // $title     -> le titre de la page

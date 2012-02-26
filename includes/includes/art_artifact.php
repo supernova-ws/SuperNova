@@ -22,7 +22,7 @@ function art_use(&$user, &$planetrow, $unit_id)
         if($planetrow['planet_type'] == PT_PLANET && !$has_moon['id'])
         {
           $artifact_list[$unit_id]--;
-          $moon_chance = BE_calculateMoonChance($planetrow['debris_metal'] + $planetrow['debris_crystal']);
+          $moon_chance = uni_calculate_moon_chance($planetrow['debris_metal'] + $planetrow['debris_crystal']);
           $random = mt_rand(1, 100);
           if($random <= $moon_chance)
           {
@@ -40,6 +40,7 @@ function art_use(&$user, &$planetrow, $unit_id)
           $message = $lang['art_lhc_moon_exists'];
         }
       break;
+
       case ART_RCD_SMALL:
       case ART_RCD_MEDIUM:
       case ART_RCD_LARGE:

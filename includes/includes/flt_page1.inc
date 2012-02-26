@@ -104,7 +104,7 @@ if(SN_IN_FLEET !== true)
   $template->assign_vars(array(
     'usedfleet'       => str_rot13(base64_encode(serialize($fleet['fleetarray']))),
 
-    'speed_factor'     => get_fleet_speed(),
+    'speed_factor'     => flt_server_flight_speed_multiplier(),
     "t{$planet_type}" => 'SELECTED',
 
     'target_mission'  => $target_mission,

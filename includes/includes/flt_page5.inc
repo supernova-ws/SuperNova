@@ -19,30 +19,32 @@ if(SN_IN_FLEET !== true)
 
 function flt_build_gathering($resources_taken = '')
 {
-  global $time_now, $planetrow, $name_to_id, $user, $sn_data, $transports, $lang;
+  global $time_now, $planetrow, $user, $sn_data, $lang; // $name_to_id, $transports, 
+  // Caching $sn_data names for quick access
   $lang_sys_planet_type = $lang['sys_planet_type'];
   $lang_fl_attack_error = $lang['fl_attack_error'];
+  $deuterium_db_name = &$sn_data[RES_DEUTERIUM]['name'];
 
   $planet_list = array();
 
-  $query = '';
   if(is_array($resources_taken))
   {
-    foreach($resources_taken as $planet_id => $cork)
-    {
-      $planet_id = max(0, floatval($planet_id));
-      $query .= $planet_id ? "{$planet_id}," : '';
-    }
-    $query = substr($query, 0, -1);
+    $query = implode(',', array_keys($resources_taken));
     $query = " AND `destruyed` = 0 AND `id` IN ({$query})";
   }
+  else
+  {
+    $query = '';
+  }
 
-  // Caching $sn_data names for quick access
-  $deuterium_db_name = $sn_data[RES_DEUTERIUM]['name'];
+  foreach($sn_data['groups']['flt_transports'] as $transport_id)
+  {
+    $transports[$sn_data[$transport_id]['name']] = $sn_data[$transport_id]['capacity'];
+    $name_to_id[$sn_data[$transport_id]['name']] = $transport_id;
+  }
+  arsort($transports);
 
-  // $query = "SELECT * FROM `{{planets}}` WHERE `id_owner` = '{$user['id']}' AND `destruyed` = 0 AND `id` IN ({$query});";
-  // $planets_db_list = doquery($query);
-  $planets_db_list = SortUserPlanets($user, $planetrow, '*', $query);
+  $planets_db_list = SortUserPlanets($user, $planetrow['id'], '*', $query);
   while($planet_db_data = mysql_fetch_assoc($planets_db_list))
   { // begin planet loop
     if(!$query)
@@ -73,19 +75,20 @@ function flt_build_gathering($resources_taken = '')
 
     $planet_data = &$planet_list[$planet_id];
 
+    $fleet_capacity = 0;
     $ship_loadout = array();
     $fleet = array();
-
-    $fleet_capacity = 0;
     foreach($transports as $ship_id => $ship_capacity)
     {
       if($planet_db_data[$ship_id])
       {
         $ship_loadout[$ship_id]['capacity'] = $planet_db_data[$ship_id] * $ship_capacity;
         $ship_loadout[$ship_id]['taken'] = 0;
-        $fleet_capacity += $planet_db_data[$ship_id] * $ship_capacity;
+        $fleet_capacity += $ship_loadout[$ship_id]['capacity'];
       }
     }
+    $planet_data['FLEET_CAPACITY'] = $fleet_capacity;
+    $planet_data['FLEET_CAPACITY_TEXT'] = pretty_number($fleet_capacity, true, -$planet_resources);
 
     $planet_resources = 0;
     foreach($sn_data['groups']['resources_loot'] as $resource_id)
@@ -95,11 +98,8 @@ function flt_build_gathering($resources_taken = '')
         $planet_resources += floor($planet_db_data[$sn_data[$resource_id]['name']]);
       }
     }
-
     $planet_data['RESOURCES'] = $planet_resources;
     $planet_data['RESOURCES_TEXT'] = pretty_number($planet_resources);
-    $planet_data['FLEET_CAPACITY'] = $fleet_capacity;
-    $planet_data['FLEET_CAPACITY_TEXT'] = pretty_number($fleet_capacity, true, -$planet_resources);
 
     $will_take = min($planet_resources, $fleet_capacity);
 
@@ -123,9 +123,8 @@ function flt_build_gathering($resources_taken = '')
 
     if(!empty($fleet))
     {
-      $planet_data['FLEET_SPEED'] = flt_fleet_speed($user, $fleet);
-
       $travel_data = flt_travel_data($user, $planetrow, $planet_db_data, $fleet, 10);
+      $planet_data['FLEET_SPEED'] = $travel_data['fleet_speed'];
       $planet_data['DISTANCE']    = $travel_data['distance'];
       $planet_data['DURATION']    = $travel_data['duration'];
       $planet_data['CONSUMPTION'] = $travel_data['consumption'];
@@ -176,13 +175,6 @@ function flt_build_gathering($resources_taken = '')
 $template = gettemplate('fleet5', true);
 
 $resources_taken = sys_get_param('resources');
-
-foreach($sn_data['groups']['flt_transports'] as $transport_id)
-{
-  $transports[$sn_data[$transport_id]['name']] = $sn_data[$transport_id]['capacity'];
-  $name_to_id[$sn_data[$transport_id]['name']] = $transport_id;
-}
-arsort($transports);
 
 if(!empty($resources_taken))
 { // begin processing parameters

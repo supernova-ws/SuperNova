@@ -76,7 +76,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
         $Caps['planet'][$resName] += $incCount;
         $Caps['planet'][$resName . '_perhour'] = $Caps['real'][$resName . '_perhour'];
       }
-      break;
+    break;
 
     case PT_MOON:
     default:
@@ -85,22 +85,34 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
       $planet['deuterium_perhour'] = 0;
       $planet['energy_used'] = 0;
       $planet['energy_max'] = 0;
-      break;
+    break;
   }
 
   $planet = array_merge($planet, $Caps['planet']);
 
   $que = eco_que_process($user, $planet, $ProductionTime);
 
+  $planet['field_current'] = 0;
+  foreach($sn_data['groups']['build_allow'][$planet['planet_type']] as $building_id)
+  {
+    $planet['field_current'] += $planet[$sn_data[$building_id]['name']];
+  }
+
   if($simulation)
   {
     return array('user' => $user, 'planet' => $planet, 'que' => $que);
   }
 
-  $QryUpdatePlanet = "UPDATE {{planets}} SET `last_update` = '{$planet['last_update']}', ";
-  $QryUpdatePlanet .= "`metal`     = `metal`     + '{$incRes['metal']}', `crystal`   = `crystal`   + '{$incRes['crystal']}', `deuterium` = `deuterium` + '{$incRes['deuterium']}', ";
-  $QryUpdatePlanet .= "`metal_perhour` = '{$planet['metal_perhour']}', `crystal_perhour` = '{$planet['crystal_perhour']}', `deuterium_perhour` = '{$planet['deuterium_perhour']}', ";
-  $QryUpdatePlanet .= "`energy_used` = '{$planet['energy_used']}', `energy_max` = '{$planet['energy_max']}', ";
+  $QryUpdatePlanet = "UPDATE {{planets}} SET `last_update` = '{$planet['last_update']}',
+    `field_current` = {$planet['field_current']},
+    `metal`     = `metal`     + '{$incRes['metal']}',
+    `crystal`   = `crystal`   + '{$incRes['crystal']}',
+    `deuterium` = `deuterium` + '{$incRes['deuterium']}',
+    `metal_perhour` = '{$planet['metal_perhour']}',
+    `crystal_perhour` = '{$planet['crystal_perhour']}',
+    `deuterium_perhour` = '{$planet['deuterium_perhour']}',
+    `energy_used` = '{$planet['energy_used']}',
+    `energy_max` = '{$planet['energy_max']}', ";
 
   $built = eco_bld_que_hangar($user, $planet, $ProductionTime);
   if($built['built'])
@@ -120,9 +132,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     }
   }
 
-  $QryUpdatePlanet .= "`b_hangar_id` = '{$planet['b_hangar_id']}', ";
-  $QryUpdatePlanet .= "`b_hangar` = '{$planet['b_hangar']}' ";
-
+  $QryUpdatePlanet .= "`b_hangar_id` = '{$planet['b_hangar_id']}', `b_hangar` = '{$planet['b_hangar']}' ";
   $QryUpdatePlanet .= $que['query'] != $planet['que'] ? ",{$que['query']} " : '';
 
   if(!empty($que['built']))

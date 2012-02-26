@@ -1,4 +1,7 @@
 <?php
+
+require_once('includes/includes/flt_mission_attack.php');
+
 /*
  * Partial copyright (c) 2009 by Gorlum for http://supernova.ws
 

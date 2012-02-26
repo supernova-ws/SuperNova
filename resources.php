@@ -5,7 +5,7 @@
  *
  * Planet resource interface page
  *
- * 2.2 - copyright (ñ) 2010 by Gorlum for http://supernova.ws
+ * 2.2 - copyright (Ã±) 2010 by Gorlum for http://supernova.ws
  *   [~] - more optimization to utilize PTE
  *   [~] - code formatting according to PCG
  *   [~] - content of BuildRessourcePage.php moved to resource.php
@@ -17,7 +17,7 @@
  *   [+] - Mise en module initiale (creation)
  * 1.1 - copyright 2010 by Gorlum for http://supernova.ws
  *   [%] - Security checks & tests by Gorlum for http://supernova.ws
- * 1.0 copyright (ñ) 2008 by Chlorel for XNova
+ * 1.0 copyright (Ã±) 2008 by Chlorel for XNova
  *   [!] - Passage en fonction pour utilisation XNova
  *
 **/
@@ -57,8 +57,6 @@ function int_calc_storage_bar($resource_name)
     'BAR'         => min($storage_fill, 100),
   ));
 };
-
-CheckPlanetUsedFields ( $planetrow );
 
 $ValidList['percent'] = array (  0,  10,  20,  30,  40,  50,  60,  70,  80,  90, 100 );
 $template = gettemplate('resources', true);

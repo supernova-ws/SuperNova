@@ -26,6 +26,8 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 define('SN_IN_FLEET', true);
 
+require_once('includes/includes/flt_functions.php');
+
 lng_include('fleet');
 
 $parse = $lang;
@@ -185,9 +187,10 @@ switch ($fleet_page)
     ksort($missiontype);
 
     $speed_percent = sys_get_param_int('speed', 10);
-    $fleet_speed   = flt_fleet_speed($user, $fleetarray);
     $travel_data   = flt_travel_data($user, $planetrow, array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet), $fleetarray, $speed_percent);
 
+//    $fleet_speed   = flt_fleet_speed($user, $fleetarray);
+    $fleet_speed   = $travel_data['fleet_speed'];
     $distance      = $travel_data['distance'];
     $duration      = $travel_data['duration'];
     $consumption   = $travel_data['consumption'];

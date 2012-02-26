@@ -89,7 +89,7 @@ $template = gettemplate('universe', true);
 // $UserPoints    = doquery("SELECT * FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."'", '', true);
 $CurrentPoints = $user['total_points'];
 
-$MissileRange  = flt_get_missile_range();
+$MissileRange  = flt_get_missile_range($user);
 $PhalanxRange  = GetPhalanxRange($HavePhalanx);
 
 $planet_precache_query = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$uni_galaxy} AND `system` = {$uni_system};");
@@ -204,7 +204,8 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
       {
         if($fleet_row['fleet_owner'] == $user['id'])
         {
-          $fleet_data = flt_expand($fleet_row);
+//          $fleet_data = flt_expand($fleet_row);
+          $fleet_data = sys_unit_str2arr($fleet_string['fleet_array']);
           $recyclers_incoming += $fleet_data[SHIP_RECYCLER];
         }
       }

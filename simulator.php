@@ -35,6 +35,9 @@ if(($_GET['BE_DEBUG'] || $_POST['BE_DEBUG']) && !defined('BE_DEBUG'))
   define('BE_DEBUG', true);
 }
 
+require_once('includes/includes/coe_calculate_attack.php');
+require_once('includes/includes/coe_simulator_helpers.php');
+
 $replay = $_GET['replay'] ? $_GET['replay'] : $_POST['replay'];
 $execute = intval($_GET['execute']);
 $sym_defender = $_POST['defender'] ? $_POST['defender'] : array();
@@ -76,7 +79,7 @@ if($_POST['submit'] || $execute)
   $loot = BE_calculatePostAttacker($arr_combat_defender[0]['resources'], $arr_combat_attacker, $result, true);
 
   // Calculating Moon Chance
-  $MoonChance = BE_calculateMoonChance($result['debree']['att'][0] + $result['debree']['def'][0] + $result['debree']['att'][1] + $result['debree']['def'][1]);
+  $MoonChance = uni_calculate_moon_chance($result['debree']['att'][0] + $result['debree']['def'][0] + $result['debree']['att'][1] + $result['debree']['def'][1]);
 
   $formatted_cr = coe_report_format($result, $loot['looted'], $MoonChance, '', $totaltime);
 
@@ -96,8 +99,8 @@ if($_POST['submit'] || $execute)
     $str_replace2  = array($s_name);
     $report = str_replace($str_replace1, $str_replace2, $report);
   }
-  $no_fleet = '<table border=1 align=\"center\"><tr><th>Тип</th></tr><tr><th>Всего</th></tr><tr><th>Оружие</th></tr><tr><th>Щиты</th></tr><tr><th>Броня</th></tr></table>';
-  $destroyed = '<table border=1 align=\"center\"><tr><th><font color=\"red\"><strong>Уничтожены!</strong></font></th></tr></table>';
+  $no_fleet = '<table border=1 align=\"center\"><tr><th>РўРёРї</th></tr><tr><th>Р’СЃРµРіРѕ</th></tr><tr><th>РћСЂСѓР¶РёРµ</th></tr><tr><th>Р©РёС‚С‹</th></tr><tr><th>Р‘СЂРѕРЅСЏ</th></tr></table>';
+  $destroyed = '<table border=1 align=\"center\"><tr><th><font color=\"red\"><strong>РЈРЅРёС‡С‚РѕР¶РµРЅС‹!</strong></font></th></tr></table>';
   $str_replace1  = array($no_fleet);
   $str_replace2  = array($destroyed);
   $report = str_replace($str_replace1, $str_replace2, $report);

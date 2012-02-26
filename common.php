@@ -69,9 +69,41 @@ if (defined('IN_ADMIN') && IN_ADMIN)
 }
 elseif($sys_user_logged_in)
 {
-  $dpath     = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
+  $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
-  flt_flying_fleet_handler($config, $skip_fleet_update);
+  if(!$skip_fleet_update && $time_now - $config->flt_lastUpdate >= 4)
+  {
+    require_once("includes/includes/flt_flying_fleet_handler.php");
+    flt_flying_fleet_handler($config, $skip_fleet_update);
+/*
+  $flt_update_mode = 0;
+  // 0 - old
+  // 1 - new
+  switch($flt_update_mode)
+  {
+    case 0:
+      if($time_now - $config->flt_lastUpdate <= 4)
+      {
+        return;
+      }
+    break;
+
+    case 1:
+      if($config->flt_lastUpdate)
+      {
+        if($time_now - $config->flt_lastUpdate <= 15)
+        {
+          return;
+        }
+        else
+        {
+          $GLOBALS['debug']->error('Flying fleet handler is on timeout', 'FFH Error', 504);
+        }
+      }
+    break;
+  }
+*/
+  }
 
   $planet_id = SetSelectedPlanet($user);
 
@@ -113,8 +145,6 @@ elseif($sys_user_logged_in)
   }
 
   $que = $global_data['que'];
-
-  CheckPlanetUsedFields($planetrow);
 
   if(!$allow_anonymous)
   {

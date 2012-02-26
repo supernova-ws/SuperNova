@@ -18,6 +18,8 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 header("Content-type: text/html; charset=utf-8");
 
+require_once('includes/includes/flt_functions.php');
+
 lng_include('universe');
 lng_include('fleet');
 
@@ -99,7 +101,7 @@ if($target_mission == MT_MISSILE)
   $distance = abs($target_system - $planetrow['system']);
   $mipRange = ($user['impulse_motor_tech'] * 5) - 1;
 
-  $arrival = $time_now + round((30 + (60 * $distance)) / get_fleet_speed());
+  $arrival = $time_now + round((30 + (60 * $distance)) / flt_server_flight_speed_multiplier());
 
   doquery("INSERT INTO `{{iraks}}` SET
      `fleet_target_owner` = '{$TargetRow['id_owner']}', `fleet_end_galaxy` = '{$target_galaxy}', `fleet_end_system` = '{$target_system}', `fleet_end_planet` = '{$target_planet}',

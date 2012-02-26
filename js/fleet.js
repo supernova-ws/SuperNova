@@ -393,15 +393,15 @@ function fleet_table_make(fleet_id)
     {
       //if(fleet[ship_id][C_SHIP_AMOUNT] != 0)
       {
-        fleet_html += '<tr><th>';
+        fleet_html += '<tr><td class="c_l">';
         switch(fleet[ship_id][C_SHIP_NAME])
         {
           default:
             fleet_html += fleet[ship_id][C_SHIP_NAME];
           break;
         }
-        fleet_html += '</th><th>' + fleet[ship_id][C_SHIP_AMOUNT];
-        fleet_html += '</th></tr>';
+        fleet_html += '</td><td class="c_r">' + sn_format_number(parseInt(fleet[ship_id][C_SHIP_AMOUNT]));
+        fleet_html += '</td></tr>';
         fleet_capacity += fleet[ship_id][C_SHIP_CAPACITY] * fleet[ship_id][C_SHIP_AMOUNT];
       }
     };

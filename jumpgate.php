@@ -19,7 +19,7 @@ $TargetPlanet = sys_get_param_id('jmpto');
 
 if($TargetPlanet)
 {
-  $NextJumpTime = flt_gate_time_to_jump($planetrow);
+  $NextJumpTime = uni_get_time_to_jump($planetrow);
   // Dit monsieur, j'ai le droit de sauter ???
   if(!$NextJumpTime)
   {
@@ -27,7 +27,7 @@ if($TargetPlanet)
     $TargetGate   = doquery ( "SELECT `id`, `sprungtor`, `last_jump_time` FROM {{planets}} WHERE `id` = '". $TargetPlanet ."';", '', true);
     // Dit monsieur, ou je veux aller y a une porte de saut ???
     if ($TargetGate['sprungtor'] > 0) {
-      $NextDestTime = flt_gate_time_to_jump ( $TargetGate );
+      $NextDestTime = uni_get_time_to_jump ( $TargetGate );
       // Dit monsieur, chez toi aussi peut y avoir un saut ???
       if(!$NextDestTime)
       {
@@ -74,7 +74,7 @@ if($TargetPlanet)
           doquery ( $QryUpdateUsr);
 
           $planetrow['last_jump_time'] = $time_now;
-          $RetMessage    = $lang['gate_jump_done'] ." - ". pretty_time(flt_gate_time_to_jump($planetrow));
+          $RetMessage    = $lang['gate_jump_done'] ." - ". pretty_time(uni_get_time_to_jump($planetrow));
         } else {
           $RetMessage = $lang['gate_wait_data'];
         }
@@ -92,7 +92,7 @@ if($TargetPlanet)
   $GateTPL = gettemplate('gate_fleet_table', true);
   if($planetrow[$sn_data[STRUC_MOON_GATE]['name']] > 0)
   {
-    $NextJumpTime = flt_gate_time_to_jump($planetrow);
+    $NextJumpTime = uni_get_time_to_jump($planetrow);
     $parse['GATE_JUMP_REST_TIME'] = $NextJumpTime;
     $parse['gate_start_name'] = $planetrow['name'];
     $parse['gate_start_link'] = uni_render_coordinates_href($planetrow, '', 3);
@@ -105,7 +105,7 @@ if($TargetPlanet)
     {
       if ($CurMoon['id'] != $planetrow['id'])
       {
-        $NextJumpTime = flt_gate_time_to_jump($CurMoon);
+        $NextJumpTime = uni_get_time_to_jump($CurMoon);
         if ($CurMoon[$sn_data[STRUC_MOON_GATE]['name']] >= 1)
         {
           $Combo .= "<option value=\"" . $CurMoon['id'] . "\">[" . $CurMoon['galaxy'] . ":" . $CurMoon['system'] . ":" . $CurMoon['planet'] . "] " . $CurMoon['name'] . ' ' . ($NextJumpTime ? pretty_time($NextJumpTime) : '') . "</option>\n";

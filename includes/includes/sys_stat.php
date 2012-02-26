@@ -182,7 +182,8 @@ function sys_stat_calculate()
 
     if($planet_row['b_hangar_id'])
     {
-      $ship_list = flt_expand(array('fleet_array' => $planet_row['b_hangar_id']));
+//      $ship_list = flt_expand(array('fleet_array' => $planet_row['b_hangar_id']));
+      $ship_list = sys_unit_str2arr($planet_row['b_hangar_id']);
       foreach($ship_list as $ship_id => $ship_amount)
       {
         $data = $sn_data[$ship_id]['cost'];

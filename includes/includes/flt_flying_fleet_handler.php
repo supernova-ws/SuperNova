@@ -297,49 +297,15 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
 // ------------------------------------------------------------------
 function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 {
-  $flt_update_mode = 0;
-  // 0 - old
-  // 1 - new
-
   global $time_now;
 
-  /*
-  if(($time_now - $GLOBALS['config']->flt_lastUpdate <= 8 ) || $GLOBALS['skip_fleet_update'])
-  {
-    return;
-  }
-
-  $GLOBALS['config']->db_saveItem('flt_lastUpdate', $time_now);
-  doquery('LOCK TABLE {{table}}aks WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}users WRITE, {{table}}logs WRITE, {{table}}iraks WRITE, {{table}}statpoints WRITE, {{table}}referrals WRITE, {{table}}counter WRITE');
-  */
+  //if(($time_now - $GLOBALS['config']->flt_lastUpdate <= 8 ) || $GLOBALS['skip_fleet_update']) return;
+  //$GLOBALS['config']->db_saveItem('flt_lastUpdate', $time_now);
+  //doquery('LOCK TABLE {{table}}aks WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}users WRITE, {{table}}logs WRITE, {{table}}iraks WRITE, {{table}}statpoints WRITE, {{table}}referrals WRITE, {{table}}counter WRITE');
 
   if($skip_fleet_update)
   {
     return;
-  }
-
-  switch($flt_update_mode)
-  {
-    case 0:
-      if($time_now - $config->flt_lastUpdate <= 4)
-      {
-        return;
-      }
-    break;
-
-    case 1:
-      if($config->flt_lastUpdate)
-      {
-        if($time_now - $config->flt_lastUpdate <= 15)
-        {
-          return;
-        }
-        else
-        {
-          $GLOBALS['debug']->error('Flying fleet handler is on timeout', 'FFH Error', 504);
-        }
-      }
-    break;
   }
 
   $config->db_saveItem('flt_lastUpdate', $time_now);
@@ -353,26 +319,53 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   $flt_event_cache  = array();
   $flt_planet_cache = array();
 
+  $missions_used = array();
+
   $_fleets = doquery("SELECT *, fleet_start_time AS fleet_time FROM `{{fleets}}` WHERE `fleet_start_time` <= '{$time_now}' FOR UPDATE;");
   while ($fleet_row = mysql_fetch_assoc($_fleets))
   {
+    $missions_used[$fleet_row['fleet_mission']]++;
     flt_cache_fleet($fleet_row, $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_ALL);
   }
 
   $_fleets = doquery("SELECT *, fleet_end_stay AS fleet_time FROM `{{fleets}}` WHERE `fleet_end_stay` <= '{$time_now}' AND fleet_end_stay > 0 FOR UPDATE;");
   while ($fleet_row = mysql_fetch_assoc($_fleets))
   {
+    $missions_used[$fleet_row['fleet_mission']]++;
     flt_cache_fleet($fleet_row, $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_ALL);
   }
 
   $_fleets = doquery("SELECT *, fleet_end_time AS fleet_time FROM `{{fleets}}` WHERE `fleet_end_time` <= '{$time_now}' FOR UPDATE;");
   while ($fleet_row = mysql_fetch_assoc($_fleets))
   {
+    $missions_used[$fleet_row['fleet_mission']]++;
     flt_cache_fleet($fleet_row, $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_ALL);
   }
 
   uasort($flt_event_cache, 'flt_flyingFleetsSort');
   unset($_fleets);
+
+  $mission_files = array(
+    MT_ATTACK => 'flt_mission_attack.php',
+    MT_AKS => 'flt_mission_attack.php',
+    MT_TRANSPORT => 'flt_mission_transport.php',
+    MT_RELOCATE => 'flt_mission_relocate.php',
+    MT_HOLD => 'flt_mission_hold.php',
+    MT_SPY => 'flt_mission_spy.php',
+    MT_COLONIZE => 'flt_mission_colonize.php',
+    MT_RECYCLE => 'flt_mission_recycle.php',
+    MT_DESTROY => 'flt_mission_destroy.php',
+//    'MT_MISSILE => 'flt_mission_missile.php',
+    MT_EXPLORE => 'flt_mission_explore.php',
+  );
+
+  foreach($missions_used as $mission_id => $cork)
+  {
+    if(isset($mission_files[$mission_id]))
+    {
+      require_once("includes/includes/{$mission_files[$mission_id]}");
+    }
+  }
 
 /*
 pdump(count($flt_user_cache), '$flt_user_row');

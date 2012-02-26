@@ -164,7 +164,7 @@ foreach ($friendTables as $tableID => $friendTable)
   $page .= parsetemplate(gettemplate('bud_table'), $parse);
 }
 
-$page .= MessageForm($lang['sys_hint'], $lang['bud_hint'], "", "", true);
+//$page .= MessageForm($lang['sys_hint'], $lang['bud_hint'], "", "", true);
 
 display($page, $lang['bud_listTitle']);
 

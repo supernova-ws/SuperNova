@@ -52,7 +52,7 @@ $template->assign_vars(array(
 
   'ShipList'           => $ShipList,
 
-  'speed_factor'       => get_fleet_speed(),
+  'speed_factor'       => flt_server_flight_speed_multiplier(),
 
   'PLANET_RESOURCES'   => pretty_number($planetrow['metal'] + $planetrow['crystal'] + $planetrow['deuterium']),
   'PLANET_DEUTERIUM'   => pretty_number($planetrow['deuterium']),

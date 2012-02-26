@@ -338,7 +338,7 @@ switch($mode)
       'planet_temp_max'       => $planetrow['temp_max'],
 
       'GATE_LEVEL'            => $planetrow[$sn_data[STRUC_MOON_GATE]['name']],
-      'GATE_JUMP_REST_TIME'   => flt_gate_time_to_jump($planetrow),
+      'GATE_JUMP_REST_TIME'   => uni_get_time_to_jump($planetrow),
 
       'ADMIN_EMAIL'           => $config->game_adminEmail,
 

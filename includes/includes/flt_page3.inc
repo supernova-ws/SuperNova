@@ -188,7 +188,6 @@ if(SN_IN_FLEET !== true)
     message ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
   }
 
-  // ecriture de l'enregistrement de flotte (a partir de lôå_, y a quelque chose qui vole et c'est toujours sur la planete d'origine)
   $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
   $QryInsertFleet .= "`fleet_owner` = '{$user['id']}', `fleet_mission` = '{$target_mission}', ";
   $QryInsertFleet .= "`fleet_amount` = '{$FleetShipCount}', `fleet_array` = '{$fleet_array}', `fleet_start_time` = '{$fleet['start_time']}', ";

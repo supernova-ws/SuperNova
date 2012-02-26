@@ -7,21 +7,12 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-function chance ($percent) {
-  $chance = mt_rand(0,100);
-  if($percent <= $chance){
-    return true;
-  }else{
-    return false;
-  }
-}
-
 function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
   global $config, $user;
 
   //$ClassicBase           = 163;
   if (!$HomeWorld) {
-    if(chance(60)){
+    if(mt_rand(0,100) >= 60){
       $Average          = array ( 64, 68, 73,173,167,155,144,150,159,101, 98,105,110, 84,101);
       $SixtyMin          = array ( 39, 53, 34, 83, 84, 82,116,123,129, 62, 81, 85, 60, 42, 54);
       $SixtyMax          = array ( 89, 83, 82,306,232,328,173,177,203,122,116,129,191,172,150);
@@ -176,7 +167,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetN
     $QryInsertPlanet .= "`deuterium_max` = '".     $planet['deuterium_max']     ."';";
     doquery( $QryInsertPlanet);
 
-    // On recupere l'id de planete nouvellement créé
+    // On recupere l'id de planete nouvellement crÃ©Ã©
     $QrySelectPlanet  = "SELECT `id` FROM `{{planets}}` WHERE ";
     $QrySelectPlanet .= "`galaxy` = '{$planet['galaxy']}' AND `system` = '{$planet['system']}' AND `planet` = '{$planet['planet']}' AND ";
     $QrySelectPlanet .= "`id_owner` = '{$planet['id_owner']}';";
@@ -287,40 +278,23 @@ function SetSelectedPlanet(&$user)
  * @version 1.0
  * @copyright 2008 By Chlorel for XNova
  */
-function SortUserPlanets($CurrentUser, $planet = false, $field_list = '', $conditions = '')
+function SortUserPlanets($user_row, $skip_planet_id = false, $field_list = '', $conditions = '')
 {
-  $Order = ( $CurrentUser['planet_sort_order'] == SORT_DESCENDING ) ? "DESC" : "ASC";
-  $Sort = $CurrentUser['planet_sort'];
+  $field_list = $field_list != '*' ? "`id`, `name`, `galaxy`, `system`, `planet`, `planet_type`{$field_list}" : $field_list;
+  $conditions .= $skip_planet_id ? " AND `id` <> {$skip_planet_id} " : '';
 
-  if($field_list != '*')
-  {
-    $field_list = "`id`, `name`, `galaxy`, `system`, `planet`, `planet_type`{$field_list}";
-  }
+  $sort_orders = array(
+    SORT_ID       => '`id`',
+    SORT_LOCATION => '`galaxy`, `system`, `planet`, `planet_type`',
+    SORT_NAME     => '`name`',
+    SORT_SIZE     => '(`field_max` + `terraformer` * 5 + `mondbasis` * 3)',
+  );
+  $order_by = (isset($sort_orders[$user_row['planet_sort']]) ? $sort_orders[$user_row['planet_sort']] : $sort_orders[SORT_ID])
+    . ($user_row['planet_sort_order'] == SORT_DESCENDING ? " DESC" : " ASC");
 
-  $QryPlanets = "SELECT {$field_list} FROM {{planets}} WHERE `id_owner` = '{$CurrentUser['id']}' {$conditions} ";
-  if ($planet)
-  {
-    $QryPlanets .= "AND `id` <> {$planet['id']} ";
-  }
-
-  $QryPlanets .= 'ORDER BY ';
-  if ($Sort == SORT_ID)
-  {
-    $QryPlanets .= "`id` {$Order}";
-  }
-  elseif ($Sort == SORT_LOCATION)
-  {
-    $QryPlanets .= "`galaxy`, `system`, `planet`, `planet_type` {$Order}";
-  }
-  elseif ($Sort == SORT_NAME)
-  {
-    $QryPlanets .= "`name` {$Order}";
-  }
-  elseif ($Sort == SORT_SIZE)
-  {
-    $QryPlanets .= "(`field_max` + `terraformer` * 5 + `mondbasis` * 3) {$Order}";
-  }
-
+  // Compilating query
+  $QryPlanets = "SELECT {$field_list} FROM {{planets}} WHERE `id_owner` = '{$user_row['id']}' {$conditions} ORDER BY {$order_by}";
+  
   $Planets = doquery($QryPlanets);
   return $Planets;
 }
@@ -344,6 +318,19 @@ function uni_render_coordinates_url($from, $prefix = '', $page = 'galaxy.php')
 function uni_render_coordinates_href($from, $prefix = '', $mode = 0, $fleet_type = '')
 {
   return '<a href="' . uni_render_coordinates_url($from, $prefix, "galaxy.php?mode={$mode}") . '"' . ($fleet_type ? " {$fleet_type}" : '') . '>' . uni_render_coordinates($from, $prefix) . '</a>';
+}
+
+function uni_get_time_to_jump($moon_row)
+{
+  global $sn_data, $time_now;
+  $jump_gate_level = $moon_row[$sn_data[STRUC_MOON_GATE]['name']];
+  return $jump_gate_level ? max(0, $moon_row['last_jump_time'] + abs(60 * 60 / $jump_gate_level) - $time_now) : 0;
+}
+
+function uni_calculate_moon_chance($FleetDebris)
+{
+  $MoonChance = $FleetDebris / 1000000;
+  return ($MoonChance < 1) ? 0 : ($MoonChance>30 ? 30 : $MoonChance);
 }
 
 ?>

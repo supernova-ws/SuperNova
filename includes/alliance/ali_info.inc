@@ -22,10 +22,8 @@ if($mode == 'exit')
     doquery("UPDATE {{alliance}} as a LEFT JOIN (SELECT ally_id, count(*) as ally_memeber_count FROM {{users}} WHERE ally_id IS NOT NULL GROUP BY ally_id) as u ON u.ally_id = a.id SET a.`ally_members` = u.ally_memeber_count;");
     doquery('COMMIT;');
     $lang['Go_out_welldone'] = str_replace("%s", $ally_name, $lang['Go_out_welldone']);
-    $page = MessageForm($lang['sys_alliance'], sprintf($lang['ali_info_leave_success'], $ally['ally_name']), $PHP_SELF, $lang['Ok']);
+    message(sprintf($lang['ali_info_leave_success'], $ally['ally_name']), $lang['sys_alliance']);
   }
-
-  display($page);
 }
 elseif($mode == 'ainfo')
 {

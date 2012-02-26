@@ -1,5 +1,85 @@
 <?php
 
+function flt_fleet_speed($user, $fleet)
+{
+  global $sn_data;
+
+  if (!is_array($fleet))
+  {
+    $fleet = array($fleet => 1);
+  }
+
+  $speeds = array();
+  if(!empty($fleet))
+  {
+    foreach ($fleet as $ship_id => $amount)
+    {
+      if($amount && in_array($ship_id, $sn_data['groups']['fleet']))
+      {
+        $single_ship_data = get_ship_data($ship_id, $user);
+        $speeds[] = $single_ship_data['speed'];
+      }
+    }
+  }
+
+  return empty($speeds) ? 0 : min($speeds);
+}
+
+function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 10)
+{
+  if($from['galaxy'] != $to['galaxy'])
+  {
+    $distance = abs($from['galaxy'] - $to['galaxy']) * 20000;
+  }
+  elseif($from['system'] != $to['system'])
+  {
+    $distance = abs($from['system'] - $to['system']) * 5 * 19 + 2700;
+  }
+  elseif($from['planet'] != $to['planet'])
+  {
+    $distance = abs($from['planet'] - $to['planet']) * 5 + 1000;
+  }
+  else
+  {
+    $distance = 5;
+  }
+
+  $consumption = 0;
+  $duration = 0;
+
+  $game_fleet_speed = flt_server_flight_speed_multiplier();
+  $fleet_speed = flt_fleet_speed($user_row, $fleet_array);
+  if(!empty($fleet_array) && $fleet_speed && $game_fleet_speed)
+  {
+    $speed_percent = $speed_percent ? max(min($speed_percent, 10), 1) : 10;
+    $real_speed = $speed_percent * sqrt($fleet_speed);
+
+    $duration = max(1, round((35000 / $speed_percent * sqrt($distance * 10 / $fleet_speed) + 10) / $game_fleet_speed));
+
+    foreach($fleet_array as $ship_id => $ship_count)
+    {
+      if (!$ship_id || !$ship_count)
+      {
+        continue;
+      }
+
+      $single_ship_data = get_ship_data($ship_id, $user_row);
+      $single_ship_data['speed'] = $single_ship_data['speed'] < 1 ? 1 : $single_ship_data['speed'];
+
+      $consumption += $single_ship_data['consumption'] * $ship_count * pow($real_speed / sqrt($single_ship_data['speed']) / 10 + 1, 2);
+    }
+
+    $consumption = round($distance * $consumption / 35000) + 1;
+  }
+
+  return array(
+    'fleet_speed' => $fleet_speed,
+    'distance' => $distance,
+    'duration' => $duration,
+    'consumption' => $consumption,
+  );
+}
+
 function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duration, $fleet_group = 0)
 {
   $time_now = $GLOBALS['time_now'];
@@ -221,7 +301,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
 
   $enemy = doquery("SELECT * FROM {{users}} WHERE `id` = '{$planet_dst['id_owner']}' LIMIT 1;", '', true);
   // We cannot attack or send resource to users in VACATION mode
-  if ($enemy['vacation'] && $target_mission != MT_RECYCLE)
+  if ($enemy['vacation'] && $mission != MT_RECYCLE)
   {
     return ATTACK_VACATION;
   }
@@ -309,7 +389,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     }
 
     $distance = abs($planet_dst['system'] - $planet_src['system']);
-    $mip_range = flt_get_missile_range();
+    $mip_range = flt_get_missile_range($user);
     if($distance > $mip_range || $planet_dst['galaxy'] != $planet_src['galaxy'])
     {
       return ATTACK_MISSILE_TOO_FAR;
@@ -327,6 +407,118 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   }
 
   return ATTACK_ALLOWED;
+}
+
+/*
+$user - actual user record
+$from - actual planet record
+$to - actual planet record
+$fleet - array of records $unit_id -> $amount
+$mission - fleet mission
+*/
+
+function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array())
+{
+//ini_set('error_reporting', E_ALL);
+
+  //doquery('SET autocommit = 0;');
+  //doquery('LOCK TABLES {{users}} READ, {{planets}} WRITE, {{fleet}} WRITE, {{aks}} WRITE, {{statpoints}} READ;');
+  doquery('START TRANSACTION;');
+
+  $from = sys_o_get_updated($user, $from['id'], $GLOBALS['time_now']);
+  $from = $from['planet'];
+
+  $can_attack = flt_can_attack($from, $to, $fleet, $mission, $options);
+  if($can_attack != ATTACK_ALLOWED)
+  {
+    doquery('ROLLBACK');
+    return $can_attack;
+  }
+
+  global $time_now, $sn_data;
+
+  $fleet_group = isset($options['fleet_group']) ? floatval($options['fleet_group']) : 0;
+
+  $travel_data  = flt_travel_data($user, $from, $to, $fleet, $options['fleet_speed_percent']);
+
+  $fleet_start_time = $time_now + $travel_data['duration'];
+
+  if ($mission == MT_EXPLORE OR $mission == MT_HOLD)
+  {
+    $stay_duration = $options['stay_time'] * 3600;
+    $stay_time     = $fleet_start_time + $stay_duration;
+  }
+  else
+  {
+    $stay_duration = 0;
+    $stay_time     = 0;
+  }
+  $fleet_end_time = $fleet_start_time + $travel_data['duration'] + $stay_duration;
+
+  $fleet_ship_count  = 0;
+  $fleet_string      = '';
+  $planet_sub_query  = '';
+  foreach ($fleet as $unit_id => $amount)
+  {
+    if(!$amount || !$unit_id)
+    {
+      continue;
+    }
+
+    if(in_array($unit_id, $sn_data['groups']['fleet']))
+    {
+      $fleet_ship_count += $amount;
+      $fleet_string     .= "{$unit_id},{$amount};";
+    }
+    $planet_sub_query .= "`{$sn_data[$unit_id]['name']}` = `{$sn_data[$unit_id]['name']}` - {$amount},";
+  }
+
+  $to['id_owner'] = intval($to['id_owner']);
+
+  $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
+  $QryInsertFleet .= "`fleet_owner` = '{$user['id']}', ";
+  $QryInsertFleet .= "`fleet_mission` = '{$mission}', ";
+  $QryInsertFleet .= "`fleet_amount` = '{$fleet_ship_count}', ";
+  $QryInsertFleet .= "`fleet_array` = '{$fleet_string}', ";
+  $QryInsertFleet .= "`fleet_start_time` = '{$fleet_start_time}', ";
+  $QryInsertFleet .= "`fleet_start_galaxy` = '{$from['galaxy']}', ";
+  $QryInsertFleet .= "`fleet_start_system` = '{$from['system']}', ";
+  $QryInsertFleet .= "`fleet_start_planet` = '{$from['planet']}', ";
+  $QryInsertFleet .= "`fleet_start_type` = '{$from['planet_type']}', ";
+  $QryInsertFleet .= "`fleet_end_time` = '{$fleet_end_time}', ";
+  $QryInsertFleet .= "`fleet_end_stay` = '{$stay_time}', ";
+  $QryInsertFleet .= "`fleet_end_galaxy` = '{$to['galaxy']}', ";
+  $QryInsertFleet .= "`fleet_end_system` = '{$to['system']}', ";
+  $QryInsertFleet .= "`fleet_end_planet` = '{$to['planet']}', ";
+  $QryInsertFleet .= "`fleet_end_type` = '{$to['planet_type']}', ";
+  $QryInsertFleet .= "`fleet_resource_metal` = " . floatval($fleet[RES_METAL]) . ", ";
+  $QryInsertFleet .= "`fleet_resource_crystal` = " . floatval($fleet[RES_CRYSTAL]) . ", ";
+  $QryInsertFleet .= "`fleet_resource_deuterium` = " . floatval($fleet[RES_DEUTERIUM]) . ", ";
+  $QryInsertFleet .= "`fleet_target_owner` = '{$to['id_owner']}', ";
+  $QryInsertFleet .= "`fleet_group` = '{$fleet_group}', ";
+  $QryInsertFleet .= "`start_time` = '{$time_now}';";
+  doquery( $QryInsertFleet);
+
+  $QryUpdatePlanet  = "UPDATE {{planets}} SET {$planet_sub_query} `deuterium` = `deuterium` - '{$travel_data['consumption']}' WHERE `id` = '{$from['id']}' LIMIT 1;";
+  doquery ($QryUpdatePlanet);
+
+  if(BE_DEBUG)
+  {
+    debug($QryInsertFleet);
+    debug($QryUpdatePlanet);
+  }
+
+  doquery("COMMIT;");
+  // doquery('SET autocommit = 1;');
+  $from = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$from['id']}' LIMIT 1;", '', true);
+
+  return ATTACK_ALLOWED;
+//ini_set('error_reporting', E_ALL ^ E_NOTICE);
+}
+
+function flt_server_flight_speed_multiplier()
+{
+  return $GLOBALS['config']->fleet_speed;
 }
 
 ?>

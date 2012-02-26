@@ -41,7 +41,7 @@ if($ally_tag)
   $ally_user_id = mysql_insert_id();
   doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_id} LIMIT 1;");
 
-  $page = MessageForm(str_replace('%s', $ally_tag_raw, $lang['ally_maked']), str_replace('%s', $ally_tag_raw, $lang['ally_been_maked']) . "<br><br>", "", $lang['Ok']);
+  message(str_replace('%s', $ally_tag_raw, $lang['ally_been_maked']), str_replace('%s', $ally_tag_raw, $lang['ally_maked']));
 }
 else
 {

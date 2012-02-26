@@ -135,6 +135,12 @@ function eco_planet_fields_max($planet)
 }
 
 // ----------------------------------------------------------------------------------------------------------------
+function flt_get_missile_range($user)
+{
+  return max(0, mrc_get_level($user, false, TECH_ENIGNE_ION) * 5 - 1);
+}
+
+// ----------------------------------------------------------------------------------------------------------------
 function GetSpyLevel(&$user)
 {
   return mrc_modify_value($user, false, array(MRC_SPY, TECH_SPY), 0);
@@ -163,7 +169,7 @@ function CheckInputStrings($String)
 
 // ----------------------------------------------------------------------------------------------------------------
 //
-// Routine Test de validité d'une adresse email
+// Routine Test de validitÃ© d'une adresse email
 //
 function is_email($email)
 {
@@ -650,6 +656,29 @@ function sn_get_url_contents($url)
   }
 
   return $return;
+}
+
+function get_ship_data($ship_id, $user)
+{
+  global $sn_data;
+
+  $ship_data = array();
+  if(in_array($ship_id, $sn_data['groups']['fleet']))
+  {
+    foreach($sn_data[$ship_id]['engine'] as $engine_info)
+    {
+//      if($user[$sn_data[$engine_info['tech']]['name']] >= $engine_info['min_level'])
+      if(mrc_get_level($user, false, $engine_info['tech']) >= $engine_info['min_level'])
+      {
+        $ship_data = $engine_info;
+      }
+    }
+    $ship_data['speed'] = floor(mrc_modify_value($user, false, array(MRC_NAVIGATOR, $ship_data['tech']), $ship_data['speed']));
+
+    $ship_data['capacity'] = $sn_data[$ship_id]['capacity'];
+  }
+
+  return $ship_data;
 }
 
 ?>
