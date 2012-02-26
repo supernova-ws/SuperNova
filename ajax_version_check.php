@@ -63,7 +63,7 @@ else
         $config->db_saveItem('server_updater_key', $check_result['site']['site_key']);
         $config->db_saveItem('server_updater_id', $check_result['site']['site_id']);
       }
-      $version_check = $check_result['result'];
+      $version_check = $check_result['site']['result'];
     break;
   }
 }
