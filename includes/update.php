@@ -1618,6 +1618,9 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_check_key('server_updater_check_last', 0, !isset($config->server_updater_check_last));
     upd_check_key('server_updater_check_result', SNC_VER_NEVER, !isset($config->server_updater_check_result));
 
+    upd_check_key('server_updater_key', '', !isset($config->server_updater_key));
+    upd_check_key('server_updater_id', 0, !isset($config->server_updater_id));
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 33;
 };

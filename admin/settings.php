@@ -124,6 +124,9 @@ $template->assign_vars(array(
   'CHECK_DATE' => $config->server_updater_check_last ? date(FMT_DATE_TIME, $config->server_updater_check_last) : 0,
   'CHECK_RESULT' => isset($lang['adm_opt_ver_response'][$config->server_updater_check_result]) ? $lang['adm_opt_ver_response'][$config->server_updater_check_result] : $lang['adm_opt_ver_response'][SNC_VER_UNKNOWN_RESPONSE],
   'CHECK_CLASS' => isset($sn_version_check_class[$config->server_updater_check_result]) ? $sn_version_check_class[$config->server_updater_check_result] : $sn_version_check_class[SNC_VER_UNKNOWN_RESPONSE],
+
+  'SERVER_UPDATE_ID' => $config->server_updater_id,
+  'SERVER_UPDATE_KEY' => $config->server_updater_key,
 ));
 
 foreach($lang['sys_game_mode'] as $mode_id => $mode_name)

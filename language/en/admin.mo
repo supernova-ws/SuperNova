@@ -374,6 +374,17 @@ $lang = array_merge($lang, array(
     SNC_VER_UNKNOWN_RESPONSE => 'Update server gives unknown response. In most ases it means that there is new game version with more advanced update server support. Also it can mean error in update server. Please check and update your game or contact developer to diagnose and fix problem.',
     SNC_VER_INVALID => 'I just can not understand which version of game you have. Please contact developer to diagnose and fix this problem.',
     SNC_VER_STRANGE => 'You should not see this message. If you saw this message - something going terrible wrong. Please contact developer to diagnose and fix this problem.',
+
+    SNC_VER_REGISTER_UNREGISTERED => 'Your server still not registered',
+    SNC_VER_REGISTER_ERROR_MULTISERVER => 'Error - your server has multiply registration entries! Contact developer for diagnose and fix problem',
+    SNC_VER_REGISTER_ERROR_REGISTERED => 'Error - your server already registered! Check your key and ID in server configuration.',
+    SNC_VER_REGISTER_ERROR_NO_NAME => 'Error - no server name supplied! You should define your server name to register.',
+    SNC_VER_REGISTER_ERROR_WRONG_URL => 'Error - wrong URL! Passed string is not a correct URL. If you tried to registered server from localhost you should be awared that update server did not work with local servers.',
+    SNC_VER_REGISTER_REGISTERED => 'Your site sucesfully registered',
+
+    SNC_VER_ERROR_INCOMPLETE_REQUEST => 'Error - missed correct ID or key in request! Check your key and ID in server configuration.',
+    SNC_VER_ERROR_UNKNOWN_KEY => 'Error - unknown key! Passed key did not found in update server DB. Check your key in server configuration.',
+    SNC_VER_ERROR_MISSMATCH_KEY_ID => 'Error - passed key did not match server ID! Check your key and ID in server configuration.',
   ),
 
   'adm_opt_ver_response_short' => array(
@@ -395,7 +406,45 @@ $lang = array_merge($lang, array(
     SNC_VER_UNKNOWN_RESPONSE => 'Unknown response',
     SNC_VER_INVALID => 'Version error',
     SNC_VER_STRANGE => 'Unpredictable shit',
+
+    SNC_VER_REGISTER_UNREGISTERED => 'Not registered',
+    SNC_VER_REGISTER_ERROR_MULTISERVER => 'Multiregistration',
+    SNC_VER_REGISTER_ERROR_REGISTERED => 'Key error',
+    SNC_VER_REGISTER_ERROR_NO_NAME => 'Server name error',
+    SNC_VER_REGISTER_REGISTERED => 'Registered',
+
+    SNC_VER_ERROR_INCOMPLETE_REQUEST => 'ID or key error',
+    SNC_VER_ERROR_UNKNOWN_KEY => 'Unknown key',
+    SNC_VER_ERROR_MISSMATCH_KEY_ID => 'Key not match ID',
   ),
+
+  'adm_upd_register' => 'Server registration',
+  'adm_upd_register_hint' => '
+    –егистраци€ сервера нужна дл€ р€да запросов к серверу обновлений. ѕри регистрации передаетс€ минимум информации, необходимой дл€ идентификации сервера. ¬ частности, передаетс€:
+    <ul>
+      <li>ѕолный URL сервера - т.е. HTTP-адрес и подкаталог сервера. Ќапример: http://myserver.com/myfolder/. Ёто необходимо дл€ первичной идентификации сервера. ѕолный путь необходим дл€ того, что бы различать несколько копий —верхЌовой, установленных на одном IP или домене</li>
+      <li>¬нутреннее название сервера. »спользуетс€ дл€ подстановки в сообщени€.</li>
+    </ul>
+    «ачем вообще регистрировать свой сервер? ¬ будующем планируетс€ р€д возможностей, которые буду доступны только зарегистрированным серверам. ¬ их число входит (отсортированы по запланированным срокам реализации):
+    <ul>
+     <li>автоматическое получение чейнджлога</li>
+     <li>автоматическое обновление движка</li>
+     <li>участие в рейтинге серверов</li>
+     <li>багрепорты от администраторов серверов</li>
+     <li>пр€мой чат с разработчиками движка</li>
+     <li>удаленна€ диагностика сервера</li>
+     <li>и многое другое</li>
+    </ul>
+    «ачем регистрировать свой сервер пр€мо сейчас?
+    <ul>
+      <li>јдминистраторы зарегестрированных серверов могут рассчитывать на дополнительное внимание разработчиков при диагностике проблем серверов и обработке багрепортов.</li>
+      <li>ѕри регистрации кроме индивидуального ключа серверу выдаетс€ уникальный идентификационный номер, который будет использоватьс€ при первичной сортировке серверов. „ем раньше будет зарегистрирован сервер - тем, например, выше он будет в общем каталоге серверов...</li>
+    </ul>
+  ',
+  'adm_upd_register_do' => 'Register server',
+  'adm_upd_register_already' => 'You already registered your server. Write down server ID and key and store it in safe place!',
+  'adm_upd_register_id' => 'Registration ID',
+  'adm_upd_register_key' => 'Registration key',
 
 ));
 

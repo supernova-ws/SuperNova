@@ -426,7 +426,7 @@ function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $b
 
 // Generates random string of $length symbols from $allowed_chars charset
 // Usefull for password and confirmation code generation
-function sys_random_string($length = 16, $allowed_chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789')
+function sys_random_string($length = 16, $allowed_chars = SN_SYS_SEC_CHARS_ALLOWED)
 {
   $allowed_length = strlen($allowed_chars);
 

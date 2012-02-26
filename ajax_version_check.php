@@ -3,25 +3,78 @@
 require_once('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
 $mode = sys_get_param_int('mode');
+$ajax = sys_get_param_int('ajax');
 
-$url = 'http://supernova.ws/version_check.php?mode=' . $mode . '&db=' . DB_VERSION . '&release=' . SN_RELEASE . '&version=' . SN_VERSION;
+$url = 'http://supernova.ws/version_check.php?mode=' . $mode 
+  . '&db=' . DB_VERSION
+  . '&release=' . SN_RELEASE
+  . '&version=' . SN_VERSION
+  . '&key=' . urlencode($config->server_updater_key)
+  . '&id=' . urlencode($config->server_updater_id);
+/*
+//TODO REMOVE DEBUG!!!
+$url = 'http://localhost/supernova_site/version_check.php?mode=' . $mode
+  . '&db=' . DB_VERSION
+  . '&release=' . SN_RELEASE
+  . '&version=' . SN_VERSION
+  . '&key=' . urlencode($config->server_updater_key)
+  . '&id=' . urlencode($config->server_updater_id);
+*/
+switch($mode)
+{
+  case SNC_MODE_REGISTER:
+    if($config->server_updater_key || $config->server_updater_id)
+    {
+      if($ajax)
+      {
+        print(SNC_VER_REGISTER_ERROR_REGISTERED);
+      }
+      die();
+    }
+// TODO REMOVE DEBUG!!!
+//$url .= "&name=" . urlencode($config->game_name) . "&url=" . urlencode('http://supernova.ws/');
+    $url .= "&name=" . urlencode($config->game_name) . "&url=" . urlencode(SN_ROOT_VIRTUAL);
+  break;
+}
+
+//debug($url, '$url');
 
 $check_result = sn_get_url_contents($url);
-if($check_result == intval($check_result))
+//debug($check_result, '$check_result');
+if(!$check_result)
 {
-  $check_status = $check_result;
+  $version_check = SNC_VER_ERROR_CONNECT;
+}
+elseif(($version_check = intval($check_result)) && $version_check == $check_result)
+{
+  $version_check = $check_result;
 }
 else
 {
   // JSON decode if string
+  $check_result = json_decode($check_result, true);
+  $version_check = $check_result === null ? SNC_VER_UNKNOWN_RESPONSE : $check_result['version_check'];
+
+  switch($mode)
+  {
+    case SNC_MODE_REGISTER:
+      if($check_result['site']['site_key'] && $check_result['site']['site_id'] && $check_result['site']['result'] == SNC_VER_REGISTER_REGISTERED)
+      {
+        $config->db_saveItem('server_updater_key', $check_result['site']['site_key']);
+        $config->db_saveItem('server_updater_id', $check_result['site']['site_id']);
+      }
+      $version_check = $check_result['result'];
+    break;
+  }
 }
+//debug($mode);
 
 $config->db_saveItem('server_updater_check_last', $time_now);
-$config->db_saveItem('server_updater_check_result', $check_status);
+$config->db_saveItem('server_updater_check_result', $version_check);
 
-if(sys_get_param_int('ajax'))
+if($ajax)
 {
-  print($check_status);
+  print($version_check);
 }
 
 ?>

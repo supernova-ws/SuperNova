@@ -32,6 +32,8 @@ if(function_exists('set_magic_quotes_runtime'))
 {
   @set_magic_quotes_runtime(0);
 }
+@ini_set('magic_quotes_runtime', 0);
+@ini_set('magic_quotes_gpc', 0);
 
 function sys_refresh_tablelist($db_prefix)
 {
@@ -93,7 +95,7 @@ $phpbb_root_path  = $sn_root_physical;
 
 define('SN_ROOT_RELATIVE', $sn_root_relative);
 define('SN_ROOT_PHYSICAL', $sn_root_physical);
-define('SN_ROOT_VIRTUAL',  'http://' . $_SERVER['HTTP_HOST'] . $sn_root_relative);
+define('SN_ROOT_VIRTUAL' , 'http://' . $_SERVER['HTTP_HOST'] . $sn_root_relative);
 define('PHP_EX', $phpEx); // PHP extension on this server
 
 $time_now      = time();

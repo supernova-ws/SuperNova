@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '32');
 define('SN_RELEASE', '33');
-define('SN_VERSION', '33a29.3');
+define('SN_VERSION', '33a30');
 
 define('SN_RELEASE_STABLE', '32d0'); // Latest stable release
 
@@ -28,6 +28,9 @@ define('GAME_OGAME'    , 1);
 define('PLANET_COORD_PREG', '/^\[([1-9]):([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):(1[0-5]|[1-9])\]$/i');
 // Pattern to parse scheduler '[[[[[YYYY-]MM-]DD ]HH:]MM:]SS'
 define('SCHEDULER_PREG', '/^(?:(?:(?:(?:(?:(2\d\d\d)-)?(1[0-2]|0[1-9])-)?(?:(3[01]|[0-2]\d)\ ))?(?:(2[0-3]|[01]\d):))?(?:([0-5]\d):))?([0-5]\d)$/i');
+
+// Default allowed chars for random string
+define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
 
 define('MAX_ATTACK_ROUNDS', 10);
 
@@ -508,6 +511,18 @@ define('SNC_VER_INVALID', 98);
 define('SNC_VER_STRANGE', 99);
 define('SNC_VER_ERROR_SERVER', 100);
 
+define('SNC_VER_REGISTER_UNREGISTERED', 200);
+define('SNC_VER_REGISTER_ERROR_MULTISERVER', 201);
+define('SNC_VER_REGISTER_ERROR_REGISTERED', 202);
+define('SNC_VER_REGISTER_ERROR_NO_NAME', 203);
+define('SNC_VER_REGISTER_ERROR_WRONG_URL', 204);
+define('SNC_VER_REGISTER_REGISTERED', 299);
+
+define('SNC_VER_ERROR_INCOMPLETE_REQUEST', 301);
+define('SNC_VER_ERROR_UNKNOWN_KEY', 302);
+define('SNC_VER_ERROR_MISSMATCH_KEY_ID', 303);
+
 define('SNC_MODE_VERSION_CHECK', 0);
+define('SNC_MODE_REGISTER', 1);
 
 ?>

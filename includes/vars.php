@@ -31,6 +31,17 @@ if (!defined('INSIDE'))
     SNC_VER_UNKNOWN_RESPONSE => 'warning',
     SNC_VER_INVALID => 'error',
     SNC_VER_STRANGE => 'error',
+
+    SNC_VER_REGISTER_UNREGISTERED => 'warning',
+    SNC_VER_REGISTER_ERROR_MULTISERVER => 'error',
+    SNC_VER_REGISTER_ERROR_REGISTERED => 'error',
+    SNC_VER_REGISTER_ERROR_NO_NAME => 'error',
+    SNC_VER_REGISTER_ERROR_WRONG_URL => 'error',
+    SNC_VER_REGISTER_REGISTERED => 'ok',
+
+    SNC_VER_ERROR_INCOMPLETE_REQUEST => 'error',
+    SNC_VER_ERROR_UNKNOWN_KEY => 'error',
+    SNC_VER_ERROR_MISSMATCH_KEY_ID => 'error',
   );
 
   $tableList = array( 'aks', 'alliance', 'alliance_requests', 'announce', 'annonce', 'banned', 'buddy', 'chat', 'config', 'counter',

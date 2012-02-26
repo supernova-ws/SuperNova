@@ -550,6 +550,8 @@ class classConfig extends classPersistent
     'server_updater_check_period' => PERIOD_DAY, // Server autocheck period
     'server_updater_check_last' => 0, // Server last check time
     'server_updater_check_result' => SNC_VER_NEVER, // Server last check result
+    'server_updater_key' => '', // Server key on update server
+    'server_updater_id' => 0, // Server ID on update server
 
     // Quests
     'quest_total'          => 0, // Total number of quests
