@@ -46,7 +46,7 @@ function sn_autologin($abort = true)
   $time_now = $GLOBALS['time_now'];
 
   $IsUserChecked = false;
-  if (!isset($_COOKIE[$config->COOKIE_NAME]))
+  if(!isset($_COOKIE[$config->COOKIE_NAME]))
   {
     return false;
   }
@@ -56,9 +56,9 @@ function sn_autologin($abort = true)
   $TheCookie[1] = mysql_real_escape_string($TheCookie[1]);
   $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = '{$TheCookie[0]}' LIMIT 1;", '', true);
 
-  if (!$user || md5("{$user['password']}--{$config->secret_word}") !== $TheCookie[2])
+  if(!$user || md5("{$user['password']}--{$config->secret_word}") != $TheCookie[2])
   {
-    setcookie($config->COOKIE_NAME, "", time() - 3600*25);
+    setcookie($config->COOKIE_NAME);
     if($abort)
     {
       message($lang['err_cookie']);

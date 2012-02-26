@@ -47,9 +47,8 @@ body {
   background-color     : #000000;
 
   width: 450px;
-}
+  margin: auto;
 
-#log_main {
   filter               : alpha(opacity=70);
   -moz-opacity         : 0.7;
   -khtml-opacity       : 0.7;
@@ -64,10 +63,6 @@ body {
   text-align: center;
 
   background-color     : #FFFFFF;
-  filter               : alpha(opacity=70);
-  -moz-opacity         : 0.7;
-  -khtml-opacity       : 0.7;
-  opacity              : 0.7;
 }
 
 #log_status, #log_title
@@ -136,4 +131,8 @@ body {
 
 #log_menu {
   border-top: solid 1px;
+}
+
+#page_body {
+  margin: 0;
 }

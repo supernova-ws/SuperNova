@@ -20,7 +20,6 @@ $password = sys_get_param('password');
 if ($username)
 {
   $result = sn_login($username, $password, $_POST['rememberme']);
-
   switch($result['status'])
   {
     case LOGIN_SUCCESS:
@@ -51,7 +50,7 @@ elseif(!empty($_COOKIE[$config->COOKIE_NAME]))
   die();
 }
 
-$query = doquery('SELECT username FROM {{users}} ORDER BY register_time DESC LIMIT 1;', '', true);
+$query = doquery('SELECT username FROM {{users}} WHERE `user_as_ally` IS NULL ORDER BY register_time DESC LIMIT 1;', '', true);
 $query1 = doquery("SELECT COUNT(DISTINCT(id)) AS users_online FROM {{users}} WHERE onlinetime>" . (time()-900), '', true);
 
 $template = gettemplate('login_body', true);

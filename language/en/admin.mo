@@ -420,25 +420,25 @@ $lang = array_merge($lang, array(
 
   'adm_upd_register' => 'Server registration',
   'adm_upd_register_hint' => '
-    –егистраци€ сервера нужна дл€ р€да запросов к серверу обновлений. ѕри регистрации передаетс€ минимум информации, необходимой дл€ идентификации сервера. ¬ частности, передаетс€:
+    Server registration need for specials queries to update server. When you register there are passed required minimum for unique server identification:
     <ul>
-      <li>ѕолный URL сервера - т.е. HTTP-адрес и подкаталог сервера. Ќапример: http://myserver.com/myfolder/. Ёто необходимо дл€ первичной идентификации сервера. ѕолный путь необходим дл€ того, что бы различать несколько копий —верхЌовой, установленных на одном IP или домене</li>
-      <li>¬нутреннее название сервера. »спользуетс€ дл€ подстановки в сообщени€.</li>
+      <li>Full server URL - i.e. http://myserver.com/myfolder/. It is necessary to distinguish several servers that shares same IP or domain</li>
+      <li>Internal server name. Used in server messages.</li>
     </ul>
-    «ачем вообще регистрировать свой сервер? ¬ будующем планируетс€ р€д возможностей, которые буду доступны только зарегистрированным серверам. ¬ их число входит (отсортированы по запланированным срокам реализации):
+    Why would you like to register? In future there are many features planned wich would be acessed only to registered servers. Short list of planned features:
     <ul>
-     <li>автоматическое получение чейнджлога</li>
-     <li>автоматическое обновление движка</li>
-     <li>участие в рейтинге серверов</li>
-     <li>багрепорты от администраторов серверов</li>
-     <li>пр€мой чат с разработчиками движка</li>
-     <li>удаленна€ диагностика сервера</li>
-     <li>и многое другое</li>
+     <li>Automatic changelog refresh</li>
+     <li>Automatic game update</li>
+     <li>Listing in server ratings</li>
+     <li>Bugreport and ticket system</li>
+     <li>Chat for server admins</li>
+     <li>Remote server diagnostic - at request</li>
+     <li>...and many others</li>
     </ul>
-    «ачем регистрировать свой сервер пр€мо сейчас?
+    Why would you like to register NOW?
     <ul>
-      <li>јдминистраторы зарегестрированных серверов могут рассчитывать на дополнительное внимание разработчиков при диагностике проблем серверов и обработке багрепортов.</li>
-      <li>ѕри регистрации кроме индивидуального ключа серверу выдаетс€ уникальный идентификационный номер, который будет использоватьс€ при первичной сортировке серверов. „ем раньше будет зарегистрирован сервер - тем, например, выше он будет в общем каталоге серверов...</li>
+      <li>Requests of registered server administrators are prioritized for developers.</li>
+      <li>Upon registration each server assigned uniq ID which will be used for basic server sorting. It means that servers with lesser ID (i.e. those who registered first) would be higher in server list...</li>
     </ul>
   ',
   'adm_upd_register_do' => 'Register server',
