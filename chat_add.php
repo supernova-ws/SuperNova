@@ -38,7 +38,7 @@ else
 
 if ($message && $user['username'])
 {
-  $nick = trim(strip_tags($user['username'])) . ($user['ally_tag'] ? '[' . trim(strip_tags($user['ally_tag'])) . ']' : '');
+  $nick = trim(strip_tags($user['username'])) . ($user['ally_tag'] ? '[' . trim(strip_tags($user['ally_tag'])) . ')' : '');
 
   if($user['authlevel'])
   {
