@@ -76,7 +76,7 @@ while($chat_row = mysql_fetch_object($query))
   $nick = str_replace(strip_tags($chat_row->user), $nick_stripped, $chat_row->user);
   if(!$history)
   {
-    $nick = "<span style=\"cursor: pointer;\" onclick=\"addSmiley('({$nick_stripped}]');\">{$nick}</span>";
+    $nick = "<span style=\"cursor: pointer;\" onclick=\"addSmiley('({$nick_stripped})');\">{$nick}</span>";
   }
 
   $chat[] = array(
