@@ -51,7 +51,8 @@ function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = fals
       {
         $ship_record = explode (',', $ship_string);
         $ship_db_name = $sn_data[$ship_record[0]]['name'];
-        $query .= "`{$ship_db_name}` = `{$ship_db_name}` + '{$ship_record[1]}', ";
+        $ship_record[1] = floatval($ship_record[1]);
+        $query .= "`{$ship_db_name}` = `{$ship_db_name}` + {$ship_record[1]}, ";
       }
     }
     doquery("DELETE FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");

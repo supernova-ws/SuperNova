@@ -87,13 +87,14 @@ switch ($fleet_page)
     $fleet_group_mr = sys_get_param_id('fleet_group');
     $fleetarray     = unserialize(base64_decode(str_rot13(sys_get_param('usedfleet'))));
 
-    foreach($fleetarray as $ship_id => $ship_amount)
+    foreach($fleetarray as $ship_id => &$ship_amount)
     {
-      if(!in_array($ship_id, $sn_data['groups']['fleet']) || floatval($ship_amount) != $ship_amount || $ship_amount < 1)
+      if(!in_array($ship_id, $sn_data['groups']['fleet']) || (string)floatval($ship_amount) != $ship_amount || $ship_amount < 1)
       {
         $debug->warning('Supplying wrong ship in ship list on fleet page', 'Hack attempt', 302, array('base_dump' => true));
         die();
       }
+      $ship_amount = floatval($ship_amount);
     }
 
     $UsedPlanet = false;
