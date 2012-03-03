@@ -377,7 +377,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   {
     $mercenary_level = $user[$unit_db_name];
   }
-  elseif(in_array($unit_id, $sn_data['groups']['resources_loot']))
+  elseif(in_array($unit_id, array_merge($sn_data['groups']['resources_loot'], $sn_data['groups']['structures'], $sn_data['groups']['fleet'], $sn_data['groups']['defense'])))
   {
     $mercenary_level =  !empty($planet) ? $planet[$unit_db_name] : $user[$unit_db_name];
   }

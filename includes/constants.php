@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '32');
 define('SN_RELEASE', '33');
-define('SN_VERSION', '33a31.2');
+define('SN_VERSION', '33a31.3');
 
 define('SN_RELEASE_STABLE', '32d0'); // Latest stable release
 
@@ -524,5 +524,6 @@ define('SNC_VER_ERROR_MISSMATCH_KEY_ID', 303);
 
 define('SNC_MODE_VERSION_CHECK', 0);
 define('SNC_MODE_REGISTER', 1);
+define('SNC_MODE_CHANGELOG', 2);
 
 ?>

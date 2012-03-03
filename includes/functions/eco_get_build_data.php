@@ -186,6 +186,7 @@ function eco_can_build_unit($user, $planet, $unit_id)
   {
     foreach($sn_data[$unit_id]['require'] as $require_id => $require_level)
     {
+      /*
       $db_name = $sn_data[$require_id]['name'];
       $data = in_array($require_id, $sn_data['groups']['mercenaries']) ? mrc_get_level($user, $planet, $require_id) : (
         isset($planet[$db_name]) ? $planet[$db_name] : (
@@ -195,7 +196,8 @@ function eco_can_build_unit($user, $planet, $unit_id)
         )
       );
 
-      if($data < $require_level)
+      */
+      if(mrc_get_level($user, $planet, $require_id) < $require_level)
       {
         $accessible = BUILD_REQUIRE_NOT_MEET;
         break;

@@ -9,7 +9,7 @@
 [@] Эта информация будет  интересна  только  админам  и/или  разработчикам/This
     information is only for administrators and/or developers 
 
-Текущая версия 33a31.2 "Temporary Mercenary Aliplayers Avatar Rename VerCheck"
+Текущая версия 33a31.3 "Temporary Mercenary Aliplayers Avatar Rename VerCheck"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [@] ВНИМАНИЕ!!! PHP 5.3.1 содержит баг, который делает невозможной  полноценную
