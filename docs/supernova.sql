@@ -2,15 +2,15 @@
 Navicat MySQL Data Transfer
 
 Source Server         : localhost
-Source Server Version : 50158
+Source Server Version : 50141
 Source Host           : localhost:3306
 Source Database       : supernova
 
 Target Server Type    : MYSQL
-Target Server Version : 50158
+Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2011-12-27 15:39:08
+Date: 2012-03-04 18:54:39
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -35,10 +35,6 @@ CREATE TABLE `sn_aks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_aks
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_alliance`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_alliance`;
@@ -51,7 +47,7 @@ CREATE TABLE `sn_alliance` (
   `ally_description` text,
   `ally_web` varchar(255) DEFAULT '',
   `ally_text` text,
-  `ally_image` varchar(255) DEFAULT '',
+  `ally_image` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `ally_request` text,
   `ally_request_waiting` text,
   `ally_request_notallow` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -61,14 +57,13 @@ CREATE TABLE `sn_alliance` (
   `ranklist` text,
   `total_rank` int(10) unsigned NOT NULL DEFAULT '0',
   `total_points` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `ally_user_id` bigint(20) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `i_ally_name` (`ally_name`),
-  UNIQUE KEY `i_ally_tag` (`ally_tag`)
+  UNIQUE KEY `i_ally_tag` (`ally_tag`),
+  KEY `I_ally_user_id` (`ally_user_id`),
+  CONSTRAINT `FK_ally_ally_user_id` FOREIGN KEY (`ally_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_alliance
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_alliance_diplomacy`
@@ -94,10 +89,6 @@ CREATE TABLE `sn_alliance_diplomacy` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_alliance_diplomacy
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_alliance_negotiation`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_alliance_negotiation`;
@@ -120,14 +111,10 @@ CREATE TABLE `sn_alliance_negotiation` (
   KEY `FK_negotiation_contr_ally_id` (`alliance_negotiation_contr_ally_id`),
   KEY `FK_negotiation_contr_ally_name` (`alliance_negotiation_contr_ally_name`),
   CONSTRAINT `FK_negotiation_ally_id` FOREIGN KEY (`alliance_negotiation_ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_negotiation_contr_ally_id` FOREIGN KEY (`alliance_negotiation_contr_ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_negotiation_ally_name` FOREIGN KEY (`alliance_negotiation_ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_negotiation_contr_ally_id` FOREIGN KEY (`alliance_negotiation_contr_ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_negotiation_contr_ally_name` FOREIGN KEY (`alliance_negotiation_contr_ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_alliance_negotiation
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_alliance_requests`
@@ -141,13 +128,9 @@ CREATE TABLE `sn_alliance_requests` (
   `request_denied` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id_user`,`id_ally`),
   KEY `I_alliance_requests_id_ally` (`id_ally`,`id_user`),
-  CONSTRAINT `FK_alliance_request_user_id` FOREIGN KEY (`id_user`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_alliance_request_ally_id` FOREIGN KEY (`id_ally`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_alliance_request_ally_id` FOREIGN KEY (`id_ally`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_alliance_request_user_id` FOREIGN KEY (`id_user`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_alliance_requests
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_annonce`
@@ -171,10 +154,6 @@ CREATE TABLE `sn_annonce` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_annonce
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_announce`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_announce`;
@@ -186,10 +165,6 @@ CREATE TABLE `sn_announce` (
   PRIMARY KEY (`idAnnounce`),
   KEY `indTimeStamp` (`tsTimeStamp`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_announce
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_banned`
@@ -206,10 +181,6 @@ CREATE TABLE `sn_banned` (
   PRIMARY KEY (`ban_id`),
   KEY `ID` (`ban_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_banned
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_bashing`
@@ -230,10 +201,6 @@ CREATE TABLE `sn_bashing` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_bashing
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_buddy`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_buddy`;
@@ -252,10 +219,6 @@ CREATE TABLE `sn_buddy` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_buddy
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_chat`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_chat`;
@@ -269,10 +232,6 @@ CREATE TABLE `sn_chat` (
   UNIQUE KEY `messageid` (`messageid`),
   KEY `i_ally_idmess` (`ally_id`,`messageid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_chat
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_config`
@@ -301,10 +260,6 @@ CREATE TABLE `sn_confirmations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_confirmations
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_counter`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_counter`;
@@ -323,10 +278,6 @@ CREATE TABLE `sn_counter` (
   KEY `i_ip` (`ip`),
   KEY `I_counter_user_name` (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_counter
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_fleets`
@@ -371,10 +322,6 @@ CREATE TABLE `sn_fleets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_fleets
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_iraks`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_iraks`;
@@ -397,10 +344,6 @@ CREATE TABLE `sn_iraks` (
   CONSTRAINT `FK_iraks_fleet_owner` FOREIGN KEY (`fleet_owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_iraks_fleet_target_owner` FOREIGN KEY (`fleet_target_owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_iraks
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_logs`
@@ -427,10 +370,6 @@ CREATE TABLE `sn_logs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_logs
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_log_dark_matter`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_log_dark_matter`;
@@ -449,27 +388,6 @@ CREATE TABLE `sn_log_dark_matter` (
   KEY `i_log_dark_matter_reason_sender_id` (`log_dark_matter_reason`,`log_dark_matter_sender`,`log_dark_matter_id`),
   KEY `i_log_dark_matter_amount` (`log_dark_matter_amount`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_log_dark_matter
--- ----------------------------
-
--- ----------------------------
--- Table structure for `sn_mercenaries`
--- ----------------------------
-DROP TABLE IF EXISTS `sn_mercenaries`;
-CREATE TABLE `sn_mercenaries` (
-  `user_id` int(11) NOT NULL DEFAULT '0',
-  `id` int(4) NOT NULL DEFAULT '0',
-  `from` int(11) DEFAULT NULL,
-  `to` int(11) DEFAULT NULL,
-  `level` int(2) DEFAULT NULL,
-  PRIMARY KEY (`user_id`,`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_mercenaries
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_messages`
@@ -491,10 +409,6 @@ CREATE TABLE `sn_messages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_messages
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_notes`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_notes`;
@@ -510,10 +424,6 @@ CREATE TABLE `sn_notes` (
   KEY `I_notes_owner` (`owner`),
   CONSTRAINT `FK_notes_owner` FOREIGN KEY (`owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_notes
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_planets`
@@ -590,8 +500,6 @@ CREATE TABLE `sn_planets` (
   `fusion_plant_porcent` tinyint(3) unsigned NOT NULL DEFAULT '10',
   `solar_satelit_porcent` tinyint(3) unsigned NOT NULL DEFAULT '10',
   `que` text COMMENT 'Planet que',
-  `b_tech` int(11) NOT NULL DEFAULT '0',
-  `b_tech_id` smallint(6) NOT NULL DEFAULT '0',
   `b_hangar` int(11) NOT NULL DEFAULT '0',
   `b_hangar_id` text,
   `last_update` int(11) DEFAULT NULL,
@@ -662,6 +570,28 @@ CREATE TABLE `sn_planets` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Table structure for `sn_powerup`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_powerup`;
+CREATE TABLE `sn_powerup` (
+  `powerup_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `powerup_user_id` bigint(20) unsigned DEFAULT NULL,
+  `powerup_planet_id` bigint(20) unsigned DEFAULT NULL,
+  `powerup_category` smallint(6) NOT NULL DEFAULT '0',
+  `powerup_unit_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `powerup_unit_level` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `powerup_time_start` int(11) NOT NULL DEFAULT '0',
+  `powerup_time_finish` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`powerup_id`),
+  KEY `I_powerup_user_id` (`powerup_user_id`),
+  KEY `I_powerup_planet_id` (`powerup_planet_id`),
+  KEY `I_user_powerup_time` (`powerup_user_id`,`powerup_unit_id`,`powerup_time_start`,`powerup_time_finish`),
+  KEY `I_planet_powerup_time` (`powerup_planet_id`,`powerup_unit_id`,`powerup_time_start`,`powerup_time_finish`),
+  CONSTRAINT `FK_powerup_user_id` FOREIGN KEY (`powerup_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_powerup_planet_id` FOREIGN KEY (`powerup_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
 -- Table structure for `sn_quest`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_quest`;
@@ -677,10 +607,6 @@ CREATE TABLE `sn_quest` (
   UNIQUE KEY `quest_id` (`quest_id`),
   KEY `quest_type` (`quest_type`,`quest_order`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_quest
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_quest_status`
@@ -701,10 +627,6 @@ CREATE TABLE `sn_quest_status` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_quest_status
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_referrals`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_referrals`;
@@ -717,10 +639,6 @@ CREATE TABLE `sn_referrals` (
   CONSTRAINT `FK_referrals_id` FOREIGN KEY (`id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_referrals_id_partner` FOREIGN KEY (`id_partner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_referrals
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_rw`
@@ -743,10 +661,6 @@ CREATE TABLE `sn_rw` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_rw
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `sn_shortcut`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_shortcut`;
@@ -767,10 +681,6 @@ CREATE TABLE `sn_shortcut` (
   CONSTRAINT `FK_shortcut_planet_id` FOREIGN KEY (`shortcut_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_shortcut_user_id` FOREIGN KEY (`shortcut_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_shortcut
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_statpoints`
@@ -818,8 +728,16 @@ CREATE TABLE `sn_statpoints` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of sn_statpoints
+-- Table structure for `sn_universe`
 -- ----------------------------
+DROP TABLE IF EXISTS `sn_universe`;
+CREATE TABLE `sn_universe` (
+  `universe_galaxy` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `universe_system` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `universe_name` varchar(32) NOT NULL DEFAULT '',
+  `universe_price` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`universe_galaxy`,`universe_system`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for `sn_users`
@@ -849,15 +767,6 @@ CREATE TABLE `sn_users` (
   `expedition_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
   `colonisation_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
   `graviton_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `rpg_amiral` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `mrc_academic` smallint(5) unsigned DEFAULT '0',
-  `rpg_espion` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `rpg_commandant` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `rpg_stockeur` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `rpg_destructeur` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `rpg_general` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `rpg_raideur` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `rpg_empereur` smallint(5) unsigned NOT NULL DEFAULT '0',
   `player_artifact_list` text,
   `ally_id` bigint(20) unsigned DEFAULT NULL,
   `ally_tag` varchar(8) DEFAULT NULL,
@@ -884,7 +793,6 @@ CREATE TABLE `sn_users` (
   `mnl_expedition` int(11) NOT NULL DEFAULT '0',
   `mnl_buildlist` int(11) NOT NULL DEFAULT '0',
   `msg_admin` bigint(11) unsigned DEFAULT '0',
-  `b_tech_planet` int(11) NOT NULL DEFAULT '0',
   `bana` int(11) DEFAULT NULL,
   `deltime` int(10) unsigned DEFAULT '0',
   `news_lastread` int(10) unsigned DEFAULT '0',
@@ -895,7 +803,7 @@ CREATE TABLE `sn_users` (
   `email_2` varchar(64) NOT NULL DEFAULT '',
   `lang` varchar(8) NOT NULL DEFAULT 'ru',
   `sex` char(1) DEFAULT 'M',
-  `avatar` varchar(255) NOT NULL DEFAULT '',
+  `avatar` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `sign` mediumtext,
   `id_planet` int(11) NOT NULL DEFAULT '0',
   `galaxy` int(11) NOT NULL DEFAULT '0',
@@ -916,12 +824,16 @@ CREATE TABLE `sn_users` (
   `spio_anz` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `settings_tooltiptime` tinyint(1) unsigned NOT NULL DEFAULT '5',
   `settings_fleetactions` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `settings_allylogo` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `settings_esp` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `settings_wri` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `settings_bud` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `settings_mis` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `settings_rep` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `user_as_ally` bigint(20) unsigned DEFAULT NULL,
+  `metal` decimal(65,5) NOT NULL DEFAULT '0.00000',
+  `crystal` decimal(65,5) NOT NULL DEFAULT '0.00000',
+  `deuterium` decimal(65,5) NOT NULL DEFAULT '0.00000',
+  `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'User que',
   PRIMARY KEY (`id`),
   KEY `i_ally_id` (`ally_id`),
   KEY `i_ally_name` (`ally_name`),
@@ -930,18 +842,27 @@ CREATE TABLE `sn_users` (
   KEY `onlinetime` (`onlinetime`),
   KEY `i_register_time` (`register_time`),
   KEY `FK_users_ally_tag` (`ally_tag`),
+  KEY `I_user_user_as_ally` (`user_as_ally`),
   CONSTRAINT `FK_users_ally_id` FOREIGN KEY (`ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `FK_users_ally_name` FOREIGN KEY (`ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `FK_users_ally_tag` FOREIGN KEY (`ally_tag`) REFERENCES `sn_alliance` (`ally_tag`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `FK_users_ally_tag` FOREIGN KEY (`ally_tag`) REFERENCES `sn_alliance` (`ally_tag`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_user_as_ally` FOREIGN KEY (`user_as_ally`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Default server configuration
 -- ----------------------------
-INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '(Place here code for banner)');
-INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '0');
+INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '<tr><td align=center><script type=\"text/javascript\"><!--\r\ngoogle_ad_client = \"pub-1914310741599503\";\r\n/* oGame */\r\ngoogle_ad_slot = \"2544836773\";\r\ngoogle_ad_width = 125;\r\ngoogle_ad_height = 125;\r\n//-->\r\n</script>\r\n<script type=\"text/javascript\"\r\nsrc=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\r\n</script></td></tr>\r\n');
+INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '1');
+INSERT INTO `sn_config` VALUES ('ali_bonus_algorithm', '0');
+INSERT INTO `sn_config` VALUES ('ali_bonus_brackets', '10');
+INSERT INTO `sn_config` VALUES ('ali_bonus_brackets_divisor', '50');
+INSERT INTO `sn_config` VALUES ('ali_bonus_divisor', '10000000');
+INSERT INTO `sn_config` VALUES ('ali_bonus_members', '10');
 INSERT INTO `sn_config` VALUES ('allow_buffing', '0');
 INSERT INTO `sn_config` VALUES ('ally_help_weak', '0');
+INSERT INTO `sn_config` VALUES ('avatar_max_height', '128');
+INSERT INTO `sn_config` VALUES ('avatar_max_width', '128');
 INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
 INSERT INTO `sn_config` VALUES ('chat_highlight_admin', '<font color=purple>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');
@@ -949,19 +870,20 @@ INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</
 INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
-INSERT INTO `sn_config` VALUES ('db_version', '32');
+INSERT INTO `sn_config` VALUES ('db_version', '33');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
-INSERT INTO `sn_config` VALUES ('deuterium_basic_income', 0);
-INSERT INTO `sn_config` VALUES ('eco_scale_storage', 1);
+INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
+INSERT INTO `sn_config` VALUES ('eco_scale_storage', '1');
 INSERT INTO `sn_config` VALUES ('eco_stockman_fleet', '');
+INSERT INTO `sn_config` VALUES ('empire_mercenary_base_period', 30 * 24 * 60 * 60);
+INSERT INTO `sn_config` VALUES ('empire_mercenary_temporary', '1');
 INSERT INTO `sn_config` VALUES ('energy_basic_income', '0');
-INSERT INTO `sn_config` VALUES ('fleet_bashing_attacks', 3);
+INSERT INTO `sn_config` VALUES ('fleet_bashing_attacks', '3');
 INSERT INTO `sn_config` VALUES ('fleet_bashing_interval', 30 * 60);
 INSERT INTO `sn_config` VALUES ('fleet_bashing_scope', 24 * 60 * 60);
 INSERT INTO `sn_config` VALUES ('fleet_bashing_war_delay', 12 * 60 * 60);
-INSERT INTO `sn_config` VALUES ('fleet_bashing_waves', 3);
-INSERT INTO `sn_config` VALUES ('fleet_buffing_check', 1);
+INSERT INTO `sn_config` VALUES ('fleet_bashing_waves', '3');
 INSERT INTO `sn_config` VALUES ('Fleet_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('fleet_speed', '1');
 INSERT INTO `sn_config` VALUES ('flt_lastUpdate', UNIX_TIMESTAMP(NOW()));
@@ -970,13 +892,13 @@ INSERT INTO `sn_config` VALUES ('game_counter', '0');
 INSERT INTO `sn_config` VALUES ('game_default_language', 'ru');
 INSERT INTO `sn_config` VALUES ('game_default_skin', 'skins/EpicBlue/');
 INSERT INTO `sn_config` VALUES ('game_default_template', 'OpenGame');
-INSERT INTO `sn_config` VALUES ('game_disable', 0);
+INSERT INTO `sn_config` VALUES ('game_disable', '0');
 INSERT INTO `sn_config` VALUES ('game_disable_reason', 'SuperNova is in maintenance mode! Please return later!');
-INSERT INTO `sn_config` VALUES ('game_email_pm', 0);
-INSERT INTO `sn_config` VALUES ('game_maxGalaxy', 5);
-INSERT INTO `sn_config` VALUES ('game_maxPlanet', 15);
-INSERT INTO `sn_config` VALUES ('game_maxSystem', 199);
-INSERT INTO `sn_config` VALUES ('game_mode', 0);
+INSERT INTO `sn_config` VALUES ('game_email_pm', '0');
+INSERT INTO `sn_config` VALUES ('game_maxGalaxy', '5');
+INSERT INTO `sn_config` VALUES ('game_maxPlanet', '15');
+INSERT INTO `sn_config` VALUES ('game_maxSystem', '199');
+INSERT INTO `sn_config` VALUES ('game_mode', '0');
 INSERT INTO `sn_config` VALUES ('game_name', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('game_news_actual', '259200');
 INSERT INTO `sn_config` VALUES ('game_news_overview', '3');
@@ -1008,31 +930,43 @@ INSERT INTO `sn_config` VALUES ('quest_total', '0');
 INSERT INTO `sn_config` VALUES ('resource_multiplier', '1');
 INSERT INTO `sn_config` VALUES ('rpg_bonus_divisor', '10');
 INSERT INTO `sn_config` VALUES ('rpg_bonus_minimum', '10000');
-INSERT INTO `sn_config` VALUES ('rpg_cost_banker', '1');
-INSERT INTO `sn_config` VALUES ('rpg_cost_exchange', '1');
-INSERT INTO `sn_config` VALUES ('rpg_cost_pawnshop', '1');
-INSERT INTO `sn_config` VALUES ('rpg_cost_scraper', '1');
-INSERT INTO `sn_config` VALUES ('rpg_cost_stockman', '1');
-INSERT INTO `sn_config` VALUES ('rpg_cost_trader', '1');
+INSERT INTO `sn_config` VALUES ('rpg_cost_banker', '1000');
+INSERT INTO `sn_config` VALUES ('rpg_cost_exchange', '1000');
+INSERT INTO `sn_config` VALUES ('rpg_cost_info', '10000');
+INSERT INTO `sn_config` VALUES ('rpg_cost_pawnshop', '1000');
+INSERT INTO `sn_config` VALUES ('rpg_cost_scraper', '1000');
+INSERT INTO `sn_config` VALUES ('rpg_cost_stockman', '1000');
+INSERT INTO `sn_config` VALUES ('rpg_cost_trader', '1000');
 INSERT INTO `sn_config` VALUES ('rpg_exchange_crystal', '2');
-INSERT INTO `sn_config` VALUES ('rpg_exchange_darkMatter', '100000');
+INSERT INTO `sn_config` VALUES ('rpg_exchange_darkMatter', '400');
 INSERT INTO `sn_config` VALUES ('rpg_exchange_deuterium', '4');
 INSERT INTO `sn_config` VALUES ('rpg_exchange_metal', '1');
-INSERT INTO `sn_config` VALUES ('rpg_officer', '3');
+INSERT INTO `sn_config` VALUES ('rpg_flt_explore', '1000');
 INSERT INTO `sn_config` VALUES ('rpg_scrape_crystal', '0.50');
 INSERT INTO `sn_config` VALUES ('rpg_scrape_deuterium', '0.25');
 INSERT INTO `sn_config` VALUES ('rpg_scrape_metal', '0.75');
+INSERT INTO `sn_config` VALUES ('server_updater_check_auto', '0');
+INSERT INTO `sn_config` VALUES ('server_updater_check_last', '0');
+INSERT INTO `sn_config` VALUES ('server_updater_check_period', 24 * 60 * 60);
+INSERT INTO `sn_config` VALUES ('server_updater_check_result', '-1');
+INSERT INTO `sn_config` VALUES ('server_updater_id', '0');
+INSERT INTO `sn_config` VALUES ('server_updater_key', '');
 INSERT INTO `sn_config` VALUES ('stats_schedule', 'd@04:00:00');
+INSERT INTO `sn_config` VALUES ('tpl_minifier', '0');
+INSERT INTO `sn_config` VALUES ('uni_price_galaxy', '10000');
+INSERT INTO `sn_config` VALUES ('uni_price_system', '1000');
+INSERT INTO `sn_config` VALUES ('upd_lock_time', '60');
 INSERT INTO `sn_config` VALUES ('url_dark_matter', '');
-INSERT INTO `sn_config` VALUES ('url_faq', '');
-INSERT INTO `sn_config` VALUES ('url_forum', '');
-INSERT INTO `sn_config` VALUES ('url_rules', '');
+INSERT INTO `sn_config` VALUES ('url_faq', 'http://forum.supernova.ws/viewtopic.php?f=3&t=1891');
+INSERT INTO `sn_config` VALUES ('url_forum', 'http://forum.supernova.ws/');
+INSERT INTO `sn_config` VALUES ('url_rules', 'http://forum.supernova.ws/viewtopic.php?f=3&t=974');
 INSERT INTO `sn_config` VALUES ('users_amount', '1');
 INSERT INTO `sn_config` VALUES ('user_vacation_disable', '0');
-INSERT INTO `sn_config` VALUES ('var_db_update', UNIX_TIMESTAMP(NOW()));
-INSERT INTO `sn_config` VALUES ('var_db_update_end', UNIX_TIMESTAMP(NOW()));
-INSERT INTO `sn_config` VALUES ('var_stat_update', UNIX_TIMESTAMP(NOW()));
-INSERT INTO `sn_config` VALUES ('var_stat_update_end', UNIX_TIMESTAMP(NOW()));
+INSERT INTO `sn_config` VALUES ('var_db_update', '0');
+INSERT INTO `sn_config` VALUES ('var_db_update_end', '0');
+INSERT INTO `sn_config` VALUES ('var_news_last', '0');
+INSERT INTO `sn_config` VALUES ('var_stat_update', '0');
+INSERT INTO `sn_config` VALUES ('var_stat_update_end', '0');
 INSERT INTO `sn_config` VALUES ('var_stat_update_msg', '');
 
 -- ----------------------------

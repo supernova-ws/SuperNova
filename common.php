@@ -34,8 +34,8 @@ if(
   (defined('IN_ADMIN') && IN_ADMIN && $user['authlevel'] < 1)
 )
 {
-  setcookie($config->COOKIE_NAME, '', time() - 3600*25);
-  header('Location: ' . (IN_ADMIN == true ? '../' : '') .'login.php');
+  setcookie($config->COOKIE_NAME, '', time() - PERIOD_WEEK);
+  header('Location: ' . SN_ROOT_VIRTUAL .'login.php');
   ob_end_flush();
   die();
 }

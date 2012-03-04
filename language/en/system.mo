@@ -191,7 +191,7 @@ $lang = array_merge($lang, array(
   'sys_fields' => "Fields",
 
 // Cookies
-  'err_cookie' => "Error! You cannot authenticate the user on information in a cookie. <a href='login." . PHP_EX . "'>Log on</a> in a game or <a href='reg." . PHP_EX . "'>register new account</a>.",
+  'err_cookie' => "Error! You cannot authenticate the user on information in a cookie.<br />Clear cookies in you browser then <a href='login." . PHP_EX . "'>log in</a> in a game or <a href='reg." . PHP_EX . "'>register new account again</a>.",
 
 // Supported languages
   'ru'              	  => 'Russian',

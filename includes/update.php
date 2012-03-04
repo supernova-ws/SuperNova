@@ -28,12 +28,13 @@ if(!defined('INIT'))
 
 define('IN_UPDATE', true);
 
-require('update/upd_helpers.php');
+require('includes/upd_helpers.php');
 
-$debug_value = $config->debug;
+$config->reset();
+$config->db_loadAll();
 $config->debug = 0;
 
-$config->db_loadItem('db_version');
+//$config->db_loadItem('db_version');
 if($config->db_version == DB_VERSION)
 {
 }
@@ -61,6 +62,8 @@ while($row = mysql_fetch_row($query))
   upd_load_table_info($row[0]);
 }
 upd_log_message('Table info loaded. Now looking DB for upgrades...');
+
+upd_do_query('SET FOREIGN_KEY_CHECKS=0;');
 
 switch($new_version)
 {
@@ -124,7 +127,6 @@ switch($new_version)
     upd_alter_table('referrals', "ADD KEY `id_partner` (`id_partner`)", !$update_indexes['referrals']['id_partner']);
 
     upd_check_key('rpg_bonus_divisor', 10);
-    upd_check_key('rpg_officer', 3);
 
     upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('BannerURL', 'banner_source_post', 'BannerOverviewFrame',
       'close_reason', 'dbVersion', 'ForumUserBarFrame', 'OverviewBanner', 'OverviewClickBanner', 'OverviewExternChat',
@@ -265,17 +267,6 @@ switch($new_version)
       }
     }
 
-    upd_create_table('mercenaries',
-      "(
-        `id` bigint(11) NOT NULL AUTO_INCREMENT,
-        `id_user` bigint(11) NOT NULL,
-        `mercenary` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
-        `time_start` int(11) NOT NULL DEFAULT '0',
-        `time_finish` int(11) NOT NULL DEFAULT '0',
-        PRIMARY KEY (`id`),
-        KEY `i_user_mercenary_time` (`id_user`, `mercenary`, `time_start`, `time_finish`)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
-    );
   upd_do_query('COMMIT;', true);
   $new_version = 23;
 
@@ -890,49 +881,6 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       ), !$update_foreigns['users']['FK_users_ally_tag']);
     }
 
-    if(!$config->rpg_flt_explore)
-    {
-      $inflation_rate = 1000;
-
-      $config->db_saveItem('rpg_cost_banker', $config->rpg_cost_banker * $inflation_rate);
-      $config->db_saveItem('rpg_cost_exchange', $config->rpg_cost_exchange * $inflation_rate);
-      $config->db_saveItem('rpg_cost_pawnshop', $config->rpg_cost_pawnshop * $inflation_rate);
-      $config->db_saveItem('rpg_cost_scraper', $config->rpg_cost_scraper * $inflation_rate);
-      $config->db_saveItem('rpg_cost_stockman', $config->rpg_cost_stockman * $inflation_rate);
-      $config->db_saveItem('rpg_cost_trader', $config->rpg_cost_trader * $inflation_rate);
-
-      $config->db_saveItem('rpg_exchange_darkMatter', $config->rpg_exchange_darkMatter / $inflation_rate * 4);
-
-      $config->db_saveItem('rpg_bonus_divisor', $config->rpg_bonus_divisor * $inflation_rate);
-      
-      $config->db_saveItem('rpg_flt_explore', $inflation_rate);
-
-      doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` * {$inflation_rate};");
-
-      $query = doquery("SELECT * FROM {{quest}}");
-      while($row = mysql_fetch_assoc($query))
-      {
-        $query_add = '';
-        $quest_reward_list = explode(';', $row['quest_rewards']);
-        foreach($quest_reward_list as &$quest_reward)
-        {
-          list($reward_resource, $reward_amount) = explode(',', $quest_reward);
-          if($reward_resource == RES_DARK_MATTER)
-          {
-            $quest_reward = "{$reward_resource}," . $reward_amount * 1000;
-          }
-        }
-        $new_rewards = implode(';', $quest_reward_list);
-        if($new_rewards != $row['quest_rewards'])
-        {
-          doquery("UPDATE {{quest}} SET `quest_rewards` = '{$new_rewards}' WHERE quest_id = {$row['quest_id']} LIMIT 1;");
-        }
-      }
-
-    }
-
-    upd_check_key('rpg_bonus_minimum', 10000, !isset($config->rpg_bonus_minimum));
-
     upd_alter_table('users', array(
       "ADD COLUMN `player_artifact_list` TEXT",
     ), !isset($update_tables['users']['player_artifact_list']));
@@ -1489,7 +1437,6 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       }
     }
 
-//    upd_do_query("DROP TABLE IF EXISTS {$config->db_prefix}universe;");
     if(!isset($update_tables['universe']))
     {
       upd_create_table('universe',
@@ -1502,8 +1449,6 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
           PRIMARY KEY (`universe_galaxy`, `universe_system`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
-//          `universe_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-//           PRIMARY KEY (`universe_id`),
 
       upd_check_key('uni_price_galaxy', 10000, !isset($config->uni_price_galaxy));
       upd_check_key('uni_price_system', 1000, !isset($config->uni_price_system));
@@ -1512,7 +1457,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     // ========================================================================
     // Ally player
     // Adding config variable
-    upd_check_key('ali_members_bonus', 10, !isset($config->ali_members_bonus));
+    upd_check_key('ali_bonus_members', 10, !isset($config->ali_bonus_members));
 
     // ------------------------------------------------------------------------
     // Modifying tables
@@ -1617,7 +1562,6 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_check_key('server_updater_check_period', PERIOD_DAY, !isset($config->server_updater_check_period));
     upd_check_key('server_updater_check_last', 0, !isset($config->server_updater_check_last));
     upd_check_key('server_updater_check_result', SNC_VER_NEVER, !isset($config->server_updater_check_result));
-
     upd_check_key('server_updater_key', '', !isset($config->server_updater_key));
     upd_check_key('server_updater_id', 0, !isset($config->server_updater_id));
 
@@ -1626,12 +1570,57 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_check_key('ali_bonus_brackets', 10, !isset($config->ali_bonus_brackets));
     upd_check_key('ali_bonus_brackets_divisor', 50, !isset($config->ali_bonus_brackets_divisor));
 
-//    upd_check_key('ali_bonus_members', $config->ali_members_bonus, !isset($config->ali_bonus_members));
+    if(!$config->db_loadItem('rpg_flt_explore'))
+    {
+      $inflation_rate = 1000;
+
+      $config->db_saveItem('rpg_cost_banker', $config->rpg_cost_banker * $inflation_rate);
+      $config->db_saveItem('rpg_cost_exchange', $config->rpg_cost_exchange * $inflation_rate);
+      $config->db_saveItem('rpg_cost_pawnshop', $config->rpg_cost_pawnshop * $inflation_rate);
+      $config->db_saveItem('rpg_cost_scraper', $config->rpg_cost_scraper * $inflation_rate);
+      $config->db_saveItem('rpg_cost_stockman', $config->rpg_cost_stockman * $inflation_rate);
+      $config->db_saveItem('rpg_cost_trader', $config->rpg_cost_trader * $inflation_rate);
+
+      $config->db_saveItem('rpg_exchange_darkMatter', $config->rpg_exchange_darkMatter / $inflation_rate * 4);
+
+      $config->db_saveItem('rpg_flt_explore', $inflation_rate);
+
+      doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` * {$inflation_rate};");
+
+      $query = doquery("SELECT * FROM {{quest}}");
+      while($row = mysql_fetch_assoc($query))
+      {
+        $query_add = '';
+        $quest_reward_list = explode(';', $row['quest_rewards']);
+        foreach($quest_reward_list as &$quest_reward)
+        {
+          list($reward_resource, $reward_amount) = explode(',', $quest_reward);
+          if($reward_resource == RES_DARK_MATTER)
+          {
+            $quest_reward = "{$reward_resource}," . $reward_amount * 1000;
+          }
+        }
+        $new_rewards = implode(';', $quest_reward_list);
+        if($new_rewards != $row['quest_rewards'])
+        {
+          doquery("UPDATE {{quest}} SET `quest_rewards` = '{$new_rewards}' WHERE quest_id = {$row['quest_id']} LIMIT 1;");
+        }
+      }
+    }
+
+    upd_check_key('rpg_bonus_minimum', 10000, !isset($config->rpg_bonus_minimum));
+    upd_check_key('rpg_bonus_divisor',
+      !isset($config->rpg_bonus_divisor) ? 10 : ($config->rpg_bonus_divisor >= 1000 ? floor($config->rpg_bonus_divisor / 1000) : $config->rpg_bonus_divisor),
+      !isset($config->rpg_bonus_divisor) || $config->rpg_bonus_divisor >= 1000);
+
+    upd_check_key('var_news_last', 0, !isset($config->var_news_last));
 
     upd_do_query('COMMIT;', true);
-//    $new_version = 33;
+    $new_version = 33;
 };
 upd_log_message('Upgrade complete.');
+
+upd_do_query('SET FOREIGN_KEY_CHECKS=1;');
 
 if($new_version)
 {
@@ -1643,12 +1632,12 @@ else
   upd_log_message("DB version didn't changed from {$config->db_version}");
 }
 
+$config->db_loadAll();
+
 if($user['authlevel'] >= 3)
 {
   print(str_replace("\r\n", '<br>', $upd_log));
 }
-
-$config->debug = $debug_value;
 
 unset($sn_cache->tables);
 sys_refresh_tablelist($config->db_prefix);

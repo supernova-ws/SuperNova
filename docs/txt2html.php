@@ -194,7 +194,7 @@ foreach($output as $chapter)
     continue;
   }
 
-  buf_print("<h1>{$chapter['name']}</h1>");
+  buf_print("<h1>{$chapter['name']}</h1>\r\n");
   foreach($chapter['content'] as $block)
   {
     buf_print("<div class=\"{$styles[$block['style']]}\">" . ($block['style'] != 'D' ? "[{$block['style']}]&nbsp;" : ''));
@@ -267,7 +267,7 @@ foreach($output as $chapter)
         }
       }
     }
-    buf_print("</div>");
+    buf_print("</div>\r\n");
   }
 }
 

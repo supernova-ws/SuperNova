@@ -36,7 +36,7 @@ function sn_set_cookie($user, $rememberme)
 
   $md5pass = md5("{$user['password']}--{$config->secret_word}");
   $cookie = "{$user['id']}/%/{$user['username']}/%/{$md5pass}/%/{$rememberme}";
-  $result = setcookie($config->COOKIE_NAME, $cookie, $expiretime, '/', '', 0);
+  $result = setcookie($config->COOKIE_NAME, $cookie, $expiretime);
 }
 
 function sn_autologin($abort = true)
@@ -58,7 +58,8 @@ function sn_autologin($abort = true)
 
   if(!$user || md5("{$user['password']}--{$config->secret_word}") != $TheCookie[2])
   {
-    setcookie($config->COOKIE_NAME);
+    setcookie($config->COOKIE_NAME, '', time() - PERIOD_WEEK);
+    // setcookie($config->COOKIE_NAME);
     if($abort)
     {
       message($lang['err_cookie']);

@@ -119,7 +119,7 @@ foreach($relations as $relation)
   }
 }
 
-$lang['ALI_MEMBERS_BONUS'] = isset($sn_module['ali_ally_player']) ? $config->ali_members_bonus : 0;
+$lang['ALI_BONUS_MEMBERS'] = isset($sn_module['ali_ally_player']) ? $config->ali_bonus_members : 0;
 
 $template = parsetemplate($template, $lang);
 

@@ -28,11 +28,11 @@
 
 if (!defined('INSIDE')) die();
 
-
 $lang = array_merge($lang, array(
   'aff_title' => 'Affiliate program',
-  'aff_text1' => 'Place a personal link, banner or userbar forum or site and each coming under the link will be your Guest. For every',
-  'aff_text2' => 'DM earned an invited, you will receive 1000 Dark Matter!',
+  'aff_text1' => 'Place a personal link, banner or userbar on forum or site and each coming under the link will be your Invited. You will have 1 DM for every',
+  'aff_text2' => 'DM earned by Invited.',
+  'aff_text3' => 'Bonus starts when your Invited will gain',
   'aff_link' => 'Personal link partner program',
   'aff_link_bb' => 'BBCode for placing personal references to Forum',
   'aff_link_html' => 'HTML code to place personal links on a Web page',

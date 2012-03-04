@@ -44,6 +44,10 @@ function upd_check_key($key, $default_value, $condition = false)
     }
     $config->db_saveItem($key, $default_value);
   }
+  else
+  {
+    $config->db_saveItem($key);
+  }
 }
 
 function upd_log_version_update()

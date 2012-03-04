@@ -29,14 +29,14 @@
   <tr>
     <th>{L_Members}</th>
     <th>
-      <!-- IF ALI_MEMBERS_BONUS -->
-        <!-- IF ALLY_MEMBERS >= ALI_MEMBERS_BONUS -->
+      <!-- IF ALI_BONUS_MEMBERS -->
+        <!-- IF ALLY_MEMBERS >= ALI_BONUS_MEMBERS -->
           <!-- DEFINE $ALLY_MEMBERS_CLASS = 'ok' -->
         <!-- ELSE -->
           <!-- DEFINE $ALLY_MEMBERS_CLASS = 'warning' -->
         <!-- ENDIF -->
       <!-- ENDIF -->
-      <span class="{$ALLY_MEMBERS_CLASS}">{ALLY_MEMBERS}<!-- IF ALI_MEMBERS_BONUS -->/{ALI_MEMBERS_BONUS} {L_ali_info_bonus_rate}: {ALLY_BONUS_RATE}<!-- ENDIF --></span>
+      <span class="{$ALLY_MEMBERS_CLASS}">{ALLY_MEMBERS}<!-- IF ALI_BONUS_MEMBERS -->/{ALI_BONUS_MEMBERS} {L_ali_info_bonus_rate}: {ALLY_BONUS_RATE}<!-- ENDIF --></span>
       <!-- IF ! EXTERNAL --><a href="alliance.php?mode=memberslist" class="fr">[ {Members_list} ]</a><!-- ENDIF -->
     </th>
   </tr>

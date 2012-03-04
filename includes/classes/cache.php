@@ -157,7 +157,7 @@ class classCache
       break;
 
       case CACHER_XCACHE:
-        return xcache_isset($this->prefix.$name);
+        return xcache_isset($this->prefix.$name) && ($this->__get($name) !== null);
       break;
 
     };
@@ -489,7 +489,7 @@ class classConfig extends classPersistent
 
     'eco_scale_storage'      => 1,
 
-    'ali_members_bonus'      => 10, // Minumum alliace size to start using bonus
+    'ali_bonus_members'      => 10, // Minumum alliace size to start using bonus
     'ali_bonus_algorithm'    => 0,  // Bonus calculation algorithm
     'ali_bonus_divisor'      => 10000000, // Rank divisor for ALI_BONUS_BY_POINTS
     'ali_bonus_brackets'     => 10, // Brackets count for ALI_BONUS_BY_RANK
@@ -581,7 +581,6 @@ class classConfig extends classPersistent
     'chat_highlight_moderator' => '<font color=green>$1</font>', // highlighting moderator nick
 
     //Roleplay system
-    'rpg_officer'       =>  3000,    // Cost per officer level
     'rpg_bonus_divisor' => 10,    // Amount of DM referral shoud get for partner have 1 DM bonus
     'rpg_bonus_minimum' => 10000, // Minimum DM ammount for starting paying bonuses to affiliate
 
@@ -615,6 +614,9 @@ class classConfig extends classPersistent
     'var_stat_update_end' => 0,
     'var_stat_update_msg' => 'Update never started',
     'stats_schedule' => 'd@04:00:00',
+
+    'var_news_last' => 0,      // Last news post time
+    'rpg_flt_explore' => 1000, // DM reward for finding Supernova in expedition
 
     'var_db_update'     => 0,  // Time of last DB update
     'var_db_update_end' => 0,  // Time when last DB update should end. Need to prevent duplicate update

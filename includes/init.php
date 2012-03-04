@@ -125,8 +125,8 @@ if(empty($sn_cache->tables))
 
 // Initializing global "config" object
 $config = new classConfig($db_prefix);
-$config->db_prefix = $db_prefix;
-$config->secret_word = $sn_secret_word;
+$config->db_saveItem('db_prefix', $db_prefix);
+$config->db_saveItem('secret_word', $sn_secret_word);
 
 if(defined('BE_DEBUG') || $config->debug)
 {
@@ -145,7 +145,7 @@ require_once("{$sn_root_physical}includes/vars.{$phpEx}");
 $update_file = "{$sn_root_physical}includes/update.{$phpEx}";
 if(file_exists($update_file))
 {
-  if(filemtime($update_file) > $config->var_db_update || $config->db_version < DB_VERSION)
+  if(filemtime($update_file) > $config->db_loadItem('var_db_update') || $config->db_loadItem('db_version') < DB_VERSION)
   {
     if($time_now >= $config->var_db_update_end)
     {
