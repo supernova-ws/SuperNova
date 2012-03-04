@@ -193,7 +193,6 @@ $lang = array_merge($lang, array(
   'fl_aks_too_slow' => 'Fleet is too slow and could not join the war Union',
   'fl_fleet_not_exists' => 'The fleet was not found',
   'fl_multi_ip_protection' => 'Protection against multi-accounts!<br>Unable to send resources to the player with same IP!',
-  'fl_on_stores' => 'In stock',
   'fl_load_cargo' => 'Storage',
   'fl_rest_on_planet' => 'Balance',
   'fl_none_resources' => 'Reset',

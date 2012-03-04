@@ -47,7 +47,7 @@ $lang = array_merge($lang, array(
     <li>Artifacts are expendables i.e. after use Artifact disappears</li>
     <li>Some Artifacts too powerfull that can exist only within limit numbers in one Empire</li>
     <li>Usually Artifact effect extends only on planet where it used but some of them has Empire-wide effect.
-    Rarest and powerfullest Artifaxts extends their effect to whole solar system, galaxy or even Universe!</li>
+    Rarest and powerfullest Artifacts extends their effect to whole solar system, galaxy or even Universe!</li>
   </ul>',
 ));
 

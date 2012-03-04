@@ -630,6 +630,9 @@ $lang = array_merge($lang, array(
   'sys_fleet_and' => '+ флоты',
 
   'sys_on_planet' => 'На планете',
+  'fl_on_stores' => 'На складе',
+
+  'sys_ali_members_bonus' => 'Минимальное размер Альянса для получения бонуса',
 
 ));
 

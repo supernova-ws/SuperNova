@@ -9,7 +9,7 @@
  *
  */
 
-include('common.' . substr(strrchr(__FILE__, '.'), 1));
+require_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 define('SN_IN_MARKET', true);
 
@@ -18,19 +18,19 @@ lng_include('fleet');
 
 $mode = sys_get_param_int('mode');
 $action = sys_get_param_int('action');
-$shipList  = $_POST['ships'];
+$shipList = $_POST['ships'];
 
 $page_title = "{$lang['eco_mrk_title']}";
 
 $stock = sys_unit_str2arr($config->eco_stockman_fleet);
-
 $newstock = $stock;
-
 $intError = MARKET_DEAL;
+
 switch($mode)
 {
   case MARKET_RESOURCES: // Resource trader
     require('includes/includes/market_trader.inc');
+    $template = eco_mrk_trader($user, $planetrow);
   break;
 
   case MARKET_SCRAPPER: // Fleet scraper

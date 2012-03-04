@@ -10,30 +10,43 @@
   <tr>
     <th class="c_l" colspan="{$COLSPAN}">
       <!-- IF EXTERNAL -->
-        {L_ali_info_title}
+      {L_ali_info_title}
       <!-- ELSE -->
-        {L_your_alliance}
-        <span class="fr">
-          <!-- IF ALLY_ADMIN -->
-            <a href="alliance.php?mode=admin&edit=ally"><span class="ok">[&nbsp;{L_ally_admin}&nbsp;]</span></a>
-          <!-- ELSEIF ALLY_CAN_KICK -->
-            <a href="alliance.php?mode=admin&edit=members"><span class="ok">[&nbsp;{L_members_admin}&nbsp;]</span></a>
-          <!-- ENDIF -->
-        </span>
+      {L_your_alliance}
+      <span class="fr">
+        <!-- IF ALLY_ADMIN -->
+          <a href="alliance.php?mode=admin&edit=ally"><span class="ok">[&nbsp;{L_ally_admin}&nbsp;]</span></a>
+        <!-- ELSEIF ALLY_CAN_KICK -->
+          <a href="alliance.php?mode=admin&edit=members"><span class="ok">[&nbsp;{L_members_admin}&nbsp;]</span></a>
+        <!-- ENDIF -->
+      </span>
       <!-- ENDIF -->
     </th>
   </tr>
   <tr><th width=150>{L_Tag}</th><th>{ally_tag}</th><!-- IF ally_image --><th rowspan="5" valign="top"><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/ally_{ally_id}.png"></th><!-- ENDIF --></tr>
   <tr><th>{L_Name}</th><th>{ally_name}</th></tr>
   <tr><th>{L_Main_Page}</th><th><a href="{ally_web}">{ally_web}</a></th></tr>
-  <tr><th>{L_Members}</th><th>{ally_members}<!-- IF ! EXTERNAL -->&nbsp;(<a href="alliance.php?mode=memberslist">{Members_list}</a>)<!-- ENDIF --></th></tr>
+  <tr>
+    <th>{L_Members}</th>
+    <th>
+      <!-- IF ALI_MEMBERS_BONUS -->
+        <!-- IF ALLY_MEMBERS >= ALI_MEMBERS_BONUS -->
+          <!-- DEFINE $ALLY_MEMBERS_CLASS = 'ok' -->
+        <!-- ELSE -->
+          <!-- DEFINE $ALLY_MEMBERS_CLASS = 'warning' -->
+        <!-- ENDIF -->
+      <!-- ENDIF -->
+      <span class="{$ALLY_MEMBERS_CLASS}">{ALLY_MEMBERS}<!-- IF ALI_MEMBERS_BONUS -->/{ALI_MEMBERS_BONUS} {L_ali_info_bonus_rate}: {ALLY_BONUS_RATE}<!-- ENDIF --></span>
+      <!-- IF ! EXTERNAL --><a href="alliance.php?mode=memberslist" class="fr">[ {Members_list} ]</a><!-- ENDIF -->
+    </th>
+  </tr>
   <!-- IF EXTERNAL && ! USER_ALLY_ID -->
-    <tr>
-      <th>{L_ali_req_make}</th>
-      <th><a href="alliance.php?mode=apply&a={ally_id}">{Click_writerequest}</a></th>
-    </tr>
+  <tr>
+    <th>{L_ali_req_make}</th>
+    <th><a href="alliance.php?mode=apply&a={ally_id}">{Click_writerequest}</a></th>
+  </tr>
   <!-- ENDIF -->
-  <tr><th colspan=2>{ALLY_DESCRIPTION}</th></tr>
+  <!-- IF ALLY_DESCRIPTION --><tr><th colspan=2>{ALLY_DESCRIPTION}</th></tr><!-- ENDIF -->
 </table>
 
 <!-- IF ! EXTERNAL -->
@@ -47,16 +60,16 @@
   <!-- IF MANAGE_REQUESTS --><tr><th>{ali_req_check}</th><th><a href="alliance.php?mode=admin&edit=requests"><!-- IF ALLY_REQUESTS -->{L_ali_req_requestCount}:&nbsp;{ALLY_REQUESTS}<!-- ELSE -->{L_ali_req_emptyList}<!-- ENDIF --></a></th></tr><!-- ENDIF -->
   <!-- IF MASS_MAIL --><tr><th>{Circular_message}</th><th><a href="alliance.php?mode=circular">{Send_circular_mail}</a></th></tr><!-- ENDIF -->
   <!-- IF ! ALLY_ADMIN -->
-    <tr>
-      <th>{L_ali_info_leave}</th>
-      <th>
-        <form action="alliance.php" method="post">
-          <input type="checkbox" name="ali_info_leave_confirm" value="1"> {L_ali_info_leave}
-          <input type="hidden" name="mode" value="exit">
-          <input type="submit" value="{L_sys_confirm}">
-        </form>
-      </th>
-    </tr>
+  <tr>
+    <th>{L_ali_info_leave}</th>
+    <th>
+      <form action="alliance.php" method="post">
+        <input type="checkbox" name="ali_info_leave_confirm" value="1"> {L_ali_info_leave}
+        <input type="hidden" name="mode" value="exit">
+        <input type="submit" value="{L_sys_confirm}">
+      </form>
+    </th>
+  </tr>
   <!-- ENDIF -->
   <!-- IF ALLY_TEXT --><tr><th colspan=2>{ALLY_TEXT}</th></tr><!-- ENDIF -->
 </table>
@@ -66,18 +79,18 @@
   <tr>
     <td class=c colspan=3>
       <span class="fl">{L_ali_dip_title}</span>
-      <!-- IF ALLY_NEGOTIATE --><a class="fr" href="alliance.php?mode=admin&edit=diplomacy">{L_ali_dip_negotiate}</a><!-- ENDIF -->
+      <!-- IF ALLY_NEGOTIATE --><a class="fr" href="alliance.php?mode=admin&edit=diplomacy">[ {L_ali_dip_negotiate} ]</a><!-- ENDIF -->
     </td>
   </tr>
   <!-- BEGIN relation -->
-    <tr>
-      <th width=120>{relation.TIME}</th>
-      <th>{relation.NAME}</th>
-      <th width=100>{relation.RELATION}</th>
-    </tr>
+  <tr>
+    <th width=120>{relation.TIME}</th>
+    <th>{relation.NAME}</th>
+    <th width=100>{relation.RELATION}</th>
+  </tr>
   <!-- BEGINELSE relation -->
-    <tr><th>
-      {L_ali_dip_relation_none}
-    </th></tr>
+  <tr><th>
+    {L_ali_dip_relation_none}
+  </th></tr>
   <!-- END relation -->
 </table>

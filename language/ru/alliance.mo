@@ -136,6 +136,7 @@ $lang = array_merge($lang, array(
   'ali_info_title' => 'Информация об Альянсе',
   'ali_info_internal' => 'Внутрення информация',
   'ali_info_leave' => 'Покинуть Альянс',
+  'ali_info_bonus_rate' => 'Коэфициент бонуса',
   'Name' => 'Название',
   'Tag' => 'Обозначение',
   'Members' => 'Участники',
@@ -257,7 +258,8 @@ $lang = array_merge($lang, array(
   'opt_msg_avatar_error_unsupported' => 'Формат загруженного изображения не поддерживается. Поддерживаются только файлы JPG, GIF, PNG размером до 200КБ',
 
   'ali_admin_mercenaries' => 'Наемники Альянса',
-  'ali_admin_techs' => 'Технологии Альянса',
+  'ali_admin_techs' => 'Исследования Альянса',
+  'ali_admin_market_trader' => 'Обмен ресурсов на чёрном рынке',
 
   'ali_res_player_bonus' => 'Бонус участника',
   'ali_res_transfer' => 'Перевести',

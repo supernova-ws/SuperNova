@@ -80,11 +80,6 @@ else
   $lang['ALLY_REQUESTS'] = $request['request_count'];
 }
 
-if(!$ally['ally_description'])
-{
-  $ally['ally_description'] = $lang['Ally_nodescription'];
-}
-
 $patterns[] = "#\[fc\]([a-z0-9\#]+)\[/fc\](.*?)\[/f\]#Ssi";
 $replacements[] = '<font color="\1">\2</font>';
 $patterns[] = '#\[img\](.*?)\[/img\]#Smi';
@@ -96,12 +91,13 @@ $replacements[] = '</font>';
 $lang['ALLY_DESCRIPTION'] = nl2br(preg_replace($patterns, $replacements, $ally['ally_description']));
 $lang['ALLY_TEXT']    = nl2br(preg_replace($patterns, $replacements, $ally['ally_text']));
 
-$lang['ally_id']      = $ally['id'];
-$lang['ally_members'] = $ally['ally_members'];
-$lang['ally_web']     = $ally['ally_web'];
-$lang['ally_tag']     = $ally['ally_tag'];
-$lang['ally_image']   = $ally['ally_image'];
-$lang['ally_name']    = $ally['ally_name'];
+$lang['ally_id']         = $ally['id'];
+$lang['ALLY_MEMBERS']    = $ally['ally_members'];
+$lang['ALLY_BONUS_RATE'] = function_exists('sn_module_ali_player_get_multiplier') ? sn_module_ali_player_get_multiplier($ally) : 0;
+$lang['ally_web']        = $ally['ally_web'];
+$lang['ally_tag']        = $ally['ally_tag'];
+$lang['ally_image']      = $ally['ally_image'];
+$lang['ally_name']       = $ally['ally_name'];
 
 $relations = ali_relations($ally['id']);
 foreach($relations as $relation)
@@ -122,6 +118,8 @@ foreach($relations as $relation)
     ));
   }
 }
+
+$lang['ALI_MEMBERS_BONUS'] = isset($sn_module['ali_ally_player']) ? $config->ali_members_bonus : 0;
 
 $template = parsetemplate($template, $lang);
 

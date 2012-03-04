@@ -1621,6 +1621,13 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_check_key('server_updater_key', '', !isset($config->server_updater_key));
     upd_check_key('server_updater_id', 0, !isset($config->server_updater_id));
 
+    upd_check_key('ali_bonus_algorithm', 0, !isset($config->ali_bonus_algorithm));
+    upd_check_key('ali_bonus_divisor', 10000000, !isset($config->ali_bonus_divisor));
+    upd_check_key('ali_bonus_brackets', 10, !isset($config->ali_bonus_brackets));
+    upd_check_key('ali_bonus_brackets_divisor', 50, !isset($config->ali_bonus_brackets_divisor));
+
+//    upd_check_key('ali_bonus_members', $config->ali_members_bonus, !isset($config->ali_bonus_members));
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 33;
 };

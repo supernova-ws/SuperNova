@@ -628,7 +628,6 @@ function sn_ali_fill_user_ally(&$user)
 
   if(!isset($user['ally']))
   {
-// TODO: Check why there is several queries to DB instead of one
     $user['ally'] = doquery("SELECT * FROM {{alliance}} WHERE `id` = {$user['ally_id']} LIMIT 1;", true);
   }
 
@@ -679,22 +678,6 @@ function get_ship_data($ship_id, $user)
   }
 
   return $ship_data;
-}
-
-function sn_sys_load_php_files($dir_name, $phpEx = 'php')
-{
-  if(file_exists($dir_name))
-  {
-    $dir = opendir($dir_name);
-    while(($file = readdir($dir)) !== false)
-    {
-      $extension = substr($file, -strlen($phpEx));
-      if($extension == $phpEx)
-      {
-        require_once("{$dir_name}{$file}");
-      }
-    }
-  }
 }
 
 ?>

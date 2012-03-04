@@ -490,6 +490,10 @@ class classConfig extends classPersistent
     'eco_scale_storage'      => 1,
 
     'ali_members_bonus'      => 10, // Minumum alliace size to start using bonus
+    'ali_bonus_algorithm'    => 0,  // Bonus calculation algorithm
+    'ali_bonus_divisor'      => 10000000, // Rank divisor for ALI_BONUS_BY_POINTS
+    'ali_bonus_brackets'     => 10, // Brackets count for ALI_BONUS_BY_RANK
+    'ali_bonus_brackets_divisor' => 10,// Bonus divisor for ALI_BONUS_BY_RANK
 
     'empire_mercenary_temporary' => 0, // Temporary empire-wide mercenaries
     'empire_mercenary_base_period' => PERIOD_MONTH, // Base

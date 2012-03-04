@@ -1,10 +1,14 @@
     <!-- planet_resources BOF -->
     <tr class="c_l">
-      <th>{L_sys_resources}</th>
+      <th><!-- IF SN_IN_ALLY -->{L_sys_alliance}<!-- ELSE -->{L_sys_resources}<!-- ENDIF --></th>
       <th class="c_l">{L_sys_metal}</th>
       <th class="c_l">{L_sys_crystal}</th>
       <th class="c_l">{L_sys_deuterium}</th>
+      <!-- IF SN_IN_ALLY -->
+      <th class="c_l">{L_sys_dark_matter}</th>
+      <!-- ELSE -->
       <th class="c_l"<!-- IF ! SN_NAVBAR_HIDE_FLEETS --> colspan="2"<!-- ENDIF -->>{L_sys_energy}</th>
+      <!-- ENDIF -->
     </tr>
 
     <tr>
@@ -12,9 +16,14 @@
       <td class="c_r" id='top_metal'>{PLANET_METAL_TEXT}</td>
       <td class="c_r" id='top_crystal'>{PLANET_CRYSTAL_TEXT}</td>
       <td class="c_r" id='top_deuterium'>{PLANET_DEUTERIUM_TEXT}</td>
+      <!-- IF SN_IN_ALLY -->
+      <td class="c_r" id='top_deuterium'>{DARK_MATTER_TEXT}</td>
+      <!-- ELSE -->
       <td class="c_r">{ENERGY_BALANCE}</td>
+      <!-- ENDIF -->
     </tr>
 
+    <!-- IF ! SN_IN_ALLY -->
     <tr>
       <th>{L_tech_storage_max}</th>
       <td class="c_r">{PLANET_METAL_MAX_TEXT}</td>
@@ -22,6 +31,7 @@
       <td class="c_r">{PLANET_DEUTERIUM_MAX_TEXT}</td>
       <td class="c_r">{ENERGY_MAX}</td>
     </tr>
+    <!-- ENDIF -->
 
     <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
     <tr>

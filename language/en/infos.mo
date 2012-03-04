@@ -319,7 +319,7 @@ $lang = array_merge($lang, array(
 
     SHIP_SUPERNOVA => array(
       'description' => 'You are granted a ship from the emperor for your cruelty skills.',
-      'description_short' => ' - the flagship of the fleet of the Empire. The huge cost of erection with compensated terrible firepower and advanced protection. One ship of this class is able to defeat the average fleet alone.',
+      'description_short' => 'The flagship of the fleet of the Empire. The huge build cost will be compensated with terrible firepower and advanced protection. One ship of this class is able to defeat an average fleet by itself.',
     ),
 
     '401' => array(

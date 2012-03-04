@@ -113,11 +113,17 @@
 
 
   <tr><td class="c" colspan="2">{L_adm_opt_game_oth_info}</td></tr>
+  <!-- IF ALI_MEMBERS_BONUS -->
+  <tr>
+    <th>{L_sys_ali_members_bonus}</th> 
+    <th>{ALI_MEMBERS_BONUS}</th>
+  </tr>
+  <!-- ENDIF -->
   <tr>
     <th>{L_adm_opt_exchange}</th>
     <th>{L_sys_metal}&nbsp;{C_rpg_exchange_metal}&nbsp;:&nbsp;{L_sys_crystal}&nbsp;{C_rpg_exchange_crystal}&nbsp;:&nbsp;{L_sys_deuterium}&nbsp;{C_rpg_exchange_deuterium}&nbsp;:&nbsp;{L_sys_dark_matter_sh}&nbsp;{C_rpg_exchange_darkMatter}</th>
   </tr>
-  <tr> 
+  <tr>
     <th>{L_adm_opt_vacation_mode_is}</th> 
     <th>
       <!-- IF USER_VACATION_DISABLE -->
@@ -125,7 +131,7 @@
       <!-- ELSE -->
         {L_sys_on}
       <!-- ENDIF -->
-    </th> 
+    </th>
   </tr>
   <tr>
     <th>{L_adm_opt_build_on_research}</th>

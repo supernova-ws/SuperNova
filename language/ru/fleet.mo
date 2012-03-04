@@ -191,7 +191,6 @@ $lang = array_merge($lang, array(
   'fl_aks_too_slow' => 'Флот слишком медленный и не может присоединиться к боевому союзу',
   'fl_fleet_not_exists' => 'Указанный флот не найден',
   'fl_multi_ip_protection' => 'ЗАЩИТА ОТ МУЛЬИАККАУНТОВ!<br>Невозможно отправить ресурсы игроку с таким же IP!',
-  'fl_on_stores' => 'На складе',
   'fl_load_cargo' => 'В трюме',
   'fl_rest_on_planet' => 'Остаток',
   'fl_none_resources' => 'Сбросить',

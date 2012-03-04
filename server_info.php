@@ -17,6 +17,7 @@ $template->assign_vars(array(
   'fleet_bashing_scope' => sys_time_human($config->fleet_bashing_scope),
   'fleet_bashing_war_delay' => sys_time_human($config->fleet_bashing_war_delay),
   'EMPIRE_MERCENARY_TEMPORARY' => $config->empire_mercenary_temporary,
+  'ALI_MEMBERS_BONUS' => isset($sn_module['ali_ally_player']) ? $config->ali_members_bonus : 0,
 ));
 
 display(parsetemplate($template));

@@ -82,8 +82,9 @@ define('SN_ROOT_PHYSICAL', $sn_root_physical);
 define('SN_ROOT_VIRTUAL' , 'http://' . $_SERVER['HTTP_HOST'] . $sn_root_relative);
 define('PHP_EX', $phpEx); // PHP extension on this server
 
-$time_now      = time();
-$microtime     = microtime(true);
+define('SN_TIME_NOW', $time_now = time());
+define('SN_TIME_MICRO', $microtime = microtime(true));
+
 $user          = array();
 $lang          = array();
 $sn_modules    = array();
@@ -107,20 +108,7 @@ $debug = new debug();
 //require_once("{$sn_root_physical}includes/db/{$dbms}.{$phpEx}");
 // $db      = new $sql_db();
 
-$dir_name = "{$sn_root_physical}includes/classes";
-$dir = opendir($dir_name);
-while (($file = readdir($dir)) !== false)
-{
-  $extension = substr(strrchr($file, '.'), 1); //$extension = '.' . substr($file, -3);
-  if(strpos($extension, '/') !== false)
-  {
-    $extension = '';
-  }
-
-  if ($extension == $phpEx){
-    require_once("{$dir_name}/{$file}");
-  }
-}
+sn_sys_load_php_files("{$sn_root_physical}includes/classes/", $phpEx);
 
 // Initializing global 'cacher' object
 $sn_cache = new classCache($db_prefix);
@@ -192,14 +180,11 @@ $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 
 // Now including all functions
 require_once("{$sn_root_physical}includes/general.{$phpEx}");
-
 require_once("{$sn_root_physical}includes/template.{$phpEx}");
-// require_once("{$sn_root_physical}language/" . DEFAULT_LANG .'/language.mo');
-//$lang['LANG_INFO'] = $lang_info;
-//unset($lang_info);
-
 sn_sys_load_php_files("{$sn_root_physical}includes/functions/", $phpEx);
-sn_sys_load_php_files("{$sn_root_physical}modules/", $phpEx);
+
+$sn_module = array();
+sn_sys_load_php_files("{$sn_root_physical}modules/", $phpEx, true);
 
 sn_db_connect();
 
@@ -209,6 +194,40 @@ lng_switch($force_lang);
 if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= $time_now)
 {
   include(SN_ROOT_PHYSICAL . 'ajax_version_check.php');
+}
+
+
+// ------------------------------------------------------------------------------------------------------------------------------
+function sn_sys_load_php_files($dir_name, $phpEx = 'php', $modules = false)
+{
+  if(file_exists($dir_name))
+  {
+    $dir = opendir($dir_name);
+    while(($file = readdir($dir)) !== false)
+    {
+      if($file == '..' || $file == '.')
+      {
+        continue;
+      }
+
+      $full_filename = $dir_name . $file;
+      if($modules && is_dir($full_filename))
+      {
+        if(file_exists($full_filename = "{$full_filename}/{$file}.{$phpEx}"))
+        {
+          require_once($full_filename);
+        }
+      }
+      else
+      {
+        $extension = substr($full_filename, -strlen($phpEx));
+        if($extension == $phpEx)
+        {
+          require_once($full_filename);
+        }
+      }
+    }
+  }
 }
 
 ?>
