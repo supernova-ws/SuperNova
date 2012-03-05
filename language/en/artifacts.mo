@@ -32,7 +32,7 @@ $lang = array_merge($lang, array(
   'art_lhc_subj'        => 'Creating moon...',
   'art_lhc_moon_create' => 'LHC\'s gravity wave connects large pieces of debris resulting to creation new moon %s on coordinates %s!',
   'art_lhc_moon_exists' => 'There is already moon on moon orbit on current coordinates',
-  'art_lhc_moon_fail'   => 'Unfortunatly LHC\'s gravite wave was not enough to create new moon',
+  'art_lhc_moon_fail'   => 'Unfortunatly LHC\'s gravity wave was not enough to create a new moon',
 
   'art_rcd_from'        => 'Rapid Colony Deployer',
   'art_rcd_subj'        => 'Colony deployed',

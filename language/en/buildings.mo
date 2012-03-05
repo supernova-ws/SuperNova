@@ -85,7 +85,7 @@ $lang = array_merge($lang, array(
   'eco_bld_resources_not_enough' => 'Lack the resources to build units ordered',
   'eco_bld_msg_err_research_in_progress' => 'Scientists of empire already researching other technology',
   'eco_bld_msg_err_not_research' => 'Can not research in laboratory other than technology',
-  'eco_bld_msg_err_requirements_not_meet' => 'Requirements for technology research not meet',
+  'eco_bld_msg_err_requirements_not_meet' => 'Requirements for technology research not met',
 ));
 
 ?>

@@ -14,11 +14,11 @@ $url = 'http://supernova.ws/version_check.php?mode=' . $mode
 /*
 //TODO REMOVE DEBUG!!!
 $url = 'http://localhost/supernova_site/version_check.php?mode=' . $mode
-  . '&db=' . DB_VERSION
-  . '&release=' . SN_RELEASE
-  . '&version=' . SN_VERSION
-  . '&key=' . urlencode($config->server_updater_key)
-  . '&id=' . urlencode($config->server_updater_id);
+. '&db=' . DB_VERSION
+. '&release=' . SN_RELEASE
+. '&version=' . SN_VERSION
+. '&key=' . urlencode($config->server_updater_key)
+. '&id=' . urlencode($config->server_updater_id);
 */
 switch($mode)
 {
@@ -31,16 +31,13 @@ switch($mode)
       }
       die();
     }
-// TODO REMOVE DEBUG!!!
-//$url .= "&name=" . urlencode($config->game_name) . "&url=" . urlencode('http://supernova.ws/');
     $url .= "&name=" . urlencode($config->game_name) . "&url=" . urlencode(SN_ROOT_VIRTUAL);
+//TODO REMOVE DEBUG!!!
+//$url .= "&name=" . urlencode($config->game_name) . "&url=" . urlencode('http://supernova.ws/');
   break;
 }
 
-//debug($url, '$url');
-
 $check_result = sn_get_url_contents($url);
-//debug($check_result, '$check_result');
 if(!$check_result)
 {
   $version_check = SNC_VER_ERROR_CONNECT;

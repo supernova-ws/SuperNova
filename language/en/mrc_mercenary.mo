@@ -59,7 +59,7 @@ $lang = array_merge($lang, array(
   'mrc_msg_error_wrong_period' => 'Unacceptable hire period',
   'mrc_msg_error_already_hired' => 'Mercenary already hired. Wait until hire period ends',
   'mrc_msg_error_no_resource' => 'Not enough Dark Matter to hire mercenary',
-  'mrc_msg_error_requirements' => 'Requirements not meet',
+  'mrc_msg_error_requirements' => 'Requirements not met',
 
   'mrc_dismiss' => 'Dismiss',
   'mrc_dismiss_confirm' => 'When you dismissing mercenary you loose all DM that you spent for hiring this merc before! Are you sure that you want do dismiss mercenary?',

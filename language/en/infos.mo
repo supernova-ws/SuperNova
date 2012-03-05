@@ -258,8 +258,8 @@ $lang = array_merge($lang, array(
     ),
 
     SHIP_FIGHTER_LIGHT => array(
-      'description' => 'Lightweight fighter is highly maneuverable craft, which can be found on almost every planet. Cost is not too big, but the shielding power and capacity of very small.',
-      'description_short' => 'Lightweight fighter is highly maneuverable craft, which can be found on almost every planet. Cost is not too big, but the shielding power and capacity of very small.',
+      'description' => 'Lightweight fighter is a highly maneuverable craft, which can be found on almost every planet. Cost is not too big, but the shielding power and capacity are very small.',
+      'description_short' => 'Lightweight fighter is a highly maneuverable craft, which can be found on almost every planet. Cost is not too big, but the shielding power and capacity are very small.',
     ),
 
     SHIP_FIGHTER_HEAVY => array(
