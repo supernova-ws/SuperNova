@@ -327,8 +327,8 @@ ADD CONSTRAINT `FK_users_ally_tag` FOREIGN KEY (`ally_tag`) REFERENCES `{$config
 Он связывает поле ally_tag таблицы users (подчиненная) с полем ally_tag таблицы
 alliance (главная). Когда поле  ally_tag  изменяется  в  таблице  alliance,  то
 связанное поле автоматически изменяется в таблице users. Если запись  удаляется
-из таблицы users - поле ally_tag d соответствующей записи удаляется из  таблицы
-users.
+из таблицы users  -  поле  ally_tag  в  соответствующей  записи  таблицы  users
+обнуляется.
 
 Что бы можно было сделать  такую  связь,  нужна  логическая  целостность  обоих
 таблиц. Это означает, что:
@@ -351,8 +351,7 @@ doquery("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id S
 нужно было бы просто удалить из подчиненной таблицы все записи, для которых нет
 соответствия в главной таблице. На примере constraint для таблицы shortcut:
 ADD CONSTRAINT `FK_shortcut_planet_id` FOREIGN KEY (`shortcut_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-
-соответствующий запрос:
+Соответствующий запрос:
 doquery('DELETE FROM {{shortcut}} WHERE shortcut_planet_id NOT IN (SELECT id FROM {{planets}});');
 
 ??????
@@ -396,7 +395,8 @@ https://github.com/supernova-ws/SuperNova/archives/trunk
 Клик на «Download .zip» и загрузит архив транка. При чем именно надо перейти по
 ссылке выше и там щелкнуть кнопку. Переход по прямой ссылке на загружаемый файл
 – не сработает.
-На название файла внимание обращать не нужно.
+На название файла внимание обращать не нужно -  будет  загружена  самая  свежая
+версия из ветки trunk.
 
 !!!ВНИМАНИЕ!!! Диагностику нужно проводить на отдельной БД  и  отдельной  копии
 движка! НИ В КОЕМ СЛУЧАЕ НЕЛЬЗЯ ПРОВОДИТЬ ДИАГНОСТИКУ НА ЖИВОМ СЕРВЕРЕ!!!
