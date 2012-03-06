@@ -9,7 +9,7 @@
 [@] Эта информация будет  интересна  только  админам  и/или  разработчикам/This
     information is only for administrators and/or developers 
 
-Текущая версия 33c0.1 RC "Temporary Mercenary Aliplayers Avatar Rename VerCheck"
+Текущая версия 33c0.2 RC "Temporary Mercenary Aliplayers Avatar Rename VerCheck"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [@] ВНИМАНИЕ!!! В этой версии скорректирована работа партнерской  программы,  а
