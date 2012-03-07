@@ -21,7 +21,7 @@ lng_include('stat');
 $parse = $lang;
 $who = ($who = sys_get_param_int('who')) ? $who : 1;
 $type = ($type = sys_get_param_int('type')) ? $type : 1;
-$range = ($range = sys_get_param_int('range')) ? $range : 1;
+$range = sys_get_param_int('range', 1);
 
 $parse['who']    = "<option value=\"1\"". (($who == "1") ? " SELECTED" : "") .">". $lang['stat_player'] ."</option>";
 $parse['who']   .= "<option value=\"2\"". (($who == "2") ? " SELECTED" : "") .">". $lang['stat_allys']  ."</option>";
@@ -97,19 +97,19 @@ if ($who == 2) {
   while ($StatRow = mysql_fetch_assoc($query)) {
     $ranking                  = $StatRow[ $OldRank ] - $StatRow[ $Rank ];
     if ($ranking == 0) {
-      $parse['ally_rankplus']   = "<font color=\"#87CEEB\">*</font>";
+      $parse['ally_rankplus']   = "<span class=\"neutral\">*</font>";
     }elseif ($ranking < 0) {
-      $parse['ally_rankplus']   = "<font color=\"red\">".$ranking."</font>";
+      $parse['ally_rankplus']   = "<span class=\"negative\">".$ranking."</span>";
     }elseif ($ranking > 0) {
-      $parse['ally_rankplus']   = "<font color=\"green\">+".$ranking."</font>";
+      $parse['ally_rankplus']   = "<span class=\"positive\">+".$ranking."</span>";
     }
     if ($StatRow['ally_name'] == $user['ally_name']) {
       $parse['ally_name'] = "<font color=\"#33CCFF\">".$StatRow['ally_name']."</font>";
     } else {
       $parse['ally_name'] = $StatRow['ally_name'];
     }
-
     $parse['ally_rank']       = $start;
+    $parse['ally_rank_selected'] = $start == $range ? "&gt;" : '';
     $parse['ally_tag']        = $StatRow['ally_tag'];
     $parse['ally_id']         = $StatRow['id'];
     $parse['ally_mes']        = '';
@@ -126,15 +126,15 @@ if ($who == 2) {
     $LastPage = floor($MaxUsers['count'] / 100);
   }
   $parse['range'] = "";
+  $start = floor($range / 100 % 100) * 100;
   for ($Page = 0; $Page <= $LastPage; $Page++) {
     $PageValue      = ($Page * 100) + 1;
     $PageRange      = $PageValue + 99;
-    $parse['range'] .= "<option value=\"". $PageValue ."\"". (($range == $PageValue) ? " SELECTED" : "") .">". $PageValue ."-". $PageRange ."</option>\n";
+    $parse['range'] .= "<option value=\"". $PageValue ."\"". (($start + 1 == $PageValue) ? " SELECTED" : "") .">". $PageValue ."-". $PageRange ."</option>\n";
   }
 
   $parse['stat_header'] = parsetemplate(gettemplate('stat_playertable_header'), $parse);
 
-  $start = floor($range / 100 % 100) * 100;
   $start1 = $start;
   $query = doquery("SELECT @rownum:=@rownum+1 rownum, {{statpoints}}.* FROM (SELECT @rownum:=0) r, {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' ORDER BY `". $Rank ."`, id_owner LIMIT ". $start .",100;");
 
@@ -146,13 +146,14 @@ if ($who == 2) {
     $parse['player_rank']     = ($StatRow['rownum'] + $start1);
 
     $parse['player_rank']     = $StatRow[ $Rank ];
+    $parse['player_rank_selected'] = $start == $range ? "&gt;" : '';
     $ranking                  = $StatRow[ $OldRank ] - $StatRow[ $Rank ];
     if ($ranking == "0") {
-      $parse['player_rankplus'] = "<font color=\"#87CEEB\">*</font>";
+      $parse['player_rankplus'] = "<span class=\"neutral\">*</span>";
     }elseif ($ranking < "0") {
-      $parse['player_rankplus'] = "<font color=\"red\">".$ranking."</font>";
+      $parse['player_rankplus'] = "<span class=\"negative\">".$ranking."</span>";
     }elseif ($ranking > "0") {
-      $parse['player_rankplus'] = "<font color=\"green\">+".$ranking."</font>";
+      $parse['player_rankplus'] = "<span class=\"positive\">+".$ranking."</span>";
     }
     if ($UsrRow['id'] == $user['id']) {
       $parse['player_name']     = "<font color=\"lime\">".$UsrRow['username']."</font>";

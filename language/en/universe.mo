@@ -169,7 +169,7 @@ $lang = array_merge($lang, array(
     <li>
     When naming galaxy or system you can choose naming price. Naming price can't be less than proposed</li>
     <li>
-    Why you can choose to increase naming price? Next player that wish to rename galaxy or system after you should pay your naming price plus base price for galaxy or system. So paying higher prce will protect (in some degree) galaxy or system from further renaming</li>
+    Why you can choose to increase naming price? Next player that wish to rename galaxy or system after you should pay your naming price plus base price for galaxy or system. So paying higher price will protect (in some degree) galaxy or system from further renaming</li>
   ",
 
   'uni_galaxy_of' => 'galaxy',

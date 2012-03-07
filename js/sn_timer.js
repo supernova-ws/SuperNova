@@ -134,7 +134,8 @@ function sn_timer_compile_que(timer_options)
   return compiled;
 };
 
-function sn_timer() {
+function sn_timer()
+{
   var HTML, HTML_timer, HTML_finish;
 
   var local_time = new Date();
@@ -145,13 +146,12 @@ function sn_timer() {
 
   for(timerID in sn_timers)
   {
-    timer = sn_timers[timerID];
-    if(!timer['active'])
+    if(!sn_timers[timerID]['active'])
     {
       continue;
     }
-    timer_options = timer['options'];
 
+    timer = sn_timers[timerID];
     if(!timer['html_main'])
     {
       sn_timers[timerID]['html_main']   = document.getElementById(timer['id']);
@@ -167,6 +167,7 @@ function sn_timer() {
     HTML_que    = timer['html_que'];
     HTML_total  = timer['html_total'];
 
+    timer_options = timer['options'];
     switch(timer['type'])
     {
       case 0: // old que display
@@ -324,12 +325,12 @@ function sn_timer() {
         var que_item = timer_options['que'][0];
         var que_compiled = '';
 
-        if(!timer['que_compiled'] && timer['que_compiled'] != '')
+        if(!timer['que_compiled'] || timer['que_compiled'] != '')
         {
           sn_timers[timerID]['que_compiled'] = sn_timer_compile_que(timer_options);
 //          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
-          que_compiled = sn_timers[timerID]['que_compiled'];
         }
+        que_compiled = sn_timers[timerID]['que_compiled'];
 
         if(que_item[UNIT_TIME] <= timestamp - timer['start_time'])
         {

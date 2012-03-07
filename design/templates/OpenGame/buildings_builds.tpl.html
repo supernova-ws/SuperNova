@@ -7,12 +7,12 @@ var eco_bld_style_probe;
 
 language = 
 {
-  eco_que_empty: '{L_eco_que_empty}',
-  level: '{L_level}',
-  level_short: '{L_sys_level_short}',
-  bld_create: '{L_bld_create}',
-  bld_destroy: '{L_bld_destroy}',
-  construction_time: '{L_ConstructionTime}',
+  eco_que_empty: '{LA_eco_que_empty}',
+  level: '{LA_level}',
+  level_short: '{LA_sys_level_short}',
+  bld_create: '{LA_bld_create}',
+  bld_destroy: '{LA_bld_destroy}',
+  construction_time: '{LA_ConstructionTime}',
   eco_price: '{L_eco_price}',
   eco_left: '{L_eco_left}',
   eco_left_fleet: '{L_sys_fleet_and}',
@@ -290,17 +290,21 @@ jQuery(document).ready(
 
     eco_bld_style_probe = sn_probe_style(element_cache['style_probe'], 'border-top-color');
 
+    var production_id_first;
+    for(production_id_first in production)
+    {
+      eco_struc_show_unit_info(production_id_first, true);
+      break;
+    }
+/*
     for(production_id in production)
     {
-      eco_struc_show_unit_info(production_id, true);
+      eco_struc_show_unit_info(production_id, true, true);
       // break;
     }
 
-    for(production_id in production)
-    {
-      eco_struc_show_unit_info(production_id, true);
-      break;
-    }
+    eco_struc_show_unit_info(production_id_first, true);
+*/
   }
 );
 --></script>

@@ -25,7 +25,7 @@ foreach($lang['tech'] as $unit_id => $unit_name)
     $data_row = false;
     if(in_array($unit_id, array_merge($sn_data['groups']['structures'], $sn_data['groups']['fleet'], $sn_data['groups']['defense'])))
     {
-      $data_row = doquery ("SELECT `username`, `{$sn_data[$unit_id]['name']}` AS `current` FROM {{planets}} AS p LEFT JOIN {{users}} AS u ON u.id = p.id_owner WHERE `{$sn_data[$unit_id]['name']}` = (SELECT MAX(`{$sn_data[$unit_id]['name']}`) FROM {{planets}} WHERE `id_level` = '0') AND `id_level` = '0' ORDER BY p.`id` LIMIT 1;", '', true);
+      $data_row = doquery ("SELECT `username`, `{$sn_data[$unit_id]['name']}` AS `current` FROM {{planets}} AS p LEFT JOIN {{users}} AS u ON u.id = p.id_owner WHERE `{$sn_data[$unit_id]['name']}` = (SELECT MAX(`{$sn_data[$unit_id]['name']}`) FROM {{planets}} WHERE `id_level` = '0' and `id_owner` != 0) AND `id_level` = '0' ORDER BY p.`id` LIMIT 1;", '', true);
     }
     elseif(in_array($unit_id, $sn_data['groups']['tech']))
     {

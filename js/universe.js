@@ -22,7 +22,7 @@ function show_user(id)
       result = result + "<tr><th><a href=messages.php?mode=write&id=" + id + ">" + language['gl_sendmess'] + "</a></th></tr>";
       result = result + "<tr><th><a href=buddy.php?a=2&u=" + id + ">" + language['gl_buddyreq'] + "</a></th></tr>";
     }
-    result = result + "<tr><th><a href=stat.php?who=player&start=" + users[id]['rank'] + ">" + language['gl_stats'] + "</a></th></tr></table>";
+    result = result + "<tr><th><a href=\"stat.php?who=1&range=" + users[id]['rank'] + "#" + users[id]['rank'] + "\">" + language['gl_stats'] + "</a></th></tr></table>";
 
     users[id]['cache'] = result;
   }
@@ -48,7 +48,7 @@ function show_alliance(id)
     result += "<br>" + language['gal_sys_members'] + allies[id]['members'];
     result += "</center></td></tr>";
     result += "<tr><th><a href=alliance.php?mode=ainfo&a=" + id + ">" + language['gl_ally_internal'] + "</a></th></tr>";
-    result += "<tr><th><a href=stat.php?start=1&who=ally>" + language['gl_stats'] + "</a></th></tr>";
+    result += "<tr><th><a href=\"stat.php?range=" + allies[id]['rank'] + "&who=2#" + allies[id]['rank'] + "\">" + language['gl_stats'] + "</a></th></tr>";
     if (allies[id]['url'])
     {
       result += "<tr><th><a href=" + allies[id]['url'] + " target=_new>" + language['gl_ally_web'] + "</th></tr>";

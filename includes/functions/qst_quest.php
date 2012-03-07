@@ -10,7 +10,7 @@ function qst_render_page()
   $quest_units_allowed   = array_merge($sn_data['groups']['structures'], $sn_data['groups']['tech'], $sn_data['groups']['fleet'], $sn_data['groups']['defense']);
   $quest_reward_allowed = &$sn_data['groups']['quest_rewards'];
 
-  $in_admin = defined('IN_ADMIN') && IN_ADMIN == true;
+  $in_admin = defined('IN_ADMIN') && IN_ADMIN === true;
 
   if($in_admin)
   {
