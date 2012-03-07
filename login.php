@@ -51,7 +51,7 @@ elseif(!empty($_COOKIE[$config->COOKIE_NAME]))
 }
 
 $query = doquery('SELECT username FROM {{users}} WHERE `user_as_ally` IS NULL ORDER BY register_time DESC LIMIT 1;', '', true);
-$query1 = doquery("SELECT COUNT(DISTINCT(id)) AS users_online FROM {{users}} WHERE onlinetime>" . (time()-900), '', true);
+$query1 = doquery("SELECT COUNT(DISTINCT(id)) AS users_online FROM {{users}} WHERE user_as_ally is null and onlinetime>" . (time()-900), '', true);
 
 $template = gettemplate('login_body', true);
 $template->assign_vars(array(

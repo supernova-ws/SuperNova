@@ -121,7 +121,7 @@ if ($who == 2) {
     $start++;
   }
 } else {
-  $MaxUsers = doquery ("SELECT COUNT(*) AS `count` FROM {{users}} WHERE `deltime` = '0';", '', true);
+  $MaxUsers = doquery ("SELECT COUNT(*) AS `count` FROM {{users}} WHERE `deltime` = '0' and user_as_ally IS NULL;", '', true);
   if ($MaxUsers['count'] > 100) {
     $LastPage = floor($MaxUsers['count'] / 100);
   }
@@ -141,7 +141,7 @@ if ($who == 2) {
   $start++;
   $parse['stat_values'] = "";
   while ($StatRow = mysql_fetch_assoc($query)) {
-    $UsrRow                   = doquery("SELECT * FROM {{users}} WHERE `id` = '". $StatRow['id_owner'] ."';", '',true);
+    $UsrRow                   = doquery("SELECT * FROM {{users}} WHERE `id` = '". $StatRow['id_owner'] ."' LIMIT 1;", '',true);
 
     $parse['player_rank']     = ($StatRow['rownum'] + $start1);
 

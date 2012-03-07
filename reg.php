@@ -13,6 +13,7 @@
 include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('login');
+lng_include('admin');
 
 $wylosuj = rand(100000,9000000);
 $kod = md5($wylosuj);
@@ -176,10 +177,15 @@ if ($_POST['submit'])
 }
 else
 {
+  $query = doquery('SELECT username FROM {{users}} WHERE `user_as_ally` IS NULL ORDER BY register_time DESC LIMIT 1;', '', true);
+  $query1 = doquery("SELECT COUNT(DISTINCT(id)) AS users_online FROM {{users}} WHERE user_as_ally is null and onlinetime>" . (time()-900), '', true);
+
   $template = gettemplate('registry_form', true);
   $template->assign_vars(array(
     'id_ref'     => $id_ref,
     'servername' => $config->game_name,
+    'last_user'    => $query['username'],
+    'online_users' => $query1['users_online'],
     'URL_RULES'  => $config->url_rules,
     'URL_FORUM'  => $config->url_forum,
     'URL_FAQ'    => $config->url_faq,
