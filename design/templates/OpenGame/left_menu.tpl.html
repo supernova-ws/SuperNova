@@ -5,11 +5,19 @@
     <tr><td class="c_c"><img border="0" src="design/images/supernova.png" alt="supernova.ws" /></td></tr>
 
     <!-- IF USER_AUTHLEVEL > 0 -->
-      <tr>
-        <th class="c_c">
-          <a href="admin/overview.php" style="color: lime;">[{USER_AUTHLEVEL_NAME}]</a>
-        </th>
-      </tr>
+    <tr>
+      <th class="c_c">
+        <a href="admin/overview.php"><span class="ok">[{USER_AUTHLEVEL_NAME}]</span></a>
+      </th>
+    </tr>
+    <!-- ENDIF -->
+
+    <!-- IF USER_IMPERSONATOR -->
+    <tr>
+      <th class="c_c">
+        <a href="logout.php"><span style="color: red; text-decoration: blink; font-weight: bold;">[ {L_sys_impersonate_done} ]</span></a>
+      </th>
+    </tr>
     <!-- ENDIF -->
 
     <!-- IF URL_RULES || URL_FAQ --><tr><th>{L_m_h_rules}</th></tr><!-- ENDIF -->
@@ -19,7 +27,7 @@
       <td>
           <a href="announce.php">{L_news_title}
           <!-- IF NEWS_UNREAD -->
-            <span style="color: red; text-decoration: blink; font-weight: bold;">{L_lm_announce_fresh}</span>
+          <span style="color: red; text-decoration: blink; font-weight: bold;">{L_lm_announce_fresh}</span>
           <!-- ENDIF -->
         </a>
       </td>

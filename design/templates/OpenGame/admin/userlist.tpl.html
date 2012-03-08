@@ -1,0 +1,56 @@
+<h2>{L_adm_ul_title}</h2>
+
+<table>
+  <tr>
+    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_ID}">{L_sys_id}</a></th>
+    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_NAME}">{L_sys_user_name}</a></th>
+    <!-- IF ! RESTRICTED -->
+    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_EMAIL}">{L_sys_email}</a></th>
+    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_IP}">{L_sys_ip}</a></th>
+    <!-- ENDIF -->
+    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_TIME_REGISTERED}">{L_adm_ul_time_registered}</a></th>
+    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_TIME_LAST_VISIT}">{L_adm_ul_time_played}</a></th>
+    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_TIME_BAN_UNTIL}">{L_adm_ul_time_banned}</a></th>
+    <th class="c_c">{L_adm_sys_actions}</th>
+  </tr>
+
+  <!-- BEGIN user -->
+  <tr>
+    <td>{user.ID}</td>
+    <!-- IF ! RESTRICTED -->
+    <td>{user.NAME}</td>
+    <td>{user.EMAIL}</td>
+    <!-- ENDIF -->
+    <td>
+      <!-- IF user.IP_MULTI -->
+        <span class="error">{user.IP} ({user.IP_MULTI})</span>
+      <!-- ELSE -->
+        {user.IP}
+      <!-- ENDIF -->
+    </td>
+    <td>{user.TIME_REGISTERED}</td>
+    <td>{user.TIME_PLAYED}</td>
+    <td>
+      <a href="admin/banned.php?name={user.NAME}">
+      <!-- IF user.BANNED -->
+        <span class="warning">{user.BANNED}</span>
+      <!-- ELSE -->
+        {L_sys_no}
+      <!-- ENDIF -->
+      </a>
+    </td>
+
+    <td>
+      <a href="messages.php?mode=write&id={user.ID}"><img src="design/images/mail.gif" alt="{L_adm_sys_write_message}" title="{L_adm_sys_write_message}" border="0"></a>
+      <!-- IF user.ACTION -->
+      <a href="admin/userlist.php?sort={SORT}&uid={user.ID}&action={D_ACTION_DELETE}" onclick="javascript:return confirm('{L_adm_ul_delete_confirm} {user.NAME_JS}');"><img src="design/images/r1.png" alt="{L_adm_sys_delete_user}" title="{L_adm_sys_delete_user}" ></a>
+      <a href="admin/userlist.php?sort={SORT}&uid={user.ID}&action={D_ACTION_USE}"><img src="design/images/icon_impersonate.gif" alt="{L_sys_impersonate}" title="{L_sys_impersonate}" border="0"></a>
+      <!-- ENDIF -->
+    </td>
+  </tr>
+  <!-- END user -->
+
+  <tr>
+    <td colspan="9">{adm_ul_count}{adm_ul_playe}</td>
+  </tr>
+</table>

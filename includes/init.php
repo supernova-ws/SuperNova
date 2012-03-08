@@ -183,6 +183,8 @@ if(file_exists($update_file))
 unset($db_name);
 
 // Initializing constants
+define('SN_COOKIE'        , $config->COOKIE_NAME ? $config->COOKIE_NAME : 'SuperNova');
+define('SN_COOKIE_I'      , SN_COOKIE . '_I');
 define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_default_template : 'OpenGame');
 define('TEMPLATE_DIR'     , SN_ROOT_PHYSICAL . 'design/templates/' . TEMPLATE_NAME);
 define('DEFAULT_SKINPATH' , $config->game_default_skin ? $config->game_default_skin : 'skins/EpicBlue/');

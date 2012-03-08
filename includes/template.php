@@ -43,7 +43,7 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
 
 function tpl_render_menu()
 {
-  global $config, $user, $lang, $time_now;
+  global $config, $user, $user_impersonator, $lang, $time_now;
 
   lng_include('leftmenu');
 
@@ -54,6 +54,7 @@ function tpl_render_menu()
     'SERVER_TIME'         => $time_now,
     'USER_AUTHLEVEL'      => $user['authlevel'],
     'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
+    'USER_IMPERSONATOR'   => is_array($user_impersonator),
   ));
 
   if(IN_ADMIN === true && $user['authlevel'] > 0)
@@ -98,7 +99,7 @@ $config->db_saveItem('server_updater_check_result', $check_result);
 // $AdminPage -> Si on est dans la section admin ... faut le dire ...
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true)
 {
-  global $link, $debug, $user, $planetrow, $IsUserChecked, $time_now, $config, $lang;
+  global $link, $debug, $user, $user_impersonator, $planetrow, $IsUserChecked, $time_now, $config, $lang;
 
   if(!$user || !isset($user['id']) || !is_numeric($user['id']))
   {
@@ -114,6 +115,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     'LANG_LANGUAGE'  => $lang['LANG_INFO']['LANG_NAME_ISO2'],
     'LANG_ENCODING'  => 'utf-8',
     'LANG_DIRECTION' => $lang['LANG_INFO']['LANG_DIRECTION'],
+    'IMPERSONATING'  => $user_impersonator ? sprintf($lang['sys_impersonated_as'], $user['username'], $user_impersonator['username']) : '',
   ));
   displayP(parsetemplate($template));
 

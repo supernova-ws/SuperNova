@@ -39,6 +39,8 @@ if (empty($lang) || !is_array($lang))
 // System-wide localization
 
 $lang = array_merge($lang, array(
+  'adm_err_denied' => 'Access denied. You do not have enough rights to use this admin page',
+
   'sys_empire'          => 'Empire',
   'VacationMode'			=> "Your production stopped because you are on vacation",
   'sys_moon_destruction_report' => "Report of destruction of the Moon",
@@ -47,6 +49,10 @@ $lang = array_merge($lang, array(
   'sys_rips_come_back' => "Your Deathstar did not have enough power to defeat this moon. Your fleet is not destroying the Moon.",
   'sys_chance_moon_destroy' => "Chance of Moon destruction: ",
   'sys_chance_rips_destroy' => "Modify burst destruction: ",
+
+  'sys_impersonate' => 'Impersonate',
+  'sys_impersonate_done' => 'Unimpersonate',
+  'sys_impersonated_as' => 'WARNING! Currently you impersonating player %1$s. Don\'t forget that you are really %2$s! To unimpersonate select appropriate menu item.',
 
   'sys_day' => "Days",
   'sys_hrs' => "Hours",
@@ -532,6 +538,9 @@ $lang = array_merge($lang, array(
 
   'sys_id' => 'ID',
   'sys_identifier' => 'Identifier',
+
+  'sys_email'   => 'E-Mail',
+  'sys_ip' => 'IP',
 
   'sys_max' => 'Max',
   'sys_maximum' => 'Maximum',

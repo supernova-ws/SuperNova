@@ -28,7 +28,17 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
-  'adm_err_denied' => 'Доступ запрещен',
+  'adm_ul_title' => 'Список игроков',
+  'adm_ul_time_registered' => 'Дата регистрации',
+  'adm_ul_time_played' => 'Последний логин',
+  'adm_ul_time_banned' => 'Срок блокировки',
+  'adm_ul_delete_confirm' => 'Подвтердите удаление пользователя ',
+  'adm_sys_actions' => 'Действия',
+  'adm_sys_write_message' => 'Написать личное сообщение',
+  'adm_sys_delete_user' => 'Удалить игрока',
+
+
+
   'adm_done' => 'Успешно выполнено',
   'adm_inactive_removed' => '<li>Удалено неактивных записей игроков: %d</li>',
   'adm_stat_title' => 'Обновление статистики',
@@ -37,6 +47,7 @@ $lang = array_merge($lang, array(
   'adm_cleaner_title' => 'Чистка очереди построек',
   'adm_cleaned' => 'Кол-во удаленных задач: ',
   'adm_schedule_none' => 'В расписании нет задач на сейчас',
+
   'Fix' => 'Обновлено',
   'Welcome_to_Fix_section' => 'секция патчей',
   'There_is_not_need_fix' => 'Фикс ненужен!',
@@ -53,7 +64,8 @@ $lang = array_merge($lang, array(
   'adm_ov_count' => 'Онлайн игроки',
   'adm_ov_wrtpm' => 'Написать в личку',
   'adm_ov_altpm' => '[ЛП]',
-  'adm_ul_title' => 'Список игроков',
+
+
   'adm_ul_ttle2' => 'Players listed',
   'adm_ul_id' => 'ID',
   'adm_ul_name' => 'Имя игрока',

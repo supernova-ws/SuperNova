@@ -34,8 +34,9 @@ if (empty($lang) || !is_array($lang))
 }
 
 // System-wide localization
-
 $lang = array_merge($lang, array(
+  'adm_err_denied' => 'Доступ запрещен. У вас не хватает прав, что бы пользоваться этой страницей интерфейса управления сервером',
+
   'sys_empire'          => 'Империя',
   'VacationMode'			=> "Ваше производство закрыто, так как вы в Отпуске",
   'sys_moon_destruction_report' => "Рапорт разрушения луны",
@@ -44,6 +45,10 @@ $lang = array_merge($lang, array(
   'sys_rips_come_back' => "Ваши Звёзды Смерти не имеют достаточно энергии, чтоб нанести ущерб этой луне. Ваш флот возвращается не уничтожив луну.",
   'sys_chance_moon_destroy' => "Изменение лунного уничтожения: ",
   'sys_chance_rips_destroy' => "Изменение разрывного уничтожения: ",
+
+  'sys_impersonate' => 'Воплотиться',
+  'sys_impersonate_done' => 'Развоплотиться',
+  'sys_impersonated_as' => 'ВНИМАНИЕ! Вы сейчас Воплотились в игрока %1$s. Не забывайте, что на самом деле - вы %2$s! Развоплотиться можно выбрав соответствующий пункт меню.',
 
   'sys_day' => "дней",
   'sys_hrs' => "часов",
@@ -529,6 +534,9 @@ $lang = array_merge($lang, array(
 
   'sys_id' => 'ИД',
   'sys_identifier' => 'Идентификатор',
+
+  'sys_email'   => 'Е-Мейл',
+  'sys_ip' => 'IP',
 
   'sys_max' => 'Макс',
   'sys_maximum' => 'Максимум',

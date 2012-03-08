@@ -31,13 +31,11 @@ if($config->game_disable)
 
 if(
   !($allow_anonymous || $sys_user_logged_in) ||
-  (defined('IN_ADMIN') && IN_ADMIN && $user['authlevel'] < 1)
+  (defined('IN_ADMIN') && IN_ADMIN === true && $user['authlevel'] < 1)
 )
 {
-  setcookie($config->COOKIE_NAME, '', time() - PERIOD_WEEK);
-  header('Location: ' . SN_ROOT_VIRTUAL .'login.php');
-  ob_end_flush();
-  die();
+  setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+  sys_redirect(SN_ROOT_VIRTUAL .'login.php');
 }
 
 if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0)
@@ -45,11 +43,11 @@ if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @
   echo "<a href=\"badqrys.txt\" target=\"_NEW\"><font color=\"red\">{$lang['ov_hack_alert']}</font</a>";
 }
 
-if (defined('IN_ADMIN') && IN_ADMIN)
+if(defined('IN_ADMIN') && IN_ADMIN === true)
 {
   $UserSkin  = $user['dpath'];
-  $local     = stristr ( $UserSkin, "http:");
-  if ($local === false)
+  $local     = stristr($UserSkin, "http:");
+  if($local === false)
   {
     if (!$user['dpath'])
     {
@@ -131,17 +129,11 @@ elseif($sys_user_logged_in)
   }
   doquery('COMMIT;');
 
-  if(!$global_data)
-  {
-    $debug->error("User ID {$user['id']} has no current planet and no homeworld", 'User record error', 502);
-  }
-
   $planetrow = $global_data['planet'];
   if(!($planetrow && isset($planetrow['id']) && $planetrow['id']))
   {
-    header('Location: login.php');
-    ob_end_flush();
-    die();
+    sn_sys_logout(false);
+    $debug->error("User ID {$user['id']} has no current planet and no homeworld", 'User record error', 502);
   }
 
   $que = $global_data['que'];

@@ -9,16 +9,15 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+sn_sys_logout();
+/*
 lng_include('login');
 
-setcookie($config->COOKIE_NAME, '', time() - PERIOD_WEEK);
-//setcookie($config->COOKIE_NAME, '', time() - 2 * 24 * 60 * 60);
-//setcookie($config->COOKIE_NAME); // , "", time()-100000, "/", "", 0
-
+if($_COOKIE[SN_COOKIE_I])
+setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
 unset($user);
-
-message ( $lang['log_see_you'], $lang['log_session_closed'], "login." . PHP_EX, 5, false );
-
+message($lang['log_see_you'], $lang['log_session_closed'], "login." . PHP_EX, 5, false);
+*/
 // -----------------------------------------------------------------------------------------------------------
 // History version
 ?>

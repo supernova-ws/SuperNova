@@ -224,35 +224,6 @@ function sys_user_vacation($user)
   return false;
 }
 
-function sys_get_user_ip()
-{
-  if ($_SERVER["HTTP_X_FORWARDED_FOR"])
-  {
-    if ($_SERVER["HTTP_CLIENT_IP"])
-    {
-      $ip['proxy'] = $_SERVER["HTTP_CLIENT_IP"];
-    }
-    else
-    {
-      $ip['proxy'] = $_SERVER["REMOTE_ADDR"];
-    }
-    $ip['client'] = mysql_real_escape_string($_SERVER["HTTP_X_FORWARDED_FOR"]);
-  }
-  else
-  {
-    if ($_SERVER["HTTP_CLIENT_IP"])
-    {
-      $ip['client'] = $_SERVER["HTTP_CLIENT_IP"];
-    }
-    else
-    {
-      $ip['client'] = $_SERVER["REMOTE_ADDR"];
-    }
-  }
-
-  return array_map('mysql_real_escape_string', $ip);
-}
-
 function is_id($value)
 {
   return preg_match('/^\d+$/', $value);

@@ -30,7 +30,6 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
-  'adm_err_denied' => 'Access denied',
   'adm_done' => 'Successfully Completed',
   'adm_inactive_removed' => '<li>Remove inactive players: %d</li>',
   'adm_stat_title' => 'Update statistics',
@@ -55,14 +54,15 @@ $lang = array_merge($lang, array(
   'adm_ov_count' => 'Online players',
   'adm_ov_wrtpm' => 'Write Private Message',
   'adm_ov_altpm' => '[PM]',
-  'adm_ul_title' => 'Players list',
-  'adm_ul_ttle2' => 'Players listed',
-  'adm_ul_id' => 'ID',
-  'adm_ul_name' => 'Player name',
-  'adm_ul_mail' => 'E-mail',
-  'adm_ul_adip' => 'IP',
-  'adm_ul_regd' => 'Registred from',
-  'adm_ul_lconn' => 'Last login',
+
+
+  'adm_ul_title' => 'Player list',
+  'adm_ul_time_registered' => 'Register date',
+  'adm_ul_time_played' => 'Last played',
+  'adm_ul_time_banned' => 'Banned until',
+  'adm_sys_actions' => 'Actions',
+
+
   'adm_ul_bana' => 'Ban',
   'adm_ul_detai' => 'Details',
   'adm_ul_actio' => 'Actions',

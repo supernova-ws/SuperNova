@@ -1,4 +1,46 @@
 <?php
+
+function sys_get_user_ip()
+{
+/*
+  $ip = array();
+  if($_SERVER["HTTP_X_FORWARDED_FOR"])
+  {
+    if ($_SERVER["HTTP_CLIENT_IP"])
+    {
+      $ip['proxy'] = $_SERVER["HTTP_CLIENT_IP"];
+    }
+    else
+    {
+      $ip['proxy'] = $_SERVER["REMOTE_ADDR"];
+    }
+    $ip['client'] = $_SERVER["HTTP_X_FORWARDED_FOR"];
+//    $ip['client'] = mysql_real_escape_string($_SERVER["HTTP_X_FORWARDED_FOR"]);
+//    $ip['proxy'] = $_SERVER["HTTP_CLIENT_IP"] ? $_SERVER["HTTP_CLIENT_IP"] : $_SERVER["REMOTE_ADDR"];
+  }
+  else
+  {
+    if ($_SERVER["HTTP_CLIENT_IP"])
+    {
+      $ip['client'] = $_SERVER["HTTP_CLIENT_IP"];
+    }
+    else
+    {
+      $ip['client'] = $_SERVER["REMOTE_ADDR"];
+    }
+//    $ip['client'] = $_SERVER["HTTP_CLIENT_IP"] ? $_SERVER["HTTP_CLIENT_IP"] : $_SERVER["REMOTE_ADDR"];
+  }
+*/
+
+  $ip = array(
+    'proxy' => $_SERVER["HTTP_X_FORWARDED_FOR"] ? ($_SERVER["HTTP_CLIENT_IP"] ? $_SERVER["HTTP_CLIENT_IP"] : $_SERVER["REMOTE_ADDR"]) : '',
+    'client' => $_SERVER["HTTP_X_FORWARDED_FOR"] ? $_SERVER["HTTP_X_FORWARDED_FOR"] : 
+      ($_SERVER["HTTP_CLIENT_IP"] ? $_SERVER["HTTP_CLIENT_IP"] : $_SERVER["REMOTE_ADDR"]),
+  );
+
+  return array_map('mysql_real_escape_string', $ip);
+}
+
 /**
  * @filename sys_security.php
  * @previously CheckCookies.php & CheckUser.php
@@ -23,7 +65,7 @@ function sn_set_cookie($user, $rememberme)
 {
   global $config;
 
-  if ($rememberme)
+  if($rememberme)
   {
     $expiretime = $GLOBALS['time_now'] + 31536000;
     $rememberme = 1;
@@ -36,30 +78,75 @@ function sn_set_cookie($user, $rememberme)
 
   $md5pass = md5("{$user['password']}--{$config->secret_word}");
   $cookie = "{$user['id']}/%/{$user['username']}/%/{$md5pass}/%/{$rememberme}";
-  $result = setcookie($config->COOKIE_NAME, $cookie, $expiretime);
+  return setcookie(SN_COOKIE, $cookie, $expiretime, SN_ROOT_RELATIVE);
+}
+
+function sn_sys_cookie_check($cookie)
+{
+  global $config;
+/*
+  $cookie  = explode("/%/", $cookie);
+  $cookie[0] = intval($cookie[0]);
+  $cookie[1] = mysql_real_escape_string($cookie[1]);
+
+  $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = '{$cookie[0]}' AND user_as_ally IS NULL LIMIT 1;", '', true);
+  if(!$user || md5("{$user['password']}--{$config->secret_word}") != $cookie[2])
+  {
+    $user = false;
+  }
+  else
+  {
+    $user['user_remember_me'] = $cookie[3];
+  }
+*/
+
+  list($user_id, $user_name, $user_pass_hash, $user_remember_me) = explode("/%/", $cookie);
+  $user_name = mysql_real_escape_string($user_name);
+
+  $user_id = intval($user_id);
+  $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = '{$user_id}' AND user_as_ally IS NULL LIMIT 1;", '', true);
+  if(!$user || md5("{$user['password']}--{$config->secret_word}") != $user_pass_hash)
+  {
+    $user = false;
+  }
+  else
+  {
+    $user['user_remember_me'] = $user_remember_me;
+  }
+
+  return $user;
 }
 
 function sn_autologin($abort = true)
 {
-  global $config, $IsUserChecked;
+  global $config, $IsUserChecked, $user_impersonator;
   $lang = $GLOBALS['lang'];
   $time_now = $GLOBALS['time_now'];
 
   $IsUserChecked = false;
-  if(!isset($_COOKIE[$config->COOKIE_NAME]))
+  if(!isset($_COOKIE[SN_COOKIE]))
   {
     return false;
   }
 
-  $TheCookie  = explode("/%/", $_COOKIE[$config->COOKIE_NAME]);
-  $TheCookie[0] = intval($TheCookie[0]);
-  $TheCookie[1] = mysql_real_escape_string($TheCookie[1]);
-  $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = '{$TheCookie[0]}' LIMIT 1;", '', true);
-
-  if(!$user || md5("{$user['password']}--{$config->secret_word}") != $TheCookie[2])
+  if($_COOKIE[SN_COOKIE_I])
   {
-    setcookie($config->COOKIE_NAME, '', time() - PERIOD_WEEK);
-    // setcookie($config->COOKIE_NAME);
+    $user_impersonator = sn_sys_cookie_check($_COOKIE[SN_COOKIE_I]);
+    if(!$user_impersonator || $user_impersonator['authlevel'] < 3)
+    {
+      // TODO: Log here
+      setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+      setcookie(SN_COOKIE_I, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+      sys_redirect(SN_ROOT_RELATIVE);
+    }
+  }
+  if(!$user = sn_sys_cookie_check($_COOKIE[SN_COOKIE]))
+  {
+    setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+    if($user_impersonator)
+    {
+      sn_sys_logout();
+    }
     if($abort)
     {
       message($lang['err_cookie']);
@@ -67,21 +154,21 @@ function sn_autologin($abort = true)
     return false;
   }
 
-  sn_set_cookie($user, $TheCookie[3]);
   sys_user_options_unpack($user);
+  sn_set_cookie($user, $user['user_remember_me']);
 
   $ip = sys_get_user_ip();
   $user_agent = mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']);
-  doquery("UPDATE `{{users}}` SET `onlinetime`  = '{$time_now}', `user_lastip` = '{$ip['client']}', `user_proxy`  = '{$ip['proxy']}', `user_agent`  = '{$user_agent}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+  doquery("UPDATE `{{users}}` SET `onlinetime` = '{$time_now}'" . ($user_impersonator ? '' : ", `user_lastip` = '{$ip['client']}', `user_proxy`  = '{$ip['proxy']}', `user_agent`  = '{$user_agent}'") . " WHERE `id` = '{$user['id']}' LIMIT 1;");
 
   if(!$GLOBALS['skip_ban_check'] && $user['banaday'])
   {
     if($user['banaday'] > $time_now)
     {
       $bantime = date(FMT_DATE_TIME, $user['banaday']);
-      // Add ban reason. Add vacation time
       if($abort)
       {
+        // TODO: Add ban reason. Add vacation time. Add message window
         die("{$lang['sys_banned_msg']} {$bantime}");
       }
       else
@@ -108,6 +195,7 @@ function sn_login($username, $password, $remember_me = '1')
 
   $login = doquery("SELECT * FROM {{users}} WHERE `username` = '{$username}' LIMIT 1;", '', true);
 
+  // TODO: try..catch
   if(!$username || !$login || $login['user_as_ally'])
   {
     $status = LOGIN_ERROR_USERNAME;
@@ -136,6 +224,60 @@ function sys_is_multiaccount($user1, $user2)
  return $user1['user_lastip'] == $user2['user_lastip'];
 }
 
+function sn_sys_impersonate($user_selected)
+{
+  global $user;
+
+  if($_COOKIE[SN_COOKIE_I])
+  {
+    // TODO: Log here
+    die('You already impersonating someone. Go back to living other\'s life! Or clear your cookies and try again');
+  }
+
+  if($user['authlevel'] < 3)
+  {
+    // TODO: Log here
+    die('You can\'t impersonate - too low level');
+  }
+
+  setcookie(SN_COOKIE_I, $_COOKIE[SN_COOKIE], 0, SN_ROOT_RELATIVE);
+  sn_set_cookie($user_selected, 0);
+  sys_redirect(SN_ROOT_RELATIVE);
+}
+
+//
+// Log outs user from game. Cancels impersonate if user impersonated
+// 
+// $redirect manages what happens after logout
+//   true  - redirect to main page
+//   false - do not redirect
+//   'string' - redirect to 'string' URL
+//
+function sn_sys_logout($redirect = true)
+{
+  global $user_impersonator, $config;
+
+  if($_COOKIE[SN_COOKIE_I] && $user_impersonator['authlevel'] >= 3)
+  {
+    sn_set_cookie($user_impersonator, 0);
+  }
+  else
+  {
+    setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+  }
+
+  setcookie(SN_COOKIE_I, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+
+  if($redirect === true)
+  {
+    sys_redirect(SN_ROOT_RELATIVE);
+  }
+  elseif($redirect !== false)
+  {
+    sys_redirect($redirect);
+  }
+}
+
 /**
  * DeleteSelectedUser.php
  *
@@ -143,7 +285,10 @@ function sys_is_multiaccount($user1, $user2)
  * @copyright 2008 By Chlorel for XNova
  */
 
-function DeleteSelectedUser ( $UserID ) {
+function DeleteSelectedUser ( $UserID )
+{
+  // TODO: Full rewrite
+  doquery("START TRANSACTION;");
   $TheUser = doquery ( "SELECT * FROM `{{users}}` WHERE `id` = '" . $UserID . "';", '', true );
   if ( $TheUser['ally_id'] != 0 ) {
     $TheAlly = doquery ( "SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true );
@@ -176,6 +321,7 @@ function DeleteSelectedUser ( $UserID ) {
   doquery ( "DELETE FROM `{{users}}` WHERE `id` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
   doquery ( "UPDATE `{{config}}` SET `config_value`= `config_value` - 1 WHERE `config_name` = 'users_amount';");
+  doquery("COMMIT;");
 }
 
 ?>

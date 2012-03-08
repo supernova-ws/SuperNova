@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '33');
 define('SN_RELEASE', '34');
-define('SN_VERSION', '34a0');
+define('SN_VERSION', '34a1');
 
 define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
 
@@ -318,10 +318,12 @@ define('BONUS_PERCENT_DEGRADED' ,   6);  // Bonus amount degraded with increase 
 // *** Action constat (build should be replaced with ACTION)
 define('BUILD_CREATE' ,  1);
 define('BUILD_DESTROY', -1);
-define('ACTION_SELL',    -1);
-define('ACTION_NOTHING',  0);
-define('ACTION_BUY' ,     1);
-define('ACTION_USE',      2);
+
+define('ACTION_SELL'       , -1);
+define('ACTION_NOTHING'    ,  0);
+define('ACTION_BUY'        ,  1);
+define('ACTION_USE'        ,  2);
+define('ACTION_DELETE'     ,  3);
 
 // *** Check unit availability codes
 define('BUILD_ALLOWED'         , 0); // HARDCODE! DO NOT CHANGE!
@@ -367,10 +369,16 @@ define('UNIT_RESOURCE' , 9);
 // *** Sort options
 define('SORT_ASCENDING' , 0);
 define('SORT_DESCENDING', 1);
-define('SORT_ID'        , 0);
-define('SORT_LOCATION'  , 1);
-define('SORT_NAME'      , 2);
-define('SORT_SIZE'      , 3);
+
+define('SORT_ID'              , 0);
+define('SORT_LOCATION'        , 1);
+define('SORT_NAME'            , 2);
+define('SORT_SIZE'            , 3);
+define('SORT_EMAIL'           , 4);
+define('SORT_IP'              , 5);
+define('SORT_TIME_REGISTERED' , 6);
+define('SORT_TIME_LAST_VISIT' , 7);
+define('SORT_TIME_BAN_UNTIL'  , 8);
 
 // === Structures
 define('STRUC_STRUCTURES', 0);

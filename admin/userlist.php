@@ -1,87 +1,95 @@
 <?php
 
 /**
- * userlist.php
  *
- * @version 1.0s - Security checked for SQL-injection by Gorlum for http://supernova.ws
- * @version 1.0
- * @copyright 2008 by Chlorel for XNova
- */
+ * Project "SuperNova.WS" copyright (c) 2009-2012 Gorlum
+ * Release 34
+ *
+ * userlist.php v2
+ *
+**/
+
 define('INSIDE', true);
 define('INSTALL', false);
 define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if ($user['authlevel'] < 3)
+if($user['authlevel'] < 3)
 {
   AdminMessage($lang['adm_err_denied']);
 }
 
-$GET_cmd = sys_get_param_str('cmd');
-$GET_user = intval($_GET['user']);
-$TypeSort = sys_get_param_str('type');
-
 lng_include('admin');
 
-if ($GET_cmd == 'dele')
+$sort_fields = array(
+  SORT_ID => 'id',
+  SORT_NAME => 'username',
+  SORT_EMAIL => 'email',
+  SORT_IP => 'user_lastip',
+  SORT_TIME_REGISTERED => 'register_time',
+  SORT_TIME_LAST_VISIT => 'onlinetime',
+  SORT_TIME_BAN_UNTIL => 'banaday',
+);
+$sort = sys_get_param_int('sort', SORT_ID);
+$sort = $sort_fields[$sort] ? $sort : SORT_ID;
+
+if(($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid')))
 {
-  DeleteSelectedUser($GET_user);
-}
-
-if ($GET_cmd == 'sort')
-{
-  
-}
-else
-{
-  $TypeSort = "id";
-}
-
-$PageTPL = gettemplate('admin/userlist_body');
-$RowsTPL = gettemplate('admin/userlist_rows');
-
-$query = doquery("SELECT * FROM {{users}} ORDER BY `" . $TypeSort . "` ASC");
-
-$parse = $lang;
-$parse['adm_ul_table'] = "";
-$i = 0;
-$Color = "lime";
-
-$Bloc['sort'] = $TypeSort ? "&sort=" . $TypeSort : "";
-while ($u = mysql_fetch_assoc($query))
-{
-  if ($PrevIP != "")
+  $user_selected = doquery("SELECT id, username, password, authlevel FROM {{users}} WHERE `id` = {$user_id} LIMIT 1;", true);
+  if($user_selected['authlevel'] < $user['authlevel'] && $user['authlevel'] >= 3)
   {
-    if ($PrevIP == $u['user_lastip'])
+    switch($action)
     {
-      $Color = "red";
-    }
-    else
-    {
-      $Color = "lime";
+      case ACTION_DELETE:
+        DeleteSelectedUser($user_id);
+        sys_redirect("{$_SERVER['SCRIPT_NAME']}?sort={$sort}");
+      break;
+
+      case ACTION_USE:
+        // Impersonate
+        sn_sys_impersonate($user_selected);
+      break;
     }
   }
-  $Bloc['dpath'] = $dpath;
-  $Bloc['adm_ul_data_id'] = $u['id'];
-  $Bloc['adm_ul_data_name'] = $u['username'];
-  $Bloc['adm_ul_data_mail'] = $u['email'];
-  $Bloc['adm_ov_altpm'] = $lang['adm_ov_altpm'];
-  $Bloc['adm_ov_wrtpm'] = $lang['adm_ov_wrtpm'];
-  $Bloc['adm_ul_data_adip'] = "<font color=\"" . $Color . "\">" . $u['user_lastip'] . "</font>";
-  $Bloc['adm_ul_data_regd'] = date(FMT_DATE_TIME, $u['register_time']);
-  $Bloc['adm_ul_data_lconn'] = date(FMT_DATE_TIME, $u['onlinetime']);
-  $Bloc['adm_ul_data_banna'] = $u['banaday'] ? "<span title=\"" . date(FMT_DATE_TIME, $u['banaday']) . "\">" . $lang['adm_ul_yes'] . "</span>" : $lang['adm_ul_no'];
-  $Bloc['adm_ul_ban_mode'] = $u['banaday'] ? 'unbanit' : 'banit';
-  // $Bloc['adm_ul_data_actio']  = "<a href=\"userlist.php?cmd=dele&user=".$u['id']."\"><img src=\"../design/images/r1.png\"></a>"; // Lien vers actions 'effacer'
-  $PrevIP = $u['user_lastip'];
-  $parse['adm_ul_table'] .= parsetemplate($RowsTPL, $Bloc);
-  $i++;
+  else
+  {
+    // Restricted try to delete user higher or equal level
+    AdminMessage($lang['adm_err_denied']);
+  }
 }
-$parse['adm_ul_count'] = $i;
-$parse['dpath'] = $dpath;
 
-$page = parsetemplate($PageTPL, $parse);
-display($page, $lang['adm_ul_title'], false, '', true);
+$template = gettemplate('admin/userlist', true);
 
-// Created by e-Zobar. All rights reversed (C) XNova Team 2008
+$multi_ip = array();
+$ip_query = doquery("SELECT COUNT(*) as ip_count, user_lastip FROM {{users}} WHERE user_as_ally IS NULL GROUP BY user_lastip HAVING COUNT(*)>1;");
+while($ip = mysql_fetch_assoc($ip_query))
+{
+  $multi_ip[$ip['user_lastip']] = $ip['ip_count'];
+}
+
+$query = doquery("SELECT * FROM {{users}} WHERE user_as_ally IS NULL ORDER BY `{$sort_fields[$sort]}` ASC;");
+while ($user_row = mysql_fetch_assoc($query))
+{
+  $template->assign_block_vars('user', array(
+    'ID' => $user_row['id'],
+    'NAME' => $user_row['username'],
+    'NAME_JS' => js_safe_string($user_row['username']),
+    'EMAIL' => $user_row['email'],
+    'IP' => $user_row['user_lastip'],
+    'IP_MULTI' => intval($multi_ip[$user_row['user_lastip']]),
+    'TIME_REGISTERED' => date(FMT_DATE_TIME, $user_row['register_time']),
+    'TIME_PLAYED' => date(FMT_DATE_TIME, $user_row['onlinetime']),
+    'BANNED' => $user_row['banaday'] ? date(FMT_DATE_TIME, $user_row['banaday']) : 0,
+    'ACTION' => $user_row['authlevel'] < $user['authlevel'],
+    'RESTRICTED' => $user['authlevel'] < 3,
+  ));
+}
+
+$template->assign_vars(array(
+  'USER_COUNT' => mysql_num_rows($query),
+  'SORT' => $sort,
+));
+
+display($template, $lang['adm_ul_title'], false, '', true);
+
 ?>

@@ -100,8 +100,7 @@ if($mode == 'change')
     $user['username'] = $username;
     $username = mysql_real_escape_string($username);
     // TODO: Change cookie to not force user relogin
-    setcookie($config->COOKIE_NAME, '', time() - PERIOD_WEEK);
-    //setcookie(COOKIE_NAME, '', time()-100000, '/', '', 0); //le da el expire
+    setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
     $template->assign_block_vars('result', array(
       'STATUS'  => ERR_NONE,
       'MESSAGE' => $lang['opt_msg_name_changed']
@@ -129,8 +128,7 @@ if($mode == 'change')
 
       $user['password'] = md5($new_password);
       // TODO: Change cookie to not force user relogin
-      setcookie($config->COOKIE_NAME, '', time() - PERIOD_WEEK);
-      //setcookie(COOKIE_NAME, '', time()-100000, '/', '', 0); //le da el expire
+      setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
       throw new Exception($lang['opt_msg_pass_changed'], ERR_NONE);
     }
     catch (Exception $e)

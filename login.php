@@ -37,7 +37,7 @@ if ($username)
   }
   die();
 }
-elseif(!empty($_COOKIE[$config->COOKIE_NAME]))
+elseif(!empty($_COOKIE[SN_COOKIE]))
 {
   $user = sn_autologin();
 
