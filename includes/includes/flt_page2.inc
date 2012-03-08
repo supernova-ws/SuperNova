@@ -55,9 +55,11 @@ if(SN_IN_FLEET !== true)
   $parse['acs_target_mr'] = ($_POST['acs_target_mr']) ;
 
   for($i = 0; $i<3; $i++){
+    $amount = $planetrow[$sn_data['groups']['resources'][$i]] - ($i == 2 ? $consumption : 0);
     $template->assign_block_vars('resources', array(
       'ID' => $i,
-      'ON_PLANET' => floor($planetrow[$sn_data['groups']['resources'][$i]] - ($i == 2 ? $consumption : 0)),
+      'ON_PLANET' => floor($amount),
+      'TEXT' => pretty_number($amount),
       'NAME' => $lang['sys_' . $sn_data['groups']['resources'][$i]],
     ));
   }

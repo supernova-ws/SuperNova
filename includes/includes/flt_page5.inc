@@ -75,6 +75,17 @@ function flt_build_gathering($resources_taken = '')
 
     $planet_data = &$planet_list[$planet_id];
 
+    $planet_resources = 0;
+    foreach($sn_data['groups']['resources_loot'] as $resource_id)
+    {
+      if($resources_taken[$planet_id] == 1 || $resources_taken[$planet_id][$resource_id])
+      {
+        $planet_resources += floor($planet_db_data[$sn_data[$resource_id]['name']]);
+      }
+    }
+    $planet_data['RESOURCES'] = $planet_resources;
+    $planet_data['RESOURCES_TEXT'] = pretty_number($planet_resources);
+
     $fleet_capacity = 0;
     $ship_loadout = array();
     $fleet = array();
@@ -89,17 +100,6 @@ function flt_build_gathering($resources_taken = '')
     }
     $planet_data['FLEET_CAPACITY'] = $fleet_capacity;
     $planet_data['FLEET_CAPACITY_TEXT'] = pretty_number($fleet_capacity, true, -$planet_resources);
-
-    $planet_resources = 0;
-    foreach($sn_data['groups']['resources_loot'] as $resource_id)
-    {
-      if($resources_taken[$planet_id] == 1 || $resources_taken[$planet_id][$resource_id])
-      {
-        $planet_resources += floor($planet_db_data[$sn_data[$resource_id]['name']]);
-      }
-    }
-    $planet_data['RESOURCES'] = $planet_resources;
-    $planet_data['RESOURCES_TEXT'] = pretty_number($planet_resources);
 
     $will_take = min($planet_resources, $fleet_capacity);
 

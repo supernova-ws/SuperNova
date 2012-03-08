@@ -28,12 +28,27 @@ if(!defined('IN_PHPBB'))
   define('IN_PHPBB', true);
 }
 
+if(ini_get('magic_quotes_sybase'))
+{
+  die('SN is incompatible with \'magic_quotes_sybase\' turned on. Disable it in php.ini or .htaccess...');
+}
+
+if(@get_magic_quotes_gpc())
+{
+  function sn_sys_unmagic_quotes(&$value, $key)
+  {
+    $value = stripslashes($value);
+  }
+  $gpcr = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
+  array_walk_recursive($gpcr, 'sn_sys_unmagic_quotes');
+}
+
 if(function_exists('set_magic_quotes_runtime'))
 {
   @set_magic_quotes_runtime(0);
+  @ini_set('magic_quotes_runtime', 0);
+  @ini_set('magic_quotes_sybase', 0);
 }
-@ini_set('magic_quotes_runtime', 0);
-@ini_set('magic_quotes_gpc', 0);
 
 function sys_refresh_tablelist($db_prefix)
 {
