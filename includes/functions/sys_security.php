@@ -253,13 +253,18 @@ function sn_sys_impersonate($user_selected)
 //   false - do not redirect
 //   'string' - redirect to 'string' URL
 //
-function sn_sys_logout($redirect = true)
+function sn_sys_logout($redirect = true, $only_impersonator = false)
 {
   global $user_impersonator, $config;
 
+  if($only_impersonator && !$user_impersonator)
+  {
+    return;
+  }
+
   if($_COOKIE[SN_COOKIE_I] && $user_impersonator['authlevel'] >= 3)
   {
-    sn_set_cookie($user_impersonator, 0);
+    sn_set_cookie($user_impersonator, 1);
   }
   else
   {

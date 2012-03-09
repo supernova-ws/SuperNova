@@ -434,7 +434,7 @@ $lang = array_merge($lang, array(
 
   // Contacts
   'ctc_title' => 'Administration',
-  'ctc_intro' => 'Here you will find the addresses of all administrators and operators of the games for feeback',
+  'ctc_intro' => 'Here you will find the addresses of all administrators and operators of the games for feedback',
   'ctc_name'  => 'Name',
   'ctc_rank'  => 'Rank',
   'ctc_mail'  => 'E-Mail',

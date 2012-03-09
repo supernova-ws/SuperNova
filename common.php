@@ -12,6 +12,8 @@ require_once('includes/init.php');
 $user = sn_autologin(!$allow_anonymous);
 $sys_user_logged_in = $user && is_array($user) && isset($user['id']) && $user['id'];
 
+$dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
+
 lng_switch($force_lang);
 
 if($config->game_disable)
@@ -29,10 +31,7 @@ if($config->game_disable)
   }
 }
 
-if(
-  !($allow_anonymous || $sys_user_logged_in) ||
-  (defined('IN_ADMIN') && IN_ADMIN === true && $user['authlevel'] < 1)
-)
+if(!($allow_anonymous || $sys_user_logged_in) || (defined('IN_ADMIN') && IN_ADMIN === true && $user['authlevel'] < 1))
 {
   setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
   sys_redirect(SN_ROOT_VIRTUAL .'login.php');
@@ -45,6 +44,7 @@ if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @
 
 if(defined('IN_ADMIN') && IN_ADMIN === true)
 {
+/*
   $UserSkin  = $user['dpath'];
   $local     = stristr($UserSkin, "http:");
   if($local === false)
@@ -62,31 +62,17 @@ if(defined('IN_ADMIN') && IN_ADMIN === true)
   {
     $dpath     = $UserSkin;
   }
-
+*/
   lng_include('admin');
 }
 elseif($sys_user_logged_in)
 {
-  $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
   if(!$skip_fleet_update && $time_now - $config->flt_lastUpdate >= 4)
   {
     require_once("includes/includes/flt_flying_fleet_handler.php");
     flt_flying_fleet_handler($config, $skip_fleet_update);
 /*
-  $flt_update_mode = 0;
-  // 0 - old
-  // 1 - new
-  switch($flt_update_mode)
-  {
-    case 0:
-      if($time_now - $config->flt_lastUpdate <= 4)
-      {
-        return;
-      }
-    break;
-
-    case 1:
       if($config->flt_lastUpdate)
       {
         if($time_now - $config->flt_lastUpdate <= 15)
@@ -98,8 +84,6 @@ elseif($sys_user_logged_in)
           $GLOBALS['debug']->error('Flying fleet handler is on timeout', 'FFH Error', 504);
         }
       }
-    break;
-  }
 */
   }
 
@@ -113,6 +97,7 @@ elseif($sys_user_logged_in)
     sn_ali_fill_user_ally($user);
     if(!$user['ally']['player']['id'])
     {
+      sn_sys_logout(false, true);
       $debug->error("User ID {$user['id']} has ally ID {$user['ally_id']} but no ally info", 'User record error', 502);
     }
     eco_bld_que_tech($user['ally']['player']);
@@ -132,7 +117,7 @@ elseif($sys_user_logged_in)
   $planetrow = $global_data['planet'];
   if(!($planetrow && isset($planetrow['id']) && $planetrow['id']))
   {
-    sn_sys_logout(false);
+    sn_sys_logout(false, true);
     $debug->error("User ID {$user['id']} has no current planet and no homeworld", 'User record error', 502);
   }
 
@@ -140,6 +125,7 @@ elseif($sys_user_logged_in)
 
   if(!$allow_anonymous)
   {
+    sn_sys_logout(false, true);
     sys_user_vacation($user);
   }
 }
