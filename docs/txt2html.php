@@ -67,11 +67,20 @@ function buf_print($string)
   $output_buffer .= $string;
 }
 
+if(substr(getcwd(), -4) != 'docs')
+{
+  $path_prefix = 'docs/';
+}
+else
+{
+  $path_prefix = '';
+}
+
 $output_buffer = '';
 
 $filename = 'changelog';
 
-$input =  file_get_contents($filename . '.txt');
+$input =  file_get_contents($path_prefix . $filename . '.txt');
 $input = iconv('CP1251', 'UTF-8', $input);
 
 $input = preg_replace("/\r\n\d\d\d\d\-\d\d\-\d\d\ \d\d\:\d\d/", "[D] $0", $input);
@@ -271,7 +280,10 @@ foreach($output as $chapter)
   }
 }
 
-file_put_contents('html/' . $filename . '.html', $output_buffer);
-print($output_buffer);
+file_put_contents($path_prefix . 'html/' . $filename . '.html', $output_buffer);
+if(!$path_prefix)
+{
+  print($output_buffer);
+}
 
 ?>
