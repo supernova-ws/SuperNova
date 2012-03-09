@@ -5,12 +5,6 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 define('SN_IN_ALLY', true);
 
 // Main admin page save themes
-$isSaveText       = !empty($_POST['isSaveText']);
-$isSaveOptions    = !empty($_POST['isSaveOptions']);
-$isDisband        = !empty($_POST['isDisband']);
-$isConfirmDisband = !empty($_POST['isConfirmDisband']);
-$isTransfer       = !empty($_POST['isTransfer']);
-
 lng_include('alliance');
 
 $mode = sys_get_param_str('mode');
