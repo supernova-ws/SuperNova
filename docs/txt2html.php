@@ -280,10 +280,16 @@ foreach($output as $chapter)
   }
 }
 
-file_put_contents($path_prefix . 'html/' . $filename . '.html', $output_buffer);
-if(!$path_prefix)
+$html = file_get_contents($path_prefix . 'html/' . $filename . '.html');
+if($html != $output_buffer)
 {
-  print($output_buffer);
+  file_put_contents($path_prefix . 'html/' . $filename . '.html', $output_buffer);
+  if(!$path_prefix)
+  {
+    print($output_buffer);
+  }
+  exit(1);
 }
+exit(0);
 
 ?>
