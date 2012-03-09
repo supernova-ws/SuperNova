@@ -14,7 +14,7 @@ $sys_user_logged_in = $user && is_array($user) && isset($user['id']) && $user['i
 
 $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
-lng_switch($force_lang);
+lng_switch(sys_get_param_str('lang'));
 
 if($config->game_disable)
 {
@@ -125,7 +125,6 @@ elseif($sys_user_logged_in)
 
   if(!$allow_anonymous)
   {
-    sn_sys_logout(false, true);
     sys_user_vacation($user);
   }
 }

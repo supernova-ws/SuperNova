@@ -50,6 +50,8 @@ function lng_switch($language_new)
 
 //  $lang = array();
   $language_new = $language_new ? $language_new : ($user['lang'] ? $user['lang'] : DEFAULT_LANG);
+
+  $result = false;
   if($language_new != $language)
   {
     $language = $language_new;
@@ -57,7 +59,10 @@ function lng_switch($language_new)
 
     lng_include('system');
     lng_include('tech');
+    $result = true;
   }
+
+  return $result;
 }
 
 ?>

@@ -209,6 +209,8 @@ function sys_user_vacation($user)
 
   if ($user['vacation'])
   {
+    sn_sys_logout(false, true);
+
     $template = gettemplate('vacation', true);
 
     $template->assign_vars(array(

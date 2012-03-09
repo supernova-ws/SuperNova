@@ -205,8 +205,7 @@ sn_sys_load_php_files("{$sn_root_physical}modules/", $phpEx, true);
 
 sn_db_connect();
 
-$force_lang = sys_get_param_str('lang');
-lng_switch($force_lang);
+lng_switch(sys_get_param_str('lang'));
 
 if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= $time_now)
 {

@@ -265,6 +265,7 @@ function sn_sys_logout($redirect = true, $only_impersonator = false)
   if($_COOKIE[SN_COOKIE_I] && $user_impersonator['authlevel'] >= 3)
   {
     sn_set_cookie($user_impersonator, 1);
+    $redirect = $redirect === true ? 'admin/userlist.php' : $redirect;
   }
   else
   {

@@ -142,7 +142,12 @@ if($mode == 'change')
 
   $user['email'] = sys_get_param_str('db_email');
   $user['dpath']  = sys_get_param_str('dpath');
-  $user['lang']   = $language = sys_get_param_str('langer', $language);
+  $user['lang']   = sys_get_param_str('langer', $language);
+  if(lng_switch($user['lang']))
+  {
+    lng_include('options');
+    lng_include('messages');
+  }
 
   $user['design'] = sys_get_param_int('design');
   $user['noipcheck'] = sys_get_param_int('noipcheck');
