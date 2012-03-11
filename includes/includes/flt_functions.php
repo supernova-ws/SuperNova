@@ -182,6 +182,8 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
 
 function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false)
 {
+  //TODO: try..catch
+
   global $config, $sn_data, $user, $time_now;
 
   if($user['vacation'])
@@ -194,12 +196,42 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     return ATTACK_NO_FLEET;
   }
 
+//TODO: Проверка на наличие ресурсов при Транспорте
+//TODO: Проверка на отстуствие ресурсов в нетранспортных миссиях (Транспорт, Передислокация, Колонизация)
+  $ships = 0;
+  $resources = 0;
   foreach($fleet as $ship_id => $ship_count)
   {
+    $is_ship = in_array($ship_id, $sn_data['groups']['fleet']);
     if($ship_count > $planet_src[$sn_data[$ship_id]['name']])
     {
-      return ATTACK_NO_SHIPS;
+      return $is_ship ? ATTACK_NO_SHIPS : ATTACK_NO_RESOURCES;
     }
+    if($is_ship)
+    {
+      $ships += $ship_count;
+    }
+    else
+    {
+      $resources += $ship_count;
+    }
+  }
+
+  if($ships <= 0)
+  {
+    return ATTACK_NO_FLEET;
+  }
+
+  if($resources > 0)
+  {
+    if(!in_array($mission, array(MT_TRANSPORT, MT_RELOCATE, MT_COLONIZE)))
+    {
+      return ATTACK_RESOURCE_FORBIDDEN;
+    }
+  }
+  elseif($mission == MT_TRANSPORT)
+  {
+    return ATTACK_TRANSPORT_EMPTY;
   }
 
   $speed = $options['fleet_speed_percent'];
@@ -248,7 +280,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     $flying_fleets = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
     $flying_fleets = $flying_fleets['flying_fleets'];
   }
-  if (GetMaxFleets($user) <= $flying_fleets && $mission != MT_MISSILE)
+  if(GetMaxFleets($user) <= $flying_fleets && $mission != MT_MISSILE)
   {
     return ATTACK_NO_SLOTS;
   }
@@ -290,7 +322,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     {
       return ATTACK_ALLOWED;
     }
-    return ATTACK_OWN;
+    return $planet_src['id'] == $planet_dst['id'] ? ATTACK_SAME : ATTACK_OWN;
   }
 
   // No, planet not ours. Cutting mission that can't be send to not-ours planet

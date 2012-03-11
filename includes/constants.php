@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '33');
 define('SN_RELEASE', '34');
-define('SN_VERSION', '34a2.3');
+define('SN_VERSION', '34a3');
 
 define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
 
@@ -241,37 +241,41 @@ define('MSG_TYPE_QUE'      ,  99);
 define('MSG_TYPE_NEW'      , 100);
 
 // Attack verification statuses
-define('ATTACK_ALLOWED'          ,  0);
-define('ATTACK_NO_TARGET'        ,  1);
-define('ATTACK_OWN'              ,  2);
-define('ATTACK_WRONG_MISSION'    ,  3);
-define('ATTACK_NO_ALLY_DEPOSIT'  ,  4);
-define('ATTACK_NO_DEBRIS'        ,  5);
-define('ATTACK_VACATION'         ,  6);
-define('ATTACK_SAME_IP'          ,  7);
-define('ATTACK_BUFFING'          ,  8);
-define('ATTACK_ADMIN'            ,  9);
-define('ATTACK_NOOB'             , 10);
-define('ATTACK_OWN_VACATION'     , 11);
-define('ATTACK_NO_SILO'          , 12);
-define('ATTACK_NO_MISSILE'       , 13);
-define('ATTACK_NO_FLEET'         , 14);
-define('ATTACK_NO_SLOTS'         , 15);
-define('ATTACK_NO_SHIPS'         , 16);
-define('ATTACK_NO_RECYCLERS'     , 17);
-define('ATTACK_NO_SPIES'         , 18);
-define('ATTACK_NO_COLONIZER'     , 19);
-define('ATTACK_MISSILE_TOO_FAR'  , 20);
-define('ATTACK_WRONG_STRUCTURE'  , 21);
-define('ATTACK_NO_FUEL'          , 22);
-define('ATTACK_NO_RESOURCES'     , 23);
-define('ATTACK_NO_ACS'           , 24);
-define('ATTACK_ACS_MISSTARGET'   , 25);
-define('ATTACK_WRONG_SPEED'      , 26);
-define('ATTACK_ACS_TOO_LATE'     , 27);
-define('ATTACK_BASHING'          , 28);
-define('ATTACK_BASHING_WAR_DELAY', 29);
-define('ATTACK_ACS_WRONG_TARGET' , 30);
+define('ATTACK_ALLOWED'           ,  0);
+define('ATTACK_NO_TARGET'         ,  1);
+define('ATTACK_OWN'               ,  2);
+define('ATTACK_WRONG_MISSION'     ,  3);
+define('ATTACK_NO_ALLY_DEPOSIT'   ,  4);
+define('ATTACK_NO_DEBRIS'         ,  5);
+define('ATTACK_VACATION'          ,  6);
+define('ATTACK_SAME_IP'           ,  7);
+define('ATTACK_BUFFING'           ,  8);
+define('ATTACK_ADMIN'             ,  9);
+define('ATTACK_NOOB'              , 10);
+define('ATTACK_OWN_VACATION'      , 11);
+define('ATTACK_NO_SILO'           , 12);
+define('ATTACK_NO_MISSILE'        , 13);
+define('ATTACK_NO_FLEET'          , 14);
+define('ATTACK_NO_SLOTS'          , 15);
+define('ATTACK_NO_SHIPS'          , 16);
+define('ATTACK_NO_RECYCLERS'      , 17);
+define('ATTACK_NO_SPIES'          , 18);
+define('ATTACK_NO_COLONIZER'      , 19);
+define('ATTACK_MISSILE_TOO_FAR'   , 20);
+define('ATTACK_WRONG_STRUCTURE'   , 21);
+define('ATTACK_NO_FUEL'           , 22);
+define('ATTACK_NO_RESOURCES'      , 23);
+define('ATTACK_NO_ACS'            , 24);
+define('ATTACK_ACS_MISSTARGET'    , 25);
+define('ATTACK_WRONG_SPEED'       , 26);
+define('ATTACK_ACS_TOO_LATE'      , 27);
+define('ATTACK_BASHING'           , 28);
+define('ATTACK_BASHING_WAR_DELAY' , 29);
+define('ATTACK_ACS_WRONG_TARGET'  , 30);
+define('ATTACK_SAME'              , 31);
+define('ATTACK_RESOURCE_FORBIDDEN', 32);
+define('ATTACK_TRANSPORT_EMPTY'   , 33);
+
 
 // *** Market variables
 // === Market blocks

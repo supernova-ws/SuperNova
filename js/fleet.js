@@ -24,6 +24,9 @@ function changeMission(mission)
     case '9': // Destroy
     case '15':// Explore
       element.style.display = "none";
+      jQuery('#resource0').val(0).trigger('change');
+      jQuery('#resource1').val(0).trigger('change');
+      jQuery('#resource2').val(0).trigger('change');
     break;
 
     default:

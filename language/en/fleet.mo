@@ -127,6 +127,9 @@ $lang = array_merge($lang, array(
     ATTACK_BASHING => 'Bashing protection. Number of allowed attacks per day per planet already reached',
     ATTACK_BASHING_WAR_DELAY => 'Bashing protection. War to this Alliance already declared but did not started yet. Look at your Alliance page to see war begin date',
     ATTACK_ACS_WRONG_TARGET => 'Fleet destination did not equal to ACS destination',
+    ATTACK_SAME => 'Source and destination planets are a same',
+    ATTACK_RESOURCE_FORBIDDEN => 'It is not allowed to send fleet with resources in this mission',
+    ATTACK_TRANSPORT_EMPTY => 'It is not allowed to send empty fleet to transport mission',
   ),
 
   'fl_fleet_err' => 'Error!',
