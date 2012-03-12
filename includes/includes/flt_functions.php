@@ -211,17 +211,19 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     {
       $ships += $ship_count;
     }
+    /*
     else
     {
       $resources += $ship_count;
     }
+    */
   }
 
   if($ships <= 0)
   {
     return ATTACK_NO_FLEET;
   }
-
+/*
   if($resources > 0)
   {
     if(!in_array($mission, array(MT_TRANSPORT, MT_RELOCATE, MT_COLONIZE)))
@@ -233,7 +235,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   {
     return ATTACK_TRANSPORT_EMPTY;
   }
-
+*/
   $speed = $options['fleet_speed_percent'];
   if($speed && ($speed != intval($speed) || $speed < 1 || $speed > 10))
   {
