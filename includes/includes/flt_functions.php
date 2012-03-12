@@ -211,19 +211,17 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     {
       $ships += $ship_count;
     }
-    /*
     else
     {
       $resources += $ship_count;
     }
-    */
   }
-
+/*
   if($ships <= 0)
   {
     return ATTACK_NO_FLEET;
   }
-/*
+
   if($resources > 0)
   {
     if(!in_array($mission, array(MT_TRANSPORT, MT_RELOCATE, MT_COLONIZE)))
