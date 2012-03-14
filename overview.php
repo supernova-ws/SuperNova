@@ -154,11 +154,6 @@ switch($mode)
 
     while ($UserPlanet = mysql_fetch_assoc($planets_query))
     {
-      if($UserPlanet['planet_type'] == PT_MOON)
-      {
-        continue;
-      }
-
       $UserPlanet      = sys_o_get_updated($user, $UserPlanet, $time_now, true);
       $list_planet_que = $UserPlanet['que'];
       $UserPlanet      = $UserPlanet['planet'];
@@ -172,6 +167,10 @@ switch($mode)
         $planet_fleet_id = "p{$UserPlanet['id']}";
         $fleets_to_planet[$UserPlanet['id']] = tpl_parse_fleet_sn($fleet_list['own']['total'], $planet_fleet_id);
 //        $fleet_id++;
+      }
+      if($UserPlanet['planet_type'] == PT_MOON)
+      {
+        continue;
       }
       $moon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3 LIMIT 1;", '', true);
       if($moon)
