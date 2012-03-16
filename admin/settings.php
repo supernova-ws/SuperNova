@@ -82,6 +82,9 @@ if(sys_get_param('save'))
   $config->uni_price_galaxy        = sys_get_param_float('uni_price_galaxy');
   $config->uni_price_system        = sys_get_param_float('uni_price_system');
 
+  $config->user_birthday_gift      = sys_get_param_float('user_birthday_gift');
+  $config->user_birthday_range     = sys_get_param_int('user_birthday_range');
+
   $config->empire_mercenary_base_period = sys_get_param_int('empire_mercenary_base_period');
   if($config->empire_mercenary_temporary != sys_get_param_int('empire_mercenary_temporary'))
   {

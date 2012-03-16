@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '33');
 define('SN_RELEASE', '34');
-define('SN_VERSION', '34a3.2');
+define('SN_VERSION', '34a4');
 
 define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
 
@@ -166,6 +166,7 @@ define('RPG_REFERRAL', 10);
 define('RPG_ARTIFACT', 11);
 define('RPG_RENAME', 12);
 define('RPG_ALLY', 13);
+define('RPG_BIRTHDAY', 14);
 
 // Operation results
 define('ERR_NONE'               , 0);

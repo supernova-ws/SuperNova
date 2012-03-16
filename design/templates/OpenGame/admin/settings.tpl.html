@@ -101,7 +101,7 @@
       <th><input name="game_name" size="40" value="{C_game_name}" type="text"></th>
     </tr>
     <tr>
-      <th>{L_adm_opt_game_mode}</a></th>
+      <th>{L_adm_opt_game_mode}</th>
       <th>
         <select name="game_mode">
         <!-- BEGIN game_modes -->
@@ -124,7 +124,6 @@
         </div>
       </th>
     </tr>
-
     <tr>
       <th>{L_adm_opt_speed} {L_adm_opt_game_speed_normal}</th>
       <th>
@@ -143,11 +142,11 @@
       </th>
     </tr>
     <tr>
-      <th>{L_adm_opt_max_colonies}</a></th>
+      <th>{L_adm_opt_max_colonies}</th>
       <th><input name="player_max_colonies" maxlength="80" size="10" value="{C_player_max_colonies}" type="text"> {L_adm_opt_main_not_counted}</th>
     </tr>
     <tr>
-      <th>{L_adm_opt_exchange}</a></th>
+      <th>{L_adm_opt_exchange}</th>
       <th>
         {L_sys_metal} <input name="rpg_exchange_metal" maxlength="10" size="2" value="{C_rpg_exchange_metal}" type="text"> :
         {L_sys_crystal} <input name="rpg_exchange_crystal" maxlength="10" size="2" value="{C_rpg_exchange_crystal}" type="text"> :
@@ -175,11 +174,11 @@
       </th>
     </tr>
     <tr>
-      <th>{L_adm_uni_price_galaxy}</a></th>
+      <th>{L_adm_uni_price_galaxy}</th>
       <th><input name="uni_price_galaxy" maxlength="20" size="20" value="{C_uni_price_galaxy}" type="text"></th>
     </tr>
     <tr>
-      <th>{L_adm_uni_price_system}</a></th>
+      <th>{L_adm_uni_price_system}</th>
       <th><input name="uni_price_system" maxlength="20" size="20" value="{C_uni_price_system}" type="text"></th>
     </tr>
 
@@ -191,7 +190,7 @@
 
     <tr><td class="c" colspan="2">{L_adm_opt_links}</td></tr>
     <tr>
-      <th>{L_adm_opt_game_rules}</a></th>
+      <th>{L_adm_opt_game_rules}</th>
       <th><input name="url_rules" size="53" maxlength="254" value="{C_url_rules}" type="text"></th>
     </tr>
     <tr>
@@ -209,7 +208,7 @@
 
     <tr><td class="c" colspan="2">{L_adm_opt_game_defaults}</td></tr>
     <tr>
-      <th>{L_adm_opt_game_default_language}</a></th>
+      <th>{L_adm_opt_game_default_language}</th>
       <th>
         <select name="game_default_language">
         <!-- BEGIN game_languages -->
@@ -223,18 +222,35 @@
         </select>
       </th>
     </tr>
-
     <tr>
-      <th>{L_adm_opt_game_default_skin}</a></th>
+      <th>{L_adm_opt_game_default_skin}</th>
       <th><input name="game_default_skin" size="40" maxlength="254" value="{C_game_default_skin}" type="text"></th>
     </tr>
     <tr>
-      <th>{L_adm_opt_game_default_template}</a></th>
+      <th>{L_adm_opt_game_default_template}</th>
       <th><input name="game_default_template" size="40" maxlength="254" value="{C_game_default_template}" type="text"></th>
     </tr>
     <tr>
       <th>{L_adm_opt_int_news_count}<br>{L_adm_opt_game_zero_dsiable}</th>
       <th>{L_adm_opt_int_page_imperor} <input name="game_news_overview" type="text" size=3 maxlength=3 value="{C_game_news_overview}" /></th>
+    </tr>
+
+    <tr><td class="c" colspan="2">{L_adm_opt_user_settings}</td></tr>
+    <tr>
+      <th>
+        {L_adm_opt_user_birthday_gift}<br />
+        {L_adm_opt_user_birthday_gift_disable}
+      </th>
+      <th>
+        {L_sys_dark_matter} <input name="user_birthday_gift" size="20" maxlength="20" value="{C_user_birthday_gift}" type="text">
+      </th>
+    </tr>
+    <tr>
+      <th>{L_adm_opt_user_birthday_range}</th>
+      <th>
+        <input name="user_birthday_range" size="20" maxlength="20" value="{C_user_birthday_range}" type="text">
+        <div class="c_l" style="width: 350px">{L_adm_opt_user_birthday_range_hint}</div>
+      </th>
     </tr>
 
     <tr><td class="c" colspan="2">{L_sys_opt_bash_info}</td></tr>

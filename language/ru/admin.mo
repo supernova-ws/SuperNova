@@ -28,6 +28,12 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
+  'adm_opt_user_settings' => 'Настройки игроков',
+  'adm_opt_user_birthday_gift' => 'Подарок игроку на день рождения',
+  'adm_opt_user_birthday_gift_disable' => '0 - отключить подарки',
+  'adm_opt_user_birthday_range' => 'Ретро-рождение, в днях',
+  'adm_opt_user_birthday_range_hint' => 'Как далеко в прошлом может располагаться день рождения для получения игроком подарка. Очевидно, не имеет практического смысла устанавливать это значение более чем в 364 дня',
+
   'adm_ul_title' => 'Список игроков',
   'adm_ul_time_registered' => 'Дата регистрации',
   'adm_ul_time_played' => 'Последний логин',
@@ -214,7 +220,7 @@ $lang = array_merge($lang, array(
   'adm_opt_allow_buffing' => 'Разрешить прокачку',
   'adm_opt_ally_help_weak' => 'Разрешить удержание на слабом соаловце',
   'adm_opt_email_pm' => 'Разрешить пересылку ЛС на e-mail',
-  'adm_opt_game_defaults' => 'Настройки игрока по умолчанию',
+  'adm_opt_game_defaults' => 'Настройки игры по умолчанию',
   'adm_opt_game_default_language' => 'Язык интерфейса',
   'adm_opt_game_default_skin' => 'Оформление/Шкурка',
   'adm_opt_game_default_template' => 'Шаблон',

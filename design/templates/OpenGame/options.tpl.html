@@ -60,6 +60,20 @@
       </tr>
 
       <tr>
+        <th>{L_opt_birthday}</th>
+        <th>
+          <!-- IF user_birthday -->
+          {user_birthday}
+          <!-- ELSE -->
+          <input type="text" name="user_birthday" id="user_birthday" size="10" maxlength="10" value="{FMT_DATE}" 
+            onfocus="var user_birthday = document.getElementById('user_birthday');if(user_birthday.value == '{JS_FMT_DATE}') user_birthday.value = '';"
+            onblur="var user_birthday = document.getElementById('user_birthday');if(user_birthday.value == '') user_birthday.value = '{JS_FMT_DATE}';"
+          >
+          <!-- ENDIF -->
+        </th>
+      </tr>
+
+      <tr>
         <td class="c" colspan="2">{L_general_settings}</td>
       </tr>
 

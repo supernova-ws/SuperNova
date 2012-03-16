@@ -141,7 +141,7 @@ if ($who == 2) {
   $start++;
   $parse['stat_values'] = "";
   while ($StatRow = mysql_fetch_assoc($query)) {
-    $UsrRow                   = doquery("SELECT * FROM {{users}} WHERE `id` = '". $StatRow['id_owner'] ."' LIMIT 1;", '',true);
+    $UsrRow                   = doquery("SELECT *, UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday` FROM {{users}} WHERE `id` = '". $StatRow['id_owner'] ."' LIMIT 1;", '',true);
 
     $parse['player_rank']     = ($StatRow['rownum'] + $start1);
 
@@ -160,7 +160,9 @@ if ($who == 2) {
     } else {
       $parse['player_name']     = $UsrRow['username'];
     }
-    $parse['player_name'] = '<img src="' . SN_ROOT_VIRTUAL . $dpath . 'images/sex_' . ($UsrRow['sex'] == 'M' ? 'male' : 'female') . '.png">' . $parse['player_name'];
+    $parse['player_name'] = '<img src="' . SN_ROOT_VIRTUAL . $dpath . 'images/sex_' . ($UsrRow['sex'] == 'M' ? 'male' : 'female') . '.png">' .
+      (date(FMT_DATE, $UsrRow['nearest_birthday']) == date(FMT_DATE, $time_now) ? '<img src="' . SN_ROOT_VIRTUAL . 'images/birthday.png">' : '') .
+      $parse['player_name'];
     if ($IsUserChecked)
       $parse['player_mes']      = "<a href=\"messages.php?mode=write&id=" . $UsrRow['id'] . "\"><img src=\"" . $dpath . "img/m.gif\" border=\"0\" alt=\"". $lang['Ecrire'] ."\" /></a>";
     if ($UsrRow['ally_name'] == $user['ally_name']) {

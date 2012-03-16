@@ -27,6 +27,8 @@
 if (!defined('INSIDE')) die();
 
 $lang = array_merge($lang, array(
+  'opt_birthday' => 'День рождения',
+
   'opt_header' => 'Настройки пользователя',
   'opt_messages' => 'Автоматические уведомления',
   'opt_msg_saved' => 'Настройки успешно изменены',
@@ -58,7 +60,6 @@ $lang = array_merge($lang, array(
   'thanksforregistry' => 'Спасибо за регистрацию.<br />Через несколько минут вы получите ваше сообщение с паролем.',
   'general_settings' => 'Общие настройки',
   'skins_example' => 'Оформление<br>(например C:/ogame/skin/)',
-
 
 
   'opt_avatar' => 'Аватар',

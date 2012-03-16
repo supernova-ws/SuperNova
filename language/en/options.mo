@@ -29,6 +29,8 @@
 if (!defined('INSIDE')) die();
 
 $lang = array_merge($lang, array(
+  'opt_birthday' => 'Birthday',
+
   'opt_header' => 'User options',
   'opt_messages' => 'Automatic alerts',
   'opt_msg_saved' => 'Options succesfully saved',

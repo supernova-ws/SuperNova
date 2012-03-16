@@ -82,7 +82,10 @@ switch($new_version)
     upd_alter_table('planets', "ADD `debris_metal` bigint(11) unsigned DEFAULT '0'", !$update_tables['planets']['debris_metal']);
     upd_alter_table('planets', "ADD `debris_crystal` bigint(11) unsigned DEFAULT '0'", !$update_tables['planets']['debris_crystal']);
 
-    upd_alter_table('planets', array("ADD `parent_planet` bigint(11) unsigned DEFAULT '0'","ADD KEY `i_parent_planet` (`parent_planet`)"), !$update_tables['planets']['parent_planet']);
+    upd_alter_table('planets', array(
+      "ADD `parent_planet` bigint(11) unsigned DEFAULT '0'",
+      "ADD KEY `i_parent_planet` (`parent_planet`)"
+    ), !$update_tables['planets']['parent_planet']);
     upd_do_query(
       "UPDATE `{{planets}}` AS lu
         LEFT JOIN `{{planets}}` AS pl
@@ -1617,6 +1620,22 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
     upd_do_query('COMMIT;', true);
     $new_version = 33;
+
+  case 33:
+    upd_log_version_update();
+
+    upd_alter_table('users', array(
+      "ADD `user_birthday` DATE DEFAULT NULL COMMENT 'User birthday'",
+      "ADD `user_birthday_celebrated` DATE DEFAULT NULL COMMENT 'Last time where user got birthday gift'",
+
+      "ADD KEY `I_user_birthday` (`user_birthday`, `user_birthday_celebrated`)",
+    ), !$update_tables['users']['user_birthday']);
+
+    upd_check_key('user_birthday_gift', 0, !isset($config->user_birthday_gift));
+    upd_check_key('user_birthday_range', 30, !isset($config->user_birthday_range));
+    upd_check_key('user_birthday_celebrate', 0, !isset($config->user_birthday_celebrate));
+
+    // $new_version = 33;
 };
 upd_log_message('Upgrade complete.');
 

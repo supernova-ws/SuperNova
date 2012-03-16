@@ -30,6 +30,12 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
+  'adm_opt_user_settings' => 'User settings',
+  'adm_opt_user_birthday_gift' => 'Birthday gift',
+  'adm_opt_user_birthday_gift_disable' => '0 - disable gifts',
+  'adm_opt_user_birthday_range' => 'Retro-birthday, in days',
+  'adm_opt_user_birthday_range_hint' => 'How far in past can be user birthday for giving him gift. Obviously can not be more then 364 days',
+
   'adm_done' => 'Successfully Completed',
   'adm_inactive_removed' => '<li>Remove inactive players: %d</li>',
   'adm_stat_title' => 'Update statistics',

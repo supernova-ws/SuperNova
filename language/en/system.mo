@@ -39,7 +39,11 @@ if (empty($lang) || !is_array($lang))
 // System-wide localization
 
 $lang = array_merge($lang, array(
+  'sys_administration' => 'SuperNova Administration',
+  'sys_birthday' => 'Birthday',
+
   'adm_err_denied' => 'Access denied. You do not have enough rights to use this admin page',
+  'sys_birthday_message' => '%1$s! SuperNova Administration warmly greats you with your birthday on %2$s and gives to you s small gift - %3$d %4$s!',
 
   'sys_empire'          => 'Empire',
   'VacationMode'			=> "Your production stopped because you are on vacation",

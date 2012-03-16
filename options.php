@@ -15,6 +15,8 @@ lng_include('messages');
 
 $template = gettemplate('options', true);
 
+$FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
+
 $mode = sys_get_param_str('mode');
 if($mode == 'change')
 {
@@ -163,6 +165,58 @@ if($mode == 'change')
   $user['planet_sort_order'] = sys_get_param_int('settings_order');
   $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : $time_now + $config->player_delete_time);
 
+  try
+  {
+    if($user['birthday'])
+    {
+      throw new exception();
+    }
+
+    $user_birthday = sys_get_param_str_raw('user_birthday');
+    if(!$user_birthday || $user_birthday == $FMT_DATE)
+    {
+      throw new exception();
+    }
+
+    // Some black magic to parse any valid date format - those that contains all three "d", "m" and "Y" and any of the delimeters "\", "/", ".", "-"
+    $pos['d'] = strpos(FMT_DATE, 'd');
+    $pos['m'] = strpos(FMT_DATE, 'm');
+    $pos['Y'] = strpos(FMT_DATE, 'Y');
+    asort($pos);
+    $i = 0;
+    foreach($pos as &$position)
+    {
+      $position = ++$i;
+    }
+
+    $regexp = "/" . preg_replace(array('/\\\\/', '/\//', '/\./', '/\-/', '/d/', '/m/', '/Y/'), array('\\\\\\', '\/', '\.', '\-', '(\d?\d)', '(\d?\d)', '(\d{4})'), FMT_DATE) . "/";
+    if(!preg_match($regexp, $user_birthday, $match))
+    {
+      throw new exception();
+    }
+
+    if(!checkdate($match[$pos['m']], $match[$pos['d']], $match[$pos['Y']]))
+    {
+      throw new exception();
+    }
+
+    $user['user_birthday'] = mysql_real_escape_string("{$match[$pos['Y']]}-{$match[$pos['m']]}-{$match[$pos['d']]}");
+    // EOF black magic! Now we have valid MYSQL date in $user['user_birthday'] - independent of date format
+
+    $year = date('Y', $time_now);
+    if(mktime(0, 0, 0, $match[$pos['m']], $match[$pos['d']], $year) > $time_now)
+    {
+      $year--;
+    }
+    $user['user_birthday_celebrated'] = mysql_real_escape_string("{$year}-{$match[$pos['m']]}-{$match[$pos['d']]}");
+
+    $user_birthday = ", `user_birthday` = '{$user['user_birthday']}', `user_birthday_celebrated` = '{$user['user_birthday_celebrated']}'";
+  }
+  catch (Exception $e)
+  {
+    $user_birthday = '';
+  }
+
   require_once('includes/includes/sys_avatar.php');
 
   $avatar_upload_result = sys_avatar_upload($user['id'], $user['avatar']);
@@ -190,6 +244,7 @@ if($mode == 'change')
     `deltime` = '{$user['deltime']}',
     `vacation` = '{$user['vacation']}',
     `options` = '{$user['options']}'
+    {$user_birthday}
   WHERE `id` = '{$user['id']}' LIMIT 1");
 
   $template->assign_block_vars('result', array(
@@ -261,6 +316,10 @@ $template->assign_vars(array(
   'user_settings_wri' => ($user['settings_wri'] == 1) ? " checked='checked'/":'',
   'user_settings_mis' => ($user['settings_mis'] == 1) ? " checked='checked'/":'',
   'user_settings_bud' => ($user['settings_bud'] == 1) ? " checked='checked'/":'',
+
+  'user_birthday' => $user['user_birthday'],
+  'FMT_DATE' => $FMT_DATE,
+  'JS_FMT_DATE' => js_safe_string($FMT_DATE),
 
   'USER_VACATION_DISABLE' => $config->user_vacation_disable,
   'TIME_NOW' => $time_now,

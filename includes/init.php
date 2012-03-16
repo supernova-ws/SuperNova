@@ -212,6 +212,11 @@ if($config->server_updater_check_auto && $config->server_updater_check_last + $c
   include(SN_ROOT_PHYSICAL . 'ajax_version_check.php');
 }
 
+if($config->user_birthday_gift && $time_now > $config->user_birthday_celebrate + PERIOD_DAY)
+{
+  require_once("{$sn_root_physical}includes/includes/user_birthday_celebrate.{$phpEx}");
+  sn_user_birthday_celebrate();
+}
 
 // ------------------------------------------------------------------------------------------------------------------------------
 function sn_sys_load_php_files($dir_name, $phpEx = 'php', $modules = false)
