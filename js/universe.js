@@ -41,7 +41,7 @@ function show_alliance(id)
     var result = "<table><tr>";
     if(opt_uni_avatar_ally && allies[id]['avatar'] == 1)
     {
-      result += "<td rowspan=\"4\"><img src=\"" + sn_path_prefix + "images/avatar/ally_" + id + ".png\" height=75 width=75 /></td>";
+      result += "<td rowspan=\"4\"><img src=\"" + sn_path_prefix + "images/avatar/ally_" + id + ".png\" width=75 /></td>";
     }
     result += "<td class=c><center>" + language['sys_alliance'] + "&nbsp;" + allies[id]['name'];
     result += "<br>" + language['place'] + "&nbsp;" + allies[id]['rank'] + "/" + game_ally_count;

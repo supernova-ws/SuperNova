@@ -112,6 +112,8 @@ while($fleet_row = mysql_fetch_assoc($fleet_precache_query))
   $fleet_list[$fleet_planet][$fleet_type][] = $fleet_row;
 }
 
+$time_now_parsed = getdate($time_now);
+
 $fleet_id = 1;
 $fleets = array();
 $config_game_max_planet = $config->game_maxPlanet + 1;
@@ -216,6 +218,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
   }
 
   $RowUserPoints = $uni_galaxyRowUser['total_points'];
+  $birthday_array = $uni_galaxyRowUser['user_birthday'] ? date_parse($uni_galaxyRowUser['user_birthday']) : array();
   $template->assign_block_vars('galaxyrow', array(
      'PLANET_ID'        => $uni_galaxyRowPlanet['id'],
      'PLANET_NUM'       => $Planet,
@@ -250,6 +253,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
      'USER_STRONG'   => $CurrentPoints * $config->game_noob_factor < $RowUserPoints && $config->game_noob_factor,
      'USER_AUTH'     => $uni_galaxyRowUser['authlevel'],
      'USER_ADMIN'    => $lang['user_level_shortcut'][$uni_galaxyRowUser['authlevel']],
+     'USER_BIRTHDAY' => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? date(FMT_DATE, $time_now) : 0,
 
      'ALLY_ID'       => $uni_galaxyRowUser['ally_id'],
      'ALLY_TAG'      => $uni_galaxyRowUser['ally_tag'],
@@ -279,12 +283,15 @@ foreach($cached['users'] as $PlanetUser)
     {
       $user_rank_title = '';
     }
+
+    $birthday_array = $PlanetUser['user_birthday'] ? date_parse($PlanetUser['user_birthday']) : array();
     $template->assign_block_vars('users', array(
       'ID'   => $PlanetUser['id'],
       'NAME' => $PlanetUser['username'],
       'NAME_JS' => js_safe_string($PlanetUser['username']),
       'RANK' => $PlanetUser['total_rank'],
       'SEX'      => $PlanetUser['sex'] == 'F' ? 'female' : 'male',
+      'BIRTHDAY' => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? 1 : 0, // date(FMT_DATE, $time_now)
       'AVATAR'   => $PlanetUser['avatar'],
       'ALLY_TAG' => js_safe_string($user_ally['ally_tag']),
       'ALLY_TITLE' => str_replace(' ', '&nbsp', js_safe_string($user_rank_title)),
