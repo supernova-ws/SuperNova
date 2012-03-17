@@ -161,7 +161,7 @@ if ($who == 2) {
       $parse['player_name']     = $UsrRow['username'];
     }
     $parse['player_name'] = '<img src="' . SN_ROOT_VIRTUAL . $dpath . 'images/sex_' . ($UsrRow['sex'] == 'M' ? 'male' : 'female') . '.png">' .
-      (date(FMT_DATE, $UsrRow['nearest_birthday']) == date(FMT_DATE, $time_now) ? '<img src="' . SN_ROOT_VIRTUAL . 'images/birthday.png">' : '') .
+      (($UsrRow['nearest_birthday'] = date(FMT_DATE, $UsrRow['nearest_birthday'])) == date(FMT_DATE, $time_now) ? '<img src="' . SN_ROOT_VIRTUAL . 'images/birthday.png" alt="' . $UsrRow['nearest_birthday'] . '" title="' . $UsrRow['nearest_birthday'] . '">' : '') .
       $parse['player_name'];
     if ($IsUserChecked)
       $parse['player_mes']      = "<a href=\"messages.php?mode=write&id=" . $UsrRow['id'] . "\"><img src=\"" . $dpath . "img/m.gif\" border=\"0\" alt=\"". $lang['Ecrire'] ."\" /></a>";
