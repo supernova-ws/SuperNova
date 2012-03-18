@@ -602,6 +602,7 @@ if (!defined('INSIDE'))
       'energy' => 0,
       'factor' => 2,
       'type' => UNIT_STRUCTURE,
+      'capacity' => 12,
     ),
 
     SHIP_CARGO_SMALL => array(
@@ -1417,6 +1418,7 @@ if (!defined('INSIDE'))
       'amplify' => array(SHIP_CARGO_HYPER => 1, SHIP_CARGO_SUPER => 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 500.05, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
       'armor' => 2000,
       'stackable' => true,
+      'max' => 1,
     ),
 
     408 => array(
@@ -1441,6 +1443,7 @@ if (!defined('INSIDE'))
       'amplify' => array(SHIP_CARGO_HYPER => 1, SHIP_CARGO_SUPER => 1, SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 1, SHIP_FIGHTER_LIGHT => 1, SHIP_FIGHTER_HEAVY => 1, SHIP_DESTROYER => 1, SHIP_CRUISER => 1, SHIP_COLONIZER => 1, SHIP_RECYCLER => 1, SHIP_SPY => 500.05, SHIP_BOMBER => 1, SHIP_SATTELITE_SOLAR => 1, SHIP_DESTRUCTOR => 1, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 1, SHIP_SUPERNOVA => 1),
       'armor' => 10000,
       'stackable' => true,
+      'max' => 1,
     ),
 
     409 => array(
@@ -1465,6 +1468,7 @@ if (!defined('INSIDE'))
       'amplify'   => array(SHIP_CARGO_HYPER => 1,  SHIP_CARGO_SUPER => 0.2025, SHIP_CARGO_SMALL => 0.041, SHIP_CARGO_BIG => 0.098, SHIP_FIGHTER_LIGHT => 0.03075, SHIP_FIGHTER_HEAVY => 0.0615, SHIP_DESTROYER => 0.055, SHIP_CRUISER => 0.124, SHIP_COLONIZER => 0.31, SHIP_RECYCLER => 0.161, SHIP_SPY => 0.05001, SHIP_BOMBER => 0.08, SHIP_SATTELITE_SOLAR => 0.105, SHIP_DESTRUCTOR => 0.023, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 0.037, SHIP_SUPERNOVA => 1 ),
       'armor'     => 1500000,
       'stackable' => true,
+      'max' => 1,
     ),
 
     502 => array(
@@ -1487,6 +1491,7 @@ if (!defined('INSIDE'))
       'attack' => 1,
       'armor' => 1000,
       'stackable' => true,
+      'size' => 1,
     ),
 
     503 => array(
@@ -1509,6 +1514,7 @@ if (!defined('INSIDE'))
       'attack' => 120000,
       'armor' => 1500,
       'stackable' => true,
+      'size' => 3,
     ),
 
 
@@ -2201,6 +2207,8 @@ mission = array(
         PT_PLANET => array(STRUC_MINE_METAL, STRUC_MINE_CRYSTAL, STRUC_MINE_DEUTERIUM, STRUC_MINE_SOLAR, STRUC_MINE_FUSION, STRUC_FACTORY_ROBOT, STRUC_FACTORY_HANGAR, STRUC_FACTORY_NANO, STRUC_LABORATORY, STRUC_LABORATORY_NANO, STRUC_SILO, STRUC_STORE_METAL, STRUC_STORE_CRYSTAL, STRUC_STORE_DEUTERIUM, STRUC_ALLY_DEPOSIT, STRUC_TERRAFORMER),
         PT_MOON   => array(STRUC_FACTORY_ROBOT, STRUC_FACTORY_HANGAR, STRUC_STORE_METAL, STRUC_STORE_CRYSTAL, STRUC_STORE_DEUTERIUM, STRUC_ALLY_DEPOSIT, STRUC_MOON_STATION, STRUC_MOON_PHALANX, STRUC_MOON_GATE, ),
       ),
+      // List of units that can produce resources
+      'factories'      => array ( 1, 2, 3, 4, 12, SHIP_SATTELITE_SOLAR ),
 
       // Tech list
       'tech'      => array (
@@ -2226,20 +2234,23 @@ mission = array(
         SHIP_RECYCLER, SHIP_COLONIZER, SHIP_SPY, SHIP_SATTELITE_SOLAR
        ),
       // Defensive building list
-      'defense'   => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409, 502, 503 ),
+      'defense'   => array (401, 402, 403, 404, 405, 406, 407, 408, 409, 502, 503 ),
+      // Missiles list
+      'missile'   => array (502, 503),
 
       // Combat units list
       'combat'    => array(
-        SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_CARGO_HYPER, SHIP_FIGHTER_LIGHT, SHIP_FIGHTER_HEAVY, SHIP_DESTROYER, SHIP_CRUISER, SHIP_COLONIZER, SHIP_RECYCLER, SHIP_SPY, SHIP_BOMBER, SHIP_SATTELITE_SOLAR, SHIP_DESTRUCTOR, SHIP_DEATH_STAR, SHIP_BATTLESHIP, SHIP_SUPERNOVA, 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
+        SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_CARGO_HYPER, SHIP_FIGHTER_LIGHT,
+        SHIP_FIGHTER_HEAVY, SHIP_DESTROYER, SHIP_CRUISER, SHIP_COLONIZER, SHIP_RECYCLER, SHIP_SPY,
+        SHIP_BOMBER, SHIP_SATTELITE_SOLAR, SHIP_DESTRUCTOR, SHIP_DEATH_STAR, SHIP_BATTLESHIP, SHIP_SUPERNOVA,
+        401, 402, 403, 404, 405, 406, 407, 408, 409,
+      ),
       // Planet active defense list
       'defense_active' => array ( 401, 402, 403, 404, 405, 406, 407, 408, 409 ),
       // Transports
       'flt_transports' => array ( SHIP_CARGO_SMALL, SHIP_CARGO_BIG, SHIP_CARGO_SUPER, SHIP_CARGO_HYPER),
 
       'artifacts' => array(ART_LHC, ART_RCD_SMALL, ART_RCD_MEDIUM, ART_RCD_LARGE),
-
-      // List of units that can produce resources
-      'factories'      => array ( 1, 2, 3, 4, 12, SHIP_SATTELITE_SOLAR ),
 
       // Resource list
       'resources' => array ( 0 => 'metal', 1 => 'crystal', 2 => 'deuterium', 3 => 'dark_matter'),
@@ -2251,7 +2262,8 @@ mission = array(
       'resources_loot' => array (RES_METAL, RES_CRYSTAL, RES_DEUTERIUM),
       // Resources that can be tradeable in market trader
       'resources_trader' => array(RES_METAL, RES_CRYSTAL, RES_DEUTERIUM, RES_DARK_MATTER),
-      // Resources that can be tradeable in market trader
+
+      // Resources that can be tradeable in market trader AND be a quest_rewards
       'quest_rewards' => array(RES_METAL, RES_CRYSTAL, RES_DEUTERIUM, RES_DARK_MATTER),
 
 //      // Ques list

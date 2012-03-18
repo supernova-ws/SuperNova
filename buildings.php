@@ -36,7 +36,7 @@ switch ($mode)
   case SUBQUE_FLEET:
   case SUBQUE_DEFENSE:
     require_once('includes/includes/eco_bld_hangar.php');
-    eco_build_hangar($mode, $user, $planetrow, $que);
+    eco_bld_hangar($mode, $user, $planetrow, $que);
   break;
 
   case QUE_STRUCTURES:

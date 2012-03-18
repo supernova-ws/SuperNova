@@ -24,16 +24,17 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
 {
   global $sn_data, $config;
 
-  $sn_groups = $sn_data['groups'];
-
-  $unit_data = $sn_data[$unit_id];
-  $unit_db_name = $unit_data['name'];
-  $unit_factor = $unit_data['cost']['factor'] ? $unit_data['cost']['factor'] : 1;
-
   $rpg_exchange_deuterium = $config->rpg_exchange_deuterium;
 
+  $sn_groups = &$sn_data['groups'];
+  $unit_data = &$sn_data[$unit_id];
+  $unit_db_name = &$unit_data['name'];
+
+
+  $unit_factor = $unit_data['cost']['factor'] ? $unit_data['cost']['factor'] : 1;
   $price_increase = pow($unit_factor, $unit_level);
-  $can_build   = 1000000000000;
+
+  $can_build   = $unit_data['max'] ? $unit_data['max'] : 1000000000000;
   $can_destroy = 1000000000000;
   foreach($unit_data['cost'] as $resource_id => $resource_amount)
   {

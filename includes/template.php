@@ -459,7 +459,7 @@ function tpl_assign_hangar($que_type, $planet, &$template)
       'TIME' => $unit_data[RES_TIME][BUILD_CREATE] - ($hangar_que_string_id ? 0 : $planet['b_hangar']),
       'TIME_FULL' => $unit_data[RES_TIME][BUILD_CREATE],
       'AMOUNT' => $unit_amount,
-      'LEVEL' => 0,
+      'LEVEL' => -1,
     ));
 
     $que_length++;

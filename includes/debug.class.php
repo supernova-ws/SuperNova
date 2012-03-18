@@ -225,9 +225,9 @@ class debug
 // Copyright (c) 2009-2010 Gorlum for http://supernova.ws
 // Dump variables nicer then var_dump()
 
-function dump($value,$varname = "",$level=0,$dumper = "")
+function dump($value, $varname = null, $level=0, $dumper = "")
 {
-  if ($varname) $varname .= " = ";
+  if (isset($varname)) $varname .= " = ";
 
   if ($level==-1)
   {
@@ -275,12 +275,12 @@ function dump($value,$varname = "",$level=0,$dumper = "")
   return $dumper;
 }
 
-function pdump($value, $varname = '')
+function pdump($value, $varname = null)
 {
   print('<span style="text-align: left">' . dump($value, $varname) . '</span>');
 }
 
-function debug($value, $varname = '')
+function debug($value, $varname = null)
 {
   return pdump($value, $varname);
 }

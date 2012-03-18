@@ -1,5 +1,31 @@
 <?php
 
+function eco_que_str2arr($que_str)
+{
+  $que_arr = explode(';', $que_str);
+  foreach($que_arr as $que_index => &$que_item)
+  {
+    if($que_item)
+    {
+      $que_item = explode(',', $que_item);
+    }
+    else
+    {
+      unset($que_arr[$que_index]);
+    }
+  }
+  return $que_arr;
+}
+
+function eco_que_arr2str($que_arr)
+{
+  foreach($que_arr as &$que_item)
+  {
+    $que_item = implode(',', $que_item);
+  }
+  return implode(';', $que_arr);
+}
+
 function eco_que_process($user, &$planet, $time_left)
 {
   global $lang;

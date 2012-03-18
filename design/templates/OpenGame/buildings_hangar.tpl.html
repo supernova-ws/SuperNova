@@ -5,7 +5,9 @@
 
 <div>{error_msg}</div>
 
-<font color="#ff0000">{noresearch}</font>
+<!-- IF HANGAR_BUSY -->
+<span class="error" >{L_fleet_on_update}</span>
+<!-- ENDIF -->
 
 <form action="buildings.php?mode={MODE}" method="post">
   <!-- IF .production -->
@@ -123,5 +125,4 @@
   </table>
   <!-- ELSE -->
   <!-- ENDIF -->
-
 </form>

@@ -111,21 +111,16 @@ function sn_timer_compile_que(timer_options)
     temp = temp.replace('[UNIT_TIME]', sn_timestampToString(que[que_id][UNIT_TIME]));
 
     unit_name = que[que_id][UNIT_NAME];
-    if(que[que_id][UNIT_AMOUNT] > 1)
+    if(que[que_id][UNIT_LEVEL] >= 0)
+    {
+      unit_name += ' (' + que[que_id][UNIT_LEVEL] + ')';
+      temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_LEVEL]);
+    }
+    else
     {
       unit_name += ' (' + que[que_id][UNIT_AMOUNT] + ')';
       temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_AMOUNT]);
     }
-    else
-      if(que[que_id][UNIT_LEVEL] > 0)
-      {
-        unit_name += ' (' + que[que_id][UNIT_LEVEL] + ')';
-        temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_LEVEL]);
-      }
-      else
-      {
-        temp = temp.replace('[UNIT_LEVEL]', '');
-      }
     temp = temp.replace('[UNIT_NAME]', unit_name);
     compiled += temp;
   }
