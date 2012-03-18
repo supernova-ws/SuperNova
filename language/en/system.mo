@@ -39,6 +39,17 @@ if (empty($lang) || !is_array($lang))
 // System-wide localization
 
 $lang = array_merge($lang, array(
+  'pay_msg_request_unsupported' => 'Unsupported request',
+  'pay_msg_request_signature_invalid' => 'Wrong request signature',
+  'pay_msg_request_user_invalid' => 'User ID is invalid',
+  'pay_msg_request_server_wrong' => 'Wrong server',
+  'pay_msg_request_payment_amount_invalid' => 'Wrong payment amount',
+  'pay_msg_request_payment_id_invalid' => 'Wrong payment ID',
+  'pay_msg_request_payment_date_invalid' => 'Wrong payment date',
+  'pay_msg_request_internal_error' => 'Server internal error. Try again later',
+  'pay_msg_request_user_found' => 'User found',
+
+
   'sys_administration' => 'SuperNova Administration',
   'sys_birthday' => 'Birthday',
 

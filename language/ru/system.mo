@@ -35,6 +35,18 @@ if (empty($lang) || !is_array($lang))
 
 // System-wide localization
 $lang = array_merge($lang, array(
+  'pay_msg_request_unsupported' => 'Данный тип запроса не поддерживается',
+  'pay_msg_request_signature_invalid' => 'Неправильная подпись запроса',
+  'pay_msg_request_user_invalid' => 'Неправильный идентификатор пользователя',
+  'pay_msg_request_user_found' => 'Пользователь найден',
+  'pay_msg_request_server_wrong' => 'Неправильный сервер',
+  'pay_msg_request_payment_amount_invalid' => 'Неправильная сумма платежа',
+  'pay_msg_request_payment_id_invalid' => 'Неправильный идентификатор платежа',
+  'pay_msg_request_payment_date_invalid' => 'Неправильная дата платежа',
+  'pay_msg_request_internal_error' => 'Внутренняя ошибка сервера. Попробуйте повторить платеж позже',
+
+
+
   'sys_administration' => 'Администрация СверхНовой',
   'sys_birthday' => 'День рождения',
   'sys_birthday_message' => '%1$s! Администрация СверхНовой сердечно поздравляет тебя с твоим Днем Рождения, который пришелся на %2$s и преподносит тебе в качестве подарка %3$d %4$s! От всей души желаем тебе успехов в игре и высоких рангов в статистике! Может это поздравление и запоздало, но лучше раньше, чем позже.',

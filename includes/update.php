@@ -1635,6 +1635,38 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_check_key('user_birthday_range', 30, !isset($config->user_birthday_range));
     upd_check_key('user_birthday_celebrate', 0, !isset($config->user_birthday_celebrate));
 
+    if(!isset($update_tables['payment']))
+    {
+      upd_alter_table('users', array(
+        "ADD KEY `I_user_id_name` (`id`, `username`)",
+      ), !$update_indexes['users']['I_user_id_name']);
+
+      upd_create_table('payment',
+        "(
+          `payment_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Internal payment ID',
+          `payment_user_id` BIGINT(20) UNSIGNED DEFAULT NULL,
+          `payment_user_name` VARCHAR(64) DEFAULT NULL,
+          `payment_amount` DECIMAL(60,5) DEFAULT 0 COMMENT 'Amount paid',
+          `payment_currency` VARCHAR(3) DEFAULT '' COMMENT 'Payment currency',
+          `payment_dm` DECIMAL(65,0) DEFAULT 0 COMMENT 'DM gained',
+          `payment_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Payment server timestamp',
+          `payment_comment` TEXT COMMENT 'Payment comment',
+
+          `payment_module_name` VARCHAR(255) DEFAULT '' COMMENT 'Payment module name',
+          `payment_internal_id` VARCHAR(255) DEFAULT '' COMMENT 'Internal payment ID in payment system',
+          `payment_internal_date` DATETIME COMMENT 'Internal payment timestamp in payment system',
+
+          PRIMARY KEY (`payment_id`),
+          KEY `I_payment_user` (`payment_user_id`, `payment_user_name`),
+          KEY `I_payment_module_internal_id` (`payment_module_name`, `payment_internal_id`),
+
+          CONSTRAINT `FK_payment_user` FOREIGN KEY (`payment_user_id`, `payment_user_name`) REFERENCES `{$config->db_prefix}users` (`id`, `username`) ON UPDATE CASCADE ON DELETE NO ACTION
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+
+      upd_check_key('payment_currency_default', 'UAH', !isset($config->payment_currency_default));
+    }
+
     // $new_version = 33;
 };
 upd_log_message('Upgrade complete.');

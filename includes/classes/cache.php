@@ -625,6 +625,8 @@ class classConfig extends classPersistent
     'user_birthday_gift' => 0, // User birthday gift
     'user_birthday_range' => PERIOD_MONTH, // How far in past can be user birthday for giving him gift
     'user_birthday_celebrate' => 0, // When last time celebrations (i.e. giftgiving) was made
+
+    'payment_currency_default' => 'UAH', // Default currency for payments
   );
 
   public function __construct($gamePrefix = 'sn_')

@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '33');
 define('SN_RELEASE', '34');
-define('SN_VERSION', '34a5');
+define('SN_VERSION', '34a6');
 
 define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
 
@@ -28,6 +28,7 @@ define('GAME_OGAME'    , 1);
 define('PLANET_COORD_PREG', '/^\[([1-9]):([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):(1[0-5]|[1-9])\]$/i');
 // Pattern to parse scheduler '[[[[[YYYY-]MM-]DD ]HH:]MM:]SS'
 define('SCHEDULER_PREG', '/^(?:(?:(?:(?:(?:(2\d\d\d)-)?(1[0-2]|0[1-9])-)?(?:(3[01]|[0-2]\d)\ ))?(?:(2[0-3]|[01]\d):))?(?:([0-5]\d):))?([0-5]\d)$/i');
+define('PREG_DATE_SQL', '/(20[1-9][0-9])\-(1[0-2]|0[1-9])\-(3[01]|[12]\d|0[1-9]) ([2[0-3]|[01][0-9])\:([0-5][0-9])\:([0-5][0-9])/');
 
 // Default allowed chars for random string
 define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
@@ -167,6 +168,7 @@ define('RPG_ARTIFACT', 11);
 define('RPG_RENAME', 12);
 define('RPG_ALLY', 13);
 define('RPG_BIRTHDAY', 14);
+define('RPG_PURCHASE', 15);
 
 // Operation results
 define('ERR_NONE'               , 0);

@@ -50,22 +50,6 @@ if(function_exists('set_magic_quotes_runtime'))
   @ini_set('magic_quotes_sybase', 0);
 }
 
-function sys_refresh_tablelist($db_prefix)
-{
-  global $sn_cache;
-
-  $query = doquery('SHOW TABLES;');
-
-  while ( $row = mysql_fetch_assoc($query) )
-  {
-    foreach($row as $row)
-    {
-      $tl[] = str_replace($db_prefix, '', $row);
-    }
-  }
-  $sn_cache->tables = $tl;
-}
-
 header('Content-type: text/html; charset=utf-8');
 
 ob_start();
@@ -77,8 +61,8 @@ if($_SERVER['SERVER_NAME'] == 'localhost')
   define('BE_DEBUG', true);
 }
 
+/*
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
-$phpEx = strpos($phpEx, '/') === false ? $phpEx : '';
 
 $sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/') + 1);
 if(strpos($sn_root_relative, 'admin/') !== false)
@@ -89,6 +73,11 @@ if(strpos($sn_root_relative, '.local/') !== false)
 {
   $sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '.local/'));
 }
+*/
+
+$phpEx = strpos($phpEx = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $phpEx : '';
+$server_document_root = str_replace(array('//', '//'), '/', $_SERVER['DOCUMENT_ROOT']);
+$sn_root_relative = '/' . str_replace(array('\\', $server_document_root, 'includes/init.php'), array('/', '', ''), __FILE__);
 $sn_root_physical = str_replace(array('//', '//'), '/', $_SERVER['DOCUMENT_ROOT'] . $sn_root_relative);
 $phpbb_root_path  = $sn_root_physical;
 
@@ -249,6 +238,22 @@ function sn_sys_load_php_files($dir_name, $phpEx = 'php', $modules = false)
       }
     }
   }
+}
+
+function sys_refresh_tablelist($db_prefix)
+{
+  global $sn_cache;
+
+  $query = doquery('SHOW TABLES;');
+
+  while ( $row = mysql_fetch_assoc($query) )
+  {
+    foreach($row as $row)
+    {
+      $tl[] = str_replace($db_prefix, '', $row);
+    }
+  }
+  $sn_cache->tables = $tl;
 }
 
 ?>
