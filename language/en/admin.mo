@@ -30,6 +30,8 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
+  'adm_sys_write_message' => 'Write message',
+
   'adm_opt_user_settings' => 'User settings',
   'adm_opt_user_birthday_gift' => 'Birthday gift',
   'adm_opt_user_birthday_gift_disable' => '0 - disable gifts',

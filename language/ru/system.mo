@@ -35,15 +35,17 @@ if (empty($lang) || !is_array($lang))
 
 // System-wide localization
 $lang = array_merge($lang, array(
+  'pay_msg_request_user_found' => 'Пользователь найден',
+
   'pay_msg_request_unsupported' => 'Данный тип запроса не поддерживается',
   'pay_msg_request_signature_invalid' => 'Неправильная подпись запроса',
   'pay_msg_request_user_invalid' => 'Неправильный идентификатор пользователя',
-  'pay_msg_request_user_found' => 'Пользователь найден',
   'pay_msg_request_server_wrong' => 'Неправильный сервер',
   'pay_msg_request_payment_amount_invalid' => 'Неправильная сумма платежа',
   'pay_msg_request_payment_id_invalid' => 'Неправильный идентификатор платежа',
   'pay_msg_request_payment_date_invalid' => 'Неправильная дата платежа',
   'pay_msg_request_internal_error' => 'Внутренняя ошибка сервера. Попробуйте повторить платеж позже',
+  'pay_msg_module_disabled' => 'Модуль платежа отключен',
 
 
 
