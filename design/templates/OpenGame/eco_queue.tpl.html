@@ -8,10 +8,16 @@
 
 <!-- Now is que not empty - adding appropriate JS variables and starting timer -->
 <!-- IF $QUE_NOT_EMPTY -->
+<!-- IF QUE_HTML -->
+  <!-- DEFINE $QUE_HTML = '{QUE_HTML}' -->
+<!-- ELSE -->
+  <!-- DEFINE $QUE_HTML = 'ov' -->
+<!-- ENDIF -->
+
 <script type="text/javascript"><!--
 sn_timers.unshift(
 {
-  'id': 'ov_{$QUE_ID}',
+  'id': '{$QUE_HTML}_{$QUE_ID}',
   'type': 3,
   'active': true,
   'start_time': {TIME_NOW},

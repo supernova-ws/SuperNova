@@ -282,7 +282,32 @@ function sn_tpl_render_topnav(&$user, $planetrow)
   $time = $time_now - 15*60;
   $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}' AND `user_as_ally` IS NULL;", '', true);
 
+  $que_length = 0;
+  if($user['que'])
+  {
+    $que_item = $user['que'] ? explode(',', $user['que']) : array();
+    $unit_id = $que_item[QI_UNIT_ID];
+    $unit_data = eco_get_build_data($user, $planet, $unit_id, $user[$sn_data[$unit_id]['name']]);
+
+    $template->assign_block_vars('que', array(
+      'ID' => $unit_id,
+      'QUE' => QUE_RESEARCH,
+      'NAME' => $lang['tech'][$unit_id],
+      'TIME' => $que_item[QI_TIME],
+      'TIME_FULL' => $unit_data[RES_TIME][BUILD_CREATE],
+      'AMOUNT' => 1,
+      'LEVEL' => $user[$sn_data[$unit_id]['name']] + 1,
+    ));
+
+    $que_length++;
+  }
+
   $template->assign_vars(array(
+    'QUE_ID'             => QUE_RESEARCH,
+    'QUE_HTML'           => 'topnav',
+
+    'RESEARCH_ONGOING'   => (boolean)$user['que'],
+
     'TIME_NOW'   => $time_now,
     'DATE_TEXT'          => "$day_of_week, $day $month $year {$lang['top_of_year']},",
     'TIME_TEXT'          => "{$hour}:{$min}:{$sec}",
