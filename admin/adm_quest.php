@@ -13,6 +13,11 @@ define('IN_ADMIN'  , true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
+if($user['authlevel'] < 2)
+{
+  AdminMessage($lang['adm_err_denied']);
+}
+
 lng_include('quest');
 $template = gettemplate('quest', true);
 
