@@ -224,7 +224,9 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
   }
 
   doquery('START TRANSACTION;');
-  $planet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = {$planet['id']} LIMIT 1 FOR UPDATE;", '', true);
+  $global_data = sys_o_get_updated($user, $planet['id'], $time_now);
+  $planet = $global_data['planet'];
+  $que = $global_data['que'];
   if(
     eco_can_build_unit($user, $planet, $unit_id) != BUILD_ALLOWED
     || eco_unit_busy($user, $planet, $que, $unit_id)
@@ -295,13 +297,16 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
 
 function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
 {
+  //TODO: Rewrite as eco_bld_hangar_clear($planet, $action)
   global $sn_data;
 
   $que_string = '';
   $que_query = '';
 
   doquery('START TRANSACTION;');
-  $planet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = {$planet['id']} LIMIT 1 FOR UPDATE;", '', true);
+  $global_data = sys_o_get_updated($user, $planet['id'], $time_now);
+  $planet = $global_data['planet'];
+  $que = $global_data['que'];
   foreach($que['que'] as $que_data_id => &$que_data)
   {
     // TODO: MAY BE NOT ALL QUES CAN BE CLEARED - ADD CHECK FOR CLEAREBILITY!

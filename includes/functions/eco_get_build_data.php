@@ -93,7 +93,8 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     foreach($sn_data[$unit_id]['require'] as $require_id => $require_level)
     {
       $db_name = $sn_data[$require_id]['name'];
-      $data = in_array($require_id, $sn_groups['mercenaries']) ? mrc_get_level($user, $planet, $require_id) : (isset($planet[$db_name]) ? $planet[$db_name] : (isset($user[$db_name]) ? $user[$db_name] : ($require_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0)));
+      //$data = in_array($require_id, $sn_groups['mercenaries']) ? mrc_get_level($user, $planet, $require_id) : (isset($planet[$db_name]) ? $planet[$db_name] : (isset($user[$db_name]) ? $user[$db_name] : ($require_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0)));
+      $data = mrc_get_level($user, $planet, $require_id);
 
       if($data < $require_level)
       {
