@@ -51,8 +51,8 @@ $lang = array_merge($lang, array(
   'msg_not_message_sent' => 'Message succesfully sent',
   'msg_warn_no_messages' => 'No messages in this category',
   'msg_err_player_not_found' => 'Player not found',
-  'msg_err_no_text' => 'You can not sent empty message',
-  'msg_err_self_send' => 'You can not sent message to yourself',
+  'msg_err_no_text' => 'You can not send empty message',
+  'msg_err_self_send' => 'You can not send message to yourself',
   'msg_del_class' => 'Delete all messages in this category',
   'msg_page_hint_class' => '<ul>    <li>Category "All messages" contains messages sent by you AND did not yet deleted by recipient.    You can not delete messages from this category</li>    <li>To delete all messages of one category press delete icon in according row</li>    <li>Deleting messages from category "All messages" will lead to clear whole messagebox</li>    <li>Slow connection and/or large ammount of messages on one category can lead to unability to browse through messages.        In such case you should clear according message category and/or clear whole messagebox</li>  </ul>',
 ));

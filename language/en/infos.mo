@@ -408,7 +408,7 @@ $lang = array_merge($lang, array(
     ),
 
     MRC_DESTRUCTOR => array(
-      'description' => 'Devastator - a ruthless army officer. He suggests how the planets Empire brutal methods. The same Destructor has developed technology manufactures Deathstars.',
+      'description' => 'Destroyer, a ruthless army officer. He suggests how the Empire\'s planets brutal methods should be. The same Destroyer has developed technology and manufactures Deathstars.',
       'effect' => 'Allows to build Deathstars in the shipyard',
     ),
 
@@ -428,7 +428,7 @@ $lang = array_merge($lang, array(
     ),
 
     MRC_ASSASIN => array(
-      'description' => 'Assasin-trusted killer Emperor. But it\'s not only its quality. However, Disruptor, Assasin has developed new cruiser class Supernova. Central computer ships configured to DNA Assasina. Therefore, it is the only person who can manage this ship',
+      'description' => 'Assasin is a trusted killer. But it\'s not his only quality. Assassin has developed the new cruiser class Supernova. He is the only person who can manage this ship.',
       'effect' => 'Allows to build Supernova Cruisers in the shipyard',
     ),
 
@@ -484,7 +484,7 @@ $lang = array_merge($lang, array(
     ),
 
     RES_DARK_MATTER => array(
-      'description' => 'Dark Matter is matter that neither emits nor scatters light or other electromagnetic radiation, and so cannot be directly detected via optical or radio astronomy. From it we can get an incredible amount of energy. Because of this, and also because of the complexities associated with its production of dark matter is highly appreciated',
+      'description' => 'Dark Matter is a matter that neither emits nor scatters light or other electromagnetic radiation, and so cannot be directly detected via optical or radio astronomy. From it we can get an incredible amount of energy. Because of this, and also because of the complexities associated with its production of dark matter is highly appreciated.',
       'effect' => '',
     ),
 
