@@ -39,6 +39,39 @@ if (empty($lang) || !is_array($lang))
 // System-wide localization
 
 $lang = array_merge($lang, array(
+  // Dark Matter
+  'sys_dark_matter_text' => 'What is Dark Matter?
+    Dark Matter - is ingame currency, which in the game you can make a variety of operations:
+    <ul>
+      <li>Use Black Market: exchanging resources, selling ship and buying them for resources etc</li>
+      <li>Hire Mercenaries and Governors</li>
+      <li>Buy Artifacts</li>
+      <li>...and many other things</li>
+    </ul>',
+  'sys_dark_matter_obtain_header' => 'How to obtain Dark Matter?',
+  'sys_dark_matter_obtain_text' => 'You acquring Dark Matter in game process: while gained levels for raids to enemy planets, researching technologies, building and destroying buildings.
+    Also sometimes expeditions can gain you some DM.',
+
+  'sys_dark_matter_purchase_url_description' => 'In addition you can purchase Dark Matter for WebMoney',
+  'sys_dark_matter_purchase_url_get'  => 'Click here to read details.',
+
+
+  'sys_dark_matter_purchase' => 'Purchase Dark Matter',
+  'sys_dark_matter_purchase_text' => 'Lorem Ipsum',
+  'sys_dark_matter_purchase_step1' => 'Step 1',
+  'sys_dark_matter_purchase_step1_text' => 'Select amount of DM you wish to purchase, select payment system and confirm your selection',
+  'sys_dark_matter_purchase_amount' => 'Dark Matter amount',
+  'sys_dark_matter_purchase_select' => 'Payment system',
+  'sys_dark_matter_purchase_confirm' => 'Confirm selection',
+  'sys_dark_matter_purchase_payment_selected' => 'Purchase would be made using payment system',
+
+  'sys_dark_matter_purchase_step2' => 'Step 2',
+  'sys_dark_matter_purchase_step2_text' => 'Verify selected amount of Dark Matter and selected payment system. If everything is OK press button "Purchase Dark Matter". If there is any error - press button "Discard and start again"',
+  'sys_dark_matter_purchase_pay' => 'Purchase Dark Matter',
+  'sys_dark_matter_purchase_reset' => 'Discard and start again',
+  'sys_dark_matter_purchase_in_progress' => 'Payment in progress...',
+
+
   'pay_msg_request_user_found' => 'User found',
 
   'pay_msg_request_unsupported' => 'Unsupported request',
@@ -49,14 +82,18 @@ $lang = array_merge($lang, array(
   'pay_msg_request_payment_id_invalid' => 'Wrong payment ID',
   'pay_msg_request_payment_date_invalid' => 'Wrong payment date',
   'pay_msg_request_internal_error' => 'Server internal error. Try again later',
+
+  'pay_msg_request_dark_matter_amount_invalid' => 'Wrong Dark Matter amount',
+  'pay_msg_request_paylink_unsupported' => 'This type of paylink is not supported. It\'s looks like you using outdated version of SuperNova which incompatible with selected payment module',
+
   'pay_msg_module_disabled' => 'Payment module disabled',
 
 
   'sys_administration' => 'SuperNova Administration',
   'sys_birthday' => 'Birthday',
+  'sys_birthday_message' => '%1$s! SuperNova Administration warmly greats you with your birthday on %2$s and gives to you s small gift - %3$d %4$s!',
 
   'adm_err_denied' => 'Access denied. You do not have enough rights to use this admin page',
-  'sys_birthday_message' => '%1$s! SuperNova Administration warmly greats you with your birthday on %2$s and gives to you s small gift - %3$d %4$s!',
 
   'sys_empire'          => 'Empire',
   'VacationMode'			=> "Your production stopped because you are on vacation",
@@ -420,19 +457,6 @@ $lang = array_merge($lang, array(
   'cr_view_prompt' => "Enter the code",
   'cr_view_my'     => "My Combat Records",
   'cr_view_hint'   => "This page allows you to view shared Combat Reports. All Combat Reports will have a code at the bottom. To share a Combat Report simply give them that code. Then they can enter it here and view your Combat Report.",
-
-  // Dark Matter
-  'sys_dark_matter_text' => '<h2>What is Dark Matter?</h2>
-    Dark Matter - it is currency, which in the game you can make a variety of operations:
-    <ul><li>Swapping one resource for another</li>
-    <li>Call charge fleet</li>
-    <li>Call seller of used vehicles</li>
-    <li>Hiring officers</li></ul>
-    <h2>Where to get Dark Matter?</h2>
-    You get Dark Matter during the game: gaining experience for raids on other planets and construction of buildings.
-    Also sometimes research cruises can bring Dark Matter.',
-  'sys_dark_matter_purchase' => 'In addition you can purchase Dark Matter for WebMoney.',
-  'sys_dark_matter_get'  => 'Click here to read details.',
 
   // Fleet
   'flt_gather_all'    => 'Gather resources',

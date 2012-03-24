@@ -4,9 +4,90 @@
     <td>
       <img src="./design/images/DMaterie.jpg" width="120" height="120">
     </td>
-    <td>
-      {L_sys_dark_matter_text} 
-      <!-- IF URL_DARK_MATTER --><br />{L_sys_dark_matter_purchase} <a href="{URL_DARK_MATTER}">{L_sys_dark_matter_get}</a>.<!-- ENDIF -->
+    <td align=justify>
+      <h2>{L_sys_dark_matter_description_header}</h2>
+      {L_sys_dark_matter_description_text}
+      <h2>{L_sys_dark_matter_obtain_header}</h2>
+      {L_sys_dark_matter_obtain_text}
+
+      <!-- IF URL_DARK_MATTER --><br /><br />{L_sys_dark_matter_purchase_url_description} <a href="{URL_DARK_MATTER}"><span class="link">{L_sys_dark_matter_purchase_url_get}</span></a>.<!-- ENDIF -->
+
+      <!-- IF .payment_module -->
+      <form method="POST">
+        <h2>{L_sys_dark_matter_purchase}</h2>
+        {L_sys_dark_matter_purchase_text}
+
+        <h3>{L_sys_dark_matter_purchase_step1}</h3>
+
+        <!-- IF DARK_MATTER -->
+          {L_sys_dark_matter_purchase_amount} <span class="ok">{DARK_MATTER}</span>
+          <input type="hidden" name="dark_matter" id="dark_matter_amount" value="{DARK_MATTER}">
+        <!-- ELSE -->
+          {L_sys_dark_matter_purchase_amount} <span class="notice">{L_sys_dark_matter_purchase_step1_text}</span><br /><br/>
+          <select name="dark_matter">
+            <!-- BEGIN dm_amount -->
+              <option value="{dm_amount.VALUE}"<!-- IF dm_amount.VALUE == DARK_MATTER --> selected<!-- ENDIF -->>{dm_amount.VALUE}</value>
+            <!-- END dm_amount -->
+          </select>
+        <!-- ENDIF -->
+        <br /><br/>
+
+        <!-- IF PAYMENT_MODULE -->
+          {L_sys_dark_matter_purchase_payment_selected}
+          <!-- BEGIN payment_module -->
+            <!-- IF payment_module.ID == PAYMENT_MODULE -->
+              <span class="ok">"{payment_module.NAME}"</span> <input type="hidden" name="payment_module" id="dark_matter_module" value="{payment_module.ID}">
+            <!-- ENDIF -->
+          <!-- END payment_module -->
+        <!-- ELSE -->
+          {L_sys_dark_matter_purchase_select}
+          <select name="payment_module">
+            <!-- BEGIN payment_module -->
+            <option value="{payment_module.ID}">{payment_module.NAME}</option>
+            <!-- END payment_module -->
+          </select>
+        <!-- ENDIF -->
+        <br/><br/>
+
+        <!-- IF PAY_LINK -->
+          <h3>{L_sys_dark_matter_purchase_step2}</h3>
+          <span class="notice">{L_sys_dark_matter_purchase_step2_text}</span><br /><br/>
+
+          <!-- IF PAY_LINK_TYPE == 'string' -->
+            <script type="text/javascript">
+              function make_payment_popup()
+              {
+                this.open = function(ob)
+                {
+                  $(ob).hide();
+                  $('<span id="psload">{LA_sys_dark_matter_purchase_in_progress}</span>').insertAfter(ob);
+                  var win = window.open('{PAY_LINK}', 'PayStation', 'width=850px, height=550px, scrollbars=yes, status=no');
+                  setTimeout(function () 
+                  {
+                    if(win.closed)
+                    {
+                      $('#psload').remove();
+                      $(ob).show();
+                    }
+                    else
+                    {
+                      setTimeout(arguments.callee,500);
+                    }
+                  }, 500);
+                }
+              }
+              payment_popup = new make_payment_popup;
+            </script>
+
+            <span class="fl"><input type="button" value="{L_sys_dark_matter_purchase_pay}" onclick="payment_popup.open(this);return false;"></span>
+            <input class="fr" type="submit" value="{L_sys_dark_matter_purchase_reset}" onclick="jQuery('#dark_matter_amount').val('');jQuery('#dark_matter_module').val('');">
+          <!-- ENDIF -->
+        <!-- ELSE -->
+          <input type="submit" name="payment_validate" value="{L_sys_dark_matter_purchase_confirm}">
+        <!-- ENDIF -->
+
+      </form>
+      <!-- ENDIF -->
     </td>
   </tr>
 </table>

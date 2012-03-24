@@ -4,11 +4,17 @@
 //
 // Gestion de la localisation des chaines
 //
-function lng_include($filename, $ext = '.mo')
+function lng_include($filename, $ext = '', $path = '')
 {
   global $lang, $language;
+
+  $ext = $ext ? $ext : '.mo';
   $SelLanguage = $language ? $language : DEFAULT_LANG;
-  require(SN_ROOT_PHYSICAL . "language/{$SelLanguage}/{$filename}{$ext}");
+
+  $file_path_relative = "language/{$SelLanguage}/{$filename}{$ext}";
+  $file_path = SN_ROOT_PHYSICAL . ($path && file_exists(SN_ROOT_PHYSICAL . $path . $file_path_relative) ? $path : '') . $file_path_relative;
+
+  include($file_path);
 }
 
 function lng_get_list()

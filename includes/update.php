@@ -1666,6 +1666,8 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
       upd_check_key('payment_currency_default', 'UAH', !isset($config->payment_currency_default));
     }
+    upd_check_key('payment_lot_size', 1000, !isset($config->payment_lot_size));
+    upd_check_key('payment_lot_price', 1, !isset($config->payment_lot_price));
 
     // $new_version = 33;
 };

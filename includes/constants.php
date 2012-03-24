@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '33');
 define('SN_RELEASE', '34');
-define('SN_VERSION', '34a7.3');
+define('SN_VERSION', '34a8');
 
 define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
 
@@ -170,12 +170,18 @@ define('RPG_ALLY', 13);
 define('RPG_BIRTHDAY', 14);
 define('RPG_PURCHASE', 15);
 
-// Operation results
-define('ERR_NONE'               , 0);
-define('ERR_WARNING'            , 1);
-define('ERR_ERROR'              , 2);
-define('ERR_OK'                 , 3);
-define('ERR_HACK'               , 4);
+// Operation error status
+define('ERR_NONE'               , 0); // No error
+define('ERR_WARNING'            , 1); // There is warning - something altering normal operation process
+define('ERR_ERROR'              , 2); // There is error - something permits operation from process
+define('ERR_HACK'               , 4); // Operation is qualified as hack attempt
+// New GLOBAL operation results
+//define('RESULT_DEFAULT' , 0); // Default result - all went OK or result really doesn't matter
+//define('RESULT_WARNING' , 1);
+//define('RESULT_ERROR'   , 2);
+//define('RESULT_HACKING' , 3);
+//define('RESULT_PAYMENT_ERR_REQUEST_UNSUPPORTED', 5);
+
 
 // Log system codes
 define('LOG_DEFAULT', 0); // Код по умолчанию

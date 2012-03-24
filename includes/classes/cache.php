@@ -627,6 +627,8 @@ class classConfig extends classPersistent
     'user_birthday_celebrate' => 0, // When last time celebrations (i.e. giftgiving) was made
 
     'payment_currency_default' => 'UAH', // Default currency for payments
+    'payment_lot_size'         => 1000,  // Lot size. Also service as minimum amount of DM that could be bought with one transaction
+    'payment_lot_price'        => 1,     // Lot price in default currency
   );
 
   public function __construct($gamePrefix = 'sn_')
