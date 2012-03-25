@@ -227,6 +227,11 @@ function sn_sys_load_php_files($dir_name, $phpEx = 'php', $modules = false)
         if(file_exists($full_filename = "{$full_filename}/{$file}.{$phpEx}"))
         {
           require_once($full_filename);
+          // Registering module
+          if(class_exists($file))
+          {
+            new $file($full_filename);
+          }
         }
       }
       else

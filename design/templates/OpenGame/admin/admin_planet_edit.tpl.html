@@ -2,7 +2,7 @@
 <form method="post">
   <input type="hidden" name="mode" value="{MODE}">
 
-  <table width=600>
+  <table width="500px">
     <tr>
       <th colspan="4" class="c_c">
         <div>
@@ -12,21 +12,22 @@
       </th>
     </tr>
 
+    <!-- IF PLANET_ID -->
     <tr>
-      <th colspan="4" class="c_c">
+      <td colspan="4" class="c_c">
         <div>
-        <!-- IF PLANET_NAME -->
           <span class="fl">{PLANET_NAME}</span>
-        <!-- ENDIF -->
+
           <span class="fr">
-            <a href="admin/planet_edit.php?planet_id={PLANET_ID}&mode=structures"><span<!-- IF MODE == 'structures' --> class="positive"<!-- ENDIF -->>{L_tech[0]}</span></a>
-            <a href="admin/planet_edit.php?planet_id={PLANET_ID}&mode=fleet"><span<!-- IF MODE == 'fleet' --> class="positive"<!-- ENDIF -->>{L_tech[200]}</span></a>
-            <a href="admin/planet_edit.php?planet_id={PLANET_ID}&mode=defense"><span<!-- IF MODE == 'defense' --> class="positive"<!-- ENDIF -->>{L_tech[400]}</span></a>
-            <a href="admin/planet_edit.php?planet_id={PLANET_ID}&mode=resources_loot"><span<!-- IF MODE == 'resources_loot' --> class="positive"<!-- ENDIF -->>{L_tech[900]}</span></a>
+            <!-- BEGIN page_menu -->
+            <a href="admin/planet_edit.php?planet_id={PLANET_ID}&mode={page_menu.ID}"><span<!-- IF MODE == page_menu.ID --> class="positive"<!-- ENDIF -->>{page_menu.TEXT}</span></a>
+            <!-- END page_menu -->
           </span>
         </div>
-      </th>
+      </td>
     </tr>
+    <!-- ENDIF -->
+
     <!-- IF .unit -->
     <tr>
       <th class="c_c">{L_sys_id}</th>
@@ -35,12 +36,28 @@
       <th class="c_c">{L_adm_planet_change}</th>
     </tr>
     <!-- ENDIF -->
+
     <!-- BEGIN unit -->
       <tr>
+        <!-- IF MODE == '__admin_planet_edit_extra' -->
+        <td class="c_l" colspan="2">{unit.NAME}</td>
+        <td class="c_l">{unit.TEXT}</td>
+        <!-- ELSE -->
         <td class="c_r">{unit.ID}</td>
         <td class="c_l">{unit.NAME}</td>
-        <td class="c_r">{unit.AMOUNT}</td>
-        <td><input name="unit_list[{unit.ID}]"></td>
+        <td class="c_r">{unit.TEXT}</td>
+        <!-- ENDIF -->
+        <td width="160px">
+          <!-- IF unit.ID == "PLANET_GOVERNOR_ID" -->
+          <select name="unit_list[{unit.ID}]">
+            <!-- BEGIN !governor -->
+            <option value="{governor.ID}"<!-- IF unit.VALUE == governor.ID --> selected<!-- ENDIF -->>{governor.NAME}</option>
+            <!-- END !governor -->
+          </select>
+          <!-- ELSE -->
+          <input name="unit_list[{unit.ID}]" value="{unit.VALUE}">
+          <!-- ENDIF -->
+        </td>
       </tr>
     <!-- END unit -->
   </table>

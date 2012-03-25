@@ -11,7 +11,7 @@ function sn_function_call($func_name, $func_arg = array())
 {
   global $functions;
 
-  $func_name = isset($functions[$func_name]) && function_exists($functions[$func_name]) ? $functions[$func_name] : ('sn_' . $func_name);
+  $func_name = isset($functions[$func_name]) && is_callable($functions[$func_name]) ? $functions[$func_name] : ('sn_' . $func_name);
 
   return call_user_func_array($func_name, $func_arg);
 }

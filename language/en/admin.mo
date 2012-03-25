@@ -30,6 +30,15 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
+  'adm_pl_image' => 'Planet image',
+  'adm_pl_fields_max' => 'Max sectors',
+  'adm_pl_fields_busy' => 'Sectors occupied',
+  'adm_pl_temp_min' => 'Minimal temperature',
+  'adm_pl_temp_max' => 'Maximal temperature',
+  'adm_pl_governor' => 'Governor',
+  'adm_pl_debris_metal' => 'Metal debris',
+  'adm_pl_debris_crystal' => 'Crystal debris',
+
   'adm_sys_write_message' => 'Write message',
 
   'adm_opt_user_settings' => 'User settings',

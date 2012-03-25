@@ -2,12 +2,32 @@
 
 class sn_module
 {
+  public $manifest = array();
+
+  function sn_module($filename = __FILE__)
+  {
+    global $sn_module;
+
+    $this->manifest['root_relative'] = $module_root_relative = str_replace(array(SN_ROOT_PHYSICAL, basename($filename)), '', str_replace('\\', '/', $filename));
+
+    $module_name = get_class($this);
+    $sn_module[$module_name] = $this;
+
+    // Overriding function if any
+    if(isset($this->manifest['functions']))
+    {
+      global $functions;
+
+      foreach($this->manifest['functions'] as $function_name => $override_with)
+      {
+        $functions[$function_name] = array($module_name, $override_with);
+      }
+    }
+  }
 }
 
 abstract class sn_module_payment extends sn_module
 {
-//  abstract protected function payment_sign();
-
   // Function calculates amount of dark_matter for entered money and vice versa
   static function exchange($dark_matter = 0, $money = 0, $currency = '')
   {

@@ -28,6 +28,16 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
+  'adm_pl_image' => 'Изображение планеты',
+  'adm_pl_fields_max' => 'Максимум секторов',
+  'adm_pl_fields_busy' => 'Занято секторов',
+  'adm_pl_temp_min' => 'Минимальная&nbsp;температура',
+  'adm_pl_temp_max' => 'Максимальная&nbsp;температура',
+  'adm_pl_fields_busy' => 'Занято секторов',
+  'adm_pl_governor' => 'Губернатор',
+  'adm_pl_debris_metal' => 'Обломки, металл',
+  'adm_pl_debris_crystal' => 'Обломки, кристалл',
+
   'adm_opt_user_settings' => 'Настройки игроков',
   'adm_opt_user_birthday_gift' => 'Подарок игроку на день рождения',
   'adm_opt_user_birthday_gift_disable' => '0 - отключить подарки',
