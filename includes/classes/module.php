@@ -82,6 +82,9 @@ abstract class sn_module_payment extends sn_module
     }
     elseif($dark_matter)
     {
+      $money = round($dark_matter / $config->payment_lot_size * $config->payment_lot_price, 2);
+
+      return $money;
     }
   }
 }
