@@ -2,16 +2,45 @@
 
 class sn_module
 {
-  public $manifest = array();
+  public $manifest = array(
+    'package' => 'core',
+    'name' => 'sn_module',
+    'version' => '1c0',
+    'copyright' => 'Project "SuperNova.WS" #34a9.2# copyright © 2009-2012 Gorlum',
+
+    'installed' => true,
+    'active' => true,
+  );
+
+  protected $config = array();
 
   function sn_module($filename = __FILE__)
   {
-    global $sn_module;
+    // Getting module PHP class name
+    $class_module_name = get_class($this);
 
+    // Getting module root relative to SN
     $this->manifest['root_relative'] = $module_root_relative = str_replace(array(SN_ROOT_PHYSICAL, basename($filename)), '', str_replace('\\', '/', $filename));
 
-    $module_name = get_class($this);
-    $sn_module[$module_name] = $this;
+    // TODO: Load configuration from DB. Manifest setting
+    // Trying to load configuration from file
+    if(file_exists($config_filename = dirname($filename) . '/config.php'))
+    {
+      include($config_filename);
+      $module_config_array = $class_module_name . '_config';
+      $this->config = $$module_config_array;
+    }
+
+    // Registering module
+    global $sn_module;
+    $sn_module[$class_module_name] = $this;
+
+    // Checking module status - is it installed and active
+    $this->check_status();
+    if(!$this->manifest['active'])
+    {
+      return;
+    }
 
     // Overriding function if any
     if(isset($this->manifest['functions']))
@@ -20,9 +49,13 @@ class sn_module
 
       foreach($this->manifest['functions'] as $function_name => $override_with)
       {
-        $functions[$function_name] = array($module_name, $override_with);
+        $functions[$function_name] = array($class_module_name, $override_with);
       }
     }
+  }
+
+  function check_status()
+  {
   }
 }
 

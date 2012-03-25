@@ -263,7 +263,7 @@ $lang = array_merge($lang, array(
   'ali_admin_mercenaries' => 'Alliance\'s mercenaries',
   'ali_admin_techs' => 'Alliance\'s research',
 
-  'ali_res_player_bonus' => 'Member\s bonus',
+  'ali_res_player_bonus' => 'Member\'s bonus',
   'ali_res_transfer' => 'Transfer',
   'ali_res_transfer_long' => 'Transfer to Alliance',
   'ali_res_no_resources' => 'Alliance has no resources',

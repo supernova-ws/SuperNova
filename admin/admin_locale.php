@@ -73,6 +73,11 @@ function adm_lng_parse_string($string_name, $string_value, $ident = '  ')
 }
 
 $honor_constants = array(
+  'admin' => array(
+    '[adm_opt_ver_response]' => 'SNC_VER_',
+    '[adm_opt_ver_response_short]' => 'SNC_VER_',
+  ),
+
   'alliance' => array(
     '[ali_dip_relations]' => 'ALLY_DIPLOMACY_',
   ),

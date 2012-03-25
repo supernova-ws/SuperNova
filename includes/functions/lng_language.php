@@ -1,20 +1,50 @@
 <?php
 
 // ----------------------------------------------------------------------------------------------------------------
-//
-// Gestion de la localisation des chaines
-//
 function lng_include($filename, $ext = '', $path = '')
 {
-  global $lang, $language;
-
   $ext = $ext ? $ext : '.mo';
+  $filename = "{$filename}{$ext}";
+
+  global $lang, $language, $user;
+
+  $language_fallback = array(
+    $language,     // Current language
+    $user['lang'], // User language
+    DEFAULT_LANG,  // Server default language
+    'ru',          // Russian
+    'en',          // English
+  );
+
+  $language_tried = array();
+
+  $file_path = '';
+  foreach($language_fallback as $lang_try)
+  {
+    if(!$lang_try || isset($language_tried[$lang_try]))
+    {
+      continue;
+    }
+
+    $file_path_relative = "language/{$lang_try}/{$filename}";
+    $file_path = SN_ROOT_PHYSICAL . ($path && file_exists(SN_ROOT_PHYSICAL . $path . $file_path_relative) ? $path : '') . $file_path_relative;
+    if(file_exists($file_path))
+    {
+      break;
+    }
+    $file_path = '';
+    $language_tried[$lang_try] = $lang_try;
+  }
+/*
   $SelLanguage = $language ? $language : DEFAULT_LANG;
 
-  $file_path_relative = "language/{$SelLanguage}/{$filename}{$ext}";
+  $file_path_relative = "language/{$SelLanguage}/{$filename}";
   $file_path = SN_ROOT_PHYSICAL . ($path && file_exists(SN_ROOT_PHYSICAL . $path . $file_path_relative) ? $path : '') . $file_path_relative;
-
-  include($file_path);
+*/
+  if($file_path)
+  {
+    include($file_path);
+  }
 }
 
 function lng_get_list()
@@ -54,7 +84,6 @@ function lng_switch($language_new)
 {
   global $lang, $language, $user;
 
-//  $lang = array();
   $language_new = $language_new ? $language_new : ($user['lang'] ? $user['lang'] : DEFAULT_LANG);
 
   $result = false;

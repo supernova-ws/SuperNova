@@ -40,8 +40,8 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
   // Dark Matter
-  'sys_dark_matter_text' => 'What is Dark Matter?
-    Dark Matter - is ingame currency, which in the game you can make a variety of operations:
+  'sys_dark_matter_description_header' => 'Why do you need Dark Matter ?',
+  'sys_dark_matter_description_text' => 'Dark Matter - is ingame currency, which in the game you can make a variety of operations:
     <ul>
       <li>Use Black Market: exchanging resources, selling ship and buying them for resources etc</li>
       <li>Hire Mercenaries and Governors</li>
@@ -55,9 +55,18 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase_url_description' => 'In addition you can purchase Dark Matter for WebMoney',
   'sys_dark_matter_purchase_url_get'  => 'Click here to read details.',
 
-
   'sys_dark_matter_purchase' => 'Purchase Dark Matter',
-  'sys_dark_matter_purchase_text' => 'Lorem Ipsum',
+  'sys_dark_matter_purchase_text_cost' => 'Price for',
+  'sys_dark_matter_purchase_text_unit' => 'is',
+  'sys_dark_matter_purchase_text_end' => 'When you purchasing large amounts of Dark Matter you recieve bonuses:
+    <ul>
+     <li>from 100.000 DM - 10% bonus to purchased DM amount</li>
+     <li>from 200.000 DM - 20% bonus to purchased DM amount</li>
+     <li>from 300.000 DM - 30% bonus to purchased DM amount</li>
+     <li>from 400.000 DM - 40% bonus to purchased DM amount</li>
+     <li>from 500.000 DM - 50% bonus to purchased DM amount</li>
+    </ul>
+  ',
   'sys_dark_matter_purchase_step1' => 'Step 1',
   'sys_dark_matter_purchase_step1_text' => 'Select amount of DM you wish to purchase, select payment system and confirm your selection',
   'sys_dark_matter_purchase_amount' => 'Dark Matter amount',

@@ -1,4 +1,5 @@
 <?php
+
 /*
 #############################################################################
 #  Filename: system.mo
@@ -36,8 +37,8 @@ if (empty($lang) || !is_array($lang))
 // System-wide localization
 $lang = array_merge($lang, array(
   // Dark Matter
-  'sys_dark_matter_description_header' => 'Что такое Темная Материя?',
-  'sys_dark_matter_description_text' => 'Темная Материя - это внутриигровой ресурс, за счет которой в игре вы можете совершать различные операции:
+  'sys_dark_matter_description_header' => 'Зачем нужна Тёмная Материя?',
+  'sys_dark_matter_description_text' => 'Тёмная Материя - это внутриигровой ресурс, за счет которой в игре вы можете совершать различные операции:
     <ul>
       <li>Использовать Чёрный Рынок: Обменивать один вид ресурсов на другой; продавать корабли; покупать Б/У корабли итд</li>
       <li>Нанимать Наемников и Губернаторов</li>
@@ -53,7 +54,17 @@ $lang = array_merge($lang, array(
 
 
   'sys_dark_matter_purchase' => 'Купить Тёмную Материю',
-  'sys_dark_matter_purchase_text' => 'Всякое бла-бла-бла про цену и бонусы',
+  'sys_dark_matter_purchase_text_cost' => 'Стоимость',
+  'sys_dark_matter_purchase_text_unit' => 'составляет',
+  'sys_dark_matter_purchase_text_end' => 'При оптовой покупке ТМ предоставляются бонусы:
+    <ul>
+     <li>от 100.000 ТМ - бонус 10% к количеству ТМ</li>
+     <li>от 200.000 ТМ - бонус 20% к количеству ТМ</li>
+     <li>от 300.000 ТМ - бонус 30% к количеству ТМ</li>
+     <li>от 400.000 ТМ - бонус 40% к количеству ТМ</li>
+     <li>от 500.000 ТМ - бонус 50% к количеству ТМ</li>
+    </ul>
+  ', //  Вы можете купить ТМ используя один из приведенных ниже способов оплаты.
   'sys_dark_matter_purchase_step1' => 'Шаг 1',
   'sys_dark_matter_purchase_step1_text' => 'Выберите количество ТМ, способ оплаты и подтвердите свой выбор',
   'sys_dark_matter_purchase_amount' => 'Количество Тёмной Материи',
