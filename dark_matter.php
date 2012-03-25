@@ -51,8 +51,23 @@ if($request['dark_matter'] && $payment_module && sys_get_param_str('payment_vali
     {
       $template->assign_vars(array(
         'PAY_LINK' => $pay_link,
-        'PAY_LINK_TYPE' => 'string',
+        'PAY_LINK_METHOD' => 'LINK',
       ));
+    }
+    elseif(is_array($pay_link) && in_array($pay_link['METHOD'], array('POST', 'GET')))
+    {
+      $template->assign_vars(array(
+        'PAY_LINK' => $pay_link['URL'],
+        'PAY_LINK_METHOD' => $pay_link['METHOD'],
+      ));
+      
+      foreach($pay_link['DATA'] as $key => $value)
+      {
+        $template->assign_block_vars('pay_link_data', array(
+          'FIELD' => $key,
+          'VALUE' => $value,
+        ));
+      }
     }
     else
     {

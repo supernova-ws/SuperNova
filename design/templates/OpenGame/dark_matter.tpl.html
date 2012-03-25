@@ -54,7 +54,9 @@
           <h3>{L_sys_dark_matter_purchase_step2}</h3>
           <span class="notice">{L_sys_dark_matter_purchase_step2_text}</span><br /><br/>
 
-          <!-- IF PAY_LINK_TYPE == 'string' -->
+          <input class="fr" type="submit" value="{L_sys_dark_matter_purchase_reset}" onclick="jQuery('#dark_matter_amount').val('');jQuery('#dark_matter_module').val('');">
+      </form>
+          <!-- IF PAY_LINK_METHOD == 'LINK' -->
             <script type="text/javascript">
               function make_payment_popup()
               {
@@ -81,13 +83,18 @@
             </script>
 
             <span class="fl"><input type="button" value="{L_sys_dark_matter_purchase_pay}" onclick="payment_popup.open(this);return false;"></span>
-            <input class="fr" type="submit" value="{L_sys_dark_matter_purchase_reset}" onclick="jQuery('#dark_matter_amount').val('');jQuery('#dark_matter_module').val('');">
+          <!-- ELSEIF PAY_LINK_METHOD == 'GET' || PAY_LINK_METHOD == 'POST' -->
+            <form action="{PAY_LINK}" method="{PAY_LINK_METHOD}">
+              <!-- BEGIN pay_link_data -->
+                <input type="hidden" name="{pay_link_data.FIELD}" value="{pay_link_data.VALUE}">
+              <!-- END pay_link_data -->
+              <span class="fl"><input type="submit" value="{L_sys_dark_matter_purchase_pay}"></span>
+            </form>
           <!-- ENDIF -->
         <!-- ELSE -->
           <input type="submit" name="payment_validate" value="{L_sys_dark_matter_purchase_confirm}">
         <!-- ENDIF -->
 
-      </form>
       <!-- ENDIF -->
     </td>
   </tr>
