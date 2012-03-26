@@ -76,11 +76,17 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
     - ($hangar_que_by_unit[503] + $planet[$sn_data[503]['name']]) * $sn_data[503]['size']);
 
   $POST_fmenge = sys_get_param('fmenge');
-  if(!empty($POST_fmenge) && !eco_hangar_is_building($que) && count(eco_que_str2arr($planet['b_hangar_id'])) < MAX_BUILDING_QUEUE_SIZE)
+  $que_size = count(eco_que_str2arr($planet['b_hangar_id']));
+  if(!empty($POST_fmenge) && !eco_hangar_is_building($que) && $que_size < MAX_BUILDING_QUEUE_SIZE)
   {
     $units_cost = array();
     foreach($POST_fmenge as $unit_id => $unit_count)
     {
+      if($que_size >= MAX_BUILDING_QUEUE_SIZE)
+      {
+        break;
+      }
+
       $unit_id = intval($unit_id);
       // Restricting $unit_count by positive number
       $unit_count   = max(0, intval($unit_count));
@@ -112,6 +118,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
       $silo_capacity_free -= $unit_is_missile ? $unit_count * $sn_data[$unit_id]['size'] : 0;
       $hangar_que[] = array($unit_id, $unit_count);
       $hangar_que_by_unit[$unit_id] += $unit_count;
+      $que_size++;
     }
 
     if(!empty($units_cost))
