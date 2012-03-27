@@ -35,7 +35,7 @@
         throw new exception($lang['uni_msg_error_no_dm'], ERR_ERROR);
       }
 
-      if(!rpg_points_change($user['id'], RPG_RENAME, -$uni_price, "Renaming [{$uni_galaxy}:{$uni_planet}]"))
+      if(!rpg_points_change($user['id'], RPG_RENAME, -$uni_price, "Renaming [{$uni_galaxy}:{$uni_system}] to " . sys_get_param_str_raw('uni_name')))
       {
         throw new exception($lang['sys_msg_err_update_dm'], ERR_ERROR);
       }
