@@ -155,6 +155,7 @@ function mrc_mercenary_render($user)
     ));
   }
 
+  $cost_alliance_multiplyer = (SN_IN_ALLY === true && $mode == UNIT_PLANS ? $config->ali_bonus_members : 1);
   foreach($sn_data['groups'][$mode == UNIT_PLANS ? 'plans' : 'mercenaries'] as $mercenary_id)
   {
     {
@@ -181,9 +182,10 @@ function mrc_mercenary_render($user)
       if($is_permanent)
       {
         $total_cost_old = eco_get_total_cost($mercenary_id, $mercenary_level);
-        $total_cost_old = $total_cost_old[BUILD_CREATE][RES_DARK_MATTER];
+        $total_cost_old = $total_cost_old[BUILD_CREATE][RES_DARK_MATTER] * $cost_alliance_multiplyer;
       }
       $total_cost = eco_get_total_cost($mercenary_id, $mercenary_level + 1);
+      $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $cost_alliance_multiplyer;
       $mercenary_time_finish = $user[$mercenary_id]['powerup_time_finish'];
       $template->assign_block_vars('officer', array(
         'ID'          => $mercenary_id,
@@ -191,6 +193,7 @@ function mrc_mercenary_render($user)
         'DESCRIPTION' => $lang['info'][$mercenary_id]['description'],
         'EFFECT'      => $lang['info'][$mercenary_id]['effect'],
         'COST'        => $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old,
+        'COST_TEXT'   => pretty_number($total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old),
         'LEVEL'       => $mercenary_level,
         'LEVEL_MAX'   => $mercenary['max'],
         'BONUS'       => $mercenary_bonus,

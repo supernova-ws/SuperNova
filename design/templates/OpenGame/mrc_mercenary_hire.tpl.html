@@ -35,10 +35,10 @@
 function mrc_change(mercenary_id)
 {
   var period_element = document.getElementById('period_' + mercenary_id);
-  var period = mrc_discount_array[period_element.value]; // mrc_discount_array[discount_element.options[discount_element.selectedIndex].value];
-  var mrc_price = mrc_cost_array[mercenary_id][document.getElementById('level_' + mercenary_id).value] * period;
+//  var period = mrc_discount_array[period_element.value]; // mrc_discount_array[discount_element.options[discount_element.selectedIndex].value];
+  var mrc_price = mrc_cost_array[mercenary_id][document.getElementById('level_' + mercenary_id).value] * mrc_discount_array[period_element.value];
 
-  document.getElementById('final_cost_' + mercenary_id).innerHTML = Math.ceil(mrc_price);
+  document.getElementById('final_cost_' + mercenary_id).innerHTML = sn_format_number(Math.ceil(mrc_price));
 }
 </script>
 
@@ -105,7 +105,7 @@ function mrc_change(mercenary_id)
                   <!-- ELSE -->
                     <input type="hidden" name="mercenary_period" id="period_{officer.ID}" value="{C_empire_mercenary_base_period}">
                   <!-- ENDIF -->
-                  {L_sys_buy_for} <span id="final_cost_{officer.ID}">{officer.COST}</span> {L_sys_dark_matter_sh}
+                  {L_sys_buy_for} <span id="final_cost_{officer.ID}">{officer.COST_TEXT}</span> {L_sys_dark_matter_sh}
                   <input type="submit" value="<!-- IF MODE == 600 -->{L_mrc_hire}<!-- ELSE -->{L_sys_buy}<!-- ENDIF -->">
                 </form>
               <!-- ELSE -->

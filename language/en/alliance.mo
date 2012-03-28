@@ -261,7 +261,9 @@ $lang = array_merge($lang, array(
   'opt_msg_avatar_error_unsupported' => 'Uploaded image format not supported. Only supported JPG, GIF, PNG up to 200KB',
 
   'ali_admin_mercenaries' => 'Alliance\'s mercenaries',
+  'ali_admin_plans' => 'Alliance\'s schematics',
   'ali_admin_techs' => 'Alliance\'s research',
+  'ali_admin_market_trader' => 'Black Market resource exchange',
 
   'ali_res_player_bonus' => 'Member\'s bonus',
   'ali_res_transfer' => 'Transfer',

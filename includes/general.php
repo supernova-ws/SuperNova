@@ -329,7 +329,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   $mercenary_level = 0;
   $unit_db_name = $sn_data[$unit_id]['name'];
 //  if(in_array($unit_id, $sn_data['groups']['mercenaries']))
-  if($unit_id == RES_DARK_MATTER || in_array($unit_id, $sn_data['groups']['mercenaries']) || in_array($unit_id, $sn_data['groups']['tech']) || in_array($unit_id, $sn_data['groups']['plans']))
+  if(in_array($unit_id, $sn_data['groups']['mercenaries']) || in_array($unit_id, $sn_data['groups']['plans']))
   {
     if(!$user['id'])
     {
@@ -346,6 +346,10 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   elseif(in_array($unit_id, $sn_data['groups']['governors']))
   {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
+  }
+  elseif(in_array($unit_id, $sn_data['groups']['tech']) || $unit_id == RES_DARK_MATTER)
+  {
+    $mercenary_level = $user[$unit_db_name];
   }
   elseif(in_array($unit_id, array_merge($sn_data['groups']['resources_loot'], $sn_data['groups']['structures'], $sn_data['groups']['fleet'], $sn_data['groups']['defense'])))
   {

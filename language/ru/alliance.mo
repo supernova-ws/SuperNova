@@ -258,6 +258,7 @@ $lang = array_merge($lang, array(
   'opt_msg_avatar_error_unsupported' => 'Формат загруженного изображения не поддерживается. Поддерживаются только файлы JPG, GIF, PNG размером до 200КБ',
 
   'ali_admin_mercenaries' => 'Наемники Альянса',
+  'ali_admin_plans' => 'Чертежи Альянса',
   'ali_admin_techs' => 'Исследования Альянса',
   'ali_admin_market_trader' => 'Обмен ресурсов на чёрном рынке',
 

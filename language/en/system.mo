@@ -693,7 +693,7 @@ $lang = array_merge($lang, array(
   'sys_on_planet' => 'On planet',
   'fl_on_stores' => 'In stock',
 
-  'sys_ali_members_bonus' => 'Minimum Alliance size for Ally bonus ',
+  'sys_ali_bonus_members' => 'Minimum Alliance size for Ally bonus ',
 
 ));
 
