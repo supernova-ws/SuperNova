@@ -379,7 +379,7 @@ $lang = array_merge($lang, array(
 
     MRC_TECHNOLOGIST => array(
       'description' => 'Technologist is a recognized expert in astromineralogy and crystalography. With his team of Metalurgists and chemists, he supported the interplanetary Government when developing new resources and optimize their refinery.',
-      'effect' => 'per level to metal, crystal and deuterium production, to energy production on solar and fusion stations each level.<br>At 5th level allows to build fusion station',
+      'effect' => 'per level to metal, crystal and deuterium production, to energy production on solar and fusion stations each level',
     ),
 
     MRC_ENGINEER => array(
@@ -389,7 +389,7 @@ $lang = array_merge($lang, array(
 
     MRC_FORTIFIER => array(
       'description' => 'Fortifier - Army Engineer. His in-depth knowledge of defensive systems allow you to shorten planet defense building time',
-      'effect' => 'per level to construction time of missiles and defense structures<br />        +10% per level to attack, armor and shields when defending planet<br />        At 3rd level allows building of Planetary Defense',
+      'effect' => 'per level to construction time of missiles and defense structures<br />+10% per level to attack, armor and shields when defending planet',
     ),
 
     MRC_STOCKMAN => array(
