@@ -407,10 +407,10 @@ $lang = array_merge($lang, array(
       'effect' => 'by the time of studies for each level',
     ),
 
-    MRC_DESTRUCTOR => array(
-      'description' => 'Destroyer, a ruthless army officer. He suggests how the Empire\'s planets brutal methods should be. The same Destroyer has developed technology and manufactures Deathstars.',
-      'effect' => 'Allows to build Deathstars in the shipyard',
-    ),
+//    MRC_DESTRUCTOR => array(
+//      'description' => 'Destroyer, a ruthless army officer. He suggests how the Empire\'s planets brutal methods should be. The same Destroyer has developed technology and manufactures Deathstars.',
+//      'effect' => 'Allows to build Deathstars in the shipyard',
+//    ),
 
     MRC_ADMIRAL => array(
       'description' => 'Admiral is tried by war veteran and a brilliant strategist. Even in the hottest fights he doesn\'t lose a review and maintains contact with commanders fleets. The wise ruler can rely on him in battle and thereby use to battle more ships.',
@@ -427,10 +427,10 @@ $lang = array_merge($lang, array(
       'effect' => 'speed of ships for each level',
     ),
 
-    MRC_ASSASIN => array(
-      'description' => 'Assasin is a trusted killer. But it\'s not his only quality. Assassin has developed the new cruiser class Supernova. He is the only person who can manage this ship.',
-      'effect' => 'Allows to build Supernova Cruisers in the shipyard',
-    ),
+//    MRC_ASSASIN => array(
+//      'description' => 'Assasin is a trusted killer. But it\'s not his only quality. Assassin has developed the new cruiser class Supernova. He is the only person who can manage this ship.',
+//      'effect' => 'Allows to build Supernova Cruisers in the shipyard',
+//    ),
 
     MRC_EMPEROR => array(
       'description' => 'Emperor - your personal assistant and Deputy. The accuracy of its reports and punctuality in everything-his best qualities, capable of total control over the Empire.',

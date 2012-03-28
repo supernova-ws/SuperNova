@@ -1670,7 +1670,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_check_key('payment_lot_price', 1, !isset($config->payment_lot_price));
 
     // Updating category for Mercenaries
-    upd_do_query("UPDATE {{powerup}} SET powerup_category = " . MRC_MERCENARIES . " WHERE powerup_unit_id > 600 AND powerup_unit_id < 700;");
+    upd_do_query("UPDATE {{powerup}} SET powerup_category = " . UNIT_MERCENARIES . " WHERE powerup_unit_id > 600 AND powerup_unit_id < 700;");
 
     // Convert Destructor to Death Star plan
     upd_do_query("UPDATE {{powerup}} 

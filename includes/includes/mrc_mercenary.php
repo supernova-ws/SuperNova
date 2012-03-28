@@ -127,8 +127,8 @@ function mrc_mercenary_render($user)
 {
   global $time_now, $sn_data, $config, $lang, $sn_mrc_hire_discount;
 
-  $mode = sys_get_param_int('mode', MRC_MERCENARIES);
-  $mode = in_array($mode, array(MRC_MERCENARIES, UNIT_PLANS)) ? $mode : MRC_MERCENARIES;
+  $mode = sys_get_param_int('mode', UNIT_MERCENARIES);
+  $mode = in_array($mode, array(UNIT_MERCENARIES, UNIT_PLANS)) ? $mode : UNIT_MERCENARIES;
   $is_permanent = $mode == UNIT_PLANS || !$config->empire_mercenary_temporary;
 
   if($mercenary_id = sys_get_param_int('mercenary_id'))

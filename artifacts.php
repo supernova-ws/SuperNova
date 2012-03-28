@@ -77,7 +77,7 @@ if($action && in_array($unit_id, $sn_data['groups']['artifacts']))
       die();
     break;
   }
-  message($Message, $lang['tech'][ART_ARTIFACTS], 'artifacts.' . PHP_EX, 5);
+  message($Message, $lang['tech'][UNIT_ARTIFACTS], 'artifacts.' . PHP_EX, 5);
 }
 
 $template = gettemplate('artifacts', true);
@@ -125,6 +125,6 @@ $template->assign_vars(array(
   'PAGE_HINT' => $lang['art_page_hint'],
 ));
 
-display(parsetemplate($template), $lang['tech'][ART_ARTIFACTS]);
+display(parsetemplate($template), $lang['tech'][UNIT_ARTIFACTS]);
 
 ?>

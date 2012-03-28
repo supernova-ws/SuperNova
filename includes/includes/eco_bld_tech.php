@@ -100,7 +100,7 @@ function eco_bld_tech(&$user, &$planet, $que = array())
 
   if(!$planet[$sn_data[STRUC_LABORATORY]['name']])
   {
-    message($lang['no_laboratory'], $lang['tech'][TECH_TECHNOLOGY]);
+    message($lang['no_laboratory'], $lang['tech'][UNIT_TECHNOLOGIES]);
   }
 
   switch(sys_get_param_str('action'))
@@ -192,7 +192,7 @@ function eco_bld_tech(&$user, &$planet, $que = array())
   }
 
   $template->assign_vars(array(
-    'PAGE_HEADER'        => $page_header = $lang['tech'][TECH_TECHNOLOGY] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : ''),
+    'PAGE_HEADER'        => $page_header = $lang['tech'][UNIT_TECHNOLOGIES] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : ''),
     'FLEET_OWN_COUNT'    => $fleet_list['own']['count'],
     'QUE_ID'             => QUE_RESEARCH,
 

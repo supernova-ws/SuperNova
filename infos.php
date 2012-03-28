@@ -254,7 +254,7 @@ elseif (in_array($unit_id, $sn_data['groups']['fleet']))
   // Flotte
   $PageTPL = gettemplate('info_buildings_fleet');
 
-  $parse['element_typ'] = $lang['tech'][SHIP_FLEET];
+  $parse['element_typ'] = $lang['tech'][UNIT_SHIPS];
   $rapid_fire = eco_render_rapid_fire($unit_id);
   $parse['rf_info_to'] = $rapid_fire['to'];   // Rapid Fire vers
   $parse['rf_info_fr'] = $rapid_fire['from']; // Rapid Fire de

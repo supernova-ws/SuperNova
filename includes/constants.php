@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '33');
 define('SN_RELEASE', '34');
-define('SN_VERSION', '34a11.4');
+define('SN_VERSION', '34a11.5');
 
 define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
 
@@ -387,8 +387,8 @@ define('SORT_TIME_LAST_VISIT' , 7);
 define('SORT_TIME_BAN_UNTIL'  , 8);
 
 // === Structures
-define('STRUC_STRUCTURES', 0);
-define('STRUC_STRUCTURES_SPECIAL', 40);
+define('UNIT_STRUCTURES', 0);
+define('UNIT_STRUCTURES_SPECIAL', 40);
 define('STRUC_MINE_METAL', 1);
 define('STRUC_MINE_CRYSTAL', 2);
 define('STRUC_MINE_DEUTERIUM', 3);
@@ -410,7 +410,7 @@ define('STRUC_MOON_PHALANX', 42);
 define('STRUC_MOON_GATE', 43);
 
 // === Techs
-define('TECH_TECHNOLOGY', 100);
+define('UNIT_TECHNOLOGIES', 100);
 define('TECH_SPY', 106);
 define('TECH_COMPUTER', 108);
 define('TECH_WEAPON', 109);
@@ -432,7 +432,7 @@ define('TECH_GRAVITON', 199);
 
 // === Hangar units
 // --- Ships
-define('SHIP_FLEET', 200);
+define('UNIT_SHIPS', 200);
 define('SHIP_CARGO_SUPER', 201);
 define('SHIP_CARGO_SMALL', 202);
 define('SHIP_CARGO_BIG', 203);
@@ -452,23 +452,23 @@ define('SHIP_SUPERNOVA', 216);
 define('SHIP_FIGHTER_ASSAULT', 217);
 define('SHIP_CARGO_HYPER', 218);
 // --- Defense
-define('DEF_DEFENCE', 400);
+define('UNIT_DEFENCE', 400);
 define('DEF_TURRET_MISSILE', 401);
 define('DEF_TURRET_LASER_SMALL', 402);
 define('DEF_TURRET_LASER_BIG', 403);
 define('DEF_TURRET_GAUSS', 404);
 define('DEF_TURRET_ION', 405);
 define('DEF_TURRET_PLASMA', 406);
-define('DEF_SHIELD_SMALL', 407);
-define('DEF_SHIELD_BIG', 408);
-define('DEF_SHIELD_PLANET', 409);
+define('UNIT_DEF_SHIELD_SMALL', 407);
+define('UNIT_DEF_SHIELD_BIG', 408);
+define('UNIT_DEF_SHIELD_PLANET', 409);
 // --- Missiles
 define('DEF_MISSILE_INTERCEPTOR', 502);
 define('DEF_MISSILE_INTERPLANET', 503);
 
 // === Mercenaries
 // --- Mercenary list
-define('MRC_MERCENARIES', 600);
+define('UNIT_MERCENARIES', 600);
 define('MRC_ACADEMIC', 606);
 define('MRC_ADMIRAL', 602);
 define('MRC_STOCKMAN', 607);
@@ -487,10 +487,10 @@ define('MRC_FORTIFIER', 608);
 
 // Bonus category
 define('BONUS_SERVER', 0);
-define('BONUS_MERCENARY', MRC_MERCENARIES); // DO NOT MOVE ABOVE MERCENARIES SECTION!
+define('BONUS_MERCENARY', UNIT_MERCENARIES); // DO NOT MOVE ABOVE MERCENARIES SECTION!
 
 // === Resources
-define('RES_RESOURCES', 900);
+define('UNIT_RESOURCES', 900);
 define('RES_METAL', 901);
 define('RES_CRYSTAL', 902);
 define('RES_DEUTERIUM', 903);
@@ -499,7 +499,7 @@ define('RES_DARK_MATTER', 905);
 define('RES_TIME', 999);
 
 // === Artifacts
-define('ART_ARTIFACTS', 1000);
+define('UNIT_ARTIFACTS', 1000);
 define('ART_LHC', 1001);      // Additional moon chance
 define('ART_RCD_SMALL', 1002);   // Rapid Colony Deployment - Set of buildings up to 10th level - 10/14/ 3/0 -   405 DM
 define('ART_RCD_MEDIUM', 1003);  // Rapid Colony Deployment - Set of buildings up to 15th level - 15/20/ 8/0 -  4704 DM

@@ -206,6 +206,7 @@ if (!defined('INSIDE'))
   $sn_data = array(
     STRUC_MINE_METAL => array(
       'name' => 'metal_mine',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_METAL     => 80,
@@ -229,11 +230,11 @@ if (!defined('INSIDE'))
       'crystal_perhour'   => 'return 0;',
       'deuterium_perhour' => 'return 0;',
       'energy_perhour'    => 'return - (13 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_MINE_CRYSTAL => array(
       'name' => 'crystal_mine',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_METAL     => 48,
@@ -257,11 +258,11 @@ if (!defined('INSIDE'))
       'crystal_perhour'   => 'return   (32 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
       'deuterium_perhour' => 'return 0;',
       'energy_perhour'    => 'return - (16 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_MINE_DEUTERIUM => array(
       'name' => 'deuterium_sintetizer',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_METAL     => 225,
@@ -285,11 +286,11 @@ if (!defined('INSIDE'))
       'crystal_perhour'   => 'return 0;',
       'deuterium_perhour' => 'return  ((10 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor) * (-0.002 * $BuildTemp + 1.28));',
       'energy_perhour'    => 'return - (20 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_MINE_SOLAR => array(
       'name' => 'solar_plant',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_METAL     => 75,
@@ -313,11 +314,11 @@ if (!defined('INSIDE'))
       'crystal_perhour'   => 'return 0;',
       'deuterium_perhour' => 'return 0;',
       'energy_perhour'    => 'return   (($BuildTemp / 5 + 15) * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_MINE_FUSION => array(
       'name' => 'fusion_plant',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'require' => array(3 => 5, TECH_ENERGY => 3, UNIT_PLAN_STRUC_MINE_FUSION => 1),
       'cost' => array(
@@ -342,11 +343,11 @@ if (!defined('INSIDE'))
       'crystal_perhour'   => 'return 0;',
       'deuterium_perhour' => 'return - (10 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
       'energy_perhour'    => 'return   (30 * $BuildLevel * pow(1.05 + 0.01 * $BuildEnergyTech, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_FACTORY_ROBOT => array(
       'name' => 'robot_factory',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_METAL     => 400,
@@ -360,11 +361,11 @@ if (!defined('INSIDE'))
       'deuterium' => 200,
       'energy' => 0,
       'factor' => 2,
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_FACTORY_NANO => array(
       'name' => 'nano_factory',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_ROBOT => 10, TECH_COMPUTER => 10),
       'cost' => array(
@@ -379,11 +380,11 @@ if (!defined('INSIDE'))
       'deuterium' => 100000,
       'energy' => 0,
       'factor' => 2,
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_FACTORY_HANGAR => array(
       'name' => 'hangar',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_ROBOT => 2),
       'cost' => array(
@@ -398,11 +399,11 @@ if (!defined('INSIDE'))
       'deuterium' => 100,
       'energy' => 0,
       'factor' => 2,
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_STORE_METAL => array(
       'name' => 'metal_store',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_METAL     => 2000,
@@ -416,11 +417,11 @@ if (!defined('INSIDE'))
       'deuterium' => 0,
       'energy' => 0,
       'factor' => 2,
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_STORE_CRYSTAL => array(
       'name' => 'crystal_store',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_METAL     => 2000,
@@ -434,7 +435,6 @@ if (!defined('INSIDE'))
       'deuterium' => 0,
       'energy' => 0,
       'factor' => 2,
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_STORE_DEUTERIUM => array(
@@ -457,6 +457,7 @@ if (!defined('INSIDE'))
 
     STRUC_LABORATORY => array(
       'name' => 'laboratory',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_METAL     => 200,
@@ -470,11 +471,11 @@ if (!defined('INSIDE'))
       'deuterium' => 200,
       'energy' => 0,
       'factor' => 2,
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_TERRAFORMER => array(
       'name' => 'terraformer',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_NANO => 1, TECH_ENERGY => 12),
       'cost' => array(
@@ -489,11 +490,11 @@ if (!defined('INSIDE'))
       'deuterium' => 100000,
       'energy' => 0,
       'factor' => 2,
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_ALLY_DEPOSIT => array(
       'name' => 'ally_deposit',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_METAL     => 20000,
@@ -507,11 +508,11 @@ if (!defined('INSIDE'))
       'deuterium' => 0,
       'energy' => 0,
       'factor' => 2,
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_LABORATORY_NANO => array(
       'name' => 'nano',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'require' => array(STRUC_LABORATORY => 10, TECH_ENERGY => 10),
       'cost' => array(
@@ -526,11 +527,11 @@ if (!defined('INSIDE'))
       'deuterium' => 150000,
       'energy' => 0,
       'factor' => 2,
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_MOON_STATION => array(
       'name' => 'mondbasis',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_METAL     => 20000,
@@ -544,11 +545,11 @@ if (!defined('INSIDE'))
       'deuterium' => 20000,
       'energy' => 0,
       'factor' => 2,
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_MOON_PHALANX => array(
       'name' => 'phalanx',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'require' => array(STRUC_MOON_STATION => 1),
       'cost' => array(
@@ -563,11 +564,11 @@ if (!defined('INSIDE'))
       'deuterium' => 20000,
       'energy' => 0,
       'factor' => 2,
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_MOON_GATE => array(
       'name' => 'sprungtor',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'require' => array(STRUC_MOON_STATION => 1, TECH_HYPERSPACE => 7),
       'cost' => array(
@@ -582,11 +583,11 @@ if (!defined('INSIDE'))
       'deuterium' => 2000000,
       'energy' => 0,
       'factor' => 2,
-      'type' => UNIT_STRUCTURE,
     ),
 
     STRUC_SILO => array(
       'name' => 'silo',
+      'type' => UNIT_STRUCTURE,
       'location' => LOC_PLANET,
       'require' => array(TECH_ENIGNE_ION => 1),
       'cost' => array(
@@ -601,12 +602,12 @@ if (!defined('INSIDE'))
       'deuterium' => 1000,
       'energy' => 0,
       'factor' => 2,
-      'type' => UNIT_STRUCTURE,
       'capacity' => 12,
     ),
 
     SHIP_CARGO_SMALL => array(
       'name' => 'small_ship_cargo',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 2, TECH_ENGINE_CHEMICAL => 2),
       'cost' => array(
@@ -653,6 +654,7 @@ if (!defined('INSIDE'))
 
     SHIP_CARGO_BIG => array(
       'name' => 'big_ship_cargo',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 4, TECH_ENGINE_CHEMICAL => 6),
       'cost' => array(
@@ -689,6 +691,7 @@ if (!defined('INSIDE'))
 
     SHIP_CARGO_SUPER => array(
       'name' => 'supercargo',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 8, TECH_ENIGNE_ION => 5, UNIT_PLAN_SHIP_CARGO_SUPER => 1),
       'cost' => array(
@@ -725,6 +728,7 @@ if (!defined('INSIDE'))
 
     SHIP_CARGO_HYPER => array(
       'name' => 'planet_cargo_hyper',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 10, TECH_ENGINE_HYPER => 5, UNIT_PLAN_SHIP_CARGO_HYPER => 1),
       'cost' => array(
@@ -761,6 +765,7 @@ if (!defined('INSIDE'))
 
     SHIP_FIGHTER_LIGHT => array(
       'name' => 'light_hunter',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 1, TECH_ENGINE_CHEMICAL => 1),
       'cost' => array(
@@ -797,6 +802,7 @@ if (!defined('INSIDE'))
 
     SHIP_FIGHTER_HEAVY => array(
       'name' => 'heavy_hunter',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 3, TECH_ARMOR => 2, TECH_ENIGNE_ION => 2),
       'cost' => array(
@@ -833,6 +839,7 @@ if (!defined('INSIDE'))
 
     SHIP_DESTROYER => array(
       'name' => 'crusher',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 5, TECH_ENIGNE_ION => 4, TECH_ION => 2),
       'cost' => array(
@@ -869,6 +876,7 @@ if (!defined('INSIDE'))
 
     SHIP_CRUISER => array(
       'name' => 'battle_ship',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 7, TECH_ENGINE_HYPER => 4),
       'cost' => array(
@@ -905,6 +913,7 @@ if (!defined('INSIDE'))
 
     SHIP_COLONIZER => array(
       'name' => 'colonizer',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 4, TECH_ENIGNE_ION => 3, TECH_COLONIZATION => 2),
       'cost' => array(
@@ -941,6 +950,7 @@ if (!defined('INSIDE'))
 
     SHIP_RECYCLER => array(
       'name' => 'recycler',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 4, TECH_ENGINE_CHEMICAL => 6, TECH_SHIELD => 2),
       'cost' => array(
@@ -977,6 +987,7 @@ if (!defined('INSIDE'))
 
     SHIP_SPY => array(
       'name' => 'spy_sonde',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 3, TECH_ENGINE_CHEMICAL => 3, TECH_SPY => 2),
       'cost' => array(
@@ -1013,6 +1024,7 @@ if (!defined('INSIDE'))
 
     SHIP_BOMBER => array(
       'name' => 'bomber_ship',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(TECH_ENIGNE_ION => 6, STRUC_FACTORY_HANGAR => 8, TECH_PLASMA => 5),
       'cost' => array(
@@ -1059,6 +1071,7 @@ if (!defined('INSIDE'))
 
     SHIP_SATTELITE_SOLAR => array(
       'name' => 'solar_satelit',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 1),
       'cost' => array(
@@ -1105,6 +1118,7 @@ if (!defined('INSIDE'))
 
     SHIP_DESTRUCTOR => array(
       'name' => 'destructor',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 9, TECH_HYPERSPACE => 5, TECH_ENGINE_HYPER => 6),
       'cost' => array(
@@ -1141,6 +1155,7 @@ if (!defined('INSIDE'))
 
     SHIP_DEATH_STAR => array(
       'name' => 'dearth_star',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 12, TECH_HYPERSPACE => 6, TECH_ENGINE_HYPER => 7, TECH_GRAVITON => 1, UNIT_PLAN_SHIP_DEATH_STAR => 1),
       'cost' => array(
@@ -1177,6 +1192,7 @@ if (!defined('INSIDE'))
 
     SHIP_BATTLESHIP => array(
       'name' => 'battleship',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 8, TECH_HYPERSPACE => 5, TECH_ENGINE_HYPER => 5, TECH_LASER => 12),
       'cost' => array(
@@ -1213,6 +1229,7 @@ if (!defined('INSIDE'))
 
     SHIP_SUPERNOVA => array(
       'name' => 'supernova',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 15, TECH_HYPERSPACE => 7, TECH_ENGINE_HYPER => 9, TECH_GRAVITON => 1, UNIT_PLAN_SHIP_SUPERNOVA => 1),
       'cost' => array(
@@ -1249,11 +1266,13 @@ if (!defined('INSIDE'))
 
     SHIP_FIGHTER_ASSAULT => array(
       'name' => 'assault_ship',
+      'type' => UNIT_SHIPS,
       'location' => LOC_PLANET,
     ),
 
     401 => array(
       'name' => 'misil_launcher',
+      'type' => UNIT_DEFENCE,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 1),
       'cost' => array(
@@ -1278,6 +1297,7 @@ if (!defined('INSIDE'))
 
     402 => array(
       'name' => 'small_laser',
+      'type' => UNIT_DEFENCE,
       'location' => LOC_PLANET,
       'require' => array(TECH_ENERGY => 1, STRUC_FACTORY_HANGAR => 2, TECH_LASER => 3),
       'cost' => array(
@@ -1302,6 +1322,7 @@ if (!defined('INSIDE'))
 
     403 => array(
       'name' => 'big_laser',
+      'type' => UNIT_DEFENCE,
       'location' => LOC_PLANET,
       'require' => array(TECH_ENERGY => 3, STRUC_FACTORY_HANGAR => 4, TECH_LASER => 6),
       'cost' => array(
@@ -1326,6 +1347,7 @@ if (!defined('INSIDE'))
 
     404 => array(
       'name' => 'gauss_canyon',
+      'type' => UNIT_DEFENCE,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 6, TECH_ENERGY => 6, TECH_WEAPON => 3, TECH_SHIELD => 1),
       'cost' => array(
@@ -1350,6 +1372,7 @@ if (!defined('INSIDE'))
 
     405 => array(
       'name' => 'ionic_canyon',
+      'type' => UNIT_DEFENCE,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 4, TECH_ION => 4),
       'cost' => array(
@@ -1374,6 +1397,7 @@ if (!defined('INSIDE'))
 
     406 => array(
       'name' => 'buster_canyon',
+      'type' => UNIT_DEFENCE,
       'location' => LOC_PLANET,
       'require' => array(STRUC_FACTORY_HANGAR => 8, TECH_PLASMA => 7),
       'cost' => array(
@@ -1398,6 +1422,7 @@ if (!defined('INSIDE'))
 
     407 => array(
       'name' => 'small_protection_shield',
+      'type' => UNIT_DEFENCE,
       'location' => LOC_PLANET,
       'require' => array(TECH_SHIELD => 2, STRUC_FACTORY_HANGAR => 1),
       'cost' => array(
@@ -1423,6 +1448,7 @@ if (!defined('INSIDE'))
 
     408 => array(
       'name' => 'big_protection_shield',
+      'type' => UNIT_DEFENCE,
       'location' => LOC_PLANET,
       'require' => array(TECH_SHIELD => 6, STRUC_FACTORY_HANGAR => 6),
       'cost' => array(
@@ -1448,6 +1474,7 @@ if (!defined('INSIDE'))
 
     409 => array(
       'name'      => 'planet_protector',
+      'type' => UNIT_DEFENCE,
       'location' => LOC_PLANET,
       'require'   => array(UNIT_PLAN_DEF_SHIELD_PLANET => 1),
       'cost' => array(
@@ -1473,6 +1500,7 @@ if (!defined('INSIDE'))
 
     502 => array(
       'name' => 'interceptor_misil',
+      'type' => UNIT_DEFENCE,
       'location' => LOC_PLANET,
       'require' => array(STRUC_SILO => 2),
       'cost' => array(
@@ -1496,6 +1524,7 @@ if (!defined('INSIDE'))
 
     503 => array(
       'name' => 'interplanetary_misil',
+      'type' => UNIT_DEFENCE,
       'location' => LOC_PLANET,
       'require' => array(STRUC_SILO => 4),
       'cost' => array(
@@ -1520,6 +1549,7 @@ if (!defined('INSIDE'))
 
     TECH_COMPUTER => array(
       'name' => 'computer_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 1),
       'cost' => array(
@@ -1541,6 +1571,7 @@ if (!defined('INSIDE'))
 
     TECH_SPY => array(
       'name' => 'spy_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 3),
       'cost' => array(
@@ -1562,6 +1593,7 @@ if (!defined('INSIDE'))
 
     TECH_WEAPON => array(
       'name' => 'military_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 4),
       'cost' => array(
@@ -1583,6 +1615,7 @@ if (!defined('INSIDE'))
 
     TECH_SHIELD => array(
       'name' => 'shield_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 6, TECH_ENERGY => 3),
       'cost' => array(
@@ -1604,6 +1637,7 @@ if (!defined('INSIDE'))
 
     TECH_ARMOR => array(
       'name' => 'defence_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 2),
       'cost' => array(
@@ -1625,6 +1659,7 @@ if (!defined('INSIDE'))
 
     TECH_ENERGY => array(
       'name' => 'energy_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 1),
       'cost' => array(
@@ -1645,6 +1680,7 @@ if (!defined('INSIDE'))
 
     TECH_HYPERSPACE => array(
       'name' => 'hyperspace_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 7, TECH_ENERGY => 10, TECH_SHIELD => 5),
       'cost' => array(
@@ -1663,6 +1699,7 @@ if (!defined('INSIDE'))
 
     TECH_ENGINE_CHEMICAL => array(
       'name' => 'combustion_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 1, TECH_ENERGY => 1),
       'cost' => array(
@@ -1684,6 +1721,7 @@ if (!defined('INSIDE'))
 
     TECH_ENIGNE_ION => array(
       'name' => 'impulse_motor_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 4, TECH_ION => 1),
       'cost' => array(
@@ -1705,6 +1743,7 @@ if (!defined('INSIDE'))
 
     TECH_ENGINE_HYPER => array(
       'name' => 'hyperspace_motor_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 8, TECH_HYPERSPACE => 3),
       'cost' => array(
@@ -1726,6 +1765,7 @@ if (!defined('INSIDE'))
 
     TECH_LASER => array(
       'name' => 'laser_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 1, TECH_ENERGY => 2),
       'cost' => array(
@@ -1744,6 +1784,7 @@ if (!defined('INSIDE'))
 
     TECH_ION => array(
       'name' => 'ionic_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 3, TECH_ENERGY => 4, TECH_LASER => 5),
       'cost' => array(
@@ -1762,6 +1803,7 @@ if (!defined('INSIDE'))
 
     TECH_PLASMA => array(
       'name' => 'buster_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 5, TECH_ENERGY => 8, TECH_LASER => 10, TECH_ION => 5),
       'cost' => array(
@@ -1780,6 +1822,7 @@ if (!defined('INSIDE'))
 
     TECH_RESEARCH => array(
       'name' => 'intergalactic_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 10, TECH_COMPUTER => 8, TECH_HYPERSPACE => 8),
       'cost' => array(
@@ -1798,6 +1841,7 @@ if (!defined('INSIDE'))
 
     TECH_EXPEDITION => array(
       'name' => 'expedition_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 3, TECH_COMPUTER => 4, TECH_ENIGNE_ION => 3),
       'cost' => array(
@@ -1816,6 +1860,7 @@ if (!defined('INSIDE'))
 
     TECH_COLONIZATION => array(
       'name' => 'colonisation_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 3, TECH_ENERGY => 5, TECH_ARMOR => 2),
       'cost' => array(
@@ -1834,6 +1879,7 @@ if (!defined('INSIDE'))
 
     TECH_ASTROTECH => array(
       'name' => 'tech_astro',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 3, TECH_ENERGY => 5, TECH_ARMOR => 2),
       'cost' => array(
@@ -1852,6 +1898,7 @@ if (!defined('INSIDE'))
 
     TECH_GRAVITON => array(
       'name' => 'graviton_tech',
+      'type' => UNIT_TECHNOLOGIES,
       'location' => LOC_USER,
       'require' => array(STRUC_LABORATORY => 12),
       'cost' => array(
@@ -1912,7 +1959,7 @@ if (!defined('INSIDE'))
 
     MRC_STOCKMAN => array(
       'name' => 'rpg_stockeur',
-      'type' => MRC_MERCENARIES,
+      'type' => UNIT_MERCENARIES,
       'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 3000,
@@ -1925,7 +1972,7 @@ if (!defined('INSIDE'))
 
     MRC_SPY => array(
       'name' => 'rpg_espion',
-      'type' => MRC_MERCENARIES,
+      'type' => UNIT_MERCENARIES,
       'location' => LOC_USER,
       'require' => array(MRC_STOCKMAN => 5),
       'cost' => array(
@@ -1939,7 +1986,7 @@ if (!defined('INSIDE'))
 
     MRC_ACADEMIC => array(
       'name' => 'mrc_academic',
-      'type' => MRC_MERCENARIES,
+      'type' => UNIT_MERCENARIES,
       'location' => LOC_USER,
       'require' => array(MRC_STOCKMAN => 10, MRC_SPY => 5),
       'cost' => array(
@@ -1953,7 +2000,7 @@ if (!defined('INSIDE'))
 
     MRC_ADMIRAL => array(
       'name' => 'rpg_amiral',
-      'type' => MRC_MERCENARIES,
+      'type' => UNIT_MERCENARIES,
       'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 3000,
@@ -1966,7 +2013,7 @@ if (!defined('INSIDE'))
 
     MRC_COORDINATOR => array(
       'name' => 'rpg_commandant',
-      'type' => MRC_MERCENARIES,
+      'type' => UNIT_MERCENARIES,
       'location' => LOC_USER,
       'require' => array(MRC_ADMIRAL => 5),
       'cost' => array(
@@ -1980,7 +2027,7 @@ if (!defined('INSIDE'))
 
     MRC_NAVIGATOR => array(
       'name' => 'rpg_general',
-      'type' => MRC_MERCENARIES,
+      'type' => UNIT_MERCENARIES,
       'location' => LOC_USER,
       'require' => array(MRC_ADMIRAL => 10, MRC_COORDINATOR => 5),
       'cost' => array(
@@ -1996,7 +2043,7 @@ if (!defined('INSIDE'))
 /*
     MRC_EMPEROR => array(
       'name' => 'rpg_empereur',
-      'type' => MRC_MERCENARIES,
+      'type' => UNIT_MERCENARIES,
       'location' => LOC_USER,
       'require' => array(MRC_ASSASIN => 1, MRC_DEFENDER => 1),
       'cost' => array(
@@ -2009,36 +2056,42 @@ if (!defined('INSIDE'))
 */
     RES_METAL => array(
       'name' => 'metal',
+      'type' => UNIT_RESOURCES,
       'location' => LOC_PLANET,
       'bonus_type' => BONUS_ABILITY,
     ),
 
     RES_CRYSTAL => array(
       'name' => 'crystal',
+      'type' => UNIT_RESOURCES,
       'location' => LOC_PLANET,
       'bonus_type' => BONUS_ABILITY,
     ),
 
     RES_DEUTERIUM => array(
       'name' => 'deuterium',
+      'type' => UNIT_RESOURCES,
       'location' => LOC_PLANET,
       'bonus_type' => BONUS_ABILITY,
     ),
 
     RES_ENERGY => array(
       'name' => 'energy',
+      'type' => UNIT_RESOURCES,
       'location' => LOC_PLANET,
       'bonus_type' => BONUS_ABILITY,
     ),
 
     RES_DARK_MATTER => array(
       'name' => 'dark_matter',
+      'type' => UNIT_RESOURCES,
       'location' => LOC_USER,
       'bonus_type' => BONUS_ABILITY,
     ),
 
     ART_LHC => array(
       'name' => 'art_lhc',
+      'type' => UNIT_ARTIFACTS,
       'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 25000,
@@ -2049,6 +2102,7 @@ if (!defined('INSIDE'))
 
     ART_RCD_SMALL => array(
       'name' => 'art_rcd_small',
+      'type' => UNIT_ARTIFACTS,
       'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 5000,
@@ -2066,6 +2120,7 @@ if (!defined('INSIDE'))
 
     ART_RCD_MEDIUM => array(
       'name' => 'art_rcd_medium',
+      'type' => UNIT_ARTIFACTS,
       'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 25000,
@@ -2083,6 +2138,7 @@ if (!defined('INSIDE'))
 
     ART_RCD_LARGE => array(
       'name' => 'art_rcd_large',
+      'type' => UNIT_ARTIFACTS,
       'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 60000,
@@ -2101,8 +2157,9 @@ if (!defined('INSIDE'))
 
 
     UNIT_PLAN_STRUC_MINE_FUSION => array(
-      'location' => LOC_USER,
+      'name' => 'UNIT_PLAN_STRUC_MINE_FUSION',
       'type' => UNIT_PLANS,
+      'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 10000,
         'factor' => 1,
@@ -2112,8 +2169,9 @@ if (!defined('INSIDE'))
     ),
 
     UNIT_PLAN_SHIP_CARGO_SUPER => array(
-      'location' => LOC_USER,
+      'name' => 'UNIT_PLAN_SHIP_CARGO_SUPER',
       'type' => UNIT_PLANS,
+      'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 10000,
         'factor' => 1,
@@ -2123,8 +2181,9 @@ if (!defined('INSIDE'))
     ),
 
     UNIT_PLAN_SHIP_CARGO_HYPER => array(
-      'location' => LOC_USER,
+      'name' => 'UNIT_PLAN_SHIP_CARGO_HYPER',
       'type' => UNIT_PLANS,
+      'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 25000,
         'factor' => 1,
@@ -2134,8 +2193,9 @@ if (!defined('INSIDE'))
     ),
 
     UNIT_PLAN_SHIP_DEATH_STAR => array(
-      'location' => LOC_USER,
+      'name' => 'UNIT_PLAN_SHIP_DEATH_STAR',
       'type' => UNIT_PLANS,
+      'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 10000,
         'factor' => 1,
@@ -2145,8 +2205,9 @@ if (!defined('INSIDE'))
     ),
 
     UNIT_PLAN_SHIP_SUPERNOVA => array(
-      'location' => LOC_USER,
+      'name' => 'UNIT_PLAN_SHIP_SUPERNOVA',
       'type' => UNIT_PLANS,
+      'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 25000,
         'factor' => 1,
@@ -2156,8 +2217,9 @@ if (!defined('INSIDE'))
     ),
 
     UNIT_PLAN_DEF_SHIELD_PLANET => array(
-      'location' => LOC_USER,
+      'name' => 'UNIT_PLAN_DEF_SHIELD_PLANET',
       'type' => UNIT_PLANS,
+      'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 25000,
         'factor' => 1,
@@ -2271,19 +2333,19 @@ mission = array(
         TECH_ENGINE_CHEMICAL, TECH_ENIGNE_ION, TECH_ENGINE_HYPER, TECH_LASER, TECH_ION, TECH_PLASMA, TECH_HYPERSPACE,
         TECH_SPY, TECH_EXPEDITION, TECH_COLONIZATION, TECH_GRAVITON, TECH_RESEARCH),
 
-      // Mercenary list
+      // Mercenaries
       'mercenaries' => array (
         MRC_STOCKMAN, MRC_SPY, MRC_ACADEMIC,
         MRC_ADMIRAL, MRC_COORDINATOR, MRC_NAVIGATOR,
       ),
+      // Governors
       'governors' => array(
         MRC_TECHNOLOGIST, MRC_ENGINEER, MRC_FORTIFIER
       ),
+      // Plans
       'plans' => array(
         UNIT_PLAN_STRUC_MINE_FUSION, UNIT_PLAN_SHIP_CARGO_SUPER, UNIT_PLAN_SHIP_CARGO_HYPER, UNIT_PLAN_SHIP_DEATH_STAR, UNIT_PLAN_SHIP_SUPERNOVA, UNIT_PLAN_DEF_SHIELD_PLANET,
       ),
-
-
 
       // Spaceships list
       'fleet'     => array(

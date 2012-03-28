@@ -155,7 +155,7 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
         {
           $return['ships'][$ship_data[0]] = array(
             'ID'          => $ship_id++,
-            'NAME'        => $lang['tech'][SHIP_FLEET],
+            'NAME'        => $lang['tech'][UNIT_SHIPS],
             'AMOUNT'      => $ship_data[1],
             'CONSUMPTION' => 0,
             'SPEED'       => 0,

@@ -89,7 +89,7 @@ function art_use(&$user, &$planetrow, $unit_id)
   }
 
   doquery("COMMIT;");
-  message($message, "{$lang['tech'][ART_ARTIFACTS]} - {$lang['tech'][$unit_id]}", 'artifacts.' . PHP_EX, 10);
+  message($message, "{$lang['tech'][UNIT_ARTIFACTS]} - {$lang['tech'][$unit_id]}", 'artifacts.' . PHP_EX, 10);
 }
 
 ?>

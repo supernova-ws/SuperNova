@@ -337,7 +337,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
     }
     elseif($for_update || !isset($user[$unit_id]))
     {
-      $time_restriction = $config->empire_mercenary_temporary && $sn_data[$unit_id]['type'] == MRC_MERCENARIES ? " AND powerup_time_start <= {$time_now} AND powerup_time_finish >= {$time_now} " : '';
+      $time_restriction = $config->empire_mercenary_temporary && $sn_data[$unit_id]['type'] == UNIT_MERCENARIES ? " AND powerup_time_start <= {$time_now} AND powerup_time_finish >= {$time_now} " : '';
       $mercenary_level = doquery("SELECT * FROM {{powerup}} WHERE powerup_user_id = {$user['id']} AND powerup_unit_id = {$unit_id} {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
       $user[$unit_id] = $mercenary_level;
     }

@@ -43,12 +43,12 @@ foreach($lang['tech'] as $unit_id => $unit_name)
   }
   else
   {
-    if(!in_array($unit_id, array(MRC_MERCENARIES, RES_RESOURCES, ART_ARTIFACTS)))
+    if(!in_array($unit_id, array(UNIT_MERCENARIES, UNIT_RESOURCES, UNIT_ARTIFACTS, UNIT_PLANS)))
     {
       $template->assign_block_vars('records', array(
         'UNIT' => $unit_name,
         'USER' => $lang['sys_player'],
-        'COUNT' => in_array($unit_id, array(STRUC_STRUCTURES, STRUC_STRUCTURES_SPECIAL, TECH_TECHNOLOGY)) ? $lang['sys_level'] : $lang['sys_quantity'],
+        'COUNT' => in_array($unit_id, array(UNIT_STRUCTURES, UNIT_STRUCTURES_SPECIAL, UNIT_TECHNOLOGIES)) ? $lang['sys_level'] : $lang['sys_quantity'],
         'HEADER' => true,
       ));
     }
