@@ -463,6 +463,38 @@ $lang = array_merge($lang, array(
       'effect' => 'Instantly deploys improved colony on planet',
     ),
 
+
+    UNIT_PLAN_STRUC_MINE_FUSION  => array(
+      'description' => 'Allows to build on planets sturcture "Thermonuclear plant"',
+      'effect' => 'Allows to build on planets sturcture "Thermonuclear plant"',
+    ),
+
+    UNIT_PLAN_SHIP_CARGO_SUPER  => array(
+      'description' => 'Allows to build on planet\'s hangars "Super Cargo" ships',
+      'effect' => 'Allows to build on planet\'s hangars "Super Cargo" ships',
+    ),
+
+    UNIT_PLAN_SHIP_CARGO_HYPER  => array(
+      'description' => 'Allows to build on planet\'s hangars "Hypercargo" ships',
+      'effect' => 'Allows to build on planet\'s hangars "Hypercargo" ships',
+    ),
+
+    UNIT_PLAN_SHIP_DEATH_STAR  => array(
+      'description' => 'Allows to build on planet\'s hangars "Death Star" ships',
+      'effect' => 'Allows to build on planet\'s hangars "Death Star" ships',
+    ),
+
+    UNIT_PLAN_SHIP_SUPERNOVA  => array(
+      'description' => 'Allows to build on planet\'s hangars "Supernova"-class cruisers',
+      'effect' => 'Allows to build on planet\'s hangars "Supernova"-class cruisers',
+    ),
+
+    UNIT_PLAN_DEF_SHIELD_PLANET  => array(
+      'description' => 'Allows to build on planets defense system "Planet protector"',
+      'effect' => 'Allows to build on planets defense system "Planet protector"',
+    ),
+
+
     RES_METAL => array(
       'description' => 'Metametallic iron-normed energy-neutraul compound (shortly "metal") is a basic raw material from which nanobots produces all materials and details used in construction and research. Metal comes in ignots. Each ignot volume is 127 litres and weights 1 metric tonn including protective case. "Iron-normed" means that standard pack of nanobot will produce from 1 ignot 1 tonn of pure iron. "Energy-neutral" means that nanobots will use exact amount of energy which can be extracted from ignot. "Metametallic compaund" means that ignot can include simple and complex chemical substances. Composition of metal ignot can differ from planet to planet and from mine to mine - but their physical characteristics remain the same. Usually metal is slightly radioactive',
       'effect' => '',

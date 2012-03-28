@@ -319,7 +319,7 @@ if (!defined('INSIDE'))
     STRUC_MINE_FUSION => array(
       'name' => 'fusion_plant',
       'location' => LOC_PLANET,
-      'require' => array(3 => 5, TECH_ENERGY => 3, MRC_TECHNOLOGIST => 5),
+      'require' => array(3 => 5, TECH_ENERGY => 3, UNIT_PLAN_STRUC_MINE_FUSION => 1),
       'cost' => array(
         RES_METAL     => 900,
         RES_CRYSTAL   => 360,
@@ -690,7 +690,7 @@ if (!defined('INSIDE'))
     SHIP_CARGO_SUPER => array(
       'name' => 'supercargo',
       'location' => LOC_PLANET,
-      'require' => array(STRUC_FACTORY_HANGAR => 8, TECH_ENIGNE_ION => 5, MRC_STOCKMAN => 1),
+      'require' => array(STRUC_FACTORY_HANGAR => 8, TECH_ENIGNE_ION => 5, UNIT_PLAN_SHIP_CARGO_SUPER => 1),
       'cost' => array(
         RES_METAL     => 25000,
         RES_CRYSTAL   => 15000,
@@ -726,7 +726,7 @@ if (!defined('INSIDE'))
     SHIP_CARGO_HYPER => array(
       'name' => 'planet_cargo_hyper',
       'location' => LOC_PLANET,
-      'require' => array(STRUC_FACTORY_HANGAR => 10, TECH_ENGINE_HYPER => 5, MRC_STOCKMAN => 10),
+      'require' => array(STRUC_FACTORY_HANGAR => 10, TECH_ENGINE_HYPER => 5, UNIT_PLAN_SHIP_CARGO_HYPER => 10),
       'cost' => array(
         RES_METAL     => 500000,
         RES_CRYSTAL   => 200000,
@@ -1142,7 +1142,7 @@ if (!defined('INSIDE'))
     SHIP_DEATH_STAR => array(
       'name' => 'dearth_star',
       'location' => LOC_PLANET,
-      'require' => array(STRUC_FACTORY_HANGAR => 12, TECH_HYPERSPACE => 6, TECH_ENGINE_HYPER => 7, TECH_GRAVITON => 1, MRC_DESTRUCTOR => 1),
+      'require' => array(STRUC_FACTORY_HANGAR => 12, TECH_HYPERSPACE => 6, TECH_ENGINE_HYPER => 7, TECH_GRAVITON => 1, UNIT_PLAN_SHIP_DEATH_STAR => 1),
       'cost' => array(
         RES_METAL     => 5000000,
         RES_CRYSTAL   => 4000000,
@@ -1214,7 +1214,7 @@ if (!defined('INSIDE'))
     SHIP_SUPERNOVA => array(
       'name' => 'supernova',
       'location' => LOC_PLANET,
-      'require' => array(STRUC_FACTORY_HANGAR => 15, TECH_HYPERSPACE => 7, TECH_ENGINE_HYPER => 9, TECH_GRAVITON => 1, MRC_ASSASIN => 1),
+      'require' => array(STRUC_FACTORY_HANGAR => 15, TECH_HYPERSPACE => 7, TECH_ENGINE_HYPER => 9, TECH_GRAVITON => 1, UNIT_PLAN_SHIP_SUPERNOVA => 1),
       'cost' => array(
         RES_METAL     => 20000000,
         RES_CRYSTAL   => 15000000,
@@ -1449,7 +1449,7 @@ if (!defined('INSIDE'))
     409 => array(
       'name'      => 'planet_protector',
       'location' => LOC_PLANET,
-      'require'   => array(MRC_FORTIFIER => 3),
+      'require'   => array(UNIT_PLAN_DEF_SHIELD_PLANET => 1),
       'cost' => array(
         RES_METAL     => 10000000,
         RES_CRYSTAL   => 5000000,
@@ -1872,6 +1872,7 @@ if (!defined('INSIDE'))
 
     MRC_TECHNOLOGIST => array(
       'name' => 'rpg_geologue',
+      'type' => UNIT_GOVERNORS,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_DARK_MATTER => 800,
@@ -1883,6 +1884,7 @@ if (!defined('INSIDE'))
 
     MRC_ENGINEER => array(
       'name' => 'rpg_constructeur',
+      'type' => UNIT_GOVERNORS,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_DARK_MATTER => 400,
@@ -1895,6 +1897,7 @@ if (!defined('INSIDE'))
 
     MRC_FORTIFIER => array(
       'name' => 'rpg_defenseur',
+      'type' => UNIT_GOVERNORS,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_DARK_MATTER => 2000,
@@ -1909,6 +1912,7 @@ if (!defined('INSIDE'))
 
     MRC_STOCKMAN => array(
       'name' => 'rpg_stockeur',
+      'type' => MRC_MERCENARIES,
       'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 3000,
@@ -1921,6 +1925,7 @@ if (!defined('INSIDE'))
 
     MRC_SPY => array(
       'name' => 'rpg_espion',
+      'type' => MRC_MERCENARIES,
       'location' => LOC_USER,
       'require' => array(MRC_STOCKMAN => 5),
       'cost' => array(
@@ -1934,6 +1939,7 @@ if (!defined('INSIDE'))
 
     MRC_ACADEMIC => array(
       'name' => 'mrc_academic',
+      'type' => MRC_MERCENARIES,
       'location' => LOC_USER,
       'require' => array(MRC_STOCKMAN => 10, MRC_SPY => 5),
       'cost' => array(
@@ -1945,21 +1951,9 @@ if (!defined('INSIDE'))
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    MRC_DESTRUCTOR => array(
-      'name' => 'rpg_destructeur',
-      'location' => LOC_USER,
-      'require' => array(MRC_STOCKMAN => 20, MRC_ACADEMIC => 10, MRC_NAVIGATOR => 1),
-      'cost' => array(
-        RES_DARK_MATTER => 3000,
-        'factor' => 1,
-      ),
-      'max' => 1,
-      'bonus_type' => BONUS_ABILITY,
-    ),
-
-
     MRC_ADMIRAL => array(
       'name' => 'rpg_amiral',
+      'type' => MRC_MERCENARIES,
       'location' => LOC_USER,
       'cost' => array(
         RES_DARK_MATTER => 3000,
@@ -1972,6 +1966,7 @@ if (!defined('INSIDE'))
 
     MRC_COORDINATOR => array(
       'name' => 'rpg_commandant',
+      'type' => MRC_MERCENARIES,
       'location' => LOC_USER,
       'require' => array(MRC_ADMIRAL => 5),
       'cost' => array(
@@ -1985,6 +1980,7 @@ if (!defined('INSIDE'))
 
     MRC_NAVIGATOR => array(
       'name' => 'rpg_general',
+      'type' => MRC_MERCENARIES,
       'location' => LOC_USER,
       'require' => array(MRC_ADMIRAL => 10, MRC_COORDINATOR => 5),
       'cost' => array(
@@ -1996,20 +1992,11 @@ if (!defined('INSIDE'))
       'bonus_type' => BONUS_PERCENT,
     ),
 
-    MRC_ASSASIN => array(
-      'name' => 'rpg_raideur',
-      'location' => LOC_USER,
-      'require' => array(MRC_ADMIRAL => 20, MRC_NAVIGATOR => 10, MRC_ACADEMIC => 1),
-      'cost' => array(
-        RES_DARK_MATTER => 3000,
-        'factor' => 1,
-      ),
-      'max' => 1,
-      'bonus_type' => BONUS_ABILITY,
-    ),
+
 /*
     MRC_EMPEROR => array(
       'name' => 'rpg_empereur',
+      'type' => MRC_MERCENARIES,
       'location' => LOC_USER,
       'require' => array(MRC_ASSASIN => 1, MRC_DEFENDER => 1),
       'cost' => array(
@@ -2111,6 +2098,74 @@ if (!defined('INSIDE'))
         STRUC_FACTORY_NANO => 1,
       ),
     ),
+
+
+    UNIT_PLAN_STRUC_MINE_FUSION => array(
+      'location' => LOC_USER,
+      'type' => UNIT_PLANS,
+      'cost' => array(
+        RES_DARK_MATTER => 10000,
+        'factor' => 1,
+      ),
+      'max' => 1,
+      'bonus_type' => BONUS_ABILITY,
+    ),
+
+    UNIT_PLAN_SHIP_CARGO_SUPER => array(
+      'location' => LOC_USER,
+      'type' => UNIT_PLANS,
+      'cost' => array(
+        RES_DARK_MATTER => 10000,
+        'factor' => 1,
+      ),
+      'max' => 1,
+      'bonus_type' => BONUS_ABILITY,
+    ),
+
+    UNIT_PLAN_SHIP_CARGO_HYPER => array(
+      'location' => LOC_USER,
+      'type' => UNIT_PLANS,
+      'cost' => array(
+        RES_DARK_MATTER => 25000,
+        'factor' => 1,
+      ),
+      'max' => 1,
+      'bonus_type' => BONUS_ABILITY,
+    ),
+
+    UNIT_PLAN_SHIP_DEATH_STAR => array(
+      'location' => LOC_USER,
+      'type' => UNIT_PLANS,
+      'cost' => array(
+        RES_DARK_MATTER => 10000,
+        'factor' => 1,
+      ),
+      'max' => 1,
+      'bonus_type' => BONUS_ABILITY,
+    ),
+
+    UNIT_PLAN_SHIP_SUPERNOVA => array(
+      'location' => LOC_USER,
+      'type' => UNIT_PLANS,
+      'cost' => array(
+        RES_DARK_MATTER => 25000,
+        'factor' => 1,
+      ),
+      'max' => 1,
+      'bonus_type' => BONUS_ABILITY,
+    ),
+
+    UNIT_PLAN_DEF_SHIELD_PLANET => array(
+      'location' => LOC_USER,
+      'type' => UNIT_PLANS,
+      'cost' => array(
+        RES_DARK_MATTER => 25000,
+        'factor' => 1,
+      ),
+      'max' => 1,
+      'bonus_type' => BONUS_ABILITY,
+    ),
+
 
     'groups' => array(
       // Missions
@@ -2220,11 +2275,15 @@ mission = array(
       'mercenaries' => array (
         MRC_STOCKMAN, MRC_SPY, MRC_ACADEMIC,
         MRC_ADMIRAL, MRC_COORDINATOR, MRC_NAVIGATOR,
-        MRC_DESTRUCTOR, MRC_ASSASIN //, MRC_EMPEROR
       ),
       'governors' => array(
         MRC_TECHNOLOGIST, MRC_ENGINEER, MRC_FORTIFIER
       ),
+      'plans' => array(
+        UNIT_PLAN_STRUC_MINE_FUSION, UNIT_PLAN_SHIP_CARGO_SUPER, UNIT_PLAN_SHIP_CARGO_HYPER, UNIT_PLAN_SHIP_DEATH_STAR, UNIT_PLAN_SHIP_SUPERNOVA, UNIT_PLAN_DEF_SHIELD_PLANET,
+      ),
+
+
 
       // Spaceships list
       'fleet'     => array(

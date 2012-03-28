@@ -18,7 +18,12 @@ $sn_mrc_hire_discount = array(
 
 function mrc_officer_accessible(&$user, $mercenary_id)
 {
-  global $sn_data;
+  global $sn_data, $config;
+
+  if($config->empire_mercenary_temporary || $sn_data[$mercenary_id]['type'] == UNIT_PLANS)
+  {
+    return true;
+  }
 
   if(isset($sn_data[$mercenary_id]['require']))
   {
@@ -34,18 +39,19 @@ function mrc_officer_accessible(&$user, $mercenary_id)
   return true;
 }
 
-function mrc_mercenary_hire($user, $mercenary_id)
+function mrc_mercenary_hire($mode, $user, $mercenary_id)
 {
   global $time_now, $sn_data, $config, $lang, $sn_mrc_hire_discount;
 
   try
   {
-    if(!in_array($mercenary_id, $sn_data['groups']['mercenaries']))
+    $is_permanent = $mode == UNIT_PLANS || !$config->empire_mercenary_temporary;
+    if(!in_array($mercenary_id, $sn_data['groups'][$mode == UNIT_PLANS ? 'plans' : 'mercenaries']))
     {
       throw new Exception($lang['mrc_msg_error_wrong_mercenary'], ERR_ERROR);
     }
 
-    if(!$config->empire_mercenary_temporary && mrc_officer_accessible($user, $mercenary_id) != 1)
+    if(!mrc_officer_accessible($user, $mercenary_id))
     {
       throw new Exception($lang['mrc_msg_error_requirements'], ERR_ERROR);
     }
@@ -98,9 +104,9 @@ function mrc_mercenary_hire($user, $mercenary_id)
     {
       $time_start = $config->empire_mercenary_temporary ? $time_now : 0;
       $time_end = $config->empire_mercenary_temporary ? $time_now + $mercenary_period : 0;
-      doquery("INSERT INTO {{powerup}} SET powerup_user_id = {$user['id']}, powerup_unit_id = {$mercenary_id}, powerup_unit_level = {$mercenary_level}, powerup_time_start = {$time_start}, powerup_time_finish = {$time_end};");
+      doquery("INSERT INTO {{powerup}} SET powerup_user_id = {$user['id']}, powerup_unit_id = {$mercenary_id}, powerup_category = {$mode}, powerup_unit_level = {$mercenary_level}, powerup_time_start = {$time_start}, powerup_time_finish = {$time_end};");
 
-      rpg_points_change($user['id'], RPG_MERCENARY, -($darkmater_cost), "Spent for officer {$lang['tech'][$mercenary_id]} ID {$mercenary_id}");
+      rpg_points_change($user['id'], $mode == UNIT_PLANS ? RPG_PLANS : RPG_MERCENARY, -($darkmater_cost), "Spent for officer {$lang['tech'][$mercenary_id]} ID {$mercenary_id}");
     }
     doquery('COMMIT;');
     sys_redirect($_SERVER['REQUEST_URI']);
@@ -121,9 +127,13 @@ function mrc_mercenary_render($user)
 {
   global $time_now, $sn_data, $config, $lang, $sn_mrc_hire_discount;
 
+  $mode = sys_get_param_int('mode', MRC_MERCENARIES);
+  $mode = in_array($mode, array(MRC_MERCENARIES, UNIT_PLANS)) ? $mode : MRC_MERCENARIES;
+  $is_permanent = $mode == UNIT_PLANS || !$config->empire_mercenary_temporary;
+
   if($mercenary_id = sys_get_param_int('mercenary_id'))
   {
-    $operation_result = mrc_mercenary_hire($user, $mercenary_id);
+    $operation_result = mrc_mercenary_hire($mode, $user, $mercenary_id);
   }
 
   lng_include('infos');
@@ -145,10 +155,8 @@ function mrc_mercenary_render($user)
     ));
   }
 
-  $total_cost_old = 0;
-  foreach($sn_data['groups']['mercenaries'] as $mercenary_id)
+  foreach($sn_data['groups'][$mode == UNIT_PLANS ? 'plans' : 'mercenaries'] as $mercenary_id)
   {
-  //  if($Result = ($config->empire_mercenary_temporary || mrc_officer_accessible ( $user, $mercenary_id )))
     {
       $mercenary = $sn_data[$mercenary_id];
       $mercenary_bonus = $mercenary['bonus'];
@@ -159,19 +167,18 @@ function mrc_mercenary_render($user)
           $mercenary_bonus = "{$mercenary_bonus}% ";
         break;
 
-        case BONUS_ADD:
-        break;
-
         case BONUS_ABILITY:
           $mercenary_bonus = '';
         break;
 
+        case BONUS_ADD:
         default:
         break;
       }
 
       $mercenary_level = mrc_get_level($user, null, $mercenary_id, false, true);
-      if(!$config->empire_mercenary_temporary)
+      $total_cost_old = 0;
+      if($is_permanent)
       {
         $total_cost_old = eco_get_total_cost($mercenary_id, $mercenary_level);
         $total_cost_old = $total_cost_old[BUILD_CREATE][RES_DARK_MATTER];
@@ -208,10 +215,13 @@ function mrc_mercenary_render($user)
   }
 
   $template->assign_vars(array(
+    'PAGE_HEADER' => $lang['tech'][$mode],
+    'MODE' => $mode,
+    'IS_PERMANENT' => $is_permanent,
     'EMPIRE_MERCENARY_TEMPORARY' => $config->empire_mercenary_temporary,
   ));
 
-  display(parsetemplate($template), $lang['tech'][MRC_MERCENARIES]);
+  display(parsetemplate($template), $lang['tech'][$mode]);
 }
 
 ?>

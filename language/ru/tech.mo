@@ -153,6 +153,15 @@ $lang = array_merge($lang, array(
     ART_RCD_SMALL  => 'Малый АКК',
     ART_RCD_MEDIUM => 'Средний АКК',
     ART_RCD_LARGE  => 'Большой АКК',
+
+    UNIT_PLANS => 'Чертежи',
+    UNIT_PLAN_STRUC_MINE_FUSION => 'Чертеж "Термоядерная электростанция"',
+    UNIT_PLAN_SHIP_CARGO_SUPER => 'Чертеж "Супертранспорт"',
+    UNIT_PLAN_SHIP_CARGO_HYPER => 'Чертеж "Гипертранспорт"',
+    UNIT_PLAN_SHIP_DEATH_STAR => 'Чертеж "Звезда Смерти"',
+    UNIT_PLAN_SHIP_SUPERNOVA => 'Чертеж \'Крейсер "Сверхновая"\'',
+    UNIT_PLAN_DEF_SHIELD_PLANET => 'Чертеж "Планетарная защита"',
+
   ),
 
 ));

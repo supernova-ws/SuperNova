@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '33');
 define('SN_RELEASE', '34');
-define('SN_VERSION', '34a10.2');
+define('SN_VERSION', '34a11');
 
 define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
 
@@ -169,6 +169,7 @@ define('RPG_RENAME', 12);
 define('RPG_ALLY', 13);
 define('RPG_BIRTHDAY', 14);
 define('RPG_PURCHASE', 15);
+define('RPG_PLANS', 16);
 
 // Operation error status
 define('ERR_NONE'               , 0); // No error
@@ -370,14 +371,6 @@ define('SUBQUE_DEFENSE' , 6);
 define('SUBQUE_RESEARCH', 7);
 
 // *** Units
-// === Unit types
-define('UNIT_STRUCTURE', 0);
-define('UNIT_RESEARCH' , 1);
-define('UNIT_SHIP'     , 2);
-define('UNIT_DEFENSE'  , 4);
-define('UNIT_MISSILE'  , 5);
-define('UNIT_MERCENARY', 6);
-define('UNIT_RESOURCE' , 9);
 
 // *** Sort options
 define('SORT_ASCENDING' , 0);
@@ -460,30 +453,22 @@ define('SHIP_FIGHTER_ASSAULT', 217);
 define('SHIP_CARGO_HYPER', 218);
 // --- Defense
 define('DEF_DEFENCE', 400);
-define('misil_launcher', 401);
-define('small_laser', 402);
-define('big_laser', 403);
-define('gauss_canyon', 404);
-define('ionic_canyon', 405);
-define('buster_canyon', 406);
-define('small_protection_shield', 407);
-define('big_protection_shield', 408);
-define('planet_protector', 409);
+define('DEF_TURRET_MISSILE', 401);
+define('DEF_TURRET_LASER_SMALL', 402);
+define('DEF_TURRET_LASER_BIG', 403);
+define('DEF_TURRET_GAUSS', 404);
+define('DEF_TURRET_ION', 405);
+define('DEF_TURRET_PLASMA', 406);
+define('DEF_SHIELD_SMALL', 407);
+define('DEF_SHIELD_BIG', 408);
+define('DEF_SHIELD_PLANET', 409);
 // --- Missiles
-define('interceptor_misil', 502);
-define('interplanetary_misil', 503);
+define('DEF_MISSILE_INTERCEPTOR', 502);
+define('DEF_MISSILE_INTERPLANET', 503);
 
 // === Mercenaries
-// --- Mercenary type
-define('MRT_GOVERNOR', 1); // Governor resides on planet
-define('MRT_ADVISOR', 2);  // Advisor has imperium-wide effects
-
 // --- Mercenary list
 define('MRC_MERCENARIES', 600);
-define('MRC_TECHNOLOGIST', 601);
-define('MRC_ENGINEER', 605);
-define('MRC_FORTIFIER', 608);
-
 define('MRC_ACADEMIC', 606);
 define('MRC_ADMIRAL', 602);
 define('MRC_STOCKMAN', 607);
@@ -493,6 +478,12 @@ define('MRC_DESTRUCTOR', 612);
 define('MRC_NAVIGATOR', 613);
 define('MRC_ASSASIN', 614);
 define('MRC_EMPEROR', 615);
+
+// --- Governors list
+define('UNIT_GOVERNORS', 680);
+define('MRC_TECHNOLOGIST', 601);
+define('MRC_ENGINEER', 605);
+define('MRC_FORTIFIER', 608);
 
 // Bonus category
 define('BONUS_SERVER', 0);
@@ -516,6 +507,25 @@ define('ART_RCD_LARGE', 1004);   // Rapid Colony Deployment - Set of buildings u
 //define('ART_SUPERCOMPUTER', 1005); // Speed up research
 //define('ART_PLANET_GATE', 1006);   // Planet gate
 //define('ART_NANOBOTS_SMALL', 1007); // Speed up building
+
+// === Blueprints
+define('UNIT_PLANS', 1100);
+define('UNIT_PLAN_STRUC_MINE_FUSION', 1101);
+define('UNIT_PLAN_SHIP_CARGO_SUPER', 1102);
+define('UNIT_PLAN_SHIP_CARGO_HYPER', 1103);
+define('UNIT_PLAN_SHIP_DEATH_STAR', 1104);
+define('UNIT_PLAN_SHIP_SUPERNOVA', 1105);
+define('UNIT_PLAN_DEF_SHIELD_PLANET', 1106);
+
+// === Unit types // TODO - convert to GROUP_xxx constants
+define('UNIT_STRUCTURE', 0);
+define('UNIT_RESEARCH' , 1);
+define('UNIT_SHIP'     , 2);
+define('UNIT_DEFENSE'  , 4);
+define('UNIT_MISSILE'  , 5);
+define('UNIT_MERCENARY', 6);
+define('UNIT_RESOURCE' , 9);
+
 
 define('SNC_VER_NEVER', -1);
 define('SNC_VER_ERROR_CONNECT', 0);

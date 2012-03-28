@@ -145,6 +145,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
   foreach($sn_data_group as $unit_id)
   {
     $build_data = eco_get_build_data($user, $planet, $unit_id);
+
     if($build_data['RESULT'][BUILD_CREATE] == BUILD_REQUIRE_NOT_MEET)
     {
       continue;

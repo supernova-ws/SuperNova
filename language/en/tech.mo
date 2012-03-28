@@ -154,6 +154,15 @@ $lang = array_merge($lang, array(
     ART_RCD_SMALL => 'Small RCD',
     ART_RCD_MEDIUM => 'Medium RCD',
     ART_RCD_LARGE => 'Large RCD',
+
+    UNIT_PLANS => 'Schematics',
+    UNIT_PLAN_STRUC_MINE_FUSION => 'Schematic "Thermonuclear plant"',
+    UNIT_PLAN_SHIP_CARGO_SUPER => 'Schematic "Supertransport"',
+    UNIT_PLAN_SHIP_CARGO_HYPER => 'Schematic "Hyperstransport"',
+    UNIT_PLAN_SHIP_DEATH_STAR => 'Schematic "Death Star"',
+    UNIT_PLAN_SHIP_SUPERNOVA => 'Schematic \'"Supernova" cruiser\'',
+    UNIT_PLAN_DEF_SHIELD_PLANET => 'Schematic "Planet defense"',
+
   ),
 
 ));

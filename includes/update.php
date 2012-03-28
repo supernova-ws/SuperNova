@@ -1669,6 +1669,15 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_check_key('payment_lot_size', 1000, !isset($config->payment_lot_size));
     upd_check_key('payment_lot_price', 1, !isset($config->payment_lot_price));
 
+    // Convert Destructor to Death Star plan
+    upd_do_query("UPDATE {{powerup}} 
+      SET powerup_time_start = 0, powerup_time_finish = 0, powerup_category = " . UNIT_PLANS . ", powerup_unit_id = " . UNIT_PLAN_SHIP_DEATH_STAR . " 
+      WHERE (powerup_time_start = 0 OR powerup_time_finish <= UNIX_TIMESTAMP()) AND powerup_unit_id = 612;");
+    // Convert Assasin to SuperNova plan
+    upd_do_query("UPDATE {{powerup}} 
+      SET powerup_time_start = 0, powerup_time_finish = 0, powerup_category = " . UNIT_PLANS . ", powerup_unit_id = " . UNIT_PLAN_SHIP_SUPERNOVA . " 
+      WHERE (powerup_time_start = 0 OR powerup_time_finish <= UNIX_TIMESTAMP()) AND powerup_unit_id = 614;");
+
     // $new_version = 33;
 };
 upd_log_message('Upgrade complete.');

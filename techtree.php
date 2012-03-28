@@ -29,14 +29,21 @@ foreach($lang['tech'] as $Element => $ElementName)
       foreach($sn_data[$Element]['require'] as $ResClass => $Level)
       {
         $actual_level = 0;
-        if(in_array($ResClass, $sn_data['groups']['mercenaries']))
+        if(
+          in_array($ResClass, $sn_data['groups']['mercenaries'])
+          || in_array($ResClass, $sn_data['groups']['plans'])
+          || in_array($ResClass, $sn_data['groups']['tech'])
+          || in_array($ResClass, $sn_data['groups']['governors'])
+        )
         {
           $actual_level = mrc_get_level($user, $planetrow, $ResClass);
         }
-        elseif(in_array($ResClass, $sn_data['groups']['tech']))
+/*
+        elseif($planetrow['PLANET_GOVERNOR_ID'] == $ResClass)
         {
-          $actual_level = mrc_get_level($user, $planetrow, $ResClass);
+          $actual_level = $planetrow['PLANET_GOVERNOR_LEVEL'];
         }
+*/
         elseif(isset($user[$sn_data[$ResClass]['name']]))
         {
           $actual_level = $user[$sn_data[$ResClass]['name']];
@@ -44,10 +51,6 @@ foreach($lang['tech'] as $Element => $ElementName)
         elseif(isset($planetrow[$sn_data[$ResClass]['name']]))
         {
           $actual_level = $planetrow[$sn_data[$ResClass]['name']];
-        }
-        elseif(in_array($ResClass, $sn_data['groups']['governors']) && $planetrow['PLANET_GOVERNOR_ID'] == $ResClass)
-        {
-          $actual_level = $planetrow['PLANET_GOVERNOR_LEVEL'];
         }
         $parse['required_list'] .= "<font color=\"" . ($actual_level >= $Level ? '#00ff00' : '#ff0000') . "\">{$lang['tech'][$ResClass]} ( {$lang['level']} {$actual_level} / {$Level} )</font><br>";
       }

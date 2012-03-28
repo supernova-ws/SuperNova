@@ -328,7 +328,8 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
 
   $mercenary_level = 0;
   $unit_db_name = $sn_data[$unit_id]['name'];
-  if(in_array($unit_id, $sn_data['groups']['mercenaries']))
+//  if(in_array($unit_id, $sn_data['groups']['mercenaries']))
+  if($unit_id == RES_DARK_MATTER || in_array($unit_id, $sn_data['groups']['mercenaries']) || in_array($unit_id, $sn_data['groups']['tech']) || in_array($unit_id, $sn_data['groups']['plans']))
   {
     if(!$user['id'])
     {
@@ -336,7 +337,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
     }
     elseif($for_update || !isset($user[$unit_id]))
     {
-      $time_restriction = $config->empire_mercenary_temporary ? " AND powerup_time_start <= {$time_now} AND powerup_time_finish >= {$time_now} " : '';
+      $time_restriction = $config->empire_mercenary_temporary && $sn_data[$unit_id]['type'] == MRC_MERCENARIES ? " AND powerup_time_start <= {$time_now} AND powerup_time_finish >= {$time_now} " : '';
       $mercenary_level = doquery("SELECT * FROM {{powerup}} WHERE powerup_user_id = {$user['id']} AND powerup_unit_id = {$unit_id} {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
       $user[$unit_id] = $mercenary_level;
     }
@@ -345,10 +346,6 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   elseif(in_array($unit_id, $sn_data['groups']['governors']))
   {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
-  }
-  elseif(in_array($unit_id, $sn_data['groups']['tech']) || $unit_id == RES_DARK_MATTER)
-  {
-    $mercenary_level = $user[$unit_db_name];
   }
   elseif(in_array($unit_id, array_merge($sn_data['groups']['resources_loot'], $sn_data['groups']['structures'], $sn_data['groups']['fleet'], $sn_data['groups']['defense'])))
   {
