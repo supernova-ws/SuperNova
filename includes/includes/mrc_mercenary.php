@@ -155,6 +155,7 @@ function mrc_mercenary_render($user)
     ));
   }
 
+  $user_dark_matter = mrc_get_level($user, '', RES_DARK_MATTER);
   $cost_alliance_multiplyer = (SN_IN_ALLY === true && $mode == UNIT_PLANS ? $config->ali_bonus_members : 1);
   foreach($sn_data['groups'][$mode == UNIT_PLANS ? 'plans' : 'mercenaries'] as $mercenary_id)
   {
@@ -193,7 +194,7 @@ function mrc_mercenary_render($user)
         'DESCRIPTION' => $lang['info'][$mercenary_id]['description'],
         'EFFECT'      => $lang['info'][$mercenary_id]['effect'],
         'COST'        => $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old,
-        'COST_TEXT'   => pretty_number($total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old),
+        'COST_TEXT'   => pretty_number($total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old, 0, $user_dark_matter),
         'LEVEL'       => $mercenary_level,
         'LEVEL_MAX'   => $mercenary['max'],
         'BONUS'       => $mercenary_bonus,
@@ -205,10 +206,12 @@ function mrc_mercenary_render($user)
       for($i = $config->empire_mercenary_temporary ? 1 : $mercenary_level + 1; $i <= $mercenary['max']; $i++)
       {
         $total_cost = eco_get_total_cost($mercenary_id, $i);
+        /*
         if(!$config->empire_mercenary_temporary && $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old > $user[$sn_data[RES_DARK_MATTER]['name']])
         {
           break;
         }
+        */
         $template->assign_block_vars('officer.level', array(
           'VALUE' => $i,
           'PRICE' => $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old,
@@ -220,8 +223,9 @@ function mrc_mercenary_render($user)
   $template->assign_vars(array(
     'PAGE_HEADER' => $lang['tech'][$mode],
     'MODE' => $mode,
-    'IS_PERMANENT' => $is_permanent,
+    'IS_PERMANENT' => intval($is_permanent),
     'EMPIRE_MERCENARY_TEMPORARY' => $config->empire_mercenary_temporary,
+    'DARK_MATTER' => $user_dark_matter,
   ));
 
   display(parsetemplate($template), $lang['tech'][$mode]);

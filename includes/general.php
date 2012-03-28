@@ -55,7 +55,7 @@ function get_game_speed()
 
 function pretty_number($n, $floor = true, $color = false, $limit = false)
 {
-  if (is_int($floor))
+  if(is_int($floor))
   {
     $n = round($n, $floor); // , PHP_ROUND_HALF_DOWN
   }

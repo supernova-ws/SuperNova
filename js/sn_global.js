@@ -74,14 +74,15 @@ function sn_format_number(number, precission, style, max)
     {
       ret_val = '<span class="neutral">' + ret_val + '</span>';
     }
-    else if((max > 0 && -number < -max) || (!max && number < 0) || (max < 0 && number < -max))
-    {
-      ret_val = '<span class="negative">' + ret_val + '</span>';
-    }
     else
-    {
-      ret_val = '<span class="' + style + '">' + ret_val + '</span>';
-    }
+      if((max > 0 && -number < -max) || (!max && number < 0) || (max < 0 && number < -max))
+      {
+        ret_val = '<span class="negative">' + ret_val + '</span>';
+      }
+      else
+      {
+        ret_val = '<span class="' + style + '">' + ret_val + '</span>';
+      }
   }
 
   return ret_val;

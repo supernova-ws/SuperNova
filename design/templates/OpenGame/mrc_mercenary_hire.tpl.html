@@ -25,20 +25,25 @@
 <script language="javascript">
   var mrc_cost_array = Array();
   var mrc_discount_array = Array();
+  var dark_matter_amount = {DARK_MATTER};
+  var is_premanent = {IS_PERMANENT};
   <!-- BEGIN period -->
   mrc_discount_array[{period.LENGTH}] = {period.DISCOUNT};
   <!-- END period -->
 </script>
 
-
 <script type="text/javascript">
 function mrc_change(mercenary_id)
 {
+  var final_cost_element = document.getElementById('final_cost_' + mercenary_id);
+
   var period_element = document.getElementById('period_' + mercenary_id);
 //  var period = mrc_discount_array[period_element.value]; // mrc_discount_array[discount_element.options[discount_element.selectedIndex].value];
-  var mrc_price = mrc_cost_array[mercenary_id][document.getElementById('level_' + mercenary_id).value] * mrc_discount_array[period_element.value];
+  var mrc_price = Math.ceil(mrc_cost_array[mercenary_id][document.getElementById('level_' + mercenary_id).value] * mrc_discount_array[period_element.value]);
 
-  document.getElementById('final_cost_' + mercenary_id).innerHTML = sn_format_number(Math.ceil(mrc_price));
+  final_cost_element.innerHTML = sn_format_number(mrc_price);
+  final_cost_element.className = mrc_price <= dark_matter_amount ? 'positive' : 'negative';
+  document.getElementById('make_purchase_' + mercenary_id).style.visibility = mrc_price <= dark_matter_amount ? 'visible' : 'hidden';
 }
 </script>
 
@@ -57,64 +62,57 @@ function mrc_change(mercenary_id)
         {officer.DESCRIPTION}<br><br>
         <div align="center">
           <div class="positive" align="center">{officer.BONUS} {officer.EFFECT}</div><br />
-          <!-- IF officer.LEVEL && ! IS_PERMANENT -->
-            <div>{L_sys_level} {officer.LEVEL}/{officer.LEVEL_MAX}<!-- IF officer.HIRE_END -->
-              {L_mrc_up_to} {officer.HIRE_END}
-              <form method=post>
-                <input type="hidden" name="mercenary_id" value="{officer.ID}">
-                <input type="submit" value="{L_mrc_dismiss}" onclick="return confirm('{LA_mrc_dismiss_confirm}');">
-              </form>
-            <!-- ENDIF --></div>
-          <!-- ENDIF -->
 
-          <!-- IF officer.LEVEL >= officer.LEVEL_MAX && IS_PERMANENT -->
-            <div class="neutral">{L_sys_maximum_level} {officer.LEVEL}/{officer.LEVEL_MAX}</div>
-          <!-- ELSE -->
+          <form method="post">
+            <input type="hidden" name="mercenary_id" value="{officer.ID}">
 
-
-            <!-- IF ! officer.CAN_BUY -->
-              <a href="techtree.php"><span class="error">{L_mrc_msg_error_requirements}</span></a>
-            <!-- ELSEIF IS_PERMANENT || ! officer.LEVEL -->
-              <!-- IF .officer.level -->
-                <form method="post">
-                  <input type="hidden" value="{officer.ID}" name="mercenary_id">
-
-                  {L_sys_level}
-                  <!-- IF .officer.level == 1 -->
-                    <!-- BEGIN level -->
-                      {level.VALUE}
-                      <input type="hidden" name="mercenary_level" id="level_{officer.ID}" value="{level.VALUE}" />
-                      <script language="javascript">
-                        mrc_cost_array[{officer.ID}][{level.VALUE}] = {level.PRICE};
-                      </script>
-                    <!-- END level -->
-                  <!-- ELSE -->
-                    <select name="mercenary_level" id="level_{officer.ID}" onchange="javascript:mrc_change({officer.ID});">
-                      <!-- BEGIN level -->
-                      <option value="{level.VALUE}"<!-- IF officer.LEVEL == level.VALUE --> selected<!-- ENDIF -->>{level.VALUE}</option><script language="javascript">mrc_cost_array[{officer.ID}][{level.VALUE}] = {level.PRICE};</script>
-                      <!-- END level -->
-                    </select>
-                  <!-- ENDIF -->
-
-                  <!-- IF ! IS_PERMANENT -->
-                    <select name="mercenary_period" id="period_{officer.ID}" onchange="javascript:mrc_change({officer.ID});">
-                      <!-- BEGIN !period -->
-                      <option value="{period.LENGTH}"<!-- IF period.SELECTED --> selected<!-- ENDIF -->>{period.TEXT}</option>
-                      <!-- END period -->
-                    </select>
-                  <!-- ELSE -->
-                    <input type="hidden" name="mercenary_period" id="period_{officer.ID}" value="{C_empire_mercenary_base_period}">
-                  <!-- ENDIF -->
-                  {L_sys_buy_for} <span id="final_cost_{officer.ID}">{officer.COST_TEXT}</span> {L_sys_dark_matter_sh}
-                  <input type="submit" value="<!-- IF MODE == 600 -->{L_mrc_hire}<!-- ELSE -->{L_sys_buy}<!-- ENDIF -->">
-                </form>
+            <!-- IF officer.LEVEL -->
+              <!-- IF officer.LEVEL >= officer.LEVEL_MAX -->
+              <div class="neutral">{L_sys_maximum_level}
               <!-- ELSE -->
-                <span class="error">{L_mrc_msg_error_no_resource}</span>
+              <div>{L_sys_level}
               <!-- ENDIF -->
+                {officer.LEVEL}/{officer.LEVEL_MAX}
+              <!-- IF officer.HIRE_END -->
+                {L_mrc_up_to} {officer.HIRE_END}
+                <input type="submit" value="{L_mrc_dismiss}" onclick="return confirm('{LA_mrc_dismiss_confirm}');"><br />
+                <span class="warning">{L_mrc_dismiss_before_hire}</span>
+              <!-- ENDIF -->
+              </div>
             <!-- ENDIF -->
 
+            <!-- IF (! officer.LEVEL && ! IS_PERMANENT) || (officer.LEVEL < officer.LEVEL_MAX && IS_PERMANENT) -->
+              <!-- IF .officer.level -->
+                {L_sys_level}
+                <select name="mercenary_level" id="level_{officer.ID}" onchange="javascript:mrc_change({officer.ID});">
+                  <!-- BEGIN level -->
+                  <option value="{level.VALUE}"<!-- IF officer.LEVEL == level.VALUE --> selected<!-- ENDIF -->>{level.VALUE}</option>
+                  <script language="javascript">
+                    mrc_cost_array[{officer.ID}][{level.VALUE}] = {level.PRICE};
+                  </script>
+                  <!-- END level -->
+                </select>
 
-          <!-- ENDIF -->
+                <!-- IF ! IS_PERMANENT -->
+                  <select name="mercenary_period" id="period_{officer.ID}" onchange="javascript:mrc_change({officer.ID});">
+                    <!-- BEGIN !period -->
+                    <option value="{period.LENGTH}"<!-- IF period.SELECTED --> selected<!-- ENDIF -->>{period.TEXT}</option>
+                    <!-- END period -->
+                  </select>
+                <!-- ELSE -->
+                  <input type="hidden" name="mercenary_period" id="period_{officer.ID}" value="{C_empire_mercenary_base_period}">
+                <!-- ENDIF -->
+                {L_sys_buy_for} <span id="final_cost_{officer.ID}" class="<!-- IF officer.COST_TEXT <= DARK_MATTER -->positive<!-- ELSE -->negative<!-- ENDIF -->">{officer.COST_TEXT}</span> {L_sys_dark_matter_sh}
+                <input type="submit" id="make_purchase_{officer.ID}" value="<!-- IF MODE == 600 -->{L_mrc_hire}<!-- ELSE -->{L_sys_buy}<!-- ENDIF -->">
+                <script language="javascript">
+                  mrc_change({officer.ID});
+                </script>
+              <!-- ENDIF -->
+
+              <!-- IF ! .officer.level --><span class="error">{L_mrc_msg_error_no_resource}</span><br /><!-- ENDIF -->
+              <!-- IF ! officer.CAN_BUY --><a href="techtree.php"><span class="error">{L_mrc_msg_error_requirements}</span></a><br /><!-- ENDIF -->
+            <!-- ENDIF -->
+          </form>
 
         </div>
       </th>

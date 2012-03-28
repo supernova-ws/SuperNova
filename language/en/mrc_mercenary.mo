@@ -63,6 +63,7 @@ $lang = array_merge($lang, array(
 
   'mrc_dismiss' => 'Dismiss',
   'mrc_dismiss_confirm' => 'When you dismissing mercenary you loose all DM that you spent for hiring this merc before! Are you sure that you want do dismiss mercenary?',
+  'mrc_dismiss_before_hire' => 'To change level of recruited Mercenary you should before fire current one. You will lose all DM spent for current Mercenary.',
 
 ));
 
