@@ -726,7 +726,7 @@ if (!defined('INSIDE'))
     SHIP_CARGO_HYPER => array(
       'name' => 'planet_cargo_hyper',
       'location' => LOC_PLANET,
-      'require' => array(STRUC_FACTORY_HANGAR => 10, TECH_ENGINE_HYPER => 5, UNIT_PLAN_SHIP_CARGO_HYPER => 10),
+      'require' => array(STRUC_FACTORY_HANGAR => 10, TECH_ENGINE_HYPER => 5, UNIT_PLAN_SHIP_CARGO_HYPER => 1),
       'cost' => array(
         RES_METAL     => 500000,
         RES_CRYSTAL   => 200000,

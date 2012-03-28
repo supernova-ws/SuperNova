@@ -52,6 +52,7 @@ foreach($lang['tech'] as $Element => $ElementName)
         {
           $actual_level = $planetrow[$sn_data[$ResClass]['name']];
         }
+        $actual_level = intval($actual_level);
         $parse['required_list'] .= "<font color=\"" . ($actual_level >= $Level ? '#00ff00' : '#ff0000') . "\">{$lang['tech'][$ResClass]} ( {$lang['level']} {$actual_level} / {$Level} )</font><br>";
       }
     }
