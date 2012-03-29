@@ -16,7 +16,7 @@ if(!defined('INSIDE'))
 
 define('DB_VERSION', '33');
 define('SN_RELEASE', '34');
-define('SN_VERSION', '34a11.8');
+define('SN_VERSION', '34a11.9');
 
 define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
 
