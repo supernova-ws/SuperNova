@@ -161,7 +161,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
     {
       if(!$build_data['CAN'][BUILD_CREATE])
       {
-        $unit_message = 'no resources';//$lang['b_no_silo_space'];
+        $unit_message = $lans['sys_build_result'][BUILD_NO_RESOURCES];//$lang['b_no_silo_space'];
       }
       elseif($unit_is_missile && $silo_capacity_free < $sn_data[$unit_id]['size'])
       {
