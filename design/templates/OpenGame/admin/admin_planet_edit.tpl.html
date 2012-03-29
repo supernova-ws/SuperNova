@@ -6,7 +6,7 @@
     <tr>
       <th colspan="4" class="c_c">
         <div>
-          <div class="fl">{L_adm_planet_id}&nbsp;<input name="planet_id" value="{PLANET_ID}"></div>
+          <div class="fl">{L_adm_planet_id}&nbsp;<!-- IF PLANET_ID --><input type="hidden" name="planet_id" value="{PLANET_ID}">{PLANET_ID} <a href="admin/planet_edit.php">{L_sys_reset}</a><!-- ELSE --><input name="planet_id" value="{PLANET_ID}"><!-- ENDIF --></div>
           <div class="fr"><input type="submit" name="change_data" value="{L_sys_confirm}"></div>
         </div>
       </th>
