@@ -185,6 +185,8 @@ function db_change_units(&$user, &$planet, $unit_list = array())
     LOC_PLANET => array(),
   );
 
+  $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planet['id']} LIMIT 1 FOR UPDATE;");
+
   foreach($unit_list as $unit_id => $unit_amount)
   {
     if(!$unit_amount)
