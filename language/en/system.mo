@@ -611,6 +611,7 @@ $lang = array_merge($lang, array(
   'sys_qty' => 'Qty',
 
   'sys_buy_for' => 'Buy for',
+  'sys_buy' => 'Buy',
 
   'sys_eco_lack_dark_matter' => 'Not enough Dark Matter',
 
