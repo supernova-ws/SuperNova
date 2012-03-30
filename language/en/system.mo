@@ -45,6 +45,7 @@ $lang = array_merge($lang, array(
     <ul>
       <li>Use Black Market: exchanging resources, selling ship and buying them for resources etc</li>
       <li>Hire Mercenaries and Governors</li>
+      <li>Buy Schematics</li>
       <li>Buy Artifacts</li>
       <li>...and many other things</li>
     </ul>',
