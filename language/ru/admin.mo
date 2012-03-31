@@ -28,6 +28,41 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
+  'adm_tool_md5_header' => 'Шифрование пароля (MD5)',
+  'adm_tool_md5_password' => 'Пароль',
+  'adm_tool_md5_hash' => 'Хэш MD5',
+  'adm_tool_md5_encode' => '[ Зашифровать ]',
+
+  'adm_tool_mysql_page_header' => 'Параметры сервера MySQL',
+
+  'adm_tool_mysql_server_version' => 'Версия сервера',
+  'adm_tool_mysql_client_version' => 'Версия библиотеки',
+  'adm_tool_mysql_host_info' => 'Метод соединения',
+
+  'adm_tool_mysql_table' => array(
+    'server' => array(
+      'TABLE_HEADER'  => 'Сервер MySQL',
+      'COLUMN_NAME_1' => 'Параметр',
+      'COLUMN_NAME_2' => 'Значение',
+      'TABLE_FOOTER'  => '',
+      'TABLE_EMPTY'   => '',
+    ),
+
+    'status' => array(
+      'TABLE_HEADER'  => 'Статус сервера MySQL',
+      'COLUMN_NAME_1' => 'Параметр',
+      'COLUMN_NAME_2' => 'Значение',
+      'TABLE_FOOTER'  => '',
+    ),
+
+    'params' => array(
+      'TABLE_HEADER'  => 'Настройки сервера MySQL',
+      'COLUMN_NAME_1' => 'Параметр',
+      'COLUMN_NAME_2' => 'Значение',
+      'TABLE_FOOTER'  => '',
+    ),
+  ),
+
   'adm_pl_image' => 'Изображение планеты',
   'adm_pl_fields_max' => 'Максимум секторов',
   'adm_pl_fields_busy' => 'Занято секторов',
@@ -335,12 +370,6 @@ $lang = array_merge($lang, array(
   'flt_staying' => 'Stat.',
   'flt_action' => 'Действие',
   'flt_title' => 'Флоты в полёте',
-  'adm_md5' => 'MD5-хэш',
-  'md5_title' => 'Утилита шифрования',
-  'md5_pswcyp' => 'Шифрование пароля',
-  'md5_psw' => 'Пароль',
-  'md5_pswenc' => 'Зашифрованный пароль',
-  'md5_doit' => '[ зашифровать ]',
   'mlst_title' => 'Список сообщений',
   'mlst_mess_del' => 'Удаление сообщений',
   'mlst_hdr_page' => 'Стр.',

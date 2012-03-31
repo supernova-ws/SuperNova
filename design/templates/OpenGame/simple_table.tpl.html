@@ -1,0 +1,26 @@
+<h2>{PAGE_HEADER}</h2>
+<!-- BEGIN table -->
+<!-- IF table.TABLE_HEADER --><h3>{table.TABLE_HEADER}</h3><!-- ENDIF -->
+<table>
+  <!-- IF .table.row -->
+    <!-- IF table.COLUMN_NAME_1 && table.COLUMN_NAME_2 -->
+    <tr align="center">
+      <th class="c_l">{table.COLUMN_NAME_1}</th>
+      <th class="c_l">{table.COLUMN_NAME_2}</th>
+    </tr>
+    <!-- ENDIF -->
+
+    <!-- BEGIN row -->
+      <tr align=center>
+        <td class=cell_left><b>{row.VALUE_1}</b></td>
+        <td class=cell_left><b>{row.VALUE_2}</b></td>
+      </tr>
+    <!-- END row -->
+    <!-- IF table.TABLE_FOOTER && .row -->
+    <tr><th class="c_c" colspan="2">{table.TABLE_FOOTER}: {row.S_ROW_COUNT}</th></tr>
+    <!-- ENDIF -->
+  <!-- ELSEIF table.TABLE_EMPTY -->
+    <tr><th class="c_c" colspan="2">{table.TABLE_EMPTY}</th></tr>
+  <!-- ENDIF -->
+</table>
+<!-- END table -->

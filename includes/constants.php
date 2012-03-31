@@ -17,7 +17,7 @@ if(!defined('INSIDE'))
 define('DB_VERSION', '33');
 define('SN_RELEASE', '34');
 
-define('SN_VERSION', '34a11.13');
+define('SN_VERSION', '34a12');
 
 define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
 
@@ -562,5 +562,13 @@ define('ALI_BONUS_BY_PLAYERS', 0);
 define('ALI_BONUS_BY_SIZE', 1);
 define('ALI_BONUS_BY_POINTS', 2);
 define('ALI_BONUS_BY_RANK', 3);
+
+// Admin tools constants
+define('ADM_TOOL_CONFIG_RELOAD', 1);
+define('ADM_TOOL_MD5', 2);
+define('ADM_TOOL_FORCE_ALL', 3);
+define('ADM_TOOL_FORCE_LAST', 4);
+define('ADM_TOOL_INFO_PHP', 5);
+define('ADM_TOOL_INFO_MYSQL', 6);
 
 ?>

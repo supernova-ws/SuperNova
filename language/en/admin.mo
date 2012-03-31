@@ -30,6 +30,41 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
+  'adm_tool_md5_header' => 'Password encoding (MD5)',
+  'adm_tool_md5_password' => 'Password',
+  'adm_tool_md5_hash' => 'MD5 hash',
+  'adm_tool_md5_encode' => '[ Encode ]',
+
+  'adm_tool_mysql_page_header' => 'MySQL server parameters',
+
+  'adm_tool_mysql_server_version' => 'Server version',
+  'adm_tool_mysql_client_version' => 'Libriary version',
+  'adm_tool_mysql_host_info' => 'OS communication method',
+
+  'adm_tool_mysql_table' => array(
+    'server' => array(
+      'TABLE_HEADER'  => 'MySQL server',
+      'COLUMN_NAME_1' => 'Parameter',
+      'COLUMN_NAME_2' => 'Value',
+      'TABLE_FOOTER'  => '',
+      'TABLE_EMPTY'   => '',
+    ),
+
+    'status' => array(
+      'TABLE_HEADER'  => 'MySQL status',
+      'COLUMN_NAME_1' => 'Parameter',
+      'COLUMN_NAME_2' => 'Value',
+      'TABLE_FOOTER'  => '',
+    ),
+
+    'params' => array(
+      'TABLE_HEADER'  => 'MySQL settings',
+      'COLUMN_NAME_1' => 'Parameter',
+      'COLUMN_NAME_2' => 'Value',
+      'TABLE_FOOTER'  => '',
+    ),
+  ),
+
   'adm_pl_image' => 'Planet image',
   'adm_pl_fields_max' => 'Max sectors',
   'adm_pl_fields_busy' => 'Sectors occupied',
@@ -326,12 +361,6 @@ $lang = array_merge($lang, array(
   'flt_staying' => 'Stat.',
   'flt_action' => 'Action',
   'flt_title' => 'Fleets in flight',
-  'adm_md5' => 'MD5-hash',
-  'md5_title' => 'Encryption utility',
-  'md5_pswcyp' => 'Password encryption',
-  'md5_psw' => 'Password',
-  'md5_pswenc' => 'Encrypted password',
-  'md5_doit' => '[ encrypt ]',
   'mlst_title' => 'Message list',
   'mlst_mess_del' => 'Delete messages',
   'mlst_hdr_page' => 'Page.',
