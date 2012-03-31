@@ -10,7 +10,7 @@ function eco_bld_tech_research($user, $planet)
 
     $tech_id    = sys_get_param_int('tech');
     $user = doquery("SELECT * FROM {{users}} WHERE `id` ={$user['id']} LIMIT 1 FOR UPDATE;", true);
-    $planet = doquery("SELECT * FROM {{planets}} WHERE `id` ={$planet['id']} LIMIT 1 FOR UPDATE;", true);
+    $planet = $planet['id'] ? doquery("SELECT * FROM {{planets}} WHERE `id` ={$planet['id']} LIMIT 1 FOR UPDATE;", true) : $planet;
     //$build_data = eco_get_build_data($user, $planet, $tech_id, mrc_get_level($user, $planet, $tech_id, false, true));
     $build_data = eco_get_build_data($user, $planet, $tech_id, $user[$sn_data[$tech_id]['name']]);
 
@@ -64,7 +64,7 @@ function eco_bld_tech_que_clear($user_id, $planet)
 
   doquery('START TRANSACTION;');
   $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE;", true);
-  $planet = doquery("SELECT * FROM {{planets}} WHERE `id` ={$planet['id']} LIMIT 1 FOR UPDATE;", true);
+  $planet = $planet['id'] ? doquery("SELECT * FROM {{planets}} WHERE `id` ={$planet['id']} LIMIT 1 FOR UPDATE;", true) : $planet;
   $que_item = $user['que'] ? explode(',', $user['que']) : array();
 
   if(!empty($que_item))
