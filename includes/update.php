@@ -1681,6 +1681,11 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       SET powerup_time_start = 0, powerup_time_finish = 0, powerup_category = " . UNIT_PLANS . ", powerup_unit_id = " . UNIT_PLAN_SHIP_SUPERNOVA . " 
       WHERE (powerup_time_start = 0 OR powerup_time_finish >= UNIX_TIMESTAMP()) AND powerup_unit_id = 614;");
 
+    upd_alter_table('iraks', array(
+      "ADD `fleet_start_type` SMALLINT NOT NULL DEFAULT 1",
+      "ADD `fleet_end_type` SMALLINT NOT NULL DEFAULT 1",
+    ), !$update_tables['iraks']['fleet_start_type']);
+
     // $new_version = 33;
 };
 upd_log_message('Upgrade complete.');

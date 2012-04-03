@@ -125,8 +125,8 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
     'STAY_LEFT'          => floor($fleet['fleet_end_stay'] + 1 - $time_now),
 
     'OV_LABEL'           => $fleet['ov_label'],
-    'OV_TIME_TEXT'       => date(FMT_DATE_TIME, $fleet['ov_time']),
-    'OV_LEFT'            => floor($fleet['ov_time'] + 1 - $time_now),
+    'EVENT_TIME_TEXT'    => date(FMT_DATE_TIME, $fleet['event_time']),
+    'OV_LEFT'            => floor($fleet['event_time'] + 1 - $time_now),
     'OV_THIS_PLANET'     => $fleet['ov_this_planet'],
   );
 
@@ -235,27 +235,6 @@ function tpl_parse_planet($planet, $que)
   return $result;
 }
 
-function flt_get_fleets_to_planet_db($planet, $phalanx = false)
-{
-  $fleet_db_list = array();
-
-  if(!empty($planet))
-  {
-    $sql_fleets = doquery(
-      "SELECT * FROM {{fleets}} WHERE
-        (fleet_start_galaxy = {$planet['galaxy']} AND fleet_start_system = {$planet['system']} AND fleet_start_planet = {$planet['planet']} AND fleet_start_type = {$planet['planet_type']}" . ($phalanx ? '' : ' AND fleet_mess = 1') . ")
-        OR
-        (fleet_end_galaxy = {$planet['galaxy']} AND fleet_end_system = {$planet['system']} AND fleet_end_planet = {$planet['planet']} AND fleet_end_type = {$planet['planet_type']}" . ($phalanx ? '' : ' AND fleet_mess = 0') . ");"
-    );
-    while ($fleet = mysql_fetch_assoc($sql_fleets))
-    {
-      $fleet_db_list[] = $fleet;
-    }
-  }
-
-  return $fleet_db_list;
-}
-
 function flt_get_fleets_to_planet($planet, $fleet_db_list = 0)
 {
   if(!($planet && $planet['id']) && !$fleet_db_list)
@@ -268,13 +247,17 @@ function flt_get_fleets_to_planet($planet, $fleet_db_list = 0)
 
   if($fleet_db_list === 0)
   {
-    $fleet_db_list = flt_get_fleets_to_planet_db($planet);
+    $fleet_db_list = flt_get_fleets($planet);
   }
 
   foreach($fleet_db_list as $fleet)
   {
     if($fleet['fleet_owner'] == $user['id'])
     {
+      if($fleet['fleet_mission'] == MT_MISSILE)
+      {
+        continue;
+      }
       $fleet_ownage = 'own';
     }
     else

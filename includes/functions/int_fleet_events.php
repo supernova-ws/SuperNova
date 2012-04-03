@@ -1,26 +1,75 @@
 <?php
 
-function int_get_fleet_to_planet($fleet_list, $planet_scanned = false)
+/*
+ * Get fleets by condition (including missiles)
+ * $condition =
+ *   false - get ALL fleets (for FlyingFleetsManagerV2); $phalanx ignored
+ *   user ID - get all fleets from current owner
+ *   array - (presumed planet row) get all fleets coming to selected planet
+ */
+function flt_get_fleets($condition, $phalanx = false)
 {
-  global $config, $user, $fleets, $fleet_number, $lang, $time_now;
+  global $time_now;
+  
+  $fleet_db_list = array();
 
-  $fleets = array();
+  if(!$condition)
+  {
+    $missile_query = $condition = 1;
+  }
+  elseif(is_array($condition))
+  {
+    $missile_query = "
+      (fleet_start_galaxy = {$condition['galaxy']} AND fleet_start_system = {$condition['system']} AND fleet_start_planet = {$condition['planet']} AND fleet_start_type = {$condition['planet_type']})
+      OR
+      (fleet_end_galaxy = {$condition['galaxy']} AND fleet_end_system = {$condition['system']} AND fleet_end_planet = {$condition['planet']} AND fleet_end_type = {$condition['planet_type']})";
+    $condition = "
+      (fleet_start_galaxy = {$condition['galaxy']} AND fleet_start_system = {$condition['system']} AND fleet_start_planet = {$condition['planet']} AND fleet_start_type = {$condition['planet_type']}" . ($phalanx ? '' : ' AND fleet_mess = 1') . ")
+      OR
+      (fleet_end_galaxy = {$condition['galaxy']} AND fleet_end_system = {$condition['system']} AND fleet_end_planet = {$condition['planet']} AND fleet_end_type = {$condition['planet_type']}" . ($phalanx ? '' : ' AND fleet_mess = 0') . ")";
+  }
+  else
+  {
+    $missile_query = "`fleet_owner` = '{$condition}' OR `fleet_target_owner` = '{$condition}'";
+    $condition = $missile_query;
+  }
+  $sql_fleets = doquery("SELECT DISTINCT * FROM {{fleets}} WHERE {$condition};");
+      
+  while ($fleet = mysql_fetch_assoc($sql_fleets))
+  {
+    $fleet_db_list[] = $fleet;
+  }
+
+  // Missile attack
+  $sql_fleets = doquery("SELECT * FROM `{{iraks}}` WHERE {$missile_query};");
+  while ($irak = mysql_fetch_assoc($sql_fleets))
+  {
+    if($irak['fleet_end_time'] >= $time_now)
+    {
+      $planet_start = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '{$irak['fleet_start_galaxy']}' AND `system` = '{$irak['fleet_start_system']}' AND `planet` = '{$irak['fleet_start_planet']}' AND `planet_type` = '1'", true);
+      $irak['fleet_id']             = -$irak['id'];
+      $irak['fleet_mission']        = MT_MISSILE;
+      $irak['fleet_array']          = "503,{$irak['fleet_amount']};";
+//        $irak['fleet_end_type']       = PT_PLANET;
+//        $irak['fleet_start_type']     = PT_PLANET;
+      $irak['fleet_start_name']     = $planet_start['name'];
+    }
+    $fleet_db_list[] = $irak;
+  }
+
+  return $fleet_db_list;
+}
+
+function flt_parse_fleets_to_events($fleet_list, $planet_scanned = false)
+{
+  global $config, $user, $fleet_number, $lang, $time_now;
+
+  $fleet_events = array();
   $fleet_number = 0;
 
   if(empty($fleet_list))
   {
     return;
-  }
-
-  if(is_string($fleet_list))
-  {
-    $flying_fleets_mysql = doquery($fleet_list);
-
-    $fleet_list = array();
-    while ($fleet = mysql_fetch_assoc($flying_fleets_mysql))
-    {
-      $fleet_list[] = $fleet;
-    }
   }
 
   foreach($fleet_list as $fleet)
@@ -59,7 +108,7 @@ function int_get_fleet_to_planet($fleet_list, $planet_scanned = false)
       $fleet['fleet_end_name'] = $planet_end['name'];
     }
 
-    if($fleet['fleet_start_time'] > $time_now && $fleet['fleet_mess'] == 0 &&
+    if($fleet['fleet_start_time'] > $time_now && $fleet['fleet_mess'] == 0 && $fleet['fleet_mission'] != MT_MISSILE &&
       ($planet_scanned === false
         ||
         (
@@ -71,16 +120,16 @@ function int_get_fleet_to_planet($fleet_list, $planet_scanned = false)
       )
     )
     {
-      int_assign_event($fleet, 0, $planet_scanned, $planet_end_type);
+      $fleet_events[] = flt_register_fleet_event($fleet, 0, $planet_end_type);
     }
 
-    if($fleet['fleet_end_stay'] > $time_now && $fleet['fleet_mess'] == 0 && $planet_scanned === false)
+    if($fleet['fleet_end_stay'] > $time_now && $fleet['fleet_mess'] == 0 && $planet_scanned === false && $fleet['fleet_mission'] != MT_MISSILE)
     {
-      int_assign_event($fleet, 1, $planet_scanned, $planet_end_type);
+      $fleet_events[] = flt_register_fleet_event($fleet, 1, $planet_end_type);
     }
 
     if(
-      $fleet['fleet_end_time'] > $time_now && ($fleet['fleet_mess'] == 1 || ($fleet['fleet_mission'] != MT_RELOCATE && $fleet['fleet_mission'] != MT_COLONIZE)) && 
+      $fleet['fleet_end_time'] > $time_now && $fleet['fleet_mission'] != MT_MISSILE && ($fleet['fleet_mess'] == 1 || ($fleet['fleet_mission'] != MT_RELOCATE && $fleet['fleet_mission'] != MT_COLONIZE)) && 
       (
         ($planet_scanned === false && $fleet['fleet_owner'] == $user['id'])
         ||
@@ -93,54 +142,26 @@ function int_get_fleet_to_planet($fleet_list, $planet_scanned = false)
       )
     )
     {
-      int_assign_event($fleet, 2, $planet_scanned, $planet_end_type);
+      $fleet_events[] = flt_register_fleet_event($fleet, 2, $planet_end_type);
+    }
+    
+    if($fleet['fleet_mission'] == MT_MISSILE)
+    {
+      $fleet_events[] = flt_register_fleet_event($fleet, 3, $planet_end_type);
     }
   }
+  
+  return $fleet_events;
 }
 
-function int_get_missile_to_planet($query, $planet_scanned = false)
+function flt_register_fleet_event($fleet, $ov_label, $planet_end_type)
 {
-  global $time_now;
-
-  if(is_string($query))
-  {
-    $flying_fleets_mysql = doquery($query);
-
-    $fleet_list = array();
-    while ($fleet = mysql_fetch_assoc($flying_fleets_mysql))
-    {
-      $fleet_list[] = $fleet;
-    }
-  }
-
-  foreach($fleet_list as $irak)
-  {
-    if($irak['fleet_end_time'] >= $time_now)
-    {
-      $planet_start = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '{$irak['fleet_start_galaxy']}' AND `system` = '{$irak['fleet_start_system']}' AND `planet` = '{$irak['fleet_start_planet']}' AND `planet_type` = '1'", '', true);
-      $planet_end   = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '{$irak['fleet_end_galaxy']}'   AND `system` = '{$irak['fleet_end_system']}'   AND `planet` = '{$irak['fleet_end_planet']}'   AND `planet_type` = '1'", '', true);
-
-      $irak['fleet_id']             = -$irak['id'];
-      $irak['fleet_mission']        = MT_MISSILE;
-      $irak['fleet_array']          = "503,{$irak['fleet_amount']};";
-      $irak['fleet_end_type']       = PT_PLANET;
-      $irak['fleet_start_type']     = PT_PLANET;
-      $irak['fleet_end_name']       = $planet_end['name'];
-      $irak['fleet_start_name']     = $planet_start['name'];
-
-      int_assign_event($irak, 3, $planet_scanned, $irak['fleet_end_type']);
-    }
-  }
-}
-
-function int_assign_event($fleet, $ov_label, $planet_scanned = false, $planet_end_type)
-{
-  global $user, $planetrow, $fleets, $fleet_number;
+  global $user, $planetrow, $fleet_number;
 
   switch($fleet['ov_label'] = $ov_label)
   {
     case 0:
-      $fleet['ov_time'] = $fleet['fleet_start_time'];
+      $fleet['event_time'] = $fleet['fleet_start_time'];
       $is_this_planet = (
         ($planetrow['galaxy'] == $fleet['fleet_end_galaxy']) AND
         ($planetrow['system'] == $fleet['fleet_end_system']) AND
@@ -149,7 +170,7 @@ function int_assign_event($fleet, $ov_label, $planet_scanned = false, $planet_en
     break;
 
     case 1:
-      $fleet['ov_time'] = $fleet['fleet_end_stay'];
+      $fleet['event_time'] = $fleet['fleet_end_stay'];
       $is_this_planet = (
         ($planetrow['galaxy'] == $fleet['fleet_end_galaxy']) AND
         ($planetrow['system'] == $fleet['fleet_end_system']) AND
@@ -159,7 +180,7 @@ function int_assign_event($fleet, $ov_label, $planet_scanned = false, $planet_en
 
     case 2:
     case 3:
-      $fleet['ov_time'] = $fleet['fleet_end_time'];
+      $fleet['event_time'] = $fleet['fleet_end_time'];
       $is_this_planet = (
         ($planetrow['galaxy'] == $fleet['fleet_start_galaxy']) AND
         ($planetrow['system'] == $fleet['fleet_start_system']) AND
@@ -180,7 +201,7 @@ function int_assign_event($fleet, $ov_label, $planet_scanned = false, $planet_en
     $user_data = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$fleet['fleet_owner']};", '', true);
   };
 
-  $fleets[] = tpl_parse_fleet_db($fleet, ++$fleet_number, $user_data);
+  return tpl_parse_fleet_db($fleet, ++$fleet_number, $user_data);
 }
 
 function int_planet_pretemplate($planetrow, &$template)

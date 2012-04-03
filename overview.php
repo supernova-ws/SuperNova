@@ -146,8 +146,9 @@ switch($mode)
 
     $fleet_id = 1;
 
-    int_get_fleet_to_planet("SELECT DISTINCT * FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}' OR `fleet_target_owner` = '{$user['id']}';");
-    int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE `fleet_owner` = '{$user['id']}'");
+    $fleet_list = flt_get_fleets($user['id']);
+    $fleets = flt_parse_fleets_to_events($fleet_list);
+//    int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE `fleet_owner` = '{$user['id']}'");
 
     $planet_count = 0;
     $planets_query = SortUserPlanets($user, false, '*');
@@ -166,7 +167,7 @@ switch($mode)
       {
         $planet_fleet_id = "p{$UserPlanet['id']}";
         $fleets_to_planet[$UserPlanet['id']] = tpl_parse_fleet_sn($fleet_list['own']['total'], $planet_fleet_id);
-//        $fleet_id++;
+//        $fleet_id++;tpl_parse_fleet_sn
       }
       if($UserPlanet['planet_type'] == PT_MOON)
       {

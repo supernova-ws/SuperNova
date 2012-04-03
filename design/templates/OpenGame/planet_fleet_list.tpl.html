@@ -2,7 +2,7 @@
 
 <table width="519">
   <tr class="c_c">
-    <th>{L_ov_time}</th>
+    <th>{L_event_time}</th>
     <th>{L_ov_fleet}</th>
     <th>{L_ov_destination}</th>
     <th>{L_ov_source}</th>
@@ -64,7 +64,7 @@
     <tr class="{$OV_FLEET_ACTION} {$OV_FLEET_PREFIX}{$OV_FLEET_STYLE}">
       <th width=70>
         <div id="ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}" class="z">00:00:00</div>
-        {fleets.OV_TIME_TEXT}
+        {fleets.EVENT_TIME_TEXT}
       </th>
       <th style="cursor: pointer;" onmouseover='fleet_dialog_show(this, {fleets.ID})' onmouseout='popup_hide()'>
         {fleets.AMOUNT}

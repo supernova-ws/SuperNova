@@ -59,8 +59,9 @@ $template = gettemplate('planet_fleet_list', true);
 
 $planet_scanned = doquery("SELECT * FROM {{planets}} WHERE galaxy = {$scan_galaxy} AND system = {$scan_system} AND planet = {$scan_planet} AND planet_type = {$scan_planet_type} LIMIT 1;", '', true);
 
-int_get_fleet_to_planet(flt_get_fleets_to_planet_db($planet_scanned, true), $planet_scanned);
-int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE fleet_end_galaxy = {$scan_galaxy} AND fleet_end_system = {$scan_system} AND fleet_end_planet = {$scan_planet};", true);
+$fleet_list = flt_get_fleets($planet_scanned, true);
+$fleets = flt_parse_fleets_to_events($fleet_list, $planet_scanned);
+//int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE fleet_end_galaxy = {$scan_galaxy} AND fleet_end_system = {$scan_system} AND fleet_end_planet = {$scan_planet};");
 tpl_assign_fleet($template, $fleets);
 
 $template->assign_vars(array(
