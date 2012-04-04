@@ -111,10 +111,17 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
 
       // Restricting $unit_count by MAX_FLEET_OR_DEFS_PER_ROW
       $unit_count = min($unit_count, MAX_FLEET_OR_DEFS_PER_ROW);
+      // Restricting build by resources
+      $units_cost_new = $units_cost;
       foreach($build_data[BUILD_CREATE] as $resource_id => $resource_amount)
       {
-        $units_cost[$resource_id] += $resource_amount * $unit_count;
+        $units_cost_new[$resource_id] += $resource_amount * $unit_count;
+        if($units_cost_new[$resource_id] > $planet[$sn_data[$resource_id]['name']])
+        {
+          continue;
+        }
       }
+      $units_cost = $units_cost_new;
       $silo_capacity_free -= $unit_is_missile ? $unit_count * $sn_data[$unit_id]['size'] : 0;
       $hangar_que[] = array($unit_id, $unit_count);
       $hangar_que_by_unit[$unit_id] += $unit_count;
