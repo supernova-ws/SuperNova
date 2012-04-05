@@ -18,7 +18,7 @@ function sn_user_birthday_celebrate()
       AND (`user_birthday_celebrated` IS NULL OR DATE_ADD(`user_birthday_celebrated`, INTERVAL 1 YEAR) < CURRENT_DATE)
       AND `user_as_ally` IS NULL
     HAVING 
-      `days_after_birthday` > 0 AND `days_after_birthday` < {$config->user_birthday_range} FOR UPDATE;");
+      `days_after_birthday` >= 0 AND `days_after_birthday` < {$config->user_birthday_range} FOR UPDATE;");
 
 /*
   $query = doquery("
