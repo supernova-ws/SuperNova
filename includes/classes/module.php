@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #34a9.2# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #34a14# copyright © 2009-2012 Gorlum',
 
     'installed' => true,
     'active' => true,
@@ -61,6 +61,93 @@ class sn_module
 
 abstract class sn_module_payment extends sn_module
 {
+  static $bonus_table = array(
+    100000 => 0.1,
+    200000 => 0.2,
+    300000 => 0.3,
+    400000 => 0.4,
+    500000 => 0.5,
+  );
+
+  // Function converts money values between currencies
+  function currency_convert($value, $currency_from = '', $currency_to = '')
+  {
+    return $value;
+  }
+
+  // Function calculates bonused DM amount for bulk purchase and ($direct = false) vice versa
+  static function bonus_calculate($dark_matter, $direct = true)
+  {
+    $bonus = 0;
+    $dark_matter_new = $dark_matter;
+    if(!empty(self::$bonus_table) && $dark_matter >= $bonus_table[0])
+    {
+      if($direct)
+      {
+        foreach(self::$bonus_table as $dm_for_bonus => $multiplyer)
+        {
+          if($dm_for_bonus <= $dark_matter)
+          {
+            $dark_matter_new = $dark_matter * (1 + $multiplyer);
+          }
+          else
+          {
+            break;
+          }
+        }
+      }
+      else
+      {
+
+        foreach(self::$bonus_table as $dm_for_bonus => $multiplyer)
+        {
+          $temp = $dm_for_bonus * (1 + $multiplyer);
+          if($dark_matter >= $temp)
+          {
+            $dark_matter_new = round($dark_matter / (1 + $multiplyer));
+          }
+          else
+          {
+            break;
+          }
+        }
+      }
+    }
+
+    return $dark_matter_new;
+  }
+
+  // Function calculates amount of dark_matter for entered money and vice versa
+  static function exchange($dark_matter = 0, $money = 0, $currency = '')
+  {
+    global $config;
+
+    if(!$dark_matter && !$money)
+    {
+      return 0;
+    }
+
+    $currency = $currency ? $currency : $config->payment_currency_default;
+    if($money)
+    {
+      $dark_matter = $money * $config->payment_lot_size / $config->payment_lot_price;
+/*
+      $bonus = ($dark_matter - ($dark_matter % 100000)) / 100000 / 10;
+      $bonus = min(0.5, $bonus);
+      $dark_matter *= 1 + $bonus;
+*/
+      return floor($dark_matter);
+    }
+    elseif($dark_matter)
+    {
+      $money = $dark_matter * $config->payment_lot_price / $config->payment_lot_size;
+
+      return round($money, 2);
+    }
+  }
+}
+
+/*
   // Function calculates amount of dark_matter for entered money and vice versa
   static function exchange($dark_matter = 0, $money = 0, $currency = '')
   {
@@ -88,5 +175,5 @@ abstract class sn_module_payment extends sn_module
     }
   }
 }
-
+*/
 ?>

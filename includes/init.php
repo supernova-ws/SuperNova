@@ -133,14 +133,14 @@ $config->db_saveItem('secret_word', $sn_secret_word);
 
 if(defined('BE_DEBUG') || $config->debug)
 {
-  define('BE_DEBUG', true);
-  ini_set('display_errors', 1);
-  error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
+  @define('BE_DEBUG', true);
+  @ini_set('display_errors', 1);
+  @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
 }
 else
 {
-  define('BE_DEBUG', false);
-  ini_set('display_errors', 0);
+  @define('BE_DEBUG', false);
+  @ini_set('display_errors', 0);
 }
 
 require_once("{$sn_root_physical}includes/vars.{$phpEx}");

@@ -1672,11 +1672,11 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     // Updating category for Mercenaries
     upd_do_query("UPDATE {{powerup}} SET powerup_category = " . UNIT_MERCENARIES . " WHERE powerup_unit_id > 600 AND powerup_unit_id < 700;");
 
-    // Convert Destructor to Death Star plan
+    // Convert Destructor to Death Star schematic
     upd_do_query("UPDATE {{powerup}} 
       SET powerup_time_start = 0, powerup_time_finish = 0, powerup_category = " . UNIT_PLANS . ", powerup_unit_id = " . UNIT_PLAN_SHIP_DEATH_STAR . " 
       WHERE (powerup_time_start = 0 OR powerup_time_finish >= UNIX_TIMESTAMP()) AND powerup_unit_id = 612;");
-    // Convert Assasin to SuperNova plan
+    // Convert Assasin to SuperNova schematic
     upd_do_query("UPDATE {{powerup}} 
       SET powerup_time_start = 0, powerup_time_finish = 0, powerup_category = " . UNIT_PLANS . ", powerup_unit_id = " . UNIT_PLAN_SHIP_SUPERNOVA . " 
       WHERE (powerup_time_start = 0 OR powerup_time_finish >= UNIX_TIMESTAMP()) AND powerup_unit_id = 614;");
@@ -1685,6 +1685,26 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       "ADD `fleet_start_type` SMALLINT NOT NULL DEFAULT 1",
       "ADD `fleet_end_type` SMALLINT NOT NULL DEFAULT 1",
     ), !$update_tables['iraks']['fleet_start_type']);
+
+
+    if(!$update_tables['payment']['payment_status'])
+    {
+      upd_alter_table('payment', array(
+  //      "CHANGE COLUMN `payment_amount` DECIMAL(60,5) DEFAULT 0 COMMENT ''",
+  //      "CHANGE COLUMN `payment_currency` VARCHAR(3) DEFAULT '' COMMENT 'Currency in'",
+        "ADD COLUMN `payment_status` INT DEFAULT 0 COMMENT 'Payment status' AFTER `payment_id`",
+
+        "CHANGE COLUMN `payment_dm` `payment_dark_matter_paid` DECIMAL(65,0) DEFAULT 0 COMMENT 'Real DM paid for'",
+        "ADD COLUMN `payment_dark_matter_gained` DECIMAL(65,0) DEFAULT 0 COMMENT 'DM gained by player (with bonuses)' AFTER `payment_dark_matter_paid`",
+
+        "CHANGE COLUMN `payment_internal_id` `payment_external_id` VARCHAR(255) DEFAULT '' COMMENT 'External payment ID in payment system'",
+        "CHANGE COLUMN `payment_internal_date` `payment_external_date` DATETIME COMMENT 'External payment timestamp in payment system'",
+        "ADD COLUMN `payment_external_lots` decimal(65,5) NOT NULL DEFAULT '0.00000' COMMENT 'Payment system lot amount'",
+//        "ADD COLUMN `payment_external_dark_matter` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Payment system DM amount'",
+        "ADD COLUMN `payment_external_amount` decimal(65,5) NOT NULL DEFAULT '0.00000' COMMENT 'Money incoming from payment system'",
+        "ADD COLUMN `payment_external_currency` VARCHAR(3) NOT NULL DEFAULT '' COMMENT 'Payment system currency'",
+      ), !$update_tables['payment']['payment_status']);
+    }
 
     // $new_version = 33;
 };
