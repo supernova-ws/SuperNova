@@ -221,7 +221,7 @@ function sys_stat_calculate()
     $points[$user_id]['tech'] = $TechPoints / 1000;
     $counts[$user_id]['tech'] = $TechCounts;
 
-    array_walk($points[$user_id], 'floor');
+    $points[$user_id] = array_map('floor', $points[$user_id]);
 
     $GPoints = array_sum($points[$user_id]);
     $GCount = array_sum($counts[$user_id]);
