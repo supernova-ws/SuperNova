@@ -102,11 +102,14 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
       throw new Exception($lang['mrc_msg_error_no_resource'], ERR_ERROR);
     }
 
-    doquery("DELETE FROM {{powerup}} WHERE powerup_user_id = {$user['id']} AND powerup_unit_id = {$mercenary_id} LIMIT 1;");
+    if(($darkmater_cost && $mercenary_level) || !$is_permanent)
+    {
+      doquery("DELETE FROM {{powerup}} WHERE powerup_user_id = {$user['id']} AND powerup_unit_id = {$mercenary_id} LIMIT 1;");
+    }
     if($darkmater_cost && $mercenary_level)
     {
-      $time_start = $config->empire_mercenary_temporary ? $time_now : 0;
-      $time_end = $config->empire_mercenary_temporary ? $time_now + $mercenary_period : 0;
+      $time_start = $is_permanent ? 0 : $time_now;
+      $time_end = $is_permanent ? 0 : $time_now + $mercenary_period;
       doquery("INSERT INTO {{powerup}} SET powerup_user_id = {$user['id']}, powerup_unit_id = {$mercenary_id}, powerup_category = {$mode}, powerup_unit_level = {$mercenary_level}, powerup_time_start = {$time_start}, powerup_time_finish = {$time_end};");
 
       rpg_points_change($user['id'], $mode == UNIT_PLANS ? RPG_PLANS : RPG_MERCENARY, -($darkmater_cost), "Spent for officer {$lang['tech'][$mercenary_id]} ID {$mercenary_id}");

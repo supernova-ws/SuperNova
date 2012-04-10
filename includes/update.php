@@ -1706,6 +1706,8 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       ), !$update_tables['payment']['payment_status']);
     }
 
+    upd_do_query("UPDATE {{powerup}} SET powerup_time_start = 0, powerup_time_finish = 0 WHERE powerup_category = " . UNIT_PLANS . ";");
+
     // $new_version = 33;
 };
 upd_log_message('Upgrade complete.');
