@@ -641,7 +641,7 @@ function get_ship_data($ship_id, $user)
     foreach($sn_data[$ship_id]['engine'] as $engine_info)
     {
 //      if($user[$sn_data[$engine_info['tech']]['name']] >= $engine_info['min_level'])
-      if(mrc_get_level($user, false, $engine_info['tech']) >= $engine_info['min_level'])
+      if(empty($ship_data) || mrc_get_level($user, false, $engine_info['tech']) >= $engine_info['min_level'])
       {
         $ship_data = $engine_info;
       }
