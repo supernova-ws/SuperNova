@@ -39,6 +39,7 @@ $lang = array_merge($lang, array(
   'art_rcd_ok'          => '%1$s succesfully deployed colony on planet  %2$s coordinates %3$s',
   'art_rcd_err_moon'    => 'RCD can be deployed on planet',
   'art_rcd_err_no_sense'=> 'RCD detected that there will be no improvement to current buildings and aborted deployment',
+  'art_rcd_err_que'     => 'RCD can not be deployed on planet where building ongoing. Cancel all construction tasks and try to deploy RCD again',
 
   'art_err_no_artifact' => 'You did not have this artifact',
 
