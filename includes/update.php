@@ -1708,6 +1708,8 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
     upd_do_query("UPDATE {{powerup}} SET powerup_time_start = 0, powerup_time_finish = 0 WHERE powerup_category = " . UNIT_PLANS . ";");
 
+    upd_check_key('server_start_date', date('d.m.Y', $time_now), !isset($config->server_start_date));
+
     // $new_version = 33;
 };
 upd_log_message('Upgrade complete.');
