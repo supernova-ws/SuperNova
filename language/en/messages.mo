@@ -30,7 +30,7 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
-  'msg_page_header' => 'Personal messges',
+  'msg_page_header' => 'Personal messages',
   'msg_head_type' => 'Category',
   'msg_head_count' => 'Unread',
   'msg_head_total' => 'Total',
