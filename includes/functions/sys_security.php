@@ -169,6 +169,8 @@ function sn_autologin($abort = true)
       if($abort)
       {
         // TODO: Add ban reason. Add vacation time. Add message window
+        sn_sys_logout(false, true);
+        message("{$lang['sys_banned_msg']} {$bantime}", $lang['ban_title']);
         die("{$lang['sys_banned_msg']} {$bantime}");
       }
       else
