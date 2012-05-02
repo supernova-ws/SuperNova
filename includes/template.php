@@ -202,7 +202,7 @@ function tpl_render_menu()
     'empire_schematics' => array(
       'LEVEL' => 'submenu',
       'ITEM'  => $lang['tech'][UNIT_PLANS],
-      'LINK'  => 'imperium.php',
+      'LINK'  => 'officer.php?mode=' . UNIT_PLANS,
     ),
     'empire_artifacts' => array(
       'LEVEL' => 'submenu',
