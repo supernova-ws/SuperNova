@@ -1709,6 +1709,10 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_do_query("UPDATE {{powerup}} SET powerup_time_start = 0, powerup_time_finish = 0 WHERE powerup_category = " . UNIT_PLANS . ";");
 
     upd_check_key('server_start_date', date('d.m.Y', $time_now), !isset($config->server_start_date));
+    upd_check_key('server_que_length_structures', 5, !isset($config->server_que_length_structures));
+    upd_check_key('server_que_length_hangar', 5, !isset($config->server_que_length_hangar));
+
+    upd_do_query("UPDATE {{planets}} SET `PLANET_GOVERNOR_LEVEL` = CEILING(`PLANET_GOVERNOR_LEVEL`/2) WHERE PLANET_GOVERNOR_ID = " . MRC_ENGINEER . " AND `PLANET_GOVERNOR_LEVEL` > 8;");
 
     // $new_version = 33;
 };

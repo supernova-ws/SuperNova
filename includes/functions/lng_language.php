@@ -1,10 +1,17 @@
 <?php
 
 // ----------------------------------------------------------------------------------------------------------------
-function lng_include($filename, $ext = '', $path = '')
+function lng_try_filepath($path, $file_path_relative)
 {
-  $ext = $ext ? $ext : '.mo';
-  $filename = "{$filename}{$ext}";
+  $file_path = SN_ROOT_PHYSICAL . ($path && file_exists(SN_ROOT_PHYSICAL . $path . $file_path_relative) ? $path : '') . $file_path_relative;
+  return file_exists($file_path) ? $file_path : false;
+}
+
+// ----------------------------------------------------------------------------------------------------------------
+function lng_include($filename, $path = '', $ext = '')
+{
+  $ext = $ext ? $ext : '.mo.php';
+  $filename_ext = "{$filename}{$ext}";
 
   global $lang, $language, $user;
 
@@ -17,7 +24,6 @@ function lng_include($filename, $ext = '', $path = '')
   );
 
   $language_tried = array();
-
   $file_path = '';
   foreach($language_fallback as $lang_try)
   {
@@ -26,21 +32,34 @@ function lng_include($filename, $ext = '', $path = '')
       continue;
     }
 
-    $file_path_relative = "language/{$lang_try}/{$filename}";
+    if($file_path = lng_try_filepath($path, "language/{$lang_try}/{$filename_ext}"))
+    {
+      break;
+    }
+
+    if($file_path = lng_try_filepath($path, "language/{$filename}_{$lang_try}{$ext}"))
+    {
+      break;
+    }
+/*
+    $file_path_relative = "language/{$lang_try}/{$filename_ext}";
     $file_path = SN_ROOT_PHYSICAL . ($path && file_exists(SN_ROOT_PHYSICAL . $path . $file_path_relative) ? $path : '') . $file_path_relative;
     if(file_exists($file_path))
     {
       break;
     }
+
+    $file_path_relative = "language/{$filename_ext}_{$lang_try}";
+    $file_path = SN_ROOT_PHYSICAL . ($path && file_exists(SN_ROOT_PHYSICAL . $path . $file_path_relative) ? $path : '') . $file_path_relative;
+    if(file_exists($file_path))
+    {
+      break;
+    }
+*/
     $file_path = '';
     $language_tried[$lang_try] = $lang_try;
   }
-/*
-  $SelLanguage = $language ? $language : DEFAULT_LANG;
 
-  $file_path_relative = "language/{$SelLanguage}/{$filename}";
-  $file_path = SN_ROOT_PHYSICAL . ($path && file_exists(SN_ROOT_PHYSICAL . $path . $file_path_relative) ? $path : '') . $file_path_relative;
-*/
   if($file_path)
   {
     include($file_path);

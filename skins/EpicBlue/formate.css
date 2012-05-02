@@ -189,59 +189,53 @@ h1
   text-align: center;
 }
 
-#lm_overview {
+.lm_overview {
   color: #999933;
 }
 
-#lm_fleet {
+.lm_fleet {
   color: #CC3333;
 }
 
-#lm_universe {
-  color: #999966;
-}
-
-#lm_buildings {
+.lm_buildings {
   color: #669933;
 }
 
-#lm_shipyard {
+.lm_shipyard {
   color: #993399;
 }
 
-#lm_techtree {
+.lm_techtree {
   color: #999933;
 }
 
-#lm_forum {
+.lm_universe {
+  color: #999966;
+}
+
+.lm_chatally, .lm_chat
+{
+  color: #996699;
+}
+
+.lm_forum
+{
   color: #0066CC;
 }
 
-#lm_chat {
-  color: #996699;
-}
-
-#lm_chatally {
-  color: #996699;
-}
-
-#lm_simulator {
+.lm_simulator {
   color: #FF9966;
 }
 
-#lm_search {
+.lm_search {
   color: #887766;
 }
 
-#lm_options {
+.lm_options {
   color: #CCCC66;
 }
 
-#lm_affilates {
-  color: #993333;
-}
-
-#lm_logout {
+.lm_logout {
   color: #993333;
 }
 

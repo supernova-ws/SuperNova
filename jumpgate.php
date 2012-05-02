@@ -12,7 +12,6 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-//lng_include('infos');
 $parse = $lang;
 
 $TargetPlanet = sys_get_param_id('jmpto');

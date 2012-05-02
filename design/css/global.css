@@ -182,3 +182,15 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
 {
   margin: auto;
 }
+
+.important
+{
+  color: red;
+  text-decoration: blink;
+  font-weight: bold;
+}
+
+.affiliates
+{
+  color: #993333;
+}

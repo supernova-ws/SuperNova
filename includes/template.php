@@ -45,9 +45,335 @@ function tpl_render_menu()
 {
   global $config, $user, $user_impersonator, $lang, $time_now;
 
-  lng_include('leftmenu');
+  lng_include('menu');
 
-  $template_name = IN_ADMIN === true ? 'admin/left_menu' : 'left_menu';
+  $sn_menu = array(
+/*
+    'triolan_menu' => array(                  // This should be used as ID for both internal submenu insert AND as "id" attribute of Tx HTML-tag (see below)
+      'LEVEL' => 'submenu',                   // Which Tx HTML tag to use. 'header' - would be used TH; 'submenu' - TD
+      'TYPE'  => 'image',                     // Menu item type: 'image' (wrapped by IMG tag) or 'text' (puts "as-is"). Default is 'text'
+      'CLASS' => 'c_c',                       // Class for TD/TH element. Can be c_c, c_l, c_r or any other custom. 'c_c' default for 'header', 'c_l' default for 'text'
+      'TITLE' => 'Triolan.COM',               // TITLE tag for Tx HTML-element
+
+      'ITEM'  => 'images/triolan.gif',        // Item: text or relative image URL
+      'LINK'  => 'http://www.triolan.com/',   // URL
+      'BLANK' => true,                        // Should link open in new window/tab?
+      'SPAN'  => 'lm_overview',               // Class for internal SPAN - to override <A> style
+      'ALT'   => 'Triolan.COM',               // ALT-tag for image
+    ),
+*/
+
+    'server_name' => array(
+      'LEVEL' => 'header',
+      'ITEM' => "{$config->game_name}<br />{$lang['sys_from']} {$config->server_start_date}",
+    ),
+    'server_logo' => array(
+      'LEVEL' => 'submenu',
+      'TYPE' => 'image',
+      'CLASS' => 'c_c',
+      'ITEM' => 'design/images/supernova.png',
+      'LINK' => '.',
+      'ALT' => 'supernova.ws',
+    ),
+
+    'admin' => $user['authlevel'] <= 0 ? array() : 
+    array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['user_level'][$user['authlevel']],
+      'LINK'  => 'admin/overview.php',
+      'SPAN'  => 'ok',
+    ),
+    'impersonator' => !is_array($user_impersonator) ? array() : 
+    array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['sys_impersonate_done'],
+      'LINK'  => 'logout.php',
+      'SPAN'  => 'important',
+    ),
+
+    'rules' => !$config->url_rules ? array() : 
+    array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['sys_game_rules'],
+      'LINK'  => $config->url_rules,
+      'SPAN'  => 'warning',
+    ),
+    'faq' => !$config->url_faq ? array() : 
+    array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['m_faq'],
+      'LINK'  => $config->url_faq,
+      'SPAN'  => 'notice',
+    ),
+
+    'news' => array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['news_title'] . ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\">{$lang['lm_announce_fresh']}</span>" : ''),
+      'LINK'  => 'announce.php',
+      'SPAN'  => 'ok',
+    ),
+
+    'affiliates' => array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['m_affilates'],
+      'LINK'  => 'affilates.php',
+      'SPAN'  => 'affiliates',
+    ),
+
+    'planet_menu' => array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['sys_planet'],
+    ),
+    'planet_overview' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Overview'],
+      'LINK'  => 'overview.php',
+      'SPAN'  => 'lm_overview',
+    ),
+    'planet_resources' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Resources'],
+      'LINK'  => 'resources.php',
+    ),
+    'planet_fleet' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['lm_fleet_orbiting'],
+      'LINK'  => 'fleet.php',
+      'SPAN'  => 'lm_fleet',
+    ),
+    'planet_structures' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Buildings'],
+      'LINK'  => 'buildings.php?mode=' . QUE_STRUCTURES,
+      'SPAN'  => 'lm_buildings',
+    ),
+    'planet_shipyard' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Shipyard'],
+      'LINK'  => 'buildings.php?mode=' . SUBQUE_FLEET,
+      'SPAN'  => 'lm_shipyard',
+    ),
+    'planet_defense' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Defense'],
+      'LINK'  => 'buildings.php?mode=' . SUBQUE_DEFENSE,
+      'SPAN'  => 'lm_shipyard',
+    ),
+
+    'empire_menu' => array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['sys_empire'],
+    ),
+    'empire_overview' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['imp_overview'],
+      'LINK'  => 'imperium.php',
+      'SPAN'  => 'lm_overview',
+    ),
+    'empire_emperor' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['imp_imperator'],
+      'LINK'  => 'imperator.php',
+    ),
+    'empire_fleets' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['imp_fleets'],
+      'LINK'  => 'flying_fleets.php',
+      'SPAN'  => 'lm_fleet',
+    ),
+    'empire_research' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Research'],
+      'LINK'  => 'buildings.php?mode=research',
+      'SPAN'  => 'lm_techtree',
+    ),
+    'empire_techtree' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Technology'],
+      'LINK'  => 'techtree.php',
+      'SPAN'  => 'lm_techtree',
+    ),
+    'empire_mercenaries' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['tech'][UNIT_MERCENARIES],
+      'LINK'  => 'officer.php?mode=' . UNIT_MERCENARIES,
+      'SPAN'  => 'lm_overview',
+    ),
+    'empire_schematics' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['tech'][UNIT_PLANS],
+      'LINK'  => 'imperium.php',
+    ),
+    'empire_artifacts' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['tech'][UNIT_ARTIFACTS],
+      'LINK'  => 'artifacts.php',
+    ),
+    'empire_market' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['rinok'],
+      'LINK'  => 'market.php',
+    ),
+    'empire_universe' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['sys_universe'],
+      'LINK'  => 'galaxy.php?mode=0',
+      'SPAN'  => 'lm_universe',
+    ),
+    'empire_quests' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['qst_quests'],
+      'LINK'  => 'quest.php',
+    ),
+
+    'ally_menu' => array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['sys_alliance'],
+    ),
+    'ally_overview' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['sys_alliance'],
+      'LINK'  => 'alliance.php',
+    ),
+    'ally_chat' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['AllyChat'],
+      'LINK'  => 'chat.php?ally=ally',
+      'SPAN'  => 'lm_chatally',
+    ),
+
+    'comm_menu' => array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['m_communication'],
+    ),
+
+    'comm_messages' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Messages'],
+      'LINK'  => 'messages.php',
+    ),
+    'comm_chat' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Chat'],
+      'LINK'  => 'chat.php',
+      'SPAN'  => 'lm_chat',
+    ),
+    'comm_forum' => !$config->url_forum ? array() :
+    array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['m_forum'],
+      'LINK'  => $config->url_forum,
+      'SPAN'  => 'lm_forum',
+    ),
+
+    'utils_menu' => array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['m_others'],
+    ),
+    'utils_simulator' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['m_simulator'],
+      'LINK'  => 'simulator.php',
+      'SPAN'  => 'lm_simulator',
+    ),
+    'utils_reports' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['lm_combat_reports'],
+      'LINK'  => 'viewreport.php',
+    ),
+    'utils_buddies' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Buddylist'],
+      'LINK'  => 'buddy.php',
+    ),
+    'utils_notes' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Notes'],
+      'LINK'  => 'notes.php',
+    ),
+    'utils_shortcuts' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['lm_shortcuts'],
+      'LINK'  => 'fleet_shortcuts.php',
+    ),
+    'utils_search' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Search'],
+      'LINK'  => 'search.php',
+      'SPAN'  => 'lm_search',
+    ),
+
+    'info_menu' => array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['navig'],
+    ),
+    'info_stats' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Statistics'],
+      'LINK'  => 'stat.php',
+    ),
+    'info_records' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['Records'],
+      'LINK'  => 'records.php',
+    ),
+    'info_server' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['lm_server_info'],
+      'LINK'  => 'server_info.php',
+    ),
+    'info_ban' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['lm_banned'],
+      'LINK'  => 'banned.php',
+    ),
+    'info_admins' => array(
+      'LEVEL' => 'submenu',
+      'ITEM'  => $lang['commun'],
+      'LINK'  => 'contact.php',
+    ),
+
+    'options_menu' => array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['Options'],
+      'LINK'  => 'options.php',
+      'SPAN'  => 'lm_options',
+    ),
+
+    'logout_menu' => array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['Logout'],
+      'LINK'  => 'logout.php',
+      'SPAN'  => 'lm_logout',
+    ),
+
+    'extra_menu' => !$config->advGoogleLeftMenuIsOn ? array() :
+    array(
+      'LEVEL' => 'submenu',
+      'CLASS' => 'c_c',
+      'ITEM'  => $config->advGoogleLeftMenuCode,
+    ),
+    'supernova_logo' => array(
+      'LEVEL' => 'submenu',
+      'TYPE' => 'image',
+      'CLASS' => 'c_c',
+      'ITEM' => 'design/images/supernova.png',
+      'LINK' => 'http://supernova.ws',
+      'ALT' => 'Powered by \'Project "SuperNova.WS"\' engine',
+    ),
+    'triolan_menu' => array(
+      'LEVEL' => 'submenu',
+      'TYPE'  => 'image',
+      'CLASS' => 'c_c',
+      'ITEM'  => 'images/triolan.gif',
+      'LINK'  => 'http://www.triolan.com/',
+      'BLANK' => true,
+      'ALT'   => 'Triolan.COM',
+    ),
+
+  );
+
+  $template_name = IN_ADMIN === true ? 'admin/menu' : 'menu';
   $template = gettemplate($template_name, true);
 
   $template->assign_vars(array(
@@ -66,23 +392,26 @@ function tpl_render_menu()
       'CHECK_RESULT' => $lang['adm_opt_ver_response_short'][$config->server_updater_check_result],
       'CHECK_CLASS' => $sn_version_check_class[$config->server_updater_check_result],
     ));
-/*
-$config->db_saveItem('server_updater_check_last', $time_now);
-$config->db_saveItem('server_updater_check_result', $check_result);
-*/
-
   }
   else
   {
-    $template->assign_vars(array(
-      'NEWS_UNREAD'         => $user['news_lastread'] < $config->var_news_last,
-      'game_url'            => SN_ROOT_RELATIVE,
-      'game_name'           => $config->game_name,
-      'URL_RULES'           => $config->url_rules,
-      'URL_FORUM'           => $config->url_forum,
-      'URL_FAQ'             => $config->url_faq,
-      'ADV_LEFT_BOTTOM'     => $config->advGoogleLeftMenuIsOn ? $config->advGoogleLeftMenuCode : '',
-    ));
+    foreach($sn_menu as $menu_item_id => $menu_item)
+    {
+      if(!$menu_item)
+      {
+        continue;
+      }
+
+      if(is_string($menu_item_id))
+      {
+        $menu_item['ID'] = $menu_item_id;
+      }
+
+      $menu_item['ALT'] = htmlentities($menu_item['ALT']);
+      $menu_item['TITLE'] = htmlentities($menu_item['TITLE']);
+
+      $template->assign_block_vars('menu', $menu_item);
+    }
   }
 
   return $template;

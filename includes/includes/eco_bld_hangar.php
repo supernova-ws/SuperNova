@@ -54,7 +54,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
     eco_bld_hangar_clear($planet, $action);
   }
 
-  global $sn_data, $lang, $time_now;
+  global $sn_data, $lang, $time_now, $config;
 
   if($planet[$sn_data[STRUC_FACTORY_HANGAR]['name']] == 0)
   {
@@ -78,11 +78,12 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
   $POST_fmenge = sys_get_param('fmenge');
   $que_size = count(eco_que_str2arr($planet['b_hangar_id']));
   $units_cost = array();
-  if(!empty($POST_fmenge) && !eco_hangar_is_building($que) && $que_size < MAX_BUILDING_QUEUE_SIZE)
+  $config_server_que_length_hangar = $config->server_que_length_hangar + mrc_get_level($user, $planet, $que_type == SUBQUE_FLEET ? MRC_ENGINEER : MRC_FORTIFIER);
+  if(!empty($POST_fmenge) && !eco_hangar_is_building($que) && $config_server_que_length_hangar)
   {
     foreach($POST_fmenge as $unit_id => $unit_count)
     {
-      if($que_size >= MAX_BUILDING_QUEUE_SIZE)
+      if($que_size >= $config_server_que_length_hangar)
       {
         break;
       }

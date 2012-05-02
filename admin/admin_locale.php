@@ -171,9 +171,9 @@ if($domain)
     ksort($constants);
     foreach($languages_info as $lang_id => $land_data)
     {
-      $file_handler = fopen(SN_ROOT_PHYSICAL . "language/{$lang_id}/{$domain}.mo.new", 'w');
+      $file_handler = fopen(SN_ROOT_PHYSICAL . "language/{$lang_id}/{$domain}.mo.php.new", 'w');
       fwrite($file_handler, "<?php\r\n\r\n/*\r\n#############################################################################
-#  Filename: {$domain}.mo
+#  Filename: {$domain}.mo.php
 #  Project: SuperNova.WS
 #  Website: http://www.supernova.ws
 #  Description: Massive Multiplayer Online Browser Space Startegy Game\r\n#\r\n");
@@ -202,7 +202,7 @@ if($domain)
   foreach($languages_info as $lang_id => $lang_data)
   {
     $template->assign_block_vars('language', $lang_data);
-    $full_filename = SN_ROOT_PHYSICAL . "language/{$lang_id}/{$domain}.mo";
+    $full_filename = SN_ROOT_PHYSICAL . "language/{$lang_id}/{$domain}.mo.php";
     $languages[$lang_id] = adm_lng_load($full_filename . (file_exists($full_filename . '.new') ? '.new' : ''));
     foreach($languages[$lang_id] as $locale_string_name => $cork)
     {
@@ -250,7 +250,7 @@ else
         $file_ext = strtolower(substr($filename, strpos($filename, '.')));
         if($lang_domain != 'language')
         {
-          if($file_ext == '.mo.new' || ($file_ext == '.mo' && empty($languages[$lang_id][$lang_domain])))
+          if($file_ext == '.mo.php.new' || ($file_ext == '.mo.php' && empty($languages[$lang_id][$lang_domain])))
           {
             $language_domains[$lang_domain] = $lang_domain;
             $languages[$lang_id][$lang_domain] = $lang_domain;

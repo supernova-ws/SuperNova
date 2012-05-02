@@ -1,0 +1,27 @@
+<div id="sn_menu">
+  <table width="100%" cellspacing="0" cellpadding="0" id="left_menu" align="left">
+  <!-- BEGIN menu -->
+    <tr><!-- IF menu.LEVEL == 'header' --><!-- DEFINE $TX = 'th' --><!-- ELSE --><!-- DEFINE $TX = 'td' --><!-- ENDIF -->
+      <{$TX}
+        <!-- IF menu.ID --> id="{menu.ID}"<!-- ENDIF -->
+        <!-- IF menu.CLASS --> class="{menu.CLASS}"<!-- ENDIF -->
+        <!-- IF menu.TITLE --> title="{menu.TITLE}"<!-- ELSEIF menu.ALT --> title="{menu.ALT}"<!-- ENDIF -->
+      >
+        <!-- IF menu.LINK --><a href="{menu.LINK}"<!-- IF menu.BLANK --> target="_blank"<!-- ENDIF -->><!-- ENDIF -->
+        <!-- IF menu.SPAN --><span class="{menu.SPAN}"><!-- ENDIF -->
+        <!-- IF menu.LEVEL == 'header' && menu.LINK -->[&nbsp;<!-- ENDIF -->
+
+        <!-- IF menu.TYPE == 'image' -->
+        <img border="0" src="{menu.ITEM}"<!-- IF menu.ALT --> alt="{menu.ALT}"<!-- ELSEIF menu.TITLE --> alt="{menu.TITLE}"<!-- ENDIF -->/>
+        <!-- ELSE -->
+        {menu.ITEM}
+        <!-- ENDIF -->
+
+        <!-- IF menu.LEVEL == 'header' && menu.LINK -->&nbsp;]<!-- ENDIF -->
+        <!-- IF menu.SPAN --></span><!-- ENDIF -->
+        <!-- IF menu.LINK --></a><!-- ENDIF -->
+      </{$TX}>
+    </tr>
+  <!-- END menu -->
+  </table>
+</div>

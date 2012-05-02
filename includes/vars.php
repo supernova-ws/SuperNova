@@ -1928,27 +1928,25 @@ if (!defined('INSIDE'))
       'bonus' => 5,
       'bonus_type' => BONUS_PERCENT,
     ),
-
     MRC_ENGINEER => array(
       'name' => 'rpg_constructeur',
       'type' => UNIT_GOVERNORS,
       'location' => LOC_PLANET,
       'cost' => array(
-        RES_DARK_MATTER => 400,
-        'factor' => 1.25,
+        RES_DARK_MATTER => 500,
+        'factor' => 1.65,
       ),
-      'max' => 15,
-      'bonus' => -5,
+      'max' => 8,
+      'bonus' => -10,
       'bonus_type' => BONUS_PERCENT,
     ),
-
     MRC_FORTIFIER => array(
       'name' => 'rpg_defenseur',
       'type' => UNIT_GOVERNORS,
       'location' => LOC_PLANET,
       'cost' => array(
         RES_DARK_MATTER => 2000,
-        'factor' => 1,
+        'factor' => 1.25,
       ),
       'max' => 8,
       'bonus' => -10,

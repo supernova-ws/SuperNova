@@ -62,8 +62,7 @@ function eco_build($que_type, $user, &$planet, $que)
   $lab_busy    = count($que['que'][QUE_RESEARCH]) && !$config->BuildLabWhileRun;
 */
   $que_length  = count($que['que'][$que_type]);
-  $can_que_element = $que_length < MAX_BUILDING_QUEUE_SIZE;
-
+  $can_que_element = $que_length < ($config->server_que_length_structures + mrc_get_level($user, $planet, MRC_ENGINEER));
 
   $fleet_list            = flt_get_fleets_to_planet($planet);
   $caps                  = eco_get_planet_caps($user, $planet);

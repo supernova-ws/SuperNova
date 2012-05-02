@@ -11,9 +11,26 @@ function sn_function_call($func_name, $func_arg = array())
 {
   global $functions;
 
-  $func_name = isset($functions[$func_name]) && is_callable($functions[$func_name]) ? $functions[$func_name] : ('sn_' . $func_name);
+  if(!isset($functions[$func_name]) || (!is_array($functions[$func_name]) && !is_callable($functions[$func_name])))
+  {
+    $functions[$func_name] = 'sn_' . $func_name;
+  }
 
-  return call_user_func_array($func_name, $func_arg);
+  if(is_array($functions[$func_name]))
+  {
+//  $func_arg[] = null;
+    foreach($functions[$func_name] as $func_chain_name)
+    {
+      $result = call_user_func_array($func_chain_name, $func_arg);
+    }
+  }
+  else
+  {
+    $func_name = isset($functions[$func_name]) && is_callable($functions[$func_name]) ? $functions[$func_name] : ('sn_' . $func_name);
+    $result = call_user_func_array($func_name, $func_arg);
+  }
+
+  return $result;
 }
 
 // ----------------------------------------------------------------------------------------------------------------

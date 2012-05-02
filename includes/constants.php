@@ -14,11 +14,24 @@ if(!defined('INSIDE'))
   die('Hacking attempt');
 }
 
+// ****************************************************************************************************************
+// SHOULD BE REPLACED WITH CONFIG!
+define('MAX_FLEET_OR_DEFS_PER_ROW', 2000);
+define('MAX_ATTACK_ROUNDS', 10);
+define('MAX_OVERFLOW', 1);
+define('BASE_STORAGE_SIZE', 500000);
+define('BUILD_METAL'      , 500);
+define('BUILD_CRISTAL'    , 500);
+define('BUILD_DEUTERIUM'  , 0);
+define('HIDE_1ST_FROM_STATS', 0);
+define('HIDE_BUILDING_RECORDS', 0);
+define('SHOW_ADMIN', 1);
+
+
+
 define('DB_VERSION', '33');
 define('SN_RELEASE', '34');
-
-define('SN_VERSION', '34a14.8');
-
+define('SN_VERSION', '34a15');
 define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -33,31 +46,6 @@ define('PREG_DATE_SQL', '/(20[1-9][0-9])\-(1[0-2]|0[1-9])\-(3[01]|[12]\d|0[1-9])
 
 // Default allowed chars for random string
 define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
-
-define('MAX_ATTACK_ROUNDS', 10);
-
-// Nombre maximum d'element dans la liste de construction de batiments
-define('MAX_BUILDING_QUEUE_SIZE'  , 5);
-// Nombre maximum d'element dans une ligne de liste de construction flotte et defenses
-define('MAX_FLEET_OR_DEFS_PER_ROW', 2000);
-// Taux de depassement possible dans l'espace de stockage des hangards ...
-// 1.0 pour 100% - 1.1 pour 110% etc ...
-define('MAX_OVERFLOW', 1);
-
-// Valeurs de bases pour les colonies ou planetes fraichement crГ©es
-define('BASE_STORAGE_SIZE', 500000);
-define('BUILD_METAL'      , 500);
-define('BUILD_CRISTAL'    , 500);
-define('BUILD_DEUTERIUM'  , 0);
-
-//hide 1st player from stats
-define('HIDE_1ST_FROM_STATS', 0);
-
-//deny access to building records page
-define('HIDE_BUILDING_RECORDS', 0);
-
-//galaxy_show_admins
-define('SHOW_ADMIN', 1);
 
 // Mot qui sont interdit a la saisie !
 $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
@@ -521,6 +509,9 @@ define('UNIT_PLAN_SHIP_CARGO_HYPER', 1103);
 define('UNIT_PLAN_SHIP_DEATH_STAR', 1104);
 define('UNIT_PLAN_SHIP_SUPERNOVA', 1105);
 define('UNIT_PLAN_DEF_SHIELD_PLANET', 1106);
+
+// === Premium
+define('UNIT_PREMIUM', 1200);
 
 // === Unit types // TODO - convert to GROUP_xxx constants
 define('UNIT_STRUCTURE', 0);

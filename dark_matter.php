@@ -25,7 +25,7 @@ foreach($sn_module as $module_name => $module)
     continue;
   }
 
-  lng_include($module_name, '', $module->manifest['root_relative']);
+  lng_include($module_name, $module->manifest['root_relative']);
 
   $template->assign_block_vars('payment_module', array(
     'ID' => $module_name,
