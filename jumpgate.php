@@ -18,12 +18,14 @@ $TargetPlanet = sys_get_param_id('jmpto');
 
 if($TargetPlanet)
 {
+  doquery('START TRANSACTION');
+  $planetrow = doquery("SELECT * FROM {{planets}} WHERE id = {$planetrow['id']} LIMIT 1 FOR UPDATE;", true);
   $NextJumpTime = uni_get_time_to_jump($planetrow);
   // Dit monsieur, j'ai le droit de sauter ???
   if(!$NextJumpTime)
   {
     // Dit monsieur, ou je veux aller ca existe ???
-    $TargetGate   = doquery ( "SELECT `id`, `sprungtor`, `last_jump_time` FROM {{planets}} WHERE `id` = '". $TargetPlanet ."';", '', true);
+    $TargetGate   = doquery ( "SELECT `id`, `sprungtor`, `last_jump_time` FROM {{planets}} WHERE `id` = '{$TargetPlanet}'  LIMIT 1 FOR UPDATE;", true);
     // Dit monsieur, ou je veux aller y a une porte de saut ???
     if ($TargetGate['sprungtor'] > 0) {
       $NextDestTime = uni_get_time_to_jump ( $TargetGate );
@@ -34,15 +36,18 @@ if($TargetPlanet)
         $ShipArray   = array();
         $SubQueryOri = "";
         $SubQueryDes = "";
-        for ( $Ship = 200; $Ship < 300; $Ship++ ) {
+//        for ( $Ship = 200; $Ship < 300; $Ship++ )
+        foreach($sn_data['groups']['fleet'] as $Ship)
+        {
           $ShipLabel = "c". $Ship;
-          $ShipNum = intval($_POST[ $ShipLabel ]);
-          if ( $ShipNum > $planetrow[ $sn_data[$Ship]['name'] ] ) {
+          $ShipNum = floor(floatval($_POST[$ShipLabel]));
+          if ( $ShipNum > $planetrow[ $sn_data[$Ship]['name'] ] )
+          {
             $ShipArray[ $Ship ] = $planetrow[ $sn_data[$Ship]['name'] ];
           } else {
             $ShipArray[ $Ship ] = $ShipNum;
           }
-          if ($ShipArray[ $Ship ] <> 0) {
+          if ($ShipArray[ $Ship ] > 0) {
             $SubQueryOri .= "`". $sn_data[$Ship]['name'] ."` = `". $sn_data[$Ship]['name'] ."` - '". $ShipArray[ $Ship ] ."', ";
             $SubQueryDes .= "`". $sn_data[$Ship]['name'] ."` = `". $sn_data[$Ship]['name'] ."` + '". $ShipArray[ $Ship ] ."', ";
           }
@@ -86,6 +91,7 @@ if($TargetPlanet)
   } else {
     $RetMessage = $lang['gate_wait_star'] ." - ". pretty_time($NextJumpTime);
   }
+  doquery('COMMIT;');
   message ($RetMessage, $lang['tech'][STRUC_MOON_GATE], "jumpgate.php", 10);
 } else {
   $GateTPL = gettemplate('gate_fleet_table', true);
