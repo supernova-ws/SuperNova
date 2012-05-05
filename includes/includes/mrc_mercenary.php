@@ -47,7 +47,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
   {
     $is_permanent = $mode == UNIT_PLANS || !$config->empire_mercenary_temporary;
     $cost_alliance_multiplyer = (SN_IN_ALLY === true && $mode == UNIT_PLANS ? $config->ali_bonus_members : 1);
-  $cost_alliance_multiplyer = $cost_alliance_multiplyer >= 1 ? $cost_alliance_multiplyer : 1;
+    $cost_alliance_multiplyer = $cost_alliance_multiplyer >= 1 ? $cost_alliance_multiplyer : 1;
     if(!in_array($mercenary_id, $sn_data['groups'][$mode == UNIT_PLANS ? 'plans' : 'mercenaries']))
     {
       throw new Exception($lang['mrc_msg_error_wrong_mercenary'], ERR_ERROR);

@@ -12,6 +12,8 @@ if (!defined('INSIDE'))
   die('Hack attempt!');
 }
 
+  $sn_menu_extra = array();
+
   $sn_version_check_class = array(
     SNC_VER_NEVER => 'warning',
 
@@ -2223,6 +2225,19 @@ if (!defined('INSIDE'))
         'factor' => 1,
       ),
       'max' => 1,
+      'bonus_type' => BONUS_ABILITY,
+    ),
+
+
+    UNIT_PREMIUM => array(
+      'name' => 'UNIT_PREMIUM',
+      'type' => UNIT_PREMIUM,
+      'location' => LOC_USER,
+      'cost' => array(
+        RES_DARK_MATTER => 25000,
+        'factor' => 3,
+      ),
+      'max' => 5,
       'bonus_type' => BONUS_ABILITY,
     ),
 

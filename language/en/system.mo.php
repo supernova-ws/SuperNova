@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 34a16
 *
 */
 
@@ -696,6 +696,8 @@ $lang = array_merge($lang, array(
   'fl_on_stores' => 'In stock',
 
   'sys_ali_bonus_members' => 'Minimum Alliance size for Ally bonus ',
+
+  'sys_premium' => 'PREMIUM',
 
 ));
 

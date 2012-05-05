@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 34a16
 *
 */
 
@@ -695,6 +695,8 @@ $lang = array_merge($lang, array(
   'fl_on_stores' => 'На складе',
 
   'sys_ali_bonus_members' => 'Минимальное размер Альянса для получения бонуса',
+
+  'sys_premium' => 'ПЕРМИУМ',
 
 ));
 

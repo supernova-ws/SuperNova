@@ -39,7 +39,7 @@ function eco_get_planet_caps(&$user, &$planet_row)
   {
     $unit_data = $sn_data[$ProdID];
 
-    $BuildLevel = $planet_row[$sn_data[$ProdID]['name']];
+    $BuildLevel = mrc_get_level($user, $planet_row, $ProdID); // $planet_row[$sn_data[$ProdID]['name']];
     $BuildLevelFactor = $planet_row["{$sn_data[$ProdID]['name']}_porcent"];
 
     $Caps['energy'][$ProdID] = floor(eval($unit_data['energy_perhour']) * $config_resource_multiplier);

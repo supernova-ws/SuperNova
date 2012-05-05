@@ -1,15 +1,45 @@
 <?php
 
+
+
+
 class sn_module
 {
   public $manifest = array(
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #34a14# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #34a16# copyright © 2009-2012 Gorlum',
+
+//    'require' => null,
+    'root_relative' => '',
 
     'installed' => true,
     'active' => true,
+
+    // 'functions' array - this functions would be installed as hooks
+    // Key: overwritable function name to replace
+    // Value: which method to use. Format: [*][<object_name>][.]<method>
+    // '*' means that new function would replace old one
+    // If object_name is ommited but "." is present - overwritable linked to global function
+    // If only "method" present - overwritable linked to appropriate method of current object
+    // Function/Method should be accessible on module init
+    'functions' => array(
+//      'test_object_test_method' => 'test_object.test_method',
+//      'test_function' => '.my_test_function',
+//      'this_object_test_method' => 'test_method',
+    ),
+
+    // 'menu' array - this menu items would be merged into main game menu
+    // Array element almost identical to $sn_menu with additional param 'LOCATION'.
+    // 'LOCATION' => '-news', // Special atrtribute for modules
+    // [-|+][<menu_item_id>]
+    // <menu_item_id> identifies menu item aginst new menu item would be placed. When ommited new item placed against whole menu
+    // -/+ indicates that new item should be placed before/after identified menu item (or whole menu). If ommited and menu item exists - new item will replace previous one
+    // Empty or non-existent LOCATION equivalent to '+' - place item at end of menu
+    // Non-existent menu_item_id treated as ommited
+    'menu' => array(
+    ),
   );
 
   protected $config = array();
@@ -49,7 +79,47 @@ class sn_module
 
       foreach($this->manifest['functions'] as $function_name => $override_with)
       {
-        $functions[$function_name] = array($class_module_name, $override_with);
+        $overwrite = $override_with[0] == '*';
+        if($overwrite)
+        {
+          $override_with = substr($override_with, 1);
+        }
+
+        if(($point_position = strpos($override_with, '.')) === false)
+        {
+          $override_with = array($class_module_name, $override_with);
+        }
+        elseif($point_position == 0)
+        {
+          $override_with = substr($override_with, 1);
+        }
+        else
+        {
+          $override_with = array(substr($override_with, 0, $point_position), substr($override_with, $point_position + 1));
+        }
+
+        if(!isset($functions[$function_name]))
+        {
+          $functions[$function_name] = array();
+        }
+
+        if($overwrite)
+        {
+          $functions[$function_name] = array();
+        }
+
+        $functions[$function_name][] = $override_with;
+      }
+    }
+
+    // Pathcing game menu - if any
+    if(isset($this->manifest['menu']))
+    {
+      global $sn_menu_extra;
+
+      foreach($this->manifest['menu'] as $menu_item_name => $menu_item_data)
+      {
+        $sn_menu_extra[$menu_item_name] = $menu_item_data;
       }
     }
   }

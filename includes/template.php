@@ -51,7 +51,7 @@ function tpl_render_menu()
 /*
     'triolan_menu' => array(                  // This should be used as ID for both internal submenu insert AND as "id" attribute of Tx HTML-tag (see below)
       'LEVEL' => 'submenu',                   // Which Tx HTML tag to use. 'header' - would be used TH; 'submenu' - TD
-      'TYPE'  => 'image',                     // Menu item type: 'image' (wrapped by IMG tag) or 'text' (puts "as-is"). Default is 'text'
+      'TYPE'  => 'image',                     // Menu item type: 'image' (wrapped by IMG tag), 'text' (puts "as-is") or 'lang' for late biding with $lang[ITEM] values. Default is 'text'
       'CLASS' => 'c_c',                       // Class for TD/TH element. Can be c_c, c_l, c_r or any other custom. 'c_c' default for 'header', 'c_l' default for 'text'
       'TITLE' => 'Triolan.COM',               // TITLE tag for Tx HTML-element
 
@@ -395,6 +395,55 @@ function tpl_render_menu()
   }
   else
   {
+    global $sn_menu_extra;
+
+    foreach($sn_menu_extra as $menu_item_id => $menu_item)
+    {
+      $item_location = $menu_item['LOCATION'];
+      unset($menu_item['LOCATION']);
+
+      if(!$item_location)
+      {
+        $sn_menu[$menu_item_id] = $menu_item;
+        continue;
+      }
+
+      $is_positioned = $item_location[0];
+      if($is_positioned == '+' || $is_positioned == '-')
+      {
+        $item_location = substr($item_location, 1);
+      }
+      else
+      {
+        $is_positioned = '';
+      }
+
+      if($item_location)
+      {
+        $menu_keys = array_keys($sn_menu);
+        $insert_position = array_search($item_location, $menu_keys);
+        if($insert_position === false)
+        {
+          $insert_position = count($sn_menu)-1;
+          $is_positioned = '+';
+          $item_location = '';
+        }
+      }
+      else
+      {
+        $insert_position = $is_positioned == '-' ? 0 : count($sn_menu);
+      }
+
+      $insert_position += $is_positioned == '+' ? 1 : 0;
+      $spliced = array_splice($sn_menu, $insert_position, count($sn_menu) - $insert_position);
+      $sn_menu[$menu_item_id] = $menu_item;
+      if(!$is_positioned && $item_location)
+      {
+        unset($spliced[$item_location]);
+      }
+      $sn_menu = array_merge($sn_menu, $spliced);
+    }
+
     foreach($sn_menu as $menu_item_id => $menu_item)
     {
       if(!$menu_item)
@@ -405,6 +454,11 @@ function tpl_render_menu()
       if(is_string($menu_item_id))
       {
         $menu_item['ID'] = $menu_item_id;
+      }
+
+      if($menu_item['TYPE'] == 'lang')
+      {
+        $menu_item['ITEM'] = $lang[$menu_item['ITEM']];
       }
 
       $menu_item['ALT'] = htmlentities($menu_item['ALT']);
