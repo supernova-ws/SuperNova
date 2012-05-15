@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 34a16.2
 *
 */
 
@@ -148,7 +148,7 @@ $lang = array_merge($lang, array(
     ),
 
     STRUC_SILO => array(
-      'description' => 'Missile silo serve for storing missiles. With each level you can store five interplanetary or ten interceptor missiles anymore. One interplanetary missiles require space twice the interceptor missile. May be any combination of different types of missiles.',
+      'description' => 'Missile silo serve for storing missiles. With each level you can store four interplanetary or twelve interceptor missiles more. One interplanetary missiles require space triple the interceptor missile. May be any combination of different types of missiles.',
       'description_short' => 'Missile silo allows firing rockets and missile plus storage.',
     ),
 
