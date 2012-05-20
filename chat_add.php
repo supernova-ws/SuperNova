@@ -56,9 +56,13 @@ if ($message && $user['username'])
         $highlight = $config->chat_highlight_moderator;
       break;
     }
-
-    $nick = preg_replace("#(.+)#", $highlight ? $highlight : '$1', $nick);
   }
+  elseif(mrc_get_level($user, false, UNIT_PREMIUM))
+  {
+    $highlight = $config->chat_highlight_premium;
+  }
+
+  $nick = preg_replace("#(.+)#", $highlight ? $highlight : '$1', $nick);
 
   $nick = mysql_real_escape_string($nick);
 

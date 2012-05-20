@@ -1712,6 +1712,12 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_check_key('server_que_length_structures', 5, !isset($config->server_que_length_structures));
     upd_check_key('server_que_length_hangar', 5, !isset($config->server_que_length_hangar));
 
+    upd_check_key('chat_highlight_moderator', '<span class="nick_moderator">$1</span>', $config->chat_highlight_admin == '<font color=green>$1</font>');
+    upd_check_key('chat_highlight_operator', '<span class="nick_operator">$1</span>', $config->chat_highlight_admin == '<font color=red>$1</font>');
+    upd_check_key('chat_highlight_admin', '<span class="nick_admin">$1</span>', $config->chat_highlight_admin == '<font color=purple>$1</font>');
+
+    upd_check_key('chat_highlight_premium', '<span class="nick_premium">$1</span>', !isset($config->chat_highlight_premium));
+
     upd_do_query("UPDATE {{planets}} SET `PLANET_GOVERNOR_LEVEL` = CEILING(`PLANET_GOVERNOR_LEVEL`/2) WHERE PLANET_GOVERNOR_ID = " . MRC_ENGINEER . " AND `PLANET_GOVERNOR_LEVEL` > 8;");
 
     // $new_version = 33;

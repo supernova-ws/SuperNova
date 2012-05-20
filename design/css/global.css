@@ -237,3 +237,23 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
 .errormessage a, .success a, .notice a, .warning a, .error a {
   text-decoration: underline;
 }
+
+.nick_admin
+{
+  color: purple;
+}
+
+.nick_operator
+{
+  color: red;
+}
+
+.nick_moderator
+{
+  color: green;
+}
+
+.nick_premium
+{
+  color: yellow;
+}
