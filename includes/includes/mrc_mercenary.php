@@ -210,7 +210,8 @@ function mrc_mercenary_render($user)
         'CAN_BUY'     => mrc_officer_accessible($user, $mercenary_id),
       ));
 
-      for($i = $config->empire_mercenary_temporary ? 1 : $mercenary_level + 1; $i <= $mercenary['max']; $i++)
+      $upgrade_cost = 1;
+      for($i = $config->empire_mercenary_temporary ? 1 : $mercenary_level + 1; $mercenary['max'] ? ($i <= $mercenary['max']) : $upgrade_cost <= $user_dark_matter; $i++)
       {
         $total_cost = eco_get_total_cost($mercenary_id, $i);
         $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $cost_alliance_multiplyer;
@@ -220,9 +221,10 @@ function mrc_mercenary_render($user)
           break;
         }
         */
+        $upgrade_cost = $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old;
         $template->assign_block_vars('officer.level', array(
           'VALUE' => $i,
-          'PRICE' => $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old,
+          'PRICE' => $upgrade_cost,
         ));
       }
     }

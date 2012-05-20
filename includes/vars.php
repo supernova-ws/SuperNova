@@ -1993,7 +1993,7 @@ if (!defined('INSIDE'))
         RES_DARK_MATTER => 3000,
         'factor' => 1,
       ),
-//      'max' => 10,
+      'max' => 30,
       'bonus' => 10,
       'bonus_type' => BONUS_PERCENT,
     ),
