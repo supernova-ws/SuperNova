@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a16.2
+* @version 34a17
 *
 */
 
@@ -383,13 +383,13 @@ $lang = array_merge($lang, array(
     ),
 
     MRC_ENGINEER => array(
-      'effect' => 'per level to construction time of buildings and ships each level',
+      'effect' => 'per level to construction speed for buildings and ships',
       'description' => '',
     ),
 
     MRC_FORTIFIER => array(
       'description' => 'Fortifier - Army Engineer. His in-depth knowledge of defensive systems allow you to shorten planet defense building time',
-      'effect' => 'per level to construction time of missiles and defense structures<br />+10% per level to attack, armor and shields when defending planet',
+      'effect' => 'per level to construction speed of missiles and defense structures<br />+10% per level to attack, armor and shields when defending planet',
     ),
 
     MRC_STOCKMAN => array(
@@ -404,7 +404,7 @@ $lang = array_merge($lang, array(
 
     MRC_ACADEMIC => array(
       'description' => 'Academicians are actors Guild Technocrats. Their mind and scholars degree allow them Excel in their acts even constructors. They specialize in the field of technological progress.',
-      'effect' => 'by the time of studies for each level',
+      'effect' => 'per level to technology research speed',
     ),
 
 //    MRC_DESTRUCTOR => array(

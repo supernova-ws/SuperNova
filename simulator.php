@@ -86,7 +86,7 @@ if($_POST['submit'] || $execute)
   // Well lets just copy rw.php code. If I am showing a cr why re-inent the wheel???
   $Page  = '<html>';
   $Page .= '<head>';
-  $Page .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"{$dpath}/formate.css\">";
+  $Page .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"{$dpath}/skin.css\">";
   $Page .= '<meta http-equiv="content-type" content="text/html; charset=utf-8" />';
   $Page .= '</head>';
   $Page .= '<body>';

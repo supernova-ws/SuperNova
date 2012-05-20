@@ -183,6 +183,18 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
   margin: auto;
 }
 
+.affiliates
+{
+  color: #993333;
+}
+
+#menu_premium
+{
+  color: #CC3333;
+}
+
+
+/* Message & numbers color coding */
 .important
 {
   color: red;
@@ -190,7 +202,38 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
   font-weight: bold;
 }
 
-.affiliates
-{
-  color: #993333;
+.ok, .success, .positive {
+  color: lime;
+}
+
+.notice, .zero, .neutral {
+  color: yellow;
+}
+
+.warning {
+  color: orange;
+}
+
+.error, .negative {
+  color: red;
+}
+
+.ok_bg, .success_bg, .positive_bg {
+  background-color: darkgreen;
+}
+
+.notice_bg, .zero_bg, .neutral_bg {
+  background-color: #AAAA00;
+}
+
+.warning_bg {
+  background-color: #924200;
+}
+
+.error_bg, .negative_bg {
+  background-color: darkred;
+}
+
+.errormessage a, .success a, .notice a, .warning a, .error a {
+  text-decoration: underline;
 }

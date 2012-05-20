@@ -60,24 +60,28 @@ function get_game_speed()
 /**
  * @version 1.0
  * @copyright 2008 by ??????? for XNova
+ --- Formatting & Coloring numbers
+ $n - number to format
+ $floor: (ignored if $limit set)
+   integer   - floors to $floor numbers after decimal points
+   true      - floors number before format
+   otherwise - floors to 2 numbers after decimal points
+ $color:
+   true    - colors number to green if positive or zero; red if negative
+   0
+   numeric - colors number to green if less then $color; red if greater
+ $limit:
+   0/false - proceed with $floor
+   numeric - divieds number to segments by power of $limit and adds 'k' for each segment
+             makes sense for 1000, but works with any number
+             generally converts "15000" to "15k", "2000000" to "2kk" etc
+ $style
+   null  - standart result
+   true  - return only style class for current params
+   false - return array('text' => $ret, 'class' => $class), where $ret - unstyled
  */
-// --- Formatting & Coloring numbers
-// $n - number to format
-// $floor: (ignored if $limit set)
-//   integer   - floors to $floor numbers after decimal points
-//   true      - floors number before format
-//   otherwise - floors to 2 numbers after decimal points
-// $color:
-//   true    - colors number to green if positive or zero; red if negative
-//   0
-//   numeric - colors number to green if less then $color; red if greater
-// $limit:
-//   0/false - proceed with $floor
-//   numeric - divieds number to segments by power of $limit and adds 'k' for each segment
-//             makes sense for 1000, but works with any number
-//             generally converts "15000" to "15k", "2000000" to "2kk" etc
 
-function pretty_number($n, $floor = true, $color = false, $limit = false)
+function pretty_number($n, $floor = true, $color = false, $limit = false, $style = null)
 {
   if(is_int($floor))
   {
@@ -134,7 +138,14 @@ function pretty_number($n, $floor = true, $color = false, $limit = false)
       $class = $n == -$color ? 'zero' : (-$n < $color ? 'positive' : 'negative');
     }
 
-    $ret = "<span class='{$class}'>{$ret}</span>";
+    if(!isset($style))
+    {
+      $ret = "<span class='{$class}'>{$ret}</span>";
+    }
+    else
+    {
+      $ret = $style ? $ret = $class : $ret = array('text' => $ret, 'class' => $class);
+    }
   }
 
   return $ret;
@@ -333,8 +344,8 @@ function eco_get_total_cost($unit_id, $unit_level)
     {
       continue;
     }
-
-    $cost_array[BUILD_CREATE][$resource_id] = $resource_amount * ($factor == 1 ? $unit_level : ((pow($factor, $unit_level) - $factor) / ($factor - 1)));
+//    $cost_array[BUILD_CREATE][$resource_id] = $resource_amount * ($factor == 1 ? $unit_level : ((pow($factor, $unit_level) - $factor) / ($factor - 1)));
+    $cost_array[BUILD_CREATE][$resource_id] = $resource_amount * ($factor == 1 ? $unit_level : ((1 - pow($factor, $unit_level)) / (1 - $factor)));
     if(in_array($resource_id, $sn_data['groups']['resources_loot']))
     {
       $cost_array['total'] += $cost_array[BUILD_CREATE][$resource_id] * $rate[$resource_id];
@@ -361,7 +372,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
     elseif($for_update || !isset($user[$unit_id]))
     {
       $time_restriction = ($unit_id == UNIT_PREMIUM) || ($config->empire_mercenary_temporary && $sn_data[$unit_id]['type'] == UNIT_MERCENARIES) ? " AND powerup_time_start <= {$time_now} AND powerup_time_finish >= {$time_now} " : '';
-      $mercenary_level = doquery("SELECT * FROM {{powerup}} WHERE powerup_user_id = {$user['id']} AND powerup_unit_id = {$unit_id} {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
+      $mercenary_level = doquery("SELECT * FROM {{powerup}} WHERE powerup_user_id = {$user['id']} AND powerup_unit_id = '{$unit_id}' {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
       $user[$unit_id] = $mercenary_level;
     }
     $mercenary_level = $user['units'] = intval($user[$unit_id]['powerup_unit_level']);
@@ -408,6 +419,7 @@ function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $b
       break;
 
       case BONUS_PERCENT:
+        $mercenary_level = $mercenary_bonus < 0 && $mercenary_level * $mercenary_bonus < -90 ? -90 / $mercenary_bonus : $mercenary_level;
         $value += $base_value * $mercenary_level * $mercenary_bonus / 100;
       break;
 

@@ -212,9 +212,6 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
   $que_types[QUE_STRUCTURES]['unit_list'] = $sn_data['groups']['build_allow'][$planet['planet_type']];
 
   $que_data  = &$que_types[$que_id];
-//debug($que_data['length']);
-//debug(mrc_get_level($user, $planet, MRC_ENGINEER));
-//debug($que_data['length'] + (mrc_get_level($user, $planet, MRC_ENGINEER)));die();
   // We do not work with negaitve unit_amounts - hack or cheat
   if(
     $unit_amount < 1

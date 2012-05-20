@@ -1938,8 +1938,8 @@ if (!defined('INSIDE'))
         RES_DARK_MATTER => 500,
         'factor' => 1.65,
       ),
-      'max' => 8,
-      'bonus' => -10,
+//      'max' => 8,
+      'bonus' => 10,
       'bonus_type' => BONUS_PERCENT,
     ),
     MRC_FORTIFIER => array(
@@ -1950,8 +1950,8 @@ if (!defined('INSIDE'))
         RES_DARK_MATTER => 2000,
         'factor' => 1.25,
       ),
-      'max' => 8,
-      'bonus' => -10,
+//      'max' => 8,
+      'bonus' => 10,
       'bonus_type' => BONUS_PERCENT,
     ),
 
@@ -1993,8 +1993,8 @@ if (!defined('INSIDE'))
         RES_DARK_MATTER => 3000,
         'factor' => 1,
       ),
-      'max' => 10,
-      'bonus' => -5,
+//      'max' => 10,
+      'bonus' => 10,
       'bonus_type' => BONUS_PERCENT,
     ),
 
@@ -2227,20 +2227,6 @@ if (!defined('INSIDE'))
       'max' => 1,
       'bonus_type' => BONUS_ABILITY,
     ),
-
-
-    UNIT_PREMIUM => array(
-      'name' => 'UNIT_PREMIUM',
-      'type' => UNIT_PREMIUM,
-      'location' => LOC_USER,
-      'cost' => array(
-        RES_DARK_MATTER => 25000,
-        'factor' => 3,
-      ),
-      'max' => 5,
-      'bonus_type' => BONUS_ABILITY,
-    ),
-
 
     'groups' => array(
       // Missions

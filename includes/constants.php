@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '33');
 define('SN_RELEASE', '34');
-define('SN_VERSION', '34a16.2');
+define('SN_VERSION', '34a17');
 define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -159,6 +159,7 @@ define('RPG_ALLY', 13);
 define('RPG_BIRTHDAY', 14);
 define('RPG_PURCHASE', 15);
 define('RPG_PLANS', 16);
+define('RPG_PREMIUM', 17);
 
 // Operation error status
 define('ERR_NONE'               , 0); // No error
@@ -183,7 +184,8 @@ define('LOG_DEFAULT', 0); // Код по умолчанию
 define('LOG_INFORMATION', 100);
 define('LOG_INFO_DM_CHANGE', 102); // Изменение количества Темной Материи
 define('LOG_INFO_DB_CHANGE', 103); // Изменение структуры БД
-define('LOG_INFO_UNI_RENAME', 104); // Изменение количества Темной Материи
+define('LOG_INFO_UNI_RENAME', 104); // Переименование объекта Вселенной
+define('LOG_INFO_PREMIUM_CANCEL', 105); // Пользователь отменил премиум аккаунт
 define('LOG_INFO_STAT_START', 190); // Запуск обновления статистики игроков
 define('LOG_INFO_STAT_PROCESS', 191); // Сообщения системы обновления статистики
 define('LOG_INFO_STAT_FINISH', 192); // Обновление статистики игроков выполнено успешно
@@ -510,7 +512,6 @@ define('UNIT_PLAN_SHIP_DEATH_STAR', 1104);
 define('UNIT_PLAN_SHIP_SUPERNOVA', 1105);
 define('UNIT_PLAN_DEF_SHIELD_PLANET', 1106);
 
-// === Premium
 define('UNIT_PREMIUM', 1200);
 
 // === Unit types // TODO - convert to GROUP_xxx constants

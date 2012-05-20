@@ -168,7 +168,8 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
 
   if($mercenary)
   {
-    $time = mrc_modify_value($user, $planet, $mercenary, $time);
+//    $time = mrc_modify_value($user, $planet, $mercenary, $time);
+    $time = $time / mrc_modify_value($user, $planet, $mercenary, 1);
   }
 
   $time = ($time >= 2) ? $time : (in_array($unit_id, $sn_groups['governors']) ? 0 : 2);

@@ -17,7 +17,7 @@ $raportrow = doquery("SELECT * FROM {{rw}} WHERE `rid` = '".(mysql_real_escape_s
 if ($allow == 1 || $open) {
   $Page  = "<html>";
   $Page .= "<head>";
-  $Page .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$dpath."/formate.css\">";
+  $Page .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"".$dpath."/skin.css\">";
   $Page .= "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />";
   $Page .= "</head>";
   $Page .= "<body>";

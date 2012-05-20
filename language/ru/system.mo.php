@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a16
+* @version 34a17
 *
 */
 
@@ -298,6 +298,8 @@ $lang = array_merge($lang, array(
   'eco_que_empty' => 'Очередь пуста',
   'eco_que_clear' => 'Очистить очередь',
   'eco_que_trim'  => 'Отменить последнее',
+
+  'sys_cancel' => 'Отменить',
 
   'sys_overview'			=> 'Обзор',
   'mod_marchand'			=> 'Торговец',
@@ -610,6 +612,7 @@ $lang = array_merge($lang, array(
 
   'sys_buy_for' => 'Купить за',
   'sys_buy' => 'Купить',
+  'sys_for' => 'за',
 
   'sys_eco_lack_dark_matter' => 'Не хватает Темной Материи',
 

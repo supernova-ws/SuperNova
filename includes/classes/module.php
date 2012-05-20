@@ -9,13 +9,20 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #34a16# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #34a17# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
 
     'installed' => true,
     'active' => true,
+
+    // 'constants' array - contents of this array would be instaled into engine
+    'constants' => array(
+//      'UNIT_STRUCTURE_NEW' => 999999,
+    ),
+
+    'vars' => array(), // Just a placeholder. vars assigned via special method __assign_vars(). See below
 
     // 'functions' array - this functions would be installed as hooks
     // Key: overwritable function name to replace
@@ -44,6 +51,33 @@ class sn_module
 
   protected $config = array();
 
+  function __assign_vars()
+  {
+    return array(
+/*
+      'sn_data' => array(
+        UNIT_STRUCTURE_NEW => array( // Will honor new constants
+          'name' => 'robot_factory',
+          'type' => UNIT_STRUCTURE,
+          'location' => LOC_PLANET,
+          'cost' => array(
+            RES_METAL     => 400,
+            RES_CRYSTAL   => 120,
+            RES_DEUTERIUM => 200,
+            RES_ENERGY    => 0,
+            'factor' => 2,
+          ),
+          'metal' => 400,
+          'crystal' => 120,
+          'deuterium' => 200,
+          'energy' => 0,
+          'factor' => 2,
+        ),
+      ),
+*/
+    );
+  }
+
   function sn_module($filename = __FILE__)
   {
     // Getting module PHP class name
@@ -70,6 +104,44 @@ class sn_module
     if(!$this->manifest['active'])
     {
       return;
+    }
+
+    // Setting constants - if any
+    if(isset($this->manifest['constants']))
+    {
+      foreach($this->manifest['constants'] as $constant_name => $constant_value)
+      {
+        if(!defined($constant_name))
+        {
+          define($constant_name, $constant_value);
+        }
+      }
+    }
+
+    // Adding vars - if any
+    // Due to possible introduce of new constants in previous step vars is assigned via special method to honor new constants
+    // Only root variables are honored for now. For ex. $sn_data['groups'] would overwrite all groups subarray of $sn_data
+    $this->manifest['vars'] = $this->__assign_vars();
+    if(!empty($this->manifest['vars']))
+    {
+      $vars_assigned = array();
+      foreach($this->manifest['vars'] as $var_name => $var_value)
+      {
+        if(!isset($vars_assigned[$var_name]))
+        {
+          $vars_assigned[$var_name] = true;
+          global $$var_name;
+        }
+
+        if(!isset($$var_name) || !is_array($$var_name))
+        {
+          $$var_name = $var_value;
+        }
+        elseif(is_array($$var_name))
+        {
+          $$var_name = $$var_name + $var_value;
+        }
+      }
     }
 
     // Overriding function if any
@@ -101,6 +173,10 @@ class sn_module
         if(!isset($functions[$function_name]))
         {
           $functions[$function_name] = array();
+          if(is_callable("sn_{$function_name}"))
+          {
+            $functions[$function_name][] = "sn_{$function_name}";
+          }
         }
 
         if($overwrite)
