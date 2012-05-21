@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 34a17.2
 *
 */
 
@@ -110,7 +110,7 @@ $lang = array_merge($lang, array(
   'ali_req_template' => 'Прошу принять меня в ваш Альянс',
   'ali_req_text' => 'Текст заявки',
   'ali_req_title' => 'Подача заявки в Альянс',
-  'ali_req_waiting' => 'Ваше заявка на вступление в Альянс [%s] будет расмотренно главой Альянса.<br>Вас оповестят о принятом решении.',
+  'ali_req_waiting' => 'Ваша заявка на вступление в Альянс [%s] будет расмотрена главой Альянса.<br>Вас оповестят о принятом решении.',
   'ali_req_check' => 'Управление заявками',
   'ali_req_requestCount' => 'Заявок',
   'ali_req_admin_title' => 'Обзор заявок',
