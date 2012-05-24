@@ -2,20 +2,6 @@
 
 lng_include('mrc_mercenary');
 
-$sn_mrc_hire_discount = array(
-//  PERIOD_MINUTE    => 1,
-//  PERIOD_MINUTE_3  => 1,
-//  PERIOD_MINUTE_5  => 1,
-//  PERIOD_MINUTE_10 => 1,
-//  PERIOD_DAY       => 3,
-//  PERIOD_DAY_3     => 2,
-  PERIOD_WEEK      => 1.5,
-  PERIOD_WEEK_2    => 1.2,
-  PERIOD_MONTH     => 1,
-  PERIOD_MONTH_2   => 0.9,
-  PERIOD_MONTH_3   => 0.8,
-);
-
 function mrc_officer_accessible(&$user, $mercenary_id)
 {
   global $sn_data, $config;
@@ -41,7 +27,7 @@ function mrc_officer_accessible(&$user, $mercenary_id)
 
 function mrc_mercenary_hire($mode, $user, $mercenary_id)
 {
-  global $time_now, $sn_data, $config, $lang, $sn_mrc_hire_discount;
+  global $time_now, $sn_data, $config, $lang, $sn_pwr_buy_discount;
 
   try
   {
@@ -64,7 +50,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
       throw new Exception($lang['mrc_msg_error_wrong_level'], ERR_ERROR);
     }
 
-    if($mercenary_level && !array_key_exists($mercenary_period = sys_get_param_int('mercenary_period'), $sn_mrc_hire_discount))
+    if($mercenary_level && !array_key_exists($mercenary_period = sys_get_param_int('mercenary_period'), $sn_pwr_buy_discount))
     {
       throw new Exception($lang['mrc_msg_error_wrong_period'], ERR_ERROR);
     }
@@ -89,7 +75,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
        $darkmater_cost_old = eco_get_total_cost($mercenary_id, $mercenary_level_old);
        $darkmater_cost[BUILD_CREATE][RES_DARK_MATTER] -= $darkmater_cost_old[BUILD_CREATE][RES_DARK_MATTER];
       }
-      $darkmater_cost = ceil($darkmater_cost[BUILD_CREATE][RES_DARK_MATTER] * $mercenary_period * $sn_mrc_hire_discount[$mercenary_period] / $config->empire_mercenary_base_period);
+      $darkmater_cost = ceil($darkmater_cost[BUILD_CREATE][RES_DARK_MATTER] * $mercenary_period * $sn_pwr_buy_discount[$mercenary_period] / $config->empire_mercenary_base_period);
     }
     else
     {
@@ -131,7 +117,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
 
 function mrc_mercenary_render($user)
 {
-  global $time_now, $sn_data, $config, $lang, $sn_mrc_hire_discount;
+  global $time_now, $sn_data, $config, $lang, $sn_pwr_buy_discount;
 
   $mode = sys_get_param_int('mode', UNIT_MERCENARIES);
   $mode = in_array($mode, array(UNIT_MERCENARIES, UNIT_PLANS)) ? $mode : UNIT_MERCENARIES;
@@ -151,7 +137,7 @@ function mrc_mercenary_render($user)
     $template->assign_block_vars('result', $operation_result);
   }
 
-  foreach($sn_mrc_hire_discount as $hire_period => $hire_discount)
+  foreach($sn_pwr_buy_discount as $hire_period => $hire_discount)
   {
     $template->assign_block_vars('period', array(
       'LENGTH'   => $hire_period,

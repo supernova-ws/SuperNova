@@ -2449,6 +2449,20 @@ mission = array(
     ),
   );
 
+  $sn_pwr_buy_discount = array(
+  //  PERIOD_MINUTE    => 1,
+  //  PERIOD_MINUTE_3  => 1,
+  //  PERIOD_MINUTE_5  => 1,
+  //  PERIOD_MINUTE_10 => 1,
+  //  PERIOD_DAY       => 3,
+  //  PERIOD_DAY_3     => 2,
+    PERIOD_WEEK      => 1.5,
+    PERIOD_WEEK_2    => 1.2,
+    PERIOD_MONTH     => 1,
+    PERIOD_MONTH_2   => 0.9,
+    PERIOD_MONTH_3   => 0.8,
+  );
+
   foreach ($sn_data as $unitID => $unitData)
   {
     $sn_data[$unitID]['armor'] = ($sn_data[$unitID]['metal'] + $sn_data[$unitID]['crystal'])/10;
