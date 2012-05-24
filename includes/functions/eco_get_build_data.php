@@ -114,19 +114,17 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   }
   elseif(in_array($unit_id, $sn_groups['tech']))
   {
-    $lab_db_name = $sn_data[STRUC_LABORATORY]['name'];
-    $nanolab_db_name = $sn_data[STRUC_LABORATORY_NANO]['name'];
-
-//    $tech_intergalactic = $user[$sn_data[TECH_RESEARCH]['name']];
     $tech_intergalactic = mrc_get_level($user, false, TECH_RESEARCH);
 
-    if(!$tech_intergalactic)
+    if(!$tech_intergalactic || $user['user_as_ally'])
     {
-      $lab_level = eco_get_lab_max_effective_level($user); // isset($planet[$lab_db_name]) ? $planet[$lab_db_name] : 1;
+      $lab_level = eco_get_lab_max_effective_level($user);
       $time = $time / $lab_level;
     }
     else
     {
+      $lab_db_name = $sn_data[STRUC_LABORATORY]['name'];
+      $nanolab_db_name = $sn_data[STRUC_LABORATORY_NANO]['name'];
       $lab_require = intval($unit_data['require'][STRUC_LABORATORY]);
       $tech_intergalactic = $tech_intergalactic + 1;
 /*
