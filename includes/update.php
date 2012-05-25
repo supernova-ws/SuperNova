@@ -1720,7 +1720,9 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
     upd_do_query("UPDATE {{planets}} SET `PLANET_GOVERNOR_LEVEL` = CEILING(`PLANET_GOVERNOR_LEVEL`/2) WHERE PLANET_GOVERNOR_ID = " . MRC_ENGINEER . " AND `PLANET_GOVERNOR_LEVEL` > 8;");
 
-    // $new_version = 33;
+
+    upd_do_query('COMMIT;', true);
+    // $new_version = 34;
 };
 upd_log_message('Upgrade complete.');
 
