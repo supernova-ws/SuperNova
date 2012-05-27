@@ -150,6 +150,8 @@ if($who == 1)
     FROM
       (SELECT @rownum:={$start}) r,
       {{users}} AS subject
+    WHERE
+      subject.user_as_ally is null
     ORDER BY
       subject.{$Rank} DESC, subject.id
     LIMIT

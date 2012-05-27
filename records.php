@@ -29,7 +29,7 @@ foreach($lang['tech'] as $unit_id => $unit_name)
     }
     elseif(in_array($unit_id, $sn_data['groups']['tech']))
     {
-      $data_row = doquery ("SELECT `username`, `{$sn_data[$unit_id]['name']}` AS `current` FROM {{users}} WHERE `{$sn_data[$unit_id]['name']}` = (SELECT MAX(`{$sn_data[$unit_id]['name']}`) FROM {{users}} WHERE `authlevel` = '0') AND `authlevel` = 0 ORDER BY `id` LIMIT 1;", '', true);
+      $data_row = doquery ("SELECT `username`, `{$sn_data[$unit_id]['name']}` AS `current` FROM {{users}} WHERE `{$sn_data[$unit_id]['name']}` = (SELECT MAX(`{$sn_data[$unit_id]['name']}`) FROM {{users}} WHERE `authlevel` = '0' AND user_as_ally is null) AND `authlevel` = 0 AND user_as_ally is null ORDER BY `id` LIMIT 1;", '', true);
     }
 
     if($data_row)
