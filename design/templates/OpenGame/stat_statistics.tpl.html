@@ -1,0 +1,97 @@
+<h1>{L_stat_header}</h1>
+<h2>{L_stat_refresh_last}&nbsp;{REFRESH_DATE}</h2>
+
+<table width="519">
+  <tr>
+    <th class="c_c" colspan="6">
+      <form name="stat_form" method="post">
+        {L_stat_show}
+        <select name="type" onChange="javascript:document.stat_form.submit()">
+          <!-- BEGIN type -->
+          <option value="{type.ID}"<!-- IF type.SELECTED --> selected<!-- ENDIF -->>{type.HEADER}</option>
+          <!-- END type -->
+        </select>
+        {L_stat_by}
+        <select name="who" onChange="javascript:document.stat_form.submit()">
+          <!-- BEGIN subject -->
+          <option value="{subject.ID}"<!-- IF subject.SELECTED --> selected<!-- ENDIF -->>{subject.HEADER}</option>
+          <!-- END subject -->
+        </select>
+        {L_stat_range}
+        <select name="range" onChange="javascript:document.stat_form.submit()">
+          <!-- BEGIN range -->
+          <option value="{range.ID}"<!-- IF range.SELECTED --> selected<!-- ENDIF -->>{range.HEADER}</option>
+          <!-- END range -->
+        </select>
+      </form>
+    </th>
+  </tr>
+
+  <tr>
+    <th class ="c_c" width="30">{L_stat_rank}</th>
+    <th class ="c_c" width="30">{L_stat_rank_diff}</th>
+
+    <!-- IF SUBJECT == 1 -->
+    <th class ="c_c">{L_sys_player}</th>
+    <th class ="c_c"><img src="{dpath}img/m.gif" border="0" alt="{L_stat_message_write}" /></th>
+    <th class ="c_c">{L_sys_alliance}</th>
+    <!-- ELSE -->
+    <th class ="c_c">{L_sys_alliance}</th>
+    <th class ="c_c">{L_stat_members}</th>
+    <th class ="c_c">{L_stat_per_member}</th>
+    <!-- ENDIF -->
+
+    <th class ="c_c">{L_stat_points}</th>
+  </tr>
+
+  <!-- IF SUBJECT == 1 -->
+    <!-- BEGIN stat -->
+      <!-- IF stat.RANK_CHANGE > 0 -->
+        <!-- DEFINE $RANK_CLASS = 'positive' -->
+        <!-- DEFINE $RANK_SIGN = '+{stat.RANK_CHANGE}' -->
+      <!-- ELSEIF stat.RANK_CHANGE < 0 -->
+        <!-- DEFINE $RANK_CLASS = 'negative' -->
+        <!-- DEFINE $RANK_SIGN = '{stat.RANK_CHANGE}' -->
+      <!-- ELSE -->
+        <!-- DEFINE $RANK_CLASS = 'zero' -->
+        <!-- DEFINE $RANK_SIGN = '*' -->
+      <!-- ENDIF -->
+      <tr>
+        <td class="c_r"><!-- IF stat.RANK == RANGE --><span class="fl">&gt;</span><!-- ENDIF --><a name="{player_rank}">{stat.RANK}</a></td>
+        <td class="c_r {$RANK_CLASS}">{$RANK_SIGN}</td>
+        <td class="c_l<!-- IF USER_ID == stat.ID --> same_player<!-- ENDIF -->">
+          <img src="{D_SN_ROOT_VIRTUAL}{dpath}images/sex_<!-- IF stat.SEX == "F" -->fe<!-- ENDIF -->male.png">
+          {stat.NAME}
+          <!-- IF stat.BIRTHDAY_TODAY -->
+            <img class="fr" src="{D_SN_ROOT_VIRTUAL}images/birthday.png" alt="{stat.BIRTHDAY}" title="{stat.BIRTHDAY}">
+          <!-- ENDIF -->
+        </td>
+        <td class="c_c"><a href="messages.php?mode=write&id={stat.ID}"><img src="{dpath}img/m.gif" border="0" alt="{L_stat_message_write}" /></a></td>
+        <td class="c_l"><!-- IF stat.ALLY_ID --><a href="alliance.php?mode=ainfo&a={stat.ALLY_ID}"><span class="<!-- IF USER_ALLY == stat.ALLY_ID -->same_alliance<!-- ENDIF -->">{stat.ALLY_NAME}</span></a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
+        <td class="c_r">{stat.POINTS}</td>
+      </tr>
+    <!-- END stat -->
+  <!-- ELSE -->
+    <!-- BEGIN stat -->
+      <!-- IF stat.RANK_CHANGE > 0 -->
+        <!-- DEFINE $RANK_CLASS = 'positive' -->
+        <!-- DEFINE $RANK_SIGN = '+{stat.RANK_CHANGE}' -->
+      <!-- ELSEIF stat.RANK_CHANGE < 0 -->
+        <!-- DEFINE $RANK_CLASS = 'negative' -->
+        <!-- DEFINE $RANK_SIGN = '{stat.RANK_CHANGE}' -->
+      <!-- ELSE -->
+        <!-- DEFINE $RANK_CLASS = 'zero' -->
+        <!-- DEFINE $RANK_SIGN = '*' -->
+      <!-- ENDIF -->
+      <tr>
+        <td class="c_r"><!-- IF stat.RANK == RANGE --><span class="fl">&gt;</span><!-- ENDIF --><a name="{player_rank}">{stat.RANK}</a></td>
+        <td class="c_r {$RANK_CLASS}">{$RANK_SIGN}</td>
+        <td class="c_l"><a href="alliance.php?mode=ainfo&a={stat.ID}"><span class="<!-- IF USER_ALLY == stat.ID -->same_alliance<!-- ENDIF -->">{stat.NAME}</span></a></td>
+        <td class="c_r">{stat.MEMBERS}</td>
+        <td class="c_r">{stat.POINTS_PER_MEMBER}</td>
+        <td class="c_r">{stat.POINTS}</td>
+      </tr>
+    <!-- END stat -->
+  <!-- ENDIF -->
+
+</table>

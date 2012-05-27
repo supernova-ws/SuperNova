@@ -257,3 +257,8 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
 {
   color: yellow;
 }
+
+.same_alliance, .same_player
+{
+  color: #33CCFF;
+}

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 34a18
 *
 */
 
@@ -28,28 +28,37 @@
 
 if (!defined('INSIDE')) die();
 
-
 $lang = array_merge($lang, array(
-  'stat_title' => 'Statistics',
+  'stat_header' => 'Statistics',
+  'stat_refresh_last' => 'Last refresh',
+
+  'stat_rank' => 'Rank',
+  'stat_rank_diff' => 'Diff',
+  'stat_points' => 'Points',
+  'stat_per_member' => 'Per member',
+  'stat_members' => 'Members',
+  'stat_message_write' => 'Write message',
+
   'stat_show' => 'Show',
-  'stat_by' => 'By',
-  'stat_range' => 'Place',
-  'stat_player' => 'Players',
-  'stat_allys' => 'Alliances',
-  'stat_main' => 'Total',
-  'stat_fleet' => 'Fleet',
-  'stat_research' => 'Research',
-  'stat_building' => 'Buildings',
-  'stat_defenses' => 'Defences',
-  'stat_resources' => 'Resources',
-  'Position' => 'Position',
-  'Difference' => 'Difference',
-  'Player' => 'Player',
-  'Alliance' => 'Alliance',
-  'Points' => 'Points',
-  'Members' => 'Members',
-  'PerMember' => 'Per Member',
-  'Ecrire' => 'Write a message',
+  'stat_type' => array(
+    STAT_TOTAL => 'total',
+    STAT_FLEET => 'fleet',
+    STAT_TECH => 'research',
+    STAT_BUILDING => 'building',
+    STAT_DEFENSE => 'defense',
+    STAT_RESOURCE => 'resource',
+    STAT_RAID_TOTAL => 'raid',
+    STAT_RAID_WON => 'raid won',
+    STAT_RAID_LOST => 'raid lost',
+    STAT_LVL_BUILDING => 'building level',
+    STAT_LVL_TECH => 'tech level',
+    STAT_LVL_RAID => 'raid level',
+  ),
+
+  'stat_by' => 'for',
+  'stat_player' => 'players',
+  'stat_allys' => 'alliances',
+  'stat_range' => 'ranks',
 ));
 
 ?>

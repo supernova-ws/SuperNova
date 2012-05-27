@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '33');
 define('SN_RELEASE', '34');
-define('SN_VERSION', '34a17.4');
+define('SN_VERSION', '34a18');
 define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -566,5 +566,18 @@ define('ADM_TOOL_FORCE_ALL', 3);
 define('ADM_TOOL_FORCE_LAST', 4);
 define('ADM_TOOL_INFO_PHP', 5);
 define('ADM_TOOL_INFO_MYSQL', 6);
+
+define('STAT_TOTAL', 0);
+define('STAT_FLEET', 1);
+define('STAT_TECH', 2);
+define('STAT_BUILDING', 3);
+define('STAT_DEFENSE', 4);
+define('STAT_RESOURCE', 5);
+define('STAT_RAID_TOTAL', 6);
+define('STAT_RAID_WON', 7);
+define('STAT_RAID_LOST', 8);
+define('STAT_LVL_BUILDING', 9);
+define('STAT_LVL_TECH', 10);
+define('STAT_LVL_RAID', 11);
 
 ?>

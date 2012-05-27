@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 34a18
 *
 */
 
@@ -26,28 +26,37 @@
 
 if (!defined('INSIDE')) die();
 
-
 $lang = array_merge($lang, array(
-  'stat_title' => 'Статистика',
-  'stat_show' => 'Упорядочить',
-  'stat_by' => 'по',
-  'stat_range' => 'Место',
-  'stat_player' => 'игроки',
-  'stat_allys' => 'альянсы',
-  'stat_main' => 'Общая',
-  'stat_fleet' => 'Флот',
-  'stat_research' => 'Исследования',
-  'stat_building' => 'Постройки',
-  'stat_defenses' => 'Оборона',
-  'stat_resources' => 'Ресурсы',
-  'Position' => 'Место',
-  'Difference' => 'Изм.',
-  'Player' => 'Игрок',
-  'Alliance' => 'Альянс',
-  'Points' => 'Очки',
-  'Members' => 'Участники',
-  'PerMember' => 'На человека',
-  'Ecrire' => 'Написать сообщение',
+  'stat_header' => 'Статистика',
+  'stat_refresh_last' => 'Последнее обновление',
+
+  'stat_rank' => 'Место',
+  'stat_rank_diff' => 'Изм.',
+  'stat_points' => 'Очки',
+  'stat_per_member' => 'На участника',
+  'stat_members' => 'Участников',
+  'stat_message_write' => 'Написать сообщение',
+
+  'stat_show' => 'Показать статистику',
+  'stat_type' => array(
+    STAT_TOTAL => 'общую',
+    STAT_FLEET => 'флотов',
+    STAT_TECH => 'исследований',
+    STAT_BUILDING => 'построек',
+    STAT_DEFENSE => 'обороны',
+    STAT_RESOURCE => 'ресурсов',
+    STAT_RAID_TOTAL => 'проведенных боев',
+    STAT_RAID_WON => 'выигранных боев',
+    STAT_RAID_LOST => 'проигранных боев',
+    STAT_LVL_BUILDING => 'уровней постройки',
+    STAT_LVL_TECH => 'уровней исследований',
+    STAT_LVL_RAID => 'уровней рейдерства',
+  ),
+
+  'stat_by' => 'для',
+  'stat_player' => 'игроков',
+  'stat_allys' => 'альянсов',
+  'stat_range' => 'места',
 ));
 
 ?>
