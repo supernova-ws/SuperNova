@@ -694,6 +694,41 @@ class template
     }
     include($file);
   }
+
+  /**
+  * Assign key variable pairs from an array with block support
+  * @access public
+  */
+  function assign_recursive($values, $name = '')
+  {
+    if(isset($values['.']))
+    {
+      $values_extra = $values['.'];
+      unset($values['.']);
+    }
+
+    if(!$name)
+    {
+      $this->assign_vars($values);
+    }
+    else
+    {
+      $this->assign_block_vars($name, $values);
+    }
+
+    if(isset($values_extra))
+    {
+      foreach($values_extra as $sub_array_name => $sub_array)
+      {
+        $new_name = $name . ($name ? '.' : '') . $sub_array_name;
+        foreach($sub_array as $sub_element)
+        {
+          $this->assign_recursive($sub_element, $new_name);
+        }
+      }
+    }
+  }
+
 }
 
 ?>

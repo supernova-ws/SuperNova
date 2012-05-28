@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a17.2
+* @version 34a19
 *
 */
 
@@ -700,6 +700,20 @@ $lang = array_merge($lang, array(
   'sys_ali_bonus_members' => 'Минимальное размер Альянса для получения бонуса',
 
   'sys_premium' => 'ПРЕМИУМ',
+
+  'mrc_period_list' => array(
+    PERIOD_MINUTE    => '1 минута',
+    PERIOD_MINUTE_3  => '3 минуты',
+    PERIOD_MINUTE_5  => '5 минут',
+    PERIOD_MINUTE_10 => '10 минут',
+    PERIOD_DAY       => '1 день',
+    PERIOD_DAY_3     => '3 дня',
+    PERIOD_WEEK      => '1 неделя',
+    PERIOD_WEEK_2    => '2 недели',
+    PERIOD_MONTH     => '30 дней',
+    PERIOD_MONTH_2   => '60 дней',
+    PERIOD_MONTH_3   => '90 дней',
+  ),
 
 ));
 

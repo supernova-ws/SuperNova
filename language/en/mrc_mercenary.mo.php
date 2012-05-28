@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 34a19
 *
 * @clean - all constants is used
 *
@@ -37,20 +37,6 @@ if (empty($lang) || !is_array($lang))
 
 // Officers/mercenaries
 $lang = array_merge($lang, array(
-  'mrc_period_list' => array(
-    PERIOD_MINUTE    => '1 minute',
-    PERIOD_MINUTE_3  => '3 minutes',
-    PERIOD_MINUTE_5  => '5 minutes',
-    PERIOD_MINUTE_10 => '10 minutes',
-    PERIOD_DAY       => '1 day',
-    PERIOD_DAY_3     => '3 days',
-    PERIOD_WEEK      => '1 week',
-    PERIOD_WEEK_2    => '2 weeks',
-    PERIOD_MONTH     => '30 days',
-    PERIOD_MONTH_2   => '60 days',
-    PERIOD_MONTH_3   => '90 days',
-  ),
-
   'mrc_up_to' => 'up to',
   'mrc_hire' => 'Hire',
   'mrc_hire_for' => 'Hire for',

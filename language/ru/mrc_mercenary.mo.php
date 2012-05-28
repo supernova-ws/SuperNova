@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 34a19
 *
 * @clean - all constants is used
 *
@@ -37,20 +37,6 @@ if (empty($lang) || !is_array($lang))
 
 // Officers/mercenaries
 $lang = array_merge($lang, array(
-  'mrc_period_list' => array(
-    PERIOD_MINUTE    => '1 минута',
-    PERIOD_MINUTE_3  => '3 минуты',
-    PERIOD_MINUTE_5  => '5 минут',
-    PERIOD_MINUTE_10 => '10 минут',
-    PERIOD_DAY       => '1 день',
-    PERIOD_DAY_3     => '3 дня',
-    PERIOD_WEEK      => '1 неделя',
-    PERIOD_WEEK_2    => '2 недели',
-    PERIOD_MONTH     => '30 дней',
-    PERIOD_MONTH_2   => '60 дней',
-    PERIOD_MONTH_3   => '90 дней',
-  ),
-
   'mrc_up_to' => 'до',
   'mrc_hire' => 'Нанять',
   'mrc_hire_for' => 'Нанять за',

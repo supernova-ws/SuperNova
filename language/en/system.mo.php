@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a16
+* @version 34a19
 *
 */
 
@@ -698,6 +698,20 @@ $lang = array_merge($lang, array(
   'sys_ali_bonus_members' => 'Minimum Alliance size for Ally bonus ',
 
   'sys_premium' => 'PREMIUM',
+
+  'mrc_period_list' => array(
+    PERIOD_MINUTE    => '1 minute',
+    PERIOD_MINUTE_3  => '3 minutes',
+    PERIOD_MINUTE_5  => '5 minutes',
+    PERIOD_MINUTE_10 => '10 minutes',
+    PERIOD_DAY       => '1 day',
+    PERIOD_DAY_3     => '3 days',
+    PERIOD_WEEK      => '1 week',
+    PERIOD_WEEK_2    => '2 weeks',
+    PERIOD_MONTH     => '30 days',
+    PERIOD_MONTH_2   => '60 days',
+    PERIOD_MONTH_3   => '90 days',
+  ),
 
 ));
 
