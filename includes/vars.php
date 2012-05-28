@@ -2060,28 +2060,24 @@ if (!defined('INSIDE'))
       'location' => LOC_PLANET,
       'bonus_type' => BONUS_ABILITY,
     ),
-
     RES_CRYSTAL => array(
       'name' => 'crystal',
       'type' => UNIT_RESOURCES,
       'location' => LOC_PLANET,
       'bonus_type' => BONUS_ABILITY,
     ),
-
     RES_DEUTERIUM => array(
       'name' => 'deuterium',
       'type' => UNIT_RESOURCES,
       'location' => LOC_PLANET,
       'bonus_type' => BONUS_ABILITY,
     ),
-
     RES_ENERGY => array(
       'name' => 'energy',
       'type' => UNIT_RESOURCES,
       'location' => LOC_PLANET,
       'bonus_type' => BONUS_ABILITY,
     ),
-
     RES_DARK_MATTER => array(
       'name' => 'dark_matter',
       'type' => UNIT_RESOURCES,
@@ -2099,7 +2095,6 @@ if (!defined('INSIDE'))
       ),
       'bonus_type' => BONUS_ABILITY,
     ),
-
     ART_RCD_SMALL => array(
       'name' => 'art_rcd_small',
       'type' => UNIT_ARTIFACTS,
@@ -2117,7 +2112,6 @@ if (!defined('INSIDE'))
         STRUC_FACTORY_ROBOT => 4,
       ),
     ),
-
     ART_RCD_MEDIUM => array(
       'name' => 'art_rcd_medium',
       'type' => UNIT_ARTIFACTS,
@@ -2135,7 +2129,6 @@ if (!defined('INSIDE'))
         STRUC_FACTORY_ROBOT => 8,
       ),
     ),
-
     ART_RCD_LARGE => array(
       'name' => 'art_rcd_large',
       'type' => UNIT_ARTIFACTS,
@@ -2179,7 +2172,6 @@ if (!defined('INSIDE'))
       'max' => 1,
       'bonus_type' => BONUS_ABILITY,
     ),
-
     UNIT_PLAN_SHIP_CARGO_HYPER => array(
       'name' => 'UNIT_PLAN_SHIP_CARGO_HYPER',
       'type' => UNIT_PLANS,
@@ -2191,7 +2183,6 @@ if (!defined('INSIDE'))
       'max' => 1,
       'bonus_type' => BONUS_ABILITY,
     ),
-
     UNIT_PLAN_SHIP_DEATH_STAR => array(
       'name' => 'UNIT_PLAN_SHIP_DEATH_STAR',
       'type' => UNIT_PLANS,
@@ -2203,7 +2194,6 @@ if (!defined('INSIDE'))
       'max' => 1,
       'bonus_type' => BONUS_ABILITY,
     ),
-
     UNIT_PLAN_SHIP_SUPERNOVA => array(
       'name' => 'UNIT_PLAN_SHIP_SUPERNOVA',
       'type' => UNIT_PLANS,
@@ -2215,7 +2205,6 @@ if (!defined('INSIDE'))
       'max' => 1,
       'bonus_type' => BONUS_ABILITY,
     ),
-
     UNIT_PLAN_DEF_SHIELD_PLANET => array(
       'name' => 'UNIT_PLAN_DEF_SHIELD_PLANET',
       'type' => UNIT_PLANS,
@@ -2225,6 +2214,17 @@ if (!defined('INSIDE'))
         'factor' => 1,
       ),
       'max' => 1,
+      'bonus_type' => BONUS_ABILITY,
+    ),
+
+    UNIT_SECTOR => array(
+      'name' => 'field_max',
+      'type' => UNIT_SECTOR,
+      'location' => LOC_PLANET,
+      'cost' => array(
+        RES_DARK_MATTER => 1000,
+        'factor' => 1.01,
+      ),
       'bonus_type' => BONUS_ABILITY,
     ),
 

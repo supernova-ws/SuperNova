@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 34a20
 *
 */
 
@@ -154,6 +154,9 @@ $lang = array_merge($lang, array(
   'ov_mrc_confirm_3' => 'to governor',
   'ov_mrc_confirm_4' => 'first level? All your Dark Matter invested in current governor WILL BE LOST!',
   'ov_manage_page_hint' => '  <li class="warning">WARNING! When hiring different governor his starting level will become 1 WITHOUT COMPENSATION SPENT DARK MATTER for previous one!  It\'s essential to plan your Empire, choosing right governor for each planet depending of it\'s role!</li>  <li>Governors are mercenaries that manage one planet and granting certain bonuses to it</li>  <li>Click on governor\'s image in list to see description and granted bonuses</li>  <li>To hire governor click on "Hire"</li>  <li>Hiring current governor will increase his level - and thus increase his bonuses on planet</li>  <li>Some governors has limit by level. Some - has not</li>  ',
+
+  'ov_sector_buy' => 'Buy 1 sector',
+  'ov_gate_time_left' => 'Time to next jump',
 ));
 
 ?>

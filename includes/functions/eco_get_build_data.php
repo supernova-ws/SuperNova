@@ -170,9 +170,9 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $time = $time / mrc_modify_value($user, $planet, $mercenary, 1);
   }
 
-  $time = ($time >= 2) ? $time : (in_array($unit_id, $sn_groups['governors']) ? 0 : 2);
+  $time = ($time >= 1) ? $time : (in_array($unit_id, $sn_groups['governors']) ? 0 : 1);
   $cost[RES_TIME][BUILD_CREATE]  = floor($time);
-  $cost[RES_TIME][BUILD_DESTROY] = floor($time / 2);
+  $cost[RES_TIME][BUILD_DESTROY] = $time <= 1 ? 1 : floor($time / 2);
 
   return $cost;
 }

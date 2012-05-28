@@ -138,6 +138,31 @@ switch($mode)
   break;
 
   default:
+    if(sys_get_param_str('sector_buy') && $planetrow['planet_type'] == PT_PLANET)
+    {
+      doquery("START TRANSACTION;");
+      $planetrow = sys_o_get_updated($user, $planetrow, $time_now);
+      $user = $planetrow['user'];
+      $planetrow = $planetrow['planet'];
+      $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
+      $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
+      if($sector_cost <= $user[$sn_data[RES_DARK_MATTER]['name']])
+      {
+        $planet_name_text = uni_render_planet($planetrow);
+        if(rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, "User {$user['username']} ID {$user['id']} purchased 1 sector on planet {$planet_name_text} planet type {$planetrow['planet_type']} ID {$planetrow['id']} for {$sector_cost} DM"))
+        {
+          $sector_db_name = $sn_data[UNIT_SECTOR]['name'];
+          doquery("UPDATE {{planets}} SET {$sector_db_name} = {$sector_db_name} + 1 WHERE `id` = {$planetrow['id']} LIMIT 1;");
+        }
+        else
+        {
+          doquery("ROLLBACK;");
+        }
+      }
+      doquery("COMMIT;");
+      sys_redirect('overview.php');
+    }
+
     $template = gettemplate('planet_overview', true);
 
     rpg_level_up($user, RPG_STRUCTURE);
@@ -277,7 +302,7 @@ switch($mode)
       NAME   => $lang['sys_ques'][QUE_HANGAR],
       LENGTH => $que_hangar_length,
     ));
-
+/*
     $tech_que_item = explode(',', $user['que']);
     $unit_id = intval($tech_que_item[QI_UNIT_ID]);
     $time_rest = $tech_que_item[QI_TIME];
@@ -299,7 +324,7 @@ switch($mode)
         'LEVEL' => $user[$sn_data[$unit_id]['name']] + 1,
       ));
     }
-
+*/
 
     $overview_planet_rows = $user['opt_int_overview_planet_rows'];
     $overview_planet_columns = $user['opt_int_overview_planet_columns'];
@@ -315,6 +340,8 @@ switch($mode)
       $overview_planet_columns = ceil($planet_count / $overview_planet_rows);
     }
 
+    $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
+    $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
     $template->assign_vars(array(
       'TIME_NOW'              => $time_now,
 
@@ -349,6 +376,9 @@ switch($mode)
       'LIST_ROW_COUNT'        => $overview_planet_rows,
       'LIST_COLUMN_COUNT'     => $overview_planet_columns,
 
+      'SECTOR_CAN_BUY'        => $sector_cost <= $user[$sn_data[RES_DARK_MATTER]['name']],
+      'SECTOR_COST'           => $sector_cost,
+      'SECTOR_COST_TEXT'      => pretty_number($sector_cost),
       //'LastChat'       => CHT_messageParse($msg),
     ));
     tpl_set_resource_info($template, $planetrow, $fleets_to_planet, 2);

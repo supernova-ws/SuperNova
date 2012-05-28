@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '33');
 define('SN_RELEASE', '34');
-define('SN_VERSION', '34a19');
+define('SN_VERSION', '34a20');
 define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -160,6 +160,7 @@ define('RPG_BIRTHDAY', 14);
 define('RPG_PURCHASE', 15);
 define('RPG_PLANS', 16);
 define('RPG_PREMIUM', 17);
+define('RPG_SECTOR', 18);
 
 // Operation error status
 define('ERR_NONE'               , 0); // No error
@@ -513,6 +514,7 @@ define('UNIT_PLAN_SHIP_SUPERNOVA', 1105);
 define('UNIT_PLAN_DEF_SHIELD_PLANET', 1106);
 
 define('UNIT_PREMIUM', 1200);
+define('UNIT_SECTOR', 1300);
 
 // === Unit types // TODO - convert to GROUP_xxx constants
 define('UNIT_STRUCTURE', 0);
