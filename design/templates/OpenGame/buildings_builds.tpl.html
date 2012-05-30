@@ -58,6 +58,15 @@ var que_id = '{QUE_ID}';
   <tr>
     <td colspan="{$COLSPAN}" class="c" align="center">
       {L_bld_theyare} {L_bld_cellfree} {FIELDS_FREE} (<!-- IF FIELDS_QUE != 0 --><span style="color: yellow;">{FIELDS_QUE}</span>/<!-- ENDIF --><span class="negative">{FIELDS_CURRENT}</span>/<span class="positive">{FIELDS_MAX}</span>)
+      <span class="fr">
+      <!-- IF PLANET_TYPE == 1 -->
+        <!-- IF SECTOR_CAN_BUY -->
+          <a href="buildings.php?mode={D_QUE_STRUCTURES}&sector_buy=1"><span class="positive">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span></a>
+        <!-- ELSE -->
+          <span class="negative">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
+        <!-- ENDIF -->
+      <!-- ENDIF -->
+      </span>
     </td>
   </tr>
 

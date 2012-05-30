@@ -45,6 +45,32 @@
     </tr>
 
     <tr>
+      <td>{L_buildings_on_planet}</td>
+      <td colspan="2" class="c_c" style="position: relative; padding: 0px; height: 100%;">
+        <div style="position: relative; width: 100%; height: 100%; border: 1px solid rgb(153, 153, 255); ">
+          <!-- IF PLANET_FILL >= 100 -->
+            <!-- DEFINE $BAR_COLOR = '#C00000' -->
+          <!-- ELSEIF PLANET_FILL >= 80 -->
+            <!-- DEFINE $BAR_COLOR = '#C0C000' -->
+          <!-- ELSE -->
+            <!-- DEFINE $BAR_COLOR = '#00C000' -->
+          <!-- ENDIF -->
+          <div style="position: absolute; top: 0px; left: 0px; width: {PLANET_FILL_BAR}%; background-color: {$BAR_COLOR}; height:100%;">&nbsp;</div>
+          <div style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; vertical-align: middle;">{planet_field_current}/{planet_field_max} ({PLANET_FILL}%)</div>
+          &nbsp;
+        </div>
+        <!-- IF PLANET_TYPE == 1 -->
+          <!-- IF SECTOR_CAN_BUY -->
+            <a href="overview.php?mode=manage&sector_buy=1"><span class="positive">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span></a>
+          <!-- ELSE -->
+            <span class="negative">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
+          <!-- ENDIF -->
+        <!-- ENDIF -->
+      </td>
+    </tr>
+
+
+    <tr>
       <th>{L_ov_new_name}</th>
       <th><input type="text" name="new_name" size=25 maxlength=20 value="{PLANET_NAME}"></th>
       <th><input type="submit" name="rename" value="{L_ov_rename}"></th>

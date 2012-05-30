@@ -167,6 +167,8 @@ function eco_build($que_type, $user, &$planet, $que)
     }
   }
 
+  $sector_cost = eco_get_build_data($user, $planet, UNIT_SECTOR, mrc_get_level($user, $planet, UNIT_SECTOR), true);
+  $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
   $template->assign_vars(array(
     'TIME_NOW'           => $time_now,
 
@@ -191,6 +193,10 @@ function eco_build($que_type, $user, &$planet, $que)
     'FLEET_OWN'          => $fleet_list['own']['count'],
 
     'PAGE_HINT'          => $lang['eco_bld_page_hint'],
+    'PLANET_TYPE'        => $planet['planet_type'],
+    'SECTOR_CAN_BUY'     => $sector_cost <= $user[$sn_data[RES_DARK_MATTER]['name']],
+    'SECTOR_COST'        => $sector_cost,
+    'SECTOR_COST_TEXT'   => pretty_number($sector_cost),
 
     'U_opt_int_struc_vertical' => $user['option_list'][OPT_INTERFACE]['opt_int_struc_vertical'],
   ));

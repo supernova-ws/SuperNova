@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a19
+* @version 34a20.1
 *
 */
 
@@ -715,6 +715,7 @@ $lang = array_merge($lang, array(
     PERIOD_MONTH_3   => '90 дней',
   ),
 
+  'sys_sector_buy' => 'Купить 1 сектор',
 ));
 
 ?>

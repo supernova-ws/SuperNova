@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a19
+* @version 34a20.1
 *
 */
 
@@ -712,6 +712,8 @@ $lang = array_merge($lang, array(
     PERIOD_MONTH_2   => '60 days',
     PERIOD_MONTH_3   => '90 days',
   ),
+
+  'sys_sector_buy' => 'Buy 1 sector',
 
 ));
 

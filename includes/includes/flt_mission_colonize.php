@@ -28,7 +28,8 @@ function flt_mission_colonize($mission_data)
     $TheMessage = $lang['sys_colo_notfree'];
     if (!$destination_planet)
     {
-      $iMaxColo = $src_user_row['colonisation_tech'] + 1;
+      $iMaxColo = mrc_get_level($src_user_row, false, TECH_COLONIZATION) + 1;
+//      $iMaxColo = $src_user_row['colonisation_tech'] + 1;
 
       $iPlanetCount = doquery ("SELECT count(*) as `planet_count` FROM `{{planets}}` WHERE `id_owner` = '{$fleet_row['fleet_owner']}' AND `planet_type` = '1';", '', true);
       $iPlanetCount = $iPlanetCount['planet_count'];

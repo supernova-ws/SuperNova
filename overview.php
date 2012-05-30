@@ -38,6 +38,8 @@ $mode            = sys_get_param_str('mode');
 switch($mode)
 {
   case 'manage':
+    sn_sys_sector_buy('overview.php?mode=manage');
+
     $template  = gettemplate('planet_manage', true);
     $planet_id = sys_get_param_id('planet_id');
     $hire = sys_get_param_int('hire');
@@ -128,8 +130,21 @@ switch($mode)
       ));
     }
 
+    $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
+    $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
+    $planet_fill = floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100);
+    $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
+
     $template->assign_vars(array(
       'DARK_MATTER' => $user['dark_matter'],
+
+      'PLANET_FILL'           => floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100),
+      'PLANET_FILL_BAR'       => $planet_fill,
+      'SECTOR_CAN_BUY'        => $sector_cost <= $user[$sn_data[RES_DARK_MATTER]['name']],
+      'SECTOR_COST'           => $sector_cost,
+      'SECTOR_COST_TEXT'      => pretty_number($sector_cost),
+      'planet_field_current'  => $planetrow['field_current'],
+      'planet_field_max'      => eco_planet_fields_max($planetrow),
 
       'PAGE_HINT'   => $lang['ov_manage_page_hint'],
     ));
@@ -138,30 +153,7 @@ switch($mode)
   break;
 
   default:
-    if(sys_get_param_str('sector_buy') && $planetrow['planet_type'] == PT_PLANET)
-    {
-      doquery("START TRANSACTION;");
-      $planetrow = sys_o_get_updated($user, $planetrow, $time_now);
-      $user = $planetrow['user'];
-      $planetrow = $planetrow['planet'];
-      $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
-      $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
-      if($sector_cost <= $user[$sn_data[RES_DARK_MATTER]['name']])
-      {
-        $planet_name_text = uni_render_planet($planetrow);
-        if(rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, "User {$user['username']} ID {$user['id']} purchased 1 sector on planet {$planet_name_text} planet type {$planetrow['planet_type']} ID {$planetrow['id']} for {$sector_cost} DM"))
-        {
-          $sector_db_name = $sn_data[UNIT_SECTOR]['name'];
-          doquery("UPDATE {{planets}} SET {$sector_db_name} = {$sector_db_name} + 1 WHERE `id` = {$planetrow['id']} LIMIT 1;");
-        }
-        else
-        {
-          doquery("ROLLBACK;");
-        }
-      }
-      doquery("COMMIT;");
-      sys_redirect('overview.php');
-    }
+    sn_sys_sector_buy();
 
     $template = gettemplate('planet_overview', true);
 

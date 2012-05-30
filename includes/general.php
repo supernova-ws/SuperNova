@@ -723,4 +723,37 @@ if(!function_exists('strptime'))
   }
 }
 
+function sn_sys_sector_buy($redirect = 'overview.php')
+{
+  global $user, $planetrow, $sn_data;
+
+  if(!sys_get_param_str('sector_buy') || $planetrow['planet_type'] != PT_PLANET)
+  {
+    return;
+  }
+
+  doquery("START TRANSACTION;");
+  $planetrow = sys_o_get_updated($user, $planetrow, $time_now);
+  $user = $planetrow['user'];
+  $planetrow = $planetrow['planet'];
+  $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
+  $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
+  if($sector_cost <= $user[$sn_data[RES_DARK_MATTER]['name']])
+  {
+    $planet_name_text = uni_render_planet($planetrow);
+    if(rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, "User {$user['username']} ID {$user['id']} purchased 1 sector on planet {$planet_name_text} planet type {$planetrow['planet_type']} ID {$planetrow['id']} for {$sector_cost} DM"))
+    {
+      $sector_db_name = $sn_data[UNIT_SECTOR]['name'];
+      doquery("UPDATE {{planets}} SET {$sector_db_name} = {$sector_db_name} + 1 WHERE `id` = {$planetrow['id']} LIMIT 1;");
+    }
+    else
+    {
+      doquery("ROLLBACK;");
+    }
+  }
+  doquery("COMMIT;");
+
+  sys_redirect($redirect); // 'overview.php'
+}
+
 ?>
