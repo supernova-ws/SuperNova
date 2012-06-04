@@ -51,9 +51,14 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
 {
   global $config, $user, $sn_message_class_list, $time_now;
 
+  if(!$owners)
+  {
+    return;
+  }
+
   $timestamp = $timestamp ? $timestamp : $time_now;
   $sender = intval($sender);
-  if (!is_array($owners))
+  if(!is_array($owners))
   {
     $owners = array($owners);
   }

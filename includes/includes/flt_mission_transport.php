@@ -14,7 +14,7 @@ function flt_mission_transport($mission_data)
   $source_planet      = $mission_data['src_planet'];
   $destination_planet = $mission_data['dst_planet'];
 
-  if(!$destination_planet || !is_array($destination_planet) || !$destination_planet['id_owner'])
+  if(!isset($destination_planet['id']) || !$destination_planet['id_owner'])
   {
     doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
     return CACHE_FLEET;

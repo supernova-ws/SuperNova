@@ -53,7 +53,7 @@ function flt_mission_spy($mission_data)
   $spying_user_row   = $mission_data['src_user'];
   $spying_planet_row = $mission_data['src_planet'];
 
-  if(!$target_user_row || !$target_planet_row || !is_array($target_user_row) || !is_array($target_planet_row))
+  if(!isset($target_user_row['id']) || !isset($target_planet_row['id']) || !isset($spying_user_row['id']))
   {
     doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
     return;
