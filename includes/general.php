@@ -701,7 +701,7 @@ if(!function_exists('strptime'))
       '%M' => '(?P<M>[0-9]{2})',
       '%S' => '(?P<S>[0-9]{2})',
      // usw..
-    ); 
+    );
 
     $rexep = "#".strtr(preg_quote($format), $masks)."#";
     if(preg_match($rexep, $date, $out))

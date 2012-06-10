@@ -124,12 +124,14 @@ foreach($sn_data['groups']['factories'] as $ProdID)
   $resource_db_name = $sn_data[$ProdID]['name'];
   if($planetrow[$resource_db_name] > 0 && isset($sn_data[$ProdID]))
   {
+    $level_plain = $planetrow[$resource_db_name];
     $template->assign_block_vars('production', array(
       'ID'             => $ProdID,
       'NAME'           => $resource_db_name,
       'PERCENT'        => $planetrow[$resource_db_name . '_porcent'] * 10,
       'TYPE'           => $lang['tech'][$ProdID],
-      'LEVEL'          => $planetrow[$resource_db_name],
+      'LEVEL'          => $level_plain,
+      'LEVEL_EXTRA'    => mrc_get_level($user, $planetrow, $ProdID) - $level_plain,
       'LEVEL_TYPE'     => ($ProdID > 200) ? $lang['quantity'] : $lang['level'],
 
       'METAL_TYPE'     => pretty_number($caps['metal_perhour'][$ProdID]     * $caps['production'], true, true),

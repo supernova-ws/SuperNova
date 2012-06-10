@@ -88,7 +88,7 @@ function eco_build($que_type, $user, &$planet, $que)
     if($element_sn_data['production'])
     {
       $level_production_base = array();
-      $element_level_start = $element_level ? $element_level : $element_level;
+      $element_level_start = mrc_get_level($user, $planet, $Element) + $que['in_que'][$Element];
       foreach($element_sn_data['production'] as $resource_id => $resource_calc)
       {
         if($resource_income = floor(mrc_modify_value($user, $planet, MRC_TECHNOLOGIST, $resource_calc($element_level_start, 10, $planet['temp_max']) * $config_resource_multiplier)))
@@ -97,7 +97,8 @@ function eco_build($que_type, $user, &$planet, $que)
         }
       }
 
-      $level_start = $element_level > 1 ? $element_level - 1 : 1;
+//      $level_start = $element_level > 1 ? $element_level - 1 : 1;
+      $level_start = $element_level > 1 ? mrc_get_level($user, $planet, $Element) + $que['in_que'][$Element] - 1 : 1;
       $level_production = array();
       for($i = 0; $i < 6; $i++)
       {
@@ -124,6 +125,7 @@ function eco_build($que_type, $user, &$planet, $que)
       'DESCRIPTION'       => $lang['info'][$Element]['description_short'],
       'LEVEL'             => $element_level,
       'LEVEL_OLD'         => $planet[$sn_data[$Element]['name']],
+      'LEVEL_EXTRA'       => mrc_get_level($user, $planet, $Element) - $planet[$sn_data[$Element]['name']],
       'LEVEL_CHANGE'      => $que['in_que'][$Element],
 
       'BUILD_RESULT'      => $build_data['RESULT'][BUILD_CREATE],

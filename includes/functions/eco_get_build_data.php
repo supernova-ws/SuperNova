@@ -7,17 +7,56 @@
  * @version 1.0
  */
 
-function eco_get_lab_max_effective_level(&$user)
+function eco_get_lab_max_effective_level(&$user, $lab_require)
 {
   global $sn_data;
 
-  if(!isset($user[STRUC_LABORATORY]))
-  {
-    $lab_level = doquery("SELECT MAX(({$sn_data[STRUC_LABORATORY]['name']} + 1) * 2 / pow(0.5, {$sn_data[STRUC_LABORATORY_NANO]['name']})) as lab_level FROM {{planets}} WHERE `id_owner` = {$user['id']};", true);
-    $user[STRUC_LABORATORY] = floor($lab_level['lab_level']);
-  }
 
-  return $user[STRUC_LABORATORY] ? $user[STRUC_LABORATORY] : 1;
+    $tech_intergalactic = mrc_get_level($user, false, TECH_RESEARCH);
+    $lab_db_name = $sn_data[STRUC_LABORATORY]['name'];
+    $nanolab_db_name = $sn_data[STRUC_LABORATORY_NANO]['name'];
+
+    $bonus = mrc_get_level($user, false, UNIT_PREMIUM);
+    $lab_require = $lab_require > $bonus ? $lab_require - $bonus : 1;
+/*
+    if(!$tech_intergalactic || $user['user_as_ally'])
+    {
+      if(!isset($user[STRUC_LABORATORY]))
+      {
+        $lab_level = doquery("SELECT MAX(({$lab_db_name} + 1) * 2 / pow(0.5, {$nanolab_db_name})) as effective_level FROM {{planets}} WHERE `id_owner` = {$user['id']};", true);
+        $user[STRUC_LABORATORY] = floor($lab_level['effective_level']);
+      }
+
+      return $user[STRUC_LABORATORY] ? $user[STRUC_LABORATORY] : 1;
+    }
+    else
+*/
+    {
+      $tech_intergalactic = $tech_intergalactic + 1;
+/*
+      $inves = doquery("SELECT SUM(`{$lab_db_name}`) AS `laboratorio`
+        FROM
+        (
+          SELECT `{$lab_db_name}`
+            FROM `{{planets}}`
+            WHERE `id_owner` = '{$user['id']}' AND `{$lab_db_name}` >= {$lab_require}
+            ORDER BY `{$lab_db_name}` DESC
+            LIMIT {$tech_intergalactic}
+        ) AS subquery;", '', true);
+//      $time = $time / (($inves['laboratorio'] + 1) * 2) * pow(0.5, $planet[$sn_data[STRUC_LABORATORY_NANO]['name']]);
+*/
+      $lab_level = doquery(
+        "SELECT SUM(lab) AS effective_level
+          FROM
+          (
+            SELECT ({$lab_db_name} + 1 + {$bonus}) * 2 / POW(0.5, {$nanolab_db_name} + {$bonus}) AS lab
+              FROM {{planets}}
+                WHERE id_owner='{$user['id']}' AND {$lab_db_name} >= {$lab_require}
+                ORDER BY lab DESC
+                LIMIT {$tech_intergalactic}
+          ) AS subquery;", '', true);
+      return $lab_level['effective_level'];
+    }
 }
 
 function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_cost = false)
@@ -108,59 +147,27 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   $cost['RESULT'][BUILD_DESTROY] = BUILD_INDESTRUCTABLE;
   if(in_array($unit_id, $sn_groups['structures']))
   {
-    $time = $time * pow(0.5, $planet[$sn_data[STRUC_FACTORY_NANO]['name']]) / ($planet[$sn_data[STRUC_FACTORY_ROBOT]['name']] + 1);
+//    $time = $time * pow(0.5, $planet[$sn_data[STRUC_FACTORY_NANO]['name']]) / ($planet[$sn_data[STRUC_FACTORY_ROBOT]['name']] + 1);
+    $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_ROBOT) + 1);
     $mercenary = MRC_ENGINEER;
     $cost['RESULT'][BUILD_DESTROY] = $planet[$unit_db_name] ? ($cost['CAN'][BUILD_DESTROY] ? BUILD_ALLOWED : BUILD_NO_RESOURCES) : BUILD_NO_UNITS;
   }
   elseif(in_array($unit_id, $sn_groups['tech']))
   {
-    $tech_intergalactic = mrc_get_level($user, false, TECH_RESEARCH);
-
-    if(!$tech_intergalactic || $user['user_as_ally'])
-    {
-      $lab_level = eco_get_lab_max_effective_level($user);
-      $time = $time / $lab_level;
-    }
-    else
-    {
-      $lab_db_name = $sn_data[STRUC_LABORATORY]['name'];
-      $nanolab_db_name = $sn_data[STRUC_LABORATORY_NANO]['name'];
-      $lab_require = intval($unit_data['require'][STRUC_LABORATORY]);
-      $tech_intergalactic = $tech_intergalactic + 1;
-/*
-      $inves = doquery("SELECT SUM(`{$lab_db_name}`) AS `laboratorio`
-        FROM
-        (
-          SELECT `{$lab_db_name}`
-            FROM `{{planets}}`
-            WHERE `id_owner` = '{$user['id']}' AND `{$lab_db_name}` >= {$lab_require}
-            ORDER BY `{$lab_db_name}` DESC
-            LIMIT {$tech_intergalactic}
-        ) AS subquery;", '', true);
-//      $time = $time / (($inves['laboratorio'] + 1) * 2) * pow(0.5, $planet[$sn_data[STRUC_LABORATORY_NANO]['name']]);
-*/
-      $inves = doquery(
-        "SELECT SUM(lab) AS effective_level
-          FROM
-          (
-            SELECT ({$lab_db_name} + 1) * 2 / pow(0.5, {$nanolab_db_name}) AS lab
-              FROM {{planets}}
-                WHERE id_owner='{$user['id']}' AND {$lab_db_name} >= {$lab_require}
-                ORDER BY lab DESC
-                LIMIT {$tech_intergalactic}
-          ) AS subquery;", '', true);
-      $time = $time / $inves['effective_level'];
-    }
+    $lab_level = eco_get_lab_max_effective_level($user, intval($unit_data['require'][STRUC_LABORATORY]));
+    $time = $time / $lab_level;
     $mercenary = MRC_ACADEMIC;
   }
-  elseif (in_array($unit_id, $sn_groups['defense']))
+  elseif(in_array($unit_id, $sn_groups['defense']))
   {
-    $time = $time * pow(0.5, $planet[$sn_data[STRUC_FACTORY_NANO]['name']]) / ($planet[$sn_data[STRUC_FACTORY_HANGAR]['name']] + 1) ;
+//    $time = $time * pow(0.5, $planet[$sn_data[STRUC_FACTORY_NANO]['name']]) / ($planet[$sn_data[STRUC_FACTORY_HANGAR]['name']] + 1) ;
+    $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1) ;
     $mercenary = MRC_FORTIFIER;
   }
-  elseif (in_array($unit_id, $sn_groups['fleet']))
+  elseif(in_array($unit_id, $sn_groups['fleet']))
   {
-    $time = $time * pow(0.5, $planet[$sn_data[STRUC_FACTORY_NANO]['name']]) / ($planet[$sn_data[STRUC_FACTORY_HANGAR]['name']] + 1);
+//    $time = $time * pow(0.5, $planet[$sn_data[STRUC_FACTORY_NANO]['name']]) / ($planet[$sn_data[STRUC_FACTORY_HANGAR]['name']] + 1);
+    $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1);
     $mercenary = MRC_ENGINEER;
   }
 

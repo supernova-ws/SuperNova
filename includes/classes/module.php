@@ -9,7 +9,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #34a17.2# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #34b1# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -120,30 +120,52 @@ class sn_module
 
     // Adding vars - if any
     // Due to possible introduce of new constants in previous step vars is assigned via special method to honor new constants
-    // Only root variables are honored for now. For ex. $sn_data['groups'] would overwrite all groups subarray of $sn_data
+    // Assignation can work with simple variables and with multidimensional arrays - for ex. 'sn_data[groups][test]'
+    // New values from module variables will overwrite previous values (for root variables) and array elements with corresponding indexes (for arrays)
+    // Constants as array indexes are honored - it's make valid such declarations as 'sn_data[ques][QUE_STRUCTURES]'
     $this->manifest['vars'] = $this->__assign_vars();
     if(!empty($this->manifest['vars']))
     {
       $vars_assigned = array();
       foreach($this->manifest['vars'] as $var_name => $var_value)
       {
+        $sub_vars = explode('[', str_replace(']', '', $var_name));
+        $var_name = $sub_vars[0];
+
         if(!isset($vars_assigned[$var_name]))
         {
           $vars_assigned[$var_name] = true;
           global $$var_name;
         }
 
-        if(!isset($$var_name) || !is_array($$var_name))
+        $pointer = &$$var_name;
+        if(($n = count($sub_vars)) > 1)
         {
-          $$var_name = $var_value;
+          for($i = 1; $i < $n; $i++)
+          {
+            if(defined($sub_vars[$i]))
+            {
+              $sub_vars[$i] = constant($sub_vars[$i]);
+            }
+
+            if(!isset($pointer[$sub_vars[$i]]) && $i != $n)
+            {
+              $pointer[$sub_vars[$i]] = array();
+            }
+            $pointer = &$pointer[$sub_vars[$i]];
+          }
+        }
+
+        if(!isset($pointer) || !is_array($pointer))
+        {
+          $pointer = $var_value;
         }
         elseif(is_array($$var_name))
         {
-          $$var_name = $var_value + $$var_name;
+          $pointer = $var_value + $pointer;
         }
       }
     }
-
     // Overriding function if any
     if(isset($this->manifest['functions']))
     {

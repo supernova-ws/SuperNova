@@ -62,7 +62,7 @@ function eco_struc_show_unit_info(unit_id, no_color)
   document.getElementById('unit_name').innerHTML = unit['name'];
   if(unit['level'] > 0)
   {
-    document.getElementById('unit_name').innerHTML += '<br>' + language['level'] + ' ' + unit['level'];
+    document.getElementById('unit_name').innerHTML += '<br>' + language['level'] + ' ' + unit['level'] + (parseInt(unit['extra']) > 0 ? '<span class="neutral">+' + unit['extra'] + '</span>' : '');
     unit_destroy_link = language['bld_destroy'] + ' ' + language['level'] + ' ' + unit['level'];
   }
 
@@ -121,7 +121,7 @@ function eco_struc_show_unit_info(unit_id, no_color)
               break;
             }
           }
-          result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][i][j]), 0, 'positive', j == 'level' ? -unit['level'] : 0) + '</td>';
+          result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][i][j]), 0, 'positive', j == 'level' ? -unit['level']-unit['extra'] : 0) + '</td>';
         }
       }
       result += '</tr>';

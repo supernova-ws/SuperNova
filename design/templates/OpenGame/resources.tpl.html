@@ -50,7 +50,7 @@ function res_set_all(obj)
     </tr>
     <!-- BEGIN production -->
       <tr>
-        <th height="22">{production.TYPE}<!-- IF production.LEVEL --> ({production.LEVEL} {production.LEVEL_TYPE})<!-- ENDIF --></th>
+        <th height="22">{production.TYPE}<!-- IF production.LEVEL --> (<!-- IF production.LEVEL_TYPE -->{production.LEVEL_TYPE}&nbsp;<!-- ENDIF -->{production.LEVEL}<!-- IF production.LEVEL_EXTRA > 0 --><span class="neutral">+{production.LEVEL_EXTRA}</span><!-- ENDIF -->)<!-- ENDIF --></th>
         <th>{production.METAL_TYPE}</th>
         <th>{production.CRYSTAL_TYPE}</th>
         <th>{production.DEUTERIUM_TYPE}</th>
