@@ -11,7 +11,7 @@
 
 
 
-Текущая версия #34b3#
+Текущая версия #34c0#
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 Project "SuperNova.WS" Release 34 RC0 "Happy Birthday Supernova! 3rd anniversary"
