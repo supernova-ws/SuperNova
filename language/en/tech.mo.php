@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 34b2
 *
 */
 
@@ -165,6 +165,7 @@ $lang = array_merge($lang, array(
     UNIT_PLAN_SHIP_SUPERNOVA => 'Schematic \'"Supernova" cruiser\'',
     UNIT_PLAN_DEF_SHIELD_PLANET => 'Schematic "Planet defense"',
 
+    UNIT_PREMIUM => 'Premium',
   ),
 
 ));

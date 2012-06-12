@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 34b2
 *
 */
 
@@ -166,6 +166,7 @@ $lang = array_merge($lang, array(
     UNIT_PLAN_SHIP_SUPERNOVA => 'Чертеж \'Крейсер "Сверхновая"\'',
     UNIT_PLAN_DEF_SHIELD_PLANET => 'Чертеж "Планетарная защита"',
 
+    UNIT_PREMIUM => 'Премиум',
   ),
 
 ));

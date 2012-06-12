@@ -50,6 +50,10 @@ if($info_action)
         {
           $msg_text[] = "{$lang['tech'][$mercenary_id]} - " . (($mercenary_level = mrc_get_level($user_info, false, $mercenary_id)) ? "{$lang['sys_level']} {$mercenary_level}" : $lang['eco_mrk_info_not_hired']);
         }
+        if($mercenary_level = mrc_get_level($user_info, false, UNIT_PREMIUM))
+        {
+          $msg_text[] = "{$lang['tech'][UNIT_PREMIUM]} - {$mercenary_level} {$lang['sys_level']}";
+        }
         $msg_text = sprintf($lang['eco_mrk_info_player_message'], $user_info['id'], $user_info['username']) . "\r\n" . implode("\r\n", $msg_text);
 
         msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_SPY, $lang['eco_mrk_info_msg_from'], "{$lang['eco_mrk_info_player']} ID {$user_info['id']} [{$user_info['username']}]", $msg_text, false, true);
