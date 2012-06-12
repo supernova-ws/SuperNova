@@ -83,6 +83,7 @@ function get_game_speed()
 
 function pretty_number($n, $floor = true, $color = false, $limit = false, $style = null)
 {
+  $n = floatval($n);
   if(is_int($floor))
   {
     $n = round($n, $floor); // , PHP_ROUND_HALF_DOWN
@@ -129,7 +130,7 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
     {
       $class = $n == 0 ? 'zero' : ($n > 0 ? 'positive' : 'negative');
     }
-    elseif($color > 0)
+    elseif($color >= 0)
     {
       $class = $n == $color ? 'zero' : ($n < $color ? 'positive' : 'negative');
     }
@@ -191,7 +192,6 @@ function GetMaxFleets(&$user)
 function GetMaxExpeditions(&$user)
 {
   return floor(sqrt(mrc_get_level($user, false, TECH_EXPEDITION)));
-//  return floor(sqrt($user[$GLOBALS['sn_data'][TECH_EXPEDITION]['name']]));
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -675,13 +675,21 @@ function get_ship_data($ship_id, $user)
   {
     foreach($sn_data[$ship_id]['engine'] as $engine_info)
     {
-//      if($user[$sn_data[$engine_info['tech']]['name']] >= $engine_info['min_level'])
-      if(empty($ship_data) || mrc_get_level($user, false, $engine_info['tech']) >= $engine_info['min_level'])
+      $tech_level = intval(mrc_get_level($user, false, $engine_info['tech']));
+      if(empty($ship_data) || $tech_level >= $engine_info['min_level'])
       {
         $ship_data = $engine_info;
+        $ship_data['tech_level'] = $tech_level;
       }
     }
-    $ship_data['speed'] = floor(mrc_modify_value($user, false, array(MRC_NAVIGATOR, $ship_data['tech']), $ship_data['speed']));
+//    $ship_data['speed'] = floor(mrc_modify_value($user, false, array(MRC_NAVIGATOR, $ship_data['tech']), $ship_data['speed']));
+    $tech_bonus = ($ship_data['tech_level'] - $ship_data['min_level']) * $sn_data[$ship_data['tech']]['bonus'] / 100;
+    $tech_bonus = $tech_bonus < -0.9 ? -0.95 : $tech_bonus;
+    $ship_data['speed'] = floor(mrc_modify_value($user, false, array(MRC_NAVIGATOR), $ship_data['speed']) * (1 + $tech_bonus));
+
+    $tech_bonus = ($ship_data['tech_level'] - $ship_data['min_level']) * $sn_data[$ship_data['tech']]['bonus'] / 1000;
+    $tech_bonus = $tech_bonus > 0.5 ? 0.5 : ($tech_bonus < 0 ? $tech_bonus * 2: $tech_bonus);
+    $ship_data['consumption'] = $ship_data['consumption'] * (1 - $tech_bonus);
 
     $ship_data['capacity'] = $sn_data[$ship_id]['capacity'];
   }

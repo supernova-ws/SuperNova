@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2012-03-04 18:54:39
+Date: 2012-06-12 14:44:23
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -338,6 +338,8 @@ CREATE TABLE `sn_iraks` (
   `fleet_target_owner` bigint(20) unsigned DEFAULT NULL,
   `fleet_amount` bigint(20) unsigned DEFAULT '0',
   `primaer` int(32) DEFAULT NULL,
+  `fleet_start_type` smallint(6) NOT NULL DEFAULT '1',
+  `fleet_end_type` smallint(6) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `I_iraks_fleet_owner` (`fleet_owner`),
   KEY `I_iraks_fleet_target_owner` (`fleet_target_owner`),
@@ -423,6 +425,33 @@ CREATE TABLE `sn_notes` (
   UNIQUE KEY `id` (`id`),
   KEY `I_notes_owner` (`owner`),
   CONSTRAINT `FK_notes_owner` FOREIGN KEY (`owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for `sn_payment`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_payment`;
+CREATE TABLE `sn_payment` (
+  `payment_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Internal payment ID',
+  `payment_status` int(11) DEFAULT '0' COMMENT 'Payment status',
+  `payment_user_id` bigint(20) unsigned DEFAULT NULL,
+  `payment_user_name` varchar(64) DEFAULT NULL,
+  `payment_amount` decimal(60,5) DEFAULT '0.00000' COMMENT 'Amount paid',
+  `payment_currency` varchar(3) DEFAULT '' COMMENT 'Payment currency',
+  `payment_dark_matter_paid` decimal(65,0) DEFAULT '0' COMMENT 'Real DM paid for',
+  `payment_dark_matter_gained` decimal(65,0) DEFAULT '0' COMMENT 'DM gained by player (with bonuses)',
+  `payment_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Payment server timestamp',
+  `payment_comment` text COMMENT 'Payment comment',
+  `payment_module_name` varchar(255) DEFAULT '' COMMENT 'Payment module name',
+  `payment_external_id` varchar(255) DEFAULT '' COMMENT 'External payment ID in payment system',
+  `payment_external_date` datetime DEFAULT NULL COMMENT 'External payment timestamp in payment system',
+  `payment_external_lots` decimal(65,5) NOT NULL DEFAULT '0.00000' COMMENT 'Payment system lot amount',
+  `payment_external_amount` decimal(65,5) NOT NULL DEFAULT '0.00000' COMMENT 'Money incoming from payment system',
+  `payment_external_currency` varchar(3) NOT NULL DEFAULT '' COMMENT 'Payment system currency',
+  PRIMARY KEY (`payment_id`),
+  KEY `I_payment_user` (`payment_user_id`,`payment_user_name`),
+  KEY `I_payment_module_internal_id` (`payment_module_name`,`payment_external_id`),
+  CONSTRAINT `FK_payment_user` FOREIGN KEY (`payment_user_id`, `payment_user_name`) REFERENCES `sn_users` (`id`, `username`) ON DELETE NO ACTION ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -834,6 +863,8 @@ CREATE TABLE `sn_users` (
   `crystal` decimal(65,5) NOT NULL DEFAULT '0.00000',
   `deuterium` decimal(65,5) NOT NULL DEFAULT '0.00000',
   `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'User que',
+  `user_birthday` date DEFAULT NULL COMMENT 'User birthday',
+  `user_birthday_celebrated` date DEFAULT NULL COMMENT 'Last time where user got birthday gift',
   PRIMARY KEY (`id`),
   KEY `i_ally_id` (`ally_id`),
   KEY `i_ally_name` (`ally_name`),
@@ -843,6 +874,8 @@ CREATE TABLE `sn_users` (
   KEY `i_register_time` (`register_time`),
   KEY `FK_users_ally_tag` (`ally_tag`),
   KEY `I_user_user_as_ally` (`user_as_ally`),
+  KEY `I_user_birthday` (`user_birthday`,`user_birthday_celebrated`),
+  KEY `I_user_id_name` (`id`,`username`),
   CONSTRAINT `FK_users_ally_id` FOREIGN KEY (`ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `FK_users_ally_name` FOREIGN KEY (`ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `FK_users_ally_tag` FOREIGN KEY (`ally_tag`) REFERENCES `sn_alliance` (`ally_tag`) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -864,13 +897,15 @@ INSERT INTO `sn_config` VALUES ('ally_help_weak', '0');
 INSERT INTO `sn_config` VALUES ('avatar_max_height', '128');
 INSERT INTO `sn_config` VALUES ('avatar_max_width', '128');
 INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
-INSERT INTO `sn_config` VALUES ('chat_highlight_admin', '<font color=purple>$1</font>');
-INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');
-INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</font>');
+INSERT INTO `sn_config` VALUES ('chat_highlight_admin', '<span class=\"nick_admin\">$1</span>');
+INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<span class=\"nick_moderator\">$1</span>');
+INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<span class=\"nick_operator\">$1</span>');
+INSERT INTO `sn_config` VALUES ('chat_highlight_premium', '<span class=\"nick_premium\">$1</span>');
 INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
-INSERT INTO `sn_config` VALUES ('db_version', '33');
+INSERT INTO `sn_config` VALUES ('db_prefix', 'sn_');
+INSERT INTO `sn_config` VALUES ('db_version', '34');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
@@ -923,6 +958,9 @@ INSERT INTO `sn_config` VALUES ('LastSettedGalaxyPos', '1');
 INSERT INTO `sn_config` VALUES ('LastSettedPlanetPos', '1');
 INSERT INTO `sn_config` VALUES ('LastSettedSystemPos', '1');
 INSERT INTO `sn_config` VALUES ('metal_basic_income', '40');
+INSERT INTO `sn_config` VALUES ('payment_currency_default', 'UAH');
+INSERT INTO `sn_config` VALUES ('payment_lot_price', '1');
+INSERT INTO `sn_config` VALUES ('payment_lot_size', '1000');
 INSERT INTO `sn_config` VALUES ('player_delete_time', 45 * 24*60*60);
 INSERT INTO `sn_config` VALUES ('player_max_colonies', '9');
 INSERT INTO `sn_config` VALUES ('player_vacation_time', 2 * 24*60*60);
@@ -945,6 +983,10 @@ INSERT INTO `sn_config` VALUES ('rpg_flt_explore', '1000');
 INSERT INTO `sn_config` VALUES ('rpg_scrape_crystal', '0.50');
 INSERT INTO `sn_config` VALUES ('rpg_scrape_deuterium', '0.25');
 INSERT INTO `sn_config` VALUES ('rpg_scrape_metal', '0.75');
+INSERT INTO `sn_config` VALUES ('secret_word', 'SuperNova');
+INSERT INTO `sn_config` VALUES ('server_que_length_hangar', '5');
+INSERT INTO `sn_config` VALUES ('server_que_length_structures', '5');
+INSERT INTO `sn_config` VALUES ('server_start_date', DATE_FORMAT(CURDATE(), '%d.%m.%Y'));
 INSERT INTO `sn_config` VALUES ('server_updater_check_auto', '0');
 INSERT INTO `sn_config` VALUES ('server_updater_check_last', '0');
 INSERT INTO `sn_config` VALUES ('server_updater_check_period', 24 * 60 * 60);
@@ -961,6 +1003,9 @@ INSERT INTO `sn_config` VALUES ('url_faq', 'http://forum.supernova.ws/viewtopic.
 INSERT INTO `sn_config` VALUES ('url_forum', 'http://forum.supernova.ws/');
 INSERT INTO `sn_config` VALUES ('url_rules', 'http://forum.supernova.ws/viewtopic.php?f=3&t=974');
 INSERT INTO `sn_config` VALUES ('users_amount', '1');
+INSERT INTO `sn_config` VALUES ('user_birthday_celebrate', '0');
+INSERT INTO `sn_config` VALUES ('user_birthday_gift', '0');
+INSERT INTO `sn_config` VALUES ('user_birthday_range', '30');
 INSERT INTO `sn_config` VALUES ('user_vacation_disable', '0');
 INSERT INTO `sn_config` VALUES ('var_db_update', '0');
 INSERT INTO `sn_config` VALUES ('var_db_update_end', '0');

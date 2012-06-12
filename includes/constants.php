@@ -29,10 +29,10 @@ define('SHOW_ADMIN', 1);
 
 
 
-define('DB_VERSION', '33');
+define('DB_VERSION', '34');
 define('SN_RELEASE', '34');
-define('SN_VERSION', '34b2');
-define('SN_RELEASE_STABLE', '33d0'); // Latest stable release
+define('SN_VERSION', '34b3');
+define('SN_RELEASE_STABLE', '34c0'); // Latest stable release
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -324,6 +324,7 @@ define('BONUS_ABILITY' ,            3);  // Some ability
 define('BONUS_MULTIPLY',            4);  // Multiply by value
 define('BONUS_PERCENT_CUMULATIVE' , 5);  // Cumulative percent on base value
 define('BONUS_PERCENT_DEGRADED' ,   6);  // Bonus amount degraded with increase as pow(bonus, level) (?)
+define('BONUS_SPEED',               7);  // Speed bonus
 
 // *** Action constat (build should be replaced with ACTION)
 define('BUILD_CREATE' ,  1);
