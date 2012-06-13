@@ -1673,12 +1673,12 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_do_query("UPDATE {{powerup}} SET powerup_category = " . UNIT_MERCENARIES . " WHERE powerup_unit_id > 600 AND powerup_unit_id < 700;");
 
     // Convert Destructor to Death Star schematic
-    upd_do_query("UPDATE {{powerup}} 
-      SET powerup_time_start = 0, powerup_time_finish = 0, powerup_category = " . UNIT_PLANS . ", powerup_unit_id = " . UNIT_PLAN_SHIP_DEATH_STAR . " 
+    upd_do_query("UPDATE {{powerup}}
+      SET powerup_time_start = 0, powerup_time_finish = 0, powerup_category = " . UNIT_PLANS . ", powerup_unit_id = " . UNIT_PLAN_SHIP_DEATH_STAR . "
       WHERE (powerup_time_start = 0 OR powerup_time_finish >= UNIX_TIMESTAMP()) AND powerup_unit_id = 612;");
     // Convert Assasin to SuperNova schematic
-    upd_do_query("UPDATE {{powerup}} 
-      SET powerup_time_start = 0, powerup_time_finish = 0, powerup_category = " . UNIT_PLANS . ", powerup_unit_id = " . UNIT_PLAN_SHIP_SUPERNOVA . " 
+    upd_do_query("UPDATE {{powerup}}
+      SET powerup_time_start = 0, powerup_time_finish = 0, powerup_category = " . UNIT_PLANS . ", powerup_unit_id = " . UNIT_PLAN_SHIP_SUPERNOVA . "
       WHERE (powerup_time_start = 0 OR powerup_time_finish >= UNIX_TIMESTAMP()) AND powerup_unit_id = 614;");
 
     upd_alter_table('iraks', array(
@@ -1722,7 +1722,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
 
     upd_do_query('COMMIT;', true);
-    // $new_version = 34;
+    $new_version = 34;
 };
 upd_log_message('Upgrade complete.');
 
