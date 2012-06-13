@@ -130,13 +130,13 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
     {
       $class = $n == 0 ? 'zero' : ($n > 0 ? 'positive' : 'negative');
     }
-    elseif($color >= 0)
+    elseif($color > 0)
     {
       $class = $n == $color ? 'zero' : ($n < $color ? 'positive' : 'negative');
     }
     else
     {
-      $class = $n == -$color ? 'zero' : (-$n < $color ? 'positive' : 'negative');
+      $class = ($n == -$color) ? 'zero' : ($n < -$color ? 'negative' : 'positive');
     }
 
     if(!isset($style))
