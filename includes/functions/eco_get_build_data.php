@@ -11,25 +11,32 @@ function eco_get_lab_max_effective_level(&$user, $lab_require)
 {
   global $sn_data;
 
-  $tech_intergalactic = mrc_get_level($user, false, TECH_RESEARCH);
-  $lab_db_name = $sn_data[STRUC_LABORATORY]['name'];
-  $nanolab_db_name = $sn_data[STRUC_LABORATORY_NANO]['name'];
+  if($user['user_as_ally'])
+  {
+    $lab_level = doquery("SELECT ally_members AS effective_level FROM {{alliance}} WHERE id = {$user['user_as_ally']} LIMIT 1", true);
+  }
+  else
+  {
+    $tech_intergalactic = mrc_get_level($user, false, TECH_RESEARCH);
+    $lab_db_name = $sn_data[STRUC_LABORATORY]['name'];
+    $nanolab_db_name = $sn_data[STRUC_LABORATORY_NANO]['name'];
 
-  $bonus = mrc_get_level($user, false, UNIT_PREMIUM);
-  $lab_require = $lab_require > $bonus ? $lab_require - $bonus : 1;
-  $tech_intergalactic = $tech_intergalactic + 1;
-  $lab_level = doquery(
-    "SELECT SUM(lab) AS effective_level
-      FROM
-      (
-        SELECT ({$lab_db_name} + 1 + {$bonus}) * 2 / POW(0.5, {$nanolab_db_name} + {$bonus}) AS lab
-          FROM {{planets}}
-            WHERE id_owner='{$user['id']}' AND {$lab_db_name} >= {$lab_require}
-            ORDER BY lab DESC
-            LIMIT {$tech_intergalactic}
-      ) AS subquery;", '', true);
+    $bonus = mrc_get_level($user, false, UNIT_PREMIUM);
+    $lab_require = $lab_require > $bonus ? $lab_require - $bonus : 1;
+    $tech_intergalactic = $tech_intergalactic + 1;
+    $lab_level = doquery(
+      "SELECT SUM(lab) AS effective_level
+        FROM
+        (
+          SELECT (IF({$lab_db_name} > 0, {$lab_db_name} + {$bonus}, 0)) * POW(2, IF({$nanolab_db_name} > 0, {$nanolab_db_name} + {$bonus}, 0)) AS lab
+            FROM {{planets}}
+              WHERE id_owner='{$user['id']}' AND {$lab_db_name} + {$bonus} >= {$lab_require}
+              ORDER BY lab DESC
+              LIMIT {$tech_intergalactic}
+        ) AS subquery;", '', true);
+  }
 
-  return $lab_level['effective_level'];
+  return $lab_level['effective_level'] ? $lab_level['effective_level'] : 1;
 }
 
 function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_cost = false)
