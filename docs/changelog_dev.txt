@@ -211,7 +211,7 @@
 
 
 
-Текущий билд #34c1#
+Текущий билд #34d0#
 ~~~~~~~~~~~~~~~~~~~~~
 
 [*] sort_order и require для загрузки модулей
@@ -219,6 +219,10 @@
 [*] Листание Обзора Империи
 [*] Фон примиума во Вселенной - жолтый
 [*] Иконка атаки в навбаре (?) и на планете
+
+
+2012-06-16 14:36:40 34d0 - Project "SuperNova.WS" Release 34
+[!] Project "SuperNova.WS" Release 34 "Happy Birthday Supernova! 3rd anniversary"
 
 
 2012-06-14 14:11:27 34c1 - Research slowing down

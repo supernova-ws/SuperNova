@@ -1723,6 +1723,13 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
     upd_do_query('COMMIT;', true);
     $new_version = 34;
+
+//  case 34:
+//    upd_log_version_update();
+//
+//    upd_do_query('COMMIT;', true);
+//    $new_version = 35;
+
 };
 upd_log_message('Upgrade complete.');
 
