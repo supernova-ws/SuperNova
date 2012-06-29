@@ -839,7 +839,7 @@ CREATE TABLE `sn_users` (
   `system` int(11) NOT NULL DEFAULT '0',
   `planet` int(11) NOT NULL DEFAULT '0',
   `current_planet` int(11) NOT NULL DEFAULT '0',
-  `user_agent` mediumtext NOT NULL,
+  `user_agent` mediumtext NOT NULL DEFAULT '',
   `user_lastip` varchar(250) DEFAULT NULL COMMENT 'User last IP',
   `user_proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)',
   `register_time` int(10) unsigned DEFAULT '0',

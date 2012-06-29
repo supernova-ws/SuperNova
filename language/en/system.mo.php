@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a20.1
+* @version 35a0
 *
 */
 
@@ -43,12 +43,15 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_description_header' => 'Why do you need Dark Matter ?',
   'sys_dark_matter_description_text' => 'Dark Matter - is ingame currency, which in the game you can make a variety of operations:
     <ul>
-      <li>Use Black Market: exchanging resources, selling ship and buying them for resources etc</li>
-      <li>Hire Mercenaries and Governors</li>
-      <li>Buy Schematics</li>
-      <li>Buy Artifacts</li>
+      <li>Buy <a href="index.php?module=player_premium"><span class="link">Premium account</span></a></li>
+      <li>Recruit <a href="officer.php?mode=600"><span class="link">Mercenaries</span></a> for Empire</li>
+      <li>Hire Governors and but additional sectors <a href="overview.php?mode=manage"><span class="link">for planets</span></a></li>
+      <li>Buy <a href="officer.php?mode=1100"><span class="link">Schematics</span></a></li>
+      <li>Buy <a href="artifacts.php"><span class="link">Artefacts</span></a></li>
+      <li>Use <a href="market.php"><span class="link">Black Market</span></a>: exchange resources; sell ships; buy ships; buy intelligence etc</li>
       <li>...and many other things</li>
     </ul>',
+
   'sys_dark_matter_obtain_header' => 'How to obtain Dark Matter?',
   'sys_dark_matter_obtain_text' => 'You acquring Dark Matter in game process: while gained levels for raids to enemy planets, researching technologies, building and destroying buildings.
     Also sometimes expeditions can gain you some DM.',

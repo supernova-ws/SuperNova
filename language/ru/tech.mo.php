@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34b2
+* @version 35a0
 *
 */
 
@@ -36,7 +36,7 @@ $lang = array_merge($lang, array(
   'Crystal' => 'Кристалл',
   'Deuterium' => 'Дейтерий',
   'Energy' => 'Энергия',
-  'dark_matter' => 'Темная Материя',
+  'dark_matter' => 'Тёмная Материя',
   'ds' => 'Сообщения',
   'Message' => 'Сообщения',
   'level' => 'Уровень',
@@ -150,7 +150,7 @@ $lang = array_merge($lang, array(
     RES_CRYSTAL => 'Кристалл',
     RES_DEUTERIUM => 'Дейтерий',
     RES_ENERGY => 'Энергия',
-    RES_DARK_MATTER => 'Темная Материя',
+    RES_DARK_MATTER => 'Тёмная Материя',
 
     UNIT_ARTIFACTS => 'Артефакты',
     ART_LHC => 'Большой Адронный Коллайдер',

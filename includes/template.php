@@ -117,6 +117,13 @@ function tpl_render_menu()
       'LINK'  => 'announce.php',
     ),
 
+    'menu_dark_matter' => array(
+      'LEVEL' => 'header',
+      'TYPE'  => 'lang',
+      'ITEM'  => 'sys_dark_matter',
+      'LINK'  => 'dark_matter.php',
+    ),
+
     'menu_affiliates' => array(
       'LEVEL' => 'header',
       'ITEM'  => $lang['m_affilates'],
