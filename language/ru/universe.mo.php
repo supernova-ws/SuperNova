@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 35a1
 *
 */
 
@@ -143,6 +143,7 @@ $lang = array_merge($lang, array(
   'phalanx_onlyformoons' => 'Эта постройка доступна только для Луны.',
   'phalanx_nosensoravailable' => 'У Вас нет Сенсорной фаланги.',
   'phalanx_rangeerror' => 'Не хватает уровня Сенсорной фаланги!',
+  'phalanx_planet_destroyed' => 'Нельзя сканировать уничтоженную планету!',
   'gal_sys_members' => 'Участников:&nbsp;',
   'gal_sys_hint' => 'Подведите курсор мышки к картинке планеты, луны, обломков или к имени пользователя, названию альянса, что бы получить всплывающее меню с дополнительными опциями',
   'uni_debris' => 'Обломки',

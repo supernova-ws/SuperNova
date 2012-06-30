@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 35a1
 *
 */
 
@@ -145,6 +145,7 @@ $lang = array_merge($lang, array(
   'phalanx_onlyformoons' => 'This development is only available for the Moon.',
   'phalanx_nosensoravailable' => 'You do not have a Sensor Phalanx.',
   'phalanx_rangeerror' => 'Lacks level Sensor Phalanx!',
+  'phalanx_planet_destroyed' => 'You can not scan destroyed planet!',
   'gal_sys_members' => 'Members:&nbsp;',
   'gal_sys_hint' => 'Position the mouse pointer to the picture of the planet, moon, wrecks or the user name, the name of the Alliance that would get a popup menu with additional options',
   'uni_debris' => 'Debris',
@@ -166,10 +167,8 @@ $lang = array_merge($lang, array(
     <li>You can name galaxy or system with chosen name</li>
     <li>Chosen name would be seen by all players on page \"Universe\"</li>
     <li>Naming unnamed galaxy or system has it's base price which could be seen on page \"Universe Constants\"</li>
-    <li>
-    When naming galaxy or system you can choose naming price. Naming price can't be less than proposed</li>
-    <li>
-    Why you can choose to increase naming price? Next player that wish to rename galaxy or system after you should pay your naming price plus base price for galaxy or system. So paying higher price will protect (in some degree) galaxy or system from further renaming</li>
+    <li>When naming galaxy or system you can choose naming price. Naming price can't be less than proposed</li>
+    <li>Why you can choose to increase naming price? Next player that wish to rename galaxy or system after you should pay your naming price plus base price for galaxy or system. So paying higher price will protect (in some degree) galaxy or system from further renaming</li>
   ",
 
   'uni_galaxy_of' => 'galaxy',

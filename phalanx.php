@@ -15,7 +15,6 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('overview');
 lng_include('universe');
-
 if (!intval($planetrow['phalanx'])) {
   message ($lang['phalanx_nosensoravailable'], $lang['tech'][STRUC_MOON_PHALANX], "", 3);
 }
@@ -45,19 +44,20 @@ if($system_distance > $sensorRange || $scan_galaxy != $source_galaxy)
 
 $cost = $sensorLevel * 1000;
 
-if ($planetrow['deuterium'] > $cost)
-{
-  doquery("UPDATE {{planets}} SET deuterium = deuterium - {$cost} WHERE id='{$user['current_planet']}' LIMIT 1;");
-}
-else
+if ($planetrow['deuterium'] < $cost)
 {
   message($lang['phalanx_nodeuterium'], "phalanx", "", 3);
 }
 
+$planet_scanned = doquery("SELECT * FROM {{planets}} WHERE galaxy = {$scan_galaxy} AND system = {$scan_system} AND planet = {$scan_planet} AND planet_type = {$scan_planet_type} LIMIT 1;", '', true);
+if($planet_scanned['destruyed'])
+{
+  message ($lang['phalanx_planet_destroyed'], $lang['tech'][STRUC_MOON_PHALANX], "", 3);
+}
+
+doquery("UPDATE {{planets}} SET deuterium = deuterium - {$cost} WHERE id='{$user['current_planet']}' LIMIT 1;");
 
 $template = gettemplate('planet_fleet_list', true);
-
-$planet_scanned = doquery("SELECT * FROM {{planets}} WHERE galaxy = {$scan_galaxy} AND system = {$scan_system} AND planet = {$scan_planet} AND planet_type = {$scan_planet_type} LIMIT 1;", '', true);
 
 $fleet_list = flt_get_fleets($planet_scanned, true);
 $fleets = flt_parse_fleets_to_events($fleet_list, $planet_scanned);
