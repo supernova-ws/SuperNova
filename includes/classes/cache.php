@@ -568,6 +568,9 @@ class classConfig extends classPersistent
     'payment_lot_price'            => 1,     // Lot price in default currency
     'payment_lot_size'             => 1000,  // Lot size. Also service as minimum amount of DM that could be bought with one transaction
 
+    'planet_teleport_cost'         => 50000, // 
+    'planet_teleport_timeout'      => 86400, // 
+
     'player_delete_time'           => 3888000, // 
     'player_max_colonies'          => 9, // Max player planet count (NOT including main planet)
     'player_vacation_time'         => 172800, // 

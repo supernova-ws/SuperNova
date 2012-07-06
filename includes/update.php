@@ -1690,8 +1690,6 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     if(!$update_tables['payment']['payment_status'])
     {
       upd_alter_table('payment', array(
-  //      "CHANGE COLUMN `payment_amount` DECIMAL(60,5) DEFAULT 0 COMMENT ''",
-  //      "CHANGE COLUMN `payment_currency` VARCHAR(3) DEFAULT '' COMMENT 'Currency in'",
         "ADD COLUMN `payment_status` INT DEFAULT 0 COMMENT 'Payment status' AFTER `payment_id`",
 
         "CHANGE COLUMN `payment_dm` `payment_dark_matter_paid` DECIMAL(65,0) DEFAULT 0 COMMENT 'Real DM paid for'",
@@ -1700,7 +1698,6 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
         "CHANGE COLUMN `payment_internal_id` `payment_external_id` VARCHAR(255) DEFAULT '' COMMENT 'External payment ID in payment system'",
         "CHANGE COLUMN `payment_internal_date` `payment_external_date` DATETIME COMMENT 'External payment timestamp in payment system'",
         "ADD COLUMN `payment_external_lots` decimal(65,5) NOT NULL DEFAULT '0.00000' COMMENT 'Payment system lot amount'",
-//        "ADD COLUMN `payment_external_dark_matter` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Payment system DM amount'",
         "ADD COLUMN `payment_external_amount` decimal(65,5) NOT NULL DEFAULT '0.00000' COMMENT 'Money incoming from payment system'",
         "ADD COLUMN `payment_external_currency` VARCHAR(3) NOT NULL DEFAULT '' COMMENT 'Payment system currency'",
       ), !$update_tables['payment']['payment_status']);
@@ -1724,10 +1721,17 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_do_query('COMMIT;', true);
     $new_version = 34;
 
-//  case 34:
-//    upd_log_version_update();
-//
-//    upd_do_query('COMMIT;', true);
+  case 34:
+    upd_log_version_update();
+
+    upd_alter_table('planets', array(
+      "ADD COLUMN `planet_teleport_last` INT(11) NOT NULL DEFAULT 0 COMMENT 'Last teleport time'",
+    ), !$update_tables['planets']['planet_teleport_last']);
+
+    upd_check_key('planet_teleport_cost', 50000, !isset($config->planet_teleport_cost));
+    upd_check_key('planet_teleport_timeout', PERIOD_DAY * 1, !isset($config->planet_teleport_timeout));
+
+    upd_do_query('COMMIT;', true);
 //    $new_version = 35;
 
 };

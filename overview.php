@@ -50,6 +50,41 @@ switch($mode)
       $new_name = mysql_real_escape_string($new_name);
       doquery("UPDATE {{planets}} SET `name` = '{$new_name}' WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
     }
+    elseif(sys_get_param_str('teleport'))
+    {
+      /*
+      try
+      {
+        if(!uni_coordinates_valid(array($new_galaxy = sys_get_param_int('new_galaxy'), $new_system = sys_get_param_int('new_system'), $new_planet = sys_get_param_int('new_planet'))))
+        {
+          message($lang['ov_teleport_wrong_coordinates'] , $lang['ov_teleport'], 'overview.php?mode=manage');
+          throw new exception($lang['pay_msg_request_paylink_unsupported'], SN_PAYMENT_REQUEST_PAYLINK_UNSUPPORTED);
+        }
+
+        doquery("START TRANSACTION");
+        $destination = doquery("SELECT id FROM {{planets}} where galaxy = {$new_galaxy}, system = {$new_system}, planet = {$new_planet}", true);
+        if($destination)
+        {
+          message($lang['ov_teleport_wrong_coordinates'] , $lang['ov_teleport'], 'overview.php?mode=manage');
+          throw new exception($lang['pay_msg_request_paylink_unsupported'], SN_PAYMENT_REQUEST_PAYLINK_UNSUPPORTED);
+        }
+        doquery("COMMIT");
+      }
+      catch(exception $e)
+      {
+        doquery("ROLLBACK");
+        $response = array(
+          'result'  => $e->getCode(),
+          'message' => $e->getMessage(),
+        );
+      }
+      */
+/*
+      $planetrow['name'] = $new_name;
+      $new_name = mysql_real_escape_string($new_name);
+      doquery("UPDATE {{planets}} SET `name` = '{$new_name}' WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+*/
+    }
     elseif(sys_get_param_str('abandon'))
     {
       $abandon_confirm = $_POST['abandon_confirm'];

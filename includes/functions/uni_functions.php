@@ -333,4 +333,16 @@ function uni_calculate_moon_chance($FleetDebris)
   return ($MoonChance < 1) ? 0 : ($MoonChance>30 ? 30 : $MoonChance);
 }
 
+function uni_coordinates_valid($coordinates, $prefix = '')
+{
+  global $config;
+
+  array_walk($coordinates, 'intval');
+
+  return
+    $coordinates["{$prefix}galaxy"] > 0 && $coordinates["{$prefix}galaxy"] <= $config->game_maxGalaxy &&
+    $coordinates["{$prefix}system"] > 0 && $coordinates["{$prefix}system"] <= $config->game_maxSystem &&
+    $coordinates["{$prefix}planet"] > 0 && $coordinates["{$prefix}planet"] <= $config->game_maxPlanet;
+}
+
 ?>

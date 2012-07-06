@@ -90,7 +90,7 @@ function lng_get_list()
 
 function lng_get_info($entry)
 {
-  $file_name = SN_ROOT_PHYSICAL . "language/" . $entry . '/language.mo';
+  $file_name = SN_ROOT_PHYSICAL . "language/" . $entry . '/language.mo.php';
   $lang_info = array();
   if (file_exists($file_name))
   {
