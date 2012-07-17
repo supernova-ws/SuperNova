@@ -1725,8 +1725,8 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_log_version_update();
 
     upd_alter_table('planets', array(
-      "ADD COLUMN `planet_teleport_last` INT(11) NOT NULL DEFAULT 0 COMMENT 'Last teleport time'",
-    ), !$update_tables['planets']['planet_teleport_last']);
+      "ADD COLUMN `planet_teleport_next` INT(11) NOT NULL DEFAULT 0 COMMENT 'Next teleport time'",
+    ), !$update_tables['planets']['planet_teleport_next']);
 
     upd_check_key('planet_teleport_cost', 50000, !isset($config->planet_teleport_cost));
     upd_check_key('planet_teleport_timeout', PERIOD_DAY * 1, !isset($config->planet_teleport_timeout));

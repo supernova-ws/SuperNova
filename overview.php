@@ -52,33 +52,59 @@ switch($mode)
     }
     elseif(sys_get_param_str('teleport'))
     {
-      /*
       try
       {
-        if(!uni_coordinates_valid(array($new_galaxy = sys_get_param_int('new_galaxy'), $new_system = sys_get_param_int('new_system'), $new_planet = sys_get_param_int('new_planet'))))
-        {
-          message($lang['ov_teleport_wrong_coordinates'] , $lang['ov_teleport'], 'overview.php?mode=manage');
-          throw new exception($lang['pay_msg_request_paylink_unsupported'], SN_PAYMENT_REQUEST_PAYLINK_UNSUPPORTED);
+        if(!uni_coordinates_valid($new_coordinates = array('galaxy' => sys_get_param_int('new_galaxy'), 'system' => sys_get_param_int('new_system'), 'planet' => sys_get_param_int('new_planet'))))
+        {debug($new_coordinates);
+          throw new exception($lang['ov_teleport_err_wrong_coordinates'], ERR_ERROR);
         }
 
         doquery("START TRANSACTION");
+        $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
+        $user = $global_data['user'];
+        $planetrow = $global_data['planet'];
+
+//        $user = doquery("SELECT * FROM {{users}} WHERE id = {$user['id']} LIMIT 1", true);
+//        $planetrow = doquery();
+
+        $can_teleport = uni_planet_teleport_check($user, $planetrow, $new_coordinates);
+        if($can_teleport['result'] != ERR_NONE)
+        {
+          throw new exception($can_teleport['message'], $can_teleport['result']);
+        }
+
+        rpg_points_change($user['id'], RPG_TELEPORT, -$config->planet_teleport_cost,
+          array('Planet %s ID %d teleported from coordinates %s to coordinates %s', $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow), uni_render_coordinates($new_coordinates))
+        );
+        $planet_teleport_next = $time_now + $config->planet_teleport_timeout;
+        doquery("UPDATE {{planets}} 
+          SET galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next} 
+          WHERE galaxy = {$planetrow['galaxy']} AND system = {$planetrow['system']} AND planet = {$planetrow['planet']}");
+/*
         $destination = doquery("SELECT id FROM {{planets}} where galaxy = {$new_galaxy}, system = {$new_system}, planet = {$new_planet}", true);
         if($destination)
         {
           message($lang['ov_teleport_wrong_coordinates'] , $lang['ov_teleport'], 'overview.php?mode=manage');
           throw new exception($lang['pay_msg_request_paylink_unsupported'], SN_PAYMENT_REQUEST_PAYLINK_UNSUPPORTED);
         }
+*/
+        $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
         doquery("COMMIT");
+        $user = $global_data['user'];
+        $planetrow = $global_data['planet'];
+        $result = array(
+          'result'  => ERR_NONE,
+          'message' => $lang['ov_teleport_err_none'],
+        );
       }
       catch(exception $e)
       {
         doquery("ROLLBACK");
-        $response = array(
+        $result = array(
           'result'  => $e->getCode(),
           'message' => $e->getMessage(),
         );
       }
-      */
 /*
       $planetrow['name'] = $new_name;
       $new_name = mysql_real_escape_string($new_name);
@@ -170,6 +196,8 @@ switch($mode)
     $planet_fill = floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100);
     $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
 
+    $can_teleport = uni_planet_teleport_check($user, $planetrow);
+
     $template->assign_vars(array(
       'DARK_MATTER' => $user['dark_matter'],
 
@@ -181,7 +209,15 @@ switch($mode)
       'planet_field_current'  => $planetrow['field_current'],
       'planet_field_max'      => eco_planet_fields_max($planetrow),
 
+      'CAN_TELEPORT'          => $can_teleport['result'] == ERR_NONE,
+      'CAN_NOT_TELEPORT_MSG'  => $can_teleport['message'],
+
       'PAGE_HINT'   => $lang['ov_manage_page_hint'],
+    ));
+
+    $template->assign_block_vars('result', array(
+      'STATUS'  => $result['result'],
+      'MESSAGE' => $result['message'],
     ));
 
     display($template, $lang['rename_and_abandon_planet']);

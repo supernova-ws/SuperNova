@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a20.1
+* @version 35a4
 *
 */
 
@@ -153,9 +153,23 @@ $lang = array_merge($lang, array(
   'ov_mrc_confirm_2' => 'level',
   'ov_mrc_confirm_3' => 'to governor',
   'ov_mrc_confirm_4' => 'first level? All your Dark Matter invested in current governor WILL BE LOST!',
-  'ov_manage_page_hint' => '  <li class="warning">WARNING! When hiring different governor his starting level will become 1 WITHOUT COMPENSATION SPENT DARK MATTER for previous one!  It\'s essential to plan your Empire, choosing right governor for each planet depending of it\'s role!</li>  <li>Governors are mercenaries that manage one planet and granting certain bonuses to it</li>  <li>Click on governor\'s image in list to see description and granted bonuses</li>  <li>To hire governor click on "Hire"</li>  <li>Hiring current governor will increase his level - and thus increase his bonuses on planet</li>  <li>Some governors has limit by level. Some - has not</li>  ',
+  'ov_manage_page_hint' => '  <li class="warning">WARNING! When hiring different governor his starting level will become 1 WITHOUT COMPENSATION SPENT DARK MATTER for previous one!  It\'s essential to plan your Empire, choosing right governor for each planet depending of it\'s role!</li>  <li>Governors are mercenaries that manage one planet and granting certain bonuses to it</li>  <li>Click on governor\'s image in list to see description and granted bonuses</li>  <li>To hire governor click on "Hire"</li>  <li>Hiring current governor will increase his level - and thus increase his bonuses on planet</li>  <li>Some governors has limit by level. Some - has not</li>
+  <li>Teleportatioin moves planet with orbiting fleet to new coordinates</li>
+  <li>If planet have a moon - it would be also teleported with orbiting fleet</li>
+  <li>Teleportation is not possible if there is any activity in planet range (i.e. some fleets have as source and/or destination current planet or their moon or debris field)</li>
+  <li>After teleportation you should wait some time - dimension metrics should normalize itself before next teleportation</li>
+  ',
 
   'ov_gate_time_left' => 'Time to next jump',
+
+  'ov_teleport' => 'Teleport',
+  'ov_teleport_new_coordinates' => 'New coordinates',
+  'ov_teleport_err_none' => 'Planet succesfully teleported',
+  'ov_teleport_err_wrong_coordinates' => 'Wrong coordinates',
+  'ov_teleport_err_fleet' => 'There is some fleet activity in planet range',
+  'ov_teleport_err_destination_busy' => 'Destination is busy',
+  'ov_teleport_err_cooldown' => 'You can not teleport until dimension metrics is normalized. Please wait',
+  'ov_teleport_err_no_dark_matter' => 'There is not enough Dark Matter to teleport',
 ));
 
 ?>

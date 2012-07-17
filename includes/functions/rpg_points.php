@@ -42,6 +42,10 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
   if($rows_affected)
   {
     $page_url = mysql_real_escape_string($_SERVER['SCRIPT_NAME']);
+    if(is_array($comment))
+    {
+      $comment = call_user_func_array('sprintf', $comment);
+    }
     $comment = mysql_real_escape_string($comment);
     $row = doquery("SELECT username FROM {{users}} WHERE id = {$user_id} LIMIT 1;", '', true);
     $row['username'] = mysql_real_escape_string($row['username']);

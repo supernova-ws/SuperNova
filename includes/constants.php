@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '34');
 define('SN_RELEASE', '35');
-define('SN_VERSION', '35a3');
+define('SN_VERSION', '35a4');
 define('SN_RELEASE_STABLE', '34d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -161,6 +161,7 @@ define('RPG_PURCHASE', 15);
 define('RPG_PLANS', 16);
 define('RPG_PREMIUM', 17);
 define('RPG_SECTOR', 18);
+define('RPG_TELEPORT', 19);
 
 // Operation error status
 define('ERR_NONE'               , 0); // No error

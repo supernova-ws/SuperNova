@@ -340,9 +340,66 @@ function uni_coordinates_valid($coordinates, $prefix = '')
   array_walk($coordinates, 'intval');
 
   return
-    $coordinates["{$prefix}galaxy"] > 0 && $coordinates["{$prefix}galaxy"] <= $config->game_maxGalaxy &&
-    $coordinates["{$prefix}system"] > 0 && $coordinates["{$prefix}system"] <= $config->game_maxSystem &&
-    $coordinates["{$prefix}planet"] > 0 && $coordinates["{$prefix}planet"] <= $config->game_maxPlanet;
+    isset($coordinates["{$prefix}galaxy"]) && $coordinates["{$prefix}galaxy"] > 0 && $coordinates["{$prefix}galaxy"] <= $config->game_maxGalaxy &&
+    isset($coordinates["{$prefix}system"]) && $coordinates["{$prefix}system"] > 0 && $coordinates["{$prefix}system"] <= $config->game_maxSystem &&
+    isset($coordinates["{$prefix}planet"]) && $coordinates["{$prefix}planet"] > 0 && $coordinates["{$prefix}planet"] <= $config->game_maxPlanet;
+}
+
+function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null)
+{
+  global $lang, $time_now, $config;
+
+  try
+  {
+    if($planetrow['planet_teleport_next'] && $planetrow['planet_teleport_next'] > $time_now)
+    {
+      throw new exception($lang['ov_teleport_err_cooldown'], ERR_ERROR);
+    }
+
+    if(mrc_get_level($user, false, RES_DARK_MATTER) < $config->planet_teleport_cost)
+    {
+      throw new exception($lang['ov_teleport_err_no_dark_matter'], ERR_ERROR);
+    }
+
+    // TODO: Replace quick-check with using gathered flying fleet data
+    $incoming = doquery("SELECT COUNT(*) AS incoming FROM {{fleets}} WHERE 
+      (fleet_start_galaxy = {$planetrow['galaxy']} and fleet_start_system = {$planetrow['system']} and fleet_start_planet = {$planetrow['planet']})
+      or
+      (fleet_end_galaxy = {$planetrow['galaxy']} and fleet_end_system = {$planetrow['system']} and fleet_end_planet = {$planetrow['planet']})", true);
+    if($incoming['incoming'])
+    {
+      throw new exception($lang['ov_teleport_err_fleet'], ERR_ERROR);
+    }
+
+    $incoming = doquery("SELECT COUNT(*) AS incoming FROM {{iraks}} WHERE fleet_end_galaxy = {$planetrow['galaxy']} and fleet_end_system = {$planetrow['system']} and fleet_end_planet = {$planetrow['planet']}", true);
+    if($incoming['incoming'])
+    {
+      throw new exception($lang['ov_teleport_err_fleet'], ERR_ERROR);
+    }
+
+    if(is_array($new_coordinates))
+    {
+      $incoming = doquery("SELECT COUNT(*) AS incoming FROM {{planets}} WHERE galaxy = {$new_coordinates['galaxy']} and system = {$new_coordinates['system']} and planet = {$new_coordinates['planet']}", true);
+      if($incoming['incoming'])
+      {
+        throw new exception($lang['ov_teleport_err_destination_busy'], ERR_ERROR);
+      }
+    }
+
+    $response = array(
+      'result'  => ERR_NONE,
+      'message' => '',
+    );
+  }
+  catch(exception $e)
+  {
+    $response = array(
+      'result'  => $e->getCode(),
+      'message' => $e->getMessage(),
+    );
+  }
+
+  return $response;
 }
 
 ?>
