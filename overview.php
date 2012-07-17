@@ -42,7 +42,6 @@ switch($mode)
 
     $template  = gettemplate('planet_manage', true);
     $planet_id = sys_get_param_id('planet_id');
-    $hire = sys_get_param_int('hire');
 
     if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name'))
     {
@@ -50,12 +49,39 @@ switch($mode)
       $new_name = mysql_real_escape_string($new_name);
       doquery("UPDATE {{planets}} SET `name` = '{$new_name}' WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
     }
-    elseif(sys_get_param_str('teleport'))
+    elseif(sys_get_param_str('capital'))
     {
       try
       {
+        doquery("START TRANSACTION");
+        $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
+        $user = $global_data['user'];
+        $planetrow = $global_data['planet'];
+
+        if($planetrow['planet_type'] != PT_PLANET)
+        {
+          throw new exception($lang['ov_capital_err_not_a_planet'], ERR_ERROR);
+        }
+
+        if($planetrow['id'] == $user['id_planet'])
+        {
+          throw new exception($lang['ov_capital_err_capital_already'], ERR_ERROR);
+        }
+
+        if(mrc_get_level($user, false, RES_DARK_MATTER) < $config->planet_capital_cost)
+        {
+          throw new exception($lang['ov_capital_err_no_dark_matter'], ERR_ERROR);
+        }
+
+        rpg_points_change($user['id'], RPG_CAPITAL, -$config->planet_capital_cost,
+          array('Planet %s ID %d at coordinates %s now become Empire Capital', $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow))
+        );
+
+        doquery("UPDATE {{users}} SET id_planet = {$planetrow['id']} WHERE id = {$user['id']} LIMIT 1");
+
+/*
         if(!uni_coordinates_valid($new_coordinates = array('galaxy' => sys_get_param_int('new_galaxy'), 'system' => sys_get_param_int('new_system'), 'planet' => sys_get_param_int('new_planet'))))
-        {debug($new_coordinates);
+        {
           throw new exception($lang['ov_teleport_err_wrong_coordinates'], ERR_ERROR);
         }
 
@@ -80,14 +106,58 @@ switch($mode)
         doquery("UPDATE {{planets}} 
           SET galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next} 
           WHERE galaxy = {$planetrow['galaxy']} AND system = {$planetrow['system']} AND planet = {$planetrow['planet']}");
-/*
-        $destination = doquery("SELECT id FROM {{planets}} where galaxy = {$new_galaxy}, system = {$new_system}, planet = {$new_planet}", true);
-        if($destination)
-        {
-          message($lang['ov_teleport_wrong_coordinates'] , $lang['ov_teleport'], 'overview.php?mode=manage');
-          throw new exception($lang['pay_msg_request_paylink_unsupported'], SN_PAYMENT_REQUEST_PAYLINK_UNSUPPORTED);
-        }
+
+        $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
+        $user = $global_data['user'];
+        $planetrow = $global_data['planet'];
 */
+        $user['id_planet'] = $planetrow['id'];
+        $result = array(
+          'result'  => ERR_NONE,
+          'message' => $lang['ov_capital_err_none'],
+        );
+        doquery("COMMIT");
+      }
+      catch(exception $e)
+      {
+        doquery("ROLLBACK");
+        $result = array(
+          'result'  => $e->getCode(),
+          'message' => $e->getMessage(),
+        );
+      }
+    }
+    elseif(sys_get_param_str('teleport'))
+    {
+      try
+      {
+        if(!uni_coordinates_valid($new_coordinates = array('galaxy' => sys_get_param_int('new_galaxy'), 'system' => sys_get_param_int('new_system'), 'planet' => sys_get_param_int('new_planet'))))
+        {
+          throw new exception($lang['ov_teleport_err_wrong_coordinates'], ERR_ERROR);
+        }
+
+        doquery("START TRANSACTION");
+        $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
+        $user = $global_data['user'];
+        $planetrow = $global_data['planet'];
+
+//        $user = doquery("SELECT * FROM {{users}} WHERE id = {$user['id']} LIMIT 1", true);
+//        $planetrow = doquery();
+
+        $can_teleport = uni_planet_teleport_check($user, $planetrow, $new_coordinates);
+        if($can_teleport['result'] != ERR_NONE)
+        {
+          throw new exception($can_teleport['message'], $can_teleport['result']);
+        }
+
+        rpg_points_change($user['id'], RPG_TELEPORT, -$config->planet_teleport_cost,
+          array('Planet %s ID %d teleported from coordinates %s to coordinates %s', $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow), uni_render_coordinates($new_coordinates))
+        );
+        $planet_teleport_next = $time_now + $config->planet_teleport_timeout;
+        doquery("UPDATE {{planets}} 
+          SET galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next} 
+          WHERE galaxy = {$planetrow['galaxy']} AND system = {$planetrow['system']} AND planet = {$planetrow['planet']}");
+
         $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
         doquery("COMMIT");
         $user = $global_data['user'];
@@ -105,11 +175,6 @@ switch($mode)
           'message' => $e->getMessage(),
         );
       }
-/*
-      $planetrow['name'] = $new_name;
-      $new_name = mysql_real_escape_string($new_name);
-      doquery("UPDATE {{planets}} SET `name` = '{$new_name}' WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
-*/
     }
     elseif(sys_get_param_str('abandon'))
     {
@@ -135,7 +200,7 @@ switch($mode)
       }
     }
     elseif(
-      $hire && in_array($hire, $sn_data['groups']['governors'])
+      ($hire = sys_get_param_int('hire')) && in_array($hire, $sn_data['groups']['governors'])
       && (
         !isset($sn_data[$hire]['max']) ||
         ($planetrow['PLANET_GOVERNOR_ID'] != $hire) ||
@@ -211,6 +276,8 @@ switch($mode)
 
       'CAN_TELEPORT'          => $can_teleport['result'] == ERR_NONE,
       'CAN_NOT_TELEPORT_MSG'  => $can_teleport['message'],
+
+      'IS_CAPITAL'            => $planetrow['id'] == $user['id_planet'],
 
       'PAGE_HINT'   => $lang['ov_manage_page_hint'],
     ));

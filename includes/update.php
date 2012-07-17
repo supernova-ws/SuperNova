@@ -1731,6 +1731,8 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_check_key('planet_teleport_cost', 50000, !isset($config->planet_teleport_cost));
     upd_check_key('planet_teleport_timeout', PERIOD_DAY * 1, !isset($config->planet_teleport_timeout));
 
+    upd_check_key('planet_capital_cost', 25000, !isset($config->planet_capital_cost));
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 35;
 

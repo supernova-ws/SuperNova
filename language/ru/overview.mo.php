@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a4
+* @version 35a5
 *
 */
 
@@ -58,7 +58,7 @@ $lang = array_merge($lang, array(
   'Miner' => 'Геолог',
   'Raider' => 'Рейдер',
   'Debris_Field' => 'Debris Field',
-  'rename_and_abandon_planet' => 'Переименовать и покинуть планету',
+  'rename_and_abandon_planet' => 'Управление планетой',
   'functions' => 'Функции',
   'coords' => 'Координаты',
   'your_planet' => 'Ваша планета',
@@ -168,6 +168,13 @@ $lang = array_merge($lang, array(
   'ov_teleport_err_destination_busy' => 'Место назначения занято',
   'ov_teleport_err_cooldown' => 'Невозможно телепортироваться два раза подряд. Подождите пока нормализуется метрика пространства',
   'ov_teleport_err_no_dark_matter' => 'Не хватает Тёмной Материи для телепортации',
+
+  'ov_capital' => 'Сделать столицей Империи',
+  'ov_teleport_err_none' => 'Планета теперь является столицей Империи',
+  'ov_capital_err_capital_already' => 'Эта планета уже является столицей Империи',
+  'ov_capital_err_no_dark_matter' => 'Не хватает Тёмной Материи для переноса столицы Империи',
+  'ov_capital_err_not_a_planet' => 'Только планету можно сделать столицей Империи',
+
 ));
 
 ?>

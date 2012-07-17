@@ -77,6 +77,7 @@ INSERT INTO `sn_config` VALUES ('metal_basic_income', '40');
 INSERT INTO `sn_config` VALUES ('payment_currency_default', 'UAH');
 INSERT INTO `sn_config` VALUES ('payment_lot_price', '1');
 INSERT INTO `sn_config` VALUES ('payment_lot_size', '1000');
+INSERT INTO `sn_config` VALUES ('planet_capital_cost', 25000);
 INSERT INTO `sn_config` VALUES ('planet_teleport_cost', 50000);
 INSERT INTO `sn_config` VALUES ('planet_teleport_timeout', 1 * 24*60*60);
 INSERT INTO `sn_config` VALUES ('player_delete_time', 45 * 24*60*60);
