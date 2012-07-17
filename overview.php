@@ -77,40 +77,8 @@ switch($mode)
           array('Planet %s ID %d at coordinates %s now become Empire Capital', $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow))
         );
 
-        doquery("UPDATE {{users}} SET id_planet = {$planetrow['id']} WHERE id = {$user['id']} LIMIT 1");
+        doquery("UPDATE {{users}} SET id_planet = {$planetrow['id']}, galaxy = {$planetrow['galaxy']}, system = {$planetrow['system']}, planet = {$planetrow['planet']} WHERE id = {$user['id']} LIMIT 1");
 
-/*
-        if(!uni_coordinates_valid($new_coordinates = array('galaxy' => sys_get_param_int('new_galaxy'), 'system' => sys_get_param_int('new_system'), 'planet' => sys_get_param_int('new_planet'))))
-        {
-          throw new exception($lang['ov_teleport_err_wrong_coordinates'], ERR_ERROR);
-        }
-
-        doquery("START TRANSACTION");
-        $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
-        $user = $global_data['user'];
-        $planetrow = $global_data['planet'];
-
-//        $user = doquery("SELECT * FROM {{users}} WHERE id = {$user['id']} LIMIT 1", true);
-//        $planetrow = doquery();
-
-        $can_teleport = uni_planet_teleport_check($user, $planetrow, $new_coordinates);
-        if($can_teleport['result'] != ERR_NONE)
-        {
-          throw new exception($can_teleport['message'], $can_teleport['result']);
-        }
-
-        rpg_points_change($user['id'], RPG_TELEPORT, -$config->planet_teleport_cost,
-          array('Planet %s ID %d teleported from coordinates %s to coordinates %s', $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow), uni_render_coordinates($new_coordinates))
-        );
-        $planet_teleport_next = $time_now + $config->planet_teleport_timeout;
-        doquery("UPDATE {{planets}} 
-          SET galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next} 
-          WHERE galaxy = {$planetrow['galaxy']} AND system = {$planetrow['system']} AND planet = {$planetrow['planet']}");
-
-        $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
-        $user = $global_data['user'];
-        $planetrow = $global_data['planet'];
-*/
         $user['id_planet'] = $planetrow['id'];
         $result = array(
           'result'  => ERR_NONE,
@@ -141,9 +109,6 @@ switch($mode)
         $user = $global_data['user'];
         $planetrow = $global_data['planet'];
 
-//        $user = doquery("SELECT * FROM {{users}} WHERE id = {$user['id']} LIMIT 1", true);
-//        $planetrow = doquery();
-
         $can_teleport = uni_planet_teleport_check($user, $planetrow, $new_coordinates);
         if($can_teleport['result'] != ERR_NONE)
         {
@@ -157,6 +122,11 @@ switch($mode)
         doquery("UPDATE {{planets}} 
           SET galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next} 
           WHERE galaxy = {$planetrow['galaxy']} AND system = {$planetrow['system']} AND planet = {$planetrow['planet']}");
+
+        if($planetrow['id'] == $user['id_planet'])
+        {
+          doquery($q = "UPDATE {{users}} SET galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']} WHERE id = {$user['id']} LIMIT 1");
+        }
 
         $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
         doquery("COMMIT");

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a5
+* @version 35a5.1
 *
 */
 
@@ -172,7 +172,7 @@ $lang = array_merge($lang, array(
   'ov_teleport_err_no_dark_matter' => 'There is not enough Dark Matter to teleport',
 
   'ov_capital' => 'Transfer Empire capital here',
-  'ov_teleport_err_none' => 'This planet is now Empire\'s capital ',
+  'ov_capital_err_none' => 'This planet is now Empire\'s capital ',
   'ov_capital_err_capital_already' => 'This planet is already the capital',
   'ov_capital_err_no_dark_matter' => 'There is not enough Dark Matter to transfer capital',
   'ov_capital_err_not_a_planet' => 'Only a planet can be capital',
