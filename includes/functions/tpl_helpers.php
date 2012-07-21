@@ -207,7 +207,6 @@ function tpl_parse_planet($planet, $que)
     'CRYSTAL_PERCENT'   => $planet['crystal_mine_porcent'] * 10,
     'DEUTERIUM_PERCENT' => $planet['deuterium_sintetizer_porcent'] * 10,
 
-    'TECH'          => $user['que'] ? $lang['tech'][$tech_que[QI_UNIT_ID]] . ' ' . pretty_time($tech_que[QI_TIME]) : 0,
     'HANGAR'        => $hangar_build_tip,
     'hangar_que'    => $hangar_que,
 
