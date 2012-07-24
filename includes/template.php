@@ -529,12 +529,12 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   sys_log_hit();
 
   // Affichage du Debug si necessaire
-  if ($user['authlevel'] >= 3 && $config->debug)
+  if($user['authlevel'] >= 3 && $config->debug)
   {
     $debug->echo_log();
   }
 
-  if (isset($link))
+  if(isset($link))
   {
     mysql_close();
   }
@@ -730,7 +730,10 @@ function displayP($template)
       parsetemplate($template);
     }
 
-    $template->display('body');
+    foreach($template->files as $section => $filename)
+    {
+      $template->display($section);
+    }
   }
   else
   {
@@ -743,7 +746,7 @@ function parsetemplate($template, $array = false)
 
   if(is_object($template))
   {
-    global $time_now, $user; // $ugamela_root_path,
+    global $time_now, $user;
 
     if($array)
     {
@@ -755,8 +758,8 @@ function parsetemplate($template, $array = false)
 
     $template->assign_vars(array(
       'dpath'         => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
-      'SN_ROOT_PATH'  => SN_ROOT_VIRTUAL, //$ugamela_root_path,
-      '-path_prefix-' => SN_ROOT_VIRTUAL, //$ugamela_root_path,
+      'SN_ROOT_PATH'  => SN_ROOT_VIRTUAL,
+      '-path_prefix-' => SN_ROOT_VIRTUAL,
       'TIME_NOW'      => $time_now,
     ));
 
@@ -766,46 +769,48 @@ function parsetemplate($template, $array = false)
   }
   else
   {
-  /*
-    global $lang;
-
-    if(!$array)
-    {
-      $array = array();
-    }
- */
     $search[] = '#\{L_([a-z0-9\-_]*?)\[([a-z0-9\-_]*?)\]\}#Ssie';
-    $replace[] = '( ( isset($lang[\'\1\'][\'\2\']) ) ? $lang[\'\1\'][\'\2\'] : \'\' );';
+    $replace[] = '((isset($lang[\'\1\'][\'\2\'])) ? $lang[\'\1\'][\'\2\'] : \'\');';
 
     $search[] = '#\{L_([a-z0-9\-_]*?)\}#Ssie';
-    $replace[] = '( ( isset($lang[\'\1\']) ) ? $lang[\'\1\'] : \'\' );';
+    $replace[] = '((isset($lang[\'\1\'])) ? $lang[\'\1\'] : \'\');';
 
     $search[] = '#\{([a-z0-9\-_]*?)\}#Ssie';
-    $replace[] = '( ( isset($array[\'\1\']) ) ? $array[\'\1\'] : \'\' );';
+    $replace[] = '((isset($array[\'\1\'])) ? $array[\'\1\'] : \'\');';
 
     return preg_replace($search, $replace, $template);
   }
 }
 
-function gettemplate($templatename, $is_phpbb = false, $template_path = false)
+function gettemplate($files, $template = false, $template_path = false)
 {
-  $templatename .= '.tpl.html';
+  $template_ex = '.tpl.html';
 
-  if($is_phpbb)
+  if($template === false)
+  {
+    return sys_file_read(TEMPLATE_DIR . '/' . $files . $template_ex);
+  }
+
+  if(is_string($files))
+  {
+//    $files = array('body' => $files);
+    $files = array(basename($files) => $files);
+  }
+
+  if(!is_object($template))
   {
     $template = new template();
     $template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
-
-    $template->set_filenames(array(
-        'body' => $templatename
-    ));
-
-    return $template;
   }
-  else
+
+  foreach($files as &$filename)
   {
-    return sys_file_read(TEMPLATE_DIR . '/' . $templatename);
+    $filename = $filename . $template_ex;
   }
+
+  $template->set_filenames($files);
+
+  return $template;
 }
 
 function tpl_login_lang(&$template, $id_ref)
