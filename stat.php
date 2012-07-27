@@ -127,9 +127,10 @@ if($who == 1)
 {
   if(in_array($type, $sn_data['groups']['STAT_COMMON']))
   {
+//      @rownum:=@rownum+1 rownum, subject.id, sp.{$Rank}_rank as rank, sp.{$Rank}_old_rank as rank_old, sp.{$Rank}_points as points, subject.username as name, subject.ally_name, subject.ally_id, subject.sex, UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
     $query_str = 
     "SELECT
-      @rownum:=@rownum+1 rownum, subject.id, sp.{$Rank}_rank as rank, sp.{$Rank}_old_rank as rank_old, sp.{$Rank}_points as points, subject.username as name, subject.ally_name, subject.ally_id, subject.sex, UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
+      @rownum:=@rownum+1 rownum, subject.id, sp.{$Rank}_rank as rank, sp.{$Rank}_old_rank as rank_old, sp.{$Rank}_points as points, subject.username as name, subject.*, UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
     FROM
       (SELECT @rownum:={$start}) r,
       {{statpoints}} as sp
@@ -144,9 +145,10 @@ if($who == 1)
   }
   else
   {
+//      @rownum:=@rownum+1 AS rank, subject.id, @rownum as rank_old, subject.{$Rank} as points, subject.username as name, subject.ally_name, subject.ally_id, subject.sex, UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
     $query_str = 
     "SELECT
-      @rownum:=@rownum+1 AS rank, subject.id, @rownum as rank_old, subject.{$Rank} as points, subject.username as name, subject.ally_name, subject.ally_id, subject.sex, UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
+      @rownum:=@rownum+1 AS rank, subject.id, @rownum as rank_old, subject.{$Rank} as points, subject.username as name, subject.*, UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
     FROM
       (SELECT @rownum:={$start}) r,
       {{users}} AS subject
@@ -182,7 +184,6 @@ while ($row = mysql_fetch_assoc($query))
 {
   $row_stat = array(
       'ID' => $row['id'],
-      'NAME' => $row['name'],
 //      'RANK'        => $row['rownum'] + $start,
       'RANK'        => $row['rank'],
       'RANK_CHANGE' => $row['rank_old'] - $row['rank'],
@@ -196,11 +197,13 @@ while ($row = mysql_fetch_assoc($query))
     $row_stat['SEX'] = $row['sex'];
     $row_stat['ALLY_NAME'] = $row['ally_name'];
     $row_stat['ALLY_ID'] = $row['ally_id'];
+    $row_stat['NAME'] = render_player_nick($row, array('icons' => true));
   }
   else
   {
     $row_stat['MEMBERS'] = $row['ally_members'];
     $row_stat['POINTS_PER_MEMBER'] = pretty_number(floor($row['points'] / $row['ally_members']));
+    $row_stat['NAME'] = $row['name'];
   }
 
   $template->assign_block_vars('stat', $row_stat);

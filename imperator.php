@@ -58,7 +58,7 @@ $template->assign_vars(array(
   'USERS_TOTAL'          => $config->users_amount,
 
   'USER_ID'              => $user['id'],
-  'user_username'        => $user['username'],
+  'user_username'        => render_player_nick($user, true),//$user['username'],
   'user_sex'             => $user['sex'] == 'F' ? 'female' : 'male',
   'USER_AVATAR'          => $user['avatar'],
 

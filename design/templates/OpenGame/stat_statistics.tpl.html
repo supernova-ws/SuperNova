@@ -60,11 +60,15 @@
         <td class="c_r"><!-- IF stat.RANK == RANGE --><span class="fl">&gt;</span><!-- ENDIF --><a name="{player_rank}">{stat.RANK}</a></td>
         <td class="c_r {$RANK_CLASS}">{$RANK_SIGN}</td>
         <td class="c_l<!-- IF USER_ID == stat.ID --> same_player<!-- ENDIF -->">
+<script>
           <img src="{D_SN_ROOT_VIRTUAL}{dpath}images/sex_<!-- IF stat.SEX == "F" -->fe<!-- ENDIF -->male.png">
+</script>
           {stat.NAME}
+<script>
           <!-- IF stat.BIRTHDAY_TODAY -->
             <img class="fr" src="{D_SN_ROOT_VIRTUAL}images/birthday.png" alt="{stat.BIRTHDAY}" title="{stat.BIRTHDAY}">
           <!-- ENDIF -->
+</script>
         </td>
         <td class="c_c"><a href="messages.php?mode=write&id={stat.ID}"><img src="{dpath}img/m.gif" border="0" alt="{L_stat_message_write}" /></a></td>
         <td class="c_l"><!-- IF stat.ALLY_ID --><a href="alliance.php?mode=ainfo&a={stat.ALLY_ID}"><span class="<!-- IF USER_ALLY == stat.ALLY_ID -->same_alliance<!-- ENDIF -->">{stat.ALLY_NAME}</span></a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>

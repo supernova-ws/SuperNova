@@ -38,8 +38,10 @@ else
 
 if ($message && $user['username'])
 {
-  $nick = trim(strip_tags($user['username'])) . ($user['ally_tag'] ? '[' . trim(strip_tags($user['ally_tag'])) . ']' : '');
+  $nick = trim(strip_tags($user['username']));// . ($user['ally_tag'] ? '[' . trim(strip_tags($user['ally_tag'])) . ']' : '');
 
+  $nick = render_player_nick($user, true);
+/*
   if($user['authlevel'])
   {
     switch($user['authlevel'])
@@ -61,7 +63,7 @@ if ($message && $user['username'])
   {
     $highlight = $config->chat_highlight_premium;
   }
-
+*/
   $nick = preg_replace("#(.+)#", $highlight ? $highlight : '$1', $nick);
 
   $nick = mysql_real_escape_string($nick);

@@ -19,7 +19,7 @@ function sn_function_call($func_name, $func_arg = array())
   if(is_array($functions[$func_name]) && !is_callable($functions[$func_name]))
   {
     // Chain-callable functions should be made as following:
-    // 1. Never use incompplete calls with parameters "by default"
+    // 1. Never use incomplete calls with parameters "by default"
     // 2. Reserve last parameter for cumulative result
     // 3. Use same format for original value and cumulative result (if there is original value)
     // 4. Honor cumulative result
@@ -815,6 +815,64 @@ function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '',
       $functions[$function_name][] = $function_data;
     }
   }
+}
+
+//function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false){return sn_function_call('mrc_get_level', array(&$user, $planet, $unit_id, $for_update, $plain, &$result));}
+//function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false, &$result)
+
+function render_player_nick($user, $options = false){return sn_function_call('render_player_nick', array($user, $options, &$result));}
+function sn_render_player_nick($user, $options = false, &$result)
+{
+  global $config, $time_now;
+
+  $result .= $user['username'];
+
+  if($options !== false)
+  {
+    if($options === true || isset($options['ally']))
+    {
+      $result .= $user['ally_tag'] ? '[' . trim(strip_tags($user['ally_tag'])) . ']' : '';
+    }
+
+    if($options === true || isset($options['color']))
+    {
+      if($user['authlevel'])
+      {
+        switch($user['authlevel'])
+        {
+          case 3:
+            $highlight = $config->chat_highlight_admin;
+          break;
+
+          case 2:
+            $highlight = $config->chat_highlight_operator;
+          break;
+
+          case 1:
+            $highlight = $config->chat_highlight_moderator;
+          break;
+        }
+      }
+      elseif(mrc_get_level($user, false, UNIT_PREMIUM))
+      {
+        $highlight = $config->chat_highlight_premium;
+      }
+
+      $result = preg_replace("#(.+)#", $highlight ? $highlight : '$1', $result);
+    }
+
+    if($options === true || isset($options['icons']) || isset($options['sex']))
+    {
+      $result = '<img src="' . SN_ROOT_VIRTUAL . ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'images/sex_' . ($user['sex'] == 'F' ? 'female' : 'male') . '.png">' . $result;
+    }
+
+    if($user['user_birthday'] && ($options === true || isset($options['icons']) || isset($options['birthday'])) && (date('Y', $time_now) . date('-m-d', strtotime($user['user_birthday'])) == date('Y-m-d', $time_now)))
+    {
+      $result .= '<img src="' . SN_ROOT_VIRTUAL . 'images/birthday.png">';
+    }
+  }
+
+  return $result;
 }
 
 ?>

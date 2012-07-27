@@ -1733,6 +1733,10 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
     upd_check_key('planet_capital_cost', 25000, !isset($config->planet_capital_cost));
 
+    upd_alter_table('users', array(
+      "ADD COLUMN `player_race` INT(11) NOT NULL DEFAULT 0 COMMENT 'Player\'s race'",
+    ), !$update_tables['users']['player_race']);
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 35;
 

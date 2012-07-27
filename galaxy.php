@@ -242,8 +242,10 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
      'DEBRIS_RC_NEED' => $recyclers_need,
 
      'USER_ID'       => $uni_galaxyRowUser['id'],
-     'USER_NAME'     => $uni_galaxyRowUser['username'],
-     'USER_NAME_JS'  => js_safe_string($uni_galaxyRowUser['username']),
+//     'USER_NAME'     => $uni_galaxyRowUser['username'],
+//     'USER_NAME_JS'  => js_safe_string($uni_galaxyRowUser['username']),
+     'USER_NAME'     => render_player_nick($uni_galaxyRowUser),
+     'USER_NAME_JS'  => js_safe_string(render_player_nick($uni_galaxyRowUser)),
      'USER_RANK'     => $uni_galaxyRowUser['total_rank'],
      'USER_BANNED'   => $uni_galaxyRowUser['banaday'],
      'USER_VACATION' => $uni_galaxyRowUser['vacation'],
@@ -285,13 +287,15 @@ foreach($cached['users'] as $PlanetUser)
     }
 
     $birthday_array = $PlanetUser['user_birthday'] ? date_parse($PlanetUser['user_birthday']) : array();
+    $PlanetUser2 = $PlanetUser;
+    $PlanetUser2['username'] = js_safe_string($PlanetUser2['username']);
     $template->assign_block_vars('users', array(
       'ID'   => $PlanetUser['id'],
-      'NAME' => $PlanetUser['username'],
-      'NAME_JS' => js_safe_string($PlanetUser['username']),
+      'NAME' => render_player_nick($PlanetUser, true),
+      'NAME_JS' => render_player_nick($PlanetUser2, true),
       'RANK' => $PlanetUser['total_rank'],
-      'SEX'      => $PlanetUser['sex'] == 'F' ? 'female' : 'male',
-      'BIRTHDAY' => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? 1 : 0, // date(FMT_DATE, $time_now)
+//      'SEX'      => $PlanetUser['sex'] == 'F' ? 'female' : 'male',
+//      'BIRTHDAY' => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? 1 : 0, // date(FMT_DATE, $time_now)
       'AVATAR'   => $PlanetUser['avatar'],
       'ALLY_TAG' => js_safe_string($user_ally['ally_tag']),
       'ALLY_TITLE' => str_replace(' ', '&nbsp', js_safe_string($user_rank_title)),
