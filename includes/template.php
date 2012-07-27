@@ -329,7 +329,8 @@ function tpl_render_menu()
     'menu_options' => array(
       'LEVEL' => 'header',
       'ITEM'  => $lang['Options'],
-      'LINK'  => 'options.php',
+//      'LINK'  => 'options.php',
+      'LINK'  => 'index.php?page=options',
     ),
 
     'menu_logout' => array(
@@ -800,8 +801,8 @@ function gettemplate($files, $template = false, $template_path = false)
   if(!is_object($template))
   {
     $template = new template();
-    $template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
   }
+  $template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
 
   foreach($files as &$filename)
   {

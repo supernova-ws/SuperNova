@@ -14,6 +14,17 @@ if (!defined('INSIDE'))
 
   $sn_menu_extra = array();
 
+  $sn_mvc = array(
+   'model' => array(),
+   'view' => array(),
+   'controller' => array(),
+  );
+
+  $sn_i18n = array(
+    'pages' => array(
+    ),
+  );
+
   $sn_version_check_class = array(
     SNC_VER_NEVER => 'warning',
 
@@ -2436,6 +2447,8 @@ mission = array(
       'STAT_COMMON' => array(STAT_TOTAL => STAT_TOTAL, STAT_FLEET => STAT_FLEET, STAT_TECH => STAT_TECH, STAT_BUILDING => STAT_BUILDING, STAT_DEFENSE => STAT_DEFENSE, STAT_RESOURCE => STAT_RESOURCE, ),
       'STAT_PLAYER' => array(STAT_RAID_TOTAL => STAT_RAID_TOTAL, STAT_RAID_WON => STAT_RAID_WON, STAT_RAID_LOST => STAT_RAID_LOST, STAT_LVL_BUILDING => STAT_LVL_BUILDING, STAT_LVL_TECH => STAT_LVL_TECH, STAT_LVL_RAID => STAT_LVL_RAID, ),
     ),
+
+    'pages' => array('options' => 'options'),
   );
 
   //All resources

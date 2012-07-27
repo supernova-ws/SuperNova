@@ -1,15 +1,13 @@
 <?php
 
-
-
-
 class sn_module
 {
   public $manifest = array(
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #34b1# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #35a8.1
+# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -28,7 +26,7 @@ class sn_module
     // Key: overwritable function name to replace
     // Value: which method to use. Format: [*][<object_name>][.]<method>
     // '*' means that new function would replace old one
-    // If object_name is ommited but "." is present - overwritable linked to global function
+    // If object_name is ommited but "." is present - hook linked to global function
     // If only "method" present - overwritable linked to appropriate method of current object
     // Function/Method should be accessible on module init
     'functions' => array(
@@ -46,6 +44,10 @@ class sn_module
     // Empty or non-existent LOCATION equivalent to '+' - place item at end of menu
     // Non-existent menu_item_id treated as ommited
     'menu' => array(
+    ),
+
+    // 'page' array - defines pages which will handle this module and appropriate handlers
+    'page' => array(
     ),
   );
 
@@ -107,7 +109,7 @@ class sn_module
     }
 
     // Setting constants - if any
-    if(isset($this->manifest['constants']))
+    if(isset($this->manifest['constants']) && is_array($this->manifest['constants']) && !empty($this->manifest['constants']))
     {
       foreach($this->manifest['constants'] as $constant_name => $constant_value)
       {
@@ -167,7 +169,10 @@ class sn_module
       }
     }
     // Overriding function if any
-    if(isset($this->manifest['functions']))
+    global $functions;
+    sn_sys_handler_add($functions, $this->manifest['functions'], $this);//$class_module_name
+/*
+    if(isset($this->manifest['functions']) && is_array($this->manifest['functions']) && !empty($this->manifest['functions']))
     {
       global $functions;
 
@@ -192,7 +197,11 @@ class sn_module
           $override_with = array(substr($override_with, 0, $point_position), substr($override_with, $point_position + 1));
         }
 
-        if(!isset($functions[$function_name]))
+        if($overwrite)
+        {
+          $functions[$function_name] = array();
+        }
+        elseif(!isset($functions[$function_name]))
         {
           $functions[$function_name] = array();
           if(is_callable("sn_{$function_name}"))
@@ -201,23 +210,44 @@ class sn_module
           }
         }
 
-        if($overwrite)
-        {
-          $functions[$function_name] = array();
-        }
-
         $functions[$function_name][] = $override_with;
       }
     }
-
+*/
     // Pathcing game menu - if any
-    if(isset($this->manifest['menu']))
+    if(isset($this->manifest['menu']) && is_array($this->manifest['menu']) && !empty($this->manifest['menu']))
     {
       global $sn_menu_extra;
 
       foreach($this->manifest['menu'] as $menu_item_name => $menu_item_data)
       {
         $sn_menu_extra[$menu_item_name] = $menu_item_data;
+      }
+    }
+
+    global $sn_mvc;
+    foreach($sn_mvc as $handler_type => &$handler_data)
+    {
+      sn_sys_handler_add($handler_data, $this->manifest['mvc'][$handler_type], $this, $handler_type);
+    }
+
+    if(isset($this->manifest['i18n']) && is_array($this->manifest['i18n']) && !empty($this->manifest['i18n']))
+    {
+      global $sn_i18n;
+      foreach($this->manifest['i18n'] as $i18n_page_name => &$i18n_file_list)
+      {
+        foreach($i18n_file_list as &$i18n_file_data)
+        {
+          if(is_array($i18n_file_data) && !$i18n_file_data['path'])
+          {
+            $i18n_file_data['path'] = $module_root_relative;
+          }
+        }
+        if(!isset($sn_i18n['pages'][$i18n_page_name]))
+        {
+          $sn_i18n['pages'][$i18n_page_name] = array();
+        }
+        $sn_i18n['pages'][$i18n_page_name] += $i18n_file_list;
       }
     }
   }
