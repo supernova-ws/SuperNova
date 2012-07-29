@@ -28,7 +28,7 @@ $sn_mvc['view']['options'][] = 'sn_options_view';
 
 function sn_options_model()
 {
-  global $user, $user_option_list, $lang, $template_result;
+  global $user, $user_option_list, $lang, $template_result, $time_now;
 
   $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
 
@@ -264,8 +264,6 @@ function sn_options_model()
       'STATUS'  => ERR_NONE,
       'MESSAGE' => $lang['opt_msg_saved']
     );
-
-    sys_user_vacation($user);
   }
 }
 
@@ -273,7 +271,9 @@ function sn_options_model()
 
 function sn_options_view($template = null)
 {
-  global $lang, $template_result, $user, $planetrow, $user_option_list, $user_option_types, $sn_message_class_list, $config;
+  global $lang, $template_result, $user, $planetrow, $user_option_list, $user_option_types, $sn_message_class_list, $config, $time_now;
+
+  sys_user_vacation($user);
 
   $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
 
@@ -281,24 +281,24 @@ function sn_options_view($template = null)
   $template->assign_recursive($template_result);
 
   $dir = dir(SN_ROOT_PHYSICAL . 'skins');
-  $parse['opt_lst_skin_data']="<option value =\"\">{$lang['select_skin_path']}</option>";
-  while (($entry = $dir->read()) !== false)
+  $parse['opt_lst_skin_data'] = "<option value =\"\">{$lang['select_skin_path']}</option>";
+  while(($entry = $dir->read()) !== false)
   {
-    if (is_dir("skins/{$entry}") && $entry[0] !='.')
+    if(is_dir("skins/{$entry}") && $entry[0] !='.')
     {
-      $parse['opt_lst_skin_data'].="<option value =\"{$entry}\">{$entry}</option>";
+      $parse['opt_lst_skin_data'] .= "<option value =\"{$entry}\">{$entry}</option>";
     }
   }
   $dir->close();
 
   //  $parse['opt_lst_skin_data']  = "<option value =\"skins/xnova/\">skins/xnova/</option>";
-  $parse['opt_lst_ord_data']   = "<option value =\"0\"". (($user['planet_sort'] == 0) ? " selected": "") .">". $lang['opt_lst_ord0'] ."</option>";
-  $parse['opt_lst_ord_data']  .= "<option value =\"1\"". (($user['planet_sort'] == 1) ? " selected": "") .">". $lang['opt_lst_ord1'] ."</option>";
-  $parse['opt_lst_ord_data']  .= "<option value =\"2\"". (($user['planet_sort'] == 2) ? " selected": "") .">". $lang['opt_lst_ord2'] ."</option>";
-  $parse['opt_lst_ord_data']  .= "<option value =\"3\"". (($user['planet_sort'] == 3) ? " selected": "") .">". $lang['opt_lst_ord3'] ."</option>";
+  $parse['opt_lst_ord_data']  = "<option value =\"0\"". (($user['planet_sort'] == 0) ? " selected": "") .">". $lang['opt_lst_ord0'] ."</option>";
+  $parse['opt_lst_ord_data'] .= "<option value =\"1\"". (($user['planet_sort'] == 1) ? " selected": "") .">". $lang['opt_lst_ord1'] ."</option>";
+  $parse['opt_lst_ord_data'] .= "<option value =\"2\"". (($user['planet_sort'] == 2) ? " selected": "") .">". $lang['opt_lst_ord2'] ."</option>";
+  $parse['opt_lst_ord_data'] .= "<option value =\"3\"". (($user['planet_sort'] == 3) ? " selected": "") .">". $lang['opt_lst_ord3'] ."</option>";
 
-  $parse['opt_lst_cla_data']   = "<option value =\"0\"". (($user['planet_sort_order'] == 0) ? " selected": "") .">". $lang['opt_lst_cla0'] ."</option>";
-  $parse['opt_lst_cla_data']  .= "<option value =\"1\"". (($user['planet_sort_order'] == 1) ? " selected": "") .">". $lang['opt_lst_cla1'] ."</option>";
+  $parse['opt_lst_cla_data']  = "<option value =\"0\"". (($user['planet_sort_order'] == 0) ? " selected": "") .">". $lang['opt_lst_cla0'] ."</option>";
+  $parse['opt_lst_cla_data'] .= "<option value =\"1\"". (($user['planet_sort_order'] == 1) ? " selected": "") .">". $lang['opt_lst_cla1'] ."</option>";
 
   $lang_list = lng_get_list();
   foreach($lang_list as $lang_id => $lang_data)
