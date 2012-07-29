@@ -456,7 +456,7 @@ function sys_random_string($length = 16, $allowed_chars = SN_SYS_SEC_CHARS_ALLOW
 
 function js_safe_string($string)
 {
-  return str_replace("\r\n", '\r\n', addslashes($string));
+  return str_replace(array("\r", "\n"), array('\r', '\n'), addslashes($string));
 }
 
 function sys_safe_output($string)
