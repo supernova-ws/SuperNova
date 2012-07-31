@@ -853,7 +853,9 @@ class template_compile
   */
   function minify($html)
   {
-    if(!$GLOBALS['config']->tpl_minifier)
+    global $config;
+
+    if(!$config->tpl_minifier)
     {
       return $html;
     }

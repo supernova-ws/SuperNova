@@ -32,13 +32,13 @@ function upd_do_query($query, $no_log = false)
 
 function upd_check_key($key, $default_value, $condition = false)
 {
-  global $config;
+  global $config, $sys_log_disabled;
 
   $config->db_loadItem($key);
   if($condition || !isset($config->$key))
   {
     upd_add_more_time();
-    if(!$GLOBALS['sys_log_disabled'])
+    if(!$sys_log_disabled)
     {
       upd_log_message("Updating config key '{$key}' with value '{$default_value}'");
     }
@@ -52,18 +52,20 @@ function upd_check_key($key, $default_value, $condition = false)
 
 function upd_log_version_update()
 {
+  global $new_version;
+
   doquery('START TRANSACTION;');
   upd_add_more_time();
-  upd_log_message("Detected outdated version {$GLOBALS['new_version']}. Upgrading...");
+  upd_log_message("Detected outdated version {$new_version}. Upgrading...");
 }
 
 function upd_add_more_time($time = 0)
 {
-  global $config, $time_now;
+  global $config, $time_now, $sys_log_disabled;
 
   $time = $time ? $time : ($config->upd_lock_time ? $config->upd_lock_time : 30);
 
-  if(!$GLOBALS['sys_log_disabled'])
+  if(!$sys_log_disabled)
   {
     $config->db_saveItem('var_db_update_end', $time_now + $time);
   }
@@ -72,14 +74,16 @@ function upd_add_more_time($time = 0)
 
 function upd_log_message($message)
 {
-  if($GLOBALS['sys_log_disabled'])
+  global $sys_log_disabled, $upd_log, $debug;
+
+  if($sys_log_disabled)
   {
 //    print("{$message}<br />");
   }
   else
   {
-    $GLOBALS['upd_log'] .= "{$message}\r\n";
-    $GLOBALS['debug']->warning($message, 'Database Update', 103);
+    $upd_log .= "{$message}\r\n";
+    $debug->warning($message, 'Database Update', 103);
   }
 }
 

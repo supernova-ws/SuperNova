@@ -158,7 +158,9 @@ function flt_cache_planet($planet_vector, &$flt_user_cache, &$flt_planet_cache)
   $planet_hash = flt_planet_hash($planet_vector); //"g{$planet_vector['galaxy']}s{$planet_vector['system']}p{$planet_vector['planet']}t{$planet_vector['planet_type']}";
   if(!isset($flt_planet_cache[$planet_hash]))
   {
-    $global_data = sys_o_get_updated(false, $planet_vector, $GLOBALS['time_now']);
+    global $time_now;
+
+    $global_data = sys_o_get_updated(false, $planet_vector, $time_now);
     $flt_planet_cache[$planet_hash] = $global_data['planet'];
 
     if($flt_planet_cache[$planet_hash])
@@ -181,8 +183,7 @@ function flt_cache_planet($planet_vector, &$flt_user_cache, &$flt_planet_cache)
 // ------------------------------------------------------------------
 function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt_fleet_cache, &$flt_event_cache, $cache_mode)
 {
-  global $sn_data;
-  $time_now = $GLOBALS['time_now'];
+  global $sn_data, $time_now;
 
   // Empty $fleet_row - no chance to know anything about it. By design it should never triggered but let it be
   if(!$fleet_row)

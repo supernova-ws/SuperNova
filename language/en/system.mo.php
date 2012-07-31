@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a0
+* @version 35a8.7
 *
 */
 
@@ -717,6 +717,8 @@ $lang = array_merge($lang, array(
   ),
 
   'sys_sector_buy' => 'Buy 1 sector',
+
+  'sys_select_confirm' => 'Confirm selection',
 
 ));
 

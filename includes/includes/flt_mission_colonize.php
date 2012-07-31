@@ -16,7 +16,7 @@ function flt_mission_colonize($mission_data)
   $src_user_row       = $mission_data['src_user'];
   $destination_planet = $mission_data['dst_planet'];
 
-  global $lang;
+  global $lang, $config;
 
   $TargetAdress = sprintf ($lang['sys_adress_planet'], $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet']);
 
@@ -36,7 +36,7 @@ function flt_mission_colonize($mission_data)
 
       // Can we colonize more planets?
       $TheMessage = $lang['sys_colo_maxcolo'];
-      if ($iPlanetCount < $iMaxColo && $iPlanetCount < ($GLOBALS['config']->player_max_colonies + 1) )
+      if ($iPlanetCount < $iMaxColo && $iPlanetCount < ($config->player_max_colonies + 1) )
       {
         // Yes, we can colonize
         $TheMessage = $lang['sys_colo_badpos'];
@@ -49,11 +49,13 @@ function flt_mission_colonize($mission_data)
           $fleet_array[SHIP_COLONIZER]--;
           $fleet_row['fleet_amount']--;
           $fleet_row['fleet_array'] = sys_unit_arr2str($fleet_array);
-
+/*
           if($fleet_row['fleet_array'])
           {
-            $GLOBALS['debug']->warning("Sending several type of ships with colonizer leads to resource duplication. Resource duplicate X time where X - number of ship type<br>Fleet: {$fleet_row['fleet_array']}", 'Colonization With Fleet', 304);
+            global $debug;
+            $debug->warning("Sending several type of ships with colonizer leads to resource duplication. Resource duplicate X time where X - number of ship type<br>Fleet: {$fleet_row['fleet_array']}", 'Colonization With Fleet', 304);
           }
+*/
           return RestoreFleetToPlanet($fleet_row, false);
         }
       }

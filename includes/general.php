@@ -54,7 +54,9 @@ function sys_file_write($filename, $content)
 
 function get_game_speed()
 {
-  return $GLOBALS['config']->game_speed;
+  global $config;
+
+  return $config->game_speed;
 }
 
 /**
@@ -167,7 +169,9 @@ function pretty_time($seconds)
 //
 function eco_planet_fields_max($planet)
 {
-  return $planet['field_max'] + ($planet['planet_type'] == PT_PLANET ? $planet[$GLOBALS['sn_data'][STRUC_TERRAFORMER]['name']] * 5 : $planet[$GLOBALS['sn_data'][STRUC_MOON_STATION]['name']] * 3);
+  global $sn_data;
+
+  return $planet['field_max'] + ($planet['planet_type'] == PT_PLANET ? $planet[$sn_data[STRUC_TERRAFORMER]['name']] * 5 : $planet[$sn_data[STRUC_MOON_STATION]['name']] * 3);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -199,7 +203,9 @@ function GetMaxExpeditions(&$user)
 //
 function CheckInputStrings($String)
 {
-  return preg_replace($GLOBALS['ListCensure'], '*', $String);
+  global $ListCensure;
+
+  return preg_replace($ListCensure, '*', $String);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -216,15 +222,17 @@ function is_email($email)
 //
 function sys_log_hit()
 {
-  if (!$GLOBALS['config']->game_counter || $GLOBALS['sys_stop_log_hit'])
+  global $config, $time_now, $sys_stop_log_hit, $is_watching, $user;
+
+  if (!$config->game_counter || $sys_stop_log_hit)
   {
     return;
   }
 
-  $GLOBALS['is_watching'] = true;
+  $is_watching = true;
   $ip = sys_get_user_ip();
-  doquery("INSERT INTO {{counter}} (`time`, `page`, `url`, `user_id`, `ip`, `proxy`) VALUES ('{$GLOBALS['time_now']}', '{$_SERVER['PHP_SELF']}', '{$_SERVER['REQUEST_URI']}', '{$GLOBALS['user']['id']}', '{$ip['client']}', '{$ip['proxy']}');");
-  $GLOBALS['is_watching'] = false;
+  doquery("INSERT INTO {{counter}} (`time`, `page`, `url`, `user_id`, `ip`, `proxy`) VALUES ('{$time_now}', '{$_SERVER['PHP_SELF']}', '{$_SERVER['REQUEST_URI']}', '{$user['id']}', '{$ip['client']}', '{$ip['proxy']}');");
+  $is_watching = false;
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -233,9 +241,11 @@ function sys_log_hit()
 //
 function sys_user_vacation($user)
 {
+  global $time_now;
+
   if (sys_get_param_str('vacation') == 'leave')
   {
-    if ($user['vacation'] < $GLOBALS['time_now'])
+    if ($user['vacation'] < $time_now)
     {
       doquery("UPDATE {{users}} SET `vacation` = '0' WHERE `id` = '{$user['id']}' LIMIT 1;");
       $user['vacation'] = 0;
@@ -251,7 +261,7 @@ function sys_user_vacation($user)
     $template->assign_vars(array(
       'NAME' => $user['username'],
       'VACATION_END' => date(FMT_DATE_TIME, $user['vacation']),
-      'CAN_LEAVE' => $user['vacation'] <= $GLOBALS['time_now'],
+      'CAN_LEAVE' => $user['vacation'] <= $time_now,
       'RANDOM' => mt_rand(1, 2),
     ));
 
@@ -320,7 +330,9 @@ function GetPhalanxRange($phalanx_level)
 
 function CheckAbandonPlanetState(&$planet)
 {
-  if ($planet['destruyed'] && $planet['destruyed'] <= $GLOBALS['time_now'])
+  global $time_now;
+
+  if ($planet['destruyed'] && $planet['destruyed'] <= $time_now)
   {
     doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}' LIMIT 1;");
   }

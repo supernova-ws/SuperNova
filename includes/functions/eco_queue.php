@@ -28,8 +28,7 @@ function eco_que_arr2str($que_arr)
 
 function eco_que_process($user, &$planet, $time_left)
 {
-  global $lang;
-  $sn_data = &$GLOBALS['sn_data'];
+  global $lang, $sn_data;
 
   $quest_list = qst_get_quests($user['id']);
   $quest_triggers = qst_active_triggers($quest_list);

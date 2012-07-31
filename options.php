@@ -277,7 +277,7 @@ function sn_options_view($template = null)
 
   $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
 
-  $template = gettemplate('options', isset($template) ? $template : true);
+  $template = gettemplate('options', $template);
   $template->assign_recursive($template_result);
 
   $dir = dir(SN_ROOT_PHYSICAL . 'skins');

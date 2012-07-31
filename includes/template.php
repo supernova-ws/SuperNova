@@ -177,7 +177,8 @@ function tpl_render_menu()
     'menu_empire_emperor' => array(
       'LEVEL' => 'submenu',
       'ITEM'  => $lang['imp_imperator'],
-      'LINK'  => 'imperator.php',
+      'LINK'  => 'index.php?page=imperator',
+//      'LINK'  => 'imperator.php',
     ),
     'menu_empire_fleets' => array(
       'LEVEL' => 'submenu',
@@ -476,13 +477,17 @@ function tpl_render_menu()
 // $AdminPage -> Si on est dans la section admin ... faut le dire ...
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true)
 {
-  global $link, $debug, $user, $user_impersonator, $planetrow, $IsUserChecked, $time_now, $config, $lang;
+  global $link, $debug, $user, $user_impersonator, $planetrow, $IsUserChecked, $time_now, $config, $lang, $template_result;
 
   if(!$user || !isset($user['id']) || !is_numeric($user['id']))
   {
     $isDisplayMenu = false;
     $topnav = false;
   }
+
+//  $template->assign_recursive($template_result);
+
+  $title = $title ? $title : (is_object($page) && isset($page->_rootref['PAGE_HEADER']) ? $page->_rootref['PAGE_HEADER'] : '');
 
   // Global header
   $template = gettemplate('simple_header', true);

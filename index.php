@@ -53,8 +53,7 @@
         }
       }
 
-//      display(parsetemplate($template, $parse), $lang['opt_options'], false);
-      display($template, $lang['opt_options'], false);
+      display($template);
 
   /*
       if(isset($sn_module[$module_name]))

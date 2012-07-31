@@ -73,7 +73,6 @@ function eco_build($que_type, $user, &$planet, $que)
   $planet_fields_free    = max(0, $planet_fields_max - $planet_fields_current + $planet_fields_que);
   $planet_fields_queable = $planet_fields_free > 0;
   $planet_temp_max       = $planet['temp_max'];
-  $GLOBALS['user_tech_energy'] = $user['energy_tech'];
 
   foreach($planet_type_structs as $Element)
   {

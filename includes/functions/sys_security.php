@@ -63,11 +63,11 @@ function sys_get_user_ip()
 
 function sn_set_cookie($user, $rememberme)
 {
-  global $config;
+  global $config, $time_now;
 
   if($rememberme)
   {
-    $expiretime = $GLOBALS['time_now'] + 31536000;
+    $expiretime = $time_now + 31536000;
     $rememberme = 1;
   }
   else
@@ -119,9 +119,7 @@ function sn_sys_cookie_check($cookie)
 
 function sn_autologin($abort = true)
 {
-  global $config, $IsUserChecked, $user_impersonator;
-  $lang = $GLOBALS['lang'];
-  $time_now = $GLOBALS['time_now'];
+  global $config, $IsUserChecked, $user_impersonator, $time_now, $lang, $skip_ban_check;
 
   $IsUserChecked = false;
   if(!isset($_COOKIE[SN_COOKIE]))
@@ -161,7 +159,7 @@ function sn_autologin($abort = true)
   $user_agent = mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']);
   doquery("UPDATE `{{users}}` SET `onlinetime` = '{$time_now}'" . ($user_impersonator ? '' : ", `user_lastip` = '{$ip['client']}', `user_proxy`  = '{$ip['proxy']}', `user_agent`  = '{$user_agent}'") . " WHERE `id` = '{$user['id']}' LIMIT 1;");
 
-  if(!$GLOBALS['skip_ban_check'] && $user['banaday'])
+  if(!$skip_ban_check && $user['banaday'])
   {
     if($user['banaday'] > $time_now)
     {

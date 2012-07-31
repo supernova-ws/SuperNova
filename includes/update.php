@@ -40,13 +40,16 @@ if($config->db_version == DB_VERSION)
 }
 elseif($config->db_version > DB_VERSION)
 {
-  $GLOBALS['config']->db_saveItem('var_db_update_end', $GLOBALS['time_now']);
+  global $config, $time_now;
+
+  $config->db_saveItem('var_db_update_end', $time_now);
   die('Internal error! Auotupdater detects DB version greater then can be handled!<br>Possible you have out-of-date SuperNova version<br>Pleas upgrade your server from <a href="http://github.com/supernova-ws/SuperNova">GIT repository</a>.');
 }
 
 if($config->db_version < 26)
 {
-  $GLOBALS['sys_log_disabled'] = true;
+  global $sys_log_disabled;
+  $sys_log_disabled = true;
 }
 
 $upd_log = '';
@@ -378,7 +381,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_do_query("UPDATE `{{logs}}` SET `log_code` = 190 WHERE `log_code` = 100 AND `log_title` = 'Stat update';");
     upd_do_query("UPDATE `{{logs}}` SET `log_code` = 191 WHERE `log_code` = 101 AND `log_title` = 'Stat update';");
     upd_do_query("UPDATE `{{logs}}` SET `log_code` = 192 WHERE `log_code` = 102 AND `log_title` = 'Stat update';");
-    $GLOBALS['sys_log_disabled'] = false;
+    $sys_log_disabled = false;
 
   upd_do_query('COMMIT;', true);
   $new_version = 26;
@@ -386,7 +389,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
   case 26:
     upd_log_version_update();
 
-    $GLOBALS['sys_log_disabled'] = false;
+    $sys_log_disabled = false;
 
     upd_alter_table('planets', "ADD INDEX `i_parent_planet` (`parent_planet`)", !$update_indexes['planets']['i_parent_planet']);
     upd_alter_table('messages', "DROP INDEX `owner`", $update_indexes['messages']['owner']);

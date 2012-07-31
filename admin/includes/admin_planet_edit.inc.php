@@ -24,7 +24,7 @@ function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode)
 {
   global $sn_data, $lang;
 
-  $unit_list = $sn_data['groups'][$mode];
+  $unit_list = &$sn_data['groups'][$mode];
   $name_list = $lang['tech'];
 
   foreach($unit_list as $unit_id)

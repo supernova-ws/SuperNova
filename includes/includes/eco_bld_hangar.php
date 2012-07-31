@@ -63,7 +63,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
 
   $page_error = '';
   $page_mode = $que_type == SUBQUE_FLEET ? 'fleet' : 'defense';
-  $sn_data_group = $sn_data['groups'][$page_mode];
+  $sn_data_group = &$sn_data['groups'][$page_mode];
 
   doquery('START TRANSACTION;');
   $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planet['id']}' LIMIT 1 FOR UPDATE;", '', true);

@@ -96,8 +96,9 @@ class debug
       unset($error_backtrace['backtrace'][1]);
       unset($error_backtrace['backtrace'][0]);
       $error_backtrace['query_log'] = "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>\r\n";
-      $error_backtrace['user'] = $GLOBALS['user'];
-      $error_backtrace['planetrow'] = $GLOBALS['planetrow'];
+      global $user, $planetrow;
+      $error_backtrace['user'] = $user;
+      $error_backtrace['planetrow'] = $planetrow;
       $error_backtrace['$_GET'] = $_GET;
       $error_backtrace['$_POST'] = $_POST;
       $error_backtrace['$_COOKIES'] = $_COOKIES;
@@ -141,7 +142,9 @@ class debug
     $error_text = mysql_real_escape_string($message);
     $error_backtrace = $this->dump($dump, true);
 
-    if(!$GLOBALS['sys_log_disabled'])
+    global $sys_log_disabled;
+    global $user;
+    if(!$sys_log_disabled)
     {
       if($error_backtrace)
       {
@@ -152,14 +155,14 @@ class debug
         $error_backtrace = '';
       }
       mysql_query("INSERT INTO `{$dbsettings['prefix']}logs` SET
-        `log_time` = '".time()."', `log_code` = '{$error_code}', `log_sender` = '{$GLOBALS['user']['id']}', `log_username` = '{$GLOBALS['user']['username']}',
+        `log_time` = '".time()."', `log_code` = '{$error_code}', `log_sender` = '{$user['id']}', `log_username` = '{$user['username']}',
         `log_title` = '{$title}',  `log_text` = '{$error_text}', `log_page` = '".mysql_real_escape_string(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'{$error_backtrace};")
       or die($fatal_error . mysql_error());
 
       $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . mysql_insert_id() . "</b>";
 
       $sys_stop_log_hit = true;
-      $GLOBALS['sys_log_disabled'] = true;
+      $sys_log_disabled = true;
       if (!function_exists('message'))
       {
         die($message);
@@ -172,7 +175,7 @@ class debug
     else
     {
       ob_start();
-      print("<hr>User ID {$GLOBALS['user']['id']} raised error code {$error_code} titled '{$title}' with text '{$error_text}' on page {$_SERVER['SCRIPT_NAME']}");
+      print("<hr>User ID {$user['id']} raised error code {$error_code} titled '{$title}' with text '{$error_text}' on page {$_SERVER['SCRIPT_NAME']}");
 
       foreach($error_backtrace as $name => $value)
       {
@@ -199,7 +202,8 @@ class debug
 
     $error_backtrace = $this->dump($dump, false);
 
-    if(!$GLOBALS['sys_log_disabled'])
+    global $sys_log_disabled;
+    if(!$sys_log_disabled)
     {
       if($error_backtrace)
       {
@@ -217,7 +221,7 @@ class debug
     }
     else
     {
-      print("<hr>User ID {$GLOBALS['user']['id']} made log entry with code {$log_code} titled '{$title}' with text '{$message}' on page {$_SERVER['SCRIPT_NAME']}");
+      print("<hr>User ID {$user['id']} made log entry with code {$log_code} titled '{$title}' with text '{$message}' on page {$_SERVER['SCRIPT_NAME']}");
     }
   }
 }

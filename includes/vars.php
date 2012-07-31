@@ -350,7 +350,7 @@ if (!defined('INSIDE'))
         RES_METAL     => create_function ('$level, $production_factor, $temperature', 'return 0;'),
         RES_CRYSTAL   => create_function ('$level, $production_factor, $temperature', 'return 0;'),
         RES_DEUTERIUM => create_function ('$level, $production_factor, $temperature', 'return -10 * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
-        RES_ENERGY    => create_function ('$level, $production_factor, $temperature', 'return  30 * $level * pow(1.05 + 0.01 * $GLOBALS["user_tech_energy"], $level) * (0.1 * $production_factor);'),
+        RES_ENERGY    => create_function ('$level, $production_factor, $temperature', 'return  30 * $level * pow(1.05 + 0.01 * mrc_get_level($GLOBALS["user"], "", TECH_ENERGY), $level) * (0.1 * $production_factor);'),
       ),
       'metal_perhour'     => 'return 0;',
       'crystal_perhour'   => 'return 0;',
@@ -2448,7 +2448,7 @@ mission = array(
       'STAT_PLAYER' => array(STAT_RAID_TOTAL => STAT_RAID_TOTAL, STAT_RAID_WON => STAT_RAID_WON, STAT_RAID_LOST => STAT_RAID_LOST, STAT_LVL_BUILDING => STAT_LVL_BUILDING, STAT_LVL_TECH => STAT_LVL_TECH, STAT_LVL_RAID => STAT_LVL_RAID, ),
     ),
 
-    'pages' => array('options' => 'options'),
+    'pages' => array('options' => 'options', 'imperator' => 'imperator'),
   );
 
   //All resources

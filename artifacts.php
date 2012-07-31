@@ -86,9 +86,9 @@ foreach($sn_data['groups']['artifacts'] as $artifact_id)
 {
   $build_data = eco_get_build_data($user, $planetrow, $artifact_id, $user[$sn_data[$artifact_id]['name']]);
   {
-    $artifact_data = $sn_data[$artifact_id];
+    $artifact_data = &$sn_data[$artifact_id];
     $artifact_data_bonus = $artifact_data['bonus'];
-    $artifact_data_bonus = $artifact_data_bonus>=0 ? "+{$artifact_data_bonus}" : "{$artifact_data_bonus}";
+    $artifact_data_bonus = $artifact_data_bonus >= 0 ? "+{$artifact_data_bonus}" : "{$artifact_data_bonus}";
     switch($artifact_data['bonus_type'])
     {
       case BONUS_PERCENT:

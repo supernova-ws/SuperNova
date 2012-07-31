@@ -82,8 +82,7 @@ function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 1
 
 function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duration, $fleet_group = 0)
 {
-  $time_now = $GLOBALS['time_now'];
-  $config = &$GLOBALS['config'];
+  global $time_now, $config;
 
   $config_bashing_attacks = $config->fleet_bashing_attacks;
   $config_bashing_interval = $config->fleet_bashing_interval;
@@ -451,13 +450,14 @@ $mission - fleet mission
 
 function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array())
 {
+  global $time_now;
 //ini_set('error_reporting', E_ALL);
 
   //doquery('SET autocommit = 0;');
   //doquery('LOCK TABLES {{users}} READ, {{planets}} WRITE, {{fleet}} WRITE, {{aks}} WRITE, {{statpoints}} READ;');
   doquery('START TRANSACTION;');
 
-  $from = sys_o_get_updated($user, $from['id'], $GLOBALS['time_now']);
+  $from = sys_o_get_updated($user, $from['id'], $time_now);
   $from = $from['planet'];
 
   $can_attack = flt_can_attack($from, $to, $fleet, $mission, $options);
@@ -550,7 +550,9 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
 function flt_server_flight_speed_multiplier()
 {
-  return $GLOBALS['config']->fleet_speed;
+  global $config;
+
+  return $config->fleet_speed;
 }
 
 ?>

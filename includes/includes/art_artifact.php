@@ -58,7 +58,7 @@ function art_use(&$user, &$planetrow, $unit_id)
         }
 
         $artifact_list[$unit_id]--;
-        $artifact_deploy = $sn_data[$unit_id]['deploy'];
+        $artifact_deploy = &$sn_data[$unit_id]['deploy'];
 
         $deployment_str = '';
         $sectors_used = 0;
