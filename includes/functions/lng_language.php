@@ -119,4 +119,22 @@ function lng_switch($language_new)
   return $result;
 }
 
+function lng_load_i18n($i18n)
+{
+  if(isset($i18n))
+  {
+    foreach($i18n as $i18n_data)
+    {
+      if(is_string($i18n_data))
+      {
+        lng_include($i18n_data);
+      }
+      elseif(is_array($i18n_data))
+      {
+        lng_include($i18n_data['file'], $i18n_data['path']);
+      }
+    }
+  }
+}
+
 ?>

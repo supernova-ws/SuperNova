@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a8.7
+* @version 35a8.8
 *
 */
 
@@ -48,8 +48,8 @@ $lang = array_merge($lang, array(
       <li>Использовать <a href="market.php"><span class="link">Чёрный Рынок</span></a>: Обменивать один вид ресурсов на другой; продавать корабли; покупать Б/У корабли итд</li>
       <li>...и многое, многое другое</li>
     </ul>',
-  'sys_dark_matter_obtain_header' => 'Где взять Темную Материю?',
-  'sys_dark_matter_obtain_text' => 'Вы получаете Темную Материю в процессе игры: набирая опыт за успешные рейды на чужие планеты, исследование новых технологий, а так же за постройку и разрушение зданий.
+  'sys_dark_matter_obtain_header' => 'Где взять Тёмную Материю?',
+  'sys_dark_matter_obtain_text' => 'Вы получаете Тёмную Материю в процессе игры: набирая опыт за успешные рейды на чужие планеты, исследование новых технологий, а так же за постройку и разрушение зданий.
     Так же иногда исследовательские экспедиции могут принести ТМ.',
 
   'sys_dark_matter_purchase_url_description' => 'Кроме того вы можете приобрести ТМ за WebMoney.',
@@ -93,7 +93,7 @@ $lang = array_merge($lang, array(
   'pay_msg_request_payment_date_invalid' => 'Неправильная дата платежа',
   'pay_msg_request_internal_error' => 'Внутренняя ошибка сервера. Попробуйте повторить платеж позже',
 
-  'pay_msg_request_dark_matter_amount_invalid' => 'Неправильное количество Темной Материи',
+  'pay_msg_request_dark_matter_amount_invalid' => 'Неправильное количество Тёмной Материи',
   'pay_msg_request_paylink_unsupported' => 'Данный тип платежной ссылке не поддерживается. Возможно используется устаревшая версия СН, не совместимая с данным платежным модулем',
 
   'pay_msg_module_disabled' => 'Модуль платежа отключен',
@@ -616,7 +616,7 @@ $lang = array_merge($lang, array(
   'sys_buy' => 'Купить',
   'sys_for' => 'за',
 
-  'sys_eco_lack_dark_matter' => 'Не хватает Темной Материи',
+  'sys_eco_lack_dark_matter' => 'Не хватает Тёмной Материи',
 
   // Arrays
   'sys_build_result' => array(

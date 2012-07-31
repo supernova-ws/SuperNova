@@ -190,17 +190,21 @@ sn_sys_load_php_files("{$sn_root_physical}includes/functions/", $phpEx);
 
 $template_result = array();
 $sn_page_name = isset($_GET['page']) ? trim(strip_tags($_GET['page'])) : '';
+
+$sn_module = array();
+sn_sys_load_php_files("{$sn_root_physical}modules/", $phpEx, true);
+
 if($sn_page_name && isset($sn_data['pages'][$sn_page_name]))
 {
-  require_once($sn_page_name . '.' . $phpEx);
+  if(basename($sn_data['pages'][$sn_page_name]) == $sn_data['pages'][$sn_page_name])
+  {
+    require_once($sn_data['pages'][$sn_page_name] . '.' . $phpEx);
+  }
 }
 else
 {
   $sn_page_name = '';
 }
-
-$sn_module = array();
-sn_sys_load_php_files("{$sn_root_physical}modules/", $phpEx, true);
 
 sn_db_connect();
 

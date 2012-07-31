@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '34');
 define('SN_RELEASE', '35');
-define('SN_VERSION', '35a8.7');
+define('SN_VERSION', '35a8.8');
 define('SN_RELEASE_STABLE', '34d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -186,7 +186,7 @@ define('PAYMENT_STATUS_COMPLETE' , 1); // Money received, DM sent to user
 define('LOG_DEFAULT', 0); // Код по умолчанию
 // 1xx - Информационные коды
 define('LOG_INFORMATION', 100);
-define('LOG_INFO_DM_CHANGE', 102); // Изменение количества Темной Материи
+define('LOG_INFO_DM_CHANGE', 102); // Изменение количества Тёмной Материи
 define('LOG_INFO_DB_CHANGE', 103); // Изменение структуры БД
 define('LOG_INFO_UNI_RENAME', 104); // Переименование объекта Вселенной
 define('LOG_INFO_PREMIUM_CANCEL', 105); // Пользователь отменил премиум аккаунт
@@ -213,7 +213,7 @@ define('LOG_WARN_HACK_NEGATIVE_UNIT', 307); // Попытка взлома. По
 define('LOG_WARN_BIG_BROTHER', 399); // Запись системы слежения за игроками
 // 4xx - Ошибки при запросе клиента
 define('LOG_ERR_UNAUTHORIZED', 401); // Unauthorized. Пользователь попытался получить доступ к части сайта, не доступной для его уровня доступа
-define('LOG_ERR_DARK_MATTER', 402); // Ошибка изменения количества Темной Материи
+define('LOG_ERR_DARK_MATTER', 402); // Ошибка изменения количества Тёмной Материи
 define('LOG_ERR_FORBIDDEN', 403); // Forbidden. Попытка взлома - пользователь попытался выполнять отдельный файл вне нормального хода операции. Например - попытался выполнить файл, предназначенный только для include
 // 5xx - Ошибки сервера - сбой в БД или ошибки в коде движка
 define('LOG_ERR_INT', 500); // Ошибки сервера - сбой в БД или ошибки в коде движка

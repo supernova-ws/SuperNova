@@ -13,22 +13,13 @@
   if(isset($sn_page_name) || ($sn_page_name = isset($_GET['page']) ? trim(strip_tags($_GET['page'])) : ''))
   {
     require_once('common.' . substr(strrchr(__FILE__, '.'), 1));
+
     if($sn_page_name)
     {
-      if($sn_i18n['pages'][$sn_page_name])
-      {
-        foreach($sn_i18n['pages'][$sn_page_name] as $i18n_data)
-        {
-          if(is_string($i18n_data))
-          {
-            lng_include($i18n_data);
-          }
-          elseif(is_array($i18n_data))
-          {
-            lng_include($i18n_data['file'], $i18n_data['path']);
-          }
-        }
-      }
+      // Loading global language files
+      lng_load_i18n($sn_i18n['pages']['']);
+      // Loading page-specific language files
+      lng_load_i18n($sn_i18n['pages'][$sn_page_name]);
 
       if($sn_mvc['model'][$sn_page_name])
       {

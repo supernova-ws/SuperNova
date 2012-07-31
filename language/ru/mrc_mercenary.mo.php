@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a19
+* @version 35a8.8
 *
 * @clean - all constants is used
 *
@@ -44,7 +44,7 @@ $lang = array_merge($lang, array(
   'mrc_msg_error_wrong_level' => 'Неправильный уровень наемника',
   'mrc_msg_error_wrong_period' => 'Недопустимый срок найма',
   'mrc_msg_error_already_hired' => 'Наемник уже рекрутирован. Дождитесь окончания срока найма',
-  'mrc_msg_error_no_resource' => 'Не хватает Темной Материи для найма',
+  'mrc_msg_error_no_resource' => 'Не хватает Тёмной Материи для найма',
   'mrc_msg_error_requirements' => 'Не удовлетворены требования',
 
   'mrc_dismiss' => 'Уволить',

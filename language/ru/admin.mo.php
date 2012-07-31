@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 35a8.8
 *
 */
 
@@ -190,7 +190,7 @@ $lang = array_merge($lang, array(
   'adm_er_nbs' => 'Записей в логе:',
   'adm_er_text' => 'Запись лога',
   'adm_er_bktr' => 'Отладочная информация',
-  'adm_dm_title' => 'Изменение количества Темной Материи',
+  'adm_dm_title' => 'Изменение количества Тёмной Материи',
   'adm_dm_planet' => 'ID, координаты или название планеты',
   'adm_dm_oruser' => 'ИЛИ',
   'adm_dm_user' => 'ID или имя пользователя',
