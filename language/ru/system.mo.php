@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a8.8
+* @version 35a8.10
 *
 */
 
@@ -617,6 +617,11 @@ $lang = array_merge($lang, array(
   'sys_for' => 'за',
 
   'sys_eco_lack_dark_matter' => 'Не хватает Тёмной Материи',
+
+  'sys_result' => array(
+    'error_dark_matter_not_enough' => 'Не хватает Тёмной Материи для завершения операции',
+    'error_dark_matter_change' => 'Ошибка изменения количества Тёмной Материи! Повторите операцию еще раз. Если ошибка повторится - сообщите Администрации сервера',
+  ),
 
   // Arrays
   'sys_build_result' => array(

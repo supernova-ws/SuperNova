@@ -44,6 +44,10 @@
         }
       }
 
+      if(!empty($template_result))
+      {
+        $template->assign_recursive($template_result);
+      }
       display($template);
 
   /*

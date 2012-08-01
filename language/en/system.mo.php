@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a8.7
+* @version 35a8.10
 *
 */
 
@@ -617,6 +617,11 @@ $lang = array_merge($lang, array(
   'sys_buy' => 'Buy',
 
   'sys_eco_lack_dark_matter' => 'Not enough Dark Matter',
+
+  'sys_result' => array(
+    'error_dark_matter_not_enough' => 'Íå õâàòàåò Ò¸ìíîé Ìàòåğèè äëÿ çàâåğøåíèÿ îïåğàöèè',
+    'error_dark_matter_change' => 'Îøèáêà èçìåíåíèÿ êîëè÷åñòâà Ò¸ìíîé Ìàòåğèè! Ïîâòîğèòå îïåğàöèş åùå ğàç. Åñëè îøèáêà ïîâòîğèòñÿ - ñîîáùèòå Àäìèíèñòğàöèè ñåğâåğà',
+  ),
 
   // Arrays
   'sys_build_result' => array(

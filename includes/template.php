@@ -517,8 +517,19 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   {
     $page = array($page);
   }
+  $result_added = false;
   foreach($page as $page_item)
   {
+    if(!$result_added && is_object($page_item) && isset($page_item->_tpldata['result']))
+    {
+      $page_item = gettemplate('_result_message', $page_item);
+      $temp = $page_item->files['_result_message'];
+      unset($page_item->files['_result_message']);
+      $page_item->files = array_reverse($page_item->files);
+      $page_item->files['_result_message'] = $temp;
+      $page_item->files = array_reverse($page_item->files);
+      $result_added = true;
+    }
     displayP($page_item);
   }
   echo '</div></center>';

@@ -26,7 +26,7 @@ function sn_imperator_view($template = null)
 
 //  $template = gettemplate('imperator', isset($template) ? $template : true);
   $template = gettemplate('imperator', $template);
-  $template->assign_recursive($template_result);
+//  $template->assign_recursive($template_result);
 /*
   // SuperNova's banner for users to use
   if($config->int_banner_showInOverview)
