@@ -160,24 +160,25 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   return $cost;
 }
 
-function eco_can_build_unit($user, $planet, $unit_id)
+function eco_can_build_unit($user, $planet, $unit_id){return sn_function_call('sn_eco_can_build_unit', array($user, $planet, $unit_id, &$result));}
+function sn_eco_can_build_unit($user, $planet, $unit_id, &$result)
 {
   global $sn_data;
 
-  $accessible = BUILD_ALLOWED;
-  if(isset($sn_data[$unit_id]['require']))
+  $result = isset($result) ? $result : BUILD_ALLOWED;
+  if($result == BUILD_ALLOWED && isset($sn_data[$unit_id]['require']))
   {
     foreach($sn_data[$unit_id]['require'] as $require_id => $require_level)
     {
       if(mrc_get_level($user, $planet, $require_id) < $require_level)
       {
-        $accessible = BUILD_REQUIRE_NOT_MEET;
+        $result = BUILD_REQUIRE_NOT_MEET;
         break;
       }
     }
   }
 
-  return $accessible;
+  return $result;
 }
 
 // TODO: This function is deprecated and should be replaced!
