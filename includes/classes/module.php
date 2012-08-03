@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #35a8.8# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #35a8.21# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -85,7 +85,7 @@ class sn_module
     $class_module_name = get_class($this);
 
     // Getting module root relative to SN
-    $this->manifest['root_relative'] = $module_root_relative = str_replace(array(SN_ROOT_PHYSICAL, basename($filename)), '', str_replace('\\', '/', $filename));
+    $this->manifest['root_relative'] = str_replace(array(SN_ROOT_PHYSICAL, basename($filename)), '', str_replace('\\', '/', $filename));
 
     // TODO: Load configuration from DB. Manifest setting
     // Trying to load configuration from file
@@ -106,7 +106,10 @@ class sn_module
     {
       return;
     }
+  }
 
+  public function initialize()
+  {
     // Setting constants - if any
     if(isset($this->manifest['constants']) && is_array($this->manifest['constants']) && !empty($this->manifest['constants']))
     {
@@ -169,7 +172,7 @@ class sn_module
     }
     // Overriding function if any
     global $functions;
-    sn_sys_handler_add($functions, $this->manifest['functions'], $this);//$class_module_name
+    sn_sys_handler_add($functions, $this->manifest['functions'], $this);
 /*
     if(isset($this->manifest['functions']) && is_array($this->manifest['functions']) && !empty($this->manifest['functions']))
     {
@@ -239,7 +242,7 @@ class sn_module
         {
           if(is_array($i18n_file_data) && !$i18n_file_data['path'])
           {
-            $i18n_file_data['path'] = $module_root_relative;
+            $i18n_file_data['path'] = $this->manifest['root_relative'];
           }
         }
         if(!isset($sn_i18n['pages'][$i18n_page_name]))
