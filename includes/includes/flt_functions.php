@@ -122,8 +122,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
     }
   }
 
-  $time_now += $flight_duration;
-  $time_limit = $time_now - $config->fleet_bashing_scope;
+  $time_limit = $time_now + $flight_duration - $config->fleet_bashing_scope;
   $bashing_list = array($time_now);
 
   // Retrieving flying fleets
