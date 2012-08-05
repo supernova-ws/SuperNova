@@ -28,7 +28,7 @@ $sn_mvc['view']['options'][] = 'sn_options_view';
 
 function sn_options_model()
 {
-  global $user, $user_option_list, $lang, $template_result, $time_now;
+  global $user, $user_option_list, $lang, $template_result, $time_now, $config;
 
   $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
 
