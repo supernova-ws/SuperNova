@@ -196,14 +196,14 @@ sn_sys_load_php_files("{$sn_root_physical}modules/", $phpEx, true);
 
 $load_order = array();
 $sn_req = array();
-foreach($sn_module as $module_name => $module_data)
+foreach($sn_module as $loaded_module_name => $module_data)
 {
-  $load_order[$module_name] = isset($module_data->manifest['load_order']) && !empty($module_data->manifest['load_order']) ? $module_data->manifest['load_order'] : 1;
+  $load_order[$loaded_module_name] = isset($module_data->manifest['load_order']) && !empty($module_data->manifest['load_order']) ? $module_data->manifest['load_order'] : 1;
   if(isset($module_data->manifest['require']) && !empty($module_data->manifest['require']))
   {
     foreach($module_data->manifest['require'] as $require_name)
     {
-      $sn_req[$module_name][$require_name] = 0;
+      $sn_req[$loaded_module_name][$require_name] = 0;
     }
   }
 }
@@ -212,7 +212,7 @@ do
 {
   $prev_order = $load_order;
 
-  foreach($sn_req as $module_name => &$req_data)
+  foreach($sn_req as $loaded_module_name => &$req_data)
   {
     $level = 1;
     foreach($req_data as $req_name => &$req_level)
@@ -228,22 +228,22 @@ do
       }
       $req_level = $load_order[$req_name];
     }
-    if($level > $load_order[$module_name] || $level == -1)
+    if($level > $load_order[$loaded_module_name] || $level == -1)
     {
-      $load_order[$module_name] = $level;
+      $load_order[$loaded_module_name] = $level;
     }
   }
 }
 while($prev_order != $load_order);
 asort($load_order);
 
-foreach($load_order as $module_name => $load_order)
+foreach($load_order as $loaded_module_name => $load_order)
 {
   if($load_order < 0)
   {
     continue;
   }
-  $sn_module[$module_name]->initialize();
+  $sn_module[$loaded_module_name]->initialize();
 }
 
 if($sn_page_name && isset($sn_data['pages'][$sn_page_name]))
