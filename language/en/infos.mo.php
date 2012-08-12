@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a9.3
+* @version 35a9.4
 *
 */
 
@@ -57,7 +57,12 @@ $lang = array_merge($lang, array(
   'nfo_consumption' => 'Fuel consumption (Deuterium)',
 ));
 
-$lang['info'] += (array(
+if(!is_array($lang['info']))
+{
+  $lang['info'] = array();
+}
+
+$lang['info'] = (array(
     STRUC_MINE_METAL => array(
       'description' => 'The main supplier of raw materials for the construction of load-bearing structures of buildings and ships. Metal is the most inexpensive raw material, but takes more than everything else. For production of metal requires less total energy. Than mines more deeper. on most planets metal is at great depths, deeper mines you can obtain more metals, production increases. At the same time, larger mines require more energy.',
       'description_short' => 'The main supplier of raw materials for the construction of load-bearing structures of buildings and ships.',
@@ -522,6 +527,6 @@ $lang['info'] += (array(
       'effect' => '',
     ),
 
-));
+)) + $lang['info'];
 
 ?>
