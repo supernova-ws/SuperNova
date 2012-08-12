@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a17
+* @version 35a9.3
 *
 */
 
@@ -55,7 +55,9 @@ $lang = array_merge($lang, array(
   'nfo_units' => 'units',
   'nfo_base_speed' => 'Base speed',
   'nfo_consumption' => 'Fuel consumption (Deuterium)',
-  'info' => array(
+));
+
+$lang['info'] += (array(
     STRUC_MINE_METAL => array(
       'description' => 'The main supplier of raw materials for the construction of load-bearing structures of buildings and ships. Metal is the most inexpensive raw material, but takes more than everything else. For production of metal requires less total energy. Than mines more deeper. on most planets metal is at great depths, deeper mines you can obtain more metals, production increases. At the same time, larger mines require more energy.',
       'description_short' => 'The main supplier of raw materials for the construction of load-bearing structures of buildings and ships.',
@@ -519,8 +521,6 @@ $lang = array_merge($lang, array(
       'description' => 'Dark Matter is a matter that neither emits nor scatters light or other electromagnetic radiation, and so cannot be directly detected via optical or radio astronomy. From it we can get an incredible amount of energy. Because of this, and also because of the complexities associated with its production of dark matter is highly appreciated.',
       'effect' => '',
     ),
-
-  ),
 
 ));
 

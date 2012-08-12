@@ -16,8 +16,6 @@
 
     if($sn_page_name)
     {
-      // Loading global language files
-      lng_load_i18n($sn_i18n['pages']['']);
       // Loading page-specific language files
       lng_load_i18n($sn_i18n['pages'][$sn_page_name]);
 

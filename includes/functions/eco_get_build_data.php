@@ -106,6 +106,9 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
 
   $time = $time * 60 * 60 / get_game_speed() / 2500;
 
+
+  $cost['RESULT'][BUILD_CREATE] = eco_can_build_unit($user, $planet, $unit_id);
+/*
   $cost['RESULT'][BUILD_CREATE] = BUILD_ALLOWED;
   if(isset($sn_data[$unit_id]['require']))
   {
@@ -121,6 +124,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
       }
     }
   }
+*/
   $cost['RESULT'][BUILD_CREATE] = $cost['RESULT'][BUILD_CREATE] == BUILD_ALLOWED ? ($cost['CAN'][BUILD_CREATE] ? BUILD_ALLOWED : BUILD_NO_RESOURCES) : $cost['RESULT'][BUILD_CREATE];
 
   $mercenary = 0;
