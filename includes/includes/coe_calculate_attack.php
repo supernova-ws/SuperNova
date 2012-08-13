@@ -83,13 +83,14 @@ function coe_precalc_round_data(&$fleets, &$fleetRoundData, &$fleetArray, $strFi
       $fleetRoundData['att'][$fleetID] += $thisAtt;
       $fleetRoundData['shield'][$fleetID] += $thisDef;
       $fleetRoundData['amount'][$fleetID] += $amount;
-
-      foreach ($sn_data[$element]['sd'] as $element2 => $amount2){
+/*
+      foreach($sn_data[$element]['sd'] as $element2 => $amount2){
         $aTemp = max($amount, $amount*$amount2);
 
         $fleetRoundData['rf'][$fleetID][$element2] += $aTemp;
         $fleetRoundData['rf']['total'][$element2] += $aTemp;
       }
+*/
     }
     $fleetRoundData['def']['total'] += $fleetRoundData['def'][$fleetID];
     $fleetRoundData['att']['total'] += $fleetRoundData['att'][$fleetID];
@@ -146,7 +147,7 @@ function BE_calculateRound(&$fleets, &$fleetsAttacking, &$fleet_n, &$fleet_shiel
             $PctHarmMade = $HarmPctIncoming ; // which % of damage came to defending ship from attacker's ship
             $HarmMade = round($PctHarmMade * $defenseShipData['att']); // which damage came to defending ship from attacker's ship
 
-            $FinalHarm = round($HarmMade * $sn_data[$defenseShipID]['amplify'][$element]); // method 2 - Amplification (RapidFire) applies BEFORE shields
+            $FinalHarm = round($HarmMade * (isset($sn_data[$defenseShipID]['amplify'][$element]) ? $sn_data[$defenseShipID]['amplify'][$element] : 1)); // method 2 - Amplification (RapidFire) applies BEFORE shields
             // $FinalHarm = $HarmMade; // method 3 - Amplification applies AFTER shields
 
 BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $attackArray, $fleetID, $HarmPctIncoming, $HarmMade, $FinalHarm, $amount);
@@ -157,7 +158,7 @@ BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $attackArra
               $fleet_shield += $attackArray[$fleetID][$element]['shield'];          // How much damage was absorbed by shield - add to total fleet absorb
               $attackArray[$fleetID][$element]['shield'] = 0;                       // Shield now 0 'cause they all was destroyed by incoming damage
 
-              //$FinalHarm = $FinalHarm * $sn_data[$defenseShipID]['amplify'][$element]; // method 3 - Amplification (RapidFire) applies AFTER shields
+              //$FinalHarm = $FinalHarm * (isset($sn_data[$defenseShipID]['amplify'][$element]) ? $sn_data[$defenseShipID]['amplify'][$element] : 1); // method 3 - Amplification (RapidFire) applies AFTER shields
 
               $calculatedDestroyedShip = floor($FinalHarm / ($attackArray[$fleetID][$element]['def'] / $amount));   // How much ships was destroyed by incoming harm
               $fleet_n[$fleetID][$element] = max(0, ceil($amount - $calculatedDestroyedShip));                      // How much ships left in fleet

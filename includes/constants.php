@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '34');
 define('SN_RELEASE', '35');
-define('SN_VERSION', '35a9.4');
+define('SN_VERSION', '35a9.5');
 define('SN_RELEASE_STABLE', '34d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -453,6 +453,7 @@ define('SHIP_SUPERNOVA', 216);
 define('SHIP_FIGHTER_ASSAULT', 217);
 define('SHIP_CARGO_HYPER', 218);
 define('SHIP_FIGHTER_WRATH', 219);
+define('SHIP_CARGO_GREED', 220);
 // --- Defense
 define('UNIT_DEFENCE', 400);
 define('DEF_TURRET_MISSILE', 401);
