@@ -177,7 +177,7 @@ function eco_planet_fields_max($planet)
 // ----------------------------------------------------------------------------------------------------------------
 function flt_get_missile_range($user)
 {
-  return max(0, mrc_get_level($user, false, TECH_ENIGNE_ION) * 5 - 1);
+  return max(0, mrc_get_level($user, false, TECH_ENGINE_ION) * 5 - 1);
 }
 
 // ----------------------------------------------------------------------------------------------------------------

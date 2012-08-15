@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a9.4
+* @version 35a9.6
 *
 */
 
@@ -199,7 +199,7 @@ $lang['info'] = (array(
       'description_short' => 'Further development of these engines makes some ships faster, but each level increases the speed of only 10%.',
     ),
 
-    TECH_ENIGNE_ION => array(
+    TECH_ENGINE_ION => array(
       'description' => 'Impulse engine is based on the principle of effectiveness, and warming up of matter are the nuclear reaction. You can also inject additional mass. Further development of these engines makes the following ships with each level to 20% faster: small transportation, bombers (until a researched hyperspace engine 8th level), cruisers, heavy fighter and colonizers. Each level increases the reach of interplanetary missiles.',
       'description_short' => 'Impulse engine is based on the principle of effectiveness. Further development of these engines makes some ships faster, but with each level increases the speed of only 20%.',
     ),

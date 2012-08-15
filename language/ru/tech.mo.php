@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a0
+* @version 35a9.6
 *
 */
 
@@ -88,7 +88,7 @@ $lang = array_merge($lang, array(
     TECH_WEAPON => 'Оружейная технология',
     TECH_SHIELD => 'Щитовая технология',
     TECH_ENGINE_CHEMICAL => 'Химический двигатель',
-    TECH_ENIGNE_ION => 'Ионный двигатель',
+    TECH_ENGINE_ION => 'Ионный двигатель',
     TECH_ENGINE_HYPER => 'Гиперпространственный двигатель',
     TECH_LASER => 'Лазерная технология',
     TECH_ION => 'Ионная технология',
