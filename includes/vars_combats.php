@@ -622,7 +622,7 @@ $sn_data += array(
     'name' => 'supernova',
     'type' => UNIT_SHIPS,
     'location' => LOC_PLANET,
-    'require' => array(STRUC_FACTORY_HANGAR => 15, TECH_HYPERSPACE => 7, TECH_ENGINE_HYPER => 9, TECH_GRAVITON => 1, UNIT_PLAN_),
+    'require' => array(STRUC_FACTORY_HANGAR => 15, TECH_HYPERSPACE => 7, TECH_ENGINE_HYPER => 9, TECH_GRAVITON => 1, UNIT_PLAN_SHIP_SUPERNOVA => 1),
     'cost' => array(
       RES_METAL     => 20000000,
       RES_CRYSTAL   => 15000000,
