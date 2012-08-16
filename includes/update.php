@@ -1744,9 +1744,12 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       "MODIFY COLUMN `user` TEXT COMMENT 'Chat message user name'",
     ), $update_tables['chat']['user']['Type'] != 'TEXT');
 
-    upd_alter_table('planets', "ADD `ship_fighter_wrath` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Venerian Wrath'", !$update_tables['planets']['ship_fighter_wrath']);
-    upd_alter_table('planets', "ADD `ship_cargo_greed` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Republican Greed'", !$update_tables['planets']['ship_cargo_greed']);
     upd_alter_table('planets', "ADD `ship_sattelite_sloth` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Terran Sloth'", !$update_tables['planets']['ship_sattelite_sloth']);
+    upd_alter_table('planets', "ADD `ship_bomber_envy` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Lunar Envy'", !$update_tables['planets']['ship_bomber_envy']);
+    upd_alter_table('planets', "ADD `ship_recycler_gluttony` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Mercurian Gluttony'", !$update_tables['planets']['ship_recycler_gluttony']);
+    upd_alter_table('planets', "ADD `ship_fighter_wrath` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Venerian Wrath'", !$update_tables['planets']['ship_fighter_wrath']);
+    upd_alter_table('planets', "ADD `ship_battleship_pride` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Martian Pride'", !$update_tables['planets']['ship_battleship_pride']);
+    upd_alter_table('planets', "ADD `ship_cargo_greed` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Republican Greed'", !$update_tables['planets']['ship_cargo_greed']);
 
     upd_do_query('COMMIT;', true);
 //    $new_version = 35;
