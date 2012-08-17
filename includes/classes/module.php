@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #35a8.21# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #35a9.10# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -166,7 +166,8 @@ class sn_module
         }
         elseif(is_array($$var_name))
         {
-          $pointer = $var_value + $pointer;
+//          $pointer = $var_value + $pointer;
+          $pointer += $var_value;
         }
       }
     }

@@ -284,7 +284,7 @@ elseif (in_array($unit_id, $sn_data['groups']['defense_active']))
 {
   // Defenses
   $PageTPL = gettemplate('info_buildings_defense');
-  $parse['element_typ'] = $lang['tech'][400];
+  $parse['element_typ'] = $lang['tech'][UNIT_DEFENCE];
 
   $rapid_fire = eco_render_rapid_fire($unit_id);
   $parse['rf_info_to'] = $rapid_fire['to'];   // Rapid Fire vers
@@ -294,11 +294,11 @@ elseif (in_array($unit_id, $sn_data['groups']['defense_active']))
   $parse['shield_pt'] = pretty_number($sn_data[$unit_id]['shield']);  // Points de Bouclier
   $parse['attack_pt'] = pretty_number($sn_data[$unit_id]['attack']);  // Points d'Attaque
 }
-elseif ($unit_id >= 502 && $unit_id <= 503)
+elseif(in_array($unit_id, $sn_data['groups']['missile']))
 {
   // Misilles
   $PageTPL = gettemplate('info_buildings_defense');
-  $parse['element_typ'] = $lang['tech'][400];
+  $parse['element_typ'] = $lang['tech'][UNIT_DEFENCE];
   $parse['hull_pt'] = pretty_number($sn_data[$unit_id]['metal'] + $sn_data[$unit_id]['crystal']); // Points de Structure
   $parse['shield_pt'] = pretty_number($sn_data[$unit_id]['shield']);  // Points de Bouclier
   $parse['attack_pt'] = pretty_number($sn_data[$unit_id]['attack']);  // Points d'Attaque

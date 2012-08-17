@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a9.6
+* @version 35a9.10
 *
 */
 
@@ -329,57 +329,57 @@ $lang['info'] = (array(
       'description_short' => 'The flagship of the fleet of the Empire. The huge build cost will be compensated with terrible firepower and advanced protection. One ship of this class is able to defeat an average fleet by itself.',
     ),
 
-    '401' => array(
+    UNIT_DEF_TURRET_MISSILE => array(
       'description' => 'Launcher is a simple and inexpensive means of defence. Because this is the development of conventional ballistic artillery shells, it does not require further upgrading. The small cost of its production justifies its use against smaller fleets, but over time it loses value. Later it is used only for withdrawal of enemy shots. Defensive deactivates itself once they severely damaged. Recoverability of the fortifications after a battle with up to 70%.',
       'description_short' => 'Launcher is a simple and inexpensive means of defence.',
     ),
 
-    '402' => array(
+    UNIT_DEF_TURRET_LASER_SMALL => array(
       'description_short' => 'Using the concentrated attack targets photons can be achieved much great destruction than conventional ballistic weapons.',
       'description' => '',
     ),
 
-    '403' => array(
+    UNIT_DEF_TURRET_LASER_BIG => array(
       'description' => 'Heavy laser represents a further development of the laser light. Structure has been reinforced and improved with new materials. Wrapper could do much more resistant. At the same time has been improved and energy system and the target computer, so heavy laser can concentrate much more on target. Defensive deactivates itself once they severely damaged. Recoverability of the fortifications after a battle with up to 70%.',
       'description_short' => 'Heavy laser represents a further development of laser light.',
     ),
 
-    '404' => array(
+    UNIT_DEF_TURRET_GAUSS => array(
       'description_short' => 'Coilgun accelerates mnogotonnye charges with gigantic energy costs.',
       'description' => '',
     ),
 
-    '405' => array(
+    UNIT_DEF_TURRET_ION => array(
       'description_short' => 'Ion Cannon directs to the purpose of wave ion, which destabilizes the shields and damages the electronics.',
       'description' => '',
     ),
 
-    '406' => array(
+    UNIT_DEF_TURRET_PLASMA => array(
       'description' => 'Laser technology was brought to perfection, Ionic technology has reached the final stage and was thought to be virtually impossible, even qualitatively Cannon system to achieve even greater efficiency. But everything was to change when the idea to combine both systems. Using the technology of nuclear fusion, laser heat the substance (usually a deuterium) up to ultrahigh temperatures reaching millions of degrees. Ionic technology provides enrichment plasma electric charge, its stabilization and acceleration. Once electric charge sufficiently warmed, ionized and is under pressure, it produce using accelerators in the direction of the goal. Glowing bluish color plasma Bowl looks awesome, the only question is, how long they will enjoy the command ship-purpose if after a few seconds, the armor he explodes into pieces and Electronics will burn ... Plasma turret is generally the most frightening weapons, and this technology represents a trade-off. Defensive deactivates itself once they severely damaged. Recoverability of the fortifications after a battle with up to 70%.',
       'description_short' => 'The last word in Planetary Defense technologies created a symbiosis of laser and Ion tech.',
     ),
 
-    '407' => array(
+    UNIT_DEF_SHIELD_SMALL => array(
       'description' => 'Long before the shield generators become sufficiently small to be used on ships, there is a huge generators on the surface of planets. They obvolakivali an entire planet force field that can absorb the shock of the attack. Small fleets are constantly attacking on these billboards dome. Due to the growing technological development of these boards can be even greater. Later, you can build stronger large shield dome. On every planet you can build only one small shield dome.',
       'description_short' => 'Small shield protects the planet and absorbs shock attack.',
     ),
 
-    '408' => array(
+    UNIT_DEF_SHIELD_BIG => array(
       'description' => 'Further development of the small shield dome. It can deter even stronger attack to planet, consuming significantly more energy.',
       'description_short' => 'Further development of the small shield dome. It can deter even stronger attack to planet, consuming significantly more energy.',
     ),
 
-    '409' => array(
+    UNIT_DEF_SHIELD_PLANET => array(
       'description' => 'The best protection for your planets',
       'description_short' => 'The best protection for your planets',
     ),
 
-    '502' => array(
+    UNIT_DEF_MISSILE_INTERCEPTOR => array(
       'description' => 'Rocket interceptors destroy attacking interplanetary missiles. An interceptor missile destroys one interplanetary missile.',
       'description_short' => 'Rocket interceptors destroy attacking interplanetary missiles',
     ),
 
-    '503' => array(
+    UNIT_DEF_MISSILE_INTERPLANET => array(
       'description_short' => 'Interplanetary missiles destroy enemy defenses',
       'description' => '',
     ),

@@ -49,7 +49,7 @@ function flt_get_fleets($condition, $phalanx = false)
       $planet_start = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '{$irak['fleet_start_galaxy']}' AND `system` = '{$irak['fleet_start_system']}' AND `planet` = '{$irak['fleet_start_planet']}' AND `planet_type` = '1'", true);
       $irak['fleet_id']             = -$irak['id'];
       $irak['fleet_mission']        = MT_MISSILE;
-      $irak['fleet_array']          = "503,{$irak['fleet_amount']};";
+      $irak['fleet_array']          = UNIT_DEF_MISSILE_INTERPLANET . ",{$irak['fleet_amount']};";
 //        $irak['fleet_end_type']       = PT_PLANET;
 //        $irak['fleet_start_type']     = PT_PLANET;
       $irak['fleet_start_name']     = $planet_start['name'];

@@ -355,19 +355,13 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       </td>
     </tr>
     <tr>
-      <th class=c>{L_gal_mis_toLaunch} <input type=text name=SendMI size=7 maxlength=7 /></th>
+      <th class=c>{L_gal_mis_toLaunch} <input type=text value="{MIPs}" name=SendMI size=7 maxlength=7 /></th>
       <th class=c>{L_gm_target}
         <select name=Target>
           <option value=0 selected>{L_gm_all}</option>
-          <option value=401>{L_tech[401]}</option>
-          <option value=402>{L_tech[402]}</option>
-          <option value=403>{L_tech[403]}</option>
-          <option value=404>{L_tech[404]}</option>
-          <option value=405>{L_tech[405]}</option>
-          <option value=406>{L_tech[406]}</option>
-          <option value=407>{L_tech[407]}</option>
-          <option value=408>{L_tech[408]}</option>
-          <option value=409>{L_tech[409]}</option>
+          <!-- BEGIN defense_active -->
+          <option value={defense_active.ID}>{defense_active.NAME}</option>
+          <!-- END defense_active -->
         </select>
       </th>
       <th class=c>

@@ -164,6 +164,7 @@ else
 
   $template->assign_vars(array(
     'BE_DEBUG' => BE_DEBUG,
+    'UNIT_DEFENCE' => UNIT_DEFENCE,
   ));
 
   display(parsetemplate($template, $parse), $lang['coe_combatSimulator'], false);

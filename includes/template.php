@@ -84,28 +84,24 @@ function tpl_render_menu()
       'ALT' => 'supernova.ws',
     ),
 
-    'menu_admin' => $user['authlevel'] <= 0 ? array() : 
-    array(
+    'menu_admin' => $user['authlevel'] <= 0 ? array() : array(
       'LEVEL' => 'header',
       'ITEM'  => $lang['user_level'][$user['authlevel']],
       'LINK'  => 'admin/overview.php',
     ),
-    'menu_impersonator' => !is_array($user_impersonator) ? array() : 
-    array(
+    'menu_impersonator' => !is_array($user_impersonator) ? array() : array(
       'LEVEL' => 'header',
       'ITEM'  => $lang['sys_impersonate_done'],
       'LINK'  => 'logout.php',
       'SPAN'  => 'important',
     ),
 
-    'menu_rules' => !$config->url_rules ? array() : 
-    array(
+    'menu_rules' => !$config->url_rules ? array() : array(
       'LEVEL' => 'header',
       'ITEM'  => $lang['sys_game_rules'],
       'LINK'  => $config->url_rules,
     ),
-    'menu_faq' => !$config->url_faq ? array() : 
-    array(
+    'menu_faq' => !$config->url_faq ? array() : array(
       'LEVEL' => 'header',
       'ITEM'  => $lang['m_faq'],
       'LINK'  => $config->url_faq,
@@ -245,8 +241,7 @@ function tpl_render_menu()
       'ITEM'  => $lang['Chat'],
       'LINK'  => 'chat.php',
     ),
-    'menu_comm_forum' => !$config->url_forum ? array() :
-    array(
+    'menu_comm_forum' => !$config->url_forum ? array() : array(
       'LEVEL' => 'submenu',
       'ITEM'  => $lang['m_forum'],
       'LINK'  => $config->url_forum,
@@ -330,7 +325,6 @@ function tpl_render_menu()
     'menu_options' => array(
       'LEVEL' => 'header',
       'ITEM'  => $lang['Options'],
-//      'LINK'  => 'options.php',
       'LINK'  => 'index.php?page=options',
     ),
 
@@ -340,8 +334,7 @@ function tpl_render_menu()
       'LINK'  => 'logout.php',
     ),
 
-    'menu_extra' => !$config->advGoogleLeftMenuIsOn ? array() :
-    array(
+    'menu_extra' => !$config->advGoogleLeftMenuIsOn ? array() : array(
       'LEVEL' => 'submenu',
       'CLASS' => 'c_c',
       'ITEM'  => $config->advGoogleLeftMenuCode,

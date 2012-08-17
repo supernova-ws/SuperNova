@@ -51,7 +51,7 @@ $fleet_array    = array();
 $FleetDBArray   = '';
 $FleetSubQRY    = '';
 $fleet_ship_count = 0;
-foreach(array_merge($sn_data['groups']['fleet'], array(503)) as $ship_id)
+foreach(array_merge($sn_data['groups']['fleet'], array(UNIT_DEF_MISSILE_INTERPLANET)) as $ship_id)
 {
   $ship_count = max(0, sys_get_param_float("ship{$ship_id}"));
   if(!$ship_count)
@@ -96,7 +96,7 @@ if($target_mission == MT_MISSILE)
     die("{$cant_attack}|{$lang['fl_attack_error'][$cant_attack]}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}");
   };
 
-  $mips_sent = $fleet_array[503];
+  $mips_sent = $fleet_array[UNIT_DEF_MISSILE_INTERPLANET];
 
   $distance = abs($target_system - $planetrow['system']);
   $mipRange = ($user['impulse_motor_tech'] * 5) - 1;
@@ -108,8 +108,8 @@ if($target_mission == MT_MISSILE)
      `fleet_owner` = '{$user['id']}', `fleet_start_galaxy` = '{$planetrow['galaxy']}', `fleet_start_system` = '{$planetrow['system']}', `fleet_start_planet` = '{$planetrow['planet']}',
      `fleet_end_time` = '{$arrival}', `fleet_amount` = '{$mips_sent}', `primaer` = '{$target_structure}';");
 
-  $FleetSubQRY = "`{$sn_data[503]['name']}` = `{$sn_data[503]['name']}` - '{$mips_sent}', ";
-  $Ship = 503;
+  $FleetSubQRY = "`{$sn_data[UNIT_DEF_MISSILE_INTERPLANET]['name']}` = `{$sn_data[UNIT_DEF_MISSILE_INTERPLANET]['name']}` - '{$mips_sent}', ";
+  $Ship = UNIT_DEF_MISSILE_INTERPLANET;
   //doquery("UPDATE `{{planets}}` SET  WHERE `id` = '{$user['current_planet']}' LIMIT 1;");
   $travel_data['consumption'] = 0;
 }
@@ -151,7 +151,7 @@ doquery("COMMIT;");
 $CurrentFlyingFleets++;
 $UserSpyProbes -= $fleet_array[SHIP_SPY];
 $UserRecycles  -= $fleet_array[SHIP_RECYCLER];
-$UserMissiles  -= $fleet_array[503];
+$UserMissiles  -= $fleet_array[UNIT_DEF_MISSILE_INTERPLANET];
 
 $ResultMessage  = "{$cant_attack}|{$lang['gs_sending']} {$fleet_ship_count} {$lang['tech'][$Ship]} {$lang['gs_to']} {$target_galaxy}:{$target_system}:{$target_planet}...|";
 $ResultMessage .= "{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}";

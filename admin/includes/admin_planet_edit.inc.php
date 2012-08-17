@@ -6,10 +6,10 @@ function sn_admin_planet_edit_mode(&$template, &$admin_planet_edit_mode_list)
   global $lang;
 
   $admin_planet_edit_mode_list = array_merge(isset($admin_planet_edit_mode_list) ? $admin_planet_edit_mode_list : array(), array(
-    'structures' => $lang['tech'][0],
-    'fleet' => $lang['tech'][200],
-    'defense' => $lang['tech'][400],
-    'resources_loot' => $lang['tech'][900],
+    'structures' => $lang['tech'][UNIT_STRUCTURES],
+    'fleet' => $lang['tech'][UNIT_SHIPS],
+    'defense' => $lang['tech'][UNIT_DEFENCE],
+    'resources_loot' => $lang['tech'][UNIT_RESOURCES],
   ));
 
   $mode = sys_get_param_str('mode');

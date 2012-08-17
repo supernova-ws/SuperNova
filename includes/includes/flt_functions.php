@@ -408,12 +408,12 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   // Is it MISSILE mission?
   if($mission == MT_MISSILE)
   {
-    if($planet_src[$sn_data[STRUC_SILO]['name']] < $sn_data[503]['require'][STRUC_SILO])
+    if($planet_src[$sn_data[STRUC_SILO]['name']] < $sn_data[UNIT_DEF_MISSILE_INTERPLANET]['require'][STRUC_SILO])
     {
       return ATTACK_NO_SILO;
     }
 
-    if(!$fleet[503])
+    if(!$fleet[UNIT_DEF_MISSILE_INTERPLANET])
     {
       return ATTACK_NO_MISSILE;
     }

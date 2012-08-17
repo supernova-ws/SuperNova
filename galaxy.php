@@ -264,6 +264,14 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
 
 tpl_assign_fleet($template, $fleets);
 
+foreach($sn_data['groups']['defense_active'] as $unit_id)
+{
+  $template->assign_block_vars('defense_active', array(
+    'ID' => $unit_id,
+    'NAME' => $lang['tech'][$unit_id],
+  ));
+}
+
 foreach($cached['users'] as $PlanetUser)
 {
   if($PlanetUser)

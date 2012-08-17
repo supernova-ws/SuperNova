@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '34');
 define('SN_RELEASE', '35');
-define('SN_VERSION', '35a9.9');
+define('SN_VERSION', '35a9.10');
 define('SN_RELEASE_STABLE', '34d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -460,18 +460,18 @@ define('SHIP_RECYCLER_GLUTTONY', 223);
 define('SHIP_BOMBER_ENVY', 224);
 // --- Defense
 define('UNIT_DEFENCE', 400);
-define('DEF_TURRET_MISSILE', 401);
-define('DEF_TURRET_LASER_SMALL', 402);
-define('DEF_TURRET_LASER_BIG', 403);
-define('DEF_TURRET_GAUSS', 404);
-define('DEF_TURRET_ION', 405);
-define('DEF_TURRET_PLASMA', 406);
+define('UNIT_DEF_TURRET_MISSILE', 401);
+define('UNIT_DEF_TURRET_LASER_SMALL', 402);
+define('UNIT_DEF_TURRET_LASER_BIG', 403);
+define('UNIT_DEF_TURRET_GAUSS', 404);
+define('UNIT_DEF_TURRET_ION', 405);
+define('UNIT_DEF_TURRET_PLASMA', 406);
 define('UNIT_DEF_SHIELD_SMALL', 407);
 define('UNIT_DEF_SHIELD_BIG', 408);
 define('UNIT_DEF_SHIELD_PLANET', 409);
 // --- Missiles
-define('DEF_MISSILE_INTERCEPTOR', 502);
-define('DEF_MISSILE_INTERPLANET', 503);
+define('UNIT_DEF_MISSILE_INTERCEPTOR', 502);
+define('UNIT_DEF_MISSILE_INTERPLANET', 503);
 
 // === Mercenaries
 // --- Mercenary list

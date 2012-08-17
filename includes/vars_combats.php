@@ -423,7 +423,7 @@ $sn_data += array(
     'consumption' => 300,
     'shield' => 50,
     'attack' => 400,
-    'amplify' => array(SHIP_FIGHTER_LIGHT => 6.15, SHIP_SPY => 1.25013, SHIP_SATTELITE_SOLAR => 2.625, 401 => 5.5, ),
+    'amplify' => array(SHIP_FIGHTER_LIGHT => 6.15, SHIP_SPY => 1.25013, SHIP_SATTELITE_SOLAR => 2.625, UNIT_DEF_TURRET_MISSILE => 5.5, ),
     'armor' => 2700,
     'stackable' => true,
   ),
@@ -459,7 +459,7 @@ $sn_data += array(
     'consumption' => 500,
     'shield' => 200,
     'attack' => 1000,
-    'amplify' => array(SHIP_SPY => 0.50005, SHIP_SATTELITE_SOLAR => 1.05, 401 => 1.76, ),
+    'amplify' => array(SHIP_SPY => 0.50005, SHIP_SATTELITE_SOLAR => 1.05, UNIT_DEF_TURRET_MISSILE => 1.76, ),
     'armor' => 6000,
     'stackable' => true,
   ),
@@ -505,7 +505,7 @@ $sn_data += array(
     'consumption2' => 1250,
     'shield' => 500,
     'attack' => 1000,
-    'amplify' => array(SHIP_SPY => 0.50005, SHIP_SATTELITE_SOLAR => 1.05, 401 => 4.4, 402 => 4.5, 403 => 9, 405 => 8, 406 => 1.3),
+    'amplify' => array(SHIP_SPY => 0.50005, SHIP_SATTELITE_SOLAR => 1.05, UNIT_DEF_TURRET_MISSILE => 4.4, UNIT_DEF_TURRET_LASER_SMALL => 4.5, UNIT_DEF_TURRET_LASER_BIG => 9, UNIT_DEF_TURRET_ION => 8, UNIT_DEF_TURRET_PLASMA => 1.3),
     'armor' => 7500,
     'stackable' => true,
   ),
@@ -577,7 +577,7 @@ $sn_data += array(
     'consumption' => 1000,
     'shield' => 500,
     'attack' => 2000,
-    'amplify' => array(SHIP_SPY => 0.25003, SHIP_SATTELITE_SOLAR => 0.525, SHIP_BATTLESHIP => 7.4, 402 => 1.125, ),
+    'amplify' => array(SHIP_SPY => 0.25003, SHIP_SATTELITE_SOLAR => 0.525, SHIP_BATTLESHIP => 7.4, UNIT_DEF_TURRET_LASER_SMALL => 1.125, ),
     'armor' => 11000,
     'stackable' => true,
   ),
@@ -613,7 +613,7 @@ $sn_data += array(
     'consumption' => 1,
     'shield' => 50000,
     'attack' => 200000,
-    'amplify' => array(SHIP_CARGO_SUPER => 2.025, SHIP_CARGO_SMALL => 0.41, SHIP_CARGO_BIG => 0.91875, SHIP_FIGHTER_LIGHT => 0.41, SHIP_FIGHTER_HEAVY => 0.5125, SHIP_DESTROYER => 0.45375, SHIP_CRUISER => 0.93, SHIP_COLONIZER => 3.875, SHIP_RECYCLER => 2.0125, SHIP_SPY => 0.62506, SHIP_SATTELITE_SOLAR => 1.3125, SHIP_DESTRUCTOR => 0.2875, SHIP_BATTLESHIP => 0.03, 401 => 0.02, 402 => 0.025, 403 => 0.05, 404 => 0.05, 405 => 0.25,  ),
+    'amplify' => array(SHIP_CARGO_SUPER => 2.025, SHIP_CARGO_SMALL => 0.41, SHIP_CARGO_BIG => 0.91875, SHIP_FIGHTER_LIGHT => 0.41, SHIP_FIGHTER_HEAVY => 0.5125, SHIP_DESTROYER => 0.45375, SHIP_CRUISER => 0.93, SHIP_COLONIZER => 3.875, SHIP_RECYCLER => 2.0125, SHIP_SPY => 0.62506, SHIP_SATTELITE_SOLAR => 1.3125, SHIP_DESTRUCTOR => 0.2875, SHIP_BATTLESHIP => 0.03, UNIT_DEF_TURRET_MISSILE => 0.02, UNIT_DEF_TURRET_LASER_SMALL => 0.025, UNIT_DEF_TURRET_LASER_BIG => 0.05, UNIT_DEF_TURRET_GAUSS => 0.05, UNIT_DEF_TURRET_ION => 0.25,  ),
     'armor' => 900000,
     'stackable' => true,
   ),
@@ -650,7 +650,7 @@ $sn_data += array(
     'shield' => 1000000,
     'attack' => 100000,
     'amplify' => array(
-//SHIP_CARGO_HYPER => 1,  SHIP_CARGO_SUPER => 0.6075, SHIP_CARGO_SMALL => 0.1025, SHIP_CARGO_BIG => 0.245, SHIP_FIGHTER_LIGHT => 0.082, SHIP_FIGHTER_HEAVY => 0.1025, SHIP_DESTROYER => 0.09075, SHIP_CRUISER => 0.186, SHIP_COLONIZER => 0.775, SHIP_RECYCLER => 0.4025, SHIP_SPY => 0.12501, SHIP_BOMBER => 0.2, SHIP_SATTELITE_SOLAR => 0.2625, SHIP_DESTRUCTOR => 0.0575, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 0.111, SHIP_SUPERNOVA => 1, 401 => 0.004, 402 => 0.005, 403 => 0.01, 404 => 0.01, 405 => 0.05, 406 => 1, 407 => 1, 408 => 1, 409 => 1
+//SHIP_CARGO_HYPER => 1,  SHIP_CARGO_SUPER => 0.6075, SHIP_CARGO_SMALL => 0.1025, SHIP_CARGO_BIG => 0.245, SHIP_FIGHTER_LIGHT => 0.082, SHIP_FIGHTER_HEAVY => 0.1025, SHIP_DESTROYER => 0.09075, SHIP_CRUISER => 0.186, SHIP_COLONIZER => 0.775, SHIP_RECYCLER => 0.4025, SHIP_SPY => 0.12501, SHIP_BOMBER => 0.2, SHIP_SATTELITE_SOLAR => 0.2625, SHIP_DESTRUCTOR => 0.0575, SHIP_DEATH_STAR => 1, SHIP_BATTLESHIP => 0.111, SHIP_SUPERNOVA => 1, UNIT_DEF_TURRET_MISSILE => 0.004, UNIT_DEF_TURRET_LASER_SMALL => 0.005, UNIT_DEF_TURRET_LASER_BIG => 0.01, UNIT_DEF_TURRET_GAUSS => 0.01, UNIT_DEF_TURRET_ION => 0.05, UNIT_DEF_TURRET_PLASMA => 1, UNIT_DEF_SHIELD_SMALL => 1, UNIT_DEF_SHIELD_BIG => 1, UNIT_DEF_SHIELD_PLANET => 1
 
 SHIP_CARGO_SMALL => 1, SHIP_CARGO_BIG => 3, SHIP_CARGO_SUPER => 6, SHIP_CARGO_HYPER => 10,
 SHIP_RECYCLER => 5, SHIP_SPY => 2, SHIP_SATTELITE_SOLAR => 3, SHIP_COLONIZER => 8, 
@@ -660,8 +660,8 @@ SHIP_DESTROYER => 5, SHIP_BOMBER => 5,
 SHIP_CRUISER => 1.86, SHIP_BATTLESHIP => 1.11,
 SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
 
- 401 => 0.04, 402 => 0.05, 403 => 0.1, 404 => 0.1, 405 => 0.5, 406 => 1, 407 => 1, 408 => 1, 409 => 1
-      // SHIP_CARGO_SUPER => 0.6075, SHIP_CARGO_SMALL => 0.1025, SHIP_CARGO_BIG => 0.245, SHIP_DESTROYER => 0.09075, SHIP_COLONIZER => 0.775, SHIP_RECYCLER => 0.4025, SHIP_SPY => 0.12501, SHIP_SATTELITE_SOLAR => 0.2625, 401 => 0.004, 402 => 0.005, 403 => 0.01, 404 => 0.01, 405 => 0.05,
+ UNIT_DEF_TURRET_MISSILE => 0.04, UNIT_DEF_TURRET_LASER_SMALL => 0.05, UNIT_DEF_TURRET_LASER_BIG => 0.1, UNIT_DEF_TURRET_GAUSS => 0.1, UNIT_DEF_TURRET_ION => 0.5, UNIT_DEF_TURRET_PLASMA => 1, UNIT_DEF_SHIELD_SMALL => 1, UNIT_DEF_SHIELD_BIG => 1, UNIT_DEF_SHIELD_PLANET => 1
+      // SHIP_CARGO_SUPER => 0.6075, SHIP_CARGO_SMALL => 0.1025, SHIP_CARGO_BIG => 0.245, SHIP_DESTROYER => 0.09075, SHIP_COLONIZER => 0.775, SHIP_RECYCLER => 0.4025, SHIP_SPY => 0.12501, SHIP_SATTELITE_SOLAR => 0.2625, UNIT_DEF_TURRET_MISSILE => 0.004, UNIT_DEF_TURRET_LASER_SMALL => 0.005, UNIT_DEF_TURRET_LASER_BIG => 0.01, UNIT_DEF_TURRET_GAUSS => 0.01, UNIT_DEF_TURRET_ION => 0.05,
 //      SHIP_FIGHTER_LIGHT => 0.1,
 //      SHIP_FIGHTER_HEAVY => 0.1,
 //      SHIP_FIGHTER_LIGHT => 0.861,
@@ -680,7 +680,7 @@ SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
     'stackable' => true,
   ),
 
-  401 => array(
+  UNIT_DEF_TURRET_MISSILE => array(
     'name' => 'misil_launcher',
     'type' => UNIT_DEFENCE,
     'location' => LOC_PLANET,
@@ -704,7 +704,7 @@ SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
     'stackable' => true,
   ),
 
-  402 => array(
+  UNIT_DEF_TURRET_LASER_SMALL => array(
     'name' => 'small_laser',
     'type' => UNIT_DEFENCE,
     'location' => LOC_PLANET,
@@ -728,7 +728,7 @@ SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
     'stackable' => true,
   ),
 
-  403 => array(
+  UNIT_DEF_TURRET_LASER_BIG => array(
     'name' => 'big_laser',
     'type' => UNIT_DEFENCE,
     'location' => LOC_PLANET,
@@ -752,7 +752,7 @@ SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
     'stackable' => true,
   ),
 
-  404 => array(
+  UNIT_DEF_TURRET_GAUSS => array(
     'name' => 'gauss_canyon',
     'type' => UNIT_DEFENCE,
     'location' => LOC_PLANET,
@@ -776,7 +776,7 @@ SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
     'stackable' => true,
   ),
 
-  405 => array(
+  UNIT_DEF_TURRET_ION => array(
     'name' => 'ionic_canyon',
     'type' => UNIT_DEFENCE,
     'location' => LOC_PLANET,
@@ -800,7 +800,7 @@ SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
     'stackable' => true,
   ),
 
-  406 => array(
+  UNIT_DEF_TURRET_PLASMA => array(
     'name' => 'buster_canyon',
     'type' => UNIT_DEFENCE,
     'location' => LOC_PLANET,
@@ -824,7 +824,7 @@ SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
     'stackable' => true,
   ),
 
-  407 => array(
+  UNIT_DEF_SHIELD_SMALL => array(
     'name' => 'small_protection_shield',
     'type' => UNIT_DEFENCE,
     'location' => LOC_PLANET,
@@ -849,7 +849,7 @@ SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
     'max' => 1,
   ),
 
-  408 => array(
+  UNIT_DEF_SHIELD_BIG => array(
     'name' => 'big_protection_shield',
     'type' => UNIT_DEFENCE,
     'location' => LOC_PLANET,
@@ -874,7 +874,7 @@ SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
     'max' => 1,
   ),
 
-  409 => array(
+  UNIT_DEF_SHIELD_PLANET => array(
     'name'      => 'planet_protector',
     'type' => UNIT_DEFENCE,
     'location' => LOC_PLANET,
@@ -899,7 +899,7 @@ SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
     'max' => 1,
   ),
 
-  502 => array(
+  UNIT_DEF_MISSILE_INTERCEPTOR => array(
     'name' => 'interceptor_misil',
     'type' => UNIT_DEFENCE,
     'location' => LOC_PLANET,
@@ -923,7 +923,7 @@ SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
     'size' => 1,
   ),
 
-  503 => array(
+  UNIT_DEF_MISSILE_INTERPLANET => array(
     'name' => 'interplanetary_misil',
     'type' => UNIT_DEFENCE,
     'location' => LOC_PLANET,

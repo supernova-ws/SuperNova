@@ -70,10 +70,20 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
 
   $hangar_que = eco_que_str2arr($planet['b_hangar_id']);
   $hangar_que_by_unit = sys_unit_str2arr($planet['b_hangar_id']);
+
+/*
   $silo_capacity_free = max(0,
-    $planet[$sn_data[STRUC_SILO]['name']] * $sn_data[STRUC_SILO]['capacity']
-    - ($hangar_que_by_unit[502] + $planet[$sn_data[502]['name']]) * $sn_data[502]['size']
-    - ($hangar_que_by_unit[503] + $planet[$sn_data[503]['name']]) * $sn_data[503]['size']);
+    $silo_capacity_free
+    - ($hangar_que_by_unit[UNIT_DEF_MISSILE_INTERCEPTOR] + $planet[$sn_data[UNIT_DEF_MISSILE_INTERCEPTOR]['name']]) * $sn_data[UNIT_DEF_MISSILE_INTERCEPTOR]['size']
+    - ($hangar_que_by_unit[UNIT_DEF_MISSILE_INTERPLANET] + $planet[$sn_data[UNIT_DEF_MISSILE_INTERPLANET]['name']]) * $sn_data[UNIT_DEF_MISSILE_INTERPLANET]['size']);
+*/
+
+  $silo_capacity_free = $planet[$sn_data[STRUC_SILO]['name']] * $sn_data[STRUC_SILO]['capacity'];
+  foreach($sn_data['groups']['missile'] as $silo_unit_id)
+  {
+    $silo_capacity_free -= ($hangar_que_by_unit[$silo_unit_id] + $planet[$sn_data[$silo_unit_id]['name']]) * $sn_data[$silo_unit_id]['size'];
+  }
+  $silo_capacity_free = max(0, $silo_capacity_free);
 
   $POST_fmenge = sys_get_param('fmenge');
   $que_size = count(eco_que_str2arr($planet['b_hangar_id']));

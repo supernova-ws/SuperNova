@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a9.6
+* @version 35a9.10
 *
 */
 
@@ -100,6 +100,7 @@ $lang = array_merge($lang, array(
     TECH_COLONIZATION => 'Colonization Technology',
     TECH_GRAVITON => 'Graviton Technology',
     TECH_RESEARCH => 'Intergalactic Research Network',
+
     UNIT_SHIPS => 'Ships',
     SHIP_SATTELITE_SOLAR => 'Solar Satellite',
     SHIP_SPY => 'Spy Probe',
@@ -118,18 +119,19 @@ $lang = array_merge($lang, array(
     SHIP_DESTRUCTOR => 'Destructor',
     SHIP_DEATH_STAR => 'Deathstar',
     SHIP_SUPERNOVA => 'Cruiser Class &quot;Supernova&quot;',
-    '400' => 'Defences',
-    '401' => 'Rocket Launcher',
-    '402' => 'Light Laser',
-    '403' => 'Heavy Laser',
-    '404' => 'Gauss Cannon',
-    '405' => 'Ion Cannon',
-    '406' => 'Plasma Turrent',
-    '407' => 'Small Shield Dome',
-    '408' => 'Large Shield Dome',
-    '409' => 'Planetary Protection',
-    '502' => 'Interceptor Missiles',
-    '503' => 'Interplanetary Missiles',
+
+    UNIT_DEFENCE => 'Defences',
+    UNIT_DEF_TURRET_MISSILE => 'Rocket Launcher',
+    UNIT_DEF_TURRET_LASER_SMALL => 'Light Laser',
+    UNIT_DEF_TURRET_LASER_BIG => 'Heavy Laser',
+    UNIT_DEF_TURRET_GAUSS => 'Gauss Cannon',
+    UNIT_DEF_TURRET_ION => 'Ion Cannon',
+    UNIT_DEF_TURRET_PLASMA => 'Plasma Turrent',
+    UNIT_DEF_SHIELD_SMALL => 'Small Shield Dome',
+    UNIT_DEF_SHIELD_BIG => 'Large Shield Dome',
+    UNIT_DEF_SHIELD_PLANET => 'Planetary Protection',
+    UNIT_DEF_MISSILE_INTERCEPTOR => 'Interceptor Missiles',
+    UNIT_DEF_MISSILE_INTERPLANET => 'Interplanetary Missiles',
 
     UNIT_MERCENARIES => 'Mercenaries',
     MRC_TECHNOLOGIST => 'Technologist',

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a9.6
+* @version 35a9.10
 *
 */
 
@@ -119,18 +119,18 @@ $lang = array_merge($lang, array(
     SHIP_DEATH_STAR => 'Звезда смерти',
     SHIP_SUPERNOVA => 'Крейсер класса &quot;Сверхновая&quot;',
 
-    '400' => 'Оборона',
-    '401' => 'Ракетная установка',
-    '402' => 'Легкий лазер',
-    '403' => 'Тяжёлый лазер',
-    '404' => 'Пушка Гаусса',
-    '405' => 'Ионное орудие',
-    '406' => 'Плазменное орудие',
-    '407' => 'Малый щитовой купол',
-    '408' => 'Большой щитовой купол',
-    '409' => 'Планетарная защита',
-    '502' => 'Ракета-перехватчик',
-    '503' => 'Межпланетная ракета',
+    UNIT_DEFENCE => 'Оборона',
+    UNIT_DEF_TURRET_MISSILE => 'Ракетная установка',
+    UNIT_DEF_TURRET_LASER_SMALL => 'Легкий лазер',
+    UNIT_DEF_TURRET_LASER_BIG => 'Тяжёлый лазер',
+    UNIT_DEF_TURRET_GAUSS => 'Пушка Гаусса',
+    UNIT_DEF_TURRET_ION => 'Ионное орудие',
+    UNIT_DEF_TURRET_PLASMA => 'Плазменное орудие',
+    UNIT_DEF_SHIELD_SMALL => 'Малый щитовой купол',
+    UNIT_DEF_SHIELD_BIG => 'Большой щитовой купол',
+    UNIT_DEF_SHIELD_PLANET => 'Планетарная защита',
+    UNIT_DEF_MISSILE_INTERCEPTOR => 'Ракета-перехватчик',
+    UNIT_DEF_MISSILE_INTERPLANET => 'Межпланетная ракета',
 
     UNIT_MERCENARIES => 'Наемники',
     MRC_TECHNOLOGIST => 'Технолог',

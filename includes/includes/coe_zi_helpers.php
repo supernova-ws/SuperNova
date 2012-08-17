@@ -38,11 +38,18 @@ function BE_DEBUG_openRow($round, $defenseShipID, $defenseShipData, $element, $a
 
   global $sn_data, $be_debug_array;
 
-  $SN = array(SHIP_CARGO_SMALL => 'МаТр', SHIP_CARGO_BIG => 'БоТр', SHIP_CARGO_SUPER => 'СуТр', SHIP_CARGO_HYPER => 'ГпТр', SHIP_FIGHTER_LIGHT => 'ЛгИс', SHIP_FIGHTER_HEAVY => 'ТяИс',
-    SHIP_DESTROYER => 'Эсми', SHIP_CRUISER => 'Линк', SHIP_COLONIZER => 'Коло', SHIP_RECYCLER => 'Пере', SHIP_SPY => 'Шпио', SHIP_BOMBER => 'Бомб',
-    SHIP_SATTELITE_SOLAR => 'СоСп', SHIP_DESTRUCTOR => 'Уник', SHIP_DEATH_STAR => 'ЗвСм', SHIP_BATTLESHIP => 'Лине', SHIP_SUPERNOVA => 'Нова',
-    SHIP_FIGHTER_ASSAULT => 'Штур',
-    401 => 'Раке', 402 => 'ЛеЛа', 403 => 'ТяЛа', 404 => 'Гаус', 405 => 'Ионн', 406 => 'Плаз', 407 => 'МалЩ', 408 => 'БолЩ', 409 => 'План');
+  $SN = array(
+    SHIP_CARGO_SMALL => 'МаТр', SHIP_CARGO_BIG => 'БоТр', SHIP_CARGO_SUPER => 'СуТр', SHIP_CARGO_HYPER => 'ГпТр',
+    SHIP_SATTELITE_SOLAR => 'СоСп', 
+    SHIP_COLONIZER => 'Коло', SHIP_RECYCLER => 'Пере', SHIP_SPY => 'Шпио', SHIP_SATTELITE_SLOTH => 'Лень',
+
+    SHIP_FIGHTER_LIGHT => 'ЛгИс', SHIP_FIGHTER_WRATH => 'Гнев', SHIP_FIGHTER_HEAVY => 'ТяИс', SHIP_FIGHTER_ASSAULT => 'Штур',
+
+    SHIP_DESTROYER => 'Эсми', SHIP_BOMBER_ENVY => 'Зави', SHIP_BOMBER => 'Бомб',
+    SHIP_CARGO_GREED => 'Жадн', SHIP_CRUISER => 'Крей', SHIP_BATTLESHIP => 'Линк', SHIP_BATTLESHIP_PRIDE => 'Горд',
+    SHIP_DESTRUCTOR => 'Уник', SHIP_DEATH_STAR => 'ЗвСм', SHIP_SUPERNOVA => 'Нова',
+    UNIT_DEF_TURRET_MISSILE => 'Раке', UNIT_DEF_TURRET_LASER_SMALL => 'ЛеЛа', UNIT_DEF_TURRET_LASER_BIG => 'ТяЛа', UNIT_DEF_TURRET_GAUSS => 'Гаус', UNIT_DEF_TURRET_ION => 'Ионн', UNIT_DEF_TURRET_PLASMA => 'Плаз', UNIT_DEF_SHIELD_SMALL => 'МалЩ', UNIT_DEF_SHIELD_BIG => 'БолЩ', UNIT_DEF_SHIELD_PLANET => 'ПлаЩ'
+  );
 
   $print_data = '<tr>'.
     '<td>'.$round.'</td>'.

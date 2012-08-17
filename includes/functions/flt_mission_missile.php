@@ -9,54 +9,82 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
 
   // Here we select which part of defense should take damage: structure or shield
   // $damageTo = 'shield';
-  $damageTo = 'structure';
+  // $damageTo = 'structure';
+  $damageTo = 'defense';
 
-  //$MIPDamage = ($MIPs * $sn_data[503]['attack']) * (1 + 0.1 * $attackerTech[$sn_data[TECH_WEAPON]['name']]);
-  $MIPDamage = mrc_modify_value($attackerTech, false, TECH_WEAPON, $MIPs * $sn_data[503]['attack']);
+  //$MIPDamage = ($MIPs * $sn_data[UNIT_DEF_MISSILE_INTERPLANET]['attack']) * (1 + 0.1 * $attackerTech[$sn_data[TECH_WEAPON]['name']]);
+  $MIPDamage = floor(mrc_modify_value($attackerTech, false, TECH_WEAPON, $MIPs * $sn_data[UNIT_DEF_MISSILE_INTERPLANET]['attack'] * mt_rand(80, 120) / 100));
   foreach($structures as $key => $structure)
   {
-    $structures[$key]['shield'] = mrc_modify_value($defenceTech, false, TECH_SHIELD, $sn_data[$key]['shield']);
-    $structures[$key]['structure'] = mrc_modify_value($defenceTech, false, TECH_ARMOR, ($sn_data[$key]['metal'] + $sn_data[$key]['crystal']) / 10);
-
-    //$structures[$key]['shield'] = $sn_data[$key]['shield'] * (1 + 0.10 * $defenceTech[$sn_data[TECH_SHIELD]['name']]);
-    //$structures[$key]['structure'] = ($sn_data[$key]['metal'] + $sn_data[$key]['crystal']) / 10 * (1 + 0.10 * $defenceTech[$sn_data[TECH_ARMOR]['name']]);
+    $amplify = isset($sn_data[UNIT_DEF_MISSILE_INTERPLANET]['amplify'][$key]) ? $sn_data[UNIT_DEF_MISSILE_INTERPLANET]['amplify'][$key] : 1;
+    $structures[$key]['shield'] = floor(mrc_modify_value($defenceTech, false, TECH_SHIELD, $sn_data[$key]['shield']) / $amplify);
+    $structures[$key]['structure'] = floor(mrc_modify_value($defenceTech, false, TECH_ARMOR, $sn_data[$key]['armor']) / $amplify);
+    $structures[$key]['defense'] = floor((
+      mrc_modify_value($defenceTech, false, TECH_ARMOR, $sn_data[$key]['armor']) + 
+      mrc_modify_value($defenceTech, false, TECH_SHIELD, $sn_data[$key]['shield'])
+    ) / $amplify * mt_rand(80, 120) / 100);
   };
 
   $startStructs = $structures;
 
-  if ($targetedStructure){
+  if ($targetedStructure)
+  {
     //attacking only selected structure
     $damageDone = $structures[$targetedStructure][$damageTo];
     $structsDestroyed = min( floor($MIPDamage/$damageDone), $structures[$targetedStructure][0] );
     $structures[$targetedStructure][0] -= $structsDestroyed;
     $MIPDamage -= $structsDestroyed*$damageDone;
-  }else{
+  }
+  else
+  {
     // REALLY random attack
-    do {
+    $can_be_damaged = $sn_data['groups']['defense_active'];
+//debug($structures);
+//debug($can_be_damaged);
+    do
+    {
       // finding is there any structure that can be damaged with leftovers of $MIPDamage
-      for ($i = 409; $i > 400; $i--){
-        if (($structures[$i][0]>0) && ($structures[$i][$damageTo]<=$MIPDamage)){
-          break;
-        };
-      };
+      foreach($can_be_damaged as $key => $unit_id)
+      {
+//debug($structures[$unit_id][0]);
+//debug($structures[$unit_id][$damageTo], $MIPDamage);
+        if($structures[$unit_id][0] <= 0 || $structures[$unit_id][$damageTo] > $MIPDamage)
+        {
+          unset($can_be_damaged[$key]);
+        }
+      }
+      if(empty($can_be_damaged))
+      {
+        break;
+      }
+      sort($can_be_damaged);
+//debug($can_be_damaged, 'can be damaged');
+      $random_defense = mt_rand(0, count($can_be_damaged) - 1);
+//debug($can_be_damaged[$random_defense], 'Target');
+      $current_target = &$structures[$can_be_damaged[$random_defense]];
+//debug($current_target[0], 'Amount was');
+      $can_be_destroyed = min($current_target[0], floor($MIPDamage / $current_target[$damageTo]));
+//debug($MIPDamage, 'MIPDamage');
+//debug($can_be_destroyed, 'Can be destroyed');
+      $destroyed = mt_rand(1, $can_be_destroyed);
+      $MIPDamage -= $current_target[$damageTo] * $destroyed;
+      $current_target[0] -= $destroyed;
+//debug($destroyed, 'Actually destroyed');
 
-      // Selecting random structure of available
-      $RandomDefense = rand(401, $i);
-      if ($i>400 && $structures[$RandomDefense][0]>0 && $structures[$RandomDefense][$damageTo]<=$MIPDamage){
-        $MIPDamage -= $structures[$RandomDefense][$damageTo];
-        $structures[$RandomDefense][0]--;
-      };
-    } while ($i>400); // on $i = 400 - no more structures to damage. Exiting loop
+//print('<hr>');
+    }
+    while($MIPDamage > 0 && !empty($can_be_damaged));
+//debug($MIPDamage, 'MIPDamage left');
   };
-
+//debug($structures);//die();
   // 1/2 of metal and 1/4 of crystal of destroyed structures returns to planet
   $metal = 0;
   $crystal = 0;
   foreach ($structures as $key => $structure)
   {
-    $destroyed = $startStructs[$key][0]-$structure[0];
-    $metal += $destroyed*$sn_data[$key]['metal']/2;
-    $crystal += $destroyed*$sn_data[$key]['crystal']/4;
+    $destroyed = $startStructs[$key][0] - $structure[0];
+    $metal += $destroyed * $sn_data[$key]['metal']/2;
+    $crystal += $destroyed * $sn_data[$key]['crystal']/4;
   };
 
   $return['structures'] = $structures;     // Structures left after attack
@@ -94,21 +122,27 @@ function coe_o_missile_calculate()
 
     if ($target_planet_row['id'])
     {
+      $planetDefense = array();
+      foreach($sn_data['groups']['defense_active'] as $unit_id)
+      {
+        $planetDefense[$unit_id] = array($target_planet_row[$sn_data[$unit_id]['name']]);
+      }
+      /*
       $planetDefense = array(
-        400 => array( 0, 'shield' => 0, 'structure' => 0),
-        401 => array( $target_planet_row[$sn_data[401]['name']], 'shield' => 0, 'structure' => 0),
-        402 => array( $target_planet_row[$sn_data[402]['name']], 'shield' => 0, 'structure' => 0),
-        403 => array( $target_planet_row[$sn_data[403]['name']], 'shield' => 0, 'structure' => 0),
-        404 => array( $target_planet_row[$sn_data[404]['name']], 'shield' => 0, 'structure' => 0),
-        405 => array( $target_planet_row[$sn_data[405]['name']], 'shield' => 0, 'structure' => 0),
-        406 => array( $target_planet_row[$sn_data[406]['name']], 'shield' => 0, 'structure' => 0),
-        407 => array( $target_planet_row[$sn_data[407]['name']], 'shield' => 0, 'structure' => 0),
-        408 => array( $target_planet_row[$sn_data[408]['name']], 'shield' => 0, 'structure' => 0),
-        409 => array( $target_planet_row[$sn_data[409]['name']], 'shield' => 0, 'structure' => 0),
+        UNIT_DEF_TURRET_MISSILE => array( $target_planet_row[$sn_data[UNIT_DEF_TURRET_MISSILE]['name']],),
+        UNIT_DEF_TURRET_LASER_SMALL => array( $target_planet_row[$sn_data[UNIT_DEF_TURRET_LASER_SMALL]['name']],),
+        UNIT_DEF_TURRET_LASER_BIG => array( $target_planet_row[$sn_data[UNIT_DEF_TURRET_LASER_BIG]['name']],),
+        UNIT_DEF_TURRET_GAUSS => array( $target_planet_row[$sn_data[UNIT_DEF_TURRET_GAUSS]['name']],),
+        UNIT_DEF_TURRET_ION => array( $target_planet_row[$sn_data[UNIT_DEF_TURRET_ION]['name']],),
+        UNIT_DEF_TURRET_PLASMA => array( $target_planet_row[$sn_data[UNIT_DEF_TURRET_PLASMA]['name']],),
+        UNIT_DEF_SHIELD_SMALL => array( $target_planet_row[$sn_data[UNIT_DEF_SHIELD_SMALL]['name']],),
+        UNIT_DEF_SHIELD_BIG => array( $target_planet_row[$sn_data[UNIT_DEF_SHIELD_BIG]['name']],),
+        UNIT_DEF_SHIELD_PLANET => array( $target_planet_row[$sn_data[UNIT_DEF_SHIELD_PLANET]['name']],),
       );
+      */
 
       $message = '';
-      $interceptor_db_name = $sn_data[502]['name'];
+      $interceptor_db_name = $sn_data[UNIT_DEF_MISSILE_INTERCEPTOR]['name'];
       $interceptors = $target_planet_row[$interceptor_db_name]; // Number of interceptors
       $missiles = $fleetRow['fleet_amount']; // Number of MIP
       $qUpdate = "UPDATE `{{planets}}` SET {$interceptor_db_name} = ";
@@ -124,9 +158,12 @@ function coe_o_missile_calculate()
 
         $attackResult = COE_missileAttack($targetUser, $rowAttacker, ($missiles - $interceptors), $planetDefense, $fleetRow['primaer']);
 
-        foreach ($attackResult['structures'] as $key => $structure) {
+        foreach($attackResult['structures'] as $key => $structure)
+        {
           $destroyed = $planetDefense[$key][0] - $structure[0];
-          if ($key > 400 && $destroyed) {
+//          if ($key > UNIT_DEFENCE && $destroyed)
+          if ($destroyed)
+          {
             $message .= "&nbsp;&nbsp;{$lang['tech'][$key]} - {$destroyed} {$lang['quantity']}<br>";
             $qUpdate .= ", `{$sn_data[$key]['name']}` = {$structure[0]}";
           };
