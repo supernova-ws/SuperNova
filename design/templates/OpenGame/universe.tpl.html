@@ -28,10 +28,11 @@ var uni_death_stars = '{deathStars}';
 var opt_uni_avatar_user = '{opt_uni_avatar_user}';
 var opt_uni_avatar_ally = '{opt_uni_avatar_ally}';
 
-var SHIP_COLONIZER = {D_SHIP_COLONIZER};
-var SHIP_CARGO_BIG = {D_SHIP_CARGO_BIG};
-var SHIP_RECYCLER  = {D_SHIP_RECYCLER};
-var SHIP_SPY       = {D_SHIP_SPY};
+var SHIP_COLONIZER               = {D_SHIP_COLONIZER};
+var SHIP_CARGO_BIG               = {D_SHIP_CARGO_BIG};
+var SHIP_RECYCLER                = {D_SHIP_RECYCLER};
+var SHIP_SPY                     = {D_SHIP_SPY};
+var UNIT_DEF_MISSILE_INTERPLANET = {D_UNIT_DEF_MISSILE_INTERPLANET};
 
 jQuery.extend(language, {
   debris: '{L_Debris}',
@@ -311,7 +312,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
           <!-- ENDIF -->
           <!-- IF ACT_MISSILE -->
             <span class="fl">
-              <img onclick="javascript:uni_missile_planet={galaxyrow.PLANET_NUM};jQuery('#uni_missile_form').show();" src={dpath}img/r.gif alt="{L_gl_mipattack}" title="{L_gl_mipattack}" border=0 style="cursor: pointer;">&nbsp;
+              <img onclick="javascript:uni_missile_planet={galaxyrow.PLANET_NUM};jQuery('#uni_missile_planet').html({galaxyrow.PLANET_NUM});jQuery('#uni_missile_form').show();" src={dpath}img/r.gif alt="{L_gl_mipattack}" title="{L_gl_mipattack}" border=0 style="cursor: pointer;">&nbsp;
             </span>
           <!-- ENDIF -->
         <!-- ENDIF -->
@@ -350,7 +351,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
   <table border=0>
     <tr>
       <td class=c colspan=3>
-         <span class="fl">{L_gm_launch} [{galaxy}:{system}:{planet}]</span>
+         <span class="fl">{L_gm_launch} [{galaxy}:{system}:<span id="uni_missile_planet">{planet}</span>]</span>
          <span class="fr">{L_gal_mis_rest}{MIPs}</span>
       </td>
     </tr>

@@ -267,8 +267,8 @@ function doit (order, galaxy, system, planet, planettype, shipcount)
   }
   if (order == 10) // Missile attack
   {
-    ajax.setVar("ship{D_UNIT_DEF_MISSILE_INTERPLANET}", shipcount);
-    ajax.setVar("fleet[{D_UNIT_DEF_MISSILE_INTERPLANET}]", shipcount);
+    ajax.setVar("ship" + UNIT_DEF_MISSILE_INTERPLANET, shipcount);
+    ajax.setVar("fleet[" + UNIT_DEF_MISSILE_INTERPLANET + "]", shipcount);
     ajax.setVar("structures", document.uni_missile_form.Target.value);
   }
   ajax.runAJAX();
