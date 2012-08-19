@@ -270,9 +270,14 @@ if (!defined('INSIDE'))
 /*
 mission = array(
   'DESTINATION' => EMPTY/SAME/PLAYER/ALLY
-  'ONE_WAY' => true/false, // Is it mission one-way like Transport/Colonize?
+  'ONE_WAY' => true/false, // Is it mission one-way like Relocate/Colonize?
   'DURATION' => array(duration list  in  second)/false,  //  List  of  possible durations
   'AGGRESIVE' => true/false, // Should aggresive trigger rise?
+  'AJAX' => true/false, // Is mission can be launch via ajax?
+  'REQUIRE' => array( // requirements for mission. Empty = any unit from $sn_data['groups']['fleet']
+    <any unit_id> => 0 // require any number
+    <any unit_id> => <number> // require at least <number>
+  ),
 );
 */
       'missions' => array(
@@ -316,6 +321,7 @@ mission = array(
           'src_user'   => 1,
           'dst_planet' => 1,
           'dst_user'   => 1,
+          'AJAX'       => true,
         ),
 
         MT_COLONIZE => array(
@@ -330,6 +336,7 @@ mission = array(
           'src_user'   => 0,
           'dst_planet' => 1,
           'dst_user'   => 0,
+          'AJAX'       => true,
         ),
 
         MT_DESTROY => array(
@@ -344,6 +351,7 @@ mission = array(
           'src_user'   => 0,
           'dst_planet' => 0,
           'dst_user'   => 0,
+          'AJAX'       => true,
         ),
 
         MT_EXPLORE => array(
@@ -451,6 +459,14 @@ mission = array(
       // Recyclers
       'flt_recyclers' => array(
         SHIP_RECYCLER => SHIP_RECYCLER,
+      ),
+      // Spies
+      'flt_spies' => array(
+        SHIP_SPY => SHIP_SPY,
+      ),
+      // Colonizers
+      'flt_colonizers' => array(
+        SHIP_COLONIZER => SHIP_COLONIZER,
       ),
 
       'artifacts' => array(

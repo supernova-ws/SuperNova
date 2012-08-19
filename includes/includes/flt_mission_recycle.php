@@ -35,7 +35,7 @@ function flt_mission_recycle($mission_data)
             pretty_number($fleet_row['fleet_resource_deuterium']), $lang['Deuterium'] );
       SendSimpleMessage ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_end_time'], 4, $lang['sys_mess_spy_control'], $lang['sys_mess_fleetback'], $Message);
 */
-
+/*
   $FleetRecord         = explode(";", $fleet_row['fleet_array']);
   $RecyclerCapacity    = 0;
   $OtherFleetCapacity  = 0;
@@ -49,14 +49,33 @@ function flt_mission_recycle($mission_data)
       }
     }
   }
+*/
+  $RecyclerCapacity    = 0;
+  $OtherFleetCapacity  = 0;
+  $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
+  foreach($fleet_array as $unit_id => $unit_count)
+  {
+    if(in_array($unit_id, $sn_data['groups']['fleet']))
+    {
+      $capacity = $sn_data[$unit_id]["capacity"] * $unit_count;
+      if(in_array($unit_id, $sn_data['groups']['flt_recyclers']))
+      {
+        $RecyclerCapacity += $capacity;
+      }
+      else
+      {
+        $OtherFleetCapacity += $capacity;
+      }
+    }
+  }
 
   $IncomingFleetGoods = $fleet_row["fleet_resource_metal"] + $fleet_row["fleet_resource_crystal"] + $fleet_row["fleet_resource_deuterium"];
-  if ($IncomingFleetGoods > $OtherFleetCapacity)
+  if($IncomingFleetGoods > $OtherFleetCapacity)
   {
     $RecyclerCapacity -= ($IncomingFleetGoods - $OtherFleetCapacity);
   }
 
-  if (($destination_planet["debris_metal"] + $destination_planet["debris_crystal"]) <= $RecyclerCapacity)
+  if(($destination_planet["debris_metal"] + $destination_planet["debris_crystal"]) <= $RecyclerCapacity)
   {
     $RecycledGoods["metal"]   = $destination_planet["debris_metal"];
     $RecycledGoods["crystal"] = $destination_planet["debris_crystal"];

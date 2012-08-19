@@ -1,5 +1,5 @@
-<script language="JavaScript" src="js/lib/tw-sack.js"></script>
-<script language="JavaScript" src="js/universe.js"></script>
+<script language="JavaScript" src="js/sn_universe.js"></script>
+<script language="JavaScript" src="js/sn_ajax_send_fleet.js"></script>
 <!-- INCLUDE fleet_javascript -->
 
 <script type="text/javascript"><!--
@@ -30,9 +30,14 @@ var opt_uni_avatar_ally = '{opt_uni_avatar_ally}';
 
 var SHIP_COLONIZER               = {D_SHIP_COLONIZER};
 var SHIP_CARGO_BIG               = {D_SHIP_CARGO_BIG};
-var SHIP_RECYCLER                = {D_SHIP_RECYCLER};
+// var SHIP_RECYCLER                = {D_SHIP_RECYCLER};
 var SHIP_SPY                     = {D_SHIP_SPY};
 var UNIT_DEF_MISSILE_INTERPLANET = {D_UNIT_DEF_MISSILE_INTERPLANET};
+
+var MT_SPY = {D_MT_SPY};
+var MT_COLONIZE = {D_MT_COLONIZE};
+var MT_RECYCLE = {D_MT_RECYCLE};
+var MT_MISSILE = {D_MT_MISSILE};
 
 jQuery.extend(language, {
   debris: '{L_Debris}',
@@ -42,7 +47,7 @@ jQuery.extend(language, {
   gl_ally_web: '{L_gl_ally_web}',
   gl_buddyreq: '{L_gl_buddyreq}', 
   gl_phalanx: '{L_gl_phalanx}',
-  gl_ressource: '{L_gl_ressource}',
+//  gl_ressource: '{L_gl_ressource}',
   gl_sendmess: '{L_gl_sendmess}', 
   gl_stats: '{L_gl_stats}',
   place: '{L_Place}', 
@@ -60,10 +65,14 @@ jQuery.extend(language, {
   type_mission8: '{L_type_mission[8]}',
   type_mission9: '{L_type_mission[9]}',
   sys_ships: '{L_uni_incoming_fleets}',
-  lang_recyclers: '{LANG_RECYCLERS}',
+//  lang_recyclers: '{LANG_RECYCLERS}',
   sys_error: '{L_sys_error}',
   sys_done: '{L_sys_done}',
-  uni_flying: '{L_uni_flying}'
+  uni_flying: '{L_uni_flying}',
+//  uni_debris_recyclable: '{LA_uni_debris_recyclable}',
+//  uni_debris_incoming_recyclers: '{LA_uni_debris_incoming_recyclers}',
+//  uni_debris_on_planet: '{LA_uni_debris_on_planet}',
+  uni_recyclers_send: '{LA_uni_recyclers_send}',
 });
 
 var users = new Array();
@@ -72,6 +81,8 @@ var users = new Array();
 var allies = new Array();
 <!-- BEGIN alliances --><!-- IF alliances.ID -->allies[{alliances.ID}] = {'name': '{alliances.NAME_JS}', 'rank' : '{alliances.RANK}','members': '{alliances.MEMBERS}', 'url': '{alliances.URL}', avatar: '{alliances.AVATAR}'};
 <!-- ENDIF --><!-- END alliances -->
+
+var PLANET_RECYCLERS = {PLANET_RECYCLERS};
 
 var uni_row = new Array();
 <!-- BEGIN galaxyrow --><!-- IF galaxyrow.PLANET_NUM -->
@@ -86,11 +97,24 @@ uni_row[{galaxyrow.PLANET_NUM}] =
   moon_diameter: '{galaxyrow.MOON_DIAMETER}',
   moon_image: 'mond',
   moon_fleet_id: '{galaxyrow.MOON_FLEET_ID}',
+
+
+  debris: '{galaxyrow.DEBRIS}',
   debris_metal: '{galaxyrow.DEBRIS_METAL}',
   debris_crystal: '{galaxyrow.DEBRIS_CRYSTAL}',
-  debris_recyclers: '{galaxyrow.DEBRIS_RC_SEND}',
-  debris_incoming: '{galaxyrow.DEBRIS_RC_INC}',
-  debris_rc_need: '{galaxyrow.DEBRIS_RC_NEED}'
+
+  debris_reserved: '{galaxyrow.DEBRIS_RESERVED}',
+  debris_reserved_percent: '{galaxyrow.DEBRIS_RESERVED_PERCENT}',
+  debris_will_gather: '{galaxyrow.DEBRIS_WILL_GATHER}',
+  debris_will_gather_percent: '{galaxyrow.DEBRIS_WILL_GATHER_PERCENT}',
+  debris_gather_total: '{galaxyrow.DEBRIS_GATHER_TOTAL}',
+  debris_gather_total_percent: '{galaxyrow.DEBRIS_GATHER_TOTAL_PERCENT}',
+
+
+//  debris_recyclers_incoming: '{galaxyrow.DEBRIS_RECYCLERS_INCOMING}',
+//  debris_recyclers: '{galaxyrow.DEBRIS_RC_SEND}',
+//  debris_incoming: '{galaxyrow.DEBRIS_RC_INC}',
+//  debris_rc_need: '{galaxyrow.DEBRIS_RC_NEED}'
 };
 <!-- ENDIF --><!-- END galaxyrow -->
 
@@ -239,25 +263,32 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       <!-- ENDIF -->
     </th>
       
-    <!-- IF galaxyrow.DEBRIS_METAL + galaxyrow.DEBRIS_CRYSTAL >= 10000000 -->
+    <!-- IF galaxyrow.DEBRIS >= 10000000 -->
       <!-- DEFINE $DEBRIS_BKG = 'rgb(100, 0, 0)' -->
-    <!-- ELSEIF galaxyrow.DEBRIS_METAL + galaxyrow.DEBRIS_CRYSTAL >= 1000000 -->
+    <!-- ELSEIF galaxyrow.DEBRIS >= 1000000 -->
       <!-- DEFINE $DEBRIS_BKG = 'rgb(100, 100, 0)' -->
-    <!-- ELSEIF galaxyrow.DEBRIS_METAL + galaxyrow.DEBRIS_CRYSTAL >= 100000 -->
+    <!-- ELSEIF galaxyrow.DEBRIS >= 100000 -->
       <!-- DEFINE $DEBRIS_BKG = 'rgb(0, 100, 0)' -->
     <!-- ELSE -->
       <!-- DEFINE $DEBRIS_BKG = '' -->
     <!-- ENDIF -->
 
     <th style="white-space: nowrap; background-image: none; width: 60px; height: 100%; background-color: {$DEBRIS_BKG};	"><center>
-      <!-- IF galaxyrow.DEBRIS_METAL + galaxyrow.DEBRIS_CRYSTAL -->
+      <!-- IF galaxyrow.DEBRIS -->
         <div style="position: relative; height: 30px; width: 30px;">
           <span style="position: absolute; top: 0; left: 0; height: 30px; width: 30px;">
-            <img onmouseover='javascript:show_debris({galaxyrow.PLANET_NUM});' src={dpath}planeten/debris.jpg height=30px width=30px>
+            <img onmouseover='javascript:show_debris({galaxyrow.PLANET_NUM});' src="{dpath}planeten/debris.jpg" height="30px" width="30px">
           </span>
-          <!-- IF galaxyrow.DEBRIS_RC_INC -->
-            <span class="icon_alpha" style="position: absolute; bottom: 0; right: 0;">{galaxyrow.DEBRIS_RC_INC}</span>
+          <!-- IF ! galaxyrow.DEBRIS_RESERVED_PERCENT -->
+            <!-- DEFINE $DEBRIS_FONT_CLASS = 'error' -->
+          <!-- ELSEIF galaxyrow.DEBRIS_RESERVED_PERCENT == 100 -->
+            <!-- DEFINE $DEBRIS_FONT_CLASS = 'ok' -->
+          <!-- ELSEIF galaxyrow.DEBRIS_GATHER_TOTAL_PERCENT == 100 -->
+            <!-- DEFINE $DEBRIS_FONT_CLASS = 'notice' -->
+          <!-- ELSE -->
+            <!-- DEFINE $DEBRIS_FONT_CLASS = 'warning' -->
           <!-- ENDIF -->
+            <span class="icon_alpha {$DEBRIS_FONT_CLASS}" style="position: absolute; bottom: 0; right: 0;">{galaxyrow.DEBRIS_RESERVED_PERCENT}%</span>
         </div>
       <!-- ELSE -->
         &nbsp;
@@ -307,7 +338,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
         <!-- IF !galaxyrow.USER_NOOB -->
           <!-- IF ACT_SPY -->
             <span class="fl">
-              <img onclick="javascript:doit(6, {galaxy}, {system}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src={dpath}img/e.gif alt="{L_gl_espionner}" title="{L_gl_espionner}" border=0 style="cursor: pointer;">&nbsp;
+              <img onclick="javascript:doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src={dpath}img/e.gif alt="{L_gl_espionner}" title="{L_gl_espionner}" border=0 style="cursor: pointer;">&nbsp;
             </span>
           <!-- ENDIF -->
           <!-- IF ACT_MISSILE -->
@@ -339,9 +370,15 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     <th colspan=8><a href="fleet.php?galaxy={galaxy}&system={system}&planet={EXPIDITION}&planettype=1&target_mission={D_MT_EXPLORE}">{L_gf_unknowsp}</a></th>
   </tr>
   <tr>
-    <td class=c colspan=3><span id="missiles">{MIPs}</span> {L_gf_mi_title}</td>
-    <td class=c colspan=3><span id="slots">{fleet_count}</span>/{fleet_max} {L_gf_fleetslt}</td>
-    <td class=c colspan=2><span id="recyclers">{RCs}</span> {L_gf_rc_title}<br><span id="probes">{SPs}</span> {L_gf_sp_title}</td>
+    <td class=c colspan=3>
+      <span id="missile">{MIPs}</span> {L_gf_mi_title}
+    </td>
+    <td class=c colspan=3>
+      <span id="flt_recyclers">{PLANET_RECYCLERS}</span> {L_gf_rc_title}
+    </td>
+    <td class=c colspan=2>
+      <span id="flt_spies">{SPs}</span> {L_gf_sp_title}
+    </td>
   </tr>
   <tr style="display: none;" id="fleetstatusrow"><th class=c colspan=8><table style="font-weight: bold" width="100%" id="fleetstatustable"></table></th></tr>
 </tbody></table>
@@ -352,11 +389,11 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     <tr>
       <td class=c colspan=3>
          <span class="fl">{L_gm_launch} [{galaxy}:{system}:<span id="uni_missile_planet">{planet}</span>]</span>
-         <span class="fr">{L_gal_mis_rest}{MIPs}</span>
+         <span class="fr">{L_gal_mis_rest}<span id="missile2">{MIPs}</span></span>
       </td>
     </tr>
     <tr>
-      <th class=c>{L_gal_mis_toLaunch} <input type=text value="{MIPs}" name=SendMI size=7 maxlength=7 /></th>
+      <th class=c>{L_gal_mis_toLaunch} <input type=text value="{MIPs}" name="SendMI" id="SendMI" size=7 maxlength=7 /></th>
       <th class=c>{L_gm_target}
         <select name=Target>
           <option value=0 selected>{L_gm_all}</option>
@@ -366,11 +403,53 @@ uni_row[{galaxyrow.PLANET_NUM}] =
         </select>
       </th>
       <th class=c>
-<!--        <input type=submit name=aktion value={L_gal_mis_launch}> -->
-        <input type="button" value="{L_gal_mis_launch}" onclick="javascript:doit(10, {galaxy}, {system}, uni_missile_planet, 1, document.uni_missile_form.SendMI.value);jQuery('#uni_missile_form').hide();">
+        <input type="button" value="{L_gal_mis_launch}" onclick="javascript:doit({D_MT_MISSILE}, uni_missile_planet, {D_PT_PLANET}, document.uni_missile_form.SendMI.value);jQuery('#uni_missile_form').hide();">
       </th>
     </tr>
   </table>
 </form>
 
+<span style="display: none">
+<span id="debris_template">
+  <table width=100%>
+    <tr><th class="c_l" colspan="4">{L_Debris} [{galaxy}:{system}:[CURRENT_PLANET]]</th></tr>
+    <tr><td class="c_c" rowspan="7"><img src="{dpath}planeten/debris.jpg" height="75px" width="75px" /></td></tr>
+
+    <tr>
+      <th class="c_l">{L_gl_ressource}</th>
+      <th class="c_r">[DEBRIS]</th>
+      <th class="c_r">100%</th>
+    </tr>
+    <tr>
+      <td class="c_l">{L_sys_metal}</td>
+      <td class="c_r">[DEBRIS_METAL]</td>
+      <td class="c_r">[DEBRIS_METAL_PERCENT]%</td>
+    </tr>
+    <tr>
+      <td class="c_l">{L_sys_crystal}</td>
+      <td class="c_r">[DEBRIS_CRYSTAL]</td>
+      <td class="c_r">[DEBRIS_CRYSTAL_PERCENT]%</td>
+    </tr>
+
+    <tr>
+      <th class="c_l">{L_uni_debris_recyclable}</th>
+      <th class="c_r">[DEBRIS_GATHER_TOTAL]</th>
+      <th class="c_r">[DEBRIS_GATHER_TOTAL_PERCENT]%</th>
+    </tr>
+    <tr>
+      <td class="c_l">{L_uni_debris_incoming_recyclers}</td>
+      <td class="c_r">[DEBRIS_RESERVED]</td>
+      <td class="c_r">[DEBRIS_RESERVED_PERCENT]%</td>
+    </tr>
+    <tr>
+      <td class="c_l">{L_uni_debris_on_planet}</td>
+      <td class="c_r">[DEBRIS_WILL_GATHER]</td>
+      <td class="c_r">[DEBRIS_WILL_GATHER_PERCENT]%</td>
+    </tr>
+
+    <tr style="cursor:pointer; [HIDE_RECYCLER_LINK]" onclick="doit({D_MT_RECYCLE},[CURRENT_PLANET],{D_PT_DEBRIS});"><th class="c_c" colspan="4">[ {L_uni_recyclers_send} ]</th></tr>
+
+  </table>
+</span>
+</span>
 <!-- INCLUDE page_hint -->

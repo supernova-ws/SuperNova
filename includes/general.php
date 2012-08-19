@@ -683,7 +683,7 @@ function get_ship_data($ship_id, $user)
   global $sn_data;
 
   $ship_data = array();
-  if(in_array($ship_id, $sn_data['groups']['fleet']))
+  if(in_array($ship_id, $sn_data['groups']['fleet'] + $sn_data['groups']['missile']))
   {
     foreach($sn_data[$ship_id]['engine'] as $engine_info)
     {

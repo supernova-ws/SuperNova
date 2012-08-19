@@ -927,7 +927,7 @@ SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
     'name' => 'interplanetary_misil',
     'type' => UNIT_DEFENCE,
     'location' => LOC_PLANET,
-    'require' => array(STRUC_SILO => 4),
+    'require' => array(STRUC_SILO => 4, TECH_ENGINE_ION => 2),
     'cost' => array(
       RES_METAL     => 12500,
       RES_CRYSTAL   => 2500,
@@ -945,6 +945,19 @@ SHIP_DESTRUCTOR => 0.575, SHIP_DEATH_STAR => 10, SHIP_SUPERNOVA => 10,
     'armor' => 1500,
     'stackable' => true,
     'size' => 3,
+    'capacity' => 10,
+
+    'engine' => array(
+      array(
+        'tech' => TECH_ENGINE_ION,
+        'speed' => 10000000,
+        'consumption' => 10,
+        'min_level' => 2,
+      ),
+    ),
+    'tech' => TECH_ENGINE_ION,
+    'speed' => 10000000,
+    'consumption' => 10,
   ),
 );
 

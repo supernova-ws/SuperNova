@@ -374,7 +374,11 @@ switch($mode)
     }
     $msg .= '</table>';
 */
-    $recyclers_send = min(ceil(($planetrow['debris_metal'] + $planetrow['debris_crystal']) / $sn_data[SHIP_RECYCLER]['capacity']), $planetrow[$sn_data[SHIP_RECYCLER]['name']]);
+    $planet_recyclers_orbiting = 0;
+    foreach($sn_data['groups']['flt_recyclers'] as $recycler_id)
+    {
+      $planet_recyclers_orbiting += mrc_get_level($user, $planetrow, $recycler_id);
+    }
 
     int_planet_pretemplate($planetrow, $template);
 
@@ -460,7 +464,7 @@ switch($mode)
       'PLANET_FILL_BAR'       => $planet_fill,
       'metal_debris'          => pretty_number($planetrow['debris_metal']),
       'crystal_debris'        => pretty_number($planetrow['debris_crystal']),
-      'RECYCLERS_SEND'        => $recyclers_send,
+      'PLANET_RECYCLERS'      => $planet_recyclers_orbiting,
       'planet_temp_min'       => $planetrow['temp_min'],
       'planet_temp_max'       => $planetrow['temp_max'],
 

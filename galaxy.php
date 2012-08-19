@@ -30,6 +30,8 @@ if($mode == 'name')
   require_once('includes/includes/uni_rename.php');
 }
 
+require_once('includes/includes/flt_functions.php');
+
 $CurrentPlanetID  = sys_get_param_id('current');
 $planet           = sys_get_param_int('planet');
 $POST_galaxyLeft  = sys_get_param_str('galaxyLeft');
@@ -94,7 +96,7 @@ $PhalanxRange  = GetPhalanxRange($HavePhalanx);
 
 $planet_precache_query = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$uni_galaxy} AND `system` = {$uni_system};");
 while($planet_row = mysql_fetch_assoc($planet_precache_query))
-{//                debug($planet_row);
+{
   $planet_list[$planet_row['planet']][$planet_row['planet_type']] = $planet_row;
 }
 
@@ -113,6 +115,19 @@ while($fleet_row = mysql_fetch_assoc($fleet_precache_query))
 }
 
 $time_now_parsed = getdate($time_now);
+
+$recycler_info = array();
+$planet_recyclers_orbiting = 0;
+$recyclers_fleet = array();
+foreach($sn_data['groups']['flt_recyclers'] as $recycler_id)
+{
+  $recycler_info[$recycler_id] = get_ship_data($recycler_id, $user);
+  $recyclers_fleet[$recycler_id] = mrc_get_level($user, $planetrow, $recycler_id);
+  $planet_recyclers_orbiting += $recyclers_fleet[$recycler_id];
+}
+
+//debug($recyclers_fleet);
+//debug($recycler_info);
 
 $fleet_id = 1;
 $fleets = array();
@@ -195,26 +210,62 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
     }
   }
 
-  $recyclers_incoming = 0;
-  $recyclers_to_send = 0;
-  $recyclers_need = 0;
-  if ($uni_galaxyRowPlanet["debris_metal"] || $uni_galaxyRowPlanet["debris_crystal"])
+//  $recyclers_incoming = 0;
+  $recyclers_incoming_capacity = 0;
+  $uni_galaxyRowPlanet['debris'] = $uni_galaxyRowPlanet['debris_metal'] + $uni_galaxyRowPlanet['debris_crystal'];
+  if($uni_galaxyRowPlanet['debris'])
   {
+//print('<hr>');
     if($fleet_list[$Planet][PT_DEBRIS])
     {
       foreach($fleet_list[$Planet][PT_DEBRIS] as $fleet_row)
       {
         if($fleet_row['fleet_owner'] == $user['id'])
         {
-//          $fleet_data = flt_expand($fleet_row);
-          $fleet_data = sys_unit_str2arr($fleet_string['fleet_array']);
-          $recyclers_incoming += $fleet_data[SHIP_RECYCLER];
+          $fleet_data = sys_unit_str2arr($fleet_row['fleet_array']);
+          foreach($recycler_info as $recycler_id => $recycler_data)
+          {
+//            $recyclers_incoming += $fleet_data[$recycler_id];
+            $recyclers_incoming_capacity += $fleet_data[$recycler_id] * $recycler_data['capacity'];
+          }
         }
       }
     }
 
-    $recyclers_need = ceil(($uni_galaxyRowPlanet['debris_metal'] + $uni_galaxyRowPlanet['debris_crystal']) / $sn_data[SHIP_RECYCLER]['capacity']);
-    $recyclers_to_send = min($CurrentRC, max(0, $recyclers_need - $recyclers_incoming));
+    $uni_galaxyRowPlanet['debris_reserved'] = $recyclers_incoming_capacity;
+    $uni_galaxyRowPlanet['debris_reserved_percent'] = min(100, floor($uni_galaxyRowPlanet['debris_reserved'] / $uni_galaxyRowPlanet['debris'] * 100));
+
+    $uni_galaxyRowPlanet['debris_to_gather'] = max(0, $uni_galaxyRowPlanet['debris'] - $recyclers_incoming_capacity);
+    $uni_galaxyRowPlanet['debris_to_gather_percent'] = 100 - $uni_galaxyRowPlanet['debris_reserved_percent'];
+
+    $recyclers_fleet_data = flt_calculate_fleet_to_transport($recyclers_fleet, $uni_galaxyRowPlanet['debris_to_gather'], $planetrow, $uni_galaxyRowPlanet);
+
+    $uni_galaxyRowPlanet['debris_will_gather'] = min($recyclers_fleet_data['capacity'], $uni_galaxyRowPlanet['debris_to_gather']);
+    $uni_galaxyRowPlanet['debris_will_gather_percent'] = $uni_galaxyRowPlanet['debris_to_gather'] ? floor($uni_galaxyRowPlanet['debris_will_gather'] / $uni_galaxyRowPlanet['debris_to_gather'] * $uni_galaxyRowPlanet['debris_to_gather_percent']) : 0;
+
+    $uni_galaxyRowPlanet['debris_gather_total'] = $uni_galaxyRowPlanet['debris_will_gather'] + $uni_galaxyRowPlanet['debris_reserved'];
+    $uni_galaxyRowPlanet['debris_gather_total_percent'] = min(100, floor($uni_galaxyRowPlanet['debris_gather_total'] / $uni_galaxyRowPlanet['debris'] * 100));
+
+//    $uni_galaxyRowPlanet['debris_can_gather_percent'] = ($recyclers_fleet_data['capacity'] / $uni_galaxyRowPlanet['debris_to_gather']);
+/*
+debug($uni_galaxyRowPlanet['debris'], '$debris');
+//debug($recyclers_incoming, '$recyclers_incoming');
+//debug($recyclers_incoming_capacity, '$recyclers_incoming_capacity');
+debug($uni_galaxyRowPlanet['debris_reserved'], '$debris_reserved');
+debug($uni_galaxyRowPlanet['debris_reserved_percent'] . '%', '$debris_reserved_percent');
+debug($uni_galaxyRowPlanet['debris_to_gather'], '$debris_to_gather');
+debug($uni_galaxyRowPlanet['debris_to_gather_percent'] . '%', '$debris_to_gather_percent');
+
+debug($recyclers_fleet_data['capacity'], 'can gather resources');
+
+debug($uni_galaxyRowPlanet['debris_will_gather'], 'debris_will_gather');
+debug($uni_galaxyRowPlanet['debris_will_gather_percent'], 'debris_will_gather_percent');
+//debug($uni_galaxyRowPlanet['debris_can_gather_percent'], 'can gather percent');
+//    debug($recyclers_fleet_data);
+    // ceil( / $sn_data[SHIP_RECYCLER]['capacity']);
+*/
+//    $recyclers_need = ceil(($uni_galaxyRowPlanet['debris_metal'] + $uni_galaxyRowPlanet['debris_crystal']) / $sn_data[SHIP_RECYCLER]['capacity']);
+//    $recyclers_to_send = min($CurrentRC, max(0, $recyclers_need - $recyclers_incoming));
   }
 
   $RowUserPoints = $uni_galaxyRowUser['total_points'];
@@ -235,15 +286,19 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
      'MOON_TEMP'      => number_format($uni_galaxyRowMoon['temp_min'], 0, '', '.'),
      'MOON_FLEET_ID'  => $moon_fleet_id,
 
+     'DEBRIS'         => $uni_galaxyRowPlanet['debris'],
      'DEBRIS_METAL'   => $uni_galaxyRowPlanet['debris_metal'],
      'DEBRIS_CRYSTAL' => $uni_galaxyRowPlanet['debris_crystal'],
-     'DEBRIS_RC_INC'  => $recyclers_incoming,
-     'DEBRIS_RC_SEND' => $recyclers_to_send, // <= $recyclers_incoming ? 0 : $recyclers_to_send - $recyclers_incoming,
-     'DEBRIS_RC_NEED' => $recyclers_need,
+     'DEBRIS_REST_PERCENT' => $uni_galaxyRowPlanet["debris_rest_percent"],
+
+     'DEBRIS_RESERVED' => $uni_galaxyRowPlanet['debris_reserved'],
+     'DEBRIS_RESERVED_PERCENT' => $uni_galaxyRowPlanet['debris_reserved_percent'],
+     'DEBRIS_WILL_GATHER' => $uni_galaxyRowPlanet['debris_will_gather'],
+     'DEBRIS_WILL_GATHER_PERCENT' => $uni_galaxyRowPlanet['debris_will_gather_percent'],
+     'DEBRIS_GATHER_TOTAL' => $uni_galaxyRowPlanet['debris_gather_total'],
+     'DEBRIS_GATHER_TOTAL_PERCENT' => $uni_galaxyRowPlanet['debris_gather_total_percent'],
 
      'USER_ID'       => $uni_galaxyRowUser['id'],
-//     'USER_NAME'     => $uni_galaxyRowUser['username'],
-//     'USER_NAME_JS'  => js_safe_string($uni_galaxyRowUser['username']),
      'USER_NAME'     => render_player_nick($uni_galaxyRowUser),
      'USER_NAME_JS'  => js_safe_string(render_player_nick($uni_galaxyRowUser)),
      'USER_RANK'     => $uni_galaxyRowUser['total_rank'],
@@ -330,41 +385,41 @@ $ally_count = doquery("SELECT COUNT(*) AS ally_count FROM {{alliance}};", '', tr
 $galaxy_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = 0 limit 1;", '', true);
 $system_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;", '', true);
 $template->assign_vars(array(
-     'rows'           => $Result,
-     'userCount'      => $config->users_amount,
-     'ALLY_COUNT'     => $ally_count['ally_count'],
-     'EXPIDITION'     => $config->game_maxPlanet + 1,
-     'curPlanetID'    => $planetrow['id'],
-     'curPlanetG'     => $planetrow['galaxy'],
-     'curPlanetS'     => $planetrow['system'],
-     'curPlanetP'     => $planetrow['planet'],
-     'curPlanetPT'    => $planetrow['planet_type'],
-     'deathStars'     => $planetrow[$sn_data[SHIP_DEATH_STAR]['name']],
-     'galaxy'         => $uni_galaxy,
-     'system'         => $uni_system,
-     'planet'         => $planet,
-     'MIPs'           => $CurrentMIP,
-     'MODE'           => $mode,
-     'planets'        => $planetcount, //  ? ($lang['gal_planets'] . $planetcount) : $lang['gal_planetNone']
-     'RCs'            => pretty_number($planetrow['recycler']),
-     'SPs'            => pretty_number($planetrow['spy_sonde']),
-     'SHOW_ADMIN'     => SHOW_ADMIN,
-     'fleet_count'    => $maxfleet_count,
-     'fleet_max'      => $fleetmax,
-     'ALLY_ID'        => $user['ally_id'],
-     'USER_ID'        => $user['id'],
-     'ACT_SPY'        => $user['settings_esp'],
-     'ACT_SPIO'       => $user['spio_anz'],
-     'ACT_WRITE'      => $user['settings_wri'],
-     'ACT_FRIEND'     => $user['settings_bud'],
-     'opt_uni_avatar_user'     => $user['opt_uni_avatar_user'],
-     'opt_uni_avatar_ally'     => $user['opt_uni_avatar_ally'],
-     'ACT_MISSILE'    => $user["settings_mis"] && ($CurrentMIP > 0) && ($uni_galaxy == $CurrentGalaxy) && ($uni_system >= $CurrentSystem - $MissileRange) && ($uni_system <= $CurrentSystem + $MissileRange),
-     'PLANET_PHALANX' => $HavePhalanx && $uni_galaxy == $CurrentGalaxy && $uni_system >= $CurrentSystem - $PhalanxRange && $uni_system <= $CurrentSystem + $PhalanxRange,
-     'PAGE_HINT'      => $lang['gal_sys_hint'],
-     'LANG_RECYCLERS' => $lang['tech'][SHIP_RECYCLER],
-     'GALAXY_NAME'    => $galaxy_name['universe_name'],
-     'SYSTEM_NAME'    => $system_name['universe_name'],
+     'rows'                => $Result,
+     'userCount'           => $config->users_amount,
+     'ALLY_COUNT'          => $ally_count['ally_count'],
+     'EXPIDITION'          => $config->game_maxPlanet + 1,
+     'curPlanetID'         => $planetrow['id'],
+     'curPlanetG'          => $planetrow['galaxy'],
+     'curPlanetS'          => $planetrow['system'],
+     'curPlanetP'          => $planetrow['planet'],
+     'curPlanetPT'         => $planetrow['planet_type'],
+     'deathStars'          => $planetrow[$sn_data[SHIP_DEATH_STAR]['name']],
+     'galaxy'              => $uni_galaxy,
+     'system'              => $uni_system,
+     'planet'              => $planet,
+     'MIPs'                => $CurrentMIP,
+     'MODE'                => $mode,
+     'planets'             => $planetcount,
+     'SPs'                 => pretty_number($planetrow['spy_sonde']),
+     'SHOW_ADMIN'          => SHOW_ADMIN,
+     'fleet_count'         => $maxfleet_count,
+     'fleet_max'           => $fleetmax,
+     'ALLY_ID'             => $user['ally_id'],
+     'USER_ID'             => $user['id'],
+     'ACT_SPY'             => $user['settings_esp'],
+     'ACT_SPIO'            => $user['spio_anz'],
+     'ACT_WRITE'           => $user['settings_wri'],
+     'ACT_FRIEND'          => $user['settings_bud'],
+     'opt_uni_avatar_user' => $user['opt_uni_avatar_user'],
+     'opt_uni_avatar_ally' => $user['opt_uni_avatar_ally'],
+     'ACT_MISSILE'         => $user["settings_mis"] && ($CurrentMIP > 0) && ($uni_galaxy == $CurrentGalaxy) && ($uni_system >= $CurrentSystem - $MissileRange) && ($uni_system <= $CurrentSystem + $MissileRange),
+     'PLANET_PHALANX'      => $HavePhalanx && $uni_galaxy == $CurrentGalaxy && $uni_system >= $CurrentSystem - $PhalanxRange && $uni_system <= $CurrentSystem + $PhalanxRange,
+     'PAGE_HINT'           => $lang['gal_sys_hint'],
+//     'LANG_RECYCLERS'      => $lang['tech'][SHIP_RECYCLER],
+     'PLANET_RECYCLERS'    => $planet_recyclers_orbiting,
+     'GALAXY_NAME'         => $galaxy_name['universe_name'],
+     'SYSTEM_NAME'         => $system_name['universe_name'],
    )
 );
 

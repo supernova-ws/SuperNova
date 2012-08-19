@@ -14,7 +14,7 @@ function flt_fleet_speed($user, $fleet)
   {
     foreach ($fleet as $ship_id => $amount)
     {
-      if($amount && in_array($ship_id, $sn_data['groups']['fleet']))
+      if($amount && in_array($ship_id, $sn_data['groups']['fleet'] + $sn_data['groups']['missile']))
       {
         $single_ship_data = get_ship_data($ship_id, $user);
         $speeds[] = $single_ship_data['speed'];
@@ -45,6 +45,7 @@ function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 1
   }
 
   $consumption = 0;
+  $capacity = 0;
   $duration = 0;
 
   $game_fleet_speed = flt_server_flight_speed_multiplier();
@@ -67,16 +68,40 @@ function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 1
       $single_ship_data['speed'] = $single_ship_data['speed'] < 1 ? 1 : $single_ship_data['speed'];
 
       $consumption += $single_ship_data['consumption'] * $ship_count * pow($real_speed / sqrt($single_ship_data['speed']) / 10 + 1, 2);
+      $capacity += $single_ship_data['capacity'] * $ship_count;
     }
 
     $consumption = round($distance * $consumption / 35000) + 1;
-  }
+/*
+    $speed_percent = $speed_percent ? max(min($speed_percent, 10), 1) : 10;
 
+    $duration = (35000 / $speed_percent * sqrt($distance / $fleet_speed * 10 ) + 10) / $game_fleet_speed;
+    $duration = max(1, round($duration));
+
+    foreach($fleet_array as $ship_id => $ship_count)
+    {
+      if (!$ship_id || !$ship_count)
+      {
+        continue;
+      }
+
+      $single_ship_data = get_ship_data($ship_id, $user_row);
+      $single_ship_data['speed'] = $single_ship_data['speed'] < 1 ? 1 : $single_ship_data['speed'];
+
+      $consumption += $single_ship_data['consumption'] * $ship_count * pow($speed_percent / 10 * sqrt($fleet_speed / $single_ship_data['speed']) + 1, 2);
+    }
+
+    $consumption = round($distance * $consumption / 35000) + 1;
+*/
+  }
   return array(
     'fleet_speed' => $fleet_speed,
     'distance' => $distance,
     'duration' => $duration,
     'consumption' => $consumption,
+    'capacity' => $capacity,
+    'hold' => $capacity - $consumption,
+    'transport_effectivness' => $capacity / $consumption,
   );
 }
 
@@ -197,6 +222,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
 //TODO: Проверка на наличие ресурсов при Транспорте
 //TODO: Проверка на отстуствие ресурсов в нетранспортных миссиях (Транспорт, Передислокация, Колонизация)
   $ships = 0;
+  $recyclers = 0;
   $resources = 0;
   foreach($fleet as $ship_id => $ship_count)
   {
@@ -205,9 +231,11 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     {
       return $is_ship ? ATTACK_NO_SHIPS : ATTACK_NO_RESOURCES;
     }
+
     if($is_ship)
     {
       $ships += $ship_count;
+      $recyclers = in_array($ship_id, $sn_data['groups']['flt_recyclers']) ? $ship_count : 0;
     }
     else
     {
@@ -305,7 +333,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
       return ATTACK_NO_DEBRIS;
     }
 
-    if($fleet[SHIP_RECYCLER] <= 0)
+    if($recyclers <= 0)
     {
       return ATTACK_NO_RECYCLERS;
     }
@@ -423,6 +451,11 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     if($distance > $mip_range || $planet_dst['galaxy'] != $planet_src['galaxy'])
     {
       return ATTACK_MISSILE_TOO_FAR;
+    }
+
+    if(isset($options['target_structure']) && $options['target_structure'] && !in_array($options['target_structure'], $sn_data['groups']['defense_active']))
+    {
+      return ATTACK_WRONG_STRUCTURE;
     }
   }
 
@@ -552,6 +585,51 @@ function flt_server_flight_speed_multiplier()
   global $config;
 
   return $config->fleet_speed;
+}
+
+function flt_calculate_ship_to_transport_sort($a, $b)
+{
+  return $a['transport_effectivness'] == $b['transport_effectivness'] ? 0 : ($a['transport_effectivness'] > $b['transport_effectivness'] ? -1 : 1);
+}
+
+// flt_calculate_ship_to_transport - calculates how many ships need to transport pointed amount of resources
+// $ship_list - list of available ships
+// $resource_amount - how much amount of resources need to be transported
+// $from - transport from
+// $to - transport to
+function flt_calculate_fleet_to_transport($ship_list, $resource_amount, $from, $to)
+{
+  global $sn_data, $user;
+
+  $ship_data = array();
+  $fleet_array = array();
+  foreach($ship_list as $transport_id => $cork)
+  {
+    $ship_data[$transport_id] = flt_travel_data($user, $from, $to, array($transport_id => 1), 10);
+//debug($ship_data[$transport_id], '$ship_data[$transport_id]1');
+//    $ship_data[$transport_id]['capacity'] = $sn_data[$transport_id]['capacity'];
+//    $ship_data[$transport_id]['transport_effectivness'] = $ship_data[$transport_id]['capacity'] / $ship_data[$transport_id]['consumption'];
+//    $ship_data[$transport_id]['hold'] = $ship_data[$transport_id]['capacity'] - $ship_data[$transport_id]['consumption'];
+//debug($ship_data[$transport_id], '$ship_data[$transport_id]2');
+  }
+  uasort($ship_data, flt_calculate_ship_to_transport_sort);
+
+  $fleet_hold = 0;
+  $fuel_total = $fuel_left = mrc_get_level($user, $from, RES_DEUTERIUM);
+  foreach($ship_data as $transport_id => &$ship_info)
+  {
+    $ship_loaded = min($ship_list[$transport_id], ceil($resource_amount / $ship_info['hold']), floor($fuel_left / $ship_info['consumption']));
+    if($ship_loaded)
+    {
+      $fleet_array[$transport_id] = $ship_loaded;
+      $resource_amount -= min($resource_amount, $ship_info['hold'] * $ship_loaded);
+      $fuel_left -= $ship_info['consumption'] * $ship_loaded;
+
+      $fleet_capacity += $ship_info['capacity'] * $ship_loaded;
+    }
+  }
+
+  return array('fleet' => $fleet_array, 'ship_data' => $ship_data, 'capacity' => $fleet_capacity, 'consumption' => $fuel_total - $fuel_left);
 }
 
 ?>

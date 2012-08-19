@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a1
+* @version 35a9.12
 *
 */
 
@@ -107,8 +107,9 @@ $lang = array_merge($lang, array(
   'gl_phalanx' => 'Фаланга',
   'gl_ressource' => 'Ресурсы',
   'gl_action' => 'Задание',
+  'gs_c00' => 'Ошибка, миссия недоступна из интерфейса Вселенной',
   'gs_c01' => 'Ошибка, планета не найдена.',
-  'gs_c02' => 'Ошибка, неизвестная вселенная',
+  'gs_c02' => 'Ошибка, неправильные координаты во Вселенной',
   'gs_c03' => 'Ошибка, игрок слишком слабый.',
   'gs_c04' => 'Ошибка, игрок слишком сильный.',
   'gs_c04k' => ' У вас нет шпионских зондов!',
@@ -173,6 +174,10 @@ $lang = array_merge($lang, array(
   'uni_system_of' => 'системе',
   'uni_msg_admin_rename' => 'Игрок ID %d [%s] за %d ТМ дал %s [%s%s] новое название: %s',
 
+  'uni_debris_recyclable' => 'К&nbsp;переработке',
+  'uni_debris_incoming_recyclers' => 'В&nbsp;полете',
+  'uni_debris_on_planet' => 'На&nbsp;орбите',
+  'uni_recyclers_send' => 'Отправить переработчики',
 ));
 
 ?>

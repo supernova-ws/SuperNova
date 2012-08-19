@@ -15,116 +15,117 @@
 **/
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
-
 header("Content-type: text/html; charset=utf-8");
-
-require_once('includes/includes/flt_functions.php');
-
 lng_include('universe');
 lng_include('fleet');
+require_once('includes/includes/flt_functions.php');
 
-doquery("START TRANSACTION;");
-$planetrow = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['current_planet']}' LIMIT 1 FOR UPDATE;", '',true);
+$target_coord = array(
+  'galaxy' => $target_galaxy = sys_get_param_int('galaxy'),
+  'system' => $target_system = sys_get_param_int('system'),
+  'planet' => $target_planet = sys_get_param_int('planet'),
+);
 
-$CurrentFlyingFleets = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
-$CurrentFlyingFleets = $CurrentFlyingFleets["flying_fleets"];
-$UserSpyProbes  = $planetrow['spy_sonde'];
-$UserRecycles   = $planetrow['recycler'];
-$UserDeuterium  = $planetrow['deuterium'];
-$UserMissiles   = $planetrow['interplanetary_misil'];
-
-$target_galaxy = sys_get_param_int('galaxy');
-$target_system = sys_get_param_int('system');
-$target_planet = sys_get_param_int('planet');
-if($target_galaxy > $config->game_maxGalaxy || $target_galaxy < 1 ||
-   $target_system > $config->game_maxSystem || $target_system < 1 ||
-   $target_planet > $config->game_maxPlanet || $target_planet < 1)
+if(!uni_coordinates_valid($target_coord))
 {
-  $ResultMessage = "02|{$lang['gs_c02']}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}";
-  die ( $ResultMessage );
+  die($lang['gs_c02']);
 }
-$target_planet_type = sys_get_param_int('planettype');
 
 $target_mission = sys_get_param_int('mission');
-
-$fleet_array    = array();
-$FleetDBArray   = '';
-$FleetSubQRY    = '';
-$fleet_ship_count = 0;
-foreach(array_merge($sn_data['groups']['fleet'], array(UNIT_DEF_MISSILE_INTERPLANET)) as $ship_id)
+if(!isset($sn_data['groups']['missions'][$target_mission]['AJAX']) || !$sn_data['groups']['missions'][$target_mission]['AJAX'])
 {
-  $ship_count = max(0, sys_get_param_float("ship{$ship_id}"));
-  if(!$ship_count)
-  {
-    continue;
-  }
-  if($ship_count > $planetrow[$sn_data[$ship_id]['name']] && $target_mission != MT_MISSILE)
-  {
-    $ship_count = $planetrow[$sn_data[$ship_id]['name']];
-  }
-  $fleet_array[$ship_id]  = $ship_count;
-  $fleet_ship_count      += $ship_count;
-  $FleetDBArray          .= "{$ship_id},{$ship_count};";
-  $FleetSubQRY           .= "`{$sn_data[$ship_id]['name']}` = `{$sn_data[$ship_id]['name']}` - {$ship_count}, ";
+  die($lang['gs_c00']);
 }
+
+doquery("START TRANSACTION;");
+$planetrow = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['current_planet']}' LIMIT 1 FOR UPDATE;", true);
+
+$target_planet_type = sys_get_param_int('planet_type');
 $target_planet_check = $target_planet_type == PT_DEBRIS ? PT_PLANET : $target_planet_type;
-$TargetRow = doquery( "SELECT * FROM {{planets}} WHERE `galaxy` = '{$target_galaxy}' AND `system` = '{$target_system}' AND `planet` = '{$target_planet}' AND `planet_type` = '{$target_planet_check}' LIMIT 1;", '', true);
-if(empty($TargetRow))
+$target_row = doquery( "SELECT * FROM {{planets}} WHERE `galaxy` = '{$target_coord['galaxy']}' AND `system` = '{$target_coord['system']}' AND `planet` = '{$target_coord['planet']}' AND `planet_type` = '{$target_planet_check}' LIMIT 1;", true);
+if(empty($target_row))
 {
-  $TargetRow = array(
-    'galaxy' => $target_galaxy,
-    'system' => $target_system,
-    'planet' => $target_planet,
+  $target_row = array(
+    'galaxy' => $target_coord['galaxy'],
+    'system' => $target_coord['system'],
+    'planet' => $target_coord['planet'],
     'planet_type' => $target_planet_check,
     'id_owner' => 0
   );
 }
 
-$options = array();
-$cant_attack = flt_can_attack($planetrow, $TargetRow, $fleet_array, $target_mission, $options);
+$fleet_array = array();
+switch($target_mission)
+{
+  case MT_SPY:
+    $fleet_array[SHIP_SPY] = min(mrc_get_level($user, $planetrow, SHIP_SPY), abs($user['spio_anz']));
+    $unit_group = 'flt_spies';
+  break;
+
+  case MT_RECYCLE:
+    foreach($sn_data['groups']['flt_recyclers'] as $unit_id)
+    {
+      if($unit_count = mrc_get_level($user, $planetrow, $unit_id))
+      {
+        $fleet_array[$unit_id] = $unit_count;
+      }
+    }
+    $transport_data = flt_calculate_fleet_to_transport($fleet_array, $target_row['debris_metal'] + $target_row['debris_crystal'], $planetrow, $target_row);
+    $fleet_array = $transport_data['fleet'];
+    $unit_group = 'flt_recyclers';
+  break;
+
+  case MT_MISSILE:
+    $fleet_array[UNIT_DEF_MISSILE_INTERPLANET] = min(mrc_get_level($user, $planetrow, UNIT_DEF_MISSILE_INTERPLANET), abs(sys_get_param_float('missiles')));
+    $unit_group = 'missile';
+  break;
+
+}
+
+$options = array('target_structure' => $target_structure = sys_get_param_int('structures'));
+$cant_attack = flt_can_attack($planetrow, $target_row, $fleet_array, $target_mission, $options);
 if($cant_attack != ATTACK_ALLOWED)
 {
-  die("{$cant_attack}|{$lang['fl_attack_error'][$cant_attack]}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}");
+  die($lang['fl_attack_error'][$cant_attack]);
 }
+
+$FleetDBArray   = array();
+$FleetSubQRY    = array();
+foreach($fleet_array as $unit_id => $unit_count)
+{
+  $FleetDBArray[] = "{$unit_id},{$unit_count}";
+  $FleetSubQRY[]  = "`{$sn_data[$unit_id]['name']}` = `{$sn_data[$unit_id]['name']}` - {$unit_count}";
+}
+$FleetDBArray = implode(';', $FleetDBArray);
+$FleetSubQRY  = implode(',', $FleetSubQRY);
+
+$fleet_ship_count = array_sum($fleet_array);
 
 if($target_mission == MT_MISSILE)
 {
-  $target_structure = sys_get_param_int('structures');
-  if ($target_structure && !in_array($target_structure, $sn_data['groups']['defense_active']))
-  {
-    $cant_attack = ATTACK_WRONG_STRUCTURE;
-    die("{$cant_attack}|{$lang['fl_attack_error'][$cant_attack]}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}");
-  };
-
-  $mips_sent = $fleet_array[UNIT_DEF_MISSILE_INTERPLANET];
-
-  $distance = abs($target_system - $planetrow['system']);
-  $mipRange = ($user['impulse_motor_tech'] * 5) - 1;
-
-  $arrival = $time_now + round((30 + (60 * $distance)) / flt_server_flight_speed_multiplier());
-
-  doquery("INSERT INTO `{{iraks}}` SET
-     `fleet_target_owner` = '{$TargetRow['id_owner']}', `fleet_end_galaxy` = '{$target_galaxy}', `fleet_end_system` = '{$target_system}', `fleet_end_planet` = '{$target_planet}',
-     `fleet_owner` = '{$user['id']}', `fleet_start_galaxy` = '{$planetrow['galaxy']}', `fleet_start_system` = '{$planetrow['system']}', `fleet_start_planet` = '{$planetrow['planet']}',
-     `fleet_end_time` = '{$arrival}', `fleet_amount` = '{$mips_sent}', `primaer` = '{$target_structure}';");
-
-  $FleetSubQRY = "`{$sn_data[UNIT_DEF_MISSILE_INTERPLANET]['name']}` = `{$sn_data[UNIT_DEF_MISSILE_INTERPLANET]['name']}` - '{$mips_sent}', ";
-  $Ship = UNIT_DEF_MISSILE_INTERPLANET;
-  //doquery("UPDATE `{{planets}}` SET  WHERE `id` = '{$user['current_planet']}' LIMIT 1;");
+  $distance = abs($target_coord['system'] - $planetrow['system']);
+  $duration = round((30 + (60 * $distance)) / flt_server_flight_speed_multiplier());
+  $arrival = $time_now + $duration;
   $travel_data['consumption'] = 0;
+
+  doquery(
+    "INSERT INTO `{{iraks}}` SET
+     `fleet_target_owner` = '{$target_row['id_owner']}', `fleet_end_galaxy` = '{$target_coord['galaxy']}', `fleet_end_system` = '{$target_coord['system']}', `fleet_end_planet` = '{$target_coord['planet']}',
+     `fleet_owner` = '{$user['id']}', `fleet_start_galaxy` = '{$planetrow['galaxy']}', `fleet_start_system` = '{$planetrow['system']}', `fleet_start_planet` = '{$planetrow['planet']}',
+     `fleet_end_time` = '{$arrival}', `fleet_amount` = '{$fleet_ship_count}', `primaer` = '{$target_structure}';"
+  );
 }
 else
 {
-  $travel_data = flt_travel_data($user, $planetrow, array('galaxy' => $target_galaxy, 'system' => $target_system, 'planet' => $target_planet), $fleet_array, 10);
+  $travel_data = flt_travel_data($user, $planetrow, $target_coord, $fleet_array, 10);
 
-  if($UserDeuterium < $travel_data['consumption'])
+  if($planetrow['deuterium'] < $travel_data['consumption'])
   {
-    $ResultMessage = "13|{$lang['gs_c13']}|{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}";
-    die ( $ResultMessage );
+    die($lang['gs_c13']);
   }
 
-  $fleet_start_time = $travel_data['duration'] + $time_now;
-  $fleet_end_time   = $travel_data['duration'] + $fleet_start_time;
+  $fleet_start_time = $time_now + $travel_data['duration'];
+  $fleet_end_time   = $fleet_start_time + $travel_data['duration'];
 
   $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
   $QryInsertFleet .= "`fleet_owner` = '{$user['id']}', ";
@@ -132,30 +133,32 @@ else
   $QryInsertFleet .= "`fleet_amount` = '{$fleet_ship_count}', ";
   $QryInsertFleet .= "`fleet_array` = '{$FleetDBArray}', ";
   $QryInsertFleet .= "`fleet_start_time` = '{$fleet_start_time}', ";
-  $QryInsertFleet .= "`fleet_start_galaxy` = '{$planetrow['galaxy']}', ";
-  $QryInsertFleet .= "`fleet_start_system` = '{$planetrow['system']}', ";
-  $QryInsertFleet .= "`fleet_start_planet` = '{$planetrow['planet']}', ";
-  $QryInsertFleet .= "`fleet_start_type`   = '{$planetrow['planet_type']}', ";
+  $QryInsertFleet .= "`fleet_start_galaxy` = '{$planetrow['galaxy']}', `fleet_start_system` = '{$planetrow['system']}', `fleet_start_planet` = '{$planetrow['planet']}', `fleet_start_type`   = '{$planetrow['planet_type']}', ";
   $QryInsertFleet .= "`fleet_end_time` = '{$fleet_end_time}', ";
-  $QryInsertFleet .= "`fleet_end_galaxy` = '{$target_galaxy}', ";
-  $QryInsertFleet .= "`fleet_end_system` = '{$target_system}', ";
-  $QryInsertFleet .= "`fleet_end_planet` = '{$target_planet}', ";
-  $QryInsertFleet .= "`fleet_end_type` = '{$target_planet_type}', ";
-  $QryInsertFleet .= "`fleet_target_owner` = '{$TargetRow['id_owner']}', ";
+  $QryInsertFleet .= "`fleet_end_galaxy` = '{$target_coord['galaxy']}', `fleet_end_system` = '{$target_coord['system']}', `fleet_end_planet` = '{$target_coord['planet']}', `fleet_end_type` = '{$target_planet_type}', ";
+  $QryInsertFleet .= "`fleet_target_owner` = '{$target_row['id_owner']}', ";
   $QryInsertFleet .= "`start_time` = '{$time_now}';";
-  doquery( $QryInsertFleet);
+  doquery($QryInsertFleet);
 }
-doquery( "UPDATE {{planets}} SET {$FleetSubQRY} `{$sn_data[RES_DEUTERIUM]['name']}` = `{$sn_data[RES_DEUTERIUM]['name']}` - {$travel_data['consumption']} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+
+doquery("UPDATE {{planets}} SET `{$sn_data[RES_DEUTERIUM]['name']}` = `{$sn_data[RES_DEUTERIUM]['name']}` - {$travel_data['consumption']}, {$FleetSubQRY} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
 doquery("COMMIT;");
 
-$CurrentFlyingFleets++;
-$UserSpyProbes -= $fleet_array[SHIP_SPY];
-$UserRecycles  -= $fleet_array[SHIP_RECYCLER];
-$UserMissiles  -= $fleet_array[UNIT_DEF_MISSILE_INTERPLANET];
+$ships_sent = array();
+//$ships_sent_js = array();
+$ships_sent_js = 0;
+foreach($fleet_array as $unit_id => $unit_count)
+{
+  $ships_sent[] = "{$unit_count} {$lang['tech'][$unit_id]}";
+//  $ships_sent_js[] = "{$unit_id}=" . ($planetrow[$sn_data[$unit_id]['name']] - $unit_count);
+  $ships_sent_js += $planetrow[$sn_data[$unit_id]['name']] - $unit_count;
+}
+$ships_sent = implode(', ', $ships_sent);
+//$ships_sent_js = implode(',', $ships_sent_js);
+$ships_sent_js = "{$unit_group}={$ships_sent_js}";
 
-$ResultMessage  = "{$cant_attack}|{$lang['gs_sending']} {$fleet_ship_count} {$lang['tech'][$Ship]} {$lang['gs_to']} {$target_galaxy}:{$target_system}:{$target_planet}...|";
-$ResultMessage .= "{$CurrentFlyingFleets}|{$UserSpyProbes}|{$UserRecycles}|{$UserMissiles}";
+$ResultMessage  = "{$lang['gs_sending']} {$ships_sent} {$lang['gs_to']} {$target_coord['galaxy']}:{$target_coord['system']}:{$target_coord['planet']}|{$ships_sent_js}";
 
-die ( $ResultMessage );
+die($ResultMessage);
 
 ?>

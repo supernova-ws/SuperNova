@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a1
+* @version 35a9.12
 *
 */
 
@@ -109,8 +109,9 @@ $lang = array_merge($lang, array(
   'gl_phalanx' => 'Phalanx',
   'gl_ressource' => 'Resources',
   'gl_action' => 'Mission',
+  'gs_c00' => 'Error, mission is unaccessible from Universe interface',
   'gs_c01' => 'Error, planet was not found.',
-  'gs_c02' => 'Error, unknown universe',
+  'gs_c02' => 'Error, wrong coordinates in Universe',
   'gs_c03' => 'Error, the player is too weak.',
   'gs_c04' => 'Error, the player is too strong.',
   'gs_c04k' => ' You do not have any spy probes!',

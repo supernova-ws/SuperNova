@@ -138,7 +138,13 @@ switch ($fleet_page)
       }
       else
       {
-        if ($fleetarray[SHIP_RECYCLER] && $planet_type == PT_DEBRIS)
+        $recyclers = 0;
+        foreach($sn_data['groups']['flt_recyclers'] as $recycler_id)
+        {
+          $recyclers += $fleetarray[$recycler_id];
+        }
+//        if ($fleetarray[SHIP_RECYCLER] && $planet_type == PT_DEBRIS)
+        if ($recyclers > 0 && $planet_type == PT_DEBRIS)
         {
           $target_mission = MT_RECYCLE;
           $missiontype[MT_RECYCLE] = $lang['type_mission'][MT_RECYCLE];
