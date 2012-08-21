@@ -25,6 +25,12 @@ var PLANET_RECYCLERS = {PLANET_RECYCLERS};
 
 var MT_MISSILE = {D_MT_MISSILE};
 
+jQuery.extend(language, {
+  sys_ships: '{L_uni_incoming_fleets}',
+  sys_moon: '{L_Moon}',
+  sys_planet: '{L_gl_planet}',
+});
+
 var users = new Array();
 <!-- BEGIN users --><!-- IF users.ID -->
 users[{users.ID}] = {
@@ -448,11 +454,11 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     <table>
       <tr>
         <td class="c_c" style="[HIDE_USER_AVATAR]"><img src="{D_SN_ROOT_VIRTUAL}images/avatar/avatar_[USER_ID].png" height=75 width=75 /></td>
-        <td class="c_c">
+        <th class="c_c">
           [USER_NAME]<br>
           {L_Place}&nbsp;[USER_RANK]/{userCount}<br>
           <span style="[HIDE_USER_ALLY]">[USER_ALLY_TITLE]</span>
-        </td>
+        </th>
       </tr>
     </table>
   </span>
