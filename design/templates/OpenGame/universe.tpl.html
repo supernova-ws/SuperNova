@@ -8,81 +8,42 @@ var uni_user_galaxy = "{curPlanetG}";
 var uni_user_system = "{curPlanetS}";
 var uni_user_planet = "{curPlanetP}";
 var uni_user_planet_type = "{curPlanetPT}";
-var uni_galaxy = "{galaxy}";
-var uni_system = "{system}";
-// --></script>
-
-<script LANGUAGE='JavaScript'><!--
 var uni_galaxy = {galaxy};
 var uni_system = {system};
 
 var user_id = {USER_ID};
 var game_user_count = {userCount};
 var game_ally_count = {ALLY_COUNT};
-// var dpath = "{dpath}";
-// var SN_PATH_VIRTUAL = "{D_SN_PATH_VIRTUAL}";
-var uni_phalanx = '{PLANET_PHALANX}';
-var uni_spies = '{ACT_SPIO}';
-var uni_death_stars = '{deathStars}';
 
 var opt_uni_avatar_user = '{opt_uni_avatar_user}';
 var opt_uni_avatar_ally = '{opt_uni_avatar_ally}';
 
-var SHIP_COLONIZER               = {D_SHIP_COLONIZER};
-var SHIP_CARGO_BIG               = {D_SHIP_CARGO_BIG};
-// var SHIP_RECYCLER                = {D_SHIP_RECYCLER};
-var SHIP_SPY                     = {D_SHIP_SPY};
-var UNIT_DEF_MISSILE_INTERPLANET = {D_UNIT_DEF_MISSILE_INTERPLANET};
-
-var MT_SPY = {D_MT_SPY};
-var MT_COLONIZE = {D_MT_COLONIZE};
-var MT_RECYCLE = {D_MT_RECYCLE};
-var MT_MISSILE = {D_MT_MISSILE};
-
-jQuery.extend(language, {
-  debris: '{L_Debris}',
-  gal_sys_members: '{L_gal_sys_members}',
-  gl_action: '{L_gl_action}',
-  gl_ally_internal: '{L_gl_ally_internal}',
-  gl_ally_web: '{L_gl_ally_web}',
-  gl_buddyreq: '{L_gl_buddyreq}', 
-  gl_phalanx: '{L_gl_phalanx}',
-//  gl_ressource: '{L_gl_ressource}',
-  gl_sendmess: '{L_gl_sendmess}', 
-  gl_stats: '{L_gl_stats}',
-  place: '{L_Place}', 
-  sys_alliance: '{L_sys_alliance}',
-  sys_crystal: '{L_sys_crystal}',
-  sys_metal: '{L_sys_metal}',
-  sys_moon: '{L_Moon}',
-  sys_planet: '{L_gl_planet}',
-  sys_player: '{L_sys_player}', 
-  type_mission1: '{L_type_mission[1]}',
-  type_mission3: '{L_type_mission[3]}',
-  type_mission4: '{L_type_mission[4]}',
-  type_mission5: '{L_type_mission[5]}',
-  type_mission6: '{L_type_mission[6]}',
-  type_mission8: '{L_type_mission[8]}',
-  type_mission9: '{L_type_mission[9]}',
-  sys_ships: '{L_uni_incoming_fleets}',
-//  lang_recyclers: '{LANG_RECYCLERS}',
-  sys_error: '{L_sys_error}',
-  sys_done: '{L_sys_done}',
-  uni_flying: '{L_uni_flying}',
-//  uni_debris_recyclable: '{LA_uni_debris_recyclable}',
-//  uni_debris_incoming_recyclers: '{LA_uni_debris_incoming_recyclers}',
-//  uni_debris_on_planet: '{LA_uni_debris_on_planet}',
-  uni_recyclers_send: '{LA_uni_recyclers_send}',
-});
+var uni_phalanx = '{PLANET_PHALANX}';
+var uni_spies = '{ACT_SPIO}';
+var uni_death_stars = '{deathStars}';
+var PLANET_RECYCLERS = {PLANET_RECYCLERS};
 
 var users = new Array();
-<!-- BEGIN users --><!-- IF users.ID -->users[{users.ID}] = {name: '{users.NAME_JS}', rank: '{users.RANK}', ally_title: '{users.ALLY_TITLE}', ally_tag: '{users.ALLY_TAG}', /*sex: '{users.SEX}', */avatar: '{users.AVATAR}'};<!-- ENDIF --><!-- END users -->
+<!-- BEGIN users --><!-- IF users.ID -->
+users[{users.ID}] = {
+  name: '{users.NAME_JS}',
+  rank: '{users.RANK}',
+  ally_title: '{users.ALLY_TITLE}',
+  ally_tag: '{users.ALLY_TAG}',
+  avatar: '{users.AVATAR}'
+};
+<!-- ENDIF --><!-- END users -->
 
 var allies = new Array();
-<!-- BEGIN alliances --><!-- IF alliances.ID -->allies[{alliances.ID}] = {'name': '{alliances.NAME_JS}', 'rank' : '{alliances.RANK}','members': '{alliances.MEMBERS}', 'url': '{alliances.URL}', avatar: '{alliances.AVATAR}'};
+<!-- BEGIN alliances --><!-- IF alliances.ID -->
+allies[{alliances.ID}] = {
+  'name': '{alliances.NAME_JS}',
+  'rank' : '{alliances.RANK}',
+  'members': '{alliances.MEMBERS}',
+  'url': '{alliances.URL}',
+  avatar: '{alliances.AVATAR}'
+};
 <!-- ENDIF --><!-- END alliances -->
-
-var PLANET_RECYCLERS = {PLANET_RECYCLERS};
 
 var uni_row = new Array();
 <!-- BEGIN galaxyrow --><!-- IF galaxyrow.PLANET_NUM -->
@@ -93,32 +54,25 @@ uni_row[{galaxyrow.PLANET_NUM}] =
   planet_name: '{galaxyrow.PLANET_NAME_JS}',
   planet_image: '{galaxyrow.PLANET_IMAGE}',
   planet_fleet_id: '{galaxyrow.PLANET_FLEET_ID}',
+  planet_diameter: '{galaxyrow.PLANET_DIAMETER}',
+
   moon_name: '{galaxyrow.MOON_NAME_JS}',
   moon_diameter: '{galaxyrow.MOON_DIAMETER}',
   moon_image: 'mond',
   moon_fleet_id: '{galaxyrow.MOON_FLEET_ID}',
 
-
   debris: '{galaxyrow.DEBRIS}',
   debris_metal: '{galaxyrow.DEBRIS_METAL}',
   debris_crystal: '{galaxyrow.DEBRIS_CRYSTAL}',
-
   debris_reserved: '{galaxyrow.DEBRIS_RESERVED}',
   debris_reserved_percent: '{galaxyrow.DEBRIS_RESERVED_PERCENT}',
   debris_will_gather: '{galaxyrow.DEBRIS_WILL_GATHER}',
   debris_will_gather_percent: '{galaxyrow.DEBRIS_WILL_GATHER_PERCENT}',
   debris_gather_total: '{galaxyrow.DEBRIS_GATHER_TOTAL}',
   debris_gather_total_percent: '{galaxyrow.DEBRIS_GATHER_TOTAL_PERCENT}',
-
-
-//  debris_recyclers_incoming: '{galaxyrow.DEBRIS_RECYCLERS_INCOMING}',
-//  debris_recyclers: '{galaxyrow.DEBRIS_RC_SEND}',
-//  debris_incoming: '{galaxyrow.DEBRIS_RC_INC}',
-//  debris_rc_need: '{galaxyrow.DEBRIS_RC_NEED}'
 };
 <!-- ENDIF --><!-- END galaxyrow -->
-
---></script>
+// --></script>
 
 <br />
 <form action="galaxy.php?mode=1" method="post" id="galaxy_form">
@@ -148,26 +102,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
 <table width=569><tbody>
   <tr><th class="c_l" colspan="8">
     <span class="fl">{L_sys_galaxy}&nbsp;{galaxy} <span class="ok">{GALAXY_NAME}</span>&nbsp;<a class="link" href="galaxy.php?mode=name&galaxy={galaxy}&system=0"><!-- IF GALAXY_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a></span>
-    <span class="fr ok link" style="cursor: pointer;" onmouseout='popup_hide();' onmouseover='popup_show("\
-      <table>\
-      <tr><td class=c colspan=2>{L_sys_planet}</td></tr>\
-      <tr class=myplanet><td colspan=2>{L_uni_legend_myplanet}</td></tr>\
-      <tr class=allymember><td colspan=2>{L_uni_legend_allyplanet}</td></tr>\
-      <tr><td class=c colspan=2>{L_sys_player}</td></tr>\
-      <tr><td>{L_sys_birthday}</td><td><img src=\"{D_SN_ROOT_VIRTUAL}images/birthday.png\" alt=\"{galaxyrow.USER_BIRTHDAY}\" title=\"{galaxyrow.USER_BIRTHDAY}\"></td></tr>\
-      <tr class=protected><td>{L_uni_protected_player}</td><td>{L_uni_protected_player_shortcut}</td></tr>\
-      <tr class=noob><td>{L_Weak_player}</td><td>{L_weak_player_shortcut}</td></tr>\
-      <tr class=strong><td>{L_Strong_player}</td><td>{L_strong_player_shortcut}</td></tr>\
-      <tr class=vacation><td>{L_Way_vacation}</td><td>{L_vacation_shortcut}</td></tr>\
-      <tr class=banned><td>{L_Pendent_user}</td><td>{L_banned_shortcut}</td></tr>\
-      <tr class=player_active><td>{L_Active}</td><td>{L_active_shortcut}</td></tr>\
-      <tr class=inactive><td>{L_Inactive_7_days}</td><td>{L_inactif_7_shortcut}</td></tr>\
-      <tr class=longinactive><td>{L_Inactive_28_days}</td><td>{L_inactif_28_shortcut}</td></tr>\
-      <!-- IF SHOW_ADMIN --><tr class=admin><td>{L_user_level[3]}</td><td>{L_user_level_shortcut[3]}</td></tr>\
-      <tr class=admin><td>{L_user_level[2]}</td><td>{L_user_level_shortcut[2]}</td></tr>\
-      <tr class=admin><td>{L_user_level[1]}</td><td>{L_user_level_shortcut[1]}</td></tr><!-- ENDIF -->\
-      </table>");'>{L_Legend}
-    </span>
+    <span class="fr ok link" style="cursor: pointer;" onmouseout='popup_hide();' onmouseover="popup_show(jQuery('#legend_template').html());">{L_Legend}</span>
   </th></tr>
 
   <tr><th class="c_l" colspan=8>
@@ -319,7 +254,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
 
     <th width=150 align=center>
       <!-- IF galaxyrow.USER_ID -->
-        <!-- IF galaxyrow.USER_BIRTHDAY --><img src="{D_SN_ROOT_VIRTUAL}images/birthday.png" alt="{galaxyrow.USER_BIRTHDAY}" title="{galaxyrow.USER_BIRTHDAY}">&nbsp;<!-- ENDIF --><span style="cursor: pointer;" onmouseover='javascript:show_user({galaxyrow.USER_ID});' class="{$USER_CLASS} {$FONT_TYPE}">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACATION --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_PROTECTED --><span class="protected">{L_uni_protected_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)
+        <!-- IF galaxyrow.USER_BIRTHDAY --><img src="{D_SN_ROOT_VIRTUAL}design/images/birthday.png" alt="{galaxyrow.USER_BIRTHDAY}" title="{galaxyrow.USER_BIRTHDAY}">&nbsp;<!-- ENDIF --><span style="cursor: pointer;" onmouseover='javascript:show_user({galaxyrow.USER_ID});' class="{$USER_CLASS} {$FONT_TYPE}">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACATION --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_PROTECTED --><span class="protected">{L_uni_protected_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
@@ -327,7 +262,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
 
     <th width=80>
       <!-- IF galaxyrow.ALLY_ID -->
-        <span style="line-height: 1em; height: 1em; cursor: pointer;" onmouseover='javascript:show_alliance({galaxyrow.ALLY_ID});' class="<!-- IF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">{galaxyrow.ALLY_TAG}</span>
+        <span style="line-height: 1em; height: 1em; cursor: pointer;" onmouseover='javascript:show_alliance({galaxyrow.ALLY_ID});' class="<!-- IF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">[{galaxyrow.ALLY_TAG}]</span>
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
@@ -350,16 +285,13 @@ uni_row[{galaxyrow.PLANET_NUM}] =
 
         <!-- IF ACT_WRITE -->
         <span class="fl">
-          <a href="messages.php?mode=write&id={galaxyrow.USER_ID}">
-            <img src={dpath}img/m.gif alt="{L_gl_sendmess}" title="{L_gl_sendmess}" border=0  style="cursor: pointer;"></a>&nbsp;
+          <a href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src={dpath}img/m.gif alt="{L_gl_sendmess}" title="{L_gl_sendmess}" border=0  style="cursor: pointer;"></a>&nbsp;
         </span>
         <!-- ENDIF -->
         <!-- IF ACT_FRIEND -->
-        <span class="fl">
-          <a href="buddy.php?a=2&u={galaxyrow.USER_ID}">
-            <img src={dpath}img/b.gif alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" border=0></a>
-        </span>
+        <a class="fl" href="buddy.php?a=2&u={galaxyrow.USER_ID}"><img src={dpath}img/b.gif alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" border=0></a>&nbsp;
         <!-- ENDIF -->
+        <a class="fl" href="stat.php?who=1&range={galaxyrow.USER_RANK}#{galaxyrow.USER_RANK}"><img src="{D_SN_ROOT_VIRTUAL}design/images/statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}: {L_Place} {galaxyrow.USER_RANK}/{userCount}" border=0 width="16px"></a>
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
@@ -410,46 +342,142 @@ uni_row[{galaxyrow.PLANET_NUM}] =
 </form>
 
 <span style="display: none">
-<span id="debris_template">
-  <table width=100%>
-    <tr><th class="c_l" colspan="4">{L_Debris} [{galaxy}:{system}:[CURRENT_PLANET]]</th></tr>
-    <tr><td class="c_c" rowspan="7"><img src="{dpath}planeten/debris.jpg" height="75px" width="75px" /></td></tr>
+  <span id="legend_template">
+    <table>
+      <tr><th class="c_l" colspan=2>{L_sys_planet}</th></tr>
+      <tr class=myplanet><td colspan=2>{L_uni_legend_myplanet}</td></tr>
+      <tr class=allymember><td colspan=2>{L_uni_legend_allyplanet}</td></tr>
 
-    <tr>
-      <th class="c_l">{L_gl_ressource}</th>
-      <th class="c_r">[DEBRIS]</th>
-      <th class="c_r">100%</th>
-    </tr>
-    <tr>
-      <td class="c_l">{L_sys_metal}</td>
-      <td class="c_r">[DEBRIS_METAL]</td>
-      <td class="c_r">[DEBRIS_METAL_PERCENT]%</td>
-    </tr>
-    <tr>
-      <td class="c_l">{L_sys_crystal}</td>
-      <td class="c_r">[DEBRIS_CRYSTAL]</td>
-      <td class="c_r">[DEBRIS_CRYSTAL_PERCENT]%</td>
-    </tr>
+      <tr><th class="c_l" colspan=2>{L_sys_player}</th></tr>
+      <tr><td>{L_sys_birthday}</td><td><img src="{D_SN_ROOT_VIRTUAL}design/images/birthday.png" alt="{galaxyrow.USER_BIRTHDAY}" title="{galaxyrow.USER_BIRTHDAY}"></td></tr>
+      <tr class=protected><td>{L_uni_protected_player}</td><td>{L_uni_protected_player_shortcut}</td></tr>
+      <tr class=noob><td>{L_Weak_player}</td><td>{L_weak_player_shortcut}</td></tr>
+      <tr class=strong><td>{L_Strong_player}</td><td>{L_strong_player_shortcut}</td></tr>
+      <tr class=vacation><td>{L_Way_vacation}</td><td>{L_vacation_shortcut}</td></tr>
+      <tr class=banned><td>{L_Pendent_user}</td><td>{L_banned_shortcut}</td></tr>
+      <tr class=player_active><td>{L_Active}</td><td>{L_active_shortcut}</td></tr>
+      <tr class=inactive><td>{L_Inactive_7_days}</td><td>{L_inactif_7_shortcut}</td></tr>
+      <tr class=longinactive><td>{L_Inactive_28_days}</td><td>{L_inactif_28_shortcut}</td></tr>
+      <!-- IF SHOW_ADMIN -->
+      <tr class=admin><td>{L_user_level[3]}</td><td>{L_user_level_shortcut[3]}</td></tr>
+      <tr class=admin><td>{L_user_level[2]}</td><td>{L_user_level_shortcut[2]}</td></tr>
+      <tr class=admin><td>{L_user_level[1]}</td><td>{L_user_level_shortcut[1]}</td></tr>
+      <!-- ENDIF -->
 
-    <tr>
-      <th class="c_l">{L_uni_debris_recyclable}</th>
-      <th class="c_r">[DEBRIS_GATHER_TOTAL]</th>
-      <th class="c_r">[DEBRIS_GATHER_TOTAL_PERCENT]%</th>
-    </tr>
-    <tr>
-      <td class="c_l">{L_uni_debris_incoming_recyclers}</td>
-      <td class="c_r">[DEBRIS_RESERVED]</td>
-      <td class="c_r">[DEBRIS_RESERVED_PERCENT]%</td>
-    </tr>
-    <tr>
-      <td class="c_l">{L_uni_debris_on_planet}</td>
-      <td class="c_r">[DEBRIS_WILL_GATHER]</td>
-      <td class="c_r">[DEBRIS_WILL_GATHER_PERCENT]%</td>
-    </tr>
+      <tr><th class="c_l" colspan=2>{L_Actions}</th></tr>
+      <tr><td>{L_gl_espionner}</td><td><img src="{dpath}img/e.gif" border=0></td></tr>
+      <tr><td>{L_gl_mipattack}</td><td><img src="{dpath}img/r.gif" border=0></td></tr>
+      <tr><td>{L_gl_sendmess}</td><td><img src="{dpath}img/m.gif" border=0></td></tr>
+      <tr><td>{L_gl_buddyreq}</td><td><img src="{dpath}img/b.gif" border=0></td></tr>
+      <tr><td>{L_gl_stats}</td><td><img src="{D_SN_ROOT_VIRTUAL}design/images/statistics.png" border=0 width="16px"></td></tr>
+    </table>
+  </span>
 
-    <tr style="cursor:pointer; [HIDE_RECYCLER_LINK]" onclick="doit({D_MT_RECYCLE},[CURRENT_PLANET],{D_PT_DEBRIS});"><th class="c_c" colspan="4">[ {L_uni_recyclers_send} ]</th></tr>
+  <span id="planet_template">
+    <table>
+      <tr>
+        <th class="c_c" colspan="2">
+          [PLANET_TYPE_TEXT]&nbsp;[PLANET_NAME]&nbsp;[{galaxy}:{system}:[PLANET_POS]]
+        </th>
+      </tr>
 
-  </table>
-</span>
+      <tr>
+      <td class="c_c" width=75><img src="{dpath}planeten/small/s_[PLANET_IMAGE].jpg" height=75 width=75 /><div>[PLANET_DIAMETER]</div></td>
+
+      <td class="c_c">
+        <a class="owndeploy" style="[HIDE_PLANET_RELOCATE]" href="fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_RELOCATE}">{L_type_mission[4]}</a><br />
+        <a class="owntransport" href="fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_TRANSPORT}">{L_type_mission[3]}</a><br />
+        <a class="ownhold" style="[HIDE_PLANET_HOLD]" href="fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_HOLD}">{L_type_mission[5]}</a><br />
+        <br />
+        <a class="owndestroy" style="[HIDE_PLANET_DESTROY]" href="fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_DESTROY}">{L_type_mission[9]}</a><br />
+        <a class="ownattack" style="[HIDE_PLANET_ATTACK]" href="fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_ATTACK}">{L_type_mission[1]}</a><br />
+        <span class="ownespionage" style="cursor:pointer; [HIDE_PLANET_SPY]" onclick="doit({D_MT_SPY}, [PLANET_POS], [PLANET_TYPE], {ACT_SPIO});">{L_type_mission[6]}</span><br />
+        <span style="cursor:pointer; [HIDE_PLANET_PHALANX]" onclick=fenster("phalanx.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]")>{L_gl_phalanx}</span>
+      </td>
+      </tr>
+    </table>
+
+    [FLEET_TABLE]
+  </span>
+
+  <span id="debris_template">
+    <table width=100%>
+      <tr><th class="c_l" colspan="4">{L_Debris} [{galaxy}:{system}:[CURRENT_PLANET]]</th></tr>
+      <tr><td class="c_c" rowspan="7"><img src="{dpath}planeten/debris.jpg" height="75px" width="75px" /></td></tr>
+
+      <tr>
+        <th class="c_l">{L_gl_ressource}</th>
+        <th class="c_r">[DEBRIS]</th>
+        <th class="c_r">100%</th>
+      </tr>
+      <tr>
+        <td class="c_l">{L_sys_metal}</td>
+        <td class="c_r">[DEBRIS_METAL]</td>
+        <td class="c_r">[DEBRIS_METAL_PERCENT]%</td>
+      </tr>
+      <tr>
+        <td class="c_l">{L_sys_crystal}</td>
+        <td class="c_r">[DEBRIS_CRYSTAL]</td>
+        <td class="c_r">[DEBRIS_CRYSTAL_PERCENT]%</td>
+      </tr>
+
+      <tr>
+        <th class="c_l">{L_uni_debris_recyclable}</th>
+        <th class="c_r">[DEBRIS_GATHER_TOTAL]</th>
+        <th class="c_r">[DEBRIS_GATHER_TOTAL_PERCENT]%</th>
+      </tr>
+      <tr>
+        <td class="c_l">{L_uni_debris_incoming_recyclers}</td>
+        <td class="c_r">[DEBRIS_RESERVED]</td>
+        <td class="c_r">[DEBRIS_RESERVED_PERCENT]%</td>
+      </tr>
+      <tr>
+        <td class="c_l">{L_uni_debris_on_planet}</td>
+        <td class="c_r">[DEBRIS_WILL_GATHER]</td>
+        <td class="c_r">[DEBRIS_WILL_GATHER_PERCENT]%</td>
+      </tr>
+
+      <tr style="cursor:pointer; [HIDE_RECYCLER_LINK]" onclick="doit({D_MT_RECYCLE},[CURRENT_PLANET],{D_PT_DEBRIS});"><th class="c_c" colspan="4">[ {L_uni_recyclers_send} ]</th></tr>
+
+    </table>
+  </span>
+
+  <span id="user_template">
+    <table>
+      <tr>
+        <td class="c_c" style="[HIDE_USER_AVATAR]"><img src="{D_SN_ROOT_VIRTUAL}images/avatar/avatar_[USER_ID].png" height=75 width=75 /></td>
+        <td class="c_c">
+          [USER_NAME]<br>
+          {L_Place}&nbsp;[USER_RANK]/{userCount}<br>
+          <span style="[HIDE_USER_ALLY]">[USER_ALLY_TITLE]</span>
+        </td>
+      </tr>
+    </table>
+  </span>
+
+  <span id="ally_template">
+    <table>
+      <tr>
+        <td class="c_c" rowspan="4" style="[HIDE_ALLY_AVATAR]"><img src="{D_SN_ROOT_VIRTUAL}images/avatar/ally_[ALLY_ID].png" width=75 /></td>
+        <th class="c_c">
+          [ALLY_NAME]<br>
+          {L_Place}&nbsp;[ALLY_RANK]/{ALLY_COUNT}<br>
+          {L_gal_sys_members}&nbsp;[ALLY_MEMBERS]
+        </th>
+      </tr>
+      <tr>
+        <td class="c_c">
+          <a href="alliance.php?mode=ainfo&a=[ALLY_ID]">{L_gl_ally_internal}</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="c_c">
+          <a href="stat.php?who=2&range=[ALLY_RANK]#[ALLY_RANK]">{L_gl_stats}</a>
+        </td>
+      </tr>
+      <tr style="[HIDE_ALLY_URL]"><td class="c_c"><a href="[ALLY_URL]" target=_new>{L_gl_ally_web}</td></tr>
+    </table>
+  </span>
+
 </span>
 <!-- INCLUDE page_hint -->

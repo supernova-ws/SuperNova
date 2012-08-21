@@ -123,12 +123,16 @@ a
 {
   text-decoration      : none;
   font-weight          : bold;
+  color                : #f2f2f2;
 }
 
 a:hover
 {
-  color                : #CDD7F8;
+/*  color                : #CDD7F8;
   text-decoration      : underline;
+*/
+  background-color     : #415680;
+  text-decoration      : none;
 }
 
 .style td
@@ -138,23 +142,23 @@ a:hover
 
 .style div a
 {
-  color                : #f2f2f2;
+/*  color                : #f2f2f2;*/
 }
 
 .style div a:link
 {
-  color                : #f2f2f2;
+/*  color                : #f2f2f2;*/
 }
 
 .style div a:visited
 {
-  color                : #f2f2f2;
+/*  color                : #f2f2f2;*/
 }
 
 .style div a:hover
 {
-  background-color     : #415680;
-  text-decoration      : none;
+/*  background-color     : #415680;
+  text-decoration      : none;*/
 }
 
 h1
@@ -484,64 +488,32 @@ div .ui-dialog-content table { background: #344055; }
   color: red;
 }
 
-.flight .attack a {
-  color: #E6EBFB;
-}
-
 *.colony {
   color: lime;
-}
-
-.flight .colony a {
-  color: #E6EBFB;
 }
 
 *.deploy {
   color: lime;
 }
 
-.flight .deploy a {
-  color: #E6EBFB;
-}
-
 *.destroy {
   color: gold;
-}
-
-.flight .destroy a {
-  color: #E6EBFB;
 }
 
 *.espionage {
   color: red;
 }
 
-.flight .espionage a {
-  color: #E6EBFB;
-}
-
 *.federation {
   color: #CC0000;
-}
-
-.flight .federation a {
-  color: #E6EBFB;
 }
 
 *.harvest {
   color: lime;
 }
 
-.flight .harvest a {
-  color: #E6EBFB;
-}
-
 *.hold {
   color: #80a0C0;
-}
-
-.flight .hold a {
-  color: #E6EBFB;
 }
 
 *.missile {
@@ -552,7 +524,9 @@ div .ui-dialog-content table { background: #344055; }
   color: lime;
 }
 
-.flight .transport a {
+.flight .attack a, .flight .colony a, .flight .deploy a, .flight .destroy a, .flight .espionage a,
+.flight .federation a, .flight .harvest a, .flight .hold a, .flight .missile a, .flight .transport a
+{
   color: #E6EBFB;
 }
 

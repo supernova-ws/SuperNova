@@ -280,6 +280,7 @@ debug($uni_galaxyRowPlanet['debris_will_gather_percent'], 'debris_will_gather_pe
      'PLANET_ACTIVITY'  => floor(($time_now - $uni_galaxyRowPlanet['last_update'])/60),
      'PLANET_IMAGE'     => $uni_galaxyRowPlanet['image'],
      'PLANET_FLEET_ID'  => $planet_fleet_id,
+     'PLANET_DIAMETER'  => number_format($uni_galaxyRowPlanet['diameter'], 0, '', '.'),
 
      'MOON_NAME_JS'   => js_safe_string($uni_galaxyRowMoon['name']),
      'MOON_DIAMETER'  => number_format($uni_galaxyRowMoon['diameter'], 0, '', '.'),
@@ -411,6 +412,7 @@ $template->assign_vars(array(
      'ACT_SPIO'            => $user['spio_anz'],
      'ACT_WRITE'           => $user['settings_wri'],
      'ACT_FRIEND'          => $user['settings_bud'],
+     'ACT_STATISTICS'      => $user['settings_statistics'],
      'opt_uni_avatar_user' => $user['opt_uni_avatar_user'],
      'opt_uni_avatar_ally' => $user['opt_uni_avatar_ally'],
      'ACT_MISSILE'         => $user["settings_mis"] && ($CurrentMIP > 0) && ($uni_galaxy == $CurrentGalaxy) && ($uni_system >= $CurrentSystem - $MissileRange) && ($uni_system <= $CurrentSystem + $MissileRange),

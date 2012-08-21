@@ -23,26 +23,16 @@ function addToTable(strInfo, CmdCode)
   e.style.display = '';
 
   var e2 = document.getElementById('fleetstatustable');
-  if(e2.rows.length > 2) {
+  if(e2.rows.length > 2)
+  {
     e2.deleteRow(2);
   }
-
-  if(CmdCode != 0)
-  {
-    strDataResult = language['sys_error'];
-    strClass = "error";
-  }
-  else
-  {
-    strDataResult = language['sys_done'];
-    strClass = "success";
-  };
 
   var td1 = document.createElement("td");
   td1.appendChild(document.createTextNode(strInfo));
 
   var row = e2.insertRow(0);
-  row.className = strClass;
+  row.className = CmdCode ? "error" : "success";
   row.appendChild(td1);
 
   jQuery('#ov_recycle').hide();

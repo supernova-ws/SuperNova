@@ -132,7 +132,7 @@ function consumption() {
   consumption = Math.round(distance() * consumption / 35000) + 1;
   return(consumption);
 }
-
+/*
 function probeConsumption() {
   var consumption = 0;
   var basicConsumption = 0;
@@ -160,7 +160,7 @@ function unusedProbeStorage() {
 
   return (stor>0) ? stor : 0;
 }
-
+*/
 function shortInfo() {
   document.getElementById("distance").innerHTML = sn_format_number(distance());
 
@@ -380,7 +380,7 @@ function fleet_table_make(fleet_id)
 {
   if(!fleets[fleet_id])
   {
-    return false;
+    return '';
   }
 
   if(!fleets[fleet_id][9])

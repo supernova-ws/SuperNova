@@ -880,7 +880,7 @@ function sn_render_player_nick($user, $options = false, &$result)
 
     if($user['user_birthday'] && ($options === true || isset($options['icons']) || isset($options['birthday'])) && (date('Y', $time_now) . date('-m-d', strtotime($user['user_birthday'])) == date('Y-m-d', $time_now)))
     {
-      $result .= '<img src="' . SN_ROOT_VIRTUAL . 'images/birthday.png">';
+      $result .= '<img src="' . SN_ROOT_VIRTUAL . 'design/images/birthday.png">';
     }
   }
 
