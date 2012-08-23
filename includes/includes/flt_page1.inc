@@ -18,9 +18,9 @@ if(SN_IN_FLEET !== true)
 
   foreach ($ships as $ship_id => $ship_count)
   {
-    if ($ship_id > 200 && $ship_id < 300 && $ship_count)
+    if(in_array($ship_id, $sn_data['groups']['fleet']) && $ship_count)
     {
-      if ($ship_count > $planetrow[$sn_data[$ship_id]['name']])
+      if($ship_count > $planetrow[$sn_data[$ship_id]['name']])
       {
         $page .= $lang['fl_noenought'];
       }
