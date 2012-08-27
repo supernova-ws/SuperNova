@@ -89,27 +89,6 @@ foreach ($planets as $planet_index => &$planet)
 
 tpl_assign_fleet($template, $fleets);
 
-$template->assign_block_vars('planet', array_merge(array(
-  'NAME'       => $lang['sys_total'],
-
-  'FIELDS_CUR' => $total['fields'],
-  'FIELDS_MAX' => $total['fields_max'],
-
-  'METAL_CUR'  => pretty_number($total['metal']),
-  'METAL_PROD' => pretty_number($total['metal_perhour']),
-
-  'CRYSTAL_CUR'  => pretty_number($total['crystal']),
-  'CRYSTAL_PROD' => pretty_number($total['crystal_perhour']),
-
-  'DEUTERIUM_CUR'  => pretty_number($total['deuterium']),
-  'DEUTERIUM_PROD' => pretty_number($total['deuterium_perhour']),
-
-  'ENERGY_CUR' => pretty_number($total['energy']),
-  'ENERGY_MAX' => pretty_number($total['energy_max']),
-
-  'TEMP_MIN' => $total['temp_min'],
-  'TEMP_MAX' => $total['temp_max'],
-)));
 unset($planet);
 
 $last = -1000;
@@ -159,16 +138,19 @@ foreach ($sn_data as $unit_id => $res) {
           if($level_plus_build)
           {
             $level_plus['LEVEL_PLUS_GREEN'] = $level_plus_build < 0 ? $level_plus_build : "+{$level_plus_build}";
+            $total['units'][$unit_id]['LEVEL_PLUS_GREEN'] += $level_plus['LEVEL_PLUS_GREEN'];
           }
         break;
 
         case 'fleet':
           $level_plus['LEVEL_PLUS_YELLOW'] = $planet['fleet_list']['own']['total'][$unit_id]<=0 ? $planet['fleet_list']['own']['total'][$unit_id] : "+{$planet['fleet_list']['own']['total'][$unit_id]}";
+          $total['units'][$unit_id]['LEVEL_PLUS_YELLOW'] += $level_plus['LEVEL_PLUS_YELLOW'];
 
         case 'defense':
           if($planet['hangar_que'][$unit_id])
           {
             $level_plus['LEVEL_PLUS_GREEN'] = "+{$planet['hangar_que'][$unit_id]}";
+            $total['units'][$unit_id]['LEVEL_PLUS_GREEN'] += $level_plus['LEVEL_PLUS_GREEN'];
           }
         break;
 
@@ -185,13 +167,39 @@ foreach ($sn_data as $unit_id => $res) {
       $unit_count += $planet[$unit_db_name];
     }
 
+    $unit_green = $total['units'][$unit_id]['LEVEL_PLUS_GREEN'];
+    $unit_yellow = $total['units'][$unit_id]['LEVEL_PLUS_YELLOW'];
     $template->assign_block_vars('prods.planet', array(
       'LEVEL' => $unit_count,
+      'LEVEL_PLUS_GREEN' => $unit_green == 0 ? '' : ($unit_green > 0 ? "+{$unit_green}" : $unit_green),
+      'LEVEL_PLUS_YELLOW' => $unit_yellow == 0 ? '' : ($unit_yellow > 0 ? "+{$unit_yellow}" : $unit_yellow),
     ));
 
     $last = $unit_id;
   }
 }
+
+$template->assign_block_vars('planet', array_merge(array(
+  'NAME'       => $lang['sys_total'],
+
+  'FIELDS_CUR' => $total['fields'],
+  'FIELDS_MAX' => $total['fields_max'],
+
+  'METAL_CUR'  => pretty_number($total['metal']),
+  'METAL_PROD' => pretty_number($total['metal_perhour']),
+
+  'CRYSTAL_CUR'  => pretty_number($total['crystal']),
+  'CRYSTAL_PROD' => pretty_number($total['crystal_perhour']),
+
+  'DEUTERIUM_CUR'  => pretty_number($total['deuterium']),
+  'DEUTERIUM_PROD' => pretty_number($total['deuterium_perhour']),
+
+  'ENERGY_CUR' => pretty_number($total['energy']),
+  'ENERGY_MAX' => pretty_number($total['energy_max']),
+
+  'TEMP_MIN' => $total['temp_min'],
+  'TEMP_MAX' => $total['temp_max'],
+)));
 
 display(parsetemplate($template), $lang['imp_overview']);
 
