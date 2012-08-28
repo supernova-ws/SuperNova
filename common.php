@@ -10,7 +10,7 @@
 require_once('includes/init.php');
 
 $user = sn_autologin(!$allow_anonymous);
-$sys_user_logged_in = $user && is_array($user) && isset($user['id']) && $user['id'];
+$sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
 
 $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
@@ -44,35 +44,20 @@ if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @
 
 if(defined('IN_ADMIN') && IN_ADMIN === true)
 {
-/*
-  $UserSkin  = $user['dpath'];
-  $local     = stristr($UserSkin, "http:");
-  if($local === false)
-  {
-    if (!$user['dpath'])
-    {
-      $dpath     = "../". DEFAULT_SKINPATH  ;
-    }
-    else
-    {
-      $dpath     = "../". $user["dpath"];
-    }
-  }
-  else
-  {
-    $dpath     = $UserSkin;
-  }
-*/
   lng_include('admin');
 }
 elseif($sys_user_logged_in)
 {
-
   if(!$skip_fleet_update && $time_now - $config->flt_lastUpdate >= 4)
   {
     require_once("includes/includes/flt_flying_fleet_handler.php");
     flt_flying_fleet_handler($config, $skip_fleet_update);
   }
+
+//  if(!$allow_anonymous)
+//  {
+  sys_user_vacation($user);
+//  }
 
   $planet_id = SetSelectedPlanet($user);
 
@@ -109,11 +94,6 @@ elseif($sys_user_logged_in)
   }
 
   $que = $global_data['que'];
-
-  if(!$allow_anonymous)
-  {
-    sys_user_vacation($user);
-  }
 }
 
 ?>
