@@ -18,18 +18,23 @@ if(HIDE_BUILDING_RECORDS)
 
 $template = gettemplate('records', true);
 
+$user_skip_list = sys_stat_get_user_skip_list();
+$user_skip_list = empty($user_skip_list) ? '' : ' AND u.id NOT IN (' . implode(',', $user_skip_list) . ')';
+
 foreach($lang['tech'] as $unit_id => $unit_name)
 {
   if($unit_name && $sn_data[$unit_id]['name'])
   {
+    $unit_db_name = $sn_data[$unit_id]['name'];
     $data_row = false;
     if(in_array($unit_id, array_merge($sn_data['groups']['structures'], $sn_data['groups']['fleet'], $sn_data['groups']['defense'])))
     {
-      $data_row = doquery ("SELECT `username`, `{$sn_data[$unit_id]['name']}` AS `current` FROM {{planets}} AS p LEFT JOIN {{users}} AS u ON u.id = p.id_owner WHERE `{$sn_data[$unit_id]['name']}` = (SELECT MAX(`{$sn_data[$unit_id]['name']}`) FROM {{planets}} WHERE `id_level` = '0' and `id_owner` != 0) AND `id_level` = '0' ORDER BY p.`id` LIMIT 1;", '', true);
+      $data_row = doquery ("SELECT `username`, `{$unit_db_name}` AS `current` FROM {{planets}} AS p JOIN {{users}} AS u ON u.id = p.id_owner WHERE `{$unit_db_name}` = (
+      SELECT MAX(`{$unit_db_name}`) FROM {{planets}} AS p LEFT JOIN {{users}} AS u ON u.id = p.id_owner WHERE `id_owner` != 0 {$user_skip_list}) AND `id_owner` != '0' {$user_skip_list} ORDER BY u.`id` LIMIT 1;", true);
     }
     elseif(in_array($unit_id, $sn_data['groups']['tech']))
     {
-      $data_row = doquery ("SELECT `username`, `{$sn_data[$unit_id]['name']}` AS `current` FROM {{users}} WHERE `{$sn_data[$unit_id]['name']}` = (SELECT MAX(`{$sn_data[$unit_id]['name']}`) FROM {{users}} WHERE `authlevel` = '0' AND user_as_ally is null) AND `authlevel` = 0 AND user_as_ally is null ORDER BY `id` LIMIT 1;", '', true);
+      $data_row = doquery ("SELECT `username`, `{$unit_db_name}` AS `current` FROM {{users}} AS u WHERE u.`{$unit_db_name}` = (SELECT MAX(`{$unit_db_name}`) FROM {{users}} AS u WHERE user_as_ally is null {$user_skip_list}) AND user_as_ally is null {$user_skip_list} ORDER BY `id` LIMIT 1;", true);
     }
 
     if($data_row)

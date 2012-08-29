@@ -887,4 +887,39 @@ function sn_render_player_nick($user, $options = false, &$result)
   return $result;
 }
 
+function sys_stat_get_user_skip_list()
+{
+  global $config;
+
+  $user_skip_list = array();
+  if($config->stats_hide_admins)
+  {
+    $user_skip_list[] = '`authlevel` > 0';
+  }
+  if($config->stats_hide_player_list)
+  {
+    $temp = explode(',', $config->stats_hide_player_list);
+    foreach($temp as $user_id)
+    {
+      $user_id = floatval($user_id);
+      if($user_id)
+      {
+        $user_skip_list[] = '`id` = ' . $user_id;
+      }
+    }
+  }
+  if(!empty($user_skip_list))
+  {
+    $user_skip_list = implode(' OR ', $user_skip_list);
+    $user_skip_query = doquery("SELECT `id` FROM {{users}} WHERE {$user_skip_list}");
+    $user_skip_list = array();
+    while($user_skip_row = mysql_fetch_assoc($user_skip_query))
+    {
+      $user_skip_list[$user_skip_row['id']] = $user_skip_row['id'];
+    }
+  }
+
+  return $user_skip_list;
+}
+
 ?>

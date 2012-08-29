@@ -885,6 +885,8 @@ CREATE TABLE `sn_users` (
 -- ----------------------------
 -- Default server configuration
 -- ----------------------------
+INSERT INTO `sn_config` VALUES ('adv_seo_meta_description', '');
+INSERT INTO `sn_config` VALUES ('adv_seo_meta_keywords', '');
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '<tr><td align=center><script type=\"text/javascript\"><!--\r\ngoogle_ad_client = \"pub-1914310741599503\";\r\n/* oGame */\r\ngoogle_ad_slot = \"2544836773\";\r\ngoogle_ad_width = 125;\r\ngoogle_ad_height = 125;\r\n//-->\r\n</script>\r\n<script type=\"text/javascript\"\r\nsrc=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\r\n</script></td></tr>\r\n');
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '1');
 INSERT INTO `sn_config` VALUES ('ali_bonus_algorithm', '0');
@@ -996,6 +998,8 @@ INSERT INTO `sn_config` VALUES ('server_updater_check_period', 24 * 60 * 60);
 INSERT INTO `sn_config` VALUES ('server_updater_check_result', '-1');
 INSERT INTO `sn_config` VALUES ('server_updater_id', '0');
 INSERT INTO `sn_config` VALUES ('server_updater_key', '');
+INSERT INTO `sn_config` VALUES ('stats_hide_admins', 1);
+INSERT INTO `sn_config` VALUES ('stats_hide_player_list', '');
 INSERT INTO `sn_config` VALUES ('stats_schedule', 'd@04:00:00');
 INSERT INTO `sn_config` VALUES ('tpl_minifier', '0');
 INSERT INTO `sn_config` VALUES ('uni_price_galaxy', '10000');

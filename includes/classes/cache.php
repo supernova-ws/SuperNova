@@ -462,6 +462,11 @@ class classPersistent extends classCache
 class classConfig extends classPersistent
 {
   protected $defaults = array(
+
+    // SEO meta
+    'adv_seo_meta_description'     => '',
+    'adv_seo_meta_keywords'        => '',
+
     // Advert banner
     'advGoogleLeftMenuIsOn'        => 0,
     'advGoogleLeftMenuCode'        => '(Place here code for banner)',
@@ -618,6 +623,8 @@ class classConfig extends classPersistent
     'server_updater_id'            => 0, // Server ID on update server
     'server_updater_key'           => '', // Server key on update server
 
+    'stats_hide_admins'            => 1,
+    'stats_hide_player_list'       => '',
     'stats_schedule'               => 'd@04:00:00',
 
     'tpl_minifier'                 => 0, // Template minifier

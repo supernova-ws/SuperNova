@@ -487,11 +487,14 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   $template->assign_vars(array(
     'title'          => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
     '-meta-'         => $metatags,
+    'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
+    'ADV_SEO_META_KEYWORDS' => $config->adv_seo_meta_keywords,
     'LANG_LANGUAGE'  => $lang['LANG_INFO']['LANG_NAME_ISO2'],
     'LANG_ENCODING'  => 'utf-8',
     'LANG_DIRECTION' => $lang['LANG_INFO']['LANG_DIRECTION'],
     'IMPERSONATING'  => $user_impersonator ? sprintf($lang['sys_impersonated_as'], $user['username'], $user_impersonator['username']) : '',
   ));
+
   displayP(parsetemplate($template));
 
   if($isDisplayMenu)

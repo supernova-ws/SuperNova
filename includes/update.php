@@ -1763,6 +1763,12 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       "ADD KEY `I_ship_cargo_greed` (`ship_cargo_greed`, `id_level`)",
     ), !$update_tables['planets']['ship_sattelite_sloth_porcent']);
 
+    upd_check_key('stats_hide_admins', 1, !isset($config->stats_hide_admins));
+    upd_check_key('stats_hide_player_list', '', !isset($config->stats_hide_player_list));
+
+    upd_check_key('adv_seo_meta_description', '', !isset($config->adv_seo_meta_description));
+    upd_check_key('adv_seo_meta_keywords', '', !isset($config->adv_seo_meta_keywords));
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 35;
 

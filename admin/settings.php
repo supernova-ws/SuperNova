@@ -85,6 +85,10 @@ if(sys_get_param('save'))
   $config->user_birthday_gift      = sys_get_param_float('user_birthday_gift');
   $config->user_birthday_range     = sys_get_param_int('user_birthday_range');
 
+  $config->stats_hide_admins       = sys_get_param_int('stats_hide_admins');
+  $config->stats_hide_player_list  = sys_get_param_str('stats_hide_player_list');
+  $config->stats_schedule          = sys_get_param_str('stats_schedule');
+
   $config->empire_mercenary_base_period = sys_get_param_int('empire_mercenary_base_period');
   if($config->empire_mercenary_temporary != sys_get_param_int('empire_mercenary_temporary'))
   {
@@ -130,6 +134,10 @@ $template->assign_vars(array(
 
   'SERVER_UPDATE_ID' => $config->server_updater_id,
   'SERVER_UPDATE_KEY' => $config->server_updater_key,
+
+  'STATS_HIDE_ADMINS' => $config->stats_hide_admins,
+//  'STATS_HIDE_PLAYER_LIST' => $config->stats_hide_player_list,
+//  'STATS_SCHEDULE' => $config->stats_hide_player_list,
 ));
 
 foreach($lang['sys_game_mode'] as $mode_id => $mode_name)

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 35a9.25
 *
 */
 
@@ -491,6 +491,14 @@ $lang = array_merge($lang, array(
   'adm_upd_register_already' => 'You already registered your server. Write down server ID and key and store it in safe place!',
   'adm_upd_register_id' => 'Registration ID',
   'adm_upd_register_key' => 'Registration key',
+
+  'adm_opt_stats_and_records' => 'Statistics and records',
+  'adm_opt_stats_hide_admins' => 'Hide admins',
+  'adm_opt_stats_hide_admins_detail' => 'Will be hidden all accounts with authlevel > 0',
+  'adm_opt_stats_hide_player_list' => 'Hide players',
+  'adm_opt_stats_hide_player_list_detail' => 'List of hidden players ID separated with comma',
+  'adm_opt_stats_schedule' => 'Statistics update schedule',
+  'adm_opt_stats_schedule_detail' => 'Schedule update launch times in format d@HH:MM:SS separated with comma',
 
 ));
 

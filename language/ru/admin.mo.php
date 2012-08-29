@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a8.8
+* @version 35a9.25
 *
 */
 
@@ -502,6 +502,14 @@ $lang = array_merge($lang, array(
   'adm_upd_register_already' => 'Вы уже зарегистрированы на сервере обновлений. Обязательно сохраните ИД и уникальный ключ вашего сервера!',
   'adm_upd_register_id' => 'Регистрационный номер',
   'adm_upd_register_key' => 'Регистрационный ключ',
+
+  'adm_opt_stats_and_records' => 'Статистика и рекорды',
+  'adm_opt_stats_hide_admins' => 'Прятать админов',
+  'adm_opt_stats_hide_admins_detail' => 'Будут скрыты все аккунты с authlevel > 0',
+  'adm_opt_stats_hide_player_list' => 'Прятать игроков',
+  'adm_opt_stats_hide_player_list_detail' => 'Список ID скрываемых игроков через запятую',
+  'adm_opt_stats_schedule' => 'Расписание обновления статистики',
+  'adm_opt_stats_schedule_detail' => 'Время запуска в формате d@ЧЧ:ММ:СС через запятую',
 
 ));
 

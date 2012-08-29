@@ -54,6 +54,8 @@ function sys_stat_calculate()
 {
   global $config, $time_now, $sta_update_step, $sn_data;
 
+  $user_skip_list = sys_stat_get_user_skip_list();
+
   $sn_groups_resources_loot = &$sn_data['groups']['resources_loot'];
   $rate[RES_METAL] = $config->rpg_exchange_metal;
   $rate[RES_CRYSTAL] = $config->rpg_exchange_crystal / $config->rpg_exchange_metal;
@@ -83,6 +85,12 @@ function sys_stat_calculate()
     }
     $i++;
 
+//    $user_id = $fleet_row['fleet_owner'];
+    if(array_key_exists($user_id = $fleet_row['fleet_owner'], $user_skip_list))
+    {
+      continue;
+    }
+
     $split = explode(' ', trim(str_replace(';', ' ', $fleet_row['fleet_array'])));
 
     $FleetCounts = 0;
@@ -107,7 +115,6 @@ function sys_stat_calculate()
     }
     */
 
-    $user_id = $fleet_row['fleet_owner'];
     $counts[$user_id]['fleet'] += $FleetCounts;
     $points[$user_id]['fleet'] += $FleetPoints / 1000;
     $counts[$user_id]['resources'] += $fleet_resources;
@@ -127,10 +134,14 @@ function sys_stat_calculate()
     }
     $i++;
 
-    $user_id = $planet_row['id_owner'];
-  
+//    $user_id = $planet_row['id_owner'];
+    if(array_key_exists($user_id = $planet_row['id_owner'], $user_skip_list))
+    {
+      continue;
+    }
+
     $planet_points = 0;
-    
+
     $point_counter = $amount_counter = 0;
     foreach($sn_data['groups']['structures'] as $unit_id)
     {
@@ -204,7 +215,12 @@ function sys_stat_calculate()
   while($user_row = mysql_fetch_assoc($GameUsers))
   {
     $user_id = $user_row['id'];
-    
+
+    if(array_key_exists($user_id = $user_row['id'], $user_skip_list))
+    {
+      continue;
+    }
+
     $TechCounts = 0;
     $TechPoints = 0;
     foreach($sn_data['groups']['tech'] as $unit_id)
