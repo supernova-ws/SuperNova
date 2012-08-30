@@ -224,7 +224,7 @@ function tpl_render_menu()
     'menu_ally_chat' => array(
       'LEVEL' => 'submenu',
       'ITEM'  => $lang['AllyChat'],
-      'LINK'  => 'chat.php?ally=ally',
+      'LINK'  => 'index.php?page=chat&mode=' . CHAT_MODE_ALLY,
     ),
 
     'menu_comm' => array(
@@ -239,7 +239,7 @@ function tpl_render_menu()
     'menu_comm_chat' => array(
       'LEVEL' => 'submenu',
       'ITEM'  => $lang['Chat'],
-      'LINK'  => 'chat.php',
+      'LINK'  => 'index.php?page=chat&mode=' . CHAT_MODE_COMMON,
     ),
     'menu_comm_forum' => !$config->url_forum ? array() : array(
       'LEVEL' => 'submenu',
@@ -468,7 +468,7 @@ function tpl_render_menu()
 // $topnav    -> Affichage des ressources ? oui ou non ??
 // $metatags  -> S'il y a quelques actions particulieres a faire ...
 // $AdminPage -> Si on est dans la section admin ... faut le dire ...
-function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true)
+function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
   global $link, $debug, $user, $user_impersonator, $planetrow, $IsUserChecked, $time_now, $config, $lang, $template_result;
 
@@ -552,7 +552,10 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     mysql_close();
   }
 
-  die();
+  if($die)
+  {
+    die($die === true ? 0 : $die);
+  }
 }
 
 function tpl_topnav_event_build_helper($time, $event, $msg, $prefix, $is_decrease, $fleet_flying_row, &$fleet_flying_sorter, &$fleet_flying_events, &$fleet_event_count)

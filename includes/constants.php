@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '34');
 define('SN_RELEASE', '35');
-define('SN_VERSION', '35a9.25');
+define('SN_VERSION', '35a10.0');
 define('SN_RELEASE_STABLE', '34d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -592,5 +592,8 @@ define('STAT_RAID_LOST', 8);
 define('STAT_LVL_BUILDING', 9);
 define('STAT_LVL_TECH', 10);
 define('STAT_LVL_RAID', 11);
+
+define('CHAT_MODE_COMMON', 0);
+define('CHAT_MODE_ALLY', 1);
 
 ?>

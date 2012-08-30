@@ -4,6 +4,9 @@
    AJAX-called code to post message to chat
 
  Changelog:
+   4.0 copyright © 2009-2012 Gorlum for http://supernova.ws
+     [!] Another rewrite
+     [+] Chat is now incremental
    3.0 copyright (c) 2009-2011 by Gorlum for http://supernova.ws
      [!] Almost full rewrote
      [+] Complies with PCG1
@@ -26,51 +29,14 @@ if($config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && $microtime - $c
   die();
 }
 
-$message = sys_get_param_str('message');
-if(sys_get_param_id('ally'))
+if(($message = sys_get_param_str('message')) && $user['username'])
 {
-  $ally_id = $user['ally_id'];
-}
-else
-{
-  $ally_id = 0;
-}
-
-if ($message && $user['username'])
-{
-  $nick = trim(strip_tags($user['username']));// . ($user['ally_tag'] ? '[' . trim(strip_tags($user['ally_tag'])) . ']' : '');
-
-  $nick = render_player_nick($user, true);
-/*
-  if($user['authlevel'])
-  {
-    switch($user['authlevel'])
-    {
-      case 3:
-        $highlight = $config->chat_highlight_admin;
-      break;
-
-      case 2:
-        $highlight = $config->chat_highlight_operator;
-      break;
-
-      case 1:
-        $highlight = $config->chat_highlight_moderator;
-      break;
-    }
-  }
-  elseif(mrc_get_level($user, false, UNIT_PREMIUM))
-  {
-    $highlight = $config->chat_highlight_premium;
-  }
-*/
-  $nick = preg_replace("#(.+)#", $highlight ? $highlight : '$1', $nick);
-
-  $nick = mysql_real_escape_string($nick);
-
+  $nick = mysql_real_escape_string(render_player_nick($user, true));
   $message = preg_replace("#(?:http\:\/\/(?:.+)?\/rw\.php\?raport\=([0-9a-fA-F]{32}))#", "[rw=$1]", $message);
+  $ally_id = sys_get_param('ally') && $user['ally_id'] ? $user['ally_id'] : 0;
 
   $query = doquery("INSERT INTO {{chat}} (user, ally_id, message, timestamp) VALUES ('{$nick}', '{$ally_id}', '{$message}', '{$time_now}');");
+
   $config->array_set('users', $user['id'], 'chat_last_activity', $microtime);
 }
 
