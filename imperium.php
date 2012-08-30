@@ -91,26 +91,21 @@ tpl_assign_fleet($template, $fleets);
 
 unset($planet);
 
-$last = -1000;
-foreach ($sn_data as $unit_id => $res) {
-  if (in_array($unit_id, $sn_data['groups']['structures']))
-    $mode = 'buildings';
-  elseif (in_array($unit_id, $sn_data['groups']['fleet']))
-    $mode = 'fleet';
-  elseif (in_array($unit_id, $sn_data['groups']['defense']))
-    $mode = 'defense';
-  else
-    $mode = '';
+$show_groups = array(
+  UNIT_STRUCTURES => 'structures',
+  UNIT_STRUCTURES_SPECIAL => 'structures',
+  UNIT_SHIPS => 'fleet',
+  UNIT_DEFENCE => 'defense',
+);
 
-  if($mode)
+foreach($show_groups as $unit_group_id => $mode)
+{
+  $template->assign_block_vars('prods', array(
+    'NAME' => $lang['tech'][$unit_group_id],
+  ));
+  $unit_group = &$sn_data['techtree'][$unit_group_id];
+  foreach($unit_group as $unit_id)
   {
-    if((int) ($unit_id/100) != (int)($last/100))
-    {
-      $template->assign_block_vars('prods', array(
-        'NAME' => $lang['tech'][(int) ($unit_id/100)*100],
-      ));
-    }
-
     $template->assign_block_vars('prods', array(
       'ID'    => $unit_id,
       'FIELD' => $sn_data[$unit_id]['name'],
@@ -174,8 +169,6 @@ foreach ($sn_data as $unit_id => $res) {
       'LEVEL_PLUS_GREEN' => $unit_green == 0 ? '' : ($unit_green > 0 ? "+{$unit_green}" : $unit_green),
       'LEVEL_PLUS_YELLOW' => $unit_yellow == 0 ? '' : ($unit_yellow > 0 ? "+{$unit_yellow}" : $unit_yellow),
     ));
-
-    $last = $unit_id;
   }
 }
 

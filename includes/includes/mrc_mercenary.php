@@ -172,6 +172,7 @@ function mrc_mercenary_render($user)
       }
 
       $mercenary_level = mrc_get_level($user, null, $mercenary_id, false, true);
+      $mercenary_level_bonus = max(0, mrc_get_level($user, null, $mercenary_id) - $mercenary_level);
       $total_cost_old = 0;
       if($is_permanent)
       {
@@ -189,6 +190,7 @@ function mrc_mercenary_render($user)
         'COST'        => $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old,
         'COST_TEXT'   => pretty_number($total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old, 0, $user_dark_matter),
         'LEVEL'       => $mercenary_level,
+        'LEVEL_BONUS' => $mercenary_level_bonus,
         'LEVEL_MAX'   => $mercenary['max'],
         'BONUS'       => $mercenary_bonus,
         'BONUS_TYPE'  => $mercenary['bonus_type'],

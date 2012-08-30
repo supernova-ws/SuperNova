@@ -72,7 +72,7 @@ function mrc_change(mercenary_id)
               <!-- ELSE -->
               <div>{L_sys_level}
               <!-- ENDIF -->
-                {officer.LEVEL}/{officer.LEVEL_MAX}
+                {officer.LEVEL}<!-- IF officer.LEVEL_BONUS --><span class="bonus">+{officer.LEVEL_BONUS}</span><!-- ENDIF -->/{officer.LEVEL_MAX}
               <!-- IF officer.HIRE_END -->
                 {L_mrc_up_to} {officer.HIRE_END}
                 <input type="submit" value="{L_mrc_dismiss}" onclick="return confirm('{LA_mrc_dismiss_confirm}');"><br />

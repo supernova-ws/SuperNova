@@ -1,6 +1,6 @@
 <!-- DEFINE $OVERVIEW = true -->
 <script language="JavaScript" src="js/sn_ajax_send_fleet.js"></script>
-<script type="text/javascript"> 
+<script type="text/javascript">
 
 // var SHIP_RECYCLER = {D_SHIP_RECYCLER};
 var MT_SPY = {D_MT_SPY};
@@ -10,40 +10,6 @@ var MT_MISSILE = {D_MT_MISSILE};
 var uni_galaxy = "{PLANET_GALAXY}";
 var uni_system = "{PLANET_SYSTEM}";
 
-// fixing bug with sending recycle from planet overview
-// replace sack() with jQuery! Everywhere!!!
-/*
-function whenResponse () {
-  retVals   = this.response.split("|");
-  CmdCode   = retVals[0];
-  strInfo   = retVals[1];
-  UsedSlots = retVals[2];
-  SpyProbes = retVals[3];
-  Recyclers = retVals[4];
-  Missiles  = retVals[5];
-  document.getElementById("ov_recycle").innerHTML = retVals[1];
-}
-
-var ajax = new sack();
-
-function doit (order, galaxy, system, planet, planettype, shipcount) {
-  ajax.requestFile = "flotenajax.php?action=send";
-  ajax.runResponse = whenResponse;
-  ajax.execute = true;
-  ajax.setVar("thisgalaxy", galaxy);
-  ajax.setVar("thissystem", system);
-  ajax.setVar("thisplanet", planet);
-  ajax.setVar("thisplanettype", planettype);
-  ajax.setVar("mission", order);
-  ajax.setVar("galaxy", galaxy);
-  ajax.setVar("system", system);
-  ajax.setVar("planet", planet);
-  ajax.setVar("planettype", 2);
-  if (order == 8)
-    ajax.setVar("ship" + SHIP_RECYCLER, shipcount);
-  ajax.runAJAX();
-}
-*/
 jQuery.noConflict();
 // --></script>
 

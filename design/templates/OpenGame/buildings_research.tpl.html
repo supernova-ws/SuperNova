@@ -46,7 +46,7 @@
       </a>
     </td>
     <td class="c_c">
-      <div><a href="infos.php?gid={production.ID}">{production.NAME}<!-- IF production.LEVEL -->&nbsp;{production.LEVEL}<!-- ENDIF --></a></div>
+      <div><a href="infos.php?gid={production.ID}">{production.NAME}<!-- IF production.LEVEL -->&nbsp;{production.LEVEL}<!-- IF production.LEVEL_BONUS --><span class="bonus">+{production.LEVEL_BONUS}</span><!-- ENDIF --><!-- ENDIF --></a></div>
       <div style="text-align: justify;">{production.DESCRIPTION}</div>
       <table align="center">
         <tr>

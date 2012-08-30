@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a9.10
+* @version 35a11.0
 *
 */
 
@@ -390,13 +390,13 @@ $lang['info'] = (array(
     ),
 
     MRC_ENGINEER => array(
-      'effect' => 'per level to construction speed for buildings and ships',
-      'description' => '',
+      'description' => 'Engineer is expert in structures and ship building',
+      'effect' => 'per level to construction speed for buildings and ships<br />+1 slot per level to planet structures and hangar queries',
     ),
 
     MRC_FORTIFIER => array(
       'description' => 'Fortifier - Army Engineer. His in-depth knowledge of defensive systems allow you to shorten planet defense building time',
-      'effect' => 'per level to construction speed of missiles and defense structures<br />+10% per level to attack, armor and shields when defending planet',
+      'effect' => 'per level to construction speed of missiles and defense structures<br />+10% per level to attack, armor and shields when defending planet<br />+1 slot per level to defence structures and missile queries',
     ),
 
     MRC_STOCKMAN => array(

@@ -188,12 +188,6 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
   color: #993333;
 }
 
-#menu_premium
-{
-  color: #CC3333;
-}
-
-
 /* Message & numbers color coding */
 .important
 {
@@ -253,9 +247,9 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
   color: green;
 }
 
-.nick_premium
+.nick_premium, .bonus, #menu_premium
 {
-  color: yellow;
+  color: gold;
 }
 
 .same_alliance, .same_player

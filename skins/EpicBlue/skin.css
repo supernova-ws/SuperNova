@@ -202,7 +202,12 @@ h1
   color: lime;
 }
 
-#menu_premium, #menu_affiliates, #menu_planet_fleets, #menu_empire_fleets
+#menu_premium
+{
+  color: gold;
+}
+
+#menu_affiliates, #menu_planet_fleets, #menu_empire_fleets
 {
   color: #CC3333;
 }

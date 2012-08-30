@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a9.10
+* @version 35a11.0
 *
 */
 
@@ -134,9 +134,6 @@ $lang = array_merge($lang, array(
     UNIT_DEF_MISSILE_INTERPLANET => 'Interplanetary Missiles',
 
     UNIT_MERCENARIES => 'Mercenaries',
-    MRC_TECHNOLOGIST => 'Technologist',
-    MRC_ENGINEER => 'Engineer',
-    MRC_FORTIFIER => 'Fortifier',
     MRC_STOCKMAN => 'Cargo Master',
     MRC_SPY => 'Spy',
     MRC_ACADEMIC => 'Academician',
@@ -145,6 +142,11 @@ $lang = array_merge($lang, array(
     MRC_COORDINATOR => 'Coordinator',
     MRC_NAVIGATOR => 'Navigator',
 //    MRC_ASSASIN => 'Assassin',
+
+    UNIT_GOVERNORS => 'Governors',
+    MRC_TECHNOLOGIST => 'Technologist',
+    MRC_ENGINEER => 'Engineer',
+    MRC_FORTIFIER => 'Fortifier',
 
     UNIT_RESOURCES => 'Resources',
     RES_METAL => 'Metal',

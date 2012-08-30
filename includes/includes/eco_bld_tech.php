@@ -132,7 +132,9 @@ function eco_bld_tech(&$user, &$planet, $que = array())
       continue;
     }
 
-    $building_level      = $user[$sn_data[$Tech]['name']];
+//    $building_level      = $user[$sn_data[$Tech]['name']];
+    $building_level      = mrc_get_level($user, '' , $Tech, false, true);
+    $level_bonus         = max(0, mrc_get_level($user, '' , $Tech) - $building_level);
     $build_data          = eco_get_build_data($user, $planet, $Tech, $building_level);
 
     $temp[RES_METAL]     = floor($planet['metal'] - $build_data[BUILD_CREATE][RES_METAL]);
@@ -144,6 +146,7 @@ function eco_bld_tech(&$user, &$planet, $que = array())
       'NAME'               => $lang['tech'][$Tech],
       'LEVEL'              => $building_level,
       'LEVEL_NEXT'         => $building_level + 1,
+      'LEVEL_BONUS'        => $level_bonus,
       'DESCRIPTION'        => $lang['info'][$Tech]['description_short'],
 
       'BUILD_CAN'          => $build_data['CAN'][BUILD_CREATE],

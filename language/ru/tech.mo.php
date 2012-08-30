@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a9.10
+* @version 35a11.0
 *
 */
 
@@ -133,9 +133,6 @@ $lang = array_merge($lang, array(
     UNIT_DEF_MISSILE_INTERPLANET => 'Межпланетная ракета',
 
     UNIT_MERCENARIES => 'Наемники',
-    MRC_TECHNOLOGIST => 'Технолог',
-    MRC_ENGINEER => 'Инженер',
-    MRC_FORTIFIER => 'Фортификатор',
     MRC_STOCKMAN => 'Карго-мастер',
     MRC_SPY => 'Шпион',
     MRC_ACADEMIC => 'Академик',
@@ -144,6 +141,11 @@ $lang = array_merge($lang, array(
     MRC_COORDINATOR => 'Координатор',
     MRC_NAVIGATOR => 'Навигатор',
 //    MRC_ASSASIN => 'Ассасин',
+
+    UNIT_GOVERNORS => 'Губернаторы',
+    MRC_TECHNOLOGIST => 'Технолог',
+    MRC_ENGINEER => 'Инженер',
+    MRC_FORTIFIER => 'Фортификатор',
 
     UNIT_RESOURCES => 'Ресурсы',
     RES_METAL => 'Металл',

@@ -124,7 +124,7 @@ function eco_build($que_type, $user, &$planet, $que)
       'DESCRIPTION'       => $lang['info'][$Element]['description_short'],
       'LEVEL'             => $element_level,
       'LEVEL_OLD'         => $planet[$sn_data[$Element]['name']],
-      'LEVEL_EXTRA'       => mrc_get_level($user, $planet, $Element) - $planet[$sn_data[$Element]['name']],
+      'LEVEL_BONUS'       => mrc_get_level($user, $planet, $Element) - $planet[$sn_data[$Element]['name']],
       'LEVEL_CHANGE'      => $que['in_que'][$Element],
 
       'BUILD_RESULT'      => $build_data['RESULT'][BUILD_CREATE],

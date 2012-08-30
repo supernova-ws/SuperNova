@@ -228,30 +228,35 @@ if (!defined('INSIDE'))
       'type' => UNIT_RESOURCES,
       'location' => LOC_PLANET,
       'bonus_type' => BONUS_ABILITY,
+      'stackable' => true,
     ),
     RES_CRYSTAL => array(
       'name' => 'crystal',
       'type' => UNIT_RESOURCES,
       'location' => LOC_PLANET,
       'bonus_type' => BONUS_ABILITY,
+      'stackable' => true,
     ),
     RES_DEUTERIUM => array(
       'name' => 'deuterium',
       'type' => UNIT_RESOURCES,
       'location' => LOC_PLANET,
       'bonus_type' => BONUS_ABILITY,
+      'stackable' => true,
     ),
     RES_ENERGY => array(
       'name' => 'energy',
       'type' => UNIT_RESOURCES,
       'location' => LOC_PLANET,
       'bonus_type' => BONUS_ABILITY,
+      'stackable' => true,
     ),
     RES_DARK_MATTER => array(
       'name' => 'dark_matter',
       'type' => UNIT_RESOURCES,
       'location' => LOC_USER,
       'bonus_type' => BONUS_ABILITY,
+      'stackable' => true,
     ),
 
     UNIT_SECTOR => array(
@@ -494,8 +499,21 @@ mission = array(
       'STAT_PLAYER' => array(STAT_RAID_TOTAL => STAT_RAID_TOTAL, STAT_RAID_WON => STAT_RAID_WON, STAT_RAID_LOST => STAT_RAID_LOST, STAT_LVL_BUILDING => STAT_LVL_BUILDING, STAT_LVL_TECH => STAT_LVL_TECH, STAT_LVL_RAID => STAT_LVL_RAID, ),
     ),
 
-    'pages' => array('options' => 'options', 'imperator' => 'imperator', 'chat' => 'chat'),
+    'pages' => array('options' => 'options', 'imperator' => 'imperator', 'chat' => 'chat', 'techtree' => 'techtree'),
   );
+
+$sn_data['techtree'] = array(
+  UNIT_STRUCTURES => &$sn_data['groups']['build_allow'][PT_PLANET],
+  UNIT_STRUCTURES_SPECIAL => array_diff($sn_data['groups']['build_allow'][PT_MOON], $sn_data['groups']['build_allow'][PT_PLANET]),
+  UNIT_TECHNOLOGIES => &$sn_data['groups']['tech'],
+  UNIT_SHIPS => &$sn_data['groups']['fleet'],
+  UNIT_DEFENCE => &$sn_data['groups']['defense'],
+  UNIT_MERCENARIES => &$sn_data['groups']['mercenaries'],
+  UNIT_GOVERNORS => &$sn_data['groups']['governors'],
+  UNIT_RESOURCES => &$sn_data['groups']['resources_all'],
+  UNIT_ARTIFACTS => &$sn_data['groups']['artifacts'],
+  UNIT_PLANS => &$sn_data['groups']['plans'],
+);
 
   //All resources
   $sn_data['groups']['all'] = array_merge($sn_data['groups']['structures'], $sn_data['groups']['tech'], $sn_data['groups']['fleet'], $sn_data['groups']['defense'], $sn_data['groups']['mercenaries']);
@@ -571,7 +589,11 @@ mission = array(
 
   foreach ($sn_data as $unitID => $unitData)
   {
-    $sn_data[$unitID]['armor'] = ($sn_data[$unitID]['metal'] + $sn_data[$unitID]['crystal'])/10;
+    if(!isset($sn_data[$unitID]['cost']['metal']))
+    {
+      continue;
+    }
+    $sn_data[$unitID]['armor'] = ($sn_data[$unitID]['cost']['metal'] + $sn_data[$unitID]['cost']['crystal'])/10;
 /*
     foreach ($unitData['sd'] as $enemyID => $SPD)
     {

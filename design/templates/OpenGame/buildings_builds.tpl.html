@@ -191,7 +191,7 @@ var que_id = '{QUE_ID}';
           </span>
 
           <span style="position: absolute; top: 0; left: 15%; width: 70%; height: 16px; text-align: center; font-size: 120%;" class="icon_alpha">
-            <!-- IF production.LEVEL_OLD -->{production.LEVEL_OLD}<!-- IF production.LEVEL_EXTRA --><span class="neutral">+{production.LEVEL_EXTRA}</span><!-- ENDIF --><!-- ENDIF --><!-- IF production.LEVEL_CHANGE --><!-- IF production.LEVEL_CHANGE > 0 -->+<!-- ENDIF -->{production.LEVEL_CHANGE}<!-- ENDIF -->
+            <!-- IF production.LEVEL_OLD -->{production.LEVEL_OLD}<!-- IF production.LEVEL_BONUS --><span class="bonus">+{production.LEVEL_BONUS}</span><!-- ENDIF --><!-- ENDIF --><!-- IF production.LEVEL_CHANGE --><!-- IF production.LEVEL_CHANGE > 0 -->+<!-- ENDIF -->{production.LEVEL_CHANGE}<!-- ENDIF -->
           </span>
 
           <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY -->
@@ -223,7 +223,7 @@ var que_id = '{QUE_ID}';
         id: '{production.ID}',
         name: '{production.NAME}',
         level: '{production.LEVEL}',
-        extra: '{production.LEVEL_EXTRA}',
+        level_bonus: '{production.LEVEL_BONUS}',
         change: '{production.CHANGE}',
         description: '{production.DESCRIPTION}',
         unit_busy: '{production.UNIT_BUSY}',
