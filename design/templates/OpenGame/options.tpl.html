@@ -14,7 +14,7 @@
 <form action="index.php?page=options&mode=change" method="post" name="fOptions" enctype="multipart/form-data">
   <table width="519px">
     <tbody>
-      <!-- IF IS_ADMIN -->
+      <!-- IF ADM_PROTECT_PLANETS -->
         <tr><td class="c" colspan="2">{L_opt_adm_title}</td></tr>
         <tr>
           <th><label for="adm_pl_prot">{L_opt_adm_planet_prot}</label></th>
@@ -54,7 +54,9 @@
         <th>{L_opt_language}</th>
         <th>
           <select name="langer">
-            {opt_lst_lang_data}
+            <!-- BEGIN languages -->
+            <option value="{languages.VALUE}"<!-- IF languages.SELECTED --> selected<!-- ENDIF -->>[{languages.VALUE}] {languages.NAME}</option>
+            <!-- END languages -->
           </select>
         </th>
       </tr>
@@ -81,18 +83,24 @@
         <th>{L_opt_lst_ord}</th>
         <th>
           <select name="settings_order">
-            {opt_lst_cla_data}
+            <!-- BEGIN planet_order -->
+            <option value="{planet_order.VALUE}"<!-- IF planet_order.SELECTED --> selected<!-- ENDIF -->>{planet_order.NAME}</option>
+            <!-- END planet_order -->
           </select>
           <select name="settings_sort">
-            {opt_lst_ord_data}
+            <!-- BEGIN planet_order_type -->
+            <option value="{planet_order_type.VALUE}"<!-- IF planet_order_type.SELECTED --> selected<!-- ENDIF -->>{planet_order_type.NAME}</option>
+            <!-- END planet_order_type -->
           </select>
         </th>
       </tr>
       <tr>
         <th>{L_skins_example}</th>
         <td class="c_l"><input name="design"{opt_sskin_data} type="checkbox" id="design" /> <label for="design">{L_opt_chk_skin}</label><br>
-          <input name="dpath" maxlength="80" size="28" value="{opt_dpath_data}" type="text">&nbsp;<select name="dpaths" size="1" onchange="document.fOptions.dpath.value='skins/'+this.value+'/';">
-            {opt_lst_skin_data}
+          <input name="dpath" maxlength="80" size="28" value="{OPT_DPATH_DATA}" type="text">&nbsp;<select name="dpaths" size="1" onchange="document.fOptions.dpath.value='skins/'+this.value+'/';">
+            <!-- BEGIN skin_list -->
+            <option value="{skin_list.VALUE}"<!-- IF skin_list.SELECTED --> selected<!-- ENDIF -->>{skin_list.NAME}</option>
+            <!-- END skin_list -->
           </select>
         </td>
       </tr>

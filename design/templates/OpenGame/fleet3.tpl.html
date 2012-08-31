@@ -1,18 +1,20 @@
-<br>
-<center>
-  <div>
-  <table border="0" cellpadding="0" cellspacing="1" width="519">
-    <tr height="20"><td class="c" colspan="2"><span class="success">{fl_fleet_send}</span></td></tr>
-    <tr height="20"><th>{fl_mission}</th><th>{mission}</th></tr>
-    <tr height="20"><th>{fl_dist}</th><th>{dist}</th></tr>
-    <tr height="20"><th>{fl_speed}</th><th>{speed}</th></tr>
-    <tr height="20"><th>{fl_deute_need}</th><th>{deute_need}</th></tr>
-    <tr height="20"><th>{fl_from}</th><th>{from}</th></tr>
-    <tr height="20"><th>{fl_dest}</th><th>{galaxy}:{system}:{planet}</th></tr>
-    <tr height="20"><th>{fl_time_go}</th><th>{time_go}</th></tr>
-    <tr height="20"><th>{fl_time_back}</th><th>{time_back}</th></tr>
-    <tr height="20"><td class="c" colspan="2">{fl_title}</td></tr>
-    {ShipList}
-  </table>
-  </div>
-</center>
+<br />
+<table border="0" cellpadding="0" cellspacing="1" width="519">
+  <tr><td class="c success" colspan="2">{L_fl_fleet_send}</td></tr>
+  <tr><td class="c_c">{L_fl_mission}</td><td class="c_c">{mission}</td></tr>
+  <tr><td class="c_c">{L_fl_dist}</td><td class="c_c">{dist}</td></tr>
+  <tr><td class="c_c">{L_fl_speed}</td><td class="c_c">{speed}</td></tr>
+  <tr><td class="c_c">{L_fl_deute_need}</td><td class="c_c">{deute_need}</td></tr>
+  <tr><td class="c_c">{L_fl_from}</td><td class="c_c">{from}</td></tr>
+  <tr><td class="c_c">{L_fl_dest}</td><td class="c_c">{galaxy}:{system}:{planet}</td></tr>
+  <tr><td class="c_c">{L_fl_time_go}</td><td class="c_c">{time_go}</td></tr>
+  <tr><td class="c_c">{L_fl_time_back}</td><td class="c_c">{time_back}</td></tr>
+
+  <tr><td class="c" colspan="2">{L_fl_title}</td></tr>
+  <!-- BEGIN ships -->
+  <tr>
+    <td class="c_c">{ships.NAME}</td>
+    <td class="c_c">{ships.COUNT}</td>
+  </tr>
+  <!-- END ships -->
+</table>

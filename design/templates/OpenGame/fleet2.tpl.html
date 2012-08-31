@@ -4,7 +4,6 @@
 var fleet_capacity = {fleet_capacity};
 var resource_max = Array({planet_metal}, {planet_crystal}, {planet_deuterium});
 var fleet_slide_changing = false;
-
 --></script>
 
 <h2>{L_flt_page2_title}</h2>
@@ -49,14 +48,12 @@ var fleet_slide_changing = false;
         <!-- ENDIF -->
       </div></th></tr>
       <!-- IF missions.ID == 15 -->
-        <tr><th>
-          <font color="red">{fl_expe_warning}</font>
-        </th></tr>
+        <tr><th class="warning">{L_fl_expe_warning}</th></tr>
       <!-- ENDIF -->
     <!-- BEGINELSE missions -->
       <tr><th><font color="red">{L_fl_bad_mission}</font></th></tr>
     <!-- END missions -->
-    <tr><th class="c_c"><input id="fleet_page2_submit" value="{fl_continue}" type="submit"></th></tr>
+    <tr><th class="c_c"><input id="fleet_page2_submit" value="{L_fl_continue}" type="submit"></th></tr>
   </table>
 <br />
 
@@ -93,7 +90,7 @@ var fleet_slide_changing = false;
                 }
                 var transportCapacity = fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2);
                 for(i = 0; i < 3; i++)
-                {        
+                {
                   jQuery('#resource' + i + 'slide').slider("option", "max", Math.min(jQuery('#resource' + i + 'slide').slider("value") + transportCapacity, resource_max[i]));
                   jQuery('#resource' + i).keyup();
                 }
@@ -107,7 +104,7 @@ var fleet_slide_changing = false;
     <!-- END resources -->
 
     <tr>
-      <th colspan="2" class="c_l">{fl_space_left}</th>
+      <th colspan="2" class="c_l">{L_fl_space_left}</th>
       <th class="c_c">
         <div class="fl"><input type="button" onclick="javascript:zero_resources()" value="{L_fl_none_resources}"></div>
         <div class="fr"><input type="button" onclick="javascript:max_resources()" value="{L_fl_allressources}"></div>

@@ -7,16 +7,6 @@
  * @version 1.0
  * @copyright 2008 by ??????? for XNova
  */
-/*
-include('common.' . substr(strrchr(__FILE__, '.'), 1));
-
-lng_include('options');
-lng_include('messages');
-
-$template_result = array();
-sn_options_model();
-sn_options_view();
-*/
 
 $sn_i18n['pages']['options'] = array(
   'options' => 'options',
@@ -278,56 +268,60 @@ function sn_options_view($template = null)
   $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
 
   $template = gettemplate('options', $template);
-//  $template->assign_recursive($template_result);
 
+  $template_result['.']['skin_list'][] = array(
+    'NAME'  => $lang['select_skin_path'],
+    'VALUE' => '',
+  );
   $dir = dir(SN_ROOT_PHYSICAL . 'skins');
-  $parse['opt_lst_skin_data'] = "<option value =\"\">{$lang['select_skin_path']}</option>";
   while(($entry = $dir->read()) !== false)
   {
     if(is_dir("skins/{$entry}") && $entry[0] !='.')
     {
-      $parse['opt_lst_skin_data'] .= "<option value =\"{$entry}\">{$entry}</option>";
+      $template_result['.']['skin_list'][] = array(
+        'VALUE' => $entry,
+        'NAME'  => $entry,
+        'SELECTED' => $user['dpath'] == "skins/{$entry}/",
+      );
     }
   }
   $dir->close();
 
-  //  $parse['opt_lst_skin_data']  = "<option value =\"skins/xnova/\">skins/xnova/</option>";
-  $parse['opt_lst_ord_data']  = "<option value =\"0\"". (($user['planet_sort'] == 0) ? " selected": "") .">". $lang['opt_lst_ord0'] ."</option>";
-  $parse['opt_lst_ord_data'] .= "<option value =\"1\"". (($user['planet_sort'] == 1) ? " selected": "") .">". $lang['opt_lst_ord1'] ."</option>";
-  $parse['opt_lst_ord_data'] .= "<option value =\"2\"". (($user['planet_sort'] == 2) ? " selected": "") .">". $lang['opt_lst_ord2'] ."</option>";
-  $parse['opt_lst_ord_data'] .= "<option value =\"3\"". (($user['planet_sort'] == 3) ? " selected": "") .">". $lang['opt_lst_ord3'] ."</option>";
-
-  $parse['opt_lst_cla_data']  = "<option value =\"0\"". (($user['planet_sort_order'] == 0) ? " selected": "") .">". $lang['opt_lst_cla0'] ."</option>";
-  $parse['opt_lst_cla_data'] .= "<option value =\"1\"". (($user['planet_sort_order'] == 1) ? " selected": "") .">". $lang['opt_lst_cla1'] ."</option>";
+  for($i = 0; $i < 2; $i++)
+  {
+    $template_result['.']['planet_order'][] = array(
+      'VALUE' => $i,
+      'NAME'  => $lang['opt_lst_cla' . $i],
+      'SELECTED' => $user['planet_sort_order'] == $i,
+    );
+  }
+  for($i = 0; $i < 4; $i++)
+  {
+    $template_result['.']['planet_order_type'][] = array(
+      'VALUE' => $i,
+      'NAME'  => $lang['opt_lst_ord' . $i],
+      'SELECTED' => $user['planet_sort'] == $i,
+    );
+  }
 
   $lang_list = lng_get_list();
   foreach($lang_list as $lang_id => $lang_data)
   {
-    if($lang_id == $user['lang'])
-    {
-      $selected = 'selected';
-    }
-    else
-    {
-      $selected = '';
-    }
-
-    $parse['opt_lst_lang_data'] .= "<option value =\"{$lang_id}\" {$selected}>{$lang_data['LANG_NAME_NATIVE']}</option>";
-  }
-
-  if($user['authlevel'] >= 3)
-  {
-    $parse['adm_pl_prot_data'] = ($planetrow['id_level'] > 0) ? " checked='checked'" : '';
+    $template_result['.']['languages'][] = array(
+      'VALUE' => $lang_id,
+      'NAME'  => $lang_data['LANG_NAME_NATIVE'],
+      'SELECTED' => $lang_id == $user['lang'],
+    );
   }
 
   $template->assign_vars(array(
     'USER_ID'        => $user['id'],
 
-    'IS_ADMIN'       => $user['authlevel'] >= 3,
+    'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
     'opt_usern_data' => $user['username'],
     'opt_mail1_data' => $user['email'],
     'opt_mail2_data' => $user['email_2'],
-    'opt_dpath_data' => $user['dpath'],
+    'OPT_DPATH_DATA' => $user['dpath'],
     'opt_probe_data' => $user['spio_anz'],
     'opt_toolt_data' => $user['settings_tooltiptime'],
     'opt_fleet_data' => $user['settings_fleetactions'],
@@ -396,7 +390,7 @@ function sn_options_view($template = null)
     }
   }
 
-  return parsetemplate($template, $parse);
+  return parsetemplate($template);
 }
 
 ?>

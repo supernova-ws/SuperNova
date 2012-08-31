@@ -1,49 +1,61 @@
 <?php
-  // verband.php
-  // @version 1.0
-  // @copyright 2008 by ??????? for XNova
+// verband.php
+// @version 1.0
+// @copyright 2008 by ??????? for XNova
 
 if(SN_IN_FLEET !== true)
 {
   $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
 }
 
-$fleetid = intval($_POST['fleetid']);
-$userToAdd = mysql_real_escape_string($_POST['addtogroup']);
+$fleetid = sys_get_param_id('fleetid');
 
-if (!is_numeric($fleetid) || empty($fleetid)) {
+if(!is_numeric($fleetid) || empty($fleetid))
+{
   header("Location: fleet.php");
   exit();
 }
 
 $query = doquery("SELECT * FROM `{{fleets}}` WHERE fleet_id = '{$fleetid}'");
-if (mysql_num_rows($query) != 1) {
+if(mysql_num_rows($query) != 1)
+{
   message($lang['fl_fleet_not_exists'], $lang['fl_error']);
 }
 
 $fleet = mysql_fetch_assoc($query);
-if ($fleet['fleet_start_time'] <= $time_now || $fleet['fleet_end_time'] < $time_now || $fleet['fleet_mess'] == 1) {
+if ($fleet['fleet_start_time'] <= $time_now || $fleet['fleet_end_time'] < $time_now || $fleet['fleet_mess'] == 1)
+{
   message($lang['fl_isback'], $lang['fl_error']);
 }
 
-if ($fleet['fleet_owner'] != $user['id']) {
+if($fleet['fleet_owner'] != $user['id'])
+{
   $debug->warning($lang['fl_aks_hack_wrong_fleet'],'Wrong Fleet Owner',301);
   message($lang['fl_aks_hack_wrong_fleet'], $lang['fl_error']);
 }
 
 $aks = doquery("SELECT * from `{{aks}}` WHERE `flotten` = {$fleetid} LIMIT 1;", '', true);
 // If we got a message to add some1 to attack (MadnessRed code)
-if($userToAdd){
+if($userToAdd = sys_get_param_str('addtogroup'))
+{
   $userToAddID = doquery("SELECT `id` FROM `{{users}}` WHERE `username` like '{$userToAdd}' LIMIT 1;", '', true);
   $userToAddID = $userToAddID['id'];
 
-  if($userToAddID){
-    if (!$aks){
+  if($fleet['fleet_owner'] == $userToAddID)
+  {
+    message($lang['flt_aks_player_same'], $lang['fl_error']);
+  }
+
+  if($userToAddID)
+  {
+    if(!$aks)
+    {
       // No AKS exists - making one
       // SetSelectedPlanet ( $user );
       // CheckPlanetUsedFields($planetrow);
 
-      if (!$fleet['fleet_group']) {
+      if(!$fleet['fleet_group'])
+      {
         doquery("INSERT INTO {{aks}} SET
           `name` = 'KV{$fleetid}',
           `teilnehmer` = '" . $user['id'] . "',
@@ -60,54 +72,69 @@ if($userToAdd){
 
         doquery("UPDATE {{fleets}} SET fleet_group = '{$aks['id']}', fleet_mission = '" . MT_AKS . "' WHERE fleet_id = '{$fleetid}'");
         $fleet['fleet_group'] = $aks['id'];
-      }else{
-        message($lang['fl_aks_already_in_aks'],$lang['fl_error']);
-      };
-    };
+      }
+      else
+      {
+        message($lang['fl_aks_already_in_aks'], $lang['fl_error']);
+      }
+    }
 
     $isUserExists = false;
     $invited_ar = explode(",", $aks['eingeladen']);
-    foreach($invited_ar as $inv){
+    foreach($invited_ar as $inv)
+    {
       if ($userToAddID == $inv)
+      {
         $isUserExists = true;
+      }
     };
 
-    if(count($invited_ar)>=5){
-      message('Нельзя приглашать больше 5 человек','Ошибка');
-    };
+    if(count($invited_ar)>=5)
+    {
+      message($lang['flt_aks_error_too_much_players'], $lang['fl_error']);
+    }
 
-    if ($isUserExists) {
+    if($isUserExists)
+    {
       $add_user_message_mr = sprintf($lang['fl_aks_player_invited_already'], $userToAdd);
-    }else{
-      print('adding user');
+    }
+    else
+    {
       $add_user_message_mr = sprintf($lang['fl_aks_player_invited'], $userToAdd);
       doquery("UPDATE `{{aks}}` SET `eingeladen` = concat(`eingeladen`, ',{$userToAddID}') WHERE `flotten` = {$fleetid};")
         or die(sprintf($lang['fl_aks_adding_error'],mysql_error()));
       $aks['eingeladen'] .= ',' . $userToAddID;
-    };
+    }
     msg_send_simple_message ( $userToAddID, $user['id'], $time_now, MSG_TYPE_COMBAT, $user['username'],
       $lang['fl_aks_invite_message_header'], sprintf( $lang['fl_aks_invite_message'], $user['username']));
-  }else{
+  }
+  else
+  {
     $add_user_message_mr = sprintf($lang['fl_aks_player_error'], $userToAdd);
   }
 }
 
-$parse['fleetid'] = $fleetid;
-$parse['add_user_message_mr'] = $add_user_message_mr;
+$template = gettemplate('fleet_aks_invite', true);
+$template->assign_vars(array(
+  'FLEET_ID' => $fleetid,
+  'MESSAGE' => $add_user_message_mr,
+));
 
 $members = explode(",", $aks['eingeladen']);
-foreach($members as $a => $b) {
-  if ($b != '') {
+foreach($members as $a => $b)
+{
+  if($b != '')
+  {
     $member_qry_mr = doquery("SELECT `username` FROM `{{users}}` WHERE `id` ='{$b}' ;");
-    while($row = mysql_fetch_assoc($member_qry_mr)){
-      $invited .= "<option>".$row['username']."</option>";
+    while($row = mysql_fetch_assoc($member_qry_mr))
+    {
+      $template->assign_block_vars('invited', array(
+        'NAME' => $row['username'],
+      ));
     }
   }
 }
-$parse['members'] = $invited;
 
-$page = parsetemplate(gettemplate('fleet_aks_invite'), $parse);
-
-display($page, $lang['fl_title']);
+display($template, $lang['fl_title']);
 
 ?>

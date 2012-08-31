@@ -12,15 +12,15 @@
 
   <table width="519" border="0" cellpadding="0" cellspacing="1">
     <tr>
-      <th width="50%">{fl_dest}</th>
+      <th width="50%">{L_fl_dest}</th>
       <th>
         <input name="galaxy" size="3" maxlength="2" onChange="shortInfo()" onKeyUp="shortInfo()" value="{galaxy}" />
         <input name="system" size="3" maxlength="3" onChange="shortInfo()" onKeyUp="shortInfo()" value="{system}" />
         <input name="planet" size="3" maxlength="2" onChange="shortInfo()" onKeyUp="shortInfo()" value="{planet}" />
         <select name="planet_type" onChange="shortInfo()" onKeyUp="shortInfo()">
-          <option value="1" {t1}>{fl_planet}</option>
-          <option value="2" {t2}>{fl_ruins}</option>
-          <option value="3" {t3}>{fl_moon}</option>
+          <option value="1" {t1}>{L_fl_planet}</option>
+          <option value="2" {t2}>{L_fl_ruins}</option>
+          <option value="3" {t3}>{L_fl_moon}</option>
         </select>
         <input name="fleet_group" type="hidden" onChange="shortInfo()" onKeyUp="shortInfo()" value="0" />
         <input name="acs_target_mr" type="hidden" onChange="shortInfo()" onKeyUp="shortInfo()" value="0:0:0" />
@@ -28,7 +28,7 @@
     </tr>
 
     <tr>
-      <th>{fl_speed}</th>
+      <th>{L_fl_speed}</th>
       <th>
         <select name="speed" onChange="shortInfo()" onKeyUp="shortInfo()">
           <option value="10">100</option>
@@ -45,7 +45,7 @@
     </tr>
 
     <tr>
-      <th>{fl_dist}</th>
+      <th>{L_fl_dist}</th>
       <th><div id="distance">-</div></th>
     </tr>
 
@@ -70,8 +70,8 @@
     </tr>
 
     <tr>
-        <td class="c_c">{L_fl_fuel_on_planet}</td>
-        <td class="c_c zero">{PLANET_DEUTERIUM}</td>
+      <td class="c_c">{L_fl_fuel_on_planet}</td>
+      <td class="c_c zero">{PLANET_DEUTERIUM}</td>
     </tr>
 
     <tr>
@@ -79,14 +79,14 @@
       <th><div id="capacity">-</div></th>
     </tr>
 
-    <tr><th colspan="2" class="c_c"><input type="submit" value="{fl_continue}" /></th></tr>
+    <tr><th colspan="2" class="c_c"><input type="submit" value="{L_fl_continue}" /></th></tr>
   </table>
   <br />
   <table>
     <tr>
       <td valign="top">
         <table>
-        <tr><td colspan=2 class=c>{fl_myplanets}</td></tr>
+        <tr><td colspan=2 class=c>{L_fl_myplanets}</td></tr>
           <!-- BEGIN colonies -->
             <tr>
               <th>
@@ -96,7 +96,7 @@
             </tr>
           <!-- BEGINELSE colonies -->
             <tr>
-              <th colspan="2">{fl_nocolonies}</th>
+              <th colspan="2">{L_fl_nocolonies}</th>
             </tr>
           <!-- END colonies -->
         </table>
@@ -104,7 +104,7 @@
 
       <td valign="top">
         <table>
-          <tr><td class=c>{fl_shortcut}</td></tr>
+          <tr><td class=c>{L_fl_shortcut}</td></tr>
           <!-- BEGIN shortcut -->
             <tr>
               <th>
@@ -122,7 +122,7 @@
 
       <td valign="top">
         <table>
-        <tr><td class=c>{fl_grattack}</td></tr>
+        <tr><td class=c>{L_fl_grattack}</td></tr>
           <!-- BEGIN acss -->
             <tr>
               <th>
@@ -131,7 +131,7 @@
             </tr>
           <!-- BEGINELSE acss -->
             <tr>
-              <th colspan="2">{fl_noacss}</th>
+              <th colspan="2">{L_fl_noacss}</th>
             </tr>
           <!-- END acss -->
         </table>

@@ -5,13 +5,10 @@
  *
  * Player's information
  *
- * @version 1.0 copyright (c) 2010 by Gorlum for http://supernova.ws
+ * @version 2.0 copyright (c) 2010-2012 by Gorlum for http://supernova.ws
  */
 
-include('common.' . substr(strrchr(__FILE__, '.'), 1));
-
 $sn_i18n['pages']['imperator'] = array(
-//  'affilates' => 'affilates',
   'overview' => 'overview',
 );
 
@@ -21,45 +18,9 @@ function sn_imperator_view($template = null)
 {
   global $template_result, $config, $lang, $user, $time_now;
 
-//  lng_include('affilates');
-//  lng_include('overview');
-
-//  $template = gettemplate('imperator', isset($template) ? $template : true);
   $template = gettemplate('imperator', $template);
-//  $template->assign_recursive($template_result);
-/*
-  // SuperNova's banner for users to use
-  if($config->int_banner_showInOverview)
-  {
-    $delimiter = strpos($config->int_banner_URL, '?') ? '&' : '?';
-    $template->assign_vars(array(
-      'BANNER_URL' => SN_ROOT_VIRTUAL . "{$config->int_banner_URL}{$delimiter}id={$user['id']}",
-    ));
-  }
-
-  // SuperNova's userbar to use on forums
-  if($config->int_userbar_showInOverview)
-  {
-    $delimiter = strpos($config->int_userbar_URL, '?') ? '&' : '?';
-
-    $template->assign_vars(array(
-      'USERBAR_URL' => SN_ROOT_VIRTUAL . "{$config->int_userbar_URL}{$delimiter}id={$user['id']}",
-    ));
-  }
-*/
   $StatRecord = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."';", '', true);
-  /*
-  // Last chat messages
-  $mess = doquery("SELECT `user`,`message` FROM {{chat}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5");
-  $msg = '<table>';
-  while ($result = mysql_fetch_assoc($mess)) {
-    //$str = substr($result['message'], 0, 85);
-    $str = $result['message'];
-    $usr = $result['user'];
-    $msg .= "<tr><td align=\"left\">".$usr.":</td><td>".$str."</td></tr>";
-  }
-  $msg .= '</table>';
-  */
+
   // -----------------------------------------------------------------------------------------------
   // News Frame ...
   if ($config->game_news_overview)
@@ -100,12 +61,9 @@ function sn_imperator_view($template = null)
     'RANK_DIFF'            => $StatRecord['total_old_rank'] - $StatRecord['total_rank'],
 
     'GAME_NEWS_OVERVIEW'   => $config->game_news_overview,
-
-    //'LastChat'       => CHT_messageParse($msg),
   ));
 
-  return parsetemplate($template, $parse);
+  return parsetemplate($template);
 }
-//display(parsetemplate($template), "{$lang['imp_imperator']} {$user['username']}");
 
 ?>

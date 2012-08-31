@@ -12,17 +12,14 @@ if(SN_IN_FLEET !== true)
 
 lng_include('overview');
 
-if (!$planetrow)
+if(!$planetrow)
 {
-  $parse_err['title'] = $lang['fl_error'];
-  $parse_err['mes']   = $lang['fl_noplanetrow'];
-
-  $parse['ErrorNoPlanetRow'] = parsetemplate(gettemplate('message_body'), $parse_err);
+  message($lang['fl_noplanetrow'], $lang['fl_error']);
 }
 
 $template = gettemplate('fleet0', true);
 
-foreach ($sn_data['groups']['fleet'] as $n => $i)
+foreach($sn_data['groups']['fleet'] as $n => $i)
 {
   if ($planetrow[$sn_data[$i]['name']] > 0)
   {
@@ -58,6 +55,7 @@ $template->assign_vars(array(
   'PLANET_DEUTERIUM'   => pretty_number($planetrow['deuterium']),
 ));
 
-display(parsetemplate($template, $parse), $lang['fl_title']);
+$template->assign_recursive($template_result);
+display($template, $lang['fl_title']);
 
 ?>

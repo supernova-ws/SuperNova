@@ -17,7 +17,7 @@ var speed_factor   = {speed_factor};
 
 <!-- INCLUDE fleet_javascript -->
 
-<h2>{fl_new_miss}</h2>
+<h2>{L_fl_new_miss}</h2>
 <!-- IF MISSION_NAME -->
   <h3>{TYPE_NAME} [{galaxy}:{system}:{planet}], {MISSION_NAME}</h3>
 <!-- ENDIF -->
@@ -35,13 +35,11 @@ var speed_factor   = {speed_factor};
 
   <table border="0" cellpadding="0" cellspacing="1">
     <tr class="c_c">
-      <th>{fl_fleet_typ}</th>
+      <th>{L_fl_fleet_typ}</th>
       <th>{L_fl_orbiting}</th>
       <th>{L_fl_to_fly}</th>
     </tr>
 
-    {ErrorNoPlanetRow}
-    
     <!-- IF .ships -->
       <!-- BEGIN ships -->
         <tr>
@@ -65,14 +63,14 @@ var speed_factor   = {speed_factor};
           <th><input type="button" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';"></th>
           <th><input type="submit" value="{L_fl_continue}" /></th>
           <th>
-              <div class="fl"><input type="button" value="{fl_unselectall}" onclick="javascript:zero_fleet();"></div>
-              <div class="fr"><input type="button" value="{fl_selectall}" onclick="javascript:max_fleet();"></div>
+              <div class="fl"><input type="button" value="{L_fl_unselectall}" onclick="javascript:zero_fleet();"></div>
+              <div class="fr"><input type="button" value="{L_fl_selectall}" onclick="javascript:max_fleet();"></div>
             <div class="fr"></div>
           </th>
         </tr>
       <!-- ELSE -->
         <tr>
-          <th colspan="3"><font color="red">{fl_noslotfree}</font></th>
+          <th colspan="3" class="error">{L_fl_noslotfree}</th>
         </tr>
       <!-- ENDIF -->
     <!-- ELSE -->

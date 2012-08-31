@@ -1,123 +1,126 @@
 <?php
-  // floten1.php
-  // @version 1.0
-  // @copyright 2008 by Chlorel for XNova
+
+// floten1.php
+// @version 1.0
+// @copyright 2008 by Chlorel for XNova
 
 if(SN_IN_FLEET !== true)
 {
   $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
 }
 
-  $template = gettemplate('fleet1', true);
+$template = gettemplate('fleet1', true);
 
-  $ships = $_POST['ships'];
-  if(!is_array($ships))
-  {
-    $ships = array();
-  }
+$ships = $_POST['ships'];
+if(!is_array($ships))
+{
+  $ships = array();
+}
 
-  foreach ($ships as $ship_id => $ship_count)
+foreach ($ships as $ship_id => $ship_count)
+{
+  if(in_array($ship_id, $sn_data['groups']['fleet']) && $ship_count)
   {
-    if(in_array($ship_id, $sn_data['groups']['fleet']) && $ship_count)
+    if($ship_count > $planetrow[$sn_data[$ship_id]['name']])
     {
-      if($ship_count > $planetrow[$sn_data[$ship_id]['name']])
-      {
-        $page .= $lang['fl_noenought'];
-      }
-      else
-      {
-        $fleet['fleetarray'][$ship_id]  = $ship_count;
-        $fleet['fleetlist']            .= "{$ship_id},{$ship_count};";
-        $fleet['amount']               += $ship_count;
-      }
-      $fleet['capacity'] += $sn_data[$ship_id]['capacity'] * $ship_count;
-      $ship_base_data = get_ship_data($ship_id, $user);
-      $template->assign_block_vars('ships', array(
-        'ID'          => $ship_id,
-        'AMOUNT'      => $ship_count,
-        'CONSUMPTION' => $ship_base_data['consumption'],
-        'SPEED'       => $ship_base_data['speed'],
-      ));
+      $page .= $lang['fl_noenought'];
     }
-  }
-
-  if (!$fleet['fleetlist'])
-  {
-    message($lang['fl_err_no_ships'], $lang['fl_error'], 'fleet.' . PHP_EX, 5);
-  }
-
-  // Building list of shortcuts
-  $query = doquery("SELECT * FROM {{shortcut}} WHERE shortcut_user_id = {$user['id']};");
-  while($shortcut = mysql_fetch_assoc($query))
-  {
-    $template->assign_block_vars('shortcut', array(
-      'NAME'       => $shortcut['shortcut_text'],
-      'GALAXY'     => $shortcut['shortcut_galaxy'],
-      'SYSTEM'     => $shortcut['shortcut_system'],
-      'PLANET'     => $shortcut['shortcut_planet'],
-      'TYPE'       => $shortcut['shortcut_planet_type'],
-      'TYPE_PRINT' => $lang['fl_shrtcup'][$shortcut['shortcut_planet_type']],
+    else
+    {
+      $fleet['fleetarray'][$ship_id]  = $ship_count;
+      $fleet['fleetlist']            .= "{$ship_id},{$ship_count};";
+      $fleet['amount']               += $ship_count;
+    }
+    $fleet['capacity'] += $sn_data[$ship_id]['capacity'] * $ship_count;
+    $ship_base_data = get_ship_data($ship_id, $user);
+    $template->assign_block_vars('ships', array(
+      'ID'          => $ship_id,
+      'AMOUNT'      => $ship_count,
+      'CONSUMPTION' => $ship_base_data['consumption'],
+      'SPEED'       => $ship_base_data['speed'],
     ));
   }
+}
 
-  // Building list of own planets & moons
-  $colonies = SortUserPlanets ( $user );
-  if (mysql_num_rows($colonies) > 1)
+if (!$fleet['fleetlist'])
+{
+  message($lang['fl_err_no_ships'], $lang['fl_error'], 'fleet.' . PHP_EX, 5);
+}
+
+// Building list of shortcuts
+$query = doquery("SELECT * FROM {{shortcut}} WHERE shortcut_user_id = {$user['id']};");
+while($shortcut = mysql_fetch_assoc($query))
+{
+  $template->assign_block_vars('shortcut', array(
+    'NAME'       => $shortcut['shortcut_text'],
+    'GALAXY'     => $shortcut['shortcut_galaxy'],
+    'SYSTEM'     => $shortcut['shortcut_system'],
+    'PLANET'     => $shortcut['shortcut_planet'],
+    'TYPE'       => $shortcut['shortcut_planet_type'],
+    'TYPE_PRINT' => $lang['fl_shrtcup'][$shortcut['shortcut_planet_type']],
+  ));
+}
+
+// Building list of own planets & moons
+$colonies = SortUserPlanets ( $user );
+if (mysql_num_rows($colonies) > 1)
+{
+  while ($row = mysql_fetch_assoc($colonies))
   {
-    while ($row = mysql_fetch_assoc($colonies))
+    $template->assign_block_vars('colonies', array(
+      'NAME'       => $row['name'],
+      'GALAXY'     => $row['galaxy'],
+      'SYSTEM'     => $row['system'],
+      'PLANET'     => $row['planet'],
+      'TYPE'       => $row['planet_type'],
+      'TYPE_PRINT' => $lang['fl_shrtcup'][$row['planet_type']],
+      // $row['planet_type'] == 3
+    ));
+  }
+};
+
+//ACS Start
+//Need to look for acs attacks.
+$aks_madnessred = doquery('SELECT * FROM {{aks}};');
+while($row = mysql_fetch_assoc($aks_madnessred))
+{
+  $members = explode(',', $row['eingeladen']);
+  foreach($members as $a => $b)
+  {
+    if ($b == $user['id'])
     {
-      $template->assign_block_vars('colonies', array(
-        'NAME'       => $row['name'],
+      $template->assign_block_vars('acss', array(
+        'ID'         => $row['id'],
         'GALAXY'     => $row['galaxy'],
         'SYSTEM'     => $row['system'],
         'PLANET'     => $row['planet'],
         'TYPE'       => $row['planet_type'],
         'TYPE_PRINT' => $lang['fl_shrtcup'][$row['planet_type']],
-        // $row['planet_type'] == 3
+        'NAME'       => $row['name'],
       ));
     }
-  };
-
-  //ACS Start
-  //Need to look for acs attacks.
-  $aks_madnessred = doquery('SELECT * FROM {{aks}};');
-  while($row = mysql_fetch_assoc($aks_madnessred))
-  {
-    $members = explode(',', $row['eingeladen']);
-    foreach($members as $a => $b)
-    {
-      if ($b == $user['id'])
-      {
-        $template->assign_block_vars('acss', array(
-          'ID'         => $row['id'],
-          'GALAXY'     => $row['galaxy'],
-          'SYSTEM'     => $row['system'],
-          'PLANET'     => $row['planet'],
-          'TYPE'       => $row['planet_type'],
-          'TYPE_PRINT' => $lang['fl_shrtcup'][$row['planet_type']],
-          'NAME'       => $row['name'],
-        ));
-      }
-    }
   }
+}
 
-  $template->assign_vars(array(
-    'usedfleet'       => str_rot13(base64_encode(serialize($fleet['fleetarray']))),
+$template->assign_vars(array(
+  'usedfleet'       => str_rot13(base64_encode(serialize($fleet['fleetarray']))),
 
-    'speed_factor'     => flt_server_flight_speed_multiplier(),
-    "t{$planet_type}" => 'SELECTED',
+  'speed_factor'     => flt_server_flight_speed_multiplier(),
+  "t{$planet_type}" => 'SELECTED',
 
-    'target_mission'  => $target_mission,
+  'target_mission'  => $target_mission,
 
-    'ships'           => str_rot13(base64_encode(serialize($ships))),
+  'ships'           => str_rot13(base64_encode(serialize($ships))),
 
-    'fleet_speed'     => flt_fleet_speed($user, $fleet['fleetarray']),
-    'fleet_capacity'  => $fleet['capacity'],
+  'fleet_speed'     => flt_fleet_speed($user, $fleet['fleetarray']),
+  'fleet_capacity'  => $fleet['capacity'],
 
-    'PLANET_DEUTERIUM'   => pretty_number($planetrow['deuterium']),
+  'PLANET_DEUTERIUM'   => pretty_number($planetrow['deuterium']),
 
-    'PAGE_HINT'       => $lang['fl_page1_hint'],
-  ));
+  'PAGE_HINT'       => $lang['fl_page1_hint'],
+));
 
-  display(parsetemplate($template, $parse), $lang['fl_title']);
+$template->assign_recursive($template_result);
+display($template, $lang['fl_title']);
+
 ?>

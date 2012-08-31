@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 35a11.6
 *
 */
 
@@ -210,6 +210,11 @@ $lang = array_merge($lang, array(
 
   'fl_fuel_on_planet' => 'Fuel on planet',
 
+  'flt_aks_players_in_aks' => 'Player in ACS',
+  'flt_aks_player_invite' => 'Invite player to ACS',
+  'flt_aks_player_invite_do' => 'Invite',
+  'flt_aks_player_same' => 'You can not invite to ACS player to whom attack is launched!',
+  'flt_aks_error_too_much_players' => 'You can invite to ACS 5 players maximum',
 ));
 
 ?>

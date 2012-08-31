@@ -23,14 +23,13 @@
 */
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
+$template_result = is_array($template_result) ? $template_result : array();
 
 define('SN_IN_FLEET', true);
 
 require_once('includes/includes/flt_functions.php');
 
 lng_include('fleet');
-
-$parse = $lang;
 
 $fleet_page = intval($_GET['fleet_page']);
 
@@ -143,7 +142,6 @@ switch ($fleet_page)
         {
           $recyclers += $fleetarray[$recycler_id];
         }
-//        if ($fleetarray[SHIP_RECYCLER] && $planet_type == PT_DEBRIS)
         if ($recyclers > 0 && $planet_type == PT_DEBRIS)
         {
           $target_mission = MT_RECYCLE;
@@ -205,18 +203,22 @@ switch ($fleet_page)
 
   case 1:
   case 0:
-    $parse['thisgalaxy']      = $planetrow['galaxy'];
-    $parse['thissystem']      = $planetrow['system'];
-    $parse['thisplanet']      = $planetrow['planet'];
-    $parse['thisplanet_type'] = $planetrow['planet_type'];
+    $template_result += array(
+      'thisgalaxy'      => $planetrow['galaxy'],
+      'thissystem'      => $planetrow['system'],
+      'thisplanet'      => $planetrow['planet'],
+      'thisplanet_type' => $planetrow['planet_type'],
+    );
   // no break
 
 }
 
-$parse['galaxy'] = $galaxy;
-$parse['system'] = $system;
-$parse['planet'] = $planet;
-$parse['planet_type'] = $planet_type;
+$template_result += array(
+  'galaxy' => $galaxy,
+  'system' => $system,
+  'planet' => $planet,
+  'planet_type' => $planet_type,
+);
 
 switch($fleet_page)
 {

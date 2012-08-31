@@ -221,6 +221,6 @@ $template->assign_vars(array(
 
 tpl_set_resource_info($template, $planetrow, array());
 
-display(parsetemplate($template), $lang['fl_title']);
+display($template, $lang['fl_title']);
 
 ?>

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 35a11.6
 *
 */
 
@@ -187,7 +187,7 @@ $lang = array_merge($lang, array(
   'fl_aks_invite_message' => '<font color="red">Игрок %s пригласил Вас присоединяться к САБ. Вы можете присоединиться к САБ на странице &quot;Флот&quot;.</font>',
   'fl_aks_player_invited' => '<font color="lime">Игрок %s был приглашен для совместного нападения.</font>',
   'fl_aks_player_invited_already' => '<font color="lime">Игрок %s уже приглашен. Повторное приглашение отослано.</font>',
-  'fl_aks_player_error' => '<font color="red">Ошибка. Игрок %s не в игре.</font>',
+  'fl_aks_player_error' => '<font color="red">Ошибка. Игрок %s не найден.</font>',
   'fl_aks_already_in_aks' => 'Флот уже в боевой группе!',
   'fl_aks_adding_error' => 'Ошибка добавления участника к флоту:<br>%s',
   'fl_aks_hack_wrong_fleet' => 'Попытка взлома! Манипулирование чужим флотом! Сообщение отправлено Администратору!',
@@ -208,6 +208,11 @@ $lang = array_merge($lang, array(
 
   'fl_fuel_on_planet' => 'Запас топлива на планете',
 
+  'flt_aks_players_in_aks' => 'Игроки в САБ',
+  'flt_aks_player_invite' => 'Пригласить игрока в САБ',
+  'flt_aks_player_invite_do' => 'Пригласить',
+  'flt_aks_player_same' => 'Нельзя присоединить к САБу пользователя, на которого совершается нападение!',
+  'flt_aks_error_too_much_players' => 'Нельзя пригласить в САБ больше 5 игроков',
 ));
 
 ?>
