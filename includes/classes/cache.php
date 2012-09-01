@@ -625,6 +625,7 @@ class classConfig extends classPersistent
 
     'stats_hide_admins'            => 1,
     'stats_hide_player_list'       => '',
+    'stats_hide_pm_link'           => 0,
     'stats_schedule'               => 'd@04:00:00',
 
     'tpl_minifier'                 => 0, // Template minifier

@@ -213,6 +213,7 @@ $template->assign_vars(array(
   'TYPE' => $type,
   'USER_ALLY' => $user['ally_id'],
   'USER_ID' => $user['id'],
+  'STATS_HIDE_PM_LINK' => $config->stats_hide_pm_link,
 ));
 
 display($template, $lang['stat_header'], $IsUserChecked, '', false, $IsUserChecked);

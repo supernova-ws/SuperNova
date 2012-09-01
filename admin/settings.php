@@ -87,6 +87,7 @@ if(sys_get_param('save'))
 
   $config->stats_hide_admins       = sys_get_param_int('stats_hide_admins');
   $config->stats_hide_player_list  = sys_get_param_str('stats_hide_player_list');
+  $config->stats_hide_pm_link      = sys_get_param_int('stats_hide_pm_link');
   $config->stats_schedule          = sys_get_param_str('stats_schedule');
 
   $config->empire_mercenary_base_period = sys_get_param_int('empire_mercenary_base_period');
@@ -136,6 +137,7 @@ $template->assign_vars(array(
   'SERVER_UPDATE_KEY' => $config->server_updater_key,
 
   'STATS_HIDE_ADMINS' => $config->stats_hide_admins,
+  'STATS_HIDE_PM_LINK' => $config->stats_hide_pm_link,
 //  'STATS_HIDE_PLAYER_LIST' => $config->stats_hide_player_list,
 //  'STATS_SCHEDULE' => $config->stats_hide_player_list,
 ));

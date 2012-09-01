@@ -1,9 +1,15 @@
 <h1>{L_stat_header}</h1>
 <h2>{L_stat_refresh_last}&nbsp;{REFRESH_DATE}</h2>
 
+<!-- IF STATS_HIDE_PM_LINK && SUBJECT == 1 -->
+  <!-- DEFINE $HEADER_COLSPAN = '5' -->
+<!-- ELSE -->
+  <!-- DEFINE $HEADER_COLSPAN = '6' -->
+<!-- ENDIF -->
+
 <table width="519">
   <tr>
-    <th class="c_c" colspan="6">
+    <th class="c_c" colspan="{$HEADER_COLSPAN}">
       <form name="stat_form" method="post">
         {L_stat_show}
         <select name="type" onChange="javascript:document.stat_form.submit()">
@@ -33,7 +39,9 @@
 
     <!-- IF SUBJECT == 1 -->
     <th class ="c_c">{L_sys_player}</th>
+      <!-- IF ! STATS_HIDE_PM_LINK -->
     <th class ="c_c"><img src="{dpath}img/m.gif" border="0" alt="{L_stat_message_write}" /></th>
+      <!-- ENDIF -->
     <th class ="c_c">{L_sys_alliance}</th>
     <!-- ELSE -->
     <th class ="c_c">{L_sys_alliance}</th>
@@ -62,7 +70,9 @@
         <td class="c_l<!-- IF USER_ID == stat.ID --> same_player<!-- ENDIF -->">
           {stat.NAME}
         </td>
+        <!-- IF ! STATS_HIDE_PM_LINK -->
         <td class="c_c"><a href="messages.php?mode=write&id={stat.ID}"><img src="{dpath}img/m.gif" border="0" alt="{L_stat_message_write}" /></a></td>
+        <!-- ENDIF -->
         <td class="c_l"><!-- IF stat.ALLY_ID --><a href="alliance.php?mode=ainfo&a={stat.ALLY_ID}"><span class="<!-- IF USER_ALLY == stat.ALLY_ID -->same_alliance<!-- ENDIF -->">{stat.ALLY_NAME}</span></a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
         <td class="c_r">{stat.POINTS}</td>
       </tr>

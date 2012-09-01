@@ -1000,6 +1000,7 @@ INSERT INTO `sn_config` VALUES ('server_updater_id', '0');
 INSERT INTO `sn_config` VALUES ('server_updater_key', '');
 INSERT INTO `sn_config` VALUES ('stats_hide_admins', 1);
 INSERT INTO `sn_config` VALUES ('stats_hide_player_list', '');
+INSERT INTO `sn_config` VALUES ('stats_hide_pm_link', 0);
 INSERT INTO `sn_config` VALUES ('stats_schedule', 'd@04:00:00');
 INSERT INTO `sn_config` VALUES ('tpl_minifier', '0');
 INSERT INTO `sn_config` VALUES ('uni_price_galaxy', '10000');

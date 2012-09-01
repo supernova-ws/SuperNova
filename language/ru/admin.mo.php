@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a9.25
+* @version 35a11.7
 *
 */
 
@@ -510,6 +510,7 @@ $lang = array_merge($lang, array(
   'adm_opt_stats_hide_player_list_detail' => 'Список ID скрываемых игроков через запятую',
   'adm_opt_stats_schedule' => 'Расписание обновления статистики',
   'adm_opt_stats_schedule_detail' => 'Время запуска в формате d@ЧЧ:ММ:СС через запятую',
+  'adm_opt_stats_hide_pm_link' => 'Скрывать ссылки на ЛС',
 
 ));
 

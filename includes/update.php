@@ -1769,6 +1769,8 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     upd_check_key('adv_seo_meta_description', '', !isset($config->adv_seo_meta_description));
     upd_check_key('adv_seo_meta_keywords', '', !isset($config->adv_seo_meta_keywords));
 
+    upd_check_key('stats_hide_pm_link', '0', !isset($config->stats_hide_pm_link));
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 35;
 
