@@ -167,7 +167,7 @@ else
     'UNIT_DEFENCE' => UNIT_DEFENCE,
   ));
 
-  display(parsetemplate($template, $parse), $lang['coe_combatSimulator'], false);
+  display($template, $lang['coe_combatSimulator'], false);
 }
 
 ?>

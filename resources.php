@@ -26,22 +26,13 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 function int_calc_storage_bar($resource_name)
 {
-  global $lang, $config, $template, $parse, $caps;
+  global $lang, $config, $template, $caps;
 
   $resource_income_name = $resource_name.'_basic_income';
   $resource_max_name    = $resource_name.'_max';
 
   $totalProduction      = floor($caps['planet'][$resource_name.'_perhour'] * $caps['production'] + $caps[$resource_name.'_perhour'][0]);
   $storage_fill         = floor($caps['planet'][$resource_name] / $caps['planet'][$resource_max_name] * 100);
-
-  if ($caps['planet'][$resource_max_name] < $caps['planet'][$resource_name])
-  {
-    $parse[$resource_max_name] = '<font color="#ff0000">';
-  }
-  else
-  {
-    $parse[$resource_max_name] = '<font color="#00ff00">';
-  }
 
   $template->assign_block_vars('resources', array(
     'NAME'        => $lang["sys_$resource_name"],
@@ -164,6 +155,6 @@ $template->assign_vars(array(
  'PAGE_HINT'        => $lang['res_hint'],
 ));
 
-display(parsetemplate( $template, $parse ), $lang['res_planet_production']);
+display($template, $lang['res_planet_production']);
 
 ?>

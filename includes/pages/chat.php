@@ -53,7 +53,7 @@ function sn_chat_view($template = null)
 {
   $template = gettemplate('chat_body', $template);
 
-  return parsetemplate($template);
+  return $template;
 }
 
 ?>

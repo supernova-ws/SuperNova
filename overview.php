@@ -327,8 +327,6 @@ switch($mode)
     tpl_assign_fleet($template, $fleets_to_planet);
     tpl_assign_fleet($template, $fleets);
 
-    $parse = $lang;
-
     if($planetrow['planet_type'] == PT_PLANET)
     {
       $lune = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$planetrow['id']}' AND `planet_type` = " . PT_MOON . " LIMIT 1;", '', true);
@@ -351,29 +349,6 @@ switch($mode)
     $planet_fill = floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100);
     $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
 
-/*
-    $ally = $user['ally_id'];
-    $OnlineUsersNames = doquery("SELECT `username` FROM {{users}} WHERE `onlinetime`>'".$time."' AND `ally_id`='".$ally."' AND `ally_id` != '0'");
-
-    $names = '';
-    while ($OUNames = mysql_fetch_assoc($OnlineUsersNames)) {
-      $names .= $OUNames['username'];
-      $names .= ", ";
-    }
-    $parse['MembersOnline2'] = $names;
-*/
-/*
-    // Last chat message
-    $mess = doquery("SELECT `user`,`message` FROM {{chat}} WHERE `ally_id` = '0' ORDER BY `messageid` DESC LIMIT 5");
-    $msg = '<table>';
-    while ($result = mysql_fetch_assoc($mess)) {
-      //$str = substr($result['message'], 0, 85);
-      $str = $result['message'];
-      $usr = $result['user'];
-      $msg .= "<tr><td align=\"left\">".$usr.":</td><td>".$str."</td></tr>";
-    }
-    $msg .= '</table>';
-*/
     $planet_recyclers_orbiting = 0;
     foreach($sn_data['groups']['flt_recyclers'] as $recycler_id)
     {
@@ -488,7 +463,7 @@ switch($mode)
     tpl_set_resource_info($template, $planetrow, $fleets_to_planet, 2);
     nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user['news_lastread']}", $config->game_news_overview); //  AND UNIX_TIMESTAMP(`tsTimeStamp`) + {$config->game_news_actual} >= {$time_now}
 
-    display(parsetemplate($template, $parse), "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");
+    display($template, "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");
   break;
 }
 

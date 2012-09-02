@@ -34,7 +34,6 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('stat');
 
-$parse = $lang;
 $who = sys_get_param_int('who', 1);
 $type = sys_get_param_int('type');
 $type = $who != 1 && !in_array($type, $sn_data['groups']['STAT_COMMON']) ? 1 : $type;

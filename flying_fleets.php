@@ -35,14 +35,9 @@ if(sys_get_param_str('return_fleet'))
 lng_include('overview');
 lng_include('fleet');
 
-$parse = $lang;
-
-if (!$planetrow)
+if(!$planetrow)
 {
-  $parse_err['title'] = $lang['fl_error'];
-  $parse_err['mes']   = $lang['fl_noplanetrow'];
-
-  $parse['ErrorNoPlanetRow'] = parsetemplate(gettemplate('message_body'), $parse_err);
+  message($lang['fl_noplanetrow'], $lang['fl_error']);
 }
 
 $template = gettemplate('flying_fleets', true);
@@ -85,6 +80,6 @@ $template->assign_vars(array(
   'EXPEDITIONS_MAX'    => $MaxExpeditions,
 ));
 
-display(parsetemplate($template, $parse), $lang['fl_title']);
+display($template, $lang['fl_title']);
 
 ?>

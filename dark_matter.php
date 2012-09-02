@@ -100,6 +100,6 @@ $template->assign_vars(array(
   'DARK_MATTER_TEXT' => pretty_number($request['dark_matter']),
 ));
 
-display(parsetemplate($template, $parse), $lang['sys_dark_matter']);
+display($template, $lang['sys_dark_matter']);
 
 ?>

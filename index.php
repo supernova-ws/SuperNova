@@ -37,13 +37,6 @@
       }
       display($template);
 
-  /*
-      if(isset($sn_module[$module_name]))
-      {
-        $parse_result = is_callable(array($module_name, 'request_parse')) ? $sn_module[$module_name]->request_parse($user, $planetrow) : array();
-        $render_result = is_callable(array($module_name, 'page_render')) ? $sn_module[$module_name]->page_render($template, $parse_result) : array();
-      }
-  */
     }
   }
 

@@ -830,10 +830,11 @@ function parsetemplate($template, $array = false)
     $replace[] = '((isset($lang[\'\1\'][\'\2\'])) ? $lang[\'\1\'][\'\2\'] : \'\');';
 
     $search[] = '#\{L_([a-z0-9\-_]*?)\}#Ssie';
+//    $replace[] = '((isset($lang[\'\1\'])) ? $lang[\'\1\'] : \'\{L_\}\');';
     $replace[] = '((isset($lang[\'\1\'])) ? $lang[\'\1\'] : \'\');';
 
     $search[] = '#\{([a-z0-9\-_]*?)\}#Ssie';
-    $replace[] = '((isset($array[\'\1\'])) ? $array[\'\1\'] : \'\');';
+    $replace[] = '((isset($array[\'\1\'])) ? $array[\'\1\'] : \'\{\1\}\');';
 
     return preg_replace($search, $replace, $template);
   }

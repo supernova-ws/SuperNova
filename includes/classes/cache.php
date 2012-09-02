@@ -572,6 +572,7 @@ class classConfig extends classPersistent
     'payment_currency_default'     => 'UAH', // Default currency for payments
     'payment_lot_price'            => 1,     // Lot price in default currency
     'payment_lot_size'             => 1000,  // Lot size. Also service as minimum amount of DM that could be bought with one transaction
+    'payment_conversion_code'      => '',
 
     'planet_teleport_cost'         => 50000, // 
     'planet_teleport_timeout'      => 86400, // 

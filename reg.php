@@ -193,10 +193,11 @@ else
 
   tpl_login_lang($template, $id_ref);
 
-  display(parsetemplate($template), $lang['registry'], false, '', false, false);
+  display($template, $lang['registry'], false, '', false, false);
 }
 
-function sendpassemail($emailaddress, $password) {
+function sendpassemail($emailaddress, $password)
+{
   global $lang, $kod;
 
   $parse['SN_ROOT_VIRTUAL']  = SN_ROOT_VIRTUAL;
