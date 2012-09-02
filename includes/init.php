@@ -191,9 +191,17 @@ sn_sys_load_php_files("{$sn_root_physical}includes/functions/", $phpEx);
 $template_result = array();
 $sn_page_name = isset($_GET['page']) ? trim(strip_tags($_GET['page'])) : '';
 
+// Подключаем все модули
+// По нормальным делам тут надо подключать манифесты
+// И читать конфиги - вдруг модуль отключен?
+// Конфиг - часть манифеста?
 $sn_module = array();
 sn_sys_load_php_files("{$sn_root_physical}modules/", $phpEx, true);
 
+// Подключаем дефолтную страницу
+// По нормальным делам её надо подключать в порядке загрузки обработчиков
+// Сейчас мы делаем это здесь только для того, что бы содержание дефолтной страницы оказалось вверху. Что не факт, что нужно всегда
+// Но нужно, пока у нас есть не MVC-страницы
 if($sn_page_name && isset($sn_data['pages'][$sn_page_name]))
 {
   if(basename($sn_data['pages'][$sn_page_name]) == $sn_data['pages'][$sn_page_name])
@@ -201,11 +209,8 @@ if($sn_page_name && isset($sn_data['pages'][$sn_page_name]))
     require_once('includes/pages/' . $sn_data['pages'][$sn_page_name] . '.' . $phpEx);
   }
 }
-else
-{
-  $sn_page_name = '';
-}
 
+// Генерируем список требуемых модулей
 $load_order = array();
 $sn_req = array();
 foreach($sn_module as $loaded_module_name => $module_data)
@@ -220,6 +225,8 @@ foreach($sn_module as $loaded_module_name => $module_data)
   }
 }
 
+// Создаем последовательность инициализации модулей
+// По нормальным делам надо сначала читать их конфиги - вдруг какой-то модуль отключен?
 do
 {
   $prev_order = $load_order;
@@ -249,6 +256,8 @@ do
 while($prev_order != $load_order);
 asort($load_order);
 
+// Инициализируем модули
+// По нормальным делам это должна быть загрузка модулей и лишь затем инициализация - что бы минимизировать размер процесса в памяти
 foreach($load_order as $loaded_module_name => $load_order)
 {
   if($load_order < 0)
@@ -256,6 +265,15 @@ foreach($load_order as $loaded_module_name => $load_order)
     continue;
   }
   $sn_module[$loaded_module_name]->initialize();
+}
+// Скрипач не нужон
+unset($load_order);
+unset($sn_req);
+
+// А теперь проверяем - поддерживают ли у нас загруженный код такую страницу
+if(!isset($sn_data['pages'][$sn_page_name]))
+{
+  $sn_page_name = '';
 }
 
 sn_db_connect();

@@ -139,7 +139,7 @@ $sn_data += array(
       RES_METAL     => create_function ('$level, $production_factor, $temperature', 'return 0;'),
       RES_CRYSTAL   => create_function ('$level, $production_factor, $temperature', 'return 0;'),
       RES_DEUTERIUM => create_function ('$level, $production_factor, $temperature', 'return -10 * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
-      RES_ENERGY    => create_function ('$level, $production_factor, $temperature', 'return  30 * $level * pow(1.05 + 0.01 * mrc_get_level($GLOBALS["user"], "", TECH_ENERGY), $level) * (0.1 * $production_factor);'),
+      RES_ENERGY    => create_function ('$level, $production_factor, $temperature', 'global $user;return  30 * $level * pow(1.05 + 0.01 * mrc_get_level($user, "", TECH_ENERGY), $level) * (0.1 * $production_factor);'),
     ),
     'metal_perhour'     => 'return 0;',
     'crystal_perhour'   => 'return 0;',

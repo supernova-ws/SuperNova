@@ -44,7 +44,16 @@ if(!$user['ally_id'])
   }
 }
 
-$rights     = array(
+sn_ali_fill_user_ally($user);
+//$ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}'", '', true);
+if(!isset($user['ally']))
+{
+  doquery("UPDATE {{users}} SET `ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0  WHERE `id`='{$user['id']}' LIMIT 1;");
+  message($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
+}
+$ally = &$user['ally'];
+
+$rights = array(
   0 => 'name',
   1 => 'mail',
   2 => 'online',
@@ -62,13 +71,6 @@ $rights_old = array(
   4 => 'kick',
   5 => 'rechtehand'
 );
-
-$ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}'", '', true);
-if(!$ally)
-{
-  doquery("UPDATE {{users}} SET `ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0  WHERE `id`='{$user['id']}' LIMIT 1;");
-  message($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
-}
 
 // This piece converting old ally data to new one
 //  unset($ally['ranklist']);
@@ -94,36 +96,34 @@ if(!$ally['ranklist'] && $ally['ally_ranks'])
 
 if($ally['ranklist'])
 {
-   $str_ranks = explode(';', $ally['ranklist']);
-   foreach($str_ranks as $str_rank)
-   {
-     if(!$str_rank)
-     {
-       continue;
-     }
+  $str_ranks = explode(';', $ally['ranklist']);
+  foreach($str_ranks as $str_rank)
+  {
+    if(!$str_rank)
+    {
+      continue;
+    }
 
-     $tmp = explode(',', $str_rank);
-     $rank_id = count($ranks);
-     foreach($rights as $key => $value)
-     {
-       $ranks[$rank_id][$value] = $tmp[$key];
-     }
-   }
+    $tmp = explode(',', $str_rank);
+    $rank_id = count($ranks);
+    foreach($rights as $key => $value)
+    {
+      $ranks[$rank_id][$value] = $tmp[$key];
+    }
+  }
 }
 
 $isAllyOwner = $ally['ally_owner'] == $user['id'];
-$user_can_send_mails = $ranks[$user['ally_rank_id']]['mail'] == 1 || $isAllyOwner;
-$userCanPostForum = $ranks[$user['ally_rank_id']]['forum'] == 1 || $isAllyOwner;
-$user_onlinestatus = $ranks[$user['ally_rank_id']]['online'] == 1 || $isAllyOwner;
-$user_admin_applications = $ranks[$user['ally_rank_id']]['invite'] == 1 || $isAllyOwner;
-$user_can_kick = $ranks[$user['ally_rank_id']]['kick'] == 1 || $isAllyOwner;
-$user_can_negotiate = $ranks[$user['ally_rank_id']]['diplomacy'] == 1 || $isAllyOwner;
-$user_can_edit_rights = $user_admin = $ranks[$user['ally_rank_id']]['admin'] == 1 || $isAllyOwner;
+$user_can_send_mails = $ranks[$user['ally_rank_id']]['mail'] || $isAllyOwner;
+$userCanPostForum = $ranks[$user['ally_rank_id']]['forum'] || $isAllyOwner;
+$user_onlinestatus = $ranks[$user['ally_rank_id']]['online'] || $isAllyOwner;
+$user_admin_applications = $ranks[$user['ally_rank_id']]['invite'] || $isAllyOwner;
+$user_can_kick = $ranks[$user['ally_rank_id']]['kick'] || $isAllyOwner;
+$user_can_negotiate = $ranks[$user['ally_rank_id']]['diplomacy'] || $isAllyOwner;
+$user_can_edit_rights = $user_admin = $ranks[$user['ally_rank_id']]['admin'] || $isAllyOwner;
 
 $edit = sys_get_param_str('edit');
-
 ally_pre_call();
-
 switch($mode)
 {
   case 'admin':
@@ -135,8 +135,7 @@ switch($mode)
     {
       require("includes/{$sn_ali_admin_internal[$edit]['include']}");
     }
-
-    if($sn_ali_admin_internal[$edit]['function'])
+    if(isset($sn_ali_admin_internal[$edit]['function']) && is_callable($sn_ali_admin_internal[$edit]['function']))
     {
       call_user_func($sn_ali_admin_internal[$edit]['function']);
     }
@@ -147,39 +146,6 @@ switch($mode)
   default:             require('includes/alliance/ali_info.inc'); break;
 }
 
-function ally_pre_call()
-{
-  $func_args = func_get_args();
-  return sn_function_call('ally_pre_call', $func_args);
-}
-
-function sn_ally_pre_call()
-{
-  global $sn_ali_admin_internal;
-
-  $sn_ali_admin_internal = isset($sn_ali_admin_internal) ? $sn_ali_admin_internal : array();
-  $sn_ali_admin_internal = array_merge($sn_ali_admin_internal, array(
-    'rights' => array(
-      'include' => 'alliance/ali_internal_admin_rights.inc',
-      'function' => '',
-    ),
-    'members' => array(
-      'include' => 'alliance/ali_internal_members.inc',
-      'function' => '',
-    ),
-    'requests' => array(
-      'include' => 'alliance/ali_internal_admin_request.inc',
-      'function' => '',
-    ),
-    'diplomacy' => array(
-      'include' => 'alliance/ali_internal_admin_diplomacy.inc',
-      'function' => '',
-    ),
-    'default' => array(
-      'include' => 'alliance/ali_internal_admin.inc',
-      'function' => '',
-    ),
-  ));
-}
+function ally_pre_call(){$func_args = func_get_args();return sn_function_call('ally_pre_call', $func_args);}
 
 ?>

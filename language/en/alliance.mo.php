@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 35a12.0
 *
 */
 
@@ -273,6 +273,9 @@ $lang = array_merge($lang, array(
 
   'ali_res_err_not_enough' => 'Ypu don\'t have enough %s!',
   'ali_res_err_wrong_unit' => 'You can only transfer resources to Ally!',
+
+  'ali_res_alliance_bonus' => 'Alliance\'s Bonuses',
+  'ali_res_alliance_bonus_players' => 'Minimal members count to obtain bonus',
 
 ));
 

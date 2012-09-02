@@ -11,11 +11,6 @@ function sn_function_call($func_name, $func_arg = array())
 {
   global $functions; // All data in $functions should be normalized to valid 'callable' state: '<function_name>'|array('<object_name>', '<method_name>')
 
-//  if(!isset($functions[$func_name]) || (!is_array($functions[$func_name]) && !is_callable($functions[$func_name])))
-//  {
-//    $functions[$func_name] = 'sn_' . $func_name;
-//  }
-
   if(is_array($functions[$func_name]) && !is_callable($functions[$func_name]))
   {
     // Chain-callable functions should be made as following:
@@ -26,15 +21,22 @@ function sn_function_call($func_name, $func_arg = array())
     // 5. Return cumulative result
     foreach($functions[$func_name] as $func_chain_name)
     {
-      $result = call_user_func_array($func_chain_name, $func_arg);
-//if($func_arg[0]['id'] == 2 && $func_arg[2] == MRC_STOCKMAN) debug($func_arg[2], $func_chain_name);
+      // По идее - это уже тут не нужно, потому что оно все должно быть callable к этому моменту
+      // Но для старых модулей...
+      if(is_callable($func_chain_name))
+      {
+        $result = call_user_func_array($func_chain_name, $func_arg);
+      }
     }
   }
   else
   {
     // TODO: This is left for backward compatibility. Appropriate code should be rewrote!
     $func_name = isset($functions[$func_name]) && is_callable($functions[$func_name]) ? $functions[$func_name] : ('sn_' . $func_name);
-    $result = call_user_func_array($func_name, $func_arg);
+    if(is_callable($func_name))
+    {
+      $result = call_user_func_array($func_name, $func_arg);
+    }
   }
 
   return $result;
@@ -210,7 +212,7 @@ function CheckInputStrings($String)
 
 // ----------------------------------------------------------------------------------------------------------------
 //
-// Routine Test de validité d'une adresse email
+// Routine Test de validitГ© d'une adresse email
 //
 function is_email($email)
 {
@@ -920,6 +922,19 @@ function sys_stat_get_user_skip_list()
   }
 
   return $user_skip_list;
+}
+
+function sn_get_groups($groups)
+{
+  global $sn_data;
+
+  $result = array();
+  foreach($groups = is_array($groups) ? $groups : array($groups) as $group_name)
+  {
+    $result += isset($sn_data['groups'][$group_name]) ? $sn_data['groups'][$group_name] : array();
+  }
+
+  return $result;
 }
 
 ?>

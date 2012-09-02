@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a17.2
+* @version 35a12.0
 *
 */
 
@@ -271,6 +271,8 @@ $lang = array_merge($lang, array(
   'ali_res_err_not_enough' => 'Не хватает ресурса %s!',
   'ali_res_err_wrong_unit' => 'На счет Альянса можно передавать только ресурсы!',
 
+  'ali_res_alliance_bonus' => 'Бонусы Альянса',
+  'ali_res_alliance_bonus_players' => 'Количество участников для получения бонуса',
 ));
 
 ?>

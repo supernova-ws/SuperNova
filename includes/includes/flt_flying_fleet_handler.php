@@ -301,8 +301,9 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 {
   global $time_now;
 
-  //if(($time_now - $GLOBALS['config']->flt_lastUpdate <= 8 ) || $GLOBALS['skip_fleet_update']) return;
-  //$GLOBALS['config']->db_saveItem('flt_lastUpdate', $time_now);
+  //global $config, $skip_fleet_update;
+  //if(($time_now - $config->flt_lastUpdate <= 8 ) || $skip_fleet_update) return;
+  //$config->db_saveItem('flt_lastUpdate', $time_now);
   //doquery('LOCK TABLE {{table}}aks WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}users WRITE, {{table}}logs WRITE, {{table}}iraks WRITE, {{table}}statpoints WRITE, {{table}}referrals WRITE, {{table}}counter WRITE');
 
   if($skip_fleet_update)
@@ -374,7 +375,7 @@ pdump(count($flt_user_cache), '$flt_user_row');
 pdump(count($flt_planet_cache), '$flt_planet_row');
 pdump(count($flt_fleet_cache), '$flt_fleet_cache');
 pdump(count($flt_event_cache), '$flt_event_cache');
-pdump($GLOBALS['time_now'], 'time_now');
+pdump($time_now, 'time_now');
 die();
 */
   foreach($flt_event_cache as $fleet_event_id => $fleet_event)

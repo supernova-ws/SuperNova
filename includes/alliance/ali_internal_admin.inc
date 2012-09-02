@@ -134,19 +134,16 @@ if(!empty($tmp))
   $parse['adminMembers'] = $tmp;
 }
 
-$template = gettemplate('ali_admin', true);
-
-$sn_ali_admin_actions = isset($sn_ali_admin_actions) ? $sn_ali_admin_actions : array();
-$sn_ali_admin_actions = array_merge($sn_ali_admin_actions, array(
-//  'members' => 'members_admin',
-  'rights' => 'ali_adm_rights_title',
-));
-
-foreach($sn_ali_admin_actions as $sn_ali_admin_action => $sn_ali_admin_action_locale)
+$template = gettemplate('ali_admin', $template);
+foreach($sn_ali_admin_internal as $sn_ali_admin_action => $sn_ali_admin_action_locale)
 {
+  if(!$sn_ali_admin_action_locale['title'])
+  {
+    continue;
+  }
   $template->assign_block_vars('admin_actions', array(
     'ACTION' => $sn_ali_admin_action,
-    'LOCALE' => $lang[$sn_ali_admin_action_locale],
+    'LOCALE' => $lang[$sn_ali_admin_action_locale['title']],
   ));
 }
 

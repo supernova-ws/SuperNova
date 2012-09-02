@@ -48,19 +48,15 @@ elseif($mode == 'ainfo')
     $ally['ally_description'] = $lang['Ally_nodescription'];
   }
 
-  $lang['EXTERNAL']     = true;
-  $lang['USER_ALLY_ID'] = $user['ally_id'];
+  $template->assign_vars(array(
+    'EXTERNAL'     => true,
+    'USER_ALLY_ID' => $user['ally_id'],
+  ));
   $page_header          = $lang['sys_alliance'];
 }
 else
 {
   $page_header = $lang['your_alliance'];
-
-  $lang['ALLY_ADMIN'] = $user_admin;
-  $lang['ALLY_CAN_KICK'] = $user_can_kick;
-  $lang['MASS_MAIL'] = $user_can_send_mails;
-  $lang['MANAGE_REQUESTS'] = $user_admin_applications;
-  $lang['ALLY_NEGOTIATE'] = $user_can_negotiate;
 
   if($ally['ally_owner'] == $user['id'])
   {
@@ -74,10 +70,19 @@ else
   {
     $range = $lang['member'];
   }
-  $lang['range'] = $range;
 
   $request = doquery("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
-  $lang['ALLY_REQUESTS'] = $request['request_count'];
+
+  $template->assign_vars(array(
+    'range' => $range,
+    'ALLY_REQUESTS' => $request['request_count'],
+
+    'ALLY_ADMIN' => $user_admin,
+    'ALLY_CAN_KICK' => $user_can_kick,
+    'MASS_MAIL' => $user_can_send_mails,
+    'MANAGE_REQUESTS' => $user_admin_applications,
+    'ALLY_NEGOTIATE' => $user_can_negotiate,
+  ));
 }
 
 $patterns[] = "#\[fc\]([a-z0-9\#]+)\[/fc\](.*?)\[/f\]#Ssi";
@@ -88,16 +93,17 @@ $patterns[] = "#\[fc\]([a-z0-9\#\ \[\]]+)\[/fc\]#Ssi";
 $replacements[] = '<font color="\1">';
 $patterns[] = "#\[/f\]#Ssi";
 $replacements[] = '</font>';
-$lang['ALLY_DESCRIPTION'] = nl2br(preg_replace($patterns, $replacements, $ally['ally_description']));
-$lang['ALLY_TEXT']    = nl2br(preg_replace($patterns, $replacements, $ally['ally_text']));
 
-$lang['ally_id']         = $ally['id'];
-$lang['ALLY_MEMBERS']    = $ally['ally_members'];
-$lang['ALLY_BONUS_RATE'] = function_exists('sn_module_ali_player_get_multiplier') ? sn_module_ali_player_get_multiplier($ally) : 0;
-$lang['ally_web']        = $ally['ally_web'];
-$lang['ally_tag']        = $ally['ally_tag'];
-$lang['ally_image']      = $ally['ally_image'];
-$lang['ally_name']       = $ally['ally_name'];
+$template->assign_vars(array(
+  'ALLY_DESCRIPTION' => nl2br(preg_replace($patterns, $replacements, $ally['ally_description'])),
+  'ALLY_TEXT'        => nl2br(preg_replace($patterns, $replacements, $ally['ally_text'])),
+  'ally_id'          => $ally['id'],
+  'ALLY_MEMBERS'     => $ally['ally_members'],
+  'ally_web'         => $ally['ally_web'],
+  'ally_tag'         => $ally['ally_tag'],
+  'ally_image'       => $ally['ally_image'],
+  'ally_name'        => $ally['ally_name'],
+));
 
 $relations = ali_relations($ally['id']);
 foreach($relations as $relation)
@@ -119,17 +125,10 @@ foreach($relations as $relation)
   }
 }
 
-$lang['ALI_BONUS_MEMBERS'] = isset($sn_module['ali_ally_player']) ? $config->ali_bonus_members : 0;
-
 $template = parsetemplate($template, $lang);
 
-if(is_array($sn_ali_render))
-{
-  foreach($sn_ali_render as $render_func_name)
-  {
-    call_user_func($render_func_name);
-  }
-}
+function ali_render(){$func_args = func_get_args();return sn_function_call(__FUNCTION__, $func_args);}
+ali_render();
 
 display($template, "{$lang['your_alliance']} [{$ally['ally_name']}]");
 

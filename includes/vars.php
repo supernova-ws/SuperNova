@@ -25,6 +25,28 @@ if (!defined('INSIDE'))
     ),
   );
 
+  $sn_ali_admin_internal = array(
+    'rights' => array(
+      'include' => 'alliance/ali_internal_admin_rights.inc',
+      'title' => 'ali_adm_rights_title'
+    ),
+    'members' => array(
+      'include' => 'alliance/ali_internal_members.inc',
+      'title' => 'Members_list'
+    ),
+    'requests' => array(
+      'include' => 'alliance/ali_internal_admin_request.inc',
+      'title' => 'ali_req_check'
+    ),
+    'diplomacy' => array(
+      'include' => 'alliance/ali_internal_admin_diplomacy.inc',
+      'title' => 'ali_dip_title'
+    ),
+    'default' => array(
+      'include' => 'alliance/ali_internal_admin.inc',
+    ),
+  );
+
   $sn_version_check_class = array(
     SNC_VER_NEVER => 'warning',
 
