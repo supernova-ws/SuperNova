@@ -1,0 +1,69 @@
+<script type="text/javascript"><!--
+function zero_fleet()
+{
+  jQuery('[id^="ships"][id$="slide"]').slider("value", 0);
+}
+
+function max_fleet()
+{
+  jQuery('[id^="ships"][id$="slide"]').each(function(){
+    jQuery(this).slider("value", jQuery(this).slider("option", "max"));
+  });
+}
+--></script>
+
+<h2>{L_tech[D_STRUC_MOON_GATE]}</h2>
+
+<form action="jumpgate.php" method="post">
+  <table><tbody>
+    <tr>
+      <td class="c_l">{L_gate_start_moon}</td>
+      <td colspan="2" class="c_c">
+        {gate_start_link} {gate_start_name} 
+        <!-- IF GATE_JUMP_REST_TIME -->
+          <span id="jump_gate_timer"></span>
+          <script type="text/javascript"><!--
+            sn_timers.unshift({id: 'jump_gate_timer', type: 0, active: true, start_time: '{TIME_NOW}', options: {msg_done: '', que: [['1', '', {GATE_JUMP_REST_TIME}, '1']]}});
+          // --></script>
+        <!-- ENDIF -->
+      </td>
+    </tr>
+
+    <tr>
+      <td class="c_l">{L_gate_dest_moon}</td>
+      <td colspan="2" class="c_c">
+        <select name="jmpto">
+          <!-- BEGIN moon -->
+          <option value="{moon.ID}">[{moon.GALAXY}:{moon.SYSTEM}:{moon.PLANET}] {moon.NAME} {moon.NEXT_JUMP_TIME}</option>
+          <!-- END moon -->
+        </select>
+      </td>
+    </tr>
+
+    <tr class="c_c">
+      <th>{L_fl_fleet_typ}</th>
+      <th>{L_fl_orbiting}</th>
+      <th>{L_fl_to_fly}</th>
+    </tr>
+
+    <!-- BEGIN fleet -->
+    <tr>
+      <td class="c_l"><a href="infos.php?gid={fleet.SHIP_ID}">{fleet.SHIP_NAME}</a></td>
+      <td class="c_r">{fleet.SHIP_COUNT_TEXT}</td>
+      <th>
+        <script type="text/javascript"><!--
+          sn_ainput_make('ships[{fleet.SHIP_ID}]', {max: {fleet.SHIP_COUNT}});
+        --></script>
+      </th>
+    </tr>
+    <!-- END fleet -->
+
+    <tr>
+      <th class="c_c" colspan="2"><input value="{L_gate_jump_btn}" type="submit"></th>
+      <th class="c_c">
+        <div class="fl"><input type="button" value="{L_fl_unselectall}" onclick="javascript:zero_fleet();"></div>
+        <div class="fr"><input type="button" value="{L_fl_selectall}" onclick="javascript:max_fleet();"></div>
+      </th>
+    </tr>
+  </tbody></table>
+</form>

@@ -1771,6 +1771,10 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
 
     upd_check_key('stats_hide_pm_link', '0', !isset($config->stats_hide_pm_link));
 
+    upd_alter_table('notes', array(
+      "ADD INDEX `I_owner_priority_time` (`owner`, `priority`, `time`)",
+    ), !$update_indexes['notes']['I_owner_priority_time']);
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 35;
 

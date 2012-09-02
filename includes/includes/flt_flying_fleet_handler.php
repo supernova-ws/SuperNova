@@ -304,7 +304,6 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   //global $config, $skip_fleet_update;
   //if(($time_now - $config->flt_lastUpdate <= 8 ) || $skip_fleet_update) return;
   //$config->db_saveItem('flt_lastUpdate', $time_now);
-  //doquery('LOCK TABLE {{table}}aks WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}users WRITE, {{table}}logs WRITE, {{table}}iraks WRITE, {{table}}statpoints WRITE, {{table}}referrals WRITE, {{table}}counter WRITE');
 
   if($skip_fleet_update)
   {

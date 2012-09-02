@@ -68,8 +68,6 @@ $template->assign_vars(array(
   'TIME_NOW'             => $time_now,
 ));
 
-$page = parsetemplate($template, $parse);
-
-display($page, $lang['tech'][STRUC_MOON_PHALANX], false, '', false, false);
+display($template, $lang['tech'][STRUC_MOON_PHALANX], false, '', false, false);
 
 ?>

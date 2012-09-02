@@ -128,7 +128,8 @@ function doquery($query, $table = '', $fetch = false){
 
   $db_prefix = sn_db_connect($query);
 
-  $sql = str_replace('{{table}}', $db_prefix.$table, $query);
+//  $sql = str_replace('{{table}}', $db_prefix.$table, $query);
+  $sql = $query;
   if(!(strpos($sql, '{{') === false) )
   {
     foreach($sn_cache->tables as $tableName)

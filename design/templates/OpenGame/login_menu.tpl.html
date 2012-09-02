@@ -1,3 +1,9 @@
+<!-- IF LANG -->
+  <!-- DEFINE $SEPARATOR = '&' -->
+<!-- ELSE -->
+  <!-- DEFINE $SEPARATOR = '?' -->
+<!-- ENDIF -->
+
 <div id="log_menu">
   <!-- BEGIN language -->
     <a href="{FILENAME}?lang={language.LANG_NAME_ISO2}{referral}"><img src="language/{language.LANG_NAME_ISO2}/{language.LANG_FLAG}" /></a>
@@ -25,5 +31,5 @@
   <a href="{URL_FORUM}">{L_log_forums}</a> ::
   <!-- ENDIF -->
   <a href="banned.php{LANG}">{L_log_banned}</a> ::
-  <a href="contact.php{LANG}">{L_log_contacts}</a>
+  <a href="index.php{LANG}{$SEPARATOR}page=contact">{L_log_contacts}</a>
 </div>

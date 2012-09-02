@@ -3,153 +3,196 @@
 /**
  * notes.php
  *
- * 1.0s - Security checks by Gorlum for http://supernova.ws
- * @version 1.0
- * @copyright 2008 by ??????? for XNova
+ * Changelog:
+ *   2.0 copyright © 2009-2012 Gorlum for http://supernova.ws
+ *     [!] Wrote from scratch
  */
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
-// TODO: Rewrote notes
-$GET_a = intval($_GET['a']);
-$n = intval($_GET['n']);
-$POST_s = intval($_POST["s"]);
-$priority = intval($_POST["u"]);
-$title = sys_get_param_str('title', $lang['NoTitle']);
-$text = sys_get_param_str('text', $lang['NoText']);
-$id = intval($_POST["n"]);
 
-$lang['Please_Wait'] = "Patientez...";
-
-//lenguaje
 lng_include('notes');
 
-$lang['PHP_SELF'] = 'notes.'. PHP_EX;
+$note_priority_classes = array(
+  '0' => '',
+  '1' => 'ok',
+  '2' => 'notice',
+  '3' => 'warning',
+  '4' => 'error',
+);
 
-if($POST_s == 1 || $POST_s == 2){//Edicion y agregar notas
+$template = gettemplate('notes', true);
 
-  $time = time();
-
-  if($POST_s ==1){
-    doquery("INSERT INTO {{notes}} SET owner={$user['id']}, time=$time, priority=$priority, title='$title', text='$text'");
-    message($lang['NoteAdded'], $lang['Please_Wait'],'notes.'. PHP_EX,"3");
-  }elseif($POST_s == 2){
-    /*
-      pequeño query para averiguar si la nota que se edita es del propio jugador
-    */
-    $note_query = doquery("SELECT * FROM {{notes}} WHERE id=$id AND owner=".$user["id"]);
-
-    if(!$note_query){ error($lang['notpossiblethisway'],$lang['Notes']); }
-
-    doquery("UPDATE {{notes}} SET time=$time, priority=$priority, title='$title', text='$text' WHERE id=$id");
-    message($lang['NoteUpdated'], $lang['Please_Wait'], 'notes.'. PHP_EX, "3");
-  }
-
+// owner time priority title text
+$result = array();
+if(($result_message = sys_get_param_str('MESSAGE')) && isset($lang[$result_message]))
+{
+  $result[] = array('STATUS' => sys_get_param_int('STATUS'), 'MESSAGE' => $lang[$result_message]);
 }
-elseif($_POST){//Borrar
 
-  foreach($_POST as $a => $b){
-    /*
-      Los checkbox marcados tienen la palabra delmes seguido del id.
-      Y cada array contiene el valor "y" para compro
-    */
-    if(preg_match("/delmes/i",$a) && $b == "y"){
+$note_id_edit = sys_get_param_id('note_id_edit');
+if(sys_get_param('note_delete'))
+{
+  try
+  {
+    $not = '';
+    $query_where = '';
+    switch(sys_get_param_str('note_delete_range'))
+    {
+      case 'all':
+      break;
 
-      $id = str_replace("delmes","",$a);
-      $note_query = doquery("SELECT * FROM {{notes}} WHERE id=$id AND owner={$user['id']}");
-      //comprobamos,
-      if($note_query){
-        $deleted++;
-        doquery("DELETE FROM {{notes}} WHERE `id`=$id;");// y borramos
+      case 'marked_not':
+        $not = 'NOT';
+      case 'marked':
+        if(!is_array($notes_marked = sys_get_param('note')))
+        {
+          throw new exception('note_err_none_selected', ERR_WARNING);
+        }
+
+        $notes_marked_filtered = array();
+        foreach($notes_marked as $note_id => $note_select)
+        {
+          if($note_select == 'on' && $note_id = idval($note_id))
+          {
+            $notes_marked_filtered[] = $note_id;
+          }
+        }
+
+        if(empty($notes_marked_filtered))
+        {
+          throw new exception('note_err_none_selected', ERR_WARNING);
+        }
+
+        $notes_marked_filtered = implode(',', $notes_marked_filtered);
+        $query_where = "AND `id` {$not} IN ({$notes_marked_filtered})";
+      break;
+
+      default:
+        throw new exception('note_warn_no_range', ERR_WARNING);
+      break;
+    }
+
+    doquery('START TRANSACTION');
+    doquery("DELETE FROM {{notes}} WHERE `owner` = {$user['id']} {$query_where};");
+    doquery('COMMIT');
+    throw new exception($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added', ERR_NONE);
+  }
+  catch(exception $e)
+  {
+    $note_id_edit = 0;
+    doquery('ROLLBACK');
+    $result[] = array(
+      'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
+      'MESSAGE' => $lang[$e->getMessage()],
+    );
+  }
+}
+elseif($note_text = sys_get_param_str('note_text'))
+{
+  $note_title = sys_get_param_str('note_title', mysql_real_escape_string($lang['note_new_title']));
+  try
+  {
+    if($note_text == mysql_real_escape_string($lang['note_new_text']) && $note_title == mysql_real_escape_string($lang['note_new_title']))
+    {
+      throw new exception('note_err_note_empty', ERR_WARNING);
+    }
+
+    $note_priority = min(sys_get_param_id('note_priority', 2), count($note_priority_classes) - 1);
+
+    doquery('START TRANSACTION');
+    if($note_id_edit)
+    {
+      $check_note_id = doquery("SELECT `id`, `owner` FROM {{notes}} WHERE `id` = {$note_id_edit} LIMIT 1 FOR UPDATE", true);
+      if(!$check_note_id)
+      {
+        throw new exception('note_err_note_not_found', ERR_ERROR);
       }
     }
-  }
-  if($deleted){
-    $mes = ($deleted == 1) ? $lang['NoteDeleted'] : $lang['NoteDeleteds'];
-    message($mes,$lang['Please_Wait'],'notes.'.PHP_EX,"3");
-  }else{header("Location: notes." . PHP_EX);}
 
-}else{//sin post...
-  if($GET_a == 1){//crear una nueva nota.
-    /*
-      Formulario para crear una nueva nota.
-    */
+    if($note_id_edit)
+    {
+      if($check_note_id['owner'] != $user['id'])
+      {
+        throw new exception('note_err_owner_wrong', ERR_ERROR);
+      }
 
-    $parse = $lang;
-
-    $parse['c_Options'] = "<option value=2 selected=selected>{$lang['Important']}</option>
-        <option value=1>{$lang['Normal']}</option>
-        <option value=0>{$lang['Unimportant']}</option>";
-
-    $parse['cntChars'] = '0';
-    $parse['TITLE'] = $lang['Createnote'];
-    $parse['text'] = '';
-    $parse['title'] = '';
-    $parse['inputs'] = '<input type=hidden name=s value=1>';
-
-    $page .= parsetemplate(gettemplate('notes_form'), $parse);
-
-    display($page,$lang['Notes'],false);
-
-  }
-  elseif($GET_a == 2){//editar
-    /*
-      Formulario donde se puestra la nota y se puede editar.
-    */
-    $note = doquery("SELECT * FROM {{notes}} WHERE owner={$user['id']} AND id=$n",'',true);
-
-    if(!$note){ message($lang['notpossiblethisway'],$lang['Error']); }
-
-    $cntChars = strlen($note['text']);
-
-    $SELECTED[$note['priority']] = ' selected="selected"';
-
-    $parse = array_merge($note,$lang);
-
-    $parse['c_Options'] = "<option value=2{$SELECTED[2]}>{$lang['Important']}</option>
-        <option value=1{$SELECTED[1]}>{$lang['Normal']}</option>
-        <option value=0{$SELECTED[0]}>{$lang['Unimportant']}</option>";
-
-    $parse['cntChars'] = $cntChars;
-    $parse['TITLE'] = $lang['Editnote'];
-    $parse['inputs'] = '<input type=hidden name=s value=2><input type=hidden name=n value='.$note['id'].'>';
-
-    $page .= parsetemplate(gettemplate('notes_form'), $parse);
-
-    display($page,$lang['Notes'],false);
-
-  }
-  else{//default
-
-    $notes_query = doquery("SELECT * FROM {{notes}} WHERE owner={$user['id']} ORDER BY time DESC");
-    //Loop para crear la lista de notas que el jugador tiene
-    $count = 0;
-    $parse=$lang;
-    while($note = mysql_fetch_assoc($notes_query)){
-      $count++;
-      //Colorea el titulo dependiendo de la prioridad
-      if($note["priority"] == 0){ $parse['NOTE_COLOR'] = "lime";}//Importante
-      elseif($note["priority"] == 1){ $parse['NOTE_COLOR'] = "yellow";}//Normal
-      elseif($note["priority"] == 2){ $parse['NOTE_COLOR'] = "red";}//Sin importancia
-
-      //fragmento de template
-      $parse['NOTE_ID'] = $note['id'];
-      $parse['NOTE_TIME'] = date(FMT_DATE_TIME,$note["time"]);
-      $parse['NOTE_TITLE'] = $note['title'];
-      $parse['NOTE_TEXT'] = strlen($note['text']);
-
-      $list .= parsetemplate(gettemplate('notes_body_entry'), $parse);
-
+      doquery("UPDATE {{notes}} SET `time` = {$time_now}, `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}' WHERE `id` = {$note_id_edit} LIMIT 1;");
+    }
+    else
+    {
+      doquery("INSERT INTO {{notes}} SET `owner` = {$user['id']}, `time` = {$time_now}, `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}';");
     }
 
-    if($count == 0){
-      $list .= "<tr><th colspan=4>{$lang['ThereIsNoNote']}</th>\n";
-    }
-
-    $parse = $lang;
-    $parse['BODY_LIST'] = $list;
-    //fragmento de template
-
-  display(parsetemplate(gettemplate('notes_body'), $parse), $lang['Notes']);
+    doquery('COMMIT');
+    sys_redirect('notes.php?STATUS=' . ERR_NONE . '&MESSAGE=' . ($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added'));
+//    throw new exception($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added', ERR_NONE);
+  }
+  catch(exception $e)
+  {
+    $note_id_edit = 0;
+    doquery('ROLLBACK');
+    $result[] = array(
+      'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
+      'MESSAGE' => $lang[$e->getMessage()],
+    );
   }
 }
+
+function note_assign($note_row)
+{
+  global $template, $note_priority_classes, $lang;
+
+  $template->assign_block_vars('note', array(
+    'ID' => $note_row['id'],
+    'TIME' => $note_row['time'],
+    'TIME_TEXT' => date(FMT_DATE_TIME, $note_row['time']),
+    'PRIORITY' => $note_row['priority'],
+    'PRIORITY_CLASS' => $note_priority_classes[$note_row['priority']],
+    'PRIORITY_TEXT' => $lang['note_priorities'][$note_row['priority']],
+    'TITLE' => $note_row['title'],
+    'TEXT' => sys_bbcodeParse(htmlentities($note_row['text'], ENT_COMPAT, 'UTF-8')),
+    'TEXT_EDIT' => htmlentities($note_row['text'], ENT_COMPAT, 'UTF-8'),
+  ));
+}
+
+$note_exist = false;
+$notes_query = doquery($q = "SELECT * FROM {{notes}} WHERE owner={$user['id']} ORDER BY priority DESC, time DESC");
+while($note_row = mysql_fetch_assoc($notes_query))
+{
+  note_assign($note_row);
+  $note_exist = $note_exist || $note_row['id'] == $note_id_edit;
+}
+$note_id_edit = $note_exist ? $note_id_edit : 0;
+if(!$note_id_edit)
+{
+  note_assign(array(
+    'id' => 0,
+    'time' => $time_now,
+    'priority' => 2,
+    'title' => $lang['note_new_title'],
+    'text' => $lang['note_new_text'],
+  ));
+}
+
+foreach($note_priority_classes as $note_priority_id => $note_priority_class)
+{
+  $template->assign_block_vars('note_priority', array(
+    'ID' => $note_priority_id,
+    'CLASS' => $note_priority_classes[$note_priority_id],
+    'TEXT' => $lang['note_priorities'][$note_priority_id],
+  ));
+}
+
+foreach($result as $result_data)
+{
+  $template->assign_block_vars('result', $result_data);
+}
+
+$template->assign_vars(array(
+  'PAGE_HEADER' => $lang['note_page_header'],
+  'NOTE_ID_EDIT' => $note_id_edit,
+));
+
+display($template);
+
 ?>

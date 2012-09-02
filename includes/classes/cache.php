@@ -464,6 +464,8 @@ class classConfig extends classPersistent
   protected $defaults = array(
 
     // SEO meta
+    'adv_conversion_code_payment'  => '',
+    'adv_conversion_code_register' => '',
     'adv_seo_meta_description'     => '',
     'adv_seo_meta_keywords'        => '',
 
@@ -572,7 +574,6 @@ class classConfig extends classPersistent
     'payment_currency_default'     => 'UAH', // Default currency for payments
     'payment_lot_price'            => 1,     // Lot price in default currency
     'payment_lot_size'             => 1000,  // Lot size. Also service as minimum amount of DM that could be bought with one transaction
-    'payment_conversion_code'      => '',
 
     'planet_teleport_cost'         => 50000, // 
     'planet_teleport_timeout'      => 86400, // 

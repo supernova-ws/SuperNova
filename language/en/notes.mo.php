@@ -7,10 +7,7 @@
 #  Website: http://www.supernova.ws
 #  Description: Massive Multiplayer Online Browser Space Startegy Game
 #
-#  Copyright © 2011 madmax1991 for Project "SuperNova.WS"
-#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
-#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright © 2005 - 2008 KGsystem
+#  Copyright © 2009-2012 Gorlum for Project "SuperNova.WS"
 #############################################################################
 */
 
@@ -18,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 35a12.4
 *
 */
 
@@ -30,30 +27,37 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
-  'Notes' => 'Notes',
-  'Createnote' => 'Create Notes',
-  'MakeNewNote' => 'Create a new note',
-  'Editnote' => 'Edit Notes',
-  'Priority' => 'Priority',
-  'Important' => 'Important',
-  'Normal' => 'Normal',
-  'Unimportant' => 'UnImportant',
-  'Subject' => 'Subject',
-  'NoTitle' => 'No Title',
-  'NoText' => 'No Text',
-  'Date' => 'Date',
-  'Size' => 'Size',
-  'Note' => 'Note',
-  'characters' => 'Characters',
-  'Apply' => 'Apply',
-  'Back' => 'Back',
-  'Delete' => 'Delete',
-  'Reset' => 'Reset',
-  'ThereIsNoNote' => 'There are no notes',
-  'NoteUpdated' => 'Note updated. <a href="notes.php"><blink>Please, wait...</blink></a>',
-  'NoteAdded' => 'Note added. <a href="notes.php"><blink>Please, wait...</blink></a>',
-  'NoteDeleted' => 'Note deleted. <a href="notes.php"><blink>Please, wait...</blink></a>',
-  'NoteDeleteds' => 'Note deleted <a href="notes.php"><blink>Please, wait...</blink></a>',
+  'note_page_header' => 'Notes',
+  'note_date' => 'Date',
+  'note_priority' => 'Priority',
+  'note_note' => 'Note',
+//  'note_title' => 'Title',
+//  'note_text' => 'Text',
+  'note_priorities' => array(
+    0 => 'Low priority',
+    1 => 'Below normal',
+    2 => 'Normal',
+    3 => 'Important',
+    4 => 'Very important',
+  ),
+  'note_new_title' => 'New note title',
+  'note_new_text' => 'New note text',
+
+  'note_err_none_added' => 'Note succesfully added',
+  'note_err_none_changed' => 'Note succesfully changed',
+  'note_err_note_not_found' => 'Note with this ID not found. Possibly it was already deleted',
+  'note_err_owner_wrong' => 'You are not owner of this note',
+  'note_err_note_empty' => 'You did not write anything in note - it will not be added',
+
+  'note_delete' => 'Delete notes',
+  'note_range_select' => '-- SELECT RANGE --',
+  'note_range_marked' => 'Marked notes',
+  'note_range_marked_not' => 'Not marked notes',
+  'note_range_all' => 'All notes',
+
+  'note_warn_no_range' => 'You did not select range - nothing to delete',
+  'note_err_none_selected' => 'There are no notes selected - nothing to delete. To delete all notes at once select range "All notes"',
+
 ));
 
 ?>

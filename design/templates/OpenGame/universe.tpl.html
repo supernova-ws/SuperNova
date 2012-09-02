@@ -1,5 +1,5 @@
-<script language="JavaScript" src="js/sn_universe.js"></script>
-<script language="JavaScript" src="js/sn_ajax_send_fleet.js"></script>
+<script type="text/javascript" src="js/sn_universe.js"></script>
+<script type="text/javascript" src="js/sn_ajax_send_fleet.js"></script>
 <!-- INCLUDE fleet_javascript -->
 
 <script type="text/javascript"><!--
@@ -107,7 +107,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
   </tbody></table>
 </form>
 
-<table width=569><tbody>
+<table width=595><tbody>
   <tr><th class="c_l" colspan="8">
     <span class="fl">{L_sys_galaxy}&nbsp;{galaxy} <span class="ok">{GALAXY_NAME}</span>&nbsp;<a class="link" href="galaxy.php?mode=name&galaxy={galaxy}&system=0"><!-- IF GALAXY_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a></span>
     <span class="fr ok link" style="cursor: pointer;" onmouseout='popup_hide();' onmouseover="popup_show(jQuery('#legend_template').html());">{L_Legend}</span>
@@ -276,7 +276,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       <!-- ENDIF -->
     </th>
 
-    <th style="white-space: nowrap" width=125 align="center"><center>
+    <th style="white-space: nowrap" width=151 align="center"><center>
       <!-- IF galaxyrow.USER_ID && USER_ID != galaxyrow.USER_ID -->
         <!-- IF !galaxyrow.USER_NOOB -->
           <!-- IF ACT_SPY -->

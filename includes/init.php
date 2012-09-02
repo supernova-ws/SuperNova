@@ -202,12 +202,16 @@ sn_sys_load_php_files("{$sn_root_physical}modules/", $phpEx, true);
 // По нормальным делам её надо подключать в порядке загрузки обработчиков
 // Сейчас мы делаем это здесь только для того, что бы содержание дефолтной страницы оказалось вверху. Что не факт, что нужно всегда
 // Но нужно, пока у нас есть не MVC-страницы
-if($sn_page_name && isset($sn_data['pages'][$sn_page_name]))
+$sn_page_data = $sn_data['pages'][$sn_page_name];
+if($sn_page_name && isset($sn_page_data))
 {
-  if(basename($sn_data['pages'][$sn_page_name]) == $sn_data['pages'][$sn_page_name])
+  require_once('includes/pages/' . $sn_page_data['filename'] . '.' . $phpEx);
+/*
+  if(basename($sn_page_data) == $sn_page_data)
   {
-    require_once('includes/pages/' . $sn_data['pages'][$sn_page_name] . '.' . $phpEx);
+    require_once('includes/pages/' . $sn_page_data . '.' . $phpEx);
   }
+*/
 }
 
 // Генерируем список требуемых модулей

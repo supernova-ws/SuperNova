@@ -521,7 +521,24 @@ mission = array(
       'STAT_PLAYER' => array(STAT_RAID_TOTAL => STAT_RAID_TOTAL, STAT_RAID_WON => STAT_RAID_WON, STAT_RAID_LOST => STAT_RAID_LOST, STAT_LVL_BUILDING => STAT_LVL_BUILDING, STAT_LVL_TECH => STAT_LVL_TECH, STAT_LVL_RAID => STAT_LVL_RAID, ),
     ),
 
-    'pages' => array('options' => 'options', 'imperator' => 'imperator', 'chat' => 'chat', 'techtree' => 'techtree', 'contact' => 'contact'),
+    'pages' => array(
+      'chat' => array(
+        'filename' => 'chat',
+      ),
+      'contact' => array(
+        'allow_anonymous' => true,
+        'filename' => 'contact',
+      ),
+      'imperator' => array(
+        'filename' => 'imperator',
+      ),
+      'options' => array(
+        'filename' => 'options',
+      ),
+      'techtree' => array(
+        'filename' => 'techtree',
+      ),
+    ),
   );
 
 $sn_data['techtree'] = array(

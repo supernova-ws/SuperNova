@@ -93,7 +93,7 @@ for ( $cPage = 1; $cPage <= $MaxPage; $cPage++ ) {
   $parse['mlst_data_pages'] .= "<option value=\"".$cPage."\"".  (($ViewPage == $cPage)  ? " SELECTED" : "") .">". $cPage ."/". $MaxPage ."</option>";
 }
 
-$parse['mlst_scpt']  = "<script language=\"JavaScript\">\n";
+$parse['mlst_scpt']  = "<script type=\"text/javascript\">\n";
 $parse['mlst_scpt'] .= "function f(target_url, win_name) {\n";
 $parse['mlst_scpt'] .= "var new_win = window.open(target_url,win_name,'resizable=yes,scrollbars=yes,menubar=no,toolbar=no,width=550,height=280,top=0,left=0');\n";
 $parse['mlst_scpt'] .= "new_win.focus();\n";

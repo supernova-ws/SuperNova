@@ -105,7 +105,6 @@ $template_result += array(
 
 $template = gettemplate('chat_messages', true);
 $template->assign_recursive($template_result);
-$template = parsetemplate($template);
 
 if($history)
 {

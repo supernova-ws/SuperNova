@@ -440,3 +440,8 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
   border-style: none;
   cursor: pointer;
 }
+
+#copyright #supernova_ws
+{
+  font-weight: normal;
+}

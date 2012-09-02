@@ -160,7 +160,7 @@ if ($_POST['submit'])
     $config->db_saveItem('users_amount', $config->users_amount+1);
 
     $Message  = $lang['thanksforregistry'];
-    if (sendpassemail($email, $password))
+    if (sendpassemail($username, $password, $email))
     {
       $Message .= " (" . htmlentities($email) . ")";
     }
@@ -172,7 +172,7 @@ if ($_POST['submit'])
     $user = sn_login($username, $password);
     $user = $user['user_row'];
 
-    message( $Message, "{$lang['reg_welldone']}<b>{$password}</b>");
+    message($Message . $config->adv_conversion_code_register, "{$lang['reg_welldone']}<b>{$password}</b>");
   }
 }
 else
@@ -182,13 +182,13 @@ else
 
   $template = gettemplate('registry_form', true);
   $template->assign_vars(array(
-    'id_ref'     => $id_ref,
-    'servername' => $config->game_name,
+    'id_ref'       => $id_ref,
+    'servername'   => $config->game_name,
     'last_user'    => $query['username'],
     'online_users' => $query1['users_online'],
-    'URL_RULES'  => $config->url_rules,
-    'URL_FORUM'  => $config->url_forum,
-    'URL_FAQ'    => $config->url_faq,
+    'URL_RULES'    => $config->url_rules,
+    'URL_FORUM'    => $config->url_forum,
+    'URL_FAQ'      => $config->url_faq,
   ));
 
   tpl_login_lang($template, $id_ref);
@@ -196,15 +196,12 @@ else
   display($template, $lang['registry'], false, '', false, false);
 }
 
-function sendpassemail($emailaddress, $password)
+function sendpassemail($username, $password, $email)
 {
-  global $lang, $kod;
+  global $lang, $config;
 
-  $parse['SN_ROOT_VIRTUAL']  = SN_ROOT_VIRTUAL;
-  $parse['password'] = $password;
-  $parse['kod']      = $kod;
-  $email             = parsetemplate($lang['mail_welcome'], $parse);
-  $status            = mymail($emailaddress, $lang['mail_title'], $email);
+  $email  = sprintf($lang['mail_welcome'], $config->game_name, SN_ROOT_VIRTUAL, $username, $password);
+  $status = mymail($emailaddress, sprintf($lang['mail_title'], $config->game_name), $email);
   return $status;
 }
 

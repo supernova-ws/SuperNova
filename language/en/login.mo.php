@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 35a12.4
 *
 */
 
@@ -85,8 +85,16 @@ $lang = array_merge($lang, array(
   'Languese' => 'Language',
   'log_reg_text0' => 'Before registering please read',
   'log_reg_text1' => 'Registration means that you have read and fully agree with all points of the rules. If you do not agree with any paragraph rules-please register.',
-  'mail_welcome' => 'Thanks for registering {gameurl}\\n Your password: {password}\\n\\n Luck!\\n{gameurl}',
-  'mail_title' => 'Your registration OGame',
+  'mail_title' => "Your registration on SuperNova game server %1\$s",
+  'mail_welcome' => "Registration confirmation for account %3\$s\r\n\r\n
+  This letter contains registration data on SuperNova game server %1\$s
+  Store this data in safe place\r\n\r\n
+  Server address: %2\$s\r\n
+  Your login: %3\$s\r\n
+  Your password: %4\$s\r\n\r\n
+  Thank you for registering on our server! We wish you luck in game!\r\n
+  Server administration %1\$s %2\$s\r\n\r\n
+  Powered by OpenSource engine 'Project SuperNova.WS'. Light your SuperNova http://supernova.ws/",
   'thanksforregistry' => 'Congratulations on your successful registration! Now you can <a href=overview.php><u>start the game!</u></a>',
   'welcome_to_universe' => 'Welcome to OGame!!!',
   'your_password' => 'Your password',

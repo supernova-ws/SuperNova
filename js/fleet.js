@@ -132,35 +132,7 @@ function consumption() {
   consumption = Math.round(distance() * consumption / 35000) + 1;
   return(consumption);
 }
-/*
-function probeConsumption() {
-  var consumption = 0;
-  var basicConsumption = 0;
-  var values;
-  var i;
 
-  dist = distance();
-  dur = duration();
-
-  if (document.getElementsByName("ship" + SHIP_SPY)[0]) {
-    shipspeed = document.getElementsByName("speed" + SHIP_SPY)[0].value;
-    spd = 35000 / (dur * speed_factor - 10) * Math.sqrt(dist * 10 / shipspeed);
-
-    basicConsumption = document.getElementsByName("consumption" + SHIP_SPY)[0].value
-    * document.getElementsByName("ship" + SHIP_SPY)[0].value;
-    consumption += basicConsumption * dist / 35000 * ((spd / 10) + 1) * ((spd / 10) + 1);
-  }
-
-  consumption = Math.round(consumption) + 1;
-  return(consumption);
-}
-
-function unusedProbeStorage() {
-  var stor =  document.getElementsByName('capacity' + SHIP_SPY)[0].value * document.getElementsByName('ship' + SHIP_SPY)[0].value - probeConsumption();
-
-  return (stor>0) ? stor : 0;
-}
-*/
 function shortInfo() {
   document.getElementById("distance").innerHTML = sn_format_number(distance());
 
@@ -298,10 +270,13 @@ var fleet_global_update = false;
 function zero_fleet()
 {
   fleet_global_update = true;
+/*
   for (i in ships)
   {
     jQuery('#ships' + i + 'slide').slider("value", 0);
   }
+*/
+  jQuery('[id^="ships"][id$="slide"]').slider("value", 0);
   fleet_global_update = false;
   fl_calc_stats();
 }
@@ -309,10 +284,15 @@ function zero_fleet()
 function max_fleet()
 {
   fleet_global_update = true;
+/*
   for (i in ships)
   {
     jQuery('#ships' + i + 'slide').slider("value", ships[i][C1_SHIP_AMOUNT]);
   }
+*/
+  jQuery('[id^="ships"][id$="slide"]').each(function(){
+    jQuery(this).slider("value", jQuery(this).slider("option", "max"));
+  });
   fleet_global_update = false;
   fl_calc_stats();
 }

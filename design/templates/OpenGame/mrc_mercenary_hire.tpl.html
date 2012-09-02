@@ -22,7 +22,7 @@
     <td width="100%" colspan="2" class="c">{PAGE_HEADER}</td>
   </tr>
 
-<script language="javascript">
+<script type="text/javascript">
   var mrc_cost_array = Array();
   var mrc_discount_array = Array();
   var dark_matter_amount = {DARK_MATTER};
@@ -48,7 +48,7 @@ function mrc_change(mercenary_id)
 </script>
 
   <!-- BEGIN officer -->
-<script language="javascript">
+<script type="text/javascript">
   mrc_cost_array[{officer.ID}] = Array();
 </script>
 
@@ -87,7 +87,7 @@ function mrc_change(mercenary_id)
                 <select name="mercenary_level" id="level_{officer.ID}" onchange="javascript:mrc_change({officer.ID});">
                   <!-- BEGIN level -->
                   <option value="{level.VALUE}"<!-- IF officer.LEVEL == level.VALUE --> selected<!-- ENDIF -->>{level.VALUE}</option>
-                  <script language="javascript">
+                  <script type="text/javascript">
                     mrc_cost_array[{officer.ID}][{level.VALUE}] = {level.PRICE};
                   </script>
                   <!-- END level -->
@@ -104,7 +104,7 @@ function mrc_change(mercenary_id)
                 <!-- ENDIF -->
                 {L_sys_buy_for} <span id="final_cost_{officer.ID}" class="<!-- IF officer.COST_TEXT <= DARK_MATTER -->positive<!-- ELSE -->negative<!-- ENDIF -->">{officer.COST_TEXT}</span> {L_sys_dark_matter_sh}
                 <input type="submit" id="make_purchase_{officer.ID}" value="<!-- IF MODE == 600 -->{L_mrc_hire}<!-- ELSE -->{L_sys_buy}<!-- ENDIF -->">
-                <script language="javascript">
+                <script type="text/javascript">
                   mrc_change({officer.ID});
                 </script>
               <!-- ENDIF -->

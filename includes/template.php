@@ -358,7 +358,7 @@ function tpl_render_menu()
       'LEVEL' => 'submenu',
       'TYPE'  => 'lang',
       'ITEM'  => 'commun',
-      'LINK'  => 'contact.php',
+      'LINK'  => 'index.php?page=contact',
     ),
 
     'menu_options' => array(
@@ -827,14 +827,14 @@ function parsetemplate($template, $array = false)
   else
   {
     $search[] = '#\{L_([a-z0-9\-_]*?)\[([a-z0-9\-_]*?)\]\}#Ssie';
-    $replace[] = '((isset($lang[\'\1\'][\'\2\'])) ? $lang[\'\1\'][\'\2\'] : \'\');';
+    $replace[] = '((isset($lang[\'\1\'][\'\2\'])) ? $lang[\'\1\'][\'\2\'] : \'{L_\1[\2]}\');';
 
     $search[] = '#\{L_([a-z0-9\-_]*?)\}#Ssie';
 //    $replace[] = '((isset($lang[\'\1\'])) ? $lang[\'\1\'] : \'\{L_\}\');';
-    $replace[] = '((isset($lang[\'\1\'])) ? $lang[\'\1\'] : \'\');';
+    $replace[] = '((isset($lang[\'\1\'])) ? $lang[\'\1\'] : \'{L_\1}\');';
 
     $search[] = '#\{([a-z0-9\-_]*?)\}#Ssie';
-    $replace[] = '((isset($array[\'\1\'])) ? $array[\'\1\'] : \'\{\1\}\');';
+    $replace[] = '((isset($array[\'\1\'])) ? $array[\'\1\'] : \'{\1}\');';
 
     return preg_replace($search, $replace, $template);
   }
@@ -876,8 +876,9 @@ function tpl_login_lang(&$template, $id_ref)
   global $user, $language;
 
   $template->assign_vars(array(
-    'LANG'         => "?lang={$language}",
-    'referral'     => $id_ref ? "&id_ref={$id_ref}" : '',
+//    'LANG'         => "?lang={$language}",
+//    'referral'     => $id_ref ? "&id_ref={$id_ref}" : '',
+    'LANG'         => "?lang={$language}" . ($id_ref ? "&id_ref={$id_ref}" : ''),
     'FILENAME'     => basename($_SERVER['PHP_SELF']),
   ));
 

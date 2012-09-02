@@ -275,7 +275,7 @@ function sys_user_vacation($user)
 
 function is_id($value)
 {
-  return preg_match('/^\d+$/', $value);
+  return preg_match('/^\d+$/', $value) && ($value >= 0);
 }
 
 function sys_get_param($param_name, $default = '')
@@ -935,6 +935,13 @@ function sn_get_groups($groups)
   }
 
   return $result;
+}
+
+// Format $value to ID
+function idval($value, $default = 0)
+{
+  $value = floatval($value);
+  return preg_match('#^(\d*)#', $value, $matches) ? $matches[1] : $default;
 }
 
 ?>

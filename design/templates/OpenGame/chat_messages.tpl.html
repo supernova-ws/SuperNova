@@ -15,11 +15,9 @@
 <!-- ENDIF -->
 
 <!-- BEGIN chat -->
-  <div align="left" style='background-color:black;color:white;'>
-    <!-- IF chat.TIME --><span style='font:menu;'>[{chat.TIME}]</span><!-- ENDIF -->
-    <!-- IF chat.NICK --><span style='font:menu;'><b>{chat.NICK}</b></span>:<!-- ENDIF -->
-    <!-- IF chat.TEXT -->{chat.TEXT}<!-- ENDIF -->
-    <!-- IF chat.DISABLE --><span class="warning">{L_chat_timeout}</span><!-- ENDIF -->
+  <div align="left" style='background-color:black; color:white; font-weight: normal;'>
+    <!-- IF chat.TIME -->[{chat.TIME}]&nbsp;<!-- ENDIF --><!-- IF chat.NICK --><span style="font-weight: bold;">{chat.NICK}&gt;&nbsp;</span><!-- ENDIF --><!-- IF chat.TEXT -->{chat.TEXT}<!-- ENDIF -->
+    <!-- IF chat.DISABLE --><span class="warning"><b>{L_chat_timeout}</b></span><!-- ENDIF -->
     <br>
   </div>
 <!-- END chat -->
