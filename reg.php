@@ -196,7 +196,7 @@ else
   display($template, $lang['registry'], false, '', false, false);
 }
 
-function sendpassemail($username, $password, $email)
+function sendpassemail($username, $password, $emailaddress)
 {
   global $lang, $config;
 
