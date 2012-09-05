@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '34');
 define('SN_RELEASE', '35');
-define('SN_VERSION', '35a12.9');
+define('SN_VERSION', '35a12.11');
 define('SN_RELEASE_STABLE', '34d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -595,5 +595,9 @@ define('STAT_LVL_RAID', 11);
 
 define('CHAT_MODE_COMMON', 0);
 define('CHAT_MODE_ALLY', 1);
+
+define('BUDDY_REQUEST_WAITING', 0);
+define('BUDDY_REQUEST_ACTIVE', 1);
+define('BUDDY_REQUEST_DENIED', 2);
 
 ?>

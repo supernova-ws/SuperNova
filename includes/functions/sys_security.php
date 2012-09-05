@@ -319,8 +319,8 @@ function DeleteSelectedUser ( $UserID )
   doquery ( "DELETE FROM `{{messages}}` WHERE `message_owner` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{notes}}` WHERE `owner` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{fleets}}` WHERE `fleet_owner` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner1` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner2` = '" . $UserID . "';");
+//  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner1` = '" . $UserID . "';");
+//  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner2` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{buddy}}` WHERE `sender` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{buddy}}` WHERE `owner` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{annonce}}` WHERE `user` = '" . $UserID . "';");

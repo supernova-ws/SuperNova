@@ -834,25 +834,25 @@ function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '',
 //function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false){return sn_function_call('mrc_get_level', array(&$user, $planet, $unit_id, $for_update, $plain, &$result));}
 //function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false, &$result)
 
-function render_player_nick($user, $options = false){return sn_function_call('render_player_nick', array($user, $options, &$result));}
-function sn_render_player_nick($user, $options = false, &$result)
+function render_player_nick($render_user, $options = false){return sn_function_call('render_player_nick', array($render_user, $options, &$result));}
+function sn_render_player_nick($render_user, $options = false, &$result)
 {
-  global $config, $time_now;
+  global $config, $time_now, $user;
 
-  $result .= $user['username'];
+  $result .= $render_user['username'];
 
   if($options !== false)
   {
-    if($options === true || isset($options['ally']))
+    if($options === true || (isset($options['ally']) && $options['ally']))
     {
-      $result .= $user['ally_tag'] ? '[' . trim(strip_tags($user['ally_tag'])) . ']' : '';
+      $result .= $render_user['ally_tag'] ? '[' . trim(strip_tags($render_user['ally_tag'])) . ']' : '';
     }
 
-    if($options === true || isset($options['color']))
+    if($options === true || (isset($options['color']) && $options['color']))
     {
-      if($user['authlevel'])
+      if($render_user['authlevel'])
       {
-        switch($user['authlevel'])
+        switch($render_user['authlevel'])
         {
           case 3:
             $highlight = $config->chat_highlight_admin;
@@ -867,7 +867,7 @@ function sn_render_player_nick($user, $options = false, &$result)
           break;
         }
       }
-      elseif(mrc_get_level($user, false, UNIT_PREMIUM))
+      elseif(mrc_get_level($render_user, false, UNIT_PREMIUM))
       {
         $highlight = $config->chat_highlight_premium;
       }
@@ -875,12 +875,12 @@ function sn_render_player_nick($user, $options = false, &$result)
       $result = preg_replace("#(.+)#", $highlight ? $highlight : '$1', $result);
     }
 
-    if($options === true || isset($options['icons']) || isset($options['sex']))
+    if($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['sex']) && $options['sex']))
     {
-      $result = '<img src="' . ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'images/sex_' . ($user['sex'] == 'F' ? 'female' : 'male') . '.png">' . $result;
+      $result = '<img src="' . ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'images/sex_' . ($render_user['sex'] == 'F' ? 'female' : 'male') . '.png">' . $result;
     }
 
-    if($user['user_birthday'] && ($options === true || isset($options['icons']) || isset($options['birthday'])) && (date('Y', $time_now) . date('-m-d', strtotime($user['user_birthday'])) == date('Y-m-d', $time_now)))
+    if($render_user['user_birthday'] && ($options === true || isset($options['icons']) || isset($options['birthday'])) && (date('Y', $time_now) . date('-m-d', strtotime($render_user['user_birthday'])) == date('Y-m-d', $time_now)))
     {
       $result .= '<img src="design/images/birthday.png">';
     }

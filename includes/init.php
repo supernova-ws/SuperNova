@@ -188,7 +188,7 @@ require_once("{$sn_root_physical}includes/general.{$phpEx}");
 require_once("{$sn_root_physical}includes/template.{$phpEx}");
 sn_sys_load_php_files("{$sn_root_physical}includes/functions/", $phpEx);
 
-$template_result = array();
+$template_result = array('.' => array());
 $sn_page_name = isset($_GET['page']) ? trim(strip_tags($_GET['page'])) : '';
 
 // Подключаем все модули

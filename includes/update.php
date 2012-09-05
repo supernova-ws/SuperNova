@@ -1775,6 +1775,61 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
       "ADD INDEX `I_owner_priority_time` (`owner`, `priority`, `time`)",
     ), !$update_indexes['notes']['I_owner_priority_time']);
 
+    if(!$update_tables['buddy']['BUDDY_ID'])
+    {
+      upd_alter_table('buddy', array(
+        "CHANGE COLUMN `id` `BUDDY_ID` SERIAL COMMENT 'Buddy table row ID'",
+        "CHANGE COLUMN `active` `BUDDY_STATUS` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Buddy request status'",
+        "CHANGE COLUMN `text` `BUDDY_REQUEST` TINYTEXT DEFAULT '' COMMENT 'Buddy request text'", // 255 chars
+
+        "DROP INDEX `id`",
+
+        "DROP FOREIGN KEY `FK_buddy_sender_id`",
+        "DROP FOREIGN KEY `FK_buddy_owner_id`",
+        "DROP INDEX `I_buddy_sender`",
+        "DROP INDEX `I_buddy_owner`",
+      ), !$update_tables['buddy']['BUDDY_ID']);
+
+      upd_alter_table('buddy', array(
+        "CHANGE COLUMN `sender` `BUDDY_SENDER_ID` BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Buddy request sender ID'",
+        "CHANGE COLUMN `owner` `BUDDY_OWNER_ID` BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Buddy request recipient ID'",
+      ), !$update_tables['buddy']['BUDDY_SENDER']);
+
+      $query = upd_do_query("SELECT `BUDDY_ID`, `BUDDY_SENDER_ID`, `BUDDY_OWNER_ID` FROM {{buddy}} ORDER BY `BUDDY_ID`;");
+      $found = $lost = array();
+      while($row = mysql_fetch_assoc($query))
+      {
+        $index = min($row['BUDDY_SENDER_ID'], $row['BUDDY_OWNER_ID']) . ';' . max($row['BUDDY_SENDER_ID'], $row['BUDDY_OWNER_ID']);
+        if(!isset($found[$index]))
+        {
+          $found[$index] = $row['BUDDY_ID'];
+        }
+        else
+        {
+          $lost[] = $row['BUDDY_ID'];
+        }
+      }
+      $lost = implode(',', $lost);
+      if($lost)
+      {
+        upd_do_query("DELETE FROM {{buddy}} WHERE `BUDDY_ID` IN ({$lost})");
+      }
+
+      upd_alter_table('buddy', array(
+          "ADD KEY `I_BUDDY_SENDER_ID` (`BUDDY_SENDER_ID`, `BUDDY_OWNER_ID`)",
+          "ADD KEY `I_BUDDY_OWNER_ID` (`BUDDY_OWNER_ID`, `BUDDY_SENDER_ID`)",
+
+          "ADD CONSTRAINT `FK_BUDDY_SENDER_ID` FOREIGN KEY (`BUDDY_SENDER_ID`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+          "ADD CONSTRAINT `FK_BUDDY_OWNER_ID` FOREIGN KEY (`BUDDY_OWNER_ID`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), !$update_indexes['buddy']['I_BUDDY_SENDER_ID']);
+    }
+
+    // TODO: FOR TEST ONLY!! DELETE
+    upd_alter_table('buddy', array(
+      "CHANGE COLUMN `BUDDY_ACTIVE` `BUDDY_STATUS` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Buddy request status'",
+    ), !$update_tables['buddy']['BUDDY_STATUS']);
+    // EOF TODO
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 35;
 

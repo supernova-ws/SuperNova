@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a8.10
+* @version 35a12.11
 *
 */
 
@@ -725,6 +725,11 @@ $lang = array_merge($lang, array(
   'sys_sector_buy' => 'Купить 1 сектор',
 
   'sys_select_confirm' => 'Подвердить выбор',
+
+  'sys_capital' => 'Столица',
+
+  'sys_result_operation' => 'Сообщения',
+
 ));
 
 ?>

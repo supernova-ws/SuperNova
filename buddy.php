@@ -10,162 +10,191 @@
  * Idea from buddy.php Created by Perberos. All rights reversed (C) 2006
  * */
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
-// TODO: Rewrote buddy.php
-function int_renderLastActiveHTML($last_active = 0, $isAllowed = true, $isAdmin = false)
-{
-  global $lang;
 
-  if ($isAdmin)
-  {
-    if ($last_active < 60)
-    {
-      $tmp = "lime>{$lang['sys_online']}";
-    }
-    elseif ($last_active < 60 * 60)
-    {
-      $last_active = round($last_active / 60);
-      $tmp = "lime>{$last_active} {$lang['sys_min_short']}";
-    }
-    elseif ($last_active < 60 * 60 * 24)
-    {
-      $last_active = round($last_active / (60 * 60));
-      $tmp = "green>{$last_active} {$lang['sys_hrs_short']}";
-    }
-    else
-    {
-      $last_active = round($last_active / (60 * 60 * 24));
-
-      if ($last_active < 7)
-      {
-        $tmp = 'yellow';
-      }
-      elseif ($last_active < 30)
-      {
-        $tmp = 'orange';
-      }
-      else
-      {
-        $tmp = 'red';
-      }
-      $tmp .= ">{$last_active} {$lang['sys_day_short']}";
-    }
-  }
-  else
-  {
-    if ($isAllowed)
-    {
-      if ($last_active < 60 * 5)
-      {
-        $tmp = "lime>{$lang['sys_online']}";
-      }
-      elseif ($last_active < 60 * 15)
-      {
-        $tmp = "yellow>{$lang['sys_lessThen15min']}";
-      }
-      else
-      {
-        $tmp = "red>{$lang['sys_offline']}";
-      }
-    }
-    else
-    {
-      $tmp = "orange>-";
-    }
-  }
-  return "<font color={$tmp}</font>";
-}
 lng_include('buddy');
 
-$userID = sys_get_param_id('u');
-$buddyID = sys_get_param_id('buddyID');
-$text = mysql_real_escape_string(sys_bbcodeParse(strip_tags(sys_get_param('text'))));
-$mode = sys_get_param_str('mode');
-
-if ($userID)
+$result = array();
+try
 {
-  if ($userID == $user['id'])
-    message($lang['bud_sys_cantFriendYourself'], $lang['bud_req_title'], 'buddy.php');
-
-  $qryRes = doquery("SELECT sender FROM {{buddy}} WHERE `sender` = '{$user['id']}' AND `owner` = '{$userID}';", 'buddy', true);
-  if ($qryRes)
-    message($lang['bud_sys_cantFriendAgain'], $lang['bud_req_title'], 'buddy.php');
-
-  if ($text)
+  doquery('START TRANSACTION');
+  if($buddy_id = sys_get_param_id('buddy_id'))
   {
-    doquery("INSERT INTO `{{buddy}}` SET `sender` = '{$user['id']}', `owner` = '{$userID}', `active` = '0', `text` = '{$text}';");
-    message($lang['Request_sent'], $lang['Buddy_request'], 'buddy.php');
-  }
-  else
-  {
-    $friend = doquery("SELECT `id`, `username` FROM `{{users}}` WHERE `id` = '{$userID}' LIMIT 1;", "", true);
-    $friend = array_merge($friend, $lang);
-    display(parsetemplate(gettemplate('bud_request'), $friend), $lang['adm_an_title']);
-  }
-}
-
-if ($buddyID)
-{
-  $friend = doquery("SELECT * FROM {{buddy}} WHERE `id` = '{$buddyID}';", 'buddy', true);
-  if ($friend)
-  {
-    switch ($mode)
+    $buddy_row = doquery("SELECT BUDDY_SENDER_ID, BUDDY_OWNER_ID, BUDDY_STATUS FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1 FOR UPDATE;", true);
+    if(!is_array($buddy_row))
     {
-      case 'delete':
-        doquery("DELETE FROM {{buddy}} WHERE `sender` = '{$friend['owner']}'  AND `owner` = {$friend['sender']};");
-        doquery("DELETE FROM {{buddy}} WHERE `sender` = '{$friend['sender']}' AND `owner` = {$friend['owner']} ;");
-        break;
+      throw new exception('buddy_err_not_exist', ERR_ERROR);
+    }
+
+    switch($mode = sys_get_param_str('mode'))
+    {
       case 'accept':
-        doquery("UPDATE {{buddy}} SET `active` = 1 WHERE `id` = '{$buddyID}'");
-        doquery("DELETE FROM {{buddy}} WHERE `sender` = '{$friend['owner']}' AND `owner` = {$friend['sender']};");
-        doquery("INSERT INTO {{buddy}} (`sender`, `owner`, `active`, `text`) VALUES ({$friend['owner']},{$friend['sender']},1,'Ответная дружба');");
-        break;
+        if($buddy_row['BUDDY_SENDER_ID'] == $user['id'])
+        {
+          throw new exception('buddy_err_accept_own', ERR_ERROR);
+        }
+
+        if($buddy_row['BUDDY_OWNER_ID'] != $user['id'])
+        {
+          throw new exception('buddy_err_accept_alien', ERR_ERROR);
+        }
+
+        if($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_ACTIVE)
+        {
+          throw new exception('buddy_err_accept_already', ERR_WARNING);
+        }
+
+        if($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_DENIED)
+        {
+          throw new exception('buddy_err_accept_denied', ERR_ERROR);
+        }
+
+        doquery("UPDATE {{buddy}} SET `BUDDY_STATUS` = " . BUDDY_REQUEST_ACTIVE . " WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
+        if(mysql_affected_rows($link))
+        {
+          msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], $time_now, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_accept_title'],
+            sprintf($lang['buddy_msg_accept_text'], $user['username']));
+          doquery('COMMIT');
+          throw new exception('buddy_err_accept_none', ERR_NONE);
+        }
+        else
+        {
+          throw new exception('buddy_err_accept_internal', ERR_ERROR);
+        }
+      break;
+
+      case 'delete':
+        if($buddy_row['BUDDY_SENDER_ID'] != $user['id'] && $buddy_row['BUDDY_OWNER_ID'] != $user['id'])
+        {
+          throw new exception('buddy_err_delete_alien', ERR_ERROR);
+        }
+
+        if($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_ACTIVE) // Existing friendship
+        {
+          $ex_friend_id = $buddy_row['BUDDY_SENDER_ID'] == $user['id'] ? $buddy_row['BUDDY_OWNER_ID'] : $buddy_row['BUDDY_SENDER_ID'];
+
+          msg_send_simple_message($ex_friend_id, $user['id'], $time_now, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_unfriend_title'],
+            sprintf($lang['buddy_msg_unfriend_text'], $user['username']));
+
+          doquery("DELETE FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
+          doquery('COMMIT');
+          throw new exception('buddy_err_unfriend_none', ERR_NONE);
+        }
+        elseif($buddy_row['BUDDY_SENDER_ID'] == $user['id']) // Player's outcoming request - either denied or waiting
+        {
+          doquery("DELETE FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
+          doquery('COMMIT');
+          throw new exception('buddy_err_delete_own', ERR_NONE);
+        }
+        elseif($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_WAITING) // Deny incoming request
+        {
+          msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], $time_now, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_deny_title'],
+            sprintf($lang['buddy_msg_deny_text'], $user['username']));
+
+          doquery("UPDATE {{buddy}} SET `BUDDY_STATUS` = " . BUDDY_REQUEST_DENIED . " WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
+          doquery('COMMIT');
+          throw new exception('buddy_err_deny_none', ERR_NONE);
+        }
+      break;
     }
   }
-}
 
-$friendTables = array(
-  0 => array('title' => $lang['bud_listTitle'], 'empty' => $lang['bud_noFriends'], 'column4title' => $lang['sys_status'], 'isShowAccept' => 'class="hide"', 'req' => "sender WHERE `active` = 1 AND `owner`  = {$user['id']}"), // Friend list
-  1 => array('title' => $lang['bud_req_toMeTitle'], 'empty' => $lang['bud_noReqsToMe'], 'column4title' => $lang['bud_req_text'], 'isShowAccept' => '', 'req' => "sender WHERE `active` = 0 AND `owner`  = {$user['id']}"), // Requests to me
-  2 => array('title' => $lang['bud_req_myTitle'], 'empty' => $lang['bud_noMyReqs'], 'column4title' => $lang['bud_req_text'], 'isShowAccept' => 'class="hide"', 'req' => "owner  WHERE `active` = 0 AND `sender` = {$user['id']}"), // My requests
-);
-
-$parse = $lang;
-$parse['dpath'] = $dpath;
-$parse['PAGE_HINT'] = $lang['bud_hint'];
-
-foreach ($friendTables as $tableID => $friendTable)
-{
-  $parse = array_merge($parse, $friendTable);
-  $renderRow = '';
-
-  $friendList = doquery("SELECT {{buddy}}.*, {{users}}.username, {{users}}.ally_name, {{users}}.onlinetime, {{users}}.galaxy, {{users}}.system, {{users}}.planet FROM {{buddy}} LEFT JOIN {{users}} ON {{users}}.id = {{buddy}}." . $friendTable['req']);
-  if (mysql_num_rows($friendList))
-    $parse['isShowPlaceholder'] = 'class="hide"';
-  else
-    $parse['isShowPlaceholder'] = '';
-
-  while ($friend = mysql_fetch_assoc($friendList))
+  // New request?
+  // Checking for user ID - in case if it was request from outside buddy system
+  if($new_friend_id = sys_get_param_id('request_user_id'))
   {
-    $parse = array_merge($parse, $friend);
-    if (!$tableID)
-      $parse['column4data'] = int_renderLastActiveHTML($time_now - $friend['onlinetime']);
-    else
-      $parse['column4data'] = $friend['text'];
-
-    if ($friend['sender'] == $user['id'])
-      $parse['addressee'] = $friend['owner'];
-    else
-      $parse['addressee'] = $friend['sender'];
-
-    $renderRow .= parsetemplate(gettemplate('bud_table_row'), $parse);
+    $new_friend_row = doquery("SELECT `id`, `username` FROM {{users}} WHERE `id` = {$new_friend_id} LIMIT 1 FOR UPDATE;", true);
+  }
+  elseif($new_friend_name = sys_get_param_str('request_user_name'))
+  {
+    $new_friend_row = doquery("SELECT `id`, `username` FROM {{users}} WHERE `username` = '{$new_friend_name}' LIMIT 1 FOR UPDATE;", true);
   }
 
-  $parse['rows'] = $renderRow;
-  $page .= parsetemplate(gettemplate('bud_table'), $parse);
+  if($new_friend_row['id'] == $user['id'])
+  {
+    unset($new_friend_row);
+    throw new exception('buddy_err_adding_self', ERR_ERROR);
+  }
+
+  // Checking for user name & request text - in case if it was request to adding new request
+  if(isset($new_friend_row['id']) && ($new_request_text = sys_get_param_str('request_text')))
+  {
+    $check_relation = doquery("SELECT `BUDDY_ID` FROM {{buddy}} WHERE
+      (`BUDDY_SENDER_ID` = {$user['id']} AND `BUDDY_OWNER_ID` = {$new_friend_row['id']})
+      OR
+      (`BUDDY_SENDER_ID` = {$new_friend_row['id']} AND `BUDDY_OWNER_ID` = {$user['id']})
+      LIMIT 1 FOR UPDATE;"
+    , true);
+    if(isset($check_relation['BUDDY_ID']))
+    {
+      throw new exception('buddy_err_adding_exists', ERR_WARNING);
+    }
+
+    msg_send_simple_message($new_friend_row['id'], $user['id'], $time_now, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_adding_title'],
+      sprintf($lang['buddy_msg_adding_text'], $user['username']));
+
+    doquery($q = "INSERT INTO {{buddy}} SET `BUDDY_SENDER_ID` = {$user['id']}, `BUDDY_OWNER_ID` = {$new_friend_row['id']}, `BUDDY_REQUEST` = '{$new_request_text}';");
+    doquery('COMMIT');
+    throw new exception('buddy_err_adding_none', ERR_NONE);
+  }
+}
+catch(exception $e)
+{
+  doquery('ROLLBACK');
+  $result[] = array(
+    'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
+    'MESSAGE' => $lang[$e->getMessage()],
+  );
 }
 
-//$page .= MessageForm($lang['sys_hint'], $lang['bud_hint'], "", "", true);
 
-display($page, $lang['bud_listTitle']);
+
+
+$query = doquery("
+SELECT
+  b.*,
+--  b.BUDDY_ACTIVE + IF(b.BUDDY_OWNER_ID = {$user['id']}, " . BUDDY_REQUEST_INCOMING . ", " . BUDDY_REQUEST_OUTCOMING . ") AS BUDDY_REQUEST_STATUS,
+  IF(b.BUDDY_OWNER_ID = {$user['id']}, b.BUDDY_SENDER_ID, b.BUDDY_OWNER_ID) AS BUDDY_USER_ID,
+  u.username AS BUDDY_USER_NAME,
+  p.name AS BUDDY_PLANET_NAME,
+  p.galaxy AS BUDDY_PLANET_GALAXY,
+  p.system AS BUDDY_PLANET_SYSTEM,
+  p.planet AS BUDDY_PLANET_PLANET,
+  a.id AS BUDDY_ALLY_ID,
+  a.ally_name AS BUDDY_ALLY_NAME,
+  u.onlinetime
+FROM {{buddy}} AS b
+  LEFT JOIN {{users}} AS u ON u.id = IF(b.BUDDY_OWNER_ID = {$user['id']}, b.BUDDY_SENDER_ID, b.BUDDY_OWNER_ID)
+  LEFT JOIN {{planets}} AS p ON p.id_owner = u.id AND p.id = id_planet
+  LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id
+WHERE (`BUDDY_OWNER_ID` = {$user['id']}) OR `BUDDY_SENDER_ID` = {$user['id']}
+ORDER BY BUDDY_STATUS, BUDDY_ID");
+// WHERE (`BUDDY_OWNER_ID` = {$user['id']} AND b.`BUDDY_STATUS` != " . BUDDY_REQUEST_DENIED . ") OR `BUDDY_SENDER_ID` = {$user['id']}
+while($row = mysql_fetch_assoc($query))
+{
+  $row['BUDDY_REQUEST'] = sys_bbcodeParse($row['BUDDY_REQUEST']);
+
+  $row['BUDDY_ACTIVE'] = $row['BUDDY_STATUS'] == BUDDY_REQUEST_ACTIVE;
+  $row['BUDDY_DENIED'] = $row['BUDDY_STATUS'] == BUDDY_REQUEST_DENIED;
+  $row['BUDDY_INCOMING'] = $row['BUDDY_OWNER_ID'] == $user['id'];
+  $row['BUDDY_ONLINE'] = floor(($time_now - $row['onlinetime']) / 60);
+
+  $template_result['.']['buddy'][] = $row;
+}
+
+$template_result += array(
+  'PAGE_HEADER' => $lang['buddy_buddies'],
+  'PAGE_HINT' => $lang['buddy_hint'],
+  'USER_ID' => $user['id'],
+  'REQUEST_USER_ID' => isset($new_friend_row['id']) ? $new_friend_row['id'] : 0,
+  'REQUEST_USER_NAME' => isset($new_friend_row['username']) ? $new_friend_row['username'] : '',
+);
+
+$template_result['.']['result'] = is_array($template_result['.']['result']) ? $template_result['.']['result'] : array();
+$template_result['.']['result'] += $result;
+
+$template = gettemplate('buddy', true);
+$template->assign_recursive($template_result);
+
+display($template);
 
 ?>

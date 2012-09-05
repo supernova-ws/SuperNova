@@ -22,7 +22,6 @@ $note_priority_classes = array(
 
 $template = gettemplate('notes', true);
 
-// owner time priority title text
 $result = array();
 if(($result_message = sys_get_param_str('MESSAGE')) && isset($lang[$result_message]))
 {

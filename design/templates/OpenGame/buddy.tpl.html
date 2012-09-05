@@ -1,0 +1,112 @@
+<h1>{PAGE_HEADER}</h1>
+
+<br />
+<table>
+  <tr>
+    <th class="c_l">{L_sys_player}/{L_sys_alliance}</th>
+    <th class="c_l">{L_sys_capital}</th>
+    <th class="c_l" width="300px">{L_buddy_status}</th>
+    <th class="c_l" width="55px">
+      <img src="{dpath}img/m.gif" alt="{L_sys_writeMessage}" title="{L_sys_writeMessage}">
+      <img src="design/images/r1.png" alt="{L_sys_delete}" title="{L_sys_delete}" border="0">
+      <img src="design/images/r4.png" alt="{L_buddy_request_accept}" title="{L_buddy_request_accept}" border="0">
+    </th>
+  </tr>
+
+  <!-- BEGIN buddy -->
+  <tr>
+    <td class="c_l">
+      {buddy.BUDDY_USER_NAME}<br />
+      <!-- IF buddy.BUDDY_ALLY_ID -->
+        {buddy.BUDDY_ALLY_NAME}
+      <!-- ELSE -->
+        &nbsp;
+      <!-- ENDIF -->
+    </td>
+    <td class="c_l">
+      <!-- IF buddy.BUDDY_PLANET_NAME && buddy.BUDDY_PLANET_GALAXY -->
+        <a href="galaxy.php?mode=3&galaxy={buddy.BUDDY_PLANET_GALAXY}&system={buddy.BUDDY_PLANET_SYSTEM}&planet={buddy.BUDDY_PLANET_PLANET}">[{buddy.BUDDY_PLANET_GALAXY}:{buddy.BUDDY_PLANET_SYSTEM}:{buddy.BUDDY_PLANET_PLANET}]<br/>{buddy.BUDDY_PLANET_NAME}</a>
+      <!-- ELSE -->
+        <span class="notice">{L_sys_na}</span>
+      <!-- ENDIF -->
+    </td>
+    <td class="c_l">
+      <!-- IF buddy.BUDDY_ACTIVE -->
+        <span class="ok">{L_buddy_status_active}</span><br />
+        <!-- IF buddy.BUDDY_ONLINE < 5 -->
+          <span class="ok">{L_sys_online}</span>
+        <!-- ELSEIF buddy.BUDDY_ONLINE < 15 -->
+          <span class="notice">{L_sys_lessThen15min}</span>
+        <!-- ELSEIF buddy.BUDDY_ONLINE < 1440 -->
+          <span class="warning">{L_sys_offline}</span>
+        <!-- ELSE -->
+          <span class="error">{L_sys_offline}</span>
+        <!-- ENDIF -->
+
+      <!-- ELSE -->
+        <!-- IF buddy.BUDDY_INCOMING -->
+          <!-- IF buddy.BUDDY_DENIED -->
+            <span class="error">{L_buddy_status_incoming_denied}</span>
+          <!-- ELSE -->
+            <span class="warning">{L_buddy_status_incoming_waiting}</span>
+          <!-- ENDIF -->
+        <!-- ELSE -->
+          <!-- IF buddy.BUDDY_DENIED -->
+            <span class="error">{L_buddy_status_outcoming_denied}</span>
+          <!-- ELSE -->
+            <span class="notice">{L_buddy_status_outcoming_waiting}</span>
+          <!-- ENDIF -->
+        <!-- ENDIF -->
+        <br />
+        {buddy.BUDDY_REQUEST}
+      <!-- ENDIF -->
+    </td>
+    <td class="c_l">
+      <a href="messages.php?mode=write&id={buddy.BUDDY_USER_ID}"><img src="{dpath}img/m.gif" alt="{L_sys_writeMessage}" title="{L_sys_writeMessage}"></a>
+      <!-- IF ! (buddy.BUDDY_INCOMING && buddy.BUDDY_DENIED) -->
+        <a href="buddy.php?mode=delete&buddy_id={buddy.BUDDY_ID}"><img src="design/images/r1.png" alt="{L_sys_delete}" title="{L_sys_delete}" border="0"></a>
+      <!-- ENDIF -->
+      <!-- IF buddy.BUDDY_INCOMING && ! buddy.BUDDY_ACTIVE && ! buddy.BUDDY_DENIED -->
+        <a href="buddy.php?mode=accept&buddy_id={buddy.BUDDY_ID}"><img src="design/images/r4.png" alt="{L_buddy_request_accept}" title="{L_buddy_request_accept}" border="0"></a>
+      <!-- ENDIF -->
+    </td>
+  </tr>
+  <!-- BEGINELSE -->
+    {L_buddy_request_none}
+  <!-- END buddy -->
+
+  <tr>
+    <th class="c_l" colspan="5">
+      {L_buddy_request_write_header}
+      <span class="fr">{bud_req_toUser}&nbsp;{username}&nbsp;(<span id="cntChars">0</span> / 2000 {sys_characters})</span>
+    </th>
+  </tr>
+  <form action="buddy.php" method="post">
+    <tr>
+      <td class="c_l">
+        {L_buddy_request_player_name}
+      </td>
+      <td colspan="4" class="c_l">
+        <input type="hidden" name="request_user_id" value="{REQUEST_USER_ID}" />
+        <input type="text" name="request_user_name" size="60" maxlength="64" value="{REQUEST_USER_NAME}" /><br />
+      </td>
+    </tr>
+
+    <tr>
+      <td class="c_l">
+        {L_buddy_request_text}
+      </td>
+      <td colspan="4" class="c_l">
+        <input type="text" name="request_text" size="60" maxlength="255" value="{L_buddy_request_text_default}" />
+      </td>
+    </tr>
+
+    <tr>
+      <th class="c_c" colspan="5">
+        <input type="submit" value="{L_sys_send}">
+      </th>
+    </tr>
+  </form>
+</table>
+
+<!-- INCLUDE page_hint -->
