@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a12.11
+* @version 35a12.16
 *
 */
 
@@ -40,7 +40,8 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
   // Dark Matter
-  'sys_dark_matter_description_header' => 'Why do you need Dark Matter ?',
+  'sys_dark_matter_what_header' => 'What is Dark Matter',
+  'sys_dark_matter_description_header' => 'Why do you need Dark Matter',
   'sys_dark_matter_description_text' => 'Dark Matter - is ingame currency, which in the game you can make a variety of operations:
     <ul>
       <li>Buy <a href="index.php?module=player_premium"><span class="link">Premium account</span></a></li>
@@ -52,7 +53,7 @@ $lang = array_merge($lang, array(
       <li>...and many other things</li>
     </ul>',
 
-  'sys_dark_matter_obtain_header' => 'How to obtain Dark Matter?',
+  'sys_dark_matter_obtain_header' => 'How to obtain Dark Matter',
   'sys_dark_matter_obtain_text' => 'You acquring Dark Matter in game process: while gained levels for raids to enemy planets, researching technologies, building and destroying buildings.
     Also sometimes expeditions can gain you some DM.',
 

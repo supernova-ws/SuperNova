@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a11.0
+* @version 35a12.16
 *
 */
 
@@ -30,31 +30,28 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
-  'info_title_param' => 'Parameter',
-  'info_title_base' => 'Base',
-  'info_title_actual' => 'Current',
-  'nfo_page_title' => 'Information',
-  'nfo_title_head' => 'Information',
-  'nfo_name' => 'Name',
-  'nfo_destroy' => 'Destruction',
-  'nfo_level' => 'level',
-  'nfo_range' => 'Distance sensors',
-  'nfo_used_energy' => 'Power consumption',
-  'nfo_used_deuter' => 'Deuterium consumption',
-  'nfo_prod_energy' => 'Energy production',
-  'nfo_difference' => 'Difference',
-  'nfo_prod_p_hour' => 'Production per hour',
-  'nfo_needed' => 'Requirements',
-  'nfo_dest_durati' => 'Time to kill',
-  'nfo_struct_pt' => 'Structural (life)',
-  'nfo_shielf_pt' => 'Shield',
-  'nfo_attack_pt' => 'Attack power',
-  'nfo_rf_again' => 'One attack kill',
-  'nfo_rf_from' => 'one attack kill',
-  'nfo_capacity' => 'Capacity',
-  'nfo_units' => 'units',
-  'nfo_base_speed' => 'Base speed',
-  'nfo_consumption' => 'Fuel consumption (Deuterium)',
+  'wiki_title' => 'Novapedia',
+  'wiki_requrements' => 'Requirements for build/research',
+
+  'wiki_char_nominal' => 'Nominal',
+  'wiki_char_actual' => 'Actual',
+
+  'wiki_ship_engine_header' => 'Engine characteristics',
+
+  'wiki_ship_header' => 'Flying characteristics',
+  'wiki_ship_speed' => 'Speed',
+  'wiki_ship_consumption' => 'Deuterium consumption',
+  'wiki_ship_capacity' => 'Cargo bay capacity',
+  'wiki_ship_hint' => '<li>Actual data calculated with applying all bonuses - techs, mercs etc</li>',
+
+  'wiki_combat_header' => 'Battle characteristics',
+  'wiki_combat_attack' => 'Attack power, hits',
+  'wiki_combat_shield' => 'Shield battery capacity, hits',
+  'wiki_combat_armor' => 'Durability, hits',
+
+  'wiki_combat_volley_header' => 'Volley',
+  'wiki_combat_volley_to' => 'Will destroy',
+  'wiki_combat_volley_from' => 'Will lost',
 ));
 
 if(!is_array($lang['info']))

@@ -69,7 +69,7 @@ th, td, input, select, textarea
 th.c_l, th.c_r, th.c_c, tr.c_l th, tr.c_r th, tr.c_c th, td.c
 {
   font-weight          : bold;
-  background-image     : url(img/bg1.gif);
+  background-image     : url("img/bg1.gif");
 }
 /*
 th, td.c_l, td.c_c, tr.c_l td, tr.c_r td, tr.c_c td
@@ -77,6 +77,7 @@ th, td.c_l, td.c_c, tr.c_l td, tr.c_r td, tr.c_c td
   text-align           : center;
 }
 */
+/*
 .c_c, th.c_c, td.c_c, tr.c_c td, tr.c_c th, .cell_center, tr.cell_center td, tr.cell_center th
 {
   text-align: center;
@@ -91,7 +92,7 @@ th, td.c_l, td.c_c, tr.c_l td, tr.c_r td, tr.c_c td
 {
   text-align: right;
 }
-
+*/
 td.l
 {
   vertical-align       : top;

@@ -680,6 +680,27 @@ function sn_get_url_contents($url)
   return $return;
 }
 
+function get_engine_data($user, $engine_info)
+{
+  global $sn_data;
+
+  $sn_data_tech_bonus = $sn_data[$engine_info['tech']]['bonus'];
+
+  $user_tech_level = intval(mrc_get_level($user, false, $engine_info['tech']));
+
+  $engine_info['speed_base'] = $engine_info['speed'];
+  $tech_bonus = ($user_tech_level - $engine_info['min_level']) * $sn_data_tech_bonus / 100;
+  $tech_bonus = $tech_bonus < -0.9 ? -0.95 : $tech_bonus;
+  $engine_info['speed'] = floor(mrc_modify_value($user, false, array(MRC_NAVIGATOR), $engine_info['speed']) * (1 + $tech_bonus));
+
+  $engine_info['consumption_base'] = $engine_info['consumption'];
+  $tech_bonus = ($user_tech_level - $engine_info['min_level']) * $sn_data_tech_bonus / 1000;
+  $tech_bonus = $tech_bonus > 0.5 ? 0.5 : ($tech_bonus < 0 ? $tech_bonus * 2: $tech_bonus);
+  $engine_info['consumption'] = $engine_info['consumption'] * (1 - $tech_bonus);
+
+  return $engine_info;
+}
+
 function get_ship_data($ship_id, $user)
 {
   global $sn_data;
@@ -696,15 +717,19 @@ function get_ship_data($ship_id, $user)
         $ship_data['tech_level'] = $tech_level;
       }
     }
-//    $ship_data['speed'] = floor(mrc_modify_value($user, false, array(MRC_NAVIGATOR, $ship_data['tech']), $ship_data['speed']));
-    $tech_bonus = ($ship_data['tech_level'] - $ship_data['min_level']) * $sn_data[$ship_data['tech']]['bonus'] / 100;
+    $ship_data = get_engine_data($user, $ship_data);
+/*
+    $sn_data_tech_bonus = $sn_data[$ship_data['tech']]['bonus'];
+    $tech_bonus = ($ship_data['tech_level'] - $ship_data['min_level']) * $sn_data_tech_bonus / 100;
     $tech_bonus = $tech_bonus < -0.9 ? -0.95 : $tech_bonus;
     $ship_data['speed'] = floor(mrc_modify_value($user, false, array(MRC_NAVIGATOR), $ship_data['speed']) * (1 + $tech_bonus));
 
-    $tech_bonus = ($ship_data['tech_level'] - $ship_data['min_level']) * $sn_data[$ship_data['tech']]['bonus'] / 1000;
+    $tech_bonus = ($ship_data['tech_level'] - $ship_data['min_level']) * $sn_data_tech_bonus / 1000;
     $tech_bonus = $tech_bonus > 0.5 ? 0.5 : ($tech_bonus < 0 ? $tech_bonus * 2: $tech_bonus);
     $ship_data['consumption'] = $ship_data['consumption'] * (1 - $tech_bonus);
 
+    debug($ship_data);
+*/
     $ship_data['capacity'] = $sn_data[$ship_id]['capacity'];
   }
 
@@ -831,9 +856,6 @@ function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '',
   }
 }
 
-//function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false){return sn_function_call('mrc_get_level', array(&$user, $planet, $unit_id, $for_update, $plain, &$result));}
-//function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false, &$result)
-
 function render_player_nick($render_user, $options = false){return sn_function_call('render_player_nick', array($render_user, $options, &$result));}
 function sn_render_player_nick($render_user, $options = false, &$result)
 {
@@ -942,6 +964,35 @@ function idval($value, $default = 0)
 {
   $value = floatval($value);
   return preg_match('#^(\d*)#', $value, $matches) ? $matches[1] : $default;
+}
+
+function unit_requirements_render($user, $planetrow, $unit_id){return sn_function_call('unit_requirements_render', array($user, $planetrow, $unit_id, &$result));}
+function sn_unit_requirements_render($user, $planetrow, $unit_id, &$result)
+{
+  global $sn_data, $lang;
+
+  $sn_data_unit = &$sn_data[$unit_id];
+
+  $result = is_array($result) ? $result : array();
+  if($sn_data_unit['require'])
+  {
+    foreach($sn_data_unit['require'] as $require_id => $require_level)
+    {
+      $level_got = mrc_get_level($user, $planetrow, $require_id);
+      $level_basic = mrc_get_level($user, $planetrow, $require_id, false, true);
+      $result[] = array(
+        'NAME' => $lang['tech'][$require_id],
+//        'CLASS' => $require_level > $level_got ? 'negative' : ($require_level == $level_got ? 'zero' : 'positive'),
+        'REQUEREMENTS_MET' => $require_level <= $level_got ? REQUIRE_MET : REQUIRE_MET_NOT,
+        'LEVEL_REQUIRE' => $require_level,
+        'LEVEL' => $level_got,
+        'LEVEL_BASIC' => $level_basic,
+        'LEVEL_BONUS' => max(0, $level_got - $level_basic),
+      );
+    }
+  }
+
+  return $result;
 }
 
 ?>

@@ -1,7 +1,7 @@
 <?php
 
-// Ïðèäóìàòü êàêîé ñòàòóñ äîëæåí áûòü ó ãëîáàëüíûõ îòâåòîâ, ÷òî áû íå ïåðåêðûâàòü ñòàòóñû ïëàòåæíûõ ñèñòåì
-// Ìîæåò äîáàâèòü ñïåöñòàòóñ "Îòâåò ñèñòåìû ïëàòåæà" è ïàðñèòü äàëüøå getMessage
+// ÐŸÑ€Ð¸Ð´ÑƒÐ¼Ð°Ñ‚ÑŒ ÐºÐ°ÐºÐ¾Ð¹ ÑÑ‚Ð°Ñ‚ÑƒÑ Ð´Ð¾Ð»Ð¶ÐµÐ½ Ð±Ñ‹Ñ‚ÑŒ Ñƒ Ð³Ð»Ð¾Ð±Ð°Ð»ÑŒÐ½Ñ‹Ñ… Ð¾Ñ‚Ð²ÐµÑ‚Ð¾Ð², Ñ‡Ñ‚Ð¾ Ð±Ñ‹ Ð½Ðµ Ð¿ÐµÑ€ÐµÐºÑ€Ñ‹Ð²Ð°Ñ‚ÑŒ ÑÑ‚Ð°Ñ‚ÑƒÑÑ‹ Ð¿Ð»Ð°Ñ‚ÐµÐ¶Ð½Ñ‹Ñ… ÑÐ¸ÑÑ‚ÐµÐ¼
+// ÐœÐ¾Ð¶ÐµÑ‚ Ð´Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ ÑÐ¿ÐµÑ†ÑÑ‚Ð°Ñ‚ÑƒÑ "ÐžÑ‚Ð²ÐµÑ‚ ÑÐ¸ÑÑ‚ÐµÐ¼Ñ‹ Ð¿Ð»Ð°Ñ‚ÐµÐ¶Ð°" Ð¸ Ð¿Ð°Ñ€ÑÐ¸Ñ‚ÑŒ Ð´Ð°Ð»ÑŒÑˆÐµ getMessage
 define('SN_PAYMENT_REQUEST_ERROR_DM_AMOUNT', 1);
 define('SN_PAYMENT_REQUEST_PAYLINK_UNSUPPORTED', 2);
 
@@ -91,6 +91,7 @@ foreach($dm_amount_list as $dm_amount)
   ));
 }
 
+lng_include('infos');
 $template->assign_vars(array(
   'URL_DARK_MATTER' => $config->url_dark_matter,
   'PAYMENT_MODULE' => $payment_module,
@@ -98,6 +99,7 @@ $template->assign_vars(array(
   'PAYMENT_MODULE_DESCRIPTION' => $payment_module,
   'DARK_MATTER' => (float)$request['dark_matter'],
   'DARK_MATTER_TEXT' => pretty_number($request['dark_matter']),
+  'UNIT_DESCRIPTION' => $lang['info'][RES_DARK_MATTER]['description'],
 ));
 
 display($template, $lang['sys_dark_matter']);

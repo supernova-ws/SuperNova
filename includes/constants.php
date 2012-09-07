@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '34');
 define('SN_RELEASE', '35');
-define('SN_VERSION', '35a12.15');
+define('SN_VERSION', '35a12.16');
 define('SN_RELEASE_STABLE', '34d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -389,7 +389,6 @@ define('SORT_TIME_BAN_UNTIL'  , 8);
 
 // === Structures
 define('UNIT_STRUCTURES', 0);
-define('UNIT_STRUCTURES_SPECIAL', 40);
 define('STRUC_MINE_METAL', 1);
 define('STRUC_MINE_CRYSTAL', 2);
 define('STRUC_MINE_DEUTERIUM', 3);
@@ -406,6 +405,8 @@ define('STRUC_LABORATORY_NANO', 35);
 define('STRUC_TERRAFORMER', 33);
 define('STRUC_ALLY_DEPOSIT', 34);
 define('STRUC_SILO', 44);
+
+define('UNIT_STRUCTURES_SPECIAL', 40);
 define('STRUC_MOON_STATION', 41);
 define('STRUC_MOON_PHALANX', 42);
 define('STRUC_MOON_GATE', 43);
@@ -526,15 +527,16 @@ define('UNIT_PLAN_DEF_SHIELD_PLANET', 1106);
 
 define('UNIT_PREMIUM', 1200);
 define('UNIT_SECTOR', 1300);
+define('UNIT_RACE', 1400);
 
 // === Unit types // TODO - convert to GROUP_xxx constants
-define('UNIT_STRUCTURE', 0);
-define('UNIT_RESEARCH' , 1);
-define('UNIT_SHIP'     , 2);
-define('UNIT_DEFENSE'  , 4);
-define('UNIT_MISSILE'  , 5);
-define('UNIT_MERCENARY', 6);
-define('UNIT_RESOURCE' , 9);
+//define('UNIT_STRUCTURE', 0);
+//define('UNIT_RESEARCH' , 1);
+//define('UNIT_SHIP'     , 2);
+//define('UNIT_DEFENSE'  , 4);
+//define('UNIT_MISSILE'  , 5);
+//define('UNIT_MERCENARY', 6);
+//define('UNIT_RESOURCE' , 9);
 
 
 define('SNC_VER_NEVER', -1);
@@ -599,5 +601,8 @@ define('CHAT_MODE_ALLY', 1);
 define('BUDDY_REQUEST_WAITING', 0);
 define('BUDDY_REQUEST_ACTIVE', 1);
 define('BUDDY_REQUEST_DENIED', 2);
+
+define('REQUIRE_MET', 0);
+define('REQUIRE_MET_NOT', 1);
 
 ?>

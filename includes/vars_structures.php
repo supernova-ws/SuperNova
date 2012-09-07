@@ -8,7 +8,7 @@ if (!defined('INSIDE'))
 $sn_data += array(
   STRUC_MINE_METAL => array(
     'name' => 'metal_mine',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'cost' => array(
       RES_METAL     => 80,
@@ -36,7 +36,7 @@ $sn_data += array(
 
   STRUC_MINE_CRYSTAL => array(
     'name' => 'crystal_mine',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'cost' => array(
       RES_METAL     => 48,
@@ -64,7 +64,7 @@ $sn_data += array(
 
   STRUC_MINE_DEUTERIUM => array(
     'name' => 'deuterium_sintetizer',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'cost' => array(
       RES_METAL     => 225,
@@ -92,7 +92,7 @@ $sn_data += array(
 
   STRUC_MINE_SOLAR => array(
     'name' => 'solar_plant',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'cost' => array(
       RES_METAL     => 75,
@@ -120,7 +120,7 @@ $sn_data += array(
 
   STRUC_MINE_FUSION => array(
     'name' => 'fusion_plant',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'require' => array(3 => 5, TECH_ENERGY => 3, UNIT_PLAN_STRUC_MINE_FUSION => 1),
     'cost' => array(
@@ -149,7 +149,7 @@ $sn_data += array(
 
   STRUC_FACTORY_ROBOT => array(
     'name' => 'robot_factory',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'cost' => array(
       RES_METAL     => 400,
@@ -167,7 +167,7 @@ $sn_data += array(
 
   STRUC_FACTORY_NANO => array(
     'name' => 'nano_factory',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'require' => array(STRUC_FACTORY_ROBOT => 10, TECH_COMPUTER => 10),
     'cost' => array(
@@ -186,7 +186,7 @@ $sn_data += array(
 
   STRUC_FACTORY_HANGAR => array(
     'name' => 'hangar',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'require' => array(STRUC_FACTORY_ROBOT => 2),
     'cost' => array(
@@ -205,7 +205,7 @@ $sn_data += array(
 
   STRUC_STORE_METAL => array(
     'name' => 'metal_store',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'cost' => array(
       RES_METAL     => 2000,
@@ -223,7 +223,7 @@ $sn_data += array(
 
   STRUC_STORE_CRYSTAL => array(
     'name' => 'crystal_store',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'cost' => array(
       RES_METAL     => 2000,
@@ -254,12 +254,12 @@ $sn_data += array(
     'deuterium' => 0,
     'energy' => 0,
     'factor' => 2,
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
   ),
 
   STRUC_LABORATORY => array(
     'name' => 'laboratory',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'cost' => array(
       RES_METAL     => 200,
@@ -277,7 +277,7 @@ $sn_data += array(
 
   STRUC_TERRAFORMER => array(
     'name' => 'terraformer',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'require' => array(STRUC_FACTORY_NANO => 1, TECH_ENERGY => 12),
     'cost' => array(
@@ -296,7 +296,7 @@ $sn_data += array(
 
   STRUC_ALLY_DEPOSIT => array(
     'name' => 'ally_deposit',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'cost' => array(
       RES_METAL     => 20000,
@@ -314,7 +314,7 @@ $sn_data += array(
 
   STRUC_LABORATORY_NANO => array(
     'name' => 'nano',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'require' => array(STRUC_LABORATORY => 10, TECH_ENERGY => 10),
     'cost' => array(
@@ -333,7 +333,7 @@ $sn_data += array(
 
   STRUC_MOON_STATION => array(
     'name' => 'mondbasis',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'cost' => array(
       RES_METAL     => 20000,
@@ -351,7 +351,7 @@ $sn_data += array(
 
   STRUC_MOON_PHALANX => array(
     'name' => 'phalanx',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'require' => array(STRUC_MOON_STATION => 1),
     'cost' => array(
@@ -370,7 +370,7 @@ $sn_data += array(
 
   STRUC_MOON_GATE => array(
     'name' => 'sprungtor',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'require' => array(STRUC_MOON_STATION => 1, TECH_HYPERSPACE => 7),
     'cost' => array(
@@ -389,7 +389,7 @@ $sn_data += array(
 
   STRUC_SILO => array(
     'name' => 'silo',
-    'type' => UNIT_STRUCTURE,
+    'type' => UNIT_STRUCTURES,
     'location' => LOC_PLANET,
     'require' => array(TECH_ENGINE_ION => 1),
     'cost' => array(

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a12.11
+* @version 35a12.16
 *
 */
 
@@ -37,7 +37,8 @@ if (empty($lang) || !is_array($lang))
 // System-wide localization
 $lang = array_merge($lang, array(
   // Dark Matter
-  'sys_dark_matter_description_header' => 'Зачем нужна Тёмная Материя?',
+  'sys_dark_matter_what_header' => 'Что такое Тёмная Материя',
+  'sys_dark_matter_description_header' => 'Зачем нужна Тёмная Материя',
   'sys_dark_matter_description_text' => 'Тёмная Материя - это внутриигровой ресурс, за счет которой в игре вы можете совершать различные операции:
     <ul>
       <li>Покупать <a href="index.php?module=player_premium"><span class="link">Премиум-аккаунт</span></a></li>
@@ -48,7 +49,7 @@ $lang = array_merge($lang, array(
       <li>Использовать <a href="market.php"><span class="link">Чёрный Рынок</span></a>: Обменивать один вид ресурсов на другой; продавать корабли; покупать Б/У корабли итд</li>
       <li>...и многое, многое другое</li>
     </ul>',
-  'sys_dark_matter_obtain_header' => 'Где взять Тёмную Материю?',
+  'sys_dark_matter_obtain_header' => 'Где взять Тёмную Материю',
   'sys_dark_matter_obtain_text' => 'Вы получаете Тёмную Материю в процессе игры: набирая опыт за успешные рейды на чужие планеты, исследование новых технологий, а так же за постройку и разрушение зданий.
     Так же иногда исследовательские экспедиции могут принести ТМ.',
 

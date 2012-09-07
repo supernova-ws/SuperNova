@@ -445,3 +445,37 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
 {
   font-weight: normal;
 }
+
+th.c_l, td.c_l
+{
+  text-align: left;
+}
+th.c_r, td.c_r
+{
+  text-align: right;
+}
+th.c_c, td.c_c, td.c
+{
+  text-align: center;
+}
+th.c_j, td.c_j
+{
+  text-align: justify;
+}
+
+.cell_left, .c_l
+{
+  text-align: left;
+}
+.cell_right, .c_r
+{
+  text-align: right;
+}
+.cell_center, .c_c
+{
+  text-align: center;
+}
+.cell_justify, .c_j
+{
+  text-align: justify;
+}

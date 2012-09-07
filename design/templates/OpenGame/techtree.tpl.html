@@ -12,7 +12,7 @@
 
    <td class="c_l"><ul>
      <!-- BEGIN require -->
-       <li style="margin: 0; padding: 0;"><span class="{require.CLASS}">{require.NAME}</span><!-- IF require.LEVEL_REQUIRE -->&nbsp;{require.LEVEL_BASIC}<!-- IF require.LEVEL_BONUS --><span class="bonus">+{require.LEVEL_BONUS}</span><!-- ENDIF -->/{require.LEVEL_REQUIRE}<!-- ENDIF --></li>
+       <li style="margin: 0; padding: 0;"><span class="<!-- IF require.REQUEREMENTS_MET -->negative<!-- ELSE -->positive<!-- ENDIF -->">{require.NAME}</span><!-- IF require.LEVEL_REQUIRE -->&nbsp;{require.LEVEL_BASIC}<!-- IF require.LEVEL_BONUS --><span class="bonus">+{require.LEVEL_BONUS}</span><!-- ENDIF -->/{require.LEVEL_REQUIRE}<!-- ENDIF --></li>
      <!-- BEGINELSE require -->
        &nbsp;
      <!-- END require -->

@@ -85,6 +85,7 @@ switch ($fleet_page)
   case 2:
     $fleet_group_mr = sys_get_param_id('fleet_group');
     $fleetarray     = unserialize(base64_decode(str_rot13(sys_get_param('usedfleet'))));
+    $fleetarray = is_array($fleetarray) ? $fleetarray : array();
 
     foreach($fleetarray as $ship_id => &$ship_amount)
     {

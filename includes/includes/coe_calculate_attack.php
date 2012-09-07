@@ -335,7 +335,7 @@ BE_DEBUG_closeTable();
     }
     foreach ($defender['def'] as $element => $amount)
     {
-      if ($element < 300)
+      if(in_array($element, $sn_data['groups']['fleet']))
       {
         $defenseResourcePoints['metal'] -= $sn_data[$element]['metal'] * $amount;
         $defenseResourcePoints['crystal'] -= $sn_data[$element]['crystal'] * $amount;
@@ -343,7 +343,7 @@ BE_DEBUG_closeTable();
         $totalResourcePoints['defender'] -= $sn_data[$element]['metal'] * $amount;
         $totalResourcePoints['defender'] -= $sn_data[$element]['crystal'] * $amount;
       }
-      else
+      elseif(in_array($element, $sn_data['groups']['defense_active']))
       {
         $lost = $originalDef[$element] - $amount;
 

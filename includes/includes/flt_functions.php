@@ -101,7 +101,7 @@ function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 1
     'consumption' => $consumption,
     'capacity' => $capacity,
     'hold' => $capacity - $consumption,
-    'transport_effectivness' => $capacity / $consumption,
+    'transport_effectivness' => $consumption ? $capacity / $consumption : 0,
   );
 }
 

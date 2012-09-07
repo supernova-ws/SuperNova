@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a11.0
+* @version 35a12.16
 *
 */
 
@@ -26,33 +26,31 @@
 
 if (!defined('INSIDE')) die();
 
-
 $lang = array_merge($lang, array(
-  'info_title_param' => 'Характеристика',
-  'info_title_base' => 'Базовая',
-  'info_title_actual' => 'Текущая',
-  'nfo_page_title' => 'Информация',
-  'nfo_title_head' => 'Информация',
-  'nfo_name' => 'Имя',
-  'nfo_destroy' => 'Уничтожение',
-  'nfo_level' => 'Уровень',
-  'nfo_range' => 'Дальность сенсоров',
-  'nfo_used_energy' => 'Расход энергии',
-  'nfo_used_deuter' => 'Расход дейтерия',
-  'nfo_prod_energy' => 'Производство энергии',
-  'nfo_difference' => 'Разница',
-  'nfo_prod_p_hour' => 'Производство в час',
-  'nfo_needed' => 'Требования',
-  'nfo_dest_durati' => 'Время для уничтожения',
-  'nfo_struct_pt' => 'Структурная целосность(жизни)',
-  'nfo_shielf_pt' => 'Сила щита',
-  'nfo_attack_pt' => 'Сила атаки',
-  'nfo_rf_again' => 'Одним залпом поражает',
-  'nfo_rf_from' => 'Одним залпом поражает',
-  'nfo_capacity' => 'Вместимость',
-  'nfo_units' => 'единицы',
-  'nfo_base_speed' => 'Базовая скорость',
-  'nfo_consumption' => 'Потребление топлива (Дейтерий)',
+  'wiki_title' => 'Новапедия',
+  'wiki_requrements' => 'Требования для постройки или исследования',
+
+  'wiki_char_nominal' => 'Паспортные',
+  'wiki_char_actual' => 'Актуальные',
+
+  'wiki_ship_engine_header' => 'Характеристики двигателей',
+
+  'wiki_ship_header' => 'Транспортные характеристики',
+  'wiki_ship_speed' => 'Скорость',
+  'wiki_ship_consumption' => 'Потребление дейтерия',
+  'wiki_ship_capacity' => 'Емкость трюма',
+  'wiki_ship_hint' => '<li>Актуальные скорость и потребление приводятся с учетом всех бонусов - технологий, наемников итд</li>',
+
+  'wiki_combat_header' => 'Боевые характеристики',
+  'wiki_combat_attack' => 'Мощность залпа, хитов',
+  'wiki_combat_shield' => 'Емкость щитовых батарей, хитов',
+  'wiki_combat_armor' => 'Структурная целостность, хитов',
+
+  'wiki_combat_volley_header' => 'Залповый огонь',
+  'wiki_combat_volley_to' => 'Поражает единиц',
+  'wiki_combat_volley_from' => 'Теряет единиц',
+
+//  'wiki_combat_volley_text' => 'Одним залпом поражает',
 ));
 
 if(!is_array($lang['info']))

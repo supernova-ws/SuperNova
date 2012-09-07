@@ -1,0 +1,193 @@
+<h1>{PAGE_HEADER}</h1>
+
+<table class="c_l" width="519">
+  <tr>
+    <th class="c_l" colspan="3">
+      {UNIT_TYPE_NAME} - {UNIT_NAME}
+    </th>
+  </tr>
+
+  <tr class="c_j">
+    <td colspan="3">
+      <div style="display: table-row; position: relative; margin: 7px;">
+        <img src="{dpath}gebaeude/{UNIT_ID}.{UNIT_IMAGE_EXT}" align="top" border="0" height="120" width="120" class="fl" style="margin-right: 7px;">
+        {UNIT_DESCRIPTION}
+      </div>
+
+      <!-- IF UNIT_EFFECT -->
+      <hr />
+      {UNIT_BONUS} {UNIT_EFFECT}
+      <!-- ENDIF -->
+
+    </td>
+  </tr>
+  <!-- IF .require -->
+  <tr>
+    <th class="c_l" colspan="3">
+    {L_wiki_requrements}
+    </th>
+  </tr>
+  <tr>
+    <td colspan="3">
+      <ul>
+        <!-- BEGIN require -->
+        <li style="margin: 0; padding: 0;"><span class="<!-- IF require.REQUEREMENTS_MET -->negative<!-- ELSE -->positive<!-- ENDIF -->">{require.NAME}</span><!-- IF require.LEVEL_REQUIRE -->&nbsp;{require.LEVEL_BASIC}<!-- IF require.LEVEL_BONUS --><span class="bonus">+{require.LEVEL_BONUS}</span><!-- ENDIF -->/{require.LEVEL_REQUIRE}<!-- ENDIF --></li>
+        <!-- END require -->
+      </ul>
+    </td>
+  </tr>
+  <!-- ENDIF -->
+</table>
+
+<table width="519">
+  <!-- IF UNIT_IS_SHIP -->
+    <tr class="c_l">
+      <th>{L_wiki_ship_header}</th>
+      <th>{L_wiki_char_nominal}</th>
+      <th>{L_wiki_char_actual}</th>
+    </tr>
+    <tr class="c_r">
+      <td class="c_l"><div>{L_wiki_ship_speed}</div></td>
+      <td>{BASE_SPEED}</td>
+      <td>{ACTUAL_SPEED}</td>
+    </tr>
+    <tr class="c_r">
+      <td class="c_l">{L_wiki_ship_consumption}</td>
+      <td>{BASE_CONSUMPTION}</td>
+      <td>{ACTUAL_CONSUMPTION}</td>
+    </tr>
+    <tr class="c_r">
+      <td class="c_l">{L_wiki_ship_capacity}</td>
+      <td>{BASE_CAPACITY}</td>
+      <td>{ACTUAL_CAPACITY}</td>
+    </tr>
+    <tr>
+      <td class="c_j" colspan="3">
+        <ul>
+          {L_wiki_ship_hint}
+        </ul>
+      </td>
+    </tr>
+
+    <tr class="c_l">
+      <th>{L_wiki_ship_engine_header}</th>
+      <th>{L_wiki_char_nominal}</th>
+      <th>{L_wiki_char_actual}</th>
+    </tr>
+
+    <!-- BEGIN engine -->
+      <tr class="c_l">
+        <td colspan="3"><span class="<!-- IF engine.MIN_LEVEL < engine.USER_TECH_LEVEL -->positive<!-- ELSE -->negative<!-- ENDIF -->">{engine.NAME}</span>&nbsp;{engine.USER_TECH_LEVEL}/{engine.MIN_LEVEL}</td>
+      </tr>
+      <tr class="c_r">
+        <td class="c_l"><div>{L_wiki_ship_speed}</div></td>
+        <td>{engine.BASE_SPEED}</td>
+        <td>{engine.ACTUAL_SPEED}</td>
+      </tr>
+      <tr class="c_r">
+        <td class="c_l">{L_wiki_ship_consumption}</td>
+        <td>{engine.BASE_CONSUMPTION}</td>
+        <td>{engine.ACTUAL_CONSUMPTION}</td>
+      </tr>
+    <!-- END engine -->
+  <!-- ENDIF -->
+
+  <!-- IF UNIT_IS_COMBAT -->
+    <tr class="c_l">
+      <th>{L_wiki_combat_header}</th>
+      <th>{L_wiki_char_nominal}</th>
+      <th>{L_wiki_char_actual}</th>
+    </tr>
+    <tr class="c_r">
+      <td class="c_l">{L_wiki_combat_attack}</td>
+      <td>{BASE_WEAPON}</td>
+      <td>{ACTUAL_WEAPON}</td>
+    </tr>
+    <tr class="c_r">
+      <td class="c_l">{L_wiki_combat_shield}</td>
+      <td>{BASE_SHIELD}</td>
+      <td>{ACTUAL_SHIELD}</td>
+    </tr>
+    <tr class="c_r">
+      <td class="c_l">{L_wiki_combat_armor}</td>
+      <td>{BASE_ARMOR}</td>
+      <td>{ACTUAL_ARMOR}</td>
+    </tr>
+
+    <!-- IF .volley -->
+  <script>/*
+    <tr>
+      <th class="c_l" colspan="3">{L_wiki_combat_volley_header}</th>
+    </tr>
+
+    <!-- BEGIN volley -->
+    <!-- IF volley.TO -->
+    <!-- IF ! $VOLLEY_TO_TABLE -->
+    <!-- DEFINE $VOLLEY_TO_TABLE = '1' -->
+    <tr class="c_j">
+      <td colspan="3">
+        <!-- ENDIF -->
+        {L_wiki_combat_volley_text} {volley.ENEMY_NAME} <span class="positive">{volley.TO}</span><br />
+        <!-- ENDIF -->
+        <!-- END volley -->
+        <!-- IF $VOLLEY_TO_TABLE -->
+      </td>
+    </tr>
+    <!-- ENDIF -->
+    <!-- DEFINE $VOLLEY_TO_TABLE = '0' -->
+
+    <!-- BEGIN volley -->
+    <!-- IF volley.FROM -->
+    <!-- IF ! $VOLLEY_TO_TABLE -->
+    <!-- DEFINE $VOLLEY_TO_TABLE = '1' -->
+    <tr>
+      <td align="justify" colspan="3">
+        <!-- ENDIF -->
+        {volley.ENEMY_NAME} {L_wiki_combat_volley_text} <span class="negative">{volley.FROM}</span><br />
+        <!-- ENDIF -->
+        <!-- END volley -->
+        <!-- IF $VOLLEY_TO_TABLE -->
+      </td>
+    </tr>
+    <!-- ENDIF -->
+  */</script>
+
+    <tr>
+      <th class="c_l">
+        {L_wiki_combat_volley_header}
+      </th>
+
+      <th class="c_l positive">
+        {L_wiki_combat_volley_to}
+      </th>
+
+      <th class="c_l negative">
+        {L_wiki_combat_volley_from}
+      </th>
+    </tr>
+    <!-- BEGIN volley -->
+      <tr>
+        <td class="c_l">
+          {volley.ENEMY_NAME}
+        </td>
+
+        <td class="c_r positive">
+          <!-- IF volley.TO >= 1 -->
+          {volley.TO}
+          <!-- ELSE -->
+          &lt;&nbsp;1
+          <!-- ENDIF -->
+        </td>
+
+        <td class="c_r negative">
+          <!-- IF volley.FROM >= 1 -->
+          {volley.FROM}
+          <!-- ELSE -->
+          &lt;&nbsp;1
+          <!-- ENDIF -->
+        </td>
+      </tr>
+    <!-- END volley -->
+    <!-- ENDIF -->
+  <!-- ENDIF -->
+</table>
