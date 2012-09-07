@@ -5,16 +5,14 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }
 
-// Code - CLEAR!
-// Template - CLEAR!
-
-if ($user['ally_id']) {
+if ($user['ally_id'])
+{
   message($lang['ali_req_inAlly'], $lang['ali_req_title']);
 }
 
 if ($user_request['id_ally'])
 {
-  $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user_request['id_ally']}'", '', true);
+  $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user_request['id_ally']}'", true);
 
   if (sys_get_param_str('bcancel'))
   {
@@ -30,9 +28,8 @@ if ($user_request['id_ally'])
   {
     $lang['request_text'] = sprintf($lang['ali_req_waiting'], $ally['ally_tag']);
   }
-  $page = parsetemplate(gettemplate('ali_request_waiting'), $lang);
 
-  display($page, $lang['ali_req_title']);
+  display(gettemplate('ali_request_waiting', true), $lang['ali_req_title']);
 }
 
 $id_ally = sys_get_param_id('a');
@@ -43,7 +40,7 @@ if ($POST_text)
   header('Location: alliance.php');
 }
 
-$ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$id_ally}'", '', true);
+$ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$id_ally}'", true);
 
 if(!$ally)
 {
@@ -57,12 +54,15 @@ if($ally['ally_request_notallow'])
 
 $text_apply = $ally['ally_request'] ? $ally['ally_request'] : $lang['ali_req_template'];
 
-$parse = $lang;
-$parse['allyid'] = $id_ally;
-$parse['chars_count'] = strlen($text_apply);
-$parse['text_apply'] = $text_apply;
-$parse['ali_req_title'] = "{$lang['ali_req_title']} [{$ally['ally_tag']}]";
+$template = gettemplate('ali_request', true);
 
-display(parsetemplate(gettemplate('ali_request'), $parse), $lang['ali_req_title']);
+$template->assign_vars(array(
+  'allyid' => $id_ally,
+  'chars_count' => strlen($text_apply),
+  'text_apply' => $text_apply,
+  'ali_req_title' => "{$lang['ali_req_title']} [{$ally['ally_tag']}]",
+));
+
+display($template, $lang['ali_req_title']);
 
 ?>

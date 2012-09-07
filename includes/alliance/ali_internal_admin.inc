@@ -10,7 +10,9 @@ if(!$user_admin)
   message($lang['Denied_access'], $lang['ally_admin']);
 }
 
-$parse = $lang;
+$template = gettemplate('ali_admin', $template);
+
+// $parse = $lang;
 
 $text_list = array(
   1 => array ('db_field' => 'ally_description', 'text_type' => 'Public_text_of_alliance'),
@@ -26,8 +28,10 @@ if(sys_get_param_str('isSaveOptions'))
   require_once('includes/includes/sys_avatar.php');
 
   $avatar_upload_result = sys_avatar_upload($ally['id'], $ally['ally_image'], 'ally');
-  $parse['AVATAR_UPLOAD_STATUS'] = $avatar_upload_result['STATUS'];
-  $parse['AVATAR_UPLOAD_MESSAGE'] = $avatar_upload_result['MESSAGE'];
+  $template->assign_vars(array(
+    'AVATAR_UPLOAD_STATUS' => $avatar_upload_result['STATUS'],
+    'AVATAR_UPLOAD_MESSAGE' => $avatar_upload_result['MESSAGE'],
+  ));
 //  $template->assign_block_vars('result', $avatar_upload_result);
 
   $old_tag = $ally['ally_tag'];
@@ -93,24 +97,23 @@ elseif(sys_get_param_str('isDisband') && sys_get_param_str('isConfirmDisband'))
   sys_redirect('alliance.php');
 };
 
-$parse['text']         = $ally[$text_list[$allyTextID]['db_field']];
-$parse['request_type'] = $lang[$text_list[$allyTextID]['text_type']];
-
-$parse['t'] = $allyTextID;
-
 $request = doquery("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
-$parse['request_count'] = $request['request_count'] ? $lang['ali_req_requestCount'] . ': ' . intval($request['request_count']) . '. ' . $lang['ali_req_check'] : $lang['ali_req_emptyList'];
 
-$parse['ALLY_ID'] = $ally['id'];
-$parse['ALLY_IMAGE'] = $ally['ally_image'];
-
-$parse['ally_name'] = htmlspecialchars($ally['ally_name']);
-$parse['ally_tag'] = htmlspecialchars($ally['ally_tag']);
-$parse['ally_web'] = htmlspecialchars($ally['ally_web']);
-$parse['ally_request_notallow_0'] = (( $ally['ally_request_notallow']) ? ' SELECTED' : '');
-$parse['ally_request_notallow_1'] = ((!$ally['ally_request_notallow']) ? ' SELECTED' : '');
-$parse['ally_owner_range'] = htmlspecialchars($ally['ally_owner_range']);
-$parse['hideNotOwner'] = $ally['ally_owner'] != $user['id'] ? ' style="hide"' : '';
+$template->assign_vars(array(
+  'request_count' => $request['request_count'] ? $lang['ali_req_requestCount'] . ': ' . intval($request['request_count']) . '. ' . $lang['ali_req_check'] : $lang['ali_req_emptyList'],
+  'text'         => $ally[$text_list[$allyTextID]['db_field']],
+  'request_type' => $lang[$text_list[$allyTextID]['text_type']],
+  't' => $allyTextID,
+  'ALLY_ID' => $ally['id'],
+  'ALLY_IMAGE' => $ally['ally_image'],
+  'ally_name' => htmlspecialchars($ally['ally_name']),
+  'ally_tag' => htmlspecialchars($ally['ally_tag']),
+  'ally_web' => htmlspecialchars($ally['ally_web']),
+  'ally_request_notallow_0' => (( $ally['ally_request_notallow']) ? ' SELECTED' : ''),
+  'ally_request_notallow_1' => ((!$ally['ally_request_notallow']) ? ' SELECTED' : ''),
+  'ally_owner_range' => htmlspecialchars($ally['ally_owner_range']),
+  'hideNotOwner' => $ally['ally_owner'] != $user['id'] ? ' style="hide"' : '',
+));
 
 unset($tmp);
 foreach($ranks as $rankID => $rank)
@@ -131,10 +134,9 @@ if(!empty($tmp))
     $tmp .= "<option value={$userAllyAdmin['id']}>{$userAllyAdmin['username']}</option>";
   }
 
-  $parse['adminMembers'] = $tmp;
+  $template->assign_var('adminMembers', $tmp);
 }
 
-$template = gettemplate('ali_admin', $template);
 foreach($sn_ali_admin_internal as $sn_ali_admin_action => $sn_ali_admin_action_locale)
 {
   if(!$sn_ali_admin_action_locale['title'])
@@ -147,6 +149,6 @@ foreach($sn_ali_admin_internal as $sn_ali_admin_action => $sn_ali_admin_action_l
   ));
 }
 
-display(parsetemplate($template, $parse), $lang['ally_admin']);
+display($template, $lang['ally_admin']);
 
 ?>
