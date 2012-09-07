@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a12.16
+* @version 35a12.19
 *
 */
 
@@ -39,7 +39,7 @@ $lang = array_merge($lang, array(
   'wiki_ship_speed' => 'Скорость',
   'wiki_ship_consumption' => 'Потребление дейтерия',
   'wiki_ship_capacity' => 'Емкость трюма',
-  'wiki_ship_hint' => '<li>Актуальные скорость и потребление приводятся с учетом всех бонусов - технологий, наемников итд</li>',
+  'wiki_ship_hint' => '<li>Актуальные скорость и потребление приводятся с учетом всех бонусов - технологий, наемников и т.д.</li>',
 
   'wiki_combat_header' => 'Боевые характеристики',
   'wiki_combat_attack' => 'Мощность залпа, хитов',

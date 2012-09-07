@@ -58,8 +58,6 @@ function flt_mission_attack($mission_data)
 
   $db_admiral_name = $sn_data[MRC_ADMIRAL]['name'];
 
-//  $fortifier_bonus = 1 - ($destination_planet['PLANET_GOVERNOR_ID'] == MRC_FORTIFIER ? $destination_planet['PLANET_GOVERNOR_LEVEL'] : 0) * $sn_data[MRC_FORTIFIER]['bonus'] / 100;
-//  $fortifier_bonus = $destination_planet['PLANET_GOVERNOR_ID'] == MRC_FORTIFIER ? $destination_planet['PLANET_GOVERNOR_LEVEL'] : 0;
   $fortifier_bonus = mrc_get_level($destination_user, $destination_planet, MRC_FORTIFIER);
   $defenseFleets = array(
     0 => array(
