@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a12.16
+* @version 35a12.21
 *
 */
 
@@ -41,7 +41,7 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_description_header' => 'Зачем нужна Тёмная Материя',
   'sys_dark_matter_description_text' => 'Тёмная Материя - это внутриигровой ресурс, за счет которой в игре вы можете совершать различные операции:
     <ul>
-      <li>Покупать <a href="index.php?module=player_premium"><span class="link">Премиум-аккаунт</span></a></li>
+      <li>Покупать <a href="index.php?page=premium"><span class="link">Премиум-аккаунт</span></a></li>
       <li>Рекрутировать <a href="officer.php?mode=600"><span class="link">Наемников</span></a> в Империю </li>
       <li>Нанимать Губернаторов и покупать дополнительные сектора <a href="overview.php?mode=manage"><span class="link">на планеты</span></a></li>
       <li>Покупать <a href="officer.php?mode=1100"><span class="link">Чертежи</span></a></li>

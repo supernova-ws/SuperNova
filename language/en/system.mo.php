@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a12.16
+* @version 35a12.21
 *
 */
 
@@ -44,7 +44,7 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_description_header' => 'Why do you need Dark Matter',
   'sys_dark_matter_description_text' => 'Dark Matter - is ingame currency, which in the game you can make a variety of operations:
     <ul>
-      <li>Buy <a href="index.php?module=player_premium"><span class="link">Premium account</span></a></li>
+      <li>Buy <a href="index.php?page=premium"><span class="link">Premium account</span></a></li>
       <li>Recruit <a href="officer.php?mode=600"><span class="link">Mercenaries</span></a> for Empire</li>
       <li>Hire Governors and but additional sectors <a href="overview.php?mode=manage"><span class="link">for planets</span></a></li>
       <li>Buy <a href="officer.php?mode=1100"><span class="link">Schematics</span></a></li>

@@ -11,6 +11,7 @@ require_once('includes/init.php');
 
 $user = sn_autologin(!$allow_anonymous);
 $sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
+define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
 
 $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
@@ -94,6 +95,19 @@ elseif($sys_user_logged_in)
   }
 
   $que = $global_data['que'];
+}
+
+require_once('includes/vars_menu.php');
+
+if($sn_mvc['model'][''])
+{
+  foreach($sn_mvc['model'][''] as $hook)
+  {
+    if(is_callable($hook_call = (is_string($hook) ? $hook : (is_array($hook) ? $hook['callable'] : $hook->callable))))
+    {
+      call_user_func($hook_call);
+    }
+  }
 }
 
 ?>

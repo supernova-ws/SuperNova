@@ -19,6 +19,20 @@
         }
       }
 
+/*
+      $sn_mvc_models = array_merge(is_array($sn_mvc['model']['']) ? $sn_mvc['model'][''] : array(), is_array($sn_mvc['model'][$sn_page_name]) ? $sn_mvc['model'][$sn_page_name] : array());
+      if(!empty($sn_mvc_models))
+      {
+        foreach($sn_mvc_models as $hook)
+        {
+          if(is_callable($hook_call = (is_string($hook) ? $hook : (is_array($hook) ? $hook['callable'] : $hook->callable))))
+          {
+            call_user_func($hook_call);
+          }
+        }
+      }
+*/
+
       if($sn_mvc['view'][$sn_page_name])
       {
         foreach($sn_mvc['view'][$sn_page_name] as $hook)

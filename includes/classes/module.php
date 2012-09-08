@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #35a9.10# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #35a12.21# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -171,52 +171,11 @@ class sn_module
         }
       }
     }
+
     // Overriding function if any
     global $functions;
     sn_sys_handler_add($functions, $this->manifest['functions'], $this);
-/*
-    if(isset($this->manifest['functions']) && is_array($this->manifest['functions']) && !empty($this->manifest['functions']))
-    {
-      global $functions;
 
-      foreach($this->manifest['functions'] as $function_name => $override_with)
-      {
-        $overwrite = $override_with[0] == '*';
-        if($overwrite)
-        {
-          $override_with = substr($override_with, 1);
-        }
-
-        if(($point_position = strpos($override_with, '.')) === false)
-        {
-          $override_with = array($class_module_name, $override_with);
-        }
-        elseif($point_position == 0)
-        {
-          $override_with = substr($override_with, 1);
-        }
-        else
-        {
-          $override_with = array(substr($override_with, 0, $point_position), substr($override_with, $point_position + 1));
-        }
-
-        if($overwrite)
-        {
-          $functions[$function_name] = array();
-        }
-        elseif(!isset($functions[$function_name]))
-        {
-          $functions[$function_name] = array();
-          if(is_callable("sn_{$function_name}"))
-          {
-            $functions[$function_name][] = "sn_{$function_name}";
-          }
-        }
-
-        $functions[$function_name][] = $override_with;
-      }
-    }
-*/
     // Pathcing game menu - if any
     if(isset($this->manifest['menu']) && is_array($this->manifest['menu']) && !empty($this->manifest['menu']))
     {
