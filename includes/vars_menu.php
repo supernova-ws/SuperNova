@@ -18,7 +18,8 @@ $sn_menu = array(
     'ITEM'     => 'images/triolan.gif',        // Item: text, relative image URL or lang reference. Lang reference supports constants and multilevel arrays i.e. 'info[STRUC_MINE_METAL][description]'
     'LINK'     => 'http://www.triolan.com/',   // URL
     'BLANK'    => true,                        // Should link open in new window/tab?
-    'SPAN'     => 'lm_overview',               // Class for internal SPAN - to override <A> style
+    'SPAN'     => 'lm_overview',               // Class for internal SPAN - to override <A> style. NOT COMPATIBLE WITH STYLE!
+    'STYLE'    => 'color: white',              // CSS-class for internal SPAN - to override <A> style. NOT COMPATIBLE WITH SPAN!
     'ALT'      => 'Triolan.COM',               // ALT-tag for image
 
     'LOCATION' => '+menu_supernova_logo',      // Special atrtribute for modules' $extra_menu. SHOULD BE USE EXCLUSIVE IN MODULES!
