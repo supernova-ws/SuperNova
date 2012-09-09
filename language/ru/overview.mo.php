@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a8.8
+* @version 35b3
 *
 */
 
@@ -49,7 +49,7 @@ $lang = array_merge($lang, array(
   'to' => 'to',
   'Centigrade' => 'C',
   'Position' => 'Координаты',
-  'Buildings' => 'Строения',
+//  'Buildings' => 'Строения',
   'Fleet' => 'Флот',
   'Research' => 'Исследования',
   'Total' => 'Всего',

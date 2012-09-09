@@ -118,7 +118,7 @@ $sn_menu = array(
   'menu_planet_structures' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
-    'ITEM'  => 'Buildings',
+    'ITEM'  => 'tech[UNIT_STRUCTURES]',
     'LINK'  => 'buildings.php?mode=' . QUE_STRUCTURES,
   ),
   'menu_planet_shipyard' => array(

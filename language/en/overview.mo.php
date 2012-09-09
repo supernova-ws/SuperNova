@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a5.1
+* @version 35b3
 *
 */
 
@@ -51,7 +51,7 @@ $lang = array_merge($lang, array(
   'to' => 'to',
   'Centigrade' => 'C',
   'Position' => 'Position',
-  'Buildings' => 'Buildings',
+//  'Buildings' => 'Buildings',
   'Fleet' => 'Fleet',
   'Research' => 'Research',
   'Total' => 'Total',

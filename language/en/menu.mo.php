@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 35b3
 *
 */
 
@@ -40,10 +40,10 @@ $lang = array_merge($lang, array(
   'm_simulator' => 'Battle Simulator',
   'm_communication' => 'Link & Communication',
   'm_exchange' => 'Exchange resources',
-  'm_affilates' => '!!!Earn Dark Matter!!!',
+  'm_affilates' => '!!!Earn DM!!!',
   'Overview' => 'Overview',
   'Officiers' => 'Officers',
-  'Buildings' => 'Construction',
+//  'Buildings' => 'Construction',
   'Building' => 'Construction',
   'Research' => 'Research',
   'Shipyard' => 'Shipyard',

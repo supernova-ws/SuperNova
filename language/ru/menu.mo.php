@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 35b3
 *
 */
 
@@ -41,7 +41,7 @@ $lang = array_merge($lang, array(
   'm_affilates' => '!!!ЗАРАБОТАЙ ТМ!!!',
   'Overview' => 'Обзор планеты',
   'Officiers' => 'Офицеры',
-  'Buildings' => 'Постройки',
+//  'Buildings' => 'Постройки',
   'Building' => 'Строительство',
   'Research' => 'Исследования',
   'Shipyard' => 'Верфь',
