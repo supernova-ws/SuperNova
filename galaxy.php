@@ -22,8 +22,9 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 lng_include('universe');
 
 $mode       = sys_get_param_str('mode');
-$uni_galaxy = sys_get_param_int('galaxy');
-$uni_system = sys_get_param_int('system');
+$uni_galaxy = sys_get_param_int('galaxy', $planetrow['galaxy']);
+$uni_system = sys_get_param_int('system', $planetrow['system']);
+$planet     = sys_get_param_int('planet', $planetrow['planet']);
 
 if($mode == 'name')
 {
@@ -33,14 +34,10 @@ if($mode == 'name')
 require_once('includes/includes/flt_functions.php');
 
 $CurrentPlanetID  = sys_get_param_id('current');
-$planet           = sys_get_param_int('planet');
 $POST_galaxyLeft  = sys_get_param_str('galaxyLeft');
 $POST_galaxyRight = sys_get_param_str('galaxyRight');
 $POST_systemLeft  = sys_get_param_str('systemLeft');
 $POST_systemRight = sys_get_param_str('systemRight');
-$GET_galaxy       = sys_get_param_int('galaxy');
-$GET_system       = sys_get_param_int('system');
-$GET_planet       = sys_get_param_int('planet');
 
 $fleetmax      = GetMaxFleets($user);
 $CurrentPlID   = $planetrow['id'];
@@ -64,9 +61,9 @@ if ($mode == 1) {
   elseif ($POST_systemRight)
     $uni_system++;
 } elseif ($mode == 2 || $mode == 3) {
-  $uni_galaxy = $GET_galaxy;
-  $uni_system = $GET_system;
-  $planet = $GET_planet;
+  $uni_galaxy = $uni_galaxy;
+  $uni_system = $uni_system;
+  $planet = $planetrow['planet'];
 } else {
   $uni_galaxy = $planetrow['galaxy'];
   $uni_system = $planetrow['system'];
