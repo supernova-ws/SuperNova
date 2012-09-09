@@ -42,7 +42,7 @@ $sn_menu = array(
     'CLASS' => 'c_c',
     'ITEM' => 'design/images/supernova.png',
     'LINK' => '.',
-    'ALT' => 'supernova.ws',
+    'ALT' => $config->game_name,
   ),
 
   'menu_admin' => $user['authlevel'] <= 0 ? array() : array(
