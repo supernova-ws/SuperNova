@@ -128,6 +128,41 @@ else
     }
   }
 
+  $show_groups = array(
+    UNIT_TECHNOLOGIES => array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR),
+    UNIT_MERCENARIES => array(MRC_ADMIRAL),
+    UNIT_SHIPS => &$sn_data['groups']['fleet'],
+    UNIT_DEFENCE => &$sn_data['groups']['defense_active'],
+    UNIT_RESOURCES => &$sn_data['groups']['resources_loot'],
+  );
+
+
+  foreach($show_groups as $unit_group_id => $unit_group)
+  {
+    $template->assign_block_vars('simulator', array(
+      'GROUP' => $unit_group_id,
+      'NAME' => $lang['tech'][$unit_group_id],
+    ));
+
+    foreach($unit_group as $unit_id)
+    {
+      $tab++;
+
+      $value = mrc_get_level($user, $planetrow, $unit_id);
+
+      $template->assign_block_vars('simulator', array(
+        'NUM'      => $tab < 9 ? "0{$tab}" : $tab,
+        'ID'       => $unit_id,
+        'GROUP'    => $unit_group_id,
+        'NAME'     => $lang['tech'][$unit_id],
+        'ATTACKER' => intval($sym_attacker[1][$unit_id]),
+        'DEFENDER' => intval($sym_defender[0][$unit_id]),
+        'VALUE'    => $value,
+      ));
+    }
+  }
+
+/*
   foreach(array_merge($techs_and_officers, $sn_data['groups']['combat'], $sn_data['groups']['resources_loot']) as $unit_id)
   {
     $tab++;
@@ -161,7 +196,7 @@ else
       'VALUE'    => $value,
     ));
   }
-
+*/
   $template->assign_vars(array(
     'BE_DEBUG' => BE_DEBUG,
     'UNIT_DEFENCE' => UNIT_DEFENCE,

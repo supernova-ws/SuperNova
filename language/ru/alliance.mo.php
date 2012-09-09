@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a12.0
+* @version 35b0
 *
 */
 
@@ -47,6 +47,7 @@ $lang = array_merge($lang, array(
   'ali_dip_offer_accept' => 'Принять предложение',
   'ali_dip_offer_delete' => 'Отозвать предложение',
   'ali_dip_err_no_ally' => 'Нет такого Альянса',
+  'ali_dip_err_same_ally' => 'Нельзя проводить переговоры со своим же Альянсом',
   'ali_dip_err_wrong_offer' => 'Нельзя сделать ТАКОЕ предложение',
   'ali_dip_err_offer_none' => 'Нет такого предложения',
   'ali_dip_err_offer_same' => 'Вы уже находитесь с этим Альянсом в отношениях %s',

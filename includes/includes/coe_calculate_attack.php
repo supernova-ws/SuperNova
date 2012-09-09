@@ -220,7 +220,7 @@ function coe_attack_calculate(&$attackers, &$defenders, $isSimulated = false)
     }
     foreach ($defender['def'] as $element => $amount)
     {
-      if ($element < 300)
+      if(in_array($element, $sn_data['groups']['fleet']))
       {
         $defenseResourcePoints['metal'] += $sn_data[$element]['metal'] * $amount;
         $defenseResourcePoints['crystal'] += $sn_data[$element]['crystal'] * $amount;

@@ -23,6 +23,11 @@ if(sys_get_param_str('ali_dip_offer_make'))
   }
 
   $alliance_negotiation_contr_ally_id = sys_get_param_id('alliance_negotiation_contr_ally_id');
+  if($alliance_negotiation_contr_ally_id == $user['ally_id'])
+  {
+    message($lang['ali_dip_err_same_ally'], $page_title);
+  }
+
   $contr_ally_row = doquery("SELECT `ally_name` FROM {{alliance}} WHERE `id` = {$alliance_negotiation_contr_ally_id} LIMIT 1;", '', true);
   if(!$contr_ally_row)
   {
@@ -158,7 +163,7 @@ foreach($sn_diplomacy_relation_list as $diplomacy_relation_id => $diplomacy_rela
   ));
 }
 
-$query = doquery("SELECT id, ally_name, ally_tag FROM {{alliance}} ORDER BY ally_name;");
+$query = doquery("SELECT id, ally_name, ally_tag FROM {{alliance}} WHERE `id` != {$user['ally_id']} ORDER BY ally_name;");
 while($alliance = mysql_fetch_assoc($query))
 {
   $template->assign_block_vars('alliance', array(

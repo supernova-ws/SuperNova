@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a12.0
+* @version 35b0
 *
 */
 
@@ -49,6 +49,7 @@ $lang = array_merge($lang, array(
   'ali_dip_offer_accept' => 'Accept offer',
   'ali_dip_offer_delete' => 'Withdraw offer',
   'ali_dip_err_no_ally' => 'There is no such Alliance',
+  'ali_dip_err_same_ally' => 'You can not start negotiation with your\'s Alliance',
   'ali_dip_err_wrong_offer' => 'You can not make THIS offer',
   'ali_dip_err_offer_none' => 'No such offer',
   'ali_dip_err_offer_same' => 'You already have relation %s with this Alliance',
