@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35b3
+* @version 35b4
 *
 */
 
@@ -51,7 +51,6 @@ $lang = array_merge($lang, array(
   'to' => 'to',
   'Centigrade' => 'C',
   'Position' => 'Position',
-//  'Buildings' => 'Buildings',
   'Fleet' => 'Fleet',
   'Research' => 'Research',
   'Total' => 'Total',
@@ -69,7 +68,6 @@ $lang = array_merge($lang, array(
   'security_query' => 'Security system',
   'name' => 'Name',
   'namer' => 'Change the name',
-  'password' => 'Password',
   'confirm_planet_delete' => 'Confirm the deletion of the planet',
   'confirmed_with_password' => 'Confirm the password',
   'ov_delete_ok' => 'Colony successfully deleted',
@@ -148,7 +146,6 @@ $lang = array_merge($lang, array(
   'ov_return' => 'Back to overview',
   'ov_rename' => 'Rename',
   'ov_new_name' => 'New name',
-  'ov_password' => 'Your password',
   'ov_mrc_confirm_1' => 'Do you confirm replacement of governor ',
   'ov_mrc_confirm_2' => 'level',
   'ov_mrc_confirm_3' => 'to governor',

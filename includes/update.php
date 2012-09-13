@@ -1491,7 +1491,6 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     $ally_row_list = doquery("SELECT `id`, `ally_tag` FROM {{alliance}} WHERE ally_user_id IS NULL;");
     while($ally_row = mysql_fetch_assoc($ally_row_list))
     {
-      // `email` = '{$email}', `email_2` = '{$email}', `lang` = '{$language}', `sex` = '{$sex}', `id_planet` = '0', `password` = '{$md5pass}',
       $ally_user_name = mysql_escape_string("[{$ally_row['ally_tag']}]");
       doquery("INSERT INTO {{users}} SET `username` = '{$ally_user_name}', `register_time` = {$time_now}, `user_as_ally` = {$ally_row['id']};");
       $ally_user_id = mysql_insert_id();

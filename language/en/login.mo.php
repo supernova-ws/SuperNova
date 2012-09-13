@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a12.4
+* @version 35b4
 *
 */
 
@@ -32,7 +32,6 @@ if (!defined('INSIDE')) die();
 $lang = array_merge($lang, array(
   'Login' => 'Login',
   'User_name' => 'Username:',
-  'Password' => 'Password:',
   'Please_Login' => 'You are welcome <a href="login.php" target="_main">login...</a>',
   'Please_Wait' => 'Please wait',
   'Remember_me' => 'Remember me',
@@ -81,7 +80,6 @@ $lang = array_merge($lang, array(
   'reg_i_agree' => 'I have read and agree with',
   'reg_with_rules' => 'Rules of the game',
   'signup' => 'Register',
-  'neededpass' => 'Password',
   'Languese' => 'Language',
   'log_reg_text0' => 'Before registering please read',
   'log_reg_text1' => 'Registration means that you have read and fully agree with all points of the rules. If you do not agree with any paragraph rules-please register.',
@@ -97,7 +95,6 @@ $lang = array_merge($lang, array(
   Powered by OpenSource engine 'Project SuperNova.WS'. Light your SuperNova http://supernova.ws/",
   'thanksforregistry' => 'Congratulations on your successful registration! Now you can <a href=overview.php><u>start the game!</u></a>',
   'welcome_to_universe' => 'Welcome to OGame!!!',
-  'your_password' => 'Your password',
   'please_click_url' => 'In order to use the account, you must activate it by clicking on this link',
   'regards' => 'Good luck!',
   'error_lang' => 'This language is not supported!<br />',

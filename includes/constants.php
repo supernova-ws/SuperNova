@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '34');
 define('SN_RELEASE', '35');
-define('SN_VERSION', '35b3');
+define('SN_VERSION', '35b4');
 define('SN_RELEASE_STABLE', '34d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -604,5 +604,9 @@ define('BUDDY_REQUEST_DENIED', 2);
 
 define('REQUIRE_MET', 0);
 define('REQUIRE_MET_NOT', 1);
+
+define('UBE_ATTACK', 'attack');
+define('UBE_ARMOR', 'armor');
+define('UBE_SHIELD', 'shield');
 
 ?>

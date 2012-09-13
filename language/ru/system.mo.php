@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a12.21
+* @version 35b4
 *
 */
 
@@ -730,6 +730,8 @@ $lang = array_merge($lang, array(
   'sys_capital' => 'Столица',
 
   'sys_result_operation' => 'Сообщения',
+
+  'sys_password' => 'Пароль',
 
 ));
 

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a12.4
+* @version 35b4
 *
 */
 
@@ -30,7 +30,8 @@ if (!defined('INSIDE')) die();
 $lang = array_merge($lang, array(
   'Login' => 'Логин',
   'User_name' => 'Имя:',
-  'Password' => 'Пароль:',
+//  'Password' => 'Пароль:',
+//  'neededpass' => 'Пароль',
   'Please_Login' => 'Пожалуйста <a href="login.php" target="_main">войдите...</a>',
   'Please_Wait' => 'Подождите',
   'Remember_me' => 'Запомнить меня',
@@ -79,7 +80,6 @@ $lang = array_merge($lang, array(
   'reg_i_agree' => 'Я ознакомился и согласен с',
   'reg_with_rules' => 'правилами игры',
   'signup' => 'Зарегистрироваться',
-  'neededpass' => 'Пароль',
   'Languese' => 'Язык',
   'log_reg_text0' => 'Перед регистрацией ознакомьтесь с',
   'log_reg_text1' => 'Регистрация означает, что вы полность прочли и согласились со всеми пунктами правил. Если вы не согласны хоть с каким-то пунктом правил - пожалуйста, не регестрируйтесь.',
@@ -95,7 +95,6 @@ $lang = array_merge($lang, array(
   Сервер работает на свободном движке 'Project SuperNova.WS'. Зажги свою Сверхновую http://supernova.ws/",
   'thanksforregistry' => 'Поздравляем вас с успешной регистрацией! Теперь вы можете <a href=overview.php><u>начать игру!</u></a>',
   'welcome_to_universe' => 'Добро пожаловать в OGame!!!',
-  'your_password' => 'Ваш пароль',
   'please_click_url' => 'Для того чтобы использовать аккаунт, вы должны активировать его нажав на эту ссылку',
   'regards' => 'Удачи!',
   'error_lang' => 'Этот язык не поддерживается!<br />',

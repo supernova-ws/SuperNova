@@ -90,4 +90,123 @@ function coe_sym_to_combat($arr_sym_data, $str_fleet_type)
   return $combat;
 }
 
+function sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender)
+{
+  global $sn_data;
+
+  $combat_data = array(
+    UBE_OPTIONS => array(
+      UBE_SIMULATOR => true,
+    ),
+    UBE_PLAYERS => array(
+/*
+      0 => array(
+        UBE_NAME => 'Defender',
+        UBE_ATTACKER => false,
+//        UBE_BONUSES => array(
+//          UBE_ATTACK => 1,
+//          UBE_ARMOR => 4,
+//          UBE_SHIELD => 2,
+//        ),
+      ),
+*/
+/*
+      1 => array(
+        UBE_NAME => 'Attacker',
+        UBE_ATTACKER => true,
+//        UBE_BONUSES => array(
+//          UBE_ATTACK => 5,
+//          UBE_ARMOR => 6,
+//          UBE_SHIELD => 7,
+//        ),
+      ),
+*/
+    ),
+
+    UBE_FLEETS => array(
+      // FLEET_ID => FLEET_OWNER,
+/*
+      0 => array(
+        UBE_OWNER => 0,
+        // Бонусы на флот - например, капитаны или Фортификатор
+        UBE_BONUSES => array(
+//          UBE_ATTACK => 2,
+        ),
+        UBE_COUNT => array(
+          SHIP_SATTELITE_SOLAR => 200,
+          UNIT_DEF_TURRET_GAUSS => 7,
+          UNIT_DEF_TURRET_MISSILE => 700,
+        ),
+      ),
+
+      1 => array(
+        UBE_OWNER => 1,
+        UBE_BONUSES => array(
+        ),
+        UBE_COUNT => array(
+          SHIP_CARGO_SMALL => 500,
+          SHIP_CARGO_SUPER => 520,
+        ),
+      ),
+*/
+    ),
+  );
+
+  $side_info = $sym_defender;
+  $attacker = false;
+
+  sn_ube_simulator_fill_side($combat_data, $sym_defender, false);
+  sn_ube_simulator_fill_side($combat_data, $sym_attacker, true);
+
+
+  // UBE_ATTACKER
+//  sn_ube_combat_prepare_first_round($combat_data);
+
+  return($combat_data);
+}
+
+function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker)
+{
+  global $sn_data;
+
+  $convert = array(
+    TECH_WEAPON => UBE_ATTACK,
+    TECH_ARMOR => UBE_ARMOR,
+    TECH_SHIELD => UBE_SHIELD,
+  );
+
+  $id = count($combat_data[UBE_PLAYERS]);
+
+  foreach($side_info as $fleet_data)
+  {
+    $combat_data[UBE_PLAYERS][$id][UBE_NAME] = $attacker ? 'Attacker' : 'Defender';
+    $combat_data[UBE_PLAYERS][$id][UBE_ATTACKER] = $attacker;
+
+    $combat_data[UBE_FLEETS][$id][UBE_OWNER] = $id;
+    foreach($fleet_data as $unit_id => $unit_count)
+    {
+      if($sn_data[$unit_id]['type'] == UNIT_TECHNOLOGIES)
+      {
+        $combat_data[UBE_PLAYERS][$id][UBE_BONUSES][$convert[$unit_id]] = $unit_count;
+      }
+      elseif($sn_data[$unit_id]['type'] == UNIT_SHIPS || $sn_data[$unit_id]['type'] == UNIT_DEFENCE)
+      {
+        if(!$unit_count)
+        {
+          continue;
+        }
+        $combat_data[UBE_FLEETS][$id][UBE_COUNT][$unit_id] = $unit_count;
+      }
+      elseif($sn_data[$unit_id]['type'] == UNIT_MERCENARIES)
+      {
+        //TODO
+      }
+      elseif($sn_data[$unit_id]['type'] == UNIT_RESOURCES)
+      {
+        // TODO
+      }
+    }
+  }
+}
+
 ?>

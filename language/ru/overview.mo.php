@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35b3
+* @version 35b4
 *
 */
 
@@ -67,7 +67,7 @@ $lang = array_merge($lang, array(
   'security_query' => 'Система безопасности',
   'name' => 'Имя',
   'namer' => 'Сменить название',
-  'password' => 'Пароль',
+//  'password' => 'Пароль',
   'confirm_planet_delete' => 'Подтвердите удаление планеты',
   'confirmed_with_password' => 'Подтвердите с паролем',
   'ov_delete_ok' => 'Колония успешно удалена',
@@ -146,7 +146,6 @@ $lang = array_merge($lang, array(
   'ov_return' => 'Вернуться к обзору',
   'ov_rename' => 'Переименовать',
   'ov_new_name' => 'Новое название',
-  'ov_password' => 'Ваш пароль',
   'ov_mrc_confirm_1' => 'Вы точно хотите заменить губернатора',
   'ov_mrc_confirm_2' => 'уровня',
   'ov_mrc_confirm_3' => 'на губернатора',

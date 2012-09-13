@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a11.7
+* @version 35b4
 *
 */
 
@@ -29,7 +29,6 @@ if (!defined('INSIDE')) die();
 
 $lang = array_merge($lang, array(
   'adm_tool_md5_header' => 'Шифрование пароля (MD5)',
-  'adm_tool_md5_password' => 'Пароль',
   'adm_tool_md5_hash' => 'Хэш MD5',
   'adm_tool_md5_encode' => '[ Зашифровать ]',
 
@@ -44,22 +43,22 @@ $lang = array_merge($lang, array(
       'TABLE_HEADER'  => 'Сервер MySQL',
       'COLUMN_NAME_1' => 'Параметр',
       'COLUMN_NAME_2' => 'Значение',
-      'TABLE_FOOTER'  => '',
-      'TABLE_EMPTY'   => '',
+//      'TABLE_FOOTER'  => '',
+//      'TABLE_EMPTY'   => '',
     ),
 
     'status' => array(
       'TABLE_HEADER'  => 'Статус сервера MySQL',
       'COLUMN_NAME_1' => 'Параметр',
       'COLUMN_NAME_2' => 'Значение',
-      'TABLE_FOOTER'  => '',
+//      'TABLE_FOOTER'  => '',
     ),
 
     'params' => array(
       'TABLE_HEADER'  => 'Настройки сервера MySQL',
       'COLUMN_NAME_1' => 'Параметр',
       'COLUMN_NAME_2' => 'Значение',
-      'TABLE_FOOTER'  => '',
+//      'TABLE_FOOTER'  => '',
     ),
   ),
 
