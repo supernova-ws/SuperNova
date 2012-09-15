@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2012-06-12 14:44:23
+Date: 2012-09-15 16:13:07
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -33,6 +33,10 @@ CREATE TABLE `sn_aks` (
   `fleet_end_time` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_aks
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_alliance`
@@ -66,6 +70,10 @@ CREATE TABLE `sn_alliance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sn_alliance
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_alliance_diplomacy`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_alliance_diplomacy`;
@@ -87,6 +95,10 @@ CREATE TABLE `sn_alliance_diplomacy` (
   CONSTRAINT `FK_diplomacy_contr_ally_id` FOREIGN KEY (`alliance_diplomacy_contr_ally_id`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_diplomacy_contr_ally_name` FOREIGN KEY (`alliance_diplomacy_contr_ally_name`) REFERENCES `sn_alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_alliance_diplomacy
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_alliance_negotiation`
@@ -117,6 +129,10 @@ CREATE TABLE `sn_alliance_negotiation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sn_alliance_negotiation
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_alliance_requests`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_alliance_requests`;
@@ -131,6 +147,10 @@ CREATE TABLE `sn_alliance_requests` (
   CONSTRAINT `FK_alliance_request_ally_id` FOREIGN KEY (`id_ally`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_alliance_request_user_id` FOREIGN KEY (`id_user`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_alliance_requests
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_annonce`
@@ -154,6 +174,10 @@ CREATE TABLE `sn_annonce` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sn_annonce
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_announce`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_announce`;
@@ -165,6 +189,10 @@ CREATE TABLE `sn_announce` (
   PRIMARY KEY (`idAnnounce`),
   KEY `indTimeStamp` (`tsTimeStamp`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_announce
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_banned`
@@ -183,6 +211,10 @@ CREATE TABLE `sn_banned` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sn_banned
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_bashing`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_bashing`;
@@ -196,27 +228,35 @@ CREATE TABLE `sn_bashing` (
   KEY `bashing_user_id` (`bashing_user_id`,`bashing_planet_id`,`bashing_time`),
   KEY `bashing_planet_id` (`bashing_planet_id`),
   KEY `bashing_time` (`bashing_time`),
-  CONSTRAINT `FK_bashing_user_id` FOREIGN KEY (`bashing_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_bashing_planet_id` FOREIGN KEY (`bashing_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_bashing_planet_id` FOREIGN KEY (`bashing_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_bashing_user_id` FOREIGN KEY (`bashing_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_bashing
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_buddy`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_buddy`;
 CREATE TABLE `sn_buddy` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `sender` bigint(20) unsigned DEFAULT NULL,
-  `owner` bigint(20) unsigned DEFAULT NULL,
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `text` text,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  KEY `I_buddy_sender` (`sender`),
-  KEY `I_buddy_owner` (`owner`),
-  CONSTRAINT `FK_buddy_sender_id` FOREIGN KEY (`sender`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_buddy_owner_id` FOREIGN KEY (`owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `BUDDY_ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Buddy table row ID',
+  `BUDDY_SENDER_ID` bigint(20) unsigned DEFAULT NULL COMMENT 'Buddy request sender ID',
+  `BUDDY_OWNER_ID` bigint(20) unsigned DEFAULT NULL COMMENT 'Buddy request recipient ID',
+  `BUDDY_STATUS` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Buddy request status',
+  `BUDDY_REQUEST` tinytext COMMENT 'Buddy request text',
+  PRIMARY KEY (`BUDDY_ID`),
+  UNIQUE KEY `BUDDY_ID` (`BUDDY_ID`),
+  KEY `I_BUDDY_SENDER_ID` (`BUDDY_SENDER_ID`,`BUDDY_OWNER_ID`),
+  KEY `I_BUDDY_OWNER_ID` (`BUDDY_OWNER_ID`,`BUDDY_SENDER_ID`),
+  CONSTRAINT `FK_BUDDY_SENDER_ID` FOREIGN KEY (`BUDDY_SENDER_ID`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_BUDDY_OWNER_ID` FOREIGN KEY (`BUDDY_OWNER_ID`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_buddy
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_chat`
@@ -224,7 +264,7 @@ CREATE TABLE `sn_buddy` (
 DROP TABLE IF EXISTS `sn_chat`;
 CREATE TABLE `sn_chat` (
   `messageid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `user` varchar(255) NOT NULL DEFAULT '',
+  `user` text COMMENT 'Chat message user name',
   `message` text,
   `timestamp` int(11) NOT NULL DEFAULT '0',
   `ally_id` int(11) NOT NULL DEFAULT '0',
@@ -232,6 +272,10 @@ CREATE TABLE `sn_chat` (
   UNIQUE KEY `messageid` (`messageid`),
   KEY `i_ally_idmess` (`ally_id`,`messageid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_chat
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_config`
@@ -260,6 +304,10 @@ CREATE TABLE `sn_confirmations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sn_confirmations
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_counter`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_counter`;
@@ -278,6 +326,10 @@ CREATE TABLE `sn_counter` (
   KEY `i_ip` (`ip`),
   KEY `I_counter_user_name` (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_counter
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_fleets`
@@ -322,6 +374,10 @@ CREATE TABLE `sn_fleets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sn_fleets
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_iraks`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_iraks`;
@@ -348,6 +404,10 @@ CREATE TABLE `sn_iraks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sn_iraks
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_logs`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_logs`;
@@ -372,6 +432,10 @@ CREATE TABLE `sn_logs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sn_logs
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_log_dark_matter`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_log_dark_matter`;
@@ -390,6 +454,10 @@ CREATE TABLE `sn_log_dark_matter` (
   KEY `i_log_dark_matter_reason_sender_id` (`log_dark_matter_reason`,`log_dark_matter_sender`,`log_dark_matter_id`),
   KEY `i_log_dark_matter_amount` (`log_dark_matter_amount`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_log_dark_matter
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_messages`
@@ -411,6 +479,10 @@ CREATE TABLE `sn_messages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sn_messages
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_notes`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_notes`;
@@ -424,8 +496,13 @@ CREATE TABLE `sn_notes` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `I_notes_owner` (`owner`),
+  KEY `I_owner_priority_time` (`owner`,`priority`,`time`),
   CONSTRAINT `FK_notes_owner` FOREIGN KEY (`owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_notes
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_payment`
@@ -442,8 +519,8 @@ CREATE TABLE `sn_payment` (
   `payment_dark_matter_gained` decimal(65,0) DEFAULT '0' COMMENT 'DM gained by player (with bonuses)',
   `payment_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Payment server timestamp',
   `payment_comment` text COMMENT 'Payment comment',
-  `payment_module_name` varchar(127) DEFAULT '' COMMENT 'Payment module name',
-  `payment_external_id` varchar(127) DEFAULT '' COMMENT 'External payment ID in payment system',
+  `payment_module_name` varchar(255) DEFAULT '' COMMENT 'Payment module name',
+  `payment_external_id` varchar(255) DEFAULT '' COMMENT 'External payment ID in payment system',
   `payment_external_date` datetime DEFAULT NULL COMMENT 'External payment timestamp in payment system',
   `payment_external_lots` decimal(65,5) NOT NULL DEFAULT '0.00000' COMMENT 'Payment system lot amount',
   `payment_external_amount` decimal(65,5) NOT NULL DEFAULT '0.00000' COMMENT 'Money incoming from payment system',
@@ -453,6 +530,10 @@ CREATE TABLE `sn_payment` (
   KEY `I_payment_module_internal_id` (`payment_module_name`,`payment_external_id`),
   CONSTRAINT `FK_payment_user` FOREIGN KEY (`payment_user_id`, `payment_user_name`) REFERENCES `sn_users` (`id`, `username`) ON DELETE NO ACTION ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_payment
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_planets`
@@ -550,6 +631,14 @@ CREATE TABLE `sn_planets` (
   `debris_crystal` bigint(20) unsigned DEFAULT '0',
   `PLANET_GOVERNOR_ID` smallint(6) NOT NULL DEFAULT '0',
   `PLANET_GOVERNOR_LEVEL` smallint(6) NOT NULL DEFAULT '0',
+  `planet_teleport_next` int(11) NOT NULL DEFAULT '0' COMMENT 'Next teleport time',
+  `ship_sattelite_sloth` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Terran Sloth',
+  `ship_bomber_envy` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Lunar Envy',
+  `ship_recycler_gluttony` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Mercurian Gluttony',
+  `ship_fighter_wrath` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Venerian Wrath',
+  `ship_battleship_pride` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Martian Pride',
+  `ship_cargo_greed` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Republican Greed',
+  `ship_sattelite_sloth_porcent` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT 'Terran Sloth production',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `owner_type` (`id_owner`,`planet_type`),
@@ -595,7 +684,13 @@ CREATE TABLE `sn_planets` (
   KEY `i_nano` (`nano`,`id_level`),
   KEY `i_last_update` (`last_update`),
   KEY `GSPT` (`galaxy`,`system`,`planet`,`planet_type`),
-  KEY `i_parent_planet` (`parent_planet`)
+  KEY `i_parent_planet` (`parent_planet`),
+  KEY `I_ship_sattelite_sloth` (`ship_sattelite_sloth`,`id_level`),
+  KEY `I_ship_bomber_envy` (`ship_bomber_envy`,`id_level`),
+  KEY `I_ship_recycler_gluttony` (`ship_recycler_gluttony`,`id_level`),
+  KEY `I_ship_fighter_wrath` (`ship_fighter_wrath`,`id_level`),
+  KEY `I_ship_battleship_pride` (`ship_battleship_pride`,`id_level`),
+  KEY `I_ship_cargo_greed` (`ship_cargo_greed`,`id_level`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -616,9 +711,13 @@ CREATE TABLE `sn_powerup` (
   KEY `I_powerup_planet_id` (`powerup_planet_id`),
   KEY `I_user_powerup_time` (`powerup_user_id`,`powerup_unit_id`,`powerup_time_start`,`powerup_time_finish`),
   KEY `I_planet_powerup_time` (`powerup_planet_id`,`powerup_unit_id`,`powerup_time_start`,`powerup_time_finish`),
-  CONSTRAINT `FK_powerup_user_id` FOREIGN KEY (`powerup_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_powerup_planet_id` FOREIGN KEY (`powerup_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_powerup_planet_id` FOREIGN KEY (`powerup_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_powerup_user_id` FOREIGN KEY (`powerup_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_powerup
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_quest`
@@ -636,6 +735,10 @@ CREATE TABLE `sn_quest` (
   UNIQUE KEY `quest_id` (`quest_id`),
   KEY `quest_type` (`quest_type`,`quest_order`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_quest
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_quest_status`
@@ -656,6 +759,10 @@ CREATE TABLE `sn_quest_status` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sn_quest_status
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_referrals`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_referrals`;
@@ -668,6 +775,10 @@ CREATE TABLE `sn_referrals` (
   CONSTRAINT `FK_referrals_id` FOREIGN KEY (`id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_referrals_id_partner` FOREIGN KEY (`id_partner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_referrals
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_rw`
@@ -690,6 +801,10 @@ CREATE TABLE `sn_rw` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of sn_rw
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_shortcut`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_shortcut`;
@@ -710,6 +825,10 @@ CREATE TABLE `sn_shortcut` (
   CONSTRAINT `FK_shortcut_planet_id` FOREIGN KEY (`shortcut_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_shortcut_user_id` FOREIGN KEY (`shortcut_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_shortcut
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_statpoints`
@@ -752,9 +871,13 @@ CREATE TABLE `sn_statpoints` (
   KEY `TOTAL` (`total_points`),
   KEY `i_stats_owner` (`id_owner`,`stat_type`,`stat_code`,`tech_rank`,`build_rank`,`defs_rank`,`fleet_rank`,`total_rank`),
   KEY `I_stats_id_ally` (`id_ally`),
-  CONSTRAINT `FK_stats_id_owner` FOREIGN KEY (`id_owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_stats_id_ally` FOREIGN KEY (`id_ally`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_stats_id_ally` FOREIGN KEY (`id_ally`) REFERENCES `sn_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_stats_id_owner` FOREIGN KEY (`id_owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_statpoints
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_universe`
@@ -767,6 +890,10 @@ CREATE TABLE `sn_universe` (
   `universe_price` bigint(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`universe_galaxy`,`universe_system`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_universe
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_users`
@@ -839,7 +966,7 @@ CREATE TABLE `sn_users` (
   `system` int(11) NOT NULL DEFAULT '0',
   `planet` int(11) NOT NULL DEFAULT '0',
   `current_planet` int(11) NOT NULL DEFAULT '0',
-  `user_agent` mediumtext NOT NULL DEFAULT '',
+  `user_agent` mediumtext NOT NULL,
   `user_lastip` varchar(250) DEFAULT NULL COMMENT 'User last IP',
   `user_proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)',
   `register_time` int(10) unsigned DEFAULT '0',
@@ -865,6 +992,7 @@ CREATE TABLE `sn_users` (
   `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'User que',
   `user_birthday` date DEFAULT NULL COMMENT 'User birthday',
   `user_birthday_celebrated` date DEFAULT NULL COMMENT 'Last time where user got birthday gift',
+  `player_race` int(11) NOT NULL DEFAULT '0' COMMENT 'Player''s race',
   PRIMARY KEY (`id`),
   KEY `i_ally_id` (`ally_id`),
   KEY `i_ally_name` (`ally_name`),
@@ -900,8 +1028,8 @@ INSERT INTO `sn_config` VALUES ('avatar_max_height', '128');
 INSERT INTO `sn_config` VALUES ('avatar_max_width', '128');
 INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
 INSERT INTO `sn_config` VALUES ('chat_highlight_admin', '<span class=\"nick_admin\">$1</span>');
-INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<span class=\"nick_moderator\">$1</span>');
-INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<span class=\"nick_operator\">$1</span>');
+INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');
+INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_premium', '<span class=\"nick_premium\">$1</span>');
 INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');

@@ -442,10 +442,7 @@ http://dev.mysql.com/doc/refman/5.5/en/constraints.html
 =================================
 Самую свежую и актуальную версию движка (с самыми свежими и актуальными багами)
 можно скачать по этой ссылке:
-https://github.com/supernova-ws/SuperNova/archives/trunk
-Клик на «Download .zip» и загрузит архив транка. При чем именно надо перейти по
-ссылке выше и там щелкнуть кнопку. Переход по прямой ссылке на загружаемый файл
-– не сработает.
+https://github.com/supernova-ws/SuperNova/zipball/trunk
 На название файла внимание обращать не нужно -  будет  загружена  самая  свежая
 версия из ветки trunk.
 
@@ -507,8 +504,11 @@ https://github.com/supernova-ws/SuperNova/archives/trunk
 Страница проекта:
   http://github.com/supernova-ws/SuperNova
 
-Загрузка движка:
-  https://github.com/supernova-ws/SuperNova/archives/master
+Самый свежий стабильный релиз:
+  https://github.com/supernova-ws/SuperNova/zipball/master
+
+night build - самая свежая версия следующего релиза с глюками и багами:
+  https://github.com/supernova-ws/SuperNova/zipball/trunk
 
 Репозиторий:
   git://github.com/supernova-ws/SuperNova.git

@@ -423,10 +423,15 @@
 
 
 
-Текущий билд #35b5#
+Текущий билд #35c0#
 ~~~~~~~~~~~~~~~~~~~~~
 #ctv
 
+
+2012-09-15 17:23:52 35c0 - Project "SuperNova.WS" Release 35 Release Candidate 0
+[!] Project "SuperNova.WS" Release 35 RC0 "MVC race reparse teleportation recycle"
+
+[!] readme.txt сконвертирован в UTF8
 
 2012-09-15 14:27:02 35b5
 [%] Админка

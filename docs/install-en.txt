@@ -258,10 +258,7 @@ Fault diagnosis engine
 =================================
 The latest and most current version of the engine (with  the  most  recent  and
 relevant bugs) can be downloaded at this link: 
-https://github.com/supernova-ws/SuperNova/archives/trunk
-Click on «Download. Zip» and download archives trunk. At what exactly should go on
-link above and click the button there. Go direct link to the download
-- Does not work.
+https://github.com/supernova-ws/SuperNova/zipball/trunk
 To pay attention to the file name is not necessary.
 ! WARNING! Diagnosis should be performed on a separate database and separate copy
 engine! DO NOT LIVE IN diagnosis SERVER!
@@ -293,27 +290,43 @@ can be used by the old settings from the previous version.
 Only a true and accurate diagnostic procedure to follow will help to effectively
 identify problems in the SN on each individual server.
 
-References
-======
-The main project site: http://supernova.ws
+URLs
+====
+The main project site:
+  http://supernova.ws
 
 Forums
 ------
-Forum Project: http://forum.supernova.ws
-Support Forum: http://forum.supernova.ws/viewforum.php?f=73
-Forum for bug reports: http://forum.supernova.ws/viewforum.php?f=65
+Forum Project:
+  http://forum.supernova.ws
+
+Support Forum:
+  http://forum.supernova.ws/viewforum.php?f=73
+
+Forum for bug reports:
+  http://forum.supernova.ws/viewforum.php?f=65
 
 Supernova on github
 --------------------
-Project page: http://github.com/supernova-ws/SuperNova
-Download Engine: https://github.com/supernova-ws/SuperNova/archives/master
-Repository: git://github.com/supernova-ws/SuperNova.git
+Project page:
+  http://github.com/supernova-ws/SuperNova
+
+Download freshest release:
+  https://github.com/supernova-ws/SuperNova/zipball/master
+
+Repository:
+  git://github.com/supernova-ws/SuperNova.git
 
 Supernova on sourceforge
 --------------------
-Project page: http://sourceforge.net/projects/supernova-ws/
-Download Engine: http://sourceforge.net/projects/supernova-ws/files/
-Repository: git://supernova-ws.git.sourceforge.net/gitroot/supernova-ws/supernova-ws
+Project page:
+  http://sourceforge.net/projects/supernova-ws/
+
+Download Engine:
+  http://sourceforge.net/projects/supernova-ws/files/
+
+Repository:
+  git://supernova-ws.git.sourceforge.net/gitroot/supernova-ws/supernova-ws
 
 
 Donations

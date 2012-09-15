@@ -62,9 +62,11 @@ GIT-repository:
 GIT-repository through HTTP:
   https://github.com/supernova-ws/SuperNova#
 
-Release archives:
-  https://github.com/supernova-ws/SuperNova/archives/master
-(button "download .zip" will download most recent release archive)
+Latest stable release:
+  https://github.com/supernova-ws/SuperNova/zipball/master
+
+Latest night build (stability is not guaranted!):
+  https://github.com/supernova-ws/SuperNova/zipball/trunk
 
 SVN-interface (SVN-interface on GitHub works is very unstable):
   http://svn.github.com/supernova-ws/SuperNova.git

@@ -1822,15 +1822,21 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
           "ADD CONSTRAINT `FK_BUDDY_OWNER_ID` FOREIGN KEY (`BUDDY_OWNER_ID`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), !$update_indexes['buddy']['I_BUDDY_SENDER_ID']);
     }
-
+/*
     // TODO: FOR TEST ONLY!! DELETE
     upd_alter_table('buddy', array(
       "CHANGE COLUMN `BUDDY_ACTIVE` `BUDDY_STATUS` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Buddy request status'",
     ), !$update_tables['buddy']['BUDDY_STATUS']);
     // EOF TODO
+*/
+    upd_do_query('COMMIT;', true);
+    $new_version = 35;
+
+  case 35:
+    upd_log_version_update();
 
     upd_do_query('COMMIT;', true);
-//    $new_version = 35;
+//    $new_version = 36;
 
 };
 upd_log_message('Upgrade complete.');
