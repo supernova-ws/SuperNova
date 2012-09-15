@@ -185,16 +185,16 @@ function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker)
     $combat_data[UBE_FLEETS][$id][UBE_OWNER] = $id;
     foreach($fleet_data as $unit_id => $unit_count)
     {
+      if(!$unit_count)
+      {
+        continue;
+      }
       if($sn_data[$unit_id]['type'] == UNIT_TECHNOLOGIES)
       {
         $combat_data[UBE_PLAYERS][$id][UBE_BONUSES][$convert[$unit_id]] = $unit_count;
       }
       elseif($sn_data[$unit_id]['type'] == UNIT_SHIPS || $sn_data[$unit_id]['type'] == UNIT_DEFENCE)
       {
-        if(!$unit_count)
-        {
-          continue;
-        }
         $combat_data[UBE_FLEETS][$id][UBE_COUNT][$unit_id] = $unit_count;
       }
       elseif($sn_data[$unit_id]['type'] == UNIT_MERCENARIES)
@@ -203,7 +203,7 @@ function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker)
       }
       elseif($sn_data[$unit_id]['type'] == UNIT_RESOURCES)
       {
-        // TODO
+        $combat_data[UBE_FLEETS][$id][UBE_RESOURCES][$unit_id] = $unit_count;
       }
     }
   }

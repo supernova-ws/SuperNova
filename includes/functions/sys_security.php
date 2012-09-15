@@ -321,8 +321,8 @@ function DeleteSelectedUser ( $UserID )
   doquery ( "DELETE FROM `{{fleets}}` WHERE `fleet_owner` = '" . $UserID . "';");
 //  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner1` = '" . $UserID . "';");
 //  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner2` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{buddy}}` WHERE `sender` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{buddy}}` WHERE `owner` = '" . $UserID . "';");
+  doquery ( "DELETE FROM `{{buddy}}` WHERE `BUDDY_SENDER_ID` = '" . $UserID . "';");
+  doquery ( "DELETE FROM `{{buddy}}` WHERE `BUDDY_OWNER_ID` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{annonce}}` WHERE `user` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{users}}` WHERE `id` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
