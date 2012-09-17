@@ -41,12 +41,12 @@ XCache> = 1.2.h - optional, but very, very desirable. Without XCache not
                   will work some chips and increase significantly the load
                   to MySQL.
 
-MySQL 5.x - ÂÊËÏ STRICT_TRANS_TABLES ‰ÓÎÊÂÌ ·˚Ú¸ Œ“ Àﬁ◊≈Õ
-PHP >= 5.2.ı - Õ≈ —Œ¬Ã≈—“»Ã — PHP 5.3.1!
+MySQL 5.x - —Ä–µ–∂–∏–º STRICT_TRANS_TABLES –¥–æ–ª–∂–µ–Ω –±—ã—Ç—å –û–¢–ö–õ–Æ–ß–ï–ù
+PHP >= 5.2.—Ö - –ù–ï –°–û–í–ú–ï–°–¢–ò–ú –° PHP 5.3.1!
 Web-server
-XCache >= 1.2.ı - ÓÔˆËÓÌ‡Î¸ÌÓ, ÌÓ Í‡ÈÌÂ, Í‡ÈÌÂ ÊÂÎ‡ÚÂÎ¸ÌÓ.  ¡ÂÁ  XCache  ÌÂ
-                  ·Û‰ÛÚ ‡·ÓÚ‡Ú¸ ÌÂÍÓÚÓ˚Â ÙË¯ÍË Ë Á‡ÏÂÚÌÓ ‚ÓÁ‡ÒÚÂÚ Ì‡„ÛÁÍ‡
-                  Ì‡ MySQL.
+XCache >= 1.2.—Ö - –æ–ø—Ü–∏–æ–Ω–∞–ª—å–Ω–æ, –Ω–æ –∫—Ä–∞–π–Ω–µ, –∫—Ä–∞–π–Ω–µ –∂–µ–ª–∞—Ç–µ–ª—å–Ω–æ.  –ë–µ–∑  XCache  –Ω–µ
+                  –±—É–¥—É—Ç —Ä–∞–±–æ—Ç–∞—Ç—å –Ω–µ–∫–æ—Ç–æ—Ä—ã–µ —Ñ–∏—à–∫–∏ –∏ –∑–∞–º–µ—Ç–Ω–æ –≤–æ–∑—Ä–∞—Å—Ç–µ—Ç –Ω–∞–≥—Ä—É–∑–∫–∞
+                  –Ω–∞ MySQL.
 
 WARNING!!! PHP 5.3.1 contains bug which made  it  incompatible  with  SuperNova
 after version 33a12! Upgrade  or  downgrade  PHP  or  use  earlier  version  of
@@ -345,4 +345,4 @@ I a small commission.
 Remember! Nothing strengthens the belief in the usefulness to work as a donation!
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Updated: 2011-12-27 16:07 V32Ò0
+Updated: 2011-12-27 16:07 V32—Å0

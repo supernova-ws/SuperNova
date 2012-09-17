@@ -2,12 +2,12 @@
 if(!defined("INSIDE")){ die("attemp hacking"); }
 
 $dbsettings = Array(
-  "server"     => "localhost",      // MySQL ÒÂ‚Â.
-  "user"       => "supernova_user", // ÀÓ„ËÌ ‰ÓÒÚÛÔ‡ MySQL ÒÂ‚Â‡.
-  "pass"       => "MYSQL_PASSWORD", // œ‡ÓÎ¸ ‰ÓÒÚÛÔ‡ MySQL ÒÂ‚Â‡.
-  "name"       => "supernova",      // Õ‡Á‚‡ÌËÂ MySQL ·‡Á˚.
-  "prefix"     => "sn_",            // œÂÙËÍÒ ‰Îˇ Ú‡·ÎËˆ ‚ ·‡ÁÂ.
-  "secretword" => "SUPERNOVA",      //  Î˛˜Â‚ÓÂ ÒÎÓ‚Ó ‰Îˇ ÒÓÁ‰‡ÌËˇ Cookies. (ÕÂ Á‡·Û‰¸ÚÂ ËÁÏÂÌËÚ¸ Ì‡ Ò‚Ó∏!)
+  "server"     => "localhost",      // MySQL —Å–µ—Ä–≤–µ—Ä.
+  "user"       => "supernova_user", // –õ–æ–≥–∏–Ω –¥–æ—Å—Ç—É–ø–∞ MySQL —Å–µ—Ä–≤–µ—Ä–∞.
+  "pass"       => "MYSQL_PASSWORD", // –ü–∞—Ä–æ–ª—å –¥–æ—Å—Ç—É–ø–∞ MySQL —Å–µ—Ä–≤–µ—Ä–∞.
+  "name"       => "supernova",      // –ù–∞–∑–≤–∞–Ω–∏–µ MySQL –±–∞–∑—ã.
+  "prefix"     => "sn_",            // –ü—Ä–µ—Ñ–∏–∫—Å –¥–ª—è —Ç–∞–±–ª–∏—Ü –≤ –±–∞–∑–µ.
+  "secretword" => "SUPERNOVA",      // –ö–ª—é—á–µ–≤–æ–µ —Å–ª–æ–≤–æ –¥–ª—è —Å–æ–∑–¥–∞–Ω–∏—è Cookies. (–ù–µ –∑–∞–±—É–¥—å—Ç–µ –∏–∑–º–µ–Ω–∏—Ç—å –Ω–∞ —Å–≤–æ—ë!)
 );     
 
 $game['prefix'] = $dbsettings['prefix'];
