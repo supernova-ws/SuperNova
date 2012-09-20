@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35b4
+* @version 35c4
 *
 */
 
@@ -33,6 +33,7 @@ $lang = array_merge($lang, array(
   'adm_tool_md5_header' => 'Password encoding (MD5)',
   'adm_tool_md5_hash' => 'MD5 hash',
   'adm_tool_md5_encode' => '[ Encode ]',
+  'adm_tool_md5_generate' => '[ Generate ]',
 
   'adm_tool_mysql_page_header' => 'MySQL server parameters',
 

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35b4
+* @version 35c4
 *
 */
 
@@ -28,9 +28,10 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
-  'adm_tool_md5_header' => 'Шифрование пароля (MD5)',
+  'adm_tool_md5_header' => 'Генерация и шифрование пароля (MD5)',
   'adm_tool_md5_hash' => 'Хэш MD5',
   'adm_tool_md5_encode' => '[ Зашифровать ]',
+  'adm_tool_md5_generate' => '[ Сгенерировать ]',
 
   'adm_tool_mysql_page_header' => 'Параметры сервера MySQL',
 

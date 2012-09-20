@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35b4
+* @version 35c4
 *
 */
 
@@ -732,6 +732,8 @@ $lang = array_merge($lang, array(
   'sys_result_operation' => 'Сообщения',
 
   'sys_password' => 'Пароль',
+  'sys_password_length' => 'Длина пароля',
+  'sys_password_seed' => 'Используемые символы',
 
 ));
 

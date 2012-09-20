@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35b4
+* @version 35c4
 *
 */
 
@@ -731,6 +731,8 @@ $lang = array_merge($lang, array(
   'sys_result_operation' => 'Outcome',
 
   'sys_password' => 'Password',
+  'sys_password_length' => 'Password length',
+  'sys_password_seed' => 'Used characters',
 
 ));
 

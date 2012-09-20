@@ -2,16 +2,29 @@
 <form method="post">
   <table>
     <tr>
+      <td class="c_l">{L_sys_password_seed}</td>
+      <td class="c_l">
+        <input type="text" name="seed" value="{SEED}" size=35 />
+      </td>
+    </tr>
+    <tr>
+      <td class="c_l">{L_sys_password_length}</td>
+      <td class="c_l">
+        <input type="text" name="length" value="{LENGTH}">
+        <input type="submit" name="ok" value="{L_adm_tool_md5_generate}" onclick="jQuery('#string').val('');" />
+      </td>
+    </tr>
+    <tr>
       <td class="c_l">{L_sys_password}</td>
       <td class="c_l">
-        <input type="text" name="string" value="{STRING}">
-        <input type="submit" name="ok" value="{L_adm_tool_md5_encode}">
+        <input type="text" name="string" id="string" value="{STRING}">
+        <input type="submit" name="ok" value="{L_adm_tool_md5_encode}" />
       </td>
     </tr>
 
     <tr>
-      <th>{L_adm_tool_md5_hash}</th>
-      <th><input type="text" name="md5w" value="{MD5}" size="32"></th>
+      <td class="c_l">{L_adm_tool_md5_hash}</td>
+      <td><input type="text" name="md5w" value="{MD5}" size="32"></td>
     </tr>
   </table>
 </form>
