@@ -81,7 +81,7 @@ $output_buffer = '';
 $filename = 'changelog';
 
 $input =  file_get_contents($path_prefix . $filename . '.txt');
-$input = iconv('CP1251', 'UTF-8', $input);
+//$input = iconv('CP1251', 'UTF-8', $input);
 
 $input = preg_replace("/\r\n\d\d\d\d\-\d\d\-\d\d\ \d\d\:\d\d/", "[D] $0", $input);
 

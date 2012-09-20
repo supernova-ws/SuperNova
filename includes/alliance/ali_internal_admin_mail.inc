@@ -12,7 +12,7 @@ if (!$user_can_send_mails) {
 $POST_text = sys_get_param_str('text');
 if ($POST_text)
 {
-  message($lang['members_who_recived_message'] . msg_ali_send($POST_text, $lang['ali_adm_msg_subject'], sys_get_param_id('r')), $lang['Circular_sended'], "alliance.php", "");
+  message($lang['members_who_recived_message'] . msg_ali_send($POST_text, $lang['ali_adm_msg_subject'], sys_get_param_int('r')), $lang['Circular_sended'], "alliance.php", "");
 }
 
 $lang['r_list'] = "<option value=\"-1\">{$lang['All_players']}</option>";

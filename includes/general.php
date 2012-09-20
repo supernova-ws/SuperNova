@@ -695,8 +695,8 @@ function get_engine_data($user, $engine_info)
 
   $engine_info['consumption_base'] = $engine_info['consumption'];
   $tech_bonus = ($user_tech_level - $engine_info['min_level']) * $sn_data_tech_bonus / 1000;
-  $tech_bonus = $tech_bonus > 0.5 ? 0.5 : ($tech_bonus < 0 ? $tech_bonus * 2: $tech_bonus);
-  $engine_info['consumption'] = $engine_info['consumption'] * (1 - $tech_bonus);
+  $tech_bonus = $tech_bonus > 0.5 ? 0.5 : ($tech_bonus < 0 ? $tech_bonus * 2 : $tech_bonus);
+  $engine_info['consumption'] = ceil($engine_info['consumption'] * (1 - $tech_bonus));
 
   return $engine_info;
 }

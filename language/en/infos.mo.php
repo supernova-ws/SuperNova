@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a12.16
+* @version 35c3
 *
 */
 
@@ -142,7 +142,7 @@ $lang['info'] = (array(
     ),
 
     STRUC_MOON_PHALANX => array(
-      'description' => 'High frequency sensors full browsing frequency spectrum by all the falangu radiations. Powerful computers combines tiny fluctuations in energy and thus gain information about the movements of ships at the distant planets. To view the Moon should be given the energy in the form of deuterium (5 000 per view). View is the transition from the Moon menu Galaxy and the title enemy planet located in range sensors (formula: (level phalanges) ^ 2-1).',
+      'description' => 'High frequency sensors full browsing frequency spectrum by all the falangu radiations. Powerful computers combines tiny fluctuations in energy and thus gain information about the movements of ships at the distant planets. To view the Moon should be given the energy in the form of deuterium (per view 1000 * phalanx level). View is the transition from the Moon menu Galaxy and the title enemy planet located in range sensors (formula: (level phalanges) ^ 2-1).',
       'description_short' => 'High frequency sensors full browsing frequency spectrum by all the ship fuel radiation.',
     ),
 

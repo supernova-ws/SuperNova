@@ -19,6 +19,7 @@ function cht_message_parse($msg)
     ':p' => 'tongue', ':wink:' => 'wink', ':yahoo:' => 'yahoo', ':tratata:' => 'mill',
     ':fr' => 'friends', ':dr' => 'drinks', ':tease:' => 'tease',
     '\:\(' => 'mellow', ':\)' => 'smile',  ':wink:' => 'wink',
+    ':nea:' => 'nea', ':ups:' => 'pardon', ':quote:' => 'pleasantry', ':shout:' => 'shout', ':sorry:' => 'sorry', ':spiteful:' => 'spiteful',
   );
 
   foreach ($BBCodes as $key => $html)
