@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version #35c6#
 *
 */
 
@@ -28,24 +28,16 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
-  'Position' => 'Место',
-  'Player' => 'Игрок',
-  'Name' => 'Имя',
-  'Player_name' => 'Имя игрока',
-  'Planet' => 'Планета',
-  'Planet_name' => 'Имя планеты',
-  'Alliance' => 'Альянс',
-  'Alliance_name' => 'Имя альянса',
-  'Tag' => 'Обозначение',
-  'Alliance_tag' => 'Обозначение альянса',
-  'Members' => 'Участники',
-  'Points' => 'Очки',
-  'PerMember' => 'На человека',
-  'Search' => 'Поиск',
-  'Search_in_all_game' => 'Поиск по серверу',
-  'Back' => 'Назад',
-  'write_a_messege' => 'Написать сообщение',
-  'buddy_request' => 'Добавить в друзья',
+  'srch_title' => 'Поиск по серверу',
+  'srch_search_do' => 'Искать',
+  'srch_result_none' => 'По данному запросу ничего не найдено',
+  'srch_player_name' => 'Имя игрока',
+  'srch_ally_name' => 'Название Альянса',
+  'srch_ally_members' => 'Участников',
+  'srch_planet_name' => 'Имя планеты',
+  'srch_rank' => 'Место',
+  'srch_action_pm' => 'Написать сообщение',
+  'srch_action_buddy' => 'Добавить в друзья',
 ));
 
 ?>

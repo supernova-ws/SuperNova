@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version #35c6#
 *
 */
 
@@ -30,24 +30,16 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
-  'Position' => 'Position',
-  'Player' => 'Player',
-  'Name' => 'Name',
-  'Player_name' => 'Player Name',
-  'Planet' => 'Planet',
-  'Planet_name' => 'Planet Name',
-  'Alliance' => 'Alliance',
-  'Alliance_name' => 'Alliance Name',
-  'Tag' => 'Designation',
-  'Alliance_tag' => 'Alliance Tag',
-  'Members' => 'Members',
-  'Points' => 'Points',
-  'PerMember' => 'Per Member',
-  'Search' => 'Search',
-  'Search_in_all_game' => 'Search the server',
-  'Back' => 'Back',
-  'write_a_messege' => 'Write a message',
-  'buddy_request' => 'Add as Friend',
+  'srch_title' => 'Server search',
+  'srch_search_do' => 'Search',
+  'srch_result_none' => 'There is nothing found on your query',
+  'srch_player_name' => 'Player name',
+  'srch_ally_name' => 'Alliance name',
+  'srch_ally_members' => 'Members',
+  'srch_planet_name' => 'Planet name',
+  'srch_rank' => 'Rank',
+  'srch_action_pm' => 'Write PM',
+  'srch_action_buddy' => 'Request friendship',
 ));
 
 ?>

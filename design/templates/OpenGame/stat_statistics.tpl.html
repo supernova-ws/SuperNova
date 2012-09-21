@@ -52,21 +52,21 @@
     <th class ="c_c">{L_stat_points}</th>
   </tr>
 
-  <!-- IF SUBJECT == 1 -->
-    <!-- BEGIN stat -->
-      <!-- IF stat.RANK_CHANGE > 0 -->
-        <!-- DEFINE $RANK_CLASS = 'positive' -->
-        <!-- DEFINE $RANK_SIGN = '+{stat.RANK_CHANGE}' -->
-      <!-- ELSEIF stat.RANK_CHANGE < 0 -->
-        <!-- DEFINE $RANK_CLASS = 'negative' -->
-        <!-- DEFINE $RANK_SIGN = '{stat.RANK_CHANGE}' -->
-      <!-- ELSE -->
-        <!-- DEFINE $RANK_CLASS = 'zero' -->
-        <!-- DEFINE $RANK_SIGN = '*' -->
-      <!-- ENDIF -->
-      <tr>
-        <td class="c_r"><!-- IF stat.RANK == RANGE --><a name="{stat.RANK}"><span class="fl">&gt;</span></a><!-- ENDIF -->{stat.RANK}</td>
-        <td class="c_r {$RANK_CLASS}">{$RANK_SIGN}</td>
+  <!-- BEGIN stat -->
+    <!-- IF stat.RANK_CHANGE > 0 -->
+      <!-- DEFINE $RANK_CLASS = 'positive' -->
+      <!-- DEFINE $RANK_SIGN = '+{stat.RANK_CHANGE}' -->
+    <!-- ELSEIF stat.RANK_CHANGE < 0 -->
+      <!-- DEFINE $RANK_CLASS = 'negative' -->
+      <!-- DEFINE $RANK_SIGN = '{stat.RANK_CHANGE}' -->
+    <!-- ELSE -->
+      <!-- DEFINE $RANK_CLASS = 'zero' -->
+      <!-- DEFINE $RANK_SIGN = '*' -->
+    <!-- ENDIF -->
+    <tr>
+      <td class="c_r"><!-- IF stat.RANK == RANGE --><a name="{stat.RANK}"><span class="fl">&gt;</span></a><!-- ENDIF -->{stat.RANK}</td>
+      <td class="c_r {$RANK_CLASS}">{$RANK_SIGN}</td>
+      <!-- IF SUBJECT == 1 -->
         <td class="c_l<!-- IF USER_ID == stat.ID --> same_player<!-- ENDIF -->">
           {stat.NAME}
         </td>
@@ -74,30 +74,13 @@
         <td class="c_c"><a href="messages.php?mode=write&id={stat.ID}"><img src="{dpath}img/m.gif" border="0" alt="{L_stat_message_write}" /></a></td>
         <!-- ENDIF -->
         <td class="c_l"><!-- IF stat.ALLY_ID --><a href="alliance.php?mode=ainfo&a={stat.ALLY_ID}"><span class="<!-- IF USER_ALLY == stat.ALLY_ID -->same_alliance<!-- ENDIF -->">{stat.ALLY_NAME}</span></a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
-        <td class="c_r">{stat.POINTS}</td>
-      </tr>
-    <!-- END stat -->
-  <!-- ELSE -->
-    <!-- BEGIN stat -->
-      <!-- IF stat.RANK_CHANGE > 0 -->
-        <!-- DEFINE $RANK_CLASS = 'positive' -->
-        <!-- DEFINE $RANK_SIGN = '+{stat.RANK_CHANGE}' -->
-      <!-- ELSEIF stat.RANK_CHANGE < 0 -->
-        <!-- DEFINE $RANK_CLASS = 'negative' -->
-        <!-- DEFINE $RANK_SIGN = '{stat.RANK_CHANGE}' -->
       <!-- ELSE -->
-        <!-- DEFINE $RANK_CLASS = 'zero' -->
-        <!-- DEFINE $RANK_SIGN = '*' -->
-      <!-- ENDIF -->
-      <tr>
-        <td class="c_r"><!-- IF stat.RANK == RANGE --><span class="fl">&gt;</span><!-- ENDIF --><a name="{player_rank}">{stat.RANK}</a></td>
-        <td class="c_r {$RANK_CLASS}">{$RANK_SIGN}</td>
         <td class="c_l"><a href="alliance.php?mode=ainfo&a={stat.ID}"><span class="<!-- IF USER_ALLY == stat.ID -->same_alliance<!-- ENDIF -->">{stat.NAME}</span></a></td>
         <td class="c_r">{stat.MEMBERS}</td>
         <td class="c_r">{stat.POINTS_PER_MEMBER}</td>
-        <td class="c_r">{stat.POINTS}</td>
-      </tr>
-    <!-- END stat -->
-  <!-- ENDIF -->
+      <!-- ENDIF -->
+      <td class="c_r">{stat.POINTS}</td>
+    </tr>
+  <!-- END stat -->
 
 </table>
