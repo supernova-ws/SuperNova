@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version #35c6#
+* @version #35c9#
 *
 */
 
@@ -40,6 +40,7 @@ $lang = array_merge($lang, array(
   'srch_rank' => 'Rank',
   'srch_action_pm' => 'Write PM',
   'srch_action_buddy' => 'Request friendship',
+  'srch_page_hint' => '<li>Only first 30 records appears</li>',
 ));
 
 ?>

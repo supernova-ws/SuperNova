@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #35c6#
+* @version #35c9#
 *
 */
 
@@ -38,6 +38,7 @@ $lang = array_merge($lang, array(
   'srch_rank' => 'Место',
   'srch_action_pm' => 'Написать сообщение',
   'srch_action_buddy' => 'Добавить в друзья',
+  'srch_page_hint' => '<li>Показывается только первые 30 записей</li>',
 ));
 
 ?>

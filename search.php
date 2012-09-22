@@ -34,7 +34,7 @@ if($searchtext && $type)
           {{planets}} AS p
           LEFT JOIN {{users}} AS u ON u.id = p.id_owner
         WHERE
-          name LIKE '%{$searchtext}%'
+          name LIKE '%{$searchtext}%' AND u.user_as_ally IS NULL
         ORDER BY
           ally_tag, username, planet_name
         LIMIT 30;";
@@ -55,7 +55,7 @@ if($searchtext && $type)
           {{users}} AS u
           LEFT JOIN {{planets}} AS p ON p.id_owner = u.id AND p.id=u.id_planet
         WHERE
-          username LIKE '%{$searchtext}%'
+          username LIKE '%{$searchtext}%' AND u.user_as_ally IS NULL
         ORDER BY
           ally_tag, username, planet_name
         LIMIT 30;";
@@ -109,6 +109,7 @@ foreach($search_type as $type_id => $type_lang)
 
 $template->assign_vars(array(
   'PAGE_HEADER' => $lang['Search'],
+  'PAGE_HINT' => $lang['srch_page_hint'],
   'TEXT' => $searchtext,
   'IS_ALLY' => $type == 'ally',
   'STATS_HIDE_PM_LINK' => $config->stats_hide_pm_link,
