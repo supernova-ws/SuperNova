@@ -1,0 +1,72 @@
+<form action="search.php" method="post">
+  <table width="519">
+    <tr>
+      <th class="c_c">{L_srch_title}</th>
+    </tr>
+    <tr>
+      <td class="c_c">
+        <select name="type">
+          <!-- BEGIN type -->
+            <option value="{type.ID}"<!-- IF type.SELECTED --> selected<!-- ENDIF -->>{type.TEXT}</option>
+          <!-- END type -->
+        </select>
+        <input type="text" name="searchtext" value="{TEXT}"/>
+        <input type="submit" value="{L_srch_search_do}" />
+      </td>
+    </tr>
+  </table>
+</form>
+
+<table width="519">
+<!-- IF ! .search_result -->
+  <tr>
+    <th class="c_с">
+      {L_srch_result_none}
+    </th>
+  </tr>
+  <!-- ELSEIF IS_ALLY -->
+    <tr class="c_l">
+      <th>{L_sys_alliance}</th>
+      <th>{L_srch_ally_name}</th>
+      <th>{L_srch_ally_members}</th>
+      <th>{L_srch_rank}</th>
+    </tr>
+    <!-- BEGIN search_result -->
+      <tr class="c_l">
+        <td><a href="alliance.php?mode=ainfo&tag={search_result.ALLY_TAG}">[{search_result.ALLY_TAG}]</a></td>
+        <td>{search_result.ALLY_NAME}</td>
+        <td class="c_r">{search_result.ALLY_MEMBERS}</td>
+        <td class="c_r"><a href="stat.php?who=2&range={search_result.ALLY_RANK}#{search_result.ALLY_RANK}">{search_result.ALLY_RANK}</a></td>
+      </tr>
+    <!-- END search_result -->
+  <!-- ELSE -->
+    <tr class="c_l">
+      <th>{L_sys_alliance}</th>
+      <th>
+        <!-- IF ! STATS_HIDE_PM_LINK --><img src="{dpath}img/m.gif" alt="{L_srch_action_pm}" title="{L_srch_action_pm}" /><!-- ENDIF -->
+        <img src="{dpath}img/b.gif" alt="{L_srch_action_buddy}" title="{L_srch_action_buddy}" border="0" />
+        {L_srch_player_name}
+      </th>
+      <th>{L_sys_planet}</th>
+      <th>{L_srch_rank}</th>
+    </tr>
+    <!-- BEGIN search_result -->
+      <tr class="c_l">
+        <td><!-- IF search_result.ALLY_TAG --><a href="alliance.php?mode=ainfo&tag={search_result.ALLY_TAG}">[{search_result.ALLY_TAG}]</a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
+        <td>
+          <!-- IF ! STATS_HIDE_PM_LINK --><a href="messages.php?mode=write&id={search_result.PLAYER_ID}"><img src="{dpath}img/m.gif" alt="{L_srch_action_pm}" title="{L_srch_action_pm}" /></a><!-- ENDIF -->
+          <a href="buddy.php?request_user_id={search_result.PLAYER_ID}" alt="{L_srch_action_buddy}"><img src="{dpath}img/b.gif" alt="{L_srch_action_buddy}" title="{L_srch_action_buddy}" border="0" /></a>
+          {search_result.PLAYER_NAME}
+        </td>
+        <td>
+          {search_result.PLANET_TYPE}
+          {search_result.PLANET_NAME}
+          <a class="fr" href="galaxy.php?mode=3&galaxy={search_result.PLANET_GALAXY}&system={search_result.PLANET_SYSTEM}">[{search_result.PLANET_GALAXY}:{search_result.PLANET_SYSTEM}:{search_result.PLANET_PLANET}]</a>
+        </td>
+        <td class="c_r">
+          <a href="stat.php?range={search_result.PLAYER_RANK}#{search_result.PLAYER_RANK}">{search_result.PLAYER_RANK}</a>
+        </td>
+      </tr>
+    <!-- END search_result -->
+  <!-- ENDIF -->
+</table>
