@@ -73,7 +73,7 @@ function show_debris(planet)
 
     result = result.replace('[DEBRIS_WILL_GATHER]', sn_format_number(uni_row[planet]['debris_will_gather']));
     result = result.replace('[DEBRIS_WILL_GATHER_PERCENT]', sn_format_number(uni_row[planet]['debris_will_gather_percent']));
-    if(PLANET_RECYCLERS > 0 && parseFloat(uni_row[planet]['debris_will_gather_percent']))
+    if(PLANET_RECYCLERS > 0 && parseFloat(uni_row[planet]['debris_will_gather']))
     {
       result = result.replace('[HIDE_RECYCLER_LINK]', '');
     }
