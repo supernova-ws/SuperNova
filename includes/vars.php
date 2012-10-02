@@ -541,6 +541,9 @@ mission = array(
     'techtree' => array(
       'filename' => 'techtree',
     ),
+    'battle_report' => array(
+      'filename' => 'battle_report',
+    ),
   ),
 );
 

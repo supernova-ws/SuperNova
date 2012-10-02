@@ -99,15 +99,15 @@ function flt_planet_hash($planet_vector, $prefix = '')
 }
 
 // ------------------------------------------------------------------
-function flt_unset_by_attack($attack_result, &$flt_user_cache, &$flt_planet_cache, &$flt_fleet_cache, &$flt_event_cache)
+function flt_unset_by_attack(&$attack_result, &$flt_user_cache, &$flt_planet_cache, &$flt_fleet_cache, &$flt_event_cache)
 {
-  foreach($attack_result as $combat_fleet_id => $combat_record)
+  foreach($attack_result[UBE_FLEETS] as $combat_fleet_id => $combat_record)
   {
-    unset($flt_user_cache[$combat_record['user']['id']]);
+    unset($flt_user_cache[$combat_record[UBE_OWNER]]);
     if($combat_fleet_id)
     {
       unset($flt_fleet_cache[$combat_fleet_id]);
-      $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = {$combat_fleet_id} LIMIT 1 FOR UPDATE;", '', true);
+      $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = {$combat_fleet_id} LIMIT 1 FOR UPDATE;", true);
       flt_cache_fleet($fleet_row, $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_COMBAT);
     }
   }
@@ -356,7 +356,8 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
     MT_SPY => 'flt_mission_spy.php',
     MT_COLONIZE => 'flt_mission_colonize.php',
     MT_RECYCLE => 'flt_mission_recycle.php',
-    MT_DESTROY => 'flt_mission_destroy.php',
+    MT_DESTROY => 'flt_mission_attack.php',
+//    MT_DESTROY => 'flt_mission_destroy.php',
 //    'MT_MISSILE => 'flt_mission_missile.php',
     MT_EXPLORE => 'flt_mission_explore.php',
   );
@@ -416,7 +417,7 @@ die();
       break;
 
       case MT_DESTROY:
-        $attack_result = flt_mission_destroy($mission_data);
+        $attack_result = flt_mission_attack($mission_data);
         $mission_result = CACHE_COMBAT;
       break;
 
@@ -458,9 +459,10 @@ die();
     if($attack_result)
     {
       // Case for passed attack
-      $attack_result = $attack_result['rw'][0];
-      flt_unset_by_attack($attack_result['attackers'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache);
-      flt_unset_by_attack($attack_result['defenders'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache);
+//      $attack_result = $attack_result['rw'][0];
+//      flt_unset_by_attack($attack_result['attackers'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache);
+//      flt_unset_by_attack($attack_result['defenders'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache);
+      flt_unset_by_attack($attack_result, $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache);
       unset($attack_result);
       unset($flt_planet_cache[$fleet_event['dst_planet_hash']]);
     }

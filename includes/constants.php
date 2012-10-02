@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '35');
 define('SN_RELEASE', '35');
-define('SN_VERSION', '35c9');
+define('SN_VERSION', '36a0.0');
 define('SN_RELEASE_STABLE', '34d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -43,6 +43,8 @@ define('PLANET_COORD_PREG', '/^\[([1-9]):([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]
 // Pattern to parse scheduler '[[[[[YYYY-]MM-]DD ]HH:]MM:]SS'
 define('SCHEDULER_PREG', '/^(?:(?:(?:(?:(?:(2\d\d\d)-)?(1[0-2]|0[1-9])-)?(?:(3[01]|[0-2]\d)\ ))?(?:(2[0-3]|[01]\d):))?(?:([0-5]\d):))?([0-5]\d)$/i');
 define('PREG_DATE_SQL', '/(20[1-9][0-9])\-(1[0-2]|0[1-9])\-(3[01]|[12]\d|0[1-9]) (2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])/');
+
+define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
 
 // Default allowed chars for random string
 define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
@@ -605,8 +607,20 @@ define('BUDDY_REQUEST_DENIED', 2);
 define('REQUIRE_MET', 0);
 define('REQUIRE_MET_NOT', 1);
 
-define('UBE_ATTACK', 'attack');
-define('UBE_ARMOR', 'armor');
-define('UBE_SHIELD', 'shield');
+
+define('UBE_COMBAT_RESULT_DRAW_END', -1);
+define('UBE_COMBAT_RESULT_DRAW', 0);
+define('UBE_COMBAT_RESULT_WIN', 1);
+define('UBE_COMBAT_RESULT_LOSS', 2);
+
+define('UBE_MOON_WAS', -1);
+define('UBE_MOON_NONE', 0);
+define('UBE_MOON_CREATE_SUCCESS', 1);
+define('UBE_MOON_CREATE_FAILED', 2);
+define('UBE_MOON_DESTROY_SUCCESS', 3);
+define('UBE_MOON_DESTROY_FAILED', 4);
+define('UBE_MOON_REAPERS_NONE', 5);
+define('UBE_MOON_REAPERS_DIED', 6);
+define('UBE_MOON_REAPERS_RETURNED', 7);
 
 ?>
