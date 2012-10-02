@@ -946,7 +946,6 @@ function sn_ube_combat_analyze_moon_destroy(&$combat_data)
   }
   else
   {
-// TODO !!!!!!!
     $combat_data[UBE_OUTCOME][UBE_MOON_REAPERS] = UBE_MOON_REAPERS_NONE;
   }
 }

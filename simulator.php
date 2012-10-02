@@ -37,10 +37,23 @@ if($_POST['submit'] || $execute)
 
   $combat_data = sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender);
 
+/*
+  $combat_data[UBE_OPTIONS][UBE_MOON_WAS] = $destination_planet['planet_type'] == PT_MOON || is_array(doquery("SELECT `id` FROM {{planets}} WHERE `parent_planet` = {$destination_planet['id']} LIMIT 1;", true));
+  $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] = $fleet_row['fleet_mission'];
+*/
+
   sn_ube_combat_calculate($combat_data);
+  if(!sys_get_param_int('simulator') || sys_get_param_str('reload'))
+  {
+    sn_ube_report_save($combat_data);
+  }
+
+  if(sys_get_param_str('reload'))
+  {
+    $combat_data = sn_ube_report_load($combat_data[UBE_REPORT_CYPHER]);
+  }
+
 //debug($combat_data);
-//  sn_ube_report_save($combat_data);
-//  $combat_data = sn_ube_report_load($combat_data[UBE_REPORT_CYPHER]);
   // Рендерим их в темплейт
   sn_ube_report_generate($combat_data, $template_result);
 

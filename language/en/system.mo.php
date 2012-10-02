@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36a0.0
+* @version 36a0.1
 *
 */
 
@@ -792,6 +792,8 @@ $lang = array_merge($lang, array(
   'ube_report_msg_body_sfr' => 'Связь с флотом утеряна',
 
   'sys_kilometers_short' => 'км',
+
+  'ube_simulation' => 'Симуляция',
 
 ));
 

@@ -146,6 +146,7 @@ function sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender)
   $combat_data = array(
     UBE_OPTIONS => array(
       UBE_SIMULATOR => sys_get_param_int('simulator'),
+      UBE_MISSION_TYPE => MT_ATTACK,
     ),
 
     UBE_PLAYERS => array(
