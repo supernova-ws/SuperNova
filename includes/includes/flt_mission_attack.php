@@ -28,7 +28,7 @@ function flt_mission_attack($mission_data, $save_report = true)
 
   $combat_data = ube_attack_prepare($mission_data);
 
-  sn_ube_combat_calculate($combat_data);
+  sn_ube_combat($combat_data);
 
   sn_ube_report_save($combat_data);
 

@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '35');
 define('SN_RELEASE', '35');
-define('SN_VERSION', '36a0.1');
+define('SN_VERSION', '36a0.2');
 define('SN_RELEASE_STABLE', '34d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -332,7 +332,7 @@ define('BONUS_PERCENT_CUMULATIVE' , 5);  // Cumulative percent on base value
 define('BONUS_PERCENT_DEGRADED' ,   6);  // Bonus amount degraded with increase as pow(bonus, level) (?)
 define('BONUS_SPEED',               7);  // Speed bonus
 
-// *** Action constat (build should be replaced with ACTION)
+// *** Action constant (build should be replaced with ACTION)
 define('BUILD_CREATE' ,  1);
 define('BUILD_DESTROY', -1);
 
@@ -343,7 +343,7 @@ define('ACTION_USE'        ,  2);
 define('ACTION_DELETE'     ,  3);
 
 // *** Check unit availability codes
-define('BUILD_ALLOWED'         , 0); // HARDCODE! DO NOT CHANGE!
+define('BUILD_ALLOWED'         , 0); // HARDCODED! DO NOT CHANGE!
 define('BUILD_REQUIRE_NOT_MEET', 1);
 define('BUILD_AMOUNT_WRONG'    , 2);
 define('BUILD_QUE_WRONG'       , 3);
@@ -622,5 +622,115 @@ define('UBE_MOON_DESTROY_FAILED', 4);
 define('UBE_MOON_REAPERS_NONE', 5);
 define('UBE_MOON_REAPERS_DIED', 6);
 define('UBE_MOON_REAPERS_RETURNED', 7);
+
+
+
+define('UBE_REPORT_CYPHER', 'UBE_REPORT_CYPHER');
+define('UBE_REPORT_ID', 'UBE_REPORT_ID');
+define('UBE_TIME', 'UBE_TIME');
+define('UBE_TIME_SPENT', 'UBE_TIME_SPENT');
+
+define('UBE_OPTIONS', 'UBE_OPTIONS');
+define('UBE_COMBAT_ADMIN', 'UBE_COMBAT_ADMIN');
+define('UBE_MISSION_TYPE', 'UBE_MISSION_TYPE');
+define('UBE_LOADED', 'UBE_LOADED');
+define('UBE_SIMULATOR', 'UBE_SIMULATOR');
+define('UBE_EXCHANGE', 'UBE_EXCHANGE');
+
+
+define('UBE_OUTCOME', 'UBE_OUTCOME');
+define('UBE_COMBAT_RESULT', 'UBE_COMBAT_RESULT');
+define('UBE_SFR', 'UBE_SFR');
+define('UBE_DEBRIS', 'UBE_DEBRIS');
+define('UBE_DEBRIS_TOTAL', 'UBE_DEBRIS_TOTAL');
+
+define('UBE_PLANET', 'UBE_PLANET');
+define('PLANET_ID', 'PLANET_ID');
+define('PLANET_NAME', 'PLANET_NAME');
+define('PLANET_SIZE', 'PLANET_SIZE');
+define('PLANET_GALAXY', 'PLANET_GALAXY');
+define('PLANET_SYSTEM', 'PLANET_SYSTEM');
+define('PLANET_PLANET', 'PLANET_PLANET');
+define('PLANET_TYPE', 'PLANET_TYPE');
+
+define('UBE_MOON', 'UBE_MOON');
+define('UBE_MOON_NAME', 'UBE_MOON_NAME');
+define('UBE_MOON_CHANCE', 'UBE_MOON_CHANCE');
+define('UBE_MOON_SIZE', 'UBE_MOON_SIZE');
+define('UBE_MOON_REAPERS', 'UBE_MOON_REAPERS');
+define('UBE_MOON_DESTROY_CHANCE', 'UBE_MOON_DESTROY_CHANCE');
+define('UBE_MOON_REAPERS_DIE_CHANCE', 'UBE_MOON_REAPERS_DIE_CHANCE');
+
+
+define('UBE_PLAYERS', 'UBE_PLAYERS');
+define('UBE_NAME', 'UBE_NAME');
+define('UBE_ATTACKER', 'UBE_ATTACKER');
+define('UBE_AUTH_LEVEL', 'UBE_AUTH_LEVEL');
+define('UBE_PLAYER_DATA', 'UBE_PLAYER_DATA');
+
+
+define('UBE_BONUSES', 'UBE_BONUSES');
+define('UBE_ATTACK', 'UBE_ATTACK');
+define('UBE_SHIELD', 'UBE_SHIELD');
+define('UBE_ARMOR', 'UBE_ARMOR');
+
+
+define('UBE_FLEETS', 'UBE_FLEETS');
+define('UBE_OWNER', 'UBE_OWNER');
+define('UBE_FLEET_GROUP', 'UBE_FLEET_GROUP');
+define('UBE_PRICE', 'UBE_PRICE');
+define('UBE_AMPLIFY', 'UBE_AMPLIFY');
+define('UBE_CAPACITY', 'UBE_CAPACITY');
+define('UBE_TYPE', 'UBE_TYPE');
+define('UBE_RESOURCES', 'UBE_RESOURCES');
+define('UBE_RESOURCES_LOST', 'UBE_RESOURCES_LOST');
+define('UBE_CARGO_DROPPED', 'UBE_CARGO_DROPPED');
+define('UBE_RESOURCES_LOOTED', 'UBE_RESOURCES_LOOTED');
+define('UBE_RESOURCES_LOST_IN_METAL', 'UBE_RESOURCES_LOST_IN_METAL');
+define('UBE_FLEET_TYPE', 'UBE_FLEET_TYPE');
+
+
+define('UBE_COUNT', 'UBE_COUNT');
+define('UBE_UNITS_LOST', 'UBE_UNITS_LOST');
+define('UBE_DEFENCE_RESTORE', 'UBE_DEFENCE_RESTORE');
+
+
+define('UBE_ROUNDS', 'UBE_ROUNDS');
+define('UBE_FLEET_INFO', 'UBE_FLEET_INFO');
+define('UBE_UNITS_BOOM', 'UBE_UNITS_BOOM');
+define('UBE_ATTACK_BASE', 'UBE_ATTACK_BASE');
+define('UBE_SHIELD_BASE', 'UBE_SHIELD_BASE');
+define('UBE_ARMOR_BASE', 'UBE_ARMOR_BASE');
+define('UBE_ATTACKERS', 'UBE_ATTACKERS');
+define('UBE_DEFENDERS', 'UBE_DEFENDERS');
+define('UBE_TOTAL', 'UBE_TOTAL');
+define('UBE_DAMAGE_PERCENT', 'UBE_DAMAGE_PERCENT');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ?>

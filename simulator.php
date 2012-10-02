@@ -42,7 +42,7 @@ if($_POST['submit'] || $execute)
   $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] = $fleet_row['fleet_mission'];
 */
 
-  sn_ube_combat_calculate($combat_data);
+  sn_ube_combat($combat_data);
   if(!sys_get_param_int('simulator') || sys_get_param_str('reload'))
   {
     sn_ube_report_save($combat_data);
