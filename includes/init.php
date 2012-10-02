@@ -76,9 +76,12 @@ if(strpos($sn_root_relative, '.local/') !== false)
 */
 
 $phpEx = strpos($phpEx = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $phpEx : '';
-$server_document_root = str_replace(array('//', '//'), '/', $_SERVER['DOCUMENT_ROOT']);
+
+//$server_document_root = str_replace(array('//', '//'), '/', $_SERVER['DOCUMENT_ROOT']);
+$server_document_root = str_replace("\\", '/', realpath($_SERVER['DOCUMENT_ROOT'])) . '/';
 $sn_root_relative = str_replace(array('//', '//'), '/', '/' . str_replace(array('\\', $server_document_root, 'includes/init.php'), array('/', '', ''), __FILE__));
-$sn_root_physical = str_replace(array('//', '//'), '/', $_SERVER['DOCUMENT_ROOT'] . $sn_root_relative);
+//$sn_root_physical = str_replace(array('//', '//'), '/', $_SERVER['DOCUMENT_ROOT'] . $sn_root_relative);
+$sn_root_physical = str_replace(array('//', '//'), '/', $server_document_root . $sn_root_relative);
 $phpbb_root_path  = $sn_root_physical;
 
 define('SN_ROOT_RELATIVE', $sn_root_relative);
