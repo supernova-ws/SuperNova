@@ -1154,7 +1154,7 @@ function sn_ube_combat_result_apply(&$combat_data)
       // Не планета
       if($new_fleet_count || ($fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS && $outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_RETURNED))
       {
-        doquery("UPDATE {{fleets}} SET {$fleet_query} WHERE `id` = {$fleet_id} LIMIT 1");
+        doquery("UPDATE {{fleets}} SET {$fleet_query} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
       }
       else
       {
