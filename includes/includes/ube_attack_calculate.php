@@ -3,7 +3,8 @@
 require_once('ube_report.php');
 
 /*
-Сделано
+
+// TODO: Для админского боя обнулять обломки до луны - что бы не создавалась луна и не писалось количество обломков
 
 // TODO: В симуляторе все равно печтатать поле обломков и изменить надпись "Средний диаметр луны с указанным шансом %%" UBE_MOON_SIMULATED
 
@@ -1108,7 +1109,8 @@ function sn_ube_combat_result_apply(&$combat_data)
       if($fleet_id)
       {
         // Для флотов перегенерируем массив как SQL-запрос
-        $fleet_query = array('`fleet_array` = ' . implode(',', $fleet_query));
+        $fleet_query = implode(',', $fleet_query);
+        $fleet_query = array("`fleet_array` = '{$fleet_query}'");
       }
     }
 
