@@ -1187,24 +1187,27 @@ function sn_ube_combat_result_apply(&$combat_data)
     doquery("DELETE FROM {{planets}} WHERE `id` = {$planet_id} LIMIT 1");
   }
 
-  $bashing_list = array();
-  foreach($combat_data[UBE_PLAYERS] as $player_id => $player_info)
+  if($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS)
   {
-    if($player_info[UBE_ATTACKER])
+    $bashing_list = array();
+    foreach($combat_data[UBE_PLAYERS] as $player_id => $player_info)
     {
-      $bashing_list[] = "({$player_id}, {$planet_id}, {$combat_data[UBE_TIME]})";
-      if($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_ATTACK)
+      if($player_info[UBE_ATTACKER])
       {
-        /** @noinspection SpellCheckingInspection */
-        $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
-        doquery("UPDATE {{users}} SET `xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1 WHERE id = '{$player_id}' LIMIT 1;");
+        $bashing_list[] = "({$player_id}, {$planet_id}, {$combat_data[UBE_TIME]})";
+        if($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_ATTACK)
+        {
+          /** @noinspection SpellCheckingInspection */
+          $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
+          doquery("UPDATE {{users}} SET `xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1 WHERE id = '{$player_id}' LIMIT 1;");
+        }
       }
     }
-  }
-  $bashing_list = implode(',', $bashing_list);
-  if($bashing_list)
-  {
-    doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
+    $bashing_list = implode(',', $bashing_list);
+    if($bashing_list)
+    {
+      doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
+    }
   }
 
 }
