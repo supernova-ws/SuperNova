@@ -186,7 +186,7 @@ function ube_attack_prepare_planet(&$combat_data, &$planet)
   $combat_data[UBE_FLEETS][0] = array(UBE_OWNER => $player_id);
   $fleet_info = &$combat_data[UBE_FLEETS][0];
 
-  foreach(sn_get_groups('defense_active') as $unit_id)
+  foreach(sn_get_groups('combat') as $unit_id)
   {
     if($unit_count = mrc_get_level($player, $planet, $unit_id))
     {
