@@ -1835,6 +1835,8 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
   case 35:
     upd_log_version_update();
 
+    upd_do_query("UPDATE {{users}} SET `ally_name` = null, `ally_tag` = null, ally_register_time = 0, ally_rank_id = 0 WHERE `ally_id` IS NULL");
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 36;
 
