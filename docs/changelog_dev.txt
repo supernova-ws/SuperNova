@@ -11,9 +11,13 @@
 [*] ToDo - см. todo.xls
 
 
-Текущий билд #35c11#
+Текущий билд #35d0#
 ~~~~~~~~~~~~~~~~~~~~~
 #ctv
+
+
+2012-10-03 21:15:44 35d0 - Project "SuperNova.WS" Release 35
+[!] Project "SuperNova.WS" Release 35 "MVC race reparse teleportation recycle"
 
 
 2012-10-03 20:59:09 35c11

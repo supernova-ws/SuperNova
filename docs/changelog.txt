@@ -11,12 +11,12 @@
 
 
 
-Текущая версия #35c11#
+Текущая версия #35d0#
 ~~~~~~~~~~~~~~~~~~~~~
 
 
 
-Project "SuperNova.WS" Release 35 RC0 "MVC race reparse teleportation recycle"
+Project "SuperNova.WS" Release 35 "MVC race reparse teleportation recycle"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 [#] Модули: Расы
