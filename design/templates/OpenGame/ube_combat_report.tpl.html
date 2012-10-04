@@ -30,7 +30,7 @@
         {L_ube_report_info_location}
       </td>
       <td colspan="2" class="c_c">
-        {PLANET_TYPE_TEXT}&nbsp;[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]&nbsp;{PLANET_NAME}
+        <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}">{PLANET_TYPE_TEXT}&nbsp;[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]&nbsp;{PLANET_NAME}</a>
       </td>
     </tr>
   <!-- ENDIF -->
@@ -245,7 +245,7 @@
           <!-- IF fleet.IS_ATTACKER -->{L_ube_report_side_attacker}<!-- ELSE -->{L_ube_report_side_defender}<!-- ENDIF -->
           <!-- IF fleet.PLAYER_NAME -->&nbsp;{fleet.PLAYER_NAME}<!-- ENDIF -->
           <!-- IF fleet.PLANET_TYPE_TEXT -->&nbsp;{fleet.PLANET_TYPE_TEXT}<!-- ENDIF -->
-          <!-- IF fleet.PLANET_GALAXY -->&nbsp;[{fleet.PLANET_GALAXY}:{fleet.PLANET_SYSTEM}:{fleet.PLANET_PLANET}]<!-- ENDIF -->
+          <!-- IF fleet.PLANET_GALAXY -->&nbsp;<a href="galaxy.php?mode=0&galaxy={fleet.PLANET_GALAXY}&system={fleet.PLANET_SYSTEM}">[{fleet.PLANET_GALAXY}:{fleet.PLANET_SYSTEM}:{fleet.PLANET_PLANET}]</a><!-- ENDIF -->
         </h3>
       </td>
     </tr>
