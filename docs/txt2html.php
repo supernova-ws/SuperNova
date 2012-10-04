@@ -103,12 +103,14 @@ $input = str_replace("\r\n==", "==", $input);
 
 $input = preg_split("/\r\n(.+)[\~\=]{2}/", $input, -1, PREG_SPLIT_DELIM_CAPTURE + PREG_SPLIT_NO_EMPTY); // 
 
+$prev_chapter_is_header = false;
 $output = array();
 $buffer = array();
 foreach($input as &$chapter)
 {
   $chapter = preg_split("/(\r\n[\[])/", $chapter, -1, PREG_SPLIT_NO_EMPTY); // , PREG_SPLIT_DELIM_CAPTURE
-  if(count($chapter) == 1)
+
+  if(count($chapter) == 1 && !$prev_chapter_is_header)
   {
     if(!empty($chapter))
     {
@@ -116,9 +118,11 @@ foreach($input as &$chapter)
       $buffer = array();
       $buffer['name'] = $chapter[0];
     }
+    $prev_chapter_is_header = true;
   }
   else
   {
+    $prev_chapter_is_header = false;
     foreach($chapter as &$note)
     {
       $note = explode("\r\n", $note);
