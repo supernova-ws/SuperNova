@@ -45,7 +45,7 @@
         }
       }
 
-      if(!empty($template_result))
+      if(!empty($template_result) && is_object($template))
       {
         $template->assign_recursive($template_result);
       }

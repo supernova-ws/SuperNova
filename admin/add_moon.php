@@ -6,6 +6,7 @@
  * @version 1
  * @copyright 2008 by Chlorel for XNova
  */
+
 define('INSIDE', true);
 define('INSTALL', false);
 define('IN_ADMIN', true);
@@ -24,17 +25,17 @@ $parse = $lang;
 
 if ($mode == 'addit')
 {
-  $PlanetID = $_POST['user'];
-  $MoonName = $_POST['name'];
+  $PlanetID = sys_get_param_id('user');
+  $MoonName = sys_get_param_str('name');
 
-  $PlanetSelected = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$PlanetID}' LIMIT 1;", '', true);
+  $PlanetSelected = doquery("SELECT `galaxy`, `system`, `planet`, `id_owner` FROM {{planets}} WHERE `id` = '{$PlanetID}' LIMIT 1;", true);
 
   $Galaxy = $PlanetSelected['galaxy'];
   $System = $PlanetSelected['system'];
   $Planet = $PlanetSelected['planet'];
-  $Owner = $PlanetSelected['id_owner'];
+  $Owner  = $PlanetSelected['id_owner'];
 
-  uni_create_moon($Galaxy, $System, $Planet, $Owner, 20, $MoonName);
+  uni_create_moon($Galaxy, $System, $Planet, $Owner, 0, $MoonName);
 
   AdminMessage($lang['addm_done'], $lang['addm_title']);
 }

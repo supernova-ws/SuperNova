@@ -1,0 +1,320 @@
+﻿<style>
+.transparent_cell
+{
+  background-color: transparent;
+  border: 0px;
+}
+</style>
+
+<table>
+  <tr>
+    <td class="c_c transparent_cell" colspan="3">
+      <h2>{L_ube_report_info_main}</h2>
+    </td>
+  </tr>
+
+  <!-- IF COMBAT_TIME -->
+    <tr>
+      <td>
+        {L_ube_report_info_date}
+      </td>
+      <td colspan="2" class="c_c">
+        {COMBAT_TIME_TEXT}
+      </td>
+    </tr>
+  <!-- ENDIF -->
+
+  <!-- IF PLANET_GALAXY -->
+    <tr>
+      <td>
+        {L_ube_report_info_location}
+      </td>
+      <td colspan="2" class="c_c">
+        {PLANET_TYPE_TEXT}&nbsp;[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]&nbsp;{PLANET_NAME}
+      </td>
+    </tr>
+  <!-- ENDIF -->
+
+  <tr>
+    <td>
+      {L_ube_report_info_rounds_number}
+    </td>
+    <td colspan="2" class="c_c">
+      {COMBAT_ROUNDS}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      {L_ube_report_info_outcome}
+    </td>
+    <td colspan="2" class="c_c">
+      <!-- IF UBE_COMBAT_RESULT == UBE_COMBAT_RESULT_WIN -->
+        {L_ube_report_info_outcome_win}
+      <!-- ELSEIF UBE_COMBAT_RESULT == UBE_COMBAT_RESULT_LOSS -->
+        {L_ube_report_info_outcome_loss}
+      <!-- ELSE -->
+        {L_ube_report_info_outcome_draw}
+      <!-- ENDIF -->
+    </td>
+  </tr>
+
+  <!-- IF UBE_REPORT_CYPHER -->
+    <tr>
+      <td>
+        {L_ube_report_info_link}
+      </td>
+      <td colspan="2" class="c_c">
+        <a href="index.php?page=battle_report&cypher={UBE_REPORT_CYPHER}">{UBE_REPORT_CYPHER}</a>
+      </td>
+    </tr>
+  <!-- ENDIF -->
+
+  <!-- IF UBE_SFR -->
+    <tr>
+      <td colspan="3" class="c_c notice">
+        {L_ube_report_info_sfr}
+      </td>
+    </tr>
+  <!-- ENDIF -->
+
+  <!-- IF .debris -->
+    <tr>
+      <th class="c_c" colspan="3">
+        {L_ube_report_info_debris}
+      </th>
+    </tr>
+    <!-- BEGIN debris -->
+      <tr>
+        <td>
+          {debris.NAME}
+        </td>
+        <td class="c_r" colspan="2">
+          {debris.AMOUNT}
+        </td>
+      </tr>
+    <!-- END debris -->
+  <!-- ENDIF -->
+
+  <!-- IF UBE_MOON != UBE_MOON_NONE -->
+    <tr>
+      <th class="c_c" colspan="3">
+        <!-- IF UBE_MISSION_TYPE == MT_DESTROY -->
+          <!-- IF UBE_MOON_REAPERS == UBE_MOON_REAPERS_NONE -->
+            {L_ube_report_moon_reapers_none}
+          <!-- ELSE -->
+            {L_ube_report_moon_reapers_wave}<br />
+            {L_ube_report_moon_reapers_chance} {UBE_MOON_DESTROY_CHANCE}%.
+            <!-- IF UBE_MOON == UBE_MOON_DESTROY_SUCCESS -->
+              {L_ube_report_moon_reapers_success}
+            <!-- ELSE -->
+              {L_ube_report_moon_reapers_failure}
+            <!-- ENDIF --><br />
+
+            {L_ube_report_moon_reapers_outcome} {UBE_MOON_REAPERS_DIE_CHANCE}%. 
+            <!-- IF UBE_MOON_REAPERS == UBE_MOON_REAPERS_RETURNED -->
+              {L_ube_report_moon_reapers_survive}
+            <!-- ELSE -->
+              {L_ube_report_moon_reapers_died}
+            <!-- ENDIF --><br />
+          <!-- ENDIF -->
+        <!-- ELSEIF UBE_MOON == UBE_MOON_WAS -->
+          {L_ube_report_moon_was}
+        <!-- ELSE -->
+          {L_ube_report_moon_chance} {UBE_MOON_CHANCE}%
+          <!-- IF UBE_MOON == UBE_MOON_CREATE_SUCCESS -->
+            <br />{L_ube_report_moon_created} {UBE_MOON_SIZE}
+          <!-- ENDIF -->
+        <!-- ENDIF -->
+      </th>
+    </tr>
+  <!-- ENDIF -->
+
+
+
+
+
+<!-- IF .loot > 0 -->
+  <tr>
+    <td class="c_c transparent_cell" colspan="3">
+      <h2>{L_ube_report_info_loot}</h2>
+    </td>
+  <tr>
+  <!-- BEGIN loot -->
+    <!-- IF .loot.param -->
+      <tr>
+        <td class="c_c transparent_cell" colspan="3">
+          <h3><!-- IF loot.IS_ATTACKER -->{L_ube_report_side_attacker}<!-- ELSE -->{L_ube_report_side_defender}<!-- ENDIF --> {loot.NAME}</h3>
+        </td>
+      <tr>
+      <!-- BEGIN param -->
+        <tr>
+          <!-- IF ! param.LOSS -->
+            <th colspan="3" class="c_c">
+              {param.NAME}
+            </th>
+          <!-- ELSE -->
+            <!-- IF ! param.START -->
+              <td colspan="2">
+                {param.NAME}
+              </td>
+            <!-- ELSE -->
+              <td>
+                {param.NAME}
+              </td>
+              <td class="c_r">
+                {param.START}
+              </td>
+            <!-- ENDIF -->
+            <td class="c_r">
+              {param.LOSS}
+            </td>
+          <!-- ENDIF -->
+        <tr>
+      <!-- END param -->
+    <!-- ENDIF -->
+  <!-- END loot -->
+<!-- ENDIF -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- IF .loss > 1 -->
+  <tr>
+    <td class="c_c transparent_cell" colspan="3">
+      <h2>{L_ube_report_info_loss}</h2>
+    </td>
+  <tr>
+  <!-- BEGIN loss -->
+    <!-- IF .loss.param -->
+      <tr>
+        <td class="c_c transparent_cell" colspan="3">
+          <h3><!-- IF loss.IS_ATTACKER -->{L_ube_report_side_attacker}<!-- ELSE -->{L_ube_report_side_defender}<!-- ENDIF -->&nbsp;{loss.NAME}</h3>
+        </td>
+      <tr>
+      <!-- BEGIN param -->
+        <tr>
+          <!-- IF ! param.LOSS -->
+            <th colspan="3" class="c_c">
+              {param.NAME}
+            </th>
+          <!-- ELSE -->
+            <!-- IF ! param.START -->
+              <td colspan="2">
+                {param.NAME}
+              </td>
+            <!-- ELSE -->
+              <td>
+                {param.NAME}
+              </td>
+              <td class="c_r">
+                {param.START}
+              </td>
+            <!-- ENDIF -->
+            <td class="c_r">
+              {param.LOSS}
+            </td>
+          <!-- ENDIF -->
+        <tr>
+      <!-- END param -->
+    <!-- ENDIF -->
+  <!-- END loss -->
+<!-- ENDIF -->
+</table>
+
+<!-- BEGIN round -->
+<table>
+  <tr>
+    <td colspan="8" class="c_c transparent_cell">
+      <h2>{L_ube_report_round} {round.NUMBER}</h2>
+    </td>
+  </tr>
+  <!-- BEGIN fleet -->
+  <!-- IF .round.fleet.ship -->
+    <tr>
+      <td colspan="8" class="c_c transparent_cell">
+        <h3>
+          <!-- IF fleet.IS_ATTACKER -->{L_ube_report_side_attacker}<!-- ELSE -->{L_ube_report_side_defender}<!-- ENDIF -->
+          <!-- IF fleet.PLAYER_NAME -->&nbsp;{fleet.PLAYER_NAME}<!-- ENDIF -->
+          <!-- IF fleet.PLANET_TYPE_TEXT -->&nbsp;{fleet.PLANET_TYPE_TEXT}<!-- ENDIF -->
+          <!-- IF fleet.PLANET_GALAXY -->&nbsp;[{fleet.PLANET_GALAXY}:{fleet.PLANET_SYSTEM}:{fleet.PLANET_PLANET}]<!-- ENDIF -->
+        </h3>
+      </td>
+    </tr>
+    <tr class="c_l">
+      <th>
+        {L_ube_report_unit}
+      </th>
+      <th>
+        {L_sys_quantity}
+      </th>
+      <th>
+        {L_ube_report_attack}
+      </th>
+      <th>
+        {L_ube_report_shields}
+      </th>
+      <th>
+        {L_ube_report_shields_passed}
+      </th>
+      <th>
+        {L_ube_report_armor}
+      </th>
+      <th>
+        {L_ube_report_damage}
+      </th>
+      <th>
+        {L_ube_report_loss}
+      </th>
+    </tr>
+    <!-- BEGIN ship -->
+      <tr class="c_r">
+        <!-- IF ship.UNITS_LOST == ship.UNITS -->
+          <!-- DEFINE $SHIP_NAME_CLASS = 'error' -->
+        <!-- ELSEIF ship.UNITS_LOST -->
+          <!-- DEFINE $SHIP_NAME_CLASS = 'warning' -->
+        <!-- ELSEIF ship.ARMOR_LOST -->
+          <!-- DEFINE $SHIP_NAME_CLASS = 'notice' -->
+        <!-- ELSE -->
+          <!-- DEFINE $SHIP_NAME_CLASS = 'ok' -->
+        <!-- ENDIF -->
+        <td class="{$SHIP_NAME_CLASS} c_l">
+          {ship.NAME}
+        </td>
+        <td>
+          {ship.UNITS}
+        </td>
+        <td>
+          {ship.ATTACK}
+        </td>
+        <td>
+          {ship.SHIELD}
+        </td>
+        <td class="{$SHIP_NAME_CLASS}">
+          {ship.SHIELD_LOST}
+        </td>
+        <td>
+          {ship.ARMOR}
+        </td>
+        <td class="<!-- IF ship.ARMOR_LOST -->{$SHIP_NAME_CLASS}<!-- ENDIF -->">
+          {ship.ARMOR_LOST}
+        </td>
+        <td class="<!-- IF ship.UNITS_LOST -->{$SHIP_NAME_CLASS}<!-- ENDIF -->">
+          <!-- IF ship.UNITS_BOOM -->({ship.UNITS_BOOM})&nbsp;<!-- ENDIF -->{ship.UNITS_LOST}
+        </td>
+      </tr>
+    <!-- END ship -->
+    <!-- ENDIF -->
+  <!-- END fleet -->
+</table>
+<!-- END round -->
+<br />
+{L_ube_report_info_generate} {MICROTIME}

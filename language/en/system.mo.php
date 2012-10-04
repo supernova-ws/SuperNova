@@ -7,10 +7,10 @@
 #  Website: http://www.supernova.ws
 #  Description: Massive Multiplayer Online Browser Space Startegy Game
 #
-#  Copyright © 2011 madmax1991 for Project "SuperNova.WS"
-#  Copyright © 2009 Gorlum for Project "SuperNova.WS"
-#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright © 2005 - 2008 KGsystem
+#  Copyright В© 2011 madmax1991 for Project "SuperNova.WS"
+#  Copyright В© 2009 Gorlum for Project "SuperNova.WS"
+#  Copyright В© 2008 Aleksandar Spasojevic <spalekg@gmail.com>
+#  Copyright В© 2005 - 2008 KGsystem
 #############################################################################
 */
 
@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35c4
+* @version 36a0.7
 *
 */
 
@@ -340,7 +340,6 @@ $lang = array_merge($lang, array(
   'sys_rapport_build_time' 	=> 'Report generation time %s seconds',
   'sys_mess_tower' 		=> 'Transport',
   'sys_coe_lost_contact' 		=> 'You lost contact with your fleet',
-  'sys_mess_attack_report' 	=> 'Battle Report',
   'sys_spy_maretials' 		=> 'Raw material',
   'sys_spy_fleet' 			=> 'Fleet',
   'sys_spy_defenses' 		=> 'Defence',
@@ -392,8 +391,6 @@ $lang = array_merge($lang, array(
   'sys_buildlist' 			=> 'Building list',
   'sys_buildlist_fail' 		=> 'no buildings',
   'sys_gain' 			=> 'Extraction: ',
-  'sys_perte_attaquant' 		=> 'The Attacker lost',
-  'sys_perte_defenseur' 		=> 'The Defender lost',
   'sys_debris' 			=> 'Debris: ',
   'sys_noaccess' 			=> 'Access Denied',
   'sys_noalloaw' 			=> 'You have access to this zone!',
@@ -514,7 +511,7 @@ $lang = array_merge($lang, array(
   'cred_creat'   => 'Director',
   'cred_prog'    => 'Programmer',
   'cred_master'  => 'Moderator',
-  'cred_design'  => 'Designerр',
+  'cred_design'  => 'DesignerСЂ',
   'cred_web'     => 'Webmaster',
   'cred_thx'     => 'Thanks',
   'cred_based'   => 'Basis for establishing XNova',
@@ -620,8 +617,8 @@ $lang = array_merge($lang, array(
   'sys_eco_lack_dark_matter' => 'Not enough Dark Matter',
 
   'sys_result' => array(
-    'error_dark_matter_not_enough' => '�� ������� Ҹ���� ������� ��� ���������� ��������',
-    'error_dark_matter_change' => '������ ��������� ���������� Ҹ���� �������! ��������� �������� ��� ���. ���� ������ ���������� - �������� ������������� �������',
+    'error_dark_matter_not_enough' => 'Не хватает Тёмной Материи для завершения операции',
+    'error_dark_matter_change' => 'Ошибка изменения количества Тёмной Материи! Повторите операцию еще раз. Если ошибка повторится - сообщите Администрации сервера',
   ),
 
   // Arrays
@@ -733,6 +730,70 @@ $lang = array_merge($lang, array(
   'sys_password' => 'Password',
   'sys_password_length' => 'Password length',
   'sys_password_seed' => 'Used characters',
+
+  'sys_msg_ube_report_err_not_found' => 'Battle report not found - check cypher key. It is possible that battle report was deleted as outdated',
+
+  'sys_mess_attack_report' 	=> 'Battle Report',
+  'sys_perte_attaquant' 		=> 'The Attacker lost',
+  'sys_perte_defenseur' 		=> 'The Defender lost',
+
+
+  'ube_report_info_main' => 'Основная информация о бое',
+  'ube_report_info_date' => 'Дата и время',
+  'ube_report_info_location' => 'Место',
+  'ube_report_info_rounds_number' => 'Количество раундов',
+  'ube_report_info_outcome' => 'Результат боя',
+  'ube_report_info_outcome_win' => 'Атакующий выиграл бой',
+  'ube_report_info_outcome_loss' => 'Атакующий проиграл бой',
+  'ube_report_info_outcome_draw' => 'Бой закончился ничьей',
+  'ube_report_info_link' => 'Ссылка на боевой отчет',
+  'ube_report_info_sfr' => 'Бой закончился за один раунд проигрышем атакующего<br />Вероятна РМФ',
+  'ube_report_info_debris' => 'Обломки на орбите',
+  'ube_report_info_loot' => 'Добыча',
+  'ube_report_info_loss' => 'Боевые потери',
+  'ube_report_info_generate' => 'Время генерации страницы',
+
+  'ube_report_moon_was' => 'У этой планеты уже была луна',
+  'ube_report_moon_chance' => 'Шанс образования луны',
+  'ube_report_moon_created' => 'На орбите планеты образовалась луна диаметром',
+
+  'ube_report_moon_reapers_none' => 'Все корабли с гравитационными двигателями были уничтожены в процессе боя',
+  'ube_report_moon_reapers_wave' => 'Корабли атакующего создали сфокусированную гравитационную волну',
+  'ube_report_moon_reapers_chance' => 'Шанс уничтожения луны',
+  'ube_report_moon_reapers_success' => 'Луна уничтожена',
+  'ube_report_moon_reapers_failure' => 'Мощности волны не хватило для уничтожения луны',
+
+  'ube_report_moon_reapers_outcome' => 'Шанс взрыва двигателей',
+  'ube_report_moon_reapers_survive' => 'Точная компенсация гравитационных полей системы позволила погасить отдачу от разрушения луны',
+  'ube_report_moon_reapers_died' => 'Не сумев компенсировать добавочные гравитационные поля системы, флот был уничтожен',
+
+  'ube_report_side_attacker' => 'Атакующий',
+  'ube_report_side_defender' => 'Защитник',
+
+  'ube_report_round' => 'Раунд',
+  'ube_report_unit' => 'Боевая единица',
+  'ube_report_attack' => 'Атака',
+  'ube_report_shields' => 'Щиты',
+  'ube_report_shields_passed' => 'Пробой',
+  'ube_report_armor' => 'Броня',
+  'ube_report_damage' => 'Урон',
+  'ube_report_loss' => 'Потери',
+
+  'ube_report_info_restored' => 'Восстановленно оборонительных сооружений',
+  'ube_report_info_loss_final' => 'Итоговые потери боевых единиц',
+  'ube_report_info_loss_resources' => 'Потери в пересчете на ресурсы',
+  'ube_report_info_loss_dropped' => 'Потери ресурсов из-за уменьшения трюмов',
+  'ube_report_info_loot_lost' => 'Увезено ресурсов со складов планеты',
+  'ube_report_info_loss_gained' => 'Потери из-за вывоза ресурсов с планеты',
+  'ube_report_info_loss_in_metal' => 'Общие потери в пересчете на металл',
+
+  'ube_report_msg_body_common' => 'Бой состоялся %s на орбите %s [%d:%d:%d] %s<br />%s<br /><br />',
+  'ube_report_msg_body_debris' => 'В результат боя на орбите планеты образовались обломки:<br />',
+  'ube_report_msg_body_sfr' => 'Связь с флотом утеряна',
+
+  'sys_kilometers_short' => 'км',
+
+  'ube_simulation' => 'Симуляция',
 
 ));
 
