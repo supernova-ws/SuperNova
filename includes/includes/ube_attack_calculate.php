@@ -981,6 +981,11 @@ function sn_ube_message_send(&$combat_data)
   $text_defender = '';
   foreach($outcome[UBE_DEBRIS] as $resource_id => $resource_amount)
   {
+    if($resource_id == RES_DEUTERIUM)
+    {
+      continue;
+    }
+
     $text_defender .= "{$lang['tech'][$resource_id]}: " . pretty_number($resource_amount) . '<br />';
   }
   if($text_defender)
