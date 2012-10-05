@@ -1099,7 +1099,7 @@ function sn_ube_combat_result_apply(&$combat_data)
       foreach($fleet_info[UBE_COUNT] as $unit_id => $unit_count)
       {
         // Перебираем аутком на случай восстановления юнитов
-        $units_lost = $fleets_outcome[$fleet_id][UBE_UNITS_LOST][$unit_id];
+        $units_lost = (float)$fleets_outcome[$fleet_id][UBE_UNITS_LOST][$unit_id];
 
         $units_left = $unit_count - $units_lost;
         if($units_lost)
@@ -1154,7 +1154,7 @@ function sn_ube_combat_result_apply(&$combat_data)
     }
 
 //debug($fleet_query);
-
+global $debug;
     $fleet_query = implode(',', $fleet_query);
     if($fleet_id)
     {
@@ -1162,17 +1162,20 @@ function sn_ube_combat_result_apply(&$combat_data)
       if($new_fleet_count || ($fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS && $outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_RETURNED))
       {
         doquery("UPDATE {{fleets}} SET {$fleet_query} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
+$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": UPDATE {{fleets}} SET {$fleet_query} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
       }
       else
       {
         // Удаляем пустые флоты
         doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
+$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
       }
     }
     elseif($fleet_query)
     {
       // Планета - сохраняем данные боя
       doquery("UPDATE {{planets}} SET {$fleet_query} WHERE `id` = {$planet_id} LIMIT 1");
+$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": UPDATE {{planets}} SET {$fleet_query} WHERE `id` = {$planet_id} LIMIT 1");
     }
   }
 
@@ -1182,6 +1185,7 @@ function sn_ube_combat_result_apply(&$combat_data)
   {
     $db_save[UBE_FLEET_GROUP] = implode(',', $db_save[UBE_FLEET_GROUP]);
     doquery("DELETE FROM {{aks}} WHERE `id` IN ({$db_save[UBE_FLEET_GROUP]})");
+$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{aks}} WHERE `id` IN ({$db_save[UBE_FLEET_GROUP]})");
   }
 
   if($outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS)
@@ -1192,6 +1196,7 @@ function sn_ube_combat_result_apply(&$combat_data)
   elseif($outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS)
   {
     doquery("DELETE FROM {{planets}} WHERE `id` = {$planet_id} LIMIT 1");
+$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{planets}} WHERE `id` = {$planet_id} LIMIT 1");
   }
 
   if($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS)
@@ -1207,6 +1212,7 @@ function sn_ube_combat_result_apply(&$combat_data)
           /** @noinspection SpellCheckingInspection */
           $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
           doquery("UPDATE {{users}} SET `xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1 WHERE id = '{$player_id}' LIMIT 1;");
+$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": UPDATE {{users}} SET `xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1 WHERE id = '{$player_id}' LIMIT 1;");
         }
       }
     }
@@ -1214,6 +1220,7 @@ function sn_ube_combat_result_apply(&$combat_data)
     if($bashing_list)
     {
       doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
+$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
     }
   }
 

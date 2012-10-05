@@ -533,12 +533,12 @@ switch($new_version)
 
     upd_do_query("UPDATE {{users}} SET `ally_name` = null, `ally_tag` = null, ally_register_time = 0, ally_rank_id = 0 WHERE `ally_id` IS NULL");
 
-    upd_drop_table('ube_report_outcome_unit');
-    upd_drop_table('ube_report_outcome_fleet');
-    upd_drop_table('ube_report_unit');
-    upd_drop_table('ube_report_fleet');
-    upd_drop_table('ube_report_player');
-    upd_drop_table('ube_report');
+//    upd_drop_table('ube_report_outcome_unit');
+//    upd_drop_table('ube_report_outcome_fleet');
+//    upd_drop_table('ube_report_unit');
+//    upd_drop_table('ube_report_fleet');
+//    upd_drop_table('ube_report_player');
+//    upd_drop_table('ube_report');
 
     if(!$update_tables['ube_report'])
     {
