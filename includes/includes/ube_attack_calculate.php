@@ -1114,7 +1114,7 @@ function sn_ube_combat_result_apply(&$combat_data)
       if($fleet_id)
       {
         // Для флотов перегенерируем массив как SQL-запрос
-        $fleet_query = implode(',', $fleet_query);
+        $fleet_query = implode(';', $fleet_query);
         $fleet_query = array("`fleet_array` = '{$fleet_query}'");
       }
     }
