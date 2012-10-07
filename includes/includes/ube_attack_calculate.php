@@ -845,7 +845,6 @@ function sn_ube_combat_analyze_loot(&$combat_data)
 
     // Вычисляем какой процент общей емкости трюмов атакующих будет задействован
     $total_lootable = min($planet_lootable, $total_capacity);
-    $total_lootable_percent = $total_lootable / $total_capacity;
 
     // Вычисляем сколько ресурсов вывезено
     foreach($outcome[UBE_ATTACKERS][UBE_CAPACITY] as $fleet_id => $fleet_capacity)
@@ -855,7 +854,8 @@ function sn_ube_combat_analyze_loot(&$combat_data)
       foreach($planet_resource_list as $resource_id => $resource_amount)
       {
         // TODO Восстанавливаем ошибку округления - придумать нормальный алгоритм - вроде round() должно быть достаточно. Проверить
-        $looted = round($resource_amount * $planet_lootable_percent * $total_lootable_percent);
+        $fleet_lootable_percent = $fleet_capacity / $total_capacity;
+        $looted = round($resource_amount * $planet_lootable_percent * $fleet_lootable_percent);
         $fleet_loot_data[$resource_id] = -$looted;
         $planet_resource_looted[$resource_id] += $looted;
         $looted_in_metal -= $looted * $exchange[$resource_id];

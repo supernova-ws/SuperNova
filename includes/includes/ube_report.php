@@ -598,7 +598,7 @@ function sn_ube_report_generate(&$combat_data, &$template_result)
             sn_ube_report_table_render($fleet_outcome[UBE_UNITS_LOST], $lang['ube_report_info_loss_final']),
             sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST], $lang['ube_report_info_loss_resources']),
             sn_ube_report_table_render($fleet_outcome[UBE_CARGO_DROPPED], $lang['ube_report_info_loss_dropped']),
-            sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOOTED], $lang[$player_info[UBE_ATTACKER] ? 'ube_report_info_loss_gained' : 'ube_report_info_loot_lost']),
+            sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOOTED], $lang[$player_info[UBE_ATTACKER] ? 'ube_report_info_loot_lost' : 'ube_report_info_loss_gained']),
             sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST_IN_METAL], $lang['ube_report_info_loss_in_metal'])
           ),
         ),
