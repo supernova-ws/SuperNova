@@ -104,7 +104,7 @@ function flt_mission_spy($mission_data)
       coe_compress_add_units(array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR), $target_user_row, $combat_pack[0]);
     }
 
-    $simulator_link = coe_sym_encode_replay($combat_pack, 'D');
+    $simulator_link = sn_ube_simulator_encode_replay($combat_pack, 'D');
 
     $target_unit_list = 0;
     foreach($sn_data['groups']['fleet'] as $unit_id)

@@ -1,7 +1,5 @@
 <?php
 
-define('BE_DEBUG', true);
-
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if(sys_get_param_int('BE_DEBUG') && !defined('BE_DEBUG'))
@@ -19,7 +17,7 @@ $sym_attacker = $_POST['attacker'] ? $_POST['attacker'] : array();
 
 if($replay)
 {
-  $unpacked = coe_sym_decode_replay($replay);
+  $unpacked = sn_ube_simulator_decode_replay($replay);
 
   $sym_defender = $unpacked['D'];
   $sym_attacker = $unpacked['A'];
@@ -32,8 +30,8 @@ else
 
 if($_POST['submit'] || $execute)
 {
-  $replay = coe_sym_encode_replay($sym_defender, 'D');
-  $replay .= coe_sym_encode_replay($sym_attacker, 'A');
+  $replay = sn_ube_simulator_encode_replay($sym_defender, 'D');
+  $replay .= sn_ube_simulator_encode_replay($sym_attacker, 'A');
 
   $combat_data = sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender);
 

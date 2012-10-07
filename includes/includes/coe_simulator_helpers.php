@@ -1,6 +1,6 @@
 <?php
 
-function coe_sym_encode_replay($combat, $type)
+function sn_ube_simulator_encode_replay($combat, $type)
 {
   $strPacked = "{$type}!";
 
@@ -17,7 +17,7 @@ function coe_sym_encode_replay($combat, $type)
   return $strPacked;
 }
 
-function coe_sym_decode_replay($str_data)
+function sn_ube_simulator_decode_replay($str_data)
 {
   global $sn_data;
 
@@ -58,40 +58,8 @@ function coe_sym_decode_replay($str_data)
   return $unpacked;
 }
 
-function coe_sym_to_combat($arr_sym_data, $str_fleet_type)
-{
-  global $sn_data;
-  $combat = array();
-
-  foreach($arr_sym_data as $int_fleet_id => $arr_sym_fleet)
-  {
-    foreach($arr_sym_fleet as $int_unit_id => $int_unit_count)
-    {
-      if(!$int_unit_count)
-      {
-        continue;
-      }
-
-      if(in_array($int_unit_id, $sn_data['groups']['tech']) || $int_unit_id == MRC_ADMIRAL)
-      {
-        $combat[$int_fleet_id]['user'][$sn_data[$int_unit_id]['name']] = intval($int_unit_count);
-      }
-      elseif(in_array($int_unit_id, $sn_data['groups']['resources_loot']))
-      {
-        $combat[$int_fleet_id]['resources'][$sn_data[$int_unit_id]['name']] = $int_unit_count;
-      }
-      elseif(in_array($int_unit_id, $sn_data['groups']['combat']))
-      {
-        $combat[$int_fleet_id][$str_fleet_type][$int_unit_id] = $int_unit_count;
-      }
-    }
-  }
-
-  return $combat;
-}
-
 // ------------------------------------------------------------------------------------------------
-// Преобразовывает данные симулятора в данные для расчета боя
+// РџСЂРµРѕР±СЂР°Р·РѕРІС‹РІР°РµС‚ РґР°РЅРЅС‹Рµ СЃРёРјСѓР»СЏС‚РѕСЂР° РІ РґР°РЅРЅС‹Рµ РґР»СЏ СЂР°СЃС‡РµС‚Р° Р±РѕСЏ
 function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker, $player_id = -1)
 {
   global $sn_data, $ube_convert_techs;
