@@ -34,7 +34,7 @@ function flt_get_fleets($condition, $phalanx = false)
     $condition = $missile_query;
   }
   $sql_fleets = doquery("SELECT DISTINCT * FROM {{fleets}} WHERE {$condition};");
-      
+
   while ($fleet = mysql_fetch_assoc($sql_fleets))
   {
     $fleet_db_list[] = $fleet;

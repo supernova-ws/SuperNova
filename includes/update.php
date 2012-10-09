@@ -558,7 +558,7 @@ switch($new_version)
           `ube_report_combat_result` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Combat outcome',
           `ube_report_combat_sfr` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Small Fleet Reconnaissance',
 
-          `ube_report_planet_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Player attack bonus',
+          `ube_report_planet_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Player planet ID',
           `ube_report_planet_name` VARCHAR(64) NOT NULL DEFAULT 'Planet' COMMENT 'Player planet name',
           `ube_report_planet_size` SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Player diameter',
           `ube_report_planet_galaxy` SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Player planet coordinate galaxy',
@@ -595,9 +595,9 @@ switch($new_version)
           `ube_report_player_name` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'Player name',
           `ube_report_player_attacker` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Is player an attacker?',
 
-          `ube_report_player_bonus_attack` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Player attack bonus', -- Only for statistics
-          `ube_report_player_bonus_shield` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Player shield bonus', -- Only for statistics
-          `ube_report_player_bonus_armor` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Player armor bonus', -- Only for statistics
+          `ube_report_player_bonus_attack` DECIMAL(11,2) NOT NULL DEFAULT 0 COMMENT 'Player attack bonus', -- Only for statistics
+          `ube_report_player_bonus_shield` DECIMAL(11,2) NOT NULL DEFAULT 0 COMMENT 'Player shield bonus', -- Only for statistics
+          `ube_report_player_bonus_armor` DECIMAL(11,2) NOT NULL DEFAULT 0 COMMENT 'Player armor bonus', -- Only for statistics
 
           PRIMARY KEY (`ube_report_player_id`),
           KEY `I_ube_report_player_player_id` (`ube_report_player_player_id`),
@@ -623,9 +623,9 @@ switch($new_version)
           `ube_report_fleet_planet_planet` SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Player planet coordinate planet',
           `ube_report_fleet_planet_planet_type` TINYINT NOT NULL DEFAULT 1 COMMENT 'Player planet type',
 
-          `ube_report_fleet_bonus_attack` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Fleet attack bonus', -- Only for statistics
-          `ube_report_fleet_bonus_shield` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Fleet shield bonus', -- Only for statistics
-          `ube_report_fleet_bonus_armor` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Fleet armor bonus',   -- Only for statistics
+          `ube_report_fleet_bonus_attack` DECIMAL(11,2) NOT NULL DEFAULT 0 COMMENT 'Fleet attack bonus', -- Only for statistics
+          `ube_report_fleet_bonus_shield` DECIMAL(11,2) NOT NULL DEFAULT 0 COMMENT 'Fleet shield bonus', -- Only for statistics
+          `ube_report_fleet_bonus_armor` DECIMAL(11,2) NOT NULL DEFAULT 0 COMMENT 'Fleet armor bonus',   -- Only for statistics
 
           `ube_report_fleet_resource_metal` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Fleet metal amount',
           `ube_report_fleet_resource_crystal` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Fleet crystal amount',
@@ -731,6 +731,91 @@ switch($new_version)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
+
+//    upd_drop_table('unit');
+//    upd_drop_table('captain');
+
+    if(!$update_tables['unit'])
+    {
+      upd_create_table('unit',
+        "(
+          `unit_id` SERIAL COMMENT 'Record ID',
+
+          `unit_player_id` BIGINT(20) UNSIGNED DEFAULT NULL COMMENT 'Unit owner',
+          `unit_location_type` TINYINT NOT NULL DEFAULT 0 COMMENT 'Location type: universe, user, planet (moon?), fleet',
+          `unit_location_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Location ID',
+
+--          `unit_bind_type` TINYINT NOT NULL DEFAULT 0 COMMENT 'Binding - where unit is originally belongs', -- unused so far
+--          `unit_bind_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Location ID', -- unused so far
+
+          `unit_type` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit type',
+          `unit_snid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit SuperNova ID',
+--          `unit_dbid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit exemplar DB ID in respective table', -- does it really needs?
+--          `unit_guid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit unique GUID', -- unused for now. Will be need when GUID would be implemented
+
+          `unit_level` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit level or count - dependent of unit_type',
+
+
+
+          PRIMARY KEY (`unit_id`),
+
+          KEY `I_unit_player_location_snid` (`unit_player_id`, `unit_location_type`, `unit_location_id`, `unit_snid`),
+
+          CONSTRAINT `FK_unit_player_id` FOREIGN KEY (`unit_player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+    }
+
+    if(!$update_tables['captain'])
+    {
+      upd_create_table('captain',
+        "(
+          `captain_id` SERIAL COMMENT 'Record ID',
+          `captain_unit_id` BIGINT(20) UNSIGNED DEFAULT NULL COMMENT 'Link to `unit` record',
+
+          `captain_xp` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain expirience',
+          `captain_level` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain level so far', -- Дублирует запись в unit
+--          `captain_level_free` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain level free to spend',
+
+          `captain_shield` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain shield bonus level',
+          `captain_armor` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain armor bonus level',
+          `captain_attack` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain defense bonus level',
+
+
+
+          PRIMARY KEY (`captain_id`),
+
+          KEY `I_captain_unit_id` (`captain_unit_id`),
+
+          CONSTRAINT `FK_captain_unit_id` FOREIGN KEY (`captain_unit_id`) REFERENCES `{$config->db_prefix}unit` (`unit_id`) ON UPDATE CASCADE ON DELETE CASCADE
+
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+    }
+
+    if(!$update_tables['fleets']['fleet_start_planet_id'])
+    {
+      upd_alter_table('fleets', array(
+        "ADD `fleet_start_planet_id` BIGINT(20) UNSIGNED DEFAULT NULL COMMENT 'Fleet start planet ID' AFTER `fleet_start_time`",
+        "ADD `fleet_end_planet_id` BIGINT(20) UNSIGNED DEFAULT NULL COMMENT 'Fleet end planet ID' AFTER `fleet_end_stay`",
+
+        "ADD KEY `I_fleet_start_planet_id` (`fleet_start_planet_id`)",
+        "ADD KEY `I_fleet_end_planet_id` (`fleet_end_planet_id`)",
+
+        "ADD CONSTRAINT `FK_fleet_planet_start` FOREIGN KEY (`fleet_start_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_fleet_planet_end` FOREIGN KEY (`fleet_end_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+      ), !$update_tables['fleets']['fleet_start_planet_id']);
+
+      upd_do_query("
+        UPDATE {{fleets}} AS f
+         LEFT JOIN {{planets}} AS p_s ON p_s.galaxy = f.fleet_start_galaxy AND p_s.system = f.fleet_start_system AND p_s.planet = f.fleet_start_planet AND p_s.planet_type = f.fleet_start_type
+         LEFT JOIN {{planets}} AS p_e ON p_e.galaxy = f.fleet_end_galaxy AND p_e.system = f.fleet_end_system AND p_e.planet = f.fleet_end_planet AND p_e.planet_type = f.fleet_end_type
+        SET f.fleet_start_planet_id = p_s.id, f.fleet_end_planet_id = p_e.id
+      ");
+    }
+
+    upd_alter_table('fleets', array("DROP COLUMN `processing_start`"), $update_tables['fleets']['processing_start']);
 
     upd_do_query('COMMIT;', true);
 //    $new_version = 36;

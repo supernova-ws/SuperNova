@@ -53,6 +53,13 @@ var fleet_slide_changing = false;
     <!-- BEGINELSE missions -->
       <tr><th><font color="red">{L_fl_bad_mission}</font></th></tr>
     <!-- END missions -->
+    <!-- IF CAPTAIN_ID -->
+    <tr>
+      <td class="c_l">
+        <input type="checkbox" name="captain_id" value="{CAPTAIN_ID}" /> {L_module_unit_captain}
+      </td>
+    </tr>
+    <!-- ENDIF -->
     <tr><th class="c_c"><input id="fleet_page2_submit" value="{L_fl_continue}" type="submit"></th></tr>
   </table>
 <br />

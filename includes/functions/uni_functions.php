@@ -314,7 +314,7 @@ function SortUserPlanets($user_row, $skip_planet_id = false, $field_list = '', $
 
   // Compilating query
   $QryPlanets = "SELECT {$field_list} FROM {{planets}} WHERE `id_owner` = '{$user_row['id']}' {$conditions} ORDER BY {$order_by}";
-  
+
   $Planets = doquery($QryPlanets);
   return $Planets;
 }
@@ -328,6 +328,16 @@ function uni_render_coordinates($from, $prefix = '')
 function uni_render_planet($from)
 {
   return "{$from['name']} [{$from['galaxy']}:{$from['system']}:{$from['planet']}]";
+}
+
+function uni_render_planet_full($from, $prefix = '', $html_safe = true)
+{
+  global $lang;
+
+  $result = uni_render_coordinates($from, $prefix) . ($from['planet_type'] ? ' ' . $lang['sys_planet_type_sh'][$from['planet_type']] : '') . ($from['name'] ? ' ' . $from['name'] : '');
+  $result = str_replace(' ', '&nbsp;', $html_safe ? htmlentities($result, ENT_COMPAT, 'UTF-8') : $result);
+
+  return $result;
 }
 
 function uni_render_coordinates_url($from, $prefix = '', $page = 'galaxy.php')

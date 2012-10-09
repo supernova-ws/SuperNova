@@ -144,7 +144,7 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
 
 .noborder, .noborder tr, .noborder th
 {
-  border: 0;
+  border: 0px;
 }
 
 #chat_box

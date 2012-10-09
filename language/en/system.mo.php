@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36a0.7
+* @version 36a0.15
 *
 */
 
@@ -794,6 +794,8 @@ $lang = array_merge($lang, array(
   'sys_kilometers_short' => 'км',
 
   'ube_simulation' => 'Симуляция',
+
+  'sys_hire_do' => 'Hire',
 
 ));
 

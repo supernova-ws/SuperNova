@@ -134,7 +134,7 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
     {
       $class = $n == 0 ? 'zero' : ($n > 0 ? 'positive' : 'negative');
     }
-    elseif($color > 0)
+    elseif($color >= 0)
     {
       $class = $n == $color ? 'zero' : ($n < $color ? 'positive' : 'negative');
     }
@@ -845,7 +845,7 @@ function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '',
       {
         $functions[$function_name] = array();
         $sn_function_name = 'sn_' . $function_name . ($sub_type ? '_' . $sub_type : '');
-        if(is_callable($sn_function_name))
+        //if(is_callable($sn_function_name))
         {
           $functions[$function_name][] = $sn_function_name;
         }

@@ -12,8 +12,8 @@ Based on original code:
 #  Project: prethOgame
 #  Description: RPG web based game
 #
-#  Copyright © 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright © 2005 - 2008 KGsystem
+#  Copyright ï¿½ 2008 Aleksandar Spasojevic <spalekg@gmail.com>
+#  Copyright ï¿½ 2005 - 2008 KGsystem
 #############################################################################
 */
 function flt_mission_destroy($mission_data)
@@ -41,7 +41,7 @@ doquery('COMMIT');
 //debug($combat_data);
 
 doquery('START TRANSACTION');
-  sn_ube_combat_result_apply($combat_data);
+  ube_combat_result_apply($combat_data);
 doquery('ROLLBACK');
 
   sn_ube_message_send($combat_data);

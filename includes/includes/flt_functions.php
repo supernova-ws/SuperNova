@@ -545,12 +545,20 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   $QryInsertFleet .= "`fleet_amount` = '{$fleet_ship_count}', ";
   $QryInsertFleet .= "`fleet_array` = '{$fleet_string}', ";
   $QryInsertFleet .= "`fleet_start_time` = '{$fleet_start_time}', ";
+  if($from['id'])
+  {
+    $QryInsertFleet .= "`fleet_start_planet_id` = '{$from['id']}', ";
+  }
   $QryInsertFleet .= "`fleet_start_galaxy` = '{$from['galaxy']}', ";
   $QryInsertFleet .= "`fleet_start_system` = '{$from['system']}', ";
   $QryInsertFleet .= "`fleet_start_planet` = '{$from['planet']}', ";
   $QryInsertFleet .= "`fleet_start_type` = '{$from['planet_type']}', ";
   $QryInsertFleet .= "`fleet_end_time` = '{$fleet_end_time}', ";
   $QryInsertFleet .= "`fleet_end_stay` = '{$stay_time}', ";
+  if($to['id'])
+  {
+    $QryInsertFleet .= "`fleet_end_planet_id` = '{$to['id']}', ";
+  }
   $QryInsertFleet .= "`fleet_end_galaxy` = '{$to['galaxy']}', ";
   $QryInsertFleet .= "`fleet_end_system` = '{$to['system']}', ";
   $QryInsertFleet .= "`fleet_end_planet` = '{$to['planet']}', ";

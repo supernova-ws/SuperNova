@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 36a0.7
+* @version #36a0.15#
 *
 */
 
@@ -286,7 +286,7 @@ $lang = array_merge($lang, array(
 
 // top bar
   'top_of_year' => 'года',
-  'top_online'			=> 'Игроки on-line',
+  'top_online'			=> 'Игроки',
 
   'sys_first_round_crash_1'	=> 'Контакт с атакованным флотом потерян.',
   'sys_first_round_crash_2'	=> 'Это означает что он был уничтожен в первом раунде боя.',
@@ -798,6 +798,8 @@ $lang = array_merge($lang, array(
   'sys_kilometers_short' => 'км',
 
   'ube_simulation' => 'Симуляция',
+
+  'sys_hire_do' => 'Нанять',
 
 ));
 

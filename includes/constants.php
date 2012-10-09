@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '35');
 define('SN_RELEASE', '36');
-define('SN_VERSION', '36a0.14');
+define('SN_VERSION', '36a0.15');
 define('SN_RELEASE_STABLE', '35d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -116,8 +116,12 @@ define('PT_DEBRIS', 2);
 define('PT_MOON'  , 3);
 
 // *** Unit locations - shows db table where unit belong
-define('LOC_USER',   1);
-define('LOC_PLANET', 2);
+define('LOC_UNIVERSE', 0);
+define('LOC_PLANET',   1);
+define('LOC_DEBRIS',   2); // Translates to `planets` table planet_type = 1, `debris_*` fields
+define('LOC_MOON',     3); // Translates to `planets` table planet_type = 3
+define('LOC_USER',     4);
+define('LOC_FLEET',    5);
 
 // *** Caching masks
 define('CACHE_NOTHING'    ,  0);
@@ -166,6 +170,8 @@ define('RPG_SECTOR', 18);
 define('RPG_TELEPORT', 19);
 define('RPG_CAPITAL', 20);
 define('RPG_RACE', 21);
+define('RPG_CAPTAIN', 22);
+
 
 
 // Operation error status
@@ -530,6 +536,7 @@ define('UNIT_PLAN_DEF_SHIELD_PLANET', 1106);
 define('UNIT_PREMIUM', 1200);
 define('UNIT_SECTOR', 1300);
 define('UNIT_RACE', 1400);
+define('UNIT_CAPTAIN', 1500);
 
 // === Unit types // TODO - convert to GROUP_xxx constants
 //define('UNIT_STRUCTURE', 0);
@@ -632,6 +639,7 @@ define('UBE_TIME_SPENT', 'UBE_TIME_SPENT');
 
 define('UBE_OPTIONS', 'UBE_OPTIONS');
 define('UBE_COMBAT_ADMIN', 'UBE_COMBAT_ADMIN');
+define('UBE_DEFENDER_ACTIVE', 'UBE_DEFENDER_ACTIVE');
 define('UBE_MISSION_TYPE', 'UBE_MISSION_TYPE');
 define('UBE_LOADED', 'UBE_LOADED');
 define('UBE_SIMULATOR', 'UBE_SIMULATOR');
@@ -706,31 +714,6 @@ define('UBE_DEFENDERS', 'UBE_DEFENDERS');
 define('UBE_TOTAL', 'UBE_TOTAL');
 define('UBE_DAMAGE_PERCENT', 'UBE_DAMAGE_PERCENT');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+define('UBE_CAPTAIN', 'UBE_CAPTAIN');
 
 ?>

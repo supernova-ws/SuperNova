@@ -144,9 +144,9 @@ function sn_ube_report_save(&$combat_data)
       "'" . mysql_real_escape_string($player_info[UBE_NAME]) . "'",
       (int)$player_info[UBE_ATTACKER],
 
-      (int)$player_info[UBE_BONUSES][UBE_ATTACK],
-      (int)$player_info[UBE_BONUSES][UBE_SHIELD],
-      (int)$player_info[UBE_BONUSES][UBE_ARMOR],
+      (float)$player_info[UBE_BONUSES][UBE_ATTACK],
+      (float)$player_info[UBE_BONUSES][UBE_SHIELD],
+      (float)$player_info[UBE_BONUSES][UBE_ARMOR],
     );
   }
 

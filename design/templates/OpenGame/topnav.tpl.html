@@ -1,24 +1,28 @@
 <!-- NAVBAR START -->
 
 <div id="sn_navbar">
-  <table cellpadding="0" cellspacing="0" class="header c_c" id="resources"><tbody>
-    <tr class="c_c">
-      <th>
-        <select class="fl" style="margin-right: 20px" size="1" onchange="window.location.href = window.location.pathname + this.options[this.selectedIndex].value;">
+  <table cellpadding="3" cellspacing="0" class="header c_c" id="resources"><tbody>
+    <tr>
+      <th class="c_l noborder">
+        <select size="1" onchange="window.location.href = window.location.pathname + this.options[this.selectedIndex].value;">
           <!-- BEGIN topnav_planets -->
             <option{topnav_planets.SELECTED} value="?cp={topnav_planets.ID}&mode={TOPNAV_MODE}&re=0">{topnav_planets.NAME}&nbsp;{topnav_planets.COORDS}
           <!-- END topnav_planets -->
         </select>
+      </th>
 
-        <span style="margin: auto;">{DATE_TEXT}<span id="top_time">{TIME_TEXT}</span></span>&nbsp;<span class="fr" style="margin-left: 20px" >{L_top_online} [{USERS_ONLINE}/{USERS_TOTAL}]</span>
+      <th class="c_c noborder">
+        <span>{DATE_TEXT}<span id="top_time">{TIME_TEXT}</span>
+      </th>
+
+      <th class="c_r noborder">
+        </span>&nbsp;<span style="margin-left: 20px" >{L_top_online} [{USERS_ONLINE}/{USERS_TOTAL}]</span>
       </th>
     </tr>
 
     <tr>
-      <td class="c_c">
-<!-- div style1="width: 140px" -->
         <!-- BOF Nav Bar Left block -->
-        <div class="fl">
+        <td class="c_l noborder">
 
           <!-- DEFINE $QUE_ID = '{QUE_ID}' -->
           <!-- INCLUDE eco_queue -->
@@ -41,11 +45,11 @@
             </a>
           </div>
 
-        </div>
+        </td>
         <!-- EOF Nav Bar Left block -->
 
         <!-- BOF Nav Bar Middle block -->
-        <div style="display: inline-block; margin: auto;">
+        <td class="c_c noborder">
 
           <div style="display: inline-block; position: relative; margin-right: 3px; width: 64px; height: 64px;">
             <a href="fleet.php">
@@ -98,23 +102,21 @@
             <!-- ENDIF -->
           </div>
 
-        </div>
+        </td>
         <!-- EOF Nav Bar Middle block -->
 
         <!-- BOF Nav Bar Right block -->
-        <div class="fr">
+        <td class="c_r noborder">
 
-          <div style="position: relative; width: 64px; height: 64px; margin-right: 3px; display: inline-block;">
+          <div style="position: relative; width: 64px; height: 64px; display: inline-block;">
             <a href="dark_matter.php">
               <img style="position: absolute; left: 0px; top: 0px;" src="{D_SN_ROOT_RELATIVE}design/images/navbar_dark_matterie_64x64.png" height="100%" alt="{L_sys_dark_matter}" title="{L_sys_dark_matter}">
               <span style="position: absolute; right: 0; bottom: 0;" class="icon_alpha ok">{TOPNAV_DARK_MATTER}</span>
             </a>
           </div>
 
-        </div>
+        </td>
         <!-- EOF Nav Bar Right block -->
-<!-- /div -->
-      </td>
     </tr>
   </tbody></table>
 

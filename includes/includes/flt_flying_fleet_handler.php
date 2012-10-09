@@ -74,6 +74,40 @@ function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = fals
 
   doquery($query);
 
+
+  global $sn_module;
+  if($sn_module['unit_captain']->manifest['active'])
+  {
+    $captain = doquery("
+      SELECT *
+      FROM {{unit}} AS u
+        LEFT JOIN {{captain}} AS c ON c.captain_unit_id = u.unit_id
+      WHERE
+        u.`unit_player_id` = {$fleet_row['fleet_owner']}
+        AND u.`unit_location_type` = " . LOC_FLEET . "
+        AND u.`unit_location_id` = {$fleet_row['fleet_id']}
+        AND u.`unit_snid` = " . UNIT_CAPTAIN . "
+        LIMIT 1 FOR UPDATE"
+    , true);
+
+    if(is_array($captain))
+    {
+      $planet = doquery("
+        SELECT `id`
+        FROM {{planets}}
+        WHERE
+          `system` = '". $fleet_row["fleet_{$prefix}_system"] ."' AND
+          `galaxy` = '". $fleet_row["fleet_{$prefix}_galaxy"] ."' AND
+          `planet` = '". $fleet_row["fleet_{$prefix}_planet"] ."' AND
+          `planet_type` = '". $fleet_row["fleet_{$prefix}_type"] ."' LIMIT 1
+      ", true);
+      if($planet['id'])
+      {
+        doquery("UPDATE {{unit}} SET `unit_location_type` = " . LOC_PLANET . ", `unit_location_id` = {$planet['id']} WHERE `unit_id` = {$captain['unit_id']} LIMIT 1");
+      }
+    }
+  }
+
   return CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
 }
 
@@ -271,7 +305,7 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
   {
     $mission_data = $sn_data['groups']['missions'][$fleet_row['fleet_mission']];
 
-// А здесь надо проверять, какие нужны данные и кэшировать только их
+// пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ
     $source = array('planet_hash' => '', 'user_id' => 0);
     if($mission_data['src_planet'])
     {
@@ -405,11 +439,11 @@ die();
       'dst_planet' => $flt_planet_cache[$fleet_event['dst_planet_hash']]
     );
 
-    // Миссии должны возвращать измененные результаты, что бы второй раз не лезть в базу
+    // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
     unset($mission_result);
     switch ($fleet_row['fleet_mission'])
     {
-      // Для боевых атак нужно обновлять по САБу и по холду - таки надо возвращать данные из обработчика миссий!
+      // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!
       case MT_AKS:
       case MT_ATTACK:
         $attack_result = flt_mission_attack($mission_data);

@@ -228,11 +228,13 @@ switch($fleet_page)
   break;
 
   case 2:
-    require('includes/includes/flt_page2.inc');
+    require_once('includes/includes/flt_page2.inc');
+    sn_fleet_page2();
   break;
 
   case 3:
-    require('includes/includes/flt_page3.inc');
+    require_once('includes/includes/flt_page3.inc');
+    sn_fleet_page3();
   break;
 
   case 4:

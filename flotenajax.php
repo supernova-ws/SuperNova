@@ -133,8 +133,16 @@ else
   $QryInsertFleet .= "`fleet_amount` = '{$fleet_ship_count}', ";
   $QryInsertFleet .= "`fleet_array` = '{$FleetDBArray}', ";
   $QryInsertFleet .= "`fleet_start_time` = '{$fleet_start_time}', ";
+  if($planetrow['id'])
+  {
+    $QryInsertFleet .= "`fleet_start_planet_id` = '{$planetrow['id']}', ";
+  }
   $QryInsertFleet .= "`fleet_start_galaxy` = '{$planetrow['galaxy']}', `fleet_start_system` = '{$planetrow['system']}', `fleet_start_planet` = '{$planetrow['planet']}', `fleet_start_type`   = '{$planetrow['planet_type']}', ";
   $QryInsertFleet .= "`fleet_end_time` = '{$fleet_end_time}', ";
+  if($target_row['id'])
+  {
+    $QryInsertFleet .= "`fleet_end_planet_id` = '{$target_row['id']}', ";
+  }
   $QryInsertFleet .= "`fleet_end_galaxy` = '{$target_coord['galaxy']}', `fleet_end_system` = '{$target_coord['system']}', `fleet_end_planet` = '{$target_coord['planet']}', `fleet_end_type` = '{$target_planet_type}', ";
   $QryInsertFleet .= "`fleet_target_owner` = '{$target_row['id_owner']}', ";
   $QryInsertFleet .= "`start_time` = '{$time_now}';";
