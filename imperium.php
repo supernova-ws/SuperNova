@@ -128,7 +128,7 @@ foreach($show_groups as $unit_group_id => $mode)
       }
       switch($mode)
       {
-        case 'buildings':
+        case 'structures':
           $level_plus_build = $planet['full_que']['in_que'][$unit_id];
           if($level_plus_build)
           {
