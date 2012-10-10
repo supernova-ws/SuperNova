@@ -535,6 +535,9 @@ mission = array(
     'imperator' => array(
       'filename' => 'imperator',
     ),
+    'imperium' => array(
+      'filename' => 'imperium',
+    ),
     'options' => array(
       'filename' => 'options',
     ),

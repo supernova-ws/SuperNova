@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a11.0
+* @version 36a0.18
 *
 */
 
@@ -170,6 +170,7 @@ $lang = array_merge($lang, array(
     UNIT_PLAN_DEF_SHIELD_PLANET => 'Schematic "Planet defense"',
 
     UNIT_PREMIUM => 'Premium',
+    UNIT_CAPTAIN => 'Captain',
   ),
 
 ));

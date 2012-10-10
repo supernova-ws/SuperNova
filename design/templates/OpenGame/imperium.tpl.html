@@ -5,7 +5,7 @@
 
 <h2>{L_imp_overview}</h2>
 <table border="0" cellpadding="0" cellspacing="1" align=center><tbody>
-  <tr><th class="c_l" colspan="{amount}">{L_sys_planets}</td></tr>
+  <tr><th class="c_l" colspan="{amount}">{L_sys_planets}</th></tr>
 
   <tr>
     <th width="{$CELL_HEADER}">{L_imp_name}</th>
@@ -16,7 +16,7 @@
         <!-- ELSE -->
           {planet.NAME}
         <!-- ENDIF -->
-      </th>
+      </td>
     <!-- END planet -->
   </tr>
 
@@ -137,30 +137,35 @@
     <!-- ENDIF -->
 
     <!-- BEGIN planet -->
-    <th class="empire_cell" onclick="document.location='buildings.php?cp={prods.planet.ID}&mode={prods.MODE}';">
-      <!-- IF prods.planet.LEVEL_PLUS_GREEN > 0 -->
-        <!-- DEFINE $PLUS_CLASS = 'positive' -->
-      <!-- ELSEIF prods.planet.LEVEL_PLUS_GREEN < 0 -->
-        <!-- DEFINE $PLUS_CLASS = 'negative' -->
-      <!-- ENDIF -->
-
-      <!-- IF prods.planet.PERCENT < 0 || prods.planet.LEVEL == 0 -->
-        <!-- DEFINE $FIELD_COLOR = '' -->
-      <!-- ELSEIF prods.planet.PERCENT < 50 --> 
-        <!-- DEFINE $FIELD_COLOR = 'negative_bg' -->
-      <!-- ELSEIF prods.planet.PERCENT < 80 --> 
-        <!-- DEFINE $FIELD_COLOR = 'warning_bg' -->
-      <!-- ELSEIF prods.planet.PERCENT < 100 --> 
-        <!-- DEFINE $FIELD_COLOR = 'neutral_bg' -->
+      <!-- IF prods.URL -->
+        <!-- DEFINE $FIELD_URL = '{prods.URL}' -->
       <!-- ELSE -->
-        <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
+        <!-- DEFINE $FIELD_URL = 'buildings.php?cp={prods.planet.ID}&mode={prods.MODE}' -->
       <!-- ENDIF -->
+      <th class="empire_cell" onclick="document.location='{$FIELD_URL}';">
+        <!-- IF prods.planet.LEVEL_PLUS_GREEN > 0 -->
+          <!-- DEFINE $PLUS_CLASS = 'positive' -->
+        <!-- ELSEIF prods.planet.LEVEL_PLUS_GREEN < 0 -->
+          <!-- DEFINE $PLUS_CLASS = 'negative' -->
+        <!-- ENDIF -->
 
-      <div class="empire_cell_wrapper">
-        <!-- IF prods.planet.PERCENT --><span style="width: {prods.planet.PERCENT}%;" class="empire_cell_filler {$FIELD_COLOR}"></span><!-- ENDIF -->
-        <span class="empire_cell_number">{prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><font color="yellow">{prods.planet.LEVEL_PLUS_YELLOW}</font><!-- ENDIF --></span>
-      </div>
-    </th>
+        <!-- IF prods.planet.PERCENT <= 0 -->
+          <!-- DEFINE $FIELD_COLOR = '' -->
+        <!-- ELSEIF prods.planet.PERCENT < 50 -->
+          <!-- DEFINE $FIELD_COLOR = 'negative_bg' -->
+        <!-- ELSEIF prods.planet.PERCENT < 80 -->
+          <!-- DEFINE $FIELD_COLOR = 'warning_bg' -->
+        <!-- ELSEIF prods.planet.PERCENT < 100 -->
+          <!-- DEFINE $FIELD_COLOR = 'neutral_bg' -->
+        <!-- ELSE -->
+          <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
+        <!-- ENDIF -->
+
+        <div class="empire_cell_wrapper">
+          <!-- IF prods.planet.PERCENT --><span style="width: {prods.planet.PERCENT}%;" class="empire_cell_filler {$FIELD_COLOR}"></span><!-- ENDIF -->
+          <span class="empire_cell_number">{prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><font color="yellow">{prods.planet.LEVEL_PLUS_YELLOW}</font><!-- ENDIF --></span>
+        </div>
+      </th>
     <!-- END planet -->
   </tr>
   <!-- END prods -->

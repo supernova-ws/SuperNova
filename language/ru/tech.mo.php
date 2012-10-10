@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a11.0
+* @version 36a0.18
 *
 */
 
@@ -169,6 +169,7 @@ $lang = array_merge($lang, array(
     UNIT_PLAN_DEF_SHIELD_PLANET => 'Чертеж "Планетарная защита"',
 
     UNIT_PREMIUM => 'Премиум',
+    UNIT_CAPTAIN => 'Капитан',
   ),
 
 ));

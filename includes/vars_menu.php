@@ -143,7 +143,7 @@ $sn_menu = array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'imp_overview',
-    'LINK'  => 'imperium.php',
+    'LINK'  => 'index.php?page=imperium',
   ),
   'menu_empire_emperor' => array(
     'LEVEL' => 'submenu',

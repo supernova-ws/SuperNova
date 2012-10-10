@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36a0.16
+* @version 36a0.18
 *
 */
 
@@ -798,6 +798,8 @@ $lang = array_merge($lang, array(
   'sys_hire_do' => 'Hire',
 
   'sys_captains' => 'Captains',
+
+  'sys_fleet_composition' => 'Fleet composition',
 
 ));
 

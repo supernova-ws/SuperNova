@@ -365,7 +365,7 @@ function fleet_table_make(fleet_id)
 
   if(!fleets[fleet_id][9])
   {
-    var fleet_html = '<table><tr><td class=c colspan=2>' + language['sys_ships'] + '</td></tr>';
+    var fleet_html = '<table><tr><td class=c colspan=2>' + language['sys_fleet_composition'] + '</td></tr>';
     var fleet = fleets[fleet_id][0];
     var resources = fleets[fleet_id][1];
 

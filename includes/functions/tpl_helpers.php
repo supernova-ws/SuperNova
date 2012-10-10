@@ -74,7 +74,8 @@ function tpl_parse_fleet_sn($fleet, $fleet_id)
   return $return;
 }
 
-function tpl_parse_fleet_db($fleet, $index, $user_data = false)
+function tpl_parse_fleet_db($fleet, $index, $user_data = false){return sn_function_call('tpl_parse_fleet_db', array($fleet, $index, $user_data, &$result));}
+function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result)
 {
   global $lang, $time_now, $user, $sn_data;
 
@@ -90,7 +91,9 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
 
   $spy_level = $user['id'] == $fleet['fleet_owner'] ? 100 : GetSpyLevel($user);
 
-  $return['fleet'] = array(
+  $result['fleet'] = isset($result['fleet']) ? $result['fleet'] : array();
+
+  $result['fleet'] = array(
     'NUMBER'             => $index,
 
     'ID'                 => $fleet['fleet_id'],
@@ -142,7 +145,7 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
         if($spy_level >= 10)
         {
           $single_ship_data = get_ship_data($ship_data[0], $user_data);
-          $return['ships'][$ship_data[0]] = array(
+          $result['ships'][$ship_data[0]] = array(
             'ID'          => $ship_data[0],
             'NAME'        => $lang['tech'][$ship_data[0]],
             'AMOUNT'      => $ship_data[1],
@@ -153,7 +156,7 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
         }
         else
         {
-          $return['ships'][$ship_data[0]] = array(
+          $result['ships'][$ship_data[0]] = array(
             'ID'          => $ship_id++,
             'NAME'        => $lang['tech'][UNIT_SHIPS],
             'AMOUNT'      => $ship_data[1],
@@ -166,7 +169,7 @@ function tpl_parse_fleet_db($fleet, $index, $user_data = false)
     }
   }
 
-  return $return;
+  return $result;
 }
 
 function tpl_parse_planet($planet, $que)

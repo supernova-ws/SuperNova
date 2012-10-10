@@ -1143,14 +1143,16 @@ $debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{planets}} WHE
     doquery("DELETE FROM {{planets}} WHERE `id` = {$planet_id} LIMIT 1");
   }
 
-//  if($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS)
   {
     $bashing_list = array();
     foreach($combat_data[UBE_PLAYERS] as $player_id => $player_info)
     {
       if($player_info[UBE_ATTACKER])
       {
-        $bashing_list[] = "({$player_id}, {$planet_id}, {$combat_data[UBE_TIME]})";
+        if($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS)
+        {
+          $bashing_list[] = "({$player_id}, {$planet_id}, {$combat_data[UBE_TIME]})";
+        }
         if($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_ATTACK && $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE])
         {
           /** @noinspection SpellCheckingInspection */
