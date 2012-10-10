@@ -307,7 +307,7 @@ function tpl_set_resource_info(&$template, $planetrow, $fleets_to_planet = array
   $template->assign_vars(array(
     'RESOURCE_ROUNDING' => $round,
 
-    'ENERGY_BALANCE' => pretty_number($planetrow['energy_max'] - $planetrow['energy_used'], true, 0),
+    'ENERGY_BALANCE' => pretty_number($planetrow['energy_max'] - $planetrow['energy_used'], true, true),
     'ENERGY_MAX' => pretty_number($planetrow['energy_max'], true, -$planetrow['energy_used']),
 
     'PLANET_METAL' => round($planetrow["metal"], $round),

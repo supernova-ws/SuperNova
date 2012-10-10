@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '35');
 define('SN_RELEASE', '36');
-define('SN_VERSION', '36a0.15');
+define('SN_VERSION', '36a0.16');
 define('SN_RELEASE_STABLE', '35d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -116,6 +116,7 @@ define('PT_DEBRIS', 2);
 define('PT_MOON'  , 3);
 
 // *** Unit locations - shows db table where unit belong
+define('LOC_NONE',    -1);
 define('LOC_UNIVERSE', 0);
 define('LOC_PLANET',   1);
 define('LOC_DEBRIS',   2); // Translates to `planets` table planet_type = 1, `debris_*` fields

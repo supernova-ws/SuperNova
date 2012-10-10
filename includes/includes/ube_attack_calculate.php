@@ -304,7 +304,7 @@ function sn_ube_combat_prepare_first_round(&$combat_data)
       // Заполняем информацию о кораблях в информации флота
       foreach($ube_combat_bonus_list as $bonus_id => $bonus_value)
       {
-        $fleet_info[$bonus_id][$unit_id] = $sn_data[$unit_id][$ube_convert_to_techs[$bonus_id]] * (1 + $fleet_info[UBE_BONUSES][$bonus_id]);
+        $fleet_info[$bonus_id][$unit_id] = floor($sn_data[$unit_id][$ube_convert_to_techs[$bonus_id]] * (1 + $fleet_info[UBE_BONUSES][$bonus_id]));
       }
       $fleet_info[UBE_AMPLIFY][$unit_id] = $sn_data[$unit_id]['amplify'];
       // TODO: Переделать через get_ship_data()
@@ -450,7 +450,7 @@ function sn_ube_combat_round_crossfire_unit(&$attack_fleet_data, &$defend_fleet_
   // Применяем амплифай, если есть
   $amplify = $attack_fleet_info[UBE_AMPLIFY][$attack_unit_id][$defend_unit_id];
   $amplify = $amplify ? $amplify : 1;
-  $amplified_damage = $direct_damage * $amplify;
+  $amplified_damage = floor($direct_damage * $amplify);
 
   // Снимаем остатки щитов
   $shields_damage = min($defend_fleet_data[UBE_SHIELD][$defend_unit_id], $amplified_damage);

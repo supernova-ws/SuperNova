@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36a0.15
+* @version 36a0.16
 *
 */
 
@@ -796,6 +796,8 @@ $lang = array_merge($lang, array(
   'ube_simulation' => 'Симуляция',
 
   'sys_hire_do' => 'Hire',
+
+  'sys_captains' => 'Captains',
 
 ));
 

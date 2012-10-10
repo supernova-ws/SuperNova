@@ -5,7 +5,7 @@
 #  Filename: system.mo
 #  Project: SuperNova.WS
 #  Website: http://www.supernova.ws
-#  Description: Massive Multiplayer Online Browser Space Startegy Game
+#  Description: Massive Multiplayer Online Browser Space Strategy Game
 #
 #  Copyright © 2009 Gorlum for Project "SuperNova.WS"
 #  Copyright © 2009 MSW
@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #36a0.15#
+* @version #36a0.16#
 *
 */
 
@@ -800,6 +800,8 @@ $lang = array_merge($lang, array(
   'ube_simulation' => 'Симуляция',
 
   'sys_hire_do' => 'Нанять',
+
+  'sys_captains' => 'Капитаны',
 
 ));
 

@@ -664,10 +664,10 @@ switch($new_version)
           `ube_report_unit_attack_base` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit base attack',
           `ube_report_unit_shield_base` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit base shield',
           `ube_report_unit_armor_base` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit base armor',
--- ?          `ube_report_unit_capacity` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit capacity', -- Only for statistics
--- ?          `ube_report_unit_type` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit type',            -- Only for statistics
+          -- ? `ube_report_unit_capacity` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit capacity', -- Only for statistics
+          -- ? `ube_report_unit_type` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit type',            -- Only for statistics
 
--- ?          `ube_report_unit_price_metal` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit price metal',       -- Only for statistics
+          -- ? `ube_report_unit_price_metal` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit price metal',       -- Only for statistics
 
           `ube_report_unit_sort_order` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit pass-through sort order to maintain same output',
 
@@ -745,13 +745,13 @@ switch($new_version)
           `unit_location_type` TINYINT NOT NULL DEFAULT 0 COMMENT 'Location type: universe, user, planet (moon?), fleet',
           `unit_location_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Location ID',
 
---          `unit_bind_type` TINYINT NOT NULL DEFAULT 0 COMMENT 'Binding - where unit is originally belongs', -- unused so far
---          `unit_bind_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Location ID', -- unused so far
+          -- `unit_bind_type` TINYINT NOT NULL DEFAULT 0 COMMENT 'Binding - where unit is originally belongs', -- unused so far
+          -- `unit_bind_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Location ID', -- unused so far
 
           `unit_type` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit type',
           `unit_snid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit SuperNova ID',
---          `unit_dbid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit exemplar DB ID in respective table', -- does it really needs?
---          `unit_guid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit unique GUID', -- unused for now. Will be need when GUID would be implemented
+          -- `unit_dbid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit exemplar DB ID in respective table', -- does it really needs?
+          -- `unit_guid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit unique GUID', -- unused for now. Will be need when GUID would be implemented
 
           `unit_level` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit level or count - dependent of unit_type',
 
@@ -776,7 +776,7 @@ switch($new_version)
 
           `captain_xp` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain expirience',
           `captain_level` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain level so far', -- Дублирует запись в unit
---          `captain_level_free` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain level free to spend',
+          -- `captain_level_free` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain level free to spend',
 
           `captain_shield` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain shield bonus level',
           `captain_armor` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain armor bonus level',

@@ -84,7 +84,7 @@ li
 /* Icon file */
 .icons { background-image: url(../images/icons.png); }
 
-.icon-plus { background-position: 0px 0px; }
+.icon-plus { background-position: 0 0px; }
 .icon-minus { background-position: -16px 0px; }
 .icon-info { background-position: -32px 0px; }
 .icon-cancel { background-position: -48px 0px; }
@@ -495,4 +495,10 @@ th.c_j, td.c_j
 .cell_justify, .c_j
 {
   text-align: justify;
+}
+
+.transparent_cell
+{
+  background-color: transparent;
+  border: 0;
 }

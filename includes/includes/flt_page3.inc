@@ -47,24 +47,6 @@ function sn_fleet_page3()
 
   doquery('START TRANSACTION;');
 
-  if($sn_module['unit_captain']->manifest['active'] && $captain_id = sys_get_param_id('captain_id'))
-  {
-    $captain = mrc_get_level($user, $planetrow, UNIT_CAPTAIN, true);
-    if(!$captain)
-    {
-      $errorlist .= $lang['module_unit_captain_error_no_captain'];
-    }
-    elseif($captain['unit_location_type'] == LOC_PLANET)
-    {
-      // Do nothing (?)
-    }
-    else
-    {
-      $errorlist .= $lang['module_unit_captain_error_captain_flying'];
-    }
-  }
-
-
   $planetrow = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1 FOR UPDATE;", true);
 
   if ($target_mission == MT_EXPLORE) {
@@ -103,6 +85,26 @@ function sn_fleet_page3()
     }
   }
 
+
+  if($sn_module['unit_captain']->manifest['active'] && $captain_id = sys_get_param_id('captain_id'))
+  {
+    $captain = mrc_get_level($user, $planetrow, UNIT_CAPTAIN, true);
+    if(!$captain)
+    {
+      $errorlist .= $lang['module_unit_captain_error_no_captain'];
+    }
+    elseif($captain['unit_location_type'] == LOC_PLANET)
+    {
+      if($target_mission == MT_RELOCATE && ($arriving_captain = mrc_get_level($user, $TargetPlanet, UNIT_CAPTAIN, true)))
+      {
+        $errorlist .= $lang['module_unit_captain_error_captain_already_bound'];
+      }
+    }
+    else
+    {
+      $errorlist .= $lang['module_unit_captain_error_captain_flying'];
+    }
+  }
 
   if ($errorlist)
   {

@@ -65,9 +65,8 @@ function sn_fleet_page2()
     ));
   }
 
-  if($sn_module['unit_captain']->manifest['active'] && $captain = mrc_get_level($user, $planetrow, UNIT_CAPTAIN))
+  if($sn_module['unit_captain']->manifest['active'] && ($captain = mrc_get_level($user, $planetrow, UNIT_CAPTAIN)) && $captain['unit_location_type'] == LOC_PLANET)
   {
-debug($captain);
     $template->assign_vars(array(
       'CAPTAIN_ID' => $captain['unit_id'],
       'CAPTAIN_SHIELD' => $captain['captain_shield'],
