@@ -14,7 +14,7 @@ $sn_menu = array(
     'TYPE'     => 'image',                     // Menu item type: 'image' (wrapped by IMG tag), 'text' (puts "as-is") or 'lang' for late biding with $lang[ITEM] values. Default is 'text'
     'CLASS'    => 'c_c',                       // Class for TD/TH element. Can be c_c, c_l, c_r or any other custom. 'c_c' default for 'header', 'c_l' default for 'text'
     'TITLE'    => 'Triolan.COM',               // TITLE tag for Tx HTML-element
-    'ICON'     => 'menu_icon.png',             // Icon filename - would be searched in $dpath/icons/
+    'ICON'     => 'menu_icon.png',             // Icon filename - would be searched in $dpath/icons/. If 'true' - icon name would be generated from menu item ID plus ".png"
     'ITEM'     => 'images/triolan.gif',        // Item: text, relative image URL or lang reference. Lang reference supports constants and multilevel arrays i.e. 'info[STRUC_MINE_METAL][description]'
     'LINK'     => 'http://www.triolan.com/',   // URL
     'BLANK'    => true,                        // Should link open in new window/tab?
@@ -59,39 +59,6 @@ $sn_menu = array(
     'SPAN'  => 'important',
   ),
 
-  'menu_rules' => !$config->url_rules ? array() : array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'sys_game_rules',
-    'LINK'  => $config->url_rules,
-  ),
-  'menu_faq' => !$config->url_faq ? array() : array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'm_faq',
-    'LINK'  => $config->url_faq,
-  ),
-
-  'menu_news' => array(
-    'LEVEL' => 'header',
-    'ITEM'  => $lang['news_title'] . ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\">{$lang['lm_announce_fresh']}</span>" : ''),
-    'LINK'  => 'announce.php',
-  ),
-
-  'menu_dark_matter' => array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'sys_dark_matter',
-    'LINK'  => 'dark_matter.php',
-  ),
-
-  'menu_affiliates' => array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'm_affilates',
-    'LINK'  => 'affilates.php',
-  ),
-
   'menu_planet' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
@@ -102,36 +69,42 @@ $sn_menu = array(
     'TYPE'  => 'lang',
     'ITEM'  => 'Overview',
     'LINK'  => 'overview.php',
-  ),
-  'menu_planet_resources' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'Resources',
-    'LINK'  => 'resources.php',
-  ),
-  'menu_planet_fleets' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'lm_fleet_orbiting',
-    'LINK'  => 'fleet.php',
+    'ICON'  => true,
   ),
   'menu_planet_structures' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'tech[UNIT_STRUCTURES]',
     'LINK'  => 'buildings.php?mode=' . QUE_STRUCTURES,
+    'ICON'  => true,
   ),
   'menu_planet_shipyard' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'Shipyard',
     'LINK'  => 'buildings.php?mode=' . SUBQUE_FLEET,
+    'ICON'  => true,
   ),
   'menu_planet_defense' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'Defense',
     'LINK'  => 'buildings.php?mode=' . SUBQUE_DEFENSE,
+    'ICON'  => true,
+  ),
+  'menu_planet_resources' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'Resources',
+    'LINK'  => 'resources.php',
+    'ICON'  => true,
+  ),
+  'menu_planet_fleets' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'lm_fleet_orbiting',
+    'LINK'  => 'fleet.php',
+    'ICON'  => true,
   ),
 
   'menu_empire' => array(
@@ -144,63 +117,121 @@ $sn_menu = array(
     'TYPE'  => 'lang',
     'ITEM'  => 'imp_overview',
     'LINK'  => 'index.php?page=imperium',
-  ),
-  'menu_empire_emperor' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'imp_imperator',
-    'LINK'  => 'index.php?page=imperator',
-  ),
-  'menu_empire_fleets' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'imp_fleets',
-    'LINK'  => 'flying_fleets.php',
+    'ICON'  => true,
   ),
   'menu_info_research' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'Research',
     'LINK'  => 'buildings.php?mode=research',
+    'ICON'  => true,
   ),
-  'menu_empire_mercenaries' => array(
+  'menu_empire_techtree' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
-    'ITEM'  => 'tech[UNIT_MERCENARIES]',
-    'LINK'  => 'officer.php?mode=' . UNIT_MERCENARIES,
+    'ITEM'  => 'Technology',
+    'LINK'  => 'index.php?page=techtree',
+    'ICON'  => true,
   ),
-  'menu_empire_schematics' => array(
+  'menu_empire_fleets' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
-    'ITEM'  => 'tech[UNIT_PLANS]',
-    'LINK'  => 'officer.php?mode=' . UNIT_PLANS,
+    'ITEM'  => 'imp_fleets',
+    'LINK'  => 'flying_fleets.php',
+    'ICON'  => true,
   ),
-  'menu_empire_artifacts' => array(
+  'menu_empire_quests' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
-    'ITEM'  => 'tech[UNIT_ARTIFACTS]',
-    'LINK'  => 'artifacts.php',
+    'ITEM'  => 'menu_quest_list',
+    'LINK'  => 'quest.php',
+    'ICON'  => true,
+  ),
+
+  'menu_empire_universe' => array(
+    'LEVEL' => 'header',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'menu_universe_overview',
+    'LINK'  => 'galaxy.php?mode=0',
+  ),
+
+  'menu_stats' => array(
+    'LEVEL' => 'header',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'Statistics',
+  ),
+  'menu_info_stats' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'menu_stat_players',
+    'LINK'  => 'stat.php',
+    'ICON'  => true,
+  ),
+  'menu_info_records' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'menu_stat_records',
+    'LINK'  => 'records.php',
+    'ICON'  => true,
+  ),
+  'menu_empire_emperor' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'imp_imperator',
+    'LINK'  => 'index.php?page=imperator',
+    'ICON'  => true,
+  ),
+
+  'menu_dark_matter' => array(
+    'LEVEL' => 'header',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'sys_dark_matter',
+    'LINK'  => 'dark_matter.php',
   ),
   'menu_empire_market' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'rinok',
     'LINK'  => 'market.php',
+    'ICON'  => true,
   ),
-  'menu_empire_universe' => array(
+  'menu_empire_mercenaries' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
-    'ITEM'  => 'sys_universe',
-    'LINK'  => 'galaxy.php?mode=0',
+    'ITEM'  => 'tech[UNIT_MERCENARIES]',
+    'LINK'  => 'officer.php?mode=' . UNIT_MERCENARIES,
+    'ICON'  => true,
   ),
-
+  'menu_empire_schematics' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'tech[UNIT_PLANS]',
+    'LINK'  => 'officer.php?mode=' . UNIT_PLANS,
+    'ICON'  => true,
+  ),
+  'menu_empire_artifacts' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'tech[UNIT_ARTIFACTS]',
+    'LINK'  => 'artifacts.php',
+    'ICON'  => true,
+  ),
+  'menu_affiliates' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'm_affilates',
+    'LINK'  => 'affilates.php',
+    'ICON'  => true,
+  ),
+/*
   'menu_ally' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'sys_alliance',
   ),
+*/
   'menu_ally_overview' => array(
-    'LEVEL' => 'submenu',
+    'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'sys_alliance',
     'LINK'  => 'alliance.php',
@@ -210,6 +241,7 @@ $sn_menu = array(
     'TYPE'  => 'lang',
     'ITEM'  => 'AllyChat',
     'LINK'  => 'index.php?page=chat&mode=' . CHAT_MODE_ALLY,
+    'ICON'  => true,
   ),
 
   'menu_comm' => array(
@@ -222,60 +254,70 @@ $sn_menu = array(
     'TYPE'  => 'lang',
     'ITEM'  => 'Messages',
     'LINK'  => 'messages.php',
+    'ICON'  => true,
   ),
   'menu_comm_chat' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'Chat',
     'LINK'  => 'index.php?page=chat&mode=' . CHAT_MODE_COMMON,
+    'ICON'  => true,
   ),
   'menu_comm_forum' => !$config->url_forum ? array() : array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'm_forum',
     'LINK'  => $config->url_forum,
+    'ICON'  => true,
   ),
 
+// TODO: menu_races
   'menu_utils' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'm_others',
-  ),
-  'menu_utils_simulator' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'm_simulator',
-    'LINK'  => 'simulator.php',
-  ),
-  'menu_utils_reports' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'lm_combat_reports',
-    'LINK'  => 'viewreport.php',
-  ),
-  'menu_utils_buddies' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'Buddylist',
-    'LINK'  => 'buddy.php',
-  ),
-  'menu_utils_notes' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'Notes',
-    'LINK'  => 'notes.php',
-  ),
-  'menu_utils_shortcuts' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'lm_shortcuts',
-    'LINK'  => 'fleet_shortcuts.php',
   ),
   'menu_utils_search' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'Search',
     'LINK'  => 'search.php',
+    'ICON'  => true,
+  ),
+  'menu_utils_shortcuts' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'lm_shortcuts',
+    'LINK'  => 'fleet_shortcuts.php',
+    'ICON'  => true,
+  ),
+  'menu_utils_buddies' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'Buddylist',
+    'LINK'  => 'buddy.php',
+    'ICON'  => true,
+  ),
+  'menu_utils_notes' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'Notes',
+    'LINK'  => 'notes.php',
+    'ICON'  => true,
+  ),
+  'menu_utils_reports' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'lm_combat_reports',
+    'LINK'  => 'viewreport.php',
+    'ICON'  => true,
+  ),
+  'menu_utils_simulator' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'm_simulator',
+    'LINK'  => 'simulator.php',
+    'ICON'  => true,
   ),
 
   'menu_info' => array(
@@ -283,47 +325,46 @@ $sn_menu = array(
     'TYPE'  => 'lang',
     'ITEM'  => 'navig',
   ),
-  'menu_empire_techtree' => array(
+  'menu_news' => array(
     'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'Technology',
-    'LINK'  => 'index.php?page=techtree',
+    'ITEM'  => $lang['news_title'] . ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\">{$lang['lm_announce_fresh']}</span>" : ''),
+    'LINK'  => 'announce.php',
+    'ICON'  => true,
   ),
-  'menu_empire_quests' => array(
+  'menu_faq' => !$config->url_faq ? array() : array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
-    'ITEM'  => 'qst_quests',
-    'LINK'  => 'quest.php',
+    'ITEM'  => 'm_faq',
+    'LINK'  => $config->url_faq,
+    'ICON'  => true,
   ),
-  'menu_info_stats' => array(
+  'menu_rules' => !$config->url_rules ? array() : array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
-    'ITEM'  => 'Statistics',
-    'LINK'  => 'stat.php',
-  ),
-  'menu_info_records' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'Records',
-    'LINK'  => 'records.php',
-  ),
-  'menu_info_server' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'lm_server_info',
-    'LINK'  => 'server_info.php',
+    'ITEM'  => 'sys_game_rules',
+    'LINK'  => $config->url_rules,
+    'ICON'  => true,
   ),
   'menu_info_ban' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'lm_banned',
     'LINK'  => 'banned.php',
+    'ICON'  => true,
+  ),
+  'menu_info_server' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'lm_server_info',
+    'LINK'  => 'server_info.php',
+    'ICON'  => true,
   ),
   'menu_info_admins' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'commun',
     'LINK'  => 'index.php?page=contact',
+    'ICON'  => true,
   ),
 
   'menu_options' => array(

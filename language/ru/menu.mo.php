@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35b3
+* @version 36a0.21
 *
 */
 
@@ -110,7 +110,7 @@ $lang = array_merge($lang, array(
   'lm_shortcuts' => 'Закладки',
   'lm_banned' => 'Список банов',
   'lm_announce_fresh' => 'СВЕЖИЕ',
-  'lm_server_info' => 'Мировые константы',
+  'lm_server_info' => 'О сервере',
 ));
 
 ?>

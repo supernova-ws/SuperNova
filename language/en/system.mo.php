@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36a0.18
+* @version 36a0.21
 *
 */
 
@@ -703,7 +703,7 @@ $lang = array_merge($lang, array(
 
   'sys_ali_bonus_members' => 'Minimum Alliance size for Ally bonus ',
 
-  'sys_premium' => 'PREMIUM',
+  'sys_premium' => 'Premium account',
 
   'mrc_period_list' => array(
     PERIOD_MINUTE    => '1 minute',
@@ -800,6 +800,11 @@ $lang = array_merge($lang, array(
   'sys_captains' => 'Captains',
 
   'sys_fleet_composition' => 'Fleet composition',
+
+  'menu_quest_list' => 'Quest list',
+  'menu_universe_overview' => 'Universe overview',
+  'menu_stat_players' => 'Players statistics',
+  'menu_stat_records' => 'Universe records',
 
 ));
 

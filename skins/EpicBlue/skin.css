@@ -202,8 +202,8 @@ h1
   font-weight: bold;
 }
 
-#left_menu th {
-  color: #63698c;
+#left_menu th, #menu_ally_overview {
+  color: goldenrod;/*#63698c;*/
 /*  background-image: url(img/bg1.gif);*/
   background-image     : url("images/table_th_background.png");
   background-repeat: repeat-x;

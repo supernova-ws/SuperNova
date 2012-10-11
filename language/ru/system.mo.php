@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #36a0.18#
+* @version #36a0.21#
 *
 */
 
@@ -704,7 +704,7 @@ $lang = array_merge($lang, array(
 
   'sys_ali_bonus_members' => 'Минимальное размер Альянса для получения бонуса',
 
-  'sys_premium' => 'ПРЕМИУМ',
+  'sys_premium' => 'Премиум',
 
   'mrc_period_list' => array(
     PERIOD_MINUTE    => '1 минута',
@@ -804,6 +804,11 @@ $lang = array_merge($lang, array(
   'sys_captains' => 'Капитаны',
 
   'sys_fleet_composition' => 'Состав флота',
+
+  'menu_quest_list' => 'Список квестов',
+  'menu_universe_overview' => 'Обзор Вселенной',
+  'menu_stat_players' => 'Статистика',
+  'menu_stat_records' => 'Рекорды',
 
 ));
 
