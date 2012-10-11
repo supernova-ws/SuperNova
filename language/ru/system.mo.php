@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #36a0.21#
+* @version #36a0.24#
 *
 */
 
@@ -804,11 +804,6 @@ $lang = array_merge($lang, array(
   'sys_captains' => 'Капитаны',
 
   'sys_fleet_composition' => 'Состав флота',
-
-  'menu_quest_list' => 'Список квестов',
-  'menu_universe_overview' => 'Обзор Вселенной',
-  'menu_stat_players' => 'Статистика',
-  'menu_stat_records' => 'Рекорды',
 
 ));
 

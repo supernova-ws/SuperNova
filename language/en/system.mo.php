@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36a0.21
+* @version 36a0.24
 *
 */
 
@@ -800,11 +800,6 @@ $lang = array_merge($lang, array(
   'sys_captains' => 'Captains',
 
   'sys_fleet_composition' => 'Fleet composition',
-
-  'menu_quest_list' => 'Quest list',
-  'menu_universe_overview' => 'Universe overview',
-  'menu_stat_players' => 'Players statistics',
-  'menu_stat_records' => 'Universe records',
 
 ));
 

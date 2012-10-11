@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 36a0.21
+* @version 36a0.24
 *
 */
 
@@ -111,6 +111,13 @@ $lang = array_merge($lang, array(
   'lm_banned' => 'Список банов',
   'lm_announce_fresh' => 'СВЕЖИЕ',
   'lm_server_info' => 'О сервере',
+
+  'menu_quest_list' => 'Список квестов',
+  'menu_universe_overview' => 'Обзор Вселенной',
+  'menu_stat_players' => 'Статистика',
+  'menu_stat_records' => 'Рекорды',
+  'menu_races' => 'Родные миры',
+
 ));
 
 ?>

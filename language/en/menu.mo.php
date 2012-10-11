@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35b3
+* @version 36a0.24
 *
 */
 
@@ -113,6 +113,13 @@ $lang = array_merge($lang, array(
   'lm_banned' => 'Ban List',
   'lm_announce_fresh' => 'Update',
   'lm_server_info' => 'Server',
+
+  'menu_quest_list' => 'Quest list',
+  'menu_universe_overview' => 'Universe overview',
+  'menu_stat_players' => 'Players statistics',
+  'menu_stat_records' => 'Universe records',
+  'menu_races' => 'Homeworlds',
+
 ));
 
 ?>
