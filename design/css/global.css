@@ -178,6 +178,12 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
   padding-right:5px;
 }
 
+#sn_menu td, #sn_menu th
+{
+  height: 16px;
+  vertical-align: middle;
+}
+
 #resources
 {
   margin: auto;

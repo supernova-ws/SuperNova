@@ -1,176 +1,181 @@
 <!-- DEFINE $OVERVIEW = true -->
 <script type="text/javascript" src="js/sn_ajax_send_fleet.js"></script>
 <script type="text/javascript">
+  var MT_SPY = {D_MT_SPY};
+  var MT_COLONIZE = {D_MT_COLONIZE};
+  var MT_RECYCLE = {D_MT_RECYCLE};
+  var MT_MISSILE = {D_MT_MISSILE};
+  var uni_galaxy = "{PLANET_GALAXY}";
+  var uni_system = "{PLANET_SYSTEM}";
 
-// var SHIP_RECYCLER = {D_SHIP_RECYCLER};
-var MT_SPY = {D_MT_SPY};
-var MT_COLONIZE = {D_MT_COLONIZE};
-var MT_RECYCLE = {D_MT_RECYCLE};
-var MT_MISSILE = {D_MT_MISSILE};
-var uni_galaxy = "{PLANET_GALAXY}";
-var uni_system = "{PLANET_SYSTEM}";
-
-jQuery.noConflict();
+  jQuery.noConflict();
 // --></script>
 
-<br>
-<table><tr><th valign=top class="tr">
+<br />
 
-    <!-- IF .announces -->
-    <table width=519>
-      <tr><td colspan=2 class="c"><a href=announce.php>{L_news_title}</a></td></tr>
-      <!-- INCLUDE news_list -->
-    </table>
-  <!-- ENDIF -->
-
-  <!-- IF NEW_MESSAGES || NEW_LEVEL_MINER || NEW_LEVEL_RAID -->
-    <table width="519">
-      <!-- IF NEW_MESSAGES -->
-        <tr><th colspan=2><a href=messages.php>
-          {L_ov_you_have}
-          <!-- IF NEW_MESSAGES == 1 -->
-            {L_ov_new_message}
-          <!-- ELSE -->
-            {NEW_MESSAGES} {L_ov_new_messages}
-          <!-- ENDIF -->
-        </a></th></tr>
+<table>
+  <tr>
+    <th valign=top class="tr">
+      <!-- IF .announces -->
+        <table width=519>
+          <tr><th colspan=2 class="c_c"><a href=announce.php>[ {L_news_title} ]</a></th></tr>
+          <!-- INCLUDE news_list -->
+        </table>
       <!-- ENDIF -->
 
-      <!-- IF NEW_LEVEL_MINER -->
-        <tr><th colspan=2><a href=officer.php>{L_ov_rpg_new_level_miner}</a></th></tr>
+      <!-- IF NEW_MESSAGES || NEW_LEVEL_MINER || NEW_LEVEL_RAID -->
+        <table width="519">
+          <!-- IF NEW_MESSAGES -->
+            <tr><th colspan=2><a href=messages.php>
+              {L_ov_you_have}
+              <!-- IF NEW_MESSAGES == 1 -->
+                {L_ov_new_message}
+              <!-- ELSE -->
+                {NEW_MESSAGES} {L_ov_new_messages}
+              <!-- ENDIF -->
+            </a></th></tr>
+          <!-- ENDIF -->
+
+          <!-- IF NEW_LEVEL_MINER -->
+            <tr><th colspan=2><a href=officer.php>{L_ov_rpg_new_level_miner}</a></th></tr>
+          <!-- ENDIF -->
+
+          <!-- IF NEW_LEVEL_RAID -->
+            <tr><th colspan=2><a href=officer.php>{L_ov_rpg_new_level_raid}</a></th></tr>
+          <!-- ENDIF -->
+        </table>
       <!-- ENDIF -->
 
-      <!-- IF NEW_LEVEL_RAID -->
-        <tr><th colspan=2><a href=officer.php>{L_ov_rpg_new_level_raid}</a></th></tr>
-      <!-- ENDIF -->
-    </table>
-  <!-- ENDIF -->
+      <table width="519">
+        <tr>
+          <th style="white-space: nowrap;" class="c_c" colspan=5>
+            <div class="fl">
+              <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}] {PLANET_TYPE_TEXT} "{PLANET_NAME}"</a>
+            </div>
+            <div class="fr">
+              <a href="overview.php?mode=manage"><font color="green">[ {L_ov_manage} ]</font></a>
+            </div>
+          </th>
+        </tr>
 
-  <table width="519">
-    <tr>
-      <th style="white-space: nowrap;" class="c_c" colspan=5>
-        <div class="fl">{PLANET_TYPE_TEXT} "{PLANET_NAME}" <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</a></div>
-        <div class="fr"><a href="overview.php?mode=manage"><font color="green">[{L_ov_manage}]</font></a></td></div>
-      </th>
-    </tr>
-
-    <!-- IF GATE_LEVEL -->
-    <tr>
-      <th class="c_c" colspan="2">{L_tech[D_STRUC_MOON_GATE]}</th>
-      <th class="c_c" colspan="3"><a href="jumpgate.php">
-        <!-- IF GATE_JUMP_REST_TIME -->
-        {L_ov_gate_time_left} <span  id="gate_jump_time" class="error"></span>
-        <script type="text/javascript"><!--
-          sn_timers.unshift({
-            id: 'gate_jump_time',
-            type: 0,
-            active: true,
-            start_time: '{TIME_NOW}',
-            options: 
-            {
-              msg_done: '{L_gate_ready}',
-              que: [['1', '', {GATE_JUMP_REST_TIME}, '1']]
-            }
-          });
-        // --></script>
-        <!-- ELSE -->
-          <span class="ok">{L_gate_ready}</span>
-        <!-- ENDIF --></a>
-      </th>
-    </tr>
-    <!-- ENDIF -->
-
-    <tr>
-      <td class="c_c" width="120" rowspan="6">
-        <!-- DEFINE $PLANET_ID = '{PLANET_ID}' -->
-        <!-- INCLUDE planet_governor -->
-      </td>
-
-      <th width=100 align="center">{L_buildings_on_planet}</th>
-      <th colspan="3" style="position: relative; padding: 0px; height: 100%;">
-        <div style="position: relative; width: 100%; height: 100%; border: 1px solid rgb(153, 153, 255); ">
-          <!-- IF PLANET_FILL >= 100 -->
-            <!-- DEFINE $BAR_COLOR = '#C00000' -->
-          <!-- ELSEIF PLANET_FILL >= 80 -->
-            <!-- DEFINE $BAR_COLOR = '#C0C000' -->
-          <!-- ELSE -->
-            <!-- DEFINE $BAR_COLOR = '#00C000' -->
-          <!-- ENDIF -->
-          <div style="position: absolute; top: 0px; left: 0px; width: {PLANET_FILL_BAR}%; background-color: {$BAR_COLOR}; height:100%;">&nbsp;</div>
-          <div style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; vertical-align: middle;">{planet_field_current}/{planet_field_max} ({PLANET_FILL}%)</div>
-          &nbsp;
-        </div>
-        <!-- IF PLANET_TYPE == 1 -->
-          <!-- IF SECTOR_CAN_BUY -->
-            <a href="overview.php?sector_buy=1"><span class="positive">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span></a>
-          <!-- ELSE -->
-            <span class="negative">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
-          <!-- ENDIF -->
+        <!-- IF GATE_LEVEL -->
+          <tr>
+            <th class="c_c" colspan="2">{L_tech[D_STRUC_MOON_GATE]}</th>
+            <th class="c_c" colspan="3">
+              <a href="jumpgate.php">
+                <!-- IF GATE_JUMP_REST_TIME -->
+                  {L_ov_gate_time_left} <span  id="gate_jump_time" class="error"></span>
+                  <script type="text/javascript"><!--
+                    sn_timers.unshift({
+                      id: 'gate_jump_time',
+                      type: 0,
+                      active: true,
+                      start_time: '{TIME_NOW}',
+                      options: 
+                      {
+                        msg_done: '{L_gate_ready}',
+                        que: [['1', '', {GATE_JUMP_REST_TIME}, '1']]
+                      }
+                    });
+                  // --></script>
+                <!-- ELSE -->
+                  <span class="ok">{L_gate_ready}</span>
+                <!-- ENDIF -->
+              </a>
+            </th>
+          </tr>
         <!-- ENDIF -->
-      </th>
-    </tr>
 
-    <tr>
-      <th width=100>{L_orb}</th>
-      <th colspan="3" id="fleetstatusrow">{L_sys_metal}: {metal_debris} / {L_sys_crystal}: {crystal_debris}
-        <!-- IF PLANET_RECYCLERS -->
-          <br><span id="ov_recycle" style="cursor: pointer" onclick="doit(MT_RECYCLE, {PLANET_PLANET}, {PLANET_TYPE});">[ {L_type_mission[8]} ]</span>
-          <table id="fleetstatustable" cellspacing="0" cellpadding="0"></table>
-        <!-- ENDIF -->
-      </th>
-    </tr>
-    <tr>
-      <th colspan="2">{L_Diameter}&nbsp;{planet_diameter}&nbsp;{L_km}</th>
-      <th colspan="2">{L_Temperature}&nbsp;{planet_temp_min}&deg;C&nbsp;/&nbsp;{planet_temp_max}&deg;C</th>
-    </tr>
+        <tr>
+          <td class="c_c" width="120" rowspan="6">
+            <!-- DEFINE $PLANET_ID = '{PLANET_ID}' -->
+            <!-- INCLUDE planet_governor -->
+          </td>
 
-    </tr>
-    <tr><td colspan=5 class="c">{L_Planet_menu}</td></tr>
-    <!-- BEGIN ques -->
-    <tr>
-      <th width=100 height=33%>
-        <!-- IF ques.LENGTH -->
-        <div id="ov_{ques.ID}"></div>
-        <!-- DEFINE $QUE_ID = '{ques.ID}' -->
-        <!-- INCLUDE eco_queue -->
-        <!-- ELSE -->
-        {ques.NAME}<br>
-        <!-- ENDIF -->
-        <div id="ov_{ques.ID}_timer" style="color: lime"></div>
-        <div id="ov_{ques.ID}_total" style="color: red"></div>
-      </th>
-      <th colspan=4 id="ov_{ques.ID}_que">
-        {L_eco_que_empty}
-      </th>
-    </tr>
-    <!-- END ques -->
+          <th width=100 align="center">{L_buildings_on_planet}</th>
+          <th colspan="3" style="position: relative; padding: 0px; height: 100%;">
+            <div style="position: relative; width: 100%; height: 100%; border: 1px solid rgb(153, 153, 255); ">
+              <!-- IF PLANET_FILL >= 100 -->
+                <!-- DEFINE $BAR_COLOR = '#C00000' -->
+              <!-- ELSEIF PLANET_FILL >= 80 -->
+                <!-- DEFINE $BAR_COLOR = '#C0C000' -->
+              <!-- ELSE -->
+                <!-- DEFINE $BAR_COLOR = '#00C000' -->
+              <!-- ENDIF -->
+              <div style="position: absolute; top: 0px; left: 0px; width: {PLANET_FILL_BAR}%; background-color: {$BAR_COLOR}; height:100%;">&nbsp;</div>
+              <div style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; vertical-align: middle;">{planet_field_current}/{planet_field_max} ({PLANET_FILL}%)</div>
+              &nbsp;
+            </div>
+            <!-- IF PLANET_TYPE == 1 -->
+              <!-- IF SECTOR_CAN_BUY -->
+                <a href="overview.php?sector_buy=1"><span class="positive">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span></a>
+              <!-- ELSE -->
+                <span class="negative">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
+              <!-- ENDIF -->
+            <!-- ENDIF -->
+          </th>
+        </tr>
 
-    <!-- INCLUDE planet_resources -->
+        <tr>
+          <th width=100>{L_orb}</th>
+          <th colspan="3" id="fleetstatusrow">{L_sys_metal}: {metal_debris} / {L_sys_crystal}: {crystal_debris}
+            <!-- IF PLANET_RECYCLERS -->
+              <br><span id="ov_recycle" style="cursor: pointer" onclick="doit(MT_RECYCLE, {PLANET_PLANET}, {PLANET_TYPE});">[ {L_type_mission[8]} ]</span>
+              <table id="fleetstatustable" cellspacing="0" cellpadding="0"></table>
+            <!-- ENDIF -->
+          </th>
+        </tr>
+        <tr>
+          <th colspan="2">{L_Diameter}&nbsp;{planet_diameter}&nbsp;{L_km}</th>
+          <th colspan="2">{L_Temperature}&nbsp;{planet_temp_min}&deg;C&nbsp;/&nbsp;{planet_temp_max}&deg;C</th>
+        </tr>
 
-  </table>
+        </tr>
+        <tr><td colspan=5 class="c">{L_Planet_menu}</td></tr>
+        <!-- BEGIN ques -->
+          <tr>
+            <th width=100 height=33%>
+              <!-- IF ques.LENGTH -->
+                <div id="ov_{ques.ID}"></div>
+                <!-- DEFINE $QUE_ID = '{ques.ID}' -->
+                <!-- INCLUDE eco_queue -->
+              <!-- ELSE -->
+                {ques.NAME}<br>
+              <!-- ENDIF -->
+                <div id="ov_{ques.ID}_timer" style="color: lime"></div>
+                <div id="ov_{ques.ID}_total" style="color: red"></div>
+            </th>
+            <th colspan=4 id="ov_{ques.ID}_que">
+              {L_eco_que_empty}
+            </th>
+          </tr>
+        <!-- END ques -->
 
-  <!-- INCLUDE planet_fleet_list -->
-</th>
+        <!-- INCLUDE planet_resources -->
+      </table>
 
-<th valign=top class="tr">
-  <table border="0" cellspacing=0 cellpadding=0 width="200">
-    <!-- INCLUDE planet_list -->
-  </table>
-</th>
-</tr>
+      <!-- INCLUDE planet_fleet_list -->
+    </th>
+
+    <th valign=top class="tr">
+      <table border="0" cellspacing=0 cellpadding=0 width="200">
+        <!-- INCLUDE planet_list -->
+      </table>
+    </th>
+  </tr>
 
 </table>
 
 <div id="admin_message"></div>
 
 <script type="text/javascript"><!--
-jQuery(document).bind("ready", function() {
-  // send requests
-  jQuery.post("scheduler.php", {rating: jQuery(this).html()}, function(xml) {
-    // format result
-    var result = [ jQuery("message", xml).text() ];
-    // output result
-    jQuery("#admin_message").html(result.join(""));
-  } );
-});
+  jQuery(document).bind("ready", function() {
+    // send requests
+    jQuery.post("scheduler.php", {rating: jQuery(this).html()}, function(xml) {
+      // format result
+      var result = [ jQuery("message", xml).text() ];
+      // output result
+      jQuery("#admin_message").html(result.join(""));
+    } );
+  });
 --></script>

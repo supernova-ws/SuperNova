@@ -1,6 +1,6 @@
 <?php
 
-function nws_render(&$template, $query_where = '', $query_limit = 0)
+function nws_render(&$template, $query_where = '', $query_limit = 20)
 {
   global $config, $time_now;
 
