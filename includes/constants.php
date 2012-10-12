@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '35');
 define('SN_RELEASE', '36');
-define('SN_VERSION', '36a0.24');
+define('SN_VERSION', '36a0.25');
 define('SN_RELEASE_STABLE', '35d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -294,6 +294,7 @@ define('ATTACK_ACS_WRONG_TARGET'  , 30);
 define('ATTACK_SAME'              , 31);
 define('ATTACK_RESOURCE_FORBIDDEN', 32);
 define('ATTACK_TRANSPORT_EMPTY'   , 33);
+define('ATTACK_SPIES_LONLY'       , 34);
 
 
 // *** Market variables

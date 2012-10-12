@@ -102,7 +102,7 @@ switch ($fleet_page)
     $missiontype = array();
     if ($planet > $config->game_maxPlanet)
     {
-      if(!$fleetarray[SHIP_SPY])
+//      if(!$fleetarray[SHIP_SPY])
       {
         $target_mission = MT_EXPLORE;
         $missiontype[MT_EXPLORE] = $lang['type_mission'][MT_EXPLORE];

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a11.6
+* @version 36a0.25
 *
 */
 
@@ -130,6 +130,7 @@ $lang = array_merge($lang, array(
     ATTACK_SAME => 'Source and destination planets are a same',
     ATTACK_RESOURCE_FORBIDDEN => 'It is not allowed to send fleet with resources in this mission',
     ATTACK_TRANSPORT_EMPTY => 'It is not allowed to send empty fleet to transport mission',
+    ATTACK_SPIES_LONLY => 'In this missions spies should be accompanied with other ships',
   ),
 
   'fl_fleet_err' => 'Error!',

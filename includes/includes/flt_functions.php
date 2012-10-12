@@ -219,10 +219,11 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     return ATTACK_NO_FLEET;
   }
 
-//TODO: Ïðîâåðêà íà íàëè÷èå ðåñóðñîâ ïðè Òðàíñïîðòå
-//TODO: Ïðîâåðêà íà îòñòóñòâèå ðåñóðñîâ â íåòðàíñïîðòíûõ ìèññèÿõ (Òðàíñïîðò, Ïåðåäèñëîêàöèÿ, Êîëîíèçàöèÿ)
+//TODO: ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð½Ð° Ð½Ð°Ð»Ð¸Ñ‡Ð¸Ðµ Ñ€ÐµÑÑƒÑ€ÑÐ¾Ð² Ð¿Ñ€Ð¸ Ð¢Ñ€Ð°Ð½ÑÐ¿Ð¾Ñ€Ñ‚Ðµ
+//TODO: ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð½Ð° Ð¾Ñ‚ÑÑ‚ÑƒÑÑ‚Ð²Ð¸Ðµ Ñ€ÐµÑÑƒÑ€ÑÐ¾Ð² Ð² Ð½ÐµÑ‚Ñ€Ð°Ð½ÑÐ¿Ð¾Ñ€Ñ‚Ð½Ñ‹Ñ… Ð¼Ð¸ÑÑÐ¸ÑÑ… (Ð¢Ñ€Ð°Ð½ÑÐ¿Ð¾Ñ€Ñ‚, ÐŸÐµÑ€ÐµÐ´Ð¸ÑÐ»Ð¾ÐºÐ°Ñ†Ð¸Ñ, ÐšÐ¾Ð»Ð¾Ð½Ð¸Ð·Ð°Ñ†Ð¸Ñ)
   $ships = 0;
   $recyclers = 0;
+  $spies = 0;
   $resources = 0;
   foreach($fleet as $ship_id => $ship_count)
   {
@@ -235,7 +236,8 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     if($is_ship)
     {
       $ships += $ship_count;
-      $recyclers = in_array($ship_id, $sn_data['groups']['flt_recyclers']) ? $ship_count : 0;
+      $recyclers += in_array($ship_id, $sn_data['groups']['flt_recyclers']) ? $ship_count : 0;
+      $spies += $ship_id == SHIP_SPY ? $ship_count : 0;
     }
     else
     {
@@ -311,6 +313,12 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     return ATTACK_NO_SLOTS;
   }
 
+  // Ð’ Ð¾Ð´Ð¸Ð½Ð¾Ñ‡ÐºÑƒ ÑˆÐ¿Ð¸Ð¾Ð½ÑÐºÐ¸Ðµ Ð·Ð¾Ð½Ð´Ñ‹ Ð¼Ð¾Ð³ÑƒÑ‚ Ð»ÐµÑ‚Ð°Ñ‚ÑŒ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð² Ð¼Ð¸ÑÑÐ¸Ð¸ Ð¨Ð¿Ð¸Ð¾Ð½Ð°Ð¶, ÐŸÐµÑ€ÐµÐ´Ð¸ÑÐ»Ð¾ÐºÐ°Ñ†Ð¸Ñ Ð¸ Ð¢Ñ€Ð°Ð½ÑÐ¿Ð¾Ñ€Ñ‚
+  if($spies == $ships && !($mission == MT_SPY || $mission == MT_RELOCATE || $mission == MT_TRANSPORT))
+  {
+    return ATTACK_SPIES_LONLY;
+  }
+
   // Checking for no planet
   if(!$planet_dst['id_owner'])
   {
@@ -359,12 +367,13 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
 
   $enemy = doquery("SELECT * FROM {{users}} WHERE `id` = '{$planet_dst['id_owner']}' LIMIT 1;", '', true);
   // We cannot attack or send resource to users in VACATION mode
-  if ($enemy['vacation'] && $mission != MT_RECYCLE)
+  if($enemy['vacation'] && $mission != MT_RECYCLE)
   {
     return ATTACK_VACATION;
   }
 
-  // Multi IP protection. Here we need a procedure to check proxies
+  // Multi IP protection
+  // TODO: Here we need a procedure to check proxies
   if(sys_is_multiaccount($user, $enemy))
   {
     return ATTACK_SAME_IP;
@@ -426,11 +435,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
 
   if($mission == MT_SPY)
   {
-    if($fleet[SHIP_SPY] >= 1)
-    {
-      return ATTACK_ALLOWED;
-    }
-    return ATTACK_NO_SPIES;
+    return $spies >= 1 ? ATTACK_ALLOWED : ATTACK_NO_SPIES;
   }
 
   // Is it MISSILE mission?

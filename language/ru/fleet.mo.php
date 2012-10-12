@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a11.6
+* @version 36a0.25
 *
 */
 
@@ -128,6 +128,7 @@ $lang = array_merge($lang, array(
     ATTACK_SAME => 'Исходная планета совпадает с пунктом назначения флота',
     ATTACK_RESOURCE_FORBIDDEN => 'Нельзя отправить флот с ресурсами в эту миссию',
     ATTACK_TRANSPORT_EMPTY => 'Нельзя отправить флот без ресурсов в транспортную миссию',
+    ATTACK_SPIES_LONLY => 'Нельзя отправить в эту миссию флот только из шпионских зондов',
   ),
 
   'fl_fleet_err' => 'Ошибка!',
