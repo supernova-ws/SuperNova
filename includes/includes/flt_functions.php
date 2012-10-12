@@ -314,7 +314,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   }
 
   // В одиночку шпионские зонды могут летать только в миссии Шпионаж, Передислокация и Транспорт
-  if($spies == $ships && !($mission == MT_SPY || $mission == MT_RELOCATE || $mission == MT_TRANSPORT))
+  if($ships && $spies && $spies == $ships && !($mission == MT_SPY || $mission == MT_RELOCATE || $mission == MT_TRANSPORT))
   {
     return ATTACK_SPIES_LONLY;
   }
