@@ -687,7 +687,7 @@ function sn_ube_combat_analyze(&$combat_data)
           // Если это корабль - прибавляем потери к обломкам на орбите
           if($fleet_info[UBE_TYPE][$unit_id] == UNIT_SHIPS)
           {
-            $outcome[UBE_DEBRIS][$resource_id] += $resources_lost;
+            $outcome[UBE_DEBRIS][$resource_id] += floor($resources_lost * ($combat_data[UBE_OPTIONS][UBE_SIMULATOR] ? 30 : mt_rand(20, 40)) / 100); // TODO: Configurize
           }
 
           // ...в металле
@@ -730,7 +730,7 @@ function sn_ube_combat_analyze(&$combat_data)
         $resource_dropped = $resource_amount - $fleet_outcome[UBE_RESOURCES][$resource_id];
         $fleet_outcome[UBE_CARGO_DROPPED][$resource_id] = $resource_dropped;
 
-        $outcome[UBE_DEBRIS][$resource_id] += $resource_dropped;
+        $outcome[UBE_DEBRIS][$resource_id] += round($resource_dropped * ($combat_data[UBE_OPTIONS][UBE_SIMULATOR] ? 50 : mt_rand(30, 70)) / 100); // TODO: Configurize
         $fleet_outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resource_dropped * $exchange[$resource_id];
       }
       $fleet_total_resources = array_sum($fleet_outcome[UBE_RESOURCES]);
