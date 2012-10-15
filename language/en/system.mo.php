@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36a0.24
+* @version 36a0.32
 *
 */
 
@@ -402,14 +402,15 @@ $lang = array_merge($lang, array(
   'news_new'        => 'New',
   'news_future'     => 'Announcement',
   'news_more'       => 'Read More...',
-                    
+  'news_hint'       => 'To close fresh news list - read them all by clicking on header "[ News ]"',
+
   'news_date'       => 'Date',
   'news_announce'   => 'Table of Contents',
   'news_detail_url' => 'Link to more info',
   'news_mass_mail'  => 'Send news to all players',
-                    
+
   'news_total'      => 'Total news: ',
-                    
+
   'news_add'        => 'Submit news',
   'news_edit'       => 'Edit news',
   'news_copy'       => 'Copy the news',

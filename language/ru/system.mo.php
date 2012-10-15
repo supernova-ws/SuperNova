@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #36a0.24#
+* @version #36a0.32#
 *
 */
 
@@ -401,14 +401,15 @@ $lang = array_merge($lang, array(
   'news_new'        => 'НОВАЯ',
   'news_future'     => 'АНОНС',
   'news_more'       => 'Подробнее...',
-                    
+  'news_hint'       => 'Что бы убрать список последних новостей - прочтите их все, кликнув на заголовке "[ Новости ]"',
+
   'news_date'       => 'Дата',
   'news_announce'   => 'Содержание',
   'news_detail_url' => 'Ссылка на подробности',
   'news_mass_mail'  => 'Разослать новость всем игрокам',
 
   'news_total'      => 'Всего новостей: ',
-                    
+
   'news_add'        => 'Добавить новость',
   'news_edit'       => 'Редактировать новость',
   'news_copy'       => 'Скопировать новость',
