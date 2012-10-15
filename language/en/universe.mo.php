@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a9.12
+* @version 36a0.33
 *
 */
 
@@ -147,6 +147,7 @@ $lang = array_merge($lang, array(
   'phalanx_nosensoravailable' => 'You do not have a Sensor Phalanx.',
   'phalanx_rangeerror' => 'Lacks level Sensor Phalanx!',
   'phalanx_planet_destroyed' => 'You can not scan destroyed planet!',
+  'phalanx_planet_not_exists' => 'This planet does not exists!',
   'gal_sys_members' => 'Members:&nbsp;',
   'gal_sys_hint' => 'Position the mouse pointer to the picture of the planet, moon, wrecks or the user name, the name of the Alliance that would get a popup menu with additional options',
   'uni_debris' => 'Debris',

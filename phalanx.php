@@ -50,6 +50,11 @@ if ($planetrow['deuterium'] < $cost)
 }
 
 $planet_scanned = doquery("SELECT * FROM {{planets}} WHERE galaxy = {$scan_galaxy} AND system = {$scan_system} AND planet = {$scan_planet} AND planet_type = {$scan_planet_type} LIMIT 1;", '', true);
+if(!$planet_scanned['id'])
+{
+  message($lang['phalanx_planet_not_exists'], $lang['tech'][STRUC_MOON_PHALANX], "", 3);
+}
+
 if($planet_scanned['destruyed'])
 {
   message ($lang['phalanx_planet_destroyed'], $lang['tech'][STRUC_MOON_PHALANX], "", 3);
