@@ -31,9 +31,10 @@ if($config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && $microtime - $c
 
 if(($message = sys_get_param_str('message')) && $user['username'])
 {
-  $nick = mysql_real_escape_string(render_player_nick($user, true));
-  $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $message);
   $ally_id = sys_get_param('ally') && $user['ally_id'] ? $user['ally_id'] : 0;
+//  $nick = mysql_real_escape_string(render_player_nick($user, true));
+  $nick = mysql_real_escape_string(render_player_nick($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id)));
+  $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $message);
 
   $query = doquery("INSERT INTO {{chat}} (user, ally_id, message, timestamp) VALUES ('{$nick}', '{$ally_id}', '{$message}', '{$time_now}');");
 

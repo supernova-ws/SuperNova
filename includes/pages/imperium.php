@@ -125,6 +125,8 @@ function sn_imperium_view($template = null)
       {
         $level_plus['LEVEL_PLUS_YELLOW'] = 0;
         $level_plus['LEVEL_PLUS_GREEN'] = 0;
+        $unit_db_name = $sn_data[$unit_id]['name'];
+
         if(in_array($unit_id, $sn_data['groups']['factories']))
         {
           $level_plus['PERCENT'] = $planet[$unit_db_name] ? $planet["{$sn_data[$unit_id]['name']}_porcent"] * 10 : -1;
@@ -161,7 +163,6 @@ function sn_imperium_view($template = null)
           break;
         }
 
-        $unit_db_name = $sn_data[$unit_id]['name'];
         $template->assign_block_vars('prods.planet', array_merge($level_plus, array(
           'ID'         => $planet['id'],
           'TYPE'       => $planet['planet_type'],
