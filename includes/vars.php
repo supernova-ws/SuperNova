@@ -527,6 +527,21 @@ mission = array(
   'pages' => array(
     'chat' => array(
       'filename' => 'chat',
+      'options' => array(
+        'fleet_update_skip' => true,
+      ),
+    ),
+    'chat_add' => array(
+      'filename' => 'chat',
+      'options' => array(
+        'fleet_update_skip' => true,
+      ),
+    ),
+    'chat_msg' => array(
+      'filename' => 'chat',
+      'options' => array(
+        'fleet_update_skip' => true,
+      ),
     ),
     'contact' => array(
       'allow_anonymous' => true,

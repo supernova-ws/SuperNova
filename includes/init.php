@@ -75,12 +75,13 @@ if(strpos($sn_root_relative, '.local/') !== false)
 }
 */
 
+$supernova = new stdClass();
+$supernova->options = array();
+
 $phpEx = strpos($phpEx = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $phpEx : '';
 
-//$server_document_root = str_replace(array('//', '//'), '/', $_SERVER['DOCUMENT_ROOT']);
 $server_document_root = str_replace("\\", '/', realpath($_SERVER['DOCUMENT_ROOT'])) . '/';
 $sn_root_relative = str_replace(array('//', '//'), '/', '/' . str_replace(array('\\', $server_document_root, 'includes/init.php'), array('/', '', ''), __FILE__));
-//$sn_root_physical = str_replace(array('//', '//'), '/', $_SERVER['DOCUMENT_ROOT'] . $sn_root_relative);
 $sn_root_physical = str_replace(array('//', '//'), '/', $server_document_root . $sn_root_relative);
 $phpbb_root_path  = $sn_root_physical;
 
@@ -206,9 +207,15 @@ sn_sys_load_php_files("{$sn_root_physical}modules/", $phpEx, true);
 // Сейчас мы делаем это здесь только для того, что бы содержание дефолтной страницы оказалось вверху. Что не факт, что нужно всегда
 // Но нужно, пока у нас есть не MVC-страницы
 $sn_page_data = $sn_data['pages'][$sn_page_name];
-if($sn_page_name && isset($sn_page_data))
+$sn_page_name_file = 'includes/pages/' . $sn_page_data['filename'] . '.' . $phpEx;
+if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file))
 {
-  require_once('includes/pages/' . $sn_page_data['filename'] . '.' . $phpEx);
+  require_once($sn_page_name_file);
+  if(is_array($sn_page_data['options']))
+  {
+    $supernova->options = array_merge($supernova->options, $sn_page_data['options']);
+  }
+//  $sn_page_data
 /*
   if(basename($sn_page_data) == $sn_page_data)
   {

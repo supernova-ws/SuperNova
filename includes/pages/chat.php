@@ -24,6 +24,8 @@
 
 $sn_mvc['model']['chat'][] = 'sn_chat_model';
 $sn_mvc['view']['chat'][] = 'sn_chat_view';
+$sn_mvc['model']['chat_add'][] = 'sn_chat_add_model';
+$sn_mvc['view']['chat_msg'][] = 'sn_chat_msg_view';
 
 function sn_chat_model()
 {
@@ -54,6 +56,137 @@ function sn_chat_view($template = null)
   $template = gettemplate('chat_body', $template);
 
   return $template;
+}
+
+function sn_chat_add_model()
+{
+  global $skip_fleet_update, $config, $microtime, $user, $time_now;
+
+  $skip_fleet_update = true;
+//  include('common.' . substr(strrchr(__FILE__, '.'), 1));
+  if($config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && $microtime - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
+  {
+    die();
+  }
+
+  if(($message = sys_get_param_str('message')) && $user['username'])
+  {
+    $ally_id = sys_get_param('ally') && $user['ally_id'] ? $user['ally_id'] : 0;
+    $nick = mysql_real_escape_string(render_player_nick($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id)));
+    $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $message);
+
+    doquery("INSERT INTO {{chat}} (user, ally_id, message, timestamp) VALUES ('{$nick}', '{$ally_id}', '{$message}', '{$time_now}');");
+
+    $config->array_set('users', $user['id'], 'chat_last_activity', $microtime);
+  }
+
+  die();
+}
+
+function sn_chat_msg_view($template = null)
+{
+  global $config, $skip_fleet_update, $microtime, $user, $time_now, $lang;
+//  $template = gettemplate('chat_body', $template);
+
+//  return $template;
+
+
+  $skip_fleet_update = true;
+//  include('common.' . substr(strrchr(__FILE__, '.'), 1));
+
+  $history = sys_get_param_str('history');
+  if(!$history)
+  {
+    $config->array_set('users', $user['id'], 'chat_last_refresh', $microtime);
+  }
+
+  $page = 0;
+  $last_message = '';
+  $alliance = 0;
+  $template_result['.']['chat'] = array();
+  if(!$history && $config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && $microtime - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
+  {
+    $result['disable'] = true;
+    $template_result['.']['chat'][] = array(
+      'TIME' => date(FMT_DATE_TIME, htmlentities($time_now, ENT_QUOTES, 'utf-8')),
+      'DISABLE' => true,
+    );
+  }
+  else
+  {
+    $alliance = sys_get_param_str('ally') && $user['ally_id'] ? $user['ally_id'] : 0;
+
+    $page_limit = 20; // Chat rows Limit
+
+    $where_add = '';
+    $last_message = 0;
+    if($history)
+    {
+      $rows = doquery("SELECT count(1) AS CNT FROM {{chat}} WHERE ally_id = '{$alliance}';", true);
+      $page_count = ceil($rows['CNT'] / $page_limit);
+
+      for($i = 0; $i < $page_count; $i++)
+      {
+        $template_result['.']['page'][] = array(
+          'NUMBER' => $i
+        );
+      }
+
+      $page = min($page_count, max(0, sys_get_param_int('page')));
+    }
+    else
+    {
+      $last_message = sys_get_param_id('last_message');
+      $where_add = $last_message ? "AND `messageid` > {$last_message}" : '';
+    }
+
+    $start_row = $page * $page_limit;
+    $query = doquery("SELECT * FROM {{chat}} WHERE ally_id = '{$alliance}' {$where_add} ORDER BY messageid DESC LIMIT {$start_row}, {$page_limit};");
+    while($chat_row = mysql_fetch_assoc($query))
+    {
+      // Little magik here - to retain HTML codes from DB and stripping HTML codes from nick
+      $nick_stripped = htmlentities(strip_tags($chat_row['user']), ENT_QUOTES, 'utf-8');
+      $nick = str_replace(strip_tags($chat_row['user']), $nick_stripped, $chat_row['user']);
+      if(!$history)
+      {
+        $nick = "<span style=\"cursor: pointer;\" onclick=\"addSmiley('({$nick_stripped})');\">{$nick}</span>";
+      }
+
+      $template_result['.']['chat'][] = array(
+        'TIME' => htmlentities(date(FMT_DATE_TIME, $chat_row['timestamp']), ENT_QUOTES, 'utf-8'),
+        'NICK' => $nick,
+        'TEXT' => cht_message_parse(htmlentities($chat_row['message'], ENT_QUOTES, 'utf-8')),
+      );
+
+      $last_message = max($last_message, $chat_row['messageid']);
+    }
+  }
+
+  $template_result['.']['chat'] = array_reverse($template_result['.']['chat']);
+
+  $template_result += array(
+    'PAGE' => $page,
+    'ALLY' => $alliance,
+    'HISTORY' => $history,
+  );
+
+  $template = gettemplate('chat_messages', $template);
+  $template->assign_recursive($template_result);
+
+  if($history)
+  {
+    display($template, "{$lang['chat_history']} - {$lang[$alliance ? 'chat_ally' : 'chat_common']}", true, '', false, true);
+  }
+  else
+  {
+    $result['last_message'] = $last_message;
+    ob_start();
+    displayP($template);
+    $result['html'] = ob_get_contents();
+    ob_end_clean();
+    print(json_encode($result));
+  }
+  die();
 }
 
 ?>

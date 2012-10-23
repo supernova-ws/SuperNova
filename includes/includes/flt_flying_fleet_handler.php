@@ -333,13 +333,13 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
 // ------------------------------------------------------------------
 function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 {
-  global $time_now;
+  global $time_now, $supernova;
 
   //global $config, $skip_fleet_update;
   //if(($time_now - $config->flt_lastUpdate <= 8 ) || $skip_fleet_update) return;
   //$config->db_saveItem('flt_lastUpdate', $time_now);
 
-  if($skip_fleet_update)
+  if($skip_fleet_update || $supernova->options['fleet_update_skip'])
   {
     return;
   }

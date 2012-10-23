@@ -38,7 +38,7 @@ function addMessage()
     message = "[c="+color+"]" + message + "[/c]";
   }
 
-  jQuery.post("chat_add.php", {'ally': ally_id, 'message': message}, function(data)
+  jQuery.post("index.php?page=chat_add", {'ally': ally_id, 'message': message}, function(data)
     {
       showMessage();
     }
@@ -53,7 +53,7 @@ function showMessage(norefresh)
   }
 
   chat_refreshing = true;
-  jQuery.post("chat_msg.php", {'ally': ally_id, 'last_message': chat_last_message}, function(data)
+  jQuery.post("index.php?page=chat_msg", {'page': 'chat_msg', 'ally': ally_id, 'last_message': chat_last_message}, function(data)
     {
       var shoutbox = document.getElementById('shoutbox');
       if(data.html)

@@ -4,7 +4,7 @@
     <!-- IF .page -->
       <div class="fr">
         <b><font size=2>{L_chat_page}:</font></b>
-        <select name='page' onchange='document.location.assign("chat_msg.php?ally={ALLY}&history={HISTORY}&page=" + this.value);'>
+        <select name='page' onchange='document.location.assign("index.php?page=chat_msg&ally={ALLY}&history={HISTORY}&page=" + this.value);'>
         <!-- BEGIN page -->
           <option value={page.NUMBER}<!-- IF PAGE == page.NUMBER --> selected<!-- ENDIF -->>{page.NUMBER}</option>
         <!-- END page -->
