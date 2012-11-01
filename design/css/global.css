@@ -508,3 +508,9 @@ th.c_j, td.c_j
   background-color: transparent;
   border: 0;
 }
+
+.chat_online
+{
+  background-color: black;
+  border: 0;
+}
