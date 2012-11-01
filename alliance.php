@@ -52,8 +52,8 @@ if(!isset($user['ally']))
   message($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
 }
 $ally = &$user['ally'];
-
-$rights = array(
+/*
+$ally_rights = array(
   0 => 'name',
   1 => 'mail',
   2 => 'online',
@@ -63,6 +63,7 @@ $rights = array(
   6 => 'forum',
   7 => 'diplomacy'
 );
+*/
 $rights_old = array(
   0 => 'name',
   1 => 'mails',
@@ -80,7 +81,7 @@ if(!$ally['ranklist'] && $ally['ally_ranks'])
   $i = 0;
   foreach($ally_ranks as $rank_id => $rank)
   {
-    foreach($rights as $key => $value)
+    foreach($ally_rights as $key => $value)
     {
       $ranks[$i][$value] = $rank[$rights_old[$key]];
     }
@@ -94,24 +95,7 @@ if(!$ally['ranklist'] && $ally['ally_ranks'])
   }
 }
 
-if($ally['ranklist'])
-{
-  $str_ranks = explode(';', $ally['ranklist']);
-  foreach($str_ranks as $str_rank)
-  {
-    if(!$str_rank)
-    {
-      continue;
-    }
-
-    $tmp = explode(',', $str_rank);
-    $rank_id = count($ranks);
-    foreach($rights as $key => $value)
-    {
-      $ranks[$rank_id][$value] = $tmp[$key];
-    }
-  }
-}
+$ranks = ally_get_ranks($ally);
 
 $isAllyOwner = $ally['ally_owner'] == $user['id'];
 $user_can_send_mails = $ranks[$user['ally_rank_id']]['mail'] || $isAllyOwner;

@@ -817,6 +817,66 @@ switch($new_version)
 
     upd_alter_table('fleets', array("DROP COLUMN `processing_start`"), $update_tables['fleets']['processing_start']);
 
+    //upd_drop_table('chat_player');
+    if(!$update_tables['chat_player'])
+    {
+      upd_create_table('chat_player',
+        "(
+          `chat_player_id` SERIAL COMMENT 'Record ID',
+
+          `chat_player_player_id` BIGINT(20) UNSIGNED DEFAULT NULL COMMENT 'Chat player record owner',
+          `chat_player_activity` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last player activity in chat',
+          `chat_player_invisible` TINYINT NOT NULL DEFAULT 0 COMMENT 'Player invisibility',
+          `chat_player_muted` INT(11) NOT NULL DEFAULT 0 COMMENT 'Player is muted',
+          `chat_player_mute_reason` VARCHAR(256) NOT NULL DEFAULT '' COMMENT 'Player mute reason',
+
+          PRIMARY KEY (`chat_player_id`),
+
+          KEY `I_chat_player_id` (`chat_player_player_id`),
+
+          CONSTRAINT `FK_chat_player_id` FOREIGN KEY (`chat_player_player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+    }
+
+    upd_alter_table('chat', array(
+      "ADD `chat_message_sender_id` BIGINT(20) UNSIGNED DEFAULT NULL COMMENT 'Message sender ID' AFTER `messageid`",
+      "ADD `chat_message_recipient_id` BIGINT(20) UNSIGNED DEFAULT NULL COMMENT 'Message recipient ID' AFTER `user`",
+
+      "ADD KEY `I_chat_message_sender_id` (`chat_message_sender_id`)",
+      "ADD KEY `I_chat_message_recipient_id` (`chat_message_recipient_id`)",
+
+      "ADD CONSTRAINT `FK_chat_message_sender_user_id` FOREIGN KEY (`chat_message_sender_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+    ), !$update_tables['chat']['chat_message_sender_id']);
+
+    upd_alter_table('chat', array(
+      "ADD `chat_message_sender_name` VARCHAR(64) DEFAULT '' COMMENT 'Message sender name' AFTER `chat_message_sender_id`",
+      "ADD `chat_message_recipient_name` VARCHAR(64) DEFAULT '' COMMENT 'Message sender name' AFTER `chat_message_recipient_id`",
+
+//      "ADD KEY `I_chat_message_sender_name` (`chat_message_sender_id`)",
+//      "ADD KEY `I_chat_message_recipient_name` (`chat_message_recipient_id`)",
+
+//      "ADD CONSTRAINT `FK_chat_message_sender_user_id` FOREIGN KEY (`chat_message_sender_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+//      "ADD CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+    ), !$update_tables['chat']['chat_message_sender_name']);
+
+    upd_alter_table('users', array(
+      "MODIFY COLUMN `banaday` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'User ban status'",
+    ), strtoupper($update_tables['users']['banaday']['Null']) == 'YES');
+
+    upd_alter_table('banned', array(
+      "ADD `ban_user_id` BIGINT(20) UNSIGNED DEFAULT NULL COMMENT 'Banned user ID' AFTER `ban_id`",
+      "ADD `ban_issuer_id` BIGINT(20) UNSIGNED DEFAULT NULL COMMENT 'Banner ID' AFTER `ban_until`",
+
+      "ADD KEY `I_ban_user_id` (`ban_user_id`)",
+      "ADD KEY `I_ban_issuer_id` (`ban_issuer_id`)",
+
+      "ADD CONSTRAINT `FK_ban_user_id` FOREIGN KEY (`ban_user_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_ban_issuer_id` FOREIGN KEY (`ban_issuer_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+    ), !$update_tables['banned']['ban_user_id']);
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 36;
 

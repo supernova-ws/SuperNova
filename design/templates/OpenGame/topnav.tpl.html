@@ -4,9 +4,9 @@
   <table cellpadding="3" cellspacing="0" class="header c_c" id="resources"><tbody>
     <tr>
       <th class="c_l noborder">
-        <select size="1" onchange="window.location.href = window.location.pathname + this.options[this.selectedIndex].value;">
+        <select size="1" onchange="changePlanet(this);">
           <!-- BEGIN topnav_planets -->
-            <option{topnav_planets.SELECTED} value="?cp={topnav_planets.ID}&mode={TOPNAV_MODE}&re=0">{topnav_planets.NAME}&nbsp;{topnav_planets.COORDS}
+            <option{topnav_planets.SELECTED} value="{topnav_planets.ID}">{topnav_planets.NAME}&nbsp;{topnav_planets.COORDS}
           <!-- END topnav_planets -->
         </select>
       </th>
@@ -128,6 +128,22 @@
 </div>
 
 <script type="text/javascript"><!--
+  function changePlanet(obj)
+  {
+    var pathAdd = 'cp=' + obj.options[obj.selectedIndex].value + '&mode={TOPNAV_MODE}&re=0';
+    regexp=/\?page\=(\w*)/i;
+    var parsed = regexp.exec(window.location.href);
+    if(parsed)
+    {
+      pathAdd = parsed[0] + '&' + pathAdd;
+    }
+    else
+    {
+      pathAdd = '?' + pathAdd;
+    }
+    window.location.href = window.location.pathname + pathAdd;
+  }
+
   sn_timers.unshift({
     'id': 'top_time',
     'type': 2,

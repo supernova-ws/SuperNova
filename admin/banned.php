@@ -25,70 +25,46 @@ $mode = sys_get_param_str('mode', 'banit');
 $name = sys_get_param_str('name');
 $action = sys_get_param_str('action');
 
-if ($mode == 'banit' && $action)
+$player_banned_row = doquery("SELECT * FROM {{users}} WHERE `username` = '{$name}' LIMIT 1 ", true);
+if($mode == 'banit' && $action)
 {
-  $reas = $_POST['why'];
-  $days = $_POST['days'];
-  $hour = $_POST['hour'];
-  $mins = $_POST['mins'];
-  $secs = $_POST['secs'];
-  $isVacation = $_POST['isVacation'];
-
-  $Now = time();
-  $BanTime = $days * 86400;
-  $BanTime += $hour * 3600;
-  $BanTime += $mins * 60;
-  $BanTime += $secs;
-  $BannedUntil = $Now + $BanTime;
-
-  $QryUpdateUser = "UPDATE {{users}} SET `banaday` = '" . $BannedUntil . "', `que` = '' ";
-  if ($isVacation)
+  if($player_banned_row)
   {
-    $QryUpdateUser .= ", `vacation` = '{$BannedUntil}' ";
-  }
-  $QryUpdateUser .= "WHERE `username` = \"" . $name . "\" LIMIT 1;";
+    $reas = $_POST['why'];
+    $days = $_POST['days'];
+    $hour = $_POST['hour'];
+    $mins = $_POST['mins'];
+    $secs = $_POST['secs'];
+//    $isVacation = $_POST['isVacation'];
 
-  $QryResult = doquery($QryUpdateUser);
+    $BanTime = $days * 86400;
+    $BanTime += $hour * 3600;
+    $BanTime += $mins * 60;
+    $BanTime += $secs;
+//    $BannedUntil = $time_now + $BanTime;
 
-  if ($QryResult)
-  {
-    doquery("INSERT INTO {{banned}} SET `ban_user_name` = '{$name}', `ban_reason` = '{$reas}', `ban_time` = '{$Now}', `ban_until` = '{$BannedUntil}', `ban_issuer_name` = '{$user['username']}', `ban_issuer_email` = '{$user['email']}';");
+    sys_admin_player_ban($user, $player_banned_row, $BanTime, $is_vacation = sys_get_param_int('isVacation'), sys_get_param_str('why'));
 
     $DoneMessage = "{$lang['adm_bn_thpl']} {$name} {$lang['adm_bn_isbn']}";
-    if ($isVacation)
+
+    if($is_vacation)
     {
       $DoneMessage .= $lang['adm_bn_vctn'];
     }
 
-    $QryResult = doquery("SELECT `id` FROM {{users}} WHERE `username` = \"" . $name . "\" LIMIT 1;", '', true);
-
-    $QryResult =
-      doquery("UPDATE {{planets}}
-       SET
-         `metal_mine_porcent` = '0', `crystal_mine_porcent` = '0', `deuterium_sintetizer_porcent` = '0',
-         `solar_plant_porcent` = '0', `fusion_plant_porcent` = '0', `solar_satelit_porcent` = '0', `que` = ''
-       WHERE `id_owner` = {$QryResult['id']};");
-
-    if ($QryResult)
-    {
-      $DoneMessage .= $lang['adm_bn_plnt'];
-    }
-    else
-    {
-      $DoneMessage .= $lang['adm_bn_err2'];
-    };
+    $DoneMessage .= $lang['adm_bn_plnt'];
   }
   else
   {
     $DoneMessage = sprintf($lang['adm_bn_errr'], $name);
-  };
+  }
 
   AdminMessage($DoneMessage, $lang['adm_ban_title']);
 }
-elseif ($mode == 'unbanit' && $action)
+elseif($mode == 'unbanit' && $action)
 {
-  doquery("UPDATE {{users}} SET banaday=0, `vacation` = {$time_now} WHERE username like '{$name}';");
-  doquery("INSERT INTO {{banned}} SET `ban_user_name` = \"{$name}\", `ban_reason` = '{$lang['sys_unbanned']}', `ban_time` = 0, `ban_until` = '{$time_now}', `ban_issuer_name` = '{$user['username']}', `ban_issuer_email` = '{$user['email']}';");
+  sys_admin_player_ban_unset($user, $player_banned_row, ($reason = sys_get_param_str('why')) ? $reason : $lang['sys_unbanned']);
+
   $DoneMessage = $lang['adm_unbn_thpl'] . " " . $name . " " . $lang['adm_unbn_isbn'];
   AdminMessage($DoneMessage, $lang['adm_unbn_ttle']);
 };

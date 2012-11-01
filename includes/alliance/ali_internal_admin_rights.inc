@@ -14,7 +14,7 @@ $template = gettemplate('ali_admin_rights', true);
 $new_rank_name = sys_get_param_str('newRankName');
 if ($new_rank_name)
 {
-  foreach($rights as $fieldName)
+  foreach($ally_rights as $fieldName)
   {
     $newRank[$fieldName] = 0;
   }
@@ -30,7 +30,7 @@ if (is_array($rankListInput))
 
   foreach($rankListInput as $rankID => $rank)
   {
-    foreach($rights as $rightName)
+    foreach($ally_rights as $rightName)
     {
       $ranks[$rankID][$rightName] = $rank[$rightName] ? 1 : 0;
     }
@@ -62,8 +62,8 @@ if (count($ranks))
 
     for($i = 1; $i < count($rank); $i++)
     {
-      $rank_data['R' . $i] = (($rank[$rights[$i]] == 1) ? ' checked' : '') ;
-      $rank_data['N' . $i] = $rights[$i];
+      $rank_data['R' . $i] = (($rank[$ally_rights[$i]] == 1) ? ' checked' : '') ;
+      $rank_data['N' . $i] = $ally_rights[$i];
     }
 
     $template->assign_block_vars('rank', $rank_data);

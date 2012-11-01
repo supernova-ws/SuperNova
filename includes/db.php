@@ -22,6 +22,8 @@ function sn_db_connect()
 
     mysql_query("/*!40101 SET NAMES 'utf8' */") or
       die('Error: ' . mysql_error());
+//    mysql_query("SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE") or
+//      die('Error: ' . mysql_error());
     mysql_select_db($dbsettings['name']) or
       $debug->error(mysql_error(), 'DB error - cannot find DB on server');
     echo mysql_error();
@@ -84,7 +86,7 @@ function doquery($query, $table = '', $fetch = false){
   }
 
   if ($badword) {
-    $message = 'Привет, я не знаю то, что Вы пробовали сделать, но команда, которую Вы только послали базе данных, не выглядела очень дружественной и она была заблокированна.<br /><br />Ваш IP, и другие данные переданны администрации сервера. Удачи!.';
+    $message = 'РџСЂРёРІРµС‚, СЏ РЅРµ Р·РЅР°СЋ С‚Рѕ, С‡С‚Рѕ Р’С‹ РїСЂРѕР±РѕРІР°Р»Рё СЃРґРµР»Р°С‚СЊ, РЅРѕ РєРѕРјР°РЅРґР°, РєРѕС‚РѕСЂСѓСЋ Р’С‹ С‚РѕР»СЊРєРѕ РїРѕСЃР»Р°Р»Рё Р±Р°Р·Рµ РґР°РЅРЅС‹С…, РЅРµ РІС‹РіР»СЏРґРµР»Р° РѕС‡РµРЅСЊ РґСЂСѓР¶РµСЃС‚РІРµРЅРЅРѕР№ Рё РѕРЅР° Р±С‹Р»Р° Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅРЅР°.<br /><br />Р’Р°С€ IP, Рё РґСЂСѓРіРёРµ РґР°РЅРЅС‹Рµ РїРµСЂРµРґР°РЅРЅС‹ Р°РґРјРёРЅРёСЃС‚СЂР°С†РёРё СЃРµСЂРІРµСЂР°. РЈРґР°С‡Рё!.';
 
     $report  = "Hacking attempt (".date("d.m.Y H:i:s")." - [".time()."]):\n";
     $report .= ">Database Inforamation\n";

@@ -995,4 +995,32 @@ function sn_unit_requirements_render($user, $planetrow, $unit_id, &$result)
   return $result;
 }
 
+function ally_get_ranks(&$ally)
+{
+  global $ally_rights;
+
+  $ranks = array();
+
+  if($ally['ranklist'])
+  {
+    $str_ranks = explode(';', $ally['ranklist']);
+    foreach($str_ranks as $str_rank)
+    {
+      if(!$str_rank)
+      {
+        continue;
+      }
+
+      $tmp = explode(',', $str_rank);
+      $rank_id = count($ranks);
+      foreach($ally_rights as $key => $value)
+      {
+        $ranks[$rank_id][$value] = $tmp[$key];
+      }
+    }
+  }
+
+  return $ranks;
+}
+
 ?>

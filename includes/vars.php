@@ -86,6 +86,16 @@ $tableList = array( 'aks', 'alliance', 'alliance_requests', 'announce', 'annonce
 
 $sn_image_allowed_extensions = array('png', 'jpg', 'jpeg', 'gif');
 
+$ally_rights = array(
+  0 => 'name',
+  1 => 'mail',
+  2 => 'online',
+  3 => 'invite',
+  4 => 'kick',
+  5 => 'admin',
+  6 => 'forum',
+  7 => 'diplomacy'
+);
 
 $functions = array(
 //    'test' => 'sn_test',

@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '35');
 define('SN_RELEASE', '36');
-define('SN_VERSION', '36a1.0');
+define('SN_VERSION', '36a1.1');
 define('SN_RELEASE_STABLE', '35d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -717,5 +717,7 @@ define('UBE_TOTAL', 'UBE_TOTAL');
 define('UBE_DAMAGE_PERCENT', 'UBE_DAMAGE_PERCENT');
 
 define('UBE_CAPTAIN', 'UBE_CAPTAIN');
+
+define('CHAT_OPTION_SWITCH', 1);
 
 ?>

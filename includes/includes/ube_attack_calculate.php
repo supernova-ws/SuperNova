@@ -1103,23 +1103,23 @@ global $debug;
       {
         if($fleet_query)
         {
-$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": UPDATE {{fleets}} SET {$fleet_query} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
+//$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": UPDATE {{fleets}} SET {$fleet_query} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
           doquery("UPDATE {{fleets}} SET {$fleet_query} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
         }
       }
       else
       {
         // Удаляем пустые флоты
-$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
+//$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
         doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
-$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{unit}} WHERE `unit_location_type` = " . LOC_FLEET . " AND `unit_location_id` = {$fleet_id}");
+//$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{unit}} WHERE `unit_location_type` = " . LOC_FLEET . " AND `unit_location_id` = {$fleet_id}");
         doquery("DELETE FROM {{unit}} WHERE `unit_location_type` = " . LOC_FLEET . " AND `unit_location_id` = {$fleet_id}");
       }
     }
     elseif($fleet_query)
     {
       // Планета - сохраняем данные боя
-$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": UPDATE {{planets}} SET {$fleet_query} WHERE `id` = {$planet_id} LIMIT 1");
+//$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": UPDATE {{planets}} SET {$fleet_query} WHERE `id` = {$planet_id} LIMIT 1");
       doquery("UPDATE {{planets}} SET {$fleet_query} WHERE `id` = {$planet_id} LIMIT 1");
     }
   }
@@ -1129,7 +1129,7 @@ $debug->warning($combat_data[UBE_REPORT_CYPHER] . ": UPDATE {{planets}} SET {$fl
   if(!empty($db_save[UBE_FLEET_GROUP]))
   {
     $db_save[UBE_FLEET_GROUP] = implode(',', $db_save[UBE_FLEET_GROUP]);
-$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{aks}} WHERE `id` IN ({$db_save[UBE_FLEET_GROUP]})");
+//$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{aks}} WHERE `id` IN ({$db_save[UBE_FLEET_GROUP]})");
     doquery("DELETE FROM {{aks}} WHERE `id` IN ({$db_save[UBE_FLEET_GROUP]})");
   }
 
@@ -1139,7 +1139,7 @@ $debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{aks}} WHERE `
   }
   elseif($outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS)
   {
-$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{planets}} WHERE `id` = {$planet_id} LIMIT 1");
+//$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{planets}} WHERE `id` = {$planet_id} LIMIT 1");
     doquery("DELETE FROM {{planets}} WHERE `id` = {$planet_id} LIMIT 1");
   }
 
@@ -1157,7 +1157,7 @@ $debug->warning($combat_data[UBE_REPORT_CYPHER] . ": DELETE FROM {{planets}} WHE
         {
           /** @noinspection SpellCheckingInspection */
           $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
-$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": UPDATE {{users}} SET `xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1 WHERE id = '{$player_id}' LIMIT 1;");
+//$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": UPDATE {{users}} SET `xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1 WHERE id = '{$player_id}' LIMIT 1;");
           doquery("UPDATE {{users}} SET `xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1 WHERE id = '{$player_id}' LIMIT 1;");
         }
       }
@@ -1165,7 +1165,7 @@ $debug->warning($combat_data[UBE_REPORT_CYPHER] . ": UPDATE {{users}} SET `xprai
     $bashing_list = implode(',', $bashing_list);
     if($bashing_list)
     {
-$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
+//$debug->warning($combat_data[UBE_REPORT_CYPHER] . ": INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
       doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
     }
   }

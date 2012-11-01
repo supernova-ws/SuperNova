@@ -364,10 +364,9 @@ function eco_bld_que_tech(&$user)
 
   global $sn_data, $time_now, $lang;
 
-  $time_left = max(0, $time_now - $user['onlinetime']);
-
   doquery('START TRANSACTION;');
   $user_row = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
+  $time_left = max(0, $time_now - $user_row['onlinetime']);
   $planet = array('id' => $user['id_planet']);
 
   $update_add = '';

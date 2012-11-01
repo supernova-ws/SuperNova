@@ -330,4 +330,61 @@ function DeleteSelectedUser ( $UserID )
   doquery("COMMIT;");
 }
 
+function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $reason = '')
+{
+  global $time_now;
+
+  $ban_until = $time_now + $term;
+
+  doquery("UPDATE {{users}} SET `banaday` = {$ban_until}, `que` = '' " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : '') . "WHERE `id` = {$banned['id']} LIMIT 1");
+
+  $banned['username'] = mysql_real_escape_string($banned['username']);
+  $banner['username'] = mysql_real_escape_string($banner['username']);
+  doquery("
+    INSERT INTO
+      {{banned}}
+    SET
+      `ban_user_id` = '{$banned['id']}',
+      `ban_user_name` = '{$banned['username']}',
+      `ban_reason` = '{$reason}',
+      `ban_time` = {$time_now},
+      `ban_until` = {$ban_until},
+      `ban_issuer_id` = '{$banner['id']}',
+      `ban_issuer_name` = '{$banner['username']}',
+      `ban_issuer_email` = '{$banner['email']}'
+  ");
+
+  doquery("
+    UPDATE {{planets}}
+      SET
+        `metal_mine_porcent` = '0', `crystal_mine_porcent` = '0', `deuterium_sintetizer_porcent` = '0',
+        `solar_plant_porcent` = '0', `fusion_plant_porcent` = '0', `solar_satelit_porcent` = '0', `que` = ''
+      WHERE `id_owner` = {$banned['id']};
+  ");
+
+}
+
+function sys_admin_player_ban_unset($banner, $banned, $reason = '')
+{
+  global $time_now;
+
+  doquery("UPDATE {{users}} SET `banaday` = 0, `vacation` = {$time_now} WHERE `id` = {$banned['id']} LIMIT 1");
+
+  $banned['username'] = mysql_real_escape_string($banned['username']);
+  $banner['username'] = mysql_real_escape_string($banner['username']);
+  $reason = mysql_real_escape_string($reason);
+  doquery("
+    INSERT INTO {{banned}}
+    SET
+      `ban_user_id` = '{$banned['id']}',
+      `ban_user_name` = '{$banned['username']}',
+      `ban_reason` = '{$reason}',
+      `ban_time` = 0,
+      `ban_until` = '{$time_now}',
+      `ban_issuer_id` = '{$banner['id']}',
+      `ban_issuer_name` = '{$banner['username']}',
+      `ban_issuer_email` = '{$banner['email']}'
+  ");
+}
+
 ?>

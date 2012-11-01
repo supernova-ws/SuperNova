@@ -2,7 +2,6 @@
 
 function eco_bld_tech_research($user, $planet)
 {
-//  global $lang, $sn_data;
   global $lang;
 
   try
@@ -12,7 +11,6 @@ function eco_bld_tech_research($user, $planet)
     $tech_id    = sys_get_param_int('tech');
     $user = doquery("SELECT * FROM {{users}} WHERE `id` ={$user['id']} LIMIT 1 FOR UPDATE;", true);
     $planet = $planet['id'] ? doquery("SELECT * FROM {{planets}} WHERE `id` ={$planet['id']} LIMIT 1 FOR UPDATE;", true) : $planet;
-    //$build_data = eco_get_build_data($user, $planet, $tech_id, $user[$sn_data[$tech_id]['name']]);
     $build_data = eco_get_build_data($user, $planet, $tech_id, mrc_get_level($user, $planet, $tech_id, false, true));
 
     if($user['que'])
@@ -61,11 +59,15 @@ function eco_bld_tech_research($user, $planet)
 
 function eco_bld_tech_que_clear($user_id, $planet)
 {
-//  global $sn_data;
-
+  doquery('COMMIT;');
+//$q = doquery("SELECT @@session.tx_isolation AS a;", true);
+//debug($q['a']);
   doquery('START TRANSACTION;');
   $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE;", true);
+//debug($user['que']);sleep(5);
+  doquery("UPDATE {{users}} SET `que` = '' WHERE `id` = '{$user['id']}' LIMIT 1;");
   $que_item = $user['que'] ? explode(',', $user['que']) : array();
+//debug($user['que']);
 
   if(!empty($que_item))
   {
@@ -77,7 +79,6 @@ function eco_bld_tech_que_clear($user_id, $planet)
     $planet = $planet['id'] ? doquery("SELECT * FROM {{planets}} WHERE `id` ={$planet['id']} LIMIT 1 FOR UPDATE;", true) : $planet;
 
     $tech_id = $que_item[QI_UNIT_ID];
-//    $build_data = eco_get_build_data($user, false, $tech_id, $user[$sn_data[$tech_id]['name']], true);
     $build_data = eco_get_build_data($user, false, $tech_id, mrc_get_level($user, $planet, $tech_id, false, true), true);
 
     db_change_units($user, $planet, array(
@@ -86,7 +87,6 @@ function eco_bld_tech_que_clear($user_id, $planet)
       RES_DEUTERIUM => $build_data[BUILD_CREATE][RES_DEUTERIUM],
     ));
 
-    doquery("UPDATE {{users}} SET `que` = '' WHERE `id` = '{$user['id']}' LIMIT 1;");
     doquery('COMMIT;');
   }
   else
@@ -98,13 +98,11 @@ function eco_bld_tech_que_clear($user_id, $planet)
 
 function eco_bld_tech(&$user, &$planet, $que = array())
 {
-//  global $config, $sn_data, $lang, $time_now;
   global $config, $lang, $time_now;
 
   lng_include('buildings');
   lng_include('infos');
 
-//  if(!$planet[$sn_data[STRUC_LABORATORY]['name']])
   if(!mrc_get_level($user, $planet, STRUC_LABORATORY))
   {
     message($lang['no_laboratory'], $lang['tech'][UNIT_TECHNOLOGIES]);
@@ -131,14 +129,12 @@ function eco_bld_tech(&$user, &$planet, $que = array())
   $fleet_list            = flt_get_fleets_to_planet($planet);
 
   foreach(sn_get_groups('tech') as $Tech)
-//  foreach($sn_data['groups']['tech'] as $Tech)
   {
     if(eco_can_build_unit($user, $planet, $Tech) != BUILD_ALLOWED)
     {
       continue;
     }
 
-//    $building_level      = $user[$sn_data[$Tech]['name']];
     $building_level      = mrc_get_level($user, '' , $Tech, false, true);
     $level_bonus         = max(0, mrc_get_level($user, '' , $Tech) - $building_level);
     $build_data          = eco_get_build_data($user, $planet, $Tech, $building_level);
@@ -187,7 +183,6 @@ function eco_bld_tech(&$user, &$planet, $que = array())
   {
     $que_item = $user['que'] ? explode(',', $user['que']) : array();
     $unit_id = $que_item[QI_UNIT_ID];
-//    $unit_data = eco_get_build_data($user, $planet, $unit_id, $user[$sn_data[$unit_id]['name']]);
     $unit_level = mrc_get_level($user, $planet, $unit_id, false, true);
     $unit_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
 

@@ -21,8 +21,9 @@ if(is_array($shipList))
   $message .= $lang["eco_mrk_{$submode}_ships"] . '<ul>';
   $qry = '';
   $total = array();
-  foreach($shipList as $shipID => $shipCount)
+  foreach($shipList as $shipID => &$shipCount)
   {
+    $shipCount = floatval($shipCount);
     if(!$shipCount)
     {
       continue;

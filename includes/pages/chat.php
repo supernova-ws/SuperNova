@@ -29,7 +29,7 @@ $sn_mvc['view']['chat_msg'][] = 'sn_chat_msg_view';
 
 function sn_chat_model()
 {
-  global $config, $user, $microtime, $template_result, $lang;
+  global $config, $user, $microtime, $template_result, $lang, $supernova;
 
   $config->array_set('users', $user['id'], 'chat_last_activity', $microtime);
   $config->array_set('users', $user['id'], 'chat_last_refresh', 0);
@@ -46,6 +46,15 @@ function sn_chat_model()
     default:
       $page_title = $lang['chat_common'];
     break;
+  }
+
+  $template_result['.']['smiles'] = array();
+  foreach($supernova->design['smiles'] as $bbcode => $filename)
+  {
+    $template_result['.']['smiles'][] = array(
+      'BBCODE' => $bbcode,
+      'FILENAME' => $filename,
+    );
   }
 
   $template_result['PAGE_HEADER'] = $page_title;
@@ -132,7 +141,7 @@ function sn_chat_msg_view($template = null)
         );
       }
 
-      $page = min($page_count, max(0, sys_get_param_int('page')));
+      $page = min($page_count, max(0, sys_get_param_int('sheet')));
     }
     else
     {

@@ -44,7 +44,7 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
 function tpl_render_menu()
 {
   global $config, $user, $user_impersonator, $lang, $time_now, $sn_menu;
-
+;
   $template_name = IN_ADMIN === true ? 'admin/menu' : 'menu';
   $template = gettemplate($template_name, true);
 

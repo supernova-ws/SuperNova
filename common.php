@@ -62,9 +62,9 @@ elseif($sys_user_logged_in)
 
   $planet_id = SetSelectedPlanet($user);
 
-  doquery('START TRANSACTION;');
   eco_bld_que_tech($user);
 
+  doquery('START TRANSACTION;');
   if($user['ally_id'])
   {
     sn_ali_fill_user_ally($user);
