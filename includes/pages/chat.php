@@ -162,9 +162,11 @@ function sn_chat_msg_view($template = null)
       }
 
       $template_result['.']['chat'][] = array(
-        'TIME' => htmlentities(date(FMT_DATE_TIME, $chat_row['timestamp']), ENT_QUOTES, 'utf-8'),
+        //'TIME' => htmlentities(date(FMT_DATE_TIME, $chat_row['timestamp']), ENT_QUOTES, 'utf-8'),
+        'TIME' => cht_message_parse(date(FMT_DATE_TIME, $chat_row['timestamp'])),
         'NICK' => $nick,
-        'TEXT' => cht_message_parse(htmlentities($chat_row['message'], ENT_QUOTES, 'utf-8')),
+        //'TEXT' => cht_message_parse(htmlentities($chat_row['message'], ENT_QUOTES, 'utf-8')),
+        'TEXT' => cht_message_parse($chat_row['message']),
       );
 
       $last_message = max($last_message, $chat_row['messageid']);
