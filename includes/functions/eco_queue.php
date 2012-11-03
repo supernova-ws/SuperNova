@@ -357,26 +357,30 @@ function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
 
 function eco_bld_que_tech(&$user)
 {
+  global $sn_data, $time_now, $lang;
+
+  doquery('START TRANSACTION');
+  $user_row = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
+  $user['que'] = $user_row['que'];
   if(!$user['que'])
   {
+    doquery('ROLLBACK');
     return;
   }
 
-  global $sn_data, $time_now, $lang;
-
   $time_left = max(0, $time_now - $user['onlinetime']);
 
-  doquery('START TRANSACTION;');
-  $user_row = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
   $planet = array('id' => $user['id_planet']);
 
   $update_add = '';
   $que_item = $user['que'] ? explode(',', $user['que']) : array();
-  if($user['que'] && $que_item[QI_TIME] <= $time_left)
+//  if($user['que'] && $que_item[QI_TIME] <= $time_left)
+  if($que_item[QI_TIME] <= $time_left)
   {
     $unit_id = $que_item[QI_UNIT_ID];
     $unit_db_name = $sn_data[$unit_id]['name'];
 
+    $user[$unit_db_name] = $user_row[$unit_db_name];
     $user[$unit_db_name]++;
     msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_research_from'], $lang['msg_que_research_subject'], sprintf($lang['msg_que_research_message'], $lang['tech'][$unit_id], $user[$unit_db_name]));
 
@@ -421,7 +425,7 @@ function eco_bld_que_tech(&$user)
   }
 
   $user['que'] = implode(',', $que_item);
-  doquery("UPDATE `{{users}}` SET {$update_add}`que` = '{$user['que']}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+  doquery("UPDATE `{{users}}` SET {$update_add}`que` = '{$user['que']}' WHERE `id` = '{$user['id']}' LIMIT 1");
   doquery('COMMIT');
 }
 

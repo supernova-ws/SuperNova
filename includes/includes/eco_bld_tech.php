@@ -59,24 +59,19 @@ function eco_bld_tech_research($user, $planet)
 
 function eco_bld_tech_que_clear($user_id, $planet)
 {
-  doquery('COMMIT;');
-//$q = doquery("SELECT @@session.tx_isolation AS a;", true);
-//debug($q['a']);
-  doquery('START TRANSACTION;');
-  $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE;", true);
-//debug($user['que']);sleep(5);
-  doquery("UPDATE {{users}} SET `que` = '' WHERE `id` = '{$user['id']}' LIMIT 1;");
+  doquery('START TRANSACTION');
+  $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE", true);
   $que_item = $user['que'] ? explode(',', $user['que']) : array();
-//debug($user['que']);
 
   if(!empty($que_item))
   {
+    doquery("UPDATE {{users}} SET `que` = '' WHERE `id` = {$user_id} LIMIT 1");
     if($que_item[QI_PLANET_ID])
     {
       $planet['id'] = $que_item[QI_PLANET_ID];
     }
 
-    $planet = $planet['id'] ? doquery("SELECT * FROM {{planets}} WHERE `id` ={$planet['id']} LIMIT 1 FOR UPDATE;", true) : $planet;
+    $planet = $planet['id'] ? doquery("SELECT * FROM {{planets}} WHERE `id` ={$planet['id']} LIMIT 1 FOR UPDATE", true) : $planet;
 
     $tech_id = $que_item[QI_UNIT_ID];
     $build_data = eco_get_build_data($user, false, $tech_id, mrc_get_level($user, $planet, $tech_id, false, true), true);

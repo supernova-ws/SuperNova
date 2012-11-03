@@ -104,7 +104,7 @@ function sn_sys_cookie_check($cookie)
   $user_name = mysql_real_escape_string($user_name);
 
   $user_id = intval($user_id);
-  $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = '{$user_id}' AND user_as_ally IS NULL LIMIT 1;", '', true);
+  $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = '{$user_id}' AND user_as_ally IS NULL LIMIT 1;", true);
   if(!$user || md5("{$user['password']}--{$config->secret_word}") != $user_pass_hash)
   {
     $user = false;

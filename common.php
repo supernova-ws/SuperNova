@@ -64,6 +64,18 @@ elseif($sys_user_logged_in)
 
   eco_bld_que_tech($user);
 
+//  doquery('START TRANSACTION');
+//  $user_row = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
+//debug($user_row['que'], 'common');
+//  doquery('COMMIT');
+
+
+//  print('zzzzzzzzz');
+
+//require_once('includes/includes/eco_bld_tech.php');
+//eco_bld_tech_que_clear($user['id'], array());
+//die();
+
   doquery('START TRANSACTION;');
   if($user['ally_id'])
   {
