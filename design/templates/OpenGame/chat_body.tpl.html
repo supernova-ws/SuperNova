@@ -31,10 +31,10 @@
             </select>
           </td>
           <td class="noborder" >
-            <input name="msg" type="text" id="msg" style="width:100%" maxlength="120" onKeyPress="if(event.keyCode == 13){document.chat_form.send.click();event.returnValue = false;return false;}" style="width: 100px" />
+            <input name="msg" type="text" id="msg" style="width:100%" maxlength="120" onKeyPress="if(event.keyCode == 13){document.chat_form.send.click();event.returnValue = false;return false;}" />
           </td>
           <td class="noborder" align="left" width="160px">
-            &nbsp;&nbsp;<input type="button" name="send" value="{L_chat_send}" id="send" onClick="addMessage();event.returnValue = false;return false;" />
+            &nbsp;&nbsp;<input type="button" name="send" value="{L_chat_send}" id="send" onClick="addMessage();event.returnValue = false;return false;" style="width: 100px" />
           </td>
           <th class="noborder" align="right" width="100px">
             <a onClick="window.open('index.php?page=chat_msg&history=history&ally={ALLY}', 'ChatHistory', '');">{L_chat_history}</a>
