@@ -90,25 +90,6 @@ function eco_mrk_trader_recourse()
 }
 //--></script>
 
-<script type="text/javascript"><!--
-var original_color;
-jQuery(document).ready(
-  function()
-  {
-    varTemp = '{exchangeTo}';
-    if(varTemp == '') varTemp = 0;
-    element_cache['exchangeTo'].value = varTemp;
-
-    if(original_color == undefined)
-    {
-      original_color = element_cache['spend' + res_resource_metal].style.backgroundColor;
-    }
-
-    eco_mrk_trader_recourse();
-  }
-);
-//--></script>
-
 <h2>{L_eco_mrk_title}:&nbsp;{L_eco_mrk_trader}</h2>
 
 {message}
@@ -147,3 +128,23 @@ jQuery(document).ready(
     </th></tr>
   </table>
 </form>
+
+<script type="text/javascript"><!--
+var original_color;
+jQuery(document).ready(
+  function()
+  {
+    varTemp = '{exchangeTo}';
+    if(varTemp == '') varTemp = 0;
+    element_cache['exchangeTo'].value = varTemp;
+
+    if(original_color == undefined)
+    {
+      original_color = element_cache['spend' + res_resource_metal].style.backgroundColor;
+    }
+
+    jQuery('#exchangeTo :first').attr('selected', 'selected');
+    eco_mrk_trader_recourse();
+  }
+);
+//--></script>

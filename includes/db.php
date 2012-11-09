@@ -178,12 +178,12 @@ function db_change_units_perform($query, $tablename, $object_id)
   }
 }
 
-function db_change_units(&$user, &$planet, $unit_list = array())
+function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
 // $unit_list should have unique entrances! Recompress non-uniq entrances before pass param!
 {
   global $sn_data;
 
-  $query = array(
+  $query = is_array($query) ? $query : array(
     LOC_USER => array(),
     LOC_PLANET => array(),
   );
