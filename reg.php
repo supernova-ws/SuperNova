@@ -153,6 +153,8 @@ if ($_POST['submit'])
       $planet += 3;
     }
 
+    sys_player_new_adjust($user['id'], $new_planet);
+
 //    $new_planet = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}' LIMIT 1;", '', true);
 //    $new_planet = $new_planet['id'];
     doquery("UPDATE {{users}} SET `id_planet` = '{$new_planet}', `current_planet` = '{$new_planet}', `galaxy` = '{$galaxy}', `system` = '{$system}', `planet` = '{$planet}' WHERE `id` = '{$user['id']}' LIMIT 1;");

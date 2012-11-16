@@ -2,36 +2,6 @@
 
 function sys_get_user_ip()
 {
-/*
-  $ip = array();
-  if($_SERVER["HTTP_X_FORWARDED_FOR"])
-  {
-    if ($_SERVER["HTTP_CLIENT_IP"])
-    {
-      $ip['proxy'] = $_SERVER["HTTP_CLIENT_IP"];
-    }
-    else
-    {
-      $ip['proxy'] = $_SERVER["REMOTE_ADDR"];
-    }
-    $ip['client'] = $_SERVER["HTTP_X_FORWARDED_FOR"];
-//    $ip['client'] = mysql_real_escape_string($_SERVER["HTTP_X_FORWARDED_FOR"]);
-//    $ip['proxy'] = $_SERVER["HTTP_CLIENT_IP"] ? $_SERVER["HTTP_CLIENT_IP"] : $_SERVER["REMOTE_ADDR"];
-  }
-  else
-  {
-    if ($_SERVER["HTTP_CLIENT_IP"])
-    {
-      $ip['client'] = $_SERVER["HTTP_CLIENT_IP"];
-    }
-    else
-    {
-      $ip['client'] = $_SERVER["REMOTE_ADDR"];
-    }
-//    $ip['client'] = $_SERVER["HTTP_CLIENT_IP"] ? $_SERVER["HTTP_CLIENT_IP"] : $_SERVER["REMOTE_ADDR"];
-  }
-*/
-
   $ip = array(
     'proxy' => $_SERVER["HTTP_X_FORWARDED_FOR"] ? ($_SERVER["HTTP_CLIENT_IP"] ? $_SERVER["HTTP_CLIENT_IP"] : $_SERVER["REMOTE_ADDR"]) : '',
     'client' => $_SERVER["HTTP_X_FORWARDED_FOR"] ? $_SERVER["HTTP_X_FORWARDED_FOR"] : 
@@ -84,21 +54,6 @@ function sn_set_cookie($user, $rememberme)
 function sn_sys_cookie_check($cookie)
 {
   global $config;
-/*
-  $cookie  = explode("/%/", $cookie);
-  $cookie[0] = intval($cookie[0]);
-  $cookie[1] = mysql_real_escape_string($cookie[1]);
-
-  $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = '{$cookie[0]}' AND user_as_ally IS NULL LIMIT 1;", '', true);
-  if(!$user || md5("{$user['password']}--{$config->secret_word}") != $cookie[2])
-  {
-    $user = false;
-  }
-  else
-  {
-    $user['user_remember_me'] = $cookie[3];
-  }
-*/
 
   list($user_id, $user_name, $user_pass_hash, $user_remember_me) = explode("/%/", $cookie);
   $user_name = mysql_real_escape_string($user_name);

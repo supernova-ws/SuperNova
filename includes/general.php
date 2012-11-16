@@ -1023,4 +1023,9 @@ function ally_get_ranks(&$ally)
   return $ranks;
 }
 
+function sys_player_new_adjust($user_id, $planet_id){return sn_function_call('sys_player_new_adjust', array($user_id, $planet_id, &$result));}
+function sn_sys_player_new_adjust($user_id, $planet_id, &$result)
+{
+}
+
 ?>
