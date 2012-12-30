@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2012-09-15 16:13:07
+Date: 2012-12-30 17:44:03
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -200,14 +200,20 @@ CREATE TABLE `sn_announce` (
 DROP TABLE IF EXISTS `sn_banned`;
 CREATE TABLE `sn_banned` (
   `ban_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `ban_user_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Banned user ID',
   `ban_user_name` varchar(64) NOT NULL DEFAULT '',
   `ban_reason` varchar(128) NOT NULL DEFAULT '',
   `ban_time` int(11) NOT NULL DEFAULT '0',
   `ban_until` int(11) NOT NULL DEFAULT '0',
+  `ban_issuer_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Banner ID',
   `ban_issuer_name` varchar(64) NOT NULL DEFAULT '',
   `ban_issuer_email` varchar(64) NOT NULL DEFAULT '',
   PRIMARY KEY (`ban_id`),
-  KEY `ID` (`ban_id`)
+  KEY `ID` (`ban_id`),
+  KEY `I_ban_user_id` (`ban_user_id`),
+  KEY `I_ban_issuer_id` (`ban_issuer_id`),
+  CONSTRAINT `FK_ban_user_id` FOREIGN KEY (`ban_user_id`) REFERENCES `sn_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `FK_ban_issuer_id` FOREIGN KEY (`ban_issuer_id`) REFERENCES `sn_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -259,22 +265,73 @@ CREATE TABLE `sn_buddy` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for `sn_captain`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_captain`;
+CREATE TABLE `sn_captain` (
+  `captain_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Record ID',
+  `captain_unit_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Link to `unit` record',
+  `captain_xp` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Captain expirience',
+  `captain_level` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Captain level so far',
+  `captain_shield` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Captain shield bonus level',
+  `captain_armor` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Captain armor bonus level',
+  `captain_attack` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Captain defense bonus level',
+  PRIMARY KEY (`captain_id`),
+  UNIQUE KEY `captain_id` (`captain_id`),
+  KEY `I_captain_unit_id` (`captain_unit_id`),
+  CONSTRAINT `FK_captain_unit_id` FOREIGN KEY (`captain_unit_id`) REFERENCES `sn_unit` (`unit_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_captain
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_chat`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_chat`;
 CREATE TABLE `sn_chat` (
   `messageid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `chat_message_sender_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Message sender ID',
+  `chat_message_sender_name` varchar(64) DEFAULT '' COMMENT 'Message sender name',
   `user` text COMMENT 'Chat message user name',
+  `chat_message_recipient_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Message recipient ID',
+  `chat_message_recipient_name` varchar(64) DEFAULT '' COMMENT 'Message sender name',
   `message` text,
   `timestamp` int(11) NOT NULL DEFAULT '0',
   `ally_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`messageid`),
   UNIQUE KEY `messageid` (`messageid`),
-  KEY `i_ally_idmess` (`ally_id`,`messageid`)
+  KEY `i_ally_idmess` (`ally_id`,`messageid`),
+  KEY `I_chat_message_sender_id` (`chat_message_sender_id`),
+  KEY `I_chat_message_recipient_id` (`chat_message_recipient_id`),
+  CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `sn_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `FK_chat_message_sender_user_id` FOREIGN KEY (`chat_message_sender_id`) REFERENCES `sn_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sn_chat
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_chat_player`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_chat_player`;
+CREATE TABLE `sn_chat_player` (
+  `chat_player_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Record ID',
+  `chat_player_player_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Chat player record owner',
+  `chat_player_activity` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last player activity in chat',
+  `chat_player_invisible` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Player invisibility',
+  `chat_player_muted` int(11) NOT NULL DEFAULT '0' COMMENT 'Player is muted',
+  `chat_player_mute_reason` varchar(256) NOT NULL DEFAULT '' COMMENT 'Player mute reason',
+  PRIMARY KEY (`chat_player_id`),
+  UNIQUE KEY `chat_player_id` (`chat_player_id`),
+  KEY `I_chat_player_id` (`chat_player_player_id`),
+  CONSTRAINT `FK_chat_player_id` FOREIGN KEY (`chat_player_player_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_chat_player
 -- ----------------------------
 
 -- ----------------------------
@@ -342,12 +399,14 @@ CREATE TABLE `sn_fleets` (
   `fleet_amount` bigint(11) NOT NULL DEFAULT '0',
   `fleet_array` text,
   `fleet_start_time` int(11) NOT NULL DEFAULT '0',
+  `fleet_start_planet_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Fleet start planet ID',
   `fleet_start_galaxy` int(11) NOT NULL DEFAULT '0',
   `fleet_start_system` int(11) NOT NULL DEFAULT '0',
   `fleet_start_planet` int(11) NOT NULL DEFAULT '0',
   `fleet_start_type` int(11) NOT NULL DEFAULT '0',
   `fleet_end_time` int(11) NOT NULL DEFAULT '0',
   `fleet_end_stay` int(11) NOT NULL DEFAULT '0',
+  `fleet_end_planet_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Fleet end planet ID',
   `fleet_end_galaxy` int(11) NOT NULL DEFAULT '0',
   `fleet_end_system` int(11) NOT NULL DEFAULT '0',
   `fleet_end_planet` int(11) NOT NULL DEFAULT '0',
@@ -359,7 +418,6 @@ CREATE TABLE `sn_fleets` (
   `fleet_group` varchar(15) NOT NULL DEFAULT '0',
   `fleet_mess` int(11) NOT NULL DEFAULT '0',
   `start_time` int(11) DEFAULT '0',
-  `processing_start` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`fleet_id`),
   UNIQUE KEY `fleet_id` (`fleet_id`),
   KEY `fleet_origin` (`fleet_start_galaxy`,`fleet_start_system`,`fleet_start_planet`),
@@ -370,7 +428,11 @@ CREATE TABLE `sn_fleets` (
   KEY `i_fl_targ_owner` (`fleet_target_owner`),
   KEY `fleet_both` (`fleet_start_galaxy`,`fleet_start_system`,`fleet_start_planet`,`fleet_start_type`,`fleet_end_galaxy`,`fleet_end_system`,`fleet_end_planet`),
   KEY `fleet_mess` (`fleet_mess`),
-  KEY `fleet_group` (`fleet_group`)
+  KEY `fleet_group` (`fleet_group`),
+  KEY `I_fleet_start_planet_id` (`fleet_start_planet_id`),
+  KEY `I_fleet_end_planet_id` (`fleet_end_planet_id`),
+  CONSTRAINT `FK_fleet_planet_end` FOREIGN KEY (`fleet_end_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `FK_fleet_planet_start` FOREIGN KEY (`fleet_start_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -880,6 +942,203 @@ CREATE TABLE `sn_statpoints` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for `sn_ube_report`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_ube_report`;
+CREATE TABLE `sn_ube_report` (
+  `ube_report_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Report ID',
+  `ube_report_cypher` char(32) NOT NULL DEFAULT '' COMMENT '16 char secret report ID',
+  `ube_report_time_combat` datetime NOT NULL COMMENT 'Combat time',
+  `ube_report_time_process` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Time when combat was processed',
+  `ube_report_time_spent` decimal(11,8) unsigned NOT NULL DEFAULT '0.00000000' COMMENT 'Time in seconds spent for combat calculations',
+  `ube_report_mission_type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Mission type',
+  `ube_report_combat_admin` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Does admin participates in combat?',
+  `ube_report_combat_result` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Combat outcome',
+  `ube_report_combat_sfr` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Small Fleet Reconnaissance',
+  `ube_report_planet_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Player planet ID',
+  `ube_report_planet_name` varchar(64) NOT NULL DEFAULT 'Planet' COMMENT 'Player planet name',
+  `ube_report_planet_size` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Player diameter',
+  `ube_report_planet_galaxy` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Player planet coordinate galaxy',
+  `ube_report_planet_system` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Player planet coordinate system',
+  `ube_report_planet_planet` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Player planet coordinate planet',
+  `ube_report_planet_planet_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'Player planet type',
+  `ube_report_moon` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Moon result: was, none, failed, created, destroyed',
+  `ube_report_moon_chance` decimal(9,6) unsigned NOT NULL DEFAULT '0.000000' COMMENT 'Moon creation chance',
+  `ube_report_moon_size` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Moon size',
+  `ube_report_moon_reapers` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Moon reapers result: none, died, survived',
+  `ube_report_moon_destroy_chance` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Moon destroy chance',
+  `ube_report_moon_reapers_die_chance` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Moon reapers die chance',
+  `ube_report_debris_metal` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Metal debris',
+  `ube_report_debris_crystal` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Crystal debris',
+  PRIMARY KEY (`ube_report_id`),
+  UNIQUE KEY `ube_report_id` (`ube_report_id`),
+  KEY `I_ube_report_cypher` (`ube_report_cypher`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_ube_report
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_ube_report_fleet`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_ube_report_fleet`;
+CREATE TABLE `sn_ube_report_fleet` (
+  `ube_report_fleet_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Record DB ID',
+  `ube_report_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Report ID',
+  `ube_report_fleet_player_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Owner ID',
+  `ube_report_fleet_fleet_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Fleet ID',
+  `ube_report_fleet_planet_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Player attack bonus',
+  `ube_report_fleet_planet_name` varchar(64) NOT NULL DEFAULT 'Planet' COMMENT 'Player planet name',
+  `ube_report_fleet_planet_galaxy` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Player planet coordinate galaxy',
+  `ube_report_fleet_planet_system` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Player planet coordinate system',
+  `ube_report_fleet_planet_planet` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Player planet coordinate planet',
+  `ube_report_fleet_planet_planet_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'Player planet type',
+  `ube_report_fleet_bonus_attack` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT 'Fleet attack bonus',
+  `ube_report_fleet_bonus_shield` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT 'Fleet shield bonus',
+  `ube_report_fleet_bonus_armor` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT 'Fleet armor bonus',
+  `ube_report_fleet_resource_metal` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Fleet metal amount',
+  `ube_report_fleet_resource_crystal` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Fleet crystal amount',
+  `ube_report_fleet_resource_deuterium` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Fleet deuterium amount',
+  PRIMARY KEY (`ube_report_fleet_id`),
+  UNIQUE KEY `ube_report_fleet_id` (`ube_report_fleet_id`),
+  KEY `FK_ube_report_fleet_ube_report` (`ube_report_id`),
+  CONSTRAINT `FK_ube_report_fleet_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `sn_ube_report` (`ube_report_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_ube_report_fleet
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_ube_report_outcome_fleet`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_ube_report_outcome_fleet`;
+CREATE TABLE `sn_ube_report_outcome_fleet` (
+  `ube_report_outcome_fleet_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Record DB ID',
+  `ube_report_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Report ID',
+  `ube_report_outcome_fleet_fleet_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Fleet ID',
+  `ube_report_outcome_fleet_resource_lost_metal` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Fleet metal loss from units',
+  `ube_report_outcome_fleet_resource_lost_crystal` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Fleet crystal loss from units',
+  `ube_report_outcome_fleet_resource_lost_deuterium` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Fleet deuterium loss from units',
+  `ube_report_outcome_fleet_resource_dropped_metal` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Fleet metal dropped due reduced cargo',
+  `ube_report_outcome_fleet_resource_dropped_crystal` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Fleet crystal dropped due reduced cargo',
+  `ube_report_outcome_fleet_resource_dropped_deuterium` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Fleet deuterium dropped due reduced cargo',
+  `ube_report_outcome_fleet_resource_loot_metal` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Looted/Lost from loot metal',
+  `ube_report_outcome_fleet_resource_loot_crystal` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Looted/Lost from loot crystal',
+  `ube_report_outcome_fleet_resource_loot_deuterium` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Looted/Lost from loot deuterium',
+  `ube_report_outcome_fleet_resource_lost_in_metal` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Fleet total resource loss in metal',
+  PRIMARY KEY (`ube_report_outcome_fleet_id`),
+  UNIQUE KEY `ube_report_outcome_fleet_id` (`ube_report_outcome_fleet_id`),
+  KEY `I_ube_report_outcome_fleet_report_fleet` (`ube_report_id`,`ube_report_outcome_fleet_fleet_id`),
+  CONSTRAINT `FK_ube_report_outcome_fleet_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `sn_ube_report` (`ube_report_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_ube_report_outcome_fleet
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_ube_report_outcome_unit`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_ube_report_outcome_unit`;
+CREATE TABLE `sn_ube_report_outcome_unit` (
+  `ube_report_outcome_unit_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Record DB ID',
+  `ube_report_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Report ID',
+  `ube_report_outcome_unit_fleet_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Fleet ID',
+  `ube_report_outcome_unit_unit_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit ID',
+  `ube_report_outcome_unit_restored` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Unit restored',
+  `ube_report_outcome_unit_lost` decimal(65,0) NOT NULL DEFAULT '0' COMMENT 'Unit lost',
+  `ube_report_outcome_unit_sort_order` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit pass-through sort order to maintain same output',
+  PRIMARY KEY (`ube_report_outcome_unit_id`),
+  UNIQUE KEY `ube_report_outcome_unit_id` (`ube_report_outcome_unit_id`),
+  KEY `I_ube_report_outcome_unit_report_order` (`ube_report_id`,`ube_report_outcome_unit_sort_order`),
+  CONSTRAINT `FK_ube_report_outcome_unit_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `sn_ube_report` (`ube_report_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_ube_report_outcome_unit
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_ube_report_player`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_ube_report_player`;
+CREATE TABLE `sn_ube_report_player` (
+  `ube_report_player_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Record ID',
+  `ube_report_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Report ID',
+  `ube_report_player_player_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Player ID',
+  `ube_report_player_name` varchar(64) NOT NULL DEFAULT '' COMMENT 'Player name',
+  `ube_report_player_attacker` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Is player an attacker?',
+  `ube_report_player_bonus_attack` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT 'Player attack bonus',
+  `ube_report_player_bonus_shield` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT 'Player shield bonus',
+  `ube_report_player_bonus_armor` decimal(11,2) NOT NULL DEFAULT '0.00' COMMENT 'Player armor bonus',
+  PRIMARY KEY (`ube_report_player_id`),
+  UNIQUE KEY `ube_report_player_id` (`ube_report_player_id`),
+  KEY `I_ube_report_player_player_id` (`ube_report_player_player_id`),
+  KEY `FK_ube_report_player_ube_report` (`ube_report_id`),
+  CONSTRAINT `FK_ube_report_player_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `sn_ube_report` (`ube_report_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_ube_report_player
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_ube_report_unit`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_ube_report_unit`;
+CREATE TABLE `sn_ube_report_unit` (
+  `ube_report_unit_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Record DB ID',
+  `ube_report_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Report ID',
+  `ube_report_unit_player_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Owner ID',
+  `ube_report_unit_fleet_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Fleet ID',
+  `ube_report_unit_round` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Round number',
+  `ube_report_unit_unit_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit ID',
+  `ube_report_unit_count` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit count',
+  `ube_report_unit_boom` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit booms',
+  `ube_report_unit_attack` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit attack',
+  `ube_report_unit_shield` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit shield',
+  `ube_report_unit_armor` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit armor',
+  `ube_report_unit_attack_base` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit base attack',
+  `ube_report_unit_shield_base` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit base shield',
+  `ube_report_unit_armor_base` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit base armor',
+  `ube_report_unit_sort_order` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit pass-through sort order to maintain same output',
+  PRIMARY KEY (`ube_report_unit_id`),
+  UNIQUE KEY `ube_report_unit_id` (`ube_report_unit_id`),
+  KEY `I_ube_report_unit_report_round_fleet_order` (`ube_report_id`,`ube_report_unit_round`,`ube_report_unit_fleet_id`,`ube_report_unit_sort_order`),
+  KEY `I_ube_report_unit_report_unit_order` (`ube_report_id`,`ube_report_unit_sort_order`),
+  KEY `I_ube_report_unit_order` (`ube_report_unit_sort_order`),
+  CONSTRAINT `FK_ube_report_unit_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `sn_ube_report` (`ube_report_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_ube_report_unit
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_unit`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_unit`;
+CREATE TABLE `sn_unit` (
+  `unit_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Record ID',
+  `unit_player_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Unit owner',
+  `unit_location_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Location type: universe, user, planet (moon?), fleet',
+  `unit_location_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Location ID',
+  `unit_type` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit type',
+  `unit_snid` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit SuperNova ID',
+  `unit_level` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit level or count - dependent of unit_type',
+  PRIMARY KEY (`unit_id`),
+  UNIQUE KEY `unit_id` (`unit_id`),
+  KEY `I_unit_player_location_snid` (`unit_player_id`,`unit_location_type`,`unit_location_id`,`unit_snid`),
+  CONSTRAINT `FK_unit_player_id` FOREIGN KEY (`unit_player_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_unit
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_universe`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_universe`;
@@ -904,7 +1163,7 @@ CREATE TABLE `sn_users` (
   `username` varchar(64) NOT NULL DEFAULT '',
   `authlevel` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `vacation` int(11) unsigned DEFAULT '0',
-  `banaday` int(11) unsigned DEFAULT '0',
+  `banaday` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'User ban status',
   `dark_matter` bigint(20) DEFAULT '0',
   `spy_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
   `computer_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -1013,10 +1272,10 @@ CREATE TABLE `sn_users` (
 -- ----------------------------
 -- Default server configuration
 -- ----------------------------
-INSERT INTO `sn_config` VALUES ('adv_seo_meta_description', '');
-INSERT INTO `sn_config` VALUES ('adv_seo_meta_keywords', '');
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '<script type=\"text/javascript\"><!--\r\ngoogle_ad_client = \"pub-1914310741599503\";\r\n/* oGame */\r\ngoogle_ad_slot = \"2544836773\";\r\ngoogle_ad_width = 125;\r\ngoogle_ad_height = 125;\r\n//-->\r\n</script>\r\n<script type=\"text/javascript\"\r\nsrc=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\r\n</script>\r\n');
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '1');
+INSERT INTO `sn_config` VALUES ('adv_seo_meta_description', '');
+INSERT INTO `sn_config` VALUES ('adv_seo_meta_keywords', '');
 INSERT INTO `sn_config` VALUES ('ali_bonus_algorithm', '0');
 INSERT INTO `sn_config` VALUES ('ali_bonus_brackets', '10');
 INSERT INTO `sn_config` VALUES ('ali_bonus_brackets_divisor', '50');
@@ -1035,7 +1294,7 @@ INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
 INSERT INTO `sn_config` VALUES ('db_prefix', 'sn_');
-INSERT INTO `sn_config` VALUES ('db_version', '34');
+INSERT INTO `sn_config` VALUES ('db_version', '35');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
@@ -1135,7 +1394,7 @@ INSERT INTO `sn_config` VALUES ('uni_price_galaxy', '10000');
 INSERT INTO `sn_config` VALUES ('uni_price_system', '1000');
 INSERT INTO `sn_config` VALUES ('upd_lock_time', '60');
 INSERT INTO `sn_config` VALUES ('url_dark_matter', '');
-INSERT INTO `sn_config` VALUES ('url_faq', 'http://forum.supernova.ws/viewtopic.php?f=3&t=1891');
+INSERT INTO `sn_config` VALUES ('url_faq', 'http://supernova.ws/faq/SuperNova.ws.html');
 INSERT INTO `sn_config` VALUES ('url_forum', 'http://forum.supernova.ws/');
 INSERT INTO `sn_config` VALUES ('url_rules', 'http://forum.supernova.ws/viewtopic.php?f=3&t=974');
 INSERT INTO `sn_config` VALUES ('users_amount', '1');

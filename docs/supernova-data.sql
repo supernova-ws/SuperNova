@@ -1,10 +1,10 @@
 -- ----------------------------
 -- Default server configuration
 -- ----------------------------
-INSERT INTO `sn_config` VALUES ('adv_seo_meta_description', '');
-INSERT INTO `sn_config` VALUES ('adv_seo_meta_keywords', '');
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '<script type=\"text/javascript\"><!--\r\ngoogle_ad_client = \"pub-1914310741599503\";\r\n/* oGame */\r\ngoogle_ad_slot = \"2544836773\";\r\ngoogle_ad_width = 125;\r\ngoogle_ad_height = 125;\r\n//-->\r\n</script>\r\n<script type=\"text/javascript\"\r\nsrc=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\r\n</script>\r\n');
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '1');
+INSERT INTO `sn_config` VALUES ('adv_seo_meta_description', '');
+INSERT INTO `sn_config` VALUES ('adv_seo_meta_keywords', '');
 INSERT INTO `sn_config` VALUES ('ali_bonus_algorithm', '0');
 INSERT INTO `sn_config` VALUES ('ali_bonus_brackets', '10');
 INSERT INTO `sn_config` VALUES ('ali_bonus_brackets_divisor', '50');
@@ -123,7 +123,7 @@ INSERT INTO `sn_config` VALUES ('uni_price_galaxy', '10000');
 INSERT INTO `sn_config` VALUES ('uni_price_system', '1000');
 INSERT INTO `sn_config` VALUES ('upd_lock_time', '60');
 INSERT INTO `sn_config` VALUES ('url_dark_matter', '');
-INSERT INTO `sn_config` VALUES ('url_faq', 'http://forum.supernova.ws/viewtopic.php?f=3&t=1891');
+INSERT INTO `sn_config` VALUES ('url_faq', 'http://supernova.ws/faq/SuperNova.ws.html');
 INSERT INTO `sn_config` VALUES ('url_forum', 'http://forum.supernova.ws/');
 INSERT INTO `sn_config` VALUES ('url_rules', 'http://forum.supernova.ws/viewtopic.php?f=3&t=974');
 INSERT INTO `sn_config` VALUES ('users_amount', '1');
