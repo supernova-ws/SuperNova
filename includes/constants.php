@@ -29,10 +29,10 @@ define('SHOW_ADMIN', 1);
 
 
 
-define('DB_VERSION', '35');
+define('DB_VERSION', '36');
 define('SN_RELEASE', '36');
-define('SN_VERSION', '36d0');
-define('SN_RELEASE_STABLE', '35d0'); // Latest stable release
+define('SN_VERSION', '36d0.1');
+define('SN_RELEASE_STABLE', '36d0'); // Latest stable release
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);

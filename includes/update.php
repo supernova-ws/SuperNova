@@ -878,8 +878,12 @@ switch($new_version)
     ), !$update_tables['banned']['ban_user_id']);
 
     upd_do_query('COMMIT;', true);
-//    $new_version = 36;
+    $new_version = 36;
 
+  case 36:
+    upd_log_version_update();
+
+//    $new_version = 36;
 };
 upd_log_message('Upgrade complete.');
 
