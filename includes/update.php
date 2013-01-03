@@ -883,6 +883,10 @@ switch($new_version)
   case 36:
     upd_log_version_update();
 
+    upd_alter_table('payment', array(
+      "DROP FOREIGN KEY `FK_payment_user`",
+    ), $update_foreigns['payment']['FK_payment_user']);
+
 //    $new_version = 36;
 };
 upd_log_message('Upgrade complete.');
