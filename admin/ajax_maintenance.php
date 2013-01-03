@@ -24,8 +24,8 @@ $ques = array(
 
   'DELETE FROM `{{notes}}`     WHERE `owner`          not in (select id from {{users}});',
   'DELETE FROM `{{fleets}}`    WHERE `fleet_owner`    not in (select id from {{users}});',
-  'DELETE FROM `{{buddy}}`     WHERE `sender`         not in (select id from {{users}});',
-  'DELETE FROM `{{buddy}}`     WHERE `owner`          not in (select id from {{users}});',
+// FK 'DELETE FROM `{{buddy}}`     WHERE `sender`         not in (select id from {{users}});',
+// FK  'DELETE FROM `{{buddy}}`     WHERE `owner`          not in (select id from {{users}});',
   'DELETE FROM `{{annonce}}`   WHERE `user`           not in (select id from {{users}});',
 //  'DELETE FROM `{{messages}}`  WHERE `message_sender` not in (select id from {{users}});',
   'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});',
