@@ -70,6 +70,12 @@ while($ip = mysql_fetch_assoc($ip_query))
 $query = doquery("SELECT * FROM {{users}} WHERE user_as_ally IS NULL ORDER BY `{$sort_fields[$sort]}` ASC;");
 while ($user_row = mysql_fetch_assoc($query))
 {
+  if($user_row['banaday'])
+  {
+    $ban_details = doquery("SELECT * FROM {{banned}} WHERE `ban_user_id` = {$user_row['id']} ORDER BY ban_id DESC LIMIT 1", true);
+    pdump($ban_details);
+  }
+
   $template->assign_block_vars('user', array(
     'ID' => $user_row['id'],
     'NAME' => $user_row['username'],
@@ -80,6 +86,9 @@ while ($user_row = mysql_fetch_assoc($query))
     'TIME_REGISTERED' => date(FMT_DATE_TIME, $user_row['register_time']),
     'TIME_PLAYED' => date(FMT_DATE_TIME, $user_row['onlinetime']),
     'BANNED' => $user_row['banaday'] ? date(FMT_DATE_TIME, $user_row['banaday']) : 0,
+    'BAN_DATE' => date(FMT_DATE_TIME, $ban_details['ban_time']),
+    'BAN_ISSUER' => $ban_details['ban_issuer_name'],
+    'BAN_REASON' => $ban_details['ban_reason'],
     'ACTION' => $user_row['authlevel'] < $user['authlevel'],
     'RESTRICTED' => $user['authlevel'] < 3,
   ));

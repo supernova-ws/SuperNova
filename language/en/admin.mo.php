@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35c4
+* @version 36d0.5
 *
 */
 
@@ -151,6 +151,7 @@ $lang = array_merge($lang, array(
   'adm_bn_errr' => 'Error: Banning player! perhaps Name %s not found.',
   'adm_bn_err2' => 'Error: Unable to stop production on the planets!',
   'adm_bn_plnt' => 'Production on the planets is disabled.',
+  'adm_ban_msg_issued_date' => 'banned player on',
   'adm_unbn_ttle' => 'Unban',
   'adm_unbn_plto' => 'Unban player',
   'adm_unbn_name' => 'Name',

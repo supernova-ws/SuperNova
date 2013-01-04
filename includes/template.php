@@ -116,44 +116,47 @@ function tpl_render_menu()
       $sn_menu = array_merge($sn_menu, $spliced);
     }
 
-    foreach($sn_menu as $menu_item_id => $menu_item)
+    if($sn_menu)
     {
-      if(!$menu_item)
+      foreach($sn_menu as $menu_item_id => $menu_item)
       {
-        continue;
-      }
-
-      if(is_string($menu_item_id))
-      {
-        $menu_item['ID'] = $menu_item_id;
-      }
-
-      if($menu_item['TYPE'] == 'lang')
-      {
-        $lang_string = &$lang;
-        if(preg_match('#(\w+)(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?#', $menu_item['ITEM'], $matches) && count($matches) > 1)
+        if(!$menu_item)
         {
-          for($i = 1; $i < count($matches); $i++)
-          {
-            if(defined($matches[$i]))
-            {
-              $matches[$i] = constant($matches[$i]);
-            }
-            $lang_string = &$lang_string[$matches[$i]];
-          }
+          continue;
         }
-        $menu_item['ITEM'] = $lang_string && is_string($lang_string) ? $lang_string : "{L_{$menu_item['ITEM']}}";
+
+        if(is_string($menu_item_id))
+        {
+          $menu_item['ID'] = $menu_item_id;
+        }
+
+        if($menu_item['TYPE'] == 'lang')
+        {
+          $lang_string = &$lang;
+          if(preg_match('#(\w+)(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?#', $menu_item['ITEM'], $matches) && count($matches) > 1)
+          {
+            for($i = 1; $i < count($matches); $i++)
+            {
+              if(defined($matches[$i]))
+              {
+                $matches[$i] = constant($matches[$i]);
+              }
+              $lang_string = &$lang_string[$matches[$i]];
+            }
+          }
+          $menu_item['ITEM'] = $lang_string && is_string($lang_string) ? $lang_string : "{L_{$menu_item['ITEM']}}";
+        }
+
+        $menu_item['ALT'] = htmlentities($menu_item['ALT']);
+        $menu_item['TITLE'] = htmlentities($menu_item['TITLE']);
+
+        if($menu_item['ICON'] === true)
+        {
+          $menu_item['ICON'] = $menu_item_id . '.png';
+        }
+
+        $template->assign_block_vars('menu', $menu_item);
       }
-
-      $menu_item['ALT'] = htmlentities($menu_item['ALT']);
-      $menu_item['TITLE'] = htmlentities($menu_item['TITLE']);
-
-      if($menu_item['ICON'] === true)
-      {
-        $menu_item['ICON'] = $menu_item_id . '.png';
-      }
-
-      $template->assign_block_vars('menu', $menu_item);
     }
   }
 

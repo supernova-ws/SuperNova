@@ -33,7 +33,7 @@
     <td>
       <a href="admin/banned.php?name={user.NAME}">
       <!-- IF user.BANNED -->
-        <span class="warning">{user.BANNED}</span>
+        <span class="warning" title="{user.BAN_ISSUER} {L_adm_ban_msg_issued_date} {user.BAN_DATE}. {L_adm_bn_reas}: '{user.BAN_REASON}'">{user.BANNED}</span>
       <!-- ELSE -->
         {L_sys_no}
       <!-- ENDIF -->

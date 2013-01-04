@@ -847,8 +847,8 @@ switch($new_version)
       "ADD KEY `I_chat_message_sender_id` (`chat_message_sender_id`)",
       "ADD KEY `I_chat_message_recipient_id` (`chat_message_recipient_id`)",
 
-      "ADD CONSTRAINT `FK_chat_message_sender_user_id` FOREIGN KEY (`chat_message_sender_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
-      "ADD CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_chat_message_sender_user_id` FOREIGN KEY (`chat_message_sender_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
     ), !$update_tables['chat']['chat_message_sender_id']);
 
     upd_alter_table('chat', array(
@@ -886,6 +886,15 @@ switch($new_version)
     upd_alter_table('payment', array(
       "DROP FOREIGN KEY `FK_payment_user`",
     ), $update_foreigns['payment']['FK_payment_user']);
+
+    upd_alter_table('chat', array(
+      "DROP FOREIGN KEY `FK_chat_message_sender_user_id`",
+      "DROP FOREIGN KEY `FK_chat_message_sender_recipient_id`",
+    ), true);
+    upd_alter_table('chat', array(
+      "ADD CONSTRAINT `FK_chat_message_sender_user_id` FOREIGN KEY (`chat_message_sender_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+    ), true);
 
 //    $new_version = 36;
 };

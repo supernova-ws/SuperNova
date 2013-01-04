@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35c4
+* @version 36d0.5
 *
 */
 
@@ -160,6 +160,7 @@ $lang = array_merge($lang, array(
   'adm_bn_errr' => 'Ошибка блокировки игрока! Возможно ник %s не найден.',
   'adm_bn_err2' => 'Ошибка отключения производства на планетах!',
   'adm_bn_plnt' => 'Производство на планетах отключено.',
+  'adm_ban_msg_issued_date' => 'заблокировал игрока',
   'adm_unbn_ttle' => 'Анбан',
   'adm_unbn_plto' => 'Разбанить игрока',
   'adm_unbn_name' => 'Имя',
