@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '36');
 define('SN_RELEASE', '36');
-define('SN_VERSION', '36d0.5');
+define('SN_VERSION', '36d1');
 define('SN_RELEASE_STABLE', '36d0'); // Latest stable release
 
 // Game type constants starts with GAME_

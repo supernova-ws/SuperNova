@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35b4
+* @version 36d1
 *
 */
 
@@ -125,7 +125,7 @@ $lang = array_merge($lang, array(
   'log_lost_sent_pass' => 'Just sent to your email message with the new password',
   'log_lost_email_title' => 'Supernova, Universe %s: Password reset',
   'log_lost_email_code' => 'Someone (possibly you) has requested a reset password on SuperNova Universe %4 . If you did not request reset password-then just ignore this email. For password reset, go to the address %1$s?confirm=%2$s or enter the confirmation code "%2$s" (WITHOUT THE DOUBLE QUOTES!) on the page %1$s This code will be valid up to %3$s. After the password reset you will need to request a new confirmation code',
-  'log_lost_email_pass' => 'You changed your password on the SuperNova Universe %s. The following line shows your new password:%s Remember it!',
+  'log_lost_email_pass' => 'You changed your password on the SuperNova Universe %s. The following line shows your new password:<br />%s<br />Remember it!',
   'log_lost_err_email' => 'This email is not registered in the database. This could mean one of the following:<br>You miss typed the email. Return to the previous page and try again<br>Your account has been deleted due to inactivity. Register a new<br>You are trying to enter the wrong Gaming Universe. Double check the name of the current Universe and on Error Go To correct Universe',
   'log_lost_err_sending' => 'Error sending message to the specified by email. Notify Administrator of the error',
   'log_lost_err_code' => 'The verification code is not registered in the database. This could mean one of the following:<br>You mistype the confirmation code. Return to the previous page and enter the code<br>You are trying to enter the confirmation code in the wrong Universe for which it was generated. Double check the name of the current Universe and on Error Go To correct Universe<br>Your account has been deleted due to inactivity. Register a new<br>Expired confirmation code. Check the expiration date of code in the letter. If it passed, request a new confirmation code',

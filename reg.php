@@ -155,13 +155,11 @@ if ($_POST['submit'])
 
     sys_player_new_adjust($user['id'], $new_planet);
 
-//    $new_planet = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}' LIMIT 1;", '', true);
-//    $new_planet = $new_planet['id'];
     doquery("UPDATE {{users}} SET `id_planet` = '{$new_planet}', `current_planet` = '{$new_planet}', `galaxy` = '{$galaxy}', `system` = '{$system}', `planet` = '{$planet}' WHERE `id` = '{$user['id']}' LIMIT 1;");
 
     $config->db_saveItem('users_amount', $config->users_amount+1);
 
-    $Message  = $lang['thanksforregistry'];
+    $Message = $lang['thanksforregistry'];
     if (sendpassemail($username, $password, $email))
     {
       $Message .= " (" . htmlentities($email) . ")";
@@ -169,7 +167,7 @@ if ($_POST['submit'])
     else
     {
       $Message .= " (" . htmlentities($email) . ")";
-      $Message .= "<br><br>{$lang['error_mailsend']} <b>{$password}</b>";
+      $Message .= "<br><br>{$lang['error_mailsend']} <br /><b>{$password}</b><br />";
     }
     $user = sn_login($username, $password);
     $user = $user['user_row'];
