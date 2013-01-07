@@ -73,7 +73,6 @@ while ($user_row = mysql_fetch_assoc($query))
   if($user_row['banaday'])
   {
     $ban_details = doquery("SELECT * FROM {{banned}} WHERE `ban_user_id` = {$user_row['id']} ORDER BY ban_id DESC LIMIT 1", true);
-    pdump($ban_details);
   }
 
   $template->assign_block_vars('user', array(
