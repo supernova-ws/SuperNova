@@ -12,7 +12,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20)
   {
     $template->assign_block_vars('announces', array(
       'ID'         => $announce['idAnnounce'],
-      'TIME'       => $announce['tsTimeStamp'] + $time_diff,
+      'TIME'       => date(FMT_DATE_TIME, $announce['unix_time'] + $time_diff),
       'ANNOUNCE'   => sys_bbcodeParse($announce['strAnnounce']),
       'DETAIL_URL' => $announce['detail_url'],
       'NEW'        => $announce['unix_time'] + $config->game_news_actual >= $time_now,
