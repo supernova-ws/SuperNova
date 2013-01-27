@@ -72,7 +72,7 @@ function sn_chat_add_model()
   global $skip_fleet_update, $config, $microtime, $user, $time_now;
 
   $skip_fleet_update = true;
-//  include('common.' . substr(strrchr(__FILE__, '.'), 1));
+
   if($config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && $microtime - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
   {
     die();
@@ -94,14 +94,9 @@ function sn_chat_add_model()
 
 function sn_chat_msg_view($template = null)
 {
-  global $config, $skip_fleet_update, $microtime, $user, $time_now, $lang;
-//  $template = gettemplate('chat_body', $template);
-
-//  return $template;
-
+  global $config, $skip_fleet_update, $microtime, $user, $time_now, $time_local, $time_diff, $lang;
 
   $skip_fleet_update = true;
-//  include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
   $history = sys_get_param_str('history');
   if(!$history)
@@ -117,7 +112,7 @@ function sn_chat_msg_view($template = null)
   {
     $result['disable'] = true;
     $template_result['.']['chat'][] = array(
-      'TIME' => date(FMT_DATE_TIME, htmlentities($time_now, ENT_QUOTES, 'utf-8')),
+      'TIME' => date(FMT_DATE_TIME, htmlentities($time_local, ENT_QUOTES, 'utf-8')),
       'DISABLE' => true,
     );
   }
@@ -162,10 +157,8 @@ function sn_chat_msg_view($template = null)
       }
 
       $template_result['.']['chat'][] = array(
-        //'TIME' => htmlentities(date(FMT_DATE_TIME, $chat_row['timestamp']), ENT_QUOTES, 'utf-8'),
-        'TIME' => cht_message_parse(date(FMT_DATE_TIME, $chat_row['timestamp'])),
+        'TIME' => cht_message_parse(date(FMT_DATE_TIME, $chat_row['timestamp'] + $time_diff)),
         'NICK' => $nick,
-        //'TEXT' => cht_message_parse(htmlentities($chat_row['message'], ENT_QUOTES, 'utf-8')),
         'TEXT' => cht_message_parse($chat_row['message']),
       );
 

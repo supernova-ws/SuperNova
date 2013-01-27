@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36a0.32
+* @version 37a1
 *
 */
 
@@ -616,6 +616,9 @@ $lang = array_merge($lang, array(
   'sys_buy' => 'Buy',
 
   'sys_eco_lack_dark_matter' => 'Not enough Dark Matter',
+
+  'time_local' => 'Local time',
+  'time_server' => 'Server time',
 
   'sys_result' => array(
     'error_dark_matter_not_enough' => 'Не хватает Тёмной Материи для завершения операции',

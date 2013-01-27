@@ -27,6 +27,38 @@
 
   <body class="style">
     <script type="text/javascript" src="{-path_prefix-}js/lib/jquery.js"></script>
+
+    <script type="text/javascript"><!--
+      var localTime = new Date();
+      var serverTime = new Date('{TIME_NOW}' * 1000);
+      var timeDiff = '{TIME_DIFF}';
+      if(timeDiff === '')
+      {
+        timeDiff = 0;
+        jQuery.post("time_probe.php", {'localtime': localTime.valueOf()}, function(data)
+          {
+            timeDiff = parseInt(data);
+          }
+        );
+      }
+      timeDiff = parseInt(timeDiff);
+//      var timeDiff = serverTime.valueOf() - localTime.valueOf();
+
+//      jQuery.post("time_probe.php", {'localtime': localTime.valueOf()}, function(data)
+//        {
+//          localTime = new Date();
+//          serverTime = new Date(data * 1000);
+//          timeDiff = serverTime.valueOf() - localTime.valueOf();
+//        }
+//      );
+
+      jQuery(document).ready(function()
+        {
+          sn_timer();
+        }
+      );
+    --></script>
+
     <script type="text/javascript" src="{-path_prefix-}js/lib/jquery-ui.js"></script>
     <script type="text/javascript" src="{-path_prefix-}js/sn_global.js"></script>
     <script type="text/javascript" src="{-path_prefix-}js/sn_timer.js"></script>

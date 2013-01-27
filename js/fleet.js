@@ -134,7 +134,7 @@ function consumption() {
 }
 
 function shortInfo() {
-  document.getElementById("distance").innerHTML = sn_format_number(distance());
+  jQuery("#distance").html(sn_format_number(distance()));
 
   var seconds = duration();
   var duration_tick = seconds * 1000;
@@ -146,44 +146,33 @@ function shortInfo() {
     var minutes = Math.floor(seconds / 60);
     seconds -= minutes * 60;
 
+    if (hours < 10) hours = "0" + hours;
     if (minutes < 10) minutes = "0" + minutes;
     if (seconds < 10) seconds = "0" + seconds;
 
-    document.getElementById("duration").innerHTML = hours + ":" + minutes + ":" + seconds;
+    jQuery("#duration").html(hours + ":" + minutes + ":" + seconds);
 
     time_temp = new Date();
+    time_temp.setTime(time_temp.valueOf() + duration_tick);
+    jQuery('#time_dst').html(time_temp.toLocaleString());
+
+    time_temp_local = new Date(time_temp.valueOf() + timeDiff * 1000);
+    jQuery('#time_dst_local').html(time_temp_local.toLocaleString());
 
     time_temp.setTime(time_temp.valueOf() + duration_tick);
-    element = document.getElementById("time_dst");
-    if(element)
-    {
-      element.innerHTML = time_temp.toLocaleString();
-    }
+    jQuery('#time_src').html(time_temp.toLocaleString());
 
-    time_temp.setTime(time_temp.valueOf() + duration_tick);
-    element = document.getElementById("time_src");
-    if(element)
-    {
-      element.innerHTML = time_temp.toLocaleString();
-    }
+    time_temp_local.setTime(time_temp_local.valueOf() + duration_tick);
+    jQuery('#time_src_local').html(time_temp_local.toLocaleString());
   }
   else
   {
-    document.getElementById("duration").innerHTML = "-";
+    jQuery("#duration").html("-");
   }
   var cons = consumption();
 
-  element = document.getElementById("consumption");
-  if(element)
-  {
-    element.innerHTML = sn_format_number(cons, 0, 'positive');
-  }
-
-  element = document.getElementById("capacity");
-  if(element)
-  {
-    element.innerHTML = sn_format_number(fleet_capacity - cons, 0, 'positive');
-  }
+  jQuery("#consumption").html(sn_format_number(cons, 0, 'positive'));
+  jQuery("#capacity").html(sn_format_number(fleet_capacity - cons, 0, 'positive'));
 }
 
 var fleet_consumption = 0;

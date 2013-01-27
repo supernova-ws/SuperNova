@@ -1,5 +1,13 @@
 <?php
 //  header('Content-type: text/xml');
 //  echo '<time>' . time() . '</time>';
-  echo time();
+//  echo time();
+  require_once('common.' . substr(strrchr(__FILE__, '.'), 1));
+
+  $time_diff = ($time_local = intval($_POST['localtime'] / 1000)) ? $time_now - $time_local : 0;
+  if($user['id'] && !$user['user_time_diff_forced'])
+  {
+    doquery("UPDATE {{users}} SET `user_time_diff` = {$time_diff} WHERE `id` = {$user['id']} LIMIT 1;");
+  }
+  echo $time_diff;
 ?>

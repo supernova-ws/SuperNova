@@ -10,9 +10,9 @@
 
   <input type="hidden" name="usedfleet"       value="{usedfleet}" />
 
-  <table width="519" border="0" cellpadding="0" cellspacing="1">
+  <table border="0" cellpadding="0" cellspacing="1">
     <tr>
-      <th width="50%">{L_fl_dest}</th>
+      <th>{L_fl_dest}</th>
       <th>
         <input name="galaxy" size="3" maxlength="2" onChange="shortInfo()" onKeyUp="shortInfo()" value="{galaxy}" />
         <input name="system" size="3" maxlength="3" onChange="shortInfo()" onKeyUp="shortInfo()" value="{system}" />
@@ -55,13 +55,19 @@
     </tr>
 
     <tr>
-      <th>{L_fl_dest_t}</th>
-      <th><div id="time_dst">-</div></th>
+      <th rowspan="2">{L_fl_dest_t}</th>
+      <th>{L_time_local}: <span id="time_dst_local">-</span></th>
+    </tr>
+    <tr>
+      <th>{L_time_server}: <span id="time_dst">-</span></th>
     </tr>
 
     <tr>
-      <th>{L_fl_back_t}</th>
-      <th><div id="time_src">-</div></th>
+      <th rowspan="2">{L_fl_back_t}</th>
+      <th>{L_time_local}: <span id="time_src_local">-</span></th>
+    </tr>
+    <tr>
+      <th>{L_time_server}: <span id="time_src">-</span></th>
     </tr>
 
     <tr>

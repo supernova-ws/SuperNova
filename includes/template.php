@@ -49,7 +49,6 @@ function tpl_render_menu()
   $template = gettemplate($template_name, true);
 
   $template->assign_vars(array(
-    'SERVER_TIME'         => $time_now,
     'USER_AUTHLEVEL'      => $user['authlevel'],
     'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
     'USER_IMPERSONATOR'   => is_array($user_impersonator),
@@ -174,7 +173,7 @@ function tpl_render_menu()
 // $AdminPage -> Si on est dans la section admin ... faut le dire ...
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
-  global $link, $debug, $user, $user_impersonator, $planetrow, $IsUserChecked, $time_now, $config, $lang, $template_result;
+  global $link, $debug, $user, $user_impersonator, $planetrow, $IsUserChecked, $time_now, $config, $lang, $template_result, $time_diff;
 
   if(!$user || !isset($user['id']) || !is_numeric($user['id']))
   {
@@ -189,14 +188,20 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   // Global header
   $template = gettemplate('simple_header', true);
   $template->assign_vars(array(
-    'title'          => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
-    '-meta-'         => $metatags,
+    'TIME_NOW'                 => $time_now,
+    'TIME_DIFF'                => isset($time_diff) ? $time_diff : '',
+    'USER_AUTHLEVEL'           => $user['authlevel'],
+
+    'title'                    => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
+    '-meta-'                   => $metatags,
     'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
-    'ADV_SEO_META_KEYWORDS' => $config->adv_seo_meta_keywords,
-    'LANG_LANGUAGE'  => $lang['LANG_INFO']['LANG_NAME_ISO2'],
-    'LANG_ENCODING'  => 'utf-8',
-    'LANG_DIRECTION' => $lang['LANG_INFO']['LANG_DIRECTION'],
-    'IMPERSONATING'  => $user_impersonator ? sprintf($lang['sys_impersonated_as'], $user['username'], $user_impersonator['username']) : '',
+    'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
+
+    'LANG_LANGUAGE'            => $lang['LANG_INFO']['LANG_NAME_ISO2'],
+    'LANG_ENCODING'            => 'utf-8',
+    'LANG_DIRECTION'           => $lang['LANG_INFO']['LANG_DIRECTION'],
+
+    'IMPERSONATING'            => $user_impersonator ? sprintf($lang['sys_impersonated_as'], $user['username'], $user_impersonator['username']) : '',
   ));
 
   displayP(parsetemplate($template));
@@ -238,7 +243,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   $template = gettemplate('simple_footer', true);
   $template->assign_vars(array(
     'ADMIN_EMAIL' => $config->game_adminEmail,
-    'SERVER_TIME' => $time_now,
+    'TIME_NOW' => $time_now,
     'SN_VERSION'  => SN_VERSION,
   ));
   displayP(parsetemplate($template));
@@ -272,8 +277,9 @@ function tpl_topnav_event_build_helper($time, $event, $msg, $prefix, $is_decreas
     'FLEET_ID' => $fleet_flying_row['fleet_id'],
     'EVENT' => $event,
     'COORDINATES' => uni_render_coordinates($fleet_flying_row, $prefix),
+    'COORDINATES_TYPE' => $fleet_flying_row["{$prefix}type"],
     'TEXT' => "{$msg}",
-    'DECREASE' => $is_decrease
+    'DECREASE' => $is_decrease,
   );
   $fleet_event_count++;
 }
@@ -285,7 +291,7 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
     return;
   }
 
-  global $lang, $user, $time_now;
+  global $lang, $user, $time_now, $time_diff;
 
   $fleet_event_count = 0;
   $fleet_flying_sorter = array();
@@ -321,7 +327,7 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
     $template->assign_block_vars("flying_{$type}s", array(
       'TIME' => max(0, $fleet_time - $time_now),
       'TEXT' => $fleet_flying_count,
-      'HINT' => date(FMT_DATE_TIME, $fleet_time) . " - {$lang['sys_fleet']} {$fleet_event['TEXT']} {$fleet_event['COORDINATES']} {$lang['type_mission'][$fleet_event['ROW']['fleet_mission']]}",
+      'HINT' => date(FMT_DATE_TIME, $fleet_time + $time_diff) . " - {$lang['sys_fleet']} {$fleet_event['TEXT']} {$fleet_event['COORDINATES']} {$lang['sys_planet_type_sh'][$fleet_event['COORDINATES_TYPE']]} {$lang['type_mission'][$fleet_event['ROW']['fleet_mission']]}",
     ));
     if($fleet_event['DECREASE'])
     {
@@ -338,7 +344,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     return '';
   }
 
-  global $time_now, $lang, $config, $sn_data;
+  global $time_now, $lang, $config, $sn_data, $time_local;
 
   $GET_mode = sys_get_param_str('mode');
 
@@ -362,14 +368,6 @@ function sn_tpl_render_topnav(&$user, $planetrow)
       ));
     }
   }
-
-  $day_of_week = $lang['weekdays'][date('w')];
-  $day         = date('d');
-  $month       = $lang['months'][date('m')];
-  $year        = date('Y');
-  $hour        = date('H');
-  $min         = date('i');
-  $sec         = date('s');
 
   $fleet_flying_list = tpl_get_fleets_flying($user);
   tpl_topnav_event_build($template, $fleet_flying_list[0]);
@@ -398,15 +396,25 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     $que_length++;
   }
 
+  $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
+  $time_now_parsed = getdate($time_now);
+  $time_local_parsed = getdate($time_local);
+
   $template->assign_vars(array(
     'QUE_ID'             => QUE_RESEARCH,
     'QUE_HTML'           => 'topnav',
 
     'RESEARCH_ONGOING'   => (boolean)$user['que'],
 
-    'TIME_NOW'   => $time_now,
-    'DATE_TEXT'          => "$day_of_week, $day $month $year {$lang['top_of_year']},",
-    'TIME_TEXT'          => "{$hour}:{$min}:{$sec}",
+//    'DATE_TEXT'          => "$day_of_week, $day $month $year {$lang['top_of_year']},",
+//    'TIME_TEXT'          => "{$hour}:{$min}:{$sec}",
+
+    'TIME_TEXT'          => sprintf($str_date_format, $time_now_parsed['year'], $lang['months'][$time_now_parsed['mon']], $time_now_parsed['mday'],
+      $time_now_parsed['hours'], $time_now_parsed['minutes'], $time_now_parsed['seconds']
+    ),
+    'TIME_TEXT_LOCAL'          => sprintf($str_date_format, $time_local_parsed['year'], $lang['months'][$time_local_parsed['mon']], $time_local_parsed['mday'],
+      $time_local_parsed['hours'], $time_local_parsed['minutes'], $time_local_parsed['seconds']
+    ),
 
     'USERS_ONLINE'         => $online_count['users_online'],
     'USERS_TOTAL'          => $config->users_amount,

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 37a1
 *
 */
 
@@ -118,6 +118,8 @@ $lang = array_merge($lang, array(
   'succeful_changepass' => 'Пароль успешно изменён.<br /><a href="login.php" target="_top">Назад</a>',
 
   'opt_int_options' => 'Настройки интерфейса',
+
+  'opt_time_diff_clear' => 'Замерить разницу между локальным (клиентским) и серверным временем',
 
   'opt_custom' => array(
     'opt_uni_avatar_user' => 'Показывать аватар пользователя',

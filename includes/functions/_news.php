@@ -2,7 +2,7 @@
 
 function nws_render(&$template, $query_where = '', $query_limit = 20)
 {
-  global $config, $time_now;
+  global $config, $time_now, $time_diff;
 
   $announce_list = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} {$query_where} ORDER BY `tsTimeStamp` DESC" . ($query_limit ? " LIMIT {$query_limit}" : ''));
 
@@ -12,7 +12,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20)
   {
     $template->assign_block_vars('announces', array(
       'ID'         => $announce['idAnnounce'],
-      'TIME'       => $announce['tsTimeStamp'],
+      'TIME'       => $announce['tsTimeStamp'] + $time_diff,
       'ANNOUNCE'   => sys_bbcodeParse($announce['strAnnounce']),
       'DETAIL_URL' => $announce['detail_url'],
       'NEW'        => $announce['unix_time'] + $config->game_news_actual >= $time_now,

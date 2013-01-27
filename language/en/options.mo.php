@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 37a1
 *
 */
 
@@ -119,6 +119,8 @@ $lang = array_merge($lang, array(
   'succeful_changepass' => '',
 
   'opt_int_options' => 'Interface Settings',
+
+  'opt_time_diff_clear' => 'Measure difference between local (client) and server time',
 
   'opt_custom' => array(
     'opt_uni_avatar_user' => 'Show user avatar',

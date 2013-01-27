@@ -1,6 +1,9 @@
 <?php
 //define('BE_DEBUG', true);
 
+define('SN_TIME_NOW', $time_now = time());
+define('SN_TIME_MICRO', $microtime = microtime(true));
+
 if(defined('INIT'))
 {
   return;
@@ -89,9 +92,6 @@ define('SN_ROOT_RELATIVE', $sn_root_relative);
 define('SN_ROOT_PHYSICAL', $sn_root_physical);
 define('SN_ROOT_VIRTUAL' , 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . $sn_root_relative);
 define('PHP_EX', $phpEx); // PHP extension on this server
-
-define('SN_TIME_NOW', $time_now = time());
-define('SN_TIME_MICRO', $microtime = microtime(true));
 
 $user          = array();
 $lang          = array();

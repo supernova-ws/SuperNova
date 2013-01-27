@@ -225,6 +225,8 @@ function sn_options_model()
     $avatar_upload_result = sys_avatar_upload($user['id'], $user['avatar']);
     $template_result['.']['result'][] = $avatar_upload_result;
 
+    $user_birthday .= sys_get_param_int('opt_time_diff_clear') ? ', `user_time_diff` = NULL' : '';
+
     doquery("UPDATE {{users}} SET
       `username` = '{$username}',
       `password` = '{$user['password']}',

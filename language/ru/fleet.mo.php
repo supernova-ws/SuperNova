@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 36a0.25
+* @version 37a1
 *
 */
 
@@ -75,8 +75,8 @@ $lang = array_merge($lang, array(
   'fl_moon' => 'Луна',
   'fl_dist' => 'Расстояние',
   'fl_fltime' => 'Продолжительность(в одну сторону)',
-  'fl_time_go' => 'Отправлен (Время)',
-  'fl_time_back' => 'Вернётся (время)',
+  'fl_time_go' => 'Прибытие в точку назначение',
+  'fl_time_back' => 'Возвращение в точку старта',
   'fl_deute_need' => 'Потребление топлива',
   'fl_speed_max' => 'Максимальная скорость',
   'fl_shortcut' => 'Закладки',

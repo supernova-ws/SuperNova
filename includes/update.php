@@ -896,7 +896,13 @@ switch($new_version)
       "ADD CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
     ), true);
 
-//    $new_version = 36;
+    upd_alter_table('users', array(
+      "ADD `user_time_diff` INT(11) DEFAULT NULL COMMENT 'User time difference with server time' AFTER `onlinetime`",
+      "ADD `user_time_diff_forced` TINYINT(1) DEFAULT 0 COMMENT 'User time difference forced with time zone selection flag' AFTER `user_time_diff`",
+    ), !$update_tables['users']['user_time_diff']);
+
+    upd_do_query('COMMIT;', true);
+//    $new_version = 37;
 };
 upd_log_message('Upgrade complete.');
 

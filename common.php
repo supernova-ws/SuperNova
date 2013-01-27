@@ -10,6 +10,8 @@
 require_once('includes/init.php');
 
 $user = sn_autologin(!$allow_anonymous);
+$time_diff = $user['user_time_diff'];
+$time_local = $time_now + intval($user['user_time_diff']);
 $sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
 define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
 
