@@ -4,7 +4,13 @@
 //  echo time();
   require_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-  $time_diff = ($time_local = intval($_POST['localtime'] / 1000)) ? $time_now - $time_local : 0;
+/*
+$time_local  = $time_server + $time_diff
+$time_diff   = $time_local  - $time_server
+$time_server = $time_local  - $time_diff
+*/
+
+  $time_diff = ($time_local = intval($_POST['localtime'] / 1000)) ? $time_local - $time_now : 0;
   if($user['id'] && !$user['user_time_diff_forced'])
   {
     doquery("UPDATE {{users}} SET `user_time_diff` = {$time_diff} WHERE `id` = {$user['id']} LIMIT 1;");

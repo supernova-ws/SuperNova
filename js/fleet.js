@@ -152,18 +152,18 @@ function shortInfo() {
 
     jQuery("#duration").html(hours + ":" + minutes + ":" + seconds);
 
-    time_temp = new Date();
-    time_temp.setTime(time_temp.valueOf() + duration_tick);
-    jQuery('#time_dst').html(time_temp.toLocaleString());
-
-    time_temp_local = new Date(time_temp.valueOf() + timeDiff * 1000);
+    time_temp_local = new Date();
+    time_temp_local.setTime(time_temp_local.valueOf() + duration_tick);
     jQuery('#time_dst_local').html(time_temp_local.toLocaleString());
 
-    time_temp.setTime(time_temp.valueOf() + duration_tick);
-    jQuery('#time_src').html(time_temp.toLocaleString());
+    time_temp = new Date(time_temp_local.valueOf() - timeDiff * 1000);
+    jQuery('#time_dst').html(time_temp.toLocaleString());
 
     time_temp_local.setTime(time_temp_local.valueOf() + duration_tick);
     jQuery('#time_src_local').html(time_temp_local.toLocaleString());
+
+    time_temp.setTime(time_temp.valueOf() + duration_tick);
+    jQuery('#time_src').html(time_temp.toLocaleString());
   }
   else
   {
