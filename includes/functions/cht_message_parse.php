@@ -4,7 +4,7 @@ global $supernova;
 
 $supernova->design['bbcodes'] = array(
 //  "^\[c=(white|blue|yellow|green|pink|red|orange|purple)\](.+)\[/c\]$" => "<font color=\"$1\">$2</font>",
-  "\[c=(white|blue|yellow|green|pink|red|orange|purple)\](.+)\[/c\]" => "<font color=\"$1\">$2</font>",
+  "\[c=(white|cyan|yellow|green|pink|red|lime|maroon|orange|purple)\](.+)\[/c\]" => "<font color=\"$1\">$2</font>",
   "\[a=(ft|https?://)(.+)\](.+)\[/a\]" => "<a href=\"$1$2\" target=\"_blank\"><u>$3</u></a>",
   "\[b\](.+)\[/b\]" => "<b>$1</b>",
   "\[i\](.+)\[/i\]" => "<i>$1</i>",
