@@ -901,6 +901,10 @@ switch($new_version)
       "ADD `user_time_diff_forced` TINYINT(1) DEFAULT 0 COMMENT 'User time difference forced with time zone selection flag' AFTER `user_time_diff`",
     ), !$update_tables['users']['user_time_diff']);
 
+    upd_alter_table('planets', array(
+      "ADD `ship_orbital_heavy` bigint(20) NOT NULL DEFAULT '0' COMMENT 'HOPe - Heavy Orbital Platform'",
+    ), !$update_tables['planets']['ship_orbital_heavy']);
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 37;
 };

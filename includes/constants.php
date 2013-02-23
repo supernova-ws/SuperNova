@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '36');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '37a3.9');
+define('SN_VERSION', '37a3.10');
 define('SN_RELEASE_STABLE', '36d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -469,6 +469,8 @@ define('SHIP_SATTELITE_SLOTH', 221);
 define('SHIP_BATTLESHIP_PRIDE', 222);
 define('SHIP_RECYCLER_GLUTTONY', 223);
 define('SHIP_BOMBER_ENVY', 224);
+
+define('SHIP_ORBITAL_HEAVY', 225);
 // --- Defense
 define('UNIT_DEFENCE', 400);
 define('UNIT_DEF_TURRET_MISSILE', 401);
@@ -534,6 +536,7 @@ define('UNIT_PLAN_SHIP_CARGO_HYPER', 1103);
 define('UNIT_PLAN_SHIP_DEATH_STAR', 1104);
 define('UNIT_PLAN_SHIP_SUPERNOVA', 1105);
 define('UNIT_PLAN_DEF_SHIELD_PLANET', 1106);
+define('UNIT_PLAN_SHIP_ORBITAL_HEAVY', 1107);
 
 define('UNIT_PREMIUM', 1200);
 define('UNIT_SECTOR', 1300);
