@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a1
+* @version 37a3.9
 *
 */
 
@@ -224,6 +224,8 @@ $lang = array_merge($lang, array(
     PT_DEBRIS => '(D)', 
     PT_MOON   => '(M)',
   ),
+
+  'sys_planet_expedition' => 'unexplored space',
 
   'sys_capacity' 			=> 'Load Capacity',
   'sys_cargo_bays' 			=> 'Holds',

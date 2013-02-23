@@ -334,15 +334,22 @@ function uni_render_planet_full($from, $prefix = '', $html_safe = true, $include
 {
   global $lang;
 
-  $from_planet_id = $include_id ? (
-    'ID ' . ($from['id'] ? $from['id'] : ($from[$prefix . 'planet_id'] ? $from[$prefix . 'planet_id'] : 0)) . ' '
-  ) : '';
+  if(!$from['id'])
+  {
+    $result = $lang['sys_planet_expedition'];
+  }
+  else
+  {
+    $from_planet_id = $include_id ? (
+      'ID ' . ($from['id'] ? $from['id'] : ($from[$prefix . 'planet_id'] ? $from[$prefix . 'planet_id'] : 0)) . ' '
+    ) : '';
 
-  $from_planet_type = $from['planet_type'] ? $from['planet_type'] : ($from[$prefix . 'type'] ? $from[$prefix . 'type'] : 0);
-  $from_planet_type = ($from_planet_type ? ' ' . $lang['sys_planet_type_sh'][$from_planet_type] : '');
+    $from_planet_type = $from['planet_type'] ? $from['planet_type'] : ($from[$prefix . 'type'] ? $from[$prefix . 'type'] : 0);
+    $from_planet_type = ($from_planet_type ? ' ' . $lang['sys_planet_type_sh'][$from_planet_type] : '');
 
-  $result = $from_planet_id . uni_render_coordinates($from, $prefix) . $from_planet_type . ($from['name'] ? ' ' . $from['name'] : '');
-  $result = $html_safe ? str_replace(' ', '&nbsp;', htmlentities($result, ENT_COMPAT, 'UTF-8')) : $result;
+    $result = $from_planet_id . uni_render_coordinates($from, $prefix) . $from_planet_type . ($from['name'] ? ' ' . $from['name'] : '');
+    $result = $html_safe ? str_replace(' ', '&nbsp;', htmlentities($result, ENT_COMPAT, 'UTF-8')) : $result;
+  }
 
   return $result;
 }

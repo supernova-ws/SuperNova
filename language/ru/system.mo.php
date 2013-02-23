@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #37a1#
+* @version #37a3.9#
 *
 */
 
@@ -221,6 +221,8 @@ $lang = array_merge($lang, array(
     PT_DEBRIS => '(О)',
     PT_MOON   => '(Л)',
   ),
+
+  'sys_planet_expedition' => 'неисследованное пространство',
 
   'sys_capacity' 			=> 'Грузоподъёмность',
   'sys_cargo_bays' 		=> 'Трюмы',
