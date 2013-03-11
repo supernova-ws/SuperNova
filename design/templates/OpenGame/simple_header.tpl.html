@@ -26,6 +26,7 @@
   </head>
 
   <body class="style">
+    <div id="debug_header" style="text-align: left"></div>
     <script type="text/javascript" src="{-path_prefix-}js/lib/jquery.js"></script>
 
     <script type="text/javascript"><!--
@@ -35,7 +36,8 @@
       if(timeDiff === '')
       {
         timeDiff = 0;
-        jQuery.post("time_probe.php", {'localtime': localTime.valueOf()}, function(data)
+//        jQuery.post("time_probe.php", {'localtime': localTime.valueOf()}, function(data)
+        jQuery.post("time_probe.php", {'localtime': localTime.valueOf(), 'utcoffset': -localTime.getTimezoneOffset() * 60}, function(data)
           {
             timeDiff = parseInt(data);
           }
