@@ -35,7 +35,7 @@
       if(timeDiff === '')
       {
         timeDiff = 0;
-        jQuery.post("time_probe.php", {'localtime': localTime.valueOf()}, function(data)
+        jQuery.post("time_probe.php", {'localtime': localTime.valueOf(), 'utcoffset': -localTime.getTimezoneOffset() * 60}, function(data)
           {
             timeDiff = parseInt(data);
           }
