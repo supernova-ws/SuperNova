@@ -46,6 +46,7 @@ function sn_fleet_page2()
     }
   */
   $temp = array(
+    'id' => $TargetPlanet['id'],
     'galaxy' => $galaxy,
     'system' => $system,
     'planet' => $planet,
