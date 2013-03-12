@@ -41,7 +41,7 @@ if($userToAdd = sys_get_param_str('addtogroup'))
   $userToAddID = doquery("SELECT `id` FROM `{{users}}` WHERE `username` like '{$userToAdd}' LIMIT 1;", '', true);
   $userToAddID = $userToAddID['id'];
 
-  if($fleet['fleet_owner'] == $userToAddID)
+  if($fleet['fleet_target_owner'] == $userToAddID)
   {
     message($lang['flt_aks_player_same'], $lang['fl_error']);
   }
