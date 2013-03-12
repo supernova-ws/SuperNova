@@ -134,7 +134,8 @@ function sn_timer()
   var HTML, HTML_timer, HTML_finish;
 
   var local_time = new Date();
-  var time_now = new Date(local_time.valueOf() - timeDiff * 1000);
+//  var time_now = new Date(local_time.valueOf() - timeDiff * 1000);
+  var time_now = new Date(local_time.valueOf());
 // alert(local_time + '\r\n' + time_now);
   var timestamp = Math.round(time_now.valueOf() / 1000);
 
