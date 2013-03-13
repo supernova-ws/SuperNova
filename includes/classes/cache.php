@@ -496,6 +496,7 @@ class classConfig extends classPersistent
     'chat_highlight_operator'      => '<span class=\"nick_operator\">$1</span>', // Operator nick
     'chat_highlight_premium'       => '<span class=\"nick_premium\">$1</span>', // Premium nick
     // Other chat settings
+    'chat_refresh_rate'            => 5, // in seconds. Chat AJAX refresh rate
     'chat_timeout'                 => 900, // in seconds. Default = 15 min
 
     'COOKIE_NAME'                  => 'SuperNova',

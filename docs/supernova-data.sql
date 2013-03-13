@@ -19,6 +19,7 @@ INSERT INTO `sn_config` VALUES ('chat_highlight_admin', '<span class=\"nick_admi
 INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_premium', '<span class=\"nick_premium\">$1</span>');
+INSERT INTO `sn_config` VALUES ('chat_refresh_rate', '5');
 INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');

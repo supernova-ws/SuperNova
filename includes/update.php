@@ -905,6 +905,14 @@ switch($new_version)
       "ADD `ship_orbital_heavy` bigint(20) NOT NULL DEFAULT '0' COMMENT 'HOPe - Heavy Orbital Platform'",
     ), !$update_tables['planets']['ship_orbital_heavy']);
 
+    upd_check_key('chat_refresh_rate', 5, !isset($config->chat_refresh_rate));
+
+    upd_alter_table('chat_player', array(
+      "ADD `chat_player_refresh_last`  INT(11) NOT NULL DEFAULT 0 COMMENT 'Player last refresh time'",
+
+      "ADD KEY `I_chat_player_refresh_last` (`chat_player_refresh_last`)",
+    ), !$update_tables['chat_player']['chat_player_refresh_last']);
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 37;
 };
