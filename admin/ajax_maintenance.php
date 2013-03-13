@@ -30,6 +30,10 @@ $ques = array(
 //  'DELETE FROM `{{messages}}`  WHERE `message_sender` not in (select id from {{users}});',
   'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});',
   'DELETE FROM `{{planets}}`   WHERE `id_owner`       not in (select id from {{users}});',
+
+  // UBE reports
+  'DELETE FROM `{{ube_report}}` WHERE `ube_report_time_combat` < DATE_SUB(now(),INTERVAL 60 day);',
+
 //  'DELETE FROM `{{rw}}`        WHERE `id_owner1`      not in (select id from {{users}});',
 //  'DELETE FROM `{{rw}}`        WHERE `id_owner2`      not in (select id from {{users}});',
   'DELETE FROM `{{referrals}}` WHERE `id`             not in (select id from {{users}});',

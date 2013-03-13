@@ -533,13 +533,6 @@ switch($new_version)
 
     upd_do_query("UPDATE {{users}} SET `ally_name` = null, `ally_tag` = null, ally_register_time = 0, ally_rank_id = 0 WHERE `ally_id` IS NULL");
 
-//    upd_drop_table('ube_report_outcome_unit');
-//    upd_drop_table('ube_report_outcome_fleet');
-//    upd_drop_table('ube_report_unit');
-//    upd_drop_table('ube_report_fleet');
-//    upd_drop_table('ube_report_player');
-//    upd_drop_table('ube_report');
-
     if(!$update_tables['ube_report'])
     {
       upd_create_table('ube_report',
@@ -578,8 +571,6 @@ switch($new_version)
 
           PRIMARY KEY (`ube_report_id`),
           KEY `I_ube_report_cypher` (`ube_report_cypher`)
-
--- constraint to ube_report_player_player_id ?
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
@@ -632,7 +623,6 @@ switch($new_version)
           `ube_report_fleet_resource_deuterium` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Fleet deuterium amount',
 
           PRIMARY KEY (`ube_report_fleet_id`),
---          KEY `I_ube_report_player_player_id` (`ube_report_player_player_id`),
           CONSTRAINT `FK_ube_report_fleet_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `{$config->db_prefix}ube_report` (`ube_report_id`) ON UPDATE CASCADE ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
@@ -664,10 +654,6 @@ switch($new_version)
           `ube_report_unit_attack_base` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit base attack',
           `ube_report_unit_shield_base` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit base shield',
           `ube_report_unit_armor_base` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit base armor',
-          -- ? `ube_report_unit_capacity` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit capacity', -- Only for statistics
-          -- ? `ube_report_unit_type` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit type',            -- Only for statistics
-
-          -- ? `ube_report_unit_price_metal` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit price metal',       -- Only for statistics
 
           `ube_report_unit_sort_order` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit pass-through sort order to maintain same output',
 
@@ -732,9 +718,6 @@ switch($new_version)
       );
     }
 
-//    upd_drop_table('unit');
-//    upd_drop_table('captain');
-
     if(!$update_tables['unit'])
     {
       upd_create_table('unit',
@@ -744,25 +727,17 @@ switch($new_version)
           `unit_player_id` BIGINT(20) UNSIGNED DEFAULT NULL COMMENT 'Unit owner',
           `unit_location_type` TINYINT NOT NULL DEFAULT 0 COMMENT 'Location type: universe, user, planet (moon?), fleet',
           `unit_location_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Location ID',
-
           -- `unit_bind_type` TINYINT NOT NULL DEFAULT 0 COMMENT 'Binding - where unit is originally belongs', -- unused so far
           -- `unit_bind_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Location ID', -- unused so far
-
           `unit_type` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit type',
           `unit_snid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit SuperNova ID',
           -- `unit_dbid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit exemplar DB ID in respective table', -- does it really needs?
           -- `unit_guid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit unique GUID', -- unused for now. Will be need when GUID would be implemented
-
           `unit_level` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit level or count - dependent of unit_type',
 
-
-
           PRIMARY KEY (`unit_id`),
-
           KEY `I_unit_player_location_snid` (`unit_player_id`, `unit_location_type`, `unit_location_id`, `unit_snid`),
-
           CONSTRAINT `FK_unit_player_id` FOREIGN KEY (`unit_player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
-
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
@@ -782,14 +757,9 @@ switch($new_version)
           `captain_armor` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain armor bonus level',
           `captain_attack` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain defense bonus level',
 
-
-
           PRIMARY KEY (`captain_id`),
-
           KEY `I_captain_unit_id` (`captain_unit_id`),
-
           CONSTRAINT `FK_captain_unit_id` FOREIGN KEY (`captain_unit_id`) REFERENCES `{$config->db_prefix}unit` (`unit_id`) ON UPDATE CASCADE ON DELETE CASCADE
-
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
@@ -817,7 +787,6 @@ switch($new_version)
 
     upd_alter_table('fleets', array("DROP COLUMN `processing_start`"), $update_tables['fleets']['processing_start']);
 
-    //upd_drop_table('chat_player');
     if(!$update_tables['chat_player'])
     {
       upd_create_table('chat_player',
@@ -854,12 +823,6 @@ switch($new_version)
     upd_alter_table('chat', array(
       "ADD `chat_message_sender_name` VARCHAR(64) DEFAULT '' COMMENT 'Message sender name' AFTER `chat_message_sender_id`",
       "ADD `chat_message_recipient_name` VARCHAR(64) DEFAULT '' COMMENT 'Message sender name' AFTER `chat_message_recipient_id`",
-
-//      "ADD KEY `I_chat_message_sender_name` (`chat_message_sender_id`)",
-//      "ADD KEY `I_chat_message_recipient_name` (`chat_message_recipient_id`)",
-
-//      "ADD CONSTRAINT `FK_chat_message_sender_user_id` FOREIGN KEY (`chat_message_sender_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
-//      "ADD CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
     ), !$update_tables['chat']['chat_message_sender_name']);
 
     upd_alter_table('users', array(
@@ -913,6 +876,10 @@ switch($new_version)
       "ADD KEY `I_chat_player_refresh_last` (`chat_player_refresh_last`)",
     ), !$update_tables['chat_player']['chat_player_refresh_last']);
 
+    upd_alter_table('ube_report', array(
+      "ADD KEY `I_ube_report_time_combat` (`ube_report_time_combat`)",
+    ), !$update_indexes['ube_report']['I_ube_report_time_combat']);
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 37;
 };
@@ -939,5 +906,3 @@ if($user['authlevel'] >= 3)
 
 unset($sn_cache->tables);
 sys_refresh_tablelist($config->db_prefix);
-
-?>
