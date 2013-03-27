@@ -8,34 +8,35 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
-if ( !defined('INSIDE') ) {
+if(!defined('INSIDE'))
+{
   die();
 }
 
 function sn_db_connect()
 {
-  global $link, $debug, $config, $lang;
-  require(SN_ROOT_PHYSICAL . "config." . PHP_EX);
-  if(!$link) {
-    $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']) or
-      $debug->error(mysql_error(),'DB Error - cannot connect to server');
+  global $link, $debug, $config, $lang, $db_prefix;
 
-    mysql_query("/*!40101 SET NAMES 'utf8' */") or
-      die('Error: ' . mysql_error());
-//    mysql_query("SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE") or
-//      die('Error: ' . mysql_error());
-    mysql_select_db($dbsettings['name']) or
-      $debug->error(mysql_error(), 'DB error - cannot find DB on server');
+  if(!$link)
+  {
+    require(SN_ROOT_PHYSICAL . "config." . PHP_EX);
+
+    $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']) or $debug->error(mysql_error(),'DB Error - cannot connect to server');
+
+    mysql_query("/*!40101 SET NAMES 'utf8' */") or die('Error: ' . mysql_error());
+//    mysql_query("SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE") or die('Error: ' . mysql_error());
+    mysql_select_db($dbsettings['name']) or $debug->error(mysql_error(), 'DB error - cannot find DB on server');
     echo mysql_error();
+    unset($dbsettings);
   }
-  $db_prefix = $config->db_prefix ? $config->db_prefix : $dbsettings['prefix'];
+//  $db_prefix = $config->db_prefix ? $config->db_prefix : $db_prefix;
 
-  unset($dbsettings);
-  return $db_prefix;
+//  return $db_prefix;
 }
 
-function doquery($query, $table = '', $fetch = false){
-  global $numqueries, $link, $debug, $user, $tableList, $sn_cache, $is_watching, $config, $dm_change_legit;
+function doquery($query, $table = '', $fetch = false)
+{
+  global $numqueries, $link, $debug, $user, $tableList, $sn_cache, $is_watching, $config, $dm_change_legit, $db_prefix;
 
   if(!is_string($table))
   {
@@ -128,7 +129,10 @@ function doquery($query, $table = '', $fetch = false){
     die($message);
   }
 
-  $db_prefix = sn_db_connect($query);
+  if(!$link)
+  {
+    sn_db_connect();
+  }
 
 //  $sql = str_replace('{{table}}', $db_prefix.$table, $query);
   $sql = $query;

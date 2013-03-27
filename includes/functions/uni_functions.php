@@ -21,7 +21,9 @@ function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
       $FrmAvgMax          = $SixtyMax[$Position - 1] - $Average[$Position - 1];
 
       $DifInDeveation      = $FrmAvgMin + $FrmAvgMax;
+      // $DifInDeveation = $SixtyMin[$Position - 1] + $SixtyMax[$Position - 1] - 2 * $Average[$Position - 1];
       $BaseIncDeveatn      = $Average[$Position - 1] - ($DifInDeveation / 2);
+      // $BaseIncDeveatn = 2 * $Average[$Position - 1] - ($SixtyMin[$Position - 1] + $SixtyMax[$Position - 1]) / 2
 
       $PlanetFieldsLow  = mt_rand($SixtyMin[$Position - 1], $BaseIncDeveatn);
       $PlanetFieldsUpp  = mt_rand($BaseIncDeveatn, $SixtyMax[$Position - 1]);

@@ -1045,4 +1045,37 @@ function array_merge_recursive_numeric($array1, $array2)
   return $array1;
 }
 
-?>
+// Эта функция выдает нормально распределенное случайное число с матожиднием $mu и стандартным отклонением $sigma
+// $strict - количество $sigma, по которым идет округление функции. Т.е. $strict = 3 означает, что диапазон значений обрезается по +-3 * $sigma
+// Используется http://ru.wikipedia.org/wiki/Преобразование_Бокса_—_Мюллера
+function sn_rand_gauss($mu = 0, $sigma = 1, $strict = false)
+{
+  // http://ru.wikipedia.org/wiki/Среднеквадратическое_отклонение
+  // При $mu = 0 (график симметричный, цифры только для половины графика)
+  // От 0 до $sigma ~ 34.1%
+  // От $sigma до 2 * $sigma ~ 13.6%
+  // От 2 * $sigma до 3 * $sigma ~ 2.1%
+  // От 3 * $sigma до бесконечности ~ 0.15%
+  // Не менее 99.7% случайных величин лежит в пределах +-3 $sigma
+
+//  $r = sn_rand_0_1();
+//  $phi = sn_rand_0_1();
+//  $z0 = cos(2 * pi() * $phi) * sqrt(-2 * log($r));
+//  return $mu + $sigma * $z0;
+  $max_rand = mt_getrandmax();
+  $random = cos(2 * pi() * (mt_rand(1, $max_rand) / $max_rand)) * sqrt(-2 * log(mt_rand(1, $max_rand) / $max_rand));
+  $random = $strict === false ? $random : ($random > $strict ? $strict : ($random < -$strict ? -$strict : $random));
+
+  return $mu + $sigma * $random;
+}
+
+// Функция возвращает случайное нормально распределенное целое число из указанного промежутка
+function sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
+{
+  $random = sn_rand_gauss(($range_start + $range_end) / 2, ($range_end - $range_start) / $strict / 2, $strict);
+  return $round ? round($random) : $random;
+//  $random = sn_rand_gauss(0, 1, $strict) + $strict * $sigma; // отнормировано по нулю
+//  $range_delta = $range_end - $range_start;
+//  $step = $strict * 2 / $range_delta;
+//  return $range_start + round($random / $step);
+}

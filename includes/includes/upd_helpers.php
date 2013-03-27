@@ -7,7 +7,7 @@ if(!defined('IN_UPDATE'))
 
 function upd_do_query($query, $no_log = false)
 {
-  global $update_tables;
+  global $update_tables, $db_prefix;
 
   upd_add_more_time();
   if(!$no_log)
@@ -15,17 +15,16 @@ function upd_do_query($query, $no_log = false)
     upd_log_message("Performing query '{$query}'");
   }
 
-  $db_prefix = sn_db_connect($query);
+  sn_db_connect();
   if(!(strpos($query, '{{') === false))
   {
     foreach($update_tables as $tableName => $cork)
     {
-      $query = str_replace("{{{$tableName}}}", $db_prefix.$tableName, $query);
+      $query = str_replace("{{{$tableName}}}", $db_prefix . $tableName, $query);
     }
   }
 
-  $result = mysql_query($query) or
-    die('Query error for ' . $query . ': ' . mysql_error());
+  $result = mysql_query($query) or die('Query error for ' . $query . ': ' . mysql_error());
 
   return $result;
 }
