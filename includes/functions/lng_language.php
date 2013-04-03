@@ -101,7 +101,7 @@ function lng_get_info($entry)
 
 function lng_switch($language_new)
 {
-  global $lang, $language, $user, $sn_i18n;
+  global $lang, $language, $user, $sn_mvc;
 
   $language_new = $language_new ? $language_new : ($user['lang'] ? $user['lang'] : DEFAULT_LANG);
 
@@ -114,7 +114,7 @@ function lng_switch($language_new)
     lng_include('system');
     lng_include('tech');
     // Loading global language files
-    lng_load_i18n($sn_i18n['pages']['']);
+    lng_load_i18n($sn_mvc['i18n']['']);
     $result = true;
   }
 

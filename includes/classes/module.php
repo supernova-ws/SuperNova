@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #37a3.6# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #37a6.0# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -195,7 +195,6 @@ class sn_module
 
     if(isset($this->manifest['i18n']) && is_array($this->manifest['i18n']) && !empty($this->manifest['i18n']))
     {
-      global $sn_i18n;
       foreach($this->manifest['i18n'] as $i18n_page_name => &$i18n_file_list)
       {
         foreach($i18n_file_list as &$i18n_file_data)
@@ -205,11 +204,11 @@ class sn_module
             $i18n_file_data['path'] = $this->manifest['root_relative'];
           }
         }
-        if(!isset($sn_i18n['pages'][$i18n_page_name]))
+        if(!isset($sn_mvc['i18n'][$i18n_page_name]))
         {
-          $sn_i18n['pages'][$i18n_page_name] = array();
+          $sn_mvc['i18n'][$i18n_page_name] = array();
         }
-        $sn_i18n['pages'][$i18n_page_name] += $i18n_file_list;
+        $sn_mvc['i18n'][$i18n_page_name] += $i18n_file_list;
       }
     }
   }

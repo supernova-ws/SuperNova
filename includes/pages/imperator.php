@@ -8,7 +8,7 @@
  * @version 2.0 copyright (c) 2010-2012 by Gorlum for http://supernova.ws
  */
 
-$sn_i18n['pages']['imperator'] = array(
+$sn_mvc['i18n']['imperator'] = array(
   'overview' => 'overview',
 );
 

@@ -8,7 +8,7 @@
  * @copyright 2008 by ??????? for XNova
  */
 
-$sn_i18n['pages']['options'] = array(
+$sn_mvc['i18n']['options'] = array(
   'options' => 'options',
   'messages' => 'messages',
 );

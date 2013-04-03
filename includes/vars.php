@@ -18,11 +18,7 @@ $sn_mvc = array(
  'model' => array(),
  'view' => array(),
  'controller' => array(),
-);
-
-$sn_i18n = array(
-  'pages' => array(
-  ),
+ 'i18n' => array(),
 );
 
 $sn_ali_admin_internal = array(
