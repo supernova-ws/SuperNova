@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '36');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '37a6.0');
+define('SN_VERSION', '37a6.1');
 define('SN_RELEASE_STABLE', '36d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -387,15 +387,17 @@ define('SUBQUE_RESEARCH', 7);
 define('SORT_ASCENDING' , 0);
 define('SORT_DESCENDING', 1);
 
-define('SORT_ID'              , 0);
-define('SORT_LOCATION'        , 1);
-define('SORT_NAME'            , 2);
-define('SORT_SIZE'            , 3);
-define('SORT_EMAIL'           , 4);
-define('SORT_IP'              , 5);
-define('SORT_TIME_REGISTERED' , 6);
-define('SORT_TIME_LAST_VISIT' , 7);
-define('SORT_TIME_BAN_UNTIL'  , 8);
+define('SORT_ID'             , 0);
+define('SORT_LOCATION'       , 1);
+define('SORT_NAME'           , 2);
+define('SORT_SIZE'           , 3);
+define('SORT_EMAIL'          , 4);
+define('SORT_IP'             , 5);
+define('SORT_TIME_REGISTERED', 6);
+define('SORT_TIME_LAST_VISIT', 7);
+define('SORT_TIME_BAN_UNTIL' , 8);
+define('SORT_REFERRAL_COUNT' , 9);
+define('SORT_REFERRAL_DM'    , 10);
 
 // === Structures
 define('UNIT_STRUCTURES', 0);

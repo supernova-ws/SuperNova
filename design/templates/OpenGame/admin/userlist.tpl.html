@@ -2,16 +2,22 @@
 
 <table>
   <tr>
-    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_ID}">{L_sys_id}</a></th>
-    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_NAME}">{L_sys_user_name}</a></th>
+    <th class="c_c" rowspan="2"><a href="admin/userlist.php?sort={D_SORT_ID}">{L_sys_id}</a></th>
+    <th class="c_c" rowspan="2"><a href="admin/userlist.php?sort={D_SORT_NAME}">{L_sys_user_name}</a></th>
     <!-- IF ! RESTRICTED -->
-    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_EMAIL}">{L_sys_email}</a></th>
-    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_IP}">{L_sys_ip}</a></th>
+    <th class="c_c" rowspan="2"><a href="admin/userlist.php?sort={D_SORT_EMAIL}">{L_sys_email}</a></th>
+    <th class="c_c" rowspan="2"><a href="admin/userlist.php?sort={D_SORT_IP}">{L_sys_ip}</a></th>
     <!-- ENDIF -->
-    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_TIME_REGISTERED}">{L_adm_ul_time_registered}</a></th>
-    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_TIME_LAST_VISIT}">{L_adm_ul_time_played}</a></th>
-    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_TIME_BAN_UNTIL}">{L_adm_ul_time_banned}</a></th>
-    <th class="c_c">{L_adm_sys_actions}</th>
+    <th class="c_c" rowspan="2"><a href="admin/userlist.php?sort={D_SORT_TIME_REGISTERED}">{L_adm_ul_time_registered}</a></th>
+    <th class="c_c" rowspan="2"><a href="admin/userlist.php?sort={D_SORT_TIME_LAST_VISIT}">{L_adm_ul_time_played}</a></th>
+    <th class="c_c" rowspan="2"><a href="admin/userlist.php?sort={D_SORT_TIME_BAN_UNTIL}">{L_adm_ul_time_banned}</a></th>
+    <th class="c_c" colspan="2">{L_adm_ul_referral}</th>
+    <th class="c_c" rowspan="2">{L_adm_sys_actions}</th>
+  </tr>
+
+  <tr>
+    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_REFERRAL_COUNT}">{L_adm_ul_players}</a></th>
+    <th class="c_c"><a href="admin/userlist.php?sort={D_SORT_REFERRAL_DM}">{L_adm_ul_dms}</a></th>
   </tr>
 
   <!-- BEGIN user -->
@@ -39,6 +45,9 @@
       <!-- ENDIF -->
       </a>
     </td>
+
+    <td>{user.REFERRAL_COUNT}</td>
+    <td>{user.REFERRAL_DM}</td>
 
     <td>
       <a href="messages.php?mode=write&id={user.ID}"><img src="design/images/mail.gif" alt="{L_adm_sys_write_message}" title="{L_adm_sys_write_message}" border="0"></a>

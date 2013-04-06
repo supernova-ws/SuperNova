@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 36d0.5
+* @version 37a6.1
 *
 */
 
@@ -84,6 +84,9 @@ $lang = array_merge($lang, array(
   'adm_ul_time_played' => 'Последний логин',
   'adm_ul_time_banned' => 'Срок блокировки',
   'adm_ul_delete_confirm' => 'Подвтердите удаление пользователя ',
+  'adm_ul_referral' => 'Рефералы',
+  'adm_ul_players' => 'Игроки',
+  'adm_ul_dms' => 'ТМ',
   'adm_sys_actions' => 'Действия',
   'adm_sys_write_message' => 'Написать личное сообщение',
   'adm_sys_delete_user' => 'Удалить игрока',

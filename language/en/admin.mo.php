@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36d0.5
+* @version 37a6.1
 *
 */
 
@@ -112,6 +112,9 @@ $lang = array_merge($lang, array(
   'adm_ul_time_registered' => 'Register date',
   'adm_ul_time_played' => 'Last played',
   'adm_ul_time_banned' => 'Banned until',
+  'adm_ul_referral' => 'Referrals',
+  'adm_ul_players' => 'Players',
+  'adm_ul_dms' => 'DM',
   'adm_sys_actions' => 'Actions',
 
 
