@@ -112,6 +112,14 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
   {
     $caps_real['total_storage'][$resource_id] = array_sum($resource_data);
   }
+
+  $planet_row['caps'] = $caps_real;
+
+  $planet_row['metal_max'] = $caps_real['total_storage'][RES_METAL];
+  $planet_row['crystal_max'] = $caps_real['total_storage'][RES_CRYSTAL];
+  $planet_row['deuterium_max'] = $caps_real['total_storage'][RES_DEUTERIUM];
+  $planet_row['energy_max'] = $caps_real[RES_ENERGY][BUILD_CREATE];
+  $planet_row['energy_used'] = $caps_real[RES_ENERGY][BUILD_DESTROY];
 /*
   // Calcul de production lin�aire des divers types
   $BuildTemp = $planet_row['temp_max'];

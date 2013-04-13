@@ -80,8 +80,6 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
         $planet[$resource_name] += $increment;
         $planet[$resource_name . '_perhour'] = $caps_real['total'][$resource_id];
       }
-      $planet['energy_max'] = $caps_real[RES_ENERGY][BUILD_CREATE];
-      $planet['energy_used'] = $caps_real[RES_ENERGY][BUILD_DESTROY];
 /*
       foreach($incRes as $resName => &$incCount)
       {
