@@ -24,15 +24,14 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-function int_calc_storage_bar($resource_name)
+function int_calc_storage_bar($resource_id)
 {
-  global $lang, $config, $template, $caps;
+  global $lang, $config, $template, $caps_real, $sn_data, $planetrow;
 
-  $resource_income_name = $resource_name.'_basic_income';
-  $resource_max_name    = $resource_name.'_max';
+  $resource_name = &$sn_data[$resource_id]['name'];
 
-  $totalProduction      = floor($caps['planet'][$resource_name.'_perhour'] * $caps['production'] + $caps[$resource_name.'_perhour'][0]);
-  $storage_fill         = floor($caps['planet'][$resource_name] / $caps['planet'][$resource_max_name] * 100);
+  $totalProduction      = $caps_real['total'][$resource_id];
+  $storage_fill         = floor($planetrow[$resource_name] / $caps_real['total_storage'][$resource_id] * 100);
 
   $template->assign_block_vars('resources', array(
     'NAME'        => $lang["sys_$resource_name"],
@@ -143,9 +142,9 @@ $template->assign_block_vars('production', array(
   'ENERGY_TYPE'    => pretty_number($caps_real['total'][RES_ENERGY], true, true),
 ));
 
-int_calc_storage_bar('metal');
-int_calc_storage_bar('crystal');
-int_calc_storage_bar('deuterium');
+int_calc_storage_bar(RES_METAL);
+int_calc_storage_bar(RES_CRYSTAL);
+int_calc_storage_bar(RES_DEUTERIUM);
 
 $template->assign_vars(array(
  'PLANET_NAME'      => $planetrow['name'],
