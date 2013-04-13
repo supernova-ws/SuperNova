@@ -54,19 +54,40 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   $planet['prev_update'] = $planet['last_update'];
   $planet['last_update'] += $ProductionTime;
 
-  $Caps = eco_get_planet_caps($user, $planet);
-  $incRes = array('metal' => 0, 'crystal' => 0, 'deuterium' => 0);
+  $Caps = eco_get_planet_caps($user, $planet, $ProductionTime);
+  $caps_real = &$Caps['caps_real'];
+  $resources_increase = array(
+    RES_METAL => 0,
+    RES_CRYSTAL => 0,
+    RES_DEUTERIUM => 0,
+  );
 
   switch($planet['planet_type'])
   {
     case PT_PLANET:
+      foreach($resources_increase as $resource_id => &$increment)
+      {
+        $resource_name = &$sn_data[$resource_id]['name'];
+        $increment = $caps_real['total'][$resource_id] * $ProductionTime / 3600;
+        $store_free = $caps_real['total_storage'][$resource_id] - $planet[$resource_name];
+        $increment = min($increment, max(0, $store_free));
+
+        if($planet[$resource_name] + $increment < 0)
+        {
+          global $debug;
+          $debug->warning("Player ID {$user['id']} have negative resources on ID {$planet['id']}.{$planet['planet_type']} [{$planet['galaxy']}:{$planet['system']}:{$planet['planet']}]. Difference {$planet[$resource_name]} of {$resource_name}", 'Negative Resources', 501);
+        }
+        $planet[$resource_name] += $increment;
+        $planet[$resource_name . '_perhour'] = $caps_real['total'][$resource_id];
+      }
+      $planet['energy_max'] = $caps_real[RES_ENERGY][BUILD_CREATE];
+      $planet['energy_used'] = $caps_real[RES_ENERGY][BUILD_DESTROY];
+/*
       foreach($incRes as $resName => &$incCount)
       {
-//        $Caps['planet'][$resName] = max(0, $Caps['planet'][$resName]);
         $incCount = ($Caps[$resName . '_perhour'][0] + $Caps['planet'][$resName . '_perhour'] * $Caps['production']) * $ProductionTime / 3600;
 
         $store_free = $Caps['planet'][$resName . '_max'] - $Caps['planet'][$resName];
-//        $incCount = max(0, min($incCount, max(0, $store_free)));
         $incCount = min($incCount, max(0, $store_free));
 
         if($planet[$resName] + $incCount < 0)
@@ -77,6 +98,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
         $Caps['planet'][$resName] += $incCount;
         $Caps['planet'][$resName . '_perhour'] = $Caps['real'][$resName . '_perhour'];
       }
+*/
     break;
 
     case PT_MOON:
@@ -88,8 +110,6 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
       $planet['energy_max'] = 0;
     break;
   }
-
-  $planet = array_merge($planet, $Caps['planet']);
 
   $que = eco_que_process($user, $planet, $ProductionTime);
 
@@ -106,9 +126,9 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 
   $QryUpdatePlanet = "UPDATE {{planets}} SET `last_update` = '{$planet['last_update']}',
     `field_current` = {$planet['field_current']},
-    `metal`     = `metal`     + '{$incRes['metal']}',
-    `crystal`   = `crystal`   + '{$incRes['crystal']}',
-    `deuterium` = `deuterium` + '{$incRes['deuterium']}',
+    `metal`     = `metal`     + '{$resources_increase[RES_METAL]}',
+    `crystal`   = `crystal`   + '{$resources_increase[RES_CRYSTAL]}',
+    `deuterium` = `deuterium` + '{$resources_increase[RES_DEUTERIUM]}',
     `metal_perhour` = '{$planet['metal_perhour']}',
     `crystal_perhour` = '{$planet['crystal_perhour']}',
     `deuterium_perhour` = '{$planet['deuterium_perhour']}',
@@ -172,9 +192,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   }
   qst_reward($user, $planet, $que['rewards'], $que['quests']);
 
-  $planet['planet_caps'] = $Caps;
+  //$planet['planet_caps'] = $Caps;
 
   return array('user' => $user, 'planet' => $planet, 'que' => $que);
 }
-
-?>

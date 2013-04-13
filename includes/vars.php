@@ -433,6 +433,10 @@ mission = array(
       STRUC_MINE_METAL => STRUC_MINE_METAL, STRUC_MINE_CRYSTAL => STRUC_MINE_CRYSTAL, STRUC_MINE_DEUTERIUM => STRUC_MINE_DEUTERIUM,
       STRUC_MINE_SOLAR => STRUC_MINE_SOLAR, STRUC_MINE_FUSION => STRUC_MINE_FUSION, SHIP_SATTELITE_SOLAR => SHIP_SATTELITE_SOLAR,
     ),
+    // List of units that can hold resources
+    'storages' => array(
+      STRUC_STORE_METAL => STRUC_STORE_METAL, STRUC_STORE_CRYSTAL => STRUC_STORE_CRYSTAL, STRUC_STORE_DEUTERIUM => STRUC_STORE_DEUTERIUM,
+    ),
 
     // Tech list
     'tech'      => array (
@@ -519,6 +523,16 @@ mission = array(
     'resources_loot' => array(RES_METAL => RES_METAL, RES_CRYSTAL => RES_CRYSTAL, RES_DEUTERIUM => RES_DEUTERIUM),
     // Resources that can be tradeable in market trader
     'resources_trader' => array(RES_METAL => RES_METAL, RES_CRYSTAL => RES_CRYSTAL, RES_DEUTERIUM => RES_DEUTERIUM, RES_DARK_MATTER => RES_DARK_MATTER),
+
+    // List of data modifiers
+    'modifiers' => array(
+      MODIFIER_RESOURCE_CAPACITY => array(
+        MRC_STOCKMAN => MRC_STOCKMAN,
+      ),
+      MODIFIER_RESOURCE_PRODUCTION => array(
+        MRC_TECHNOLOGIST => MRC_TECHNOLOGIST,
+      ),
+    ),
 
     // Resources that can be tradeable in market trader AND be a quest_rewards
     'quest_rewards' => array(RES_METAL => RES_METAL, RES_CRYSTAL => RES_CRYSTAL, RES_DEUTERIUM => RES_DEUTERIUM, RES_DARK_MATTER => RES_DARK_MATTER),

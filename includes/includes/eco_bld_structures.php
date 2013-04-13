@@ -65,14 +65,14 @@ function eco_build($que_type, $user, &$planet, $que)
   $can_que_element = $que_length < ($config->server_que_length_structures + mrc_get_level($user, $planet, MRC_ENGINEER));
 
   $fleet_list            = flt_get_fleets_to_planet($planet);
-  $caps                  = eco_get_planet_caps($user, $planet);
+  // $caps                  = eco_get_planet_caps($user, $planet);
 
   $planet_fields_max     = eco_planet_fields_max($planet);
   $planet_fields_current = $planet['field_current'];
   $planet_fields_que     = -$que['amounts'][$que_type];
   $planet_fields_free    = max(0, $planet_fields_max - $planet_fields_current + $planet_fields_que);
   $planet_fields_queable = $planet_fields_free > 0;
-  $planet_temp_max       = $planet['temp_max'];
+  //$planet_temp_max       = $planet['temp_max'];
 
   foreach($planet_type_structs as $Element)
   {
@@ -90,13 +90,12 @@ function eco_build($que_type, $user, &$planet, $que)
       $element_level_start = mrc_get_level($user, $planet, $Element) + $que['in_que'][$Element];
       foreach($element_sn_data['production'] as $resource_id => $resource_calc)
       {
-        if($resource_income = floor(mrc_modify_value($user, $planet, MRC_TECHNOLOGIST, $resource_calc($element_level_start, 10, $planet['temp_max']) * $config_resource_multiplier)))
+        if($resource_income = floor(mrc_modify_value($user, $planet, MRC_TECHNOLOGIST, $resource_calc($element_level_start, 10, $user, $planet) * $config_resource_multiplier)))
         {
           $level_production_base[strtoupper($sn_data[$resource_id]['name'])] = $resource_income;
         }
       }
 
-//      $level_start = $element_level > 1 ? $element_level - 1 : 1;
       $level_start = $element_level > 1 ? mrc_get_level($user, $planet, $Element) + $que['in_que'][$Element] - 1 : 1;
       $level_production = array();
       for($i = 0; $i < 6; $i++)
@@ -104,7 +103,7 @@ function eco_build($que_type, $user, &$planet, $que)
         $level_production[$level_start + $i]['LEVEL'] = $level_start + $i;
         foreach($element_sn_data['production'] as $resource_id => $resource_calc)
         {
-          if($resource_income = floor(mrc_modify_value($user, $planet, MRC_TECHNOLOGIST, $resource_calc($level_start + $i, 10, $planet['temp_max']) * $config_resource_multiplier)))
+          if($resource_income = floor(mrc_modify_value($user, $planet, MRC_TECHNOLOGIST, $resource_calc($level_start + $i, 10, $user, $planet) * $config_resource_multiplier)))
           {
             $resource_name = strtoupper($sn_data[$resource_id]['name']);
             $level_production[$level_start + $i][$resource_name] = $resource_income;
@@ -204,5 +203,3 @@ function eco_build($que_type, $user, &$planet, $que)
 
   display(parsetemplate($template), $lang['Builds']);
 }
-
-?>

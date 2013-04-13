@@ -18,7 +18,7 @@ if(!defined('INSIDE'))
 // SHOULD BE REPLACED WITH CONFIG!
 define('MAX_FLEET_OR_DEFS_PER_ROW', 2000);
 define('MAX_ATTACK_ROUNDS', 10);
-define('MAX_OVERFLOW', 1);
+//define('MAX_OVERFLOW', 1);
 define('BASE_STORAGE_SIZE', 500000);
 define('BUILD_METAL'      , 500);
 define('BUILD_CRISTAL'    , 500);
@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '36');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '37a6.5');
+define('SN_VERSION', '37a7');
 define('SN_RELEASE_STABLE', '36d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -725,4 +725,8 @@ define('UBE_CAPTAIN', 'UBE_CAPTAIN');
 
 define('CHAT_OPTION_SWITCH', 1);
 
-?>
+// Modifier constants
+define('MODIFIER_NONE', 0);
+define('MODIFIER_RESOURCE_CAPACITY', 1);
+define('MODIFIER_RESOURCE_PRODUCTION', 2);
+// define('MODIFIER_FUSION_OUTPUT', 3);

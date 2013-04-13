@@ -98,36 +98,36 @@ for ($Option = 10; $Option >= 0; $Option--)
 }
 
 $caps = eco_get_planet_caps($user, $planetrow);
+$caps_real = &$caps['caps_real'];
 
-$ProdID = 0;
 $template->assign_block_vars('production', array(
   'TYPE'           => $lang['res_basic_income'],
 
-  'METAL_TYPE'     => pretty_number($caps['metal_perhour'][$ProdID], true, true),
-  'CRYSTAL_TYPE'   => pretty_number($caps['crystal_perhour'][$ProdID], true, true),
-  'DEUTERIUM_TYPE' => pretty_number($caps['deuterium_perhour'][$ProdID], true, true),
-  'ENERGY_TYPE'    => pretty_number($caps['energy'][$ProdID], true, true),
+  'METAL_TYPE'     => pretty_number($caps_real['production'][RES_METAL][0], true, true),
+  'CRYSTAL_TYPE'   => pretty_number($caps_real['production'][RES_CRYSTAL][0], true, true),
+  'DEUTERIUM_TYPE' => pretty_number($caps_real['production'][RES_DEUTERIUM][0], true, true),
+  'ENERGY_TYPE'    => pretty_number($caps_real['production'][RES_ENERGY][0], true, true),
 ));
 
-foreach($sn_data['groups']['factories'] as $ProdID)
+foreach($sn_data['groups']['factories'] as $unit_id)
 {
-  $resource_db_name = $sn_data[$ProdID]['name'];
-  if($planetrow[$resource_db_name] > 0 && isset($sn_data[$ProdID]))
+  $resource_db_name = $sn_data[$unit_id]['name'];
+  if($planetrow[$resource_db_name] > 0 && isset($sn_data[$unit_id]))
   {
     $level_plain = $planetrow[$resource_db_name];
     $template->assign_block_vars('production', array(
-      'ID'             => $ProdID,
+      'ID'             => $unit_id,
       'NAME'           => $resource_db_name,
       'PERCENT'        => $planetrow[$resource_db_name . '_porcent'] * 10,
-      'TYPE'           => $lang['tech'][$ProdID],
+      'TYPE'           => $lang['tech'][$unit_id],
       'LEVEL'          => $level_plain,
-      'LEVEL_BONUS'    => mrc_get_level($user, $planetrow, $ProdID) - $level_plain,
-      'LEVEL_TYPE'     => ($ProdID > 200) ? $lang['quantity'] : $lang['level'],
+      'LEVEL_BONUS'    => mrc_get_level($user, $planetrow, $unit_id) - $level_plain,
+      'LEVEL_TYPE'     => ($unit_id > 200) ? $lang['quantity'] : $lang['level'],
 
-      'METAL_TYPE'     => pretty_number($caps['metal_perhour'][$ProdID]     * $caps['production'], true, true),
-      'CRYSTAL_TYPE'   => pretty_number($caps['crystal_perhour'][$ProdID]   * $caps['production'], true, true),
-      'DEUTERIUM_TYPE' => pretty_number($caps['deuterium_perhour'][$ProdID] * $caps['production'], true, true),
-      'ENERGY_TYPE'    => pretty_number($caps['energy'][$ProdID], true, true),
+      'METAL_TYPE'     => pretty_number($caps_real['production'][RES_METAL][$unit_id], true, true),
+      'CRYSTAL_TYPE'   => pretty_number($caps_real['production'][RES_CRYSTAL][$unit_id], true, true),
+      'DEUTERIUM_TYPE' => pretty_number($caps_real['production'][RES_DEUTERIUM][$unit_id], true, true),
+      'ENERGY_TYPE'    => pretty_number($caps_real['production'][RES_ENERGY][$unit_id], true, true),
 
       'SELECT'         => $row_select,
     ));
@@ -137,10 +137,10 @@ foreach($sn_data['groups']['factories'] as $ProdID)
 $template->assign_block_vars('production', array(
   'TYPE'           => $lang['res_total'],
 
-  'METAL_TYPE'     => pretty_number($caps['planet']['metal_perhour'] * $caps['production'] + $caps['metal_perhour'][0], true, true),
-  'CRYSTAL_TYPE'   => pretty_number($caps['planet']['crystal_perhour'] * $caps['production'] + $caps['crystal_perhour'][0], true, true),
-  'DEUTERIUM_TYPE' => pretty_number($caps['planet']['deuterium_perhour'] * $caps['production'] + $caps['deuterium_perhour'][0], true, true),
-  'ENERGY_TYPE'    => pretty_number($caps['planet']['energy_max'] - $caps['planet']['energy_used'], true, true),
+  'METAL_TYPE'     => pretty_number($caps_real['total'][RES_METAL], true, true),
+  'CRYSTAL_TYPE'   => pretty_number($caps_real['total'][RES_CRYSTAL], true, true),
+  'DEUTERIUM_TYPE' => pretty_number($caps_real['total'][RES_DEUTERIUM], true, true),
+  'ENERGY_TYPE'    => pretty_number($caps_real['total'][RES_ENERGY], true, true),
 ));
 
 int_calc_storage_bar('metal');
@@ -150,7 +150,7 @@ int_calc_storage_bar('deuterium');
 $template->assign_vars(array(
  'PLANET_NAME'      => $planetrow['name'],
 
- 'PRODUCTION_LEVEL' => floor($caps['production'] * 100),
+ 'PRODUCTION_LEVEL' => floor($caps_real['efficiency'] * 100),
 
  'PAGE_HINT'        => $lang['res_hint'],
 ));
