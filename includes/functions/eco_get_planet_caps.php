@@ -16,16 +16,16 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
 {
   global $sn_data, $config;
 
-  static $sn_groups, $sn_group_structures, $sn_group_modifiers, $config_resource_multiplier, $config_eco_scale_storage, $base_storage_size;
+  static $sn_groups, $sn_group_modifiers, $config_resource_multiplier, $config_eco_scale_storage;//, $sn_group_structures, $base_storage_size;
 
   if(!$sn_groups)
   {
     $sn_groups = &$sn_data['groups'];
-    $sn_group_structures = &$sn_groups['structures'];
+    //$sn_group_structures = &$sn_groups['structures'];
     $sn_group_modifiers = &$sn_groups['modifiers'];
     $config_resource_multiplier = $config->resource_multiplier;
     $config_eco_scale_storage = $config->eco_scale_storage ? $config_resource_multiplier : 1;
-    $base_storage_size = BASE_STORAGE_SIZE * $config_eco_scale_storage;
+    //$base_storage_size = BASE_STORAGE_SIZE * $config_eco_scale_storage;
   }
 
   $caps = array('caps_real' => array(),);
