@@ -369,8 +369,20 @@ function sn_unit_purchase($unit_id){}
 
 function sn_unit_relocate($unit_id, $from, $to){}
 
-// ЭТО ПРОСТОЙ ВРАППЕР ДЛЯ БД! Здесь НЕТ никаких проверок! ВСЕ проверки должны быть сделаны заранее!
-function sn_unit_get_level($unit_id, &$context = null, $options = null) // , &$result
+/*
+  ЭТО ПРОСТОЙ ВРАППЕР ДЛЯ БД! Здесь НЕТ никаких проверок! ВСЕ проверки должны быть сделаны заранее!
+  Враппер возвращает уровень для указанного UNIT_ID и заполняет поле в соответствующей записи
+  TODO: Он может быть перекрыт для возвращения дополнительной информации о юните - например, о Капитане (пока не реализовано)
+
+  $context
+    'location' - где искать данный тип юнита: LOC_USER
+    'user' - &$user
+
+  $options
+    'for_update' - блокировать запись до конца транзакции
+*/
+function unit_get_level($unit_id, &$context = null, $options = null){return sn_function_call('unit_get_level', array($unit_id, &$context, $options, &$result));}
+function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result)
 {
   global $sn_data, $config, $time_now;
   $unit_db_name = $sn_data[$unit_id]['name'];
@@ -386,7 +398,7 @@ function sn_unit_get_level($unit_id, &$context = null, $options = null) // , &$r
     }
     elseif($for_update || !isset($user[$unit_id]))
     {
-      $time_restriction = ($sn_data[$unit_id]['type'] == UNIT_MERCENARIES && $config->empire_mercenary_temporary) ? " AND unit_time_start <= FROM_UNIXTIME({$time_now}) AND unit_time_finish >= FROM_UNIXTIME({$time_now}) " : '';
+      $time_restriction = $sn_data[$unit_id]['temporary'] || ($sn_data[$unit_id]['type'] == UNIT_MERCENARIES && $config->empire_mercenary_temporary) ? " AND unit_time_start <= FROM_UNIXTIME({$time_now}) AND unit_time_finish >= FROM_UNIXTIME({$time_now}) " : '';
       $unit_level = doquery("SELECT * FROM {{unit}} WHERE unit_player_id = {$user['id']} AND unit_snid = '{$unit_id}' {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
       $unit_level['unit_time_start'] = strtotime($unit_level['unit_time_start']);
       $unit_level['unit_time_finish'] = strtotime($unit_level['unit_time_finish']);
@@ -395,7 +407,7 @@ function sn_unit_get_level($unit_id, &$context = null, $options = null) // , &$r
     $unit_level = intval($user[$unit_id]['unit_level']);
   }
 
-  return $unit_level;
+  return $result = $unit_level;
 }
 
 function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false){return sn_function_call('mrc_get_level', array(&$user, $planet, $unit_id, $for_update, $plain, &$result));}
@@ -407,42 +419,13 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   $mercenary_level = 0;
   $unit_db_name = $sn_data[$unit_id]['name'];
 
-  if($unit_id == UNIT_PREMIUM)
+  if(in_array($unit_id, sn_get_groups(array('plans', 'mercenaries'))))
   {
-    if(!$user['id'])
-    {
-      $user[$unit_id]['powerup_unit_level'] = $user[$unit_db_name];
-    }
-    elseif($for_update || !isset($user[$unit_id]))
-    {
-      $time_restriction = ($unit_id == UNIT_PREMIUM) || ($config->empire_mercenary_temporary && $sn_data[$unit_id]['type'] == UNIT_MERCENARIES) ? " AND powerup_time_start <= {$time_now} AND powerup_time_finish >= {$time_now} " : '';
-      $mercenary_level = doquery("SELECT * FROM {{powerup}} WHERE powerup_user_id = {$user['id']} AND powerup_unit_id = '{$unit_id}' {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
-      $user[$unit_id] = $mercenary_level;
-    }
-    $mercenary_level = intval($user[$unit_id]['powerup_unit_level']);
-  }
-  elseif(in_array($unit_id, sn_get_groups(array('plans', 'mercenaries'))))
-  {
-    /*
-    if(!$user['id'])
-    {
-      $user[$unit_id]['unit_level'] = $user[$unit_db_name];
-    }
-    elseif($for_update || !isset($user[$unit_id]))
-    {
-      $time_restriction = ($config->empire_mercenary_temporary && $sn_data[$unit_id]['type'] == UNIT_MERCENARIES) ? " AND unit_time_start <= FROM_UNIXTIME({$time_now}) AND unit_time_finish >= FROM_UNIXTIME({$time_now}) " : '';
-      $mercenary_level = doquery("SELECT * FROM {{unit}} WHERE unit_player_id = {$user['id']} AND unit_snid = '{$unit_id}' {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
-      $mercenary_level['unit_time_start'] = strtotime($mercenary_level['unit_time_start']);
-      $mercenary_level['unit_time_finish'] = strtotime($mercenary_level['unit_time_finish']);
-      $user[$unit_id] = $mercenary_level;
-    }
-    $mercenary_level = intval($user[$unit_id]['unit_level']);
-    */
     $context = array(
       'location' => LOC_USER,
       'user' => &$user,
     );
-    $mercenary_level = sn_unit_get_level($unit_id, $context, array('for_update' => $for_update));
+    $mercenary_level = unit_get_level($unit_id, $context, array('for_update' => $for_update));
   }
   elseif(in_array($unit_id, $sn_data['groups']['governors']))
   {
