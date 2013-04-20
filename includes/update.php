@@ -880,6 +880,27 @@ switch($new_version)
       "ADD KEY `I_ube_report_time_combat` (`ube_report_time_combat`)",
     ), !$update_indexes['ube_report']['I_ube_report_time_combat']);
 
+    if(!$update_tables['unit']['unit_time_start'])
+    {
+      upd_alter_table('unit', array(
+        "ADD COLUMN `unit_time_start` DATETIME NULL DEFAULT NULL COMMENT 'Unit activation start time'",
+        "ADD COLUMN `unit_time_finish` DATETIME NULL DEFAULT NULL COMMENT 'Unit activation end time'",
+      ), !$update_tables['unit']['unit_time_start']);
+    }
+
+// TODO - УБРАТЬ
+upd_do_query("DELETE FROM {{unit}} WHERE `unit_type` IN (" . UNIT_MERCENARIES . ", " . UNIT_PLANS . ")");
+
+    upd_do_query(
+      "INSERT INTO {{unit}}
+        (unit_player_id, unit_location_type, unit_location_id, unit_type, unit_snid, unit_level, unit_time_start, unit_time_finish)
+      SELECT
+        `powerup_user_id`, " . LOC_USER . ", `powerup_user_id`, `powerup_category`, `powerup_unit_id`, `powerup_unit_level`
+        , IF(`powerup_time_start`, FROM_UNIXTIME(`powerup_time_start`), NULL), IF(`powerup_time_finish`, FROM_UNIXTIME(`powerup_time_finish`), NULL)
+      FROM {{powerup}} WHERE `powerup_category` IN (" . UNIT_MERCENARIES . ", " . UNIT_PLANS . ")"
+    );
+
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 37;
 };

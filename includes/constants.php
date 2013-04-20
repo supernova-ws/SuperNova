@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '36');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '37a8.3');
+define('SN_VERSION', '37a8.4');
 define('SN_RELEASE_STABLE', '36d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -123,6 +123,7 @@ define('LOC_DEBRIS',   2); // Translates to `planets` table planet_type = 1, `de
 define('LOC_MOON',     3); // Translates to `planets` table planet_type = 3
 define('LOC_USER',     4);
 define('LOC_FLEET',    5);
+define('LOC_ALLY',     6);
 
 // *** Caching masks
 define('CACHE_NOTHING'    ,  0);
@@ -493,7 +494,7 @@ define('UNIT_DEF_MISSILE_INTERPLANET', 503);
 define('UNIT_MERCENARIES', 600);
 define('MRC_ACADEMIC', 606);
 define('MRC_ADMIRAL', 602);
-define('MRC_STOCKMAN', 607);
+define('MRC_STOCKMAN', 607); // OK MODIFIER
 define('MRC_SPY', 610);
 define('MRC_COORDINATOR', 611);
 define('MRC_DESTRUCTOR', 612);
@@ -503,7 +504,7 @@ define('MRC_EMPEROR', 615);
 
 // --- Governors list
 define('UNIT_GOVERNORS', 680);
-define('MRC_TECHNOLOGIST', 601);
+define('MRC_TECHNOLOGIST', 601); // OK MODIFIER
 define('MRC_ENGINEER', 605);
 define('MRC_FORTIFIER', 608);
 

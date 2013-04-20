@@ -68,7 +68,7 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
 
     foreach($unit_data['production'] as $resource_id => $function)
     {
-      $caps_real['production'][$resource_id][$unit_id] = $function($unit_level, $unit_load, $user, $planet_row);
+      $caps_real['production'][$resource_id][$unit_id] = $function($unit_level, $unit_load, $user, $planet_row) * $config_resource_multiplier;
     }
   }
 

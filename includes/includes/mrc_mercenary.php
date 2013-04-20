@@ -90,13 +90,27 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
 
     if(($darkmater_cost && $mercenary_level) || !$is_permanent)
     {
-      doquery("DELETE FROM {{powerup}} WHERE powerup_user_id = {$user['id']} AND powerup_unit_id = {$mercenary_id} LIMIT 1;");
+      //doquery("DELETE FROM {{powerup}} WHERE powerup_user_id = {$user['id']} AND powerup_unit_id = {$mercenary_id} LIMIT 1;");
+      doquery("DELETE FROM {{unit}} WHERE unit_player_id = {$user['id']} AND unit_snid = {$mercenary_id} LIMIT 1;");
     }
     if($darkmater_cost && $mercenary_level)
     {
       $time_start = $is_permanent ? 0 : $time_now;
       $time_end = $is_permanent ? 0 : $time_now + $mercenary_period;
-      doquery("INSERT INTO {{powerup}} SET powerup_user_id = {$user['id']}, powerup_unit_id = {$mercenary_id}, powerup_category = {$mode}, powerup_unit_level = {$mercenary_level}, powerup_time_start = {$time_start}, powerup_time_finish = {$time_end};");
+      //doquery("INSERT INTO {{powerup}} SET powerup_user_id = {$user['id']}, powerup_unit_id = {$mercenary_id}, powerup_category = {$mode}, powerup_unit_level = {$mercenary_level}, powerup_time_start = {$time_start}, powerup_time_finish = {$time_end};");
+      doquery(
+        "INSERT INTO
+          {{unit}}
+        SET
+          unit_player_id = {$user['id']},
+          unit_location_type = " . LOC_USER . ",
+          unit_location_id = {$user['id']},
+          unit_type = {$mode},
+          unit_snid = {$mercenary_id},
+          unit_level = {$mercenary_level},
+          unit_time_start = FROM_UNIXTIME({$time_start}),
+          unit_time_finish = FROM_UNIXTIME({$time_end});"
+      );
 
       rpg_points_change($user['id'], $mode == UNIT_PLANS ? RPG_PLANS : RPG_MERCENARY, -($darkmater_cost), "Spent for officer {$lang['tech'][$mercenary_id]} ID {$mercenary_id}");
     }
@@ -181,7 +195,7 @@ function mrc_mercenary_render($user)
       }
       $total_cost = eco_get_total_cost($mercenary_id, $mercenary_level + 1);
       $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $cost_alliance_multiplyer;
-      $mercenary_time_finish = $user[$mercenary_id]['powerup_time_finish'];
+      $mercenary_time_finish = $user[$mercenary_id]['unit_time_finish'];
       $template->assign_block_vars('officer', array(
         'ID'          => $mercenary_id,
         'NAME'        => $lang['tech'][$mercenary_id],

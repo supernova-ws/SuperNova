@@ -62,9 +62,8 @@ function get_game_speed()
 }
 
 /**
- * @version 1.0
- * @copyright 2008 by ??????? for XNova
- --- Formatting & Coloring numbers
+ pretty_number implementation for SuperNova
+
  $n - number to format
  $floor: (ignored if $limit set)
    integer   - floors to $floor numbers after decimal points
@@ -76,11 +75,11 @@ function get_game_speed()
    numeric - colors number to green if less then $color; red if greater
  $limit:
    0/false - proceed with $floor
-   numeric - divieds number to segments by power of $limit and adds 'k' for each segment
+   numeric - divides number to segments by power of $limit and adds 'k' for each segment
              makes sense for 1000, but works with any number
              generally converts "15000" to "15k", "2000000" to "2kk" etc
  $style
-   null  - standart result
+   null  - standard result
    true  - return only style class for current params
    false - return array('text' => $ret, 'class' => $class), where $ret - unstyled
  */
@@ -104,12 +103,12 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
 
   $ret = $n;
 
-  if ($limit)
+  $suffix = '';
+  if($limit)
   {
-
-    if ($ret > 0)
+    if($ret > 0)
     {
-      while ($ret > $limit)
+      while($ret > $limit)
       {
         $suffix .= 'k';
         $ret = round($ret / 1000);
@@ -117,7 +116,7 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
     }
     else
     {
-      while ($ret < -$limit)
+      while($ret < -$limit)
       {
         $suffix .= 'k';
         $ret = round($ret / 1000);
@@ -166,9 +165,6 @@ function pretty_time($seconds)
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-//
-// Calcul de la place disponible sur une planete
-//
 function eco_planet_fields_max($planet)
 {
   global $sn_data;
@@ -369,6 +365,39 @@ function eco_get_total_cost($unit_id, $unit_level)
   return $cost_array;
 }
 
+function sn_unit_purchase($unit_id){}
+
+function sn_unit_relocate($unit_id, $from, $to){}
+
+// Р­РўРћ РџР РћРЎРўРћР™ Р’Р РђРџРџР•Р  Р”Р›РЇ Р‘Р”! Р—РґРµСЃСЊ РќР•Рў РЅРёРєР°РєРёС… РїСЂРѕРІРµСЂРѕРє! Р’РЎР• РїСЂРѕРІРµСЂРєРё РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ СЃРґРµР»Р°РЅС‹ Р·Р°СЂР°РЅРµРµ!
+function sn_unit_get_level($unit_id, &$context = null, $options = null) // , &$result
+{
+  global $sn_data, $config, $time_now;
+  $unit_db_name = $sn_data[$unit_id]['name'];
+  $for_update = $options['for_update'];
+
+  $unit_level = 0;
+  if($context['location'] == LOC_USER)
+  {
+    $user = &$context['user'];
+    if(!$user['id'])
+    {
+      $user[$unit_id]['unit_level'] = $user[$unit_db_name];
+    }
+    elseif($for_update || !isset($user[$unit_id]))
+    {
+      $time_restriction = ($sn_data[$unit_id]['type'] == UNIT_MERCENARIES && $config->empire_mercenary_temporary) ? " AND unit_time_start <= FROM_UNIXTIME({$time_now}) AND unit_time_finish >= FROM_UNIXTIME({$time_now}) " : '';
+      $unit_level = doquery("SELECT * FROM {{unit}} WHERE unit_player_id = {$user['id']} AND unit_snid = '{$unit_id}' {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
+      $unit_level['unit_time_start'] = strtotime($unit_level['unit_time_start']);
+      $unit_level['unit_time_finish'] = strtotime($unit_level['unit_time_finish']);
+      $user[$unit_id] = $unit_level;
+    }
+    $unit_level = intval($user[$unit_id]['unit_level']);
+  }
+
+  return $unit_level;
+}
+
 function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false){return sn_function_call('mrc_get_level', array(&$user, $planet, $unit_id, $for_update, $plain, &$result));}
 function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false, &$result)
 {
@@ -377,7 +406,8 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
 
   $mercenary_level = 0;
   $unit_db_name = $sn_data[$unit_id]['name'];
-  if($unit_id == UNIT_PREMIUM || in_array($unit_id, $sn_data['groups']['mercenaries']) || in_array($unit_id, $sn_data['groups']['plans']))
+
+  if($unit_id == UNIT_PREMIUM)
   {
     if(!$user['id'])
     {
@@ -389,7 +419,30 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
       $mercenary_level = doquery("SELECT * FROM {{powerup}} WHERE powerup_user_id = {$user['id']} AND powerup_unit_id = '{$unit_id}' {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
       $user[$unit_id] = $mercenary_level;
     }
-    $mercenary_level = $user['units'] = intval($user[$unit_id]['powerup_unit_level']);
+    $mercenary_level = intval($user[$unit_id]['powerup_unit_level']);
+  }
+  elseif(in_array($unit_id, sn_get_groups(array('plans', 'mercenaries'))))
+  {
+    /*
+    if(!$user['id'])
+    {
+      $user[$unit_id]['unit_level'] = $user[$unit_db_name];
+    }
+    elseif($for_update || !isset($user[$unit_id]))
+    {
+      $time_restriction = ($config->empire_mercenary_temporary && $sn_data[$unit_id]['type'] == UNIT_MERCENARIES) ? " AND unit_time_start <= FROM_UNIXTIME({$time_now}) AND unit_time_finish >= FROM_UNIXTIME({$time_now}) " : '';
+      $mercenary_level = doquery("SELECT * FROM {{unit}} WHERE unit_player_id = {$user['id']} AND unit_snid = '{$unit_id}' {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
+      $mercenary_level['unit_time_start'] = strtotime($mercenary_level['unit_time_start']);
+      $mercenary_level['unit_time_finish'] = strtotime($mercenary_level['unit_time_finish']);
+      $user[$unit_id] = $mercenary_level;
+    }
+    $mercenary_level = intval($user[$unit_id]['unit_level']);
+    */
+    $context = array(
+      'location' => LOC_USER,
+      'user' => &$user,
+    );
+    $mercenary_level = sn_unit_get_level($unit_id, $context, array('for_update' => $for_update));
   }
   elseif(in_array($unit_id, $sn_data['groups']['governors']))
   {
@@ -982,7 +1035,7 @@ function sn_unit_requirements_render($user, $planetrow, $unit_id, &$result)
       $level_basic = mrc_get_level($user, $planetrow, $require_id, false, true);
       $result[] = array(
         'NAME' => $lang['tech'][$require_id],
-//        'CLASS' => $require_level > $level_got ? 'negative' : ($require_level == $level_got ? 'zero' : 'positive'),
+        //'CLASS' => $require_level > $level_got ? 'negative' : ($require_level == $level_got ? 'zero' : 'positive'),
         'REQUEREMENTS_MET' => $require_level <= $level_got ? REQUIRE_MET : REQUIRE_MET_NOT,
         'LEVEL_REQUIRE' => $require_level,
         'LEVEL' => $level_got,
@@ -1045,18 +1098,18 @@ function array_merge_recursive_numeric($array1, $array2)
   return $array1;
 }
 
-// Эта функция выдает нормально распределенное случайное число с матожиднием $mu и стандартным отклонением $sigma
-// $strict - количество $sigma, по которым идет округление функции. Т.е. $strict = 3 означает, что диапазон значений обрезается по +-3 * $sigma
-// Используется http://ru.wikipedia.org/wiki/Преобразование_Бокса_—_Мюллера
+// Р­С‚Р° С„СѓРЅРєС†РёСЏ РІС‹РґР°РµС‚ РЅРѕСЂРјР°Р»СЊРЅРѕ СЂР°СЃРїСЂРµРґРµР»РµРЅРЅРѕРµ СЃР»СѓС‡Р°Р№РЅРѕРµ С‡РёСЃР»Рѕ СЃ РјР°С‚РѕР¶РёРґРЅРёРµРј $mu Рё СЃС‚Р°РЅРґР°СЂС‚РЅС‹Рј РѕС‚РєР»РѕРЅРµРЅРёРµРј $sigma
+// $strict - РєРѕР»РёС‡РµСЃС‚РІРѕ $sigma, РїРѕ РєРѕС‚РѕСЂС‹Рј РёРґРµС‚ РѕРєСЂСѓРіР»РµРЅРёРµ С„СѓРЅРєС†РёРё. Рў.Рµ. $strict = 3 РѕР·РЅР°С‡Р°РµС‚, С‡С‚Рѕ РґРёР°РїР°Р·РѕРЅ Р·РЅР°С‡РµРЅРёР№ РѕР±СЂРµР·Р°РµС‚СЃСЏ РїРѕ +-3 * $sigma
+// РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ http://ru.wikipedia.org/wiki/РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ_Р‘РѕРєСЃР°_вЂ”_РњСЋР»Р»РµСЂР°
 function sn_rand_gauss($mu = 0, $sigma = 1, $strict = false)
 {
-  // http://ru.wikipedia.org/wiki/Среднеквадратическое_отклонение
-  // При $mu = 0 (график симметричный, цифры только для половины графика)
-  // От 0 до $sigma ~ 34.1%
-  // От $sigma до 2 * $sigma ~ 13.6%
-  // От 2 * $sigma до 3 * $sigma ~ 2.1%
-  // От 3 * $sigma до бесконечности ~ 0.15%
-  // Не менее 99.7% случайных величин лежит в пределах +-3 $sigma
+  // http://ru.wikipedia.org/wiki/РЎСЂРµРґРЅРµРєРІР°РґСЂР°С‚РёС‡РµСЃРєРѕРµ_РѕС‚РєР»РѕРЅРµРЅРёРµ
+  // РџСЂРё $mu = 0 (РіСЂР°С„РёРє СЃРёРјРјРµС‚СЂРёС‡РЅС‹Р№, С†РёС„СЂС‹ С‚РѕР»СЊРєРѕ РґР»СЏ РїРѕР»РѕРІРёРЅС‹ РіСЂР°С„РёРєР°)
+  // РћС‚ 0 РґРѕ $sigma ~ 34.1%
+  // РћС‚ $sigma РґРѕ 2 * $sigma ~ 13.6%
+  // РћС‚ 2 * $sigma РґРѕ 3 * $sigma ~ 2.1%
+  // РћС‚ 3 * $sigma РґРѕ Р±РµСЃРєРѕРЅРµС‡РЅРѕСЃС‚Рё ~ 0.15%
+  // РќРµ РјРµРЅРµРµ 99.7% СЃР»СѓС‡Р°Р№РЅС‹С… РІРµР»РёС‡РёРЅ Р»РµР¶РёС‚ РІ РїСЂРµРґРµР»Р°С… +-3 $sigma
 
 //  $r = sn_rand_0_1();
 //  $phi = sn_rand_0_1();
@@ -1069,12 +1122,12 @@ function sn_rand_gauss($mu = 0, $sigma = 1, $strict = false)
   return $mu + $sigma * $random;
 }
 
-// Функция возвращает случайное нормально распределенное целое число из указанного промежутка
+// Р¤СѓРЅРєС†РёСЏ РІРѕР·РІСЂР°С‰Р°РµС‚ СЃР»СѓС‡Р°Р№РЅРѕРµ РЅРѕСЂРјР°Р»СЊРЅРѕ СЂР°СЃРїСЂРµРґРµР»РµРЅРЅРѕРµ С†РµР»РѕРµ С‡РёСЃР»Рѕ РёР· СѓРєР°Р·Р°РЅРЅРѕРіРѕ РїСЂРѕРјРµР¶СѓС‚РєР°
 function sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
 {
   $random = sn_rand_gauss(($range_start + $range_end) / 2, ($range_end - $range_start) / $strict / 2, $strict);
   return $round ? round($random) : $random;
-//  $random = sn_rand_gauss(0, 1, $strict) + $strict * $sigma; // отнормировано по нулю
+//  $random = sn_rand_gauss(0, 1, $strict) + $strict * $sigma; // РѕС‚РЅРѕСЂРјРёСЂРѕРІР°РЅРѕ РїРѕ РЅСѓР»СЋ
 //  $range_delta = $range_end - $range_start;
 //  $step = $strict * 2 / $range_delta;
 //  return $range_start + round($random / $step);
