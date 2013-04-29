@@ -64,19 +64,7 @@ elseif($sys_user_logged_in)
 
   $planet_id = SetSelectedPlanet($user);
 
-  eco_bld_que_tech($user);
-
-//  doquery('START TRANSACTION');
-//  $user_row = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
-//debug($user_row['que'], 'common');
-//  doquery('COMMIT');
-
-
-//  print('zzzzzzzzz');
-
-//require_once('includes/includes/eco_bld_tech.php');
-//eco_bld_tech_que_clear($user['id'], array());
-//die();
+  que_process($user);
 
   doquery('START TRANSACTION;');
   if($user['ally_id'])
@@ -87,7 +75,7 @@ elseif($sys_user_logged_in)
       sn_sys_logout(false, true);
       $debug->error("User ID {$user['id']} has ally ID {$user['ally_id']} but no ally info", 'User record error', 502);
     }
-    eco_bld_que_tech($user['ally']['player']);
+    que_process($user['ally']['player']);
     doquery("UPDATE `{{users}}` SET `onlinetime` = {$time_now} WHERE `id` = '{$user['ally']['player']['id']}' LIMIT 1;");
   }
   doquery('COMMIT;');

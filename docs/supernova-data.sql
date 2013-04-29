@@ -107,6 +107,7 @@ INSERT INTO `sn_config` VALUES ('rpg_scrape_deuterium', '0.25');
 INSERT INTO `sn_config` VALUES ('rpg_scrape_metal', '0.75');
 INSERT INTO `sn_config` VALUES ('secret_word', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('server_que_length_hangar', '5');
+INSERT INTO `sn_config` VALUES ('server_que_length_research', '1');
 INSERT INTO `sn_config` VALUES ('server_que_length_structures', '5');
 INSERT INTO `sn_config` VALUES ('server_start_date', DATE_FORMAT(CURDATE(), '%d.%m.%Y'));
 INSERT INTO `sn_config` VALUES ('server_updater_check_auto', '0');

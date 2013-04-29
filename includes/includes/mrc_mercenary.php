@@ -97,7 +97,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
     {
       $time_start = $is_permanent ? 0 : $time_now;
       $time_end = $is_permanent ? 0 : $time_now + $mercenary_period;
-      //doquery("INSERT INTO {{powerup}} SET powerup_user_id = {$user['id']}, powerup_unit_id = {$mercenary_id}, powerup_category = {$mode}, powerup_unit_level = {$mercenary_level}, powerup_time_start = {$time_start}, powerup_time_finish = {$time_end};");
+
       doquery(
         "INSERT INTO
           {{unit}}

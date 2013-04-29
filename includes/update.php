@@ -897,6 +897,157 @@ switch($new_version)
       );
     }
 
+          /*
+      que
+        +que_id
+        +que_player_id
+        +que_planet_id
+        +que_type
+        +que_unit_id
+        +que_amount
+        +que_level
+        +que_time_unit - time per unit
+        +que_time_left - for last unit
+        +que_price_unit - price per unit for que trim/clear - на случай глобального изменения цены
+    */
+
+    if(!$update_tables['que'])
+    {
+      upd_create_table('que',
+        "(
+          `que_id` SERIAL COMMENT 'Internal que id',
+
+          `que_player_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Que owner ID',
+          `que_planet_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Which planet this que item belongs',
+          `que_planet_id_origin` BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Planet spawner ID',
+          `que_type` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Que type',
+          `que_time_left` DECIMAL(20,5) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Build time left from last activity',
+
+          `que_unit_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit ID',
+          `que_unit_amount` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Amount left to build',
+          `que_unit_mode` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Build/Destroy',
+
+          `que_unit_level` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit level. Informational field',
+          `que_unit_time` DECIMAL(20,5) NOT NULL DEFAULT 0 COMMENT 'Time to build one unit. Informational field',
+          `que_unit_price` VARCHAR(128) NOT NULL DEFAULT '' COMMENT 'Price per unit - for correct trim/clear in case of global price events',
+
+          PRIMARY KEY (`que_id`),
+          KEY `I_que_player_type_planet` (`que_player_id`, `que_type`, `que_planet_id`, `que_id`), -- For main search
+          KEY `I_que_player_type` (`que_player_id`, `que_type`, `que_id`), -- For main search
+          KEY `I_que_planet_id` (`que_planet_id`), -- For constraint
+
+          CONSTRAINT `FK_que_player_id` FOREIGN KEY (`que_player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+          CONSTRAINT `FK_que_planet_id` FOREIGN KEY (`que_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+          CONSTRAINT `FK_que_planet_id_origin` FOREIGN KEY (`que_planet_id_origin`) REFERENCES `{$config->db_prefix}planets` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+    }
+
+    // Конвертирум очередь исследований
+    if($update_tables['users']['que'])
+    {
+      $que_lines = array();
+      $que_query = upd_do_query("SELECT * FROM {{users}} WHERE `que`");
+      while($que_row = mysql_fetch_assoc($que_query))
+      {
+        $que_data = explode(',', $que_row['que']);
+
+        if(!in_array($que_data[QI_UNIT_ID], $sn_data['groups']['tech']))
+        {
+          continue;
+        }
+
+        // Если планета пустая - ставим главку
+        $que_data[QI_PLANET_ID] = $que_data[QI_PLANET_ID] ? $que_data[QI_PLANET_ID] : $que_row['id_planet'];
+        $que_data[QI_TIME] = $que_data[QI_TIME] >= 0 ? $que_data[QI_TIME] : 0;
+
+        $unit_level = $que_row[$sn_data[$que_data[QI_UNIT_ID]]['name']];
+        $unit_factor = $sn_data[$que_data[QI_UNIT_ID]]['cost']['factor'] ? $sn_data[$que_data[QI_UNIT_ID]]['cost']['factor'] : 1;
+        $price_increase = pow($unit_factor, $unit_level);
+        $unit_level++;
+        $unit_cost = array();
+        foreach($sn_data[$que_data[QI_UNIT_ID]]['cost'] as $resource_id => $resource_amount)
+        {
+          if($resource_id === 'factor' || $resource_id == RES_ENERGY || !($resource_cost = $resource_amount * $price_increase))
+          {
+            continue;
+          }
+          $unit_cost[] = $resource_id . ',' . floor($resource_cost);
+        }
+        $unit_cost = implode(';', $unit_cost);
+
+        $que_lines[] = "({$que_row['id']},{$que_data[QI_PLANET_ID]}," . QUE_RESEARCH . ",{$que_data[QI_TIME]},{$que_data[QI_UNIT_ID]},1," .
+          BUILD_CREATE . ",{$unit_level},{$que_data[QI_TIME]},'{$unit_cost}')";
+      }
+
+      if(!empty($que_lines))
+      {
+        upd_do_query('INSERT INTO `{{que}}` (`que_player_id`,`que_planet_id_origin`,`que_type`,`que_time_left`,`que_unit_id`,`que_unit_amount`,`que_unit_mode`,`que_unit_level`,`que_unit_time`,`que_unit_price`) VALUES ' . implode(',', $que_lines));
+        upd_do_query("UPDATE `{{users}}` SET `que` = '' WHERE `que`");
+        // TODO: Дропнуть колонку que
+      }
+    }
+
+
+    upd_check_key('server_que_length_research', 1, !isset($config->server_que_length_research));
+
+
+    // Ковертируем технологии в таблицы
+    if($update_tables['users']['graviton_tech'])
+    {
+      //upd_do_query("DELETE FROM {{unit}} WHERE unit_type = " . UNIT_TECHNOLOGIES);
+
+      $user_query = upd_do_query("SELECT * FROM {{users}}");
+      while($user_row = mysql_fetch_assoc($user_query))
+      {
+        foreach($sn_data['groups']['tech'] as $tech_id)
+        {
+          if($tech_level = intval($user_row[$sn_data[$tech_id]['name']]))
+          {
+            upd_do_query(
+              "INSERT INTO
+              {{unit}}
+            SET
+              unit_player_id = {$user_row['id']},
+              unit_location_type = " . LOC_USER . ",
+              unit_location_id = {$user_row['id']},
+              unit_type = " . UNIT_TECHNOLOGIES . ",
+              unit_snid = {$tech_id},
+              unit_level = {$tech_level}" // , unit_time_start = NULL, unit_time_finish = NULL;
+            );
+          }
+        }
+      }
+
+      upd_alter_table('users', array(
+        "DROP COLUMN `graviton_tech`",
+      ), $update_tables['users']['graviton_tech']);
+    }
+
+    /*
+    upd_alter_table('users', array(
+      "DROP COLUMN `spy_tech`",
+      "DROP COLUMN `computer_tech`",
+      "DROP COLUMN `military_tech`",
+      "DROP COLUMN `defence_tech`",
+      "DROP COLUMN `shield_tech`",
+      "DROP COLUMN `energy_tech`",
+      "DROP COLUMN `hyperspace_tech`",
+      "DROP COLUMN `combustion_tech`",
+      "DROP COLUMN `impulse_motor_tech`",
+      "DROP COLUMN `hyperspace_motor_tech`",
+      "DROP COLUMN `laser_tech`",
+      "DROP COLUMN `ionic_tech`",
+      "DROP COLUMN `buster_tech`",
+      "DROP COLUMN `intergalactic_tech`",
+      "DROP COLUMN `expedition_tech`",
+      "DROP COLUMN `colonisation_tech`",
+      // "DROP COLUMN `graviton_tech`",
+    ), $update_tables['users']['spy_tech']);
+    */
+
+
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 37;
 };

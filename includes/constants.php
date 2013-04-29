@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '36');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '37a8.6');
+define('SN_VERSION', '37a8.7');
 define('SN_RELEASE_STABLE', '36d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -373,6 +373,7 @@ define('QI_AMOUNT'    , 1);
 define('QI_TIME'      , 2);
 define('QI_MODE'      , 3);
 define('QI_QUE_ID'    , 4);
+define('QI_QUE_TYPE'  , 4);
 define('QI_PLANET_ID' , 5);
 
 // *** Subque types
@@ -731,3 +732,8 @@ define('MODIFIER_NONE', 0);
 define('MODIFIER_RESOURCE_CAPACITY', 1);
 define('MODIFIER_RESOURCE_PRODUCTION', 2);
 // define('MODIFIER_FUSION_OUTPUT', 3);
+
+define('SQL_OP_DELETE', -1);
+define('SQL_OP_UPDATE', 0);
+define('SQL_OP_INSERT', 1);
+define('SQL_OP_ALTER', 3);

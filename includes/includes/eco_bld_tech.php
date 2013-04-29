@@ -2,26 +2,31 @@
 
 function eco_bld_tech_research($user, $planet)
 {
-  global $lang;
+  global $lang, $global_que, $config;
 
   try
   {
-    doquery('START TRANSACTION;');
-
-    $tech_id    = sys_get_param_int('tech');
-    $user = doquery("SELECT * FROM {{users}} WHERE `id` ={$user['id']} LIMIT 1 FOR UPDATE;", true);
-    $planet = $planet['id'] ? doquery("SELECT * FROM {{planets}} WHERE `id` ={$planet['id']} LIMIT 1 FOR UPDATE;", true) : $planet;
-    $build_data = eco_get_build_data($user, $planet, $tech_id, mrc_get_level($user, $planet, $tech_id, false, true));
-
-    if($user['que'])
-    {
-      throw new exception($lang['eco_bld_msg_err_research_in_progress'], ERR_ERROR);
-    }
+    $tech_id = sys_get_param_int('tech');
     if(!in_array($tech_id, sn_get_groups('tech')))
     {
       // TODO: Hack attempt - warning here. Normally non-tech can't be passed from build page
       throw new exception($lang['eco_bld_msg_err_not_research'], ERR_ERROR);
     }
+    sn_db_transaction_start();
+    // Это нужно, что бы заблокировать пользователя и работу с очередями
+    $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
+
+    que_get_que($global_que, QUE_RESEARCH, $user['id'], $planet['id'], true);
+    if(count($global_que[QUE_RESEARCH][0]) >= $config->server_que_length_research)
+    {
+      throw new exception($lang['eco_bld_msg_err_research_in_progress'], ERR_ERROR);
+    }
+
+    // Это нужно, что бы заблокировать планету от списания ресурсов
+    $planet = $planet['id'] ? doquery("SELECT * FROM {{planets}} WHERE `id` = {$planet['id']} LIMIT 1 FOR UPDATE;", true) : $planet;
+    $unit_level = mrc_get_level($user, $planet, $tech_id, false, true) + $global_que['in_que'][QUE_RESEARCH][0][$tech_id];
+    $build_data = eco_get_build_data($user, $planet, $tech_id, $unit_level);
+
     if(eco_can_build_unit($user, $planet, $tech_id) != BUILD_ALLOWED)
     {
       // TODO: Hack attempt - warning here. Normally requirements check should be done on build page
@@ -32,22 +37,14 @@ function eco_bld_tech_research($user, $planet)
       throw new exception($lang['eco_bld_resources_not_enough'], ERR_ERROR);
     }
 
-    $que_item_string = "{$tech_id},1,{$build_data[RES_TIME][BUILD_CREATE]}," . BUILD_CREATE . "," . QUE_RESEARCH . ",{$planet['id']}";
-
-    db_change_units($user, $planet, array(
-      RES_METAL     => -$build_data[BUILD_CREATE][RES_METAL],
-      RES_CRYSTAL   => -$build_data[BUILD_CREATE][RES_CRYSTAL],
-      RES_DEUTERIUM => -$build_data[BUILD_CREATE][RES_DEUTERIUM],
-    ));
-
-    doquery("UPDATE {{users}} SET `que` = '{$que_item_string}' WHERE `id` = '{$user['id']}' LIMIT 1;");
-    doquery('COMMIT;');
+    que_add_unit(QUE_RESEARCH, $tech_id, $user, $planet, $build_data, $unit_level + 1, 1);
+    sn_db_transaction_commit();
 
     sys_redirect($_SERVER['REQUEST_URI']);
   }
   catch (exception $e)
   {
-    doquery('ROLLBACK;');
+    sn_db_transaction_rollback();
     $operation_result = array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
       'MESSAGE' => $e->getMessage()
@@ -57,43 +54,9 @@ function eco_bld_tech_research($user, $planet)
   return $operation_result;
 }
 
-function eco_bld_tech_que_clear($user_id, $planet)
-{
-  doquery('START TRANSACTION');
-  $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE", true);
-  $que_item = $user['que'] ? explode(',', $user['que']) : array();
-
-  if(!empty($que_item))
-  {
-    doquery("UPDATE {{users}} SET `que` = '' WHERE `id` = {$user_id} LIMIT 1");
-    if($que_item[QI_PLANET_ID])
-    {
-      $planet['id'] = $que_item[QI_PLANET_ID];
-    }
-
-    $planet = $planet['id'] ? doquery("SELECT * FROM {{planets}} WHERE `id` ={$planet['id']} LIMIT 1 FOR UPDATE", true) : $planet;
-
-    $tech_id = $que_item[QI_UNIT_ID];
-    $build_data = eco_get_build_data($user, false, $tech_id, mrc_get_level($user, $planet, $tech_id, false, true), true);
-
-    db_change_units($user, $planet, array(
-      RES_METAL     => $build_data[BUILD_CREATE][RES_METAL],
-      RES_CRYSTAL   => $build_data[BUILD_CREATE][RES_CRYSTAL],
-      RES_DEUTERIUM => $build_data[BUILD_CREATE][RES_DEUTERIUM],
-    ));
-
-    doquery('COMMIT;');
-  }
-  else
-  {
-    doquery('ROLLBACK;');
-  }
-  sys_redirect($_SERVER['REQUEST_URI']);
-}
-
 function eco_bld_tech(&$user, &$planet, $que = array())
 {
-  global $config, $lang, $time_now;
+  global $config, $lang, $time_now, $global_que;
 
   lng_include('buildings');
   lng_include('infos');
@@ -105,14 +68,9 @@ function eco_bld_tech(&$user, &$planet, $que = array())
 
   switch(sys_get_param_str('action'))
   {
-    case 'clear':
-    case 'trim':
-      eco_bld_tech_que_clear($user['id'], $planet);
-    break;
-
-    case 'build':
-      $operation_result = eco_bld_tech_research($user, $planet);
-    break;
+    case 'clear':que_delete(QUE_RESEARCH, $user, $planet, true);break;
+    case 'trim':que_delete(QUE_RESEARCH, $user, $planet, false);break;
+    case 'build':$operation_result = eco_bld_tech_research($user, $planet);break;
   }
 
   $template = gettemplate('buildings_research', true);
@@ -121,7 +79,9 @@ function eco_bld_tech(&$user, &$planet, $que = array())
     $template->assign_block_vars('result', $operation_result);
   }
 
-  $fleet_list            = flt_get_fleets_to_planet($planet);
+  $fleet_list = flt_get_fleets_to_planet($planet);
+
+  que_tpl_parse($template, QUE_RESEARCH, $user);
 
   foreach(sn_get_groups('tech') as $Tech)
   {
@@ -132,7 +92,8 @@ function eco_bld_tech(&$user, &$planet, $que = array())
 
     $building_level      = mrc_get_level($user, '' , $Tech, false, true);
     $level_bonus         = max(0, mrc_get_level($user, '' , $Tech) - $building_level);
-    $build_data          = eco_get_build_data($user, $planet, $Tech, $building_level);
+    $level_qued          = $global_que['in_que'][QUE_RESEARCH][0][$Tech];
+    $build_data          = eco_get_build_data($user, $planet, $Tech, $building_level + $level_qued);
 
     $temp[RES_METAL]     = floor($planet['metal'] - $build_data[BUILD_CREATE][RES_METAL]);
     $temp[RES_CRYSTAL]   = floor($planet['crystal'] - $build_data[BUILD_CREATE][RES_CRYSTAL]);
@@ -142,7 +103,8 @@ function eco_bld_tech(&$user, &$planet, $que = array())
       'ID'                 => $Tech,
       'NAME'               => $lang['tech'][$Tech],
       'LEVEL'              => $building_level,
-      'LEVEL_NEXT'         => $building_level + 1,
+      'LEVEL_NEXT'         => $building_level + $level_qued + 1,
+      'LEVEL_QUED'         => $level_qued,
       'LEVEL_BONUS'        => $level_bonus,
       'DESCRIPTION'        => $lang['info'][$Tech]['description_short'],
 
@@ -173,36 +135,14 @@ function eco_bld_tech(&$user, &$planet, $que = array())
     ));
   }
 
-  $que_length = 0;
-  if($user['que'])
-  {
-    $que_item = $user['que'] ? explode(',', $user['que']) : array();
-    $unit_id = $que_item[QI_UNIT_ID];
-    $unit_level = mrc_get_level($user, $planet, $unit_id, false, true);
-    $unit_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
-
-    $template->assign_block_vars('que', array(
-      'ID' => $unit_id,
-      'QUE' => QUE_RESEARCH,
-      'NAME' => $lang['tech'][$unit_id],
-      'TIME' => $que_item[QI_TIME],
-      'TIME_FULL' => $unit_data[RES_TIME][BUILD_CREATE],
-      'AMOUNT' => 1,
-      'LEVEL' => $unit_level + 1,
-    ));
-
-    $que_length++;
-  }
-
   $template->assign_vars(array(
-    'PAGE_HEADER'        => $page_header = $lang['tech'][UNIT_TECHNOLOGIES] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : ''),
-    'FLEET_OWN_COUNT'    => $fleet_list['own']['count'],
-    'QUE_ID'             => QUE_RESEARCH,
+    'PAGE_HEADER'         => $page_header = $lang['tech'][UNIT_TECHNOLOGIES] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : ''),
+    'FLEET_OWN_COUNT'     => $fleet_list['own']['count'],
+    'QUE_ID'              => QUE_RESEARCH,
 
-    'RESEARCH_ONGOING'   => (boolean)$user['que'],
+    // TODO: Вынести в модуль
+    'CONFIG_RESEARCH_QUE' => $config->server_que_length_research,
   ));
 
   display(parsetemplate($template), $page_header);
 }
-
-?>

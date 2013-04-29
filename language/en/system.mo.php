@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a3.9
+* @version 37a8.7
 *
 */
 
@@ -744,62 +744,62 @@ $lang = array_merge($lang, array(
   'sys_perte_defenseur' 		=> 'The Defender lost',
 
 
-  'ube_report_info_main' => 'Основная информация о бое',
-  'ube_report_info_date' => 'Дата и время',
-  'ube_report_info_location' => 'Место',
-  'ube_report_info_rounds_number' => 'Количество раундов',
-  'ube_report_info_outcome' => 'Результат боя',
-  'ube_report_info_outcome_win' => 'Атакующий выиграл бой',
-  'ube_report_info_outcome_loss' => 'Атакующий проиграл бой',
-  'ube_report_info_outcome_draw' => 'Бой закончился ничьей',
-  'ube_report_info_link' => 'Ссылка на боевой отчет',
-  'ube_report_info_sfr' => 'Бой закончился за один раунд проигрышем атакующего<br />Вероятна РМФ',
-  'ube_report_info_debris' => 'Обломки на орбите',
-  'ube_report_info_loot' => 'Добыча',
-  'ube_report_info_loss' => 'Боевые потери',
-  'ube_report_info_generate' => 'Время генерации страницы',
+  'ube_report_info_main' => 'Main battle info',
+  'ube_report_info_date' => 'Date and time',
+  'ube_report_info_location' => 'Location',
+  'ube_report_info_rounds_number' => 'Round number',
+  'ube_report_info_outcome' => 'Battle outcome',
+  'ube_report_info_outcome_win' => 'Attacker win',
+  'ube_report_info_outcome_loss' => 'Attacker lost',
+  'ube_report_info_outcome_draw' => 'Draw',
+  'ube_report_info_link' => 'Link to battle rport',
+  'ube_report_info_sfr' => 'Battle finshed in one round by attacker loss<br />Possible SFR',
+  'ube_report_info_debris' => 'Debris on orbit',
+  'ube_report_info_loot' => 'Loot',
+  'ube_report_info_loss' => 'Battle losses',
+  'ube_report_info_generate' => 'Page generation time',
 
-  'ube_report_moon_was' => 'У этой планеты уже была луна',
-  'ube_report_moon_chance' => 'Шанс образования луны',
-  'ube_report_moon_created' => 'На орбите планеты образовалась луна диаметром',
+  'ube_report_moon_was' => 'This planet already had moon',
+  'ube_report_moon_chance' => 'Moon chance',
+  'ube_report_moon_created' => 'On planet orbit appears new moon diameter',
 
-  'ube_report_moon_reapers_none' => 'Все корабли с гравитационными двигателями были уничтожены в процессе боя',
-  'ube_report_moon_reapers_wave' => 'Корабли атакующего создали сфокусированную гравитационную волну',
-  'ube_report_moon_reapers_chance' => 'Шанс уничтожения луны',
-  'ube_report_moon_reapers_success' => 'Луна уничтожена',
-  'ube_report_moon_reapers_failure' => 'Мощности волны не хватило для уничтожения луны',
+  'ube_report_moon_reapers_none' => 'All ships with graviton engines was destroyed during fight',
+  'ube_report_moon_reapers_wave' => 'Attacker\'s ship created focused gravitation wave',
+  'ube_report_moon_reapers_chance' => 'Moon destruction chance',
+  'ube_report_moon_reapers_success' => 'Moon destroyed',
+  'ube_report_moon_reapers_failure' => 'Graviton wave power was not enough to destroy moon',
 
-  'ube_report_moon_reapers_outcome' => 'Шанс взрыва двигателей',
-  'ube_report_moon_reapers_survive' => 'Точная компенсация гравитационных полей системы позволила погасить отдачу от разрушения луны',
-  'ube_report_moon_reapers_died' => 'Не сумев компенсировать добавочные гравитационные поля системы, флот был уничтожен',
+  'ube_report_moon_reapers_outcome' => 'Graviton engines self-desctruction chance',
+  'ube_report_moon_reapers_survive' => 'Graviton engines was succesfully synchronized and compensated graviton recoil',
+  'ube_report_moon_reapers_died' => 'Graviton engines self-destructs and destroy all your fleet',
 
-  'ube_report_side_attacker' => 'Атакующий',
-  'ube_report_side_defender' => 'Защитник',
+  'ube_report_side_attacker' => 'Attacker',
+  'ube_report_side_defender' => 'Defender',
 
-  'ube_report_round' => 'Раунд',
-  'ube_report_unit' => 'Боевая единица',
-  'ube_report_attack' => 'Атака',
-  'ube_report_shields' => 'Щиты',
-  'ube_report_shields_passed' => 'Пробой',
-  'ube_report_armor' => 'Броня',
-  'ube_report_damage' => 'Урон',
-  'ube_report_loss' => 'Потери',
+  'ube_report_round' => 'Round',
+  'ube_report_unit' => 'Unit',
+  'ube_report_attack' => 'Attack',
+  'ube_report_shields' => 'Shields',
+  'ube_report_shields_passed' => 'Puncture',
+  'ube_report_armor' => 'Armor',
+  'ube_report_damage' => 'Damage',
+  'ube_report_loss' => 'Losses',
 
-  'ube_report_info_restored' => 'Восстановленно оборонительных сооружений',
-  'ube_report_info_loss_final' => 'Итоговые потери боевых единиц',
-  'ube_report_info_loss_resources' => 'Потери в пересчете на ресурсы',
-  'ube_report_info_loss_dropped' => 'Потери ресурсов из-за уменьшения трюмов',
-  'ube_report_info_loot_lost' => 'Увезено ресурсов со складов планеты',
-  'ube_report_info_loss_gained' => 'Потери из-за вывоза ресурсов с планеты',
-  'ube_report_info_loss_in_metal' => 'Общие потери в пересчете на металл',
+  'ube_report_info_restored' => 'Defense unit recovered',
+  'ube_report_info_loss_final' => 'Total unit loss',
+  'ube_report_info_loss_resources' => 'Loss in resources',
+  'ube_report_info_loss_dropped' => 'Resource loss due reduced cargo capacity',
+  'ube_report_info_loot_lost' => 'Resources looted from planet',
+  'ube_report_info_loss_gained' => 'Resource loss due planet loot',
+  'ube_report_info_loss_in_metal' => 'Total resources lost in metal',
 
-  'ube_report_msg_body_common' => 'Бой состоялся %s на орбите %s [%d:%d:%d] %s<br />%s<br /><br />',
-  'ube_report_msg_body_debris' => 'В результат боя на орбите планеты образовались обломки:<br />',
-  'ube_report_msg_body_sfr' => 'Связь с флотом утеряна',
+  'ube_report_msg_body_common' => 'Battle on %s on orbit of %s [%d:%d:%d] %s<br />%s<br /><br />',
+  'ube_report_msg_body_debris' => 'There are debris appears on planet orbit:<br />',
+  'ube_report_msg_body_sfr' => 'You lost contact with your fleet',
 
-  'sys_kilometers_short' => 'км',
+  'sys_kilometers_short' => 'km',
 
-  'ube_simulation' => 'Симуляция',
+  'ube_simulation' => 'Simulation',
 
   'sys_hire_do' => 'Hire',
 

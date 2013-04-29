@@ -376,25 +376,28 @@ function sn_tpl_render_topnav(&$user, $planetrow)
   $time = $time_now - 15*60;
   $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}' AND `user_as_ally` IS NULL;", '', true);
 
-  $que_length = 0;
-  if($user['que'])
-  {
-    $que_item = $user['que'] ? explode(',', $user['que']) : array();
-    $unit_id = $que_item[QI_UNIT_ID];
-    $unit_data = eco_get_build_data($user, $planet, $unit_id, $user[$sn_data[$unit_id]['name']]);
+  que_tpl_parse($template, QUE_RESEARCH, $user);
+  /*
+    $que_length = 0;
+    if($user['que'])
+    {
+      $que_item = $user['que'] ? explode(',', $user['que']) : array();
+      $unit_id = $que_item[QI_UNIT_ID];
+      $unit_data = eco_get_build_data($user, $planet, $unit_id, $user[$sn_data[$unit_id]['name']]);
 
-    $template->assign_block_vars('que', array(
-      'ID' => $unit_id,
-      'QUE' => QUE_RESEARCH,
-      'NAME' => $lang['tech'][$unit_id],
-      'TIME' => $que_item[QI_TIME],
-      'TIME_FULL' => $unit_data[RES_TIME][BUILD_CREATE],
-      'AMOUNT' => 1,
-      'LEVEL' => $user[$sn_data[$unit_id]['name']] + 1,
-    ));
+      $template->assign_block_vars('que', array(
+        'ID' => $unit_id,
+        'QUE' => QUE_RESEARCH,
+        'NAME' => $lang['tech'][$unit_id],
+        'TIME' => $que_item[QI_TIME],
+        'TIME_FULL' => $unit_data[RES_TIME][BUILD_CREATE],
+        'AMOUNT' => 1,
+        'LEVEL' => $user[$sn_data[$unit_id]['name']] + 1,
+      ));
 
-    $que_length++;
-  }
+      $que_length++;
+    }
+    */
 
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate($time_now);

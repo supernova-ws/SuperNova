@@ -190,10 +190,10 @@ function tpl_parse_planet($planet, $que)
   }
   $hangar_build_tip = $hangar_que['que'][0]['id'] ? $lang[tech][$hangar_que['que'][0]['id']] : '';
 
-  if($user['que'])
-  {
-    $tech_que = explode(',', $user['que']);
-  }
+//  if($user['que'])
+//  {
+//    $tech_que = explode(',', $user['que']);
+//  }
 
   $result = array(
     'ID'            => $planet['id'],

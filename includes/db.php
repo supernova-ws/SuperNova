@@ -266,4 +266,176 @@ function sn_db_perform($table, $values, $type = 'insert', $options = false)
   return doquery($query);
 }
 
-?>
+function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null)
+{
+  global $sn_data;
+  $db_changeset = array();
+  $temp = doquery("SELECT `unit_id` FROM {{unit}} WHERE `unit_player_id` = {$user['id']} AND `unit_snid` = {$unit_id} LIMIT 1", true);
+//pdump($temp, '$temp');
+  if($temp['unit_id'])
+  {
+    // update
+    $db_changeset = array(
+      'action' => SQL_OP_UPDATE,
+      'where' => array(
+        "`unit_id` = {$temp['unit_id']}",
+      ),
+      'fields' => array(
+        'unit_level' => array(
+          'delta' => $unit_value
+        ),
+      ),
+    );
+  }
+  else
+  {
+    $unit_location = sys_get_unit_location($user, array(), $unit_id);
+    // insert
+    $db_changeset = array(
+      'action' => SQL_OP_INSERT,
+      'fields' => array(
+        'unit_player_id' => array(
+          'set' => $user['id'],
+        ),
+        'unit_location_type' => array(
+          'set' => $unit_location,
+        ),
+        'unit_location_id' => array(
+          'set' => $unit_location == LOC_USER ? $user['id'] : $planet_id,
+        ),
+        'unit_type' => array(
+          'set' => $sn_data[$unit_id]['type'],
+        ),
+        'unit_snid' => array(
+          'set' => $unit_id,
+        ),
+        'unit_level' => array(
+          'set' => $unit_value,
+        ),
+      ),
+    );
+  }
+
+  return $db_changeset;
+}
+
+
+
+function sn_db_changeset_apply($db_changeset)
+{
+  foreach($db_changeset as $table_name => $table_data)
+  {
+    foreach($table_data as $record_id => $conditions)
+    {
+      $where = '';
+      if(!empty($conditions['where']))
+      {
+        $where = 'WHERE ' . implode(' AND ', $conditions['where']);
+      }
+
+      $fields = array();
+      if($conditions['fields'])
+      {
+        foreach($conditions['fields'] as $field_name => $field_data)
+        {
+          $condition = "`{$field_name}` = ";
+          $value = '';
+          if($field_data['delta'])
+          {
+            $value = "`{$field_name}`" . ($field_data['delta'] >= 0 ? '+' : '') . $field_data['delta'];
+          }
+          elseif($field_data['set'])
+          {
+            $value = (is_string($field_data['set']) ? "'{$field_data['set']}'": $field_data['set']);
+          }
+          if($value)
+          {
+            $fields[] = $condition . $value;
+          }
+        }
+      }
+      $fields = implode(',', $fields);
+
+      switch($conditions['action'])
+      {
+        case SQL_OP_DELETE:
+          doquery("DELETE FROM {{{$table_name}}} {$where}");
+          break;
+
+        case SQL_OP_UPDATE:
+          if($fields)
+          {
+            doquery("UPDATE {{{$table_name}}} SET {$fields} {$where}");
+          }
+          break;
+
+        case SQL_OP_INSERT:
+          if($fields)
+          {
+            doquery("INSERT INTO {{{$table_name}}} SET {$fields}");
+          }
+          break;
+
+      }
+    }
+  }
+}
+
+/*
+ * Эта функция проверяет статус транзакции
+ * Это - низкоуровневая функция. В нормальном состоянии движка её сообщения никогда не будут видны
+ *
+ * $transaction_status
+ *   true - транзакция должна быть запущена
+ *   false - всё равно
+ *   null - транзакция НЕ должна быть запущена
+ *
+ */
+function sn_db_transaction_check($transaction_should_be_started = null)
+{
+  global $supernova;
+
+  $error_msg = false;
+  if($transaction_should_be_started && !$supernova->db_in_transaction)
+  {
+    $error_msg = 'No transaction started for current operation';
+  }
+  elseif($transaction_should_be_started === null && $supernova->db_in_transaction)
+  {
+    $error_msg = 'Transaction is already started';
+  }
+
+  if($error_msg)
+  {
+    $backtrace = debug_backtrace();
+    array_shift($backtrace);
+    pdump($backtrace);
+    die($error_msg);
+  }
+
+  return $supernova->db_in_transaction;
+}
+
+function sn_db_transaction_start()
+{
+  global $supernova;
+  sn_db_transaction_check();
+  doquery('START TRANSACTION');
+  $supernova->db_in_transaction = true;
+}
+
+
+function sn_db_transaction_commit()
+{
+  global $supernova;
+  sn_db_transaction_check(true);
+  doquery('COMMIT');
+  $supernova->db_in_transaction = false;
+}
+
+function sn_db_transaction_rollback()
+{
+  global $supernova;
+  doquery('ROLLBACK');
+  $supernova->db_in_transaction = false;
+}

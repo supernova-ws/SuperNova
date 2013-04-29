@@ -398,7 +398,10 @@ function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result
     }
     elseif($for_update || !isset($user[$unit_id]))
     {
-      $time_restriction = $sn_data[$unit_id]['temporary'] || ($sn_data[$unit_id]['type'] == UNIT_MERCENARIES && $config->empire_mercenary_temporary) ? " AND unit_time_start <= FROM_UNIXTIME({$time_now}) AND unit_time_finish >= FROM_UNIXTIME({$time_now}) " : '';
+      $time_restriction =
+        $sn_data[$unit_id]['temporary'] || ($sn_data[$unit_id]['type'] == UNIT_MERCENARIES && $config->empire_mercenary_temporary)
+          ? " AND unit_time_start <= FROM_UNIXTIME({$time_now}) AND unit_time_finish >= FROM_UNIXTIME({$time_now}) "
+          : '';
       $unit_level = doquery("SELECT * FROM {{unit}} WHERE unit_player_id = {$user['id']} AND unit_snid = '{$unit_id}' {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
       $unit_level['unit_time_start'] = strtotime($unit_level['unit_time_start']);
       $unit_level['unit_time_finish'] = strtotime($unit_level['unit_time_finish']);
@@ -419,7 +422,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   $mercenary_level = 0;
   $unit_db_name = $sn_data[$unit_id]['name'];
 
-  if(in_array($unit_id, sn_get_groups(array('plans', 'mercenaries'))))
+  if(in_array($unit_id, sn_get_groups(array('plans', 'mercenaries', 'tech'))))
   {
     $context = array(
       'location' => LOC_USER,
@@ -431,7 +434,8 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
   }
-  elseif(in_array($unit_id, $sn_data['groups']['tech']) || $unit_id == RES_DARK_MATTER)
+//  elseif(in_array($unit_id, $sn_data['groups']['tech']) || $unit_id == RES_DARK_MATTER)
+  elseif($unit_id == RES_DARK_MATTER)
   {
     $mercenary_level = $user[$unit_db_name];
   }
@@ -1115,3 +1119,4 @@ function sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 
 //  $step = $strict * 2 / $range_delta;
 //  return $range_start + round($random / $step);
 }
+
