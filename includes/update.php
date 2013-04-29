@@ -897,19 +897,8 @@ switch($new_version)
       );
     }
 
-          /*
-      que
-        +que_id
-        +que_player_id
-        +que_planet_id
-        +que_type
-        +que_unit_id
-        +que_amount
-        +que_level
-        +que_time_unit - time per unit
-        +que_time_left - for last unit
-        +que_price_unit - price per unit for que trim/clear - на случай глобального изменения цены
-    */
+
+
 
     if(!$update_tables['que'])
     {
@@ -946,6 +935,8 @@ switch($new_version)
     // Конвертирум очередь исследований
     if($update_tables['users']['que'])
     {
+      // upd_do_query("DELETE FROM {{que}}");
+
       $que_lines = array();
       $que_query = upd_do_query("SELECT * FROM {{users}} WHERE `que`");
       while($que_row = mysql_fetch_assoc($que_query))
@@ -957,9 +948,26 @@ switch($new_version)
           continue;
         }
 
+        $que_data[QI_TIME] = $que_data[QI_TIME] >= 0 ? $que_data[QI_TIME] : 0;
         // Если планета пустая - ставим главку
         $que_data[QI_PLANET_ID] = $que_data[QI_PLANET_ID] ? $que_data[QI_PLANET_ID] : $que_row['id_planet'];
-        $que_data[QI_TIME] = $que_data[QI_TIME] >= 0 ? $que_data[QI_TIME] : 0;
+        if($que_data[QI_PLANET_ID])
+        {
+          $que_planet_check = mysql_fetch_assoc(upd_do_query("SELECT `id` FROM {{planets}} WHERE `id` = {$que_data[QI_PLANET_ID]}"));
+          if(!$que_planet_check['id'])
+          {
+            $que_data[QI_PLANET_ID] = $que_row['id_planet'];
+            $que_planet_check = mysql_fetch_assoc(upd_do_query("SELECT `id` FROM {{planets}} WHERE `id` = {$que_data[QI_PLANET_ID]}"));
+            if(!$que_planet_check['id'])
+            {
+              $que_data[QI_PLANET_ID] = 'NULL';
+            }
+          }
+        }
+        else
+        {
+          $que_data[QI_PLANET_ID] = 'NULL';
+        }
 
         $unit_level = $que_row[$sn_data[$que_data[QI_UNIT_ID]]['name']];
         $unit_factor = $sn_data[$que_data[QI_UNIT_ID]]['cost']['factor'] ? $sn_data[$que_data[QI_UNIT_ID]]['cost']['factor'] : 1;
@@ -983,9 +991,12 @@ switch($new_version)
       if(!empty($que_lines))
       {
         upd_do_query('INSERT INTO `{{que}}` (`que_player_id`,`que_planet_id_origin`,`que_type`,`que_time_left`,`que_unit_id`,`que_unit_amount`,`que_unit_mode`,`que_unit_level`,`que_unit_time`,`que_unit_price`) VALUES ' . implode(',', $que_lines));
-        upd_do_query("UPDATE `{{users}}` SET `que` = '' WHERE `que`");
-        // TODO: Дропнуть колонку que
+        //upd_do_query("UPDATE `{{users}}` SET `que` = '' WHERE `que`");
       }
+
+      upd_alter_table('users', array(
+        "DROP COLUMN `que`",
+      ), $update_tables['users']['que']);
     }
 
 

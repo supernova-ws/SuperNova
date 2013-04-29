@@ -685,7 +685,6 @@ function que_tpl_parse(&$template, $que_type, $user, $planet = array())
 
   $planet['id'] = $planet['id'] ? $planet['id'] : 0;
   que_get_que($global_que, $que_type, $user['id'], $planet['id']);
-//pdump($global_que);
 
   if($global_que[$que_type])
   {
@@ -707,7 +706,7 @@ function que_tpl_parse(&$template, $que_type, $user, $planet = array())
 
   if($que_type == QUE_RESEARCH)
   {
-    $template->assign_var('RESEARCH_ONGOING', count($global_que[QUE_RESEARCH]) >= $config->server_que_length_research);
+    $template->assign_var('RESEARCH_ONGOING', count($global_que[QUE_RESEARCH][0]) >= $config->server_que_length_research);
   }
 }
 
