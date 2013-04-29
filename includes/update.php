@@ -1006,28 +1006,25 @@ switch($new_version)
     // Ковертируем технологии в таблицы
     if($update_tables['users']['graviton_tech'])
     {
-      //upd_do_query("DELETE FROM {{unit}} WHERE unit_type = " . UNIT_TECHNOLOGIES);
+      upd_do_query("DELETE FROM {{unit}} WHERE unit_type = " . UNIT_TECHNOLOGIES);
 
+      $que_lines = array();
       $user_query = upd_do_query("SELECT * FROM {{users}}");
+      upd_add_more_time(300);
       while($user_row = mysql_fetch_assoc($user_query))
       {
         foreach($sn_data['groups']['tech'] as $tech_id)
         {
           if($tech_level = intval($user_row[$sn_data[$tech_id]['name']]))
           {
-            upd_do_query(
-              "INSERT INTO
-              {{unit}}
-            SET
-              unit_player_id = {$user_row['id']},
-              unit_location_type = " . LOC_USER . ",
-              unit_location_id = {$user_row['id']},
-              unit_type = " . UNIT_TECHNOLOGIES . ",
-              unit_snid = {$tech_id},
-              unit_level = {$tech_level}" // , unit_time_start = NULL, unit_time_finish = NULL;
-            );
+            $que_lines[] = "({$user_row['id']}," . LOC_USER . ",{$user_row['id']}," . UNIT_TECHNOLOGIES . ",{$tech_id},{$tech_level})";
           }
         }
+      }
+
+      if(!empty($que_lines))
+      {
+        upd_do_query("INSERT INTO {{unit}} (unit_player_id, unit_location_type, unit_location_id, unit_type, unit_snid, unit_level) VALUES " . implode(',', $que_lines));
       }
 
       upd_alter_table('users', array(
