@@ -293,7 +293,7 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
 
   $ban_until = ($ban_current['banaday'] ? $ban_current['banaday'] : $time_now) + $term;
 
-  doquery("UPDATE {{users}} SET `banaday` = {$ban_until}, `que` = '' " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : '') . "WHERE `id` = {$banned['id']} LIMIT 1");
+  doquery("UPDATE {{users}} SET `banaday` = {$ban_until} " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : '') . "WHERE `id` = {$banned['id']} LIMIT 1");
 
   $banned['username'] = mysql_real_escape_string($banned['username']);
   $banner['username'] = mysql_real_escape_string($banner['username']);
