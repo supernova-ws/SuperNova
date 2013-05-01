@@ -53,7 +53,8 @@ foreach($show_groups as $unit_group_id => $mode)
       }
       elseif(in_array($unit_id, $sn_data['groups']['tech']))
       {
-        $data_row = doquery ("SELECT `username`, `{$unit_db_name}` AS `current` FROM {{users}} AS u WHERE u.`{$unit_db_name}` = (SELECT MAX(`{$unit_db_name}`) FROM {{users}} AS u WHERE user_as_ally is null {$user_skip_list}) AND user_as_ally is null {$user_skip_list} ORDER BY `id` LIMIT 1;", true);
+//        $data_row = doquery ("SELECT `username`, `{$unit_db_name}` AS `current` FROM {{users}} AS u WHERE u.`{$unit_db_name}` = (SELECT MAX(`{$unit_db_name}`) FROM {{users}} AS u WHERE user_as_ally is null {$user_skip_list}) AND user_as_ally is null {$user_skip_list} ORDER BY `id` LIMIT 1;", true);
+        $data_row = doquery ("SELECT `username`, `unit_level` AS `current` FROM {{unit}} as un LEFT JOIN {{users}} AS u ON u.id = un.unit_player_id WHERE un.`unit_snid` = {$unit_id} AND user_as_ally is null {$user_skip_list} ORDER BY `unit_level` DESC, `unit_id` LIMIT 1;", true);
       }
 
       if($data_row)
