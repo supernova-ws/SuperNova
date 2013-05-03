@@ -2,15 +2,13 @@
 
 // TODO: Переделать под $template_result
 
-/**
+/*
  * imperium.php
  *
  * Overview you empire
  *
  * @version 2.1 copyright (c) 2010-2012 by Gorlum for http://supernova.ws
- * @version 1.0
- * @copyright 2008 by Chlorel for XNova
-// Created by Perberos. All rights reserved (C) 2006
+ *
  */
 
 $sn_mvc['view']['imperium'][] = 'sn_imperium_view';
@@ -57,17 +55,25 @@ function sn_imperium_view($template = null)
     $template->assign_block_vars('planet', array_merge($planet_template, array(
       'PLANET_FLEET_ID'   => $planet_fleet_id,
 
-      'METAL_CUR'         => pretty_number($planet['metal'], true, $planet['metal_max']),
-      'METAL_PROD'        => pretty_number($planet['metal_perhour']),
+//      'METAL_CUR'         => pretty_number($planet['metal'], true, $planet['metal_max']),
+//      'METAL_PROD'        => pretty_number($planet['metal_perhour']),
+      'METAL_CUR'         => pretty_number($planet['metal'], true, $planet['caps']['total_storage'][RES_METAL]),
+      'METAL_PROD'        => pretty_number($planet['caps']['total'][RES_METAL]),
 
-      'CRYSTAL_CUR'       => pretty_number($planet['crystal'], true, $planet['crystal_max']),
-      'CRYSTAL_PROD'      => pretty_number($planet['crystal_perhour']),
+//      'CRYSTAL_CUR'       => pretty_number($planet['crystal'], true, $planet['crystal_max']),
+//      'CRYSTAL_PROD'      => pretty_number($planet['crystal_perhour']),
+      'CRYSTAL_CUR'       => pretty_number($planet['crystal'], true, $planet['caps']['total_storage'][RES_CRYSTAL]),
+      'CRYSTAL_PROD'      => pretty_number($planet['caps']['total'][RES_CRYSTAL]),
 
-      'DEUTERIUM_CUR'     => pretty_number($planet['deuterium'], true, $planet['deuterium_max']),
-      'DEUTERIUM_PROD'    => pretty_number($planet['deuterium_perhour']),
+//      'DEUTERIUM_CUR'     => pretty_number($planet['deuterium'], true, $planet['deuterium_max']),
+//      'DEUTERIUM_PROD'    => pretty_number($planet['deuterium_perhour']),
+      'DEUTERIUM_CUR'     => pretty_number($planet['deuterium'], true, $planet['caps']['total_storage'][RES_DEUTERIUM]),
+      'DEUTERIUM_PROD'    => pretty_number($planet['caps']['total'][RES_DEUTERIUM]),
 
-      'ENERGY_CUR'        => pretty_number($planet['energy_max'] - $planet['energy_used'], true, true),
-      'ENERGY_MAX'        => pretty_number($planet['energy_max']),
+//      'ENERGY_CUR'        => pretty_number($planet['energy_max'] - $planet['energy_used'], true, true),
+//      'ENERGY_MAX'        => pretty_number($planet['energy_max']),
+      'ENERGY_CUR'        => pretty_number($planet['caps']['total'][RES_ENERGY], true, true),
+      'ENERGY_MAX'        => pretty_number($planet['caps'][RES_ENERGY][BUILD_CREATE]),
 
       'TEMP_MIN'          => $planet['temp_min'],
       'TEMP_MAX'          => $planet['temp_max'],
@@ -84,11 +90,16 @@ function sn_imperium_view($template = null)
     $total['deuterium'] += $planet['deuterium'];
     $total['energy'] += $planet['energy_max'] - $planet['energy_used'];
 
-    $total['fields_max'] += $planet['field_max'] + $planet[$sn_data[STRUC_TERRAFORMER]['name']] * 5;
-    $total['metal_perhour'] += $planet['metal_perhour'];
-    $total['crystal_perhour'] += $planet['crystal_perhour'];
-    $total['deuterium_perhour'] += $planet['deuterium_perhour'];
-    $total['energy_max'] += $planet['energy_max'];
+//    $total['fields_max'] += $planet['field_max'] + $planet[$sn_data[STRUC_TERRAFORMER]['name']] * 5;
+//    $total['metal_perhour'] += $planet['metal_perhour'];
+//    $total['crystal_perhour'] += $planet['crystal_perhour'];
+//    $total['deuterium_perhour'] += $planet['deuterium_perhour'];
+//    $total['energy_max'] += $planet['energy_max'];
+    $total['fields_max'] += eco_planet_fields_max($planet);
+    $total['metal_perhour'] += $planet['caps']['total'][RES_METAL];
+    $total['crystal_perhour'] += $planet['caps']['total'][RES_CRYSTAL];
+    $total['deuterium_perhour'] += $planet['caps']['total'][RES_DEUTERIUM];
+    $total['energy_max'] += $planet['caps'][RES_ENERGY][BUILD_CREATE];
 
     $total['temp_min'] = min($planet['temp_min'], $total['temp_min']);
     $total['temp_max'] = max($planet['temp_max'], $total['temp_max']);
@@ -113,14 +124,8 @@ function sn_imperium_view($template = null)
     $unit_group = &$sn_data['techtree'][$unit_group_id];
     foreach($unit_group as $unit_id)
     {
-      $template->assign_block_vars('prods', array(
-        'ID'    => $unit_id,
-        'FIELD' => $sn_data[$unit_id]['name'],
-        'NAME'  => $lang['tech'][$unit_id],
-        'MODE'  => $mode,
-      ));
-
       $unit_count = 0;
+      $block_vars = array();
       foreach($planets as $planet)
       {
         $level_plus['LEVEL_PLUS_YELLOW'] = 0;
@@ -163,21 +168,41 @@ function sn_imperium_view($template = null)
           break;
         }
 
-        $template->assign_block_vars('prods.planet', array_merge($level_plus, array(
+//        $template->assign_block_vars('prods.planet', array_merge($level_plus, array(
+//          'ID'         => $planet['id'],
+//          'TYPE'       => $planet['planet_type'],
+//          'LEVEL'      => $planet[$unit_db_name] == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : $planet[$unit_db_name],
+//        )));
+        $block_vars[] = array_merge($level_plus, array(
           'ID'         => $planet['id'],
           'TYPE'       => $planet['planet_type'],
           'LEVEL'      => $planet[$unit_db_name] == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : $planet[$unit_db_name],
-        )));
+        ));
         $unit_count += $planet[$unit_db_name];
       }
 
-      $unit_green = $total['units'][$unit_id]['LEVEL_PLUS_GREEN'];
-      $unit_yellow = $total['units'][$unit_id]['LEVEL_PLUS_YELLOW'];
-      $template->assign_block_vars('prods.planet', array(
-        'LEVEL' => $unit_count,
-        'LEVEL_PLUS_GREEN' => $unit_green == 0 ? '' : ($unit_green > 0 ? "+{$unit_green}" : $unit_green),
-        'LEVEL_PLUS_YELLOW' => $unit_yellow == 0 ? '' : ($unit_yellow > 0 ? "+{$unit_yellow}" : $unit_yellow),
-      ));
+      if($unit_count)
+      {
+        $template->assign_block_vars('prods', array(
+          'ID'    => $unit_id,
+          'FIELD' => $sn_data[$unit_id]['name'],
+          'NAME'  => $lang['tech'][$unit_id],
+          'MODE'  => $mode,
+        ));
+
+        foreach($block_vars as $block_var)
+        {
+          $template->assign_block_vars('prods.planet', $block_var);
+        }
+
+        $unit_green = $total['units'][$unit_id]['LEVEL_PLUS_GREEN'];
+        $unit_yellow = $total['units'][$unit_id]['LEVEL_PLUS_YELLOW'];
+        $template->assign_block_vars('prods.planet', array(
+          'LEVEL' => $unit_count,
+          'LEVEL_PLUS_GREEN' => $unit_green == 0 ? '' : ($unit_green > 0 ? "+{$unit_green}" : $unit_green),
+          'LEVEL_PLUS_YELLOW' => $unit_yellow == 0 ? '' : ($unit_yellow > 0 ? "+{$unit_yellow}" : $unit_yellow),
+        ));
+      }
     }
   }
 

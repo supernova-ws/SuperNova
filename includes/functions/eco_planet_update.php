@@ -1,16 +1,13 @@
 <?php
 
-/**
+/*
  * PlanetResourceUpdate.php
  *
  * 2.1 - copyright (c) 2010 by Gorlum for http://supernova.ws
  *     [+] Bit more optimization
  * 2.0 - copyright (c) 2009-2010 by Gorlum for http://supernova.ws
  *     [+] Full rewrote and optimization
- * 1.1 - @copyright 2008 By Chlorel for XNova
- *     [*] Mise a jour automatique mines / silos / energie ...
- * 1.0 - @copyright 2008 By Chlorel for XNova
- *     [*] Mise en module initiale
+ *
  */
 function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 {
@@ -54,8 +51,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   $planet['prev_update'] = $planet['last_update'];
   $planet['last_update'] += $ProductionTime;
 
-  $Caps = eco_get_planet_caps($user, $planet, $ProductionTime);
-  $caps_real = &$Caps['caps_real'];
+  $caps_real = eco_get_planet_caps($user, $planet, $ProductionTime);
   $resources_increase = array(
     RES_METAL => 0,
     RES_CRYSTAL => 0,
@@ -80,23 +76,6 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
         $planet[$resource_name] += $increment;
         $planet[$resource_name . '_perhour'] = $caps_real['total'][$resource_id];
       }
-/*
-      foreach($incRes as $resName => &$incCount)
-      {
-        $incCount = ($Caps[$resName . '_perhour'][0] + $Caps['planet'][$resName . '_perhour'] * $Caps['production']) * $ProductionTime / 3600;
-
-        $store_free = $Caps['planet'][$resName . '_max'] - $Caps['planet'][$resName];
-        $incCount = min($incCount, max(0, $store_free));
-
-        if($planet[$resName] + $incCount < 0)
-        {
-          global $debug;
-          $debug->warning("Player ID {$user['id']} have negative resources on ID {$planet['id']}.{$planet['planet_type']} [{$planet['galaxy']}:{$planet['system']}:{$planet['planet']}]. Difference {$planet[$resName]} of {$resName}", 'Negative Resources', 501);
-        }
-        $Caps['planet'][$resName] += $incCount;
-        $Caps['planet'][$resName . '_perhour'] = $Caps['real'][$resName . '_perhour'];
-      }
-*/
     break;
 
     case PT_MOON:

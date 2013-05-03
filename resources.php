@@ -96,8 +96,7 @@ for ($Option = 10; $Option >= 0; $Option--)
  ));
 }
 
-$caps = eco_get_planet_caps($user, $planetrow);
-$caps_real = &$caps['caps_real'];
+$caps_real = eco_get_planet_caps($user, $planetrow);
 
 $template->assign_block_vars('production', array(
   'TYPE'           => $lang['res_basic_income'],
