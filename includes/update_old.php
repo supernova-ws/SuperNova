@@ -776,7 +776,7 @@ debug($update_tables['logs']['log_id'], STRUC_LABORATORY);
     ), $update_tables['users']['p_infligees']);
 
     upd_alter_table('users', array(
-      "ADD COLUMN `mrc_academic` SMALLINT(3) DEFAULT 0 AFTER rpg_amiral",
+      "ADD COLUMN `mrc_academic` SMALLINT(3) DEFAULT 0",
     ), !$update_tables['users']['mrc_academic']);
 
     upd_alter_table('users', array(
