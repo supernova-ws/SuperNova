@@ -42,6 +42,11 @@ function sn_function_call($func_name, $func_arg = array())
   return $result;
 }
 
+function sn_floor($value)
+{
+  return $value >= 0 ? floor($value) : ceil($value);
+}
+
 // ----------------------------------------------------------------------------------------------------------------
 // Fonction de lecture / ecriture / exploitation de templates
 function sys_file_read($filename)
@@ -91,7 +96,7 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
   {
     $n = round($n, $floor); // , PHP_ROUND_HALF_DOWN
   }
-  elseif ($floor === true)
+  elseif($floor === true)
   {
     $n = floor($n);
     $floor = 0;
@@ -1119,4 +1124,3 @@ function sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 
 //  $step = $strict * 2 / $range_delta;
 //  return $range_start + round($random / $step);
 }
-

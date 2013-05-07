@@ -96,7 +96,7 @@ for ($Option = 10; $Option >= 0; $Option--)
  ));
 }
 
-$caps_real = eco_get_planet_caps($user, $planetrow);
+$caps_real = eco_get_planet_caps($user, $planetrow, 3600);
 
 $template->assign_block_vars('production', array(
   'TYPE'           => $lang['res_basic_income'],
@@ -127,6 +127,11 @@ foreach($sn_data['groups']['factories'] as $unit_id)
       'DEUTERIUM_TYPE' => pretty_number($caps_real['production'][RES_DEUTERIUM][$unit_id], true, true),
       'ENERGY_TYPE'    => pretty_number($caps_real['production'][RES_ENERGY][$unit_id], true, true),
 
+      'METAL_FULL'     => pretty_number($caps_real['production_full'][RES_METAL][$unit_id], true, true),
+      'CRYSTAL_FULL'   => pretty_number($caps_real['production_full'][RES_CRYSTAL][$unit_id], true, true),
+      'DEUTERIUM_FULL' => pretty_number($caps_real['production_full'][RES_DEUTERIUM][$unit_id], true, true),
+      'ENERGY_FULL'    => pretty_number($caps_real['production_full'][RES_ENERGY][$unit_id], true, true),
+
       'SELECT'         => $row_select,
     ));
   }
@@ -139,6 +144,11 @@ $template->assign_block_vars('production', array(
   'CRYSTAL_TYPE'   => pretty_number($caps_real['total'][RES_CRYSTAL], true, true),
   'DEUTERIUM_TYPE' => pretty_number($caps_real['total'][RES_DEUTERIUM], true, true),
   'ENERGY_TYPE'    => pretty_number($caps_real['total'][RES_ENERGY], true, true),
+
+  'METAL_FULL'     => pretty_number($caps_real['total_production_full'][RES_METAL], true, true),
+  'CRYSTAL_FULL'   => pretty_number($caps_real['total_production_full'][RES_CRYSTAL], true, true),
+  'DEUTERIUM_FULL' => pretty_number($caps_real['total_production_full'][RES_DEUTERIUM], true, true),
+  'ENERGY_FULL'    => pretty_number($caps_real['total_production_full'][RES_ENERGY], true, true),
 ));
 
 int_calc_storage_bar(RES_METAL);

@@ -335,5 +335,3 @@ function tpl_set_resource_info(&$template, $planetrow, $fleets_to_planet = array
     'PLANET_DEUTERIUM_FLEET_TEXT' => pretty_number($fleets_to_planet[$planetrow['id']]['fleet']['DEUTERIUM'], $round, true),
   ));
 }
-
-?>

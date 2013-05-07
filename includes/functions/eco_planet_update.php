@@ -51,6 +51,9 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   $planet['prev_update'] = $planet['last_update'];
   $planet['last_update'] += $ProductionTime;
 
+  $que = eco_que_process($user, $planet, $ProductionTime);
+  $hangar_built = $ProductionTime && !$simulation ? eco_bld_que_hangar($user, $planet, $ProductionTime) : array();
+
   $caps_real = eco_get_planet_caps($user, $planet, $ProductionTime);
   $resources_increase = array(
     RES_METAL => 0,
@@ -68,7 +71,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
         $store_free = $caps_real['total_storage'][$resource_id] - $planet[$resource_name];
         $increment = min($increment, max(0, $store_free));
 
-        if($planet[$resource_name] + $increment < 0)
+        if($planet[$resource_name] + $increment < 0 && !$simulation)
         {
           global $debug;
           $debug->warning("Player ID {$user['id']} have negative resources on ID {$planet['id']}.{$planet['planet_type']} [{$planet['galaxy']}:{$planet['system']}:{$planet['planet']}]. Difference {$planet[$resource_name]} of {$resource_name}", 'Negative Resources', 501);
@@ -87,8 +90,6 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
       $planet['energy_max'] = 0;
     break;
   }
-
-  $que = eco_que_process($user, $planet, $ProductionTime);
 
   $planet['field_current'] = 0;
   foreach($sn_data['groups']['build_allow'][$planet['planet_type']] as $building_id)
@@ -112,10 +113,9 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     `energy_used` = '{$planet['energy_used']}',
     `energy_max` = '{$planet['energy_max']}', ";
 
-  $built = eco_bld_que_hangar($user, $planet, $ProductionTime);
-  if($built['built'])
+  if(!empty($hangar_built['built']))
   {
-    foreach($built['built'] as $Element => $Count)
+    foreach($hangar_built['built'] as $Element => $Count)
     {
       $Element = intval($Element);
       $Count = intval($Count);
@@ -124,7 +124,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
         $QryUpdatePlanet .= "`{$sn_data[$Element]['name']}` = `{$sn_data[$Element]['name']}` + '{$Count}', ";
       }
     }
-    if(!$planet['b_hangar'])
+    if(!$planet['b_hangar_id'])
     {
       msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_planet_from'], $lang['msg_que_hangar_subject'], sprintf($lang['msg_que_hangar_message'], uni_render_planet($planet)));
     }
@@ -163,9 +163,13 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 
   // Can't use array_merge here - it will broke numeric array indexes those broke quest_id
   // TODO: Make own function for this
-  foreach($built['rewards'] as $quest_id => $quest_reward)
+  if(!empty($hangar_built['rewards']))
   {
-    $que['rewards'][$quest_id] = $quest_reward;
+
+    foreach($hangar_built['rewards'] as $quest_id => $quest_reward)
+    {
+      $que['rewards'][$quest_id] = $quest_reward;
+    }
   }
   qst_reward($user, $planet, $que['rewards'], $que['quests']);
 

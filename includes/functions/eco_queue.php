@@ -479,7 +479,6 @@ function eco_bld_que_hangar($user, &$planet, $production_time)
         $count = $que_data[1];
         $build_data = eco_get_build_data($user, $planet, $unit_id);
         $build_time = $build_data[RES_TIME][BUILD_CREATE];
-//        $build_time = GetBuildingTime($user, $planet, $unit_id);
 
         if(!$skip_rest)
         {

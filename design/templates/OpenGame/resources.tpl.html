@@ -51,10 +51,22 @@ function res_set_all(obj)
     <!-- BEGIN production -->
       <tr>
         <th height="22">{production.TYPE}<!-- IF production.LEVEL --> (<!-- IF production.LEVEL_TYPE -->{production.LEVEL_TYPE}&nbsp;<!-- ENDIF -->{production.LEVEL}<!-- IF production.LEVEL_BONUS > 0 --><span class="bonus">+{production.LEVEL_BONUS}</span><!-- ENDIF -->)<!-- ENDIF --></th>
-        <th>{production.METAL_TYPE}</th>
-        <th>{production.CRYSTAL_TYPE}</th>
-        <th>{production.DEUTERIUM_TYPE}</th>
-        <th>{production.ENERGY_TYPE}</th>
+        <th>
+          {production.METAL_TYPE}
+          <!-- IF production.METAL_FULL != '' && production.METAL_FULL != production.METAL_TYPE --><br />({production.METAL_FULL})<!-- ENDIF -->
+        </th>
+        <th>
+          {production.CRYSTAL_TYPE}
+          <!-- IF production.CRYSTAL_FULL != '' && production.CRYSTAL_FULL != production.CRYSTAL_TYPE --><br />({production.CRYSTAL_FULL})<!-- ENDIF -->
+        </th>
+        <th>
+          {production.DEUTERIUM_TYPE}
+          <!-- IF production.DEUTERIUM_FULL != '' && production.DEUTERIUM_FULL != production.DEUTERIUM_TYPE --><br />({production.DEUTERIUM_FULL})<!-- ENDIF -->
+        </th>
+        <th>
+          {production.ENERGY_TYPE}
+          <!-- IF production.ENERGY_FULL != '' && production.ENERGY_FULL != production.ENERGY_TYPE --><br />({production.ENERGY_FULL})<!-- ENDIF -->
+        </th>
         <th>
           <!-- IF production.LEVEL -->
             <select name="production[{production.ID}]" id="production{production.ID}" size="1">
