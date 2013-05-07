@@ -24,7 +24,7 @@ function sn_imperium_view($template = null)
   $planet_row_list = SortUserPlanets($user);
   while ($planet = mysql_fetch_assoc($planet_row_list))
   {
-    $global_data = sys_o_get_updated($user, $planet['id'], $time_now);
+    $global_data = sys_o_get_updated($user, $planet['id'], $time_now, true);
     $planets[$planet['id']] = $global_data['planet'];
     $ques[$planet['id']] = $global_data['que'];
   }
@@ -55,23 +55,15 @@ function sn_imperium_view($template = null)
     $template->assign_block_vars('planet', array_merge($planet_template, array(
       'PLANET_FLEET_ID'   => $planet_fleet_id,
 
-//      'METAL_CUR'         => pretty_number($planet['metal'], true, $planet['metal_max']),
-//      'METAL_PROD'        => pretty_number($planet['metal_perhour']),
       'METAL_CUR'         => pretty_number($planet['metal'], true, $planet['caps']['total_storage'][RES_METAL]),
       'METAL_PROD'        => pretty_number($planet['caps']['total'][RES_METAL]),
 
-//      'CRYSTAL_CUR'       => pretty_number($planet['crystal'], true, $planet['crystal_max']),
-//      'CRYSTAL_PROD'      => pretty_number($planet['crystal_perhour']),
       'CRYSTAL_CUR'       => pretty_number($planet['crystal'], true, $planet['caps']['total_storage'][RES_CRYSTAL]),
       'CRYSTAL_PROD'      => pretty_number($planet['caps']['total'][RES_CRYSTAL]),
 
-//      'DEUTERIUM_CUR'     => pretty_number($planet['deuterium'], true, $planet['deuterium_max']),
-//      'DEUTERIUM_PROD'    => pretty_number($planet['deuterium_perhour']),
       'DEUTERIUM_CUR'     => pretty_number($planet['deuterium'], true, $planet['caps']['total_storage'][RES_DEUTERIUM]),
       'DEUTERIUM_PROD'    => pretty_number($planet['caps']['total'][RES_DEUTERIUM]),
 
-//      'ENERGY_CUR'        => pretty_number($planet['energy_max'] - $planet['energy_used'], true, true),
-//      'ENERGY_MAX'        => pretty_number($planet['energy_max']),
       'ENERGY_CUR'        => pretty_number($planet['caps']['total'][RES_ENERGY], true, true),
       'ENERGY_MAX'        => pretty_number($planet['caps'][RES_ENERGY][BUILD_CREATE]),
 
@@ -90,11 +82,6 @@ function sn_imperium_view($template = null)
     $total['deuterium'] += $planet['deuterium'];
     $total['energy'] += $planet['energy_max'] - $planet['energy_used'];
 
-//    $total['fields_max'] += $planet['field_max'] + $planet[$sn_data[STRUC_TERRAFORMER]['name']] * 5;
-//    $total['metal_perhour'] += $planet['metal_perhour'];
-//    $total['crystal_perhour'] += $planet['crystal_perhour'];
-//    $total['deuterium_perhour'] += $planet['deuterium_perhour'];
-//    $total['energy_max'] += $planet['energy_max'];
     $total['fields_max'] += eco_planet_fields_max($planet);
     $total['metal_perhour'] += $planet['caps']['total'][RES_METAL];
     $total['crystal_perhour'] += $planet['caps']['total'][RES_CRYSTAL];
@@ -168,11 +155,6 @@ function sn_imperium_view($template = null)
           break;
         }
 
-//        $template->assign_block_vars('prods.planet', array_merge($level_plus, array(
-//          'ID'         => $planet['id'],
-//          'TYPE'       => $planet['planet_type'],
-//          'LEVEL'      => $planet[$unit_db_name] == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : $planet[$unit_db_name],
-//        )));
         $block_vars[] = array_merge($level_plus, array(
           'ID'         => $planet['id'],
           'TYPE'       => $planet['planet_type'],
@@ -233,5 +215,3 @@ function sn_imperium_view($template = null)
 
   return $template;
 }
-
-?>

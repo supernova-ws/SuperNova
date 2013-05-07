@@ -1124,3 +1124,30 @@ function sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 
 //  $step = $strict * 2 / $range_delta;
 //  return $range_start + round($random / $step);
 }
+
+/*
+ * Простенький бенчмарк
+ */
+function sn_benchmark($message = '', $commented = true)
+{
+  static $microtime, $memory;
+
+  if(!$microtime)
+  {
+    $microtime = SN_TIME_MICRO;
+    $memory = SN_MEM_START;
+  }
+
+  $microtime_now = microtime(true);
+  $memory_now = memory_get_usage();
+
+  print("\r\n");
+  if($commented)print("<!--\r\n");
+  print('!BENCHMARK! ' . $message . "\r\n");
+  print('Time: ' . round($microtime_now - $microtime, 5) . '/' . round($microtime_now - SN_TIME_MICRO, 5) . "\r\n");
+  print("Memory: " . number_format($memory_now - $memory) . '/' . number_format($memory_now - SN_MEM_START) . "\r\n");
+  if($commented)print("-->\r\n");
+
+  $microtime = $microtime_now;
+  $memory = $memory_now;
+}

@@ -261,6 +261,8 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     mysql_close();
   }
 
+  sn_benchmark();
+
   if($die)
   {
     die($die === true ? 0 : $die);

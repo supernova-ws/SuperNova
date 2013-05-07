@@ -3,6 +3,7 @@
 
 define('SN_TIME_NOW', $time_now = time());
 define('SN_TIME_MICRO', $microtime = microtime(true));
+define('SN_MEM_START', memory_get_usage());
 
 if(defined('INIT'))
 {
