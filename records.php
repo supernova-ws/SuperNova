@@ -19,7 +19,8 @@ if(HIDE_BUILDING_RECORDS)
 $template = gettemplate('records', true);
 
 $user_skip_list = sys_stat_get_user_skip_list();
-$user_skip_list = empty($user_skip_list) ? '' : ' AND u.id NOT IN (' . implode(',', $user_skip_list) . ')';
+$user_skip_list = empty($user_skip_list) ? '' : ' AND p.id_owner NOT IN (' . implode(',', $user_skip_list) . ')';
+$user_skip_list_un = $user_skip_list ? '' : ' AND un.unit_player_id NOT IN (' . implode(',', $user_skip_list) . ')';
 
 $show_groups = array(
   UNIT_STRUCTURES => 'structures',
@@ -28,6 +29,8 @@ $show_groups = array(
   UNIT_DEFENCE => 'defense',
   UNIT_TECHNOLOGIES => 'tech',
 );
+
+$user_name_cache = array();
 
 foreach($show_groups as $unit_group_id => $mode)
 {
@@ -48,17 +51,51 @@ foreach($show_groups as $unit_group_id => $mode)
       $data_row = false;
       if(in_array($unit_id, array_merge($sn_data['groups']['structures'], $sn_data['groups']['fleet'], $sn_data['groups']['defense'])))
       {
-        $data_row = doquery ("SELECT `username`, `{$unit_db_name}` AS `current` FROM {{planets}} AS p JOIN {{users}} AS u ON u.id = p.id_owner WHERE `{$unit_db_name}` = (
-        SELECT MAX(`{$unit_db_name}`) FROM {{planets}} AS p LEFT JOIN {{users}} AS u ON u.id = p.id_owner WHERE `id_owner` != 0 {$user_skip_list}) AND `id_owner` != '0' {$user_skip_list} ORDER BY u.`id` LIMIT 1;", true);
+//        $data_row = doquery ("SELECT `username`, `{$unit_db_name}` AS `current` FROM {{planets}} AS p JOIN {{users}} AS u ON u.id = p.id_owner WHERE `{$unit_db_name}` = (
+//        SELECT MAX(`{$unit_db_name}`) FROM {{planets}} AS p LEFT JOIN {{users}} AS u ON u.id = p.id_owner WHERE `id_owner` != 0 {$user_skip_list}) AND `id_owner` != '0' {$user_skip_list} ORDER BY u.`id` LIMIT 1;", true);
+        // For Allies!
+/*
+        $data_row = doquery (
+        "SELECT `{$unit_db_name}` AS `current` , `username`
+        FROM
+          {{planets}} AS p
+          JOIN {{users}} AS u ON u.id = p.id_owner AND u.`user_as_ally` IS NULL
+        WHERE
+          p.`id_owner` != '0'
+          
+          {$user_skip_list}
+        ORDER BY p.{$unit_db_name} DESC, p.id_owner
+        LIMIT 1;", true);
+*/
+        $data_row = doquery (
+        "SELECT `{$unit_db_name}` AS `current`, p.id_owner
+        FROM {{planets}} AS p
+        WHERE p.`id_owner` != '0' {$user_skip_list}
+        ORDER BY p.{$unit_db_name} DESC, p.id_owner
+        LIMIT 1;", true);
       }
       elseif(in_array($unit_id, $sn_data['groups']['tech']))
       {
-//        $data_row = doquery ("SELECT `username`, `{$unit_db_name}` AS `current` FROM {{users}} AS u WHERE u.`{$unit_db_name}` = (SELECT MAX(`{$unit_db_name}`) FROM {{users}} AS u WHERE user_as_ally is null {$user_skip_list}) AND user_as_ally is null {$user_skip_list} ORDER BY `id` LIMIT 1;", true);
-        $data_row = doquery ("SELECT `username`, `unit_level` AS `current` FROM {{unit}} as un LEFT JOIN {{users}} AS u ON u.id = un.unit_player_id WHERE un.`unit_snid` = {$unit_id} AND user_as_ally is null {$user_skip_list} ORDER BY `unit_level` DESC, `unit_id` LIMIT 1;", true);
+        $data_row = doquery (
+        "SELECT
+          u.`username`, u.id, `unit_level` AS `current`
+        FROM
+          {{unit}} AS un
+          JOIN {{users}} AS u ON u.id = un.unit_player_id AND user_as_ally IS NULL
+        WHERE un.`unit_snid` = {$unit_id} {$user_skip_list_un}
+        ORDER BY `unit_level` DESC, `unit_id`
+        LIMIT 1;", true);
       }
 
       if($data_row)
       {
+        if(!$data_row['username'] && !$user_name_cache[$data_row['id_owner']])
+        {
+          $user_name = doquery("SELECT `username` FROM {{users}} WHERE `id` = {$data_row['id_owner']} LIMIT 1", true);
+          $user_name_cache[$data_row['id_owner']] = $user_name['username'];
+        }
+        $data_row['username'] = $data_row['username'] ? $data_row['username'] : $user_name_cache[$data_row['id_owner']];
+
         $template->assign_block_vars('records', array(
           'UNIT' => $unit_name,
           'USER' => $data_row['current'] ? $data_row['username'] : $lang['rec_rien'],
@@ -70,5 +107,3 @@ foreach($show_groups as $unit_group_id => $mode)
 }
 
 display($template, $lang['rec_title']);
-
-?>
