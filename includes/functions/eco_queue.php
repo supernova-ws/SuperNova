@@ -738,6 +738,7 @@ function que_process(&$user, $planet_id = null)
   doquery("SELECT `id` FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE");
 
   // Если нужно изменять данные на планетах - блокируем планеты и получаем данные о них
+  // TODO: Это перенести на попозже, для избежания блокировок
   $planet_list = array();
   if($planet_id !== null)
   {
@@ -856,7 +857,7 @@ pdump($local_que['time_left'][$que_id][$owner_id], '$local_que[time_left][$que_i
 print('<hr />');
 */
         // Если на очереди времени не осталось - выходим
-        if(!$local_que['time_left'][$que_id][$owner_id])
+        if($local_que['time_left'][$que_id][$owner_id] <= 0)
         {
           break;
         }
@@ -864,22 +865,48 @@ print('<hr />');
     }
   }
 
-//pdump($local_que);
-//pdump($db_changeset, '$db_changeset');
-//pdump($unit_changes, '$unit_changes');
+
+  /*
+  // TODO: Re-enable quests for Alliances
+  if(!$user['user_as_ally'] && $planet['id'])
+  {
+    $quest_list = qst_get_quests($user['id']);
+    $quest_triggers = qst_active_triggers($quest_list);
+    $quest_rewards = array();
+    // TODO: Check mutiply condition quests
+    $quest_trigger_list = array_keys($quest_triggers, $unit_id);
+    foreach($quest_trigger_list as $quest_id)
+    {
+      if($quest_list[$quest_id]['quest_unit_amount'] <= $user[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
+      {
+        $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards'];
+        $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
+      }
+    }
+    qst_reward($user, $planet, $quest_rewards, $quest_list);
+  }
+  */
 
   foreach($unit_changes as $owner_id => $changes)
   {
     // $user_id_sql = $owner_id ? $owner_id : $user['id'];
     $planet_id_sql = $owner_id ? $owner_id : null;
-//pdump($changes, '$changes');
+    $xp_incoming = 0;
     foreach($changes as $unit_id => $unit_value)
     {
 
       $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id_sql);
 
-      // pdump($temp, $unit_value);
+      // TODO: Изменить согласно типу очереди
+      $build_data = eco_get_build_data($user, array(), $unit_id, mrc_get_level($user, array(), $unit_id) + $unit_value - 1);
+      $build_data = $build_data[BUILD_CREATE];
+      foreach($sn_data['groups']['resources_loot'] as $resource_id)
+      {
+        $xp_incoming += $build_data[$resource_id];
+      }
     }
+    // TODO: Изменить согласно типу очереди
+    rpg_level_up($user, RPG_TECH, $xp_incoming / 1000);
   }
 
 
