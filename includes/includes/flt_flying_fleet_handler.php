@@ -78,8 +78,8 @@ function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = fals
   global $sn_module;
   if($sn_module['unit_captain']->manifest['active'])
   {
-    $captain = doquery("
-      SELECT *
+    $captain = doquery(
+      "SELECT *
       FROM {{unit}} AS u
         LEFT JOIN {{captain}} AS c ON c.captain_unit_id = u.unit_id
       WHERE
@@ -92,15 +92,15 @@ function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = fals
 
     if(is_array($captain))
     {
-      $planet = doquery("
-        SELECT `id`
+      $planet = doquery(
+        "SELECT `id`
         FROM {{planets}}
         WHERE
           `system` = '". $fleet_row["fleet_{$prefix}_system"] ."' AND
           `galaxy` = '". $fleet_row["fleet_{$prefix}_galaxy"] ."' AND
           `planet` = '". $fleet_row["fleet_{$prefix}_planet"] ."' AND
-          `planet_type` = '". $fleet_row["fleet_{$prefix}_type"] ."' LIMIT 1
-      ", true);
+          `planet_type` = '". $fleet_row["fleet_{$prefix}_type"] ."' LIMIT 1"
+      , true);
       if($planet['id'])
       {
         doquery("UPDATE {{unit}} SET `unit_location_type` = " . LOC_PLANET . ", `unit_location_id` = {$planet['id']} WHERE `unit_id` = {$captain['unit_id']} LIMIT 1");

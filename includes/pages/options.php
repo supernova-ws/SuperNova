@@ -394,5 +394,3 @@ function sn_options_view($template = null)
 
   return parsetemplate($template);
 }
-
-?>

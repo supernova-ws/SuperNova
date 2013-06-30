@@ -6,8 +6,8 @@ function sn_user_birthday_celebrate()
 
   doquery("START TRANSACTION;");
 
-  $query = doquery("
-    SELECT 
+  $query = doquery(
+    "SELECT 
       `id`, `username`, `user_birthday`, `user_birthday_celebrated`
       , CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d')) AS `current_birthday`
       , DATEDIFF(CURRENT_DATE, CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `days_after_birthday`

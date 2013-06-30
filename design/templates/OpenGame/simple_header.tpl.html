@@ -28,10 +28,11 @@
   <body class="style">
     <script type="text/javascript" src="{-path_prefix-}js/lib/jquery.js"></script>
 
-    <script type="text/javascript"><!--
+    <script type="text/javascript">
       var localTime = new Date();
       var serverTime = new Date('{TIME_NOW}' * 1000);
       var timeDiff = '{TIME_DIFF}';
+
       if(timeDiff === '')
       {
         timeDiff = 0;
@@ -57,7 +58,7 @@
           sn_timer();
         }
       );
-    --></script>
+    </script>
 
     <script type="text/javascript" src="{-path_prefix-}js/lib/jquery-ui.js"></script>
     <script type="text/javascript" src="{-path_prefix-}js/sn_global.js"></script>

@@ -134,11 +134,13 @@ function sn_timer()
   var HTML, HTML_timer, HTML_finish;
 
   var local_time = new Date();
+// alert('local_time: ' + local_time);
 //  var time_now = new Date(local_time.valueOf() - timeDiff * 1000);
   var time_now = new Date(local_time.valueOf());
 // alert(local_time + '\r\n' + time_now);
   var timestamp = Math.round(time_now.valueOf() / 1000);
-
+  var timestamp_server = Math.round(time_now.valueOf() / 1000 - timeDiff);
+// alert('timestamp: ' + timestamp);
   var activeTimers = 0;
 
   for(timerID in sn_timers)
@@ -169,8 +171,8 @@ function sn_timer()
     {
       case 0: // old que display
         var que_item = timer_options['que'][0];
-
-        if(que_item[UNIT_TIME] <= timestamp - timer['start_time'])
+// alert('timestamp: ' + timestamp + '   start_time: ' + timer['start_time']);
+        if(que_item[UNIT_TIME] <= timestamp_server - timer['start_time'])
         {
           que_item[UNIT_AMOUNT]--;
           if(que_item[UNIT_AMOUNT] <= 0)
@@ -178,13 +180,13 @@ function sn_timer()
             timer_options['que'].shift();
             que_item = timer_options['que'][0];
           }
-          timer['start_time'] = timestamp;
+          timer['start_time'] = timestamp_server;
         }
 
         if(timer_options['que'].length && que_item[UNIT_ID])
         {
           timeFinish = parseInt(timer['start_time']) + parseInt(que_item[UNIT_TIME]);
-          timeLeft = parseInt(timer['start_time']) + parseInt(que_item[UNIT_TIME]) - timestamp;
+          timeLeft = parseInt(timer['start_time']) + parseInt(que_item[UNIT_TIME]) - timestamp_server;
           infoText = que_item[UNIT_NAME];
           if(que_item[UNIT_AMOUNT] > 1)
           {
@@ -224,7 +226,7 @@ function sn_timer()
       break;
 
       case 1: // time-independent counter
-        var new_value = parseInt(timer_options['start_value']) + (timestamp - parseInt(timer['start_time'])) * parseFloat(timer_options['per_second']);
+        var new_value = parseInt(timer_options['start_value']) + (timestamp_server - parseInt(timer['start_time'])) * parseFloat(timer_options['per_second']);
         if(timer_options['round'] === undefined)
         {
           timer_options['round'] = 0;
@@ -329,7 +331,7 @@ function sn_timer()
         }
         que_compiled = sn_timers[timerID]['que_compiled'];
 
-        if(que_item[UNIT_TIME] <= timestamp - timer['start_time'])
+        if(que_item[UNIT_TIME] <= timestamp_server - timer['start_time'])
         {
           que_item[UNIT_AMOUNT]--;
           if(que_item[UNIT_AMOUNT] <= 0)
@@ -341,7 +343,7 @@ function sn_timer()
           {
             que_item[UNIT_TIME] = que_item[UNIT_TIME_FULL];
           }
-          timer['start_time'] = timestamp;
+          timer['start_time'] = timestamp_server;
           sn_timers[timerID]['que_compiled'] = sn_timer_compile_que(timer_options);
 //          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
           que_compiled = sn_timers[timerID]['que_compiled'];
@@ -359,7 +361,7 @@ function sn_timer()
         if(timer_options['que'].length && !should_break)
         {
           timeFinish = timer['start_time'] + que_item[UNIT_TIME];
-          timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp;
+          timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp_server;
           total_text = sn_timestampToString(timeLeft + timer_options['total']);
           infoText = que_item[UNIT_NAME];
           if(que_item[UNIT_AMOUNT] > 1)
@@ -432,7 +434,7 @@ function sn_timer()
         var que_item = timer_options['que'][0];
         var finalText = '';
 
-        if(que_item[EVENT_TIME] <= timestamp - timer['start_time'])
+        if(que_item[EVENT_TIME] <= timestamp_server - timer['start_time'])
         {
           timer_options['que'].shift();
 //          timer['start_time'] = timestamp;
