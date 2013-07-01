@@ -742,6 +742,7 @@ function que_process(&$user, $planet_id = null)
   $planet_list = array();
   if($planet_id !== null)
   {
+    // TODO: ХУЕТА!!!! ПЕРЕПИСАТЬ!!!!
     $planet_query = doquery("SELECT `id`, `last_update` FROM {{planets}} WHERE " . ($planet_id ? "`id` = {$planet_id}" : "`id_owner` = {$user['id']}") . " FOR UPDATE");
     while($planet_row = mysql_fetch_assoc($planet_query))
     {
@@ -857,7 +858,7 @@ pdump($local_que['time_left'][$que_id][$owner_id], '$local_que[time_left][$que_i
 print('<hr />');
 */
         // Если на очереди времени не осталось - выходим
-        if($local_que['time_left'][$que_id][$owner_id] <= 0)
+        if(!$local_que['time_left'][$que_id][$owner_id])
         {
           break;
         }
@@ -866,55 +867,64 @@ print('<hr />');
   }
 
 
-  /*
   // TODO: Re-enable quests for Alliances
-  if(!$user['user_as_ally'] && $planet['id'])
+  if(!empty($unit_changes) && !$user['user_as_ally'] && $user['id_planet'])
   {
+    $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = {$user['id_planet']} FOR UPDATE", true);
     $quest_list = qst_get_quests($user['id']);
     $quest_triggers = qst_active_triggers($quest_list);
-    $quest_rewards = array();
-    // TODO: Check mutiply condition quests
-    $quest_trigger_list = array_keys($quest_triggers, $unit_id);
-    foreach($quest_trigger_list as $quest_id)
-    {
-      if($quest_list[$quest_id]['quest_unit_amount'] <= $user[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
-      {
-        $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards'];
-        $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
-      }
-    }
-    qst_reward($user, $planet, $quest_rewards, $quest_list);
   }
-  */
+  else
+  {
+    $planet = array();
+  }
 
+  $quest_rewards = array();
+  $xp_incoming = 0;
   foreach($unit_changes as $owner_id => $changes)
   {
     // $user_id_sql = $owner_id ? $owner_id : $user['id'];
     $planet_id_sql = $owner_id ? $owner_id : null;
-    $xp_incoming = 0;
     foreach($changes as $unit_id => $unit_value)
     {
 
       $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id_sql);
 
       // TODO: Изменить согласно типу очереди
-      $build_data = eco_get_build_data($user, array(), $unit_id, mrc_get_level($user, array(), $unit_id) + $unit_value - 1);
+      $unit_level_new = mrc_get_level($user, array(), $unit_id) + $unit_value;
+      $build_data = eco_get_build_data($user, array(), $unit_id, $unit_level_new - 1);
       $build_data = $build_data[BUILD_CREATE];
       foreach($sn_data['groups']['resources_loot'] as $resource_id)
       {
         $xp_incoming += $build_data[$resource_id];
       }
+
+      if($planet['id'])
+      {
+        // TODO: Check mutiply condition quests
+        $quest_trigger_list = array_keys($quest_triggers, $unit_id);
+        foreach($quest_trigger_list as $quest_id)
+        {
+          if($quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE && $quest_list[$quest_id]['quest_unit_amount'] <= $unit_level_new)
+          {
+            $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards'];
+            $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
+          }
+        }
+      }
+
     }
-    // TODO: Изменить согласно типу очереди
-    rpg_level_up($user, RPG_TECH, $xp_incoming / 1000);
   }
+
+  // TODO: Изменить согласно типу очереди
+  rpg_level_up($user, RPG_TECH, $xp_incoming / 1000);
+  // TODO: Изменить начисление награды за квесты на ту планету, на которой происходил ресеч
+  qst_reward($user, $planet, $quest_rewards, $quest_list);
 
 
   sn_db_changeset_apply($db_changeset);
 
   // Сообщения о постройке
-  // Квесты
-  // Экспириенс
 
 
 //  $user['que'] = $user_row['que'];

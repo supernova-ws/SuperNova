@@ -299,7 +299,7 @@ function qst_active_triggers($quest_list)
 
 function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
 {
-  global $lang, $sn_data;
+  global $lang, $sn_data, $time_now;
 
   foreach($rewards as $quest_id => $rewards_list_string)
   {
