@@ -110,6 +110,7 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
       }
     }
     $caps['total'][$resource_id] = array_sum($resource_data);
+    $caps['total'][$resource_id] = $caps['total'][$resource_id] >= 0 ? floor($caps['total'][$resource_id]) : ceil($caps['total'][$resource_id]);
   }
 
   foreach($caps['storage'] as $resource_id => &$resource_data)
