@@ -891,7 +891,7 @@ print('<hr />');
       $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id_sql);
 
       // TODO: Изменить согласно типу очереди
-      $unit_level_new = mrc_get_level($user, array(), $unit_id) + $unit_value;
+      $unit_level_new = mrc_get_level($user, array(), $unit_id, false, true) + $unit_value;
       $build_data = eco_get_build_data($user, array(), $unit_id, $unit_level_new - 1);
       $build_data = $build_data[BUILD_CREATE];
       foreach($sn_data['groups']['resources_loot'] as $resource_id)
