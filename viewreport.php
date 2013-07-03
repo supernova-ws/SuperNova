@@ -6,5 +6,3 @@ $template = gettemplate('viewreport', true);
 $template->assign_var('PAGE_HINT', $lang['cr_view_hint']);
 
 display($template, $lang['cr_view_title']);
-
-?>

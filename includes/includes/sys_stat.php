@@ -41,7 +41,7 @@ function sta_set_time_limit($sta_update_msg = 'updatins something', $next_step =
   {
     $sta_update_step++;
   }
-  $sta_update_msg = "Update in progress. Step {$sta_update_step}/10: {$sta_update_msg}.";
+  $sta_update_msg = "Update in progress. Step {$sta_update_step}/11: {$sta_update_msg}.";
 
   $config->db_saveItem('var_stat_update_msg', $sta_update_msg);
   if($next_step)
@@ -204,11 +204,43 @@ function sys_stat_calculate()
     // TODO: Also calculate cost of structures and research in ques
     $points[$user_id]['resources'] += $point_counter / 1000;
     $counts[$user_id]['resources'] += $point_counter;
-    
+
 //  Disabled planet point update. Didn't see any use for it
 //    $planet_points = floor($planet_points / 1000);
 //    doquery("UPDATE {{planets}} SET `points` = '{$planet_points}' WHERE `id` = '{$planet_row['id']}';");
   }
+
+  sta_set_time_limit('calculating tech points');
+  $user_techs = doquery("SELECT un.* FROM {{unit}} AS un INNER JOIN {{users}} AS us ON us.id = un.unit_player_id AND us.user_as_ally IS NULL");
+  while($tech_row = mysql_fetch_assoc($user_techs))
+  {
+    if(array_key_exists($user_id = $tech_row['unit_player_id'], $user_skip_list))
+    {
+      continue;
+    }
+
+    if(!in_array($unit_id = $tech_row['unit_snid'], $sn_data['groups']['tech']))
+    {
+      continue;
+    }
+
+    $TechCounts = 0;
+    $TechPoints = 0;
+//    foreach($sn_data['groups']['tech'] as $unit_id)
+    {
+      $unit_level = $tech_row['unit_level'];
+      if($unit_level > 0)
+      {
+        $unit_cost_data = $sn_data[$unit_id]['cost'];
+        $f = $unit_cost_data['factor'];
+        $TechPoints += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * (pow($f, $unit_level) - $f) / ($f - 1);
+        $TechCounts += $unit_level;
+      }
+    }
+    $points[$user_id]['tech'] += $TechPoints / 1000;
+    $counts[$user_id]['tech'] += $TechCounts;
+  }
+//  pdump($points);die();
 
   sta_set_time_limit('posting new user stats to DB');
   $GameUsers = doquery("SELECT * FROM {{users}} where user_as_ally IS NULL;");
@@ -220,7 +252,7 @@ function sys_stat_calculate()
     {
       continue;
     }
-
+/*
     $TechCounts = 0;
     $TechPoints = 0;
     foreach($sn_data['groups']['tech'] as $unit_id)
@@ -236,7 +268,7 @@ function sys_stat_calculate()
     }
     $points[$user_id]['tech'] = $TechPoints / 1000;
     $counts[$user_id]['tech'] = $TechCounts;
-
+*/
     $points[$user_id] = array_map('floor', $points[$user_id]);
 
     $GPoints = array_sum($points[$user_id]);
