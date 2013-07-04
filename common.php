@@ -10,9 +10,13 @@
 require_once('includes/init.php');
 
 $user = sn_autologin(!$allow_anonymous);
-$time_diff = $user['user_time_diff'];
-$time_local = $time_now + intval($user['user_time_diff']);
 $sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
+
+$time_diff_seconds = $user['user_time_diff'];
+$time_utc_offset = $user['user_time_utc_offset'];
+$time_diff = $time_diff_seconds + $time_utc_offset;
+$time_local = $time_now + $time_diff;
+
 define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
 
 $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;

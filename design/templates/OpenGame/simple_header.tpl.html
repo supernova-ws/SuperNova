@@ -31,18 +31,21 @@
     <script type="text/javascript">
       var localTime = new Date();
       var serverTime = new Date('{TIME_NOW}' * 1000);
-      var timeDiff = '{TIME_DIFF}';
+      var timeDiffSeconds = '{TIME_DIFF_SECONDS}';
+      var timeUTCOffset = '{TIME_UTC_OFFSET}' ? '{TIME_UTC_OFFSET}' : 0;
+      var timeDiff = '{TIME_DIFF}' ? '{TIME_DIFF}' : 0;
 
-      if(timeDiff === '')
+      if(timeDiffSeconds === '')
       {
-        timeDiff = 0;
+        timeDiffSeconds = 0;
         jQuery.post("time_probe.php", {'localtime': localTime.valueOf(), 'utcoffset': -localTime.getTimezoneOffset() * 60}, function(data)
           {
-            timeDiff = parseInt(data);
+            timeDiffSeconds = parseInt(data);
           }
         );
       }
-      timeDiff = parseInt(timeDiff);
+      timeDiffSeconds = parseInt(timeDiffSeconds);
+//      alert('timeDiff: ' + timeDiff + ', timeUTCOffset: ' + timeUTCOffset);
 //      var timeDiff = serverTime.valueOf() - localTime.valueOf();
 
 //      jQuery.post("time_probe.php", {'localtime': localTime.valueOf()}, function(data)

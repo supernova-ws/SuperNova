@@ -173,7 +173,7 @@ function tpl_render_menu()
 // $AdminPage -> Si on est dans la section admin ... faut le dire ...
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
-  global $link, $debug, $user, $user_impersonator, $planetrow, $IsUserChecked, $time_now, $config, $lang, $template_result, $time_diff;
+  global $link, $debug, $user, $user_impersonator, $planetrow, $IsUserChecked, $time_now, $config, $lang, $template_result, $time_diff, $time_utc_offset, $time_diff_seconds;
 
   if(!$user || !isset($user['id']) || !is_numeric($user['id']))
   {
@@ -190,6 +190,8 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   $template->assign_vars(array(
     'TIME_NOW'                 => $time_now,
     'TIME_DIFF'                => isset($time_diff) ? $time_diff : '',
+    'TIME_DIFF_SECONDS'        => isset($time_diff_seconds) ? $time_diff_seconds : '',
+    'TIME_UTC_OFFSET'          => isset($time_utc_offset) ? $time_utc_offset : '',
     'USER_AUTHLEVEL'           => $user['authlevel'],
 
     'title'                    => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",

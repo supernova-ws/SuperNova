@@ -1086,7 +1086,9 @@ switch($new_version)
     ), $update_tables['users']['spy_tech']);
     */
 
-
+    upd_alter_table('users', array(
+      "ADD `user_time_utc_offset` INT(11) DEFAULT NULL COMMENT 'User time difference with server time' AFTER `user_time_diff`",
+    ), !$update_tables['users']['user_time_utc_offset']);
 
     upd_do_query('COMMIT;', true);
 //    $new_version = 37;

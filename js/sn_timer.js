@@ -139,7 +139,7 @@ function sn_timer()
   var time_now = new Date(local_time.valueOf());
 // alert(local_time + '\r\n' + time_now);
   var timestamp = Math.round(time_now.valueOf() / 1000);
-  var timestamp_server = Math.round(time_now.valueOf() / 1000 - timeDiff);
+  var timestamp_server = timestamp - timeDiffSeconds; // Math.round(time_now.valueOf() / 1000 + timeDiff + timeUTCOffset);
 // alert('timestamp: ' + timestamp);
   var activeTimers = 0;
 
