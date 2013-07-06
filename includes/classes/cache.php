@@ -491,6 +491,7 @@ class classConfig extends classPersistent
 
     // Chat settings
     // Nick highliting
+    'chat_highlight_developer'     => '<span class=\"nick_developer\">$1</span>', // Developer nick
     'chat_highlight_admin'         => '<span class=\"nick_admin\">$1</span>', // Admin nick
     'chat_highlight_moderator'     => '<span class=\"nick_moderator\">$1</span>', // Moderator nick
     'chat_highlight_operator'      => '<span class=\"nick_operator\">$1</span>', // Operator nick

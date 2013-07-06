@@ -921,6 +921,10 @@ function sn_render_player_nick($render_user, $options = false, &$result)
       {
         switch($render_user['authlevel'])
         {
+          case 4:
+            $highlight = $config->chat_highlight_developer;
+          break;
+
           case 3:
             $highlight = $config->chat_highlight_admin;
           break;

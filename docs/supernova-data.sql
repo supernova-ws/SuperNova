@@ -15,6 +15,7 @@ INSERT INTO `sn_config` VALUES ('ally_help_weak', '0');
 INSERT INTO `sn_config` VALUES ('avatar_max_height', '128');
 INSERT INTO `sn_config` VALUES ('avatar_max_width', '128');
 INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
+INSERT INTO `sn_config` VALUES ('chat_highlight_developer', '<span class=\"nick_developer\">$1</span>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_admin', '<span class=\"nick_admin\">$1</span>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</font>');
