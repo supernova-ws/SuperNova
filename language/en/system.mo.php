@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a8.7
+* @version 37a9.1
 *
 */
 
@@ -674,6 +674,7 @@ $lang = array_merge($lang, array(
     1 => 'Moderator',
     2 => 'Operator',
     3 => 'Administrator',
+    4 => 'Developer',
   ),
 
   'user_level_shortcut' => array(
@@ -681,6 +682,7 @@ $lang = array_merge($lang, array(
     1 => 'M',
     2 => 'O',
     3 => 'A',
+    4 => 'D',
   ),
 
   'sys_lessThen15min'   => '&lt; 15 min',

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #37a3.9#
+* @version #37a9.1#
 *
 */
 
@@ -674,6 +674,7 @@ $lang = array_merge($lang, array(
     1 => 'Модератор',
     2 => 'Оператор',
     3 => 'Администратор',
+    4 => 'Разработчик',
   ),
 
   'user_level_shortcut' => array(
@@ -681,6 +682,7 @@ $lang = array_merge($lang, array(
     1 => 'М',
     2 => 'О',
     3 => 'А',
+    4 => 'Р',
   ),
 
   'sys_lessThen15min'   => '&lt; 15 мин',

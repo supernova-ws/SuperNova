@@ -238,9 +238,14 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
   text-decoration: underline;
 }
 
-.nick_admin
+.nick_developer
 {
   color: purple;
+}
+
+.nick_admin
+{
+  color: #0000FF;
 }
 
 .nick_operator

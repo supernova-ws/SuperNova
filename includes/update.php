@@ -1110,6 +1110,8 @@ switch($new_version)
       "ADD CONSTRAINT `FK_fleet_owner` FOREIGN KEY (`fleet_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
     ), strtoupper($update_tables['fleets']['fleet_owner']['Type']) != 'BIGINT(20) UNSIGNED');
 
+    upd_check_key('chat_highlight_developer', '<span class="nick_developer">$1</span>', !$config->chat_highlight_developer);
+
 /*
     upd_alter_table('planets', array(
       "ADD CONSTRAINT `FK_planet_owner` FOREIGN KEY (`id_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE NULL ON UPDATE CASCADE",
