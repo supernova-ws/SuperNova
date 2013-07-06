@@ -142,12 +142,11 @@ function sn_autologin($abort = true)
   return $user;
 }
 
-function sn_login($username, $password, $remember_me = '1')
+function sn_login($username, $password, $remember_me = 1)
 {
   global $lang;
 
-  $username = mysql_real_escape_string($username);
-
+/*
   $login = doquery("SELECT * FROM {{users}} WHERE `username` = '{$username}' LIMIT 1;", '', true);
 
   // TODO: try..catch
@@ -169,6 +168,50 @@ function sn_login($username, $password, $remember_me = '1')
     sn_set_cookie($login, $remember_me);
     $status = LOGIN_SUCCESS;
     $error_msg = '';
+  }
+*/
+  $login = array();
+  $username = mysql_real_escape_string($username);
+  if(!$username || !$password)
+  {
+    $status = LOGIN_ERROR_USERNAME;
+    $error_msg = $lang['Login_FailUser'];
+  }
+  else
+  {
+    $query = doquery($q = "SELECT * FROM {{users}} WHERE `username` = '{$username}';");
+
+    while($login = mysql_fetch_assoc($query))
+    {
+      // TODO: try..catch
+      if($login['user_as_ally'])
+      {
+        $status = LOGIN_ERROR_USERNAME;
+        $error_msg = $lang['Login_FailUser'];
+        $login = array();
+      }
+      elseif(!$login['password'] || $login['password'] != md5($password))
+      {
+        $status = LOGIN_ERROR_PASSWORD;
+        $error_msg = $lang['Login_FailPassword'];
+        $login = array();
+      }
+      else
+      {
+        sys_user_options_unpack($login);
+        sn_set_cookie($login, $remember_me);
+        $status = LOGIN_SUCCESS;
+        $error_msg = '';
+        break;
+      }
+    }
+
+    if(empty($login))
+    {
+      $status = LOGIN_ERROR_USERNAME;
+      $error_msg = $lang['Login_FailUser'];
+      $login = array();
+    }
   }
 
   return array('status' => $status, 'error_msg' => $error_msg, 'user_row' => $login);
