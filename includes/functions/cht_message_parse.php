@@ -57,6 +57,10 @@ $supernova->design['smiles'] = array(
   ':agr:' => 'aggressive',
   ':diablo:' => 'diablo',
   ':tratata:' => 'mill',
+  ':wall:' => 'wall',
+  ':suicide:' => 'suicide',
+  ':plushit:' => 'plushit',
+  ':popcorn:' => 'popcorn',
 );
 
 function cht_message_parse($msg)
