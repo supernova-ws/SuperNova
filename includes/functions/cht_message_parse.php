@@ -15,7 +15,7 @@ $supernova->design['bbcodes'] = array(
 
 $supernova->design['smiles'] = array(
   ':\)' => 'smile',
-  ':p' => 'tongue',
+  ':p:' => 'tongue',
 //  ':D' => 'lol',
   'rofl' => 'rofl',
   ':wink:' => 'wink',

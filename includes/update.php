@@ -1090,17 +1090,19 @@ switch($new_version)
       "ADD `user_time_utc_offset` INT(11) DEFAULT NULL COMMENT 'User time difference with server time' AFTER `user_time_diff`",
     ), !$update_tables['users']['user_time_utc_offset']);
 
-    upd_do_query("UPDATE {{alliance}} SET ally_owner = null WHERE ally_owner not in (select id from {{users}})");
+    if(!$update_foreigns['alliance']['FK_alliance_owner'])
+    {
+      upd_do_query("UPDATE {{alliance}} SET ally_owner = null WHERE ally_owner not in (select id from {{users}})");
 
-    upd_alter_table('alliance', array(
-      "ADD CONSTRAINT `FK_alliance_owner` FOREIGN KEY (`ally_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
-    ), !$update_foreigns['alliance']['FK_alliance_owner']);
+      upd_alter_table('alliance', array(
+        "ADD CONSTRAINT `FK_alliance_owner` FOREIGN KEY (`ally_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+      ), !$update_foreigns['alliance']['FK_alliance_owner']);
 
-    upd_do_query("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_ally_id not in (select id from {{alliance}}) OR alliance_negotiation_contr_ally_id not in (select id from {{alliance}})");
+      upd_do_query("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_ally_id not in (select id from {{alliance}}) OR alliance_negotiation_contr_ally_id not in (select id from {{alliance}})");
 
-    upd_do_query("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_ally_id = alliance_negotiation_contr_ally_id");
-    upd_do_query("DELETE FROM {{alliance_diplomacy}} WHERE alliance_diplomacy_ally_id = alliance_diplomacy_contr_ally_id");
-
+      upd_do_query("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_ally_id = alliance_negotiation_contr_ally_id");
+      upd_do_query("DELETE FROM {{alliance_diplomacy}} WHERE alliance_diplomacy_ally_id = alliance_diplomacy_contr_ally_id");
+    }
 
 //    fleets
 //    fleet_owner
