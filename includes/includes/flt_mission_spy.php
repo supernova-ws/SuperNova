@@ -100,8 +100,8 @@ function flt_mission_spy($mission_data)
     }
     if ($spy_diff >= 7)
     {
-      $spy_message .= "<div class='spy_long'>" . flt_spy_scan($target_user_row, 'tech', $lang['tech'][UNIT_TECHNOLOGIES]) . "</div>";
-      coe_compress_add_units(array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR), $target_user_row, $combat_pack[0]);
+//      $spy_message .= "<div class='spy_long'>" . flt_spy_scan($target_user_row, 'tech', $lang['tech'][UNIT_TECHNOLOGIES]) . "</div>";
+//      coe_compress_add_units(array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR), $target_user_row, $combat_pack[0]);
     }
 
     $simulator_link = sn_ube_simulator_encode_replay($combat_pack, 'D');
