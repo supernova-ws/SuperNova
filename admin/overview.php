@@ -18,6 +18,10 @@ if($user['authlevel'] < 1)
 {
   AdminMessage($lang['adm_err_denied']);
 }
+elseif($user['authlevel'] < 3)
+{
+  sys_redirect(SN_ROOT_VIRTUAL . 'admin/banned.php');
+}
 
 $GET_cmd  = sys_get_param_str('cmd');
 $TypeSort = sys_get_param_str('type', 'id');
