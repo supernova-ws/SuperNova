@@ -1032,36 +1032,41 @@ switch($new_version)
       ), $update_tables['users']['graviton_tech']);
     }
 
-    upd_alter_table('unit', array(
-      "ADD KEY `I_unit_record_search` (`unit_snid`,`unit_player_id`,`unit_level` DESC,`unit_id`)",
-    ), !$update_indexes['unit']['I_unit_record_search']);
 /*
     $planet_units = array('ship_sattelite_sloth' => 1, 'ship_bomber_envy' => 1, 'ship_recycler_gluttony' => 1, 'ship_fighter_wrath' => 1, 'ship_battleship_pride' => 1, 'ship_cargo_greed' => 1,
       'unit_ship_shadow' => 0, 'unit_ship_hornet' => 0, 'unit_ship_hive' => 0);
 */
-    foreach(array_merge($sn_data['groups']['structures'], $sn_data['groups']['fleet'], $sn_data['groups']['defense']) as $unit_id)
-    {
-      $planet_units[$sn_data[$unit_id]['name']] = 1; // $sn_data[$unit_id]['type'] != UNIT_SHIPS;
-    }
-    $drop_index = array();
-    $create_index = &$drop_index; // array();
-    foreach($planet_units as $unit_name => $unit_create)
-    {
-      if($update_indexes['planets']['I_' . $unit_name])
-      {
-        $drop_index[] = "DROP KEY I_{$unit_name}";
-      }
-      if($update_indexes['planets']['i_' . $unit_name])
-      {
-        $drop_index[] = "DROP KEY i_{$unit_name}";
-      }
 
-      if($unit_create)
+    if(!$update_indexes['unit']['I_unit_record_search'])
+    {
+      upd_alter_table('unit', array(
+        "ADD KEY `I_unit_record_search` (`unit_snid`,`unit_player_id`,`unit_level` DESC,`unit_id`)",
+      ), !$update_indexes['unit']['I_unit_record_search']);
+
+      foreach(array_merge($sn_data['groups']['structures'], $sn_data['groups']['fleet'], $sn_data['groups']['defense']) as $unit_id)
       {
-        $create_index[] = "ADD KEY `I_{$unit_name}` (`id_owner`, {$unit_name} DESC)";
+        $planet_units[$sn_data[$unit_id]['name']] = 1; // $sn_data[$unit_id]['type'] != UNIT_SHIPS;
       }
+      $drop_index = array();
+      $create_index = &$drop_index; // array();
+      foreach($planet_units as $unit_name => $unit_create)
+      {
+        if($update_indexes['planets']['I_' . $unit_name])
+        {
+          $drop_index[] = "DROP KEY I_{$unit_name}";
+        }
+        if($update_indexes['planets']['i_' . $unit_name])
+        {
+          $drop_index[] = "DROP KEY i_{$unit_name}";
+        }
+
+        if($unit_create)
+        {
+          $create_index[] = "ADD KEY `I_{$unit_name}` (`id_owner`, {$unit_name} DESC)";
+        }
+      }
+      upd_alter_table('planets', $drop_index, true);
     }
-    upd_alter_table('planets', $drop_index, true);
 //    upd_alter_table('planets', $create_index, true);
 
     /*
