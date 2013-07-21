@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37a5.8
+* @version 37a9.13
 *
 */
 
@@ -84,6 +84,5 @@ $lang = array_merge($lang, array(
   'eco_bld_msg_err_research_in_progress' => 'Imperiya olimlari allaqachon tadqiqotni boshqariyapti',
   'eco_bld_msg_err_not_research' => 'Laboratoriyalarda faqat texnologiyalarni tadqiqot qilish mumkin',
   'eco_bld_msg_err_requirements_not_meet' => 'Tadqiqot talablari qanoatlantirilmadi',
+  'eco_bld_msg_err_laboratory_upgrading' => 'Исследовательские лаборатории находятся в процессе модификации и не могут производить исследования',
 ));
-
-?>

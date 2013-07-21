@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '36');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '37a9.12');
+define('SN_VERSION', '37a9.13');
 define('SN_RELEASE_STABLE', '36d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -362,6 +362,7 @@ define('BUILD_QUE_UNIT_WRONG'  , 4);
 define('BUILD_INDESTRUCTABLE'  , 5);
 define('BUILD_NO_RESOURCES'    , 6);
 define('BUILD_NO_UNITS'        , 7);
+define('BUILD_UNIT_BUSY'       , 8);
 
 
 // *** Que types

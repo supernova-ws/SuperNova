@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 37a9.13
 *
 */
 
@@ -86,6 +86,5 @@ $lang = array_merge($lang, array(
   'eco_bld_msg_err_research_in_progress' => 'Scientists of empire already researching other technology',
   'eco_bld_msg_err_not_research' => 'Can not research in laboratory other than technology',
   'eco_bld_msg_err_requirements_not_meet' => 'Requirements for technology research not met',
+  'eco_bld_msg_err_laboratory_upgrading' => 'Laboratories currently upgrading and can not research anything',
 ));
-
-?>

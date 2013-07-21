@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a9.1
+* @version 37a9.13
 *
 */
 
@@ -637,6 +637,11 @@ $lang = array_merge($lang, array(
     BUILD_INDESTRUCTABLE => 'Can not be destroyed',
     BUILD_NO_RESOURCES => 'Not enough resources',
     BUILD_NO_UNITS => 'No units',
+    BUILD_UNIT_BUSY => array(
+      0 => 'Busy',
+      STRUC_LABORATORY => 'Research ongoing',
+      STRUC_LABORATORY_NANO => 'Research ongoing',
+    ),
   ),
 
   'sys_game_mode' => array(

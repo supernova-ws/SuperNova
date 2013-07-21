@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version #37a5.8#
+* @version #37a9.13#
 *
 */
 
@@ -632,6 +632,11 @@ $lang = array_merge($lang, array(
     BUILD_INDESTRUCTABLE => 'Yo`q qilib bo`lmaydi',
     BUILD_NO_RESOURCES => 'Resurslar yetishmayapdi',
     BUILD_NO_UNITS => 'Kemalar yo`q',
+    BUILD_UNIT_BUSY => array(
+      0 => 'Строение занято',
+      STRUC_LABORATORY => 'Идет исследование',
+      STRUC_LABORATORY_NANO => 'Идет исследование',
+    ),
   ),
 
   'sys_game_mode' => array(

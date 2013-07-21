@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35b0
+* @version 37a9.13
 *
 */
 
@@ -214,7 +214,6 @@ $lang = array_merge($lang, array(
   'Ok' => 'Ок',
   'On' => 'On-line',
   'Online' => 'Статус',
-  'Options' => 'Опции',
   'Position' => 'Статус',
   'Public_text_of_alliance' => 'Внешний текст',
   'Range' => 'Звание',

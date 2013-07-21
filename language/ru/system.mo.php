@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #37a9.1#
+* @version #37a9.13#
 *
 */
 
@@ -637,6 +637,11 @@ $lang = array_merge($lang, array(
     BUILD_INDESTRUCTABLE => 'Нельзя уничтожить',
     BUILD_NO_RESOURCES => 'Не хватает ресурсов',
     BUILD_NO_UNITS => 'Нет юнитов',
+    BUILD_UNIT_BUSY => array(
+      0 => 'Строение занято',
+      STRUC_LABORATORY => 'Идет исследование',
+      STRUC_LABORATORY_NANO => 'Идет исследование',
+    ),
   ),
 
   'sys_game_mode' => array(

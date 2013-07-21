@@ -12,9 +12,15 @@ function eco_bld_tech_research($user, $planet)
       // TODO: Hack attempt - warning here. Normally non-tech can't be passed from build page
       throw new exception($lang['eco_bld_msg_err_not_research'], ERR_ERROR);
     }
+
     sn_db_transaction_start();
     // Это нужно, что бы заблокировать пользователя и работу с очередями
     $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
+
+//    if(eco_unit_busy($user, $planet, $tech_id))
+//    {
+//      throw new exception($lang['eco_bld_msg_err_laboratory_upgrading'], ERR_ERROR);
+//    }
 
     que_get_que($global_que, QUE_RESEARCH, $user['id'], $planet['id'], true);
     if(count($global_que[QUE_RESEARCH][0]) >= $config->server_que_length_research)
@@ -24,14 +30,25 @@ function eco_bld_tech_research($user, $planet)
 
     // Это нужно, что бы заблокировать планету от списания ресурсов
     $planet = $planet['id'] ? doquery("SELECT * FROM {{planets}} WHERE `id` = {$planet['id']} LIMIT 1 FOR UPDATE;", true) : $planet;
+
+    switch(eco_can_build_unit($user, $planet, $tech_id))
+    {
+      case BUILD_ALLOWED:
+      break;
+
+      case BUILD_UNIT_BUSY:
+        throw new exception($lang['eco_bld_msg_err_laboratory_upgrading'], ERR_ERROR);
+      break;
+
+      case BUILD_REQUIRE_NOT_MEET:
+      default:
+        throw new exception($lang['eco_bld_msg_err_requirements_not_meet'], ERR_ERROR);
+      break;
+    }
+
     $unit_level = mrc_get_level($user, $planet, $tech_id, false, true) + $global_que['in_que'][QUE_RESEARCH][0][$tech_id];
     $build_data = eco_get_build_data($user, $planet, $tech_id, $unit_level);
 
-    if(eco_can_build_unit($user, $planet, $tech_id) != BUILD_ALLOWED)
-    {
-      // TODO: Hack attempt - warning here. Normally requirements check should be done on build page
-      throw new exception($lang['eco_bld_msg_err_requirements_not_meet'], ERR_ERROR);
-    }
     if(!$build_data['CAN'][BUILD_CREATE])
     {
       throw new exception($lang['eco_bld_resources_not_enough'], ERR_ERROR);
@@ -56,7 +73,7 @@ function eco_bld_tech_research($user, $planet)
 
 function eco_bld_tech(&$user, &$planet, $que = array())
 {
-  global $config, $lang, $time_now, $global_que;
+  global $config, $lang, $global_que;
 
   lng_include('buildings');
   lng_include('infos');
@@ -64,6 +81,11 @@ function eco_bld_tech(&$user, &$planet, $que = array())
   if(!mrc_get_level($user, $planet, STRUC_LABORATORY))
   {
     message($lang['no_laboratory'], $lang['tech'][UNIT_TECHNOLOGIES]);
+  }
+
+  if(eco_unit_busy($user, $planet, UNIT_TECHNOLOGIES))
+  {
+    message($lang['eco_bld_msg_err_laboratory_upgrading'], $lang['tech'][UNIT_TECHNOLOGIES]);
   }
 
   switch(sys_get_param_str('action'))

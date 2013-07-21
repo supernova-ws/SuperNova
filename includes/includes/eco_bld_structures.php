@@ -119,6 +119,8 @@ function eco_build($que_type, $user, &$planet, $que)
     $temp[RES_METAL]     = floor($planet['metal'] + $fleet_list['own']['total'][RES_METAL] - $build_data[BUILD_CREATE][RES_METAL]);
     $temp[RES_CRYSTAL]   = floor($planet['crystal'] + $fleet_list['own']['total'][RES_CRYSTAL] - $build_data[BUILD_CREATE][RES_CRYSTAL]);
     $temp[RES_DEUTERIUM] = floor($planet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_data[BUILD_CREATE][RES_DEUTERIUM]);
+    $build_result_text = $lang['sys_build_result'][$build_data['RESULT'][BUILD_CREATE]];
+    $build_result_text = !is_array($build_result_text) ? $build_result_text : (isset($build_result_text[$Element]) ? $build_result_text[$Element] : $build_result_text[0]);
     $template->assign_block_vars('production', array(
       'ID'                => $Element,
       'NAME'              => $element_name,
@@ -129,7 +131,7 @@ function eco_build($que_type, $user, &$planet, $que)
       'LEVEL_CHANGE'      => $que['in_que'][$Element],
 
       'BUILD_RESULT'      => $build_data['RESULT'][BUILD_CREATE],
-      'BUILD_RESULT_TEXT' => $lang['sys_build_result'][$build_data['RESULT'][BUILD_CREATE]],
+      'BUILD_RESULT_TEXT' => $build_result_text,
       'BUILD_CAN'         => $build_data['CAN'][BUILD_CREATE],
       'TIME'              => pretty_time($build_data[RES_TIME][BUILD_CREATE]),
       'METAL'             => $build_data[BUILD_CREATE][RES_METAL],

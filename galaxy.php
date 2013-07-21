@@ -126,6 +126,7 @@ foreach($sn_data['groups']['flt_recyclers'] as $recycler_id)
 //debug($recyclers_fleet);
 //debug($recycler_info);
 
+$user_skip_list = sys_stat_get_user_skip_list();
 $fleet_id = 1;
 $fleets = array();
 $config_game_max_planet = $config->game_maxPlanet + 1;
@@ -299,7 +300,7 @@ debug($uni_galaxyRowPlanet['debris_will_gather_percent'], 'debris_will_gather_pe
      'USER_ID'       => $uni_galaxyRowUser['id'],
      'USER_NAME'     => render_player_nick($uni_galaxyRowUser),
      'USER_NAME_JS'  => js_safe_string(render_player_nick($uni_galaxyRowUser)),
-     'USER_RANK'     => $uni_galaxyRowUser['total_rank'],
+     'USER_RANK'     => in_array($uni_galaxyRowUser['id'], $user_skip_list) ? '-' : $uni_galaxyRowUser['total_rank'],
      'USER_BANNED'   => $uni_galaxyRowUser['banaday'],
      'USER_VACATION' => $uni_galaxyRowUser['vacation'],
      'USER_ACTIVITY' => floor(($time_now - $uni_galaxyRowUser['onlinetime'])/(60*60*24)),
@@ -354,7 +355,7 @@ foreach($cached['users'] as $PlanetUser)
       'ID'   => $PlanetUser['id'],
       'NAME' => render_player_nick($PlanetUser, true),
       'NAME_JS' => render_player_nick($PlanetUser2, true),
-      'RANK' => $PlanetUser['total_rank'],
+      'RANK' => in_array($PlanetUser['id'], $user_skip_list) ? '-' : $PlanetUser['total_rank'],
 //      'SEX'      => $PlanetUser['sex'] == 'F' ? 'female' : 'male',
 //      'BIRTHDAY' => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? 1 : 0, // date(FMT_DATE, $time_now)
       'AVATAR'   => $PlanetUser['avatar'],
