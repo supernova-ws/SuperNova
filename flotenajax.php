@@ -38,6 +38,8 @@ if(!isset($sn_data['groups']['missions'][$target_mission]['AJAX']) || !$sn_data[
 }
 
 doquery("START TRANSACTION;");
+
+$user = doquery ("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1 FOR UPDATE;", true);
 $planetrow = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['current_planet']}' LIMIT 1 FOR UPDATE;", true);
 
 $target_planet_type = sys_get_param_int('planet_type');
@@ -84,6 +86,8 @@ switch($target_mission)
 
 $options = array('target_structure' => $target_structure = sys_get_param_int('structures'));
 $cant_attack = flt_can_attack($planetrow, $target_row, $fleet_array, $target_mission, $options);
+
+
 if($cant_attack != ATTACK_ALLOWED)
 {
   die($lang['fl_attack_error'][$cant_attack]);

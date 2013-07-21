@@ -270,9 +270,20 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
 
   $travel_data = flt_travel_data($user, $planet_src, $planet_dst, $fleet, $options['fleet_speed_percent']);
 
+
   if($planet_src[$sn_data[RES_DEUTERIUM]['name']] < $fleet[RES_DEUTERIUM] + $travel_data['consumption'])
   {
     return ATTACK_NO_FUEL;
+  }
+
+  if($travel_data['consumption'] > $travel_data['capacity'])
+  {
+    return ATTACK_TOO_FAR;
+  }
+
+  if($travel_data['hold'] < 0)
+  {
+    return ATTACK_OVERLOADED;
   }
 
   $fleet_start_time = $time_now + $travel_data['duration'];
@@ -494,6 +505,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   //doquery('LOCK TABLES {{users}} READ, {{planets}} WRITE, {{fleet}} WRITE, {{aks}} WRITE, {{statpoints}} READ;');
   doquery('START TRANSACTION;');
 
+  $user = doquery ("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1 FOR UPDATE;", true);
   $from = sys_o_get_updated($user, $from['id'], $time_now);
   $from = $from['planet'];
 

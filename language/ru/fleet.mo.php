@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37a1
+* @version 37a9.11
 *
 */
 
@@ -129,6 +129,8 @@ $lang = array_merge($lang, array(
     ATTACK_RESOURCE_FORBIDDEN => 'Нельзя отправить флот с ресурсами в эту миссию',
     ATTACK_TRANSPORT_EMPTY => 'Нельзя отправить флот без ресурсов в транспортную миссию',
     ATTACK_SPIES_LONLY => 'Нельзя отправить в эту миссию флот только из шпионских зондов',
+    ATTACK_TOO_FAR => 'Ваш флот не может лететь так далеко',
+    ATTACK_OVERLOADED => 'Ваши корабли перегружены. Уменьшите загрузку трюмов или добавьте транспортных кораблей',
   ),
 
   'fl_fleet_err' => 'Ошибка!',

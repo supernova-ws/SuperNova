@@ -47,6 +47,7 @@ function sn_fleet_page3()
 
   doquery('START TRANSACTION;');
 
+  $user = doquery ("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1 FOR UPDATE;", true);
   $planetrow = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1 FOR UPDATE;", true);
 
   if ($target_mission == MT_EXPLORE) {

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36a0.25
+* @version 37a9.11
 *
 */
 
@@ -131,6 +131,8 @@ $lang = array_merge($lang, array(
     ATTACK_RESOURCE_FORBIDDEN => 'It is not allowed to send fleet with resources in this mission',
     ATTACK_TRANSPORT_EMPTY => 'It is not allowed to send empty fleet to transport mission',
     ATTACK_SPIES_LONLY => 'In this missions spies should be accompanied with other ships',
+    ATTACK_TOO_FAR => 'Your fleet cannot reach this far',
+    ATTACK_OVERLOADED => 'Your ships is overloaded. Reduce fleet cargo load or add more transports',
   ),
 
   'fl_fleet_err' => 'Error!',

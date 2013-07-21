@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version 37a5.8
+* @version 37a9.11
 *
 */
 
@@ -129,6 +129,8 @@ $lang = array_merge($lang, array(
     ATTACK_RESOURCE_FORBIDDEN => 'Resurslar ortilgan flotni bu vazifa uchun jo`natib bo`lmaydi',
     ATTACK_TRANSPORT_EMPTY => 'Flotni transport vazifasi uchun resurslarsiz jo`natib bolmaydi',
     ATTACK_SPIES_LONLY => 'Bu vazifa uchun faqat josuslar zondidagi flotni birgina o`zini yuborib bo`lmaydi',
+    ATTACK_TOO_FAR => 'Ваш флот не может лететь так далеко',
+    ATTACK_OVERLOADED => 'Ваши корабли перегружены. Уменьшите загрузку трюмов или добавьте транспортных кораблей',
   ),
 
   'fl_fleet_err' => 'Hatolik!',
