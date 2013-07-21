@@ -850,14 +850,18 @@ switch($new_version)
       "DROP FOREIGN KEY `FK_payment_user`",
     ), $update_foreigns['payment']['FK_payment_user']);
 
-    upd_alter_table('chat', array(
-      "DROP FOREIGN KEY `FK_chat_message_sender_user_id`",
-      "DROP FOREIGN KEY `FK_chat_message_sender_recipient_id`",
-    ), true);
-    upd_alter_table('chat', array(
-      "ADD CONSTRAINT `FK_chat_message_sender_user_id` FOREIGN KEY (`chat_message_sender_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
-      "ADD CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
-    ), true);
+    if($update_foreigns['chat']['FK_chat_message_sender_user_id'] != 'chat_message_sender_id,users,id;')
+    {
+      upd_alter_table('chat', array(
+        "DROP FOREIGN KEY `FK_chat_message_sender_user_id`",
+        "DROP FOREIGN KEY `FK_chat_message_sender_recipient_id`",
+      ), true);
+
+      upd_alter_table('chat', array(
+        "ADD CONSTRAINT `FK_chat_message_sender_user_id` FOREIGN KEY (`chat_message_sender_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      ), true);
+    }
 
     upd_alter_table('users', array(
       "ADD `user_time_diff` INT(11) DEFAULT NULL COMMENT 'User time difference with server time' AFTER `onlinetime`",
