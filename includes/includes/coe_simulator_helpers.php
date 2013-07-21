@@ -81,13 +81,17 @@ function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker, $playe
 
       $unit_type = $sn_data[$unit_id]['type'];
 
-      if($unit_type == UNIT_TECHNOLOGIES)
-      {
-        $combat_data[UBE_PLAYERS][$player_id][UBE_BONUSES][$ube_convert_techs[$unit_id]] += $unit_count;
-      }
-      elseif($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE)
+      if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE)
       {
         $combat_data[UBE_FLEETS][$player_id][UBE_COUNT][$unit_id] = $unit_count;
+      }
+      elseif($unit_type == UNIT_RESOURCES)
+      {
+        $combat_data[UBE_FLEETS][$player_id][UBE_RESOURCES][$unit_id] = $unit_count;
+      }
+      elseif($unit_type == UNIT_TECHNOLOGIES)
+      {
+        $combat_data[UBE_PLAYERS][$player_id][UBE_BONUSES][$ube_convert_techs[$unit_id]] += $unit_count * $sn_data[$unit_id]['bonus'] / 100;
       }
       elseif($unit_type == UNIT_GOVERNORS)
       {
@@ -95,7 +99,7 @@ function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker, $playe
         {
           foreach($ube_convert_techs as $ube_id)
           {
-            $combat_data[UBE_FLEETS][$player_id][UBE_BONUSES][$ube_id] = $unit_count;
+            $combat_data[UBE_FLEETS][$player_id][UBE_BONUSES][$ube_id] += $unit_count * $sn_data[$unit_id]['bonus'] / 100;
           }
         }
       }
@@ -105,13 +109,9 @@ function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker, $playe
         {
           foreach($ube_convert_techs as $ube_id)
           {
-            $combat_data[UBE_PLAYERS][$player_id][UBE_BONUSES][$ube_id] += $unit_count / 2;
+            $combat_data[UBE_PLAYERS][$player_id][UBE_BONUSES][$ube_id] += $unit_count * $sn_data[$unit_id]['bonus'] / 100;
           }
         }
-      }
-      elseif($unit_type == UNIT_RESOURCES)
-      {
-        $combat_data[UBE_FLEETS][$player_id][UBE_RESOURCES][$unit_id] = $unit_count;
       }
     }
   }
