@@ -5,9 +5,35 @@
 define('SN_PAYMENT_REQUEST_ERROR_DM_AMOUNT', 1);
 define('SN_PAYMENT_REQUEST_PAYLINK_UNSUPPORTED', 2);
 
-include('common.' . substr(strrchr(__FILE__, '.'), 1));
+include_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $template = gettemplate('dark_matter', true);
+
+if($payment_id = sys_get_param_id('payment_id'))
+{
+  $payment = doquery("SELECT * FROM {{payment}} WHERE `payment_id` = {$payment_id} LIMIT 1;", true);
+  if($payment && $payment['payment_user_id'] == $user['id'])
+  {
+    if($payment['payment_status'] == PAYMENT_STATUS_COMPLETE || $payment['payment_status'] == PAYMENT_STATUS_TEST)
+    {
+      $template->assign_block_vars('result', array('MESSAGE' => sprintf($lang['sys_dark_matter_purchase_result_complete'], $payment['payment_dark_matter_paid'], $payment['payment_module_name'], $payment['payment_dark_matter_gained'])));
+    }
+    if($payment['payment_status'] == PAYMENT_STATUS_NONE)
+    {
+      $template->assign_block_vars('result', array(
+        'MESSAGE' => sprintf($lang['sys_dark_matter_purchase_result_incomplete'], $payment['payment_dark_matter_paid'], $payment['payment_module_name']),
+        'STATUS' => 1,
+      ));
+    }
+    if($payment['payment_status'] == PAYMENT_STATUS_TEST)
+    {
+      $template->assign_block_vars('result', array(
+        'MESSAGE' => sprintf($lang['sys_dark_matter_purchase_result_test']),
+        'STATUS' => -1,
+      ));
+    }
+  }
+}
 
 $dm_amount_list = array(1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 500000, 1000000);
 
@@ -37,8 +63,6 @@ foreach($sn_module as $module_name => $module)
 }
 // If payment_module invalid - making it empty OR if there is only one payment_module - selecting it
 $payment_module = $payment_module_valid ? $payment_module : (count($template->_tpldata['payment_module']) == 1 ? $template->_tpldata['payment_module'][0]['ID'] : '');
-
-//debug($payment_module);
 
 if($request['dark_matter'] && $payment_module && sys_get_param_str('payment_validate'))
 {
@@ -103,5 +127,3 @@ $template->assign_vars(array(
 ));
 
 display($template, $lang['sys_dark_matter']);
-
-?>

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a9.13
+* @version 37a9.18
 *
 */
 
@@ -84,6 +84,10 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase_pay' => 'Purchase Dark Matter',
   'sys_dark_matter_purchase_reset' => 'Discard and start again',
   'sys_dark_matter_purchase_in_progress' => 'Payment in progress...',
+
+  'sys_dark_matter_purchase_result_complete' => 'You succesfully paid for %d Dark Matter via %s. You gained %s Dark Matter',
+  'sys_dark_matter_purchase_result_incomplete' => 'You payment for %d Dark Matter via %s currently in progress. If you feel it wrong please contact Administration',
+  'sys_dark_matter_purchase_result_test' => 'Really you did not gain anything! Because it was a test payment ha-ha-ha! If you feel it wrong - contact Administration',
 
 
   'pay_msg_request_user_found' => 'User found',

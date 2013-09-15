@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version #37a9.13#
+* @version #37a9.18#
 *
 */
 
@@ -82,6 +82,9 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase_reset' => 'Yangitdan boshlash',
   'sys_dark_matter_purchase_in_progress' => 'To`lov bajarilmoqda...',
 
+  'sys_dark_matter_purchase_result_complete' => 'Вы успешно заплатили за %d Тёмной Материи через сервис %s. Вам начислено %s Тёмной Материи',
+  'sys_dark_matter_purchase_result_incomplete' => 'Ваш платеж за %d Тёмной Материи через сервис %s не закончен. Если вы считаете, что произошла ошибка - свяжитесь с Администрацией сервера',
+  'sys_dark_matter_purchase_result_test' => 'На самом деле - шутка. Платеж был тестовый, поэтому ты ничего не получил ха-ха-ха! Если считаешь, что это ошибка - обратись к Администрации сервера',
 
   'pay_msg_request_user_found' => 'Foydalanuvchi topildi',
 
