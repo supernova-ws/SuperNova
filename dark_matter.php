@@ -41,6 +41,10 @@ $request = array(
   'dark_matter' => sys_get_param_float('dark_matter'),
 );
 $request['dark_matter'] = in_array($request['dark_matter'], $dm_amount_list) ? $request['dark_matter'] : 0;
+if(!$request['dark_matter'])
+{
+  unset($_POST);
+}
 
 $payment_module_valid = false;
 $payment_module = sys_get_param_str('payment_module');
