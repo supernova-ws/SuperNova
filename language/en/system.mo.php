@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a9.18
+* @version 37a9.22
 *
 */
 
@@ -84,6 +84,7 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase_pay' => 'Purchase Dark Matter',
   'sys_dark_matter_purchase_reset' => 'Discard and start again',
   'sys_dark_matter_purchase_in_progress' => 'Payment in progress...',
+  'sys_dark_matter_purchase_conversion_cost' => 'Cost of %d Dark Matter will be %s %s',
 
   'sys_dark_matter_purchase_result_complete' => 'You succesfully paid for %d Dark Matter via %s. You gained %s Dark Matter',
   'sys_dark_matter_purchase_result_incomplete' => 'You payment for %d Dark Matter via %s currently in progress. If you feel it wrong please contact Administration',
@@ -103,6 +104,7 @@ $lang = array_merge($lang, array(
 
   'pay_msg_request_dark_matter_amount_invalid' => 'Wrong Dark Matter amount',
   'pay_msg_request_paylink_unsupported' => 'This type of paylink is not supported. It\'s looks like you using outdated version of SuperNova which incompatible with selected payment module',
+  'pay_msg_request_dark_matter_config_invalid' => 'There is error in payment module configuration. Please contact server Administration',
 
   'pay_msg_module_disabled' => 'Payment module disabled',
 

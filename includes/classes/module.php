@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #37a6.0# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #37a9.22# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -231,6 +231,17 @@ abstract class sn_module_payment extends sn_module
   // Function converts money values between currencies
   function currency_convert($value, $currency_from = '', $currency_to = '')
   {
+    global $config;
+
+    if(strtolower($currency_from) != strtolower($currency_to))
+    {
+      $exchange_from = ($exchange_from = $config->__get('payment_currency_exchange_' . strtolower($currency_from))) ? $exchange_from : 1;
+      $exchange_to = ($exchange_to = $config->__get('payment_currency_exchange_' . strtolower($currency_to))) ? $exchange_to : 1;
+
+      $value = $value / $exchange_from * $exchange_to;
+      $value = round($value, $currency_to == 'DM_' ? 0 : 2);
+    }
+
     return $value;
   }
 

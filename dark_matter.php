@@ -64,13 +64,66 @@ foreach($sn_module as $module_name => $module)
 // If payment_module invalid - making it empty OR if there is only one payment_module - selecting it
 $payment_module = $payment_module_valid ? $payment_module : (count($template->_tpldata['payment_module']) == 1 ? $template->_tpldata['payment_module'][0]['ID'] : '');
 
-if($request['dark_matter'] && $payment_module && sys_get_param_str('payment_validate'))
+if($request['dark_matter'] && $payment_module)
 {
   try
   {
     // Any possible errors about generating paylink should be raised in module!
     $pay_link = $sn_module[$payment_module]->compile_request($request);
 
+    if(is_array($pay_link['RENDER']))
+    {
+      foreach($pay_link['RENDER'] as $html_data)
+      {
+        $template->assign_block_vars('render', $html_data);
+        if(isset($html_data['VALUE']) && is_array($html_data['VALUE']))
+        {
+          foreach($html_data['VALUE'] as $value_id => $value_value)
+          {
+            $template->assign_block_vars('render.value', array(
+              'FIELD' => $value_id,
+              'VALUE' => $value_value,
+            ));
+          }
+        }
+      }
+    }
+
+    if(is_array($pay_link['DATA']))
+    {
+      foreach($pay_link['DATA'] as $key => $value)
+      {
+        $template->assign_block_vars('pay_link_data', array(
+          'FIELD' => $key,
+          'VALUE' => $value,
+        ));
+      }
+    }
+
+    if(!is_string($pay_link) && isset($pay_link['METHOD']) && $pay_link['METHOD'] == 'STEP')
+    {
+/*
+      $template->assign_vars(array(
+        'ANOTHER_STEP' => $pay_link['METHOD'],
+      ));
+*/
+/*
+        if(is_string($html_data))
+        {
+          $template->assign_block_vars('render', array(
+            'TYPE' => 'text',
+            'ELEMENTS' => $html_data,
+          ));
+        }
+        elseif(is_array($html_data))
+        {
+          $template->assign_block_vars('render', array(
+            'NAME' => $html_name,
+            'TYPE' => $html_data['TYPE'],
+          ));
+        }
+*/
+    }
     if(is_string($pay_link) && strpos($pay_link, 'http') === 0)
     {
       $template->assign_vars(array(
@@ -84,14 +137,6 @@ if($request['dark_matter'] && $payment_module && sys_get_param_str('payment_vali
         'PAY_LINK' => $pay_link['URL'],
         'PAY_LINK_METHOD' => $pay_link['METHOD'],
       ));
-      
-      foreach($pay_link['DATA'] as $key => $value)
-      {
-        $template->assign_block_vars('pay_link_data', array(
-          'FIELD' => $key,
-          'VALUE' => $value,
-        ));
-      }
     }
     else
     {
@@ -119,11 +164,12 @@ lng_include('infos');
 $template->assign_vars(array(
   'URL_DARK_MATTER' => $config->url_dark_matter,
   'PAYMENT_MODULE' => $payment_module,
-  'PAYMENT_MODULE_NAME' => $payment_module,
-  'PAYMENT_MODULE_DESCRIPTION' => $payment_module,
+  'PAYMENT_MODULE_NAME' => $lang["module_{$payment_module}_name"],
+  'PAYMENT_MODULE_DESCRIPTION' => $lang["module_{$payment_module}_description"],
   'DARK_MATTER' => (float)$request['dark_matter'],
   'DARK_MATTER_TEXT' => pretty_number($request['dark_matter']),
   'UNIT_DESCRIPTION' => $lang['info'][RES_DARK_MATTER]['description'],
+  'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => $config->payment_currency_exchange_dm_,
 ));
 
 display($template, $lang['sys_dark_matter']);

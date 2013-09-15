@@ -48,17 +48,19 @@
     </tr>
     <tr class="c_j">
       <td>
-      <form action="{D_SN_ROOT_VIRTUAL}dark_matter.php" method="POST">
-          {L_sys_dark_matter_purchase_text_cost} <span class="ok">{C_payment_lot_size} {L_sys_dark_matter_sh}</span>
-          {L_sys_dark_matter_purchase_text_unit} <span class="notice">{C_payment_lot_price} {C_payment_currency_default}</span>.
+          {L_sys_dark_matter_purchase_text_cost} <span class="ok">{PAYMENT_CURRENCY_EXCHANGE_DEFAULT} {L_sys_dark_matter_sh}</span>
+          {L_sys_dark_matter_purchase_text_unit} <span class="notice">1 {C_payment_currency_default}</span>.
           {L_sys_dark_matter_purchase_text_end}
 
           <h3>{L_sys_dark_matter_purchase_step1}</h3>
 
-          <!-- IF DARK_MATTER -->
-            {L_sys_dark_matter_purchase_amount} <span class="ok">{DARK_MATTER}</span>
-            <input type="hidden" name="dark_matter" id="dark_matter_amount" value="{DARK_MATTER}">
-          <!-- ELSE -->
+          <!-- IF ! PAY_LINK -->
+            <form action="{D_SN_ROOT_VIRTUAL}dark_matter.php" method="POST">
+          <!-- ELSEIF PAY_LINK_METHOD == 'GET' || PAY_LINK_METHOD == 'POST' -->
+            <form action="{PAY_LINK}" method="{PAY_LINK_METHOD}">
+          <!-- ENDIF -->
+
+          <!-- IF ! DARK_MATTER -->
             <span class="notice">{L_sys_dark_matter_purchase_step1_text}</span><br /><br/>
             {L_sys_dark_matter_purchase_amount}
             <select name="dark_matter">
@@ -66,70 +68,89 @@
                 <option value="{dm_amount.VALUE}"<!-- IF dm_amount.VALUE == DARK_MATTER --> selected<!-- ENDIF -->>{dm_amount.VALUE}</value>
               <!-- END dm_amount -->
             </select>
-          <!-- ENDIF -->
-          <br /><br/>
+          <!-- ELSE -->
+            <input type="hidden" name="dark_matter" id="dark_matter_amount" value="{DARK_MATTER}">
+            {L_sys_dark_matter_purchase_amount} <span class="ok">{DARK_MATTER}</span><br /><br />
 
-          <!-- IF PAYMENT_MODULE -->
-            {L_sys_dark_matter_purchase_payment_selected}
-            <!-- BEGIN payment_module -->
-              <!-- IF payment_module.ID == PAYMENT_MODULE -->
-                <span class="ok">"{payment_module.NAME}"</span> <input type="hidden" name="payment_module" id="dark_matter_module" value="{payment_module.ID}">
+            <!-- IF ! PAYMENT_MODULE -->
+              {L_sys_dark_matter_purchase_select}
+              <select name="payment_module">
+                <!-- BEGIN payment_module -->
+                <option value="{payment_module.ID}">{payment_module.NAME}</option>
+                <!-- END payment_module -->
+              </select>
+            <!-- ELSE -->
+              <input type="hidden" name="payment_module" id="dark_matter_module" value="{PAYMENT_MODULE}">
+              {L_sys_dark_matter_purchase_payment_selected} <span class="ok">"{PAYMENT_MODULE_NAME}"</span><br /><br />
+
+              <!-- BEGIN pay_link_data -->
+                <input type="hidden" name="{pay_link_data.FIELD}" value="{pay_link_data.VALUE}">
+              <!-- END pay_link_data -->
+
+                  <!-- BEGIN render -->
+                    <!-- IF render.TYPE == 'select' -->
+                      <select name="{render.NAME}">
+                        <!-- BEGIN value -->
+                          <option value="{render.value.FIELD}">{render.value.VALUE}</option>
+                        <!-- END value -->
+                      </select>
+                    <!-- ELSE -->
+                      {render.VALUE}
+                    <!-- ENDIF -->
+                  <!-- END render -->
+                <!-- IF ! PAY_LINK -->
+
+                <!-- ELSE -->
+                  <h3>{L_sys_dark_matter_purchase_step2}</h3>{C_adv_conversion_code_payment}
+                  <span class="notice">{L_sys_dark_matter_purchase_step2_text}</span>
+
+                  <!-- IF PAY_LINK_METHOD == 'LINK' -->
+                    <script type="text/javascript">
+                      function make_payment_popup()
+                      {
+                        this.open = function(ob)
+                        {
+                          $(ob).hide();
+                          $('<span id="psload" class="fl">{LA_sys_dark_matter_purchase_in_progress}</span>').insertAfter(ob);
+                          var win = window.open('{PAY_LINK}', 'PayStation', 'width=850px, height=550px, scrollbars=yes, status=no');
+                          setTimeout(function ()
+                          {
+                            if(win.closed)
+                            {
+                              $('#psload').remove();
+                              $(ob).show();
+                            }
+                            else
+                            {
+                              setTimeout(arguments.callee,500);
+                            }
+                          }, 500);
+                        }
+                      }
+                      payment_popup = new make_payment_popup;
+                    </script>
+
+              <br /><br />
+                    <input class="fl" type="button" value="{L_sys_dark_matter_purchase_pay}" onclick="payment_popup.open(this);return false;">
+                  <!-- ENDIF -->
+                <!-- ENDIF -->
               <!-- ENDIF -->
-            <!-- END payment_module -->
-          <!-- ELSE -->
-            {L_sys_dark_matter_purchase_select}
-            <select name="payment_module">
-              <!-- BEGIN payment_module -->
-              <option value="{payment_module.ID}">{payment_module.NAME}</option>
-              <!-- END payment_module -->
-            </select>
           <!-- ENDIF -->
-          <br/><br/>
 
-          <!-- IF PAY_LINK -->
-            <h3>{L_sys_dark_matter_purchase_step2}</h3>{C_adv_conversion_code_payment}
-            <span class="notice">{L_sys_dark_matter_purchase_step2_text}</span><br /><br/>
 
-            <input class="fr" type="submit" value="{L_sys_dark_matter_purchase_reset}" onclick="jQuery('#dark_matter_amount').val('');jQuery('#dark_matter_module').val('');">
-      </form>
-            <!-- IF PAY_LINK_METHOD == 'LINK' -->
-              <script type="text/javascript">
-                function make_payment_popup()
-                {
-                  this.open = function(ob)
-                  {
-                    $(ob).hide();
-                    $('<span id="psload">{LA_sys_dark_matter_purchase_in_progress}</span>').insertAfter(ob);
-                    var win = window.open('{PAY_LINK}', 'PayStation', 'width=850px, height=550px, scrollbars=yes, status=no');
-                    setTimeout(function ()
-                    {
-                      if(win.closed)
-                      {
-                        $('#psload').remove();
-                        $(ob).show();
-                      }
-                      else
-                      {
-                        setTimeout(arguments.callee,500);
-                      }
-                    }, 500);
-                  }
-                }
-                payment_popup = new make_payment_popup;
-              </script>
-
-              <span class="fl"><input type="button" value="{L_sys_dark_matter_purchase_pay}" onclick="payment_popup.open(this);return false;"></span>
-            <!-- ELSEIF PAY_LINK_METHOD == 'GET' || PAY_LINK_METHOD == 'POST' -->
-              <form action="{PAY_LINK}" method="{PAY_LINK_METHOD}">
-                <!-- BEGIN pay_link_data -->
-                  <input type="hidden" name="{pay_link_data.FIELD}" value="{pay_link_data.VALUE}">
-                <!-- END pay_link_data -->
-                <span class="fl"><input type="submit" value="{L_sys_dark_matter_purchase_pay}"></span>
-              </form>
-            <!-- ENDIF -->
-          <!-- ELSE -->
-            <input type="submit" name="payment_validate" value="{L_sys_dark_matter_purchase_confirm}">
+          <!-- IF ! PAY_LINK -->
+              <br /><br />
+              <input class="fl" type="submit" value="{L_sys_dark_matter_purchase_confirm}">
+          <!-- ELSEIF PAY_LINK_METHOD == 'GET' || PAY_LINK_METHOD == 'POST' -->
+              <br /><br />
+              <input class="fl" type="submit" value="{L_sys_dark_matter_purchase_pay}">
           <!-- ENDIF -->
+                  <!-- IF PAY_LINK_METHOD != 'LINK' -->
+        </form>
+          <!-- ENDIF -->
+            <form action="{D_SN_ROOT_VIRTUAL}dark_matter.php" method="POST">
+                  <input class="fr" type="submit" value="{L_sys_dark_matter_purchase_reset}" onclick="jQuery('#dark_matter_amount').val('');jQuery('#dark_matter_module').val('');">
+        </form>
       </td>
     </tr>
   <!-- ENDIF -->

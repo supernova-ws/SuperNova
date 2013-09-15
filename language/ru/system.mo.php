@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #37a9.18#
+* @version #37a9.22#
 *
 */
 
@@ -81,6 +81,7 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase_pay' => 'Оплатить Тёмную Материю',
   'sys_dark_matter_purchase_reset' => 'Начать заново',
   'sys_dark_matter_purchase_in_progress' => 'Происходит оплата...',
+  'sys_dark_matter_purchase_conversion_cost' => 'Стоимость %d Тёмной Материи составит %s %s',
 
   'sys_dark_matter_purchase_result_complete' => 'Вы успешно заплатили за %d Тёмной Материи через сервис %s. Вам начислено %s Тёмной Материи',
   'sys_dark_matter_purchase_result_incomplete' => 'Ваш платеж за %d Тёмной Материи через сервис %s не закончен. Если вы считаете, что произошла ошибка - свяжитесь с Администрацией сервера',
@@ -99,6 +100,7 @@ $lang = array_merge($lang, array(
 
   'pay_msg_request_dark_matter_amount_invalid' => 'Неправильное количество Тёмной Материи',
   'pay_msg_request_paylink_unsupported' => 'Данный тип платежной ссылке не поддерживается. Возможно используется устаревшая версия СН, не совместимая с данным платежным модулем',
+  'pay_msg_request_dark_matter_config_invalid' => 'Ошибка в конфигурации модуля платежа. Свяжитесь с Администрацией сервера',
 
   'pay_msg_module_disabled' => 'Модуль платежа отключен',
 
