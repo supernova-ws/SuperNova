@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a9.22
+* @version 37a9.25
 *
 */
 
@@ -63,15 +63,8 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase' => 'Purchase Dark Matter',
   'sys_dark_matter_purchase_text_cost' => 'Price for',
   'sys_dark_matter_purchase_text_unit' => 'is',
-  'sys_dark_matter_purchase_text_end' => 'When you purchasing large amounts of Dark Matter you recieve bonuses:
-    <ul>
-     <li>from 100.000 DM - 10% bonus to purchased DM amount</li>
-     <li>from 200.000 DM - 20% bonus to purchased DM amount</li>
-     <li>from 300.000 DM - 30% bonus to purchased DM amount</li>
-     <li>from 400.000 DM - 40% bonus to purchased DM amount</li>
-     <li>from 500.000 DM - 50% bonus to purchased DM amount</li>
-    </ul>
-  ',
+  'sys_dark_matter_purchase_text_end' => 'When you purchasing large amounts of Dark Matter you recieve bonuses:',
+  'sys_dark_matter_purchase_text_bonus' => 'from %s DM - %d%% bonus to purchased DM amount',
   'sys_dark_matter_purchase_step1' => 'Step 1',
   'sys_dark_matter_purchase_step1_text' => 'Select amount of DM you wish to purchase, select payment system and confirm your selection',
   'sys_dark_matter_purchase_amount' => 'Dark Matter amount',

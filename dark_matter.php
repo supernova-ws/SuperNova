@@ -7,7 +7,23 @@ define('SN_PAYMENT_REQUEST_PAYLINK_UNSUPPORTED', 2);
 
 include_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+// pdump(sn_module_payment::$bonus_table);
+
 $template = gettemplate('dark_matter', true);
+if(isset(sn_module_payment::$bonus_table) && is_array(sn_module_payment::$bonus_table))
+{
+  foreach(sn_module_payment::$bonus_table as $sum => $discount)
+  {
+    if($discount)
+    {
+      $template->assign_block_vars('discount', array(
+        'SUM' => $sum,
+        'DISCOUNT' => $discount * 100,
+        'TEXT' => sprintf($lang['sys_dark_matter_purchase_text_bonus'], pretty_number($sum), $discount * 100),
+      ));
+    }
+  }
+}
 
 if($payment_id = sys_get_param_id('payment_id'))
 {
@@ -35,12 +51,13 @@ if($payment_id = sys_get_param_id('payment_id'))
   }
 }
 
-$dm_amount_list = array(1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 500000, 1000000);
+$dm_amount_list = &sn_module_payment::$bonus_table; // array(2500, 5000, 10000, 25000, 50000); // , 100000, 200000, 500000, 1000000);
+// $dm_amount_list = array(1000, 5000, 10000, 15000);
 
 $request = array(
   'dark_matter' => sys_get_param_float('dark_matter'),
 );
-$request['dark_matter'] = in_array($request['dark_matter'], $dm_amount_list) ? $request['dark_matter'] : 0;
+$request['dark_matter'] = isset($dm_amount_list[$request['dark_matter']]) ? $request['dark_matter'] : 0;
 if(!$request['dark_matter'])
 {
   unset($_POST);
@@ -156,7 +173,7 @@ if($request['dark_matter'] && $payment_module)
   }
 }
 
-foreach($dm_amount_list as $dm_amount)
+foreach($dm_amount_list as $dm_amount => $discount)
 {
   $template->assign_block_vars('dm_amount', array(
     'VALUE' => $dm_amount,

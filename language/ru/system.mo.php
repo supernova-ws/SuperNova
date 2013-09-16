@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #37a9.22#
+* @version #37a9.25#
 *
 */
 
@@ -60,15 +60,8 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase' => 'Купить Тёмную Материю',
   'sys_dark_matter_purchase_text_cost' => 'Стоимость',
   'sys_dark_matter_purchase_text_unit' => 'составляет',
-  'sys_dark_matter_purchase_text_end' => 'При оптовой покупке ТМ предоставляются бонусы:
-    <ul>
-     <li>от 100.000 ТМ - бонус 10% к количеству ТМ</li>
-     <li>от 200.000 ТМ - бонус 20% к количеству ТМ</li>
-     <li>от 300.000 ТМ - бонус 30% к количеству ТМ</li>
-     <li>от 400.000 ТМ - бонус 40% к количеству ТМ</li>
-     <li>от 500.000 ТМ - бонус 50% к количеству ТМ</li>
-    </ul>
-  ', //  Вы можете купить ТМ используя один из приведенных ниже способов оплаты.
+  'sys_dark_matter_purchase_text_end' => 'При оптовой покупке ТМ предоставляются бонусы:', //  Вы можете купить ТМ используя один из приведенных ниже способов оплаты.
+  'sys_dark_matter_purchase_text_bonus' => 'от %s ТМ - бонус %d%% к количеству ТМ',
   'sys_dark_matter_purchase_step1' => 'Шаг 1',
   'sys_dark_matter_purchase_step1_text' => 'Выберите количество ТМ, способ оплаты и подтвердите свой выбор',
   'sys_dark_matter_purchase_amount' => 'Количество Тёмной Материи',

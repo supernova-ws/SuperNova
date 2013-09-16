@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version #37a9.22#
+* @version #37a9.25#
 *
 */
 
@@ -60,15 +60,8 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase' => 'TM sotib olish',
   'sys_dark_matter_purchase_text_cost' => 'Narhi',
   'sys_dark_matter_purchase_text_unit' => 'tuzmoq',
-  'sys_dark_matter_purchase_text_end' => 'TM ni ko`p miqdorda sotib olganlarga bonus taqdim etiladi:
-    <ul>
-     <li>boshlang\'ich 100.000 TM - bonus 10% miqdorda qoshib beriladi</li>
-     <li>boshlang\'ich 200.000 ТМ - bonus 20% miqdorda qoshib beriladi</li>
-     <li>boshlang\'ich 300.000 ТМ - bonus 30% miqdorda qoshib beriladi</li>
-     <li>boshlang\'ich 400.000 ТМ - bonus 40% miqdorda qoshib beriladi</li>
-     <li>boshlang\'ich 500.000 ТМ - bonus 50% miqdorda qoshib beriladi</li>
-    </ul>
-  ', //  TM sotib olishni yo'li.
+  'sys_dark_matter_purchase_text_end' => 'TM ni ko`p miqdorda sotib olganlarga bonus taqdim etiladi:', //  TM sotib olishni yo'li.
+  'sys_dark_matter_purchase_text_bonus' => 'boshlang\'ich %s ТМ - bonus %d%% miqdorda qoshib beriladi',
   'sys_dark_matter_purchase_step1' => '1-qadam',
   'sys_dark_matter_purchase_step1_text' => 'TM miqdorini, pul to`lash yo`lini tanlang va tasdiqlang',
   'sys_dark_matter_purchase_amount' => 'TM soni',

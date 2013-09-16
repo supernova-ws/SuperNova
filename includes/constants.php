@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '36');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '37a9.23');
+define('SN_VERSION', '37a9.25');
 define('SN_RELEASE_STABLE', '36d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -201,6 +201,7 @@ define('LOG_INFO_DM_CHANGE', 102); // Изменение количества Т
 define('LOG_INFO_DB_CHANGE', 103); // Изменение структуры БД
 define('LOG_INFO_UNI_RENAME', 104); // Переименование объекта Вселенной
 define('LOG_INFO_PREMIUM_CANCEL', 105); // Пользователь отменил премиум аккаунт
+define('LOG_INFO_PAYMENT', 110); // Записи системы платежей
 define('LOG_INFO_STAT_START', 190); // Запуск обновления статистики игроков
 define('LOG_INFO_STAT_PROCESS', 191); // Сообщения системы обновления статистики
 define('LOG_INFO_STAT_FINISH', 192); // Обновление статистики игроков выполнено успешно

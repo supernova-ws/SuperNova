@@ -1123,11 +1123,12 @@ switch($new_version)
 
     upd_check_key('chat_highlight_developer', '<span class="nick_developer">$1</span>', !$config->chat_highlight_developer);
 
-    upd_check_key('payment_currency_exchange_dm_', 1000,            !$config->payment_currency_exchange_dm_);
-    upd_check_key('payment_currency_exchange_usd', 0.122699,        !$config->payment_currency_exchange_usd);
-    upd_check_key('payment_currency_exchange_wmr', 3.4127,          !$config->payment_currency_exchange_wmr);
-    upd_check_key('payment_currency_exchange_wmu', 1,               !$config->payment_currency_exchange_wmu);
-    upd_check_key('payment_currency_exchange_wmz', 0.1062326707956, !$config->payment_currency_exchange_wmz);
+    upd_check_key('payment_currency_exchange_dm_', 2500,             !$config->payment_currency_exchange_dm_ || $config->payment_currency_exchange_dm_ == 1000);
+    upd_check_key('payment_currency_exchange_usd', 0.122699,         !$config->payment_currency_exchange_usd);
+    upd_check_key('payment_currency_exchange_wme', 0.09223050247178, !$config->payment_currency_exchange_usd);
+    upd_check_key('payment_currency_exchange_wmr', 3.93,             !$config->payment_currency_exchange_wmr);
+    upd_check_key('payment_currency_exchange_wmu', 1,                !$config->payment_currency_exchange_wmu);
+    upd_check_key('payment_currency_exchange_wmz', 0.1204238921002,  !$config->payment_currency_exchange_wmz);
 
 /*
     upd_alter_table('planets', array(
