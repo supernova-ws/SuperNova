@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #37a9.25# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #37a9.29# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -225,13 +225,16 @@ abstract class sn_module_payment extends sn_module
       5000 => 0,
      10000 => 0,
      25000 => 0,
-     50000 => 0,
-    100000 => 0.05,
-    250000 => 0.1,
-    500000 => 0.2,
-   1000000 => 0.3,
-   2500000 => 0.4,
-   5000000 => 0.5,
+
+     50000 => 0.02,
+    100000 => 0.04,
+    200000 => 0.07,
+    250000 => 0.11,
+    375000 => 0.15,
+    500000 => 0.22,
+    750000 => 0.33,
+   1000000 => 0.44,
+   1250000 => 0.55,
   );
 
   // Function converts money values between currencies
