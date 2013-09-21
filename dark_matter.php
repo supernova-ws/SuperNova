@@ -66,7 +66,7 @@ if(!$request['dark_matter'])
 $payment_module_valid = false;
 $payment_module = sys_get_param_str('payment_module');
 foreach($sn_module as $module_name => $module)
-{//  continue;
+{
   if(!is_object($module) || $module->manifest['package'] != 'payment' || !$module->manifest['active'])
   {
     continue;

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a9.25
+* @version 37a9.30
 *
 */
 
@@ -78,6 +78,8 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase_reset' => 'Discard and start again',
   'sys_dark_matter_purchase_in_progress' => 'Payment in progress...',
   'sys_dark_matter_purchase_conversion_cost' => 'Cost of %d Dark Matter will be %s %s',
+
+  'sys_dark_matter_purchase_exchange' => 'Internal currency exchange (without comission of payment system(s))',
 
   'sys_dark_matter_purchase_result_complete' => 'You succesfully paid for %d Dark Matter via %s. You gained %s Dark Matter',
   'sys_dark_matter_purchase_result_incomplete' => 'You payment for %d Dark Matter via %s currently in progress. If you feel it wrong please contact Administration',

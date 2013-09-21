@@ -49,7 +49,16 @@
     <tr class="c_j">
       <td>
           {L_sys_dark_matter_purchase_text_cost} <span class="ok">{PAYMENT_CURRENCY_EXCHANGE_DEFAULT} {L_sys_dark_matter_sh}</span>
-          {L_sys_dark_matter_purchase_text_unit} <span class="notice">1 {C_payment_currency_default}</span>
+          {L_sys_dark_matter_purchase_text_unit} <span class="notice">1 {C_payment_currency_default}</span><br />
+          <!-- IF .exchange -->
+          {L_sys_dark_matter_purchase_exchange}
+          <ul>
+          <!-- BEGIN exchange -->
+            <li>{discount.TEXT}</li>
+          <!-- END exchange -->
+          </ul>
+          <!-- ENDIF -->
+
           <!-- IF .discount -->
           {L_sys_dark_matter_purchase_text_end}
           <ul>

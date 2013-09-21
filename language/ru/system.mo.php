@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #37a9.25#
+* @version #37a9.30#
 *
 */
 
@@ -75,6 +75,8 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase_reset' => 'Начать заново',
   'sys_dark_matter_purchase_in_progress' => 'Происходит оплата...',
   'sys_dark_matter_purchase_conversion_cost' => 'Стоимость %d Тёмной Материи составит %s %s',
+
+  'sys_dark_matter_purchase_exchange' => 'Внутренние курсы валют (без учета комиссий посредников и/или платежной системы)',
 
   'sys_dark_matter_purchase_result_complete' => 'Вы успешно заплатили за %d Тёмной Материи через сервис %s. Вам начислено %s Тёмной Материи',
   'sys_dark_matter_purchase_result_incomplete' => 'Ваш платеж за %d Тёмной Материи через сервис %s не закончен. Если вы считаете, что произошла ошибка - свяжитесь с Администрацией сервера',

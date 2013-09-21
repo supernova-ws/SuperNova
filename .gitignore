@@ -1,5 +1,6 @@
 # Ignore config.php in any directory
 config.php
+*config.php
 
 # Ignore forums
 /phpBB3/
