@@ -126,5 +126,3 @@ $template->assign_vars(array(
 ));
 
 display(parsetemplate($template), $lang['tech'][UNIT_ARTIFACTS]);
-
-?>

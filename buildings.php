@@ -47,5 +47,3 @@ switch ($mode)
     eco_build(QUE_STRUCTURES, $user, $planetrow, $que);
   break;
 }
-
-?>

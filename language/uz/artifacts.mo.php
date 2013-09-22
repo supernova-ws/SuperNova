@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version 37a5.8
+* @version 37a10.0
 *
 */
 
@@ -41,6 +41,16 @@ $lang = array_merge($lang, array(
   'art_rcd_err_no_sense'=> 'АКК aniqlandi, binolarning hech biri takomillashtirilmaydi va yaratishdan to`xtatildi',
   'art_rcd_err_que'     => 'АКК faqat sayyorada yaratiladi, qayerdaki mavjud joyda. Bekor qiling sayyoradagi barcha qurulishlarni va yana bir bor AKK ni boshqatdan yaratib ko`ring',
 
+  'art_heurestic_chip_ok' => 'Время исследования технологии "%s" (уровень %d) уменьшено на %d секунд',
+  'art_heurestic_chip_subj' => 'Ускорение времени исследования',
+  'art_heurestic_chip_no_research' => 'В настоящее время не ведется никаких исследований',
+
+  'art_nano_builder_ok' => 'Время %s здания "%s" (уровень %d) на планете %s %s уменьшено на %d секунд',
+  'art_nano_builder_build' => 'строительства',
+  'art_nano_builder_destroy' => 'сноса',
+  'art_nano_builder_subj' => 'Ускорение строительной операции',
+  'art_nano_builder_no_que' => 'В настоящее время на планете не производится строительных операций',
+
   'art_err_no_artifact' => 'Sizda kerakli artefaktlat mavjud emas',
 
   'art_page_hint'       => '<ul>
@@ -51,6 +61,3 @@ $lang = array_merge($lang, array(
     Eng noyob va qimmat Artefaktlar butun quyosh tizimi, galaktika va koinotni boshqarishi mumkin!</li>
   </ul>',
 ));
-
-?>
-

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 36a0.18
+* @version 37a10.0
 *
 */
 
@@ -154,11 +154,13 @@ $lang = array_merge($lang, array(
     RES_ENERGY => 'Энергия',
     RES_DARK_MATTER => 'Тёмная Материя',
 
-    UNIT_ARTIFACTS => 'Артефакты',
-    ART_LHC => 'Большой Адронный Коллайдер',
-    ART_RCD_SMALL  => 'Малый АКК',
-    ART_RCD_MEDIUM => 'Средний АКК',
-    ART_RCD_LARGE  => 'Большой АКК',
+    UNIT_ARTIFACTS     => 'Артефакты',
+    ART_LHC            => 'Большой Адронный Коллайдер',
+    ART_RCD_SMALL      => 'Малый АКК',
+    ART_RCD_MEDIUM     => 'Средний АКК',
+    ART_RCD_LARGE      => 'Большой АКК',
+    ART_HEURISTIC_CHIP => 'Эвристический чип',
+    ART_NANO_BUILDER   => 'Наностроитель',
 
     UNIT_PLANS => 'Чертежи',
     UNIT_PLAN_STRUC_MINE_FUSION => 'Чертеж "Термоядерная электростанция"',

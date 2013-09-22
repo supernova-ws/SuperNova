@@ -9,7 +9,7 @@ function art_use(&$user, &$planetrow, $unit_id)
     return;
   }
 
-  doquery("START TRANSACTION;");
+  sn_db_transaction_start();
   $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", '', true);
 
   $artifact_list = sys_unit_str2arr($user['player_artifact_list']);
@@ -18,7 +18,7 @@ function art_use(&$user, &$planetrow, $unit_id)
     switch($unit_id)
     {
       case ART_LHC:
-        $has_moon = doquery("SELECT `id` FROM `{{planets}}` WHERE parent_planet = {$planetrow['id']} LIMIT 1;", '', true);
+        $has_moon = doquery("SELECT `id` FROM `{{planets}}` WHERE parent_planet = {$planetrow['id']} LIMIT 1;", true);
         if($planetrow['planet_type'] == PT_PLANET && !$has_moon['id'])
         {
           $artifact_list[$unit_id]--;
@@ -44,7 +44,7 @@ function art_use(&$user, &$planetrow, $unit_id)
       case ART_RCD_SMALL:
       case ART_RCD_MEDIUM:
       case ART_RCD_LARGE:
-        $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planetrow['id']} LIMIT 1 FOR UPDATE;", '', true);
+        $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planetrow['id']} LIMIT 1 FOR UPDATE;", true);
         if($planetrow['planet_type'] != PT_PLANET)
         {
           $message = $lang['art_rcd_err_moon'];
@@ -79,6 +79,48 @@ function art_use(&$user, &$planetrow, $unit_id)
         msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_rcd_subj'], $lang['art_rcd_subj'], $message);
       break;
 
+      case ART_HEURISTIC_CHIP:
+        que_get_que($global_que, QUE_RESEARCH, $user['id'], $planetrow['id'], true);
+        if(isset($global_que[QUE_RESEARCH][0][0]['que_time_left']) && $global_que[QUE_RESEARCH][0][0]['que_time_left'] > 0)
+        {
+          $old_time = $global_que[QUE_RESEARCH][0][0]['que_time_left'];
+          $global_que[QUE_RESEARCH][0][0]['que_time_left'] = max(0, $global_que[QUE_RESEARCH][0][0]['que_time_left'] - PERIOD_HOUR);
+          $artifact_list[$unit_id]--;
+          doquery("UPDATE {{que}} SET `que_time_left` = {$global_que[QUE_RESEARCH][0][0]['que_time_left']} WHERE `que_id` = {$global_que[QUE_RESEARCH][0][0]['que_id']} LIMIT 1;");
+          $message = sprintf($lang['art_heurestic_chip_ok'], $lang['tech'][$global_que[QUE_RESEARCH][0][0]['que_unit_id']], $global_que[QUE_RESEARCH][0][0]['que_unit_level'], $old_time - $global_que[QUE_RESEARCH][0][0]['que_time_left']);
+          msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_heurestic_chip_subj'], $lang['art_heurestic_chip_subj'], $message);
+        }
+        else
+        {
+          $message = $lang['art_heurestic_chip_no_research'];
+        }
+      break;
+
+      case ART_NANO_BUILDER:
+        $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planetrow['id']} LIMIT 1 FOR UPDATE;", true);
+        $que = eco_que_process($user, $planetrow, 0);
+        $que_item = &$que['que'][$planetrow['id']][0];
+        if(isset($que_item['TIME']) && $que_item['TIME'] > 0)
+        {
+          $old_time = $que_item['TIME'];
+          $que_item['TIME'] = max(0, $que_item['TIME'] - PERIOD_HOUR);
+          $artifact_list[$unit_id]--;
+          $que_item['STRING'] = "{$que_item['ID']},{$que_item['AMOUNT']},{$que_item['TIME']},{$que_item['MODE']},{$que_item['QUE']};";
+          $query_string = '';
+          foreach($que['que'][$planetrow['id']] as $value)
+          {
+            $query_string .= $value['STRING'];
+          }
+          doquery("UPDATE {{planets}} SET `que` = '{$query_string}' WHERE `id` = {$planetrow['id']} LIMIT 1;");
+          $message = sprintf($lang['art_nano_builder_ok'], $que_item['MODE'] == BUILD_CREATE ? $lang['art_nano_builder_build'] : $lang['art_nano_builder_destroy'], $lang['tech'][$que_item['ID']], $que_item['AMOUNT'], $planetrow['name'], uni_render_coordinates($planetrow), $old_time - $global_que[QUE_RESEARCH][0][0]['que_time_left']);
+          msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_nano_builder_subj'], $lang['art_nano_builder_subj'], $message);
+        }
+        else
+        {
+          $message = $lang['art_nano_builder_no_que'];
+        }
+      break;
+
     }
     $artifact_list = sys_unit_arr2str($artifact_list);
     if($artifact_list != $user['player_artifact_list'])
@@ -91,7 +133,7 @@ function art_use(&$user, &$planetrow, $unit_id)
     $message = $lang['art_err_no_artifact'];
   }
 
-  doquery("COMMIT;");
+  sn_db_transaction_commit();
   message($message, "{$lang['tech'][UNIT_ARTIFACTS]} - {$lang['tech'][$unit_id]}", 'artifacts.' . PHP_EX, 10);
 }
 

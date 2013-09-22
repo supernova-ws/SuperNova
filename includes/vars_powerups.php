@@ -555,7 +555,26 @@ $sn_data += array(
       STRUC_FACTORY_NANO => 1,
     ),
   ),
-
+  ART_HEURISTIC_CHIP => array(
+    'name' => 'art_heuristic_chip',
+    'type' => UNIT_ARTIFACTS,
+    'location' => LOC_USER,
+    'cost' => array(
+      RES_DARK_MATTER => 20000,
+      'factor' => 1,
+    ),
+    'bonus_type' => BONUS_ABILITY,
+  ),
+  ART_NANO_BUILDER => array(
+    'name' => 'art_nano_builder',
+    'type' => UNIT_ARTIFACTS,
+    'location' => LOC_USER,
+    'cost' => array(
+      RES_DARK_MATTER => 5000,
+      'factor' => 1,
+    ),
+    'bonus_type' => BONUS_ABILITY,
+  ),
 
   UNIT_PLAN_STRUC_MINE_FUSION => array(
     'name' => 'UNIT_PLAN_STRUC_MINE_FUSION',

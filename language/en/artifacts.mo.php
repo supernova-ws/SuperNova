@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 37a10.0
 *
 */
 
@@ -41,6 +41,16 @@ $lang = array_merge($lang, array(
   'art_rcd_err_no_sense'=> 'RCD detected that there will be no improvement to current buildings and aborted deployment',
   'art_rcd_err_que'     => 'RCD can not be deployed on planet where building ongoing. Cancel all construction tasks and try to deploy RCD again',
 
+  'art_heurestic_chip_ok' => 'Decreased research time for %s level %d down to %d seconds',
+  'art_heurestic_chip_subj' => 'Research speed up',
+  'art_heurestic_chip_no_research' => 'There is no research currently ongoing',
+
+  'art_nano_builder_ok' => '%s time of "%s" level %d on planet %s %s decreased down to %d seconds',
+  'art_nano_builder_build' => 'Building',
+  'art_nano_builder_destroy' => 'Destruction',
+  'art_nano_builder_subj' => 'Building operation speed up',
+  'art_nano_builder_no_que' => 'There is no construction operation performed on planet',
+
   'art_err_no_artifact' => 'You did not have this artifact',
 
   'art_page_hint'       => '<ul>
@@ -51,5 +61,3 @@ $lang = array_merge($lang, array(
     Rarest and powerfullest Artifacts extends their effect to whole solar system, galaxy or even Universe!</li>
   </ul>',
 ));
-
-?>

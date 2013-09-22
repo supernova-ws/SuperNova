@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36a0.18
+* @version 37a10.0
 *
 */
 
@@ -160,6 +160,8 @@ $lang = array_merge($lang, array(
     ART_RCD_SMALL => 'Small RCD',
     ART_RCD_MEDIUM => 'Medium RCD',
     ART_RCD_LARGE => 'Large RCD',
+    ART_HEURISTIC_CHIP => 'Heuristic chip',
+    ART_NANO_BUILDER   => 'Nanobuilder',
 
     UNIT_PLANS => 'Schematics',
     UNIT_PLAN_STRUC_MINE_FUSION => 'Schematic "Thermonuclear plant"',

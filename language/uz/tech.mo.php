@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version 37a5.8
+* @version 37a10.0
 *
 */
 
@@ -159,6 +159,8 @@ $lang = array_merge($lang, array(
     ART_RCD_SMALL  => 'Kichik АКК',
     ART_RCD_MEDIUM => 'Katta bo`lmagan АКК',
     ART_RCD_LARGE  => 'Katta АКК',
+    ART_HEURISTIC_CHIP => 'Эвристический чип',
+    ART_NANO_BUILDER   => 'Наностроитель',
 
     UNIT_PLANS => 'Chizmalar',
     UNIT_PLAN_STRUC_MINE_FUSION => '"Termoyadro elektrostansiyasi" ning chizmasi',
