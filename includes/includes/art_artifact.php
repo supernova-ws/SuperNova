@@ -99,7 +99,7 @@ function art_use(&$user, &$planetrow, $unit_id)
       case ART_NANO_BUILDER:
         $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planetrow['id']} LIMIT 1 FOR UPDATE;", true);
         $que = eco_que_process($user, $planetrow, 0);
-        $que_item = &$que['que'][$planetrow['id']][0];
+        $que_item = &$que['que'][QUE_STRUCTURES][0];
         if(isset($que_item['TIME']) && $que_item['TIME'] > 0)
         {
           $old_time = $que_item['TIME'];
@@ -107,12 +107,12 @@ function art_use(&$user, &$planetrow, $unit_id)
           $artifact_list[$unit_id]--;
           $que_item['STRING'] = "{$que_item['ID']},{$que_item['AMOUNT']},{$que_item['TIME']},{$que_item['MODE']},{$que_item['QUE']};";
           $query_string = '';
-          foreach($que['que'][$planetrow['id']] as $value)
+          foreach($que['que'][QUE_STRUCTURES] as $value)
           {
             $query_string .= $value['STRING'];
           }
           doquery("UPDATE {{planets}} SET `que` = '{$query_string}' WHERE `id` = {$planetrow['id']} LIMIT 1;");
-          $message = sprintf($lang['art_nano_builder_ok'], $que_item['MODE'] == BUILD_CREATE ? $lang['art_nano_builder_build'] : $lang['art_nano_builder_destroy'], $lang['tech'][$que_item['ID']], $que_item['AMOUNT'], $planetrow['name'], uni_render_coordinates($planetrow), $old_time - $global_que[QUE_RESEARCH][0][0]['que_time_left']);
+          $message = sprintf($lang['art_nano_builder_ok'], $que_item['MODE'] == BUILD_CREATE ? $lang['art_nano_builder_build'] : $lang['art_nano_builder_destroy'], $lang['tech'][$que_item['ID']], $que_item['AMOUNT'], $planetrow['name'], uni_render_coordinates($planetrow), $old_time - $que_item['TIME']);
           msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_nano_builder_subj'], $lang['art_nano_builder_subj'], $message);
         }
         else
@@ -134,7 +134,5 @@ function art_use(&$user, &$planetrow, $unit_id)
   }
 
   sn_db_transaction_commit();
-  message($message, "{$lang['tech'][UNIT_ARTIFACTS]} - {$lang['tech'][$unit_id]}", 'artifacts.' . PHP_EX, 10);
+  message($message, "{$lang['tech'][UNIT_ARTIFACTS]} - {$lang['tech'][$unit_id]}", 'artifacts.' . PHP_EX . '#' . $unit_id, 5); // <br /><a href=\"artifacts." . PHP_EX . "#{$unit_id}><\""
 }
-
-?>

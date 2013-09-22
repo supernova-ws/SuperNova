@@ -63,7 +63,7 @@ function eco_que_process($user, &$planet, $time_left)
       {
         continue;
       }
-//pdump($que_item_string);
+
       $que_item = explode(',', $que_item_string);
 
       // Skipping invalid negative values for unit_amount

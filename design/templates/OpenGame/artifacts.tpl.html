@@ -22,7 +22,7 @@
   <!-- BEGIN artifact -->
     <tr>
       <th width=120>
-        {artifact.NAME}<br>
+        <a name="{artifact.ID}">{artifact.NAME}</a><br>
         <img src="{dpath}gebaeude/{artifact.ID}.jpg" align="top" width="120" height="120" /><br>
         <!-- IF artifact.LEVEL -->
           <div><a href="artifacts.php?action={D_ACTION_USE}&unit_id={artifact.ID}"><span class="warning">{L_art_use}</span></a></div>

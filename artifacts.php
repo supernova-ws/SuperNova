@@ -54,7 +54,7 @@ if($action && in_array($unit_id, $sn_data['groups']['artifacts']))
             doquery( "UPDATE {{users}} SET `player_artifact_list` = '{$artifact_list}' WHERE `id` = '{$user['id']}' LIMIT 1;");
             rpg_points_change($user['id'], RPG_ARTIFACT, -($darkmater_cost), "Spent for artifact {$lang['tech'][$unit_id]} ID {$unit_id}");
             doquery("COMMIT;");
-            header("Location: artifacts.php?goto={$unit_id}");
+            header("Location: artifacts.php#{$unit_id}");
             ob_end_flush();
             die();
           }
@@ -72,7 +72,7 @@ if($action && in_array($unit_id, $sn_data['groups']['artifacts']))
 
     case ACTION_USE:
       art_use($user, $planetrow, $unit_id);
-      header("Location: artifacts.php?goto={$unit_id}");
+      header("Location: artifacts.php#{$unit_id}");
       ob_end_flush();
       die();
     break;

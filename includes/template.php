@@ -33,12 +33,16 @@ function AdminMessage ($mes, $title = 'Error', $dest = "", $time = "3") {
 //
 function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header = true)
 {
+  global $lang;
+
   $parse['title'] = $title;
   $parse['mes']   = $mes;
+  $parse['DEST']  = $dest;
+  $parse['L_sys_continue']  = $lang['sys_continue'];
 
   $page .= parsetemplate(gettemplate('message_body'), $parse);
 
-  display ($page, $title, $show_header, (($dest != "") ? "<meta http-equiv=\"refresh\" content=\"{$time};url={$dest}\">" : ""), false);
+  display($page, $title, $show_header, (($dest != "") ? "<meta http-equiv=\"refresh\" content=\"{$time};url={$dest}\">" : ""), false);
 }
 
 function tpl_render_menu()

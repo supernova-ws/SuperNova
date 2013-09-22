@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a9.30
+* @version 37a10.3
 *
 */
 
@@ -815,6 +815,6 @@ $lang = array_merge($lang, array(
 
   'sys_fleet_composition' => 'Fleet composition',
 
-));
+  'sys_continue' => 'Continue',
 
-?>
+));
