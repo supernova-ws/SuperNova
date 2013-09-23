@@ -1133,6 +1133,7 @@ switch($new_version)
     if(!$update_tables['player_name_history'])
     {
       upd_check_key('game_user_changename_cost', 100000, !$config->game_user_changename_cost);
+      upd_check_key('game_user_changename', SERVER_PLAYER_NAME_CHANGE_PAY, $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_PAY);
 
       upd_alter_table('users', array(
         "CHANGE COLUMN `username` `username` VARCHAR(32) NOT NULL DEFAULT '' COMMENT 'Player name'",
