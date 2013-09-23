@@ -48,14 +48,15 @@ if($searchtext && $type)
     case "playername":
     default:
       $sql = "SELECT
-          u.id as uid, u.username, u.ally_id, u.id_planet, u.total_points, u.total_rank,
+          pn.player_name, u.id as uid, u.username, u.ally_id, u.id_planet, u.total_points, u.total_rank,
           p.galaxy, p.system, p.planet, p.planet_type, p.name as planet_name,
           u.ally_tag, u.ally_name
-        FROM 
-          {{users}} AS u
+        FROM
+          {{player_name_history}} AS pn
+          JOIN {{users}} AS u ON u.id = pn.player_id
           LEFT JOIN {{planets}} AS p ON p.id_owner = u.id AND p.id=u.id_planet
         WHERE
-          username LIKE '%{$searchtext}%' AND u.user_as_ally IS NULL
+          player_name LIKE '%{$searchtext}%' AND u.user_as_ally IS NULL
         ORDER BY
           ally_tag, username, planet_name
         LIMIT 30;";
@@ -70,6 +71,7 @@ if($searchtext && $type)
       $template->assign_block_vars('search_result', array(
         'PLAYER_ID' => $row['uid'],
         'PLAYER_NAME' => htmlentities($row['username'], ENT_COMPAT, 'UTF-8'),
+        'PLAYER_NAME_OLD' => htmlentities($row['player_name'], ENT_COMPAT, 'UTF-8'),
         'PLAYER_RANK' => pretty_number($row['total_rank']),
         'PLANET_NAME' => htmlentities($row['planet_name'], ENT_COMPAT, 'UTF-8'),
         'PLANET_GALAXY' => $row['galaxy'],

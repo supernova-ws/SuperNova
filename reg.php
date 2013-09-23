@@ -41,7 +41,7 @@ if ($_POST['submit'])
   }
   else
   {
-    $db_check = doquery("SELECT `username` FROM {{users}} WHERE `username` = '{$username_safe}' LIMIT 1;", '', true);
+    $db_check = doquery("SELECT `player_name` FROM {{player_name_history}} WHERE `player_name` = '{$username_safe}' LIMIT 1;", '', true);
     if ($db_check['username']) {
       $errorlist .= $lang['error_userexist'];
       $errors++;
@@ -103,6 +103,7 @@ if ($_POST['submit'])
         `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^1|opt_email_mnl_joueur^1|opt_email_mnl_alliance^1|opt_mnl_attaque^1|opt_email_mnl_attaque^1|opt_mnl_exploit^1|opt_email_mnl_exploit^1|opt_mnl_transport^1|opt_email_mnl_transport^1|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^1|opt_mnl_buildlist^1|opt_email_mnl_buildlist^1|';");
 
     $user = doquery("SELECT `id` FROM {{users}} WHERE `username` = '{$username_safe}' LIMIT 1;", true);
+    doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = \"{$username_safe}\"");
 
     if($id_ref)
     {

@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '36');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '37a10.3');
+define('SN_VERSION', '37a11.0');
 define('SN_RELEASE_STABLE', '36d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -173,6 +173,7 @@ define('RPG_TELEPORT', 19);
 define('RPG_CAPITAL', 20);
 define('RPG_RACE', 21);
 define('RPG_CAPTAIN', 22);
+define('RPG_NAME_CHANGE', 23);
 
 
 
@@ -743,3 +744,8 @@ define('SQL_OP_DELETE', -1);
 define('SQL_OP_UPDATE', 0);
 define('SQL_OP_INSERT', 1);
 define('SQL_OP_ALTER', 3);
+
+
+define('SERVER_PLAYER_NAME_CHANGE_NONE', 0);
+define('SERVER_PLAYER_NAME_CHANGE_FREE', 1);
+define('SERVER_PLAYER_NAME_CHANGE_PAY', 2);

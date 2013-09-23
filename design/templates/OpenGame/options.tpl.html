@@ -27,7 +27,18 @@
       </tr>
       <tr>
         <th>{L_username}</th>
-        <th width=330>{opt_usern_data}</th>
+        <th width=330>
+          <!-- IF SERVER_NAME_CHANGE -->
+            {L_username_old} <span class="ok">{opt_usern_data}</span><br />
+            {L_username_new} <input name="username" value="{opt_usern_data}" maxlength="32" size="32" <!-- IF ! SERVER_NAME_CHANGE_ENABLED -->disabled<!-- ENDIF -->><br />
+            <input type="checkbox" name="username_confirm" id="username_confirm" value="1" <!-- IF ! SERVER_NAME_CHANGE_ENABLED -->disabled<!-- ENDIF -->> <label for="username_confirm">{L_username_change_confirm}</label>
+            <!-- IF SERVER_NAME_CHANGE_PAY -->
+              {L_username_change_confirm_payed} {DARK_MATTER} {L_sys_dark_matter_sh}
+            <!-- ENDIF -->
+          <!-- ELSE -->
+            {opt_usern_data}
+          <!-- ENDIF -->
+        </th>
       </tr>
       <tr>
         <th>{L_lastpassword}</th>

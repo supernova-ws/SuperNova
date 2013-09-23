@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37a1
+* @version 37a11.0
 *
 */
 
@@ -33,6 +33,14 @@ $lang = array_merge($lang, array(
   'opt_messages' => 'Автоматические уведомления',
   'opt_msg_saved' => 'Настройки успешно изменены',
   'opt_msg_name_changed' => 'Имя пользователя успешно изменено.<br /><a href="login.php" target="_top">Назад</a>',
+  'opt_msg_name_change_err_used_name' => 'Это имя принадлежит другому пользователю',
+  'opt_msg_name_change_err_no_dm' => 'Не хватает ТМ для смены имени',
+
+  'username_old' => 'Старое имя',
+  'username_new' => 'Новое имя',
+  'username_change_confirm' => 'Сменить имя',
+  'username_change_confirm_payed' => 'за',
+
   'opt_msg_pass_changed' => 'Пароль успешно изменен.<br /><a href="login.php" target="_top">Назад</a>',
   'opt_err_pass_wrong' => 'Неправильный текущий пароль. Пароль не был изменен',
   'opt_err_pass_unmatched' => 'Введенный пароль не совпадает с подтвержденим пароля. Пароль не был изменен',
@@ -132,5 +140,3 @@ $lang = array_merge($lang, array(
     'opt_int_overview_planet_rows_hint' => 'Игнорируется, если указано количество колонок',
   ),
 ));
-
-?>

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version #35c9#
+* @version #37a11.0#
 *
 */
 
@@ -40,7 +40,11 @@ $lang = array_merge($lang, array(
   'srch_rank' => 'Rank',
   'srch_action_pm' => 'Write PM',
   'srch_action_buddy' => 'Request friendship',
-  'srch_page_hint' => '<li>Only first 30 records appears</li>',
-));
 
-?>
+  'srch_aka' => 'AKA',
+
+  'srch_page_hint' => '<li>Only first 30 records appears</li>
+  <li>If player ever changed his name and one of his old names is a subject of search request then there will be additional line for old name.
+  In this case current name will be shown and old name also will apear - bracketed and highlighted by <span class="warning">color</span></li>',
+
+));

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a1
+* @version 37a11.0
 *
 */
 
@@ -38,6 +38,15 @@ $lang = array_merge($lang, array(
   'opt_msg_pass_changed' => 'Password sucessfully changed.<br /><a href="login.php" target="_top">Back</a>',
   'opt_err_pass_wrong' => 'Wrong old password. Password was not changed',
   'opt_err_pass_unmatched' => 'New password confirmation is not identical to new password. Password was not changed',
+
+  'opt_msg_name_change_err_used_name' => 'Someone else already owns this name',
+  'opt_msg_name_change_err_no_dm' => 'There is not enough DM to change name',
+
+  'username_old' => 'Old name',
+  'username_new' => 'New name',
+  'username_change_confirm' => 'Change name',
+  'username_change_confirm_payed' => 'for',
+
   'changue_pass' => 'Change password',
   'Download' => 'Download',
   'userdata' => 'Information',
@@ -133,5 +142,3 @@ $lang = array_merge($lang, array(
     'opt_int_overview_planet_rows_hint' => 'Ignored if there is column count',
   ),
 ));
-
-?>

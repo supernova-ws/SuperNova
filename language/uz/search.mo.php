@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version #37a5.8#
+* @version #37a11.0#
 *
 */
 
@@ -38,7 +38,10 @@ $lang = array_merge($lang, array(
   'srch_rank' => 'O`rni',
   'srch_action_pm' => 'Xat yozish',
   'srch_action_buddy' => 'Do`stlar safiga qo`shish',
-  'srch_page_hint' => '<li>Faqat birinchi 30 talikni ko`rsatadi</li>',
-));
 
-?>
+  'srch_aka' => 'AKA',
+
+  'srch_page_hint' => '<li>Faqat birinchi 30 talikni ko`rsatadi</li>
+  <li>Если игрок менял своё имя и одно из его старых имен подходит под критерии поиска, то оно будет так же показано отдельной строкой.
+  В этом случае в качестве имени будет выступать текущее имя игрока, а в скобках <span class="warning">цветом</span> будет указано старое имя</li>',
+));

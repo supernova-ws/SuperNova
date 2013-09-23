@@ -1130,6 +1130,30 @@ switch($new_version)
     upd_check_key('payment_currency_exchange_wmu', 1,                !$config->payment_currency_exchange_wmu);
     upd_check_key('payment_currency_exchange_wmz', 0.1204238921002,  !$config->payment_currency_exchange_wmz);
 
+    if(!$update_tables['player_name_history'])
+    {
+      upd_check_key('game_user_changename_cost', 100000, !$config->game_user_changename_cost);
+
+      upd_alter_table('users', array(
+        "CHANGE COLUMN `username` `username` VARCHAR(32) NOT NULL DEFAULT '' COMMENT 'Player name'",
+      ));
+
+      upd_create_table('player_name_history',
+        "(
+          `player_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Player ID',
+          `player_name` VARCHAR(32) NOT NULL COMMENT 'Historical player name',
+          `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'When player changed name',
+
+          PRIMARY KEY (`player_name`),
+          KEY `I_player_name_history_id_name` (`player_id`, `player_name`),
+
+          CONSTRAINT `FK_player_name_history_id` FOREIGN KEY (`player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+        )"
+      );
+
+      upd_do_query("REPLACE INTO {{player_name_history}} (`player_id`, `player_name`) SELECT `id`, `username` FROM {{users}} WHERE `user_as_ally` IS NULL;");
+    }
+
 /*
     upd_alter_table('planets', array(
       "ADD CONSTRAINT `FK_planet_owner` FOREIGN KEY (`id_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE NULL ON UPDATE CASCADE",

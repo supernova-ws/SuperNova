@@ -57,6 +57,9 @@
           <!-- IF ! STATS_HIDE_PM_LINK --><a href="messages.php?mode=write&id={search_result.PLAYER_ID}"><img src="{dpath}img/m.gif" alt="{L_srch_action_pm}" title="{L_srch_action_pm}" /></a><!-- ENDIF -->
           <a href="buddy.php?request_user_id={search_result.PLAYER_ID}" alt="{L_srch_action_buddy}"><img src="{dpath}img/b.gif" alt="{L_srch_action_buddy}" title="{L_srch_action_buddy}" border="0" /></a>
           {search_result.PLAYER_NAME}
+          <!-- IF search_result.PLAYER_NAME != search_result.PLAYER_NAME_OLD -->
+            ({L_srch_aka} <span class="warning">{search_result.PLAYER_NAME_OLD}</span>)
+          <!-- ENDIF -->
         </td>
         <td>
           {search_result.PLANET_TYPE}

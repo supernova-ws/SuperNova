@@ -61,6 +61,7 @@ INSERT INTO `sn_config` VALUES ('game_noob_factor', '5');
 INSERT INTO `sn_config` VALUES ('game_noob_points', '5000');
 INSERT INTO `sn_config` VALUES ('game_speed', '1');
 INSERT INTO `sn_config` VALUES ('game_user_changename', '0');
+INSERT INTO `sn_config` VALUES ('game_user_changename_cost', 100000);
 INSERT INTO `sn_config` VALUES ('initial_fields', '163');
 INSERT INTO `sn_config` VALUES ('int_banner_background', 'design/images/banner.png');
 INSERT INTO `sn_config` VALUES ('int_banner_fontInfo', 'terminator.ttf');

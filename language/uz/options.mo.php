@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version 37a5.8
+* @version 37a11.0
 *
 */
 
@@ -36,6 +36,15 @@ $lang = array_merge($lang, array(
   'opt_msg_pass_changed' => 'Maxfiy raqam muvaffaqiyatli o`zgartirildi.<br /><a href="login.php" target="_top">Ortga</a>',
   'opt_err_pass_wrong' => 'Noto`g`ri maxfiy raqam. Maxfiy raqam o`zgartirilmagan',
   'opt_err_pass_unmatched' => 'Kirgizilgan maxfiy raqam amaldagi maxfiy raqamga mos kelmadi. Maxfiy raqam o`zgartirilmagan',
+
+  'opt_msg_name_change_err_used_name' => 'Это имя принадлежит другому пользователю',
+  'opt_msg_name_change_err_no_dm' => 'Не хватает ТМ для смены имени',
+
+  'username_old' => 'Старое имя',
+  'username_new' => 'Новое имя',
+  'username_change_confirm' => 'Сменить имя',
+  'username_change_confirm_payed' => 'за',
+
   'changue_pass' => 'Maxfiy raqamni o`zgartirish',
   'Download' => 'Yuklash',
   'userdata' => 'Ma`lumot',
@@ -130,5 +139,3 @@ $lang = array_merge($lang, array(
     'opt_int_overview_planet_rows_hint' => 'Rad etilgan',
   ),
 ));
-
-?>

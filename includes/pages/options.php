@@ -99,21 +99,50 @@ function sn_options_model()
     }
     $options = sys_user_options_pack($user);
 
-    $username = sys_get_param_str_raw('username');
-    if($username && $user['username'] != $username && $config->game_user_changename)
+    $username = substr(sys_get_param_str_raw('username'), 0, 32);
+    $username_safe = mysql_real_escape_string($username);
+    if($username && $user['username'] != $username && $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE && sys_get_param_int('username_confirm'))
     {
-      $user['username'] = $username;
-      $username = mysql_real_escape_string($username);
-      // TODO: Change cookie to not force user relogin
-      setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-      $template_result['.']['result'][] = array(
-        'STATUS'  => ERR_NONE,
-        'MESSAGE' => $lang['opt_msg_name_changed']
-      );
-    }
-    else
-    {
-      $username = mysql_real_escape_string($user['username']);
+    // проверка на корректность
+      sn_db_transaction_start();
+      $name_check = doquery("SELECT * FROM {{player_name_history}} WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1;", true);
+      if(!$name_check || $name_check['player_id'] == $user['id'])
+      {
+        $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
+        switch($config->game_user_changename)
+        {
+          case SERVER_PLAYER_NAME_CHANGE_PAY:
+            if(mrc_get_level($user, $planetrow, RES_DARK_MATTER) < $config->game_user_changename_cost)
+            {
+              $template_result['.']['result'][] = array(
+                'STATUS'  => ERR_ERROR,
+                'MESSAGE' => $lang['opt_msg_name_change_err_no_dm'],
+              );
+              break;
+            }
+            rpg_points_change($user['id'], RPG_NAME_CHANGE, -$config->game_user_changename_cost, sprintf('Пользователь ID %d сменил имя с "%s" на "%s"', $user['id'], $user['username'], $username));
+
+          case SERVER_PLAYER_NAME_CHANGE_FREE:
+            doquery("UPDATE {{users}} SET `username` = \"{$username_safe}\" WHERE `id` = {$user['id']}");
+            doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = \"{$username_safe}\"");
+            // TODO: Change cookie to not force user relogin
+            setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+            $template_result['.']['result'][] = array(
+              'STATUS'  => ERR_NONE,
+              'MESSAGE' => $lang['opt_msg_name_changed']
+            );
+            $user['username'] = $username;
+          break;
+        }
+      }
+      else
+      {
+        $template_result['.']['result'][] = array(
+          'STATUS'  => ERR_ERROR,
+          'MESSAGE' => $lang['opt_msg_name_change_err_used_name'],
+        );
+      }
+      sn_db_transaction_commit();
     }
 
     $new_password = sys_get_param('newpass1');
@@ -227,8 +256,8 @@ function sn_options_model()
 
     $user_birthday .= sys_get_param_int('opt_time_diff_clear') ? ', `user_time_diff` = NULL' : '';
 
+//      `username` = '{$username_safe}',
     doquery("UPDATE {{users}} SET
-      `username` = '{$username}',
       `password` = '{$user['password']}',
       `email` = '{$user['email']}',
       `lang` = '{$user['lang']}',
@@ -320,7 +349,7 @@ function sn_options_view($template = null)
     'USER_ID'        => $user['id'],
 
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
-    'opt_usern_data' => $user['username'],
+    'opt_usern_data' => htmlspecialchars($user['username']),
     'opt_mail1_data' => $user['email'],
     'opt_mail2_data' => $user['email_2'],
     'OPT_DPATH_DATA' => $user['dpath'],
@@ -345,6 +374,12 @@ function sn_options_view($template = null)
 
     'USER_VACATION_DISABLE' => $config->user_vacation_disable,
     'TIME_NOW' => $time_now,
+
+    'SERVER_NAME_CHANGE' => $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE,
+    'SERVER_NAME_CHANGE_PAY' => $config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_PAY,
+    'SERVER_NAME_CHANGE_ENABLED' => $config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_FREE || ($config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_PAY && mrc_get_level($user, $planetrow, RES_DARK_MATTER) >= $config->game_user_changename_cost),
+
+    'DARK_MATTER' => pretty_number($config->game_user_changename_cost, true, mrc_get_level($user, $planetrow, RES_DARK_MATTER)),
 
     'PAGE_HEADER' => $lang['opt_header'],
   ));
