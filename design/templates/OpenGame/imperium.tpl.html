@@ -4,6 +4,7 @@
 <!-- DEFINE $CELL_PLANET = '60px' -->
 
 <h2>{L_imp_overview}</h2>
+<form method="post">
 <table border="0" cellpadding="0" cellspacing="1" align=center><tbody>
   <tr><th class="c_l" colspan="{amount}">{L_sys_planets}</th></tr>
 
@@ -85,7 +86,8 @@
         <!-- DEFINE $FIELD_COLOR = 'positive' -->
       <!-- ENDIF -->
       <td class="c_c">
-        <a href="resources.php?cp={planet.ID}">{planet.METAL_CUR}<br><span class="{$FIELD_COLOR}">{planet.METAL_PROD}</span></a>
+        <a href="resources.php?cp={planet.ID}">{planet.METAL_CUR}</a><br />
+        <span class="{$FIELD_COLOR}">{planet.METAL_PROD}</span>
       </td>
     <!-- END planet -->
   </tr>
@@ -102,7 +104,7 @@
         <!-- DEFINE $FIELD_COLOR = 'positive' -->
       <!-- ENDIF -->
       <td class="c_c">
-        <a href="resources.php?cp={planet.ID}">{planet.CRYSTAL_CUR}<br><span class="{$FIELD_COLOR}">{planet.CRYSTAL_PROD}</span></a>
+        <a href="resources.php?cp={planet.ID}">{planet.CRYSTAL_CUR}</a><br /><span class="{$FIELD_COLOR}">{planet.CRYSTAL_PROD}</span>
       </td>
     <!-- END planet -->
   </tr>
@@ -119,13 +121,18 @@
         <!-- DEFINE $FIELD_COLOR = 'positive' -->
       <!-- ENDIF -->
       <td class="c_c">
-        <a href="resources.php?cp={planet.ID}">{planet.DEUTERIUM_CUR}<br /><span class="{$FIELD_COLOR}">{planet.DEUTERIUM_PROD}</span></a>
+        <a href="resources.php?cp={planet.ID}">{planet.DEUTERIUM_CUR}</a><br /><span class="{$FIELD_COLOR}">{planet.DEUTERIUM_PROD}</span>
       </td>
     <!-- END planet -->
   </tr>
   <tr>
     <th width="{$CELL_HEADER}">{L_sys_energy}<br>{L_imp_production}</th>
-    <!-- BEGIN planet --><td class="c_c"><a href="resources.php?cp={planet.ID}">{planet.ENERGY_CUR}<br />{planet.ENERGY_MAX}</a></td><!-- END planet -->
+    <!-- BEGIN planet -->
+    <td class="c_c">
+      <a href="resources.php?cp={planet.ID}">{planet.ENERGY_CUR}</a><br />
+      {planet.ENERGY_MAX}
+    </td>
+    <!-- END planet -->
   </tr>
 
   <!-- BEGIN prods -->
@@ -133,7 +140,7 @@
     <!-- IF prods.MODE -->
     <td class="c_c" width="{$CELL_HEADER}">{prods.NAME}</td>
     <!-- ELSE -->
-    <th width="{$CELL_HEADER}" class="c_l" colspan="{amount}">{prods.NAME}</th>
+    <th width="{$CELL_HEADER}" class="c_l" colspan="{amount}">{prods.NAME}<input type="submit" name="save_production" value="{L_sys_save}" style="float: right;"></th>
     <!-- ENDIF -->
 
     <!-- BEGIN planet -->
@@ -142,7 +149,7 @@
       <!-- ELSE -->
         <!-- DEFINE $FIELD_URL = 'buildings.php?cp={prods.planet.ID}&mode={prods.MODE}' -->
       <!-- ENDIF -->
-      <th class="empire_cell" onclick="document.location='{$FIELD_URL}';">
+      <th class="empire_cell">
         <!-- IF prods.planet.LEVEL_PLUS_GREEN > 0 -->
           <!-- DEFINE $PLUS_CLASS = 'positive' -->
         <!-- ELSEIF prods.planet.LEVEL_PLUS_GREEN < 0 -->
@@ -161,12 +168,42 @@
           <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
         <!-- ENDIF -->
 
-        <div class="empire_cell_wrapper">
+        <div class="<!-- IF prods.planet.PERCENT != -1 -->empire_cell_wrapper_double_height<!-- ELSE -->empire_cell_wrapper<!-- ENDIF -->">
           <!-- IF prods.planet.PERCENT --><span style="width: {prods.planet.PERCENT}%;" class="empire_cell_filler {$FIELD_COLOR}"></span><!-- ENDIF -->
-          <span class="empire_cell_number">{prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><font color="yellow">{prods.planet.LEVEL_PLUS_YELLOW}</font><!-- ENDIF --></span>
+
+
+
+          <span class="empire_cell_number"><span onclick="document.location='{$FIELD_URL}';">{prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><font color="yellow">{prods.planet.LEVEL_PLUS_YELLOW}</font><!-- ENDIF --></span>
+          <!-- IF prods.planet.PERCENT >= 0 -->
+            <br />
+          <select name="percent[{prods.ID}][{prods.planet.ID}]" id="percent_{prods.ID}_{prods.planet.ID}">
+            <!-- IF prods.planet.ID == 0 -->
+            <option>-</option>
+            <!-- ENDIF -->
+
+            <!-- BEGIN !percent -->
+            <option value="{percent.PERCENT}"<!-- IF prods.planet.PERCENT === percent.PERCENT --> selected<!-- ENDIF -->>{percent.PERCENT} %</option>
+            <!-- END !percent -->
+          </select>
+
+          <!-- IF prods.planet.ID == 0 -->
+            <script type="text/javascript">
+              jQuery("select[name='percent[{prods.ID}][{prods.planet.ID}]']").change(function(){
+                if(jQuery(this).val() != '-')
+                {
+                  jQuery("select[name^='percent[{prods.ID}][']").val(jQuery(this).val());
+                }
+              });
+            </script>
+          <!-- ENDIF -->
+
+          <!-- ENDIF -->
+          </span>
+
         </div>
       </th>
     <!-- END planet -->
   </tr>
   <!-- END prods -->
 </tbody></table>
+</form>

@@ -291,6 +291,13 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
   height: 13px;
 }
 
+.empire_cell_wrapper_double_height
+{
+  position: relative;
+  width: 100%;
+  height: 32px;
+}
+
 .empire_cell_filler
 {
   position: absolute;

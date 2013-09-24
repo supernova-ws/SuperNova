@@ -31,7 +31,7 @@ function int_calc_storage_bar($resource_id)
   $resource_name = &$sn_data[$resource_id]['name'];
 
   $totalProduction      = $caps_real['total'][$resource_id];
-  $storage_fill         = floor($planetrow[$resource_name] / $caps_real['total_storage'][$resource_id] * 100);
+  $storage_fill         = $caps_real['total_storage'][$resource_id] ? floor($planetrow[$resource_name] / $caps_real['total_storage'][$resource_id] * 100) : 0;
 
   $template->assign_block_vars('resources', array(
     'NAME'        => $lang["sys_$resource_name"],

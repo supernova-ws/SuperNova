@@ -21,16 +21,50 @@ function sn_imperium_view($template = null)
   $ques = array();
 
   //$planet_row_list = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
+
+  if(sys_get_param('save_production'))
+  {
+    $production = sys_get_param('percent');
+    if(is_array($production) && !empty($production))
+    {
+      sn_db_transaction_start();
+      $query = array();
+      $planet_row_list = SortUserPlanets($user, false, '*');
+      while($planet = mysql_fetch_assoc($planet_row_list))
+      {
+        foreach($sn_data['groups']['factories'] as $factory_unit_id)
+        {
+          if(isset($production[$factory_unit_id][$planet['id']]) && ($actual_porcent = intval($production[$factory_unit_id][$planet['id']] / 10)) >=0 && $actual_porcent <= 10 &&  $actual_porcent != $planet[$unit_db_name = $sn_data[$factory_unit_id]['name'] . '_porcent'])
+          {
+            $query[$planet['id']][] = "{$unit_db_name} = {$actual_porcent}";
+          }
+        }
+      }
+      foreach($query as $planet_id => $query_data)
+      {
+        doquery("UPDATE {{planets}} SET " . implode(',', $query_data) . " WHERE `id` = {$planet_id};");
+      }
+      sn_db_transaction_commit();
+    }
+  }
+
+  sn_db_transaction_start();
   $planet_row_list = SortUserPlanets($user);
   while ($planet = mysql_fetch_assoc($planet_row_list))
   {
-    $global_data = sys_o_get_updated($user, $planet['id'], $time_now, true);
+    $global_data = sys_o_get_updated($user, $planet['id'], $time_now);
     $planets[$planet['id']] = $global_data['planet'];
     $ques[$planet['id']] = $global_data['que'];
   }
+  sn_db_transaction_commit();
 
   $template = gettemplate('imperium', $template);
   $template->assign_var('amount', count($planets) + 2);
+
+  for($i = 100; $i >= 0; $i -= 10)
+  {
+    $template->assign_block_vars('percent', array('PERCENT' => $i));
+  }
 
   $fleet_id = 1;
   $fleets = array();
@@ -64,7 +98,6 @@ function sn_imperium_view($template = null)
       'DEUTERIUM_CUR'     => pretty_number($planet['deuterium'], true, $planet['caps']['total_storage'][RES_DEUTERIUM]),
       'DEUTERIUM_PROD'    => pretty_number($planet['caps']['total'][RES_DEUTERIUM]),
 
-//      'ENERGY_CUR'        => pretty_number($planet['caps']['total'][RES_ENERGY], true, true),
       'ENERGY_CUR'        => pretty_number($planet['caps'][RES_ENERGY][BUILD_CREATE] - $planet['caps'][RES_ENERGY][BUILD_DESTROY], true, true),
       'ENERGY_MAX'        => pretty_number($planet['caps'][RES_ENERGY][BUILD_CREATE]),
 
@@ -114,20 +147,14 @@ function sn_imperium_view($template = null)
     {
       $unit_count = 0;
       $block_vars = array();
+      $unit_is_factory = in_array($unit_id, $sn_data['groups']['factories']);
       foreach($planets as $planet)
       {
         $level_plus['LEVEL_PLUS_YELLOW'] = 0;
         $level_plus['LEVEL_PLUS_GREEN'] = 0;
         $unit_db_name = $sn_data[$unit_id]['name'];
 
-        if(in_array($unit_id, $sn_data['groups']['factories']))
-        {
-          $level_plus['PERCENT'] = $planet[$unit_db_name] ? $planet["{$sn_data[$unit_id]['name']}_porcent"] * 10 : -1;
-        }
-        else
-        {
-          $level_plus['PERCENT'] = -1;
-        }
+        $level_plus['PERCENT'] = $unit_is_factory ? ($planet[$unit_db_name] ? $planet["{$sn_data[$unit_id]['name']}_porcent"] * 10 : -1) : -1;
         switch($mode)
         {
           case 'structures':
@@ -177,19 +204,21 @@ function sn_imperium_view($template = null)
         {
           $template->assign_block_vars('prods.planet', $block_var);
         }
-
         $unit_green = $total['units'][$unit_id]['LEVEL_PLUS_GREEN'];
         $unit_yellow = $total['units'][$unit_id]['LEVEL_PLUS_YELLOW'];
         $template->assign_block_vars('prods.planet', array(
+          'ID' => 0,
           'LEVEL' => $unit_count,
           'LEVEL_PLUS_GREEN' => $unit_green == 0 ? '' : ($unit_green > 0 ? "+{$unit_green}" : $unit_green),
           'LEVEL_PLUS_YELLOW' => $unit_yellow == 0 ? '' : ($unit_yellow > 0 ? "+{$unit_yellow}" : $unit_yellow),
+          'PERCENT' => $unit_is_factory ? '' : -1,
         ));
       }
     }
   }
 
   $template->assign_block_vars('planet', array_merge(array(
+    'ID'         => 0,
     'NAME'       => $lang['sys_total'],
 
     'FIELDS_CUR' => $total['fields'],
