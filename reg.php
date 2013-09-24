@@ -41,7 +41,7 @@ if ($_POST['submit'])
   }
   else
   {
-    $db_check = doquery("SELECT `id` FROM {{player_name_history}} WHERE `player_name` = '{$username_safe}' LIMIT 1;", true);
+    $db_check = doquery("SELECT `player_id` FROM {{player_name_history}} WHERE `player_name` = '{$username_safe}' LIMIT 1;", true);
     if($db_check) {
       $errorlist .= $lang['error_userexist'];
       $errors++;
