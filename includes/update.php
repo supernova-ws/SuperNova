@@ -56,7 +56,14 @@ $upd_log = '';
 $new_version = floatval($config->db_version);
 upd_check_key('upd_lock_time', 60, !isset($config->upd_lock_time));
 
-upd_log_message('Update starting. Loading table info...');
+upd_log_message('Update started. Disabling server');
+
+$old_server_status = $config->game_disable;
+$old_server_reason = $config->game_disable_reason;
+$config->db_saveItem('game_disable', 1);
+$config->db_saveItem('game_disable_reason', 'Server is updating. Please wait');
+
+upd_log_message('Server disabled. Loading table info...');
 $update_tables  = array();
 $update_indexes = array();
 $query = upd_do_query('SHOW TABLES;');
@@ -1198,3 +1205,7 @@ if($user['authlevel'] >= 3)
 
 unset($sn_cache->tables);
 sys_refresh_tablelist($config->db_prefix);
+
+upd_log_message('Restoring server status');
+$config->db_saveItem('game_disable', $old_server_status);
+$config->db_saveItem('game_disable_reason', $old_server_reason);
