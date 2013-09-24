@@ -1137,10 +1137,9 @@ switch($new_version)
     upd_check_key('payment_currency_exchange_wmu', 1,                !$config->payment_currency_exchange_wmu);
     upd_check_key('payment_currency_exchange_wmz', 0.1204238921002,  !$config->payment_currency_exchange_wmz);
 
+    upd_drop_table('player_name_history');
 
-    upd_do_query("DROP TABLE IF EXISTS {$config->db_prefix}player_name_history;");
-
-//    if(!$update_tables['player_name_history'])
+    if(!$update_tables['player_name_history'])
     {
       upd_check_key('game_user_changename_cost', 100000, !$config->game_user_changename_cost);
       upd_check_key('game_user_changename', SERVER_PLAYER_NAME_CHANGE_PAY, $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_PAY);
