@@ -150,6 +150,7 @@ function sn_imperium_view($template = null)
       $unit_is_factory = in_array($unit_id, $sn_data['groups']['factories']);
       foreach($planets as $planet)
       {
+        $level_plus['FACTORY'] = $unit_is_factory;
         $level_plus['LEVEL_PLUS_YELLOW'] = 0;
         $level_plus['LEVEL_PLUS_GREEN'] = 0;
         $unit_db_name = $sn_data[$unit_id]['name'];
@@ -212,6 +213,7 @@ function sn_imperium_view($template = null)
           'LEVEL_PLUS_GREEN' => $unit_green == 0 ? '' : ($unit_green > 0 ? "+{$unit_green}" : $unit_green),
           'LEVEL_PLUS_YELLOW' => $unit_yellow == 0 ? '' : ($unit_yellow > 0 ? "+{$unit_yellow}" : $unit_yellow),
           'PERCENT' => $unit_is_factory ? '' : -1,
+          'FACTORY' => $unit_is_factory,
         ));
       }
     }

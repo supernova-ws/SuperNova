@@ -168,13 +168,13 @@
           <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
         <!-- ENDIF -->
 
-        <div class="<!-- IF prods.planet.PERCENT != -1 -->empire_cell_wrapper_double_height<!-- ELSE -->empire_cell_wrapper<!-- ENDIF -->">
+        <div class="<!-- IF prods.planet.FACTORY && prods.planet.PERCENT != -1 -->empire_cell_wrapper_double_height<!-- ELSE -->empire_cell_wrapper<!-- ENDIF -->">
           <!-- IF prods.planet.PERCENT --><span style="width: {prods.planet.PERCENT}%;" class="empire_cell_filler {$FIELD_COLOR}"></span><!-- ENDIF -->
 
 
 
           <span class="empire_cell_number"><span onclick="document.location='{$FIELD_URL}';">{prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><font color="yellow">{prods.planet.LEVEL_PLUS_YELLOW}</font><!-- ENDIF --></span>
-          <!-- IF prods.planet.PERCENT >= 0 -->
+          <!-- IF prods.planet.FACTORY && prods.planet.PERCENT >= 0 -->
             <br />
           <select name="percent[{prods.ID}][{prods.planet.ID}]" id="percent_{prods.ID}_{prods.planet.ID}">
             <!-- IF prods.planet.ID == 0 -->
@@ -186,7 +186,7 @@
             <!-- END !percent -->
           </select>
 
-          <!-- IF prods.planet.ID == 0 -->
+          <!-- IF prods.planet.FACTORY && prods.planet.ID == 0 -->
             <script type="text/javascript">
               jQuery("select[name='percent[{prods.ID}][{prods.planet.ID}]']").change(function(){
                 if(jQuery(this).val() != '-')
