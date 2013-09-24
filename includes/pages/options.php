@@ -105,7 +105,7 @@ function sn_options_model()
     {
     // проверка на корректность
       sn_db_transaction_start();
-      $name_check = doquery("SELECT * FROM {{player_name_history}} WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1;", true);
+      $name_check = doquery("SELECT * FROM {{player_name_history}} WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
       if(!$name_check || $name_check['player_id'] == $user['id'])
       {
         $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);

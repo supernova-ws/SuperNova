@@ -1137,7 +1137,10 @@ switch($new_version)
     upd_check_key('payment_currency_exchange_wmu', 1,                !$config->payment_currency_exchange_wmu);
     upd_check_key('payment_currency_exchange_wmz', 0.1204238921002,  !$config->payment_currency_exchange_wmz);
 
-    if(!$update_tables['player_name_history'])
+
+    upd_do_query("DROP TABLE IF EXISTS {$config->db_prefix}player_name_history;");
+
+//    if(!$update_tables['player_name_history'])
     {
       upd_check_key('game_user_changename_cost', 100000, !$config->game_user_changename_cost);
       upd_check_key('game_user_changename', SERVER_PLAYER_NAME_CHANGE_PAY, $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_PAY);
@@ -1156,7 +1159,7 @@ switch($new_version)
           KEY `I_player_name_history_id_name` (`player_id`, `player_name`),
 
           CONSTRAINT `FK_player_name_history_id` FOREIGN KEY (`player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
-        )"
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
 
       upd_do_query("REPLACE INTO {{player_name_history}} (`player_id`, `player_name`) SELECT `id`, `username` FROM {{users}} WHERE `user_as_ally` IS NULL;");

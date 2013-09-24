@@ -41,8 +41,8 @@ if ($_POST['submit'])
   }
   else
   {
-    $db_check = doquery("SELECT `player_name` FROM {{player_name_history}} WHERE `player_name` = '{$username_safe}' LIMIT 1;", '', true);
-    if ($db_check['username']) {
+    $db_check = doquery("SELECT `id` FROM {{player_name_history}} WHERE `player_name` = '{$username_safe}' LIMIT 1;", true);
+    if($db_check) {
       $errorlist .= $lang['error_userexist'];
       $errors++;
     }
@@ -61,8 +61,8 @@ if ($_POST['submit'])
   }
   else
   {
-    $db_check = doquery("SELECT `email` FROM {{users}} WHERE `email` = '{$email}' LIMIT 1;", '', true);
-    if ($db_check['email'])
+    $db_check = doquery("SELECT `id` FROM {{users}} WHERE `email` = '{$email}' OR `email_2` = '{$email}' LIMIT 1;", true);
+    if($db_check)
     {
       $errorlist .= $lang['error_emailexist'];
       $errors++;
