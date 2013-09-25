@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version 37a10.0
+* @version 37a13.0
 *
 */
 
@@ -172,8 +172,8 @@ $lang = array_merge($lang, array(
 
     UNIT_PREMIUM => 'Premium',
     UNIT_CAPTAIN => 'Kapitan',
+
+    UNIT_PLANET_DENSITY => 'Плотность',
   ),
 
 ));
-
-?>

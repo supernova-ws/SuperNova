@@ -128,7 +128,14 @@
         </tr>
         <tr>
           <th colspan="2">{L_Diameter}&nbsp;{planet_diameter}&nbsp;{L_km}</th>
-          <th colspan="2">{L_Temperature}&nbsp;{planet_temp_min}&deg;C&nbsp;/&nbsp;{planet_temp_max}&deg;C</th>
+          <th colspan="2">
+            <div class="icons icon-info" style="display: inline-block;" onclick="document.location='infos.php?gid={D_UNIT_PLANET_DENSITY}'"></div>
+            {L_density}&nbsp;{planet_density}&nbsp;{L_density_units}
+
+          </th>
+        </tr>
+        <tr>
+          <th colspan="4">{L_Temperature}&nbsp;({L_min_avg_max})&nbsp;{planet_temp_min}&deg;C&nbsp;/&nbsp;{planet_temp_avg}&deg;C&nbsp;/&nbsp;{planet_temp_max}&deg;C</th>
         </tr>
 
         </tr>

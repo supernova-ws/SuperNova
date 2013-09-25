@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37a6.5
+* @version 37a13.0
 *
 */
 
@@ -41,10 +41,13 @@ $lang = array_merge($lang, array(
   'Events' => 'События',
   'Free' => 'нет заданий',
   'Diameter' => 'Диаметр',
+  'density' => 'Плотность',
+  'density_units' => 'кг/м&sup3;',
   'fields' => 'Сектора',
   'Developed_fields' => 'Занято секторов',
   'max_eveloped_fields' => 'Максимальное количество секторов',
   'Temperature' => 'Температура',
+  'min_avg_max' => 'мин/ср/макс',
   'approx' => 'приблизительно',
   'to' => 'to',
   'Centigrade' => 'C',

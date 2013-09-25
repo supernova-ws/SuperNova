@@ -8,10 +8,11 @@
  */
 
 function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
-  global $config, $user;
+  global $config;
 
   //$ClassicBase           = 163;
-  if (!$HomeWorld) {
+  if(!$HomeWorld)
+  {
     if(mt_rand(0,100) >= 60){
       $Average          = array ( 64, 68, 73,173,167,155,144,150,159,101, 98,105,110, 84,101);
       $SixtyMin          = array ( 39, 53, 34, 83, 84, 82,116,123,129, 62, 81, 85, 60, 42, 54);
@@ -34,7 +35,9 @@ function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
       $MaxSize          = 330;
       $PlanetFields      = mt_rand($MinSize, $MaxSize);
     }
-  } else {
+  }
+  else
+  {
     $PlanetFields     = $config->initial_fields;
   }
 //  $SettingSize          = $config->initial_fields;
@@ -49,9 +52,129 @@ function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
 }
 
 function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetName = '', $HomeWorld = false) {
-  global $lang, $config;
+  global $lang, $config, $sn_data;
 
-  // Avant tout, on verifie s'il existe deja une planete a cet endroit
+/*
+ Типы планет по плотности (г/см^3) - добыча при средней температуре:
+1. <2 - Лёд (метановый, водный, водородный итд) + Газ (местами водород). Металл 0 Кристалл -- Дейтерий++
+2. 2-3.5 Силикат (кремний) + Водяной лёд + Газ (водород, метан). Метал --. Кристалл норма. Дейтерий +
+3. 3.5-5 - Камень. Металл - Кристалл+ Дейтерий норма
+4. 5-6 - Руда. Металл норма. Кристалл норма. Дейтерий норма
+5. 6-7 - Металл. Металл +. Кристалл -. Дейтерий -
+6. >7 - тяжелый металл. Металл ++ Кристалл -- Дейтерий --
+
+sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
+
+1-2-3 0..100
+4-5-6 -25..75
+7-8-9 -50..50
+10-11-12 -75..25
+13-14-15 -100..10
+16+ -120..10
+
+
+Типы планеты по средней температуре:
+1. Замороженная - меньше -183 градусов Цельсия. Метановый лёд
+2. Холодная - от -183 до -161 градусов. Жидкий метан, водный лёд
+3. Ледяная - от -161 до -20. Газообразный метан, водный лёд
+4. Земного типа - от -20 до +40 градусов
+5. Горячая - от +40 до +80 градусов
+6. Инферно - выше +80 градусов
+
+
+ */
+
+
+  /*
+  $density = array(0,0,0,0,0,0,0,);
+
+  for($i = 0;$i<10000;$i++)
+  {
+    $q = sn_rand_gauss_range(850, 9250, true, 3);
+    if($q < 2000)
+    {
+      $density[0]++;
+    }
+    elseif($q < 3250)
+    {
+      $density[1]++;
+    }
+    elseif($q < 4500)
+    {
+      $density[2]++;
+    }
+    elseif($q < 5750)
+    {
+      $density[3]++;
+    }
+    elseif($q < 7000)
+    {
+      $density[4]++;
+    }
+    elseif($q < 8250)
+    {
+      $density[5]++;
+    }
+    else
+    {
+      $density[6]++;
+    }
+  //  pdump($q);
+  }
+
+  foreach($density as $key => $value)
+  {
+    echo $key,' ', $value, ' ',  str_repeat('*', $value/30), '<br />';
+  0. 0.75-2 - Лёд (метановый, водный, водородный итд) + Газ (местами водород).    Металл  25%  Кристалл  25%  Дейтерий 175%  225%+
+  1. 2-3.25 Силикат (кремний) + Водяной лёд + Газ (водород, метан).               Метал   25%  Кристалл 150%  Дейтерий  75%  250%+
+  2. 3.25-4.5 - Камень.                                                           Металл  50%  Кристалл 125%  Дейтерий 100%  275%+
+  3. 4.5-5.75 - Стандарт                                                          Металл 100%. Кристалл 100%  Дейтерий 100%  300%+
+  4. 5.25-6.50 - Руда                                                             Металл 125%  Кристалл  50%  Дейтерий 100%  275%+
+  5  6.50-7.75   Металл                                                           Металл 150%  Кристалл  25%  Дейтерий  75%  250%+
+  6. >7.75-9 - тяжелый металл.                                                    Металл 175%  Кристалл  25%  Дейтерий  25%  225%+
+
+  Лёд
+  Силикат
+  Камень
+  Стандарт
+  Руда
+  Металл
+  Тяжмет
+
+
+  }
+
+  /*
+  */
+  /*
+  $planet_density = array(
+    2000 => array(RES_METAL => 0.25, RES_CRYSTAL => 0.25, RES_DEUTERIUM => 1.75),
+    3250 => array(RES_METAL => 0.25, RES_CRYSTAL => 1.50, RES_DEUTERIUM => 0.75),
+    4500 => array(RES_METAL => 0.50, RES_CRYSTAL => 1.25, RES_DEUTERIUM => 1.00),
+    5750 => array(RES_METAL => 1.00, RES_CRYSTAL => 1.00, RES_DEUTERIUM => 1.00),
+    7000 => array(RES_METAL => 1.25, RES_CRYSTAL => 0.50, RES_DEUTERIUM => 1.00),
+    8250 => array(RES_METAL => 1.50, RES_CRYSTAL => 0.25, RES_DEUTERIUM => 0.75),
+    9250 => array(RES_METAL => 1.75, RES_CRYSTAL => 0.25, RES_DEUTERIUM => 0.25),
+  );
+  $planet_density = array(
+     850 => array(RES_METAL => 0.10, RES_CRYSTAL => 0.10, RES_DEUTERIUM => 1.30),
+    2000 => array(RES_METAL => 0.30, RES_CRYSTAL => 0.20, RES_DEUTERIUM => 1.20),  // Лёд
+    3250 => array(RES_METAL => 0.40, RES_CRYSTAL => 1.40, RES_DEUTERIUM => 0.90),  // Силикат
+    4500 => array(RES_METAL => 0.80, RES_CRYSTAL => 1.25, RES_DEUTERIUM => 0.80),  // Камень
+    5750 => array(RES_METAL => 1.00, RES_CRYSTAL => 1.00, RES_DEUTERIUM => 1.00),  // Норма
+    7000 => array(RES_METAL => 2.00, RES_CRYSTAL => 0.75, RES_DEUTERIUM => 0.75),  // Руда
+    8250 => array(RES_METAL => 3.00, RES_CRYSTAL => 0.50, RES_DEUTERIUM => 0.50),  // Металл
+    9250 => array(RES_METAL => 4.00, RES_CRYSTAL => 0.25, RES_DEUTERIUM => 0.25),  // Тяжмет
+  );
+  */
+  $planet_density = &$sn_data['groups']['planet_density'];
+  $density_min = reset($planet_density);
+  $density_min = $density_min[UNIT_PLANET_DENSITY];
+  $density_max = end($planet_density);
+  $density_max = $density_max[UNIT_PLANET_DENSITY];
+  $density = sn_rand_gauss_range($density_min, $density_max, true, 3);
+
+    // Avant tout, on verifie s'il existe deja une planete a cet endroit
   $QrySelectPlanet  = "SELECT `id` ";
   $QrySelectPlanet .= "FROM `{{planets}}` ";
   $QrySelectPlanet .= "WHERE ";
@@ -68,9 +191,6 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetN
     $planet['metal']             = BUILD_METAL;
     $planet['crystal']           = BUILD_CRISTAL;
     $planet['deuterium']         = BUILD_DEUTERIUM;
-    $planet['metal_perhour']     = $config->metal_basic_income;
-    $planet['crystal_perhour']   = $config->crystal_basic_income;
-    $planet['deuterium_perhour'] = $config->deuterium_basic_income;
     $planet['metal_max']         = BASE_STORAGE_SIZE;
     $planet['crystal_max']       = BASE_STORAGE_SIZE;
     $planet['deuterium_max']     = BASE_STORAGE_SIZE;
@@ -119,7 +239,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetN
       $PlanetType         = array('dschjungel', 'gas', 'normaltemp', 'trocken', 'wasser', 'wuesten', 'eis');
       $PlanetClass        = array('planet');
       $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '00',);
-      $planet['temp_min'] = rand(-120, 10);
+      $planet['temp_min'] = rand(-140, 10);
       $planet['temp_max'] = $planet['temp_min'] + 40;
     }
 
@@ -127,7 +247,23 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetN
     {
       $planet['temp_min'] = 0;
       $planet['temp_max'] = $planet['temp_min'] + 40;
+      $planet['density'] = 5500;
     }
+    else
+    {
+      $planet['density'] = $density;
+    }
+
+    foreach($planet_density as $planet['density_index'] => $value)
+    {
+      if($planet['density'] < $value[UNIT_PLANET_DENSITY]) break;
+    }
+
+    $density_info_resources = &$planet_density[$planet['density_index']][UNIT_RESOURCES];
+
+    $planet['metal_perhour']     = $config->metal_basic_income * $density_info_resources[RES_METAL];
+    $planet['crystal_perhour']   = $config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
+    $planet['deuterium_perhour'] = $config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
 
     $planet['image']       = $PlanetType[ rand( 0, count( $PlanetType ) -1 ) ];
     $planet['image']      .= $PlanetClass[ rand( 0, count( $PlanetClass ) - 1 ) ];
@@ -155,6 +291,8 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetN
     $QryInsertPlanet .= "`planet_type` = '".       $planet['planet_type']       ."', ";
     $QryInsertPlanet .= "`image` = '".             $planet['image']             ."', ";
     $QryInsertPlanet .= "`diameter` = '".          $planet['diameter']          ."', ";
+    $QryInsertPlanet .= "`density` = '".           $planet['density']           ."', ";
+    $QryInsertPlanet .= "`density_index` = '".     $planet['density_index']     ."', ";
     $QryInsertPlanet .= "`field_max` = '".         $planet['field_max']         ."', ";
     $QryInsertPlanet .= "`temp_min` = '".          $planet['temp_min']          ."', ";
     $QryInsertPlanet .= "`temp_max` = '".          $planet['temp_max']          ."', ";
@@ -167,6 +305,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetN
     $QryInsertPlanet .= "`deuterium` = '".         $planet['deuterium']         ."', ";
     $QryInsertPlanet .= "`deuterium_perhour` = '". $planet['deuterium_perhour'] ."', ";
     $QryInsertPlanet .= "`deuterium_max` = '".     $planet['deuterium_max']     ."';";
+//pdump($QryInsertPlanet);die();
     doquery( $QryInsertPlanet);
 
     // On recupere l'id de planete nouvellement créé
@@ -243,7 +382,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
           `image` = 'mond', `diameter` = '{$size}', `temp_min` = '{$temp_min}', `temp_max` = '{$temp_max}', `field_max` = '{$field_max}',
           `metal` = '0', `metal_perhour` = '0', `metal_max` = '{$base_storage_size}',
           `crystal` = '0', `crystal_perhour` = '0', `crystal_max` = '{$base_storage_size}',
-          `deuterium` = '0', `deuterium_perhour` = '0', `deuterium_max` = '{$base_storage_size}';"
+          `deuterium` = '0', `deuterium_perhour` = '0', `deuterium_max` = '{$base_storage_size}', `density` = 2500, `density_index` = 2;"
       );
 
       if($update_debris)

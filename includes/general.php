@@ -1122,7 +1122,8 @@ function sn_rand_gauss($mu = 0, $sigma = 1, $strict = false)
 function sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
 {
   $random = sn_rand_gauss(($range_start + $range_end) / 2, ($range_end - $range_start) / $strict / 2, $strict);
-  return $round ? round($random) : $random;
+  $round_emul = pow(10, $round === true ? 0 : $round);
+  return $round ? round($random * $round_emul) / $round_emul : $random;
 //  $random = sn_rand_gauss(0, 1, $strict) + $strict * $sigma; // отнормировано по нулю
 //  $range_delta = $range_end - $range_start;
 //  $step = $strict * 2 / $range_delta;

@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '36');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '37a12.6');
+define('SN_VERSION', '37a13.0');
 define('SN_RELEASE_STABLE', '36d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -553,6 +553,18 @@ define('UNIT_PREMIUM', 1200);
 define('UNIT_SECTOR', 1300);
 define('UNIT_RACE', 1400);
 define('UNIT_CAPTAIN', 1500);
+
+define('UNIT_PLANET_DENSITY', 1601);
+define('UNIT_PLANET_DENSITY_INDEX', 1602);
+
+define('PLANET_DENSITY_NONE', 0);
+define('PLANET_DENSITY_ICE_WATER', 1);
+define('PLANET_DENSITY_SILICATE', 2);
+define('PLANET_DENSITY_STONE', 3);
+define('PLANET_DENSITY_STANDARD', 4);
+define('PLANET_DENSITY_METAL_ORE', 5);
+define('PLANET_DENSITY_METAL_PRILL', 6);
+define('PLANET_DENSITY_METAL_HEAVY', 7);
 
 // === Unit types // TODO - convert to GROUP_xxx constants
 //define('UNIT_STRUCTURE', 0);

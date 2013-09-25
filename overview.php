@@ -441,7 +441,11 @@ switch($mode)
       'crystal_debris'        => pretty_number($planetrow['debris_crystal']),
       'PLANET_RECYCLERS'      => $planet_recyclers_orbiting,
       'planet_temp_min'       => $planetrow['temp_min'],
+      'planet_temp_avg'       => round(($planetrow['temp_min'] + $planetrow['temp_max']) / 2),
       'planet_temp_max'       => $planetrow['temp_max'],
+      'planet_density'        => $planetrow['density'],
+      'planet_density_index'  => $planetrow['density_index'],
+      'planet_density_text'   => $planetrow['density_index'],
 
       'GATE_LEVEL'            => $planetrow[$sn_data[STRUC_MOON_GATE]['name']],
       'GATE_JUMP_REST_TIME'   => uni_get_time_to_jump($planetrow),

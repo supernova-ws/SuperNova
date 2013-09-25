@@ -42,10 +42,12 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
     return $caps;
   }
 
-  $caps['production_full'][RES_METAL][0] = floor($config->metal_basic_income * $config_resource_multiplier);
-  $caps['production_full'][RES_CRYSTAL][0] = floor($config->crystal_basic_income * $config_resource_multiplier);
-  $caps['production_full'][RES_DEUTERIUM][0] = floor($config->deuterium_basic_income * $config_resource_multiplier);
-  $caps['production_full'][RES_ENERGY][0] = floor($config->energy_basic_income * $config_resource_multiplier);
+  $planet_density = &$sn_data['groups']['planet_density'][$planet_row['density_index']][UNIT_RESOURCES];
+
+  $caps['production_full'][RES_METAL][0] = floor($config->metal_basic_income * $config_resource_multiplier * (isset($planet_density[RES_METAL]) ? $planet_density[RES_METAL] : 1));
+  $caps['production_full'][RES_CRYSTAL][0] = floor($config->crystal_basic_income * $config_resource_multiplier * (isset($planet_density[RES_CRYSTAL]) ? $planet_density[RES_CRYSTAL] : 1));
+  $caps['production_full'][RES_DEUTERIUM][0] = floor($config->deuterium_basic_income * $config_resource_multiplier * (isset($planet_density[RES_DEUTERIUM]) ? $planet_density[RES_DEUTERIUM] : 1));
+  $caps['production_full'][RES_ENERGY][0] = floor($config->energy_basic_income * $config_resource_multiplier * (isset($planet_density[RES_ENERGY]) ? $planet_density[RES_ENERGY] : 1));
 
   foreach($sn_groups['factories'] as $unit_id)
   {
@@ -55,7 +57,7 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
 
     foreach($unit_data['production'] as $resource_id => $function)
     {
-      $caps['production_full'][$resource_id][$unit_id] = $function($unit_level, $unit_load, $user, $planet_row) * $config_resource_multiplier;
+      $caps['production_full'][$resource_id][$unit_id] = $function($unit_level, $unit_load, $user, $planet_row) * $config_resource_multiplier * (isset($planet_density[$resource_id]) ? $planet_density[$resource_id] : 1);
     }
   }
 

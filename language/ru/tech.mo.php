@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37a10.0
+* @version 37a13.0
 *
 */
 
@@ -172,8 +172,8 @@ $lang = array_merge($lang, array(
 
     UNIT_PREMIUM => 'Премиум',
     UNIT_CAPTAIN => 'Капитан',
+
+    UNIT_PLANET_DENSITY => 'Плотность',
   ),
 
 ));
-
-?>

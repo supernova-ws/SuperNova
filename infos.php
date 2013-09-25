@@ -12,18 +12,18 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $unit_id = sys_get_param_id('gid');
-if(!$unit_id || !isset($sn_data[$unit_id]))
-{
-  sys_redirect('index.php?page=techtree');
-}
-
 if($unit_id == RES_DARK_MATTER)
 {
   sys_redirect('dark_matter.php');
 }
 
-// $sn_data['techtree'] as $unit_group_id => $unit_list
 lng_include('infos');
+if(!$unit_id || (!isset($sn_data[$unit_id]) && !isset($lang['info'][$unit_id])))
+{
+  sys_redirect('index.php?page=techtree');
+}
+
+// $sn_data['techtree'] as $unit_group_id => $unit_list
 $template = gettemplate('novapedia', true);
 
 $unit_data = &$sn_data[$unit_id];

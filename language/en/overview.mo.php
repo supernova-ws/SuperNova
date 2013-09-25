@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35b4
+* @version 37a13.0
 *
 */
 
@@ -43,10 +43,13 @@ $lang = array_merge($lang, array(
   'Events' => 'Events',
   'Free' => 'Free',
   'Diameter' => 'Diameter',
+  'density' => 'Density',
+  'density_units' => 'kg/m&sup3;',
   'fields' => 'Fields',
   'Developed_fields' => 'Developed Fields',
   'max_eveloped_fields' => 'maximum number of fields',
   'Temperature' => 'Temperature',
+  'min_avg_max' => 'min/avg/max',
   'approx' => 'Approx',
   'to' => 'to',
   'Centigrade' => 'C',

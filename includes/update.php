@@ -734,12 +734,8 @@ switch($new_version)
           `unit_player_id` BIGINT(20) UNSIGNED DEFAULT NULL COMMENT 'Unit owner',
           `unit_location_type` TINYINT NOT NULL DEFAULT 0 COMMENT 'Location type: universe, user, planet (moon?), fleet',
           `unit_location_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Location ID',
-          -- `unit_bind_type` TINYINT NOT NULL DEFAULT 0 COMMENT 'Binding - where unit is originally belongs', -- unused so far
-          -- `unit_bind_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Location ID', -- unused so far
           `unit_type` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit type',
           `unit_snid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit SuperNova ID',
-          -- `unit_dbid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit exemplar DB ID in respective table', -- does it really needs?
-          -- `unit_guid` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit unique GUID', -- unused for now. Will be need when GUID would be implemented
           `unit_level` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Unit level or count - dependent of unit_type',
 
           PRIMARY KEY (`unit_id`),
@@ -758,7 +754,6 @@ switch($new_version)
 
           `captain_xp` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain expirience',
           `captain_level` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain level so far', -- Дублирует запись в unit
-          -- `captain_level_free` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain level free to spend',
 
           `captain_shield` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain shield bonus level',
           `captain_armor` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Captain armor bonus level',
@@ -1162,12 +1157,16 @@ switch($new_version)
       upd_do_query("REPLACE INTO {{player_name_history}} (`player_id`, `player_name`) SELECT `id`, `username` FROM {{users}} WHERE `user_as_ally` IS NULL;");
     }
 
+    upd_alter_table('planets', array(
+      "ADD `density` SMALLINT NOT NULL DEFAULT 5500 COMMENT 'Planet average density kg/m3'",
+      "ADD `density_index` TINYINT NOT NULL DEFAULT " . PLANET_DENSITY_STANDARD . " COMMENT 'Planet cached density index'",
+    ), !$update_tables['planets']['density_index']);
+
 /*
     upd_alter_table('planets', array(
       "ADD CONSTRAINT `FK_planet_owner` FOREIGN KEY (`id_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE NULL ON UPDATE CASCADE",
     ), !$update_tables['planets']['FK_planet_owner']);
 */
-
 
 /*
     upd_alter_table('banned', array(

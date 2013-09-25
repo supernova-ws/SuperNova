@@ -398,6 +398,81 @@ mission = array(
       ),
     ),
 
+    'planet_density' => array(
+      PLANET_DENSITY_NONE => array(
+        UNIT_PLANET_DENSITY => 850,
+        UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_NONE,
+        UNIT_RESOURCES => array(
+          RES_METAL => 0.10,
+          RES_CRYSTAL => 0.10,
+          RES_DEUTERIUM => 1.30
+        ),
+      ),
+      PLANET_DENSITY_ICE_WATER => array(
+        UNIT_PLANET_DENSITY => 2000,
+        UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_ICE_WATER,
+        UNIT_RESOURCES => array(
+          RES_METAL => 0.30,
+          RES_CRYSTAL => 0.20,
+          RES_DEUTERIUM => 1.20
+        ),
+      ),
+      PLANET_DENSITY_SILICATE => array(
+        UNIT_PLANET_DENSITY => 3250,
+        UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_SILICATE,
+        UNIT_RESOURCES => array(
+          RES_METAL => 0.40,
+          RES_CRYSTAL => 1.40,
+          RES_DEUTERIUM => 0.90
+        ),
+      ),
+      PLANET_DENSITY_STONE => array(
+        UNIT_PLANET_DENSITY => 4500,
+        UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_STONE,
+        UNIT_RESOURCES => array(
+          RES_METAL => 0.80,
+          RES_CRYSTAL => 1.25,
+          RES_DEUTERIUM => 0.80
+        ),
+      ),
+      PLANET_DENSITY_STANDARD => array(
+        UNIT_PLANET_DENSITY => 5750,
+        UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_STANDARD,
+        UNIT_RESOURCES => array(
+          RES_METAL => 1.00,
+          RES_CRYSTAL => 1.00,
+          RES_DEUTERIUM => 1.00
+        ),
+      ),
+      PLANET_DENSITY_METAL_ORE => array(
+        UNIT_PLANET_DENSITY => 7000,
+        UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_METAL_ORE,
+        UNIT_RESOURCES => array(
+          RES_METAL => 2.00,
+          RES_CRYSTAL => 0.75,
+          RES_DEUTERIUM => 0.75
+        ),
+      ),
+      PLANET_DENSITY_METAL_PRILL => array(
+        UNIT_PLANET_DENSITY => 8250,
+        UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_METAL_PRILL,
+        UNIT_RESOURCES => array(
+          RES_METAL => 3.00,
+          RES_CRYSTAL => 0.50,
+          RES_DEUTERIUM => 0.50
+        ),
+      ),
+      PLANET_DENSITY_METAL_HEAVY => array(
+        UNIT_PLANET_DENSITY => 9250,
+        UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_METAL_HEAVY,
+        UNIT_RESOURCES => array(
+          RES_METAL => 4.00,
+          RES_CRYSTAL => 0.25,
+          RES_DEUTERIUM => 0.25
+        ),
+      ),
+    ),
+
     // Planet structures list
     'structures' => array(
       STRUC_MINE_METAL => STRUC_MINE_METAL, STRUC_MINE_CRYSTAL => STRUC_MINE_CRYSTAL, STRUC_MINE_DEUTERIUM => STRUC_MINE_DEUTERIUM,
