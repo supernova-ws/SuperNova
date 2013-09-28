@@ -2,8 +2,18 @@
 
 <!-- INCLUDE _result_message -->
 
-<table width="519">
+<script type="text/javascript">
+  function sn_show_hide(element, element_name)
+  {
+    var element_to_hide = jQuery("#" + element_name);
+    var tag_name = element_to_hide[0].tagName;
 
+    element_to_hide.css('display', element_to_hide.css('display') == 'none' ? (tag_name == 'TR' ? 'table-row' : (tag_name == 'UL' || tag_name == 'DIV' ? 'block' : 'inline')) : 'none');
+    jQuery(element).html("[&nbsp;" + (element_to_hide.css('display') == 'none' ? "{LA_sys_show}" : "{LA_sys_hide}") + "&nbsp;]");
+  }
+</script>
+
+<table width="519">
   <tr class="c_j">
     <th>
       {L_sys_dark_matter_what_header}
@@ -18,28 +28,32 @@
     </td>
   </tr>
 
-  <tr class="c_j">
-    <th>
-    {L_sys_dark_matter_description_header}
+  <tr>
+    <th class="c_l">
+      {L_sys_dark_matter_description_header}
+      <span class="fr link_action" onclick="sn_show_hide(this, 'dark_matter_usage');">[ {L_sys_show} ]</span>
     </th>
   </tr>
-  <tr class="c_j">
+  <tr class="c_j" id="dark_matter_usage" style="display: none;">
     <td>
       {L_sys_dark_matter_description_text}
      </td>
   </tr>
+
   <tr class="c_j">
     <th>
       {L_sys_dark_matter_obtain_header}
+      <span class="fr link_action" onclick="sn_show_hide(this, 'dark_matter_obtain');">[ {L_sys_show} ]</span>
     </th>
   </tr>
-  <tr class="c_j">
+  <tr class="c_j" id="dark_matter_obtain" style="display: none;">
     <td>
       {L_sys_dark_matter_obtain_text}
 
       <!-- IF URL_DARK_MATTER --><br /><br />{L_sys_dark_matter_purchase_url_description} <a href="{URL_DARK_MATTER}"><span class="link">{L_sys_dark_matter_purchase_url_get}</span></a>.<!-- ENDIF -->
     </td>
   </tr>
+
   <!-- IF .payment_module -->
     <tr class="c_j">
       <th>
@@ -49,19 +63,39 @@
     <tr class="c_j">
       <td>
           {L_sys_dark_matter_purchase_text_cost} <span class="ok">{PAYMENT_CURRENCY_EXCHANGE_DEFAULT} {L_sys_dark_matter_sh}</span>
-          {L_sys_dark_matter_purchase_text_unit} <span class="notice">1 {C_payment_currency_default}</span><br />
+          {L_sys_dark_matter_purchase_text_unit} <span class="notice">1 {C_payment_currency_default} ({PAYMENT_CURRENCY_DEFAULT_TEXT})</span><br /><br />
           <!-- IF .exchange -->
-          {L_sys_dark_matter_purchase_exchange}
-          <ul>
-          <!-- BEGIN exchange -->
-            <li>{discount.TEXT}</li>
-          <!-- END exchange -->
-          </ul>
+            {L_sys_dark_matter_purchase_exchange}
+            <span class="fr link_action" onclick="sn_show_hide(this, 'dark_matter_exchange');">[ {L_sys_show} ]</span><br />
+            <div id="dark_matter_exchange" style="display: none;">
+              <table width="100%">
+                <tr>
+                  <th>{L_sys_currency_name}</th>
+                  <th>{L_sys_currency_symbol}</th>
+                  <th>{L_sys_currency_exchange_direct}</th>
+                  <th>{L_sys_currency_exchange_reverse}</th>
+                  <th>{L_sys_currency_exchange_dm}</th>
+                </tr>
+                <!-- BEGIN exchange -->
+                <tr>
+                  <td>{exchange.TEXT}</td>
+                  <td>{exchange.SYMBOL}</td>
+                  <td class="c_r">{exchange.COURSE_DIRECT}</td>
+                  <td class="c_r">{exchange.COURSE_REVERSE}</td>
+                  <td class="c_r">{exchange.DM_PER_UNIT}</td>
+                  <!--<td class="c_r">{exchange.UNIT_PER_LOT}</td>-->
+                </tr>
+                <!-- END exchange -->
+              </table>
+              <span class="note">{L_sys_dark_matter_purchase_exchange_note}
+            </div>
+            <br />
           <!-- ENDIF -->
 
           <!-- IF .discount -->
           {L_sys_dark_matter_purchase_text_end}
-          <ul>
+          <span class="fr link_action" onclick="sn_show_hide(this, 'dark_matter_bonus_rate');">[ {L_sys_show} ]</span>
+          <ul id="dark_matter_bonus_rate" style="display: none;">
           <!-- BEGIN discount -->
             <li>{discount.TEXT}</li>
           <!-- END discount -->

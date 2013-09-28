@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #37a13.2#
+* @version #37a13.6#
 *
 */
 
@@ -60,7 +60,7 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase' => 'Купить Тёмную Материю',
   'sys_dark_matter_purchase_text_cost' => 'Стоимость',
   'sys_dark_matter_purchase_text_unit' => 'составляет',
-  'sys_dark_matter_purchase_text_end' => 'При оптовой покупке ТМ предоставляются бонусы:', //  Вы можете купить ТМ используя один из приведенных ниже способов оплаты.
+  'sys_dark_matter_purchase_text_end' => 'При оптовой покупке ТМ предоставляются бонусы',
   'sys_dark_matter_purchase_text_bonus' => 'от %s ТМ - бонус %d%% к количеству ТМ',
   'sys_dark_matter_purchase_step1' => 'Шаг 1',
   'sys_dark_matter_purchase_step1_text' => 'Выберите количество ТМ, способ оплаты и подтвердите свой выбор',
@@ -76,7 +76,23 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase_in_progress' => 'Происходит оплата...',
   'sys_dark_matter_purchase_conversion_cost' => 'Стоимость %d Тёмной Материи составит %s %s',
 
-  'sys_dark_matter_purchase_exchange' => 'Внутренние курсы валют (без учета комиссий посредников и/или платежной системы)',
+  'sys_dark_matter_purchase_exchange' => 'Внутренние курсы валют',
+  'sys_currency_name' => 'Валюта',
+  'sys_currency_symbol' => 'Символ',
+  'sys_currency_exchange_direct' => 'Прямой курс',
+  'sys_currency_exchange_reverse' => 'Обратный курс',
+  'sys_currency_exchange_dm' => 'ТМ за 1 у.е.',
+  'sys_currencies' => array(
+    'RUB' => 'Российский рубль',
+    'USD' => 'Доллар США',
+    'EUR' => 'Евро',
+    'UAH' => 'Украинская гривна',
+    'WMR' => 'WebMoney рубль',
+    'WMZ' => 'WebMoney доллар',
+    'WME' => 'WebMoney евро',
+    'WMU' => 'WebMoney гривна',
+  ),
+  'sys_dark_matter_purchase_exchange_note' => 'Внутренний курс используется для пересчета из основной валюты сервера в валюту плтаженой системы. Курс не включает комиссию посредников и/или платежных систем',
 
   'sys_dark_matter_purchase_result_complete' => 'Вы успешно заплатили за %d Тёмной Материи через сервис %s. Вам начислено %s Тёмной Материи',
   'sys_dark_matter_purchase_result_incomplete' => 'Ваш платеж за %d Тёмной Материи через сервис %s не закончен. Если вы считаете, что произошла ошибка - свяжитесь с Администрацией сервера',
@@ -834,5 +850,8 @@ $lang = array_merge($lang, array(
   'sys_planet_density' => 'Плотность',
   'sys_planet_density_units' => 'кг/м&sup3;',
   'sys_planet_density_core' => 'Тип ядра',
+
+  'sys_show' => 'Показать',
+  'sys_hide' => 'Скрыть',
 
 ));

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a13.2
+* @version 37a13.6
 *
 */
 
@@ -79,7 +79,23 @@ $lang = array_merge($lang, array(
   'sys_dark_matter_purchase_in_progress' => 'Payment in progress...',
   'sys_dark_matter_purchase_conversion_cost' => 'Cost of %d Dark Matter will be %s %s',
 
-  'sys_dark_matter_purchase_exchange' => 'Internal currency exchange (without comission of payment system(s))',
+  'sys_dark_matter_purchase_exchange' => 'Internal currency exchange',
+  'sys_currency_name' => 'Currency',
+  'sys_currency_symbol' => 'Symbol',
+  'sys_currency_exchange_direct' => 'Exchange rate',
+  'sys_currency_exchange_reverse' => 'Reverse rate',
+  'sys_currency_exchange_dm' => 'DM for 1 currency',
+  'sys_currencies' => array(
+    'RUB' => 'Russian ruble',
+    'USD' => 'Dollar USA',
+    'EUR' => 'Euro',
+    'UAH' => 'Ukrainian hryvna',
+    'WMR' => 'WebMoney rouble',
+    'WMZ' => 'WebMoney dollar',
+    'WME' => 'WebMoney euro',
+    'WMU' => 'WebMoney hryvna',
+  ),
+  'sys_dark_matter_purchase_exchange_note' => 'Internal exchange rates used to calculate payment amount in payment system currency. Exchange rates does not includes commission of payment system(s)',
 
   'sys_dark_matter_purchase_result_complete' => 'You succesfully paid for %d Dark Matter via %s. You gained %s Dark Matter',
   'sys_dark_matter_purchase_result_incomplete' => 'You payment for %d Dark Matter via %s currently in progress. If you feel it wrong please contact Administration',

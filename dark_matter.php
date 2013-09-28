@@ -51,8 +51,7 @@ if($payment_id = sys_get_param_id('payment_id'))
   }
 }
 
-$dm_amount_list = &sn_module_payment::$bonus_table; // array(2500, 5000, 10000, 25000, 50000); // , 100000, 200000, 500000, 1000000);
-// $dm_amount_list = array(1000, 5000, 10000, 15000);
+$dm_amount_list = &sn_module_payment::$bonus_table;
 
 $request = array(
   'dark_matter' => sys_get_param_float('dark_matter'),
@@ -84,6 +83,24 @@ foreach($sn_module as $module_name => $module)
 }
 // If payment_module invalid - making it empty OR if there is only one payment_module - selecting it
 $payment_module = $payment_module_valid ? $payment_module : (count($template->_tpldata['payment_module']) == 1 ? $template->_tpldata['payment_module'][0]['ID'] : '');
+
+foreach($lang['sys_currencies'] as $key => $value)
+{
+  $var_name = 'payment_currency_exchange_' . strtolower($key);
+  $course = $config->$var_name;
+  if(!$course || $key == $config->payment_currency_default)
+  {
+    continue;
+  }
+  $template->assign_block_vars('exchange', array(
+    'SYMBOL' => $key,
+    'TEXT' => $value,
+    'COURSE_DIRECT' => pretty_number($course, 4),
+    'COURSE_REVERSE' => pretty_number(1 / $course, 4),
+    'DM_PER_UNIT' => sn_module_payment::currency_convert(1, $key, 'DM_'),
+    'UNIT_PER_LOT' => sn_module_payment::currency_convert(2500, 'DM_', $key),
+  ));
+}// 1/0,24712 = 4,046617028164
 
 if($request['dark_matter'] && $payment_module)
 {
@@ -191,6 +208,7 @@ $template->assign_vars(array(
   'DARK_MATTER_TEXT' => pretty_number($request['dark_matter']),
   'UNIT_DESCRIPTION' => $lang['info'][RES_DARK_MATTER]['description'],
   'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => $config->payment_currency_exchange_dm_,
+  'PAYMENT_CURRENCY_DEFAULT_TEXT' => $lang['sys_currencies'][$config->payment_currency_default],
 ));
 
 display($template, $lang['sys_dark_matter']);

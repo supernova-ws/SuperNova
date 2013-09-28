@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #37a9.29# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #37a13.6# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -238,7 +238,7 @@ abstract class sn_module_payment extends sn_module
   );
 
   // Function converts money values between currencies
-  function currency_convert($value, $currency_from = '', $currency_to = '')
+  static function currency_convert($value, $currency_from = '', $currency_to = '')
   {
     global $config;
 

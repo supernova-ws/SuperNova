@@ -526,3 +526,17 @@ th.c_j, td.c_j
   background-color: black;
   border: 0;
 }
+
+.link
+{
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.link_action
+{
+  border-bottom: 1px dashed;
+  font-weight: bold;
+  cursor: pointer;
+}
