@@ -178,7 +178,7 @@ if(file_exists($update_file))
     }
     else
     {
-      die("Обновляется база данных. Пожалуйста, подождите...<br>Obnovljaetsja baza dannyh. Pozhalujsta, podozhdute...<br>Database update in progress. Please wait...");
+      die('Происходит обновление сервера - пожалуйста, подождите...<br>Proishodit obnovlenie servera - pozhalujsta, podozhdute...<br>Server upgrading now - please wait...<br /><a href="admin/overview.php">Admin link</a>');
     }
   }
 }
