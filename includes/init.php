@@ -149,6 +149,8 @@ else
 }
 
 require_once("{$sn_root_physical}includes/vars.{$phpEx}");
+// Now including all functions
+require_once("{$sn_root_physical}includes/general.{$phpEx}");
 
 $update_file = "{$sn_root_physical}includes/update.{$phpEx}";
 if(file_exists($update_file))
@@ -189,8 +191,6 @@ define('FMT_DATE_TIME'    , FMT_DATE . ' ' . FMT_TIME);
 
 $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 
-// Now including all functions
-require_once("{$sn_root_physical}includes/general.{$phpEx}");
 require_once("{$sn_root_physical}includes/template.{$phpEx}");
 sn_sys_load_php_files("{$sn_root_physical}includes/functions/", $phpEx);
 

@@ -10,10 +10,10 @@ function art_use(&$user, &$planetrow, $unit_id)
   }
 
   sn_db_transaction_start();
-  $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", '', true);
+  $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
 
-  $artifact_list = sys_unit_str2arr($user['player_artifact_list']);
-  if($artifact_list[$unit_id])
+  $unit_level = $artifact_level_old = mrc_get_level($user, array(), $unit_id, true);
+  if($unit_level > 0)
   {
     switch($unit_id)
     {
@@ -21,7 +21,7 @@ function art_use(&$user, &$planetrow, $unit_id)
         $has_moon = doquery("SELECT `id` FROM `{{planets}}` WHERE parent_planet = {$planetrow['id']} LIMIT 1;", true);
         if($planetrow['planet_type'] == PT_PLANET && !$has_moon['id'])
         {
-          $artifact_list[$unit_id]--;
+          $unit_level--;
           $moon_chance = uni_calculate_moon_chance($planetrow['debris_metal'] + $planetrow['debris_crystal']);
           $random = mt_rand(1, 100);
           if($random <= $moon_chance)
@@ -57,7 +57,7 @@ function art_use(&$user, &$planetrow, $unit_id)
           break;
         }
 
-        $artifact_list[$unit_id]--;
+        $unit_level--;
         $artifact_deploy = &$sn_data[$unit_id]['deploy'];
 
         $deployment_str = '';
@@ -83,9 +83,9 @@ function art_use(&$user, &$planetrow, $unit_id)
         que_get_que($global_que, QUE_RESEARCH, $user['id'], $planetrow['id'], true);
         if(isset($global_que[QUE_RESEARCH][0][0]['que_time_left']) && $global_que[QUE_RESEARCH][0][0]['que_time_left'] > 0)
         {
+          $unit_level--;
           $old_time = $global_que[QUE_RESEARCH][0][0]['que_time_left'];
           $global_que[QUE_RESEARCH][0][0]['que_time_left'] = max(0, $global_que[QUE_RESEARCH][0][0]['que_time_left'] - PERIOD_HOUR);
-          $artifact_list[$unit_id]--;
           doquery("UPDATE {{que}} SET `que_time_left` = {$global_que[QUE_RESEARCH][0][0]['que_time_left']} WHERE `que_id` = {$global_que[QUE_RESEARCH][0][0]['que_id']} LIMIT 1;");
           $message = sprintf($lang['art_heurestic_chip_ok'], $lang['tech'][$global_que[QUE_RESEARCH][0][0]['que_unit_id']], $global_que[QUE_RESEARCH][0][0]['que_unit_level'], $old_time - $global_que[QUE_RESEARCH][0][0]['que_time_left']);
           msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_heurestic_chip_subj'], $lang['art_heurestic_chip_subj'], $message);
@@ -102,9 +102,9 @@ function art_use(&$user, &$planetrow, $unit_id)
         $que_item = &$que['que'][QUE_STRUCTURES][0];
         if(isset($que_item['TIME']) && $que_item['TIME'] > 0)
         {
+          $unit_level--;
           $old_time = $que_item['TIME'];
           $que_item['TIME'] = max(0, $que_item['TIME'] - PERIOD_HOUR);
-          $artifact_list[$unit_id]--;
           $que_item['STRING'] = "{$que_item['ID']},{$que_item['AMOUNT']},{$que_item['TIME']},{$que_item['MODE']},{$que_item['QUE']};";
           $query_string = '';
           foreach($que['que'][QUE_STRUCTURES] as $value)
@@ -122,10 +122,10 @@ function art_use(&$user, &$planetrow, $unit_id)
       break;
 
     }
-    $artifact_list = sys_unit_arr2str($artifact_list);
-    if($artifact_list != $user['player_artifact_list'])
+    if($unit_level != $artifact_level_old)
     {
-      doquery("UPDATE {{users}} SET `player_artifact_list` = '{$artifact_list}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+      $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_level - $artifact_level_old, $user);
+      sn_db_changeset_apply($db_changeset);
     }
   }
   else
@@ -134,5 +134,5 @@ function art_use(&$user, &$planetrow, $unit_id)
   }
 
   sn_db_transaction_commit();
-  message($message, "{$lang['tech'][UNIT_ARTIFACTS]} - {$lang['tech'][$unit_id]}", 'artifacts.' . PHP_EX . '#' . $unit_id, 5); // <br /><a href=\"artifacts." . PHP_EX . "#{$unit_id}><\""
+  message($message, "{$lang['tech'][UNIT_ARTIFACTS]} - {$lang['tech'][$unit_id]}", 'artifacts.' . PHP_EX . '#' . $unit_id, 5);
 }

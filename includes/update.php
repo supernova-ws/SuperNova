@@ -1075,28 +1075,6 @@ switch($new_version)
     }
 //    upd_alter_table('planets', $create_index, true);
 
-    /*
-    upd_alter_table('users', array(
-      "DROP COLUMN `spy_tech`",
-      "DROP COLUMN `computer_tech`",
-      "DROP COLUMN `military_tech`",
-      "DROP COLUMN `defence_tech`",
-      "DROP COLUMN `shield_tech`",
-      "DROP COLUMN `energy_tech`",
-      "DROP COLUMN `hyperspace_tech`",
-      "DROP COLUMN `combustion_tech`",
-      "DROP COLUMN `impulse_motor_tech`",
-      "DROP COLUMN `hyperspace_motor_tech`",
-      "DROP COLUMN `laser_tech`",
-      "DROP COLUMN `ionic_tech`",
-      "DROP COLUMN `buster_tech`",
-      "DROP COLUMN `intergalactic_tech`",
-      "DROP COLUMN `expedition_tech`",
-      "DROP COLUMN `colonisation_tech`",
-      // "DROP COLUMN `graviton_tech`",
-    ), $update_tables['users']['spy_tech']);
-    */
-
     upd_alter_table('users', array(
       "ADD `user_time_utc_offset` INT(11) DEFAULT NULL COMMENT 'User time difference with server time' AFTER `user_time_diff`",
     ), !$update_tables['users']['user_time_utc_offset']);
@@ -1161,6 +1139,65 @@ switch($new_version)
       "ADD `density` SMALLINT NOT NULL DEFAULT 5500 COMMENT 'Planet average density kg/m3'",
       "ADD `density_index` TINYINT NOT NULL DEFAULT " . PLANET_DENSITY_STANDARD . " COMMENT 'Planet cached density index'",
     ), !$update_tables['planets']['density_index']);
+
+    if($update_tables['users']['player_artifact_list'])
+    {
+      upd_alter_table('unit', "DROP KEY `unit_id`", $update_indexes['unit']['unit_id']);
+
+      upd_alter_table('unit', array(
+        "ADD KEY `I_unit_player_id_temporary` (`unit_player_id`)",
+        "DROP KEY `I_unit_player_location_snid`",
+      ));
+      upd_alter_table('unit', array(
+        "ADD UNIQUE KEY `I_unit_player_location_snid` (`unit_player_id`, `unit_location_type`, `unit_location_id`, `unit_snid`)",
+        "DROP KEY `I_unit_player_id_temporary`",
+      ));
+
+      $sn_data_artifacts = &$sn_data['groups']['artifacts'];
+      $db_changeset = array();
+
+      $query = upd_do_query("SELECT `id`, `player_artifact_list` FROM {{users}} WHERE `player_artifact_list` IS NOT NULL AND `player_artifact_list` != '' FOR UPDATE");
+      while($row = mysql_fetch_assoc($query))
+      {
+        $artifact_list = explode(';', $row['player_artifact_list']);
+        if(!$row['player_artifact_list'] || empty($artifact_list))
+        {
+          continue;
+        }
+        foreach($artifact_list as $key => &$value)
+        {
+          $value = explode(',', $value);
+          if(!isset($value[1]) || $value[1] <= 0 || !isset($sn_data_artifacts[$value[0]]))
+          {
+            unset($artifact_list[$key]);
+            continue;
+          }
+          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($value[0], $value[1], $row);
+        }
+      }
+      sn_db_changeset_apply($db_changeset);
+
+      upd_alter_table('users', "DROP COLUMN `player_artifact_list`", $update_tables['users']['player_artifact_list']);
+    }
+
+    upd_alter_table('users', array(
+      "DROP COLUMN `spy_tech`",
+      "DROP COLUMN `computer_tech`",
+      "DROP COLUMN `military_tech`",
+      "DROP COLUMN `defence_tech`",
+      "DROP COLUMN `shield_tech`",
+      "DROP COLUMN `energy_tech`",
+      "DROP COLUMN `hyperspace_tech`",
+      "DROP COLUMN `combustion_tech`",
+      "DROP COLUMN `impulse_motor_tech`",
+      "DROP COLUMN `hyperspace_motor_tech`",
+      "DROP COLUMN `laser_tech`",
+      "DROP COLUMN `ionic_tech`",
+      "DROP COLUMN `buster_tech`",
+      "DROP COLUMN `intergalactic_tech`",
+      "DROP COLUMN `expedition_tech`",
+      "DROP COLUMN `colonisation_tech`",
+    ), $update_tables['users']['spy_tech']);
 
 /*
     upd_alter_table('planets', array(

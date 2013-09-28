@@ -427,7 +427,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   $mercenary_level = 0;
   $unit_db_name = $sn_data[$unit_id]['name'];
 
-  if(in_array($unit_id, sn_get_groups(array('plans', 'mercenaries', 'tech'))))
+  if(in_array($unit_id, sn_get_groups(array('plans', 'mercenaries', 'tech', 'artifacts'))))
   {
     $context = array(
       'location' => LOC_USER,
@@ -679,6 +679,7 @@ function sys_redirect($url)
   die();
 }
 
+// TODO Для полноценного функионирования апдейтера пакет функций, включая эту должен быть вынесен раньше - или грузить general.php до апдейтера
 function sys_get_unit_location($user, $planet, $unit_id){return sn_function_call('sys_get_unit_location', array($user, $planet, $unit_id));}
 function sn_sys_get_unit_location($user, $planet, $unit_id)
 {

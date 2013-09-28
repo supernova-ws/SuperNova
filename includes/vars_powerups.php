@@ -575,6 +575,16 @@ $sn_data += array(
     ),
     'bonus_type' => BONUS_ABILITY,
   ),
+  ART_DENSITY_CHANGER => array(
+    'name' => 'art_density_changer',
+    'type' => UNIT_ARTIFACTS,
+    'location' => LOC_USER,
+    'cost' => array(
+      RES_DARK_MATTER => 50000,
+      'factor' => 1,
+    ),
+    'bonus_type' => BONUS_ABILITY,
+  ),
 
   UNIT_PLAN_STRUC_MINE_FUSION => array(
     'name' => 'UNIT_PLAN_STRUC_MINE_FUSION',

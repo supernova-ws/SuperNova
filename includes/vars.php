@@ -402,6 +402,7 @@ mission = array(
       PLANET_DENSITY_NONE => array(
         UNIT_PLANET_DENSITY => 850,
         UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_NONE,
+        UNIT_PLANET_DENSITY_RARITY => 100.0,
         UNIT_RESOURCES => array(
           RES_METAL => 0.10,
           RES_CRYSTAL => 0.10,
@@ -411,6 +412,7 @@ mission = array(
       PLANET_DENSITY_ICE_WATER => array(
         UNIT_PLANET_DENSITY => 2000,
         UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_ICE_WATER,
+        UNIT_PLANET_DENSITY_RARITY => 23.4,
         UNIT_RESOURCES => array(
           RES_METAL => 0.30,
           RES_CRYSTAL => 0.20,
@@ -420,6 +422,7 @@ mission = array(
       PLANET_DENSITY_SILICATE => array(
         UNIT_PLANET_DENSITY => 3250,
         UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_SILICATE,
+        UNIT_PLANET_DENSITY_RARITY => 4.1,
         UNIT_RESOURCES => array(
           RES_METAL => 0.40,
           RES_CRYSTAL => 1.40,
@@ -429,6 +432,7 @@ mission = array(
       PLANET_DENSITY_STONE => array(
         UNIT_PLANET_DENSITY => 4500,
         UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_STONE,
+        UNIT_PLANET_DENSITY_RARITY => 1.4,
         UNIT_RESOURCES => array(
           RES_METAL => 0.80,
           RES_CRYSTAL => 1.25,
@@ -438,6 +442,7 @@ mission = array(
       PLANET_DENSITY_STANDARD => array(
         UNIT_PLANET_DENSITY => 5750,
         UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_STANDARD,
+        UNIT_PLANET_DENSITY_RARITY => 1,
         UNIT_RESOURCES => array(
           RES_METAL => 1.00,
           RES_CRYSTAL => 1.00,
@@ -447,6 +452,7 @@ mission = array(
       PLANET_DENSITY_METAL_ORE => array(
         UNIT_PLANET_DENSITY => 7000,
         UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_METAL_ORE,
+        UNIT_PLANET_DENSITY_RARITY => 1.5,
         UNIT_RESOURCES => array(
           RES_METAL => 2.00,
           RES_CRYSTAL => 0.75,
@@ -456,6 +462,7 @@ mission = array(
       PLANET_DENSITY_METAL_PRILL => array(
         UNIT_PLANET_DENSITY => 8250,
         UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_METAL_PRILL,
+        UNIT_PLANET_DENSITY_RARITY => 4.9,
         UNIT_RESOURCES => array(
           RES_METAL => 3.00,
           RES_CRYSTAL => 0.50,
@@ -465,6 +472,7 @@ mission = array(
       PLANET_DENSITY_METAL_HEAVY => array(
         UNIT_PLANET_DENSITY => 9250,
         UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_METAL_HEAVY,
+        UNIT_PLANET_DENSITY_RARITY => 31.4,
         UNIT_RESOURCES => array(
           RES_METAL => 4.00,
           RES_CRYSTAL => 0.25,
@@ -585,7 +593,8 @@ mission = array(
     ),
 
     'artifacts' => array(
-      ART_LHC => ART_LHC, ART_RCD_SMALL => ART_RCD_SMALL, ART_RCD_MEDIUM => ART_RCD_MEDIUM, ART_RCD_LARGE => ART_RCD_LARGE, ART_HEURISTIC_CHIP => ART_HEURISTIC_CHIP, ART_NANO_BUILDER => ART_NANO_BUILDER,
+      ART_LHC => ART_LHC, ART_RCD_SMALL => ART_RCD_SMALL, ART_RCD_MEDIUM => ART_RCD_MEDIUM, ART_RCD_LARGE => ART_RCD_LARGE,
+      ART_HEURISTIC_CHIP => ART_HEURISTIC_CHIP, ART_NANO_BUILDER => ART_NANO_BUILDER, // ART_DENSITY_CHANGER => ART_DENSITY_CHANGER,
     ),
 
     // Resource list

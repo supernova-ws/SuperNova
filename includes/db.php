@@ -182,6 +182,7 @@ function db_change_units_perform($query, $tablename, $object_id)
   }
 }
 
+// TODO: THIS FUNCTION IS OBSOLETE AND SHOULD BE REPLACED!
 function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
 // $unit_list should have unique entrances! Recompress non-uniq entrances before pass param!
 {
@@ -270,7 +271,7 @@ function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id =
 {
   global $sn_data;
   $db_changeset = array();
-  $temp = doquery("SELECT `unit_id` FROM {{unit}} WHERE `unit_player_id` = {$user['id']} AND `unit_snid` = {$unit_id} LIMIT 1", true);
+  $temp = doquery("SELECT `unit_id` FROM {{unit}} WHERE `unit_player_id` = {$user['id']} AND `unit_snid` = {$unit_id} LIMIT 1 FOR UPDATE", true);
 //pdump($temp, '$temp');
   if($temp['unit_id'])
   {
@@ -373,6 +374,13 @@ function sn_db_changeset_apply($db_changeset)
           if($fields)
           {
             doquery("INSERT INTO {{{$table_name}}} SET {$fields}");
+          }
+          break;
+
+        case SQL_OP_REPLACE:
+          if($fields)
+          {
+            doquery("REPLACE INTO {{{$table_name}}} SET {$fields}");
           }
           break;
 

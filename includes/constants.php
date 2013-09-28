@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '36');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '37a13.0');
+define('SN_VERSION', '37a13.1');
 define('SN_RELEASE_STABLE', '36d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -535,6 +535,8 @@ define('ART_RCD_MEDIUM', 1003);  // Rapid Colony Deployment - Set of buildings u
 define('ART_RCD_LARGE', 1004);   // Rapid Colony Deployment - Set of buildings up to 20th level - 20/25/10/1 - 39790 DM
 define('ART_HEURISTIC_CHIP', 1005);
 define('ART_NANO_BUILDER', 1006);
+define('ART_NANO_CONSTRUCTOR', 1007);
+define('ART_DENSITY_CHANGER', 1008);
 //define('ART_SUPERCOMPUTER', 1005); // Speed up research
 //define('ART_PLANET_GATE', 1006);   // Planet gate
 //define('ART_NANOBOTS_SMALL', 1007); // Speed up building
@@ -556,6 +558,7 @@ define('UNIT_CAPTAIN', 1500);
 
 define('UNIT_PLANET_DENSITY', 1601);
 define('UNIT_PLANET_DENSITY_INDEX', 1602);
+define('UNIT_PLANET_DENSITY_RARITY', 1603);
 
 define('PLANET_DENSITY_NONE', 0);
 define('PLANET_DENSITY_ICE_WATER', 1);
@@ -755,7 +758,7 @@ define('MODIFIER_RESOURCE_PRODUCTION', 2);
 define('SQL_OP_DELETE', -1);
 define('SQL_OP_UPDATE', 0);
 define('SQL_OP_INSERT', 1);
-define('SQL_OP_ALTER', 3);
+define('SQL_OP_REPLACE', 3);
 
 
 define('SERVER_PLAYER_NAME_CHANGE_NONE', 0);

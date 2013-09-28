@@ -20,44 +20,33 @@ lng_include('artifacts');
 
 include('includes/includes/art_artifact.php');
 
-$action = sys_get_param_int('action');
-$unit_id = sys_get_param_int('unit_id');
-
 $sn_data_dark_matter_db_name = $sn_data[RES_DARK_MATTER]['name'];
 
-$artifact_list = sys_unit_str2arr($user['player_artifact_list']);
-foreach($sn_data['groups']['artifacts'] as $artifact_unit_id)
-{
-  $user[$sn_data[$artifact_unit_id]['name']] = isset($artifact_list[$artifact_unit_id]) ? $artifact_list[$artifact_unit_id] : 0;
-}
-
-if($action && in_array($unit_id, $sn_data['groups']['artifacts']))
+if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_int('unit_id'), $sn_data['groups']['artifacts']))
 {
   switch($action)
   {
     case ACTION_BUY:
-      $build_data = eco_get_build_data($user, $planetrow, $unit_id, $user[$sn_data[$unit_id]['name']]);
+      sn_db_transaction_start();
+
+      $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
+      $artifact_level = mrc_get_level($user, array(), $unit_id, true);
+
+      $build_data = eco_get_build_data($user, $planetrow, $unit_id, $artifact_level, true);
       $darkmater_cost = $build_data[BUILD_CREATE][RES_DARK_MATTER];
 
       // TODO: more correct check - with "FOR UPDATE"
       if($user[$sn_data_dark_matter_db_name] >= $darkmater_cost)
       {
-        if(!isset($sn_data[$unit_id]['max']) || ($sn_data[$unit_id]['max'] >= $user[$sn_data[$unit_id]['name']]))
+        if(!isset($sn_data[$unit_id]['max']) || ($sn_data[$unit_id]['max'] > $user[$sn_data[$unit_id]['name']]))
         {
-          {
-            $selected_db_name = $sn_data[$unit_id]['name'];
-            doquery("START TRANSACTION;");
-            $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", '', true);
-            $artifact_list = sys_unit_str2arr($user['player_artifact_list']);
-            @$artifact_list[$unit_id]++;
-            $artifact_list = sys_unit_arr2str($artifact_list);
-            doquery( "UPDATE {{users}} SET `player_artifact_list` = '{$artifact_list}' WHERE `id` = '{$user['id']}' LIMIT 1;");
-            rpg_points_change($user['id'], RPG_ARTIFACT, -($darkmater_cost), "Spent for artifact {$lang['tech'][$unit_id]} ID {$unit_id}");
-            doquery("COMMIT;");
-            header("Location: artifacts.php#{$unit_id}");
-            ob_end_flush();
-            die();
-          }
+          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, 1, $user);
+          sn_db_changeset_apply($db_changeset);
+          rpg_points_change($user['id'], RPG_ARTIFACT, -($darkmater_cost), "Spent for artifact {$lang['tech'][$unit_id]} ID {$unit_id}");
+          sn_db_transaction_commit();
+          header("Location: artifacts.php#{$unit_id}");
+          ob_end_flush();
+          die();
         }
         else
         {
@@ -68,6 +57,7 @@ if($action && in_array($unit_id, $sn_data['groups']['artifacts']))
       {
         $Message = $lang['sys_no_points'];
       }
+      sn_db_transaction_rollback();
     break;
 
     case ACTION_USE:
@@ -84,7 +74,8 @@ $template = gettemplate('artifacts', true);
 
 foreach($sn_data['groups']['artifacts'] as $artifact_id)
 {
-  $build_data = eco_get_build_data($user, $planetrow, $artifact_id, $user[$sn_data[$artifact_id]['name']]);
+  $artifact_level = mrc_get_level($user, array(), $artifact_id, true);
+  $build_data = eco_get_build_data($user, $planetrow, $artifact_id, $artifact_level);
   {
     $artifact_data = &$sn_data[$artifact_id];
     $artifact_data_bonus = $artifact_data['bonus'];
@@ -112,7 +103,7 @@ foreach($sn_data['groups']['artifacts'] as $artifact_id)
       'DESCRIPTION' => $lang['info'][$artifact_id]['description'],
       'EFFECT'      => $lang['info'][$artifact_id]['effect'],
       'COST'        => $build_data[BUILD_CREATE][RES_DARK_MATTER],
-      'LEVEL'       => intval($user[$sn_data[$artifact_id]['name']]),
+      'LEVEL'       => intval($artifact_level),
       'LEVEL_MAX'   => intval($artifact_data['max']),
       'BONUS'       => $artifact_data_bonus,
       'BONUS_TYPE'  => $artifact_data['bonus_type'],

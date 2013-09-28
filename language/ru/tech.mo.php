@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37a13.0
+* @version 37a13.1
 *
 */
 
@@ -161,6 +161,7 @@ $lang = array_merge($lang, array(
     ART_RCD_LARGE      => 'Большой АКК',
     ART_HEURISTIC_CHIP => 'Эвристический чип',
     ART_NANO_BUILDER   => 'Наностроитель',
+    ART_DENSITY_CHANGER => 'Матрица трансмутации',
 
     UNIT_PLANS => 'Чертежи',
     UNIT_PLAN_STRUC_MINE_FUSION => 'Чертеж "Термоядерная электростанция"',
