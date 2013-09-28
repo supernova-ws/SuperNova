@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #37a10.3#
+* @version #37a13.2#
 *
 */
 
@@ -819,5 +819,20 @@ $lang = array_merge($lang, array(
   'sys_fleet_composition' => 'Состав флота',
 
   'sys_continue' => 'Продолжить',
+
+  'uni_planet_density_types' => array(
+    PLANET_DENSITY_NONE => 'Не бывает',
+    PLANET_DENSITY_ICE_WATER => 'Лёд',
+    PLANET_DENSITY_SILICATE => 'Силикат',
+    PLANET_DENSITY_STONE => 'Камень',
+    PLANET_DENSITY_STANDARD => 'Стандарт',
+    PLANET_DENSITY_METAL_ORE => 'Руда',
+    PLANET_DENSITY_METAL_PRILL => 'Металл',
+    PLANET_DENSITY_METAL_HEAVY => 'Тяжелый металл',
+  ),
+
+  'sys_planet_density' => 'Плотность',
+  'sys_planet_density_units' => 'кг/м&sup3;',
+  'sys_planet_density_core' => 'Тип ядра',
 
 ));

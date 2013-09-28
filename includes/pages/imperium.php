@@ -103,6 +103,9 @@ function sn_imperium_view($template = null)
 
       'TEMP_MIN'          => $planet['temp_min'],
       'TEMP_MAX'          => $planet['temp_max'],
+
+      'DENSITY_CLASS'     => $planet['density_index'],
+      'DENSITY_CLASS_TEXT'=> $lang['uni_planet_density_types'][$planet['density_index']],
     )));
 
     $planet['fleet_list'] = $planet_template['fleet_list'];

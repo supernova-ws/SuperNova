@@ -71,6 +71,28 @@
     <!-- END planet -->
   </tr>
 
+  <tr>
+    <th width="{$CELL_HEADER}">
+      {L_sys_planet_density_core}
+      <div class="icons icon-info link" style="display: inline-block; vertical-align: middle;" onclick="document.location='infos.php?gid={D_UNIT_PLANET_DENSITY}'"></div>
+    </th>
+    <!-- BEGIN planet -->
+      <!-- IF planet.DENSITY_CLASS == 4 -->
+        <!-- DEFINE $FIELD_COLOR = 'positive' -->
+      <!-- ELSEIF planet.DENSITY_CLASS == 3 || planet.DENSITY_CLASS == 5 -->
+        <!-- DEFINE $FIELD_COLOR = 'zero' -->
+    <!-- ELSEIF planet.DENSITY_CLASS == 2 || planet.DENSITY_CLASS == 6 -->
+    <!-- DEFINE $FIELD_COLOR = 'warning' -->
+      <!-- ELSE -->
+        <!-- DEFINE $FIELD_COLOR = 'negative' -->
+      <!-- ENDIF -->
+
+      <td width="{$CELL_PLANET}" class="c_c {$FIELD_COLOR}">
+        {planet.DENSITY_CLASS_TEXT}
+      </td>
+    <!-- END planet -->
+  </tr>
+
   <tr><th class="c_l" colspan="{amount}">{L_sys_resources}</th></tr>
 
   <tr>

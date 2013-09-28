@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version 37a13.0
+* @version 37a13.2
 *
 */
 
@@ -41,8 +41,6 @@ $lang = array_merge($lang, array(
   'Events' => 'Hodisalar',
   'Free' => 'Vazifalar yo`q',
   'Diameter' => 'Diametr',
-  'density' => 'Плотность',
-  'density_units' => 'кг/м&sup3;',
   'fields' => 'Sektor',
   'Developed_fields' => 'Band sektorlar',
   'max_eveloped_fields' => 'Sektorlarning eng ko`p soni',
@@ -178,5 +176,3 @@ $lang = array_merge($lang, array(
   'ov_capital_err_not_a_planet' => 'Faqat sayyorani Bosh qarorgoh qilsa bo`ladi',
 
 ));
-
-?>

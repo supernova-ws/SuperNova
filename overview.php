@@ -445,7 +445,7 @@ switch($mode)
       'planet_temp_max'       => $planetrow['temp_max'],
       'planet_density'        => $planetrow['density'],
       'planet_density_index'  => $planetrow['density_index'],
-      'planet_density_text'   => $planetrow['density_index'],
+      'planet_density_text'   => $lang['uni_planet_density_types'][$planetrow['density_index']],
 
       'GATE_LEVEL'            => $planetrow[$sn_data[STRUC_MOON_GATE]['name']],
       'GATE_JUMP_REST_TIME'   => uni_get_time_to_jump($planetrow),

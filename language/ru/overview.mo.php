@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37a13.0
+* @version 37a13.2
 *
 */
 
@@ -41,8 +41,6 @@ $lang = array_merge($lang, array(
   'Events' => 'События',
   'Free' => 'нет заданий',
   'Diameter' => 'Диаметр',
-  'density' => 'Плотность',
-  'density_units' => 'кг/м&sup3;',
   'fields' => 'Сектора',
   'Developed_fields' => 'Занято секторов',
   'max_eveloped_fields' => 'Максимальное количество секторов',
@@ -182,5 +180,3 @@ $lang = array_merge($lang, array(
   'ov_capital_err_not_a_planet' => 'Только планету можно сделать столицей Империи',
 
 ));
-
-?>

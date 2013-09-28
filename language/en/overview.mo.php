@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a13.0
+* @version 37a13.2
 *
 */
 
@@ -43,8 +43,6 @@ $lang = array_merge($lang, array(
   'Events' => 'Events',
   'Free' => 'Free',
   'Diameter' => 'Diameter',
-  'density' => 'Density',
-  'density_units' => 'kg/m&sup3;',
   'fields' => 'Fields',
   'Developed_fields' => 'Developed Fields',
   'max_eveloped_fields' => 'maximum number of fields',
@@ -178,5 +176,3 @@ $lang = array_merge($lang, array(
   'ov_capital_err_not_a_planet' => 'Only a planet can be capital',
 
 ));
-
-?>

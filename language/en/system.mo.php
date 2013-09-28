@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a10.3
+* @version 37a13.2
 *
 */
 
@@ -816,5 +816,20 @@ $lang = array_merge($lang, array(
   'sys_fleet_composition' => 'Fleet composition',
 
   'sys_continue' => 'Continue',
+
+  'uni_planet_density_types' => array(
+    PLANET_DENSITY_NONE => 'Never happens',
+    PLANET_DENSITY_ICE_WATER => 'Ice',
+    PLANET_DENSITY_SILICATE => 'Silicate',
+    PLANET_DENSITY_STONE => 'Stone',
+    PLANET_DENSITY_STANDARD => 'Standard',
+    PLANET_DENSITY_METAL_ORE => 'Ore',
+    PLANET_DENSITY_METAL_PRILL => 'Metall',
+    PLANET_DENSITY_METAL_HEAVY => 'Heavy metall',
+  ),
+
+  'sys_planet_density' => 'Density',
+  'sys_planet_density_units' => 'kg/m&sup3;',
+  'sys_planet_density_core' => 'Core type',
 
 ));
