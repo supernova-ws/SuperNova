@@ -1144,14 +1144,10 @@ switch($new_version)
     {
       upd_alter_table('unit', "DROP KEY `unit_id`", $update_indexes['unit']['unit_id']);
 
-      upd_alter_table('unit', array(
-        "ADD KEY `I_unit_player_id_temporary` (`unit_player_id`)",
-        "DROP KEY `I_unit_player_location_snid`",
-      ));
-      upd_alter_table('unit', array(
-        "ADD UNIQUE KEY `I_unit_player_location_snid` (`unit_player_id`, `unit_location_type`, `unit_location_id`, `unit_snid`)",
-        "DROP KEY `I_unit_player_id_temporary`",
-      ));
+//      upd_alter_table('unit', "ADD KEY `I_unit_player_id_temporary` (`unit_player_id`)", !$update_indexes['unit']['I_unit_player_id_temporary']);
+//      upd_alter_table('unit', "DROP KEY `I_unit_player_location_snid`", $update_indexes['unit']['I_unit_player_location_snid']);
+      upd_alter_table('unit', "ADD KEY `I_unit_player_location_snid` (`unit_player_id`, `unit_location_type`, `unit_location_id`, `unit_snid`)", !$update_indexes['unit']['I_unit_player_location_snid']);
+      upd_alter_table('unit', "DROP KEY `I_unit_player_id_temporary`", $update_indexes['unit']['I_unit_player_id_temporary']);
 
       $sn_data_artifacts = &$sn_data['groups']['artifacts'];
       $db_changeset = array();

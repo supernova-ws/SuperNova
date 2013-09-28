@@ -157,21 +157,28 @@ if(file_exists($update_file))
 {
   if(filemtime($update_file) > $config->db_loadItem('var_db_update') || $config->db_loadItem('db_version') < DB_VERSION)
   {
-    if($time_now >= $config->var_db_update_end)
+    if(defined('IN_ADMIN'))
     {
-      $config->db_saveItem('var_db_update_end', $time_now + $config->upd_lock_time);
+      if($time_now >= $config->var_db_update_end)
+      {
+        $config->db_saveItem('var_db_update_end', $time_now + $config->upd_lock_time);
 
-      require_once($update_file);
-      sys_refresh_tablelist($db_prefix);
+        require_once($update_file);
+        sys_refresh_tablelist($db_prefix);
 
-      $time_now = time();
-      $config->db_saveItem('var_db_update', $time_now);
-      $config->db_saveItem('var_db_update_end', $time_now);
+        $time_now = time();
+        $config->db_saveItem('var_db_update', $time_now);
+        $config->db_saveItem('var_db_update_end', $time_now);
+      }
+      elseif(filemtime($update_file) > $config->var_db_update)
+      {
+        $timeout = $config->var_db_update_end - $time_now;
+        die("Обновляется база данных. Рассчетное время окончания - {$timeout} секунд (время обновления может увеличиваться). Пожалуйста, подождите...<br>Obnovljaetsja baza dannyh. Rasschetnoe vremya okonchanija - {$timeout} secund. Pozhalujsta, podozhdute...<br>Database update in progress. Estimated update time {$timeout} seconds (can increase depending on update process). Please wait...");
+      }
     }
-    elseif(filemtime($update_file) > $config->var_db_update)
+    else
     {
-      $timeout = $config->var_db_update_end - $time_now;
-      die("Обновляется база данных. Рассчетное время окончания - {$timeout} секунд (время обновления может увеличиваться). Пожалуйста, подождите...<br>Obnovljaetsja baza dannyh. Rasschetnoe vremya okonchanija - {$timeout} secund. Pozhalujsta, podozhdute...<br>Database update in progress. Estimated update time {$timeout} seconds (can increase depending on update process). Please wait...");
+      die("Обновляется база данных. Пожалуйста, подождите...<br>Obnovljaetsja baza dannyh. Pozhalujsta, podozhdute...<br>Database update in progress. Please wait...");
     }
   }
 }
@@ -362,5 +369,3 @@ function sys_refresh_tablelist($db_prefix)
   }
   $sn_cache->tables = $tl;
 }
-
-?>
