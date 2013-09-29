@@ -115,3 +115,5 @@ if($sn_mvc['model'][''])
     }
   }
 }
+
+sys_user_options_unpack($user);
