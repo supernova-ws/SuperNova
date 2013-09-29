@@ -178,6 +178,11 @@ function eco_build($que_type, $user, &$planet, $que)
 
     'QUE_ID'             => $que_type,
 
+    'ARTIFACT_ID'         => ART_NANO_BUILDER,
+    'ARTIFACT_LEVEL'      => mrc_get_level($user, array(), ART_NANO_BUILDER),
+    'ARTIFACT_NAME'       => $lang['tech'][ART_NANO_BUILDER],
+    'REQUEST_URI'         => urlencode($_SERVER['REQUEST_URI']),
+
     'METAL'              => $planet['metal'],
     'CRYSTAL'            => $planet['crystal'],
     'DEUTERIUM'          => $planet['deuterium'],

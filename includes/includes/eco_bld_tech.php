@@ -162,6 +162,11 @@ function eco_bld_tech(&$user, &$planet, $que = array())
     'FLEET_OWN_COUNT'     => $fleet_list['own']['count'],
     'QUE_ID'              => QUE_RESEARCH,
 
+    'ARTIFACT_ID'         => ART_HEURISTIC_CHIP,
+    'ARTIFACT_LEVEL'      => mrc_get_level($user, array(), ART_HEURISTIC_CHIP),
+    'ARTIFACT_NAME'       => $lang['tech'][ART_HEURISTIC_CHIP],
+    'REQUEST_URI'         => $_SERVER['REQUEST_URI'],
+
     // TODO: Вынести в модуль
     'CONFIG_RESEARCH_QUE' => $config->server_que_length_research,
   ));

@@ -26,6 +26,9 @@
     <tr>
       <td colspan="2" class="c" align="center">
         <div class="fl"><form method="post"><input type="submit" value="{L_eco_que_clear}"><input type="hidden" name="action" value="clear"></form></div>
+        <!-- IF ARTIFACT_LEVEL -->
+        <form style="display:inline;" method="post" action="artifacts.php"><input type="submit" value="{ARTIFACT_NAME}"><input type="hidden" name="action" value="{D_ACTION_USE}"/><input type="hidden" name="unit_id" value="{ARTIFACT_ID}" /><input type="hidden" name="REQUEST_URI" value="{REQUEST_URI}" /></form>
+        <!-- ENDIF -->
         <!-- IF CONFIG_RESEARCH_QUE > 1 -->
         <div class="fr"><form method="post"><input type="submit" value="{L_eco_que_trim}"><input type="hidden" name="action" value="trim"></form></div>
         <!-- ENDIF -->

@@ -990,6 +990,8 @@ print('<hr />');
 //
 //  $user['que'] = implode(',', $que_item);
 //  doquery("UPDATE `{{users}}` SET {$update_add}`que` = '{$user['que']}' WHERE `id` = '{$user['id']}' LIMIT 1");
+  $user =   doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
+  // TODO Так же пересчитывать планеты
 
   sn_db_transaction_commit();
 }

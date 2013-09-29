@@ -15,14 +15,25 @@
           </tr>
           <tr>
             <th class="c_c"<!-- IF ! U_opt_int_struc_vertical --> colspan="5"<!-- ENDIF -->>
-              <div class="fl"><a href="buildings.php?mode={QUE_ID}&action=clear">{L_eco_que_clear}</a></div>
+              <div class="fl"><a class="link" href="buildings.php?mode={QUE_ID}&action=clear">{L_eco_que_clear}</a></div>
 <!-- IF U_opt_int_struc_vertical -->
             </th>
           </tr>
           <tr>
             <th class="c_c">
 <!-- ENDIF -->
-              <div class="fr"><a href="buildings.php?mode={QUE_ID}&action=trim">{L_eco_que_trim}</a></div>
+
+        <!-- IF ARTIFACT_LEVEL -->
+        <a class="link" href="artifacts.php?action={D_ACTION_USE}&unit_id={ARTIFACT_ID}&REQUEST_URI=buildings.php?mode={QUE_ID}">{ARTIFACT_NAME}</a>
+        <!-- ENDIF -->
+
+<!-- IF U_opt_int_struc_vertical -->
+            </th>
+          </tr>
+          <tr>
+            <th class="c_c">
+<!-- ENDIF -->
+              <div class="fr"><a class="link" href="buildings.php?mode={QUE_ID}&action=trim">{L_eco_que_trim}</a></div>
             </th>
           </tr>
         </table>

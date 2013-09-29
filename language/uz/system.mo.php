@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version #37a13.6#
+* @version #37a13.8#
 *
 */
 
@@ -317,6 +317,7 @@ $lang = array_merge($lang, array(
   'eco_que_empty' => 'Navbat bosh',
   'eco_que_clear' => 'Navbatni bo`shatish',
   'eco_que_trim'  => 'Ohirgi navbatni bo`shatish',
+  'eco_que_artifact'  => 'Использовать Артефакт',
 
   'sys_cancel' => 'Bekor qilish',
 

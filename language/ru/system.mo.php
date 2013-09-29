@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #37a13.6#
+* @version #37a13.8#
 *
 */
 
@@ -319,6 +319,7 @@ $lang = array_merge($lang, array(
   'eco_que_empty' => 'Очередь пуста',
   'eco_que_clear' => 'Очистить очередь',
   'eco_que_trim'  => 'Отменить последнее',
+  'eco_que_artifact'  => 'Использовать Артефакт',
 
   'sys_cancel' => 'Отменить',
 

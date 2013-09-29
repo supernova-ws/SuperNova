@@ -112,7 +112,7 @@ function art_use(&$user, &$planetrow, $unit_id)
             $query_string .= $value['STRING'];
           }
           doquery("UPDATE {{planets}} SET `que` = '{$query_string}' WHERE `id` = {$planetrow['id']} LIMIT 1;");
-          $message = sprintf($lang['art_nano_builder_ok'], $que_item['MODE'] == BUILD_CREATE ? $lang['art_nano_builder_build'] : $lang['art_nano_builder_destroy'], $lang['tech'][$que_item['ID']], $que_item['AMOUNT'], $planetrow['name'], uni_render_coordinates($planetrow), $old_time - $que_item['TIME']);
+          $message = sprintf($lang['art_nano_builder_ok'], $que_item['MODE'] == BUILD_CREATE ? $lang['art_nano_builder_build'] : $lang['art_nano_builder_destroy'], $lang['tech'][$que_item['ID']], mrc_get_level($user, $planetrow, $que_item['ID'], false, true) + $que_item['AMOUNT'], $planetrow['name'], uni_render_coordinates($planetrow), $old_time - $que_item['TIME']);
           msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_nano_builder_subj'], $lang['art_nano_builder_subj'], $message);
         }
         else
@@ -134,5 +134,7 @@ function art_use(&$user, &$planetrow, $unit_id)
   }
 
   sn_db_transaction_commit();
-  message($message, "{$lang['tech'][UNIT_ARTIFACTS]} - {$lang['tech'][$unit_id]}", 'artifacts.' . PHP_EX . '#' . $unit_id, 5);
+  message($message, "{$lang['tech'][UNIT_ARTIFACTS]} - {$lang['tech'][$unit_id]}", 
+    ($request_uri = sys_get_param_str_raw('REQUEST_URI')) ? $request_uri : ('artifacts.' . PHP_EX . '#' . $unit_id),
+  5);
 }

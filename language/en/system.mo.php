@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a13.6
+* @version 37a13.8
 *
 */
 
@@ -319,10 +319,11 @@ $lang = array_merge($lang, array(
     QUE_RESEARCH   => 'Research',
   ),
 
-  'eco_que'       => 'Queue',
-  'eco_que_empty' => 'Queue is empty',
-  'eco_que_clear' => 'Clear queue',
-  'eco_que_trim'  => 'Undo last queue',
+  'eco_que'          => 'Queue',
+  'eco_que_empty'    => 'Queue is empty',
+  'eco_que_clear'    => 'Clear queue',
+  'eco_que_trim'     => 'Undo last queue',
+  'eco_que_artifact' => 'Use Artifact',
 
   'sys_overview'			=> 'Overview',
   'mod_marchand'			=> 'Trader',
