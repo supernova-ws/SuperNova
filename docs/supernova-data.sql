@@ -1,4 +1,4 @@
--- ----------------------------
+﻿-- ----------------------------
 -- Default server configuration
 -- ----------------------------
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '<script type=\"text/javascript\"><!--\r\ngoogle_ad_client = \"pub-1914310741599503\";\r\n/* oGame */\r\ngoogle_ad_slot = \"2544836773\";\r\ngoogle_ad_width = 125;\r\ngoogle_ad_height = 125;\r\n//-->\r\n</script>\r\n<script type=\"text/javascript\"\r\nsrc=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\r\n</script>\r\n');
@@ -15,8 +15,8 @@ INSERT INTO `sn_config` VALUES ('ally_help_weak', '0');
 INSERT INTO `sn_config` VALUES ('avatar_max_height', '128');
 INSERT INTO `sn_config` VALUES ('avatar_max_width', '128');
 INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
-INSERT INTO `sn_config` VALUES ('chat_highlight_developer', '<span class=\"nick_developer\">$1</span>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_admin', '<span class=\"nick_admin\">$1</span>');
+INSERT INTO `sn_config` VALUES ('chat_highlight_developer', '<span class=\"nick_developer\">$1</span>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_premium', '<span class=\"nick_premium\">$1</span>');
@@ -25,7 +25,7 @@ INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
 INSERT INTO `sn_config` VALUES ('db_prefix', 'sn_');
-INSERT INTO `sn_config` VALUES ('db_version', '34');
+INSERT INTO `sn_config` VALUES ('db_version', '36');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
@@ -135,9 +135,9 @@ INSERT INTO `sn_config` VALUES ('uni_price_galaxy', '10000');
 INSERT INTO `sn_config` VALUES ('uni_price_system', '1000');
 INSERT INTO `sn_config` VALUES ('upd_lock_time', '60');
 INSERT INTO `sn_config` VALUES ('url_dark_matter', '');
-INSERT INTO `sn_config` VALUES ('url_faq', 'http://supernova.ws/faq/SuperNova.ws.html');
-INSERT INTO `sn_config` VALUES ('url_forum', 'http://forum.supernova.ws/');
-INSERT INTO `sn_config` VALUES ('url_rules', 'http://forum.supernova.ws/viewtopic.php?f=3&t=974');
+INSERT INTO `sn_config` VALUES ('url_faq', '');
+INSERT INTO `sn_config` VALUES ('url_forum', '');
+INSERT INTO `sn_config` VALUES ('url_rules', '');
 INSERT INTO `sn_config` VALUES ('users_amount', '1');
 INSERT INTO `sn_config` VALUES ('user_birthday_celebrate', '0');
 INSERT INTO `sn_config` VALUES ('user_birthday_gift', '0');
@@ -156,6 +156,11 @@ INSERT INTO `sn_config` VALUES ('var_stat_update_msg', '');
 -- Password: admin
 -- ----------------------------
 INSERT INTO `sn_users` (`id`, `username`, `password`, `email`, `email_2`, `authlevel`, `id_planet`, `galaxy`, `system`, `planet`, `current_planet`, `register_time`, `onlinetime`, `noipcheck`, `sex`) VALUES (1, 'admin',  '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 3, 1, 1, 1, 1, 1, UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(NOW()), 1, 'M');
+
+-- ----------------------------
+-- Reserved 'admin' name
+-- ----------------------------
+INSERT INTO `sn_player_name_history` VALUES ('1', 'admin', '2013-10-13 22:35:51');
 
 -- ----------------------------
 -- Administrator's planet

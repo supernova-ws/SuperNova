@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2012-12-30 17:44:03
+Date: 2013-10-13 22:36:25
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -66,6 +66,8 @@ CREATE TABLE `sn_alliance` (
   UNIQUE KEY `i_ally_name` (`ally_name`),
   UNIQUE KEY `i_ally_tag` (`ally_tag`),
   KEY `I_ally_user_id` (`ally_user_id`),
+  KEY `FK_alliance_owner` (`ally_owner`),
+  CONSTRAINT `FK_alliance_owner` FOREIGN KEY (`ally_owner`) REFERENCES `sn_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `FK_ally_ally_user_id` FOREIGN KEY (`ally_user_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -324,9 +326,11 @@ CREATE TABLE `sn_chat_player` (
   `chat_player_invisible` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Player invisibility',
   `chat_player_muted` int(11) NOT NULL DEFAULT '0' COMMENT 'Player is muted',
   `chat_player_mute_reason` varchar(256) NOT NULL DEFAULT '' COMMENT 'Player mute reason',
+  `chat_player_refresh_last` int(11) NOT NULL DEFAULT '0' COMMENT 'Player last refresh time',
   PRIMARY KEY (`chat_player_id`),
   UNIQUE KEY `chat_player_id` (`chat_player_id`),
   KEY `I_chat_player_id` (`chat_player_player_id`),
+  KEY `I_chat_player_refresh_last` (`chat_player_refresh_last`),
   CONSTRAINT `FK_chat_player_id` FOREIGN KEY (`chat_player_player_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -344,6 +348,7 @@ CREATE TABLE `sn_config` (
   PRIMARY KEY (`config_name`),
   KEY `i_config_name` (`config_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- ----------------------------
 -- Table structure for `sn_confirmations`
@@ -394,7 +399,7 @@ CREATE TABLE `sn_counter` (
 DROP TABLE IF EXISTS `sn_fleets`;
 CREATE TABLE `sn_fleets` (
   `fleet_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `fleet_owner` int(11) NOT NULL DEFAULT '0',
+  `fleet_owner` bigint(20) unsigned DEFAULT NULL,
   `fleet_mission` int(11) NOT NULL DEFAULT '0',
   `fleet_amount` bigint(11) NOT NULL DEFAULT '0',
   `fleet_array` text,
@@ -431,6 +436,7 @@ CREATE TABLE `sn_fleets` (
   KEY `fleet_group` (`fleet_group`),
   KEY `I_fleet_start_planet_id` (`fleet_start_planet_id`),
   KEY `I_fleet_end_planet_id` (`fleet_end_planet_id`),
+  CONSTRAINT `FK_fleet_owner` FOREIGN KEY (`fleet_owner`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_fleet_planet_end` FOREIGN KEY (`fleet_end_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `FK_fleet_planet_start` FOREIGN KEY (`fleet_start_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -589,8 +595,7 @@ CREATE TABLE `sn_payment` (
   `payment_external_currency` varchar(3) NOT NULL DEFAULT '' COMMENT 'Payment system currency',
   PRIMARY KEY (`payment_id`),
   KEY `I_payment_user` (`payment_user_id`,`payment_user_name`),
-  KEY `I_payment_module_internal_id` (`payment_module_name`,`payment_external_id`),
-  CONSTRAINT `FK_payment_user` FOREIGN KEY (`payment_user_id`, `payment_user_name`) REFERENCES `sn_users` (`id`, `username`) ON DELETE NO ACTION ON UPDATE CASCADE
+  KEY `I_payment_module_internal_id` (`payment_module_name`,`payment_external_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -701,49 +706,14 @@ CREATE TABLE `sn_planets` (
   `ship_battleship_pride` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Martian Pride',
   `ship_cargo_greed` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Republican Greed',
   `ship_sattelite_sloth_porcent` tinyint(3) unsigned NOT NULL DEFAULT '10' COMMENT 'Terran Sloth production',
+  `ship_orbital_heavy` bigint(20) NOT NULL DEFAULT '0' COMMENT 'HOPe - Heavy Orbital Platform',
+  `density` smallint(6) NOT NULL DEFAULT '5500' COMMENT 'Planet average density kg/m3',
+  `density_index` tinyint(4) NOT NULL DEFAULT '4' COMMENT 'Planet cached density index',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `owner_type` (`id_owner`,`planet_type`),
   KEY `i_metal` (`metal`),
   KEY `id_level` (`id_level`),
-  KEY `i_metal_mine` (`metal_mine`,`id_level`),
-  KEY `i_crystal_mine` (`crystal_mine`,`id_level`),
-  KEY `i_deuterium_sintetizer` (`deuterium_sintetizer`,`id_level`),
-  KEY `i_solar_plant` (`solar_plant`,`id_level`),
-  KEY `i_fusion_plant` (`fusion_plant`,`id_level`),
-  KEY `i_robot_factory` (`robot_factory`,`id_level`),
-  KEY `i_nano_factory` (`nano_factory`,`id_level`),
-  KEY `i_hangar` (`hangar`,`id_level`),
-  KEY `i_metal_store` (`metal_store`,`id_level`),
-  KEY `i_crystal_store` (`crystal_store`,`id_level`),
-  KEY `i_deuterium_store` (`deuterium_store`,`id_level`),
-  KEY `i_laboratory` (`laboratory`,`id_level`),
-  KEY `i_silo` (`silo`,`id_level`),
-  KEY `i_small_ship_cargo` (`small_ship_cargo`,`id_level`),
-  KEY `i_big_ship_cargo` (`big_ship_cargo`,`id_level`),
-  KEY `i_light_hunter` (`light_hunter`,`id_level`),
-  KEY `i_heavy_hunter` (`heavy_hunter`,`id_level`),
-  KEY `i_crusher` (`crusher`,`id_level`),
-  KEY `i_battle_ship` (`battle_ship`,`id_level`),
-  KEY `i_colonizer` (`colonizer`,`id_level`),
-  KEY `i_recycler` (`recycler`,`id_level`),
-  KEY `i_spy_sonde` (`spy_sonde`,`id_level`),
-  KEY `i_bomber_ship` (`bomber_ship`,`id_level`),
-  KEY `i_solar_satelit` (`solar_satelit`,`id_level`),
-  KEY `i_destructor` (`destructor`,`id_level`),
-  KEY `i_dearth_star` (`dearth_star`,`id_level`),
-  KEY `i_battleship` (`battleship`,`id_level`),
-  KEY `i_misil_launcher` (`misil_launcher`,`id_level`),
-  KEY `i_small_laser` (`small_laser`,`id_level`),
-  KEY `i_big_laser` (`big_laser`,`id_level`),
-  KEY `i_gauss_canyon` (`gauss_canyon`,`id_level`),
-  KEY `i_ionic_canyon` (`ionic_canyon`,`id_level`),
-  KEY `i_buster_canyon` (`buster_canyon`,`id_level`),
-  KEY `i_small_protection_shield` (`small_protection_shield`,`id_level`),
-  KEY `i_big_protection_shield` (`big_protection_shield`,`id_level`),
-  KEY `i_interceptor_misil` (`interceptor_misil`,`id_level`),
-  KEY `i_interplanetary_misil` (`interplanetary_misil`,`id_level`),
-  KEY `i_nano` (`nano`,`id_level`),
   KEY `i_last_update` (`last_update`),
   KEY `GSPT` (`galaxy`,`system`,`planet`,`planet_type`),
   KEY `i_parent_planet` (`parent_planet`),
@@ -752,8 +722,69 @@ CREATE TABLE `sn_planets` (
   KEY `I_ship_recycler_gluttony` (`ship_recycler_gluttony`,`id_level`),
   KEY `I_ship_fighter_wrath` (`ship_fighter_wrath`,`id_level`),
   KEY `I_ship_battleship_pride` (`ship_battleship_pride`,`id_level`),
-  KEY `I_ship_cargo_greed` (`ship_cargo_greed`,`id_level`)
+  KEY `I_ship_cargo_greed` (`ship_cargo_greed`,`id_level`),
+  KEY `I_metal_mine` (`id_owner`,`metal_mine`),
+  KEY `I_crystal_mine` (`id_owner`,`crystal_mine`),
+  KEY `I_deuterium_sintetizer` (`id_owner`,`deuterium_sintetizer`),
+  KEY `I_solar_plant` (`id_owner`,`solar_plant`),
+  KEY `I_fusion_plant` (`id_owner`,`fusion_plant`),
+  KEY `I_robot_factory` (`id_owner`,`robot_factory`),
+  KEY `I_hangar` (`id_owner`,`hangar`),
+  KEY `I_nano_factory` (`id_owner`,`nano_factory`),
+  KEY `I_laboratory` (`id_owner`,`laboratory`),
+  KEY `I_nano` (`id_owner`,`nano`),
+  KEY `I_silo` (`id_owner`,`silo`),
+  KEY `I_metal_store` (`id_owner`,`metal_store`),
+  KEY `I_crystal_store` (`id_owner`,`crystal_store`),
+  KEY `I_deuterium_store` (`id_owner`,`deuterium_store`),
+  KEY `I_ally_deposit` (`id_owner`,`ally_deposit`),
+  KEY `I_terraformer` (`id_owner`,`terraformer`),
+  KEY `I_mondbasis` (`id_owner`,`mondbasis`),
+  KEY `I_phalanx` (`id_owner`,`phalanx`),
+  KEY `I_sprungtor` (`id_owner`,`sprungtor`),
+  KEY `I_light_hunter` (`id_owner`,`light_hunter`),
+  KEY `I_heavy_hunter` (`id_owner`,`heavy_hunter`),
+  KEY `I_crusher` (`id_owner`,`crusher`),
+  KEY `I_battle_ship` (`id_owner`,`battle_ship`),
+  KEY `I_bomber_ship` (`id_owner`,`bomber_ship`),
+  KEY `I_battleship` (`id_owner`,`battleship`),
+  KEY `I_destructor` (`id_owner`,`destructor`),
+  KEY `I_dearth_star` (`id_owner`,`dearth_star`),
+  KEY `I_supernova` (`id_owner`,`supernova`),
+  KEY `I_small_ship_cargo` (`id_owner`,`small_ship_cargo`),
+  KEY `I_big_ship_cargo` (`id_owner`,`big_ship_cargo`),
+  KEY `I_supercargo` (`id_owner`,`supercargo`),
+  KEY `I_planet_cargo_hyper` (`id_owner`,`planet_cargo_hyper`),
+  KEY `I_recycler` (`id_owner`,`recycler`),
+  KEY `I_colonizer` (`id_owner`,`colonizer`),
+  KEY `I_spy_sonde` (`id_owner`,`spy_sonde`),
+  KEY `I_solar_satelit` (`id_owner`,`solar_satelit`),
+  KEY `I_misil_launcher` (`id_owner`,`misil_launcher`),
+  KEY `I_small_laser` (`id_owner`,`small_laser`),
+  KEY `I_big_laser` (`id_owner`,`big_laser`),
+  KEY `I_gauss_canyon` (`id_owner`,`gauss_canyon`),
+  KEY `I_ionic_canyon` (`id_owner`,`ionic_canyon`),
+  KEY `I_buster_canyon` (`id_owner`,`buster_canyon`),
+  KEY `I_small_protection_shield` (`id_owner`,`small_protection_shield`),
+  KEY `I_big_protection_shield` (`id_owner`,`big_protection_shield`),
+  KEY `I_planet_protector` (`id_owner`,`planet_protector`),
+  KEY `I_interceptor_misil` (`id_owner`,`interceptor_misil`),
+  KEY `I_interplanetary_misil` (`id_owner`,`interplanetary_misil`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+
+-- ----------------------------
+-- Table structure for `sn_player_name_history`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_player_name_history`;
+CREATE TABLE `sn_player_name_history` (
+  `player_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Player ID',
+  `player_name` varchar(32) NOT NULL COMMENT 'Historical player name',
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'When player changed name',
+  PRIMARY KEY (`player_name`),
+  KEY `I_player_name_history_id_name` (`player_id`,`player_name`),
+  CONSTRAINT `FK_player_name_history_id` FOREIGN KEY (`player_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for `sn_powerup`
@@ -779,6 +810,38 @@ CREATE TABLE `sn_powerup` (
 
 -- ----------------------------
 -- Records of sn_powerup
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_que`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_que`;
+CREATE TABLE `sn_que` (
+  `que_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Internal que id',
+  `que_player_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Que owner ID',
+  `que_planet_id` bigint(20) unsigned DEFAULT NULL COMMENT 'Which planet this que item belongs',
+  `que_planet_id_origin` bigint(20) unsigned DEFAULT NULL COMMENT 'Planet spawner ID',
+  `que_type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Que type',
+  `que_time_left` decimal(20,5) unsigned NOT NULL DEFAULT '0.00000' COMMENT 'Build time left from last activity',
+  `que_unit_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit ID',
+  `que_unit_amount` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Amount left to build',
+  `que_unit_mode` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Build/Destroy',
+  `que_unit_level` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit level. Informational field',
+  `que_unit_time` decimal(20,5) NOT NULL DEFAULT '0.00000' COMMENT 'Time to build one unit. Informational field',
+  `que_unit_price` varchar(128) NOT NULL DEFAULT '' COMMENT 'Price per unit - for correct trim/clear in case of global price events',
+  PRIMARY KEY (`que_id`),
+  UNIQUE KEY `que_id` (`que_id`),
+  KEY `I_que_player_type_planet` (`que_player_id`,`que_type`,`que_planet_id`,`que_id`),
+  KEY `I_que_player_type` (`que_player_id`,`que_type`,`que_id`),
+  KEY `I_que_planet_id` (`que_planet_id`),
+  KEY `FK_que_planet_id_origin` (`que_planet_id_origin`),
+  CONSTRAINT `FK_que_player_id` FOREIGN KEY (`que_player_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_que_planet_id` FOREIGN KEY (`que_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_que_planet_id_origin` FOREIGN KEY (`que_planet_id_origin`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_que
 -- ----------------------------
 
 -- ----------------------------
@@ -972,7 +1035,8 @@ CREATE TABLE `sn_ube_report` (
   `ube_report_debris_crystal` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Crystal debris',
   PRIMARY KEY (`ube_report_id`),
   UNIQUE KEY `ube_report_id` (`ube_report_id`),
-  KEY `I_ube_report_cypher` (`ube_report_cypher`)
+  KEY `I_ube_report_cypher` (`ube_report_cypher`),
+  KEY `I_ube_report_time_combat` (`ube_report_time_combat`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -1128,9 +1192,11 @@ CREATE TABLE `sn_unit` (
   `unit_type` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit type',
   `unit_snid` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit SuperNova ID',
   `unit_level` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT 'Unit level or count - dependent of unit_type',
+  `unit_time_start` datetime DEFAULT NULL COMMENT 'Unit activation start time',
+  `unit_time_finish` datetime DEFAULT NULL COMMENT 'Unit activation end time',
   PRIMARY KEY (`unit_id`),
-  UNIQUE KEY `unit_id` (`unit_id`),
   KEY `I_unit_player_location_snid` (`unit_player_id`,`unit_location_type`,`unit_location_id`,`unit_snid`),
+  KEY `I_unit_record_search` (`unit_snid`,`unit_player_id`,`unit_level`,`unit_id`),
   CONSTRAINT `FK_unit_player_id` FOREIGN KEY (`unit_player_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1160,29 +1226,11 @@ CREATE TABLE `sn_universe` (
 DROP TABLE IF EXISTS `sn_users`;
 CREATE TABLE `sn_users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(64) NOT NULL DEFAULT '',
+  `username` varchar(32) NOT NULL DEFAULT '' COMMENT 'Player name',
   `authlevel` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `vacation` int(11) unsigned DEFAULT '0',
   `banaday` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'User ban status',
   `dark_matter` bigint(20) DEFAULT '0',
-  `spy_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `computer_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `military_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `defence_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `shield_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `energy_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `hyperspace_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `combustion_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `impulse_motor_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `hyperspace_motor_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `laser_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `ionic_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `buster_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `intergalactic_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `expedition_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `colonisation_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `graviton_tech` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `player_artifact_list` text,
   `ally_id` bigint(20) unsigned DEFAULT NULL,
   `ally_tag` varchar(8) DEFAULT NULL,
   `ally_name` varchar(32) DEFAULT NULL,
@@ -1230,6 +1278,9 @@ CREATE TABLE `sn_users` (
   `user_proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)',
   `register_time` int(10) unsigned DEFAULT '0',
   `onlinetime` int(10) unsigned DEFAULT '0',
+  `user_time_diff` int(11) DEFAULT NULL COMMENT 'User time difference with server time',
+  `user_time_utc_offset` int(11) DEFAULT NULL COMMENT 'User time difference with server time',
+  `user_time_diff_forced` tinyint(1) DEFAULT '0' COMMENT 'User time difference forced with time zone selection flag',
   `dpath` varchar(255) NOT NULL DEFAULT '',
   `design` tinyint(4) unsigned NOT NULL DEFAULT '1',
   `noipcheck` tinyint(4) unsigned NOT NULL DEFAULT '1',
@@ -1248,7 +1299,6 @@ CREATE TABLE `sn_users` (
   `metal` decimal(65,5) NOT NULL DEFAULT '0.00000',
   `crystal` decimal(65,5) NOT NULL DEFAULT '0.00000',
   `deuterium` decimal(65,5) NOT NULL DEFAULT '0.00000',
-  `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'User que',
   `user_birthday` date DEFAULT NULL COMMENT 'User birthday',
   `user_birthday_celebrated` date DEFAULT NULL COMMENT 'Last time where user got birthday gift',
   `player_race` int(11) NOT NULL DEFAULT '0' COMMENT 'Player''s race',
@@ -1286,8 +1336,8 @@ INSERT INTO `sn_config` VALUES ('ally_help_weak', '0');
 INSERT INTO `sn_config` VALUES ('avatar_max_height', '128');
 INSERT INTO `sn_config` VALUES ('avatar_max_width', '128');
 INSERT INTO `sn_config` VALUES ('BuildLabWhileRun', '0');
-INSERT INTO `sn_config` VALUES ('chat_highlight_developer', '<span class=\"nick_developer\">$1</span>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_admin', '<span class=\"nick_admin\">$1</span>');
+INSERT INTO `sn_config` VALUES ('chat_highlight_developer', '<span class=\"nick_developer\">$1</span>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_premium', '<span class=\"nick_premium\">$1</span>');
@@ -1296,7 +1346,7 @@ INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
 INSERT INTO `sn_config` VALUES ('db_prefix', 'sn_');
-INSERT INTO `sn_config` VALUES ('db_version', '35');
+INSERT INTO `sn_config` VALUES ('db_version', '36');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
@@ -1406,9 +1456,9 @@ INSERT INTO `sn_config` VALUES ('uni_price_galaxy', '10000');
 INSERT INTO `sn_config` VALUES ('uni_price_system', '1000');
 INSERT INTO `sn_config` VALUES ('upd_lock_time', '60');
 INSERT INTO `sn_config` VALUES ('url_dark_matter', '');
-INSERT INTO `sn_config` VALUES ('url_faq', 'http://supernova.ws/faq/SuperNova.ws.html');
-INSERT INTO `sn_config` VALUES ('url_forum', 'http://forum.supernova.ws/');
-INSERT INTO `sn_config` VALUES ('url_rules', 'http://forum.supernova.ws/viewtopic.php?f=3&t=974');
+INSERT INTO `sn_config` VALUES ('url_faq', '');
+INSERT INTO `sn_config` VALUES ('url_forum', '');
+INSERT INTO `sn_config` VALUES ('url_rules', '');
 INSERT INTO `sn_config` VALUES ('users_amount', '1');
 INSERT INTO `sn_config` VALUES ('user_birthday_celebrate', '0');
 INSERT INTO `sn_config` VALUES ('user_birthday_gift', '0');
@@ -1429,6 +1479,12 @@ INSERT INTO `sn_config` VALUES ('var_stat_update_msg', '');
 INSERT INTO `sn_users` (`id`, `username`, `password`, `email`, `email_2`, `authlevel`, `id_planet`, `galaxy`, `system`, `planet`, `current_planet`, `register_time`, `onlinetime`, `noipcheck`, `sex`) VALUES (1, 'admin',  '21232f297a57a5a743894a0e4a801fc3', 'root@localhost', 'root@localhost', 3, 1, 1, 1, 1, 1, UNIX_TIMESTAMP(NOW()), UNIX_TIMESTAMP(NOW()), 1, 'M');
 
 -- ----------------------------
+-- Reserved 'admin' name
+-- ----------------------------
+INSERT INTO `sn_player_name_history` VALUES ('1', 'admin', '2013-10-13 22:35:51');
+
+-- ----------------------------
 -- Administrator's planet
 -- ----------------------------
 INSERT INTO `sn_planets` (`id`, `name`, `id_owner`, `id_level`, `galaxy`, `system`, `planet`, `planet_type`, `last_update`) VALUES (1, 'Planet', 1, 0, 1, 1, 1, 1, UNIX_TIMESTAMP(NOW()));
+
