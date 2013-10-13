@@ -1213,14 +1213,6 @@ switch($new_version)
     upd_check_key('payment_currency_exchange_wmu', 1.05,             !$config->payment_currency_exchange_wmu);
     upd_check_key('payment_currency_exchange_wmz', 0.126582278481,   !$config->payment_currency_exchange_wmz);
 
-    upd_check_key('payment_currency_exchange_eur', 0.09259259259259,  true);
-    upd_check_key('payment_currency_exchange_rub', 4.0,               true);
-    upd_check_key('payment_currency_exchange_usd', 0.125,             true);
-    upd_check_key('payment_currency_exchange_wme', 0.0952380952381,   true);
-    upd_check_key('payment_currency_exchange_wmr', 4.1,               true);
-    upd_check_key('payment_currency_exchange_wmu', 1.05,              true);
-    upd_check_key('payment_currency_exchange_wmz', 0.126582278481,    true);
-
     upd_do_query('COMMIT;', true);
 //    $new_version = 37;
 };

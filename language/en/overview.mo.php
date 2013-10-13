@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a13.2
+* @version 37a13.13
 *
 */
 
@@ -174,5 +174,13 @@ $lang = array_merge($lang, array(
   'ov_capital_err_capital_already' => 'This planet is already the capital',
   'ov_capital_err_no_dark_matter' => 'There is not enough Dark Matter to transfer capital',
   'ov_capital_err_not_a_planet' => 'Only a planet can be capital',
+
+  'ov_core_type_current' => 'Current core type',
+  'ov_core_change_to' => 'Change to',
+  'ov_core_err_none' => 'Planet core type succesfully changed from "%s" to "%s".<br />New average planet density %d kg/m3',
+  'ov_core_err_not_a_planet' => 'Only planet core type could be changed',
+  'ov_core_err_denisty_type_wrong' => 'Wrong core type',
+  'ov_core_err_same_density' => 'New core type does not differ from current one - nothing to change',
+  'ov_core_err_no_dark_matter' => 'There are not enough Dark Matter to change core type',
 
 ));

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version 37a13.2
+* @version 37a13.13
 *
 */
 
@@ -174,5 +174,13 @@ $lang = array_merge($lang, array(
   'ov_capital_err_capital_already' => 'Bu sayyora avvalroq Bosh Qarorgoh qilingan.',
   'ov_capital_err_no_dark_matter' => 'Bu sayyorani Bosh Qarorgoh qilish uchun TM yetishmayapdi',
   'ov_capital_err_not_a_planet' => 'Faqat sayyorani Bosh qarorgoh qilsa bo`ladi',
+
+  'ov_core_type_current' => 'Текущий тип ядра',
+  'ov_core_change_to' => 'Изменить на',
+  'ov_core_err_none' => 'Тип ядра планеты успешно изменен с "%s" на "%s".<br />Новая плотность планеты %d кг/м3',
+  'ov_core_err_not_a_planet' => 'Только на планете можно менять плотность ядра',
+  'ov_core_err_denisty_type_wrong' => 'Неправильный тип ядра',
+  'ov_core_err_same_density' => 'Новый тип ядра не отличается от текущего - нечего менять',
+  'ov_core_err_no_dark_matter' => 'Не хватает Тёмной Материи для смены типа ядра',
 
 ));

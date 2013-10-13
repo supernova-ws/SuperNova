@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a13.8
+* @version 37a13.13
 *
 */
 
@@ -848,5 +848,9 @@ $lang = array_merge($lang, array(
   'sys_planet_density' => 'Density',
   'sys_planet_density_units' => 'kg/m&sup3;',
   'sys_planet_density_core' => 'Core type',
+
+  'sys_change' => 'Change',
+  'sys_show' => 'Show',
+  'sys_hide' => 'Hide',
 
 ));

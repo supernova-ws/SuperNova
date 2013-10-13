@@ -8,7 +8,7 @@
     <tr>
       <td style="white-space: nowrap;" class="c" colspan=4>
         <div class="fl">{PLANET_TYPE_TEXT} "{PLANET_NAME}" <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</a></div>
-        <div class="fr"><a href="overview.php"><font color="green">[{L_ov_return}]</font></a></td></div>
+        <div class="fr"><a href="overview.php"><font color="green">[{L_ov_return}]</font></a></div>
       </td>
     </tr>
 
@@ -47,7 +47,7 @@
     </tr>
 
     <tr>
-      <td>{L_buildings_on_planet}</td>
+      <th>{L_buildings_on_planet}</th>
       <td colspan="2" class="c_c" style="position: relative; padding: 0px; height: 100%;">
         <div style="position: relative; width: 100%; height: 100%; border: 1px solid rgb(153, 153, 255); ">
           <!-- IF PLANET_FILL >= 100 -->
@@ -79,6 +79,33 @@
     </tr>
 
     <!-- IF PLANET_TYPE == 1 -->
+    <tr>
+      <th>
+        {L_sys_planet_density_core} <div class="icons icon-info link" style="display: inline-block; vertical-align: middle;" onclick="document.location='infos.php?gid={D_UNIT_PLANET_DENSITY}'"></div>
+      </th>
+      <th>
+        {L_ov_core_type_current}: "{PLANET_CORE_TEXT}"<br/>
+        <label for="density_type">{L_ov_core_change_to}</label>
+        <select name="density_type" id="density_type">
+          <!-- BEGIN densities -->
+          <option value="{densities.ID}" rest="{densities.REST}" html="{densities.COST_TEXT}" html_class="{densities.COST_TEXT_CLASS}"<!-- IF PLANET_DENSITY_INDEX == densities.ID --> selected<!-- ENDIF -->>{densities.TEXT}</option>
+          <!-- END densities -->
+        </select>
+      </th>
+      <th>
+        <input type="submit" id="transmute_button" name="transmute" value="{L_sys_change}" disabled="1"/><br />
+        {L_sys_for} <span id="transmutation_cost" class="positive">0</span> {L_sys_dark_matter_sh}
+
+        <script type="text/javascript">
+          jQuery("#density_type").change(function(){
+            selected = jQuery("#density_type option:selected");
+            $("#transmutation_cost").html(selected.attr("html")).removeClass().addClass(selected.attr("html_class"));
+            parseInt(selected.attr("rest")) <= 0 ? $("#transmute_button").attr("disabled", 1) : $("#transmute_button").removeAttr("disabled");
+          });
+        </script>
+      </th>
+    </tr>
+
     <tr>
       <th>{L_ov_teleport}</th>
       <!-- IF CAN_TELEPORT -->

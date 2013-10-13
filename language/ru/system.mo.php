@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #37a13.8#
+* @version #37a13.13#
 *
 */
 
@@ -852,6 +852,7 @@ $lang = array_merge($lang, array(
   'sys_planet_density_units' => 'кг/м&sup3;',
   'sys_planet_density_core' => 'Тип ядра',
 
+  'sys_change' => 'Изменить',
   'sys_show' => 'Показать',
   'sys_hide' => 'Скрыть',
 

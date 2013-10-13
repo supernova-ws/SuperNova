@@ -301,6 +301,17 @@ $sn_data += array(
     'bonus_type' => BONUS_ABILITY,
   ),
 
+  UNIT_PLANET_DENSITY => array(
+    'name' => 'density',
+    'type' => UNIT_PLANET_DENSITY,
+    'location' => LOC_PLANET,
+    'cost' => array(
+      RES_DARK_MATTER => 1000,
+      'factor' => 1,
+    ),
+    'bonus_type' => BONUS_ABILITY,
+  ),
+
   'groups' => array(
     // Missions
 /*

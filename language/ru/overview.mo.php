@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37a13.2
+* @version 37a13.13
 *
 */
 
@@ -178,5 +178,13 @@ $lang = array_merge($lang, array(
   'ov_capital_err_capital_already' => 'Эта планета уже является столицей Империи',
   'ov_capital_err_no_dark_matter' => 'Не хватает Тёмной Материи для переноса столицы Империи',
   'ov_capital_err_not_a_planet' => 'Только планету можно сделать столицей Империи',
+
+  'ov_core_type_current' => 'Текущий тип ядра',
+  'ov_core_change_to' => 'Изменить на',
+  'ov_core_err_none' => 'Тип ядра планеты успешно изменен с "%s" на "%s".<br />Новая плотность планеты %d кг/м3',
+  'ov_core_err_not_a_planet' => 'Только на планете можно менять плотность ядра',
+  'ov_core_err_denisty_type_wrong' => 'Неправильный тип ядра',
+  'ov_core_err_same_density' => 'Новый тип ядра не отличается от текущего - нечего менять',
+  'ov_core_err_no_dark_matter' => 'Не хватает Тёмной Материи для смены типа ядра',
 
 ));

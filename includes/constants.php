@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '36');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '37a13.11');
+define('SN_VERSION', '37a13.13');
 define('SN_RELEASE_STABLE', '36d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -174,6 +174,7 @@ define('RPG_CAPITAL', 20);
 define('RPG_RACE', 21);
 define('RPG_CAPTAIN', 22);
 define('RPG_NAME_CHANGE', 23);
+define('RPG_PLANET_DENSITY_CHANGE', 24);
 
 
 
