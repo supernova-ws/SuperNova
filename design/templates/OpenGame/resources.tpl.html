@@ -1,3 +1,5 @@
+<!-- INCLUDE _result_message -->
+
 <script type="text/javascript"><!--
 var production = Array();
 <!-- BEGIN production -->
@@ -33,6 +35,33 @@ function res_set_all(obj)
       </div>
       </th>
     </tr>
+
+    <!-- IF PLANET_TYPE == 1 -->
+    <tr>
+      <th colspan="6">
+        <form method="POST">
+        <div class="icons icon-info link" style="display: inline-block; vertical-align: middle;" onclick="document.location='infos.php?gid={D_UNIT_PLANET_DENSITY}'"></div>
+        {L_ov_core_type_current}: "{PLANET_CORE_TEXT}"<br/>
+        <label for="density_type">{L_ov_core_change_to}</label>
+        <select name="density_type" id="density_type">
+          <!-- BEGIN densities -->
+          <option value="{densities.ID}" rest="{densities.REST}" html="{densities.COST_TEXT}" html_class="{densities.COST_TEXT_CLASS}"<!-- IF PLANET_DENSITY_INDEX == densities.ID --> selected<!-- ENDIF -->>{densities.TEXT}</option>
+          <!-- END densities -->
+        </select>
+        <input type="submit" id="transmute_button" name="transmute" value="{L_sys_change}" disabled="1"/> {L_sys_for} <span id="transmutation_cost" class="positive">0</span> {L_sys_dark_matter_sh}
+        </form>
+
+        <script type="text/javascript">
+          jQuery("#density_type").change(function(){
+            selected = jQuery("#density_type option:selected");
+            $("#transmutation_cost").html(selected.attr("html")).removeClass().addClass(selected.attr("html_class"));
+            parseInt(selected.attr("rest")) <= 0 ? $("#transmute_button").attr("disabled", 1) : $("#transmute_button").removeAttr("disabled");
+          });
+        </script>
+      </th>
+    </tr>
+    <!-- ENDIF -->
+
     <tr align=center>
       <td class="c">&nbsp;</td>
       <td class="c" width="60">{L_sys_metal}</td>

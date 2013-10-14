@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #37a13.13#
+* @version #37c2#
 *
 */
 
@@ -855,5 +855,13 @@ $lang = array_merge($lang, array(
   'sys_change' => 'Изменить',
   'sys_show' => 'Показать',
   'sys_hide' => 'Скрыть',
+
+  'ov_core_type_current' => 'Текущий тип ядра',
+  'ov_core_change_to' => 'Изменить на',
+  'ov_core_err_none' => 'Тип ядра планеты успешно изменен с "%s" на "%s".<br />Новая плотность планеты %d кг/м3',
+  'ov_core_err_not_a_planet' => 'Только на планете можно менять плотность ядра',
+  'ov_core_err_denisty_type_wrong' => 'Неправильный тип ядра',
+  'ov_core_err_same_density' => 'Новый тип ядра не отличается от текущего - нечего менять',
+  'ov_core_err_no_dark_matter' => 'Не хватает Тёмной Материи для смены типа ядра',
 
 ));

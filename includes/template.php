@@ -615,4 +615,16 @@ function tpl_assign_hangar($que_type, $planet, &$template)
   return($que_length);
 }
 
-?>
+function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_matter)
+{
+  foreach($density_price_chart as $density_price_index => &$density_price_data)
+  {
+    $density_number_style = pretty_number($density_price_data['COST'], true, $user_dark_matter, false, false);
+    $density_price_data['COST_TEXT'] = $density_number_style['text'];
+    $density_price_data['COST_TEXT_CLASS'] = $density_number_style['class'];
+    $density_price_data['REST'] = $user_dark_matter - $density_price_data['COST'];
+    $density_price_data['ID'] = $density_price_index;
+
+    $template->assign_block_vars('densities', $density_price_data);
+  }
+}

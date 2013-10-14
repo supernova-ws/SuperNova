@@ -75,6 +75,7 @@ function eco_build($que_type, $user, &$planet, $que)
   //$planet_temp_max       = $planet['temp_max'];
   $sn_modifiers_resource = sn_get_groups('modifiers');
   $sn_modifiers_resource = $sn_modifiers_resource[MODIFIER_RESOURCE_PRODUCTION];
+  $density_info = $sn_data['groups']['planet_density'][$planet['density_index']][UNIT_RESOURCES];
 
   foreach($planet_type_structs as $Element)
   {
@@ -105,7 +106,7 @@ function eco_build($que_type, $user, &$planet, $que)
         $level_production[$level_start + $i]['LEVEL'] = $level_start + $i;
         foreach($element_sn_data['production'] as $resource_id => $resource_calc)
         {
-          if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($level_start + $i, 10, $user, $planet) * $config_resource_multiplier)))
+          if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($level_start + $i, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1))))
           {
             $resource_name = strtoupper($sn_data[$resource_id]['name']);
             $level_production[$level_start + $i][$resource_name] = $resource_income;

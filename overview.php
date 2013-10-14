@@ -41,16 +41,9 @@ switch($mode)
     sn_sys_sector_buy('overview.php?mode=manage');
 
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
-    $template  = gettemplate('planet_manage', true);
-    $planet_id = sys_get_param_id('planet_id');
-
-    if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name'))
-    {
-      $planetrow['name'] = $new_name;
-      $new_name = mysql_real_escape_string($new_name);
-      doquery("UPDATE {{planets}} SET `name` = '{$new_name}' WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
-    }
-    elseif(sys_get_param_str('transmute'))
+    $result = sn_sys_planet_core_transmute($user, $planetrow);
+/*
+    if(sys_get_param_str('transmute'))
     {
       try
       {
@@ -114,8 +107,8 @@ switch($mode)
         $planetrow['density'] = $new_density;
         $planetrow['density_index'] = $new_density_index;
         $result = array(
-          'result'  => ERR_NONE,
-          'message' => sprintf($lang['ov_core_err_none'], $density_price_chart[$planet_density_index]['TEXT'], $density_price_chart[$new_density_index]['TEXT'], $new_density),
+          'STATUS'  => ERR_NONE,
+          'MESSAGE' => sprintf($lang['ov_core_err_none'], $density_price_chart[$planet_density_index]['TEXT'], $density_price_chart[$new_density_index]['TEXT'], $new_density),
         );
         sn_db_transaction_commit();
       }
@@ -123,10 +116,20 @@ switch($mode)
       {
         sn_db_transaction_rollback();
         $result = array(
-          'result'  => $e->getCode(),
-          'message' => $e->getMessage(),
+          'STATUS'  => $e->getCode(),
+          'MESSAGE' => $e->getMessage(),
         );
       }
+    }
+*/
+    $template  = gettemplate('planet_manage', true);
+    $planet_id = sys_get_param_id('planet_id');
+
+    if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name'))
+    {
+      $planetrow['name'] = $new_name;
+      $new_name = mysql_real_escape_string($new_name);
+      doquery("UPDATE {{planets}} SET `name` = '{$new_name}' WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
     }
     elseif(sys_get_param_str('capital'))
     {
@@ -160,8 +163,8 @@ switch($mode)
 
         $user['id_planet'] = $planetrow['id'];
         $result = array(
-          'result'  => ERR_NONE,
-          'message' => $lang['ov_capital_err_none'],
+          'STATUS'  => ERR_NONE,
+          'MESSAGE' => $lang['ov_capital_err_none'],
         );
         doquery("COMMIT");
       }
@@ -169,8 +172,8 @@ switch($mode)
       {
         doquery("ROLLBACK");
         $result = array(
-          'result'  => $e->getCode(),
-          'message' => $e->getMessage(),
+          'STATUS'  => $e->getCode(),
+          'MESSAGE' => $e->getMessage(),
         );
       }
     }
@@ -212,16 +215,16 @@ switch($mode)
         $user = $global_data['user'];
         $planetrow = $global_data['planet'];
         $result = array(
-          'result'  => ERR_NONE,
-          'message' => $lang['ov_teleport_err_none'],
+          'STATUS'  => ERR_NONE,
+          'MESSAGE' => $lang['ov_teleport_err_none'],
         );
       }
       catch(exception $e)
       {
         doquery("ROLLBACK");
         $result = array(
-          'result'  => $e->getCode(),
-          'message' => $e->getMessage(),
+          'STATUS'  => $e->getCode(),
+          'MESSAGE' => $e->getMessage(),
         );
       }
     }
@@ -285,7 +288,6 @@ switch($mode)
       die();
     }
 
-    $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
     lng_include('mrc_mercenary');
     int_planet_pretemplate($planetrow, $template);
     foreach($sn_data['groups']['governors'] as $governor_id)
@@ -306,14 +308,28 @@ switch($mode)
       ));
     }
 
+    $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
+    $planet_density_index = $planetrow['density_index'];
+    $density_price_chart = planet_density_price_chart($planet_density_index);
+    tpl_planet_density_info($template, $density_price_chart, $user_dark_matter);
+    /*
+    foreach($density_price_chart as $density_price_index => &$density_price_data)
+    {
+      $density_number_style = pretty_number($density_price_data['COST'], true, $user_dark_matter, false, false);
+      $density_price_data['COST_TEXT'] = $density_number_style['text'];
+      $density_price_data['COST_TEXT_CLASS'] = $density_number_style['class'];
+      $density_price_data['REST'] = $user_dark_matter - $density_price_data['COST'];
+      $density_price_data['ID'] = $density_price_index;
+
+      $template->assign_block_vars('densities', $density_price_data);
+    }
+    */
+
     $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
     $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
     $planet_fill = floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100);
     $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
-    $planet_density_index = $planetrow['density_index'];
-
     $can_teleport = uni_planet_teleport_check($user, $planetrow);
-
     $template->assign_vars(array(
       'DARK_MATTER' => $user['dark_matter'],
 
@@ -336,23 +352,13 @@ switch($mode)
       'PAGE_HINT'   => $lang['ov_manage_page_hint'],
     ));
 
+    $template->assign_block_vars('result', $result);
+/*
     $template->assign_block_vars('result', array(
-      'STATUS'  => $result['result'],
-      'MESSAGE' => $result['message'],
+      'STATUS'  => $result['STATUS'],
+      'MESSAGE' => $result['MESSAGE'],
     ));
-
-    $density_price_chart = planet_density_price_chart($planet_density_index);
-    foreach($density_price_chart as $density_price_index => &$density_price_data)
-    {
-      $density_number_style = pretty_number($density_price_data['COST'], true, $user_dark_matter, false, false);
-      $density_price_data['COST_TEXT'] = $density_number_style['text'];
-      $density_price_data['COST_TEXT_CLASS'] = $density_number_style['class'];
-      $density_price_data['REST'] = $user_dark_matter - $density_price_data['COST'];
-      $density_price_data['ID'] = $density_price_index;
-
-      $template->assign_block_vars('densities', $density_price_data);
-    }
-
+*/
     display($template, $lang['rename_and_abandon_planet']);
   break;
 
@@ -565,61 +571,4 @@ switch($mode)
 
     display($template, "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");
   break;
-}
-
-function planet_density_price_chart($planet_density_index)
-{
-  global $sn_data, $lang;
-
-  $sn_data_density = &$sn_data['groups']['planet_density'];
-  $density_price_chart = array();
-  foreach($sn_data_density as $density_id => $density_data)
-  {
-    if($density_id_prev !== null)
-    {
-      //$density_price_chart[$density_id]['DENSITY'] = floor(($density_data[UNIT_PLANET_DENSITY] + $sn_data_density[$density_id_prev][UNIT_PLANET_DENSITY]) / 2);
-      $density_price_chart[$density_id][UNIT_PLANET_DENSITY_RARITY] = $sn_data_density[$density_id_prev][UNIT_PLANET_DENSITY_RARITY] / $density_data[UNIT_PLANET_DENSITY_RARITY];
-      $density_price_chart[$density_id][UNIT_PLANET_DENSITY_RARITY] = $density_price_chart[$density_id][UNIT_PLANET_DENSITY_RARITY] >= 1 ? $density_price_chart[$density_id][UNIT_PLANET_DENSITY_RARITY] : 1 / $density_price_chart[$density_id][UNIT_PLANET_DENSITY_RARITY];
-      $density_price_chart[$density_id]['TEXT'] = $lang['uni_planet_density_types'][$density_id];
-    }
-    $density_id_prev = $density_id;
-  }
-
-
-
-  $density_base_cost = $sn_data[UNIT_PLANET_DENSITY]['cost'][RES_DARK_MATTER];
-  foreach($density_price_chart as $density_price_index => &$density_price_data)
-  {
-    if($density_price_index == $planet_density_index)
-    {
-      $density_multiplier = 0;
-    }
-    else
-    {
-      $density_multiplier = 1;
-      $density_set = null;
-      foreach($density_price_chart as $key => $value)
-      {
-        if($density_set !== null)
-        {
-          $density_multiplier *= $value[UNIT_PLANET_DENSITY_RARITY];
-        }
-        if($key == $planet_density_index || $key == $density_price_index)
-        {
-          if($density_set === null)
-          {
-            $density_set = $key;
-          }
-          else
-          {
-            break;
-          }
-        }
-      }
-    }
-
-    $density_price_data['COST'] = ceil($density_multiplier * $density_base_cost);
-  }
-
-  return $density_price_chart;
 }

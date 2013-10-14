@@ -818,7 +818,7 @@ if(!function_exists('strptime'))
 
 function sn_sys_sector_buy($redirect = 'overview.php')
 {
-  global $user, $planetrow, $sn_data;
+  global $user, $planetrow, $sn_data, $time_now;
 
   if(!sys_get_param_str('sector_buy') || $planetrow['planet_type'] != PT_PLANET)
   {
@@ -1156,4 +1156,151 @@ function sn_benchmark($message = '', $commented = true)
 
   $microtime = $microtime_now;
   $memory = $memory_now;
+}
+
+
+function planet_density_price_chart($planet_density_index)
+{
+  global $sn_data, $lang;
+
+  $sn_data_density = &$sn_data['groups']['planet_density'];
+  $density_price_chart = array();
+  foreach($sn_data_density as $density_id => $density_data)
+  {
+    if($density_id_prev !== null)
+    {
+      //$density_price_chart[$density_id]['DENSITY'] = floor(($density_data[UNIT_PLANET_DENSITY] + $sn_data_density[$density_id_prev][UNIT_PLANET_DENSITY]) / 2);
+      $density_price_chart[$density_id][UNIT_PLANET_DENSITY_RARITY] = $sn_data_density[$density_id_prev][UNIT_PLANET_DENSITY_RARITY] / $density_data[UNIT_PLANET_DENSITY_RARITY];
+      $density_price_chart[$density_id][UNIT_PLANET_DENSITY_RARITY] = $density_price_chart[$density_id][UNIT_PLANET_DENSITY_RARITY] >= 1 ? $density_price_chart[$density_id][UNIT_PLANET_DENSITY_RARITY] : 1 / $density_price_chart[$density_id][UNIT_PLANET_DENSITY_RARITY];
+      $density_price_chart[$density_id]['TEXT'] = $lang['uni_planet_density_types'][$density_id];
+    }
+    $density_id_prev = $density_id;
+  }
+
+
+
+  $density_base_cost = $sn_data[UNIT_PLANET_DENSITY]['cost'][RES_DARK_MATTER];
+  foreach($density_price_chart as $density_price_index => &$density_price_data)
+  {
+    if($density_price_index == $planet_density_index)
+    {
+      $density_multiplier = 0;
+    }
+    else
+    {
+      $density_multiplier = 1;
+      $density_set = null;
+      foreach($density_price_chart as $key => $value)
+      {
+        if($density_set !== null)
+        {
+          $density_multiplier *= $value[UNIT_PLANET_DENSITY_RARITY];
+        }
+        if($key == $planet_density_index || $key == $density_price_index)
+        {
+          if($density_set === null)
+          {
+            $density_set = $key;
+          }
+          else
+          {
+            break;
+          }
+        }
+      }
+    }
+
+    $density_price_data['COST'] = ceil($density_multiplier * $density_base_cost);
+  }
+
+  return $density_price_chart;
+}
+
+function sn_sys_planet_core_transmute(&$user, &$planetrow)
+{
+  if(!sys_get_param_str('transmute'))
+  {
+    return array();
+  }
+
+  global $lang, $sn_data;
+
+  try
+  {
+    if($planetrow['planet_type'] != PT_PLANET)
+    {
+      throw new exception($lang['ov_core_err_not_a_planet'], ERR_ERROR);
+    }
+
+    if($planetrow['density_index'] == ($new_density_index = sys_get_param_id('density_type')))
+    {
+      throw new exception($lang['ov_core_err_same_density'], ERR_WARNING);
+    }
+
+    sn_db_transaction_start();
+    $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
+    $user = $global_data['user'];
+    $planetrow = $global_data['planet'];
+
+    $planet_density_index = $planetrow['density_index'];
+
+    $density_price_chart = planet_density_price_chart($planet_density_index);
+    if(!isset($density_price_chart[$new_density_index]))
+    {
+      // Hack attempt
+      throw new exception($lang['ov_core_err_denisty_type_wrong'], ERR_ERROR);
+    }
+
+    $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
+    if($user_dark_matter < $density_price_chart[$new_density_index]['COST'])
+    {
+      throw new exception($lang['ov_core_err_no_dark_matter'], ERR_ERROR);
+    }
+
+    $sn_data_planet_density = &$sn_data['groups']['planet_density'];
+    foreach($sn_data_planet_density as $key => $value)
+    {
+      if($key == $new_density_index)
+      {
+        break;
+      }
+      $prev_density_index = $key;
+    }
+
+    $new_density = round(($sn_data_planet_density[$new_density_index][UNIT_PLANET_DENSITY] + $sn_data_planet_density[$prev_density_index][UNIT_PLANET_DENSITY]) / 2);
+
+    rpg_points_change($user['id'], RPG_PLANET_DENSITY_CHANGE, -$density_price_chart[$new_density_index]['COST'],
+      array(
+        'Planet %s ID %d at coordinates %s changed density type from %d "%s" to %d "%s". New density is %d kg/m3',
+        $planetrow['name'],
+        $planetrow['id'],
+        uni_render_coordinates($planetrow),
+        $planet_density_index,
+        $density_price_chart[$planet_density_index]['TEXT'],
+        $new_density_index,
+        $density_price_chart[$new_density_index]['TEXT'],
+        $new_density
+      )
+    );
+
+    doquery("UPDATE {{planets}} SET `density` = {$new_density}, `density_index` = {$new_density_index} WHERE id = {$planetrow['id']} LIMIT 1");
+    sn_db_transaction_commit();
+
+    $planetrow['density'] = $new_density;
+    $planetrow['density_index'] = $new_density_index;
+    $result = array(
+      'STATUS'  => ERR_NONE,
+      'MESSAGE' => sprintf($lang['ov_core_err_none'], $density_price_chart[$planet_density_index]['TEXT'], $density_price_chart[$new_density_index]['TEXT'], $new_density),
+    );
+  }
+  catch(exception $e)
+  {
+    sn_db_transaction_rollback();
+    $result = array(
+      'STATUS'  => $e->getCode(),
+      'MESSAGE' => $e->getMessage(),
+    );
+  }
+
+  return $result;
 }

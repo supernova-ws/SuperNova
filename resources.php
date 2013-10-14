@@ -36,7 +36,7 @@ function int_calc_storage_bar($resource_id)
   $template->assign_block_vars('resources', array(
     'NAME'        => $lang["sys_$resource_name"],
 
-    'BASIC_INCOME'=> $config->$resource_income_name * $config->resource_multiplier,
+//    'BASIC_INCOME'=> $config->$resource_income_name * $config->resource_multiplier,
 
     'HOURLY'      => pretty_number($totalProduction, true, true),
     'WEEKLY'      => pretty_number($totalProduction * 24 * 7, true, true),
@@ -50,6 +50,12 @@ function int_calc_storage_bar($resource_id)
 
 $ValidList['percent'] = array (  0,  10,  20,  30,  40,  50,  60,  70,  80,  90, 100 );
 $template = gettemplate('resources', true);
+
+$transmutation_result = sn_sys_planet_core_transmute($user, $planetrow);
+if(!empty($transmutation_result))
+{
+  $template->assign_block_vars('result', $transmutation_result); // array('STATUS' => $transmutation_result['STATUS'], 'MESSAGE' => $transmutation_result['MESSAGE']));
+}
 
 $production = $_POST['production'];
 $SubQry     = '';
@@ -137,6 +143,11 @@ foreach($sn_data['groups']['factories'] as $unit_id)
   }
 }
 
+$user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
+$planet_density_index = $planetrow['density_index'];
+$density_price_chart = planet_density_price_chart($planet_density_index);
+tpl_planet_density_info($template, $density_price_chart, $user_dark_matter);
+
 $template->assign_block_vars('production', array(
   'TYPE'           => $lang['res_total'],
 
@@ -156,13 +167,14 @@ int_calc_storage_bar(RES_CRYSTAL);
 int_calc_storage_bar(RES_DEUTERIUM);
 
 $template->assign_vars(array(
- 'PLANET_NAME'      => $planetrow['name'],
+ 'PLANET_NAME'          => $planetrow['name'],
+ 'PLANET_TYPE'          => $planetrow['planet_type'],
+ 'PLANET_DENSITY_INDEX' => $planet_density_index,
+ 'PLANET_CORE_TEXT'     => $lang['uni_planet_density_types'][$planet_density_index],
 
- 'PRODUCTION_LEVEL' => floor($caps_real['efficiency'] * 100),
+ 'PRODUCTION_LEVEL'     => floor($caps_real['efficiency'] * 100),
 
- 'PAGE_HINT'        => $lang['res_hint'],
+ 'PAGE_HINT'            => $lang['res_hint'],
 ));
 
 display($template, $lang['res_planet_production']);
-
-?>
