@@ -93,7 +93,7 @@ function eco_build($que_type, $user, &$planet, $que)
       $element_level_start = mrc_get_level($user, $planet, $Element) + $que['in_que'][$Element];
       foreach($element_sn_data['production'] as $resource_id => $resource_calc)
       {
-        if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($element_level_start, 10, $user, $planet) * $config_resource_multiplier)))
+        if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($element_level_start, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1))))
         {
           $level_production_base[strtoupper($sn_data[$resource_id]['name'])] = $resource_income;
         }
