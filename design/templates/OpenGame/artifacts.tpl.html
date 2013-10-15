@@ -11,7 +11,7 @@
         <div class="fl"><img src="design/images/dm_klein_1.jpg"></div>
         <div align="left">{L_sys_dark_matter_hint}</div>
       </div>
-      <A HREF="dark_matter.php" id="off_get_dark_matter">{L_sys_dark_matter_obtain_header}</A>
+      <a href="dark_matter.php" id="off_get_dark_matter" class="link">{L_sys_dark_matter_obtain_header}</a>
     </th>
   </tr>
 
@@ -22,10 +22,10 @@
   <!-- BEGIN artifact -->
     <tr>
       <th width=120>
-        <a name="{artifact.ID}">{artifact.NAME}</a><br>
+        <a href="infos.php?gid={artifact.ID}" class="link">{artifact.NAME}</a><br>
         <img src="{dpath}gebaeude/{artifact.ID}.jpg" align="top" width="120" height="120" /><br>
         <!-- IF artifact.LEVEL -->
-          <div><a href="artifacts.php?action={D_ACTION_USE}&unit_id={artifact.ID}"><span class="warning">{L_art_use}</span></a></div>
+          <div><a href="artifacts.php?action={D_ACTION_USE}&unit_id={artifact.ID}" class="warning link">{L_art_use}</a></div>
         <!-- ENDIF -->
       </th>
 
@@ -39,7 +39,7 @@
           <!-- ELSEIF artifact.CAN_BUY <= 0 -->
             <span class="negative">{L_sys_buy_for} {artifact.COST} {L_sys_dark_matter_sh} - {L_sys_eco_lack_dark_matter}</span>
           <!-- ELSE -->
-            <a href="artifacts.php?action={D_ACTION_BUY}&unit_id={artifact.ID}"><span class="positive">{L_sys_buy_for} {artifact.COST} {L_sys_dark_matter_sh}</span></a>
+            <a href="artifacts.php?action={D_ACTION_BUY}&unit_id={artifact.ID}" class="link positive">{L_sys_buy_for} {artifact.COST} {L_sys_dark_matter_sh}</a>
           <!-- ENDIF -->
         </div>
       </th>

@@ -306,7 +306,7 @@ $sn_data += array(
     'type' => UNIT_PLANET_DENSITY,
     'location' => LOC_PLANET,
     'cost' => array(
-      RES_DARK_MATTER => 1000,
+      RES_DARK_MATTER => 2000,
       'factor' => 1,
     ),
     'bonus_type' => BONUS_ABILITY,
@@ -413,7 +413,7 @@ mission = array(
       PLANET_DENSITY_NONE => array(
         UNIT_PLANET_DENSITY => 850,
         UNIT_PLANET_DENSITY_INDEX => PLANET_DENSITY_NONE,
-        UNIT_PLANET_DENSITY_RARITY => 100.0,
+        UNIT_PLANET_DENSITY_RARITY => 0,
         UNIT_RESOURCES => array(
           RES_METAL => 0.10,
           RES_CRYSTAL => 0.10,
