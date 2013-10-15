@@ -18,9 +18,9 @@ if(HIDE_BUILDING_RECORDS)
 
 $template = gettemplate('records', true);
 
-$user_skip_list = sys_stat_get_user_skip_list();
-$user_skip_list = empty($user_skip_list) ? '' : ' AND p.id_owner NOT IN (' . implode(',', $user_skip_list) . ')';
-$user_skip_list_un = empty($user_skip_list) ? '' : ' AND un.unit_player_id NOT IN (' . implode(',', $user_skip_list) . ')';
+$user_skip_list_data = sys_stat_get_user_skip_list();
+$user_skip_list = empty($user_skip_list_data) ? '' : (' AND p.id_owner NOT IN (' . implode(',', $user_skip_list_data) . ')');
+$user_skip_list_un = empty($user_skip_list_data) ? '' : (' AND un.unit_player_id NOT IN (' . implode(',', $user_skip_list_data) . ')');
 
 $show_groups = array(
   UNIT_STRUCTURES => 'structures',
