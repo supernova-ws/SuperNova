@@ -34,16 +34,22 @@ function sn_options_model()
     {
       if($user['authlevel'] < 3)
       {
-        $is_building = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_owner` = '{$user['id']}' LIMIT 1;", '', true);
+        if($user['vacation_next'] > $time_now)
+        {
+          message($lang['opt_vacation_err_timeout'], $lang['Error'], 'index.php?page=options', 5);
+          die();
+        }
+
+        $is_building = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_owner` = '{$user['id']}' LIMIT 1;", true);
 
         if($is_building)
         {
-          message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'options.php', 5);
+          message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
           die();
         }
         elseif($user['que'])
         {
-          message($lang['opt_vacation_err_research'], $lang['Error'], 'options.php', 5);
+          message($lang['opt_vacation_err_research'], $lang['Error'], 'index.php?page=options', 5);
           die();
         }
         else
@@ -55,7 +61,7 @@ function sn_options_model()
             $planet = $global_data['planet'];
             if(($planet['que']) || ($planet['b_hangar'] || $planet['b_hangar_id']))
             {
-              message(sprintf($lang['opt_vacation_err_building'], $planet['name']), $lang['Error'], 'options.php', 5);
+              message(sprintf($lang['opt_vacation_err_building'], $planet['name']), $lang['Error'], 'index.php?page=options', 5);
               die();
             }
           }
@@ -348,6 +354,8 @@ function sn_options_view($template = null)
   $template->assign_vars(array(
     'USER_ID'        => $user['id'],
 
+    'USER_AUTHLEVEL'           => $user['authlevel'],
+
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
     'opt_usern_data' => htmlspecialchars($user['username']),
     'opt_mail1_data' => $user['email'],
@@ -373,6 +381,9 @@ function sn_options_view($template = null)
     'JS_FMT_DATE' => js_safe_string($FMT_DATE),
 
     'USER_VACATION_DISABLE' => $config->user_vacation_disable,
+    'VACATION_NEXT' => $user['vacation_next'],
+    'VACATION_NEXT_TEXT' => date(FMT_DATE_TIME, $user['vacation_next']),
+    'VACATION_TIMEOUT' => $user['vacation_next'] - $time_now > 0 ? $user['vacation_next'] - $time_now : 0,
     'TIME_NOW' => $time_now,
 
     'SERVER_NAME_CHANGE' => $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE,

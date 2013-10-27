@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version 37a11.0
+* @version 38a0.0
 *
 */
 
@@ -105,6 +105,7 @@ $lang = array_merge($lang, array(
   'vacations_tip' => 'Siz yo`q paytingizda sayyorani ximoya qilish uchun ta`til rejimi kerak.',
   'deleteaccount' => 'Profilni o`chirish',
   'deleteaccount_tip' => 'Profil 45 kunlik foalsizlikdan keyin o`chiriladi.',
+  'deleteaccount_on' => 'При неактивности аккаунта его удаление произойдет',
   'save_settings' => 'O`zgartirilganlarini saqlash',
   'exit_vacations' => 'Ta`til rejimidan chiqish',
   'Vaccation_mode' => 'Ta`til rejimi amal qila boshladi. U amal qiladi : ',
@@ -123,6 +124,8 @@ $lang = array_merge($lang, array(
   'opt_vacation_err_your_fleet' => 'Hech bo`lmaganda bitta flotingiz uchuvda bo`lsa ham siz ta`tilga chiqa olmaysiz',
   'opt_vacation_err_building' => 'siz biror bir narsani %s da tadqiqot qilyapsiz yoki quryapsiz shuning uchun siz ta`tilga chiqa olmaysiz',
   'opt_vacation_err_research' => 'Sizning tadqiqotchilaringiz texnologiyani tekshirishadi va shuning uchun siz  ta`tilga chiqa olmaysiz',
+  'opt_vacation_err_timeout' => 'Вы еще не наработали на отпуск - таймаут ухода в отпуск не исчерпан',
+  'opt_vacation_next' => 'Пойти в отпуск можно будет после',
   'opt_vacation_min' => 'minimumgacha',
   'succeful_changepass' => 'Maxsus raqam muvaffaqiyatli o`zgartirildi.<br /><a href="login.php" target="_top">Orqaga</a>',
 

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37a11.0
+* @version 38a0.0
 *
 */
 
@@ -104,6 +104,7 @@ $lang = array_merge($lang, array(
   'vacations_tip' => 'Режим отпуска нужен для защиты планет во время вашего отсутствия.',
   'deleteaccount' => 'Отключить профиль',
   'deleteaccount_tip' => 'Профиль будет удалён через 45 дней неактивности.',
+  'deleteaccount_on' => 'При неактивности аккаунта его удаление произойдет',
   'save_settings' => 'Сохранить изменения',
   'exit_vacations' => 'Выйти из режима отпуска',
   'Vaccation_mode' => 'Режим отпуска включён. Он продлится до: ',
@@ -122,6 +123,8 @@ $lang = array_merge($lang, array(
   'opt_vacation_err_your_fleet' => 'Нельзя уйти в отпуск пока в полете находится хотя бы один ваш флот',
   'opt_vacation_err_building' => 'Вы что-то строите или исследуете на %s и поэтому вы не можете уйти в отпуск',
   'opt_vacation_err_research' => 'Ваши ученные исследует технологию и поэтому вы не можете уйти в отпуск',
+  'opt_vacation_err_timeout' => 'Вы еще не наработали на отпуск - таймаут ухода в отпуск не исчерпан',
+  'opt_vacation_next' => 'Пойти в отпуск можно будет после',
   'opt_vacation_min' => 'минимум до',
   'succeful_changepass' => 'Пароль успешно изменён.<br /><a href="login.php" target="_top">Назад</a>',
 

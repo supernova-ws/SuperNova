@@ -244,14 +244,15 @@ function sys_log_hit()
 //
 function sys_user_vacation($user)
 {
-  global $time_now;
+  global $time_now, $config;
 
   if (sys_get_param_str('vacation') == 'leave')
   {
     if ($user['vacation'] < $time_now)
     {
-      doquery("UPDATE {{users}} SET `vacation` = '0' WHERE `id` = '{$user['id']}' LIMIT 1;");
       $user['vacation'] = 0;
+      $user['vacation_next'] = $time_now + $config->player_vacation_timeout;
+      doquery("UPDATE {{users}} SET `vacation` = {$user['vacation']}, `vacation_next` = {$user['vacation_next']} WHERE `id` = '{$user['id']}' LIMIT 1;");
     }
   }
 

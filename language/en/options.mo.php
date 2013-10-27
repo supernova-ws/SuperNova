@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a11.0
+* @version 38a0.0
 *
 */
 
@@ -106,6 +106,7 @@ $lang = array_merge($lang, array(
   'vacations_tip' => 'Vacation mode is to protect the planet while you\'re away.',
   'deleteaccount' => 'Disable Account',
   'deleteaccount_tip' => 'Account will be deleted after 45 days of no login.',
+  'deleteaccount_on' => 'If no activity this profile would be deleted on',
   'save_settings' => 'Save the changes',
   'exit_vacations' => 'Exit leave',
   'Vaccation_mode' => 'Vacation mode is enabled. It runs until: ',
@@ -124,6 +125,8 @@ $lang = array_merge($lang, array(
   'opt_vacation_err_your_fleet' => 'Not to leave until the flight is at least one of your fleet',
   'opt_vacation_err_building' => 'You are building or explore on %s and therefore you cannot leave on vacation',
   'opt_vacation_err_research' => 'Your scientists do some research and therefore you cannot leave on vacation',
+  'opt_vacation_err_timeout' => 'Vacancy timeout not reached',
+  'opt_vacation_next' => 'Next vacancy would be available after',
   'opt_vacation_min' => 'a minimum of',
   'succeful_changepass' => '',
 

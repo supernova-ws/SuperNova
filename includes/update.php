@@ -735,6 +735,11 @@ switch($new_version)
   case 37:
     upd_log_version_update();
 
+    upd_check_key('player_vacation_timeout', PERIOD_WEEK * 2,             !$config->player_vacation_timeout);
+    upd_check_key('player_vacation_time', PERIOD_WEEK * 2,             $config->player_vacation_time < PERIOD_WEEK * 2);
+
+    upd_alter_table('users', "ADD `vacation_next` INT(11) NOT NULL DEFAULT 0 COMMENT 'Next datetime when player can go on vacation'", !$update_tables['users']['vacation_next']);
+
 /*
 //      upd_alter_table('unit', "ADD KEY `I_unit_player_id_temporary` (`unit_player_id`)", !$update_indexes['unit']['I_unit_player_id_temporary']);
 //      upd_alter_table('unit', "DROP KEY `I_unit_player_location_snid`", $update_indexes['unit']['I_unit_player_location_snid']);
@@ -759,7 +764,7 @@ switch($new_version)
 */
 
     upd_do_query('COMMIT;', true);
-    // $new_version = 37;
+    // $new_version = 38;
 };
 upd_log_message('Upgrade complete.');
 
