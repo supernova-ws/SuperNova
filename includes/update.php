@@ -735,8 +735,8 @@ switch($new_version)
   case 37:
     upd_log_version_update();
 
-    upd_check_key('player_vacation_timeout', PERIOD_WEEK * 2,             !$config->player_vacation_timeout);
-    upd_check_key('player_vacation_time', PERIOD_WEEK * 2,             $config->player_vacation_time < PERIOD_WEEK * 2);
+    upd_check_key('player_vacation_timeout', PERIOD_WEEK, $config->player_vacation_timeout != PERIOD_WEEK);
+    upd_check_key('player_vacation_time', PERIOD_WEEK ,   $config->player_vacation_time != PERIOD_WEEK);
 
     upd_alter_table('users', "ADD `vacation_next` INT(11) NOT NULL DEFAULT 0 COMMENT 'Next datetime when player can go on vacation'", !$update_tables['users']['vacation_next']);
 

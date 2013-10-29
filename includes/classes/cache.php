@@ -592,8 +592,8 @@ class classConfig extends classPersistent
 
     'player_delete_time'           => 3888000, // 
     'player_max_colonies'          => 9, // Max player planet count (NOT including main planet)
-    'player_vacation_time'         => 1209600, // 
-    'player_vacation_timeout'      => 1209600, // 
+    'player_vacation_time'         => PERIOD_WEEK, // 
+    'player_vacation_timeout'      => PERIOD_WEEK, // 
 
     // Quests
     'quest_total'                  => 0, // Total number of quests
