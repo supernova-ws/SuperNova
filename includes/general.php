@@ -917,6 +917,11 @@ function sn_render_player_nick($render_user, $options = false, &$result)
       $result .= $render_user['ally_tag'] ? '[' . trim(strip_tags($render_user['ally_tag'])) . ']' : '';
     }
 
+    if((isset($options['class']) && $options['class']))
+    {
+      $result = '<span class="' . $options['class'] . '">' . $result . '</span>';
+    }
+
     if($options === true || (isset($options['color']) && $options['color']))
     {
       if($render_user['authlevel'])
