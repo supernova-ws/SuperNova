@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 36a0.24
+* @version 38a2.0
 *
 */
 
@@ -117,7 +117,6 @@ $lang = array_merge($lang, array(
   'menu_stat_players' => 'Статистика',
   'menu_stat_records' => 'Рекорды',
   'menu_races' => 'Родные миры',
+  'menu_metamatter' => 'Метаматерия',
 
 ));
-
-?>

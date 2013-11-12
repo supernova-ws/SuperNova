@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbek]
-* @version 37a5.8
+* @version 38a2.0
 *
 */
 
@@ -224,7 +224,7 @@ $lang = array_merge($lang, array(
   'adm_opt_game_speed_normal' => '( 1&nbsp;-&nbsp;normalniy )',
   'adm_opt_game_faq' => 'Chavoga o\'tish silkasi',
   'adm_opt_game_forum' => 'Forum adresi',
-  'adm_opt_game_dark_matter' => '&quot;TM topish&quot; sahifasiga o\'tmoq',
+  'adm_opt_game_metamatter' => '&quot;MM topish&quot; sahifasiga o\'tmoq',
   'adm_opt_game_copyrigh' => 'Copyright',
   'adm_opt_game_online' => 'O\'yinni o\'chirish. Foydalanuvchilar keyingi habarni ko\'rishi:',
   'adm_opt_game_offreaso' => 'Habar',

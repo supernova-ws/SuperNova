@@ -651,9 +651,9 @@ class classConfig extends classPersistent
 
     'upd_lock_time'                => 60, // How long update will lock table. Also update increment time when it requires
 
-    'url_dark_matter'              => '',
     'url_faq'                      => '',
     'url_forum'                    => '',
+    'url_purchase_metamatter'      => '',
     'url_rules'                    => '',
 
     'users_amount'                 => 1,

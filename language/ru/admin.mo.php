@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37a6.1
+* @version 38a2.0
 *
 */
 
@@ -227,7 +227,7 @@ $lang = array_merge($lang, array(
   'adm_opt_game_speed_normal' => '(1&nbsp;-&nbsp;нормальная)',
   'adm_opt_game_faq' => 'Ссылка на ЧаВо',
   'adm_opt_game_forum' => 'Адрес форума',
-  'adm_opt_game_dark_matter' => 'Ссылка &quot;Добыть ТМ&quot;',
+  'adm_opt_game_metamatter' => 'Ссылка &quot;Приобрести Метаматерию&quot;',
   'adm_opt_game_copyrigh' => 'Copyright',
   'adm_opt_game_online' => 'Отключить игру. Пользователи увидят следующее сообщение:',
   'adm_opt_game_offreaso' => 'Сообщение',

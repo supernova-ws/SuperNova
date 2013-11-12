@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37a13.1
+* @version 38a2.0
 *
 */
 
@@ -153,6 +153,7 @@ $lang = array_merge($lang, array(
     RES_DEUTERIUM => 'Дейтерий',
     RES_ENERGY => 'Энергия',
     RES_DARK_MATTER => 'Тёмная Материя',
+    RES_METAMATTER => 'Метаматерия',
 
     UNIT_ARTIFACTS     => 'Артефакты',
     ART_LHC            => 'Большой Адронный Коллайдер',

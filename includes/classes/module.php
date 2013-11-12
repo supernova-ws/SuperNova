@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #37a13.6# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #38a2.0# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -99,17 +99,17 @@ class sn_module
     // Registering module
     global $sn_module;
     $sn_module[$class_module_name] = $this;
+  }
 
+  public function initialize()
+  {
     // Checking module status - is it installed and active
     $this->check_status();
     if(!$this->manifest['active'])
     {
       return;
     }
-  }
 
-  public function initialize()
-  {
     // Setting constants - if any
     if(isset($this->manifest['constants']) && is_array($this->manifest['constants']) && !empty($this->manifest['constants']))
     {
@@ -247,8 +247,11 @@ abstract class sn_module_payment extends sn_module
       $exchange_from = ($exchange_from = $config->__get('payment_currency_exchange_' . strtolower($currency_from))) ? $exchange_from : 1;
       $exchange_to = ($exchange_to = $config->__get('payment_currency_exchange_' . strtolower($currency_to))) ? $exchange_to : 1;
 
-      $value = $value / $exchange_from * $exchange_to;
-      $value = round($value, $currency_to == 'DM_' ? 0 : 2);
+      // $value = $value / $exchange_from * $exchange_to;
+      // $value = round($value, $currency_to == 'MM_' ? 0 : 2);
+
+      $value = $value / $exchange_from * $exchange_to * 100;
+      $value = ceil($value) / 100;
     }
 
     return $value;
@@ -296,6 +299,7 @@ abstract class sn_module_payment extends sn_module
     return $dark_matter_new;
   }
 
+  /*
   // Function calculates amount of dark_matter for entered money and vice versa
   static function exchange($dark_matter = 0, $money = 0, $currency = '')
   {
@@ -310,11 +314,9 @@ abstract class sn_module_payment extends sn_module
     if($money)
     {
       $dark_matter = $money * $config->payment_lot_size / $config->payment_lot_price;
-/*
-      $bonus = ($dark_matter - ($dark_matter % 100000)) / 100000 / 10;
-      $bonus = min(0.5, $bonus);
-      $dark_matter *= 1 + $bonus;
-*/
+      // $bonus = ($dark_matter - ($dark_matter % 100000)) / 100000 / 10;
+      // $bonus = min(0.5, $bonus);
+      // $dark_matter *= 1 + $bonus;
       return floor($dark_matter);
     }
     elseif($dark_matter)
@@ -324,35 +326,146 @@ abstract class sn_module_payment extends sn_module
       return round($money, 2);
     }
   }
-}
+  */
 
-/*
-  // Function calculates amount of dark_matter for entered money and vice versa
-  static function exchange($dark_matter = 0, $money = 0, $currency = '')
+
+  function payment_request_process($options = array())
   {
-    if(!$dark_matter && !$money)
+    global $lang;
+
+    if(!$this->manifest['active'])
     {
-      return 0;
+      throw new exception($lang['pay_msg_module_disabled'], SN_MODULE_DISABLED);
     }
 
+    if(SN_ROOT_VIRTUAL != $options['server_id'])
+    {
+      throw new exception($lang['pay_msg_request_server_wrong'], SN_PAYMENT_REQUEST_SERVER_WRONG);
+    }
+
+    if(!$options['user_id'] || !$payer = doquery("SELECT * FROM {{users}} WHERE `id` = '{$options['user_id']}' LIMIT 1 FOR UPDATE;", true)) // $command != 'cancel'
+    {
+      throw new exception($lang['pay_msg_request_user_invalid'], SN_PAYMENT_REQUEST_USER_NOT_FOUND);
+    }
+
+    return array(
+      'payer' => $payer,
+    );
+  }
+
+
+  function db_insert_payment(&$payer, &$payment, $options = array())
+  {
     global $config;
-    $currency = $currency ? $currency : $config->payment_currency_default;
-    if($money)
-    {
-      $dark_matter = $money  * $config->payment_lot_size / $config->payment_lot_price;
-      $bonus = ($dark_matter - ($dark_matter % 100000)) / 100000 / 10;
-      $bonus = min(0.5, $bonus);
-      $dark_matter *= 1 + $bonus;
 
-      return floor($dark_matter);
+    $payment['payment_test'] = isset($payment['payment_test']) && $payment['payment_test'] ? 1 : 0;
+
+    $payment['payment_status'] = !isset($payment['payment_status']) ? PAYMENT_STATUS_COMPLETE : $payment['payment_status'];
+
+    $payment['payment_user_id'] = !isset($payment['payment_user_id']) || !$payment['payment_user_id'] ? $payer['id'] : $payment['payment_user_id'];
+    $payment['payment_user_name'] = !isset($payment['payment_user_name']) || !$payment['payment_user_name'] ? $payer['username'] : $payment['payment_user_name'];
+
+    $payment['payment_module_name'] = $this->manifest['name'];
+    $payment['payment_currency'] = $config->payment_currency_default;
+
+    // $payment['payment_amount'] - уникальный для каждого модуля. TODO: Поднять ошибку если пустое или 0
+    // $payment['payment_dark_matter_paid'] - посмотреть, нельзя ли как-то унифицировать. TODO: Поднять ошибку если пустое или 0
+
+    $payment['payment_dark_matter_gained'] = self::bonus_calculate($payment['payment_dark_matter_paid'], true);
+
+    // $payment['payment_external_date'] - свой для каждого модуля
+
+    $payment['payment_external_lots'] = !isset($payment['payment_external_lots']) || !$payment['payment_external_lots']
+      ? $payment['payment_dark_matter_paid'] / $config->payment_currency_exchange_mm_
+      : $payment['payment_external_lots'];
+
+    // $payment['payment_external_amount'] - уникальный для каждого модуля. TODO: Поднять ошибку если пустое или 0
+    // $payment['payment_external_currency'] - уникальный для каждого модуля. TODO: Поднять ошибку если пустое или 0
+    // $payment['payment_external_id'] - свой для каждого модуля
+
+
+    // TODO - системная локализация
+    $payment['payment_comment'] = 
+      ($payment['payment_test'] ? "ТЕСТОВЫЙ ПЛАТЕЖ! " : '') .
+      "Платеж от игрока '{$payment['payment_user_name']}' ID {$payment['payment_user_id']} на сервере " . SN_ROOT_VIRTUAL .
+      " сумма {$payment['payment_amount']} {$payment['payment_currency']} за {$payment['payment_dark_matter_paid']} ММ (начислено {$payment['payment_dark_matter_gained']} ММ)" .
+      " через '{$payment['payment_module_name']}' сумма {$payment['payment_external_amount']} {$payment['payment_external_currency']}"
+    ;
+
+    foreach($payment as $key => &$value)
+    {
+      $value = is_string($value) ? '"' . mysql_real_escape_string($value) . '"' : $value;
+      $value = "`{$key}` = {$value}";
     }
-    elseif($dark_matter)
-    {
-      $money = round($dark_matter / $config->payment_lot_size * $config->payment_lot_price, 2);
 
-      return $money;
+    $query_str = (isset($options['replace']) && $options['replace'] ? 'REPLACE' : 'INSERT') . ' INTO `{{payment}}` SET ' . implode(',', $payment) . ';';
+    doquery($query_str);
+
+    /*
+    if(isset($options['test']) && $options['test'])
+    {
+      // TEST payment
+    }
+
+    if(isset($options['replace']) && $options['replace'])
+    {
+      // do REPLACE instead of insert
+    }
+    // doquery("INSERT INTO {{payment}} SET
+    */
+
+    $payment_id = mysql_insert_id();
+    // $payment = doquery("SELECT * FROM `{{payment}}` WHERE `payment_id` = {$payment_id}", true);
+
+    return $payment_id;
+  }
+
+  // Response to payment system request
+  function payment_request_response()
+  {
+    global $debug;
+
+    doquery("START TRANSACTION;");
+    sn_db_transaction_start();
+    try
+    {
+      $response = $this->payment_request_process();
+    }
+    catch(exception $e)
+    {
+      $response['result'] = $e->getCode();
+      $response['message'] = $e->getMessage();
+    }
+
+    if($response['result'] == SN_PAYMENT_REQUEST_OK)
+    {
+      sn_db_transaction_commit();
+    }
+    else
+    {
+      sn_db_transaction_rollback();
+      $debug->warning('Результат операции: код ' . $response['result'] . ' сообщение "' . $response['message'] . '"', 'Ошибка платежа', LOG_INFO_PAYMENT);
+    }
+
+    // Переводим код результата из СН в код платежной системы
+    if(is_array($this->result_translations) && !empty($this->result_translations))
+    {
+      $response['result'] = isset($this->result_translations[$response['result']]) ? $this->result_translations[$response['result']] : $this->result_translations[SN_PAYMENT_REQUEST_UNDEFINED_ERROR];
+    }
+
+    return $response;
+  }
+
+  function payment_adjust_mm(&$payment)
+  {
+    if(!$payment['payment_test'])
+    {
+      // Not a test payment. Adding DM to account
+      $result = mm_points_change($payment['payment_user_id'], RPG_PURCHASE, $payment['payment_dark_matter_gained'], $payment['payment_comment']);
+      if(!$result)
+      {
+        throw new exception('Ошибка начисления ММ', SN_METAMATTER_ERROR_ADJUST);
+      }
     }
   }
 }
-*/
-?>

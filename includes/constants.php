@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '37');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '38a0.6');
+define('SN_VERSION', '38a2.0');
 define('SN_RELEASE_STABLE', '37d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -175,10 +175,11 @@ define('RPG_RACE', 21);
 define('RPG_CAPTAIN', 22);
 define('RPG_NAME_CHANGE', 23);
 define('RPG_PLANET_DENSITY_CHANGE', 24);
+define('RPG_CONVERT_MM', 25);
 
 
 
-// Operation error status
+// Operation error status HARDCODE!
 define('ERR_NONE'               , 0); // No error
 define('ERR_WARNING'            , 1); // There is warning - something altering normal operation process
 define('ERR_ERROR'              , 2); // There is error - something permits operation from process
@@ -526,6 +527,7 @@ define('RES_CRYSTAL', 902);
 define('RES_DEUTERIUM', 903);
 define('RES_ENERGY', 904);
 define('RES_DARK_MATTER', 905);
+define('RES_METAMATTER', 950);
 define('RES_TIME', 999);
 
 // === Artifacts
@@ -765,3 +767,21 @@ define('SQL_OP_REPLACE', 3);
 define('SERVER_PLAYER_NAME_CHANGE_NONE', 0);
 define('SERVER_PLAYER_NAME_CHANGE_FREE', 1);
 define('SERVER_PLAYER_NAME_CHANGE_PAY', 2);
+
+define('SN_PAYMENT_REQUEST_UNDEFINED_ERROR', -1);
+define('SN_PAYMENT_REQUEST_OK', 0);
+define('SN_PAYMENT_REQUEST_ERROR_UNIT_AMOUNT', 1);
+define('SN_PAYMENT_REQUEST_ERROR_PAYLINK_UNSUPPORTED', 2);
+define('SN_PAYMENT_REQUEST_IP_WRONG', 3);  // Неправильный IP входящей системы - обычно хак
+define('SN_PAYMENT_REQUEST_COMMAND_UNSUPPORTED', 4); // Неподдерживаемая команда - обычно хак
+define('SN_PAYMENT_REQUEST_SIGNATURE_INVALID', 5); // Неправильная подпись или не сошлась контрольная сумма - обычно хак
+define('SN_MODULE_DISABLED', 6); // Модуль отключен // УНИВЕРСАЛЬНЫЙ ОТВЕТ!
+define('SN_PAYMENT_REQUEST_SERVER_WRONG', 7); // Не совпадает УРЛ сервера
+define('SN_PAYMENT_REQUEST_USER_NOT_FOUND', 8); // Пользователь не найден
+define('SN_PAYMENT_REQUEST_EXTERNAL_ID_WRONG', 9); // Остуствует или неправильный ИД операции в платежной системе
+define('SN_PAYMENT_REQUEST_CURRENCY_AMOUNT_INVALID', 10); // Неправильная сумма платежа
+define('SN_PAYMENT_REQUEST_DATE_INVALID', 11); // Неправильная дата платежа
+define('SN_DB_ERROR_WRITE', 12); // Ошибка записи в БД // УНИВЕРСАЛЬНЫЙ ОТВЕТ!
+define('SN_METAMATTER_ERROR_ADJUST', 13); // Ошибка начисления ММ // УНИВЕРСАЛЬНЫЙ ОТВЕТ!
+define('SN_PAYMENT_REQUEST_INTERNAL_ID_WRONG', 14); // Остуствует или неправильный внутренний ИД операции
+define('SN_PAYMENT_REQUEST_MM_AMOUNT_INVALID', 15); // Неправильное количеств ММ в платеже

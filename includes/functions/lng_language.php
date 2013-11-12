@@ -113,6 +113,7 @@ function lng_switch($language_new)
 
     lng_include('system');
     lng_include('tech');
+    lng_include('payment');
     // Loading global language files
     lng_load_i18n($sn_mvc['i18n']['']);
     $result = true;

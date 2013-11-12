@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37c2
+* @version 38a2.0
 *
 */
 
@@ -39,87 +39,6 @@ if (empty($lang) || !is_array($lang))
 // System-wide localization
 
 $lang = array_merge($lang, array(
-  // Dark Matter
-  'sys_dark_matter_what_header' => 'What is Dark Matter',
-  'sys_dark_matter_description_header' => 'Why do you need Dark Matter',
-  'sys_dark_matter_description_text' => 'Dark Matter - is ingame currency, which in the game you can make a variety of operations:
-    <ul>
-      <li>Buy <a href="index.php?page=premium"><span class="link">Premium account</span></a></li>
-      <li>Recruit <a href="officer.php?mode=600"><span class="link">Mercenaries</span></a> for Empire</li>
-      <li>Hire Governors and but additional sectors <a href="overview.php?mode=manage"><span class="link">for planets</span></a></li>
-      <li>Buy <a href="officer.php?mode=1100"><span class="link">Schematics</span></a></li>
-      <li>Buy <a href="artifacts.php"><span class="link">Artefacts</span></a></li>
-      <li>Use <a href="market.php"><span class="link">Black Market</span></a>: exchange resources; sell ships; buy ships; buy intelligence etc</li>
-      <li>...and many other things</li>
-    </ul>',
-
-  'sys_dark_matter_obtain_header' => 'How to obtain Dark Matter',
-  'sys_dark_matter_obtain_text' => 'You acquring Dark Matter in game process: while gained levels for raids to enemy planets, researching technologies, building and destroying buildings.
-    Also sometimes expeditions can gain you some DM.',
-
-  'sys_dark_matter_purchase_url_description' => 'In addition you can purchase Dark Matter for WebMoney',
-  'sys_dark_matter_purchase_url_get'  => 'Click here to read details.',
-
-  'sys_dark_matter_purchase' => 'Purchase Dark Matter',
-  'sys_dark_matter_purchase_text_cost' => 'Price for',
-  'sys_dark_matter_purchase_text_unit' => 'is',
-  'sys_dark_matter_purchase_text_end' => 'When you purchasing large amounts of Dark Matter you recieve bonuses:',
-  'sys_dark_matter_purchase_text_bonus' => 'from %s DM - %d%% bonus to purchased DM amount',
-  'sys_dark_matter_purchase_step1' => 'Step 1',
-  'sys_dark_matter_purchase_step1_text' => 'Select amount of DM you wish to purchase, select payment system and confirm your selection',
-  'sys_dark_matter_purchase_amount' => 'Dark Matter amount',
-  'sys_dark_matter_purchase_select' => 'Payment system',
-  'sys_dark_matter_purchase_confirm' => 'Confirm selection',
-  'sys_dark_matter_purchase_payment_selected' => 'Purchase would be made using payment system',
-
-  'sys_dark_matter_purchase_step2' => 'Step 2',
-  'sys_dark_matter_purchase_step2_text' => 'Verify selected amount of Dark Matter and selected payment system. If everything is OK press button "Purchase Dark Matter". If there is any error - press button "Discard and start again"',
-  'sys_dark_matter_purchase_pay' => 'Purchase Dark Matter',
-  'sys_dark_matter_purchase_reset' => 'Discard and start again',
-  'sys_dark_matter_purchase_in_progress' => 'Payment in progress...',
-  'sys_dark_matter_purchase_conversion_cost' => 'Cost of %d Dark Matter will be %s %s',
-
-  'sys_dark_matter_purchase_exchange' => 'Internal currency exchange',
-  'sys_currency_name' => 'Currency',
-  'sys_currency_symbol' => 'Symbol',
-  'sys_currency_exchange_direct' => 'Exchange rate',
-  'sys_currency_exchange_reverse' => 'Reverse rate',
-  'sys_currency_exchange_dm' => 'DM for 1 currency',
-  'sys_currencies' => array(
-    'RUB' => 'Russian ruble',
-    'USD' => 'Dollar USA',
-    'EUR' => 'Euro',
-    'UAH' => 'Ukrainian hryvna',
-    'WMR' => 'WebMoney rouble',
-    'WMZ' => 'WebMoney dollar',
-    'WME' => 'WebMoney euro',
-    'WMU' => 'WebMoney hryvna',
-  ),
-  'sys_dark_matter_purchase_exchange_note' => 'Internal exchange rates used to calculate payment amount in payment system currency. Exchange rates does not includes commission of payment system(s)',
-
-  'sys_dark_matter_purchase_result_complete' => 'You succesfully paid for %d Dark Matter via %s. You gained %s Dark Matter',
-  'sys_dark_matter_purchase_result_incomplete' => 'You payment for %d Dark Matter via %s currently in progress. If you feel it wrong please contact Administration',
-  'sys_dark_matter_purchase_result_test' => 'Really you did not gain anything! Because it was a test payment ha-ha-ha! If you feel it wrong - contact Administration',
-
-
-  'pay_msg_request_user_found' => 'User found',
-
-  'pay_msg_request_unsupported' => 'Unsupported request',
-  'pay_msg_request_signature_invalid' => 'Wrong request signature',
-  'pay_msg_request_user_invalid' => 'User ID is invalid',
-  'pay_msg_request_server_wrong' => 'Wrong server',
-  'pay_msg_request_payment_amount_invalid' => 'Wrong payment amount',
-  'pay_msg_request_payment_id_invalid' => 'Wrong payment ID',
-  'pay_msg_request_payment_date_invalid' => 'Wrong payment date',
-  'pay_msg_request_internal_error' => 'Server internal error. Try again later',
-
-  'pay_msg_request_dark_matter_amount_invalid' => 'Wrong Dark Matter amount',
-  'pay_msg_request_paylink_unsupported' => 'This type of paylink is not supported. It\'s looks like you using outdated version of SuperNova which incompatible with selected payment module',
-  'pay_msg_request_dark_matter_config_invalid' => 'There is error in payment module configuration. Please contact server Administration',
-
-  'pay_msg_module_disabled' => 'Payment module disabled',
-
-
   'sys_administration' => 'SuperNova Administration',
   'sys_birthday' => 'Birthday',
   'sys_birthday_message' => '%1$s! SuperNova Administration warmly greats you with your birthday on %2$s and gives to you s small gift - %3$d %4$s!',
@@ -711,8 +630,27 @@ $lang = array_merge($lang, array(
   'sys_lessThen15min'   => '&lt; 15 min',
 
   'sys_no_points'        => 'You do not have enough Dark Matter!',
+  'sys_dark_matter_obtain_header' => 'How to obtain Dark Matter',
   'sys_dark_matter_desc' => 'Dark matter - using the standard methods of  fabric, which accounts for 23% mass of the universe. From there you can obtain an incredible amount of energy. Because of this, and because of the complexities associated with its extraction, Dark Matter is valued very highly.',
   'sys_dark_matter_hint' => 'With the help of this substance you can hire officers and commanders.',
+
+  'sys_dark_matter_what_header' => 'What is Dark Matter',
+  'sys_dark_matter_description_header' => 'Why do you need Dark Matter',
+  'sys_dark_matter_description_text' => 'Dark Matter is ingame currency, which in the game you can make a variety of operations:
+    <ul>
+      <li>Buy <a href="index.php?page=premium"><span class="link">Premium account</span></a></li>
+      <li>Recruit <a href="officer.php?mode=600"><span class="link">Mercenaries</span></a> for Empire</li>
+      <li>Hire Governors and but additional sectors <a href="overview.php?mode=manage"><span class="link">for planets</span></a></li>
+      <li>Buy <a href="officer.php?mode=1100"><span class="link">Schematics</span></a></li>
+      <li>Buy <a href="artifacts.php"><span class="link">Artefacts</span></a></li>
+      <li>Use <a href="market.php"><span class="link">Black Market</span></a>: exchange resources; sell ships; buy ships; buy intelligence etc</li>
+      <li>...and many other things</li>
+    </ul>',
+  'sys_dark_matter_obtain_header' => 'How to obtain Dark Matter',
+  'sys_dark_matter_obtain_text' => 'You acquring Dark Matter in game process: while gained levels for raids to enemy planets, researching technologies, building and destroying buildings.
+    Also sometimes expeditions can gain you some DM.',
+
+  'sys_dark_matter_obtain_text_convert' => '<br /><br />Besides, you can convert Metamatter to Dark Matter. <a href="metamatter.php" class="link">More about Metamatter</a>',
 
   'sys_msg_err_update_dm' => 'Error updating DM quantity!',
 
@@ -729,6 +667,7 @@ $lang = array_merge($lang, array(
   'sys_hint_ally_name' => 'You can search Alliance by his ID, tag or name. If Alliance\'s tag or name consists from strange symbols or only from numbers - you should use ally ID for search.',
 
   'sys_fleet_and' => '+ fleets',
+
   'sys_on_planet' => 'On planet',
   'fl_on_stores' => 'In stock',
 

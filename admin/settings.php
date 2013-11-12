@@ -31,7 +31,7 @@ if(sys_get_param('save'))
   $config->url_faq                 = sys_get_param_str_raw('url_faq');
   $config->url_forum               = sys_get_param_str_raw('url_forum');
   $config->url_rules               = sys_get_param_str_raw('url_rules');
-  $config->url_dark_matter         = sys_get_param_str_raw('url_dark_matter');
+  $config->url_purchase_metamatter         = sys_get_param_str_raw('url_purchase_metamatter');
   $config->game_disable            = sys_get_param_int('game_disable');
   $config->game_disable_reason     = sys_get_param_str_raw('game_disable_reason');
   $config->server_updater_check_auto = sys_get_param_int('server_updater_check_auto');

@@ -17,6 +17,11 @@ if($unit_id == RES_DARK_MATTER)
   sys_redirect('dark_matter.php');
 }
 
+if($unit_id == RES_METAMATTER)
+{
+  sys_redirect('metamatter.php');
+}
+
 lng_include('infos');
 if(!$unit_id || (!isset($sn_data[$unit_id]) && !isset($lang['info'][$unit_id])))
 {

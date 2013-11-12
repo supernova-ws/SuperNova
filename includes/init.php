@@ -209,6 +209,7 @@ $sn_page_name = isset($_GET['page']) ? trim(strip_tags($_GET['page'])) : '';
 // И читать конфиги - вдруг модуль отключен?
 // Конфиг - часть манифеста?
 $sn_module = array();
+$sn_module_list = array();
 sn_sys_load_php_files("{$sn_root_physical}modules/", $phpEx, true);
 
 // Подключаем дефолтную страницу
@@ -288,7 +289,9 @@ foreach($load_order as $loaded_module_name => $load_order)
     continue;
   }
   $sn_module[$loaded_module_name]->initialize();
+  $sn_module_list[$sn_module[$loaded_module_name]->manifest['package']][$loaded_module_name] = &$sn_module[$loaded_module_name];
 }
+
 // Скрипач не нужон
 unset($load_order);
 unset($sn_req);
@@ -312,6 +315,23 @@ if($config->user_birthday_gift && $time_now > $config->user_birthday_celebrate +
 {
   require_once("{$sn_root_physical}includes/includes/user_birthday_celebrate.{$phpEx}");
   sn_user_birthday_celebrate();
+}
+
+// TODO Грязный хак!
+if(sn_module_get_active_count('payment'))
+{
+/*
+  $sn_menu_extra['menu_metamatter'] = array(
+    'LEVEL' => 'header',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'sys_metamatter',
+    'LINK'  => 'metamatter.php',
+    'LOCATION' => '-menu_dark_matter',
+  );
+*/
+}
+else
+{
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------

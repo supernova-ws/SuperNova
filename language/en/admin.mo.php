@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a6.1
+* @version 38a2.0
 *
 */
 
@@ -218,7 +218,7 @@ $lang = array_merge($lang, array(
   'adm_opt_game_speed_normal' => '(1&nbsp;-&nbsp;normal)',
   'adm_opt_game_faq' => 'Link to FAQ',
   'adm_opt_game_forum' => 'Forum address',
-  'adm_opt_game_dark_matter' => 'Reference &quot;Harvest Dark Matter&quot;',
+  'adm_opt_game_metamatter' => 'Reference &quot;Purchase Metamatter&quot;',
   'adm_opt_game_copyrigh' => 'Copyright',
   'adm_opt_game_online' => 'Turn off the game. Users will see the following message:',
   'adm_opt_game_offreaso' => 'Turn off reason',

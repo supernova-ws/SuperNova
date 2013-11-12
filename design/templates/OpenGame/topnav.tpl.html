@@ -135,12 +135,21 @@
           <!-- BOF Nav Bar Right block -->
           <td class="c_r noborder">
 
-            <div style="position: relative; width: 64px; height: 64px; display: inline-block;">
+            <div style="position: relative; width: 64px; height: 64px; margin-right: 3px; display: inline-block;">
               <a href="dark_matter.php">
                 <img style="position: absolute; left: 0px; top: 0px;" src="{D_SN_ROOT_RELATIVE}design/images/navbar_dark_matterie_64x64.png" height="100%" alt="{L_sys_dark_matter}" title="{L_sys_dark_matter}">
-                <span style="position: absolute; right: 0; bottom: 0;" class="icon_alpha ok">{TOPNAV_DARK_MATTER}</span>
+                <span style="position: absolute; right: 0; bottom: 0;" class="icon_alpha ok">{TOPNAV_DARK_MATTER_TEXT}</span>
               </a>
             </div>
+
+            <!-- IF TOPNAV_PAYMENT -->
+            <div style="position: relative; width: 64px; height: 64px; margin-right: 3px; display: inline-block;">
+              <a href="metamatter.php">
+                <img style="position: absolute; left: 0px; top: 0px;" src="{D_SN_ROOT_RELATIVE}design/images/navbar_metamatter_64x64.png" height="100%" alt="{L_sys_metamatte}" title="{L_sys_metamatter}">
+                <span style="position: absolute; right: 0; bottom: 0;" class="icon_alpha ok">{TOPNAV_METAMATTER_TEXT}</span>
+              </a>
+            </div>
+            <!-- ENDIF -->
 
           </td>
           <!-- EOF Nav Bar Right block -->

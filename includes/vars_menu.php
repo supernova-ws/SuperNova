@@ -181,6 +181,14 @@ $sn_menu = array(
     'LINK'  => 'index.php?page=imperator',
     'ICON'  => true,
   ),
+/*
+  'menu_metamatter' => array(
+    'LEVEL' => 'header',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'sys_metamatter',
+    'LINK'  => 'metamatter.php',
+  ),
+*/
 
   'menu_dark_matter' => array(
     'LEVEL' => 'header',

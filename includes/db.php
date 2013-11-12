@@ -36,7 +36,7 @@ function sn_db_connect()
 
 function doquery($query, $table = '', $fetch = false)
 {
-  global $numqueries, $link, $debug, $user, $tableList, $sn_cache, $is_watching, $config, $dm_change_legit, $db_prefix;
+  global $numqueries, $link, $debug, $user, $tableList, $sn_cache, $is_watching, $config, $dm_change_legit, $mm_change_legit, $db_prefix;
 
   if(!is_string($table))
   {
@@ -81,6 +81,8 @@ function doquery($query, $table = '', $fetch = false)
   }elseif (stripos($query, 'EOAD DAT') != FALSE) {
     $badword = true;
   }elseif (stripos($query, 'RPG_POINTS') != FALSE && stripos(trim($query), 'UPDATE ') === 0 && !$dm_change_legit) {
+    $badword = true;
+  }elseif (stripos($query, 'METAMATTER') != FALSE && stripos(trim($query), 'UPDATE ') === 0 && !$mm_change_legit) {
     $badword = true;
   }elseif (stripos($query, 'AUTHLEVEL') != FALSE && $user['authlevel'] < 3 && stripos($query, 'SELECT') !== 0) {
     $badword = true;

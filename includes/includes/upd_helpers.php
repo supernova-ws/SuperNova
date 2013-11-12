@@ -201,5 +201,3 @@ function upd_create_table($table_name, $declaration)
 
   return $result;
 }
-
-?>

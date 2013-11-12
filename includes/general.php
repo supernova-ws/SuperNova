@@ -423,7 +423,7 @@ function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false,
 function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false, &$result)
 {
 // TODO: Add caching for known items
-  global $config, $sn_data, $time_now;
+  global $sn_data;
 
   $mercenary_level = 0;
   $unit_db_name = $sn_data[$unit_id]['name'];
@@ -440,8 +440,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
   }
-//  elseif(in_array($unit_id, $sn_data['groups']['tech']) || $unit_id == RES_DARK_MATTER)
-  elseif($unit_id == RES_DARK_MATTER)
+  elseif($unit_id == RES_DARK_MATTER || $unit_id == RES_METAMATTER)
   {
     $mercenary_level = $user[$unit_db_name];
   }
@@ -1302,4 +1301,20 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow)
   }
 
   return $result;
+}
+
+function sn_module_get_active_count($group = '*')
+{
+  global $sn_module_list;
+
+  $active_modules = 0;
+  if(isset($sn_module_list[$group]) && is_array($sn_module_list[$group]))
+  {
+    foreach($sn_module_list[$group] as $payment_module)
+    {
+      $active_modules += $payment_module->manifest['active'];
+    }
+  }
+
+  return $active_modules;
 }

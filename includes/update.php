@@ -740,6 +740,36 @@ switch($new_version)
 
     upd_alter_table('users', "ADD `vacation_next` INT(11) NOT NULL DEFAULT 0 COMMENT 'Next datetime when player can go on vacation'", !$update_tables['users']['vacation_next']);
 
+    upd_alter_table('users', "ADD `metamatter` INT(20) NOT NULL DEFAULT 0 COMMENT 'Metamatter amount'", !$update_tables['users']['metamatter']);
+    upd_check_key('url_purchase_metamatter', $config->url_dark_matter, !$config->url_purchase_metamatter && $config->url_dark_matter);
+    upd_check_key('url_dark_matter', '', $config->url_dark_matter); // TODO REMOVE KEY FROM DB
+
+    upd_check_key('payment_currency_exchange_mm_', 2500, !$config->payment_currency_exchange_mm_);
+
+    if(!$update_tables['log_metamatter'])
+    {
+      upd_create_table('log_metamatter',
+        "(
+          `id` SERIAL,
+          `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Human-readable record timestamp',
+          `user_id` BIGINT(20) unsigned NOT NULL DEFAULT '0' COMMENT 'User ID which make log record',
+          `username` VARCHAR(32) NOT NULL DEFAULT '' COMMENT 'Username',
+          `reason` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Reason ID for metamatter adjustment',
+          `amount` BIGINT(10) NOT NULL DEFAULT 0 COMMENT 'Amount of metamatter change',
+          `comment` TEXT COMMENT 'Comments',
+          `page` VARCHAR(512) NOT NULL DEFAULT '' COMMENT 'Page that makes entry to log',
+
+          PRIMARY KEY (`id`),
+          KEY `I_log_metamatter_sender_id` (`user_id`, `id`),
+          KEY `I_log_metamatter_reason_sender_id` (`reason`, `user_id`, `id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
+      );
+    }
+
+    upd_alter_table('payment', array(
+      "ADD `payment_test` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Is this a test payment?'",
+    ), !$update_tables['payment']['payment_test']);
+
 /*
 //      upd_alter_table('unit', "ADD KEY `I_unit_player_id_temporary` (`unit_player_id`)", !$update_indexes['unit']['I_unit_player_id_temporary']);
 //      upd_alter_table('unit', "DROP KEY `I_unit_player_location_snid`", $update_indexes['unit']['I_unit_player_location_snid']);

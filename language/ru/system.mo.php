@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #37c2#
+* @version #38a2.0#
 *
 */
 
@@ -36,86 +36,6 @@ if (empty($lang) || !is_array($lang))
 
 // System-wide localization
 $lang = array_merge($lang, array(
-  // Dark Matter
-  'sys_dark_matter_what_header' => 'Что такое Тёмная Материя',
-  'sys_dark_matter_description_header' => 'Зачем нужна Тёмная Материя',
-  'sys_dark_matter_description_text' => 'Тёмная Материя - это внутриигровой ресурс, за счет которой в игре вы можете совершать различные операции:
-    <ul>
-      <li>Покупать <a href="index.php?page=premium"><span class="link">Премиум-аккаунт</span></a></li>
-      <li>Рекрутировать <a href="officer.php?mode=600"><span class="link">Наемников</span></a> в Империю </li>
-      <li>Нанимать Губернаторов и покупать дополнительные сектора <a href="overview.php?mode=manage"><span class="link">на планеты</span></a></li>
-      <li>Покупать <a href="officer.php?mode=1100"><span class="link">Чертежи</span></a></li>
-      <li>Покупать <a href="artifacts.php"><span class="link">Артефакты</span></a></li>
-      <li>Использовать <a href="market.php"><span class="link">Чёрный Рынок</span></a>: Обменивать один вид ресурсов на другой; продавать корабли; покупать Б/У корабли итд</li>
-      <li>...и многое, многое другое</li>
-    </ul>',
-  'sys_dark_matter_obtain_header' => 'Где взять Тёмную Материю',
-  'sys_dark_matter_obtain_text' => 'Вы получаете Тёмную Материю в процессе игры: набирая опыт за успешные рейды на чужие планеты, исследование новых технологий, а так же за постройку и разрушение зданий.
-    Так же иногда исследовательские экспедиции могут принести ТМ.',
-
-  'sys_dark_matter_purchase_url_description' => 'Кроме того вы можете приобрести ТМ за WebMoney.',
-  'sys_dark_matter_purchase_url_get'  => 'Откройте эту ссылку, что бы узнать подробности.',
-
-
-  'sys_dark_matter_purchase' => 'Купить Тёмную Материю',
-  'sys_dark_matter_purchase_text_cost' => 'Стоимость',
-  'sys_dark_matter_purchase_text_unit' => 'составляет',
-  'sys_dark_matter_purchase_text_end' => 'При оптовой покупке ТМ предоставляются бонусы',
-  'sys_dark_matter_purchase_text_bonus' => 'от %s ТМ - бонус %d%% к количеству ТМ',
-  'sys_dark_matter_purchase_step1' => 'Шаг 1',
-  'sys_dark_matter_purchase_step1_text' => 'Выберите количество ТМ, способ оплаты и подтвердите свой выбор',
-  'sys_dark_matter_purchase_amount' => 'Количество Тёмной Материи',
-  'sys_dark_matter_purchase_select' => 'Способ оплаты',
-  'sys_dark_matter_purchase_confirm' => 'Подтвердить выбор',
-  'sys_dark_matter_purchase_payment_selected' => 'Оплата будет произведена с использованием платежной системы',
-
-  'sys_dark_matter_purchase_step2' => 'Шаг 2',
-  'sys_dark_matter_purchase_step2_text' => 'Проверьте выбранное количество Тёмной Материи и способ оплаты. Если все правильно - нажмите кнопку "Оплатить Тёмную Материю". Если вы ошиблись - нажмите кнопку "Начать заново"',
-  'sys_dark_matter_purchase_pay' => 'Оплатить Тёмную Материю',
-  'sys_dark_matter_purchase_reset' => 'Начать заново',
-  'sys_dark_matter_purchase_in_progress' => 'Происходит оплата...',
-  'sys_dark_matter_purchase_conversion_cost' => 'Стоимость %d Тёмной Материи составит %s %s',
-
-  'sys_dark_matter_purchase_exchange' => 'Внутренние курсы валют',
-  'sys_currency_name' => 'Валюта',
-  'sys_currency_symbol' => 'Символ',
-  'sys_currency_exchange_direct' => 'Прямой курс',
-  'sys_currency_exchange_reverse' => 'Обратный курс',
-  'sys_currency_exchange_dm' => 'ТМ за 1 у.е.',
-  'sys_currencies' => array(
-    'RUB' => 'Российский рубль',
-    'USD' => 'Доллар США',
-    'EUR' => 'Евро',
-    'UAH' => 'Украинская гривна',
-    'WMR' => 'WebMoney рубль',
-    'WMZ' => 'WebMoney доллар',
-    'WME' => 'WebMoney евро',
-    'WMU' => 'WebMoney гривна',
-  ),
-  'sys_dark_matter_purchase_exchange_note' => 'Внутренний курс используется для пересчета из основной валюты сервера в валюту плтаженой системы. Курс не включает комиссию посредников и/или платежных систем',
-
-  'sys_dark_matter_purchase_result_complete' => 'Вы успешно заплатили за %d Тёмной Материи через сервис %s. Вам начислено %s Тёмной Материи',
-  'sys_dark_matter_purchase_result_incomplete' => 'Ваш платеж за %d Тёмной Материи через сервис %s не закончен. Если вы считаете, что произошла ошибка - свяжитесь с Администрацией сервера',
-  'sys_dark_matter_purchase_result_test' => 'На самом деле - шутка. Платеж был тестовый, поэтому ты ничего не получил ха-ха-ха! Если считаешь, что это ошибка - обратись к Администрации сервера',
-
-  'pay_msg_request_user_found' => 'Пользователь найден',
-
-  'pay_msg_request_unsupported' => 'Данный тип запроса не поддерживается',
-  'pay_msg_request_signature_invalid' => 'Неправильная подпись запроса',
-  'pay_msg_request_user_invalid' => 'Неправильный идентификатор пользователя',
-  'pay_msg_request_server_wrong' => 'Неправильный сервер',
-  'pay_msg_request_payment_amount_invalid' => 'Неправильная сумма платежа',
-  'pay_msg_request_payment_id_invalid' => 'Неправильный идентификатор платежа',
-  'pay_msg_request_payment_date_invalid' => 'Неправильная дата платежа',
-  'pay_msg_request_internal_error' => 'Внутренняя ошибка сервера. Попробуйте повторить платеж позже',
-
-  'pay_msg_request_dark_matter_amount_invalid' => 'Неправильное количество Тёмной Материи',
-  'pay_msg_request_paylink_unsupported' => 'Данный тип платежной ссылке не поддерживается. Возможно используется устаревшая версия СН, не совместимая с данным платежным модулем',
-  'pay_msg_request_dark_matter_config_invalid' => 'Ошибка в конфигурации модуля платежа. Свяжитесь с Администрацией сервера',
-
-  'pay_msg_module_disabled' => 'Модуль платежа отключен',
-
-
   'sys_administration' => 'Администрация СверхНовой',
   'sys_birthday' => 'День рождения',
   'sys_birthday_message' => '%1$s! Администрация СверхНовой сердечно поздравляет тебя с твоим Днем Рождения, который пришелся на %2$s и преподносит тебе в качестве подарка %3$d %4$s! От всей души желаем тебе успехов в игре и высоких рангов в статистике! Может это поздравление и запоздало, но лучше раньше, чем позже.',
@@ -196,6 +116,8 @@ $lang = array_merge($lang, array(
   'sys_energy_sh'      => "Э",
   'sys_dark_matter'    => "Тёмная Материя",
   'sys_dark_matter_sh' => "ТМ",
+  'sys_metamatter'     => "Метаматерия",
+  'sys_metamatter_sh'  => "ММ",
 
   'sys_reset'           => "Сбросить",
   'sys_send'            => "Отправить",
@@ -710,8 +632,27 @@ $lang = array_merge($lang, array(
   'sys_lessThen15min'   => '&lt; 15 мин',
 
   'sys_no_points'         => 'У вас недостаточно тёмной материи!',
+  'sys_dark_matter_obtain_header' => 'Где взять Тёмную Материю',
   'sys_dark_matter_desc' => 'Тёмная материя - необнаружимая стандартными методами небарионная материя, на которую приходится 23% массы Вселенной. Из неё можно добывать невероятное количество энергии. Из-за этого, а так же из-за сложностей, связанных с её добычей, Тёмная Материя ценится очень высоко.',
   'sys_dark_matter_hint' => 'При помощи этой субстанции можно нанять офицеров и командиров.',
+
+  'sys_dark_matter_what_header' => 'Что такое Тёмная Материя',
+  'sys_dark_matter_description_header' => 'Зачем нужна Тёмная Материя',
+  'sys_dark_matter_description_text' => 'Тёмная Материя - это внутриигровой ресурс, за счет которой в игре вы можете совершать различные операции:
+    <ul>
+      <li>Покупать <a href="index.php?page=premium"><span class="link">Премиум-аккаунт</span></a></li>
+      <li>Рекрутировать <a href="officer.php?mode=600"><span class="link">Наемников</span></a> в Империю </li>
+      <li>Нанимать Губернаторов и покупать дополнительные сектора <a href="overview.php?mode=manage"><span class="link">на планеты</span></a></li>
+      <li>Покупать <a href="officer.php?mode=1100"><span class="link">Чертежи</span></a></li>
+      <li>Покупать <a href="artifacts.php"><span class="link">Артефакты</span></a></li>
+      <li>Использовать <a href="market.php"><span class="link">Чёрный Рынок</span></a>: Обменивать один вид ресурсов на другой; продавать корабли; покупать Б/У корабли итд</li>
+      <li>...и многое, многое другое</li>
+    </ul>',
+  'sys_dark_matter_obtain_header' => 'Где взять Тёмную Материю',
+  'sys_dark_matter_obtain_text' => 'Вы получаете Тёмную Материю в процессе игры: набирая опыт за успешные рейды на чужие планеты, исследование новых технологий, а так же за постройку и разрушение зданий.
+    Так же иногда исследовательские экспедиции могут принести ТМ.',
+
+  'sys_dark_matter_obtain_text_convert' => '<br /><br />Кроме того, вы можете сконвертировать Метаматерию в Тёмную Материю. <a href="metamatter.php" class="link">Узнать подробнее про Метаматерию</a>',
 
   'sys_msg_err_update_dm' => 'Ошибка обновления количества ТМ!',
 

@@ -7,6 +7,61 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
+function mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false)
+{
+  global $debug, $mm_change_legit, $sn_data, $user;
+
+  if(!$user_id || !($metamatter = intval($metamatter)))
+  {
+    return false;
+  }
+
+  $mm_change_legit = true;
+  $sn_data_metamatter_db_name = $sn_data[RES_METAMATTER]['name'];
+  if($already_changed)
+  {
+    $result = -1;
+  }
+  else
+  {
+    doquery("UPDATE {{users}} SET `{$sn_data_metamatter_db_name}` = `{$sn_data_metamatter_db_name}` + '{$metamatter}' WHERE `id` = {$user_id} AND `{$sn_data_metamatter_db_name}` + '{$metamatter}' >= 0 LIMIT 1;");
+    $result = mysql_affected_rows();
+  }
+
+  if($result)
+  {
+    $page_url = mysql_real_escape_string($_SERVER['SCRIPT_NAME']);
+    if(is_array($comment))
+    {
+      $comment = call_user_func_array('sprintf', $comment);
+    }
+    $comment = mysql_real_escape_string($comment);
+    $row = doquery("SELECT username FROM {{users}} WHERE id = {$user_id} LIMIT 1;", '', true);
+    $row['username'] = mysql_real_escape_string($row['username']);
+    doquery("INSERT INTO {{log_metamatter}} SET
+      `user_id` = {$user_id},
+      `username` = '{$row['username']}',
+      `reason` = {$change_type},
+      `amount` = {$metamatter},
+      `comment` = '{$comment}',
+      `page` = '{$page_url}'
+    ;");
+    $result = mysql_insert_id();
+
+    if($user['id'] == $user_id)
+    {
+      $user['metamatter'] += $metamatter;
+    }
+  }
+  else
+  {
+    $debug->warning("Error adjusting Metamatter for player ID {$user_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
+  }
+
+  $mm_change_legit = false;
+  return $result;
+}
+
 
 /**
 *

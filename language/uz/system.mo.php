@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version #37c2#
+* @version #38a2.0#
 *
 */
 
@@ -36,86 +36,6 @@ if (empty($lang) || !is_array($lang))
 
 // System-wide localization
 $lang = array_merge($lang, array(
-  // Dark Matter
-  'sys_dark_matter_what_header' => 'TM (Tyomniy Materiya) nima degani?',
-  'sys_dark_matter_description_header' => 'TM nimaga kerak bo`ladi?',
-  'sys_dark_matter_description_text' => 'TM - bu o`yin ichidagi asosiy resurslardan biri bo`lib, o`yin ichida har xil operatsiyalarni bajarishga yordam beradi:
-    <ul>
-      <li>Sotib olish <a href="index.php?page=premium"><span class="link">Premium-akkaunt</span></a></li>
-      <li>Ishga biriktirish <a href="officer.php?mode=600"><span class="link">Yollanma odamlar</span></a> Imperiya uchun </li>
-      <li>Gubernatorlar yollash va sektorlar sotib olish <a href="overview.php?mode=manage"><span class="link">sayyorada</span></a></li>
-      <li>Sotib olish mumkin: <a href="officer.php?mode=1100"><span class="link">Chizmalarni</span></a></li>
-      <li>Sotib olish mumkin: <a href="artifacts.php"><span class="link">Artefaktlarni</span></a></li>
-      <li>Foydalanish mumkin: <a href="market.php"><span class="link">Qora bozor</span></a>: Bir turdagi resursni boshqa turdagi resursga almashtirish; Kemalarni sotish va boshqalar</li>
-      <li>...va boshqa ko`plab ishlarni o`z ichiga oladi</li>
-    </ul>',
-  'sys_dark_matter_obtain_header' => 'TM ni qayerdan olsa boladi?',
-  'sys_dark_matter_obtain_text' => 'Siz TM ni o`yin ichida quyidagi holatlarda yutib olishingiz mumkin bo`ladi: Tajribangiz oshgan sayin, begona sayyoralarda muvaffaqayatli yurishlar bilan, yangi tehnologiyalarni darajasini oshirish bilan, hamda yangi binolarni qurish va uni buzish bilan ham TM olsa boladi.
-    Hamda ba`zida Ekspeditsiya vaqtida yuborgan flotingiz TM olib kelishi mumkin.',
-
-  'sys_dark_matter_purchase_url_description' => 'TM ni Webmoney orqali olishingiz ham mumkin.',
-  'sys_dark_matter_purchase_url_get'  => 'Batafsilroq ma`lumot olish uchun ushbu manzilga o`ting.',
-
-
-  'sys_dark_matter_purchase' => 'TM sotib olish',
-  'sys_dark_matter_purchase_text_cost' => 'Narhi',
-  'sys_dark_matter_purchase_text_unit' => 'tuzmoq',
-  'sys_dark_matter_purchase_text_end' => 'TM ni ko`p miqdorda sotib olganlarga bonus taqdim etiladi:', //  TM sotib olishni yo'li.
-  'sys_dark_matter_purchase_text_bonus' => 'boshlang\'ich %s ТМ - bonus %d%% miqdorda qoshib beriladi',
-  'sys_dark_matter_purchase_step1' => '1-qadam',
-  'sys_dark_matter_purchase_step1_text' => 'TM miqdorini, pul to`lash yo`lini tanlang va tasdiqlang',
-  'sys_dark_matter_purchase_amount' => 'TM soni',
-  'sys_dark_matter_purchase_select' => 'Pul to`lash yo`li',
-  'sys_dark_matter_purchase_confirm' => 'Tasdiqlang',
-  'sys_dark_matter_purchase_payment_selected' => 'Pul tushirish uchun kerakli karmonlardan foydalaning',
-
-  'sys_dark_matter_purchase_step2' => '2-qadam',
-  'sys_dark_matter_purchase_step2_text' => 'Siz uchun kerakli bo`lgan TM miqdorini ko`rsating va to`lash usulini tanlang. Agar hammasi to`g`ri bolsa "TM uchun tolov" tugmasini bosing. Agar adashgan bo`lsangiz "Yangitdan boshlash" tugmasini bosing',
-  'sys_dark_matter_purchase_pay' => 'TM to`lash',
-  'sys_dark_matter_purchase_reset' => 'Yangitdan boshlash',
-  'sys_dark_matter_purchase_in_progress' => 'To`lov bajarilmoqda...',
-  'sys_dark_matter_purchase_conversion_cost' => 'Стоимость %d Тёмной Материи составит %s %s',
-
-  'sys_dark_matter_purchase_exchange' => 'Внутренние курсы валют',
-  'sys_currency_name' => 'Валюта',
-  'sys_currency_symbol' => 'Символ',
-  'sys_currency_exchange_direct' => 'Прямой курс',
-  'sys_currency_exchange_reverse' => 'Обратный курс',
-  'sys_currency_exchange_dm' => 'ТМ за 1 у.е.',
-  'sys_currencies' => array(
-    'RUB' => 'Российский рубль',
-    'USD' => 'Доллар США',
-    'EUR' => 'Евро',
-    'UAH' => 'Украинская гривна',
-    'WMR' => 'WebMoney рубль',
-    'WMZ' => 'WebMoney доллар',
-    'WME' => 'WebMoney евро',
-    'WMU' => 'WebMoney гривна',
-  ),
-  'sys_dark_matter_purchase_exchange_note' => 'Внутренний курс используется для пересчета из основной валюты сервера в валюту плтаженой системы. Курс не включает комиссию посредников и/или платежных систем',
-
-  'sys_dark_matter_purchase_result_complete' => 'Вы успешно заплатили за %d Тёмной Материи через сервис %s. Вам начислено %s Тёмной Материи',
-  'sys_dark_matter_purchase_result_incomplete' => 'Ваш платеж за %d Тёмной Материи через сервис %s не закончен. Если вы считаете, что произошла ошибка - свяжитесь с Администрацией сервера',
-  'sys_dark_matter_purchase_result_test' => 'На самом деле - шутка. Платеж был тестовый, поэтому ты ничего не получил ха-ха-ха! Если считаешь, что это ошибка - обратись к Администрации сервера',
-
-  'pay_msg_request_user_found' => 'Foydalanuvchi topildi',
-
-  'pay_msg_request_unsupported' => 'So`rovning bunday turi qo`llab quvvatlanmaydi',
-  'pay_msg_request_signature_invalid' => 'So`rovning imzosi noto`g`ri',
-  'pay_msg_request_user_invalid' => 'Foydalanuvchining identifikatori noto`g`ri',
-  'pay_msg_request_server_wrong' => 'Server noto`g`ri',
-  'pay_msg_request_payment_amount_invalid' => 'To`lov summasi noto`g`ri',
-  'pay_msg_request_payment_id_invalid' => 'To`lov identifikatori noto`g`ri',
-  'pay_msg_request_payment_date_invalid' => 'to`lovning kuni noto`g`ri',
-  'pay_msg_request_internal_error' => 'Serverning ichida hatolik. To`lovni keyinroq amalga oshirib koring',
-
-  'pay_msg_request_dark_matter_amount_invalid' => 'TM soni noto`g`ri',
-  'pay_msg_request_paylink_unsupported' => 'Bunday turdagi to`lov sahifasi qo`llanmaydi. SN ning eskirgan versiyasini qo`llayotgan bo`lishingiz mumkin',
-  'pay_msg_request_dark_matter_config_invalid' => 'Ошибка в конфигурации модуля платежа. Свяжитесь с Администрацией сервера',
-
-  'pay_msg_module_disabled' => 'To`lov moduli o`chirilgan',
-
-
   'sys_administration' => 'Sverhnovaning Adminstratorlari',
   'sys_birthday' => 'Tug`ilgan yil',
   'sys_birthday_message' => '%1$s! Sverhnovaning Adminstratorlari sizni tug`ilgan kuningiz bilan muborakbod etadi va sizga  %3$d %4$s sovg`a qiladi! Sizga chin qalbdan o`yinimizda omad va statistikamizning yuqori o`rinlarida bo`lishingizni tilab qoladi!',
@@ -703,8 +623,27 @@ $lang = array_merge($lang, array(
   'sys_lessThen15min'   => '&lt; 15 daq',
 
   'sys_no_points'         => 'Sizga TM yetishmayapdi!',
+  'sys_dark_matter_obtain_header' => 'TM ni qayerdan olsa boladi?',
   'sys_dark_matter_desc' => 'Tyomniy materiya - energiya qancha yuqori bo`lsa uni olish ham shuncha oson boladi.',
   'sys_dark_matter_hint' => 'Bu substansiyaga ofitserlar va kamandirlar yollash mumkin.',
+
+  'sys_dark_matter_what_header' => 'TM (Tyomniy Materiya) nima degani?',
+  'sys_dark_matter_description_header' => 'TM nimaga kerak bo`ladi?',
+  'sys_dark_matter_description_text' => 'TM - bu o`yin ichidagi asosiy resurslardan biri bo`lib, o`yin ichida har xil operatsiyalarni bajarishga yordam beradi:
+    <ul>
+      <li>Sotib olish <a href="index.php?page=premium"><span class="link">Premium-akkaunt</span></a></li>
+      <li>Ishga biriktirish <a href="officer.php?mode=600"><span class="link">Yollanma odamlar</span></a> Imperiya uchun </li>
+      <li>Gubernatorlar yollash va sektorlar sotib olish <a href="overview.php?mode=manage"><span class="link">sayyorada</span></a></li>
+      <li>Sotib olish mumkin: <a href="officer.php?mode=1100"><span class="link">Chizmalarni</span></a></li>
+      <li>Sotib olish mumkin: <a href="artifacts.php"><span class="link">Artefaktlarni</span></a></li>
+      <li>Foydalanish mumkin: <a href="market.php"><span class="link">Qora bozor</span></a>: Bir turdagi resursni boshqa turdagi resursga almashtirish; Kemalarni sotish va boshqalar</li>
+      <li>...va boshqa ko`plab ishlarni o`z ichiga oladi</li>
+    </ul>',
+  'sys_dark_matter_obtain_header' => 'TM ni qayerdan olsa boladi?',
+  'sys_dark_matter_obtain_text' => 'Siz TM ni o`yin ichida quyidagi holatlarda yutib olishingiz mumkin bo`ladi: Tajribangiz oshgan sayin, begona sayyoralarda muvaffaqayatli yurishlar bilan, yangi tehnologiyalarni darajasini oshirish bilan, hamda yangi binolarni qurish va uni buzish bilan ham TM olsa boladi.
+    Hamda ba`zida Ekspeditsiya vaqtida yuborgan flotingiz TM olib kelishi mumkin.',
+
+  'sys_dark_matter_obtain_text_convert' => '<br /><br />Кроме того, вы можете сконвертировать Метаматерию в Тёмную Материю. <a href="metamatter.php" class="link">Узнать подробнее про Метаматерию</a>',
 
   'sys_msg_err_update_dm' => 'TM o`zgarishishida hatolik yuz berdi!',
 

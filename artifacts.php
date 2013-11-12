@@ -113,6 +113,7 @@ foreach($sn_data['groups']['artifacts'] as $artifact_id)
 }
 
 $template->assign_vars(array(
+  'PAGE_HEADER' => $lang['tech'][UNIT_ARTIFACTS],
   'PAGE_HINT' => $lang['art_page_hint'],
 ));
 

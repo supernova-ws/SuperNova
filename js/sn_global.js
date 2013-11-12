@@ -294,3 +294,13 @@ jQuery(document).mousemove(function(e){
 });
 
 jQuery(document).ready(calc_elements);
+
+function sn_show_hide(element, element_name)
+{
+  var element_to_hide = jQuery("#" + element_name);
+  var tag_name = element_to_hide[0].tagName;
+
+  element_to_hide.css('display', element_to_hide.css('display') == 'none' ? (tag_name == 'TR' ? 'table-row' : (tag_name == 'UL' || tag_name == 'DIV' ? 'block' : 'inline')) : 'none');
+//  jQuery(element).html("[&nbsp;" + (element_to_hide.css('display') == 'none' ? "{LA_sys_show}" : "{LA_sys_hide}") + "&nbsp;]");
+  jQuery(element).html("[&nbsp;" + (element_to_hide.css('display') == 'none' ? LA_sys_show : LA_sys_hide) + "&nbsp;]");
+}

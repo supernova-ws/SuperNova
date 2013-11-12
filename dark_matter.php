@@ -1,13 +1,6 @@
 <?php
 
-// Придумать какой статус должен быть у глобальных ответов, что бы не перекрывать статусы платежных систем
-// Может добавить спецстатус "Ответ системы платежа" и парсить дальше getMessage
-define('SN_PAYMENT_REQUEST_ERROR_DM_AMOUNT', 1);
-define('SN_PAYMENT_REQUEST_PAYLINK_UNSUPPORTED', 2);
-
 include_once('common.' . substr(strrchr(__FILE__, '.'), 1));
-
-// pdump(sn_module_payment::$bonus_table);
 
 $template = gettemplate('dark_matter', true);
 if(isset(sn_module_payment::$bonus_table) && is_array(sn_module_payment::$bonus_table))
@@ -84,7 +77,7 @@ foreach($sn_module as $module_name => $module)
 // If payment_module invalid - making it empty OR if there is only one payment_module - selecting it
 $payment_module = $payment_module_valid ? $payment_module : (count($template->_tpldata['payment_module']) == 1 ? $template->_tpldata['payment_module'][0]['ID'] : '');
 
-foreach($lang['sys_currencies'] as $key => $value)
+foreach($lang['pay_currency_list'] as $key => $value)
 {
   $var_name = 'payment_currency_exchange_' . strtolower($key);
   $course = $config->$var_name;
@@ -208,7 +201,9 @@ $template->assign_vars(array(
   'DARK_MATTER_TEXT' => pretty_number($request['dark_matter']),
   'UNIT_DESCRIPTION' => $lang['info'][RES_DARK_MATTER]['description'],
   'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => $config->payment_currency_exchange_dm_,
-  'PAYMENT_CURRENCY_DEFAULT_TEXT' => $lang['sys_currencies'][$config->payment_currency_default],
+  'PAYMENT_CURRENCY_DEFAULT_TEXT' => $lang['pay_currency_list'][$config->payment_currency_default],
+
+  'PAYMENT_AVAILABLE' => sn_module_get_active_count('payment'),
 ));
 
 display($template, $lang['sys_dark_matter']);

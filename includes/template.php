@@ -68,7 +68,7 @@ function tpl_render_menu()
       'CHECK_CLASS' => $sn_version_check_class[$config->server_updater_check_result],
     ));
   }
-  else
+  elseif(!empty($sn_menu))
   {
     global $sn_menu_extra;
 
@@ -352,7 +352,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     return '';
   }
 
-  global $time_now, $lang, $config, $sn_data, $time_local;
+  global $time_now, $lang, $config, $sn_data, $time_local, $sn_module_list;
 
   $GET_mode = sys_get_param_str('mode');
 
@@ -433,7 +433,13 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     'TOPNAV_CURRENT_PLANET' => $user['current_planet'],
     'TOPNAV_MODE' => $GET_mode,
 
-    'TOPNAV_DARK_MATTER' => pretty_number($user[$sn_data[RES_DARK_MATTER]['name']]),
+    'TOPNAV_DARK_MATTER' => mrc_get_level($user, '', RES_DARK_MATTER),
+    'TOPNAV_DARK_MATTER_TEXT' => pretty_number(mrc_get_level($user, '', RES_DARK_MATTER)),
+    'TOPNAV_METAMATTER'  => mrc_get_level($user, '', RES_METAMATTER),
+    'TOPNAV_METAMATTER_TEXT'  => pretty_number(mrc_get_level($user, '', RES_METAMATTER)),
+
+    // TODO ÃĞßÇÍÛÉ ÕÀÊ!!! ÓÁĞÀÒÜ!
+    'TOPNAV_PAYMENT' => sn_module_get_active_count('payment'),
 
     'TOPNAV_MESSAGES_ADMIN'    => $user['msg_admin'],
     'TOPNAV_MESSAGES_PLAYER'   => $user['mnl_joueur'],
