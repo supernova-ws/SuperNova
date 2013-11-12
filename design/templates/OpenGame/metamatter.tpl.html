@@ -1,0 +1,245 @@
+<h2>{PAGE_HEADER}</h2>
+
+<!-- INCLUDE _result_message -->
+
+<script type="text/javascript">
+  var LA_sys_show = "{LA_sys_show}";
+  var LA_sys_hide = "{LA_sys_hide}";
+  /*
+   function sn_show_hide(element, element_name)
+   {
+   var element_to_hide = jQuery("#" + element_name);
+   var tag_name = element_to_hide[0].tagName;
+
+   element_to_hide.css('display', element_to_hide.css('display') == 'none' ? (tag_name == 'TR' ? 'table-row' : (tag_name == 'UL' || tag_name == 'DIV' ? 'block' : 'inline')) : 'none');
+   jQuery(element).html("[&nbsp;" + (element_to_hide.css('display') == 'none' ? "{LA_sys_show}" : "{LA_sys_hide}") + "&nbsp;]");
+   }
+   */
+</script>
+
+<table width="519">
+  <tr class="c_j">
+    <th>
+      {L_sys_metamatter_what_header}
+    </th>
+  </tr>
+  <tr class="c_j">
+    <td>
+      <div style="display: table-row; position: relative; margin: 7px;">
+        <img src="design/images/metamatter.jpg" align="top" border="0" height="120" width="120" class="fl" style="margin-right: 7px;">
+        {L_sys_metamatter_what_description}
+      </div>
+    </td>
+  </tr>
+
+  <!--
+  <tr>
+    <th class="c_l">
+      {L_sys_metamatter_description_header}
+      <span class="fr link_action" onclick="sn_show_hide(this, 'dark_matter_usage');">[ {L_sys_show} ]</span>
+    </th>
+  </tr>
+  <tr class="c_j" id="dark_matter_usage" style="display: none;">
+    <td>
+      {L_sys_metamatter_description_text}
+     </td>
+  </tr>
+
+  <tr class="c_j">
+    <th>
+      {L_sys_metamatter_obtain_header}
+      <span class="fr link_action" onclick="sn_show_hide(this, 'dark_matter_obtain');">[ {L_sys_show} ]</span>
+    </th>
+  </tr>
+  <tr class="c_j" id="dark_matter_obtain" style="display: none;">
+    <td>
+      {L_sys_metamatter_obtain_text}
+    </td>
+  </tr>
+  -->
+
+  <tr class="c_j">
+    <th>
+      {L_pay_mm_convert_header}
+    </th>
+  </tr>
+  <tr class="c_j">
+    <td valign="middle">
+      {L_pay_mm_convert_text}<br />
+      <!-- IF METAMATTER == 0 -->
+        {L_pay_mm_convert_no_mm}
+      <!-- ELSE -->
+        <form action="metamatter.php" method="POST">
+          {L_pay_mm_convert_prefix}
+          <input type="text" name="mm_convert" value="0" />
+          {L_pay_mm_convert_suffix}
+          <input type="submit" name="mm_convert_do" value="{L_pay_mm_convert_do}"/>
+        </form>
+      <!-- ENDIF -->
+    </td>
+  </tr>
+
+  <tr class="c_j">
+    <th>
+      {L_pay_mm_bonus_header}
+    </th>
+  </tr>
+  <tr class="c_j">
+    <td>
+      {L_pay_mm_buy_text_cost} {PAYMENT_CURRENCY_EXCHANGE_DEFAULT} {L_sys_metamatter_sh}
+      {L_pay_mm_buy_text_unit} <span class="notice">1 {C_payment_currency_default} ({PAYMENT_CURRENCY_DEFAULT_TEXT})</span><br />
+
+      <!-- IF .exchange -->
+      <br />
+      {L_pay_currency_exchange_title}
+      <span class="fr link_action" onclick="sn_show_hide(this, 'currency_exchange');">[ {L_sys_show} ]</span><br />
+      <div id="currency_exchange" style="display: none;">
+        <table width="100%">
+          <tr>
+            <th>{L_pay_currency_name}</th>
+            <th>{L_pay_currency_symbol}</th>
+            <th>{L_pay_currency_exchange_direct}</th>
+            <th>{L_pay_currency_exchange_reverse}</th>
+            <th>{L_pay_currency_exchange_mm}</th>
+          </tr>
+          <!-- BEGIN exchange -->
+          <tr>
+            <td>{exchange.TEXT}</td>
+            <td>{exchange.SYMBOL}</td>
+            <td class="c_r">{exchange.COURSE_DIRECT}</td>
+            <td class="c_r">{exchange.COURSE_REVERSE}</td>
+            <td class="c_r">{exchange.MM_PER_CURRENCY}</td>
+            <!--<td class="c_r">{exchange.UNIT_PER_LOT}</td>-->
+          </tr>
+          <!-- END exchange -->
+        </table>
+        <span class="note">{L_pay_currency_exchange_note}
+      </div>
+      <!-- ENDIF -->
+
+      <!-- IF .discount -->
+      <br />
+      {L_pay_mm_bonus}
+      <span class="fr link_action" onclick="sn_show_hide(this, 'bonuses');">[ {L_sys_show} ]</span>
+      <ul id="bonuses" style="display: none;">
+        <!-- BEGIN discount -->
+        <li>{discount.TEXT}</li>
+        <!-- END discount -->
+      </ul>
+      <!-- ENDIF -->
+    </td>
+  </tr>
+
+  <tr class="c_j">
+    <th>
+      {L_pay_mm_buy}
+    </th>
+  </tr>
+  <tr class="c_j">
+    <td>
+      <!-- IF .payment_module -->
+        <!-- IF ! PAY_LINK_URL -->
+          <form action="{D_SN_ROOT_VIRTUAL}metamatter.php" method="POST">
+        <!-- ELSEIF PAY_LINK_METHOD == 'GET' || PAY_LINK_METHOD == 'POST' -->
+          <form action="{PAY_LINK_URL}" method="{PAY_LINK_METHOD}">
+        <!-- ELSEIF PAY_LINK_METHOD == 'LINK' -->
+          <form action="" method="">
+        <!-- ENDIF -->
+
+        <!-- IF ! UNIT_AMOUNT -->
+          <span class="notice">{L_pay_mm_buy_step1_text}</span>
+          <br />
+          <br/>
+          {L_sys_buy}
+          <select name="metamatter" dir="rtl">
+            <!-- BEGIN mm_amount -->
+              <option dir="ltr" value="{mm_amount.VALUE}"<!-- IF mm_amount.VALUE == UNIT_AMOUNT --> selected<!-- ENDIF -->>{mm_amount.TEXT}</value>
+            <!-- END mm_amount -->
+          </select>
+          {L_pay_mm_buy_unit}
+        <!-- ELSE -->
+          <input type="hidden" name="metamatter" id="payment_amount" value="{UNIT_AMOUNT}">
+          {L_sys_buy} {UNIT_AMOUNT_TEXT} {L_pay_mm_buy_unit}
+          <br />
+          <br />
+
+          <!-- IF ! PAYMENT_MODULE -->
+            {L_pay_mm_buy_select}
+            <select name="payment_module">
+              <!-- BEGIN payment_module -->
+              <option value="{payment_module.ID}">{payment_module.NAME}</option>
+              <!-- END payment_module -->
+            </select>
+          <!-- ELSE -->
+            <input type="hidden" name="payment_module" id="payment_module" value="{PAYMENT_MODULE}">
+            {L_pay_mm_buy_payment_selected} <span class="ok">"{PAYMENT_MODULE_NAME}"</span><br /><br />
+
+            <!-- BEGIN pay_link_data -->
+              <input type="hidden" name="{pay_link_data.FIELD}" value="{pay_link_data.VALUE}">
+            <!-- END pay_link_data -->
+
+            <!-- BEGIN render -->
+              <!-- IF render.TYPE == 'select' -->
+                <select name="{render.NAME}">
+                  <!-- BEGIN value -->
+                    <option value="{render.value.FIELD}">{render.value.VALUE}</option>
+                  <!-- END value -->
+                </select>
+              <!-- ELSE -->
+                {render.VALUE}
+              <!-- ENDIF -->
+            <!-- END render -->
+
+            <!-- IF PAY_LINK_URL -->
+              {C_adv_conversion_code_payment}<br />
+              <br />
+              <span class="notice">{L_pay_mm_buy_step2_text}</span>
+            <!-- ENDIF -->
+          <!-- ENDIF -->
+        <!-- ENDIF -->
+        <br />
+        <br />
+        <!-- IF ! PAY_LINK_URL -->
+          <input class="fl" type="submit" value="{L_pay_mm_buy_confirm}">
+        <!-- ELSEIF PAY_LINK_METHOD == 'GET' || PAY_LINK_METHOD == 'POST' -->
+          <input class="fl" type="submit" value="{L_pay_mm_buy_pay}">
+        <!-- ELSEIF PAY_LINK_METHOD == 'LINK' -->
+          <script type="text/javascript">
+            function make_payment_popup() {
+              this.open = function(ob) {
+                $(ob).hide();
+                $('<span id="psload" class="fl">{LA_pay_mm_buy_in_progress}</span>').insertAfter(ob);
+                var win = window.open('{PAY_LINK_URL}', 'PayStation', 'width=850px, height=550px, scrollbars=yes, status=no');
+                setTimeout(function () {
+                  if(win.closed)
+                  {
+                    $('#psload').remove();
+                    $(ob).show();
+                  }
+                  else
+                  {
+                    setTimeout(arguments.callee,500);
+                  }
+                }, 500);
+              }
+            }
+            payment_popup = new make_payment_popup;
+          </script>
+
+          <input class="fl" type="button" value="{L_pay_mm_buy_pay}" onclick="payment_popup.open(this);return false;">
+        <!-- ENDIF -->
+
+        </form>
+
+        <form action="{D_SN_ROOT_VIRTUAL}metamatter.php" method="POST">
+          <input class="fr" type="submit" value="{L_pay_mm_buy_reset}" onclick="jQuery('#payment_amount').val('');jQuery('#payment_module').val('');">
+        </form>
+
+      <!-- ELSEIF URL_PURCHASE -->
+        {L_pay_mm_buy_url_description} <a href="{URL_PURCHASE}"><span class="link">{L_pay_mm_buy_url_get}</span></a>
+      <!-- ELSE -->
+        {L_pay_mm_buy_url_none}
+      <!-- ENDIF -->
+    </td>
+  </tr>
+</table>
