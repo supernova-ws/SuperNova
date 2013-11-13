@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #38a2.0# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #38a2.2# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -392,14 +392,15 @@ abstract class sn_module_payment extends sn_module
       " через '{$payment['payment_module_name']}' сумма {$payment['payment_external_amount']} {$payment['payment_external_currency']}"
     ;
 
-    foreach($payment as $key => &$value)
+    $query = array();
+    foreach($payment as $key => $value)
     {
       $value = is_string($value) ? '"' . mysql_real_escape_string($value) . '"' : $value;
-      $value = "`{$key}` = {$value}";
+      $query[] = "`{$key}` = {$value}";
     }
 
-    $query_str = (isset($options['replace']) && $options['replace'] ? 'REPLACE' : 'INSERT') . ' INTO `{{payment}}` SET ' . implode(',', $payment) . ';';
-    doquery($query_str);
+    $query = (isset($options['replace']) && $options['replace'] ? 'REPLACE' : 'INSERT') . ' INTO `{{payment}}` SET ' . implode(',', $query) . ';';
+    doquery($query);
 
     /*
     if(isset($options['test']) && $options['test'])

@@ -48,7 +48,7 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
 function tpl_render_menu()
 {
   global $config, $user, $user_impersonator, $lang, $time_now, $sn_menu;
-;
+
   $template_name = IN_ADMIN === true ? 'admin/menu' : 'menu';
   $template = gettemplate($template_name, true);
 
@@ -56,6 +56,7 @@ function tpl_render_menu()
     'USER_AUTHLEVEL'      => $user['authlevel'],
     'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
     'USER_IMPERSONATOR'   => is_array($user_impersonator),
+    'PAYMENT'             => sn_module_get_active_count('payment'),
   ));
 
   if(IN_ADMIN === true && $user['authlevel'] > 0)
