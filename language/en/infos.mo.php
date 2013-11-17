@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a13.13
+* @version 38a3.1
 *
 */
 
@@ -257,7 +257,7 @@ $lang['info'] = (array(
     ),
 
     SHIP_CARGO_HYPER => array(
-      'description' => 'If Supercargo was "last word in transportation technology" then Hypertransport would be a final point. "Giant" is too weak word to describe this ship. Sized as small moon this transport able to transfer enormeous amount of resources. Only hyperdrives can move fully loaded ship. They allow Hypertransport to slide through Universe with acceptable speed. But price is very high - cost of one ship is about ten times cost of Destructor. Moreover - fuel consumption of this transport will made almost any Emperor cry like a baby. Thou Hypertransport is a ship for a large and powerfull Empires which need to transfer several millions tons of resources at once',
+      'description' => 'If Supercargo was &quot;last word in transportation technology&quot; then Hypertransport would be a final point. &quot;Giant&quot; is too weak word to describe this ship. Sized as small moon this transport able to transfer enormeous amount of resources. Only hyperdrives can move fully loaded ship. They allow Hypertransport to slide through Universe with acceptable speed. But price is very high - cost of one ship is about ten times cost of Destructor. Moreover - fuel consumption of this transport will made almost any Emperor cry like a baby. Thou Hypertransport is a ship for a large and powerfull Empires which need to transfer several millions tons of resources at once',
       'description_short' => 'Cargo ship sized as small moon. Equiped with hyperdrives and able to transfer million ton of resources at once',
     ),
 
@@ -442,7 +442,7 @@ $lang['info'] = (array(
     ),
 
     ART_LHC => array(
-      'description' => 'LHC creates waves of gravitons that forces debris to concentrate in one place<br /><span class="warning">WARNING! Using of LHC is not a guarantee to creation of new moon!</span>',
+      'description' => 'LHC creates waves of gravitons that forces debris to concentrate in one place<br /><span class=warning>WARNING! Using of LHC is not a guarantee to creation of new moon!</span>',
       'effect' => 'Allows another chance to create moon<br />1% per 1.000.000 of debris but not more then 30%',
     ),
 
@@ -479,48 +479,48 @@ $lang['info'] = (array(
 
 
     UNIT_PLAN_STRUC_MINE_FUSION  => array(
-      'description' => 'Allows to build on planets sturcture "Thermonuclear plant"',
-      'effect' => 'Allows to build on planets sturcture "Thermonuclear plant"',
+      'description' => 'Allows to build on planets sturcture &quot;Thermonuclear plant&quot;',
+      'effect' => 'Allows to build on planets sturcture &quot;Thermonuclear plant&quot;',
     ),
 
     UNIT_PLAN_SHIP_CARGO_SUPER  => array(
-      'description' => 'Allows to build on planet\'s hangars "Super Cargo" ships',
-      'effect' => 'Allows to build on planet\'s hangars "Super Cargo" ships',
+      'description' => 'Allows to build on planet\'s hangars &quot;Super Cargo&quot; ships',
+      'effect' => 'Allows to build on planet\'s hangars &quot;Super Cargo&quot; ships',
     ),
 
     UNIT_PLAN_SHIP_CARGO_HYPER  => array(
-      'description' => 'Allows to build on planet\'s hangars "Hypercargo" ships',
-      'effect' => 'Allows to build on planet\'s hangars "Hypercargo" ships',
+      'description' => 'Allows to build on planet\'s hangars &quot;Hypercargo&quot; ships',
+      'effect' => 'Allows to build on planet\'s hangars &quot;Hypercargo&quot; ships',
     ),
 
     UNIT_PLAN_SHIP_DEATH_STAR  => array(
-      'description' => 'Allows to build on planet\'s hangars "Death Star" ships',
-      'effect' => 'Allows to build on planet\'s hangars "Death Star" ships',
+      'description' => 'Allows to build on planet\'s hangars &quot;Death Star&quot; ships',
+      'effect' => 'Allows to build on planet\'s hangars &quot;Death Star&quot; ships',
     ),
 
     UNIT_PLAN_SHIP_SUPERNOVA  => array(
-      'description' => 'Allows to build on planet\'s hangars "Supernova"-class cruisers',
-      'effect' => 'Allows to build on planet\'s hangars "Supernova"-class cruisers',
+      'description' => 'Allows to build on planet\'s hangars &quot;Supernova&quot;-class cruisers',
+      'effect' => 'Allows to build on planet\'s hangars &quot;Supernova&quot;-class cruisers',
     ),
 
     UNIT_PLAN_DEF_SHIELD_PLANET  => array(
-      'description' => 'Allows to build on planets defense system "Planet protector"',
-      'effect' => 'Allows to build on planets defense system "Planet protector"',
+      'description' => 'Allows to build on planets defense system &quot;Planet protector&quot;',
+      'effect' => 'Allows to build on planets defense system &quot;Planet protector&quot;',
     ),
 
 
     RES_METAL => array(
-      'description' => 'Metametallic iron-normed energy-neutraul compound (shortly "metal") is a basic raw material from which nanobots produces all materials and details used in construction and research. Metal comes in ignots. Each ignot volume is 127 litres and weights 1 metric tonn including protective case. "Iron-normed" means that standard pack of nanobot will produce from 1 ignot 1 tonn of pure iron. "Energy-neutral" means that nanobots will use exact amount of energy which can be extracted from ignot. "Metametallic compaund" means that ignot can include simple and complex chemical substances. Composition of metal ignot can differ from planet to planet and from mine to mine - but their physical characteristics remain the same. Usually metal is slightly radioactive',
+      'description' => 'Metametallic iron-normed energy-neutraul compound (shortly &quot;metal&quot;) is a basic raw material from which nanobots produces all materials and details used in construction and research. Metal comes in ignots. Each ignot volume is 127 litres and weights 1 metric tonn including protective case. &quot;Iron-normed&quot; means that standard pack of nanobot will produce from 1 ignot 1 tonn of pure iron. &quot;Energy-neutral&quot; means that nanobots will use exact amount of energy which can be extracted from ignot. &quot;Metametallic compaund&quot; means that ignot can include simple and complex chemical substances. Composition of metal ignot can differ from planet to planet and from mine to mine - but their physical characteristics remain the same. Usually metal is slightly radioactive',
       'effect' => '',
     ),
 
     RES_CRYSTAL => array(
-      'description' => 'Crystal is a complex termoplastic polymer which demonstrates Superlight Conduction Effect. SCE - increasing photon speed in a crystall above 300000 km/s. All modern computers uses crystall as material for processing and memory units. Residuals ("anomal assemblies" - i.e. polymers that has same formula but didn\'t demonstrates SCE) used in solar panels whose efficiency is about 100%. Specially selected crystal is a main part of jump-drive - device which allow faster-then-light travels',
+      'description' => 'Crystal is a complex termoplastic polymer which demonstrates Superlight Conduction Effect. SCE - increasing photon speed in a crystall above 300000 km/s. All modern computers uses crystall as material for processing and memory units. Residuals (&quot;anomal assemblies&quot; - i.e. polymers that has same formula but didn\'t demonstrates SCE) used in solar panels whose efficiency is about 100%. Specially selected crystal is a main part of jump-drive - device which allow faster-then-light travels',
       'effect' => '',
     ),
 
     RES_DEUTERIUM => array(
-      'description' => 'Deuterium, also called heavy hydrogen, is one of two stable isotopes of hydrogen. The nucleus of deuterium, called a deuteron, contains one proton and one neutron, whereas the far more common hydrogen isotope, protium, has no neutron in the nucleus. Deuterium used as fuel for termonuclear reactors and all types of ship engines. It is stored in liquefied form in a standard thermally insulated containers which also is a fuel cells for reactors and engines. Ship cargo bays with automatic feeders also serves as "fuel tank" for any ship',
+      'description' => 'Deuterium, also called heavy hydrogen, is one of two stable isotopes of hydrogen. The nucleus of deuterium, called a deuteron, contains one proton and one neutron, whereas the far more common hydrogen isotope, protium, has no neutron in the nucleus. Deuterium used as fuel for termonuclear reactors and all types of ship engines. It is stored in liquefied form in a standard thermally insulated containers which also is a fuel cells for reactors and engines. Ship cargo bays with automatic feeders also serves as &quot;fuel tank&quot; for any ship',
       'effect' => '',
     ),
 
@@ -578,5 +578,5 @@ $lang['info'] = (array(
         </li>
       </ul>',
     ),
-
-)) + $lang['info'];
+  )
+) + $lang['info'];

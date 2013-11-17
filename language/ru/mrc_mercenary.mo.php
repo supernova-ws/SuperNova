@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a8.8
+* @version 38a3.1
 *
 * @clean - all constants is used
 *
@@ -40,6 +40,7 @@ $lang = array_merge($lang, array(
   'mrc_up_to' => 'до',
   'mrc_hire' => 'Нанять',
   'mrc_hire_for' => 'Нанять за',
+  'mrc_allowed' => 'Доступные',
   'mrc_msg_error_wrong_mercenary' => 'Неправильный идентификатор наемника',
   'mrc_msg_error_wrong_level' => 'Неправильный уровень наемника',
   'mrc_msg_error_wrong_period' => 'Недопустимый срок найма',

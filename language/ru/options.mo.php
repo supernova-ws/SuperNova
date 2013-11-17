@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a0.0
+* @version 38a3.1
 *
 */
 
@@ -67,7 +67,7 @@ $lang = array_merge($lang, array(
   'opt_adm_planet_prot' => 'Защита планет',
   'thanksforregistry' => 'Спасибо за регистрацию.<br />Через несколько минут вы получите ваше сообщение с паролем.',
   'general_settings' => 'Общие настройки',
-  'skins_example' => 'Оформление<br>(например C:/ogame/skin/)',
+  'skins_example' => 'Оформление',
 
 
   'opt_avatar' => 'Аватар',

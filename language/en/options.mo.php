@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a0.0
+* @version 38a3.1
 *
 */
 
@@ -70,7 +70,7 @@ $lang = array_merge($lang, array(
   'opt_adm_planet_prot' => 'Planetary protection',
   'thanksforregistry' => 'Thanks for registering.<br />After a few minutes you will receive your message with a password.',
   'general_settings' => 'General settings',
-  'skins_example' => 'Skin<br>(for example C:/ogame/skin/)',
+  'skins_example' => 'Skin',
 
   'opt_avatar' => 'Avatar',
   'opt_avatar_remove' => 'Remove avatar',

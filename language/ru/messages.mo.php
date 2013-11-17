@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 38a3.1
 *
 */
 
@@ -37,6 +37,7 @@ $lang = array_merge($lang, array(
   'msg_mark_unchecked' => 'Неотмеченные сообщения',
   'msg_mark_class' => 'Все сообщения данной категории',
   'msg_mark_all' => 'ВСЕ личные сообщения',
+  'msg_select_all' => 'Выбрать все',
   'msg_date' => 'Дата',
   'msg_from' => 'От',
   'msg_recipient' => 'Кому',

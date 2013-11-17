@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37c2
+* @version 38a3.1
 *
 */
 
@@ -37,9 +37,12 @@ $lang = array_merge($lang, array(
   'cancel' => 'Cancel',
   'Planet_menu' => 'Buildings on the planet',
   'Planet' => 'Planet',
+  'Moon' => 'Moon',
   'Have_new_level_mineur' => 'For achievements in economy you have won a point development officers!',
   'Have_new_level_raid' => 'For successful attacks you have won a point development officers!',
   'Server_time' => 'Time',
+  'Left_time' => 'Remaining Time',
+  'Now_build' => 'Now under construction',
   'Events' => 'Events',
   'Free' => 'Free',
   'Diameter' => 'Diameter',
@@ -147,6 +150,7 @@ $lang = array_merge($lang, array(
   'ov_return' => 'Back to overview',
   'ov_rename' => 'Rename',
   'ov_new_name' => 'New name',
+  'cur_governor' => 'Current governor',
   'ov_mrc_confirm_1' => 'Do you confirm replacement of governor ',
   'ov_mrc_confirm_2' => 'level',
   'ov_mrc_confirm_3' => 'to governor',

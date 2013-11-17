@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Uzbek]
-* @version 38a2.1
+* @version 38a3.1
 *
 */
 

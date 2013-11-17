@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37c2
+* @version 38a3.1
 *
 */
 
@@ -35,9 +35,12 @@ $lang = array_merge($lang, array(
   'cancel' => 'Отменить',
   'Planet_menu' => 'Строительство на планете',
   'Planet' => 'Планета',
+  'Moon' => 'Луна',
   'Have_new_level_mineur' => 'За достижения в экономике Вы выиграли очко развития офицеров!',
   'Have_new_level_raid' => 'За успешные атаки Вы выиграли очко развития офицеров!',
   'Server_time' => 'Время',
+  'Left_time' => 'Оставшееся время',
+  'Now_build' => 'Сейчас строится',
   'Events' => 'События',
   'Free' => 'нет заданий',
   'Diameter' => 'Диаметр',
@@ -147,6 +150,7 @@ $lang = array_merge($lang, array(
   'ov_return' => 'Вернуться к обзору',
   'ov_rename' => 'Переименовать',
   'ov_new_name' => 'Новое название',
+  'cur_governor' => 'Текущий губернатор',
   'ov_mrc_confirm_1' => 'Вы точно хотите заменить губернатора',
   'ov_mrc_confirm_2' => 'уровня',
   'ov_mrc_confirm_3' => 'на губернатора',

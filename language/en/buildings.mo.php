@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a9.13
+* @version 38a3.1
 *
 */
 
@@ -38,6 +38,18 @@ $lang = array_merge($lang, array(
   'Research' => 'Research',
   'level' => 'Level',
   'dispo' => 'Photos',
+  'load_det' => 'Click on image to view 3D model',
+  'off_det' => 'Press again to show off the 3D model',
+  'allowed_aya' => 'Available',
+  'allowed_ye' => 'Available',
+  'allowed_yi' => 'Available',
+  'mech_info' => 'Technical Specifications',
+  'fst_bld_load' => 'Order processing.<br>Please wait...',
+  'fst_bld' => 'Fast build :',
+  'price' => 'Price',
+  'builds' => 'Buildings',
+  'destroy_price' => 'Destroy Price',
+  'no_fields' => 'No fields on planet',
   'can_build' => 'You can build: ',
   'Requirements' => 'You Must: ',
   'Requires' => 'Necessary Resources ',
@@ -45,6 +57,7 @@ $lang = array_merge($lang, array(
   'Rest_ress_fleet' => 'The visiting fleet',
   'Rechercher' => 'Explore',
   'ConstructionTime' => 'Construction time ',
+  'DestructionTime' => 'Destruction time ',
   'ResearchTime' => 'Research Time ',
   'Construire' => 'Build',
   'BuildFirstLevel' => 'Build',

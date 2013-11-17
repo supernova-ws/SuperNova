@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a2.0
+* @version 38a3.1
 *
 */
 
@@ -28,10 +28,12 @@ if (!defined('INSIDE')) die();
 
 
 $lang = array_merge($lang, array(
-  'tech_storage_max' => 'Хранилища',
+//  'tech_storage_max' => 'Хранилища',
+  'tech_storage_max' => 'Макс. емкость хранилища',
   'tech_storage' => 'В хранилищах',
   'Tech' => 'Технология',
   'Requirements' => 'Требуется',
+  'No_requirements' => 'Нет требований',
   'Metal' => 'Металл',
   'Crystal' => 'Кристалл',
   'Deuterium' => 'Дейтерий',
@@ -165,12 +167,12 @@ $lang = array_merge($lang, array(
     ART_DENSITY_CHANGER => 'Матрица трансмутации',
 
     UNIT_PLANS => 'Чертежи',
-    UNIT_PLAN_STRUC_MINE_FUSION => 'Чертеж "Термоядерная электростанция"',
-    UNIT_PLAN_SHIP_CARGO_SUPER => 'Чертеж "Супертранспорт"',
-    UNIT_PLAN_SHIP_CARGO_HYPER => 'Чертеж "Гипертранспорт"',
-    UNIT_PLAN_SHIP_DEATH_STAR => 'Чертеж "Звезда Смерти"',
-    UNIT_PLAN_SHIP_SUPERNOVA => 'Чертеж \'Крейсер "Сверхновая"\'',
-    UNIT_PLAN_DEF_SHIELD_PLANET => 'Чертеж "Планетарная защита"',
+    UNIT_PLAN_STRUC_MINE_FUSION => 'Чертеж &quot;Термоядерная электростанция&quot;',
+    UNIT_PLAN_SHIP_CARGO_SUPER => 'Чертеж &quot;Супертранспорт&quot;',
+    UNIT_PLAN_SHIP_CARGO_HYPER => 'Чертеж &quot;Гипертранспорт&quot;',
+    UNIT_PLAN_SHIP_DEATH_STAR => 'Чертеж &quot;Звезда Смерти&quot;',
+    UNIT_PLAN_SHIP_SUPERNOVA => 'Чертеж крейсер &quot;Сверхновая&quot;',
+    UNIT_PLAN_DEF_SHIELD_PLANET => 'Чертеж &quot;Планетарная защита&quot;',
 
     UNIT_PREMIUM => 'Премиум',
     UNIT_CAPTAIN => 'Капитан',

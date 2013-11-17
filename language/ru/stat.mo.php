@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a18
+* @version 38a3.1
 *
 */
 
@@ -54,8 +54,8 @@ $lang = array_merge($lang, array(
   ),
 
   'stat_by' => 'для',
-  'stat_player' => 'игроков',
-  'stat_allys' => 'альянсов',
+  'stat_player' => 'Игроки',
+  'stat_allys' => 'Альянсы',
   'stat_range' => 'места',
 ));
 

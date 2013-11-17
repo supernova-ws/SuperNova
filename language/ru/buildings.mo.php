@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37a9.13
+* @version 38a3.1
 *
 */
 
@@ -36,6 +36,18 @@ $lang = array_merge($lang, array(
   'Research' => 'Исследования',
   'level' => 'Уровень',
   'dispo' => 'Доступно',
+  'load_det' => 'Нажмите на изображение для просмотра 3D модели',
+  'off_det' => 'Повторное нажатие отключает просмотр 3D модели',
+  'allowed_aya' => 'Доступная',
+  'allowed_ye' => 'Доступные',
+  'allowed_yi' => 'Доступный',
+  'mech_info' => 'Технические характеристики',
+  'fst_bld_load' => 'Обработка заказа.<br>Пожалуйста, подождите...',
+  'fst_bld' => 'Быстрый заказ :',
+  'price' => 'Стоимость',
+  'builds' => 'Постройки',
+  'destroy_price' => 'Стоимость Уничтожения',
+  'no_fields' => 'Нету полей на планете',
   'can_build' => 'Можно построить: ',
   'Requirements' => 'Необходимо: ',
   'Requires' => 'Необходимые ресурсы ',
@@ -43,6 +55,7 @@ $lang = array_merge($lang, array(
   'Rest_ress_fleet' => 'С учетом прибывающих флотов',
   'Rechercher' => 'Исследовать',
   'ConstructionTime' => 'Время строительства ',
+  'DestructionTime' => 'Время уничтожения ',
   'ResearchTime' => 'Время исследования ',
   'Construire' => 'Построить',
   'BuildFirstLevel' => 'Построить',
@@ -53,6 +66,7 @@ $lang = array_merge($lang, array(
   'total_left_time' => 'Оставшееся время',
   'only_one' => 'Вы можете построить только один щит.',
   'b_no_silo_space' => 'Ракетная шахта заполнена.',
+  'que_full' => 'Очередь построек заполнена!',
   'Build_lab' => 'Ошибка Строительства',
   'NoMoreSpace' => 'Планета заполнена!',
   'InBuildQueue' => 'В очередь построек',

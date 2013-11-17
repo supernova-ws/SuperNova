@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 38a3.1
 *
 */
 
@@ -39,6 +39,7 @@ $lang = array_merge($lang, array(
   'msg_mark_unchecked' => 'Unmarked messages',
   'msg_mark_class' => 'All messages in current category',
   'msg_mark_all' => 'ALL PERSONAL MESSAGES',
+  'msg_select_all' => 'Select All',
   'msg_date' => 'Date',
   'msg_from' => 'From',
   'msg_recipient' => 'To',

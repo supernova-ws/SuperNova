@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36d1
+* @version 38a3.1
 *
 */
 
@@ -32,6 +32,7 @@ if (!defined('INSIDE')) die();
 $lang = array_merge($lang, array(
   'Login' => 'Login',
   'User_name' => 'Username:',
+  'Authorization' => 'Authorization',
   'Please_Login' => 'You are welcome <a href="login.php" target="_main">login...</a>',
   'Please_Wait' => 'Please wait',
   'Remember_me' => 'Remember me',
@@ -62,6 +63,9 @@ $lang = array_merge($lang, array(
   'vacation_mode' => 'Your in vacation Mode<br> You can turn off vacation mode ',
   'hours' => ' Hours',
   'vacations' => 'Vacation Mode',
+  'log_scr1' => 'Screenshot of shipyard, where ships are built and ordered on the current planet. Click image to enlarge.',
+  'log_scr2' => 'Screenshot of Statistics, there are shows your ranking among other players on various parameters. Click image to enlarge.',
+  'log_scr3' => 'Screenshot of the universe, here you can see your planet in the universe, and find the planets of other players. Click image to enlarge.',
   'log_rules' => 'Rules of the game',
   'log_banned' => 'List of currently banned',
   'log_see_you' => 'Hope to see you again at the expanse of our universe. Good luck!<br><a href="login.php">Go to the login page in the game</a>',
@@ -93,7 +97,7 @@ $lang = array_merge($lang, array(
   Thank you for registering on our server! We wish you luck in game!\r\n
   Server administration %1\$s %2\$s\r\n\r\n
   Powered by OpenSource engine 'Project SuperNova.WS'. Light your SuperNova http://supernova.ws/",
-  'thanksforregistry' => 'Congratulations on your successful registration! Now you can <a href=overview.php><u>start the game!</u></a>',
+  'thanksforregistry' => 'Congratulations on your successful registration! You will be redirected to the main page of your planet in 10 seconds, if it did not click on this <a href=overview.php><u>link!</u></a>!',
   'welcome_to_universe' => 'Welcome to OGame!!!',
   'please_click_url' => 'In order to use the account, you must activate it by clicking on this link',
   'regards' => 'Good luck!',

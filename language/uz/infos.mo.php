@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbek]
-* @version 37a13.13
+* @version 38a3.1
 *
 */
 
@@ -441,7 +441,7 @@ $lang['info'] = (array(
     ),
 
     ART_LHC => array(
-      'description' => 'BAK Tortishish kuchini olga suradi va organib chiqadi, katta miqdordagi siniqlar toplamidan oyni barpo etishga kirishadi. <br /><span class="warning">Diqqat! BAK ni ishlatish tufayli aniq oy paydo boladi deya olmaymiz!</span>',
+      'description' => 'BAK Tortishish kuchini olga suradi va organib chiqadi, katta miqdordagi siniqlar toplamidan oyni barpo etishga kirishadi. <br /><span class=warning>Diqqat! BAK ni ishlatish tufayli aniq oy paydo boladi deya olmaymiz!</span>',
       'effect' => 'Har million siniqlar toplamidan Oyni yarata oladi',
     ),
 

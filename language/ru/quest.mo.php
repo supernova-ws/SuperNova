@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 38a3.1
 *
 */
 
@@ -32,14 +32,14 @@ $lang = array_merge($lang, array(
   'qst_quest_of' => 'квеста',
   'qst_name' => 'Название',
   'qst_description' => 'Описание',
-  'qst_conditions' => 'Условие',
+  'qst_conditions' => 'Требования',
   'qst_rewards' => 'Награда',
   'qst_total' => 'Квестов',
   'qst_status' => 'Статус',
   'qst_status_list' => array(
-    QUEST_STATUS_NOT_STARTED => 'Не&nbsp;начат',
+    QUEST_STATUS_NOT_STARTED => 'Не&nbsp;выполнен',
     QUEST_STATUS_STARTED => 'Начат',
-    QUEST_STATUS_COMPLETE => 'Завершен',
+    QUEST_STATUS_COMPLETE => 'Выполнен',
   ),
 
   'qst_add' => 'Добавление квеста',

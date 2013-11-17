@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36a0.33
+* @version 38a3.1
 *
 */
 
@@ -53,6 +53,10 @@ $lang = array_merge($lang, array(
   'uni_legend_myplanet' => 'My planet',
   'uni_legend_allyplanet' => 'Alliance planet',
   'Solar_system_at' => 'Solar System %g:%s',
+  'Activity' => 'Activity',
+  'Planet_info' => 'Planet Information',
+  'Moon_info' => 'Moon Information',
+  'Available' => 'Available',
   'type1' => 'Planet',
   'type3' => 'Moon',
   'Pos' => 'Pos',
@@ -74,6 +78,7 @@ $lang = array_merge($lang, array(
   'Sending_fleet' => 'Sending Fleet...',
   'Sent_fleet' => 'Sent Fleet...',
   'Obtaining_data' => 'Checking',
+  'Planet_info_tip' => 'For information about the planet, and to perform a variety of actions, move your mouse over the planet that interests you',
   'an_error_has_happened_while_it_was_sent' => 'Error, has happened while it was sent',
   'error_there_is_no_moon' => 'Error, there is no Moon',
   'error_the_player_is_under_the_protection_of_beginners' => 'Error, the player is under protection',

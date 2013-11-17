@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 36a0.33
+* @version 38a3.1
 *
 */
 
@@ -51,6 +51,10 @@ $lang = array_merge($lang, array(
   'uni_legend_myplanet' => 'Мои планеты',
   'uni_legend_allyplanet' => 'Планеты соальянсовца',
   'Solar_system_at' => 'Солнечная система %g:%s',
+  'Activity' => 'Активность',
+  'Planet_info' => 'Информация о планете',
+  'Moon_info' => 'Информация о луне',
+  'Available' => 'Доступно',
   'type1' => 'планета',
   'type3' => 'луна',
   'Pos' => 'Поз',
@@ -72,6 +76,7 @@ $lang = array_merge($lang, array(
   'Sending_fleet' => 'Отправление флота...',
   'Sent_fleet' => 'Отправить флот...',
   'Obtaining_data' => 'Проверка',
+  'Planet_info_tip' => 'Для получения информации о планете, а также для выполнения различных действий наведите курсор мыши на интересующую вас планету',
   'an_error_has_happened_while_it_was_sent' => 'во время отправки произошла ошибка',
   'error_there_is_no_moon' => 'ошибка, это не луна',
   'error_the_player_is_under_the_protection_of_beginners' => 'ошибка, игрок под защитой для новичков',
