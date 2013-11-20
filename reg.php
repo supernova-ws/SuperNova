@@ -95,12 +95,13 @@ if ($_POST['submit'])
     $md5pass = md5($password);
 
     $language = $language ? $language : DEFAULT_LANG;
+    $def_skin = DEFAULT_SKINPATH;
 
     doquery(
       "INSERT INTO {{users}} SET
-        `username` = '{$username_safe}', `email` = '{$email}', `email_2` = '{$email}',
+        `username` = '{$username_safe}', `email` = '{$email}', `email_2` = '{$email}', `design` = '1', `dpath` = '{$def_skin}',
         `lang` = '{$language}', `sex` = '{$sex}', `id_planet` = '0', `register_time` = '{$time_now}', `password` = '{$md5pass}',
-        `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^1|opt_email_mnl_joueur^1|opt_email_mnl_alliance^1|opt_mnl_attaque^1|opt_email_mnl_attaque^1|opt_mnl_exploit^1|opt_email_mnl_exploit^1|opt_mnl_transport^1|opt_email_mnl_transport^1|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^1|opt_mnl_buildlist^1|opt_email_mnl_buildlist^1|';");
+        `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^1|opt_email_mnl_joueur^1|opt_email_mnl_alliance^1|opt_mnl_attaque^1|opt_email_mnl_attaque^1|opt_mnl_exploit^1|opt_email_mnl_exploit^1|opt_mnl_transport^1|opt_email_mnl_transport^1|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^1|opt_mnl_buildlist^1|opt_email_mnl_buildlist^1|opt_int_navbar_resource_force^1|';");
 
     $user = doquery("SELECT `id` FROM {{users}} WHERE `username` = '{$username_safe}' LIMIT 1;", true);
     doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = \"{$username_safe}\"");
@@ -173,7 +174,7 @@ if ($_POST['submit'])
     $user = sn_login($username, $password);
     $user = $user['user_row'];
 
-    message($Message . $config->adv_conversion_code_register, "{$lang['reg_welldone']}<b>{$password}</b>");
+    message($Message . $config->adv_conversion_code_register, "{$lang['reg_welldone']}<b>{$password}</b> <script>document.getElementById('sn_navbar').style.display='none';document.getElementById('page_body').style.marginLeft='0px'; document.getElementById('page_body').style.marginTop='0px';jQuery(document).ready(function(){setTimeout(function(){parent.location='overview.php';}, 10000);});</script>");
   }
 }
 else

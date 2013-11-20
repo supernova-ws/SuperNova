@@ -13,6 +13,18 @@ function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage 
  * @copyright 2008 By Chlorel for XNova
 */
 
+function gettemplatename($u_dpath)
+{
+  static $template_names = array();
+
+  if(!isset($template_names[$u_dpath]))
+  {
+    $template_names[$u_dpath] = file_exists(SN_ROOT_PHYSICAL . $u_dpath . 'tmpl.ini') ? sys_file_read(SN_ROOT_PHYSICAL . $u_dpath . 'tmpl.ini') : TEMPLATE_NAME;
+  }
+
+  return $template_names[$u_dpath];
+}
+
 // ----------------------------------------------------------------------------------------------------------------
 //
 // Routine Affichage d'un message administrateur avec saut vers une autre page si souhaité
@@ -203,6 +215,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     '-meta-'                   => $metatags,
     'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
     'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
+    'ADV_SEO_JAVASCRIPT'       => $config->adv_seo_javascript,
 
     'LANG_LANGUAGE'            => $lang['LANG_INFO']['LANG_NAME_ISO2'],
     'LANG_ENCODING'            => 'utf-8',
@@ -369,9 +382,13 @@ function sn_tpl_render_topnav(&$user, $planetrow)
   {
     if (!$CurPlanet['destruyed'])
     {
+      $fleet_listx = flt_get_fleets_to_planet($CurPlanet);
+
       $template->assign_block_vars('topnav_planets', array(
         'ID'     => $CurPlanet['id'],
         'NAME'   => $CurPlanet['name'],
+        'PLIMAGE'  => $CurPlanet['image'],
+        'FLEET_ENEMY'   => $fleet_listx['enemy']['count'],
         'COORDS' => uni_render_coordinates($CurPlanet),
         'SELECTED' => $CurPlanet['id'] == $user['current_planet'] ? ' selected' : '',
       ));
@@ -412,6 +429,8 @@ function sn_tpl_render_topnav(&$user, $planetrow)
   $time_now_parsed = getdate($time_now);
   $time_local_parsed = getdate($time_local);
 
+  $premium_lvl = mrc_get_level($user, false, UNIT_PREMIUM, true, true);
+
   $template->assign_vars(array(
     'QUE_ID'             => QUE_RESEARCH,
     'QUE_HTML'           => 'topnav',
@@ -430,6 +449,12 @@ function sn_tpl_render_topnav(&$user, $planetrow)
 
     'USERS_ONLINE'         => $online_count['users_online'],
     'USERS_TOTAL'          => $config->users_amount,
+    'USER_RANK'            => $user['total_rank'],
+    'USER_NICK'            => $user['username'],
+    'USER_AVATAR'          => $user['avatar'],
+    'USER_AVATARID'        => $user['id'],
+    'USER_PREMIUM'         => $premium_lvl,
+    'USER_RACE'        	   => $user['player_race'],
 
     'TOPNAV_CURRENT_PLANET' => $user['current_planet'],
     'TOPNAV_MODE' => $GET_mode,
@@ -445,6 +470,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     'TOPNAV_MESSAGES_ADMIN'    => $user['msg_admin'],
     'TOPNAV_MESSAGES_PLAYER'   => $user['mnl_joueur'],
     'TOPNAV_MESSAGES_ALLIANCE' => $user['mnl_alliance'],
+    'TOPNAV_MESSAGES_ATTACK'   => $user['mnl_attaque'],
     'TOPNAV_MESSAGES_ALL'      => $user['new_message'],
 
     'TOPNAV_FLEETS_FLYING'      => count($fleet_flying_list[0]),
@@ -502,8 +528,11 @@ function parsetemplate($template, $array = false)
       }
     }
 
+    $tmpl_name = gettemplatename($user['dpath']);
+
     $template->assign_vars(array(
       'dpath'         => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
+      'tpath'         => $tmpl_name,
       'SN_ROOT_PATH'  => SN_ROOT_VIRTUAL,
       '-path_prefix-' => SN_ROOT_VIRTUAL,
       'TIME_NOW'      => $time_now,
@@ -531,6 +560,8 @@ function parsetemplate($template, $array = false)
 
 function gettemplate($files, $template = false, $template_path = false)
 {
+  global $user;
+
   $template_ex = '.tpl.html';
 
   if($template === false)
@@ -548,7 +579,12 @@ function gettemplate($files, $template = false, $template_path = false)
   {
     $template = new template();
   }
-  $template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
+  //$template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
+
+  $tmpl_name = gettemplatename($user['dpath']);
+
+  $tmpl_dir = SN_ROOT_PHYSICAL . 'design/templates/' . $tmpl_name . '/';
+  $template->set_custom_template($template_path ? $template_path : $tmpl_dir, $tmpl_name, $tmpl_dir);
 
   foreach($files as &$filename)
   {

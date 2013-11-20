@@ -1043,6 +1043,7 @@ function sn_unit_requirements_render($user, $planetrow, $unit_id, &$result)
         'LEVEL' => $level_got,
         'LEVEL_BASIC' => $level_basic,
         'LEVEL_BONUS' => max(0, $level_got - $level_basic),
+        'ID' => $require_id,
       );
     }
   }

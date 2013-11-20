@@ -208,30 +208,35 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
     if ($Position == 1 || $Position == 2 || $Position == 3) {
       $PlanetType         = array('trocken');
       $PlanetClass        = array('planet');
+//      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20');
       $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10');
       $planet['temp_min'] = rand(0, 100);
       $planet['temp_max'] = $planet['temp_min'] + 40;
     } elseif ($Position == 4 || $Position == 5 || $Position == 6) {
       $PlanetType         = array('dschjungel');
       $PlanetClass        = array('planet');
+//      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20');
       $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10');
       $planet['temp_min'] = rand(-25, 75);
       $planet['temp_max'] = $planet['temp_min'] + 40;
     } elseif ($Position == 7 || $Position == 8 || $Position == 9) {
       $PlanetType         = array('normaltemp');
       $PlanetClass        = array('planet');
+//      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20');
       $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07');
       $planet['temp_min'] = rand(-50, 50);
       $planet['temp_max'] = $planet['temp_min'] + 40;
     } elseif ($Position == 10 || $Position == 11 || $Position == 12) {
       $PlanetType         = array('wasser');
       $PlanetClass        = array('planet');
+//      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20');
       $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09');
       $planet['temp_min'] = rand(-75, 25);
       $planet['temp_max'] = $planet['temp_min'] + 40;
     } elseif ($Position == 13 || $Position == 14 || $Position == 15) {
       $PlanetType         = array('eis');
       $PlanetClass        = array('planet');
+//      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20');
       $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10');
       $planet['temp_min'] = rand(-100, 10);
       $planet['temp_max'] = $planet['temp_min'] + 40;
@@ -441,7 +446,7 @@ function SetSelectedPlanet(&$user)
  */
 function SortUserPlanets($user_row, $skip_planet_id = false, $field_list = '', $conditions = '')
 {
-  $field_list = $field_list != '*' ? "`id`, `name`, `galaxy`, `system`, `planet`, `planet_type`{$field_list}" : $field_list;
+  $field_list = $field_list != '*' ? "`id`, `name`, `image`, `galaxy`, `system`, `planet`, `planet_type`{$field_list}" : $field_list;
   $conditions .= $skip_planet_id ? " AND `id` <> {$skip_planet_id} " : '';
 
   $sort_orders = array(
@@ -586,5 +591,3 @@ function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null)
 
   return $response;
 }
-
-?>

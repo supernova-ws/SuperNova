@@ -41,6 +41,7 @@ function sn_imperator_view($template = null)
 
     'builder_xp'           => pretty_number($user['xpminier']),
     'builder_lvl'          => pretty_number($user['lvl_minier']),
+    'builder_lvl_st'       => pretty_number(rpg_get_miner_xp($user['lvl_minier'])),
     'builder_lvl_up'       => pretty_number(rpg_get_miner_xp($user['lvl_minier']+1)),
     'raid_xp'              => pretty_number($user['xpraid']),
     'raid_lvl'             => pretty_number($user['lvl_raid']),
@@ -50,6 +51,7 @@ function sn_imperator_view($template = null)
     'raidsloose'           => pretty_number($user['raidsloose']),
     'tech_xp'              => pretty_number($user['player_rpg_tech_xp']),
     'tech_lvl'             => pretty_number($user['player_rpg_tech_level']),
+    'tech_lvl_st'          => pretty_number(rpg_get_tech_xp($user['player_rpg_tech_level'])),
     'tech_lvl_up'          => pretty_number(rpg_get_tech_xp($user['player_rpg_tech_level']+1)),
     'build_points'         => pretty_number( $StatRecord['build_points'] ),
     'tech_points'          => pretty_number( $StatRecord['tech_points'] ),

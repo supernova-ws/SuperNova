@@ -251,11 +251,10 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
     'QUE_ID'     => $que_type,
     'TIME_NOW'   => $time_now,
     'HANGAR_BUSY' => eco_hangar_is_building($que),
+    'QUE_HAS_PLACE' => $que_size < $config_server_que_length_hangar,
   ));
 
   tpl_assign_hangar($que_type, $planet, $template);
 
   display(parsetemplate($template), $lang[$page_mode]);
 }
-
-?>

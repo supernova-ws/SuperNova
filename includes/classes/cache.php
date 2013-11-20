@@ -468,6 +468,7 @@ class classConfig extends classPersistent
     'adv_conversion_code_register' => '',
     'adv_seo_meta_description'     => '',
     'adv_seo_meta_keywords'        => '',
+    'adv_seo_javascript'           => '',
 
     // Advert banner
     'advGoogleLeftMenuIsOn'        => 0,

@@ -28,7 +28,7 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-define('SN_RENDER_NAVBAR_PLANET', false);
+//define('SN_RENDER_NAVBAR_PLANET', false);
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
@@ -42,6 +42,7 @@ switch($mode)
 
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
     $result = sn_sys_planet_core_transmute($user, $planetrow);
+
     $template  = gettemplate('planet_manage', true);
     $planet_id = sys_get_param_id('planet_id');
 
@@ -422,6 +423,7 @@ switch($mode)
       'metal_debris'          => pretty_number($planetrow['debris_metal']),
       'crystal_debris'        => pretty_number($planetrow['debris_crystal']),
       'PLANET_RECYCLERS'      => $planet_recyclers_orbiting,
+      'planet_image'          => $planetrow['image'],
       'planet_temp_min'       => $planetrow['temp_min'],
       'planet_temp_avg'       => round(($planetrow['temp_min'] + $planetrow['temp_max']) / 2),
       'planet_temp_max'       => $planetrow['temp_max'],

@@ -770,6 +770,8 @@ switch($new_version)
       "ADD `payment_test` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Is this a test payment?'",
     ), !$update_tables['payment']['payment_test']);
 
+    upd_check_key('adv_seo_javascript', '', !isset($config->adv_seo_javascript));
+
 /*
 //      upd_alter_table('unit', "ADD KEY `I_unit_player_id_temporary` (`unit_player_id`)", !$update_indexes['unit']['I_unit_player_id_temporary']);
 //      upd_alter_table('unit', "DROP KEY `I_unit_player_location_snid`", $update_indexes['unit']['I_unit_player_location_snid']);

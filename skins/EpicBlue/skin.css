@@ -640,3 +640,8 @@ div .ui-dialog-content table { background: #344055; }
   color: black;
   background-color: white;
 }
+
+.menu_text_t, .menu_text_b
+{
+  text-align: center;
+}

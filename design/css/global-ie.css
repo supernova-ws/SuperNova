@@ -21,3 +21,8 @@
   /* For IE 8*/
   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#40000000, endColorstr=#40000000)";
 }
+
+#top_avat
+{
+  margin-top:-36px;
+}

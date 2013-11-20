@@ -33,13 +33,14 @@ $sn_menu = array(
 */
 
   'menu_server_name' => array(
-    'LEVEL' => 'header',
+    'LEVEL' => 'text',
+    'CLASS' => 'menu_text_t',
     'ITEM' => "{$config->game_name}<br />{$lang['sys_from']} {$config->server_start_date}",
   ),
   'menu_server_logo' => array(
-    'LEVEL' => 'submenu',
+    'LEVEL' => 'text',
+    'CLASS' => 'menu_text_b',
     'TYPE' => 'image',
-    'CLASS' => 'c_c',
     'ITEM' => 'design/images/supernova.png',
     'LINK' => '.',
     'ALT' => $config->game_name,
@@ -181,15 +182,13 @@ $sn_menu = array(
     'LINK'  => 'index.php?page=imperator',
     'ICON'  => true,
   ),
-/*
-  'menu_metamatter' => array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'sys_metamatter',
-    'LINK'  => 'metamatter.php',
-  ),
-*/
 
+//  'menu_dark_matter_h' => array(
+//    'LEVEL' => 'header',
+//    'TYPE'  => 'lang',
+//    'ITEM'  => 'sys_dark_matter',
+//    'ICON'  => true,
+//  ),
   'menu_dark_matter' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
@@ -231,18 +230,19 @@ $sn_menu = array(
     'LINK'  => 'affilates.php',
     'ICON'  => true,
   ),
-/*
-  'menu_ally' => array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'sys_alliance',
-  ),
-*/
+
   'menu_ally_overview' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'sys_alliance',
+  ),
+  'menu_ally' => array(
+//    'LEVEL' => 'header',
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'sys_alliance',
     'LINK'  => 'alliance.php',
+    'ICON'  => true,
   ),
   'menu_ally_chat' => array(
     'LEVEL' => 'submenu',
@@ -335,7 +335,8 @@ $sn_menu = array(
   ),
   'menu_news' => array(
     'LEVEL' => 'submenu',
-    'ITEM'  => $lang['news_title'] . ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\">{$lang['lm_announce_fresh']}</span>" : ''),
+//    'ITEM'  => $lang['news_title'] . ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\">{$lang['lm_announce_fresh']}</span>" : ''),
+    'ITEM'  => $lang['news_title'] . ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\" style='display:inline'>{$lang['lm_announce_fresh']}</span>" : ''),
     'LINK'  => 'announce.php',
     'ICON'  => true,
   ),
@@ -388,7 +389,7 @@ $sn_menu = array(
     'ITEM'  => 'Logout',
     'LINK'  => 'logout.php',
   ),
-
+/*
   'menu_extra' => !$config->advGoogleLeftMenuIsOn ? array() : array(
     'LEVEL' => 'submenu',
     'CLASS' => 'c_c',
@@ -413,7 +414,5 @@ $sn_menu = array(
     'BLANK' => true,
     'ALT'   => 'Hosted @ Triolan.COM',
   ),
-
+*/
 );
-
-?>

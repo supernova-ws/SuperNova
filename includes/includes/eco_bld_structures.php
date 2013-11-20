@@ -179,6 +179,8 @@ function eco_build($que_type, $user, &$planet, $que)
 
     'QUE_ID'             => $que_type,
 
+    'PLN_ID'              => $planet['id'],
+
     'ARTIFACT_ID'         => ART_NANO_BUILDER,
     'ARTIFACT_LEVEL'      => mrc_get_level($user, array(), ART_NANO_BUILDER),
     'ARTIFACT_NAME'       => $lang['tech'][ART_NANO_BUILDER],

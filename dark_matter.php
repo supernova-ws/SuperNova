@@ -204,6 +204,8 @@ $template->assign_vars(array(
   'PAYMENT_CURRENCY_DEFAULT_TEXT' => $lang['pay_currency_list'][$config->payment_currency_default],
 
   'PAYMENT_AVAILABLE' => sn_module_get_active_count('payment'),
+
+  'PAGE_HEADER' =>$lang['sys_dark_matter'],
 ));
 
 display($template, $lang['sys_dark_matter']);

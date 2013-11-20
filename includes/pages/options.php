@@ -306,10 +306,11 @@ function sn_options_view($template = null)
 
   $template = gettemplate('options', $template);
 
-  $template_result['.']['skin_list'][] = array(
-    'NAME'  => $lang['select_skin_path'],
-    'VALUE' => '',
-  );
+//  $template_result['.']['skin_list'][] = array(
+//    'NAME'  => $lang['select_skin_path'],
+//    'VALUE' => '',
+//  );
+
   $dir = dir(SN_ROOT_PHYSICAL . 'skins');
   while(($entry = $dir->read()) !== false)
   {
