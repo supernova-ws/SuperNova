@@ -464,7 +464,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     'TOPNAV_METAMATTER'  => mrc_get_level($user, '', RES_METAMATTER),
     'TOPNAV_METAMATTER_TEXT'  => pretty_number(mrc_get_level($user, '', RES_METAMATTER)),
 
-    // TODO ÃÐßÇÍÛÉ ÕÀÊ!!! ÓÁÐÀÒÜ!
+    // TODO Ð“Ð Ð¯Ð—ÐÐ«Ð™ Ð¥ÐÐš!!!
     'TOPNAV_PAYMENT' => sn_module_get_active_count('payment'),
 
     'TOPNAV_MESSAGES_ADMIN'    => $user['msg_admin'],
@@ -582,9 +582,7 @@ function gettemplate($files, $template = false, $template_path = false)
   //$template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
 
   $tmpl_name = gettemplatename($user['dpath']);
-
-  $tmpl_dir = SN_ROOT_PHYSICAL . 'design/templates/' . $tmpl_name . '/';
-  $template->set_custom_template($template_path ? $template_path : $tmpl_dir, $tmpl_name, $tmpl_dir);
+  $template->set_custom_template(($template_path ? $template_path : SN_ROOT_PHYSICAL . 'design/templates/') . $tmpl_name . '/', $tmpl_name, TEMPLATE_DIR);
 
   foreach($files as &$filename)
   {
