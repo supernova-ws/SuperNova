@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a3.1
+* @version 38a3.12
 *
 */
 
@@ -526,6 +526,31 @@ $lang = array_merge($lang, array(
   'adm_opt_stats_schedule_detail' => 'Время запуска в формате d@ЧЧ:ММ:СС через запятую',
   'adm_opt_stats_hide_pm_link' => 'Скрывать ссылки на ЛС',
 
-));
+  'adm_pay' => 'Платежи',
+  'adm_pay_th_payer' => 'Плательщик',
+  'adm_pay_th_payer_id' => 'ID',
+  'adm_pay_th_payer_name' => 'Имя',
+  'adm_pay_th_payment' => 'Платёж',
+  'adm_pay_th_payment_id' => 'ID',
+  'adm_pay_th_payment_date' => 'Дата',
+  'adm_pay_th_payment_status' => 'Статус',
+  'adm_pay_th_payment_amount' => 'Сумма',
+  'adm_pay_th_payment_currency' => 'Валюта',
+  'adm_pay_th_mm_paid' => 'Оплачено',
+  'adm_pay_th_mm_gained' => 'Начислено',
+  'adm_pay_th_module' => 'Платёжная система',
+  'adm_pay_th_module_name' => 'Тип',
 
-?>
+  'adm_pay_filter_all' => '-- Все --',
+  'adm_pay_filter_status' => array(
+    -1 => '-- Все --',
+    PAYMENT_STATUS_NONE => 'Не завершен',
+    PAYMENT_STATUS_COMPLETE => 'Завершен',
+  ),
+  'adm_pay_filter_test' => array(
+    -1 => '-- Все --',
+    0 => 'Реальный',
+    1 => 'Тестовый',
+  ),
+
+));

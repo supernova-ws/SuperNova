@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a2.0
+* @version 38a3.12
 *
 */
 
@@ -505,6 +505,31 @@ $lang = array_merge($lang, array(
   'adm_opt_stats_schedule_detail' => 'Schedule update launch times in format d@HH:MM:SS separated with comma',
   'adm_opt_stats_hide_pm_link' => 'Hide PM links',
 
-));
+  'adm_pay' => 'Payments',
+  'adm_pay_th_payer' => 'Payer',
+  'adm_pay_th_payer_id' => 'ID',
+  'adm_pay_th_payer_name' => 'Name',
+  'adm_pay_th_payment' => 'Payment',
+  'adm_pay_th_payment_id' => 'ID',
+  'adm_pay_th_payment_date' => 'Date',
+  'adm_pay_th_payment_status' => 'Status',
+  'adm_pay_th_payment_amount' => 'Amount',
+  'adm_pay_th_payment_currency' => 'Currency',
+  'adm_pay_th_mm_paid' => 'Paid for',
+  'adm_pay_th_mm_gained' => 'Gained',
+  'adm_pay_th_module' => 'Payment system',
+  'adm_pay_th_module_name' => 'Type',
 
-?>
+  'adm_pay_filter_all' => '-- All --',
+  'adm_pay_filter_status' => array(
+    -1 => '-- All --',
+    PAYMENT_STATUS_NONE => 'Not finished',
+    PAYMENT_STATUS_COMPLETE => 'Finished',
+  ),
+  'adm_pay_filter_test' => array(
+    -1 => '-- All --',
+    0 => 'Real',
+    1 => 'Test',
+  ),
+
+));

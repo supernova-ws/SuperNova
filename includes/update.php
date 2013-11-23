@@ -766,11 +766,22 @@ switch($new_version)
       );
     }
 
+    upd_check_key('adv_seo_javascript', '', !isset($config->adv_seo_javascript));
+
     upd_alter_table('payment', array(
-      "ADD `payment_test` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Is this a test payment?'",
+      "ADD `payment_test` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Is this a test payment?'",
     ), !$update_tables['payment']['payment_test']);
 
-    upd_check_key('adv_seo_javascript', '', !isset($config->adv_seo_javascript));
+    if($update_tables['payment']['payment_test']['Default'] == 1)
+    {
+      upd_alter_table('payment', array(
+        "MODIFY COLUMN `payment_test` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Is this a test payment?'",
+      ));
+
+      upd_do_query('UPDATE {{payment}} SET `payment_test` = 0;');
+    }
+
+    upd_do_query('UPDATE {{payment}} SET `payment_test` = 1, `payment_status` = 1 WHERE payment_status = -1;');
 
 /*
 //      upd_alter_table('unit', "ADD KEY `I_unit_player_id_temporary` (`unit_player_id`)", !$update_indexes['unit']['I_unit_player_id_temporary']);

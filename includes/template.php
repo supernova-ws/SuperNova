@@ -1,17 +1,11 @@
 <?php
+
 // Wrappers for functions
 function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true)
 {
   $func_args = func_get_args();
   return sn_function_call('display', $func_args);
 }
-
-/**
- * functions.php
- *
- * @version 1
- * @copyright 2008 By Chlorel for XNova
-*/
 
 function gettemplatename($u_dpath)
 {
@@ -179,15 +173,6 @@ function tpl_render_menu()
   return $template;
 }
 
-// ----------------------------------------------------------------------------------------------------------------
-//
-// Routine d'affichage d'une page dans un cadre donné
-//
-// $page      -> la page
-// $title     -> le titre de la page
-// $topnav    -> Affichage des ressources ? oui ou non ??
-// $metatags  -> S'il y a quelques actions particulieres a faire ...
-// $AdminPage -> Si on est dans la section admin ... faut le dire ...
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
   global $link, $debug, $user, $user_impersonator, $planetrow, $IsUserChecked, $time_now, $config, $lang, $template_result, $time_diff, $time_utc_offset, $time_diff_seconds;
@@ -201,6 +186,10 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 //  $template->assign_recursive($template_result);
 
   $title = $title ? $title : (is_object($page) && isset($page->_rootref['PAGE_HEADER']) ? $page->_rootref['PAGE_HEADER'] : '');
+  if(is_object($page) && !isset($page->_rootref['PAGE_HEADER']) && $title)
+  {
+    $page->assign_var('PAGE_HEADER', $title);
+  }
 
   // Global header
   $template = gettemplate('simple_header', true);
@@ -257,7 +246,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     }
     displayP($page_item);
   }
-  echo '</div></center>';
+  echo '</center></div>';
 
   // Global footer
   $template = gettemplate('simple_footer', true);
@@ -423,7 +412,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
 
       $que_length++;
     }
-    */
+  */
 
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate($time_now);
@@ -675,5 +664,16 @@ function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_m
       'TEXT' => $lang['uni_planet_density_types'][$density_price_index],
     );
     $template->assign_block_vars('densities', $density_price_data);
+  }
+}
+
+function tpl_assign_select(&$template, $name, $values)
+{
+  foreach($values as $key => $value)
+  {
+    $template->assign_block_vars($name, array(
+      'KEY' => htmlentities($key, ENT_COMPAT, 'UTF-8'),
+      'VALUE' => htmlentities($value, ENT_COMPAT, 'UTF-8'),
+    ));
   }
 }
