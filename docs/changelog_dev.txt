@@ -11,11 +11,19 @@
 [*] ToDo - см. todo.txt & todo.xls
 
 
-Текущий билд #38a3.12#
+Текущий билд #38a3.13#
 ~~~~~~~~~~~~~~~~~~~~~
 
 
 [*] Покупка отпуска на меньший срок за ТМ
+
+[*] e correct way to use LOCK TABLES and UNLOCK TABLES with transactional tables, such as InnoDB tables, is to begin a transaction with SET autocommit = 0 (not START TRANSACTION) followed by LOCK TABLES, and to not call UNLOCK TABLES until you commit the transaction explicitly. For example, if you need to write to table t1 and read from table t2, you can do this: 
+SET autocommit=0;
+LOCK TABLES t1 WRITE, t2 READ, ...;
+... do something with tables t1 and t2 here ...
+COMMIT;
+UNLOCK TABLES;
+When you call LOCK TABLES, InnoDB internally takes its own table lock, and MySQL takes its own table lock. InnoDB releases its internal table lock at the next commit, but for MySQL to release its table lock, you have to call UNLOCK TABLES. You should not have autocommit = 1, because then InnoDB releases its internal table lock immediately after the call of LOCK TABLES, and deadlocks can very easily happen. InnoDB does not acquire the internal table lock at all if autocommit = 1, to help old applications avoid unnecessary deadlocks.
 
 [*] Поправить апдейт, что бы внатуре только админы могли что-то сделать
 
@@ -53,9 +61,16 @@
 
 [*] Еще один уровень АКК
 
+[*] Поменять иконку ММ в навбаре
+
 
 
 #ctv
+
+
+2013-11-24 10:40:40 38a3.13
+[%] Постройки
+    Исправлена ошибка отображения остатка ресурсов при входящих флотах
 
 
 2013-11-23 17:02:16 38a3.12

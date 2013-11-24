@@ -9,7 +9,8 @@ function eco_struc_make_resource_row(resource_name, value, value_destroy)
     if(planet['fleet_own'])
     {
       document.getElementById(resource_name + '_fleet').innerHTML = sn_format_number(parseFloat(planet[resource_name]) + parseFloat(planet[resource_name + '_incoming']) - parseFloat(value), 0, 'positive');
-      document.getElementById('fleet_res').style.display = "block";
+      // document.getElementById('fleet_res').style.display = "block";
+      jQuery('#fleet_res').css('display', "block");
     }
     else
     {
