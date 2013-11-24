@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a3.12
+* @version 38a3.14
 *
 */
 
@@ -552,5 +552,7 @@ $lang = array_merge($lang, array(
     0 => 'Реальный',
     1 => 'Тестовый',
   ),
+
+  'adm_user_stat' => 'Статистика пользователей',
 
 ));

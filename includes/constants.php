@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '37');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '38a3.13');
+define('SN_VERSION', '38a3.14');
 define('SN_RELEASE_STABLE', '37d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -43,6 +43,7 @@ define('PLANET_COORD_PREG', '/^\[([1-9]):([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]
 // Pattern to parse scheduler '[[[[[YYYY-]MM-]DD ]HH:]MM:]SS'
 define('SCHEDULER_PREG', '/^(?:(?:(?:(?:(?:(2\d\d\d)-)?(1[0-2]|0[1-9])-)?(?:(3[01]|[0-2]\d)\ ))?(?:(2[0-3]|[01]\d):))?(?:([0-5]\d):))?([0-5]\d)$/i');
 define('PREG_DATE_SQL', '/(20[1-9][0-9])\-(1[0-2]|0[1-9])\-(3[01]|[12]\d|0[1-9]) (2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])/');
+define('PREG_DATE_SQL_RELAXED', '/(20[1-9][0-9])(?:\-(1[0-2]|0[1-9])(?:\-(3[01]|[12]\d|0[1-9])(?: (2[0-3]|[01][0-9])(?::([0-5][0-9])(?::([0-5][0-9]))?)?)?)?)?/');
 
 define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
 
@@ -65,6 +66,7 @@ define('PERIOD_HOUR', PERIOD_MINUTE * 60);
 define('PERIOD_DAY', PERIOD_HOUR * 24);
 define('PERIOD_WEEK', PERIOD_DAY * 7);
 define('PERIOD_MONTH', PERIOD_DAY * 30);
+define('PERIOD_YEAR', PERIOD_DAY * 365);
 
 define('PERIOD_MINUTE_3' , PERIOD_MINUTE * 3);
 define('PERIOD_MINUTE_5' , PERIOD_MINUTE * 5);

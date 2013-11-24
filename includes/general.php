@@ -311,6 +311,12 @@ function sys_get_param_safe($param_name, $default = '')
   return mysql_real_escape_string(strip_tags(sys_get_param($param_name, $default)));
 }
 
+function sys_get_param_date_sql($param_name, $default = '2000-01-01')
+{
+  $val = sys_get_param($param_name, $default);
+  return preg_match(PREG_DATE_SQL_RELAXED, $val) ? $val : $default;
+}
+
 function sys_get_param_str_raw($param_name, $default = '')
 {
   return strip_tags(trim(sys_get_param($param_name, $default)));
