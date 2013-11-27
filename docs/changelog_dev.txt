@@ -11,7 +11,7 @@
 [*] ToDo - см. todo.txt & todo.xls
 
 
-Текущий билд #38a3.14#
+Текущий билд #38a3.17#
 ~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -66,6 +66,11 @@ When you call LOCK TABLES, InnoDB internally takes its own table lock, and MySQL
 
 
 #ctv
+
+
+2013-11-27 17:29:20 38a3.17
+[+] Смайлы
+    Добавлен смайл :sarcasm:
 
 
 2013-11-24 15:50:57 38a3.14

@@ -36,6 +36,7 @@ $supernova->design['smiles'] = array(
   ':unknw:' => 'unknw',
   ':ups:' => 'pardon',
   ':nea:' => 'nea',
+  ':sarcasm:' => 'sarcasm',
   ':shok:' => 'shok',
   ':blink:' => 'blink',
 
