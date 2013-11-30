@@ -333,6 +333,30 @@ function sys_get_param_str_both($param_name, $default = '')
   return array('raw' => $param, 'str' => mysql_real_escape_string($param));
 }
 
+function sys_get_param_phone($param_name, $default = '')
+{
+  $phone_raw = sys_get_param_str_raw($param_name, $default = '');
+  if($phone_raw)
+  {
+    $phone = $phone_raw[0] == '+' ? '+' : '';
+    for($i = 0; $i < strlen($phone_raw); $i++)
+    {
+      $ord = ord($phone_raw[$i]);
+      if($ord >= 48 && $ord <= 57)
+      {
+        $phone .= $phone_raw[$i];
+      }
+    }
+    $phone = strlen($phone) < 11 ? '' : $phone;
+  }
+  else
+  {
+    $phone = '';
+  }
+
+  return array('raw' => $phone_raw, 'phone' => $phone);
+}
+
 function GetPhalanxRange($phalanx_level)
 {
   return $phalanx_level > 1 ? pow($phalanx_level, 2) - 1 : 0;
