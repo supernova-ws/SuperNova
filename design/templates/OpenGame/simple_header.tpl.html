@@ -29,6 +29,11 @@
     <script type="text/javascript" src="{-path_prefix-}js/lib/jquery.js"></script>
 
     <script type="text/javascript">
+      var sn_inframe;
+      sn_inframe = window.frameElement ? true : false;
+    </script>
+
+    <script type="text/javascript">
       var localTime = new Date();
       var serverTime = new Date('{TIME_NOW}' * 1000);
       var timeDiffSeconds = '{TIME_DIFF_SECONDS}';

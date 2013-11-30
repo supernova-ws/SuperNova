@@ -185,6 +185,9 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
 //  $template->assign_recursive($template_result);
 
+  $isDisplayMenu = is_object($page) && isset($page->_rootref['MENU']) ? $page->_rootref['MENU'] : $isDisplayMenu;
+  $topnav = is_object($page) && isset($page->_rootref['NAVBAR']) ? $page->_rootref['NAVBAR'] : $topnav;
+
   $title = $title ? $title : (is_object($page) && isset($page->_rootref['PAGE_HEADER']) ? $page->_rootref['PAGE_HEADER'] : '');
   if(is_object($page) && !isset($page->_rootref['PAGE_HEADER']) && $title)
   {
@@ -226,7 +229,11 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     displayP(parsetemplate(tpl_render_topnav($user, $planetrow)));
   }
 
-  echo '<div id="page_body"><center>';
+  if($isDisplayMenu)
+  {
+    echo '<div id="page_body">';
+  }
+  echo '<center>';
   if(!is_array($page))
   {
     $page = array($page);
@@ -246,7 +253,11 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     }
     displayP($page_item);
   }
-  echo '</center></div>';
+  echo '</center>';
+  if($isDisplayMenu)
+  {
+    echo '</div>';
+  }
 
   // Global footer
   $template = gettemplate('simple_footer', true);
