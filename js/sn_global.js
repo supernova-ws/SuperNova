@@ -227,14 +227,14 @@ popup.mouseleave(function()
   popup.dialog("close");
 });
 
-function popup_show(html, width)
+function popup_show(html, width, aClientX, aClientY)
 {
   popup_hide();
   if(width)
   {
     popup.dialog("option", "width", width);
   }
-  popup.dialog("option", "position", [clientX, clientY]); // + 20
+  popup.dialog("option", "position", [aClientX ? aClientX : clientX, aClientY ? aClientY : clientY]); // + 20
   popup.html(html);
   popup.dialog("open");
 }

@@ -29,8 +29,21 @@
     <script type="text/javascript" src="{-path_prefix-}js/lib/jquery.js"></script>
 
     <script type="text/javascript">
+      function getFrameName(frame) {
+          var frames = parent.frames, 
+              l = frames.length, 
+              name = null;
+
+          for (var x=0; x<l; x++) {
+              if (frames[x] === frame) {
+                  name = frames[x].name;
+              }
+          }
+          return name;
+      }
+
       var sn_inframe;
-      sn_inframe = window.frameElement ? true : false;
+      sn_inframe = window.frameElement ? getFrameName(self) : false;
     </script>
 
     <script type="text/javascript">
