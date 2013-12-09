@@ -1,16 +1,17 @@
 <?php
-if(!empty($_SERVER['QUERY_STRING']) && preg_match("/^(\w+)(\.v\d+)?\.(lng\.js|js|css|gif|png|ico)$/", $_SERVER['QUERY_STRING'], $m)){
+error_reporting(0);
+if(!empty($_SERVER['QUERY_STRING']) && preg_match("/^(\w+)(\.v\d+)?(pro)?\.(lng\.js|js|css|gif|png|ico)$/", $_SERVER['QUERY_STRING'], $m)){
 	$compress = true;
 	$skin = '';
 	$file = $skin;
 	header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 1209600) . ' GMT');
 	header('Cache-Control: max-age=1209600, public');
-	switch($m[3]) {
+	switch($m[4]) {
 		case 'css': $type = 'text/css; charset=UTF-8'; break;
 		case 'js':  $type = 'application/x-javascript; charset=UTF-8'; break;
 		case 'lng.js': 
 			header('Content-Type: application/x-javascript; charset=UTF-8');
-			if(!ini_get('zlib.output_compression') && function_exists('ob_gzhandler')) ob_start('ob_gzhandler');
+			//if(!ini_get('zlib.output_compression') && function_exists('ob_gzhandler')) ob_start('ob_gzhandler');
 			include("lang/lng_{$m[1]}.php");
 			echo 'sxdlng = ' . sxd_php2json($LNG['js']) . ';';
 			exit;
@@ -18,11 +19,11 @@ if(!empty($_SERVER['QUERY_STRING']) && preg_match("/^(\w+)(\.v\d+)?\.(lng\.js|js
 		case 'gif': $file = 'img/'; $type = 'image/gif';$compress = false; break;
 		case 'ico': $file = ''; $type = 'image/x-icon';$compress = false; break;
 	}	
-	$file .= $m[1] . '.' . $m[3];
+	$file .= $m[1] . '.' . $m[4];
 	if(is_file($file)){
-		if($compress) if(!ini_get('zlib.output_compression') && function_exists('ob_gzhandler')) ob_start('ob_gzhandler');
+		//if($compress) if(!ini_get('zlib.output_compression') && function_exists('ob_gzhandler')) ob_start('ob_gzhandler');
 		header('Content-Type: ' . $type);
-		readfile($file);
+		readfile($file);exit;
 	}
 }
 function sxd_php2json($obj){
@@ -40,4 +41,3 @@ function sxd_php2json($obj){
     }
 	return  substr_replace($str, $is_obj ? '}' : ']', -1);
 }
-?>

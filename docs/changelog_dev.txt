@@ -11,7 +11,7 @@
 [*] ToDo - см. todo.txt & todo.xls
 
 
-Текущий билд #38a4.16#
+Текущий билд #38a4.17#
 ~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -97,6 +97,12 @@ When you call LOCK TABLES, InnoDB internally takes its own table lock, and MySQL
     фрейме обновляется целиком. Или перехватывать браузерное обновление
 
 [*] admin_planet_edit_extra - плотность
+
+
+#ctv
+[~] admin/Sypex Dumper
+    Sypex Dumper обновлен до версии 2.0.11
+
 
 
 2013-12-09 23:48:34 38a4.16

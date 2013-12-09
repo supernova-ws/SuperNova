@@ -1,1 +1,6 @@
 AddType application/octetstream .gz .bz2 .sql
+
+<Files ~ "\.(php|log|rtl|stp)$">
+order allow,deny
+deny from all
+</Files>
