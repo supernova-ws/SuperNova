@@ -58,7 +58,7 @@ $template->assign_vars(array(
   'PLANET_ID' => $planet_id,
   'PLANET_NAME' => empty($edit_planet_row) ? '' : $lang['sys_planet_type'][$edit_planet_row['planet_type']] . ' ' . uni_render_planet($edit_planet_row),
   'PAGE_HINT' => $lang['adm_planet_edit_hint'],
-  'PAGE_HINT_WIDTH' => '500px',
+  'PAGE_HINT_WIDTH' => '100%',
 ));
 
 display($template, $lang['adm_am_ttle'], false, '', true);

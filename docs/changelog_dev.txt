@@ -11,7 +11,7 @@
 [*] ToDo - см. todo.txt & todo.xls
 
 
-Текущий билд #38a4.6#
+Текущий билд #38a4.16#
 ~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -63,6 +63,31 @@ When you call LOCK TABLES, InnoDB internally takes its own table lock, and MySQL
 
 [*] Поменять иконку ММ в навбаре
 
+[*] Астрофизика
+    http://board.ru.ogame.gameforge.com/board494-ogame-ru-игра/board496-энциклопедия/board259-огейм/144947-редизайн/
+    http://board.ru.ogame.gameforge.com/board494-ogame-ru-игра/board496-энциклопедия/board262-флоты-и-оборона/52313-всё-о-колониях-и-колонизации/
+    http://board.en.ogame.gameforge.com/board1-news/board958-old-news/board959-old-gamenews/537929-redesign-news-reset-and-features/
+
+[*] It's dangerous to go alone! Take this.
+[*] There is nothing to see here. Move along!
+
+
+[21:07:23] igorrnc Капустьянов Игорь Сергеевич: http://www.tinymce.com/
+[21:07:26] igorrnc Капустьянов Игорь Сергеевич: в движок
+[21:07:37] igorrnc Капустьянов Игорь Сергеевич: чтобы было выравнивание, встаква урлов и тд.
+[21:07:42] Project "SuperNova.WS": НАХУЙ!
+[21:08:05] Project "SuperNova.WS": Только - хардкор. Только - bbcode
+[21:09:07] igorrnc Капустьянов Игорь Сергеевич: тебе виднее
+[21:09:13] igorrnc Капустьянов Игорь Сергеевич: <head><!-- CDN hosted by Cachefly -->
+<script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
+<script>
+        tinymce.init({selector:'textarea'});
+</script>
+</head>
+<body>
+        <textarea>Your content here.</textarea>
+</body>
+
 
 
 
@@ -70,6 +95,13 @@ When you call LOCK TABLES, InnoDB internally takes its own table lock, and MySQL
 
 [*] Если меню во фрейме - добавить  пункт  "обновить",  поскольку  страница  во
     фрейме обновляется целиком. Или перехватывать браузерное обновление
+
+[*] admin_planet_edit_extra - плотность
+
+
+2013-12-09 23:48:34 38a4.16
+[~] Скин/sn_space_blue
+    Обновлены файлы скина, в т.ч. для модулей
 
 
 2013-12-01 19:26:00 38a4.5

@@ -21,7 +21,7 @@ if ($user['authlevel'] < 3)
 
 $mode = $_POST['mode'];
 
-$PageTpl = gettemplate("admin/del_research");
+$PageTpl = gettemplate("admin/del_research", true);
 $parse = $lang;
 
 if ($mode == 'addit')

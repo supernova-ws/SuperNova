@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version #38a3.1#
+* @version #38a4.16#
 *
 */
 
@@ -551,6 +551,8 @@ $lang = array_merge($lang, array(
   'sys_buy_for' => 'Sotib olish',
   'sys_buy' => 'Sotib olish',
   'sys_for' => 'ga',
+
+  'topnav_imp_attack' => 'Ваша империя атакована!',
 
   'sys_eco_lack_dark_matter' => 'TM yetishmayapdi',
 

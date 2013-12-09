@@ -21,7 +21,7 @@ if ($user['authlevel'] < 3)
 
 $mode = $_POST['mode'];
 
-$PageTpl = gettemplate("admin/add_moon");
+$PageTpl = gettemplate("admin/add_moon", true);
 $parse = $lang;
 
 if ($mode == 'addit')

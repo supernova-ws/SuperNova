@@ -55,7 +55,7 @@ while ($CurrentFleet = mysql_fetch_assoc($FlyingFleets))
 
 $parse = $lang;
 $parse['flt_table'] = $table;
-$PageTPL = gettemplate('admin/fleet_body');
+$PageTPL = gettemplate('admin/fleet_body', true);
 display(parsetemplate($PageTPL, $parse), $lang['flt_title'], false, '', true);
 
 // ----------------------------------------------------------------------------------------------------------------

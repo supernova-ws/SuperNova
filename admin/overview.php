@@ -31,7 +31,7 @@ if ($GET_cmd == 'sort') {
   $TypeSort = "id";
 }
 */
-$PageTPL  = gettemplate('admin/overview_body');
+$PageTPL  = gettemplate('admin/overview_body', true);
 $RowsTPL  = gettemplate('admin/overview_rows');
 
 $parse                      = $lang;

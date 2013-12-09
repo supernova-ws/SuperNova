@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #38a3.1#
+* @version #38a4.16#
 *
 */
 
@@ -175,6 +175,7 @@ $lang = array_merge($lang, array(
   'sys_from_speed'	   => 'от',
 
   'sys_from'		  => 'с',
+  'tp_on'            => 'на',
 
 // Resource page
   'res_planet_production' => 'Производство ресурсов на планете',
@@ -359,6 +360,10 @@ $lang = array_merge($lang, array(
   'news_mode_copy'  => 'Копия',
 
   'sys_administration' => 'Администрация сервера',
+
+  'note_add'        => 'Добавить заметку',
+  'note_del'        => 'Удалить заметку',
+  'note_edit'        => 'Изменить заметку',
 
   // Shortcuts
   'shortcut_title'     => 'Закладки',
@@ -560,6 +565,8 @@ $lang = array_merge($lang, array(
 
   'time_local' => 'Локальное время',
   'time_server' => 'Серверное время',
+
+  'topnav_imp_attack' => 'Ваша империя атакована!',
 
   'sys_result' => array(
     'error_dark_matter_not_enough' => 'Не хватает Тёмной Материи для завершения операции',

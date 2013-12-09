@@ -33,6 +33,6 @@ while($ban_row = mysql_fetch_assoc($query))
 }
 
 $template->assign_var('BANNED_COUNT', $i);
-display(parsetemplate($template), 'Banned');
+display(parsetemplate($template));
 
 ?>

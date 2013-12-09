@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a2.0
+* @version 38a4.16
 *
 */
 
@@ -558,6 +558,8 @@ $lang = array_merge($lang, array(
 
   'time_local' => 'Local time',
   'time_server' => 'Server time',
+
+  'topnav_imp_attack' => 'Your Empire is attacked!',
 
   'sys_result' => array(
     'error_dark_matter_not_enough' => 'Не хватает Тёмной Материи для завершения операции',
