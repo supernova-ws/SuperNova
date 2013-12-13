@@ -11,7 +11,7 @@
 [*] ToDo - см. todo.txt & todo.xls
 
 
-Текущий билд #38a4.17#
+Текущий билд #38a4.18#
 ~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -88,6 +88,8 @@ When you call LOCK TABLES, InnoDB internally takes its own table lock, and MySQL
         <textarea>Your content here.</textarea>
 </body>
 
+[*] Сообщение главе о запросах на дипломатию/смену статуса
+
 
 
 
@@ -97,6 +99,10 @@ When you call LOCK TABLES, InnoDB internally takes its own table lock, and MySQL
     фрейме обновляется целиком. Или перехватывать браузерное обновление
 
 [*] admin_planet_edit_extra - плотность
+
+[*] Переработать констраинты
+
+[*] Добавить в отчет по платежам аллы и фильтр по ним
 
 
 #ctv
