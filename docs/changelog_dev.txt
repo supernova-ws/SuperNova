@@ -11,7 +11,7 @@
 [*] ToDo - см. todo.txt & todo.xls
 
 
-Текущий билд #38a4.18#
+Текущий билд #38a4.19#
 ~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -105,10 +105,15 @@ When you call LOCK TABLES, InnoDB internally takes its own table lock, and MySQL
 [*] Добавить в отчет по платежам аллы и фильтр по ним
 
 
-#ctv
+
+2013-12-14 12:11:30 38a4.19
+[~] Template/OpenGame
+    Добавлена возможность подгрузки серверных CSS для скинов
+
+
+2013-12-10 00:39:13 38a4.17
 [~] admin/Sypex Dumper
     Sypex Dumper обновлен до версии 2.0.11
-
 
 
 2013-12-09 23:48:34 38a4.16
