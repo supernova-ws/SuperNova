@@ -1,8 +1,10 @@
 <?php
 //define('BE_DEBUG', true);
 
-define('SN_TIME_NOW', $time_now = time());
 define('SN_TIME_MICRO', $microtime = microtime(true));
+// define('SN_TIME_NOW', $time_now = time());
+define('SN_TIME_NOW', $time_now = intval($microtime));
+
 define('SN_MEM_START', memory_get_usage());
 
 if(defined('INIT'))
@@ -65,30 +67,28 @@ if($_SERVER['SERVER_NAME'] == 'localhost')
   define('BE_DEBUG', true);
 }
 
-/*
-$phpEx = substr(strrchr(__FILE__, '.'), 1);
-
-$sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/') + 1);
-if(strpos($sn_root_relative, 'admin/') !== false)
-{
-  $sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], 'admin/'));
-}
-if(strpos($sn_root_relative, '.local/') !== false)
-{
-  $sn_root_relative = substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '.local/'));
-}
-*/
 
 $supernova = new stdClass();
 $supernova->options = array();
 
 $phpEx = strpos($phpEx = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $phpEx : '';
-
+/*
 $server_document_root = str_replace("\\", '/', realpath($_SERVER['DOCUMENT_ROOT'])) . '/';
 $sn_root_relative = str_replace(array('//', '//'), '/', '/' . str_replace(array('\\', $server_document_root, 'includes/init.php'), array('/', '', ''), __FILE__));
 $sn_root_physical = str_replace(array('//', '//'), '/', $server_document_root . $sn_root_relative);
-$phpbb_root_path  = $sn_root_physical;
+*/
 
+
+$sn_root_physical = str_replace('\\', '/', __FILE__);
+$sn_root_physical = str_replace('includes/init.php', '', $sn_root_physical);
+
+$sn_root_relative = str_replace('\\', '/', getcwd());
+$sn_root_relative .= $sn_root_relative[strlen($sn_root_relative) - 1] == '/' ? '' : '/';
+$sn_root_relative = str_replace($sn_root_physical, '', $sn_root_relative);
+$sn_root_relative .= basename($_SERVER['SCRIPT_NAME']);
+$sn_root_relative = str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']);
+
+$phpbb_root_path  = $sn_root_physical;
 define('SN_ROOT_RELATIVE', $sn_root_relative);
 define('SN_ROOT_PHYSICAL', $sn_root_physical);
 define('SN_ROOT_VIRTUAL' , 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . $sn_root_relative);
