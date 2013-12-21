@@ -1349,3 +1349,49 @@ function sn_module_get_active_count($group = '*')
 
   return $active_modules;
 }
+
+function get_resource_exchange()
+{
+  static $rates;
+
+  if(!$rates)
+  {
+    global $config;
+
+    $rates = array(
+      RES_METAL => 'rpg_exchange_metal',
+      RES_CRYSTAL => 'rpg_exchange_crystal',
+      RES_DEUTERIUM => 'rpg_exchange_deuterium',
+      RES_DARK_MATTER => 'rpg_exchange_darkMatter',
+    );
+
+    foreach($rates as &$rate)
+    {
+      $rate = $config->$rate;
+    }
+  }
+
+  return $rates;
+}
+
+
+
+function get_unit_cost_in(&$cost, $in_resource = RES_METAL)
+{
+  static $rates;
+
+  if(!$rates)
+  {
+    $rates = get_resource_exchange();
+  }
+
+  global $sn_data;
+
+  $metal_cost = 0;
+  foreach($cost as $resource_id => $resource_value)
+  {
+    $metal_cost += $rates[$resource_id] * $resource_value;
+  }
+
+  return $metal_cost;
+}

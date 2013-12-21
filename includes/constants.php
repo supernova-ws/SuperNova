@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '37');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '38a4.20');
+define('SN_VERSION', '38a5.0');
 define('SN_RELEASE_STABLE', '37d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -787,3 +787,12 @@ define('SN_DB_ERROR_WRITE', 12); // Ошибка записи в БД // УНИ�
 define('SN_METAMATTER_ERROR_ADJUST', 13); // Ошибка начисления ММ // УНИВЕРСАЛЬНЫЙ ОТВЕТ!
 define('SN_PAYMENT_REQUEST_INTERNAL_ID_WRONG', 14); // Остуствует или неправильный внутренний ИД операции
 define('SN_PAYMENT_REQUEST_MM_AMOUNT_INVALID', 15); // Неправильное количеств ММ в платеже
+
+
+define('FLT_EXPEDITION_OUTCOME_NONE', 0);
+define('FLT_EXPEDITION_OUTCOME_LOST_FLEET', 1);
+define('FLT_EXPEDITION_OUTCOME_FOUND_FLEET', 2);
+define('FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES', 3);
+define('FLT_EXPEDITION_OUTCOME_FOUND_DM', 4);
+define('FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT', 5);
+define('FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL', 6);

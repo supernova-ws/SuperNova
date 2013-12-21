@@ -172,7 +172,7 @@ function sn_fleet_page3()
   }
 
   $fleet['start_time'] = $duration + $time_now;
-  if ($target_mission == MT_EXPLORE OR $target_mission == MT_HOLD)
+  if($target_mission == MT_EXPLORE || $target_mission == MT_HOLD)
   {
     $StayDuration = intval($_POST['missiontime']);
     if(!in_array($StayDuration, array(1, 2, 4, 8, 16, 32)))
@@ -180,7 +180,7 @@ function sn_fleet_page3()
       $debug->warning('Supplying wrong mission time', 'Hack attempt', 302, array('base_dump' => true));
       die();
     }
-    $StayDuration = max(0, $StayDuration) * 3600;
+    $StayDuration = ceil(max(0, $StayDuration) * 3600 / ($target_mission == MT_EXPLORE && $config->game_speed_expedition ? $config->game_speed_expedition : 1));
     $StayTime     = $fleet['start_time'] + $StayDuration;
   }
   else

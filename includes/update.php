@@ -783,6 +783,7 @@ switch($new_version)
 
     upd_do_query('UPDATE {{payment}} SET `payment_test` = 1, `payment_status` = 1 WHERE payment_status = -1;');
 
+    upd_check_key('game_speed_expedition', 1, !$config->game_speed_expedition);
 /*
 //      upd_alter_table('unit', "ADD KEY `I_unit_player_id_temporary` (`unit_player_id`)", !$update_indexes['unit']['I_unit_player_id_temporary']);
 //      upd_alter_table('unit', "DROP KEY `I_unit_player_location_snid`", $update_indexes['unit']['I_unit_player_location_snid']);
