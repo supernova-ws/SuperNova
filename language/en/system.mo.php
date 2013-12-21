@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a5.0
+* @version 38a5.3
 *
 */
 
@@ -334,6 +334,9 @@ $lang = array_merge($lang, array(
   'sys_noaccess' 			=> 'Access Denied',
   'sys_noalloaw' 			=> 'You have access to this zone!',
   'sys_governor'        => 'Governor',
+
+  'flt_error_duration_wrong' => 'Невозможно отправить флот - нет доступных интервалов для задержки',
+  'flt_stay_duration' => 'выберите длительность',
 
   'flt_mission_expedition' => array(
     'msg_sender' => 'Отчет экспедиции',

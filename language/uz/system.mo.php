@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version #38a5.0#
+* @version #38a5.3#
 *
 */
 
@@ -331,6 +331,9 @@ $lang = array_merge($lang, array(
   'sys_noaccess' 			=> 'Kirish rad etilgan',
   'sys_noalloaw' 			=> 'Bu zona siz uchun yopiq!',
   'sys_governor'        => 'Gubernator',
+
+  'flt_error_duration_wrong' => 'Невозможно отправить флот - нет доступных интервалов для задержки',
+  'flt_stay_duration' => 'выберите длительность',
 
   'flt_mission_expedition' => array(
     'msg_sender' => 'Отчет экспедиции',
