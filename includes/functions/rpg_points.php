@@ -7,6 +7,7 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
+
 function mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false)
 {
   global $debug, $mm_change_legit, $sn_data, $user;
@@ -24,7 +25,7 @@ function mm_points_change($user_id, $change_type, $metamatter, $comment = false,
   }
   else
   {
-    doquery("UPDATE {{users}} SET `{$sn_data_metamatter_db_name}` = `{$sn_data_metamatter_db_name}` + '{$metamatter}' WHERE `id` = {$user_id} AND `{$sn_data_metamatter_db_name}` + '{$metamatter}' >= 0 LIMIT 1;");
+    doquery("UPDATE {{users}} SET `{$sn_data_metamatter_db_name}` = `{$sn_data_metamatter_db_name}` + '{$metamatter}', `metamatter_total` = `metamatter_total` + '{$metamatter}' WHERE `id` = {$user_id} AND `{$sn_data_metamatter_db_name}` + '{$metamatter}' >= 0 LIMIT 1;");
     $result = mysql_affected_rows();
   }
 
