@@ -42,11 +42,12 @@ function flt_mission_explore($mission_data)
 
   $flt_stay_hours = ($fleet_row['fleet_end_stay'] - $fleet_row['fleet_start_time']) / 3600 * ($config->game_speed_expedition ? $config->game_speed_expedition : 1);
   // pdump($flt_stay_hours);
+  // pdump($config->game_speed_expedition);
   // pdump(log($flt_stay_hours, 2), $flt_stay_hours);
 
   $mission_outcome_list = array(
     FLT_EXPEDITION_OUTCOME_NONE => array(
-      'chance' => max(100, 200 - log($flt_stay_hours, 2) * 10),
+      'chance' => floor(max(100, 200 - log($flt_stay_hours, 2) * 10)),
     ),
     FLT_EXPEDITION_OUTCOME_LOST_FLEET => array(
       'chance' => 9,
@@ -90,9 +91,9 @@ function flt_mission_explore($mission_data)
   {
     $value['value'] = $chance_max = $value['chance'] + $chance_max;
   }
-//pdump($mission_outcome_list);
+// pdump($mission_outcome_list);
   $outcome_value = mt_rand(0, $chance_max);
-//$outcome_value = 782;
+// $outcome_value = 409;
   foreach($mission_outcome_list as $mission_outcome => &$outcome_description)
   {
     if($outcome_value <= $outcome_description['value'])
@@ -193,6 +194,13 @@ function flt_mission_explore($mission_data)
       if(empty($fleet_found))
       {
         $msg_text_addon = $lang['flt_mission_expedition']['outcomes'][$mission_outcome]['no_result'];
+      }
+      else
+      {
+        foreach($fleet_found as $unit_id => $unit_amount)
+        {
+          $fleet[$unit_id] += $unit_amount;
+        }
       }
     break;
 
@@ -302,8 +310,6 @@ function flt_mission_explore($mission_data)
   $query_data .=  " WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1";
 
   doquery($query_data);
-  // pdump($query_data);
-
 
   if(!$msg_text)
   {
@@ -328,6 +334,16 @@ function flt_mission_explore($mission_data)
   // pdump($fleet_capacity);
   // pdump($fleet_metal_points);
   // die();
+  // pdump($msg_text_addon);
+  /*
+  pdump($query_data);
+  pdump(mysql_error(), 'error');
+  pdump($fleet, '$fleet');
+  pdump($fleet_row, '$fleet_row');
+  pdump($fleet_found, '$fleet_found');
+  die();
+  */
+
   return CACHE_FLEET | CACHE_USER_SRC;
 
   $msg_sender = "{$lang['sys_mess_qg']} ({$outcome})";

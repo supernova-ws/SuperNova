@@ -7,7 +7,7 @@ function sn_fleet_page2()
 {
   global $missiontype, $target_mission, $fleetarray, $sn_data, $planetrow, $lang;
   global $galaxy, $system, $planet, $planet_type, $TargetPlanet, $consumption, $template_result;
-  global $sn_module, $user;
+  global $sn_module, $user, $config;
 
   $template = gettemplate('fleet2', true);
 
@@ -25,6 +25,20 @@ function sn_fleet_page2()
   foreach ($fleetarray as $Ship => $Count)
   {
     $fleet_capacity += $sn_data[$Ship]['capacity'] * $Count;
+  }
+
+  $max_duration = $target_mission == MT_EXPLORE ? mrc_get_level($user, '', TECH_EXPEDITION) :
+    ($target_mission == MT_HOLD ? 12 : 0);
+  if($max_duration)
+  {
+    $config_game_speed_expedition = ($target_mission == MT_EXPLORE && $config->game_speed_expedition ? $config->game_speed_expedition : 1);
+    for($i = 1; $i <= $max_duration; $i++)
+    {
+      $template->assign_block_vars('duration', array(
+        'ID' => $i,
+        'TIME' => pretty_time(ceil($i * 3600 / $config_game_speed_expedition)),
+      ));
+    }
   }
 
   /*
@@ -91,6 +105,8 @@ function sn_fleet_page2()
 
     'fleet_group' => sys_get_param_id('fleet_group') ,
     'acs_target_mr' => sys_get_param_str('acs_target_mr'),
+
+    'MAX_DURATION' => $max_duration,
   ));
 
   $template->assign_recursive($template_result);

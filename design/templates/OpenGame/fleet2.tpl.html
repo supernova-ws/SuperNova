@@ -33,10 +33,17 @@ var fleet_slide_changing = false;
     <tr><td class="c" colspan="2">{fl_mission}</td></tr>
 
     <!-- BEGIN missions -->
-      <tr><th><div align=left>
+      <tr><th nowrap><div align=left>
         <input id="target_mission{missions.ID}" type="radio" name="target_mission" class="frameless" value="{missions.ID}" <!-- IF missions.CHECKED -->checked <!-- ENDIF --> onChange="javascript:changeMission(this);" onClick="javascript:changeMission(this);">
         <label for="target_mission{missions.ID}">{missions.NAME}</label>
         <!-- IF missions.ID == 5 || missions.ID == 15 -->
+          <!-- IF MAX_DURATION -->
+          - {L_flt_stay_duration}&nbsp;&nbsp;<select name="missiontime">
+          <!-- BEGIN !duration -->
+            <option value="{duration.ID}">{duration.TIME}</option>
+          <!-- END !duration -->
+          </select>&nbsp;&nbsp;
+          <!--
           &nbsp;&nbsp;<select name="missiontime">
           <option value="1">1</option>
           <option value="2">2</option>
@@ -45,6 +52,11 @@ var fleet_slide_changing = false;
           <option value="16">16</option>
           <option value="32">32</option>
           </select>&nbsp;&nbsp;{L_fl_expe_hours}
+          -->
+          <!-- ELSE -->
+            <!-- DEFINE $CANNOTSEND = 1 -->
+            <span class="error">{L_flt_error_duration_wrong}</span>
+          <!-- ENDIF -->
         <!-- ENDIF -->
       </div></th></tr>
       <!-- IF missions.ID == 15 -->
@@ -60,7 +72,9 @@ var fleet_slide_changing = false;
       </td>
     </tr>
     <!-- ENDIF -->
-    <tr><th class="c_c"><input id="fleet_page2_submit" value="{L_fl_continue}" type="submit"></th></tr>
+    <tr><th class="c_c">
+      <input id="fleet_page2_submit" value="{L_fl_continue}" type="submit"<!-- IF $CANNOTSEND --> disabled<!-- ENDIF -->/>
+    </th></tr>
   </table>
 <br />
 
