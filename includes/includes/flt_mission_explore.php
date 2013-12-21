@@ -213,9 +213,11 @@ function flt_mission_explore($mission_data)
 
       $resources_found[RES_METAL] = floor(mt_rand(300000, 700000) / 1000000 * $found_in_metal);
       $found_in_metal -= $resources_found[RES_METAL];
+      $found_in_metal = floor($found_in_metal * $rates[RES_METAL] / $rates[RES_CRYSTAL]);
 
       $resources_found[RES_CRYSTAL] = floor(mt_rand(500000, 1000000) / 1000000 * $found_in_metal);
       $found_in_metal -= $resources_found[RES_CRYSTAL];
+      $found_in_metal = floor($found_in_metal * $rates[RES_CRYSTAL] / $rates[RES_DEUTERIUM]);
 
       $resources_found[RES_DEUTERIUM] = $found_in_metal;
 
