@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a3.1
+* @version 38a6.0
 *
 */
 
@@ -99,6 +99,7 @@ $lang = array_merge($lang, array(
     TECH_SPY => 'Технология шпионажа',
     TECH_EXPEDITION => 'Экспедиционная технология',
     TECH_COLONIZATION => 'Колонизационная технология',
+    TECH_ASTROTECH => 'Астрокартография',
     TECH_GRAVITON => 'Гравитационная технология',
     TECH_RESEARCH => 'Межгалактическая исследовательская сеть',
 

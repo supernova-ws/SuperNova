@@ -476,7 +476,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     'TOPNAV_FLEETS_FLYING'      => count($fleet_flying_list[0]),
     'TOPNAV_FLEETS_TOTAL'       => GetMaxFleets($user),
     'TOPNAV_EXPEDITIONS_FLYING' => count($fleet_flying_list[MT_EXPLORE]),
-    'TOPNAV_EXPEDITIONS_TOTAL'  => GetMaxExpeditions($user),
+    'TOPNAV_EXPEDITIONS_TOTAL'  => get_player_max_expeditons($user),
 
     'TOPNAV_QUEST_COMPLETE'     => get_quest_amount_complete($user['id']),
   ));

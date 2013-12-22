@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a3.1
+* @version 38a6.0
 *
 */
 
@@ -234,6 +234,11 @@ $lang['info'] = (array(
     TECH_COLONIZATION => array(
       'description' => 'Ruler with many colonies, has more advantages over others.',
       'description_short' => 'This technology is very important that you could build your Empire with many colonies.',
+    ),
+
+    TECH_ASTROTECH => array(
+      'description' => 'Астрокартография позволяет увеличить максимальное количество колоний и экспедиций, а так же максимальную длительность экспедиции',
+      'description_short' => 'Астрокартография позволяет увеличить максимальное количество колоний и экспедиций, а так же максимальную длительность экспедиции',
     ),
 
     TECH_GRAVITON => array(

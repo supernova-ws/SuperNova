@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbek]
-* @version 38a3.1
+* @version 38a6.0
 *
 */
 
@@ -233,6 +233,11 @@ $lang['info'] = (array(
     TECH_COLONIZATION => array(
       'description' => 'Vlastitel, koinotda koplab koloniyalar yaratish imkonini beradi.',
       'description_short' => 'Bu tehnologiya ota muhim bolib koinot tez rivojlanishga yordam beradi.',
+    ),
+
+    TECH_ASTROTECH => array(
+      'description' => 'Астрокартография позволяет увеличить максимальное количество колоний и экспедиций, а так же максимальную длительность экспедиции',
+      'description_short' => 'Астрокартография позволяет увеличить максимальное количество колоний и экспедиций, а так же максимальную длительность экспедиции',
     ),
 
     TECH_GRAVITON => array(

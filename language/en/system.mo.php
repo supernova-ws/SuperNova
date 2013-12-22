@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a5.3
+* @version 38a6.0
 *
 */
 
@@ -871,6 +871,7 @@ $lang = array_merge($lang, array(
   'sys_change' => 'Change',
   'sys_show' => 'Show',
   'sys_hide' => 'Hide',
+  'sys_unlimited' => 'Unlimited',
 
   'ov_core_type_current' => 'Current core type',
   'ov_core_change_to' => 'Change to',

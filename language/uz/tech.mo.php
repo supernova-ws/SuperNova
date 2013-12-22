@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version 37a13.0
+* @version 38a6.0
 *
 */
 
@@ -97,6 +97,7 @@ $lang = array_merge($lang, array(
     TECH_SPY => 'Shpion texnologiyasi',
     TECH_EXPEDITION => 'Ekspeditsiya texnologiyasi',
     TECH_COLONIZATION => 'Kolanizatsiay texnologiyasi',
+    TECH_ASTROTECH => 'Астрокартография',
     TECH_GRAVITON => 'Gravitatsiya texnologiyasi',
     TECH_RESEARCH => 'Galaktikalar aro tadqiqot tarmoq',
 

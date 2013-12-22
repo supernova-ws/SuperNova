@@ -27,7 +27,7 @@ function sn_fleet_page2()
     $fleet_capacity += $sn_data[$Ship]['capacity'] * $Count;
   }
 
-  $max_duration = $target_mission == MT_EXPLORE ? mrc_get_level($user, '', TECH_EXPEDITION) :
+  $max_duration = $target_mission == MT_EXPLORE ? get_player_max_expedition_duration($user) :
     ($target_mission == MT_HOLD ? 12 : 0);
   if($max_duration)
   {

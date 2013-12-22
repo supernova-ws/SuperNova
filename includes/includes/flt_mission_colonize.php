@@ -28,15 +28,16 @@ function flt_mission_colonize($mission_data)
     $TheMessage = $lang['sys_colo_notfree'];
     if (!$destination_planet)
     {
-      $iMaxColo = mrc_get_level($src_user_row, false, TECH_COLONIZATION) + 1;
-//      $iMaxColo = $src_user_row['colonisation_tech'] + 1;
+      // $iMaxColo = mrc_get_level($src_user_row, false, TECH_COLONIZATION) + 1;
+      $iMaxColo = get_player_max_colonies($src_user_row);
 
       $iPlanetCount = doquery ("SELECT count(*) as `planet_count` FROM `{{planets}}` WHERE `id_owner` = '{$fleet_row['fleet_owner']}' AND `planet_type` = '1';", '', true);
       $iPlanetCount = $iPlanetCount['planet_count'];
 
       // Can we colonize more planets?
       $TheMessage = $lang['sys_colo_maxcolo'];
-      if ($iPlanetCount < $iMaxColo && $iPlanetCount < ($config->player_max_colonies + 1) )
+      // if($iPlanetCount < $iMaxColo && ($config->player_max_colonies < 0 || $iPlanetCount < ($config->player_max_colonies + 1)) )
+      if($iPlanetCount < $iMaxColo)
       {
         // Yes, we can colonize
         $TheMessage = $lang['sys_colo_badpos'];
@@ -49,13 +50,7 @@ function flt_mission_colonize($mission_data)
           $fleet_array[SHIP_COLONIZER]--;
           $fleet_row['fleet_amount']--;
           $fleet_row['fleet_array'] = sys_unit_arr2str($fleet_array);
-/*
-          if($fleet_row['fleet_array'])
-          {
-            global $debug;
-            $debug->warning("Sending several type of ships with colonizer leads to resource duplication. Resource duplicate X time where X - number of ship type<br>Fleet: {$fleet_row['fleet_array']}", 'Colonization With Fleet', 304);
-          }
-*/
+
           return RestoreFleetToPlanet($fleet_row, false);
         }
       }

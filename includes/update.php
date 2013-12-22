@@ -796,6 +796,65 @@ switch($new_version)
       upd_do_query('UPDATE {{users}} SET metamatter_total = (SELECT sum(payment_dark_matter_gained) FROM {{payment}} WHERE payment_user_id = id AND payment_status > 0);');
     }
 
+    $query = upd_do_query("SELECT * FROM {{que}} WHERE `que_type` = " . QUE_RESEARCH . " AND que_unit_id in (" . TECH_EXPEDITION . "," . TECH_COLONIZATION . ") FOR UPDATE");
+    while($row = mysql_fetch_assoc($query))
+    {
+      $planet_id = ($row['que_planet_id_origin'] ? $row['que_planet_id_origin'] : $row['que_planet_id']);
+      upd_do_query("SELECT id FROM {{planets}} WHERE id = {$planet_id} FOR UPDATE");
+      $price = sys_unit_str2arr($row['que_unit_price']);
+      upd_do_query("UPDATE {{planets}} SET " .
+        "`metal` = `metal` + " . ($price[RES_METAL] ? $price[RES_METAL] : 0) . "," .
+        "`crystal` = `crystal` + " . ($price[RES_CRYSTAL] ? $price[RES_CRYSTAL] : 0) . "," .
+        "`deuterium` = `deuterium` + " . ($price[RES_DEUTERIUM] ? $price[RES_DEUTERIUM] : 0) .
+        " WHERE id = {$planet_id}"
+      );
+      // pdump($row);
+      // pdump(mysql_error());
+      upd_do_query("DELETE FROM {{que}} WHERE que_id = {$row['que_id']}");
+    }
+
+    $query = upd_do_query("SELECT unit_id, unit_snid, unit_level, id_planet FROM {{unit}} AS un
+    LEFT JOIN {{users}} AS u ON u.id = un.unit_player_id
+    LEFT JOIN {{planets}} AS p ON p.id = u.id_planet
+    WHERE unit_snid in (" . TECH_EXPEDITION . "," . TECH_COLONIZATION . ")
+    FOR UPDATE");
+    while($row = mysql_fetch_assoc($query))
+    {
+      if(!$row['id_planet'])
+      {
+        continue;
+      }
+
+      $unit_id = $row['unit_snid'];
+      $unit_level = $row['unit_level'];
+      $price = $sn_data[$unit_id]['cost'];
+      $factor = $sn_data[$unit_id]['cost']['factor'];
+      foreach($price as $resource_id => &$resource_amount)
+      {
+        $resource_amount = $resource_amount * (pow($factor, $unit_level) - 1) / ($factor - 1);
+      }
+      // upd_do_query
+      upd_do_query($q = "UPDATE {{planets}} SET " .
+        "`metal` = `metal` + " . ($price[RES_METAL] ? $price[RES_METAL] : 0) . "," .
+        "`crystal` = `crystal` + " . ($price[RES_CRYSTAL] ? $price[RES_CRYSTAL] : 0) . "," .
+        "`deuterium` = `deuterium` + " . ($price[RES_DEUTERIUM] ? $price[RES_DEUTERIUM] : 0) .
+        " WHERE id = {$row['id_planet']}"
+      );
+      // pdump($q);
+      // pdump(mysql_error());
+      upd_do_query("DELETE FROM {{unit}} WHERE unit_id = {$row['unit_id']}");
+      // pdump(mysql_error());
+      // pdump($row);
+      // pdump($price);
+      // pdump(mysql_error());
+    }
+
+    // Удалить из очереди Экспедиционную технологию и вернуть ресы
+    // Удалить из очереди Колонизационную технологию и вернуть ресы
+    // Вернуть ресы за уже исследованную Колонизационную технологию
+    // Вернуть ресы за уже исследованную Экспедиционную технологию
+    upd_check_key('player_max_colonies', -1, $config->player_max_colonies >= 0);
+
 /*
 //      upd_alter_table('unit', "ADD KEY `I_unit_player_id_temporary` (`unit_player_id`)", !$update_indexes['unit']['I_unit_player_id_temporary']);
 //      upd_alter_table('unit', "DROP KEY `I_unit_player_location_snid`", $update_indexes['unit']['I_unit_player_location_snid']);

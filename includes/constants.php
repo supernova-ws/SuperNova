@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '37');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '38a5.5');
+define('SN_VERSION', '38a6.0');
 define('SN_RELEASE_STABLE', '37d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -452,7 +452,7 @@ define('TECH_PLASMA', 122);
 define('TECH_RESEARCH', 123);
 define('TECH_EXPEDITION', 124);
 define('TECH_COLONIZATION', 150);
-define('TECH_ASTRO', 151);
+define('TECH_ASTROTECH', 151);
 define('TECH_GRAVITON', 199);
 
 // === Hangar units
@@ -564,6 +564,9 @@ define('UNIT_CAPTAIN', 1500);
 define('UNIT_PLANET_DENSITY', 1601);
 define('UNIT_PLANET_DENSITY_INDEX', 1602);
 define('UNIT_PLANET_DENSITY_RARITY', 1603);
+
+define('UNIT_PLAYER_COLONIES_MAX', 'COLONIES_MAX');
+define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 
 define('PLANET_DENSITY_NONE', 0);
 define('PLANET_DENSITY_ICE_WATER', 1);

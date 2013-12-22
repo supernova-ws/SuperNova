@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a3.14
+* @version 38a6.0
 *
 */
 
@@ -233,7 +233,7 @@ $lang = array_merge($lang, array(
   'adm_opt_game_gspeed' => 'Игры',
   'adm_opt_game_fspeed' => 'Флота',
   'adm_opt_game_pspeed' => 'Добычи ресурсов',
-  'adm_opt_main_not_counted' => '(не считая главную планету)',
+  'adm_opt_main_not_counted' => '(не считая главную планету; -1 - нет ограничений)',
   'adm_opt_game_speed_normal' => '(1&nbsp;-&nbsp;нормальная)',
   'adm_opt_game_faq' => 'Ссылка на ЧаВо',
   'adm_opt_game_forum' => 'Адрес форума',

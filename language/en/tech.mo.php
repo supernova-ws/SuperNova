@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a3.1
+* @version 38a6.0
 *
 */
 
@@ -99,6 +99,7 @@ $lang = array_merge($lang, array(
     TECH_HYPERSPACE => 'Hyperspace Technology',
     TECH_EXPEDITION => 'Expedition Technology',
     TECH_COLONIZATION => 'Colonization Technology',
+    TECH_ASTROTECH => 'Астрокартография',
     TECH_GRAVITON => 'Graviton Technology',
     TECH_RESEARCH => 'Intergalactic Research Network',
 

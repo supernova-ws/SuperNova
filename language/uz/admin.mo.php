@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbek]
-* @version 38a3.14
+* @version 38a6.0
 *
 */
 
@@ -220,7 +220,7 @@ $lang = array_merge($lang, array(
   'adm_opt_game_gspeed' => 'O\'yinlar',
   'adm_opt_game_fspeed' => 'Flot',
   'adm_opt_game_pspeed' => 'Resurslar ishlab chiqarish',
-  'adm_opt_main_not_counted' => '( Asosiy sayyorani hisoblamaganda )',
+  'adm_opt_main_not_counted' => '(Asosiy sayyorani hisoblamaganda; -1 - нет ограничений)',
   'adm_opt_game_speed_normal' => '( 1&nbsp;-&nbsp;normalniy )',
   'adm_opt_game_faq' => 'Chavoga o\'tish silkasi',
   'adm_opt_game_forum' => 'Forum adresi',

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #38a5.1#
+* @version #38a6.0#
 *
 */
 
@@ -881,6 +881,7 @@ $lang = array_merge($lang, array(
   'sys_change' => 'Изменить',
   'sys_show' => 'Показать',
   'sys_hide' => 'Скрыть',
+  'sys_unlimited' => 'Без ограничений',
 
   'ov_core_type_current' => 'Текущий тип ядра',
   'ov_core_change_to' => 'Изменить на',

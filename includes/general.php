@@ -196,10 +196,12 @@ function GetMaxFleets(&$user)
 }
 
 // ----------------------------------------------------------------------------------------------------------------
+/*
 function GetMaxExpeditions(&$user)
 {
   return floor(sqrt(mrc_get_level($user, false, TECH_EXPEDITION)));
 }
+*/
 
 // ----------------------------------------------------------------------------------------------------------------
 // Check input string for forbidden words
@@ -1394,4 +1396,36 @@ function get_unit_cost_in(&$cost, $in_resource = RES_METAL)
   }
 
   return $metal_cost;
+}
+
+function get_player_max_expeditons(&$user)
+{
+  if(!isset($user[UNIT_PLAYER_EXPEDITIONS_MAX]))
+  {
+    $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
+    $user[UNIT_PLAYER_EXPEDITIONS_MAX] = floor(sqrt($astrotech - 1));
+  }
+
+  return $user[UNIT_PLAYER_EXPEDITIONS_MAX];
+}
+
+function get_player_max_colonies(&$user)
+{
+  if(!isset($user[UNIT_PLAYER_COLONIES_MAX]))
+  {
+    global $config;
+
+    $expeditions = get_player_max_expeditons($user);
+    $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
+    $colonies = $astrotech - $expeditions;
+
+    $user[UNIT_PLAYER_COLONIES_MAX] = $config->player_max_colonies < 0 ? $colonies : min($config->player_max_colonies, $colonies);
+  }
+
+  return $user[UNIT_PLAYER_COLONIES_MAX];
+}
+
+function get_player_max_expedition_duration(&$user)
+{
+  return mrc_get_level($user, false, TECH_ASTROTECH);
 }

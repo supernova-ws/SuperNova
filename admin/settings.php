@@ -46,7 +46,7 @@ if(sys_get_param('save'))
   $config->game_maxSystem          = sys_get_param_int('game_maxSystem', 199);
   $config->game_maxPlanet          = sys_get_param_int('game_maxPlanet', 15);
 
-  $config->player_max_colonies     = sys_get_param_int('player_max_colonies', 9);
+  $config->player_max_colonies     = sys_get_param_int('player_max_colonies', -1);
 
   $config->fleet_bashing_attacks   = sys_get_param_int('fleet_bashing_attacks', 3);
   $config->fleet_bashing_interval  = sys_get_param_int('fleet_bashing_interval', 30 * 60);

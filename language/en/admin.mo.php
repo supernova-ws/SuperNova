@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a3.14
+* @version 38a6.0
 *
 */
 
@@ -214,7 +214,7 @@ $lang = array_merge($lang, array(
   'adm_opt_game_gspeed' => 'Games',
   'adm_opt_game_fspeed' => 'Fleet',
   'adm_opt_game_pspeed' => 'Resource',
-  'adm_opt_main_not_counted' => '(Apart from home planet)',
+  'adm_opt_main_not_counted' => '(Apart from home planet; -1 - unlimited)',
   'adm_opt_game_speed_normal' => '(1&nbsp;-&nbsp;normal)',
   'adm_opt_game_faq' => 'Link to FAQ',
   'adm_opt_game_forum' => 'Forum address',

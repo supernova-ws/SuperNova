@@ -70,7 +70,7 @@ if ($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4)
   message($lang['fl_noslotfree'], $lang['fl_error'], "fleet." . PHP_EX, 5);
 }
 
-$MaxExpeditions = GetMaxExpeditions($user);
+$MaxExpeditions = get_player_max_expeditons($user);
 if($MaxExpeditions){
   $FlyingExpeditions  = doquery("SELECT COUNT(fleet_owner) AS `expedi` FROM {{fleets}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '" . MT_EXPLORE . "';", '', true);
   $FlyingExpeditions  = $FlyingExpeditions['expedi'];

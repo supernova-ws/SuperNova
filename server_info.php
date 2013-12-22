@@ -18,6 +18,8 @@ $template->assign_vars(array(
   'fleet_bashing_war_delay' => sys_time_human($config->fleet_bashing_war_delay),
   'EMPIRE_MERCENARY_TEMPORARY' => $config->empire_mercenary_temporary,
   'ALI_BONUS_MEMBERS' => isset($sn_module['ali_ally_player']) ? $config->ali_bonus_members : 0,
+
+  'PLAYER_MAX_COLONIES' => $config->player_max_colonies,
 ));
 
 display(parsetemplate($template));

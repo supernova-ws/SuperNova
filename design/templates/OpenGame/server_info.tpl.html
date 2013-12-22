@@ -82,7 +82,7 @@
   </tr>
   <tr>
     <th>{L_adm_opt_max_colonies}</th>
-    <th>{C_player_max_colonies}</th>
+    <th><!-- IF PLAYER_MAX_COLONIES < 1 -->{L_sys_unlimited}<!-- ELSE -->{PLAYER_MAX_COLONIES}<!-- ENDIF --></th>
   </tr>
 
     <tr><td class="c" colspan="2">{L_sys_opt_bash_info}</td></tr>

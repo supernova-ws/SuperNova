@@ -47,7 +47,8 @@ function flt_mission_explore($mission_data)
 
   $mission_outcome_list = array(
     FLT_EXPEDITION_OUTCOME_NONE => array(
-      'chance' => floor(max(100, 200 - log($flt_stay_hours, 2) * 10)),
+      // 'chance' => floor(max(100, 200 - log($flt_stay_hours, 2) * 10)),
+      'chance' => ceil(200 / pow($flt_stay_hours, 1/1.7)),
     ),
     FLT_EXPEDITION_OUTCOME_LOST_FLEET => array(
       'chance' => 9,
