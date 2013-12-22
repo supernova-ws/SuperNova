@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a3.1
+* @version 38a6.8
 *
 */
 
@@ -178,5 +178,7 @@ $lang = array_merge($lang, array(
   'ov_capital_err_capital_already' => 'This planet is already the capital',
   'ov_capital_err_no_dark_matter' => 'There is not enough Dark Matter to transfer capital',
   'ov_capital_err_not_a_planet' => 'Only a planet can be capital',
+
+  'read_all_news' => 'Read all news',
 
 ));

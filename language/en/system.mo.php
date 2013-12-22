@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a6.0
+* @version 38a6.8
 *
 */
 
@@ -881,4 +881,9 @@ $lang = array_merge($lang, array(
   'ov_core_err_same_density' => 'New core type does not differ from current one - nothing to change',
   'ov_core_err_no_dark_matter' => 'There are not enough Dark Matter to change core type',
 
+  'sys_color'  => "Color",
+  'topnav_imp_attack' => 'Your Empire is attacked',
+  'topnav_user_rank' => 'Your current place in statistic',
+  'topnav_users' => 'Number of registered players',
+  'topnav_users_online' => 'Now online',
 ));

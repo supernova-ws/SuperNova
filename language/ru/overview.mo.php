@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a3.1
+* @version 38a6.8
 *
 */
 
@@ -182,5 +182,7 @@ $lang = array_merge($lang, array(
   'ov_capital_err_capital_already' => 'Эта планета уже является столицей Империи',
   'ov_capital_err_no_dark_matter' => 'Не хватает Тёмной Материи для переноса столицы Империи',
   'ov_capital_err_not_a_planet' => 'Только планету можно сделать столицей Империи',
+
+  'read_all_news' => 'Отметить все как прочитанное',
 
 ));

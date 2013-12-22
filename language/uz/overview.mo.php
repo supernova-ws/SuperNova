@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version 38a3.1
+* @version 38a6.8
 *
 */
 
@@ -45,7 +45,6 @@ $lang = array_merge($lang, array(
   'Developed_fields' => 'Band sektorlar',
   'max_eveloped_fields' => 'Sektorlarning eng ko`p soni',
   'Temperature' => 'Harorat',
-  'min_avg_max' => '���/��/����',
   'approx' => 'Taxminan',
   'to' => 'to',
   'Centigrade' => 'Y',
@@ -174,5 +173,8 @@ $lang = array_merge($lang, array(
   'ov_capital_err_capital_already' => 'Bu sayyora avvalroq Bosh Qarorgoh qilingan.',
   'ov_capital_err_no_dark_matter' => 'Bu sayyorani Bosh Qarorgoh qilish uchun TM yetishmayapdi',
   'ov_capital_err_not_a_planet' => 'Faqat sayyorani Bosh qarorgoh qilsa bo`ladi',
+
+  'min_avg_max' => 'мин/ср/макс',
+  'read_all_news' => 'Отметить все как прочитанное',
 
 ));

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version #38a6.0#
+* @version #38a6.8#
 *
 */
 
@@ -876,5 +876,12 @@ $lang = array_merge($lang, array(
   'ov_core_err_denisty_type_wrong' => 'Неправильный тип ядра',
   'ov_core_err_same_density' => 'Новый тип ядра не отличается от текущего - нечего менять',
   'ov_core_err_no_dark_matter' => 'Не хватает Тёмной Материи для смены типа ядра',
+
+  'sys_color'    => "Цвет",
+
+  'topnav_imp_attack' => 'Ваша империя атакована!',
+  'topnav_user_rank' => 'Ваше текущее место в рейтинговой статистике',
+  'topnav_users' => 'Всего зарегистрированных игроков',
+  'topnav_users_online' => 'Текущее количество игроков онлайн',
 
 ));
