@@ -11,7 +11,7 @@
 [*] ToDo - см. todo.txt & todo.xls
 
 
-Текущий билд #38a6.1#
+Текущий билд #38a6.2#
 ~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -115,7 +115,6 @@ When you call LOCK TABLES, InnoDB internally takes its own table lock, and MySQL
 [*] rpg_exchange_darkMatter => rpg_exchange_darkmatter
 
 
-[*] Наконец
 
 
 #ctv
@@ -147,6 +146,11 @@ When you call LOCK TABLES, InnoDB internally takes its own table lock, and MySQL
 
 
 
+
+
+2013-12-22 14:45:20 38a6.2
+[%] Технологии/Астрокартография
+    Исправлена ошибка в требованиях к кораблю "Колонизатор"
 
 
 2013-12-22 14:37:55 38a6.1

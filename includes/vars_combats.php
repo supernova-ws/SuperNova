@@ -164,7 +164,7 @@ $sn_data += array(
     'name' => 'colonizer',
     'type' => UNIT_SHIPS,
     'location' => LOC_PLANET,
-    'require' => array(STRUC_FACTORY_HANGAR => 4, TECH_ENGINE_ION => 3, TECH_COLONIZATION => 2),
+    'require' => array(STRUC_FACTORY_HANGAR => 4, TECH_ENGINE_ION => 3, TECH_ASTROTECH => 2),
     'cost' => array(
       RES_METAL     => 10000,
       RES_CRYSTAL   => 20000,
