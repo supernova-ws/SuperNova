@@ -37,7 +37,7 @@ function flt_mission_colonize($mission_data)
       // Can we colonize more planets?
       $TheMessage = $lang['sys_colo_maxcolo'];
       // if($iPlanetCount < $iMaxColo && ($config->player_max_colonies < 0 || $iPlanetCount < ($config->player_max_colonies + 1)) )
-      if($iPlanetCount < $iMaxColo)
+      if($iPlanetCount < $iMaxColo + 1)
       {
         // Yes, we can colonize
         $TheMessage = $lang['sys_colo_badpos'];
