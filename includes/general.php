@@ -1403,7 +1403,7 @@ function get_player_max_expeditons(&$user)
   if(!isset($user[UNIT_PLAYER_EXPEDITIONS_MAX]))
   {
     $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
-    $user[UNIT_PLAYER_EXPEDITIONS_MAX] = floor(sqrt($astrotech - 1));
+    $user[UNIT_PLAYER_EXPEDITIONS_MAX] = $astrotech >= 1 ? floor(sqrt($astrotech - 1)) : 0;
   }
 
   return $user[UNIT_PLAYER_EXPEDITIONS_MAX];
