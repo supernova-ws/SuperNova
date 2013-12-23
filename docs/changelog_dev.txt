@@ -11,7 +11,7 @@
 [*] ToDo - см. todo.txt & todo.xls
 
 
-Текущий билд #38a6.8#
+Текущий билд #38a6.10#
 ~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -113,6 +113,7 @@ When you call LOCK TABLES, InnoDB internally takes its own table lock, and MySQL
 
 [*] Сообщение главе о запросах на дипломатию/смену статуса
 [*] rpg_exchange_darkMatter => rpg_exchange_darkmatter
+[*] Дневной бонус
 
 
 
