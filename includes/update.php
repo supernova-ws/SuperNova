@@ -877,6 +877,13 @@ switch($new_version)
       "ADD CONSTRAINT `FK_ban_user_id` FOREIGN KEY (`ban_user_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE NULL ON UPDATE CASCADE",
     ), !$update_tables['banned']['FK_ban_user_id']);
 */
+    if(!isset($update_tables['users']['player_rpg_explore_xp']))
+    {
+      upd_alter_table('users', array(
+        "ADD COLUMN `player_rpg_explore_level` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `dark_matter`",
+        "ADD COLUMN `player_rpg_explore_xp` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `dark_matter`",
+      ), !isset($update_tables['users']['player_rpg_explore_xp']));
+    }
 
     upd_do_query('COMMIT;', true);
     // $new_version = 38;

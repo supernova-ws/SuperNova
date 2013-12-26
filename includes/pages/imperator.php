@@ -21,6 +21,11 @@ function sn_imperator_view($template = null)
   $template = gettemplate('imperator', $template);
   $StatRecord = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."';", '', true);
 
+  rpg_level_up($user, RPG_STRUCTURE);
+  rpg_level_up($user, RPG_RAID);
+  rpg_level_up($user, RPG_TECH);
+  rpg_level_up($user, RPG_EXPLORE);
+
   // -----------------------------------------------------------------------------------------------
   // News Frame ...
   if ($config->game_news_overview)
@@ -53,6 +58,12 @@ function sn_imperator_view($template = null)
     'tech_lvl'             => pretty_number($user['player_rpg_tech_level']),
     'tech_lvl_st'          => pretty_number(rpg_get_tech_xp($user['player_rpg_tech_level'])),
     'tech_lvl_up'          => pretty_number(rpg_get_tech_xp($user['player_rpg_tech_level']+1)),
+
+    'explore_xp'           => pretty_number($user['player_rpg_explore_xp']),
+    'explore_lvl'          => pretty_number($user['player_rpg_explore_level']),
+    'explore_lvl_st'       => pretty_number(rpg_get_explore_xp($user['player_rpg_explore_level'])),
+    'explore_lvl_up'       => pretty_number(rpg_get_explore_xp($user['player_rpg_explore_level']+1)),
+
     'build_points'         => pretty_number( $StatRecord['build_points'] ),
     'tech_points'          => pretty_number( $StatRecord['tech_points'] ),
     'fleet_points'         => pretty_number( $StatRecord['fleet_points'] ),
@@ -67,5 +78,3 @@ function sn_imperator_view($template = null)
 
   return parsetemplate($template);
 }
-
-?>

@@ -174,6 +174,14 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
       $comment = 'Level Up For Research';
     break;
 
+    case RPG_EXPLORE:
+      $field_level = 'player_rpg_explore_level';
+      $field_xp = 'player_rpg_explore_xp';
+      $b1 = 10;
+      $comment = 'Level Up For Exploration';
+      $q = 1.05;
+    break;
+
   }
 
   $xp = &$user[$field_xp];
@@ -218,4 +226,7 @@ function rpg_get_tech_xp($level)
   return rpg_xp_for_level($level, 50, 1.03);
 }
 
-?>
+function rpg_get_explore_xp($level)
+{
+  return rpg_xp_for_level($level, 10, 1.05);
+}

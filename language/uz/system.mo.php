@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version #38a6.8#
+* @version #38a7.0#
 *
 */
 
@@ -195,6 +195,7 @@ $lang = array_merge($lang, array(
   'imp_production' => "Ishlab chiqarish",
   'imp_name' => "Nomi",
   'imp_research' => "Daraja ko`tarish",
+  'imp_exploration' => "Экспедиции",
   'sys_fields' => "Sektor",
 
 // Cookies

@@ -274,6 +274,7 @@ switch($mode)
     rpg_level_up($user, RPG_STRUCTURE);
     rpg_level_up($user, RPG_RAID);
     rpg_level_up($user, RPG_TECH);
+    rpg_level_up($user, RPG_EXPLORE);
 
     $fleet_id = 1;
 

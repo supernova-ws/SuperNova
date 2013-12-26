@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a6.8
+* @version 38a7.0
 *
 */
 
@@ -200,6 +200,7 @@ $lang = array_merge($lang, array(
   'imp_production' => "Production",
   'imp_name' => "Name",
   'imp_research' => "Research",
+  'imp_exploration' => "Exploration",
   'sys_fields' => "Fields",
 
 // Cookies
