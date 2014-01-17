@@ -201,6 +201,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     'TIME_DIFF'                => isset($time_diff) ? $time_diff : '',
     'TIME_DIFF_SECONDS'        => isset($time_diff_seconds) ? $time_diff_seconds : '',
     'TIME_UTC_OFFSET'          => isset($time_utc_offset) ? $time_utc_offset : '',
+    'TIME_DIFF_MEASURE'        => intval($time_now - $user['user_time_measured'] > 60 * 60),
     'USER_AUTHLEVEL'           => $user['authlevel'],
 
     'title'                    => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
@@ -398,10 +399,19 @@ function sn_tpl_render_topnav(&$user, $planetrow)
   $fleet_flying_list = tpl_get_fleets_flying($user);
   tpl_topnav_event_build($template, $fleet_flying_list[0]);
   tpl_topnav_event_build($template, $fleet_flying_list[MT_EXPLORE], 'expedition');
-
-  $time = $time_now - 15*60;
-  $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}' AND `user_as_ally` IS NULL;", '', true);
-
+/*
+  if(!$config->var_online_user_count || $config->var_online_user_time + 30 < $time_now)
+  {
+    $time = $time_now - 15*60;
+    $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}' AND `user_as_ally` IS NULL;", true);
+    $config->db_saveItem('var_online_user_count', $online_count['users_online']);
+    $config->db_saveItem('var_online_user_time', $time_now);
+    if($config->server_log_online)
+    {
+      doquery("INSERT INTO {{log_users_online}} SET online_count = {$config->var_online_user_count};");
+    }
+  }
+*/
   que_tpl_parse($template, QUE_RESEARCH, $user);
   /*
     $que_length = 0;
@@ -431,6 +441,9 @@ function sn_tpl_render_topnav(&$user, $planetrow)
 
   $premium_lvl = mrc_get_level($user, false, UNIT_PREMIUM, true, true);
 
+  // $time = $time_now - 15*60;
+  // $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}' AND `user_as_ally` IS NULL;", true);
+
   $template->assign_vars(array(
     'QUE_ID'             => QUE_RESEARCH,
     'QUE_HTML'           => 'topnav',
@@ -447,7 +460,8 @@ function sn_tpl_render_topnav(&$user, $planetrow)
       $time_local_parsed['hours'], $time_local_parsed['minutes'], $time_local_parsed['seconds']
     ),
 
-    'USERS_ONLINE'         => $online_count['users_online'],
+//    'USERS_ONLINE'         => $online_count['users_online'],
+    'USERS_ONLINE'         => $config->var_online_user_count,
     'USERS_TOTAL'          => $config->users_amount,
     'USER_RANK'            => $user['total_rank'],
     'USER_NICK'            => $user['username'],

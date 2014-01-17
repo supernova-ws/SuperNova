@@ -15,7 +15,8 @@ lng_include('admin');
 $totaltime = microtime(true);
 $msg = '<div align="left"><ul>';
 
-doquery('START TRANSACTION;');
+//doquery('START TRANSACTION;');
+doquery('LOCK TABLES {{' . implode('}} WRITE, {{', $sn_cache->tables) . '}} WRITE');
 
 $msg .= sprintf($lang['adm_inactive_removed'], $rows);
 
@@ -84,7 +85,8 @@ $msg .= '</ul></div>';
 $user_count = doquery("SELECT COUNT(*) AS user_count FROM {{users}} WHERE user_as_ally IS NULL;", '', true);
 $config->db_saveItem('users_amount', $user_count['user_count']);
 
-doquery('COMMIT;');
+doquery('UNLOCK TABLES');
+// doquery('COMMIT;');
 
 $totaltime = microtime(true) - $totaltime;
 

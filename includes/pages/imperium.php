@@ -193,9 +193,10 @@ function sn_imperium_view($template = null)
           'LEVEL'      => $planet[$unit_db_name] == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : $planet[$unit_db_name],
         ));
         $unit_count += $planet[$unit_db_name];
+        $unit_count_abs += $planet[$unit_db_name] + abs($level_plus['LEVEL_PLUS_YELLOW']) + abs($level_plus['LEVEL_PLUS_GREEN']);
       }
 
-      if($unit_count)
+      if($unit_count_abs)
       {
         $template->assign_block_vars('prods', array(
           'ID'    => $unit_id,

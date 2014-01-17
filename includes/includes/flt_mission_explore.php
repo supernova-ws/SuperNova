@@ -156,7 +156,7 @@ function flt_mission_explore($mission_data)
       $can_be_found = array();
       foreach($ship_data as $ship_id => $ship_info)
       {
-        if($ship_info['metal_cost'] <= $max_metal_cost)
+        if($ship_info['metal_cost'] < $max_metal_cost)
         {
           $can_be_found[$ship_id] = $ship_info['metal_cost'];
         }

@@ -54,7 +54,7 @@
       var timeUTCOffset = '{TIME_UTC_OFFSET}' ? '{TIME_UTC_OFFSET}' : 0;
       var timeDiff = '{TIME_DIFF}' ? '{TIME_DIFF}' : 0;
 
-      if(timeDiffSeconds === '')
+      if(timeDiffSeconds === '' || {TIME_DIFF_MEASURE})
       {
         timeDiffSeconds = 0;
         jQuery.post("time_probe.php", {'localtime': localTime.valueOf(), 'utcoffset': -localTime.getTimezoneOffset() * 60}, function(data)
@@ -63,7 +63,10 @@
           }
         );
       }
-      timeDiffSeconds = parseInt(timeDiffSeconds);
+      else
+      {
+        timeDiffSeconds = parseInt(timeDiffSeconds);
+      }
 //      alert('timeDiff: ' + timeDiff + ', timeUTCOffset: ' + timeUTCOffset);
 //      var timeDiff = serverTime.valueOf() - localTime.valueOf();
 

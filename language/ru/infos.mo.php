@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a6.0
+* @version 38a7.2
 *
 */
 
@@ -579,11 +579,11 @@ $lang['info'] = (array(
           На них <span class="ok">очень хорошая добыча металлов</span>, <span class="warning">пониженная добыча кристаллов</span> и <span class="zero">пониженная добыча дейтерия</span>.
         </li>
         <li>
-          <span class="ok">Металлические планеты</span> (плотность <span class="zero">более 5750, но менее 7000 </span> кг/м&sup3;) встречаются <span class="warning">редко</span>.
+          <span class="ok">Металлические планеты</span> (плотность <span class="zero">более 7000, но менее 8250 </span> кг/м&sup3;) встречаются <span class="warning">редко</span>.
           На них <span class="ok">отличная добыча металлов</span>, <span class="warning">низкая добыча кристаллов</span> и <span class="zero">низкая добыча дейтерия</span>.
         </li>
         <li>
-          <span class="ok">Тяжелометаллические планеты</span> (плотность <span class="zero">более 7000 </span> кг/м&sup3;) встречаются <span class="error">очень редко</span>.
+          <span class="ok">Тяжелометаллические планеты</span> (плотность <span class="zero">более 8250 </span> кг/м&sup3;) встречаются <span class="error">очень редко</span>.
           На них <span class="ok">великолепная добыча металлов</span>, <span class="error">очень низкая добыча кристаллов</span> и <span class="error">очень низкая добыча дейтерия</span>.
         </li>
       </ul>',

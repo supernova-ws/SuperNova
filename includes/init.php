@@ -317,6 +317,18 @@ if($config->user_birthday_gift && $time_now > $config->user_birthday_celebrate +
   sn_user_birthday_celebrate();
 }
 
+if(!$config->var_online_user_count || $config->var_online_user_time + 30 < $time_now)
+{
+  $time = $time_now - 15*60;
+  $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}' AND `user_as_ally` IS NULL;", true);
+  $config->db_saveItem('var_online_user_count', $online_count['users_online']);
+  $config->db_saveItem('var_online_user_time', $time_now);
+  if($config->server_log_online)
+  {
+    doquery("INSERT INTO {{log_users_online}} SET online_count = {$config->var_online_user_count};");
+  }
+}
+
 // TODO Грязный хак!
 if(sn_module_get_active_count('payment'))
 {

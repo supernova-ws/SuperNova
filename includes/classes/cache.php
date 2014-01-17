@@ -627,6 +627,8 @@ class classConfig extends classPersistent
     'rpg_scrape_deuterium'         => 0.25,
     'rpg_scrape_metal'             => 0.75,
 
+    'server_log_online'            => 0, //
+
     'server_que_length_hangar'     => '5', //
     'server_que_length_research'   => '1', //
     'server_que_length_structures' => '5', //

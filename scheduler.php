@@ -22,7 +22,12 @@ require_once('includes/init.php');
 
 lng_include('admin');
 
-if($_SERVER['HTTP_REFERER'] == SN_ROOT_VIRTUAL . 'admin/statbuilder.php')
+$user = sn_autologin(!$allow_anonymous);
+$sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
+define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
+
+//if($_SERVER['HTTP_REFERER'] == SN_ROOT_VIRTUAL . 'admin/statbuilder.php')
+if(USER_LEVEL > 0)
 {
   $is_admin_request = true;
   $next_stat_update = time();
@@ -85,6 +90,7 @@ elseif($is_admin_request)
 
 if($msg)
 {
+  $msg = htmlspecialchars($msg, ENT_QUOTES, 'UTF-8');
   $msg = "<message>{$msg}</message>";
 
   header('Content-type: text/xml');

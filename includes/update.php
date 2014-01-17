@@ -885,6 +885,24 @@ switch($new_version)
       ), !isset($update_tables['users']['player_rpg_explore_xp']));
     }
 
+    if(!$update_tables['log_users_online'])
+    {
+      upd_create_table('log_users_online',
+        "(
+          `online_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Measure time',
+          `online_count` SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Users online',
+
+          PRIMARY KEY (`online_timestamp`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+    }
+
+    upd_check_key('server_log_online', 0, !isset($config->server_log_online));
+
+    upd_alter_table('users', array(
+      "ADD `user_time_measured` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'When was time diff measured last time' AFTER `onlinetime`",
+    ), !$update_tables['users']['user_time_measured']);
+
     upd_do_query('COMMIT;', true);
     // $new_version = 38;
 };
