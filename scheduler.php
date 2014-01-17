@@ -22,15 +22,17 @@ require_once('includes/init.php');
 
 lng_include('admin');
 
-$user = sn_autologin(!$allow_anonymous);
-$sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
-define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
-
 //if($_SERVER['HTTP_REFERER'] == SN_ROOT_VIRTUAL . 'admin/statbuilder.php')
-if(USER_LEVEL > 0)
+if(sys_get_param_int('admin_update'))
 {
-  $is_admin_request = true;
-  $next_stat_update = time();
+  $user = sn_autologin(!$allow_anonymous);
+  $sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
+  define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
+  if(USER_LEVEL > 0)
+  {
+    $is_admin_request = true;
+    $next_stat_update = time();
+  }
 }
 else
 {
