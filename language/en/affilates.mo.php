@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 38a8.0
 *
 */
 
@@ -28,7 +28,9 @@
 
 if (!defined('INSIDE')) die();
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'aff_title' => 'Affiliate program',
   'aff_text1' => 'Place a personal link, banner or userbar on forum or site and each coming under the link will be your Invited. You will have 1 DM for every',
   'aff_text2' => 'DM earned by Invited.',
@@ -47,5 +49,3 @@ $lang = array_merge($lang, array(
   'aff_gained' => 'DM earned player',
   'aff_your_bonus' => 'Your bonus',
 ));
-
-?>

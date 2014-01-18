@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 37a9.11
+* @version 38a8.0
 *
 */
 
@@ -26,8 +26,9 @@
 
 if (!defined('INSIDE')) die();
 
-
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'flt_page2_title' => 'Выбор задания',
   'fl_title' => 'Флоты',
   'fl_expttl' => 'Экспедиции',
@@ -217,5 +218,3 @@ $lang = array_merge($lang, array(
   'flt_aks_player_same' => 'Нельзя присоединить к САБу пользователя, на которого совершается нападение!',
   'flt_aks_error_too_much_players' => 'Нельзя пригласить в САБ больше 5 игроков',
 ));
-
-?>

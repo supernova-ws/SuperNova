@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a3.1
+* @version 38a8.0
 *
 */
 
@@ -29,7 +29,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'Login' => 'Login',
   'User_name' => 'Username:',
   'Authorization' => 'Authorization',
@@ -136,5 +138,3 @@ $lang = array_merge($lang, array(
   'log_lost_err_admin' => 'The members server command (moderators, operators, administrators, etc) may not use the password reset function. Contact your server administrator to change the password',
   'log_lost_err_change' => 'Error changing the password in the database. Notify Administrator of error',
 ));
-
-?>

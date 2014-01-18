@@ -158,5 +158,3 @@ $lang['changelog']   = array(
 '0.0' => 'Version of departure: 
 - Base of the repack',
 );
-
-?>

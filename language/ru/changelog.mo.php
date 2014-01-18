@@ -154,5 +154,3 @@ $lang['changelog']   = array(
 '0.0' => 'Version de depart:
 - Base du repack a Tom1991',
 );
-
-?>

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #37a11.0#
+* @version #38a8.0#
 *
 */
 
@@ -27,7 +27,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'srch_title' => 'Поиск по серверу',
   'srch_search_do' => 'Искать',
   'srch_result_none' => 'По данному запросу ничего не найдено',

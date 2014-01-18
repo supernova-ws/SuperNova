@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version #37a11.0#
+* @version #38a8.0#
 *
 */
 
@@ -29,7 +29,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'srch_title' => 'Server search',
   'srch_search_do' => 'Search',
   'srch_result_none' => 'There is nothing found on your query',

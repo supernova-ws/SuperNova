@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a3.1
+* @version 38a8.0
 *
 */
 
@@ -29,7 +29,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'msg_page_header' => 'Personal messages',
   'msg_head_type' => 'Category',
   'msg_head_count' => 'Unread',
@@ -57,5 +59,3 @@ $lang = array_merge($lang, array(
   'msg_del_class' => 'Delete all messages in this category',
   'msg_page_hint_class' => '<ul>    <li>Category "All messages" contains messages sent by you AND did not yet deleted by recipient.    You can not delete messages from this category</li>    <li>To delete all messages of one category press delete icon in according row</li>    <li>Deleting messages from category "All messages" will lead to clear whole messagebox</li>    <li>Slow connection and/or large ammount of messages on one category can lead to unability to browse through messages.        In such case you should clear according message category and/or clear whole messagebox</li>  </ul>',
 ));
-
-?>

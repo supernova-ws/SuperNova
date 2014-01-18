@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a3.1
+* @version 38a8.0
 *
 * @clean - all constants is used
 *
@@ -29,14 +29,16 @@ if (!defined('INSIDE'))
 {
   exit;
 }
-
+/*
 if (empty($lang) || !is_array($lang))
 {
   $lang = array();
 }
-
+*/
 // Officers/mercenaries
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'mrc_up_to' => 'up to',
   'mrc_hire' => 'Hire',
   'mrc_hire_for' => 'Hire for',
@@ -53,5 +55,3 @@ $lang = array_merge($lang, array(
   'mrc_dismiss_before_hire' => 'To change level of recruited Mercenary you should before fire current one. You will lose all DM spent for current Mercenary.',
 
 ));
-
-?>

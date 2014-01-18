@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35b0
+* @version 38a8.0
 *
 */
 
@@ -29,7 +29,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'ali_dip_title' => 'Diplomacy',
   'ali_dip_negotiate' => 'Negotiations',
   'ali_adm_msg_subject' => 'Alliance Maillist',
@@ -279,5 +281,3 @@ $lang = array_merge($lang, array(
   'ali_res_alliance_bonus_players' => 'Minimal members count to obtain bonus',
 
 ));
-
-?>

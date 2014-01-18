@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a9.11
+* @version 38a8.0
 *
 */
 
@@ -29,7 +29,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'flt_page2_title' => 'Mission selection',
   'fl_title' => 'Fleets',
   'fl_expttl' => 'Expedition',
@@ -219,5 +221,3 @@ $lang = array_merge($lang, array(
   'flt_aks_player_same' => 'You can not invite to ACS player to whom attack is launched!',
   'flt_aks_error_too_much_players' => 'You can invite to ACS 5 players maximum',
 ));
-
-?>

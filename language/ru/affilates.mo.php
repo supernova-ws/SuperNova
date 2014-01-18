@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 38a8.0
 *
 */
 
@@ -27,7 +27,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'aff_title' => 'Партнерская программа',
   'aff_text1' => 'Разместите личную ссылку, баннер или юзербар на форуме или сайте и каждый пришедший по ссылке станет вашим Приглашенным. Вы будете получать по 1 ТМ за каждые',
   'aff_text2' => 'ТМ, заработанных приглашенным.',
@@ -46,5 +48,3 @@ $lang = array_merge($lang, array(
   'aff_gained' => 'ТМ заработано игроком',
   'aff_your_bonus' => 'Ваш бонус',
 ));
-
-?>

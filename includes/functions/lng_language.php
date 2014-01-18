@@ -63,6 +63,16 @@ function lng_include($filename, $path = '', $ext = '')
   if($file_path)
   {
     include($file_path);
+
+    if(is_object($lang))
+    {
+      $lang->merge($a_lang_array);
+    }
+    else
+    {
+      $lang = array_merge($lang, $a_lang_array);
+    }
+    unset($a_lang_array);
   }
 }
 
@@ -139,5 +149,3 @@ function lng_load_i18n($i18n)
     }
   }
 }
-
-?>

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a3.1
+* @version 38a8.0
 *
 */
 
@@ -27,7 +27,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'qst_quest' => 'Квест',
   'qst_quest_of' => 'квеста',
   'qst_name' => 'Название',
@@ -54,5 +56,3 @@ $lang = array_merge($lang, array(
   'qst_adm_err_reward_type' => 'Неправильный тип награды',
   'qst_adm_err_reward_empty' => 'Пустая награда квеста',
 ));
-
-?>

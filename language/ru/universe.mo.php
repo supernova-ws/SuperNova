@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a3.1
+* @version 38a8.0
 *
 */
 
@@ -27,7 +27,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'Galaxy' => 'Галактика',
   'Solar_system' => 'Солнечная система',
   'Show' => 'Показать',
@@ -185,5 +187,3 @@ $lang = array_merge($lang, array(
   'uni_debris_on_planet' => 'На&nbsp;орбите',
   'uni_recyclers_send' => 'Отправить переработчики',
 ));
-
-?>

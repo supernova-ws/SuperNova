@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 34a15
+* @version 38a8.0
 *
 */
 
@@ -27,7 +27,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'add_announce' => 'Добавить объявление',
   'metal' => 'Металл',
   'crystal' => 'Кристалл',
@@ -48,5 +50,3 @@ $lang = array_merge($lang, array(
   'Your_announce_not_recorded' => 'Ваше объявление не отправлено',
   'Your_announce_was_deleted' => 'Ваше объявление успешно удалено',
 ));
-
-?>

@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a3.1
+* @version 38a8.0
 *
 */
 
@@ -25,7 +25,9 @@
 
 if (!defined('INSIDE')) die();
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   // Metamatter
   'sys_metamatter_what_header' => 'Что такое Метаматерия',
   'sys_metamatter_what_description' => 'Метаматерия - это весьма условное название для особого состояния Вселенной. Фактически - это даже не материя, а факторизируемая вероятность.<br />

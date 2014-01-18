@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 38a8.0
 * @condition clear
 *
 */
@@ -28,7 +28,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'eco_mrk_title' => 'Market',
   'eco_mrk_description' => 'Very strange but you can not recognize any mention of this menu item in documentation. Where it came from?',
   'eco_mrk_service' => 'Service',
@@ -105,5 +107,3 @@ $lang = array_merge($lang, array(
   ),
 
 ));
-
-?>

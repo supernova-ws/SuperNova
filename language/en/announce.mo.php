@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 38a8.0
 *
 */
 
@@ -29,7 +29,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'add_announce' => 'Add announcement',
   'metal' => 'Metal',
   'crystal' => 'Crystal',
@@ -50,5 +52,3 @@ $lang = array_merge($lang, array(
   'Your_announce_not_recorded' => 'Your ad was not sent',
   'Your_announce_was_deleted' => 'Your announcement was successfully removed',
 ));
-
-?>

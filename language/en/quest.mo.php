@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a15
+* @version 38a8.0
 *
 */
 
@@ -29,7 +29,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'qst_quest' => 'Quest',
   'qst_quest_of' => 'quest',
   'qst_name' => 'Name',
@@ -56,5 +58,3 @@ $lang = array_merge($lang, array(
   'qst_adm_err_reward_type' => 'Wrong reward type',
   'qst_adm_err_reward_empty' => 'Quest reward empty',
 ));
-
-?>

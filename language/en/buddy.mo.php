@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a12.11
+* @version 38a8.0
 *
 */
 
@@ -29,7 +29,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'buddy_buddies' => 'Friends',
   'buddy_request_text' => 'Request text',
   'buddy_request_text_default' => 'Please add me to your friendlist',
@@ -81,5 +83,3 @@ $lang = array_merge($lang, array(
     <li>If you denied friendship request you can not start any friendship relation with this player until he deletes his offer</li>',
 
 ));
-
-?>

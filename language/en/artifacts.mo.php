@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 37a10.0
+* @version 38a8.0
 *
 */
 
@@ -25,7 +25,9 @@
 
 if (!defined('INSIDE')) die();
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'art_use'             => 'Use artifact',
 
   'art_lhc_from'        => 'Large Hadron Collider',

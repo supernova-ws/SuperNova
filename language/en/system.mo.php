@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a7.6
+* @version 38a8.0
 *
 */
 
@@ -38,7 +38,9 @@ if (empty($lang) || !is_array($lang))
 
 // System-wide localization
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'sys_administration' => 'SuperNova Administration',
   'sys_birthday' => 'Birthday',
   'sys_birthday_message' => '%1$s! SuperNova Administration warmly greats you with your birthday on %2$s and gives to you s small gift - %3$d %4$s!',

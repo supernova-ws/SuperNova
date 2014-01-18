@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 35a12.4
+* @version 38a8.0
 *
 */
 
@@ -26,7 +26,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'note_page_header' => 'Notes',
   'note_date' => 'Date',
   'note_priority' => 'Priority',
@@ -59,5 +61,3 @@ $lang = array_merge($lang, array(
   'note_err_none_selected' => 'There are no notes selected - nothing to delete. To delete all notes at once select range "All notes"',
 
 ));
-
-?>

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a3.1
+* @version 38a8.0
 *
 */
 
@@ -29,7 +29,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'Galaxy' => 'Galaxy',
   'Solar_system' => 'Solar System',
   'Show' => 'Show',
@@ -183,5 +185,3 @@ $lang = array_merge($lang, array(
   'uni_msg_admin_rename' => 'Player ID %d [%s] for %d DM gives to %s at [%s%s] new name: %s',
 
 ));
-
-?>

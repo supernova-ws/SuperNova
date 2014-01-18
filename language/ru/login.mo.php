@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a3.1
+* @version 38a8.0
 *
 */
 
@@ -27,7 +27,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'Login' => 'Логин',
   'User_name' => 'Имя:',
   'Authorization' => 'Авторизация',
@@ -136,5 +138,3 @@ $lang = array_merge($lang, array(
   'log_lost_err_admin' => 'Члены Команды сервера (модераторы, операторы, администраторы итд) не могут использовать функцию сброса пароля. Обратитесь к Администратору сервера для смены пароля',
   'log_lost_err_change' => 'Ошибка смены пароля в базе данных. Сообщите об ошибке Администратору',
 ));
-
-?>

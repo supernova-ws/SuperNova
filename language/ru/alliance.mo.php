@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a3.1
+* @version 38a8.0
 *
 */
 
@@ -27,7 +27,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'ali_dip_title' => 'Дипломатия',
   'ali_dip_negotiate' => 'Переговоры',
   'ali_adm_msg_subject' => 'Рассылка Альянса',
@@ -274,5 +276,3 @@ $lang = array_merge($lang, array(
   'ali_res_alliance_bonus' => 'Бонусы Альянса',
   'ali_res_alliance_bonus_players' => 'Количество участников для получения бонуса',
 ));
-
-?>

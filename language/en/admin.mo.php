@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a7.7
+* @version 38a8.0
 *
 */
 
@@ -29,7 +29,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'adm_tool_md5_header' => 'Password encoding (MD5)',
   'adm_tool_md5_hash' => 'MD5 hash',
   'adm_tool_md5_encode' => '[ Encode ]',

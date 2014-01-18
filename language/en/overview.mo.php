@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a6.8
+* @version 38a8.0
 *
 */
 
@@ -29,7 +29,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'ov_hack_alert' => 'DATABASE hacking attempt!!!',
   'ov_you_have' => 'You have',
   'ov_new_message' => 'One new message',

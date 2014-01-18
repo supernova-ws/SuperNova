@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a12.11
+* @version 38a8.0
 *
 */
 
@@ -26,7 +26,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'buddy_buddies' => 'Друзья',
   'buddy_request_text' => 'Текст запроса',
   'buddy_request_text_default' => 'Прошу добавить меня в список друзей',
@@ -78,5 +80,3 @@ $lang = array_merge($lang, array(
     <li>Если вы отклонили предложение дружбы, то вы не сможете начать дружеские отношения с этим игроком, пока он не удалит свой запрос</li>',
 
 ));
-
-?>

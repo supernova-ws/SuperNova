@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 35a12.4
+* @version 38a8.0
 *
 */
 
@@ -25,7 +25,9 @@
 
 if (!defined('INSIDE')) die();
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'note_page_header' => 'Заметки',
   'note_date' => 'Дата',
   'note_priority' => 'Важность',
@@ -58,5 +60,3 @@ $lang = array_merge($lang, array(
   'note_err_none_selected' => 'Не выбрано ни одной заметки - удаление не производится. Для удаления всех заметок выберите диапазон "Все заметки"',
 
 ));
-
-?>

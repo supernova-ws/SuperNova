@@ -95,7 +95,6 @@ define('SN_ROOT_VIRTUAL' , 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . ':/
 define('PHP_EX', $phpEx); // PHP extension on this server
 
 $user          = array();
-$lang          = array();
 $IsUserChecked = false;
 
 require("{$sn_root_physical}config.{$phpEx}");
@@ -304,7 +303,10 @@ if(!isset($sn_data['pages'][$sn_page_name]))
 
 sn_db_connect();
 
+$lang          = array();
+// $lang          = new classLocale();
 lng_switch(sys_get_param_str('lang'));
+
 
 if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= $time_now)
 {

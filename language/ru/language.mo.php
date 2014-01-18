@@ -46,5 +46,3 @@ $lang_info = array(
   ),
 
 );
-
-?>

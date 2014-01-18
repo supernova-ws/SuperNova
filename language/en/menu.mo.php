@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 36a0.24
+* @version 38a8.0
 *
 */
 
@@ -29,7 +29,9 @@
 if (!defined('INSIDE')) die();
 
 
-$lang = array_merge($lang, array(
+//$lang = array_merge($lang,
+//$lang->merge(
+$a_lang_array = (array(
   'Multiverse' => '<b>Sever</b> Uni',
   'm_h_rules' => 'Rules',
   'm_faq' => 'FAQ',
@@ -121,5 +123,3 @@ $lang = array_merge($lang, array(
   'menu_races' => 'Homeworlds',
 
 ));
-
-?>
