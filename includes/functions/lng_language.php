@@ -64,15 +64,18 @@ function lng_include($filename, $path = '', $ext = '')
   {
     include($file_path);
 
-    if(is_object($lang))
+    if($a_lang_array)
     {
-      $lang->merge($a_lang_array);
+      if(is_object($lang))
+      {
+        $lang->merge($a_lang_array);
+      }
+      else
+      {
+        $lang = array_merge($lang, $a_lang_array);
+      }
+      unset($a_lang_array);
     }
-    else
-    {
-      $lang = array_merge($lang, $a_lang_array);
-    }
-    unset($a_lang_array);
   }
 }
 
