@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a7.0
+* @version 38a7.5
 *
 */
 
@@ -887,4 +887,7 @@ $lang = array_merge($lang, array(
   'topnav_user_rank' => 'Your current place in statistic',
   'topnav_users' => 'Number of registered players',
   'topnav_users_online' => 'Now online',
+
+  'sys_colonies' => 'Colonies',
+
 ));

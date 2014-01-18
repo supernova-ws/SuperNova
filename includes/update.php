@@ -808,8 +808,6 @@ switch($new_version)
         "`deuterium` = `deuterium` + " . ($price[RES_DEUTERIUM] ? $price[RES_DEUTERIUM] : 0) .
         " WHERE id = {$planet_id}"
       );
-      // pdump($row);
-      // pdump(mysql_error());
       upd_do_query("DELETE FROM {{que}} WHERE que_id = {$row['que_id']}");
     }
 
@@ -840,13 +838,7 @@ switch($new_version)
         "`deuterium` = `deuterium` + " . ($price[RES_DEUTERIUM] ? $price[RES_DEUTERIUM] : 0) .
         " WHERE id = {$row['id_planet']}"
       );
-      // pdump($q);
-      // pdump(mysql_error());
       upd_do_query("DELETE FROM {{unit}} WHERE unit_id = {$row['unit_id']}");
-      // pdump(mysql_error());
-      // pdump($row);
-      // pdump($price);
-      // pdump(mysql_error());
     }
 
     // Удалить из очереди Экспедиционную технологию и вернуть ресы

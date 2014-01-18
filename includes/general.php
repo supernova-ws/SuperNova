@@ -1425,6 +1425,17 @@ function get_player_max_colonies(&$user)
   return $user[UNIT_PLAYER_COLONIES_MAX];
 }
 
+function get_player_current_colonies(&$user)
+{
+  if(!isset($user[UNIT_PLAYER_COLONIES_CURRENT]))
+  {
+    $colonies = doquery("SELECT COUNT(*) AS planet_count FROM {{planets}} WHERE id_owner = {$user['id']} AND `planet_type` = " . PT_PLANET, true);
+    $user[UNIT_PLAYER_COLONIES_CURRENT] = max(0, $colonies['planet_count'] - 1);
+  }
+
+  return $user[UNIT_PLAYER_COLONIES_CURRENT];
+}
+
 function get_player_max_expedition_duration(&$user)
 {
   return mrc_get_level($user, false, TECH_ASTROTECH);

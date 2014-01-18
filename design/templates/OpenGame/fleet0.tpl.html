@@ -19,7 +19,8 @@ var speed_factor   = {speed_factor};
 
 <h2>{L_fl_new_miss}</h2>
 <!-- IF MISSION_NAME -->
-  <h3>{TYPE_NAME} [{galaxy}:{system}:{planet}], {MISSION_NAME}</h3>
+  <h3>{TYPE_NAME} [{galaxy}:{system}:{planet}], {MISSION_NAME}<!-- IF IS_COLONIZATION -->, {L_sys_colonies} {COLONIES_CURRENT}/{COLONIES_MAX}<!-- ENDIF -->
+  </h3>
 <!-- ENDIF -->
 <form action="fleet.php?fleet_page=1" method="post">
   <input type="hidden" name="thisgalaxy"      value="{thisgalaxy}" />

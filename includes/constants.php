@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '37');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '38a7.4');
+define('SN_VERSION', '38a7.5');
 define('SN_RELEASE_STABLE', '37d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -566,6 +566,7 @@ define('UNIT_PLANET_DENSITY', 1601);
 define('UNIT_PLANET_DENSITY_INDEX', 1602);
 define('UNIT_PLANET_DENSITY_RARITY', 1603);
 
+define('UNIT_PLAYER_COLONIES_CURRENT', 'COLONIES_CURRENT');
 define('UNIT_PLAYER_COLONIES_MAX', 'COLONIES_MAX');
 define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 

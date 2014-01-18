@@ -15,7 +15,7 @@ function sn_fleet_page2()
   {
     $template->assign_block_vars('missions', array(
       'ID' => $key,
-      'NAME' => $value,
+      'NAME' => $value . ($key == MT_COLONIZE ? ' (' . $lang['sys_colonies'] . ' ' . get_player_current_colonies($user) . '/' . get_player_max_colonies($user) . ')' : ''),
       'CHECKED' => $target_mission == $key,
     ));
   };
@@ -112,5 +112,3 @@ function sn_fleet_page2()
   $template->assign_recursive($template_result);
   display($template, $lang['fl_title']);
 }
-
-?>

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #38a7.0#
+* @version #38a7.5#
 *
 */
 
@@ -898,5 +898,7 @@ $lang = array_merge($lang, array(
   'topnav_user_rank' => 'Ваше текущее место в рейтинговой статистике',
   'topnav_users' => 'Всего зарегистрированных игроков',
   'topnav_users_online' => 'Текущее количество игроков онлайн',
+
+  'sys_colonies' => 'Колонии',
 
 ));
