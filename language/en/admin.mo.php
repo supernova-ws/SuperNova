@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a6.0
+* @version 38a7.4
 *
 */
 
@@ -533,5 +533,6 @@ $lang = array_merge($lang, array(
   ),
 
   'adm_user_stat' => 'Статистика пользователей',
+  'adm_user_online' => 'Онлайн с %s по %s',
 
 ));
