@@ -179,7 +179,7 @@ function tpl_render_menu()
     tpl_menu_merge_extra($sn_menu_admin, $sn_menu_admin_extra);
     tpl_menu_assign_to_template($sn_menu_admin, $template);
   }
-  elseif(!empty($sn_menu))
+  else
   {
     global $sn_menu, $sn_menu_extra;
 
