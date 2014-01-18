@@ -20,6 +20,7 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('universe');
+lng_include('stat');
 
 $mode       = sys_get_param_str('mode');
 $uni_galaxy = sys_get_param_int('galaxy', $planetrow['galaxy']);
@@ -380,9 +381,13 @@ foreach($cached['allies'] as $PlanetAlly)
   }
 }
 
+$is_missile = $user["settings_mis"] && ($CurrentMIP > 0) && ($uni_galaxy == $CurrentGalaxy) && ($uni_system >= $CurrentSystem - $MissileRange) && ($uni_system <= $CurrentSystem + $MissileRange);
+$colspan = $user['settings_esp'] + $user['settings_wri'] + $user['settings_bud'] + $is_missile;
+
 $ally_count = doquery("SELECT COUNT(*) AS ally_count FROM {{alliance}};", '', true);
 $galaxy_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = 0 limit 1;", '', true);
 $system_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;", '', true);
+
 $template->assign_vars(array(
      'rows'                => $Result,
      'userCount'           => $config->users_amount,
@@ -413,13 +418,15 @@ $template->assign_vars(array(
      'ACT_STATISTICS'      => $user['settings_statistics'],
      'opt_uni_avatar_user' => $user['opt_uni_avatar_user'],
      'opt_uni_avatar_ally' => $user['opt_uni_avatar_ally'],
-     'ACT_MISSILE'         => $user["settings_mis"] && ($CurrentMIP > 0) && ($uni_galaxy == $CurrentGalaxy) && ($uni_system >= $CurrentSystem - $MissileRange) && ($uni_system <= $CurrentSystem + $MissileRange),
+     'ACT_MISSILE'         => $is_missile,
      'PLANET_PHALANX'      => $HavePhalanx && $uni_galaxy == $CurrentGalaxy && $uni_system >= $CurrentSystem - $PhalanxRange && $uni_system <= $CurrentSystem + $PhalanxRange,
      'PAGE_HINT'           => $lang['gal_sys_hint'],
 //     'LANG_RECYCLERS'      => $lang['tech'][SHIP_RECYCLER],
      'PLANET_RECYCLERS'    => $planet_recyclers_orbiting,
      'GALAXY_NAME'         => $galaxy_name['universe_name'],
      'SYSTEM_NAME'         => $system_name['universe_name'],
+     'COL_SPAN'            => $colspan + 9,
+     'COL_SPAN_PLUS'       => $colspan + 3,
    )
 );
 

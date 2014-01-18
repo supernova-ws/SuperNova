@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version #38a7.5#
+* @version #38a7.6#
 *
 */
 
@@ -196,6 +196,7 @@ $lang = array_merge($lang, array(
   'imp_name' => "Nomi",
   'imp_research' => "Daraja ko`tarish",
   'imp_exploration' => "Экспедиции",
+  'imp_imperator_none' => "Нет такого Императора во Вселенной!",
   'sys_fields' => "Sektor",
 
 // Cookies

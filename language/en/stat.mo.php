@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 34a18
+* @version 38a7.6
 *
 */
 
@@ -59,6 +59,7 @@ $lang = array_merge($lang, array(
   'stat_player' => 'players',
   'stat_allys' => 'alliances',
   'stat_range' => 'ranks',
-));
 
-?>
+  'stat_details' => 'Details',
+
+));

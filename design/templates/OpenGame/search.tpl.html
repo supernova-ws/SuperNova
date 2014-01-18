@@ -41,19 +41,22 @@
     <!-- END search_result -->
   <!-- ELSE -->
     <tr class="c_l">
-      <th>{L_sys_alliance}</th>
       <th>
+        <img src="{dpath}icons/menu_empire_emperor.png" border="0" alt="{L_stat_details}" />
         <!-- IF ! STATS_HIDE_PM_LINK --><img src="{dpath}img/m.gif" alt="{L_srch_action_pm}" title="{L_srch_action_pm}" /><!-- ENDIF -->
         <img src="{dpath}img/b.gif" alt="{L_srch_action_buddy}" title="{L_srch_action_buddy}" border="0" />
         {L_srch_player_name}
       </th>
+      <th>{L_sys_alliance}</th>
       <th>{L_sys_planet}</th>
       <th>{L_srch_rank}</th>
     </tr>
     <!-- BEGIN search_result -->
       <tr class="c_l">
-        <td><!-- IF search_result.ALLY_TAG --><a href="alliance.php?mode=ainfo&tag={search_result.ALLY_TAG}">[{search_result.ALLY_TAG}]</a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
         <td>
+          <a href="index.php?page=imperator&int_user_id={search_result.PLAYER_ID}">
+            <img src="{dpath}icons/menu_empire_emperor.png" border="0" alt="{L_stat_details}" />
+          </a>
           <!-- IF ! STATS_HIDE_PM_LINK --><a href="messages.php?mode=write&id={search_result.PLAYER_ID}"><img src="{dpath}img/m.gif" alt="{L_srch_action_pm}" title="{L_srch_action_pm}" /></a><!-- ENDIF -->
           <a href="buddy.php?request_user_id={search_result.PLAYER_ID}" alt="{L_srch_action_buddy}"><img src="{dpath}img/b.gif" alt="{L_srch_action_buddy}" title="{L_srch_action_buddy}" border="0" /></a>
           {search_result.PLAYER_NAME}
@@ -61,6 +64,7 @@
             ({L_srch_aka} <span class="warning">{search_result.PLAYER_NAME_OLD}</span>)
           <!-- ENDIF -->
         </td>
+        <td><!-- IF search_result.ALLY_TAG --><a href="alliance.php?mode=ainfo&tag={search_result.ALLY_TAG}">[{search_result.ALLY_TAG}]</a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
         <td>
           {search_result.PLANET_TYPE}
           {search_result.PLANET_NAME}

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Uzbekin]
-* @version 37a5.8
+* @version 38a7.6
 *
 */
 
@@ -57,6 +57,7 @@ $lang = array_merge($lang, array(
   'stat_player' => 'o`yinchilar',
   'stat_allys' => 'ittifoqdagilar',
   'stat_range' => 'o`rni',
-));
 
-?>
+  'stat_details' => 'Подробности',
+
+));

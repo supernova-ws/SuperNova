@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #38a7.5#
+* @version #38a7.6#
 *
 */
 
@@ -201,6 +201,7 @@ $lang = array_merge($lang, array(
   'imp_name' => "Название",
   'imp_research' => "Исследования",
   'imp_exploration' => "Экспедиции",
+  'imp_imperator_none' => "Нет такого Императора во Вселенной!",
   'sys_fields' => "Сектора",
 
 // Cookies

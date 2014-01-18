@@ -216,5 +216,3 @@ $template->assign_vars(array(
 ));
 
 display($template, $lang['stat_header'], $IsUserChecked, '', false, $IsUserChecked);
-
-?>

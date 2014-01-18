@@ -540,3 +540,8 @@ th.c_j, td.c_j
   font-weight: bold;
   cursor: pointer;
 }
+
+#universe_main img {
+  border: 0px;
+  cursor: pointer;
+}

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a7.5
+* @version 38a7.6
 *
 */
 
@@ -201,6 +201,7 @@ $lang = array_merge($lang, array(
   'imp_name' => "Name",
   'imp_research' => "Research",
   'imp_exploration' => "Exploration",
+  'imp_imperator_none' => "There is no such Emperor in this Universe!",
   'sys_fields' => "Fields",
 
 // Cookies
