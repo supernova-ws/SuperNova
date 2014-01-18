@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a7.4
+* @version 38a7.7
 *
 */
 
@@ -555,5 +555,8 @@ $lang = array_merge($lang, array(
 
   'adm_user_stat' => 'Статистика пользователей',
   'adm_user_online' => 'Онлайн с %s по %s',
+
+  'adm_ban_unban' => 'Бан/Разбан',
+  'adm_metametter_payment' => 'ММ & Платежи',
 
 ));

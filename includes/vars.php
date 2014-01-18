@@ -13,6 +13,7 @@ if (!defined('INSIDE'))
 }
 
 $sn_menu_extra = array();
+$sn_menu_admin_extra = array();
 
 $sn_mvc = array(
  'model' => array(),
@@ -816,5 +817,3 @@ foreach ($sn_data as $unitID => $unitData)
   print(" );<br>");
 }
 */
-
-?>

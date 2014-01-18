@@ -545,3 +545,11 @@ th.c_j, td.c_j
   border: 0px;
   cursor: pointer;
 }
+
+#menu_admin_exit {
+  color: red;
+}
+
+#menu_admin_server_time, #menu_admin_version_info {
+  text-align: center;
+}

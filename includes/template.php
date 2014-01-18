@@ -51,12 +51,111 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
   display($page, $title, $show_header, (($dest != "") ? "<meta http-equiv=\"refresh\" content=\"{$time};url={$dest}\">" : ""), false);
 }
 
+function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra)
+{
+  foreach($sn_menu_extra as $menu_item_id => $menu_item)
+  {
+    $item_location = $menu_item['LOCATION'];
+    unset($menu_item['LOCATION']);
+
+    if(!$item_location)
+    {
+      $sn_menu[$menu_item_id] = $menu_item;
+      continue;
+    }
+
+    $is_positioned = $item_location[0];
+    if($is_positioned == '+' || $is_positioned == '-')
+    {
+      $item_location = substr($item_location, 1);
+    }
+    else
+    {
+      $is_positioned = '';
+    }
+
+    if($item_location)
+    {
+      $menu_keys = array_keys($sn_menu);
+      $insert_position = array_search($item_location, $menu_keys);
+      if($insert_position === false)
+      {
+        $insert_position = count($sn_menu)-1;
+        $is_positioned = '+';
+        $item_location = '';
+      }
+    }
+    else
+    {
+      $insert_position = $is_positioned == '-' ? 0 : count($sn_menu);
+    }
+
+    $insert_position += $is_positioned == '+' ? 1 : 0;
+    $spliced = array_splice($sn_menu, $insert_position, count($sn_menu) - $insert_position);
+    $sn_menu[$menu_item_id] = $menu_item;
+    if(!$is_positioned && $item_location)
+    {
+      unset($spliced[$item_location]);
+    }
+    $sn_menu = array_merge($sn_menu, $spliced);
+  }
+}
+
+function tpl_menu_assign_to_template(&$sn_menu, &$template)
+{
+  global $lang;
+
+  if($sn_menu)
+  {
+    foreach($sn_menu as $menu_item_id => $menu_item)
+    {
+      if(!$menu_item)
+      {
+        continue;
+      }
+
+      if(is_string($menu_item_id))
+      {
+        $menu_item['ID'] = $menu_item_id;
+      }
+
+      if($menu_item['TYPE'] == 'lang')
+      {
+        $lang_string = &$lang;
+        if(preg_match('#(\w+)(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?#', $menu_item['ITEM'], $matches) && count($matches) > 1)
+        {
+          for($i = 1; $i < count($matches); $i++)
+          {
+            if(defined($matches[$i]))
+            {
+              $matches[$i] = constant($matches[$i]);
+            }
+            $lang_string = &$lang_string[$matches[$i]];
+          }
+        }
+        $menu_item['ITEM'] = $lang_string && is_string($lang_string) ? $lang_string : "{L_{$menu_item['ITEM']}}";
+      }
+
+      $menu_item['ALT'] = htmlentities($menu_item['ALT']);
+      $menu_item['TITLE'] = htmlentities($menu_item['TITLE']);
+
+      if($menu_item['ICON'] === true)
+      {
+        $menu_item['ICON'] = $menu_item_id . '.png';
+      }
+
+      $template->assign_block_vars('menu', $menu_item);
+    }
+  }
+}
+
 function tpl_render_menu()
 {
-  global $config, $user, $user_impersonator, $lang, $time_now, $sn_menu;
+  global $user, $user_impersonator, $lang; // $config,
 
-  $template_name = IN_ADMIN === true ? 'admin/menu' : 'menu';
-  $template = gettemplate($template_name, true);
+  //$template_name = IN_ADMIN === true ? 'admin/menu' : 'menu';
+  //$template = gettemplate($template_name, true);
+  $template = gettemplate('menu', true);
 
   $template->assign_vars(array(
     'USER_AUTHLEVEL'      => $user['authlevel'],
@@ -67,107 +166,25 @@ function tpl_render_menu()
 
   if(IN_ADMIN === true && $user['authlevel'] > 0)
   {
-    global $sn_version_check_class;
+    //global $sn_version_check_class;
+    //$template->assign_vars(array(
+    //  'CHECK_DATE' => $config->server_updater_check_last ? date(FMT_DATE, $config->server_updater_check_last) : 0,
+    //  'CHECK_RESULT' => $lang['adm_opt_ver_response_short'][$config->server_updater_check_result],
+    //  'CHECK_CLASS' => $sn_version_check_class[$config->server_updater_check_result],
+    //));
+    //$template = gettemplate('menu', $template);
 
-    $template->assign_vars(array(
-      'CHECK_DATE' => $config->server_updater_check_last ? date(FMT_DATE, $config->server_updater_check_last) : 0,
-      'CHECK_RESULT' => $lang['adm_opt_ver_response_short'][$config->server_updater_check_result],
-      'CHECK_CLASS' => $sn_version_check_class[$config->server_updater_check_result],
-    ));
+    global $sn_menu_admin_extra, $sn_menu_admin;
+
+    tpl_menu_merge_extra($sn_menu_admin, $sn_menu_admin_extra);
+    tpl_menu_assign_to_template($sn_menu_admin, $template);
   }
   elseif(!empty($sn_menu))
   {
-    global $sn_menu_extra;
+    global $sn_menu, $sn_menu_extra;
 
-    foreach($sn_menu_extra as $menu_item_id => $menu_item)
-    {
-      $item_location = $menu_item['LOCATION'];
-      unset($menu_item['LOCATION']);
-
-      if(!$item_location)
-      {
-        $sn_menu[$menu_item_id] = $menu_item;
-        continue;
-      }
-
-      $is_positioned = $item_location[0];
-      if($is_positioned == '+' || $is_positioned == '-')
-      {
-        $item_location = substr($item_location, 1);
-      }
-      else
-      {
-        $is_positioned = '';
-      }
-
-      if($item_location)
-      {
-        $menu_keys = array_keys($sn_menu);
-        $insert_position = array_search($item_location, $menu_keys);
-        if($insert_position === false)
-        {
-          $insert_position = count($sn_menu)-1;
-          $is_positioned = '+';
-          $item_location = '';
-        }
-      }
-      else
-      {
-        $insert_position = $is_positioned == '-' ? 0 : count($sn_menu);
-      }
-
-      $insert_position += $is_positioned == '+' ? 1 : 0;
-      $spliced = array_splice($sn_menu, $insert_position, count($sn_menu) - $insert_position);
-      $sn_menu[$menu_item_id] = $menu_item;
-      if(!$is_positioned && $item_location)
-      {
-        unset($spliced[$item_location]);
-      }
-      $sn_menu = array_merge($sn_menu, $spliced);
-    }
-
-    if($sn_menu)
-    {
-      foreach($sn_menu as $menu_item_id => $menu_item)
-      {
-        if(!$menu_item)
-        {
-          continue;
-        }
-
-        if(is_string($menu_item_id))
-        {
-          $menu_item['ID'] = $menu_item_id;
-        }
-
-        if($menu_item['TYPE'] == 'lang')
-        {
-          $lang_string = &$lang;
-          if(preg_match('#(\w+)(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?#', $menu_item['ITEM'], $matches) && count($matches) > 1)
-          {
-            for($i = 1; $i < count($matches); $i++)
-            {
-              if(defined($matches[$i]))
-              {
-                $matches[$i] = constant($matches[$i]);
-              }
-              $lang_string = &$lang_string[$matches[$i]];
-            }
-          }
-          $menu_item['ITEM'] = $lang_string && is_string($lang_string) ? $lang_string : "{L_{$menu_item['ITEM']}}";
-        }
-
-        $menu_item['ALT'] = htmlentities($menu_item['ALT']);
-        $menu_item['TITLE'] = htmlentities($menu_item['TITLE']);
-
-        if($menu_item['ICON'] === true)
-        {
-          $menu_item['ICON'] = $menu_item_id . '.png';
-        }
-
-        $template->assign_block_vars('menu', $menu_item);
-      }
-    }
+    tpl_menu_merge_extra($sn_menu, $sn_menu_extra);
+    tpl_menu_assign_to_template($sn_menu, $template);
   }
 
   return $template;
@@ -399,41 +416,8 @@ function sn_tpl_render_topnav(&$user, $planetrow)
   $fleet_flying_list = tpl_get_fleets_flying($user);
   tpl_topnav_event_build($template, $fleet_flying_list[0]);
   tpl_topnav_event_build($template, $fleet_flying_list[MT_EXPLORE], 'expedition');
-/*
-  if(!$config->var_online_user_count || $config->var_online_user_time + 30 < $time_now)
-  {
-    $time = $time_now - 15*60;
-    $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}' AND `user_as_ally` IS NULL;", true);
-    $config->db_saveItem('var_online_user_count', $online_count['users_online']);
-    $config->db_saveItem('var_online_user_time', $time_now);
-    if($config->server_log_online)
-    {
-      doquery("INSERT INTO {{log_users_online}} SET online_count = {$config->var_online_user_count};");
-    }
-  }
-*/
+
   que_tpl_parse($template, QUE_RESEARCH, $user);
-  /*
-    $que_length = 0;
-    if($user['que'])
-    {
-      $que_item = $user['que'] ? explode(',', $user['que']) : array();
-      $unit_id = $que_item[QI_UNIT_ID];
-      $unit_data = eco_get_build_data($user, $planet, $unit_id, $user[$sn_data[$unit_id]['name']]);
-
-      $template->assign_block_vars('que', array(
-        'ID' => $unit_id,
-        'QUE' => QUE_RESEARCH,
-        'NAME' => $lang['tech'][$unit_id],
-        'TIME' => $que_item[QI_TIME],
-        'TIME_FULL' => $unit_data[RES_TIME][BUILD_CREATE],
-        'AMOUNT' => 1,
-        'LEVEL' => $user[$sn_data[$unit_id]['name']] + 1,
-      ));
-
-      $que_length++;
-    }
-  */
 
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate($time_now);
@@ -441,17 +425,11 @@ function sn_tpl_render_topnav(&$user, $planetrow)
 
   $premium_lvl = mrc_get_level($user, false, UNIT_PREMIUM, true, true);
 
-  // $time = $time_now - 15*60;
-  // $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}' AND `user_as_ally` IS NULL;", true);
-
   $template->assign_vars(array(
     'QUE_ID'             => QUE_RESEARCH,
     'QUE_HTML'           => 'topnav',
 
     'RESEARCH_ONGOING'   => (boolean)$user['que'],
-
-//    'DATE_TEXT'          => "$day_of_week, $day $month $year {$lang['top_of_year']},",
-//    'TIME_TEXT'          => "{$hour}:{$min}:{$sec}",
 
     'TIME_TEXT'          => sprintf($str_date_format, $time_now_parsed['year'], $lang['months'][$time_now_parsed['mon']], $time_now_parsed['mday'],
       $time_now_parsed['hours'], $time_now_parsed['minutes'], $time_now_parsed['seconds']
@@ -460,7 +438,6 @@ function sn_tpl_render_topnav(&$user, $planetrow)
       $time_local_parsed['hours'], $time_local_parsed['minutes'], $time_local_parsed['seconds']
     ),
 
-//    'USERS_ONLINE'         => $online_count['users_online'],
     'USERS_ONLINE'         => $config->var_online_user_count,
     'USERS_TOTAL'          => $config->users_amount,
     'USER_RANK'            => $user['total_rank'],
@@ -529,7 +506,6 @@ function displayP($template)
 
 function parsetemplate($template, $array = false)
 {
-
   if(is_object($template))
   {
     global $time_now, $user;

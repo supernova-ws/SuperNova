@@ -416,3 +416,225 @@ $sn_menu = array(
   ),
 */
 );
+
+
+global $sn_version_check_class, $lang, $config, $sn_menu_admin_extra;
+
+$sn_menu_admin = array(
+  'menu_admin_server_name' => array(
+    'LEVEL' => 'header',
+    'TYPE' => 'text',
+    'ITEM' => $config->game_name,
+  ),
+  'menu_admin_server_time' => array(
+    'TYPE' => 'text',
+    'ITEM' => '',
+  ),
+
+  'menu_admin_version_check' => array(
+    'LEVEL' => 'header',
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_opt_ver_check',
+  ),
+  'menu_admin_version_info' => array(
+    'TYPE' => 'text',
+    'ITEM'  => ($config->server_updater_check_last ? date(FMT_DATE, $config->server_updater_check_last) : '') . '<div class="' .
+      $sn_version_check_class[$config->server_updater_check_result] . '">' . $lang['adm_opt_ver_response_short'][$config->server_updater_check_result] . '</div>',
+  ),
+
+  'USER_AUTHLEVEL_NAME' => array(
+    'LEVEL' => 'header',
+    'TYPE' => 'lang',
+    'ITEM'  => 'user_level[USER_LEVEL]',
+  ),
+  'menu_admin_overview' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_over',
+    'LINK' => 'admin/overview.php',
+  ),
+  'menu_admin_quests' => array(
+    'TYPE'  => 'lang',
+    'ITEM'  => 'qst_quests',
+    'LINK'  => 'admin/adm_quest.php',
+  ),
+
+  'menu_admin_player' => array(
+    'LEVEL' => 'header',
+    'TYPE' => 'lang',
+    'ITEM' => 'player',
+  ),
+  'menu_admin_player_ban' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_ban_unban',
+    'LINK' => 'admin/banned.php',
+  ),
+
+  //    <!-- IF USER_AUTHLEVEL >= 2 -->
+  //    <tr><td><a href="">Add Research</a></td></tr>
+  //    <tr><td><a href="admin/del_research.php">Del Research</a></td></tr>
+  //    <!-- ENDIF -->
+
+  'menu_admin_universe' => array(
+    'LEVEL' => 'header',
+    'TYPE' => 'lang',
+    'ITEM' => 'sys_universe',
+  ),
+  'menu_admin_planet_list_active' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_planet_active',
+    'LINK' => 'admin/adm_planet_list.php?planet_active=1',
+  ),
+  'menu_admin_planet_list_planets' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_pltlst',
+    'LINK' => 'admin/adm_planet_list.php?planet_type=' . PT_PLANET,
+  ),
+  'menu_admin_planet_list_moons' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_moonlst',
+    'LINK' => 'admin/adm_planet_list.php?planet_type=' . PT_MOON,
+  ),
+
+  'menu_admin_utilites' => array(
+    'LEVEL' => 'header',
+    'TYPE' => 'lang',
+    'ITEM' => 'tool',
+    'CLASS' => 'link',
+    'LINK' => 'admin/tools.php',
+  ),
+  'menu_admin_statbuilder' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_updpt',
+    'LINK' => 'admin/statbuilder.php',
+  ),
+  'menu_admin_languages' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_lng_title',
+    'LINK' => 'admin/admin_locale.php',
+  ),
+
+  'menu_admin_exit' => array(
+    'LEVEL' => 'header',
+    'CLASS' => 'link',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'adm_back',
+    'LINK'  => 'index.php',
+  ),
+);
+
+if($user['authlevel'] >= 2)
+{
+  $sn_menu_admin_extra += array(
+    'menu_admin_planet_moon_add' => array(
+      'TYPE' => 'lang',
+      'ITEM' => 'adm_addmoon',
+      'LINK' => 'admin/add_moon.php',
+      'LOCATION' => '+menu_admin_planet_list_moons',
+    ),
+    'menu_admin_planet_edit' => array(
+      'TYPE' => 'lang',
+      'ITEM' => 'adm_lm_planet_edit',
+      'LINK' => 'admin/planet_edit.php',
+      'LOCATION' => '+menu_admin_planet_moon_add',
+    ),
+    'menu_admin_fleets' => array(
+      'TYPE' => 'lang',
+      'ITEM' => 'adm_fleet',
+      'LINK' => 'admin/ShowFlyingFleets.php',
+      'LOCATION' => '-menu_admin_utilites',
+    ),
+  );
+
+  if($user['authlevel'] >= 3)
+  {
+    $sn_menu_admin_extra += array(
+      'menu_admin_configuration' => array(
+        'TYPE' => 'lang',
+        'ITEM' => 'adm_conf',
+        'LINK' => 'admin/settings.php',
+        'LOCATION' => '+menu_admin_quests',
+      ),
+      'menu_admin_dark_matter' => array(
+        'TYPE' => 'lang',
+        'ITEM' => 'dark_matter',
+        'LINK' => 'admin/admin_darkmatter.php',
+        'LOCATION' => '+menu_admin_configuration',
+      ),
+
+      'menu_admin_planet_compensate' => array(
+        'TYPE' => 'lang',
+        'ITEM' => 'adm_lm_compensate',
+        'LINK' => 'admin/planet_compensate.php',
+        'LOCATION' => '+menu_admin_planet_edit',
+      ),
+
+      'menu_admin_player_list' => array(
+        'TYPE' => 'lang',
+        'ITEM' => 'adm_plrlst',
+        'LINK' => 'admin/userlist.php',
+        'LOCATION' => '+menu_admin_player_ban',
+      ),
+      'menu_admin_player_panel' => array(
+        'TYPE' => 'lang',
+        'ITEM' => 'adm_panel',
+        'LINK' => 'admin/paneladmina.php',
+        'LOCATION' => '+menu_admin_player_list',
+      ),
+
+      'menu_admin_maintenance' => array(
+        'TYPE' => 'lang',
+        'ITEM' => 'adm_maint',
+        'LINK' => 'admin/maintenance.php',
+        'LOCATION' => '+menu_admin_languages',
+      ),
+      'menu_admin_backup' => array(
+        'TYPE' => 'lang',
+        'ITEM' => 'adm_backup',
+        'LINK' => 'admin/sxd/index.php',
+        'LOCATION' => '+menu_admin_maintenance',
+      ),
+      'menu_admin_messages' => array(
+        'TYPE' => 'lang',
+        'ITEM' => 'adm_msg',
+        'LINK' => 'admin/messagelist.php',
+        'LOCATION' => '+menu_admin_backup',
+      ),
+      'menu_admin_chat' => array(
+        'TYPE' => 'lang',
+        'ITEM' => 'adm_chat',
+        'LINK' => 'admin/admin_chat.php',
+        'LOCATION' => '+menu_admin_messages',
+      ),
+      'menu_admin_logs' => array(
+        'TYPE' => 'lang',
+        'ITEM' => 'adm_error',
+        'LINK' => 'admin/errors.php',
+        'LOCATION' => '+menu_admin_chat',
+      ),
+    );
+
+    if(sn_module_get_active_count('payment'))
+    {
+      $sn_menu_admin_extra += array(
+        'menu_admin_metamatter_header' => array(
+          'LEVEL' => 'header',
+          'TYPE' => 'lang',
+          'ITEM' => 'adm_metametter_payment',
+          'LOCATION' => '-menu_admin_player',
+        ),
+        'menu_admin_metamatter' => array(
+          'TYPE' => 'lang',
+          'ITEM' => 'sys_metamatter',
+          'LINK' => 'admin/adm_metamatter.php',
+          'LOCATION' => '-menu_admin_player',
+        ),
+        'menu_admin_metametter_payment' => array(
+          'TYPE' => 'lang',
+          'ITEM' => 'adm_pay',
+          'LINK' => 'admin/adm_payment.php',
+          'LOCATION' => '-menu_admin_player',
+        ),
+      );
+    }
+  }
+}
