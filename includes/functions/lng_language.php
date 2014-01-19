@@ -8,12 +8,17 @@ function lng_try_filepath($path, $file_path_relative)
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-function lng_include($filename, $path = '', $ext = '')
+function lng_include($filename, $path = '', $ext = '.mo.php')
 {
+  global $lang, $language, $user;
+
+  if(is_object($lang))
+  {
+    return $lang->lng_include($filename, $path, $ext);
+  }
+
   $ext = $ext ? $ext : '.mo.php';
   $filename_ext = "{$filename}{$ext}";
-
-  global $lang, $language, $user;
 
   $language_fallback = array(
     $language,     // Current language
@@ -81,6 +86,13 @@ function lng_include($filename, $path = '', $ext = '')
 
 function lng_get_list()
 {
+  global $lang;
+
+  if(is_object($lang))
+  {
+    return $lang->lng_get_list();
+  }
+
   $lang_list = array();
 
   $path = SN_ROOT_PHYSICAL . "language/";
@@ -103,6 +115,13 @@ function lng_get_list()
 
 function lng_get_info($entry)
 {
+  global $lang;
+
+  if(is_object($lang))
+  {
+    return $lang->lng_get_info($entry);
+  }
+
   $file_name = SN_ROOT_PHYSICAL . "language/" . $entry . '/language.mo.php';
   $lang_info = array();
   if (file_exists($file_name))
@@ -114,7 +133,13 @@ function lng_get_info($entry)
 
 function lng_switch($language_new)
 {
-  global $lang, $language, $user, $sn_mvc;
+  global $lang;
+  if(is_object($lang))
+  {
+    return $lang->lng_switch($language_new);
+  }
+
+  global $language, $user, $sn_mvc;
 
   $language_new = $language_new ? $language_new : ($user['lang'] ? $user['lang'] : DEFAULT_LANG);
 
@@ -137,6 +162,12 @@ function lng_switch($language_new)
 
 function lng_load_i18n($i18n)
 {
+  global $lang;
+  if(is_object($lang))
+  {
+    return $lang->lng_load_i18n($i18n);
+  }
+
   if(isset($i18n))
   {
     foreach($i18n as $i18n_data)

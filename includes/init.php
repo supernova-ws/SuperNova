@@ -304,7 +304,7 @@ if(!isset($sn_data['pages'][$sn_page_name]))
 sn_db_connect();
 
 $lang          = array();
-// $lang          = new classLocale();
+$lang          = new classLocale();
 lng_switch(sys_get_param_str('lang'));
 
 
