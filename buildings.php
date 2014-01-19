@@ -22,7 +22,6 @@ $mode = sys_get_param_escaped('mode');
 
 lng_include('buildings');
 lng_include('infos');
-
 $mode = (!$mode || $mode == 'buildings') ? QUE_STRUCTURES : ($mode == 'fleet' ? SUBQUE_FLEET : ($mode == 'defense' ? SUBQUE_DEFENSE : $mode));
 
 sn_sys_sector_buy('buildings.php?mode=' . $mode);

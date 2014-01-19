@@ -1026,6 +1026,8 @@ class classLocale implements ArrayAccess {
   {
     global $language, $user;
 
+    $lang = $this;
+
     $ext = $ext ? $ext : '.mo.php';
     $filename_ext = "{$filename}{$ext}";
 
