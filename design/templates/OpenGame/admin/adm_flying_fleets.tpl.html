@@ -1,0 +1,44 @@
+<!-- INCLUDE fleet_javascript -->
+
+<h2>{L_flt_title}</h2>
+<table width="569"><tbody>
+  <tr>
+    <th class="c_c" colspan="2" >{L_flt_fleet}</th>
+    <th class="c_c">{L_flt_mission}<br />{L_flt_here_there}</th>
+    <th class="c_c" colspan="3">{L_flt_departure}</th>
+    <th class="c_c" colspan="3">{L_flt_e_owner}</th>
+    <th class="c_c" rowspan="2">{L_flt_staying}</th>
+    <!-- <th class="c_c">{L_flt_action}</th> -->
+  </tr>
+  <tr>
+    <th class="c_c">{L_flt_id}</th>
+    <th class="c_c">{L_flt_ships}</th>
+    <th class="c_c">{L_flt_mission}</th>
+    <th class="c_c">{L_flt_owner}</th>
+    <th class="c_c">{L_flt_planet}</th>
+    <th class="c_c">{L_flt_time_return}</th>
+    <th class="c_c">{L_flt_owner}</th>
+    <th class="c_c">{L_flt_planet}</th>
+    <th class="c_c">{L_flt_time_arrive}</th>
+    <!-- <th class="c_c">{L_flt_action}</th> -->
+  </tr>
+  <!-- BEGIN fleets -->
+  <tr>
+    <td class="c_c" style="cursor: pointer;" onmouseover='fleet_dialog_show(this, {fleets.ID})' onmouseout='popup_hide()'>{fleets.ID}</td>
+    <td class="c_c" style="cursor: pointer;" onmouseover='fleet_dialog_show(this, {fleets.ID})' onmouseout='popup_hide()'>{fleets.AMOUNT}</td>
+    <td class="c_c">{fleets.MISSION_NAME}<br /><!-- IF fleets.MESSAGE -->{L_flt_here}<!-- ELSE -->{L_flt_there}<!-- ENDIF --></td>
+    <td class="c_c"><!-- IF fleets.OWNER -->{fleets.OWNER_NAME}<br />[{fleets.OWNER}]<!-- ELSE -->-<!-- ENDIF --></td>
+    <td class="c_c">{fleets.START_URL} {fleets.START_TYPE_TEXT_SH}</td>
+    <td class="c_c">{fleets.START_TIME_TEXT}</td>
+    <td class="c_c"><!-- IF fleets.TARGET_OWNER_NAME -->{fleets.TARGET_OWNER_NAME}<br />[{fleets.TARGET_OWNER}]<!-- ELSE -->-<!-- ENDIF --></td>
+    <td class="c_c">{fleets.END_URL} {fleets.END_TYPE_TEXT_SH}</td>
+    <td class="c_c">{fleets.END_TIME_TEXT}</td>
+    <td class="c_c"><!-- IF fleets.STAY_TIME_INT -->{fleets.STAY_TIME}<!-- ELSE -->-<!-- ENDIF --></td>
+    <!-- <td class="c_c"></td> -->
+  </tr>
+  <!-- BEGINELSE -->
+  <tr>
+    <td class="c_c" colspan="10">{L_flt_no_fleet}</td>
+  </tr>
+  <!-- END fleets -->
+</tbody></table>

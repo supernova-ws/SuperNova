@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a8.0
+* @version 38a9.0
 *
 */
 
@@ -108,6 +108,7 @@ $a_lang_array = (array(
   'adm_ov_count' => 'Online players',
   'adm_ov_wrtpm' => 'Write Private Message',
   'adm_ov_altpm' => '[PM]',
+  'adm_ov_hint' => '<ul><li>Таблица пользователей онлайн может быть отсортирована по колонкам "ID", "Имя игрока", "Альянс", "Очки" и "Активность". Для сортировки по определенной колонке кликните на её заголовке</li></ul>',
 
 
   'adm_ul_title' => 'Player list',
@@ -358,15 +359,21 @@ $a_lang_array = (array(
   'adm_bt_change' => 'Change',
   'flt_id' => 'ID',
   'flt_fleet' => 'Fleet',
+  'flt_ships' => 'Composition',
   'flt_mission' => 'Mission',
+  'flt_here' => 'Back',
+  'flt_there' => 'There',
+  'flt_here_there' => 'There/Back',
+  'flt_departure' => 'Source',
   'flt_owner' => 'Owner',
   'flt_planet' => 'Planet',
-  'flt_time_st' => 'Departure time',
-  'flt_e_owner' => 'Arrival',
-  'flt_time_en' => 'Time of arrival',
-  'flt_staying' => 'Stat.',
+  'flt_time_return' => 'Return',
+  'flt_e_owner' => 'Destination',
+  'flt_time_arrive' => 'Arrival',
+  'flt_staying' => 'Stay',
   'flt_action' => 'Action',
   'flt_title' => 'Fleets in flight',
+  'flt_no_fleet' => 'There are no fleets in flight',
   'mlst_title' => 'Message list',
   'mlst_mess_del' => 'Delete messages',
   'mlst_hdr_page' => 'Page.',
@@ -382,16 +389,12 @@ $a_lang_array = (array(
   'mlst_hdr_action' => 'Action.',
   'mlst_del_mess' => 'Delete',
   'mlst_bt_delsel' => 'Delete selected',
-  'mlst_bt_deldate' => 'Delete message date',
-  'mlst_hdr_delfrom' => 'Remove the date',
-  'mlst_mess_typ__0' => 'Spy',
-  'mlst_mess_typ__1' => 'Players',
-  'mlst_mess_typ__2' => 'Alliances',
-  'mlst_mess_typ__3' => 'Fights',
-  'mlst_mess_typ__4' => 'Operational.',
-  'mlst_mess_typ__5' => 'Transport',
-  'mlst_mess_typ_15' => 'Expedition',
-  'mlst_mess_typ_99' => 'Building List',
+  'mlst_bt_deldate' => 'Delete',
+  'mlst_hdr_delfrom' => 'Delete selected type messages before date',
+  'mlst_no_messages' => 'No messages',
+  'mlst_messages_deleted' => 'Deleted messages with ID(s) %s',
+  'mlst_messages_deleted_date' => 'Deleted messages with type "%s" before date %s (does not includes messages on indicated date)',
+
   'adm_lng_title' => 'Localization',
   'adm_lng_warning' => 'WARNING! Locale editor is in alpha stage! Use it on your own risk!',
   'adm_lng_domain' => 'Domain',

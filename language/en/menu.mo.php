@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a8.0
+* @version 38a9.0
 *
 */
 
@@ -101,7 +101,7 @@ $a_lang_array = (array(
   'adm_msg' => 'Message List',
   'adm_md5' => 'Encryption',
   'adm_updrank' => 'Reset Databases',
-  'adm_error' => 'Log records',
+  'adm_log_main' => 'Log records',
   'adm_help' => 'Developers Forum',
   'adm_back' => 'Return',
   'admin' => 'Administration',

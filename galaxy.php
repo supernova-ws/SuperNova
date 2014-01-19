@@ -269,6 +269,7 @@ debug($uni_galaxyRowPlanet['debris_will_gather_percent'], 'debris_will_gather_pe
 
   $RowUserPoints = $uni_galaxyRowUser['total_points'];
   $birthday_array = $uni_galaxyRowUser['user_birthday'] ? date_parse($uni_galaxyRowUser['user_birthday']) : array();
+  $user_activity = floor(($time_now - $uni_galaxyRowUser['onlinetime'])/(60*60*24));
   $template->assign_block_vars('galaxyrow', array(
      'PLANET_ID'        => $uni_galaxyRowPlanet['id'],
      'PLANET_NUM'       => $Planet,
@@ -304,7 +305,8 @@ debug($uni_galaxyRowPlanet['debris_will_gather_percent'], 'debris_will_gather_pe
      'USER_RANK'     => in_array($uni_galaxyRowUser['id'], $user_skip_list) ? '-' : $uni_galaxyRowUser['total_rank'],
      'USER_BANNED'   => $uni_galaxyRowUser['banaday'],
      'USER_VACATION' => $uni_galaxyRowUser['vacation'],
-     'USER_ACTIVITY' => floor(($time_now - $uni_galaxyRowUser['onlinetime'])/(60*60*24)),
+     'USER_ACTIVITY' => $user_activity,
+     'USER_INACTIVE' => $user_activity >= 28,
      'USER_PROTECTED'=> $RowUserPoints <= $config->game_noob_points,
      'USER_NOOB'     => $RowUserPoints * $config->game_noob_factor < $CurrentPoints && $config->game_noob_factor,
      'USER_STRONG'   => $CurrentPoints * $config->game_noob_factor < $RowUserPoints && $config->game_noob_factor,

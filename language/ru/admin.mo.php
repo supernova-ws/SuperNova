@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a8.0
+* @version 38a9.0
 *
 */
 
@@ -120,6 +120,7 @@ $a_lang_array = (array(
   'adm_ov_count' => 'Онлайн игроки',
   'adm_ov_wrtpm' => 'Написать в личку',
   'adm_ov_altpm' => '[ЛП]',
+  'adm_ov_hint' => '<ul><li>Таблица пользователей онлайн может быть отсортирована по колонкам "ID", "Имя игрока", "Альянс", "Очки" и "Активность". Для сортировки по определенной колонке кликните на её заголовке</li></ul>',
 
 
   'adm_ul_ttle2' => 'Players listed',
@@ -377,15 +378,21 @@ $a_lang_array = (array(
   'adm_bt_change' => 'Изменить',
   'flt_id' => 'ID',
   'flt_fleet' => 'Флот',
+  'flt_ships' => 'Состав',
   'flt_mission' => 'Задание',
-  'flt_owner' => 'Отправление',
+  'flt_here' => 'Обратно',
+  'flt_there' => 'Туда',
+  'flt_here_there' => 'Туда/Обратно',
+  'flt_departure' => 'Пункт отправления',
+  'flt_owner' => 'Владелец',
   'flt_planet' => 'Планета',
-  'flt_time_st' => 'Время отправления',
-  'flt_e_owner' => 'Прибытие',
-  'flt_time_en' => 'Время прибытия',
-  'flt_staying' => 'Stat.',
+  'flt_time_return' => 'Возвращение',
+  'flt_e_owner' => 'Пункт назначения',
+  'flt_time_arrive' => 'Прибытие',
+  'flt_staying' => 'Время ожидания',
   'flt_action' => 'Действие',
   'flt_title' => 'Флоты в полёте',
+  'flt_no_fleet' => 'Сейчас в полете нет ни одного флота',
   'mlst_title' => 'Список сообщений',
   'mlst_mess_del' => 'Удаление сообщений',
   'mlst_hdr_page' => 'Стр.',
@@ -393,24 +400,20 @@ $a_lang_array = (array(
   'mlst_hdr_prev' => '[ &lt;- ]',
   'mlst_hdr_next' => '[ -&gt; ]',
   'mlst_hdr_id' => 'ID',
-  'mlst_hdr_type' => 'Type',
-  'mlst_hdr_time' => 'Heure',
-  'mlst_hdr_from' => 'От',
+  'mlst_hdr_type' => 'Тип сообщений',
+  'mlst_hdr_time' => 'Время отправки',
+  'mlst_hdr_from' => 'От кого',
   'mlst_hdr_to' => 'Кому',
   'mlst_hdr_text' => 'Contenu',
   'mlst_hdr_action' => 'Отм.',
   'mlst_del_mess' => 'Удалить',
-  'mlst_bt_delsel' => 'Удалить выделенные',
-  'mlst_bt_deldate' => 'Удалить сообщения даты',
-  'mlst_hdr_delfrom' => 'Удалить с даты',
-  'mlst_mess_typ__0' => 'Шпионаж',
-  'mlst_mess_typ__1' => 'Игроков',
-  'mlst_mess_typ__2' => 'Альянсов',
-  'mlst_mess_typ__3' => 'Боёв',
-  'mlst_mess_typ__4' => 'Эксплуатац.',
-  'mlst_mess_typ__5' => 'Трансорт',
-  'mlst_mess_typ_15' => 'Экспедиции',
-  'mlst_mess_typ_99' => 'Список Batiment',
+  'mlst_bt_delsel' => 'Удалить выделенные сообщения',
+  'mlst_bt_deldate' => 'Удалить',
+  'mlst_hdr_delfrom' => 'Удалить сообщения текущего типа ранее даты',
+  'mlst_no_messages' => 'Нет сообщений',
+  'mlst_messages_deleted' => 'Удалены сообщения с ID %s',
+  'mlst_messages_deleted_date' => 'Удалены сообщения типа "%s" по дату %s (не включая сообщения на указанную дату)',
+
   'adm_lng_title' => 'Локализация',
   'adm_lng_warning' => 'ВНИМАНИЕ! Это alpha-версия редактор локализаций! Используйте его на свой страх и риск!',
   'adm_lng_domain' => 'Домен',

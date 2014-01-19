@@ -1,0 +1,76 @@
+<h2>{L_mlst_title}</h2>
+
+<form action="" method="post" id="aForm">
+  <input type="hidden" name="msg_del" id="msg_del" value="" />
+
+  <table border="0" cellspacing="1" cellpadding="1">
+    <tr>
+      <td class="c">{L_mlst_hdr_type}
+        <select name="int_type_selected" onchange="submit();">
+          <!-- BEGIN int_type_selected -->
+          <option value="{int_type_selected.VALUE}"<!-- IF int_type_selected.VALUE == TYPE_SELECTED --> selected<!-- ENDIF -->>{int_type_selected.TEXT}</option>
+          <!-- END int_type_selected -->
+        </select>
+      </td>
+
+      <td class="c">
+        <input type="submit" name="page_prev" value="{L_mlst_hdr_prev}" />
+        {L_mlst_hdr_page}
+
+        <select name="int_page_current" onchange="submit();">
+          <!-- BEGIN page -->
+            <option value="{page.NUMBER}"<!-- IF page.NUMBER == PAGE_CURRENT --> selected<!-- ENDIF -->>{page.NUMBER}</option>
+          <!-- END page -->
+        </select>
+        / {PAGE_MAX}
+        <input type="submit" name="page_next" value="{L_mlst_hdr_next}" />
+      </td>
+    </tr>
+
+    <tr>
+      <td class="c" colspan="2">
+        {L_mlst_hdr_delfrom}
+        <input type="text" name="delete_day" size="2" value="DD" onfocus="this.value = this.value == 'DD' ? '' : this.value;" onblur="this.value = this.value ? this.value : 'DD';" />
+        <input type="text" name="delete_month" size="2" value="MM" onfocus="this.value = this.value == 'MM' ? '' : this.value;" onblur="this.value = this.value ? this.value : 'MM';" />
+        <input type="text" name="delete_year" size="4" value="YYYY" onfocus="this.value = this.value == 'YYYY' ? '' : this.value;" onblur="this.value = this.value ? this.value : 'YYYY';" />
+        <input type="submit" name="str_delete_date" value="{L_mlst_bt_deldate}" />
+      </td>
+    </tr>
+
+    <tr>
+      <td class="c" colspan="2"><input type="submit" name="str_delete_selected" value="{L_mlst_bt_delsel}" /></td>
+    </tr>
+  </table>
+
+  <table width="600px" border="0" cellspacing="1" cellpadding="1">
+    <tr class="c_c">
+      <th>{L_mlst_hdr_action}</th>
+      <th>{L_mlst_hdr_id}</th>
+      <th width="121px" nowrap>{L_mlst_hdr_time}</th>
+      <th>{L_mlst_hdr_from}</th>
+      <th>{L_mlst_hdr_to}</th>
+      <!-- <th class="c" width="350">{L_mlst_hdr_text}</th> -->
+    </tr>
+
+    <!-- BEGIN message -->
+    <tr class="c_c">
+      <td rowspan="2">
+        <input type="checkbox" name="selected[]" value="{message.ID}" /><br/>
+        <img src="design/images/r1.png" onclick="$('#msg_del').val({message.ID});$('#aForm').submit();">
+      </td>
+      <td nowrap>{message.ID}</td>
+      <td nowrap>{message.TIME}</td>
+      <td nowrap>{message.FROM}</td>
+      <td nowrap>{message.OWNER_NAME} [{message.OWNER_ID}]</td>
+    </tr>
+    <tr>
+      <td colspan="4" class="c_l error_message">{message.TEXT}</td>
+    </tr>
+    <!-- BEGINELSE -->
+    <tr>
+      <td colspan="5">{L_mlst_no_messages}</td>
+    </tr>
+    <!-- END message -->
+  </table>
+
+</form>

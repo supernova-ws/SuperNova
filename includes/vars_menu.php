@@ -540,7 +540,7 @@ if($user['authlevel'] >= 2)
     'menu_admin_fleets' => array(
       'TYPE' => 'lang',
       'ITEM' => 'adm_fleet',
-      'LINK' => 'admin/ShowFlyingFleets.php',
+      'LINK' => 'admin/adm_flying_fleets.php',
       'LOCATION' => '-menu_admin_utilites',
     ),
   );
@@ -596,7 +596,7 @@ if($user['authlevel'] >= 2)
       'menu_admin_messages' => array(
         'TYPE' => 'lang',
         'ITEM' => 'adm_msg',
-        'LINK' => 'admin/messagelist.php',
+        'LINK' => 'admin/adm_message_list.php',
         'LOCATION' => '+menu_admin_backup',
       ),
       'menu_admin_chat' => array(
@@ -607,8 +607,8 @@ if($user['authlevel'] >= 2)
       ),
       'menu_admin_logs' => array(
         'TYPE' => 'lang',
-        'ITEM' => 'adm_error',
-        'LINK' => 'admin/errors.php',
+        'ITEM' => 'adm_log_main',
+        'LINK' => 'admin/adm_log_main.php',
         'LOCATION' => '+menu_admin_chat',
       ),
     );

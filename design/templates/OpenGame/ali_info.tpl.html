@@ -29,16 +29,16 @@
   <tr>
     <th>{L_Members}</th>
     <th>
-      {ALLY_MEMBERS}<!-- IF ! EXTERNAL -->&nbsp;<a href="alliance.php?mode=memberslist" class="fr">[ {Members_list} ]</a><!-- ENDIF -->
+      {ALLY_MEMBERS}<!-- IF ! EXTERNAL -->&nbsp;<a href="alliance.php?mode=memberslist" class="fr">[ {L_Members_list} ]</a><!-- ENDIF -->
     </th>
   </tr>
   <!-- IF EXTERNAL && ! USER_ALLY_ID -->
   <tr>
     <th>{L_ali_req_make}</th>
-    <th><a href="alliance.php?mode=apply&a={ally_id}">{Click_writerequest}</a></th>
+    <th><a href="alliance.php?mode=apply&a={ally_id}">{L_Click_writerequest}</a></th>
   </tr>
   <!-- ENDIF -->
-  <!-- IF ALLY_DESCRIPTION --><tr><th colspan=2>{ALLY_DESCRIPTION}</th></tr><!-- ENDIF -->
+  <!-- IF ALLY_DESCRIPTION --><tr><th colspan="{$COLSPAN}">{ALLY_DESCRIPTION}</th></tr><!-- ENDIF -->
 </table>
 
 <!-- IF ! EXTERNAL -->
@@ -48,9 +48,9 @@
       <span class="fl">{L_ali_info_internal}</span>
     </td>
   </tr>
-  <tr><th width=150>{Range}</th><th>{range}</th></tr>
-  <!-- IF MANAGE_REQUESTS --><tr><th>{ali_req_check}</th><th><a href="alliance.php?mode=admin&edit=requests"><!-- IF ALLY_REQUESTS -->{L_ali_req_requestCount}:&nbsp;{ALLY_REQUESTS}<!-- ELSE -->{L_ali_req_emptyList}<!-- ENDIF --></a></th></tr><!-- ENDIF -->
-  <!-- IF MASS_MAIL --><tr><th>{Circular_message}</th><th><a href="alliance.php?mode=circular">{Send_circular_mail}</a></th></tr><!-- ENDIF -->
+  <tr><th width=150>{L_Range}</th><th>{range}</th></tr>
+  <!-- IF MANAGE_REQUESTS --><tr><th>{L_ali_req_check}</th><th><a href="alliance.php?mode=admin&edit=requests"><!-- IF ALLY_REQUESTS -->{L_ali_req_requestCount}:&nbsp;{ALLY_REQUESTS}<!-- ELSE -->{L_ali_req_emptyList}<!-- ENDIF --></a></th></tr><!-- ENDIF -->
+  <!-- IF MASS_MAIL --><tr><th>{L_Circular_message}</th><th><a href="alliance.php?mode=circular">{L_Send_circular_mail}</a></th></tr><!-- ENDIF -->
   <!-- IF ! ALLY_ADMIN -->
   <tr>
     <th>{L_ali_info_leave}</th>

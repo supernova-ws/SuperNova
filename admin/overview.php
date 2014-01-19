@@ -1,11 +1,11 @@
 <?php
 
 /**
- * overview.php
  *
- * @version 1.0s - Security checked for SQL-injection by Gorlum for http://supernova.ws
- * @version 1.0
- * @copyright 2008 by ??????? for XNova
+ * admin/overview.php
+ *
+ * @version 2.0 copyright (c) 2014 Gorlum for http://supernova.ws
+ *
  */
 
 define('INSIDE'  , true);
@@ -23,53 +23,26 @@ elseif($user['authlevel'] < 3)
   sys_redirect(SN_ROOT_VIRTUAL . 'admin/banned.php');
 }
 
-$GET_cmd  = sys_get_param_str('cmd');
 $TypeSort = sys_get_param_str('type', 'id');
-/*
-if ($GET_cmd == 'sort') {
-} else {
-  $TypeSort = "id";
-}
-*/
-$PageTPL  = gettemplate('admin/overview_body', true);
-$RowsTPL  = gettemplate('admin/overview_rows');
+$template = gettemplate('admin/adm_overview', true);
 
-$parse                      = $lang;
-$parse['dpath']             = $dpath;
-
-$Last15Mins = doquery("SELECT * FROM {{users}} WHERE `onlinetime` >= '". (time() - 15 * 60) ."' ORDER BY user_as_ally, `". $TypeSort ."` ASC;");
+$Last15Mins = doquery("SELECT `id` AS `ID`, `username` AS `NAME`, `user_agent` AS `BROWSER`, `ally_name` AS `ALLY`, `total_points` AS `STAT_POINTS`, `onlinetime` AS `ACTIVITY` FROM {{users}} WHERE `onlinetime` >= '". (time() - 15 * 60) ."' ORDER BY user_as_ally, `". $TypeSort ."` ASC;");
 $Count      = 0;
-$Color      = "lime";
-while ( $TheUser = mysql_fetch_assoc($Last15Mins) ) {
-  if ($PrevIP != "") {
-    if ($PrevIP == $TheUser['user_lastip']) {
-      $Color = "red";
-    } else {
-      $Color = "lime";
-    }
-  }
+while($TheUser = mysql_fetch_assoc($Last15Mins))
+{
+  $TheUser['NAME'] = htmlentities($TheUser['NAME'], ENT_COMPAT, 'UTF-8');
+  $TheUser['BROWSER'] = htmlentities($TheUser['BROWSER'], ENT_COMPAT, 'UTF-8');
+  $TheUser['ALLY'] = htmlentities($TheUser['ALLY'], ENT_COMPAT, 'UTF-8');
+  $TheUser['STAT_POINTS'] = pretty_number($TheUser['STAT_POINTS']);
+  $TheUser['ACTIVITY'] = pretty_time(SN_TIME_NOW - $TheUser['ACTIVITY']);
 
-//  $UserPoints = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '" . $TheUser['id'] . "';", '', true);
-  $Bloc['dpath']               = $dpath;
-  $Bloc['adm_ov_altpm']        = $lang['adm_ov_altpm'];
-  $Bloc['adm_ov_wrtpm']        = $lang['adm_ov_wrtpm'];
-  $Bloc['adm_ov_data_id']      = $TheUser['id'];
-  $Bloc['adm_ov_data_name']    = ($TheUser['username']);
-  $Bloc['adm_ov_data_agen']    = htmlentities($TheUser['user_agent']);
-  $Bloc['adm_ov_data_clip']    = $Color;
-//  $Bloc['adm_ov_data_adip']    = $TheUser['user_lastip'];
-  $Bloc['adm_ov_data_ally']    = ($TheUser['ally_name']);
-  $Bloc['adm_ov_data_point']   = pretty_number ( $TheUser['total_points'] );
-  $Bloc['adm_ov_data_activ']   = pretty_time ( time() - $TheUser['onlinetime'] );
-  $PrevIP                      = ($TheUser['user_lastip']);
-
-  $parse['adm_ov_data_table'] .= parsetemplate( $RowsTPL, $Bloc );
+  $template->assign_block_vars('user', $TheUser);
   $Count++;
 }
 
-$parse['adm_ov_data_count']  = $Count;
-$Page = parsetemplate($PageTPL, $parse);
+$template->assign_vars(array(
+  'USERS' => $Count,
+  'PAGE_HINT' => $lang['adm_ov_hint'],
+));
 
-display ( $Page, $lang['sys_overview'], false, '', true);
-
-?>
+display($template, $lang['sys_overview'], false, '', true);

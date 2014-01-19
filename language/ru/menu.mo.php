@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a8.0
+* @version 38a9.0
 *
 */
 
@@ -99,7 +99,7 @@ $a_lang_array = (array(
   'adm_msg' => 'Список сообщений',
   'adm_md5' => 'Шифрование',
   'adm_updrank' => 'Обнуление базы',
-  'adm_error' => 'Записи логов',
+  'adm_log_main' => 'Записи логов',
   'adm_help' => 'Форум разработчиков',
   'adm_back' => 'Вернуться',
   'admin' => 'Администрирование',
