@@ -15,9 +15,6 @@ lng_include('admin');
 $totaltime = microtime(true);
 $msg = '<div align="left"><ul>';
 
-//doquery('START TRANSACTION;');
-doquery('LOCK TABLES {{' . implode('}} WRITE, {{', $sn_cache->tables) . '}} WRITE');
-
 $msg .= sprintf($lang['adm_inactive_removed'], $rows);
 
 $ques = array(
@@ -62,8 +59,11 @@ $ques = array(
   "UPDATE {{alliance}} as a LEFT JOIN (SELECT ally_id, count(*) as ally_memeber_count FROM {{users}} WHERE ally_id IS NOT NULL GROUP BY ally_id) as u ON u.ally_id = a.id SET a.`ally_members` = u.ally_memeber_count;",
 );
 
+// doquery('LOCK TABLES {{' . implode('}} WRITE, {{', $sn_cache->tables) . '}} WRITE');
+
 foreach ($ques as $que)
 {
+  doquery('START TRANSACTION;');
   $QryResult = doquery($que);
 
   $que = str_replace('{{', "", $que);
@@ -78,6 +78,7 @@ foreach ($ques as $que)
     $msg .= 'red>FAILED!';
   };
   $msg .= '</font> ' . mysql_affected_rows($link) . ' ' . $lang['adm_records'];
+  doquery('COMMIT;');
   set_time_limit(120);
 }
 $msg .= '</ul></div>';
@@ -85,8 +86,7 @@ $msg .= '</ul></div>';
 $user_count = doquery("SELECT COUNT(*) AS user_count FROM {{users}} WHERE user_as_ally IS NULL;", '', true);
 $config->db_saveItem('users_amount', $user_count['user_count']);
 
-doquery('UNLOCK TABLES');
-// doquery('COMMIT;');
+// doquery('UNLOCK TABLES');
 
 $totaltime = microtime(true) - $totaltime;
 

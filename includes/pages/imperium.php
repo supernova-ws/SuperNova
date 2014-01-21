@@ -148,7 +148,7 @@ function sn_imperium_view($template = null)
     $unit_group = &$sn_data['techtree'][$unit_group_id];
     foreach($unit_group as $unit_id)
     {
-      $unit_count = 0;
+      $unit_count = $unit_count_abs = 0;
       $block_vars = array();
       $unit_is_factory = in_array($unit_id, $sn_data['groups']['factories']);
       foreach($planets as $planet)
