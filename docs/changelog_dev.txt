@@ -11,7 +11,7 @@
 [*] ToDo - см. todo.txt & todo.xls
 
 
-Текущий билд #38a9.3#
+Текущий билд #38a9.6#
 ~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -179,6 +179,12 @@ HAVING SUM(SIGN(1-SIGN(y.val-x.val))) = (COUNT(*)+1)/2
 
 assumes (COUNT(*)+1)/2 returns an int, if not then use INT((COUNT(*)+1)/2)
 
+
+
+2014-01-21 23:44:01 38a9.6
+[#] chat_advanced 2c2
+    [#] Чат
+        Исправлена ошибка с центровкой чата
 
 
 2014-01-21 23:11:41 38a9.3
