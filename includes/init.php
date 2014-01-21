@@ -327,7 +327,7 @@ if(!$config->var_online_user_count || $config->var_online_user_time + 30 < $time
   $config->db_saveItem('var_online_user_time', $time_now);
   if($config->server_log_online)
   {
-    doquery("INSERT INTO {{log_users_online}} SET online_count = {$config->var_online_user_count};");
+    doquery("INSERT IGNORE INTO {{log_users_online}} SET online_count = {$config->var_online_user_count};");
   }
 }
 
