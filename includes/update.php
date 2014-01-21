@@ -895,6 +895,11 @@ switch($new_version)
       "ADD `user_time_measured` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'When was time diff measured last time' AFTER `onlinetime`",
     ), !$update_tables['users']['user_time_measured']);
 
+    if($update_tables['rw'])
+    {
+      upd_do_query("DROP TABLE IF EXISTS {{rw}};");
+    }
+
     upd_do_query('COMMIT;', true);
     // $new_version = 38;
 };
