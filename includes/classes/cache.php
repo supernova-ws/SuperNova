@@ -74,7 +74,7 @@ class classCache
     };
   }
 
-  public static function getInstance($prefIn = 'CACHE_')
+  public static function getInstance($prefIn = 'CACHE_', $table_name = '')
   {
     if (!isset(self::$cacheObject))
     {
@@ -684,12 +684,12 @@ class classConfig extends classPersistent
     parent::__construct($gamePrefix, 'config');
   }
 
-  public static function getInstance($gamePrefix = 'sn_')
+  public static function getInstance($gamePrefix = 'sn_', $table_name = 'config')
   {
     if (!isset(self::$cacheObject))
     {
       $className = get_class();
-      self::$cacheObject = new $className($gamePrefix, 'config');
+      self::$cacheObject = new $className($gamePrefix, $table_name);
     }
     return self::$cacheObject;
   }
