@@ -5,9 +5,10 @@
  *
  * Adjust Dark Matter quantity
  *
- * @version 1.0 (c) copyright 2010 by Gorlum for http://supernova.ws
+ * @version 1.0 (c) copyright 2013 by Gorlum for http://supernova.ws
  *
  */
+
 define('INSIDE', true);
 define('INSTALL', false);
 define('IN_ADMIN', true);
@@ -24,17 +25,14 @@ if($user['authlevel'] < 3)
   AdminMessage($lang['adm_err_denied']);
 }
 
-$parse = $lang;
-$PageTpl = gettemplate("admin/adm_metamatter", true);
+$template = gettemplate("admin/adm_metamatter", true);
 
-$mode      = sys_get_param_str('mode');
-$id_user   = sys_get_param_str('id_user');
-$points    = sys_get_param_float('points');
-$reason    = $_POST['reason'];
+$message = '';
+$message_status = ERR_ERROR;
 
-if($points)
+if($points = sys_get_param_float('points'))
 { // If points not empty...
-  if($id_user)
+  if($id_user = sys_get_param_str('id_user'))
   {
     if(is_numeric($id_user))
     {
@@ -51,10 +49,11 @@ if($points)
       case 1: // Proceeding normal - only one user exists
         $row = mysql_fetch_assoc($query);
         // Does anything post to DB?
-        if (mm_points_change($row['id'], RPG_ADMIN, $points, "Through admin interface for user {$row['username']} ID {$row['id']} " . $reason))
+        if(mm_points_change($row['id'], RPG_ADMIN, $points, "Through admin interface for user {$row['username']} ID {$row['id']} " . $reason))
         {
           $message = sprintf($lang['adm_mm_user_added'], $row['username'], $row['id'], $points);
           $isNoError = true;
+          $message_status = ERR_NONE;
         }
         else // No? We will say it to user...
         {
@@ -77,13 +76,18 @@ elseif($id_user) // Points is empty but destination is set - this again means er
   $message = $lang['adm_mm_no_quant'];
 }
 
-$parse['message'] = $message . "<br><br>";
 if(!$isNoError)
 {
-  $parse['id_user']   = $id_user;
-  $parse['points']    = $points;
-  $parse['reason']    = $reason;
+  $template->assign_vars(array(
+    'ID_USER' => $id_user,
+    'POINTS' => $points,
+    'REASON' => $reason,
+  ));
 };
 
-$Page = parsetemplate($PageTpl, $parse);
-display($Page, $lang['adm_mm_title'], false, '', true);
+if($message)
+{
+  $template->assign_block_vars('result', array('MESSAGE' => $message, 'STATUS' => $message_status ? $message_status : ERR_NONE));
+}
+
+display($template, $lang['adm_mm_title'], false, '', true);

@@ -5,7 +5,7 @@
  *
  * Adjust Dark Matter quantity
  *
- * @version 1.0 (c) copyright 2010 by Gorlum for http://supernova.ws
+ * @version 1.0 (c) copyright 2010 by Gorlum for http://supernova.ws/
  *
  */
 define('INSIDE', true);
@@ -19,18 +19,17 @@ if($user['authlevel'] < 3)
   AdminMessage($lang['adm_err_denied']);
 }
 
-$parse = $lang;
-$PageTpl = gettemplate("admin/admin_darkmatter", true);
+$template = gettemplate("admin/admin_darkmatter", true);
 
-$mode      = sys_get_param_str('mode');
-$id_planet = sys_get_param_str('id_planet');
-$id_user   = sys_get_param_str('id_user');
-$points    = sys_get_param_float('points');
-$reason    = $_POST['reason'];
+$reason = sys_get_param_str('reason');
 
-if($points)
+$message = '';
+$message_status = ERR_ERROR;
+$id_planet = '';
+
+if($points = sys_get_param_float('points'))
 { // If points not empty...
-  if($id_user)
+  if($id_user = sys_get_param_str('id_user'))
   {
     if(is_numeric($id_user))
     {
@@ -51,6 +50,7 @@ if($points)
         {
           $message = sprintf($lang['adm_dm_user_added'], $row['username'], $row['id'], $points);
           $isNoError = true;
+          $message_status = ERR_NONE;
         }
         else // No? We will say it to user...
         {
@@ -63,7 +63,7 @@ if($points)
       break;
     }
   }
-  elseif($id_planet)
+  elseif($id_planet = sys_get_param_str('id_planet'))
   { // id_user is not set. Trying id_planet
     $error_id = 'adm_dm_planet_conflict_name';
     if (is_numeric($id_planet))
@@ -90,7 +90,8 @@ if($points)
         if (rpg_points_change($row['id_owner'], RPG_ADMIN, $points, "Through admin interface to planet '{$row['name']} ID: {$row['id']} for user ID: {$row['id_owner']} " . $reason))
         {
           $message = sprintf($lang['adm_dm_planet_added'], $row['id_owner'], $row['name'], $row['id'], uni_render_coordinates($row), $points);
-          $isNoError = true;
+        $isNoError = true;
+          $message_status = ERR_NONE;
         }
         else
         {
@@ -113,16 +114,19 @@ elseif($id_user || $id_planet) // Points is empty but destination is set - this 
   $message = $lang['adm_dm_no_quant'];
 }
 
-$parse['message'] = $message . "<br><br>";
 if(!$isNoError)
 {
-  $parse['id_planet'] = $id_planet;
-  $parse['id_user']   = $id_user;
-  $parse['points']    = $points;
-  $parse['reason']    = $reason;
+  $template->assign_vars(array(
+    'ID_PLANET' => $id_planet,
+    'ID_USER' => $id_user,
+    'POINTS' => $points,
+    'REASON' => $reason,
+  ));
 };
 
-$Page = parsetemplate($PageTpl, $parse);
-display($Page, $lang['adm_dm_title'], false, '', true);
+if($message)
+{
+  $template->assign_block_vars('result', array('MESSAGE' => $message, 'STATUS' => $message_status ? $message_status : ERR_NONE));
+}
 
-?>
+display($template, $lang['adm_dm_title'], false, '', true);
