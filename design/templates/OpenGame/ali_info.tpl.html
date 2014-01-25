@@ -1,7 +1,9 @@
 <!-- IF ally_image -->
   <!-- DEFINE $COLSPAN = 3 -->
+  <!-- DEFINE $COLSPAN2 = 2 -->
 <!-- ELSE -->
   <!-- DEFINE $COLSPAN = 2 -->
+  <!-- DEFINE $COLSPAN2 = 3 -->
 <!-- ENDIF -->
 
 <h1>{L_sys_alliance}&nbsp;[{ally_tag}]</h1>
@@ -38,7 +40,7 @@
     <th><a href="alliance.php?mode=apply&a={ally_id}">{L_Click_writerequest}</a></th>
   </tr>
   <!-- ENDIF -->
-  <!-- IF ALLY_DESCRIPTION --><tr><th colspan="{$COLSPAN}">{ALLY_DESCRIPTION}</th></tr><!-- ENDIF -->
+  <!-- IF ALLY_DESCRIPTION --><tr><th colspan="{$COLSPAN2}">{ALLY_DESCRIPTION}</th></tr><!-- ENDIF -->
 </table>
 
 <!-- IF ! EXTERNAL -->
