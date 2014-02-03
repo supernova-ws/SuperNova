@@ -38,7 +38,7 @@ var speed_factor   = {speed_factor};
     <tr class="c_c">
       <th>{L_fl_fleet_typ}</th>
       <th>{L_fl_orbiting}</th>
-      <th>{L_fl_to_fly}</th>
+      <th colspan=3>{L_fl_to_fly}</th>
     </tr>
 
     <!-- IF .ships -->
@@ -46,7 +46,7 @@ var speed_factor   = {speed_factor};
         <tr>
           <th><div class="fl"><a href="infos.php?gid={ships.ID}" title="{L_fl_fleetspeed}{ships.SPEED}"</a>{ships.NAME}</div></th>
           <th>{ships.AMOUNT}</th>
-          <th>
+          <th colspan=3>
             <!-- IF (ships.SPEED == 0) || (FLYING_FLEETS >= MAX_FLEETS) -->
               &nbsp;
             <!-- ELSE -->
@@ -63,18 +63,28 @@ var speed_factor   = {speed_factor};
         <tr class="c_c">
           <th><input type="button" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';"></th>
           <th><input type="submit" value="{L_fl_continue}" /></th>
-          <th>
+          <th style="padding-right: 0; border-right: 0" class="c_l" <!-- IF MAX_EXPEDITIONS <= 1 --> colspan="2"<!-- ENDIF -->><input type="button" value="{L_fl_unselectall}" onclick="javascript:zero_fleet();"></th>
+          <!-- IF MAX_EXPEDITIONS > 1 -->
+          <th class="c_c" width="50px"><input type="button" value="1/{MAX_EXPEDITIONS}" onclick="javascript:expe_fleet({MAX_EXPEDITIONS});"></th>
+          <!-- ENDIF -->
+          <th  style="padding-left: 0; border-left: 0" class="c_r"><input type="button" value="{L_fl_selectall}" onclick="javascript:max_fleet();"></th>
+<!--
             <div class="fl"><input type="button" value="{L_fl_unselectall}" onclick="javascript:zero_fleet();"></div>
+
+            <-- IF MAX_EXPEDITIONS > 1 ->
+            <div><input type="button" value="1/{MAX_EXPEDITIONS}" onclick="javascript:zero_fleet();"></div>
+            <-- ENDIF ->
+
             <div class="fr"><input type="button" value="{L_fl_selectall}" onclick="javascript:max_fleet();"></div>
-          </th>
+-->
         </tr>
       <!-- ELSE -->
         <tr>
-          <th colspan="3" class="error">{L_fl_noslotfree}</th>
+          <th colspan="5" class="error">{L_fl_noslotfree}</th>
         </tr>
       <!-- ENDIF -->
     <!-- ELSE -->
-      <tr><th colspan="3">{L_fl_noships}</th></tr>
+      <tr><th colspan="5">{L_fl_noships}</th></tr>
     <!-- ENDIF -->
   </table>
 </form>

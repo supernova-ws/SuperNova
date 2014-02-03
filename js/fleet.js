@@ -270,6 +270,26 @@ function zero_fleet()
   fl_calc_stats();
 }
 
+function expe_fleet(expeditions)
+{
+  if(expeditions > 1)
+  {
+    // expeditions = 1 / expeditions;
+    fleet_global_update = true;
+  /*
+    for (i in ships)
+    {
+      jQuery('#ships' + i + 'slide').slider("value", ships[i][C1_SHIP_AMOUNT]);
+    }
+  */
+    jQuery('[id^="ships"][id$="slide"]').each(function(){
+      jQuery(this).slider("value", Math.floor(jQuery(this).slider("option", "max") / expeditions));
+    });
+    fleet_global_update = false;
+    fl_calc_stats();
+  }
+}
+
 function max_fleet()
 {
   fleet_global_update = true;
