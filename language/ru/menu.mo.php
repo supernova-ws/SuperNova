@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a9.0
+* @version 38a9.18
 *
 */
 
@@ -32,13 +32,13 @@ if (!defined('INSIDE')) die();
 $a_lang_array = (array(
   'Multiverse' => '<b>Сервер</b> Uni',
   'm_h_rules' => 'Правила',
-  'm_faq' => 'ЧаВо',
+  'm_faq' => 'Как играть (ЧаВо)',
   'm_faq_hint' => 'Наиболее часто задаваемые вопросы пользователей и ответы на них',
   'm_h_control' => 'Управление',
   'm_forum' => 'Форум',
   'm_others' => 'Прочее',
   'm_simulator' => 'Симулятор боя',
-  'm_communication' => 'Связь & Общение',
+  'm_communication' => 'Коммуникации',
   'm_exchange' => 'Биржа ресурсов',
   'm_affilates' => '!!!ЗАРАБОТАЙ ТМ!!!',
   'Overview' => 'Обзор планеты',

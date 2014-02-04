@@ -60,15 +60,25 @@ $sn_menu = array(
     'SPAN'  => 'important',
   ),
 
+  'menu_faq' => !$config->url_faq ? array() : array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'm_faq',
+    'LINK'  => $config->url_faq,
+    'ICON'  => true,
+  ),
+
+/*
   'menu_planet' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'sys_planet',
   ),
+*/
   'menu_planet_overview' => array(
-    'LEVEL' => 'submenu',
+    'LEVEL' => 'header',
     'TYPE'  => 'lang',
-    'ITEM'  => 'Overview',
+    'ITEM'  => 'sys_planet',
     'LINK'  => 'overview.php',
     'ICON'  => true,
   ),
@@ -108,15 +118,17 @@ $sn_menu = array(
     'ICON'  => true,
   ),
 
+/*
   'menu_empire' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'sys_empire',
   ),
+*/
   'menu_empire_overview' => array(
-    'LEVEL' => 'submenu',
+    'LEVEL' => 'header',
     'TYPE'  => 'lang',
-    'ITEM'  => 'imp_overview',
+    'ITEM'  => 'sys_empire',
     'LINK'  => 'index.php?page=imperium',
     'ICON'  => true,
   ),
@@ -156,13 +168,15 @@ $sn_menu = array(
     'LINK'  => 'galaxy.php?mode=0',
   ),
 
+/*
   'menu_stats' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'Statistics',
   ),
+*/
   'menu_info_stats' => array(
-    'LEVEL' => 'submenu',
+    'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'menu_stat_players',
     'LINK'  => 'stat.php',
@@ -231,14 +245,16 @@ $sn_menu = array(
     'ICON'  => true,
   ),
 
+/*
   'menu_ally_overview' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'sys_alliance',
   ),
+*/
   'menu_ally' => array(
-//    'LEVEL' => 'header',
-    'LEVEL' => 'submenu',
+    'LEVEL' => 'header',
+//    'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'sys_alliance',
     'LINK'  => 'alliance.php',
@@ -328,30 +344,25 @@ $sn_menu = array(
     'ICON'  => true,
   ),
 
+/*
   'menu_info' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'navig',
+  ),
+*/
+  'menu_rules' => !$config->url_rules ? array() : array(
+    'LEVEL' => 'header',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'sys_game_rules',
+    'LINK'  => $config->url_rules,
+    'ICON'  => true,
   ),
   'menu_news' => array(
     'LEVEL' => 'submenu',
 //    'ITEM'  => $lang['news_title'] . ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\">{$lang['lm_announce_fresh']}</span>" : ''),
     'ITEM'  => $lang['news_title'] . ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\" style='display:inline'>{$lang['lm_announce_fresh']}</span>" : ''),
     'LINK'  => 'announce.php',
-    'ICON'  => true,
-  ),
-  'menu_faq' => !$config->url_faq ? array() : array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'm_faq',
-    'LINK'  => $config->url_faq,
-    'ICON'  => true,
-  ),
-  'menu_rules' => !$config->url_rules ? array() : array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'sys_game_rules',
-    'LINK'  => $config->url_rules,
     'ICON'  => true,
   ),
   'menu_info_ban' => array(
