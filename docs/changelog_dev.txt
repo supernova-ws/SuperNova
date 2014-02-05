@@ -11,7 +11,7 @@
 [*] ToDo - см. todo.txt & todo.xls
 
 
-Текущий билд #38a9.18#
+Текущий билд #38a9.19#
 ~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -209,6 +209,34 @@ select DATE_FORMAT(payment_date,'%Y-%m'), sum(payment_amount) from game_payment 
 
 Краткие названия для построек в очередях типа МИС
 
+В Обзоре Империи сделать ссылку на Новапедию с названий юнитов
+
+
+SELECT
+	date_format(payment_date, '%Y-%m'),
+	sum(payment_amount)
+FROM
+	`game_payment`
+WHERE
+	payment_status = 1
+GROUP BY
+	date_format(payment_date, '%Y-%m');
+
+
+SELECT
+	payment_user_id,
+	username,
+	sum(payment_amount)
+FROM
+	`game_payment`
+LEFT JOIN game_users ON id = payment_user_id
+WHERE
+	payment_status = 1
+AND payment_date >= "2013-09"
+GROUP BY
+	payment_user_id
+ORDER BY
+	sum(payment_amount) DESC;
 
 
 2014-02-04 03:39:05 38a9.18
