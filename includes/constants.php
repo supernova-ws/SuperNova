@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '37');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '38a9.19');
+define('SN_VERSION', '38a10.0');
 define('SN_RELEASE_STABLE', '37d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -44,8 +44,6 @@ define('PLANET_COORD_PREG', '/^\[([1-9]):([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]
 define('SCHEDULER_PREG', '/^(?:(?:(?:(?:(?:(2\d\d\d)-)?(1[0-2]|0[1-9])-)?(?:(3[01]|[0-2]\d)\ ))?(?:(2[0-3]|[01]\d):))?(?:([0-5]\d):))?([0-5]\d)$/i');
 define('PREG_DATE_SQL', '/(20[1-9][0-9])\-(1[0-2]|0[1-9])\-(3[01]|[12]\d|0[1-9]) (2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])/');
 define('PREG_DATE_SQL_RELAXED', '/(20[1-9][0-9])(?:\-(1[0-2]|0[1-9])(?:\-(3[01]|[12]\d|0[1-9])(?: (2[0-3]|[01][0-9])(?::([0-5][0-9])(?::([0-5][0-9]))?)?)?)?)?/');
-
-define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
 
 // Default allowed chars for random string
 define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
@@ -566,10 +564,6 @@ define('UNIT_PLANET_DENSITY', 1601);
 define('UNIT_PLANET_DENSITY_INDEX', 1602);
 define('UNIT_PLANET_DENSITY_RARITY', 1603);
 
-define('UNIT_PLAYER_COLONIES_CURRENT', 'COLONIES_CURRENT');
-define('UNIT_PLAYER_COLONIES_MAX', 'COLONIES_MAX');
-define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
-
 define('PLANET_DENSITY_NONE', 0);
 define('PLANET_DENSITY_ICE_WATER', 1);
 define('PLANET_DENSITY_SILICATE', 2);
@@ -578,6 +572,31 @@ define('PLANET_DENSITY_STANDARD', 4);
 define('PLANET_DENSITY_METAL_ORE', 5);
 define('PLANET_DENSITY_METAL_PRILL', 6);
 define('PLANET_DENSITY_METAL_HEAVY', 7);
+
+
+define('UNIT_AWARD', 2000); // Награды игрока
+define('UNIT_AWARD_ORDER', 2100); // Ордена за Выдающиеся Достижения - например, за спонсорство
+define('UNIT_AWARD_ORDER_SPONSOR_BRONZE', 2101);
+define('UNIT_AWARD_ORDER_SPONSOR_SILVER', 2102);
+define('UNIT_AWARD_ORDER_SPONSOR_GOLD', 2103);
+define('UNIT_AWARD_ORDER_SPONSOR_PLATINUM', 2104);
+define('UNIT_AWARD_ORDER_SPONSOR_DIAMOND', 2105);
+define('UNIT_AWARD_ORDER_SPONSOR_DARK', 2106);
+define('UNIT_AWARD_ORDER_SPONSOR_META', 2107);
+define('UNIT_AWARD_ORDER_SPONSOR', 2109);
+
+define('UNIT_AWARD_MEDAL', 2200); // Медали за Серъезные Достижения - например, за победу в конкурсе
+define('UNIT_AWARD_MEMORY', 2300); // Памятные знаки за существование и участие - например "4 года в игре". "Был онлайн в новогоднюю ночь 2013". итд
+define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
+define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
+
+
+// !!! Next unit start on 3000 !!!
+
+
+define('UNIT_PLAYER_COLONIES_CURRENT', 'COLONIES_CURRENT');
+define('UNIT_PLAYER_COLONIES_MAX', 'COLONIES_MAX');
+define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 
 // === Unit types // TODO - convert to GROUP_xxx constants
 //define('UNIT_STRUCTURE', 0);

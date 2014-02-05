@@ -11,7 +11,7 @@
 [*] ToDo - см. todo.txt & todo.xls
 
 
-Текущий билд #38a9.19#
+Текущий билд #38a10.0#
 ~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -237,6 +237,13 @@ GROUP BY
 	payment_user_id
 ORDER BY
 	sum(payment_amount) DESC;
+
+
+
+
+2014-02-06 00:30:02 38a10.0
+[#] player_award
+    Подддержка модуля
 
 
 2014-02-04 03:39:05 38a9.18

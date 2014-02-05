@@ -879,14 +879,12 @@ switch($new_version)
 
     if(!$update_tables['log_users_online'])
     {
-      upd_create_table('log_users_online',
-        "(
-          `online_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Measure time',
-          `online_count` SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Users online',
+      upd_create_table('log_users_online',"(
+        `online_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Measure time',
+        `online_count` SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Users online',
 
-          PRIMARY KEY (`online_timestamp`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
-      );
+        PRIMARY KEY (`online_timestamp`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
     }
 
     upd_check_key('server_log_online', 0, !isset($config->server_log_online));
@@ -898,6 +896,26 @@ switch($new_version)
     if($update_tables['rw'])
     {
       upd_do_query("DROP TABLE IF EXISTS {{rw}};");
+    }
+
+    if(!$update_tables['player_award'])
+    {
+      upd_create_table('player_award', "(
+        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        `award_type_id` int(11) DEFAULT NULL COMMENT 'Award type i.e. order, medal, pennant, rank etc',
+        `award_id` int(11) DEFAULT NULL COMMENT 'Global award unit ID',
+        `award_variant_id` int(11) DEFAULT NULL COMMENT 'Multiply award subtype i.e. for same reward awarded early',
+        `player_id` bigint(20) UNSIGNED DEFAULT NULL,
+        `awarded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'When was awarded',
+        `active_from` datetime DEFAULT NULL,
+        `active_to` datetime DEFAULT NULL,
+        `hide` tinyint(1) NOT NULL DEFAULT '0',
+
+        PRIMARY KEY (`id`),
+        KEY `I_award_player` (`player_id`,`award_type_id`),
+
+        CONSTRAINT `FK_player_award_user_id` FOREIGN KEY (`player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
     }
 
     upd_do_query('COMMIT;', true);

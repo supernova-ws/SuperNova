@@ -1,9 +1,12 @@
 <?php
 //define('BE_DEBUG', true);
 
+define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
+
 define('SN_TIME_MICRO', $microtime = microtime(true));
 // define('SN_TIME_NOW', $time_now = time());
 define('SN_TIME_NOW', $time_now = intval($microtime));
+define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
 
 define('SN_MEM_START', memory_get_usage());
 
@@ -119,7 +122,7 @@ sn_sys_load_php_files("{$sn_root_physical}includes/classes/", $phpEx);
 
 // Initializing global 'cacher' object
 $sn_cache = new classCache($db_prefix);
-if(!$sn_cache->tables)
+if(!$sn_cache->tables || empty($sn_cache->tables))
 {
   sys_refresh_tablelist($db_prefix);
 }
