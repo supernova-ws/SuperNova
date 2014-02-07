@@ -8,7 +8,9 @@
 *
 */
 
-function mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false)
+
+function mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false){return sn_function_call('mm_points_change', array($user_id, $change_type, $metamatter, $comment, $already_changed, &$result));}
+function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false, &$result)
 {
   global $debug, $mm_change_legit, $sn_data, $user;
 
