@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #38a8.0#
+* @version #38a10.10#
 *
 */
 
@@ -420,6 +420,8 @@ $a_lang_array = (array(
   ),
 
   // News page & a bit of imperator page
+  'news_fresh'      => 'Свежие новости',
+  'news_all'        => 'Все новости',
   'news_title'      => 'Новости',
   'news_none'       => 'Нет новостей',
   'news_new'        => 'НОВАЯ',
@@ -885,6 +887,7 @@ $a_lang_array = (array(
   'sys_change' => 'Изменить',
   'sys_show' => 'Показать',
   'sys_hide' => 'Скрыть',
+  'sys_close' => 'Закрыть',
   'sys_unlimited' => 'Без ограничений',
 
   'ov_core_type_current' => 'Текущий тип ядра',
@@ -901,6 +904,8 @@ $a_lang_array = (array(
   'topnav_user_rank' => 'Ваше текущее место в рейтинговой статистике',
   'topnav_users' => 'Всего зарегистрированных игроков',
   'topnav_users_online' => 'Текущее количество игроков онлайн',
+
+  'topnav_refresh_page' => 'Перегрузить страницу',
 
   'sys_colonies' => 'Колонии',
 ));

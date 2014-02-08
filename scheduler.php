@@ -77,6 +77,7 @@ if($next_stat_update > $config->var_stat_update)
     $config->db_saveItem('var_stat_update', $time_now);
     $config->db_saveItem('var_stat_update_end', $time_now);
     $config->db_saveItem('var_stat_update_msg', $msg);
+    $config->db_saveItem('var_stat_update_next', sys_schedule_get_next_run($config->stats_schedule, $time_now, $time_now, false));
   }
   elseif($next_stat_update > $config->var_stat_update)
   {

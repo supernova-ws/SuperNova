@@ -206,7 +206,8 @@ while ($row = mysql_fetch_assoc($query))
 }
 
 $template->assign_vars(array(
-  'REFRESH_DATE' => date(FMT_DATE_TIME, $config->var_stat_update),
+  'REFRESH_DATE' => $config->var_stat_update ? date(FMT_DATE_TIME, $config->var_stat_update + $time_diff) : '',
+  'NEXT_DATE' => $config->var_stat_update_next ? date(FMT_DATE_TIME, $config->var_stat_update_next + $time_diff) : '',
   'RANGE' => $range,
   'SUBJECT' => $who,
   'TYPE' => $type,

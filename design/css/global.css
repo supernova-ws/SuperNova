@@ -541,6 +541,11 @@ th.c_j, td.c_j
   cursor: pointer;
 }
 
+.pointer
+{
+  cursor: pointer;
+}
+
 #universe_main img {
   border: 0px;
   cursor: pointer;

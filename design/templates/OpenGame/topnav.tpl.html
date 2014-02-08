@@ -163,6 +163,28 @@
     <!-- INCLUDE planet_resources -->
   </table>
   <!-- ENDIF -->
+  <div align="center" style="display: none;" id="navbar_refresh"><span class="link_action" onclick="document.location.reload(true);">{L_topnav_refresh_page}</span></div>
+  <script type="text/javascript"><!--
+    if(sn_inframe) $('#navbar_refresh').css('display', 'block');
+  // --></script>
+
+  <!-- IF .announces && GAME_NEWS_OVERVIEW -->
+  <table width=519 id="fresh_news_table" align="center">
+      <tr>
+      <th colspan=2 class="c_c">
+        {L_news_fresh}
+        <img class="fr pointer" onclick="jQuery.post('announce.php?only_hide_news=1');jQuery('#fresh_news_table').css('display', 'none');" src="design/images/r1.png" alt="{L_sys_close}" title="{L_sys_close}" />
+      </th>
+    </tr>
+    <!-- INCLUDE news_list -->
+    <tr>
+      <th colspan=2 class="c_c">
+        <a class="link" href="announce.php">{L_news_all}</a>
+      </th>
+    </tr>
+  </table>
+  <!-- ENDIF -->
+
 </div>
 
 <script type="text/javascript"><!--

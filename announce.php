@@ -11,6 +11,12 @@
 $allow_anonymous = true;
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+nws_mark_read(&$user);
+if(sys_get_param_id('only_hide_news'))
+{
+  die();
+}
+
 $template     = gettemplate('announce', true);
 
 $announce_id   = sys_get_param_id('id');
@@ -19,11 +25,6 @@ $announce_time = sys_get_param_str('dtDateTime');
 $detail_url    = sys_get_param_str('detail_url');
 $mode          = sys_get_param_str('mode');
 
-if($sys_user_logged_in)
-{
-  doquery("UPDATE {{users}} SET `news_lastread` = {$time_now} WHERE `id` = {$user['id']} LIMIT 1;");
-  $users['news_lastread'] = $time_now;
-}
 
 if ($user['authlevel'] >= 3)
 {
@@ -81,7 +82,7 @@ else
   $annQuery = 'WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<=' . intval($time_now);
 }
 
-nws_render($template, $annQuery);
+nws_render($template, $annQuery, 20);
 
 $template->assign_vars(array(
   'AUTHLEVEL'       => $user['authlevel'],
@@ -94,5 +95,3 @@ $template->assign_vars(array(
 ));
 
 display($template, $lang['news_title']);
-
-?>

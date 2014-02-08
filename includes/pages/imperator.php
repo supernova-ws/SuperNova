@@ -46,12 +46,15 @@ function sn_imperator_view($template = null)
     rpg_level_up($user, RPG_TECH);
     rpg_level_up($user, RPG_EXPLORE);
 
+
+    /*
     // -----------------------------------------------------------------------------------------------
     // News Frame ...
     if ($config->game_news_overview)
     {
       nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now}", $config->game_news_overview);
     }
+    */
   }
 
 
@@ -95,7 +98,7 @@ function sn_imperator_view($template = null)
     'user_rank'            => $StatRecord['total_rank'],
     'RANK_DIFF'            => $StatRecord['total_old_rank'] - $StatRecord['total_rank'],
 
-    'GAME_NEWS_OVERVIEW'   => $config->game_news_overview,
+//    'GAME_NEWS_OVERVIEW'   => $config->game_news_overview,
 
     'SAME_USER'            => $same_user,
   ));

@@ -15,7 +15,17 @@ $sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
 $time_diff_seconds = $user['user_time_diff'];
 $time_utc_offset = $user['user_time_utc_offset'];
 $time_diff = $time_diff_seconds + $time_utc_offset;
-$time_local = $time_now + $time_diff;
+$time_local = SN_TIME_NOW + $time_diff;
+
+if(!defined('SN_CLIENT_TIME_DIFF'))
+{
+  define('SN_CLIENT_TIME_DIFF', $time_diff);
+}
+
+if(!defined('SN_CLIENT_TIME_LOCAL'))
+{
+  define('SN_CLIENT_TIME_LOCAL', $time_local);
+}
 
 define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
 

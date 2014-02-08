@@ -450,7 +450,7 @@ switch($mode)
       //'LastChat'       => CHT_messageParse($msg),
     ));
     tpl_set_resource_info($template, $planetrow, $fleets_to_planet, 2);
-    nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user['news_lastread']}", $config->game_news_overview); //  AND UNIX_TIMESTAMP(`tsTimeStamp`) + {$config->game_news_actual} >= {$time_now}
+    // nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user['news_lastread']}", $config->game_news_overview);
 
     display($template, "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");
   break;

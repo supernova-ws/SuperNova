@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a8.0
+* @version 38a10.10
 *
 */
 
@@ -418,6 +418,8 @@ $a_lang_array = (array(
   ),
 
   // News page & a bit of imperator page
+  'news_fresh'      => 'Fresh news',
+  'news_all'        => 'All news',
   'news_title'      => 'News',
   'news_none'       => 'No news',
   'news_new'        => 'New',
@@ -875,6 +877,7 @@ $a_lang_array = (array(
   'sys_change' => 'Change',
   'sys_show' => 'Show',
   'sys_hide' => 'Hide',
+  'sys_close' => 'Close',
   'sys_unlimited' => 'Unlimited',
 
   'ov_core_type_current' => 'Current core type',
@@ -890,6 +893,8 @@ $a_lang_array = (array(
   'topnav_user_rank' => 'Your current place in statistic',
   'topnav_users' => 'Number of registered players',
   'topnav_users_online' => 'Now online',
+
+  'topnav_refresh_page' => 'Reload page',
 
   'sys_colonies' => 'Colonies',
 

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a8.0
+* @version 38a10.10
 *
 */
 
@@ -30,7 +30,8 @@ if (!defined('INSIDE')) die();
 //$lang->merge(
 $a_lang_array = (array(
   'stat_header' => 'Статистика',
-  'stat_refresh_last' => 'Последнее обновление',
+  'stat_refresh_last' => 'Предыдущее обновление:',
+  'stat_refresh_next' => 'Следующее обновление:',
 
   'stat_rank' => 'Место',
   'stat_rank_diff' => 'Изм.',

@@ -423,6 +423,12 @@ function sn_tpl_render_topnav(&$user, $planetrow)
   $time_now_parsed = getdate($time_now);
   $time_local_parsed = getdate($time_local);
 
+  if($config->game_news_overview)
+  {
+    // nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now}", $config->game_news_overview);
+    nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user['news_lastread']}", $config->game_news_overview);
+  }
+
   $premium_lvl = mrc_get_level($user, false, UNIT_PREMIUM, true, true);
 
   $template->assign_vars(array(
@@ -458,11 +464,11 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     // TODO ГРЯЗНЫЙ ХАК!!!
     'TOPNAV_PAYMENT' => sn_module_get_active_count('payment'),
 
-    'TOPNAV_MESSAGES_ADMIN'    => $user['msg_admin'],
-    'TOPNAV_MESSAGES_PLAYER'   => $user['mnl_joueur'],
-    'TOPNAV_MESSAGES_ALLIANCE' => $user['mnl_alliance'],
-    'TOPNAV_MESSAGES_ATTACK'   => $user['mnl_attaque'],
-    'TOPNAV_MESSAGES_ALL'      => $user['new_message'],
+    'TOPNAV_MESSAGES_ADMIN'     => $user['msg_admin'],
+    'TOPNAV_MESSAGES_PLAYER'    => $user['mnl_joueur'],
+    'TOPNAV_MESSAGES_ALLIANCE'  => $user['mnl_alliance'],
+    'TOPNAV_MESSAGES_ATTACK'    => $user['mnl_attaque'],
+    'TOPNAV_MESSAGES_ALL'       => $user['new_message'],
 
     'TOPNAV_FLEETS_FLYING'      => count($fleet_flying_list[0]),
     'TOPNAV_FLEETS_TOTAL'       => GetMaxFleets($user),
@@ -470,6 +476,8 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     'TOPNAV_EXPEDITIONS_TOTAL'  => get_player_max_expeditons($user),
 
     'TOPNAV_QUEST_COMPLETE'     => get_quest_amount_complete($user['id']),
+
+    'GAME_NEWS_OVERVIEW'        => $config->game_news_overview,
   ));
 
   if((defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true) || ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && SN_RENDER_NAVBAR_PLANET !== false))

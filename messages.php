@@ -42,6 +42,11 @@ lng_include('messages');
 
 $mode = sys_get_param_str('msg_delete') ? 'delete' : sys_get_param_str('mode');
 $current_class = sys_get_param_int('message_class');
+if(!isset($sn_message_class_list[$current_class]))
+{
+  $current_class = 0;
+  $mode = '';
+}
 
 switch ($mode)
 {
@@ -242,36 +247,34 @@ switch ($mode)
   break;
 }
 
-  if(!$template)
+if(!$template)
+{
+  $template = gettemplate('msg_message_class', true);
+
+  $query = doquery("SELECT message_owner, message_type, COUNT(message_owner) AS message_count FROM {{messages}} WHERE `message_owner` = {$user['id']} GROUP BY message_owner, message_type ORDER BY message_owner ASC, message_type;");
+  while($message_row = mysql_fetch_assoc($query))
   {
-    $template = gettemplate('msg_message_class', true);
+    $messages_total[$message_row['message_type']]  = $message_row['message_count'];
+    $messages_total[MSG_TYPE_NEW]                 += $message_row['message_count'];
+  }
 
-    $query = doquery("SELECT message_owner, message_type, COUNT(message_owner) AS message_count FROM {{messages}} WHERE `message_owner` = {$user['id']} GROUP BY message_owner, message_type ORDER BY message_owner ASC, message_type;");
-    while($message_row = mysql_fetch_assoc($query))
-    {
-      $messages_total[$message_row['message_type']]  = $message_row['message_count'];
-      $messages_total[MSG_TYPE_NEW]                 += $message_row['message_count'];
-    }
+  $query = doquery("SELECT COUNT(message_sender) AS message_count FROM {{messages}} WHERE `message_sender` = '{$user['id']}' AND message_type = 1 GROUP BY message_sender;", '', true);
+  $messages_total[MSG_TYPE_OUTBOX] = intval($query['message_count']);
 
-    $query = doquery("SELECT COUNT(message_sender) AS message_count FROM {{messages}} WHERE `message_sender` = '{$user['id']}' AND message_type = 1 GROUP BY message_sender;", '', true);
-    $messages_total[MSG_TYPE_OUTBOX] = intval($query['message_count']);
-
-    foreach($sn_message_class_list as $message_class_id => $message_class)
-    {
-      $template->assign_block_vars('message_class', array(
-        'ID'     => $message_class_id,
-        'STYLE'  => $message_class['name'],
-        'TEXT'   => $lang['msg_class'][$message_class_id],
-        'UNREAD' => $user[$message_class['name']],
-        'TOTAL'  => intval($messages_total[$message_class_id]),
-      ));
-    }
-
-    $template->assign_vars(array(
-      'PAGE_HINT' => $lang['msg_page_hint_class'],
+  foreach($sn_message_class_list as $message_class_id => $message_class)
+  {
+    $template->assign_block_vars('message_class', array(
+      'ID'     => $message_class_id,
+      'STYLE'  => $message_class['name'],
+      'TEXT'   => $lang['msg_class'][$message_class_id],
+      'UNREAD' => $user[$message_class['name']],
+      'TOTAL'  => intval($messages_total[$message_class_id]),
     ));
   }
 
-display($template, $lang['msg_page_header']);
+  $template->assign_vars(array(
+    'PAGE_HINT' => $lang['msg_page_hint_class'],
+  ));
+}
 
-?>
+display($template, $lang['msg_page_header']);

@@ -1,5 +1,10 @@
 <h1>{L_stat_header}</h1>
+<!-- IF REFRESH_DATE -->
 <h2>{L_stat_refresh_last}&nbsp;{REFRESH_DATE}</h2>
+<!-- ENDIF -->
+<!-- IF NEXT_DATE -->
+<h3>{L_stat_refresh_next}&nbsp;{NEXT_DATE}</h3>
+<!-- ENDIF -->
 
 <!-- IF STATS_HIDE_PM_LINK && SUBJECT == 1 -->
   <!-- DEFINE $HEADER_COLSPAN = '6' -->

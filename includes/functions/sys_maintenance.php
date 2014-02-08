@@ -28,7 +28,7 @@ function sys_maintenance()
 // format: d@<time>
 
 // format: [<m|w|d|h|m|s>@]<time>
-// first param: m - monthly, w - weekly, d - daily, h - hourly, m - minutly, s - secondly
+// first param: m - monthly, w - weekly, d - daily, h - hourly, i - minutly, s - secondly
 // second param: [<months>-[<days|weeks> [<hours>:[<minutes>:]]]<seconds>
 //        valid: '10' - runtime every 10 s
 //        valid: '05:' or '05:00' - runtime every 5 m

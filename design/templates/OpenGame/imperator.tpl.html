@@ -2,44 +2,17 @@
 <h3>{L_sys_from} {REGISTRATION_DATE}</h3>
 <!-- IF USER_AVATAR --><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/avatar_{USER_ID}.png"><!-- ENDIF -->
 
-<!-- IF SAME_USER -->
-  <table width=519>
-    <!-- IF NEW_MESSAGES -->
-    <tr><th class="c_c"><a href=messages.php>
-      {L_ov_you_have}
-      <!-- IF NEW_MESSAGES == 1 -->
-      {L_ov_new_message}
-      <!-- ELSE -->
-      {NEW_MESSAGES} {L_ov_new_messages}
-      <!-- ENDIF -->
-    </a></th></tr>
-    <!-- ENDIF -->
-  </table>
-
-  <!-- IF GAME_NEWS_OVERVIEW -->
-  <table width=519>
-    <tr><td colspan=2 class="c">{L_news_title}</td></tr>
-    <!-- INCLUDE news_list -->
-  </table>
-  <!-- ENDIF -->
+<!-- IF SAME_USER && NEW_MESSAGES -->
+<table width=519>
+  <tr>
+    <th class="c_c">
+      <a href=messages.php>{L_ov_you_have}<!-- IF NEW_MESSAGES == 1 -->{L_ov_new_message}<!-- ELSE -->{NEW_MESSAGES} {L_ov_new_messages}<!-- ENDIF --></a>
+    </th>
+  </tr>
+</table>
 <!-- ENDIF -->
 
 <table width=519>
-  <!--
-  <tr>
-    <th colspan=4 class="c_c">
-      <span class="fl">{L_imp_imperator} {user_username} {L_sys_from} {REGISTRATION_DATE}</span>
-      <span class="fr"></span>
-    </th>
-  </tr>
-  <-- IF USER_AVATAR --
-    <tr>
-      <td class="c_c" colspan="4">
-          <img src="{D_SN_ROOT_VIRTUAL}/images/avatar/avatar_{USER_ID}.png">
-      </td>
-    </tr>
-  <-- ENDIF --
-  -->
   <tr>
     <th colspan=4 class="c_c">
       <span class="fl">{L_imp_statistics}</span>
@@ -86,21 +59,20 @@
   </tr>
 </table>
 
-<!-- IF BANNER_URL -->
-  <table width="519" align="center">
-    <tr><td class="c">{L_aff_banner}</td></tr>
-    <tr>
-      <th>
-        <img src="{BANNER_URL}"><br><br>
-        {L_aff_banner_bb}<br>
-        <input type="text" value="[img]{BANNER_URL}[/img]" size="55">
-      </th>
-    </tr>
-  </table>
-<!-- ENDIF -->
-
-
 <!-- IF SAME_USER -->
+  <!-- IF BANNER_URL -->
+    <table width="519" align="center">
+      <tr><td class="c">{L_aff_banner}</td></tr>
+      <tr>
+        <th>
+          <img src="{BANNER_URL}"><br><br>
+          {L_aff_banner_bb}<br>
+          <input type="text" value="[img]{BANNER_URL}[/img]" size="55">
+        </th>
+      </tr>
+    </table>
+  <!-- ENDIF -->
+
   <!-- IF USERBAR_URL -->
     <table width="519" align="center">
       <tr><td class="c">{L_aff_userbar}</td></tr>

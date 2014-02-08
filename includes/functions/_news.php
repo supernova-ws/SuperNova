@@ -2,7 +2,7 @@
 
 function nws_render(&$template, $query_where = '', $query_limit = 20)
 {
-  global $config, $time_now, $time_diff;
+  global $config;
 
   $announce_list = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} {$query_where} ORDER BY `tsTimeStamp` DESC" . ($query_limit ? " LIMIT {$query_limit}" : ''));
 
@@ -12,13 +12,20 @@ function nws_render(&$template, $query_where = '', $query_limit = 20)
   {
     $template->assign_block_vars('announces', array(
       'ID'         => $announce['idAnnounce'],
-      'TIME'       => date(FMT_DATE_TIME, $announce['unix_time'] + $time_diff),
+      'TIME'       => date(FMT_DATE_TIME, $announce['unix_time'] + SN_CLIENT_TIME_DIFF),
       'ANNOUNCE'   => sys_bbcodeParse($announce['strAnnounce']),
       'DETAIL_URL' => $announce['detail_url'],
-      'NEW'        => $announce['unix_time'] + $config->game_news_actual >= $time_now,
-      'FUTURE'     => $announce['unix_time'] > $time_now,
+      'NEW'        => $announce['unix_time'] + $config->game_news_actual >= SN_TIME_NOW,
+      'FUTURE'     => $announce['unix_time'] > SN_TIME_NOW,
     ));
   }
 }
 
-?>
+function nws_mark_read(&$user)
+{
+  if(isset($user['id']))
+  {
+    doquery("UPDATE {{users}} SET `news_lastread` = " . SN_TIME_NOW . " WHERE `id` = {$user['id']} LIMIT 1;");
+    $user['news_lastread'] = SN_TIME_NOW;
+  }
+}
