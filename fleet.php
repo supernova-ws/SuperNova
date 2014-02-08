@@ -221,6 +221,15 @@ $template_result += array(
   'planet_type' => $planet_type,
 );
 
+$is_transport_missions = false;
+if($missiontype)
+{
+  foreach($missiontype as $mission_data_id => $mission_data)
+  {
+    $is_transport_missions = $is_transport_missions || (isset($sn_data['groups']['missions'][$mission_data_id]['transport']) && $sn_data['groups']['missions'][$mission_data_id]['transport']);
+  }
+}
+
 switch($fleet_page)
 {
   case 1:
@@ -251,5 +260,3 @@ switch($fleet_page)
     require('includes/includes/flt_page0.inc');
   break;
 }
-
-?>

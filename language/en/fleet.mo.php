@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a8.0
+* @version 38a10.12
 *
 */
 
@@ -135,6 +135,7 @@ $a_lang_array = (array(
     ATTACK_SPIES_LONLY => 'In this missions spies should be accompanied with other ships',
     ATTACK_TOO_FAR => 'Your fleet cannot reach this far',
     ATTACK_OVERLOADED => 'Your ships is overloaded. Reduce fleet cargo load or add more transports',
+    ATTACK_MISSION_ABSENT => 'There is no such mission type',
   ),
 
   'fl_fleet_err' => 'Error!',

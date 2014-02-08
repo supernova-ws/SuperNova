@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '37');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '38a10.11');
+define('SN_VERSION', '38a10.12');
 define('SN_RELEASE_STABLE', '37d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -303,6 +303,7 @@ define('ATTACK_TRANSPORT_EMPTY'   , 33);
 define('ATTACK_SPIES_LONLY'       , 34);
 define('ATTACK_TOO_FAR'           , 35);
 define('ATTACK_OVERLOADED'        , 36);
+define('ATTACK_MISSION_ABSENT'    , 37);
 
 
 // *** Market variables

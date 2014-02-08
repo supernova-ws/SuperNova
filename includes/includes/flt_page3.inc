@@ -158,7 +158,7 @@ function sn_fleet_page3()
   {
     $TargetPlanet = array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet, 'id_owner' => 0);
   }
-  $options = array('fleet_speed_percent' => $speed_percent, 'fleet_group' => $fleet_group);
+  $options = array('fleet_speed_percent' => $speed_percent, 'fleet_group' => $fleet_group, 'resources' => $StorageNeeded);
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
 
   if($cant_attack !== ATTACK_ALLOWED)

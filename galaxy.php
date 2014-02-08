@@ -306,6 +306,7 @@ debug($uni_galaxyRowPlanet['debris_will_gather_percent'], 'debris_will_gather_pe
      'USER_BANNED'   => $uni_galaxyRowUser['banaday'],
      'USER_VACATION' => $uni_galaxyRowUser['vacation'],
      'USER_ACTIVITY' => $user_activity,
+     'USER_ATTACKABLE' => $user_activity >= 7,
      'USER_INACTIVE' => $user_activity >= 28,
      'USER_PROTECTED'=> $RowUserPoints <= $config->game_noob_points,
      'USER_NOOB'     => $RowUserPoints * $config->game_noob_factor < $CurrentPoints && $config->game_noob_factor,

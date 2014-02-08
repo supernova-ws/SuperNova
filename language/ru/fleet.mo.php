@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a8.0
+* @version 38a10.12
 *
 */
 
@@ -132,6 +132,7 @@ $a_lang_array = (array(
     ATTACK_SPIES_LONLY => 'Нельзя отправить в эту миссию флот только из шпионских зондов',
     ATTACK_TOO_FAR => 'Ваш флот не может лететь так далеко',
     ATTACK_OVERLOADED => 'Ваши корабли перегружены. Уменьшите загрузку трюмов или добавьте транспортных кораблей',
+    ATTACK_MISSION_ABSENT => 'Не существует такого типа миссии',
   ),
 
   'fl_fleet_err' => 'Ошибка!',

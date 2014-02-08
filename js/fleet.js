@@ -12,7 +12,7 @@ var C1_SHIP_NAME        = 0,
 
 function changeMission(mission)
 {
-  var element = document.getElementById('resTable');
+  // var element = document.getElementById('resTable');
 
   switch(mission.value)
   {
@@ -23,16 +23,18 @@ function changeMission(mission)
     case '8': // Recycle
     case '9': // Destroy
     case '15':// Explore
-      element.style.display = "none";
+      // element.style.display = "none";
+      jQuery('#resTable').css('display', 'none');
       jQuery('#resource0').val(0).trigger('change');
       jQuery('#resource1').val(0).trigger('change');
       jQuery('#resource2').val(0).trigger('change');
     break;
 
     default:
-      element.style.display = "inline";
+      // element.style.display = "inline";
+      jQuery('#resTable').css('display', 'inline');
     break;
-  };
+  }
 }
 
 function speed_percent() {

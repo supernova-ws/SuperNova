@@ -219,6 +219,12 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     return ATTACK_NO_FLEET;
   }
 
+  if(!isset($sn_data['groups']['missions'][$mission]))
+  {
+    return ATTACK_MISSION_ABSENT;
+  }
+  $sn_data_mission = &$sn_data['groups']['missions'][$mission];
+
 //TODO: Проверка на наличие ресурсов при Транспорте
 //TODO: Проверка на отстуствие ресурсов в нетранспортных миссиях (Транспорт, Передислокация, Колонизация)
   $ships = 0;
@@ -249,19 +255,20 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   {
     return ATTACK_NO_FLEET;
   }
-
-  if($resources > 0)
-  {
-    if(!in_array($mission, array(MT_TRANSPORT, MT_RELOCATE, MT_COLONIZE)))
-    {
-      return ATTACK_RESOURCE_FORBIDDEN;
-    }
-  }
-  elseif($mission == MT_TRANSPORT)
-  {
-    return ATTACK_TRANSPORT_EMPTY;
-  }
 */
+
+  if(isset($options['resources']) && $options['resources'] > 0 && !(isset($sn_data_mission['transport']) && $sn_data_mission['transport']))
+  {
+    return ATTACK_RESOURCE_FORBIDDEN;
+  }
+
+  /*
+    elseif($mission == MT_TRANSPORT)
+    {
+      return ATTACK_TRANSPORT_EMPTY;
+    }
+  */
+
   $speed = $options['fleet_speed_percent'];
   if($speed && ($speed != intval($speed) || $speed < 1 || $speed > 10))
   {

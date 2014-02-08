@@ -296,7 +296,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
 
     <!-- IF ACT_SPY -->
     <td class="c_c">
-      <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_INACTIVE) -->
+      <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
       <img onclick="javascript:doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src="{dpath}img/e.gif" alt="{L_gl_espionner}" title="{L_gl_espionner}" />
       <!-- ENDIF -->
     </td>
@@ -304,7 +304,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
 
     <!-- IF ACT_MISSILE -->
     <td class="c_c">
-      <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_INACTIVE) -->
+      <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
       <img onclick="javascript:uni_missile_planet={galaxyrow.PLANET_NUM};jQuery('#uni_missile_planet').html({galaxyrow.PLANET_NUM});jQuery('#uni_missile_form').show();" src="{dpath}img/r.gif" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" />
       <!-- ENDIF -->
     </td>

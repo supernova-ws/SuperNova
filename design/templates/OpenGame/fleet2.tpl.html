@@ -55,6 +55,7 @@ var fleet_slide_changing = false;
     <!-- BEGINELSE missions -->
       <tr><th><font color="red">{L_fl_bad_mission}</font></th></tr>
     <!-- END missions -->
+
     <!-- IF CAPTAIN_ID -->
     <tr>
       <td class="c_l">
@@ -68,6 +69,7 @@ var fleet_slide_changing = false;
   </table>
 <br />
 
+  <!-- IF IS_TRANSPORT_MISSIONS -->
   <table id="resTable" border="0" cellpadding="0" cellspacing="0" style="display: none;"><tbody>
     <tr class="c_c">
       <th>{L_sys_resources}</th>
@@ -83,31 +85,27 @@ var fleet_slide_changing = false;
           <script type="text/javascript"><!--
             sn_ainput_make('resource{resources.ID}', {max: Math.min({resources.ON_PLANET}, {fleet_capacity}), step: 1000});
 
-            jQuery('#resource{resources.ID}').bind('keyup change',
-              function(event, ui) {    
-                var transportCapacity = calculateTransportCapacity();
-              }
-            );
+            jQuery('#resource{resources.ID}').bind('keyup change', function(event, ui) {
+              var transportCapacity = calculateTransportCapacity();
+            });
 
-            jQuery('#resource{resources.ID}slide').bind('slide slidechange',
-              function(event, ui) {
-                if(fleet_slide_changing)
-                {
-                  return;
-                }
-                else
-                {
-                  fleet_slide_changing = true;
-                }
-                var transportCapacity = fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2);
-                for(i = 0; i < 3; i++)
-                {
-                  jQuery('#resource' + i + 'slide').slider("option", "max", Math.min(jQuery('#resource' + i + 'slide').slider("value") + transportCapacity, resource_max[i]));
-                  jQuery('#resource' + i).keyup();
-                }
-                fleet_slide_changing = false;
+            jQuery('#resource{resources.ID}slide').bind('slide slidechange', function(event, ui) {
+              if(fleet_slide_changing)
+              {
+                return;
               }
-            );
+              else
+              {
+                fleet_slide_changing = true;
+              }
+              var transportCapacity = fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2);
+              for(i = 0; i < 3; i++)
+              {
+                jQuery('#resource' + i + 'slide').slider("option", "max", Math.min(jQuery('#resource' + i + 'slide').slider("value") + transportCapacity, resource_max[i]));
+                jQuery('#resource' + i).keyup();
+              }
+              fleet_slide_changing = false;
+            });
           --></script>
         </td>
         <td id="rest_res{resources.ID}" class="c_r">{resources.ON_PLANET}</td>
@@ -123,6 +121,7 @@ var fleet_slide_changing = false;
       <th id="remainingresources" class="c_r">-</th>
     </tr>
   </tbody></table>
+  <!-- ENDIF -->
 </form>
 
 <script type="text/javascript"><!--

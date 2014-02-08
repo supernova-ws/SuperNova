@@ -334,6 +334,7 @@ mission = array(
         'src_user'   => 1,
         'dst_planet' => 1,
         'dst_user'   => 1,
+        'transport'  => false,
       ),
 
       MT_AKS => array(
@@ -341,6 +342,7 @@ mission = array(
         'src_user'   => 1,
         'dst_planet' => 1,
         'dst_user'   => 1,
+        'transport'  => false,
       ),
 
       MT_TRANSPORT => array(
@@ -348,6 +350,7 @@ mission = array(
         'src_user'   => 0,
         'dst_planet' => 1,
         'dst_user'   => 0,
+        'transport'  => true,
       ),
 
       MT_RELOCATE => array(
@@ -355,6 +358,7 @@ mission = array(
         'src_user'   => 0,
         'dst_planet' => 1,
         'dst_user'   => 0,
+        'transport'  => true,
       ),
 
       MT_HOLD => array(
@@ -362,6 +366,7 @@ mission = array(
         'src_user'   => 0,
         'dst_planet' => 0,
         'dst_user'   => 0,
+        'transport'  => false,
       ),
 
       MT_SPY => array(
@@ -369,6 +374,7 @@ mission = array(
         'src_user'   => 1,
         'dst_planet' => 1,
         'dst_user'   => 1,
+        'transport'  => false,
         'AJAX'       => true,
       ),
 
@@ -377,6 +383,7 @@ mission = array(
         'src_user'   => 1,
         'dst_planet' => 1,
         'dst_user'   => 0,
+        'transport'  => true,
       ),
 
       MT_RECYCLE => array(
@@ -384,6 +391,7 @@ mission = array(
         'src_user'   => 0,
         'dst_planet' => 1,
         'dst_user'   => 0,
+        'transport'  => false,
         'AJAX'       => true,
       ),
 
@@ -392,6 +400,7 @@ mission = array(
         'src_user'   => 1,
         'dst_planet' => 1,
         'dst_user'   => 1,
+        'transport'  => false,
       ),
 
       MT_MISSILE => array(
@@ -399,6 +408,7 @@ mission = array(
         'src_user'   => 0,
         'dst_planet' => 0,
         'dst_user'   => 0,
+        'transport'  => false,
         'AJAX'       => true,
       ),
 
@@ -407,6 +417,7 @@ mission = array(
         'src_user'   => 1,
         'dst_planet' => 0,
         'dst_user'   => 0,
+        'transport'  => false,
       ),
     ),
 

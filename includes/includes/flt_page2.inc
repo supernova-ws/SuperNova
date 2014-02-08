@@ -7,7 +7,7 @@ function sn_fleet_page2()
 {
   global $missiontype, $target_mission, $fleetarray, $sn_data, $planetrow, $lang;
   global $galaxy, $system, $planet, $planet_type, $TargetPlanet, $consumption, $template_result;
-  global $sn_module, $user, $config;
+  global $sn_module, $user, $config, $is_transport_missions;
 
   $template = gettemplate('fleet2', true);
 
@@ -28,7 +28,7 @@ function sn_fleet_page2()
   }
 
   $max_duration = $target_mission == MT_EXPLORE ? get_player_max_expedition_duration($user) :
-    ($target_mission == MT_HOLD ? 12 : 0);
+    (isset($missiontype[MT_HOLD]) ? 12 : 0);
   if($max_duration)
   {
     $config_game_speed_expedition = ($target_mission == MT_EXPLORE && $config->game_speed_expedition ? $config->game_speed_expedition : 1);
@@ -41,24 +41,6 @@ function sn_fleet_page2()
     }
   }
 
-  /*
-  //  $TableTitle  = "[{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}] ";
-  //  $TableTitle .= $lang["fl_planettype{$planetrow['planet_type']}"] . ' ' . $planetrow['name'];
-    $TableTitle .= "[{$galaxy}:{$system}:{$planet}] ";
-    switch ($target_mission){
-      case MT_COLONIZE:
-      case MT_EXPLORE:
-        $TableTitle .= $lang['type_mission'][$target_mission];
-      break;
-
-      case MT_RECYCLE:
-        $TableTitle .= $lang['fl_planettype2'];
-      break;
-
-      default:
-        $TableTitle .= $lang['fl_planettype' . $TargetPlanet['planet_type']]  . ' ' . $TargetPlanet['name'];
-    }
-  */
   $temp = array(
     'id' => $TargetPlanet['id'],
     'galaxy' => $galaxy,
@@ -107,6 +89,8 @@ function sn_fleet_page2()
     'acs_target_mr' => sys_get_param_str('acs_target_mr'),
 
     'MAX_DURATION' => $max_duration,
+
+    'IS_TRANSPORT_MISSIONS' => $is_transport_missions,
   ));
 
   $template->assign_recursive($template_result);
