@@ -23,6 +23,7 @@ require_once('includes/init.php');
 lng_include('admin');
 
 //if($_SERVER['HTTP_REFERER'] == SN_ROOT_VIRTUAL . 'admin/statbuilder.php')
+$next_stat_update = sys_schedule_get_prev_run($config->stats_schedule, $config->var_stat_update, SN_TIME_NOW);
 if(sys_get_param_int('admin_update'))
 {
   $user = sn_autologin(!$allow_anonymous);
@@ -31,19 +32,15 @@ if(sys_get_param_int('admin_update'))
   if(USER_LEVEL > 0)
   {
     $is_admin_request = true;
-    $next_stat_update = time();
+    $next_stat_update = SN_TIME_NOW;
   }
-}
-else
-{
-  $next_stat_update = sys_schedule_get_next_run2($config->stats_schedule, $config->var_stat_update, $time_now);
 }
 
 if($next_stat_update > $config->var_stat_update)
 {
-  if($time_now >= $config->var_stat_update_end)
+  if(SN_TIME_NOW >= $config->var_stat_update_end)
   {
-    $config->db_saveItem('var_stat_update_end', $time_now + 60);
+    $config->db_saveItem('var_stat_update_end', SN_TIME_NOW + 120);
     $config->db_saveItem('var_stat_update_msg', 'Update started');
 
     if($is_admin_request)
@@ -67,17 +64,17 @@ if($next_stat_update > $config->var_stat_update)
 
     $time_now = time();
 
-    $msg = "{$lang['adm_done']}: {$total_time} {$lang['sys_sec']}.";
+    $msg = "{$lang['adm_done']}: {$total_time} {$lang['sys_sec']}."; // . date(FMT_DATE_TIME, $next_stat_update) . ' ' . date(FMT_DATE_TIME, $config->var_stat_update);
 
     // TODO: Analyze maintenance result. Add record to log if error. Add record to log if OK
     $maintenance_result = sys_maintenance();
 
     $time_now = time();
 
-    $config->db_saveItem('var_stat_update', $time_now);
+    $config->db_saveItem('var_stat_update', $next_stat_update);
     $config->db_saveItem('var_stat_update_end', $time_now);
     $config->db_saveItem('var_stat_update_msg', $msg);
-    $config->db_saveItem('var_stat_update_next', sys_schedule_get_next_run2($config->stats_schedule, $time_now, $time_now + 1, false));
+    $config->db_saveItem('var_stat_update_next', sys_schedule_get_prev_run($config->stats_schedule, $next_stat_update, $time_now, true));
   }
   elseif($next_stat_update > $config->var_stat_update)
   {

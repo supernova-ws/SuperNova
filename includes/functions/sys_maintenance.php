@@ -119,7 +119,7 @@ function sys_schedule_get_next_run($scheduleList, $lastRun = 0, $timeNow = 0, $r
  * TODO: 2. [<m|w|d|h|m|s>@]<time>
  */
 
-function sys_schedule_get_next_run2($scheduleList, $prev_run = 0, $now = SN_TIME_NOW, $run_missed_jobs = true)
+function sys_schedule_get_prev_run($scheduleList, $prev_run = 0, $now = SN_TIME_NOW, $return_next_schedule = false)
 {
   static $date_part_names = array( 'years', 'days', 'months', 'hours', 'minutes', 'seconds', );
 
@@ -179,5 +179,5 @@ function sys_schedule_get_next_run2($scheduleList, $prev_run = 0, $now = SN_TIME
 
   // Если $runMissed И мы пропустили этот апдейт - возвращаем значение прошлого апдейта
   // Если НЕ ранмиссед ИЛИ мы НЕ пропустили этот апдейт - возвращаем значение следующего апдейта
-  return $run_missed_jobs && $last_scheduled > $prev_run ? $last_scheduled : $next_scheduled;
+  return $return_next_schedule ?  $next_scheduled : $last_scheduled;
 }
