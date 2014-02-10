@@ -86,6 +86,7 @@ function sys_schedule_get_next_run($scheduleList, $lastRun = 0, $timeNow = 0, $r
           $last[$dateFields[$i]] = $matches[$i];
       // Making new date with correct schedule
       $lastRun = mktime( $last['hours'], $last['minutes'], $last['seconds'], $last['mon'], $last['mday'], $last['year']);
+
       // Calculating previous schedule time
       $lastRun += $scheduledInterval * floor(($timeNow - $lastRun)/$scheduledInterval);
 
@@ -101,4 +102,82 @@ function sys_schedule_get_next_run($scheduleList, $lastRun = 0, $timeNow = 0, $r
   return($nextRun);
 }
 
-?>
+// define('SCHEDULER_PREG2', '/^(?:(\w\@))?(?:(?:(?:(?:(?:(\d*)-)?(\d*)-)?(?:(\d*)\ ))?(?:(\d*):))?(?:(\d*):))?(\d*)?$/i');
+
+// format: [<m|w|d|h|m|s>@]<time>
+// first param: m - monthly, w - weekly, d - daily, h - hourly, i - minutly, s - secondly
+// second param: [<months>-[<days|weeks> [<hours>:[<minutes>:]]]<seconds>
+//        valid: '10' - runtime every 10 s
+//        valid: '05:' or '05:00' - runtime every 5 m
+//        valid: '02::' or '02:00:' or '02:00:00' - runtime every 2 h
+//        etc
+
+/*
+ * Формат
+ *
+ * 1. Y-M-D H:I:S  - указывает раз в сколько времени должна запускаться задача и где Y, M, D, H, I, S - соответственно количество лет, месяцев, дней, часов, минут, секунд, определяющих интервал
+ * TODO: 2. [<m|w|d|h|m|s>@]<time>
+ */
+
+function sys_schedule_get_next_run2($scheduleList, $prev_run = 0, $now = SN_TIME_NOW, $run_missed_jobs = true)
+{
+  static $date_part_names = array( 'years', 'days', 'months', 'hours', 'minutes', 'seconds', );
+
+  // If no $timeNow defined - using current time
+  $now = $now ? $now : SN_TIME_NOW;
+
+  // $lastRun should be always not greater then $timeNow!
+  $prev_run = $prev_run > $now ? $now - 1 : $prev_run;
+
+  // Parsing shedule list
+  // $next_run = $lastRun;
+  $next_scheduled = 0;
+  $last_scheduled = 0;
+  $schedules = explode(',', $scheduleList);
+  foreach($schedules as $schedule)
+  {
+    // pdump($schedule);
+    if(!preg_match(SCHEDULER_PREG2,$schedule,$matches)){
+      continue;
+    }
+    array_shift($matches);
+
+    // Преобразовываем расписание в секунды
+    $date_interval = '';
+    foreach($date_part_names as $part_index => $date_part)
+    {
+      $date_interval .= intval($matches[$part_index]) ? intval($matches[$part_index]) . ' ' . $date_part . ' ' : '';
+    }
+    // pdump($date_interval);
+
+    $date_interval = strtotime($date_interval, 0);
+    if(!$date_interval)
+    {
+      continue;
+    }
+
+    // pdump(date(FMT_DATE_TIME, $date_interval), $date_interval);
+
+    // Высчитываем предыдущий запуск по этому расписанию
+    $last_this_schedule = $now - ($now - $prev_run) % $date_interval;
+    // Находим, какой апдейт ближе к текущей дате
+    if($last_scheduled < $last_this_schedule)
+    {
+      $last_scheduled = $last_this_schedule;
+    }
+    // pdump(date(FMT_DATE_TIME, $last_scheduled), '$last_scheduled');
+
+    // Находим следующий апдейт по текущему расписанию
+    $last_this_schedule = $last_this_schedule + $date_interval;
+    // Находим какой следующий запуск ближе к текущей дате
+    if(!$next_scheduled || $last_this_schedule < $next_scheduled)
+    {
+      $next_scheduled = $last_this_schedule;
+    }
+    // pdump(date(FMT_DATE_TIME, $next_scheduled), '$next_scheduled');
+  }
+
+  // Если $runMissed И мы пропустили этот апдейт - возвращаем значение прошлого апдейта
+  // Если НЕ ранмиссед ИЛИ мы НЕ пропустили этот апдейт - возвращаем значение следующего апдейта
+  return $run_missed_jobs && $last_scheduled > $prev_run ? $last_scheduled : $next_scheduled;
+}

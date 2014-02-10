@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '37');
 define('SN_RELEASE', '37');
-define('SN_VERSION', '38a10.13');
+define('SN_VERSION', '38a10.14');
 define('SN_RELEASE_STABLE', '37d1'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -42,6 +42,7 @@ define('GAME_OGAME'    , 1);
 define('PLANET_COORD_PREG', '/^\[([1-9]):([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):(1[0-5]|[1-9])\]$/i');
 // Pattern to parse scheduler '[[[[[YYYY-]MM-]DD ]HH:]MM:]SS'
 define('SCHEDULER_PREG', '/^(?:(?:(?:(?:(?:(2\d\d\d)-)?(1[0-2]|0[1-9])-)?(?:(3[01]|[0-2]\d)\ ))?(?:(2[0-3]|[01]\d):))?(?:([0-5]\d):))?([0-5]\d)$/i');
+define('SCHEDULER_PREG2', '/^(?:\w\@)?(?:(?:(?:(?:(?:(\d*)-)?(\d*)-)?(?:(\d*)\ ))?(?:(\d*):))?(?:(\d*):))?(\d*)?$/i');
 define('PREG_DATE_SQL', '/(20[1-9][0-9])\-(1[0-2]|0[1-9])\-(3[01]|[12]\d|0[1-9]) (2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])/');
 define('PREG_DATE_SQL_RELAXED', '/(20[1-9][0-9])(?:\-(1[0-2]|0[1-9])(?:\-(3[01]|[12]\d|0[1-9])(?: (2[0-3]|[01][0-9])(?::([0-5][0-9])(?::([0-5][0-9]))?)?)?)?)?/');
 

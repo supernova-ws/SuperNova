@@ -20,7 +20,7 @@
 <table width="519">
 <!-- IF ! .search_result -->
   <tr>
-    <th class="c_с">
+    <th class="c_c">
       {L_srch_result_none}
     </th>
   </tr>
@@ -36,7 +36,9 @@
         <td><a href="alliance.php?mode=ainfo&tag={search_result.ALLY_TAG}">[{search_result.ALLY_TAG}]</a></td>
         <td>{search_result.ALLY_NAME}</td>
         <td class="c_r">{search_result.ALLY_MEMBERS}</td>
-        <td class="c_r"><a href="stat.php?who=2&range={search_result.ALLY_RANK}#{search_result.ALLY_RANK}">{search_result.ALLY_RANK}</a></td>
+        <td class="c_r">
+          <!-- IF search_result.PLAYER_RANK_RAW --><a href="stat.php?who=2&range={search_result.ALLY_RANK_RAW}#{search_result.ALLY_RANK_RAW}">{search_result.ALLY_RANK}</a><!-- ELSE -->-<!-- ENDIF -->
+        </td>
       </tr>
     <!-- END search_result -->
   <!-- ELSE -->
@@ -71,7 +73,7 @@
           <a class="fr" href="galaxy.php?mode=3&galaxy={search_result.PLANET_GALAXY}&system={search_result.PLANET_SYSTEM}">[{search_result.PLANET_GALAXY}:{search_result.PLANET_SYSTEM}:{search_result.PLANET_PLANET}]</a>
         </td>
         <td class="c_r">
-          <a href="stat.php?range={search_result.PLAYER_RANK}#{search_result.PLAYER_RANK}">{search_result.PLAYER_RANK}</a>
+          <!-- IF search_result.PLAYER_RANK_RAW --><a href="stat.php?range={search_result.PLAYER_RANK_RAW}#{search_result.PLAYER_RANK_RAW}">{search_result.PLAYER_RANK}</a><!-- ELSE -->-<!-- ENDIF -->
         </td>
       </tr>
     <!-- END search_result -->

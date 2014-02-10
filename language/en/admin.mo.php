@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a9.0
+* @version 38a10.14
 *
 */
 
@@ -507,7 +507,7 @@ $a_lang_array = (array(
   'adm_opt_stats_hide_player_list' => 'Hide players',
   'adm_opt_stats_hide_player_list_detail' => 'List of hidden players ID separated with comma',
   'adm_opt_stats_schedule' => 'Statistics update schedule',
-  'adm_opt_stats_schedule_detail' => 'Schedule update launch times in format d@HH:MM:SS separated with comma',
+  'adm_opt_stats_schedule_detail' => 'Schedule update interval in format Y-M-D H:M:S',
   'adm_opt_stats_hide_pm_link' => 'Hide PM links',
 
   'adm_pay' => 'Payments',

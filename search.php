@@ -73,6 +73,7 @@ if($searchtext && $type)
         'PLAYER_NAME' => htmlentities($row['username'], ENT_COMPAT, 'UTF-8'),
         'PLAYER_NAME_OLD' => htmlentities($row['player_name'], ENT_COMPAT, 'UTF-8'),
         'PLAYER_RANK' => pretty_number($row['total_rank']),
+        'PLAYER_RANK_RAW' => floatval($row['total_rank']),
         'PLANET_NAME' => htmlentities($row['planet_name'], ENT_COMPAT, 'UTF-8'),
         'PLANET_GALAXY' => $row['galaxy'],
         'PLANET_SYSTEM' => $row['system'],
@@ -88,6 +89,7 @@ if($searchtext && $type)
         'ALLY_NAME' => htmlentities($row['ally_name'], ENT_COMPAT, 'UTF-8'),
         'ALLY_TAG' => htmlentities($row['ally_tag'], ENT_COMPAT, 'UTF-8'),
         'ALLY_RANK' => pretty_number($row['total_rank']),
+        'ALLY_RANK_RAW' => floatval($row['total_rank']),
         'ALLY_MEMBERS' => pretty_number($row['ally_members']),
       ));
     }
@@ -118,5 +120,3 @@ $template->assign_vars(array(
 ));
 
 display($template);
-
-?>

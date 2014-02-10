@@ -36,7 +36,7 @@ if(sys_get_param_int('admin_update'))
 }
 else
 {
-  $next_stat_update = sys_schedule_get_next_run($config->stats_schedule, $config->var_stat_update, $time_now);
+  $next_stat_update = sys_schedule_get_next_run2($config->stats_schedule, $config->var_stat_update, $time_now);
 }
 
 if($next_stat_update > $config->var_stat_update)
@@ -77,7 +77,7 @@ if($next_stat_update > $config->var_stat_update)
     $config->db_saveItem('var_stat_update', $time_now);
     $config->db_saveItem('var_stat_update_end', $time_now);
     $config->db_saveItem('var_stat_update_msg', $msg);
-    $config->db_saveItem('var_stat_update_next', sys_schedule_get_next_run($config->stats_schedule, $time_now, $time_now, false));
+    $config->db_saveItem('var_stat_update_next', sys_schedule_get_next_run2($config->stats_schedule, $time_now, $time_now + 1, false));
   }
   elseif($next_stat_update > $config->var_stat_update)
   {
@@ -99,5 +99,3 @@ if($msg)
   header('Content-type: text/xml');
   echo $msg;
 }
-
-?>

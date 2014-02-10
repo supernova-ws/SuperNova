@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a9.0
+* @version 38a10.14
 *
 */
 
@@ -528,7 +528,7 @@ $a_lang_array = (array(
   'adm_opt_stats_hide_player_list' => 'Прятать игроков',
   'adm_opt_stats_hide_player_list_detail' => 'Список ID скрываемых игроков через запятую',
   'adm_opt_stats_schedule' => 'Расписание обновления статистики',
-  'adm_opt_stats_schedule_detail' => 'Время запуска в формате d@ЧЧ:ММ:СС через запятую',
+  'adm_opt_stats_schedule_detail' => 'Интервал запуска в формате Г-М-Д Ч:М:С',
   'adm_opt_stats_hide_pm_link' => 'Скрывать ссылки на ЛС',
 
   'adm_pay' => 'Платежи',

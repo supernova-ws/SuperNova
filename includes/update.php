@@ -923,6 +923,8 @@ switch($new_version)
       "MODIFY COLUMN `payment_external_id` varchar(64) DEFAULT '' COMMENT 'External payment ID in payment system'",
     ), strtolower($update_tables['payment']['payment_test']['Type']) != 'varchar(64)');
 
+    upd_check_key('stats_schedule', '01 00:00:00', strpos($config->stats_schedule, '@') !== false);
+
     upd_do_query('COMMIT;', true);
     // $new_version = 38;
 };
