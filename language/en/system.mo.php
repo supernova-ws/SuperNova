@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a10.10
+* @version 38a10.16
 *
 */
 
@@ -897,5 +897,6 @@ $a_lang_array = (array(
   'topnav_refresh_page' => 'Reload page',
 
   'sys_colonies' => 'Colonies',
+  'sys_radio' => '"Space" radio',
 
 ));

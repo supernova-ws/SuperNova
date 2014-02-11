@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #38a10.10#
+* @version #38a10.16#
 *
 */
 
@@ -908,4 +908,5 @@ $a_lang_array = (array(
   'topnav_refresh_page' => 'Перегрузить страницу',
 
   'sys_colonies' => 'Колонии',
+  'sys_radio' => 'Радио "Космос"',
 ));
