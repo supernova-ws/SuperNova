@@ -565,3 +565,30 @@ th.c_j, td.c_j
   color:white;
   font-weight: normal;
 }
+
+.news_header {
+  background-color: #415680;
+}
+
+.news_date {
+  color: yellow;
+}
+
+.news_publisher {
+}
+
+.news_fresh, .news_future {
+  color: red;
+  font-weight: bold;
+}
+
+.news_text {
+  text-align: justify;
+}
+
+.news_link {
+  color: green;
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+}

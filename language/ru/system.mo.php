@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #38a10.16#
+* @version #38a10.23#
 *
 */
 
@@ -424,7 +424,7 @@ $a_lang_array = (array(
   'news_all'        => 'Все новости',
   'news_title'      => 'Новости',
   'news_none'       => 'Нет новостей',
-  'news_new'        => 'НОВАЯ',
+  'news_new'        => 'СВЕЖАЯ',
   'news_future'     => 'АНОНС',
   'news_more'       => 'Подробнее...',
   'news_hint'       => 'Что бы убрать список последних новостей - прочтите их все, кликнув на заголовке "[ Новости ]"',

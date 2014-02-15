@@ -11,7 +11,7 @@
 $allow_anonymous = true;
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-nws_mark_read(&$user);
+nws_mark_read($user);
 if(sys_get_param_id('only_hide_news'))
 {
   die();
@@ -40,7 +40,9 @@ if ($user['authlevel'] >= 3)
     }
     else
     {
-      doquery("INSERT INTO {{announce}} SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}'");
+      doquery("INSERT INTO {{announce}}
+        SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}',
+        `user_id` = {$user['id']}, `user_name` = '" . mysql_real_escape_string($user['username']) . "'");
     }
 
     if($announce_time <= $time_now)

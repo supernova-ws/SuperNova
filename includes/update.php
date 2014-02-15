@@ -929,6 +929,11 @@ switch($new_version)
       "ADD `admin_protection` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Protection of administration planets'",
     ), !$update_tables['users']['admin_protection']);
 
+    upd_alter_table('announce', array(
+      "ADD `user_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Announcer user ID'",
+      "ADD `user_name` varchar(32) DEFAULT NULL COMMENT 'Announcer user name'",
+    ), !$update_tables['announce']['user_id']);
+
     upd_do_query('COMMIT;', true);
     // $new_version = 38;
 };

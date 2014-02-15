@@ -1,11 +1,22 @@
   <!-- BEGIN announces -->
     <tr>
-      <td align="center" width="100"><!-- IF announces.FUTURE --><font color=red><strong>{L_news_future}</strong></font><br><!-- ELSEIF announces.NEW --><font color=red><strong>{L_news_new}</strong></font><br><!-- ENDIF -->{announces.TIME}</td>
-      <td align=justify>
-        {announces.ANNOUNCE}
-        <!-- IF announces.DETAIL_URL -->
-         <a href="{announces.DETAIL_URL}"><u><font color="green">{L_news_more}</font></u></a>
-        <!-- ENDIF -->
+      <td>
+        <div class="news_header">
+          <div class="news_date fl">{announces.TIME}</div>
+          <!-- IF announces.USER_NAME -->
+            <div class="news_publisher fr">
+              {announces.USER_NAME}
+            </div>
+          <!-- ENDIF -->
+          <br />
+        </div>
+        <div class="news_text">
+          <!-- IF announces.FUTURE --><span class="news_future">{L_news_future}</span>&nbsp;<!-- ELSEIF announces.NEW --><span class="news_fresh">{L_news_new}</span>&nbsp;<!-- ENDIF -->
+          {announces.ANNOUNCE}
+          <!-- IF announces.DETAIL_URL -->
+           <a class="news_link" href="{announces.DETAIL_URL}">{L_news_more}</a>
+          <!-- ENDIF -->
+        </div>
       </td>
       <!-- IF AUTHLEVEL >= 3 -->
         <td><a href="announce.php?mode=edit&id={announces.ID}"><img src="design/images/icon_edit.png"></a></td>

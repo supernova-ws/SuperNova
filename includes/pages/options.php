@@ -354,6 +354,20 @@ function sn_options_view($template = null)
     );
   }
 
+
+
+
+
+
+
+
+  $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
+  $time_now_parsed = getdate($user['deltime']);
+
+
+
+
+
   $template->assign_vars(array(
     'USER_ID'        => $user['id'],
 
@@ -369,7 +383,10 @@ function sn_options_view($template = null)
     'opt_fleet_data' => $user['settings_fleetactions'],
     'opt_sskin_data' => ($user['design'] == 1) ? " checked='checked'":'',
     'opt_noipc_data' => ($user['noipcheck'] == 1) ? " checked='checked'":'',
-    'opt_delac_data' => ($user['deltime'] == 1) ? " checked='checked'/":'',
+    'deltime'        => $user['deltime'],
+    'deltime_text'   => sprintf($str_date_format, $time_now_parsed['year'], $lang['months'][$time_now_parsed['mon']], $time_now_parsed['mday'],
+      $time_now_parsed['hours'], $time_now_parsed['minutes'], $time_now_parsed['seconds']
+    ),
 
     'opt_avatar'     => $user['avatar'],
 
