@@ -7,6 +7,13 @@ if(!defined('SN_IN_MARKET') || SN_IN_MARKET !== true)
 
 $page_title .= " - {$lang['eco_mrk_info']}";
 
+$template = gettemplate('market_info', true);
+
+$template->assign_vars(array(
+  'RES_DARK_MATTER' => $user[$sn_data[RES_DARK_MATTER]['name']],
+  'PAGE_HEADER' => $page_title,
+));
+
 $info_action = sys_get_param_int('action');
 if($info_action)
 {
@@ -76,7 +83,10 @@ if($info_action)
   {
     doquery('ROLLBACK;');
 
-    $message = parsetemplate(gettemplate('message_body'), array('title' => $e->getCode() == ERR_NONE ? $page_title : $lang['eco_mrk_error_title'], 'mes' => $lang['eco_mrk_errors'][$e->getMessage()]));
+    $template->assign_block_vars('result', array(
+      'STATUS' => $e->getCode(),
+      'MESSAGE' => $lang['eco_mrk_errors'][$e->getMessage()],
+    ));
     /*
     return array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
@@ -86,9 +96,3 @@ if($info_action)
   }
 
 }
-$template = gettemplate('market_info', true);
-$template->assign_vars(array(
-  'RES_DARK_MATTER' => $user[$sn_data[RES_DARK_MATTER]['name']],
-));
-
-?>

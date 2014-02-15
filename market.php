@@ -84,7 +84,12 @@ switch($mode)
 $message_id = sys_get_param_int('message');
 if($message_id != MARKET_NOTHING)
 {
-  $message = parsetemplate(gettemplate('message_body'), array('title' => $page_title, 'mes' => $lang['eco_mrk_errors'][$message_id]));
+  $template->assign_block_vars('result', array('MESSAGE' => $lang['eco_mrk_errors'][$message_id]));
+}
+
+if($message)
+{
+  $template->assign_block_vars('result', array('MESSAGE' => $message));
 }
 
 $template->assign_vars(array(
@@ -97,10 +102,8 @@ $template->assign_vars(array(
   'rpg_cost_exchange' => $config->rpg_cost_exchange,
   'rpg_cost_pawnshop' => $config->rpg_cost_pawnshop,
 
-  'message' => $message,
+//  'message' => $message,
   'MODE' => $mode
 ));
 
 display($template, $page_title);
-
-?>

@@ -8,6 +8,8 @@ if((!defined('SN_IN_MARKET') || SN_IN_MARKET !== true) && (!defined('SN_IN_ALLY'
 function eco_mrk_trader($user, $planetrow = null)
 {
   $page_title .= " - {$lang['eco_mrk_trader']}";
+  $template = gettemplate('market_trader', true);
+
   $intError = MARKET_DEAL;
   $planetrow = isset($planetrow) ? $planetrow : $user;
 
@@ -111,10 +113,12 @@ function eco_mrk_trader($user, $planetrow = null)
       die();
     }
     doquery('ROLLBACK;');
-    $message = parsetemplate(gettemplate('message_body'), array('title' => $intError == MARKET_DEAL ? $page_title : $lang['eco_mrk_error_title'], 'mes' => $lang['eco_mrk_errors'][$intError]));
+    $template->assign_block_vars('result', array(
+      'STATUS' => $intError == MARKET_DEAL ? ERR_NONE : ERR_ERROR,
+      'MESSAGE' => $lang['eco_mrk_errors'][$intError],
+    ));
   }
 
-  $template = gettemplate('market_trader', true);
   $template->assign_vars(array(
     'exchangeTo' => $exchangeTo,
   ));
@@ -142,11 +146,9 @@ function eco_mrk_trader($user, $planetrow = null)
 
   $template->assign_vars(array(
     'rpg_cost_trader'   => $config->rpg_cost_trader,
-    'message' => $message,
+    // 'message' => $message,
     'MODE' => $mode
   ));
 
   display($template, $page_title);
 }
-
-?>

@@ -37,8 +37,17 @@ function AdminMessage ($mes, $title = 'Error', $dest = "", $time = "3") {
 //
 // Routine Affichage d'un message avec saut vers une autre page si souhaité
 //
-function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header = true)
+function message ($mes, $title = 'Error', $dest = '', $time = 5, $show_header = true)
 {
+  $template = gettemplate('message_body', true);
+  $template->assign_vars(array(
+    'title' => $title,
+    'mes'   => $mes,
+    'DEST'  => $dest,
+  ));
+
+  display($template, $title, $show_header, (($dest != "") ? "<meta http-equiv=\"refresh\" content=\"{$time};url={$dest}\">" : ""), false);
+/*
   global $lang;
 
   $parse['title'] = $title;
@@ -46,9 +55,10 @@ function message ($mes, $title = 'Error', $dest = "", $time = "3", $show_header 
   $parse['DEST']  = $dest;
   $parse['L_sys_continue']  = $lang['sys_continue'];
 
-  $page .= parsetemplate(gettemplate('message_body'), $parse);
+  $page .= parsetemplate(, $parse);
 
   display($page, $title, $show_header, (($dest != "") ? "<meta http-equiv=\"refresh\" content=\"{$time};url={$dest}\">" : ""), false);
+*/
 }
 
 function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra)

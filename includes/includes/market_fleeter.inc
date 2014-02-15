@@ -7,6 +7,12 @@ if(!defined('SN_IN_MARKET') || SN_IN_MARKET !== true)
 
 $page_title .= ' - ' . $lang["eco_mrk_{$submode}"];
 
+$template = gettemplate('market_fleet', true);
+$template->assign_vars(array(
+  'PAGE_HEADER' => $page_title,
+  'rpg_cost' => $rpg_cost,
+));
+
 if(is_array($shipList))
 {
   if($user[$sn_data[RES_DARK_MATTER]['name']] < $rpg_cost)
@@ -137,23 +143,26 @@ if(is_array($shipList))
     // $user[$sn_data[RES_DARK_MATTER]['name']] -= $rpg_cost;
     $planetrow = array_merge($planetrow, $newrow);
 
-    $message = parsetemplate(gettemplate('message_body'), array('title' => $page_title, 'mes' => "<div align=left>{$message}</div>"));
+    $template->assign_block_vars('result', array(
+      'STATUS' => ERR_NONE,
+      'MESSAGE' => $message,
+    ));
   }
   else
   {
     doquery('ROLLBACK;');
-    $message = parsetemplate(gettemplate('message_body'), array('title' => $lang['eco_mrk_error_title'], 'mes' => $lang['eco_mrk_errors'][$intError]));
+    $template->assign_block_vars('result', array(
+      'STATUS' => ERR_ERROR,
+      'MESSAGE' => $lang['eco_mrk_errors'][$intError],
+    ));
+
     foreach($shipList as $shipID => $shipCount)
     {
       $data['ships'][$shipID] = max(0, intval($shipCount));
     }
   }
 }
-
-$template = gettemplate('market_fleet', true);
-$template->assign_vars(array(
-  'rpg_cost' => $rpg_cost,
-));
+$message = '';
 
 tpl_set_resource_info($template, $planetrow, array());
 
@@ -175,6 +184,11 @@ foreach($array as $key => $value)
     $amount = $value;
   }
 
+  if(!in_array($shipID, $sn_data['groups']['fleet']))
+  {
+    continue;
+  }
+
   $build_data = eco_get_build_data($user, $planetrow, $shipID);
   if($amount > 0)
   {
@@ -192,5 +206,3 @@ foreach($array as $key => $value)
     ));
   }
 }
-
-?>
