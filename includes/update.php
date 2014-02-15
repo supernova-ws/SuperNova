@@ -925,6 +925,10 @@ switch($new_version)
 
     upd_check_key('stats_schedule', '01 00:00:00', strpos($config->stats_schedule, '@') !== false);
 
+    upd_alter_table('users', array(
+      "ADD `admin_protection` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Protection of administration planets'",
+    ), !$update_tables['users']['admin_protection']);
+
     upd_do_query('COMMIT;', true);
     // $new_version = 38;
 };

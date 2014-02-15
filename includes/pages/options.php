@@ -28,6 +28,8 @@ function sn_options_model()
     {
       $planet_protection = sys_get_param_int('adm_pl_prot') ? $user['authlevel'] : 0;
       doquery ("UPDATE {{planets}} SET `id_level` = '{$planet_protection}' WHERE `id_owner` = '{$user['id']}';");
+      doquery ("UPDATE {{users}} SET `admin_protection` = '{$planet_protection}' WHERE `id` = '{$user['id']}';");
+      $user['admin_protection'] = $planet_protection;
     }
 
     if(sys_get_param_int('vacation') && !$config->user_vacation_disable)
@@ -376,6 +378,8 @@ function sn_options_view($template = null)
     'user_settings_wri' => ($user['settings_wri'] == 1) ? " checked='checked'/":'',
     'user_settings_mis' => ($user['settings_mis'] == 1) ? " checked='checked'/":'',
     'user_settings_bud' => ($user['settings_bud'] == 1) ? " checked='checked'/":'',
+
+    'adm_pl_prot' => $user['admin_protection'],
 
     'user_birthday' => $user['user_birthday'],
     'FMT_DATE' => $FMT_DATE,

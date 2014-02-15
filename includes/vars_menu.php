@@ -65,6 +65,7 @@ $sn_menu = array(
     'TYPE'  => 'lang',
     'ITEM'  => 'm_faq',
     'LINK'  => $config->url_faq,
+    'BLANK' => true,
     'ICON'  => true,
   ),
 
@@ -292,6 +293,7 @@ $sn_menu = array(
     'TYPE'  => 'lang',
     'ITEM'  => 'm_forum',
     'LINK'  => $config->url_forum,
+    'BLANK' => true,
     'ICON'  => true,
   ),
 
@@ -356,6 +358,7 @@ $sn_menu = array(
     'TYPE'  => 'lang',
     'ITEM'  => 'sys_game_rules',
     'LINK'  => $config->url_rules,
+    'BLANK' => true,
     'ICON'  => true,
   ),
   'menu_news' => array(

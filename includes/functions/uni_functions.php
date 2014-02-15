@@ -288,7 +288,6 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
     $QryInsertPlanet  = "INSERT INTO `{{planets}}` SET ";
     $QryInsertPlanet .= "`name` = '".              $planet['name']              ."', ";
     $QryInsertPlanet .= "`id_owner` = '".          $planet['id_owner']          ."', ";
-//    $QryInsertPlanet .= "`id_level` = '".          $user['authlevel']           ."', ";
     $QryInsertPlanet .= "`galaxy` = '".            $planet['galaxy']            ."', ";
     $QryInsertPlanet .= "`system` = '".            $planet['system']            ."', ";
     $QryInsertPlanet .= "`planet` = '".            $planet['planet']            ."', ";

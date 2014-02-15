@@ -20,79 +20,78 @@
 
 require_once('includes/init.php');
 
-lng_include('admin');
-
-//if($_SERVER['HTTP_REFERER'] == SN_ROOT_VIRTUAL . 'admin/statbuilder.php')
-$next_stat_update = sys_schedule_get_prev_run($config->stats_schedule, $config->var_stat_update, SN_TIME_NOW);
-if(sys_get_param_int('admin_update'))
+function scheduler_process()
 {
-  $user = sn_autologin(!$allow_anonymous);
-  $sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
-  define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
-  if(USER_LEVEL > 0)
-  {
-    $is_admin_request = true;
-    $next_stat_update = SN_TIME_NOW;
-  }
-}
+  global $allow_anonymous, $config, $user, $sys_user_logged_in, $debug, $lang;
 
-if($next_stat_update > $config->var_stat_update)
-{
-  if(SN_TIME_NOW >= $config->var_stat_update_end)
+  lng_include('admin');
+  //if($_SERVER['HTTP_REFERER'] == SN_ROOT_VIRTUAL . 'admin/statbuilder.php')
+  $next_stat_update = sys_schedule_get_prev_run($config->stats_schedule, $config->var_stat_update, SN_TIME_NOW);
+  if(sys_get_param_int('admin_update') || IN_ADMIN)
   {
-    $config->db_saveItem('var_stat_update_end', SN_TIME_NOW + 120);
-    $config->db_saveItem('var_stat_update_msg', 'Update started');
-
-    if($is_admin_request)
+    $user = sn_autologin(!$allow_anonymous);
+    $sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
+    define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
+    if(USER_LEVEL > 0)
     {
-      $msg = 'admin request';
+      $is_admin_request = true;
+      $next_stat_update = SN_TIME_NOW;
     }
-    else
-    {
-      $msg = 'scheduler';
-    };
-    $msg = "Running stat updates: {$msg}. Config->var_stat_update = " . date(FMT_DATE_TIME, $config->var_stat_update) . ', nextStatUpdate = ' . date(FMT_DATE_TIME, $next_stat_update);
-    $debug->warning($msg, 'Stat update', 190);
-    $total_time = microtime(true);
-
-    require_once('includes/includes/sys_stat.php');
-    sys_stat_calculate();
-
-    $total_time = microtime(true) - $total_time;
-    $msg = "Stat update complete in {$total_time} seconds.";
-    $debug->warning($msg, 'Stat update', 192);
-
-    $time_now = time();
-
-    $msg = "{$lang['adm_done']}: {$total_time} {$lang['sys_sec']}."; // . date(FMT_DATE_TIME, $next_stat_update) . ' ' . date(FMT_DATE_TIME, $config->var_stat_update);
-
-    // TODO: Analyze maintenance result. Add record to log if error. Add record to log if OK
-    $maintenance_result = sys_maintenance();
-
-    $time_now = time();
-
-    $config->db_saveItem('var_stat_update', $next_stat_update);
-    $config->db_saveItem('var_stat_update_end', $time_now);
-    $config->db_saveItem('var_stat_update_msg', $msg);
-    $config->db_saveItem('var_stat_update_next', sys_schedule_get_prev_run($config->stats_schedule, $next_stat_update, $time_now, true));
   }
-  elseif($next_stat_update > $config->var_stat_update)
+
+  if($next_stat_update > $config->var_stat_update)
   {
-    $timeout = $config->var_stat_update_end - $time_now;
-    $msg = $config->db_loadItem('var_stat_update_msg');
-    $msg = "{$msg} ETA {$timeout} seconds. Please wait...";
+    if(SN_TIME_NOW >= $config->var_stat_update_end)
+    {
+      $config->db_saveItem('var_stat_update_end', SN_TIME_NOW + 120);
+      $config->db_saveItem('var_stat_update_msg', 'Update started');
+
+      if($is_admin_request)
+      {
+        $msg = 'admin request';
+      }
+      else
+      {
+        $msg = 'scheduler';
+      };
+      $msg = "Running stat updates: {$msg}. Config->var_stat_update = " . date(FMT_DATE_TIME, $config->var_stat_update) . ', nextStatUpdate = ' . date(FMT_DATE_TIME, $next_stat_update);
+      $debug->warning($msg, 'Stat update', 190);
+      $total_time = microtime(true);
+
+      require_once('includes/includes/sys_stat.php');
+      sys_stat_calculate();
+
+      $total_time = microtime(true) - $total_time;
+      $msg = "Stat update complete in {$total_time} seconds.";
+      $debug->warning($msg, 'Stat update', 192);
+
+      $msg = "{$lang['adm_done']}: {$total_time} {$lang['sys_sec']}."; // . date(FMT_DATE_TIME, $next_stat_update) . ' ' . date(FMT_DATE_TIME, $config->var_stat_update);
+
+      // TODO: Analyze maintenance result. Add record to log if error. Add record to log if OK
+      $maintenance_result = sys_maintenance();
+
+      $config->db_saveItem('var_stat_update', $next_stat_update);
+      $config->db_saveItem('var_stat_update_end', SN_TIME_NOW);
+      $config->db_saveItem('var_stat_update_msg', $msg);
+      $config->db_saveItem('var_stat_update_next', sys_schedule_get_prev_run($config->stats_schedule, $next_stat_update, SN_TIME_NOW, true));
+    }
+    elseif($next_stat_update > $config->var_stat_update)
+    {
+      $timeout = $config->var_stat_update_end - SN_TIME_NOW;
+      $msg = $config->db_loadItem('var_stat_update_msg');
+      $msg = "{$msg} ETA {$timeout} seconds. Please wait...";
+    }
   }
-}
-elseif($is_admin_request)
-{
-  $msg = 'Stat is up to date';
+  elseif($is_admin_request)
+  {
+    $msg = 'Stat is up to date';
+  }
+
+  return $msg;
 }
 
-if($msg)
+if(($result = scheduler_process()) && !defined('IN_ADMIN'))
 {
-  $msg = htmlspecialchars($msg, ENT_QUOTES, 'UTF-8');
-  $msg = "<message>{$msg}</message>";
-
-  header('Content-type: text/xml');
-  echo $msg;
+  $result = htmlspecialchars($result, ENT_QUOTES, 'UTF-8');
+  print(json_encode($result));
 }

@@ -22,16 +22,10 @@ $parse = $lang;
 $script = '
 <script type="text/javascript">
 $(document).ready(function() {
-  // send requests
-  $.post("admin/ajax_maintenance.php", {rating: $(this).html()}, function(xml) {
-    // format result
-    var result = [ $("message", xml).text() ];
-    // output result
-    $("#admin_message").html(result.join($("#admin_message").html));
-  } );
+  $.post("admin/ajax_maintenance.php", function(result) {
+    $("#admin_message").html(result);
+  }, "json" );
 });
 </script>';
 
 AdminMessage($script . '<img src=design/images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title']);
-
-?>
