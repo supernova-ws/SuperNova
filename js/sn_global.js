@@ -304,3 +304,12 @@ function sn_show_hide(element, element_name)
 //  jQuery(element).html("[&nbsp;" + (element_to_hide.css('display') == 'none' ? "{LA_sys_show}" : "{LA_sys_hide}") + "&nbsp;]");
   jQuery(element).html("[&nbsp;" + (element_to_hide.css('display') == 'none' ? LA_sys_show : LA_sys_hide) + "&nbsp;]");
 }
+
+
+jQuery(document).on('click', "[go_overview]", function(){
+  document.location = 'overview.php?cp=' + jQuery(this).attr('go_overview') + (jQuery(this).attr('mode') ? '&mode=' + jQuery(this).attr('mode'): '');
+});
+
+jQuery(document).on('click', "[go_fleet]", function(){
+  document.location = 'fleet.php?cp=' + jQuery(this).attr('go_fleet') + (jQuery(this).attr('mode') ? '&fleet_page=' + jQuery(this).attr('mode'): '');
+});

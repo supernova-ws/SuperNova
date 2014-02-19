@@ -277,24 +277,25 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
   height: 100%
 }
 
-.empire_cell
+/* .empire_cell*/
+.empire_cell_single, .empire_cell_double
 {
-  cursor: pointer;
+/*  cursor: pointer; */
   position: relative;
-  height: 100%;
+/*  height: 100%;*/
 }
 
-.empire_cell_wrapper
+.empire_cell_single
 {
-  position: relative;
-  width: 100%;
+/*  position: relative;*/
+/*  width: 100%;*/
   height: 13px;
 }
 
-.empire_cell_wrapper_double_height
+.empire_cell_double
 {
-  position: relative;
-  width: 100%;
+/*  position: relative;*/
+/*  width: 100%;*/
   height: 32px;
 }
 
@@ -306,14 +307,28 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
   height: 100%;
 }
 
-.empire_cell_number
+.empire_cell
 {
+/*  cursor: pointer;*/
   position: absolute;
   top: 0px;
   left: 0px;
   height: 100%;
   width: 100%;
   vertical-align: middle;
+  text-align: center;
+}
+
+.empire_number
+{
+  cursor: pointer;
+/*  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  vertical-align: middle;
+  text-align: center;*/
 }
 
 .planet_list_wrap

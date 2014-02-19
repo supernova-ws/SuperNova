@@ -1,5 +1,7 @@
 <!-- IF $OVERVIEW -->
-  <!-- DEFINE $CELL_CLASS = 'class="tr"' -->
+  <!-- DEFINE $CELL_CLASS = 'tr' -->
+<!-- ELSE -->
+  <!-- DEFINE $CELL_CLASS = '' -->
 <!-- ENDIF -->
 
 <!-- IF $OVERVIEW && .planet > 5 -->
@@ -10,7 +12,7 @@
   <!-- IF $OVERVIEW && (! LIST_COLUMN_COUNT || planet.S_ROW_COUNT % LIST_COLUMN_COUNT == 0)  -->
    <tr>
   <!-- ENDIF -->
-  <th valign="top" {$CELL_CLASS} width="{$CELL_PLANET}" style="cursor: pointer;">
+  <td valign="top" class="{$CELL_CLASS} pointer" width="{$CELL_PLANET}" align="center">
   <!-- IF planet.ID -->
     <!-- IF planet.ID == PLANET_ID || (planet.MOON_ID == PLANET_ID && $OVERVIEW) -->
       <!-- DEFINE $PLANET_IMG_SIZE = 100 -->
@@ -27,7 +29,7 @@
       <!-- DEFINE $CRYSTAL_BAR = 79 -->
       <!-- DEFINE $DEUTERIUM_BAR = 83 -->
       <!-- DEFINE $OVERALL_BAR = 87 -->
-      <!-- DEFINE $FRAME_WIDTH = 91 -->
+      <!-- DEFINE $FRAME_WIDTH = 87 -->
     <!-- ENDIF -->
 
     <!-- IF planet.MOON_ID == PLANET_ID -->
@@ -45,28 +47,28 @@
         <div class="left_top" style="height: {$PLANET_IMG_SIZE}px; width: {$PLANET_IMG_SIZE}px;">
           <span class="element_fill_wrap">
             <!-- IF planet.IMAGE -->
-            <a href="overview.php?cp={planet.ID}"><img style="border-style: none;" src="{dpath}planeten/{planet.IMAGE}.jpg" height="100%" width="100%"></a>
+              <a href="overview.php?cp={planet.ID}"><img style="border-style: none;" src="{dpath}planeten/{planet.IMAGE}.jpg" height="100%" width="100%"></a>
             <!-- ELSE -->
-            &nbsp;
+              &nbsp;
             <!-- ENDIF -->
           </span>
 
           <!-- IF .planet.building_que -->
-          <a href="buildings.php?cp={planet.ID}"><img src="{D_SN_ROOT_VIRTUAL}design/images/build_building.png" class="icon_alpha icon_25per_left_1"></a>
+            <a href="buildings.php?cp={planet.ID}"><img src="{D_SN_ROOT_VIRTUAL}design/images/build_building.png" class="icon_alpha icon_25per_left_1"></a>
           <!-- ENDIF -->
 
           <!-- IF planet.HANGAR -->
-          <a href="buildings.php?mode=fleet&cp={planet.ID}"><img src="{D_SN_ROOT_VIRTUAL}design/images/build_hangar.png" class="icon_alpha icon_25per_left_2" title="{planet.HANGAR}"></a>
+            <a href="buildings.php?mode=fleet&cp={planet.ID}"><img src="{D_SN_ROOT_VIRTUAL}design/images/build_hangar.png" class="icon_alpha icon_25per_left_2" title="{planet.HANGAR}"></a>
           <!-- ENDIF -->
 
           <!-- IF planet.PLANET_GOVERNOR_ID && planet.PLANET_GOVERNOR_LEVEL -->
-            <span class="icon_alpha icon_25per_left_4" title="{planet.PLANET_GOVERNOR_NAME} {planet.PLANET_GOVERNOR_LEVEL}" onclick="document.location='overview.php?mode=manage&cp={planet.ID}';">
+            <span class="icon_alpha icon_25per_left_4" title="{planet.PLANET_GOVERNOR_NAME} {planet.PLANET_GOVERNOR_LEVEL}" go_overview="{planet.ID}" mode="manage">
               <img src="{dpath}gebaeude/{planet.PLANET_GOVERNOR_ID}.jpg" class="icon_fill">
               <span class="icon_alpha planet_list_governor_level">{planet.PLANET_GOVERNOR_LEVEL}</span>
             </span>
           <!-- ENDIF -->
 
-          <span title="{L_flt_gather_all}" class="icon_alpha icon_25per_right_4" onclick="document.location='fleet.php?fleet_page=5&cp={planet.ID}'">
+          <span title="{L_flt_gather_all}" class="icon_alpha icon_25per_right_4" go_fleet="{planet.ID}" mode="5">
             <div class="icons icon-gather"></div>
           </span>
 
@@ -83,7 +85,7 @@
               <a href="overview.php?cp={planet.MOON_ID}" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]"><img src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" class="icon_fill"></a>
 
               <span title="{L_flt_gather_all}" class="icon_alpha icon_25per_right_4">
-                <div class="icons icon-gather" onclick="document.location='fleet.php?fleet_page=5&cp={planet.MOON_ID}'"></div>
+                <div class="icons icon-gather" go_fleet="{planet.MOON_ID}" mode="5"></div>
               </span>
 
               <span class="planet_list_submoon_fields">
@@ -91,7 +93,7 @@
               </span>
 
               <!-- IF planet.MOON_ENEMY != 0 -->
-              <img src="{D_SN_ROOT_VIRTUAL}design/images/icon_warning.png" class="planet_list_moon_attack" onclick="document.location='overview.php?cp={planet.MOON_ID}'">
+                <img src="{D_SN_ROOT_VIRTUAL}design/images/icon_warning.png" class="planet_list_moon_attack" go_overview="{planet.MOON_ID}">
               <!-- ENDIF -->
             </div>
           <!-- ENDIF -->
@@ -165,7 +167,7 @@
     <br /><br />
     <!-- ENDIF -->
   <!-- ENDIF -->
-  </th>
+  </td>
   <!-- IF $OVERVIEW && (! LIST_COLUMN_COUNT || (planet.S_ROW_COUNT + 1) % LIST_COLUMN_COUNT == 0 || planet.S_LAST_ROW)  -->
     </tr>
   <!-- ENDIF -->
