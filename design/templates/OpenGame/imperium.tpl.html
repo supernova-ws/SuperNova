@@ -1,7 +1,7 @@
 <!-- INCLUDE fleet_javascript -->
 
-<!-- DEFINE $CELL_HEADER = '60px' -->
-<!-- DEFINE $CELL_PLANET = '60px' -->
+<!-- DEFINE $CELL_HEADER = '70px' -->
+<!-- DEFINE $CELL_PLANET = '70px' -->
 
 <h2>{L_imp_overview}</h2>
 <form method="post">
@@ -177,7 +177,8 @@
       <!-- ELSE -->
         <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
       <!-- ENDIF -->
-      <td class="<!-- IF prods.planet.FACTORY && prods.planet.PERCENT != -1 -->empire_cell_double<!-- ELSE -->empire_cell_single<!-- ENDIF -->">
+      <td>
+        <div class="<!-- IF prods.planet.FACTORY && prods.planet.PERCENT != -1 -->empire_cell_double<!-- ELSE -->empire_cell_single<!-- ENDIF -->">
         <!-- IF prods.planet.PERCENT >= 0 -->
           <span style="width: {prods.planet.PERCENT}%;" class="empire_cell_filler {$FIELD_COLOR}"></span>
         <!-- ENDIF -->
@@ -198,6 +199,7 @@
             </select>
           <!-- ENDIF -->
         </span>
+        </div>
       </td>
     <!-- END planet -->
   </tr>
