@@ -11,7 +11,7 @@
 [*] ToDo - см. todo.txt & todo.xls
 
 
-Текущий билд #38c1#
+Текущий билд #38c2#
 ~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -328,8 +328,8 @@ var page_h = $("html").width();
 
 
 
-2014-02-22 04:38:08 38c0 Project "SuperNova.WS" Release Candidate 37RC0 "Admin astro expo news bugfix"
-[!] Project "SuperNova.WS" Release Candidate 37RC0 "Admin astro expo news bugfix"
+2014-02-22 04:38:08 38c0 Project "SuperNova.WS" Release Candidate 38RC0 "Admin astro expo news bugfix"
+[!] Project "SuperNova.WS" Release Candidate 38RC0 "Admin astro expo news bugfix"
 
 
 2014-02-20 16:32:16 38a11.1
