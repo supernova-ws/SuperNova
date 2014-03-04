@@ -935,7 +935,13 @@ switch($new_version)
     ), !$update_tables['announce']['user_id']);
 
     upd_do_query('COMMIT;', true);
-    // $new_version = 38;
+    $new_version = 38;
+
+  case 38:
+    upd_log_version_update();
+
+    upd_do_query('COMMIT;', true);
+    // $new_version = 39;
 };
 upd_log_message('Upgrade complete.');
 
