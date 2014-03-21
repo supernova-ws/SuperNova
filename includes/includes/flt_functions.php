@@ -14,7 +14,7 @@ function flt_fleet_speed($user, $fleet)
   {
     foreach ($fleet as $ship_id => $amount)
     {
-      if($amount && in_array($ship_id, $sn_data['groups']['fleet'] + $sn_data['groups']['missile']))
+      if($amount && in_array($ship_id, sn_get_groups(array('fleet', 'missile'))))
       {
         $single_ship_data = get_ship_data($ship_id, $user);
         $speeds[] = $single_ship_data['speed'];
@@ -219,11 +219,12 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     return ATTACK_NO_FLEET;
   }
 
-  if(!isset($sn_data['groups']['missions'][$mission]))
+  $sn_groups_mission = sn_get_groups('missions');
+  if(!isset($sn_groups_mission[$mission]))
   {
     return ATTACK_MISSION_ABSENT;
   }
-  $sn_data_mission = &$sn_data['groups']['missions'][$mission];
+  $sn_data_mission = $sn_groups_mission[$mission];
 
 //TODO: Проверка на наличие ресурсов при Транспорте
 //TODO: Проверка на отстуствие ресурсов в нетранспортных миссиях (Транспорт, Передислокация, Колонизация)
@@ -233,7 +234,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   $resources = 0;
   foreach($fleet as $ship_id => $ship_count)
   {
-    $is_ship = in_array($ship_id, $sn_data['groups']['fleet']);
+    $is_ship = in_array($ship_id, sn_get_groups('fleet'));
     if($ship_count > $planet_src[$sn_data[$ship_id]['name']])
     {
       return $is_ship ? ATTACK_NO_SHIPS : ATTACK_NO_RESOURCES;
@@ -242,7 +243,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     if($is_ship)
     {
       $ships += $ship_count;
-      $recyclers += in_array($ship_id, $sn_data['groups']['flt_recyclers']) ? $ship_count : 0;
+      $recyclers += in_array($ship_id, sn_get_groups('flt_recyclers')) ? $ship_count : 0;
       $spies += $ship_id == SHIP_SPY ? $ship_count : 0;
     }
     else
@@ -476,7 +477,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
       return ATTACK_MISSILE_TOO_FAR;
     }
 
-    if(isset($options['target_structure']) && $options['target_structure'] && !in_array($options['target_structure'], $sn_data['groups']['defense_active']))
+    if(isset($options['target_structure']) && $options['target_structure'] && !in_array($options['target_structure'], sn_get_groups('defense_active')))
     {
       return ATTACK_WRONG_STRUCTURE;
     }
@@ -553,7 +554,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
       continue;
     }
 
-    if(in_array($unit_id, $sn_data['groups']['fleet']))
+    if(in_array($unit_id, sn_get_groups('fleet')))
     {
       $fleet_ship_count += $amount;
       $fleet_string     .= "{$unit_id},{$amount};";

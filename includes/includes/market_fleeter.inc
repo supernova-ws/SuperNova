@@ -57,7 +57,7 @@ if(is_array($shipList))
       break;
     }
 
-    if(!in_array($shipID, $sn_data['groups']['fleet']))
+    if(!in_array($shipID, sn_get_groups('fleet')))
     {
       $debug->warning('Hack Attempt', 'User supplied non-ship unit ID on Black Market page', 306);
       $intError = MARKET_NOT_A_SHIP;
@@ -184,7 +184,7 @@ foreach($array as $key => $value)
     $amount = $value;
   }
 
-  if(!in_array($shipID, $sn_data['groups']['fleet']))
+  if(!in_array($shipID, sn_get_groups('fleet')))
   {
     continue;
   }

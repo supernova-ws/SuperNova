@@ -24,8 +24,8 @@ function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode)
 {
   global $sn_data, $lang;
 
-  $unit_list = &$sn_data['groups'][$mode];
-  if(!$unit_list)
+  $unit_list = sn_get_groups($mode);
+  if(empty($unit_list))
   {
     return;
   }
@@ -45,12 +45,11 @@ function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode)
 function admin_planet_edit_query_string($unit_id, $unit_amount, $mode){return sn_function_call('admin_planet_edit_query_string', array($unit_id, $unit_amount, $mode));}
 function sn_admin_planet_edit_query_string($unit_id, $unit_amount, $mode)
 {
-  global $sn_data;
-
-  if($unit_amount && $sn_data['groups'][$mode] && in_array($unit_id, $sn_data['groups'][$mode]))
+  if($unit_amount && in_array($unit_id, sn_get_groups($mode)))
   {
     $unit_amount = round($unit_amount);
-    $result = "{$sn_data[$unit_id]['name']} = GREATEST(0, {$sn_data[$unit_id]['name']} + ($unit_amount))";
+    $unit_name = get_unit_param($unit_id, 'name');
+    $result = "{$unit_name} = GREATEST(0, {$unit_name} + ({$unit_amount}))";
   }
   else
   {
@@ -59,5 +58,3 @@ function sn_admin_planet_edit_query_string($unit_id, $unit_amount, $mode)
 
   return $result;
 }
-
-?>

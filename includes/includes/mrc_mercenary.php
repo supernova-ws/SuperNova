@@ -34,7 +34,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
     $is_permanent = $mode == UNIT_PLANS || !$config->empire_mercenary_temporary;
     $cost_alliance_multiplyer = (SN_IN_ALLY === true && $mode == UNIT_PLANS ? $config->ali_bonus_members : 1);
     $cost_alliance_multiplyer = $cost_alliance_multiplyer >= 1 ? $cost_alliance_multiplyer : 1;
-    if(!in_array($mercenary_id, $sn_data['groups'][$mode == UNIT_PLANS ? 'plans' : 'mercenaries']))
+    if(!in_array($mercenary_id, sn_get_groups($mode == UNIT_PLANS ? 'plans' : 'mercenaries')))
     {
       throw new Exception($lang['mrc_msg_error_wrong_mercenary'], ERR_ERROR);
     }
@@ -164,7 +164,7 @@ function mrc_mercenary_render($user)
   $user_dark_matter = mrc_get_level($user, '', RES_DARK_MATTER);
   $cost_alliance_multiplyer = (SN_IN_ALLY === true && $mode == UNIT_PLANS ? $config->ali_bonus_members : 1);
   $cost_alliance_multiplyer = $cost_alliance_multiplyer >= 1 ? $cost_alliance_multiplyer : 1;
-  foreach($sn_data['groups'][$mode == UNIT_PLANS ? 'plans' : 'mercenaries'] as $mercenary_id)
+  foreach(sn_get_groups($mode == UNIT_PLANS ? 'plans' : 'mercenaries') as $mercenary_id)
   {
     {
       $mercenary = $sn_data[$mercenary_id];

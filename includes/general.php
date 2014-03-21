@@ -376,25 +376,29 @@ function CheckAbandonPlanetState(&$planet)
 
 function eco_get_total_cost($unit_id, $unit_level)
 {
-  global $sn_data, $config;
+  global $config;
+
+  $sn_group_resources_all = sn_get_groups('resources_all');
+  $sn_group_resources_loot = sn_get_groups('resources_loot');
 
   $rate[RES_METAL] = $config->rpg_exchange_metal;
   $rate[RES_CRYSTAL] = $config->rpg_exchange_crystal / $config->rpg_exchange_metal;
   $rate[RES_DEUTERIUM] = $config->rpg_exchange_deterium / $config->rpg_exchange_metal;
 
-  $unit_cost_data = &$sn_data[$unit_id]['cost'];
+  // $unit_cost_data = &$sn_data[$unit_id]['cost'];
+  $unit_cost_data = get_unit_param($unit_id, 'cost');
   $factor = $unit_cost_data['factor'];
   $cost_array = array(BUILD_CREATE => array(), 'total' => 0);
   $unit_level = $unit_level > 0 ? $unit_level : 0;
   foreach($unit_cost_data as $resource_id => $resource_amount)
   {
-    if(!in_array($resource_id, $sn_data['groups']['resources_all']))
+    if(!in_array($resource_id, $sn_group_resources_all))
     {
       continue;
     }
 //    $cost_array[BUILD_CREATE][$resource_id] = $resource_amount * ($factor == 1 ? $unit_level : ((pow($factor, $unit_level) - $factor) / ($factor - 1)));
     $cost_array[BUILD_CREATE][$resource_id] = $resource_amount * ($factor == 1 ? $unit_level : ((1 - pow($factor, $unit_level)) / (1 - $factor)));
-    if(in_array($resource_id, $sn_data['groups']['resources_loot']))
+    if(in_array($resource_id, $sn_group_resources_loot))
     {
       $cost_array['total'] += $cost_array[BUILD_CREATE][$resource_id] * $rate[$resource_id];
     }
@@ -468,7 +472,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
     );
     $mercenary_level = unit_get_level($unit_id, $context, array('for_update' => $for_update));
   }
-  elseif(in_array($unit_id, $sn_data['groups']['governors']))
+  elseif(in_array($unit_id, sn_get_groups('governors')))
   {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
   }
@@ -476,7 +480,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   {
     $mercenary_level = $user[$unit_db_name];
   }
-  elseif(in_array($unit_id, array_merge($sn_data['groups']['resources_loot'], $sn_data['groups']['structures'], $sn_data['groups']['fleet'], $sn_data['groups']['defense'])) || $unit_id == UNIT_SECTOR)
+  elseif(in_array($unit_id, sn_get_groups(array('resources_loot', 'structures', 'fleet', 'defense'))) || $unit_id == UNIT_SECTOR)
   {
     $mercenary_level = !empty($planet) ? $planet[$unit_db_name] : $user[$unit_db_name];
   }
@@ -715,9 +719,8 @@ function sys_redirect($url)
 function sys_get_unit_location($user, $planet, $unit_id){return sn_function_call('sys_get_unit_location', array($user, $planet, $unit_id));}
 function sn_sys_get_unit_location($user, $planet, $unit_id)
 {
-  global $sn_data;
-
-  return $sn_data[$unit_id]['location'];
+  return get_unit_param($unit_id, 'location');
+//    $sn_data[$unit_id]['location'];
 }
 
 function sn_ali_fill_user_ally(&$user)
@@ -760,9 +763,8 @@ function sn_get_url_contents($url)
 
 function get_engine_data($user, $engine_info)
 {
-  global $sn_data;
-
-  $sn_data_tech_bonus = $sn_data[$engine_info['tech']]['bonus'];
+  // $sn_data_tech_bonus = $sn_data[$engine_info['tech']]['bonus'];
+  $sn_data_tech_bonus = get_unit_param($engine_info['tech'], 'bonus');
 
   $user_tech_level = intval(mrc_get_level($user, false, $engine_info['tech']));
 
@@ -781,12 +783,10 @@ function get_engine_data($user, $engine_info)
 
 function get_ship_data($ship_id, $user)
 {
-  global $sn_data;
-
   $ship_data = array();
-  if(in_array($ship_id, $sn_data['groups']['fleet'] + $sn_data['groups']['missile']))
+  if(in_array($ship_id, sn_get_groups(array('fleet', 'missile'))))
   {
-    foreach($sn_data[$ship_id]['engine'] as $engine_info)
+    foreach(get_unit_param($ship_id, 'engine') as $engine_info)
     {
       $tech_level = intval(mrc_get_level($user, false, $engine_info['tech']));
       if(empty($ship_data) || $tech_level >= $engine_info['min_level'])
@@ -808,7 +808,7 @@ function get_ship_data($ship_id, $user)
 
     debug($ship_data);
 */
-    $ship_data['capacity'] = $sn_data[$ship_id]['capacity'];
+    $ship_data['capacity'] = get_unit_param($ship_id, 'capacity');
   }
 
   return $ship_data;
@@ -850,7 +850,7 @@ if(!function_exists('strptime'))
 
 function sn_sys_sector_buy($redirect = 'overview.php')
 {
-  global $user, $planetrow, $sn_data, $time_now;
+  global $user, $planetrow;
 
   if(!sys_get_param_str('sector_buy') || $planetrow['planet_type'] != PT_PLANET)
   {
@@ -858,17 +858,17 @@ function sn_sys_sector_buy($redirect = 'overview.php')
   }
 
   doquery("START TRANSACTION;");
-  $planetrow = sys_o_get_updated($user, $planetrow, $time_now);
+  $planetrow = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
   $user = $planetrow['user'];
   $planetrow = $planetrow['planet'];
   $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
   $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
-  if($sector_cost <= $user[$sn_data[RES_DARK_MATTER]['name']])
+  if($sector_cost <= $user[get_unit_param(RES_DARK_MATTER, 'name')])
   {
     $planet_name_text = uni_render_planet($planetrow);
     if(rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, "User {$user['username']} ID {$user['id']} purchased 1 sector on planet {$planet_name_text} planet type {$planetrow['planet_type']} ID {$planetrow['id']} for {$sector_cost} DM"))
     {
-      $sector_db_name = $sn_data[UNIT_SECTOR]['name'];
+      $sector_db_name = get_unit_param(UNIT_SECTOR, 'name'); // $sn_data[UNIT_SECTOR]['name'];
       doquery("UPDATE {{planets}} SET {$sector_db_name} = {$sector_db_name} + 1 WHERE `id` = {$planetrow['id']} LIMIT 1;");
     }
     else
@@ -1033,16 +1033,37 @@ function sys_stat_get_user_skip_list()
   return $user_skip_list;
 }
 
-function sn_get_groups($groups)
+// function render_player_nick($render_user, $options = false){return sn_function_call('render_player_nick', array($render_user, $options, &$result));}
+// function sn_render_player_nick($render_user, $options = false, &$result)
+
+function get_unit_param($unit_id, $param_name = null, $user = null, $planet = null){return sn_function_call('get_unit_param', array($unit_id, $param_name, $user, $planet, &$result));}
+function sn_get_unit_param($unit_id, $param_name = null, $user = null, $planet = null, &$result)
 {
   global $sn_data;
 
-  $result = array();
+  $result = isset($sn_data[$unit_id])
+    ? ($param_name === null
+      ? $sn_data[$unit_id]
+      : (isset($sn_data[$unit_id][$param_name]) ? $sn_data[$unit_id][$param_name] : $result)
+    )
+    : $result;
+
+  return $result;
+}
+
+function sn_get_groups($groups){return sn_function_call('sn_get_groups', array($groups, &$result));}
+function sn_sn_get_groups($groups, &$result)
+{
+//  global $sn_data;
+//pdump($groups);
+  $result = is_array($result) ? $result : array();
   foreach($groups = is_array($groups) ? $groups : array($groups) as $group_name)
   {
-    $result += isset($sn_data['groups'][$group_name]) ? $sn_data['groups'][$group_name] : array();
+    //$result += isset($sn_data[groups][$group_name]) ? $sn_data[groups][$group_name] : array();
+    $result += is_array($a_group = get_unit_param(UNIT_GROUP, $group_name)) ? $a_group : array();
+      // isset($sn_data[groups][$group_name]) ? $sn_data[groups][$group_name] : array();
   }
-
+//pdump($result);
   return $result;
 }
 
@@ -1208,9 +1229,7 @@ function sn_sys_array_cumulative_sum(&$array)
 
 function planet_density_price_chart($planet_density_index)
 {
-  global $sn_data;
-
-  $sn_data_density = &$sn_data['groups']['planet_density'];
+  $sn_data_density = sn_get_groups('planet_density');
   $density_price_chart = array(0 => array(), 1 => array());
   $reverse_flag = false;
   foreach($sn_data_density as $density_id => $density_data)
@@ -1253,7 +1272,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow)
     return array();
   }
 
-  global $lang, $sn_data;
+  global $lang;
 
   try
   {
@@ -1282,13 +1301,14 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow)
     }
 
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
-    $transmute_cost = $sn_data[UNIT_PLANET_DENSITY]['cost'][RES_DARK_MATTER] * $density_price_chart[$new_density_index];
+    $transmute_cost = get_unit_param(UNIT_PLANET_DENSITY, 'cost');
+    $transmute_cost = $transmute_cost[RES_DARK_MATTER] * $density_price_chart[$new_density_index];
     if($user_dark_matter < $transmute_cost)
     {
       throw new exception($lang['ov_core_err_no_dark_matter'], ERR_ERROR);
     }
 
-    $sn_data_planet_density = &$sn_data['groups']['planet_density'];
+    $sn_data_planet_density = sn_get_groups('planet_density'); // &$sn_data[groups]['planet_density'];
     foreach($sn_data_planet_density as $key => $value)
     {
       if($key == $new_density_index)

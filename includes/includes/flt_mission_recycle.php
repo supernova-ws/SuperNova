@@ -27,7 +27,7 @@ function flt_mission_recycle($mission_data)
 
 /*
 
-// Это надо будет вставить наверное в RestoreFleetToPlanet
+// пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ RestoreFleetToPlanet
       $Message         = sprintf( $lang['sys_tran_mess_owner'],
             $StartName, GetStartAdressLink($fleet_row, ''),
             pretty_number($fleet_row['fleet_resource_metal']), $lang['Metal'],
@@ -55,10 +55,10 @@ function flt_mission_recycle($mission_data)
   $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
   foreach($fleet_array as $unit_id => $unit_count)
   {
-    if(in_array($unit_id, $sn_data['groups']['fleet']))
+    if(in_array($unit_id, sn_get_groups('fleet')))
     {
       $capacity = $sn_data[$unit_id]["capacity"] * $unit_count;
-      if(in_array($unit_id, $sn_data['groups']['flt_recyclers']))
+      if(in_array($unit_id, sn_get_groups('flt_recyclers')))
       {
         $RecyclerCapacity += $capacity;
       }

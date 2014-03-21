@@ -53,7 +53,7 @@ if($info_action)
         }
 
         $msg_text = array();
-        foreach($sn_data['groups']['mercenaries'] as $mercenary_id)
+        foreach(sn_get_groups('mercenaries') as $mercenary_id)
         {
           $msg_text[] = "{$lang['tech'][$mercenary_id]} - " . (($mercenary_level = mrc_get_level($user_info, false, $mercenary_id)) ? "{$lang['sys_level']} {$mercenary_level}" : $lang['eco_mrk_info_not_hired']);
         }

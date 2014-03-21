@@ -49,7 +49,7 @@ foreach($show_groups as $unit_group_id => $mode)
     {
       $unit_db_name = $sn_data[$unit_id]['name'];
       $data_row = false;
-      if(in_array($unit_id, array_merge($sn_data['groups']['structures'], $sn_data['groups']['fleet'], $sn_data['groups']['defense'])))
+      if(in_array($unit_id, sn_get_groups(array('structures', 'fleet', 'defense'))))
       {
         $data_row = doquery (
         "SELECT `{$unit_db_name}` AS `current`, p.id_owner
@@ -58,7 +58,7 @@ foreach($show_groups as $unit_group_id => $mode)
         ORDER BY p.{$unit_db_name} DESC, p.id_owner
         LIMIT 1;", true);
       }
-      elseif(in_array($unit_id, $sn_data['groups']['tech']))
+      elseif(in_array($unit_id, sn_get_groups('tech')))
       {
         $data_row = doquery (
         "SELECT

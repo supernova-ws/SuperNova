@@ -16,18 +16,17 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
 {
   global $sn_data, $config;
 
-  static $sn_groups, $sn_group_modifiers, $config_resource_multiplier, $config_eco_scale_storage;//, $sn_group_structures, $base_storage_size;
+  static $sn_group_modifiers, $config_resource_multiplier, $config_eco_scale_storage;//, $sn_group_structures, $base_storage_size;
 
-  if(!$sn_groups)
+  if(!$sn_group_modifiers)
   {
-    $sn_groups = &$sn_data['groups'];
-    $sn_group_modifiers = &$sn_groups['modifiers'];
+    $sn_group_modifiers = sn_get_groups('modifiers');
     $config_resource_multiplier = $config->resource_multiplier;
     $config_eco_scale_storage = $config->eco_scale_storage ? $config_resource_multiplier : 1;
   }
 
   $caps = array();
-  foreach($sn_groups['storages'] as $unit_id)
+  foreach(sn_get_groups('storages') as $unit_id)
   {
     foreach($sn_data[$unit_id]['storage'] as $resource_id => $function)
     {
@@ -42,14 +41,15 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
     return $caps;
   }
 
-  $planet_density = &$sn_data['groups']['planet_density'][$planet_row['density_index']][UNIT_RESOURCES];
+  $sn_group_planet_density = sn_get_groups('planet_density');
+  $planet_density = $sn_group_planet_density[$planet_row['density_index']][UNIT_RESOURCES];
 
   $caps['production_full'][RES_METAL][0] = floor($config->metal_basic_income * $config_resource_multiplier * (isset($planet_density[RES_METAL]) ? $planet_density[RES_METAL] : 1));
   $caps['production_full'][RES_CRYSTAL][0] = floor($config->crystal_basic_income * $config_resource_multiplier * (isset($planet_density[RES_CRYSTAL]) ? $planet_density[RES_CRYSTAL] : 1));
   $caps['production_full'][RES_DEUTERIUM][0] = floor($config->deuterium_basic_income * $config_resource_multiplier * (isset($planet_density[RES_DEUTERIUM]) ? $planet_density[RES_DEUTERIUM] : 1));
   $caps['production_full'][RES_ENERGY][0] = floor($config->energy_basic_income * $config_resource_multiplier * (isset($planet_density[RES_ENERGY]) ? $planet_density[RES_ENERGY] : 1));
 
-  foreach($sn_groups['factories'] as $unit_id)
+  foreach(sn_get_groups('factories') as $unit_id)
   {
     $unit_data = $sn_data[$unit_id];
     $unit_level = mrc_get_level($user, $planet_row, $unit_id);

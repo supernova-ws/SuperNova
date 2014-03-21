@@ -32,7 +32,7 @@ function flt_spy_scan($target, $group_name, $section_title)
   global $lang, $sn_data, $time_now;
 
   $result = "<tr><td class=\"c\" colspan=\"4\">{$section_title}</td></tr>";
-  foreach($sn_data['groups'][$group_name] as $unit_id)
+  foreach(sn_get_groups($group_name) as $unit_id)
   {
     if($target[$sn_data[$unit_id]['name']] > 0)
     {
@@ -88,11 +88,11 @@ function flt_mission_spy($mission_data)
     if ($spy_diff >= 2)
     {
       $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'fleet', $lang['tech'][UNIT_SHIPS]) . "</div>";
-      coe_compress_add_units($sn_data['groups']['fleet'], $target_planet_row, $combat_pack[0]);
+      coe_compress_add_units(sn_get_groups('fleet'), $target_planet_row, $combat_pack[0]);
     }
     if ($spy_diff >= 3) {
       $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'defense', $lang['tech'][UNIT_DEFENCE]) . "</div>";
-      coe_compress_add_units($sn_data['groups']['defense_active'], $target_planet_row, $combat_pack[0]);
+      coe_compress_add_units(sn_get_groups('defense_active'), $target_planet_row, $combat_pack[0]);
     }
     if ($spy_diff >= 5)
     {
@@ -107,7 +107,7 @@ function flt_mission_spy($mission_data)
     $simulator_link = sn_ube_simulator_encode_replay($combat_pack, 'D');
 
     $target_unit_list = 0;
-    foreach($sn_data['groups']['fleet'] as $unit_id)
+    foreach(sn_get_groups('fleet') as $unit_id)
     {
       $target_unit_list += max(0, $target_planet_row[$sn_data[$unit_id]['name']]);
     }

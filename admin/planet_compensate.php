@@ -28,7 +28,7 @@ if($galaxy_src)
 {
   $errors = array();
 
-  $owner = doquery("SELECT * FROM {{users}} WHERE username like '{$username}'", '', true);
+  $owner = doquery("SELECT * FROM {{users}} WHERE username like '{$username}'", true);
 
   $planet = sys_o_get_updated($owner, array('galaxy' => $galaxy_src, 'system' => $system_src, 'planet' => $planet_src, 'planet_type' => 1), time());
   $que    = $planet['que'];
@@ -48,7 +48,7 @@ if($galaxy_src)
     $errors[] = $lang['adm_pl_comp_err_4'];
   }
 
-  $destination = sys_o_get_updated($owner, array('galaxy' => $galaxy_dst, 'system' => $system_dst, 'planet' => $planet_dst, 'planet_type' => 1), time());
+  $destination = sys_o_get_updated($owner, array('galaxy' => $galaxy_dst, 'system' => $system_dst, 'planet' => $planet_dst, 'planet_type' => 1), SN_TIME_NOW);
   $destination = $destination['planet'];
   if(!$destination)
   {
@@ -80,15 +80,15 @@ if($galaxy_src)
 
     killer_add_planet($planet);
 
-    $moon = doquery("SELECT * FROM {{planets}} WHERE galaxy = '{$galaxy_src}' AND system = '{$system_src}' AND planet = '{$planet_src}' AND planet_type = 3;", '', true);
+    $moon = doquery("SELECT * FROM {{planets}} WHERE galaxy = '{$galaxy_src}' AND system = '{$system_src}' AND planet = '{$planet_src}' AND planet_type = 3;", true);
     if($moon)
     {
-      $moon = sys_o_get_updated($owner, $moon, time());
+      $moon = sys_o_get_updated($owner, $moon, SN_TIME_NOW);
       $moon = $moon['planet'];
       killer_add_planet($moon);
     }
 
-    foreach($sn_data['groups']['resources_loot'] as $resource_id)
+    foreach(sn_get_groups('resources_loot') as $resource_id)
     {
       $resource_name = $sn_data[$resource_id]['name'];
       $template->assign_var("{$resource_name}_cost", $final_cost[$resource_id]);
@@ -130,52 +130,44 @@ display(parsetemplate($template, $parse), $lang['adm_pl_comp_title'], false, '',
 
 function killer_add_planet($planet)
 {
-  global $sn_data, $final_cost;
-  $sn_groups = &$sn_data['groups'];
+  global $final_cost;
 
-  foreach($sn_groups['structures'] as $unit)
+  $final_cost = array();
+  $sn_group_resources_loot = sn_get_groups('resources_loot');
+  foreach($sn_group_resources_loot as &$value)
   {
-    $build_level = $planet[$sn_data[$unit]['name']];
+    $value = get_unit_param($value, 'name');
+  }
+
+  foreach(sn_get_groups('structures') as $unit_id)
+  {
+    $build_level = $planet[get_unit_param($unit_id, 'name')];
     if($build_level > 0)
     {
-      $factor = $sn_data[$unit]['factor'];
-      foreach($sn_groups['resources_loot'] as $resource_id)
+      $unit_cost = get_unit_param($unit_id, 'cost');
+      $build_factor = $unit_cost['factor'] != 1 ? (1 - pow($unit_cost['factor'], $build_level)) / (1 - $unit_cost['factor']) : $unit_cost['factor'];
+      foreach($sn_group_resources_loot as $resource_id => $resource_name)
       {
-        $base_price = $sn_data[$unit][$sn_data[$resource_id]['name']];
-        if($base_price > 0)
-        {
-          if($factor != 1)
-          {
-            $build_factor = (1 - pow($factor, $build_level)) / (1 - $factor);
-          }
-          else
-          {
-            $build_factor = $factor;
-          }
-          $building_cost = floor($base_price * $build_factor);
-          $final_cost[$resource_id] += $building_cost;
-          //pdump(pretty_number($building_cost), "{$unit}, {$resource_id}, {$base_price}");
-        }
+        $final_cost[$resource_id] += isset($unit_cost[$resource_id]) && $unit_cost[$resource_id] > 0 ? floor($unit_cost[$resource_id] * $build_factor) : 0;
       }
     }
   }
 
-  foreach(array_merge($sn_groups['defense'], $sn_groups['fleet']) as $unit)
+  foreach(sn_get_groups(array('defense', 'fleet')) as $unit_id)
   {
-    $unit_count = $planet[$sn_data[$unit]['name']];
-    if($unit_count)
+    $unit_count = $planet[get_unit_param($unit_id, 'name')];
+    if($unit_count > 0)
     {
-      foreach($sn_groups['resources_loot'] as $resource_id)
+      $unit_cost = get_unit_param($unit_id, 'cost');
+      foreach($sn_group_resources_loot as $resource_id => $resource_name)
       {
-        $final_cost[$resource_id] += floor($sn_data[$unit][$sn_data[$resource_id]['name']] * $unit_count);
+        $final_cost[$resource_id] += isset($unit_cost[$resource_id]) && $unit_cost[$resource_id] > 0 ? floor($unit_cost[$resource_id] * $unit_count) : 0;
       }
     }
   }
 
-  foreach($sn_groups['resources_loot'] as $resource_id)
+  foreach($sn_group_resources_loot as $resource_id => $resource_name)
   {
-    $final_cost[$resource_id] += floor($planet[$sn_data[$resource_id]['name']]);
+    $final_cost[$resource_id] += floor($planet[$resource_name]);
   }
 }
-
-?>

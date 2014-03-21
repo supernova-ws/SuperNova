@@ -45,14 +45,15 @@ function eco_que_process($user, &$planet, $time_left)
 
   if($planet['que'])
   {
-    $que_types = $sn_data['groups']['ques'];
+    $que_types = sn_get_groups('ques');
     foreach($que_types as $que_type_id => &$que_type_data)
     {
       $que_type_data['time_left'] = $time_left;
       $que_type_data['unit_place'] = 0;
       $que_type_data['que_changed'] = false;
     }
-    $que_types[QUE_STRUCTURES]['unit_list'] = $sn_data['groups']['build_allow'][$planet['planet_type']];
+    $sn_groups_build_allow = sn_get_groups('build_allow');
+    $que_types[QUE_STRUCTURES]['unit_list'] = $sn_groups_build_allow[$planet['planet_type']];
 
     $que_strings = explode(';', $planet['que']);
     foreach($que_strings as $que_item_string)
@@ -132,7 +133,7 @@ function eco_que_process($user, &$planet, $time_left)
             $built[$unit_id] += $amount_to_build;
 
             $xp_incoming = 0;
-            foreach($sn_data['groups']['resources_loot'] as $resource_id)
+            foreach(sn_get_groups('resources_loot') as $resource_id)
             {
               $xp_incoming += $build_data[$resource_id] * $amount_to_build;
             }
@@ -207,8 +208,9 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
 {
   global $lang, $time_now, $sn_data;
 
-  $que_types = $sn_data['groups']['ques'];
-  $que_types[QUE_STRUCTURES]['unit_list'] = $sn_data['groups']['build_allow'][$planet['planet_type']];
+  $que_types = sn_get_groups('ques');
+  $sn_groups_build_allow = sn_get_groups('build_allow');
+  $que_types[QUE_STRUCTURES]['unit_list'] = $sn_groups_build_allow[$planet['planet_type']];
 
   $que_data  = &$que_types[$que_id];
   // We do not work with negaitve unit_amounts - hack or cheat
@@ -278,7 +280,7 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
     $que['query'] = "`que` = '{$que['string']}'";
 
     $planet['que'] = $que['string'];
-    foreach($sn_data['groups']['resources_loot'] as $resource_id)
+    foreach(sn_get_groups('resources_loot') as $resource_id)
     {
       $resource_db_name = $sn_data[$resource_id]['name'];
       $resource_change = $build_data[$build_mode][$resource_id] * $unit_amount;
@@ -320,7 +322,7 @@ function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
         $unit_amount = $que_item['AMOUNT'];
 
         $build_data = eco_get_build_data($user, $planet, $unit_id, $que_item['LEVEL'] - $build_mode);
-        foreach($sn_data['groups']['resources_loot'] as $resource_id)
+        foreach(sn_get_groups('resources_loot') as $resource_id)
         {
           $resource_change[$resource_id] += $build_data[$build_mode][$resource_id] * $unit_amount;
         }
@@ -411,7 +413,7 @@ function eco_bld_que_tech(&$user)
     $build_data = eco_get_build_data($user, $planet, $unit_id, $user[$unit_db_name] - 1);
     $build_data = $build_data[BUILD_CREATE];
     $xp_incoming = 0;
-    foreach($sn_data['groups']['resources_loot'] as $resource_id)
+    foreach(sn_get_groups('resources_loot') as $resource_id)
     {
       $xp_incoming += $build_data[$resource_id];
     }
@@ -894,7 +896,7 @@ print('<hr />');
       $unit_level_new = mrc_get_level($user, array(), $unit_id, false, true) + $unit_value;
       $build_data = eco_get_build_data($user, array(), $unit_id, $unit_level_new - 1);
       $build_data = $build_data[BUILD_CREATE];
-      foreach($sn_data['groups']['resources_loot'] as $resource_id)
+      foreach(sn_get_groups('resources_loot') as $resource_id)
       {
         $xp_incoming += $build_data[$resource_id];
       }
@@ -925,71 +927,6 @@ print('<hr />');
   sn_db_changeset_apply($db_changeset);
 
   // Сообщения о постройке
-
-
-//  $user['que'] = $user_row['que'];
-//  if(!$user['que'])
-//  {
-//    sn_db_transaction_rollback();
-//    return;
-//  }
-//
-//  $time_left = max(0, $time_now - $user['onlinetime']);
-//
-//  $planet = array('id' => $user['id_planet']);
-//
-//  $update_add = '';
-//  $que_item = $user['que'] ? explode(',', $user['que']) : array();
-//  if($que_item[QI_TIME] <= $time_left)
-//  {
-//    $unit_id = $que_item[QI_UNIT_ID];
-//    $unit_db_name = $sn_data[$unit_id]['name'];
-//
-//    $user[$unit_db_name] = $user_row[$unit_db_name];
-//    $user[$unit_db_name]++;
-//    msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_research_from'], $lang['msg_que_research_subject'], sprintf($lang['msg_que_research_message'], $lang['tech'][$unit_id], $user[$unit_db_name]));
-//
-//    /*
-//    // TODO: Re-enable quests for Alliances
-//    if(!$user['user_as_ally'] && $planet['id'])
-//    {
-//      $quest_list = qst_get_quests($user['id']);
-//      $quest_triggers = qst_active_triggers($quest_list);
-//      $quest_rewards = array();
-//      // TODO: Check mutiply condition quests
-//      $quest_trigger_list = array_keys($quest_triggers, $unit_id);
-//      foreach($quest_trigger_list as $quest_id)
-//      {
-//        if($quest_list[$quest_id]['quest_unit_amount'] <= $user[$unit_db_name] && $quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE)
-//        {
-//          $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards'];
-//          $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
-//        }
-//      }
-//      qst_reward($user, $planet, $quest_rewards, $quest_list);
-//    }
-//    */
-//
-//    $update_add = "`{$unit_db_name}` = `{$unit_db_name}` + 1, ";
-//
-//    $build_data = eco_get_build_data($user, $planet, $unit_id, $user[$unit_db_name] - 1);
-//    $build_data = $build_data[BUILD_CREATE];
-//    $xp_incoming = 0;
-//    foreach($sn_data['groups']['resources_loot'] as $resource_id)
-//    {
-//      $xp_incoming += $build_data[$resource_id];
-//    }
-//    rpg_level_up($user, RPG_TECH, $xp_incoming / 1000);
-//
-//    $que_item = array();
-//  }
-//  else
-//  {
-//    $que_item[QI_TIME] -= $time_left;
-//  }
-//
-//  $user['que'] = implode(',', $que_item);
-//  doquery("UPDATE `{{users}}` SET {$update_add}`que` = '{$user['que']}' WHERE `id` = '{$user['id']}' LIMIT 1");
   $user =   doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
   // TODO Так же пересчитывать планеты
 

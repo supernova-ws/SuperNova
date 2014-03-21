@@ -24,7 +24,7 @@ function eco_mrk_trader($user, $planetrow = null)
     RES_DARK_MATTER => $config->rpg_exchange_darkMatter
   );
 
-  $exchangeTo = in_array($exchangeTo = sys_get_param_int('exchangeTo'), $sn_data['groups']['resources_trader']) ? $exchangeTo : 0;
+  $exchangeTo = in_array($exchangeTo = sys_get_param_int('exchangeTo'), sn_get_groups('resources_trader')) ? $exchangeTo : 0;
   if($exchangeTo && is_array($tradeList = $_POST['spend']))
   {
     $value = 0;
@@ -42,7 +42,7 @@ function eco_mrk_trader($user, $planetrow = null)
       $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
     }
 
-    foreach($sn_data['groups']['resources_trader'] as $resource_id)
+    foreach(sn_get_groups('resources_trader') as $resource_id)
     {
       $amount = floatval($tradeList[$resource_id]);
       if($amount < 0)
@@ -123,7 +123,7 @@ function eco_mrk_trader($user, $planetrow = null)
     'exchangeTo' => $exchangeTo,
   ));
 
-  foreach($sn_data['groups']['resources_trader'] as $resource_id)
+  foreach(sn_get_groups('resources_trader') as $resource_id)
   {
     if($resource_id == RES_DARK_MATTER)
     {

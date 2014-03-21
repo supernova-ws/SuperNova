@@ -7,8 +7,8 @@ function qst_render_page()
   $user_id = sys_get_param_id('user_id', false);
   $mode    = sys_get_param_str('mode');
 
-  $quest_units_allowed   = array_merge($sn_data['groups']['structures'], $sn_data['groups']['tech'], $sn_data['groups']['fleet'], $sn_data['groups']['defense']);
-  $quest_reward_allowed = &$sn_data['groups']['quest_rewards'];
+  $quest_units_allowed  = sn_get_groups(array('structures', 'tech', 'fleet', 'defense'));
+  $quest_reward_allowed = sn_get_groups('quest_rewards');
 
   $in_admin = defined('IN_ADMIN') && IN_ADMIN === true;
 

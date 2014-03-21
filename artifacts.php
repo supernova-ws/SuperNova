@@ -21,8 +21,9 @@ lng_include('artifacts');
 include('includes/includes/art_artifact.php');
 
 $sn_data_dark_matter_db_name = $sn_data[RES_DARK_MATTER]['name'];
+$sn_group_artifacts = sn_get_groups('artifacts');
 
-if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_int('unit_id'), $sn_data['groups']['artifacts']))
+if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_int('unit_id'), $sn_group_artifacts))
 {
   switch($action)
   {
@@ -72,7 +73,7 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
 
 $template = gettemplate('artifacts', true);
 
-foreach($sn_data['groups']['artifacts'] as $artifact_id)
+foreach($sn_group_artifacts as $artifact_id)
 {
   $artifact_level = mrc_get_level($user, array(), $artifact_id, true);
   $build_data = eco_get_build_data($user, $planetrow, $artifact_id, $artifact_level);

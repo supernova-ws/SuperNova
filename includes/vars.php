@@ -313,7 +313,7 @@ $sn_data += array(
     'bonus_type' => BONUS_ABILITY,
   ),
 
-  'groups' => array(
+  UNIT_GROUP => array(
     // Missions
 /*
 mission = array(
@@ -322,7 +322,7 @@ mission = array(
 'DURATION' => array(duration list  in  second)/false,  //  List  of  possible durations
 'AGGRESIVE' => true/false, // Should aggresive trigger rise?
 'AJAX' => true/false, // Is mission can be launch via ajax?
-'REQUIRE' => array( // requirements for mission. Empty = any unit from $sn_data['groups']['fleet']
+'REQUIRE' => array( // requirements for mission. Empty = any unit from sn_get_groups('fleet')
   <any unit_id> => 0 // require any number
   <any unit_id> => <number> // require at least <number>
 ),
@@ -695,73 +695,73 @@ mission = array(
 );
 
 $sn_data['techtree'] = array(
-  UNIT_STRUCTURES => &$sn_data['groups']['build_allow'][PT_PLANET],
-  UNIT_STRUCTURES_SPECIAL => array_diff($sn_data['groups']['build_allow'][PT_MOON], $sn_data['groups']['build_allow'][PT_PLANET]),
-  UNIT_TECHNOLOGIES => &$sn_data['groups']['tech'],
-  UNIT_SHIPS => &$sn_data['groups']['fleet'],
-  UNIT_DEFENCE => &$sn_data['groups']['defense'],
-  UNIT_MERCENARIES => &$sn_data['groups']['mercenaries'],
-  UNIT_GOVERNORS => &$sn_data['groups']['governors'],
-  UNIT_RESOURCES => &$sn_data['groups']['resources_all'],
-  UNIT_ARTIFACTS => &$sn_data['groups']['artifacts'],
-  UNIT_PLANS => &$sn_data['groups']['plans'],
+  UNIT_STRUCTURES => &$sn_data[UNIT_GROUP]['build_allow'][PT_PLANET],
+  UNIT_STRUCTURES_SPECIAL => array_diff($sn_data[UNIT_GROUP]['build_allow'][PT_MOON], $sn_data[UNIT_GROUP]['build_allow'][PT_PLANET]),
+  UNIT_TECHNOLOGIES => &$sn_data[UNIT_GROUP]['tech'],
+  UNIT_SHIPS => &$sn_data[UNIT_GROUP]['fleet'],
+  UNIT_DEFENCE => &$sn_data[UNIT_GROUP]['defense'],
+  UNIT_MERCENARIES => &$sn_data[UNIT_GROUP]['mercenaries'],
+  UNIT_GOVERNORS => &$sn_data[UNIT_GROUP]['governors'],
+  UNIT_RESOURCES => &$sn_data[UNIT_GROUP]['resources_all'],
+  UNIT_ARTIFACTS => &$sn_data[UNIT_GROUP]['artifacts'],
+  UNIT_PLANS => &$sn_data[UNIT_GROUP]['plans'],
 );
 
 //All resources
-$sn_data['groups']['all'] = array_merge($sn_data['groups']['structures'], $sn_data['groups']['tech'], $sn_data['groups']['fleet'], $sn_data['groups']['defense'], $sn_data['groups']['mercenaries']);
+$sn_data[UNIT_GROUP]['all'] = array_merge($sn_data[UNIT_GROUP]['structures'], $sn_data[UNIT_GROUP]['tech'], $sn_data[UNIT_GROUP]['fleet'], $sn_data[UNIT_GROUP]['defense'], $sn_data[UNIT_GROUP]['mercenaries']);
 
-$sn_data['groups']['ques'] = array(
+$sn_data[UNIT_GROUP]['ques'] = array(
   QUE_STRUCTURES => array(
-    'unit_list' => $sn_data['groups']['structures'],
+    'unit_list' => $sn_data[UNIT_GROUP]['structures'],
     'length' => 5,
     'mercenary' => MRC_ENGINEER,
     'que' => QUE_STRUCTURES,
   ),
 
   QUE_HANGAR => array(
-    'unit_list' => array_merge($sn_data['groups']['fleet'], $sn_data['groups']['defense']),
+    'unit_list' => array_merge($sn_data[UNIT_GROUP]['fleet'], $sn_data[UNIT_GROUP]['defense']),
     'length' => 10,
     'mercenary' => MRC_ENGINEER,
     'que' => QUE_HANGAR,
   ),
 
   QUE_RESEARCH => array(
-    'unit_list' => $sn_data['groups']['tech'],
+    'unit_list' => $sn_data[UNIT_GROUP]['tech'],
     'length' => 1,
     'mercenary' => MRC_ACADEMIC,
     'que' => QUE_RESEARCH,
   )
 );
 
-$sn_data['groups']['subques'] = array(
+$sn_data[UNIT_GROUP]['subques'] = array(
   SUBQUE_PLANET => array(
     'que' => QUE_STRUCTURES,
     'mercenary' => MRC_ENGINEER,
-    'unit_list' => $sn_data['groups']['build_allow'][PT_PLANET],
+    'unit_list' => $sn_data[UNIT_GROUP]['build_allow'][PT_PLANET],
   ),
 
   SUBQUE_MOON => array(
     'que' => QUE_STRUCTURES,
     'mercenary' => MRC_ENGINEER,
-    'unit_list' => $sn_data['groups']['build_allow'][PT_MOON],
+    'unit_list' => $sn_data[UNIT_GROUP]['build_allow'][PT_MOON],
   ),
 
   SUBQUE_FLEET => array(
     'que' => QUE_HANGAR,
     'mercenary' => MRC_ENGINEER,
-    'unit_list' => $sn_data['groups']['fleet'],
+    'unit_list' => $sn_data[UNIT_GROUP]['fleet'],
   ),
 
   SUBQUE_DEFENSE => array(
     'que' => QUE_HANGAR,
     'mercenary' => MRC_FORTIFIER,
-    'unit_list' => $sn_data['groups']['defense'],
+    'unit_list' => $sn_data[UNIT_GROUP]['defense'],
   ),
 
   SUBQUE_RESEARCH => array(
     'que' => QUE_RESEARCH,
     'mercenary' => MRC_ACADEMIC,
-    'unit_list' => $sn_data['groups']['tech'],
+    'unit_list' => $sn_data[UNIT_GROUP]['tech'],
   ),
 );
 

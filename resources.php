@@ -57,6 +57,7 @@ if(!empty($transmutation_result))
   $template->assign_block_vars('result', $transmutation_result); // array('STATUS' => $transmutation_result['STATUS'], 'MESSAGE' => $transmutation_result['MESSAGE']));
 }
 
+$sn_group_factories = sn_get_groups('factories');
 $production = $_POST['production'];
 $SubQry     = '';
 if(is_array($production))
@@ -70,7 +71,7 @@ if(is_array($production))
     }
 
     $prod_id = intval($prod_id);
-    if(in_array($prod_id, $sn_data['groups']['factories']))
+    if(in_array($prod_id, $sn_group_factories))
     {
       $field_name              = "{$sn_data[$prod_id]['name']}_porcent";
       $percent                 = floor($percent / 10);
@@ -113,7 +114,7 @@ $template->assign_block_vars('production', array(
   'ENERGY_TYPE'    => pretty_number($caps_real['production'][RES_ENERGY][0], true, true),
 ));
 
-foreach($sn_data['groups']['factories'] as $unit_id)
+foreach($sn_group_factories as $unit_id)
 {
   $resource_db_name = $sn_data[$unit_id]['name'];
   if($planetrow[$resource_db_name] > 0 && isset($sn_data[$unit_id]))

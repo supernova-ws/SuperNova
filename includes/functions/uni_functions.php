@@ -167,7 +167,7 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
     9250 => array(RES_METAL => 4.00, RES_CRYSTAL => 0.25, RES_DEUTERIUM => 0.25),  // Тяжмет
   );
   */
-  $planet_density = &$sn_data['groups']['planet_density'];
+  $planet_density = sn_get_groups('planet_density');
   $density_min = reset($planet_density);
   $density_min = $density_min[UNIT_PLANET_DENSITY];
   $density_max = end($planet_density);

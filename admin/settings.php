@@ -93,7 +93,6 @@ if(sys_get_param('save'))
   $config->empire_mercenary_base_period = sys_get_param_int('empire_mercenary_base_period');
   if($config->empire_mercenary_temporary != sys_get_param_int('empire_mercenary_temporary'))
   {
-    //$mercenaries_string = implode(',', $sn_data['groups']['mercenaries']);
     if($config->empire_mercenary_temporary)
     {
       // doquery("DELETE FROM {{powerup}} WHERE powerup_time_finish > 0 AND powerup_time_finish <= {$time_now} AND powerup_unit_id IN ({$mercenaries_string});");

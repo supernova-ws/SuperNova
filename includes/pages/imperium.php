@@ -15,12 +15,13 @@ $sn_mvc['view']['imperium'][] = 'sn_imperium_view';
 
 function sn_imperium_view($template = null)
 {
-  global $user, $time_now, $sn_data, $lang, $template_result;
+  global $user, $time_now, $lang, $template_result;
 
   $planets = array();
   $ques = array();
 
   //$planet_row_list = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
+  $sn_group_factories = sn_get_groups('factories');
 
   if(sys_get_param('save_production'))
   {
@@ -32,11 +33,12 @@ function sn_imperium_view($template = null)
       $planet_row_list = SortUserPlanets($user, false, '*');
       while($planet = mysql_fetch_assoc($planet_row_list))
       {
-        foreach($sn_data['groups']['factories'] as $factory_unit_id)
+        foreach($sn_group_factories as $factory_unit_id)
         {
-          if(isset($production[$factory_unit_id][$planet['id']]) && ($actual_porcent = intval($production[$factory_unit_id][$planet['id']] / 10)) >=0 && $actual_porcent <= 10 &&  $actual_porcent != $planet[$unit_db_name = $sn_data[$factory_unit_id]['name'] . '_porcent'])
+          $unit_db_name_porcent = get_unit_param($factory_unit_id, 'name') . '_porcent'; // $sn_data[$factory_unit_id]['name'];
+          if(isset($production[$factory_unit_id][$planet['id']]) && ($actual_porcent = intval($production[$factory_unit_id][$planet['id']] / 10)) >=0 && $actual_porcent <= 10 && $actual_porcent != $planet[$unit_db_name_porcent])
           {
-            $query[$planet['id']][] = "{$unit_db_name} = {$actual_porcent}";
+            $query[$planet['id']][] = "{$unit_db_name_porcent} = {$actual_porcent}";
           }
         }
       }
@@ -145,20 +147,21 @@ function sn_imperium_view($template = null)
     $template->assign_block_vars('prods', array(
       'NAME' => $lang['tech'][$unit_group_id],
     ));
-    $unit_group = &$sn_data['techtree'][$unit_group_id];
+    // $unit_group = &$sn_data['techtree'][$unit_group_id];
+    $unit_group = get_unit_param('techtree', $unit_group_id);
     foreach($unit_group as $unit_id)
     {
       $unit_count = $unit_count_abs = 0;
       $block_vars = array();
-      $unit_is_factory = in_array($unit_id, $sn_data['groups']['factories']);
+      $unit_is_factory = in_array($unit_id, $sn_group_factories);
+      $unit_db_name = get_unit_param($unit_id, 'name');
       foreach($planets as $planet)
       {
         $level_plus['FACTORY'] = $unit_is_factory;
         $level_plus['LEVEL_PLUS_YELLOW'] = 0;
         $level_plus['LEVEL_PLUS_GREEN'] = 0;
-        $unit_db_name = $sn_data[$unit_id]['name'];
 
-        $level_plus['PERCENT'] = $unit_is_factory ? ($planet[$unit_db_name] ? $planet["{$sn_data[$unit_id]['name']}_porcent"] * 10 : -1) : -1;
+        $level_plus['PERCENT'] = $unit_is_factory ? ($planet[$unit_db_name] ? $planet["{$unit_db_name}_porcent"] * 10 : -1) : -1;
         switch($mode)
         {
           case 'structures':
@@ -200,7 +203,7 @@ function sn_imperium_view($template = null)
       {
         $template->assign_block_vars('prods', array(
           'ID'    => $unit_id,
-          'FIELD' => $sn_data[$unit_id]['name'],
+          'FIELD' => $unit_db_name,
           'NAME'  => $lang['tech'][$unit_id],
           'MODE'  => $mode,
         ));

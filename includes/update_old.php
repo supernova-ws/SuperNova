@@ -1336,7 +1336,7 @@ switch($new_version)
       while($user_row = mysql_fetch_assoc($user_list))
       {
         $update_query_str = '';
-        foreach($sn_data['groups']['mercenaries'] as $mercenary_id)
+        foreach(sn_get_groups('mercenaries') as $mercenary_id)
         {
           $mercenary_data_name = $sn_data[$mercenary_id]['name'];
           if($mercenary_level = $user_row[$mercenary_data_name])

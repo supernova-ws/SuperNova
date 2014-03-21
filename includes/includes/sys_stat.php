@@ -56,7 +56,7 @@ function sys_stat_calculate()
 
   $user_skip_list = sys_stat_get_user_skip_list();
 
-  $sn_groups_resources_loot = &$sn_data['groups']['resources_loot'];
+  $sn_groups_resources_loot = sn_get_groups('resources_loot');
   $rate[RES_METAL] = $config->rpg_exchange_metal;
   $rate[RES_CRYSTAL] = $config->rpg_exchange_crystal / $config->rpg_exchange_metal;
   $rate[RES_DEUTERIUM] = $config->rpg_exchange_deterium / $config->rpg_exchange_metal;
@@ -143,7 +143,7 @@ function sys_stat_calculate()
     $planet_points = 0;
 
     $point_counter = $amount_counter = 0;
-    foreach($sn_data['groups']['structures'] as $unit_id)
+    foreach(sn_get_groups('structures') as $unit_id)
     {
       $unit_level = $planet_row[$sn_data[$unit_id]['name']];
       if($unit_level > 0)
@@ -159,7 +159,7 @@ function sys_stat_calculate()
     $counts[$user_id]['structures'] += $amount_counter;
 
     $point_counter = $amount_counter = 0;
-    foreach($sn_data['groups']['defense'] as $unit_id)
+    foreach(sn_get_groups('defense') as $unit_id)
     {
       $unit_amount = $planet_row[$sn_data[$unit_id]['name']];
       if($unit_amount > 0)
@@ -173,7 +173,7 @@ function sys_stat_calculate()
     $counts[$user_id]['defs'] += $amount_counter;
 
     $point_counter = $amount_counter = 0;
-    foreach($sn_data['groups']['fleet'] as $unit_id)
+    foreach(sn_get_groups('fleet') as $unit_id)
     {
       $unit_amount = $planet_row[$sn_data[$unit_id]['name']];
       if($unit_amount > 0)
@@ -219,23 +219,20 @@ function sys_stat_calculate()
       continue;
     }
 
-    if(!in_array($unit_id = $tech_row['unit_snid'], $sn_data['groups']['tech']))
+    if(!in_array($unit_id = $tech_row['unit_snid'], sn_get_groups('tech')))
     {
       continue;
     }
 
     $TechCounts = 0;
     $TechPoints = 0;
-//    foreach($sn_data['groups']['tech'] as $unit_id)
+    $unit_level = $tech_row['unit_level'];
+    if($unit_level > 0)
     {
-      $unit_level = $tech_row['unit_level'];
-      if($unit_level > 0)
-      {
-        $unit_cost_data = $sn_data[$unit_id]['cost'];
-        $f = $unit_cost_data['factor'];
-        $TechPoints += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * (pow($f, $unit_level) - $f) / ($f - 1);
-        $TechCounts += $unit_level;
-      }
+      $unit_cost_data = $sn_data[$unit_id]['cost'];
+      $f = $unit_cost_data['factor'];
+      $TechPoints += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * (pow($f, $unit_level) - $f) / ($f - 1);
+      $TechCounts += $unit_level;
     }
     $points[$user_id]['tech'] += $TechPoints / 1000;
     $counts[$user_id]['tech'] += $TechCounts;
@@ -252,23 +249,6 @@ function sys_stat_calculate()
     {
       continue;
     }
-/*
-    $TechCounts = 0;
-    $TechPoints = 0;
-    foreach($sn_data['groups']['tech'] as $unit_id)
-    {
-      $unit_level = $user_row[$sn_data[$unit_id]['name']];
-      if($unit_level > 0)
-      {
-        $unit_cost_data = $sn_data[$unit_id]['cost'];
-        $f = $unit_cost_data['factor'];
-        $TechPoints += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * (pow($f, $unit_level) - $f) / ($f - 1);
-        $TechCounts += $unit_level;
-      }
-    }
-    $points[$user_id]['tech'] = $TechPoints / 1000;
-    $counts[$user_id]['tech'] = $TechCounts;
-*/
     $points[$user_id] = array_map('floor', $points[$user_id]);
 
     $GPoints = array_sum($points[$user_id]);
@@ -366,5 +346,3 @@ function sys_stat_calculate()
 
 //  doquery('COMMIT');
 }
-
-?>

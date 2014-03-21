@@ -368,9 +368,9 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
   }
   else
   {
-    $mission_data = $sn_data['groups']['missions'][$fleet_row['fleet_mission']];
+    $sn_groups_missions = sn_get_groups('missions');
+    $mission_data = $sn_groups_missions[$fleet_row['fleet_mission']];
 
-// � ����� ���� ���������, ����� ����� ������ � ���������� ������ ��
     $source = array('planet_hash' => '', 'user_id' => 0);
     if($mission_data['src_planet'])
     {

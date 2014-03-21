@@ -117,7 +117,7 @@ $time_now_parsed = getdate($time_now);
 $recycler_info = array();
 $planet_recyclers_orbiting = 0;
 $recyclers_fleet = array();
-foreach($sn_data['groups']['flt_recyclers'] as $recycler_id)
+foreach(sn_get_groups('flt_recyclers') as $recycler_id)
 {
   $recycler_info[$recycler_id] = get_ship_data($recycler_id, $user);
   $recyclers_fleet[$recycler_id] = mrc_get_level($user, $planetrow, $recycler_id);
@@ -322,7 +322,7 @@ debug($uni_galaxyRowPlanet['debris_will_gather_percent'], 'debris_will_gather_pe
 
 tpl_assign_fleet($template, $fleets);
 
-foreach($sn_data['groups']['defense_active'] as $unit_id)
+foreach(sn_get_groups('defense_active') as $unit_id)
 {
   $template->assign_block_vars('defense_active', array(
     'ID' => $unit_id,

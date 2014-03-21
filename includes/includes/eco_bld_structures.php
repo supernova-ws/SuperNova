@@ -23,7 +23,8 @@ function eco_build($que_type, $user, &$planet, $que)
 
   // Caching values that used more then one time into local variables
   $config_resource_multiplier = $config->resource_multiplier;
-  $planet_type_structs = $sn_data['groups']['build_allow'][$planet['planet_type']];
+  $a_group = sn_get_groups('build_allow');
+  $planet_type_structs = $a_group[$planet['planet_type']];
 
   // Getting parameters
   $action     = sys_get_param_escaped('action');
@@ -75,7 +76,8 @@ function eco_build($que_type, $user, &$planet, $que)
   //$planet_temp_max       = $planet['temp_max'];
   $sn_modifiers_resource = sn_get_groups('modifiers');
   $sn_modifiers_resource = $sn_modifiers_resource[MODIFIER_RESOURCE_PRODUCTION];
-  $density_info = $sn_data['groups']['planet_density'][$planet['density_index']][UNIT_RESOURCES];
+  $sn_groups_density = sn_get_groups('planet_density');
+  $density_info = $sn_groups_density[$planet['density_index']][UNIT_RESOURCES];
 
   foreach($planet_type_structs as $Element)
   {

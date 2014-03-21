@@ -38,7 +38,7 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
   else
   {
     // REALLY random attack
-    $can_be_damaged = $sn_data['groups']['defense_active'];
+    $can_be_damaged = sn_get_groups('defense_active');
 //debug($structures);
 //debug($can_be_damaged);
     do
@@ -123,7 +123,7 @@ function coe_o_missile_calculate()
     if ($target_planet_row['id'])
     {
       $planetDefense = array();
-      foreach($sn_data['groups']['defense_active'] as $unit_id)
+      foreach(sn_get_groups('defense_active') as $unit_id)
       {
         $planetDefense[$unit_id] = array($target_planet_row[$sn_data[$unit_id]['name']]);
       }

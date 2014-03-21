@@ -491,7 +491,7 @@ switch($new_version)
       {
         $que_data = explode(',', $que_row['que']);
 
-        if(!in_array($que_data[QI_UNIT_ID], $sn_data['groups']['tech']))
+        if(!in_array($que_data[QI_UNIT_ID], sn_get_groups('tech')))
         {
           continue;
         }
@@ -558,9 +558,10 @@ switch($new_version)
       $que_lines = array();
       $user_query = upd_do_query("SELECT * FROM {{users}}");
       upd_add_more_time(300);
+      $sn_group_tech = sn_get_groups('tech');
       while($user_row = mysql_fetch_assoc($user_query))
       {
-        foreach($sn_data['groups']['tech'] as $tech_id)
+        foreach($sn_group_tech as $tech_id)
         {
           if($tech_level = intval($user_row[$sn_data[$tech_id]['name']]))
           {
@@ -585,7 +586,7 @@ switch($new_version)
         "ADD KEY `I_unit_record_search` (`unit_snid`,`unit_player_id`,`unit_level` DESC,`unit_id`)",
       ), !$update_indexes['unit']['I_unit_record_search']);
 
-      foreach(array_merge($sn_data['groups']['structures'], $sn_data['groups']['fleet'], $sn_data['groups']['defense']) as $unit_id)
+      foreach(sn_get_groups(array('structures', 'fleet', 'defense')) as $unit_id)
       {
         $planet_units[$sn_data[$unit_id]['name']] = 1;
       }
@@ -674,7 +675,7 @@ switch($new_version)
       upd_alter_table('unit', "ADD KEY `I_unit_player_location_snid` (`unit_player_id`, `unit_location_type`, `unit_location_id`, `unit_snid`)", !$update_indexes['unit']['I_unit_player_location_snid']);
       upd_alter_table('unit', "DROP KEY `I_unit_player_id_temporary`", $update_indexes['unit']['I_unit_player_id_temporary']);
 
-      $sn_data_artifacts = &$sn_data['groups']['artifacts'];
+      $sn_data_artifacts = sn_get_groups('artifacts');
       $db_changeset = array();
 
       $query = upd_do_query("SELECT `id`, `player_artifact_list` FROM {{users}} WHERE `player_artifact_list` IS NOT NULL AND `player_artifact_list` != '' FOR UPDATE");

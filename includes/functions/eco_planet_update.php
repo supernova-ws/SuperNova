@@ -92,7 +92,8 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   }
 
   $planet['field_current'] = 0;
-  foreach($sn_data['groups']['build_allow'][$planet['planet_type']] as $building_id)
+  $sn_group_build_allow = sn_get_groups('build_allow');
+  foreach($sn_group_build_allow[$planet['planet_type']] as $building_id)
   {
     $planet['field_current'] += $planet[$sn_data[$building_id]['name']];
   }

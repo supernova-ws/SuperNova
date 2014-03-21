@@ -106,7 +106,6 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
 
   $rpg_exchange_deuterium = $config->rpg_exchange_deuterium;
 
-  $sn_groups = &$sn_data['groups'];
   $unit_data = &$sn_data[$unit_id];
   $unit_db_name = &$unit_data['name'];
 
@@ -132,7 +131,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $cost[BUILD_CREATE][$resource_id] = floor($resource_cost);
     $cost[BUILD_DESTROY][$resource_id] = floor($resource_cost / 2);
 
-    if(in_array($resource_id, $sn_groups['resources_loot']))
+    if(in_array($resource_id, sn_get_groups('resources_loot')))
     {
       $time += $resource_cost * $config->__get("rpg_exchange_{$sn_data[$resource_id]['name']}") / $rpg_exchange_deuterium;
       $resource_got = $planet[$sn_data[$resource_id]['name']];
@@ -190,7 +189,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
 
   $mercenary = 0;
   $cost['RESULT'][BUILD_DESTROY] = BUILD_INDESTRUCTABLE;
-  if(in_array($unit_id, $sn_groups['structures']))
+  if(in_array($unit_id, sn_get_groups('structures')))
   {
     $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_ROBOT) + 1);
     $mercenary = MRC_ENGINEER;
@@ -202,18 +201,18 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
           )
         : BUILD_NO_UNITS;
   }
-  elseif(in_array($unit_id, $sn_groups['tech']))
+  elseif(in_array($unit_id, sn_get_groups('tech')))
   {
     $lab_level = eco_get_lab_max_effective_level($user, intval($unit_data['require'][STRUC_LABORATORY]));
     $time = $time / $lab_level;
     $mercenary = MRC_ACADEMIC;
   }
-  elseif(in_array($unit_id, $sn_groups['defense']))
+  elseif(in_array($unit_id, sn_get_groups('defense')))
   {
     $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1) ;
     $mercenary = MRC_FORTIFIER;
   }
-  elseif(in_array($unit_id, $sn_groups['fleet']))
+  elseif(in_array($unit_id, sn_get_groups('fleet')))
   {
     $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1);
     $mercenary = MRC_ENGINEER;
@@ -224,7 +223,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $time = $time / mrc_modify_value($user, $planet, $mercenary, 1);
   }
 
-  $time = ($time >= 1) ? $time : (in_array($unit_id, $sn_groups['governors']) ? 0 : 1);
+  $time = ($time >= 1) ? $time : (in_array($unit_id, sn_get_groups('governors')) ? 0 : 1);
   $cost[RES_TIME][BUILD_CREATE]  = floor($time);
   $cost[RES_TIME][BUILD_DESTROY] = $time <= 1 ? 1 : floor($time / 2);
 

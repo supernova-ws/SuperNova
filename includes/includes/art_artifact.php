@@ -4,7 +4,7 @@ function art_use(&$user, &$planetrow, $unit_id)
 {
   global $sn_data, $lang;
 
-  if(!in_array($unit_id, $sn_data['groups']['artifacts']))
+  if(!in_array($unit_id, sn_get_groups('artifacts')))
   {
     return;
   }

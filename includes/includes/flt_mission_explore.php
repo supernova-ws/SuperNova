@@ -498,7 +498,7 @@ function flt_mission_explore($mission_data)
   } elseif ($outcome >= 8 && $outcome < 11) {
     // Gain de vaisseaux
     $FoundChance = $FleetPoints / $FleetCount;
-    foreach($sn_data['groups']['fleet'] as $Ship)
+    foreach(sn_get_groups('fleet') as $Ship)
     {
       if ($LaFlotte[$Ship] != 0) {
         $FoundShip[$Ship] = round($LaFlotte[$Ship] * $ship_gain_ratio[$Ship]);

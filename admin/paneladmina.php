@@ -87,7 +87,7 @@ if (isset($GET_result)) {
 
       $parse['adm_sub_form3']  = "<table><tbody>";
       $parse['adm_sub_form3'] .= "<tr><td colspan=\"4\" class=\"c\">".$lang['adm_technos']."</td></tr>";
-      foreach($sn_data['groups']['tech'] as $Item)
+      foreach(sn_get_groups('tech') as $Item)
       {
         $parse['adm_sub_form3'] .= "<tr><th>".$lang['tech'][$Item]."</th>";
         $parse['adm_sub_form3'] .= "<th>".$SelUser[$sn_data[$Item]['name']]."</th></tr>";

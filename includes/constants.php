@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '38d0');
+define('SN_VERSION', '38d1');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -595,19 +595,11 @@ define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачив
 
 // !!! Next unit start on 3000 !!!
 
-
 define('UNIT_PLAYER_COLONIES_CURRENT', 'COLONIES_CURRENT');
 define('UNIT_PLAYER_COLONIES_MAX', 'COLONIES_MAX');
 define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 
-// === Unit types // TODO - convert to GROUP_xxx constants
-//define('UNIT_STRUCTURE', 0);
-//define('UNIT_RESEARCH' , 1);
-//define('UNIT_SHIP'     , 2);
-//define('UNIT_DEFENSE'  , 4);
-//define('UNIT_MISSILE'  , 5);
-//define('UNIT_MERCENARY', 6);
-//define('UNIT_RESOURCE' , 9);
+define('UNIT_GROUP', 'groups'); // 10000
 
 
 define('SNC_VER_NEVER', -1);

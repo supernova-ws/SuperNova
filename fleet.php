@@ -89,7 +89,7 @@ switch ($fleet_page)
 
     foreach($fleetarray as $ship_id => &$ship_amount)
     {
-      if(!in_array($ship_id, $sn_data['groups']['fleet']) || (string)floatval($ship_amount) != $ship_amount || $ship_amount < 1)
+      if(!in_array($ship_id, sn_get_groups('fleet')) || (string)floatval($ship_amount) != $ship_amount || $ship_amount < 1)
       {
         $debug->warning('Supplying wrong ship in ship list on fleet page', 'Hack attempt', 302, array('base_dump' => true));
         die();
@@ -139,7 +139,7 @@ switch ($fleet_page)
       else
       {
         $recyclers = 0;
-        foreach($sn_data['groups']['flt_recyclers'] as $recycler_id)
+        foreach(sn_get_groups('flt_recyclers') as $recycler_id)
         {
           $recyclers += $fleetarray[$recycler_id];
         }
@@ -224,9 +224,10 @@ $template_result += array(
 $is_transport_missions = false;
 if($missiontype)
 {
+  $sn_group_missions = sn_get_groups('missions');
   foreach($missiontype as $mission_data_id => $mission_data)
   {
-    $is_transport_missions = $is_transport_missions || (isset($sn_data['groups']['missions'][$mission_data_id]['transport']) && $sn_data['groups']['missions'][$mission_data_id]['transport']);
+    $is_transport_missions = $is_transport_missions || (isset($sn_group_missions[$mission_data_id]['transport']) && $sn_group_missions[$mission_data_id]['transport']);
   }
 }
 

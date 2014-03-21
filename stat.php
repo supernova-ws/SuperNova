@@ -9,11 +9,12 @@
 
 function stat_tpl_assign(&$template, $selected, $array_name, $array)
 {
-  global $who, $sn_data, $lang;
+  global $who, $lang;
 
+  $sn_group_stat_common = sn_get_groups('STAT_COMMON');
   foreach($array as $key => $value)
   {
-    if($array_name == 'type' && $who == 2 && !in_array($key, $sn_data['groups']['STAT_COMMON'])) // $key > 6 && 
+    if($array_name == 'type' && $who == 2 && !in_array($key, $sn_group_stat_common)) // $key > 6 &&
     {
       continue;
     }
@@ -34,9 +35,10 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('stat');
 
+$sn_group_stat_common = sn_get_groups('STAT_COMMON');
 $who = sys_get_param_int('who', 1);
 $type = sys_get_param_int('type');
-$type = $who != 1 && !in_array($type, $sn_data['groups']['STAT_COMMON']) ? 1 : $type;
+$type = $who != 1 && !in_array($type, $sn_group_stat_common) ? 1 : $type;
 $range = sys_get_param_int('range', 1);
 
 $template = gettemplate('stat_statistics', true);
@@ -124,7 +126,7 @@ $start = floor($range / 100 % 100) * 100;
 
 if($who == 1)
 {
-  if(in_array($type, $sn_data['groups']['STAT_COMMON']))
+  if(in_array($type, $sn_group_stat_common))
   {
     $query_str = 
     "SELECT

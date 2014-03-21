@@ -32,7 +32,8 @@ if(!uni_coordinates_valid($target_coord))
 }
 
 $target_mission = sys_get_param_int('mission');
-if(!isset($sn_data['groups']['missions'][$target_mission]['AJAX']) || !$sn_data['groups']['missions'][$target_mission]['AJAX'])
+$sn_group_missions = sn_get_groups('missions');
+if(!isset($sn_group_missions[$target_mission]['AJAX']) || !$sn_group_missions[$target_mission]['AJAX'])
 {
   die($lang['gs_c00']);
 }
@@ -65,7 +66,7 @@ switch($target_mission)
   break;
 
   case MT_RECYCLE:
-    foreach($sn_data['groups']['flt_recyclers'] as $unit_id)
+    foreach(sn_get_groups('flt_recyclers') as $unit_id)
     {
       if($unit_count = mrc_get_level($user, $planetrow, $unit_id))
       {

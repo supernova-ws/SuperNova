@@ -57,7 +57,7 @@ function tpl_parse_fleet_sn($fleet, $fleet_id)
 
   foreach ($fleet as $ship_id => $ship_amount)
   {
-    if(in_array($ship_id, $sn_data['groups']['fleet']))
+    if(in_array($ship_id, sn_get_groups('fleet')))
     {
       $single_ship_data = get_ship_data($ship_id, $user_data);
       $return['ships'][$ship_id] = array(
@@ -244,8 +244,7 @@ function flt_get_fleets_to_planet($planet, $fleet_db_list = 0)
     return $planet;
   }
 
-  global $user, $sn_data;
-  $sn_groups = &$sn_data['groups'];
+  global $user;
 
   if($fleet_db_list === 0)
   {
@@ -288,7 +287,7 @@ function flt_get_fleets_to_planet($planet, $fleet_db_list = 0)
       $fleet_sn = sys_unit_str2arr($fleet['fleet_array']);
       foreach($fleet_sn as $ship_id => $ship_amount)
       {
-        if(in_array($ship_id, $sn_groups['fleet']))
+        if(in_array($ship_id, sn_get_groups('fleet')))
         {
           $fleet_list[$fleet_ownage]['total'][$ship_id] += $ship_amount;
         }

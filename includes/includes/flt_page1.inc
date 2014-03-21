@@ -19,7 +19,7 @@ if(!is_array($ships))
 
 foreach ($ships as $ship_id => $ship_count)
 {
-  if(in_array($ship_id, $sn_data['groups']['fleet']) && $ship_count)
+  if(in_array($ship_id, sn_get_groups('fleet')) && $ship_count)
   {
     if($ship_count > $planetrow[$sn_data[$ship_id]['name']])
     {

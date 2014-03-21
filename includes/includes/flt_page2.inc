@@ -51,14 +51,15 @@ function sn_fleet_page2()
   );
   $TableTitle = uni_render_planet_full($planetrow) . '&nbsp;=&gt;&nbsp;' . uni_render_planet_full($temp);
 
+  $sn_group_resources = sn_get_groups('resources');
   for($i = 0; $i<3; $i++)
   {
-    $amount = $planetrow[$sn_data['groups']['resources'][$i]] - ($i == 2 ? $consumption : 0);
+    $amount = $planetrow[$sn_group_resources[$i]] - ($i == 2 ? $consumption : 0);
     $template->assign_block_vars('resources', array(
       'ID' => $i,
       'ON_PLANET' => floor($amount),
       'TEXT' => pretty_number($amount),
-      'NAME' => $lang['sys_' . $sn_data['groups']['resources'][$i]],
+      'NAME' => $lang['sys_' . $sn_group_resources[$i]],
     ));
   }
 

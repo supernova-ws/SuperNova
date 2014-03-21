@@ -173,7 +173,7 @@ switch($mode)
       }
     }
     elseif(
-      ($hire = sys_get_param_int('hire')) && in_array($hire, $sn_data['groups']['governors'])
+      ($hire = sys_get_param_int('hire')) && in_array($hire, sn_get_groups('governors'))
       && (
         !isset($sn_data[$hire]['max']) ||
         ($planetrow['PLANET_GOVERNOR_ID'] != $hire) ||
@@ -211,7 +211,7 @@ switch($mode)
 
     lng_include('mrc_mercenary');
     int_planet_pretemplate($planetrow, $template);
-    foreach($sn_data['groups']['governors'] as $governor_id)
+    foreach(sn_get_groups('governors') as $governor_id)
     {
       if($planetrow['planet_type'] == PT_MOON && $governor_id == MRC_TECHNOLOGIST)
       {
@@ -357,19 +357,20 @@ switch($mode)
     $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
 
     $planet_recyclers_orbiting = 0;
-    foreach($sn_data['groups']['flt_recyclers'] as $recycler_id)
+    foreach(sn_get_groups('flt_recyclers') as $recycler_id)
     {
       $planet_recyclers_orbiting += mrc_get_level($user, $planetrow, $recycler_id);
     }
 
     int_planet_pretemplate($planetrow, $template);
 
-    foreach(array(QUE_STRUCTURES => $sn_data['groups']['ques'][QUE_STRUCTURES]) as $que_id => $que_type_data)
+    $sn_group_ques = sn_get_groups('ques');
+    foreach(array(QUE_STRUCTURES => $sn_group_ques[QUE_STRUCTURES]) as $que_id => $que_type_data)
     {
       $template->assign_block_vars('ques', array(
-        ID     => $que_id,
-        NAME   => $lang['sys_ques'][$que_id],
-        LENGTH => count($que['que'][$que_id]),
+        'ID'     => $que_id,
+        'NAME'   => $lang['sys_ques'][$que_id],
+        'LENGTH' => count($que['que'][$que_id]),
       ));
 
       if($que['que'][$que_id])

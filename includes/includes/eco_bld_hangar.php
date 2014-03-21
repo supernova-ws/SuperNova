@@ -63,7 +63,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
 
   $page_error = '';
   $page_mode = $que_type == SUBQUE_FLEET ? 'fleet' : 'defense';
-  $sn_data_group = &$sn_data['groups'][$page_mode];
+  $sn_data_group = sn_get_groups($page_mode);
 
   doquery('START TRANSACTION;');
   $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planet['id']}' LIMIT 1 FOR UPDATE;", '', true);
@@ -79,7 +79,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
 */
 
   $silo_capacity_free = $planet[$sn_data[STRUC_SILO]['name']] * $sn_data[STRUC_SILO]['capacity'];
-  foreach($sn_data['groups']['missile'] as $silo_unit_id)
+  foreach(sn_get_groups('missile') as $silo_unit_id)
   {
     $silo_capacity_free -= ($hangar_que_by_unit[$silo_unit_id] + $planet[$sn_data[$silo_unit_id]['name']]) * $sn_data[$silo_unit_id]['size'];
   }
@@ -114,7 +114,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
       // Restricting $unit_count by resources on planet and (where applicable) with max count per unit
       $unit_count = min($build_data[CAN][BUILD_CREATE], $sn_data[$unit_id]['max'] ? max(0, $sn_data[$unit_id]['max'] - $hangar_que_by_unit[$unit_id] - $planet[$sn_data[$unit_id]['name']]) : $unit_count);
       // Restricting $unit_count by free silo capacity
-      $unit_count = ($unit_is_missile = in_array($unit_id, $sn_data['groups']['missile'])) ? min($unit_count, floor($silo_capacity_free / $sn_data[$unit_id]['size'])) : $unit_count;
+      $unit_count = ($unit_is_missile = in_array($unit_id, sn_get_groups('missile'))) ? min($unit_count, floor($silo_capacity_free / $sn_data[$unit_id]['size'])) : $unit_count;
       if(!$unit_count)
       {
         continue;
@@ -175,7 +175,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
     // Restricting $can_build by resources on planet and (where applicable) with max count per unit
     $can_build     = $sn_data[$unit_id]['max'] ? max(0, $sn_data[$unit_id]['max'] - $hangar_que_by_unit[$unit_id] - $planet[$sn_data[$unit_id]['name']]) : $build_data['CAN'][BUILD_CREATE];
     // Restricting $can_build by free silo capacity
-    $can_build     = ($unit_is_missile = in_array($unit_id, $sn_data['groups']['missile'])) ? min($can_build, floor($silo_capacity_free / $sn_data[$unit_id]['size'])) : $can_build;
+    $can_build     = ($unit_is_missile = in_array($unit_id, sn_get_groups('missile'))) ? min($can_build, floor($silo_capacity_free / $sn_data[$unit_id]['size'])) : $can_build;
     if(!$can_build)
     {
       if(!$build_data['CAN'][BUILD_CREATE])

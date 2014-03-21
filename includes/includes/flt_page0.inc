@@ -19,7 +19,7 @@ if(!$planetrow)
 
 $template = gettemplate('fleet0', true);
 
-foreach($sn_data['groups']['fleet'] as $n => $i)
+foreach(sn_get_groups('fleet') as $n => $i)
 {
   if ($planetrow[$sn_data[$i]['name']] > 0)
   {
