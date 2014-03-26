@@ -17,7 +17,7 @@ lng_include('admin');
 $totaltime = microtime(true);
 
 $ques = array(
-  'DELETE {{users}}.* FROM {{users}} WHERE `user_as_ally` IS NULL and `onlinetime` < unix_timestamp(now()) - ( 60 * 60 * 24 * 45) and metamatter_total <= 0;',
+//  'DELETE {{users}}.* FROM {{users}} WHERE `user_as_ally` IS NULL and `onlinetime` < unix_timestamp(now()) - ( 60 * 60 * 24 * 45) and metamatter_total <= 0;',
 
 // FK_notes_owner  'DELETE FROM `{{notes}}`     WHERE `owner`          not in (select id from {{users}});',
 // FK_fleet_owner  'DELETE FROM `{{fleets}}`    WHERE `fleet_owner`    not in (select id from {{users}});',
@@ -58,6 +58,7 @@ $ques = array(
 
   // Deleting empty Alliances
   'DELETE FROM {{alliance}} WHERE ally_members <= 0;',
+  "UPDATE {{users}} SET ally_id = null, ally_name = null, ally_rank_id=0 WHERE ally_id not in (select id from {{alliance}});",
 );
 
 // doquery('LOCK TABLES {{' . implode('}} WRITE, {{', $sn_cache->tables) . '}} WRITE');
