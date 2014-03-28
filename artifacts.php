@@ -20,7 +20,7 @@ lng_include('artifacts');
 
 include('includes/includes/art_artifact.php');
 
-$sn_data_dark_matter_db_name = $sn_data[RES_DARK_MATTER]['name'];
+$sn_data_dark_matter_db_name = get_unit_param(RES_DARK_MATTER, P_NAME);
 $sn_group_artifacts = sn_get_groups('artifacts');
 
 if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_int('unit_id'), $sn_group_artifacts))
@@ -39,7 +39,8 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
       // TODO: more correct check - with "FOR UPDATE"
       if($user[$sn_data_dark_matter_db_name] >= $darkmater_cost)
       {
-        if(!isset($sn_data[$unit_id]['max']) || ($sn_data[$unit_id]['max'] > $user[$sn_data[$unit_id]['name']]))
+        $unit_max_stack = get_unit_param($unit_id, P_MAX_STACK);
+        if(!isset($unit_max_stack) || ($unit_max_stack > $user[get_unit_param($unit_id, P_NAME)]))
         {
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, 1, $user);
           sn_db_changeset_apply($db_changeset);
@@ -78,7 +79,7 @@ foreach($sn_group_artifacts as $artifact_id)
   $artifact_level = mrc_get_level($user, array(), $artifact_id, true);
   $build_data = eco_get_build_data($user, $planetrow, $artifact_id, $artifact_level);
   {
-    $artifact_data = &$sn_data[$artifact_id];
+    $artifact_data = get_unit_param($artifact_id);
     $artifact_data_bonus = $artifact_data['bonus'];
     $artifact_data_bonus = $artifact_data_bonus >= 0 ? "+{$artifact_data_bonus}" : "{$artifact_data_bonus}";
     switch($artifact_data['bonus_type'])

@@ -90,7 +90,7 @@ if (isset($GET_result)) {
       foreach(sn_get_groups('tech') as $Item)
       {
         $parse['adm_sub_form3'] .= "<tr><th>".$lang['tech'][$Item]."</th>";
-        $parse['adm_sub_form3'] .= "<th>".$SelUser[$sn_data[$Item]['name']]."</th></tr>";
+        $parse['adm_sub_form3'] .= "<th>".$SelUser[get_unit_param($Item, P_NAME)]."</th></tr>";
       }
       $parse['adm_sub_form3'] .= "</tbody></table>";
       break;

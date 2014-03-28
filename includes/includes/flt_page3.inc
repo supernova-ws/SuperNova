@@ -10,7 +10,7 @@ if(SN_IN_FLEET !== true)
 
 function sn_fleet_page3()
 {
-  global $missiontype, $target_mission, $fleetarray, $sn_data, $planetrow, $lang;
+  global $missiontype, $target_mission, $fleetarray, $planetrow, $lang;
   global $galaxy, $system, $planet, $TargetPlanet, $consumption, $template_result;
   global $errorlist, $config, $planet_type, $MaxExpeditions, $FlyingExpeditions;
   global $speed_percent, $distance, $fleet_speed, $user, $debug;
@@ -115,7 +115,7 @@ function sn_fleet_page3()
 
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach ($fleetarray as $Ship => $Count) {
-    if ($Count > $planetrow[$sn_data[$Ship]['name']]) {
+    if ($Count > $planetrow[get_unit_param($Ship, P_NAME)]) {
       message ("<span class='error'><b>{$lang['fl_fleet_err']}</b></span>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
     }
   }
@@ -209,10 +209,11 @@ function sn_fleet_page3()
   $FleetSubQRY         = "";
   foreach ($fleetarray as $Ship => $Count)
   {
-    $FleetStorage    += $sn_data[$Ship]["capacity"] * $Count;
+    $FleetStorage    += get_unit_param($Ship, P_CAPACITY) * $Count;
     $FleetShipCount  += $Count;
     $fleet_array     .= "{$Ship},{$Count};";
-    $FleetSubQRY     .= "`{$sn_data[$Ship]['name']}` = `{$sn_data[$Ship]['name']}` - {$Count} , ";
+    $ship_db_name = get_unit_param($Ship, P_NAME);
+    $FleetSubQRY     .= "`{$ship_db_name}` = `{$ship_db_name}` - {$Count} , ";
   }
   $FleetStorage        -= $consumption;
 

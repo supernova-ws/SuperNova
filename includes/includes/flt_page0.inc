@@ -21,13 +21,14 @@ $template = gettemplate('fleet0', true);
 
 foreach(sn_get_groups('fleet') as $n => $i)
 {
-  if ($planetrow[$sn_data[$i]['name']] > 0)
+  $n_name = get_unit_param($i, P_NAME);
+  if($planetrow[$n_name] > 0)
   {
     $ship_data = get_ship_data( $i, $user );
     $template->assign_block_vars('ships', array(
       'ID'          => $i,
       'NAME'        => $lang['tech'][$i],
-      'AMOUNT'      => $planetrow[$sn_data[$i]['name']],
+      'AMOUNT'      => $planetrow[$n_name],
       'CONSUMPTION' => $ship_data['consumption'],
       'SPEED'       => $ship_data['speed'],
       'CAPACITY'    => $ship_data['capacity'],
@@ -36,7 +37,7 @@ foreach(sn_get_groups('fleet') as $n => $i)
 }
 
 $template->assign_vars(array(
-  'TIME_NOW'           => $time_now,
+  'TIME_NOW'           => SN_TIME_NOW,
 
   'FLYING_FLEETS'      => $FlyingFleets,
   'MAX_FLEETS'         => $MaxFleets,

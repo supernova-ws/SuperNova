@@ -15,11 +15,9 @@ require_once('includes/includes/coe_simulator_helpers.php');
 
 function coe_compress_add_units($unit_group, $target, &$compress_data)
 {
-  global $sn_data;
-
   foreach($unit_group as $unit_id)
   {
-    $unit_count = $target[$sn_data[$unit_id]['name']];
+    $unit_count = $target[get_unit_param($unit_id, P_NAME)];
     if($unit_count > 0)
     {
       $compress_data[$unit_id] = $unit_count;
@@ -29,14 +27,15 @@ function coe_compress_add_units($unit_group, $target, &$compress_data)
 
 function flt_spy_scan($target, $group_name, $section_title)
 {
-  global $lang, $sn_data, $time_now;
+  global $lang;
 
   $result = "<tr><td class=\"c\" colspan=\"4\">{$section_title}</td></tr>";
   foreach(sn_get_groups($group_name) as $unit_id)
   {
-    if($target[$sn_data[$unit_id]['name']] > 0)
+    $unit_db_name = get_unit_param($unit_id, P_NAME);
+    if($target[$unit_db_name] > 0)
     {
-      $result  .= "<tr><td align=left colspan = 3>{$lang['tech'][$unit_id]}</td><td align=right>{$target[$sn_data[$unit_id]['name']]}</td></tr>";
+      $result  .= "<tr><td align=left colspan = 3>{$lang['tech'][$unit_id]}</td><td align=right>{$target[$unit_db_name]}</td></tr>";
     }
   }
 
@@ -45,7 +44,7 @@ function flt_spy_scan($target, $group_name, $section_title)
 
 function flt_mission_spy($mission_data)
 {
-  global $time_now, $lang, $sn_data;
+  global $lang;
 
   $fleet_row         = $mission_data['fleet'];
   $target_user_row   = $mission_data['dst_user'];
@@ -109,7 +108,7 @@ function flt_mission_spy($mission_data)
     $target_unit_list = 0;
     foreach(sn_get_groups('fleet') as $unit_id)
     {
-      $target_unit_list += max(0, $target_planet_row[$sn_data[$unit_id]['name']]);
+      $target_unit_list += max(0, $target_planet_row[get_unit_param($unit_id, P_NAME)]);
     }
 
     $spy_detected = $spy_probes * $target_unit_list / 4 * pow(2, $TargetSpyLvl - $CurrentSpyLvl);
@@ -145,9 +144,10 @@ function flt_mission_spy($mission_data)
 
       $debris_planet_id = $target_planet_row['planet_type'] == PT_PLANET ? $target_planet_row['id'] : $target_planet_row['parent_planet'];
 
+      $spy_cost = get_unit_param(SHIP_SPY, P_COST);
       $QryUpdateGalaxy  = "UPDATE {{planets}} SET ";
-      $QryUpdateGalaxy .= "`debris_metal` = `debris_metal` + '". floor($spy_probes * $sn_data[SHIP_SPY]['metal'] * 0.3) ."', ";
-      $QryUpdateGalaxy .= "`debris_crystal` = `debris_crystal` + '". floor($spy_probes * $sn_data[SHIP_SPY]['crystal'] * 0.3) ."' ";
+      $QryUpdateGalaxy .= "`debris_metal` = `debris_metal` + '". floor($spy_probes * $spy_cost[RES_METAL] * 0.3) ."', ";
+      $QryUpdateGalaxy .= "`debris_crystal` = `debris_crystal` + '". floor($spy_probes * $spy_cost[RES_CRYSTAL] * 0.3) ."' ";
       $QryUpdateGalaxy .= "WHERE `id` = '{$debris_planet_id}' LIMIT 1;";
       doquery($QryUpdateGalaxy);
 

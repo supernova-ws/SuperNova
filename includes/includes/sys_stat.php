@@ -52,7 +52,7 @@ function sta_set_time_limit($sta_update_msg = 'updatins something', $next_step =
 
 function sys_stat_calculate()
 {
-  global $config, $time_now, $sta_update_step, $sn_data;
+  global $config, $time_now, $sta_update_step;
 
   $user_skip_list = sys_stat_get_user_skip_list();
 
@@ -98,22 +98,11 @@ function sys_stat_calculate()
     foreach($split as $ship)
     {
       list($unit_id, $unit_amount) = explode(',', $ship);
-      $unit_cost_data = $sn_data[$unit_id]['cost'];
+      $unit_cost_data = get_unit_param($unit_id, P_COST);
       $FleetPoints += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $unit_amount;
       $FleetCounts += $unit_amount;
     }
     $fleet_resources = $fleet_row['fleet_resource_metal'] * $rate[RES_METAL] + $fleet_row['fleet_resource_crysal'] * $rate[RES_CRYSTAL] + $fleet_row['fleet_resource_deuterium'] * $rate[RES_DEUTERIUM];
-    /*
-    foreach($sn_groups_resources_loot as $resource_name)
-    {
-      $resource_amount = $fleet_row["fleet_resource_{$sn_data[$resource_name]['name']}"];
-      if($resource_amount > 0)
-      {
-        $ResourceCount += $resource_amount;
-        $ResourcePoint += $resource_amount;
-      }
-    }
-    */
 
     $counts[$user_id]['fleet'] += $FleetCounts;
     $points[$user_id]['fleet'] += $FleetPoints / 1000;
@@ -145,10 +134,10 @@ function sys_stat_calculate()
     $point_counter = $amount_counter = 0;
     foreach(sn_get_groups('structures') as $unit_id)
     {
-      $unit_level = $planet_row[$sn_data[$unit_id]['name']];
+      $unit_level = $planet_row[get_unit_param($unit_id, P_NAME)];
       if($unit_level > 0)
       {
-        $unit_cost_data = $sn_data[$unit_id]['cost'];
+        $unit_cost_data = get_unit_param($unit_id, P_COST);
         $f = $unit_cost_data['factor'];
         $point_counter += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * (pow($f, $unit_level) - $f) / ($f - 1);
         $amount_counter += $unit_level;
@@ -161,10 +150,11 @@ function sys_stat_calculate()
     $point_counter = $amount_counter = 0;
     foreach(sn_get_groups('defense') as $unit_id)
     {
-      $unit_amount = $planet_row[$sn_data[$unit_id]['name']];
+      $unit_amount = $planet_row[get_unit_param($unit_id, P_NAME)];
       if($unit_amount > 0)
       {
-        $point_counter += ($sn_data[$unit_id]['metal'] * $rate[RES_METAL] + $sn_data[$unit_id]['crystal'] * $rate[RES_CRYSTAL] + $sn_data[$unit_id]['deuterium'] * $rate[RES_DEUTERIUM]) * $unit_amount;
+        $unit_cost_data = get_unit_param($unit_id, P_COST);
+        $point_counter += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $unit_amount;
         $amount_counter += $unit_amount;
       }
     }
@@ -175,10 +165,11 @@ function sys_stat_calculate()
     $point_counter = $amount_counter = 0;
     foreach(sn_get_groups('fleet') as $unit_id)
     {
-      $unit_amount = $planet_row[$sn_data[$unit_id]['name']];
+      $unit_amount = $planet_row[get_unit_param($unit_id, P_NAME)];
       if($unit_amount > 0)
       {
-        $point_counter += ($sn_data[$unit_id]['metal'] * $rate[RES_METAL] + $sn_data[$unit_id]['crystal'] * $rate[RES_CRYSTAL] + $sn_data[$unit_id]['deuterium'] * $rate[RES_DEUTERIUM]) * $unit_amount;
+        $unit_cost_data = get_unit_param($unit_id, P_COST);
+        $point_counter += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $unit_amount;
         $amount_counter += $unit_amount;
       }
     }
@@ -188,7 +179,7 @@ function sys_stat_calculate()
     $point_counter = 0;
     foreach($sn_groups_resources_loot as $resource_name)
     {
-      $point_counter += ($resource_amount = $planet_row[$sn_data[$resource_name]['name']]) > 0 ? $resource_amount : 0;
+      $point_counter += ($resource_amount = $planet_row[get_unit_param($resource_name, P_NAME)]) > 0 ? $resource_amount : 0;
     }
 
     if($planet_row['b_hangar_id'])
@@ -197,7 +188,7 @@ function sys_stat_calculate()
       $ship_list = sys_unit_str2arr($planet_row['b_hangar_id']);
       foreach($ship_list as $ship_id => $ship_amount)
       {
-        $data = $sn_data[$ship_id]['cost'];
+        $data = get_unit_param($ship_id, P_COST);
         $point_counter += ($data[RES_METAL] * $rate[RES_METAL] + $data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $ship_amount;
       }
     }
@@ -229,7 +220,7 @@ function sys_stat_calculate()
     $unit_level = $tech_row['unit_level'];
     if($unit_level > 0)
     {
-      $unit_cost_data = $sn_data[$unit_id]['cost'];
+      $unit_cost_data = get_unit_param($unit_id, P_COST);
       $f = $unit_cost_data['factor'];
       $TechPoints += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * (pow($f, $unit_level) - $f) / ($f - 1);
       $TechCounts += $unit_level;

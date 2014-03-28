@@ -5,7 +5,7 @@
 
 function sn_fleet_page2()
 {
-  global $missiontype, $target_mission, $fleetarray, $sn_data, $planetrow, $lang;
+  global $missiontype, $target_mission, $fleetarray, $planetrow, $lang;
   global $galaxy, $system, $planet, $planet_type, $TargetPlanet, $consumption, $template_result;
   global $sn_module, $user, $config, $is_transport_missions;
 
@@ -24,7 +24,7 @@ function sn_fleet_page2()
   $fleet_capacity = 0;
   foreach ($fleetarray as $Ship => $Count)
   {
-    $fleet_capacity += $sn_data[$Ship]['capacity'] * $Count;
+    $fleet_capacity += get_unit_param($Ship, P_CAPACITY) * $Count;
   }
 
   $max_duration = $target_mission == MT_EXPLORE ? get_player_max_expedition_duration($user) :

@@ -9,8 +9,6 @@ require_once('includes/includes/ube_attack_calculate.php');
 
 function flt_mission_attack($mission_data, $save_report = true)
 {
-  global $lang, $sn_data, $time_now;
-
   $fleet_row          = $mission_data['fleet'];
   $destination_user   = $mission_data['dst_user'];
   $destination_planet = $mission_data['dst_planet'];
@@ -38,5 +36,3 @@ function flt_mission_attack($mission_data, $save_report = true)
 
   return $combat_data;
 }
-
-?>

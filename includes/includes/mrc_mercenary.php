@@ -4,16 +4,17 @@ lng_include('mrc_mercenary');
 
 function mrc_officer_accessible(&$user, $mercenary_id)
 {
-  global $sn_data, $config;
+  global $config;
 
-  if($config->empire_mercenary_temporary || $sn_data[$mercenary_id]['type'] == UNIT_PLANS)
+  $mercenary_info = get_unit_param($mercenary_id);
+  if($config->empire_mercenary_temporary || $mercenary_info[P_UNIT_TYPE] == UNIT_PLANS)
   {
     return true;
   }
 
-  if(isset($sn_data[$mercenary_id]['require']))
+  if(isset($mercenary_info[P_REQUIRE]))
   {
-    foreach($sn_data[$mercenary_id]['require'] as $unit_id => $unit_level)
+    foreach($mercenary_info[P_REQUIRE] as $unit_id => $unit_level)
     {
       if(mrc_get_level($user, null, $unit_id) < $unit_level)
       {
@@ -27,7 +28,7 @@ function mrc_officer_accessible(&$user, $mercenary_id)
 
 function mrc_mercenary_hire($mode, $user, $mercenary_id)
 {
-  global $time_now, $sn_data, $config, $lang, $sn_pwr_buy_discount;
+  global $config, $lang, $sn_pwr_buy_discount;
 
   try
   {
@@ -45,7 +46,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
     }
 
     $mercenary_level = sys_get_param_int('mercenary_level');
-    if($mercenary_level < 0 || $mercenary_level > $sn_data[$mercenary_id]['max'])
+    if($mercenary_level < 0 || $mercenary_level > get_unit_param($mercenary_id, P_MAX_STACK))
     {
       throw new Exception($lang['mrc_msg_error_wrong_level'], ERR_ERROR);
     }
@@ -83,7 +84,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
     }
     $darkmater_cost *= $cost_alliance_multiplyer;
 
-    if($user[$sn_data[RES_DARK_MATTER]['name']] < $darkmater_cost)
+    if($user[get_unit_param(RES_DARK_MATTER, P_NAME)] < $darkmater_cost)
     {
       throw new Exception($lang['mrc_msg_error_no_resource'], ERR_ERROR);
     }
@@ -95,8 +96,8 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
     }
     if($darkmater_cost && $mercenary_level)
     {
-      $time_start = $is_permanent ? 0 : $time_now;
-      $time_end = $is_permanent ? 0 : $time_now + $mercenary_period;
+      $time_start = $is_permanent ? 0 : SN_TIME_NOW;
+      $time_end = $is_permanent ? 0 : SN_TIME_NOW + $mercenary_period;
 
       doquery(
         "INSERT INTO
@@ -131,7 +132,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
 
 function mrc_mercenary_render($user)
 {
-  global $time_now, $sn_data, $config, $lang, $sn_pwr_buy_discount;
+  global $time_now, $config, $lang, $sn_pwr_buy_discount;
 
   $mode = sys_get_param_int('mode', UNIT_MERCENARIES);
   $mode = in_array($mode, array(UNIT_MERCENARIES, UNIT_PLANS)) ? $mode : UNIT_MERCENARIES;
@@ -167,7 +168,7 @@ function mrc_mercenary_render($user)
   foreach(sn_get_groups($mode == UNIT_PLANS ? 'plans' : 'mercenaries') as $mercenary_id)
   {
     {
-      $mercenary = $sn_data[$mercenary_id];
+      $mercenary = get_unit_param($mercenary_id);
       $mercenary_bonus = $mercenary['bonus'];
       $mercenary_bonus = $mercenary_bonus >= 0 ? "+{$mercenary_bonus}" : "{$mercenary_bonus}";
       switch($mercenary['bonus_type'])
@@ -217,12 +218,6 @@ function mrc_mercenary_render($user)
       {
         $total_cost = eco_get_total_cost($mercenary_id, $i);
         $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $cost_alliance_multiplyer;
-        /*
-        if(!$config->empire_mercenary_temporary && $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old > $user[$sn_data[RES_DARK_MATTER]['name']])
-        {
-          break;
-        }
-        */
         $upgrade_cost = $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old;
         $template->assign_block_vars('officer.level', array(
           'VALUE' => $i,
@@ -242,5 +237,3 @@ function mrc_mercenary_render($user)
 
   display(parsetemplate($template), $lang['tech'][$mode]);
 }
-
-?>

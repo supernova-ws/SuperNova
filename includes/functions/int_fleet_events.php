@@ -206,7 +206,7 @@ function flt_register_fleet_event($fleet, $ov_label, $planet_end_type)
 
 function int_planet_pretemplate($planetrow, &$template)
 {
-  global $lang, $sn_data;
+  global $lang;
 
   $governor_id = $planetrow['PLANET_GOVERNOR_ID'];
 
@@ -222,7 +222,7 @@ function int_planet_pretemplate($planetrow, &$template)
     'PLANET_GOVERNOR_ID'        => $governor_id,
     'PLANET_GOVERNOR_NAME'      => $lang['tech'][$governor_id],
     'PLANET_GOVERNOR_LEVEL'     => $planetrow['PLANET_GOVERNOR_LEVEL'],
-    'PLANET_GOVERNOR_LEVEL_MAX' => $sn_data[$governor_id]['max'],
+    'PLANET_GOVERNOR_LEVEL_MAX' => get_unit_param($governor_id, P_MAX_STACK),
   ));
 }
 

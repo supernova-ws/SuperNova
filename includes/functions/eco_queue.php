@@ -28,7 +28,7 @@ function eco_que_arr2str($que_arr)
 
 function eco_que_process($user, &$planet, $time_left)
 {
-  global $lang, $sn_data;
+  global $lang;
 
   $quest_list = qst_get_quests($user['id']);
   $quest_triggers = qst_active_triggers($quest_list);
@@ -96,7 +96,7 @@ function eco_que_process($user, &$planet, $time_left)
       $que_unit_place = &$que_data['unit_place'];
       $time_left = &$que_data['time_left'];
 
-      $unit_db_name = $sn_data[$unit_id]['name'];
+      $unit_db_name = get_unit_param($unit_id, P_NAME);
 
       $build_mode = $que_item['MODE'] == BUILD_CREATE ? 1 : -1;
       $amount_change = $build_mode * $que_item['AMOUNT'];
@@ -206,7 +206,7 @@ function eco_que_process($user, &$planet, $time_left)
 
 function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1, $build_mode = BUILD_CREATE)
 {
-  global $lang, $time_now, $sn_data;
+  global $lang, $time_now;
 
   $que_types = sn_get_groups('ques');
   $sn_groups_build_allow = sn_get_groups('build_allow');
@@ -251,7 +251,7 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
 
   $build_mode = $build_mode == BUILD_CREATE ? 1 : -1;
 
-  $unit_db_name = $sn_data[$unit_id]['name'];
+  $unit_db_name = get_unit_param($unit_id, P_NAME);
 
   $unit_level = ($planet[$unit_db_name] ? $planet[$unit_db_name] : 0) + $que['in_que'][$unit_id];
   $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
@@ -282,7 +282,7 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
     $planet['que'] = $que['string'];
     foreach(sn_get_groups('resources_loot') as $resource_id)
     {
-      $resource_db_name = $sn_data[$resource_id]['name'];
+      $resource_db_name = get_unit_param($resource_id, P_NAME);
       $resource_change = $build_data[$build_mode][$resource_id] * $unit_amount;
       $planet[$resource_db_name] -= $resource_change;
       $que['query'] = "`$resource_db_name` = `$resource_db_name` - '{$resource_change}',{$que['query']}";
@@ -298,8 +298,6 @@ function eco_que_add($user, &$planet, $que, $que_id, $unit_id, $unit_amount = 1,
 function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
 {
   //TODO: Rewrite as eco_bld_hangar_clear($planet, $action)
-  global $sn_data;
-
   $que_string = '';
   $que_query = '';
 
@@ -336,7 +334,7 @@ function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
 
       foreach($resource_change as $resource_id => $resource_amount)
       {
-        $resource_db_name = $sn_data[$resource_id]['name'];
+        $resource_db_name = get_unit_param($resource_id, P_NAME);
         $planet[$resource_db_name] += $resource_amount;
         $que_query .= "`$resource_db_name` = `$resource_db_name` + '{$resource_amount}', ";
       }
@@ -359,7 +357,7 @@ function eco_que_clear($user, &$planet, $que, $que_id, $only_one = false)
 
 function eco_bld_que_tech(&$user)
 {
-  global $sn_data, $time_now, $lang;
+  global $lang;
 
   doquery('START TRANSACTION');
   $user_row = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
@@ -370,21 +368,20 @@ function eco_bld_que_tech(&$user)
     return;
   }
 
-  $time_left = max(0, $time_now - $user['onlinetime']);
+  $time_left = max(0, SN_TIME_NOW - $user['onlinetime']);
 
   $planet = array('id' => $user['id_planet']);
 
   $update_add = '';
   $que_item = $user['que'] ? explode(',', $user['que']) : array();
-//  if($user['que'] && $que_item[QI_TIME] <= $time_left)
   if($que_item[QI_TIME] <= $time_left)
   {
     $unit_id = $que_item[QI_UNIT_ID];
-    $unit_db_name = $sn_data[$unit_id]['name'];
+    $unit_db_name = get_unit_param($unit_id, P_NAME);
 
     $user[$unit_db_name] = $user_row[$unit_db_name];
     $user[$unit_db_name]++;
-    msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_research_from'], $lang['msg_que_research_subject'], sprintf($lang['msg_que_research_message'], $lang['tech'][$unit_id], $user[$unit_db_name]));
+    msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_QUE, $lang['msg_que_research_from'], $lang['msg_que_research_subject'], sprintf($lang['msg_que_research_message'], $lang['tech'][$unit_id], $user[$unit_db_name]));
 
     // TODO: Re-enable quests for Alliances
     if(!$user['user_as_ally'] && $planet['id'])
@@ -406,9 +403,6 @@ function eco_bld_que_tech(&$user)
     }
 
     $update_add = "`{$unit_db_name}` = `{$unit_db_name}` + 1, ";
-
-//    doquery("UPDATE `{{users}}` SET `{$unit_db_name}` = `{$unit_db_name}` + 1, `que` = '' WHERE `id` = '{$user['id']}' LIMIT 1;");
-//    $user = doquery("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1;", '', true);
 
     $build_data = eco_get_build_data($user, $planet, $unit_id, $user[$unit_db_name] - 1);
     $build_data = $build_data[BUILD_CREATE];
@@ -457,8 +451,6 @@ function eco_bld_que_tech(&$user)
 
 function eco_bld_que_hangar($user, &$planet, $production_time)
 {
-  global $sn_data;
-
   $quest_rewards = array();
   if ($planet['b_hangar_id'] != 0)
   {
@@ -484,7 +476,7 @@ function eco_bld_que_hangar($user, &$planet, $production_time)
 
         if(!$skip_rest)
         {
-          $unit_db_name = $sn_data[$unit_id]['name'];
+          $unit_db_name = get_unit_param($unit_id, P_NAME);
 
           $planet_unit = $planet[$unit_db_name];
           while ($hangar_time >= $build_time && $count > 0)
@@ -726,9 +718,7 @@ function que_tpl_parse(&$template, $que_type, $user, $planet = array())
  */
 function que_process(&$user, $planet_id = null)
 {
-  global $sn_data, $time_now, $lang;
-
-  $user_time_left = max(0, $time_now - $user['onlinetime']);
+  $user_time_left = max(0, SN_TIME_NOW - $user['onlinetime']);
 //$user_time_left = 25; // 25
   if($planet_id === null && !$user_time_left)
   {

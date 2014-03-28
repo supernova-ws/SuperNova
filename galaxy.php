@@ -46,7 +46,7 @@ $CurrentMIP    = $planetrow['interplanetary_misil'];
 $HavePhalanx   = $planetrow['phalanx'];
 $CurrentSystem = $planetrow['system'];
 $CurrentGalaxy = $planetrow['galaxy'];
-$CanDestroy    = $planetrow[$sn_data[SHIP_DEATH_STAR]['name']];
+$CanDestroy    = $planetrow[get_unit_param(SHIP_DEATH_STAR, P_NAME)];
 
 $maxfleet       = doquery("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
 $maxfleet_count = $maxfleet['flying_fleet_count'];
@@ -244,27 +244,6 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
 
     $uni_galaxyRowPlanet['debris_gather_total'] = $uni_galaxyRowPlanet['debris_will_gather'] + $uni_galaxyRowPlanet['debris_reserved'];
     $uni_galaxyRowPlanet['debris_gather_total_percent'] = min(100, floor($uni_galaxyRowPlanet['debris_gather_total'] / $uni_galaxyRowPlanet['debris'] * 100));
-
-//    $uni_galaxyRowPlanet['debris_can_gather_percent'] = ($recyclers_fleet_data['capacity'] / $uni_galaxyRowPlanet['debris_to_gather']);
-/*
-debug($uni_galaxyRowPlanet['debris'], '$debris');
-//debug($recyclers_incoming, '$recyclers_incoming');
-//debug($recyclers_incoming_capacity, '$recyclers_incoming_capacity');
-debug($uni_galaxyRowPlanet['debris_reserved'], '$debris_reserved');
-debug($uni_galaxyRowPlanet['debris_reserved_percent'] . '%', '$debris_reserved_percent');
-debug($uni_galaxyRowPlanet['debris_to_gather'], '$debris_to_gather');
-debug($uni_galaxyRowPlanet['debris_to_gather_percent'] . '%', '$debris_to_gather_percent');
-
-debug($recyclers_fleet_data['capacity'], 'can gather resources');
-
-debug($uni_galaxyRowPlanet['debris_will_gather'], 'debris_will_gather');
-debug($uni_galaxyRowPlanet['debris_will_gather_percent'], 'debris_will_gather_percent');
-//debug($uni_galaxyRowPlanet['debris_can_gather_percent'], 'can gather percent');
-//    debug($recyclers_fleet_data);
-    // ceil( / $sn_data[SHIP_RECYCLER]['capacity']);
-*/
-//    $recyclers_need = ceil(($uni_galaxyRowPlanet['debris_metal'] + $uni_galaxyRowPlanet['debris_crystal']) / $sn_data[SHIP_RECYCLER]['capacity']);
-//    $recyclers_to_send = min($CurrentRC, max(0, $recyclers_need - $recyclers_incoming));
   }
 
   $RowUserPoints = $uni_galaxyRowUser['total_points'];
@@ -401,7 +380,7 @@ $template->assign_vars(array(
      'curPlanetS'          => $planetrow['system'],
      'curPlanetP'          => $planetrow['planet'],
      'curPlanetPT'         => $planetrow['planet_type'],
-     'deathStars'          => $planetrow[$sn_data[SHIP_DEATH_STAR]['name']],
+     'deathStars'          => $planetrow[get_unit_param(SHIP_DEATH_STAR, P_NAME)],
      'galaxy'              => $uni_galaxy,
      'system'              => $uni_system,
      'planet'              => $planet,

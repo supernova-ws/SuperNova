@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a0.6');
+define('SN_VERSION', '39a1.0');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -412,7 +412,7 @@ define('SORT_REFERRAL_COUNT' , 9);
 define('SORT_REFERRAL_DM'    , 10);
 
 // === Structures
-define('UNIT_STRUCTURES', 0);
+define('UNIT_STRUCTURES', 99);
 define('STRUC_MINE_METAL', 1);
 define('STRUC_MINE_CRYSTAL', 2);
 define('STRUC_MINE_DEUTERIUM', 3);
@@ -483,8 +483,8 @@ define('SHIP_SATTELITE_SLOTH', 221);
 define('SHIP_BATTLESHIP_PRIDE', 222);
 define('SHIP_RECYCLER_GLUTTONY', 223);
 define('SHIP_BOMBER_ENVY', 224);
-
 define('SHIP_ORBITAL_HEAVY', 225);
+
 // --- Defense
 define('UNIT_DEFENCE', 400);
 define('UNIT_DEF_TURRET_MISSILE', 401);
@@ -496,7 +496,9 @@ define('UNIT_DEF_TURRET_PLASMA', 406);
 define('UNIT_DEF_SHIELD_SMALL', 407);
 define('UNIT_DEF_SHIELD_BIG', 408);
 define('UNIT_DEF_SHIELD_PLANET', 409);
+
 // --- Missiles
+define('UNIT_DEF_MISSILES', 500);
 define('UNIT_DEF_MISSILE_INTERCEPTOR', 502);
 define('UNIT_DEF_MISSILE_INTERPLANET', 503);
 
@@ -599,7 +601,34 @@ define('UNIT_PLAYER_COLONIES_CURRENT', 'COLONIES_CURRENT');
 define('UNIT_PLAYER_COLONIES_MAX', 'COLONIES_MAX');
 define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 
-define('UNIT_GROUP', 'groups'); // 10000
+define('UNIT_GROUP', 'groups'); // 100.000
+
+// Unit params
+define('P_MAX_STACK', 'max');
+define('P_NAME', 'name'); // Вот тут будет следующая фаза - избавится вообще от обращения к P_NAME и перевести все обращения к UNIT_ID
+define('P_UNIT_TYPE', 'type');
+define('P_UNIT_TEMPORARY', 'temporary');
+define('P_COST', 'cost');
+define('P_COST_METAL', 'metal_cost');
+define('P_FACTOR', 'factor');
+define('P_REQUIRE', 'require');
+define('P_STORAGE', 'storage');
+define('P_STACKABLE', 'stackable');
+define('P_DEPLOY', 'deploy');
+define('P_BONUS_VALUE', 'bonus');
+define('P_CAPACITY', 'capacity');
+define('P_UNIT_SIZE', 'size');
+define('P_SPEED', 'speed');
+
+
+define('P_ATTACK', 'attack');
+define('P_SHIELD', 'shield');
+define('P_ARMOR', 'armor');
+define('P_AMPLIFY', 'amplify');
+define('P_DEFENSE', 'defense');
+define('P_STRUCTURE', 'structure');
+
+
 
 
 define('SNC_VER_NEVER', -1);

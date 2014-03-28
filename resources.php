@@ -26,9 +26,9 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 function int_calc_storage_bar($resource_id)
 {
-  global $lang, $config, $template, $caps_real, $sn_data, $planetrow;
+  global $lang, $template, $caps_real, $planetrow;
 
-  $resource_name = &$sn_data[$resource_id]['name'];
+  $resource_name = get_unit_param($resource_id, P_NAME);
 
   $totalProduction      = $caps_real['total'][$resource_id];
   $storage_fill         = $caps_real['total_storage'][$resource_id] ? floor($planetrow[$resource_name] / $caps_real['total_storage'][$resource_id] * 100) : 0;
@@ -73,7 +73,7 @@ if(is_array($production))
     $prod_id = intval($prod_id);
     if(in_array($prod_id, $sn_group_factories))
     {
-      $field_name              = "{$sn_data[$prod_id]['name']}_porcent";
+      $field_name              = get_unit_param($prod_id, P_NAME) . '_porcent';
       $percent                 = floor($percent / 10);
       $planetrow[$field_name]  = $percent;
       $SubQry                 .= "`{$field_name}` = '{$percent}',";
@@ -116,8 +116,8 @@ $template->assign_block_vars('production', array(
 
 foreach($sn_group_factories as $unit_id)
 {
-  $resource_db_name = $sn_data[$unit_id]['name'];
-  if($planetrow[$resource_db_name] > 0 && isset($sn_data[$unit_id]))
+  $resource_db_name = get_unit_param($unit_id, P_NAME);
+  if($planetrow[$resource_db_name] > 0 && get_unit_param($unit_id))
   {
     $level_plain = $planetrow[$resource_db_name];
     $template->assign_block_vars('production', array(

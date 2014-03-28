@@ -394,7 +394,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     return '';
   }
 
-  global $time_now, $lang, $config, $sn_data, $time_local, $sn_module_list;
+  global $time_now, $lang, $config, $time_local;
 
   $GET_mode = sys_get_param_str('mode');
 
@@ -666,9 +666,10 @@ function tpl_assign_hangar($que_type, $planet, &$template)
 
 function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_matter)
 {
-  global $sn_data, $lang;
+  global $lang;
 
-  $density_base_cost = $sn_data[UNIT_PLANET_DENSITY]['cost'][RES_DARK_MATTER];
+  $density_base_cost = get_unit_param(UNIT_PLANET_DENSITY, P_COST);
+  $density_base_cost = $density_base_cost[RES_DARK_MATTER];
 
   foreach($density_price_chart as $density_price_index => &$density_price_data)
   {

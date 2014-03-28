@@ -19,8 +19,6 @@ function sn_ube_simulator_encode_replay($combat, $type)
 
 function sn_ube_simulator_decode_replay($str_data)
 {
-  global $sn_data;
-
   $fleet_id = 0;
 
   $arr_data_unpacked = explode('!', $str_data);
@@ -62,7 +60,7 @@ function sn_ube_simulator_decode_replay($str_data)
 // Преобразовывает данные симулятора в данные для расчета боя
 function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker, $player_id = -1)
 {
-  global $sn_data, $ube_convert_techs;
+  global $ube_convert_techs;
 
   $player_id = $player_id == -1 ? count($combat_data[UBE_PLAYERS]) : $player_id;
 
@@ -79,7 +77,7 @@ function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker, $playe
         continue;
       }
 
-      $unit_type = $sn_data[$unit_id]['type'];
+      $unit_type = get_unit_param($unit_id, P_UNIT_TYPE);
 
       if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE)
       {
@@ -91,7 +89,7 @@ function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker, $playe
       }
       elseif($unit_type == UNIT_TECHNOLOGIES)
       {
-        $combat_data[UBE_PLAYERS][$player_id][UBE_BONUSES][$ube_convert_techs[$unit_id]] += $unit_count * $sn_data[$unit_id]['bonus'] / 100;
+        $combat_data[UBE_PLAYERS][$player_id][UBE_BONUSES][$ube_convert_techs[$unit_id]] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
       }
       elseif($unit_type == UNIT_GOVERNORS)
       {
@@ -99,7 +97,7 @@ function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker, $playe
         {
           foreach($ube_convert_techs as $ube_id)
           {
-            $combat_data[UBE_FLEETS][$player_id][UBE_BONUSES][$ube_id] += $unit_count * $sn_data[$unit_id]['bonus'] / 100;
+            $combat_data[UBE_FLEETS][$player_id][UBE_BONUSES][$ube_id] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
           }
         }
       }
@@ -109,7 +107,7 @@ function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker, $playe
         {
           foreach($ube_convert_techs as $ube_id)
           {
-            $combat_data[UBE_PLAYERS][$player_id][UBE_BONUSES][$ube_id] += $unit_count * $sn_data[$unit_id]['bonus'] / 100;
+            $combat_data[UBE_PLAYERS][$player_id][UBE_BONUSES][$ube_id] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
           }
         }
       }
@@ -119,8 +117,6 @@ function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker, $playe
 
 function sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender)
 {
-  global $sn_data;
-
   $combat_data = array(
     UBE_OPTIONS => array(
       UBE_SIMULATOR => sys_get_param_int('simulator'),

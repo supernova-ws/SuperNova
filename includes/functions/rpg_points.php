@@ -12,7 +12,7 @@
 function mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false){return sn_function_call('mm_points_change', array($user_id, $change_type, $metamatter, $comment, $already_changed, &$result));}
 function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false, &$result)
 {
-  global $debug, $mm_change_legit, $sn_data, $user;
+  global $debug, $mm_change_legit, $user;
 
   if(!$user_id || !($metamatter = intval($metamatter)))
   {
@@ -20,7 +20,7 @@ function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = fal
   }
 
   $mm_change_legit = true;
-  $sn_data_metamatter_db_name = $sn_data[RES_METAMATTER]['name'];
+  $sn_data_metamatter_db_name = get_unit_param(RES_METAMATTER, P_NAME);
   if($already_changed)
   {
     $result = -1;
@@ -78,7 +78,7 @@ function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = fal
 */
 function rpg_points_change($user_id, $change_type, $dark_matter, $comment = false, $already_changed = false)
 {
-  global $debug, $config, $dm_change_legit, $sn_data, $user;
+  global $debug, $config, $dm_change_legit, $user;
 
   if(!$user_id || !$dark_matter)
   {
@@ -86,7 +86,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
   }
 
   $dm_change_legit = true;
-  $sn_data_dark_matter_db_name = $sn_data[RES_DARK_MATTER]['name'];
+  $sn_data_dark_matter_db_name = get_unit_param(RES_DARK_MATTER, P_NAME);
   if($already_changed)
   {
     $rows_affected = 1;

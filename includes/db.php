@@ -188,8 +188,6 @@ function db_change_units_perform($query, $tablename, $object_id)
 function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
 // $unit_list should have unique entrances! Recompress non-uniq entrances before pass param!
 {
-  global $sn_data;
-
   $query = is_array($query) ? $query : array(
     LOC_USER => array(),
     LOC_PLANET => array(),
@@ -202,7 +200,7 @@ function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
       continue;
     }
 
-    $unit_db_name = $sn_data[$unit_id]['name'];
+    $unit_db_name = get_unit_param($unit_id, P_NAME);
 
     $unit_location = sys_get_unit_location($user, $planet, $unit_id);
 
@@ -271,7 +269,6 @@ function sn_db_perform($table, $values, $type = 'insert', $options = false)
 
 function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null)
 {
-  global $sn_data;
   $db_changeset = array();
   $temp = doquery("SELECT `unit_id` FROM {{unit}} WHERE `unit_player_id` = {$user['id']} AND `unit_snid` = {$unit_id} LIMIT 1 FOR UPDATE", true);
 //pdump($temp, '$temp');
@@ -307,7 +304,7 @@ function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id =
           'set' => $unit_location == LOC_USER ? $user['id'] : $planet_id,
         ),
         'unit_type' => array(
-          'set' => $sn_data[$unit_id]['type'],
+          'set' => get_unit_param($unit_id, P_UNIT_TYPE),
         ),
         'unit_snid' => array(
           'set' => $unit_id,

@@ -14,9 +14,9 @@ function eco_get_planet_caps_modify_production(&$item, $key, $data)
 function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
   // TODO Считать $production_time для термоядерной электростанции
 {
-  global $sn_data, $config;
+  global $config;
 
-  static $sn_group_modifiers, $config_resource_multiplier, $config_eco_scale_storage;//, $sn_group_structures, $base_storage_size;
+  static $sn_group_modifiers, $config_resource_multiplier, $config_eco_scale_storage;
 
   if(!$sn_group_modifiers)
   {
@@ -28,7 +28,7 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
   $caps = array();
   foreach(sn_get_groups('storages') as $unit_id)
   {
-    foreach($sn_data[$unit_id]['storage'] as $resource_id => $function)
+    foreach(get_unit_param($unit_id, P_STORAGE) as $resource_id => $function)
     {
       $caps['storage'][$resource_id][$unit_id] = floor($config_eco_scale_storage *
         mrc_modify_value($user, $planet_row, $sn_group_modifiers[MODIFIER_RESOURCE_CAPACITY], $function(mrc_get_level($user, $planet_row, $unit_id)))
@@ -51,9 +51,9 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
 
   foreach(sn_get_groups('factories') as $unit_id)
   {
-    $unit_data = $sn_data[$unit_id];
+    $unit_data = get_unit_param($unit_id);
     $unit_level = mrc_get_level($user, $planet_row, $unit_id);
-    $unit_load = $planet_row["{$sn_data[$unit_id]['name']}_porcent"];
+    $unit_load = $planet_row[$unit_data[P_NAME] . "_porcent"];
 
     foreach($unit_data['production'] as $resource_id => $function)
     {
@@ -74,15 +74,7 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
   {
     $deuterium_balance = array_sum($caps['production'][RES_DEUTERIUM]);
     $energy_balance = array_sum($caps['production'][RES_ENERGY]);
-//    pdump($production_time);
-//    pdump($planet_row['deuterium'], 'deuterium');
-//    pdump($deuterium_balance , '$deuterium_balance');
-//    pdump($energy_balance , '$energy_balance ');
-//    pdump(-$deuterium_balance * $production_time / 3600, '$deuterium_balance');
-//    pdump(($deuterium_balance < 0 && $planet_row['deuterium'] <= -$deuterium_balance * $production_time / 3600));
     if($deuterium_balance < 0 || $energy_balance < 0)
-//    if(($deuterium_balance < 0 || $energy_balance < 0) && (sn_floor($planet_row['deuterium']) <= 0 || $planet_row['deuterium'] <= -$deuterium_balance * $production_time / 3600))
-//    if(sn_floor($planet_row['deuterium']) <= 0 || $planet_row['deuterium'] <= -$deuterium_balance * $production_time / 3600)
     {
       $caps['production'][RES_DEUTERIUM][STRUC_MINE_FUSION] = $caps['production'][RES_ENERGY][STRUC_MINE_FUSION] = 0;
     }

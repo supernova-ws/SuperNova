@@ -38,8 +38,6 @@ function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = fals
     }
   }
 
-  global $sn_data;
-
   $query = 'UPDATE {{planets}} SET ';
 
   if(!$only_resources)
@@ -50,7 +48,7 @@ function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = fals
       if ($ship_string != '')
       {
         $ship_record = explode (',', $ship_string);
-        $ship_db_name = $sn_data[$ship_record[0]]['name'];
+        $ship_db_name = get_unit_param($ship_record[0], P_NAME);
         $ship_record[1] = floatval($ship_record[1]);
         $query .= "`{$ship_db_name}` = `{$ship_db_name}` + {$ship_record[1]}, ";
       }
@@ -282,8 +280,6 @@ function flt_cache_planet($planet_vector, &$flt_user_cache, &$flt_planet_cache)
 // ------------------------------------------------------------------
 function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt_fleet_cache, &$flt_event_cache, $cache_mode)
 {
-  global $sn_data, $time_now;
-
   // Empty $fleet_row - no chance to know anything about it. By design it should never triggered but let it be
   if(!$fleet_row)
   {
@@ -318,7 +314,7 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
 
   if ($fleet_row['fleet_mess'] != 0)
   { // Fleet is returning to source
-    if ($fleet_row['fleet_end_time'] <= $time_now)
+    if ($fleet_row['fleet_end_time'] <= SN_TIME_NOW)
     { // Fleet is arrived
       // Restoring fleet to planet
       RestoreFleetToPlanet($fleet_row, true);
@@ -335,7 +331,7 @@ function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt
   // Otherwise fleet still not arriving and will not processed in this timeslot
   // Following code is almost useless - it should never trigger. But let it be just in case
   //      Does fleet even arrive to destination?     OR  Does fleet has timed mission (MT_HOLD/MT_EXPLORE)? If yes - does it complete?
-  elseif ($fleet_row['fleet_start_time'] > $time_now || ($fleet_row['fleet_end_stay'] && $fleet_row['fleet_end_stay'] > $time_now))
+  elseif ($fleet_row['fleet_start_time'] > SN_TIME_NOW || ($fleet_row['fleet_end_stay'] && $fleet_row['fleet_end_stay'] > SN_TIME_NOW))
   {
     return false;
   }
@@ -598,5 +594,3 @@ die();
     $config->db_saveItem('flt_lastUpdate', 0);
   }
 }
-
-?>

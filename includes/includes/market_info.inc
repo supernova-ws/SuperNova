@@ -10,7 +10,7 @@ $page_title .= " - {$lang['eco_mrk_info']}";
 $template = gettemplate('market_info', true);
 
 $template->assign_vars(array(
-  'RES_DARK_MATTER' => $user[$sn_data[RES_DARK_MATTER]['name']],
+  'RES_DARK_MATTER' => $user[get_unit_param(RES_DARK_MATTER, P_NAME)],
   'PAGE_HEADER' => $page_title,
 ));
 
@@ -22,7 +22,7 @@ if($info_action)
     doquery('START TRANSACTION;');
 
     $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
-    if($user[$sn_data[RES_DARK_MATTER]['name']] < $config->rpg_cost_info)
+    if($user[get_unit_param(RES_DARK_MATTER, P_NAME)] < $config->rpg_cost_info)
     {
       throw new Exception(MARKET_NO_DM, ERR_ERROR);
     }

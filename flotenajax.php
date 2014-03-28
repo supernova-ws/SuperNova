@@ -99,7 +99,8 @@ $FleetSubQRY    = array();
 foreach($fleet_array as $unit_id => $unit_count)
 {
   $FleetDBArray[] = "{$unit_id},{$unit_count}";
-  $FleetSubQRY[]  = "`{$sn_data[$unit_id]['name']}` = `{$sn_data[$unit_id]['name']}` - {$unit_count}";
+  $unit_db_name = get_unit_param($unit_id, P_NAME);
+  $FleetSubQRY[]  = "`{$unit_db_name}` = `{$unit_db_name}` - {$unit_count}";
 }
 $FleetDBArray = implode(';', $FleetDBArray);
 $FleetSubQRY  = implode(',', $FleetSubQRY);
@@ -154,7 +155,8 @@ else
   doquery($QryInsertFleet);
 }
 
-doquery("UPDATE {{planets}} SET `{$sn_data[RES_DEUTERIUM]['name']}` = `{$sn_data[RES_DEUTERIUM]['name']}` - {$travel_data['consumption']}, {$FleetSubQRY} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+$deuterium_db_name = get_unit_param(RES_DEUTERIUM, P_NAME);
+doquery("UPDATE {{planets}} SET `{$deuterium_db_name}` = `{$deuterium_db_name}` - {$travel_data['consumption']}, {$FleetSubQRY} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
 doquery("COMMIT;");
 
 $ships_sent = array();
@@ -163,8 +165,7 @@ $ships_sent_js = 0;
 foreach($fleet_array as $unit_id => $unit_count)
 {
   $ships_sent[] = "{$unit_count} {$lang['tech'][$unit_id]}";
-//  $ships_sent_js[] = "{$unit_id}=" . ($planetrow[$sn_data[$unit_id]['name']] - $unit_count);
-  $ships_sent_js += $planetrow[$sn_data[$unit_id]['name']] - $unit_count;
+  $ships_sent_js += $planetrow[get_unit_param($unit_id, P_NAME)] - $unit_count;
 }
 $ships_sent = implode(', ', $ships_sent);
 //$ships_sent_js = implode(',', $ships_sent_js);

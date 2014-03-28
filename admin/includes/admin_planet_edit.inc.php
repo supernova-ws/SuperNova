@@ -22,7 +22,7 @@ function sn_admin_planet_edit_mode(&$template, &$admin_planet_edit_mode_list)
 function admin_planet_edit_template(&$template, $edit_planet_row, $mode){return sn_function_call('admin_planet_edit_template', array(&$template, $edit_planet_row, $mode));}
 function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode)
 {
-  global $sn_data, $lang;
+  global $lang;
 
   $unit_list = sn_get_groups($mode);
   if(empty($unit_list))
@@ -36,7 +36,7 @@ function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode)
     $template->assign_block_vars('unit', array(
       'ID'    => $unit_id,
       'NAME'  => $name_list[$unit_id],
-      'TEXT'  => pretty_number($edit_planet_row[$sn_data[$unit_id]['name']]),
+      'TEXT'  => pretty_number($edit_planet_row[get_unit_param($unit_id, P_NAME)]),
       'VALUE' => '',
     ));
   }

@@ -517,14 +517,15 @@ switch($new_version)
           $que_data[QI_PLANET_ID] = 'NULL';
         }
 
-        $unit_level = $que_row[$sn_data[$que_data[QI_UNIT_ID]]['name']];
-        $unit_factor = $sn_data[$que_data[QI_UNIT_ID]]['cost']['factor'] ? $sn_data[$que_data[QI_UNIT_ID]]['cost']['factor'] : 1;
+        $unit_info = get_unit_param($que_data[QI_UNIT_ID]);
+        $unit_level = $que_row[$unit_info[P_NAME]];
+        $unit_factor = $unit_info[P_COST][P_FACTOR] ? $unit_info[P_COST][P_FACTOR] : 1;
         $price_increase = pow($unit_factor, $unit_level);
         $unit_level++;
         $unit_cost = array();
-        foreach($sn_data[$que_data[QI_UNIT_ID]]['cost'] as $resource_id => $resource_amount)
+        foreach($unit_info[P_COST] as $resource_id => $resource_amount)
         {
-          if($resource_id === 'factor' || $resource_id == RES_ENERGY || !($resource_cost = $resource_amount * $price_increase))
+          if($resource_id === P_FACTOR || $resource_id == RES_ENERGY || !($resource_cost = $resource_amount * $price_increase))
           {
             continue;
           }
@@ -563,7 +564,7 @@ switch($new_version)
       {
         foreach($sn_group_tech as $tech_id)
         {
-          if($tech_level = intval($user_row[$sn_data[$tech_id]['name']]))
+          if($tech_level = intval($user_row[get_unit_param($tech_id, P_NAME)]))
           {
             $que_lines[] = "({$user_row['id']}," . LOC_USER . ",{$user_row['id']}," . UNIT_TECHNOLOGIES . ",{$tech_id},{$tech_level})";
           }
@@ -588,7 +589,7 @@ switch($new_version)
 
       foreach(sn_get_groups(array('structures', 'fleet', 'defense')) as $unit_id)
       {
-        $planet_units[$sn_data[$unit_id]['name']] = 1;
+        $planet_units[get_unit_param($unit_id, P_NAME)] = 1;
       }
       $drop_index = array();
       $create_index = &$drop_index; // array();
@@ -826,8 +827,8 @@ switch($new_version)
 
       $unit_id = $row['unit_snid'];
       $unit_level = $row['unit_level'];
-      $price = $sn_data[$unit_id]['cost'];
-      $factor = $sn_data[$unit_id]['cost']['factor'];
+      $price = get_unit_param($unit_id, P_COST);
+      $factor = $price['factor'];
       foreach($price as $resource_id => &$resource_amount)
       {
         $resource_amount = $resource_amount * (pow($factor, $unit_level) - 1) / ($factor - 1);

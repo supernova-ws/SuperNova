@@ -23,33 +23,8 @@ function flt_mission_recycle($mission_data)
     return CACHE_FLEET;
   }
 
-  global $sn_data, $lang;
+  global $lang;
 
-/*
-
-// ��� ���� ����� �������� �������� � RestoreFleetToPlanet
-      $Message         = sprintf( $lang['sys_tran_mess_owner'],
-            $StartName, GetStartAdressLink($fleet_row, ''),
-            pretty_number($fleet_row['fleet_resource_metal']), $lang['Metal'],
-            pretty_number($fleet_row['fleet_resource_crystal']), $lang['Crystal'],
-            pretty_number($fleet_row['fleet_resource_deuterium']), $lang['Deuterium'] );
-      SendSimpleMessage ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_end_time'], 4, $lang['sys_mess_spy_control'], $lang['sys_mess_fleetback'], $Message);
-*/
-/*
-  $FleetRecord         = explode(";", $fleet_row['fleet_array']);
-  $RecyclerCapacity    = 0;
-  $OtherFleetCapacity  = 0;
-  foreach ($FleetRecord as $Item => $Group) {
-    if ($Group != '') {
-      $Class        = explode (",", $Group);
-      if ($Class[0] == SHIP_RECYCLER) {
-        $RecyclerCapacity   += $sn_data[$Class[0]]["capacity"] * $Class[1];
-      } else {
-        $OtherFleetCapacity += $sn_data[$Class[0]]["capacity"] * $Class[1];
-      }
-    }
-  }
-*/
   $RecyclerCapacity    = 0;
   $OtherFleetCapacity  = 0;
   $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
@@ -57,7 +32,7 @@ function flt_mission_recycle($mission_data)
   {
     if(in_array($unit_id, sn_get_groups('fleet')))
     {
-      $capacity = $sn_data[$unit_id]["capacity"] * $unit_count;
+      $capacity = get_unit_param($unit_id, P_CAPACITY) * $unit_count;
       if(in_array($unit_id, sn_get_groups('flt_recyclers')))
       {
         $RecyclerCapacity += $capacity;

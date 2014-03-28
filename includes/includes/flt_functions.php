@@ -2,8 +2,6 @@
 
 function flt_fleet_speed($user, $fleet)
 {
-  global $sn_data;
-
   if (!is_array($fleet))
   {
     $fleet = array($fleet => 1);
@@ -207,7 +205,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
 {
   //TODO: try..catch
 
-  global $config, $sn_data, $user, $time_now;
+  global $config, $user;
 
   if($user['vacation'])
   {
@@ -235,7 +233,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   foreach($fleet as $ship_id => $ship_count)
   {
     $is_ship = in_array($ship_id, sn_get_groups('fleet'));
-    if($ship_count > $planet_src[$sn_data[$ship_id]['name']])
+    if($ship_count > $planet_src[get_unit_param($ship_id, P_NAME)])
     {
       return $is_ship ? ATTACK_NO_SHIPS : ATTACK_NO_RESOURCES;
     }
@@ -279,7 +277,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   $travel_data = flt_travel_data($user, $planet_src, $planet_dst, $fleet, $options['fleet_speed_percent']);
 
 
-  if($planet_src[$sn_data[RES_DEUTERIUM]['name']] < $fleet[RES_DEUTERIUM] + $travel_data['consumption'])
+  if($planet_src[get_unit_param(RES_DEUTERIUM, P_NAME)] < $fleet[RES_DEUTERIUM] + $travel_data['consumption'])
   {
     return ATTACK_NO_FUEL;
   }
@@ -294,7 +292,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     return ATTACK_OVERLOADED;
   }
 
-  $fleet_start_time = $time_now + $travel_data['duration'];
+  $fleet_start_time = SN_TIME_NOW + $travel_data['duration'];
 
   $fleet_group = $options['fleet_group'];
   if($fleet_group)
@@ -423,7 +421,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   }
 
   // Okay. Now skipping protection checks for inactive longer then 1 week
-  if(!$enemy['onlinetime'] || $enemy['onlinetime'] >= ($time_now - 60*60*24*7))
+  if(!$enemy['onlinetime'] || $enemy['onlinetime'] >= (SN_TIME_NOW - 60*60*24*7))
   {
     if(
       ($enemy_points <= $config->game_noob_points && $user_points > $config->game_noob_points)
@@ -445,7 +443,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   // Is it HOLD mission? If yes - there should be ally deposit
   if($mission == MT_HOLD)
   {
-    if($planet_dst[$sn_data[STRUC_ALLY_DEPOSIT]['name']])
+    if($planet_dst[get_unit_param(STRUC_ALLY_DEPOSIT, P_NAME)])
     {
       return ATTACK_ALLOWED;
     }
@@ -460,7 +458,8 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   // Is it MISSILE mission?
   if($mission == MT_MISSILE)
   {
-    if($planet_src[$sn_data[STRUC_SILO]['name']] < $sn_data[UNIT_DEF_MISSILE_INTERPLANET]['require'][STRUC_SILO])
+    $sn_data_mip = get_unit_param(UNIT_DEF_MISSILE_INTERPLANET);
+    if($planet_src[get_unit_param(STRUC_SILO, P_NAME)] < $sn_data_mip[P_REQUIRE][STRUC_SILO])
     {
       return ATTACK_NO_SILO;
     }
@@ -506,7 +505,6 @@ $mission - fleet mission
 
 function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array())
 {
-  global $time_now;
 //ini_set('error_reporting', E_ALL);
 
   //doquery('SET autocommit = 0;');
@@ -514,7 +512,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   doquery('START TRANSACTION;');
 
   $user = doquery ("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1 FOR UPDATE;", true);
-  $from = sys_o_get_updated($user, $from['id'], $time_now);
+  $from = sys_o_get_updated($user, $from['id'], SN_TIME_NOW);
   $from = $from['planet'];
 
   $can_attack = flt_can_attack($from, $to, $fleet, $mission, $options);
@@ -524,13 +522,11 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
     return $can_attack;
   }
 
-  global $time_now, $sn_data;
-
   $fleet_group = isset($options['fleet_group']) ? floatval($options['fleet_group']) : 0;
 
   $travel_data  = flt_travel_data($user, $from, $to, $fleet, $options['fleet_speed_percent']);
 
-  $fleet_start_time = $time_now + $travel_data['duration'];
+  $fleet_start_time = SN_TIME_NOW + $travel_data['duration'];
 
   if ($mission == MT_EXPLORE OR $mission == MT_HOLD)
   {
@@ -547,7 +543,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   $fleet_ship_count  = 0;
   $fleet_string      = '';
   $planet_sub_query  = '';
-  foreach ($fleet as $unit_id => $amount)
+  foreach($fleet as $unit_id => $amount)
   {
     if(!$amount || !$unit_id)
     {
@@ -559,7 +555,8 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
       $fleet_ship_count += $amount;
       $fleet_string     .= "{$unit_id},{$amount};";
     }
-    $planet_sub_query .= "`{$sn_data[$unit_id]['name']}` = `{$sn_data[$unit_id]['name']}` - {$amount},";
+    $unit_db_name = get_unit_param($unit_id, P_NAME);
+    $planet_sub_query .= "`{$unit_db_name}` = `{$unit_db_name}` - {$amount},";
   }
 
   $to['id_owner'] = intval($to['id_owner']);
@@ -593,7 +590,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   $QryInsertFleet .= "`fleet_resource_deuterium` = " . floatval($fleet[RES_DEUTERIUM]) . ", ";
   $QryInsertFleet .= "`fleet_target_owner` = '{$to['id_owner']}', ";
   $QryInsertFleet .= "`fleet_group` = '{$fleet_group}', ";
-  $QryInsertFleet .= "`start_time` = '{$time_now}';";
+  $QryInsertFleet .= "`start_time` = '" . SN_TIME_NOW . "';";
   doquery( $QryInsertFleet);
 
   $QryUpdatePlanet  = "UPDATE {{planets}} SET {$planet_sub_query} `deuterium` = `deuterium` - '{$travel_data['consumption']}' WHERE `id` = '{$from['id']}' LIMIT 1;";
@@ -632,22 +629,18 @@ function flt_calculate_ship_to_transport_sort($a, $b)
 // $to - transport to
 function flt_calculate_fleet_to_transport($ship_list, $resource_amount, $from, $to)
 {
-  global $sn_data, $user;
+  global $user;
 
   $ship_data = array();
   $fleet_array = array();
   foreach($ship_list as $transport_id => $cork)
   {
     $ship_data[$transport_id] = flt_travel_data($user, $from, $to, array($transport_id => 1), 10);
-//debug($ship_data[$transport_id], '$ship_data[$transport_id]1');
-//    $ship_data[$transport_id]['capacity'] = $sn_data[$transport_id]['capacity'];
-//    $ship_data[$transport_id]['transport_effectivness'] = $ship_data[$transport_id]['capacity'] / $ship_data[$transport_id]['consumption'];
-//    $ship_data[$transport_id]['hold'] = $ship_data[$transport_id]['capacity'] - $ship_data[$transport_id]['consumption'];
-//debug($ship_data[$transport_id], '$ship_data[$transport_id]2');
   }
   uasort($ship_data, flt_calculate_ship_to_transport_sort);
 
   $fleet_hold = 0;
+  $fleet_capacity = 0;
   $fuel_total = $fuel_left = mrc_get_level($user, $from, RES_DEUTERIUM);
   foreach($ship_data as $transport_id => &$ship_info)
   {
@@ -664,5 +657,3 @@ function flt_calculate_fleet_to_transport($ship_list, $resource_amount, $from, $
 
   return array('fleet' => $fleet_array, 'ship_data' => $ship_data, 'capacity' => $fleet_capacity, 'consumption' => $fuel_total - $fuel_left);
 }
-
-?>

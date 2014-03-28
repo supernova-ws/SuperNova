@@ -175,11 +175,11 @@ switch($mode)
     elseif(
       ($hire = sys_get_param_int('hire')) && in_array($hire, sn_get_groups('governors'))
       && (
-        !isset($sn_data[$hire]['max']) ||
+        !get_unit_param($hire, P_MAX_STACK) ||
         ($planetrow['PLANET_GOVERNOR_ID'] != $hire) ||
         (
           $planetrow['PLANET_GOVERNOR_ID'] == $hire &&
-          $planetrow['PLANET_GOVERNOR_LEVEL'] < $sn_data[$hire]['max']
+          $planetrow['PLANET_GOVERNOR_LEVEL'] < get_unit_param($hire, P_MAX_STACK)
         )
       )
     )
@@ -224,7 +224,7 @@ switch($mode)
         'ID'   => $governor_id,
         'NAME' => $lang['tech'][$governor_id],
         'COST' => $build_data[BUILD_CREATE][RES_DARK_MATTER],
-        'MAX'  => $sn_data[$governor_id]['max'],
+        'MAX'  => get_unit_param($governor_id, P_MAX_STACK),
         'LEVEL' => $governor_level,
       ));
     }
@@ -433,7 +433,7 @@ switch($mode)
       'planet_density_index'  => $planetrow['density_index'],
       'planet_density_text'   => $lang['uni_planet_density_types'][$planetrow['density_index']],
 
-      'GATE_LEVEL'            => $planetrow[$sn_data[STRUC_MOON_GATE]['name']],
+      'GATE_LEVEL'            => $planetrow[get_unit_param(STRUC_MOON_GATE, P_NAME)],
       'GATE_JUMP_REST_TIME'   => uni_get_time_to_jump($planetrow),
 
       'ADMIN_EMAIL'           => $config->game_adminEmail,
@@ -445,7 +445,7 @@ switch($mode)
       'LIST_ROW_COUNT'        => $overview_planet_rows,
       'LIST_COLUMN_COUNT'     => $overview_planet_columns,
 
-      'SECTOR_CAN_BUY'        => $sector_cost <= $user[$sn_data[RES_DARK_MATTER]['name']],
+      'SECTOR_CAN_BUY'        => $sector_cost <= $user[get_unit_param(RES_DARK_MATTER, P_NAME)],
       'SECTOR_COST'           => $sector_cost,
       'SECTOR_COST_TEXT'      => pretty_number($sector_cost),
       //'LastChat'       => CHT_messageParse($msg),

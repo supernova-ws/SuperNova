@@ -7,13 +7,15 @@ if((!defined('SN_IN_MARKET') || SN_IN_MARKET !== true) && (!defined('SN_IN_ALLY'
 
 function eco_mrk_trader($user, $planetrow = null)
 {
-  $page_title .= " - {$lang['eco_mrk_trader']}";
+  // global $lang;
+
+  // $page_title = " - {$lang['eco_mrk_trader']}";
   $template = gettemplate('market_trader', true);
 
   $intError = MARKET_DEAL;
   $planetrow = isset($planetrow) ? $planetrow : $user;
 
-  global $page_title, $sn_data, $config, $lang;
+  global $page_title, $config, $lang;
 
   lng_include('market');
 
@@ -24,6 +26,7 @@ function eco_mrk_trader($user, $planetrow = null)
     RES_DARK_MATTER => $config->rpg_exchange_darkMatter
   );
 
+  $dm_db_name = get_unit_param(RES_DARK_MATTER, P_NAME);
   $exchangeTo = in_array($exchangeTo = sys_get_param_int('exchangeTo'), sn_get_groups('resources_trader')) ? $exchangeTo : 0;
   if($exchangeTo && is_array($tradeList = $_POST['spend']))
   {
@@ -55,6 +58,7 @@ function eco_mrk_trader($user, $planetrow = null)
         continue;
       }
 
+      $resource_db_name = get_unit_param($resource_id, P_NAME);
       if($exchangeTo == RES_DARK_MATTER)
       {
         $sign = '+';
@@ -70,7 +74,7 @@ function eco_mrk_trader($user, $planetrow = null)
         }
         else
         {
-          if($planetrow[$sn_data[$resource_id]['name']] < $amount)
+          if($planetrow[$resource_db_name] < $amount)
           {
             $intError = MARKET_NO_RESOURCES;
             break;
@@ -82,20 +86,21 @@ function eco_mrk_trader($user, $planetrow = null)
 
       if($amount)
       {
-        $qry[] = "`{$sn_data[$resource_id]['name']}` = `{$sn_data[$resource_id]['name']}` {$sign} {$amount}";
+        $qry[] = "`{$resource_db_name}` = `{$resource_db_name}` {$sign} {$amount}";
       }
     }
 
     if($exchangeTo != RES_DARK_MATTER)
     {
       $amount = floor($value);
-      $qry[] = "`{$sn_data[$exchangeTo]['name']}` = `{$sn_data[$exchangeTo]['name']}` + {$amount}";
+      $exchange_to_db_name = get_unit_param($exchangeTo, P_NAME);
+      $qry[] = "`{$exchange_to_db_name}` = `{$exchange_to_db_name}` + {$amount}";
     }
 
     $operation_cost = $config->rpg_cost_trader * ($exchangeTo == RES_DARK_MATTER ? 3 : 1) + $tradeList[RES_DARK_MATTER];
 
     $intError = $value <= 0 ? MARKET_ZERO_DEAL : $intError;
-    $intError = $user[$sn_data[RES_DARK_MATTER]['name']] < $operation_cost ? MARKET_NO_DM : $intError;
+    $intError = $user[$dm_db_name] < $operation_cost ? MARKET_NO_DM : $intError;
 
     if($intError == MARKET_DEAL)
     {
@@ -127,11 +132,11 @@ function eco_mrk_trader($user, $planetrow = null)
   {
     if($resource_id == RES_DARK_MATTER)
     {
-      $amount = floor($user[$sn_data[RES_DARK_MATTER]['name']] - $config->rpg_cost_trader);
+      $amount = floor($user[$dm_db_name] - $config->rpg_cost_trader);
     }
     else
     {
-      $amount = floor($planetrow[$sn_data[$resource_id]['name']]);
+      $amount = floor($planetrow[get_unit_param($resource_id, P_NAME)]);
     }
 
     $template->assign_block_vars('resources', array(

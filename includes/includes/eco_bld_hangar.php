@@ -7,8 +7,6 @@ function eco_hangar_is_building($que)
 
 function eco_bld_hangar_clear($planet, $action)
 {
-  global $sn_data;
-
   doquery('START TRANSACTION;');
   $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planet['id']}' LIMIT 1 FOR UPDATE;", '', true);
 
@@ -17,7 +15,7 @@ function eco_bld_hangar_clear($planet, $action)
   $hangar_loop = count($hangar_que) - 1;
   for($i = $hangar_loop; $i >= ($action == 'trim' ? $hangar_loop : 0); $i--)
   {
-    $unit_data = &$sn_data[$hangar_que[$i][0]];
+    $unit_data = get_unit_param($hangar_que[$i][0]);
     foreach($unit_data['cost'] as $resource_id => $resource_amount)
     {
       if(!$resource_amount || !intval($resource_id))
@@ -32,7 +30,8 @@ function eco_bld_hangar_clear($planet, $action)
   $query = array();
   foreach($restored_resources as $resource_id => $resource_amount)
   {
-    $query[] = "`{$sn_data[$resource_id]['name']}` = `{$sn_data[$resource_id]['name']}` + {$resource_amount}";
+    $resource_db_name = get_unit_param($resource_id, P_NAME);
+    $query[] = "`{$resource_db_name}` = `{$resource_db_name}` + {$resource_amount}";
   }
   $hangar_que = eco_que_arr2str($hangar_que);
   $query[] = "`b_hangar_id` = '{$hangar_que}'";
@@ -54,9 +53,9 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
     eco_bld_hangar_clear($planet, $action);
   }
 
-  global $sn_data, $lang, $time_now, $config;
+  global $lang, $config;
 
-  if($planet[$sn_data[STRUC_FACTORY_HANGAR]['name']] == 0)
+  if($planet[get_unit_param(STRUC_FACTORY_HANGAR, P_NAME)] == 0)
   {
     message($lang['need_hangar'], $lang['tech'][STRUC_FACTORY_HANGAR]);
   }
@@ -71,17 +70,12 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
   $hangar_que = eco_que_str2arr($planet['b_hangar_id']);
   $hangar_que_by_unit = sys_unit_str2arr($planet['b_hangar_id']);
 
-/*
-  $silo_capacity_free = max(0,
-    $silo_capacity_free
-    - ($hangar_que_by_unit[UNIT_DEF_MISSILE_INTERCEPTOR] + $planet[$sn_data[UNIT_DEF_MISSILE_INTERCEPTOR]['name']]) * $sn_data[UNIT_DEF_MISSILE_INTERCEPTOR]['size']
-    - ($hangar_que_by_unit[UNIT_DEF_MISSILE_INTERPLANET] + $planet[$sn_data[UNIT_DEF_MISSILE_INTERPLANET]['name']]) * $sn_data[UNIT_DEF_MISSILE_INTERPLANET]['size']);
-*/
-
-  $silo_capacity_free = $planet[$sn_data[STRUC_SILO]['name']] * $sn_data[STRUC_SILO]['capacity'];
+  $silo_info = get_unit_param(STRUC_SILO);
+  $silo_capacity_free = $planet[$silo_info[P_NAME]] * $silo_info[P_CAPACITY];
   foreach(sn_get_groups('missile') as $silo_unit_id)
   {
-    $silo_capacity_free -= ($hangar_que_by_unit[$silo_unit_id] + $planet[$sn_data[$silo_unit_id]['name']]) * $sn_data[$silo_unit_id]['size'];
+    $silo_unit_info = get_unit_param($silo_unit_id);
+    $silo_capacity_free -= ($hangar_que_by_unit[$silo_unit_id] + $planet[$silo_unit_info[P_NAME]]) * $silo_unit_info[P_UNIT_SIZE];
   }
   $silo_capacity_free = max(0, $silo_capacity_free);
 
@@ -93,6 +87,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
   {
     foreach($POST_fmenge as $unit_id => $unit_count)
     {
+      $unit_info = get_unit_param($unit_id);
       if($que_size >= $config_server_que_length_hangar)
       {
         break;
@@ -112,9 +107,9 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
         continue;
       }
       // Restricting $unit_count by resources on planet and (where applicable) with max count per unit
-      $unit_count = min($build_data[CAN][BUILD_CREATE], $sn_data[$unit_id]['max'] ? max(0, $sn_data[$unit_id]['max'] - $hangar_que_by_unit[$unit_id] - $planet[$sn_data[$unit_id]['name']]) : $unit_count);
+      $unit_count = min($build_data['CAN'][BUILD_CREATE], $unit_info[P_MAX_STACK] ? max(0, $unit_info[P_MAX_STACK] - $hangar_que_by_unit[$unit_id] - $planet[$unit_info[P_NAME]]) : $unit_count);
       // Restricting $unit_count by free silo capacity
-      $unit_count = ($unit_is_missile = in_array($unit_id, sn_get_groups('missile'))) ? min($unit_count, floor($silo_capacity_free / $sn_data[$unit_id]['size'])) : $unit_count;
+      $unit_count = ($unit_is_missile = in_array($unit_id, sn_get_groups('missile'))) ? min($unit_count, floor($silo_capacity_free / $unit_info[P_UNIT_SIZE])) : $unit_count;
       if(!$unit_count)
       {
         continue;
@@ -127,14 +122,14 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
       foreach($build_data[BUILD_CREATE] as $resource_id => $resource_amount)
       {
         $units_cost_new[$resource_id] += $resource_amount * $unit_count;
-        if($units_cost_new[$resource_id] > $planet[$sn_data[$resource_id]['name']])
+        if($units_cost_new[$resource_id] > $planet[get_unit_param($resource_id, P_NAME)])
         {
           continue 2;
         }
       }
 
       $units_cost = $units_cost_new;
-      $silo_capacity_free -= $unit_is_missile ? $unit_count * $sn_data[$unit_id]['size'] : 0;
+      $silo_capacity_free -= $unit_is_missile ? $unit_count * $unit_info[P_UNIT_SIZE] : 0;
       $hangar_que[] = array($unit_id, $unit_count);
       $hangar_que_by_unit[$unit_id] += $unit_count;
       $que_size++;
@@ -146,7 +141,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
       $query = array("`b_hangar_id` = '{$planet['b_hangar_id']}'");
       foreach($units_cost as $resource_id => $resource_amount)
       {
-        $resource_db_name = $sn_data[$resource_id]['name'];
+        $resource_db_name = get_unit_param($resource_id, P_NAME);
         $query[] = "`{$resource_db_name}` = `{$resource_db_name}` - {$resource_amount}";
         $planet[$resource_db_name] -= $resource_amount;
       }
@@ -163,6 +158,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
   $TabIndex  = 0;
   foreach($sn_data_group as $unit_id)
   {
+    $unit_info = get_unit_param($unit_id);
     $build_data = eco_get_build_data($user, $planet, $unit_id);
 
     if($build_data['RESULT'][BUILD_CREATE] == BUILD_REQUIRE_NOT_MEET)
@@ -171,22 +167,22 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
     }
 
     $unit_message = '';
-    $ElementCount  = $planet[$sn_data[$unit_id]['name']];
+    $ElementCount  = $planet[$unit_info[P_NAME]];
     // Restricting $can_build by resources on planet and (where applicable) with max count per unit
-    $can_build     = $sn_data[$unit_id]['max'] ? max(0, $sn_data[$unit_id]['max'] - $hangar_que_by_unit[$unit_id] - $planet[$sn_data[$unit_id]['name']]) : $build_data['CAN'][BUILD_CREATE];
+    $can_build     = $unit_info[P_MAX_STACK] ? max(0, $unit_info[P_MAX_STACK] - $hangar_que_by_unit[$unit_id] - $planet[$unit_info[P_NAME]]) : $build_data['CAN'][BUILD_CREATE];
     // Restricting $can_build by free silo capacity
-    $can_build     = ($unit_is_missile = in_array($unit_id, sn_get_groups('missile'))) ? min($can_build, floor($silo_capacity_free / $sn_data[$unit_id]['size'])) : $can_build;
+    $can_build     = ($unit_is_missile = in_array($unit_id, sn_get_groups('missile'))) ? min($can_build, floor($silo_capacity_free / $unit_info[P_UNIT_SIZE])) : $can_build;
     if(!$can_build)
     {
       if(!$build_data['CAN'][BUILD_CREATE])
       {
-        $unit_message = $lans['sys_build_result'][BUILD_NO_RESOURCES];//$lang['b_no_silo_space'];
+        $unit_message = $lang['sys_build_result'][BUILD_NO_RESOURCES];
       }
-      elseif($unit_is_missile && $silo_capacity_free < $sn_data[$unit_id]['size'])
+      elseif($unit_is_missile && $silo_capacity_free < $unit_info[P_UNIT_SIZE])
       {
         $unit_message = $lang['b_no_silo_space'];
       }
-      elseif($sn_data[$unit_id]['max'])
+      elseif($unit_info[P_MAX_STACK])
       {
         $unit_message = $lang['only_one'];
       }
@@ -205,7 +201,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
       'NAME'              => $lang['tech'][$unit_id],
       'DESCRIPTION'       => $lang['info'][$unit_id]['description_short'],
       'LEVEL'             => $ElementCount,
-      'LEVEL_OLD'         => $CurentPlanet[$sn_data[$unit_id]['name']],
+      'LEVEL_OLD'         => $CurentPlanet[$unit_info[P_NAME]],
       'LEVEL_CHANGE'      => $que['in_que'][$unit_id],
 
       'BUILD_CAN'         => $can_build,
@@ -231,9 +227,9 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
       'CRYSTAL_REST_NUM'  => $temp[RES_CRYSTAL],
       'DEUTERIUM_REST_NUM'=> $temp[RES_DEUTERIUM],
 
-      'ARMOR'  => pretty_number($sn_data[$unit_id]['armor']),
-      'SHIELD' => pretty_number($sn_data[$unit_id]['shield']),
-      'WEAPON' => pretty_number($sn_data[$unit_id]['attack']),
+      'ARMOR'  => pretty_number($unit_info[P_ARMOR]),
+      'SHIELD' => pretty_number($unit_info[P_SHIELD]),
+      'WEAPON' => pretty_number($unit_info[P_ATTACK]),
 
       'TABINDEX' => $TabIndex,
 
@@ -249,7 +245,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
     'MODE'       => $que_type,
 
     'QUE_ID'     => $que_type,
-    'TIME_NOW'   => $time_now,
+    'TIME_NOW'   => SN_TIME_NOW,
     'HANGAR_BUSY' => eco_hangar_is_building($que),
     'QUE_HAS_PLACE' => $que_size < $config_server_que_length_hangar,
   ));

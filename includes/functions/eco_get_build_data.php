@@ -13,12 +13,12 @@ function eco_lab_sort_effectivness($a, $b)
  */
 function eco_get_lab_max_effective_level(&$user, $lab_require)
 {
-  global $sn_data;
-
   if(!$user['user_as_ally'] && !isset($user['laboratories_active']))
   {
     $user['laboratories_active'] = array();
-    $query = doquery("SELECT id, que, {$sn_data[STRUC_LABORATORY]['name']}, {$sn_data[STRUC_LABORATORY_NANO]['name']} FROM {{planets}} WHERE id_owner='{$user['id']}' AND {$sn_data[STRUC_LABORATORY]['name']} > 0");
+    $lab_db_name = get_unit_param(STRUC_LABORATORY, P_NAME);
+    $nanolab_db_name = get_unit_param(STRUC_LABORATORY_NANO, P_NAME);
+    $query = doquery("SELECT id, que, {$lab_db_name}, {$nanolab_db_name} FROM {{planets}} WHERE id_owner='{$user['id']}' AND {$lab_db_name} > 0");
     while($row = mysql_fetch_assoc($query))
     {
       if(!eco_unit_busy($user, $row, UNIT_TECHNOLOGIES))
@@ -58,43 +58,8 @@ function eco_get_lab_max_effective_level(&$user, $lab_require)
           $tech_intergalactic--;
         }
       }
-
-/*
-      $lab_db_name = $sn_data[STRUC_LABORATORY]['name'];
-      $nanolab_db_name = $sn_data[STRUC_LABORATORY_NANO]['name'];
-
-      $bonus = mrc_get_level($user, false, UNIT_PREMIUM);
-      $lab_require = $lab_require > $bonus ? $lab_require - $bonus : 1;
-
-      $query = doquery("SELECT (IF({$lab_db_name} > 0, {$lab_db_name} + {$bonus}, 0)) * POW(2, IF({$nanolab_db_name} > 0, {$nanolab_db_name} + {$bonus}, 0)) AS lab, que, id, {$lab_db_name}, {$nanolab_db_name}
-            FROM {{planets}}
-              WHERE id_owner='{$user['id']}' AND {$lab_db_name} + {$bonus} >= {$lab_require}
-              ORDER BY lab DESC");
-
-      while($tech_intergalactic > 0 && $row = mysql_fetch_assoc($query))
-      {
-        if(!eco_is_builds_in_que($row['que'], array(STRUC_LABORATORY, STRUC_LABORATORY_NANO)))
-        {
-          pdump(mrc_get_level($user, $row, STRUC_LABORATORY));
-          $lab_level['effective_level'] += $row['lab'];
-          $tech_intergalactic--;
-        }
-      }
-//      $lab_level = doquery(
-//        "SELECT SUM(lab) AS effective_level
-//        FROM
-//        (
-//          SELECT (IF({$lab_db_name} > 0, {$lab_db_name} + {$bonus}, 0)) * POW(2, IF({$nanolab_db_name} > 0, {$nanolab_db_name} + {$bonus}, 0)) AS lab
-//            FROM {{planets}}
-//              WHERE id_owner='{$user['id']}' AND {$lab_db_name} + {$bonus} >= {$lab_require}
-//              ORDER BY lab DESC
-//              LIMIT {$tech_intergalactic}
-//        ) AS subquery;", '', true);
-
-*/
     }
     $user['research_effective_level'][$lab_require] = $lab_level['effective_level'] ? $lab_level['effective_level'] : 1;
-//    pdump($user['research_effective_level'][$lab_require], $lab_require);
   }
 
   return $user['research_effective_level'][$lab_require];
@@ -102,22 +67,22 @@ function eco_get_lab_max_effective_level(&$user, $lab_require)
 
 function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_cost = false)
 {
-  global $sn_data, $config;
+  global $config;
 
   $rpg_exchange_deuterium = $config->rpg_exchange_deuterium;
 
-  $unit_data = &$sn_data[$unit_id];
-  $unit_db_name = &$unit_data['name'];
+  $unit_data = get_unit_param($unit_id);
+  $unit_db_name = &$unit_data[P_NAME];
 
 
-  $unit_factor = $unit_data['cost']['factor'] ? $unit_data['cost']['factor'] : 1;
+  $unit_factor = $unit_data[P_COST][P_FACTOR] ? $unit_data[P_COST][P_FACTOR] : 1;
   $price_increase = pow($unit_factor, $unit_level);
 
-  $can_build   = $unit_data['max'] ? $unit_data['max'] : 1000000000000;
+  $can_build   = $unit_data[P_MAX_STACK] ? $unit_data[P_MAX_STACK] : 1000000000000;
   $can_destroy = 1000000000000;
-  foreach($unit_data['cost'] as $resource_id => $resource_amount)
+  foreach($unit_data[P_COST] as $resource_id => $resource_amount)
   {
-    if($resource_id === 'factor')
+    if($resource_id === P_FACTOR)
     {
       continue;
     }
@@ -131,14 +96,15 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $cost[BUILD_CREATE][$resource_id] = floor($resource_cost);
     $cost[BUILD_DESTROY][$resource_id] = floor($resource_cost / 2);
 
+    $resource_db_name = get_unit_param($resource_id, P_NAME);
     if(in_array($resource_id, sn_get_groups('resources_loot')))
     {
-      $time += $resource_cost * $config->__get("rpg_exchange_{$sn_data[$resource_id]['name']}") / $rpg_exchange_deuterium;
-      $resource_got = $planet[$sn_data[$resource_id]['name']];
+      $time += $resource_cost * $config->__get("rpg_exchange_{$resource_db_name}") / $rpg_exchange_deuterium;
+      $resource_got = $planet[$resource_db_name];
     }
     elseif($resource_id == RES_DARK_MATTER)
     {
-      $resource_got = $user[$sn_data[$resource_id]['name']];
+      $resource_got = $user[$resource_db_name];
     }
     elseif($resource_id == RES_ENERGY)
     {
@@ -168,23 +134,6 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
 
 
   $cost['RESULT'][BUILD_CREATE] = eco_can_build_unit($user, $planet, $unit_id);
-/*
-  $cost['RESULT'][BUILD_CREATE] = BUILD_ALLOWED;
-  if(isset($sn_data[$unit_id]['require']))
-  {
-    foreach($sn_data[$unit_id]['require'] as $require_id => $require_level)
-    {
-      $db_name = $sn_data[$require_id]['name'];
-      $data = mrc_get_level($user, $planet, $require_id);
-
-      if($data < $require_level)
-      {
-        $cost['RESULT'][BUILD_CREATE] = BUILD_REQUIRE_NOT_MEET;
-        break;
-      }
-    }
-  }
-*/
   $cost['RESULT'][BUILD_CREATE] = $cost['RESULT'][BUILD_CREATE] == BUILD_ALLOWED ? ($cost['CAN'][BUILD_CREATE] ? BUILD_ALLOWED : BUILD_NO_RESOURCES) : $cost['RESULT'][BUILD_CREATE];
 
   $mercenary = 0;
@@ -233,13 +182,12 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
 function eco_can_build_unit($user, $planet, $unit_id){return sn_function_call('eco_can_build_unit', array($user, $planet, $unit_id, &$result));}
 function sn_eco_can_build_unit($user, $planet, $unit_id, &$result)
 {
-  global $sn_data;
-
   $result = isset($result) ? $result : BUILD_ALLOWED;
   $result = $result == BUILD_ALLOWED && eco_unit_busy($user, $planet, $unit_id) ? BUILD_UNIT_BUSY : $result;
-  if($result == BUILD_ALLOWED && isset($sn_data[$unit_id]['require']))
+  $requirement = get_unit_param($unit_id, P_REQUIRE);
+  if($result == BUILD_ALLOWED && $requirement)
   {
-    foreach($sn_data[$unit_id]['require'] as $require_id => $require_level)
+    foreach($requirement as $require_id => $require_level)
     {
       if(mrc_get_level($user, $planet, $require_id) < $require_level)
       {

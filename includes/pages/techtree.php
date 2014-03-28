@@ -11,10 +11,10 @@ $sn_mvc['view']['techtree'][] = 'sn_techtree_view';
 
 function sn_techtree_view($template = null)
 {
-  global $sn_data, $lang, $user, $planetrow;
+  global $lang, $user, $planetrow;
 
   $tech_tree = array();
-  foreach($sn_data['techtree'] as $unit_group_id => $unit_list)
+  foreach(get_unit_param('techtree') as $unit_group_id => $unit_list)
   {
     $tech_tree[] = array(
       'NAME' => $lang['tech'][$unit_group_id],
@@ -22,9 +22,9 @@ function sn_techtree_view($template = null)
 
     foreach($unit_list as $unit_id)
     {
-      $sn_data_unit = &$sn_data[$unit_id];
-      $level_basic = $sn_data_unit['stackable'] ? 0 : mrc_get_level($user, $planetrow, $unit_id, false, true);
-      $unit_level = $sn_data_unit['stackable'] ? 0 : mrc_get_level($user, $planetrow, $unit_id);
+      $sn_data_unit = get_unit_param($unit_id);
+      $level_basic = $sn_data_unit[P_STACKABLE] ? 0 : mrc_get_level($user, $planetrow, $unit_id, false, true);
+      $unit_level = $sn_data_unit[P_STACKABLE] ? 0 : mrc_get_level($user, $planetrow, $unit_id);
       $rendered_info = array(
         'ID' => $unit_id,
         'NAME' => $lang['tech'][$unit_id],
@@ -46,5 +46,3 @@ function sn_techtree_view($template = null)
 
   return $template;
 }
-
-?>

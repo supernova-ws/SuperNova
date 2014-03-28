@@ -196,24 +196,19 @@ $user_option_types = array(
   'opt_int_overview_planet_columns' => 'integer',
   'opt_int_overview_planet_rows' => 'integer',
 );
-/*
-foreach($sn_message_groups['switchable'] as $option_id)
-{
-  $user_option_list[OPT_MESSAGE]["opt_{$sn_message_class_list[$option_id]['name']}"] = 1;
-}
-*/
+
 $sn_diplomacy_relation_list = array(
-  ALLY_DIPLOMACY_NEUTRAL       => array(
+  ALLY_DIPLOMACY_NEUTRAL => array(
     'relation_id' => ALLY_DIPLOMACY_NEUTRAL,
     'enter_delay' => 0,
     'exit_delay'  => 0,
   ),
-  ALLY_DIPLOMACY_WAR           => array(
+  ALLY_DIPLOMACY_WAR => array(
     'relation_id' => ALLY_DIPLOMACY_WAR,
     'enter_delay' => $config->fleet_bashing_war_delay,
     'exit_delay'  => -1,
   ),
-  ALLY_DIPLOMACY_PEACE         => array(
+  ALLY_DIPLOMACY_PEACE => array(
     'relation_id' => ALLY_DIPLOMACY_PEACE,
     'enter_delay' => -1,
     'exit_delay'  => 0,
@@ -779,52 +774,11 @@ $sn_pwr_buy_discount = array(
   PERIOD_MONTH_3   => 0.8,
 );
 
-foreach ($sn_data as $unitID => $unitData)
+foreach($sn_data as $unitID => $unitData)
 {
   if(!isset($sn_data[$unitID]['cost']['metal']))
   {
     continue;
   }
   $sn_data[$unitID]['armor'] = ($sn_data[$unitID]['cost']['metal'] + $sn_data[$unitID]['cost']['crystal'])/10;
-/*
-  foreach ($unitData['sd'] as $enemyID => $SPD)
-  {
-    if ($SPD>1)
-    {
-
-      // $enemyArmor = ($sn_data[$enemyID]['metal'] + $sn_data[$enemyID]['crystal'])/10;
-      // $a1 = ($enemyArmor + $sn_data[$enemyID]['shield']) * $SPD / $unitData['attack'];
-
-      $a1 = ($sn_data[$enemyID]['armor'] + $sn_data[$enemyID]['shield']) * $SPD / $unitData['attack'];
-      $sn_data[$unitID]['amplify'][$enemyID] = $a1;
-
-//        $unitData['attack'] * $sn_data[$unitID]['amplify'][$enemyID] / ($sn_data[$enemyID]['armor'] + $sn_data[$enemyID]['shield']) = $SPD
-    }
-    elseif ($SPD == 1)
-    {
-      $sn_data[$unitID]['amplify'][$enemyID] = 1;
-    }
-    elseif ($SPD < 0)
-    {
-      $sn_data[$unitID]['amplify'][$enemyID] = -$SPD;
-    }
-    elseif ($SPD == 0 || $SPD<1 || !is_numeric($SPD))
-    {
-      $sn_data[$unitID]['amplify'][$enemyID] = 0;
-    }
-  }
-*/
 }
-
-/*
-// Procedure to dump new 'amplify' values delivered from rapidfire
-foreach ($sn_data as $unitID => $unitData)
-{
-  print("  $"."CombatCaps[" . $unitID . "]['amplify'] = array( ");
-  foreach ($unitData['amplify'] as $enemyID => $SPD)
-  {
-    print($enemyID . ' => ' . round($SPD, 5) . ', ');
-  }
-  print(" );<br>");
-}
-*/

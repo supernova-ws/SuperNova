@@ -23,7 +23,7 @@ if($unit_id == RES_METAMATTER)
 }
 
 lng_include('infos');
-if(!$unit_id || (!isset($sn_data[$unit_id]) && !isset($lang['info'][$unit_id])))
+if(!$unit_id || (!get_unit_param($unit_id) && !isset($lang['info'][$unit_id])))
 {
   sys_redirect('index.php?page=techtree');
 }
@@ -81,7 +81,7 @@ if(in_array($unit_id, $sn_data_group_combat))
   $str_rapid_to = '';
   foreach($sn_data_group_combat as $enemy_id)
   {
-    $enemy_data = &$sn_data[$enemy_id];
+    $enemy_data = get_unit_param($enemy_id);
     $enemy_durability = $enemy_data['shield'] + $enemy_data['armor'];
 
     $rapid = $unit_data['attack'] * (isset($unit_data['amplify'][$enemy_id]) ? $unit_data['amplify'][$enemy_id] : 1) / $enemy_durability;
@@ -272,16 +272,16 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
 
 function eco_render_rapid_fire($unit_id)
 {
-  global $lang, $sn_data;
+  global $lang;
 
-  $unit_data = $sn_data[$unit_id];
+  $unit_data = get_unit_param($unit_id);
   $unit_durability = $unit_data['shield'] + $unit_data['armor'];
 
   $str_rapid_from = '';
   $str_rapid_to = '';
-  foreach (array_merge($sn_data[groups]['fleet'], $sn_data[groups]['defense_active']) as $enemy_id)
+  foreach(sn_get_groups(array('fleet', 'defense_active')) as $enemy_id)
   {
-    $enemy_data = $sn_data[$enemy_id];
+    $enemy_data = get_unit_param($enemy_id);
     $enemy_durability = $enemy_data['shield'] + $enemy_data['armor'];
 
     $rapid = floor($unit_data['attack'] * (isset($unit_data['amplify'][$enemy_id]) ? $unit_data['amplify'][$enemy_id] : 1) / $enemy_durability);
@@ -311,7 +311,7 @@ function eco_render_rapid_fire($unit_id)
 //
 $unit_id = sys_get_param_int('gid');
 
-$unit_data = &$sn_data[$unit_id];
+$unit_data = get_unit_param($unit_id);
 
 lng_include('infos');
 
@@ -324,6 +324,8 @@ $parse['dpath'] = $dpath;
 $parse['name'] = $lang['tech'][$unit_id];
 $parse['image'] = $unit_id;
 $parse['description'] = $lang['info'][$unit_id]['description'];
+
+$unit_info = get_unit_param($unit_id);
 
 if ($unit_id >= 1 && $unit_id <= 3)
 {
@@ -405,6 +407,7 @@ elseif(in_array($unit_id, sn_get_groups('tech')))
 elseif(in_array($unit_id, sn_get_groups('fleet')))
 {
   // Flotte
+
   $PageTPL = gettemplate('info_buildings_fleet');
 
   $parse['element_typ'] = $lang['tech'][UNIT_SHIPS];
@@ -412,25 +415,25 @@ elseif(in_array($unit_id, sn_get_groups('fleet')))
   $parse['rf_info_to'] = $rapid_fire['to'];   // Rapid Fire vers
   $parse['rf_info_fr'] = $rapid_fire['from']; // Rapid Fire de
 
-  $parse['hull_pt'] = pretty_number(($sn_data[$unit_id]['metal'] + $sn_data[$unit_id]['crystal']) / 10); // Points de Structure
-  $parse['shield_pt'] = pretty_number($sn_data[$unit_id]['shield']);  // Points de Bouclier
-  $parse['attack_pt'] = pretty_number($sn_data[$unit_id]['attack']);  // Points d'Attaque
-  $parse['capacity_pt'] = pretty_number($sn_data[$unit_id]['capacity']); // Capacitée de fret
-  $parse['base_speed'] = pretty_number($sn_data[$unit_id]['engine'][0]['speed']);    // Vitesse de base
-  $parse['base_conso'] = pretty_number($sn_data[$unit_id]['engine'][0]['consumption']);  // Consommation de base
+  $parse['hull_pt'] = pretty_number(($unit_info['metal'] + $unit_info['crystal']) / 10); // Points de Structure
+  $parse['shield_pt'] = pretty_number($unit_info['shield']);  // Points de Bouclier
+  $parse['attack_pt'] = pretty_number($unit_info['attack']);  // Points d'Attaque
+  $parse['capacity_pt'] = pretty_number($unit_info['capacity']); // Capacitée de fret
+  $parse['base_speed'] = pretty_number($unit_info['engine'][0]['speed']);    // Vitesse de base
+  $parse['base_conso'] = pretty_number($unit_info['engine'][0]['consumption']);  // Consommation de base
 
-  $parse['ACTUAL_ARMOR'] = pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), ($sn_data[$unit_id]['metal'] + $sn_data[$unit_id]['crystal']) / 10));
-  $parse['ACTUAL_SHIELD'] = pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $sn_data[$unit_id]['shield']));
-  $parse['ACTUAL_WEAPON'] = pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), $sn_data[$unit_id]['attack']));
+  $parse['ACTUAL_ARMOR'] = pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), ($unit_info['metal'] + $unit_info['crystal']) / 10));
+  $parse['ACTUAL_SHIELD'] = pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $unit_info['shield']));
+  $parse['ACTUAL_WEAPON'] = pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), $unit_info['attack']));
 
   $ship_data = get_ship_data($unit_id, $user);
   $parse['ACTUAL_CAPACITY'] = pretty_number($ship_data['capacity']);
   $parse['ACTUAL_SPEED'] = pretty_number($ship_data['speed']);
   $parse['ACTUAL_CONSUMPTION'] = pretty_number($ship_data['consumption']);
-  if(count($sn_data[$unit_id]['engine']) > 1)
+  if(count($unit_info['engine']) > 1)
   {
-    $parse['upd_speed'] = "<font color=\"yellow\">(" . pretty_number($sn_data[$unit_id]['engine'][1]['speed']) . ")</font>";       // Vitesse rééquipée
-    $parse['upd_conso'] = "<font color=\"yellow\">(" . pretty_number($sn_data[$unit_id]['engine'][1]['consumption']) . ")</font>"; // Consommation apres rééquipement
+    $parse['upd_speed'] = "<font color=\"yellow\">(" . pretty_number($unit_info['engine'][1]['speed']) . ")</font>";       // Vitesse rééquipée
+    $parse['upd_conso'] = "<font color=\"yellow\">(" . pretty_number($unit_info['engine'][1]['consumption']) . ")</font>"; // Consommation apres rééquipement
   }
 }
 elseif(in_array($unit_id, sn_get_groups('defense_active')))
@@ -443,25 +446,25 @@ elseif(in_array($unit_id, sn_get_groups('defense_active')))
   $parse['rf_info_to'] = $rapid_fire['to'];   // Rapid Fire vers
   $parse['rf_info_fr'] = $rapid_fire['from']; // Rapid Fire de
 
-  $parse['hull_pt'] = pretty_number(($sn_data[$unit_id]['metal'] + $sn_data[$unit_id]['crystal']) / 10); // Points de Structure
-  $parse['shield_pt'] = pretty_number($sn_data[$unit_id]['shield']);  // Points de Bouclier
-  $parse['attack_pt'] = pretty_number($sn_data[$unit_id]['attack']);  // Points d'Attaque
+  $parse['hull_pt'] = pretty_number(($unit_info['metal'] + $unit_info['crystal']) / 10); // Points de Structure
+  $parse['shield_pt'] = pretty_number($unit_info['shield']);  // Points de Bouclier
+  $parse['attack_pt'] = pretty_number($unit_info['attack']);  // Points d'Attaque
 }
 elseif(in_array($unit_id, sn_get_groups('missile')))
 {
   // Misilles
   $PageTPL = gettemplate('info_buildings_defense');
   $parse['element_typ'] = $lang['tech'][UNIT_DEFENCE];
-  $parse['hull_pt'] = pretty_number($sn_data[$unit_id]['metal'] + $sn_data[$unit_id]['crystal']); // Points de Structure
-  $parse['shield_pt'] = pretty_number($sn_data[$unit_id]['shield']);  // Points de Bouclier
-  $parse['attack_pt'] = pretty_number($sn_data[$unit_id]['attack']);  // Points d'Attaque
+  $parse['hull_pt'] = pretty_number($unit_info['metal'] + $unit_info['crystal']); // Points de Structure
+  $parse['shield_pt'] = pretty_number($unit_info['shield']);  // Points de Bouclier
+  $parse['attack_pt'] = pretty_number($unit_info['attack']);  // Points d'Attaque
 }
 elseif(in_array($unit_id, sn_get_groups(array('mercenaries', 'governors', 'artifacts', 'resources_all'))))
 {
   // Officiers
   $PageTPL = gettemplate('info_officiers_general');
 
-  $mercenary = $sn_data[$unit_id];
+  $mercenary = $unit_info;
   $mercenary_bonus = $mercenary['bonus'];
   $mercenary_bonus = $mercenary_bonus >= 0 ? "+{$mercenary_bonus}" : "{$mercenary_bonus}";
   switch ($mercenary['bonus_type'])
@@ -486,7 +489,7 @@ elseif(in_array($unit_id, sn_get_groups(array('mercenaries', 'governors', 'artif
   if(!in_array($unit_id, sn_get_groups(array('artifacts', 'resources_all'))))
   {
     $parse['max_level'] = $lang['sys_level'] . ' ' . 
-    (in_array($unit_id, sn_get_groups('mercenaries')) ? mrc_get_level($user, $planetrow, $unit_id) : ($mercenary['location'] == LOC_USER ? $user[$sn_data[$unit_id]['name']] : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0)))
+    (in_array($unit_id, sn_get_groups('mercenaries')) ? mrc_get_level($user, $planetrow, $unit_id) : ($mercenary['location'] == LOC_USER ? $user[$unit_info['name']] : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0)))
     . (isset($mercenary['max']) ? "/{$mercenary['max']}" : '');
   }
 }

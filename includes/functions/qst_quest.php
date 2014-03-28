@@ -2,7 +2,7 @@
 
 function qst_render_page()
 {
-  global $sn_data, $lang, $user, $template, $config;
+  global $lang, $user, $template, $config;
 
   $user_id = sys_get_param_id('user_id', false);
   $mode    = sys_get_param_str('mode');
@@ -299,7 +299,7 @@ function qst_active_triggers($quest_list)
 
 function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
 {
-  global $lang, $sn_data, $time_now;
+  global $lang;
 
   foreach($rewards as $quest_id => $rewards_list_string)
   {
@@ -313,7 +313,8 @@ function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
     foreach($rewards_list_array as $reward_string)
     {
       list($reward_id, $reward_amount) = explode(',', $reward_string);
-      $reward_db_name = $sn_data[$reward_id]['name'];
+      $reward_info = get_unit_param($reward_id);
+      $reward_db_name = $reward_info[P_NAME];
       $reward_db_string = "`{$reward_db_name}` = `{$reward_db_name}` + {$reward_amount}";
 
       if($reward_id == RES_DARK_MATTER)
@@ -321,7 +322,7 @@ function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
         $user_reward_dm = $reward_amount;
       }
 
-      if($sn_data[$reward_id]['location'] == LOC_USER)
+      if($reward_info['location'] == LOC_USER)
       {
         if($reward_id != RES_DARK_MATTER)
         {
@@ -329,7 +330,7 @@ function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
         }
         $user_reward[] = $reward_db_string;
       }
-      elseif($sn_data[$reward_id]['location'] == LOC_PLANET)
+      elseif($reward_info['location'] == LOC_PLANET)
       {
         $planet[$reward_db_name] += $reward_amount;
         $planet_reward[] = $reward_db_string;
@@ -353,7 +354,7 @@ function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
 
         if($user_reward_dm)
         {
-          rpg_points_change($user['id'], RPG_QUEST,$user_reward_dm, $comment, true);
+          rpg_points_change($user['id'], RPG_QUEST, $user_reward_dm, $comment, true);
         }
       }
 
@@ -370,7 +371,7 @@ function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
       'quest_status_status'   => QUEST_STATUS_COMPLETE
     ));
 
-    msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_ADMIN, $lang['msg_from_admin'], $lang['qst_msg_complete_subject'], $comment);
+    msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['msg_from_admin'], $lang['qst_msg_complete_subject'], $comment);
   }
 }
 

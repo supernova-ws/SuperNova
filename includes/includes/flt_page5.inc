@@ -19,11 +19,11 @@ if(SN_IN_FLEET !== true)
 
 function flt_build_gathering($resources_taken = '')
 {
-  global $time_now, $planetrow, $user, $sn_data, $lang; // $name_to_id, $transports, 
-  // Caching $sn_data names for quick access
+  global $time_now, $planetrow, $user, $lang;
+  // Caching sn_data names for quick access
   $lang_sys_planet_type = $lang['sys_planet_type'];
   $lang_fl_attack_error = $lang['fl_attack_error'];
-  $deuterium_db_name = &$sn_data[RES_DEUTERIUM]['name'];
+  $deuterium_db_name = get_unit_param(RES_DEUTERIUM, P_NAME);
 
   $planet_list = array();
 
@@ -39,8 +39,9 @@ function flt_build_gathering($resources_taken = '')
 
   foreach(sn_get_groups('flt_transports') as $transport_id)
   {
-    $transports[$sn_data[$transport_id]['name']] = $sn_data[$transport_id]['capacity'];
-    $name_to_id[$sn_data[$transport_id]['name']] = $transport_id;
+    $transport_info = get_unit_param($transport_id);
+    $transports[$transport_info[P_NAME]] = $transport_info[P_CAPACITY];
+    $name_to_id[$transport_info[P_NAME]] = $transport_id;
   }
   arsort($transports);
 
@@ -80,7 +81,7 @@ function flt_build_gathering($resources_taken = '')
     {
       if($resources_taken[$planet_id] == 1 || $resources_taken[$planet_id][$resource_id])
       {
-        $planet_resources += floor($planet_db_data[$sn_data[$resource_id]['name']]);
+        $planet_resources += floor($planet_db_data[get_unit_param($resource_id, P_NAME)]);
       }
     }
     $planet_data['RESOURCES'] = $planet_resources;
@@ -140,7 +141,7 @@ function flt_build_gathering($resources_taken = '')
             continue;
           }
 
-          $resource_db_name = $sn_data[$resource_id]['name'];
+          $resource_db_name = get_unit_param($resource_id, P_NAME);
 
           $resource_amount = floor($planet_db_data[$resource_db_name]);
 

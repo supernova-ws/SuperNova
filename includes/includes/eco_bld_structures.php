@@ -15,7 +15,7 @@
 
 function eco_build($que_type, $user, &$planet, $que)
 {
-  global $sn_data, $lang, $config, $time_now;
+  global $lang, $config;
 
 // start transaction here
 
@@ -82,8 +82,8 @@ function eco_build($que_type, $user, &$planet, $que)
   foreach($planet_type_structs as $Element)
   {
     $element_name    = $lang['tech'][$Element];
-    $element_sn_data = &$sn_data[$Element];
-    $element_level   = $planet[$sn_data[$Element]['name']] + $que['in_que'][$Element];
+    $element_sn_data = get_unit_param($Element);
+    $element_level   = $planet[$element_sn_data[P_NAME]] + $que['in_que'][$Element];
 
     $build_data = eco_get_build_data($user, $planet, $Element, $element_level);
 
@@ -97,7 +97,7 @@ function eco_build($que_type, $user, &$planet, $que)
       {
         if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($element_level_start, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1))))
         {
-          $level_production_base[strtoupper($sn_data[$resource_id]['name'])] = $resource_income;
+          $level_production_base[strtoupper(get_unit_param($resource_id, P_NAME))] = $resource_income;
         }
       }
 
@@ -110,7 +110,7 @@ function eco_build($que_type, $user, &$planet, $que)
         {
           if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($level_start + $i, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1))))
           {
-            $resource_name = strtoupper($sn_data[$resource_id]['name']);
+            $resource_name = strtoupper(get_unit_param($resource_id, P_NAME));
             $level_production[$level_start + $i][$resource_name] = $resource_income;
             $level_production[$level_start + $i][$resource_name.'_DIFF'] = $resource_income - $level_production_base[$resource_name];
           }
@@ -129,8 +129,8 @@ function eco_build($que_type, $user, &$planet, $que)
       'NAME'              => $element_name,
       'DESCRIPTION'       => $lang['info'][$Element]['description_short'],
       'LEVEL'             => $element_level,
-      'LEVEL_OLD'         => $planet[$sn_data[$Element]['name']],
-      'LEVEL_BONUS'       => mrc_get_level($user, $planet, $Element) - $planet[$sn_data[$Element]['name']],
+      'LEVEL_OLD'         => $planet[$element_sn_data[P_NAME]],
+      'LEVEL_BONUS'       => mrc_get_level($user, $planet, $Element) - $planet[$element_sn_data[P_NAME]],
       'LEVEL_CHANGE'      => $que['in_que'][$Element],
 
       'BUILD_RESULT'      => $build_data['RESULT'][BUILD_CREATE],
@@ -177,7 +177,7 @@ function eco_build($que_type, $user, &$planet, $que)
   $sector_cost = eco_get_build_data($user, $planet, UNIT_SECTOR, mrc_get_level($user, $planet, UNIT_SECTOR), true);
   $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
   $template->assign_vars(array(
-    'TIME_NOW'           => $time_now,
+    'TIME_NOW'           => SN_TIME_NOW,
 
     'QUE_ID'             => $que_type,
 
@@ -208,7 +208,7 @@ function eco_build($que_type, $user, &$planet, $que)
 
     'PAGE_HINT'          => $lang['eco_bld_page_hint'],
     'PLANET_TYPE'        => $planet['planet_type'],
-    'SECTOR_CAN_BUY'     => $sector_cost <= $user[$sn_data[RES_DARK_MATTER]['name']],
+    'SECTOR_CAN_BUY'     => $sector_cost <= $user[get_unit_param(RES_DARK_MATTER, P_NAME)],
     'SECTOR_COST'        => $sector_cost,
     'SECTOR_COST_TEXT'   => pretty_number($sector_cost),
 

@@ -52,7 +52,7 @@ function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
 }
 
 function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetName = '', $HomeWorld = false) {
-  global $lang, $config, $sn_data;
+  global $lang, $config;
 
 /*
  Типы планет по плотности (г/см^3) - добыча при средней температуре:
@@ -511,9 +511,8 @@ function uni_render_coordinates_href($from, $prefix = '', $mode = 0, $fleet_type
 
 function uni_get_time_to_jump($moon_row)
 {
-  global $sn_data, $time_now;
-  $jump_gate_level = $moon_row[$sn_data[STRUC_MOON_GATE]['name']];
-  return $jump_gate_level ? max(0, $moon_row['last_jump_time'] + abs(60 * 60 / $jump_gate_level) - $time_now) : 0;
+  $jump_gate_level = $moon_row[get_unit_param(STRUC_MOON_GATE, P_NAME)];
+  return $jump_gate_level ? max(0, $moon_row['last_jump_time'] + abs(60 * 60 / $jump_gate_level) - SN_TIME_NOW) : 0;
 }
 
 function uni_calculate_moon_chance($FleetDebris)

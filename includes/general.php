@@ -172,9 +172,7 @@ function pretty_time($seconds)
 // ----------------------------------------------------------------------------------------------------------------
 function eco_planet_fields_max($planet)
 {
-  global $sn_data;
-
-  return $planet['field_max'] + ($planet['planet_type'] == PT_PLANET ? $planet[$sn_data[STRUC_TERRAFORMER]['name']] * 5 : $planet[$sn_data[STRUC_MOON_STATION]['name']] * 3);
+  return $planet['field_max'] + ($planet['planet_type'] == PT_PLANET ? $planet[get_unit_param(STRUC_TERRAFORMER, P_NAME)] * 5 : $planet[get_unit_param(STRUC_MOON_STATION, P_NAME)] * 3);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -426,8 +424,8 @@ function sn_unit_relocate($unit_id, $from, $to){}
 function unit_get_level($unit_id, &$context = null, $options = null){return sn_function_call('unit_get_level', array($unit_id, &$context, $options, &$result));}
 function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result)
 {
-  global $sn_data, $config, $time_now;
-  $unit_db_name = $sn_data[$unit_id]['name'];
+  global $config, $time_now;
+  $unit_db_name = get_unit_param($unit_id, P_NAME);
   $for_update = $options['for_update'];
 
   $unit_level = 0;
@@ -441,7 +439,7 @@ function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result
     elseif($for_update || !isset($user[$unit_id]))
     {
       $time_restriction =
-        $sn_data[$unit_id]['temporary'] || ($sn_data[$unit_id]['type'] == UNIT_MERCENARIES && $config->empire_mercenary_temporary)
+        get_unit_param($unit_id, P_UNIT_TEMPORARY) || (get_unit_param($unit_id, P_UNIT_TYPE) == UNIT_MERCENARIES && $config->empire_mercenary_temporary)
           ? " AND unit_time_start <= FROM_UNIXTIME({$time_now}) AND unit_time_finish >= FROM_UNIXTIME({$time_now}) "
           : '';
       $unit_level = doquery("SELECT * FROM {{unit}} WHERE unit_player_id = {$user['id']} AND unit_snid = '{$unit_id}' {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
@@ -459,10 +457,8 @@ function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false,
 function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false, &$result)
 {
 // TODO: Add caching for known items
-  global $sn_data;
-
   $mercenary_level = 0;
-  $unit_db_name = $sn_data[$unit_id]['name'];
+  $unit_db_name = get_unit_param($unit_id, P_NAME);
 
   if(in_array($unit_id, sn_get_groups(array('plans', 'mercenaries', 'tech', 'artifacts'))))
   {
@@ -491,8 +487,6 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
 function mrc_modify_value(&$user, $planet = array(), $mercenaries, $value) {return sn_function_call('mrc_modify_value', array(&$user, $planet, $mercenaries, $value));}
 function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $base_value = null)
 {
-  global $sn_data;
-
   if(!is_array($mercenaries))
   {
     $mercenaries = array($mercenaries);
@@ -504,7 +498,7 @@ function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $b
   {
     $mercenary_level = mrc_get_level($user, $planet, $mercenary_id);
 
-    $mercenary = &$sn_data[$mercenary_id];
+    $mercenary = get_unit_param($mercenary_id);
     $mercenary_bonus = $mercenary['bonus'];
 
     switch($mercenary['bonus_type'])
@@ -720,7 +714,6 @@ function sys_get_unit_location($user, $planet, $unit_id){return sn_function_call
 function sn_sys_get_unit_location($user, $planet, $unit_id)
 {
   return get_unit_param($unit_id, 'location');
-//    $sn_data[$unit_id]['location'];
 }
 
 function sn_ali_fill_user_ally(&$user)
@@ -763,7 +756,6 @@ function sn_get_url_contents($url)
 
 function get_engine_data($user, $engine_info)
 {
-  // $sn_data_tech_bonus = $sn_data[$engine_info['tech']]['bonus'];
   $sn_data_tech_bonus = get_unit_param($engine_info['tech'], 'bonus');
 
   $user_tech_level = intval(mrc_get_level($user, false, $engine_info['tech']));
@@ -796,18 +788,6 @@ function get_ship_data($ship_id, $user)
       }
     }
     $ship_data = get_engine_data($user, $ship_data);
-/*
-    $sn_data_tech_bonus = $sn_data[$ship_data['tech']]['bonus'];
-    $tech_bonus = ($ship_data['tech_level'] - $ship_data['min_level']) * $sn_data_tech_bonus / 100;
-    $tech_bonus = $tech_bonus < -0.9 ? -0.95 : $tech_bonus;
-    $ship_data['speed'] = floor(mrc_modify_value($user, false, array(MRC_NAVIGATOR), $ship_data['speed']) * (1 + $tech_bonus));
-
-    $tech_bonus = ($ship_data['tech_level'] - $ship_data['min_level']) * $sn_data_tech_bonus / 1000;
-    $tech_bonus = $tech_bonus > 0.5 ? 0.5 : ($tech_bonus < 0 ? $tech_bonus * 2: $tech_bonus);
-    $ship_data['consumption'] = $ship_data['consumption'] * (1 - $tech_bonus);
-
-    debug($ship_data);
-*/
     $ship_data['capacity'] = get_unit_param($ship_id, 'capacity');
   }
 
@@ -868,7 +848,7 @@ function sn_sys_sector_buy($redirect = 'overview.php')
     $planet_name_text = uni_render_planet($planetrow);
     if(rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, "User {$user['username']} ID {$user['id']} purchased 1 sector on planet {$planet_name_text} planet type {$planetrow['planet_type']} ID {$planetrow['id']} for {$sector_cost} DM"))
     {
-      $sector_db_name = get_unit_param(UNIT_SECTOR, 'name'); // $sn_data[UNIT_SECTOR]['name'];
+      $sector_db_name = get_unit_param(UNIT_SECTOR, P_NAME);
       doquery("UPDATE {{planets}} SET {$sector_db_name} = {$sector_db_name} + 1 WHERE `id` = {$planetrow['id']} LIMIT 1;");
     }
     else
@@ -1054,16 +1034,12 @@ function sn_get_unit_param($unit_id, $param_name = null, $user = null, $planet =
 function sn_get_groups($groups){return sn_function_call('sn_get_groups', array($groups, &$result));}
 function sn_sn_get_groups($groups, &$result)
 {
-//  global $sn_data;
-//pdump($groups);
   $result = is_array($result) ? $result : array();
   foreach($groups = is_array($groups) ? $groups : array($groups) as $group_name)
   {
-    //$result += isset($sn_data[groups][$group_name]) ? $sn_data[groups][$group_name] : array();
     $result += is_array($a_group = get_unit_param(UNIT_GROUP, $group_name)) ? $a_group : array();
-      // isset($sn_data[groups][$group_name]) ? $sn_data[groups][$group_name] : array();
   }
-//pdump($result);
+
   return $result;
 }
 
@@ -1077,9 +1053,9 @@ function idval($value, $default = 0)
 function unit_requirements_render($user, $planetrow, $unit_id){return sn_function_call('unit_requirements_render', array($user, $planetrow, $unit_id, &$result));}
 function sn_unit_requirements_render($user, $planetrow, $unit_id, &$result)
 {
-  global $sn_data, $lang;
+  global $lang;
 
-  $sn_data_unit = &$sn_data[$unit_id];
+  $sn_data_unit = get_unit_param($unit_id);
 
   $result = is_array($result) ? $result : array();
   if($sn_data_unit['require'])
@@ -1308,7 +1284,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow)
       throw new exception($lang['ov_core_err_no_dark_matter'], ERR_ERROR);
     }
 
-    $sn_data_planet_density = sn_get_groups('planet_density'); // &$sn_data[groups]['planet_density'];
+    $sn_data_planet_density = sn_get_groups('planet_density');
     foreach($sn_data_planet_density as $key => $value)
     {
       if($key == $new_density_index)
@@ -1406,8 +1382,6 @@ function get_unit_cost_in(&$cost, $in_resource = RES_METAL)
   {
     $rates = get_resource_exchange();
   }
-
-  global $sn_data;
 
   $metal_cost = 0;
   foreach($cost as $resource_id => $resource_value)

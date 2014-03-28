@@ -30,7 +30,7 @@
 
       doquery('START TRANSACTION;');
       $user = doquery("select * from {{users}} where `id` = {$user['id']} LIMIT 1 FOR UPDATE;", '', true);
-      if($user[$sn_data[RES_DARK_MATTER]['name']] < $uni_price)
+      if($user[get_unit_param(RES_DARK_MATTER, P_NAME)] < $uni_price)
       {
         throw new exception($lang['uni_msg_error_no_dm'], ERR_ERROR);
       }

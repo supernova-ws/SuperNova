@@ -15,7 +15,7 @@ $template->assign_vars(array(
 
 if(is_array($shipList))
 {
-  if($user[$sn_data[RES_DARK_MATTER]['name']] < $rpg_cost)
+  if($user[get_unit_param(RES_DARK_MATTER, P_NAME)] < $rpg_cost)
   {
     $intError = MARKET_NO_DM;
   }
@@ -44,7 +44,7 @@ if(is_array($shipList))
 
     if($mode == MARKET_SCRAPPER)
     {
-      $amount = $planetrow[$sn_data[$shipID]['name']];
+      $amount = $planetrow[get_unit_param($shipID, P_NAME)];
     }
     elseif($mode == MARKET_STOCKMAN)
     {
@@ -64,7 +64,7 @@ if(is_array($shipList))
       break;
     }
 
-    $ship_db_name = $sn_data[$shipID]['name'];
+    $ship_db_name = get_unit_param($shipID, P_NAME);
     if($mode == MARKET_SCRAPPER)
     {
       $qry .= "`{$ship_db_name}` = `{$ship_db_name}` - {$shipCount},";
@@ -82,9 +82,6 @@ if(is_array($shipList))
     $resTemp['metal']     = floor($build_data[BUILD_CREATE][RES_METAL] * $shipCount * $config_rpg_scrape_metal);
     $resTemp['crystal']   = floor($build_data[BUILD_CREATE][RES_CRYSTAL] * $shipCount * $config_rpg_scrape_crystal);
     $resTemp['deuterium'] = floor($build_data[BUILD_CREATE][RES_DEUTERIUM] * $shipCount * $config_rpg_scrape_deuterium);
-//    $resTemp['metal'] = floor($sn_data[$shipID]['metal'] * $shipCount * $config_rpg_scrape_metal);
-//    $resTemp['crystal'] = floor($sn_data[$shipID]['crystal'] * $shipCount * $config_rpg_scrape_crystal);
-//    $resTemp['deuterium'] = floor($sn_data[$shipID]['deuterium'] * $shipCount * $config_rpg_scrape_deuterium);
 
     foreach($resTemp as $resID => $resCount)
     {
@@ -140,7 +137,6 @@ if(is_array($shipList))
     doquery('COMMIT;');
 
     $stock = $newstock;
-    // $user[$sn_data[RES_DARK_MATTER]['name']] -= $rpg_cost;
     $planetrow = array_merge($planetrow, $newrow);
 
     $template->assign_block_vars('result', array(
@@ -176,7 +172,7 @@ foreach($array as $key => $value)
   if($mode == MARKET_SCRAPPER)
   {
     $shipID = $value;
-    $amount = $planetrow[$sn_data[$shipID]['name']];
+    $amount = $planetrow[get_unit_param($shipID, P_NAME)];
   }
   elseif($mode == MARKET_STOCKMAN)
   {
@@ -196,9 +192,6 @@ foreach($array as $key => $value)
       'ID'        => $shipID,
       'COUNT'     => $amount,
       'NAME'      => $lang['tech'][$shipID],
-//      'METAL'     => floor($sn_data[$shipID]['cost'][RES_METAL] * $config_rpg_scrape_metal),
-//      'CRYSTAL'   => floor($sn_data[$shipID]['cost'][RES_CRYSTAL] * $config_rpg_scrape_crystal),
-//      'DEUTERIUM' => floor($sn_data[$shipID]['cost'][RES_DEUTERIUM] * $config_rpg_scrape_deuterium),
       'METAL'     => floor($build_data[BUILD_CREATE][RES_METAL] * $config_rpg_scrape_metal),
       'CRYSTAL'   => floor($build_data[BUILD_CREATE][RES_CRYSTAL] * $config_rpg_scrape_crystal),
       'DEUTERIUM' => floor($build_data[BUILD_CREATE][RES_DEUTERIUM] * $config_rpg_scrape_deuterium),

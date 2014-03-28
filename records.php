@@ -39,15 +39,14 @@ foreach($show_groups as $unit_group_id => $mode)
     'COUNT' => in_array($unit_id, array(UNIT_STRUCTURES, UNIT_STRUCTURES_SPECIAL, UNIT_TECHNOLOGIES)) ? $lang['sys_level'] : $lang['sys_quantity'],
     'HEADER' => true,
   ));
-  $unit_group = &$sn_data['techtree'][$unit_group_id];
-
+  $unit_group = get_unit_param('techtree', $unit_group_id); // TODO - REWRITE!!!!
 
   foreach($unit_group as $unit_id)
   {
     $unit_name = &$lang['tech'][$unit_id];
-    if($unit_name && $sn_data[$unit_id]['name'])
+    $unit_db_name = get_unit_param($unit_id, P_NAME);
+    if($unit_name && $unit_db_name)
     {
-      $unit_db_name = $sn_data[$unit_id]['name'];
       $data_row = false;
       if(in_array($unit_id, sn_get_groups(array('structures', 'fleet', 'defense'))))
       {

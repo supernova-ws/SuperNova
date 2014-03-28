@@ -2,7 +2,7 @@
 
 function art_use(&$user, &$planetrow, $unit_id)
 {
-  global $sn_data, $lang;
+  global $lang;
 
   if(!in_array($unit_id, sn_get_groups('artifacts')))
   {
@@ -58,13 +58,13 @@ function art_use(&$user, &$planetrow, $unit_id)
         }
 
         $unit_level--;
-        $artifact_deploy = &$sn_data[$unit_id]['deploy'];
+        $artifact_deploy = get_unit_param($unit_id, P_DEPLOY);
 
         $deployment_str = '';
         $sectors_used = 0;
         foreach($artifact_deploy as $deploy_unit_id => $deploy_unit_level)
         {
-          $deploy_unit_name = $sn_data[$deploy_unit_id]['name'];
+          $deploy_unit_name = get_unit_param($deploy_unit_id, P_NAME);
           $sectors_used += max(0, $deploy_unit_level - $planetrow[$deploy_unit_name]);
           $deployment_str .= ",`{$deploy_unit_name}` = GREATEST(`{$deploy_unit_name}`, {$deploy_unit_level})";
         }

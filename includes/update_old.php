@@ -1338,7 +1338,7 @@ switch($new_version)
         $update_query_str = '';
         foreach(sn_get_groups('mercenaries') as $mercenary_id)
         {
-          $mercenary_data_name = $sn_data[$mercenary_id]['name'];
+          $mercenary_data_name = get_unit_param($mercenary_id, P_NAME);
           if($mercenary_level = $user_row[$mercenary_data_name])
           {
             $update_query_str = ", `{$mercenary_data_name}` = 0";

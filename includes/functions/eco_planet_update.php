@@ -11,7 +11,7 @@
  */
 function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 {
-  global $time_now, $sn_data, $lang;
+  global $lang;
 
   $no_data = array('user' => false, 'planet' => false, 'que' => false);
 
@@ -66,7 +66,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     case PT_PLANET:
       foreach($resources_increase as $resource_id => &$increment)
       {
-        $resource_name = &$sn_data[$resource_id]['name'];
+        $resource_name = get_unit_param($resource_id, P_NAME);
         $increment = $caps_real['total'][$resource_id] * $ProductionTime / 3600;
         $store_free = $caps_real['total_storage'][$resource_id] - $planet[$resource_name];
         $increment = min($increment, max(0, $store_free));
@@ -95,7 +95,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   $sn_group_build_allow = sn_get_groups('build_allow');
   foreach($sn_group_build_allow[$planet['planet_type']] as $building_id)
   {
-    $planet['field_current'] += $planet[$sn_data[$building_id]['name']];
+    $planet['field_current'] += $planet[get_unit_param($building_id, P_NAME)];
   }
 
   if($simulation)
@@ -122,12 +122,13 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
       $Count = intval($Count);
       if($Element)
       {
-        $QryUpdatePlanet .= "`{$sn_data[$Element]['name']}` = `{$sn_data[$Element]['name']}` + '{$Count}', ";
+        $db_name = get_unit_param($Element, P_NAME);
+        $QryUpdatePlanet .= "`{$db_name}` = `{$db_name}` + '{$Count}', ";
       }
     }
     if(!$planet['b_hangar_id'])
     {
-      msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_planet_from'], $lang['msg_que_hangar_subject'], sprintf($lang['msg_que_hangar_message'], uni_render_planet($planet)));
+      msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_QUE, $lang['msg_que_planet_from'], $lang['msg_que_hangar_subject'], sprintf($lang['msg_que_hangar_message'], uni_render_planet($planet)));
     }
   }
 
@@ -148,7 +149,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
         $message[] = sprintf($lang['msg_que_destroy_message'], uni_render_planet($planet), $lang['tech'][$unit_id], -$built_count);
       }
     }
-    msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_QUE, $lang['msg_que_planet_from'], $lang['msg_que_built_subject'], implode('<br />', $message));
+    msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_QUE, $lang['msg_que_planet_from'], $lang['msg_que_built_subject'], implode('<br />', $message));
   }
 
   $QryUpdatePlanet .= "WHERE `id` = '{$planet['id']}' LIMIT 1;";

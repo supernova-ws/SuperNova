@@ -90,7 +90,7 @@ if($galaxy_src)
 
     foreach(sn_get_groups('resources_loot') as $resource_id)
     {
-      $resource_name = $sn_data[$resource_id]['name'];
+      $resource_name = get_unit_param($resource_id, P_NAME);
       $template->assign_var("{$resource_name}_cost", $final_cost[$resource_id]);
       $final_cost[$resource_id] = floor($final_cost[$resource_id] * $bonus);
       $template->assign_var("{$resource_name}_bonus", $final_cost[$resource_id]);

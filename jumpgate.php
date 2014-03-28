@@ -39,7 +39,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
           $ship_count = max(0, min(floor($ship_count), mrc_get_level($user, $planetrow, $ship_id)));
           if($ship_count)
           {
-            $ship_db_name = $sn_data[$ship_id]['name'];
+            $ship_db_name = get_unit_param($ship_id, P_NAME);
             $SubQueryOri .= "`{$ship_db_name}` = `{$ship_db_name}` - '{$ship_count}', ";
             $SubQueryDes .= "`{$ship_db_name}` = `{$ship_db_name}` + '{$ship_count}', ";
           }

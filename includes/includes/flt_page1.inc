@@ -21,7 +21,8 @@ foreach ($ships as $ship_id => $ship_count)
 {
   if(in_array($ship_id, sn_get_groups('fleet')) && $ship_count)
   {
-    if($ship_count > $planetrow[$sn_data[$ship_id]['name']])
+    $ship_info = get_unit_param($ship_id);
+    if($ship_count > $planetrow[$ship_info[P_NAME]])
     {
       $page .= $lang['fl_noenought'];
     }
@@ -31,7 +32,7 @@ foreach ($ships as $ship_id => $ship_count)
       $fleet['fleetlist']            .= "{$ship_id},{$ship_count};";
       $fleet['amount']               += $ship_count;
     }
-    $fleet['capacity'] += $sn_data[$ship_id]['capacity'] * $ship_count;
+    $fleet['capacity'] += $ship_info[P_CAPACITY] * $ship_count;
     $ship_base_data = get_ship_data($ship_id, $user);
     $template->assign_block_vars('ships', array(
       'ID'          => $ship_id,

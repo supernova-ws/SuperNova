@@ -43,7 +43,7 @@ function tpl_assign_fleet(&$template, $fleets, $js_name = 'fleets')
 // function that parses internal fleet representation (as array(id => count))
 function tpl_parse_fleet_sn($fleet, $fleet_id)
 {
-  global $lang, $time_now, $user, $sn_data;
+  global $lang, $user;
 
   $user_data = &$user;
 
@@ -77,7 +77,7 @@ function tpl_parse_fleet_sn($fleet, $fleet_id)
 function tpl_parse_fleet_db($fleet, $index, $user_data = false){return sn_function_call('tpl_parse_fleet_db', array($fleet, $index, $user_data, &$result));}
 function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result)
 {
-  global $lang, $time_now, $user, $sn_data, $time_diff;
+  global $lang, $time_now, $user, $time_diff;
 
   if(!$user_data)
   {
@@ -174,7 +174,7 @@ function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result)
 
 function tpl_parse_planet($planet, $que)
 {
-  global $lang, $config, $time_now, $sn_data;
+  global $lang;
 
   $fleet_list = flt_get_fleets_to_planet($planet);
 
@@ -226,7 +226,7 @@ function tpl_parse_planet($planet, $que)
     'PLANET_GOVERNOR_ID' => $planet['PLANET_GOVERNOR_ID'],
     'PLANET_GOVERNOR_NAME' => $lang['tech'][$planet['PLANET_GOVERNOR_ID']],
     'PLANET_GOVERNOR_LEVEL' => $planet['PLANET_GOVERNOR_LEVEL'],
-    'PLANET_GOVERNOR_LEVEL_MAX' => $sn_data[$planet['PLANET_GOVERNOR_ID']]['max'],
+    'PLANET_GOVERNOR_LEVEL_MAX' => get_unit_param($planet['PLANET_GOVERNOR_ID'], P_MAX_STACK),
   );
 
   if(!empty($que))
