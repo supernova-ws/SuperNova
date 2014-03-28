@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a1.0');
+define('SN_VERSION', '39a1.2');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -620,6 +620,11 @@ define('P_CAPACITY', 'capacity');
 define('P_UNIT_SIZE', 'size');
 define('P_SPEED', 'speed');
 
+define('P_CHAT', 'chat');
+define('P_CHAT_COMMANDS', 'commands');
+define('P_CHAT_ALIASES', 'aliases');
+
+define('P_RACE', 'player_race');
 
 define('P_ATTACK', 'attack');
 define('P_SHIELD', 'shield');
