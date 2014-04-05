@@ -403,7 +403,7 @@ $sn_menu = array(
     'ITEM'  => 'Logout',
     'LINK'  => 'logout.php',
   ),
-/*
+
   'menu_extra' => !$config->advGoogleLeftMenuIsOn ? array() : array(
     'LEVEL' => 'submenu',
     'CLASS' => 'c_c',
@@ -419,6 +419,7 @@ $sn_menu = array(
     'ALT' => 'Powered by \'Project "SuperNova.WS"\' engine',
   ),
 
+/*
   'menu_triolan' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'image',

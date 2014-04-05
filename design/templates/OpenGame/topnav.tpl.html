@@ -190,12 +190,13 @@
 <script type="text/javascript"><!--
   function changePlanet(obj)
   {
-    var pathAdd = 'cp=' + obj.options[obj.selectedIndex].value + '&mode={TOPNAV_MODE}&re=0';
-    regexp=/\?page\=(\w*)/i;
+    var pathAdd = 'cp=' + obj.options[obj.selectedIndex].value; // + ('{TOPNAV_MODE}' ? '&mode={TOPNAV_MODE}&re=0' : '');
+    regexp=/\?page\=(.*)/i;
     var parsed = regexp.exec(window.location.href);
     if(parsed)
     {
-      pathAdd = parsed[0] + '&' + pathAdd;
+      // pathAdd = parsed[0] + '&' + pathAdd;
+      pathAdd = parsed[0].replace(/\&cp=\d*/i, '') + '&' + pathAdd;
     }
     else
     {
