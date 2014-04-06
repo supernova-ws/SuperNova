@@ -579,14 +579,16 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
     // TODO: Здесь тоже указатели
     // TODO: Кэширование
     // TODO: Выбирать только нужные поля
+
+    // шпионаж не дает нормальный ID fleet_end_planet_id 'dst_planet'
     $mission_data = array(
       'fleet'      => &$fleet_row,
       'dst_user'   => $mission_data['dst_user'] ? doquery("SELECT * FROM {{users}} WHERE `id` = {$fleet_row['fleet_target_owner']} LIMIT 1 FOR UPDATE;", true) : null,
-      'dst_planet' => $mission_data['dst_planet'] ? doquery("SELECT * FROM {{planets}} WHERE `id` = {$fleet_row['fleet_end_planet_id']} LIMIT 1 FOR UPDATE;", true) : null,
-      // 'dst_planet' => $mission_data['dst_planet'] ? doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$fleet_row['fleet_end_galaxy']} AND `system` = {$fleet_row['fleet_end_system']} AND `planet` = {$fleet_row['fleet_end_planet']} AND `planet_type` = {$fleet_row['fleet_end_type']} LIMIT 1 FOR UPDATE;", true) : null,
+      // 'dst_planet' => $mission_data['dst_planet'] ? doquery("/* 1 */ SELECT * FROM {{planets}} WHERE `id` = {$fleet_row['fleet_end_planet_id']} LIMIT 1 FOR UPDATE;", true) : null,
+      'dst_planet' => $mission_data['dst_planet'] ? doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$fleet_row['fleet_end_galaxy']} AND `system` = {$fleet_row['fleet_end_system']} AND `planet` = {$fleet_row['fleet_end_planet']} AND `planet_type` = {$fleet_row['fleet_end_type']} LIMIT 1 FOR UPDATE;", true) : null,
       'src_user'   => $mission_data['src_user'] ? doquery("SELECT * FROM {{users}} WHERE `id` = {$fleet_row['fleet_owner']} LIMIT 1 FOR UPDATE;", true) : null,
-      'src_planet' => $mission_data['src_planet'] ? doquery("SELECT * FROM {{planets}} WHERE `id` = {$fleet_row['fleet_start_planet_id']} LIMIT 1 FOR UPDATE;", true) : null,
-      // 'src_planet' => $mission_data['src_planet'] ? doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$fleet_row['fleet_start_galaxy']} AND `system` = {$fleet_row['fleet_start_system']} AND `planet` = {$fleet_row['fleet_start_planet']} AND `planet_type` = {$fleet_row['fleet_start_type']} LIMIT 1 FOR UPDATE;", true) : null,
+      // 'src_planet' => $mission_data['src_planet'] ? doquery("/* 2 */ SELECT * FROM {{planets}} WHERE `id` = {$fleet_row['fleet_start_planet_id']} LIMIT 1 FOR UPDATE;", true) : null,
+      'src_planet' => $mission_data['src_planet'] ? doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$fleet_row['fleet_start_galaxy']} AND `system` = {$fleet_row['fleet_start_system']} AND `planet` = {$fleet_row['fleet_start_planet']} AND `planet_type` = {$fleet_row['fleet_start_type']} LIMIT 1 FOR UPDATE;", true) : null,
     );
 
     switch($fleet_row['fleet_mission'])
