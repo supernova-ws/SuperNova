@@ -980,29 +980,34 @@ class class_db_cache extends classCache
 class classLocale implements ArrayAccess {
   public $container = array();
   public $lang_list = null;
+  public $active = null;
+
+  // protected $cache = null;
 
   public function __construct($language = DEFAULT_LANG) {
-    $this->container = array();
+    $this->active = $language;
+    $this->container = array($this->active => array());
+    // $this->cache = classCache::getInstance();
   }
 
   public function offsetSet($offset, $value) {
     if (is_null($offset)) {
-      $this->container[] = $value;
+      $this->container[$this->active][] = $value;
     } else {
-      $this->container[$offset] = $value;
+      $this->container[$this->active][$offset] = $value;
     }
   }
 
   public function offsetExists($offset) {
-    return isset($this->container[$offset]);
+    return isset($this->container[$this->active][$offset]);
   }
 
   public function offsetUnset($offset) {
-    unset($this->container[$offset]);
+    unset($this->container[$this->active][$offset]);
   }
 
   public function offsetGet($offset) {
-    return isset($this->container[$offset]) ? $this->container[$offset] : null;
+    return isset($this->container[$this->active][$offset]) ? $this->container[$this->active][$offset] : null;
   }
 
 
@@ -1010,7 +1015,7 @@ class classLocale implements ArrayAccess {
 
   public function merge($array)
   {
-    $this->container = array_merge($this->container, $array);
+    $this->container[$this->active] = array_merge($this->container[$this->active], $array);
   }
 
 
@@ -1120,6 +1125,7 @@ class classLocale implements ArrayAccess {
     if($language_new != $language)
     {
       $language = $language_new;
+      $this->active = $language_new;
       $lang['LANG_INFO'] = $this->lng_get_info($language_new);
 
       $this->lng_include('system');
@@ -1128,6 +1134,7 @@ class classLocale implements ArrayAccess {
       // Loading global language files
       $this->lng_load_i18n($sn_mvc['i18n']['']);
       $result = true;
+      
     }
 
     return $result;

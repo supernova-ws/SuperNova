@@ -13,9 +13,14 @@ if(!defined('INSIDE'))
   die();
 }
 
+define('DB_MYSQL_TRANSACTION_SERIALIZABLE', 'SERIALIZABLE');
+define('DB_MYSQL_TRANSACTION_REPEATABLE_READ', 'REPEATABLE READ');
+define('DB_MYSQL_TRANSACTION_READ_COMMITTED', 'READ COMMITTED');
+define('DB_MYSQL_TRANSACTION_READ_UNCOMMITTED', 'READ UNCOMMITTED');
+
 function sn_db_connect()
 {
-  global $link, $debug, $config, $lang, $db_prefix;
+  global $link, $debug;
 
   if(!$link)
   {
@@ -26,22 +31,22 @@ function sn_db_connect()
     mysql_query("/*!40101 SET NAMES 'utf8' */") or die('Error: ' . mysql_error());
 //    mysql_query("SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE") or die('Error: ' . mysql_error());
     mysql_select_db($dbsettings['name']) or $debug->error(mysql_error(), 'DB error - cannot find DB on server');
-    echo mysql_error();
+    // echo mysql_error();
+    mysql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or die('Error: ' . mysql_error());
     unset($dbsettings);
   }
-//  $db_prefix = $config->db_prefix ? $config->db_prefix : $db_prefix;
-
-//  return $db_prefix;
 }
 
 function doquery($query, $table = '', $fetch = false)
 {
-  global $numqueries, $link, $debug, $user, $tableList, $sn_cache, $is_watching, $config, $dm_change_legit, $mm_change_legit, $db_prefix;
+  global $numqueries, $link, $debug, $user, $sn_cache, $is_watching, $config, $dm_change_legit, $mm_change_legit, $db_prefix;
 
   if(!is_string($table))
   {
     $fetch = $table;
   }
+
+  $query = trim($query);
 
   if($config->game_watchlist_array)
   {
@@ -423,10 +428,14 @@ function sn_db_transaction_check($transaction_should_be_started = null)
   return $supernova->db_in_transaction;
 }
 
-function sn_db_transaction_start()
+function sn_db_transaction_start($level = '')
 {
   global $supernova;
   sn_db_transaction_check();
+  if($level)
+  {
+    doquery('SET TRANSACTION ISOLATION LEVEL ' . $level);
+  }
   doquery('START TRANSACTION');
   $supernova->db_in_transaction = true;
 }

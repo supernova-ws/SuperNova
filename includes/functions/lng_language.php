@@ -7,6 +7,15 @@ function lng_try_filepath($path, $file_path_relative)
   return file_exists($file_path) ? $file_path : false;
 }
 
+function lng_die_not_an_object()
+{
+  print('Ошибка - $lang не объект! Сообщите Администратору сервера и приложите содержимое страницы');
+  $trace = debug_backtrace();
+  unset($trace[0]);
+  pdump($trace);
+  die();
+}
+
 // ----------------------------------------------------------------------------------------------------------------
 function lng_include($filename, $path = '', $ext = '.mo.php')
 {
@@ -16,6 +25,8 @@ function lng_include($filename, $path = '', $ext = '.mo.php')
   {
     return $lang->lng_include($filename, $path, $ext);
   }
+
+  lng_die_not_an_object();
 
   $ext = $ext ? $ext : '.mo.php';
   $filename_ext = "{$filename}{$ext}";
@@ -93,6 +104,8 @@ function lng_get_list()
     return $lang->lng_get_list();
   }
 
+  lng_die_not_an_object();
+
   $lang_list = array();
 
   $path = SN_ROOT_PHYSICAL . "language/";
@@ -122,6 +135,8 @@ function lng_get_info($entry)
     return $lang->lng_get_info($entry);
   }
 
+  lng_die_not_an_object();
+
   $file_name = SN_ROOT_PHYSICAL . "language/" . $entry . '/language.mo.php';
   $lang_info = array();
   if (file_exists($file_name))
@@ -138,6 +153,8 @@ function lng_switch($language_new)
   {
     return $lang->lng_switch($language_new);
   }
+
+  lng_die_not_an_object();
 
   global $language, $user, $sn_mvc;
 
@@ -167,6 +184,8 @@ function lng_load_i18n($i18n)
   {
     return $lang->lng_load_i18n($i18n);
   }
+
+  lng_die_not_an_object();
 
   if(isset($i18n))
   {

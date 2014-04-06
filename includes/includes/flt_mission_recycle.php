@@ -7,10 +7,10 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-function flt_mission_recycle($mission_data)
+function flt_mission_recycle(&$mission_data)
 {
-  $fleet_row          = $mission_data['fleet'];
-  $destination_planet = $mission_data['dst_planet'];
+  $fleet_row          = &$mission_data['fleet'];
+  $destination_planet = &$mission_data['dst_planet'];
 
   if(!$fleet_row)
   {
@@ -19,7 +19,8 @@ function flt_mission_recycle($mission_data)
 
   if(!isset($destination_planet['id']))
   {
-    doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
+    // doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
+    flt_send_back($mission_data['fleet']);
     return CACHE_FLEET;
   }
 
@@ -108,9 +109,3 @@ function flt_mission_recycle($mission_data)
 
   return CACHE_FLEET | CACHE_PLANET_DST;
 }
-
-// -----------------------------------------------------------------------------------------------------------
-// History version
-// 1.0 Mise en module initiale
-
-?>

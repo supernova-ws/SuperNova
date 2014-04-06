@@ -1,18 +1,13 @@
 <?php
 
-function flt_mission_hold($mission_data)
+function flt_mission_hold(&$mission_data)
 {
-  global $time_now;
-
-  $fleet_row = $mission_data['fleet'];
-
-  if ($fleet_row['fleet_end_stay'] <= $time_now)
+  if($mission_data['fleet']['fleet_end_stay'] < SN_TIME_NOW)
   {
-    doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
+    flt_send_back($mission_data['fleet']);
+    // doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
     return CACHE_FLEET;
   }
 
   return CACHE_NOTHING;
 }
-
-?>

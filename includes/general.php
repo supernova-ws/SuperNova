@@ -1160,10 +1160,6 @@ function sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 
   $random = sn_rand_gauss(($range_start + $range_end) / 2, ($range_end - $range_start) / $strict / 2, $strict);
   $round_emul = pow(10, $round === true ? 0 : $round);
   return $round ? round($random * $round_emul) / $round_emul : $random;
-//  $random = sn_rand_gauss(0, 1, $strict) + $strict * $sigma; // отнормировано по нулю
-//  $range_delta = $range_end - $range_start;
-//  $step = $strict * 2 / $range_delta;
-//  return $range_start + round($random / $step);
 }
 
 /*
@@ -1372,8 +1368,6 @@ function get_resource_exchange()
   return $rates;
 }
 
-
-
 function get_unit_cost_in(&$cost, $in_resource = RES_METAL)
 {
   static $rates;
@@ -1403,6 +1397,11 @@ function get_player_max_expeditons(&$user)
   return $user[UNIT_PLAYER_EXPEDITIONS_MAX];
 }
 
+function get_player_max_expedition_duration(&$user)
+{
+  return mrc_get_level($user, false, TECH_ASTROTECH);
+}
+
 function get_player_max_colonies(&$user)
 {
   if(!isset($user[UNIT_PLAYER_COLONIES_MAX]))
@@ -1430,7 +1429,24 @@ function get_player_current_colonies(&$user)
   return $user[UNIT_PLAYER_COLONIES_CURRENT];
 }
 
-function get_player_max_expedition_duration(&$user)
+function flt_send_back(&$fleet_row)
 {
-  return mrc_get_level($user, false, TECH_ASTROTECH);
+  $fleet_id = round(is_array($fleet_row) && isset($fleet_row['fleet_id']) && $fleet_row['fleet_id'] ? $fleet_row['fleet_id'] : $fleet_row);
+  if(!$fleet_id)
+  {
+    return false;
+  }
+
+  return doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_id} LIMIT 1;");
+}
+
+function flt_destroy(&$fleet_row)
+{
+  $fleet_id = round(is_array($fleet_row) && isset($fleet_row['fleet_id']) && $fleet_row['fleet_id'] ? $fleet_row['fleet_id'] : $fleet_row);
+  if(!$fleet_id)
+  {
+    return false;
+  }
+
+  return doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1;");
 }

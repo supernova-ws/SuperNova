@@ -8,7 +8,7 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-function flt_mission_explore($mission_data)
+function flt_mission_explore(&$mission_data)
 {
   global $lang, $config;
 
@@ -25,8 +25,6 @@ function flt_mission_explore($mission_data)
       }
       $ship_data[$unit_id][P_COST_METAL] = get_unit_cost_in($unit_info[P_COST]);
     }
-    // pdump($ship_data);
-    // arsort($ship_data);
     $rates = get_resource_exchange();
   }
 

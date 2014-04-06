@@ -10,13 +10,12 @@
 // ----------------------------------------------------------------------------------------------------------------
 // Mission Case 9: -> Coloniser
 //
-function flt_mission_colonize($mission_data)
+function flt_mission_colonize(&$mission_data)
 {
-  $fleet_row          = $mission_data['fleet'];
-  $src_user_row       = $mission_data['src_user'];
-  $destination_planet = $mission_data['dst_planet'];
+  $fleet_row          = &$mission_data['fleet'];
+  $src_user_row       = &$mission_data['src_user'];
 
-  global $lang, $config;
+  global $lang;
 
   $TargetAdress = sprintf ($lang['sys_adress_planet'], $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet']);
 
@@ -26,9 +25,8 @@ function flt_mission_colonize($mission_data)
   if($fleet_array[SHIP_COLONIZER] >= 1)
   {
     $TheMessage = $lang['sys_colo_notfree'];
-    if (!$destination_planet)
+    if (!$mission_data['dst_planet'] || empty($mission_data['dst_planet']))
     {
-      // $iMaxColo = mrc_get_level($src_user_row, false, TECH_COLONIZATION) + 1;
       $iMaxColo = get_player_max_colonies($src_user_row);
 
       $iPlanetCount = doquery ("SELECT count(*) as `planet_count` FROM `{{planets}}` WHERE `id_owner` = '{$fleet_row['fleet_owner']}' AND `planet_type` = '1';", '', true);
@@ -36,7 +34,6 @@ function flt_mission_colonize($mission_data)
 
       // Can we colonize more planets?
       $TheMessage = $lang['sys_colo_maxcolo'];
-      // if($iPlanetCount < $iMaxColo && ($config->player_max_colonies < 0 || $iPlanetCount < ($config->player_max_colonies + 1)) )
       if($iPlanetCount < $iMaxColo + 1)
       {
         // Yes, we can colonize
@@ -62,5 +59,3 @@ function flt_mission_colonize($mission_data)
 
   return CACHE_FLEET;
 }
-
-?>

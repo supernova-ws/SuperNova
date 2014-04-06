@@ -252,6 +252,8 @@ UBE_OPTIONS[UBE_MOON_WAS]
   // Готовим опции
   $combat_data[UBE_OPTIONS][UBE_MOON_WAS] = $destination_planet['planet_type'] == PT_MOON || is_array(doquery("SELECT `id` FROM {{planets}} WHERE `parent_planet` = {$destination_planet['id']} LIMIT 1;", true));
   $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] = $fleet_row['fleet_mission'];
+  global $config;
+  $combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
 
   return $combat_data;
 }
@@ -351,6 +353,7 @@ function sn_ube_combat_round_prepare(&$combat_data, $round)
 
       $fleet_data[UBE_ATTACK][$unit_id] = $fleet_data[UBE_ATTACK_BASE][$unit_id] * $unit_count;
       $fleet_data[UBE_SHIELD][$unit_id] = $fleet_data[UBE_SHIELD_BASE][$unit_id] * $unit_count;
+      // $fleet_data[UBE_SHIELD][$unit_id] = $fleet_data[UBE_SHIELD_BASE][$unit_id] * ($combat_data[UBE_OPTIONS][UBE_METHOD] ? $unit_count : 1);
       // $fleet_data[UBE_ARMOR][$unit_id] = $fleet_info[UBE_ARMOR_BASE][$unit_id] * $unit_count;
     }
 
@@ -448,7 +451,6 @@ function sn_ube_combat_round_crossfire_unit(&$attack_fleet_data, &$defend_fleet_
 
   // Вычисляем сколько юнитов осталось
   $units_left = ceil($defend_fleet_data[UBE_ARMOR][$defend_unit_id] / $defend_unit_armor);
-//  $defend_fleet_data[UBE_UNITS_LOST][$defend_unit_id] = $defend_fleet_data[UBE_COUNT][$defend_unit_id] - $units_left;
 
   // Вычисляем состояние последнего юнита и проверяем - взорвался ли он
   // TODO: Прописать разным кораблям разную стойкость ко взрыву
@@ -466,6 +468,13 @@ function sn_ube_combat_round_crossfire_unit(&$attack_fleet_data, &$defend_fleet_
   }
 
   $defend_fleet_data[UBE_COUNT][$defend_unit_id] = $units_left;
+
+  if($combat_options[UBE_METHOD])
+  {
+  }
+  else
+  {
+  }
 
   if(BE_DEBUG === true)
   {

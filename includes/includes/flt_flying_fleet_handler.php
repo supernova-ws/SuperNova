@@ -19,7 +19,8 @@ returns         = bitmask for recaching
 */
 
 // ------------------------------------------------------------------
-function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false)
+function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false){return sn_function_call('RestoreFleetToPlanet', array(&$fleet_row, $start, $only_resources, &$result));}
+function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, &$result)
 {
   if(!is_array($fleet_row))
   {
@@ -73,8 +74,9 @@ function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = fals
   doquery($query);
 
 
+  // TODO: Вынести в модуль капитанов
   global $sn_module;
-  if(!$only_resources && $sn_module['unit_captain']->manifest['active'])
+  if(!$only_resources && isset($sn_module['unit_captain']) && $sn_module['unit_captain']->manifest['active'])
   {
     $captain = doquery(
       "SELECT *
@@ -90,39 +92,6 @@ function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = fals
 
     if(is_array($captain))
     {
-      /*
-array(26)
-	fleet_id => string(7) 3394845
-	fleet_owner => string(4) 2329
-	fleet_mission => string(1) 3
-	fleet_amount => string(1) 1
-	fleet_array => string(6) 218,1;
-	fleet_start_time => string(10) 1385583817
-	fleet_start_planet_id => string(5) 45610
-	fleet_start_galaxy => string(1) 5
-	fleet_start_system => string(3) 148
-	fleet_start_planet => string(1) 7
-	fleet_start_type => string(1) 1
-	fleet_end_time => string(10) 1385583891
-	fleet_end_stay => string(1) 0
-	fleet_end_planet_id => string(5) 44150
-	fleet_end_galaxy => string(1) 5
-	fleet_end_system => string(3) 148
-	fleet_end_planet => string(2) 13
-	fleet_end_type => string(1) 1
-	fleet_resource_metal => string(1) 0
-	fleet_resource_crystal => string(1) 0
-	fleet_resource_deuterium => string(4) 3000
-	fleet_target_owner => string(4) 2329
-	fleet_group => string(1) 0
-	fleet_mess => string(1) 0
-	start_time => string(10) 1385583743
-	fleet_time => string(10) 1385583817 
-
-      // $prefix == "end " - error
-      */
-
-
       $planet = doquery(
         "SELECT `id`
         FROM {{planets}}
@@ -134,38 +103,6 @@ array(26)
       , true);
       if($planet['id'])
       {
-        /*
-        $captain_on_planet = doquery("SELECT * FROM {{unit}}
-        LEFT JOIN {{captain}} AS c ON c.captain_unit_id = unit_id
-        WHERE
-        unit_player_id = {$fleet_row['fleet_owner']} AND
-         `unit_location_type` = " . LOC_PLANET . " AND
-         `unit_location_id` = {$planet['id']} AND
-        unit_snid = " . UNIT_CAPTAIN . "
-         FOR UPDATE", true);
-
-        pdump($captain_on_planet, '$captain_on_planet');
-        pdump($captain, '$captain');
-        */
-
-        /*
-        if(is_array($captain_on_planet))
-        {
-          if($captain_on_planet['captain_xp'] < $captain['captain_xp'])
-          {
-            doquery("DELETE FROM {{unit}} WHERE unit_id = {$captain_on_planet['unit_id']}");
-            doquery("UPDATE {{unit}} SET `unit_location_type` = " . LOC_PLANET . ", `unit_location_id` = {$planet['id']} WHERE `unit_id` = {$captain['unit_id']} LIMIT 1");
-          }
-          else
-          {
-            doquery("DELETE FROM {{unit}} WHERE unit_id = {$captain['unit_id']}");
-          }
-        }
-        else
-        {
-          doquery("UPDATE {{unit}} SET `unit_location_type` = " . LOC_PLANET . ", `unit_location_id` = {$planet['id']} WHERE `unit_id` = {$captain['unit_id']} LIMIT 1");
-        }
-        */
         doquery("UPDATE {{unit}} SET `unit_location_type` = " . LOC_PLANET . ", `unit_location_id` = {$planet['id']} WHERE `unit_id` = {$captain['unit_id']} LIMIT 1");
       }
     }

@@ -325,43 +325,80 @@ mission = array(
 */
     'missions' => array(
       MT_ATTACK => array(
-        'src_planet' => 1,
-        'src_user'   => 1,
         'dst_planet' => 1,
         'dst_user'   => 1,
+        'dst_fleets' => 1,
+        'src_planet' => 1,
+        'src_user'   => 1,
         'transport'  => false,
       ),
 
       MT_AKS => array(
-        'src_planet' => 1,
-        'src_user'   => 1,
         'dst_planet' => 1,
         'dst_user'   => 1,
+        'dst_fleets' => 1,
+        'src_planet' => 1,
+        'src_user'   => 1,
         'transport'  => false,
       ),
 
-      MT_TRANSPORT => array(
+      MT_DESTROY => array(
+        'dst_planet' => 1,
+        'dst_user'   => 1,
+        'dst_fleets' => 1,
         'src_planet' => 1,
+        'src_user'   => 1,
+        'transport'  => false,
+      ),
+
+      MT_HOLD => array(
+        'dst_planet' => 0,
+        'dst_user'   => 0,
+        'src_planet' => 0,
         'src_user'   => 0,
+        'transport'  => false,
+      ),
+
+
+      MT_TRANSPORT => array(
         'dst_planet' => 1,
         'dst_user'   => 0,
+        'src_planet' => 1,
+        'src_user'   => 0,
         'transport'  => true,
       ),
 
       MT_RELOCATE => array(
-        'src_planet' => 0,
-        'src_user'   => 0,
         'dst_planet' => 1,
         'dst_user'   => 0,
+        'src_planet' => 1,
+        'src_user'   => 0,
         'transport'  => true,
       ),
 
-      MT_HOLD => array(
+      MT_RECYCLE => array(
+        'dst_planet' => 1,
+        'dst_user'   => 0,
         'src_planet' => 0,
         'src_user'   => 0,
+        'transport'  => false,
+        'AJAX'       => true,
+      ),
+
+      MT_EXPLORE => array(
         'dst_planet' => 0,
         'dst_user'   => 0,
+        'src_planet' => 0,
+        'src_user'   => 1,
         'transport'  => false,
+      ),
+
+      MT_COLONIZE => array(
+        'dst_planet' => 1,
+        'dst_user'   => 0,
+        'src_planet' => 0,
+        'src_user'   => 1,
+        'transport'  => true,
       ),
 
       MT_SPY => array(
@@ -373,30 +410,10 @@ mission = array(
         'AJAX'       => true,
       ),
 
-      MT_COLONIZE => array(
-        'src_planet' => 0,
-        'src_user'   => 1,
-        'dst_planet' => 1,
-        'dst_user'   => 0,
-        'transport'  => true,
-      ),
 
-      MT_RECYCLE => array(
-        'src_planet' => 0,
-        'src_user'   => 0,
-        'dst_planet' => 1,
-        'dst_user'   => 0,
-        'transport'  => false,
-        'AJAX'       => true,
-      ),
 
-      MT_DESTROY => array(
-        'src_planet' => 1,
-        'src_user'   => 1,
-        'dst_planet' => 1,
-        'dst_user'   => 1,
-        'transport'  => false,
-      ),
+
+
 
       MT_MISSILE => array(
         'src_planet' => 0,
@@ -407,13 +424,6 @@ mission = array(
         'AJAX'       => true,
       ),
 
-      MT_EXPLORE => array(
-        'src_planet' => 0,
-        'src_user'   => 1,
-        'dst_planet' => 0,
-        'dst_user'   => 0,
-        'transport'  => false,
-      ),
     ),
 
     'planet_density' => array(

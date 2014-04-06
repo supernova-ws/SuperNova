@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #38a10.23#
+* @version #39a2.0#
 *
 */
 
@@ -301,7 +301,7 @@ $a_lang_array = (array(
   'sys_mess_spy_destroyed'		=> 'Разведывательный флот был уничтожен',
   'sys_mess_spy_destroyed_enemy'		=> 'Вражеский шпионский флот уничтожен',
   'sys_object_arrival'		=> 'Прибыл на планету',
-  'sys_stay_mess_stay' => 'Оставить флот',
+  'sys_stay_mess_stay' => 'Передислокация флота',
   'sys_stay_mess_start' 		=> 'Ваш флот прибыл на планету',
   'sys_stay_mess_back'		=> 'Ваш флот вернулся ',
   'sys_stay_mess_end'		=> ' и доставил:',
@@ -328,8 +328,9 @@ $a_lang_array = (array(
   'sys_expe_found_ships' 		=> 'Ваш исследователи нашли безупречно новый флот!<br>Вы получили: ',
   'sys_expe_back_home' 		=> 'Ваш флот возвращается обратно.',
   'sys_mess_transport' 		=> 'Транспорт',
-  'sys_tran_mess_owner' 		=> 'Один из ваших флотов достигает планеты %s %s и доставляет %s %s, %s  %s и %s %s.',
-  'sys_tran_mess_user'  		=> 'Ваш флот отправленный с планеты %s %s прибыл на %s %s и доставил %s %s, %s  %s и %s %s.',
+//  'sys_tran_mess_owner' 		=> 'Один из ваших флотов достигает планеты %s %s и доставляет %s %s, %s  %s и %s %s.',
+  'sys_tran_mess_user'  		=> 'Флот с планеты %s %s прибыл на %s %s и доставил %s %s, %s %s и %s %s.',
+  'sys_relocate_mess_user'  		=> 'Так же на планету передислоцированы следующие боевые единицы:<br />',
   'sys_mess_fleetback' 		=> 'Возвращение',
   'sys_tran_mess_back' 		=> 'Один из ваших флотов возвращается на планету %s %s.',
   'sys_recy_gotten' 		=> 'Один из Ваших флотов добыл %s %s и %s %s Возвращается на планету.',

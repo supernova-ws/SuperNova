@@ -10,47 +10,58 @@ require_once('includes/includes/coe_simulator_helpers.php');
  * @copyright 2008
  */
 // ----------------------------------------------------------------------------------------------------------------
-// Mission Case 6: -> Espionner
-//
-
-function coe_compress_add_units($unit_group, $target, &$compress_data)
+function coe_compress_add_units($unit_group, $target_planet, &$compress_data, $target_user = array())
 {
   foreach($unit_group as $unit_id)
   {
-    $unit_count = $target[get_unit_param($unit_id, P_NAME)];
+    if(($unit_count = mrc_get_level($target_user, $target_planet, $unit_id)) > 0)
+    {
+      $compress_data[$unit_id] = $unit_count;
+    }
+
+    /*
+    $unit_count = $target_planet[get_unit_param($unit_id, P_NAME)];
     if($unit_count > 0)
     {
       $compress_data[$unit_id] = $unit_count;
     }
+    */
   }
 }
 
-function flt_spy_scan($target, $group_name, $section_title)
+function flt_spy_scan($target_planet, $group_name, $section_title, $target_user = array())
 {
   global $lang;
 
   $result = "<tr><td class=\"c\" colspan=\"4\">{$section_title}</td></tr>";
   foreach(sn_get_groups($group_name) as $unit_id)
   {
-    $unit_db_name = get_unit_param($unit_id, P_NAME);
-    if($target[$unit_db_name] > 0)
+    if(($unit_amount = mrc_get_level($target_user, $target_planet, $unit_id)) > 0)
     {
-      $result  .= "<tr><td align=left colspan = 3>{$lang['tech'][$unit_id]}</td><td align=right>{$target[$unit_db_name]}</td></tr>";
+      $result .= "<tr><td align=\"left\" colspan=\"3\">{$lang['tech'][$unit_id]}</td><td align=\"right\">{$unit_amount}</td></tr>";
     }
+
+    /*
+    $unit_db_name = get_unit_param($unit_id, P_NAME);
+    if($target_planet[$unit_db_name] > 0)
+    {
+      $result .= "<tr><td align=left colspan = 3>{$lang['tech'][$unit_id]}</td><td align=right>{$target_planet[$unit_db_name]}</td></tr>";
+    }
+    */
   }
 
   return $result;
 }
 
-function flt_mission_spy($mission_data)
+function flt_mission_spy(&$mission_data)
 {
   global $lang;
 
-  $fleet_row         = $mission_data['fleet'];
-  $target_user_row   = $mission_data['dst_user'];
-  $target_planet_row = $mission_data['dst_planet'];
-  $spying_user_row   = $mission_data['src_user'];
-  $spying_planet_row = $mission_data['src_planet'];
+  $fleet_row         = &$mission_data['fleet'];
+  $target_user_row   = &$mission_data['dst_user'];
+  $target_planet_row = &$mission_data['dst_planet'];
+  $spying_user_row   = &$mission_data['src_user'];
+  $spying_planet_row = &$mission_data['src_planet'];
 
   if(!isset($target_user_row['id']) || !isset($target_planet_row['id']) || !isset($spying_user_row['id']))
   {
@@ -63,9 +74,10 @@ function flt_mission_spy($mission_data)
   {
     $TargetSpyLvl      = GetSpyLevel($target_user_row);
     $CurrentSpyLvl     = GetSpyLevel($spying_user_row);
+    $spy_diff_empire = $CurrentSpyLvl - $TargetSpyLvl;
 
     $spy_probes = $fleet_array[SHIP_SPY];
-    $spy_diff   = $CurrentSpyLvl + sqrt($spy_probes) - 1 - $TargetSpyLvl;
+    $spy_diff   = $spy_diff_empire + sqrt($spy_probes) - 1 ;
 
     $combat_pack[0] = array(
       RES_METAL => $target_planet_row['metal'],
@@ -97,11 +109,13 @@ function flt_mission_spy($mission_data)
     {
       $spy_message .= "<div class='spy_long'>" . flt_spy_scan($target_planet_row, 'structures', $lang['tech'][UNIT_STRUCTURES]) . "</div>";
     }
-    if ($spy_diff >= 7)
+
+    if($spy_diff_empire >= 0)
     {
-//      $spy_message .= "<div class='spy_long'>" . flt_spy_scan($target_user_row, 'tech', $lang['tech'][UNIT_TECHNOLOGIES]) . "</div>";
-//      coe_compress_add_units(array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR), $target_user_row, $combat_pack[0]);
+      $spy_message .= "<div class='spy_long'>" . flt_spy_scan($target_planet_row, 'tech', $lang['tech'][UNIT_TECHNOLOGIES], $target_user_row) . "</div>";
+      coe_compress_add_units(array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR), $target_planet_row, $combat_pack[0], $target_user_row);
     }
+    // TODO: Наемники, губернаторы, артефакты и прочее имперское
 
     $simulator_link = sn_ube_simulator_encode_replay($combat_pack, 'D');
 
@@ -169,5 +183,3 @@ function flt_mission_spy($mission_data)
 
   return $result;
 }
-
-?>

@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a1.3');
+define('SN_VERSION', '39a2.0');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -732,6 +732,7 @@ define('UBE_MISSION_TYPE', 'UBE_MISSION_TYPE');
 define('UBE_LOADED', 'UBE_LOADED');
 define('UBE_SIMULATOR', 'UBE_SIMULATOR');
 define('UBE_EXCHANGE', 'UBE_EXCHANGE');
+define('UBE_METHOD', 'UBE_METHOD');
 
 
 define('UBE_OUTCOME', 'UBE_OUTCOME');
@@ -848,3 +849,9 @@ define('FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES', 3);
 define('FLT_EXPEDITION_OUTCOME_FOUND_DM', 4);
 define('FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT', 5);
 define('FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL', 6);
+
+
+// Обязательно оставить, что бы arrive < accomplish < return
+define('EVENT_FLT_ARRIVE', 1); // Fleet arrive to destination
+define('EVENT_FLT_ACOMPLISH', 2); // Fleet ends his mission by timer
+define('EVENT_FLT_RETURN', 3); // Fleet returns to starting planet
