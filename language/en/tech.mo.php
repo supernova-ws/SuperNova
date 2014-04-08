@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a8.0
+* @version 39a2.6
 *
 */
 
@@ -161,6 +161,9 @@ $a_lang_array = (array(
 
     UNIT_ARTIFACTS => 'Artifacts',
     ART_LHC => 'Large Hadron Collider',
+    ART_HOOK_SMALL => 'Small Hook',
+    ART_HOOK_MEDIUM => 'Medium Hook',
+    ART_HOOK_LARGE => 'Large Hook',
     ART_RCD_SMALL => 'Small RCD',
     ART_RCD_MEDIUM => 'Medium RCD',
     ART_RCD_LARGE => 'Large RCD',

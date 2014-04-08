@@ -358,11 +358,11 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
 
       if(!$moon_chance)
       {
-        $size = rand(1100, 8999);
+        $size = mt_rand(1100, 8999);
       }
       elseif($moon_chance <= 100)
       {
-        $size = rand($moon_chance * 100 + 1000, $moon_chance * 200 + 2999);
+        $size = mt_rand($moon_chance * 100 + 1000, $moon_chance * 200 + 2999);
       }
       else
       {

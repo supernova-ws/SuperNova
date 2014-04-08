@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a2.4');
+define('SN_VERSION', '39a2.6');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -544,7 +544,10 @@ define('ART_RCD_LARGE', 1004);   // Rapid Colony Deployment - Set of buildings u
 define('ART_HEURISTIC_CHIP', 1005);
 define('ART_NANO_BUILDER', 1006);
 define('ART_NANO_CONSTRUCTOR', 1007);
-define('ART_DENSITY_CHANGER', 1008);
+define('ART_HOOK_SMALL', 1008);
+define('ART_HOOK_MEDIUM', 1009);
+define('ART_HOOK_LARGE', 1010);
+//define('ART_DENSITY_CHANGER', 1011);
 //define('ART_SUPERCOMPUTER', 1005); // Speed up research
 //define('ART_PLANET_GATE', 1006);   // Planet gate
 //define('ART_NANOBOTS_SMALL', 1007); // Speed up building

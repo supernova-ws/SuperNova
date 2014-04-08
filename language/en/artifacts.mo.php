@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a8.0
+* @version 39a2.6
 *
 */
 
@@ -32,8 +32,13 @@ $a_lang_array = (array(
 
   'art_lhc_from'        => 'Large Hadron Collider',
   'art_lhc_subj'        => 'Creating moon...',
-  'art_lhc_moon_create' => 'LHC\'s gravity wave connects large pieces of debris resulting to creation new moon %s on coordinates %s!',
-  'art_lhc_moon_exists' => 'There is already moon on moon orbit on current coordinates',
+  'art_moon_create'   => array(
+    ART_LHC => 'LHC\'s gravity wave connects large pieces of debris resulting to creation new moon %s on coordinates %s!',
+    ART_HOOK_SMALL => 'Small Hook launches new moon %1$s diameter %3$s kilometers on coordinates %2$s!',
+    ART_HOOK_MEDIUM => 'Medium Hook launches new moon %1$s diameter %3$s kilometers on coordinates %2$s!',
+    ART_HOOK_LARGE => 'Large Hook launches new moon %1$s diameter %3$s kilometers on coordinates %2$s!',
+  ),
+  'art_moon_exists' => 'There is already moon on moon orbit on current coordinates',
   'art_lhc_moon_fail'   => 'Unfortunatly LHC\'s gravity wave was not enough to create a new moon',
 
   'art_rcd_from'        => 'Rapid Colony Deployer',
@@ -43,11 +48,11 @@ $a_lang_array = (array(
   'art_rcd_err_no_sense'=> 'RCD detected that there will be no improvement to current buildings and aborted deployment',
   'art_rcd_err_que'     => 'RCD can not be deployed on planet where building ongoing. Cancel all construction tasks and try to deploy RCD again',
 
-  'art_heurestic_chip_ok' => 'Decreased research time for %s level %d down to %d seconds',
+  'art_heurestic_chip_ok' => 'Decreased research time for %s level %d down by %s',
   'art_heurestic_chip_subj' => 'Research speed up',
   'art_heurestic_chip_no_research' => 'There is no research currently ongoing',
 
-  'art_nano_builder_ok' => '%s time of "%s" level %d on planet %s %s decreased down to %d seconds',
+  'art_nano_builder_ok' => '%s time of "%s" level %d on planet %s %s decreased down by %s',
   'art_nano_builder_build' => 'Building',
   'art_nano_builder_destroy' => 'Destruction',
   'art_nano_builder_subj' => 'Building operation speed up',

@@ -503,6 +503,36 @@ $sn_data += array(
     ),
     'bonus_type' => BONUS_ABILITY,
   ),
+  ART_HOOK_SMALL => array(
+    'name' => 'art_hook_small',
+    'type' => UNIT_ARTIFACTS,
+    'location' => LOC_USER,
+    'cost' => array(
+      RES_DARK_MATTER => 100000,
+      'factor' => 1,
+    ),
+    'bonus_type' => BONUS_ABILITY,
+  ),
+  ART_HOOK_MEDIUM => array(
+    'name' => 'art_hook_medium',
+    'type' => UNIT_ARTIFACTS,
+    'location' => LOC_USER,
+    'cost' => array(
+      RES_DARK_MATTER => 200000,
+      'factor' => 1,
+    ),
+    'bonus_type' => BONUS_ABILITY,
+  ),
+  ART_HOOK_LARGE => array(
+    'name' => 'art_hook_large',
+    'type' => UNIT_ARTIFACTS,
+    'location' => LOC_USER,
+    'cost' => array(
+      RES_DARK_MATTER => 400000,
+      'factor' => 1,
+    ),
+    'bonus_type' => BONUS_ABILITY,
+  ),
   ART_RCD_SMALL => array(
     'name' => 'art_rcd_small',
     'type' => UNIT_ARTIFACTS,

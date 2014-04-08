@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a8.0
+* @version 39a2.6
 *
 */
 
@@ -162,6 +162,9 @@ $a_lang_array = (array(
 
     UNIT_ARTIFACTS     => 'Артефакты',
     ART_LHC            => 'Большой Адронный Коллайдер',
+    ART_HOOK_SMALL     => 'Малый Крюк',
+    ART_HOOK_MEDIUM    => 'Средний Крюк',
+    ART_HOOK_LARGE     => 'Большой Крюк',
     ART_RCD_SMALL      => 'Малый АКК',
     ART_RCD_MEDIUM     => 'Средний АКК',
     ART_RCD_LARGE      => 'Большой АКК',

@@ -18,16 +18,21 @@ function art_use(&$user, &$planetrow, $unit_id)
     switch($unit_id)
     {
       case ART_LHC:
+      case ART_HOOK_SMALL:
+      case ART_HOOK_MEDIUM:
+      case ART_HOOK_LARGE:
         $has_moon = doquery("SELECT `id` FROM `{{planets}}` WHERE parent_planet = {$planetrow['id']} LIMIT 1;", true);
         if($planetrow['planet_type'] == PT_PLANET && !$has_moon['id'])
         {
           $unit_level--;
-          $moon_chance = uni_calculate_moon_chance($planetrow['debris_metal'] + $planetrow['debris_crystal']);
-          $random = mt_rand(1, 100);
+          $moon_chance = $unit_id == ART_LHC ? uni_calculate_moon_chance($planetrow['debris_metal'] + $planetrow['debris_crystal']) : (
+            $unit_id == ART_HOOK_MEDIUM ? mt_rand(1100, 8999) : ($unit_id == ART_HOOK_SMALL ? 1100 : 8999)
+          );
+          $random = $unit_id == ART_LHC ? mt_rand(1, 100) : $moon_chance;
           if($random <= $moon_chance)
           {
             $new_moon_name = uni_create_moon($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], $user['id'], $moon_chance);
-            $message = sprintf($lang['art_lhc_moon_create'], $new_moon_name, uni_render_coordinates($planetrow));
+            $message = sprintf($lang['art_moon_create'][$unit_id], $new_moon_name, uni_render_coordinates($planetrow), pretty_number($moon_chance));
           }
           else
           {
@@ -37,7 +42,7 @@ function art_use(&$user, &$planetrow, $unit_id)
         }
         else
         {
-          $message = $lang['art_lhc_moon_exists'];
+          $message = $lang['art_moon_exists'];
         }
       break;
 
@@ -85,9 +90,10 @@ function art_use(&$user, &$planetrow, $unit_id)
         {
           $unit_level--;
           $old_time = $global_que[QUE_RESEARCH][0][0]['que_time_left'];
-          $global_que[QUE_RESEARCH][0][0]['que_time_left'] = max(0, $global_que[QUE_RESEARCH][0][0]['que_time_left'] - PERIOD_HOUR);
+          // $global_que[QUE_RESEARCH][0][0]['que_time_left'] = max(0, $global_que[QUE_RESEARCH][0][0]['que_time_left'] - PERIOD_HOUR);
+          $global_que[QUE_RESEARCH][0][0]['que_time_left'] = $global_que[QUE_RESEARCH][0][0]['que_time_left'] > PERIOD_HOUR ? floor($global_que[QUE_RESEARCH][0][0]['que_time_left'] / 2) : 0;
           doquery("UPDATE {{que}} SET `que_time_left` = {$global_que[QUE_RESEARCH][0][0]['que_time_left']} WHERE `que_id` = {$global_que[QUE_RESEARCH][0][0]['que_id']} LIMIT 1;");
-          $message = sprintf($lang['art_heurestic_chip_ok'], $lang['tech'][$global_que[QUE_RESEARCH][0][0]['que_unit_id']], $global_que[QUE_RESEARCH][0][0]['que_unit_level'], $old_time - $global_que[QUE_RESEARCH][0][0]['que_time_left']);
+          $message = sprintf($lang['art_heurestic_chip_ok'], $lang['tech'][$global_que[QUE_RESEARCH][0][0]['que_unit_id']], $global_que[QUE_RESEARCH][0][0]['que_unit_level'], sys_time_human($old_time - $global_que[QUE_RESEARCH][0][0]['que_time_left']));
           msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_heurestic_chip_subj'], $lang['art_heurestic_chip_subj'], $message);
         }
         else
@@ -104,7 +110,8 @@ function art_use(&$user, &$planetrow, $unit_id)
         {
           $unit_level--;
           $old_time = $que_item['TIME'];
-          $que_item['TIME'] = max(0, $que_item['TIME'] - PERIOD_HOUR);
+          // $que_item['TIME'] = max(0, $que_item['TIME'] - PERIOD_HOUR);
+          $que_item['TIME'] = $que_item['TIME'] > PERIOD_HOUR ? floor($que_item['TIME'] / 2) : 0;
           $que_item['STRING'] = "{$que_item['ID']},{$que_item['AMOUNT']},{$que_item['TIME']},{$que_item['MODE']},{$que_item['QUE']};";
           $query_string = '';
           foreach($que['que'][QUE_STRUCTURES] as $value)
@@ -112,7 +119,7 @@ function art_use(&$user, &$planetrow, $unit_id)
             $query_string .= $value['STRING'];
           }
           doquery("UPDATE {{planets}} SET `que` = '{$query_string}' WHERE `id` = {$planetrow['id']} LIMIT 1;");
-          $message = sprintf($lang['art_nano_builder_ok'], $que_item['MODE'] == BUILD_CREATE ? $lang['art_nano_builder_build'] : $lang['art_nano_builder_destroy'], $lang['tech'][$que_item['ID']], mrc_get_level($user, $planetrow, $que_item['ID'], false, true) + $que_item['AMOUNT'], $planetrow['name'], uni_render_coordinates($planetrow), $old_time - $que_item['TIME']);
+          $message = sprintf($lang['art_nano_builder_ok'], $que_item['MODE'] == BUILD_CREATE ? $lang['art_nano_builder_build'] : $lang['art_nano_builder_destroy'], $lang['tech'][$que_item['ID']], mrc_get_level($user, $planetrow, $que_item['ID'], false, true) + $que_item['AMOUNT'], $planetrow['name'], uni_render_coordinates($planetrow), sys_time_human($old_time - $que_item['TIME']));
           msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_nano_builder_subj'], $lang['art_nano_builder_subj'], $message);
         }
         else
