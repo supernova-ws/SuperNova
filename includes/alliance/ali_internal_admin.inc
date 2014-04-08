@@ -35,28 +35,39 @@ if(sys_get_param_str('isSaveOptions'))
 //  $template->assign_block_vars('result', $avatar_upload_result);
 
   $old_tag = $ally['ally_tag'];
+  $old_name = $ally['ally_name'];
+  $old_rank = $ally['ally_owner_range'];
 
   $ally['ally_name'] = sys_get_param_str('name');
   $ally['ally_tag']  = sys_get_param_str('tag');
   $ally['ally_owner_range'] = sys_get_param_str('owner_range');
-  $ally['ally_web'] = strip_tags(sys_get_param_str('web'));
-  $ally['ally_request_notallow'] = sys_get_param_str('request_notallow');
-
-  doquery("START TRANSACTION;");
-  doquery("UPDATE {{alliance}} SET
-      `ally_name`='{$ally['ally_name']}',
-      `ally_tag`='{$ally['ally_tag']}',
-      `ally_owner_range`='{$ally['ally_owner_range']}',
-      `ally_image`='{$ally['ally_image']}',
-      `ally_web`='{$ally['ally_web']}',
-      `ally_request_notallow`='{$ally['ally_request_notallow']}'
-    WHERE `id`='{$ally['id']}' LIMIT 1;");
-
-  if($ally['ally_tag'] != mysql_real_escape_string($old_tag))
+  if($ally['ally_tag'] && $ally['ally_name'] && $ally['ally_owner_range'])
   {
-    doquery("UPDATE {{users}} SET `username`='[{$ally['ally_tag']}]' WHERE `id` = {$ally['ally_user_id']};");
+    $ally['ally_web'] = strip_tags(sys_get_param_str('web'));
+    $ally['ally_request_notallow'] = sys_get_param_str('request_notallow');
+
+    doquery("START TRANSACTION;");
+    doquery("UPDATE {{alliance}} SET
+        `ally_name`='{$ally['ally_name']}',
+        `ally_tag`='{$ally['ally_tag']}',
+        `ally_owner_range`='{$ally['ally_owner_range']}',
+        `ally_image`='{$ally['ally_image']}',
+        `ally_web`='{$ally['ally_web']}',
+        `ally_request_notallow`='{$ally['ally_request_notallow']}'
+      WHERE `id`='{$ally['id']}' LIMIT 1;");
+
+    if($ally['ally_tag'] != mysql_real_escape_string($old_tag))
+    {
+      doquery("UPDATE {{users}} SET `username`='[{$ally['ally_tag']}]' WHERE `id` = {$ally['ally_user_id']};");
+    }
+    doquery("COMMIT;");
   }
-  doquery("COMMIT;");
+  else
+  {
+    $ally['ally_name'] = $old_name;
+    $ally['ally_tag']  = $old_tag;
+    $ally['ally_owner_range'] = $old_rank;
+  }
 
 //  $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}';", '', true);
 }

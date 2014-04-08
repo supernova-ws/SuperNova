@@ -549,7 +549,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
       ($mission_data['dst_planet'] ? " LEFT JOIN {{planets}} AS pd ON pd.id = f.fleet_end_planet_id" : '') .
 
       // Блокировка всех прилетающих и улетающих флотов, если нужно
-      ($mission_data['dst_fleets'] ? " LEFT JOIN {{fleet}} AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id" : '') .
+      ($mission_data['dst_fleets'] ? " LEFT JOIN {{fleets}} AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id" : '') .
 
       ($mission_data['src_user'] || $mission_data['src_planet'] ? " LEFT JOIN {{users}} AS us ON us.id = f.fleet_owner" : '') .
       ($mission_data['src_planet'] ? " LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id" : '') .

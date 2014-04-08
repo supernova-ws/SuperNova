@@ -190,18 +190,19 @@
 <script type="text/javascript"><!--
   function changePlanet(obj)
   {
-    var pathAdd = 'cp=' + obj.options[obj.selectedIndex].value; // + ('{TOPNAV_MODE}' ? '&mode={TOPNAV_MODE}&re=0' : '');
+    var pathAdd = 'cp=' + obj.options[obj.selectedIndex].value + ('{TOPNAV_MODE}' ? '&mode={TOPNAV_MODE}' : '');
     regexp=/\?page\=(.*)/i;
     var parsed = regexp.exec(window.location.href);
     if(parsed)
     {
       // pathAdd = parsed[0] + '&' + pathAdd;
-      pathAdd = parsed[0].replace(/\&cp=\d*/i, '') + '&' + pathAdd;
+      pathAdd = parsed[0].replace(/\&cp=\d*/i, '').replace(/\&mode=\d*/i, '') + '&' + pathAdd;
     }
     else
     {
       pathAdd = '?' + pathAdd;
     }
+    // alert(pathAdd);
     window.location.href = window.location.pathname + pathAdd;
   }
 
