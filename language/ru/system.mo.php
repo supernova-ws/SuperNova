@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39a2.0#
+* @version #39a2.8#
 *
 */
 
@@ -486,6 +486,7 @@ $a_lang_array = (array(
   
   // Misc
   'sys_game_rules' => 'Правила игры',
+  'sys_game_documentation' => 'Описание игры',
   'sys_max' => 'макс',
   'sys_banned_msg' => 'Вы забанены. Для получения информации зайдите <a href="banned.php">сюда</a>. Срок окончания блокировки аккаунта: ',
   'sys_total_time' => 'Общее время',

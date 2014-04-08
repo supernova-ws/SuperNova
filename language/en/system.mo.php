@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a2.0
+* @version 39a2.8
 *
 */
 
@@ -480,6 +480,7 @@ $a_lang_array = (array(
   
   // Misc
   'sys_game_rules' => 'Rules of the game',
+  'sys_game_documentation' => 'Documentation',
   'sys_max' => 'Max',
   'sys_banned_msg' => 'You are banned. For more information please visit <a href="banned.php">here</a>. Time of account ban: ',
   'sys_total_time' => 'Total time',

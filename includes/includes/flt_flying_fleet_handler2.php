@@ -509,13 +509,15 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   $mission_files = array(
     MT_ATTACK => 'flt_mission_attack.php',
     MT_AKS => 'flt_mission_attack.php',
+    // MT_DESTROY => 'flt_mission_destroy.php',
+    MT_DESTROY => 'flt_mission_attack.php',
+
     MT_TRANSPORT => 'flt_mission_transport.php',
     MT_RELOCATE => 'flt_mission_relocate.php',
     MT_HOLD => 'flt_mission_hold.php',
     MT_SPY => 'flt_mission_spy.php',
     MT_COLONIZE => 'flt_mission_colonize.php',
     MT_RECYCLE => 'flt_mission_recycle.php',
-    MT_DESTROY => 'flt_mission_destroy.php',
 //    MT_MISSILE => 'flt_mission_missile.php',
     MT_EXPLORE => 'flt_mission_explore.php',
   );
@@ -589,6 +591,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
       'src_user'   => $mission_data['src_user'] ? doquery("SELECT * FROM {{users}} WHERE `id` = {$fleet_row['fleet_owner']} LIMIT 1 FOR UPDATE;", true) : null,
       // 'src_planet' => $mission_data['src_planet'] ? doquery("/* 2 */ SELECT * FROM {{planets}} WHERE `id` = {$fleet_row['fleet_start_planet_id']} LIMIT 1 FOR UPDATE;", true) : null,
       'src_planet' => $mission_data['src_planet'] ? doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$fleet_row['fleet_start_galaxy']} AND `system` = {$fleet_row['fleet_start_system']} AND `planet` = {$fleet_row['fleet_start_planet']} AND `planet_type` = {$fleet_row['fleet_start_type']} LIMIT 1 FOR UPDATE;", true) : null,
+      'fleet_event' => $fleet_event['fleet_event'],
     );
 
     switch($fleet_row['fleet_mission'])
@@ -596,14 +599,17 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
       // Для боевых атак нужно обновлять по САБу и по холду - таки надо возвращать данные из обработчика миссий!
       case MT_AKS:
       case MT_ATTACK:
+      case MT_DESTROY:
         $attack_result = flt_mission_attack($mission_data);
         $mission_result = CACHE_COMBAT;
       break;
 
+      /*
       case MT_DESTROY:
         $attack_result = flt_mission_destroy($mission_data);
         $mission_result = CACHE_COMBAT;
       break;
+      */
 
       case MT_TRANSPORT:
         $mission_result = flt_mission_transport($mission_data);

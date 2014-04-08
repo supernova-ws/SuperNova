@@ -3,21 +3,23 @@
 require_once('includes/includes/flt_mission_attack.php');
 
 /*
- * Partial copyright (c) 2009 by Gorlum for http://supernova.ws
-
-Based on original code:
-#############################################################################
-#  Filename: MissionCaseDestruction.php
-#  Create date: Saturday, April 05, 2008    15:51:35
-#  Project: prethOgame
-#  Description: RPG web based game
-#
-#  Copyright � 2008 Aleksandar Spasojevic <spalekg@gmail.com>
-#  Copyright � 2005 - 2008 KGsystem
-#############################################################################
+  copyright © 2009-2014 Gorlum for http://supernova.ws
 */
 function flt_mission_destroy($mission_data)
 {
+  $fleet_row          = $mission_data['fleet'];
+  $destination_planet = $mission_data['dst_planet'];
+  if(!$destination_planet || !is_array($destination_planet) || $destination_planet['planet_type'] != PT_MOON)
+  {
+    flt_send_back($fleet_row);
+    return CACHE_FLEET;
+  }
+
+  $combat_data = flt_mission_attack($mission_data);
+
+  return $combat_data;
+
+/*
   $combat_data = flt_mission_attack($mission_data, false);
 
   if(empty($combat_data) || $combat_data[UBE_OUTCOME][UBE_COMBAT_RESULT] != UBE_COMBAT_RESULT_WIN)
@@ -62,6 +64,5 @@ doquery('ROLLBACK');
 //      $combat_data[UBE_OUTCOME][UBE_PLANET][PLANET_SIZE]
 
   return $combat_data;
+*/
 }
-
-?>

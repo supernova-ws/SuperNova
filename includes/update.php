@@ -942,6 +942,8 @@ switch($new_version)
   case 38:
     upd_log_version_update();
 
+    upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
+
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
 };

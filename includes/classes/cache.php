@@ -546,6 +546,8 @@ class classConfig extends classPersistent
     'game_noob_factor'             => 5,    // Multiplier to divide "stronger" and "weaker" users
     'game_noob_points'             => 5000, // Below this point user threated as noob. 0 to disable
 
+    'game_multiaccount_enabled'    => 0, // 1 - allow interactions for players with same IP (multiaccounts)
+
     'game_speed'                   => 1, // Game speed
     'game_user_changename'         => 2, // Is user allowed to change name after registration?
     'game_user_changename_cost'    => 100000, // Change name cost for paid changename

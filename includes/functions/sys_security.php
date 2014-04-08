@@ -219,7 +219,9 @@ function sn_login($username, $password, $remember_me = 1)
 
 function sys_is_multiaccount($user1, $user2)
 {
- return $user1['user_lastip'] == $user2['user_lastip'];
+  global $config;
+
+ return $user1['user_lastip'] == $user2['user_lastip'] && !$config->game_multiaccount_enabled;
 }
 
 function sn_sys_impersonate($user_selected)

@@ -10,6 +10,11 @@
 
 function flt_mission_explore(&$mission_data)
 {
+  if(!isset($mission_data['fleet_event']) || $mission_data['fleet_event'] != EVENT_FLT_ACOMPLISH)
+  {
+    return CACHE_NONE;
+  }
+
   global $lang, $config;
 
   static $ship_data, $rates;

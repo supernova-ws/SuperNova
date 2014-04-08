@@ -368,6 +368,13 @@ $sn_menu = array(
     'LINK'  => 'announce.php',
     'ICON'  => true,
   ),
+  'menu_documentation' => array(
+    'TYPE'  => 'lang',
+    'ITEM'  => 'sys_game_documentation',
+    'LINK'  => 'docs/readme.txt',
+    'BLANK' => true,
+    'ICON'  => true,
+  ),
   'menu_info_ban' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',

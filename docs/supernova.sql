@@ -1375,6 +1375,7 @@ INSERT INTO `sn_config` VALUES ('game_maxGalaxy', '5');
 INSERT INTO `sn_config` VALUES ('game_maxPlanet', '15');
 INSERT INTO `sn_config` VALUES ('game_maxSystem', '199');
 INSERT INTO `sn_config` VALUES ('game_mode', '0');
+INSERT INTO `sn_config` VALUES ('game_multiaccount_enabled', '0');
 INSERT INTO `sn_config` VALUES ('game_name', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('game_news_actual', '259200');
 INSERT INTO `sn_config` VALUES ('game_news_overview', '3');

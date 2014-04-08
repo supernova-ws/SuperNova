@@ -1,10 +1,9 @@
 <?php
 
-//require_once('includes/includes/coe_calculate_attack.php');
 require_once('includes/includes/ube_attack_calculate.php');
 
 /*
-  copyright © 2009-2012 Gorlum for http://supernova.ws
+  copyright © 2009-2014 Gorlum for http://supernova.ws
 */
 
 function flt_mission_attack($mission_data, $save_report = true)
@@ -18,9 +17,10 @@ function flt_mission_attack($mission_data, $save_report = true)
     return;
   }
 
-  if(!$destination_user || !$destination_planet || !is_array($destination_user) || !is_array($destination_planet))
+  if(!$destination_user || !$destination_planet || !is_array($destination_user) || !is_array($destination_planet) || ($fleet_row['fleet_mission'] == MT_DESTROY && $destination_planet['planet_type'] != PT_MOON))
   {
-    doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
+    // doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
+    flt_send_back($fleet_row);
     return;
   }
 
