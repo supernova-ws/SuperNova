@@ -43,6 +43,7 @@ $template->assign_vars(array(
   'MAX_FLEETS'         => $MaxFleets,
   'FLYING_EXPEDITIONS' => $FlyingExpeditions,
   'MAX_EXPEDITIONS'    => $MaxExpeditions,
+  'FREE_EXPEDITIONS'   => $MaxExpeditions - $FlyingExpeditions,
 
   'COLONIES_CURRENT' => get_player_current_colonies($user),
   'COLONIES_MAX' => get_player_max_colonies($user),

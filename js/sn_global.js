@@ -111,6 +111,8 @@ function sn_timestampToString(timestamp, useDays){
   return strTime;
 }
 
+var accelerated;
+
 function sn_ainput_make(field_name, options)
 {
   var min_value = options['min'] ? options['min'] : 0;
@@ -128,13 +130,21 @@ function sn_ainput_make(field_name, options)
 
   document.write('<div>');
   document.write('<div style="width: 100%">');
+  if(options['button_zero'])
+  {
+    document.write('<input type="button" value="0" id="' + field_name + 'zero" style="width: 20;">&nbsp;');
+  }
   document.write('<input type="button" value="-" id="' + field_name + 'dec" style="width: 20;">');
   document.write('<input type="text"   value="0" id="' + field_name + '"    style="margin: 2px; width: ' + div_width + ';" name="' + field_name_orig + '" onfocus="javascript:if(this.value == \'0\') this.value=\'\';" onblur="javascript:if(this.value == \'\') this.value=\'0\';"/>');
-  document.write('<input type="button" value="+" id="' + field_name + 'inc" style="width: 20;">');
+  document.write('&nbsp;<input type="button" value="+" id="' + field_name + 'inc" style="width: 20;">');
+  if(options['button_max'])
+  {
+    document.write('<input type="button" value="M" id="' + field_name + 'max" style="width: 20;">');
+  }
   document.write('</div>');
   if(div_width != 'auto')
   {
-    div_width += 20 + 20 + 6 + 6 + 2 + 2;
+    div_width += 20 + 20 + 6 + 6 + 2 + 2 + (options['button_zero'] ? 20 + 2 + 6: 0) + (options['button_max'] ? 20 + 2 + 6: 0);
   }
   document.write('<div style="margin: 6px; width: ' + div_width + '" id="' + field_name + 'slide"></div>');
   document.write('</div>');
@@ -187,37 +197,52 @@ function sn_ainput_make(field_name, options)
     }
   );
 
-  jQuery("#" + field_name + 'dec').bind('click',
-    function(event, ui)
-    {
-      var element = jQuery("#" + field_name);
-      if(parseInt(element.val()) > step_value)
-      {
-        element.val(parseInt(element.val()) - step_value);
-      }
-      else
-      {
-        element.val(0);
-      };
-      element.trigger('change', [event, ui]);
-    }
-  );
+  jQuery("#" + field_name + 'zero').bind('click', function(event, ui) {
+    jQuery("#" + field_name).val(0).trigger('change', [event, ui]);
+  });
 
-  jQuery("#" + field_name + 'inc').bind('click',
-    function(event, ui)
+  jQuery("#" + field_name + 'max').bind('click', function(event, ui) {
+    jQuery("#" + field_name).val(jQuery(slider_id).slider("option", "max")).trigger('change', [event, ui]);
+  });
+
+  jQuery("#" + field_name + 'dec, ' + "#" + field_name + 'inc').bind('mousedown', function(event, ui) {
+    var element = jQuery("#" + field_name);
+    accelerated = {'element': element, 'step': step_value, 'slider': slider_id, 'ticks': 0, 'step_now': step_value, 'timeout': 0, 'increase': $(this).attr('id') == field_name + 'inc'};
+    // accelerated['timeout'] = window.setTimeout(sn_ainput_mouselerate, 20);
+    sn_ainput_mouselerate();
+  });
+  jQuery("#" + field_name + 'dec, ' + "#" + field_name + 'inc').bind('mouseup', function(event, ui) {
+    if(accelerated)
     {
-      var element = jQuery("#" + field_name);
-      if(parseInt(element.val()) + step_value < jQuery(slider_id).slider("option", "max"))
-      {
-        element.val(parseInt(element.val()) + step_value);
-      }
-      else
-      {
-        element.val(jQuery(slider_id).slider("option", "max"));
-      };
-      element.trigger('change', [event, ui]);
+      clearTimeout(accelerated['timeout']);
+      accelerated = undefined;
     }
-  );
+  });
+}
+
+function sn_ainput_mouselerate()
+{
+  var donext = false;
+  if(accelerated['increase'] && (val = parseInt(accelerated['element'].val())) < (option_max = jQuery(accelerated['slider']).slider("option", "max")))
+  {
+    donext = val + accelerated['step_now'] < option_max;
+    accelerated['element'].val(donext ? val + accelerated['step_now'] : option_max).trigger('change'); // , [event, ui]
+  }
+  if(!accelerated['increase'] && (val = parseInt(accelerated['element'].val())) > 0)
+  {
+    donext = val - accelerated['step_now'] > 0;
+    accelerated['element'].val(donext ? val - accelerated['step_now'] : 0).trigger('change'); // , [event, ui]
+  }
+
+  if(donext)
+  {
+    accelerated['ticks']++;
+    if(accelerated['ticks'] % 5 == 0)
+    {
+      accelerated['step_now'] = accelerated['step_now'] * 2;
+    }
+    accelerated['timeout'] = window.setTimeout(sn_ainput_mouselerate, 200);
+  }
 }
 
 var popup = jQuery(document.createElement("span"));
