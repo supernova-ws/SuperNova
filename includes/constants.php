@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a2.11');
+define('SN_VERSION', '39a3.0');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -773,6 +773,8 @@ define('UBE_BONUSES', 'UBE_BONUSES');
 define('UBE_ATTACK', 'UBE_ATTACK');
 define('UBE_SHIELD', 'UBE_SHIELD');
 define('UBE_ARMOR', 'UBE_ARMOR');
+define('UBE_SHIELD_REST', 'UBE_SHIELD_REST');
+define('UBE_ARMOR_REST', 'UBE_ARMOR_REST');
 
 
 define('UBE_FLEETS', 'UBE_FLEETS');

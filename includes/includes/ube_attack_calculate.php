@@ -306,6 +306,8 @@ function sn_ube_combat_prepare_first_round(&$combat_data)
       // Копируем её в информацию о первом раунде
       $first_round_data[$fleet_id][UBE_ARMOR][$unit_id] = $fleet_info[UBE_ARMOR][$unit_id] * $unit_count;
       $first_round_data[$fleet_id][UBE_COUNT][$unit_id] = $unit_count;
+      $first_round_data[$fleet_id][UBE_ARMOR_REST][$unit_id] = $fleet_info[UBE_ARMOR][$unit_id];
+      $first_round_data[$fleet_id][UBE_SHIELD_REST][$unit_id] = $fleet_info[UBE_SHIELD][$unit_id];
     }
   }
   $combat_data[UBE_ROUNDS][0][UBE_FLEETS] = $first_round_data;
@@ -353,6 +355,7 @@ function sn_ube_combat_round_prepare(&$combat_data, $round)
 
       $fleet_data[UBE_ATTACK][$unit_id] = $fleet_data[UBE_ATTACK_BASE][$unit_id] * $unit_count;
       $fleet_data[UBE_SHIELD][$unit_id] = $fleet_data[UBE_SHIELD_BASE][$unit_id] * $unit_count;
+      $fleet_data[UBE_SHIELD_REST][$unit_id] = $fleet_data[UBE_SHIELD_BASE][$unit_id];
       // $fleet_data[UBE_SHIELD][$unit_id] = $fleet_data[UBE_SHIELD_BASE][$unit_id] * ($combat_data[UBE_OPTIONS][UBE_METHOD] ? $unit_count : 1);
       // $fleet_data[UBE_ARMOR][$unit_id] = $fleet_info[UBE_ARMOR_BASE][$unit_id] * $unit_count;
     }
@@ -405,8 +408,8 @@ function sn_ube_combat_round_crossfire_fleet(&$combat_data, $round)
         // if($attack_unit_count <= 0) continue; // TODO: Это пока нельзя включать - вот если будут "боевые порядки юнитов..."
         foreach($defend_fleet_data[UBE_COUNT] as $defend_unit_id => $defend_unit_count)
         {
-          sn_ube_combat_round_crossfire_unit($attack_fleet_data, $defend_fleet_data, $attack_unit_id, $defend_unit_id, $combat_data[UBE_OPTIONS]);
-          sn_ube_combat_round_crossfire_unit($defend_fleet_data, $attack_fleet_data, $defend_unit_id, $attack_unit_id, $combat_data[UBE_OPTIONS]);
+          sn_ube_combat_round_crossfire_unit2($attack_fleet_data, $defend_fleet_data, $attack_unit_id, $defend_unit_id, $combat_data[UBE_OPTIONS]);
+          sn_ube_combat_round_crossfire_unit2($defend_fleet_data, $attack_fleet_data, $defend_unit_id, $attack_unit_id, $combat_data[UBE_OPTIONS]);
         }
       }
     }
@@ -451,6 +454,7 @@ function sn_ube_combat_round_crossfire_unit(&$attack_fleet_data, &$defend_fleet_
 
   // Вычисляем сколько юнитов осталось
   $units_left = ceil($defend_fleet_data[UBE_ARMOR][$defend_unit_id] / $defend_unit_armor);
+//  $defend_fleet_data[UBE_UNITS_LOST][$defend_unit_id] = $defend_fleet_data[UBE_COUNT][$defend_unit_id] - $units_left;
 
   // Вычисляем состояние последнего юнита и проверяем - взорвался ли он
   // TODO: Прописать разным кораблям разную стойкость ко взрыву
@@ -468,13 +472,6 @@ function sn_ube_combat_round_crossfire_unit(&$attack_fleet_data, &$defend_fleet_
   }
 
   $defend_fleet_data[UBE_COUNT][$defend_unit_id] = $units_left;
-
-  if($combat_options[UBE_METHOD])
-  {
-  }
-  else
-  {
-  }
 
   if(BE_DEBUG === true)
   {
@@ -497,7 +494,7 @@ function sn_ube_combat_round_crossfire_unit(&$attack_fleet_data, &$defend_fleet_
       floor($last_unit_percent),
       $random,
       $boom,
-    //  $units_lost,
+      //  $units_lost,
       $defend_fleet_data[UBE_ARMOR][$defend_unit_id],
       $defend_fleet_data[UBE_COUNT][$defend_unit_id],
       'attack_fleet_data' => $attack_fleet_data,
@@ -505,6 +502,126 @@ function sn_ube_combat_round_crossfire_unit(&$attack_fleet_data, &$defend_fleet_
     );
     sn_ube_combat_helper_round_row($debug_unit_crossfire_result);
   }
+}
+
+function sn_ube_combat_round_crossfire_unit_damage_current(&$defend_fleet_data, $defend_unit_id, &$amplified_damage, &$units_lost, &$units_boomed, &$combat_options)
+{
+  $unit_is_lost = false;
+
+  $units_boomed = $units_boomed ? $units_boomed : 0;
+  $units_lost = $units_lost ? $units_lost : 0;
+  // $boom = 0;
+  // $damage_to_shield = 0;
+  // $damage_to_armor = 0;
+  $boom_limit = 75; // Взрываемся на 75% прочности
+  if($defend_fleet_data[UBE_COUNT][$defend_unit_id] > 0 && $amplified_damage)
+  {
+    // $defend_fleet_info = &$defend_fleet_data[UBE_FLEET_INFO];
+
+    $damage_to_shield = min($amplified_damage, $defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id]);
+    $amplified_damage -= $damage_to_shield;
+    $defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id] -= $damage_to_shield;
+//pdump($damage_to_shield, '$damage_to_shield');
+//pdump($defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id], 'Осталось щита');
+
+    $damage_to_armor = min($amplified_damage, $defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id]);
+    $amplified_damage -= $damage_to_armor;
+    $defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id] -= $damage_to_armor;
+//pdump($damage_to_armor, '$damage_to_armor');
+//pdump($defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id], 'Осталось брони');
+
+    // Если брони не осталось - юнит потерян
+    if($defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id] <= 0)
+    {
+//pdump($defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id], 'Юнит потерян - не осталось брони');
+//pdump($amplified_damage, 'Осталось дамаджа');
+      $unit_is_lost = true;
+    }
+    // Если броня осталось, но не осталось щитов - прошел дамадж по броне и надо проверить - не взорвался ли корабль
+    elseif($defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id] <= 0)
+    {
+//pdump($defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id], 'Щитов не осталось');
+//pdump($defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id], 'Осталась броня');
+      $last_unit_hp = $defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id];
+      $last_unit_percent = $last_unit_hp / $defend_fleet_data[UBE_ARMOR_BASE][$defend_unit_id] * 100;
+
+      $random = $combat_options[UBE_SIMULATOR] ? $boom_limit / 2 : mt_rand(0, 100);
+//pdump($random, '$random');
+      if($last_unit_percent <= $boom_limit && $last_unit_percent <= $random)
+      {
+//pdump($last_unit_percent, 'Юнит взорвался');
+        $unit_is_lost = true;
+        $units_boomed++;
+        $damage_to_armor += $defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id];
+        $defend_fleet_data[UBE_UNITS_BOOM][$defend_unit_id]++;
+        $defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id] = 0;
+      }
+    }
+
+    $defend_fleet_data[UBE_ARMOR][$defend_unit_id] -= $damage_to_armor;
+    $defend_fleet_data[UBE_SHIELD][$defend_unit_id] -= $damage_to_shield;
+
+    if($unit_is_lost)
+    {
+//pdump($defend_fleet_data[UBE_COUNT][$defend_unit_id], 'Отрабатываем потерю юнита');
+      $units_lost++;
+      $defend_fleet_data[UBE_COUNT][$defend_unit_id]--;
+      if($defend_fleet_data[UBE_COUNT][$defend_unit_id])
+      {
+//pdump($defend_fleet_data[UBE_COUNT][$defend_unit_id], 'Еще остались юниты');
+        $defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id] = $defend_fleet_data[UBE_ARMOR_BASE][$defend_unit_id];
+        $defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id] = $defend_fleet_data[UBE_SHIELD_BASE][$defend_unit_id];
+      }
+    }
+  }
+
+  return $unit_is_lost;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Рассчитывает результат столкновения двух юнитов ака ход
+function sn_ube_combat_round_crossfire_unit2(&$attack_fleet_data, &$defend_fleet_data, $attack_unit_id, $defend_unit_id, &$combat_options)
+{
+  if($defend_fleet_data[UBE_COUNT][$defend_unit_id] <= 0)
+  {
+    return;
+  }
+
+  // Вычисляем прямой дамадж от атакующего юнита с учетом размера атакуемого
+  $direct_damage = floor($attack_fleet_data[UBE_ATTACK][$attack_unit_id] * $defend_fleet_data[UBE_DAMAGE_PERCENT][$defend_unit_id]);
+
+  // Применяем амплифай, если есть
+  $amplify = $attack_fleet_data[UBE_FLEET_INFO][UBE_AMPLIFY][$attack_unit_id][$defend_unit_id];
+  $amplify = $amplify ? $amplify : 1;
+  $amplified_damage = floor($direct_damage * $amplify);
+
+//print('<hr />');
+//pdump($defend_fleet_data);
+//pdump($amplified_damage, 'Идёт дамаг');
+
+  // Проверяем - не взорвался ли текущий юнит
+  sn_ube_combat_round_crossfire_unit_damage_current($defend_fleet_data, $defend_unit_id, $amplified_damage, $units_lost, $units_boomed, $combat_options);
+//pdump($amplified_damage, 'Осталось дамага');
+
+  $defend_unit_base_defence = $defend_fleet_data[UBE_SHIELD_BASE][$defend_unit_id] + $defend_fleet_data[UBE_ARMOR_BASE][$defend_unit_id];
+//pdump($defend_unit_base_defence, 'Защита юнита');
+
+  // todo Добавить взрывы от полуповрежденных юнитов - т.е. заранее вычислить из убитых юнитов еще количество убитых умножить на вероятность от структуры
+
+  // Вычисляем, сколько юнитов взорвалось полностью
+  $units_lost_full = floor($amplified_damage / $defend_unit_base_defence);
+//pdump($units_lost_full, 'Целиком потеряно юнитов');
+  // Уменьшаем дамадж на ту же сумму
+  $amplified_damage -= $units_lost_full * $defend_unit_base_defence;
+  // Вычисляем, сколько юнитов осталось
+  $defend_fleet_data[UBE_COUNT][$defend_unit_id] = max(0, $defend_fleet_data[UBE_COUNT][$defend_unit_id] - $units_lost_full);
+  // Уменьшаем броню подразделения на броню потерянных юнитов
+  $defend_fleet_data[UBE_ARMOR][$defend_unit_id] -= $units_lost_full * $defend_fleet_data[UBE_ARMOR_BASE][$defend_unit_id];
+  $defend_fleet_data[UBE_SHIELD][$defend_unit_id] -= $units_lost_full * $defend_fleet_data[UBE_SHIELD_BASE][$defend_unit_id];
+
+  // Проверяем - не взорвался ли текущий юнит
+  sn_ube_combat_round_crossfire_unit_damage_current($defend_fleet_data, $defend_unit_id, $amplified_damage, $units_lost, $units_boomed, $combat_options);
+//pdump($defend_fleet_data);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -531,6 +648,7 @@ function sn_ube_combat_round_analyze(&$combat_data, $round)
       }
       $next_round_fleet[$fleet_id][UBE_COUNT][$unit_id] = $unit_count;
       $next_round_fleet[$fleet_id][UBE_ARMOR][$unit_id] = $fleet_data[UBE_ARMOR][$unit_id];
+      $next_round_fleet[$fleet_id][UBE_ARMOR_REST][$unit_id] = $fleet_data[UBE_ARMOR_REST][$unit_id];
       $outcome[$fleet_data[UBE_FLEET_INFO][UBE_FLEET_TYPE]] = 1;
     }
   }
