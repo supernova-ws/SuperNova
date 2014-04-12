@@ -11,8 +11,8 @@
 
 
 
-Project "SuperNova.WS" Release Candidate 38RC0 "Admin astro expo news bugfix"
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Project "SuperNova.WS" Release 38 "Admin astro expo news bugfix"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [#] player_award 0a2
     (!) Новый модуль
         Раздел "Награды и достижения" на странице Императора, видимый всем
