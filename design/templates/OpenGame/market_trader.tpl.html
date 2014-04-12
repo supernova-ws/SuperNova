@@ -14,7 +14,6 @@ function eco_mrk_trader_recalc()
   selected_resource = element_cache['exchangeTo'].value;
   selected_input = element_cache['spend' + selected_resource];
   selected_input_value = parseFloat(0 + selected_input.value);
-
   for(i in eco_market_resources)
   {
     input_element = element_cache['spend' + i];
@@ -22,12 +21,16 @@ function eco_mrk_trader_recalc()
 
     if((selected_resource != res_resource_dm && i == selected_resource) || (selected_resource == res_resource_dm && i != res_resource_dm))
     {
-      input_element.disabled = true;
+      // input_element.disabled = true;
       input_element.style.backgroundColor = "#004400";
+      jQuery('[id^="' + 'spend' + i +'"]').attr('disabled', 1);
+      jQuery('#' + 'spend' + i +'slide').slider('disable');
     }
     else
     {
-      input_element.disabled = false;
+      // input_element.disabled = false;
+      jQuery('[id^="' + 'spend' + i +'"]').removeAttr('disabled');
+      jQuery('#' + 'spend' + i +'slide').slider('enable');
       if(input_value > eco_market_resources[i]['avail'])
       {
         input_element.style.backgroundColor = "#FF0000";
@@ -80,7 +83,8 @@ function eco_mrk_trader_recourse()
     {
       element_cache['course' + i].innerHTML = eco_market_resources[i]['rate'] / rate_for_selected + " : 1";
     }
-    element_cache['spend' + i].value = 0;
+    // element_cache['spend' + i].value = 0;
+    jQuery('#' + 'spend' + i +'slide').slider("value", 0);
   }
   eco_market_resources[res_resource_dm]['avail'] += parseFloat(element_cache['rpg_cost_trader'].innerHTML);
   element_cache['rpg_cost_trader'].innerHTML = rpg_cost_trader * (selected_resource == res_resource_dm ? 3 : 1);
@@ -108,10 +112,18 @@ function eco_mrk_trader_recourse()
       <tr>
         <td class="c_l">{resources.NAME}</td>
         <td class="c_r">{resources.AVAIL_TEXT}</td>
-        <td><input id="spend{resources.ID}" name="spend[{resources.ID}]" value="{resources.SPENT}" onKeyUp="javascript:eco_mrk_trader_recalc();"></td>
+        <td>
+          <!-- <input id="spend{resources.ID}" name="spend[{resources.ID}]" value="{resources.SPENT}" onKeyUp="javascript:eco_mrk_trader_recalc();"> -->
+          <script type="text/javascript"><!--
+            eco_market_resources[{resources.ID}] = { avail: {resources.AVAIL}, rate: {resources.RATE} };
+
+            sn_ainput_make('spend[{resources.ID}]', {max: {resources.AVAIL}, button_max: true, button_zero: true});
+            jQuery('#spend{resources.ID}').bind('keyup', eco_mrk_trader_recalc);
+            jQuery('#spend{resources.ID}slide').bind('slide slidechange', eco_mrk_trader_recalc);
+          --></script>
+        </td>
         <td class="c_r" id="res_left{resources.ID}"></td>
         <td class="c_r" id="course{resources.ID}"></td>
-        <script type="text/javascript">eco_market_resources[{resources.ID}] = { avail: {resources.AVAIL}, rate: {resources.RATE} };</script>
       </tr>
     <!-- END resources -->
 

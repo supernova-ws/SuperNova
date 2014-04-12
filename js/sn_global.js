@@ -237,7 +237,7 @@ function sn_ainput_mouselerate()
   if(donext)
   {
     accelerated['ticks']++;
-    if(accelerated['ticks'] % 5 == 0)
+    if(accelerated['ticks'] % 3 == 0)
     {
       accelerated['step_now'] = accelerated['step_now'] * 2;
     }
