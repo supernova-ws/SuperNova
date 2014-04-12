@@ -351,6 +351,15 @@ mission = array(
         'transport'  => false,
       ),
 
+      MT_SPY => array(
+        'dst_user'   => 1,
+        'dst_planet' => 1,
+        'src_user'   => 1,
+        'src_planet' => 1,
+        'transport'  => false,
+        'AJAX'       => true,
+      ),
+
       MT_HOLD => array(
         'dst_planet' => 0,
         'dst_user'   => 0,
@@ -401,14 +410,6 @@ mission = array(
         'transport'  => true,
       ),
 
-      MT_SPY => array(
-        'src_planet' => 1,
-        'src_user'   => 1,
-        'dst_planet' => 1,
-        'dst_user'   => 1,
-        'transport'  => false,
-        'AJAX'       => true,
-      ),
 
 
 

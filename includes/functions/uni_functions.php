@@ -525,7 +525,10 @@ function uni_coordinates_valid($coordinates, $prefix = '')
 {
   global $config;
 
-  array_walk($coordinates, 'intval');
+  // array_walk($coordinates, 'intval');
+  $coordinates["{$prefix}galaxy"] = intval($coordinates["{$prefix}galaxy"]);
+  $coordinates["{$prefix}system"] = intval($coordinates["{$prefix}system"]);
+  $coordinates["{$prefix}planet"] = intval($coordinates["{$prefix}planet"]);
 
   return
     isset($coordinates["{$prefix}galaxy"]) && $coordinates["{$prefix}galaxy"] > 0 && $coordinates["{$prefix}galaxy"] <= $config->game_maxGalaxy &&
