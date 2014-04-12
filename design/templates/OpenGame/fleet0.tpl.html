@@ -67,8 +67,9 @@ var speed_factor   = {speed_factor};
             <!-- IF MAX_EXPEDITIONS > 1 -->
             <input type="button" value="1/{MAX_EXPEDITIONS}" onclick="javascript:expe_fleet({MAX_EXPEDITIONS});">
             <!-- ENDIF -->
-            <!-- IF FREE_EXPEDITIONS > 1 && MAX_EXPEDITIONS > 1 -->
-            &nbsp;&nbsp;&nbsp;<input type="button" value="1/{FREE_EXPEDITIONS}" onclick="javascript:expe_fleet({FREE_EXPEDITIONS});">
+            &nbsp;&nbsp;&nbsp;
+            <!-- IF FREE_EXPEDITIONS > 1 && MAX_EXPEDITIONS > 1 && FREE_EXPEDITIONS != MAX_EXPEDITIONS -->
+            <input type="button" value="1/{FREE_EXPEDITIONS}" onclick="javascript:expe_fleet({FREE_EXPEDITIONS});">
             <!-- ENDIF -->
           </th>
           <th  style="padding-left: 0; border-left: 0" class="c_r">
