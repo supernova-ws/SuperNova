@@ -25,11 +25,16 @@
 
 <script type="text/javascript"><!--
 var colonies = Array();
---></script>
+var reCalcGatheringStarted = false;
 
-<script type="text/javascript"><!--
 function reCalcGathering()
 {
+  if(reCalcGatheringStarted)
+  {
+    return;
+  }
+  reCalcGatheringStarted = true;
+  /*
   var resourceGrid = Array();
   resourceGrid[{D_RES_METAL}] = 0;
   resourceGrid[{D_RES_CRYSTAL}] = 0;
@@ -37,28 +42,126 @@ function reCalcGathering()
   resourceGrid[0] = 0;
   for(colony in colonies)
   {
-    resourceGrid[colony] = 0;
+    colonyValue = 0;
+    maxColonyValue = 0;
+    freeCapacity = colonies[colony][3];
     if(document.getElementsByName('resources[' + colony + '][{D_RES_METAL}]')[0].checked)
     {
-      resourceGrid[{D_RES_METAL}] += parseInt(colonies[colony][0]);
-      resourceGrid[colony] += parseInt(colonies[colony][0]);
+      // addedValue = colonies[colony][0];
+      // addedValue = Math.min(freeCapacity, colonies[colony][0]);
+      addedValue = freeCapacity < colonies[colony][0] ? freeCapacity : colonies[colony][0];
+      freeCapacity -= addedValue;
+
+      resourceGrid[{D_RES_METAL}] += addedValue;
+      colonyValue += addedValue;
+      maxColonyValue += colonies[colony][0];
     }
     if(document.getElementsByName('resources[' + colony + '][{D_RES_CRYSTAL}]')[0].checked)
     {
-      resourceGrid[{D_RES_CRYSTAL}] += parseInt(colonies[colony][1]);
-      resourceGrid[colony] += parseInt(colonies[colony][1]);
+      // addedValue = colonies[colony][1];
+      // addedValue = Math.min(freeCapacity, colonies[colony][1]);
+      addedValue = freeCapacity < colonies[colony][1] ? freeCapacity : colonies[colony][1];
+      freeCapacity -= addedValue;
+
+      resourceGrid[{D_RES_CRYSTAL}] += addedValue;
+      colonyValue += addedValue;
+      maxColonyValue += colonies[colony][1];
+
+      // resourceGrid[{D_RES_CRYSTAL}] += colonies[colony][1];
+      // colonyValue += colonies[colony][1];
     }
     if(document.getElementsByName('resources[' + colony + '][{D_RES_DEUTERIUM}]')[0].checked)
     {
-      resourceGrid[{D_RES_DEUTERIUM}] += parseInt(colonies[colony][2]);
-      resourceGrid[colony] += parseInt(colonies[colony][2]);
+      // addedValue = colonies[colony][2];
+      // addedValue = Math.min(freeCapacity, colonies[colony][2]);
+      addedValue = freeCapacity < colonies[colony][2] ? freeCapacity : colonies[colony][2];
+      freeCapacity -= addedValue;
+
+      resourceGrid[{D_RES_DEUTERIUM}] += addedValue;
+      colonyValue += addedValue;
+      maxColonyValue += colonies[colony][2];
+
+      // resourceGrid[{D_RES_DEUTERIUM}] += colonies[colony][2];
+      // colonyValue += colonies[colony][2];
     }
-    document.getElementById('ga_' + colony + '_0').innerHTML = sn_format_number(resourceGrid[colony]);
+    document.getElementById('ga_' + colony + '_0').innerHTML = '<span class="' + (colonyValue < maxColonyValue ? (colonies[colony][3] ? 'negative' : 'zero') : 'positive') + '">' + sn_format_number(colonyValue) + '</span>';
+    // document.getElementById('ga_' + colony + '_0').innerHTML = sn_format_number(colonyValue);
   }
   document.getElementById('ga_0_{D_RES_METAL}').innerHTML = sn_format_number(resourceGrid[{D_RES_METAL}]);
   document.getElementById('ga_0_{D_RES_CRYSTAL}').innerHTML = sn_format_number(resourceGrid[{D_RES_CRYSTAL}]);
   document.getElementById('ga_0_{D_RES_DEUTERIUM}').innerHTML = sn_format_number(resourceGrid[{D_RES_DEUTERIUM}]);
   document.getElementById('ga_0_0').innerHTML = sn_format_number(resourceGrid[{D_RES_METAL}] + resourceGrid[{D_RES_CRYSTAL}] + resourceGrid[{D_RES_DEUTERIUM}]);
+  */
+
+  resourceGrid = [0,0,0];
+/*
+  resourceIDs = [{D_RES_METAL}, {D_RES_CRYSTAL}, {D_RES_DEUTERIUM}];
+  resourceGrid[{D_RES_METAL}] = 0;
+  resourceGrid[{D_RES_CRYSTAL}] = 0;
+  resourceGrid[{D_RES_DEUTERIUM}] = 0;
+  resourceGrid[0] = 0;
+*/
+  for(colony in colonies)
+  {
+    colonyValue = 0;
+    maxColonyValue = 0;
+    freeCapacity = colonies[colony][3];
+
+    for(resourceID in resourceGrid)
+    {
+      // if(document.getElementsByName('resources[' + colony + '][' + resourceIDs[resourceID] + ']')[0].checked)
+      if(jQuery('#ga_' + colony + '_' + resourceID + '').is(':checked'))
+      {
+        addedValue = Math.min(freeCapacity, colonies[colony][resourceID]);
+        freeCapacity -= addedValue;
+
+        resourceGrid[resourceID] += addedValue;
+        colonyValue += addedValue;
+        maxColonyValue += colonies[colony][resourceID];
+      }
+    }
+/*
+    if(document.getElementsByName('resources[' + colony + '][{D_RES_METAL}]')[0].checked)
+    {
+      addedValue = Math.min(freeCapacity, colonies[colony][0]);
+      freeCapacity -= addedValue;
+
+      resourceGrid[0] += addedValue;
+      colonyValue += addedValue;
+      maxColonyValue += colonies[colony][0];
+    }
+    if(document.getElementsByName('resources[' + colony + '][{D_RES_CRYSTAL}]')[0].checked)
+    {
+      addedValue = Math.min(freeCapacity, colonies[colony][1]);
+      freeCapacity -= addedValue;
+
+      resourceGrid[1] += addedValue;
+      colonyValue += addedValue;
+      maxColonyValue += colonies[colony][1];
+    }
+    if(document.getElementsByName('resources[' + colony + '][{D_RES_DEUTERIUM}]')[0].checked)
+    {
+      addedValue = Math.min(freeCapacity, colonies[colony][2]);
+      freeCapacity -= addedValue;
+
+      resourceGrid[2] += addedValue;
+      colonyValue += addedValue;
+      maxColonyValue += colonies[colony][2];
+    }
+*/
+    jQuery('#ga_' + colony + '_a').html('<span class="' + (colonyValue < maxColonyValue ? (colonies[colony][3] ? 'negative' : 'zero') : 'positive') + '">' + sn_format_number(colonyValue) + '</span>');
+    // document.getElementById('ga_' + colony + '_all').innerHTML = '<span class="' + (colonyValue < maxColonyValue ? (colonies[colony][3] ? 'negative' : 'zero') : 'positive') + '">' + sn_format_number(colonyValue) + '</span>';
+  }
+  // document.getElementById('ga_0_{D_RES_METAL}').innerHTML = sn_format_number(resourceGrid[0]);
+  // document.getElementById('ga_0_{D_RES_CRYSTAL}').innerHTML = sn_format_number(resourceGrid[1]);
+  // document.getElementById('ga_0_{D_RES_DEUTERIUM}').innerHTML = sn_format_number(resourceGrid[2]);
+  // document.getElementById('ga_0_all').innerHTML = sn_format_number(resourceGrid[0] + resourceGrid[1] + resourceGrid[2]);
+  jQuery('#ga_a_0').html(sn_format_number(resourceGrid[0]));
+  jQuery('#ga_a_1').html(sn_format_number(resourceGrid[1]));
+  jQuery('#ga_a_2').html(sn_format_number(resourceGrid[2]));
+  jQuery('#ga_a_a').html(sn_format_number(resourceGrid[0] + resourceGrid[1] + resourceGrid[2]));
+
+  reCalcGatheringStarted = false;
 }
 --></script>
 
@@ -67,10 +170,10 @@ function reCalcGathering()
     <tr>
       <td class="c">{L_sys_coordinates}</td>
       <td class="c">{L_fl_from}</td>
-      <td class="c"><input type="checkbox" class="planet_gather" onchange="jQuery('.planet_metal').attr('checked', jQuery(this).is(':checked'));reCalcGathering();">{L_sys_metal}</td>
-      <td class="c"><input type="checkbox" class="planet_gather" onchange="jQuery('.planet_crystal').attr('checked', jQuery(this).is(':checked'));reCalcGathering();">{L_sys_crystal}</td>
-      <td class="c"><input type="checkbox" class="planet_gather" onchange="jQuery('.planet_deuterium').attr('checked', jQuery(this).is(':checked'));reCalcGathering();">{L_sys_deuterium}</td>
-      <td class="c"><input id="planet_gather_all" type="checkbox" onchange="jQuery('.planet_gather').attr('checked', jQuery(this).is(':checked')).change();reCalcGathering();">{L_res_total}</td>
+      <td class="c"><input type="checkbox" checked class="planet_gather" onchange="jQuery('.planet_metal').attr('checked', jQuery(this).is(':checked'));reCalcGathering();">{L_sys_metal}</td>
+      <td class="c"><input type="checkbox" checked class="planet_gather" onchange="jQuery('.planet_crystal').attr('checked', jQuery(this).is(':checked'));reCalcGathering();">{L_sys_crystal}</td>
+      <td class="c"><input type="checkbox" checked class="planet_gather" onchange="jQuery('.planet_deuterium').attr('checked', jQuery(this).is(':checked'));reCalcGathering();">{L_sys_deuterium}</td>
+      <td class="c"><input type="checkbox" checked id="planet_gather_all" onchange="jQuery('.planet_gather').attr('checked', jQuery(this).is(':checked'));reCalcGathering();">{L_res_total}</td>
       <td class="c">{L_sys_cargo_bays}</td>
       <td class="c">{L_sys_time}</td>
     </tr>
@@ -82,20 +185,20 @@ function reCalcGathering()
           <span class="fl">{colonies.TYPE_PRINT} &quot;{colonies.NAME}&quot;</span>
         </th>
         <th>
-          <span class="fl"><input type="checkbox" name="resources[{colonies.ID}][{D_RES_METAL}]"     value="1" class="planet_metal planet_{colonies.ID}" onchange="reCalcGathering();"></span>
+          <span class="fl"><input type="checkbox" checked name="resources[{colonies.ID}][{D_RES_METAL}]"     id="ga_{colonies.ID}_0" value="1" class="planet_gather planet_metal planet_{colonies.ID}" onchange="reCalcGathering();"></span>
           <span class="fr">{colonies.METAL_TEXT}</span>
         </th>
         <th>
-          <span class="fl"><input type="checkbox" name="resources[{colonies.ID}][{D_RES_CRYSTAL}]"   value="1" class="planet_crystal planet_{colonies.ID}" onchange="reCalcGathering();"></span>
+          <span class="fl"><input type="checkbox" checked name="resources[{colonies.ID}][{D_RES_CRYSTAL}]"   id="ga_{colonies.ID}_1" value="1" class="planet_gather planet_crystal planet_{colonies.ID}" onchange="reCalcGathering();"></span>
           <span class="fr">{colonies.CRYSTAL_TEXT}</span>
         </th>
         <th>
-          <span class="fl"><input type="checkbox" name="resources[{colonies.ID}][{D_RES_DEUTERIUM}]" value="1" class="planet_deuterium planet_{colonies.ID}" onchange="reCalcGathering();"></span>
+          <span class="fl"><input type="checkbox" checked name="resources[{colonies.ID}][{D_RES_DEUTERIUM}]" id="ga_{colonies.ID}_2" value="1" class="planet_gather planet_deuterium planet_{colonies.ID}" onchange="reCalcGathering();"></span>
           <span class="fr">{colonies.DEUTERIUM_TEXT}</span>
         </th>
         <th>
-          <span class="fl"><input type="checkbox" name="planets[]" value="{colonies.ID}" class="planet_gather" id="planet_{colonies.ID}" onchange="jQuery('.planet_{colonies.ID}').attr('checked', jQuery(this).is(':checked'));reCalcGathering();"></span>
-          <span class="fr" id="ga_{colonies.ID}_0">{colonies.RESOURCES_TEXT}</span>
+          <span class="fl"><input type="checkbox" checked name="planets[]" value="{colonies.ID}" id="planet_{colonies.ID}" class="planet_gather" onchange="jQuery('.planet_{colonies.ID}').attr('checked', jQuery(this).is(':checked'));reCalcGathering();"></span>
+          <span class="fr" id="ga_{colonies.ID}_a">0</span>
         </th>
         <!-- IF colonies.FLEET_CAPACITY -->
         <th><span class="fr">{colonies.FLEET_CAPACITY_TEXT}</span></th>
@@ -104,7 +207,7 @@ function reCalcGathering()
         <th colspan=2><span class="negative">{L_flt_no_transports}</span></th>
         <!-- ENDIF -->
       </tr>
-      <script type="text/javascript">colonies['{colonies.ID}'] = ['{colonies.METAL}', '{colonies.CRYSTAL}', '{colonies.DEUTERIUM}', '{colonies.FLEET_CAPACITY}'];</script>
+      <script type="text/javascript">colonies['{colonies.ID}'] = [parseInt('{colonies.METAL}'), parseInt('{colonies.CRYSTAL}'), parseInt('{colonies.DEUTERIUM}'), parseInt('{colonies.FLEET_CAPACITY}')];</script>
     <!-- BEGINELSE colonies -->
       <th colspan="8">{L_fl_nocolonies}</th>
     <!-- END colonies -->
@@ -115,10 +218,10 @@ function reCalcGathering()
     <!-- ENDIF -->
     <tr>
       <th class="c_l" colspan="2">{L_sys_total}</th>
-      <th class="c_r"><span id="ga_0_{D_RES_METAL}"></span></th>
-      <th class="c_r"><span id="ga_0_{D_RES_CRYSTAL}"></span></th>
-      <th class="c_r"><span id="ga_0_{D_RES_DEUTERIUM}"></span></th>
-      <th class="c_r"><span id="ga_0_0"></span></th>
+      <th class="c_r"><span id="ga_a_0"></span></th>
+      <th class="c_r"><span id="ga_a_1"></span></th>
+      <th class="c_r"><span id="ga_a_2"></span></th>
+      <th class="c_r"><span id="ga_a_a"></span></th>
       <th class="c_c" colspan="2" rowspan="{$ROWSPAN}"><input type="submit" value="{L_flt_gather_all}" /></th>
     </tr>
     <!-- IF $ROWSPAN > 2 -->
@@ -138,14 +241,11 @@ function reCalcGathering()
       <th class="c_r">&nbsp;</th>
     </tr>
   </table>
-  <!-- INCLUDE page_hint -->
 </form>
+<!-- INCLUDE page_hint -->
 
 <script type="text/javascript"><!--
-   jQuery(document).ready(function() 
-     {
-       jQuery('#planet_gather_all').attr('checked', true).change();
-//       jQuery('#planet_gather_all').check();
-     }
-   );
---></script> 
+   jQuery(document).ready(function(){
+     reCalcGathering();
+   });
+--></script>

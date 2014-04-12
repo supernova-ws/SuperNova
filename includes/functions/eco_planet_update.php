@@ -25,12 +25,13 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   {
     if(!(isset($planet['id']) && $planet['id']) || !$simulation)
     {
-      $planet = doquery("SELECT * FROM `{{planets}}` WHERE `galaxy` = '{$planet['galaxy']}' AND `system` = '{$planet['system']}' AND `planet` = '{$planet['planet']}' and `planet_type` = '{$planet['planet_type']}' LIMIT 1 {$suffix};", '', true);
+      $planet = doquery("SELECT p.* FROM `{{planets}}` AS p " . ($simulation ? '' : "LEFT JOIN `{{users}}` AS u ON u.id = p.id_owner ") .
+        "WHERE `galaxy` = '{$planet['galaxy']}' AND `system` = '{$planet['system']}' AND `planet` = '{$planet['planet']}' and `planet_type` = '{$planet['planet_type']}' LIMIT 1 {$suffix};", true);
     }
   }
   else
   {
-    $planet = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$planet}' LIMIT 1 {$suffix};", '', true);
+    $planet = doquery("SELECT p.* FROM `{{planets}}` AS p " . ($simulation ? '' : "LEFT JOIN `{{users}}` AS u ON u.id = p.id_owner ") . "WHERE p.`id` = '{$planet}' LIMIT 1 {$suffix};", true);
   }
 
   if(!($planet && isset($planet['id']) && $planet['id']))
@@ -40,7 +41,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 
   if(!$user || !is_array($user) || !isset($user['id']))
   {
-    $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$planet['id_owner']} LIMIT 1 {$suffix};", '', true);
+    $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$planet['id_owner']} LIMIT 1 {$suffix};", true);
     if(!$user)
     {
       return $no_data;
