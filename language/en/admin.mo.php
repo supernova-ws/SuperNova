@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a10.14
+* @version 39a3.7
 *
 */
 
@@ -213,6 +213,7 @@ $a_lang_array = (array(
   'adm_opt_title' => 'Configuration of the universe',
   'adm_opt_game_settings' => 'Universe Parameters',
   'adm_opt_game_name' => 'Universe name',
+  'adm_opt_multiaccount_enabled' => 'Enable multiaccounts',
   'adm_opt_speed' => 'Speed',
   'adm_opt_game_gspeed' => 'Games',
   'adm_opt_game_fspeed' => 'Fleet',

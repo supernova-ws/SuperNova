@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a8.0
+* @version 39a3.7
 *
 */
 
@@ -84,6 +84,7 @@ $a_lang_array = (array(
     'WMZ' => 'WebMoney доллар',
     'WME' => 'WebMoney евро',
     'WMU' => 'WebMoney гривна',
+    'WMB' => 'WebMoney белорусский рубль',
   ),
 
   'pay_currency_exchange_title' => 'Внутренние курсы валют',

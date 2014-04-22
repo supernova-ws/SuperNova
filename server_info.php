@@ -20,8 +20,8 @@ $template->assign_vars(array(
   'ALI_BONUS_MEMBERS' => isset($sn_module['ali_ally_player']) ? $config->ali_bonus_members : 0,
 
   'PLAYER_MAX_COLONIES' => $config->player_max_colonies,
+
+  'GAME_MULTIACCOUNT_ENABLED' => $config->game_multiaccount_enabled,
 ));
 
 display(parsetemplate($template));
-
-?>

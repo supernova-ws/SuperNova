@@ -944,6 +944,23 @@ switch($new_version)
 
     upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
 
+    if($config->payment_currency_default == 'UAH')
+    {
+      upd_check_key('payment_currency_default',      'USD', true);
+      upd_check_key('payment_currency_exchange_dm_', 20000, true);
+      upd_check_key('payment_currency_exchange_mm_', 20000, true);
+      upd_check_key('payment_currency_exchange_eur', 0.80, true);
+      upd_check_key('payment_currency_exchange_rub', 32, true);
+      upd_check_key('payment_currency_exchange_uah', 13.333333333333, true);
+      upd_check_key('payment_currency_exchange_usd', 1, true);
+      upd_check_key('payment_currency_exchange_wmb', 11764.70588235, true);
+      upd_check_key('payment_currency_exchange_wme', 0.7692307692308, true);
+      upd_check_key('payment_currency_exchange_wmr', 33.333333333333, true);
+      upd_check_key('payment_currency_exchange_wmu', 14.28571428571, true);
+      upd_check_key('payment_currency_exchange_wmz', 1.052631578947, true);
+    }
+    upd_check_key('payment_currency_exchange_wmb', 11764.70588235, !$config->payment_currency_exchange_wmb);
+
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
 };

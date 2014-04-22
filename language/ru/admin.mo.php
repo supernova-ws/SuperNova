@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a10.14
+* @version 39a3.7
 *
 */
 
@@ -232,6 +232,7 @@ $a_lang_array = (array(
   'adm_opt_title' => 'Настройки Вселенной',
   'adm_opt_game_settings' => 'Параметры Вселенной',
   'adm_opt_game_name' => 'Название Вселенной',
+  'adm_opt_multiaccount_enabled' => 'Разрешить взаимодействие аккаунтов с 1 IP',
   'adm_opt_speed' => 'Скорость',
   'adm_opt_game_gspeed' => 'Игры',
   'adm_opt_game_fspeed' => 'Флота',

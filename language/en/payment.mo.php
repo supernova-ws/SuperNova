@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a8.0
+* @version 39a3.7
 *
 */
 
@@ -85,6 +85,7 @@ $a_lang_array = (array(
     'WMZ' => 'WebMoney dollar',
     'WME' => 'WebMoney euro',
     'WMU' => 'WebMoney hryvna',
+    'WMB' => 'WebMoney belorussian rouble',
   ),
 
   'pay_currency_exchange_title' => 'Internal currency exchange',
