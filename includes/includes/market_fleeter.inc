@@ -24,13 +24,16 @@ if(is_array($shipList))
   $global_data = sys_o_get_updated($user, $planetrow, $time_now);
   $planetrow = $global_data['planet'];
 
+  // Блокируем запись о запасах кораблей у трейдера
+  doquery("SELECT * FROM {{config}} WHERE `config_name` = 'eco_stockman_fleet' LIMIT 1 FOR UPDATE;");
+
   $message .= $lang["eco_mrk_{$submode}_ships"] . '<ul>';
   $qry = array();
   $total = array();
   $db_changeset = array();
   foreach($shipList as $shipID => &$shipCount)
   {
-    $shipCount = floatval($shipCount);
+    $shipCount = ceil(floatval($shipCount));
     if(!$shipCount)
     {
       continue;
@@ -86,23 +89,23 @@ if(is_array($shipList))
     */
 
     $build_data = eco_get_build_data($user, $planetrow, $shipID);
-    $resTemp['metal']     = floor($build_data[BUILD_CREATE][RES_METAL] * $shipCount * $config_rpg_scrape_metal * (-$multiplier));
-    $resTemp['crystal']   = floor($build_data[BUILD_CREATE][RES_CRYSTAL] * $shipCount * $config_rpg_scrape_crystal * (-$multiplier));
-    $resTemp['deuterium'] = floor($build_data[BUILD_CREATE][RES_DEUTERIUM] * $shipCount * $config_rpg_scrape_deuterium * (-$multiplier));
+    $resTemp[RES_METAL] = floor($build_data[BUILD_CREATE][RES_METAL] * $shipCount * $config_rpg_scrape_metal * (-$multiplier));
+    $resTemp[RES_CRYSTAL] = floor($build_data[BUILD_CREATE][RES_CRYSTAL] * $shipCount * $config_rpg_scrape_crystal * (-$multiplier));
+    $resTemp[RES_DEUTERIUM] = floor($build_data[BUILD_CREATE][RES_DEUTERIUM] * $shipCount * $config_rpg_scrape_deuterium * (-$multiplier));
 
     foreach($resTemp as $resID => $resCount)
     {
       $total[$resID] += $resCount;
     }
 
-    $message .= "<li>{$lang['tech'][$shipID]}: {$shipCount}";
+    $message .= "<li>{$lang['tech'][$shipID]}: " . pretty_number($shipCount);
   }
 
   if($mode == MARKET_STOCKMAN && $intError == MARKET_DEAL)
   {
     foreach($total as $resID => $resCount)
     {
-      if($planetrow[$resID] < $resCount)
+      if(mrc_get_level($user, $planetrow, $resID, true, true) < -$resCount)
       {
         $intError = MARKET_NO_RESOURCES;
         $debug->warning('Trying to use bug in s/h market', 'S/H Ship Market', 301);
@@ -123,8 +126,9 @@ if(is_array($shipList))
         continue;
       }
 
-      $newrow[$resID] = $planetrow[$resID] + $resCount * (-$multiplier);
-      $qry[] = "`{$resID}` = `{$resID}` + ({$resCount})";
+      $resource_name = pname_resource_name($resID);
+      // $newrow[$resID] = $planetrow[$resID] + $resCount * (-$multiplier);
+      $qry[] = "`{$resource_name}` = `{$resource_name}` + ({$resCount})";
       /*
       if($mode == MARKET_SCRAPPER)
       {
@@ -138,7 +142,7 @@ if(is_array($shipList))
       }
       */
 
-      $message .= "<li>" . $lang['sys_' . $resID] . ": {$resCount}";
+      $message .= "<li>" . $lang['sys_' . $resource_name] . ": " . pretty_number(abs($resCount));
     }
     $message .= "</ul>";
 
@@ -148,18 +152,22 @@ if(is_array($shipList))
     pdump($config->eco_stockman_fleet, '$oldstock');
     pdump($newstock, '$newstock');
     */
-    // pdump($db_changeset);
-    //  die();
+
+    //pdump($qry);
+    //pdump($db_changeset);
+    //die();
 
     doquery("UPDATE {{planets}} SET {$qry} WHERE `id` = {$planetrow['id']} LIMIT 1;");
     sn_db_changeset_apply($db_changeset);
 
     rpg_points_change($user['id'], RPG_MARKET, -($rpg_cost), "Using Black Market page {$mode}");
     $config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str($newstock));
-    sn_db_transaction_commit();
 
     $stock = $newstock;
-    $planetrow = array_merge($planetrow, $newrow);
+    // $planetrow = array_merge($planetrow, $newrow);
+    $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planetrow['id']} LIMIT 1", true);
+
+    sn_db_transaction_commit();
 
     $template->assign_block_vars('result', array(
       'STATUS' => ERR_NONE,

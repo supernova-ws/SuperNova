@@ -77,7 +77,14 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
   $ques = que_get($que_type, $user['id'], $planet['id']);
   $que = &$ques['ques'][$que_type][$user['id']][$planet['id']];
   $in_que = &$ques['in_que'][$que_type][$user['id']][$planet['id']];
+
   $silo_capacity_free = mrc_get_level($user, $planet, STRUC_SILO) * get_unit_param(STRUC_SILO, P_CAPACITY);
+  $group_missile = sn_get_groups('missile');
+  foreach($group_missile as $unit_id)
+  {
+    $silo_capacity_free -= (mrc_get_level($user, $planet, $unit_id, false, true) + (isset($in_que[$unit_id]) && $in_que[$unit_id] ? $in_que[$unit_id] : 0)) * get_unit_param($unit_id, P_UNIT_SIZE);
+  }
+  $silo_capacity_free = max(0, $silo_capacity_free);
 
   $template = gettemplate("buildings_hangar", true);
 
@@ -97,7 +104,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
     // Restricting $can_build by resources on planet and (where applicable) with max count per unit
     $can_build     = $unit_info[P_MAX_STACK] ? max(0, $unit_info[P_MAX_STACK] - $in_que[$unit_id] - $ElementCount) : $build_data['CAN'][BUILD_CREATE];
     // Restricting $can_build by free silo capacity
-    $can_build     = ($unit_is_missile = in_array($unit_id, sn_get_groups('missile'))) ? min($can_build, floor($silo_capacity_free / $unit_info[P_UNIT_SIZE])) : $can_build;
+    $can_build     = ($unit_is_missile = in_array($unit_id, $group_missile)) ? min($can_build, floor($silo_capacity_free / $unit_info[P_UNIT_SIZE])) : $can_build;
     if(!$can_build)
     {
       if(!$build_data['CAN'][BUILD_CREATE])

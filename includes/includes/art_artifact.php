@@ -112,7 +112,7 @@ function art_use(&$user, &$planetrow, $unit_id)
         $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planetrow['id']} LIMIT 1 FOR UPDATE;", true);
         $que = que_get(QUE_STRUCTURES, $user['id'], $planetrow['id'], true);
         $que_item = &$que['ques'][QUE_STRUCTURES][$user['id']][$planetrow['id']][0];
-        pdump($que_item);
+        //pdump($que_item);
 
         if(isset($que_item) && $que_item['que_time_left'] > 0)
         {

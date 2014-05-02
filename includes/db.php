@@ -216,6 +216,8 @@ function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
   {
     if(!in_array($unit_id, $group))
     {
+    // TODO - remove later
+      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: db_change_units() вызван для не-ресурсов!</h1>');
       pdump(debug_backtrace());
       die('db_change_units() вызван для не-ресурсов!');
     }
@@ -297,8 +299,17 @@ function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id =
   if(!is_array($user))
   {
     // TODO - remove later
+    print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER is not ARRAY</h1>');
     pdump(debug_backtrace());
     die('USER is not ARRAY');
+  }
+  if(!isset($user['id']) || !$user['id'])
+  {
+    // TODO - remove later
+    print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER[id] пустой</h1>');
+    pdump($user);
+    pdump(debug_backtrace());
+    die('USER[id] пустой');
   }
   $planet_id = is_array($planet_id) && isset($planet_id['id']) ? $planet_id['id'] : $planet_id;
 
@@ -455,6 +466,8 @@ function sn_db_transaction_check($transaction_should_be_started = null)
 
   if($error_msg)
   {
+    // TODO - Убрать позже
+    print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_transaction_check() - ' . $error_msg . '</h1>');
     $backtrace = debug_backtrace();
     array_shift($backtrace);
     pdump($backtrace);

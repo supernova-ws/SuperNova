@@ -11,11 +11,33 @@
  */
 function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 {
+  sn_db_transaction_check(true);
+
   global $lang;
 
   $no_data = array('user' => false, 'planet' => false, 'que' => false);
 
   if(!$planet)
+  {
+    return $no_data;
+  }
+
+  $suffix = !$simulation ? 'FOR UPDATE' : '';
+
+  $user = intval(is_array($user) && $user['id'] ? $user['id'] : $user);
+
+  if(!$user)
+  {
+    // TODO - Убрать позже
+    print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sys_o_get_updated() - USER пустой!</h1>');
+    $backtrace = debug_backtrace();
+    array_shift($backtrace);
+    pdump($backtrace);
+    die();
+  }
+
+  $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$user} LIMIT 1 {$suffix};", true);
+  if(!isset($user['id']))
   {
     return $no_data;
   }
@@ -26,7 +48,6 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
       "p.`galaxy` = '{$planet['galaxy']}' AND p.`system` = '{$planet['system']}' AND p.`planet` = '{$planet['planet']}' and p.`planet_type` = '{$planet['planet_type']}'" :
       "p.`id` = '{$planet['id']}'"
   );
-  $suffix = !$simulation ? 'FOR UPDATE' : '';
 
   $planet = doquery("SELECT p.* FROM `{{planets}}` AS p {$player_join} WHERE {$planet_where} LIMIT 1 {$suffix};", true);
   if(!isset($planet['id']))
@@ -49,11 +70,6 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 */
 
 
-  $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$planet['id_owner']} LIMIT 1 {$suffix};", true);
-  if(!isset($user['id']))
-  {
-    return $no_data;
-  }
 
   $que = que_process($user, $planet, $UpdateTime);
 

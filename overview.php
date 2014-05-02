@@ -32,6 +32,13 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+if(!$config->eco_stockman_fleet)
+{
+// TODO Убрать
+// print('<h1>НЕ ОШИБКА - НЕ СООБЩАТЬ</h1>');
+$config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str(array_map(function($item){return 100;}, sn_get_groups('fleet'))));
+}
+
 lng_include('overview');
 
 $mode            = sys_get_param_str('mode');
@@ -185,7 +192,8 @@ switch($mode)
     )
     {
       sn_db_transaction_start();
-      $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", '', true);
+      $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
+      $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planetrow['id']} LIMIT 1 FOR UPDATE;", true);
       $build_data = eco_get_build_data($user, $planetrow, $hire, $planetrow['PLANET_GOVERNOR_ID'] == $hire ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0);
       if($build_data['CAN'][BUILD_CREATE])
       {

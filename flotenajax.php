@@ -100,7 +100,7 @@ foreach($fleet_array as $unit_id => $unit_count)
 {
   $FleetDBArray[] = "{$unit_id},{$unit_count}";
   // $FleetSubQRY[]  = "`{$unit_db_name}` = `{$unit_db_name}` - {$unit_count}";
-  $FleetSubQRY['planets'][] = sn_db_unit_changeset_prepare($unit_id, -$unit_count, $user, $planetrow);
+  $FleetSubQRY['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$unit_count, $user, $planetrow);
 }
 $FleetDBArray = implode(';', $FleetDBArray);
 // $FleetSubQRY  = implode(',', $FleetSubQRY);

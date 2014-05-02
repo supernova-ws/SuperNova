@@ -51,7 +51,7 @@ class debug
     die();
   }
 
-  function dump($dump = false, $force_base = false)
+  function dump($dump = false, $force_base = false, $deadlock = false)
   {
     if($dump === false)
     {
@@ -88,6 +88,11 @@ class debug
           $error_backtrace[$dump_var_name] = $dump_var;
         }
       }
+    }
+
+    if($deadlock && ($q = mysql_fetch_assoc(mysql_query('SHOW ENGINE INNODB STATUS'))))
+    {
+      $error_backtrace['deadlock'] = nl2br($q['Status']);
     }
 
     if($base_dump)
@@ -140,7 +145,7 @@ class debug
     $fatal_error = 'Fatal error: cannot write to `logs` table. Please contact Administration...';
 
     $error_text = mysql_real_escape_string($message);
-    $error_backtrace = $this->dump($dump, true);
+    $error_backtrace = $this->dump($dump, true, strpos($message, 'Deadlock') !== false);
 
     global $sys_log_disabled;
     global $user;

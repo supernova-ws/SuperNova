@@ -391,7 +391,7 @@ function sn_ube_combat_round_crossfire_fleet(&$combat_data, $round)
 {
   if(BE_DEBUG === true)
   {
-    sn_ube_combat_helper_round_header($round);
+    // sn_ube_combat_helper_round_header($round);
   }
 
   $round_data = &$combat_data[UBE_ROUNDS][$round];
@@ -417,7 +417,7 @@ function sn_ube_combat_round_crossfire_fleet(&$combat_data, $round)
 
   if(BE_DEBUG === true)
   {
-    sn_ube_combat_helper_round_footer();
+    // sn_ube_combat_helper_round_footer();
   }
 }
 
@@ -1151,12 +1151,10 @@ function sn_ube_combat_result_apply(&$combat_data)
           // Планета - записываем в ИД юнита его потери только если есть потери
           // $unit_db_name = get_unit_param($unit_id, P_NAME);
           // $fleet_query[$unit_id] = "`{$unit_db_name}` = `{$unit_db_name}` - {$units_lost}";
-          pdump($fleet_info);
-          die();
+          // pdump($fleet_info);
+          // die();
           // TODO Проверить, правильно ли выбирается пользователь
-          $db_changeset['planets'][] = sn_db_unit_changeset_prepare($unit_id, -$units_lost, $combat_data[UBE_PLAYERS][$destination_user_id], $planet_id);
-
-
+          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$units_lost, $combat_data[UBE_PLAYERS][$destination_user_id][UBE_PLAYER_DATA], $planet_id);
         }
       }
 
@@ -1229,8 +1227,8 @@ function sn_ube_combat_result_apply(&$combat_data)
     elseif($fleet_query)
     {
       // TODO Проверить, правильно ли сохраняется изменения юнитов и изменения ресурсов
-      pdump($db_changeset);
-      die();
+      // pdump($db_changeset);
+      // die();
 
       // Планета - сохраняем изменения ресурсов
       // doquery("UPDATE {{planets}} SET {$fleet_query} WHERE `id` = {$planet_id} LIMIT 1");

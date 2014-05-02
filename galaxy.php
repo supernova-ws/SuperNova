@@ -42,7 +42,7 @@ $POST_systemRight = sys_get_param_str('systemRight');
 
 $fleetmax      = GetMaxFleets($user);
 $CurrentPlID   = $planetrow['id'];
-$CurrentMIP    = $planetrow['interplanetary_misil'];
+$CurrentMIP    = mrc_get_level($user, $planetrow, UNIT_DEF_MISSILE_INTERPLANET, false, true);
 $HavePhalanx   = $planetrow['phalanx'];
 $CurrentSystem = $planetrow['system'];
 $CurrentGalaxy = $planetrow['galaxy'];
@@ -379,14 +379,14 @@ $template->assign_vars(array(
      'curPlanetS'          => $planetrow['system'],
      'curPlanetP'          => $planetrow['planet'],
      'curPlanetPT'         => $planetrow['planet_type'],
-     'deathStars'          => mrc_get_level($user, $planetrow, SHIP_DEATH_STAR),
+     'deathStars'          => mrc_get_level($user, $planetrow, SHIP_DEATH_STAR, false, true),
      'galaxy'              => $uni_galaxy,
      'system'              => $uni_system,
      'planet'              => $planet,
-     'MIPs'                => $CurrentMIP,
+     'MIPs'                => round($CurrentMIP),
      'MODE'                => $mode,
      'planets'             => $planetcount,
-     'SPs'                 => pretty_number($planetrow['spy_sonde']),
+     'SPs'                 => pretty_number(mrc_get_level($user, $planetrow, SHIP_SPY, false, true)),
      'SHOW_ADMIN'          => SHOW_ADMIN,
      'fleet_count'         => $maxfleet_count,
      'fleet_max'           => $fleetmax,
@@ -404,6 +404,7 @@ $template->assign_vars(array(
      'PAGE_HINT'           => $lang['gal_sys_hint'],
 //     'LANG_RECYCLERS'      => $lang['tech'][SHIP_RECYCLER],
      'PLANET_RECYCLERS'    => $planet_recyclers_orbiting,
+     'PLANET_RECYCLERS_TEXT' => pretty_number($planet_recyclers_orbiting),
      'GALAXY_NAME'         => $galaxy_name['universe_name'],
      'SYSTEM_NAME'         => $system_name['universe_name'],
      'COL_SPAN'            => $colspan + 9,

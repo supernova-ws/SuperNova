@@ -1660,8 +1660,8 @@ $sn_data_aux = array(
       upd_alter_table('planets', $drop, true);
     }
 
-    upd_do_query("UPDATE `lh_alliance` AS a
-      JOIN `lh_users` AS u ON a.`id` = u.`user_as_ally` AND `user_as_ally` IS NOT NULL AND `username` = ''
+    upd_do_query("UPDATE `{{alliance}}` AS a
+      JOIN `{{users}}` AS u ON a.`id` = u.`user_as_ally` AND `user_as_ally` IS NOT NULL AND `username` = ''
       SET u.`username` = CONCAT('[', a.`ally_tag`, ']');");
 
     if($update_indexes['statpoints']['I_stats_id_ally'] != 'id_ally,stat_type,stat_code,')
@@ -1670,7 +1670,7 @@ $sn_data_aux = array(
       upd_alter_table('statpoints', "DROP FOREIGN KEY `FK_stats_id_ally`", $update_foreigns['statpoints']['FK_stats_id_ally']);
       upd_alter_table('statpoints', "DROP KEY `I_stats_id_ally`", $update_indexes['statpoints']['I_stats_id_ally']);
       upd_alter_table('statpoints', "ADD KEY `I_stats_id_ally` (`id_ally`,`stat_type`,`stat_code`) USING BTREE", !$update_indexes['statpoints']['I_stats_id_ally']);
-      upd_alter_table('statpoints', "ADD CONSTRAINT `FK_stats_id_ally` FOREIGN KEY (`id_ally`) REFERENCES `lh_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE", !$update_foreigns['statpoints']['FK_stats_id_ally']);
+      upd_alter_table('statpoints', "ADD CONSTRAINT `FK_stats_id_ally` FOREIGN KEY (`id_ally`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE", !$update_foreigns['statpoints']['FK_stats_id_ally']);
     }
 
     upd_alter_table('statpoints', "ADD KEY `I_stats_type_code` (`stat_type`,`stat_code`) USING BTREE", !$update_indexes['statpoints']['I_stats_type_code']);

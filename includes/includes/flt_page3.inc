@@ -205,7 +205,7 @@ function sn_fleet_page3()
 
   $FleetStorage        = 0;
   $FleetShipCount      = 0;
-pdump($fleetarray );
+//pdump($fleetarray );
   $db_changeset = array();
   foreach ($fleetarray as $Ship => $Count)
   {
@@ -217,8 +217,8 @@ pdump($fleetarray );
   }
   $fleet_array = sys_unit_arr2str($fleetarray);
   $FleetShipCount  += array_sum($fleetarray);
-pdump($fleet_array);
-pdump($db_changeset);
+//pdump($fleet_array);
+//pdump($db_changeset);
   $FleetStorage        -= $consumption;
 
   if ( $StorageNeeded > $FleetStorage)

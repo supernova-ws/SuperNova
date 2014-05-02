@@ -45,7 +45,7 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
        FROM {{planets}} AS p LEFT JOIN {{users}} AS u ON u.id = p.id_owner
        WHERE p.`galaxy` = '{$fleet_row["fleet_{$prefix}_galaxy"]}' AND p.`system` = '{$fleet_row["fleet_{$prefix}_system"]}' AND p.`planet` = '{$fleet_row["fleet_{$prefix}_planet"]}'
        AND p.`planet_type` = '{$fleet_row["fleet_{$prefix}_type"]}' LIMIT 1 FOR UPDATE;", true);
-pdump($planet_arrival);
+//pdump($planet_arrival);
   $db_changeset = array();
   if(!$only_resources)
   {
@@ -342,7 +342,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
       'fleet'      => &$fleet_row,
       'dst_user'   => $mission_data['dst_user'] ? doquery("SELECT * FROM {{users}} WHERE `id` = {$fleet_row['fleet_target_owner']} LIMIT 1 FOR UPDATE;", true) : null,
       // 'dst_planet' => $mission_data['dst_planet'] ? doquery("/* 1 */ SELECT * FROM {{planets}} WHERE `id` = {$fleet_row['fleet_end_planet_id']} LIMIT 1 FOR UPDATE;", true) : null,
-      'dst_planet' => $mission_data['dst_planet'] ? doquery("SELECT `id` FROM {{planets}} WHERE `galaxy` = {$fleet_row['fleet_end_galaxy']} AND `system` = {$fleet_row['fleet_end_system']} AND `planet` = {$fleet_row['fleet_end_planet']} AND `planet_type` = " . ($fleet_row['fleet_end_type'] == PT_DEBRIS ? PT_PLANET : $fleet_row['fleet_end_type']) . " LIMIT 1 FOR UPDATE;", true) : null,
+      'dst_planet' => $mission_data['dst_planet'] ? doquery("SELECT `id`, `id_owner` FROM {{planets}} WHERE `galaxy` = {$fleet_row['fleet_end_galaxy']} AND `system` = {$fleet_row['fleet_end_system']} AND `planet` = {$fleet_row['fleet_end_planet']} AND `planet_type` = " . ($fleet_row['fleet_end_type'] == PT_DEBRIS ? PT_PLANET : $fleet_row['fleet_end_type']) . " LIMIT 1 FOR UPDATE;", true) : null,
       'src_user'   => $mission_data['src_user'] ? doquery("SELECT * FROM {{users}} WHERE `id` = {$fleet_row['fleet_owner']} LIMIT 1 FOR UPDATE;", true) : null,
       // 'src_planet' => $mission_data['src_planet'] ? doquery("/* 2 */ SELECT * FROM {{planets}} WHERE `id` = {$fleet_row['fleet_start_planet_id']} LIMIT 1 FOR UPDATE;", true) : null,
       'src_planet' => $mission_data['src_planet'] ? doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$fleet_row['fleet_start_galaxy']} AND `system` = {$fleet_row['fleet_start_system']} AND `planet` = {$fleet_row['fleet_start_planet']} AND `planet_type` = {$fleet_row['fleet_start_type']} LIMIT 1 FOR UPDATE;", true) : null,
@@ -351,7 +351,8 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 
     if($mission_data['dst_planet'])
     {
-      $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_user'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
+      // $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_user'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
+      $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_planet']['id_owner'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
       $mission_data['dst_user'] = $mission_data['dst_user'] ? $mission_data['dst_planet']['user'] : null;
       $mission_data['dst_planet'] = $mission_data['dst_planet']['planet'];
     }
