@@ -35,7 +35,7 @@ function sn_imperium_view($template = null)
       {
         foreach($sn_group_factories as $factory_unit_id)
         {
-          $unit_db_name_porcent = get_unit_param($factory_unit_id, P_NAME) . '_porcent';
+          $unit_db_name_porcent = pname_factory_production_field_name($factory_unit_id);
           if(isset($production[$factory_unit_id][$planet['id']]) && ($actual_porcent = intval($production[$factory_unit_id][$planet['id']] / 10)) >=0 && $actual_porcent <= 10 && $actual_porcent != $planet[$unit_db_name_porcent])
           {
             $query[$planet['id']][] = "{$unit_db_name_porcent} = {$actual_porcent}";
@@ -56,7 +56,7 @@ function sn_imperium_view($template = null)
   {
     $global_data = sys_o_get_updated($user, $planet['id'], $time_now);
     $planets[$planet['id']] = $global_data['planet'];
-    $ques[$planet['id']] = $global_data['que'];
+    $ques[$planet['id']] = que_get(false, $user['id'], $planet['id']);
   }
   sn_db_transaction_commit();
 
@@ -77,7 +77,7 @@ function sn_imperium_view($template = null)
   foreach ($planets as $planet_index => &$planet)
   {
     $list_planet_que = $ques[$planet_index];
-    $planet_template = tpl_parse_planet($planet, $list_planet_que);
+    $planet_template = tpl_parse_planet($planet);
 
     $planet_fleet_id = 0;
     $fleet_list = $planet_template['fleet_list'];//flt_get_fleets_to_planet($planet);
@@ -153,18 +153,21 @@ function sn_imperium_view($template = null)
       $unit_count = $unit_count_abs = 0;
       $block_vars = array();
       $unit_is_factory = in_array($unit_id, $sn_group_factories);
-      $unit_db_name = get_unit_param($unit_id, 'name');
+      // $unit_db_name = pname_resource_name($unit_id);
       foreach($planets as $planet)
       {
+        $unit_level_plain = mrc_get_level($user, $planet, $unit_id, false, true);
+
         $level_plus['FACTORY'] = $unit_is_factory;
         $level_plus['LEVEL_PLUS_YELLOW'] = 0;
         $level_plus['LEVEL_PLUS_GREEN'] = 0;
 
-        $level_plus['PERCENT'] = $unit_is_factory ? ($planet[$unit_db_name] ? $planet["{$unit_db_name}_porcent"] * 10 : -1) : -1;
+        $level_plus['PERCENT'] = $unit_is_factory ? ($unit_level_plain ? $planet[pname_factory_production_field_name($unit_id)] * 10 : -1) : -1;
         switch($mode)
         {
           case 'structures':
-            $level_plus_build = $planet['full_que']['in_que'][$unit_id];
+            // pdump($ques[$planet['id']]);
+            $level_plus_build = $ques[$planet['id']]['in_que'][que_get_unit_que($unit_id)][$user['id']][$planet['id']][$unit_id];
             if($level_plus_build)
             {
               $level_plus['LEVEL_PLUS_GREEN'] = $level_plus_build < 0 ? $level_plus_build : "+{$level_plus_build}";
@@ -192,17 +195,17 @@ function sn_imperium_view($template = null)
         $block_vars[] = array_merge($level_plus, array(
           'ID'         => $planet['id'],
           'TYPE'       => $planet['planet_type'],
-          'LEVEL'      => $planet[$unit_db_name] == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : $planet[$unit_db_name],
+          'LEVEL'      => $unit_level_plain == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : $unit_level_plain,
         ));
-        $unit_count += $planet[$unit_db_name];
-        $unit_count_abs += $planet[$unit_db_name] + abs($level_plus['LEVEL_PLUS_YELLOW']) + abs($level_plus['LEVEL_PLUS_GREEN']);
+        $unit_count += $unit_level_plain;
+        $unit_count_abs += $unit_level_plain + abs($level_plus['LEVEL_PLUS_YELLOW']) + abs($level_plus['LEVEL_PLUS_GREEN']);
       }
 
       if($unit_count_abs)
       {
         $template->assign_block_vars('prods', array(
           'ID'    => $unit_id,
-          'FIELD' => $unit_db_name,
+          'FIELD' => 'unit_' . $unit_id, // pname_resource_name($unit_id), // TODO Делать это прямо в темплейте
           'NAME'  => $lang['tech'][$unit_id],
           'MODE'  => $mode,
         ));

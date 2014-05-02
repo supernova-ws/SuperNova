@@ -32,6 +32,7 @@ function sn_options_model()
       $user['admin_protection'] = $planet_protection;
     }
 
+    /*
     if(sys_get_param_int('vacation') && !$config->user_vacation_disable)
     {
       if($user['authlevel'] < 3)
@@ -90,6 +91,7 @@ function sn_options_model()
         $user['vacation'] = $time_now;
       }
     }
+    */
 
     foreach($user_option_list as $option_group_id => $option_group)
     {

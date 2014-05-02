@@ -23,7 +23,7 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
       mrc_modify_value($defenceTech, false, TECH_ARMOR, $unit_info[P_ARMOR]) +
       mrc_modify_value($defenceTech, false, TECH_SHIELD, $unit_info[P_SHIELD])
     ) / $amplify * mt_rand(80, 120) / 100);
-  };
+  }
 
   $startStructs = $structures;
 
@@ -72,10 +72,9 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
 //debug($destroyed, 'Actually destroyed');
 
 //print('<hr>');
-    }
-    while($MIPDamage > 0 && !empty($can_be_damaged));
+    } while($MIPDamage > 0 && !empty($can_be_damaged));
 //debug($MIPDamage, 'MIPDamage left');
-  };
+  }
 //debug($structures);//die();
   // 1/2 of metal and 1/4 of crystal of destroyed structures returns to planet
   $metal = 0;
@@ -86,7 +85,7 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
     $destroyed = $startStructs[$key][0] - $structure[0];
     $metal += $destroyed * $unit_info[P_COST][RES_METAL] / 2;
     $crystal += $destroyed * $unit_info[P_COST][RES_CRYSTAL] / 4;
-  };
+  }
 
   $return['structures'] = $structures;     // Structures left after attack
   $return['metal']      = floor($metal);   // Metal scraps
@@ -108,61 +107,65 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
 
 function coe_o_missile_calculate()
 {
+  sn_db_transaction_check(true);
+
   global $time_now, $lang;
 
-  $iraks = doquery("SELECT * FROM {{iraks}} WHERE `fleet_end_time` <= '" . SN_TIME_NOW . "';");
+  $iraks = doquery("SELECT * FROM {{iraks}} WHERE `fleet_end_time` <= '" . SN_TIME_NOW . "' FOR UPDATE;");
 
-  while ($fleetRow = mysql_fetch_assoc($iraks))
+  while($fleetRow = mysql_fetch_assoc($iraks))
   {
-    $targetUser  = doquery('SELECT * FROM {{users}} WHERE `id` = '.$fleetRow['fleet_target_owner'], '', true);
+    $db_changeset = array();
+
+    $targetUser  = doquery('SELECT * FROM {{users}} WHERE `id` = '.$fleetRow['fleet_target_owner'] . ' FOR UPDATE;',true);
 
     $target_planet_row = sys_o_get_updated($targetUser, array('galaxy' => $fleetRow['fleet_end_galaxy'], 'system' => $fleetRow['fleet_end_system'], 'planet' => $fleetRow['fleet_end_planet'], 'planet_type' => PT_PLANET), $time_now);
     $target_planet_row = $target_planet_row['planet'];
 
-    $rowAttacker = doquery("SELECT * FROM `{{users}}` WHERE `id` = '{$fleetRow['fleet_owner']}' LIMIT 1;", true);
+    $rowAttacker = doquery("SELECT * FROM `{{users}}` WHERE `id` = '{$fleetRow['fleet_owner']}' LIMIT 1 FOR UPDATE;", true);
 
-    if ($target_planet_row['id'])
+    if($target_planet_row['id'])
     {
       $planetDefense = array();
       foreach(sn_get_groups('defense_active') as $unit_id)
       {
-        $planetDefense[$unit_id] = array($target_planet_row[get_unit_param($unit_id, P_NAME)]);
+        $planetDefense[$unit_id] = array(mrc_get_level($targetUser, $target_planet_row, $unit_id, true, true));
       }
 
       $message = '';
-      $interceptor_db_name = get_unit_param(UNIT_DEF_MISSILE_INTERCEPTOR, P_NAME);
-      $interceptors = $target_planet_row[$interceptor_db_name]; // Number of interceptors
+      $interceptors = mrc_get_level($targetUser, $target_planet_row, UNIT_DEF_MISSILE_INTERCEPTOR, true, true); //$target_planet_row[$interceptor_db_name]; // Number of interceptors
       $missiles = $fleetRow['fleet_amount']; // Number of MIP
-      $qUpdate = "UPDATE `{{planets}}` SET {$interceptor_db_name} = ";
       if ($interceptors >= $missiles) {
         $message = $lang['mip_all_destroyed'];
-        $qUpdate .= "{$interceptor_db_name} - {$missiles} ";
-      } else {
-        if ($interceptors) {
+        $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, $missiles, $targetUser, $target_planet_row['id']);
+      }
+      else
+      {
+        if($interceptors)
+        {
           $message = sprintf($lang['mip_destroyed'], $interceptors);
-        };
-        $qUpdate .= "0";
+          $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, $interceptors, $targetUser, $target_planet_row['id']);
+        }
         $message .= $lang['mip_defense_destroyed'];
 
-        $attackResult = COE_missileAttack($targetUser, $rowAttacker, ($missiles - $interceptors), $planetDefense, $fleetRow['primaer']);
+        $attackResult = COE_missileAttack($targetUser, $rowAttacker, $missiles - $interceptors, $planetDefense, $fleetRow['primaer']);
 
         foreach($attackResult['structures'] as $key => $structure)
         {
           $destroyed = $planetDefense[$key][0] - $structure[0];
           if($destroyed)
           {
-            $structure_db_name = get_unit_param($key, P_NAME);
+            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($key, $destroyed, $targetUser, $target_planet_row['id']);
+
             $message .= "&nbsp;&nbsp;{$lang['tech'][$key]} - {$destroyed} {$lang['quantity']}<br>";
-            $qUpdate .= ", `{$structure_db_name}` = {$structure[0]}";
-          };
-        };
+          }
+        }
 
-        $qUpdate .= ", `metal`=`metal`+".$attackResult['metal'].", `crystal`=`crystal`+".$attackResult['crystal'];
         $message .= "{$lang['mip_recycled']}{$lang['Metal']}: {$attackResult['metal']}, {$lang['Crystal']}: {$attackResult['crystal']}<br>";
-      };
 
-      $qUpdate .= " WHERE `id` = " . $target_planet_row['id'] . ";";
-      doquery($qUpdate);
+        doquery("UPDATE `{{planets}}` SET `metal` = `metal` + {$attackResult['metal']}, `crystal` = `crystal` + {$attackResult['crystal']} WHERE `id` = {$target_planet_row['id']};");
+      }
+      sn_db_changeset_apply($db_changeset);
 
       $sourcePlanet = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '{$fleetRow['fleet_start_galaxy']}' AND `system` = '{$fleetRow['fleet_start_system']}' AND `planet` = '{$fleetRow['fleet_start_planet']}' and planet_type = " . PT_PLANET, '', true);
 
@@ -175,7 +178,7 @@ function coe_o_missile_calculate()
 
       msg_send_simple_message ( $fleetRow['fleet_owner'], '', $time_now, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
       msg_send_simple_message ( $fleetRow['fleet_target_owner'], '', $time_now, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
-    };
+    }
     doquery("DELETE FROM {{iraks}} WHERE id = '{$fleetRow['id']}';");
-  };
-};
+  }
+}

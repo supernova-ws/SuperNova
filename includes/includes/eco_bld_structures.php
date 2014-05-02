@@ -13,7 +13,7 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
-function eco_build($que_type, $user, &$planet, $que)
+function eco_build($que_type, $user, &$planet)
 {
   global $lang, $config;
 
@@ -23,14 +23,14 @@ function eco_build($que_type, $user, &$planet, $que)
 
   // Caching values that used more then one time into local variables
   $config_resource_multiplier = $config->resource_multiplier;
-  $a_group = sn_get_groups('build_allow');
-  $planet_type_structs = $a_group[$planet['planet_type']];
+  $planet_type_structs = sn_get_groups('build_allow');
+  $planet_type_structs = $planet_type_structs[$planet['planet_type']];
 
   // Getting parameters
   $action     = sys_get_param_escaped('action');
-  $unit_id    = sys_get_param_int('unit_id');
-  $unit_level = sys_get_param_id('unit_level');
-  $GET_listid = $_GET['listid'];
+//  $unit_id    = sys_get_param_int('unit_id');
+//  $unit_level = sys_get_param_id('unit_level');
+//  $GET_listid = $_GET['listid'];
 
   $que_type = ($que_type == SUBQUE_FLEET || $que_type == SUBQUE_DEFENSE) ? QUE_HANGAR : $que_type;
 
@@ -39,19 +39,24 @@ function eco_build($que_type, $user, &$planet, $que)
     switch($action)
     {
       case 'create': // Add unit to que for build
-        $que = eco_que_add($user, $planet, $que, QUE_STRUCTURES, $unit_id);
+      case 'destroy': // Add unit to que for remove
+        // eco_bld_structure_build($user, $planet);
+        que_build($user, $planet, $action == 'destroy' ? BUILD_DESTROY : BUILD_CREATE);
       break;
 
-      case 'destroy': // Add unit to que for remove
-        $que = eco_que_add($user, $planet, $que, QUE_STRUCTURES, $unit_id, 1, BUILD_DESTROY);
-      break;
+      //case 'destroy': // Add unit to que for remove
+        // eco_bld_structure_build($user, $planet, BUILD_DESTROY);
+      //  que_build($user, $planet, BUILD_DESTROY);
+      //break;
 
       case 'trim': // Cancel unit from que
-        $que = eco_que_clear($user, $planet, $que, QUE_STRUCTURES, true);
+        // $que = eco_que_clear($user, $planet, $que, QUE_STRUCTURES, true);
+        que_delete(QUE_STRUCTURES, $user, $planet, false);
       break;
 
       case 'clear': // Clear que
-        $que = eco_que_clear($user, $planet, $que, QUE_STRUCTURES);
+        // $que = eco_que_clear($user, $planet, $que, QUE_STRUCTURES);
+        que_delete(QUE_STRUCTURES, $user, $planet, true);
       break;
     }
     header("Location: {$_SERVER['PHP_SELF']}?mode={$que_type}");
@@ -62,15 +67,21 @@ function eco_build($que_type, $user, &$planet, $que)
   $hangar_busy = count($que['que'][QUE_HANGAR]);
   $lab_busy    = count($que['que'][QUE_RESEARCH]) && !$config->BuildLabWhileRun;
 */
-  $que_length  = count($que['que'][$que_type]);
-  $can_que_element = $que_length < ($config->server_que_length_structures + mrc_get_level($user, $planet, MRC_ENGINEER));
+
+  $ques = que_get($que_type, $user['id'], $planet['id']);
+  $que = &$ques['ques'][$que_type][$user['id']][$planet['id']];
+
+  $in_que = &$ques['in_que'][$que_type][$user['id']][$planet['id']];
+
+  $que_length  = count($que);
+  $can_que_element = $que_length < que_get_max_que_length($user, $planet, $que_type);
 
   $fleet_list            = flt_get_fleets_to_planet($planet);
   // $caps                  = eco_get_planet_caps($user, $planet);
 
   $planet_fields_max     = eco_planet_fields_max($planet);
   $planet_fields_current = $planet['field_current'];
-  $planet_fields_que     = -$que['amounts'][$que_type];
+  $planet_fields_que     = is_array($in_que) ? -array_sum($in_que) : 0;
   $planet_fields_free    = max(0, $planet_fields_max - $planet_fields_current + $planet_fields_que);
   $planet_fields_queable = $planet_fields_free > 0;
   //$planet_temp_max       = $planet['temp_max'];
@@ -83,7 +94,7 @@ function eco_build($que_type, $user, &$planet, $que)
   {
     $element_name    = $lang['tech'][$Element];
     $element_sn_data = get_unit_param($Element);
-    $element_level   = $planet[$element_sn_data[P_NAME]] + $que['in_que'][$Element];
+    $element_level   = mrc_get_level($user, $planet, $Element, false, true) + $in_que[$Element];
 
     $build_data = eco_get_build_data($user, $planet, $Element, $element_level);
 
@@ -92,16 +103,16 @@ function eco_build($que_type, $user, &$planet, $que)
     if($element_sn_data['production'])
     {
       $level_production_base = array();
-      $element_level_start = mrc_get_level($user, $planet, $Element) + $que['in_que'][$Element];
+      $element_level_start = mrc_get_level($user, $planet, $Element) + $in_que[$Element];
       foreach($element_sn_data['production'] as $resource_id => $resource_calc)
       {
         if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($element_level_start, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1))))
         {
-          $level_production_base[strtoupper(get_unit_param($resource_id, P_NAME))] = $resource_income;
+          $level_production_base[strtoupper(pname_resource_name($resource_id))] = $resource_income;
         }
       }
 
-      $level_start = $element_level > 1 ? mrc_get_level($user, $planet, $Element) + $que['in_que'][$Element] - 1 : 1;
+      $level_start = $element_level > 1 ? mrc_get_level($user, $planet, $Element) + $in_que[$Element] - 1 : 1;
       $level_production = array();
       for($i = 0; $i < 6; $i++)
       {
@@ -110,7 +121,7 @@ function eco_build($que_type, $user, &$planet, $que)
         {
           if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($level_start + $i, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1))))
           {
-            $resource_name = strtoupper(get_unit_param($resource_id, P_NAME));
+            $resource_name = strtoupper(pname_resource_name($resource_id));
             $level_production[$level_start + $i][$resource_name] = $resource_income;
             $level_production[$level_start + $i][$resource_name.'_DIFF'] = $resource_income - $level_production_base[$resource_name];
           }
@@ -129,9 +140,9 @@ function eco_build($que_type, $user, &$planet, $que)
       'NAME'              => $element_name,
       'DESCRIPTION'       => $lang['info'][$Element]['description_short'],
       'LEVEL'             => $element_level,
-      'LEVEL_OLD'         => $planet[$element_sn_data[P_NAME]],
-      'LEVEL_BONUS'       => mrc_get_level($user, $planet, $Element) - $planet[$element_sn_data[P_NAME]],
-      'LEVEL_CHANGE'      => $que['in_que'][$Element],
+      'LEVEL_OLD'         => mrc_get_level($user, $planet, $Element, false, true),
+      'LEVEL_BONUS'       => mrc_get_level($user, $planet, $Element) - mrc_get_level($user, $planet, $Element, false, true),
+      'LEVEL_CHANGE'      => $in_que[$Element],
 
       'BUILD_RESULT'      => $build_data['RESULT'][BUILD_CREATE],
       'BUILD_RESULT_TEXT' => $build_result_text,
@@ -166,13 +177,17 @@ function eco_build($que_type, $user, &$planet, $que)
     }
   }
 
-  if(is_array($que['que'][$que_type]))
+  /*
+  if(is_array($que))
   {
-    foreach($que['que'][$que_type] as $que_element)
+    foreach($que as $que_element)
     {
       $template->assign_block_vars('que', $que_element);
     }
   }
+  */
+
+  que_tpl_parse(&$template, $que_type, $user, $planet, $que);
 
   $sector_cost = eco_get_build_data($user, $planet, UNIT_SECTOR, mrc_get_level($user, $planet, UNIT_SECTOR), true);
   $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
@@ -208,7 +223,7 @@ function eco_build($que_type, $user, &$planet, $que)
 
     'PAGE_HINT'          => $lang['eco_bld_page_hint'],
     'PLANET_TYPE'        => $planet['planet_type'],
-    'SECTOR_CAN_BUY'     => $sector_cost <= $user[get_unit_param(RES_DARK_MATTER, P_NAME)],
+    'SECTOR_CAN_BUY'     => $sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER),
     'SECTOR_COST'        => $sector_cost,
     'SECTOR_COST_TEXT'   => pretty_number($sector_cost),
 

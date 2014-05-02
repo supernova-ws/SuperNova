@@ -37,7 +37,7 @@ if($ally_tag)
   $ally_id = mysql_insert_id();
   doquery("UPDATE {{users}} SET `ally_tag` = '{$ally_tag}', `ally_id`='{$ally_id}', `ally_name`='{$ally_name}', `ally_register_time`= {$time_now} WHERE `id`= {$user['id']} LIMIT 1;");
 
-  doquery("INSERT INTO {{users}} SET `register_time` = {$time_now}, `user_as_ally` = {$ally_id};");
+  doquery("INSERT INTO {{users}} SET `username` = '[{$ally_tag}]', `register_time` = {$time_now}, `user_as_ally` = {$ally_id};");
   $ally_user_id = mysql_insert_id();
   doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_id} LIMIT 1;");
 

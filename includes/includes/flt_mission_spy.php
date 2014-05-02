@@ -122,7 +122,7 @@ function flt_mission_spy(&$mission_data)
     $target_unit_list = 0;
     foreach(sn_get_groups('fleet') as $unit_id)
     {
-      $target_unit_list += max(0, $target_planet_row[get_unit_param($unit_id, P_NAME)]);
+      $target_unit_list += max(0, mrc_get_level($target_user_row, $target_planet_row, $unit_id, false, true));
     }
 
     $spy_detected = $spy_probes * $target_unit_list / 4 * pow(2, $TargetSpyLvl - $CurrentSpyLvl);

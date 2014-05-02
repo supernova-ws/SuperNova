@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a2.8
+* @version 39a4.0
 *
 */
 
@@ -217,6 +217,7 @@ $a_lang_array = (array(
   'sys_vacation_leave'  => 'I have got rest - break holiday!',
   'sys_level'           => 'Level',
   'sys_level_short'     => 'Lvl',
+  'sys_level_max'       => 'Max level',
 
   'sys_yes'             => 'Yes',
   'sys_no'              => 'No',
@@ -239,6 +240,7 @@ $a_lang_array = (array(
   'sys_ques' => array(
     QUE_STRUCTURES => 'Building',
     QUE_HANGAR     => 'Shipyard',
+    SUBQUE_DEFENSE => 'Defense',
     QUE_RESEARCH   => 'Research',
   ),
 
@@ -636,6 +638,7 @@ $a_lang_array = (array(
   'sys_quantity' => 'Quantity',
   'sys_quantity_maximum' => 'Maximum quantity',
   'sys_qty' => 'Qty',
+  'sys_quantity_total' => 'Total',
 
   'sys_buy_for' => 'Buy for',
   'sys_buy' => 'Buy',

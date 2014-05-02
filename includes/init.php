@@ -1,10 +1,10 @@
 <?php
 //define('BE_DEBUG', true);
+//define('DEBUG_SQL', true);
 
 define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
 
 define('SN_TIME_MICRO', $microtime = microtime(true));
-// define('SN_TIME_NOW', $time_now = time());
 define('SN_TIME_NOW', $time_now = intval($microtime));
 define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
 
@@ -71,8 +71,6 @@ if($_SERVER['SERVER_NAME'] == 'localhost')
 }
 
 
-$supernova = new stdClass();
-$supernova->options = array();
 
 $phpEx = strpos($phpEx = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $phpEx : '';
 /*
@@ -114,11 +112,11 @@ require_once("{$sn_root_physical}includes/db.{$phpEx}");
 // Initializing global 'debug' object
 $debug = new debug();
 
-//$dbms = 'mysql';
-//require_once("{$sn_root_physical}includes/db/{$dbms}.{$phpEx}");
-// $db      = new $sql_db();
+// sn_sys_load_php_files("{$sn_root_physical}includes/classes/", $phpEx);
+require_once("{$sn_root_physical}includes/classes/_classes.{$phpEx}");
 
-sn_sys_load_php_files("{$sn_root_physical}includes/classes/", $phpEx);
+$supernova = new classSupernova();
+// $supernova->options = array();
 
 // Initializing global 'cacher' object
 $sn_cache = new classCache($db_prefix);

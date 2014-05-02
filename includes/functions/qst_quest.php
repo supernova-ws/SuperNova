@@ -299,6 +299,8 @@ function qst_active_triggers($quest_list)
 
 function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
 {
+  return;
+
   global $lang;
 
   foreach($rewards as $quest_id => $rewards_list_string)
@@ -314,7 +316,7 @@ function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
     {
       list($reward_id, $reward_amount) = explode(',', $reward_string);
       $reward_info = get_unit_param($reward_id);
-      $reward_db_name = $reward_info[P_NAME];
+      $reward_db_name = pname_resource_name($reward_id);
       $reward_db_string = "`{$reward_db_name}` = `{$reward_db_name}` + {$reward_amount}";
 
       if($reward_id == RES_DARK_MATTER)

@@ -11,6 +11,7 @@ if($user['authlevel'] < 3)
 {
   AdminMessage($lang['adm_err_denied']);
 }
+AdminMessage('Временно не работает');
 
 require("includes/admin_planet_edit.inc.{$phpEx}");
 

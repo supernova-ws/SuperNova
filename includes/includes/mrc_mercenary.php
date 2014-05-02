@@ -84,7 +84,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
     }
     $darkmater_cost *= $cost_alliance_multiplyer;
 
-    if($user[get_unit_param(RES_DARK_MATTER, P_NAME)] < $darkmater_cost)
+    if(mrc_get_level($user, null, RES_DARK_MATTER) < $darkmater_cost)
     {
       throw new Exception($lang['mrc_msg_error_no_resource'], ERR_ERROR);
     }

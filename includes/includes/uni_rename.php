@@ -29,8 +29,9 @@
       $uni_row['universe_price'] = $uni_price;
 
       doquery('START TRANSACTION;');
-      $user = doquery("select * from {{users}} where `id` = {$user['id']} LIMIT 1 FOR UPDATE;", '', true);
-      if($user[get_unit_param(RES_DARK_MATTER, P_NAME)] < $uni_price)
+      $user = doquery("select * from {{users}} where `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
+      // if($user[get_unit_param(RES_DARK_MATTER, P_NAME)] < $uni_price)
+      if(mrc_get_level($user, null, RES_DARK_MATTER) < $uni_price)
       {
         throw new exception($lang['uni_msg_error_no_dm'], ERR_ERROR);
       }
@@ -65,7 +66,4 @@
     'PAGE_HINT'   => $lang['uni_name_page_hint'],
   ));
 
-
   display($template, $lang['sys_universe'] . ' - ' . $lang['uni_naming'], true, '', false);
-
-?>

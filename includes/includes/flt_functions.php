@@ -233,7 +233,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   foreach($fleet as $ship_id => $ship_count)
   {
     $is_ship = in_array($ship_id, sn_get_groups('fleet'));
-    if($ship_count > $planet_src[get_unit_param($ship_id, P_NAME)])
+    if($ship_count > mrc_get_level($user, $planet_src, $ship_id))
     {
       return $is_ship ? ATTACK_NO_SHIPS : ATTACK_NO_RESOURCES;
     }
@@ -277,7 +277,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   $travel_data = flt_travel_data($user, $planet_src, $planet_dst, $fleet, $options['fleet_speed_percent']);
 
 
-  if($planet_src[get_unit_param(RES_DEUTERIUM, P_NAME)] < $fleet[RES_DEUTERIUM] + $travel_data['consumption'])
+  if(mrc_get_level($user, $planet_src, RES_DEUTERIUM) < $fleet[RES_DEUTERIUM] + $travel_data['consumption'])
   {
     return ATTACK_NO_FUEL;
   }
@@ -443,7 +443,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   // Is it HOLD mission? If yes - there should be ally deposit
   if($mission == MT_HOLD)
   {
-    if($planet_dst[get_unit_param(STRUC_ALLY_DEPOSIT, P_NAME)])
+    if(mrc_get_level($user, $planet_dst, STRUC_ALLY_DEPOSIT))
     {
       return ATTACK_ALLOWED;
     }
@@ -459,7 +459,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   if($mission == MT_MISSILE)
   {
     $sn_data_mip = get_unit_param(UNIT_DEF_MISSILE_INTERPLANET);
-    if($planet_src[get_unit_param(STRUC_SILO, P_NAME)] < $sn_data_mip[P_REQUIRE][STRUC_SILO])
+    if(mrc_get_level($user, $planet_src, STRUC_SILO) < $sn_data_mip[P_REQUIRE][STRUC_SILO])
     {
       return ATTACK_NO_SILO;
     }
@@ -509,7 +509,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
   //doquery('SET autocommit = 0;');
   //doquery('LOCK TABLES {{users}} READ, {{planets}} WRITE, {{fleet}} WRITE, {{aks}} WRITE, {{statpoints}} READ;');
-  doquery('START TRANSACTION;');
+  sn_db_transaction_start();
 
   $user = doquery ("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1 FOR UPDATE;", true);
   $from = sys_o_get_updated($user, $from['id'], SN_TIME_NOW);
@@ -518,7 +518,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   $can_attack = flt_can_attack($from, $to, $fleet, $mission, $options);
   if($can_attack != ATTACK_ALLOWED)
   {
-    doquery('ROLLBACK');
+    sn_db_transaction_rollback();
     return $can_attack;
   }
 
@@ -528,7 +528,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
   $fleet_start_time = SN_TIME_NOW + $travel_data['duration'];
 
-  if ($mission == MT_EXPLORE OR $mission == MT_HOLD)
+  if($mission == MT_EXPLORE || $mission == MT_HOLD)
   {
     $stay_duration = $options['stay_time'] * 3600;
     $stay_time     = $fleet_start_time + $stay_duration;
@@ -542,7 +542,8 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
   $fleet_ship_count  = 0;
   $fleet_string      = '';
-  $planet_sub_query  = '';
+  //$planet_sub_query  = '';
+  $db_changeset = array();
   foreach($fleet as $unit_id => $amount)
   {
     if(!$amount || !$unit_id)
@@ -554,9 +555,10 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
     {
       $fleet_ship_count += $amount;
       $fleet_string     .= "{$unit_id},{$amount};";
+      $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$amount, $user, $from['id']);
     }
-    $unit_db_name = get_unit_param($unit_id, P_NAME);
-    $planet_sub_query .= "`{$unit_db_name}` = `{$unit_db_name}` - {$amount},";
+    // $unit_db_name = get_unit_param($unit_id, P_NAME);
+    // $planet_sub_query .= "`{$unit_db_name}` = `{$unit_db_name}` - {$amount},";
   }
 
   $to['id_owner'] = intval($to['id_owner']);
@@ -593,8 +595,10 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   $QryInsertFleet .= "`start_time` = '" . SN_TIME_NOW . "';";
   doquery( $QryInsertFleet);
 
-  $QryUpdatePlanet  = "UPDATE {{planets}} SET {$planet_sub_query} `deuterium` = `deuterium` - '{$travel_data['consumption']}' WHERE `id` = '{$from['id']}' LIMIT 1;";
-  doquery ($QryUpdatePlanet);
+  $QryUpdatePlanet  = "UPDATE {{planets}} SET `deuterium` = `deuterium` - '{$travel_data['consumption']}' WHERE `id` = '{$from['id']}' LIMIT 1;";
+  doquery($QryUpdatePlanet);
+
+  sn_db_changeset_apply($db_changeset);
 
   if(BE_DEBUG)
   {
@@ -602,9 +606,8 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
     debug($QryUpdatePlanet);
   }
 
-  doquery("COMMIT;");
-  // doquery('SET autocommit = 1;');
-  $from = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$from['id']}' LIMIT 1;", '', true);
+  sn_db_transaction_commit();
+  $from = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$from['id']}' LIMIT 1;", true);
 
   return ATTACK_ALLOWED;
 //ini_set('error_reporting', E_ALL ^ E_NOTICE);

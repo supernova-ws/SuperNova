@@ -1,76 +1,5 @@
 <?php
 
-function eco_bld_tech_research($user, $planet)
-{
-  global $lang, $global_que, $config;
-
-  try
-  {
-    $tech_id = sys_get_param_int('tech');
-    if(!in_array($tech_id, sn_get_groups('tech')))
-    {
-      // TODO: Hack attempt - warning here. Normally non-tech can't be passed from build page
-      throw new exception($lang['eco_bld_msg_err_not_research'], ERR_ERROR);
-    }
-
-    sn_db_transaction_start();
-    // Это нужно, что бы заблокировать пользователя и работу с очередями
-    $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
-
-//    if(eco_unit_busy($user, $planet, $tech_id))
-//    {
-//      throw new exception($lang['eco_bld_msg_err_laboratory_upgrading'], ERR_ERROR);
-//    }
-
-    que_get_que($global_que, QUE_RESEARCH, $user['id'], $planet['id'], true);
-    if(count($global_que[QUE_RESEARCH][0]) >= $config->server_que_length_research)
-    {
-      throw new exception($lang['eco_bld_msg_err_research_in_progress'], ERR_ERROR);
-    }
-
-    // Это нужно, что бы заблокировать планету от списания ресурсов
-    $planet = $planet['id'] ? doquery("SELECT * FROM {{planets}} WHERE `id` = {$planet['id']} LIMIT 1 FOR UPDATE;", true) : $planet;
-
-    switch(eco_can_build_unit($user, $planet, $tech_id))
-    {
-      case BUILD_ALLOWED:
-      break;
-
-      case BUILD_UNIT_BUSY:
-        throw new exception($lang['eco_bld_msg_err_laboratory_upgrading'], ERR_ERROR);
-      break;
-
-      case BUILD_REQUIRE_NOT_MEET:
-      default:
-        throw new exception($lang['eco_bld_msg_err_requirements_not_meet'], ERR_ERROR);
-      break;
-    }
-
-    $unit_level = mrc_get_level($user, $planet, $tech_id, false, true) + $global_que['in_que'][QUE_RESEARCH][0][$tech_id];
-    $build_data = eco_get_build_data($user, $planet, $tech_id, $unit_level);
-
-    if(!$build_data['CAN'][BUILD_CREATE])
-    {
-      throw new exception($lang['eco_bld_resources_not_enough'], ERR_ERROR);
-    }
-
-    que_add_unit(QUE_RESEARCH, $tech_id, $user, $planet, $build_data, $unit_level + 1, 1);
-    sn_db_transaction_commit();
-
-    sys_redirect($_SERVER['REQUEST_URI']);
-  }
-  catch (exception $e)
-  {
-    sn_db_transaction_rollback();
-    $operation_result = array(
-      'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
-      'MESSAGE' => $e->getMessage()
-    );
-  }
-
-  return $operation_result;
-}
-
 function eco_bld_tech(&$user, &$planet, $que = array())
 {
   global $config, $lang, $global_que;
@@ -91,8 +20,9 @@ function eco_bld_tech(&$user, &$planet, $que = array())
   switch(sys_get_param_str('action'))
   {
     case 'clear':que_delete(QUE_RESEARCH, $user, $planet, true);break;
-    case 'trim':que_delete(QUE_RESEARCH, $user, $planet, false);break;
-    case 'build':$operation_result = eco_bld_tech_research($user, $planet);break;
+    case 'trim' :que_delete(QUE_RESEARCH, $user, $planet, false);break;
+    case 'build':$operation_result = que_build($user, $planet);break;
+    //case 'build':$operation_result = eco_bld_tech_research($user, $planet);break;
   }
 
   $template = gettemplate('buildings_research', true);
@@ -103,8 +33,11 @@ function eco_bld_tech(&$user, &$planet, $que = array())
 
   $fleet_list = flt_get_fleets_to_planet($planet);
 
-  que_tpl_parse($template, QUE_RESEARCH, $user);
+  $ques = que_get(QUE_RESEARCH, $user['id']);
+  $que = &$ques['ques'][QUE_RESEARCH][$user['id']][0];
+  que_tpl_parse($template, QUE_RESEARCH, $user, null, $que);
 
+  $in_que = &$ques['in_que'][QUE_RESEARCH][$user['id']][0];
   foreach(sn_get_groups('tech') as $Tech)
   {
     if(eco_can_build_unit($user, $planet, $Tech) != BUILD_ALLOWED)
@@ -114,7 +47,7 @@ function eco_bld_tech(&$user, &$planet, $que = array())
 
     $building_level      = mrc_get_level($user, '' , $Tech, false, true);
     $level_bonus         = max(0, mrc_get_level($user, '' , $Tech) - $building_level);
-    $level_qued          = $global_que['in_que'][QUE_RESEARCH][0][$Tech];
+    $level_qued          = $in_que[$Tech];
     $build_data          = eco_get_build_data($user, $planet, $Tech, $building_level + $level_qued);
 
     $temp[RES_METAL]     = floor($planet['metal'] - $build_data[BUILD_CREATE][RES_METAL]);

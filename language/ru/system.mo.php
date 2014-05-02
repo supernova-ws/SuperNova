@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39a2.8#
+* @version #39a4.0#
 *
 */
 
@@ -219,6 +219,7 @@ $a_lang_array = (array(
   'sys_vacation_leave'  => 'Я уже отдохнул - выйти из отпуска!',
   'sys_level'           => 'Уровень',
   'sys_level_short'     => 'Ур',
+  'sys_level_max'       => 'Максимальный уровень',
 
   'sys_yes'             => 'Да',
   'sys_no'              => 'Нет',
@@ -241,6 +242,7 @@ $a_lang_array = (array(
   'sys_ques' => array(
     QUE_STRUCTURES => 'Здания',
     QUE_HANGAR     => 'Верфь',
+    SUBQUE_DEFENSE => 'Оборона',
     QUE_RESEARCH   => 'Исследования',
   ),
 
@@ -642,6 +644,7 @@ $a_lang_array = (array(
   'sys_quantity' => 'Количество',
   'sys_quantity_maximum' => 'Максимальное количество',
   'sys_qty' => 'К-во',
+  'sys_quantity_total' => 'Общее количество',
 
   'sys_buy_for' => 'Купить за',
   'sys_buy' => 'Купить',

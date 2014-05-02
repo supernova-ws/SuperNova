@@ -103,7 +103,7 @@
       </table>
       {L_ConstructionTime}:&nbsp;{production.TIME}
       <!-- IF ! RESEARCH_ONGOING && production.BUILD_CAN2 -->
-        <form method="post"><input type="submit" value="{L_Rechercher} {L_level} {production.LEVEL_NEXT}" class="ok"><input type="hidden" name="action" value="build"><input type="hidden" name="tech" value="{production.ID}"></form>
+        <form method="post"><input type="submit" value="{L_Rechercher} {L_level} {production.LEVEL_NEXT}" class="ok"><input type="hidden" name="action" value="build"><input type="hidden" name="unit_id" value="{production.ID}"></form>
       <!-- ELSE -->
         <span class="error">{L_Rechercher} {L_level} {production.LEVEL_NEXT}</span>
       <!-- ENDIF -->

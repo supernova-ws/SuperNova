@@ -61,6 +61,10 @@
             <a href="buildings.php?mode=fleet&cp={planet.ID}"><img src="{D_SN_ROOT_VIRTUAL}design/images/build_hangar.png" class="icon_alpha icon_25per_left_2" title="{planet.HANGAR}"></a>
           <!-- ENDIF -->
 
+          <!-- IF planet.DEFENSE -->
+            <a href="buildings.php?mode=fleet&cp={planet.ID}"><img src="{D_SN_ROOT_VIRTUAL}design/images/build_defense.png" class="icon_alpha icon_25per_left_3" title="{planet.DEFENSE}"></a>
+          <!-- ENDIF -->
+
           <!-- IF planet.PLANET_GOVERNOR_ID && planet.PLANET_GOVERNOR_LEVEL -->
             <span class="icon_alpha icon_25per_left_4" title="{planet.PLANET_GOVERNOR_NAME} {planet.PLANET_GOVERNOR_LEVEL}" go_overview="{planet.ID}" mode="manage">
               <img src="{dpath}gebaeude/{planet.PLANET_GOVERNOR_ID}.jpg" class="icon_fill">

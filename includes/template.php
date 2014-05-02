@@ -63,6 +63,11 @@ function message ($mes, $title = 'Error', $dest = '', $time = 5, $show_header = 
 
 function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra)
 {
+  if(empty($sn_menu) || empty($sn_menu_extra))
+  {
+    return;
+  }
+
   foreach($sn_menu_extra as $menu_item_id => $menu_item)
   {
     $item_location = $menu_item['LOCATION'];
@@ -402,7 +407,9 @@ function sn_tpl_render_topnav(&$user, $planetrow)
 
   $planetrow = $planetrow ? $planetrow : $user['current_planet'];
 
-  $planetrow = sys_o_get_updated($user, $planetrow, $time_now, true);
+  sn_db_transaction_start();
+  $planetrow = sys_o_get_updated($user, $planetrow, $time_now);
+  sn_db_transaction_commit();
   $planetrow = $planetrow['planet'];
 
   $ThisUsersPlanets = SortUserPlanets ( $user );
@@ -631,37 +638,21 @@ function tpl_get_fleets_flying(&$user)
   return $fleet_flying_list;
 }
 
-function tpl_assign_hangar($que_type, $planet, &$template)
+function tpl_assign_hangar(&$template, $planet, $que_type)
 {
-  global $user, $lang;
-
+  $que = que_get($que_type, $planet['id_owner'], $planet['id']);
+  $que = $que['ques'][$que_type][$planet['id_owner']][$planet['id']];
   $que_length = 0;
-  $hangar_que_strings = explode(';', $planet['b_hangar_id']);
-  foreach($hangar_que_strings as $hangar_que_string_id => $hangar_que_string)
+  if(!empty($que))
   {
-    if(!$hangar_que_string)
+    foreach($que as $que_item)
     {
-      continue;
+      $template->assign_block_vars('que', que_tpl_parse_element($que_item));
     }
-
-    list($unit_id, $unit_amount) = explode(',', $hangar_que_string);
-
-    $unit_data = eco_get_build_data($user, $planet, $unit_id, 0);
-
-    $template->assign_block_vars('que', array(
-      'ID' => $unit_id,
-      'QUE' => $que_type,
-      'NAME' => $lang['tech'][$unit_id],
-      'TIME' => $unit_data[RES_TIME][BUILD_CREATE] - ($hangar_que_string_id ? 0 : $planet['b_hangar']),
-      'TIME_FULL' => $unit_data[RES_TIME][BUILD_CREATE],
-      'AMOUNT' => $unit_amount,
-      'LEVEL' => -1,
-    ));
-
-    $que_length++;
+    $que_length = count($que);
   }
 
-  return($que_length);
+  return $que_length;
 }
 
 function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_matter)

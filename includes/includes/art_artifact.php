@@ -15,6 +15,7 @@ function art_use(&$user, &$planetrow, $unit_id)
   $unit_level = $artifact_level_old = mrc_get_level($user, array(), $unit_id, true);
   if($unit_level > 0)
   {
+    $db_changeset = array();
     switch($unit_id)
     {
       case ART_LHC:
@@ -56,22 +57,25 @@ function art_use(&$user, &$planetrow, $unit_id)
           break;
         }
 
-        if($planetrow['que'])
+        $que = que_get(QUE_STRUCTURES, $user['id'], $planetrow['id'], false);
+        if(!empty($que['items']))
         {
-          $message = $lang['art_rcd_err_moon'];
+          $message = $lang['art_rcd_err_que'];
           break;
         }
 
-        $unit_level--;
         $artifact_deploy = get_unit_param($unit_id, P_DEPLOY);
 
-        $deployment_str = '';
+        // $deployment_str = '';
         $sectors_used = 0;
         foreach($artifact_deploy as $deploy_unit_id => $deploy_unit_level)
         {
-          $deploy_unit_name = get_unit_param($deploy_unit_id, P_NAME);
-          $sectors_used += max(0, $deploy_unit_level - $planetrow[$deploy_unit_name]);
-          $deployment_str .= ",`{$deploy_unit_name}` = GREATEST(`{$deploy_unit_name}`, {$deploy_unit_level})";
+          if(!($levels_deployed = max(0, $deploy_unit_level - mrc_get_level($user, $planetrow, $deploy_unit_id, true, true))))
+            continue;
+          $sectors_used += $levels_deployed;
+          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($deploy_unit_id, $levels_deployed, $user, $planetrow['id']);
+          //$deploy_unit_name = get_unit_param($deploy_unit_id, P_NAME);
+          //$deployment_str .= ",`{$deploy_unit_name}` = GREATEST(`{$deploy_unit_name}`, {$deploy_unit_level})";
         }
 
         if($sectors_used == 0)
@@ -79,21 +83,23 @@ function art_use(&$user, &$planetrow, $unit_id)
           $message = $lang['art_rcd_err_no_sense'];
           break;
         }
-        doquery("UPDATE {{planets}} SET `field_current` = `field_current` + {$sectors_used}{$deployment_str} WHERE `id` = {$planetrow['id']} LIMIT 1;");
+        $unit_level--;
+        doquery("UPDATE {{planets}} SET `field_current` = `field_current` + {$sectors_used} WHERE `id` = {$planetrow['id']} LIMIT 1;");
         $message = sprintf($lang['art_rcd_ok'], $lang['tech'][$unit_id], $planetrow['name'], uni_render_coordinates($planetrow));
         msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_rcd_subj'], $lang['art_rcd_subj'], $message);
       break;
 
       case ART_HEURISTIC_CHIP:
-        que_get_que($global_que, QUE_RESEARCH, $user['id'], $planetrow['id'], true);
-        if(isset($global_que[QUE_RESEARCH][0][0]['que_time_left']) && $global_que[QUE_RESEARCH][0][0]['que_time_left'] > 0)
+        $que = que_get(QUE_RESEARCH, $user['id'], $planetrow['id'], true);
+        $que_item = &$que['ques'][QUE_RESEARCH][$user['id']][0][0];
+
+        if(isset($que_item) && $que_item['que_time_left'] > 0)
         {
           $unit_level--;
-          $old_time = $global_que[QUE_RESEARCH][0][0]['que_time_left'];
-          // $global_que[QUE_RESEARCH][0][0]['que_time_left'] = max(0, $global_que[QUE_RESEARCH][0][0]['que_time_left'] - PERIOD_HOUR);
-          $global_que[QUE_RESEARCH][0][0]['que_time_left'] = $global_que[QUE_RESEARCH][0][0]['que_time_left'] > PERIOD_HOUR ? floor($global_que[QUE_RESEARCH][0][0]['que_time_left'] / 2) : 0;
-          doquery("UPDATE {{que}} SET `que_time_left` = {$global_que[QUE_RESEARCH][0][0]['que_time_left']} WHERE `que_id` = {$global_que[QUE_RESEARCH][0][0]['que_id']} LIMIT 1;");
-          $message = sprintf($lang['art_heurestic_chip_ok'], $lang['tech'][$global_que[QUE_RESEARCH][0][0]['que_unit_id']], $global_que[QUE_RESEARCH][0][0]['que_unit_level'], sys_time_human($old_time - $global_que[QUE_RESEARCH][0][0]['que_time_left']));
+          $old_time = $que_item['que_time_left'];
+          $que_item['que_time_left'] = $que_item['que_time_left'] > PERIOD_HOUR ? ceil($que_item['que_time_left'] / 2) : 0;
+          doquery("UPDATE {{que}} SET `que_time_left` = {$que_item['que_time_left']} WHERE `que_id` = {$que_item['que_id']} LIMIT 1;");
+          $message = sprintf($lang['art_heurestic_chip_ok'], $lang['tech'][$que_item['que_unit_id']], $que_item['que_unit_level'], sys_time_human($old_time - $que_item['que_time_left']));
           msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_heurestic_chip_subj'], $lang['art_heurestic_chip_subj'], $message);
         }
         else
@@ -104,22 +110,17 @@ function art_use(&$user, &$planetrow, $unit_id)
 
       case ART_NANO_BUILDER:
         $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planetrow['id']} LIMIT 1 FOR UPDATE;", true);
-        $que = eco_que_process($user, $planetrow, 0);
-        $que_item = &$que['que'][QUE_STRUCTURES][0];
-        if(isset($que_item['TIME']) && $que_item['TIME'] > 0)
+        $que = que_get(QUE_STRUCTURES, $user['id'], $planetrow['id'], true);
+        $que_item = &$que['ques'][QUE_STRUCTURES][$user['id']][$planetrow['id']][0];
+        pdump($que_item);
+
+        if(isset($que_item) && $que_item['que_time_left'] > 0)
         {
           $unit_level--;
-          $old_time = $que_item['TIME'];
-          // $que_item['TIME'] = max(0, $que_item['TIME'] - PERIOD_HOUR);
-          $que_item['TIME'] = $que_item['TIME'] > PERIOD_HOUR ? floor($que_item['TIME'] / 2) : 0;
-          $que_item['STRING'] = "{$que_item['ID']},{$que_item['AMOUNT']},{$que_item['TIME']},{$que_item['MODE']},{$que_item['QUE']};";
-          $query_string = '';
-          foreach($que['que'][QUE_STRUCTURES] as $value)
-          {
-            $query_string .= $value['STRING'];
-          }
-          doquery("UPDATE {{planets}} SET `que` = '{$query_string}' WHERE `id` = {$planetrow['id']} LIMIT 1;");
-          $message = sprintf($lang['art_nano_builder_ok'], $que_item['MODE'] == BUILD_CREATE ? $lang['art_nano_builder_build'] : $lang['art_nano_builder_destroy'], $lang['tech'][$que_item['ID']], mrc_get_level($user, $planetrow, $que_item['ID'], false, true) + $que_item['AMOUNT'], $planetrow['name'], uni_render_coordinates($planetrow), sys_time_human($old_time - $que_item['TIME']));
+          $old_time = $que_item['que_time_left'];
+          $que_item['que_time_left'] = $que_item['que_time_left'] > PERIOD_HOUR ? ceil($que_item['que_time_left'] / 2) : 0;
+          doquery("UPDATE {{que}} SET `que_time_left` = {$que_item['que_time_left']} WHERE `que_id` = {$que_item['que_id']} LIMIT 1;");
+          $message = sprintf($lang['art_nano_builder_ok'], $que_item['que_unit_mode'] == BUILD_CREATE ? $lang['art_nano_builder_build'] : $lang['art_nano_builder_destroy'], $lang['tech'][$que_item['que_unit_id']], $que_item['que_unit_level'], $planetrow['name'], uni_render_coordinates($planetrow), sys_time_human($old_time - $que_item['TIME']));
           msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_nano_builder_subj'], $lang['art_nano_builder_subj'], $message);
         }
         else

@@ -19,16 +19,17 @@ if(!$planetrow)
 
 $template = gettemplate('fleet0', true);
 
-foreach(sn_get_groups('fleet') as $n => $i)
+foreach(sn_get_groups('fleet') as $n => $unit_id)
 {
-  $n_name = get_unit_param($i, P_NAME);
-  if($planetrow[$n_name] > 0)
+  // $n_name = get_unit_param($unit_id, P_NAME);
+  $unit_level = mrc_get_level($user, $planetrow, $unit_id, false, true);
+  if($unit_level > 0)
   {
-    $ship_data = get_ship_data( $i, $user );
+    $ship_data = get_ship_data($unit_id, $user);
     $template->assign_block_vars('ships', array(
-      'ID'          => $i,
-      'NAME'        => $lang['tech'][$i],
-      'AMOUNT'      => $planetrow[$n_name],
+      'ID'          => $unit_id,
+      'NAME'        => $lang['tech'][$unit_id],
+      'AMOUNT'      => $unit_level,
       'CONSUMPTION' => $ship_data['consumption'],
       'SPEED'       => $ship_data['speed'],
       'CAPACITY'    => $ship_data['capacity'],

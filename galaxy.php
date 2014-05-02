@@ -46,7 +46,6 @@ $CurrentMIP    = $planetrow['interplanetary_misil'];
 $HavePhalanx   = $planetrow['phalanx'];
 $CurrentSystem = $planetrow['system'];
 $CurrentGalaxy = $planetrow['galaxy'];
-$CanDestroy    = $planetrow[get_unit_param(SHIP_DEATH_STAR, P_NAME)];
 
 $maxfleet       = doquery("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
 $maxfleet_count = $maxfleet['flying_fleet_count'];
@@ -380,7 +379,7 @@ $template->assign_vars(array(
      'curPlanetS'          => $planetrow['system'],
      'curPlanetP'          => $planetrow['planet'],
      'curPlanetPT'         => $planetrow['planet_type'],
-     'deathStars'          => $planetrow[get_unit_param(SHIP_DEATH_STAR, P_NAME)],
+     'deathStars'          => mrc_get_level($user, $planetrow, SHIP_DEATH_STAR),
      'galaxy'              => $uni_galaxy,
      'system'              => $uni_system,
      'planet'              => $planet,
@@ -413,5 +412,3 @@ $template->assign_vars(array(
 );
 
 display (parsetemplate($template), $lang['sys_universe'], true, '', false);
-
-?>

@@ -19,11 +19,12 @@ if(SN_IN_FLEET !== true)
 
 function flt_build_gathering($resources_taken = '')
 {
+  sn_db_transaction_start();
+
   global $time_now, $planetrow, $user, $lang;
   // Caching sn_data names for quick access
   $lang_sys_planet_type = $lang['sys_planet_type'];
   $lang_fl_attack_error = $lang['fl_attack_error'];
-  $deuterium_db_name = get_unit_param(RES_DEUTERIUM, P_NAME);
 
   $planet_list = array();
 
@@ -39,9 +40,13 @@ function flt_build_gathering($resources_taken = '')
 
   foreach(sn_get_groups('flt_transports') as $transport_id)
   {
+    /*
     $transport_info = get_unit_param($transport_id);
     $transports[$transport_info[P_NAME]] = $transport_info[P_CAPACITY];
     $name_to_id[$transport_info[P_NAME]] = $transport_id;
+    */
+    $transports[$transport_id] = get_unit_param($transport_id, P_CAPACITY);
+    // $name_to_id[$transport_info[P_NAME]] = $transport_id;
   }
   arsort($transports);
 
@@ -81,7 +86,7 @@ function flt_build_gathering($resources_taken = '')
     {
       if($resources_taken[$planet_id] == 1 || $resources_taken[$planet_id][$resource_id])
       {
-        $planet_resources += floor($planet_db_data[get_unit_param($resource_id, P_NAME)]);
+        $planet_resources += floor(mrc_get_level($user, $planet_db_data, $resource_id, true, true)); // $planet_db_data[get_unit_param($resource_id, P_NAME)]);
       }
     }
     $planet_data['RESOURCES'] = $planet_resources;
@@ -92,9 +97,9 @@ function flt_build_gathering($resources_taken = '')
     $fleet = array();
     foreach($transports as $ship_id => $ship_capacity)
     {
-      if($planet_db_data[$ship_id])
+      if($ship_count = mrc_get_level($user, $planet_db_data, $ship_id, true, true))
       {
-        $ship_loadout[$ship_id]['capacity'] = $planet_db_data[$ship_id] * $ship_capacity;
+        $ship_loadout[$ship_id]['capacity'] = $ship_count * $ship_capacity;
         $ship_loadout[$ship_id]['taken'] = 0;
         $fleet_capacity += $ship_loadout[$ship_id]['capacity'];
       }
@@ -104,7 +109,7 @@ function flt_build_gathering($resources_taken = '')
 
     $will_take = min($planet_resources, $fleet_capacity);
 
-    foreach($ship_loadout as $planet_ship_key => &$planet_ship)
+    foreach($ship_loadout as $ship_id => &$planet_ship)
     {
       $can_take = min($will_take, $planet_ship['capacity']);
       if($can_take <= 0)
@@ -113,7 +118,7 @@ function flt_build_gathering($resources_taken = '')
       }
       $planet_ship['capacity'] -= $can_take;
       $planet_ship['taken'] += $can_take;
-      $fleet[$name_to_id[$planet_ship_key]] = ceil($planet_ship['taken'] / $transports[$planet_ship_key]);
+      $fleet[$ship_id] = ceil($planet_ship['taken'] / $transports[$ship_id]);
 
       $will_take -= $can_take;
       if ($will_take <= 0)
@@ -130,7 +135,7 @@ function flt_build_gathering($resources_taken = '')
       $planet_data['DURATION']    = $travel_data['duration'];
       $planet_data['CONSUMPTION'] = $travel_data['consumption'];
 
-      if(floor($planet_db_data[$deuterium_db_name]) >= $planet_data['CONSUMPTION'])
+      if(floor(mrc_get_level($user, $planet_db_data, RES_DEUTERIUM, true)) >= $planet_data['CONSUMPTION'])
       {
         $will_take = min($planet_resources, $fleet_capacity) - $planet_data['CONSUMPTION'];
 
@@ -141,9 +146,7 @@ function flt_build_gathering($resources_taken = '')
             continue;
           }
 
-          $resource_db_name = get_unit_param($resource_id, P_NAME);
-
-          $resource_amount = floor($planet_db_data[$resource_db_name]);
+          $resource_amount = floor(mrc_get_level($user, $planet_db_data, $resource_id, true, true));
 
           $fleet[$resource_id] = min($will_take, $resource_amount);
           $will_take -= $resource_amount;
@@ -169,6 +172,8 @@ function flt_build_gathering($resources_taken = '')
     $planet_data['RESULT']  = $result;
     $planet_data['FLEET']   = $fleet;
   } // end planet loop
+
+  sn_db_transaction_commit();
 
   return $planet_list;
 }
@@ -223,5 +228,3 @@ $template->assign_vars(array(
 tpl_set_resource_info($template, $planetrow, array());
 
 display($template, $lang['fl_title']);
-
-?>

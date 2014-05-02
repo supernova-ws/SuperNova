@@ -172,28 +172,32 @@ function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result)
   return $result;
 }
 
-function tpl_parse_planet($planet, $que)
+function tpl_parse_planet_que($que, $planet, $que_id)
+{
+  $hangar_que = array();
+  $que_hangar = $que['ques'][$que_id][$planet['id_owner']][$planet['id']];
+  if(!empty($que_hangar))
+  {
+    foreach($que_hangar as $que_item)
+    {
+      $hangar_que['que'][] = array('id' => $que_item['que_unit_id'], 'count' => $que_item['que_unit_amount']);
+      $hangar_que[$que_item['que_unit_id']] += $que_item['que_unit_amount'];
+    }
+  }
+
+  return $hangar_que;
+}
+
+function tpl_parse_planet($planet)
 {
   global $lang;
 
   $fleet_list = flt_get_fleets_to_planet($planet);
 
-  $hangar = explode(';', $planet['b_hangar_id']);
-  foreach($hangar as $hangar_row)
-  {
-    if($hangar_row)
-    {
-      $hangar_row = explode(',', $hangar_row);
-      $hangar_que['que'][] = array( 'id' => $hangar_row[0], 'count' => $hangar_row[1]);
-      $hangar_que[$hangar_row[0]] += $hangar_row[1];
-    }
-  }
-  $hangar_build_tip = $hangar_que['que'][0]['id'] ? $lang[tech][$hangar_que['que'][0]['id']] : '';
+  $que = que_get(false, $planet['id_owner'], $planet['id']);
 
-//  if($user['que'])
-//  {
-//    $tech_que = explode(',', $user['que']);
-//  }
+  $hangar_que = tpl_parse_planet_que($que, $planet, SUBQUE_FLEET);
+  $defense_que = tpl_parse_planet_que($que, $planet, SUBQUE_DEFENSE);
 
   $result = array(
     'ID'            => $planet['id'],
@@ -210,8 +214,11 @@ function tpl_parse_planet($planet, $que)
     'CRYSTAL_PERCENT'   => $planet['crystal_mine_porcent'] * 10,
     'DEUTERIUM_PERCENT' => $planet['deuterium_sintetizer_porcent'] * 10,
 
-    'HANGAR'        => $hangar_build_tip,
+    'HANGAR'        => isset($hangar_que['que'][0]['id']) ? $lang['tech'][$hangar_que['que'][0]['id']] : '',
     'hangar_que'    => $hangar_que,
+
+    'DEFENSE'        => isset($defense_que['que'][0]['id']) ? $lang['tech'][$defense_que['que'][0]['id']] : '',
+    'defense_que'    => $defense_que,
 
     'FIELDS_CUR'    => $planet['field_current'],
     'FIELDS_MAX'    => eco_planet_fields_max($planet),
@@ -229,9 +236,14 @@ function tpl_parse_planet($planet, $que)
     'PLANET_GOVERNOR_LEVEL_MAX' => get_unit_param($planet['PLANET_GOVERNOR_ID'], P_MAX_STACK),
   );
 
-  if(!empty($que))
+  if(!empty($que['ques'][QUE_STRUCTURES][$planet['id_owner']][$planet['id']]))
   {
-    $result['building_que'] = $que['que'][QUE_STRUCTURES];
+    $result['building_que'] = array();
+    $building_que = &$que['ques'][QUE_STRUCTURES][$planet['id_owner']][$planet['id']];
+    foreach($building_que as $que_element)
+    {
+      $result['building_que'][] = que_tpl_parse_element($que_element);
+    }
   }
 
   return $result;

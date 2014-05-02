@@ -38,7 +38,7 @@ if(!isset($sn_group_missions[$target_mission]['AJAX']) || !$sn_group_missions[$t
   die($lang['gs_c00']);
 }
 
-doquery("START TRANSACTION;");
+sn_db_transaction_start();
 
 $user = doquery ("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1 FOR UPDATE;", true);
 $planetrow = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['current_planet']}' LIMIT 1 FOR UPDATE;", true);
@@ -95,15 +95,15 @@ if($cant_attack != ATTACK_ALLOWED)
 }
 
 $FleetDBArray   = array();
-$FleetSubQRY    = array();
+$FleetSubQRY = array();
 foreach($fleet_array as $unit_id => $unit_count)
 {
   $FleetDBArray[] = "{$unit_id},{$unit_count}";
-  $unit_db_name = get_unit_param($unit_id, P_NAME);
-  $FleetSubQRY[]  = "`{$unit_db_name}` = `{$unit_db_name}` - {$unit_count}";
+  // $FleetSubQRY[]  = "`{$unit_db_name}` = `{$unit_db_name}` - {$unit_count}";
+  $FleetSubQRY['planets'][] = sn_db_unit_changeset_prepare($unit_id, -$unit_count, $user, $planetrow);
 }
 $FleetDBArray = implode(';', $FleetDBArray);
-$FleetSubQRY  = implode(',', $FleetSubQRY);
+// $FleetSubQRY  = implode(',', $FleetSubQRY);
 
 $fleet_ship_count = array_sum($fleet_array);
 
@@ -155,9 +155,11 @@ else
   doquery($QryInsertFleet);
 }
 
-$deuterium_db_name = get_unit_param(RES_DEUTERIUM, P_NAME);
-doquery("UPDATE {{planets}} SET `{$deuterium_db_name}` = `{$deuterium_db_name}` - {$travel_data['consumption']}, {$FleetSubQRY} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
-doquery("COMMIT;");
+$deuterium_db_name = pname_resource_name(RES_DEUTERIUM);
+// doquery("UPDATE {{planets}} SET `{$deuterium_db_name}` = `{$deuterium_db_name}` - {$travel_data['consumption']}, {$FleetSubQRY} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+doquery("UPDATE {{planets}} SET `{$deuterium_db_name}` = `{$deuterium_db_name}` - {$travel_data['consumption']} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+sn_db_changeset_apply($FleetSubQRY);
+sn_db_transaction_commit();
 
 $ships_sent = array();
 //$ships_sent_js = array();
@@ -165,7 +167,7 @@ $ships_sent_js = 0;
 foreach($fleet_array as $unit_id => $unit_count)
 {
   $ships_sent[] = "{$unit_count} {$lang['tech'][$unit_id]}";
-  $ships_sent_js += $planetrow[get_unit_param($unit_id, P_NAME)] - $unit_count;
+  $ships_sent_js += mrc_get_level($user, $planetrow, $unit_id) - $unit_count;
 }
 $ships_sent = implode(', ', $ships_sent);
 //$ships_sent_js = implode(',', $ships_sent_js);
@@ -174,5 +176,3 @@ $ships_sent_js = "{$unit_group}={$ships_sent_js}";
 $ResultMessage  = "{$lang['gs_sending']} {$ships_sent} {$lang['gs_to']} {$target_coord['galaxy']}:{$target_coord['system']}:{$target_coord['planet']}|{$ships_sent_js}";
 
 die($ResultMessage);
-
-?>

@@ -111,7 +111,7 @@ function sn_timer_compile_que(timer_options)
     temp = temp.replace('[UNIT_TIME]', sn_timestampToString(que[que_id][UNIT_TIME]));
 
     unit_name = que[que_id][UNIT_NAME];
-    if(que[que_id][UNIT_LEVEL] >= 0)
+    if(que[que_id][UNIT_LEVEL] > 0)
     {
       unit_name += ' (' + que[que_id][UNIT_LEVEL] + ')';
       temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_LEVEL]);
@@ -127,20 +127,16 @@ function sn_timer_compile_que(timer_options)
   timer_options['total'] = total;
 
   return compiled;
-};
+}
 
 function sn_timer()
 {
   var HTML, HTML_timer, HTML_finish;
 
   var local_time = new Date();
-// alert('local_time: ' + local_time);
-//  var time_now = new Date(local_time.valueOf() - timeDiff * 1000);
   var time_now = new Date(local_time.valueOf());
-// alert(local_time + '\r\n' + time_now);
   var timestamp = Math.round(time_now.valueOf() / 1000);
   var timestamp_server = timestamp - timeDiffSeconds; // Math.round(time_now.valueOf() / 1000 + timeDiff + timeUTCOffset);
-// alert('timestamp: ' + timestamp);
   var activeTimers = 0;
 
   for(timerID in sn_timers)
@@ -171,7 +167,6 @@ function sn_timer()
     {
       case 0: // old que display
         var que_item = timer_options['que'][0];
-// alert('timestamp: ' + timestamp + '   start_time: ' + timer['start_time']);
         if(que_item[UNIT_TIME] <= timestamp_server - timer['start_time'])
         {
           que_item[UNIT_AMOUNT]--;
@@ -188,9 +183,10 @@ function sn_timer()
           timeFinish = parseInt(timer['start_time']) + parseInt(que_item[UNIT_TIME]);
           timeLeft = parseInt(timer['start_time']) + parseInt(que_item[UNIT_TIME]) - timestamp_server;
           infoText = que_item[UNIT_NAME];
-          if(que_item[UNIT_AMOUNT] > 1)
+          //if(que_item[UNIT_AMOUNT] > 1)
           {
-            infoText += ' (' + que_item[UNIT_AMOUNT] + ')';
+            // infoText += ' (' + (que_item[UNIT_LEVEL] ? que_item[UNIT_LEVEL] : que_item[UNIT_AMOUNT]) + ')';
+            infoText += que_item[UNIT_LEVEL] ? ' (' + (que_item[UNIT_LEVEL]) + ')' : '';
           }
           timerText = sn_timestampToString(timeLeft);
         }
@@ -364,15 +360,15 @@ function sn_timer()
           timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp_server;
           total_text = sn_timestampToString(timeLeft + timer_options['total']);
           infoText = que_item[UNIT_NAME];
-          if(que_item[UNIT_AMOUNT] > 1)
+          if(que_item[UNIT_LEVEL])
+          {
+            infoText += ' (' + que_item[UNIT_LEVEL] + ')';
+          }
+          else
+          // if(que_item[UNIT_AMOUNT] > 1)
           {
             infoText += ' (' + que_item[UNIT_AMOUNT] + ')';
           }
-          else
-            if(que_item[UNIT_LEVEL] > 1)
-            {
-              infoText += ' (' + que_item[UNIT_LEVEL] + ')';
-            }
           timerText = sn_timestampToString(timeLeft);
         }
         else
@@ -432,7 +428,6 @@ function sn_timer()
 
       case 5: // old que display
         var que_item = timer_options['que'][0];
-        var finalText = '';
 
         if(que_item[EVENT_TIME] <= timestamp_server - timer['start_time'])
         {

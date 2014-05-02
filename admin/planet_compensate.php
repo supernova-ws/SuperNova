@@ -26,11 +26,12 @@ $username = sys_get_param_escaped('username');
 
 if($galaxy_src)
 {
+  sn_db_transaction_start();
   $errors = array();
 
   $owner = doquery("SELECT * FROM {{users}} WHERE username like '{$username}'", true);
 
-  $planet = sys_o_get_updated($owner, array('galaxy' => $galaxy_src, 'system' => $system_src, 'planet' => $planet_src, 'planet_type' => 1), time());
+  $planet = sys_o_get_updated($owner, array('galaxy' => $galaxy_src, 'system' => $system_src, 'planet' => $planet_src, 'planet_type' => 1), SN_TIME_NOW);
   $que    = $planet['que'];
   $planet = $planet['planet'];
   if(!$planet)
@@ -90,7 +91,7 @@ if($galaxy_src)
 
     foreach(sn_get_groups('resources_loot') as $resource_id)
     {
-      $resource_name = get_unit_param($resource_id, P_NAME);
+      $resource_name = pname_resource_name($resource_id);
       $template->assign_var("{$resource_name}_cost", $final_cost[$resource_id]);
       $final_cost[$resource_id] = floor($final_cost[$resource_id] * $bonus);
       $template->assign_var("{$resource_name}_bonus", $final_cost[$resource_id]);
@@ -99,17 +100,20 @@ if($galaxy_src)
     if($_GET['btn_confirm'])
     {
       doquery("UPDATE {{planets}} SET metal = metal + '{$final_cost[RES_METAL]}', crystal = crystal + '{$final_cost[RES_CRYSTAL]}', deuterium = deuterium + '{$final_cost[RES_DEUTERIUM]}' WHERE id = {$destination['id']};");
+      doquery("DELETE FROM {{unit}} WHERE unit_player_id = {$planet['id_owner']} AND unit_location_type = " . LOC_PLANET . " AND unit_location_id = {$planet['id']}");
 
       $time = time() + 24 * 60 * 60;
       doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = '{$time}' WHERE id = {$planet['id']};");
       if($moon)
       {
         doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = '{$time}' WHERE id = {$moon['id']};");
+        doquery("DELETE FROM {{unit}} WHERE unit_player_id = {$planet['id_owner']} AND unit_location_type = " . LOC_PLANET . " AND unit_location_id = {$moon['id']}");
       }
 
       $template->assign_var('CHECK', 2);
     }
   }
+  sn_db_transaction_commit();
 }
 
 $template->assign_vars(array(
@@ -134,19 +138,21 @@ function killer_add_planet($planet)
 
   $final_cost = array();
   $sn_group_resources_loot = sn_get_groups('resources_loot');
+  /*
   foreach($sn_group_resources_loot as &$value)
   {
-    $value = get_unit_param($value, 'name');
+    $value = get_unit_param($value, P_NAME);
   }
+  */
 
   foreach(sn_get_groups('structures') as $unit_id)
   {
-    $build_level = $planet[get_unit_param($unit_id, 'name')];
+    $build_level = mrc_get_level($user, $planet, $unit_id, true, true);
     if($build_level > 0)
     {
       $unit_cost = get_unit_param($unit_id, 'cost');
       $build_factor = $unit_cost['factor'] != 1 ? (1 - pow($unit_cost['factor'], $build_level)) / (1 - $unit_cost['factor']) : $unit_cost['factor'];
-      foreach($sn_group_resources_loot as $resource_id => $resource_name)
+      foreach($sn_group_resources_loot as $resource_id)
       {
         $final_cost[$resource_id] += isset($unit_cost[$resource_id]) && $unit_cost[$resource_id] > 0 ? floor($unit_cost[$resource_id] * $build_factor) : 0;
       }
@@ -155,19 +161,19 @@ function killer_add_planet($planet)
 
   foreach(sn_get_groups(array('defense', 'fleet')) as $unit_id)
   {
-    $unit_count = $planet[get_unit_param($unit_id, 'name')];
+    $unit_count = mrc_get_level($user, $planet, $unit_id, true, true);
     if($unit_count > 0)
     {
       $unit_cost = get_unit_param($unit_id, 'cost');
-      foreach($sn_group_resources_loot as $resource_id => $resource_name)
+      foreach($sn_group_resources_loot as $resource_id)
       {
         $final_cost[$resource_id] += isset($unit_cost[$resource_id]) && $unit_cost[$resource_id] > 0 ? floor($unit_cost[$resource_id] * $unit_count) : 0;
       }
     }
   }
 
-  foreach($sn_group_resources_loot as $resource_id => $resource_name)
+  foreach($sn_group_resources_loot as $resource_id)
   {
-    $final_cost[$resource_id] += floor($planet[$resource_name]);
+    $final_cost[$resource_id] += floor(mrc_get_level($user, $planet, $resource_id, true, true));
   }
 }

@@ -36,7 +36,7 @@ function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode)
     $template->assign_block_vars('unit', array(
       'ID'    => $unit_id,
       'NAME'  => $name_list[$unit_id],
-      'TEXT'  => pretty_number($edit_planet_row[get_unit_param($unit_id, P_NAME)]),
+      'TEXT'  => pretty_number(mrc_get_level($user, $edit_planet_row, $unit_id, false, true)),
       'VALUE' => '',
     ));
   }
@@ -48,7 +48,7 @@ function sn_admin_planet_edit_query_string($unit_id, $unit_amount, $mode)
   if($unit_amount && in_array($unit_id, sn_get_groups($mode)))
   {
     $unit_amount = round($unit_amount);
-    $unit_name = get_unit_param($unit_id, 'name');
+    $unit_name = get_unit_param($unit_id, P_NAME);
     $result = "{$unit_name} = GREATEST(0, {$unit_name} + ({$unit_amount}))";
   }
   else

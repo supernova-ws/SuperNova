@@ -154,6 +154,7 @@ $sn_menu = array(
     'LINK'  => 'flying_fleets.php',
     'ICON'  => true,
   ),
+/*
   'menu_empire_quests' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
@@ -161,6 +162,7 @@ $sn_menu = array(
     'LINK'  => 'quest.php',
     'ICON'  => true,
   ),
+*/
 
   'menu_empire_universe' => array(
     'LEVEL' => 'header',
@@ -553,12 +555,14 @@ if($user['authlevel'] >= 2)
       'LINK' => 'admin/add_moon.php',
       'LOCATION' => '+menu_admin_planet_list_moons',
     ),
+/*
     'menu_admin_planet_edit' => array(
       'TYPE' => 'lang',
       'ITEM' => 'adm_lm_planet_edit',
       'LINK' => 'admin/planet_edit.php',
       'LOCATION' => '+menu_admin_planet_moon_add',
     ),
+*/
     'menu_admin_fleets' => array(
       'TYPE' => 'lang',
       'ITEM' => 'adm_fleet',
@@ -596,13 +600,14 @@ if($user['authlevel'] >= 2)
         'LINK' => 'admin/userlist.php',
         'LOCATION' => '+menu_admin_player_ban',
       ),
+/*
       'menu_admin_player_panel' => array(
         'TYPE' => 'lang',
         'ITEM' => 'adm_panel',
         'LINK' => 'admin/paneladmina.php',
         'LOCATION' => '+menu_admin_player_list',
       ),
-
+*/
       'menu_admin_maintenance' => array(
         'TYPE' => 'lang',
         'ITEM' => 'adm_maint',

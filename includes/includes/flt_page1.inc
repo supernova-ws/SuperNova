@@ -11,25 +11,25 @@ if(SN_IN_FLEET !== true)
 
 $template = gettemplate('fleet1', true);
 
-$ships = $_POST['ships'];
+$ships = sys_get_param('ships', array());
 if(!is_array($ships))
 {
   $ships = array();
 }
 
-foreach ($ships as $ship_id => $ship_count)
+foreach($ships as $ship_id => $ship_count)
 {
   if(in_array($ship_id, sn_get_groups('fleet')) && $ship_count)
   {
     $ship_info = get_unit_param($ship_id);
-    if($ship_count > $planetrow[$ship_info[P_NAME]])
+    if($ship_count > mrc_get_level($user, $planetrow, $ship_id, false, true))
     {
       $page .= $lang['fl_noenought'];
     }
     else
     {
       $fleet['fleetarray'][$ship_id]  = $ship_count;
-      $fleet['fleetlist']            .= "{$ship_id},{$ship_count};";
+      // $fleet['fleetlist']            .= "{$ship_id},{$ship_count};";
       $fleet['amount']               += $ship_count;
     }
     $fleet['capacity'] += $ship_info[P_CAPACITY] * $ship_count;
@@ -43,7 +43,8 @@ foreach ($ships as $ship_id => $ship_count)
   }
 }
 
-if (!$fleet['fleetlist'])
+
+if(empty($fleet['fleetarray']))
 {
   message($lang['fl_err_no_ships'], $lang['fl_error'], 'fleet.' . PHP_EX, 5);
 }
@@ -64,9 +65,9 @@ while($shortcut = mysql_fetch_assoc($query))
 
 // Building list of own planets & moons
 $colonies = SortUserPlanets ( $user );
-if (mysql_num_rows($colonies) > 1)
+if(mysql_num_rows($colonies) > 1)
 {
-  while ($row = mysql_fetch_assoc($colonies))
+  while($row = mysql_fetch_assoc($colonies))
   {
     $template->assign_block_vars('colonies', array(
       'NAME'       => $row['name'],
@@ -75,7 +76,6 @@ if (mysql_num_rows($colonies) > 1)
       'PLANET'     => $row['planet'],
       'TYPE'       => $row['planet_type'],
       'TYPE_PRINT' => $lang['fl_shrtcup'][$row['planet_type']],
-      // $row['planet_type'] == 3
     ));
   }
 };
@@ -92,12 +92,12 @@ while($row = mysql_fetch_assoc($aks_madnessred))
     {
       $template->assign_block_vars('acss', array(
         'ID'         => $row['id'],
+        'NAME'       => $row['name'],
         'GALAXY'     => $row['galaxy'],
         'SYSTEM'     => $row['system'],
         'PLANET'     => $row['planet'],
         'TYPE'       => $row['planet_type'],
         'TYPE_PRINT' => $lang['fl_shrtcup'][$row['planet_type']],
-        'NAME'       => $row['name'],
       ));
     }
   }
@@ -123,5 +123,3 @@ $template->assign_vars(array(
 
 $template->assign_recursive($template_result);
 display($template, $lang['fl_title']);
-
-?>

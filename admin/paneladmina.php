@@ -55,6 +55,8 @@ if (isset($GET_result)) {
       break;
 
     case 'usr_data':
+      print('Временно не работает');
+      /*
       $SelUser = doquery("SELECT * FROM {{users}} WHERE `username` LIKE '%". $Pattern ."%' LIMIT 1;", '', true);
       $UsrMain = doquery("SELECT `name` FROM {{planets}} WHERE `id` = '". $SelUser['id_planet'] ."';", '', true);
 
@@ -93,6 +95,7 @@ if (isset($GET_result)) {
         $parse['adm_sub_form3'] .= "<th>".$SelUser[get_unit_param($Item, P_NAME)]."</th></tr>";
       }
       $parse['adm_sub_form3'] .= "</tbody></table>";
+      */
       break;
 
     case 'usr_level':

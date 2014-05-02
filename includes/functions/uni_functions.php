@@ -408,24 +408,60 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
  * @function SetSelectedPlanet
  *
  * @history
- *    3 - copyright (c) 2009-2011 by Gorlum for http://supernova.ws
- *      [+] Added handling case when current_planet does not exists or didn't belong to user
- *      [+] Moved from SetSelectedPlanet.php
- *      [+] Function now return
- *      [~] Complies with PCG1
- *    2 - copyright (c) 2009-2011 by Gorlum for http://supernova.ws
- *      [~] Security checked for SQL-injection
- *    1 - copyright 2008 By Chlorel for XNova
+ *
+ * 4 - copyright (c) 2014 by Gorlum for http://supernova.ws
+ *   [!] Full rewrote from scratch
+ * 3 - copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+ *   [+] Added handling case when current_planet does not exists or didn't belong to user
+ *   [+] Moved from SetSelectedPlanet.php
+ *   [+] Function now return
+ *   [~] Complies with PCG1
+ * 2 - copyright (c) 2009-2011 by Gorlum for http://supernova.ws
+ *   [~] Security checked for SQL-injection
+ * 1 - copyright 2008 By Chlorel for XNova
  *
  */
 function SetSelectedPlanet(&$user)
 {
-  $selected_planet = intval($_GET['cp']);
-  $restore_planet = intval($_GET['re']);
+  $planet_row['id'] = $user['current_planet'];
 
-  if (isset($selected_planet) && is_numeric($selected_planet) && $selected_planet && isset($restore_planet) && $restore_planet == 0)
+  // Пытаемся переключить на новую планету
+  if(($selected_planet = sys_get_param_id('cp')) && $selected_planet != $user['current_planet'])
   {
-    $planet_row = doquery("SELECT `id` FROM {{planets}} WHERE `id` = '{$selected_planet}' AND `id_owner` = '{$user['id']}' LIMIT 1;", '', true);
+    $planet_row = doquery("SELECT `id` FROM {{planets}} WHERE `id` = '{$selected_planet}' AND `id_owner` = '{$user['id']}' LIMIT 1;", true);
+  }
+
+  // Если новая планета не найдена или не было переключения - проверяем текущую выбранную планету
+  if(!isset($planet_row['id']) || $planet_row['id'] == $user['current_planet'])
+  {
+    $planet_row = doquery("SELECT `id` FROM {{planets}} WHERE `id` = '{$user['current_planet']}' AND `id_owner` = '{$user['id']}' LIMIT 1;", true);
+    // Если текущей планеты не существует - выставляем Столицу
+    if(!isset($planet_row['id']))
+    {
+      $planet_row = doquery("SELECT `id` FROM {{planets}} WHERE `id` = '{$user['id_planet']}' AND `id_owner` = '{$user['id']}' LIMIT 1;", true);
+      // Если и столицы не существует - значит что-то очень не так с записью пользователя
+      if(!isset($planet_row['id']))
+      {
+        global $debug;
+        $debug->error("User ID {$user['id']} has Capital planet {$user['id_planet']} but this planet does not exists", 'User record error', 502);
+      }
+    }
+  }
+
+  // Если производилось переключение планеты - делаем запись в юзере
+  if($user['current_planet'] != $planet_row['id'])
+  {
+    doquery("UPDATE {{users}} SET `current_planet` = '{$planet_row['id']}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    $user['current_planet'] = $planet_row['id'];
+  }
+
+  return $user['current_planet'];
+
+/*
+   *
+   *   if(isset($selected_planet) && is_numeric($selected_planet) && $selected_planet && isset($restore_planet) && $restore_planet == 0)
+  {
+    $planet_row = doquery("SELECT `id` FROM {{planets}} WHERE `id` = '{$selected_planet}' AND `id_owner` = '{$user['id']}' LIMIT 1;", true);
     if (!$planet_row || !isset($planet_row['id']))
     {
       $selected_planet = $user['id_planet'];
@@ -435,6 +471,8 @@ function SetSelectedPlanet(&$user)
   }
 
   return $user['current_planet'];
+
+   */
 }
 
 /**
@@ -511,7 +549,7 @@ function uni_render_coordinates_href($from, $prefix = '', $mode = 0, $fleet_type
 
 function uni_get_time_to_jump($moon_row)
 {
-  $jump_gate_level = $moon_row[get_unit_param(STRUC_MOON_GATE, P_NAME)];
+  $jump_gate_level = mrc_get_level($user, $moon_row, STRUC_MOON_GATE);
   return $jump_gate_level ? max(0, $moon_row['last_jump_time'] + abs(60 * 60 / $jump_gate_level) - SN_TIME_NOW) : 0;
 }
 

@@ -163,7 +163,7 @@ class debug
 
       $sys_stop_log_hit = true;
       $sys_log_disabled = true;
-      if (!function_exists('message'))
+      if(!function_exists('message'))
       {
         die($message);
       }

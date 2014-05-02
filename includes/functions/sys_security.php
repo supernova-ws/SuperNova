@@ -113,6 +113,12 @@ function sn_autologin($abort = true)
   $ip = sys_get_user_ip();
   $user_agent = mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']);
   doquery("UPDATE `{{users}}` SET `onlinetime` = '{$time_now}'" . ($user_impersonator ? '' : ", `user_lastip` = '{$ip['client']}', `user_proxy`  = '{$ip['proxy']}', `user_agent`  = '{$user_agent}'") . " WHERE `id` = '{$user['id']}' LIMIT 1;");
+  /*
+  if(!$user_impersonator)
+  {
+    doquery("UPDATE `{{users}}` SET `user_lastip` = '{$ip['client']}', `user_proxy`  = '{$ip['proxy']}', `user_agent`  = '{$user_agent}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+  }
+  */
 
   if(!$skip_ban_check && $user['banaday'])
   {

@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a3.7');
+define('SN_VERSION', '39a4.0');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -238,6 +238,9 @@ define('LOG_ERR_INT_NEGATIVE_RESOURCE', 501); // У игрока отрицат�
 define('LOG_ERR_INT_NO_PLANET', 502); // Ошибка записи пользователя: у пользователя в качестве родного мира назначена несуществующая планета
 define('LOG_ERR_INT_ORPHANE_PLANET', 503); // У планеты нет хозяина
 define('LOG_ERR_INT_FLEET_TIMOUT', 504); // Таймаут менеджера флотов
+// 9xx - Отладка
+define('LOG_DEBUG', 900); // Отладка
+define('LOG_DEBUG_SQL', 910); // Отладка SQL
 
 // Login statuses
 define('LOGIN_SUCCESS'               , 1);
@@ -608,6 +611,7 @@ define('UNIT_GROUP', 'groups'); // 100.000
 
 // Unit params
 define('P_MAX_STACK', 'max');
+// Все просто 'name' и "name" заменены на P_NAME
 define('P_NAME', 'name'); // Вот тут будет следующая фаза - избавится вообще от обращения к P_NAME и перевести все обращения к UNIT_ID
 define('P_UNIT_TYPE', 'type');
 define('P_UNIT_TEMPORARY', 'temporary');
@@ -635,6 +639,7 @@ define('P_ARMOR', 'armor');
 define('P_AMPLIFY', 'amplify');
 define('P_DEFENSE', 'defense');
 define('P_STRUCTURE', 'structure');
+define('P_LOCATION', 'location');
 
 
 

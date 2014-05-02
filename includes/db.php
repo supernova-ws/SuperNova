@@ -150,8 +150,6 @@ function doquery($query, $table = '', $fetch = false)
       $sql = str_replace("{{{$tableName}}}", $db_prefix.$tableName, $sql);
     }
   }
-  $sqlquery = mysql_query($sql) or
-    $debug->error(mysql_error()."<br />$sql<br />",'SQL Error');
 
   if($config->debug)
   {
@@ -162,12 +160,25 @@ function doquery($query, $table = '', $fetch = false)
     $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>$table</th><th>$fetch</th></tr>");
   }
 
-  if($fetch){
-    $sqlrow = mysql_fetch_assoc($sqlquery);
-    return $sqlrow;
-  }else{
-    return $sqlquery;
+  if(defined('DEBUG_SQL'))
+  {
+    $backtrace = debug_backtrace();
+    $function = $backtrace[1]['function'];
+    $file = str_replace(SN_ROOT_PHYSICAL, '', str_replace('\\', '/', $backtrace[0]['file']));
+    // pdump($backtrace, SN_ROOT_PHYSICAL);
+    $debug->warning("/* {$file} {$function} line {$backtrace[0]['line']} */ {$sql}", 'SQL Debug', LOG_DEBUG_SQL);
   }
+
+  $sqlquery = mysql_query($sql) or $debug->error(mysql_error()."<br />$sql<br />",'SQL Error');
+
+  return $fetch ? mysql_fetch_assoc($sqlquery) : $sqlquery;
+
+//  if($fetch){
+//    $sqlrow = mysql_fetch_assoc($sqlquery);
+//    return $sqlrow;
+//  }else{
+//    return $sqlquery;
+//  }
 }
 
 /*
@@ -190,6 +201,7 @@ function db_change_units_perform($query, $tablename, $object_id)
 }
 
 // TODO: THIS FUNCTION IS OBSOLETE AND SHOULD BE REPLACED!
+// TODO - ТОЛЬКО ДЛЯ РЕСУРСОВ
 function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
 // $unit_list should have unique entrances! Recompress non-uniq entrances before pass param!
 {
@@ -198,14 +210,22 @@ function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
     LOC_PLANET => array(),
   );
 
+  $group = sn_get_groups('resources_loot');
+
   foreach($unit_list as $unit_id => $unit_amount)
   {
+    if(!in_array($unit_id, $group))
+    {
+      pdump(debug_backtrace());
+      die('db_change_units() вызван для не-ресурсов!');
+    }
+
     if(!$unit_amount)
     {
       continue;
     }
 
-    $unit_db_name = get_unit_param($unit_id, P_NAME);
+    $unit_db_name = pname_resource_name($unit_id);
 
     $unit_location = sys_get_unit_location($user, $planet, $unit_id);
 
@@ -274,8 +294,20 @@ function sn_db_perform($table, $values, $type = 'insert', $options = false)
 
 function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null)
 {
+  if(!is_array($user))
+  {
+    // TODO - remove later
+    pdump(debug_backtrace());
+    die('USER is not ARRAY');
+  }
+  $planet_id = is_array($planet_id) && isset($planet_id['id']) ? $planet_id['id'] : $planet_id;
+
+  $unit_location = sys_get_unit_location($user, array(), $unit_id);
+  $location_id = $unit_location == LOC_USER ? $user['id'] : $planet_id;
+  $location_id = $location_id ? $location_id : 'NULL';
+
   $db_changeset = array();
-  $temp = doquery("SELECT `unit_id` FROM {{unit}} WHERE `unit_player_id` = {$user['id']} AND `unit_snid` = {$unit_id} LIMIT 1 FOR UPDATE", true);
+  $temp = doquery("SELECT `unit_id` FROM {{unit}} WHERE `unit_player_id` = {$user['id']} AND `unit_location_type` = {$unit_location} AND `unit_location_id` = {$location_id} AND `unit_snid` = {$unit_id} LIMIT 1 FOR UPDATE", true);
 //pdump($temp, '$temp');
   if($temp['unit_id'])
   {
@@ -294,7 +326,6 @@ function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id =
   }
   else
   {
-    $unit_location = sys_get_unit_location($user, array(), $unit_id);
     // insert
     $db_changeset = array(
       'action' => SQL_OP_INSERT,
@@ -370,6 +401,11 @@ function sn_db_changeset_apply($db_changeset)
         case SQL_OP_UPDATE:
           if($fields)
           {
+            /*if($table_name == 'unit')
+            {
+              pdump("UPDATE {{{$table_name}}} SET {$fields} {$where}");
+              //die();
+            }*/
             doquery("UPDATE {{{$table_name}}} SET {$fields} {$where}");
           }
           break;

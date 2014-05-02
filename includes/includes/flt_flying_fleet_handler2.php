@@ -22,6 +22,8 @@ returns         = bitmask for recaching
 function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false){return sn_function_call('RestoreFleetToPlanet', array(&$fleet_row, $start, $only_resources, $safe_fleet, &$result));}
 function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false, &$result)
 {
+  sn_db_transaction_check(true);
+
   $result = CACHE_NOTHING;
   if(!is_array($fleet_row))
   {
@@ -38,49 +40,33 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
 
   $prefix = $start ? 'start' : 'end';
 
-  $query = '';
+  $planet_arrival = doquery(
+    "SELECT p.`id`, p.`id_owner`
+       FROM {{planets}} AS p LEFT JOIN {{users}} AS u ON u.id = p.id_owner
+       WHERE p.`galaxy` = '{$fleet_row["fleet_{$prefix}_galaxy"]}' AND p.`system` = '{$fleet_row["fleet_{$prefix}_system"]}' AND p.`planet` = '{$fleet_row["fleet_{$prefix}_planet"]}'
+       AND p.`planet_type` = '{$fleet_row["fleet_{$prefix}_type"]}' LIMIT 1 FOR UPDATE;", true);
+pdump($planet_arrival);
+  $db_changeset = array();
   if(!$only_resources)
   {
     flt_destroy($fleet_row);
 
-    $planet_arrival = doquery("SELECT `id_owner` FROM {{planets}}  WHERE `galaxy` = '" . $fleet_row["fleet_{$prefix}_galaxy"] . "' AND `system` = '". $fleet_row["fleet_{$prefix}_system"] ."' AND `planet` = '". $fleet_row["fleet_{$prefix}_planet"] ."' AND `planet_type` = '". $fleet_row["fleet_{$prefix}_type"] ."' LIMIT 1 FOR UPDATE;", true);
     if($fleet_row['fleet_owner'] == $planet_arrival['id_owner'])
     {
+      $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$planet_arrival['id_owner']} LIMIT 1 FOR UPDATE;", true);
       $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
       foreach($fleet_array as $ship_id => $ship_count)
       {
-        if(!$ship_count)
+        if($ship_count)
         {
-          continue;
+          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $planet_arrival['id']);
         }
-        $ship_db_name = get_unit_param($ship_id, P_NAME);
-        $query .= "`{$ship_db_name}` = `{$ship_db_name}` + '{$ship_count}', ";
       }
     }
     else
     {
-      // doquery("DELETE FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
       return CACHE_NOTHING;
     }
-
-
-    /*
-    pdump($query);
-    $query = '';
-    $fleet_strings = explode(';', $fleet_row['fleet_array']);
-    foreach($fleet_strings as $ship_string)
-    {
-      if($ship_string != '')
-      {
-        $ship_record = explode (',', $ship_string);
-        $ship_db_name = get_unit_param($ship_record[0], P_NAME);
-        $query .= "`{$ship_db_name}` = `{$ship_db_name}` + '{$ship_record[1]}', ";
-      }
-    }
-    // doquery("DELETE FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
-    pdump($query);
-    die();
-    */
   }
   else
   {
@@ -88,258 +74,27 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
     doquery("UPDATE {{fleets}} SET fleet_resource_metal = 0, fleet_resource_crystal = 0, fleet_resource_deuterium = 0, fleet_mess = 1 WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
   }
 
-  $query = 'UPDATE {{planets}} SET ' . $query;
-  $query .= "`metal` = `metal` + '{$fleet_row['fleet_resource_metal']}', ";
-  $query .= "`crystal` = `crystal` + '{$fleet_row['fleet_resource_crystal']}', ";
-  $query .= "`deuterium` = `deuterium` + '{$fleet_row['fleet_resource_deuterium']}' ";
-  $query .= "WHERE ";
-  $query .= "`galaxy` = '". $fleet_row["fleet_{$prefix}_galaxy"] ."' AND ";
-  $query .= "`system` = '". $fleet_row["fleet_{$prefix}_system"] ."' AND ";
-  $query .= "`planet` = '". $fleet_row["fleet_{$prefix}_planet"] ."' AND ";
-  $query .= "`planet_type` = '". $fleet_row["fleet_{$prefix}_type"] ."' ";
-  $query .= "LIMIT 1;";
+  if(!empty($db_changeset))
+  {
+    sn_db_changeset_apply($db_changeset);
+  }
+
+  $query = "UPDATE {{planets}}
+    SET
+      `metal` = `metal` + '{$fleet_row['fleet_resource_metal']}',
+      `crystal` = `crystal` + '{$fleet_row['fleet_resource_crystal']}',
+      `deuterium` = `deuterium` + '{$fleet_row['fleet_resource_deuterium']}'
+    WHERE
+      `id` = {$planet_arrival['id']} LIMIT 1;";
+//  $query .= "`galaxy` = '{$fleet_row["fleet_{$prefix}_galaxy"]}' AND ";
+//  $query .= "`system` = '{$fleet_row["fleet_{$prefix}_system"]}' AND ";
+//  $query .= "`planet` = '{$fleet_row["fleet_{$prefix}_planet"]}' AND ";
+//  $query .= "`planet_type` = '". $fleet_row["fleet_{$prefix}_type"] ."' ";
 
   doquery($query);
-/*
-  // TODO: Вынести в модуль капитанов
-  global $sn_module;
-  if(!$only_resources && isset($sn_module['unit_captain']) && $sn_module['unit_captain']->manifest['active'])
-  {
-    $captain = doquery(
-      "SELECT *
-      FROM {{unit}} AS u
-        LEFT JOIN {{captain}} AS c ON c.captain_unit_id = u.unit_id
-      WHERE
-        u.`unit_player_id` = {$fleet_row['fleet_owner']}
-        AND u.`unit_location_type` = " . LOC_FLEET . "
-        AND u.`unit_location_id` = {$fleet_row['fleet_id']}
-        AND u.`unit_snid` = " . UNIT_CAPTAIN . "
-        LIMIT 1 FOR UPDATE"
-      , true);
-
-    if(is_array($captain))
-    {
-      $planet = doquery(
-        "SELECT `id`
-        FROM {{planets}}
-        WHERE
-          `system` = '". $fleet_row["fleet_{$prefix}_system"] ."' AND
-          `galaxy` = '". $fleet_row["fleet_{$prefix}_galaxy"] ."' AND
-          `planet` = '". $fleet_row["fleet_{$prefix}_planet"] ."' AND
-          `planet_type` = '". $fleet_row["fleet_{$prefix}_type"] ."' LIMIT 1"
-        , true);
-      if($planet['id'])
-      {
-        doquery("UPDATE {{unit}} SET `unit_location_type` = " . LOC_PLANET . ", `unit_location_id` = {$planet['id']} WHERE `unit_id` = {$captain['unit_id']} LIMIT 1");
-      }
-    }
-  }
-*/
   $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
 
   return $result;
-}
-
-// ------------------------------------------------------------------
-function flt_planet_hash($planet_vector, $prefix = '')
-{
-  $type_prefix = $prefix ? $prefix : 'planet_';
-  return 'g' . $planet_vector["{$prefix}galaxy"] . 's' . $planet_vector["{$prefix}system"] . 'p' . $planet_vector["{$prefix}planet"] . 't' . $planet_vector["{$type_prefix}type"];
-}
-
-// ------------------------------------------------------------------
-function flt_unset_by_attack($attack_result, &$flt_user_cache, &$flt_planet_cache, &$flt_fleet_cache, &$flt_event_cache)
-{
-  foreach($attack_result as $combat_fleet_id => $combat_record)
-  {
-    unset($flt_user_cache[$combat_record['user']['id']]);
-    if($combat_fleet_id)
-    {
-      unset($flt_fleet_cache[$combat_fleet_id]);
-      $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = {$combat_fleet_id} LIMIT 1 FOR UPDATE;", '', true);
-      flt_cache_fleet($fleet_row, $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache, CACHE_COMBAT);
-    }
-  }
-}
-
-// ------------------------------------------------------------------
-function flt_cache_user($flt_user_row, &$flt_user_cache)
-{
-  if(!$flt_user_row)
-  {
-    return;
-  }
-
-  if(!is_array($flt_user_row))
-  {
-    $flt_user_row_id = $flt_user_row;
-    // Checking if it is cached
-    if(isset($flt_user_row[$flt_user_row_id]))
-    {
-      $flt_user_row = $flt_user_row[$flt_user_row_id];
-    }
-    else
-    {
-      $flt_user_row = doquery("SELECT * FROM {{users}} WHERE `id` = '{$flt_user_row_id}' LIMIT 1 FOR UPDATE;", '', true);
-    }
-  }
-  else
-  {
-    $flt_user_row_id = $flt_user_row['id'];
-  }
-
-  if(!isset($flt_user_cache[$flt_user_row_id]))
-  {
-    $flt_user_cache[$flt_user_row_id] = $flt_user_row;
-  }
-
-  return $flt_user_row_id;
-}
-
-// ------------------------------------------------------------------
-function flt_cache_planet($planet_vector, &$flt_user_cache, &$flt_planet_cache)
-{
-  if(!$planet_vector)
-  {
-    return;
-  }
-
-  $planet_hash = flt_planet_hash($planet_vector); //"g{$planet_vector['galaxy']}s{$planet_vector['system']}p{$planet_vector['planet']}t{$planet_vector['planet_type']}";
-  if(!isset($flt_planet_cache[$planet_hash]))
-  {
-    $global_data = sys_o_get_updated(false, $planet_vector, $GLOBALS['time_now']);
-    $flt_planet_cache[$planet_hash] = $global_data['planet'];
-
-    if($flt_planet_cache[$planet_hash])
-    {
-      $flt_user_row_id = flt_cache_user($global_data['user'], $flt_user_cache);
-    }
-    else
-    {
-      $flt_user_row_id = 0;
-    }
-  }
-  else
-  {
-    $flt_user_row_id = flt_cache_user($flt_planet_cache[$planet_hash]['id_owner'], $flt_user_cache);
-  }
-
-  return array('planet_hash' => $planet_hash, 'user_id' => $flt_user_row_id);
-}
-
-// ------------------------------------------------------------------
-function flt_cache_fleet($fleet_row, &$flt_user_cache, &$flt_planet_cache, &$flt_fleet_cache, &$flt_event_cache, $cache_mode)
-{
-  // Empty $fleet_row - no chance to know anything about it. By design it should never triggered but let it be
-  if(!$fleet_row)
-  {
-    return false;
-  }
-
-  // $fleet_row is not an array - may be ONLY fleet ID. Getting $fleet_row from DB by ID
-  if (!is_array($fleet_row))
-  {
-    $fleet_row_id = $fleet_row;
-    // Checking if it is cached
-    if(isset($flt_fleet_cache[$fleet_row_id]))
-    {
-      $fleet_row = $flt_fleet_cache[$fleet_row_id];
-    }
-    else
-    {
-      $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = '{$fleet_row_id}' LIMIT 1 FOR UPDATE;", '', true);
-    }
-  }
-  else
-  {
-    $fleet_row_id = $fleet_row['fleet_id'];
-  }
-
-  // $fleet_row is false - not existing DB record
-  if(!$fleet_row)
-  {
-    $flt_fleet_cache[$fleet_row_id] = $fleet_row;
-    return false;
-  }
-
-  if ($fleet_row['fleet_mess'] != 0)
-  { // Fleet is returning to source
-    if ($fleet_row['fleet_end_time'] <= SN_TIME_NOW)
-    { // Fleet is arrived
-      // Restoring fleet to planet
-      RestoreFleetToPlanet($fleet_row, true);
-
-      // Tagging record for fleet as not existing in DB
-      $flt_fleet_cache[$fleet_row['fleet_id']] = false;
-
-      // Removing fleet source planet record from cache
-      unset($flt_planet_cache[flt_planet_hash($fleet_row, 'fleet_start_')]);
-      // Changed data will be recached later
-    }
-    return false;
-  }
-  // Otherwise fleet still not arriving and will not processed in this timeslot
-  // Following code is almost useless - it should never trigger. But let it be just in case
-  //      Does fleet even arrive to destination?     OR  Does fleet has timed mission (MT_HOLD/MT_EXPLORE)? If yes - does it complete?
-  elseif ($fleet_row['fleet_start_time'] > SN_TIME_NOW || ($fleet_row['fleet_end_stay'] && $fleet_row['fleet_end_stay'] > SN_TIME_NOW))
-  {
-    return false;
-  }
-
-  if(!isset($flt_fleet_cache[$fleet_row_id]))
-  {
-    $flt_fleet_cache[$fleet_row_id] = $fleet_row;
-  }
-
-  if($fleet_row['fleet_mission'] == MT_RECYCLE || $fleet_row['fleet_mission'] == MT_COLONIZE)
-  {
-    $fleet_row['fleet_end_type'] = PT_PLANET;
-  }
-  elseif($fleet_row['fleet_mission'] == MT_DESTROY)
-  {
-    $fleet_row['fleet_end_type'] = PT_MOON;
-  }
-
-  // On CACHE_EVENT we will cache only fleet to reduce row lock rate
-  if(($cache_mode & CACHE_EVENT) == CACHE_EVENT)
-  {
-    $flt_event_cache[] = array(
-      'fleet_id'        => $fleet_row['fleet_id'],
-      'fleet_time'      => $fleet_row['fleet_time'],
-      'src_planet_hash' => flt_planet_hash($fleet_row, 'fleet_start_'),
-      'src_user_id'     => $fleet_row['fleet_owner'],
-      'dst_planet_hash' => flt_planet_hash($fleet_row, 'fleet_end_'),
-      'dst_user_id'     => $fleet_row['fleet_target_owner']
-    );
-  }
-  else
-  {
-    $sn_groups_mission = sn_get_groups('missions');
-    $mission_data = $sn_groups_mission[$fleet_row['fleet_mission']];
-
-// А здесь надо проверять, какие нужны данные и кэшировать только их
-    $source = array('planet_hash' => '', 'user_id' => 0);
-    if($mission_data['src_planet'])
-    {
-      flt_cache_planet(array('galaxy' => $fleet_row['fleet_start_galaxy'], 'system' => $fleet_row['fleet_start_system'], 'planet' => $fleet_row['fleet_start_planet'], 'planet_type' => $fleet_row['fleet_start_type']), $flt_user_cache, $flt_planet_cache);
-    }
-    elseif($mission_data['src_user'])
-    {
-      flt_cache_user($fleet_row['fleet_owner'], $flt_user_cache);
-    }
-
-    $destination = array('planet_hash' => '', 'user_id' => 0);
-    if($mission_data['dst_planet'])
-    {
-      $destination = flt_cache_planet(array('galaxy' => $fleet_row['fleet_end_galaxy'], 'system' => $fleet_row['fleet_end_system'], 'planet' => $fleet_row['fleet_end_planet'], 'planet_type' => $fleet_row['fleet_end_type']), $flt_user_cache, $flt_planet_cache);
-    }
-    elseif($mission_data['dst_user'])
-    {
-      flt_cache_user($fleet_row['fleet_target_owner'], $flt_user_cache);
-    }
-  }
-
-  return true;
 }
 
 // ------------------------------------------------------------------
@@ -596,7 +351,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 
     if($mission_data['dst_planet'])
     {
-      $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_user'], $mission_data['dst_planet']['id'], SN_TIME_NOW);
+      $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_user'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
       $mission_data['dst_user'] = $mission_data['dst_user'] ? $mission_data['dst_planet']['user'] : null;
       $mission_data['dst_planet'] = $mission_data['dst_planet']['planet'];
     }
@@ -706,8 +461,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
     }
 */
   }
-  // doquery('COMMIT;');
-
+// doquery('COMMIT;');
 //  if($flt_update_mode == 1)
 //  {
 //    $config->db_saveItem('flt_lastUpdate', 0);

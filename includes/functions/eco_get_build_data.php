@@ -16,9 +16,10 @@ function eco_get_lab_max_effective_level(&$user, $lab_require)
   if(!$user['user_as_ally'] && !isset($user['laboratories_active']))
   {
     $user['laboratories_active'] = array();
-    $lab_db_name = get_unit_param(STRUC_LABORATORY, P_NAME);
-    $nanolab_db_name = get_unit_param(STRUC_LABORATORY_NANO, P_NAME);
-    $query = doquery("SELECT id, que, {$lab_db_name}, {$nanolab_db_name} FROM {{planets}} WHERE id_owner='{$user['id']}' AND {$lab_db_name} > 0");
+    // $query = doquery("SELECT id, que, {$lab_db_name}, {$nanolab_db_name} FROM {{planets}} WHERE id_owner='{$user['id']}' AND {$lab_db_name} > 0");
+    $query = doquery("SELECT DISTINCT unit_location_id AS `id`
+    FROM {{unit}}
+    WHERE unit_player_id = {$user['id']} AND unit_location_type = " . LOC_PLANET . " AND unit_level > 0 AND unit_snid IN (" . STRUC_LABORATORY . ", " . STRUC_LABORATORY_NANO . ");");
     while($row = mysql_fetch_assoc($query))
     {
       if(!eco_unit_busy($user, $row, UNIT_TECHNOLOGIES))
@@ -72,13 +73,12 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   $rpg_exchange_deuterium = $config->rpg_exchange_deuterium;
 
   $unit_data = get_unit_param($unit_id);
-  $unit_db_name = &$unit_data[P_NAME];
-
+  // $unit_db_name = &$unit_data[P_NAME];
 
   $unit_factor = $unit_data[P_COST][P_FACTOR] ? $unit_data[P_COST][P_FACTOR] : 1;
   $price_increase = pow($unit_factor, $unit_level);
 
-  $can_build   = $unit_data[P_MAX_STACK] ? $unit_data[P_MAX_STACK] : 1000000000000;
+  $can_build   = isset($unit_data[P_MAX_STACK]) && $unit_data[P_MAX_STACK] ? $unit_data[P_MAX_STACK] : 1000000000000;
   $can_destroy = 1000000000000;
   foreach($unit_data[P_COST] as $resource_id => $resource_amount)
   {
@@ -93,18 +93,18 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
       continue;
     }
 
-    $cost[BUILD_CREATE][$resource_id] = floor($resource_cost);
-    $cost[BUILD_DESTROY][$resource_id] = floor($resource_cost / 2);
+    $cost[BUILD_CREATE][$resource_id] = round($resource_cost);
+    $cost[BUILD_DESTROY][$resource_id] = round($resource_cost / 2);
 
-    $resource_db_name = get_unit_param($resource_id, P_NAME);
+    $resource_db_name = pname_resource_name($resource_id);
     if(in_array($resource_id, sn_get_groups('resources_loot')))
     {
       $time += $resource_cost * $config->__get("rpg_exchange_{$resource_db_name}") / $rpg_exchange_deuterium;
-      $resource_got = $planet[$resource_db_name];
+      $resource_got = mrc_get_level($user, $planet, $resource_id);
     }
     elseif($resource_id == RES_DARK_MATTER)
     {
-      $resource_got = $user[$resource_db_name];
+      $resource_got = mrc_get_level($user, null, $resource_id);
     }
     elseif($resource_id == RES_ENERGY)
     {
@@ -125,13 +125,13 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   $can_destroy = $can_destroy > 0 ? floor($can_destroy) : 0;
   $cost['CAN'][BUILD_DESTROY] = $can_destroy;
 
+  // TODO - Вынести в отдельную процедуру расчёт стоимости
   if($only_cost)
   {
     return $cost;
   }
 
   $time = $time * 60 * 60 / get_game_speed() / 2500;
-
 
   $cost['RESULT'][BUILD_CREATE] = eco_can_build_unit($user, $planet, $unit_id);
   $cost['RESULT'][BUILD_CREATE] = $cost['RESULT'][BUILD_CREATE] == BUILD_ALLOWED ? ($cost['CAN'][BUILD_CREATE] ? BUILD_ALLOWED : BUILD_NO_RESOURCES) : $cost['RESULT'][BUILD_CREATE];
@@ -143,7 +143,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_ROBOT) + 1);
     $mercenary = MRC_ENGINEER;
     $cost['RESULT'][BUILD_DESTROY] =
-      $planet[$unit_db_name]
+      mrc_get_level($user, $planet, $unit_id, false, true)
         ? ($cost['CAN'][BUILD_DESTROY]
             ? ($cost['RESULT'][BUILD_CREATE] == BUILD_UNIT_BUSY ? BUILD_UNIT_BUSY : BUILD_ALLOWED)
             : BUILD_NO_RESOURCES
@@ -173,8 +173,8 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   }
 
   $time = ($time >= 1) ? $time : (in_array($unit_id, sn_get_groups('governors')) ? 0 : 1);
-  $cost[RES_TIME][BUILD_CREATE]  = floor($time);
-  $cost[RES_TIME][BUILD_DESTROY] = $time <= 1 ? 1 : floor($time / 2);
+  $cost[RES_TIME][BUILD_CREATE]  = round($time);
+  $cost[RES_TIME][BUILD_DESTROY] = $time <= 1 ? 1 : round($time / 2);
 
   return $cost;
 }
@@ -232,8 +232,8 @@ function sn_eco_unit_busy(&$user, &$planet, $unit_id, &$result)
   {
     if(($unit_id == STRUC_LABORATORY || $unit_id == STRUC_LABORATORY_NANO) && !$config->BuildLabWhileRun)
     {
-      que_get_que($global_que, QUE_RESEARCH, $user['id'], $planet['id'], false);
-      if(!empty($global_que[QUE_RESEARCH][0]))
+      $global_que = que_get(QUE_RESEARCH, $user['id'], $planet['id'], false);
+      if(!empty($global_que['ques'][QUE_RESEARCH][$user['id']][0]))
       {
         $result = true;
       }

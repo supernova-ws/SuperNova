@@ -53,7 +53,7 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
   {
     $unit_data = get_unit_param($unit_id);
     $unit_level = mrc_get_level($user, $planet_row, $unit_id);
-    $unit_load = $planet_row[$unit_data[P_NAME] . "_porcent"];
+    $unit_load = $planet_row[pname_factory_production_field_name($unit_id)];
 
     foreach($unit_data['production'] as $resource_id => $function)
     {

@@ -17,18 +17,21 @@ lng_include('fleet');
 if($TargetPlanet = sys_get_param_id('jmpto'))
 {
   doquery('START TRANSACTION');
+  doquery("SELECT `id` FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE");
+
   $planetrow = doquery("SELECT * FROM {{planets}} WHERE id = {$planetrow['id']} LIMIT 1 FOR UPDATE;", true);
   if(!($NextJumpTime = uni_get_time_to_jump($planetrow)))
   {
-    $TargetGate = doquery ( "SELECT `id`, `sprungtor`, `last_jump_time` FROM {{planets}} WHERE `id` = '{$TargetPlanet}'  LIMIT 1 FOR UPDATE;", true);
-    if($TargetGate['sprungtor'] > 0)
+    $TargetGate = doquery ( "SELECT `id`, `last_jump_time` FROM {{planets}} WHERE `id` = '{$TargetPlanet}'  LIMIT 1 FOR UPDATE;", true);
+    if(mrc_get_level($user, $TargetGate, STRUC_MOON_GATE) > 0)
     {
       $NextDestTime = uni_get_time_to_jump ( $TargetGate );
       if(!$NextDestTime)
       {
-        $SubQueryOri = "";
-        $SubQueryDes = "";
+        // $SubQueryOri = "";
+        // $SubQueryDes = "";
         $ship_list = sys_get_param('ships');
+        $db_changeset = array();
         foreach($ship_list as $ship_id => $ship_count)
         {
           if(!in_array($ship_id, sn_get_groups('fleet')))
@@ -39,16 +42,17 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
           $ship_count = max(0, min(floor($ship_count), mrc_get_level($user, $planetrow, $ship_id)));
           if($ship_count)
           {
-            $ship_db_name = get_unit_param($ship_id, P_NAME);
-            $SubQueryOri .= "`{$ship_db_name}` = `{$ship_db_name}` - '{$ship_count}', ";
-            $SubQueryDes .= "`{$ship_db_name}` = `{$ship_db_name}` + '{$ship_count}', ";
+            $db_changeset['planets'][] = sn_db_unit_changeset_prepare($ship_id, -$ship_count, $user, $planetrow['id']);
+            $db_changeset['planets'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $TargetGate['id']);
           }
         }
         // Dit monsieur, y avait quelque chose a envoyer ???
-        if($SubQueryOri)
+        if(!empty($db_changeset))
         {
-          doquery("UPDATE {{planets}} SET {$SubQueryOri} `last_jump_time` = '{$time_now}' WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
-          doquery("UPDATE {{planets}} SET {$SubQueryDes} `last_jump_time` = '{$time_now}' WHERE `id` = '{$TargetGate['id']}' LIMIT 1;");
+          doquery("UPDATE {{planets}} SET `last_jump_time` = '{$time_now}' WHERE `id` = '{$TargetGate['id']}' LIMIT 1;");
+          doquery("UPDATE {{planets}} SET `last_jump_time` = '{$time_now}' WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+          sn_db_changeset_apply($db_changeset);
+
           doquery("UPDATE {{users}} SET `current_planet` = '{$TargetGate['id']}' WHERE `id` = '{$user['id']}' LIMIT 1;");
 
           $planetrow['last_jump_time'] = $time_now;
@@ -119,9 +123,6 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
   }
 }
 
-
 // -----------------------------------------------------------------------------------------------------------
 // History version
 // 1.0 - Version from scrap .. y avait pas ... bin maintenant y a !!
-
-?>

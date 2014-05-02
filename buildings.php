@@ -9,7 +9,7 @@
  * @version 1.3
 // History version
 // 1.0 - Nettoyage modularisation
-// 1.1 - Mise au point, mise en fonction pour linéarisation du fonctionnement
+// 1.1 - Mise au point, mise en fonction pour linï¿½arisation du fonctionnement
 // 1.2 - Liste de construction batiments
  * @copyright 2008 by Chlorel for XNova
  */
@@ -31,7 +31,7 @@ switch ($mode)
   case 'research':
   case QUE_RESEARCH:
     require_once('includes/includes/eco_bld_tech.php');
-    eco_bld_tech($user, $planetrow, $que);
+    eco_bld_tech($user, $planetrow);
   break;
 
   case SUBQUE_FLEET:
@@ -43,6 +43,6 @@ switch ($mode)
   case QUE_STRUCTURES:
   default:
     require_once('includes/includes/eco_bld_structures.php');
-    eco_build(QUE_STRUCTURES, $user, $planetrow, $que);
+    eco_build(QUE_STRUCTURES, $user, $planetrow);
   break;
 }

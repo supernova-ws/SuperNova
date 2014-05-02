@@ -172,7 +172,7 @@ function pretty_time($seconds)
 // ----------------------------------------------------------------------------------------------------------------
 function eco_planet_fields_max($planet)
 {
-  return $planet['field_max'] + ($planet['planet_type'] == PT_PLANET ? $planet[get_unit_param(STRUC_TERRAFORMER, P_NAME)] * 5 : $planet[get_unit_param(STRUC_MOON_STATION, P_NAME)] * 3);
+  return $planet['field_max'] + ($planet['planet_type'] == PT_PLANET ? mrc_get_level($user, $planet, STRUC_TERRAFORMER) * 5 : (mrc_get_level($user, $planet, STRUC_MOON_STATION) * 3));
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -381,11 +381,11 @@ function eco_get_total_cost($unit_id, $unit_level)
 
   $rate[RES_METAL] = $config->rpg_exchange_metal;
   $rate[RES_CRYSTAL] = $config->rpg_exchange_crystal / $config->rpg_exchange_metal;
-  $rate[RES_DEUTERIUM] = $config->rpg_exchange_deterium / $config->rpg_exchange_metal;
+  $rate[RES_DEUTERIUM] = $config->rpg_exchange_deuterium / $config->rpg_exchange_metal;
 
   // $unit_cost_data = &$sn_data[$unit_id]['cost'];
   $unit_cost_data = get_unit_param($unit_id, 'cost');
-  $factor = $unit_cost_data['factor'];
+  $factor = isset($unit_cost_data['factor']) ? $unit_cost_data['factor'] : 1;
   $cost_array = array(BUILD_CREATE => array(), 'total' => 0);
   $unit_level = $unit_level > 0 ? $unit_level : 0;
   foreach($unit_cost_data as $resource_id => $resource_amount)
@@ -395,7 +395,7 @@ function eco_get_total_cost($unit_id, $unit_level)
       continue;
     }
 //    $cost_array[BUILD_CREATE][$resource_id] = $resource_amount * ($factor == 1 ? $unit_level : ((pow($factor, $unit_level) - $factor) / ($factor - 1)));
-    $cost_array[BUILD_CREATE][$resource_id] = $resource_amount * ($factor == 1 ? $unit_level : ((1 - pow($factor, $unit_level)) / (1 - $factor)));
+    $cost_array[BUILD_CREATE][$resource_id] = round($resource_amount * ($factor == 1 ? $unit_level : ((1 - pow($factor, $unit_level)) / (1 - $factor))));
     if(in_array($resource_id, $sn_group_resources_loot))
     {
       $cost_array['total'] += $cost_array[BUILD_CREATE][$resource_id] * $rate[$resource_id];
@@ -425,7 +425,7 @@ function unit_get_level($unit_id, &$context = null, $options = null){return sn_f
 function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result)
 {
   global $config, $time_now;
-  $unit_db_name = get_unit_param($unit_id, P_NAME);
+  $unit_db_name = pname_resource_name($unit_id);
   $for_update = $options['for_update'];
 
   $unit_level = 0;
@@ -449,6 +449,26 @@ function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result
     }
     $unit_level = intval($user[$unit_id]['unit_level']);
   }
+  elseif($context['location'] == LOC_PLANET)
+  {
+    $planet = &$context['planet'];
+    if(!$planet['id'])
+    {
+      $planet[$unit_id]['unit_level'] = $planet[$unit_db_name];
+    }
+    elseif($for_update || !isset($planet[$unit_id]))
+    {
+      $time_restriction =
+        get_unit_param($unit_id, P_UNIT_TEMPORARY) || (get_unit_param($unit_id, P_UNIT_TYPE) == UNIT_MERCENARIES && $config->empire_mercenary_temporary)
+          ? " AND unit_time_start <= FROM_UNIXTIME({$time_now}) AND unit_time_finish >= FROM_UNIXTIME({$time_now}) "
+          : '';
+      $unit_level = doquery("SELECT * FROM {{unit}} WHERE unit_location_type = {$context['location']} AND unit_location_id = {$planet['id']} AND unit_snid = '{$unit_id}' {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
+      $unit_level['unit_time_start'] = strtotime($unit_level['unit_time_start']);
+      $unit_level['unit_time_finish'] = strtotime($unit_level['unit_time_finish']);
+      $planet[$unit_id] = $unit_level;
+    }
+    $unit_level = intval($planet[$unit_id]['unit_level']);
+  }
 
   return $result = $unit_level;
 }
@@ -458,7 +478,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
 {
 // TODO: Add caching for known items
   $mercenary_level = 0;
-  $unit_db_name = get_unit_param($unit_id, P_NAME);
+  $unit_db_name = pname_resource_name($unit_id);
 
   if(in_array($unit_id, sn_get_groups(array('plans', 'mercenaries', 'tech', 'artifacts'))))
   {
@@ -476,7 +496,16 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   {
     $mercenary_level = $user[$unit_db_name];
   }
-  elseif(in_array($unit_id, sn_get_groups(array('resources_loot', 'structures', 'fleet', 'defense'))) || $unit_id == UNIT_SECTOR)
+  elseif(in_array($unit_id, sn_get_groups(array('structures', 'fleet', 'defense'))))
+  {
+    $context = array(
+      'location' => LOC_PLANET,
+      'planet' => &$planet,
+    );
+    $mercenary_level = unit_get_level($unit_id, $context, array('for_update' => $for_update));
+  }
+  // elseif(in_array($unit_id, sn_get_groups(array('resources_loot', 'structures', 'fleet', 'defense'))) || $unit_id == UNIT_SECTOR)
+  elseif(in_array($unit_id, sn_get_groups(array('resources_loot'))) || $unit_id == UNIT_SECTOR)
   {
     $mercenary_level = !empty($planet) ? $planet[$unit_db_name] : $user[$unit_db_name];
   }
@@ -837,26 +866,26 @@ function sn_sys_sector_buy($redirect = 'overview.php')
     return;
   }
 
-  doquery("START TRANSACTION;");
+  sn_db_transaction_start();
   $planetrow = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
   $user = $planetrow['user'];
   $planetrow = $planetrow['planet'];
   $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
   $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
-  if($sector_cost <= $user[get_unit_param(RES_DARK_MATTER, 'name')])
+  if($sector_cost <= $user[get_unit_param(RES_DARK_MATTER, P_NAME)])
   {
     $planet_name_text = uni_render_planet($planetrow);
     if(rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, "User {$user['username']} ID {$user['id']} purchased 1 sector on planet {$planet_name_text} planet type {$planetrow['planet_type']} ID {$planetrow['id']} for {$sector_cost} DM"))
     {
-      $sector_db_name = get_unit_param(UNIT_SECTOR, P_NAME);
+      $sector_db_name = pname_resource_name(UNIT_SECTOR);
       doquery("UPDATE {{planets}} SET {$sector_db_name} = {$sector_db_name} + 1 WHERE `id` = {$planetrow['id']} LIMIT 1;");
     }
     else
     {
-      doquery("ROLLBACK;");
+      sn_db_transaction_rollback();
     }
   }
-  doquery("COMMIT;");
+  sn_db_transaction_commit();
 
   sys_redirect($redirect);
 }
@@ -978,6 +1007,7 @@ function sn_render_player_nick($render_user, $options = false, &$result)
   return $result;
 }
 
+// TODO ПЕРЕДЕЛАТЬ!
 function sys_stat_get_user_skip_list()
 {
   global $config;
@@ -1450,3 +1480,5 @@ function flt_destroy(&$fleet_row)
 
   return doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1;");
 }
+
+require_once('general_pname.php');

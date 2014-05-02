@@ -20,41 +20,53 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     return $no_data;
   }
 
-  $suffix = $simulation ? '' : 'FOR UPDATE';
+  $player_join = !$simulation ? "LEFT JOIN `{{users}}` AS u ON u.id = p.id_owner" : '';
+  $planet_where = !is_array($planet) ? "p.`id` = '{$planet}'" : (
+    isset($planet['galaxy']) && $planet['galaxy'] ?
+      "p.`galaxy` = '{$planet['galaxy']}' AND p.`system` = '{$planet['system']}' AND p.`planet` = '{$planet['planet']}' and p.`planet_type` = '{$planet['planet_type']}'" :
+      "p.`id` = '{$planet['id']}'"
+  );
+  $suffix = !$simulation ? 'FOR UPDATE' : '';
+
+  $planet = doquery("SELECT p.* FROM `{{planets}}` AS p {$player_join} WHERE {$planet_where} LIMIT 1 {$suffix};", true);
+  if(!isset($planet['id']))
+  {
+    return $no_data;
+  }
+/*
   if(is_array($planet))
   {
     if(!(isset($planet['id']) && $planet['id']) || !$simulation)
     {
-      $planet = doquery("SELECT p.* FROM `{{planets}}` AS p " . ($simulation ? '' : "LEFT JOIN `{{users}}` AS u ON u.id = p.id_owner ") .
+      $planet = doquery("SELECT p.* FROM `{{planets}}` AS p {$player_join} ".
         "WHERE p.`galaxy` = '{$planet['galaxy']}' AND p.`system` = '{$planet['system']}' AND p.`planet` = '{$planet['planet']}' and p.`planet_type` = '{$planet['planet_type']}' LIMIT 1 {$suffix};", true);
     }
   }
   else
   {
-    $planet = doquery("SELECT p.* FROM `{{planets}}` AS p " . ($simulation ? '' : "LEFT JOIN `{{users}}` AS u ON u.id = p.id_owner ") . "WHERE p.`id` = '{$planet}' LIMIT 1 {$suffix};", true);
+    $planet = doquery("SELECT p.* FROM `{{planets}}` AS p {$player_join} WHERE p.`id` = '{$planet}' LIMIT 1 {$suffix};", true);
   }
+*/
 
-  if(!($planet && isset($planet['id']) && $planet['id']))
+
+  $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$planet['id_owner']} LIMIT 1 {$suffix};", true);
+  if(!isset($user['id']))
   {
     return $no_data;
   }
 
-  if(!$user || !is_array($user) || !isset($user['id']))
-  {
-    $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$planet['id_owner']} LIMIT 1 {$suffix};", true);
-    if(!$user)
-    {
-      return $no_data;
-    }
-  }
+  $que = que_process($user, $planet, $UpdateTime);
 
   $ProductionTime = max(0, $UpdateTime - $planet['last_update']);
   $planet['prev_update'] = $planet['last_update'];
   $planet['last_update'] += $ProductionTime;
 
+  /*
   $que = eco_que_process($user, $planet, $ProductionTime);
   $hangar_built = $ProductionTime && !$simulation ? eco_bld_que_hangar($user, $planet, $ProductionTime) : array();
+  */
 
+  // TODO ЭТО НАДО ДЕЛАТЬ ТОЛЬКО ПРИ СПЕЦУСЛОВИЯХ
   $caps_real = eco_get_planet_caps($user, $planet, $ProductionTime);
   $resources_increase = array(
     RES_METAL => 0,
@@ -67,7 +79,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     case PT_PLANET:
       foreach($resources_increase as $resource_id => &$increment)
       {
-        $resource_name = get_unit_param($resource_id, P_NAME);
+        $resource_name = pname_resource_name($resource_id);
         $increment = $caps_real['total'][$resource_id] * $ProductionTime / 3600;
         $store_free = $caps_real['total_storage'][$resource_id] - $planet[$resource_name];
         $increment = min($increment, max(0, $store_free));
@@ -92,11 +104,12 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     break;
   }
 
+  // TODO пересчитывать размер планеты только при постройке чего-нибудь и при покупке сектора
   $planet['field_current'] = 0;
   $sn_group_build_allow = sn_get_groups('build_allow');
   foreach($sn_group_build_allow[$planet['planet_type']] as $building_id)
   {
-    $planet['field_current'] += $planet[get_unit_param($building_id, P_NAME)];
+    $planet['field_current'] += mrc_get_level($user, $planet, $building_id, !$simulation, true);
   }
 
   if($simulation)
@@ -113,8 +126,10 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     `crystal_perhour` = '{$planet['crystal_perhour']}',
     `deuterium_perhour` = '{$planet['deuterium_perhour']}',
     `energy_used` = '{$planet['energy_used']}',
-    `energy_max` = '{$planet['energy_max']}', ";
+    `energy_max` = '{$planet['energy_max']}' ";
 
+  // TODO  ЭТО ВСЁ НУЖНО ОТРАБАТЫВАТЬ В que_process
+  /*
   if(!empty($hangar_built['built']))
   {
     foreach($hangar_built['built'] as $Element => $Count)
@@ -136,6 +151,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   $QryUpdatePlanet .= "`b_hangar_id` = '{$planet['b_hangar_id']}', `b_hangar` = '{$planet['b_hangar']}' ";
   $QryUpdatePlanet .= $que['query'] != $planet['que'] ? ",{$que['query']} " : '';
 
+
   if(!empty($que['built']))
   {
     $message = array();
@@ -152,10 +168,14 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     }
     msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_QUE, $lang['msg_que_planet_from'], $lang['msg_que_built_subject'], implode('<br />', $message));
   }
+  */
 
   $QryUpdatePlanet .= "WHERE `id` = '{$planet['id']}' LIMIT 1;";
   doquery($QryUpdatePlanet);
 
+
+  // TODO  ОТРАБАТЫВАТЬ ЭТО ВСЁ В que_process
+  /*
   if(!empty($que['xp']))
   {
     foreach($que['xp'] as $xp_type => $xp_amount)
@@ -175,6 +195,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     }
   }
   qst_reward($user, $planet, $que['rewards'], $que['quests']);
+  */
 
   //$planet['planet_caps'] = $Caps;
 

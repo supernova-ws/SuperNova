@@ -225,5 +225,3 @@ function int_planet_pretemplate($planetrow, &$template)
     'PLANET_GOVERNOR_LEVEL_MAX' => get_unit_param($governor_id, P_MAX_STACK),
   ));
 }
-
-?>

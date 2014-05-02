@@ -56,7 +56,7 @@ switch($mode)
     {
       try
       {
-        doquery("START TRANSACTION");
+        sn_db_transaction_start();
         $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
         $user = $global_data['user'];
         $planetrow = $global_data['planet'];
@@ -87,11 +87,11 @@ switch($mode)
           'STATUS'  => ERR_NONE,
           'MESSAGE' => $lang['ov_capital_err_none'],
         );
-        doquery("COMMIT");
+        sn_db_transaction_commit();
       }
       catch(exception $e)
       {
-        doquery("ROLLBACK");
+        sn_db_transaction_rollback();
         $result = array(
           'STATUS'  => $e->getCode(),
           'MESSAGE' => $e->getMessage(),
@@ -107,7 +107,7 @@ switch($mode)
           throw new exception($lang['ov_teleport_err_wrong_coordinates'], ERR_ERROR);
         }
 
-        doquery("START TRANSACTION");
+        sn_db_transaction_start();
         $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
         $user = $global_data['user'];
         $planetrow = $global_data['planet'];
@@ -132,7 +132,7 @@ switch($mode)
         }
 
         $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
-        doquery("COMMIT");
+        sn_db_transaction_commit();
         $user = $global_data['user'];
         $planetrow = $global_data['planet'];
         $result = array(
@@ -142,7 +142,7 @@ switch($mode)
       }
       catch(exception $e)
       {
-        doquery("ROLLBACK");
+        sn_db_transaction_rollback();
         $result = array(
           'STATUS'  => $e->getCode(),
           'MESSAGE' => $e->getMessage(),
@@ -184,7 +184,7 @@ switch($mode)
       )
     )
     {
-      doquery('START TRANSACTION;');
+      sn_db_transaction_start();
       $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", '', true);
       $build_data = eco_get_build_data($user, $planetrow, $hire, $planetrow['PLANET_GOVERNOR_ID'] == $hire ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0);
       if($build_data['CAN'][BUILD_CREATE])
@@ -203,7 +203,7 @@ switch($mode)
         doquery("UPDATE {{planets}} SET `PLANET_GOVERNOR_ID` = {$hire}, `PLANET_GOVERNOR_LEVEL` = {$query} WHERE `id` = {$planetrow['id']} LIMIT 1;");
         rpg_points_change($user['id'], RPG_MERCENARY, -$build_data[BUILD_CREATE][RES_DARK_MATTER]);
       }
-      doquery('COMMIT;');
+      sn_db_transaction_commit();
       header("Location: overview.php?mode=manage");
       ob_end_flush();
       die();
@@ -285,13 +285,14 @@ switch($mode)
     $planet_count = 0;
     $planets_query = SortUserPlanets($user, false, '*');
 
-    while ($UserPlanet = mysql_fetch_assoc($planets_query))
+    sn_db_transaction_start();
+    while($UserPlanet = mysql_fetch_assoc($planets_query))
     {
-      $UserPlanet      = sys_o_get_updated($user, $UserPlanet, $time_now, true);
+      $UserPlanet      = sys_o_get_updated($user, $UserPlanet, $time_now);
       $list_planet_que = $UserPlanet['que'];
       $UserPlanet      = $UserPlanet['planet'];
 
-      $template_planet = tpl_parse_planet($UserPlanet, $list_planet_que);
+      $template_planet = tpl_parse_planet($UserPlanet);
 
       $planet_fleet_id = 0;
       $fleet_list = $template_planet['fleet_list'];
@@ -330,6 +331,7 @@ switch($mode)
 
       $planet_count++;
     }
+    sn_db_transaction_commit();
 
     tpl_assign_fleet($template, $fleets_to_planet);
     tpl_assign_fleet($template, $fleets);
@@ -367,27 +369,34 @@ switch($mode)
     $sn_group_ques = sn_get_groups('ques');
     foreach(array(QUE_STRUCTURES => $sn_group_ques[QUE_STRUCTURES]) as $que_id => $que_type_data)
     {
+      $this_que = $que['ques'][$que_id][$user['id']][$planetrow['id']];
       $template->assign_block_vars('ques', array(
         'ID'     => $que_id,
         'NAME'   => $lang['sys_ques'][$que_id],
-        'LENGTH' => count($que['que'][$que_id]),
+        'LENGTH' => empty($this_que) ? 0 : count($this_que),
       ));
 
-      if($que['que'][$que_id])
+      if(!empty($this_que))
       {
-        foreach($que['que'][$que_id] as $que_item)
+        foreach($this_que as $que_item)
         {
-          $template->assign_block_vars('que', $que_item);
+          $template->assign_block_vars('que', que_tpl_parse_element($que_item));
         }
       }
     }
 
-    $que_hangar_length = tpl_assign_hangar(QUE_HANGAR, $planetrow, $template);
-
+    $que_hangar_length = tpl_assign_hangar($template, $planetrow, SUBQUE_FLEET);
     $template->assign_block_vars('ques', array(
-      ID     => QUE_HANGAR,
-      NAME   => $lang['sys_ques'][QUE_HANGAR],
-      LENGTH => $que_hangar_length,
+      'ID'     => QUE_HANGAR,
+      'NAME'   => $lang['sys_ques'][QUE_HANGAR],
+      'LENGTH' => $que_hangar_length,
+    ));
+
+    $que_hangar_length = tpl_assign_hangar($template, $planetrow, SUBQUE_DEFENSE);
+    $template->assign_block_vars('ques', array(
+      'ID'     => SUBQUE_DEFENSE,
+      'NAME'   => $lang['sys_ques'][SUBQUE_DEFENSE],
+      'LENGTH' => $que_hangar_length,
     ));
 
     $overview_planet_rows = $user['opt_int_overview_planet_rows'];
@@ -433,7 +442,7 @@ switch($mode)
       'planet_density_index'  => $planetrow['density_index'],
       'planet_density_text'   => $lang['uni_planet_density_types'][$planetrow['density_index']],
 
-      'GATE_LEVEL'            => $planetrow[get_unit_param(STRUC_MOON_GATE, P_NAME)],
+      'GATE_LEVEL'            => mrc_get_level($user, $planetrow, STRUC_MOON_GATE),
       'GATE_JUMP_REST_TIME'   => uni_get_time_to_jump($planetrow),
 
       'ADMIN_EMAIL'           => $config->game_adminEmail,
@@ -445,13 +454,11 @@ switch($mode)
       'LIST_ROW_COUNT'        => $overview_planet_rows,
       'LIST_COLUMN_COUNT'     => $overview_planet_columns,
 
-      'SECTOR_CAN_BUY'        => $sector_cost <= $user[get_unit_param(RES_DARK_MATTER, P_NAME)],
+      'SECTOR_CAN_BUY'        => $sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER),
       'SECTOR_COST'           => $sector_cost,
       'SECTOR_COST_TEXT'      => pretty_number($sector_cost),
-      //'LastChat'       => CHT_messageParse($msg),
     ));
     tpl_set_resource_info($template, $planetrow, $fleets_to_planet, 2);
-    // nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user['news_lastread']}", $config->game_news_overview);
 
     display($template, "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");
   break;

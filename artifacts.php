@@ -20,7 +20,6 @@ lng_include('artifacts');
 
 include('includes/includes/art_artifact.php');
 
-$sn_data_dark_matter_db_name = get_unit_param(RES_DARK_MATTER, P_NAME);
 $sn_group_artifacts = sn_get_groups('artifacts');
 
 if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_int('unit_id'), $sn_group_artifacts))
@@ -37,10 +36,10 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
       $darkmater_cost = $build_data[BUILD_CREATE][RES_DARK_MATTER];
 
       // TODO: more correct check - with "FOR UPDATE"
-      if($user[$sn_data_dark_matter_db_name] >= $darkmater_cost)
+      if(mrc_get_level($user, null, RES_DARK_MATTER) >= $darkmater_cost)
       {
         $unit_max_stack = get_unit_param($unit_id, P_MAX_STACK);
-        if(!isset($unit_max_stack) || ($unit_max_stack > $user[get_unit_param($unit_id, P_NAME)]))
+        if(!isset($unit_max_stack) || $unit_max_stack > mrc_get_level($user, $planetrow, $unit_id))
         {
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, 1, $user);
           sn_db_changeset_apply($db_changeset);

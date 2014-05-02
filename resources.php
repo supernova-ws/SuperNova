@@ -26,15 +26,13 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 function int_calc_storage_bar($resource_id)
 {
-  global $lang, $template, $caps_real, $planetrow;
-
-  $resource_name = get_unit_param($resource_id, P_NAME);
+  global $lang, $template, $caps_real, $planetrow, $user;
 
   $totalProduction      = $caps_real['total'][$resource_id];
-  $storage_fill         = $caps_real['total_storage'][$resource_id] ? floor($planetrow[$resource_name] / $caps_real['total_storage'][$resource_id] * 100) : 0;
+  $storage_fill         = $caps_real['total_storage'][$resource_id] ? floor(mrc_get_level($user, $planetrow, $resource_id) / $caps_real['total_storage'][$resource_id] * 100) : 0;
 
   $template->assign_block_vars('resources', array(
-    'NAME'        => $lang["sys_$resource_name"],
+    'NAME'        => $lang["sys_" . pname_resource_name($resource_id)],
 
 //    'BASIC_INCOME'=> $config->$resource_income_name * $config->resource_multiplier,
 
@@ -73,7 +71,7 @@ if(is_array($production))
     $prod_id = intval($prod_id);
     if(in_array($prod_id, $sn_group_factories))
     {
-      $field_name              = get_unit_param($prod_id, P_NAME) . '_porcent';
+      $field_name              = pname_factory_production_field_name($prod_id);
       $percent                 = floor($percent / 10);
       $planetrow[$field_name]  = $percent;
       $SubQry                 .= "`{$field_name}` = '{$percent}',";
@@ -116,14 +114,13 @@ $template->assign_block_vars('production', array(
 
 foreach($sn_group_factories as $unit_id)
 {
-  $resource_db_name = get_unit_param($unit_id, P_NAME);
-  if($planetrow[$resource_db_name] > 0 && get_unit_param($unit_id))
+  if(mrc_get_level($user, $planetrow, $unit_id) > 0 && get_unit_param($unit_id))
   {
-    $level_plain = $planetrow[$resource_db_name];
+    $level_plain = mrc_get_level($user, $planetrow, $unit_id, false, true);
     $template->assign_block_vars('production', array(
       'ID'             => $unit_id,
-      'NAME'           => $resource_db_name,
-      'PERCENT'        => $planetrow[$resource_db_name . '_porcent'] * 10,
+      // 'NAME'           => $resource_db_name,
+      'PERCENT'        => $planetrow[pname_factory_production_field_name($unit_id)] * 10,
       'TYPE'           => $lang['tech'][$unit_id],
       'LEVEL'          => $level_plain,
       'LEVEL_BONUS'    => mrc_get_level($user, $planetrow, $unit_id) - $level_plain,

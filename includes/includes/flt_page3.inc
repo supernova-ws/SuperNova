@@ -45,7 +45,7 @@ function sn_fleet_page3()
     $errorlist .= $lang['fl_noenoughtgoods'];
   }
 
-  doquery('START TRANSACTION;');
+  sn_db_transaction_start();
 
   $user = doquery ("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1 FOR UPDATE;", true);
   $planetrow = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1 FOR UPDATE;", true);
@@ -109,13 +109,13 @@ function sn_fleet_page3()
 
   if ($errorlist)
   {
-    doquery("ROLLBACK;");
+    sn_db_transaction_rollback();
     message ("<span class='error'><ul>{$errorlist}</ul></span>", $lang['fl_error'], 'fleet.' . PHP_EX, false);
   }
 
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach ($fleetarray as $Ship => $Count) {
-    if ($Count > $planetrow[get_unit_param($Ship, P_NAME)]) {
+    if ($Count > mrc_get_level($user, $planetrow, $Ship)) {
       message ("<span class='error'><b>{$lang['fl_fleet_err']}</b></span>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
     }
   }
@@ -205,16 +205,20 @@ function sn_fleet_page3()
 
   $FleetStorage        = 0;
   $FleetShipCount      = 0;
-  $fleet_array         = "";
-  $FleetSubQRY         = "";
+pdump($fleetarray );
+  $db_changeset = array();
   foreach ($fleetarray as $Ship => $Count)
   {
     $FleetStorage    += get_unit_param($Ship, P_CAPACITY) * $Count;
-    $FleetShipCount  += $Count;
-    $fleet_array     .= "{$Ship},{$Count};";
-    $ship_db_name = get_unit_param($Ship, P_NAME);
-    $FleetSubQRY     .= "`{$ship_db_name}` = `{$ship_db_name}` - {$Count} , ";
+//    $fleet_array     .= "{$Ship},{$Count};";
+//    $ship_db_name = get_unit_param($Ship, P_NAME);
+//    $FleetSubQRY     .= "`{$ship_db_name}` = `{$ship_db_name}` - {$Count} , ";
+    $db_changeset['unit'][] = sn_db_unit_changeset_prepare($Ship, -$Count, $user, $planetrow['id']);
   }
+  $fleet_array = sys_unit_arr2str($fleetarray);
+  $FleetShipCount  += array_sum($fleetarray);
+pdump($fleet_array);
+pdump($db_changeset);
   $FleetStorage        -= $consumption;
 
   if ( $StorageNeeded > $FleetStorage)
@@ -252,7 +256,9 @@ function sn_fleet_page3()
   doquery( $QryInsertFleet);
   $fleet_id = mysql_insert_id();
 
-  doquery("UPDATE {{planets}} SET {$FleetSubQRY} `metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+  // doquery("UPDATE {{planets}} SET {$FleetSubQRY} `metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+  doquery("UPDATE {{planets}} SET `metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+  sn_db_changeset_apply($db_changeset);
 
   if(is_array($captain))
   {
@@ -281,11 +287,9 @@ function sn_fleet_page3()
     'time_back_local' => date(FMT_DATE_TIME, $fleet['end_time'] + $time_diff),
   ));
 
-  doquery("COMMIT;");
+  sn_db_transaction_commit();
   $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1;", true);
 
   $template->assign_recursive($template_result);
   display($template, $lang['fl_title']);
 }
-
-?>

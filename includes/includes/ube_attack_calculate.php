@@ -1149,8 +1149,14 @@ function sn_ube_combat_result_apply(&$combat_data)
         elseif($units_lost)
         {
           // Планета - записываем в ИД юнита его потери только если есть потери
-          $unit_db_name = get_unit_param($unit_id, P_NAME);
-          $fleet_query[$unit_id] = "`{$unit_db_name}` = `{$unit_db_name}` - {$units_lost}";
+          // $unit_db_name = get_unit_param($unit_id, P_NAME);
+          // $fleet_query[$unit_id] = "`{$unit_db_name}` = `{$unit_db_name}` - {$units_lost}";
+          pdump($fleet_info);
+          die();
+          // TODO Проверить, правильно ли выбирается пользователь
+          $db_changeset['planets'][] = sn_db_unit_changeset_prepare($unit_id, -$units_lost, $combat_data[UBE_PLAYERS][$destination_user_id], $planet_id);
+
+
         }
       }
 
@@ -1170,7 +1176,7 @@ function sn_ube_combat_result_apply(&$combat_data)
         $resource_change = (float)$fleets_outcome[$fleet_id][UBE_RESOURCES_LOOTED][$resource_id] + (float)$fleets_outcome[$fleet_id][UBE_CARGO_DROPPED][$resource_id];
         if($resource_change)
         {
-          $resource_db_name = ($fleet_id ? 'fleet_resource_' : '') . get_unit_param($resource_id, P_NAME);
+          $resource_db_name = ($fleet_id ? 'fleet_resource_' : '') . pname_resource_name($resource_id);
           $fleet_query[] = "`{$resource_db_name}` = `{$resource_db_name}` - ({$resource_change})";
         }
       }
@@ -1222,8 +1228,14 @@ function sn_ube_combat_result_apply(&$combat_data)
     }
     elseif($fleet_query)
     {
-      // Планета - сохраняем данные боя
-      doquery("UPDATE {{planets}} SET {$fleet_query} WHERE `id` = {$planet_id} LIMIT 1");
+      // TODO Проверить, правильно ли сохраняется изменения юнитов и изменения ресурсов
+      pdump($db_changeset);
+      die();
+
+      // Планета - сохраняем изменения ресурсов
+      // doquery("UPDATE {{planets}} SET {$fleet_query} WHERE `id` = {$planet_id} LIMIT 1");
+      // Планета - сохраняем изменения юнитов на планете
+      sn_db_changeset_apply($db_changeset);
     }
   }
 
@@ -1268,7 +1280,4 @@ function sn_ube_combat_result_apply(&$combat_data)
       doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
     }
   }
-
 }
-
-?>

@@ -168,10 +168,10 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
 
   $config_resource_multiplier = $config->resource_multiplier;
 
-  $BuildLevelFactor = $CurrentPlanet[$unit_data['name'] . "_porcent"];
+  $BuildLevelFactor = $CurrentPlanet[pname_factory_production_field_name($BuildID)];
   $BuildTemp = $CurrentPlanet['temp_max'];
   $BuildEnergyTech = $CurrentUser['energy_tech'];
-  $CurrentBuildtLvl = $CurrentPlanet[$unit_data['name']];
+  $CurrentBuildtLvl = mrc_get_level($CurrentUser, $CurrentPlanet, $BuildID);
 
   $BuildLevel = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
 
@@ -489,7 +489,7 @@ elseif(in_array($unit_id, sn_get_groups(array('mercenaries', 'governors', 'artif
   if(!in_array($unit_id, sn_get_groups(array('artifacts', 'resources_all'))))
   {
     $parse['max_level'] = $lang['sys_level'] . ' ' . 
-    (in_array($unit_id, sn_get_groups('mercenaries')) ? mrc_get_level($user, $planetrow, $unit_id) : ($mercenary['location'] == LOC_USER ? $user[$unit_info['name']] : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0)))
+    (in_array($unit_id, sn_get_groups('mercenaries')) ? mrc_get_level($user, $planetrow, $unit_id) : ($mercenary['location'] == LOC_USER ? mrc_get_level($user, null, $unit_id) : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0)))
     . (isset($mercenary['max']) ? "/{$mercenary['max']}" : '');
   }
 }
