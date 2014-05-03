@@ -121,7 +121,7 @@ else
 
 if($accept_offer)
 {
-  doquery('START TRANSACTION;');
+  sn_db_transaction_start();
 
   // TODO: Make sn_db_perform() multirow
   sn_db_perform('{{alliance_diplomacy}}',
@@ -152,7 +152,7 @@ if($accept_offer)
 
   msg_ali_send("{$lang['ali_dip_relation_change']} [{$negotiation['alliance_negotiation_ally_name']}] {$lang['ali_dip_relation_change_to']} {$lang['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", "{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_ally_name']}]");
   msg_ali_send("{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}] {$lang['ali_dip_relation_accept']} {$lang['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", "{$lang['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}]", -1, $negotiation['alliance_negotiation_ally_id']);
-  doquery('COMMIT;');
+  sn_db_transaction_commit();
 }
 
 foreach($sn_diplomacy_relation_list as $diplomacy_relation_id => $diplomacy_relation)

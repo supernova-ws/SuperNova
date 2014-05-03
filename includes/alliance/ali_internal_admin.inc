@@ -46,7 +46,7 @@ if(sys_get_param_str('isSaveOptions'))
     $ally['ally_web'] = strip_tags(sys_get_param_str('web'));
     $ally['ally_request_notallow'] = sys_get_param_str('request_notallow');
 
-    doquery("START TRANSACTION;");
+    sn_db_transaction_start();
     doquery("UPDATE {{alliance}} SET
         `ally_name`='{$ally['ally_name']}',
         `ally_tag`='{$ally['ally_tag']}',
@@ -60,7 +60,7 @@ if(sys_get_param_str('isSaveOptions'))
     {
       doquery("UPDATE {{users}} SET `username`='[{$ally['ally_tag']}]' WHERE `id` = {$ally['ally_user_id']};");
     }
-    doquery("COMMIT;");
+    sn_db_transaction_commit();
   }
   else
   {
@@ -87,11 +87,11 @@ elseif(sys_get_param_str('isTransfer') && $idNewLeader = sys_get_param_id('idNew
   $newLeader = doquery("SELECT `ally_id` FROM {{users}} WHERE `id` = '$idNewLeader' LIMIT 1;", true);
   if($newLeader['ally_id'] == $user['ally_id'])
   {
-    doquery("START TRANSACTION;");
+    sn_db_transaction_start();
     doquery("UPDATE {{users}} SET `ally_rank_id`='0' WHERE `id`={$user['id']} LIMIT 1;");
     doquery("UPDATE {{alliance}} SET `ally_owner`='{$idNewLeader}' WHERE `id`={$user['ally_id']};");
     doquery("UPDATE {{users}} SET `ally_rank_id`='0' WHERE `id`='{$idNewLeader}';");
-    doquery("COMMIT;");
+    sn_db_transaction_commit();
     sys_redirect('alliance.php');
   }
 }
@@ -101,10 +101,10 @@ elseif(sys_get_param_str('isDisband') && sys_get_param_str('isConfirmDisband'))
   {
     message($lang['Denied_access'], $lang['ally_admin']);
   }
-  doquery("START TRANSACTION;");
+  sn_db_transaction_start();
   doquery("DELETE FROM {{alliance}} WHERE id='{$ally['id']}';");
   doquery("UPDATE {{users}} SET `ally_id` = null, `ally_name` = null, `ally_rank_id` = 0, `ally_register_time` = 0 WHERE ally_id='{$ally['id']}';");
-  doquery("COMMIT;");
+  sn_db_transaction_commit();
   sys_redirect('alliance.php');
 };
 

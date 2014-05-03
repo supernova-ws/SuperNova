@@ -215,7 +215,6 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   coe_o_missile_calculate();
   sn_db_transaction_commit();
 
-  // doquery('START TRANSACTION;');
   sn_db_transaction_start();
   $_fleets = doquery("SELECT * FROM `{{fleets}}` WHERE
     (`fleet_start_time` <= '{$time_now}' AND `fleet_mess` = 0) 
@@ -462,7 +461,8 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
     }
 */
   }
-// doquery('COMMIT;');
+//           sn_db_transaction_commit();
+
 //  if($flt_update_mode == 1)
 //  {
 //    $config->db_saveItem('flt_lastUpdate', 0);

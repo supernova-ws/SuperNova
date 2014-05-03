@@ -19,7 +19,7 @@ if($info_action)
 {
   try
   {
-    doquery('START TRANSACTION;');
+    sn_db_transaction_start();
 
     $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
     if(mrc_get_level($user, null, RES_DARK_MATTER) < $config->rpg_cost_info)
@@ -76,12 +76,12 @@ if($info_action)
       // TODO: throw new Exception(MARKET_INFO_PLAYER_SAME, ERR_ERROR);
     }
 
-    doquery('COMMIT;');
+    sn_db_transaction_commit();
     throw new Exception($info_action, ERR_NONE);
   }
   catch (Exception $e)
   {
-    doquery('ROLLBACK;');
+    sn_db_transaction_rollback();
 
     $template->assign_block_vars('result', array(
       'STATUS' => $e->getCode(),

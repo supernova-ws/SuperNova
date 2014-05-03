@@ -591,7 +591,7 @@ if($user['authlevel'] >= 2)
         'TYPE' => 'lang',
         'ITEM' => 'adm_lm_compensate',
         'LINK' => 'admin/planet_compensate.php',
-        'LOCATION' => '+menu_admin_planet_edit',
+        'LOCATION' => '-menu_admin_fleets',
       ),
 
       'menu_admin_player_list' => array(

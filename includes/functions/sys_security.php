@@ -300,7 +300,7 @@ function sn_sys_logout($redirect = true, $only_impersonator = false)
 function DeleteSelectedUser ( $UserID )
 {
   // TODO: Full rewrite
-  doquery("START TRANSACTION;");
+  sn_db_transaction_start();
   $TheUser = doquery ( "SELECT * FROM `{{users}}` WHERE `id` = '" . $UserID . "';", '', true );
   if ( $TheUser['ally_id'] != 0 ) {
     $TheAlly = doquery ( "SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true );
@@ -333,7 +333,7 @@ function DeleteSelectedUser ( $UserID )
   doquery ( "DELETE FROM `{{users}}` WHERE `id` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
   doquery ( "UPDATE `{{config}}` SET `config_value`= `config_value` - 1 WHERE `config_name` = 'users_amount';");
-  doquery("COMMIT;");
+  sn_db_transaction_commit();
 }
 
 function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $reason = '')

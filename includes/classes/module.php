@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #38a6.12# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #39a4.3# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -426,7 +426,6 @@ abstract class sn_module_payment extends sn_module
   {
     global $debug;
 
-    doquery("START TRANSACTION;");
     sn_db_transaction_start();
     try
     {

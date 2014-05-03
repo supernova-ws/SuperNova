@@ -8,7 +8,7 @@ if(sys_get_param_str('return_fleet'))
 
   if($fleet_id)
   {
-    doquery('START TRANSACTION;');
+    sn_db_transaction_start();
     $FleetRow = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = '{$fleet_id}' LIMIT 1 FOR UPDATE;", '', true);
 
     if ($FleetRow['fleet_owner'] == $user['id'] && $FleetRow['fleet_mess'] == 0)
@@ -25,10 +25,10 @@ if(sys_get_param_str('return_fleet'))
     elseif ($FleetRow['fleet_id'] && $FleetRow['fleet_owner'] != $user['id'])
     {
       $debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array('base_dump' => true, 'fleet_row' => $FleetRow));
-      doquery('ROLLBACK;');
+      sn_db_transaction_rollback();
       die('Hack attempt 302');
     }
-    doquery('COMMIT;');
+    sn_db_transaction_commit();
   }
 }
 

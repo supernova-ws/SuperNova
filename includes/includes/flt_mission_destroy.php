@@ -39,12 +39,12 @@ function flt_mission_destroy($mission_data)
 
   sn_ube_report_save($combat_data);
   $combat_data = sn_ube_report_load($combat_data[UBE_REPORT_CYPHER]);
-doquery('COMMIT');
+          sn_db_transaction_commit();
 //debug($combat_data);
 
-doquery('START TRANSACTION');
+  sn_db_transaction_start();
   ube_combat_result_apply($combat_data);
-doquery('ROLLBACK');
+  sn_db_transaction_rollback();
 
   sn_ube_message_send($combat_data);
 

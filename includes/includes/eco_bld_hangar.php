@@ -8,7 +8,7 @@ function eco_hangar_is_building($que)
 /*
 function eco_bld_hangar_clear($planet, $action)
 {
-  doquery('START TRANSACTION;');
+  sn_db_transaction_start();
   $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planet['id']}' LIMIT 1 FOR UPDATE;", '', true);
 
   $restored_resources = array();
@@ -42,7 +42,7 @@ function eco_bld_hangar_clear($planet, $action)
   }
   $query = implode(',', $query);
   doquery("UPDATE `{{planets}}` SET {$query} WHERE `id` = '{$planet['id']}' LIMIT 1;");
-  doquery('COMMIT;');
+          sn_db_transaction_commit();
 
   sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode'));
 }

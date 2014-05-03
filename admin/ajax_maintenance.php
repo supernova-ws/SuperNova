@@ -65,7 +65,7 @@ $ques = array(
 
 foreach ($ques as $que)
 {
-  doquery('START TRANSACTION;');
+  sn_db_transaction_start();
   $QryResult = doquery($que);
 
   $que = str_replace('{{', "", $que);
@@ -80,7 +80,7 @@ foreach ($ques as $que)
     $msg .= 'red>FAILED!';
   };
   $msg .= '</font> ' . mysql_affected_rows($link) . ' ' . $lang['adm_records'];
-  doquery('COMMIT;');
+  sn_db_transaction_commit();
   set_time_limit(120);
 }
 

@@ -4,7 +4,7 @@ function sn_user_birthday_celebrate()
 {
   global $time_now, $config, $lang;
 
-  doquery("START TRANSACTION;");
+  sn_db_transaction_start();
 
   $query = doquery(
     "SELECT 
@@ -52,7 +52,5 @@ function sn_user_birthday_celebrate()
   }
 
   $config->db_saveItem('user_birthday_celebrate', $time_now);
-  doquery("COMMIT;");
+  sn_db_transaction_commit();
 }
-
-?>

@@ -71,15 +71,15 @@ if(sys_get_param('note_delete'))
       break;
     }
 
-    doquery('START TRANSACTION');
+    sn_db_transaction_start();
     doquery("DELETE FROM {{notes}} WHERE `owner` = {$user['id']} {$query_where};");
-    doquery('COMMIT');
+    sn_db_transaction_commit();
     throw new exception($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added', ERR_NONE);
   }
   catch(exception $e)
   {
     $note_id_edit = 0;
-    doquery('ROLLBACK');
+    sn_db_transaction_rollback();
     $result[] = array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
       'MESSAGE' => $lang[$e->getMessage()],
@@ -98,7 +98,7 @@ elseif($note_text = sys_get_param_str('note_text'))
 
     $note_priority = min(sys_get_param_id('note_priority', 2), count($note_priority_classes) - 1);
 
-    doquery('START TRANSACTION');
+    sn_db_transaction_start();
     if($note_id_edit)
     {
       $check_note_id = doquery("SELECT `id`, `owner` FROM {{notes}} WHERE `id` = {$note_id_edit} LIMIT 1 FOR UPDATE", true);
@@ -122,14 +122,14 @@ elseif($note_text = sys_get_param_str('note_text'))
       doquery("INSERT INTO {{notes}} SET `owner` = {$user['id']}, `time` = {$time_now}, `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}';");
     }
 
-    doquery('COMMIT');
+    sn_db_transaction_commit();
     sys_redirect('notes.php?STATUS=' . ERR_NONE . '&MESSAGE=' . ($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added'));
 //    throw new exception($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added', ERR_NONE);
   }
   catch(exception $e)
   {
     $note_id_edit = 0;
-    doquery('ROLLBACK');
+    sn_db_transaction_rollback();
     $result[] = array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
       'MESSAGE' => $lang[$e->getMessage()],

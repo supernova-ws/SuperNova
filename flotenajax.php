@@ -167,7 +167,7 @@ $ships_sent_js = 0;
 foreach($fleet_array as $unit_id => $unit_count)
 {
   $ships_sent[] = "{$unit_count} {$lang['tech'][$unit_id]}";
-  $ships_sent_js += mrc_get_level($user, $planetrow, $unit_id) - $unit_count;
+  $ships_sent_js += mrc_get_level($user, $planetrow, $unit_id, false, true);
 }
 $ships_sent = implode(', ', $ships_sent);
 //$ships_sent_js = implode(',', $ships_sent_js);

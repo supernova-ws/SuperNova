@@ -370,6 +370,9 @@ function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id =
 
 function sn_db_changeset_apply($db_changeset)
 {
+  if(!is_array($db_changeset) || empty($db_changeset))
+    return;
+
   foreach($db_changeset as $table_name => $table_data)
   {
     foreach($table_data as $record_id => $conditions)

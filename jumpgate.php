@@ -16,7 +16,7 @@ lng_include('fleet');
 
 if($TargetPlanet = sys_get_param_id('jmpto'))
 {
-  doquery('START TRANSACTION');
+  sn_db_transaction_start();
   doquery("SELECT `id` FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE");
 
   $planetrow = doquery("SELECT * FROM {{planets}} WHERE id = {$planetrow['id']} LIMIT 1 FOR UPDATE;", true);
@@ -69,7 +69,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
   } else {
     $RetMessage = $lang['gate_wait_star'] ." - ". pretty_time($NextJumpTime);
   }
-  doquery('COMMIT;');
+  sn_db_transaction_commit();
   message($RetMessage, $lang['tech'][STRUC_MOON_GATE], "jumpgate.php", 10);
 } else {
   $template = gettemplate('jumpgate', true);

@@ -56,7 +56,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
       throw new Exception($lang['mrc_msg_error_wrong_period'], ERR_ERROR);
     }
 
-    doquery('START TRANSACTION;');
+    sn_db_transaction_start();
 
     $mercenary_level_old = mrc_get_level($user, $planetrow, $mercenary_id, true, true);
     if($config->empire_mercenary_temporary && $mercenary_level_old && $mercenary_level)
@@ -115,12 +115,12 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
 
       rpg_points_change($user['id'], $mode == UNIT_PLANS ? RPG_PLANS : RPG_MERCENARY, -($darkmater_cost), "Spent for officer {$lang['tech'][$mercenary_id]} ID {$mercenary_id}");
     }
-    doquery('COMMIT;');
+    sn_db_transaction_commit();
     sys_redirect($_SERVER['REQUEST_URI']);
   }
   catch (Exception $e)
   {
-    doquery('ROLLBACK;');
+    sn_db_transaction_rollback();
     $operation_result = array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
       'MESSAGE' => $e->getMessage()
