@@ -15,13 +15,13 @@ function db_user_player_by_id($user_id, $for_update = false, $fields = '*')
 function db_user_by_username($username, $for_update = false, $fields = '*')
 {
   return ($username = trim($username))
-    ? doquery("SELECT {$fields} FROM {{users}} WHERE `username` = {$username} LIMIT 1" . ($for_update ? ' FOR UPDATE' : ''), true)
+    ? doquery("SELECT {$fields} FROM {{users}} WHERE `username` = '{$username}' LIMIT 1" . ($for_update ? ' FOR UPDATE' : ''), true)
     : false;
 }
-function db_user_player_like_name($user_name, $for_update = false, $fields = '*')
+function db_user_player_like_name($username, $for_update = false, $fields = '*')
 {
-  return ($user_name = trim($user_name))
-    ? doquery("SELECT {$fields} FROM {{users}} WHERE `username` LIKE '{$user_name}' AND `user_as_ally` IS NULL LIMIT 1" . ($for_update ? ' FOR UPDATE' : ''), true)
+  return ($username = trim($username))
+    ? doquery("SELECT {$fields} FROM {{users}} WHERE `username` LIKE '{$username}' AND `user_as_ally` IS NULL LIMIT 1" . ($for_update ? ' FOR UPDATE' : ''), true)
     : false;
 }
 

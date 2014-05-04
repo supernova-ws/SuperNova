@@ -2,13 +2,13 @@
 define('BE_DEBUG', true);
 //define('DEBUG_SQL', true);
 
-if($_SERVER['REMOTE_ADDR'] == "37.229.134.89")
+if($_SERVER['REMOTE_ADDR'] == "37.229.131.145")
 {
 //  print('hello');
 }
 else
 {
-//  print('Производится откат к бэкапу. Ждите..');die();
+//  print('Производится обновление сервера. Ждите...');die();
 }
 
 define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
