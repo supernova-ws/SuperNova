@@ -39,7 +39,7 @@ if($points = sys_get_param_float('points'))
       $queryPart = " or `id` = {$id_user}";
     }
 
-    $query = doquery("SELECT id, username FROM {{users}} WHERE `username` like '{$id_user}'" . $queryPart);
+    $query = db_user_list_like_name_extra($id_user, $queryPart, 'id, username');
     switch (mysql_num_rows($query))
     {
       case 0: // Error - no such ID or username

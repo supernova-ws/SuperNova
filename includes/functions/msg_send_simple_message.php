@@ -33,7 +33,7 @@ function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0)
 
   $ally_id = $ally_id ? $ally_id : $user['ally_id'];
 
-  $query = doquery("SELECT id, username FROM {{users}} WHERE ally_id = '{$ally_id}'" . ($ally_rank_id >= 0 ? " AND ally_rank_id = {$ally_rank_id}" : ''));
+  $query = db_user_list_player_by_ally($ally_id, $ally_rank_id, false, 'id, username');
 
   $list = '';
   while ($u = mysql_fetch_assoc($query))
@@ -79,15 +79,16 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
 
   $message_class_name_total = $sn_message_class_list[MSG_TYPE_NEW]['name'];
 
-  $QryInsertMessage = 'INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ';
-  $QryUpdateUser = "UPDATE {{users}} SET `{$message_class_name}` = `{$message_class_name}` + 1, `{$message_class_name_total}` = `{$message_class_name_total}` + 1 ";
   if($owners[0] == '*')
   {
     if($user['authlevel'] < 3)
     {
       return false;
     }
-    $QryInsertMessage .= "SELECT `id`, 0, unix_timestamp(now()), {$message_type}, '{$from}', '{$subject}', '{$text}' FROM {{users}}; ";
+    // TODO Добавить $timestamp - рассылка может быть и отсроченной
+    // TODO Добавить $sender - рассылка может быть и от кого-то
+    db_message_insert_all($message_type, $from, $subject, $text);
+    $owners = array();
   }
   else
   {
@@ -98,7 +99,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
     {
       if($user['id'] != $owner)
       {
-        $owner_row = doquery("SELECT * FROM {{users}} WHERE id = {$owner} LIMIT 1;", '', true);
+        $owner_row = db_user_by_id($owner);
       }
       else
       {
@@ -122,11 +123,10 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
       return;
     }
 
-    $QryInsertMessage .= 'VALUES ' . implode(',', $insert_values) . ';';
-    $QryUpdateUser .= 'WHERE `id` IN (' . implode(',', $owners) . ');';
+    doquery($QryInsertMessage = 'INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ' .
+      'VALUES ' . implode(',', $insert_values));
   }
-  doquery($QryInsertMessage);
-  doquery($QryUpdateUser);
+  db_user_list_set_mass_mail("`{$message_class_name}` = `{$message_class_name}` + 1, `{$message_class_name_total}` = `{$message_class_name_total}` + 1",  $owners);
 
   if(in_array($user['id'], $owners) || $owners[0] == '*')
   {
@@ -134,5 +134,3 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
     $user[$message_class_name_total]++;
   }
 }
-
-?>

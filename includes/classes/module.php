@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #39a4.3# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #39a5.0# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -343,7 +343,7 @@ abstract class sn_module_payment extends sn_module
       throw new exception($lang['pay_msg_request_server_wrong'] . " {$options['server_id']} вместо " . SN_ROOT_VIRTUAL, SN_PAYMENT_REQUEST_SERVER_WRONG);
     }
 
-    if(!$options['user_id'] || !$payer = doquery("SELECT * FROM {{users}} WHERE `id` = '{$options['user_id']}' LIMIT 1 FOR UPDATE;", true)) // $command != 'cancel'
+    if(!$options['user_id'] || !$payer = db_user_by_id($options['user_id'], true)) // $command != 'cancel'
     {
       throw new exception($lang['pay_msg_request_user_invalid'], SN_PAYMENT_REQUEST_USER_NOT_FOUND);
     }

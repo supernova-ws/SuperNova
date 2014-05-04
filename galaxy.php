@@ -85,13 +85,12 @@ $cached = array('users' => array(), 'allies' => array());
 
 $template = gettemplate('universe', true);
 
-// $UserPoints    = doquery("SELECT * FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."'", '', true);
 $CurrentPoints = $user['total_points'];
 
 $MissileRange  = flt_get_missile_range($user);
 $PhalanxRange  = GetPhalanxRange($HavePhalanx);
 
-$planet_precache_query = doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$uni_galaxy} AND `system` = {$uni_system};");
+$planet_precache_query = db_planet_list_in_system($uni_galaxy, $uni_system);
 while($planet_row = mysql_fetch_assoc($planet_precache_query))
 {
   $planet_list[$planet_row['planet']][$planet_row['planet_type']] = $planet_row;
@@ -153,7 +152,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
     }
     else
     {
-      $uni_galaxyRowUser = doquery("SELECT * FROM {{users}} WHERE `id` = '{$uni_galaxyRowPlanet['id_owner']}' LIMIT 1;", '', true);
+      $uni_galaxyRowUser = db_user_by_id($uni_galaxyRowPlanet['id_owner']);
       $cached['users'][$uni_galaxyRowUser['id']] = $uni_galaxyRowUser;
     }
 
@@ -162,7 +161,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
       $debug->warning("Planet '{$uni_galaxyRowPlanet['name']}' [{$uni_galaxy}:{$uni_system}:{$Planet}] has no owner!", 'Userless planet', 503);
       $uni_galaxyRowPlanet['destruyed'] = $time_now + 60 * 60 * 24;
       $uni_galaxyRowPlanet['id_owner'] = 0;
-      doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = {$uni_galaxyRowPlanet['destruyed']} WHERE `id` = {$uni_galaxyRowPlanet['id']} LIMIT 1;");
+      db_planet_set_by_id($uni_galaxyRowPlanet['id'], "id_owner = 0, destruyed = {$uni_galaxyRowPlanet['destruyed']}");
     }
 
     if($uni_galaxyRowUser['id'])

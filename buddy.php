@@ -103,11 +103,11 @@ try
   // Checking for user ID - in case if it was request from outside buddy system
   if($new_friend_id = sys_get_param_id('request_user_id'))
   {
-    $new_friend_row = doquery("SELECT `id`, `username` FROM {{users}} WHERE `id` = {$new_friend_id} LIMIT 1 FOR UPDATE;", true);
+    $new_friend_row = db_user_by_id($new_friend_id, true, '`id`, `username`');
   }
   elseif($new_friend_name = sys_get_param_str('request_user_name'))
   {
-    $new_friend_row = doquery("SELECT `id`, `username` FROM {{users}} WHERE `username` = '{$new_friend_name}' LIMIT 1 FOR UPDATE;", true);
+    $new_friend_row = db_user_by_username($new_friend_name, true, '`id`, `username`');
   }
 
   if($new_friend_row['id'] == $user['id'])
@@ -140,36 +140,15 @@ try
 }
 catch(exception $e)
 {
-  sn_db_transaction_rollback();
   $result[] = array(
     'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
     'MESSAGE' => $lang[$e->getMessage()],
   );
 }
+// TODO - Это просто заглушка. Дойдут руки - разобраться, в чём проблема
+sn_db_transaction_rollback();
 
-
-
-
-$query = doquery("
-SELECT
-  b.*,
---  b.BUDDY_ACTIVE + IF(b.BUDDY_OWNER_ID = {$user['id']}, " . BUDDY_REQUEST_INCOMING . ", " . BUDDY_REQUEST_OUTCOMING . ") AS BUDDY_REQUEST_STATUS,
-  IF(b.BUDDY_OWNER_ID = {$user['id']}, b.BUDDY_SENDER_ID, b.BUDDY_OWNER_ID) AS BUDDY_USER_ID,
-  u.username AS BUDDY_USER_NAME,
-  p.name AS BUDDY_PLANET_NAME,
-  p.galaxy AS BUDDY_PLANET_GALAXY,
-  p.system AS BUDDY_PLANET_SYSTEM,
-  p.planet AS BUDDY_PLANET_PLANET,
-  a.id AS BUDDY_ALLY_ID,
-  a.ally_name AS BUDDY_ALLY_NAME,
-  u.onlinetime
-FROM {{buddy}} AS b
-  LEFT JOIN {{users}} AS u ON u.id = IF(b.BUDDY_OWNER_ID = {$user['id']}, b.BUDDY_SENDER_ID, b.BUDDY_OWNER_ID)
-  LEFT JOIN {{planets}} AS p ON p.id_owner = u.id AND p.id = id_planet
-  LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id
-WHERE (`BUDDY_OWNER_ID` = {$user['id']}) OR `BUDDY_SENDER_ID` = {$user['id']}
-ORDER BY BUDDY_STATUS, BUDDY_ID");
-// WHERE (`BUDDY_OWNER_ID` = {$user['id']} AND b.`BUDDY_STATUS` != " . BUDDY_REQUEST_DENIED . ") OR `BUDDY_SENDER_ID` = {$user['id']}
+$query = db_buddy_list_by_user($user['id']);
 while($row = mysql_fetch_assoc($query))
 {
   $row['BUDDY_REQUEST'] = sys_bbcodeParse($row['BUDDY_REQUEST']);
@@ -177,7 +156,7 @@ while($row = mysql_fetch_assoc($query))
   $row['BUDDY_ACTIVE'] = $row['BUDDY_STATUS'] == BUDDY_REQUEST_ACTIVE;
   $row['BUDDY_DENIED'] = $row['BUDDY_STATUS'] == BUDDY_REQUEST_DENIED;
   $row['BUDDY_INCOMING'] = $row['BUDDY_OWNER_ID'] == $user['id'];
-  $row['BUDDY_ONLINE'] = floor(($time_now - $row['onlinetime']) / 60);
+  $row['BUDDY_ONLINE'] = floor((SN_TIME_NOW - $row['onlinetime']) / 60);
 
   $template_result['.']['buddy'][] = $row;
 }
@@ -197,5 +176,3 @@ $template = gettemplate('buddy', true);
 $template->assign_recursive($template_result);
 
 display($template);
-
-?>

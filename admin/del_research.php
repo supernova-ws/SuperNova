@@ -18,6 +18,8 @@ if ($user['authlevel'] < 3)
 {
   AdminMessage($lang['adm_err_denied']);
 }
+AdminMessage('ОТКЛЮЧЕНО');
+die();
 
 $mode = $_POST['mode'];
 
@@ -43,7 +45,7 @@ if ($mode == 'addit')
   $intergalactic_tech = $_POST['intergalactic_tech'];
   $expedition_tech = $_POST['expedition_tech'];
   $graviton_tech = $_POST['graviton_tech'];
-  $QryUpdatePlanet = "UPDATE {{users}} SET ";
+  $QryUpdatePlanet = "UPDATE !!users!! SET ";
   $QryUpdatePlanet .= "`spy_tech` = `spy_tech` - '" . $spy_tech . "', ";
   $QryUpdatePlanet .= "`computer_tech` = `computer_tech` - '" . $computer_tech . "', ";
   $QryUpdatePlanet .= "`military_tech` = `military_tech` - '" . $military_tech . "', ";

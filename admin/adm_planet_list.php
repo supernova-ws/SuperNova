@@ -26,18 +26,7 @@ $table_parent_columns = $planet_type == 3 || $planet_active;
 
 $template = gettemplate('admin/adm_planet_list', true);
 
-$query_str = "
-SELECT 
-  p.*, u.username"
-. ($table_parent_columns ? ', p1.name AS parent_name' : '') .
-" FROM 
-  {{planets}} AS p 
-  LEFT JOIN {{users}} AS u ON u.id = p.id_owner"
-  . ($table_parent_columns ? ' LEFT JOIN {{planets}} AS p1 ON p1.id = p.parent_planet' : '') .
-" WHERE "
- . ($planet_active ? "p.last_update >= {$active_time}" : "p.planet_type = {$planet_type}");
-
-$query = doquery($query_str);
+$query = db_planet_list_admin_list($table_parent_columns, $planet_active, $active_time, $planet_type);
 while ($planet_row = mysql_fetch_array($query))
 {
   $template->assign_block_vars('planet', array(

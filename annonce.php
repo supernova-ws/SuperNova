@@ -12,7 +12,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-$users  = doquery("SELECT `username`,`galaxy`,`system` FROM {{users}} WHERE `id` ='".$user['id']."' LIMIT 1;", '',true);
+$users = db_user_by_id($user['id'], false, '`username`,`galaxy`,`system`');
 $action = sys_get_param_int('action');
 $GET_id = sys_get_param_int('id');
 

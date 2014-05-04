@@ -20,7 +20,6 @@ function sn_imperium_view($template = null)
   $planets = array();
   $ques = array();
 
-  //$planet_row_list = doquery("SELECT `id` FROM {{planets}} WHERE `id_owner` = '{$user['id']}';");
   $sn_group_factories = sn_get_groups('factories');
 
   if(sys_get_param('save_production'))
@@ -30,7 +29,7 @@ function sn_imperium_view($template = null)
     {
       sn_db_transaction_start();
       $query = array();
-      $planet_row_list = SortUserPlanets($user, false, '*');
+      $planet_row_list = db_planet_list_sorted($user, false, '*');
       while($planet = mysql_fetch_assoc($planet_row_list))
       {
         foreach($sn_group_factories as $factory_unit_id)
@@ -44,14 +43,14 @@ function sn_imperium_view($template = null)
       }
       foreach($query as $planet_id => $query_data)
       {
-        doquery("UPDATE {{planets}} SET " . implode(',', $query_data) . " WHERE `id` = {$planet_id};");
+        db_planet_set_by_id($planet_id, implode(',', $query_data));
       }
       sn_db_transaction_commit();
     }
   }
 
   sn_db_transaction_start();
-  $planet_row_list = SortUserPlanets($user);
+  $planet_row_list = db_planet_list_sorted($user);
   while ($planet = mysql_fetch_assoc($planet_row_list))
   {
     $global_data = sys_o_get_updated($user, $planet['id'], $time_now);

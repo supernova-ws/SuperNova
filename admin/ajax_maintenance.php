@@ -30,23 +30,8 @@ $ques = array(
   'DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});',
 
 
-//  'DELETE FROM `{{rw}}`        WHERE `id_owner1`      not in (select id from {{users}});',
-//  'DELETE FROM `{{rw}}`        WHERE `id_owner2`      not in (select id from {{users}});',
-// FK_referrals_id  'DELETE FROM `{{referrals}}` WHERE `id`             not in (select id from {{users}});',
-// FK_referrals_id_partner  'DELETE FROM `{{referrals}}` WHERE `id_partner`     not in (select id from {{users}});',
-  /*
-    'DELETE {{messages}}.* FROM {{messages}} LEFT OUTER JOIN {{users}} ON {{messages}}.message_owner = {{users}}.id WHERE {{users}}.username IS NULL;',
-    'DELETE {{planets}}.* FROM {{planets}} LEFT OUTER JOIN {{users}} ON {{planets}}.id_owner = {{users}}.id WHERE {{users}}.username IS NULL;',
-    'DELETE {{rw}}.* FROM {{rw}} LEFT OUTER JOIN {{users}} ON {{rw}}.id_owner1 = {{users}}.id WHERE {{users}}.username IS NULL;',
-    'DELETE {{rw}}.* FROM {{rw}} LEFT OUTER JOIN {{users}} ON {{rw}}.id_owner2 = {{users}}.id WHERE {{users}}.username IS NULL;',
-   */
-
-  // 
-// FK_stats_id_owner  'DELETE FROM {{statpoints}} WHERE stat_type=1 AND id_owner not in (select id from {{users}});',
-
   'DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} WHERE `user_as_ally` IS NOT NULL group by ally_id);',
 //  'DELETE FROM {{statpoints}} WHERE stat_type=2 AND id_owner not in (select id from {{alliance}});', // TODO CHECK!
-  "UPDATE {{users}} SET ally_id = null, ally_name = null, ally_rank_id=0 WHERE ally_id not in (select id from {{alliance}});",
 
   // UBE reports
   'DELETE FROM `{{ube_report}}` WHERE `ube_report_time_combat` < DATE_SUB(now(), INTERVAL 60 day);',
@@ -54,11 +39,12 @@ $ques = array(
   'DELETE FROM {{chat}} WHERE timestamp < unix_timestamp(now()) - (60 * 60 * 24 * 14);',
 
   // Recalculate Alliance members
-  "UPDATE {{alliance}} as a LEFT JOIN (SELECT ally_id, count(*) as ally_memeber_count FROM {{users}} WHERE ally_id IS NOT NULL GROUP BY ally_id) as u ON u.ally_id = a.id SET a.`ally_members` = u.ally_memeber_count;",
+  "UPDATE {{alliance}} as a LEFT JOIN (SELECT ally_id, count(*) as ally_memeber_count FROM {{users}} WHERE ally_id IS NOT NULL GROUP BY ally_id) as u ON u.ally_id = a.id
+    SET a.`ally_members` = u.ally_memeber_count;",
 
   // Deleting empty Alliances
   'DELETE FROM {{alliance}} WHERE ally_members <= 0;',
-  "UPDATE {{users}} SET ally_id = null, ally_name = null, ally_rank_id=0 WHERE ally_id not in (select id from {{alliance}});",
+  "UPDATE {{users}} SET ally_id = null, ally_name = null, ally_tag = null, ally_register_time = 0, ally_rank_id = 0 WHERE ally_id not in (select id from {{alliance}});",
 );
 
 // doquery('LOCK TABLES {{' . implode('}} WRITE, {{', $sn_cache->tables) . '}} WRITE');
@@ -84,8 +70,7 @@ foreach ($ques as $que)
   set_time_limit(120);
 }
 
-$user_count = doquery("SELECT COUNT(*) AS user_count FROM {{users}} WHERE user_as_ally IS NULL;", '', true);
-$config->db_saveItem('users_amount', $user_count['user_count']);
+$config->db_saveItem('users_amount', db_user_count());
 
 // doquery('UNLOCK TABLES');
 

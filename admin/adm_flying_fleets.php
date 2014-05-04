@@ -19,10 +19,10 @@ if($user['authlevel'] < 3)
 
 $template = gettemplate('admin/adm_flying_fleets', true);
 
-$FlyingFleets = doquery("SELECT f.*, u.username FROM `{{fleets}}` AS f LEFT JOIN {{users}} AS u ON u.id = f.fleet_target_owner ORDER BY `fleet_end_time` ASC;");
+$FlyingFleets = db_fleet_list_with_usernames();
 while($CurrentFleet = mysql_fetch_assoc($FlyingFleets))
 {
-  $FleetOwner = doquery("SELECT * FROM `{{users}}` WHERE `id` = '" . $CurrentFleet['fleet_owner'] . "';", '', true);
+  $FleetOwner = db_user_by_id($CurrentFleet['fleet_owner']);
 
   $fleet_data = tpl_parse_fleet_db($CurrentFleet, ++$i, $FleetOwner);
   $fleet_data['fleet']['OWNER_NAME'] = htmlentities($FleetOwner['username'], ENT_COMPAT, 'UTF-8');

@@ -37,7 +37,7 @@ $sort = $sort_fields[$sort] ? $sort : SORT_ID;
 
 if(($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid')))
 {
-  $user_selected = doquery("SELECT id, username, password, authlevel FROM {{users}} WHERE `id` = {$user_id} LIMIT 1;", true);
+  $user_selected = db_user_by_id($user_id, false, 'id, username, password, authlevel');
   if($user_selected['authlevel'] < $user['authlevel'] && $user['authlevel'] >= 3)
   {
     switch($action)
@@ -63,18 +63,13 @@ if(($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid'
 $template = gettemplate('admin/userlist', true);
 
 $multi_ip = array();
-$ip_query = doquery("SELECT COUNT(*) as ip_count, user_lastip FROM {{users}} WHERE user_as_ally IS NULL GROUP BY user_lastip HAVING COUNT(*)>1;");
+$ip_query = db_user_list_admin_multiaccounts();
 while($ip = mysql_fetch_assoc($ip_query))
 {
   $multi_ip[$ip['user_lastip']] = $ip['ip_count'];
 }
 
-// $query = doquery("SELECT * FROM {{users}} WHERE user_as_ally IS NULL ORDER BY `{$sort_fields[$sort]}` ASC;");
-$query = doquery("SELECT u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm FROM {{users}} as u
-LEFT JOIN {{referrals}} as r on r.id_partner = u.id
-WHERE user_as_ally IS NULL 
-group by u.id
-ORDER BY {$sort_fields[$sort]} ASC");
+$query = db_user_list_admin_sorted($sort_fields[$sort]);
 
 while ($user_row = mysql_fetch_assoc($query))
 {

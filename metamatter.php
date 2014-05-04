@@ -26,7 +26,7 @@ if(sys_get_param('mm_convert_do'))
     }
 
     sn_db_transaction_start();
-    $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} FOR UPDATE", true);
+    $user = db_user_by_id($user['id'], true);
     if($mm_convert > mrc_get_level($user, '', RES_METAMATTER))
     {
       throw new exception($lang['pay_msg_mm_convert_not_enough'], ERR_ERROR);

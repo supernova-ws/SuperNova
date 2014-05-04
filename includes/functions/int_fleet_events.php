@@ -46,12 +46,11 @@ function flt_get_fleets($condition, $phalanx = false)
   {
     if($irak['fleet_end_time'] >= $time_now)
     {
-      $planet_start = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '{$irak['fleet_start_galaxy']}' AND `system` = '{$irak['fleet_start_system']}' AND `planet` = '{$irak['fleet_start_planet']}' AND `planet_type` = '1'", true);
+      $irak['fleet_start_type'] = PT_PLANET;
+      $planet_start = db_planet_by_vector($irak, 'fleet_start_', false, 'name');
       $irak['fleet_id']             = -$irak['id'];
       $irak['fleet_mission']        = MT_MISSILE;
       $irak['fleet_array']          = UNIT_DEF_MISSILE_INTERPLANET . ",{$irak['fleet_amount']};";
-//        $irak['fleet_end_type']       = PT_PLANET;
-//        $irak['fleet_start_type']     = PT_PLANET;
       $irak['fleet_start_name']     = $planet_start['name'];
     }
     $fleet_db_list[] = $irak;
@@ -75,16 +74,10 @@ function flt_parse_fleets_to_events($fleet_list, $planet_scanned = false)
   foreach($fleet_list as $fleet)
   {
     $planet_start_type = $fleet['fleet_start_type'] == PT_MOON ? PT_MOON : PT_PLANET;
-    $planet_start = doquery(
-      "SELECT `name` FROM {{planets}}
-        WHERE
-          galaxy = {$fleet['fleet_start_galaxy']} AND
-          system = {$fleet['fleet_start_system']} AND
-          planet = {$fleet['fleet_start_planet']} AND
-          planet_type = {$planet_start_type}
-      ", '', true);
+    $planet_start = db_planet_by_gspt($fleet['fleet_start_galaxy'], $fleet['fleet_start_system'], $fleet['fleet_start_planet'], $planet_start_type, false, 'name');
     $fleet['fleet_start_name'] = $planet_start['name'];
 
+    $planet_end_type = $fleet['fleet_end_type'] == PT_MOON ? PT_MOON : PT_PLANET;
     if($fleet['fleet_end_planet'] > $config->game_maxPlanet)
     {
       $fleet['fleet_end_name'] = $lang['ov_fleet_exploration'];
@@ -95,16 +88,7 @@ function flt_parse_fleets_to_events($fleet_list, $planet_scanned = false)
     }
     else
     {
-      $planet_end_type = $fleet['fleet_end_type'] == PT_MOON ? PT_MOON : PT_PLANET;
-
-      $planet_end = doquery(
-        "SELECT `name` FROM {{planets}}
-          WHERE
-            galaxy = {$fleet['fleet_end_galaxy']} AND
-            system = {$fleet['fleet_end_system']} AND
-            planet = {$fleet['fleet_end_planet']} AND
-            planet_type = {$planet_end_type}
-        ", '', true);
+      $planet_end = db_planet_by_gspt($fleet['fleet_end_galaxy'], $fleet['fleet_end_system'], $fleet['fleet_end_planet'], $planet_end_type, false, 'name');
       $fleet['fleet_end_name'] = $planet_end['name'];
     }
 
@@ -198,8 +182,8 @@ function flt_register_fleet_event($fleet, $ov_label, $planet_end_type)
   }
   else
   {
-    $user_data = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$fleet['fleet_owner']};", '', true);
-  };
+    $user_data = db_user_by_id($fleet['fleet_owner']);
+  }
 
   return tpl_parse_fleet_db($fleet, ++$fleet_number, $user_data);
 }

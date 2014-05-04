@@ -58,7 +58,7 @@ if(sys_get_param_str('isSaveOptions'))
 
     if($ally['ally_tag'] != mysql_real_escape_string($old_tag))
     {
-      doquery("UPDATE {{users}} SET `username`='[{$ally['ally_tag']}]' WHERE `id` = {$ally['ally_user_id']};");
+      db_user_set_by_id($ally['ally_user_id'], "`username`='[{$ally['ally_tag']}]'");
     }
     sn_db_transaction_commit();
   }
@@ -84,13 +84,13 @@ elseif(sys_get_param_str('isTransfer') && $idNewLeader = sys_get_param_id('idNew
     message($lang['Denied_access'], $lang['ally_admin']);
   }
 
-  $newLeader = doquery("SELECT `ally_id` FROM {{users}} WHERE `id` = '$idNewLeader' LIMIT 1;", true);
+  $newLeader = db_user_by_id($idNewLeader, false, `ally_id`);
   if($newLeader['ally_id'] == $user['ally_id'])
   {
     sn_db_transaction_start();
-    doquery("UPDATE {{users}} SET `ally_rank_id`='0' WHERE `id`={$user['id']} LIMIT 1;");
+    db_user_set_by_id($user['id'], "`ally_rank_id`='0'");
     doquery("UPDATE {{alliance}} SET `ally_owner`='{$idNewLeader}' WHERE `id`={$user['ally_id']};");
-    doquery("UPDATE {{users}} SET `ally_rank_id`='0' WHERE `id`='{$idNewLeader}';");
+    db_user_set_by_id($idNewLeader, "`ally_rank_id`='0'");
     sn_db_transaction_commit();
     sys_redirect('alliance.php');
   }
@@ -103,7 +103,7 @@ elseif(sys_get_param_str('isDisband') && sys_get_param_str('isConfirmDisband'))
   }
   sn_db_transaction_start();
   doquery("DELETE FROM {{alliance}} WHERE id='{$ally['id']}';");
-  doquery("UPDATE {{users}} SET `ally_id` = null, `ally_name` = null, `ally_rank_id` = 0, `ally_register_time` = 0 WHERE ally_id='{$ally['id']}';");
+  db_user_list_set_by_ally_and_rank($ally['id'], -20, "`ally_id` = null, `ally_name` = null, `ally_rank_id` = 0, `ally_register_time` = 0");
   sn_db_transaction_commit();
   sys_redirect('alliance.php');
 };
@@ -138,7 +138,7 @@ $tmp = substr($tmp, 0, -4);
 
 if(!empty($tmp))
 {
-  $userAllyAdmins = doquery("SELECT `id`, `username` FROM {{users}} WHERE ({$tmp}) AND `ally_id` = {$ally['id']};");
+  $userAllyAdmins = db_user_list_by_ally($ally['id'], $fields = '`id`, `username`', '', 'AND ' . $tmp);
   unset($tmp);
   while ($userAllyAdmin = mysql_fetch_assoc($userAllyAdmins))
   {
@@ -161,5 +161,3 @@ foreach($sn_ali_admin_internal as $sn_ali_admin_action => $sn_ali_admin_action_l
 }
 
 display($template, $lang['ally_admin']);
-
-?>

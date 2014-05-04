@@ -21,7 +21,7 @@ if($info_action)
   {
     sn_db_transaction_start();
 
-    $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
+    $user = db_user_by_id($user['id'], true);
     if(mrc_get_level($user, null, RES_DARK_MATTER) < $config->rpg_cost_info)
     {
       throw new Exception(MARKET_NO_DM, ERR_ERROR);
@@ -37,11 +37,11 @@ if($info_action)
 
         if(is_id($user_info_name))
         {
-          $user_info = doquery("SELECT `id`, `username` FROM {{users}} WHERE `id` = {$user_info_name} AND `user_as_ally` IS NULL LIMIT 1 FOR UPDATE;", true);
+          $user_info = db_user_player_by_id($user_info_name, true, '`id`, `username`');
         }
         if(!is_array($user_info))
         {
-          $user_info = doquery("SELECT `id`, `username` FROM {{users}} WHERE `username` LIKE '{$user_info_name}' AND `user_as_ally` IS NULL LIMIT 1 FOR UPDATE;", true);
+          $user_info = db_user_player_like_name($user_info_name, true, '`id`, `username`');
         }
         if(!is_array($user_info))
         {

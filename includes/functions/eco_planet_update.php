@@ -13,8 +13,6 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
 {
   sn_db_transaction_check(true);
 
-  global $lang;
-
   $no_data = array('user' => false, 'planet' => false, 'que' => false);
 
   if(!$planet)
@@ -22,10 +20,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     return $no_data;
   }
 
-  $suffix = !$simulation ? 'FOR UPDATE' : '';
-
   $user = intval(is_array($user) && $user['id'] ? $user['id'] : $user);
-
   if(!$user)
   {
     // TODO - Убрать позже
@@ -36,40 +31,26 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     die();
   }
 
-  $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = {$user} LIMIT 1 {$suffix};", true);
+  $user = db_user_by_id($user, !$simulation);
   if(!isset($user['id']))
   {
     return $no_data;
   }
 
-  $player_join = !$simulation ? "LEFT JOIN `{{users}}` AS u ON u.id = p.id_owner" : '';
-  $planet_where = !is_array($planet) ? "p.`id` = '{$planet}'" : (
-    isset($planet['galaxy']) && $planet['galaxy'] ?
-      "p.`galaxy` = '{$planet['galaxy']}' AND p.`system` = '{$planet['system']}' AND p.`planet` = '{$planet['planet']}' and p.`planet_type` = '{$planet['planet_type']}'" :
-      "p.`id` = '{$planet['id']}'"
-  );
+  if(isset($planet['galaxy']) && $planet['galaxy'])
+  {
+    $planet = db_planet_by_vector($planet, '', !$simulation);
+  }
+  else
+  {
+    $planet = intval(isset($planet['id']) ? $planet['id'] : $planet);
+    $planet = db_planet_by_id($planet, !$simulation);
+  }
 
-  $planet = doquery("SELECT p.* FROM `{{planets}}` AS p {$player_join} WHERE {$planet_where} LIMIT 1 {$suffix};", true);
   if(!isset($planet['id']))
   {
     return $no_data;
   }
-/*
-  if(is_array($planet))
-  {
-    if(!(isset($planet['id']) && $planet['id']) || !$simulation)
-    {
-      $planet = doquery("SELECT p.* FROM `{{planets}}` AS p {$player_join} ".
-        "WHERE p.`galaxy` = '{$planet['galaxy']}' AND p.`system` = '{$planet['system']}' AND p.`planet` = '{$planet['planet']}' and p.`planet_type` = '{$planet['planet_type']}' LIMIT 1 {$suffix};", true);
-    }
-  }
-  else
-  {
-    $planet = doquery("SELECT p.* FROM `{{planets}}` AS p {$player_join} WHERE p.`id` = '{$planet}' LIMIT 1 {$suffix};", true);
-  }
-*/
-
-
 
   $que = que_process($user, $planet, $UpdateTime);
 
@@ -133,16 +114,6 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     return array('user' => $user, 'planet' => $planet, 'que' => $que);
   }
 
-  $QryUpdatePlanet = "UPDATE {{planets}} SET `last_update` = '{$planet['last_update']}',
-    `field_current` = {$planet['field_current']},
-    `metal`     = `metal`     + '{$resources_increase[RES_METAL]}',
-    `crystal`   = `crystal`   + '{$resources_increase[RES_CRYSTAL]}',
-    `deuterium` = `deuterium` + '{$resources_increase[RES_DEUTERIUM]}',
-    `metal_perhour` = '{$planet['metal_perhour']}',
-    `crystal_perhour` = '{$planet['crystal_perhour']}',
-    `deuterium_perhour` = '{$planet['deuterium_perhour']}',
-    `energy_used` = '{$planet['energy_used']}',
-    `energy_max` = '{$planet['energy_max']}' ";
 
   // TODO  ЭТО ВСЁ НУЖНО ОТРАБАТЫВАТЬ В que_process
   /*
@@ -186,8 +157,12 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   }
   */
 
-  $QryUpdatePlanet .= "WHERE `id` = '{$planet['id']}' LIMIT 1;";
-  doquery($QryUpdatePlanet);
+  db_planet_set_by_id($planet['id'],
+    "`last_update` = '{$planet['last_update']}', `field_current` = {$planet['field_current']},
+    `metal` = `metal` + '{$resources_increase[RES_METAL]}', `crystal` = `crystal` + '{$resources_increase[RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$resources_increase[RES_DEUTERIUM]}',
+    `metal_perhour` = '{$planet['metal_perhour']}', `crystal_perhour` = '{$planet['crystal_perhour']}', `deuterium_perhour` = '{$planet['deuterium_perhour']}',
+    `energy_used` = '{$planet['energy_used']}', `energy_max` = '{$planet['energy_max']}'"
+  );
 
 
   // TODO  ОТРАБАТЫВАТЬ ЭТО ВСЁ В que_process

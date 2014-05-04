@@ -175,13 +175,7 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
   $density = sn_rand_gauss_range($density_min, $density_max, true, 3);
 
     // Avant tout, on verifie s'il existe deja une planete a cet endroit
-  $QrySelectPlanet  = "SELECT `id` ";
-  $QrySelectPlanet .= "FROM `{{planets}}` ";
-  $QrySelectPlanet .= "WHERE ";
-  $QrySelectPlanet .= "`galaxy` = '". $Galaxy ."' AND ";
-  $QrySelectPlanet .= "`system` = '". $System ."' AND ";
-  $QrySelectPlanet .= "`planet` = '". $Position ."';";
-  $PlanetExist = doquery( $QrySelectPlanet, '', true);
+  $PlanetExist = db_planet_by_gspt($Galaxy, $System, $Position, PT_PLANET, true, '`id`');
 
   // Si $PlanetExist est autre chose que false ... c'est qu'il y a quelque chose la bas ...
   // C'est donc aussi que je ne peux pas m'y poser !!
@@ -280,47 +274,24 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
     $planet['name']        = $PlanetName ? $PlanetName : $lang['sys_colo_defaultname'];
     if(!$HomeWorld)
     {
-      $OwnerName = doquery("SELECT `username` FROM {{users}} WHERE `id` = {$PlanetOwnerID};", '', true);
+      $OwnerName = db_user_by_id($PlanetOwnerID, false, 'username');
       $planet['name'] = "{$OwnerName['username']} {$planet['name']}";
     }
     $planet['name'] = mysql_real_escape_string(strip_tags(trim($planet['name'])));
 
-    $QryInsertPlanet  = "INSERT INTO `{{planets}}` SET ";
-    $QryInsertPlanet .= "`name` = '".              $planet['name']              ."', ";
-    $QryInsertPlanet .= "`id_owner` = '".          $planet['id_owner']          ."', ";
-    $QryInsertPlanet .= "`galaxy` = '".            $planet['galaxy']            ."', ";
-    $QryInsertPlanet .= "`system` = '".            $planet['system']            ."', ";
-    $QryInsertPlanet .= "`planet` = '".            $planet['planet']            ."', ";
-    $QryInsertPlanet .= "`last_update` = '".       $planet['last_update']       ."', ";
-    $QryInsertPlanet .= "`planet_type` = '".       $planet['planet_type']       ."', ";
-    $QryInsertPlanet .= "`image` = '".             $planet['image']             ."', ";
-    $QryInsertPlanet .= "`diameter` = '".          $planet['diameter']          ."', ";
-    $QryInsertPlanet .= "`density` = '".           $planet['density']           ."', ";
-    $QryInsertPlanet .= "`density_index` = '".     $planet['density_index']     ."', ";
-    $QryInsertPlanet .= "`field_max` = '".         $planet['field_max']         ."', ";
-    $QryInsertPlanet .= "`temp_min` = '".          $planet['temp_min']          ."', ";
-    $QryInsertPlanet .= "`temp_max` = '".          $planet['temp_max']          ."', ";
-    $QryInsertPlanet .= "`metal` = '".             $planet['metal']             ."', ";
-    $QryInsertPlanet .= "`metal_perhour` = '".     $planet['metal_perhour']     ."', ";
-    $QryInsertPlanet .= "`metal_max` = '".         $planet['metal_max']         ."', ";
-    $QryInsertPlanet .= "`crystal` = '".           $planet['crystal']           ."', ";
-    $QryInsertPlanet .= "`crystal_perhour` = '".   $planet['crystal_perhour']   ."', ";
-    $QryInsertPlanet .= "`crystal_max` = '".       $planet['crystal_max']       ."', ";
-    $QryInsertPlanet .= "`deuterium` = '".         $planet['deuterium']         ."', ";
-    $QryInsertPlanet .= "`deuterium_perhour` = '". $planet['deuterium_perhour'] ."', ";
-    $QryInsertPlanet .= "`deuterium_max` = '".     $planet['deuterium_max']     ."';";
-//pdump($QryInsertPlanet);die();
-    doquery( $QryInsertPlanet);
-
-    // On recupere l'id de planete nouvellement créé
-    $QrySelectPlanet  = "SELECT `id` FROM `{{planets}}` WHERE ";
-    $QrySelectPlanet .= "`galaxy` = '{$planet['galaxy']}' AND `system` = '{$planet['system']}' AND `planet` = '{$planet['planet']}' AND ";
-    $QrySelectPlanet .= "`id_owner` = '{$planet['id_owner']}';";
-    $GetPlanetID      = doquery( $QrySelectPlanet , '', true);
-
-    $RetValue = $GetPlanetID['id'];
-  } else {
-
+    db_planet_insert_set(
+      "`name` = '{$planet['name']}', `id_owner` = '{$planet['id_owner']}', `last_update` = '{$planet['last_update']}', `image` = '{$planet['image']}',
+      `galaxy` = '{$planet['galaxy']}', `system` = '{$planet['system']}', `planet` = '{$planet['planet']}', `planet_type` = '{$planet['planet_type']}',
+      `diameter` = '{$planet['diameter']}', `field_max` = '{$planet['field_max']}', `density` = '{$planet['density']}', `density_index` = '{$planet['density_index']}',
+      `temp_min` = '{$planet['temp_min']}', `temp_max` = '{$planet['temp_max']}',
+      `metal` = '{$planet['metal']}', `metal_perhour` = '{$planet['metal_perhour']}', `metal_max` = '{$planet['metal_max']}',
+      `crystal` = '{$planet['crystal']}', `crystal_perhour` = '{$planet['crystal_perhour']}', `crystal_max` = '{$planet['crystal_max']}',
+      `deuterium` = '{$planet['deuterium']}', `deuterium_perhour` = '{$planet['deuterium_perhour']}', `deuterium_max` = '{$planet['deuterium_max']}'"
+    );
+    $RetValue = mysql_insert_id();
+  }
+  else
+  {
     $RetValue = false;
   }
 
@@ -344,13 +315,13 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
 
 function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_chance = 0, $moon_name = '', $update_debris = true)
 {
-  global $lang, $time_now;
+  global $lang;
 
   $moon_name = '';
-  $moon = doquery("SELECT `id` FROM `{{planets}}` WHERE `galaxy` = '{$pos_galaxy}' AND `system` = '{$pos_system}' AND `planet` = '{$pos_planet}' AND `planet_type` = " . PT_MOON . " LIMIT 1;", '', true);
+  $moon = db_planet_by_gspt($pos_galaxy, $pos_system, $pos_planet, PT_MOON, false, 'id');
   if(!$moon['id'])
   {
-    $moon_planet = doquery("SELECT `id`, `temp_min`, `temp_max`, `name`, `debris_metal`, `debris_crystal` FROM `{{planets}}` WHERE `galaxy` = '{$pos_galaxy}' AND `system` = '{$pos_system}' AND `planet` = '{$pos_planet}' AND `planet_type` = 1 LIMIT 1;", '', true);
+    $moon_planet = db_planet_by_gspt($pos_galaxy, $pos_system, $pos_planet, PT_PLANET, true, '`id`, `temp_min`, `temp_max`, `name`, `debris_metal`, `debris_crystal`');
 
     if($moon_planet['id'])
     {
@@ -379,14 +350,13 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
 
       $field_max = ceil($size / 1000);
 
-      doquery(
-        "INSERT INTO `{{planets}}` SET
-          `id_owner` = '{$user_id}', `name` = '{$moon_name_safe}', `last_update` = '{$time_now}',
-          `galaxy` = '{$pos_galaxy}', `system` = '{$pos_system}', `planet` = '{$pos_planet}', `planet_type` = '3', `parent_planet` = '{$moon_planet['id']}',
-          `image` = 'mond', `diameter` = '{$size}', `temp_min` = '{$temp_min}', `temp_max` = '{$temp_max}', `field_max` = '{$field_max}',
+      db_planet_insert_set(
+        "`id_owner` = '{$user_id}', `parent_planet` = '{$moon_planet['id']}', `name` = '{$moon_name_safe}', `last_update` = " . SN_TIME_NOW . ", `image` = 'mond',
+          `galaxy` = '{$pos_galaxy}', `system` = '{$pos_system}', `planet` = '{$pos_planet}', `planet_type` = " . PT_MOON . ",
+          `diameter` = '{$size}', `field_max` = '{$field_max}', `density` = 2500, `density_index` = 2, `temp_min` = '{$temp_min}', `temp_max` = '{$temp_max}',
           `metal` = '0', `metal_perhour` = '0', `metal_max` = '{$base_storage_size}',
           `crystal` = '0', `crystal_perhour` = '0', `crystal_max` = '{$base_storage_size}',
-          `deuterium` = '0', `deuterium_perhour` = '0', `deuterium_max` = '{$base_storage_size}', `density` = 2500, `density_index` = 2;"
+          `deuterium` = '0', `deuterium_perhour` = '0', `deuterium_max` = '{$base_storage_size}'"
       );
 
       if($update_debris)
@@ -395,7 +365,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
         $metal_spent  = min($moon_planet['debris_metal'], $debris_spent * mt_rand(50, 75) / 100);
         $crystal_spent = min($moon_planet['debris_crystal'], $debris_spent - $metal_spent);
         $metal_spent = min($moon_planet['debris_metal'], $debris_spent - $crystal_spent); // Need if crystal less then their part
-        doquery("UPDATE {{planets}} SET `debris_metal` = GREATEST(0, `debris_metal` - {$metal_spent}), `debris_crystal` = GREATEST(0, `debris_crystal` - {$crystal_spent}) WHERE `id` = {$moon_planet['id']} LIMIT 1;");
+        db_planet_set_by_id($moon_planet['id'], "`debris_metal` = GREATEST(0, `debris_metal` - {$metal_spent}), `debris_crystal` = GREATEST(0, `debris_crystal` - {$crystal_spent})");
       }
     }
   }
@@ -428,17 +398,17 @@ function SetSelectedPlanet(&$user)
   // Пытаемся переключить на новую планету
   if(($selected_planet = sys_get_param_id('cp')) && $selected_planet != $user['current_planet'])
   {
-    $planet_row = doquery("SELECT `id` FROM {{planets}} WHERE `id` = '{$selected_planet}' AND `id_owner` = '{$user['id']}' LIMIT 1;", true);
+    $planet_row = db_planet_by_id_and_owner($selected_planet, $user['id'], false, 'id');
   }
 
   // Если новая планета не найдена или не было переключения - проверяем текущую выбранную планету
   if(!isset($planet_row['id']) || $planet_row['id'] == $user['current_planet'])
   {
-    $planet_row = doquery("SELECT `id` FROM {{planets}} WHERE `id` = '{$user['current_planet']}' AND `id_owner` = '{$user['id']}' LIMIT 1;", true);
+    $planet_row = db_planet_by_id_and_owner($user['current_planet'], $user['id'], false, 'id');
     // Если текущей планеты не существует - выставляем Столицу
     if(!isset($planet_row['id']))
     {
-      $planet_row = doquery("SELECT `id` FROM {{planets}} WHERE `id` = '{$user['id_planet']}' AND `id_owner` = '{$user['id']}' LIMIT 1;", true);
+      $planet_row = db_planet_by_id_and_owner($user['id_planet'], $user['id'], false, 'id');
       // Если и столицы не существует - значит что-то очень не так с записью пользователя
       if(!isset($planet_row['id']))
       {
@@ -451,55 +421,11 @@ function SetSelectedPlanet(&$user)
   // Если производилось переключение планеты - делаем запись в юзере
   if($user['current_planet'] != $planet_row['id'])
   {
-    doquery("UPDATE {{users}} SET `current_planet` = '{$planet_row['id']}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    db_user_set_by_id($user['id'], "`current_planet` = '{$planet_row['id']}'");
     $user['current_planet'] = $planet_row['id'];
   }
 
   return $user['current_planet'];
-
-/*
-   *
-   *   if(isset($selected_planet) && is_numeric($selected_planet) && $selected_planet && isset($restore_planet) && $restore_planet == 0)
-  {
-    $planet_row = doquery("SELECT `id` FROM {{planets}} WHERE `id` = '{$selected_planet}' AND `id_owner` = '{$user['id']}' LIMIT 1;", true);
-    if (!$planet_row || !isset($planet_row['id']))
-    {
-      $selected_planet = $user['id_planet'];
-    }
-    doquery("UPDATE {{users}} SET `current_planet` = '{$selected_planet}' WHERE `id` = '{$user['id']}' LIMIT 1;");
-    $user['current_planet'] = $selected_planet;
-  }
-
-  return $user['current_planet'];
-
-   */
-}
-
-/**
- * SortUserPlanets.php
- *
- * @version 1.0
- * @copyright 2008 By Chlorel for XNova
- */
-function SortUserPlanets($user_row, $skip_planet_id = false, $field_list = '', $conditions = '')
-{
-  $field_list = $field_list != '*' ? "`id`, `name`, `image`, `galaxy`, `system`, `planet`, `planet_type`{$field_list}" : $field_list;
-  $conditions .= $skip_planet_id ? " AND `id` <> {$skip_planet_id} " : '';
-
-  $sort_orders = array(
-    SORT_ID       => '`id`',
-    SORT_LOCATION => '`galaxy`, `system`, `planet`, `planet_type`',
-    SORT_NAME     => '`name`',
-    SORT_SIZE     => '(`field_max` + `terraformer` * 5 + `mondbasis` * 3)',
-  );
-  $order_by = (isset($sort_orders[$user_row['planet_sort']]) ? $sort_orders[$user_row['planet_sort']] : $sort_orders[SORT_ID])
-    . ($user_row['planet_sort_order'] == SORT_DESCENDING ? " DESC" : " ASC");
-
-  // Compilating query
-  $QryPlanets = "SELECT {$field_list} FROM {{planets}} WHERE `id_owner` = '{$user_row['id']}' {$conditions} ORDER BY {$order_by}";
-
-  $Planets = doquery($QryPlanets);
-  return $Planets;
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -608,8 +534,9 @@ function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null)
 
     if(is_array($new_coordinates))
     {
-      $incoming = doquery("SELECT COUNT(*) AS incoming FROM {{planets}} WHERE galaxy = {$new_coordinates['galaxy']} and system = {$new_coordinates['system']} and planet = {$new_coordinates['planet']}", true);
-      if($incoming['incoming'])
+      $new_coordinates['planet_type'] = PT_PLANET;
+      $incoming = db_planet_by_vector($new_coordinates, '', true, 'id');
+      if($incoming['id'])
       {
         throw new exception($lang['ov_teleport_err_destination_busy'], ERR_ERROR);
       }

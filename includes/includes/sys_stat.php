@@ -88,7 +88,7 @@ function sys_stat_calculate()
   sta_set_time_limit('calculating players stats');
   $i = 0;
   // Блокируем всех пользователей
-  $query = doquery("SELECT id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id FROM  `{{users}}` FOR UPDATE");
+  $query = db_user_list('', true, 'id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id');
   $row_num = mysql_num_rows($query);
   while($player = mysql_fetch_assoc($query))
   {
@@ -107,7 +107,7 @@ function sys_stat_calculate()
 
   sta_set_time_limit('calculating planets stats');
   $i = 0;
-  $query = doquery("SELECT `id_owner`, sum(metal) AS metal, sum(crystal) AS crystal, sum(deuterium) AS deuterium FROM {{planets}} WHERE id_owner <> 0 /*AND id_owner is not null*/ GROUP BY id_owner;");
+  $query = db_planet_list_resources_by_owner();
   $row_num = mysql_num_rows($query);
   while($planet = mysql_fetch_assoc($query))
   {
@@ -197,17 +197,8 @@ function sys_stat_calculate()
 
   sta_set_time_limit('posting new user stats to DB');
   $data = array();
-
   foreach($users as $user_id => $player_data)
   {
-    /*
-    if(!$player_data['user_as_ally'])
-    {
-      continue;
-    }
-    pdump($player_data);
-    */
-
     // $counts[UNIT_RESOURCES] дублирует $points[UNIT_RESOURCES], поэтому $points не заполняем, а берем $counts и делим на 1000
     $points[$user_id][UNIT_RESOURCES] = $counts[$user_id][UNIT_RESOURCES] / 1000;
     $points[$user_id] = array_map('floor', $points[$user_id]);
@@ -253,14 +244,7 @@ function sys_stat_calculate()
   );
 
   // Удаляем больше не нужные записи о достижении игрока-альянса
-  // doquery('DELETE {{statpoints}} FROM {{statpoints}} JOIN {{users}} ON id = id_owner AND user_as_ally IS NOT NULL WHERE id_ally IS NULL');
-  doquery('DELETE s FROM {{statpoints}} AS s JOIN {{users}} AS u ON u.id = s.id_owner WHERE s.id_ally IS NULL AND u.user_as_ally IS NOT NULL');
-
-  /*
-  SUM(u.`tech_points`), SUM(u.`tech_count`), SUM(u.`build_points`), SUM(u.`build_count`), SUM(u.`defs_points`),
-        SUM(u.`defs_count`), SUM(u.`fleet_points`), SUM(u.`fleet_count`), SUM(u.`res_points`), SUM(u.`res_count`),
-        SUM(u.`total_points`), SUM(u.`total_count`),
-  */
+  db_stat_list_delete_ally_player();
 
   // Some variables we need to update ranks
   $qryResetRowNum = 'SET @rownum=0;';
@@ -315,264 +299,13 @@ function sys_stat_calculate()
       new.stat_type = 2 AND new.stat_code = 1;");
 
   sta_set_time_limit('updating players current rank and points');
-  doquery("UPDATE {{users}} AS u JOIN {{statpoints}} AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points WHERE user_as_ally IS NULL;");
+  db_stat_list_update_user_stats();
 
   sta_set_time_limit('updating Allys current rank and points');
-  doquery("UPDATE {{alliance}} AS a JOIN {{statpoints}} AS sp ON sp.id_ally = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
+  db_stat_list_update_ally_stats();
 
   // Counting real user count and updating values
-  $userCount = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE user_as_ally IS NULL;", '', true);
-  $config->db_saveItem('users_amount', $userCount['users_online']);
+  $config->db_saveItem('users_amount', db_user_count());
 
   sn_db_transaction_commit();
-
-//  pdump($points);
-  return;
-/*
-  die();
-
-
-
-  sta_set_time_limit('calculating planet stats');
-
-  $UsrPlanets = doquery("SELECT * FROM {{planets}};");
-  $row_num = mysql_num_rows($UsrPlanets);
-  $i = 0;
-  while($planet_row = mysql_fetch_assoc($UsrPlanets))
-  {
-    if($i % 100 == 0)
-    {
-      sta_set_time_limit("calculating planets stats (planet {$i}/{$row_num})", false);
-    }
-    $i++;
-
-    if(array_key_exists($user_id = $planet_row['id_owner'], $user_skip_list))
-    {
-      continue;
-    }
-
-    $planet_points = 0;
-
-    $point_counter = $amount_counter = 0;
-    foreach(sn_get_groups('structures') as $unit_id)
-    {
-      $unit_level = $planet_row[get_unit_param($unit_id, P_NAME)];
-      if($unit_level > 0)
-      {
-        $unit_cost_data = get_unit_param($unit_id, P_COST);
-        $f = $unit_cost_data['factor'];
-        $point_counter += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * (pow($f, $unit_level) - $f) / ($f - 1);
-        $amount_counter += $unit_level;
-      }
-    }
-    $points[$user_id]['structures'] += $point_counter / 1000;
-    $planet_points += $point_counter;
-    $counts[$user_id]['structures'] += $amount_counter;
-
-    $point_counter = $amount_counter = 0;
-    foreach(sn_get_groups('defense') as $unit_id)
-    {
-      $unit_amount = $planet_row[get_unit_param($unit_id, P_NAME)];
-      if($unit_amount > 0)
-      {
-        $unit_cost_data = get_unit_param($unit_id, P_COST);
-        $point_counter += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $unit_amount;
-        $amount_counter += $unit_amount;
-      }
-    }
-    $points[$user_id]['defs'] += $point_counter / 1000;
-    $planet_points += $point_counter;
-    $counts[$user_id]['defs'] += $amount_counter;
-
-    $point_counter = $amount_counter = 0;
-    foreach(sn_get_groups('fleet') as $unit_id)
-    {
-      $unit_amount = $planet_row[get_unit_param($unit_id, P_NAME)];
-      if($unit_amount > 0)
-      {
-        $unit_cost_data = get_unit_param($unit_id, P_COST);
-        $point_counter += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $unit_amount;
-        $amount_counter += $unit_amount;
-      }
-    }
-    $points[$user_id]['fleet'] += $point_counter / 1000;
-    $counts[$user_id]['fleet'] += $amount_counter;
-
-    $point_counter = 0;
-    foreach($sn_groups_resources_loot as $resource_name)
-    {
-      $point_counter += ($resource_amount = $planet_row[get_unit_param($resource_name, P_NAME)]) > 0 ? $resource_amount : 0;
-    }
-
-    if($planet_row['b_hangar_id'])
-    {
-//      $ship_list = flt_expand(array('fleet_array' => $planet_row['b_hangar_id']));
-      $ship_list = sys_unit_str2arr($planet_row['b_hangar_id']);
-      foreach($ship_list as $ship_id => $ship_amount)
-      {
-        $data = get_unit_param($ship_id, P_COST);
-        $point_counter += ($data[RES_METAL] * $rate[RES_METAL] + $data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $ship_amount;
-      }
-    }
-    // TODO: Also calculate cost of structures and research in ques
-    $points[$user_id]['resources'] += $point_counter / 1000;
-    $counts[$user_id]['resources'] += $point_counter;
-
-//  Disabled planet point update. Didn't see any use for it
-//    $planet_points = floor($planet_points / 1000);
-//    doquery("UPDATE {{planets}} SET `points` = '{$planet_points}' WHERE `id` = '{$planet_row['id']}';");
-  }
-
-  sta_set_time_limit('calculating tech points');
-  $user_techs = doquery("SELECT un.* FROM {{unit}} AS un INNER JOIN {{users}} AS us ON us.id = un.unit_player_id AND us.user_as_ally IS NULL");
-  while($tech_row = mysql_fetch_assoc($user_techs))
-  {
-    if(array_key_exists($user_id = $tech_row['unit_player_id'], $user_skip_list))
-    {
-      continue;
-    }
-
-    if(!in_array($unit_id = $tech_row['unit_snid'], sn_get_groups('tech')))
-    {
-      continue;
-    }
-
-    $TechCounts = 0;
-    $TechPoints = 0;
-    $unit_level = $tech_row['unit_level'];
-    if($unit_level > 0)
-    {
-      $unit_cost_data = get_unit_param($unit_id, P_COST);
-      $f = $unit_cost_data['factor'];
-      $TechPoints += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * (pow($f, $unit_level) - $f) / ($f - 1);
-      $TechCounts += $unit_level;
-    }
-    $points[$user_id]['tech'] += $TechPoints / 1000;
-    $counts[$user_id]['tech'] += $TechCounts;
-  }
-//  pdump($points);die();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  sta_set_time_limit('posting new user stats to DB');
-  $GameUsers = doquery("SELECT * FROM {{users}} where user_as_ally IS NULL;");
-  while($user_row = mysql_fetch_assoc($GameUsers))
-  {
-    $user_id = $user_row['id'];
-
-    if(array_key_exists($user_id = $user_row['id'], $user_skip_list))
-    {
-      continue;
-    }
-    $points[$user_id] = array_map('floor', $points[$user_id]);
-
-    $GPoints = array_sum($points[$user_id]);
-    $GCount = array_sum($counts[$user_id]);
-
-    $QryInsertStats = "INSERT INTO {{statpoints}} SET ";
-    $QryInsertStats .= "`id_owner` = '" . $user_id . "', ";
-    $QryInsertStats .= "`id_ally` = " . ($user_row['ally_id'] ? $user_row['ally_id'] : 'NULL') . ", ";
-    $QryInsertStats .= "`stat_type` = '1', "; // 1 pour joueur , 2 pour alliance
-    $QryInsertStats .= "`stat_code` = '1', ";
-    $QryInsertStats .= "`tech_points` = '" . $points[$user_id]['tech'] . "', ";
-    $QryInsertStats .= "`tech_count` = '" . $counts[$user_id]['tech'] . "', ";
-    $QryInsertStats .= "`build_points` = '" . $points[$user_id]['structures'] . "', ";
-    $QryInsertStats .= "`build_count` = '" . $counts[$user_id]['structures'] . "', ";
-    $QryInsertStats .= "`defs_points` = '" . $points[$user_id]['defs'] . "', ";
-    $QryInsertStats .= "`defs_count` = '" . $counts[$user_id]['defs'] . "', ";
-    $QryInsertStats .= "`fleet_points` = '" . $points[$user_id]['fleet'] . "', ";
-    $QryInsertStats .= "`fleet_count` = '" . $counts[$user_id]['fleet'] . "', ";
-    $QryInsertStats .= "`res_points` = '" . $points[$user_id]['resources'] . "', ";
-    $QryInsertStats .= "`res_count` = '" . $counts[$user_id]['resources'] . "', ";
-    $QryInsertStats .= "`total_points` = '{$GPoints}', ";
-    $QryInsertStats .= "`total_count` = '{$GCount}', ";
-    $QryInsertStats .= "`stat_date` = '{$time_now}';";
-    doquery($QryInsertStats);
-  }
-
-  sta_set_time_limit('setting previous user stats from archive');
-  doquery("
-    UPDATE {{statpoints}} as new
-      LEFT JOIN {{statpoints}} as old ON old.id_owner = new.id_owner AND old.stat_code = 2 AND old.stat_type = 1
-    SET
-      new.tech_old_rank = old.tech_rank,
-      new.build_old_rank = old.build_rank,
-      new.defs_old_rank  = old.defs_rank ,
-      new.fleet_old_rank = old.fleet_rank,
-      new.res_old_rank = old.res_rank,
-      new.total_old_rank = old.total_rank
-    WHERE
-      new.stat_type = 1 AND new.stat_code = 1;
-  ");
-
-  // Some variables we need to update ranks
-  $qryResetRowNum = 'SET @rownum=0;';
-  $qryFormat = 'UPDATE {{statpoints}} SET `%1$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = %2$d AND `stat_code` = 1 ORDER BY `%1$s_points` DESC, `id_owner` ASC, `id_ally` ASC;';
-  $rankNames = array('tech', 'build', 'defs', 'fleet', 'res', 'total');
-
-  // Updating player's ranks
-  sta_set_time_limit("updating ranks for players");
-  foreach($rankNames as $rankName)
-  {
-    sta_set_time_limit("updating player rank '{$rankName}'", false);
-    doquery($qryResetRowNum);
-    doquery(sprintf($qryFormat, $rankName, 1));
-  }
-
-
-  // TODO Статы альянса состаят из суммы статов Альянса и суммы статов его игроков - т.е. суммируем по таблице, а затем удаляем всё нафиг
-  // Updating Allie's stats
-  sta_set_time_limit('posting new Alliance stats to DB');
-  $QryInsertStats = "
-    INSERT INTO {{statpoints}}
-      (`tech_points`, `tech_count`, `build_points`, `build_count`, `defs_points`, `defs_count`,
-        `fleet_points`, `fleet_count`, `res_points`, `res_count`, `total_points`, `total_count`,
-        `stat_date`, `id_owner`, `id_ally`, `stat_type`, `stat_code`,
-        `tech_old_rank`, `build_old_rank`, `defs_old_rank`, `fleet_old_rank`, `res_old_rank`, `total_old_rank`
-      )
-      SELECT
-        SUM(u.`tech_points`), SUM(u.`tech_count`), SUM(u.`build_points`), SUM(u.`build_count`), SUM(u.`defs_points`),
-        SUM(u.`defs_count`), SUM(u.`fleet_points`), SUM(u.`fleet_count`), SUM(u.`res_points`), SUM(u.`res_count`),
-        SUM(u.`total_points`), SUM(u.`total_count`),
-        {$time_now}, NULL, u.`id_ally`, 2, 1,
-        a.tech_rank, a.build_rank, a.defs_rank, a.fleet_rank, a.res_rank, a.total_rank
-      FROM {{statpoints}} as u
-        LEFT JOIN {{statpoints}} as a ON a.id_ally = u.id_ally AND a.stat_code = 2 AND a.stat_type = 2
-      WHERE u.`stat_type` = 1 AND u.stat_code = 1 AND u.id_ally<>0
-      GROUP BY u.`id_ally`";
-  doquery($QryInsertStats);
-
-  sta_set_time_limit("updating ranks for Alliances");
-  // --- Updating Allie's ranks
-  foreach($rankNames as $rankName)
-  {
-    sta_set_time_limit("updating Alliances rank '{$rankName}'", false);
-    doquery($qryResetRowNum);
-    doquery(sprintf($qryFormat, $rankName, 2));
-  }
-
-  sta_set_time_limit('updating player\'s current rank and points');
-  doquery("UPDATE {{users}} AS u JOIN {{statpoints}} AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points WHERE user_as_ally IS NULL;");
-
-  sta_set_time_limit('updating Ally\'s current rank and points');
-  doquery("UPDATE {{alliance}} AS a JOIN {{statpoints}} AS sp ON sp.id_ally = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
-
-  // Counting real user count and updating values
-  $userCount = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE user_as_ally IS NULL;", '', true);
-  $config->db_saveItem('users_amount', $userCount['users_online']);
-
-  sn_db_transaction_commit();*/
 }

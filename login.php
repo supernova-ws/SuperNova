@@ -50,13 +50,10 @@ elseif(!empty($_COOKIE[SN_COOKIE]))
   die();
 }
 
-$query = doquery('SELECT username FROM {{users}} WHERE `user_as_ally` IS NULL ORDER BY register_time DESC LIMIT 1;', '', true);
-$query1 = doquery("SELECT COUNT(DISTINCT(id)) AS users_online FROM {{users}} WHERE user_as_ally is null and onlinetime>" . (time()-900), '', true);
-
 $template = gettemplate('login_body', true);
 $template->assign_vars(array(
-  'last_user'    => $query['username'],
-  'online_users' => $query1['users_online'],
+  'last_user'    => db_user_last_registered_username(),
+  'online_users' => db_user_count(true),
   'URL_RULES'    => $config->url_rules,
   'URL_FORUM'    => $config->url_forum,
   'URL_FAQ'      => $config->url_faq,
@@ -65,5 +62,3 @@ $template->assign_vars(array(
 tpl_login_lang($template, $id_ref);
 
 display($template, $lang['Login'], false, '', false, false);
-
-?>

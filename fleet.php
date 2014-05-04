@@ -112,7 +112,7 @@ switch ($fleet_page)
     {
       $check_type = $planet_type == PT_MOON ? PT_MOON : PT_PLANET;
 
-      $TargetPlanet = doquery("SELECT * FROM {{planets}} WHERE galaxy = {$galaxy} AND system = {$system} AND planet = {$planet} AND planet_type = {$check_type};", '', true);
+      $TargetPlanet = db_planet_by_gspt($galaxy, $system, $planet, $check_type);
 
       if ($TargetPlanet['id_owner'])
       {

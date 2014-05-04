@@ -19,14 +19,14 @@ if($d)
 $id_user = sys_get_param_id('id_user');
 if($id_user)
 {
-  doquery("UPDATE {{users}} SET `ally_id` = '{$ally['id']}', `ally_name` = '{$ally['ally_name']}', `ally_tag` = '{$ally['ally_tag']}', `ally_register_time` = {$time_now}, `ally_rank_id` = 0 WHERE `id`= {$id_user} LIMIT 1;");
+  db_user_set_by_id($id_user, "`ally_id` = '{$ally['id']}', `ally_name` = '{$ally['ally_name']}', `ally_tag` = '{$ally['ally_tag']}', `ally_register_time` = {$time_now}, `ally_rank_id` = 0");
   doquery("UPDATE {{alliance}} SET `ally_members`= `ally_members` + 1 WHERE `id`='{$ally['id']}'");
   doquery("DELETE FROM {{alliance_requests}} WHERE `id_user`= '{$id_user}' LIMIT 1;");
 }
 
 $template = gettemplate('ali_admin_request', true);
 
-$query = doquery("SELECT {{alliance_requests}}.*, {{users}}.username FROM {{alliance_requests}} LEFT JOIN {{users}} ON {{users}}.id = {{alliance_requests}}.id_user WHERE id_ally='{$ally['id']}'");
+$query = db_ally_request_list($ally['id']);
 while ($ally_request_row = mysql_fetch_assoc($query))
 {
   $template->assign_block_vars('alliance_request', array(

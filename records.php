@@ -48,39 +48,11 @@ foreach($show_groups as $unit_group_id => $mode)
     $unit_name = &$lang['tech'][$unit_id];
     if($unit_name)
     {
-      if($unit_group_id == UNIT_SHIPS || $unit_group_id == UNIT_DEFENCE)
-      {
-        $data_row = doquery ($q =
-          "SELECT unit_player_id, username, sum(unit_level) as unit_level
-          FROM {{unit}} JOIN {{users}} AS u ON u.id = unit_player_id
-          WHERE unit_player_id != 0 AND unit_snid = {$unit_id} {$user_skip_list_unit}
-          GROUP BY unit_player_id
-          ORDER BY sum(unit_level) DESC, unit_player_id
-          LIMIT 1;"
-        , true);
-      }
-      else
-      {
-        $data_row = doquery (
-          "SELECT unit_player_id, username, unit_level
-          FROM {{unit}} JOIN {{users}} AS u ON u.id = unit_player_id
-          WHERE unit_player_id != 0 AND unit_snid = {$unit_id} {$user_skip_list_unit}
-          ORDER BY unit_level DESC, unit_id
-          LIMIT 1;"
-        , true);
-      }
+      // TODO - ISUNITSTACKABLE!
+      $data_row = $unit_group_id == UNIT_SHIPS || $unit_group_id == UNIT_DEFENCE ? db_unit_records_sum($unit_id, $user_skip_list_unit) : db_unit_records_plain($unit_id, $user_skip_list_unit);
 
       if($data_row)
       {
-        /*
-        if(!$data_row['username'] && !$user_name_cache[$data_row['id_owner']])
-        {
-          $user_name = doquery("SELECT `username` FROM {{users}} WHERE `id` = {$data_row['id_owner']} LIMIT 1", true);
-          $user_name_cache[$data_row['id_owner']] = $user_name['username'];
-        }
-        $data_row['username'] = $data_row['username'] ? $data_row['username'] : $user_name_cache[$data_row['id_owner']];
-        */
-
         $template->assign_block_vars('records', array(
           'UNIT' => $unit_name,
           'USER' => $data_row['username'] ? js_safe_string($data_row['username']) : $lang['rec_rien'],

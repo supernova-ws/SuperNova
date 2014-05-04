@@ -27,8 +27,8 @@ function sn_options_model()
     if($user['authlevel'] > 0)
     {
       $planet_protection = sys_get_param_int('adm_pl_prot') ? $user['authlevel'] : 0;
-      doquery ("UPDATE {{planets}} SET `id_level` = '{$planet_protection}' WHERE `id_owner` = '{$user['id']}';");
-      doquery ("UPDATE {{users}} SET `admin_protection` = '{$planet_protection}' WHERE `id` = '{$user['id']}';");
+      db_planet_list_set_by_owner($user['id'], "`id_level` = '{$planet_protection}'");
+      db_user_set_by_id($user['id'], "`admin_protection` = '{$planet_protection}'");
       $user['admin_protection'] = $planet_protection;
     }
 
@@ -57,7 +57,7 @@ function sn_options_model()
         }
         else
         {
-          $query = doquery("SELECT * FROM `{{planets}}` WHERE `id_owner` = '{$user['id']}';");
+          $query = db_planet_list_by_owner($user['id']);
           while($planet = mysql_fetch_assoc($query))
           {
             $global_data = sys_o_get_updated($user, $planet, $time_now, true);
@@ -70,19 +70,18 @@ function sn_options_model()
           }
         }
 
-        $query = doquery("SELECT * FROM {{planets}} WHERE id_owner = '{$user['id']}' FOR UPDATE;");
+        $query = db_planet_list_by_owner($user['id'], true);
         while($planet = mysql_fetch_assoc($query))
         {
           $planet = sys_o_get_updated($user, $planet, $time_now);
           $planet = $planet['planet'];
 
-          doquery("UPDATE {{planets}} SET
-            last_update = '{$time_now}',
+          db_planet_set_by_id($planet['id'],
+            "last_update = '{$time_now}', energy_used = '0', energy_max = '0',
             metal_perhour = '{$config->metal_basic_income}', crystal_perhour = '{$config->crystal_basic_income}', deuterium_perhour = '{$config->deuterium_basic_income}',
-            energy_used = '0', energy_max = '0',
             metal_mine_porcent = '0', crystal_mine_porcent = '0', deuterium_sintetizer_porcent = '0', solar_plant_porcent = '0',
-            fusion_plant_porcent = '0', solar_satelit_porcent = '0'
-          WHERE id = '{$planet['id']}' LIMIT 1;");
+            fusion_plant_porcent = '0', solar_satelit_porcent = '0', ship_sattelite_sloth_porcent = 0"
+          );
         }
         $user['vacation'] = $time_now + $config->player_vacation_time;
       }
@@ -118,7 +117,7 @@ function sn_options_model()
       $name_check = doquery("SELECT * FROM {{player_name_history}} WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
       if(!$name_check || $name_check['player_id'] == $user['id'])
       {
-        $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
+        $user = db_user_by_id($user['id'], true);
         switch($config->game_user_changename)
         {
           case SERVER_PLAYER_NAME_CHANGE_PAY:
@@ -133,7 +132,7 @@ function sn_options_model()
             rpg_points_change($user['id'], RPG_NAME_CHANGE, -$config->game_user_changename_cost, sprintf('Пользователь ID %d сменил имя с "%s" на "%s"', $user['id'], $user['username'], $username));
 
           case SERVER_PLAYER_NAME_CHANGE_FREE:
-            doquery("UPDATE {{users}} SET `username` = \"{$username_safe}\" WHERE `id` = {$user['id']}");
+            db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
             doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = \"{$username_safe}\"");
             // TODO: Change cookie to not force user relogin
             setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
@@ -267,29 +266,14 @@ function sn_options_model()
     $user_birthday .= sys_get_param_int('opt_time_diff_clear') ? ', `user_time_diff` = NULL' : '';
 
 //      `username` = '{$username_safe}',
-    doquery("UPDATE {{users}} SET
-      `password` = '{$user['password']}',
-      `email` = '{$user['email']}',
-      `lang` = '{$user['lang']}',
-      `avatar` = '{$user['avatar']}',
-      `dpath` = '{$user['dpath']}',
-      `design` = '{$user['design']}',
-      `noipcheck` = '{$user['noipcheck']}',
-      `planet_sort` = '{$user['planet_sort']}',
-      `planet_sort_order` = '{$user['planet_sort_order']}',
-      `spio_anz` = '{$user['spio_anz']}',
-      `settings_tooltiptime` = '{$user['settings_tooltiptime']}',
-      `settings_fleetactions` = '{$user['settings_fleetactions']}',
-      `settings_esp` = '{$user['settings_esp']}',
-      `settings_wri` = '{$user['settings_wri']}',
-      `settings_bud` = '{$user['settings_bud']}',
-      `settings_mis` = '{$user['settings_mis']}',
-      `settings_rep` = '{$user['settings_rep']}',
-      `deltime` = '{$user['deltime']}',
-      `vacation` = '{$user['vacation']}',
-      `options` = '{$user['options']}'
-      {$user_birthday}
-    WHERE `id` = '{$user['id']}' LIMIT 1");
+    db_user_set_by_id($user['id'], "`password` = '{$user['password']}', `email` = '{$user['email']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
+      `dpath` = '{$user['dpath']}', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
+      `planet_sort` = '{$user['planet_sort']}', `planet_sort_order` = '{$user['planet_sort_order']}', `spio_anz` = '{$user['spio_anz']}',
+      `settings_tooltiptime` = '{$user['settings_tooltiptime']}', `settings_fleetactions` = '{$user['settings_fleetactions']}', `settings_esp` = '{$user['settings_esp']}',
+      `settings_wri` = '{$user['settings_wri']}', `settings_bud` = '{$user['settings_bud']}', `settings_mis` = '{$user['settings_mis']}', `settings_rep` = '{$user['settings_rep']}',
+      `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user['options']}'
+      {$user_birthday}"
+    );
 
     $template_result['.']['result'][] = array(
       'STATUS'  => ERR_NONE,

@@ -17,12 +17,11 @@ lng_include('fleet');
 if($TargetPlanet = sys_get_param_id('jmpto'))
 {
   sn_db_transaction_start();
-  doquery("SELECT `id` FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE");
-
-  $planetrow = doquery("SELECT * FROM {{planets}} WHERE id = {$planetrow['id']} LIMIT 1 FOR UPDATE;", true);
+  db_user_by_id($user['id'], true, 'id');
+  $planetrow = db_planet_by_id($planetrow['id'], true);
   if(!($NextJumpTime = uni_get_time_to_jump($planetrow)))
   {
-    $TargetGate = doquery ( "SELECT `id`, `last_jump_time` FROM {{planets}} WHERE `id` = '{$TargetPlanet}'  LIMIT 1 FOR UPDATE;", true);
+    $TargetGate = db_planet_by_id($TargetPlanet, true, '`id`, `last_jump_time`');
     if(mrc_get_level($user, $TargetGate, STRUC_MOON_GATE) > 0)
     {
       $NextDestTime = uni_get_time_to_jump ( $TargetGate );
@@ -49,11 +48,11 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
         // Dit monsieur, y avait quelque chose a envoyer ???
         if(!empty($db_changeset))
         {
-          doquery("UPDATE {{planets}} SET `last_jump_time` = '{$time_now}' WHERE `id` = '{$TargetGate['id']}' LIMIT 1;");
-          doquery("UPDATE {{planets}} SET `last_jump_time` = '{$time_now}' WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+          db_planet_set_by_id($TargetGate['id'], "`last_jump_time` = '{$time_now}'");
+          db_planet_set_by_id($planetrow['id'], "`last_jump_time` = '{$time_now}'");
           sn_db_changeset_apply($db_changeset);
 
-          doquery("UPDATE {{users}} SET `current_planet` = '{$TargetGate['id']}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+          db_user_set_by_id($user['id'], "`current_planet` = '{$TargetGate['id']}'");
 
           $planetrow['last_jump_time'] = $time_now;
           $RetMessage = $lang['gate_jump_done'] ." - ". pretty_time(uni_get_time_to_jump($planetrow));
@@ -76,7 +75,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
   if(mrc_get_level($user, $planetrow, STRUC_MOON_GATE) > 0)
   {
     $Combo = "";
-    $MoonList = doquery("SELECT * FROM {{planets}} WHERE `planet_type` = '3' AND `id_owner` = '" . $user['id'] . "' AND `id` != '{$planetrow['id']}';");
+    $MoonList = db_planet_list_moon_other($user['id'], $planetrow['id']);
     while($CurMoon = mysql_fetch_assoc($MoonList))
     {
       if(mrc_get_level($user, $CurMoon, STRUC_MOON_GATE) >= 1)

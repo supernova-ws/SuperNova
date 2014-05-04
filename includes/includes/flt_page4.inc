@@ -38,7 +38,7 @@ $aks = doquery("SELECT * from `{{aks}}` WHERE `flotten` = {$fleetid} LIMIT 1;", 
 // If we got a message to add some1 to attack (MadnessRed code)
 if($userToAdd = sys_get_param_str('addtogroup'))
 {
-  $userToAddID = doquery("SELECT `id` FROM `{{users}}` WHERE `username` like '{$userToAdd}' LIMIT 1;", '', true);
+  $userToAddID = db_user_player_like_name($userToAdd, false, 'id');
   $userToAddID = $userToAddID['id'];
 
   if($fleet['fleet_target_owner'] == $userToAddID)
@@ -125,7 +125,7 @@ foreach($members as $a => $b)
 {
   if($b != '')
   {
-    $member_qry_mr = doquery("SELECT `username` FROM `{{users}}` WHERE `id` ='{$b}' ;");
+    $member_qry_mr = db_user_by_id($b, false, 'username');
     while($row = mysql_fetch_assoc($member_qry_mr))
     {
       $template->assign_block_vars('invited', array(

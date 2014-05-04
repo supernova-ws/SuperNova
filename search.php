@@ -25,20 +25,7 @@ if($searchtext && $type)
   switch($type)
   {
     case "planetname":
-      $sql = "SELECT
-          p.galaxy, p.system, p.planet, p.planet_type, p.name as planet_name,
-          u.id as uid, u.username, u.ally_id, u.id_planet,
-          u.total_points, u.total_rank,
-          u.ally_tag, u.ally_name
-        FROM
-          {{planets}} AS p
-          LEFT JOIN {{users}} AS u ON u.id = p.id_owner
-        WHERE
-          name LIKE '%{$searchtext}%' AND u.user_as_ally IS NULL
-        ORDER BY
-          ally_tag, username, planet_name
-        LIMIT 30;";
-      $search = doquery($sql);
+      $search = db_planet_list_search($searchtext);
     break;
 
     case "ally":
@@ -47,20 +34,7 @@ if($searchtext && $type)
 
     case "playername":
     default:
-      $sql = "SELECT
-          pn.player_name, u.id as uid, u.username, u.ally_id, u.id_planet, u.total_points, u.total_rank,
-          p.galaxy, p.system, p.planet, p.planet_type, p.name as planet_name,
-          u.ally_tag, u.ally_name
-        FROM
-          {{player_name_history}} AS pn
-          JOIN {{users}} AS u ON u.id = pn.player_id
-          LEFT JOIN {{planets}} AS p ON p.id_owner = u.id AND p.id=u.id_planet
-        WHERE
-          player_name LIKE '%{$searchtext}%' AND u.user_as_ally IS NULL
-        ORDER BY
-          ally_tag, username, planet_name
-        LIMIT 30;";
-      $search = doquery($sql);
+      $search = db_user_list_search($searchtext);
     break;
   }
 

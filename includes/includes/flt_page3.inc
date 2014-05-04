@@ -47,8 +47,8 @@ function sn_fleet_page3()
 
   sn_db_transaction_start();
 
-  $user = doquery ("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1 FOR UPDATE;", true);
-  $planetrow = doquery ("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1 FOR UPDATE;", true);
+  $user = db_user_by_id($user['id'], true);
+  $planetrow = db_planet_by_id($planetrow['id'], true);
 
   if ($target_mission == MT_EXPLORE) {
     if ($MaxExpeditions == 0 ) {
@@ -256,8 +256,7 @@ function sn_fleet_page3()
   doquery( $QryInsertFleet);
   $fleet_id = mysql_insert_id();
 
-  // doquery("UPDATE {{planets}} SET {$FleetSubQRY} `metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
-  doquery("UPDATE {{planets}} SET `metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+  db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
   sn_db_changeset_apply($db_changeset);
 
   if(is_array($captain))
@@ -288,7 +287,7 @@ function sn_fleet_page3()
   ));
 
   sn_db_transaction_commit();
-  $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['id']}' LIMIT 1;", true);
+  $planetrow = db_planet_by_id($planetrow['id']);
 
   $template->assign_recursive($template_result);
   display($template, $lang['fl_title']);

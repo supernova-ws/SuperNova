@@ -26,7 +26,8 @@ elseif($user['authlevel'] < 3)
 $TypeSort = sys_get_param_str('type', 'id');
 $template = gettemplate('admin/adm_overview', true);
 
-$Last15Mins = doquery("SELECT `id` AS `ID`, `username` AS `NAME`, `user_agent` AS `BROWSER`, `ally_name` AS `ALLY`, `total_points` AS `STAT_POINTS`, `onlinetime` AS `ACTIVITY` FROM {{users}} WHERE `onlinetime` >= '". (time() - 15 * 60) ."' ORDER BY user_as_ally, `". $TypeSort ."` ASC;");
+$Last15Mins = db_user_list_online_sorted($TypeSort);
+
 $Count      = 0;
 while($TheUser = mysql_fetch_assoc($Last15Mins))
 {

@@ -40,12 +40,15 @@ if(!isset($sn_group_missions[$target_mission]['AJAX']) || !$sn_group_missions[$t
 
 sn_db_transaction_start();
 
-$user = doquery ("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1 FOR UPDATE;", true);
-$planetrow = doquery("SELECT * FROM `{{planets}}` WHERE `id` = '{$user['current_planet']}' LIMIT 1 FOR UPDATE;", true);
+$user = db_user_by_id($user['id'], true);
+$planetrow = db_planet_by_id($user['current_planet'], true);
 
 $target_planet_type = sys_get_param_int('planet_type');
 $target_planet_check = $target_planet_type == PT_DEBRIS ? PT_PLANET : $target_planet_type;
-$target_row = doquery( "SELECT * FROM {{planets}} WHERE `galaxy` = '{$target_coord['galaxy']}' AND `system` = '{$target_coord['system']}' AND `planet` = '{$target_coord['planet']}' AND `planet_type` = '{$target_planet_check}' LIMIT 1;", true);
+
+$target_coord['planet_type'] = $target_planet_check;
+$target_row = db_planet_by_vector($target_coord);
+
 if(empty($target_row))
 {
   $target_row = array(
@@ -155,9 +158,7 @@ else
   doquery($QryInsertFleet);
 }
 
-$deuterium_db_name = pname_resource_name(RES_DEUTERIUM);
-// doquery("UPDATE {{planets}} SET `{$deuterium_db_name}` = `{$deuterium_db_name}` - {$travel_data['consumption']}, {$FleetSubQRY} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
-doquery("UPDATE {{planets}} SET `{$deuterium_db_name}` = `{$deuterium_db_name}` - {$travel_data['consumption']} WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");
 sn_db_changeset_apply($FleetSubQRY);
 sn_db_transaction_commit();
 

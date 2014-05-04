@@ -57,7 +57,7 @@ switch($mode)
     {
       $planetrow['name'] = $new_name;
       $new_name = mysql_real_escape_string($new_name);
-      doquery("UPDATE {{planets}} SET `name` = '{$new_name}' WHERE `id` = '{$planetrow['id']}' LIMIT 1;");
+      db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name}'");
     }
     elseif(sys_get_param_str('capital'))
     {
@@ -87,7 +87,7 @@ switch($mode)
           array('Planet %s ID %d at coordinates %s now become Empire Capital', $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow))
         );
 
-        doquery("UPDATE {{users}} SET id_planet = {$planetrow['id']}, galaxy = {$planetrow['galaxy']}, system = {$planetrow['system']}, planet = {$planetrow['planet']} WHERE id = {$user['id']} LIMIT 1");
+        db_user_set_by_id($user['id'], "id_planet = {$planetrow['id']}, galaxy = {$planetrow['galaxy']}, system = {$planetrow['system']}, planet = {$planetrow['planet']}");
 
         $user['id_planet'] = $planetrow['id'];
         $result = array(
@@ -129,13 +129,15 @@ switch($mode)
           array('Planet %s ID %d teleported from coordinates %s to coordinates %s', $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow), uni_render_coordinates($new_coordinates))
         );
         $planet_teleport_next = $time_now + $config->planet_teleport_timeout;
-        doquery("UPDATE {{planets}} 
-          SET galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next} 
-          WHERE galaxy = {$planetrow['galaxy']} AND system = {$planetrow['system']} AND planet = {$planetrow['planet']}");
+        db_planet_set_by_gspt($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], PT_ALL,
+          "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next}");
+        //doquery("UPDATE !!planets!!
+        //  SET galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next}
+        //  WHERE galaxy = {$planetrow['galaxy']} AND system = {$planetrow['system']} AND planet = {$planetrow['planet']}");
 
         if($planetrow['id'] == $user['id_planet'])
         {
-          doquery($q = "UPDATE {{users}} SET galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']} WHERE id = {$user['id']} LIMIT 1");
+          db_user_set_by_id($user['id'], "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}");
         }
 
         $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
@@ -158,15 +160,14 @@ switch($mode)
     }
     elseif(sys_get_param_str('abandon'))
     {
-      $abandon_confirm = $_POST['abandon_confirm'];
-      if(md5($abandon_confirm) == $user['password'])
+      if(md5(sys_get_param('abandon_confirm')) == $user['password'])
       {
         if($user['id_planet'] != $user['current_planet'] && $user['current_planet'] == $planet_id)
         {
-          $destruyed        = $time_now + 60 * 60 * 24;
-          doquery("UPDATE {{planets}} SET `destruyed`='{$destruyed}', `id_owner`='0' WHERE `id`='{$user['current_planet']}' LIMIT 1;");
-          doquery("UPDATE {{planets}} SET `destruyed`='{$destruyed}', `id_owner`='0' WHERE `parent_planet`='{$user['current_planet']}' LIMIT 1;");
-          doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = '{$user['id']}' LIMIT 1");
+          $destroyed = SN_TIME_NOW + 60 * 60 * 24;
+          db_planet_set_by_id($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
+          db_planet_set_by_parent($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
+          db_user_set_by_id($user['id'], '`current_planet` = `id_planet`');
           message($lang['ov_delete_ok'], $lang['colony_abandon'], 'overview.php?mode=manage');
         }
         else
@@ -192,8 +193,8 @@ switch($mode)
     )
     {
       sn_db_transaction_start();
-      $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
-      $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planetrow['id']} LIMIT 1 FOR UPDATE;", true);
+      $user = db_user_by_id($user['id'], true);
+      $planetrow = db_planet_by_id($planetrow['id'], true);
       $build_data = eco_get_build_data($user, $planetrow, $hire, $planetrow['PLANET_GOVERNOR_ID'] == $hire ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0);
       if($build_data['CAN'][BUILD_CREATE])
       {
@@ -208,7 +209,7 @@ switch($mode)
           $planetrow['PLANET_GOVERNOR_ID'] = $hire;
           $query = '1';
         }
-        doquery("UPDATE {{planets}} SET `PLANET_GOVERNOR_ID` = {$hire}, `PLANET_GOVERNOR_LEVEL` = {$query} WHERE `id` = {$planetrow['id']} LIMIT 1;");
+        db_planet_set_by_id($planetrow['id'], "`PLANET_GOVERNOR_ID` = {$hire}, `PLANET_GOVERNOR_LEVEL` = {$query}");
         rpg_points_change($user['id'], RPG_MERCENARY, -$build_data[BUILD_CREATE][RES_DARK_MATTER]);
       }
       sn_db_transaction_commit();
@@ -291,7 +292,7 @@ switch($mode)
 //    int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE `fleet_owner` = '{$user['id']}'");
 
     $planet_count = 0;
-    $planets_query = SortUserPlanets($user, false, '*');
+    $planets_query = db_planet_list_sorted($user, false, '*');
 
     sn_db_transaction_start();
     while($UserPlanet = mysql_fetch_assoc($planets_query))
@@ -314,7 +315,7 @@ switch($mode)
       {
         continue;
       }
-      $moon = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$UserPlanet['id']}' AND `planet_type` = 3 LIMIT 1;", '', true);
+      $lune = db_planet_by_parent($UserPlanet['id']);
       if($moon)
       {
         $moon_fill = min(100, floor($moon['field_current'] / eco_planet_fields_max($moon) * 100));
@@ -346,11 +347,11 @@ switch($mode)
 
     if($planetrow['planet_type'] == PT_PLANET)
     {
-      $lune = doquery("SELECT * FROM {{planets}} WHERE `parent_planet` = '{$planetrow['id']}' AND `planet_type` = " . PT_MOON . " LIMIT 1;", '', true);
+      $lune = db_planet_by_parent($planetrow['id']);
     }
     else
     {
-      $lune = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planetrow['parent_planet']}' AND `planet_type` = " . PT_PLANET . " LIMIT 1;", '', true);
+      $lune = db_planet_by_id($planetrow['parent_planet']);
     }
 
     if ($lune)

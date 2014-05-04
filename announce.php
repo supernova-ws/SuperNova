@@ -52,8 +52,6 @@ if ($user['authlevel'] >= 3)
         $config->db_saveItem('var_news_last', $announce_time);
       }
 
-//      doquery("UPDATE {{users}} SET `news_lastread` = {$time_now}");//" WHERE `id` <> {$user['id']};");
-
       if(sys_get_param_int('news_mass_mail'))
       {
         $text = sys_get_param('text') . ($detail_url ? " <a href=\"{$detail_url}\"><span class=\"positive\">{$lang['news_more']}</span></a>" : '');

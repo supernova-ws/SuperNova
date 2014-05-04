@@ -10,7 +10,7 @@ function art_use(&$user, &$planetrow, $unit_id)
   }
 
   sn_db_transaction_start();
-  $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
+  $user = db_user_by_id($user['id'], true);
 
   $unit_level = $artifact_level_old = mrc_get_level($user, array(), $unit_id, true);
   if($unit_level > 0)
@@ -22,7 +22,7 @@ function art_use(&$user, &$planetrow, $unit_id)
       case ART_HOOK_SMALL:
       case ART_HOOK_MEDIUM:
       case ART_HOOK_LARGE:
-        $has_moon = doquery("SELECT `id` FROM `{{planets}}` WHERE parent_planet = {$planetrow['id']} LIMIT 1;", true);
+        $has_moon = db_planet_by_parent($planetrow['id'], true, '`id`');
         if($planetrow['planet_type'] == PT_PLANET && !$has_moon['id'])
         {
           $unit_level--;
@@ -50,7 +50,7 @@ function art_use(&$user, &$planetrow, $unit_id)
       case ART_RCD_SMALL:
       case ART_RCD_MEDIUM:
       case ART_RCD_LARGE:
-        $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planetrow['id']} LIMIT 1 FOR UPDATE;", true);
+        $planetrow = db_planet_by_id($planetrow['id'], true);
         if($planetrow['planet_type'] != PT_PLANET)
         {
           $message = $lang['art_rcd_err_moon'];
@@ -84,7 +84,7 @@ function art_use(&$user, &$planetrow, $unit_id)
           break;
         }
         $unit_level--;
-        doquery("UPDATE {{planets}} SET `field_current` = `field_current` + {$sectors_used} WHERE `id` = {$planetrow['id']} LIMIT 1;");
+        db_planet_set_by_id($planetrow['id'], "`field_current` = `field_current` + {$sectors_used}");
         $message = sprintf($lang['art_rcd_ok'], $lang['tech'][$unit_id], $planetrow['name'], uni_render_coordinates($planetrow));
         msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_rcd_subj'], $lang['art_rcd_subj'], $message);
       break;
@@ -109,7 +109,7 @@ function art_use(&$user, &$planetrow, $unit_id)
       break;
 
       case ART_NANO_BUILDER:
-        $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planetrow['id']} LIMIT 1 FOR UPDATE;", true);
+        $planetrow = db_planet_by_id($planetrow['id'], true);
         $que = que_get(QUE_STRUCTURES, $user['id'], $planetrow['id'], true);
         $que_item = &$que['ques'][QUE_STRUCTURES][$user['id']][$planetrow['id']][0];
         //pdump($que_item);

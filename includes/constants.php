@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a4.3');
+define('SN_VERSION', '39a5.0');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -112,6 +112,7 @@ define('MT_MISSILE'  , 10);
 define('MT_EXPLORE'  , 15);
 
 // *** Planet Target constants starts with PT_
+define('PT_ALL', 0);
 define('PT_PLANET', 1);
 define('PT_DEBRIS', 2);
 define('PT_MOON'  , 3);

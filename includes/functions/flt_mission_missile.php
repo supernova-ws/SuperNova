@@ -117,12 +117,12 @@ function coe_o_missile_calculate()
   {
     $db_changeset = array();
 
-    $targetUser  = doquery('SELECT * FROM {{users}} WHERE `id` = '.$fleetRow['fleet_target_owner'] . ' FOR UPDATE;',true);
+    $targetUser = db_user_by_id($fleetRow['fleet_target_owner'], true);
 
     $target_planet_row = sys_o_get_updated($targetUser, array('galaxy' => $fleetRow['fleet_end_galaxy'], 'system' => $fleetRow['fleet_end_system'], 'planet' => $fleetRow['fleet_end_planet'], 'planet_type' => PT_PLANET), $time_now);
     $target_planet_row = $target_planet_row['planet'];
 
-    $rowAttacker = doquery("SELECT * FROM `{{users}}` WHERE `id` = '{$fleetRow['fleet_owner']}' LIMIT 1 FOR UPDATE;", true);
+    $rowAttacker = db_user_by_id($fleetRow['fleet_owner'], true);
 
     if($target_planet_row['id'])
     {
@@ -163,11 +163,12 @@ function coe_o_missile_calculate()
 
         $message .= "{$lang['mip_recycled']}{$lang['Metal']}: {$attackResult['metal']}, {$lang['Crystal']}: {$attackResult['crystal']}<br>";
 
-        doquery("UPDATE `{{planets}}` SET `metal` = `metal` + {$attackResult['metal']}, `crystal` = `crystal` + {$attackResult['crystal']} WHERE `id` = {$target_planet_row['id']};");
+        db_planet_set_by_id($target_planet_row['id'], "`metal` = `metal` + {$attackResult['metal']}, `crystal` = `crystal` + {$attackResult['crystal']}");
       }
       sn_db_changeset_apply($db_changeset);
 
-      $sourcePlanet = doquery("SELECT `name` FROM `{{planets}}` WHERE `galaxy` = '{$fleetRow['fleet_start_galaxy']}' AND `system` = '{$fleetRow['fleet_start_system']}' AND `planet` = '{$fleetRow['fleet_start_planet']}' and planet_type = " . PT_PLANET, '', true);
+      $fleetRow['fleet_start_type'] = PT_PLANET;
+      $sourcePlanet = db_planet_by_vector($fleetRow, 'fleet_start_', false, 'name');
 
       $message_vorlage = sprintf($lang['mip_body_attack'], $fleetRow['fleet_amount'],
         addslashes($sourcePlanet['name']), $fleetRow['fleet_start_galaxy'], $fleetRow['fleet_start_system'], $fleetRow['fleet_start_planet'],

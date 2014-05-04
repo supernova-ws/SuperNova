@@ -252,7 +252,7 @@ function sys_user_vacation($user)
     {
       $user['vacation'] = 0;
       $user['vacation_next'] = $time_now + $config->player_vacation_timeout;
-      doquery("UPDATE {{users}} SET `vacation` = {$user['vacation']}, `vacation_next` = {$user['vacation_next']} WHERE `id` = '{$user['id']}' LIMIT 1;");
+      db_user_set_by_id($user['id'], "`vacation` = {$user['vacation']}, `vacation_next` = {$user['vacation_next']}");
     }
   }
 
@@ -366,9 +366,9 @@ function CheckAbandonPlanetState(&$planet)
 {
   global $time_now;
 
-  if ($planet['destruyed'] && $planet['destruyed'] <= $time_now)
+  if($planet['destruyed'] && $planet['destruyed'] <= $time_now)
   {
-    doquery("DELETE FROM `{{planets}}` WHERE `id` = '{$planet['id']}' LIMIT 1;");
+    db_planet_delete_by_id($planet['id']);
   }
 }
 
@@ -759,7 +759,7 @@ function sn_ali_fill_user_ally(&$user)
 
   if(!isset($user['ally']['player']))
   {
-    $user['ally']['player'] = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['ally']['ally_user_id']} LIMIT 1;", true);
+    $user['ally']['player'] = db_user_by_id($user['ally']['ally_user_id'], true);
   }
 }
 
@@ -878,7 +878,7 @@ function sn_sys_sector_buy($redirect = 'overview.php')
     if(rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, "User {$user['username']} ID {$user['id']} purchased 1 sector on planet {$planet_name_text} planet type {$planetrow['planet_type']} ID {$planetrow['id']} for {$sector_cost} DM"))
     {
       $sector_db_name = pname_resource_name(UNIT_SECTOR);
-      doquery("UPDATE {{planets}} SET {$sector_db_name} = {$sector_db_name} + 1 WHERE `id` = {$planetrow['id']} LIMIT 1;");
+      db_planet_set_by_id($planetrow['id'], "{$sector_db_name} = {$sector_db_name} + 1");
     }
     else
     {
@@ -1007,7 +1007,7 @@ function sn_render_player_nick($render_user, $options = false, &$result)
   return $result;
 }
 
-// TODO ПЕРЕДЕЛАТЬ!
+// TODO sys_stat_get_user_skip_list() ПЕРЕДЕЛАТЬ!
 function sys_stat_get_user_skip_list()
 {
   global $config;
@@ -1032,7 +1032,7 @@ function sys_stat_get_user_skip_list()
   if(!empty($user_skip_list))
   {
     $user_skip_list = implode(' OR ', $user_skip_list);
-    $user_skip_query = doquery("SELECT `id` FROM {{users}} WHERE {$user_skip_list}");
+    $user_skip_query = db_user_list_skiplist($user_skip_list);
     $user_skip_list = array();
     while($user_skip_row = mysql_fetch_assoc($user_skip_query))
     {
@@ -1336,7 +1336,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow)
       )
     );
 
-    doquery("UPDATE {{planets}} SET `density` = {$new_density}, `density_index` = {$new_density_index} WHERE id = {$planetrow['id']} LIMIT 1");
+    db_planet_set_by_id($planetrow['id'], "`density` = {$new_density}, `density_index` = {$new_density_index}");
     sn_db_transaction_commit();
 
     $planetrow['density'] = $new_density;
@@ -1450,13 +1450,7 @@ function get_player_max_colonies(&$user)
 
 function get_player_current_colonies(&$user)
 {
-  if(!isset($user[UNIT_PLAYER_COLONIES_CURRENT]))
-  {
-    $colonies = doquery("SELECT COUNT(*) AS planet_count FROM {{planets}} WHERE id_owner = {$user['id']} AND `planet_type` = " . PT_PLANET, true);
-    $user[UNIT_PLAYER_COLONIES_CURRENT] = max(0, $colonies['planet_count'] - 1);
-  }
-
-  return $user[UNIT_PLAYER_COLONIES_CURRENT];
+  return $user[UNIT_PLAYER_COLONIES_CURRENT] = isset($user[UNIT_PLAYER_COLONIES_CURRENT]) ? $user[UNIT_PLAYER_COLONIES_CURRENT] : max(0, db_planet_count_by_type($user['id']) - 1);
 }
 
 function flt_send_back(&$fleet_row)

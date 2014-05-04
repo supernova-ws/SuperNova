@@ -329,11 +329,9 @@ if($config->user_birthday_gift && $time_now > $config->user_birthday_celebrate +
   sn_user_birthday_celebrate();
 }
 
-if(!$config->var_online_user_count || $config->var_online_user_time + 30 < $time_now)
+if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TIME_NOW)
 {
-  $time = $time_now - 15*60;
-  $online_count = doquery("SELECT COUNT(*) AS users_online FROM {{users}} WHERE `onlinetime`>'{$time}' AND `user_as_ally` IS NULL;", true);
-  $config->db_saveItem('var_online_user_count', $online_count['users_online']);
+  $config->db_saveItem('var_online_user_count', db_user_count(true));
   $config->db_saveItem('var_online_user_time', $time_now);
   if($config->server_log_online)
   {
@@ -341,28 +339,9 @@ if(!$config->var_online_user_count || $config->var_online_user_time + 30 < $time
   }
 }
 
-// TODO Грязный хак!
-if(sn_module_get_active_count('payment'))
-{
-/*
-  $sn_menu_extra['menu_metamatter'] = array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'sys_metamatter',
-    'LINK'  => 'metamatter.php',
-    'LOCATION' => '-menu_dark_matter',
-  );
-*/
-}
-else
-{
-}
-
 // ------------------------------------------------------------------------------------------------------------------------------
 function sn_sys_load_php_files($dir_name, $phpEx = 'php', $modules = false)
 {
-  global $sn_module, $lang;
-
   if(file_exists($dir_name))
   {
     $dir = opendir($dir_name);

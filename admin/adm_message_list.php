@@ -147,21 +147,7 @@ elseif($DelDat == true)
 
 $StartRec = ($int_page_current - 1) * 25;
 
-$Messages = doquery($q = "SELECT
-  message_id as `ID`,
-  message_from as `FROM`,
-  message_owner as `OWNER_ID`,
-  u.username as `OWNER_NAME`,
-  message_text as `TEXT`,
-  FROM_UNIXTIME(message_time) as `TIME`
-FROM
-  {{messages}} AS m
-  LEFT JOIN {{users}} AS u ON u.id = m.message_owner " .
-($int_type_selected >= 0 ? "WHERE `message_type` = {$int_type_selected} " : '') .
-"ORDER BY
-  `message_id` DESC
-LIMIT
-  {$StartRec}, 25;");
+$Messages = db_message_list_admin_by_type($int_type_selected, $StartRec);
 while($row = mysql_fetch_assoc($Messages))
 {
   $row['FROM'] = htmlentities($row['FROM'], ENT_COMPAT, 'UTF-8');

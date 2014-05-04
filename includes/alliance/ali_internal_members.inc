@@ -15,16 +15,16 @@ if(isset($_GET['id_rank']))
   $id_rank = sys_get_param_int('id_rank');
 }
 if($id_user && isset($id_rank) && $user_admin){
-  doquery("UPDATE {{users}} SET `ally_rank_id` = {$id_rank} WHERE `id`= {$id_user};");
+  db_user_set_by_id($id_user, "`ally_rank_id` = {$id_rank}");
 }
 
 $id_kick = sys_get_param_id('kick');
 if ($id_kick && $user_can_kick)
 {
-  $u = doquery("SELECT * FROM {{users}} WHERE `id` ='{$id_kick}' LIMIT 1", '', true);
+  $u = db_user_by_id($id_kick, true);
   if ($u['ally_id'] == $ally['id'] && $u['id'] != $ally['ally_owner'])
   {
-    doquery("UPDATE {{users}} SET `ally_id`= null, `ally_name` = null, `ally_tag` = null, ally_register_time = 0, ally_rank_id = 0 WHERE `id`='{$id_kick}' LIMIT 1;");
+    db_user_set_by_id($id_kick, '`ally_id`= null, `ally_name` = null, `ally_tag` = null, ally_register_time = 0, ally_rank_id = 0');
     doquery("UPDATE {{alliance}} SET `ally_members`= `ally_members` - 1 WHERE `id`='{$ally['id']}' LIMIT 1;");
   }
 }
@@ -43,12 +43,18 @@ else
 
 $sort1 = sys_get_param_int('sort1');
 if($sort1>5 || $sort1<0) $sort1 = 0;
-$sort1s = array(0 => "`ally_rank_id`", 1 => "`username`", 2 => "`total_points`", 3 => '`galaxy` %1$s, `system` %1$s, `planet`', 4 => "`ally_register_time`", 5 => "`onlinetime`");
-$sort = sprintf(' ORDER BY ' . $sort1s[$sort1] . ' %1$s;', $sort2s);
+$sort1s = array(
+  0 => '`ally_rank_id` %1$s;',
+  1 => '`username` %1$s;',
+  2 => '`total_points` %1$s;',
+  3 => '`galaxy` %1$s, `system` %1$s, `planet` %1$s;',
+  4 => '`ally_register_time` %1$s;',
+  5 => '`onlinetime` %1$s;'
+);
 
 $template = gettemplate('ali_members', true);
 
-$userList = doquery("SELECT id, username, galaxy, system, planet, onlinetime, ally_rank_id, ally_register_time, total_points FROM {{users}} WHERE `ally_id`='{$user['ally_id']}' {$sort}");
+$userList = db_user_list_by_ally($user['ally_id'], 'id, username, galaxy, system, planet, onlinetime, ally_rank_id, ally_register_time, total_points', sprintf($sort1s[$sort1], $sort2s));
 
 while ($userRow = mysql_fetch_assoc($userList))
 {

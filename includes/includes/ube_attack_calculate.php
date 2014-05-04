@@ -88,7 +88,7 @@ function ube_attack_prepare_player(&$combat_data, $player_id, $is_attacker)
     $combat_data[UBE_PLAYERS][$player_id] = array(UBE_ATTACKER => $is_attacker);
     $player_info = &$combat_data[UBE_PLAYERS][$player_id];
 
-    $player_data = doquery("SELECT * FROM {{users}} WHERE `id` = {$player_id} LIMIT 1 FOR UPDATE;", true);
+    $player_data = db_user_by_id($player_id, true);
     $player_info[UBE_NAME] = $player_data['username'];
     $player_info[UBE_AUTH_LEVEL] = $player_data['authlevel'];
     $combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] = $combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] || $player_data['authlevel']; // Участвует ли админ в бою?
@@ -250,7 +250,7 @@ UBE_OPTIONS[UBE_MOON_WAS]
   }
 
   // Готовим опции
-  $combat_data[UBE_OPTIONS][UBE_MOON_WAS] = $destination_planet['planet_type'] == PT_MOON || is_array(doquery("SELECT `id` FROM {{planets}} WHERE `parent_planet` = {$destination_planet['id']} LIMIT 1;", true));
+  $combat_data[UBE_OPTIONS][UBE_MOON_WAS] = $destination_planet['planet_type'] == PT_MOON || is_array(db_planet_by_parent($destination_planet['id'], true, '`id`'));
   $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] = $fleet_row['fleet_mission'];
   global $config;
   $combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
@@ -1100,17 +1100,9 @@ function sn_ube_combat_result_apply(&$combat_data)
   // Обновляем поле обломков на планете
   if(!$combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] && !empty($outcome[UBE_DEBRIS]))
   {
-    doquery("
-      UPDATE {{planets}}
-        SET
-          `debris_metal` = `debris_metal` + " . floor($outcome[UBE_DEBRIS][RES_METAL]) . "
-          ,`debris_crystal` = `debris_crystal` + " . floor($outcome[UBE_DEBRIS][RES_CRYSTAL]) . "
-        WHERE
-          `galaxy` = '{$planet_info[PLANET_GALAXY]}'
-          AND `system` = '{$planet_info[PLANET_SYSTEM]}'
-          AND `planet` = '{$planet_info[PLANET_PLANET]}'
-          AND `planet_type` = 1 LIMIT 1;
-    ");
+    db_planet_set_by_gspt($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], PT_PLANET,
+      "`debris_metal` = `debris_metal` + " . floor($outcome[UBE_DEBRIS][RES_METAL]) . ", `debris_crystal` = `debris_crystal` + " . floor($outcome[UBE_DEBRIS][RES_CRYSTAL])
+    );
   }
 
   $db_save = array(
@@ -1153,7 +1145,6 @@ function sn_ube_combat_result_apply(&$combat_data)
           // $fleet_query[$unit_id] = "`{$unit_db_name}` = `{$unit_db_name}` - {$units_lost}";
           // pdump($fleet_info);
           // die();
-          // TODO Проверить, правильно ли выбирается пользователь
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$units_lost, $combat_data[UBE_PLAYERS][$destination_user_id][UBE_PLAYER_DATA], $planet_id);
         }
       }
@@ -1226,12 +1217,8 @@ function sn_ube_combat_result_apply(&$combat_data)
     }
     elseif($fleet_query)
     {
-      // TODO Проверить, правильно ли сохраняется изменения юнитов и изменения ресурсов
-      // pdump($db_changeset);
-      // die();
-
       // Планета - сохраняем изменения ресурсов
-      // doquery("UPDATE {{planets}} SET {$fleet_query} WHERE `id` = {$planet_id} LIMIT 1");
+      db_planet_set_by_id($planet_id, $fleet_query);
       // Планета - сохраняем изменения юнитов на планете
       sn_db_changeset_apply($db_changeset);
     }
@@ -1251,7 +1238,7 @@ function sn_ube_combat_result_apply(&$combat_data)
   }
   elseif($outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS)
   {
-    doquery("DELETE FROM {{planets}} WHERE `id` = {$planet_id} LIMIT 1");
+    db_planet_delete_by_id($planet_id);
   }
 
   {
@@ -1266,9 +1253,8 @@ function sn_ube_combat_result_apply(&$combat_data)
         }
         if($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_ATTACK && $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE])
         {
-          /** @noinspection SpellCheckingInspection */
           $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
-          doquery("UPDATE {{users}} SET `xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1 WHERE id = '{$player_id}' LIMIT 1;");
+          db_user_set_by_id($player_id, "`xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1");
         }
       }
     }

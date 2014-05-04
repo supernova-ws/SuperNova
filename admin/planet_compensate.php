@@ -29,7 +29,7 @@ if($galaxy_src)
   sn_db_transaction_start();
   $errors = array();
 
-  $owner = doquery("SELECT * FROM {{users}} WHERE username like '{$username}'", true);
+  $owner = db_user_list_like_name_extra($username);
 
   $planet = sys_o_get_updated($owner, array('galaxy' => $galaxy_src, 'system' => $system_src, 'planet' => $planet_src, 'planet_type' => 1), SN_TIME_NOW);
   $que    = $planet['que'];
@@ -81,7 +81,7 @@ if($galaxy_src)
 
     killer_add_planet($planet);
 
-    $moon = doquery("SELECT * FROM {{planets}} WHERE galaxy = '{$galaxy_src}' AND system = '{$system_src}' AND planet = '{$planet_src}' AND planet_type = 3;", true);
+    $moon = db_planet_by_gspt($galaxy_src, $system_src, $planet_src, PT_MOON, true);
     if($moon)
     {
       $moon = sys_o_get_updated($owner, $moon, SN_TIME_NOW);
@@ -99,14 +99,14 @@ if($galaxy_src)
 
     if($_GET['btn_confirm'])
     {
-      doquery("UPDATE {{planets}} SET metal = metal + '{$final_cost[RES_METAL]}', crystal = crystal + '{$final_cost[RES_CRYSTAL]}', deuterium = deuterium + '{$final_cost[RES_DEUTERIUM]}' WHERE id = {$destination['id']};");
+      db_planet_set_by_id($destination['id'], "metal = metal + '{$final_cost[RES_METAL]}', crystal = crystal + '{$final_cost[RES_CRYSTAL]}', deuterium = deuterium + '{$final_cost[RES_DEUTERIUM]}'");
       doquery("DELETE FROM {{unit}} WHERE unit_player_id = {$planet['id_owner']} AND unit_location_type = " . LOC_PLANET . " AND unit_location_id = {$planet['id']}");
 
       $time = time() + 24 * 60 * 60;
-      doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = '{$time}' WHERE id = {$planet['id']};");
+      db_planet_set_by_id($planet['id'], "id_owner = 0, destruyed = {$time}");
       if($moon)
       {
-        doquery("UPDATE {{planets}} SET id_owner = 0, destruyed = '{$time}' WHERE id = {$moon['id']};");
+        db_planet_set_by_id($moon['id'], "id_owner = 0, destruyed = {$time}");
         doquery("DELETE FROM {{unit}} WHERE unit_player_id = {$planet['id_owner']} AND unit_location_type = " . LOC_PLANET . " AND unit_location_id = {$moon['id']}");
       }
 

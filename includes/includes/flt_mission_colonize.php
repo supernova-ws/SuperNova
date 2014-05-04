@@ -29,8 +29,7 @@ function flt_mission_colonize(&$mission_data)
     {
       $iMaxColo = get_player_max_colonies($src_user_row);
 
-      $iPlanetCount = doquery ("SELECT count(*) as `planet_count` FROM `{{planets}}` WHERE `id_owner` = '{$fleet_row['fleet_owner']}' AND `planet_type` = '1';", '', true);
-      $iPlanetCount = $iPlanetCount['planet_count'];
+      $iPlanetCount = get_player_current_colonies($src_user_row);
 
       // Can we colonize more planets?
       $TheMessage = $lang['sys_colo_maxcolo'];

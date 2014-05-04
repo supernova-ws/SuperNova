@@ -133,13 +133,12 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
 
     sn_db_transaction_start();
     // Блокируем нужные записи
-    // doquery("SELECT p.`id`, u.`id` FROM {{planets}} AS p LEFT JOIN {{users}} AS u ON u.id = p.id_owner WHERE p.id = {$planet['id']} LIMIT 1 FOR UPDATE");
     // Это нужно, что бы заблокировать пользователя и работу с очередями
-    $user = doquery("SELECT * FROM {{users}} WHERE id = {$user['id']} LIMIT 1 FOR UPDATE", true);
+    $user = db_user_by_id($user['id'], true);
     // Это нужно, что бы заблокировать планету от списания ресурсов
     if(isset($planet['id']) && $planet['id'])
     {
-      $planet = doquery("SELECT * FROM {{planets}} WHERE id = {$planet['id']} LIMIT 1 FOR UPDATE", true);
+      $planet = db_planet_by_id($planet['id'], true);
     }
     else
     {
@@ -371,11 +370,11 @@ function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data,
   $planet_id = $que_type == QUE_RESEARCH ? 'NULL' : $planet_id_origin;
   if(is_numeric($planet_id))
   {
-    doquery("UPDATE {{planets}} SET `que_processed` = UNIX_TIMESTAMP(NOW()) WHERE `id` = {$planet_id}");
+    db_planet_set_by_id($planet_id, "`que_processed` = UNIX_TIMESTAMP(NOW())");
   }
   elseif(is_numeric($user['id']))
   {
-    doquery("UPDATE {{users}} SET `que_processed` = UNIX_TIMESTAMP(NOW()) WHERE `id` = {$user['id']}");
+    db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
   }
 
   $resource_list = sys_unit_arr2str($build_data[$build_mode]);
@@ -404,7 +403,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
 
   // TODO: Some checks
   sn_db_transaction_start();
-  $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
+  $user = db_user_by_id($user['id'], true);
   $planet['id'] = $planet['id'] && $que_type !== QUE_RESEARCH ? $planet['id'] : 0;
   $global_que = que_get($que_type, $user['id'], $planet['id'], true);
 //pdump($global_que);
@@ -426,7 +425,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
 
       if(!isset($planets_locked[$planet['id']]))
       {
-        $planets_locked[$planet['id']] = $planet['id'] ? doquery("SELECT * FROM {{planets}} WHERE `id` = {$planet['id']} LIMIT 1 FOR UPDATE", true) : $planet;
+        $planets_locked[$planet['id']] = $planet['id'] ? db_planet_by_id($planet['id'], true) : $planet;
       }
 
       $build_data = sys_unit_str2arr($que_item['que_unit_price']);
@@ -445,11 +444,11 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
 
     if(is_numeric($planet['id']))
     {
-      doquery("UPDATE {{planets}} SET `que_processed` = UNIX_TIMESTAMP(NOW()) WHERE `id` = {$planet['id']}");
+      db_planet_set_by_id($planet['id'], "`que_processed` = UNIX_TIMESTAMP(NOW())");
     }
     elseif(is_numeric($user['id']))
     {
-      doquery("UPDATE {{users}} SET `que_processed` = UNIX_TIMESTAMP(NOW()) WHERE `id` = {$user['id']}");
+      db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
     }
 
     sn_db_transaction_commit();
@@ -548,7 +547,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
   $que = array();
 
   // Блокируем пользователя. Собственно, запись о нём нам не нужна - будем использовать старую
-  $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
+  $user = db_user_by_id($user['id'], true);
 
   $time_left[$user['id']][0] = max(0, $on_time - $user['que_processed']);
   if($planet === null && !$time_left[$user['id']][0]) // TODO
@@ -571,7 +570,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
   {
     // Если нужно изменять данные на планетах - блокируем планеты и получаем данные о них
     // TODO - от них не надо ничего, кроме ID и que_processed
-    $planet_query = doquery("SELECT * FROM {{planets}} WHERE " . ($planet && is_numeric($planet) ? "`id` = {$planet} LIMIT 1" : "`id_owner` = {$user['id']}") . " FOR UPDATE");
+    $planet_query = db_planet_list_by_user_or_planet($user['id'], $planet);
     while($planet_row = mysql_fetch_assoc($planet_query))
     {
       $planet_list[$planet_row['id']] = $planet_row;
@@ -715,7 +714,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
   // TODO: Re-enable quests for Alliances
   if(!empty($unit_changes) && !$user['user_as_ally'] && $user['id_planet'])
   {
-    $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = {$user['id_planet']} FOR UPDATE", true);
+    $planet = db_planet_by_id($user['id_planet'], true);
     $quest_list = qst_get_quests($user['id']);
     $quest_triggers = qst_active_triggers($quest_list);
   }
@@ -769,7 +768,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
   sn_db_changeset_apply($db_changeset);
 
   // Сообщения о постройке
-  // $user =   doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
+  // $user = db_user_by_id($user['id'], true);
   // TODO Так же пересчитывать планеты
 
 
@@ -898,7 +897,7 @@ print('<hr />');
   // TODO: Re-enable quests for Alliances
   if(!empty($unit_changes) && !$user['user_as_ally'] && $user['id_planet'])
   {
-    $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = {$user['id_planet']} FOR UPDATE", true);
+    $planet = db_planet_by_id($user['id_planet'], true);
     $quest_list = qst_get_quests($user['id']);
     $quest_triggers = qst_active_triggers($quest_list);
   }
@@ -952,7 +951,7 @@ print('<hr />');
   sn_db_changeset_apply($db_changeset);
 
   // Сообщения о постройке
-  $user =   doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE", true);
+  $user = db_user_by_id($user['id'], true);
   // TODO Так же пересчитывать планеты
 
   // sn_db_transaction_commit();

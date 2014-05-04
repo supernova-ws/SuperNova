@@ -96,9 +96,9 @@ function flt_mission_recycle(&$mission_data)
   $NewCargo['Crystal']   = $fleet_row["fleet_resource_crystal"] + $RecycledGoods["crystal"];
   $NewCargo['Deuterium'] = $fleet_row["fleet_resource_deuterium"];
 
-  $QryUpdateGalaxy  = "UPDATE `{{planets}}` SET `debris_metal` = `debris_metal` - '{$RecycledGoods['metal']}', `debris_crystal` = `debris_crystal` - '{$RecycledGoods['crystal']}' ";
-  $QryUpdateGalaxy .= "WHERE `planet_type` = 1 AND `galaxy` = '{$fleet_row['fleet_end_galaxy']}' AND `system` = '{$fleet_row['fleet_end_system']}' AND `planet` = '{$fleet_row['fleet_end_planet']}' LIMIT 1;";
-  doquery( $QryUpdateGalaxy);
+  db_planet_set_by_gspt($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], PT_PLANET,
+    "`debris_metal` = `debris_metal` - '{$RecycledGoods['metal']}', `debris_crystal` = `debris_crystal` - '{$RecycledGoods['crystal']}'"
+  );
 
   $Message = sprintf($lang['sys_recy_gotten'], pretty_number($RecycledGoods["metal"]), $lang['Metal'], pretty_number($RecycledGoods["crystal"]), $lang['Crystal']);
   msg_send_simple_message ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_RECYCLE, $lang['sys_mess_spy_control'], $lang['sys_recy_report'], $Message);

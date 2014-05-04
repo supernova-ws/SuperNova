@@ -86,7 +86,7 @@ if(is_array($production))
   $SubQry = substr($SubQry, 0, -1);
   if($SubQry)
   {
-   doquery("UPDATE {{planets}} SET {$SubQry} WHERE `id` = '{$planetrow['id']}';");
+    db_planet_set_by_id($planetrow['id'], $SubQry);
   }
 }
 

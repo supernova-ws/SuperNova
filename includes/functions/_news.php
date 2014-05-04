@@ -13,7 +13,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20)
   {
     if($announce['user_id'] && !isset($users[$announce['user_id']]))
     {
-      $users[$announce['user_id']] = doquery("SELECT * FROM {{users}} WHERE id = {$announce['user_id']}", true);
+      $users[$announce['user_id']] = db_user_by_id($announce['user_id']);
     }
     $template->assign_block_vars('announces', array(
       'ID'         => $announce['idAnnounce'],
@@ -33,7 +33,7 @@ function nws_mark_read(&$user)
 {
   if(isset($user['id']))
   {
-    doquery("UPDATE {{users}} SET `news_lastread` = " . SN_TIME_NOW . " WHERE `id` = {$user['id']} LIMIT 1;");
+    db_user_set_by_id($user['id'], '`news_lastread` = ' . SN_TIME_NOW);
     $user['news_lastread'] = SN_TIME_NOW;
   }
 }

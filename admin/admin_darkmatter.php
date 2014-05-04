@@ -36,7 +36,7 @@ if($points = sys_get_param_float('points'))
       $queryPart = " or `id` = {$id_user}";
     }
 
-    $query = doquery("SELECT id, username FROM {{users}} WHERE `username` like '{$id_user}'" . $queryPart);
+    $query = db_user_list_like_name_extra($id_user, $queryPart, 'id, username');
     switch (mysql_num_rows($query))
     {
       case 0: // Error - no such ID or username
@@ -78,7 +78,7 @@ if($points = sys_get_param_float('points'))
       $error_id = 'adm_dm_planet_conflict_coords';
     }
 
-    $query = doquery("SELECT id, name, id_owner, galaxy, system, planet FROM {{planets}} WHERE `name` like '{$id_planet}'" . $queryPart);
+    $query = db_planet_list_by_search($id_planet, $queryPart);
     switch (mysql_num_rows($query))
     {
       case 0: // Error - no such planet ID or name or coordinates

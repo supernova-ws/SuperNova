@@ -46,7 +46,7 @@ if ($d && isset($ranks[$d]))
     message($lang['ali_adm_lastRank'], $lang['ali_adm_rights_title']);
   }
   array_splice($ranks, $d, 1);
-  doquery("UPDATE {{users}} SET `ally_rank_id`=`ally_rank_id` - 1 WHERE `ally_id`={$ally['id']} AND `ally_rank_id` >= {$d}");
+  db_user_list_set_by_ally_and_rank($ally['id'], $d, '`ally_rank_id`=`ally_rank_id` - 1');
 }
 
 ali_rank_list_save($ranks);

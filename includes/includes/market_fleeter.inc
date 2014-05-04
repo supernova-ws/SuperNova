@@ -129,43 +129,19 @@ if(is_array($shipList))
       $resource_name = pname_resource_name($resID);
       // $newrow[$resID] = $planetrow[$resID] + $resCount * (-$multiplier);
       $qry[] = "`{$resource_name}` = `{$resource_name}` + ({$resCount})";
-      /*
-      if($mode == MARKET_SCRAPPER)
-      {
-        $newrow[$resID] = $planetrow[$resID] + $resCount;
-        $qry .= "`{$resID}` = `{$resID}` + {$resCount},";
-      }
-      elseif($mode == MARKET_STOCKMAN)
-      {
-        $newrow[$resID] = $planetrow[$resID] - $resCount;
-        $qry .= "`{$resID}` = `{$resID}` - {$resCount},";
-      }
-      */
 
       $message .= "<li>" . $lang['sys_' . $resource_name] . ": " . pretty_number(abs($resCount));
     }
     $message .= "</ul>";
 
-    $qry = implode(',', $qry);
-    /*
-    pdump("UPDATE {{planets}} SET {$qry} WHERE `id` = {$planetrow['id']} LIMIT 1;");
-    pdump($config->eco_stockman_fleet, '$oldstock');
-    pdump($newstock, '$newstock');
-    */
-
-    //pdump($qry);
-    //pdump($db_changeset);
-    //die();
-
-    doquery("UPDATE {{planets}} SET {$qry} WHERE `id` = {$planetrow['id']} LIMIT 1;");
+    db_planet_set_by_id($planetrow['id'], implode(',', $qry));
     sn_db_changeset_apply($db_changeset);
 
     rpg_points_change($user['id'], RPG_MARKET, -($rpg_cost), "Using Black Market page {$mode}");
     $config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str($newstock));
 
     $stock = $newstock;
-    // $planetrow = array_merge($planetrow, $newrow);
-    $planetrow = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planetrow['id']} LIMIT 1", true);
+    $planetrow = db_planet_by_id($planetrow['id']);
 
     sn_db_transaction_commit();
 

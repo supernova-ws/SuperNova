@@ -25,7 +25,7 @@ $mode = sys_get_param_str('mode', 'banit');
 $name = sys_get_param_str('name');
 $action = sys_get_param_str('action');
 
-$player_banned_row = doquery("SELECT * FROM {{users}} WHERE `username` = '{$name}' LIMIT 1 ", true);
+$player_banned_row = db_user_by_username($name);
 if($mode == 'banit' && $action)
 {
   if($player_banned_row)

@@ -86,7 +86,6 @@ function qst_render_page()
             'quest_rewards' => $quest_rewards,
           ));
         }
-        // doquery("UPDATE {{users}} SET `news_lastread` = `news_lastread` + 1;");
 
         // TODO: Add mass mail for new quests
         /*
@@ -351,9 +350,7 @@ function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
 
       if(!empty($user_reward))
       {
-        $user_reward = implode(',', $user_reward);
-        doquery("UPDATE {{users}} SET {$user_reward} WHERE `id` = {$user['id']} LIMIT 1;");
-
+        db_user_set_by_id($user['id'], implode(',', $user_reward));
         if($user_reward_dm)
         {
           rpg_points_change($user['id'], RPG_QUEST, $user_reward_dm, $comment, true);
@@ -362,8 +359,7 @@ function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
 
       if(!empty($planet_reward))
       {
-        $planet_reward = implode(',', $planet_reward);
-        doquery("UPDATE {{planets}} SET {$planet_reward} WHERE `id` = {$planet['id']} LIMIT 1;");
+        db_planet_set_by_id($planet['id'], implode(',', $planet_reward));
       }
     }
 

@@ -57,13 +57,13 @@ switch ($mode)
     $recipient_name = sys_get_param_str('recipient_name');
     if($recipient_name)
     {
-      $recipient_row = doquery("SELECT * FROM {{users}} WHERE `username` = '{$recipient_name}';", '', true);
+      $recipient_row = db_user_by_username($recipient_name);
     }
 
     if(!$recipient_row)
     {
       $recipient_id = sys_get_param_id('id');
-      $recipient_row = doquery("SELECT * FROM {{users}} WHERE `id` = {$recipient_id};", '', true);
+      $recipient_row = db_user_by_id($recipient_id);
       if (!$recipient_row)
       {
         $recipient_id = 0;
@@ -180,11 +180,7 @@ switch ($mode)
   case 'show':
     if($current_class == MSG_TYPE_OUTBOX)
     {
-      $message_query = 
-        "SELECT {{messages}}.message_id, {{messages}}.message_owner, {{users}}.id AS message_sender, {{messages}}.message_time,
-          {{messages}}.message_type, {{users}}.username AS message_from, {{messages}}.message_subject, {{messages}}.message_text
-       FROM
-         {{messages}} LEFT JOIN {{users}} ON {{users}}.id = {{messages}}.message_owner WHERE `message_sender` = '{$user['id']}' AND `message_type` = 1 ORDER BY `message_time` DESC;";
+      $message_query = db_message_list_outbox_by_user_id($user['id']);
     }
     else
     {
@@ -210,9 +206,10 @@ switch ($mode)
         $user[$sn_message_class_list[$current_class]['name']] = 0;
       }
 
-      doquery("UPDATE {{users}} SET {$SubUpdateQry}  WHERE `id` = '{$user['id']}' LIMIT 1;");
+      db_user_set_by_id($user['id'], $SubUpdateQry);
       $message_query = "SELECT * FROM {{messages}} WHERE `message_owner` = '{$user['id']}' {$SubSelectQry} ORDER BY `message_time` DESC;";
-    };
+      $message_query = doquery($message_query);
+    }
 
     if(sys_get_param_int('return'))
     {
@@ -221,7 +218,6 @@ switch ($mode)
     }
 
     $template = gettemplate('msg_message_list', true);
-    $message_query = doquery($message_query);
     global $time_diff;
     while ($message_row = mysql_fetch_assoc($message_query))
     {

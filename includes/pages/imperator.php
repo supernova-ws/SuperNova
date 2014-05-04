@@ -26,7 +26,7 @@ function sn_imperator_view($template = null)
   }
   else
   {
-    $user_data = doquery("SELECT * FROM {{users}} WHERE `id` = {$user_id}", true);
+    $user_data = db_user_by_id($user['id']);
     $same_user = false;
   }
 

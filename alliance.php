@@ -48,7 +48,7 @@ sn_ali_fill_user_ally($user);
 //$ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}'", '', true);
 if(!isset($user['ally']))
 {
-  doquery("UPDATE {{users}} SET `ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0  WHERE `id`='{$user['id']}' LIMIT 1;");
+  db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
   message($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
 }
 $ally = &$user['ally'];
@@ -85,7 +85,7 @@ if(!$ally['ranklist'] && $ally['ally_ranks'])
     {
       $ranks[$i][$value] = $rank[$rights_old[$key]];
     }
-    doquery("UPDATE {{users}} SET `ally_rank_id` = {$i} WHERE `ally_id` ='{$user['ally_id']}' AND `ally_rank_id`={$rank_id};", '', true);
+    db_user_list_set_ally_deprecated_convert_ranks($user['ally_id'], $i, $rank_id);
     $i++;
   }
 

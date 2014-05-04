@@ -43,7 +43,7 @@ function eco_mrk_trader($user, $planetrow = null)
     else
     {
       // Locking user record
-      $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
+      $user = db_user_by_id($user['id'], true);
     }
 
     foreach(sn_get_groups('resources_trader') as $resource_id)

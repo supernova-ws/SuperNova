@@ -17,9 +17,8 @@ if($mode == 'exit')
   if (sys_get_param_int('ali_info_leave_confirm'))
   {
     sn_db_transaction_start();
-//    doquery("UPDATE {{alliance}} SET `ally_members` = `ally_members` - 1 WHERE `id` = {$user['ally_id']} LIMIT 1;");
-    doquery("UPDATE {{users}} SET `ally_id` = null, `ally_name` = null, `ally_tag` = null, `ally_register_time` = 0, `ally_rank_id` = 0 WHERE `id` = {$user['id']} LIMIT 1;");
-    doquery("UPDATE {{alliance}} as a LEFT JOIN (SELECT ally_id, count(*) as ally_memeber_count FROM {{users}} WHERE ally_id IS NOT NULL GROUP BY ally_id) as u ON u.ally_id = a.id SET a.`ally_members` = u.ally_memeber_count;");
+    db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_tag` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
+    db_ally_list_recalc_counts();
     sn_db_transaction_commit();
     $lang['Go_out_welldone'] = str_replace("%s", $ally_name, $lang['Go_out_welldone']);
     message(sprintf($lang['ali_info_leave_success'], $ally['ally_name']), $lang['sys_alliance']);

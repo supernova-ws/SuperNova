@@ -55,8 +55,8 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
   if($id)
   {
     // Querys
-    $user = doquery("SELECT * FROM {{users}} WHERE `id` = '".$id."' LIMIT 1;", '', true);
-    $planet_row = doquery("SELECT * FROM {{planets}} WHERE `id_owner` = '".$id."' AND `planet_type` = '1' LIMIT 1;", '', true);
+    $user = db_user_by_id($id);
+    $planet_row = db_planet_by_id($user['id_planet']);
 
     // Variables
     $b_user = $user['username'];

@@ -64,7 +64,7 @@ while($shortcut = mysql_fetch_assoc($query))
 }
 
 // Building list of own planets & moons
-$colonies = SortUserPlanets ( $user );
+$colonies = db_planet_list_sorted ( $user );
 if(mysql_num_rows($colonies) > 1)
 {
   while($row = mysql_fetch_assoc($colonies))

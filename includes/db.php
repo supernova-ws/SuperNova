@@ -507,3 +507,5 @@ function sn_db_transaction_rollback()
   doquery('ROLLBACK');
   $supernova->db_in_transaction = false;
 }
+
+require_once('db/db_queries.php');

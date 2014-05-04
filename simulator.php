@@ -35,11 +35,6 @@ if($_POST['submit'] || $execute)
 
   $combat_data = sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender);
 
-/*
-  $combat_data[UBE_OPTIONS][UBE_MOON_WAS] = $destination_planet['planet_type'] == PT_MOON || is_array(doquery("SELECT `id` FROM {{planets}} WHERE `parent_planet` = {$destination_planet['id']} LIMIT 1;", true));
-  $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] = $fleet_row['fleet_mission'];
-*/
-
   $combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
   sn_ube_combat($combat_data);
   if(!sys_get_param_int('simulator') || sys_get_param_str('reload'))

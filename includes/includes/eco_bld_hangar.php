@@ -5,49 +5,6 @@ function eco_hangar_is_building($que)
   return $que['in_que_abs'][STRUC_FACTORY_HANGAR] ? true : false;
 }
 
-/*
-function eco_bld_hangar_clear($planet, $action)
-{
-  sn_db_transaction_start();
-  $planet = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$planet['id']}' LIMIT 1 FOR UPDATE;", '', true);
-
-  $restored_resources = array();
-  $hangar_que = eco_que_str2arr($planet['b_hangar_id']);
-  $hangar_loop = count($hangar_que) - 1;
-  for($i = $hangar_loop; $i >= ($action == 'trim' ? $hangar_loop : 0); $i--)
-  {
-    $unit_data = get_unit_param($hangar_que[$i][0]);
-    foreach($unit_data['cost'] as $resource_id => $resource_amount)
-    {
-      if(!$resource_amount || !intval($resource_id))
-      {
-        continue;
-      }
-      $restored_resources[$resource_id] += $hangar_que[$i][1] * $resource_amount;
-    }
-    unset($hangar_que[$i]);
-  }
-
-  $query = array();
-  foreach($restored_resources as $resource_id => $resource_amount)
-  {
-    $resource_db_name = get_unit_param($resource_id, P_NAME);
-    $query[] = "`{$resource_db_name}` = `{$resource_db_name}` + {$resource_amount}";
-  }
-  $hangar_que = eco_que_arr2str($hangar_que);
-  $query[] = "`b_hangar_id` = '{$hangar_que}'";
-  if(!$hangar_que)
-  {
-    $query[] = "`b_hangar` = 0";
-  }
-  $query = implode(',', $query);
-  doquery("UPDATE `{{planets}}` SET {$query} WHERE `id` = '{$planet['id']}' LIMIT 1;");
-          sn_db_transaction_commit();
-
-  sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode'));
-}
-*/
-
 function eco_bld_hangar($que_type, $user, &$planet, $que)
 {
   global $lang;

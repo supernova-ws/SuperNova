@@ -49,7 +49,7 @@ if ($planetrow['deuterium'] < $cost)
   message($lang['phalanx_nodeuterium'], "phalanx", "", 3);
 }
 
-$planet_scanned = doquery("SELECT * FROM {{planets}} WHERE galaxy = {$scan_galaxy} AND system = {$scan_system} AND planet = {$scan_planet} AND planet_type = {$scan_planet_type} LIMIT 1;", '', true);
+$planet_scanned = db_planet_by_gspt($scan_galaxy, $scan_system, $scan_planet, $scan_planet_type);
 if(!$planet_scanned['id'])
 {
   message($lang['phalanx_planet_not_exists'], $lang['tech'][STRUC_MOON_PHALANX], "", 3);
@@ -60,7 +60,7 @@ if($planet_scanned['destruyed'])
   message ($lang['phalanx_planet_destroyed'], $lang['tech'][STRUC_MOON_PHALANX], "", 3);
 }
 
-doquery("UPDATE {{planets}} SET deuterium = deuterium - {$cost} WHERE id='{$user['current_planet']}' LIMIT 1;");
+db_planet_set_by_id($user['current_planet'], "deuterium = deuterium - {$cost}");
 
 $template = gettemplate('planet_fleet_list', true);
 

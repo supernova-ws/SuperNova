@@ -43,26 +43,13 @@ if ($mode == 'addit')
   $intergalactic_tech = $_POST['intergalactic_tech'];
   $expedition_tech = $_POST['expedition_tech'];
   $graviton_tech = $_POST['graviton_tech'];
-  $QryUpdatePlanet = "UPDATE {{users}} SET ";
-  $QryUpdatePlanet .= "`spy_tech` = `spy_tech` + '" . $spy_tech . "', ";
-  $QryUpdatePlanet .= "`computer_tech` = `computer_tech` + '" . $computer_tech . "', ";
-  $QryUpdatePlanet .= "`military_tech` = `military_tech` + '" . $military_tech . "', ";
-  $QryUpdatePlanet .= "`defence_tech` = `defence_tech` + '" . $defence_tech . "', ";
-  $QryUpdatePlanet .= "`shield_tech` = `shield_tech` + '" . $shield_tech . "', ";
-  $QryUpdatePlanet .= "`energy_tech` = `energy_tech` + '" . $energy_tech . "', ";
-  $QryUpdatePlanet .= "`hyperspace_tech` = `hyperspace_tech` + '" . $hyperspace_tech . "', ";
-  $QryUpdatePlanet .= "`combustion_tech` = `combustion_tech` + '" . $combustion_tech . "', ";
-  $QryUpdatePlanet .= "`impulse_motor_tech` = `impulse_motor_tech` + '" . $impulse_motor_tech . "', ";
-  $QryUpdatePlanet .= "`hyperspace_motor_tech` = `hyperspace_motor_tech` + '" . $hyperspace_motor_tech . "', ";
-  $QryUpdatePlanet .= "`laser_tech` = `laser_tech` + '" . $laser_tech . "', ";
-  $QryUpdatePlanet .= "`ionic_tech` = `ionic_tech` + '" . $ionic_tech . "', ";
-  $QryUpdatePlanet .= "`buster_tech` = `buster_tech` + '" . $buster_tech . "', ";
-  $QryUpdatePlanet .= "`intergalactic_tech` = `intergalactic_tech` + '" . $intergalactic_tech . "', ";
-  $QryUpdatePlanet .= "`expedition_tech` = `expedition_tech` + '" . $expedition_tech . "', ";
-  $QryUpdatePlanet .= "`graviton_tech` = `graviton_tech` + '" . $graviton_tech . "' ";
-  $QryUpdatePlanet .= "WHERE ";
-  $QryUpdatePlanet .= "`id` = '" . $id . "' ";
-  doquery($QryUpdatePlanet);
+  db_user_set_by_id($id, "`spy_tech` = `spy_tech` + '{$spy_tech}',`computer_tech` = `computer_tech` + '{$computer_tech}',`military_tech` = `military_tech` + '{$military_tech}',
+    `defence_tech` = `defence_tech` + '{$defence_tech}',`shield_tech` = `shield_tech` + '{$shield_tech}',`energy_tech` = `energy_tech` + '{$energy_tech}',
+    `hyperspace_tech` = `hyperspace_tech` + '{$hyperspace_tech}',`combustion_tech` = `combustion_tech` + '{$combustion_tech}',
+    `impulse_motor_tech` = `impulse_motor_tech` + '{$impulse_motor_tech}',`hyperspace_motor_tech` = `hyperspace_motor_tech` + '{$hyperspace_motor_tech}',
+    `laser_tech` = `laser_tech` + '{$laser_tech}',`ionic_tech` = `ionic_tech` + '{$ionic_tech}',`buster_tech` = `buster_tech` + '{$buster_tech}',
+    `intergalactic_tech` = `intergalactic_tech` + '{$intergalactic_tech}',`expedition_tech` = `expedition_tech` + '{$expedition_tech}',
+    `graviton_tech` = `graviton_tech` + '{$graviton_tech}'");
 
   AdminMessage($lang['adm_addresearch2'], $lang['adm_addresearch1']);
 }

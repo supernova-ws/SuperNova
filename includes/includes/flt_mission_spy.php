@@ -159,11 +159,9 @@ function flt_mission_spy(&$mission_data)
       $debris_planet_id = $target_planet_row['planet_type'] == PT_PLANET ? $target_planet_row['id'] : $target_planet_row['parent_planet'];
 
       $spy_cost = get_unit_param(SHIP_SPY, P_COST);
-      $QryUpdateGalaxy  = "UPDATE {{planets}} SET ";
-      $QryUpdateGalaxy .= "`debris_metal` = `debris_metal` + '". floor($spy_probes * $spy_cost[RES_METAL] * 0.3) ."', ";
-      $QryUpdateGalaxy .= "`debris_crystal` = `debris_crystal` + '". floor($spy_probes * $spy_cost[RES_CRYSTAL] * 0.3) ."' ";
-      $QryUpdateGalaxy .= "WHERE `id` = '{$debris_planet_id}' LIMIT 1;";
-      doquery($QryUpdateGalaxy);
+
+      db_planet_set_by_id($debris_planet_id,
+        "`debris_metal` = `debris_metal` + ". floor($spy_probes * $spy_cost[RES_METAL] * 0.3) .", `debris_crystal` = `debris_crystal` + ". floor($spy_probes * $spy_cost[RES_CRYSTAL] * 0.3));
 
       $target_message .= "<br />{$lang['sys_mess_spy_destroyed_enemy']}";
 

@@ -30,7 +30,7 @@ if ($confirm)
   {
     doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$last_confirm['id']}' LIMIT 1;");
 
-    $user_data = doquery("SELECT * FROM {{users}} WHERE `id` = '{$last_confirm['id_user']}' LIMIT 1;", '', true);
+    $user_data = db_user_by_id($last_confirm['id_user']);
     if(!$user_data['id'])
     {
       message($lang['log_lost_err_code'], $lang['sys_error']);
@@ -43,7 +43,7 @@ if ($confirm)
 
     $new_password = sys_random_string();
     $md5 = md5($new_password);
-    $result = doquery("UPDATE {{users}} SET `password` = '{$md5}' WHERE `id` = '{$last_confirm['id_user']}' LIMIT 1;");
+    $result = db_user_set_by_id($last_confirm['id_user'], "`password` = '{$md5}'");
     if($result)
     {
       $message = sprintf($lang['log_lost_email_pass'], $config->game_name, $new_password);
@@ -75,9 +75,9 @@ if ($confirm)
 }
 elseif ($email)
 {
-  $user_id = doquery("SELECT `id` FROM {{users}} WHERE `email_2` = '{$email}' LIMIT 1;", '', true);
+  $user_id = db_user_by_email($email, false, false, 'id');
 
-  if (!$user_id['id'])
+  if(!$user_id['id'])
   {
     message($lang['log_lost_err_email'], $lang['sys_error']);
   }

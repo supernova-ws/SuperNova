@@ -15,12 +15,12 @@ include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 lng_include('login');
 lng_include('admin');
 
-$wylosuj = rand(100000,9000000);
-$kod = md5($wylosuj);
+// $wylosuj = rand(100000,9000000);
+// $kod = md5($wylosuj);
 
 $id_ref = sys_get_param_int('id_ref');
 
-if ($_POST['submit'])
+if($_POST['submit'])
 {
   session_start();
   $errors    = 0;
@@ -61,7 +61,7 @@ if ($_POST['submit'])
   }
   else
   {
-    $db_check = doquery("SELECT `id` FROM {{users}} WHERE `email` = '{$email}' OR `email_2` = '{$email}' LIMIT 1;", true);
+    $db_check = db_user_by_email($email, true, false, 'id');
     if($db_check)
     {
       $errorlist .= $lang['error_emailexist'];
@@ -97,18 +97,16 @@ if ($_POST['submit'])
     $language = $language ? $language : DEFAULT_LANG;
     $def_skin = DEFAULT_SKINPATH;
 
-    doquery(
-      "INSERT INTO {{users}} SET
-        `username` = '{$username_safe}', `email` = '{$email}', `email_2` = '{$email}', `design` = '1', `dpath` = '{$def_skin}',
+    db_user_insert_set("`username` = '{$username_safe}', `email` = '{$email}', `email_2` = '{$email}', `design` = '1', `dpath` = '{$def_skin}',
         `lang` = '{$language}', `sex` = '{$sex}', `id_planet` = '0', `register_time` = '{$time_now}', `password` = '{$md5pass}',
         `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^1|opt_email_mnl_joueur^1|opt_email_mnl_alliance^1|opt_mnl_attaque^1|opt_email_mnl_attaque^1|opt_mnl_exploit^1|opt_email_mnl_exploit^1|opt_mnl_transport^1|opt_email_mnl_transport^1|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^1|opt_mnl_buildlist^1|opt_email_mnl_buildlist^1|opt_int_navbar_resource_force^1|';");
 
-    $user = doquery("SELECT `id` FROM {{users}} WHERE `username` = '{$username_safe}' LIMIT 1;", true);
+    $user = db_user_by_username($username_safe, false, 'id');
     doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = \"{$username_safe}\"");
 
     if($id_ref)
     {
-      $referral_row = doquery("SELECT `id` FROM {{users}} WHERE `id` = '{$id_ref}' LIMIT 1;", true);
+      $referral_row = db_user_by_id($id_ref, true);
       if($referral_row)
       {
         doquery("INSERT INTO {{referrals}} SET `id` = {$user['id']}, `id_partner` = {$id_ref}");
@@ -140,7 +138,7 @@ if ($_POST['submit'])
         $galaxy = 1;
       }
 
-      $galaxy_row = doquery( "SELECT `id` FROM {{planets}} WHERE `galaxy` = '{$galaxy}' AND `system` = '{$system}' AND `planet` = '{$planet}' AND `planet_type` = 1 LIMIT 1;", '', true);
+      $galaxy_row = db_planet_by_gspt($galaxy, $system, $planet, PT_PLANET, true, 'id');
       if(!$galaxy_row['id'])
       {
         $planet_set = true;
@@ -157,7 +155,7 @@ if ($_POST['submit'])
 
     sys_player_new_adjust($user['id'], $new_planet);
 
-    doquery("UPDATE {{users}} SET `id_planet` = '{$new_planet}', `current_planet` = '{$new_planet}', `galaxy` = '{$galaxy}', `system` = '{$system}', `planet` = '{$planet}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    db_user_set_by_id($user['id'], "`id_planet` = '{$new_planet}', `current_planet` = '{$new_planet}', `galaxy` = '{$galaxy}', `system` = '{$system}', `planet` = '{$planet}'");
 
     $config->db_saveItem('users_amount', $config->users_amount+1);
 
@@ -179,15 +177,12 @@ if ($_POST['submit'])
 }
 else
 {
-  $query = doquery('SELECT username FROM {{users}} WHERE `user_as_ally` IS NULL ORDER BY register_time DESC LIMIT 1;', '', true);
-  $query1 = doquery("SELECT COUNT(DISTINCT(id)) AS users_online FROM {{users}} WHERE user_as_ally is null and onlinetime>" . (time()-900), '', true);
-
   $template = gettemplate('registry_form', true);
   $template->assign_vars(array(
     'id_ref'       => $id_ref,
     'servername'   => $config->game_name,
-    'last_user'    => $query['username'],
-    'online_users' => $query1['users_online'],
+    'last_user'    => db_user_last_registered_username(),
+    'online_users' => db_user_count(true),
     'URL_RULES'    => $config->url_rules,
     'URL_FORUM'    => $config->url_forum,
     'URL_FAQ'      => $config->url_faq,

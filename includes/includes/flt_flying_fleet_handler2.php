@@ -29,22 +29,30 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
   {
     return $result;
   }
-  elseif(!$safe_fleet)
-  {
-    $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1 FOR UPDATE;", true);
-    if(!$fleet_row || !is_array($fleet_row) || ($fleet_row['fleet_mess'] == 1 && $only_resources))
-    {
-      return $result;
-    }
-  }
 
   $prefix = $start ? 'start' : 'end';
 
-  $planet_arrival = doquery(
-    "SELECT p.`id`, p.`id_owner`
-       FROM {{planets}} AS p LEFT JOIN {{users}} AS u ON u.id = p.id_owner
-       WHERE p.`galaxy` = '{$fleet_row["fleet_{$prefix}_galaxy"]}' AND p.`system` = '{$fleet_row["fleet_{$prefix}_system"]}' AND p.`planet` = '{$fleet_row["fleet_{$prefix}_planet"]}'
-       AND p.`planet_type` = '{$fleet_row["fleet_{$prefix}_type"]}' LIMIT 1 FOR UPDATE;", true);
+  // Поскольку эта функция может быть вызвана не из обработчика флотов - нам надо всё заблокировать вроде бы
+  // TODO Проеверить от многократного срабатывания !!!
+  // Тут не блокируем пока - сначала надо заблокировать пользователя, что бы не было дедлока
+  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1", true);
+  // Узнаем ИД владельца планеты - без блокировки
+  // TODO поменять на владельца планеты - когда его будут возвращать всегда !!!
+  $user_id = db_planet_by_vector($fleet_row, "fleet_{$prefix}_", false, 'id_owner');
+  $user_id = $user_id['id_owner'];
+  // Блокируем пользователя
+  $user = db_user_by_id($user_id, true);
+  // Блокируем планету
+  $planet_arrival = db_planet_by_vector($fleet_row, "fleet_{$prefix}_", true);
+  // Блокируем флот
+  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1 FOR UPDATE;", true);
+
+  // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
+  if(!$fleet_row || !is_array($fleet_row) || ($fleet_row['fleet_mess'] == 1 && $only_resources))
+  {
+    return $result;
+  }
+
 //pdump($planet_arrival);
   $db_changeset = array();
   if(!$only_resources)
@@ -53,7 +61,6 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
 
     if($fleet_row['fleet_owner'] == $planet_arrival['id_owner'])
     {
-      $user = doquery("SELECT * FROM {{users}} WHERE `id` = {$planet_arrival['id_owner']} LIMIT 1 FOR UPDATE;", true);
       $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
       foreach($fleet_array as $ship_id => $ship_count)
       {
@@ -79,19 +86,8 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
     sn_db_changeset_apply($db_changeset);
   }
 
-  $query = "UPDATE {{planets}}
-    SET
-      `metal` = `metal` + '{$fleet_row['fleet_resource_metal']}',
-      `crystal` = `crystal` + '{$fleet_row['fleet_resource_crystal']}',
-      `deuterium` = `deuterium` + '{$fleet_row['fleet_resource_deuterium']}'
-    WHERE
-      `id` = {$planet_arrival['id']} LIMIT 1;";
-//  $query .= "`galaxy` = '{$fleet_row["fleet_{$prefix}_galaxy"]}' AND ";
-//  $query .= "`system` = '{$fleet_row["fleet_{$prefix}_system"]}' AND ";
-//  $query .= "`planet` = '{$fleet_row["fleet_{$prefix}_planet"]}' AND ";
-//  $query .= "`planet_type` = '". $fleet_row["fleet_{$prefix}_type"] ."' ";
-
-  doquery($query);
+  db_planet_set_by_id($planet_arrival['id'],
+    "`metal` = `metal` + '{$fleet_row['fleet_resource_metal']}', `crystal` = `crystal` + '{$fleet_row['fleet_resource_crystal']}', `deuterium` = `deuterium` + '{$fleet_row['fleet_resource_deuterium']}'");
   $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
 
   return $result;
@@ -298,22 +294,8 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 
     $mission_data = $sn_groups_mission[$fleet_row['fleet_mission']];
     // Формируем запрос, блокирующий сразу все нужные записи
-    doquery($q = "
-    SELECT 1
-    FROM {{fleets}} AS f" .
-      ($mission_data['dst_user'] || $mission_data['dst_planet'] ? " LEFT JOIN {{users}} AS ud ON ud.id = f.fleet_target_owner" : '') .
-      ($mission_data['dst_planet'] ? " LEFT JOIN {{planets}} AS pd ON pd.id = f.fleet_end_planet_id" : '') .
 
-      // Блокировка всех прилетающих и улетающих флотов, если нужно
-      ($mission_data['dst_fleets'] ? " LEFT JOIN {{fleets}} AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id" : '') .
-
-      ($mission_data['src_user'] || $mission_data['src_planet'] ? " LEFT JOIN {{users}} AS us ON us.id = f.fleet_owner" : '') .
-      ($mission_data['src_planet'] ? " LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id" : '') .
-
-      " WHERE f.fleet_id = {$fleet_row['fleet_id']}
-    GROUP BY 1 FOR UPDATE");
-
-    // print($q);
+    db_flying_fleet_lock($mission_data, $fleet_row);
 
     $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = {$fleet_row['fleet_id']} FOR UPDATE", true);
     if(!$fleet_row || empty($fleet_row))
@@ -339,12 +321,12 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
     // шпионаж не дает нормальный ID fleet_end_planet_id 'dst_planet'
     $mission_data = array(
       'fleet'      => &$fleet_row,
-      'dst_user'   => $mission_data['dst_user'] ? doquery("SELECT * FROM {{users}} WHERE `id` = {$fleet_row['fleet_target_owner']} LIMIT 1 FOR UPDATE;", true) : null,
-      // 'dst_planet' => $mission_data['dst_planet'] ? doquery("/* 1 */ SELECT * FROM {{planets}} WHERE `id` = {$fleet_row['fleet_end_planet_id']} LIMIT 1 FOR UPDATE;", true) : null,
-      'dst_planet' => $mission_data['dst_planet'] ? doquery("SELECT `id`, `id_owner` FROM {{planets}} WHERE `galaxy` = {$fleet_row['fleet_end_galaxy']} AND `system` = {$fleet_row['fleet_end_system']} AND `planet` = {$fleet_row['fleet_end_planet']} AND `planet_type` = " . ($fleet_row['fleet_end_type'] == PT_DEBRIS ? PT_PLANET : $fleet_row['fleet_end_type']) . " LIMIT 1 FOR UPDATE;", true) : null,
-      'src_user'   => $mission_data['src_user'] ? doquery("SELECT * FROM {{users}} WHERE `id` = {$fleet_row['fleet_owner']} LIMIT 1 FOR UPDATE;", true) : null,
-      // 'src_planet' => $mission_data['src_planet'] ? doquery("/* 2 */ SELECT * FROM {{planets}} WHERE `id` = {$fleet_row['fleet_start_planet_id']} LIMIT 1 FOR UPDATE;", true) : null,
-      'src_planet' => $mission_data['src_planet'] ? doquery("SELECT * FROM {{planets}} WHERE `galaxy` = {$fleet_row['fleet_start_galaxy']} AND `system` = {$fleet_row['fleet_start_system']} AND `planet` = {$fleet_row['fleet_start_planet']} AND `planet_type` = {$fleet_row['fleet_start_type']} LIMIT 1 FOR UPDATE;", true) : null,
+      'dst_user'   => $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($fleet_row['fleet_target_owner'], true) : null,
+      // TODO 'dst_planet' => $mission_data['dst_planet'] ? db_planet_by_id($fleet_row['fleet_end_planet_id'], true) : null,
+      'dst_planet' => $mission_data['dst_planet'] ? db_planet_by_vector($fleet_row, 'fleet_end_', true, '`id`, `id_owner`, `name`') : null,
+      'src_user'   => $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($fleet_row['fleet_owner'], true)  : null,
+      // TODO 'src_planet' => $mission_data['src_planet'] ? db_planet_by_id($fleet_row['fleet_start_planet_id'], true) : null,
+      'src_planet' => $mission_data['src_planet'] ? db_planet_by_vector($fleet_row, 'fleet_start_', true, '`id`, `id_owner`, `name`') : null,
       'fleet_event' => $fleet_event['fleet_event'],
     );
 
@@ -412,56 +394,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 
     sn_db_transaction_commit();
 
-/*
-
-    // Миссии должны возвращать измененные результаты, что бы второй раз не лезть в базу
-    unset($mission_result);
-    switch ($fleet_row['fleet_mission'])
-    {
-
-      default:
-        doquery("DELETE FROM `{{fleets}}` WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
-      break;
-    }
-// Подчищать массивы по результатам
-    if($attack_result)
-    {
-      // Case for passed attack
-      $attack_result = $attack_result['rw'][0];
-//TODO: А вот здесь надо переписать соответствующую функцию
-      flt_unset_by_attack($attack_result['attackers'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache);
-      flt_unset_by_attack($attack_result['defenders'], $flt_user_cache, $flt_planet_cache, $flt_fleet_cache, $flt_event_cache);
-      unset($attack_result);
-      unset($flt_planet_cache[$fleet_event['dst_planet_hash']]);
-    }
-    else
-    {
-      // Unsetting data that we broken in mission handler
-//TODO: А вот тут надо доставать данные - из кэша ли, из базы ли
-      if(($mission_result & CACHE_FLEET) == CACHE_FLEET)
-      {
-        unset($flt_fleet_cache[$fleet_event['fleet_id']]);
-      }
-      if(($mission_result & CACHE_USER_SRC) == CACHE_USER_SRC)
-      {
-        unset($flt_user_cache[$fleet_event['src_user_id']]);
-      }
-      if(($mission_result & CACHE_USER_DST) == CACHE_USER_DST)
-      {
-        unset($flt_user_cache[$fleet_event['dst_user_id']]);
-      }
-      if(($mission_result & CACHE_PLANET_SRC) == CACHE_PLANET_SRC)
-      {
-        unset($flt_planet_cache[$fleet_event['src_planet_hash']]);
-      }
-      if(($mission_result & CACHE_PLANET_DST) == CACHE_PLANET_DST)
-      {
-        unset($flt_planet_cache[$fleet_event['dst_planet_hash']]);
-      }
-    }
-*/
   }
-//           sn_db_transaction_commit();
 
 //  if($flt_update_mode == 1)
 //  {

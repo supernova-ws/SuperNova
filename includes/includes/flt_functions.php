@@ -382,7 +382,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
     return ATTACK_WRONG_MISSION;
   }
 
-  $enemy = doquery("SELECT * FROM {{users}} WHERE `id` = '{$planet_dst['id_owner']}' LIMIT 1;", '', true);
+  $enemy = db_user_by_id($planet_dst['id_owner']);
   // We cannot attack or send resource to users in VACATION mode
   if($enemy['vacation'] && $mission != MT_RECYCLE)
   {
@@ -507,11 +507,9 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 {
 //ini_set('error_reporting', E_ALL);
 
-  //doquery('SET autocommit = 0;');
-  //doquery('LOCK TABLES {{users}} READ, {{planets}} WRITE, {{fleet}} WRITE, {{aks}} WRITE, {{statpoints}} READ;');
   sn_db_transaction_start();
 
-  $user = doquery ("SELECT * FROM {{users}} WHERE `id` = '{$user['id']}' LIMIT 1 FOR UPDATE;", true);
+  $user = db_user_by_id($user['id'], true);
   $from = sys_o_get_updated($user, $from['id'], SN_TIME_NOW);
   $from = $from['planet'];
 
@@ -595,19 +593,11 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   $QryInsertFleet .= "`start_time` = '" . SN_TIME_NOW . "';";
   doquery( $QryInsertFleet);
 
-  $QryUpdatePlanet  = "UPDATE {{planets}} SET `deuterium` = `deuterium` - '{$travel_data['consumption']}' WHERE `id` = '{$from['id']}' LIMIT 1;";
-  doquery($QryUpdatePlanet);
-
+  db_planet_set_by_id($from['id'], "`deuterium` = `deuterium` - '{$travel_data['consumption']}'");
   sn_db_changeset_apply($db_changeset);
 
-  if(BE_DEBUG)
-  {
-    debug($QryInsertFleet);
-    debug($QryUpdatePlanet);
-  }
-
   sn_db_transaction_commit();
-  $from = doquery("SELECT * FROM {{planets}} WHERE `id` = '{$from['id']}' LIMIT 1;", true);
+  $from = db_planet_by_id($from['id']);
 
   return ATTACK_ALLOWED;
 //ini_set('error_reporting', E_ALL ^ E_NOTICE);

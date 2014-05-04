@@ -27,7 +27,7 @@ function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = fal
   }
   else
   {
-    doquery("UPDATE {{users}} SET `{$sn_data_metamatter_db_name}` = `{$sn_data_metamatter_db_name}` + '{$metamatter}', `metamatter_total` = `metamatter_total` + '{$metamatter}' WHERE `id` = {$user_id} AND `{$sn_data_metamatter_db_name}` + '{$metamatter}' >= 0 LIMIT 1;");
+    db_user_set_by_id($user_id, "`{$sn_data_metamatter_db_name}` = `{$sn_data_metamatter_db_name}` + '{$metamatter}', `metamatter_total` = `metamatter_total` + '{$metamatter}'");
     $result = mysql_affected_rows();
   }
 
@@ -39,7 +39,7 @@ function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = fal
       $comment = call_user_func_array('sprintf', $comment);
     }
     $comment = mysql_real_escape_string($comment);
-    $row = doquery("SELECT username FROM {{users}} WHERE id = {$user_id} LIMIT 1;", '', true);
+    $row = db_user_by_id($user_id, false, 'username');
     $row['username'] = mysql_real_escape_string($row['username']);
     doquery("INSERT INTO {{log_metamatter}} SET
       `user_id` = {$user_id},
@@ -93,7 +93,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
   }
   else
   {
-    doquery("UPDATE {{users}} SET `{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}' WHERE `id` = {$user_id} AND `{$sn_data_dark_matter_db_name}` + '{$dark_matter}' >= 0 LIMIT 1;");
+    db_user_set_by_id($user_id, "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'");
     $rows_affected = mysql_affected_rows();
   }
 
@@ -105,7 +105,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
       $comment = call_user_func_array('sprintf', $comment);
     }
     $comment = mysql_real_escape_string($comment);
-    $row = doquery("SELECT username FROM {{users}} WHERE id = {$user_id} LIMIT 1;", '', true);
+    $row = db_user_by_id($user_id, false, 'username');
     $row['username'] = mysql_real_escape_string($row['username']);
     doquery(
       "INSERT INTO {{log_dark_matter}} (`log_dark_matter_username`, `log_dark_matter_reason`,
@@ -191,7 +191,7 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
   if($xp_to_add)
   {
     $xp += $xp_to_add;
-    doquery("UPDATE `{{users}}` SET `{$field_xp}` = `{$field_xp}` + '{$xp_to_add}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    db_user_set_by_id($user['id'], "`{$field_xp}` = `{$field_xp}` + '{$xp_to_add}'");
   }
 
   $level = $user[$field_level];
@@ -202,7 +202,7 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
   $level -= $user[$field_level];
   if($level > 0)
   {
-    doquery("UPDATE `{{users}}` SET `{$field_level}` = `{$field_level}` + '{$level}' WHERE `id` = '{$user['id']}' LIMIT 1;");
+    db_user_set_by_id($user['id'], "`{$field_level}` = `{$field_level}` + '{$level}'");
     rpg_points_change($user['id'], $type, $level * 1000, $comment);
     $user[$field_level] += $level;
   }

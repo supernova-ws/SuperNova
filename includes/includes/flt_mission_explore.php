@@ -315,7 +315,7 @@ function flt_mission_explore(&$mission_data)
 
   doquery($query_data);
 
-  doquery("UPDATE {{users}} SET `player_rpg_explore_xp` = `player_rpg_explore_xp` + 1 WHERE id = '{$fleet_row['fleet_owner']}' LIMIT 1;");
+  db_user_set_by_id($fleet_row['fleet_owner'], "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
 
   if(!$msg_text)
   {

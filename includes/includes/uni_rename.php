@@ -29,7 +29,7 @@
       $uni_row['universe_price'] = $uni_price;
 
       sn_db_transaction_start();
-      $user = doquery("select * from {{users}} where `id` = {$user['id']} LIMIT 1 FOR UPDATE;", true);
+      $user = db_user_by_id($user['id'], true);
       // if($user[get_unit_param(RES_DARK_MATTER, P_NAME)] < $uni_price)
       if(mrc_get_level($user, null, RES_DARK_MATTER) < $uni_price)
       {

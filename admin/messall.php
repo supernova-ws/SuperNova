@@ -36,7 +36,7 @@ if ($_POST && $mode == "change") {
     $ranga = 'SuperGameOperator';
   }
   if ($config->tresc != '' and $config->temat) {
-    $sq      = doquery("SELECT `id` FROM {{users}}");
+    $sq      = db_user_list('', false, 'id');
     $Time    = time();
     $From    = "<font color=\"". $kolor ."\">". $ranga ." ".$user['username']."</font>";
     $Subject = "<font color=\"". $kolor ."\">". $config->temat ."</font>";
@@ -44,7 +44,7 @@ if ($_POST && $mode == "change") {
     while ($u = mysql_fetch_assoc($sq)) {
       msg_send_simple_message ($u['id'], $user['id'], $Time, MSG_TYPE_ADMIN, $From, $Subject, $Message);
     }
-    message("<font color=\"lime\">Wys�a�e� wiadomo�� do wszystkich graczy</font>", "Complete", "../overview." . PHP_EX, 3);
+    message("<font color=\"lime\">Херня на польском</font>", "Complete", "../overview." . PHP_EX, 3);
   }
 } else {
   $parse['dpath'] = $dpath;
@@ -52,5 +52,3 @@ if ($_POST && $mode == "change") {
   $page .= parsetemplate(gettemplate('admin/messall_body'), $parse);
   display($page, '', false,'', true);
 }
-
-?>

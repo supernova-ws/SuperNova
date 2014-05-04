@@ -15,7 +15,7 @@ function sn_contact_view($template = null)
 
   $template = gettemplate('contact', $template);
 
-  $query = doquery("SELECT `username`, `email`, `authlevel` FROM {{users}} WHERE `authlevel` != 0 ORDER BY `authlevel` DESC;");
+  $query = db_user_list_admin_contacts();
 
   while($row = mysql_fetch_assoc($query))
   {

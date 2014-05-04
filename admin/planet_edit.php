@@ -32,17 +32,15 @@ if(sys_get_param('change_data') && !empty($unit_list))
     }
   }
 
-  $query_string = implode(', ', $query_string);
-
-  if($query_string)
+  if(!empty($query_string))
   {
-    doquery("UPDATE {{planets}} SET {$query_string} WHERE id = {$planet_id} LIMIT 1;");
+    db_planet_set_by_id($planet_id, implode(', ', $query_string));
   }
 }
 
 if($planet_id)
 {
-  $edit_planet_row = doquery("SELECT * FROM {{planets}} WHERE `id` = {$planet_id}", '', true);
+  $edit_planet_row = db_planet_by_id($planet_id);
   admin_planet_edit_template($template, $edit_planet_row, $mode);
 }
 

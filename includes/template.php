@@ -1,12 +1,6 @@
 <?php
 
 // Wrappers for functions
-function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true)
-{
-  $func_args = func_get_args();
-  return sn_function_call('display', $func_args);
-}
-
 function gettemplatename($u_dpath)
 {
   static $template_names = array();
@@ -204,6 +198,8 @@ function tpl_render_menu()
 
   return $template;
 }
+
+function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true){$func_args = func_get_args();return sn_function_call('display', $func_args);}
 
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
@@ -412,7 +408,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
   sn_db_transaction_commit();
   $planetrow = $planetrow['planet'];
 
-  $ThisUsersPlanets = SortUserPlanets ( $user );
+  $ThisUsersPlanets = db_planet_list_sorted ( $user );
   while ($CurPlanet = mysql_fetch_assoc($ThisUsersPlanets))
   {
     if (!$CurPlanet['destruyed'])

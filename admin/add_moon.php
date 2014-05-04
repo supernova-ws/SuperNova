@@ -26,9 +26,10 @@ if(sys_get_param_str('mode') == 'addit')
   $PlanetID = sys_get_param_id('user');
   $MoonName = sys_get_param_str('name');
 
-  $PlanetSelected = doquery("SELECT `galaxy`, `system`, `planet`, `id_owner` FROM {{planets}} WHERE `id` = '{$PlanetID}' LIMIT 1;", true);
-
+  sn_db_transaction_start();
+  $PlanetSelected = db_planet_by_id($PlanetID, true, '`galaxy`, `system`, `planet`, `id_owner`');
   uni_create_moon($PlanetSelected['galaxy'], $PlanetSelected['system'], $PlanetSelected['planet'], $PlanetSelected['id_owner'], 0, $MoonName);
+  sn_db_transaction_commit();
 
   AdminMessage($lang['addm_done'], $lang['addm_title']);
 }

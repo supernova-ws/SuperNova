@@ -59,7 +59,7 @@ function sn_sys_cookie_check($cookie)
   $user_name = mysql_real_escape_string($user_name);
 
   $user_id = intval($user_id);
-  $user = doquery("SELECT * FROM `{{users}}` WHERE `id` = '{$user_id}' AND user_as_ally IS NULL LIMIT 1;", true);
+  $user = db_user_player_by_id($user_id);
   if(!$user || md5("{$user['password']}--{$config->secret_word}") != $user_pass_hash)
   {
     $user = false;
@@ -112,13 +112,8 @@ function sn_autologin($abort = true)
 
   $ip = sys_get_user_ip();
   $user_agent = mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']);
-  doquery("UPDATE `{{users}}` SET `onlinetime` = '{$time_now}'" . ($user_impersonator ? '' : ", `user_lastip` = '{$ip['client']}', `user_proxy`  = '{$ip['proxy']}', `user_agent`  = '{$user_agent}'") . " WHERE `id` = '{$user['id']}' LIMIT 1;");
-  /*
-  if(!$user_impersonator)
-  {
-    doquery("UPDATE `{{users}}` SET `user_lastip` = '{$ip['client']}', `user_proxy`  = '{$ip['proxy']}', `user_agent`  = '{$user_agent}' WHERE `id` = '{$user['id']}' LIMIT 1;");
-  }
-  */
+  db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW .
+    (!$user_impersonator ? ", `user_lastip` = '{$ip['client']}', `user_proxy`  = '{$ip['proxy']}', `user_agent`  = '{$user_agent}'" : ''));
 
   if(!$skip_ban_check && $user['banaday'])
   {
@@ -139,7 +134,7 @@ function sn_autologin($abort = true)
     }
     else
     {
-      doquery("UPDATE {{users}} SET `vacation` = '{$time_now}', banaday=0 WHERE id='{$user['id']}' LIMIT 1;");
+      db_user_set_by_id($user['id'], "`vacation` = '{$time_now}', banaday=0");
     }
   }
 
@@ -152,30 +147,6 @@ function sn_login($username, $password, $remember_me = 1)
 {
   global $lang;
 
-/*
-  $login = doquery("SELECT * FROM {{users}} WHERE `username` = '{$username}' LIMIT 1;", '', true);
-
-  // TODO: try..catch
-  if(!$username || !$login || $login['user_as_ally'])
-  {
-    $status = LOGIN_ERROR_USERNAME;
-    $error_msg = $lang['Login_FailUser'];
-    $login = array();
-  }
-  elseif(!$login['password'] || $login['password'] != md5($password))
-  {
-    $status = LOGIN_ERROR_PASSWORD;
-    $error_msg = $lang['Login_FailPassword'];
-    $login = array();
-  }
-  else
-  {
-    sys_user_options_unpack($login);
-    sn_set_cookie($login, $remember_me);
-    $status = LOGIN_SUCCESS;
-    $error_msg = '';
-  }
-*/
   $login = array();
   $username = mysql_real_escape_string($username);
   if(!$username || !$password)
@@ -185,8 +156,7 @@ function sn_login($username, $password, $remember_me = 1)
   }
   else
   {
-    $query = doquery($q = "SELECT * FROM {{users}} WHERE `username` = '{$username}';");
-
+    $query = db_user_by_username($username, false);
     while($login = mysql_fetch_assoc($query))
     {
       // TODO: try..catch
@@ -301,7 +271,7 @@ function DeleteSelectedUser ( $UserID )
 {
   // TODO: Full rewrite
   sn_db_transaction_start();
-  $TheUser = doquery ( "SELECT * FROM `{{users}}` WHERE `id` = '" . $UserID . "';", '', true );
+  $TheUser = db_user_by_id($UserID);
   if ( $TheUser['ally_id'] != 0 ) {
     $TheAlly = doquery ( "SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true );
     $TheAlly['ally_members'] -= 1;
@@ -314,13 +284,8 @@ function DeleteSelectedUser ( $UserID )
   }
   doquery ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `id_owner` = '" . $UserID . "';");
 
-  $ThePlanets = doquery ( "SELECT * FROM `{{planets}}` WHERE `id_owner` = '" . $UserID . "';" );
-  while ( $OnePlanet = mysql_fetch_assoc ( $ThePlanets ) ) {
-    if ( $OnePlanet['planet_type'] == 1 ) {
-      // doquery ( "DELETE FROM `{{galaxy}}` WHERE `galaxy` = '" . $OnePlanet['galaxy'] . "' AND `system` = '" . $OnePlanet['system'] . "' AND `planet` = '" . $OnePlanet['planet'] . "';" );
-    }
-    doquery ( "DELETE FROM `{{planets}}` WHERE `id` = '" . $ThePlanets['id'] . "';");
-  }
+  db_planet_list_delete_by_owner($UserID);
+
   doquery ( "DELETE FROM `{{messages}}` WHERE `message_sender` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{messages}}` WHERE `message_owner` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{notes}}` WHERE `owner` = '" . $UserID . "';");
@@ -330,9 +295,12 @@ function DeleteSelectedUser ( $UserID )
   doquery ( "DELETE FROM `{{buddy}}` WHERE `BUDDY_SENDER_ID` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{buddy}}` WHERE `BUDDY_OWNER_ID` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{annonce}}` WHERE `user` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{users}}` WHERE `id` = '" . $UserID . "';");
+
+
+  db_user_delete_by_id($UserID);
   doquery ( "DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
-  doquery ( "UPDATE `{{config}}` SET `config_value`= `config_value` - 1 WHERE `config_name` = 'users_amount';");
+  global $config;
+  $config->db_saveItem('users_amount', $config->users_amount - 1);
   sn_db_transaction_commit();
 }
 
@@ -340,11 +308,10 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
 {
   global $time_now;
 
-  $ban_current = doquery("SELECT `banaday` FROM {{users}} WHERE `id` = {$banned['id']} LIMIT 1", true);
-
+  $ban_current = db_user_by_id($banned['id'], false, 'banaday');
   $ban_until = ($ban_current['banaday'] ? $ban_current['banaday'] : $time_now) + $term;
 
-  doquery("UPDATE {{users}} SET `banaday` = {$ban_until} " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : '') . "WHERE `id` = {$banned['id']} LIMIT 1");
+  db_user_set_by_id($banned['id'], "`banaday` = {$ban_until} " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : ''));
 
   $banned['username'] = mysql_real_escape_string($banned['username']);
   $banner['username'] = mysql_real_escape_string($banner['username']);
@@ -362,21 +329,17 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
       `ban_issuer_email` = '{$banner['email']}'
   ");
 
-  doquery("
-    UPDATE {{planets}}
-      SET
-        `metal_mine_porcent` = '0', `crystal_mine_porcent` = '0', `deuterium_sintetizer_porcent` = '0',
-        `solar_plant_porcent` = '0', `fusion_plant_porcent` = '0', `solar_satelit_porcent` = '0', `que` = ''
-      WHERE `id_owner` = {$banned['id']};
-  ");
-
+  db_planet_list_set_by_owner($banned['id'],
+    "`metal_mine_porcent` = 0, `crystal_mine_porcent` = 0, `deuterium_sintetizer_porcent` = 0, `solar_plant_porcent` = 0,
+    `fusion_plant_porcent` = 0, `solar_satelit_porcent` = 0, `ship_sattelite_sloth_porcent` = 0"
+  );
 }
 
 function sys_admin_player_ban_unset($banner, $banned, $reason = '')
 {
   global $time_now;
 
-  doquery("UPDATE {{users}} SET `banaday` = 0, `vacation` = {$time_now} WHERE `id` = {$banned['id']} LIMIT 1");
+  db_user_set_by_id($banned['id'], "`banaday` = 0, `vacation` = {$time_now}");
 
   $banned['username'] = mysql_real_escape_string($banned['username']);
   $banner['username'] = mysql_real_escape_string($banner['username']);
