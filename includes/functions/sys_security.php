@@ -156,8 +156,9 @@ function sn_login($username, $password, $remember_me = 1)
   }
   else
   {
-    $query = db_user_by_username($username, false);
-    while($login = mysql_fetch_assoc($query))
+    // $query = db_user_by_username($username, false);
+    $login = db_user_by_username($username, false);
+    // while($login = mysql_fetch_assoc($query))
     {
       // TODO: try..catch
       if($login['user_as_ally'])
