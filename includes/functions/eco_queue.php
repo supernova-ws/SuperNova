@@ -327,6 +327,7 @@ function que_get($que_type = false, $user_id, $planet_id = null, $for_update = f
 
   if(!$user_id)
   {
+    pdump(debug_backtrace());
     die('No user_id for que_get_que()');
   }
 

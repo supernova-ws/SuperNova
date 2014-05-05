@@ -438,11 +438,7 @@ function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result
     }
     elseif($for_update || !isset($user[$unit_id]))
     {
-      $time_restriction =
-        get_unit_param($unit_id, P_UNIT_TEMPORARY) || (get_unit_param($unit_id, P_UNIT_TYPE) == UNIT_MERCENARIES && $config->empire_mercenary_temporary)
-          ? " AND unit_time_start <= FROM_UNIXTIME({$time_now}) AND unit_time_finish >= FROM_UNIXTIME({$time_now}) "
-          : '';
-      $unit_level = doquery("SELECT * FROM {{unit}} WHERE unit_player_id = {$user['id']} AND unit_snid = '{$unit_id}' {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
+      $unit_level = db_unit_by_location($user['id'], $context['location'], $user['id'], $unit_id, $for_update);
       $unit_level['unit_time_start'] = strtotime($unit_level['unit_time_start']);
       $unit_level['unit_time_finish'] = strtotime($unit_level['unit_time_finish']);
       $user[$unit_id] = $unit_level;
@@ -458,11 +454,7 @@ function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result
     }
     elseif($for_update || !isset($planet[$unit_id]))
     {
-      $time_restriction =
-        get_unit_param($unit_id, P_UNIT_TEMPORARY) || (get_unit_param($unit_id, P_UNIT_TYPE) == UNIT_MERCENARIES && $config->empire_mercenary_temporary)
-          ? " AND unit_time_start <= FROM_UNIXTIME({$time_now}) AND unit_time_finish >= FROM_UNIXTIME({$time_now}) "
-          : '';
-      $unit_level = doquery("SELECT * FROM {{unit}} WHERE unit_location_type = {$context['location']} AND unit_location_id = {$planet['id']} AND unit_snid = '{$unit_id}' {$time_restriction} LIMIT 1" . ($for_update ? ' FOR UPDATE' : '') . ";", '', true);
+      $unit_level = db_unit_by_location(0, $context['location'], $planet['id'], $unit_id, $for_update);
       $unit_level['unit_time_start'] = strtotime($unit_level['unit_time_start']);
       $unit_level['unit_time_finish'] = strtotime($unit_level['unit_time_finish']);
       $planet[$unit_id] = $unit_level;

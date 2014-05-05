@@ -99,17 +99,17 @@ if($galaxy_src)
 
     if($_GET['btn_confirm'])
     {
-      db_planet_set_by_id($destination['id'], "metal = metal + '{$final_cost[RES_METAL]}', crystal = crystal + '{$final_cost[RES_CRYSTAL]}', deuterium = deuterium + '{$final_cost[RES_DEUTERIUM]}'");
-      doquery("DELETE FROM {{unit}} WHERE unit_player_id = {$planet['id_owner']} AND unit_location_type = " . LOC_PLANET . " AND unit_location_id = {$planet['id']}");
+      $time = SN_TIME_NOW + PERIOD_DAY;
 
-      $time = time() + 24 * 60 * 60;
+      db_unit_list_delete($planet['id_owner'], LOC_PLANET, $planet['id']);
       db_planet_set_by_id($planet['id'], "id_owner = 0, destruyed = {$time}");
       if($moon)
       {
+        db_unit_list_delete($planet['id_owner'], LOC_PLANET, $moon['id']);
         db_planet_set_by_id($moon['id'], "id_owner = 0, destruyed = {$time}");
-        doquery("DELETE FROM {{unit}} WHERE unit_player_id = {$planet['id_owner']} AND unit_location_type = " . LOC_PLANET . " AND unit_location_id = {$moon['id']}");
       }
 
+      db_planet_set_by_id($destination['id'], "metal = metal + '{$final_cost[RES_METAL]}', crystal = crystal + '{$final_cost[RES_CRYSTAL]}', deuterium = deuterium + '{$final_cost[RES_DEUTERIUM]}'");
       $template->assign_var('CHECK', 2);
     }
   }

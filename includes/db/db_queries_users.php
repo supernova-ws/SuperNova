@@ -57,7 +57,7 @@ function db_user_list($user_filter = '', $for_update = false, $fields = '*')
   return
     doquery("SELECT {$fields} FROM {{users}}" .
       ($user_filter ? " WHERE {$user_filter}" : '') .
-      ($for_update ? ' FOR UPDATE' : ''), true);
+      ($for_update ? ' FOR UPDATE' : ''));
 }
 
 function db_user_list_by_ip($ip)

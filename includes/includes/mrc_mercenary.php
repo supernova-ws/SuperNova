@@ -91,26 +91,19 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
 
     if(($darkmater_cost && $mercenary_level) || !$is_permanent)
     {
-      //doquery("DELETE FROM {{powerup}} WHERE powerup_user_id = {$user['id']} AND powerup_unit_id = {$mercenary_id} LIMIT 1;");
-      doquery("DELETE FROM {{unit}} WHERE unit_player_id = {$user['id']} AND unit_snid = {$mercenary_id} LIMIT 1;");
+      db_unit_list_delete($user['id'], LOC_USER, $user['id'], $mercenary_id);
     }
     if($darkmater_cost && $mercenary_level)
     {
-      $time_start = $is_permanent ? 0 : SN_TIME_NOW;
-      $time_end = $is_permanent ? 0 : SN_TIME_NOW + $mercenary_period;
-
-      doquery(
-        "INSERT INTO
-          {{unit}}
-        SET
-          unit_player_id = {$user['id']},
-          unit_location_type = " . LOC_USER . ",
-          unit_location_id = {$user['id']},
-          unit_type = {$mode},
-          unit_snid = {$mercenary_id},
-          unit_level = {$mercenary_level},
-          unit_time_start = FROM_UNIXTIME({$time_start}),
-          unit_time_finish = FROM_UNIXTIME({$time_end});"
+      db_unit_set_insert(
+        "unit_player_id = {$user['id']},
+        unit_location_type = " . LOC_USER . ",
+        unit_location_id = {$user['id']},
+        unit_type = {$mode},
+        unit_snid = {$mercenary_id},
+        unit_level = {$mercenary_level},
+        unit_time_start = " . (!$is_permanent ? 'FROM_UNIXTIME(' . SN_TIME_NOW . ')' : 'null') . "),
+        unit_time_finish = " . (!$is_permanent ? 'FROM_UNIXTIME(' . (SN_TIME_NOW + $mercenary_period) . ')' : 'null') . ")"
       );
 
       rpg_points_change($user['id'], $mode == UNIT_PLANS ? RPG_PLANS : RPG_MERCENARY, -($darkmater_cost), "Spent for officer {$lang['tech'][$mercenary_id]} ID {$mercenary_id}");

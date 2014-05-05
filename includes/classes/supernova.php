@@ -3,7 +3,9 @@
 class classSupernova
 {
   public $options = array();
-  public $db_in_transaction = false;
+  public static $db_in_transaction = false;
+
+  public static $transaction_id = 0;
 
   protected static $user = null;
   protected static $planet = null;

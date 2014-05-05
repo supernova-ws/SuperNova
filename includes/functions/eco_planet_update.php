@@ -37,13 +37,13 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     return $no_data;
   }
 
-  if(isset($planet['galaxy']) && $planet['galaxy'])
+  if(is_array($planet) && isset($planet['galaxy']) && $planet['galaxy'])
   {
     $planet = db_planet_by_vector($planet, '', !$simulation);
   }
   else
   {
-    $planet = intval(isset($planet['id']) ? $planet['id'] : $planet);
+    $planet = intval(is_array($planet) && isset($planet['id']) ? $planet['id'] : $planet);
     $planet = db_planet_by_id($planet, !$simulation);
   }
 

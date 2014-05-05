@@ -1675,6 +1675,9 @@ $sn_data_aux = array(
 
     upd_alter_table('statpoints', "ADD KEY `I_stats_type_code` (`stat_type`,`stat_code`) USING BTREE", !$update_indexes['statpoints']['I_stats_type_code']);
 
+    upd_do_query('UPDATE {{unit}} SET unit_time_start = NULL WHERE unit_time_start = "1970-01-01 03:00:00"');
+    upd_do_query('UPDATE {{unit}} SET unit_time_finish = NULL WHERE unit_time_finish = "1970-01-01 03:00:00"');
+
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
 };

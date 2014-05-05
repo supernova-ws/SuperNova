@@ -57,9 +57,12 @@ function sys_stat_calculate_flush(&$data, $force = false)
 {
   if(count($data) < 25 && !$force) return;
 
-  doquery('REPLACE INTO {{statpoints}}
-    (`id_owner`, `id_ally`, `stat_type`, `stat_code`, `tech_points`, `tech_count`, `build_points`, `build_count`,
-     `defs_points`, `defs_count`, `fleet_points`, `fleet_count`, `res_points`, `res_count`, `total_points`, `total_count`, `stat_date`) VALUES ' . implode(',', $data));
+  if(!empty($data))
+  {
+    doquery('REPLACE INTO {{statpoints}}
+      (`id_owner`, `id_ally`, `stat_type`, `stat_code`, `tech_points`, `tech_count`, `build_points`, `build_count`,
+       `defs_points`, `defs_count`, `fleet_points`, `fleet_count`, `res_points`, `res_count`, `total_points`, `total_count`, `stat_date`) VALUES ' . implode(',', $data));
+  }
 
   $data = array();
 }
@@ -151,16 +154,7 @@ function sys_stat_calculate()
 
   sta_set_time_limit('calculating unit stats');
   $i = 0;
-  $query = doquery(
-   "SELECT
-      unit_player_id, unit_type, unit_snid, unit_level, count(*) AS unit_amount
-    FROM
-      `{{unit}}`
-    WHERE
-      (unit_time_start IS NULL OR unit_time_start >= NOW()) AND (unit_time_finish IS NULL OR unit_time_finish <= NOW())
-      AND unit_level > 0
-    GROUP BY
-	    unit_player_id, unit_type, unit_snid, unit_level;");
+  $query = db_unit_list_stat_calculate();
   $row_num = mysql_num_rows($query);
   while($unit = mysql_fetch_assoc($query))
   {

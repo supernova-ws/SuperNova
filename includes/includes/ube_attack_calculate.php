@@ -1212,7 +1212,7 @@ function sn_ube_combat_result_apply(&$combat_data)
       {
         // Удаляем пустые флоты
         doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
-        doquery("DELETE FROM {{unit}} WHERE `unit_location_type` = " . LOC_FLEET . " AND `unit_location_id` = {$fleet_id}");
+        db_unit_list_delete(0, LOC_FLEET, $fleet_id, 0);
       }
     }
     elseif($fleet_query)

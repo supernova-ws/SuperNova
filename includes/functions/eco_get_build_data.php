@@ -16,9 +16,7 @@ function eco_get_lab_max_effective_level(&$user, $lab_require)
   if(!$user['user_as_ally'] && !isset($user['laboratories_active']))
   {
     $user['laboratories_active'] = array();
-    $query = doquery("SELECT DISTINCT unit_location_id AS `id`
-    FROM {{unit}}
-    WHERE unit_player_id = {$user['id']} AND unit_location_type = " . LOC_PLANET . " AND unit_level > 0 AND unit_snid IN (" . STRUC_LABORATORY . ", " . STRUC_LABORATORY_NANO . ");");
+    $query = db_unit_list_laboratories($user['id']);
     while($row = mysql_fetch_assoc($query))
     {
       if(!eco_unit_busy($user, $row, UNIT_TECHNOLOGIES))

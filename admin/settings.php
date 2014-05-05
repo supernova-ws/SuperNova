@@ -95,17 +95,11 @@ if(sys_get_param('save'))
   {
     if($config->empire_mercenary_temporary)
     {
-      // doquery("DELETE FROM {{powerup}} WHERE powerup_time_finish > 0 AND powerup_time_finish <= {$time_now} AND powerup_unit_id IN ({$mercenaries_string});");
-      // doquery("UPDATE {{powerup}} SET powerup_time_start = 0, powerup_time_finish = 0 WHERE powerup_unit_id IN ({$mercenaries_string});");
-      // doquery("DELETE FROM {{powerup}} WHERE powerup_time_finish > 0 AND powerup_time_finish <= {$time_now} AND powerup_category = " . UNIT_MERCENARIES);
-      doquery("DELETE FROM {{unit}} WHERE unit_time_finish IS NOT NULL AND unit_time_finish <= FROM_UNIXTIME({$time_now}) AND unit_type = " . UNIT_MERCENARIES);
+      db_unit_list_admin_delete_mercenaries_finished();
     }
     else
     {
-      $time_end = $time_now + $config->empire_mercenary_base_period;
-      //doquery("UPDATE {{powerup}} SET powerup_time_start = {$time_now}, powerup_time_finish = {$time_end} WHERE powerup_unit_id IN ({$mercenaries_string});");
-      // doquery("UPDATE {{powerup}} SET powerup_time_start = {$time_now}, powerup_time_finish = {$time_end} WHERE powerup_category = " . UNIT_MERCENARIES);
-      doquery("UPDATE {{unit}} SET unit_time_start = FROM_UNIXTIME({$time_now}), unit_time_finish = FROM_UNIXTIME({$time_end}) WHERE unit_type = " . UNIT_MERCENARIES);
+      db_unit_list_admin_set_mercenaries_expire_time($config->empire_mercenary_base_period);
     }
 
     $config->empire_mercenary_temporary = sys_get_param_int('empire_mercenary_temporary');

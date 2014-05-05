@@ -162,11 +162,17 @@ function doquery($query, $table = '', $fetch = false)
 
   if(defined('DEBUG_SQL'))
   {
+    if(!classSupernova::$db_in_transaction)
+    {
+      classSupernova::$db_in_transaction++;
+    }
+    $transaction_id = classSupernova::$transaction_id;
+
     $backtrace = debug_backtrace();
     $function = $backtrace[1]['function'];
     $file = str_replace(SN_ROOT_PHYSICAL, '', str_replace('\\', '/', $backtrace[0]['file']));
     // pdump($backtrace, SN_ROOT_PHYSICAL);
-    $debug->warning("/* {$file} {$function} line {$backtrace[0]['line']} */ {$sql}", 'SQL Debug', LOG_DEBUG_SQL);
+    $debug->warning("/* {$file} {$function} line {$backtrace[0]['line']} TransID {$transaction_id} */ {$sql}", 'SQL Debug', LOG_DEBUG_SQL);
   }
 
   $sqlquery = mysql_query($sql) or $debug->error(mysql_error()."<br />$sql<br />",'SQL Error');
@@ -318,8 +324,7 @@ function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id =
   $location_id = $location_id ? $location_id : 'NULL';
 
   $db_changeset = array();
-  $temp = doquery("SELECT `unit_id` FROM {{unit}} WHERE `unit_player_id` = {$user['id']} AND `unit_location_type` = {$unit_location} AND `unit_location_id` = {$location_id} AND `unit_snid` = {$unit_id} LIMIT 1 FOR UPDATE", true);
-//pdump($temp, '$temp');
+  $temp = db_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
   if($temp['unit_id'])
   {
     // update
@@ -490,6 +495,7 @@ function sn_db_transaction_start($level = '')
   }
   doquery('START TRANSACTION');
   $supernova->db_in_transaction = true;
+  classSupernova::$transaction_id++;
 }
 
 
@@ -499,6 +505,7 @@ function sn_db_transaction_commit()
   sn_db_transaction_check(true);
   doquery('COMMIT');
   $supernova->db_in_transaction = false;
+  classSupernova::$transaction_id++;
 }
 
 function sn_db_transaction_rollback()
@@ -506,6 +513,7 @@ function sn_db_transaction_rollback()
   global $supernova;
   doquery('ROLLBACK');
   $supernova->db_in_transaction = false;
+  classSupernova::$transaction_id++;
 }
 
 require_once('db/db_queries.php');

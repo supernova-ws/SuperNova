@@ -179,7 +179,7 @@ function sn_login($username, $password, $remember_me = 1)
         sn_set_cookie($login, $remember_me);
         $status = LOGIN_SUCCESS;
         $error_msg = '';
-        break;
+        // break;
       }
     }
 

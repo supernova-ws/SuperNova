@@ -261,7 +261,7 @@ function sn_fleet_page3()
 
   if(is_array($captain))
   {
-    doquery("UPDATE {{unit}} SET `unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$fleet_id} WHERE `unit_id` = {$captain['unit_id']} LIMIT 1");
+    db_unit_set_by_id($captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$fleet_id}");
   }
 
   $template = gettemplate('fleet3', true);
