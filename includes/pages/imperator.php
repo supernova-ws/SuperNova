@@ -26,7 +26,7 @@ function sn_imperator_view($template = null)
   }
   else
   {
-    $user_data = db_user_by_id($user['id']);
+    $user_data = db_user_by_id($user_id);
     $same_user = false;
   }
 

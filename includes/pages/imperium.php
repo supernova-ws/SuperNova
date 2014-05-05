@@ -164,8 +164,8 @@ function sn_imperium_view($template = null)
         $level_plus['PERCENT'] = $unit_is_factory ? ($unit_level_plain ? $planet[pname_factory_production_field_name($unit_id)] * 10 : -1) : -1;
         switch($mode)
         {
+          /*
           case 'structures':
-            // pdump($ques[$planet['id']]);
             $level_plus_build = $ques[$planet['id']]['in_que'][que_get_unit_que($unit_id)][$user['id']][$planet['id']][$unit_id];
             if($level_plus_build)
             {
@@ -173,16 +173,20 @@ function sn_imperium_view($template = null)
               $total['units'][$unit_id]['LEVEL_PLUS_GREEN'] += $level_plus['LEVEL_PLUS_GREEN'];
             }
           break;
+          */
 
           /** @noinspection PhpMissingBreakStatementInspection */
           case 'fleet':
             $level_plus['LEVEL_PLUS_YELLOW'] = $planet['fleet_list']['own']['total'][$unit_id]<=0 ? $planet['fleet_list']['own']['total'][$unit_id] : "+{$planet['fleet_list']['own']['total'][$unit_id]}";
             $total['units'][$unit_id]['LEVEL_PLUS_YELLOW'] += $level_plus['LEVEL_PLUS_YELLOW'];
 
+          case 'structures':
           case 'defense':
-            if($planet['hangar_que'][$unit_id])
+            $level_plus_build = $ques[$planet['id']]['in_que'][que_get_unit_que($unit_id)][$user['id']][$planet['id']][$unit_id];
+            if($level_plus_build)
             {
-              $level_plus['LEVEL_PLUS_GREEN'] = "+{$planet['hangar_que'][$unit_id]}";
+              $level_plus['LEVEL_PLUS_GREEN'] = $level_plus_build < 0 ? $level_plus_build : "+{$level_plus_build}";
+              // $level_plus['LEVEL_PLUS_GREEN'] = "+{$level_plus_build}";
               $total['units'][$unit_id]['LEVEL_PLUS_GREEN'] += $level_plus['LEVEL_PLUS_GREEN'];
             }
           break;

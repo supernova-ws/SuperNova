@@ -41,8 +41,8 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
           $ship_count = max(0, min(floor($ship_count), mrc_get_level($user, $planetrow, $ship_id)));
           if($ship_count)
           {
-            $db_changeset['planets'][] = sn_db_unit_changeset_prepare($ship_id, -$ship_count, $user, $planetrow['id']);
-            $db_changeset['planets'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $TargetGate['id']);
+            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, -$ship_count, $user, $planetrow['id']);
+            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $TargetGate['id']);
           }
         }
         // Dit monsieur, y avait quelque chose a envoyer ???
