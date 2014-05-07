@@ -169,7 +169,7 @@ function sys_stat_calculate()
 
   sta_set_time_limit('calculating ques stats');
   $i = 0;
-  $query = doquery("SELECT que_player_id, sum(que_unit_amount) AS que_unit_amount, que_unit_price FROM `{{que}}` GROUP BY que_player_id, que_unit_price;");
+  $query = db_que_list_stat();
   $row_num = mysql_num_rows($query);
   while($que_item = mysql_fetch_assoc($query))
   {

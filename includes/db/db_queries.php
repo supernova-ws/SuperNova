@@ -3,6 +3,7 @@
 require_once('db_queries_users.php');
 require_once('db_queries_planets.php');
 require_once('db_queries_unit.php');
+require_once('db_queries_que.php');
 
 
 function db_planet_list_admin_list($table_parent_columns, $planet_active, $active_time, $planet_type)

@@ -331,15 +331,18 @@ function que_get($que_type = false, $user_id, $planet_id = null, $for_update = f
     die('No user_id for que_get_que()');
   }
 
+  /*
   $sql = '';
   $sql .= $user_id ? " AND `que_player_id` = {$user_id}" : '';
   $sql .= $que_type == QUE_RESEARCH || $planet_id === null ? " AND `que_planet_id` IS NULL" :
     ($planet_id ? " AND (`que_planet_id` = {$planet_id}" . ($que_type ? '' : ' OR que_planet_id IS NULL') . ")" : '');
   $sql .= $que_type ? " AND `que_type` = {$que_type}" : '';
+  $que_query = doquery("SELECT * FROM {{que}} WHERE 1 {$sql} ORDER BY que_id" . ($for_update ? ' FOR UPDATE' : ''));
+  */
 
-  if($sql)
+  $que_query = db_que_list_by_type_location($que_type, $user_id, $planet_id, $for_update);
+  if($que_query)
   {
-    $que_query = doquery("SELECT * FROM {{que}} WHERE 1 {$sql} ORDER BY que_id" . ($for_update ? ' FOR UPDATE' : ''));
     while($row = mysql_fetch_assoc($que_query))
     {
       $ques['items'][] = $row;
@@ -380,11 +383,8 @@ function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data,
 
   $resource_list = sys_unit_arr2str($build_data[$build_mode]);
 
-  doquery(
-    "INSERT INTO
-      `{{que}}`
-    SET
-      `que_player_id` = {$user['id']},
+  db_que_set_insert(
+      "`que_player_id` = {$user['id']},
       `que_planet_id` = {$planet_id},
       `que_planet_id_origin` = {$planet_id_origin},
       `que_type` = {$que_type},
@@ -417,7 +417,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
 
     foreach($que as $que_item)
     {
-      doquery("DELETE FROM {{que}} WHERE que_id = {$que_item['que_id']} LIMIT 1");
+      db_que_delete_by_id($que_item['que_id']);
 
       if($que_item['que_planet_id_origin'])
       {
