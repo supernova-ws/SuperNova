@@ -91,9 +91,11 @@ function sys_stat_calculate()
   sta_set_time_limit('calculating players stats');
   $i = 0;
   // Блокируем всех пользователей
-  $query = db_user_list('', true, 'id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id');
-  $row_num = mysql_num_rows($query);
-  while($player = mysql_fetch_assoc($query))
+  classSupernova::db_lock_tables('users');
+  $user_list = db_user_list('', true, 'id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id');
+  $row_num = count($user_list);
+  // while($player = mysql_fetch_assoc($query))
+  foreach($user_list as $player)
   {
     if($i++ % 100 == 0) sta_set_time_limit("calculating players stats (player {$i}/{$row_num})", false);
     if(array_key_exists($user_id = $player['id'], $user_skip_list)) continue;

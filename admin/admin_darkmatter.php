@@ -29,8 +29,10 @@ $id_planet = '';
 
 if($points = sys_get_param_float('points'))
 { // If points not empty...
-  if($id_user = sys_get_param_str('id_user'))
+  if($username = sys_get_param_str_raw('id_user'))
   {
+    /*
+    $id_user = mysql_real_escape_string($username);
     if(is_numeric($id_user))
     {
       $queryPart = " or `id` = {$id_user}";
@@ -62,7 +64,24 @@ if($points = sys_get_param_float('points'))
         $message = $lang['adm_dm_user_conflict'];
       break;
     }
+    */
+    $row = db_user_player_like_name($username, false, 'id, username');
+    if(is_array($row) && isset($row['id']))
+    {
+      // Does anything post to DB?
+      if(rpg_points_change($row['id'], RPG_ADMIN, $points, "Through admin interface for user {$row['username']} ID {$row['id']} " . $reason))
+      {
+        $message = sprintf($lang['adm_dm_user_added'], $row['username'], $row['id'], $points);
+        $isNoError = true;
+        $message_status = ERR_NONE;
+      }
+      else // No? We will say it to user...
+      {
+        $message = $lang['adm_dm_add_err'];
+      }
+    }
   }
+  /*
   elseif($id_planet = sys_get_param_str('id_planet'))
   { // id_user is not set. Trying id_planet
     $error_id = 'adm_dm_planet_conflict_name';
@@ -104,6 +123,7 @@ if($points = sys_get_param_float('points'))
       break;
     }
   }
+  */
   else // Points not empty but destination is not set - this means error
   {
     $message = $lang['adm_dm_no_dest'];

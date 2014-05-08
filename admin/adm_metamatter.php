@@ -32,8 +32,10 @@ $message_status = ERR_ERROR;
 
 if($points = sys_get_param_float('points'))
 { // If points not empty...
-  if($id_user = sys_get_param_str('id_user'))
+  if($username = sys_get_param_str_raw('id_user'))
   {
+    /*
+    $id_user = mysql_real_escape_string($username);
     if(is_numeric($id_user))
     {
       $queryPart = " or `id` = {$id_user}";
@@ -65,6 +67,22 @@ if($points = sys_get_param_float('points'))
         $message = $lang['adm_mm_user_conflict'];
       break;
     }
+    */
+    $row = db_user_player_like_name($username, false, 'id, username');
+    if(is_array($row) && isset($row['id']))
+    {
+      // Does anything post to DB?
+      if(mm_points_change($row['id'], RPG_ADMIN, $points, "Through admin interface for user {$row['username']} ID {$row['id']} " . $reason))
+      {
+        $message = sprintf($lang['adm_mm_user_added'], $row['username'], $row['id'], $points);
+        $isNoError = true;
+        $message_status = ERR_NONE;
+      }
+      else // No? We will say it to user...
+      {
+        $message = $lang['adm_mm_add_err'];
+      }
+    }
   }
   else // Points not empty but destination is not set - this means error
   {
@@ -79,7 +97,7 @@ elseif($id_user) // Points is empty but destination is set - this again means er
 if(!$isNoError)
 {
   $template->assign_vars(array(
-    'ID_USER' => $id_user,
+    'ID_USER' => $username,
     'POINTS' => $points,
     'REASON' => $reason,
   ));

@@ -18,12 +18,11 @@ include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 lng_include('login');
 
 $id_ref = sys_get_param_id('id_ref');
-$email   = sys_get_param_str('email');
 $confirm = sys_get_param_str('confirm');
 
 $confirm_password_reset = CONFIRM_PASSWORD_RESET;
 
-if ($confirm)
+if($confirm)
 {
   $last_confirm = doquery("SELECT *, UNIX_TIMESTAMP(`create_time`) as `unix_time` FROM {{confirmations}} WHERE `code` = '{$confirm}' LIMIT 1;", '', true);
   if($last_confirm['id'] && ($time_now - $last_confirm['unix_time'] <= 3*24*60*60))
@@ -73,16 +72,18 @@ if ($confirm)
     message($lang['log_lost_err_code'], $lang['sys_error']);
   }
 }
-elseif ($email)
+elseif($email_unsafe = sys_get_param_str_raw('email'))
 {
-  $user_id = db_user_by_email($email, false, false, 'id');
+  $email = mysql_real_escape_string($email_unsafe);
 
+  $user_id = db_user_by_email($email_unsafe, false, false, 'id');
   if(!$user_id['id'])
   {
     message($lang['log_lost_err_email'], $lang['sys_error']);
   }
   else
   {
+    // TODO - уникальный индекс по id_user и type - и делать не INSERT, а REPLACE
     $last_confirm = doquery("SELECT *, UNIX_TIMESTAMP(`create_time`) as `unix_time` FROM {{confirmations}} WHERE `id_user`= '{$user_id['id']}' AND `type` = '{$confirm_password_reset}' LIMIT 1;", '', true);
     if($last_confirm['unix_time'])
     {
@@ -104,8 +105,6 @@ elseif ($email)
       message($lang['log_lost_err_sending'], $lang['sys_error']);
     }
   }
-
-  message('Le nouveau mot de passe a &eacute;t&eacute; envoy&eacute; avec succ&egrave;s !', 'OK');
 }
 
 

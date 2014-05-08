@@ -19,7 +19,7 @@ define('CACHER_XCACHE'  ,  1);
 define('CACHER_LOCK_WAIT', 5); // maximum cacher wait for table unlock in seconds. Can be float
 
 // max timeout cacher can sleep in waiting for unlockDefault = 10000 ms = 0.01s
-// really it will sleep mr_rand(100, CACHER_LOCK_SLEEP)
+// really it will sleep mt_rand(100, CACHER_LOCK_SLEEP)
 define('CACHER_LOCK_SLEEP', 10000);
 
 /**
@@ -54,7 +54,7 @@ class classCache
     }
 
     $this->prefix = $prefIn;
-    if ( extension_loaded('xcache') && ($init_mode === CACHER_XCACHE || $init_mode === false) )
+    if(extension_loaded('xcache') && ($init_mode === CACHER_XCACHE || $init_mode === false))
     {
       if(self::$mode === CACHER_NOT_INIT)
       {
@@ -71,7 +71,7 @@ class classCache
          self::$data = array();
         }
       }
-    };
+    }
   }
 
   public static function getInstance($prefIn = 'CACHE_', $table_name = '')
@@ -144,8 +144,8 @@ class classCache
             return xcache_get($this->prefix.$name);
           break;
 
-        };
-    };
+        }
+    }
   }
 
   public function __isset($name)
@@ -159,8 +159,7 @@ class classCache
       case CACHER_XCACHE:
         return xcache_isset($this->prefix.$name) && ($this->__get($name) !== null);
       break;
-
-    };
+    }
   }
 
   public function __unset($name)
@@ -168,14 +167,13 @@ class classCache
     switch (self::$mode)
     {
       case CACHER_NO_CACHE:
-        unset(self::$data[$this->prefix.$name]);
+        unset(self::$data[$this->prefix . $name]);
       break;
 
       case CACHER_XCACHE:
-        xcache_unset($this->prefix.$name);
+        xcache_unset($this->prefix . $name);
       break;
-
-    };
+    }
   }
 
   public function unset_by_prefix($prefix_unset = '')
@@ -312,7 +310,7 @@ class classCache
         return false;
       break;
 
-    };
+    }
   }
 
   public function reset()
@@ -462,7 +460,6 @@ class classPersistent extends classCache
 class classConfig extends classPersistent
 {
   protected $defaults = array(
-
     // SEO meta
     'adv_conversion_code_payment'  => '',
     'adv_conversion_code_register' => '',
@@ -576,18 +573,7 @@ class classConfig extends classPersistent
     'LastSettedSystemPos'          => 1,
 
     'metal_basic_income'           => 40,
-/*
-    'payment_currency_default'      => 'UAH', // Default currency for payments
-    'payment_currency_exchange_dm_' => 2500,             // Exchange rate for 1 UAH to Dark Matter
-    'payment_currency_exchange_eur' => 0.09259259259259, // Exchange rate for 1 UAH to EUR
-    'payment_currency_exchange_rub' => 4.0,              // Exchange rate for 1 UAH to RUB
-    'payment_currency_exchange_usd' => 0.125,            // Exchange rate for 1 UAH to USD
-    'payment_currency_exchange_wmb' => 12000,            // Exchange rate for 1 UAH to WMB
-    'payment_currency_exchange_wme' => 0.0952380952381,  // Exchange rate for 1 UAH to WME
-    'payment_currency_exchange_wmr' => 4.1,              // Exchange rate for 1 UAH to WMR
-    'payment_currency_exchange_wmu' => 1.05,             // Exchange rate for 1 UAH to WMU
-    'payment_currency_exchange_wmz' => 0.126582278481,   // Exchange rate for 1 UAH to WMZ
-*/
+
     'payment_currency_default'      => 'USD',
     'payment_currency_exchange_dm_' => 20000,
     'payment_currency_exchange_mm_' => 20000,
@@ -702,7 +688,7 @@ class classConfig extends classPersistent
 
   public static function getInstance($gamePrefix = 'sn_', $table_name = 'config')
   {
-    if (!isset(self::$cacheObject))
+    if(!isset(self::$cacheObject))
     {
       $className = get_class();
       self::$cacheObject = new $className($gamePrefix, $table_name);

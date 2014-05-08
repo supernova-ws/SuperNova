@@ -117,12 +117,12 @@ require_once("{$sn_root_physical}includes/constants.{$phpEx}");
 
 // required for db.php
 require_once("{$sn_root_physical}includes/debug.class.{$phpEx}");
-require_once("{$sn_root_physical}includes/db.{$phpEx}");
 // Initializing global 'debug' object
 $debug = new debug();
 
 // sn_sys_load_php_files("{$sn_root_physical}includes/classes/", $phpEx);
 require_once("{$sn_root_physical}includes/classes/_classes.{$phpEx}");
+require_once("{$sn_root_physical}includes/db.{$phpEx}");
 
 $supernova = new classSupernova();
 // $supernova->options = array();

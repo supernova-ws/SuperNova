@@ -36,7 +36,7 @@ $parse['adm_sub_form3'] = "";
 if (isset($GET_result)) {
   switch ($GET_result){
     case 'usr_search':
-      $SelUser = db_user_list_like_name_extra('%'. $Pattern .'%', " LIMIT 1");
+      $SelUser = db_user_player_like_name('%'. $Pattern .'%');
       $UsrMain = db_planet_by_id($SelUser['id_planet'], false, 'name');
 
       $bloc                   = $lang;
@@ -107,7 +107,8 @@ if (isset($GET_result)) {
         die();
       }
 
-      $QryUpdate = db_user_set_by_name($Pattern, "`authlevel` = '{$NewLvl}'");
+      $selected_user = db_user_by_username($Pattern, false, 'id');
+      $QryUpdate = db_user_set_by_id($selected_user['id'], "`authlevel` = '{$NewLvl}'");
       $Message    = $lang['adm_mess_lvl1']. " ". $Pattern ." ".$lang['adm_mess_lvl2'];
       $Message   .= "<font color=\"red\">".$lang['adm_usr_level'][ $NewLvl ]."</font>!";
 
@@ -115,10 +116,12 @@ if (isset($GET_result)) {
       break;
 
     case 'ip_search':
-      $SelUser    = db_user_list_by_ip($ip);
+
       $bloc                   = $lang;
       $bloc['adm_this_ip']    = $ip;
-      while ( $Usr = mysql_fetch_assoc($SelUser) ) {
+      $SelUser = db_user_list("`user_lastip` = '{$ip}'");
+      //while ( $Usr = mysql_fetch_assoc($SelUser) ) {
+      foreach($SelUser as $Usr) {
         $UsrMain = db_planet_by_id($Usr['id_planet'], false, 'name');
         $bloc['adm_plyer_lst'] .= "<tr><th>".$Usr['username']."</th><th>[".$Usr['galaxy'].":".$Usr['system'].":".$Usr['planet']."] ".$UsrMain['name']."</th></tr>";
       }

@@ -36,12 +36,14 @@ if ($_POST && $mode == "change") {
     $ranga = 'SuperGameOperator';
   }
   if ($config->tresc != '' and $config->temat) {
-    $sq      = db_user_list('', false, 'id');
     $Time    = time();
     $From    = "<font color=\"". $kolor ."\">". $ranga ." ".$user['username']."</font>";
     $Subject = "<font color=\"". $kolor ."\">". $config->temat ."</font>";
     $Message = "<font color=\"". $kolor ."\"><b>". $config->tresc ."</b></font>";
-    while ($u = mysql_fetch_assoc($sq)) {
+    $sq      = db_user_list('', false, 'id');
+    foreach($sq as $u)
+    // while ($u = mysql_fetch_assoc($sq))
+    {
       msg_send_simple_message ($u['id'], $user['id'], $Time, MSG_TYPE_ADMIN, $From, $Subject, $Message);
     }
     message("<font color=\"lime\">Херня на польском</font>", "Complete", "../overview." . PHP_EX, 3);

@@ -1024,9 +1024,10 @@ function sys_stat_get_user_skip_list()
   if(!empty($user_skip_list))
   {
     $user_skip_list = implode(' OR ', $user_skip_list);
-    $user_skip_query = db_user_list_skiplist($user_skip_list);
+    $user_skip_query = db_user_list($user_skip_list);
     $user_skip_list = array();
-    while($user_skip_row = mysql_fetch_assoc($user_skip_query))
+    // while($user_skip_row = mysql_fetch_assoc($user_skip_query))
+    foreach($user_skip_query as $user_skip_row)
     {
       $user_skip_list[$user_skip_row['id']] = $user_skip_row['id'];
     }

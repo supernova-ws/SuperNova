@@ -27,9 +27,10 @@ if($_POST['submit'])
   $errorlist = '';
 
   $username = sys_get_param_str_raw('username');
-  $username_safe = sys_get_param_str('username');
+  $username_safe = mysql_real_escape_string($username);
   $password = sys_get_param('password');
-  $email = sys_get_param_str('email');
+  $email_unsafe = sys_get_param_str_raw('email');
+  $email = mysql_real_escape_string($email_unsafe);
   $planet_name = sys_get_param_str_raw('planet_name');
   $sex = sys_get_param_str('sex');
 
@@ -54,14 +55,14 @@ if($_POST['submit'])
     $errors++;
   }
 
-  if (!is_email($email))
+  if(!is_email($email))
   {
     $errorlist .= "'{$email}' {$lang['error_mail']}";
     $errors++;
   }
   else
   {
-    $db_check = db_user_by_email($email, true, false, 'id');
+    $db_check = db_user_by_email($email_unsafe, true, false, 'id');
     if($db_check)
     {
       $errorlist .= $lang['error_emailexist'];
@@ -101,7 +102,7 @@ if($_POST['submit'])
         `lang` = '{$language}', `sex` = '{$sex}', `id_planet` = '0', `register_time` = '{$time_now}', `password` = '{$md5pass}',
         `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^1|opt_email_mnl_joueur^1|opt_email_mnl_alliance^1|opt_mnl_attaque^1|opt_email_mnl_attaque^1|opt_mnl_exploit^1|opt_email_mnl_exploit^1|opt_mnl_transport^1|opt_email_mnl_transport^1|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^1|opt_mnl_buildlist^1|opt_email_mnl_buildlist^1|opt_int_navbar_resource_force^1|';");
 
-    $user = db_user_by_username($username_safe, false, 'id');
+    $user = db_user_by_username($username, false, 'id');
     doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = \"{$username_safe}\"");
 
     if($id_ref)
@@ -197,7 +198,7 @@ function sendpassemail($username, $password, $emailaddress)
 {
   global $lang, $config;
 
-  $email  = sprintf($lang['mail_welcome'], $config->game_name, SN_ROOT_VIRTUAL, $username, $password);
+  $email  = sprintf($lang['mail_welcome'], $config->game_name, SN_ROOT_VIRTUAL, sys_safe_output($username), sys_safe_output($password));
   $status = mymail($emailaddress, sprintf($lang['mail_title'], $config->game_name), $email);
   return $status;
 }

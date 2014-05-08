@@ -78,6 +78,29 @@ elseif($sys_user_logged_in)
 
   $planet_id = SetSelectedPlanet($user);
 
+  /*
+  print(rand());
+  pdump(classSupernova::db_get_user_list('', false, 'id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id'));
+  die();
+  */
+
+  /*
+  $test = &classSupernova::$data[LOC_USER][2];
+  // pdump($test);
+  // pdump(classSupernova::$data);
+  // pdump(classSupernova::db_get_user_by_id(2));
+  // pdump(classSupernova::$data);
+  pdump(classSupernova::$queries, 'q1');
+  classSupernova::db_get_user_list("id = 2");
+  pdump(classSupernova::$queries, 'q2');
+  // pdump(classSupernova::$queries);
+  classSupernova::db_set_user_by_id(2, 'player_rpg_tech_xp = player_rpg_tech_xp + 1');
+    // 550153
+  pdump(classSupernova::$queries, 'q3');
+  pdump(classSupernova::$data);
+  die();
+  */
+
   // sn_db_transaction_start();
   // que_process($user); // TODO UNCOMMENT ???????????
   // sn_db_transaction_commit();

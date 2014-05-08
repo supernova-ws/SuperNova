@@ -15,28 +15,18 @@
    1.5 - copyright (c) 2010-2011 by Gorlum for http://supernova.ws
          [+] SuperMassMailing - authlevel=3 player can send messages to whole server ('*' as $owners)
  */
-
-// Envoi d'un message simple
-//
-// $Owner   -> destinataire
-// $Sender  -> ID de l'emeteur
-// $Time    -> Heure theorique a laquelle l'evenement s'est produit
-// $Type    -> Type de message (pour classement dans les onglets message plus tard)
-// $From    -> Description de l'emeteur
-// $Subject -> Sujet
-// $Message -> Le message lui meme !!
-//
-
 function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0)
 {
   global $time_now, $user;
 
   $ally_id = $ally_id ? $ally_id : $user['ally_id'];
 
-  $query = db_user_list_player_by_ally($ally_id, $ally_rank_id, false, 'id, username');
-
   $list = '';
-  while ($u = mysql_fetch_assoc($query))
+  $query = db_user_list(
+    "ally_id = '{$ally_id}'" . ($ally_rank_id >= 0 ? " AND ally_rank_id = {$ally_rank_id}" : ''),
+    false, 'id, username');
+  // while ($u = mysql_fetch_assoc($query))
+  foreach($query as $u)
   {
     $sendList[] = $u['id'];
     $list .= "<br>{$u['username']} ";
@@ -126,7 +116,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
     doquery($QryInsertMessage = 'INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ' .
       'VALUES ' . implode(',', $insert_values));
   }
-  db_user_list_set_mass_mail("`{$message_class_name}` = `{$message_class_name}` + 1, `{$message_class_name_total}` = `{$message_class_name_total}` + 1",  $owners);
+  db_user_list_set_mass_mail($owners, "`{$message_class_name}` = `{$message_class_name}` + 1, `{$message_class_name_total}` = `{$message_class_name_total}` + 1");
 
   if(in_array($user['id'], $owners) || $owners[0] == '*')
   {

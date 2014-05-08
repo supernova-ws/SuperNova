@@ -148,20 +148,18 @@ function sn_login($username, $password, $remember_me = 1)
   global $lang;
 
   $login = array();
-  $username = mysql_real_escape_string($username);
-  if(!$username || !$password)
+  $username_safe = mysql_real_escape_string($username);
+  if(!$username_safe || !$password)
   {
     $status = LOGIN_ERROR_USERNAME;
     $error_msg = $lang['Login_FailUser'];
   }
   else
   {
-    // $query = db_user_by_username($username, false);
-    $login = db_user_by_username($username, false);
-    // while($login = mysql_fetch_assoc($query))
+    $login = db_user_by_username($username);
     {
       // TODO: try..catch
-      if($login['user_as_ally'])
+      if(!is_array($login) || (isset($login['user_as_ally']) && $login['user_as_ally']))
       {
         $status = LOGIN_ERROR_USERNAME;
         $error_msg = $lang['Login_FailUser'];

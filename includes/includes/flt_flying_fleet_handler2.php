@@ -290,6 +290,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
       continue;
     }
 
+    // TODO Обернуть всё в транзакции. Начинать надо заранее, блокируя все таблицы внутренним локом SELECT 1 FROM {{users}}
     sn_db_transaction_start();
 
     $mission_data = $sn_groups_mission[$fleet_row['fleet_mission']];

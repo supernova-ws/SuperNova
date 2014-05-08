@@ -105,9 +105,10 @@ try
   {
     $new_friend_row = db_user_by_id($new_friend_id, true, '`id`, `username`');
   }
-  elseif($new_friend_name = sys_get_param_str('request_user_name'))
+  elseif($new_friend_name = sys_get_param_str_raw('request_user_name'))
   {
     $new_friend_row = db_user_by_username($new_friend_name, true, '`id`, `username`');
+    $new_friend_name = mysql_real_escape_string($new_friend_name);
   }
 
   if($new_friend_row['id'] == $user['id'])

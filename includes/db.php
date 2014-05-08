@@ -448,18 +448,9 @@ function sn_db_changeset_apply($db_changeset)
   }
 }
 
-/*
- * Эта функция проверяет статус транзакции
- * Это - низкоуровневая функция. В нормальном состоянии движка её сообщения никогда не будут видны
- *
- * $transaction_status
- *   true - транзакция должна быть запущена
- *   false - всё равно
- *   null - транзакция НЕ должна быть запущена
- *
- */
 function sn_db_transaction_check($transaction_should_be_started = null)
 {
+  /*
   global $supernova;
 
   $error_msg = false;
@@ -483,10 +474,13 @@ function sn_db_transaction_check($transaction_should_be_started = null)
   }
 
   return $supernova->db_in_transaction;
+  */
+  return classSupernova::db_transaction_check($transaction_should_be_started);
 }
 
 function sn_db_transaction_start($level = '')
 {
+  /*
   global $supernova;
   sn_db_transaction_check();
   if($level)
@@ -496,24 +490,33 @@ function sn_db_transaction_start($level = '')
   doquery('START TRANSACTION');
   $supernova->db_in_transaction = true;
   classSupernova::$transaction_id++;
+  */
+  return classSupernova::db_transaction_start($level);
 }
 
 
 function sn_db_transaction_commit()
 {
+  /*
   global $supernova;
   sn_db_transaction_check(true);
   doquery('COMMIT');
   $supernova->db_in_transaction = false;
   classSupernova::$transaction_id++;
+  */
+  return classSupernova::db_transaction_commit();
 }
 
 function sn_db_transaction_rollback()
 {
+  /*
   global $supernova;
   doquery('ROLLBACK');
   $supernova->db_in_transaction = false;
   classSupernova::$transaction_id++;
+  */
+  return classSupernova::db_transaction_rollback();
 }
 
 require_once('db/db_queries.php');
+

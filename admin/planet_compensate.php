@@ -22,6 +22,7 @@ $planet_dst = sys_get_param_int('planet_dst');
 
 $bonus = sys_get_param_float('bonus', 1);
 
+$username_unsafe = sys_get_param_str_raw('username');
 $username = sys_get_param_escaped('username');
 
 if($galaxy_src)
@@ -29,7 +30,7 @@ if($galaxy_src)
   sn_db_transaction_start();
   $errors = array();
 
-  $owner = db_user_list_like_name_extra($username);
+  $owner = db_user_player_like_name($username_unsafe);
 
   $planet = sys_o_get_updated($owner, array('galaxy' => $galaxy_src, 'system' => $system_src, 'planet' => $planet_src, 'planet_type' => 1), SN_TIME_NOW);
   $que    = $planet['que'];

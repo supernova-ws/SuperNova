@@ -138,9 +138,10 @@ $tmp = substr($tmp, 0, -4);
 
 if(!empty($tmp))
 {
-  $userAllyAdmins = db_user_list_by_ally($ally['id'], $fields = '`id`, `username`', '', 'AND ' . $tmp);
+  $userAllyAdmins = db_user_list("`ally_id`= {$ally['id']} AND {$tmp}", false, '`id`, `username`');
   unset($tmp);
-  while ($userAllyAdmin = mysql_fetch_assoc($userAllyAdmins))
+  // while ($userAllyAdmin = mysql_fetch_assoc($userAllyAdmins))
+  foreach($userAllyAdmins as $userAllyAdmin)
   {
     $tmp .= "<option value={$userAllyAdmin['id']}>{$userAllyAdmin['username']}</option>";
   }

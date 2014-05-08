@@ -54,12 +54,13 @@ $sort1s = array(
 
 $template = gettemplate('ali_members', true);
 
-$userList = db_user_list_by_ally($user['ally_id'], 'id, username, galaxy, system, planet, onlinetime, ally_rank_id, ally_register_time, total_points', sprintf($sort1s[$sort1], $sort2s));
+$userList = db_user_list("`ally_id`= {$user['ally_id']} ORDER BY " . sprintf($sort1s[$sort1], $sort2s), false,
+  'id, username, galaxy, system, planet, onlinetime, ally_rank_id, ally_register_time, total_points');
 
-while ($userRow = mysql_fetch_assoc($userList))
+// while ($userRow = mysql_fetch_assoc($userList))
+foreach($userList as $userRow)
 {
   $i++;
-
   if (!isset($ranks[$userRow['ally_rank_id']]))
   {
     $userRow['ally_rank_id'] = 0;

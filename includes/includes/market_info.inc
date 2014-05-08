@@ -30,24 +30,25 @@ if($info_action)
     switch($info_action)
     {
       case MARKET_INFO_PLAYER:
-        if(!$user_info_name = sys_get_param_str('user_info_name'))
+        $user_info_name_unsafe = sys_get_param_str_raw('user_info_name');
+        if(!$user_info_name_unsafe)
         {
           throw new Exception(MARKET_INFO_PLAYER_WRONG, ERR_ERROR);
         }
 
-        if(is_id($user_info_name))
+        if(is_id($user_info_name_unsafe))
         {
-          $user_info = db_user_player_by_id($user_info_name, true, '`id`, `username`');
+          $user_info = db_user_player_by_id($user_info_name_unsafe, true, '`id`, `username`');
         }
         if(!is_array($user_info))
         {
-          $user_info = db_user_player_like_name($user_info_name, true, '`id`, `username`');
+          $user_info = db_user_player_like_name($user_info_name_unsafe, true, '`id`, `username`');
         }
         if(!is_array($user_info))
         {
           throw new Exception(MARKET_INFO_PLAYER_NOT_FOUND, ERR_ERROR);
         }
-        if($user_info == $user['id'])
+        if($user_info['id'] == $user['id'])
         {
           throw new Exception(MARKET_INFO_PLAYER_SAME, ERR_ERROR);
         }
@@ -63,7 +64,7 @@ if($info_action)
         }
         $msg_text = sprintf($lang['eco_mrk_info_player_message'], $user_info['id'], $user_info['username']) . "\r\n" . implode("\r\n", $msg_text);
 
-        msg_send_simple_message($user['id'], 0, $time_now, MSG_TYPE_SPY, $lang['eco_mrk_info_msg_from'], "{$lang['eco_mrk_info_player']} ID {$user_info['id']} [{$user_info['username']}]", $msg_text, false, true);
+        msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_SPY, $lang['eco_mrk_info_msg_from'], "{$lang['eco_mrk_info_player']} ID {$user_info['id']} [{$user_info['username']}]", $msg_text, false, true);
       break;
 
       default:

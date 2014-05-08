@@ -54,7 +54,7 @@ switch ($mode)
     $error_list = array();
     $template = gettemplate('msg_message_compose', true);
 
-    $recipient_name = sys_get_param_str('recipient_name');
+    $recipient_name = sys_get_param_str_raw('recipient_name');
     if($recipient_name)
     {
       $recipient_row = db_user_by_username($recipient_name);
