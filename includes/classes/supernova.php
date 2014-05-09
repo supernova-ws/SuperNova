@@ -86,6 +86,8 @@ class classSupernova
   // Перепаковывает массив на заданную глубину, убирая поля с null
   public static function array_repack(&$array, &$lock_table, $level = 0)
   {
+    if(!is_array($array)) return;
+
     foreach($array as $key => &$value)
     {
       if($value === null)
@@ -132,6 +134,7 @@ class classSupernova
     if($record_id && isset(static::$data[$cache_id][$record_id]) && static::$data[$cache_id][$record_id] !== null) return;
 
     static::array_repack(static::$data[$cache_id], static::$locks[$cache_id]);
+    static::array_repack(static::$data[LOC_LOCATION][$cache_id], $cork = null, 2); // TODO - проверить перепаковку LOC_LOCATION
     static::array_repack(static::$queries[$cache_id], $cork = null, 1);
     // TODO - а вот тут непонятно. Надо ли вообще это перепаковывать и будет ли польза?
     // На самом деле если запись заблокирована - то она заблокирована. Другой записи с таким же ИД быть не может, а вот инфа может заново поменятся и сразу будет блокированной
@@ -695,16 +698,6 @@ class classSupernova
 
 
 
-  /*
-  public static function db_get_planet_by_id($planet_id, $for_update = false, $fields = '*', $skip_lock = false)
-  {
-    return static::db_get_record_by_id(LOC_PLANET, $planet_id, $for_update, $fields, $skip_lock);
-  }
-  */
-
-
-
-
 
 
 
@@ -727,15 +720,76 @@ class classSupernova
   public static function db_get_unit_by_id($unit_id, $for_update = false, $fields = '*')
   {
     // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
-
-    //
-
-    // return static::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
+    return static::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
   }
   public static function db_get_unit_list($filter = '')
   {
+    // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
     return static::db_get_record_list(LOC_UNIT, $filter);
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id)
+  {
+    $query_cache = &static::$data[LOC_LOCATION][$location_type][$location_id];
+    if(!isset($query_cache))
+    {
+      $query_cache = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id}");
+      $query_cache = is_array($query_cache) ? $query_cache : array();
+      foreach($query_cache as $unit_id => $unit_data)
+      {
+        static::$data[LOC_LOCATION][$location_type][$location_id][$unit_data['unit_snid']] = &static::$data[$location_type][$unit_id];
+      }
+    }
+    // todo Надо ли
+    $query_cache = &static::$data[LOC_LOCATION][$location_type][$location_id];
+
+    return $query_cache;
+  }
+  public static function db_get_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*')
+  {
+    static::db_get_unit_list_by_location($user_id, $location_type, $location_id);
+
+    return static::$data[LOC_LOCATION][$location_type][$location_id][$unit_snid];
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   public static function db_unit_list_in_fleet_by_user($user_id, $location_id, $for_update)
   {
     return doquery(
@@ -746,46 +800,179 @@ class classSupernova
         f.fleet_owner = {$user_id} AND
         (f.fleet_start_planet_id = {$location_id} OR f.fleet_end_planet_id = {$location_id})
         AND u.`unit_location_type` = " . LOC_FLEET .
-      " AND " . db_unit_time_restrictions() .
+      " AND " . static::db_unit_time_restrictions() .
       ($for_update ? ' FOR UPDATE' : '')
       , true);
   }
-  public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id)
-  {
-    /*
-    if(!isset(static::$data[LOC_LOCATION][$location_type][$location_id]))
-    {
-      if($location_type == LOC_USER)
-      {
-        // locking user
-        static::db_get_user_by_id($location_id);
-      }
-      if($location_type == LOC_PLANET)
-      {
-        // TODO locking planet
-        // $user = static::db_get_planet_by_id($location_id);
-      }
-      if($location_type == LOC_FLEET)
-      {
-        // TODO locking fleet
 
-        // TODO Процедура для простого чтения записи - без блокировки и кэширования. Только ID - что бы узнать допинфу о владельце и залочить сначала владельца
-        static::db_unit_list_in_fleet_by_user($user_id, $location_id, static::db_transaction_check(false));
-      }
-      $query_cache = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id}");
-      foreach($query_cache as $unit_id => $unit_data)
+
+
+
+
+
+
+  public static function db_changeset_prepare_unit($unit_id, $unit_value, $user, $planet_id = null)
+  {
+    if(!is_array($user))
+    {
+      // TODO - remove later
+      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER is not ARRAY</h1>');
+      pdump(debug_backtrace());
+      die('USER is not ARRAY');
+    }
+    if(!isset($user['id']) || !$user['id'])
+    {
+      // TODO - remove later
+      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER[id] пустой</h1>');
+      pdump($user);
+      pdump(debug_backtrace());
+      die('USER[id] пустой');
+    }
+    $planet_id = is_array($planet_id) && isset($planet_id['id']) ? $planet_id['id'] : $planet_id;
+
+    $unit_location = sys_get_unit_location($user, array(), $unit_id);
+    $location_id = $unit_location == LOC_USER ? $user['id'] : $planet_id;
+    $location_id = $location_id ? $location_id : 'NULL';
+
+    $db_changeset = array();
+    $temp = db_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
+    if($temp['unit_id'])
+    {
+      $db_changeset = array(
+        'action' => SQL_OP_UPDATE,
+        'where' => array(
+          "`unit_id` = {$temp['unit_id']}",
+        ),
+        'fields' => array(
+          'unit_level' => array(
+            'delta' => $unit_value
+          ),
+        ),
+      );
+    }
+    else
+    {
+      $db_changeset = array(
+        'action' => SQL_OP_INSERT,
+        'fields' => array(
+          'unit_player_id' => array(
+            'set' => $user['id'],
+          ),
+          'unit_location_type' => array(
+            'set' => $unit_location,
+          ),
+          'unit_location_id' => array(
+            'set' => $unit_location == LOC_USER ? $user['id'] : $planet_id,
+          ),
+          'unit_type' => array(
+            'set' => get_unit_param($unit_id, P_UNIT_TYPE),
+          ),
+          'unit_snid' => array(
+            'set' => $unit_id,
+          ),
+          'unit_level' => array(
+            'set' => $unit_value,
+          ),
+        ),
+      );
+    }
+
+    return $db_changeset;
+  }
+
+
+  public static function db_changeset_apply($db_changeset)
+  {
+    $result = false;
+    if(!is_array($db_changeset) || empty($db_changeset)) return $result;
+
+    foreach($db_changeset as $table_name => $table_data)
+    {
+      foreach($table_data as $record_id => $conditions)
       {
-        static::$data[LOC_LOCATION][$location_type][$location_id][$unit_data['unit_snid']] = &static::$data[$location_type][$unit_id];
+        $where = '';
+        if(!empty($conditions['where']))
+        {
+          $where = implode(' AND ', $conditions['where']);
+        }
+
+        $fields = array();
+        if($conditions['fields'])
+        {
+          foreach($conditions['fields'] as $field_name => $field_data)
+          {
+            $condition = "`{$field_name}` = ";
+            $value = '';
+            if($field_data['delta'])
+            {
+              $value = "`{$field_name}`" . ($field_data['delta'] >= 0 ? '+' : '') . $field_data['delta'];
+            }
+            elseif($field_data['set'])
+            {
+              $value = (is_string($field_data['set']) ? "'{$field_data['set']}'": $field_data['set']);
+            }
+            if($value)
+            {
+              $fields[] = $condition . $value;
+            }
+          }
+        }
+        $fields = implode(',', $fields);
+        if($conditions['action'] != SQL_OP_DELETE && !$fields) continue;
+        if($conditions['action'] == SQL_OP_DELETE && !$where) continue; // Защита от случайного удаления всех данных в таблице
+
+        if($table_name == 'unit' && false)
+        {
+          $location_type = LOC_UNIT;
+          // die('spec ops');
+          switch($conditions['action'])
+          {
+            case SQL_OP_DELETE: $result = $result && classSupernova::db_del_record_list($location_type, $where); break;
+            case SQL_OP_UPDATE: $result = $result && classSupernova::db_upd_record_list($location_type, $where, $fields); break;
+            case SQL_OP_INSERT: $result = $result && classSupernova::db_ins_record($location_type, $fields); break;
+            // case SQL_OP_REPLACE: $result = $result && doquery("REPLACE INTO {{{$table_name}}} SET {$fields}"); break;
+          }
+        }
+        else
+        {
+          $where = $where ? 'WHERE ' . $where : '';
+          switch($conditions['action'])
+          {
+            case SQL_OP_DELETE: $result = $result && doquery("DELETE FROM {{{$table_name}}} {$where}"); break;
+            case SQL_OP_UPDATE: $result = $result && doquery("UPDATE {{{$table_name}}} SET {$fields} {$where}"); break;
+            case SQL_OP_INSERT: $result = $result && doquery("INSERT INTO {{{$table_name}}} SET {$fields}"); break;
+            case SQL_OP_REPLACE: $result = $result && doquery("REPLACE INTO {{{$table_name}}} SET {$fields}"); break;
+          }
+        }
       }
     }
-    */
-  }
-  public static function db_get_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*')
-  {
-    static::db_get_unit_list_by_location($user_id, $location_type, $location_id);
 
-    return static::$data[LOC_LOCATION][$location_type][$location_id][$unit_snid];
+    return $result;
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
