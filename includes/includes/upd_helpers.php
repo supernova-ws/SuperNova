@@ -201,3 +201,166 @@ function upd_create_table($table_name, $declaration)
 
   return $result;
 }
+
+function upd_db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*')
+{
+  return mysql_fetch_assoc(upd_do_query(
+    "SELECT {$fields}
+    FROM {{unit}}
+    WHERE
+      `unit_location_type` = {$location_type} AND `unit_location_id` = {$location_id} AND " . db_unit_time_restrictions() .
+    ($user_id = intval($user_id) ? " AND `unit_player_id` = {$user_id}" : '') .
+    ($unit_snid = intval($unit_snid) ? " AND `unit_snid` = {$unit_snid}" : '') .
+    " LIMIT 1" .
+    ($for_update ? ' FOR UPDATE' : '')
+  ));
+}
+
+
+function upd_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null)
+{
+  if(!is_array($user))
+  {
+    // TODO - remove later
+    print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER is not ARRAY</h1>');
+    pdump(debug_backtrace());
+    die('USER is not ARRAY');
+  }
+  if(!isset($user['id']) || !$user['id'])
+  {
+    // TODO - remove later
+    print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER[id] пустой</h1>');
+    pdump($user);
+    pdump(debug_backtrace());
+    die('USER[id] пустой');
+  }
+  $planet_id = is_array($planet_id) && isset($planet_id['id']) ? $planet_id['id'] : $planet_id;
+
+  $unit_location = get_unit_param($unit_id, 'location'); // sys_get_unit_location($user, array(), $unit_id);
+  $location_id = $unit_location == LOC_USER ? $user['id'] : $planet_id;
+  $location_id = $location_id ? $location_id : 'NULL';
+
+  $db_changeset = array();
+  $temp = upd_db_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
+  if($temp['unit_id'])
+  {
+    // update
+    $db_changeset = array(
+      'action' => SQL_OP_UPDATE,
+      'where' => array(
+        "`unit_id` = {$temp['unit_id']}",
+      ),
+      'fields' => array(
+        'unit_level' => array(
+          'delta' => $unit_value
+        ),
+      ),
+    );
+  }
+  else
+  {
+    // insert
+    $db_changeset = array(
+      'action' => SQL_OP_INSERT,
+      'fields' => array(
+        'unit_player_id' => array(
+          'set' => $user['id'],
+        ),
+        'unit_location_type' => array(
+          'set' => $unit_location,
+        ),
+        'unit_location_id' => array(
+          'set' => $unit_location == LOC_USER ? $user['id'] : $planet_id,
+        ),
+        'unit_type' => array(
+          'set' => get_unit_param($unit_id, P_UNIT_TYPE),
+        ),
+        'unit_snid' => array(
+          'set' => $unit_id,
+        ),
+        'unit_level' => array(
+          'set' => $unit_value,
+        ),
+      ),
+    );
+  }
+
+  return $db_changeset;
+}
+
+
+
+function upd_db_changeset_apply($db_changeset)
+{
+  if(!is_array($db_changeset) || empty($db_changeset))
+    return;
+
+  foreach($db_changeset as $table_name => $table_data)
+  {
+    foreach($table_data as $record_id => $conditions)
+    {
+      $where = '';
+      if(!empty($conditions['where']))
+      {
+        $where = 'WHERE ' . implode(' AND ', $conditions['where']);
+      }
+
+      $fields = array();
+      if($conditions['fields'])
+      {
+        foreach($conditions['fields'] as $field_name => $field_data)
+        {
+          $condition = "`{$field_name}` = ";
+          $value = '';
+          if($field_data['delta'])
+          {
+            $value = "`{$field_name}`" . ($field_data['delta'] >= 0 ? '+' : '') . $field_data['delta'];
+          }
+          elseif($field_data['set'])
+          {
+            $value = (is_string($field_data['set']) ? "'{$field_data['set']}'": $field_data['set']);
+          }
+          if($value)
+          {
+            $fields[] = $condition . $value;
+          }
+        }
+      }
+      $fields = implode(',', $fields);
+
+      switch($conditions['action'])
+      {
+        case SQL_OP_DELETE:
+          upd_do_query("DELETE FROM {{{$table_name}}} {$where}");
+          break;
+
+        case SQL_OP_UPDATE:
+          if($fields)
+          {
+            /*if($table_name == 'unit')
+            {
+              pdump("UPDATE {{{$table_name}}} SET {$fields} {$where}");
+              //die();
+            }*/
+            upd_do_query("UPDATE {{{$table_name}}} SET {$fields} {$where}");
+          }
+          break;
+
+        case SQL_OP_INSERT:
+          if($fields)
+          {
+            upd_do_query("INSERT INTO {{{$table_name}}} SET {$fields}");
+          }
+          break;
+
+        case SQL_OP_REPLACE:
+          if($fields)
+          {
+            upd_do_query("REPLACE INTO {{{$table_name}}} SET {$fields}");
+          }
+          break;
+
+      }
+    }
+  }
+}

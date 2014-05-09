@@ -208,8 +208,8 @@ function db_change_units_perform($query, $tablename, $object_id)
 
 // TODO: THIS FUNCTION IS OBSOLETE AND SHOULD BE REPLACED!
 // TODO - ТОЛЬКО ДЛЯ РЕСУРСОВ
-function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
 // $unit_list should have unique entrances! Recompress non-uniq entrances before pass param!
+function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
 {
   $query = is_array($query) ? $query : array(
     LOC_USER => array(),
@@ -255,7 +255,6 @@ function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
   db_change_units_perform($query[LOC_USER], 'users', $user['id']);
   db_change_units_perform($query[LOC_PLANET], 'planets', $planet['id']);
 }
-
 function sn_db_perform($table, $values, $type = 'insert', $options = false)
 {
   $mass_perform = false;
@@ -327,7 +326,6 @@ function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id =
   $temp = db_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
   if($temp['unit_id'])
   {
-    // update
     $db_changeset = array(
       'action' => SQL_OP_UPDATE,
       'where' => array(
@@ -342,7 +340,6 @@ function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id =
   }
   else
   {
-    // insert
     $db_changeset = array(
       'action' => SQL_OP_INSERT,
       'fields' => array(

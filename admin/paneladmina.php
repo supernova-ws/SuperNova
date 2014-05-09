@@ -36,7 +36,7 @@ $parse['adm_sub_form3'] = "";
 if (isset($GET_result)) {
   switch ($GET_result){
     case 'usr_search':
-      $SelUser = db_user_player_like_name('%'. $Pattern .'%');
+      $SelUser = db_user_by_username('%'. $Pattern .'%', false, '*', true, true);
       $UsrMain = db_planet_by_id($SelUser['id_planet'], false, 'name');
 
       $bloc                   = $lang;

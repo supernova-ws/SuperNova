@@ -27,7 +27,7 @@ function sn_options_model()
     if($user['authlevel'] > 0)
     {
       $planet_protection = sys_get_param_int('adm_pl_prot') ? $user['authlevel'] : 0;
-      db_planet_list_set_by_owner($user['id'], "`id_level` = '{$planet_protection}'");
+      db_planet_set_by_owner($user['id'], "`id_level` = '{$planet_protection}'");
       db_user_set_by_id($user['id'], "`admin_protection` = '{$planet_protection}'");
       $user['admin_protection'] = $planet_protection;
     }

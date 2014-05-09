@@ -59,7 +59,7 @@ function sn_sys_cookie_check($cookie)
   $user_name = mysql_real_escape_string($user_name);
 
   $user_id = intval($user_id);
-  $user = db_user_player_by_id($user_id);
+  $user = db_user_by_id($user_id, false, '*', true);
   if(!$user || md5("{$user['password']}--{$config->secret_word}") != $user_pass_hash)
   {
     $user = false;
@@ -328,7 +328,7 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
       `ban_issuer_email` = '{$banner['email']}'
   ");
 
-  db_planet_list_set_by_owner($banned['id'],
+  db_planet_set_by_owner($banned['id'],
     "`metal_mine_porcent` = 0, `crystal_mine_porcent` = 0, `deuterium_sintetizer_porcent` = 0, `solar_plant_porcent` = 0,
     `fusion_plant_porcent` = 0, `solar_satelit_porcent` = 0, `ship_sattelite_sloth_porcent` = 0"
   );

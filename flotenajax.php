@@ -98,15 +98,15 @@ if($cant_attack != ATTACK_ALLOWED)
 }
 
 $FleetDBArray   = array();
-$FleetSubQRY = array();
+$db_changeset = array();
 foreach($fleet_array as $unit_id => $unit_count)
 {
   $FleetDBArray[] = "{$unit_id},{$unit_count}";
-  // $FleetSubQRY[]  = "`{$unit_db_name}` = `{$unit_db_name}` - {$unit_count}";
-  $FleetSubQRY['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$unit_count, $user, $planetrow);
+  // $db_changeset[]  = "`{$unit_db_name}` = `{$unit_db_name}` - {$unit_count}";
+  $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$unit_count, $user, $planetrow);
 }
 $FleetDBArray = implode(';', $FleetDBArray);
-// $FleetSubQRY  = implode(',', $FleetSubQRY);
+// $db_changeset  = implode(',', $db_changeset);
 
 $fleet_ship_count = array_sum($fleet_array);
 
@@ -159,7 +159,7 @@ else
 }
 
 db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");
-sn_db_changeset_apply($FleetSubQRY);
+sn_db_changeset_apply($db_changeset);
 sn_db_transaction_commit();
 
 $ships_sent = array();

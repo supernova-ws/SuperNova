@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a6.0');
+define('SN_VERSION', '39a6.2');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -118,6 +118,7 @@ define('PT_DEBRIS', 2);
 define('PT_MOON'  , 3);
 
 // *** Unit locations - shows db table where unit belong
+// Also cache indexes
 define('LOC_NONE',    -1);
 define('LOC_UNIVERSE', 0);
 define('LOC_PLANET',   1);
@@ -126,6 +127,10 @@ define('LOC_MOON',     3); // Translates to `planets` table planet_type = 3
 define('LOC_USER',     4);
 define('LOC_FLEET',    5);
 define('LOC_ALLY',     6);
+
+define('LOC_UNIT',    50);
+define('LOC_QUE',     51);
+define('LOC_LOCATION',52);
 
 // *** Caching masks
 define('CACHE_NOTHING'    ,  0);
@@ -641,6 +646,12 @@ define('P_AMPLIFY', 'amplify');
 define('P_DEFENSE', 'defense');
 define('P_STRUCTURE', 'structure');
 define('P_LOCATION', 'location');
+
+define('P_ID', 'id');
+
+define('P_TABLE_NAME', 'table_name');
+define('P_OWNER_INFO', 'owner_info');
+define('P_OWNER_FIELD', 'owner_field');
 
 
 

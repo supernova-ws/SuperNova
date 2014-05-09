@@ -10,28 +10,25 @@ function db_unit_time_restrictions($date = SN_TIME_NOW)
 
 function db_unit_by_id($unit_id, $for_update = false, $fields = '*')
 {
-  return ($unit_id = intval($unit_id))
-    ? doquery(
-        "SELECT {$fields} FROM {{unit}} WHERE `unit_id` = {$unit_id} AND " . db_unit_time_restrictions() .
-        ' LIMIT 1' .
-        ($for_update ? ' FOR UPDATE' : '')
-      , true)
-    : false;
+  return classSupernova::db_get_unit_by_id($unit_id, $for_update, $fields);
 }
 
 function db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*')
 {
+  // apply time restrictions ????
+  return classSupernova::db_get_unit_by_location($user_id, $location_type, $location_id, $unit_snid, $for_update, $fields);
+  /*
   return doquery(
     "SELECT {$fields}
     FROM {{unit}}
     WHERE
       `unit_location_type` = {$location_type} AND `unit_location_id` = {$location_id} AND " . db_unit_time_restrictions() .
-      // "AND (unit_time_start IS NULL OR unit_time_start <= FROM_UNIXTIME(" . SN_TIME_NOW . ")) AND (unit_time_finish IS NULL OR unit_time_finish >= FROM_UNIXTIME(" . SN_TIME_NOW . "))" .
       ($user_id = intval($user_id) ? " AND `unit_player_id` = {$user_id}" : '') .
       ($unit_snid = intval($unit_snid) ? " AND `unit_snid` = {$unit_snid}" : '') .
     " LIMIT 1" .
     ($for_update ? ' FOR UPDATE' : '')
   , true);
+  */
 }
 
 function db_unit_in_fleet_by_user($user_id, $location_id, $unit_snid, $for_update)
@@ -41,8 +38,8 @@ function db_unit_in_fleet_by_user($user_id, $location_id, $unit_snid, $for_updat
     FROM {{fleets}} AS f
       JOIN {{unit}} AS u ON u.`unit_location_id` = f.fleet_id
     WHERE
-      f.fleet_owner = {$user_id}
-      AND (f.fleet_start_planet_id = {$location_id} OR f.fleet_end_planet_id = {$location_id})
+      f.fleet_owner = {$user_id} AND
+      (f.fleet_start_planet_id = {$location_id} OR f.fleet_end_planet_id = {$location_id})
       AND u.unit_snid = {$unit_snid} AND u.`unit_location_type` = " . LOC_FLEET .
       " AND " . db_unit_time_restrictions() .
     " LIMIT 1" .

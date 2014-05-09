@@ -65,7 +65,7 @@ if($points = sys_get_param_float('points'))
       break;
     }
     */
-    $row = db_user_player_like_name($username, false, 'id, username');
+    $row = db_user_by_username($username, false, 'id, username', true, true);
     if(is_array($row) && isset($row['id']))
     {
       // Does anything post to DB?
@@ -97,7 +97,7 @@ if($points = sys_get_param_float('points'))
       $error_id = 'adm_dm_planet_conflict_coords';
     }
 
-    $query = db_planet_list_by_search($id_planet, $queryPart);
+    $query = db_planet_list_by_name($id_planet, $queryPart);
     switch (mysql_num_rows($query))
     {
       case 0: // Error - no such planet ID or name or coordinates

@@ -38,11 +38,11 @@ if($info_action)
 
         if(is_id($user_info_name_unsafe))
         {
-          $user_info = db_user_player_by_id($user_info_name_unsafe, true, '`id`, `username`');
+          $user_info = db_user_by_id($user_info_name_unsafe, true, '`id`, `username`', true);
         }
         if(!is_array($user_info))
         {
-          $user_info = db_user_player_like_name($user_info_name_unsafe, true, '`id`, `username`');
+          $user_info = db_user_by_username($user_info_name_unsafe, true, '`id`, `username`', true, true);
         }
         if(!is_array($user_info))
         {

@@ -424,7 +424,6 @@ function sn_unit_relocate($unit_id, $from, $to){}
 function unit_get_level($unit_id, &$context = null, $options = null){return sn_function_call('unit_get_level', array($unit_id, &$context, $options, &$result));}
 function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result)
 {
-  global $config, $time_now;
   $unit_db_name = pname_resource_name($unit_id);
   $for_update = $options['for_update'];
 

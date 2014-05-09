@@ -695,10 +695,10 @@ switch($new_version)
             unset($artifact_list[$key]);
             continue;
           }
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($value[0], $value[1], $row);
+          $db_changeset['unit'][] = upd_db_unit_changeset_prepare($value[0], $value[1], $row);
         }
       }
-      sn_db_changeset_apply($db_changeset);
+      upd_db_changeset_apply($db_changeset);
 
       upd_alter_table('users', "DROP COLUMN `player_artifact_list`", $update_tables['users']['player_artifact_list']);
     }

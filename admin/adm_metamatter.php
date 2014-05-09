@@ -68,7 +68,7 @@ if($points = sys_get_param_float('points'))
       break;
     }
     */
-    $row = db_user_player_like_name($username, false, 'id, username');
+    $row = db_user_by_username($username, false, 'id, username', true, true);
     if(is_array($row) && isset($row['id']))
     {
       // Does anything post to DB?

@@ -40,7 +40,7 @@ $userToAdd_unsafe = sys_get_param_str_raw('addtogroup');
 if($userToAdd)
 {
   $userToAdd = mysql_real_escape_string($userToAdd_unsafe);
-  $userToAddID = db_user_player_like_name($userToAdd_unsafe, false, 'id');
+  $userToAddID = db_user_by_username($userToAdd_unsafe, false, 'id', true, true);
   $userToAddID = $userToAddID['id'];
 
   if($fleet['fleet_target_owner'] == $userToAddID)

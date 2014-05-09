@@ -23,13 +23,65 @@ class classSupernova
   public static $locks = array(); // Информация о блокировках
   public static $queries = array(); // Кэш запросов
 
+  public static $db_changeset = array(); // Накопительный массив изменений
   // Кэш индексов - ключ MD5-строка от суммы ключевых строк через | - менять | на что-то другое перед поиском и назад - после поиска
   // Так же в индексах могут быть двойные вхождения - например, названия планет да и вообще
   // Придумать спецсимвол для NULL
   // protected static $indexes = array();
 
+  /*
+  TODO Кэш:
+  1. Всегда дешевле использовать процессор, чем локальную память
+  2. Всегда дешевле использовать локальную память, чем общую память всех процессов
+  3. Всегда дешевле использовать общую память всех процессов, чем обращаться к БД
+
+  Кэш - многоуровневый: локальная память-общая память-БД
+  БД может быть сверхкэширующей - см. HyperNova. Это реализуется на уровне СН-драйвера БД
+  Предусмотреть вариант, когда уровни кэширования совпадают, например когда нет xcache и используется общая память
+  */
+  public static $cache; // Объект-кэшер - либо встроенная память, либо мемкэш с блокировками - находится внутри $db!!!!
+  public static $db; // Объект-БД - либок кэшер с блокировками, либо БД
 
   // protected static $info = array(); // Кэш информации - инфо о юнитах, инфо о группах итд
+
+  // TODO Автоматически заполнять эту таблицу. В случае кэша в памяти - делать show table при обращении к таблице
+  public static $location_info = array(
+    LOC_USER => array(
+      P_TABLE_NAME => 'users',
+      P_ID => 'id',
+      P_OWNER_INFO => array(),
+    ),
+    LOC_PLANET => array(
+      P_TABLE_NAME => 'planets',
+      P_ID => 'id',
+      P_OWNER_INFO => array(
+        array(
+          P_LOCATION => LOC_USER,
+          P_OWNER_FIELD => 'id_owner',
+        )
+      ),
+    ),
+    LOC_UNIT => array(
+      P_TABLE_NAME => 'unit',
+      P_ID => 'unit_id',
+      P_OWNER_INFO => array(
+        array(
+          P_LOCATION => LOC_USER,
+          P_OWNER_FIELD => 'unit_player_id',
+        )
+      ),
+    ),
+    LOC_QUE => array(
+      P_TABLE_NAME => 'que',
+      P_ID => 'que_id',
+      P_OWNER_INFO => array(
+        array(
+          P_LOCATION => LOC_USER,
+          P_OWNER_FIELD => 'que_player_id',
+        )
+      ),
+    ),
+  );
 
   // Перепаковывает массив на заданную глубину, убирая поля с null
   public static function array_repack(&$array, &$lock_table, $level = 0)
@@ -52,7 +104,7 @@ class classSupernova
     }
   }
 
-
+  // TODO Вынести в отдельный объект
   public static function cache_clear_all($hard = true)
   {
     if($hard)
@@ -63,18 +115,18 @@ class classSupernova
     static::$queries = array();
     // static::$indexes = array();
   }
-
-  public static function cache_clear($cache_id = LOC_USER, $hard = true)
+  // TODO Через вызов функции посмотреть, где она используется и как её можно оптимизировать
+  public static function cache_clear($cache_id, $hard = true)
   {
     if($hard)
     {
       static::$data[$cache_id] = array();
+      static::$data[LOC_LOCATION][$cache_id] = array();
       static::$locks[$cache_id] = array();
     }
     static::$queries[$cache_id] = array();
   }
-
-  public static function cache_repack($cache_id = LOC_USER, $record_id = 0)
+  public static function cache_repack($cache_id, $record_id = 0)
   {
     // Если есть $user_id - проверяем, а надо ли перепаковывать?
     if($record_id && isset(static::$data[$cache_id][$record_id]) && static::$data[$cache_id][$record_id] !== null) return;
@@ -86,8 +138,7 @@ class classSupernova
     // Впрочем, тут есть сторонние эффекты
     // static::array_repack(static::$locks[LOC_USER]);
   }
-
-  public static function cache_unset($cache_id = LOC_USER, $record_id = 0)
+  public static function cache_unset($cache_id, $record_id)
   {
     if(!$record_id)
     {
@@ -95,32 +146,84 @@ class classSupernova
     }
     elseif($record_id && isset(static::$data[$cache_id][$record_id]) && static::$data[$cache_id][$record_id] !== null)
     {
-      static::$data[$cache_id][$record_id] = null;
+      unset(static::$data[$cache_id][$record_id]);
       // static::db_get_user_by_id($user_id);
       static::cache_repack($cache_id, $record_id); // Перепаковываем внутренние структуры, если нужно
     }
   }
-
-  // Кэшируем запись в соответствующий кэш
-  // По умолчанию - не перезаписываем существующие значения, если не стоит $force_overwrite
-  public static function cache_set($cache_id = LOC_USER, $record_id, $record, $force_overwrite = false)
+  public static function cache_get($cache_id, $record_id)
   {
-    if(!$record_id || (isset(static::$data[$cache_id][$record['id']]) && static::$data[$cache_id][$record['id']] && !$force_overwrite)) return;
+    // Пока не нужна
+  }
+  /* Кэшируем запись в соответствующий кэш
 
-    static::$data[$cache_id][$record_id] = $record;
-    if(static::db_transaction_check(false))
+  Писать в кэш:
+  1. Если записи не существует в кэше
+  2. Если стоит $force_overwrite
+  3. Если во время транзакции существующая запись не заблокирована
+
+  Блокировать запись:
+  1. Если идет транзакция и запись не заблокирована
+  2. Если не стоит скип-лок
+  */
+  public static function cache_set($location_type, $record_id, $record, $force_overwrite = false, $skip_lock = false)
+  {
+    // нет идентификатора - выход
+    if(!($record_id = $record[static::$location_info[$location_type][P_ID]])) return;
+
+    $in_transaction = static::db_transaction_check(false);
+    if(
+      $force_overwrite
+      ||
+      // Не заменяются заблокированные записи во время транзакции
+      ($in_transaction && !static::cache_lock_get($location_type, $record_id))
+      ||
+      !isset(static::$data[$location_type][$record_id])
+      ||
+      static::$data[$location_type][$record_id] === null
+    )
     {
-      static::$locks[$cache_id][static::$data[$cache_id][$record_id]] = true;
+      static::$data[$location_type][$record_id] = $record;
+      if($in_transaction && !$skip_lock)
+      {
+        static::cache_lock_set($location_type, $record_id);
+      }
     }
-  }
+    /*
 
-  // Пока не нужна
-  public static function cache_get($cache_id = LOC_USER, $record_id)
+    // находимся в транзакции и надо пропустить блокировку - выход, $force_overwrite игнорируется
+    $in_transaction = static::db_transaction_check(false);
+    if(!$force_overwrite && $in_transaction && $skip_lock) return $record;
+    // Дальше $skip_lock не используется
+
+    // Кэш обязательно нужно обновить, если запись не залочена и происходит транзакция
+    $force_overwrite = $force_overwrite || ($in_transaction && !static::cache_lock_get($location_type, $record_id));
+    // Дальше $force_overwrite указывает на безусловное обновление кэша
+
+    // Если запись существует и её не нужно обновлять - вернуть её значение
+    if(!$force_overwrite && ($current_record = isset(static::$data[$location_type][$record_id]) ? static::$data[$location_type][$record_id] : null) !== null) return $current_record;
+
+    static::$data[$location_type][$record_id] = $record;
+    if(!$skip_lock && $in_transaction)
+    {
+      static::cache_lock_set($location_type, $record_id);
+    }
+
+    // TODO Перестраивать индексы - может пакетом ?
+
+    return $record;
+    */
+  }
+  public static function cache_lock_get($location_type, $record_id)
   {
+    return isset(static::$locks[$location_type][$record_id]);
+  }
+  public static function cache_lock_set($location_type, $record_id)
+  {
+    return static::$locks[$location_type][$record_id] = true;
   }
 
-
-
+  // TODO Вынести в отдельный объект
   /**
    * Эта функция проверяет статус транзакции
    *
@@ -156,7 +259,6 @@ class classSupernova
 
     return static::$db_in_transaction;
   }
-
   public static function db_transaction_start($level = '')
   {
     static::db_transaction_check();
@@ -174,7 +276,6 @@ class classSupernova
 
     return static::$transaction_id;
   }
-
   public static function db_transaction_commit()
   {
     static::db_transaction_check(true);
@@ -185,7 +286,6 @@ class classSupernova
 
     return static::$transaction_id;
   }
-
   public static function db_transaction_rollback()
   {
     // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
@@ -196,7 +296,6 @@ class classSupernova
 
     return static::$transaction_id;
   }
-
   /**
    * Блокирует указанные таблицу/список таблиц
    *
@@ -212,29 +311,266 @@ class classSupernova
       doquery("SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : ''));
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  public static function db_query($query, $fetch = false)
+  public static function db_query($query, $fetch = false, $skip_lock = false)
   {
     $select = strpos(strtoupper($query), 'SELECT') !== false;
 
     $query .= $select && $fetch ? ' LIMIT 1' : '';
-    $query .= $select && static::db_transaction_check(false) ? ' FOR UPDATE' : '';
+    $query .= !$skip_lock && $select && static::db_transaction_check(false) ? ' FOR UPDATE' : '';
     return doquery($query, $fetch);
   }
 
+  /**
+   * Возвращает информацию о пользователе по его ID
+   *
+   * @param int $location_type
+   * @param int|array $record_id
+   *    <p>int - ID пользователя</p>
+   *    <p>array - запись пользователя с установленным полем ['id']</p>
+   * @param bool $for_update @deprecated
+   * @param string $fields @deprecated список полей или '*'/'' для всех полей
+   * @param bool $skip_lock Указывает на то, что не нужно блокировать запись //TODO и не нужно сохранять в кэше
+   * @internal param int $user_owner_id ID юзера-владельца записи для блокировки
+   *    <p>0 - Узнать самостоятельно</p>
+   *    <p>int - ID юзера-владельца</p>
+   * @return array|false
+   * <p>false - Нет записи с указанным ID</p>
+   * <p>array - запись</p>
+   * @todo $fields
+   */
+  public static function db_get_record_by_id($location_type, $record_id, $for_update = false, $fields = '*', $skip_lock = false)
+  { // $fields = $fields ? $fields : '*'; // TODO $fields
+    $location_info = &static::$location_info[$location_type];
+    $id_field = $location_info[P_ID];
 
+    $record_id = intval(is_array($record_id) && isset($record_id[$id_field]) ? $record_id[$id_field] : $record_id);
+    if(!$record_id) return false;
+
+    $in_transaction = static::db_transaction_check(false);
+
+    // Если не пропускаем блокировку - вытаскиваем все родительские записи
+    // Потому что если $skip_lock - это, скорее всего, рекурсивный вызов
+    if(!$skip_lock && !empty($location_info[P_OWNER_INFO]))
+    {
+      // TODO && !empty($location_info[P_OWNER_INFO])
+      $record = static::db_get_record_by_id($location_type, $record_id, false, 'id', true);
+      if(!$record) return $record;
+
+      foreach($location_info[P_OWNER_INFO] as $owner_data)
+      {
+        static::db_get_record_by_id($owner_data[P_LOCATION], $record[$owner_data[P_OWNER_FIELD]], $for_update, '*');
+      }
+    }
+
+    if(
+      !isset(static::$data[$location_type][$record_id]) || static::$data[$location_type][$record_id] === null
+      // Если запись уже есть - то перечитываем её только в транзакции если нет блокировки
+      // Хотя если у нас идет $skip_lock и запись уже есть в кэше - зачем нам её перечитывать ?!
+      || ($in_transaction && !$skip_lock && !static::cache_lock_get($location_type, $record_id))
+    )
+    {
+      $table_name = static::$location_info[$location_type][P_TABLE_NAME];
+      $record = static::db_query("SELECT * FROM {{{$table_name}}} WHERE `{$id_field}` = {$record_id}", true, $skip_lock);
+      static::cache_set($location_type, $record_id, $record, $skip_lock);
+    }
+
+    return static::$data[$location_type][$record_id];
+  }
+
+
+
+
+
+
+
+
+
+  public static function db_get_record_list($location_type, $filter = '', $fetch = false)
+  {
+    $query_cache = &static::$queries[$location_type][$filter];
+    if(!isset($query_cache))
+    {
+      $location_info = &static::$location_info[$location_type];
+      $id_field = $location_info[P_ID];
+      $query_cache = array();
+
+      if(static::db_transaction_check(false))
+      {
+        foreach($location_info[P_OWNER_INFO] as $location_data)
+        {
+          $parent_location = &static::$location_info[$location_info[P_OWNER_INFO][P_LOCATION]];
+          /*
+          // Блокируем таблицу - родителя
+          // TODO - переделать позже
+          // На самом деле это не совсем правильно - если у таблицы-родителя будут другие родители, то они не заблокируются
+          // Но пока везде указаны юзеры - это нормально и быстро
+          static::db_query(
+            "SELECT 1 FROM
+              {{{$location_info[P_TABLE_NAME]}}} AS t1
+              JOIN {{{$parent_location[P_TABLE_NAME]}}} AS t2
+                ON t2.{$parent_location[P_TABLE_NAME][P_ID]} = t1.{$location_info[P_ID]}");
+          */
+          static::db_query(
+            "SELECT 1 FROM
+              {{{$location_info[P_TABLE_NAME]}}} AS t1
+              JOIN {{{$parent_location[P_TABLE_NAME]}}} AS t2
+            WHERE t2.{$parent_location[P_TABLE_NAME][P_ID]} = t1.{$location_info[P_ID]}", $fetch);
+        }
+      }
+
+      $query = static::db_query(
+        "SELECT {$id_field} FROM {{{$location_info[P_TABLE_NAME]}}}" .
+        (($filter = trim($filter)) ? " WHERE {$filter}" : ''), $fetch
+      );
+      while($row = mysql_fetch_assoc($query))
+      {
+        static::db_get_record_by_id($location_type, $row[$id_field]);
+        $query_cache[$row[$id_field]] = &static::$data[$location_type][$row[$id_field]];
+      }
+      /*
+      $query = static::db_query(
+        "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" .
+        (($filter = trim($filter)) ? " WHERE {$filter}" : '')
+      );
+      while($row = mysql_fetch_assoc($query))
+      {
+        static::cache_set($location_type, $row[$id_field], $row); // В кэш-юзер так же заполнять индексы
+        $query_cache[$row[$id_field]] = &static::$data[$location_type][$row[$id_field]];
+      }
+      */
+    }
+
+    return $fetch ? (is_array($query_cache) ? reset($query_cache) : false) : $query_cache;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  public static function db_upd_record_by_id($location_type, $record_id, $set)
+  {
+    // При апдейте единичном кэш запросов в принципе сбрасывать не надо - потому что если на эту запись есть ссылки, то её проапдейтит при изменении $data
+    // TODO - $set давать в массиве
+    // TODO Проверять по $set изменения в индексах и запросах
+    if(!($record_id = intval($record_id) || !($set = trim($set)))) return false;
+
+    $id_field = static::$location_info[$location_type][P_ID];
+    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
+    if($result = static::db_query("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
+    {
+      if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
+      {
+        static::$data[$location_type][$record_id] = null; // Тут именно так, а не cache_unset - что бы в кэшах автоматически обновилась запись
+        static::db_get_record_by_id($location_type, $record_id);
+        // TODO Сейчас сбрасывать запросы из-за того, что $set может серъезно поменять результат кэшированного запроса
+        static::cache_clear($location_type, false); // Мягкий сброс - только $queries
+        // TODO А вот индексы, возможно, прийдется обновить - если поменялись ключевые поля, по которым строились индексы. Но это - попозже
+      }
+    }
+
+    return $result;
+  }
+  public static function db_upd_record_list($location_type, $condition, $set)
+  {
+    if(!($set = trim($set))) return false;
+
+    $condition = trim($condition);
+    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
+    if($result = static::db_query("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : '')))
+    {
+      // TODO Сейчас сбрасывать всю инфу о юзерах потому, что $set может серъезно поменять результат кэшированного запроса
+      if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
+      {
+        // TODO Сейчас сбрасывать запросы из-за того, что $set может серъезно поменять результат кэшированного запроса
+        static::cache_clear($location_type, true);
+      }
+    }
+
+    return $result;
+  }
+  public static function db_ins_record($location_type, $set)
+  {
+    $set = trim($set);
+    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
+    if($result = static::db_query("INSERT INTO `{{{$table_name}}}` SET {$set}"))
+    {
+      if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
+      {
+        // TODO Сейчас сбрасывать запросы из-за того, что $set может серъезно поменять результат кэшированного запроса
+        static::cache_clear($location_type, false); // Мягкий сброс - только $queries
+
+        $record_id = mysql_insert_id();
+        $record = static::db_get_record_by_id($location_type, $record_id);
+        static::cache_set($location_type, $record_id, $record, true);
+      }
+    }
+
+    return $result;
+  }
+  public static function db_del_record_by_id($location_type, $record_id)
+  {
+    if(!($record_id = intval($record_id))) return false;
+
+    $location_info = &static::$location_info[$location_type];
+    $id_field = $location_info[P_ID];
+    $table_name = $location_info[P_TABLE_NAME];
+    if($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$record_id}"))
+    {
+      if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
+      {
+        static::cache_unset($location_type, $record_id);
+        static::cache_clear($location_type, false);
+      }
+    }
+
+    return $result;
+  }
+  public static function db_del_record_list($location_type, $condition)
+  {
+    if(!($condition = trim($condition))) return false;
+
+    $location_info = &static::$location_info[$location_type];
+    $table_name = $location_info[P_TABLE_NAME];
+    if($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE {$condition}"))
+    {
+      if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
+      {
+        // TODO Сейчас сбрасывать запросы из-за того, что $set может серъезно поменять результат кэшированного запроса
+        static::cache_clear($location_type);
+      }
+    }
+
+    return $result;
+  }
+
+
+
+  // Работа с пользователями
   /**
    * Возвращает информацию о пользователе по его ID
    *
@@ -243,6 +579,7 @@ class classSupernova
    *    <p>array - запись пользователя с установленным полем ['id']</p>
    * @param bool $for_update @deprecated
    * @param string $fields @deprecated список полей или '*'/'' для всех полей
+   * @param null $player
    * @param bool|null $player Признак выбора записи пользователь типа "игрок"
    *    <p>null - Можно выбрать запись любого типа</p>
    *    <p>true - Выбирается только запись типа "игрок"</p>
@@ -254,37 +591,16 @@ class classSupernova
    */
   public static function db_get_user_by_id($user_id, $for_update = false, $fields = '*', $player = null)
   {
-    // TODO $fields
-    $fields = $fields ? $fields : '*';
-    $user_id = intval(is_array($user_id) && isset($user_id['id']) ? $user_id['id'] : $user_id);
-    if(!$user_id)
-    {
-      return false;
-    }
-
-    if(!isset(static::$data[LOC_USER][$user_id]) || static::$data[LOC_USER][$user_id] === null)
-    {
-      $user = static::db_query("SELECT * FROM {{users}} WHERE `id` = {$user_id}", true);
-      static::cache_set(LOC_USER, $user_id, $user);
-    }
-
-    $user = &static::$data[LOC_USER][$user_id];
-
-    return
-      (is_array($user) && ($player === null || (!($user_as_ally = $user['user_as_ally']) && $player === true) || ($user_as_ally && $player === false)))
-        ? static::$data[LOC_USER][$user_id]
-        : false;
+    $user = static::db_get_record_by_id(LOC_USER, $user_id, $for_update, $fields);
+    return (is_array($user) &&
+    (
+      $player === null
+      ||
+      ($player === true && !$user['user_as_ally'])
+      ||
+      ($player === false && $user['user_as_ally'])
+    )) ? $user : false;
   }
-
-  /*
-  public static function db_get_player_by_id($user_id, $for_update = false, $fields = '*')
-  {
-    $user = static::db_user_get_by_id($user_id);
-
-    return is_array($user) && !$user['user_as_ally'] ? $user : false;
-  }
-  */
-
   // $player
   //   true - только игроки
   //   false - только Альянсы
@@ -327,7 +643,6 @@ class classSupernova
 
     return $user;
   }
-
   public static function db_get_user_by_email($email, $use_both = false, $for_update = false, $fields = '*')
   {
     if(!($email = strtolower(trim($email)))) return false;
@@ -336,7 +651,7 @@ class classSupernova
     // TODO переделать на индексы
     foreach(static::$data[LOC_USER] as $user_id => $user_data)
     {
-      if(is_array($user_data) && isset($user_data['email']))
+      if(is_array($user_data) && isset($user_data['email_2']))
       {
         // проверяем поле
         if(strtolower($user_data['email_2']) == $email || ($use_both && strtolower($user_data['email_2']) == $email))
@@ -361,112 +676,116 @@ class classSupernova
 
     return $user;
   }
-
-
-
-  // TODO При запросах списков имеет смысл спрашивать ID пользователей, а затем выбирать каждую запись отдельно - что бы работало кэширование. Впрочем, потестить
-  public static function db_get_user_list($user_filter = '', $for_update = false, $fields = '*')
-  {
-    $user_filter = trim($user_filter);
-
-    $query_cache = &static::$queries[LOC_USER][$user_filter];
-    if(!isset($query_cache))
-    {
-      $query_cache = array();
-      $query = static::db_query(
-        'SELECT * FROM {{users}}' .
-        ($user_filter ? " WHERE {$user_filter}" : '')
-      );
-      while($user = mysql_fetch_assoc($query))
-      {
-        static::cache_set(LOC_USER, $user['id'], $user); // В кэш-юзер так же заполнять индексы
-        $query_cache[$user['id']] = &static::$data[LOC_USER][$user['id']];
-      }
-    }
-
-    return $query_cache;
-    // return static::$queries[LOC_USER][$user_filter];
-  }
-
-  // При апдейте единичном кэш запросов в принципе сбрасывать не надо - потому что если на эту запись есть ссылки, то её проапдейтит при изменении $data
-  // TODO - $set давать в массиве
-  // TODO Проверять по $set изменения в индексах и запросах
   public static function db_set_user_by_id($user_id, $set)
   {
-    if(!(($user_id = intval($user_id)) && ($set = trim($set)))) return false;
-
-    if($result = static::db_query("UPDATE {{users}} SET {$set} WHERE `id` = {$user_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
-    {
-      if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
-      {
-        static::$data[LOC_USER][$user_id] = null;
-        static::db_get_user_by_id($user_id);
-        // TODO Сейчас сбрасывать запросы из-за того, что $set может серъезно поменять результат кэшированного запроса
-        static::cache_clear(LOC_USER, false); // Мягкий сброс - только $queries
-        // TODO А вот индексы, возможно, прийдется обновить - если поменялись ключевые поля, по которым строились индексы. Но это - попозже
-      }
-    }
-
-    return $result;
+    return static::db_upd_record_by_id(LOC_USER, $user_id, $set);
   }
   public static function db_upd_user_list($condition, $set)
   {
-    if(!($set = trim($set))) return false;
-    $condition = trim($condition);
-
-    if($result = static::db_query('UPDATE {{users}} SET ' . $set . ($condition ? ' WHERE ' . $condition : '')))
-    {
-      // TODO Сейчас сбрасывать всю инфу о юзерах потому, что $set может серъезно поменять результат кэшированного запроса
-      if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
-      {
-        // TODO Здесь жесткий сброс пока
-        static::cache_clear(LOC_USER, true);
-      }
-    }
-
-    return $result;
+    return static::db_upd_record_list(LOC_USER, $condition, $set);
   }
-
   public static function db_ins_user($set)
   {
-    if(!($set = trim($set))) return false;
-
-    if($result = static::db_query("INSERT INTO `{{users}}` SET {$set}"))
-    {
-      if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
-      {
-        $user_id = mysql_insert_id();
-        static::db_get_user_by_id($user_id);
-        // TODO Сейчас сбрасывать запросы из-за того, что $set может серъезно поменять результат кэшированного запроса
-        static::cache_clear(LOC_USER, false); // Мягкий сброс - только $queries
-      }
-    }
-
-    return $result;
+    return static::db_ins_record(LOC_USER, $set);
   }
-
   public static function db_del_user_by_id($user_id)
   {
-    if(!($user_id = intval($user_id))) return false;
-
-    if($result = static::db_query("DELETE FROM `{{users}}` WHERE `id` = {$user_id}"))
-    {
-      if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
-      {
-        static::cache_unset(LOC_USER, $user_id);
-        // static::$data[LOC_USER][$user_id] = null;
-        // static::cache_repack(LOC_USER, $user_id); // Перепаковываем внутренние структуры, если нужно
-      }
-    }
-
-    return $result;
+    return static::db_del_record_by_id(LOC_USER, $user_id);
   }
 
 
 
+  /*
+  public static function db_get_planet_by_id($planet_id, $for_update = false, $fields = '*', $skip_lock = false)
+  {
+    return static::db_get_record_by_id(LOC_PLANET, $planet_id, $for_update, $fields, $skip_lock);
+  }
+  */
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+  public static function db_unit_time_restrictions($date = SN_TIME_NOW)
+  {
+    $date = is_numeric($date) ? "FROM_UNIXTIME({$date})" : "'{$date}'";
+    return
+      "(unit_time_start IS NULL OR unit_time_start <= {$date}) AND
+    (unit_time_finish IS NULL OR unit_time_finish = '1970-01-01 03:00:00' OR unit_time_finish >= {$date})";
+  }
+  public static function db_get_unit_by_id($unit_id, $for_update = false, $fields = '*')
+  {
+    // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
+
+    //
+
+    // return static::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
+  }
+  public static function db_get_unit_list($filter = '')
+  {
+    return static::db_get_record_list(LOC_UNIT, $filter);
+  }
+  public static function db_unit_list_in_fleet_by_user($user_id, $location_id, $for_update)
+  {
+    return doquery(
+      "SELECT *
+      FROM {{fleets}} AS f
+        JOIN {{unit}} AS u ON u.`unit_location_id` = f.fleet_id
+      WHERE
+        f.fleet_owner = {$user_id} AND
+        (f.fleet_start_planet_id = {$location_id} OR f.fleet_end_planet_id = {$location_id})
+        AND u.`unit_location_type` = " . LOC_FLEET .
+      " AND " . db_unit_time_restrictions() .
+      ($for_update ? ' FOR UPDATE' : '')
+      , true);
+  }
+  public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id)
+  {
+    /*
+    if(!isset(static::$data[LOC_LOCATION][$location_type][$location_id]))
+    {
+      if($location_type == LOC_USER)
+      {
+        // locking user
+        static::db_get_user_by_id($location_id);
+      }
+      if($location_type == LOC_PLANET)
+      {
+        // TODO locking planet
+        // $user = static::db_get_planet_by_id($location_id);
+      }
+      if($location_type == LOC_FLEET)
+      {
+        // TODO locking fleet
+
+        // TODO Процедура для простого чтения записи - без блокировки и кэширования. Только ID - что бы узнать допинфу о владельце и залочить сначала владельца
+        static::db_unit_list_in_fleet_by_user($user_id, $location_id, static::db_transaction_check(false));
+      }
+      $query_cache = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id}");
+      foreach($query_cache as $unit_id => $unit_data)
+      {
+        static::$data[LOC_LOCATION][$location_type][$location_id][$unit_data['unit_snid']] = &static::$data[$location_type][$unit_id];
+      }
+    }
+    */
+  }
+  public static function db_get_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*')
+  {
+    static::db_get_unit_list_by_location($user_id, $location_type, $location_id);
+
+    return static::$data[LOC_LOCATION][$location_type][$location_id][$unit_snid];
+  }
 
 
 
@@ -479,6 +798,7 @@ class classSupernova
 
 
   // que_process не всегда должна работать в режиме прямой работы с БД !! Она может работать и в режиме эмуляции
+  // !!!!!!!! После que_get брать не [0] элемент, а first() - тогда можно в индекс элемента засовывать que_id из таблицы
 
 
 
@@ -503,8 +823,10 @@ class classSupernova
   {
   }
 
+  // Для модулей - регистрация юнитов
+  public static function unit_register()
+  {
 
-
-
+  }
 
 }
