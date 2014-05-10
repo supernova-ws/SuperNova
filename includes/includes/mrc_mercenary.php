@@ -102,8 +102,8 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
         unit_type = {$mode},
         unit_snid = {$mercenary_id},
         unit_level = {$mercenary_level},
-        unit_time_start = " . (!$is_permanent ? 'FROM_UNIXTIME(' . SN_TIME_NOW . ')' : 'null') . "),
-        unit_time_finish = " . (!$is_permanent ? 'FROM_UNIXTIME(' . (SN_TIME_NOW + $mercenary_period) . ')' : 'null') . ")"
+        unit_time_start = " . (!$is_permanent ? 'FROM_UNIXTIME(' . SN_TIME_NOW . ')' : 'null') . ",
+        unit_time_finish = " . (!$is_permanent ? 'FROM_UNIXTIME(' . (SN_TIME_NOW + $mercenary_period) . ')' : 'null')
       );
 
       rpg_points_change($user['id'], $mode == UNIT_PLANS ? RPG_PLANS : RPG_MERCENARY, -($darkmater_cost), "Spent for officer {$lang['tech'][$mercenary_id]} ID {$mercenary_id}");
