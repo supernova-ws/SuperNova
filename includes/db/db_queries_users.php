@@ -44,17 +44,8 @@ function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id)
 
 
 
-function db_user_insert_set($set)
-{
-  return classSupernova::db_ins_record(LOC_USER, $set);
-}
 
 
-
-function db_user_delete_by_id($user_id)
-{
-  return classSupernova::db_del_record_by_id(LOC_USER, $user_id);
-}
 
 
 

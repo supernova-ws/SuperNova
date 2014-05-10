@@ -12,9 +12,6 @@ class classSupernova
   // protected static $ally = null;
 
   /*
-  protected static $users = array();
-  protected static $planets = array();
-  protected static $units = array();
   protected static $ques = array();
   protected static $allies = array();
   */
@@ -23,7 +20,8 @@ class classSupernova
   public static $locks = array(); // Информация о блокировках
   public static $queries = array(); // Кэш запросов
 
-  public static $db_changeset = array(); // Накопительный массив изменений
+  public static $delayed_changset = array(); // Накопительный массив изменений
+
   // Кэш индексов - ключ MD5-строка от суммы ключевых строк через | - менять | на что-то другое перед поиском и назад - после поиска
   // Так же в индексах могут быть двойные вхождения - например, названия планет да и вообще
   // Придумать спецсимвол для NULL
@@ -292,6 +290,14 @@ class classSupernova
   public static function db_transaction_commit()
   {
     static::db_transaction_check(true);
+
+    if(!empty(static::$delayed_changset))
+    {
+      static::db_changeset_apply(static::$delayed_changset, true);
+      // pdump(static::$delayed_changset);
+    }
+    static::$delayed_changset = array();
+
     doquery('COMMIT');
 //print('<br/>TRANSACTION COMMIT id' . static::$transaction_id . '<hr />');
     static::$db_in_transaction = false;
@@ -302,6 +308,11 @@ class classSupernova
   }
   public static function db_transaction_rollback()
   {
+    if(!empty(static::$delayed_changset))
+    {
+      static::db_changeset_revert();
+    }
+    static::$delayed_changset = array();
     // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
     doquery('ROLLBACK');
 //print('<br/>TRANSACTION ROLLBACK id' . static::$transaction_id . '<hr />');
@@ -466,7 +477,17 @@ class classSupernova
       */
     }
 
-    return $fetch ? (is_array($query_cache) ? reset($query_cache) : false) : $query_cache;
+    $result = false;
+    if(is_array($query_cache))
+    {
+      foreach($query_cache as $key => $value)
+      {
+        $result[$key] = $value;
+        if($fetch) break;
+      }
+    }
+
+    return $fetch ? (is_array($result) ? reset($result) : false) : $result;
   }
 
   public static function db_upd_record_by_id($location_type, $record_id, $set)
@@ -505,25 +526,10 @@ class classSupernova
       // TODO Сейчас сбрасывать всю инфу о юзерах потому, что $set может серъезно поменять результат кэшированного запроса
       if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
       {
-/*
-pdump(static::$data[$location_type][1084752], $location_type);
-pdump(static::$data[LOC_LOCATION][LOC_PLANET][1][1], $location_type);
-static::$data[LOC_LOCATION][LOC_PLANET][1][1]['test'] = 5;
-static::$data[$location_type][1084752]['test2'] = 6;
-unset(static::$data[LOC_LOCATION][LOC_PLANET][1][1]);
-        pdump(static::$data[$location_type][1084752], $location_type);
-        pdump(static::$data[LOC_LOCATION][LOC_PLANET][1][1], $location_type);
-*/
-// pdump(static::$data[LOC_LOCATION]);
         // TODO Сейчас сбрасывать запросы из-за того, что $set может серъезно поменять результат кэшированного запроса
         static::cache_clear($location_type, true);
-// pdump(static::$data[LOC_LOCATION]);
-// $query_cache = &static::$data[LOC_LOCATION][$location_type][$location_id];
-// if(!isset($query_cache))
       }
     }
-
-// if($location_type == LOC_UNIT) die('LOC_UNIT');
 
     return $result;
   }
@@ -740,10 +746,17 @@ unset(static::$data[LOC_LOCATION][LOC_PLANET][1][1]);
         }
       }
     }
-    // todo Надо ли
-    $query_cache = &static::$data[LOC_LOCATION][$location_type][$location_id];
 
-    return $query_cache;
+    $result = false;
+    if(is_array($query_cache))
+    {
+      foreach($query_cache as $key => $value)
+      {
+        $result[$key] = $value;
+      }
+    }
+
+    return $result;
   }
   public static function db_get_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*')
   {
@@ -863,13 +876,48 @@ unset(static::$data[LOC_LOCATION][LOC_PLANET][1][1]);
   }
 
 
-  public static function db_changeset_apply($db_changeset)
+
+  public function db_changeset_delay($table_name, $table_data)
+  {
+    // TODO Применять ченджсет к записям
+    static::$delayed_changset[$table_name] = is_array(static::$delayed_changset[$table_name]) ? static::$delayed_changset[$table_name] : array();
+    // TODO - На самом деле дурацкая оптимизация, если честно - может быть идентичные записи с идентичными дельтами - и привет. Но не должны, конечно
+    /*
+    foreach($table_data as $key => $value)
+    {
+      if(array_search($value, static::$delayed_changset[$table_name]) !== false)
+      {
+        unset($table_data[$key]);
+      }
+    }
+    */
+    static::$delayed_changset[$table_name] = array_merge(static::$delayed_changset[$table_name], $table_data);
+    // pdump(static::$delayed_changset);
+    // die();
+  }
+
+  public function db_changeset_revert()
+  {
+    // TODO Для этапа 1 - достаточно чистить только те таблицы, что были затронуты
+    // Для этапа 2 - чистить только записи
+    // Для этапа 3 - возвращать всё
+    static::cache_clear_all(true);
+  }
+
+  public static function db_changeset_apply($db_changeset, $flush_delayed = false)
   {
     $result = true;
     if(!is_array($db_changeset) || empty($db_changeset)) return $result;
 
     foreach($db_changeset as $table_name => $table_data)
     {
+/*
+      if(static::db_transaction_check(false) && !$flush_delayed && ($table_name == 'users' || $table_name == 'planets' || $table_name == 'unit'))
+      {
+        static::db_changeset_delay($table_name, $table_data);
+        continue;
+      }
+*/
       foreach($table_data as $record_id => $conditions)
       {
         $where = '';

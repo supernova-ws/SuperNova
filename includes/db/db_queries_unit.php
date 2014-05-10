@@ -17,18 +17,6 @@ function db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_s
 {
   // apply time restrictions ????
   return classSupernova::db_get_unit_by_location($user_id, $location_type, $location_id, $unit_snid, $for_update, $fields);
-  /*
-  return doquery(
-    "SELECT {$fields}
-    FROM {{unit}}
-    WHERE
-      `unit_location_type` = {$location_type} AND `unit_location_id` = {$location_id} AND " . db_unit_time_restrictions() .
-      ($user_id = intval($user_id) ? " AND `unit_player_id` = {$user_id}" : '') .
-      ($unit_snid = intval($unit_snid) ? " AND `unit_snid` = {$unit_snid}" : '') .
-    " LIMIT 1" .
-    ($for_update ? ' FOR UPDATE' : '')
-  , true);
-  */
 }
 
 function db_unit_in_fleet_by_user($user_id, $location_id, $unit_snid, $for_update)

@@ -636,7 +636,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
 
     if($que_item['que_unit_amount'] <= 0)
     {
-      $db_changeset['que'][$que_item['que_id']] = array(
+      $db_changeset['que'][] = array(
         'action' => SQL_OP_DELETE,
         'where' => array(
           "`que_id` = {$que_item['que_id']}",
@@ -645,7 +645,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
     }
     else
     {
-      $db_changeset['que'][$que_item['que_id']] = array(
+      $db_changeset['que'][] = array(
         'action' => SQL_OP_UPDATE,
         'where' => array(
           "`que_id` = {$que_item['que_id']}",
@@ -674,7 +674,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
     {
       $table = $planet_id ? 'planets' : 'users';
       $id = $planet_id ? $planet_id : $player_id;
-      $db_changeset[$table][$id] = array(
+      $db_changeset[$table][] = array(
         'action' => SQL_OP_UPDATE,
         'where' => array(
           "`id` = {$id}",

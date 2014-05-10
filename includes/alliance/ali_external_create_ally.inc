@@ -37,7 +37,7 @@ if($ally_tag)
   $ally_id = mysql_insert_id();
   db_user_set_by_id($user['id'], "`ally_tag` = '{$ally_tag}', `ally_id`='{$ally_id}', `ally_name`='{$ally_name}', `ally_register_time`= {$time_now}");
 
-  db_user_insert_set("`username` = '[{$ally_tag}]', `register_time` = {$time_now}, `user_as_ally` = {$ally_id}");
+  classSupernova::db_ins_record(LOC_USER, "`username` = '[{$ally_tag}]', `register_time` = {$time_now}, `user_as_ally` = {$ally_id}");
   $ally_user_id = mysql_insert_id();
   doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_id} LIMIT 1;");
 

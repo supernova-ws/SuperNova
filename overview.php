@@ -295,7 +295,7 @@ switch($mode)
     sn_db_transaction_start();
     $planets_query = db_planet_list_sorted($user, false, '*');
     // while($UserPlanet = mysql_fetch_assoc($planets_query))
-    foreach($planets_query as $UserPlanet)
+    foreach($planets_query as $an_id => $UserPlanet)
     {
       $UserPlanet = sys_o_get_updated($user['id'], $UserPlanet['id'], SN_TIME_NOW);
 // pdump(classSupernova::$data[LOC_LOCATION]);

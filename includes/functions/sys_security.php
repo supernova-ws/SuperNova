@@ -296,7 +296,7 @@ function DeleteSelectedUser ( $UserID )
   doquery ( "DELETE FROM `{{annonce}}` WHERE `user` = '" . $UserID . "';");
 
 
-  db_user_delete_by_id($UserID);
+  classSupernova::db_del_record_by_id(LOC_USER, $UserID);
   doquery ( "DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
   global $config;
   $config->db_saveItem('users_amount', $config->users_amount - 1);

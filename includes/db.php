@@ -178,24 +178,7 @@ function doquery($query, $table = '', $fetch = false)
   $sqlquery = mysql_query($sql) or $debug->error(mysql_error()."<br />$sql<br />",'SQL Error');
 
   return $fetch ? mysql_fetch_assoc($sqlquery) : $sqlquery;
-
-//  if($fetch){
-//    $sqlrow = mysql_fetch_assoc($sqlquery);
-//    return $sqlrow;
-//  }else{
-//    return $sqlquery;
-//  }
 }
-
-/*
-// Adjust query depending on params
-function db_change_units_adjust($user, $planet = array(), &$query){return sn_function_call('db_change_units_adjust', array($user, $planet, &$query));}
-function sn_db_change_units_adjust($user, $planet, &$query)
-{
-  $query[LOC_USER] = $user['id'] ? $query[LOC_USER] : array();
-  $query[LOC_PLANET] = $planet['id'] ? $query[LOC_PLANET] : array();
-}
-*/
 
 function db_change_units_perform($query, $tablename, $object_id)
 {
@@ -303,81 +286,24 @@ function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id =
 {
   return classSupernova::db_changeset_prepare_unit($unit_id, $unit_value, $user, $planet_id);
 }
-
-
-
 function sn_db_changeset_apply($db_changeset)
 {
   return classSupernova::db_changeset_apply($db_changeset);
 }
-
 function sn_db_transaction_check($transaction_should_be_started = null)
 {
-  /*
-  global $supernova;
-
-  $error_msg = false;
-  if($transaction_should_be_started && !$supernova->db_in_transaction)
-  {
-    $error_msg = 'No transaction started for current operation';
-  }
-  elseif($transaction_should_be_started === null && $supernova->db_in_transaction)
-  {
-    $error_msg = 'Transaction is already started';
-  }
-
-  if($error_msg)
-  {
-    // TODO - Убрать позже
-    print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_transaction_check() - ' . $error_msg . '</h1>');
-    $backtrace = debug_backtrace();
-    array_shift($backtrace);
-    pdump($backtrace);
-    die($error_msg);
-  }
-
-  return $supernova->db_in_transaction;
-  */
   return classSupernova::db_transaction_check($transaction_should_be_started);
 }
-
 function sn_db_transaction_start($level = '')
 {
-  /*
-  global $supernova;
-  sn_db_transaction_check();
-  if($level)
-  {
-    doquery('SET TRANSACTION ISOLATION LEVEL ' . $level);
-  }
-  doquery('START TRANSACTION');
-  $supernova->db_in_transaction = true;
-  classSupernova::$transaction_id++;
-  */
   return classSupernova::db_transaction_start($level);
 }
-
-
 function sn_db_transaction_commit()
 {
-  /*
-  global $supernova;
-  sn_db_transaction_check(true);
-  doquery('COMMIT');
-  $supernova->db_in_transaction = false;
-  classSupernova::$transaction_id++;
-  */
   return classSupernova::db_transaction_commit();
 }
-
 function sn_db_transaction_rollback()
 {
-  /*
-  global $supernova;
-  doquery('ROLLBACK');
-  $supernova->db_in_transaction = false;
-  classSupernova::$transaction_id++;
-  */
   return classSupernova::db_transaction_rollback();
 }
 

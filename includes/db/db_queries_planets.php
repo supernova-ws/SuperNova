@@ -6,7 +6,7 @@ function db_planet_by_id($planet_id, $for_update = false, $fields = '*')
 }
 function db_planet_by_gspt_safe($galaxy, $system, $planet, $planet_type, $for_update = false, $fields = '*')
 {
-  return classSupernova::db_get_record_list(LOC_PLANET, // FIXED
+  return classSupernova::db_get_record_list(LOC_PLANET,
     "{{planets}}.`galaxy` = {$galaxy} AND {{planets}}.`system` = {$system} AND {{planets}}.`planet` = {$planet} AND {{planets}}.`planet_type` = {$planet_type}", true);
 }
 function db_planet_by_gspt($galaxy, $system, $planet, $planet_type, $for_update = false, $fields = '*')
@@ -31,13 +31,13 @@ function db_planet_by_vector($vector, $prefix = '', $for_update = false, $fields
 function db_planet_by_parent($parent_id, $for_update = false, $fields = '*')
 {
   if(!($parent_id = intval($parent_id))) return false;
-  return classSupernova::db_get_record_list(LOC_PLANET, // FIXED
+  return classSupernova::db_get_record_list(LOC_PLANET,
     "`parent_planet` = {$parent_id} AND `planet_type` = " . PT_MOON, true);
 }
 function db_planet_by_id_and_owner($planet_id, $owner_id, $for_update = false, $fields = '*')
 {
   if(!($planet_id = intval($planet_id)) || !($owner_id = intval($owner_id))) return false;
-  return classSupernova::db_get_record_list(LOC_PLANET, // FIXED
+  return classSupernova::db_get_record_list(LOC_PLANET,
     "`id` = {$planet_id} AND `id_owner` = {$owner_id}", true);
 }
 
@@ -45,24 +45,16 @@ function db_planet_by_id_and_owner($planet_id, $owner_id, $for_update = false, $
 function db_planet_list_moon_other($user_id, $this_moon_id)
 {
   if(!($user_id = intval($user_id)) || !($this_moon_id = intval($this_moon_id))) return false;
-  return classSupernova::db_get_record_list(LOC_PLANET, // FIXED
+  return classSupernova::db_get_record_list(LOC_PLANET,
     "`planet_type` = " . PT_MOON . " AND `id_owner` = {$user_id} AND `id` != {$this_moon_id}");
 }
 function db_planet_list_in_system($galaxy, $system)
 {
   $galaxy = intval($galaxy);
   $system = intval($system);
-  return classSupernova::db_get_record_list(LOC_PLANET, // FIXED
+  return classSupernova::db_get_record_list(LOC_PLANET,
     "`galaxy` = {$galaxy} AND `system` = {$system}");
 }
-/* UNUSED ?!
-function db_planet_list_by_owner($owner_id, $for_update = false, $fields = '*')
-{
-  $owner_id = intval($owner_id);
-  return classSupernova::db_get_record_list(LOC_PLANET, // FIXED
-    "`id_owner` = {$owner_id}");
-}
-*/
 
 function db_planet_list_sorted($user_row, $skip_planet_id = false, $field_list = '', $conditions = '')
 {
@@ -92,13 +84,6 @@ function db_planet_list_by_user_or_planet($user_id, $planet_id)
   return classSupernova::db_get_record_list(LOC_PLANET, // FIXED
     $planet_id = intval($planet_id) ? "{{planets}}.`id` = {$planet_id}" : "`id_owner` = {$user_id}", $planet_id);
 }
-/*
-function db_planet_list_by_name($planet_name, $queryPart)
-{
-  return classSupernova::db_get_record_list(LOC_PLANET, // IN PROCESS
-    "`name` like '{$planet_name}' {$queryPart}");
-}
-*/
 
 function db_planet_set_by_id($planet_id, $set)
 {

@@ -193,6 +193,7 @@ function tpl_parse_planet($planet)
   global $lang;
 
   $fleet_list = flt_get_fleets_to_planet($planet);
+
   $que = que_get(false, $planet['id_owner'], $planet['id']);
 
   $hangar_que = tpl_parse_planet_que($que, $planet, SUBQUE_FLEET); // TODO Заменить на que_tpl_parse_element($que_element);
