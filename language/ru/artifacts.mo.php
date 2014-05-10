@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a2.6
+* @version 39a6.6
 *
 */
 
@@ -50,13 +50,13 @@ $a_lang_array = (array(
 
   'art_heurestic_chip_ok' => 'Время исследования технологии "%s" (уровень %d) уменьшено на %s',
   'art_heurestic_chip_subj' => 'Ускорение времени исследования',
-  'art_heurestic_chip_no_research' => 'В настоящее время не ведется никаких исследований',
+  'art_heurestic_chip_no_research' => 'В настоящее время не ведется исследований или текущее время исследования менее 1 минуты',
 
   'art_nano_builder_ok' => 'Время %s здания "%s" (уровень %d) на планете %s %s уменьшено на %s',
   'art_nano_builder_build' => 'строительства',
   'art_nano_builder_destroy' => 'сноса',
   'art_nano_builder_subj' => 'Ускорение строительной операции',
-  'art_nano_builder_no_que' => 'В настоящее время на планете не производится строительных операций',
+  'art_nano_builder_no_que' => 'В настоящее время на планете не производится строительных операций или текущее время операции менее 1 минуты',
 
   'art_err_no_artifact'  => 'У вас нет нужного артефакта',
 

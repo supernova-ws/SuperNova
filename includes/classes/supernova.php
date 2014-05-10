@@ -102,6 +102,7 @@ class classSupernova
       elseif($level > 0 && is_array($value))
       {
         static::array_repack($value, $lock_table, $level - 1);
+        if(empty($value)) unset($array[$key]);
       }
     }
   }
@@ -124,9 +125,14 @@ class classSupernova
 //print("<br />CACHE CLEAR {$cache_id} " . ($hard ? 'HARD' : 'SOFT') . "<br />");
     if($hard)
     {
-      static::$data[$cache_id] = array();
-      static::$data[LOC_LOCATION][$cache_id] = array();
-      static::$locks[$cache_id] = array();
+      // Здесь нельзя делать unset - надо записывать NULL, что бы это отразилось на зависимых записях
+      array_walk(static::$data[$cache_id], function(&$item){$item = null;});
+      // Массив LOC_LOCATION - хранит юниты по тип_локации:ид_локации:снид_юнита для быстрого доступа
+      // Теперь перепаковываем связанные массивы
+      static::array_repack(static::$data[LOC_LOCATION], $cork = null, 2);
+      // unset(static::$data[LOC_LOCATION][$cache_id]); // TODO - А вот это, вроде, лишнее. Если мы сбрасываем планету - зачем нам сбрасывать юниты на ней?!
+
+      // static::$locks[$cache_id] = array(); // TODO И, вроде, блокировки сбрасывать не надо! Ведь на самом деле до конца транзакции запись все еще заблокирована!
     }
     static::$queries[$cache_id] = array();
   }
@@ -136,7 +142,7 @@ class classSupernova
     if($record_id && isset(static::$data[$cache_id][$record_id]) && static::$data[$cache_id][$record_id] !== null) return;
 
     static::array_repack(static::$data[$cache_id], static::$locks[$cache_id]);
-    static::array_repack(static::$data[LOC_LOCATION][$cache_id], $cork = null, 2); // TODO - проверить перепаковку LOC_LOCATION
+    static::array_repack(static::$data[LOC_LOCATION], $cork = null, 2);
     static::array_repack(static::$queries[$cache_id], $cork = null, 1);
     // TODO - а вот тут непонятно. Надо ли вообще это перепаковывать и будет ли польза?
     // На самом деле если запись заблокирована - то она заблокирована. Другой записи с таким же ИД быть не может, а вот инфа может заново поменятся и сразу будет блокированной
@@ -290,7 +296,7 @@ class classSupernova
 //print('<br/>TRANSACTION COMMIT id' . static::$transaction_id . '<hr />');
     static::$db_in_transaction = false;
     static::$transaction_id++;
-    static::$locks = array();
+    static::$locks = array(); // Пройти по массиву - снять блокировки для кэшера в памяти
 
     return static::$transaction_id;
   }
@@ -301,7 +307,7 @@ class classSupernova
 //print('<br/>TRANSACTION ROLLBACK id' . static::$transaction_id . '<hr />');
     static::$db_in_transaction = false;
     static::$transaction_id++;
-    static::$locks = array();
+    static::$locks = array(); // Пройти по массиву - снять блокировки для кэшера в памяти
 
     return static::$transaction_id;
   }
@@ -499,10 +505,25 @@ class classSupernova
       // TODO Сейчас сбрасывать всю инфу о юзерах потому, что $set может серъезно поменять результат кэшированного запроса
       if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
       {
+/*
+pdump(static::$data[$location_type][1084752], $location_type);
+pdump(static::$data[LOC_LOCATION][LOC_PLANET][1][1], $location_type);
+static::$data[LOC_LOCATION][LOC_PLANET][1][1]['test'] = 5;
+static::$data[$location_type][1084752]['test2'] = 6;
+unset(static::$data[LOC_LOCATION][LOC_PLANET][1][1]);
+        pdump(static::$data[$location_type][1084752], $location_type);
+        pdump(static::$data[LOC_LOCATION][LOC_PLANET][1][1], $location_type);
+*/
+// pdump(static::$data[LOC_LOCATION]);
         // TODO Сейчас сбрасывать запросы из-за того, что $set может серъезно поменять результат кэшированного запроса
         static::cache_clear($location_type, true);
+// pdump(static::$data[LOC_LOCATION]);
+// $query_cache = &static::$data[LOC_LOCATION][$location_type][$location_id];
+// if(!isset($query_cache))
       }
     }
+
+// if($location_type == LOC_UNIT) die('LOC_UNIT');
 
     return $result;
   }
@@ -668,18 +689,6 @@ class classSupernova
     }
 
     return $user;
-  }
-  public static function db_upd_user_list($condition, $set)
-  {
-    return static::db_upd_record_list(LOC_USER, $condition, $set);
-  }
-  public static function db_ins_user($set)
-  {
-    return static::db_ins_record(LOC_USER, $set);
-  }
-  public static function db_del_user_by_id($user_id)
-  {
-    return static::db_del_record_by_id(LOC_USER, $user_id);
   }
 
 
@@ -856,7 +865,7 @@ class classSupernova
 
   public static function db_changeset_apply($db_changeset)
   {
-    $result = false;
+    $result = true;
     if(!is_array($db_changeset) || empty($db_changeset)) return $result;
 
     foreach($db_changeset as $table_name => $table_data)
@@ -894,15 +903,22 @@ class classSupernova
         if($conditions['action'] != SQL_OP_DELETE && !$fields) continue;
         if($conditions['action'] == SQL_OP_DELETE && !$where) continue; // Защита от случайного удаления всех данных в таблице
 
-        if($table_name == 'unit' && false)
+        $location_type = LOC_NONE;
+        switch($table_name)
         {
-          $location_type = LOC_UNIT;
-die('spec ops supernova.php line 927');
+          case 'users': $location_type = LOC_USER; break;
+          case 'planets': $location_type = LOC_PLANET; break;
+          case 'unit': $location_type = LOC_UNIT; break;
+        }
+        if($location_type != LOC_NONE)
+        {
+          //die('spec ops supernova.php line 928 Добавить работу с кэшем юнитов итд');
           switch($conditions['action'])
           {
-            case SQL_OP_DELETE: $result = $result && classSupernova::db_del_record_list($location_type, $where); break;
-            case SQL_OP_UPDATE: $result = $result && classSupernova::db_upd_record_list($location_type, $where, $fields); break;
-            case SQL_OP_INSERT: $result = $result && classSupernova::db_ins_record($location_type, $fields); break;
+            case SQL_OP_DELETE: $result = classSupernova::db_del_record_list($location_type, $where) && $result; break;
+            case SQL_OP_UPDATE: $result = classSupernova::db_upd_record_list($location_type, $where, $fields) && $result; break;
+            case SQL_OP_INSERT: $result = classSupernova::db_ins_record($location_type, $fields) && $result; break;
+            default: die('Неподдерживаемая операция в classSupernova::db_changeset_apply');
             // case SQL_OP_REPLACE: $result = $result && doquery("REPLACE INTO {{{$table_name}}} SET {$fields}"); break;
           }
         }
@@ -911,10 +927,11 @@ die('spec ops supernova.php line 927');
           $where = $where ? 'WHERE ' . $where : '';
           switch($conditions['action'])
           {
-            case SQL_OP_DELETE: $result = $result && doquery("DELETE FROM {{{$table_name}}} {$where}"); break;
-            case SQL_OP_UPDATE: $result = $result && doquery("UPDATE {{{$table_name}}} SET {$fields} {$where}"); break;
-            case SQL_OP_INSERT: $result = $result && doquery("INSERT INTO {{{$table_name}}} SET {$fields}"); break;
-            case SQL_OP_REPLACE: $result = $result && doquery("REPLACE INTO {{{$table_name}}} SET {$fields}"); break;
+            case SQL_OP_DELETE: $result = doquery("DELETE FROM {{{$table_name}}} {$where}") && $result; break;
+            case SQL_OP_UPDATE: $result = doquery("UPDATE {{{$table_name}}} SET {$fields} {$where}") && $result; break;
+            case SQL_OP_INSERT: $result = doquery("INSERT INTO {{{$table_name}}} SET {$fields}") && $result; break;
+            // case SQL_OP_REPLACE: $result = doquery("REPLACE INTO {{{$table_name}}} SET {$fields}") && $result; break;
+            default: die('Неподдерживаемая операция в classSupernova::db_changeset_apply');
           }
         }
       }

@@ -493,11 +493,7 @@ function que_tpl_parse_element($que_element)
 function que_tpl_parse(&$template, $que_type, $user, $planet = array(), $que = null)
 {
   // TODO: Переделать для $que_type === false
-  global $lang, $config;
-
   $planet['id'] = $planet['id'] ? $planet['id'] : 0;
-  // que_get_que($global_que, $que_type, $user['id'], $planet['id']);
-  // que_get($que_type, )
 
   if(!is_array($que))
   {
@@ -571,15 +567,16 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
   {
     // Если нужно изменять данные на планетах - блокируем планеты и получаем данные о них
     // TODO - от них не надо ничего, кроме ID и que_processed
-    $planet_query = db_planet_list_by_user_or_planet($user['id'], $planet);
     // while($planet_row = mysql_fetch_assoc($planet_query))
-    foreach($planet_query as $planet_row)
+
+    // $planet_query = db_planet_list_by_user_or_planet($user['id'], $planet);
+    // foreach($planet_query as $planet_row)
+    $planet_row = db_planet_list_by_user_or_planet($user['id'], $planet);
     {
       $planet_list[$planet_row['id']] = $planet_row;
       $time_left[$planet_row['id_owner']][$planet_row['id']] = max(0, $on_time - $planet_row['que_processed']);
     }
   }
-
   // pdump($time_left);
 
   // Теперь в $time_left лежит время обсчета всех очередей по каждой из планеты

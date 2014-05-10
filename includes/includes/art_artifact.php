@@ -90,10 +90,16 @@ function art_use(&$user, &$planetrow, $unit_id)
       break;
 
       case ART_HEURISTIC_CHIP:
+        $que_item = null;
         $que = que_get(QUE_RESEARCH, $user['id'], $planetrow['id'], true);
-        $que_item = &$que['ques'][QUE_RESEARCH][$user['id']][0][0];
+        $current_que = &$que['ques'][QUE_RESEARCH][$user['id']][0];
+        if(!empty($current_que))
+        {
+          reset($current_que);
+          $que_item = &$que['ques'][QUE_RESEARCH][$user['id']][0][key($current_que)];
+        }
 
-        if(isset($que_item) && $que_item['que_time_left'] > 0)
+        if(!empty($que_item) && $que_item['que_time_left'] > 60)
         {
           $unit_level--;
           $old_time = $que_item['que_time_left'];
@@ -110,11 +116,16 @@ function art_use(&$user, &$planetrow, $unit_id)
 
       case ART_NANO_BUILDER:
         $planetrow = db_planet_by_id($planetrow['id'], true);
+        $que_item = null;
         $que = que_get(QUE_STRUCTURES, $user['id'], $planetrow['id'], true);
-        $que_item = &$que['ques'][QUE_STRUCTURES][$user['id']][$planetrow['id']][0];
-        //pdump($que_item);
+        $current_que = &$que['ques'][QUE_RESEARCH][$user['id']][0];
+        if(!empty($current_que))
+        {
+          reset($current_que);
+          $que_item = &$que['ques'][QUE_RESEARCH][$user['id']][0][key($current_que)];
+        }
 
-        if(isset($que_item) && $que_item['que_time_left'] > 0)
+        if(isset($que_item) && $que_item['que_time_left'] > 60)
         {
           $unit_level--;
           $old_time = $que_item['que_time_left'];

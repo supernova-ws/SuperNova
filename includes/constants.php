@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a6.4');
+define('SN_VERSION', '39a6.6');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -128,9 +128,10 @@ define('LOC_USER',     4);
 define('LOC_FLEET',    5);
 define('LOC_ALLY',     6);
 
-define('LOC_UNIT',    50);
-define('LOC_QUE',     51);
-define('LOC_LOCATION',52);
+// ТОЛЬКО ВНУТРЕНЕЕ!!!
+define('LOC_UNIT',    'LOC_UNIT');
+define('LOC_QUE',     'LOC_QUE');
+define('LOC_LOCATION','LOC_LOCATION');
 
 // *** Caching masks
 define('CACHE_NOTHING'    ,  0);

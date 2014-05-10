@@ -90,7 +90,7 @@ function db_planet_list_by_user_or_planet($user_id, $planet_id)
   if(!($user_id = intval($user_id)) && !($planet_id = intval($planet_id))) return false;
 
   return classSupernova::db_get_record_list(LOC_PLANET, // FIXED
-    $planet_id = intval($planet_id) ? "`id` = {$planet_id}" : "`id_owner` = {$user_id}", $planet_id);
+    $planet_id = intval($planet_id) ? "{{planets}}.`id` = {$planet_id}" : "`id_owner` = {$user_id}", $planet_id);
 }
 /*
 function db_planet_list_by_name($planet_name, $queryPart)

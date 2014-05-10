@@ -31,29 +31,29 @@ function db_user_set_by_id($user_id, $set)
 
 function db_user_list_set_mass_mail(&$owners_list, $set)
 {
-  return classSupernova::db_upd_user_list(!empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : '', $set);
+  return classSupernova::db_upd_record_list(LOC_USER, !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : '', $set);
 }
 function db_user_list_set_by_ally_and_rank($ally_id, $ally_rank_id, $set)
 {
-  return classSupernova::db_upd_user_list("`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}", $set);
+  return classSupernova::db_upd_record_list(LOC_USER, "`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}", $set);
 }
 function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id)
 {
-  return classSupernova::db_upd_user_list("`ally_id` ='{$ally_id}' AND `ally_rank_id`={$rank_id}", "`ally_rank_id` = {$i}");
+  return classSupernova::db_upd_record_list(LOC_USER, "`ally_id` ='{$ally_id}' AND `ally_rank_id`={$rank_id}", "`ally_rank_id` = {$i}");
 }
 
 
 
 function db_user_insert_set($set)
 {
-  return classSupernova::db_ins_user($set);
+  return classSupernova::db_ins_record(LOC_USER, $set);
 }
 
 
 
 function db_user_delete_by_id($user_id)
 {
-  return classSupernova::db_del_user_by_id($user_id);
+  return classSupernova::db_del_record_by_id(LOC_USER, $user_id);
 }
 
 

@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a2.6
+* @version 39a6.6
 *
 */
 
@@ -50,13 +50,13 @@ $a_lang_array = (array(
 
   'art_heurestic_chip_ok' => 'Decreased research time for %s level %d down by %s',
   'art_heurestic_chip_subj' => 'Research speed up',
-  'art_heurestic_chip_no_research' => 'There is no research currently ongoing',
+  'art_heurestic_chip_no_research' => 'There is no research currently ongoing or there is less then 1 minute on current research',
 
   'art_nano_builder_ok' => '%s time of "%s" level %d on planet %s %s decreased down by %s',
   'art_nano_builder_build' => 'Building',
   'art_nano_builder_destroy' => 'Destruction',
   'art_nano_builder_subj' => 'Building operation speed up',
-  'art_nano_builder_no_que' => 'There is no construction operation performed on planet',
+  'art_nano_builder_no_que' => 'There is no construction operation performed on planet or current construction time is less then 1 minute',
 
   'art_err_no_artifact' => 'You did not have this artifact',
 

@@ -230,10 +230,18 @@ function sn_eco_unit_busy(&$user, &$planet, $unit_id, &$result)
     if(($unit_id == STRUC_LABORATORY || $unit_id == STRUC_LABORATORY_NANO) && !$config->BuildLabWhileRun)
     {
       $global_que = que_get(QUE_RESEARCH, $user['id'], $planet['id'], false);
-      if(!empty($global_que['ques'][QUE_RESEARCH][$user['id']][0]))
+      if(is_array($global_que['ques'][QUE_RESEARCH][$user['id']]))
       {
-        $result = true;
+        $first_element = reset($global_que['ques'][QUE_RESEARCH][$user['id']]);
+        if(is_array($first_element))
+        {
+          $result = true;
+        }
       }
+      //if(!empty($global_que['ques'][QUE_RESEARCH][$user['id']][0]))
+      //{
+      //  $result = true;
+      //}
     }
     elseif(($unit_id == UNIT_TECHNOLOGIES || in_array($unit_id, sn_get_groups('tech'))) && !$config->BuildLabWhileRun && $planet['que'])
     {
