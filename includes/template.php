@@ -409,7 +409,8 @@ function sn_tpl_render_topnav(&$user, $planetrow)
   $planetrow = $planetrow['planet'];
 
   $ThisUsersPlanets = db_planet_list_sorted ( $user );
-  while ($CurPlanet = mysql_fetch_assoc($ThisUsersPlanets))
+  // while ($CurPlanet = mysql_fetch_assoc($ThisUsersPlanets))
+  foreach($ThisUsersPlanets as $CurPlanet)
   {
     if (!$CurPlanet['destruyed'])
     {

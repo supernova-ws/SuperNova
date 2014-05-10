@@ -30,7 +30,8 @@ function sn_imperium_view($template = null)
       sn_db_transaction_start();
       $query = array();
       $planet_row_list = db_planet_list_sorted($user, false, '*');
-      while($planet = mysql_fetch_assoc($planet_row_list))
+      // while($planet = mysql_fetch_assoc($planet_row_list))
+      foreach($planet_row_list as $planet)
       {
         foreach($sn_group_factories as $factory_unit_id)
         {
@@ -51,7 +52,8 @@ function sn_imperium_view($template = null)
 
   sn_db_transaction_start();
   $planet_row_list = db_planet_list_sorted($user);
-  while ($planet = mysql_fetch_assoc($planet_row_list))
+  // while ($planet = mysql_fetch_assoc($planet_row_list))
+  foreach($planet_row_list as $planet)
   {
     $global_data = sys_o_get_updated($user, $planet['id'], $time_now);
     $planets[$planet['id']] = $global_data['planet'];

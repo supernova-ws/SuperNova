@@ -31,8 +31,8 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     die();
   }
 
-  $user = db_user_by_id($user, !$simulation);
-  if(!isset($user['id']))
+  $user = db_user_by_id($user, !$simulation, '*', true);
+  if(!is_array($user) || !$user['id'])
   {
     return $no_data;
   }
@@ -46,8 +46,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
     $planet = intval(is_array($planet) && isset($planet['id']) ? $planet['id'] : $planet);
     $planet = db_planet_by_id($planet, !$simulation);
   }
-
-  if(!isset($planet['id']))
+  if(!is_array($planet) || !isset($planet['id']))
   {
     return $no_data;
   }
@@ -104,9 +103,12 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false)
   // TODO пересчитывать размер планеты только при постройке чего-нибудь и при покупке сектора
   $planet['field_current'] = 0;
   $sn_group_build_allow = sn_get_groups('build_allow');
-  foreach($sn_group_build_allow[$planet['planet_type']] as $building_id)
+  if(is_array($sn_group_build_allow[$planet['planet_type']]))
   {
-    $planet['field_current'] += mrc_get_level($user, $planet, $building_id, !$simulation, true);
+    foreach($sn_group_build_allow[$planet['planet_type']] as $building_id)
+    {
+      $planet['field_current'] += mrc_get_level($user, $planet, $building_id, !$simulation, true);
+    }
   }
 
   if($simulation)

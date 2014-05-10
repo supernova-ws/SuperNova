@@ -105,7 +105,7 @@ elseif($sys_user_logged_in)
   // que_process($user); // TODO UNCOMMENT ???????????
   // sn_db_transaction_commit();
 
-
+  // TODO НЕ НУЖНО АЛЬЯНС КАЖДЫЙ РАЗ ОБНОВЛЯТЬ!!!
   if($user['ally_id'])
   {
     sn_db_transaction_start();
@@ -122,10 +122,9 @@ elseif($sys_user_logged_in)
   }
 
 
-
-  // TODO - Выбирать $planet_row в SetSelectedPlanet(), а не в sys_o_get_updated()
+  // TODO - в режиме эмуляции, на самом деле!
   sn_db_transaction_start();
-  $global_data = sys_o_get_updated($user, $planet_id, $time_now);
+  $global_data = sys_o_get_updated($user['id'], $planet_id, SN_TIME_NOW);
   sn_db_transaction_commit();
 
   $planetrow = $global_data['planet'];

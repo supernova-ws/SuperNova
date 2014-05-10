@@ -11,6 +11,7 @@ if ($user['authlevel'] < 3)
 }
 
 define('IN_ADMIN', true);
+define('IN_AJAX', true);
 
 lng_include('admin');
 

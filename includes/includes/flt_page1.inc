@@ -65,9 +65,10 @@ while($shortcut = mysql_fetch_assoc($query))
 
 // Building list of own planets & moons
 $colonies = db_planet_list_sorted ( $user );
-if(mysql_num_rows($colonies) > 1)
+if(count($colonies) > 1)
 {
-  while($row = mysql_fetch_assoc($colonies))
+  // while($row = mysql_fetch_assoc($colonies))
+  foreach($colonies as $row)
   {
     $template->assign_block_vars('colonies', array(
       'NAME'       => $row['name'],
@@ -78,7 +79,7 @@ if(mysql_num_rows($colonies) > 1)
       'TYPE_PRINT' => $lang['fl_shrtcup'][$row['planet_type']],
     ));
   }
-};
+}
 
 //ACS Start
 //Need to look for acs attacks.

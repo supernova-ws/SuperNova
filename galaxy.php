@@ -91,7 +91,8 @@ $MissileRange  = flt_get_missile_range($user);
 $PhalanxRange  = GetPhalanxRange($HavePhalanx);
 
 $planet_precache_query = db_planet_list_in_system($uni_galaxy, $uni_system);
-while($planet_row = mysql_fetch_assoc($planet_precache_query))
+// while($planet_row = mysql_fetch_assoc($planet_precache_query))
+foreach($planet_precache_query as $planet_row)
 {
   $planet_list[$planet_row['planet']][$planet_row['planet_type']] = $planet_row;
 }

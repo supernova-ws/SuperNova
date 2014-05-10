@@ -421,6 +421,7 @@ function sn_unit_relocate($unit_id, $from, $to){}
   $options
     'for_update' - блокировать запись до конца транзакции
 */
+/*
 function unit_get_level($unit_id, &$context = null, $options = null){return sn_function_call('unit_get_level', array($unit_id, &$context, $options, &$result));}
 function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result)
 {
@@ -463,21 +464,37 @@ function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result
 
   return $result = $unit_level;
 }
+*/
 
 function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false){return sn_function_call('mrc_get_level', array(&$user, $planet, $unit_id, $for_update, $plain, &$result));}
 function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false, &$result)
 {
-// TODO: Add caching for known items
   $mercenary_level = 0;
   $unit_db_name = pname_resource_name($unit_id);
 
   if(in_array($unit_id, sn_get_groups(array('plans', 'mercenaries', 'tech', 'artifacts'))))
   {
+    /*
     $context = array(
       'location' => LOC_USER,
       'user' => &$user,
     );
     $mercenary_level = unit_get_level($unit_id, $context, array('for_update' => $for_update));
+    */
+    $unit = classSupernova::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $unit_id);
+    $mercenary_level = is_array($unit) && $unit['unit_level'] ? $unit['unit_level'] : 0;
+  }
+  elseif(in_array($unit_id, sn_get_groups(array('structures', 'fleet', 'defense'))))
+  {
+    /*
+    $context = array(
+      'location' => LOC_PLANET,
+      'planet' => &$planet,
+    );
+    $mercenary_level = unit_get_level($unit_id, $context, array('for_update' => $for_update));
+    */
+    $unit = classSupernova::db_get_unit_by_location($planet['id_owner'], LOC_PLANET, $planet['id'], $unit_id);
+    $mercenary_level = is_array($unit) && $unit['unit_level'] ? $unit['unit_level'] : 0;
   }
   elseif(in_array($unit_id, sn_get_groups('governors')))
   {
@@ -487,15 +504,6 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   {
     $mercenary_level = $user[$unit_db_name];
   }
-  elseif(in_array($unit_id, sn_get_groups(array('structures', 'fleet', 'defense'))))
-  {
-    $context = array(
-      'location' => LOC_PLANET,
-      'planet' => &$planet,
-    );
-    $mercenary_level = unit_get_level($unit_id, $context, array('for_update' => $for_update));
-  }
-  // elseif(in_array($unit_id, sn_get_groups(array('resources_loot', 'structures', 'fleet', 'defense'))) || $unit_id == UNIT_SECTOR)
   elseif(in_array($unit_id, sn_get_groups(array('resources_loot'))) || $unit_id == UNIT_SECTOR)
   {
     $mercenary_level = !empty($planet) ? $planet[$unit_db_name] : $user[$unit_db_name];
@@ -750,7 +758,7 @@ function sn_ali_fill_user_ally(&$user)
 
   if(!isset($user['ally']['player']))
   {
-    $user['ally']['player'] = db_user_by_id($user['ally']['ally_user_id'], true);
+    $user['ally']['player'] = db_user_by_id($user['ally']['ally_user_id'], true, '*', false);
   }
 }
 

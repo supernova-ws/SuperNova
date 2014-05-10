@@ -1678,6 +1678,9 @@ $sn_data_aux = array(
     upd_do_query('UPDATE {{unit}} SET unit_time_start = NULL WHERE unit_time_start = "1970-01-01 03:00:00"');
     upd_do_query('UPDATE {{unit}} SET unit_time_finish = NULL WHERE unit_time_finish = "1970-01-01 03:00:00"');
 
+
+    upd_alter_table('unit', "ADD KEY `I_unit_location` (unit_location_type,unit_location_id)", !$update_indexes['unit']['I_unit_location']);
+
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
 };

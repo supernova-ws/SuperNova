@@ -71,6 +71,7 @@ $config->db_saveItem('server_updater_check_result', $version_check);
 
 if($ajax)
 {
+  define('IN_AJAX', true);
   print($version_check);
 }
 

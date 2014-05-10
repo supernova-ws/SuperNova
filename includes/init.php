@@ -19,6 +19,11 @@ define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
 
 define('SN_MEM_START', memory_get_usage());
 
+register_shutdown_function(function(){
+  if(!defined('IN_AJAX'))
+    print('<hr>Benchmark ' . (microtime(true) - SN_TIME_MICRO) . '<br/>Memory usage: ' . number_format(memory_get_usage() - SN_MEM_START));
+});
+
 if(defined('INIT'))
 {
   return;

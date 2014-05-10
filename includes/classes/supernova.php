@@ -109,6 +109,7 @@ class classSupernova
   // TODO Вынести в отдельный объект
   public static function cache_clear_all($hard = true)
   {
+//print('<br />CACHE CLEAR ALL<br />');
     if($hard)
     {
       static::$data = array();
@@ -120,6 +121,7 @@ class classSupernova
   // TODO Через вызов функции посмотреть, где она используется и как её можно оптимизировать
   public static function cache_clear($cache_id, $hard = true)
   {
+//print("<br />CACHE CLEAR {$cache_id} " . ($hard ? 'HARD' : 'SOFT') . "<br />");
     if($hard)
     {
       static::$data[$cache_id] = array();
@@ -264,7 +266,7 @@ class classSupernova
   }
   public static function db_transaction_start($level = '')
   {
-    static::db_transaction_check();
+    static::db_transaction_check(null);
 
     if($level)
     {
@@ -275,7 +277,9 @@ class classSupernova
     static::$db_in_transaction = true;
     static::$transaction_id++;
 
-    static::cache_clear_all();
+//print('<hr/>TRANSACTION START id' . static::$transaction_id . '<br />');
+
+    // static::cache_clear_all(); // TODO - Проверить! Внатуре - зачем тереть записи, которые не менялись?! Если надо будет реальную запись на текущий момент - мы её получим и так в транзакции!
 
     return static::$transaction_id;
   }
@@ -283,6 +287,7 @@ class classSupernova
   {
     static::db_transaction_check(true);
     doquery('COMMIT');
+//print('<br/>TRANSACTION COMMIT id' . static::$transaction_id . '<hr />');
     static::$db_in_transaction = false;
     static::$transaction_id++;
     static::$locks = array();
@@ -293,6 +298,7 @@ class classSupernova
   {
     // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
     doquery('ROLLBACK');
+//print('<br/>TRANSACTION ROLLBACK id' . static::$transaction_id . '<hr />');
     static::$db_in_transaction = false;
     static::$transaction_id++;
     static::$locks = array();
@@ -319,8 +325,13 @@ class classSupernova
     $select = strpos(strtoupper($query), 'SELECT') !== false;
 
     $query .= $select && $fetch ? ' LIMIT 1' : '';
-    $query .= !$skip_lock && $select && static::db_transaction_check(false) ? ' FOR UPDATE' : '';
-    return doquery($query, $fetch);
+    $query .= $select && !$skip_lock && static::db_transaction_check(false) ? ' FOR UPDATE' : '';
+
+//$t = microtime(true);
+    $result = doquery($query, $fetch);
+//pdump(str_replace('  ', ' ', $query), microtime(true) - $t . ($fetch ? ' fetch' : ''));
+
+    return $result;
   }
 
   /**
@@ -351,9 +362,15 @@ class classSupernova
 
     $in_transaction = static::db_transaction_check(false);
 
+//pdump($location_type . 'id' . $record_id, 'getting record');
+//$backtrace = debug_backtrace();
+//pdump($backtrace[2], 'caller');
+
     // Если не пропускаем блокировку - вытаскиваем все родительские записи
     // Потому что если $skip_lock - это, скорее всего, рекурсивный вызов
-    if(!$skip_lock && !empty($location_info[P_OWNER_INFO]))
+    // Кэшируем родителей только в транзакции
+//pdump($location_type . 'id' . $record_id, $in_transaction && !$skip_lock && !empty($location_info[P_OWNER_INFO]) ? 'start parent locking' : 'skip locking');
+    if($in_transaction && !$skip_lock && !empty($location_info[P_OWNER_INFO]))
     {
       // TODO && !empty($location_info[P_OWNER_INFO])
       $record = static::db_get_record_by_id($location_type, $record_id, false, 'id', true);
@@ -361,8 +378,10 @@ class classSupernova
 
       foreach($location_info[P_OWNER_INFO] as $owner_data)
       {
+//pdump($owner_data[P_LOCATION] . 'id' . $record[$owner_data[P_OWNER_FIELD]], 'locking parent');
         static::db_get_record_by_id($owner_data[P_LOCATION], $record[$owner_data[P_OWNER_FIELD]], $for_update, '*');
       }
+//pdump($location_type . 'id' . $record_id, 'parent lock acqured');
     }
 
     if(
@@ -372,21 +391,17 @@ class classSupernova
       || ($in_transaction && !$skip_lock && !static::cache_lock_get($location_type, $record_id))
     )
     {
+//pdump($in_transaction, !isset(static::$data[$location_type][$record_id]) || static::$data[$location_type][$record_id] === null ? 'cache miss' : 'because transasction');
       $table_name = static::$location_info[$location_type][P_TABLE_NAME];
       $record = static::db_query("SELECT * FROM {{{$table_name}}} WHERE `{$id_field}` = {$record_id}", true, $skip_lock);
-      static::cache_set($location_type, $record_id, $record, $skip_lock);
+      static::cache_set($location_type, $record_id, $record, false, $skip_lock);
+//pdump(is_array(static::$data[$location_type][$record_id]) && static::$data[$location_type][$record_id][$id_field], 'after cache object is set');
+//pdump(static::cache_lock_get($location_type, $record_id), 'after cache object is locked');
     }
+//else pdump($location_type . 'id' . $record_id, 'cache hit');
 
     return static::$data[$location_type][$record_id];
   }
-
-
-
-
-
-
-
-
 
   public static function db_get_record_list($location_type, $filter = '', $fetch = false)
   {
@@ -401,7 +416,7 @@ class classSupernova
       {
         foreach($location_info[P_OWNER_INFO] as $location_data)
         {
-          $parent_location = &static::$location_info[$location_info[P_OWNER_INFO][P_LOCATION]];
+          $parent_location = &static::$location_info[$location_data[P_LOCATION]];
           /*
           // Блокируем таблицу - родителя
           // TODO - переделать позже
@@ -415,19 +430,21 @@ class classSupernova
           */
           static::db_query(
             "SELECT 1 FROM
-              {{{$location_info[P_TABLE_NAME]}}} AS t1
-              JOIN {{{$parent_location[P_TABLE_NAME]}}} AS t2
-            WHERE t2.{$parent_location[P_TABLE_NAME][P_ID]} = t1.{$location_info[P_ID]}", $fetch);
+              {{{$location_info[P_TABLE_NAME]}}}
+              JOIN {{{$parent_location[P_TABLE_NAME]}}}
+            WHERE {{{$parent_location[P_TABLE_NAME]}}}.{$parent_location[P_ID]} = {{{$location_info[P_TABLE_NAME]}}}.{$location_data[P_OWNER_FIELD]}" .
+            ($filter ? ' AND ' . $filter : ''), $fetch);
         }
       }
 
       $query = static::db_query(
-        "SELECT {$id_field} FROM {{{$location_info[P_TABLE_NAME]}}}" .
-        (($filter = trim($filter)) ? " WHERE {$filter}" : ''), $fetch
+        "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" .
+        (($filter = trim($filter)) ? " WHERE {$filter}" : '')
       );
       while($row = mysql_fetch_assoc($query))
       {
-        static::db_get_record_by_id($location_type, $row[$id_field]);
+        // static::db_get_record_by_id($location_type, $row[$id_field]);
+        static::cache_set($location_type, $row[$id_field], $row);
         $query_cache[$row[$id_field]] = &static::$data[$location_type][$row[$id_field]];
       }
       /*
@@ -446,48 +463,21 @@ class classSupernova
     return $fetch ? (is_array($query_cache) ? reset($query_cache) : false) : $query_cache;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   public static function db_upd_record_by_id($location_type, $record_id, $set)
   {
     // При апдейте единичном кэш запросов в принципе сбрасывать не надо - потому что если на эту запись есть ссылки, то её проапдейтит при изменении $data
     // TODO - $set давать в массиве
     // TODO Проверять по $set изменения в индексах и запросах
-    if(!($record_id = intval($record_id) || !($set = trim($set)))) return false;
+    if(!($record_id = intval($record_id)) || !($set = trim($set))) return false;
 
-    $id_field = static::$location_info[$location_type][P_ID];
-    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if($result = static::db_query("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
+    $location_info = &static::$location_info[$location_type];
+    $id_field = $location_info[P_ID];
+    $table_name = $location_info[P_TABLE_NAME];
+    if($result = static::db_query($q = "UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
     {
       if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
       {
+//pdump($location_type . ' id' . $record_id, 'regetting after update OPTIMIZE!');
         static::$data[$location_type][$record_id] = null; // Тут именно так, а не cache_unset - что бы в кэшах автоматически обновилась запись
         static::db_get_record_by_id($location_type, $record_id);
         // TODO Сейчас сбрасывать запросы из-за того, что $set может серъезно поменять результат кэшированного запроса
@@ -679,10 +669,6 @@ class classSupernova
 
     return $user;
   }
-  public static function db_set_user_by_id($user_id, $set)
-  {
-    return static::db_upd_record_by_id(LOC_USER, $user_id, $set);
-  }
   public static function db_upd_user_list($condition, $set)
   {
     return static::db_upd_record_list(LOC_USER, $condition, $set);
@@ -722,40 +708,27 @@ class classSupernova
     // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
     return static::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
   }
+  /* UNUSED
   public static function db_get_unit_list($filter = '')
   {
     // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
-    return static::db_get_record_list(LOC_UNIT, $filter);
+    return static::db_get_record_list(LOC_UNIT, $filter); // IN PROGRESS
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  */
 
   public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id)
   {
     $query_cache = &static::$data[LOC_LOCATION][$location_type][$location_id];
     if(!isset($query_cache))
     {
-      $query_cache = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id}");
-      $query_cache = is_array($query_cache) ? $query_cache : array();
-      foreach($query_cache as $unit_id => $unit_data)
+      $got_data = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id}"); // FIXED
+      if(is_array($got_data))
       {
-        static::$data[LOC_LOCATION][$location_type][$location_id][$unit_data['unit_snid']] = &static::$data[$location_type][$unit_id];
+        foreach($got_data as $unit_id => $unit_data)
+        {
+          // static::$data[LOC_LOCATION][$location_type][$location_id][$unit_data['unit_snid']] = &static::$data[LOC_UNIT][$unit_id];
+          $query_cache[$unit_data['unit_snid']] = &static::$data[LOC_UNIT][$unit_id];
+        }
       }
     }
     // todo Надо ли
@@ -924,7 +897,7 @@ class classSupernova
         if($table_name == 'unit' && false)
         {
           $location_type = LOC_UNIT;
-          // die('spec ops');
+die('spec ops supernova.php line 927');
           switch($conditions['action'])
           {
             case SQL_OP_DELETE: $result = $result && classSupernova::db_del_record_list($location_type, $where); break;

@@ -56,7 +56,7 @@ function sn_sys_cookie_check($cookie)
   global $config;
 
   list($user_id, $user_name, $user_pass_hash, $user_remember_me) = explode("/%/", $cookie);
-  $user_name = mysql_real_escape_string($user_name);
+  // $user_name = mysql_real_escape_string($user_name);
 
   $user_id = intval($user_id);
   $user = db_user_by_id($user_id, false, '*', true);

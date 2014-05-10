@@ -51,7 +51,8 @@ function flt_build_gathering($resources_taken = '')
   arsort($transports);
 
   $planets_db_list = db_planet_list_sorted($user, $planetrow['id'], '*', $query);
-  while($planet_db_data = mysql_fetch_assoc($planets_db_list))
+  // while($planet_db_data = mysql_fetch_assoc($planets_db_list))
+  foreach($planets_db_list as $planet_db_data)
   { // begin planet loop
     if(!$query)
     {

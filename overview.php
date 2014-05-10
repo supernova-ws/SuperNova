@@ -292,14 +292,16 @@ switch($mode)
 //    int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE `fleet_owner` = '{$user['id']}'");
 
     $planet_count = 0;
-    $planets_query = db_planet_list_sorted($user, false, '*');
-
     sn_db_transaction_start();
-    while($UserPlanet = mysql_fetch_assoc($planets_query))
+    $planets_query = db_planet_list_sorted($user, false, '*');
+    // while($UserPlanet = mysql_fetch_assoc($planets_query))
+    foreach($planets_query as $UserPlanet)
     {
-      $UserPlanet      = sys_o_get_updated($user, $UserPlanet, $time_now);
+      $UserPlanet = sys_o_get_updated($user['id'], $UserPlanet['id'], SN_TIME_NOW);
+// pdump(classSupernova::$data[LOC_LOCATION]);
+// die();
       $list_planet_que = $UserPlanet['que'];
-      $UserPlanet      = $UserPlanet['planet'];
+      $UserPlanet = $UserPlanet['planet'];
 
       $template_planet = tpl_parse_planet($UserPlanet);
 

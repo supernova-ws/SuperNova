@@ -2,6 +2,8 @@
 
 require_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+define('IN_AJAX', true);
+
 /*
 $time_local  = $time_server + $time_diff
 $time_diff   = $time_local  - $time_server

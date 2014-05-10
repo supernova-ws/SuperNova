@@ -76,7 +76,8 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
   {
     $Combo = "";
     $MoonList = db_planet_list_moon_other($user['id'], $planetrow['id']);
-    while($CurMoon = mysql_fetch_assoc($MoonList))
+    // while($CurMoon = mysql_fetch_assoc($MoonList))
+    foreach($MoonList as $CurMoon)
     {
       if(mrc_get_level($user, $CurMoon, STRUC_MOON_GATE) >= 1)
       {

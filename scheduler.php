@@ -20,6 +20,8 @@
 
 require_once('includes/init.php');
 
+define('IN_AJAX', true);
+
 function scheduler_process()
 {
   global $allow_anonymous, $config, $user, $sys_user_logged_in, $debug, $lang;

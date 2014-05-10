@@ -382,4 +382,3 @@ function sn_db_transaction_rollback()
 }
 
 require_once('db/db_queries.php');
-

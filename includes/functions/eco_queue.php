@@ -572,7 +572,8 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
     // Если нужно изменять данные на планетах - блокируем планеты и получаем данные о них
     // TODO - от них не надо ничего, кроме ID и que_processed
     $planet_query = db_planet_list_by_user_or_planet($user['id'], $planet);
-    while($planet_row = mysql_fetch_assoc($planet_query))
+    // while($planet_row = mysql_fetch_assoc($planet_query))
+    foreach($planet_query as $planet_row)
     {
       $planet_list[$planet_row['id']] = $planet_row;
       $time_left[$planet_row['id_owner']][$planet_row['id']] = max(0, $on_time - $planet_row['que_processed']);

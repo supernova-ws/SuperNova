@@ -17,14 +17,15 @@ function db_user_by_email($email, $use_both = false, $for_update = false, $field
 
 function db_user_list($user_filter = '', $for_update = false, $fields = '*')
 {
-  return classSupernova::db_get_record_list(LOC_USER, $user_filter);
+  return classSupernova::db_get_record_list(LOC_USER, $user_filter); // FIXED
 }
 
 
 
 function db_user_set_by_id($user_id, $set)
 {
-  return classSupernova::db_set_user_by_id($user_id, $set);
+  return classSupernova::db_upd_record_by_id(LOC_USER, $user_id, $set);
+  // return classSupernova::db_set_user_by_id($user_id, $set);
 }
 
 
