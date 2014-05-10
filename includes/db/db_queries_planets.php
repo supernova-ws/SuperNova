@@ -74,14 +74,14 @@ function db_planet_list_sorted($user_row, $skip_planet_id = false, $field_list =
     . ($user_row['planet_sort_order'] == SORT_DESCENDING ? " DESC" : " ASC");
 
   // Compilating query
-  return classSupernova::db_get_record_list(LOC_PLANET, // FIXED
+  return classSupernova::db_get_record_list(LOC_PLANET,
     "`id_owner` = '{$user_row['id']}' {$conditions} ORDER BY {$order_by}");
 }
 function db_planet_list_by_user_or_planet($user_id, $planet_id)
 {
   if(!($user_id = intval($user_id)) && !($planet_id = intval($planet_id))) return false;
 
-  return classSupernova::db_get_record_list(LOC_PLANET, // FIXED
+  return classSupernova::db_get_record_list(LOC_PLANET,
     $planet_id = intval($planet_id) ? "{{planets}}.`id` = {$planet_id}" : "`id_owner` = {$user_id}", $planet_id);
 }
 
@@ -109,12 +109,6 @@ function db_planet_set_by_owner($owner_id, $set)
 {
   if(!($owner_id = intval($owner_id)) || !($set = trim($set))) return false;
   return classSupernova::db_upd_record_list(LOC_PLANET, "`id_owner` = {$owner_id}", $set);
-}
-
-
-function db_planet_insert_set($set)
-{
-  return classSupernova::db_ins_record(LOC_PLANET, $set);
 }
 
 

@@ -279,7 +279,7 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
     }
     $planet['name'] = mysql_real_escape_string(strip_tags(trim($planet['name'])));
 
-    db_planet_insert_set(
+    classSupernova::db_ins_record(LOC_PLANET,
       "`name` = '{$planet['name']}', `id_owner` = '{$planet['id_owner']}', `last_update` = '{$planet['last_update']}', `image` = '{$planet['image']}',
       `galaxy` = '{$planet['galaxy']}', `system` = '{$planet['system']}', `planet` = '{$planet['planet']}', `planet_type` = '{$planet['planet_type']}',
       `diameter` = '{$planet['diameter']}', `field_max` = '{$planet['field_max']}', `density` = '{$planet['density']}', `density_index` = '{$planet['density_index']}',
@@ -350,7 +350,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
 
       $field_max = ceil($size / 1000);
 
-      db_planet_insert_set(
+      classSupernova::db_ins_record(LOC_PLANET,
         "`id_owner` = '{$user_id}', `parent_planet` = '{$moon_planet['id']}', `name` = '{$moon_name_safe}', `last_update` = " . SN_TIME_NOW . ", `image` = 'mond',
           `galaxy` = '{$pos_galaxy}', `system` = '{$pos_system}', `planet` = '{$pos_planet}', `planet_type` = " . PT_MOON . ",
           `diameter` = '{$size}', `field_max` = '{$field_max}', `density` = 2500, `density_index` = 2, `temp_min` = '{$temp_min}', `temp_max` = '{$temp_max}',

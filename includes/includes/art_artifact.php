@@ -57,7 +57,7 @@ function art_use(&$user, &$planetrow, $unit_id)
           break;
         }
 
-        $que = que_get(QUE_STRUCTURES, $user['id'], $planetrow['id'], false);
+        $que = que_get($user['id'], $planetrow['id'], QUE_STRUCTURES, false);
         if(!empty($que['items']))
         {
           $message = $lang['art_rcd_err_que'];
@@ -91,7 +91,7 @@ function art_use(&$user, &$planetrow, $unit_id)
 
       case ART_HEURISTIC_CHIP:
         $que_item = null;
-        $que = que_get(QUE_RESEARCH, $user['id'], $planetrow['id'], true);
+        $que = que_get($user['id'], $planetrow['id'], QUE_RESEARCH, true);
         $current_que = &$que['ques'][QUE_RESEARCH][$user['id']][0];
         if(!empty($current_que))
         {
@@ -117,7 +117,7 @@ function art_use(&$user, &$planetrow, $unit_id)
       case ART_NANO_BUILDER:
         $planetrow = db_planet_by_id($planetrow['id'], true);
         $que_item = null;
-        $que = que_get(QUE_STRUCTURES, $user['id'], $planetrow['id'], true);
+        $que = que_get($user['id'], $planetrow['id'], QUE_STRUCTURES, true);
         $current_que = &$que['ques'][QUE_RESEARCH][$user['id']][0];
         if(!empty($current_que))
         {

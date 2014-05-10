@@ -147,7 +147,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
 
     $planet_id = $que_id == QUE_RESEARCH ? 0 : intval($planet['id']);
 
-    $que = que_get($que_id, $user['id'], $planet['id'], true);
+    $que = que_get($user['id'], $planet['id'], $que_id, true);
     // TODO Добавить вызовы функций проверок текущей и максимальной длин очередей
     if(count($que['ques'][$que_id][$user['id']][$planet_id]) >= que_get_max_que_length($user, $planet, $que_id, $que_data))
     {
@@ -300,56 +300,9 @@ function que_recalculate($old_que)
   return $new_que;
 }
 
-/*
- * С $for_update === true эта функция должна вызываться только из транзакции! Все соответствующие записи в users и planets должны быть уже блокированы!
- *
- * $que_type
- *   !$que_type - все очереди
- *   QUE_XXXXXX - конкретная очередь по планете
- * $user_id - ID пользователя
- * $planet_id
- *   $que_type == QUE_RESEARCH - игнорируется
- *   null - обработка очередей планет не производится
- *   false/0 - обрабатываются очереди всех планет по $user_id
- *   (integer) - обрабатываются локальные очереди для планеты. Нужно, например, в обработчике флотов
- *   иначе - $que_type для указанной планеты
- * $for_update - true == нужно блокировать записи
- *
- * TODO Работа при !$user_id
- * TODO Переформатировать вывод данных, что бы можно было возвращать данные по всем планетам и юзерам в одном запросе: добавить подмассивы 'que', 'planets', 'players'
- *
- */
-function que_get($que_type = false, $user_id, $planet_id = null, $for_update = false)
+function que_get($user_id, $planet_id = null, $que_type = false, $for_update = false)
 {
-  sn_db_transaction_check($for_update);
-
-  $ques = array();
-
-  if(!$user_id)
-  {
-    pdump(debug_backtrace());
-    die('No user_id for que_get_que()');
-  }
-
-  /*
-  $sql = '';
-  $sql .= $user_id ? " AND `que_player_id` = {$user_id}" : '';
-  $sql .= $que_type == QUE_RESEARCH || $planet_id === null ? " AND `que_planet_id` IS NULL" :
-    ($planet_id ? " AND (`que_planet_id` = {$planet_id}" . ($que_type ? '' : ' OR que_planet_id IS NULL') . ")" : '');
-  $sql .= $que_type ? " AND `que_type` = {$que_type}" : '';
-  $que_query = doquery("SELECT * FROM {{que}} WHERE 1 {$sql} ORDER BY que_id" . ($for_update ? ' FOR UPDATE' : ''));
-  */
-
-  $que_query = db_que_list_by_type_location($que_type, $user_id, $planet_id, $for_update);
-  if($que_query)
-  {
-    while($row = mysql_fetch_assoc($que_query))
-    {
-      $ques['items'][] = $row;
-    }
-  }
-
-  return que_recalculate($ques);
+  return classSupernova::db_que_list_by_type_location($user_id, $planet_id, $que_type, $for_update);
 }
 
 function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data, $unit_level = 0, $unit_amount = 1, $build_mode = BUILD_CREATE)
@@ -406,7 +359,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
   sn_db_transaction_start();
   $user = db_user_by_id($user['id'], true);
   $planet['id'] = $planet['id'] && $que_type !== QUE_RESEARCH ? $planet['id'] : 0;
-  $global_que = que_get($que_type, $user['id'], $planet['id'], true);
+  $global_que = que_get($user['id'], $planet['id'], $que_type, true);
 //pdump($global_que);
 //pdump($planet['id']);
 //pdump($global_que[$que_type][$planet['id']]);
@@ -497,7 +450,7 @@ function que_tpl_parse(&$template, $que_type, $user, $planet = array(), $que = n
 
   if(!is_array($que))
   {
-    $que = que_get($que_type, $user['id'], $planet['id']);
+    $que = que_get($user['id'], $planet['id'], $que_type);
   }
 
   if(is_array($que) && isset($que['items']))
@@ -555,7 +508,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
   // Определяем, какие очереди нам нужны и получаем их
   $que_type_id = $planet === null ? QUE_RESEARCH : false;
   $planet = isset($planet['id']) ? $planet['id'] : $planet; // В $planet у нас теперь только её ID или шаблон null/0/false
-  $que = que_get($que_type_id, $user['id'], $planet, true);
+  $que = que_get($user['id'], $planet, $que_type_id, true);
 //pdump($que);
   if(empty($que['items']))
   {

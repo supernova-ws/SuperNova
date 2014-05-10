@@ -20,6 +20,11 @@ class classSupernova
   public static $locks = array(); // Информация о блокировках
   public static $queries = array(); // Кэш запросов
 
+  // Массив $locator - хранит отношения между записями для быстрого доступа по тип_записи:тип_локации:ид_локации:внутренний_ид_записи=>информация
+  // Для LOC_UNIT внутренний ИД - это SNID, а информация - это ссылка на запись `unit`
+  // Для LOC_QUE внутренний ИД - это тип очереди, а информация - массив ссылок на `que`
+  public static $locator = array(); // Кэширует соответствия между расположением объектов - в частности юнитов и очередей
+
   public static $delayed_changset = array(); // Накопительный массив изменений
 
   // Кэш индексов - ключ MD5-строка от суммы ключевых строк через | - менять | на что-то другое перед поиском и назад - после поиска
@@ -37,8 +42,8 @@ class classSupernova
   БД может быть сверхкэширующей - см. HyperNova. Это реализуется на уровне СН-драйвера БД
   Предусмотреть вариант, когда уровни кэширования совпадают, например когда нет xcache и используется общая память
   */
-  public static $cache; // Объект-кэшер - либо встроенная память, либо мемкэш с блокировками - находится внутри $db!!!!
-  public static $db; // Объект-БД - либок кэшер с блокировками, либо БД
+  //public static $cache; // Объект-кэшер - либо встроенная память, либо мемкэш с блокировками - находится внутри $db!!!!
+  //public static $db; // Объект-БД - либок кэшер с блокировками, либо БД
 
   // protected static $info = array(); // Кэш информации - инфо о юнитах, инфо о группах итд
 
@@ -49,31 +54,34 @@ class classSupernova
       P_ID => 'id',
       P_OWNER_INFO => array(),
     ),
+
     LOC_PLANET => array(
       P_TABLE_NAME => 'planets',
       P_ID => 'id',
       P_OWNER_INFO => array(
-        array(
+        LOC_USER => array(
           P_LOCATION => LOC_USER,
           P_OWNER_FIELD => 'id_owner',
         )
       ),
     ),
+
     LOC_UNIT => array(
       P_TABLE_NAME => 'unit',
       P_ID => 'unit_id',
       P_OWNER_INFO => array(
-        array(
+        LOC_USER => array(
           P_LOCATION => LOC_USER,
           P_OWNER_FIELD => 'unit_player_id',
         )
       ),
     ),
+
     LOC_QUE => array(
       P_TABLE_NAME => 'que',
       P_ID => 'que_id',
       P_OWNER_INFO => array(
-        array(
+        LOC_USER => array(
           P_LOCATION => LOC_USER,
           P_OWNER_FIELD => 'que_player_id',
         )
@@ -82,8 +90,9 @@ class classSupernova
   );
 
   // Перепаковывает массив на заданную глубину, убирая поля с null
-  public static function array_repack(&$array, &$lock_table, $level = 0)
+  public static function array_repack(&$array, $level = 0)
   {
+    // TODO $lock_table не нужна тут
     if(!is_array($array)) return;
 
     foreach($array as $key => &$value)
@@ -91,15 +100,10 @@ class classSupernova
       if($value === null)
       {
         unset($array[$key]);
-        // Если мы на самом нижнем уровне - снимаем блокировку с записи с соответствующим ID
-        if($level == 0 && is_array($lock_table))
-        {
-          unset($lock_table[$key]);
-        }
       }
       elseif($level > 0 && is_array($value))
       {
-        static::array_repack($value, $lock_table, $level - 1);
+        static::array_repack($value, $level - 1);
         if(empty($value)) unset($array[$key]);
       }
     }
@@ -113,6 +117,7 @@ class classSupernova
     {
       static::$data = array();
       static::$locks = array();
+      static::$locator = array();
     }
     static::$queries = array();
     // static::$indexes = array();
@@ -125,10 +130,8 @@ class classSupernova
     {
       // Здесь нельзя делать unset - надо записывать NULL, что бы это отразилось на зависимых записях
       array_walk(static::$data[$cache_id], function(&$item){$item = null;});
-      // Массив LOC_LOCATION - хранит юниты по тип_локации:ид_локации:снид_юнита для быстрого доступа
       // Теперь перепаковываем связанные массивы
-      static::array_repack(static::$data[LOC_LOCATION], $cork = null, 2);
-      // unset(static::$data[LOC_LOCATION][$cache_id]); // TODO - А вот это, вроде, лишнее. Если мы сбрасываем планету - зачем нам сбрасывать юниты на ней?!
+      static::array_repack(static::$locator[$cache_id], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
 
       // static::$locks[$cache_id] = array(); // TODO И, вроде, блокировки сбрасывать не надо! Ведь на самом деле до конца транзакции запись все еще заблокирована!
     }
@@ -139,13 +142,9 @@ class classSupernova
     // Если есть $user_id - проверяем, а надо ли перепаковывать?
     if($record_id && isset(static::$data[$cache_id][$record_id]) && static::$data[$cache_id][$record_id] !== null) return;
 
-    static::array_repack(static::$data[$cache_id], static::$locks[$cache_id]);
-    static::array_repack(static::$data[LOC_LOCATION], $cork = null, 2);
-    static::array_repack(static::$queries[$cache_id], $cork = null, 1);
-    // TODO - а вот тут непонятно. Надо ли вообще это перепаковывать и будет ли польза?
-    // На самом деле если запись заблокирована - то она заблокирована. Другой записи с таким же ИД быть не может, а вот инфа может заново поменятся и сразу будет блокированной
-    // Впрочем, тут есть сторонние эффекты
-    // static::array_repack(static::$locks[LOC_USER]);
+    static::array_repack(static::$data[$cache_id]);
+    static::array_repack(static::$locator[$cache_id], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
+    static::array_repack(static::$queries[$cache_id], 1);
   }
   public static function cache_unset($cache_id, $record_id)
   {
@@ -389,7 +388,6 @@ class classSupernova
 //pdump($location_type . 'id' . $record_id, $in_transaction && !$skip_lock && !empty($location_info[P_OWNER_INFO]) ? 'start parent locking' : 'skip locking');
     if($in_transaction && !$skip_lock && !empty($location_info[P_OWNER_INFO]))
     {
-      // TODO && !empty($location_info[P_OWNER_INFO])
       $record = static::db_get_record_by_id($location_type, $record_id, false, 'id', true);
       if(!$record) return $record;
 
@@ -420,32 +418,62 @@ class classSupernova
     return static::$data[$location_type][$record_id];
   }
 
-  public static function db_get_record_list($location_type, $filter = '', $fetch = false)
+  public static function db_get_record_list($location_type, $filter = '', $fetch = false, $no_return = false)
   {
+//pdump($filter, 'Выбираем ' . $location_type);
     $query_cache = &static::$queries[$location_type][$filter];
+
     if(!isset($query_cache))
     {
+// pdump($filter, 'Кэш пустой, начинаем возню');
       $location_info = &static::$location_info[$location_type];
       $id_field = $location_info[P_ID];
       $query_cache = array();
 
+      // static::db_lock_record_list($location_type, $filter, $fetch);
+
+      if(static::db_transaction_check(false))
+      {
+//pdump($filter, 'Транзакция - блокируем ' . $location_type);
+        // Проходим по всем родителям данной записи
+        foreach($location_info[P_OWNER_INFO] as $owner_location_type => $owner_data)
+        {
+//pdump($filter, 'Транзакция - блокируем родителя ' . $owner_location_type);
+          $parent_id_list = array();
+          // Выбираем родителей данного типа и соответствующие ИД текущего типа
+          $query = static::db_query(
+            "SELECT
+              distinct({{{$location_info[P_TABLE_NAME]}}}.{$owner_data[P_OWNER_FIELD]}) AS parent_id
+            FROM {{{$location_info[P_TABLE_NAME]}}}" .
+            ($filter ? ' WHERE ' . $filter : '') .
+            ($fetch ? ' LIMIT 1' : ''), false, true);
+//pdump($q, 'Запрос блокировки');
+          while($row = mysql_fetch_assoc($query))
+          {
+            // Исключаем из списка родительских ИД уже заблокированные записи
+            if(!static::cache_lock_get($owner_location_type, $row['parent_id']))
+              $parent_id_list[$row['parent_id']] = $row['parent_id'];
+          }
+//pdump($parent_id_list, 'Выбраны родители');
+          // Если все-таки какие-то записи еще не заблокированы - вынимаем текущие версии из базы
+          if($indexes_str = implode(',', $parent_id_list))
+          {
+//pdump($indexes_str, '$indexes_str');
+            $parent_id_field = static::$location_info[$owner_location_type][P_ID];
+            static::db_get_record_list($owner_location_type,
+              $parent_id_field . (count($parent_id_list) > 1 ? " IN ({$indexes_str})" : " = {$indexes_str}"), $fetch, true);
+          }
+//pdump($filter, 'Транзакция - родители заблокированы ' . $owner_location_type);
+        }
+      }
+
+      /*
       if(static::db_transaction_check(false))
       {
         foreach($location_info[P_OWNER_INFO] as $location_data)
         {
           $parent_location = &static::$location_info[$location_data[P_LOCATION]];
-          /*
-          // Блокируем таблицу - родителя
-          // TODO - переделать позже
-          // На самом деле это не совсем правильно - если у таблицы-родителя будут другие родители, то они не заблокируются
-          // Но пока везде указаны юзеры - это нормально и быстро
-          static::db_query(
-            "SELECT 1 FROM
-              {{{$location_info[P_TABLE_NAME]}}} AS t1
-              JOIN {{{$parent_location[P_TABLE_NAME]}}} AS t2
-                ON t2.{$parent_location[P_TABLE_NAME][P_ID]} = t1.{$location_info[P_ID]}");
-          */
-          static::db_query(
+          static::db_query($q =
             "SELECT 1 FROM
               {{{$location_info[P_TABLE_NAME]}}}
               JOIN {{{$parent_location[P_TABLE_NAME]}}}
@@ -453,7 +481,9 @@ class classSupernova
             ($filter ? ' AND ' . $filter : ''), $fetch);
         }
       }
+      */
 
+//pdump($filter, 'Выбираем записи и заносим их в кыш-память ' . $owner_location_type);
       $query = static::db_query(
         "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" .
         (($filter = trim($filter)) ? " WHERE {$filter}" : '')
@@ -463,31 +493,27 @@ class classSupernova
         // static::db_get_record_by_id($location_type, $row[$id_field]);
         static::cache_set($location_type, $row[$id_field], $row);
         $query_cache[$row[$id_field]] = &static::$data[$location_type][$row[$id_field]];
+//pdump(static::$data[$location_type][$row[$id_field]]);
       }
-      /*
-      $query = static::db_query(
-        "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" .
-        (($filter = trim($filter)) ? " WHERE {$filter}" : '')
-      );
-      while($row = mysql_fetch_assoc($query))
-      {
-        static::cache_set($location_type, $row[$id_field], $row); // В кэш-юзер так же заполнять индексы
-        $query_cache[$row[$id_field]] = &static::$data[$location_type][$row[$id_field]];
-      }
-      */
     }
 
-    $result = false;
-    if(is_array($query_cache))
+    if($no_return)
     {
-      foreach($query_cache as $key => $value)
-      {
-        $result[$key] = $value;
-        if($fetch) break;
-      }
+      return true;
     }
-
-    return $fetch ? (is_array($result) ? reset($result) : false) : $result;
+    else
+    {
+      $result = false;
+      if(is_array($query_cache))
+      {
+        foreach($query_cache as $key => $value)
+        {
+          $result[$key] = $value;
+          if($fetch) break;
+        }
+      }
+      return $fetch ? (is_array($result) ? reset($result) : false) : $result;
+    }
   }
 
   public static function db_upd_record_by_id($location_type, $record_id, $set)
@@ -533,6 +559,11 @@ class classSupernova
 
     return $result;
   }
+
+
+
+
+
   public static function db_ins_record($location_type, $set)
   {
     $set = trim($set);
@@ -545,8 +576,8 @@ class classSupernova
         static::cache_clear($location_type, false); // Мягкий сброс - только $queries
 
         $record_id = mysql_insert_id();
-        $record = static::db_get_record_by_id($location_type, $record_id);
-        static::cache_set($location_type, $record_id, $record, true);
+        static::db_get_record_by_id($location_type, $record_id);
+        // static::cache_set($location_type, $record_id, $record, true); // TODO - НЕ НУЖНО! Кэш будет установлен в get_record_by_id
       }
     }
 
@@ -721,22 +752,21 @@ class classSupernova
   public static function db_get_unit_by_id($unit_id, $for_update = false, $fields = '*')
   {
     // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
-    return static::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
+    $unit = static::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
+    if(is_array($unit))
+    {
+      static::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &static::$data[LOC_UNIT][$unit_id];
+    }
+
+    return $unit;
   }
-  /* UNUSED
-  public static function db_get_unit_list($filter = '')
-  {
-    // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
-    return static::db_get_record_list(LOC_UNIT, $filter); // IN PROGRESS
-  }
-  */
 
   public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id)
   {
-    $query_cache = &static::$data[LOC_LOCATION][$location_type][$location_id];
+    $query_cache = &static::$locator[LOC_UNIT][$location_type][$location_id];
     if(!isset($query_cache))
     {
-      $got_data = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id}"); // FIXED
+      $got_data = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id}");
       if(is_array($got_data))
       {
         foreach($got_data as $unit_id => $unit_data)
@@ -762,8 +792,126 @@ class classSupernova
   {
     static::db_get_unit_list_by_location($user_id, $location_type, $location_id);
 
-    return static::$data[LOC_LOCATION][$location_type][$location_id][$unit_snid];
+    return static::$locator[LOC_UNIT][$location_type][$location_id][$unit_snid];
   }
+
+
+
+
+  /*
+   * С $for_update === true эта функция должна вызываться только из транзакции! Все соответствующие записи в users и planets должны быть уже блокированы!
+   *
+   * $que_type
+   *   !$que_type - все очереди
+   *   QUE_XXXXXX - конкретная очередь по планете
+   * $user_id - ID пользователя
+   * $planet_id
+   *   $que_type == QUE_RESEARCH - игнорируется
+   *   null - обработка очередей планет не производится
+   *   false/0 - обрабатываются очереди всех планет по $user_id
+   *   (integer) - обрабатываются локальные очереди для планеты. Нужно, например, в обработчике флотов
+   *   иначе - $que_type для указанной планеты
+   * $for_update - true == нужно блокировать записи
+   *
+   * TODO Работа при !$user_id
+   * TODO Переформатировать вывод данных, что бы можно было возвращать данные по всем планетам и юзерам в одном запросе: добавить подмассивы 'que', 'planets', 'players'
+   *
+   */
+  public static function db_que_list_by_type_location($user_id, $planet_id = null, $que_type = false, $for_update = false)
+  {
+    if(!$user_id)
+    {
+      pdump(debug_backtrace());
+      die('No user_id for que_get_que()');
+    }
+
+    sn_db_transaction_check($for_update);
+
+    $ques = array();
+
+    $query = array();
+
+    if($user_id = intval($user_id))
+      $query[] = "`que_player_id` = {$user_id}";
+
+    if($que_type == QUE_RESEARCH || $planet_id === null)
+      $query[] = "`que_planet_id` IS NULL";
+    elseif($planet_id)
+      $query[] = "(`que_planet_id` = {$planet_id}" . ($que_type ? '' : ' OR que_planet_id IS NULL') . ")";
+    if($que_type)
+      $query[] = "`que_type` = {$que_type}";
+
+    /*
+    $sql = '';
+    $sql .= $user_id ? " AND `que_player_id` = {$user_id}" : '';
+    $sql .= $que_type == QUE_RESEARCH || $planet_id === null ? " AND `que_planet_id` IS NULL" :
+      ($planet_id ? " AND (`que_planet_id` = {$planet_id}" . ($que_type ? '' : ' OR que_planet_id IS NULL') . ")" : '');
+    $sql .= $que_type ? " AND `que_type` = {$que_type}" : '';
+    pdump($sql);
+    pdump(implode(' AND ', $query));
+    */
+
+    /*
+    $que_query = ($sql = implode(' AND ', $query))
+      ? doquery("SELECT * FROM {{que}} WHERE {$sql} ORDER BY que_id" . ($for_update ? ' FOR UPDATE' : ''))
+      : false;
+
+    if($que_query)
+    {
+      while($row = mysql_fetch_assoc($que_query))
+      {
+        $ques['items'][] = $row;
+      }
+    }
+    */
+
+    $ques['items'] = static::db_get_record_list(LOC_QUE, implode(' AND ', $query));
+
+    return que_recalculate($ques);
+
+    print(1);
+
+    $query_cache = &static::$locator[LOC_QUE][$location_type][$location_id];
+    if(!isset($query_cache))
+    {
+      $got_data = static::db_get_record_list(LOC_QUE, "unit_location_type = {$location_type} AND unit_location_id = {$location_id}");
+      if(is_array($got_data))
+      {
+        foreach($got_data as $unit_id => $unit_data)
+        {
+          // static::$data[LOC_LOCATION][$location_type][$location_id][$unit_data['unit_snid']] = &static::$data[LOC_UNIT][$unit_id];
+          $query_cache[$unit_data['unit_snid']] = &static::$data[LOC_QUE][$unit_id];
+        }
+      }
+    }
+
+    $result = false;
+    if(is_array($query_cache))
+    {
+      foreach($query_cache as $key => $value)
+      {
+        $result[$key] = $value;
+      }
+    }
+
+    return $result;
+
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

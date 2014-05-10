@@ -17,7 +17,7 @@ function db_user_by_email($email, $use_both = false, $for_update = false, $field
 
 function db_user_list($user_filter = '', $for_update = false, $fields = '*')
 {
-  return classSupernova::db_get_record_list(LOC_USER, $user_filter); // FIXED
+  return classSupernova::db_get_record_list(LOC_USER, $user_filter);
 }
 
 

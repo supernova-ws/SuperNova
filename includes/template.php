@@ -637,7 +637,7 @@ function tpl_get_fleets_flying(&$user)
 
 function tpl_assign_hangar(&$template, $planet, $que_type)
 {
-  $que = que_get($que_type, $planet['id_owner'], $planet['id']);
+  $que = que_get($planet['id_owner'], $planet['id'], $que_type);
   $que = $que['ques'][$que_type][$planet['id_owner']][$planet['id']];
   $que_length = 0;
   if(!empty($que))

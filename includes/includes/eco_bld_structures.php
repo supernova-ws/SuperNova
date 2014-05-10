@@ -68,7 +68,7 @@ function eco_build($que_type, $user, &$planet)
   $lab_busy    = count($que['que'][QUE_RESEARCH]) && !$config->BuildLabWhileRun;
 */
 
-  $ques = que_get($que_type, $user['id'], $planet['id']);
+  $ques = que_get($user['id'], $planet['id'], $que_type);
   $que = &$ques['ques'][$que_type][$user['id']][$planet['id']];
 
   $in_que = &$ques['in_que'][$que_type][$user['id']][$planet['id']];

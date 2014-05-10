@@ -98,16 +98,16 @@ function flt_mission_spy(&$mission_data)
     $spy_message .= "</tr>";
     if ($spy_diff >= 2)
     {
-      $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'fleet', $lang['tech'][UNIT_SHIPS]) . "</div>";
+      $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'fleet', $lang['tech'][UNIT_SHIPS], $target_user_row) . "</div>";
       coe_compress_add_units(sn_get_groups('fleet'), $target_planet_row, $combat_pack[0]);
     }
     if ($spy_diff >= 3) {
-      $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'defense', $lang['tech'][UNIT_DEFENCE]) . "</div>";
+      $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'defense', $lang['tech'][UNIT_DEFENCE], $target_user_row) . "</div>";
       coe_compress_add_units(sn_get_groups('defense_active'), $target_planet_row, $combat_pack[0]);
     }
     if ($spy_diff >= 5)
     {
-      $spy_message .= "<div class='spy_long'>" . flt_spy_scan($target_planet_row, 'structures', $lang['tech'][UNIT_STRUCTURES]) . "</div>";
+      $spy_message .= "<div class='spy_long'>" . flt_spy_scan($target_planet_row, 'structures', $lang['tech'][UNIT_STRUCTURES], $target_user_row) . "</div>";
     }
 
     if($spy_diff_empire >= 0)

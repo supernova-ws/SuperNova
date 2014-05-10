@@ -57,7 +57,7 @@ function sn_imperium_view($template = null)
   {
     $global_data = sys_o_get_updated($user, $planet['id'], $time_now);
     $planets[$planet['id']] = $global_data['planet'];
-    $ques[$planet['id']] = que_get(false, $user['id'], $planet['id']);
+    $ques[$planet['id']] = que_get($user['id'], $planet['id'], false);
   }
   sn_db_transaction_commit();
 

@@ -229,7 +229,7 @@ function sn_eco_unit_busy(&$user, &$planet, $unit_id, &$result)
   {
     if(($unit_id == STRUC_LABORATORY || $unit_id == STRUC_LABORATORY_NANO) && !$config->BuildLabWhileRun)
     {
-      $global_que = que_get(QUE_RESEARCH, $user['id'], $planet['id'], false);
+      $global_que = que_get($user['id'], $planet['id'], QUE_RESEARCH, false);
       if(is_array($global_que['ques'][QUE_RESEARCH][$user['id']]))
       {
         $first_element = reset($global_que['ques'][QUE_RESEARCH][$user['id']]);

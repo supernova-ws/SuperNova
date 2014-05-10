@@ -33,7 +33,7 @@ function eco_bld_tech(&$user, &$planet, $que = array())
 
   $fleet_list = flt_get_fleets_to_planet($planet);
 
-  $ques = que_get(QUE_RESEARCH, $user['id']);
+  $ques = que_get($user['id'], QUE_RESEARCH);
   $que = &$ques['ques'][QUE_RESEARCH][$user['id']][0];
   que_tpl_parse($template, QUE_RESEARCH, $user, null, $que);
 

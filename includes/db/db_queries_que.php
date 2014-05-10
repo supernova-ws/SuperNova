@@ -1,16 +1,8 @@
 <?php
 
-function db_que_list_by_type_location($que_type = false, $user_id, $planet_id = null, $for_update = false)
+function db_que_list_by_type_location($user_id, $planet_id = null, $que_type = false, $for_update = false)
 {
-  $sql = '';
-  $sql .= $user_id ? " AND `que_player_id` = {$user_id}" : '';
-  $sql .= $que_type == QUE_RESEARCH || $planet_id === null ? " AND `que_planet_id` IS NULL" :
-    ($planet_id ? " AND (`que_planet_id` = {$planet_id}" . ($que_type ? '' : ' OR que_planet_id IS NULL') . ")" : '');
-  $sql .= $que_type ? " AND `que_type` = {$que_type}" : '';
-
-  return ($sql = trim($sql))
-    ? doquery("SELECT * FROM {{que}} WHERE 1 {$sql} ORDER BY que_id" . ($for_update ? ' FOR UPDATE' : ''))
-    : false;
+  return classSupernova::db_que_list_by_type_location($user_id, $planet_id, $que_type, $for_update);
 }
 
 function db_que_list_stat()

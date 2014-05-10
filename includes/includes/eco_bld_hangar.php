@@ -31,7 +31,7 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
   $page_error = '';
   $sn_data_group = sn_get_groups($page_mode);
 
-  $ques = que_get($que_type, $user['id'], $planet['id']);
+  $ques = que_get($user['id'], $planet['id'], $que_type);
   $que = &$ques['ques'][$que_type][$user['id']][$planet['id']];
   $in_que = &$ques['in_que'][$que_type][$user['id']][$planet['id']];
 
