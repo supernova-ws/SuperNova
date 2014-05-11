@@ -401,12 +401,14 @@ function sn_tpl_render_topnav(&$user, $planetrow)
 
   $template       = gettemplate('topnav', true);
 
+  /*
   $planetrow = $planetrow ? $planetrow : $user['current_planet'];
 
   sn_db_transaction_start();
   $planetrow = sys_o_get_updated($user, $planetrow, $time_now);
   sn_db_transaction_commit();
   $planetrow = $planetrow['planet'];
+  */
 
   $ThisUsersPlanets = db_planet_list_sorted ( $user );
   // while ($CurPlanet = mysql_fetch_assoc($ThisUsersPlanets))

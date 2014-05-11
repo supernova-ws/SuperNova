@@ -763,6 +763,8 @@ class classSupernova
 
   public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id)
   {
+    if(!($location_type = intval($location_type)) || !($location_id = intval($location_id))) return false;
+
     $query_cache = &static::$locator[LOC_UNIT][$location_type][$location_id];
     if(!isset($query_cache))
     {

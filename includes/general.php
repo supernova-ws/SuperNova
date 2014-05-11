@@ -493,7 +493,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
     );
     $mercenary_level = unit_get_level($unit_id, $context, array('for_update' => $for_update));
     */
-    $unit = classSupernova::db_get_unit_by_location($planet['id_owner'], LOC_PLANET, $planet['id'], $unit_id);
+    $unit = classSupernova::db_get_unit_by_location(is_array($user) ? $user['id'] : $planet['id_owner'], LOC_PLANET, $planet['id'], $unit_id);
     $mercenary_level = is_array($unit) && $unit['unit_level'] ? $unit['unit_level'] : 0;
   }
   elseif(in_array($unit_id, sn_get_groups('governors')))
@@ -1032,11 +1032,13 @@ function sys_stat_get_user_skip_list()
   {
     $user_skip_list = implode(' OR ', $user_skip_list);
     $user_skip_query = db_user_list($user_skip_list);
-    $user_skip_list = array();
-    // while($user_skip_row = mysql_fetch_assoc($user_skip_query))
-    foreach($user_skip_query as $user_skip_row)
+    if(!empty($user_skip_query))
     {
-      $user_skip_list[$user_skip_row['id']] = $user_skip_row['id'];
+      $user_skip_list = array();
+      foreach($user_skip_query as $user_skip_row)
+      {
+        $user_skip_list[$user_skip_row['id']] = $user_skip_row['id'];
+      }
     }
   }
 

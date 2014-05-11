@@ -118,11 +118,12 @@ function art_use(&$user, &$planetrow, $unit_id)
         $planetrow = db_planet_by_id($planetrow['id'], true);
         $que_item = null;
         $que = que_get($user['id'], $planetrow['id'], QUE_STRUCTURES, true);
-        $current_que = &$que['ques'][QUE_RESEARCH][$user['id']][0];
+        $current_que = &$que['ques'][QUE_STRUCTURES][$user['id']][$planetrow['id']];
+        // $que_item = &$que['que'][QUE_STRUCTURES][0];
         if(!empty($current_que))
         {
           reset($current_que);
-          $que_item = &$que['ques'][QUE_RESEARCH][$user['id']][0][key($current_que)];
+          $que_item = &$que['ques'][QUE_STRUCTURES][$user['id']][$planetrow['id']][key($current_que)];
         }
 
         if(isset($que_item) && $que_item['que_time_left'] > 60)
