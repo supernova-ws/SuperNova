@@ -162,17 +162,30 @@ function doquery($query, $table = '', $fetch = false)
 
   if(defined('DEBUG_SQL'))
   {
-    if(!classSupernova::$db_in_transaction)
-    {
-      classSupernova::$db_in_transaction++;
-    }
-    $transaction_id = classSupernova::$transaction_id;
-
     $backtrace = debug_backtrace();
-    $function = $backtrace[1]['function'];
-    $file = str_replace(SN_ROOT_PHYSICAL, '', str_replace('\\', '/', $backtrace[0]['file']));
-    // pdump($backtrace, SN_ROOT_PHYSICAL);
-    $debug->warning("/* {$file} {$function} line {$backtrace[0]['line']} TransID {$transaction_id} */ {$sql}", 'SQL Debug', LOG_DEBUG_SQL);
+    /*
+    pdump($backtrace[0]);
+    pdump($backtrace[1]);
+    print("<hr/>");
+    */
+    $a_trace = $backtrace[1]['function'] == 'db_query' ? $backtrace[1] : $backtrace[2];
+    $function =
+      ($a_trace['type']
+        ? ($a_trace['type'] == '->'
+          ? "({$a_trace['class']})" . get_class($a_trace['object'])
+          : $a_trace['class']
+        ) . $a_trace['type']
+        : ''
+      ) . $a_trace['function'] . '()';
+
+    $file = str_replace(SN_ROOT_PHYSICAL, '', str_replace('\\', '/', $a_trace['file']));
+
+    $transaction_id = classSupernova::db_transaction_check(false) ? classSupernova::$transaction_id : classSupernova::$transaction_id++;
+
+    $debug->warning("/* tID {$transaction_id} */ " .
+      preg_replace("/\s+/", ' ', $sql) .
+      " /* {$function} {$transaction_id} '{$file}' Line {$a_trace['line']} tID */ ",
+      'SQL Debug', LOG_DEBUG_SQL);
   }
 
   $sqlquery = mysql_query($sql) or $debug->error(mysql_error()."<br />$sql<br />",'SQL Error');
@@ -286,7 +299,7 @@ function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id =
 {
   return classSupernova::db_changeset_prepare_unit($unit_id, $unit_value, $user, $planet_id);
 }
-function sn_db_changeset_apply($db_changeset)
+function db_changeset_apply($db_changeset)
 {
   return classSupernova::db_changeset_apply($db_changeset);
 }

@@ -90,13 +90,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
     $unit_id = sys_get_param_int('unit_id');
     if(!$unit_id && is_array($unit_list = sys_get_param('fmenge')))
     {
-      foreach($unit_list as $unit_id => $unit_amount)
-      {
-        if($unit_amount)
-        {
-          break;
-        }
-      }
+      foreach($unit_list as $unit_id => $unit_amount) if($unit_amount) break;
     }
     if(!$unit_id)
     {
@@ -132,7 +126,6 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
 
 
     sn_db_transaction_start();
-    // Блокируем нужные записи
     // Это нужно, что бы заблокировать пользователя и работу с очередями
     $user = db_user_by_id($user['id'], true);
     // Это нужно, что бы заблокировать планету от списания ресурсов
@@ -244,7 +237,6 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
 
     sn_db_transaction_commit();
 
-    // sys_redirect($_SERVER['REQUEST_URI']);
     sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode'));
     die();
   }
@@ -591,8 +583,9 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
     {
       $db_changeset['que'][] = array(
         'action' => SQL_OP_DELETE,
+        P_VERSION => 1,
         'where' => array(
-          "`que_id` = {$que_item['que_id']}",
+          "que_id" => $que_item['que_id'],
         ),
       );
     }
@@ -600,8 +593,9 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
     {
       $db_changeset['que'][] = array(
         'action' => SQL_OP_UPDATE,
+        P_VERSION => 1,
         'where' => array(
-          "`que_id` = {$que_item['que_id']}",
+          "que_id" => $que_item['que_id'],
         ),
         'fields' => array(
           'que_unit_amount' => array(
@@ -629,8 +623,9 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
       $id = $planet_id ? $planet_id : $player_id;
       $db_changeset[$table][] = array(
         'action' => SQL_OP_UPDATE,
+        P_VERSION => 1,
         'where' => array(
-          "`id` = {$id}",
+          "id" => $id,
         ),
         'fields' => array(
           'que_processed' => array(
@@ -717,7 +712,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
   // TODO: Изменить согласно типу очереди
   // rpg_level_up($user, RPG_TECH, $xp_incoming / 1000);
 
-  sn_db_changeset_apply($db_changeset);
+  db_changeset_apply($db_changeset);
 
   // Сообщения о постройке
   // $user = db_user_by_id($user['id'], true);
@@ -731,14 +726,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
 
 
 
-
-
-
-
-
-
-
-
+/*
 
 
 
@@ -818,22 +806,6 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
           $unit_processed_delta = $unit_processed * ($que_item['que_unit_mode'] == BUILD_CREATE ? 1 : -1);
           $unit_changes[$owner_id][$que_item['que_unit_id']] += $unit_processed_delta;
         }
-/*
-pdump($unit_processed, '$unit_processed');
-$qi2 = $que_item;
-unset($qi2['que_id']);
-unset($qi2['que_player_id']);
-unset($qi2['que_planet_id']);
-unset($qi2['que_planet_id_origin']);
-unset($qi2['que_type']);
-unset($qi2['que_unit_mode']);
-unset($qi2['que_unit_price']);
-unset($qi2['que_unit_level']);
-unset($qi2['que_unit_id']);
-pdump($qi2, '$que_item');
-pdump($local_que['time_left'][$que_id][$owner_id], '$local_que[time_left][$que_id][$owner_id]');
-print('<hr />');
-*/
         // Если на очереди времени не осталось - выходим
         if(!$local_que['time_left'][$que_id][$owner_id])
         {
@@ -900,7 +872,7 @@ print('<hr />');
   // TODO: Изменить начисление награды за квесты на ту планету, на которой происходил ресеч
   qst_reward($user, $planet, $quest_rewards, $quest_list);
 
-  sn_db_changeset_apply($db_changeset);
+  db_changeset_apply($db_changeset);
 
   // Сообщения о постройке
   $user = db_user_by_id($user['id'], true);
@@ -912,4 +884,5 @@ print('<hr />');
 
 
   return $local_que;
+*/
 }

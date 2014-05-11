@@ -257,7 +257,7 @@ function sn_fleet_page3()
   $fleet_id = mysql_insert_id();
 
   db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
-  sn_db_changeset_apply($db_changeset);
+  db_changeset_apply($db_changeset);
 
   if(is_array($captain))
   {

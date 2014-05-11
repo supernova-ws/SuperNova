@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a6.12');
+define('SN_VERSION', '39a6.14');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -655,6 +655,12 @@ define('P_TABLE_NAME', 'table_name');
 define('P_OWNER_INFO', 'owner_info');
 define('P_OWNER_FIELD', 'owner_field');
 
+define('P_WHERE', 'P_WHERE');
+define('P_WHERE_STR', 'P_WHERE_STR');
+define('P_FIELDS_STR', 'P_FIELDS_STR');
+define('P_QUERY_STR', 'P_QUERY_STR');
+define('P_ACTION_STR', 'P_ACTION_STR');
+define('P_VERSION', 'P_VERSION');
 
 
 

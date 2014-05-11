@@ -594,7 +594,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   doquery( $QryInsertFleet);
 
   db_planet_set_by_id($from['id'], "`deuterium` = `deuterium` - '{$travel_data['consumption']}'");
-  sn_db_changeset_apply($db_changeset);
+  db_changeset_apply($db_changeset);
 
   sn_db_transaction_commit();
   $from = db_planet_by_id($from['id']);

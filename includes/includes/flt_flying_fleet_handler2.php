@@ -83,7 +83,7 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
 
   if(!empty($db_changeset))
   {
-    sn_db_changeset_apply($db_changeset);
+    db_changeset_apply($db_changeset);
   }
 
   db_planet_set_by_id($planet_arrival['id'],

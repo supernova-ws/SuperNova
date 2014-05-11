@@ -50,7 +50,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
         {
           db_planet_set_by_id($TargetGate['id'], "`last_jump_time` = '{$time_now}'");
           db_planet_set_by_id($planetrow['id'], "`last_jump_time` = '{$time_now}'");
-          sn_db_changeset_apply($db_changeset);
+          db_changeset_apply($db_changeset);
 
           db_user_set_by_id($user['id'], "`current_planet` = '{$TargetGate['id']}'");
 

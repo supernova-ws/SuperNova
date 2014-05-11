@@ -1123,7 +1123,7 @@ function sn_ube_combat_result_apply(&$combat_data)
     $fleet_query = array();
     $old_fleet_count = array_sum($fleet_info[UBE_COUNT]);
     $new_fleet_count = $old_fleet_count - array_sum($fleets_outcome[$fleet_id][UBE_UNITS_LOST]);
-    // Перебираем юниты если во время боя количество юнитов изменилось и при этом во флоту остались юнити или это планета
+    // Перебираем юниты если во время боя количество юнитов изменилось и при этом во флоту остались юниты или это планета
     if($new_fleet_count != $old_fleet_count && (!$fleet_id || $new_fleet_count))
     {
       // Просматриваем результаты изменения флотов
@@ -1220,7 +1220,7 @@ function sn_ube_combat_result_apply(&$combat_data)
       // Планета - сохраняем изменения ресурсов
       db_planet_set_by_id($planet_id, $fleet_query);
       // Планета - сохраняем изменения юнитов на планете
-      sn_db_changeset_apply($db_changeset);
+      db_changeset_apply($db_changeset);
     }
   }
 

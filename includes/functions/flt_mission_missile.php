@@ -165,7 +165,7 @@ function coe_o_missile_calculate()
 
         db_planet_set_by_id($target_planet_row['id'], "`metal` = `metal` + {$attackResult['metal']}, `crystal` = `crystal` + {$attackResult['crystal']}");
       }
-      sn_db_changeset_apply($db_changeset);
+      db_changeset_apply($db_changeset);
 
       $fleetRow['fleet_start_type'] = PT_PLANET;
       $sourcePlanet = db_planet_by_vector($fleetRow, 'fleet_start_', false, 'name');
