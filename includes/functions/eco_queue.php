@@ -78,6 +78,8 @@ function eco_que_arr2str($que_arr)
 
 function que_build($user, $planet, $build_mode = BUILD_CREATE)
 {
+  global $lang;
+
   try
   {
     if(!$user['id'])
@@ -167,7 +169,11 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
     $unit_level = mrc_get_level($user, $planet, $unit_id, true, true) + $units_qued;
     if(($unit_max = get_unit_param($unit_id, P_MAX_STACK)) && $unit_level >= $unit_max)
     {
-      throw new exception('Уже есть максимальное количество юнитов', ERR_ERROR); // TODO EXCEPTION
+      throw new exception('Максимальное количество юнитов данного типа уже достигнуто или будет достигнуто по окончанию очереди', ERR_ERROR); // TODO EXCEPTION
+    }
+    if($unit_max && $unit_level + $unit_amount > $unit_max)
+    {
+      throw new exception("Постройка {$unit_amount} {$lang['tech'][$unit_id]} приведет к привышению максимально возможного количества юнитов данного типа", ERR_ERROR); // TODO EXCEPTION
     }
 
     // TODO Переделать eco_unit_busy для всех типов зданий
@@ -186,10 +192,14 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
           $missile_qued = isset($que['in_que'][$que_id][$planet['id']][$missile_id]) ? $que['in_que'][$que_id][$planet['id']][$missile_id] : 0;
           $used_silo += (mrc_get_level($user, $planet, $missile_id, true, true) + $missile_qued) * get_unit_param($missile_id, P_UNIT_SIZE);
         }
-        $free_silo = mrc_get_level($user, $planet, STRUC_SILO) * get_unit_param(STRUC_SILO, P_CAPACITY) - $used_silo - get_unit_param($unit_id, P_UNIT_SIZE) * $unit_amount;
-        if($free_silo < 0)
+        $free_silo = mrc_get_level($user, $planet, STRUC_SILO) * get_unit_param(STRUC_SILO, P_CAPACITY) - $used_silo;
+        if($free_silo <= 0)
         {
-          throw new exception('Ракетная шахта полна', ERR_ERROR); // TODO EXCEPTION
+          throw new exception('Ракетная шахта уже заполнена или будет заполнена по окончанию очереди', ERR_ERROR); // TODO EXCEPTION
+        }
+        if($free_silo < get_unit_param($unit_id, P_UNIT_SIZE) * $unit_amount)
+        {
+          throw new exception("В ракетной шахте нет места для {$unit_amount} штук {$lang['tech'][$unit_id]}", ERR_ERROR); // TODO EXCEPTION
         }
       }
       $unit_amount = min($unit_amount, MAX_FLEET_OR_DEFS_PER_ROW);
@@ -657,7 +667,6 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
   $que = que_recalculate($que);
 //pdump($que, '$que');
 
-  /*
   // TODO: Re-enable quests for Alliances
   if(!empty($unit_changes) && !$user['user_as_ally'] && $user['id_planet'])
   {
@@ -671,46 +680,53 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
   }
 
   $quest_rewards = array();
-  $xp_incoming = 0;
-  foreach($unit_changes as $owner_id => $changes)
+  $quests_complited = array();
+  $xp_incoming = array();
+
+  foreach($unit_changes as $user_id => $planet_changes)
   {
-    // $user_id_sql = $owner_id ? $owner_id : $user['id'];
-    $planet_id_sql = $owner_id ? $owner_id : null;
-    foreach($changes as $unit_id => $unit_value)
+    foreach($planet_changes as $planet_id => $changes)
     {
-
-      $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id_sql);
-
-      // TODO: Изменить согласно типу очереди
-      $unit_level_new = mrc_get_level($user, array(), $unit_id, false, true) + $unit_value;
-      $build_data = eco_get_build_data($user, array(), $unit_id, $unit_level_new - 1);
-      $build_data = $build_data[BUILD_CREATE];
-      foreach(sn_get_groups('resources_loot') as $resource_id)
+      $planet_this = $planet_id ? classSupernova::db_get_record_by_id(LOC_PLANET, $planet_id) : array();
+      foreach($changes as $unit_id => $unit_value)
       {
-        $xp_incoming += $build_data[$resource_id];
-      }
-
-      if($planet['id'])
-      {
-        // TODO: Check mutiply condition quests
-        $quest_trigger_list = array_keys($quest_triggers, $unit_id);
-        foreach($quest_trigger_list as $quest_id)
+        $que_id = que_get_unit_que($unit_id);
+        $unit_level_new = mrc_get_level($user, $planet_this, $unit_id, false, true) + $unit_value;
+        if($que_id == QUE_STRUCTURES || $que_id == QUE_RESEARCH)
         {
-          if($quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE && $quest_list[$quest_id]['quest_unit_amount'] <= $unit_level_new)
+          // TODO: Изменить согласно типу очереди
+          $build_data = eco_get_build_data($user, $planet_this, $unit_id, $unit_level_new - 1);
+          $build_data = $build_data[BUILD_CREATE];
+          foreach(sn_get_groups('resources_loot') as $resource_id)
           {
-            $quest_rewards[$quest_id] = $quest_list[$quest_id]['quest_rewards'];
-            $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
+            $xp_incoming[$que_id] += $build_data[$resource_id]; // TODO - добавить конверсию рейтов обмена
+          }
+        }
+
+        //if(is_array($planet) && $planet['id'])
+        {
+          // TODO: Check mutiply condition quests
+          $quest_trigger_list = array_keys($quest_triggers, $unit_id);
+          foreach($quest_trigger_list as $quest_id)
+          {
+            if($quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE && $quest_list[$quest_id]['quest_unit_amount'] <= $unit_level_new)
+            {
+              $quest_rewards[$quest_id][$user_id][$planet_id] = $quest_list[$quest_id]['quest_rewards_list'];
+              $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
+            }
           }
         }
       }
     }
   }
   // TODO: Изменить начисление награды за квесты на ту планету, на которой происходил ресеч
-  // qst_reward($user, $planet, $quest_rewards, $quest_list);
-  */
+  qst_reward($user, $planet, $quest_rewards, $quest_list);
 
   // TODO: Изменить согласно типу очереди
-  // rpg_level_up($user, RPG_TECH, $xp_incoming / 1000);
+  foreach($xp_incoming as $que_id => $xp)
+  {
+    rpg_level_up($user, $que_id == QUE_RESEARCH ? RPG_TECH : RPG_STRUCTURE, $xp / 1000);
+  }
 
   db_changeset_apply($db_changeset);
 

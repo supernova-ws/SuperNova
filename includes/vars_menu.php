@@ -154,7 +154,6 @@ $sn_menu = array(
     'LINK'  => 'flying_fleets.php',
     'ICON'  => true,
   ),
-/*
   'menu_empire_quests' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
@@ -162,8 +161,6 @@ $sn_menu = array(
     'LINK'  => 'quest.php',
     'ICON'  => true,
   ),
-*/
-
   'menu_empire_universe' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',

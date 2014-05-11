@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a8.0
+* @version 39a6.17
 *
 */
 
@@ -127,6 +127,7 @@ $a_lang_array = (array(
   'opt_vacation_err_your_fleet' => 'Not to leave until the flight is at least one of your fleet',
   'opt_vacation_err_building' => 'You are building or explore on %s and therefore you cannot leave on vacation',
   'opt_vacation_err_research' => 'Your scientists do some research and therefore you cannot leave on vacation',
+  'opt_vacation_err_que' => 'There are research ongoing and/or some planet ques is not empty so you can not leave to vacation. Use Empire overview to find what happening',
   'opt_vacation_err_timeout' => 'Vacancy timeout not reached',
   'opt_vacation_next' => 'Next vacancy would be available after',
   'opt_vacation_min' => 'a minimum of',

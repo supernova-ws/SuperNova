@@ -659,7 +659,7 @@ mission = array(
     ),
 
     // Resources that can be tradeable in market trader AND be a quest_rewards
-    'quest_rewards' => array(RES_METAL => RES_METAL, RES_CRYSTAL => RES_CRYSTAL, RES_DEUTERIUM => RES_DEUTERIUM, RES_DARK_MATTER => RES_DARK_MATTER),
+    'quest_rewards' => array(RES_METAL => RES_METAL, RES_CRYSTAL => RES_CRYSTAL, RES_DEUTERIUM => RES_DEUTERIUM, RES_DARK_MATTER => RES_DARK_MATTER, ),
 
 //      // Ques list
 //      'ques' => array(QUE_STRUCTURES, QUE_HANGAR, QUE_RESEARCH),

@@ -23,9 +23,14 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
     //case 'build':$operation_result = eco_bld_tech_research($user, $planet);break;
   }
 
+  $template = gettemplate("buildings_hangar", true);
   if(sys_unit_arr2str(sys_get_param('fmenge')))
   {
     $operation_result = que_build($user, $planet);
+  }
+  if(!empty($operation_result))
+  {
+    $template->assign_block_vars('result', $operation_result);
   }
 
   $page_error = '';
@@ -43,7 +48,6 @@ function eco_bld_hangar($que_type, $user, &$planet, $que)
   }
   $silo_capacity_free = max(0, $silo_capacity_free);
 
-  $template = gettemplate("buildings_hangar", true);
 
   $TabIndex  = 0;
   foreach($sn_data_group as $unit_id)

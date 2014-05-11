@@ -32,9 +32,9 @@ function sn_options_model()
       $user['admin_protection'] = $planet_protection;
     }
 
-    /*
     if(sys_get_param_int('vacation') && !$config->user_vacation_disable)
     {
+      sn_db_transaction_start();
       if($user['authlevel'] < 3)
       {
         if($user['vacation_next'] > $time_now)
@@ -50,31 +50,19 @@ function sn_options_model()
           message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
           die();
         }
-        elseif($user['que'])
+
+        $que = que_get($user['id'], false);
+        if(!empty($que))
         {
-          message($lang['opt_vacation_err_research'], $lang['Error'], 'index.php?page=options', 5);
+          message($lang['opt_vacation_err_que'], $lang['Error'], 'index.php?page=options', 5);
           die();
         }
-        else
-        {
-          $query = db_planet_list_by_owner($user['id']);
-          while($planet = mysql_fetch_assoc($query))
-          {
-            $global_data = sys_o_get_updated($user, $planet, $time_now, true);
-            $planet = $global_data['planet'];
-            if(($planet['que']) || ($planet['b_hangar'] || $planet['b_hangar_id']))
-            {
-              message(sprintf($lang['opt_vacation_err_building'], $planet['name']), $lang['Error'], 'index.php?page=options', 5);
-              die();
-            }
-          }
-        }
 
-        $query = db_planet_list_by_owner($user['id'], true);
-        while($planet = mysql_fetch_assoc($query))
+        $query = classSupernova::db_get_record_list(LOC_PLANET, "`id_owner` = {$user['id']}");
+        foreach($query as $planet)
         {
-          $planet = sys_o_get_updated($user, $planet, $time_now);
-          $planet = $planet['planet'];
+          // $planet = sys_o_get_updated($user, $planet, $time_now);
+          // $planet = $planet['planet'];
 
           db_planet_set_by_id($planet['id'],
             "last_update = '{$time_now}', energy_used = '0', energy_max = '0',
@@ -89,8 +77,8 @@ function sn_options_model()
       {
         $user['vacation'] = $time_now;
       }
+      sn_db_transaction_commit();
     }
-    */
 
     foreach($user_option_list as $option_group_id => $option_group)
     {

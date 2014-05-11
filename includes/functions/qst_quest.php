@@ -241,13 +241,7 @@ function qst_quest_parse($quest)
 {
   list($quest['quest_unit_id'], $quest['quest_unit_amount']) = explode(',', $quest['quest_conditions']);
 
-  $tmp = explode(';', $quest['quest_rewards']);
-  $quest['quest_rewards_list'] = array();
-  foreach($tmp as $quest_reward_str)
-  {
-    list($quest_reward_id, $quest_reward_amount) = explode(',', $quest_reward_str);
-    $quest['quest_rewards_list'][$quest_reward_id] = $quest_reward_amount;
-  }
+  $quest['quest_rewards_list'] = sys_unit_str2arr($quest['quest_rewards']);
 
   return $quest;
 }
@@ -298,78 +292,83 @@ function qst_active_triggers($quest_list)
 
 function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
 {
-  return;
+  if(empty($rewards)) return;
 
   global $lang;
 
-  foreach($rewards as $quest_id => $rewards_list_string)
+  $db_changeset = array();
+  $total_rewards = array();
+  $comment_dm = '';
+
+  foreach($rewards as $quest_id => $user_data)
+    foreach($user_data as $user_id => $planet_data)
+      foreach($planet_data as $planet_id => $reward_list)
+      {
+        $comment = sprintf($lang['qst_msg_complete_body'], $quest_list[$quest_id]['quest_name']);
+        $comment_dm .= isset($reward_list[RES_DARK_MATTER]) ? $comment : '';
+
+        $comment_reward = array();
+        foreach($reward_list as $unit_id => $unit_amount)
+        {
+          $comment_reward[] = $unit_amount . ' ' . $lang['tech'][$unit_id];
+          $total_rewards[$user_id][$planet_id][$unit_id] += $unit_amount;
+        }
+        $comment .= " {$lang['qst_msg_your_reward']} " . implode(',', $comment_reward);
+
+        msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['msg_from_admin'], $lang['qst_msg_complete_subject'], $comment);
+
+        sn_db_perform('{{quest_status}}', array(
+          'quest_status_quest_id' => $quest_id,
+          'quest_status_user_id'  => $user_id,
+          'quest_status_status'   => QUEST_STATUS_COMPLETE
+        ));
+      }
+
+  $group_resources = sn_get_groups('resources_loot');
+  $quest_rewards_allowed = sn_get_groups('quest_rewards');
+  if(!empty($total_rewards))
   {
-    $comment_reward = array();
-    $planet_reward  = array();
-    $user_reward    = array();
-    $user_reward_dm = 0;
-    $comment = sprintf($lang['qst_msg_complete_body'], $quest_list[$quest_id]['quest_name']);
-
-    $rewards_list_array = explode(';', $rewards_list_string);
-    foreach($rewards_list_array as $reward_string)
+    foreach($total_rewards as $user_id => $planet_data)
     {
-      list($reward_id, $reward_amount) = explode(',', $reward_string);
-      $reward_info = get_unit_param($reward_id);
-      $reward_db_name = pname_resource_name($reward_id);
-      $reward_db_string = "`{$reward_db_name}` = `{$reward_db_name}` + {$reward_amount}";
-
-      if($reward_id == RES_DARK_MATTER)
+      $user_row = classSupernova::db_get_record_by_id(LOC_USER, $user_id);
+      foreach($planet_data as $planet_id => $unit_data)
       {
-        $user_reward_dm = $reward_amount;
-      }
-
-      if($reward_info['location'] == LOC_USER)
-      {
-        if($reward_id != RES_DARK_MATTER)
+        $local_changeset = array();
+        foreach($unit_data as $unit_id => $unit_amount)
         {
-          $user[$reward_db_name] += $reward_amount;
+          if(!isset($quest_rewards_allowed[$unit_id])) continue;
+
+          if($unit_id == RES_DARK_MATTER)
+          {
+            rpg_points_change($user['id'], RPG_QUEST, $unit_amount, $comment_dm);
+          }
+          elseif(isset($group_resources[$unit_id]))
+          {
+            $local_changeset[pname_resource_name($unit_id)] = array('delta' => $unit_amount);
+          }
+          else // Проверим на юниты
+          {
+            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_amount, $user_row, $planet_id);
+          }
+          // unit
         }
-        $user_reward[] = $reward_db_string;
-      }
-      elseif($reward_info['location'] == LOC_PLANET)
-      {
-        $planet[$reward_db_name] += $reward_amount;
-        $planet_reward[] = $reward_db_string;
-      }
-      else
-      {
-        continue;
-      }
 
-      $comment_reward[] = $reward_amount . ' ' . $lang['tech'][$reward_id];
-    }
-
-    if(!empty($comment_reward))
-    {
-      $comment .= " {$lang['qst_msg_your_reward']} " . implode(',', $comment_reward);
-
-      if(!empty($user_reward))
-      {
-        db_user_set_by_id($user['id'], implode(',', $user_reward));
-        if($user_reward_dm)
+        if(!empty($local_changeset))
         {
-          rpg_points_change($user['id'], RPG_QUEST, $user_reward_dm, $comment, true);
+          $planet_id = $planet_id == 0 && isset($user_row['id_planet']) ? $user_row['id_planet'] : $planet_id;
+          $db_changeset[$planet_id ? 'planets' : 'users'][] = array(
+            'action' => SQL_OP_UPDATE,
+            P_VERSION => 1,
+            'where' => array(
+              "id" => $planet_id ? $planet_id : $user_id,
+            ),
+            'fields' => $local_changeset,
+          );
         }
-      }
-
-      if(!empty($planet_reward))
-      {
-        db_planet_set_by_id($planet['id'], implode(',', $planet_reward));
       }
     }
 
-    sn_db_perform('{{quest_status}}', array(
-      'quest_status_quest_id' => $quest_id,
-      'quest_status_user_id'  => $user['id'],
-      'quest_status_status'   => QUEST_STATUS_COMPLETE
-    ));
-
-    msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['msg_from_admin'], $lang['qst_msg_complete_subject'], $comment);
+    classSupernova::db_changeset_apply($db_changeset);
   }
 }
 

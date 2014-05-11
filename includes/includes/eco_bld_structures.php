@@ -40,14 +40,8 @@ function eco_build($que_type, $user, &$planet)
     {
       case 'create': // Add unit to que for build
       case 'destroy': // Add unit to que for remove
-        // eco_bld_structure_build($user, $planet);
-        que_build($user, $planet, $action == 'destroy' ? BUILD_DESTROY : BUILD_CREATE);
+        $operation_result = que_build($user, $planet, $action == 'destroy' ? BUILD_DESTROY : BUILD_CREATE);
       break;
-
-      //case 'destroy': // Add unit to que for remove
-        // eco_bld_structure_build($user, $planet, BUILD_DESTROY);
-      //  que_build($user, $planet, BUILD_DESTROY);
-      //break;
 
       case 'trim': // Cancel unit from que
         // $que = eco_que_clear($user, $planet, $que, QUE_STRUCTURES, true);
@@ -67,6 +61,10 @@ function eco_build($que_type, $user, &$planet)
   $hangar_busy = count($que['que'][QUE_HANGAR]);
   $lab_busy    = count($que['que'][QUE_RESEARCH]) && !$config->BuildLabWhileRun;
 */
+  if(!empty($operation_result))
+  {
+    $template->assign_block_vars('result', $operation_result);
+  }
 
   $ques = que_get($user['id'], $planet['id'], $que_type);
   $que = &$ques['ques'][$que_type][$user['id']][$planet['id']];
@@ -187,7 +185,7 @@ function eco_build($que_type, $user, &$planet)
   }
   */
 
-  que_tpl_parse(&$template, $que_type, $user, $planet, $que);
+  que_tpl_parse($template, $que_type, $user, $planet, $que);
 
   $sector_cost = eco_get_build_data($user, $planet, UNIT_SECTOR, mrc_get_level($user, $planet, UNIT_SECTOR), true);
   $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];

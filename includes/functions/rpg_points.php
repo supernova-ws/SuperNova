@@ -184,6 +184,9 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
       $q = 1.05;
     break;
 
+    default:
+      break;
+
   }
 
   $xp = &$user[$field_xp];

@@ -966,16 +966,30 @@ class classSupernova
     static::cache_clear_all(true);
   }
 
-  public function db_changeset_condition_compile(&$conditions, $table_name = '')
+  public function db_changeset_condition_compile(&$conditions, &$table_name = '')
   {
     if(!$conditions[P_LOCATION] || $conditions[P_LOCATION] == LOC_NONE)
     {
       $conditions[P_LOCATION] = LOC_NONE;
       switch($table_name)
       {
-        case 'users': $conditions[P_LOCATION] = LOC_USER; break;
-        case 'planets': $conditions[P_LOCATION] = LOC_PLANET; break;
-        case 'unit': $conditions[P_LOCATION] = LOC_UNIT; break;
+        case 'users':
+        case LOC_USER:
+          $conditions[P_TABLE_NAME] = $table_name = 'users';
+          $conditions[P_LOCATION] = LOC_USER;
+        break;
+
+        case 'planets':
+        case LOC_PLANET:
+          $conditions[P_TABLE_NAME] = $table_name = 'planets';
+          $conditions[P_LOCATION] = LOC_PLANET;
+        break;
+
+        case 'unit':
+        case LOC_UNIT:
+          $conditions[P_TABLE_NAME] = $table_name = 'unit';
+          $conditions[P_LOCATION] = LOC_UNIT;
+        break;
       }
     }
 
