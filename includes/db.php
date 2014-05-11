@@ -32,6 +32,7 @@ function sn_db_connect()
 //    mysql_query("SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE") or die('Error: ' . mysql_error());
     mysql_select_db($dbsettings['name']) or $debug->error(mysql_error(), 'DB error - cannot find DB on server');
     // echo mysql_error();
+    // mysql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or die('Error: ' . mysql_error());
     mysql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or die('Error: ' . mysql_error());
     unset($dbsettings);
   }
@@ -203,6 +204,7 @@ function db_change_units_perform($query, $tablename, $object_id)
   $query = implode(',', $query);
   if($query && $object_id)
   {
+    return classSupernova::db_upd_record_by_id($tablename == 'users' ? LOC_USER : LOC_PLANET, $object_id, $query);
     return doquery("UPDATE {{{$tablename}}} SET {$query} WHERE `id` = '{$object_id}' LIMIT 1;");
   }
 }

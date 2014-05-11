@@ -130,7 +130,8 @@ function db_planet_count_by_type($user_id, $planet_type = PT_PLANET)
   $user_id = intval($user_id);
   $planet_type = intval($planet_type);
 
-  $planets = doquery("SELECT COUNT(*) AS planet_count FROM {{planets}} WHERE id_owner = {$user_id} AND `planet_type` = {$planet_type} FOR UPDATE", true);
+  // $planets = doquery("SELECT COUNT(*) AS planet_count FROM {{planets}} WHERE id_owner = {$user_id} AND `planet_type` = {$planet_type} FOR UPDATE", true);
+  $planets = doquery("SELECT COUNT(*) AS planet_count FROM {{planets}} WHERE id_owner = {$user_id} AND `planet_type` = {$planet_type}", true);
   return isset($planets['planet_count']) ? $planets['planet_count'] : 0;
 }
 function db_planet_list_resources_by_owner()

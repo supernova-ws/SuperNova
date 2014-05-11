@@ -363,7 +363,7 @@ class classSupernova
     //pdump($filter, 'Выбираем ' . $location_type);
     $query_cache = &static::$queries[$location_type][$filter];
 
-    if(!isset($query_cache))
+    if(!isset($query_cache) || $query_cache === null)
     {
       // pdump($filter, 'Кэш пустой, начинаем возню');
       $location_info = &static::$location_info[$location_type];

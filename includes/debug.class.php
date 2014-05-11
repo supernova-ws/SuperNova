@@ -92,7 +92,13 @@ class debug
 
     if($deadlock && ($q = mysql_fetch_assoc(mysql_query('SHOW ENGINE INNODB STATUS'))))
     {
-      $error_backtrace['deadlock'] = nl2br($q['Status']);
+      $error_backtrace['deadlock'] = $q['Status'];
+      $error_backtrace['locks'] = classSupernova::$locks;
+      $error_backtrace['cSN_data'] = classSupernova::$data;
+      foreach($error_backtrace['cSN_data'] as &$location)
+        foreach($location as $location_id => &$location_data)
+          $location_data = $location_id;
+      $error_backtrace['cSN_queries'] = classSupernova::$queries;
     }
 
     if($base_dump)
@@ -101,14 +107,14 @@ class debug
       unset($error_backtrace['backtrace'][1]);
       unset($error_backtrace['backtrace'][0]);
       $error_backtrace['query_log'] = "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>\r\n";
-      global $user, $planetrow;
-      $error_backtrace['user'] = $user;
-      $error_backtrace['planetrow'] = $planetrow;
       $error_backtrace['$_GET'] = $_GET;
       $error_backtrace['$_POST'] = $_POST;
       $error_backtrace['$_COOKIES'] = $_COOKIES;
       $error_backtrace['$_SESSION'] = $_SESSION;
       $error_backtrace['$_SERVER'] = $_SERVER;
+      global $user, $planetrow;
+      $error_backtrace['user'] = $user;
+      $error_backtrace['planetrow'] = $planetrow;
     }
 
     return $error_backtrace;
