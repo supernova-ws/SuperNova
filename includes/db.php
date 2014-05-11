@@ -160,8 +160,7 @@ function doquery($query, $table = '', $fetch = false)
     $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>$table</th><th>$fetch</th></tr>");
   }
 
-  if(defined('DEBUG_SQL'))
-  {
+  // if(defined('DEBUG_SQL')) {
     $backtrace = debug_backtrace();
     /*
     pdump($backtrace[0]);
@@ -182,10 +181,16 @@ function doquery($query, $table = '', $fetch = false)
 
     $transaction_id = classSupernova::db_transaction_check(false) ? classSupernova::$transaction_id : classSupernova::$transaction_id++;
 
-    $debug->warning("/* tID {$transaction_id} */ " .
-      preg_replace("/\s+/", ' ', $sql) .
-      " /* {$function} {$transaction_id} '{$file}' Line {$a_trace['line']} tID */ ",
-      'SQL Debug', LOG_DEBUG_SQL);
+    $sql = "/* {$function} '{$file}' Line {$a_trace['line']} tID {$transaction_id} */ " . $sql;
+
+  if(defined('DEBUG_SQL'))
+  {
+    $debug->warning(preg_replace("/\s+/", ' ', $sql), 'SQL Debug', LOG_DEBUG_SQL);
+
+//    $debug->warning("/* tID {$transaction_id} */ " .
+//      preg_replace("/\s+/", ' ', $sql) .
+//      " /* {$function} {$transaction_id} '{$file}' Line {$a_trace['line']} tID */ ",
+//      'SQL Debug', LOG_DEBUG_SQL);
   }
 
   $sqlquery = mysql_query($sql) or $debug->error(mysql_error()."<br />$sql<br />",'SQL Error');

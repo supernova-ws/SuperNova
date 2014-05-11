@@ -469,6 +469,9 @@ class classSupernova
 
     $condition = trim($condition);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
+
+//static::db_get_record_list($location_type, $condition, false, true);
+
     if($result = static::db_query("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : '')))
     {
       if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
@@ -525,6 +528,9 @@ class classSupernova
 
     $location_info = &static::$location_info[$location_type];
     $table_name = $location_info[P_TABLE_NAME];
+
+//static::db_get_record_list($location_type, $condition, false, true);
+
     if($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE {$condition}"))
     {
       if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
@@ -599,6 +605,10 @@ class classSupernova
     {
       // Вытаскиваем запись
       $username_safe = mysql_real_escape_string($like ? strtolower($username) : $username); // тут на самом деле strtolower() лишняя, но пусть будет
+
+      // TODO переписать
+      // classSupernova::db_get_record_list(LOC_USER, "`username` " . ($like ? 'LIKE' : '='). " '{$username_safe}'");
+
       $user = static::db_query(
         "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '='). " '{$username_safe}'"
       , true);
@@ -740,8 +750,6 @@ class classSupernova
       die('No user_id for que_get_que()');
     }
 
-    sn_db_transaction_check($for_update);
-
     $ques = array();
 
     $query = array();
@@ -781,37 +789,6 @@ class classSupernova
     $ques['items'] = static::db_get_record_list(LOC_QUE, implode(' AND ', $query));
 
     return que_recalculate($ques);
-
-    print(1);
-
-    $query_cache = &static::$locator[LOC_QUE][$location_type][$location_id];
-    if(!isset($query_cache))
-    {
-      $got_data = static::db_get_record_list(LOC_QUE, "unit_location_type = {$location_type} AND unit_location_id = {$location_id}");
-      if(is_array($got_data))
-      {
-        foreach($got_data as $unit_id => $unit_data)
-        {
-          // static::$data[LOC_LOCATION][$location_type][$location_id][$unit_data['unit_snid']] = &static::$data[LOC_UNIT][$unit_id];
-          $query_cache[$unit_data['unit_snid']] = &static::$data[LOC_QUE][$unit_id];
-        }
-      }
-    }
-
-    $result = false;
-    if(is_array($query_cache))
-    {
-      foreach($query_cache as $key => $value)
-      {
-        $result[$key] = $value;
-      }
-    }
-
-    return $result;
-
-
-
-
   }
 
 

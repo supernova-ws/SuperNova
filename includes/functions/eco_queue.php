@@ -129,7 +129,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
 
     sn_db_transaction_start();
     // Это нужно, что бы заблокировать пользователя и работу с очередями
-    $user = db_user_by_id($user['id'], true);
+    $user = db_user_by_id($user['id']);
     // Это нужно, что бы заблокировать планету от списания ресурсов
     if(isset($planet['id']) && $planet['id'])
     {
