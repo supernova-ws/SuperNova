@@ -7,7 +7,7 @@ function mrc_officer_accessible(&$user, $mercenary_id)
   global $config;
 
   $mercenary_info = get_unit_param($mercenary_id);
-  if(!$config->empire_mercenary_temporary || $mercenary_info[P_UNIT_TYPE] == UNIT_PLANS)
+  if($config->empire_mercenary_temporary || $mercenary_info[P_UNIT_TYPE] == UNIT_PLANS)
   {
     return true;
   }

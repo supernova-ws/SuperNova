@@ -82,7 +82,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
   {
     if(!$user['id'])
     {
-      die('No user ID'); // TODO EXCEPTION
+      throw new exception('Нет идентификатора пользователя - сообщите Администрации', ERR_ERROR); // TODO EXCEPTION
     }
 
     $unit_amount = 1;
@@ -94,19 +94,19 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
     }
     if(!$unit_id)
     {
-      die('no unit_id'); // TODO EXCEPTION
+      throw new exception('Нет идентификатора юнита - сообщите Администрации', ERR_ERROR); // TODO EXCEPTION
     }
 
     $unit_amount = floor($unit_amount);
     if($unit_amount < 1)
     {
-      die('Unit amount is wrong'); // TODO EXCEPTION
+      throw new exception('Неправильное количество юнитов - сообщите Администрации', ERR_ERROR); // TODO EXCEPTION
     }
 
     $que_id = que_get_unit_que($unit_id);
     if(!$que_id)
     {
-      die('No que ID'); // TODO EXCEPTION
+      throw new exception('Неправильный тип очереди - сообщите Администрации', ERR_ERROR); // TODO EXCEPTION
     }
 
     $que_data = sn_get_groups('ques');
@@ -144,7 +144,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
     // TODO Добавить вызовы функций проверок текущей и максимальной длин очередей
     if(count($que['ques'][$que_id][$user['id']][$planet_id]) >= que_get_max_que_length($user, $planet, $que_id, $que_data))
     {
-      die('Que full'); // TODO EXCEPTION
+      throw new exception('Все слоты очереди заняты', ERR_ERROR); // TODO EXCEPTION
     }
 
     // TODO Отдельно посмотреть на уничтожение зданий - что бы можно было уничтожать их без планов
@@ -154,12 +154,12 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
         break;
 
       case BUILD_UNIT_BUSY:
-        throw new exception('eco_bld_msg_err_laboratory_upgrading', ERR_ERROR); // TODO EXCEPTION
+        throw new exception('Строение занято', ERR_ERROR); // TODO EXCEPTION eco_bld_msg_err_laboratory_upgrading
         break;
 
       case BUILD_REQUIRE_NOT_MEET:
       default:
-        throw new exception('eco_bld_msg_err_requirements_not_meet', ERR_ERROR); // TODO EXCEPTION
+        throw new exception('Требования не удовлетворены', ERR_ERROR); // TODO EXCEPTION eco_bld_msg_err_requirements_not_meet
         break;
     }
 
@@ -189,7 +189,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
         $free_silo = mrc_get_level($user, $planet, STRUC_SILO) * get_unit_param(STRUC_SILO, P_CAPACITY) - $used_silo - get_unit_param($unit_id, P_UNIT_SIZE) * $unit_amount;
         if($free_silo < 0)
         {
-          throw new exception('Silo is full', ERR_ERROR); // TODO EXCEPTION
+          throw new exception('Ракетная шахта полна', ERR_ERROR); // TODO EXCEPTION
         }
       }
       $unit_amount = min($unit_amount, MAX_FLEET_OR_DEFS_PER_ROW);
@@ -203,7 +203,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
         $sectors_qued = is_array($que['in_que'][$que_id][$planet['id']]) ? array_sum($que['in_que'][$que_id][$planet['id']]) : 0;
         if($build_mode == BUILD_CREATE && eco_planet_fields_max($planet) - $planet['field_current'] - $sectors_qued <= 0)
         {
-          die('Not enough sectors'); // TODO EXCEPTION
+          throw new exception('Не хватает секторов на планете', ERR_ERROR); // TODO EXCEPTION
         }
         // И что это я такое написал? Зачем?
         //if($build_mode == BUILD_DESTROY && $planet['field_current'] <= $que['amounts'][$que_id])
@@ -219,7 +219,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
     $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
     if($build_data['RESULT'][BUILD_CREATE] != BUILD_ALLOWED)
     {
-      throw new exception('Строительство блокировано - разобраться почему', ERR_ERROR); // TODO EXCEPTION
+      throw new exception('Строительство блокировано', ERR_ERROR); // TODO EXCEPTION
     }
 
     if($build_data['CAN'][$build_mode] < $unit_amount)
@@ -230,7 +230,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
 
     if($new_unit_level < 0)
     {
-      die('Еще какой-то эксепшен'); // TODO EXCEPTION
+      throw new exception('Нельзя уничтожить больше юнитов, чем есть', ERR_ERROR); // TODO EXCEPTION
     }
 
     que_add_unit($unit_id, $user, $planet, $build_data, $new_unit_level, $unit_amount, $build_mode);
