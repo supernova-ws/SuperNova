@@ -173,9 +173,11 @@ if(file_exists($update_file))
   {
     if(defined('IN_ADMIN'))
     {
-      if($time_now >= $config->var_db_update_end)
+      sn_db_transaction_start(); // Для защиты от двойного запуска апдейта - начинаем транзакцию. Так запись в базе будет блокирована
+      if($time_now >= $config->db_loadItem('var_db_update_end'))
       {
         $config->db_saveItem('var_db_update_end', $time_now + $config->upd_lock_time);
+        sn_db_transaction_commit();
 
         require_once($update_file);
         sys_refresh_tablelist($db_prefix);
@@ -189,6 +191,7 @@ if(file_exists($update_file))
         $timeout = $config->var_db_update_end - $time_now;
         die("Обновляется база данных. Рассчетное время окончания - {$timeout} секунд (время обновления может увеличиваться). Пожалуйста, подождите...<br>Obnovljaetsja baza dannyh. Rasschetnoe vremya okonchanija - {$timeout} secund. Pozhalujsta, podozhdute...<br>Database update in progress. Estimated update time {$timeout} seconds (can increase depending on update process). Please wait...");
       }
+      sn_db_transaction_rollback();
     }
     else
     {

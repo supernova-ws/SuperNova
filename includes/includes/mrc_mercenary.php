@@ -7,7 +7,7 @@ function mrc_officer_accessible(&$user, $mercenary_id)
   global $config;
 
   $mercenary_info = get_unit_param($mercenary_id);
-  if($config->empire_mercenary_temporary || $mercenary_info[P_UNIT_TYPE] == UNIT_PLANS)
+  if(!$config->empire_mercenary_temporary || $mercenary_info[P_UNIT_TYPE] == UNIT_PLANS)
   {
     return true;
   }
@@ -189,7 +189,8 @@ function mrc_mercenary_render($user)
       }
       $total_cost = eco_get_total_cost($mercenary_id, $mercenary_level + 1);
       $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $cost_alliance_multiplyer;
-      $mercenary_time_finish = $user[$mercenary_id]['unit_time_finish'];
+      $mercenary_unit = classSupernova::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
+      $mercenary_time_finish = strtotime($mercenary_unit['unit_time_finish']);
       $template->assign_block_vars('officer', array(
         'ID'          => $mercenary_id,
         'NAME'        => $lang['tech'][$mercenary_id],

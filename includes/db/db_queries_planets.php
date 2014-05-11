@@ -25,6 +25,7 @@ function db_planet_by_vector($vector, $prefix = '', $for_update = false, $fields
   $planet = isset($vector[$prefix . 'planet']) ? intval($vector[$prefix . 'planet']) : 0;
   $planet_type = isset($vector[$prefix . 'planet_type']) ? intval($vector[$prefix . 'planet_type']) :
     (isset($vector[$prefix . 'type']) ? intval($vector[$prefix . 'type']) : 0);
+  $planet_type = $planet_type == PT_DEBRIS ? PT_PLANET : $planet_type;
 
   return db_planet_by_gspt_safe($galaxy, $system, $planet, $planet_type, $for_update, $fields);
 }

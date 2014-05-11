@@ -378,11 +378,13 @@ class classPersistent extends classCache
   {
     if($index)
     {
-      $qry = doquery("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index}';", '', true);
+      $qry = doquery("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index}' FOR UPDATE", true);
       $this->$index = $qry[$this->sql_value_field];
 
       return $qry[$this->sql_value_field];
-    };
+    }
+
+    return null;
   }
 
   public function db_loadAll()
