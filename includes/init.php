@@ -3,13 +3,18 @@ define('BE_DEBUG', true);
 // define('DEBUG_SQL', true); // Подойдет любое значение
 // define('DEBUG_COMMENT_SQL', true); // Добавлять комментарии прямо в SQL запрос
 
-if($_SERVER['REMOTE_ADDR'] == "37.229.131.145")
+if($_SERVER['REMOTE_ADDR'] == "109.86.195.192")
 {
-//  print('hello');
+
 }
 else
 {
-//  print('Производится обновление сервера. Ждите...');die();
+  // print('Производится обновление сервера. Ждите...');die();
+}
+
+if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false)
+{
+  define('SN_GOOGLE', true);
 }
 
 define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');

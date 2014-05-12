@@ -585,6 +585,7 @@ class classSupernova
     if(!($username = trim($username))) return false;
 
     $user = null;
+    if(is_array(static::$data[LOC_USER]))
     foreach(static::$data[LOC_USER] as $user_id => $user_data)
     {
       if(is_array($user_data) && isset($user_data['username']))
@@ -625,6 +626,7 @@ class classSupernova
 
     $user = null;
     // TODO переделать на индексы
+    if(is_array(static::$data[LOC_USER]))
     foreach(static::$data[LOC_USER] as $user_id => $user_data)
     {
       if(is_array($user_data) && isset($user_data['email_2']))

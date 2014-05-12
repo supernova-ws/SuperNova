@@ -478,7 +478,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     'TOPNAV_METAMATTER_TEXT'  => pretty_number(mrc_get_level($user, '', RES_METAMATTER)),
 
     // TODO ГРЯЗНЫЙ ХАК!!!
-    'TOPNAV_PAYMENT' => sn_module_get_active_count('payment'),
+    'TOPNAV_PAYMENT' => sn_module_get_active_count('payment') && !defined('SN_GOOGLE'),
 
     'TOPNAV_MESSAGES_ADMIN'     => $user['msg_admin'],
     'TOPNAV_MESSAGES_PLAYER'    => $user['mnl_joueur'],
