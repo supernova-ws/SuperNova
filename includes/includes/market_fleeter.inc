@@ -166,6 +166,11 @@ if(is_array($shipList))
 }
 $message = '';
 
+if(!$config->eco_stockman_fleet)
+{
+  $config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str(array_map(function($item){return mt_rand(1, 1000);}, sn_get_groups('fleet'))));
+}
+
 tpl_set_resource_info($template, $planetrow, array());
 
 if(!$array)

@@ -376,15 +376,22 @@ function eco_get_total_cost($unit_id, $unit_level)
 {
   global $config;
 
-  $sn_group_resources_all = sn_get_groups('resources_all');
-  $sn_group_resources_loot = sn_get_groups('resources_loot');
+  static $rate, $sn_group_resources_all, $sn_group_resources_loot;
+  if(!$rate)
+  {
+    $sn_group_resources_all = sn_get_groups('resources_all');
+    $sn_group_resources_loot = sn_get_groups('resources_loot');
 
-  $rate[RES_METAL] = $config->rpg_exchange_metal;
-  $rate[RES_CRYSTAL] = $config->rpg_exchange_crystal / $config->rpg_exchange_metal;
-  $rate[RES_DEUTERIUM] = $config->rpg_exchange_deuterium / $config->rpg_exchange_metal;
+    $rate[RES_METAL] = $config->rpg_exchange_metal;
+    $rate[RES_CRYSTAL] = $config->rpg_exchange_crystal / $config->rpg_exchange_metal;
+    $rate[RES_DEUTERIUM] = $config->rpg_exchange_deuterium / $config->rpg_exchange_metal;
+  }
 
-  // $unit_cost_data = &$sn_data[$unit_id]['cost'];
   $unit_cost_data = get_unit_param($unit_id, 'cost');
+  if(!is_array($unit_cost_data))
+  {
+    return array('total' => 0);
+  }
   $factor = isset($unit_cost_data['factor']) ? $unit_cost_data['factor'] : 1;
   $cost_array = array(BUILD_CREATE => array(), 'total' => 0);
   $unit_level = $unit_level > 0 ? $unit_level : 0;

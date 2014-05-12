@@ -98,6 +98,8 @@ class debug
       foreach($error_backtrace['cSN_data'] as &$location)
         foreach($location as $location_id => &$location_data)
           $location_data = $location_id;
+//          $location_data = isset($location_data['username']) ? $location_data['username'] :
+//            (isset($location_data['name']) ? $location_data['name'] : $location_id);
       $error_backtrace['cSN_queries'] = classSupernova::$queries;
     }
 

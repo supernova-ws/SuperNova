@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a3.7
+* @version 39a7.3
 *
 */
 
@@ -544,4 +544,5 @@ $a_lang_array = (array(
   'adm_ban_unban' => 'Бан/Разбан',
   'adm_metametter_payment' => 'ММ & Платежи',
 
+  'adm_stat_already_started' => 'Statistics already updated just now',
 ));

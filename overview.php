@@ -32,13 +32,6 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if(!$config->eco_stockman_fleet)
-{
-// TODO Убрать
-// print('<h1>НЕ ОШИБКА - НЕ СООБЩАТЬ</h1>');
-$config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str(array_map(function($item){return 100;}, sn_get_groups('fleet'))));
-}
-
 lng_include('overview');
 
 $mode            = sys_get_param_str('mode');

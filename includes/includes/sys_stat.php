@@ -165,7 +165,7 @@ function sys_stat_calculate()
 
     $counts[$user_id][$unit['unit_type']] += $unit['unit_level'] * $unit['unit_amount'];
     $total_cost = eco_get_total_cost($unit['unit_snid'], $unit['unit_level']);
-    $points[$user_id][$unit['unit_type']] += $total_cost['total'] * $unit['unit_amount'];
+    $points[$user_id][$unit['unit_type']] += (isset($total_cost['total']) ? $total_cost['total'] : 0) * $unit['unit_amount'];
   }
 
 

@@ -268,6 +268,8 @@ class classSupernova
     static::$transaction_id++;
     doquery('START TRANSACTION');
     static::$db_in_transaction = true;
+    static::$locator = array();
+    static::$queries = array();
     //print('<hr/>TRANSACTION START id' . static::$transaction_id . '<br />');
 
     return static::$transaction_id;

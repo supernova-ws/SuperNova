@@ -1,6 +1,7 @@
 <?php
 define('BE_DEBUG', true);
 // define('DEBUG_SQL', true); // Подойдет любое значение
+// define('DEBUG_COMMENT_SQL', true); // Добавлять комментарии прямо в SQL запрос
 
 if($_SERVER['REMOTE_ADDR'] == "37.229.131.145")
 {

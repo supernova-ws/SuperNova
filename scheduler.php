@@ -29,7 +29,7 @@ function scheduler_process()
   lng_include('admin');
   //if($_SERVER['HTTP_REFERER'] == SN_ROOT_VIRTUAL . 'admin/statbuilder.php')
   $next_stat_update = sys_schedule_get_prev_run($config->stats_schedule, $config->var_stat_update, SN_TIME_NOW);
-  if(sys_get_param_int('admin_update') || IN_ADMIN)
+  if(sys_get_param_int('admin_update'))
   {
     $user = sn_autologin(!$allow_anonymous);
     $sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
@@ -73,9 +73,10 @@ function scheduler_process()
       $maintenance_result = sys_maintenance();
 
       $config->db_saveItem('var_stat_update', $next_stat_update);
-      $config->db_saveItem('var_stat_update_end', SN_TIME_NOW);
       $config->db_saveItem('var_stat_update_msg', $msg);
       $config->db_saveItem('var_stat_update_next', sys_schedule_get_prev_run($config->stats_schedule, $next_stat_update, SN_TIME_NOW, true));
+      $config->db_saveItem('var_stat_update_admin_forced', SN_TIME_NOW);
+      $config->db_saveItem('var_stat_update_end', SN_TIME_NOW);
     }
     elseif($next_stat_update > $config->var_stat_update)
     {
