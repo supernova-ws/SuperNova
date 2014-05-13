@@ -176,7 +176,7 @@ $template->assign_vars(array(
   'ADMIN_MODE' => $user_can_kick,
   'dpath' => SN_ROOT_VIRTUAL . $dpath,
   'onlineMessage' => $user_admin ? $lang['ali_sys_lastActive'] : $lang['Online'],
-  'memberCount' => mysql_num_rows($userList),
+  'memberCount' => count($userList),
   'memberslist' => $page_list,
   's' => $sort2,
 ));

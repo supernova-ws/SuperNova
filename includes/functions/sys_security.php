@@ -283,7 +283,7 @@ function DeleteSelectedUser ( $UserID )
   }
   doquery ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `id_owner` = '" . $UserID . "';");
 
-  db_planet_list_delete_by_owner($UserID);
+    db_planet_list_delete_by_owner($UserID);
 
   doquery ( "DELETE FROM `{{messages}}` WHERE `message_sender` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{messages}}` WHERE `message_owner` = '" . $UserID . "';");

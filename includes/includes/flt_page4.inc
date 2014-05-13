@@ -37,7 +37,7 @@ if($fleet['fleet_owner'] != $user['id'])
 $aks = doquery("SELECT * from `{{aks}}` WHERE `flotten` = {$fleetid} LIMIT 1;", '', true);
 // If we got a message to add some1 to attack (MadnessRed code)
 $userToAdd_unsafe = sys_get_param_str_raw('addtogroup');
-if($userToAdd)
+if($userToAdd_unsafe)
 {
   $userToAdd = mysql_real_escape_string($userToAdd_unsafe);
   $userToAddID = db_user_by_username($userToAdd_unsafe, false, 'id', true, true);
@@ -122,21 +122,14 @@ $template->assign_vars(array(
   'MESSAGE' => $add_user_message_mr,
 ));
 
-$members = explode(",", $aks['eingeladen']);
-foreach($members as $a => $b)
+if($aks['eingeladen'] && is_array($members = classSupernova::db_get_record_list(LOC_USER, "`id` in ({$aks['eingeladen']})")) && !empty($members))
 {
-  if($b != '')
+  foreach($members as $row)
   {
-    $member_qry_mr = db_user_by_id($b, false, 'username');
-    while($row = mysql_fetch_assoc($member_qry_mr))
-    {
-      $template->assign_block_vars('invited', array(
-        'NAME' => $row['username'],
-      ));
-    }
+    $template->assign_block_vars('invited', array(
+      'NAME' => $row['username'],
+    ));
   }
 }
 
 display($template, $lang['fl_title']);
-
-?>
