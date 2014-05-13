@@ -540,8 +540,8 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
   $fleet_ship_count  = 0;
   $fleet_string      = '';
-  //$planet_sub_query  = '';
   $db_changeset = array();
+  $planet_fields = array();
   foreach($fleet as $unit_id => $amount)
   {
     if(!$amount || !$unit_id)
@@ -555,8 +555,10 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
       $fleet_string     .= "{$unit_id},{$amount};";
       $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$amount, $user, $from['id']);
     }
-    // $unit_db_name = get_unit_param($unit_id, P_NAME);
-    // $planet_sub_query .= "`{$unit_db_name}` = `{$unit_db_name}` - {$amount},";
+    elseif(in_array($unit_id, sn_get_groups('resources_loot')))
+    {
+      $planet_fields[pname_resource_name($unit_id)]['delta'] -= $amount;
+    }
   }
 
   $to['id_owner'] = intval($to['id_owner']);
@@ -593,7 +595,16 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   $QryInsertFleet .= "`start_time` = '" . SN_TIME_NOW . "';";
   doquery( $QryInsertFleet);
 
-  db_planet_set_by_id($from['id'], "`deuterium` = `deuterium` - '{$travel_data['consumption']}'");
+  $planet_fields[pname_resource_name(RES_DEUTERIUM)]['delta'] -= $travel_data['consumption'];
+  $db_changeset['planets'][] = array(
+    'action' => SQL_OP_UPDATE,
+    P_VERSION => 1,
+    'where' => array(
+      'id' => $from['id'],
+    ),
+    'fields' => $planet_fields,
+  );
+
   db_changeset_apply($db_changeset);
 
   sn_db_transaction_commit();
