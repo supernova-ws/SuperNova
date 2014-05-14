@@ -290,7 +290,7 @@ function qst_active_triggers($quest_list)
   return $quest_triggers;
 }
 
-function qst_reward(&$user, &$planet, &$rewards, &$quest_list)
+function qst_reward(&$user, &$rewards, &$quest_list)
 {
   if(empty($rewards)) return;
 

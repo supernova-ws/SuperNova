@@ -40,18 +40,11 @@ function flt_build_gathering($resources_taken = '')
 
   foreach(sn_get_groups('flt_transports') as $transport_id)
   {
-    /*
-    $transport_info = get_unit_param($transport_id);
-    $transports[$transport_info[P_NAME]] = $transport_info[P_CAPACITY];
-    $name_to_id[$transport_info[P_NAME]] = $transport_id;
-    */
     $transports[$transport_id] = get_unit_param($transport_id, P_CAPACITY);
-    // $name_to_id[$transport_info[P_NAME]] = $transport_id;
   }
   arsort($transports);
 
   $planets_db_list = db_planet_list_sorted($user, $planetrow['id'], '*', $query);
-  // while($planet_db_data = mysql_fetch_assoc($planets_db_list))
   foreach($planets_db_list as $planet_db_data)
   { // begin planet loop
     if(!$query)

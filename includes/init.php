@@ -1,7 +1,19 @@
 <?php
+
 define('BE_DEBUG', true);
-// define('DEBUG_SQL', true); // Подойдет любое значение
-// define('DEBUG_COMMENT_SQL', true); // Добавлять комментарии прямо в SQL запрос
+// define('DEBUG_SQL_ONLINE', true); // Полный дамп запросов в рил-тайме. Подойдет любое значение
+define('DEBUG_SQL_ERROR', true); // Выводить в сообщении об ошибке так же полный дамп запросов за сессию. Подойдет любое значение
+// define('DEBUG_SQL_COMMENT', true); // Добавлять комментарии прямо в SQL запрос. Подойдет любое значение
+
+if(defined('DEBUG_SQL_ONLINE') && !defined('DEBUG_SQL_ERROR'))
+{
+  define('DEBUG_SQL_ERROR', true);
+}
+
+if(defined('DEBUG_SQL_ERROR') && !defined('DEBUG_SQL_COMMENT'))
+{
+  define('DEBUG_SQL_COMMENT', true);
+}
 
 if($_SERVER['REMOTE_ADDR'] == "109.86.195.192")
 {

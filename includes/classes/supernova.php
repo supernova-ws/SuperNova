@@ -59,7 +59,7 @@ class classSupernova
         LOC_USER => array(
           P_LOCATION => LOC_USER,
           P_OWNER_FIELD => 'id_owner',
-        )
+        ),
       ),
     ),
 
@@ -70,7 +70,7 @@ class classSupernova
         LOC_USER => array(
           P_LOCATION => LOC_USER,
           P_OWNER_FIELD => 'unit_player_id',
-        )
+        ),
       ),
     ),
 
@@ -78,10 +78,20 @@ class classSupernova
       P_TABLE_NAME => 'que',
       P_ID => 'que_id',
       P_OWNER_INFO => array(
-        LOC_USER => array(
+        array(
           P_LOCATION => LOC_USER,
           P_OWNER_FIELD => 'que_player_id',
-        )
+        ),
+
+        array(
+          P_LOCATION => LOC_PLANET,
+          P_OWNER_FIELD => 'que_planet_id_origin',
+        ),
+
+        array(
+          P_LOCATION => LOC_PLANET,
+          P_OWNER_FIELD => 'que_planet_id',
+        ),
       ),
     ),
   );
@@ -376,8 +386,10 @@ class classSupernova
       {
         //pdump($filter, 'Транзакция - блокируем ' . $location_type);
         // Проходим по всем родителям данной записи
-        foreach($location_info[P_OWNER_INFO] as $owner_location_type => $owner_data)
+        // foreach($location_info[P_OWNER_INFO] as $owner_location_type => $owner_data)
+        foreach($location_info[P_OWNER_INFO] as $owner_data)
         {
+          $owner_location_type = $owner_data[P_LOCATION];
           //pdump($filter, 'Транзакция - блокируем родителя ' . $owner_location_type);
           $parent_id_list = array();
           // Выбираем родителей данного типа и соответствующие ИД текущего типа

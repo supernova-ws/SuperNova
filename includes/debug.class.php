@@ -32,6 +32,7 @@ if(!defined('INSIDE'))
 class debug
 {
   var $log, $numqueries;
+  var $log_array;
 
   function debug()
   {
@@ -43,6 +44,11 @@ class debug
   {
     $this->log .= $mes;
     $this->numqueries++;
+  }
+
+  function add_to_array($mes)
+  {
+    $this->log_array[] = $mes;
   }
 
   function echo_log()
@@ -105,13 +111,22 @@ class debug
 
     if($base_dump)
     {
+      if(is_array($this->log_array) && count($this->log_array) > 0);
+      {
+        foreach($this->log_array as $log)
+        {
+          $error_backtrace['queries'][] = $log;
+        }
+      }
+
       $error_backtrace['backtrace'] = debug_backtrace();
       unset($error_backtrace['backtrace'][1]);
       unset($error_backtrace['backtrace'][0]);
-      $error_backtrace['query_log'] = "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>\r\n";
+      // $error_backtrace['query_log'] = "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>\r\n";
       $error_backtrace['$_GET'] = $_GET;
       $error_backtrace['$_POST'] = $_POST;
-      $error_backtrace['$_COOKIES'] = $_COOKIES;
+      $error_backtrace['$_REQUEST'] = $_REQUEST;
+      $error_backtrace['$_COOKIE'] = $_COOKIE;
       $error_backtrace['$_SESSION'] = $_SESSION;
       $error_backtrace['$_SERVER'] = $_SERVER;
       global $user, $planetrow;
@@ -155,8 +170,7 @@ class debug
     $error_text = mysql_real_escape_string($message);
     $error_backtrace = $this->dump($dump, true, strpos($message, 'Deadlock') !== false);
 
-    global $sys_log_disabled;
-    global $user;
+    global $sys_log_disabled, $user;
     if(!$sys_log_disabled)
     {
       if($error_backtrace)

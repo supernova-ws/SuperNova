@@ -139,8 +139,11 @@ function db_planet_count_by_type($ui_user_id, $ui_planet_type = PT_PLANET)
   $si_user_id = intval($ui_user_id);
   $si_planet_type = intval($ui_planet_type);
 
-  $planets = doquery("SELECT COUNT(*) AS planet_count FROM {{planets}} WHERE id_owner = {$si_user_id} AND `planet_type` = {$si_planet_type}", true);
-  return isset($planets['planet_count']) ? $planets['planet_count'] : 0;
+  // Лочим запись-родителя - если она есть и еще не залочена
+  $record_list = classSupernova::db_get_record_list(LOC_PLANET, "`id_owner` = {$si_user_id} AND `planet_type` = {$si_planet_type}");
+  return is_array($record_list) ? count($record_list) : 0;
+  // $planets = doquery("SELECT COUNT(*) AS planet_count FROM {{planets}} WHERE `id_owner` = {$si_user_id} AND `planet_type` = {$si_planet_type}", true);
+  // return isset($planets['planet_count']) ? $planets['planet_count'] : 0;
 }
 function db_planet_list_resources_by_owner()
 {

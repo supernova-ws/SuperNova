@@ -137,14 +137,14 @@ function coe_o_missile_calculate()
       $missiles = $fleetRow['fleet_amount']; // Number of MIP
       if ($interceptors >= $missiles) {
         $message = $lang['mip_all_destroyed'];
-        $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, $missiles, $targetUser, $target_planet_row['id']);
+        $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, -$missiles, $targetUser, $target_planet_row['id']);
       }
       else
       {
         if($interceptors)
         {
           $message = sprintf($lang['mip_destroyed'], $interceptors);
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, $interceptors, $targetUser, $target_planet_row['id']);
+          $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, -$interceptors, $targetUser, $target_planet_row['id']);
         }
         $message .= $lang['mip_defense_destroyed'];
 
@@ -155,7 +155,7 @@ function coe_o_missile_calculate()
           $destroyed = $planetDefense[$key][0] - $structure[0];
           if($destroyed)
           {
-            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($key, $destroyed, $targetUser, $target_planet_row['id']);
+            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($key, -$destroyed, $targetUser, $target_planet_row['id']);
 
             $message .= "&nbsp;&nbsp;{$lang['tech'][$key]} - {$destroyed} {$lang['quantity']}<br>";
           }

@@ -161,7 +161,7 @@ function doquery($query, $table = '', $fetch = false)
     $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>$table</th><th>$fetch</th></tr>");
   }
 
-  if(defined('DEBUG_COMMENT_SQL') || defined('DEBUG_SQL'))
+  if(defined('DEBUG_SQL_COMMENT'))
   {
     $backtrace = debug_backtrace();
     /*
@@ -186,7 +186,12 @@ function doquery($query, $table = '', $fetch = false)
     $sql = "/* {$function} '{$file}' Line {$a_trace['line']} tID {$transaction_id} */ " . $sql;
   }
 
-  if(defined('DEBUG_SQL'))
+  if(defined('DEBUG_SQL_ERROR'))
+  {
+    $debug->add_to_array(preg_replace("/\s+/", ' ', $sql));
+  }
+
+  if(defined('DEBUG_SQL_ONLINE'))
   {
     $debug->warning(preg_replace("/\s+/", ' ', $sql), 'SQL Debug', LOG_DEBUG_SQL);
   }

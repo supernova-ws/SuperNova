@@ -509,7 +509,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
 
   // Определяем, какие очереди нам нужны и получаем их
   $que_type_id = $planet === null ? QUE_RESEARCH : false;
-  $planet = isset($planet['id']) ? $planet['id'] : $planet; // В $planet у нас теперь только её ID или шаблон null/0/false
+  $planet = intval(is_array($planet) ? $planet['id'] : $planet); // В $planet у нас теперь только её ID или шаблон null/0/false
   $que = que_get($user['id'], $planet, $que_type_id, true);
 //pdump($que);
   if(empty($que['items']))
@@ -522,7 +522,6 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
   {
     // Если нужно изменять данные на планетах - блокируем планеты и получаем данные о них
     // TODO - от них не надо ничего, кроме ID и que_processed
-    // while($planet_row = mysql_fetch_assoc($planet_query))
 
     // $planet_query = db_planet_list_by_user_or_planet($user['id'], $planet);
     // foreach($planet_query as $planet_row)
@@ -651,14 +650,6 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_amount, $user, $planet_id ? $planet_id : null);
         }
       }
-
-
-
-      // Сюда впердолить подготовку чейнджсета для обновления пользователя
-
-
-
-
     }
   }
 
@@ -668,77 +659,68 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
 //pdump($que, '$que');
 
   // TODO: Re-enable quests for Alliances
-  if(!empty($unit_changes) && !$user['user_as_ally'] && $user['id_planet'])
+  if(!empty($unit_changes) && !$user['user_as_ally'])
   {
-    $planet = db_planet_by_id($user['id_planet'], true);
     $quest_list = qst_get_quests($user['id']);
     $quest_triggers = qst_active_triggers($quest_list);
-  }
-  else
-  {
-    $planet = array();
-  }
+    $quest_rewards = array();
 
-  $quest_rewards = array();
-  $quests_complited = array();
-  $xp_incoming = array();
 
-  foreach($unit_changes as $user_id => $planet_changes)
-  {
-    foreach($planet_changes as $planet_id => $changes)
+    $xp_incoming = array();
+    foreach($unit_changes as $user_id => $planet_changes)
     {
-      $planet_this = $planet_id ? classSupernova::db_get_record_by_id(LOC_PLANET, $planet_id) : array();
-      foreach($changes as $unit_id => $unit_value)
+      foreach($planet_changes as $planet_id => $changes)
       {
-        $que_id = que_get_unit_que($unit_id);
-        $unit_level_new = mrc_get_level($user, $planet_this, $unit_id, false, true) + $unit_value;
-        if($que_id == QUE_STRUCTURES || $que_id == QUE_RESEARCH)
+        $planet_this = $planet_id ? classSupernova::db_get_record_by_id(LOC_PLANET, $planet_id) : array();
+        foreach($changes as $unit_id => $unit_value)
         {
-          // TODO: Изменить согласно типу очереди
-          $build_data = eco_get_build_data($user, $planet_this, $unit_id, $unit_level_new - 1);
-          $build_data = $build_data[BUILD_CREATE];
-          foreach(sn_get_groups('resources_loot') as $resource_id)
+          $que_id = que_get_unit_que($unit_id);
+          $unit_level_new = mrc_get_level($user, $planet_this, $unit_id, false, true) + $unit_value;
+          if($que_id == QUE_STRUCTURES || $que_id == QUE_RESEARCH)
           {
-            $xp_incoming[$que_id] += $build_data[$resource_id]; // TODO - добавить конверсию рейтов обмена
-          }
-        }
-
-        //if(is_array($planet) && $planet['id'])
-        {
-          // TODO: Check mutiply condition quests
-          $quest_trigger_list = array_keys($quest_triggers, $unit_id);
-          foreach($quest_trigger_list as $quest_id)
-          {
-            if($quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE && $quest_list[$quest_id]['quest_unit_amount'] <= $unit_level_new)
+            $build_data = eco_get_build_data($user, $planet_this, $unit_id, $unit_level_new - 1);
+            $build_data = $build_data[BUILD_CREATE];
+            foreach(sn_get_groups('resources_loot') as $resource_id)
             {
-              $quest_rewards[$quest_id][$user_id][$planet_id] = $quest_list[$quest_id]['quest_rewards_list'];
-              $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
+              $xp_incoming[$que_id] += $build_data[$resource_id]; // TODO - добавить конверсию рейтов обмена
+            }
+          }
+
+          if(is_array($quest_triggers))
+          {
+            // TODO: Check mutiply condition quests
+            $quest_trigger_list = array_keys($quest_triggers, $unit_id);
+            if(is_array($quest_trigger_list))
+            {
+              foreach($quest_trigger_list as $quest_id)
+              {
+                if($quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE && $quest_list[$quest_id]['quest_unit_amount'] <= $unit_level_new)
+                {
+                  $quest_rewards[$quest_id][$user_id][$planet_id] = $quest_list[$quest_id]['quest_rewards_list'];
+                  $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
+                }
+              }
             }
           }
         }
       }
     }
-  }
-  // TODO: Изменить начисление награды за квесты на ту планету, на которой происходил ресеч
-  qst_reward($user, $planet, $quest_rewards, $quest_list);
+    // TODO: Изменить начисление награды за квесты на ту планету, на которой происходил ресеч
+    qst_reward($user, $quest_rewards, $quest_list);
 
-  // TODO: Изменить согласно типу очереди
-  foreach($xp_incoming as $que_id => $xp)
-  {
-    rpg_level_up($user, $que_id == QUE_RESEARCH ? RPG_TECH : RPG_STRUCTURE, $xp / 1000);
+    foreach($xp_incoming as $que_id => $xp)
+    {
+      rpg_level_up($user, $que_id == QUE_RESEARCH ? RPG_TECH : RPG_STRUCTURE, $xp / 1000);
+    }
   }
 
   db_changeset_apply($db_changeset);
 
-  // Сообщения о постройке
+  // TODO Сообщения о постройке
   // $user = db_user_by_id($user['id'], true);
-  // TODO Так же пересчитывать планеты
-
 
 
   return $que;
-
-
 
 
 

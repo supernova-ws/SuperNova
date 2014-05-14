@@ -94,6 +94,8 @@ function sn_chat_add_model()
 
 function sn_chat_msg_view($template = null)
 {
+  define('IN_AJAX', true);
+
   global $config, $skip_fleet_update, $microtime, $user, $time_now, $time_local, $time_diff, $lang;
 
   $skip_fleet_update = true;
@@ -192,5 +194,3 @@ function sn_chat_msg_view($template = null)
   }
   die();
 }
-
-?>

@@ -57,7 +57,7 @@ switch($mode)
       try
       {
         sn_db_transaction_start();
-        $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
+        $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
         $user = $global_data['user'];
         $planetrow = $global_data['planet'];
 
