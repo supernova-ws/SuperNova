@@ -98,11 +98,11 @@ if($_POST['submit'])
     $language = $language ? $language : DEFAULT_LANG;
     $def_skin = DEFAULT_SKINPATH;
 
-    classSupernova::db_ins_record(LOC_USER, "`username` = '{$username_safe}', `email` = '{$email}', `email_2` = '{$email}', `design` = '1', `dpath` = '{$def_skin}',
+    $user = classSupernova::db_ins_record(LOC_USER, "`username` = '{$username_safe}', `email` = '{$email}', `email_2` = '{$email}', `design` = '1', `dpath` = '{$def_skin}',
         `lang` = '{$language}', `sex` = '{$sex}', `id_planet` = '0', `register_time` = '{$time_now}', `password` = '{$md5pass}',
         `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^1|opt_email_mnl_joueur^1|opt_email_mnl_alliance^1|opt_mnl_attaque^1|opt_email_mnl_attaque^1|opt_mnl_exploit^1|opt_email_mnl_exploit^1|opt_mnl_transport^1|opt_email_mnl_transport^1|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^1|opt_mnl_buildlist^1|opt_email_mnl_buildlist^1|opt_int_navbar_resource_force^1|';");
 
-    $user = db_user_by_username($username, false, 'id');
+    // $user = db_user_by_username($username, false, 'id');
     doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = \"{$username_safe}\"");
 
     if($id_ref)

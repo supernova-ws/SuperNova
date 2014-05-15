@@ -509,7 +509,7 @@ class classSupernova
       {
         $record_id = mysql_insert_id();
         // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
-        static::db_get_record_by_id($location_type, $record_id);
+        $result = static::db_get_record_by_id($location_type, $record_id);
         // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего
         // TODO - когда будет поддержка изменения индексов и локаций - можно будет вызывать её
         static::cache_clear($location_type, false); // Мягкий сброс - только $queries
