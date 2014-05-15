@@ -15,7 +15,9 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('overview');
 lng_include('universe');
-if (!intval($planetrow['phalanx'])) {
+
+$sensorLevel = mrc_get_level($user, $planetrow, STRUC_MOON_PHALANX);
+if (!intval($sensorLevel)) {
   message ($lang['phalanx_nosensoravailable'], $lang['tech'][STRUC_MOON_PHALANX], "", 3);
 }
 
@@ -33,7 +35,6 @@ $source_galaxy = $planetrow['galaxy'];
 $source_system = $planetrow['system'];
 $source_planet = $planetrow['planet'];
 
-$sensorLevel = $planetrow['phalanx'];
 $sensorRange = GetPhalanxRange($sensorLevel);
 
 $system_distance = abs($source_system - $scan_system);
@@ -74,5 +75,3 @@ $template->assign_vars(array(
 ));
 
 display($template, $lang['tech'][STRUC_MOON_PHALANX], false, '', false, false);
-
-?>

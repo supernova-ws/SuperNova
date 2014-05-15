@@ -43,7 +43,7 @@ $POST_systemRight = sys_get_param_str('systemRight');
 $fleetmax      = GetMaxFleets($user);
 $CurrentPlID   = $planetrow['id'];
 $CurrentMIP    = mrc_get_level($user, $planetrow, UNIT_DEF_MISSILE_INTERPLANET, false, true);
-$HavePhalanx   = $planetrow['phalanx'];
+$HavePhalanx   = mrc_get_level($user, $planetrow, STRUC_MOON_PHALANX);
 $CurrentSystem = $planetrow['system'];
 $CurrentGalaxy = $planetrow['galaxy'];
 
