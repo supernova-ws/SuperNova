@@ -57,6 +57,37 @@ class debug
     die();
   }
 
+  function compact_backtrace($backtrace, $long_comment = false)
+  {
+    $result = array();
+    $transaction_id = classSupernova::db_transaction_check(false) ? classSupernova::$transaction_id : classSupernova::$transaction_id++;
+    $result[] = "tID {$transaction_id}";
+    foreach($backtrace as $a_trace)
+    {
+      if(in_array($a_trace['function'], array('doquery', 'db_query', 'db_get_record_list'))) continue;
+      $function =
+        ($a_trace['type']
+          ? ($a_trace['type'] == '->'
+            ? "({$a_trace['class']})" . get_class($a_trace['object'])
+            : $a_trace['class']
+          ) . $a_trace['type']
+          : ''
+        ) . $a_trace['function'] . '()';
+
+      $file = str_replace(SN_ROOT_PHYSICAL, '', str_replace('\\', '/', $a_trace['file']));
+
+      // $result[] = "{$function} ({$a_trace['line']})'{$file}'";
+      $result[] = "{$function} - '{$file}' Line {$a_trace['line']}";
+
+      if(!$long_comment) break;
+    }
+
+
+    // $result = implode(',', $result);
+
+    return $result;
+  }
+
   function dump($dump = false, $force_base = false, $deadlock = false)
   {
     if($dump === false)

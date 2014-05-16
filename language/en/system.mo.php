@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a4.0
+* @version 39a7.13
 *
 */
 
@@ -207,7 +207,7 @@ $a_lang_array = (array(
   'sys_fields' => "Fields",
 
 // Cookies
-  'err_cookie' => "Error! You cannot authenticate the user on information in a cookie.<br />Clear cookies in you browser then <a href='login." . PHP_EX . "'>log in</a> in a game or <a href='reg." . PHP_EX . "'>register new account again</a>.",
+  'err_cookie' => "Error! You cannot authenticate the user on information in a cookie.<br />Clear cookies in you browser then <a href='login" . DOT_PHP_EX . "'>log in</a> in a game or <a href='reg" . DOT_PHP_EX . "'>register new account again</a>.",
 
 // Supported languages
   'ru'              	  => 'Russian',

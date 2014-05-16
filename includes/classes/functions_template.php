@@ -826,9 +826,7 @@ class template_compile
   */
   function compile_write($handle, $data)
   {
-    global $phpEx;
-
-    $filename = $this->template->cachepath . str_replace('/', '.', $this->template->filename[$handle]) . '.' . $phpEx;
+    $filename = $this->template->cachepath . str_replace('/', '.', $this->template->filename[$handle]) . DOT_PHP_EX;
 
     $data = "<?php if (!defined('INSIDE')) exit;" . ((strpos($data, '<?php') === 0) ? substr($data, 5) : ' ?>' . $data);
 

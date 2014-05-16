@@ -385,5 +385,3 @@ function qst_check_completion(&$user, &$planet, )
 {
 }
 */
-
-?>

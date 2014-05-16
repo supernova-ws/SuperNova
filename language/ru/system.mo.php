@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39a4.0#
+* @version #39a7.13#
 *
 */
 
@@ -209,7 +209,7 @@ $a_lang_array = (array(
   'sys_fields' => "Сектора",
 
 // Cookies
-  'err_cookie' => "Ошибка! Невозможно авторизировать пользователя по информации в cookie.<br />Очистите куки браузера, затем еще раз попытайтесь <a href='login." . PHP_EX . "'>войти</a> в игру или <a href='reg." . PHP_EX . "'>зарегестрироваться</a>.",
+  'err_cookie' => "Ошибка! Невозможно авторизировать пользователя по информации в cookie.<br />Очистите куки браузера, затем еще раз попытайтесь <a href='login" . DOT_PHP_EX . "'>войти</a> в игру или <a href='reg" . DOT_PHP_EX . "'>зарегестрироваться</a>.",
 
 // Supported languages
   'ru'              	  => 'Русский',

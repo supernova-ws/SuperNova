@@ -110,13 +110,13 @@ function sn_fleet_page3()
   if ($errorlist)
   {
     sn_db_transaction_rollback();
-    message ("<span class='error'><ul>{$errorlist}</ul></span>", $lang['fl_error'], 'fleet.' . PHP_EX, false);
+    message ("<span class='error'><ul>{$errorlist}</ul></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
   }
 
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach ($fleetarray as $Ship => $Count) {
     if ($Count > mrc_get_level($user, $planetrow, $Ship)) {
-      message ("<span class='error'><b>{$lang['fl_fleet_err']}</b></span>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
+      message ("<span class='error'><b>{$lang['fl_fleet_err']}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
     }
   }
 
@@ -163,12 +163,12 @@ function sn_fleet_page3()
 
   if($cant_attack !== ATTACK_ALLOWED)
   {
-    message("<span class='error'><b>{$lang['fl_attack_error'][$cant_attack]}</b></span>", $lang['fl_error'], 'fleet.' . PHP_EX, 99);
+    message("<span class='error'><b>{$lang['fl_attack_error'][$cant_attack]}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 99);
   }
 
   $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
   if (!in_array($speed_percent, $speed_possible)) {
-    message ("<span class='error'><b>". $lang['fl_cheat_speed'] ."</b></span>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
+    message ("<span class='error'><b>". $lang['fl_cheat_speed'] ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
   $fleet['start_time'] = $duration + $time_now;
@@ -223,15 +223,15 @@ function sn_fleet_page3()
 
   if ( $StorageNeeded > $FleetStorage)
   {
-    message ("<span class='error'><b>". $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) ."</b></span>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
+    message ("<span class='error'><b>". $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
   if ($planetrow['deuterium'] < $TransDeuterium + $consumption)
   {
-    message ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
+    message ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
   if (($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal))
   {
-    message ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], 'fleet.' . PHP_EX, 2);
+    message ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
   $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";

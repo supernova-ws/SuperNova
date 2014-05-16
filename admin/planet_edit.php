@@ -13,7 +13,7 @@ if($user['authlevel'] < 3)
 }
 AdminMessage('Временно не работает');
 
-require("includes/admin_planet_edit.inc.{$phpEx}");
+require("includes/admin_planet_edit.inc" . DOT_PHP_EX);
 
 $template = gettemplate('admin/admin_planet_edit', true);
 

@@ -1,19 +1,56 @@
 <?php
 
-define('BE_DEBUG', true);
+// Защита от двойного инита
+if(defined('INIT'))
+{
+  return;
+}
+define('INIT', true);
+
+// Замеряем начальные параметры
+define('SN_TIME_MICRO', $microtime = microtime(true));
+define('SN_TIME_NOW', $time_now = intval($microtime));
+define('SN_MEM_START', memory_get_usage());
+
+define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
+define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
+
+// Бенчмарк
+register_shutdown_function(function() {
+  if(!defined('IN_AJAX'))
+  {
+    print('<hr>Benchmark ' . (microtime(true) - SN_TIME_MICRO) . '<br/>Memory usage: ' . number_format(memory_get_usage() - SN_MEM_START));
+  }
+});
+
+
+// Отладка
+// define('BE_DEBUG', true); // Отладка боевого движка
+if($_SERVER['SERVER_NAME'] == 'localhost' && !defined('BE_DEBUG'))
+{
+  define('BE_DEBUG', true);
+}
+
 // define('DEBUG_SQL_ONLINE', true); // Полный дамп запросов в рил-тайме. Подойдет любое значение
 define('DEBUG_SQL_ERROR', true); // Выводить в сообщении об ошибке так же полный дамп запросов за сессию. Подойдет любое значение
-// define('DEBUG_SQL_COMMENT', true); // Добавлять комментарии прямо в SQL запрос. Подойдет любое значение
+define('DEBUG_SQL_COMMENT_LONG', true); // Добавлять SQL запрос длинные комментарии. Не зависим от всех остальных параметров. Подойдет любое значение
+define('DEBUG_SQL_COMMENT', true); // Добавлять комментарии прямо в SQL запрос. Подойдет любое значение
 
+// Включаем нужные настройки
 if(defined('DEBUG_SQL_ONLINE') && !defined('DEBUG_SQL_ERROR'))
 {
   define('DEBUG_SQL_ERROR', true);
 }
-
 if(defined('DEBUG_SQL_ERROR') && !defined('DEBUG_SQL_COMMENT'))
 {
   define('DEBUG_SQL_COMMENT', true);
 }
+if(defined('DEBUG_SQL_COMMENT_LONG') && !defined('DEBUG_SQL_COMMENT'))
+{
+  define('DEBUG_SQL_COMMENT', true);
+}
+
+
 
 if($_SERVER['REMOTE_ADDR'] == "109.86.195.192")
 {
@@ -29,51 +66,29 @@ if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false)
   define('SN_GOOGLE', true);
 }
 
-define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
-
-define('SN_TIME_MICRO', $microtime = microtime(true));
-define('SN_TIME_NOW', $time_now = intval($microtime));
-define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
-
-define('SN_MEM_START', memory_get_usage());
-
-register_shutdown_function(function(){
-  if(!defined('IN_AJAX'))
-    print('<hr>Benchmark ' . (microtime(true) - SN_TIME_MICRO) . '<br/>Memory usage: ' . number_format(memory_get_usage() - SN_MEM_START));
-});
-
-if(defined('INIT'))
-{
-  return;
-}
-
 if(version_compare(PHP_VERSION, '5.3.1', '=='))
 {
   die('FATAL ERROR: you using PHP 5.3.1. Due to bug in PHP 5.3.1 SuperNova is incompatible with this version. Please upgrade or downgrade your PHP. Read more <a href="https://bugs.php.net/bug.php?id=50394">here</a>.');
 }
 
-define('INIT', true);
-
 if(!defined('INSIDE'))
 {
   define('INSIDE', true);
 }
-
 if(!defined('INSTALL'))
 {
   define('INSTALL', false);
 }
-
 if(!defined('IN_PHPBB'))
 {
   define('IN_PHPBB', true);
 }
 
+// Отключаем magic_quotes
 if(ini_get('magic_quotes_sybase'))
 {
   die('SN is incompatible with \'magic_quotes_sybase\' turned on. Disable it in php.ini or .htaccess...');
 }
-
 if(@get_magic_quotes_gpc())
 {
   function sn_sys_unmagic_quotes(&$value, $key)
@@ -83,7 +98,6 @@ if(@get_magic_quotes_gpc())
   $gpcr = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
   array_walk_recursive($gpcr, 'sn_sys_unmagic_quotes');
 }
-
 if(function_exists('set_magic_quotes_runtime'))
 {
   @set_magic_quotes_runtime(0);
@@ -91,64 +105,60 @@ if(function_exists('set_magic_quotes_runtime'))
   @ini_set('magic_quotes_sybase', 0);
 }
 
+
 header('Content-type: text/html; charset=utf-8');
-
 ob_start();
-
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
-if($_SERVER['SERVER_NAME'] == 'localhost')
-{
-  define('BE_DEBUG', true);
-}
+
 
 
 
 $phpEx = strpos($phpEx = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $phpEx : '';
-/*
-$server_document_root = str_replace("\\", '/', realpath($_SERVER['DOCUMENT_ROOT'])) . '/';
-$sn_root_relative = str_replace(array('//', '//'), '/', '/' . str_replace(array('\\', $server_document_root, 'includes/init.php'), array('/', '', ''), __FILE__));
-$sn_root_physical = str_replace(array('//', '//'), '/', $server_document_root . $sn_root_relative);
-*/
-
+define('PHP_EX', $phpEx); // PHP extension on this server
+define('DOT_PHP_EX', '.' . PHP_EX); // PHP extension on this server
 
 $sn_root_physical = str_replace('\\', '/', __FILE__);
 $sn_root_physical = str_replace('includes/init.php', '', $sn_root_physical);
+define('SN_ROOT_PHYSICAL', $sn_root_physical);
 
 $sn_root_relative = str_replace('\\', '/', getcwd());
 $sn_root_relative .= $sn_root_relative[strlen($sn_root_relative) - 1] == '/' ? '' : '/';
-$sn_root_relative = str_replace($sn_root_physical, '', $sn_root_relative);
+$sn_root_relative = str_replace(SN_ROOT_PHYSICAL, '', $sn_root_relative);
 $sn_root_relative .= basename($_SERVER['SCRIPT_NAME']);
 $sn_root_relative = str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']);
-
-$phpbb_root_path  = $sn_root_physical;
 define('SN_ROOT_RELATIVE', $sn_root_relative);
-define('SN_ROOT_PHYSICAL', $sn_root_physical);
-define('SN_ROOT_VIRTUAL' , 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . $sn_root_relative);
-define('PHP_EX', $phpEx); // PHP extension on this server
 
-$user          = array();
+define('SN_ROOT_VIRTUAL' , 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . SN_ROOT_RELATIVE);
+
+
+
+
+// Это нужно для работы PTL
+global $phpbb_root_path;
+$phpbb_root_path = SN_ROOT_PHYSICAL;
+
+global $user, $IsUserChecked;
+$user = array();
 $IsUserChecked = false;
 
-require("{$sn_root_physical}config.{$phpEx}");
+require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
 $db_prefix = $dbsettings['prefix'];
 $db_name = $dbsettings['name'];
 $sn_secret_word = $dbsettings['secretword'];
 unset($dbsettings);
 
-require_once("{$sn_root_physical}includes/constants.{$phpEx}");
+require_once(SN_ROOT_PHYSICAL . "includes/constants" . DOT_PHP_EX);
 
 // required for db.php
-require_once("{$sn_root_physical}includes/debug.class.{$phpEx}");
 // Initializing global 'debug' object
+require_once(SN_ROOT_PHYSICAL . "includes/debug.class" . DOT_PHP_EX);
 $debug = new debug();
 
-// sn_sys_load_php_files("{$sn_root_physical}includes/classes/", $phpEx);
-require_once("{$sn_root_physical}includes/classes/_classes.{$phpEx}");
-require_once("{$sn_root_physical}includes/db.{$phpEx}");
+require_once(SN_ROOT_PHYSICAL . "includes/classes/_classes" . DOT_PHP_EX);
+require_once(SN_ROOT_PHYSICAL . "includes/db" . DOT_PHP_EX);
 
 $supernova = new classSupernova();
-// $supernova->options = array();
 
 // Initializing global 'cacher' object
 $sn_cache = new classCache($db_prefix);
@@ -180,11 +190,11 @@ else
   @ini_set('display_errors', 0);
 }
 
-require_once("{$sn_root_physical}includes/vars.{$phpEx}");
+require_once(SN_ROOT_PHYSICAL . "includes/vars" . DOT_PHP_EX);
 // Now including all functions
-require_once("{$sn_root_physical}includes/general.{$phpEx}");
+require_once(SN_ROOT_PHYSICAL . "includes/general" . DOT_PHP_EX);
 
-$update_file = "{$sn_root_physical}includes/update.{$phpEx}";
+$update_file = SN_ROOT_PHYSICAL . "includes/update" . DOT_PHP_EX;
 if(file_exists($update_file))
 {
   if(filemtime($update_file) > $config->db_loadItem('var_db_update') || $config->db_loadItem('db_version') < DB_VERSION)
@@ -233,8 +243,8 @@ define('FMT_DATE_TIME'    , FMT_DATE . ' ' . FMT_TIME);
 
 $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 
-require_once("{$sn_root_physical}includes/template.{$phpEx}");
-sn_sys_load_php_files("{$sn_root_physical}includes/functions/", $phpEx);
+require_once(SN_ROOT_PHYSICAL . "includes/template" . DOT_PHP_EX);
+sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
 
 $template_result = array('.' => array());
 $sn_page_name = isset($_GET['page']) ? trim(strip_tags($_GET['page'])) : '';
@@ -245,14 +255,14 @@ $sn_page_name = isset($_GET['page']) ? trim(strip_tags($_GET['page'])) : '';
 // Конфиг - часть манифеста?
 $sn_module = array();
 $sn_module_list = array();
-sn_sys_load_php_files("{$sn_root_physical}modules/", $phpEx, true);
+sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
 
 // Подключаем дефолтную страницу
 // По нормальным делам её надо подключать в порядке загрузки обработчиков
 // Сейчас мы делаем это здесь только для того, что бы содержание дефолтной страницы оказалось вверху. Что не факт, что нужно всегда
 // Но нужно, пока у нас есть не MVC-страницы
 $sn_page_data = $sn_data['pages'][$sn_page_name];
-$sn_page_name_file = 'includes/pages/' . $sn_page_data['filename'] . '.' . $phpEx;
+$sn_page_name_file = 'includes/pages/' . $sn_page_data['filename'] . DOT_PHP_EX;
 if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file))
 {
   require_once($sn_page_name_file);
@@ -346,12 +356,12 @@ lng_switch(sys_get_param_str('lang'));
 
 if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= $time_now)
 {
-  include(SN_ROOT_PHYSICAL . 'ajax_version_check.php');
+  include(SN_ROOT_PHYSICAL . 'ajax_version_check' . DOT_PHP_EX);
 }
 
 if($config->user_birthday_gift && $time_now > $config->user_birthday_celebrate + PERIOD_DAY)
 {
-  require_once("{$sn_root_physical}includes/includes/user_birthday_celebrate.{$phpEx}");
+  require_once(SN_ROOT_PHYSICAL . "includes/includes/user_birthday_celebrate" . DOT_PHP_EX);
   sn_user_birthday_celebrate();
 }
 
