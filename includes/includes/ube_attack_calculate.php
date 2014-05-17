@@ -987,7 +987,7 @@ function sn_ube_combat_analyze_moon_destroy(&$combat_data)
       foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count)
       {
         // TODO: Работа по группам - группа "Уничтожители лун"
-        $reapers += ($unit_id == SHIP_DEATH_STAR) ? $unit_count : 0;
+        $reapers += ($unit_id == SHIP_HUGE_DEATH_STAR) ? $unit_count : 0;
       }
     }
   }

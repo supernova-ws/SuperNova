@@ -300,7 +300,7 @@ function dump($value, $varname = null, $level=0, $dumper = "")
     $trans["\0"]='&oplus;';
     return strtr(htmlspecialchars($value),$trans);
   }
-  if ($level==0) $dumper = '<pre>' . mt_rand(0, 100) . '| ' . $varname;
+  if ($level==0) $dumper = '<pre>' . mt_rand(10, 99) . '|' . $varname;
 
   $type = gettype($value);
   $dumper .= $type;

@@ -174,7 +174,7 @@ switch ($fleet_page)
 
                 $missiontype[MT_HOLD] = $lang['type_mission'][MT_HOLD];
 
-                if($planet_type == PT_MOON && $fleetarray[SHIP_DEATH_STAR])
+                if($planet_type == PT_MOON && $fleetarray[SHIP_HUGE_DEATH_STAR])
                 {
                   $missiontype[MT_DESTROY] = $lang['type_mission'][MT_DESTROY];
                 }

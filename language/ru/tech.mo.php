@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a2.6
+* @version 39a7.14
 *
 */
 
@@ -114,15 +114,15 @@ $a_lang_array = (array(
     SHIP_CARGO_HYPER => 'Гипертранспорт',
     SHIP_RECYCLER => 'Переработчик',
     SHIP_COLONIZER => 'Колонизатор',
-    SHIP_FIGHTER_LIGHT => 'Лёгкий истребитель',
-    SHIP_FIGHTER_HEAVY => 'Тяжёлый истребитель',
-    SHIP_DESTROYER => 'Эсминец',
-    SHIP_CRUISER => 'Крейсер',
-    SHIP_BOMBER => 'Бомбардировщик',
-    SHIP_BATTLESHIP => 'Линейный крейсер',
-    SHIP_DESTRUCTOR => 'Уничтожитель',
-    SHIP_DEATH_STAR => 'Звезда смерти',
-    SHIP_SUPERNOVA => 'Крейсер класса &quot;Сверхновая&quot;',
+    SHIP_SMALL_FIGHTER_LIGHT => 'Лёгкий истребитель',
+    SHIP_SMALL_FIGHTER_HEAVY => 'Тяжёлый истребитель',
+    SHIP_MEDIUM_FRIGATE => 'Эсминец',
+    SHIP_LARGE_CRUISER => 'Крейсер',
+    SHIP_LARGE_BOMBER => 'Бомбардировщик',
+    SHIP_LARGE_BATTLESHIP => 'Линейный крейсер',
+    SHIP_LARGE_DESTRUCTOR => 'Уничтожитель',
+    SHIP_HUGE_DEATH_STAR => 'Звезда смерти',
+    SHIP_HUGE_SUPERNOVA => 'Крейсер класса &quot;Сверхновая&quot;',
 
     UNIT_DEFENCE => 'Оборона',
     UNIT_DEF_TURRET_MISSILE => 'Ракетная установка',

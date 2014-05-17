@@ -984,7 +984,7 @@ switch($new_version)
     if(isset($update_tables['planets']['que']))
     {
       $sn_data_aux = array(
-        SHIP_FIGHTER_WRATH => array(
+        SHIP_SMALL_FIGHTER_WRATH => array(
           'name' => 'ship_fighter_wrath',
           'type' => UNIT_SHIPS,
           'cost' => array(
@@ -1011,7 +1011,7 @@ switch($new_version)
             RES_DEUTERIUM => 1000,
           ),
         ),
-        SHIP_BATTLESHIP_PRIDE => array(
+        SHIP_LARGE_BATTLESHIP_PRIDE => array(
           'name' => 'ship_battleship_pride',
           'type' => UNIT_SHIPS,
           'cost' => array(
@@ -1029,7 +1029,7 @@ switch($new_version)
             RES_DEUTERIUM => 3000,
           ),
         ),
-        SHIP_BOMBER_ENVY => array(
+        SHIP_MEDIUM_BOMBER_ENVY => array(
           'name' => 'ship_bomber_envy',
           'type' => UNIT_SHIPS,
           'cost' => array(
@@ -1038,7 +1038,7 @@ switch($new_version)
             RES_DEUTERIUM => 10000,
           ),
         ),
-        SHIP_ORBITAL_HEAVY => array(
+        SHIP_LARGE_ORBITAL_HEAVY => array(
           'name' => 'ship_orbital_heavy',
           'type' => UNIT_SHIPS,
           'cost' => array(

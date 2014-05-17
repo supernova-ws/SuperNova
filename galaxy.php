@@ -380,7 +380,7 @@ $template->assign_vars(array(
      'curPlanetS'          => $planetrow['system'],
      'curPlanetP'          => $planetrow['planet'],
      'curPlanetPT'         => $planetrow['planet_type'],
-     'deathStars'          => mrc_get_level($user, $planetrow, SHIP_DEATH_STAR, false, true),
+     'deathStars'          => mrc_get_level($user, $planetrow, SHIP_HUGE_DEATH_STAR, false, true),
      'galaxy'              => $uni_galaxy,
      'system'              => $uni_system,
      'planet'              => $planet,

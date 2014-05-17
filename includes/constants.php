@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a7.13');
+define('SN_VERSION', '39a7.14');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -422,6 +422,14 @@ define('SORT_TIME_BAN_UNTIL' , 8);
 define('SORT_REFERRAL_COUNT' , 9);
 define('SORT_REFERRAL_DM'    , 10);
 
+
+define('HULL_SIZE_TINY', 1);
+define('HULL_SIZE_SMALL', 2);
+define('HULL_SIZE_MEDIUM', 3);
+define('HULL_SIZE_LARGE', 4);
+define('HULL_SIZE_HUGE', 5);
+
+
 // === Structures
 define('UNIT_STRUCTURES', 99);
 define('STRUC_MINE_METAL', 1);
@@ -470,31 +478,38 @@ define('TECH_GRAVITON', 199);
 // === Hangar units
 // --- Ships
 define('UNIT_SHIPS', 200);
-define('SHIP_CARGO_SUPER', 201);
+
 define('SHIP_CARGO_SMALL', 202);
 define('SHIP_CARGO_BIG', 203);
-define('SHIP_FIGHTER_LIGHT', 204);
-define('SHIP_FIGHTER_HEAVY', 205);
-define('SHIP_DESTROYER', 206);
-define('SHIP_CRUISER', 207);
+define('SHIP_CARGO_SUPER', 201);
+define('SHIP_CARGO_HYPER', 218);
 define('SHIP_COLONIZER', 208);
 define('SHIP_RECYCLER', 209);
+define('SHIP_RECYCLER_GLUTTONY', 223);
 define('SHIP_SPY', 210);
-define('SHIP_BOMBER', 211);
 define('SHIP_SATTELITE_SOLAR', 212);
-define('SHIP_DESTRUCTOR', 213);
-define('SHIP_DEATH_STAR', 214);
-define('SHIP_BATTLESHIP', 215);
-define('SHIP_SUPERNOVA', 216);
-define('SHIP_FIGHTER_ASSAULT', 217);
-define('SHIP_CARGO_HYPER', 218);
-define('SHIP_FIGHTER_WRATH', 219);
 define('SHIP_CARGO_GREED', 220);
 define('SHIP_SATTELITE_SLOTH', 221);
-define('SHIP_BATTLESHIP_PRIDE', 222);
-define('SHIP_RECYCLER_GLUTTONY', 223);
-define('SHIP_BOMBER_ENVY', 224);
-define('SHIP_ORBITAL_HEAVY', 225);
+
+
+define('SHIP_SMALL_FIGHTER_LIGHT', 204);
+define('SHIP_SMALL_FIGHTER_WRATH', 219);
+define('SHIP_SMALL_FIGHTER_HEAVY', 205);
+define('SHIP_SMALL_FIGHTER_ASSAULT', 217);
+define('SHIP_MEDIUM_FRIGATE', 206);
+define('SHIP_MEDIUM_DESTROYER', 226);
+define('SHIP_MEDIUM_BOMBER_ENVY', 224);
+define('SHIP_LARGE_CRUISER', 207);
+define('SHIP_LARGE_BOMBER', 211);
+define('SHIP_LARGE_BATTLESHIP', 215);
+define('SHIP_LARGE_BATTLESHIP_PRIDE', 222);
+define('SHIP_LARGE_ORBITAL_HEAVY', 225);
+define('SHIP_LARGE_DESTRUCTOR', 213);
+define('SHIP_HUGE_DEATH_STAR', 214);
+define('SHIP_HUGE_SUPERNOVA', 216);
+
+
+define('SHIP_NEXT', 227);
 
 // --- Defense
 define('UNIT_DEFENCE', 400);
@@ -628,7 +643,7 @@ define('P_COST_METAL', 'metal_cost');
 define('P_FACTOR', 'factor');
 define('P_REQUIRE', 'require');
 define('P_STORAGE', 'storage');
-define('P_STACKABLE', 'stackable');
+define('P_STACKABLE', 'stackable'); // not complete
 define('P_DEPLOY', 'deploy');
 define('P_BONUS_VALUE', 'bonus');
 define('P_CAPACITY', 'capacity');
@@ -663,6 +678,7 @@ define('P_ACTION_STR', 'P_ACTION_STR');
 define('P_VERSION', 'P_VERSION');
 
 
+define('P_HULL_SIZE', 'P_HULL_SIZE');
 
 define('SNC_VER_NEVER', -1);
 define('SNC_VER_ERROR_CONNECT', 0);

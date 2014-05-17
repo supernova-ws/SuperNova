@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a6.6
+* @version 39a7.14
 *
 */
 
@@ -268,22 +268,22 @@ $lang['info'] = (array(
       'description_short' => 'Cargo ship sized as small moon. Equiped with hyperdrives and able to transfer million ton of resources at once',
     ),
 
-    SHIP_FIGHTER_LIGHT => array(
+    SHIP_SMALL_FIGHTER_LIGHT => array(
       'description' => 'Lightweight fighter is a highly maneuverable craft, which can be found on almost every planet. Cost is not too big, but the shielding power and capacity are very small.',
       'description_short' => 'Lightweight fighter is a highly maneuverable craft, which can be found on almost every planet. Cost is not too big, but the shielding power and capacity are very small.',
     ),
 
-    SHIP_FIGHTER_HEAVY => array(
+    SHIP_SMALL_FIGHTER_HEAVY => array(
       'description' => 'In further development of the lightweight fighter scientists came to a point where it became clear that an ordinary engine lacks power. In order to optimally remove ship, was first used pulse engine. Though it has cost, but it also opened new possibilities. Thanks to this engine has more power for weapons and shields, moreover, for this kind of fighter aircraft were also used valuable materials. This has led to improved structural integrity and stronger firepower, melee weapons, it represents a greater threat than its predecessor. After these changes Beaufighter represents a new era of technology, shipbuilding basis technology.',
       'description_short' => 'Further development of the lightweight fighter, it is better to secure and has a stronger attack.',
     ),
 
-    SHIP_DESTROYER => array(
+    SHIP_MEDIUM_FRIGATE => array(
       'description' => 'With the development of heavy lasers and ion guns, more and more marginalized by heavy fighters. Despite the many improvements in firepower and armor cannot be so modified to efficiently counter these defensive guns. It was therefore decided to build a new class of ships, which would have more firepower and armor. So were the destroyers. Destroyers protected almost three times stronger than heavy fighters and more than twice the firepower. They are very quick. There is no better weapons against high defense. Nearly a century cruisers unlimited dominated in the universe. With the advent of Gauss guns and plasma guns their rule came to an end. However, today they are used against groups of fighters.',
       'description_short' => 'Destroyers protected almost three times stronger than heavy fighters and firepower they surpass heavy fighters almost doubled. They are very fast.',
     ),
 
-    SHIP_CRUISER => array(
+    SHIP_LARGE_CRUISER => array(
       'description' => 'Cruisers tend to form the backbone of the fleet. Their heavy guns, high speed and large cargo make them serious opponents.',
       'description_short' => 'Cruisers tend to form the backbone of the fleet. Their heavy guns, high speed and large cargo make them serious opponents.',
     ),
@@ -303,7 +303,7 @@ $lang['info'] = (array(
       'description_short' => 'Spy probes are small mobile that the ships which deliver with distances of fleets and planets.',
     ),
 
-    SHIP_BOMBER => array(
+    SHIP_LARGE_BOMBER => array(
       'description' => 'Bomber was developed specifically to destroy the planetary protection. Using a laser sight it just resets plasma bombs on the surface of the planet and thus causes enormous damage to the defensive structures when hyperspace engine researched up to 8th grade, the bomber is a basic speed and it is equipped with this type of engine.',
       'description_short' => 'Bomber was developed specifically to destroy the planetary protection.',
     ),
@@ -313,22 +313,22 @@ $lang['info'] = (array(
       'description_short' => 'Solar satellites is a simple platform of solar cells, which are located on high orbit. They collect sunlight and expose it using laser ground station.',
     ),
 
-    SHIP_DESTRUCTOR => array(
+    SHIP_LARGE_DESTRUCTOR => array(
       'description' => 'Destructor - King of warships. The ion, plasma and gauss turrets can thanks to its advanced sensor to a 99% even high-speed mobile that the fighters. Since destroyers are very large, their agility is very limited, and in battle they resemble rather a battle station than combat ship. Deuterium consumption are also appreciated as their fighting power.',
       'description_short' => 'Destructor - King among military ships.',
     ),
 
-    SHIP_DEATH_STAR => array(
+    SHIP_HUGE_DEATH_STAR => array(
       'description' => 'Death star is equipped with a giant graviton gun that could destroy all types of ships and even the moon. To produce enough energy, celebrity deaths almost entirely consists of generators. Only huge stellar Empire have enough resources and workers for the construction of this huge ship.',
       'description_short' => 'Death star is equipped with a giant graviton gun that can destroy ships and even the Moon. ',
     ),
 
-    SHIP_BATTLESHIP => array(
+    SHIP_LARGE_BATTLESHIP => array(
       'description' => 'This high-tech ship brings death intruder fleets. Its advanced laser guns keep heavy enemy ships at a distance and can destroy several units one in one gulp. Due to its small size and incredibly powerful weapons, lenght linear Cruiser is very small, but at the expense of hyperspatial engine as little fuel consumption.',
       'description_short' => 'Starcruiser specializes in capturing enemy fleets.',
     ),
 
-    SHIP_SUPERNOVA => array(
+    SHIP_HUGE_SUPERNOVA => array(
       'description' => 'You are granted a ship from the emperor for your cruelty skills.',
       'description_short' => 'The flagship of the fleet of the Empire. The huge build cost will be compensated with terrible firepower and advanced protection. One ship of this class is able to defeat an average fleet by itself.',
     ),

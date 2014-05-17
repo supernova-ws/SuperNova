@@ -52,11 +52,11 @@ function sn_ube_combat_helper_round_row(&$debug_unit_crossfire_result)
     SHIP_SATTELITE_SOLAR => 'СоСп', 
     SHIP_COLONIZER => 'Коло', SHIP_RECYCLER => 'Пере', SHIP_SPY => 'Шпио', SHIP_SATTELITE_SLOTH => 'Лень',
 
-    SHIP_FIGHTER_LIGHT => 'ЛгИс', SHIP_FIGHTER_WRATH => 'Гнев', SHIP_FIGHTER_HEAVY => 'ТяИс', SHIP_FIGHTER_ASSAULT => 'Штур',
+    SHIP_SMALL_FIGHTER_LIGHT => 'ЛгИс', SHIP_SMALL_FIGHTER_WRATH => 'Гнев', SHIP_SMALL_FIGHTER_HEAVY => 'ТяИс', SHIP_SMALL_FIGHTER_ASSAULT => 'Штур',
 
-    SHIP_DESTROYER => 'Эсми', SHIP_BOMBER_ENVY => 'Зави', SHIP_BOMBER => 'Бомб',
-    SHIP_CARGO_GREED => 'Жадн', SHIP_CRUISER => 'Крей', SHIP_BATTLESHIP => 'Линк', SHIP_BATTLESHIP_PRIDE => 'Горд',
-    SHIP_DESTRUCTOR => 'Уник', SHIP_DEATH_STAR => 'ЗвСм', SHIP_SUPERNOVA => 'Нова',
+    SHIP_MEDIUM_FRIGATE => 'Эсми', SHIP_MEDIUM_BOMBER_ENVY => 'Зави', SHIP_LARGE_BOMBER => 'Бомб',
+    SHIP_CARGO_GREED => 'Жадн', SHIP_LARGE_CRUISER => 'Крей', SHIP_LARGE_BATTLESHIP => 'Линк', SHIP_LARGE_BATTLESHIP_PRIDE => 'Горд',
+    SHIP_LARGE_DESTRUCTOR => 'Уник', SHIP_HUGE_DEATH_STAR => 'ЗвСм', SHIP_HUGE_SUPERNOVA => 'Нова',
     UNIT_DEF_TURRET_MISSILE => 'Раке', UNIT_DEF_TURRET_LASER_SMALL => 'ЛеЛа', UNIT_DEF_TURRET_LASER_BIG => 'ТяЛа', UNIT_DEF_TURRET_GAUSS => 'Гаус', UNIT_DEF_TURRET_ION => 'Ионн', UNIT_DEF_TURRET_PLASMA => 'Плаз', UNIT_DEF_SHIELD_SMALL => 'МалЩ', UNIT_DEF_SHIELD_BIG => 'БолЩ', UNIT_DEF_SHIELD_PLANET => 'ПлаЩ'
   );
 

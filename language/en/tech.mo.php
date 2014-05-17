@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a2.6
+* @version 39a7.14
 *
 */
 
@@ -101,7 +101,7 @@ $a_lang_array = (array(
     TECH_HYPERSPACE => 'Hyperspace Technology',
     TECH_EXPEDITION => 'Expedition Technology',
     TECH_COLONIZATION => 'Colonization Technology',
-    TECH_ASTROTECH => 'Астрокартография',
+    TECH_ASTROTECH => 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ',
     TECH_GRAVITON => 'Graviton Technology',
     TECH_RESEARCH => 'Intergalactic Research Network',
 
@@ -114,15 +114,15 @@ $a_lang_array = (array(
     SHIP_CARGO_HYPER => 'Hypercargo',
     SHIP_RECYCLER => 'Recycler',
     SHIP_COLONIZER => 'Colony Ship',
-    SHIP_FIGHTER_LIGHT => 'Light Fighter',
-    SHIP_FIGHTER_HEAVY => 'Heavy Fighter',
-    SHIP_DESTROYER => 'Destroyer',
-    SHIP_CRUISER => 'Cruiser',
-    SHIP_BOMBER => 'Bomber',
-    SHIP_BATTLESHIP => 'Battleship',
-    SHIP_DESTRUCTOR => 'Destructor',
-    SHIP_DEATH_STAR => 'Deathstar',
-    SHIP_SUPERNOVA => 'Cruiser Class &quot;Supernova&quot;',
+    SHIP_SMALL_FIGHTER_LIGHT => 'Light Fighter',
+    SHIP_SMALL_FIGHTER_HEAVY => 'Heavy Fighter',
+    SHIP_MEDIUM_FRIGATE => 'Destroyer',
+    SHIP_LARGE_CRUISER => 'Cruiser',
+    SHIP_LARGE_BOMBER => 'Bomber',
+    SHIP_LARGE_BATTLESHIP => 'Battleship',
+    SHIP_LARGE_DESTRUCTOR => 'Destructor',
+    SHIP_HUGE_DEATH_STAR => 'Deathstar',
+    SHIP_HUGE_SUPERNOVA => 'Cruiser Class &quot;Supernova&quot;',
 
     UNIT_DEFENCE => 'Defences',
     UNIT_DEF_TURRET_MISSILE => 'Rocket Launcher',
