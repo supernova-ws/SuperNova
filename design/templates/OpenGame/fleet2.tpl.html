@@ -58,8 +58,12 @@ var fleet_slide_changing = false;
 
     <!-- IF CAPTAIN_ID -->
     <tr>
-      <td class="c_l">
-        <input type="checkbox" name="captain_id" value="{CAPTAIN_ID}" /> {L_module_unit_captain}
+      <td class="c_l" nowrap>
+        <input type="checkbox" name="captain_id" value="{CAPTAIN_ID}" />
+        {L_module_unit_captain} {CAPTAIN_LEVEL}:
+        {L_module_unit_captain_shield} +{CAPTAIN_SHIELD}% /
+        {L_module_unit_captain_armor} +{CAPTAIN_ARMOR}% /
+        {L_module_unit_captain_attack} +{CAPTAIN_ATTACK}%
       </td>
     </tr>
     <!-- ENDIF -->

@@ -89,7 +89,8 @@ function sn_fleet_page3()
 
   if($sn_module['unit_captain']->manifest['active'] && $captain_id = sys_get_param_id('captain_id'))
   {
-    $captain = mrc_get_level($user, $planetrow, UNIT_CAPTAIN, true);
+    $captain = $sn_module['unit_captain']->unit_captain_get($planetrow['id']);
+//      mrc_get_level($user, $planetrow, UNIT_CAPTAIN, true);
     if(!$captain)
     {
       $errorlist .= $lang['module_unit_captain_error_no_captain'];
@@ -259,11 +260,6 @@ function sn_fleet_page3()
   db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
   db_changeset_apply($db_changeset);
 
-  if(is_array($captain))
-  {
-    db_unit_set_by_id($captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$fleet_id}");
-  }
-
   $template = gettemplate('fleet3', true);
 
   foreach($fleetarray as $Ship => $Count)
@@ -272,6 +268,11 @@ function sn_fleet_page3()
       'NAME'  => $lang['tech'][$Ship],
       'COUNT' => pretty_number($Count),
     ));
+  }
+
+  if(is_array($captain))
+  {
+    db_unit_set_by_id($captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$fleet_id}");
   }
 
   $template->assign_vars(array(

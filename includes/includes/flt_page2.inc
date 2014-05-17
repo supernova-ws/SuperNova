@@ -63,10 +63,12 @@ function sn_fleet_page2()
     ));
   }
 
-  if($sn_module['unit_captain']->manifest['active'] && ($captain = mrc_get_level($user, $planetrow, UNIT_CAPTAIN)) && $captain['unit_location_type'] == LOC_PLANET)
+  if($sn_module['unit_captain']->manifest['active'] && ($captain = $sn_module['unit_captain']->unit_captain_get($planetrow['id'])) && $captain['unit_location_type'] == LOC_PLANET) // mrc_get_level($user, $planetrow, UNIT_CAPTAIN)
   {
+    pdump($captain);
     $template->assign_vars(array(
       'CAPTAIN_ID' => $captain['unit_id'],
+      'CAPTAIN_LEVEL' => $captain['captain_level'],
       'CAPTAIN_SHIELD' => $captain['captain_shield'],
       'CAPTAIN_ARMOR' => $captain['captain_armor'],
       'CAPTAIN_ATTACK' => $captain['captain_attack'],
