@@ -31,13 +31,15 @@ function db_planet_by_vector($vector, $prefix = '', $for_update = false, $fields
 }
 function db_planet_by_parent($parent_id, $for_update = false, $fields = '*')
 {
-  if(!($parent_id = intval($parent_id))) return false;
+  //if(!($parent_id = intval($parent_id))) return false;
+  if(!($parent_id = idval($parent_id))) return false;
   return classSupernova::db_get_record_list(LOC_PLANET,
     "`parent_planet` = {$parent_id} AND `planet_type` = " . PT_MOON, true);
 }
 function db_planet_by_id_and_owner($planet_id, $owner_id, $for_update = false, $fields = '*')
 {
-  if(!($planet_id = intval($planet_id)) || !($owner_id = intval($owner_id))) return false;
+  //if(!($planet_id = intval($planet_id)) || !($owner_id = intval($owner_id))) return false;
+  if(!($planet_id = idval($planet_id)) || !($owner_id = idval($owner_id))) return false;
   return classSupernova::db_get_record_list(LOC_PLANET,
     "`id` = {$planet_id} AND `id_owner` = {$owner_id}", true);
 }
@@ -45,7 +47,8 @@ function db_planet_by_id_and_owner($planet_id, $owner_id, $for_update = false, $
 
 function db_planet_list_moon_other($user_id, $this_moon_id)
 {
-  if(!($user_id = intval($user_id)) || !($this_moon_id = intval($this_moon_id))) return false;
+  // if(!($user_id = intval($user_id)) || !($this_moon_id = intval($this_moon_id))) return false;
+  if(!($user_id = idval($user_id)) || !($this_moon_id = idval($this_moon_id))) return false;
   return classSupernova::db_get_record_list(LOC_PLANET,
     "`planet_type` = " . PT_MOON . " AND `id_owner` = {$user_id} AND `id` != {$this_moon_id}");
 }
@@ -81,15 +84,18 @@ function db_planet_list_sorted($user_row, $skip_planet_id = false, $field_list =
 }
 function db_planet_list_by_user_or_planet($user_id, $planet_id)
 {
-  if(!($user_id = intval($user_id)) && !($planet_id = intval($planet_id))) return false;
+  // if(!($user_id = intval($user_id)) && !($planet_id = intval($planet_id))) return false;
+  if(!($user_id = idval($user_id)) && !($planet_id = idval($planet_id))) return false;
 
   return classSupernova::db_get_record_list(LOC_PLANET,
-    $planet_id = intval($planet_id) ? "{{planets}}.`id` = {$planet_id}" : "`id_owner` = {$user_id}", $planet_id);
+    $planet_id = idval($planet_id) ? "{{planets}}.`id` = {$planet_id}" : "`id_owner` = {$user_id}", $planet_id);
+//    $planet_id = intval($planet_id) ? "{{planets}}.`id` = {$planet_id}" : "`id_owner` = {$user_id}", $planet_id);
 }
 
 function db_planet_set_by_id($planet_id, $set)
 {
-  if(!($planet_id = intval($planet_id))) return false;
+  // if(!($planet_id = intval($planet_id))) return false;
+  if(!($planet_id = idval($planet_id))) return false;
   return classSupernova::db_upd_record_by_id(LOC_PLANET, $planet_id, $set);
 }
 function db_planet_set_by_gspt($ui_galaxy, $ui_system, $ui_planet, $ui_planet_type = PT_ALL, $set)
@@ -105,19 +111,22 @@ function db_planet_set_by_gspt($ui_galaxy, $ui_system, $ui_planet, $ui_planet_ty
 }
 function db_planet_set_by_parent($ui_parent_id, $ss_set)
 {
-  if(!($si_parent_id = intval($ui_parent_id)) || !($ss_set = trim($ss_set))) return false;
+  //if(!($si_parent_id = intval($ui_parent_id)) || !($ss_set = trim($ss_set))) return false;
+  if(!($si_parent_id = idval($ui_parent_id)) || !($ss_set = trim($ss_set))) return false;
   return classSupernova::db_upd_record_list(LOC_PLANET, "`parent_planet` = {$si_parent_id}", $ss_set);
 }
 function db_planet_set_by_owner($ui_owner_id, $ss_set)
 {
-  if(!($si_owner_id = intval($ui_owner_id)) || !($ss_set = trim($ss_set))) return false;
+  //if(!($si_owner_id = intval($ui_owner_id)) || !($ss_set = trim($ss_set))) return false;
+  if(!($si_owner_id = idval($ui_owner_id)) || !($ss_set = trim($ss_set))) return false;
   return classSupernova::db_upd_record_list(LOC_PLANET, "`id_owner` = {$si_owner_id}", $ss_set);
 }
 
 
 function db_planet_delete_by_id($planet_id)
 {
-  if(!($planet_id = intval($planet_id))) return false;
+  // if(!($planet_id = intval($planet_id))) return false;
+  if(!($planet_id = idval($planet_id))) return false;
   classSupernova::db_del_record_by_id(LOC_PLANET, $planet_id);
   classSupernova::db_del_record_list(LOC_UNIT, "`unit_location_type` = " . LOC_PLANET . " AND `unit_location_id` = " . $planet_id);
   // Очереди очистятся автоматически по FOREIGN KEY
@@ -125,7 +134,8 @@ function db_planet_delete_by_id($planet_id)
 }
 function db_planet_list_delete_by_owner($ui_owner_id)
 {
-  if(!($si_owner_id = intval($ui_owner_id))) return false;
+  // if(!($si_owner_id = intval($ui_owner_id))) return false;
+  if(!($si_owner_id = idval($ui_owner_id))) return false;
   classSupernova::db_del_record_list(LOC_PLANET, "`id_owner` = {$si_owner_id}");
   classSupernova::db_del_record_list(LOC_UNIT, "`unit_location_type` = " . LOC_PLANET . " AND `unit_player_id` = " . $si_owner_id);
   // Очереди очистятся автоматически по FOREIGN KEY
@@ -136,7 +146,8 @@ function db_planet_list_delete_by_owner($ui_owner_id)
 
 function db_planet_count_by_type($ui_user_id, $ui_planet_type = PT_PLANET)
 {
-  $si_user_id = intval($ui_user_id);
+  // $si_user_id = intval($ui_user_id);
+  $si_user_id = idval($ui_user_id);
   $si_planet_type = intval($ui_planet_type);
 
   // Лочим запись-родителя - если она есть и еще не залочена

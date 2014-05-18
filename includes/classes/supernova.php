@@ -365,7 +365,8 @@ class classSupernova
   public static function db_get_record_by_id($location_type, $record_id, $for_update = false, $fields = '*', $skip_lock = false)
   {
     $id_field = static::$location_info[$location_type][P_ID];
-    $record_id = intval(is_array($record_id) && isset($record_id[$id_field]) ? $record_id[$id_field] : $record_id);
+    // $record_id = intval(is_array($record_id) && isset($record_id[$id_field]) ? $record_id[$id_field] : $record_id);
+    $record_id = idval(is_array($record_id) && isset($record_id[$id_field]) ? $record_id[$id_field] : $record_id);
 
     return static::db_get_record_list($location_type, "`{$id_field}` = {$record_id}", true, false);
   }
@@ -455,7 +456,8 @@ class classSupernova
 
   public static function db_upd_record_by_id($location_type, $record_id, $set)
   {
-    if(!($record_id = intval($record_id)) || !($set = trim($set))) return false;
+    //if(!($record_id = intval($record_id)) || !($set = trim($set))) return false;
+    if(!($record_id = idval($record_id)) || !($set = trim($set))) return false;
 
     $location_info = &static::$location_info[$location_type];
     $id_field = $location_info[P_ID];
@@ -521,7 +523,8 @@ class classSupernova
 
   public static function db_del_record_by_id($location_type, $safe_record_id)
   {
-    if(!($safe_record_id = intval($safe_record_id))) return false;
+    // if(!($safe_record_id = intval($safe_record_id))) return false;
+    if(!($safe_record_id = idval($safe_record_id))) return false;
 
     $location_info = &static::$location_info[$location_type];
     $id_field = $location_info[P_ID];
@@ -606,7 +609,8 @@ class classSupernova
         // TODO Возможно есть смысл всегда искать по strtolower - но может игрок захочет переименоваться с другим регистром? Проверить!
         if((!$like && $user_data['username'] == $username) || ($like && strtolower($user_data['username']) == strtolower($username)))
         {
-          $user_as_ally = intval($user_data['user_as_ally']);
+          // $user_as_ally = intval($user_data['user_as_ally']);
+          $user_as_ally = idval($user_data['user_as_ally']);
           if($player === null || ($player === true && !$user_as_ally) || ($player === false && $user_as_ally))
           {
             $user = $user_data;
@@ -702,7 +706,8 @@ class classSupernova
 
   public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id)
   {
-    if(!($location_type = intval($location_type)) || !($location_id = intval($location_id))) return false;
+    //if(!($location_type = intval($location_type)) || !($location_id = intval($location_id))) return false;
+    if(!($location_type = idval($location_type)) || !($location_id = idval($location_id))) return false;
 
     $query_cache = &static::$locator[LOC_UNIT][$location_type][$location_id];
     if(!isset($query_cache))
@@ -770,7 +775,8 @@ class classSupernova
 
     $query = array();
 
-    if($user_id = intval($user_id))
+    // if($user_id = intval($user_id))
+    if($user_id = idval($user_id))
       $query[] = "`que_player_id` = {$user_id}";
 
     if($que_type == QUE_RESEARCH || $planet_id === null)

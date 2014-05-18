@@ -61,14 +61,18 @@ function db_unit_list_delete($user_id = 0, $unit_location_type, $unit_location_i
 {
   return classSupernova::db_del_record_list(LOC_UNIT,
     "`unit_location_type` = {$unit_location_type} AND `unit_location_id` = {$unit_location_id}" .
-    ($user_id = intval($user_id) ? " AND `unit_player_id` = {$user_id}" : '') .
-    ($unit_snid = intval($unit_snid) ? " AND `unit_snid` = {$unit_snid}" : ''));
+//    ($user_id = intval($user_id) ? " AND `unit_player_id` = {$user_id}" : '') .
+    ($user_id = idval($user_id) ? " AND `unit_player_id` = {$user_id}" : '') .
+//    ($unit_snid = intval($unit_snid) ? " AND `unit_snid` = {$unit_snid}" : ''));
+    ($unit_snid = idval($unit_snid) ? " AND `unit_snid` = {$unit_snid}" : ''));
 
   return doquery(
     "DELETE FROM {{unit}}
     WHERE unit_location_type = {$unit_location_type} AND unit_location_id = {$unit_location_id}" .
-    ($user_id = intval($user_id) ? " AND unit_player_id = {$user_id}" : '') .
-    ($unit_snid = intval($unit_snid) ? " AND unit_snid = {$unit_snid}" : '')
+//    ($user_id = intval($user_id) ? " AND unit_player_id = {$user_id}" : '') .
+    ($user_id = idval($user_id) ? " AND unit_player_id = {$user_id}" : '') .
+//    ($unit_snid = intval($unit_snid) ? " AND unit_snid = {$unit_snid}" : '')
+    ($unit_snid = idval($unit_snid) ? " AND unit_snid = {$unit_snid}" : '')
   );
 }
 

@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #39a5.0# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #39a7.18# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -19,7 +19,7 @@ class sn_module
 //      'UNIT_STRUCTURE_NEW' => 999999,
     ),
 
-    'vars' => array(), // Just a placeholder. vars assigned via special method __assign_vars(). See below
+    'vars' => array(), // Just a placeholder. vars assigned via special method __assign_vars(). Need 'cause of new constants that can be defined within module. See below
 
     // 'functions' array - this functions would be installed as hooks
     // Key: overwritable function name to replace

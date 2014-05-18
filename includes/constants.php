@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a7.17');
+define('SN_VERSION', '39a7.18');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -567,16 +567,15 @@ define('ART_LHC', 1001);      // Additional moon chance
 define('ART_RCD_SMALL', 1002);   // Rapid Colony Deployment - Set of buildings up to 10th level - 10/14/ 3/0 -   405 DM
 define('ART_RCD_MEDIUM', 1003);  // Rapid Colony Deployment - Set of buildings up to 15th level - 15/20/ 8/0 -  4704 DM
 define('ART_RCD_LARGE', 1004);   // Rapid Colony Deployment - Set of buildings up to 20th level - 20/25/10/1 - 39790 DM
-define('ART_HEURISTIC_CHIP', 1005);
-define('ART_NANO_BUILDER', 1006);
-define('ART_NANO_CONSTRUCTOR', 1007);
+define('ART_HEURISTIC_CHIP', 1005); // Speed up research
+define('ART_NANO_BUILDER', 1006); // Speed up building
+define('ART_NANO_CONSTRUCTOR', 1007); // RESERVED Speed up hangar constructions
 define('ART_HOOK_SMALL', 1008);
 define('ART_HOOK_MEDIUM', 1009);
 define('ART_HOOK_LARGE', 1010);
-//define('ART_DENSITY_CHANGER', 1011);
-//define('ART_SUPERCOMPUTER', 1005); // Speed up research
-//define('ART_PLANET_GATE', 1006);   // Planet gate
-//define('ART_NANOBOTS_SMALL', 1007); // Speed up building
+define('ART_DENSITY_CHANGER', 1011); // RESERVED
+// 1012 RESERVED
+define('ART_PLANET_GATE', 1013); // RESERVED Planet gate
 
 // === Blueprints
 define('UNIT_PLANS', 1100);
@@ -607,7 +606,7 @@ define('PLANET_DENSITY_METAL_PRILL', 6);
 define('PLANET_DENSITY_METAL_HEAVY', 7);
 
 
-define('UNIT_AWARD', 2000); // Награды игрока
+define('UNIT_AWARD', 2000); // Награды игрока 2.000-2.999
 define('UNIT_AWARD_ORDER', 2100); // Ордена за Выдающиеся Достижения - например, за спонсорство
 define('UNIT_AWARD_ORDER_SPONSOR_BRONZE', 2101);
 define('UNIT_AWARD_ORDER_SPONSOR_SILVER', 2102);
@@ -617,22 +616,42 @@ define('UNIT_AWARD_ORDER_SPONSOR_DIAMOND', 2105);
 define('UNIT_AWARD_ORDER_SPONSOR_DARK', 2106);
 define('UNIT_AWARD_ORDER_SPONSOR_META', 2107);
 define('UNIT_AWARD_ORDER_SPONSOR', 2109);
+// 2110 - следующая группа орденов
 
 define('UNIT_AWARD_MEDAL', 2200); // Медали за Серъезные Достижения - например, за победу в конкурсе
 define('UNIT_AWARD_MEMORY', 2300); // Памятные знаки за существование и участие - например "4 года в игре". "Был онлайн в новогоднюю ночь 2013". итд
 define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
 define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
 
+define('UNIT_NEXT', 3000); // !!! Next unit start on 3000 !!!
 
-// !!! Next unit start on 3000 !!!
+define('GROUP_PART',         800000);
+// Зарезервировано для запчастей: 800.001 - 899.999
+// define('GROUP_PART_HULL',    801000); // Корпуса - 1000 штук
+// define('GROUP_PART_ARMOR',   802000); // Броня - 1000 штук
+// define('GROUP_PART_SHIELD',  803000); // Щиты - 1000 штук
+// define('GROUP_PART_WEAPON',  810000); // Оружие - 10000 штук
+
+
+define('UNIT_GROUP', 'groups'); // 900.000
+// Зарезервировано для груп юнитов: 900.001 - 999.999
+define('GROUP_UNIT_USER', 1000000);
+// Зарезервировано для пользовательских юнитов: 1.000.001 - 1.999.999
+define('GROUP_ID_RESERVED', 2000000);
+// Зарезервировано для прочих нужд: 2.000.000 - 1.999.999.999
+define('GROUP_PARAMS', 1000000000);
+// Зарезервировано для параметров: 1.000.000.001 - 1.999.999.999
+define('GROUP_DEVELOPERS', 2000000000);
+// Пространство для разработчиков: 2.000.000.001 - 2.147.483.647
 
 define('UNIT_PLAYER_COLONIES_CURRENT', 'COLONIES_CURRENT');
 define('UNIT_PLAYER_COLONIES_MAX', 'COLONIES_MAX');
 define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 
-define('UNIT_GROUP', 'groups'); // 100.000
 
 // Unit params
+// define('GROUP_PARAMS', 1000000000);
+// Зарезервировано для параметров: 1.000.000.000-2.000.000.000
 define('P_MAX_STACK', 'max');
 // Все просто 'name' и "name" заменены на P_NAME
 define('P_NAME', 'name'); // Вот тут будет следующая фаза - избавится вообще от обращения к P_NAME и перевести все обращения к UNIT_ID
@@ -643,7 +662,7 @@ define('P_COST_METAL', 'metal_cost');
 define('P_FACTOR', 'factor');
 define('P_REQUIRE', 'require');
 define('P_STORAGE', 'storage');
-define('P_STACKABLE', 'stackable'); // not complete
+define('P_STACKABLE', 'stackable'); // COMPLETE
 define('P_DEPLOY', 'deploy');
 define('P_BONUS_VALUE', 'bonus');
 define('P_CAPACITY', 'capacity');

@@ -58,7 +58,8 @@ function db_user_list_search($searchtext)
 
 function db_buddy_list_by_user($user_id)
 {
-  return ($user_id = intval($user_id)) ? doquery(
+//  return ($user_id = intval($user_id)) ? doquery(
+  return ($user_id = idval($user_id)) ? doquery(
     "SELECT
       b.*,
       IF(b.BUDDY_OWNER_ID = {$user_id}, b.BUDDY_SENDER_ID, b.BUDDY_OWNER_ID) AS BUDDY_USER_ID,
@@ -84,7 +85,8 @@ function db_buddy_list_by_user($user_id)
 
 function db_message_list_outbox_by_user_id($user_id)
 {
-  return ($user_id = intval($user_id))
+  // return ($user_id = intval($user_id))
+  return ($user_id = idval($user_id))
     ? doquery("SELECT {{messages}}.message_id, {{messages}}.message_owner, {{users}}.id AS message_sender, {{messages}}.message_time,
           {{messages}}.message_type, {{users}}.username AS message_from, {{messages}}.message_subject, {{messages}}.message_text
        FROM
