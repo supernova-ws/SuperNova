@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #39a7.18# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #39a7.20# copyright © 2009-2012 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -115,10 +115,13 @@ class sn_module
     {
       foreach($this->manifest['constants'] as $constant_name => $constant_value)
       {
+        defined($constant_name) or define($constant_name, $constant_value);
+        /*
         if(!defined($constant_name))
         {
           define($constant_name, $constant_value);
         }
+        */
       }
     }
 

@@ -24,7 +24,7 @@ function flt_mission_explore(&$mission_data)
     foreach(sn_get_groups('fleet') as $unit_id)
     {
       $unit_info = get_unit_param($unit_id);
-      if(!$unit_info[P_SPEED])
+      if($unit_info[P_UNIT_TYPE] != UNIT_SHIPS)
       {
         continue;
       }
@@ -211,7 +211,6 @@ function flt_mission_explore(&$mission_data)
       $outcome_percent = $outcome_description['percent'][$outcome_mission_sub];
       // Рассчитываем количество найденных ресурсов
       $found_in_metal = ceil(min($outcome_percent * $fleet_metal_points, $config->resource_multiplier * 10000000, $fleet_capacity) * mt_rand(950000, 1050000) / 1000000); // game_speed
-      // pdump($found_in_metal, '$found_in_metal');
 
       $resources_found[RES_METAL] = floor(mt_rand(300000, 700000) / 1000000 * $found_in_metal);
       $found_in_metal -= $resources_found[RES_METAL];
@@ -332,23 +331,6 @@ function flt_mission_explore(&$mission_data)
     ($msg_text_addon ? "\r\n" . $msg_text_addon: '');
 
   msg_send_simple_message($fleet_row['fleet_owner'], '', $fleet_row['fleet_end_stay'], MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
-  // pdump($msg_text, '$msg_text');
-
-  // pdump($msg_text_addon, '$msg_text_addon');
-
-  // pdump($fleet);
-  // pdump($fleet_capacity);
-  // pdump($fleet_metal_points);
-  // die();
-  // pdump($msg_text_addon);
-  /*
-  pdump($query_data);
-  pdump(mysql_error(), 'error');
-  pdump($fleet, '$fleet');
-  pdump($fleet_row, '$fleet_row');
-  pdump($fleet_found, '$fleet_found');
-  die();
-  */
 
   return CACHE_FLEET | CACHE_USER_SRC;
 }

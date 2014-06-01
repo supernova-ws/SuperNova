@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a7.18');
+define('SN_VERSION', '39a7.20');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -682,8 +682,10 @@ define('P_AMPLIFY', 'amplify');
 define('P_DEFENSE', 'defense');
 define('P_STRUCTURE', 'structure');
 define('P_LOCATION', 'location');
+define('P_CONSUMPTION', 'consumption');
 
 define('P_ID', 'id');
+define('P_SNID', 'snid');
 
 define('P_TABLE_NAME', 'table_name');
 define('P_OWNER_INFO', 'owner_info');
@@ -696,8 +698,13 @@ define('P_QUERY_STR', 'P_QUERY_STR');
 define('P_ACTION_STR', 'P_ACTION_STR');
 define('P_VERSION', 'P_VERSION');
 
-
+define('P_THRUST', 'P_THRUST');
 define('P_HULL_SIZE', 'P_HULL_SIZE');
+define('P_CALC', 'P_CALC');
+define('P_WEIGHT', 'P_WEIGHT');
+define('P_PART_TYPE', 'P_PART_TYPE');
+define('P_HULL_CAPACITY', 'P_HULL_CAPACITY');
+define('P_COST_TOTAL', 'unit_cost');
 
 define('SNC_VER_NEVER', -1);
 define('SNC_VER_ERROR_CONNECT', 0);

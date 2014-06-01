@@ -1,0 +1,133 @@
+<?php
+
+function sn_floor($value)
+{
+  return $value >= 0 ? floor($value) : ceil($value);
+}
+
+// Эта функция выдает нормально распределенное случайное число с матожиднием $mu и стандартным отклонением $sigma
+// $strict - количество $sigma, по которым идет округление функции. Т.е. $strict = 3 означает, что диапазон значений обрезается по +-3 * $sigma
+// Используется http://ru.wikipedia.org/wiki/Преобразование_Бокса_—_Мюллера
+function sn_rand_gauss($mu = 0, $sigma = 1, $strict = false)
+{
+  // http://ru.wikipedia.org/wiki/Среднеквадратическое_отклонение
+  // При $mu = 0 (график симметричный, цифры только для половины графика)
+  // От 0 до $sigma ~ 34.1%
+  // От $sigma до 2 * $sigma ~ 13.6%
+  // От 2 * $sigma до 3 * $sigma ~ 2.1%
+  // От 3 * $sigma до бесконечности ~ 0.15%
+  // Не менее 99.7% случайных величин лежит в пределах +-3 $sigma
+
+//  $r = sn_rand_0_1();
+//  $phi = sn_rand_0_1();
+//  $z0 = cos(2 * pi() * $phi) * sqrt(-2 * log($r));
+//  return $mu + $sigma * $z0;
+  $max_rand = mt_getrandmax();
+  $random = cos(2 * pi() * (mt_rand(1, $max_rand) / $max_rand)) * sqrt(-2 * log(mt_rand(1, $max_rand) / $max_rand));
+  $random = $strict === false ? $random : ($random > $strict ? $strict : ($random < -$strict ? -$strict : $random));
+
+  return $mu + $sigma * $random;
+}
+
+// Функция возвращает случайное нормально распределенное целое число из указанного промежутка
+function sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
+{
+  $random = sn_rand_gauss(($range_start + $range_end) / 2, ($range_end - $range_start) / $strict / 2, $strict);
+  $round_emul = pow(10, $round === true ? 0 : $round);
+  return $round ? round($random * $round_emul) / $round_emul : $random;
+}
+
+function median()
+{
+  $args = func_get_args();
+
+  switch(func_num_args())
+  {
+    case 0:
+      // trigger_error('median() requires at least one parameter',E_USER_WARNING);
+      return false;
+      break;
+
+    case 1:
+      $args = array_pop($args);
+    // fallthrough
+
+    default:
+      if(!is_array($args))
+      {
+        // trigger_error('median() requires a list of numbers to operate on or an array of numbers', E_USER_NOTICE);
+        return false;
+      }
+
+      sort($args);
+
+      $n = count($args);
+      $h = intval($n / 2);
+
+      if($n % 2 == 0)
+      {
+        $median = ($args[$h] + $args[$h-1]) / 2;
+      }
+      else
+      {
+        $median = $args[$h];
+      }
+
+      break;
+  }
+
+  return $median;
+}
+function average($arr)
+{
+  return is_array($arr) && count($arr) ? array_sum($arr) / count($arr) : 0;
+}
+function linear_calc(&$linear, $from = 0, $debug = false)
+{
+  for($i = $from; $i < count($linear); $i++)
+  {
+    $eq = &$linear[$i];
+    for($j = count($eq) - 1; $j >= $from; $j--)
+    {
+      $eq[$j] /= $eq[$from];
+    }
+  }
+  if($debug) pdump($linear, 'Нормализовано по х' . $from);
+
+  for($i = $from + 1; $i < count($linear); $i++)
+  {
+    $eq = &$linear[$i];
+    for($j = count($eq) - 1; $j >= $from; $j--)
+    {
+      $eq[$j] -= $linear[$from][$j];
+    }
+  }
+  if($debug) pdump($linear, 'Подставили х' . $from);
+
+  if($from < count($linear) - 1)
+  {
+    linear_calc($linear, $from + 1, $debug);
+  }
+
+  if($from)
+  {
+    for($i = 0; $i < $from; $i++)
+    {
+      $eq = &$linear[$i];
+      for($j = count($eq) - 1; $j >= $from; $j--)
+      {
+        $eq[$j] = $eq[$j] - $eq[$from] * $linear[$from][$j];
+      }
+    }
+    if($debug) pdump($linear, 'Подставили обратно х' . $from);
+  }
+  else
+  {
+    if($debug) pdump($linear, 'Результат' . $from);
+    foreach($linear as $index => &$eq)
+    {
+      pdump($eq[count($linear)], 'x' . $index);
+    }
+  }
+}
+

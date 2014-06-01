@@ -1121,6 +1121,7 @@ function sn_ube_combat_result_apply(&$combat_data)
     $fleets_outcome[$fleet_id][UBE_UNITS_LOST] = $fleets_outcome[$fleet_id][UBE_UNITS_LOST] ? $fleets_outcome[$fleet_id][UBE_UNITS_LOST] : array();
 
     $fleet_query = array();
+    $db_changeset = array();
     $old_fleet_count = array_sum($fleet_info[UBE_COUNT]);
     $new_fleet_count = $old_fleet_count - array_sum($fleets_outcome[$fleet_id][UBE_UNITS_LOST]);
     // Перебираем юниты если во время боя количество юнитов изменилось и при этом во флоту остались юниты или это планета
@@ -1193,9 +1194,8 @@ function sn_ube_combat_result_apply(&$combat_data)
 
 //global $debug;
     $fleet_query = implode(',', $fleet_query);
-    if($fleet_id)
+    if($fleet_id) // Не планета
     {
-      // Не планета
       if($fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS && $outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_DIED)
       {
         $new_fleet_count = 0;
@@ -1215,12 +1215,17 @@ function sn_ube_combat_result_apply(&$combat_data)
         db_unit_list_delete(0, LOC_FLEET, $fleet_id, 0);
       }
     }
-    elseif($fleet_query)
+    else // Планета
     {
-      // Планета - сохраняем изменения ресурсов
-      db_planet_set_by_id($planet_id, $fleet_query);
-      // Планета - сохраняем изменения юнитов на планете
-      db_changeset_apply($db_changeset);
+      // Сохраняем изменения ресурсов - если они есть
+      if($fleet_query)
+      {
+        db_planet_set_by_id($planet_id, $fleet_query);
+      }
+      if(!empty($db_changeset)) // Сохраняем изменения юнитов на планете - если они есть
+      {
+        db_changeset_apply($db_changeset);
+      }
     }
   }
 

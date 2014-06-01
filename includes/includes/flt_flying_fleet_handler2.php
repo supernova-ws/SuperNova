@@ -32,10 +32,10 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
 
   $prefix = $start ? 'start' : 'end';
 
-  // Поскольку эта функция может быть вызвана не из обработчика флотов - нам надо всё заблокировать вроде бы
+  // Поскольку эта функция может быть вызвана не из обработчика флотов - нам надо всё заблокировать вроде бы НЕ МОЖЕТ!!!
   // TODO Проеверить от многократного срабатывания !!!
   // Тут не блокируем пока - сначала надо заблокировать пользователя, что бы не было дедлока
-  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1", true);
+//  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1", true);
   // Узнаем ИД владельца планеты - без блокировки
   // TODO поменять на владельца планеты - когда его будут возвращать всегда !!!
   $user_id = db_planet_by_vector($fleet_row, "fleet_{$prefix}_", false, 'id_owner');
@@ -45,7 +45,7 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
   // Блокируем планету
   $planet_arrival = db_planet_by_vector($fleet_row, "fleet_{$prefix}_", true);
   // Блокируем флот
-  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1 FOR UPDATE;", true);
+//  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1 FOR UPDATE;", true);
 
   // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
   if(!$fleet_row || !is_array($fleet_row) || ($fleet_row['fleet_mess'] == 1 && $only_resources))
@@ -334,7 +334,10 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
     if($mission_data['dst_planet'])
     {
       // $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_user'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
-      $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_planet']['id_owner'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
+      if($mission_data['dst_planet']['id_owner'])
+      {
+        $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_planet']['id_owner'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
+      }
       $mission_data['dst_user'] = $mission_data['dst_user'] ? $mission_data['dst_planet']['user'] : null;
       $mission_data['dst_planet'] = $mission_data['dst_planet']['planet'];
     }

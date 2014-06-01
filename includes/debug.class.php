@@ -59,12 +59,14 @@ class debug
 
   function compact_backtrace($backtrace, $long_comment = false)
   {
+    static $exclude_functions = array('doquery', 'db_query', 'db_get_record_list', 'db_user_by_id', 'db_get_user_by_id');
+
     $result = array();
     $transaction_id = classSupernova::db_transaction_check(false) ? classSupernova::$transaction_id : classSupernova::$transaction_id++;
     $result[] = "tID {$transaction_id}";
     foreach($backtrace as $a_trace)
     {
-      if(in_array($a_trace['function'], array('doquery', 'db_query', 'db_get_record_list'))) continue;
+      if(in_array($a_trace['function'], $exclude_functions)) continue;
       $function =
         ($a_trace['type']
           ? ($a_trace['type'] == '->'
