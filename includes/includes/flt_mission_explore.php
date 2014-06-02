@@ -24,7 +24,7 @@ function flt_mission_explore(&$mission_data)
     foreach(sn_get_groups('fleet') as $unit_id)
     {
       $unit_info = get_unit_param($unit_id);
-      if($unit_info[P_UNIT_TYPE] != UNIT_SHIPS)
+      if($unit_info[P_UNIT_TYPE] != UNIT_SHIPS || !isset($unit_info['engine'][0]['speed']) || !$unit_info['engine'][0]['speed'])
       {
         continue;
       }
