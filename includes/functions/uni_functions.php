@@ -401,6 +401,10 @@ function SetSelectedPlanet(&$user)
   {
     $planet_row = db_planet_by_id_and_owner($selected_planet, $user['id'], false, 'id');
   }
+  else
+  {
+    $planet_row = db_planet_by_id($planet_row['id']);
+  }
 
   // Если новая планета не найдена или было переключения - проверяем текущую выбранную планету
   if(!isset($planet_row['id'])) // || $planet_row['id'] != $user['current_planet']
