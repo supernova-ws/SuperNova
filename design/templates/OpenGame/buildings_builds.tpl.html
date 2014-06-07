@@ -1,4 +1,4 @@
-<br />
+<h2>{PAGE_HEADER}</h2>
 
 <script type="text/javascript"><!--
 var production = Array();
@@ -26,7 +26,7 @@ language =
 
 planet =
 {
-  fleet_own: '{FLEET_OWN}',
+  fleet_own: '{FLEET_OWN_COUNT}',
 
   metal: '{METAL}',
   crystal: '{CRYSTAL}',
@@ -55,28 +55,39 @@ var que_id = '{QUE_ID}';
 <!-- ENDIF -->
 
 <table width="650px" id="unit_table">
+  <!-- IF SHOW_SECTORS -->
   <tr>
-    <td colspan="{$COLSPAN}" class="c" align="center">
-      {L_bld_theyare} {L_bld_cellfree} {FIELDS_FREE} (<!-- IF FIELDS_QUE != 0 --><span style="color: yellow;">{FIELDS_QUE}</span>/<!-- ENDIF --><span class="negative">{FIELDS_CURRENT}</span>/<span class="positive">{FIELDS_MAX}</span>)
-      <span class="fr">
-      <!-- IF PLANET_TYPE == 1 -->
-        <!-- IF SECTOR_CAN_BUY -->
-          <a href="buildings.php?mode={D_QUE_STRUCTURES}&sector_buy=1"><span class="positive">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span></a>
-        <!-- ELSE -->
-          <span class="negative">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
-        <!-- ENDIF -->
-      <!-- ENDIF -->
-      </span>
+    <td colspan="{$COLSPAN}" class="c">
+      <table border="0" cellspacing="0" cellpadding="0" width="100%">
+        <tr>
+          <th class="c_l" style="border: 0">
+            {L_bld_theyare} {L_bld_cellfree} {FIELDS_FREE}
+            (<!-- IF FIELDS_QUE != 0 --><span style="color: yellow;">{FIELDS_QUE}</span>/<!-- ENDIF --><span class="negative">{FIELDS_CURRENT}</span>/<span class="positive">{FIELDS_MAX}</span>)
+          </th>
+          <th class="c_r" style="border: 0">
+            <!-- IF PLANET_TYPE == 1 -->
+              <!-- IF SECTOR_CAN_BUY -->
+                <a href="buildings.php?mode={D_QUE_STRUCTURES}&sector_buy=1"><span class="positive">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span></a>
+              <!-- ELSE -->
+                <span class="negative">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
+              <!-- ENDIF -->
+            <!-- ELSE -->
+              &nbsp;
+            <!-- ENDIF -->
+          </th>
+        </tr>
+      </table>
     </td>
   </tr>
+  <!-- ENDIF -->
 
-    <!-- IF ! U_opt_int_struc_vertical && $QUE_NOT_EMPTY -->
-    <tr>
-      <td colspan="5" class="c_c" align="center">
-<!-- INCLUDE eco_bld_queue_list -->
-      </td>
-    </tr>
-    <!-- ENDIF -->
+  <!-- IF ! U_opt_int_struc_vertical && $QUE_NOT_EMPTY -->
+  <tr>
+    <td colspan="5" class="c_c" align="center">
+      <!-- INCLUDE eco_bld_queue_list -->
+    </td>
+  </tr>
+  <!-- ENDIF -->
 
   <!-- IF METAL > 99999999999 || CRYSTAL > 9999999999 || DEUTERIUM > 9999999999 || METAL < -9999999999 || CRYSTAL < -999999999 || DEUTERIUM < -999999999-->
     <!-- DEFINE $FONT_SIZE = '80%' -->
@@ -140,9 +151,9 @@ var que_id = '{QUE_ID}';
     </td>
 
     <!-- IF U_opt_int_struc_vertical && $QUE_NOT_EMPTY -->
-      <td rowspan="5" class="c_c" align="center" valign="top" width="120px">
-<!-- INCLUDE eco_bld_queue_list -->
-      </td>
+    <td rowspan="5" class="c_c" align="center" valign="top" width="120px">
+      <!-- INCLUDE eco_bld_queue_list -->
+    </td>
     <!-- ENDIF -->
   </tr>
 
@@ -172,8 +183,8 @@ var que_id = '{QUE_ID}';
           </span>
 
           <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY -->
-            <!-- IF FIELDS_FREE > 0 && production.BUILD_CAN && production.BUILD_RESULT == 0 -->
-              <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='buildings.php?mode={QUE_ID}&action=create&unit_id={production.ID}'">
+            <!-- IF QUE_HAS_FIELDS && production.BUILD_CAN && production.BUILD_RESULT == 0 -->
+              <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='buildings.php?mode={QUE_ID}&action=create&unit_id={production.ID}&ally_id={ALLY_ID}'">
                 <div class="icons icon-plus"></div>
               </span>
             <!-- ENDIF -->
@@ -191,7 +202,7 @@ var que_id = '{QUE_ID}';
           </span>
 
           <span style="position: absolute; top: 0; left: 15%; width: 70%; height: 16px; text-align: center; font-size: 120%;" class="icon_alpha">
-            <!-- IF production.LEVEL_OLD -->{production.LEVEL_OLD}<!-- IF production.LEVEL_BONUS --><span class="bonus">+{production.LEVEL_BONUS}</span><!-- ENDIF --><!-- ENDIF --><!-- IF production.LEVEL_CHANGE --><!-- IF production.LEVEL_CHANGE > 0 -->+<!-- ENDIF -->{production.LEVEL_CHANGE}<!-- ENDIF -->
+            <!-- IF production.LEVEL_OLD -->{production.LEVEL_OLD}<!-- IF production.LEVEL_BONUS --><span class="bonus">+{production.LEVEL_BONUS}</span><!-- ENDIF --><!-- ENDIF --><!-- IF production.LEVEL_QUED --><!-- IF production.LEVEL_QUED > 0 -->+<!-- ENDIF -->{production.LEVEL_QUED}<!-- ENDIF -->
           </span>
 
           <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY -->
@@ -202,11 +213,13 @@ var que_id = '{QUE_ID}';
             <!-- ENDIF -->
           <!-- ENDIF -->
 
+          <!-- IF ! ALLY_ID -->
           <span style="position: absolute; bottom: 0; right: 0; cursor: pointer;" title="{L_flt_gather_all}" class="icon_alpha" onclick="document.location='fleet.php?fleet_page=5&cp={planet.ID}&re=0&metal={production.METAL_REST_NUM}&crystal={production.CRYSTAL_REST_NUM}&deuterium={production.DEUTERIUM_REST_NUM}'">
             <div class="icons icon-gather"></div>
           </span>
+          <!-- ENDIF -->
 
-          <span style="position: absolute; bottom: 0px; left: 0px;" class="icon_alpha" onclick="document.location='infos.php?gid={production.ID}'">
+          <span style="position: absolute; bottom: 0px; left: 0px;" class="icon_alpha" onclick="document.location='infos.php?gid={production.ID}&ally_id={ALLY_ID}'">
             <div class="icons icon-info"></div>
           </span>
 
@@ -247,14 +260,14 @@ var que_id = '{QUE_ID}';
           <!-- BEGIN resource -->
             {
               level: '{resource.LEVEL}',
-              metal: '{resource.METAL}',
-              metal_diff: '{resource.METAL_DIFF}',
-              'crystal': '{resource.CRYSTAL}',
-              'crystal_diff': '{resource.CRYSTAL_DIFF}',
-              'deuterium': '{resource.DEUTERIUM}',
-              'deuterium_diff': '{resource.DEUTERIUM_DIFF}',
-              'energy': '{resource.ENERGY}',
-              'energy_diff': '{resource.ENERGY_DIFF}'
+              metal: '{resource.R901}',
+              metal_diff: '{resource.D901}',
+              'crystal': '{resource.R902}',
+              'crystal_diff': '{resource.D902}',
+              'deuterium': '{resource.R903}',
+              'deuterium_diff': '{resource.D903}',
+              'energy': '{resource.R904}',
+              'energy_diff': '{resource.D904}'
             },
           <!-- END resource -->
           ]

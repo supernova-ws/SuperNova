@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a7.14
+* @version 39a8.0
 *
 */
 
@@ -97,13 +97,13 @@ $a_lang_array = (array(
     TECH_LASER => 'Лазерная технология',
     TECH_ION => 'Ионная технология',
     TECH_PLASMA => 'Плазменная технология',
-    TECH_HYPERSPACE => 'Гиперпространственная технология',
+    TECH_HYPERSPACE => 'Гиперптехнология',
     TECH_SPY => 'Технология шпионажа',
     TECH_EXPEDITION => 'Экспедиционная технология',
     TECH_COLONIZATION => 'Колонизационная технология',
     TECH_ASTROTECH => 'Астрокартография',
     TECH_GRAVITON => 'Гравитационная технология',
-    TECH_RESEARCH => 'Межгалактическая исследовательская сеть',
+    TECH_RESEARCH => 'Исследовательская сеть',
 
     UNIT_SHIPS => 'Флот',
     SHIP_SATTELITE_SOLAR => 'Солнечный спутник',

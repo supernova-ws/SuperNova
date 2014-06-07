@@ -30,8 +30,10 @@ switch ($mode)
 {
   case 'research':
   case QUE_RESEARCH:
-    require_once('includes/includes/eco_bld_tech.php');
-    eco_bld_tech($user, $planetrow);
+    require_once('includes/includes/eco_bld_structures.php');
+    eco_build(QUE_RESEARCH, $user, $planetrow);
+//    require_once('includes/includes/eco_bld_tech.php');
+//    eco_bld_tech(QUE_RESEARCH, $user, $planetrow);
   break;
 
   case SUBQUE_FLEET:

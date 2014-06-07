@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39a7.13#
+* @version #39a8.0#
 *
 */
 
@@ -677,6 +677,7 @@ $a_lang_array = (array(
       STRUC_LABORATORY => 'Идет исследование',
       STRUC_LABORATORY_NANO => 'Идет исследование',
     ),
+    BUILD_QUE_FULL => 'Очередь полна',
   ),
 
   'sys_game_mode' => array(

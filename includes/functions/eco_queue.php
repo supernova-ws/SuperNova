@@ -36,7 +36,7 @@ function que_get_max_que_length($user, $planet, $que_id, $que_data = null)
   switch($que_id)
   {
     case QUE_RESEARCH:
-      $que_length = $config->server_que_length_research;
+      $que_length = $config->server_que_length_research + mrc_get_level($user, '', UNIT_PREMIUM); // TODO - вынести в модуль
     break;
 
     default:
@@ -109,6 +109,11 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
     if(!$que_id)
     {
       throw new exception('Неправильный тип очереди - сообщите Администрации', ERR_ERROR); // TODO EXCEPTION
+    }
+
+    if($build_mode == BUILD_DESTROY && $que_id != QUE_STRUCTURES)
+    {
+      throw new exception('Уничтожать можно только здания на планете', ERR_ERROR); // TODO EXCEPTION
     }
 
     $que_data = sn_get_groups('ques');
@@ -247,7 +252,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
 
     sn_db_transaction_commit();
 
-    sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode'));
+    sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode') . "&ally_id=" . sys_get_param_id('ally_id'));
     die();
   }
   catch(exception $e)
@@ -414,7 +419,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
     sn_db_transaction_rollback();
   }
 //die();
-  header("Location: {$_SERVER['PHP_SELF']}?mode={$que_type}");
+  header("Location: {$_SERVER['PHP_SELF']}?mode={$que_type}" . "&ally_id=" . sys_get_param_id('ally_id'));
 }
 
 

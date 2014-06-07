@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a7.13
+* @version 39a8.0
 *
 */
 
@@ -670,6 +670,7 @@ $a_lang_array = (array(
       STRUC_LABORATORY => 'Research ongoing',
       STRUC_LABORATORY_NANO => 'Research ongoing',
     ),
+    BUILD_QUE_FULL => 'Que is full',
   ),
 
   'sys_game_mode' => array(
