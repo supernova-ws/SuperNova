@@ -147,6 +147,14 @@ body .ui-dialog, div .ui-dialog-content { background: transparent; border: none;
   border: 0px;
 }
 
+.makeup, .makeup > tbody > tr, .makeup > tbody > tr > th, .makeup > tbody > tr > td
+{
+  border: 0px;
+  background: transparent;
+  padding: 0px;
+  margin: 0px;
+}
+
 #chat_box
 {
   width: 100%;

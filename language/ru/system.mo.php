@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39a8.0#
+* @version #39a8.2#
 *
 */
 
@@ -678,6 +678,8 @@ $a_lang_array = (array(
       STRUC_LABORATORY_NANO => 'Идет исследование',
     ),
     BUILD_QUE_FULL => 'Очередь полна',
+    BUILD_SILO_FULL => 'Ракетная шахта заполнена',
+    BUILD_MAX_REACHED => 'Вы уже построили и/или поставили в очередь максимальное количество юнитов данного типа',
   ),
 
   'sys_game_mode' => array(

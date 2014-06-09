@@ -40,6 +40,23 @@ function sn_eco_build($que_type, &$auser, &$planet)
 //    $planet = &$aplanet;
   }
 
+// pdump($_POST);die();
+
+  switch($action = sys_get_param_escaped('action'))
+  {
+    case 'create': // Add unit to que for build
+    case 'destroy': // Add unit to que for remove
+      $operation_result = que_build($user, $planet, $action == 'destroy' ? BUILD_DESTROY : BUILD_CREATE);
+      break;
+
+    case 'trim':que_delete($que_type, $user, $planet, false);break;
+    case 'clear':que_delete($que_type, $user, $planet, true);break;
+  }
+
+// die();
+
+  $group_missile = sn_get_groups('missile');
+  $silo_capacity_free = 0;
   if($que_type == QUE_STRUCTURES)
   {
     $build_unit_list = sn_get_groups('build_allow');
@@ -64,7 +81,21 @@ function sn_eco_build($que_type, &$auser, &$planet)
   }
   else
   {
+    if(mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) == 0)
+    {
+      message($lang['need_hangar'], $lang['tech'][STRUC_FACTORY_HANGAR]);
+    }
+
+    $build_unit_list = sn_get_groups($page_mode = $que_type == SUBQUE_FLEET ? 'fleet' : 'defense');
+    $page_header = $lang[$page_mode];
     $artifact_id = 0;
+
+    $silo_capacity_free = mrc_get_level($user, $planet, STRUC_SILO) * get_unit_param(STRUC_SILO, P_CAPACITY);
+    foreach($group_missile as $unit_id)
+    {
+      $silo_capacity_free -= (mrc_get_level($user, $planet, $unit_id, false, true) + (isset($in_que[$unit_id]) && $in_que[$unit_id] ? $in_que[$unit_id] : 0)) * get_unit_param($unit_id, P_UNIT_SIZE);
+    }
+    $silo_capacity_free = max(0, $silo_capacity_free);
   }
 
 //pdump($user);die();
@@ -73,20 +104,10 @@ function sn_eco_build($que_type, &$auser, &$planet)
   $config_resource_multiplier = $config->resource_multiplier;
 
   // Getting parameters
-  $que_type = ($que_type == SUBQUE_FLEET || $que_type == SUBQUE_DEFENSE) ? QUE_HANGAR : $que_type;
+//  $que_type = ($que_type == SUBQUE_FLEET || $que_type == SUBQUE_DEFENSE) ? QUE_HANGAR : $que_type;
 
 //  if($action)
   {
-    switch($action = sys_get_param_escaped('action'))
-    {
-      case 'create': // Add unit to que for build
-      case 'destroy': // Add unit to que for remove
-        $operation_result = que_build($user, $planet, $action == 'destroy' ? BUILD_DESTROY : BUILD_CREATE);
-      break;
-
-      case 'trim':que_delete($que_type, $user, $planet, false);break;
-      case 'clear':que_delete($que_type, $user, $planet, true);break;
-    }
 //    header("Location: {$_SERVER['PHP_SELF']}?mode={$que_type}");
   }
 
@@ -132,7 +153,7 @@ function sn_eco_build($que_type, &$auser, &$planet)
     $level_bonus = max(0, $level_effective - $level_base);
     $level_base_and_que = $level_base + $level_in_que;
 
-    $element_sn_data = get_unit_param($unit_id);
+    $unit_info = get_unit_param($unit_id);
 
     $build_data = eco_get_build_data($user, $planet, $unit_id, $level_base_and_que);
     $temp[RES_METAL]     = floor($planet['metal'] + $fleet_list['own']['total'][RES_METAL] - $build_data[BUILD_CREATE][RES_METAL]);
@@ -140,17 +161,44 @@ function sn_eco_build($que_type, &$auser, &$planet)
     $temp[RES_DEUTERIUM] = floor($planet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_data[BUILD_CREATE][RES_DEUTERIUM]);
 
     $build_data['RESULT'][BUILD_CREATE] = $build_data['RESULT'][BUILD_CREATE] == BUILD_ALLOWED && !$can_que_element ? BUILD_QUE_FULL : $build_data['RESULT'][BUILD_CREATE];
+
+
+
+
+    // Restricting $can_build by resources on planet and (where applicable) with max count per unit
+    $can_build     = $unit_info[P_MAX_STACK] ? max(0, $unit_info[P_MAX_STACK] - $level_in_que - $level_effective) : $build_data['CAN'][BUILD_CREATE];
+    // Restricting $can_build by free silo capacity
+    $can_build     = ($unit_is_missile = in_array($unit_id, $group_missile)) ? min($can_build, floor($silo_capacity_free / $unit_info[P_UNIT_SIZE])) : $can_build;
+    if(!$can_build)
+    {
+      if(!$build_data['CAN'][BUILD_CREATE])
+      {
+        $build_data['RESULT'][BUILD_CREATE] = BUILD_NO_RESOURCES;
+      }
+      elseif($unit_is_missile && $silo_capacity_free < $unit_info[P_UNIT_SIZE])
+      {
+        $build_data['RESULT'][BUILD_CREATE] = BUILD_SILO_FULL;
+      }
+      elseif($unit_info[P_MAX_STACK])
+      {
+        $build_data['RESULT'][BUILD_CREATE] = BUILD_MAX_REACHED;
+      }
+    }
+
     $build_result_text = $lang['sys_build_result'][$build_data['RESULT'][BUILD_CREATE]];
     $build_result_text = !is_array($build_result_text) ? $build_result_text : (isset($build_result_text[$unit_id]) ? $build_result_text[$unit_id] : $build_result_text[0]);
     $template->assign_block_vars('production', array(
       'ID'                 => $unit_id,
       'NAME'               => $lang['tech'][$unit_id],
       'DESCRIPTION'        => $lang['info'][$unit_id]['description_short'],
+
       'LEVEL_OLD'          => $level_base,
       'LEVEL_BONUS'        => $level_bonus,
       'LEVEL_NEXT'         => $level_base + $level_in_que + 1,
       'LEVEL_QUED'         => $level_in_que,
       'LEVEL'              => $level_base_and_que,
+
+      'CAN_BUILD'          => $can_build,
 
       'BUILD_CAN'          => $build_data['CAN'][BUILD_CREATE],
       'TIME'               => pretty_time($build_data[RES_TIME][BUILD_CREATE]),
@@ -179,11 +227,11 @@ function sn_eco_build($que_type, &$auser, &$planet)
 
       'UNIT_BUSY'         => eco_unit_busy($user, $planet, $que, $unit_id),
     ));
-    if($element_sn_data['production'])
+    if($unit_info['production'])
     {
       $level_production_base = array();
       $element_level_start = $level_effective + $in_que[$unit_id];
-      foreach($element_sn_data['production'] as $resource_id => $resource_calc)
+      foreach($unit_info['production'] as $resource_id => $resource_calc)
       {
         if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($element_level_start, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1))))
         {
@@ -195,7 +243,7 @@ function sn_eco_build($que_type, &$auser, &$planet)
       for($i = 0; $i < 6; $i++)
       {
         $level_production = array('LEVEL' => $level_start + $i);
-        foreach($element_sn_data['production'] as $resource_id => $resource_calc)
+        foreach($unit_info['production'] as $resource_id => $resource_calc)
         {
           if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($level_start + $i, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1))))
           {
@@ -250,6 +298,8 @@ function sn_eco_build($que_type, &$auser, &$planet)
     'SECTOR_CAN_BUY'     => $sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER),
     'SECTOR_COST'        => $sector_cost,
     'SECTOR_COST_TEXT'   => pretty_number($sector_cost),
+
+    'STACKABLE'          => isset($unit_info[P_STACKABLE]) && $unit_info[P_STACKABLE],
 
     'U_opt_int_struc_vertical' => $user['option_list'][OPT_INTERFACE]['opt_int_struc_vertical'],
   ));

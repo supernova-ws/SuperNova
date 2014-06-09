@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a8.0
+* @version 39a8.2
 *
 */
 
@@ -671,6 +671,8 @@ $a_lang_array = (array(
       STRUC_LABORATORY_NANO => 'Research ongoing',
     ),
     BUILD_QUE_FULL => 'Que is full',
+    BUILD_SILO_FULL => 'Silo is full',
+    BUILD_MAX_REACHED => 'You already build and/or enqued maximum numbers of this type units',
   ),
 
   'sys_game_mode' => array(

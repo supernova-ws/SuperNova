@@ -128,26 +128,33 @@ function sn_ainput_make(field_name, options)
 
   var slider_id = "#" + field_name + 'slide';
 
-  document.write('<div>');
-  document.write('<div style="width: 100%">');
+  // top left
+  document.write('<div style="width: ' + div_width + ';">'); // main container - sets width
+
+  document.write('<div style="width: auto">');
   if(options['button_zero'])
   {
-    document.write('<input type="button" value="0" id="' + field_name + 'zero" style="width: 20;">&nbsp;');
+    document.write('<input type="button" value="0" id="' + field_name + 'zero" style="width: 20px; float: left; margin-right: 3px;">');
   }
-  document.write('<input type="button" value="-" id="' + field_name + 'dec" style="width: 20;">');
-  document.write('<input type="text"   value="0" id="' + field_name + '"    style="margin: 2px; width: ' + div_width + ';" name="' + field_name_orig + '" onfocus="javascript:if(this.value == \'0\') this.value=\'\';" onblur="javascript:if(this.value == \'\') this.value=\'0\';"/>');
-  document.write('&nbsp;<input type="button" value="+" id="' + field_name + 'inc" style="width: 20;">');
+  document.write('<input type="button" value="-" id="' + field_name + 'dec" style="width: 20px; float: left; margin-right: 3px;">');// div_width
+  document.write('<div style="width: auto; display: inline-block;"><input type="text" value="0" id="' + field_name + '" style="width: ' + '100%' + ';" name="' +
+    field_name_orig + '" onfocus="javascript:if(this.value == \'0\') this.value=\'\';" onblur="javascript:if(this.value == \'\') this.value=\'0\';"/></div>');
   if(options['button_max'])
   {
-    document.write('<input type="button" value="M" id="' + field_name + 'max" style="width: 20;">');
+    document.write('<input type="button" value="M" id="' + field_name + 'max" style="width: 20px; float: right; margin-left: 3px;">');
   }
+  document.write('&nbsp;<input type="button" value="+" id="' + field_name + 'inc" style="width: 20px; float: right; margin-left: 3px;">');
   document.write('</div>');
+  /*
   if(div_width != 'auto')
   {
     div_width += 20 + 20 + 6 + 6 + 2 + 2 + (options['button_zero'] ? 20 + 2 + 6: 0) + (options['button_max'] ? 20 + 2 + 6: 0);
   }
-  document.write('<div style="margin: 6px; width: ' + div_width + '" id="' + field_name + 'slide"></div>');
-  document.write('</div>');
+  */
+
+  document.write('<div style="margin: 6px; width: auto" id="' + field_name + 'slide"></div>'); // slider container
+
+  document.write('</div>'); // main container
 
   jQuery(function()
   {

@@ -1,9 +1,9 @@
 <!-- INCLUDE fleet_javascript -->
 
-<table width="519">
+<table width="522">
   <tr class="c_c">
-    <th>{L_event_time}</th>
-    <th>{L_ov_fleet}</th>
+    <th width=70>{L_event_time}</th>
+    <th width=46>{L_ov_fleet}</th>
     <th>{L_ov_destination}</th>
     <th>{L_ov_source}</th>
     <th>{L_ov_mission}</th>
@@ -22,7 +22,7 @@
       <tr><th colspan="5" class="c">{L_ov_flying_fleets} {L_ov_other_planets}</th></tr>
       <!-- DEFINE $THIS_PLANET = 2 -->
     <!-- ENDIF -->
-    
+
     <!-- IF fleets.OV_LABEL == 0 -->
       <!-- DEFINE $OV_FLEET_ACTION = 'flight' -->
     <!-- ELSEIF fleets.OV_LABEL == 1 -->
@@ -62,7 +62,7 @@
     <!-- ENDIF -->
 
     <tr class="{$OV_FLEET_ACTION} {$OV_FLEET_PREFIX}{$OV_FLEET_STYLE}">
-      <th width=70>
+      <th>
         <div id="ov_fleer_timer_{$OV_FLEET_ACTION}{fleets.ID}" class="z">00:00:00</div>
         {fleets.EVENT_TIME_TEXT}
       </th>

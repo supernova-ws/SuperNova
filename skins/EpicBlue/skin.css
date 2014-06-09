@@ -306,6 +306,10 @@ h1
   cursor: pointer;
 }
 
+.link:hover {
+  background-color     : #415680;
+}
+
 /*  Patching this theme for ui-slider */
 .style .ui-slider a:link { width: 1.2em; height: 1.2em; }
 .style .ui-slider a:hover { width: 1.2em; height: 1.2em; }

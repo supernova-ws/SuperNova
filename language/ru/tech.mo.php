@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a8.0
+* @version 39a8.2
 *
 */
 
@@ -93,7 +93,7 @@ $a_lang_array = (array(
     TECH_SHIELD => 'Щитовая технология',
     TECH_ENGINE_CHEMICAL => 'Химический двигатель',
     TECH_ENGINE_ION => 'Ионный двигатель',
-    TECH_ENGINE_HYPER => 'Гиперпространственный двигатель',
+    TECH_ENGINE_HYPER => 'Гипердвигатель',
     TECH_LASER => 'Лазерная технология',
     TECH_ION => 'Ионная технология',
     TECH_PLASMA => 'Плазменная технология',

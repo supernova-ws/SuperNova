@@ -2,7 +2,7 @@ function eco_struc_make_resource_row(resource_name, value, value_destroy)
 {
   if(value>0)
   {
-    document.getElementById('unit_' + resource_name).style.display = "table-row";
+    document.getElementById('unit_' + resource_name).style.visibility = "visible";
 
     document.getElementById(resource_name + '_price').innerHTML = sn_format_number(value, 0, 'positive', planet[resource_name]);
     document.getElementById(resource_name + '_left').innerHTML = sn_format_number(parseFloat(planet[resource_name]) - parseFloat(value), 0, 'positive');
@@ -19,7 +19,7 @@ function eco_struc_make_resource_row(resource_name, value, value_destroy)
   }
   else
   {
-    document.getElementById('unit_' + resource_name).style.display = "none";
+    document.getElementById('unit_' + resource_name).style.visibility = "hidden";
   }
 }
 
@@ -46,12 +46,15 @@ function eco_struc_show_unit_info(unit_id, no_color)
     return;
   }
 
+  $('#unit_id').val(unit_id);
+  $('#unit_amountslide').slider({ value: 0});
+/*
   if(bld_unit_info_cache[unit_id] != undefined)
   {
     jQuery('#unit_info').html(bld_unit_info_cache[unit_id]);
     return;
   }
-
+*/
   var unit = production[unit_id];
   var result = '';
   var unit_destroy_link = '';
@@ -68,27 +71,56 @@ function eco_struc_show_unit_info(unit_id, no_color)
   document.getElementById('unit_name').innerHTML = unit['name'];
   if(unit['level'] > 0)
   {
-    document.getElementById('unit_name').innerHTML += '<br>' + language['level'] + ' ' + unit['level'] + (parseInt(unit['level_bonus']) > 0 ? '<span class="bonus">+' + unit['level_bonus'] + '</span>' : '');
+    document.getElementById('unit_level').innerHTML = '<br>' + (!STACKABLE ? language['level'] + ' ' : '') + unit['level'] + (parseInt(unit['level_bonus']) > 0 ? '<span class="bonus">+' + unit['level_bonus'] + '</span>' : '');
     unit_destroy_link = language['bld_destroy'] + ' ' + language['level'] + ' ' + unit['level'];
   }
 
-  document.getElementById('unit_create_link').innerHTML = '';
-  document.getElementById('unit_destroy_link').innerHTML = '';
+//  document.getElementById('unit_create_link').innerHTML = '';
+//  document.getElementById('unit_destroy_link').innerHTML = '';
+  $('#unit_create').css('visibility', 'hidden');
+  $('#unit_destroy').css('visibility', 'hidden');
   if(planet['que_has_place'] != 0 && !unit['unit_busy'])
   {
-    var pre_href = '<a href="buildings.php?mode=' + que_id + '&action=';
-    if(unit['level'] > 0 && unit['destroy_can'] != 0 && unit['destroy_result'] == 0)
+//    var pre_href = '<a href="buildings.php?mode=' + que_id + '&action=';
+    if(STACKABLE)
     {
-      document.getElementById('unit_destroy_link').innerHTML = pre_href + 'destroy&unit_id=' + unit['id'] + '"><span class="negative">' + unit_destroy_link + '</span><br />'
-      + (unit['destroy_metal'] ? language['sys_metal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_metal']), 0, 'positive') + ' ' : '')
-      + (unit['destroy_crystal'] ? language['sys_crystal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_crystal']), 0, 'positive') + ' ' : '')
-      + (unit['destroy_deuterium'] ? language['sys_deuterium'][0] + ':' + sn_format_number(parseFloat(unit['destroy_deuterium']), 0, 'positive') + ' ' : '')
-      + unit['destroy_time']
-      + '</a>';
+      if(unit['build_can'] != 0 && unit['build_result'] == 0)
+      {
+        $('#unit_create').css('visibility', 'visible');
+        $('#unit_create_level').html(parseInt(unit['level']) + 1);
+        $('#unit_amountslide').slider({ max: unit['can_build']});
+      }
     }
-    if(planet['fields_free'] > 0 && unit['build_can'] != 0 && unit['build_result'] == 0)
+    else
     {
-      document.getElementById('unit_create_link').innerHTML = pre_href + 'create&unit_id=' + unit['id'] + '"><span class="positive">' + language['bld_create'] + ' ' + language['level'] + ' ' + (parseInt(unit['level']) + 1) + '</span></a>';
+      if(unit['level'] > 0 && unit['destroy_can'] != 0 && unit['destroy_result'] == 0)
+      {
+        $('#unit_destroy').css('visibility', 'visible');
+        $('#unit_destroy_level').html(unit['level']);
+        $('#unit_destroy_resources').html(
+            (unit['destroy_metal'] ? language['sys_metal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_metal']), 0, 'positive') + ' ' : '')
+          + (unit['destroy_crystal'] ? language['sys_crystal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_crystal']), 0, 'positive') + ' ' : '')
+          + (unit['destroy_deuterium'] ? language['sys_deuterium'][0] + ':' + sn_format_number(parseFloat(unit['destroy_deuterium']), 0, 'positive') + ' ' : '')
+        );
+        $('#unit_destroy_time').html(unit['destroy_time']);
+/*
+        document.getElementById('unit_destroy_link').innerHTML =
+          (unit['destroy_metal'] ? language['sys_metal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_metal']), 0, 'positive') + ' ' : '')
+            + (unit['destroy_crystal'] ? language['sys_crystal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_crystal']), 0, 'positive') + ' ' : '')
+            + (unit['destroy_deuterium'] ? language['sys_deuterium'][0] + ':' + sn_format_number(parseFloat(unit['destroy_deuterium']), 0, 'positive') + ' ' : '')
+            + '<br />' + unit['destroy_time']
+            + '<br />' + '<span class="link negative unit_destroy">' + unit_destroy_link + '</span>';
+*/
+      }
+      if(planet['fields_free'] > 0 && unit['build_can'] != 0 && unit['build_result'] == 0)
+      {
+        $('#unit_create').css('visibility', 'visible');
+        $('#unit_create_level').html(parseInt(unit['level']) + 1);
+        /*
+         document.getElementById('unit_create_link').innerHTML = '<span class="link positive unit_create">' +
+         language['bld_create'] + ' ' + language['level'] + ' ' + (parseInt(unit['level']) + 1) + '</span>';
+         */
+      }
     }
   }
 
@@ -140,11 +172,12 @@ function eco_struc_show_unit_info(unit_id, no_color)
   }
   bld_unit_info_width = Math.max(bld_unit_info_width, jQuery('#unit_table').width());
   document.getElementById('unit_table').width = bld_unit_info_width;
-  bld_unit_info_cache[unit_id] = jQuery('#unit_info').html();
+//  bld_unit_info_cache[unit_id] = jQuery('#unit_info').html();
 }
 
 function eco_struc_select_unit(unit_id)
 {
+  $('#unit_id').val(unit_id);
   if(unit_selected == unit_id)
   {
     unit_selected = null;
@@ -158,6 +191,7 @@ function eco_struc_select_unit(unit_id)
       eco_struc_show_unit_info(unit_id);
     }
     unit_selected = unit_id;
+    $('#unit_amountslide').slider({ value: 0});
   }
 }
 

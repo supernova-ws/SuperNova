@@ -87,22 +87,16 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
       throw new exception('Нет идентификатора пользователя - сообщите Администрации', ERR_ERROR); // TODO EXCEPTION
     }
 
-    $unit_amount = 1;
-
     $unit_id = sys_get_param_int('unit_id');
+    /*
     if(!$unit_id && is_array($unit_list = sys_get_param('fmenge')))
     {
       foreach($unit_list as $unit_id => $unit_amount) if($unit_amount) break;
     }
+    */
     if(!$unit_id)
     {
       throw new exception('Нет идентификатора юнита - сообщите Администрации', ERR_ERROR); // TODO EXCEPTION
-    }
-
-    $unit_amount = floor($unit_amount);
-    if($unit_amount < 1)
-    {
-      throw new exception('Неправильное количество юнитов - сообщите Администрации', ERR_ERROR); // TODO EXCEPTION
     }
 
     $que_id = que_get_unit_que($unit_id);
@@ -118,6 +112,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
 
     $que_data = sn_get_groups('ques');
     $que_data = $que_data[$que_id];
+//    die();
 
     // TODO Переделать под подочереди
     if($que_id == QUE_STRUCTURES)
@@ -125,11 +120,17 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
       $sn_groups_build_allow = sn_get_groups('build_allow');
       $que_data['unit_list'] = $sn_groups_build_allow[$planet['planet_type']];
     }
+    /*
     // TODO Разделить очереди для Верфи и Обороны
     elseif($que_id == QUE_HANGAR)
     {
       $que_data['mercenary'] = in_array($unit_id, sn_get_groups('defense')) ? MRC_FORTIFIER : MRC_ENGINEER;
     }
+    elseif($que_id == QUE_HANGAR)
+    {
+      $que_data['mercenary'] = in_array($unit_id, sn_get_groups('defense')) ? MRC_FORTIFIER : MRC_ENGINEER;
+    }
+    */
 
 
     sn_db_transaction_start();
@@ -148,8 +149,10 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
     $planet_id = $que_id == QUE_RESEARCH ? 0 : intval($planet['id']);
 
     $que = que_get($user['id'], $planet['id'], $que_id, true);
+    $in_que = &$que['in_que'][$que_id][$user['id']][$planet_id];
+    $que_max_length = que_get_max_que_length($user, $planet, $que_id, $que_data);
     // TODO Добавить вызовы функций проверок текущей и максимальной длин очередей
-    if(count($que['ques'][$que_id][$user['id']][$planet_id]) >= que_get_max_que_length($user, $planet, $que_id, $que_data))
+    if(count($in_que) >= $que_max_length)
     {
       throw new exception('Все слоты очереди заняты', ERR_ERROR); // TODO EXCEPTION
     }
@@ -157,29 +160,34 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
     // TODO Отдельно посмотреть на уничтожение зданий - что бы можно было уничтожать их без планов
     switch(eco_can_build_unit($user, $planet, $unit_id))
     {
-      case BUILD_ALLOWED:
-        break;
-
-      case BUILD_UNIT_BUSY:
-        throw new exception('Строение занято', ERR_ERROR); // TODO EXCEPTION eco_bld_msg_err_laboratory_upgrading
-        break;
-
-      case BUILD_REQUIRE_NOT_MEET:
-      default:
-        throw new exception('Требования не удовлетворены', ERR_ERROR); // TODO EXCEPTION eco_bld_msg_err_requirements_not_meet
-        break;
+      case BUILD_ALLOWED: break;
+      case BUILD_UNIT_BUSY: throw new exception('Строение занято', ERR_ERROR); break; // TODO EXCEPTION eco_bld_msg_err_laboratory_upgrading
+      // case BUILD_REQUIRE_NOT_MEET:
+      default: throw new exception('Требования не удовлетворены', ERR_ERROR); break; // TODO EXCEPTION eco_bld_msg_err_requirements_not_meet
     }
 
-    $units_qued = isset($que['in_que'][$que_id][$user['id']][$planet_id][$unit_id]) ? $que['in_que'][$que_id][$user['id']][$planet_id][$unit_id] : 0;
+    $unit_amount = floor(sys_get_param_float('unit_amount', 1));
+    $units_qued = isset($in_que[$unit_id]) ? $in_que[$unit_id] : 0;
     $unit_level = mrc_get_level($user, $planet, $unit_id, true, true) + $units_qued;
-    if(($unit_max = get_unit_param($unit_id, P_MAX_STACK)) && $unit_level >= $unit_max)
+    if($unit_max = get_unit_param($unit_id, P_MAX_STACK))
     {
-      throw new exception('Максимальное количество юнитов данного типа уже достигнуто или будет достигнуто по окончанию очереди', ERR_ERROR); // TODO EXCEPTION
+      if($unit_level >= $unit_max)
+      {
+        throw new exception('Максимальное количество юнитов данного типа уже достигнуто или будет достигнуто по окончанию очереди', ERR_ERROR); // TODO EXCEPTION
+      }
+      $unit_amount = max(0, min($unit_amount, $unit_max - ($unit_level + $unit_amount)));
     }
+    if($unit_amount < 1)
+    {
+      throw new exception('Неправильное количество юнитов - сообщите Администрации', ERR_ERROR); // TODO EXCEPTION
+    }
+
+    /*
     if($unit_max && $unit_level + $unit_amount > $unit_max)
     {
       throw new exception("Постройка {$unit_amount} {$lang['tech'][$unit_id]} приведет к привышению максимально возможного количества юнитов данного типа", ERR_ERROR); // TODO EXCEPTION
     }
+    */
 
     // TODO Переделать eco_unit_busy для всех типов зданий
     //  if(eco_unit_busy($user, $planet, $que, $unit_id))
@@ -194,7 +202,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
         $used_silo = 0;
         foreach($group_missile as $missile_id)
         {
-          $missile_qued = isset($que['in_que'][$que_id][$planet['id']][$missile_id]) ? $que['in_que'][$que_id][$planet['id']][$missile_id] : 0;
+          $missile_qued = isset($in_que[$missile_id]) ? $in_que[$missile_id] : 0;
           $used_silo += (mrc_get_level($user, $planet, $missile_id, true, true) + $missile_qued) * get_unit_param($missile_id, P_UNIT_SIZE);
         }
         $free_silo = mrc_get_level($user, $planet, STRUC_SILO) * get_unit_param(STRUC_SILO, P_CAPACITY) - $used_silo;
@@ -202,20 +210,22 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
         {
           throw new exception('Ракетная шахта уже заполнена или будет заполнена по окончанию очереди', ERR_ERROR); // TODO EXCEPTION
         }
-        if($free_silo < get_unit_param($unit_id, P_UNIT_SIZE) * $unit_amount)
+        $unit_size = get_unit_param($unit_id, P_UNIT_SIZE);
+        if($free_silo < $unit_size)
         {
-          throw new exception("В ракетной шахте нет места для {$unit_amount} штук {$lang['tech'][$unit_id]}", ERR_ERROR); // TODO EXCEPTION
+          throw new exception("В ракетной шахте нет места для {$lang['tech'][$unit_id]}", ERR_ERROR); // TODO EXCEPTION
         }
+        $unit_amount = max(0, min($unit_amount, floor($free_silo / $unit_size)));
       }
-      $unit_amount = min($unit_amount, MAX_FLEET_OR_DEFS_PER_ROW);
       $unit_level = $new_unit_level = 0;
     }
     else
     {
+      $unit_amount = 1;
       if($que_id == QUE_STRUCTURES)
       {
         // if($build_mode == BUILD_CREATE && eco_planet_fields_max($planet) - $planet['field_current'] - $que['sectors'][$planet['id']] <= 0)
-        $sectors_qued = is_array($que['in_que'][$que_id][$planet['id']]) ? array_sum($que['in_que'][$que_id][$planet['id']]) : 0;
+        $sectors_qued = is_array($in_que) ? array_sum($in_que) : 0;
         if($build_mode == BUILD_CREATE && eco_planet_fields_max($planet) - $planet['field_current'] - $sectors_qued <= 0)
         {
           throw new exception('Не хватает секторов на планете', ERR_ERROR); // TODO EXCEPTION
@@ -230,30 +240,44 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
       $new_unit_level = $unit_level + $unit_amount * $build_multiplier;
     }
 
-
     $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
     if($build_data['RESULT'][BUILD_CREATE] != BUILD_ALLOWED)
     {
       throw new exception('Строительство блокировано', ERR_ERROR); // TODO EXCEPTION
     }
 
-    if($build_data['CAN'][$build_mode] < $unit_amount)
+    $unit_amount = min($build_data['CAN'][$build_mode], $unit_amount);
+    if($unit_amount < 0)
     {
       throw new exception('Не хватает ресурсов', ERR_ERROR); // TODO EXCEPTION
     }
-
 
     if($new_unit_level < 0)
     {
       throw new exception('Нельзя уничтожить больше юнитов, чем есть', ERR_ERROR); // TODO EXCEPTION
     }
 
-    que_add_unit($unit_id, $user, $planet, $build_data, $new_unit_level, $unit_amount, $build_mode);
+//    $unit_amount = min($unit_amount, MAX_FLEET_OR_DEFS_PER_ROW);
+    while($unit_amount > 0 && count($que['ques'][$que_id][$user['id']][$planet_id]) < $que_max_length)
+    {
+      $place = min($unit_amount, MAX_FLEET_OR_DEFS_PER_ROW);
+      que_add_unit($unit_id, $user, $planet, $build_data, $new_unit_level, $place, $build_mode);
+      $unit_amount -= $place;
+      $que = que_get($user['id'], $planet['id'], $que_id, true);
+    }
+
+//    pdump($que);
+/*
+    pdump($que = que_get($user['id'], $planet['id'], $que_id, true));
+*/
+// die();
+//    if(count($que['ques'][$que_id][$user['id']][$planet_id]) >= $que_max_length)
+
 
     sn_db_transaction_commit();
 
-    sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode') . "&ally_id=" . sys_get_param_id('ally_id'));
-    die();
+//    sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode') . "&ally_id=" . sys_get_param_id('ally_id'));
+//    die();
   }
   catch(exception $e)
   {
