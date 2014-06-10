@@ -70,7 +70,7 @@ function eco_que_arr2str($que_arr)
     $que_item = implode(',', $que_item);
   }
   return implode(';', $que_arr);
-}
+  }
 
 
 

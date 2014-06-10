@@ -190,17 +190,23 @@ function sn_ainput_make(field_name, options)
         }
       }
 
-      if(jQuery(this).val() > jQuery(slider_id).slider("option", "max"))
+      value = parseInt(jQuery(this).val());
+      slider = jQuery(slider_id);
+
+// console.log(Number.MAX_VALUE);
+// console.log(parseInt(jQuery(slider_id).slider("option", "max")));
+// console.log(value > parseInt(jQuery(slider_id).slider("option", "max")) ? 1 : 0);
+      if(value > parseInt(slider.slider("option", "max")))
       {
-        jQuery(this).val(jQuery(slider_id).slider("option", "max"));
+        jQuery(this).val(slider.slider("option", "max"));
       }
 
-      if(jQuery(this).val() < jQuery(slider_id).slider("option", "min"))
+      if(value < parseInt(slider.slider("option", "min")))
       {
-        jQuery(this).val(jQuery(slider_id).slider("option", "min"));
+        jQuery(this).val(slider.slider("option", "min"));
       }
 
-      jQuery(slider_id).slider("value", jQuery(this).val());
+      slider.slider("value", value);
     }
   );
 
