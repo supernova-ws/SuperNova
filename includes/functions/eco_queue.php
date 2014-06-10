@@ -175,7 +175,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
       {
         throw new exception('Максимальное количество юнитов данного типа уже достигнуто или будет достигнуто по окончанию очереди', ERR_ERROR); // TODO EXCEPTION
       }
-      $unit_amount = max(0, min($unit_amount, $unit_max - ($unit_level + $unit_amount)));
+      $unit_amount = max(0, min($unit_amount, $unit_max - $unit_level));
     }
     if($unit_amount < 1)
     {
