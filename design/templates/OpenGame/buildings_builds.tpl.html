@@ -22,7 +22,14 @@ language =
   sys_metal: '{LA_sys_metal}',
   sys_crystal: '{LA_sys_crystal}',
   sys_deuterium: '{LA_sys_deuterium}',
-  sys_energy: '{LA_sys_energy}'
+  sys_energy: '{LA_sys_energy}',
+  energy: '{LA_sys_energy}',
+  shield: '{LA_sys_ship_shield}',
+  armor: '{LA_sys_ship_armour}',
+  weapon: '{LA_sys_ship_weapon}',
+  speed: '{LA_sys_ship_speed}',
+  consumption: '{LA_sys_ship_consumption}',
+  capacity: '{LA_sys_ship_capacity}',
 };
 
 planet =
@@ -64,7 +71,7 @@ var que_id = '{QUE_ID}';
   <!-- DEFINE $COLSPAN = 5 -->
 <!-- ENDIF -->
 
-<table class="makeup" cellspacing="0" cellpadding="0" style="background: transparent">
+<table class="markup" cellspacing="0" cellpadding="0" style="background: transparent">
 <tr style="background: transparent; border: none">
   <td align="center" valign="top"  >
 <table width="650px" id="unit_table">
@@ -286,19 +293,28 @@ var que_id = '{QUE_ID}';
         destroy_can: '{production.DESTROY_CAN}',
         destroy_result: '{production.DESTROY_RESULT}',
 
+        map_is_resource: '{production.MAP_IS_RESOURCE}',
+
         <!-- IF .production.resource -->
           resource_map: [
           <!-- BEGIN resource -->
             {
-              level: '{resource.LEVEL}',
-              metal: '{resource.R901}',
-              metal_diff: '{resource.D901}',
+              'shield': '{resource.ACTUAL_SHIELD}',
+              'armor': '{resource.ACTUAL_ARMOR}',
+              'weapon': '{resource.ACTUAL_WEAPON}',
+              'speed': '{resource.ACTUAL_SPEED}',
+              'consumption': '{resource.ACTUAL_CONSUMPTION}',
+              'capacity': '{resource.ACTUAL_CAPACITY}',
+
+              'level': '{resource.LEVEL}',
+              'metal': '{resource.R901}',
+              'metal_diff': '{resource.D901}',
               'crystal': '{resource.R902}',
               'crystal_diff': '{resource.D902}',
               'deuterium': '{resource.R903}',
               'deuterium_diff': '{resource.D903}',
               'energy': '{resource.R904}',
-              'energy_diff': '{resource.D904}'
+              'energy_diff': '{resource.D904}',
             },
           <!-- END resource -->
           ]

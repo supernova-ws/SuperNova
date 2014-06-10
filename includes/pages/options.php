@@ -189,6 +189,8 @@ function sn_options_model()
     $user['settings_wri'] = sys_get_param_int('settings_wri');
     $user['settings_bud'] = sys_get_param_int('settings_bud');
     $user['settings_mis'] = sys_get_param_int('settings_mis');
+    $user['settings_statistics'] = sys_get_param_int('settings_statistics');
+    $user['settings_info'] = sys_get_param_int('settings_info');
     $user['settings_rep'] = sys_get_param_int('settings_rep');
     $user['planet_sort']  = sys_get_param_int('settings_sort');
     $user['planet_sort_order'] = sys_get_param_int('settings_order');
@@ -258,7 +260,8 @@ function sn_options_model()
       `dpath` = '{$user['dpath']}', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
       `planet_sort` = '{$user['planet_sort']}', `planet_sort_order` = '{$user['planet_sort_order']}', `spio_anz` = '{$user['spio_anz']}',
       `settings_tooltiptime` = '{$user['settings_tooltiptime']}', `settings_fleetactions` = '{$user['settings_fleetactions']}', `settings_esp` = '{$user['settings_esp']}',
-      `settings_wri` = '{$user['settings_wri']}', `settings_bud` = '{$user['settings_bud']}', `settings_mis` = '{$user['settings_mis']}', `settings_rep` = '{$user['settings_rep']}',
+      `settings_wri` = '{$user['settings_wri']}', `settings_bud` = '{$user['settings_bud']}', `settings_statistics` = '{$user['settings_statistics']}',
+      `settings_info` = '{$user['settings_info']}', `settings_mis` = '{$user['settings_mis']}', `settings_rep` = '{$user['settings_rep']}',
       `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user['options']}'
       {$user_birthday}"
     );
@@ -364,11 +367,15 @@ function sn_options_view($template = null)
 
     'opt_avatar'     => $user['avatar'],
 
+    'config_game_email_pm'     => $config->game_email_pm,
+
     'user_settings_rep' => ($user['settings_rep'] == 1) ? " checked='checked'/":'',
     'user_settings_esp' => ($user['settings_esp'] == 1) ? " checked='checked'/":'',
     'user_settings_wri' => ($user['settings_wri'] == 1) ? " checked='checked'/":'',
     'user_settings_mis' => ($user['settings_mis'] == 1) ? " checked='checked'/":'',
     'user_settings_bud' => ($user['settings_bud'] == 1) ? " checked='checked'/":'',
+    'user_settings_statistics' => ($user['settings_statistics'] == 1) ? " checked='checked'/":'',
+    'user_settings_info' => ($user['settings_info'] == 1) ? " checked='checked'/":'',
 
     'adm_pl_prot' => $user['admin_protection'],
 

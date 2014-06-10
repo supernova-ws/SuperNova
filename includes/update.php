@@ -1228,6 +1228,11 @@ switch($new_version)
       "MODIFY COLUMN `log_dump` MEDIUMTEXT NOT NULL DEFAULT '' COMMENT 'Machine-readable dump of variables' AFTER `log_time`",
     ), $update_tables['logs']['log_dump']['Type'] != 'mediumtext');
 
+    upd_alter_table('users', array(
+      "ADD COLUMN `settings_info` TINYINT(1) UNSIGNED NOT NULL DEFAULT 1 AFTER `settings_rep`",
+      "ADD COLUMN `settings_statistics` TINYINT(1) UNSIGNED NOT NULL DEFAULT 1 AFTER `settings_rep`",
+    ), !isset($update_tables['users']['settings_statistics']));
+
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
 };

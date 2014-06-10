@@ -1,249 +1,248 @@
 <h1>{L_opt_header}</h1>
-<!-- INCLUDE _result_message -->
-
 <!-- IF CHANGE_PASS -->
-  <!-- IF CHANGE_PASS == -1 -->
-    <h3 class="positive">{L_opt_msg_pass_changed}</h3>
-  <!-- ELSEIF CHANGE_PASS == 1  -->
-    <h3 class="negative">{L_opt_err_pass_wrong}</h3>
-  <!-- ELSEIF CHANGE_PASS == 2  -->
-    <h3 class="negative">{L_opt_err_pass_unmatched}</h3>
-  <!-- ENDIF -->
+<!-- IF CHANGE_PASS == -1 -->
+<h3 class="positive">{L_opt_msg_pass_changed}</h3>
+<!-- ELSEIF CHANGE_PASS == 1  -->
+<h3 class="negative">{L_opt_err_pass_wrong}</h3>
+<!-- ELSEIF CHANGE_PASS == 2  -->
+<h3 class="negative">{L_opt_err_pass_unmatched}</h3>
+<!-- ENDIF -->
 <!-- ENDIF -->
 
+<!-- INCLUDE _result_message -->
+
 <form action="index.php?page=options&mode=change" method="post" name="fOptions" enctype="multipart/form-data">
-  <table width="519px">
-    <tbody>
-      <!-- IF ADM_PROTECT_PLANETS -->
-        <tr><th class="c_c" colspan="2">{L_opt_adm_title}</th></tr>
-        <tr>
+  <div id="tab_container" style="width: 550px;display: none">
+
+    <ol>
+      <li><a href="#tab_account">{L_opt_account}</a></li>
+      <li><a href="#tab_interface">{L_opt_int_options}</a></li>
+      <li><a href="#tab_alerts">{L_opt_alerts}</a></li>
+    </ol>
+
+    <div id="tab_account">
+      <table width="100%">
+          <!-- IF ADM_PROTECT_PLANETS -->
+        <tr class="c_c">
           <th><label for="adm_pl_prot">{L_opt_adm_planet_prot}</label></th>
           <th><input name="adm_pl_prot" <!-- IF adm_pl_prot -->checked<!-- ENDIF --> type="checkbox" id="adm_pl_prot" /></th>
         </tr>
-      <!-- ENDIF -->
+        <!-- ENDIF -->
 
-      <tr>
-        <th class="c_c" colspan="2">{L_userdata}</th>
-      </tr>
-      <tr>
-        <th>{L_username}</th>
-        <th width=330>
-          <!-- IF SERVER_NAME_CHANGE -->
-            {L_username_old} <span class="ok">{opt_usern_data}</span><br />
-            {L_username_new} <input name="username" value="{opt_usern_data}" maxlength="32" size="32" <!-- IF ! SERVER_NAME_CHANGE_ENABLED -->disabled<!-- ENDIF -->><br />
-            <input type="checkbox" name="username_confirm" id="username_confirm" value="1" <!-- IF ! SERVER_NAME_CHANGE_ENABLED -->disabled<!-- ENDIF -->> <label for="username_confirm">{L_username_change_confirm}</label>
-            <!-- IF SERVER_NAME_CHANGE_PAY -->
-              {L_username_change_confirm_payed} {DARK_MATTER} {L_sys_dark_matter_sh}
+        <tr>
+          <th class="c_c" colspan="2">{L_opt_common}</th>
+        </tr>
+        <tr>
+          <th>{L_username}</th>
+          <th width=330>
+            <!-- IF SERVER_NAME_CHANGE -->
+              {L_username_old} <span class="ok">{opt_usern_data}</span><br />
+              {L_username_new} <input name="username" value="{opt_usern_data}" maxlength="32" size="32" <!-- IF ! SERVER_NAME_CHANGE_ENABLED -->disabled<!-- ENDIF -->><br />
+              <input type="checkbox" name="username_confirm" id="username_confirm" value="1" <!-- IF ! SERVER_NAME_CHANGE_ENABLED -->disabled<!-- ENDIF -->> <label for="username_confirm">{L_username_change_confirm}</label>
+              <!-- IF SERVER_NAME_CHANGE_PAY -->
+                {L_username_change_confirm_payed} {DARK_MATTER} {L_sys_dark_matter_sh}
+              <!-- ENDIF -->
+            <!-- ELSE -->
+              {opt_usern_data}
             <!-- ENDIF -->
-          <!-- ELSE -->
-            {opt_usern_data}
-          <!-- ENDIF -->
-        </th>
-      </tr>
-      <tr>
-        <th>{L_lastpassword}</th>
-        <th><input name="db_password" size="20" value="" type="password"></th>
-      </tr>
-      <tr>
-        <th>{L_newpassword}</th>
-        <th><input name="newpass1" size="20" maxlength="40" type="password"></th>
-      </tr>
-      <tr>
-        <th>{L_newpasswordagain}</th>
-        <th><input name="newpass2" size="20" maxlength="40" type="password"></th>
-      </tr>
-      <tr title="{L_emaildir_tip}">
-        <th>{L_emaildir}</th>
-        <th><input name="db_email" maxlength="100" size="20" value="{opt_mail1_data}" type="text"></th>
-      </tr>
-      <tr>
-        <th>{L_permanentemaildir}</th>
-        <th>{opt_mail2_data}</th>
-      </tr>
-
-      <tr>
-        <th>{L_opt_language}</th>
-        <th>
-          <select name="langer">
-            <!-- BEGIN languages -->
-            <option value="{languages.VALUE}"<!-- IF languages.SELECTED --> selected<!-- ENDIF -->>[{languages.VALUE}] {languages.NAME}</option>
-            <!-- END languages -->
-          </select>
-        </th>
-      </tr>
-
-      <tr>
-        <th>{L_opt_birthday}</th>
-        <th>
-          <!-- IF user_birthday -->
-          {user_birthday}
-          <!-- ELSE -->
-          <input type="text" name="user_birthday" id="user_birthday" size="10" maxlength="10" value="{FMT_DATE}" 
-            onfocus="var user_birthday = document.getElementById('user_birthday');if(user_birthday.value == '{JS_FMT_DATE}') user_birthday.value = '';"
-            onblur="var user_birthday = document.getElementById('user_birthday');if(user_birthday.value == '') user_birthday.value = '{JS_FMT_DATE}';"
-          >
-          <!-- ENDIF -->
-        </th>
-      </tr>
-
-      <tr>
-        <td class="c_l" colspan="2">
-          <input name="opt_time_diff_clear" type="checkbox" id="opt_time_diff_clear" /> <label for="opt_time_diff_clear">{L_opt_time_diff_clear}</label>
-        </td>
-      </tr>
-
-      <tr>
-        <th class="c_c" colspan="2">{L_general_settings}</th>
-      </tr>
-
-      <tr>
-        <th>{L_opt_lst_ord}</th>
-        <th>
-          <select name="settings_order">
-            <!-- BEGIN planet_order -->
-            <option value="{planet_order.VALUE}"<!-- IF planet_order.SELECTED --> selected<!-- ENDIF -->>{planet_order.NAME}</option>
-            <!-- END planet_order -->
-          </select>
-          <select name="settings_sort">
-            <!-- BEGIN planet_order_type -->
-            <option value="{planet_order_type.VALUE}"<!-- IF planet_order_type.SELECTED --> selected<!-- ENDIF -->>{planet_order_type.NAME}</option>
-            <!-- END planet_order_type -->
-          </select>
-        </th>
-      </tr>
-      <tr>
-        <th>{L_skins_example}</th>
-        <th><input name="design"{opt_sskin_data} style="display:none" type="checkbox" id="design" />
-          <input name="dpath" style="display:none" maxlength="80" size="28" value="{OPT_DPATH_DATA}" type="text">&nbsp;
-	  <select name="dpaths" size="1" onchange="document.fOptions.dpath.value='skins/'+this.value+'/';">
-            <!-- BEGIN skin_list -->
-            <option value="{skin_list.VALUE}"<!-- IF skin_list.SELECTED --> selected<!-- ENDIF -->>{skin_list.NAME}</option>
-            <!-- END skin_list -->
-          </select>	  
-        </th>
-      </tr>
-      <tr>
-        <th>{L_opt_avatar}</th>
-        <th>
-          <label for="avatar">{L_opt_upload}</label>&nbsp;<input type="file" name="avatar" size="26"><br />
-          <div>
-            <!-- IF opt_avatar -->
+          </th>
+        </tr>
+        <tr>
+          <th>{L_lastpassword}</th>
+          <th><input name="db_password" size="20" value="" type="password"></th>
+        </tr>
+        <tr>
+          <th>{L_newpassword}</th>
+          <th><input name="newpass1" size="20" maxlength="40" type="password"></th>
+        </tr>
+        <tr>
+          <th>{L_newpasswordagain}</th>
+          <th><input name="newpass2" size="20" maxlength="40" type="password"></th>
+        </tr>
+        <tr title="{L_emaildir_tip}">
+          <th>{L_emaildir}</th>
+          <th><input name="db_email" maxlength="100" size="20" value="{opt_mail1_data}" type="text"></th>
+        </tr>
+        <tr>
+          <th>{L_permanentemaildir}</th>
+          <th>{opt_mail2_data}</th>
+        </tr>
+        <tr>
+          <th class="c_c" colspan="2">{L_opt_avatar}</th>
+        </tr>
+        <tr>
+          <th colspan="2">
+            <label for="avatar">{L_opt_upload}</label>&nbsp;<input type="file" name="avatar" size="26"><br />
+            <div>
+              <!-- IF opt_avatar -->
               <img src="{D_SN_ROOT_VIRTUAL}/images/avatar/avatar_{USER_ID}.png"><br />
               <input name="avatar_remove" type="checkbox" id="avatar_remove" /><label for="avatar_remove">{L_opt_avatar_remove}</label>
-            <!-- ELSE -->
+              <!-- ELSE -->
               <a href="http://www.google.com.ar/imghp" target="_blank">{L_opt_avatar_search}</a>
-            <!-- ENDIF -->
-          </div>
-        </th>
-      </tr>
+              <!-- ENDIF -->
+            </div>
+          </th>
+        </tr>
 
-      <!-- IF .options_3 -->
+
+        <tr>
+          <td class="c" colspan="2">{L_delete_vacations}</td>
+        </tr>
+        <!-- IF ! USER_VACATION_DISABLE -->
+        <tr title="{L_vacations_tip}">
+          <th colspan=2>
+            <!-- IF VACATION_NEXT > TIME_NOW && ! USER_AUTHLEVEL-->
+            {L_opt_vacation_err_timeout}<br />
+            {L_opt_vacation_next} {VACATION_NEXT_TEXT}
+            <!-- ELSE -->
+            <span class="fl"><input id="vacation" name="vacation" type="checkbox" {opt_modev_data} /> <label for="vacation">{L_mode_vacations} {L_opt_vacation_min} <span id="vacancy_to"></span></label></span>
+            <!-- ENDIF -->
+          </th>
+        </tr>
+        <!-- ENDIF -->
+
+        <!--
+              <tr>
+                <td class="c_l" colspan="2">
+                  <input name="deltime" type="checkbox" id="deltime" !-- IF deltime -- checked!-- ENDIF --  /> <label for="deltime">{L_deleteaccount}. {L_deleteaccount_tip}</label><br />
+        {L_deleteaccount_on} !-- IF deltime -- {deltime_text}!-- ELSE -- <span id="delete_on"></span>!-- ENDIF --
+        </td>
+        </tr>
+        -->
+
+      </table>
+    </div>
+
+    <div id="tab_interface">
+      <table>
+        <tr>
+          <th class="c_c" colspan="2">{L_opt_common}</th>
+        </tr>
+        <tr>
+          <th>{L_skins_example}</th>
+          <th><input name="design"{opt_sskin_data} style="display:none" type="checkbox" id="design" />
+            <input name="dpath" style="display:none" maxlength="80" size="28" value="{OPT_DPATH_DATA}" type="text">&nbsp;
+            <select name="dpaths" size="1" onchange="document.fOptions.dpath.value='skins/'+this.value+'/';">
+              <!-- BEGIN skin_list -->
+              <option value="{skin_list.VALUE}"<!-- IF skin_list.SELECTED --> selected<!-- ENDIF -->>{skin_list.NAME}</option>
+              <!-- END skin_list -->
+            </select>
+          </th>
+        </tr>
+
+        <!-- IF .options_3 -->
+        <!--
         <tr>
           <th class="c_c" colspan="2">{L_opt_int_options}</th>
         </tr>
-
+        -->
         <!-- BEGIN options_3 -->
-          <tr>
-            <td class="c_c"><label for="{options_3.NAME}">{options_3.TEXT}</label></td>
-            <td class="c_c">
-              <!-- IF options_3.TYPE == 'integer' -->
-                <input type="text" id="{options_3.NAME}" name="{options_3.NAME}" value="{options_3.VALUE}" />
-                <!-- IF options_3.HINT --><br />{options_3.HINT}<!-- ENDIF -->
-              <!-- ELSE -->
-                <input type="checkbox" id="{options_3.NAME}" name="{options_3.NAME}" value="1" <!-- IF options_3.VALUE --> checked<!-- ENDIF --> />
-              <!-- ENDIF -->
-            </td>
-          </tr>
+        <tr>
+          <td class="c_c"><label for="{options_3.NAME}">{options_3.TEXT}</label></td>
+          <td class="c_c">
+            <!-- IF options_3.TYPE == 'integer' -->
+            <input type="text" id="{options_3.NAME}" name="{options_3.NAME}" value="{options_3.VALUE}" />
+            <!-- IF options_3.HINT --><br />{options_3.HINT}<!-- ENDIF -->
+            <!-- ELSE -->
+            <input type="checkbox" id="{options_3.NAME}" name="{options_3.NAME}" value="1" <!-- IF options_3.VALUE --> checked<!-- ENDIF --> />
+            <!-- ENDIF -->
+          </td>
+        </tr>
         <!-- END options_3 -->
-      <!-- ENDIF -->
+        <!-- ENDIF -->
+        <tr>
+          <th>{L_opt_lst_ord}</th>
+          <th>
+            <select name="settings_order">
+              <!-- BEGIN planet_order -->
+              <option value="{planet_order.VALUE}"<!-- IF planet_order.SELECTED --> selected<!-- ENDIF -->>{planet_order.NAME}</option>
+              <!-- END planet_order -->
+            </select>
+            <select name="settings_sort">
+              <!-- BEGIN planet_order_type -->
+              <option value="{planet_order_type.VALUE}"<!-- IF planet_order_type.SELECTED --> selected<!-- ENDIF -->>{planet_order_type.NAME}</option>
+              <!-- END planet_order_type -->
+            </select>
+          </th>
+        </tr>
 
-      <!-- IF .options_2 -->
+        <!-- IF .options_2 -->
         <tr>
           <th class="c_c" colspan="2">{L_galaxyvision_options}</th>
         </tr>
-
         <!-- BEGIN options_2 -->
-          <tr>
-            <td class="c_c"><label for="{options_2.NAME}">{options_2.TEXT}</label></td>
-            <td class="c_c">
-              <input type="checkbox" id="{options_2.NAME}" name="{options_2.NAME}" value="1" <!-- IF options_2.VALUE --> checked<!-- ENDIF -->>
-            </td>
-          </tr>
-        <!-- END options_2 -->
-      <!-- ENDIF -->
-
-      <tr title="{L_spy_cant_tip}">
-        <th>{L_spy_cant}</th>
-        <th><input name="spio_anz" maxlength="2" size="2" value="{opt_probe_data}" type="text"></th>
-      </tr>
-      <tr>
-        <th>{L_tooltip_time}</th>
-        <th><input name="settings_tooltiptime" maxlength="2" size="2" value="{opt_toolt_data}" type="text"> {seconds}</th>
-      </tr>
-      <tr>
-      <th>{L_mess_ammount_max}</th>
-      <th><input name="settings_fleetactions" maxlength="2" size="2" value="{opt_fleet_data}" type="text"></th>
-      </tr>
-      <tr>
-      <th>{L_shortcut}</th>
-      <th>
-        <input name="settings_esp"{user_settings_esp} type="checkbox" id="settings_esp" />&nbsp;<label for="settings_esp"><img src="{dpath}img/e.gif" alt="{spy}" />&nbsp;{L_spy}</label>
-        <input name="settings_wri"{user_settings_wri} type="checkbox" id="settings_wri" />&nbsp;<label for="settings_wri"><img src="{dpath}img/m.gif" alt="{write_a_messege}" />&nbsp;{L_write_a_messege}</label>
-        <input name="settings_mis"{user_settings_mis} type="checkbox" id="settings_mis" />&nbsp;<label for="settings_mis"><img src="{dpath}img/r.gif" alt="{attack_with_missile}" />&nbsp;{L_attack_with_missile}</label>
-        <input name="settings_bud"{user_settings_bud} type="checkbox" id="settings_bud" />&nbsp;<label for="settings_bud"><img src="{dpath}img/b.gif" alt="{add_to_buddylist}">&nbsp;{L_add_to_buddylist}</label>
-<!--      <img src="{dpath}img/s.gif" alt="{show_report}"> {L_show_report} <input name="settings_rep"{user_settings_rep} type="checkbox" /> -->
-      </th>
-      </tr>
-
-      <!-- IF .options_1 -->
         <tr>
-          <th class="c_c" colspan="2">{L_opt_messages}</th>
+          <td class="c_c"><label for="{options_2.NAME}">{options_2.TEXT}</label></td>
+          <td class="c_c">
+            <input type="checkbox" id="{options_2.NAME}" name="{options_2.NAME}" value="1" <!-- IF options_2.VALUE --> checked<!-- ENDIF -->>
+          </td>
         </tr>
-
-        <!-- BEGIN options_1 -->
-          <tr>
-            <td class="c_c"><label for="{options_1.NAME}">{options_1.TEXT}</label></td>
-            <td class="c_c">
-              <!-- IF options_1.PM != -1 -->
-                <input type="checkbox" id="opt_{options_1.NAME}" name="opt_{options_1.NAME}" value="1" id="{options_1.NAME}"<!-- IF options_1.PM --> checked<!-- ENDIF -->>&nbsp;<label for="opt_{options_1.NAME}"><img src="{dpath}img/m.gif" alt="{write_a_messege}" />&nbsp;{L_msg_personal_messages}</label>
-              <!-- ENDIF -->
-              <!-- IF options_1.EMAIL != -1 -->
-                <input type="checkbox" id="opt_email_{options_1.NAME}" name="opt_email_{options_1.NAME}" value="1" id="{options_1.NAME}"<!-- IF options_1.EMAIL --> checked<!-- ENDIF -->>&nbsp;<label for="opt_email_{options_1.NAME}">@ e-mail</label>
-              <!-- ENDIF -->
-            </td>
-          </tr>
-        <!-- END options_1 -->
-      <!-- ENDIF -->
-
-      <tr>
-        <td class="c" colspan="2">{L_delete_vacations}</td>
-      </tr>
-      <!-- IF ! USER_VACATION_DISABLE -->
-        <tr title="{L_vacations_tip}">
-          <th colspan=2>
-          <!-- IF VACATION_NEXT > TIME_NOW && ! USER_AUTHLEVEL-->
-          {L_opt_vacation_err_timeout}<br />
-          {L_opt_vacation_next} {VACATION_NEXT_TEXT}
-          <!-- ELSE -->
-          <span class="fl"><input id="vacation" name="vacation" type="checkbox" {opt_modev_data} /> <label for="vacation">{L_mode_vacations} {L_opt_vacation_min} <span id="vacancy_to"></span></label></span>
-          <!-- ENDIF -->
+        <!-- END options_2 -->
+        <!-- ENDIF -->
+        <tr title="{L_spy_cant_tip}">
+          <th>{L_spy_cant}</th>
+          <th><input name="spio_anz" maxlength="2" size="2" value="{opt_probe_data}" type="text"></th>
+        </tr>
+        <tr>
+          <th>{L_tooltip_time}</th>
+          <th><input name="settings_tooltiptime" maxlength="2" size="2" value="{opt_toolt_data}" type="text"> {seconds}</th>
+        </tr>
+        <tr>
+          <th>{L_mess_ammount_max}</th>
+          <th><input name="settings_fleetactions" maxlength="2" size="2" value="{opt_fleet_data}" type="text"></th>
+        </tr>
+        <tr>
+          <th>{L_shortcut}</th>
+          <td class="c_c" nowrap>
+            <input name="settings_esp"{user_settings_esp} type="checkbox" id="settings_esp" />&nbsp;<label for="settings_esp"><img height="14px" src="{dpath}img/e.gif" alt="{spy}" />&nbsp;{L_spy}</label>
+            <input name="settings_mis"{user_settings_mis} type="checkbox" id="settings_mis" />&nbsp;<label for="settings_mis"><img height="14px" src="{dpath}img/r.gif" alt="{attack_with_missile}" />&nbsp;{L_attack_with_missile}</label><br/>
+            <input name="settings_wri"{user_settings_wri} type="checkbox" id="settings_wri" />&nbsp;<label for="settings_wri"><img height="14px" src="{dpath}img/m.gif" alt="{write_a_messege}" />&nbsp;{L_write_a_messege}</label>
+            <input name="settings_statistics"{user_settings_statistics} type="checkbox" id="settings_statistics" />&nbsp;<label for="settings_statistics"><img height="14px" src="design/images/statistics.png" alt="{L_opt_settings_statistics}">&nbsp;{L_opt_settings_statistics}</label><br/>
+            <input name="settings_info"{user_settings_info} type="checkbox" id="settings_info" />&nbsp;<label for="settings_info"><img height="14px" src="{dpath}icons/menu_empire_emperor.png" alt="{L_opt_settings_info}">&nbsp;{L_opt_settings_info}</label>
+            <input name="settings_bud"{user_settings_bud} type="checkbox" id="settings_bud" />&nbsp;<label for="settings_bud"><img height="14px" src="{dpath}img/b.gif" alt="{add_to_buddylist}">&nbsp;{L_add_to_buddylist}</label>
+            <!--      <img src="{dpath}img/s.gif" alt="{show_report}"> {L_show_report} <input name="settings_rep"{user_settings_rep} type="checkbox" /> -->
           </th>
         </tr>
-      <!-- ENDIF -->
-<!--
-      <tr>
-        <td class="c_l" colspan="2">
-          <input name="deltime" type="checkbox" id="deltime" <-- IF deltime -- >checked<-- ENDIF -- > /> <label for="deltime">{L_deleteaccount}. {L_deleteaccount_tip}</label><br />
-          {L_deleteaccount_on} <-- IF deltime -- >{deltime_text}<-- ELSE -- ><span id="delete_on"></span><-- ENDIF -- >
-        </td>
-      </tr>
--->
-      <tr>
-        <th class="c_c" colspan="2"><input value="{L_save_settings}" type="submit"></th>
-      </tr>
-    </tbody>
-  </table>
+      </table>
+    </div>
+
+    <div id="tab_alerts">
+      <table>
+        <!-- IF .options_1 -->
+        <tr>
+          <th class="c_c" colspan="2">{L_opt_alerts}</th>
+        </tr>
+        <!-- BEGIN options_1 -->
+        <tr>
+          <td class="c_c"><label for="{options_1.NAME}">{options_1.TEXT}</label></td>
+          <td class="c_c">
+            <!-- IF options_1.PM != -1 -->
+            <input type="checkbox" id="opt_{options_1.NAME}" name="opt_{options_1.NAME}" value="1" id="{options_1.NAME}"<!-- IF options_1.PM --> checked<!-- ENDIF -->>&nbsp;<label for="opt_{options_1.NAME}"><img src="{dpath}img/m.gif" alt="{write_a_messege}" />&nbsp;{L_msg_personal_messages}</label>
+            <!-- ENDIF -->&nbsp;
+          </td>
+          <!-- IF config_game_email_pm -->
+          <td class="c_c">
+          <!-- IF options_1.EMAIL != -1 -->
+          <input type="checkbox" id="opt_email_{options_1.NAME}" name="opt_email_{options_1.NAME}" value="1" id="{options_1.NAME}"<!-- IF options_1.EMAIL --> checked<!-- ENDIF -->>&nbsp;<label for="opt_email_{options_1.NAME}">@ e-mail</label>
+          <!-- ENDIF -->&nbsp;
+          </td>
+          <!-- ENDIF -->
+        </tr>
+        <!-- END options_1 -->
+        <!-- ENDIF -->
+      </table>
+    </div>
+
+  </div>
+
+  <br/>
+  <input value="{L_save_settings}" type="submit">
 </form>
+
+<script type="text/javascript"><!--
+$("#tab_container").tabs().show();
+// --></script>
+
 <script type="text/javascript"><!--
 // sn_timers.unshift({id: 'vacation_next', type: 0, active: true, start_time: '{TIME_NOW}', options: {format: 773, delta: '{VACATION_TIMEOUT}'}});
   sn_timers.unshift({id: 'vacancy_to', type: 4, active: true, start_time: '{TIME_NOW}', options: {format: 3, delta: '{C_player_vacation_time}'}});

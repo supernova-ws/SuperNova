@@ -28,11 +28,13 @@ var balance_translate = {
   'metal': language['sys_metal'],
   'crystal': language['sys_crystal'],
   'deuterium': language['sys_deuterium'],
-  'energy': language['sys_energy']
+  'energy': language['sys_energy'],
+
+//  'shield': language['sys_shield'],
 };
 
 var bld_unit_info_width = 0;
-var bld_unit_info_cache = Array();
+//var bld_unit_info_cache = Array();
 
 function eco_struc_show_unit_info(unit_id, no_color)
 {
@@ -48,13 +50,7 @@ function eco_struc_show_unit_info(unit_id, no_color)
 
   $('#unit_id').val(unit_id);
   $('#unit_amountslide').slider({ value: 0});
-/*
-  if(bld_unit_info_cache[unit_id] != undefined)
-  {
-    jQuery('#unit_info').html(bld_unit_info_cache[unit_id]);
-    return;
-  }
-*/
+
   var unit = production[unit_id];
   var result = '';
   var unit_destroy_link = '';
@@ -69,14 +65,12 @@ function eco_struc_show_unit_info(unit_id, no_color)
   eco_struc_make_resource_row('deuterium', unit['deuterium'], unit['destroy_deuterium']);
 
   document.getElementById('unit_name').innerHTML = unit['name'];
-  if(unit['level'] > 0)
+  if(unit['level'] > 0 || STACKABLE)
   {
     document.getElementById('unit_level').innerHTML = '<br>' + (!STACKABLE ? language['level'] + ' ' : '') + unit['level'] + (parseInt(unit['level_bonus']) > 0 ? '<span class="bonus">+' + unit['level_bonus'] + '</span>' : '');
     unit_destroy_link = language['bld_destroy'] + ' ' + language['level'] + ' ' + unit['level'];
   }
 
-//  document.getElementById('unit_create_link').innerHTML = '';
-//  document.getElementById('unit_destroy_link').innerHTML = '';
   $('#unit_create').css('visibility', 'hidden');
   $('#unit_destroy').css('visibility', 'hidden');
   if(planet['que_has_place'] != 0 && !unit['unit_busy'])
@@ -128,45 +122,99 @@ function eco_struc_show_unit_info(unit_id, no_color)
   if(unit['resource_map'])
   {
     var balance_header = '';
-    var has_header = false;
-    for(i in unit['resource_map'])
+    result = '';
+    if(STACKABLE)
     {
-      result += '<tr class="c_r">';
-      for(j in unit['resource_map'][i])
+      for(i in unit['resource_map'][0])
       {
-        if(unit['resource_map'][i][j])
+        if(unit['resource_map'][0][i])
         {
-          if(!has_header)
+          result += '<tr>';
+          result += '<th class="c_l">' + language[i] + '</th>';
+//          result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][0][i]), 0, 'positive', 0) + '</td>';
+        result += '<td class="c_r" width="75px">' + unit['resource_map'][0][i] + '</td>';
+          result += '</tr>';
+        }
+        /*
+        for(j in unit['resource_map'][i])
+        {
+          if(unit['resource_map'][i][j])
           {
-            switch(j)
             {
-              case 'level':
-                balance_header += '<th class="c_l">' + language['level_short'] + '</th>';
-              break;
+              if(!has_header)
+              {
+                switch(j)
+                {
+                  case 'level':
+                    balance_header += '<th class="c_l">' + language['level_short'] + '</th>';
+                    break;
 
-              case 'metal':
-              case 'crystal':
-              case 'deuterium':
-              case 'energy':
-                balance_header += '<th class="c_c" colspan="2">' + balance_translate[j];
-              break;
+                  case 'metal':
+                  case 'crystal':
+                  case 'deuterium':
+                  case 'energy':
+                    balance_header += '<th class="c_c" colspan="2">' + balance_translate[j];
+                    break;
 
-              case 'metal_diff':
-              case 'crystal_diff':
-              case 'deuterium_diff':
-              case 'energy_diff':
-                balance_header += '</th>';
-              break;
+                  case 'metal_diff':
+                  case 'crystal_diff':
+                  case 'deuterium_diff':
+                  case 'energy_diff':
+                    balance_header += '</th>';
+                    break;
+                }
+              }
+              result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][i][j]), 0, 'positive', j == 'level' ? -unit['level']-unit['level_bonus'] : 0) + '</td>';
             }
           }
-          result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][i][j]), 0, 'positive', j == 'level' ? -unit['level']-unit['level_bonus'] : 0) + '</td>';
         }
+        */
       }
-      result += '</tr>';
-      has_header = true;
+    }
+    else
+    {
+      var has_header = false;
+      for(i in unit['resource_map'])
+      {
+        result += '<tr class="c_r">';
+        for(j in unit['resource_map'][i])
+        {
+          if(unit['resource_map'][i][j])
+          {
+            {
+              if(!has_header)
+              {
+                switch(j)
+                {
+                  case 'level':
+                    balance_header += '<th class="c_l">' + language['level_short'] + '</th>';
+                    break;
+
+                  case 'metal':
+                  case 'crystal':
+                  case 'deuterium':
+                  case 'energy':
+                    balance_header += '<th class="c_c" colspan="2">' + balance_translate[j];
+                    break;
+
+                  case 'metal_diff':
+                  case 'crystal_diff':
+                  case 'deuterium_diff':
+                  case 'energy_diff':
+                    balance_header += '</th>';
+                    break;
+                }
+              }
+              result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][i][j]), 0, 'positive', j == 'level' ? -unit['level']-unit['level_bonus'] : 0) + '</td>';
+            }
+          }
+        }
+        result += '</tr>';
+        has_header = true;
+      }
     }
 
-    result = '<table><tr>' + balance_header + '</tr>' + result + '</table>';
+    result = result ? '<table>' + (balance_header ? '<tr>' + balance_header + '</tr>' : '') + result + '</table>' : '';
 
     document.getElementById('unit_balance').innerHTML += result;
   }

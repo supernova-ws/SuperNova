@@ -398,6 +398,7 @@ $template->assign_vars(array(
      'ACT_WRITE'           => $user['settings_wri'],
      'ACT_FRIEND'          => $user['settings_bud'],
      'ACT_STATISTICS'      => $user['settings_statistics'],
+     'ACT_INFO'            => $user['settings_info'],
      'opt_uni_avatar_user' => $user['opt_uni_avatar_user'],
      'opt_uni_avatar_ally' => $user['opt_uni_avatar_ally'],
      'ACT_MISSILE'         => $is_missile,

@@ -154,6 +154,7 @@ function sn_eco_build($que_type, &$auser, &$planet)
     $level_base_and_que = $level_base + $level_in_que;
 
     $unit_info = get_unit_param($unit_id);
+    $unit_stackable = isset($unit_info[P_STACKABLE]) && $unit_info[P_STACKABLE];
 
     $build_data = eco_get_build_data($user, $planet, $unit_id, $level_base_and_que);
     $temp[RES_METAL]     = floor($planet['metal'] + $fleet_list['own']['total'][RES_METAL] - $build_data[BUILD_CREATE][RES_METAL]);
@@ -226,8 +227,41 @@ function sn_eco_build($que_type, &$auser, &$planet)
       'DEUTERIUM_REST_NUM'=> $temp[RES_DEUTERIUM],
 
       'UNIT_BUSY'         => eco_unit_busy($user, $planet, $que, $unit_id),
+
+      'MAP_IS_RESOURCE'   => !empty($unit_info['production']),
     ));
-    if($unit_info['production'])
+    if($unit_stackable)
+    {
+      $level_production_base = array(
+        'ACTUAL_SHIELD' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $unit_info['shield'])),
+        'ACTUAL_ARMOR' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), $unit_info['armor'])),
+        'ACTUAL_WEAPON' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), $unit_info['attack'])),
+      );
+
+      if($unit_info[P_UNIT_TYPE] == UNIT_SHIPS)
+      {
+        $ship_data = get_ship_data($unit_id, $user);
+
+        $level_production_base += array(
+          'ACTUAL_SPEED' => pretty_number($ship_data['speed']),
+          'ACTUAL_CONSUMPTION' => pretty_number($ship_data['consumption']),
+          'ACTUAL_CAPACITY' => pretty_number($ship_data['capacity']),
+        );
+      }
+
+      if($unit_info['production'])
+      {
+        foreach($unit_info['production'] as $resource_id => $resource_calc)
+        {
+          if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc(1, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1))))
+          {
+            $level_production_base['R'. $resource_id] = $resource_income;
+          }
+        }
+      }
+      $template->assign_block_vars('production.resource', $level_production_base);
+    }
+    elseif($unit_info['production'])
     {
       $level_production_base = array();
       $element_level_start = $level_effective + $in_que[$unit_id];
@@ -299,7 +333,7 @@ function sn_eco_build($que_type, &$auser, &$planet)
     'SECTOR_COST'        => $sector_cost,
     'SECTOR_COST_TEXT'   => pretty_number($sector_cost),
 
-    'STACKABLE'          => isset($unit_info[P_STACKABLE]) && $unit_info[P_STACKABLE],
+    'STACKABLE'          => $unit_stackable,
 
     'U_opt_int_struc_vertical' => $user['option_list'][OPT_INTERFACE]['opt_int_struc_vertical'],
   ));

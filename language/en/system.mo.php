@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a8.2
+* @version 39a8.3
 *
 */
 
@@ -275,6 +275,9 @@ $a_lang_array = (array(
   'sys_ship_weapon' 		=> 'Weapon',
   'sys_ship_shield' 		=> 'Shield',
   'sys_ship_armour' 		=> 'Armor',
+  'sys_ship_speed' 		=> 'Speed',
+  'sys_ship_consumption' 		=> 'Consumption',
+  'sys_ship_capacity' 		=> 'Capacity/Tanks',
   'sys_destroyed' 			=> 'destroyed',
   'sys_attack_attack_wave' 	=> 'The Attacker is doing shots with a total capacity of %s on the defender. Shields absorb %s of the shots.',
   'sys_attack_defend_wave'		=> 'The Defender is doing shots with a total capacity of %s on the attacker. Shields absorb %s of the shots.',

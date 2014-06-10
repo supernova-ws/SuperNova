@@ -132,14 +132,18 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     <!-- IF ACT_MISSILE -->
     <th class=c_c><img src="{dpath}img/r.gif" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" /></th>
     <!-- ENDIF -->
-    <th class=c_c><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" /></th>
     <!-- IF ACT_WRITE -->
     <th class=c_c><img src="{dpath}img/m.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" /></th>
+    <!-- ENDIF -->
+    <!-- IF ACT_STATISTICS -->
+    <th class=c_c><img src="{D_SN_ROOT_VIRTUAL}design/images/statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}" border=0 width="16px"></th>
+    <!-- ENDIF -->
+    <!-- IF ACT_INFO -->
+    <th class=c_c><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" /></th>
     <!-- ENDIF -->
     <!-- IF ACT_FRIEND -->
     <th class=c_c><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" /></th>
     <!-- ENDIF -->
-    <th class=c_c><img src="{D_SN_ROOT_VIRTUAL}design/images/statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}" border=0 width="16px"></th>
   </tr>
 <!-- BEGIN galaxyrow -->
   <tr>
@@ -301,7 +305,6 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
-
     <!-- IF ACT_MISSILE -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
@@ -309,13 +312,6 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
-
-    <td class="c_c">
-      <!-- IF $DIFFERENT_USER -->
-      <a href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" /></a>
-      <!-- ENDIF -->
-    </td>
-
     <!-- IF ACT_WRITE -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER -->
@@ -323,7 +319,20 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
-
+    <!-- IF ACT_STATISTICS -->
+    <td class="c_c">
+      <!-- IF $DIFFERENT_USER && galaxyrow.USER_RANK != '-' -->
+      <a href="stat.php?who=1&range={galaxyrow.USER_RANK}#{galaxyrow.USER_RANK}"><img src="{D_SN_ROOT_VIRTUAL}design/images/statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}: {L_Place} {galaxyrow.USER_RANK}/{userCount}" width="16px" /></a>
+      <!-- ENDIF -->
+    </td>
+    <!-- ENDIF -->
+    <!-- IF ACT_INFO -->
+    <td class="c_c">
+      <!-- IF $DIFFERENT_USER -->
+      <a href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" /></a>
+      <!-- ENDIF -->
+    </td>
+    <!-- ENDIF -->
     <!-- IF ACT_FRIEND -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER -->
@@ -332,11 +341,6 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     </td>
     <!-- ENDIF -->
 
-    <td class="c_c">
-      <!-- IF $DIFFERENT_USER && galaxyrow.USER_RANK != '-' -->
-        <a href="stat.php?who=1&range={galaxyrow.USER_RANK}#{galaxyrow.USER_RANK}"><img src="{D_SN_ROOT_VIRTUAL}design/images/statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}: {L_Place} {galaxyrow.USER_RANK}/{userCount}" width="16px" /></a>
-      <!-- ENDIF -->
-    </td>
   </tr>
 <!-- END galaxyrow -->
   <tr>

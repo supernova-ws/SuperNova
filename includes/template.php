@@ -253,6 +253,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     displayP(parsetemplate(tpl_render_menu($AdminPage)));
   }
 
+  echo '<td class="c_c" valign="top"><center>';
   if($topnav)
   {
     displayP(parsetemplate(tpl_render_topnav($user, $planetrow)));
@@ -260,9 +261,9 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
   if($isDisplayMenu)
   {
-    echo '<div id="page_body">';
+//    echo '<div id="page_body">';
   }
-  echo '<center>';
+//  echo '<center>';
   if(!is_array($page))
   {
     $page = array($page);
@@ -282,11 +283,12 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     }
     displayP($page_item);
   }
-  echo '</center>';
+//  echo '</center>';
   if($isDisplayMenu)
   {
-    echo '</div>';
+//    echo '</div>';
   }
+  echo '</center></td>';
 
   // Global footer
   $template = gettemplate('simple_footer', true);

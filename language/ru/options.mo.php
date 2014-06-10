@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a6.17
+* @version 39a8.3
 *
 */
 
@@ -29,6 +29,13 @@ if (!defined('INSIDE')) die();
 //$lang = array_merge($lang,
 //$lang->merge(
 $a_lang_array = (array(
+  'opt_account' => 'Профиль',
+  'opt_int_options' => 'Интерфейс',
+  'opt_settings_statistics' => 'Статистика игрока',
+  'opt_settings_info' => 'Информация об игроке',
+  'opt_alerts' => 'Уведомления',
+  'opt_common' => 'Общие настройки',
+
   'opt_birthday' => 'День рождения',
 
   'opt_header' => 'Настройки пользователя',
@@ -56,7 +63,7 @@ $a_lang_array = (array(
   'emaildir' => 'Адрес e-mail',
   'emaildir_tip' => 'Этот адрес может быть изменён в любое время. Адрес станет основным, если он не изменялся в течении 7 дней.',
   'permanentemaildir' => 'Основной адрес e-mail',
-  'opt_lst_ord' => 'Упорядочить планеты по:',
+  'opt_lst_ord' => 'Упорядочить планеты по...',
   'opt_lst_ord0' => 'Времени колонизации',
   'opt_lst_ord1' => 'Координатам',
   'opt_lst_ord2' => 'Алфавитному порядку',
@@ -88,7 +95,7 @@ $a_lang_array = (array(
 
   'untoggleip' => 'Выключить функцию проверки по IP',
   'untoggleip_tip' => 'Проверка IP означает то, что вы не сможете войти под своим именем с двух разных IP. Проверка даёт вам преимущество в безопасности!',
-  'galaxyvision_options' => 'Настройки галактики',
+  'galaxyvision_options' => 'Вселенная',
   'spy_cant' => 'Количество зондов',
   'spy_cant_tip' => 'Количество зондов, которое будет отправляться, когда вы будете за кем-то следить.',
   'tooltip_time' => 'Время показа подсказок',
@@ -130,8 +137,6 @@ $a_lang_array = (array(
   'opt_vacation_next' => 'Пойти в отпуск можно будет после',
   'opt_vacation_min' => 'минимум до',
   'succeful_changepass' => 'Пароль успешно изменён.<br /><a href="login.php" target="_top">Назад</a>',
-
-  'opt_int_options' => 'Настройки интерфейса',
 
   'opt_time_diff_clear' => 'Замерить разницу между локальным (клиентским) и серверным временем',
 

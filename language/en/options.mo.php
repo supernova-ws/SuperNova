@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a6.17
+* @version 39a8.3
 *
 */
 
@@ -31,6 +31,13 @@ if (!defined('INSIDE')) die();
 //$lang = array_merge($lang,
 //$lang->merge(
 $a_lang_array = (array(
+  'opt_account' => 'Account',
+  'opt_int_options' => 'Interface',
+  'opt_settings_statistics' => 'Player\'s statistics',
+  'opt_settings_info' => 'Player\'s info',
+  'opt_alerts' => 'Alerts',
+  'opt_common' => 'Common settings',
+
   'opt_birthday' => 'Birthday',
 
   'opt_header' => 'User options',
@@ -90,7 +97,7 @@ $a_lang_array = (array(
 
   'untoggleip' => 'Disable IP check',
   'untoggleip_tip' => 'Check IP means that you will not be able to log in under his own name with two different IP. Testing gives you the advantage in security!',
-  'galaxyvision_options' => 'Configuring Galaxy',
+  'galaxyvision_options' => 'Universe',
   'spy_cant' => 'Number of probes',
   'spy_cant_tip' => 'Number of probes to be sent when you follow someone for.',
   'tooltip_time' => 'Show ToolTips',
@@ -132,8 +139,6 @@ $a_lang_array = (array(
   'opt_vacation_next' => 'Next vacancy would be available after',
   'opt_vacation_min' => 'a minimum of',
   'succeful_changepass' => '',
-
-  'opt_int_options' => 'Interface Settings',
 
   'opt_time_diff_clear' => 'Measure difference between local (client) and server time',
 

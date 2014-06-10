@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39a8.2#
+* @version #39a8.3#
 *
 */
 
@@ -279,6 +279,9 @@ $a_lang_array = (array(
   'sys_ship_weapon' 		=> 'Вооружение',
   'sys_ship_shield' 		=> 'Щиты',
   'sys_ship_armour' 		=> 'Броня',
+  'sys_ship_speed' 		=> 'Скорость',
+  'sys_ship_consumption' 		=> 'Потребление',
+  'sys_ship_capacity' 		=> 'Трюм/Бак',
   'sys_destroyed' 			=> 'уничтожен',
   'sys_attack_attack_wave' 	=> 'Атакующий делает выстрелы общей мощностью %s по обороняющемуся. Щиты обороняющегося поглощают %s выстрелов.',
   'sys_attack_defend_wave'		=> 'Обороняющийся делает выстрелы общей мощностью %s по атакующему. Щиты атакующего поглащают %s выстрелов.',
