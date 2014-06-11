@@ -194,7 +194,7 @@ h1
 
 #left_menu {
   font-weight: bold;
-  width: 100%;
+  width: 140px; /* 100% */
 }
 
 #left_menu #server_name {
