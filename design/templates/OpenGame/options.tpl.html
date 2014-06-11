@@ -68,6 +68,20 @@
           <th>{opt_mail2_data}</th>
         </tr>
         <tr>
+          <th>{L_opt_birthday}</th>
+          <th>
+            <!-- IF user_birthday -->
+            {user_birthday}
+            <!-- ELSE -->
+            <input type="text" name="user_birthday" id="user_birthday" size="10" maxlength="10" value="{FMT_DATE}"
+                   onfocus="var user_birthday = document.getElementById('user_birthday');if(user_birthday.value == '{JS_FMT_DATE}') user_birthday.value = '';"
+                   onblur="var user_birthday = document.getElementById('user_birthday');if(user_birthday.value == '') user_birthday.value = '{JS_FMT_DATE}';"
+                    >
+            <!-- ENDIF -->
+          </th>
+        </tr>
+
+        <tr>
           <th class="c_c" colspan="2">{L_opt_avatar}</th>
         </tr>
         <tr>
@@ -84,9 +98,13 @@
           </th>
         </tr>
 
-
         <tr>
           <td class="c" colspan="2">{L_delete_vacations}</td>
+        </tr>
+        <tr>
+          <td class="c_l" colspan="2">
+            <input name="opt_time_diff_clear" type="checkbox" id="opt_time_diff_clear" /> <label for="opt_time_diff_clear">{L_opt_time_diff_clear}</label>
+          </td>
         </tr>
         <!-- IF ! USER_VACATION_DISABLE -->
         <tr title="{L_vacations_tip}">
@@ -113,10 +131,21 @@
       </table>
     </div>
 
+
     <div id="tab_interface">
       <table>
         <tr>
           <th class="c_c" colspan="2">{L_opt_common}</th>
+        </tr>
+        <tr>
+          <th>{L_opt_language}</th>
+          <th>
+            <select name="langer">
+              <!-- BEGIN languages -->
+              <option value="{languages.VALUE}"<!-- IF languages.SELECTED --> selected<!-- ENDIF -->>[{languages.VALUE}] {languages.NAME}</option>
+              <!-- END languages -->
+            </select>
+          </th>
         </tr>
         <tr>
           <th>{L_skins_example}</th>
