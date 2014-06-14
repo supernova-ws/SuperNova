@@ -421,8 +421,9 @@ $sn_menu = array(
     'TYPE' => 'image',
     'CLASS' => 'c_c',
     'ITEM' => 'design/images/supernova.png',
-    'LINK' => 'http://supernova.ws',
+    'LINK' => 'http://supernova.ws/index-ru.html',
     'ALT' => 'Powered by \'Project "SuperNova.WS"\' engine',
+    'BLANK' => true,
   ),
 
 /*

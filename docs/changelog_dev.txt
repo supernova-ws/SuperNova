@@ -59,9 +59,13 @@ Stay out of my shed
     [*] Ракетные шахты - в строения! +переработка щитов
     [*] Отвязать опции пользователя от пользователя
     [*] Отвязать ресы от планет, флотов, юзера
+    [*] Сообщения - бывают "отложенные" и "инстант" - чат и ПМ, например. Переделать отправку сообщений по типам
+    [*] Переделать отправку сообщений со стандартного mail() на какой-нибудь мейлер PHPMailer, к примеру. Сделать отправку сообщений пакетами - что бы не попадать в спам-лист
+    [*] Отдельный таск КРОНом - или опционально в шедулере
 
   Навороты - ненужное и/или невидимое усложнение
   ----------------------------------------------
+    [*] Интеграция с phpBB3 - капча на входе в игру ИЛИ специальные права для зареганных через движок
     [*] Перебалансировать наемников, переделать Академика
     [*] Шпионаж: точность шпионажа от разности уровней для УИШ; защита зондами (?)
     [*] Статистика: сделать еще учет планов и наёмников в стате
@@ -302,7 +306,7 @@ Stay out of my shed
   !!!!!!!!!!!!!!!!! Добавить бенчмарк и потестить производительность на живых !!!!!!!!!!!
 
 
-Текущий билд #39a8.7#
+Текущий билд #39a8.8#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять flt_lastUpdate
@@ -400,14 +404,94 @@ Will update branch-b to point to the head of branch-a.
 
 Не показывать рассовые корабли; не показывать корабли других игроков
 
-Показывать боевые статы кораблей и обороны
+http://en.wikipedia.org/wiki/Wikipedia:Bypass_your_cache
+http://stackoverflow.com/questions/118884/what-is-an-elegant-way-to-force-browsers-to-reload-cached-css-js-files - заставить браузер перечитывать CSS и JS
+
+http://explainextended.com/2009/10/07/in-list-vs-range-condition-mysql/ - поиск по двум диапазонам
+
+phonegap
+http://www.smashingmagazine.com/2014/02/11/four-ways-to-build-a-mobile-app-part3-phonegap/  пример приложения
+http://propertycross.com/jquerymobile/ пример приложения
+http://tech.pro/blog/1704/2-ways-to-get-started-with-phonegapapache-cordova   пример приложения
+http://habrahabr.ru/post/118059/
+
+т ручной билд требует только android.permission.INTERNET
+
+http://cordova.apache.org/docs/en/3.0.0/guide_cli_index.md.html#The%20Command-line%20Interface_customize_each_platform настройка вида под разные платформы
+
+http://www.adamwadeharris.com/android-automation/   build and publish
+http://fusiongrokker.com/post/follow-up-on-phonegap-build-compiled-file-sizes  reduce apk size
+http://www.justbeck.com/three-ways-to-encrypt-phonegap-and-cordova-mobile-applications/
+
+
+http://knockoutjs.com/examples/simpleList.html - MVVM framework в помощь jqmobile
+
+
+paypal api
+http://habrahabr.ru/post/128198/
+
+google payment
+http://hashcode.ru/questions/286954/php-как-сделать-закрытый-веб-api-для-андроид-приложения
+https://groups.google.com/forum/#!topic/google-api-php-client/13N4rJ-zT2w
+http://habrahabr.ru/post/160911/
+https://github.com/thetutlage/Google-Play-Store-API
+http://code.google.com/p/google-playstore-api/
+http://grokbase.com/t/gg/android-market-api/1256vwc5js/access-google-play-apps-with-appaware-public-api
+
+
+http://rmcreative.ru/blog/post/s-yii-1.1-na-yii-2.0--chast-1-php#comments
+<p>Итак, для перехода на 2.0 стоит изучить:</p>
+<li><a href="http://ru2.php.net/manual/ru/language.namespaces.php">Пространства имён</a>.</li>
+<li><a href="http://ru2.php.net/manual/ru/functions.anonymous.php">Анонимные функции</a>.</li>
+<li>Короткий синтаксис массивов. Тут всё просто, вместо <code>array()</code> теперь <code>[]</code>.</li>
+<li>Короткий <code>echo</code> в виде <code>&lt;?=</code>. Доступен всегда. Используется во всех view-шаблонах фреймворка. <a href="http://www.php.net/manual/ru/language.basic-syntax.phptags.php">При этом <code>&lt;?</code> пользоваться, как и ранее, небезопасно</a>.</li>
+<li><a href="http://ru2.php.net/manual/ru/book.spl.php">SPL</a>.</li>
+<li><a href="http://ru2.php.net/manual/ru/language.oop5.late-static-bindings.php">Позднее статическое связывание</a>.</li>
+<li><a href="http://ru2.php.net/manual/ru/book.datetime.php">datetime</a>.</li>
+<li><a href="http://ru2.php.net/manual/ru/language.oop5.traits.php">Трейты</a>.</li>
+<li><a href="http://ru2.php.net/manual/ru/book.intl.php">intl</a>. В Yii2 многое из intl завёрнуто в компонент i18n, но не всё.</li>
+
+
+http://forum.supernova.ws/viewtopic.php?f=36&t=2844 - проблемы с колонизацией
+
+http://ogame.supernova.ws/index.php?page=options - вкладка Уведомления, визуальный глюк
+Добавить имя таба в ПОСТ - что бы при сохранении открывалась та же вкладка
+
+Добавлять в каждое письмо футер - "Настроить отправку уведомлений на емейл можно в настройках"
+
+Новости - не отсылает уведомление об
+
+
+Очереди - пересчитывать при постройке нанитки/верфи/лабы/нанолабы - И ПРИ РАЗРУШЕНИИ!
 Дописать подсказку для исследований и постройки юнитов/обороны
 сделать кнопку замера времени
 Показывать день рождения на странице Император
-http://en.wikipedia.org/wiki/Wikipedia:Bypass_your_cache
+
+Убрать пол из ника
+
++ * Отключить ссылку на ММ в экране ТМ
++ * Кнопка приложения  - там на самом деле есть нюансы
+* Посмотреть твое радио
+* Посчитаться и расплатиться за отработанный хостинг
+* Сделать страничку сбора бабла на КК
+* ПейПол
+* Оплата через ГугльПлей - КУЧА нюансов и геммора
+* Андроид-приложение
+
+ЧР - купить корабли за ТМ, сделать ссылку в методах расхода ТМ
 
 
 #ctv  - КК, Фаза 10. Балансировочная
+
+
+2014-06-14 14:58:21 39a8.8
+[~] Строительство
+    Восстановлен редирект на новую страницу после постройки
+[~] Меню
+    Ссылка на движок открывается в новом окне и на странице с описанием движка
+
+[%] Альянсы
+    Исправлена ошибка
 
 
 2014-06-11 19:40:28 39a8.7

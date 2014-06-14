@@ -19,7 +19,7 @@ if($ally_tag)
     message($lang['have_not_name'], $lang['make_alliance']);
   }
 
-  $query = doquery("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' or `ally_name` = '{$ally_name}' LIMIT 1;", '', true);
+  $query = doquery("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' or `ally_name` = '{$ally_name}' LIMIT 1;", true);
   if($query)
   {
     message(str_replace('%s', $query['ally_tag'] == $ally_tag_raw ? $ally_tag_raw : $ally_name_raw, $lang['always_exist']), $lang['make_alliance']);
@@ -27,7 +27,7 @@ if($ally_tag)
 
   $ally = doquery("INSERT INTO {{alliance}} SET
     `ally_name` = '{$ally_name}',
-  	 `ally_tag` = '{$ally_tag}' ,
+    `ally_tag` = '{$ally_tag}',
     `ally_owner` = '{$user['id']}',
     `ally_owner_range` = '{$lang['ali_leaderRank']}',
     `ally_members` = 1,
@@ -36,7 +36,7 @@ if($ally_tag)
   );
   // $ally_id = mysql_insert_id();
   $ally_id = is_array($ally) ? $ally['id'] : 'NULL';
-  db_user_set_by_id($user['id'], "`ally_tag` = '{$ally_tag}', `ally_id`='{$ally_id}', `ally_name`='{$ally_name}', `ally_register_time`= {$time_now}");
+  db_user_set_by_id($user['id'], "`ally_tag` = '{$ally_tag}', `ally_id`= {$ally_id}, `ally_name`='{$ally_name}', `ally_register_time`= {$time_now}");
 
   $ally_user = classSupernova::db_ins_record(LOC_USER, "`username` = '[{$ally_tag}]', `register_time` = {$time_now}, `user_as_ally` = {$ally_id}");
   // $ally_user_id = mysql_insert_id();

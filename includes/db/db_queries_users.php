@@ -39,7 +39,7 @@ function db_user_list_set_by_ally_and_rank($ally_id, $ally_rank_id, $set)
 }
 function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id)
 {
-  return classSupernova::db_upd_record_list(LOC_USER, "`ally_id` ='{$ally_id}' AND `ally_rank_id`={$rank_id}", "`ally_rank_id` = {$i}");
+  return classSupernova::db_upd_record_list(LOC_USER, "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}", "`ally_rank_id` = {$i}");
 }
 
 

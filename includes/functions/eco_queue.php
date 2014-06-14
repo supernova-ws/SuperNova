@@ -276,8 +276,8 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE)
 
     sn_db_transaction_commit();
 
-//    sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode') . "&ally_id=" . sys_get_param_id('ally_id'));
-//    die();
+    sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode') . "&ally_id=" . sys_get_param_id('ally_id'));
+    die();
   }
   catch(exception $e)
   {
