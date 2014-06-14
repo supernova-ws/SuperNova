@@ -410,12 +410,6 @@ $sn_menu = array(
     'LINK'  => 'logout.php',
   ),
 
-  'menu_extra' => !$config->advGoogleLeftMenuIsOn ? array() : array(
-    'LEVEL' => 'submenu',
-    'CLASS' => 'c_c',
-    'ITEM'  => $config->advGoogleLeftMenuCode,
-  ),
-
   'menu_supernova_logo' => array(
     'LEVEL' => 'submenu',
     'TYPE' => 'image',
@@ -424,6 +418,12 @@ $sn_menu = array(
     'LINK' => 'http://supernova.ws/index-ru.html',
     'ALT' => 'Powered by \'Project "SuperNova.WS"\' engine',
     'BLANK' => true,
+  ),
+
+  'menu_extra' => !$config->advGoogleLeftMenuIsOn ? array() : array(
+    'LEVEL' => 'submenu',
+    'CLASS' => 'c_c',
+    'ITEM'  => $config->advGoogleLeftMenuCode,
   ),
 
 /*
