@@ -306,7 +306,7 @@ Stay out of my shed
   !!!!!!!!!!!!!!!!! Добавить бенчмарк и потестить производительность на живых !!!!!!!!!!!
 
 
-Текущий билд #39a8.11#
+Текущий билд #39a8.12#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять flt_lastUpdate
@@ -409,13 +409,22 @@ http://stackoverflow.com/questions/118884/what-is-an-elegant-way-to-force-browse
 
 http://explainextended.com/2009/10/07/in-list-vs-range-condition-mysql/ - поиск по двум диапазонам
 
+http://www.smashingmagazine.com/2014/04/24/rebuilding-an-html5-game-in-unity/
+
+
 phonegap
 http://www.smashingmagazine.com/2014/02/11/four-ways-to-build-a-mobile-app-part3-phonegap/  пример приложения
 http://propertycross.com/jquerymobile/ пример приложения
 http://tech.pro/blog/1704/2-ways-to-get-started-with-phonegapapache-cordova   пример приложения
 http://habrahabr.ru/post/118059/
+http://stackoverflow.com/questions/14818138/loading-remote-html-in-phonegap-or-cleaver-cordova-on-ios
+http://stackoverflow.com/questions/15343647/using-phonegap-cordova-on-ios-with-external-url
 
-т ручной билд требует только android.permission.INTERNET
+ручной билд требует только android.permission.INTERNET
+
+http://blog.safaribooksonline.com/2012/02/29/phonegap-storing-and-retrieving-with-the-filesystem/
+https://github.com/apache/cordova-plugin-file/blob/master/doc/index.md
+http://docs.phonegap.com/en/1.3.0/phonegap_connection_connection.md.html#Connection - БОЛЕЕ НОВАЯ ВЕРСИЯ НУЖНА!
 
 http://cordova.apache.org/docs/en/3.0.0/guide_cli_index.md.html#The%20Command-line%20Interface_customize_each_platform настройка вида под разные платформы
 
@@ -469,9 +478,6 @@ http://ogame.supernova.ws/index.php?page=options - вкладка Уведомл
 
 Убрать пол из ника
 
-+ * Отключить ссылку на ММ в экране ТМ
-+ * Кнопка приложения  - там на самом деле есть нюансы
-* Посмотреть твое радио
 * Посчитаться и расплатиться за отработанный хостинг
 * Сделать страничку сбора бабла на КК
 * ПейПол
@@ -482,6 +488,16 @@ http://ogame.supernova.ws/index.php?page=options - вкладка Уведомл
 
 
 #ctv  - КК, Фаза 10. Балансировочная
+
+
+
+2014-06-15 09:35:00 39a8.12
+[-] Темплейты/OpenGame
+    Удалены неисользуемые картинки в каталоге img
+
+[@] Веб-сервер
+    Добавлены файлы .htaccess
+
 
 2014-06-14 15:46:33 39a8.11
 [~] Меню

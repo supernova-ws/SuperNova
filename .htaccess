@@ -1,0 +1,25 @@
+AddDefaultCharset UTF-8
+
+# Disable index list
+Options -Indexes
+
+# Disable access to config.php
+<Files config.php>
+  order allow,deny
+  deny from all
+</Files>
+
+<Files ~ "\.html$">
+  order allow,deny
+  deny from all
+</Files>
+
+# Deny access to all dotted fields and folders
+RedirectMatch 404 /\..*$
+
+
+#<Files "\.(tar|gif|png|...|xml)$">
+#    order allow,deny
+#    deny from all
+#</Files>
+
