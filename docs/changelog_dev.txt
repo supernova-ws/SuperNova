@@ -306,7 +306,7 @@ Stay out of my shed
   !!!!!!!!!!!!!!!!! Добавить бенчмарк и потестить производительность на живых !!!!!!!!!!!
 
 
-Текущий билд #39a8.12#
+Текущий билд #39a8.13#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять flt_lastUpdate
@@ -388,9 +388,6 @@ from delta_users where onlinetime - register_time  < 60*60 and register_time < U
 and metamatter_total = 0
 
 
-Подсветка он ховер строк в таблице под курсором
-
-Не удаляет строения если нет денег на постройку?!
 
 Экспа - каждый корабль может утащить только то же количество кораблей своего типа - или больше, если другого
 
@@ -432,6 +429,8 @@ http://www.adamwadeharris.com/android-automation/   build and publish
 http://fusiongrokker.com/post/follow-up-on-phonegap-build-compiled-file-sizes  reduce apk size
 http://www.justbeck.com/three-ways-to-encrypt-phonegap-and-cordova-mobile-applications/
 
+http://stackoverflow.com/questions/12177134/supporting-multiple-resolution-and-density-of-images-in-phonegap
+
 
 http://knockoutjs.com/examples/simpleList.html - MVVM framework в помощь jqmobile
 
@@ -440,6 +439,10 @@ paypal api
 http://habrahabr.ru/post/128198/
 
 google payment
+http://developer.android.com/google/play/billing/gp-purchase-status-api.html
+https://developers.google.com/discovery/libraries
+http://docs.madewithmarmalade.com/display/MD/S3E+Android+Google+Play+Billing%3A+Using+the+API
+
 http://hashcode.ru/questions/286954/php-как-сделать-закрытый-веб-api-для-андроид-приложения
 https://groups.google.com/forum/#!topic/google-api-php-client/13N4rJ-zT2w
 http://habrahabr.ru/post/160911/
@@ -459,6 +462,11 @@ http://rmcreative.ru/blog/post/s-yii-1.1-na-yii-2.0--chast-1-php#comments
 <li><a href="http://ru2.php.net/manual/ru/book.datetime.php">datetime</a>.</li>
 <li><a href="http://ru2.php.net/manual/ru/language.oop5.traits.php">Трейты</a>.</li>
 <li><a href="http://ru2.php.net/manual/ru/book.intl.php">intl</a>. В Yii2 многое из intl завёрнуто в компонент i18n, но не всё.</li>
+
+
+force reload
+http://www.w3schools.com/jsref/met_loc_reload.asp
+http://www.stefanhayden.com/blog/2006/04/03/css-caching-hack/
 
 
 http://forum.supernova.ws/viewtopic.php?f=36&t=2844 - проблемы с колонизацией
@@ -486,9 +494,36 @@ http://ogame.supernova.ws/index.php?page=options - вкладка Уведомл
 
 ЧР - купить корабли за ТМ, сделать ссылку в методах расхода ТМ
 
+Альфа - 2-2-10
+Бета - 100-50-500 ???
+Гамма - 1-1-1
+Дельта - 10000-100-10000
+
+
+О! Ценный артефакт - запрет шпионажа
+[14:27:20] Project "SuperNova.WS": 30 ТМ (3 бакса) на 24 часа на все планеты
+
+
+
+
+Планеты и луны - приносить ТМ от застройки или спецсзадние (?)  - сбалансировать с ценой сектора
+Подарки на ТМ - совочек, грабельки и грузовичок
+
+Баг - при постройке на верфи энтер должен ставить в очередь
+Подсветка он ховер строк в таблице под курсором
+Не удаляет строения если нет денег на постройку?!
 
 #ctv  - КК, Фаза 10. Балансировочная
 
+
+
+
+2014-06-20 20:02:18 39a8.13
+[+] Локализация
+    Добавлена поддержка вариантов языка - типа, en-US и en-UK
+
+[~] Логин/Регистрация/Восстановление пароля
+    Переделан выбор языков
 
 
 2014-06-15 09:35:00 39a8.12

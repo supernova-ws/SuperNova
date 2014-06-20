@@ -4,11 +4,21 @@
   <!-- DEFINE $SEPARATOR = '?' -->
 <!-- ENDIF -->
 
+<!-- IF .language -->
 <div id="log_menu">
+  <table class="markup c_c"><tr>
   <!-- BEGIN language -->
-    <a href="{FILENAME}?lang={language.LANG_NAME_ISO2}{referral}"><img src="language/{language.LANG_NAME_ISO2}/{language.LANG_FLAG}" /></a>
+    <td style="padding: 0px 8px">
+    <a href="{FILENAME}?lang={language.LANG_NAME_ISO2}{referral}">
+      <img src="language/{language.LANG_NAME_ISO2}/{language.LANG_FLAG_MEDIUM}" /><br />
+      {language.LANG_NAME_NATIVE}
+    </a>
+    </td>
   <!-- END language -->
+  </tr>
+  </table>
 </div>
+<!-- ENDIF -->
 
 <div id="log_menu">
   <a href="login.php{LANG}{referral}">{L_log_login_page}</a> ::

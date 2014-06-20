@@ -74,7 +74,7 @@ function sn_sys_cookie_check($cookie)
 
 function sn_autologin($abort = true)
 {
-  global $config, $IsUserChecked, $user_impersonator, $time_now, $lang, $skip_ban_check;
+  global $IsUserChecked, $user_impersonator, $time_now, $lang, $skip_ban_check;
 
   $IsUserChecked = false;
   if(!isset($_COOKIE[SN_COOKIE]))
@@ -93,6 +93,7 @@ function sn_autologin($abort = true)
       sys_redirect(SN_ROOT_RELATIVE);
     }
   }
+
   if(!$user = sn_sys_cookie_check($_COOKIE[SN_COOKIE]))
   {
     setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);

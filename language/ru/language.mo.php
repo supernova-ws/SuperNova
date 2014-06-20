@@ -33,6 +33,7 @@ $lang_info = array(
   'LANG_NAME_NATIVE'  => 'Русский',
   'LANG_NAME_ENGLISH' => 'Russian',
   'LANG_FLAG'         => 'ru.png',
+  'LANG_FLAG_MEDIUM'  => 'ru_medium.png',
   'LANG_NAME_ISO2'    => 'ru',
   'LANG_NAME_ISO3'    => 'rus',
   'LANG_DIRECTION'    => 'ltr',
@@ -44,5 +45,4 @@ $lang_info = array(
     'Copyright &copy; 2009 Gorlum for Project &quot;SuperNova.WS&quot;',
     'Copyright &copy; 2009 MSW',
   ),
-
 );

@@ -174,7 +174,8 @@ function sn_options_model()
     $user['email'] = sys_get_param_str('db_email');
     $user['dpath'] = sys_get_param_str('dpath');
     $user['lang']  = sys_get_param_str('langer', $language);
-    if(lng_switch($user['lang']))
+    global $lang;
+    if($lang->lng_switch($user['lang']))
     {
       lng_include('options');
       lng_include('messages');

@@ -12,26 +12,8 @@ require_once('includes/init.php');
 $user = sn_autologin(!$allow_anonymous);
 $sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
 
-$time_diff_seconds = $user['user_time_diff'];
-$time_utc_offset = $user['user_time_utc_offset'];
-$time_diff = $time_diff_seconds + $time_utc_offset;
-$time_local = SN_TIME_NOW + $time_diff;
-
-if(!defined('SN_CLIENT_TIME_DIFF'))
-{
-  define('SN_CLIENT_TIME_DIFF', $time_diff);
-}
-
-if(!defined('SN_CLIENT_TIME_LOCAL'))
-{
-  define('SN_CLIENT_TIME_LOCAL', $time_local);
-}
-
-define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
-
 $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
-
-lng_switch(sys_get_param_str('lang'));
+$lang->lng_switch(sys_get_param_str('lang'));
 
 if($config->game_disable)
 {
@@ -51,12 +33,32 @@ if($config->game_disable)
 if(!(($allow_anonymous || (isset($sn_page_data['allow_anonymous']) && $sn_page_data['allow_anonymous'])) || $sys_user_logged_in) || (defined('IN_ADMIN') && IN_ADMIN === true && $user['authlevel'] < 1))
 {
   setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-  sys_redirect(SN_ROOT_VIRTUAL .'login.php');
+  sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }
+
+define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
+
+$time_diff_seconds = $user['user_time_diff'];
+$time_utc_offset = $user['user_time_utc_offset'];
+$time_diff = $time_diff_seconds + $time_utc_offset;
+$time_local = SN_TIME_NOW + $time_diff;
+defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
+defined('SN_CLIENT_TIME_LOCAL') or define('SN_CLIENT_TIME_LOCAL', $time_local);
+/*
+if(!defined('SN_CLIENT_TIME_DIFF'))
+{
+  define('SN_CLIENT_TIME_DIFF', $time_diff);
+}
+if(!defined('SN_CLIENT_TIME_LOCAL'))
+{
+  define('SN_CLIENT_TIME_LOCAL', $time_local);
+}
+*/
+
 
 if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0)
 {
-  echo "<a href=\"badqrys.txt\" target=\"_NEW\"><font color=\"red\">{$lang['ov_hack_alert']}</font</a>";
+  echo "<a href=\"badqrys.txt\" target=\"_NEW\" style=\"color:red\">{$lang['ov_hack_alert']}</a>";
 }
 
 if(defined('IN_ADMIN') && IN_ADMIN === true)
@@ -71,39 +73,9 @@ elseif($sys_user_logged_in)
     flt_flying_fleet_handler($config, $skip_fleet_update);
   }
 
-//  if(!$allow_anonymous)
-//  {
   sys_user_vacation($user);
-//  }
 
   $planet_id = SetSelectedPlanet($user);
-
-  /*
-  print(rand());
-  pdump(classSupernova::db_get_user_list('', false, 'id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id'));
-  die();
-  */
-
-  /*
-  $test = &classSupernova::$data[LOC_USER][2];
-  // pdump($test);
-  // pdump(classSupernova::$data);
-  // pdump(classSupernova::db_get_user_by_id(2));
-  // pdump(classSupernova::$data);
-  pdump(classSupernova::$queries, 'q1');
-  classSupernova::db_get_user_list("id = 2");
-  pdump(classSupernova::$queries, 'q2');
-  // pdump(classSupernova::$queries);
-  classSupernova::db_set_user_by_id(2, 'player_rpg_tech_xp = player_rpg_tech_xp + 1');
-    // 550153
-  pdump(classSupernova::$queries, 'q3');
-  pdump(classSupernova::$data);
-  die();
-  */
-
-  // sn_db_transaction_start();
-  // que_process($user); // TODO UNCOMMENT ???????????
-  // sn_db_transaction_commit();
 
   // TODO НЕ НУЖНО АЛЬЯНС КАЖДЫЙ РАЗ ОБНОВЛЯТЬ!!!
   if($user['ally_id'])

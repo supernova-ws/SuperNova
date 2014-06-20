@@ -17,7 +17,7 @@ lng_include('admin');
 $id_ref = sys_get_param_id('id_ref');
 $username = sys_get_param_str_raw('username');
 $password = sys_get_param('password');
-if ($username)
+if($username)
 {
   $result = sn_login($username, $password, $_POST['rememberme']);
   switch($result['status'])

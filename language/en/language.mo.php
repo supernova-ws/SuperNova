@@ -33,13 +33,33 @@ if (!defined('INSIDE'))
 
 $lang_info = array(
   'LANG_VERSION'      => 'V26e20',
+  'LANG_DIRECTION'    => 'ltr',
 
   'LANG_NAME_NATIVE'  => 'English',
   'LANG_NAME_ENGLISH' => 'English',
   'LANG_FLAG'         => 'en.png',
+  'LANG_FLAG_MEDIUM'  => 'en-UK_medium.png',
   'LANG_NAME_ISO2'    => 'en',
   'LANG_NAME_ISO3'    => 'eng',
-  'LANG_DIRECTION'    => 'ltr',
+
+  'LANG_VARIANTS'     => array(
+    array(
+      'LANG_NAME_NATIVE'  => 'US English',
+      'LANG_NAME_ENGLISH' => 'US English',
+      'LANG_FLAG'         => 'en.png',
+      'LANG_FLAG_MEDIUM'  => 'en-US_medium.png',
+      'LANG_NAME_ISO2'    => 'en',
+      'LANG_NAME_ISO3'    => 'eng',
+    ),
+    array(
+      'LANG_NAME_NATIVE'  => 'English',
+      'LANG_NAME_ENGLISH' => 'English',
+      'LANG_FLAG'         => 'en.png',
+      'LANG_FLAG_MEDIUM'  => 'en-UK_medium.png',
+      'LANG_NAME_ISO2'    => 'en',
+      'LANG_NAME_ISO3'    => 'eng',
+    ),
+  ),
 
   'LANG_MAINTAINER'   => 'madmax1991',
   'LANG_HOMEPAGE'     => 'http://forum.supernova.ws/viewforum.php?f=73',
@@ -52,5 +72,3 @@ $lang_info = array(
   ),
 
 );
-
-?>

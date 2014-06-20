@@ -612,18 +612,28 @@ function gettemplate($files, $template = false, $template_path = false)
 
 function tpl_login_lang(&$template, $id_ref)
 {
-  global $user, $language;
+  global $language;
 
   $template->assign_vars(array(
-//    'LANG'         => "?lang={$language}",
-//    'referral'     => $id_ref ? "&id_ref={$id_ref}" : '',
     'LANG'         => "?lang={$language}" . ($id_ref ? "&id_ref={$id_ref}" : ''),
     'FILENAME'     => basename($_SERVER['PHP_SELF']),
   ));
 
   foreach(lng_get_list() as $lng_id => $lng_data)
   {
-    $template->assign_block_vars('language', $lng_data);
+    if(isset($lng_data['LANG_VARIANTS']) && is_array($lng_data['LANG_VARIANTS']))
+    {
+      foreach($lng_data['LANG_VARIANTS'] as $lang_variant)
+      {
+        $lng_data1 = $lng_data;
+        $lng_data1 = array_merge($lng_data1, $lang_variant);
+        $template->assign_block_vars('language', $lng_data1);
+      }
+    }
+    else
+    {
+      $template->assign_block_vars('language', $lng_data);
+    }
   }
 }
 

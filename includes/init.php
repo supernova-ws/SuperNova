@@ -246,7 +246,7 @@ $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 require_once(SN_ROOT_PHYSICAL . "includes/template" . DOT_PHP_EX);
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
 
-$template_result = array('.' => array());
+$template_result = array('.' => array('result' => array()));
 $sn_page_name = isset($_GET['page']) ? trim(strip_tags($_GET['page'])) : '';
 
 // Подключаем все модули
@@ -349,9 +349,8 @@ if(!isset($sn_data['pages'][$sn_page_name]))
 
 sn_db_connect();
 
-$lang          = array();
-$lang          = new classLocale();
-lng_switch(sys_get_param_str('lang'));
+$lang = new classLocale();
+$lang->lng_switch(sys_get_param_str('lang'));
 
 
 if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= $time_now)

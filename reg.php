@@ -35,7 +35,7 @@ if($_POST['submit'])
   $sex = sys_get_param_str('sex');
 
 
-  if (!$username)
+  if(!$username)
   {
     $errorlist .= $lang['error_character'];
     $errors++;
@@ -49,7 +49,7 @@ if($_POST['submit'])
     }
   }
 
-  if (strlen($password) < 4)
+  if(strlen($password) < 4)
   {
     $errorlist .= $lang['error_password'];
     $errors++;
@@ -70,19 +70,19 @@ if($_POST['submit'])
     }
   }
 
-  if (!$planet_name)
+  if(!$planet_name)
   {
     $errorlist .= $lang['error_planet'];
     $errors++;
   }
 
-  if ($sex != 'F' && $sex != 'M')
+  if($sex != 'F' && $sex != 'M')
   {
     $errorlist .= $lang['error_sex'];
     $errors++;
   }
 
-  if (!$_POST['register']) {
+  if(!$_POST['register']) {
     $errorlist .= $lang['error_rgt'];
     $errors++;
   }

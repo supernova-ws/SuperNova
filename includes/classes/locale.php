@@ -142,7 +142,7 @@ class classLocale implements ArrayAccess {
   {
     global $language, $user, $sn_mvc;
 
-    $language_new = $language_new ? $language_new : ($user['lang'] ? $user['lang'] : DEFAULT_LANG);
+    $language_new = $language_new ? $language_new : (isset($user['lang']) && $user['lang'] ? $user['lang'] : DEFAULT_LANG);
 
     $result = false;
     if($language_new != $language)
