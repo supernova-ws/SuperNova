@@ -552,6 +552,7 @@ function parsetemplate($template, $array = false)
       'SN_ROOT_PATH'  => SN_ROOT_VIRTUAL,
       '-path_prefix-' => SN_ROOT_VIRTUAL,
       'TIME_NOW'      => $time_now,
+      'USER_AUTHLEVEL'=> isset($user['authlevel']) ? $user['authlevel'] : -1,
     ));
 
     $template->parsed = true;

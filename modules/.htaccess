@@ -2,3 +2,8 @@
   order allow,deny
   deny from all
 </Files>
+
+<Files ~ "\.(png|gif|js)$">
+  order allow,deny
+  allow from all
+</Files>
