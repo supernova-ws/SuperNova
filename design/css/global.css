@@ -1,6 +1,6 @@
 html, body
 {
-  overflow-y: scroll;
+  overflow-y: none;
   height: 100%;
 /*  min-height: 100%;
   min-width: 100%;
@@ -15,6 +15,7 @@ html, body, form, iframe
 #sn_menu {
 /*  float:left; */
   width: 130px;
+  max-width: 130px;
 /*  height: 100%;*/
   /*  top:0;left:0;bottom:0;position: absolute;*/
   padding-left:5px;
