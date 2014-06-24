@@ -219,7 +219,7 @@ function db_chat_player_list_online($chat_refresh_rate, $ally_add)
       `chat_player_refresh_last` >= '{$sql_date}'
       AND (`banaday` IS NULL OR `banaday` <= " . SN_TIME_NOW . ")
       {$ally_add}
-    ORDER BY `username`");
+    ORDER BY authlevel DESC, `username`");
 }
 
 function db_flying_fleet_lock(&$mission_data, &$fleet_row)
