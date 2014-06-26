@@ -1233,6 +1233,21 @@ switch($new_version)
       "ADD COLUMN `settings_statistics` TINYINT(1) UNSIGNED NOT NULL DEFAULT 1 AFTER `settings_rep`",
     ), !isset($update_tables['users']['settings_statistics']));
 
+    if(!$update_tables['lng_usage_stat'])
+    {
+      upd_create_table('lng_usage_stat',
+        "(
+          `lang_code` char(2) COLLATE utf8_unicode_ci NOT NULL,
+          `string_id` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+          `file` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+          `line` smallint(6) NOT NULL,
+          `is_empty` tinyint(1) NOT NULL,
+          `locale` mediumtext COLLATE utf8_unicode_ci,
+          PRIMARY KEY (`lang_code`,`string_id`,`file`,`line`,`is_empty`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+      );
+    }
+
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
 };

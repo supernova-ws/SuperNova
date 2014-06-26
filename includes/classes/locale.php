@@ -5,12 +5,24 @@ class classLocale implements ArrayAccess {
   public $lang_list = null;
   public $active = null;
 
+  public $enable_stat_usage = false;
+  protected $stat_usage = array();
+  protected $stat_usage_new = array();
+
   // protected $cache = null;
 
-  public function __construct($language = DEFAULT_LANG) {
+  public function __construct($language = DEFAULT_LANG, $enable_stat_usage = false) {
     $this->active = $language;
     $this->container = array($this->active => array());
     // $this->cache = classCache::getInstance();
+
+    if($enable_stat_usage && empty($this->stat_usage))
+    {
+      $this->enable_stat_usage = $enable_stat_usage;
+      $this->usage_stat_load();
+      // TODO shutdown function
+      register_shutdown_function(array($this, 'usage_stat_save'));
+    }
   }
 
   public function offsetSet($offset, $value) {
@@ -20,20 +32,20 @@ class classLocale implements ArrayAccess {
       $this->container[$this->active][$offset] = $value;
     }
   }
-
   public function offsetExists($offset) {
     return isset($this->container[$this->active][$offset]);
   }
-
   public function offsetUnset($offset) {
     unset($this->container[$this->active][$offset]);
   }
-
   public function offsetGet($offset) {
-    return isset($this->container[$this->active][$offset]) ? $this->container[$this->active][$offset] : null;
+    $value = isset($this->container[$this->active][$offset]) ? $this->container[$this->active][$offset] : null;
+    if($this->enable_stat_usage)
+    {
+      $this->usage_stat_log($offset, $value);
+    }
+    return $value;
   }
-
-
 
 
   public function merge($array)
@@ -42,6 +54,73 @@ class classLocale implements ArrayAccess {
   }
 
 
+  public function usage_stat_load()
+  {
+    global $sn_cache;
+
+    $this->stat_usage = $sn_cache->lng_stat_usage  = array(); // TODO for debug
+    if(empty($this->stat_usage))
+    {
+      $query = doquery("SELECT * FROM {{lng_usage_stat}}");
+      while($row = mysql_fetch_assoc($query))
+      {
+        $this->stat_usage[$row['lang_code'] . ':' . $row['string_id'] . ':' . $row['file'] . ':' . $row['line']] = $row['is_empty'];
+      }
+    }
+  }
+  public function usage_stat_save()
+  {
+    if(!empty($this->stat_usage_new))
+    {
+      global $sn_cache;
+      $sn_cache->lng_stat_usage = $this->stat_usage;
+      global $link;
+      $link = null;
+      doquery("SELECT 1 FROM {{lng_usage_stat}} LIMIT 1");
+      foreach($this->stat_usage_new as &$value)
+      {
+        foreach($value as &$value2)
+        {
+          $value2 = '"' . mysql_real_escape_string($value2) . '"';
+        }
+        $value = '(' . implode(',', $value) .')';
+      }
+      doquery("REPLACE INTO {{lng_usage_stat}} (lang_code,string_id,`file`,line,is_empty,locale) VALUES " . implode(',', $this->stat_usage_new));
+    }
+  }
+  public function usage_stat_log(&$offset, &$value)
+  {
+    $trace = debug_backtrace();
+    unset($trace[0]);
+    unset($trace[1]['object']);
+
+//    pdump($trace, $offset);
+//    pdump(SN_ROOT_PHYSICAL );
+    $file = str_replace('\\', '/', substr($trace[1]['file'], strlen(SN_ROOT_PHYSICAL) - 1));
+/*
+    if(strpos($file, '/includes/classes/template.php') !== false)
+    {
+
+    }
+*/
+//    pdump($file);
+    $string_id = $this->active . ':' . $offset . ':' . $file . ':' . $trace[1]['line'];
+    if(!isset($this->stat_usage[$string_id]) || $this->stat_usage[$string_id] != $empty)
+    {
+      $this->stat_usage[$string_id] = empty($value);
+      $this->stat_usage_new[] = array(
+        'lang_code' => $this->active,
+        'string_id' => $offset,
+        'file' => $file,
+        'line' => $trace[1]['line'],
+        'is_empty' => intval(empty($value)),
+        'locale' => '' . $value,
+      );
+    }
+    // $this->stat_usage[$this->active . ':' . $offset . ':' . $file . ':' . $trace[1]['line']] = 1;
+//    pdump($string_id);
+//    die();
+  }
 
 
   protected function lng_try_filepath($path, $file_path_relative)

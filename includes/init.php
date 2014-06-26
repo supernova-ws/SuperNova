@@ -349,7 +349,7 @@ if(!isset($sn_data['pages'][$sn_page_name]))
 
 sn_db_connect();
 
-$lang = new classLocale();
+$lang = new classLocale(DEFAULT_LANG, $config->server_locale_log_usage);
 $lang->lng_switch(sys_get_param_str('lang'));
 
 

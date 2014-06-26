@@ -338,5 +338,5 @@ function sn_eco_build($que_type, &$auser, &$planet)
     'U_opt_int_struc_vertical' => $user['option_list'][OPT_INTERFACE]['opt_int_struc_vertical'],
   ));
 
-  display(parsetemplate($template), $lang['Builds']);
+  display(parsetemplate($template)); // , $lang['Builds']
 }

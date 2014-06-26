@@ -279,7 +279,7 @@ function db_change_units_perform($query, $tablename, $object_id)
   if($query && $object_id)
   {
     return classSupernova::db_upd_record_by_id($tablename == 'users' ? LOC_USER : LOC_PLANET, $object_id, $query);
-    return doquery("UPDATE {{{$tablename}}} SET {$query} WHERE `id` = '{$object_id}' LIMIT 1;");
+    // return doquery("UPDATE {{{$tablename}}} SET {$query} WHERE `id` = '{$object_id}' LIMIT 1;");
   }
 }
 
