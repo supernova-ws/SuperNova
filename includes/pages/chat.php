@@ -21,12 +21,12 @@
    1.2 by Ihor
    1.0 Shoutbox copyright © 2008 by e-Zobar for XNova
 **/
-
+/*
 $sn_mvc['model']['chat'][] = 'sn_chat_model';
-$sn_mvc['view']['chat'][] = 'sn_chat_view';
 $sn_mvc['model']['chat_add'][] = 'sn_chat_add_model';
+$sn_mvc['view']['chat'][] = 'sn_chat_view';
 $sn_mvc['view']['chat_msg'][] = 'sn_chat_msg_view';
-
+*/
 function sn_chat_model()
 {
   global $config, $user, $microtime, $template_result, $lang, $supernova;
@@ -59,7 +59,6 @@ function sn_chat_model()
 
   $template_result['PAGE_HEADER'] = $page_title;
 }
-
 function sn_chat_view($template = null)
 {
   $template = gettemplate('chat_body', $template);
@@ -91,7 +90,6 @@ function sn_chat_add_model()
 
   die();
 }
-
 function sn_chat_msg_view($template = null)
 {
   define('IN_AJAX', true);

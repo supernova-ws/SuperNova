@@ -18,11 +18,11 @@
     <form action="login.php{LANG}{referral}" method="post">
       <div class="log_input_wrapper">
         {L_User_name}<br>
-        <input name="username" type="text" value="" class="log_input" />
+        <input name="username" type="text" value="" maxlength="32" class="log_input" />
       </div>
       <div class="log_input_wrapper">
         {L_sys_password}<br>
-        <input name="password" type="password" value="" class="log_input" /> 
+        <input name="password" type="password" value="" maxlength="32" class="log_input" />
       </div><br>
       <div class="log_input_wrapper">
         <a href="lostpassword.php{LANG}{referral}" class="link">{L_PasswordLost}</a>

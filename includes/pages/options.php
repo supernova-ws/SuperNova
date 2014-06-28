@@ -7,14 +7,15 @@
  * @version 1.0
  * @copyright 2008 by ??????? for XNova
  */
+/*
+$sn_mvc['model']['options'][] = 'sn_options_model';
+$sn_mvc['view']['options'][] = 'sn_options_view';
 
 $sn_mvc['i18n']['options'] = array(
   'options' => 'options',
   'messages' => 'messages',
 );
-
-$sn_mvc['model']['options'][] = 'sn_options_model';
-$sn_mvc['view']['options'][] = 'sn_options_view';
+ */
 
 function sn_options_model()
 {
@@ -172,6 +173,10 @@ function sn_options_model()
     }
 
     $user['email'] = sys_get_param_str('db_email');
+    if(!$user['email_2'])
+    {
+      $user['email_2'] = sys_get_param_str('db_email2');
+    }
     $user['dpath'] = sys_get_param_str('dpath');
     $user['lang']  = sys_get_param_str('langer', $language);
     global $lang;
@@ -257,7 +262,7 @@ function sn_options_model()
     $user_birthday .= sys_get_param_int('opt_time_diff_clear') ? ', `user_time_diff` = NULL' : '';
 
 //      `username` = '{$username_safe}',
-    db_user_set_by_id($user['id'], "`password` = '{$user['password']}', `email` = '{$user['email']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
+    db_user_set_by_id($user['id'], "`password` = '{$user['password']}', `email` = '{$user['email']}', `email_2` = '{$user['email_2']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
       `dpath` = '{$user['dpath']}', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
       `planet_sort` = '{$user['planet_sort']}', `planet_sort_order` = '{$user['planet_sort_order']}', `spio_anz` = '{$user['spio_anz']}',
       `settings_tooltiptime` = '{$user['settings_tooltiptime']}', `settings_fleetactions` = '{$user['settings_fleetactions']}', `settings_esp` = '{$user['settings_esp']}',
@@ -389,6 +394,8 @@ function sn_options_view($template = null)
     'VACATION_NEXT_TEXT' => date(FMT_DATE_TIME, $user['vacation_next']),
     'VACATION_TIMEOUT' => $user['vacation_next'] - $time_now > 0 ? $user['vacation_next'] - $time_now : 0,
     'TIME_NOW' => $time_now,
+
+    'SERVER_SEND_EMAIL' => $config->game_email_pm,
 
     'SERVER_NAME_CHANGE' => $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE,
     'SERVER_NAME_CHANGE_PAY' => $config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_PAY,

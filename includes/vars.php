@@ -16,11 +16,26 @@ $sn_menu_extra = array();
 $sn_menu_admin_extra = array();
 
 $sn_mvc = array(
- 'model' => array(),
- 'view' => array(),
+ 'model' => array(
+   'options' => array('sn_options_model'),
+   'chat' => array('sn_chat_model'),
+   'chat_add' => array('sn_chat_add_model'),
+ ),
+ 'view' => array(
+   'options' => array('sn_options_view'),
+   'chat' => array('sn_chat_view'),
+   'chat_msg' => array('sn_chat_msg_view'),
+ ),
  'controller' => array(),
- 'i18n' => array(),
+ 'i18n' => array(
+   'options' => array(
+     'options' => 'options',
+     'messages' => 'messages',
+   ),
+ ),
 );
+
+
 
 $sn_ali_admin_internal = array(
   'rights' => array(
@@ -687,6 +702,8 @@ mission = array(
         'fleet_update_skip' => true,
       ),
     ),
+    // 'chat_frame' => 'modules/chat_advanced/chat_advanced',
+
     'contact' => array(
       'allow_anonymous' => true,
       'filename' => 'contact',
@@ -800,6 +817,7 @@ $sn_pwr_buy_discount = array(
   PERIOD_MONTH_2   => 0.9,
   PERIOD_MONTH_3   => 0.8,
 );
+
 /*
 foreach($sn_data as $unitID => $unitData)
 {

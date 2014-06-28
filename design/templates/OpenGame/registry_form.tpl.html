@@ -17,17 +17,17 @@
       <tbody>
         <tr>
           <th width="179">{L_User_name}</th>
-          <th width="161"><input name="username" type="text" size="20" maxlength="20" /></th>
+          <th width="161"><input name="username" type="text" size="20" maxlength="32" /></th>
         </tr>
 
         <tr>
           <th>{L_sys_password}:</th>
-          <th><input name="password" type="password" size="20" maxlength="20" /></th>
+          <th><input name="password" type="password" size="20" maxlength="32" /></th>
         </tr>
 
         <tr>
           <th>{L_E-Mail}:</th>
-          <th><input name="email" type="text" size="20" maxlength="40" /></th>
+          <th><input name="email" type="text" size="20" maxlength="64" /></th>
         </tr>
 
         <tr>
@@ -69,7 +69,7 @@
         </tr>
       </tbody>
     </table>
-    <input name="submit" type="submit" value="{L_signup}!" />
+    <input name="register" type="submit" value="{L_signup}!" />
   </form><br>
   {L_log_reg_already} <a href="login.php{LANG}{referral}" class="link">{L_log_login_page}</a><br>
   {L_log_reg_already_lost} <a href="lostpassword.php{LANG}{referral}" class="link">{L_PasswordLost}</a><br>

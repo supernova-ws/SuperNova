@@ -50,6 +50,9 @@ class classLocale implements ArrayAccess {
 
   public function merge($array)
   {
+//pdump($this->container[$this->active]);
+//pdump(debug_backtrace());
+    $this->container[$this->active] = is_array($this->container[$this->active]) ? $this->container[$this->active] : array();
     $this->container[$this->active] = array_merge($this->container[$this->active], $array);
   }
 

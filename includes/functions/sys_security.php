@@ -72,11 +72,28 @@ function sn_sys_cookie_check($cookie)
   return $user;
 }
 
+function global_login($abort = true)
+{
+  global $user;
+  // 1. Пробуем автологин по внутрянке
+  // 2. Пробуем автологин по внешним системам
+  $user = sn_autologin($abort && !defined('IN_API')); // Если IN_API - всегда не-аборт
+
+
+
+  // 3. Проверяем - не регистрация ли это
+  // 3.1. Если да - пробуем зарегестрировать
+  // 3.2. Если удачно - полный логин со всеми параметрами
+  // 3.3. Если нет - возврат ошибки и перейти к форме логина
+  // 4. Пробуем штатный логин по нутрянке
+  // 5. Пробуем штатный логин по внешним системам
+  // 6. Ошибка
+}
+
 function sn_autologin($abort = true)
 {
-  global $IsUserChecked, $user_impersonator, $time_now, $lang, $skip_ban_check;
+  global $user_impersonator, $time_now, $lang, $skip_ban_check;
 
-  $IsUserChecked = false;
   if(!isset($_COOKIE[SN_COOKIE]))
   {
     return false;
@@ -138,8 +155,6 @@ function sn_autologin($abort = true)
       db_user_set_by_id($user['id'], "`vacation` = '{$time_now}', banaday=0");
     }
   }
-
-  $IsUserChecked = is_array($user);
 
   return $user;
 }
@@ -357,5 +372,3 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '')
       `ban_issuer_email` = '{$banner['email']}'
   ");
 }
-
-?>

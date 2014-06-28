@@ -67,11 +67,6 @@ if(defined('IN_ADMIN') && IN_ADMIN === true)
 }
 elseif($sys_user_logged_in)
 {
-  if(!($skip_fleet_update || $supernova->options['fleet_update_skip']) && $time_now - $config->flt_lastUpdate >= 4)
-  {
-    require_once("includes/includes/flt_flying_fleet_handler2.php");
-    flt_flying_fleet_handler($config, $skip_fleet_update);
-  }
 
   sys_user_vacation($user);
 

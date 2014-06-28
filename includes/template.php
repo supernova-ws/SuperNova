@@ -203,7 +203,7 @@ function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage 
 
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
-  global $link, $debug, $user, $user_impersonator, $planetrow, $IsUserChecked, $time_now, $config, $lang, $template_result, $time_diff, $time_utc_offset, $time_diff_seconds;
+  global $link, $debug, $user, $user_impersonator, $planetrow, $time_now, $config, $lang, $template_result, $time_diff, $time_utc_offset, $time_diff_seconds;
 
   if(!$user || !isset($user['id']) || !is_numeric($user['id']))
   {
@@ -223,7 +223,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   }
 
   // Global header
-  $template = gettemplate('simple_header', true);
+  $template = gettemplate('_global_header', true);
   $template->assign_vars(array(
     'TIME_NOW'                 => $time_now,
     'TIME_DIFF'                => isset($time_diff) ? $time_diff : '',
@@ -244,7 +244,6 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
     'IMPERSONATING'            => $user_impersonator ? sprintf($lang['sys_impersonated_as'], $user['username'], $user_impersonator['username']) : '',
   ));
-
   displayP(parsetemplate($template));
 
   if($isDisplayMenu)
@@ -253,7 +252,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     displayP(parsetemplate(tpl_render_menu($AdminPage)));
   }
 
-  echo '<td class="c_c" valign="top"><center>';
+//  echo '<td class="c_c" valign="top"><center>';
   if($topnav)
   {
     displayP(parsetemplate(tpl_render_topnav($user, $planetrow)));
@@ -264,6 +263,9 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 //    echo '<div id="page_body">';
   }
 //  echo '<center>';
+  displayP(parsetemplate(gettemplate('_content_header', true)));
+
+//  echo '<tr><td class="c_c" valign="top"><div class="c_c" style="margin:0 auto" id="main_content_center">';
   if(!is_array($page))
   {
     $page = array($page);
@@ -288,10 +290,10 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   {
 //    echo '</div>';
   }
-  echo '</center></td>';
+  displayP(parsetemplate(gettemplate('_content_footer', true)));
 
   // Global footer
-  $template = gettemplate('simple_footer', true);
+  $template = gettemplate('_global_footer', true);
   $template->assign_vars(array(
     'ADMIN_EMAIL' => $config->game_adminEmail,
     'TIME_NOW' => $time_now,

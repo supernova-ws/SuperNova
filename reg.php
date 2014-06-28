@@ -20,7 +20,7 @@ lng_include('admin');
 
 $id_ref = sys_get_param_int('id_ref');
 
-if($_POST['submit'])
+if($_POST['register'])
 {
   session_start();
   $errors    = 0;

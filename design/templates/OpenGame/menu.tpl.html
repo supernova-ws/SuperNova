@@ -1,5 +1,5 @@
 <!-- IF .menu -->
-<td id="sn_menu" valign="top">
+<tr><td id="sn_menu" valign="top" rowspan="3">
   <table cellspacing="0" cellpadding="0" id="left_menu" align="left">
   <!-- BEGIN menu -->
     <tr><!-- IF menu.LEVEL == 'header' --><!-- DEFINE $TX = 'th' --><!-- ELSE --><!-- DEFINE $TX = 'td' --><!-- ENDIF -->
@@ -37,7 +37,8 @@
   <!-- END menu -->
   </table>
 </td>
-<td>&nbsp;</td>
+  <td rowspan="3">&nbsp;</td>
+</tr>
 
 <script type="text/javascript"><!--
 sn_timers.unshift({'id': 'menu_admin_server_time', 'type': 2, 'active': true, 'start_time': {TIME_NOW}, options: 3});

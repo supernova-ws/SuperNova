@@ -138,9 +138,8 @@ define('SN_ROOT_VIRTUAL' , 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . ':/
 global $phpbb_root_path;
 $phpbb_root_path = SN_ROOT_PHYSICAL;
 
-global $user, $IsUserChecked;
+global $user;
 $user = array();
-$IsUserChecked = false;
 
 require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
 $db_prefix = $dbsettings['prefix'];
@@ -157,6 +156,7 @@ $debug = new debug();
 
 require_once(SN_ROOT_PHYSICAL . "includes/classes/_classes" . DOT_PHP_EX);
 require_once(SN_ROOT_PHYSICAL . "includes/db" . DOT_PHP_EX);
+require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 
 $supernova = new classSupernova();
 
@@ -230,7 +230,7 @@ if(file_exists($update_file))
 unset($db_name);
 
 // Initializing constants
-define('SN_COOKIE'        , $config->COOKIE_NAME ? $config->COOKIE_NAME : 'SuperNova');
+define('SN_COOKIE'        , ($config->COOKIE_NAME ? $config->COOKIE_NAME : 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
 define('SN_COOKIE_I'      , SN_COOKIE . '_I');
 define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_default_template : 'OpenGame');
 define('TEMPLATE_PATH'    , 'design/templates/' . TEMPLATE_NAME);
@@ -374,56 +374,11 @@ if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TI
   }
 }
 
-// ------------------------------------------------------------------------------------------------------------------------------
-function sn_sys_load_php_files($dir_name, $phpEx = 'php', $modules = false)
+// pdump($skip_fleet_update, '$skip_fleet_update');
+// pdump($supernova->options['fleet_update_skip'], '$supernova->options[fleet_update_skip]');
+
+if(!($skip_fleet_update || $supernova->options['fleet_update_skip']) && $time_now - $config->flt_lastUpdate >= 4)
 {
-  if(file_exists($dir_name))
-  {
-    $dir = opendir($dir_name);
-    while(($file = readdir($dir)) !== false)
-    {
-      if($file == '..' || $file == '.')
-      {
-        continue;
-      }
-
-      $full_filename = $dir_name . $file;
-      if($modules && is_dir($full_filename))
-      {
-        if(file_exists($full_filename = "{$full_filename}/{$file}.{$phpEx}"))
-        {
-          require_once($full_filename);
-          // Registering module
-          if(class_exists($file))
-          {
-            new $file($full_filename);
-          }
-        }
-      }
-      else
-      {
-        $extension = substr($full_filename, -strlen($phpEx));
-        if($extension == $phpEx)
-        {
-          require_once($full_filename);
-        }
-      }
-    }
-  }
-}
-
-function sys_refresh_tablelist($db_prefix)
-{
-  global $sn_cache;
-
-  $query = doquery('SHOW TABLES;');
-
-  while ( $row = mysql_fetch_assoc($query) )
-  {
-    foreach($row as $row)
-    {
-      $tl[] = str_replace($db_prefix, '', $row);
-    }
-  }
-  $sn_cache->tables = $tl;
+  require_once("includes/includes/flt_flying_fleet_handler2.php");
+  flt_flying_fleet_handler($config, $skip_fleet_update);
 }

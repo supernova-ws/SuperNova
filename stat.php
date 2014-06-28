@@ -160,4 +160,4 @@ $template->assign_vars(array(
   'STATS_HIDE_PM_LINK' => $config->stats_hide_pm_link,
 ));
 
-display($template, $lang['stat_header'], $IsUserChecked, '', false, $IsUserChecked);
+display($template, $lang['stat_header'], !empty($user), '', false, !empty($user));
