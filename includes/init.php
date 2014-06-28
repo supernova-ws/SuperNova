@@ -323,6 +323,7 @@ do
   }
 }
 while($prev_order != $load_order);
+
 asort($load_order);
 
 // Инициализируем модули
@@ -379,6 +380,6 @@ if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TI
 
 if(!($skip_fleet_update || $supernova->options['fleet_update_skip']) && $time_now - $config->flt_lastUpdate >= 4)
 {
-  require_once("includes/includes/flt_flying_fleet_handler2.php");
+  require_once("includes/flt_flying_fleet_handler2.php");
   flt_flying_fleet_handler($config, $skip_fleet_update);
 }

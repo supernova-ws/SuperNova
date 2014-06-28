@@ -1,4 +1,4 @@
-.icon_alpha, .alpha75 /* Partially transparent background for over-planet-image icons */
+.icon_alpha, .alpha75, .a75 /* Partially transparent background for over-planet-image icons */
 {
   /* For IE 5.5 - 7. 0.75*255 = 191.25 ~ 0xC0 */
   filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#C0000000, endColorstr=#C0000000);

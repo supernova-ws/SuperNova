@@ -351,3 +351,18 @@ jQuery(document).on('click', "[go_overview]", function(){
 jQuery(document).on('click', "[go_fleet]", function(){
   document.location = 'fleet.php?cp=' + jQuery(this).attr('go_fleet') + (jQuery(this).attr('mode') ? '&fleet_page=' + jQuery(this).attr('mode'): '');
 });
+
+jQuery(document).on('click', ".show_unit_info", function(){
+  document.location = 'infos.php?gid=' + jQuery(this).parent().attr('unit_id') + (parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : '');
+});
+
+jQuery(document).on('click', ".gather_resources", function(){
+  that = $(this);
+  document.location = 'fleet.php?fleet_page=5' + (parseInt(PLANET_ID) ? '&cp=' + parseInt(PLANET_ID) : '')
+    + (parseFloat(that.attr('metal')) ? '&metal=' + parseFloat(that.attr('metal')) : '')
+    + (parseFloat(that.attr('crystal')) ? '&crystal=' + parseFloat(that.attr('crystal')) : '')
+    + (parseFloat(that.attr('deuterium')) ? '&deuterium=' + parseFloat(that.attr('deuterium')) : '')
+  ;
+
+  onclick="document.location='fleet.php?fleet_page=5&cp={planet.ID}&re=0&metal={production.METAL_REST_NUM}&crystal={production.CRYSTAL_REST_NUM}&deuterium={production.DEUTERIUM_REST_NUM}'"
+});
