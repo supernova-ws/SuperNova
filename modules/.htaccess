@@ -3,7 +3,7 @@
   deny from all
 </Files>
 
-<Files ~ "\.(png|gif|js)$">
+<Files ~ "\.(png|gif|js|swf|jpg|jpeg)$">
   order allow,deny
   allow from all
 </Files>
