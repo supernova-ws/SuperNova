@@ -31,7 +31,8 @@ require_once('includes/includes/flt_functions.php');
 
 lng_include('fleet');
 
-$fleet_page = intval($_GET['fleet_page']);
+//$fleet_page = ($fleet_page = sys_get_param_int('fleet_page')) ? $fleet_page : sys_get_param_int('mode');
+$fleet_page = sys_get_param_int('fleet_page', sys_get_param_int('mode'));
 
 $galaxy = sys_get_param_int('galaxy', $planetrow['galaxy']);
 $system = sys_get_param_int('system', $planetrow['system']);

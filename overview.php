@@ -310,7 +310,7 @@ switch($mode)
       {
         continue;
       }
-      $lune = db_planet_by_parent($UserPlanet['id']);
+      $moon = db_planet_by_parent($UserPlanet['id']);
       if($moon)
       {
         $moon_fill = min(100, floor($moon['field_current'] / eco_planet_fields_max($moon) * 100));
@@ -340,16 +340,8 @@ switch($mode)
     tpl_assign_fleet($template, $fleets_to_planet);
     tpl_assign_fleet($template, $fleets);
 
-    if($planetrow['planet_type'] == PT_PLANET)
-    {
-      $lune = db_planet_by_parent($planetrow['id']);
-    }
-    else
-    {
-      $lune = db_planet_by_id($planetrow['parent_planet']);
-    }
-
-    if ($lune)
+    $lune = $planetrow['planet_type'] == PT_PLANET ? db_planet_by_parent($planetrow['id']) : db_planet_by_id($planetrow['parent_planet']);
+    if($lune)
     {
       $template->assign_vars(array(
         'MOON_ID' => $lune['id'],
@@ -357,7 +349,6 @@ switch($mode)
         'MOON_NAME' => $lune['name'],
       ));
     }
-    // Moon END
 
     $planet_fill = floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100);
     $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;

@@ -5,7 +5,7 @@
 
 <h2>{L_imp_overview}</h2>
 <form method="post">
-<table border="0" cellpadding="0" cellspacing="1" align=center><tbody>
+<table border="0" cellpadding="0" cellspacing="1" align=center id="empire_overview"><tbody>
   <tr><th width="{$CELL_HEADER}" class="c_l" colspan="{amount}">{L_sys_planets}</th></tr>
 
   <tr class="c_c">
@@ -57,7 +57,7 @@
   <tr class="c_c">
     <td>
       {L_sys_planet_density_core}
-      <div class="icons icon-info link" style="display: inline-block; vertical-align: middle;" onclick="document.location='infos.php?gid={D_UNIT_PLANET_DENSITY}'"></div>
+      <div class="icons link icon-info_empire" go="info" unit_id="{D_UNIT_PLANET_DENSITY}"></div>
     </td>
     <!-- BEGIN planet -->
       <!-- IF planet.DENSITY_CLASS == 4 -->
@@ -166,26 +166,24 @@
         <!-- DEFINE $PLUS_CLASS = 'negative' -->
       <!-- ENDIF -->
 
-      <!-- IF prods.planet.PERCENT <= 0 -->
-        <!-- DEFINE $FIELD_COLOR = '' -->
-      <!-- ELSEIF prods.planet.PERCENT < 50 -->
-        <!-- DEFINE $FIELD_COLOR = 'negative_bg' -->
-      <!-- ELSEIF prods.planet.PERCENT < 80 -->
-        <!-- DEFINE $FIELD_COLOR = 'warning_bg' -->
-      <!-- ELSEIF prods.planet.PERCENT < 100 -->
-        <!-- DEFINE $FIELD_COLOR = 'neutral_bg' -->
-      <!-- ELSE -->
-        <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
-      <!-- ENDIF -->
       <td>
         <div class="<!-- IF prods.planet.FACTORY && prods.planet.PERCENT != -1 -->empire_cell_double<!-- ELSE -->empire_cell_single<!-- ENDIF -->">
         <!-- IF prods.planet.PERCENT >= 0 -->
+          <!-- IF prods.planet.PERCENT <= 0 -->
+            <!-- DEFINE $FIELD_COLOR = '' -->
+          <!-- ELSEIF prods.planet.PERCENT < 50 -->
+            <!-- DEFINE $FIELD_COLOR = 'negative_bg' -->
+          <!-- ELSEIF prods.planet.PERCENT < 80 -->
+            <!-- DEFINE $FIELD_COLOR = 'warning_bg' -->
+          <!-- ELSEIF prods.planet.PERCENT < 100 -->
+            <!-- DEFINE $FIELD_COLOR = 'neutral_bg' -->
+          <!-- ELSE -->
+            <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
+          <!-- ENDIF -->
           <span style="width: {prods.planet.PERCENT}%;" class="empire_cell_filler {$FIELD_COLOR}"></span>
         <!-- ENDIF -->
         <span class="empire_cell">
-          <span class="empire_number" <!-- IF prods.URL -->url="{prods.URL}"<!-- ELSE -->planet_id="{prods.planet.ID}"<!-- ENDIF -->>
-            {prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><font color="yellow">{prods.planet.LEVEL_PLUS_YELLOW}</font><!-- ENDIF -->
-          </span>
+          {prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><span class="neutral">{prods.planet.LEVEL_PLUS_YELLOW}</span><!-- ENDIF -->
           <!-- IF prods.planet.FACTORY && prods.planet.PERCENT >= 0 -->
             <br />
             <select name="percent[{prods.ID}][{prods.planet.ID}]" <!-- IF prods.planet.ID == 0 -->selector="{prods.ID}"<!-- ENDIF -->>
@@ -194,7 +192,7 @@
               <!-- ENDIF -->
 
               <!-- BEGIN !percent -->
-              <option value="{percent.PERCENT}"<!-- IF prods.planet.PERCENT === percent.PERCENT --> selected<!-- ENDIF -->>{percent.PERCENT} %</option>
+              <option value="{percent.PERCENT}"<!-- IF prods.planet.PERCENT === percent.PERCENT --> selected<!-- ENDIF -->>{percent.PERCENT}%</option>
               <!-- END !percent -->
             </select>
           <!-- ENDIF -->
@@ -208,9 +206,11 @@
 </form>
 
 <script type="text/javascript">
+  /*
   jQuery(".empire_number").click(function(){
-    document.location = jQuery(this).attr('url') ? jQuery(this).attr('url') : ('buildings.php?cp=' + jQuery(this).attr('planet_id') + '&mode=' + jQuery(this).parent().parent().parent().attr('prod_mode'));
+    document.location = jQuery(this).attr('url') ? jQuery(this).attr('url') : ('buildings.php?cp=' + jQuery(this).attr('planet_id') + '&mode=' + jQuery(this).parent().parent().parent().parent().attr('prod_mode'));
   });
+  */
 
   jQuery("select[selector]").change(function(){
     if(jQuery(this).val() != '-')
@@ -218,7 +218,4 @@
       jQuery("select[name^='percent[" + jQuery(this).attr('selector') + "][']").val(jQuery(this).val());
     }
   });
-
-
-//  onclick="document.location='infos.php?gid={D_UNIT_PLANET_DENSITY}'"
 </script>

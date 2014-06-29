@@ -339,30 +339,57 @@ function sn_show_hide(element, element_name)
   var tag_name = element_to_hide[0].tagName;
 
   element_to_hide.css('display', element_to_hide.css('display') == 'none' ? (tag_name == 'TR' ? 'table-row' : (tag_name == 'UL' || tag_name == 'DIV' ? 'block' : 'inline')) : 'none');
-//  jQuery(element).html("[&nbsp;" + (element_to_hide.css('display') == 'none' ? "{LA_sys_show}" : "{LA_sys_hide}") + "&nbsp;]");
   jQuery(element).html("[&nbsp;" + (element_to_hide.css('display') == 'none' ? LA_sys_show : LA_sys_hide) + "&nbsp;]");
 }
 
 
-jQuery(document).on('click', "[go_overview]", function(){
-  document.location = 'overview.php?cp=' + jQuery(this).attr('go_overview') + (jQuery(this).attr('mode') ? '&mode=' + jQuery(this).attr('mode'): '');
-});
-
-jQuery(document).on('click', "[go_fleet]", function(){
-  document.location = 'fleet.php?cp=' + jQuery(this).attr('go_fleet') + (jQuery(this).attr('mode') ? '&fleet_page=' + jQuery(this).attr('mode'): '');
-});
-
-jQuery(document).on('click', ".show_unit_info", function(){
-  document.location = 'infos.php?gid=' + jQuery(this).parent().attr('unit_id') + (parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : '');
+jQuery(document).on('click', "[go]", function(){
+  planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
+  unit_id = (unit_id = parseInt(jQuery(this).attr('unit_id'))) ? unit_id : parseInt(jQuery(this).parent().attr('unit_id'));
+  mode = jQuery(this).attr('mode');
+  switch(jQuery(this).attr('go'))
+  {
+    case 'info': page = 'infos'; break;
+    // case 'galaxy': page = 'galaxy'; break;
+    case 'flying': page = 'flying_fleets'; break;
+    case 'fleet': page = 'fleet'; break;
+    case 'build': page = 'buildings'; break;
+    default: page = 'overview';
+  }
+  document.location = page + '.php?' + (planet_id ? 'cp=' + planet_id + (mode ? '&' : '') : '')
+    + (mode ? 'mode=' + mode : '')
+    + (unit_id ? 'gid=' + unit_id + (typeof ALLY_ID !== 'undefined' && parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : ''): '')
+  ;
 });
 
 jQuery(document).on('click', ".gather_resources", function(){
   that = $(this);
-  document.location = 'fleet.php?fleet_page=5' + (parseInt(PLANET_ID) ? '&cp=' + parseInt(PLANET_ID) : '')
+  document.location = 'fleet.php?fleet_page=5' + (typeof PLANET_ID !== 'undefined' && parseInt(PLANET_ID) ? '&cp=' + parseInt(PLANET_ID) : '')
     + (parseFloat(that.attr('metal')) ? '&metal=' + parseFloat(that.attr('metal')) : '')
     + (parseFloat(that.attr('crystal')) ? '&crystal=' + parseFloat(that.attr('crystal')) : '')
     + (parseFloat(that.attr('deuterium')) ? '&deuterium=' + parseFloat(that.attr('deuterium')) : '')
   ;
 
-  onclick="document.location='fleet.php?fleet_page=5&cp={planet.ID}&re=0&metal={production.METAL_REST_NUM}&crystal={production.CRYSTAL_REST_NUM}&deuterium={production.DEUTERIUM_REST_NUM}'"
+  // onclick="document.location='fleet.php?fleet_page=5&cp={planet.ID}&re=0&metal={production.METAL_REST_NUM}&crystal={production.CRYSTAL_REST_NUM}&deuterium={production.DEUTERIUM_REST_NUM}'"
 });
+
+/*
+ jQuery(document).on('click', "[go_fleet]", function(){
+ document.location = 'fleet.php?cp=' + jQuery(this).attr('go_fleet') + (jQuery(this).attr('mode') ? '&fleet_page=' + jQuery(this).attr('mode'): '');
+ });
+
+ jQuery(document).on('click', "[go_overview]", function(){
+  planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
+  document.location = 'overview.php?' + (planet_id ? 'cp=' + planet_id + '&' : '') + (jQuery(this).attr('go_overview') ? 'mode=' + jQuery(this).attr('go_overview'): '');
+});
+
+jQuery(document).on('click', "[go_build]", function(){
+  planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
+  document.location = 'buildings.php?' + (planet_id ? 'cp=' + planet_id + '&' : '') + (jQuery(this).attr('go_build') ? 'mode=' + jQuery(this).attr('go_build'): '');
+});
+jQuery(document).on('click', ".show_unit_info", function(){
+  unit_id = (unit_id = parseInt(jQuery(this).attr('unit_id'))) ? unit_id : parseInt(jQuery(this).parent().attr('unit_id'));
+  document.location = 'infos.php?gid=' + unit_id + (typeof ALLY_ID !== 'undefined' && parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : '');
+//  document.location = 'infos.php?gid=' + jQuery(this).parent().attr('unit_id') + (parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : '');
+});
+ */

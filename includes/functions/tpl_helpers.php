@@ -196,6 +196,8 @@ function tpl_parse_planet($planet)
 
   $que = que_get($planet['id_owner'], $planet['id'], false);
 
+  $structure_que = tpl_parse_planet_que($que, $planet, QUE_STRUCTURES); // TODO Заменить на que_tpl_parse_element($que_element);
+  $structure_que_first = is_array($structure_que['que']) ? reset($structure_que['que']) : array();
   $hangar_que = tpl_parse_planet_que($que, $planet, SUBQUE_FLEET); // TODO Заменить на que_tpl_parse_element($que_element);
   $hangar_que_first = is_array($hangar_que['que']) ? reset($hangar_que['que']) : array();
   $defense_que = tpl_parse_planet_que($que, $planet, SUBQUE_DEFENSE); // TODO Заменить на que_tpl_parse_element($que_element);
@@ -215,6 +217,8 @@ function tpl_parse_planet($planet)
     'METAL_PERCENT'     => $planet['metal_mine_porcent'] * 10,
     'CRYSTAL_PERCENT'   => $planet['crystal_mine_porcent'] * 10,
     'DEUTERIUM_PERCENT' => $planet['deuterium_sintetizer_porcent'] * 10,
+
+    'STRUCTURE' => isset($structure_que_first['id']) ? $lang['tech'][$structure_que_first['id']] : '',
 
     // 'HANGAR'        => isset($hangar_que['que'][0]['id']) ? $lang['tech'][$hangar_que['que'][0]['id']] : '',
     'HANGAR'        => isset($hangar_que_first['id']) ? $lang['tech'][$hangar_que_first['id']] : '',

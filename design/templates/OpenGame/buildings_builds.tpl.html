@@ -233,7 +233,7 @@ var que_id = '{QUE_ID}';
 
               <!-- IF production.BUILD_RESULT != 0 -->
                 <span class="a75 unit_image">
-                  <span class="restrict">{production.BUILD_RESULT_TEXT}</span>
+                  <div class="restrict">{production.BUILD_RESULT_TEXT}</div>
                 </span>
               <!-- ENDIF -->
 
@@ -247,8 +247,8 @@ var que_id = '{QUE_ID}';
               </span>
               <!-- ENDIF -->
 
-              <span class="a75 left_bottom show_unit_info">
-                <div class="icons icon-info"></div>
+              <span class="a75 left_bottom" go="info">
+                <div class="icons icon-info_empire"></div>
               </span>
             </div>
           </td>
