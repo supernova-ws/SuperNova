@@ -380,6 +380,6 @@ if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TI
 
 if(!($skip_fleet_update || $supernova->options['fleet_update_skip']) && $time_now - $config->flt_lastUpdate >= 4)
 {
-  require_once("includes/flt_flying_fleet_handler2.php");
+  require_once(SN_ROOT_PHYSICAL . "includes/includes/flt_flying_fleet_handler2" . DOT_PHP_EX);
   flt_flying_fleet_handler($config, $skip_fleet_update);
 }

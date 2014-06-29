@@ -257,23 +257,23 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 
 // TODO: Грузить только используемые модули из $missions_used
   $mission_files = array(
-    MT_ATTACK => 'flt_mission_attack.php',
-    MT_AKS => 'flt_mission_attack.php',
+    MT_ATTACK => 'flt_mission_attack',
+    MT_AKS => 'flt_mission_attack',
     // MT_DESTROY => 'flt_mission_destroy.php',
-    MT_DESTROY => 'flt_mission_attack.php',
+    MT_DESTROY => 'flt_mission_attack',
 
-    MT_TRANSPORT => 'flt_mission_transport.php',
-    MT_RELOCATE => 'flt_mission_relocate.php',
-    MT_HOLD => 'flt_mission_hold.php',
-    MT_SPY => 'flt_mission_spy.php',
-    MT_COLONIZE => 'flt_mission_colonize.php',
-    MT_RECYCLE => 'flt_mission_recycle.php',
+    MT_TRANSPORT => 'flt_mission_transport',
+    MT_RELOCATE => 'flt_mission_relocate',
+    MT_HOLD => 'flt_mission_hold',
+    MT_SPY => 'flt_mission_spy',
+    MT_COLONIZE => 'flt_mission_colonize',
+    MT_RECYCLE => 'flt_mission_recycle',
 //    MT_MISSILE => 'flt_mission_missile.php',
-    MT_EXPLORE => 'flt_mission_explore.php',
+    MT_EXPLORE => 'flt_mission_explore',
   );
   foreach($missions_used as $mission_id => $cork)
   {
-    require_once("includes/includes/{$mission_files[$mission_id]}");
+    require_once(SN_ROOT_PHYSICAL . "includes/includes/{$mission_files[$mission_id]}" . DOT_PHP_EX);
   }
 
 
