@@ -34,8 +34,7 @@ if($ally_tag)
     `ranklist` = '{$lang['ali_defaultRankName']},0,0,0,0,0',
     `ally_register_time`= {$time_now}"
   );
-  // $ally_id = mysql_insert_id();
-  $ally_id = is_array($ally) ? $ally['id'] : 'NULL';
+  $ally_id = mysql_insert_id();
   db_user_set_by_id($user['id'], "`ally_tag` = '{$ally_tag}', `ally_id`= {$ally_id}, `ally_name`='{$ally_name}', `ally_register_time`= {$time_now}");
 
   $ally_user = classSupernova::db_ins_record(LOC_USER, "`username` = '[{$ally_tag}]', `register_time` = {$time_now}, `user_as_ally` = {$ally_id}");
