@@ -45,7 +45,7 @@ function scheduler_process()
   {
     if(SN_TIME_NOW >= $config->var_stat_update_end)
     {
-      $config->db_saveItem('var_stat_update_end', SN_TIME_NOW + 120);
+      $config->db_saveItem('var_stat_update_end', SN_TIME_NOW + 600);
       $config->db_saveItem('var_stat_update_msg', 'Update started');
 
       if($is_admin_request)

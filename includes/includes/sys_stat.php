@@ -44,7 +44,7 @@ function sta_set_time_limit($sta_update_msg = 'updating something', $next_step =
   {
     $sta_update_step++;
   }
-  $sta_update_msg = "Update in progress. Step {$sta_update_step}/13: {$sta_update_msg}.";
+  $sta_update_msg = "Update in progress. Step {$sta_update_step}/14: {$sta_update_msg}.";
 
   $config->db_saveItem('var_stat_update_msg', $sta_update_msg);
   if($next_step)
@@ -69,6 +69,7 @@ function sys_stat_calculate_flush(&$data, $force = false)
 
 function sys_stat_calculate()
 {
+  ini_set('memory_limit', '256M');
   global $config, $time_now, $sta_update_step;
 
   $user_skip_list = sys_stat_get_user_skip_list();
@@ -206,10 +207,10 @@ function sys_stat_calculate()
     $user_points = array_sum($points[$user_id]);
     $user_counts = array_sum($counts[$user_id]);
 
-    $data[] = "({$user_id},{$ally_id},1,1,'{$points[$user_id][UNIT_TECHNOLOGIES]}','{$counts[$user_id][UNIT_TECHNOLOGIES]}',
-      '{$points[$user_id][UNIT_STRUCTURES]}','{$counts[$user_id][UNIT_STRUCTURES]}','{$user_defence_points}','{$user_defence_counts}',
-      '{$points[$user_id][UNIT_SHIPS]}','{$counts[$user_id][UNIT_SHIPS]}','{$points[$user_id][UNIT_RESOURCES]}','{$counts[$user_id][UNIT_RESOURCES]}',
-      {$user_points},{$user_counts},{$time_now})";
+    $data[] = "({$user_id},{$ally_id},1,1,'{$points[$user_id][UNIT_TECHNOLOGIES]}','{$counts[$user_id][UNIT_TECHNOLOGIES]}'," .
+      "'{$points[$user_id][UNIT_STRUCTURES]}','{$counts[$user_id][UNIT_STRUCTURES]}','{$user_defence_points}','{$user_defence_counts}'," .
+      "'{$points[$user_id][UNIT_SHIPS]}','{$counts[$user_id][UNIT_SHIPS]}','{$points[$user_id][UNIT_RESOURCES]}','{$counts[$user_id][UNIT_RESOURCES]}'," .
+      "{$user_points},{$user_counts},{$time_now})";
 
     sys_stat_calculate_flush($data);
   }
