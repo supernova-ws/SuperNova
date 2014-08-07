@@ -7,9 +7,9 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }
 
-$ally_tag_raw = sys_get_param_str_raw('tag');
+$ally_tag_raw = sys_get_param_str_unsafe('tag');
 $ally_tag     = mysql_real_escape_string($ally_tag_raw);
-$ally_name_raw = sys_get_param_str_raw('name');
+$ally_name_raw = sys_get_param_str_unsafe('name');
 $ally_name     = mysql_real_escape_string($ally_name_raw);
 
 if($ally_tag)

@@ -2,9 +2,7 @@
 
 require('../includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
-$user = sn_autologin();
-
-if ($user['authlevel'] < 3)
+if($user['authlevel'] < 3)
 {
   message($lang['sys_noalloaw'], $lang['sys_noaccess']);
   die();

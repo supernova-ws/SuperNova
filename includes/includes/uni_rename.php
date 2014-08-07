@@ -36,13 +36,13 @@
         throw new exception($lang['uni_msg_error_no_dm'], ERR_ERROR);
       }
 
-      if(!rpg_points_change($user['id'], RPG_RENAME, -$uni_price, "Renaming [{$uni_galaxy}:{$uni_system}] to " . sys_get_param_str_raw('uni_name')))
+      if(!rpg_points_change($user['id'], RPG_RENAME, -$uni_price, "Renaming [{$uni_galaxy}:{$uni_system}] to " . sys_get_param_str_unsafe('uni_name')))
       {
         throw new exception($lang['sys_msg_err_update_dm'], ERR_ERROR);
       }
 
       doquery("replace {{universe}} set `universe_galaxy` = {$uni_galaxy}, `universe_system` = {$uni_system}, `universe_name` = '{$uni_row['universe_name']}', `universe_price` = {$uni_row['universe_price']};");
-      $debug->warning(sprintf($lang['uni_msg_admin_rename'], $user['id'], $user['username'], $uni_price, $uni_system ? $lang['uni_system_of'] : $lang['uni_galaxy_of'], $uni_galaxy, $uni_system ? ":{$uni_system}" : '', strip_tags(sys_get_param_str_raw('uni_name'))), $lang['uni_naming'], LOG_INFO_UNI_RENAME);
+      $debug->warning(sprintf($lang['uni_msg_admin_rename'], $user['id'], $user['username'], $uni_price, $uni_system ? $lang['uni_system_of'] : $lang['uni_galaxy_of'], $uni_galaxy, $uni_system ? ":{$uni_system}" : '', strip_tags(sys_get_param_str_unsafe('uni_name'))), $lang['uni_naming'], LOG_INFO_UNI_RENAME);
       sn_db_transaction_commit();
       sys_redirect("galaxy.php?mode=name&galaxy={$uni_galaxy}&system={$uni_system}");
     }

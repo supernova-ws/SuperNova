@@ -232,20 +232,16 @@ function sys_log_hit()
   }
 
   $is_watching = true;
-  $ip = sys_get_user_ip();
-  doquery("INSERT INTO {{counter}} (`time`, `page`, `url`, `user_id`, `ip`, `proxy`) VALUES ('{$time_now}', '{$_SERVER['PHP_SELF']}', '{$_SERVER['REQUEST_URI']}', '{$user['id']}', '{$ip['client']}', '{$ip['proxy']}');");
+  $ip = sec_player_ip();
+  doquery("INSERT INTO {{counter}} (`time`, `page`, `url`, `user_id`, `ip`, `proxy`) VALUES ('{$time_now}', '{$_SERVER['PHP_SELF']}', '{$_SERVER['REQUEST_URI']}', '{$user['id']}', '{$ip['ip']}', '{$ip['proxy_chain']}');");
   $is_watching = false;
 }
 
-// ----------------------------------------------------------------------------------------------------------------
-//
-// Routine pour la gestion du mode vacance
-//
 function sys_user_vacation($user)
 {
   global $time_now, $config;
 
-  if (sys_get_param_str('vacation') == 'leave')
+  if(sys_get_param_str('vacation') == 'leave')
   {
     if ($user['vacation'] < $time_now)
     {
@@ -255,7 +251,7 @@ function sys_user_vacation($user)
     }
   }
 
-  if ($user['vacation'])
+  if($user['vacation'])
   {
     sn_sys_logout(false, true);
 
@@ -304,37 +300,42 @@ function sys_get_param_escaped($param_name, $default = '')
 {
   return mysql_real_escape_string(sys_get_param($param_name, $default));
 }
-
+/*
 function sys_get_param_safe($param_name, $default = '')
 {
   return mysql_real_escape_string(strip_tags(sys_get_param($param_name, $default)));
 }
-
+*/
 function sys_get_param_date_sql($param_name, $default = '2000-01-01')
 {
   $val = sys_get_param($param_name, $default);
   return preg_match(PREG_DATE_SQL_RELAXED, $val) ? $val : $default;
 }
 
-function sys_get_param_str_raw($param_name, $default = '')
+function sys_get_param_str_unsafe($param_name, $default = '')
 {
-  return strip_tags(trim(sys_get_param($param_name, $default)));
+  return str_raw2unsafe(sys_get_param($param_name, $default));
 }
 
 function sys_get_param_str($param_name, $default = '')
 {
-  return mysql_real_escape_string(sys_get_param_str_raw($param_name, $default));
+  return mysql_real_escape_string(sys_get_param_str_unsafe($param_name, $default));
 }
 
 function sys_get_param_str_both($param_name, $default = '')
 {
-  $param = strip_tags(trim(sys_get_param($param_name, $default)));
-  return array('raw' => $param, 'str' => mysql_real_escape_string($param));
+  $param = sys_get_param($param_name, $default);
+  $param_unsafe = str_raw2unsafe($param);
+  return array(
+    'raw' => $param,
+    'unsafe' => $param_unsafe,
+    'safe' => mysql_real_escape_string($param_unsafe),
+  );
 }
 
 function sys_get_param_phone($param_name, $default = '')
 {
-  $phone_raw = sys_get_param_str_raw($param_name, $default = '');
+  $phone_raw = sys_get_param_str_unsafe($param_name, $default = '');
   if($phone_raw)
   {
     $phone = $phone_raw[0] == '+' ? '+' : '';
@@ -959,7 +960,7 @@ function sn_render_player_nick($render_user, $options = false, &$result)
   {
     if($options === true || (isset($options['ally']) && $options['ally']))
     {
-      $result .= $render_user['ally_tag'] ? '[' . trim(strip_tags($render_user['ally_tag'])) . ']' : '';
+      $result .= $render_user['ally_tag'] ? '[' . str_raw2unsafe($render_user['ally_tag']) . ']' : '';
     }
 
     if((isset($options['class']) && $options['class']))
@@ -1449,4 +1450,9 @@ function flt_destroy(&$fleet_row)
   }
 
   return doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1;");
+}
+
+function str_raw2unsafe($raw)
+{
+  return trim(strip_tags($raw));
 }

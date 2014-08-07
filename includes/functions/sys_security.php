@@ -1,11 +1,20 @@
 <?php
 
-function sys_get_user_ip()
+function sn_setcookie($name, $value = null, $expire = null, $path = null, $domain = null, $secure = null, $httponly = null)
 {
+  $_COOKIE[$name] = $value;
+  return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
+}
+
+function sec_player_ip() {
   $ip = array(
-    'proxy' => $_SERVER["HTTP_X_FORWARDED_FOR"] ? ($_SERVER["HTTP_CLIENT_IP"] ? $_SERVER["HTTP_CLIENT_IP"] : $_SERVER["REMOTE_ADDR"]) : '',
-    'client' => $_SERVER["HTTP_X_FORWARDED_FOR"] ? $_SERVER["HTTP_X_FORWARDED_FOR"] : 
-      ($_SERVER["HTTP_CLIENT_IP"] ? $_SERVER["HTTP_CLIENT_IP"] : $_SERVER["REMOTE_ADDR"]),
+    'ip' => $_SERVER["REMOTE_ADDR"],
+    'proxy_chain' => $_SERVER["HTTP_X_FORWARDED_FOR"]
+        ? $_SERVER["HTTP_X_FORWARDED_FOR"]
+        : ($_SERVER["HTTP_CLIENT_IP"]
+          ? $_SERVER["HTTP_CLIENT_IP"]
+          : $_SERVER["REMOTE_ADDR"]
+        ),
   );
 
   return array_map('mysql_real_escape_string', $ip);
@@ -48,165 +57,408 @@ function sn_set_cookie($user, $rememberme)
 
   $md5pass = md5("{$user['password']}--{$config->secret_word}");
   $cookie = "{$user['id']}/%/{$user['username']}/%/{$md5pass}/%/{$rememberme}";
-  return setcookie(SN_COOKIE, $cookie, $expiretime, SN_ROOT_RELATIVE);
+  return sn_setcookie(SN_COOKIE, $cookie, $expiretime, SN_ROOT_RELATIVE);
 }
 
-function sn_sys_cookie_check($cookie)
+function sec_login_username($username_unsafe, $password_raw, $remember_me = 1)
 {
-  global $config;
-
-  list($user_id, $user_name, $user_pass_hash, $user_remember_me) = explode("/%/", $cookie);
-  // $user_name = mysql_real_escape_string($user_name);
-
-  $user_id = intval($user_id);
-  $user = db_user_by_id($user_id, false, '*', true);
-  if(!$user || md5("{$user['password']}--{$config->secret_word}") != $user_pass_hash)
+  // TODO - Логин по старым именам
+  // $status = LOGIN_UNDEFINED;
+  $username_safe = mysql_real_escape_string($username_unsafe);
+  if(!$username_safe)
   {
-    $user = false;
+    $status = LOGIN_ERROR_USERNAME;
+  }
+  elseif(!$password_raw)
+  {
+    $status = LOGIN_ERROR_PASSWORD;
   }
   else
   {
-    $user['user_remember_me'] = $user_remember_me;
-  }
-
-  return $user;
-}
-
-function global_login($abort = true)
-{
-  global $user;
-  // 1. Пробуем автологин по внутрянке
-  // 2. Пробуем автологин по внешним системам
-  $user = sn_autologin($abort && !defined('IN_API')); // Если IN_API - всегда не-аборт
-
-
-
-  // 3. Проверяем - не регистрация ли это
-  // 3.1. Если да - пробуем зарегестрировать
-  // 3.2. Если удачно - полный логин со всеми параметрами
-  // 3.3. Если нет - возврат ошибки и перейти к форме логина
-  // 4. Пробуем штатный логин по нутрянке
-  // 5. Пробуем штатный логин по внешним системам
-  // 6. Ошибка
-}
-
-function sn_autologin($abort = true)
-{
-  global $user_impersonator, $time_now, $lang, $skip_ban_check;
-
-  if(!isset($_COOKIE[SN_COOKIE]))
-  {
-    return false;
-  }
-
-  if($_COOKIE[SN_COOKIE_I])
-  {
-    $user_impersonator = sn_sys_cookie_check($_COOKIE[SN_COOKIE_I]);
-    if(!$user_impersonator || $user_impersonator['authlevel'] < 3)
+    $user = db_user_by_username($username_unsafe);
+    // TODO: try..catch
+    if(empty($user) || (isset($user['user_as_ally']) && $user['user_as_ally']))
     {
-      // TODO: Log here
-      setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-      setcookie(SN_COOKIE_I, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-      sys_redirect(SN_ROOT_RELATIVE);
+      $status = LOGIN_ERROR_USERNAME;
     }
-  }
-
-  if(!$user = sn_sys_cookie_check($_COOKIE[SN_COOKIE]))
-  {
-    setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-    if($user_impersonator)
+    elseif(!$user['password'] || $user['password'] != md5($password_raw))
     {
-      sn_sys_logout();
-    }
-    if($abort)
-    {
-      message($lang['err_cookie']);
-    }
-    return false;
-  }
-
-  sys_user_options_unpack($user);
-  sn_set_cookie($user, $user['user_remember_me']);
-
-  $ip = sys_get_user_ip();
-  $user_agent = mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']);
-  db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW .
-    (!$user_impersonator ? ", `user_lastip` = '{$ip['client']}', `user_proxy`  = '{$ip['proxy']}', `user_agent`  = '{$user_agent}'" : ''));
-
-  if(!$skip_ban_check && $user['banaday'])
-  {
-    if($user['banaday'] > $time_now)
-    {
-      $bantime = date(FMT_DATE_TIME, $user['banaday']);
-      if($abort)
-      {
-        // TODO: Add ban reason. Add vacation time. Add message window
-        sn_sys_logout(false, true);
-        message("{$lang['sys_banned_msg']} {$bantime}", $lang['ban_title']);
-        die("{$lang['sys_banned_msg']} {$bantime}");
-      }
-      else
-      {
-        unset($user);
-      }
+      $status = LOGIN_ERROR_PASSWORD;
     }
     else
     {
-      db_user_set_by_id($user['id'], "`vacation` = '{$time_now}', banaday=0");
+      sec_set_cookie_by_fields($user['id'], $user['username'], $user['password'], $remember_me);
+      $status = LOGIN_SUCCESS;
     }
+  }
+  // Это можно раскомментить для большей безопасности - что бы не подбирали пароли
+  // $status = $status == LOGIN_ERROR_PASSWORD ? LOGIN_ERROR_USERNAME : $status;
+
+  return $status;
+}
+
+
+
+
+
+
+
+
+
+function sec_restore_password_send_email($email_unsafe) {
+  global $lang, $config;
+
+  try {
+    $user_id = db_user_by_email($email_unsafe, false, false, 'id, authlevel');
+    if(!isset($user_id['id']) || !$user_id['id']) {
+      throw new exception(PASSWORD_RESTORE_ERROR_WRONG_EMAIL);
+    }
+
+    if($user_id['authlevel']) {
+      throw new exception(PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT);
+    }
+
+
+    // TODO - уникальный индекс по id_user и type - и делать не INSERT, а REPLACE
+    $last_confirm = doquery("SELECT *, UNIX_TIMESTAMP(`create_time`) as `unix_time` FROM {{confirmations}} WHERE `id_user`= '{$user_id['id']}' AND `type` = " . CONFIRM_PASSWORD_RESET . " LIMIT 1;", true);
+    if(isset($last_confirm['unix_time']) && SN_TIME_NOW - $last_confirm['unix_time'] < PERIOD_HOUR) {
+      throw new exception(PASSWORD_RESTORE_ERROR_TOO_OFTEN);
+    }
+    doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$last_confirm['id']}' LIMIT 1;");
+
+    do {
+      $confirm_code = sys_random_string(4, SN_SYS_SEC_CHARS_CONFIRMATION);
+      $confirm_code_safe = mysql_real_escape_string($confirm_code);
+      $query = doquery("SELECT count(*) FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}'", true);
+    } while(!$query);
+    $email_safe = mysql_real_escape_string($email_unsafe);
+    doquery("INSERT INTO {{confirmations}} SET `id_user`= '{$user_id['id']}', `type` = " . CONFIRM_PASSWORD_RESET . ", `code` = '{$confirm_code}', `email` = '{$email_safe}';");
+
+    @$result = mymail($email_unsafe, sprintf($lang['log_lost_email_title'], $config->game_name), sprintf($lang['log_lost_email_code'], SN_ROOT_VIRTUAL . $_SERVER['PHP_SELF'], $confirm_code, date(FMT_DATE_TIME, SN_TIME_NOW + 3*24*60*60), $config->game_name));
+
+    $result = $result ? PASSWORD_RESTORE_SUCCESS_CODE_SENT : PASSWORD_RESTORE_ERROR_SENDING;
+  } catch(exception $e) {
+     $result = $e->getMessage();
+  }
+
+  return $result;
+}
+
+
+function sec_restore_password_confirm($confirm_safe, &$result) {
+  global $lang, $config;
+
+  try {
+    $last_confirm = doquery("SELECT *, UNIX_TIMESTAMP(`create_time`) as `unix_time` FROM {{confirmations}} WHERE `code` = '{$confirm_safe}' LIMIT 1;", true);
+    if(!isset($last_confirm['id'])) {
+      throw new exception(PASSWORD_RESTORE_ERROR_CODE_WRONG);
+    }
+
+    if(SN_TIME_NOW - $last_confirm['unix_time'] > PERIOD_DAY) {
+      throw new exception(PASSWORD_RESTORE_ERROR_CODE_TOO_OLD);
+    }
+
+
+    $new_password = sys_random_string(8, SN_SYS_SEC_CHARS_CONFIRMATION);
+    $md5 = md5($new_password);
+    if(!db_user_set_by_id($last_confirm['id_user'], "`password` = '{$md5}'")) {
+      throw new exception(PASSWORD_RESTORE_ERROR_CHANGE);
+    }
+
+    doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$last_confirm['id_user']}' LIMIT 1;");
+
+    $message = sprintf($lang['log_lost_email_pass'], $config->game_name, $new_password);
+    @$operation_result = mymail($last_confirm['email'], sprintf($lang['log_lost_email_title'], $config->game_name), htmlspecialchars($message));
+    $message = sys_bbcodeParse($message) . '<br><br>';
+
+    $result[F_PASSWORD_NEW] = $new_password;
+    $result[F_LOGIN_STATUS] = $operation_result ? PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT : PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR;
+    $result[F_LOGIN_MESSAGE] = $message . $operation_result ? $lang['log_lost_sent_pass'] : $lang['log_lost_err_sending'];
+    /*
+    message($message, $lang['log_lost_header']);
+
+
+
+    if($last_confirm['id'] && ($time_now - $last_confirm['unix_time'] <= 3*24*60*60)) {
+
+      $user_data = db_user_by_id($last_confirm['id_user']);
+      if(!$user_data['id']) {
+        message($lang['log_lost_err_code'], $lang['sys_error']);
+      }
+
+      if($user_data['authlevel']) {
+        message($lang['log_lost_err_admin'], $lang['sys_error']);
+      }
+
+
+    }
+    else {
+      message($lang['log_lost_err_code'], $lang['sys_error']);
+    }
+    */
+  } catch(exception $e) {
+    $result[F_LOGIN_STATUS] = $e->getMessage();
+  }
+}
+
+
+// once OK
+function sec_login()
+{
+  $result = array(
+    F_LOGIN_STATUS => LOGIN_UNDEFINED,
+    F_LOGIN_MESSAGE => '',
+    F_LOGIN_USER => array(),
+    AUTH_LEVEL => AUTH_LEVEL_ANONYMOUS,
+    F_BANNED_STATUS => 0,
+    F_VACATION_STATUS => 0,
+    F_PASSWORD_NEW => '',
+  );
+
+  $username_unsafe = sys_get_param_str_unsafe('username');
+  $password_raw = sys_get_param('password');
+//  pdump($username_unsafe);
+//  pdump($password_raw);
+
+  // Проверяем регу
+  if(sys_get_param('register')) {
+    $result[F_LOGIN_STATUS] = sec_login_register($username_unsafe, $password_raw, sys_get_param_int('rememberme'));
+  }
+
+  // Если есть в параметрах логин и пароль...
+//  if($username_unsafe && $password_raw) {
+//    }
+
+  if(sys_get_param('login') && in_array($result['status'], array(LOGIN_UNDEFINED, REGISTER_SUCCESS))) {
+    $result[F_LOGIN_STATUS] = sec_login_username($username_unsafe, $password_raw, sys_get_param_int('rememberme'));
+  } elseif(sys_get_param('confirm_code_send') && $email_unsafe = sys_get_param_str_unsafe('email')) {
+    // TODO - test
+    $result[F_LOGIN_STATUS] = sec_restore_password_send_email($email_unsafe);
+  } elseif(sys_get_param('confirm_code_submit') && $confirm_safe = sys_get_param_str('confirm')) {
+    // TODO - test
+    sec_restore_password_confirm($confirm_safe, $result);
+  }
+  // Тут всякие логины по внешним плагинам
+//pdump($result, 'security');
+  // В этой точке должен быть установлена кука СН - логинимся по ней
+  if(in_array($result['status'], array(LOGIN_UNDEFINED, REGISTER_SUCCESS))) {
+    sec_login_cookie($result);
+  }
+
+  // TODO -          ЗАМЕНИТЬ F_LOGIN_MESSAGE       на сообщения по   F_LOGIN_STATUS
+
+  return $result;
+}
+
+// once OK
+function sec_login_cookie(&$result) {
+  global $user_impersonator;
+
+  // Проверяем куку имперсонатора на доступ
+  if($_COOKIE[SN_COOKIE_I]) {
+    $user_impersonator = sec_user_by_cookie($_COOKIE[SN_COOKIE_I]);
+    if(empty($user_impersonator) || $user_impersonator['authlevel'] < 3) {
+      sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+      sn_setcookie(SN_COOKIE_I, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+    }
+  }
+
+  $result[F_LOGIN_USER] = array();
+  // Пытаемся войти по куке
+  if(!isset($_COOKIE[SN_COOKIE]) || !$_COOKIE[SN_COOKIE]) {
+    // Ошибка кукеса или не найден пользователь по кукесу
+    sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+    if(!empty($user_impersonator)) {
+      // Если это был корректный имперсонатор - просто выходим и редиректимся в админку
+      sn_sys_logout();
+    }
+  } else {
+    $result[F_LOGIN_USER] = sec_user_by_cookie($_COOKIE[SN_COOKIE]);
+    if(empty($result[F_LOGIN_USER]))
+    {
+      $result[F_LOGIN_STATUS] = LOGIN_UNDEFINED;
+    }
+    else
+    {
+      $result[AUTH_LEVEL] = $result[F_LOGIN_USER]['authlevel'];
+      sec_login_process($result);
+    }
+  }
+}
+
+// once OK
+function sec_login_process(&$result)
+{
+  global $user_impersonator;
+
+  $user = &$result[F_LOGIN_USER];
+  sys_user_options_unpack($user);
+
+  if($user['banaday'] && $user['banaday'] <= SN_TIME_NOW)
+  {
+    $user['banaday'] = 0;
+    $user['vacation'] = SN_TIME_NOW;
+  }
+
+  $ip = sec_player_ip();
+  $user['user_lastip'] = $ip['ip'];
+  $user['user_proxy'] = $ip['proxy_chain'];
+
+  $user['user_agent'] = mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']);
+  $result[F_BANNED_STATUS] = $user['banaday'];
+  $result[F_VACATION_STATUS] = $user['vacation'];
+
+  if(!$user_impersonator) {
+    db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW . ", `banaday` = {$user['banaday']}, `vacation` = {$user['vacation']},
+      `user_lastip` = '{$user['user_lastip']}', `user_proxy`  = '{$user['user_proxy']}', `user_agent`  = '{$user['user_agent']}'"
+    );
+  }
+}
+
+// once OK
+function sec_login_register($username_unsafe, $password_raw, $remember_me = 1) {
+  global $lang, $config;
+
+  sn_db_transaction_start();
+  try {
+    if(!$username_unsafe) {
+      throw new exception(REGISTER_ERROR_USERNAME_WRONG, ERR_ERROR);
+    }
+
+    $username_safe = mysql_real_escape_string($username_unsafe);
+    $db_check = doquery("SELECT `player_id` FROM {{player_name_history}} WHERE `player_name` = '{$username_safe}' LIMIT 1;", true);
+    if(!empty($db_check)) {
+      throw new exception(REGISTER_ERROR_USERNAME_EXISTS, ERR_ERROR);
+    }
+
+    if(strlen(trim($password_raw)) < 4 || strlen(trim($password_raw)) <> strlen($password_raw)) {
+      throw new exception(REGISTER_ERROR_PASSWORD_INSECURE, ERR_ERROR);
+    }
+    $password_raw = trim($password_raw);
+
+    $password_repeat_raw = trim(sys_get_param('password_repeat'));
+    if($password_raw <> $password_repeat_raw) {
+      throw new exception(REGISTER_ERROR_PASSWORD_DIFFERENT, ERR_ERROR);
+    }
+
+    $email = sys_get_param_str('email');
+    if(db_user_by_email($email, true)) {
+      throw new exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
+    }
+
+    $md5pass = md5($password_raw);
+    $language = sys_get_param_str('lang', DEFAULT_LANG);
+    $skin = DEFAULT_SKINPATH;
+    // `id_planet` = 0, `sex` = '{$sex}', `design` = '1',
+    classSupernova::db_ins_record(LOC_USER, "`email` = '{$email}', `email_2` = '{$email}', `username` = '{$username_safe}', `dpath` = '{$skin}',
+      `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ", `password` = '{$md5pass}',
+      `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';");
+
+    $user['id'] = mysql_insert_id();
+    doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = \"{$username_safe}\"");
+
+    if($id_ref = sys_get_param_int('id_ref'))
+    {
+      $referral_row = db_user_by_id($id_ref, true);
+      if($referral_row)
+      {
+        doquery("INSERT INTO {{referrals}} SET `id` = {$user['id']}, `id_partner` = {$id_ref}");
+      }
+    }
+
+    $galaxy = $config->LastSettedGalaxyPos;
+    $system = $config->LastSettedSystemPos;
+    $segment_size = floor($config->game_maxPlanet / 3);
+    $segment = floor($config->LastSettedPlanetPos / $segment_size);
+    $segment++;
+    $planet = mt_rand(1 + $segment * $segment_size, ($segment + 1) * $segment_size);
+
+    $new_planet_id = 0;
+    while(true) {
+      if($planet > $config->game_maxPlanet) {
+        $planet = mt_rand(0, $segment_size - 1) + 1;
+        $system++;
+      }
+      if($system > $config->game_maxSystem) {
+        $system = 1;
+        $galaxy++;
+      }
+      $galaxy = $galaxy > $config->game_maxGalaxy ? 1 : $galaxy;
+
+      $galaxy_row = db_planet_by_gspt($galaxy, $system, $planet, PT_PLANET, true, 'id');
+      if(!$galaxy_row['id']) {
+        $config->db_saveItem(array(
+          'LastSettedGalaxyPos' => $galaxy,
+          'LastSettedSystemPos' => $system,
+          'LastSettedPlanetPos' => $planet
+        ));
+        $new_planet_id = uni_create_planet($galaxy, $system, $planet, $user['id'], $username_unsafe . ' ' . $lang['sys_capital'], true);
+        break;
+      }
+      $planet += 3;
+    }
+
+    sys_player_new_adjust($user['id'], $new_planet_id);
+
+    db_user_set_by_id($user['id'], "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}', `galaxy` = '{$galaxy}', `system` = '{$system}', `planet` = '{$planet}'");
+
+    $config->db_saveItem('users_amount', $config->users_amount + 1);
+
+    sn_db_transaction_commit();
+
+    sec_set_cookie_by_fields($user['id'], $username_unsafe, $md5pass, $remember_me);
+
+    $result = REGISTER_SUCCESS;
+  } catch(exception $e) {
+    sn_db_transaction_rollback();
+    $result = $e->getMessage();
+  }
+
+  return $result;
+}
+
+// twice OK
+function sec_set_cookie_by_fields($user_id, $username_unsafe, $password_hash, $remember_me)
+{
+  global $config;
+
+  $expire_time = ($remember_me = intval($remember_me)) ? SN_TIME_NOW + PERIOD_YEAR : 0;
+
+  $md5pass = md5("{$password_hash}--{$config->secret_word}");
+  $cookie = "{$user_id}/%/{$username_unsafe}/%/{$md5pass}/%/{$remember_me}";
+
+  return sn_setcookie(SN_COOKIE, $cookie, $expire_time, SN_ROOT_RELATIVE);
+}
+
+// 2 OK
+// 2 deprecated SN_AUTOLOGIN
+function sec_user_by_cookie($cookie) {
+  global $config;
+
+  list($user_id_unsafe, $user_name, $password_hash_salted, $user_remember_me) = explode("/%/", $cookie);
+
+  $user = db_user_by_id($user_id_unsafe, false, '*', true);
+  if(!empty($user) && md5("{$user['password']}--{$config->secret_word}") == $password_hash_salted) {
+    $user['user_remember_me'] = $user_remember_me;
+  } else {
+    $user = false;
   }
 
   return $user;
 }
 
-function sn_login($username, $password, $remember_me = 1)
-{
-  global $lang;
 
-  $login = array();
-  $username_safe = mysql_real_escape_string($username);
-  if(!$username_safe || !$password)
-  {
-    $status = LOGIN_ERROR_USERNAME;
-    $error_msg = $lang['Login_FailUser'];
-  }
-  else
-  {
-    $login = db_user_by_username($username);
-    {
-      // TODO: try..catch
-      if(!is_array($login) || (isset($login['user_as_ally']) && $login['user_as_ally']))
-      {
-        $status = LOGIN_ERROR_USERNAME;
-        $error_msg = $lang['Login_FailUser'];
-        $login = array();
-      }
-      elseif(!$login['password'] || $login['password'] != md5($password))
-      {
-        $status = LOGIN_ERROR_PASSWORD;
-        $error_msg = $lang['Login_FailPassword'];
-        $login = array();
-      }
-      else
-      {
-        sys_user_options_unpack($login);
-        sn_set_cookie($login, $remember_me);
-        $status = LOGIN_SUCCESS;
-        $error_msg = '';
-        // break;
-      }
-    }
 
-    if(empty($login))
-    {
-      $status = LOGIN_ERROR_USERNAME;
-      $error_msg = $lang['Login_FailUser'];
-      $login = array();
-    }
-  }
 
-  return array('status' => $status, 'error_msg' => $error_msg, 'user_row' => $login);
-}
+
+
+
+
+
+
+
+
+
 
 function sys_is_multiaccount($user1, $user2)
 {
@@ -231,7 +483,7 @@ function sn_sys_impersonate($user_selected)
     die('You can\'t impersonate - too low level');
   }
 
-  setcookie(SN_COOKIE_I, $_COOKIE[SN_COOKIE], 0, SN_ROOT_RELATIVE);
+  sn_setcookie(SN_COOKIE_I, $_COOKIE[SN_COOKIE], 0, SN_ROOT_RELATIVE);
   sn_set_cookie($user_selected, 0);
   sys_redirect(SN_ROOT_RELATIVE);
 }
@@ -246,7 +498,7 @@ function sn_sys_impersonate($user_selected)
 //
 function sn_sys_logout($redirect = true, $only_impersonator = false)
 {
-  global $user_impersonator, $config;
+  global $user_impersonator;
 
   if($only_impersonator && !$user_impersonator)
   {
@@ -260,10 +512,10 @@ function sn_sys_logout($redirect = true, $only_impersonator = false)
   }
   else
   {
-    setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+    sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
   }
 
-  setcookie(SN_COOKIE_I, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+  sn_setcookie(SN_COOKIE_I, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
 
   if($redirect === true)
   {
@@ -274,13 +526,6 @@ function sn_sys_logout($redirect = true, $only_impersonator = false)
     sys_redirect($redirect);
   }
 }
-
-/**
- * DeleteSelectedUser.php
- *
- * @version 1.0
- * @copyright 2008 By Chlorel for XNova
- */
 
 function DeleteSelectedUser ( $UserID )
 {

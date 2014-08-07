@@ -1,13 +1,10 @@
 /* Login and Registration screens */
-@media only screen
-and (min-device-width : 320px)
-and (max-device-width : 480px) {
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
   /* Styles */
 }
 
 /* Smartphones (landscape) ----------- */
-@media only screen
-and (min-width : 321px) {
+@media only screen and (min-width : 321px) {
   /* Styles */
 }
 
@@ -15,6 +12,10 @@ and (min-width : 321px) {
 @media only screen
 and (max-width : 320px) {
   /* Styles */
+  body
+  {
+    background-image: none;
+  }
 }
 
 /* iPads (portrait and landscape) ----------- */
@@ -22,6 +23,10 @@ and (max-width : 320px) {
 and (min-device-width : 768px)
 and (max-device-width : 1024px) {
   /* Styles */
+  body
+  {
+    background-image: none;
+  }
 }
 
 /* iPads (landscape) ----------- */
@@ -30,6 +35,10 @@ and (min-device-width : 768px)
 and (max-device-width : 1024px)
 and (orientation : landscape) {
   /* Styles */
+  body
+  {
+    background-image: none;
+  }
 }
 
 /* iPads (portrait) ----------- */
@@ -38,6 +47,20 @@ and (min-device-width : 768px)
 and (max-device-width : 1024px)
 and (orientation : portrait) {
   /* Styles */
+  body
+  {
+    background-image: none;
+  }
+}
+
+/* Desktops and laptops medium-res */
+@media only screen
+and (min-width : 760px) {
+  /* Styles */
+  body
+  {
+      background-image: none;
+  }
 }
 
 /* Desktops and laptops ----------- */
@@ -71,8 +94,9 @@ only screen and (min-device-pixel-ratio : 1.5) {
 
 @media screen
 {
-  body 
+  body, form, table, input, select
   {
+    font-size: 13px;
   }
 
   #log_skipper
@@ -82,7 +106,7 @@ only screen and (min-device-pixel-ratio : 1.5) {
 
   #log_title
   {
-    font-size: 20px;
+    font-size: 200%;
   }
 
   #log_description
@@ -95,44 +119,54 @@ only screen and (min-device-pixel-ratio : 1.5) {
   }
 
   #log_menu {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px 0;
   }
 }
 
 body {
-    text-align: center;
-    font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
 }
+
+#login_menu .menu_line a {
+  color: #e6ebfb;
+}
+
 
 #log_main, #copyright
 {
-  position: relative;
   background-repeat: no-repeat;
+
+  position: relative;
   border:1px solid #FFFFFF;
-
-  color:  #b1daf2;
-
-  background-color     : #000000;
 
   width: 450px;
   margin: auto;
 
-  filter               : alpha(opacity=70);
-  -moz-opacity         : 0.7;
-  -khtml-opacity       : 0.7;
-  opacity              : 0.7;
+  filter               : alpha(opacity=90);
+  -moz-opacity         : 0.9;
+  -khtml-opacity       : 0.9;
+  opacity              : 0.9;
+}
+
+#log_main {
+  color: #e6ebfb;
+  background-color : #000000;
 }
 
 #copyright, #copyright #supernova_ws
 {
-  font-weight: bold;
+  padding: 0;
 
   color: #0a1c25;
-  text-align: center;
-
   background-color     : #FFFFFF;
+
+  font-size: 10px;
+  font-weight: bold;
+
 }
+
+/*
 
 #log_status, #log_title
 {
@@ -157,8 +191,8 @@ body {
 }
 
 #log_register {
-               font-family:Arial, Helvetica, sans-serif;
-  font-size: 16px;
+  font-family:Arial, Helvetica, sans-serif;
+  font-size: 160%;
 
   padding: 0.3em;
   text-align: center;
@@ -193,10 +227,10 @@ body {
   border:1px solid #000000;
   background:#ffffff url(../design/images/bg_login.png) repeat-x;
   color: #000000;
-  font-size:10px;
   width: 100%;
-  left: 0px;
+  left: 0;
 }
+
 
 #log_menu {
   border-top: solid 1px;
@@ -204,4 +238,58 @@ body {
 
 #page_body {
   margin: 0;
+}
+*/
+
+#log_error {
+  font-size: 160%;
+  color: red;
+}
+
+#login_container {
+  width: 430px;
+  font-size: 13px;
+  display: none;
+  margin-top: 10px;
+}
+
+#login_container .ui-tabs-nav {
+/*  height: 2.35em;*/
+  text-align: center;
+}
+
+#login_container .ui-tabs-nav li {
+/*  width:32%;*/
+}
+
+#login_container .ui-tabs-nav li a {
+/*
+ display: inline-block;
+ float: none;
+ width: 100%;
+ padding: 5px 0;
+ top: 0px;
+ margin: 0em;
+*/
+}
+
+
+#login_container ol li.ui-tabs-selected a {
+/*  background: #344566 url("../../skins/EpicBlue/images/ui-bg_highlight-hard_75_344566_1x100.png") repeat-x 50% 50%;*/
+/*  background: #344566 url("../../skins/EpicBlue/images/ui-bg_inset-soft_95_13233e_1x100.png") repeat-x 50% 50%;*/
+  background: #344566 url("images/ui-bg_inset-soft_95_13233e_1x100.png") repeat-x 50% 50%;
+}
+
+#login_menu {
+  padding: 10px 0;
+  border-top: 1px solid white;
+}
+
+.menu_line :not(:last-child):after
+{
+  content: ' :: ';
+}
+
+.password_show {
+  width: 130px;
 }

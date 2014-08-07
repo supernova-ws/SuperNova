@@ -370,7 +370,7 @@ $sn_menu = array(
   'menu_documentation' => array(
     'TYPE'  => 'lang',
     'ITEM'  => 'sys_game_documentation',
-    'LINK'  => 'docs/readme.txt',
+    'LINK'  => 'docs/html/readme.html',
     'BLANK' => true,
     'ICON'  => true,
   ),

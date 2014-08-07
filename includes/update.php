@@ -23,12 +23,15 @@
 
 if(!defined('INIT'))
 {
-  include_once('init.php');
+//  include_once('init.php');
+  die('Unauthorized access');
 }
 
 define('IN_UPDATE', true);
 
 require('includes/upd_helpers.php');
+
+global $sn_cache, $new_version, $db_prefix, $time_now, $config, $db_name, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_foreigns;
 
 $config->reset();
 $config->db_loadAll();
@@ -40,15 +43,16 @@ if($config->db_version == DB_VERSION)
 }
 elseif($config->db_version > DB_VERSION)
 {
-  global $config, $time_now;
-
   $config->db_saveItem('var_db_update_end', $time_now);
-  die('Internal error! Auotupdater detects DB version greater then can be handled!<br>Possible you have out-of-date SuperNova version<br>Pleas upgrade your server from <a href="http://github.com/supernova-ws/SuperNova">GIT repository</a>.');
+  die(
+    'Internal error! Auotupdater detects DB version greater then can be handled!<br />
+    Possible you have out-of-date SuperNova version<br />
+    Please upgrade your server from <a href="http://github.com/supernova-ws/SuperNova">GIT repository</a>'
+  );
 }
 
 if($config->db_version < 26)
 {
-  global $sys_log_disabled;
   $sys_log_disabled = true;
 }
 
@@ -1117,7 +1121,6 @@ switch($new_version)
           {
             $unit_data_max = strlen(implode(',', $unit_data)) > $unit_data_max ? strlen(implode(',', $unit_data)) : $unit_data_max;
             upd_do_query('REPLACE INTO {{unit}} (`unit_player_id`, `unit_location_type`, `unit_location_id`, `unit_type`, `unit_snid`, `unit_level`) VALUES ' . implode(',', $unit_data) . ';');
-// pdump($unit_data);
             $unit_data = array();
           }
         }
@@ -1150,20 +1153,11 @@ switch($new_version)
               }
 
               $resource_amount = floor($resource_amount * $price_increase / $build_destroy_divisor);
-              // $resource_db_name = get_unit_param($resource_id, P_NAME);
-              // $unit_time += $resource_amount * $config->__get("rpg_exchange_{$resource_db_name}");
             }
-            // $unit_time = $unit_time * 60 * 60 / get_game_speed() / 2500 / $rpg_exchange_deuterium;
-            // $unit_time = floor($unit_time >= 1 ? $unit_time : 1);
-
             $unit_cost = sys_unit_arr2str($unit_cost);
             $units_levels[$unit_id] += $que_item[3];
             $que_data[] = "({$user_id},{$planet_id},{$planet_id},1,{$que_item[2]},{$unit_id},1,{$que_item[3]},{$units_levels[$unit_id]},{$que_item[2]},'{$unit_cost}')";
           }
-
-          // pdump($units_levels);
-          // pdump($que_data);
-          // die();
         }
 
         // Конвертируем очередь верфи
@@ -1248,6 +1242,9 @@ switch($new_version)
       );
     }
 
+    upd_check_key('stats_php_memory', '1024M', !isset($config->stats_php_memory));
+    upd_check_key('stats_minimal_interval', '600', !isset($config->stats_minimal_interval));
+
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
 };
@@ -1266,12 +1263,12 @@ else
 }
 
 $config->db_loadAll();
-
+/*
 if($user['authlevel'] >= 3)
 {
   print(str_replace("\r\n", '<br>', $upd_log));
 }
-
+*/
 unset($sn_cache->tables);
 sys_refresh_tablelist($config->db_prefix);
 

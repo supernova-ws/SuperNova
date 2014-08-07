@@ -15,10 +15,10 @@ function qst_render_page()
   if($in_admin)
   {
     $quest_id = sys_get_param_id('id');
-    $quest_name = sys_get_param_str_raw('QUEST_NAME');
+    $quest_name = sys_get_param_str_unsafe('QUEST_NAME');
     if(!empty($quest_name))
     {
-      $quest_description = sys_get_param_str_raw('QUEST_DESCRIPTION');
+      $quest_description = sys_get_param_str_unsafe('QUEST_DESCRIPTION');
       try
       {
         $quest_rewards_list = sys_get_param('QUEST_REWARDS_LIST');

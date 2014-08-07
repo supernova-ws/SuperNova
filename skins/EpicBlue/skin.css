@@ -101,11 +101,10 @@ only screen and (min-device-pixel-ratio : 1.5) {
 }
 
 
-body
-{
+body {
   color                : #E6EBFB;
-  margin-top           : 5px;
-  margin-left          : 1px;
+/*  margin-top           : 5px;
+  margin-left          : 1px;*/
   background-color     : #132544;
   background-attachment: fixed;
   background-repeat    : no-repeat;
@@ -120,23 +119,19 @@ body
   scrollbar-shadow-color: #465673;
 }
 
-img
-{
+img {
   border               : 0px;
 }
 
-input, select, textarea, div.z
-{
+input, select, textarea, div.z {
  color                : #E6EBFB;
 }
 
-textarea
-{
+textarea {
   width                : 98%;
 }
 
-th, td, input, select, textarea
-{
+th, td, input, select, textarea {
   border               : 1px #415680 solid;
   background-color     : #344566;
   padding-left         : 3px;
@@ -155,43 +150,8 @@ td.c, th.c_l, th.c_r, th.c_c, th.c_j, tr.c_l > th, tr.c_r > th, tr.c_c > th, tr.
   background-image     : url("images/table_th_background.png");
   background-repeat:  repeat-x;
 }
-/*
-th, td.c_l, td.c_c, tr.c_l td, tr.c_r td, tr.c_c td
-{
-  text-align           : center;
-}
-*/
-/*
-tr.c_l td, tr.c_l th, tr.cell_left td, tr.cell_left th, td.c
-{
-  text-align: left;
-}
-tr.c_r td, tr.c_r th, tr.cell_right td, tr.cell_right th
-{
-  text-align: right;
-}
-tr.c_c td, tr.c_c th, tr.cell_center td, tr.cell_center th
-{
-  text-align: center;
-}
-tr.c_j td, tr.c_j th, tr.cell_justify td, tr.cell_justify th
-{
-  text-align: justify;
-}
-*/
 
-/*
-tr.c_j td, tr.c_j th, tr.cell_justify td, tr.cell_justify th
-,
-th.c_j, td.c_j
-,
-.cell_justify, .c_j
-{
-  text-align: justify;
-}
-*/
-td.l
-{
+td.l {
   vertical-align       : top;
   padding              : 3px;
 /*  background-image     : url("images/table_th_background.png");*/
@@ -220,7 +180,7 @@ a
   color                : #f2f2f2;
 }
 
-a:hover
+a:not(.nohover):hover
 {
 /*  color                : #CDD7F8;
   text-decoration      : underline;
@@ -399,8 +359,7 @@ div .ui-dialog-content table { background: #344055; }
 .icons { background-image: url(images/icons.png) !important; }
 
 /* Que item */
-.que_item
-{
+.que_item {
   cursor: pointer;
 
   border: 0px;
@@ -471,11 +430,18 @@ div .ui-dialog-content table { background: #344055; }
   border-top-color: #6B90D3;  /* Reserved for unit_preview border color */
 }
 
-#sys_dark_matter_hint {color: #00CCFF; font-weight: bold; float: left}
-#off_get_dark_matter { color: #ff8900; font-weight: bold;}
+#sys_dark_matter_hint {
+  color: #00CCFF;
+  font-weight: bold;
+  float: left;
+}
 
-.ui-widget-content
-{
+#off_get_dark_matter {
+  color: #ff8900;
+  font-weight: bold;
+}
+
+.ui-widget-content {
   color: white;
 }
 
@@ -709,11 +675,11 @@ div .ui-dialog-content table { background: #344055; }
   background-color: cyan;
 }
 
-.deuterium_bg{
+.deuterium_bg {
   background-color: #800080;
 }
 
-.overall_ng{
+.overall_ng {
   background-color: white;
 }
 
@@ -726,4 +692,8 @@ div .ui-dialog-content table { background: #344055; }
 .menu_text_t, .menu_text_b
 {
   text-align: center;
+}
+
+#copyright, #copyright #supernova_ws {
+  padding-top: 2ex;
 }

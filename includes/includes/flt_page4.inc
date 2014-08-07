@@ -36,7 +36,7 @@ if($fleet['fleet_owner'] != $user['id'])
 
 $aks = doquery("SELECT * from `{{aks}}` WHERE `flotten` = {$fleetid} LIMIT 1;", '', true);
 // If we got a message to add some1 to attack (MadnessRed code)
-$userToAdd_unsafe = sys_get_param_str_raw('addtogroup');
+$userToAdd_unsafe = sys_get_param_str_unsafe('addtogroup');
 if($userToAdd_unsafe)
 {
   $userToAdd = mysql_real_escape_string($userToAdd_unsafe);

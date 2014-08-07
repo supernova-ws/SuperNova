@@ -203,7 +203,7 @@ function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage 
 
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
-  global $link, $debug, $user, $user_impersonator, $planetrow, $time_now, $config, $lang, $template_result, $time_diff, $time_utc_offset, $time_diff_seconds;
+  global $link, $debug, $user, $user_impersonator, $planetrow, $time_now, $config, $lang, $template_result, $time_diff;
 
   if(!$user || !isset($user['id']) || !is_numeric($user['id']))
   {
@@ -227,8 +227,8 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   $template->assign_vars(array(
     'TIME_NOW'                 => $time_now,
     'TIME_DIFF'                => isset($time_diff) ? $time_diff : '',
-    'TIME_DIFF_SECONDS'        => isset($time_diff_seconds) ? $time_diff_seconds : '',
-    'TIME_UTC_OFFSET'          => isset($time_utc_offset) ? $time_utc_offset : '',
+    'TIME_DIFF_SECONDS'        => defined('SN_CLIENT_TIME_DIFF_SECONDS') ? SN_CLIENT_TIME_DIFF_SECONDS : 0,
+    'TIME_UTC_OFFSET'          => defined('SN_CLIENT_TIME_UTC_OFFSET') ? SN_CLIENT_TIME_UTC_OFFSET : '',
     'TIME_DIFF_MEASURE'        => intval($time_now - $user['user_time_measured'] > 60 * 60),
     'USER_AUTHLEVEL'           => $user['authlevel'],
 
@@ -399,7 +399,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
     return '';
   }
 
-  global $time_now, $lang, $config, $time_local;
+  global $time_now, $lang, $config;
 
   $GET_mode = sys_get_param_str('mode');
 
@@ -441,7 +441,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
 
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate($time_now);
-  $time_local_parsed = getdate($time_local);
+  $time_local_parsed = getdate(SN_CLIENT_TIME_LOCAL);
 
   if($config->game_news_overview)
   {
@@ -613,13 +613,25 @@ function gettemplate($files, $template = false, $template_path = false)
   return $template;
 }
 
-function tpl_login_lang(&$template, $id_ref)
+function tpl_login_lang(&$template)
 {
   global $language;
 
-  $template->assign_vars(array(
-    'LANG'         => "?lang={$language}" . ($id_ref ? "&id_ref={$id_ref}" : ''),
-    'FILENAME'     => basename($_SERVER['PHP_SELF']),
+  $url_params = array();
+
+  if($language) {
+    $url_params[] = "lang={$language}";
+  }
+  if($id_ref = sys_get_param_id('id_ref')) {
+    $url_params[] = "id_ref={$id_ref}";
+  }
+
+  $template->assign_vars($q = array(
+    'LANG' => $language ? '?lang=' . $language : '',
+    'referral' => $id_ref ? '&id_ref=' . $id_ref : '',
+
+    'REQUEST_PARAMS' => !empty($url_params) ? '?' . implode('&', $url_params) : '',// "?lang={$language}" . ($id_ref ? "&id_ref={$id_ref}" : ''),
+    'FILENAME' => basename($_SERVER['PHP_SELF']),
   ));
 
   foreach(lng_get_list() as $lng_id => $lng_data)

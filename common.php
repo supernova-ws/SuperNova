@@ -9,65 +9,25 @@
 
 require_once('includes/init.php');
 
-$user = sn_autologin(!$allow_anonymous);
-$sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
-
-$dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
-$lang->lng_switch(sys_get_param_str('lang'));
-
-if($config->game_disable)
-{
-  $disable_reason = sys_bbcodeParse($config->game_disable_reason);
-  if ($user['authlevel'] < 1 || !(defined('IN_ADMIN') && IN_ADMIN))
-  {
-    message($disable_reason, $config->game_name);
-    ob_end_flush();
-    die();
-  }
-  else
-  {
-    print("<div align=center style='font-size: 24; font-weight: bold; color:red;'>{$disable_reason}</div><br>");
-  }
-}
-
-if(!(($allow_anonymous || (isset($sn_page_data['allow_anonymous']) && $sn_page_data['allow_anonymous'])) || $sys_user_logged_in) || (defined('IN_ADMIN') && IN_ADMIN === true && $user['authlevel'] < 1))
-{
-  setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-  sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
-}
-
-define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
-
-$time_diff_seconds = $user['user_time_diff'];
-$time_utc_offset = $user['user_time_utc_offset'];
-$time_diff = $time_diff_seconds + $time_utc_offset;
-$time_local = SN_TIME_NOW + $time_diff;
-defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
-defined('SN_CLIENT_TIME_LOCAL') or define('SN_CLIENT_TIME_LOCAL', $time_local);
-/*
-if(!defined('SN_CLIENT_TIME_DIFF'))
-{
-  define('SN_CLIENT_TIME_DIFF', $time_diff);
-}
-if(!defined('SN_CLIENT_TIME_LOCAL'))
-{
-  define('SN_CLIENT_TIME_LOCAL', $time_local);
-}
-*/
-
-
+global $debug, $sn_mvc, $template_result, $user;
 if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0)
 {
-  echo "<a href=\"badqrys.txt\" target=\"_NEW\" style=\"color:red\">{$lang['ov_hack_alert']}</a>";
+  echo '<a href="badqrys.txt" target="_blank" style="color:red">', $lang[ov_hack_alert], '</a>';
 }
 
-if(defined('IN_ADMIN') && IN_ADMIN === true)
-{
+// Напоминание для Администрации, что игра отключена
+if($template_result[F_GAME_DISABLE]) {
+  // $disable_reason = sys_bbcodeParse($config->game_disable_reason); // Должна быть инициализирована выше по коду - в init.php
+  echo '<div class="global_admin_warning">', $template_result[F_GAME_DISABLE_REASON], '</div>';
+}
+unset($disable_reason);
+
+
+if(defined('IN_ADMIN') && IN_ADMIN === true) {
   lng_include('admin');
 }
 elseif($sys_user_logged_in)
 {
-
   sys_user_vacation($user);
 
   $planet_id = SetSelectedPlanet($user);
@@ -84,7 +44,7 @@ elseif($sys_user_logged_in)
     }
     // TODO UNCOMMENT
     que_process($user['ally']['player']);
-    db_user_set_by_id($user['ally']['player']['id'], "`onlinetime` = {$time_now}");
+    db_user_set_by_id($user['ally']['player']['id'], '`onlinetime` = ' . SN_TIME_NOW);
     sn_db_transaction_commit();
   }
 

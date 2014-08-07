@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39a8.3#
+* @version #39a10.0#
 *
 */
 
@@ -40,7 +40,6 @@ if (!isset($lang) || (!is_array($lang) && !is_object($lang)))
 //$lang = array_merge($lang,
 //$lang->merge(
 $a_lang_array = (array(
-  'sys_administration' => 'Администрация СверхНовой',
   'sys_birthday' => 'День рождения',
   'sys_birthday_message' => '%1$s! Администрация СверхНовой сердечно поздравляет тебя с твоим Днем Рождения, который пришелся на %2$s и преподносит тебе в качестве подарка %3$d %4$s! От всей души желаем тебе успехов в игре и высоких рангов в статистике! Может это поздравление и запоздало, но лучше раньше, чем позже.',
 
@@ -492,7 +491,6 @@ $a_lang_array = (array(
   // Misc
   'sys_game_rules' => 'Правила игры',
   'sys_game_documentation' => 'Описание игры',
-  'sys_max' => 'макс',
   'sys_banned_msg' => 'Вы забанены. Для получения информации зайдите <a href="banned.php">сюда</a>. Срок окончания блокировки аккаунта: ',
   'sys_total_time' => 'Общее время',
 
@@ -658,8 +656,6 @@ $a_lang_array = (array(
   'time_local' => 'Локальное время',
   'time_server' => 'Серверное время',
 
-  'topnav_imp_attack' => 'Ваша империя атакована!',
-
   'sys_result' => array(
     'error_dark_matter_not_enough' => 'Не хватает Тёмной Материи для завершения операции',
     'error_dark_matter_change' => 'Ошибка изменения количества Тёмной Материи! Повторите операцию еще раз. Если ошибка повторится - сообщите Администрации сервера',
@@ -750,7 +746,6 @@ $a_lang_array = (array(
       <li>Использовать <a href="market.php"><span class="link">Чёрный Рынок</span></a>: Обменивать один вид ресурсов на другой; продавать корабли; покупать Б/У корабли итд</li>
       <li>...и многое, многое другое</li>
     </ul>',
-  'sys_dark_matter_obtain_header' => 'Где взять Тёмную Материю',
   'sys_dark_matter_obtain_text' => 'Вы получаете Тёмную Материю в процессе игры: набирая опыт за успешные рейды на чужие планеты, исследование новых технологий, а так же за постройку и разрушение зданий.
     Так же иногда исследовательские экспедиции могут принести ТМ.',
 
@@ -911,7 +906,7 @@ $a_lang_array = (array(
 
   'sys_color'    => "Цвет",
 
-  'topnav_imp_attack' => 'Ваша империя атакована!',
+  'topnav_imp_attack' => 'Ваша Империя атакована!',
   'topnav_user_rank' => 'Ваше текущее место в рейтинговой статистике',
   'topnav_users' => 'Всего зарегистрированных игроков',
   'topnav_users_online' => 'Текущее количество игроков онлайн',
@@ -920,4 +915,35 @@ $a_lang_array = (array(
 
   'sys_colonies' => 'Колонии',
   'sys_radio' => 'Радио "Космос"',
+
+  'sys_login_messages' => array(
+    LOGIN_SUCCESS => 'Вход успешен',
+    LOGIN_ERROR_USERNAME => 'Игрок с таким именем не найден',
+    LOGIN_ERROR_PASSWORD => 'Неправильный пароль',
+  //    LOGIN_ERROR_COOKIE => '',
+
+    REGISTER_SUCCESS => 'Регистрация успешно завершена',
+    REGISTER_ERROR_USERNAME_WRONG => 'Некорректное имя игрока',
+    REGISTER_ERROR_USERNAME_EXISTS => 'Такое имя игрока уже занято',
+    REGISTER_ERROR_PASSWORD_INSECURE => 'Неправильный пароль. Пароль должен состоять минимум из 4 символов и не может начинаться или заканчиваться пробелами',
+    REGISTER_ERROR_PASSWORD_DIFFERENT => 'Пароль и проверочный пароль не совпадают. Проверьте правильность ввода',
+    REGISTER_ERROR_EMAIL_EXISTS => 'Этот электронный адрес уже зарегестрирован',
+
+    PASSWORD_RESTORE_ERROR_WRONG_EMAIL => 'Нет игрока с таким основным емейлом',
+    PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT => 'Запрещено восстановление пароля для Команды сервера. Обратитесь к Администратору',
+    PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'Запросить код код восстановления можно только 1 раз в час. Если вы не получили письмо - проверьте папку СПАМа или подождите',
+    PASSWORD_RESTORE_ERROR_SENDING => 'Ошибка отправки письма. Обратитесь к Администрации сервера',
+    PASSWORD_RESTORE_SUCCESS_CODE_SENT => 'Письмо с кодом восстановления успешно отправлено',
+
+    PASSWORD_RESTORE_ERROR_CODE_WRONG => 'Неправильный код восстановления',
+    PASSWORD_RESTORE_ERROR_CODE_TOO_OLD => 'Код восстановления устарел. Получите новый',
+    PASSWORD_RESTORE_ERROR_CHANGE => 'Ошибка смены пароля. Обратитесь к Администрации сервера',
+    PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT => 'Пароль успешно сброшен. Вам отправлено письмо с новым паролем',
+    PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR => 'Ошибка отправки письма с новым паролем. Получите новый код восстановления и повторите попытку',
+  ),
+
+  'sys_login_password_show' => 'Показать пароль',
+  'sys_login_password_hide' => 'Скрыть пароль',
+  'sys_password_repeat' => 'Повторите пароль',
+
 ));

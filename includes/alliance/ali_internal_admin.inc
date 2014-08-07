@@ -74,8 +74,8 @@ if(sys_get_param_str('isSaveOptions'))
 elseif(sys_get_param_str('isSaveText'))
 {
   $text = sys_get_param_str_both('text');
-  doquery("UPDATE {{alliance}} SET `{$text_list[$allyTextID]['db_field']}`='{$text['str']}' WHERE `id`='{$ally['id']}';");
-  $ally[$text_list[$allyTextID]['db_field']] = $text['raw'];
+  doquery("UPDATE {{alliance}} SET `{$text_list[$allyTextID]['db_field']}`='{$text['safe']}' WHERE `id`='{$ally['id']}';");
+  $ally[$text_list[$allyTextID]['db_field']] = $text['unsafe'];
 }
 elseif(sys_get_param_str('isTransfer') && $idNewLeader = sys_get_param_id('idNewLeader'))
 {

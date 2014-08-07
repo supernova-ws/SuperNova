@@ -129,11 +129,9 @@ class classSupernova
     static::array_repack(static::$locator[$location_type], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
     static::array_repack(static::$queries[$location_type], 1);
   }
-  public static function cache_clear($location_type, $hard = true)
-  {
+  public static function cache_clear($location_type, $hard = true) {
     //print("<br />CACHE CLEAR {$cache_id} " . ($hard ? 'HARD' : 'SOFT') . "<br />");
-    if($hard)
-    {
+    if($hard) {
       // Здесь нельзя делать unset - надо записывать NULL, что бы это отразилось на зависимых записях
       array_walk(static::$data[$location_type], function(&$item){$item = null;});
     }
@@ -352,7 +350,7 @@ class classSupernova
    * Возвращает информацию о записи по её ID
    *
    * @param int $location_type
-   * @param int|array $record_id
+   * @param int|array $record_id_unsafe
    *    <p>int - ID записи</p>
    *    <p>array - запись пользователя с установленным полем P_ID</p>
    * @param bool $for_update @deprecated
@@ -362,13 +360,13 @@ class classSupernova
    *    <p>false - Нет записи с указанным ID</p>
    *    <p>array - запись</p>
    */
-  public static function db_get_record_by_id($location_type, $record_id, $for_update = false, $fields = '*', $skip_lock = false)
+  public static function db_get_record_by_id($location_type, $record_id_unsafe, $for_update = false, $fields = '*', $skip_lock = false)
   {
     $id_field = static::$location_info[$location_type][P_ID];
     // $record_id = intval(is_array($record_id) && isset($record_id[$id_field]) ? $record_id[$id_field] : $record_id);
-    $record_id = idval(is_array($record_id) && isset($record_id[$id_field]) ? $record_id[$id_field] : $record_id);
+    $record_id_safe = idval(is_array($record_id_unsafe) && isset($record_id_unsafe[$id_field]) ? $record_id_unsafe[$id_field] : $record_id_unsafe);
 
-    return static::db_get_record_list($location_type, "`{$id_field}` = {$record_id}", true, false);
+    return static::db_get_record_list($location_type, "`{$id_field}` = {$record_id_safe}", true, false);
   }
 
   public static function db_get_record_list($location_type, $filter = '', $fetch = false, $no_return = false)
@@ -567,7 +565,7 @@ class classSupernova
   /**
    * Возвращает информацию о пользователе по его ID
    *
-   * @param int|array $user_id
+   * @param int|array $user_id_unsafe
    *    <p>int - ID пользователя</p>
    *    <p>array - запись пользователя с установленным полем ['id']</p>
    * @param bool $for_update @deprecated
@@ -581,9 +579,9 @@ class classSupernova
    *    <p>false - Нет записи с указанным ID и $player</p>
    *    <p>array - запись типа $user</p>
    */
-  public static function db_get_user_by_id($user_id, $for_update = false, $fields = '*', $player = null)
+  public static function db_get_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null)
   {
-    $user = static::db_get_record_by_id(LOC_USER, $user_id, $for_update, $fields);
+    $user = static::db_get_record_by_id(LOC_USER, $user_id_unsafe, $for_update, $fields);
 
     return (is_array($user) &&
     (
@@ -594,10 +592,10 @@ class classSupernova
       ($player === false && $user['user_as_ally'])
     )) ? $user : false;
   }
-  public static function db_get_user_by_username($username, $for_update = false, $fields = '*', $player = null, $like = false)
+  public static function db_get_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false)
   {
     // TODO Проверить, кстати - а везде ли нужно выбирать юзеров или где-то все-таки ищутся Альянсы ?
-    if(!($username = trim($username))) return false;
+    if(!($username_unsafe = trim($username_unsafe))) return false;
 
     $user = null;
     if(is_array(static::$data[LOC_USER]))
@@ -607,7 +605,7 @@ class classSupernova
       {
         // проверяем поле
         // TODO Возможно есть смысл всегда искать по strtolower - но может игрок захочет переименоваться с другим регистром? Проверить!
-        if((!$like && $user_data['username'] == $username) || ($like && strtolower($user_data['username']) == strtolower($username)))
+        if((!$like && $user_data['username'] == $username_unsafe) || ($like && strtolower($user_data['username']) == strtolower($username_unsafe)))
         {
           // $user_as_ally = intval($user_data['user_as_ally']);
           $user_as_ally = idval($user_data['user_as_ally']);
@@ -623,7 +621,7 @@ class classSupernova
     if($user === null)
     {
       // Вытаскиваем запись
-      $username_safe = mysql_real_escape_string($like ? strtolower($username) : $username); // тут на самом деле strtolower() лишняя, но пусть будет
+      $username_safe = mysql_real_escape_string($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
 
       // TODO переписать
       // classSupernova::db_get_record_list(LOC_USER, "`username` " . ($like ? 'LIKE' : '='). " '{$username_safe}'");

@@ -1,13 +1,13 @@
 <?php
 
-function db_user_by_id($user_id, $for_update = false, $fields = '*', $player = null)
+function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null)
 {
-  return classSupernova::db_get_user_by_id($user_id, $for_update, $fields, $player);
+  return classSupernova::db_get_user_by_id($user_id_unsafe, $for_update, $fields, $player);
 }
 
-function db_user_by_username($username, $for_update = false, $fields = '*', $player = null, $like = false)
+function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false)
 {
-  return classSupernova::db_get_user_by_username($username, $for_update, $fields, $player, $like);
+  return classSupernova::db_get_user_by_username($username_unsafe, $for_update, $fields, $player, $like);
 }
 function db_user_by_email($email, $use_both = false, $for_update = false, $fields = '*')
 {

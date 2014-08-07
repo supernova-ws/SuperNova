@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a8.3
+* @version 39a10.0
 *
 */
 
@@ -910,4 +910,33 @@ $a_lang_array = (array(
   'sys_colonies' => 'Colonies',
   'sys_radio' => '"Space" radio',
 
+  'sys_login_messages' => array(
+    LOGIN_SUCCESS => 'Login succesfull',
+    LOGIN_ERROR_USERNAME => 'There is no player with such name',
+    LOGIN_ERROR_PASSWORD => 'Wrong password',
+    //    LOGIN_ERROR_COOKIE => '',
+
+    REGISTER_SUCCESS => 'Registration succesfully complete',
+    REGISTER_ERROR_USERNAME_WRONG => 'Wrong player name',
+    REGISTER_ERROR_USERNAME_EXISTS => 'Player name already registered',
+    REGISTER_ERROR_PASSWORD_INSECURE => 'Insecure or wrong password. Password should be at least 4 characters long and cannot start or end with spaces',
+    REGISTER_ERROR_PASSWORD_DIFFERENT => 'Password does not match confirmation password',
+    REGISTER_ERROR_EMAIL_EXISTS => 'This email already registered',
+
+    PASSWORD_RESTORE_ERROR_WRONG_EMAIL => 'There is no player with such base email',
+    PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT => 'Forbidden to restore password for member of Server Team. Contact Administrator directly',
+    PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'You can request password restoration code only once per hour. Check your SPAM folder for restoration code or wait',
+    PASSWORD_RESTORE_ERROR_SENDING => 'There is error sending email with restore code. Contact server administration',
+    PASSWORD_RESTORE_SUCCESS_CODE_SENT => 'Restoration code successfully sent',
+
+    PASSWORD_RESTORE_ERROR_CODE_WRONG => 'Wrong restoration code',
+    PASSWORD_RESTORE_ERROR_CODE_TOO_OLD => 'Restoration code is too old. Get new one',
+    PASSWORD_RESTORE_ERROR_CHANGE => 'Password change error. Contact server administration',
+    PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT => 'Email with new password successfully sent to your email',
+    PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR => 'Error sending new password. Get new restoration code and try again',
+  ),
+
+  'sys_login_password_show' => 'Show password',
+  'sys_login_password_hide' => 'Hide password',
+  'sys_password_repeat' => 'Confirm password',
 ));

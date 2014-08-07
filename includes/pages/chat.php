@@ -94,7 +94,7 @@ function sn_chat_msg_view($template = null)
 {
   define('IN_AJAX', true);
 
-  global $config, $skip_fleet_update, $microtime, $user, $time_now, $time_local, $time_diff, $lang;
+  global $config, $skip_fleet_update, $microtime, $user, $time_now, $time_diff, $lang;
 
   $skip_fleet_update = true;
 
@@ -112,7 +112,7 @@ function sn_chat_msg_view($template = null)
   {
     $result['disable'] = true;
     $template_result['.']['chat'][] = array(
-      'TIME' => date(FMT_DATE_TIME, htmlentities($time_local, ENT_QUOTES, 'utf-8')),
+      'TIME' => date(FMT_DATE_TIME, htmlentities(SN_CLIENT_TIME_LOCAL, ENT_QUOTES, 'utf-8')),
       'DISABLE' => true,
     );
   }

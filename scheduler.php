@@ -28,11 +28,10 @@ function scheduler_process()
 
   lng_include('admin');
   //if($_SERVER['HTTP_REFERER'] == SN_ROOT_VIRTUAL . 'admin/statbuilder.php')
+  $is_admin_request = false;
   $next_stat_update = sys_schedule_get_prev_run($config->stats_schedule, $config->var_stat_update, SN_TIME_NOW);
   if(sys_get_param_int('admin_update'))
   {
-    $user = sn_autologin(!$allow_anonymous);
-    $sys_user_logged_in = is_array($user) && isset($user['id']) && $user['id'];
     define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
     if(USER_LEVEL > 0)
     {
@@ -45,7 +44,7 @@ function scheduler_process()
   {
     if(SN_TIME_NOW >= $config->var_stat_update_end)
     {
-      $config->db_saveItem('var_stat_update_end', SN_TIME_NOW + 600);
+      $config->db_saveItem('var_stat_update_end', SN_TIME_NOW + ($config->stats_minimal_interval ? $config->stats_minimal_interval : 600));
       $config->db_saveItem('var_stat_update_msg', 'Update started');
 
       if($is_admin_request)

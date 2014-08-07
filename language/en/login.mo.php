@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a8.0
+* @version 39a10.0
 *
 */
 
@@ -121,10 +121,11 @@ $a_lang_array = (array(
   'log_login_page' => 'Enter the game',
   'log_reg_already' => 'Already have a registration? ',
   'log_reg_already_lost' => 'Forgot password?',
+
   'log_lost_header' => 'Password recovery',
-  'log_lost_description1' => 'Enter the email address you registered your account. It will be sent an email with a verification code to reset your password',
-  'log_lost_send_mail' => 'Send Mail',
   'log_lost_code' => 'Confirmation code',
+  'log_lost_description1' => 'Enter the email address you registered your account. It will be sent an email with a verification code to reset your password',
+  'log_lost_send_mail' => 'Send confirmation code',
   'log_lost_description2' => 'If you have a confirmation code, please enter it below and click "Reset password". An e-mail will be sent an email with a new password',
   'log_lost_reset_pass' => 'Reset password',
   'log_lost_sent_code' => 'Email sent to this email with further instructions on resetting your password',
@@ -137,4 +138,7 @@ $a_lang_array = (array(
   'log_lost_err_code' => 'The verification code is not registered in the database. This could mean one of the following:<br>You mistype the confirmation code. Return to the previous page and enter the code<br>You are trying to enter the confirmation code in the wrong Universe for which it was generated. Double check the name of the current Universe and on Error Go To correct Universe<br>Your account has been deleted due to inactivity. Register a new<br>Expired confirmation code. Check the expiration date of code in the letter. If it passed, request a new confirmation code',
   'log_lost_err_admin' => 'The members server command (moderators, operators, administrators, etc) may not use the password reset function. Contact your server administrator to change the password',
   'log_lost_err_change' => 'Error changing the password in the database. Notify Administrator of error',
+
+  'login_register_offer' => 'Click here to register',
+  'login_password_restore_offer' => 'Click here to reset password',
 ));

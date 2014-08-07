@@ -36,9 +36,9 @@ switch($mode){
   
   case ADM_TOOL_MD5:
     $template = gettemplate("admin/md5enc", true);
-    $password_seed = sys_get_param_str_raw('seed', SN_SYS_SEC_CHARS_ALLOWED);
+    $password_seed = sys_get_param_str_unsafe('seed', SN_SYS_SEC_CHARS_ALLOWED);
     $password_length = sys_get_param_int('length', 16);
-    $string = ($string = sys_get_param_str_raw('string')) ? $string : sys_random_string($password_length, $password_seed);
+    $string = ($string = sys_get_param_str_unsafe('string')) ? $string : sys_random_string($password_length, $password_seed);
 
     $template->assign_vars(array(
       'SEED' => $password_seed,

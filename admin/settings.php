@@ -22,25 +22,25 @@ $template = gettemplate('admin/settings', true);
 
 if(sys_get_param('save'))
 {
-  $config->game_name               = sys_get_param_str_raw('game_name');
+  $config->game_name               = sys_get_param_str_unsafe('game_name');
   $config->game_mode               = sys_get_param_int('game_mode');
   $config->game_speed              = sys_get_param_float('game_speed', 1);
   $config->fleet_speed             = sys_get_param_float('fleet_speed', 1);
   $config->resource_multiplier     = sys_get_param_float('resource_multiplier', 1);
   $config->user_vacation_disable   = sys_get_param_int('user_vacation_disable', 0);
-  $config->url_faq                 = sys_get_param_str_raw('url_faq');
-  $config->url_forum               = sys_get_param_str_raw('url_forum');
-  $config->url_rules               = sys_get_param_str_raw('url_rules');
-  $config->url_purchase_metamatter         = sys_get_param_str_raw('url_purchase_metamatter');
+  $config->url_faq                 = sys_get_param_str_unsafe('url_faq');
+  $config->url_forum               = sys_get_param_str_unsafe('url_forum');
+  $config->url_rules               = sys_get_param_str_unsafe('url_rules');
+  $config->url_purchase_metamatter         = sys_get_param_str_unsafe('url_purchase_metamatter');
   $config->game_disable            = sys_get_param_int('game_disable');
-  $config->game_disable_reason     = sys_get_param_str_raw('game_disable_reason');
+  $config->game_disable_reason     = sys_get_param_str_unsafe('game_disable_reason');
   $config->server_updater_check_auto = sys_get_param_int('server_updater_check_auto');
 
   $config->eco_scale_storage       = sys_get_param_int('eco_scale_storage');
 
-  $config->game_default_language   = sys_get_param_str_raw('game_default_language', DEFAULT_LANG);
-  $config->game_default_skin       = sys_get_param_str_raw('game_default_skin', DEFAULT_SKINPATH);
-  $config->game_default_template   = sys_get_param_str_raw('game_default_template', TEMPLATE_NAME);
+  $config->game_default_language   = sys_get_param_str_unsafe('game_default_language', DEFAULT_LANG);
+  $config->game_default_skin       = sys_get_param_str_unsafe('game_default_skin', DEFAULT_SKINPATH);
+  $config->game_default_template   = sys_get_param_str_unsafe('game_default_template', TEMPLATE_NAME);
 
   $config->game_maxGalaxy          = sys_get_param_int('game_maxGalaxy', 5);
   $config->game_maxSystem          = sys_get_param_int('game_maxSystem', 199);

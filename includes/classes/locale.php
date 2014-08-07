@@ -224,6 +224,8 @@ class classLocale implements ArrayAccess {
   {
     global $language, $user, $sn_mvc;
 
+    $language_new = str_replace(array('?', '&', 'lang='), '', $language_new);
+
     $language_new = $language_new ? $language_new : (isset($user['lang']) && $user['lang'] ? $user['lang'] : DEFAULT_LANG);
 
     $result = false;

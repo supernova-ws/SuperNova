@@ -32,7 +32,7 @@ $message_status = ERR_ERROR;
 
 if($points = sys_get_param_float('points'))
 { // If points not empty...
-  if($username = sys_get_param_str_raw('id_user'))
+  if($username = sys_get_param_str_unsafe('id_user'))
   {
     /*
     $id_user = mysql_real_escape_string($username);

@@ -22,7 +22,7 @@ $planet_dst = sys_get_param_int('planet_dst');
 
 $bonus = sys_get_param_float('bonus', 1);
 
-$username_unsafe = sys_get_param_str_raw('username');
+$username_unsafe = sys_get_param_str_unsafe('username');
 $username = sys_get_param_escaped('username');
 
 if($galaxy_src)

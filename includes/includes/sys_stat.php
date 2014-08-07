@@ -30,47 +30,44 @@
  * StatFunctions.php @version 1 copyright 2008 by Chlorel for XNova
  */
 
-function sta_set_time_limit($sta_update_msg = 'updating something', $next_step = true)
-{
+function sta_set_time_limit($sta_update_msg = 'updating something', $next_step = true) {
   global $config, $debug, $sta_update_step;
 
-  $value = 60;
+  $value = $config->stats_minimal_interval ? $config->stats_minimal_interval : 600;
   set_time_limit($value);
   $config->db_saveItem('var_stat_update_end', time() + $value);
 
   $sta_update_msg = mysql_real_escape_string($sta_update_msg);
 
-  if($next_step)
-  {
+  if($next_step) {
     $sta_update_step++;
   }
   $sta_update_msg = "Update in progress. Step {$sta_update_step}/14: {$sta_update_msg}.";
 
   $config->db_saveItem('var_stat_update_msg', $sta_update_msg);
-  if($next_step)
-  {
+  if($next_step) {
     $debug->warning($sta_update_msg, 'Stat update', 191);
   }
 }
 
-function sys_stat_calculate_flush(&$data, $force = false)
-{
+function sys_stat_calculate_flush(&$data, $force = false) {
   if(count($data) < 25 && !$force) return;
 
-  if(!empty($data))
-  {
+  if(!empty($data)) {
     doquery('REPLACE INTO {{statpoints}}
       (`id_owner`, `id_ally`, `stat_type`, `stat_code`, `tech_points`, `tech_count`, `build_points`, `build_count`,
-       `defs_points`, `defs_count`, `fleet_points`, `fleet_count`, `res_points`, `res_count`, `total_points`, `total_count`, `stat_date`) VALUES ' . implode(',', $data));
+       `defs_points`, `defs_count`, `fleet_points`, `fleet_count`, `res_points`, `res_count`, `total_points`,
+       `total_count`, `stat_date`) VALUES ' . implode(',', $data)
+    );
   }
 
   $data = array();
 }
 
-function sys_stat_calculate()
-{
-  ini_set('memory_limit', '256M');
+function sys_stat_calculate() {
   global $config, $time_now, $sta_update_step;
+
+  ini_set('memory_limit', $config->stats_php_memory ? $config->stats_php_memory : '1024M');
 
   $user_skip_list = sys_stat_get_user_skip_list();
 
@@ -83,7 +80,7 @@ function sys_stat_calculate()
   $sta_update_step = -1;
 
   sta_set_time_limit('starting update');
-  $counts = $points = $unit_cost_cache = $users = array();
+  $counts = $points = $unit_cost_cache = $user_allies = array();
 
 
   sn_db_transaction_start();
@@ -96,53 +93,55 @@ function sys_stat_calculate()
   $user_list = db_user_list('', true, 'id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id');
   $row_num = count($user_list);
   // while($player = mysql_fetch_assoc($query))
-  foreach($user_list as $player)
-  {
+  foreach($user_list as $player) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating players stats (player {$i}/{$row_num})", false);
     if(array_key_exists($user_id = $player['id'], $user_skip_list)) continue;
 
-    $resources = $player['metal'] * $rate[RES_METAL] + $player['crystal'] * $rate[RES_CRYSTAL] + $player['deuterium'] * $rate[RES_DEUTERIUM] + $player['dark_matter'] * $rate[RES_DARK_MATTER];
+    $resources = $player['metal'] * $rate[RES_METAL] + $player['crystal'] * $rate[RES_CRYSTAL] +
+      $player['deuterium'] * $rate[RES_DEUTERIUM] + $player['dark_matter'] * $rate[RES_DARK_MATTER];
     $counts[$user_id][UNIT_RESOURCES] += $resources;
     // $points[$user_id][UNIT_RESOURCES] += $resources;
 
     // А здесь мы фильтруем пользователей по $user_skip_list - далее не нужно этого делать, потому что
-    if(!isset($user_skip_list[$user_id]))
-      $users[$user_id] = $player;
+    if(!isset($user_skip_list[$user_id])) {
+      $user_allies[$user_id] = $player['ally_id'];
+    }
   }
+  unset($user_list);
+  classSupernova::cache_clear(LOC_USER, true);
+  //pdump(classSupernova::$data[LOC_USER]);
+  //pdump(classSupernova::$locks[LOC_USER]);
+
 
 
   sta_set_time_limit('calculating planets stats');
   $i = 0;
   $query = db_planet_list_resources_by_owner();
   $row_num = mysql_num_rows($query);
-  while($planet = mysql_fetch_assoc($query))
-  {
+  while($planet = mysql_fetch_assoc($query)) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating planets stats (planet {$i}/{$row_num})", false);
     if(array_key_exists($user_id = $planet['id_owner'], $user_skip_list)) continue;
 
-    $resources = $planet['metal'] * $rate[RES_METAL] + $planet['crystal'] * $rate[RES_CRYSTAL] + $planet['deuterium'] * $rate[RES_DEUTERIUM];
+    $resources = $planet['metal'] * $rate[RES_METAL] + $planet['crystal'] * $rate[RES_CRYSTAL] +
+      $planet['deuterium'] * $rate[RES_DEUTERIUM];
     $counts[$user_id][UNIT_RESOURCES] += $resources;
     // $points[$user_id][UNIT_RESOURCES] += $resources;
   }
-
 
   // Calculation of Fleet-In-Flight
   sta_set_time_limit('calculating flying fleets stats');
   $i = 0;
   $query = doquery("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM {{fleets}};");
   $row_num = mysql_num_rows($query);
-  while($fleet_row = mysql_fetch_assoc($query))
-  {
+  while($fleet_row = mysql_fetch_assoc($query)) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating flying fleets stats (fleet {$i}/{$row_num})", false);
     if(array_key_exists($user_id = $fleet_row['fleet_owner'], $user_skip_list)) continue;
 
     $fleet = sys_unit_str2arr($fleet_row['fleet_array']);
-    foreach($fleet as $unit_id => $unit_amount)
-    {
+    foreach($fleet as $unit_id => $unit_amount) {
       $counts[$user_id][UNIT_SHIPS] += $unit_amount;
 
-      if(!isset($unit_cost_cache[$unit_id][0]))
-      {
+      if(!isset($unit_cost_cache[$unit_id][0])) {
         $unit_cost_cache[$unit_id][0] = get_unit_param($unit_id, P_COST);
       }
       $unit_cost_data = &$unit_cost_cache[$unit_id][0];
@@ -159,8 +158,7 @@ function sys_stat_calculate()
   $i = 0;
   $query = db_unit_list_stat_calculate();
   $row_num = mysql_num_rows($query);
-  while($unit = mysql_fetch_assoc($query))
-  {
+  while($unit = mysql_fetch_assoc($query)) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating unit stats (unit {$i}/{$row_num})", false);
     if(array_key_exists($user_id = $unit['unit_player_id'], $user_skip_list)) continue;
 
@@ -174,8 +172,7 @@ function sys_stat_calculate()
   $i = 0;
   $query = db_que_list_stat();
   $row_num = mysql_num_rows($query);
-  while($que_item = mysql_fetch_assoc($query))
-  {
+  while($que_item = mysql_fetch_assoc($query)) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating ques stats (que item {$i}/{$row_num})", false);
     if(array_key_exists($user_id = $que_item['id_owner'], $user_skip_list)) continue;
 
@@ -194,20 +191,19 @@ function sys_stat_calculate()
 
   sta_set_time_limit('posting new user stats to DB');
   $data = array();
-  foreach($users as $user_id => $player_data)
-  {
+  foreach($user_allies as $user_id => $ally_id) {
     // $counts[UNIT_RESOURCES] дублирует $points[UNIT_RESOURCES], поэтому $points не заполняем, а берем $counts и делим на 1000
     $points[$user_id][UNIT_RESOURCES] = $counts[$user_id][UNIT_RESOURCES] / 1000;
     $points[$user_id] = array_map('floor', $points[$user_id]);
     $counts[$user_id] = array_map('floor', $counts[$user_id]);
 
-    $ally_id = $player_data['ally_id'] ? $player_data['ally_id'] : 'NULL';
+    $ally_id = $ally_id ? $ally_id : 'NULL';
     $user_defence_points = $points[$user_id][UNIT_DEFENCE] + $points[$user_id][UNIT_DEF_MISSILES];
     $user_defence_counts = $counts[$user_id][UNIT_DEFENCE] + $counts[$user_id][UNIT_DEF_MISSILES];
     $user_points = array_sum($points[$user_id]);
     $user_counts = array_sum($counts[$user_id]);
 
-    $data[] = "({$user_id},{$ally_id},1,1,'{$points[$user_id][UNIT_TECHNOLOGIES]}','{$counts[$user_id][UNIT_TECHNOLOGIES]}'," .
+    $data[] = $q = "({$user_id},{$ally_id},1,1,'{$points[$user_id][UNIT_TECHNOLOGIES]}','{$counts[$user_id][UNIT_TECHNOLOGIES]}'," .
       "'{$points[$user_id][UNIT_STRUCTURES]}','{$counts[$user_id][UNIT_STRUCTURES]}','{$user_defence_points}','{$user_defence_counts}'," .
       "'{$points[$user_id][UNIT_SHIPS]}','{$counts[$user_id][UNIT_SHIPS]}','{$points[$user_id][UNIT_RESOURCES]}','{$counts[$user_id][UNIT_RESOURCES]}'," .
       "{$user_points},{$user_counts},{$time_now})";
@@ -251,8 +247,7 @@ function sys_stat_calculate()
 
   // Updating player's ranks
   sta_set_time_limit("updating ranks for players");
-  foreach($rankNames as $rankName)
-  {
+  foreach($rankNames as $rankName) {
     sta_set_time_limit("updating player rank '{$rankName}'", false);
     doquery($qryResetRowNum);
     doquery(sprintf($qryFormat, $rankName, 1));
@@ -260,8 +255,7 @@ function sys_stat_calculate()
 
   sta_set_time_limit("updating ranks for Alliances");
   // --- Updating Allie's ranks
-  foreach($rankNames as $rankName)
-  {
+  foreach($rankNames as $rankName) {
     sta_set_time_limit("updating Alliances rank '{$rankName}'", false);
     doquery($qryResetRowNum);
     doquery(sprintf($qryFormat, $rankName, 2));

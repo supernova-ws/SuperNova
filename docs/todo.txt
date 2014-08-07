@@ -147,7 +147,6 @@ HAVING SUM(SIGN(1-SIGN(y.val-x.val))) = (COUNT(*)+1)/2
 [*] Заменить переменные на константы
     define('SN_TIME_NOW', $time_now);
     define('SN_CLIENT_TIME_DIFF', $time_diff);
-    define('SN_CLIENT_TIME_LOCAL', $time_local);
 
 
 [*] Возможность отключить локальное время

@@ -97,7 +97,7 @@ function sn_options_model()
     }
     $options = sys_user_options_pack($user);
 
-    $username = substr(sys_get_param_str_raw('username'), 0, 32);
+    $username = substr(sys_get_param_str_unsafe('username'), 0, 32);
     $username_safe = mysql_real_escape_string($username);
     if($username && $user['username'] != $username && $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE && sys_get_param_int('username_confirm'))
     {
@@ -124,7 +124,7 @@ function sn_options_model()
             db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
             doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = \"{$username_safe}\"");
             // TODO: Change cookie to not force user relogin
-            setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+            sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
             $template_result['.']['result'][] = array(
               'STATUS'  => ERR_NONE,
               'MESSAGE' => $lang['opt_msg_name_changed']
@@ -160,7 +160,7 @@ function sn_options_model()
 
         $user['password'] = md5($new_password);
         // TODO: Change cookie to not force user relogin
-        setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+        sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
         throw new Exception($lang['opt_msg_pass_changed'], ERR_NONE);
       }
       catch (Exception $e)
@@ -209,7 +209,7 @@ function sn_options_model()
         throw new exception();
       }
 
-      $user_birthday = sys_get_param_str_raw('user_birthday');
+      $user_birthday = sys_get_param_str_unsafe('user_birthday');
       if(!$user_birthday || $user_birthday == $FMT_DATE)
       {
         throw new exception();

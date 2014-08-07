@@ -687,3 +687,19 @@ th.c_j, td.c_j
   width: 100%;
   height: 100%;
 }
+
+.global_admin_warning{
+  text-align: center;
+  width: 100%;
+  font-size: 24px;
+  font-weight: bold;
+  color:red;
+}
+
+.benchmark {
+  color: white;
+  font-size: 10px;
+  text-align: left;
+  font-weight: bold;
+  line-height: 1em;
+}

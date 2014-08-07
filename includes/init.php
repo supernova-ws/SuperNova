@@ -19,7 +19,7 @@ define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
 register_shutdown_function(function() {
   if(!defined('IN_AJAX'))
   {
-    print('<hr>Benchmark ' . (microtime(true) - SN_TIME_MICRO) . '<br/>Memory usage: ' . number_format(memory_get_usage() - SN_MEM_START));
+    print('<hr><div class="benchmark">Benchmark ' . (microtime(true) - SN_TIME_MICRO) . 's, memory: ' . number_format(memory_get_usage() - SN_MEM_START) . '</div>');
   }
 });
 
@@ -138,7 +138,8 @@ define('SN_ROOT_VIRTUAL' , 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . ':/
 global $phpbb_root_path;
 $phpbb_root_path = SN_ROOT_PHYSICAL;
 
-global $user;
+global $db_prefix, $db_name, $sn_secret_word, $user;
+
 $user = array();
 
 require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
@@ -152,15 +153,18 @@ require_once(SN_ROOT_PHYSICAL . "includes/constants" . DOT_PHP_EX);
 // required for db.php
 // Initializing global 'debug' object
 require_once(SN_ROOT_PHYSICAL . "includes/debug.class" . DOT_PHP_EX);
+global $debug;
 $debug = new debug();
 
 require_once(SN_ROOT_PHYSICAL . "includes/classes/_classes" . DOT_PHP_EX);
 require_once(SN_ROOT_PHYSICAL . "includes/db" . DOT_PHP_EX);
 require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 
+global $supernova;
 $supernova = new classSupernova();
 
 // Initializing global 'cacher' object
+global $sn_cache;
 $sn_cache = new classCache($db_prefix);
 if(!$sn_cache->tables || empty($sn_cache->tables))
 {
@@ -191,45 +195,16 @@ else
 }
 
 require_once(SN_ROOT_PHYSICAL . "includes/vars" . DOT_PHP_EX);
-// Now including all functions
 require_once(SN_ROOT_PHYSICAL . "includes/general" . DOT_PHP_EX);
 
-$update_file = SN_ROOT_PHYSICAL . "includes/update" . DOT_PHP_EX;
-if(file_exists($update_file))
-{
-  if(filemtime($update_file) > $config->db_loadItem('var_db_update') || $config->db_loadItem('db_version') < DB_VERSION)
-  {
-    if(defined('IN_ADMIN'))
-    {
-      sn_db_transaction_start(); // Для защиты от двойного запуска апдейта - начинаем транзакцию. Так запись в базе будет блокирована
-      if($time_now >= $config->db_loadItem('var_db_update_end'))
-      {
-        $config->db_saveItem('var_db_update_end', $time_now + $config->upd_lock_time);
-        sn_db_transaction_commit();
-
-        require_once($update_file);
-        sys_refresh_tablelist($db_prefix);
-
-        $time_now = time();
-        $config->db_saveItem('var_db_update', $time_now);
-        $config->db_saveItem('var_db_update_end', $time_now);
-      }
-      elseif(filemtime($update_file) > $config->var_db_update)
-      {
-        $timeout = $config->var_db_update_end - $time_now;
-        die("Обновляется база данных. Рассчетное время окончания - {$timeout} секунд (время обновления может увеличиваться). Пожалуйста, подождите...<br>Obnovljaetsja baza dannyh. Rasschetnoe vremya okonchanija - {$timeout} secund. Pozhalujsta, podozhdute...<br>Database update in progress. Estimated update time {$timeout} seconds (can increase depending on update process). Please wait...");
-      }
-      sn_db_transaction_rollback();
-    }
-    else
-    {
-      die('Происходит обновление сервера - пожалуйста, подождите...<br>Proishodit obnovlenie servera - pozhalujsta, podozhdute...<br>Server upgrading now - please wait...<br /><a href="admin/overview.php">Admin link</a>');
-    }
-  }
-}
+init_update($config);
 unset($db_name);
 
 // Initializing constants
+$sn_page_name_original = isset($_GET['page'])
+  ? trim(strip_tags($_GET['page']))
+  : str_replace(DOT_PHP_EX, '', str_replace(SN_ROOT_RELATIVE, '', str_replace('\\', '/', $_SERVER['SCRIPT_NAME'])));
+define('INITIAL_PAGE', $sn_page_name_original);
 define('SN_COOKIE'        , ($config->COOKIE_NAME ? $config->COOKIE_NAME : 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
 define('SN_COOKIE_I'      , SN_COOKIE . '_I');
 define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_default_template : 'OpenGame');
@@ -244,10 +219,10 @@ define('FMT_DATE_TIME'    , FMT_DATE . ' ' . FMT_TIME);
 $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 
 require_once(SN_ROOT_PHYSICAL . "includes/template" . DOT_PHP_EX);
+$template_result = array('.' => array('result' => array()));
+
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
 
-$template_result = array('.' => array('result' => array()));
-$sn_page_name = isset($_GET['page']) ? trim(strip_tags($_GET['page'])) : '';
 
 // Подключаем все модули
 // По нормальным делам тут надо подключать манифесты
@@ -350,6 +325,7 @@ if(!isset($sn_data['pages'][$sn_page_name]))
 
 sn_db_connect();
 
+global $lang;
 $lang = new classLocale(DEFAULT_LANG, $config->server_locale_log_usage);
 $lang->lng_switch(sys_get_param_str('lang'));
 
@@ -378,8 +354,107 @@ if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TI
 // pdump($skip_fleet_update, '$skip_fleet_update');
 // pdump($supernova->options['fleet_update_skip'], '$supernova->options[fleet_update_skip]');
 
-if(!($skip_fleet_update || $supernova->options['fleet_update_skip']) && $time_now - $config->flt_lastUpdate >= 4)
+if(!($skip_fleet_update || $supernova->options['fleet_update_skip']) && SN_TIME_NOW - $config->flt_lastUpdate >= 4)
 {
   require_once(SN_ROOT_PHYSICAL . "includes/includes/flt_flying_fleet_handler2" . DOT_PHP_EX);
   flt_flying_fleet_handler($config, $skip_fleet_update);
 }
+
+$result = sec_login();
+$user = $result[F_LOGIN_USER];
+unset($result[F_LOGIN_USER]);
+$template_result += $result;
+unset($result);
+// В этой точке пользователь либо авторизирован - и есть его запись - либо пользователя гарантированно нет в базе
+
+// Если сообщение пустое - заполняем его по коду
+$template_result[F_LOGIN_MESSAGE] = isset($template_result[F_LOGIN_MESSAGE]) && $template_result[F_LOGIN_MESSAGE]
+  ? $template_result[F_LOGIN_MESSAGE]
+  : $lang['sys_login_messages'][$template_result[F_LOGIN_STATUS]];
+
+// Это уже переключаемся на пользовательский язык с откатом до языка в параметрах запроса
+$lang->lng_switch(sys_get_param_str('lang'));
+global $dpath;
+$dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
+
+
+if($template_result[F_GAME_DISABLE] = $config->game_disable)
+{
+  $template_result[F_GAME_DISABLE_REASON] = sys_bbcodeParse($config->game_disable_reason);
+  if(defined('IN_API'))
+  {
+    return;
+  }
+
+  if($user['authlevel'] < 1 || !(defined('IN_ADMIN') && IN_ADMIN))
+  {
+    message($template_result[F_GAME_DISABLE_REASON], $config->game_name);
+    ob_end_flush();
+    die();
+  }
+}
+
+
+// TODO ban
+if($template_result[F_BANNED_STATUS] && !$skip_ban_check)
+{
+  if(defined('IN_API'))
+  {
+    return;
+  }
+
+  $bantime = date(FMT_DATE_TIME, $template_result[F_BANNED_STATUS]);
+  // TODO: Add ban reason. Add vacation time. Add message window
+  sn_sys_logout(false, true);
+  message("{$lang['sys_banned_msg']} {$bantime}", $lang['ban_title']);
+  die("{$lang['sys_banned_msg']} {$bantime}");
+}
+
+$template_result[F_USER_AUTHORIZED] = $sys_user_logged_in = !empty($user) && isset($user['id']) && $user['id'];
+
+$allow_anonymous = $allow_anonymous || (isset($sn_page_data['allow_anonymous']) && $sn_page_data['allow_anonymous']);
+
+if(!$allow_anonymous && !$sys_user_logged_in)
+{
+  sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+  sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
+}
+
+/*
+if(!(
+  ($allow_anonymous || $sys_user_logged_in)
+  ||
+  (
+    defined('IN_ADMIN') && IN_ADMIN === true && $user['authlevel'] < 1
+  )
+))
+{
+  setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+  sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
+}
+*/
+
+// define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
+
+defined('SN_CLIENT_TIME_DIFF_SECONDS') or define('SN_CLIENT_TIME_DIFF_SECONDS', isset($user['user_time_diff']) ? $user['user_time_diff'] : 0);
+defined('SN_CLIENT_TIME_UTC_OFFSET') or define('SN_CLIENT_TIME_UTC_OFFSET', isset($user['user_time_utc_offset']) ? $user['user_time_utc_offset'] : 0);
+$time_diff = SN_CLIENT_TIME_DIFF_SECONDS + SN_CLIENT_TIME_UTC_OFFSET;
+defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
+defined('SN_CLIENT_TIME_LOCAL') or define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
+
+
+
+
+/*
+if($sys_user_logged_in)
+{
+  sys_user_vacation($user);
+}
+*/
+/*
+if(empty($user) && ($username = sys_get_param_str_unsafe('username')))
+{
+  $password = sys_get_param_str_unsafe('password');
+  $result = sn_login_new($username, $password, sys_get_param_int('rememberme'));
+}
+*/

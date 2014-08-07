@@ -51,7 +51,7 @@ function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
   return $return;
 }
 
-function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $PlanetName = '', $HomeWorld = false) {
+function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_name_unsafe = '', $HomeWorld = false) {
   global $lang, $config;
 
 /*
@@ -271,7 +271,7 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
     $planet['id_owner']    = $PlanetOwnerID;
     $planet['last_update'] = time();
 
-    $planet['name']        = $PlanetName ? $PlanetName : $lang['sys_colo_defaultname'];
+    $planet['name']        = $planet_name_unsafe ? $planet_name_unsafe : $lang['sys_colo_defaultname'];
     if(!$HomeWorld)
     {
       $OwnerName = db_user_by_id($PlanetOwnerID, false, 'username');

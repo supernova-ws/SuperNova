@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a9.5');
+define('SN_VERSION', '39a10.0');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -48,6 +48,7 @@ define('PREG_DATE_SQL_RELAXED', '/(20[1-9][0-9])(?:\-(1[0-2]|0[1-9])(?:\-(3[01]|
 
 // Default allowed chars for random string
 define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
+define('SN_SYS_SEC_CHARS_CONFIRMATION', '0123456789');
 
 // Mot qui sont interdit a la saisie !
 $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
@@ -251,12 +252,59 @@ define('LOG_DEBUG', 900); // Отладка
 define('LOG_DEBUG_SQL', 910); // Отладка SQL
 
 // Login statuses
+define('LOGIN_UNDEFINED'             , 0);
 define('LOGIN_SUCCESS'               , 1);
-define('LOGIN_SUCCESS_CREATE_PROFILE', 2);
+// define('LOGIN_SUCCESS_CREATE_PROFILE', 2);
 define('LOGIN_ERROR_PASSWORD'        , 3);
 define('LOGIN_ERROR_USERNAME'        , 4);
-define('LOGIN_ERROR_ACTIVE'          , 5);
-define('LOGIN_ERROR_EXTERNAL_AUTH'   , 6);
+// define('LOGIN_ERROR_ACTIVE'          , 5);
+// define('LOGIN_ERROR_EXTERNAL_AUTH'   , 6);
+// define('LOGIN_ERROR_COOKIE'          , 7);
+
+define('REGISTER_ERROR_USERNAME_WRONG'     , 8);
+define('REGISTER_ERROR_USERNAME_EXISTS'     , 9);
+define('REGISTER_ERROR_PASSWORD_INSECURE'     , 10);
+define('REGISTER_ERROR_PASSWORD_DIFFERENT'     , 21);
+define('REGISTER_ERROR_EMAIL_EXISTS'     , 22);
+define('REGISTER_SUCCESS'               , 11);
+
+define('PASSWORD_RESTORE_ERROR_WRONG_EMAIL', 12);
+define('PASSWORD_RESTORE_ERROR_TOO_OFTEN', 13);
+define('PASSWORD_RESTORE_ERROR_SENDING', 15);
+define('PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT', 18);
+define('PASSWORD_RESTORE_SUCCESS_CODE_SENT', 14);
+
+define('PASSWORD_RESTORE_ERROR_CODE_WRONG', 16);
+define('PASSWORD_RESTORE_ERROR_CODE_TOO_OLD', 17);
+define('PASSWORD_RESTORE_ERROR_CHANGE', 18);
+define('PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT', 19);
+define('PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR', 20);
+// 23
+
+define('AUTH_LEVEL_ANONYMOUS', -10);
+define('AUTH_LEVEL_GUEST', -5);
+define('AUTH_LEVEL_REGISTERED', 0);
+
+// Global template_result fields
+define('AUTH_LEVEL', 'AUTH_LEVEL');
+
+define('F_LOGIN_STATUS', 'F_LOGIN_STATUS');
+define('F_LOGIN_MESSAGE', 'F_LOGIN_MESSAGE');
+define('F_LOGIN_USER', 'F_LOGIN_USER');
+define('F_PASSWORD_NEW', 'F_PASSWORD_NEW');
+
+define('F_BANNED_STATUS', 'F_BANNED_STATUS');
+define('F_BANNED_MESSAGE', 'F_BANNED_MESSAGE');
+
+define('F_VACATION_STATUS', 'F_VACATION_STATUS');
+
+define('F_USER_AUTHORIZED', 'F_USER_AUTHORIZED');
+
+define('F_GAME_DISABLE', 'F_GAME_DISABLE');
+define('F_GAME_DISABLE_REASON', 'F_GAME_DISABLE_REASON');
+
+
+
 
 // Option groups
 define('OPT_ALL',      0);

@@ -22,7 +22,7 @@ if ($user['authlevel'] < 1)
 }
 
 $mode = sys_get_param_str('mode', 'banit');
-$name_unsafe = sys_get_param_str_raw('name');
+$name_unsafe = sys_get_param_str_unsafe('name');
 $name_output = sys_safe_output($name_unsafe);
 $action = sys_get_param_str('action');
 

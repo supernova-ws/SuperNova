@@ -30,7 +30,7 @@ if($info_action)
     switch($info_action)
     {
       case MARKET_INFO_PLAYER:
-        $user_info_name_unsafe = sys_get_param_str_raw('user_info_name');
+        $user_info_name_unsafe = sys_get_param_str_unsafe('user_info_name');
         if(!$user_info_name_unsafe)
         {
           throw new Exception(MARKET_INFO_PLAYER_WRONG, ERR_ERROR);
