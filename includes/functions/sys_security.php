@@ -127,7 +127,7 @@ function sec_restore_password_send_email($email_unsafe) {
     doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$last_confirm['id']}' LIMIT 1;");
 
     do {
-      $confirm_code = sys_random_string(4, SN_SYS_SEC_CHARS_CONFIRMATION);
+      $confirm_code = sys_random_string(8, SN_SYS_SEC_CHARS_CONFIRMATION);
       $confirm_code_safe = mysql_real_escape_string($confirm_code);
       $query = doquery("SELECT count(*) FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}'", true);
     } while(!$query);
@@ -165,15 +165,14 @@ function sec_restore_password_confirm($confirm_safe, &$result) {
       throw new exception(PASSWORD_RESTORE_ERROR_CHANGE);
     }
 
-    doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$last_confirm['id_user']}' LIMIT 1;");
-
     $message = sprintf($lang['log_lost_email_pass'], $config->game_name, $new_password);
     @$operation_result = mymail($last_confirm['email'], sprintf($lang['log_lost_email_title'], $config->game_name), htmlspecialchars($message));
     $message = sys_bbcodeParse($message) . '<br><br>';
 
     $result[F_PASSWORD_NEW] = $new_password;
     $result[F_LOGIN_STATUS] = $operation_result ? PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT : PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR;
-    $result[F_LOGIN_MESSAGE] = $message . $operation_result ? $lang['log_lost_sent_pass'] : $lang['log_lost_err_sending'];
+    $result[F_LOGIN_MESSAGE] = $message . ($operation_result ? $lang['log_lost_sent_pass'] : $lang['log_lost_err_sending']);
+    doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$last_confirm['id_user']}' LIMIT 1;");
     /*
     message($message, $lang['log_lost_header']);
 
@@ -341,6 +340,7 @@ function sec_login_register($username_unsafe, $password_raw, $remember_me = 1) {
       throw new exception(REGISTER_ERROR_PASSWORD_DIFFERENT, ERR_ERROR);
     }
 
+    $email_unsafe = sys_get_param_str_unsafe('email');
     $email = sys_get_param_str('email');
     if(db_user_by_email($email, true)) {
       throw new exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
@@ -350,11 +350,11 @@ function sec_login_register($username_unsafe, $password_raw, $remember_me = 1) {
     $language = sys_get_param_str('lang', DEFAULT_LANG);
     $skin = DEFAULT_SKINPATH;
     // `id_planet` = 0, `sex` = '{$sex}', `design` = '1',
-    classSupernova::db_ins_record(LOC_USER, "`email` = '{$email}', `email_2` = '{$email}', `username` = '{$username_safe}', `dpath` = '{$skin}',
+    $user_new = classSupernova::db_ins_record(LOC_USER, "`email` = '{$email}', `email_2` = '{$email}', `username` = '{$username_safe}', `dpath` = '{$skin}',
       `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ", `password` = '{$md5pass}',
       `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';");
 
-    $user['id'] = mysql_insert_id();
+    $user['id'] = $user_new['id'];
     doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = \"{$username_safe}\"");
 
     if($id_ref = sys_get_param_int('id_ref'))
@@ -405,6 +405,9 @@ function sec_login_register($username_unsafe, $password_raw, $remember_me = 1) {
     $config->db_saveItem('users_amount', $config->users_amount + 1);
 
     sn_db_transaction_commit();
+
+    $email_message  = sprintf($lang['log_reg_email_text'], $config->game_name, SN_ROOT_VIRTUAL, sys_safe_output($username_unsafe), sys_safe_output($password_raw));
+    @mymail($email_unsafe, sprintf($lang['log_reg_email_title'], $config->game_name), $email_message);
 
     sec_set_cookie_by_fields($user['id'], $username_unsafe, $md5pass, $remember_me);
 

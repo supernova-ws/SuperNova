@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a10.0
+* @version 39a10.2
 *
 */
 
@@ -89,16 +89,6 @@ $a_lang_array = (array(
   'Languese' => 'Language',
   'log_reg_text0' => 'Before registering please read',
   'log_reg_text1' => 'Registration means that you have read and fully agree with all points of the rules. If you do not agree with any paragraph rules-please register.',
-  'mail_title' => "Your registration on SuperNova game server %1\$s",
-  'mail_welcome' => "Registration confirmation for account %3\$s\r\n\r\n
-  This letter contains registration data on SuperNova game server %1\$s
-  Store this data in safe place\r\n\r\n
-  Server address: %2\$s\r\n
-  Your login: %3\$s\r\n
-  Your password: %4\$s\r\n\r\n
-  Thank you for registering on our server! We wish you luck in game!\r\n
-  Server administration %1\$s %2\$s\r\n\r\n
-  Powered by OpenSource engine 'Project SuperNova.WS'. Light your SuperNova http://supernova.ws/",
   'thanksforregistry' => 'Congratulations on your successful registration! You will be redirected to the main page of your planet in 10 seconds, if it did not click on this <a href=overview.php><u>link!</u></a>!',
   'welcome_to_universe' => 'Welcome to OGame!!!',
   'please_click_url' => 'In order to use the account, you must activate it by clicking on this link',
@@ -130,9 +120,6 @@ $a_lang_array = (array(
   'log_lost_reset_pass' => 'Reset password',
   'log_lost_sent_code' => 'Email sent to this email with further instructions on resetting your password',
   'log_lost_sent_pass' => 'Just sent to your email message with the new password',
-  'log_lost_email_title' => 'Supernova, Universe %s: Password reset',
-  'log_lost_email_code' => 'Someone (possibly you) has requested a reset password on SuperNova Universe %4 . If you did not request reset password-then just ignore this email. For password reset, go to the address %1$s?confirm=%2$s or enter the confirmation code "%2$s" (WITHOUT THE DOUBLE QUOTES!) on the page %1$s This code will be valid up to %3$s. After the password reset you will need to request a new confirmation code',
-  'log_lost_email_pass' => 'You changed your password on the SuperNova Universe %s. The following line shows your new password:<br />%s<br />Remember it!',
   'log_lost_err_email' => 'This email is not registered in the database. This could mean one of the following:<br>You miss typed the email. Return to the previous page and try again<br>Your account has been deleted due to inactivity. Register a new<br>You are trying to enter the wrong Gaming Universe. Double check the name of the current Universe and on Error Go To correct Universe',
   'log_lost_err_sending' => 'Error sending message to the specified by email. Notify Administrator of the error',
   'log_lost_err_code' => 'The verification code is not registered in the database. This could mean one of the following:<br>You mistype the confirmation code. Return to the previous page and enter the code<br>You are trying to enter the confirmation code in the wrong Universe for which it was generated. Double check the name of the current Universe and on Error Go To correct Universe<br>Your account has been deleted due to inactivity. Register a new<br>Expired confirmation code. Check the expiration date of code in the letter. If it passed, request a new confirmation code',

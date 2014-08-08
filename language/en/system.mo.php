@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a10.0
+* @version 39a10.2
 *
 */
 
@@ -935,6 +935,21 @@ $a_lang_array = (array(
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT => 'Email with new password successfully sent to your email',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR => 'Error sending new password. Get new restoration code and try again',
   ),
+
+  'log_reg_email_title' => "Your registration on SuperNova game server %1\$s",
+  'log_reg_email_text' => "Registration confirmation for account %3\$s\r\n\r\n
+  This letter contains registration data on SuperNova game server %1\$s
+  Store this data in safe place\r\n\r\n
+  Server address: %2\$s\r\n
+  Your login: %3\$s\r\n
+  Your password: %4\$s\r\n\r\n
+  Thank you for registering on our server! We wish you luck in game!\r\n
+  Server administration %1\$s %2\$s\r\n\r\n
+  Powered by OpenSource engine 'Project SuperNova.WS'. Light your SuperNova http://supernova.ws/",
+
+  'log_lost_email_title' => 'Supernova, Universe %s: Password reset',
+  'log_lost_email_code' => 'Someone (possibly you) has requested a reset password on SuperNova Universe %4 . If you did not request reset password-then just ignore this email. For password reset, go to the address %1$s?confirm=%2$s or enter the confirmation code "%2$s" (WITHOUT THE DOUBLE QUOTES!) on the page %1$s This code will be valid up to %3$s. After the password reset you will need to request a new confirmation code',
+  'log_lost_email_pass' => 'You changed your password on the SuperNova Universe %s. The following line shows your new password:<br />%s<br />Remember it!',
 
   'sys_login_password_show' => 'Show password',
   'sys_login_password_hide' => 'Hide password',
