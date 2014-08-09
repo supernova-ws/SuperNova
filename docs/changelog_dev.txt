@@ -306,7 +306,7 @@ Stay out of my shed
   !!!!!!!!!!!!!!!!! Добавить бенчмарк и потестить производительность на живых !!!!!!!!!!!
 
 
-Текущий билд #39a10.2#
+Текущий билд #39a10.3#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять flt_lastUpdate
@@ -656,6 +656,21 @@ and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 1 month)
 and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 1 month) ORDER BY onlinetime;
 
 
+SELECT FROM_UNIXTIME(onlinetime), FROM_UNIXTIME(register_time), (onlinetime - register_time)/60, dark_matter, metamatter_total
+FROM `game_users` where
+metamatter_total = 0 and dark_matter = 0 and (
+(onlinetime - register_time < 1 * 60 and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 1 week))
+OR
+(onlinetime - register_time < 10 * 60 and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 2 week))
+OR
+(onlinetime - register_time < 15 * 60 and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 3 week))
+OR
+(onlinetime - register_time < 30 * 60 and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 1 month))
+OR
+(FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 1 month) and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 1 month))
+) ORDER BY onlinetime, register_time;
+
+
 
 Текст: Крисберги - кристалл работает не с сознанием, а с подсознанием
 Аморальный подсознанием
@@ -785,8 +800,12 @@ sec_restore_password_confirm($confirm_safe, $result); - кукесы тут вы
 
 
 
+Добавить защиту от перерасхода ММ и/или ТМ
 
 
+2014-08-09 21:30:58 39a10.3
+[~] Метаматерия
+    Немного изменен алгоритм начисления ММ
 
 
 2014-08-08 04:50:49 39a10.2

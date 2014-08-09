@@ -27,7 +27,8 @@ function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = fal
   }
   else
   {
-    db_user_set_by_id($user_id, "`{$sn_data_metamatter_db_name}` = `{$sn_data_metamatter_db_name}` + '{$metamatter}', `metamatter_total` = `metamatter_total` + '{$metamatter}'");
+    db_user_set_by_id($user_id, "`{$sn_data_metamatter_db_name}` = `{$sn_data_metamatter_db_name}` + '{$metamatter}'" .
+      ($metamatter > 0 ? ", `metamatter_total` = `metamatter_total` + '{$metamatter}'" : ''));
     $result = mysql_affected_rows();
   }
 
