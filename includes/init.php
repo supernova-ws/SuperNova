@@ -412,6 +412,7 @@ if($template_result[F_BANNED_STATUS] && !$skip_ban_check)
 
 $template_result[F_USER_AUTHORIZED] = $sys_user_logged_in = !empty($user) && isset($user['id']) && $user['id'];
 
+// !!! Просто $allow_anonymous используется в платежных модулях !!!
 $allow_anonymous = $allow_anonymous || (isset($sn_page_data['allow_anonymous']) && $sn_page_data['allow_anonymous']);
 
 if(!$allow_anonymous && !$sys_user_logged_in)
