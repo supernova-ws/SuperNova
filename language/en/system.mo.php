@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a10.2
+* @version 39a10.11
 *
 */
 
@@ -345,7 +345,7 @@ $a_lang_array = (array(
   'sys_noalloaw' 			=> 'You have access to this zone!',
   'sys_governor'        => 'Governor',
 
-  'flt_error_duration_wrong' => 'Невозможно отправить флот - нет доступных интервалов для задержки',
+  'flt_error_duration_wrong' => 'Невозможно отправить флот - нет доступных интервалов для задержки. Изучите еще уровни Астрокартографии',
   'flt_stay_duration' => 'выберите длительность',
 
   'flt_mission_expedition' => array(

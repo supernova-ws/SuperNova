@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a7.14
+* @version 39a10.11
 *
 */
 
@@ -101,7 +101,7 @@ $a_lang_array = (array(
     TECH_HYPERSPACE => 'Hyperspace Technology',
     TECH_EXPEDITION => 'Expedition Technology',
     TECH_COLONIZATION => 'Colonization Technology',
-    TECH_ASTROTECH => '����������������',
+    TECH_ASTROTECH => 'Astrophysics Technology',
     TECH_GRAVITON => 'Graviton Technology',
     TECH_RESEARCH => 'Intergalactic Research Network',
 
