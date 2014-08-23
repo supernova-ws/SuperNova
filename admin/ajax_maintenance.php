@@ -1,5 +1,7 @@
 <?php
 
+define('IN_ADMIN', true);
+
 require('../includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < 3)
@@ -8,7 +10,6 @@ if($user['authlevel'] < 3)
   die();
 }
 
-define('IN_ADMIN', true);
 define('IN_AJAX', true);
 
 lng_include('admin');
