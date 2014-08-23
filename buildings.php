@@ -9,7 +9,7 @@
  * @version 1.3
 // History version
 // 1.0 - Nettoyage modularisation
-// 1.1 - Mise au point, mise en fonction pour lin�arisation du fonctionnement
+// 1.1 - Mise au point, mise en fonction pour linarisation du fonctionnement
 // 1.2 - Liste de construction batiments
  * @copyright 2008 by Chlorel for XNova
  */

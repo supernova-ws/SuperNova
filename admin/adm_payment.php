@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /**
  * adm_payment.php
