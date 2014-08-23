@@ -22,7 +22,7 @@ function eco_struc_make_resource_row(resource_name, value, value_destroy)
     document.getElementById('unit_' + resource_name).style.visibility = "hidden";
   }
 }
-
+/*
 var balance_translate = {
   'level': language['level'],
   'metal': language['sys_metal'],
@@ -32,7 +32,7 @@ var balance_translate = {
 
 //  'shield': language['sys_shield'],
 };
-
+*/
 var bld_unit_info_width = 0;
 //var bld_unit_info_cache = Array();
 
@@ -123,90 +123,47 @@ function eco_struc_show_unit_info(unit_id, no_color)
   {
     var balance_header = '';
     result = '';
-    if(STACKABLE)
-    {
-      for(i in unit['resource_map'][0])
-      {
-        if(unit['resource_map'][0][i])
-        {
+    if(STACKABLE) {
+      for(i in unit['resource_map'][0]) {
+        if(unit['resource_map'][0][i]) {
           result += '<tr>';
           result += '<th class="c_l">' + language[i] + '</th>';
-//          result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][0][i]), 0, 'positive', 0) + '</td>';
-        result += '<td class="c_r" width="75px">' + unit['resource_map'][0][i] + '</td>';
+          result += '<td class="c_r" width="75px">' + unit['resource_map'][0][i] + '</td>';
           result += '</tr>';
         }
-        /*
-        for(j in unit['resource_map'][i])
-        {
-          if(unit['resource_map'][i][j])
-          {
-            {
-              if(!has_header)
-              {
-                switch(j)
-                {
-                  case 'level':
-                    balance_header += '<th class="c_l">' + language['level_short'] + '</th>';
-                    break;
-
-                  case 'metal':
-                  case 'crystal':
-                  case 'deuterium':
-                  case 'energy':
-                    balance_header += '<th class="c_c" colspan="2">' + balance_translate[j];
-                    break;
-
-                  case 'metal_diff':
-                  case 'crystal_diff':
-                  case 'deuterium_diff':
-                  case 'energy_diff':
-                    balance_header += '</th>';
-                    break;
-                }
-              }
-              result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][i][j]), 0, 'positive', j == 'level' ? -unit['level']-unit['level_bonus'] : 0) + '</td>';
-            }
-          }
-        }
-        */
       }
-    }
-    else
-    {
+    } else {
       var has_header = false;
-      for(i in unit['resource_map'])
-      {
+      for(i in unit['resource_map']) {
         result += '<tr class="c_r">';
-        for(j in unit['resource_map'][i])
-        {
-          if(unit['resource_map'][i][j])
-          {
-            {
-              if(!has_header)
-              {
-                switch(j)
-                {
-                  case 'level':
-                    balance_header += '<th class="c_l">' + language['level_short'] + '</th>';
-                    break;
+        for(j in unit['resource_map'][i]) {
+          if(unit['resource_map'][i][j]) {
+            if(!has_header) {
+              switch(j) {
+                case 'level':
+                  balance_header += '<th class="c_l">' + language['level_short'] + '</th>';
+                  break;
 
-                  case 'metal':
-                  case 'crystal':
-                  case 'deuterium':
-                  case 'energy':
-                    balance_header += '<th class="c_c" colspan="2">' + balance_translate[j];
-                    break;
+                case 'sys_metal':
+                case 'sys_crystal':
+                case 'sys_deuterium':
+                case 'sys_energy':
+                case 'sys_expeditions':
+                case 'sys_colonies':
+                  balance_header += '<th class="c_c" colspan="2">' + language[j];
+                  break;
 
-                  case 'metal_diff':
-                  case 'crystal_diff':
-                  case 'deuterium_diff':
-                  case 'energy_diff':
-                    balance_header += '</th>';
-                    break;
-                }
+                case 'metal_diff':
+                case 'crystal_diff':
+                case 'deuterium_diff':
+                case 'energy_diff':
+                case 'sys_expeditions_diff':
+                case 'sys_colonies_diff':
+                  balance_header += '</th>';
+                  break;
               }
-              result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][i][j]), 0, 'positive', j == 'level' ? -unit['level']-unit['level_bonus'] : 0) + '</td>';
             }
+            result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][i][j]), 0, 'positive', j == 'level' ? -unit['level']-unit['level_bonus'] : 0) + '</td>';
           }
         }
         result += '</tr>';

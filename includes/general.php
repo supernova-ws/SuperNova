@@ -1393,36 +1393,52 @@ function get_unit_cost_in(&$cost, $in_resource = RES_METAL)
   return $metal_cost;
 }
 
-function get_player_max_expeditons(&$user)
+function get_player_current_expeditions(&$user) {
+  $FlyingExpeditions  = doquery("SELECT COUNT(fleet_owner) AS `expedi` FROM {{fleets}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '" . MT_EXPLORE . "';", true);
+  return $FlyingExpeditions['expedi'];
+}
+
+function get_player_max_expeditons(&$user, $astrotech = -1)
 {
-  if(!isset($user[UNIT_PLAYER_EXPEDITIONS_MAX]))
-  {
-    $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
-    $user[UNIT_PLAYER_EXPEDITIONS_MAX] = $astrotech >= 1 ? floor(sqrt($astrotech - 1)) : 0;
+  if($astrotech == -1) {
+    if(!isset($user[UNIT_PLAYER_EXPEDITIONS_MAX]))
+    {
+      $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
+      $user[UNIT_PLAYER_EXPEDITIONS_MAX] = $astrotech >= 1 ? floor(sqrt($astrotech - 1)) : 0;
+    }
+
+    return $user[UNIT_PLAYER_EXPEDITIONS_MAX];
+  } else {
+    return $astrotech >= 1 ? floor(sqrt($astrotech - 1)) : 0;
   }
-
-  return $user[UNIT_PLAYER_EXPEDITIONS_MAX];
 }
 
-function get_player_max_expedition_duration(&$user)
+function get_player_max_expedition_duration(&$user, $astrotech = -1)
 {
-  return mrc_get_level($user, false, TECH_ASTROTECH);
+  return $astrotech == -1 ? mrc_get_level($user, false, TECH_ASTROTECH) : $astrotech;
 }
 
-function get_player_max_colonies(&$user)
-{
-  if(!isset($user[UNIT_PLAYER_COLONIES_MAX]))
-  {
-    global $config;
+function get_player_max_colonies(&$user, $astrotech = -1) {
+  global $config;
 
-    $expeditions = get_player_max_expeditons($user);
-    $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
+  if($astrotech == -1) {
+    if(!isset($user[UNIT_PLAYER_COLONIES_MAX])) {
+
+      $expeditions = get_player_max_expeditons($user);
+      $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
+      $colonies = $astrotech - $expeditions;
+
+      $user[UNIT_PLAYER_COLONIES_MAX] = $config->player_max_colonies < 0 ? $colonies : min($config->player_max_colonies, $colonies);
+    }
+
+    return $user[UNIT_PLAYER_COLONIES_MAX];
+  } else {
+    $expeditions = get_player_max_expeditons($user, $astrotech);
+    // $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
     $colonies = $astrotech - $expeditions;
 
-    $user[UNIT_PLAYER_COLONIES_MAX] = $config->player_max_colonies < 0 ? $colonies : min($config->player_max_colonies, $colonies);
+    return $config->player_max_colonies < 0 ? $colonies : min($config->player_max_colonies, $colonies);
   }
-
-  return $user[UNIT_PLAYER_COLONIES_MAX];
 }
 
 function get_player_current_colonies(&$user)

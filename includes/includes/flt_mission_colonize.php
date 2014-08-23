@@ -27,13 +27,11 @@ function flt_mission_colonize(&$mission_data)
     $TheMessage = $lang['sys_colo_notfree'];
     if (!$mission_data['dst_planet'] || empty($mission_data['dst_planet']))
     {
-      $iMaxColo = get_player_max_colonies($src_user_row);
-
       $iPlanetCount = get_player_current_colonies($src_user_row);
 
       // Can we colonize more planets?
       $TheMessage = $lang['sys_colo_maxcolo'];
-      if($iPlanetCount < $iMaxColo + 1)
+      if($iPlanetCount < get_player_max_colonies($src_user_row))
       {
         // Yes, we can colonize
         $TheMessage = $lang['sys_colo_badpos'];

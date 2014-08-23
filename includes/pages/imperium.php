@@ -260,6 +260,9 @@ function sn_imperium_view($template = null)
   $template->assign_vars(array(
     'COLONIES_CURRENT' => get_player_current_colonies($user),
     'COLONIES_MAX' => get_player_max_colonies($user),
+
+    'EXPEDITIONS_CURRENT' => get_player_current_expeditions($user),
+    'EXPEDITIONS_MAX' => get_player_max_expeditons($user),
   ));
   //$template->assign_recursive($template_result);
 

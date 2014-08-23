@@ -1,3 +1,718 @@
+Stay out of my shed
+
+ТУДУ
+====
+  Видное
+  ------
+    [*] Чат - выделять цветом, если идет обращение к игроку в сообщении
+    [*] Таблицы - выдать "черезполосицу", что бы было можно различать строки легче - в частности при подборе флота
+    [*] Премиум - плюс к Губернаторам
+    [*] Режим наблюдателя - когда можно летать только между своими планетами и нельзя ничего делать остального
+        За ТМ?
+        Для прем от 3 (?) давать возможность делать "пассивный" режим?
+        С Таймаутом(?)
+        Не давать включать при летящих агрессивных флотах
+
+
+  Важное внутреннее
+  -----------------
+    [*] Еще раз пройтись по вводу-выводу данных. Это уже когда будет модульная система вывода
+    [*] Позаменять везде для ID преобразования из intval() в idval(). ID сделать строкой!
+
+
+  Быстрое внутреннее
+  ------------------
+
+
+  Завлекалочки
+  ------------
+    [*] Модуль "Счастливчик" - за ММ повышает всё, что можно
+        Серебряная ложка
+        Родился в рубашке 10 баксов
+        Седьмой сын 100 баксов
+        Седьмой сын седьмого сына 1000 баксов
+    [*] Модуль "Эвентов"
+    [*] ОТДЕЛЬНОЕ СТРОЕНИЕ - ПЛАНЕТАРНЫЙ ЩИТ, который уменьшает всю атаку на некоторое количество единиц
+    [*] Модуль "Апгрейдов" - улучшает любой аспект любого юнита
+    [*] Артефакт "Планетарный сеятель" - разбрасывает планеты по галактикам. Свои? Чужие?
+
+
+  Не сломалось - не чини!
+  -----------------------
+    [*] Ракеты - переписать. Проверить, что бы влияли все бонусы - техи, форты, наемники, премиум
+    [*] Альянсы: переписать, в особенности работу с ранками!
+    [*] flt_t_send_fleet - переписать и сделать через него отправку всех флотов: своз ресурсов, через подбор флотов, через AJAX
+    [*] Флоты - внести в список кораблей флота ресурсы вместо отдельных полей
+    [*] // TODO ПЕРЕДЕЛАТЬ! function sys_stat_get_user_skip_list()
+    [*] infos.php - переписать
+    [*] Вселенная: отправка флотов через AJAX - И ВООБЩЕ РАЗОБРАТЬСЯ, КАК ЭТА ХУЕТА РАБОТАЕТ! И ПЕРЕПИСАТЬ!
+    [*] Кэширование языков http://ru.wikipedia.org/wiki/Коды_языков
+    [*] Параметр "re" при "cp" вообще не нужен - поубирать везде
+    [*] поискать _perhour как в metal_perhour - что бы убрать лишние строки из зданий-факторий
+    [*] Ракетные шахты - в строения! +переработка щитов
+    [*] Отвязать опции пользователя от пользователя
+    [*] Отвязать ресы от планет, флотов, юзера
+    [*] Сообщения - бывают "отложенные" и "инстант" - чат и ПМ, например. Переделать отправку сообщений по типам
+    [*] Переделать отправку сообщений со стандартного mail() на какой-нибудь мейлер PHPMailer, к примеру. Сделать отправку сообщений пакетами - что бы не попадать в спам-лист
+    [*] Отдельный таск КРОНом - или опционально в шедулере
+    [*] Добавить в темплейт поддержку префикса Fx_ - форматирование строки, скажем, в целое - FI и в число - FF
+
+  Навороты - ненужное и/или невидимое усложнение
+  ----------------------------------------------
+    [*] Интеграция с phpBB3 - капча на входе в игру ИЛИ специальные права для зареганных через движок
+    [*] Перебалансировать наемников, переделать Академика
+    [*] Шпионаж: точность шпионажа от разности уровней для УИШ; защита зондами (?)
+    [*] Статистика: сделать еще учет планов и наёмников в стате
+    [*] Капитан - скилл для экспы, скилл на ускорение, скилл на сборку ресов
+    [*] Диверсификация результатов по экспе:
+        - Всегда - ТМ и арты
+        - Только транспорты - ресы
+        - Только суперхеви - флот
+        - Только лайты, миды и хеви - ТМ и арты
+
+  Нутрянное - нужно только мне
+  ----------------------------
+    [*] ОТКЛЮЧЕНИЕ МОДУЛЯ ДОЛЖНО БЫТЬ ПРОПИСАНО ВО ВСЕХ ФУНКЦИЯХ МОДУЛЯ!
+    [*] Плательщики, никогда не закончившие платеж
+        SELECT payment_user_id, payment_user_name, max(payment_date), sum(payment_dark_matter_paid)
+        FROM game_payment WHERE payment_status <> 1 AND payment_user_id NOT IN (SELECT payment_user_id FROM game_payment WHERE payment_status = 1)
+        GROUP BY payment_user_id ORDER BY max(payment_date) DESC
+    [*] Бенчмарк. Разделить время обсчета страницы и время генерации собственно HTML-текста
+
+  Фигня всякая, неважная
+  ----------------------
+    [*] ОШИБКА: проверить - бьется ли get_total_cost($level) с суммой по левелам  НЕ БЬЕТСЯ!!! но совсем чутку // TODO как-нибудь переделать на встроенные циклы
+    [*] ОШИБКА: Черный рынок - фигня с обменом ресурсов: не совпадают данные в JS (сколько будет) и в PHP (сколько стало) - очевидно ошибка округления
+    [*] Артефакты:
+        Инфа с ЧР - в артефакты (?)
+        Сканирование удержания - общее количество кораблей на орбите. Возможно - с задержкой по времени
+
+
+  HyperNova
+  ---------
+    [*] Сверхбыстрый режим - работа только с xcache - но это только после того, как разберусь с $supernova
+    [*] xcache
+        Для блокирования записи использовать xcache_inc/xcache_dec:
+        xcache_inc = 1 => мы блокировали данную запись, можно работать
+        xcache_inc > 1 => запись уже кем-то блокирована, xcache_dec, usleep, повторяем
+          usleep — Delay execution in microseconds. A micro second is one millionth of a second.
+        Двухуровневая блокировка - на уровне "таблиц" и на уровне "записей". Впрочем, нужна ли блокировка на уровне записей? Может нужна "общая блокировка"
+    [*] memcached
+        Так же может использоваться Memcache::add()
+    [*] HyperNova
+        При сохраннении индексов (например - кэш запросов) делать это через implode/explode - потому что всё равно потом прийдется восстанавливать указатели на объекты
+        Так же можно для массивов использовать serialize/unserialize и паковать, скажем, gzip - память дешевле тактов
+        Индексы можно сворачивать через MD5
+    [*] !!!! Поделать мелкие объектики, которые будут инкапсулировать методы и сами следить за своей когерентностью - игроки, планеты, юниты, очереди итд
+        Таки да - нативное обращение типа sn->$user->get()
+        А дальше уже внутри гета пусть сам ебеться с вытягиванием из базы и блокировкой - или потом как-нибудь? Это же нас к КК не приблизит?
+
+
+  Ссылкота
+  --------
+    [*] ioncube http://habrahabr.ru/post/191176/
+    [*] http://www.php.net/manual/ru/function.version-compare.php
+    [*] http://explainextended.com/2009/10/07/in-list-vs-range-condition-mysql/ - поиск по двум диапазонам
+    [*] http://www.smashingmagazine.com/2014/04/24/rebuilding-an-html5-game-in-unity/
+
+
+    [*] phonegap ручной билд требует только android.permission.INTERNET
+        http://www.smashingmagazine.com/2014/02/11/four-ways-to-build-a-mobile-app-part3-phonegap/  пример приложения
+        http://propertycross.com/jquerymobile/ пример приложения
+        http://tech.pro/blog/1704/2-ways-to-get-started-with-phonegapapache-cordova   пример приложения
+        http://habrahabr.ru/post/118059/
+        http://stackoverflow.com/questions/14818138/loading-remote-html-in-phonegap-or-cleaver-cordova-on-ios
+        http://stackoverflow.com/questions/15343647/using-phonegap-cordova-on-ios-with-external-url
+        http://blog.safaribooksonline.com/2012/02/29/phonegap-storing-and-retrieving-with-the-filesystem/
+        https://github.com/apache/cordova-plugin-file/blob/master/doc/index.md
+        http://docs.phonegap.com/en/1.3.0/phonegap_connection_connection.md.html#Connection - БОЛЕЕ НОВАЯ ВЕРСИЯ НУЖНА!
+        http://cordova.apache.org/docs/en/3.0.0/guide_cli_index.md.html#The%20Command-line%20Interface_customize_each_platform настройка вида под разные платформы
+        http://www.adamwadeharris.com/android-automation/   build and publish
+        http://fusiongrokker.com/post/follow-up-on-phonegap-build-compiled-file-sizes  reduce apk size
+        http://www.justbeck.com/three-ways-to-encrypt-phonegap-and-cordova-mobile-applications/
+        http://stackoverflow.com/questions/12177134/supporting-multiple-resolution-and-density-of-images-in-phonegap
+        http://knockoutjs.com/examples/simpleList.html - MVVM framework в помощь jqmobile
+    [*] paypal api http://habrahabr.ru/post/128198/
+    [*] google payment
+        http://developer.android.com/google/play/billing/gp-purchase-status-api.html
+        https://developers.google.com/discovery/libraries
+        http://docs.madewithmarmalade.com/display/MD/S3E+Android+Google+Play+Billing%3A+Using+the+API
+
+        http://hashcode.ru/questions/286954/php-как-сделать-закрытый-веб-api-для-андроид-приложения
+        https://groups.google.com/forum/#!topic/google-api-php-client/13N4rJ-zT2w
+        http://habrahabr.ru/post/160911/
+        https://github.com/thetutlage/Google-Play-Store-API
+        http://code.google.com/p/google-playstore-api/
+        http://grokbase.com/t/gg/android-market-api/1256vwc5js/access-google-play-apps-with-appaware-public-api
+    [*] http://rmcreative.ru/blog/post/s-yii-1.1-na-yii-2.0--chast-1-php#comments
+        <p>Итак, для перехода на 2.0 стоит изучить:</p>
+        <li><a href="http://ru2.php.net/manual/ru/language.namespaces.php">Пространства имён</a>.</li>
+        <li><a href="http://ru2.php.net/manual/ru/functions.anonymous.php">Анонимные функции</a>.</li>
+        <li>Короткий синтаксис массивов. Тут всё просто, вместо <code>array()</code> теперь <code>[]</code>.</li>
+        <li>Короткий <code>echo</code> в виде <code>&lt;?=</code>. Доступен всегда. Используется во всех view-шаблонах фреймворка. <a href="http://www.php.net/manual/ru/language.basic-syntax.phptags.php">При этом <code>&lt;?</code> пользоваться, как и ранее, небезопасно</a>.</li>
+        <li><a href="http://ru2.php.net/manual/ru/book.spl.php">SPL</a>.</li>
+        <li><a href="http://ru2.php.net/manual/ru/language.oop5.late-static-bindings.php">Позднее статическое связывание</a>.</li>
+        <li><a href="http://ru2.php.net/manual/ru/book.datetime.php">datetime</a>.</li>
+        <li><a href="http://ru2.php.net/manual/ru/language.oop5.traits.php">Трейты</a>.</li>
+        <li><a href="http://ru2.php.net/manual/ru/book.intl.php">intl</a>. В Yii2 многое из intl завёрнуто в компонент i18n, но не всё.</li>
+    [*] force reload
+        http://www.w3schools.com/jsref/met_loc_reload.asp
+        http://www.stefanhayden.com/blog/2006/04/03/css-caching-hack/
+        http://en.wikipedia.org/wiki/Wikipedia:Bypass_your_cache
+        http://stackoverflow.com/questions/118884/what-is-an-elegant-way-to-force-browsers-to-reload-cached-css-js-files - заставить браузер перечитывать CSS и JS
+    [*] http://www.merzo.net/index.html WELCOME TO STARSHIP DIMENSIONS... A Museum of Speculative Fiction inspired Spaceships
+    [*] Рост кристаллов
+        https://ru.wikipedia.org/wiki/Фронтальный_клеточный_автомат
+        http://www.mat.net.ua/autor/julia01.htm
+        http://cyberleninka.ru/article/n/modelirovanie-rosta-dvuhkomponentnogo-kristalla-so-sloistym-raspredeleniem-primesi
+        http://www.rsdn.ru/article/livepixels/LivePixels.xml
+        http://neoneuro.com/ru/live-pixels-ru/app
+
+
+
+    [*] Тексты: реализация "демона максвелла"
+        Сколько я помню школьную физику - дальше физика в моей жизни как-то не
+        встречалась - отводить придется, поскольку иначе кораблик начнет немного
+        сильно греться, там же выполняется работа. А отводить тепло в вакууме
+        можно либо просто излучением, либо выкидывая горячее наружу, например по
+        принципу демона Максвелла, что, сколько понимаю, вы и предлагаете.
+
+        Проблема с направленным отведением, на мой взгляд, состоит в том, что
+        тепло имеет свойство рассеиваться. То есть, мы все равно получим тепловой
+        след, причем интенсивность этого следа будет, как минимум, не меньше, чем
+        от работающего двигателя, так? Так-то можно было бы просто лететь носом к
+        врагам, дюзы-то все равно сзади.
+
+        Допустим, корабль взял с собой запас холода в виде жидкого воздуха - и
+        дышать есть чем, и тепло наружу не сбрасывается..
+
+        Я предлагаю не рассеивать горячее вещество, а излучать тепловые лучи. Но
+        излучать в одном направлении, окружив горячий радиатор зеркалом. Если
+        излучать строго от Солнца - ничего не заметят на его фоне.
+
+        Тепловой след от газа в вакууме почти не образуется, т.к. молекулы быстро
+        разлетаются и не сталкиваются.
+    [*] Текст: Крисберги - кристалл работает не с сознанием, а с подсознанием
+        Аморальный подсознанием
+        Поэтому крисберги эффективнее людей с кристаллическими компьютерами - и поэтому же опаснее
+        Крисберг - гибрид человека и кристалла, который перешел Предел Человечности
+
+
+РЕЛИЗ 40
+========
+  [*] mysqli !!!!!!!! ПРОВЕРИТЬ ЕЩЕ РАЗ ВСЕ ВВОДИМЫЕ ДАННЫЕ !!!!!!!
+  [*] mysql_real_escape_string => db_escape
+  [*] mysql_error => db_error
+  [*] doquery => db_query
+  [*] mysql_insert_id() => db_insert_id()
+  [*] mysql_num_rows => db_num_rows
+
+  [*] Инсталлятор
+  [*] Апдейтер
+
+  [*] Артефакт: "планетарный телепортер"
+  [*] Автоматическая конвертация ТМ в ММ по опции
+  [*] Админка - добавить в список игроков начисление ТМ и ММ
+  [*] АРТЕФАКТЫ - КУПИТЬ НЕСКОЛЬКО
+  [*] ЛОГ ТМ / ММ для игрока
+  [*] В ЧР ограничивать количество покупаемых кораблей ресурсами на планете
+  [*] todo - в капитане дропнуть поле captain_level - оно всегда равно unit_level
+  [*] Ачивки, интегрированные с наградами
+  [*] Модуль наград
+
+
+
+
+РЕЛИЗ 39
+========
+  !!! Сменить лицензионную политику. Модули под ионкубе - см. ссылкоту
+
+
+  [*] МОДУЛИ: проверить работу
+  [%] шпионаж не дает нормальный ID fleet_end_planet_id 'dst_planet'
+  [*] Модуль КК
+  [*] Модуль квестов "любые награды + мультиусловия"
+  [*] Не отсылаются сообщения очередей
+  [*] Отключено удаление аккаунта
+
+  [?] Убрать автопополнение стокмана из overview.php. Или, может, оставить? Добавить только rand()
+  [*] // FK_referrals_id  'DELETE FROM `{{referrals}}` WHERE `id`             not in (select id from {{users}});',
+  [*] // FK_referrals_id_partner  'DELETE FROM `{{referrals}}` WHERE `id_partner`     not in (select id from {{users}});',
+  [*] // FK_stats_id_owner  'DELETE FROM {{statpoints}} WHERE stat_type=1 AND id_owner not in (select id from {{users}});',
+  [*] БД таблица `unit` индекс I_unit_location - НЕ НУЖЕН, если везде проносить user_id - что, в целом, не сложно, наверное - потому что здоровый очень индекс
+
+
+  Под вопоросом в 39-м релизе
+  ---------------------------
+    [*] Переписать ранки Альянсов - кроме ID сделать еще sort_list для упорядочивания без смены ID
+    [*] !!!!!!!! GlobalMessage
+    [*] !!!!!!!! Переименовать юзеров, планеты, альянсы, тэги в более безопасные - без символов %?"'<>/\[](){};:,.^
+    [*] !!!!!!!! В чате - включать пользователям-премиум на месяц и выше разные фишки. Так же включать "бессмертным"
+
+    [*] Отвязать корабли флотов от флотов
+    [*] Отвязать губера PLANET_GOVERNOR_ID PLANET_GOVERNOR_LEVEL
+
+    [*] Refactor: change signature - попоменять порядок переменных. Например - mrc_get_level($unit_id, $user, $planet итд)
+    [*] рекорды - переписать на отдельную таблицу и что бы обновлялась вместе со статистикой
+    [*] Экспы: добавить нахождение Артефактов
+    [*] GeoIP - в админке и на странице Императора //todo - проблема с IP - берет IP_v6 - надо настраивать php или апач/lighttpd
+    [*] Унифицировать интерфейс постройки/конструирования/исследования
+    [*] ДЛЯ РАКЕТ СДЕЛАТЬ ПАРАМЕТР P_CONTAINS_IN - указывать ссылку сооружения, где они могут находиться
+    [*] Заменить артефакты строительства/исследования на простое ускорение за ТМ. Добавить ускорение постройки кораблей (?)
+    [*] Опция - автоконвертирование ММ в ТМ при нехватке ТМ
+    [*] СДЕЛАТЬ ЗДАНИЕ ДЛЯ ОБОРОНЫ - И ПРОВЕРЯТЬ ЕГО НАЛИЧИЕ
+    [*] СДЕЛАТЬ РАЗРУШЕНИЕ РАКЕТ - в шахте и в полёте
+    [+] Альянсы: лог транзакций
+    [*] Проверить поля для ввода данных: ЧР, экраны Альянса - подабавлять мультиэлементы
+    [*] ОЧЕРЕДЬ ИССЛЕДОВАНИЯ - расширять академиком
+    [*] Констраинт на planets.id_owner => users.id ON UPDATE CASCADE ON DELETE CASCADE - НИХУЯ, ставить в 0 и пусть летять
+    [*] Разрешить грабить удалённые планеты и луны тем флотам, что в полете! Проверить, как вообще работает destroyed поле
+    [*] Поменять название всем файлам, вызываемым из АЯКСА на ajax_
+
+
+  Good Enough
+    [*] Спасательная капсула - капитан спасается, одноразовая, тыщ 20-30кТМ
+    [*] sys_o_get_updated слишком много хочет обновлять подряд юзеров при нескольких планетах - а нада один раз - но эта тока при апдейте
+    [*] сеты - доделать
+    [*] отложенные ченйджсеты - доделать
+    [*] Готовить чейнджсеты - и применять их по _commit, отменять при _rollback
+    [*] Паковать чейнджсеты
+    [*] Отдетектить updates/delete/replace/insert вне транзакций! И обернуть
+    [*] Заменить все обращения к unit - выставлять отдельные флаги, что вынуто ВСЁ
+    [*] Заменить все обращения в que - выставлять отдельные флаги, что вынуто ВСЁ
+    [*] МОЖНО КЭШИРОВАТЬ ЦЕЛЫМИ ЗАПРОСАМИ!!!! Т.е. get_user_list_by_id(huemoe); - кэшировать. Строить индексы соответствия - апдейтить данные
+    [*] SET-функции могут сами в случае нужды запускать транзакции
+    [*] переделать позже db_gеt_record_list($location_type, $filter = '')
+    [*] НЕ НУЖНО АЛЬЯНС КАЖДЫЙ РАЗ ОБНОВЛЯТЬ!!! сommon.php line 109 and further
+    [*] !!! Некоторые групповые запросы не обязательно спускать в БД! Достаточно пройтись и позаменять по кэшу! Все равно если нужно будет что-то не из кэша - его потом можно будет подтянуть!
+    [*] Все set_ функции заставить в качестве сета давать список полей а-ля db_prepare_changeset
+    [*] В db_changeset_apply - сделать так же изменение соответствующей информации в кэше
+    [*] $supernova: оптимизировать количество SQL-запросов
+    [*] Всегда приводить емейлы к нижнему регистру!
+    [*] Пересчитывать скорости постройки при достройке верфи/нанофабрики
+    [*] //todo $fields
+    [*] ОБНОВЛЕНИЕ - сделать разбор {{table}} при upd_alter_table
+    [*] db_change_units()  // TODO: THIS FUNCTION IS OBSOLETE AND SHOULD BE REPLACED!  // TODO - ТОЛЬКО ДЛЯ РЕСУРСОВ  проверить по модулям  переименовать в db_change_resources()  И вообще избавиться от неё
+    [*] Возвращать в пакетах индексы - и уже затем получать инфу по индексам, что бы не засирать память
+
+
+
+ФАЗА ? - Админка
+================
+[!] ВНИИМАНИЕ! ДАННЫЙ ПАТЧ ЯВЛЯЕТСЯ ПРОМЕЖУТОЧНЫМ! В НЁМ НЕ РАБОТАЮТ НЕКОТОРЫЕ ФИШКИ
+    В админке отключена "Панель админа" и "Редактирование планеты"
+[!] Кстати, сейчас в Верфи и Обороне строится только первое из выбранных сооружений. Забыл написать
+[!] Админка
+    Отключены: панель админа, компенсация планет - может что-то еще
+    В начислении ТМ и ММ поиск производится только по имени пользователя
+    Убрана возможность начислять ТМ по планете
+
+
+  [*] Админка: редактирование планеты: переписать и добавить функционал бесплатного модуля - что бы включался только при наличии хоть какого-нибудь модуля (?)
+  [*] Админка: панель админа - переделать
+  [*] Админка: компенсацию планет - проверить
+
+
+ФАЗА ?
+======
+   [*] интерфейс КК
+
+
+
+ФАЗА ?
+======
+  [*] добавление корпусов и модулей кораблей, балансировка
+  [*] Количество залпов в ракете/пушке
+  [*] Переделать UBE для поддержки (?) - динамический расчёт данных по амплифай для всех участвующих флотов
+
+
+
+ФАЗА ?
+======
+  [*] перенос $sn_data в БД
+  http://php.net/manual/en/function.create-function.php
+
+  [*] Писать в логи если ММ или ТМ меньше 0
+  [*] Индексы по новому менеджеру флотов
+  [*] Какая-то непонятная хуйня в админке при переключении типа наёмников - проверить
+  [*] Имя последнего зарегестрированного пользователя вообще-то надо хранить в конфигурации
+  // TODO Заменить на que_tpl_parse_element($que_element); tpl_helpers.php->tpl_parse_planet() 198 и 200
+  sys_o_get_updated - разнести, все-таки, процессинг юзеров и юнитов
+  [%] Ошибка Статистика - 24:00:00 ошибка, а 24:: - нормально
+  [%] Не работает сортировка по размеру планеты! Не учитывает террформер/лунную базу. Сделать отдельное поле для базового стартового количества секторов, максимального и текущего. И вообще разобраться с полями
+
+
+
+
+ФАЗА ? - Интерфейс
+==================
+НАДО ЕЩЕ ИЗМЕНЯТЬ ДАКМАТТЕР И МЕТАМАТТЕР В КЭШЕ В СООТВЕТСТВУЮЩИХ ПРОЦЕДУРАХ
+И вообще - сделать вызов по чейнджсету
+А еще лочить всех реферрал-юзеров - что бы не было дедлоков !!! Просто лочить - их данные нам не нужны
+По начислению ТМ с рефераллами - тупо блокировать все ИД юзеров, которые есть в таблице реферралов - возможно прийдется сделать сбоку припёку
+
+Юниты - ВЫБИРАТЬ ЮНИТЫ ПО ВРЕМЕНИ! Т.е. что бы наемники действовали на момент боя, например
+
+
+
+
+Для выливания на живой
+======================
+
+
+Текущий билд #39a10.13#
+~~~~~~~~~~~~~~~~~~~~~
+
+// НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять flt_lastUpdate
+
+Последовательность блокировок user-planet-unit-que-fleet-остальное
+
+
+Первый дедлок появился в 15692	2014-05-11 19:43:28 - посмотреть, что было сделано между этим временем и 16 часами - когда дедлока еще вроде не было
+Если не поможет - добавить предвыборки в двух местах
+Если не поможет - включить постоянный лог
+По финалу можно сделать SERIALIZABLE
+ВРОДЕ ПОМОГЛО
+ЛИБО function db_planet_count_by_type($user_id, $planet_type = PT_PLANET) убрал FOR UPDATE
+ЛИБО public static function db_transaction_start($level = '') добавил     static::$locator = array(); static::$queries = array();
+
+
+
+delete FROM `tst_logs` where log_text like "%Update in progress. Step%";
+delete FROM `tst_logs` where log_text like "Running stat updates%";
+
+сделать I_unit_player_location_snid UNIQUE - перед этим почистив таблицу от дубликатов
+
+в настройках сервера сделать редирект - что бы сразу всё отражалось
+
+посмотреть баг в статистике с прасингом данных
+
+
+сделать бэкап и потереть всё на тесте - оставить только планеты. Потереть ресы на юзерах и их экспириеныс
+
+
+// todo
+Там есть очень хитрый баг, который всплывает только при большом количестве игроков. Надо его отловить
+
+
+!!! Запустить перевод !!!
+1. Перевод локализации:
+   0. Допереводить на английский
+   1. Оптимизировать локализацию - убрать дубликаты строк (выгрузить всё в БД, собрать из БД список дубликатов, проверить, что дубликаты - это реально дубликаты)
+   2. Посчитать количество страниц в переводе - стандартная страница 1860 символов
+2. Узнать цены и сроки
+   1. На вычитку английского
+   2. На перевод
+  3. Пока ссуть да тело - пофиксить выпадение языков, т.е. разбить языки на серверный, текущий и контекстный
+
+
+ОТКЛЮЧИТЬ ЛОГ ЗАПРОСОВ!
+
+
+Проверить - уменьшаются ли корректно при ракетной атаке:
+1. Ракеты - при полном уничтожении атаки (когда интерсепторов больше, чем МПР)
+2. Ракеты - при частичном уничтожении атаки (когда интерсепторов меньше, чем МПР)
+3. Оборонные сооружения - при прошедшей по планете атаке
+
+
+Только атмосферные двигатели - требуют наличие еще и межпланетных, иначе корабль не может перелетать между планетами !
+Отдельно - атмосферная скорость, космическая скорость, варп-скорость
+
+УМЕНЬШИТЬ ДОХОД ДЕЙТЕРИЕВЫХ ШАХТ! Потому что меньше расход топлива у всех!
+
+Дедлоки:
+1. При отправке флота лочить одним запросов юзеров-владельцев планеты-отправления и планеты-назначения - как в свозе, в аяксе и просто при отправке
+    16730	2014-05-16 19:18:58
+2. Когда лочатся юзеры - лочить и Альянсы! Проверить - как лочаться Альянсы, лочат ли они пользователей
+    16873	2014-05-18 20:41:05
+    16872	2014-05-18 16:39:22
+
+
+
+Из емкости трюма вычитать стоимость топлива для полёта - добавочное поле в таблице fleets
+
+
+select username, FROM_UNIXTIME(register_time), FROM_UNIXTIME(onlinetime), onlinetime - register_time
+
+delete
+from delta_users where onlinetime - register_time  < 60*60 and register_time < UNIX_TIMESTAMP(NOW()) - 24 * 60*60*45
+and metamatter_total = 0
+
+Экспа - каждый корабль может утащить только то же количество кораблей своего типа - или больше, если другого
+
+ЮЗЕР в sys_o_get_updated() МОЖЕТ быть пустой, когда идет апдейт УДАЛЕННОЙ планеты - сделать проверку по owner_id планеты
+
+git branch -f branch-b branch-a
+Will update branch-b to point to the head of branch-a.
+
+Не показывать рассовые корабли; не показывать корабли других игроков
+
+
+
+
+
+
+Добавлять в каждое письмо футер - "Настроить отправку уведомлений на емейл можно в настройках"
+
+
+Новости - не отсылает уведомление об
+
+
+
+Ограничивать дальность видимости с планеты, убрать цену за скан, если еще была. Артефакты, все дела
+Отсылка шпиона позволяет открывать планету (?)
+
+
+Очереди - пересчитывать при постройке нанитки/верфи/лабы/нанолабы - И ПРИ РАЗРУШЕНИИ!
+Дописать подсказку для исследований и постройки юнитов/обороны
+сделать кнопку замера времени
+Показывать день рождения на странице Император
+
+
+* Посчитаться и расплатиться за отработанный хостинг
+* Сделать страничку сбора бабла на КК
+* ПейПол
+* Оплата через ГугльПлей - КУЧА нюансов и геммора
+* Андроид-приложение
+
+
+Альфа - 2-2-10
+Бета - 100-50-500 ???
+Гамма - 1-1-1
+Дельта - 10000-100-10000
+
+
+Центрирование модального окна
+ jQuery.fn.center = function () {
+    this.css("position","absolute");
+    this.css("top", ( jQuery(window).height() - this.height() ) / 2+jQuery(window).scrollTop() + "px");
+    this.css("left", ( jQuery(window).width() - this.width() ) / 2+jQuery(window).scrollLeft() + "px");
+    return this;
+  }
+ $('#seller_review').show().center();
+
+
+
+
+
+Премиум - добавлять к левелу хранилищ
+
+Настройка - "предупреждать, если в очереди больше 30 минут постройки текущей прошло"
+
+О! Ценный артефакт - запрет шпионажа
+[14:27:20] Project "SuperNova.WS": 30 ТМ (3 бакса) на 24 часа на все планеты
+
+
+Планеты и луны - приносить ТМ от застройки или спецсзадние (?)  - сбалансировать с ценой сектора
+Подарки на ТМ - совочек, грабельки и грузовичок
+Добавить пароль на передачу и роспуск Альянса
+
+
+
+
+
+
+
+
+Хранить хэши пользователей в таблице - аналог сессий. Т.е. кукесы содержат только полностью обезличенную информацию о пользователе
+Конвертер старых кукесов
+Имперсонация не поддерживается в АПИ
+array_replace() - теперь у нас код 5.3.0, поэтому можно использовать вместо своей собственной мерджи или + операций
+
+
+
+КЛЮЧ В КОНФИГУРАЦИЮ И НАСТРОЙКА НА set_memory_limit для рассчета статистики!!! Пока - хардкод 256М
+
+
+
+
+
+Капитаны - прокачка по кораблям: эффективность вождения кораблей, эффективность против
+
+
+SELECT FROM_UNIXTIME(onlinetime), FROM_UNIXTIME(register_time), (onlinetime - register_time)/60, dark_matter, metamatter_total
+FROM `game_users` where
+metamatter_total = 0 and dark_matter = 0
+and onlinetime - register_time < 1 * 60
+and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 1 week);
+
+SELECT FROM_UNIXTIME(onlinetime), FROM_UNIXTIME(register_time), (onlinetime - register_time)/60, dark_matter, metamatter_total
+FROM `game_users` where
+metamatter_total = 0 and dark_matter = 0
+and onlinetime - register_time < 10 * 60
+and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 2 week);
+
+SELECT FROM_UNIXTIME(onlinetime), FROM_UNIXTIME(register_time), (onlinetime - register_time)/60, dark_matter, metamatter_total
+FROM `game_users` where
+metamatter_total = 0 and dark_matter = 0
+and onlinetime - register_time < 15 * 60
+and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 3 week);
+
+SELECT FROM_UNIXTIME(onlinetime), FROM_UNIXTIME(register_time), (onlinetime - register_time)/60, dark_matter, metamatter_total
+FROM `game_users` where
+metamatter_total = 0 and dark_matter = 0
+and onlinetime - register_time < 60 * 60
+and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 1 month);
+
+SELECT FROM_UNIXTIME(onlinetime), FROM_UNIXTIME(register_time), (onlinetime - register_time)/60, dark_matter, metamatter_total
+FROM `game_users` where
+metamatter_total = 0 and dark_matter = 0
+-- and onlinetime - register_time < 60 * 60
+and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 1 month)
+and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 1 month) ORDER BY onlinetime;
+
+
+SELECT FROM_UNIXTIME(onlinetime), FROM_UNIXTIME(register_time), (onlinetime - register_time)/60, dark_matter, metamatter_total
+FROM `game_users` where
+metamatter_total = 0 and dark_matter = 0 and (
+(onlinetime - register_time < 1 * 60 and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 1 week))
+OR
+(onlinetime - register_time < 10 * 60 and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 2 week))
+OR
+(onlinetime - register_time < 15 * 60 and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 3 week))
+OR
+(onlinetime - register_time < 30 * 60 and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 1 month))
+OR
+(FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 1 month) and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 1 month))
+) ORDER BY onlinetime, register_time;
+
+
+
+
+
+
+Увеличение очереди за ТМ
+
+
+Письмо с предложением дружить - ссылка на страницу или описание, как туда попасть
+
+
+
+
+
+Для админов - попап над каждым ником с общей суммой платежей - через ММ в баксы по курсу
+
+
+GIF анимация может использовать прозрачность для того чтобы не сохранять очередной кадр целиком, а только изменения относительно предыдущего.
+Различные реализации алгоритма Deflate дают разную степень сжатия, поэтому были созданы программы для пережатия изображений с несколькими вариантами настроек в целях получения наилучшего сжатия — например, форк pngcrush OptiPNG и advpng из комплекта AdvanceCOMP (использует 7-Zip).
+
+
+Показывать стоимость флота при отправке
+
+Админка - http://ogame.supernova.ws/admin/adm_user_online.php?dt_from=2014-07&dt_to=2014-08&str_step=d
+
+
+СТАТИСТИКА - быть экономней с памятью при расчете! Удалять ненужные данные
+
+
+#ctv  - КК, Фаза 10. Балансировочная
+
+КЛИЕНТ!!!!
+Проверка на бан, проверка на отпуск
+
+
+бронежилет
+exoskeleton
+powered armor
+adaptive armor
+
+
+
+TODO - ФАЗА 0
+todo - сообщение о бане или отпуске
+function sn_autologin($abort = true) - переделать вызовы
+sys_user_options_unpack($user); - разобраться, где нужно
+автогенерация пароля?!
+прописать строки локализации
+    LOGIN_SUCCESS => '',
+    REGISTER_ERROR_USERNAME_WRONG => '',
+    REGISTER_ERROR_USERNAME_EXISTS => '',
+    REGISTER_ERROR_PASSWORD_INSECURE => '',
+    REGISTER_SUCCESS => '',
+$skip_ban_check - проверить что и зачем
+    // TODO - GLOBAL_MESSAGES
+    /*
+    //$result = sec_login_username($username_unsafe, $password_raw, sys_get_param_int('rememberme'));
+    //$user = $user['user_row'];
+
+    $Message = $lang['thanksforregistry'];
+    if(sendpassemail($username, $password, $email))
+    {
+      $Message .= " (" . htmlentities($email) . ")";
+    }
+    else
+    {
+      $Message .= " (" . htmlentities($email) . ")";
+      $Message .= "<br><br>{$lang['error_mailsend']} <br /><b>{$password}</b><br />";
+    }
+
+    message($Message . $config->adv_conversion_code_register, "{$lang['reg_welldone']}<b>{$password}</b> <script>document.getElementById('sn_navbar').style.display='none';document.getElementById('page_body').style.marginLeft='0px'; document.getElementById('page_body').style.marginTop='0px';jQuery(document).ready(function(){setTimeout(function(){parent.location='overview.php';}, 10000);});</script>");
+    */
+
+ВЫНЕСТИ ДОБАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯ ИЗ sec_login_register В ОТДЕЛЬНУЮ ПРОЦЕДУРУ - ИЛИ ЦЕЛИКМО ПЕРЕНЕСТИ КУДА-НИБУДЬ
+По таймдиффу тоже всё не очень радостно - посмотреть, может позже его замерять?
+
+ПОЧТОВЫЙ АДРЕС:
+1. Логин по почтовому адресу (основному)
+2. Проверка при создании почтового адреса - основного и вторичного
+3. Проверка при смене почтового адреса - всех адресов
+4. Бесплатная смена ника при реге через емайл
+
+
+При восстановлении пароля - прописывать его сразу в ячейку пароля. Или логиниться сразу?
+    $result[F_PASSWORD_NEW] = $new_password;
+    $result[F_LOGIN_STATUS] = $operation_result ? PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT : PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR;
+    $result[F_LOGIN_MESSAGE] = $message . $operation_result ? $lang['log_lost_sent_pass'] : $lang['log_lost_err_sending'];
+sec_restore_password_confirm($confirm_safe, $result); - кукесы тут выставлять?
+
+
+[10.07.2014 22:43:06] Sabretooth> тогда надо описание к Ракетной шахте сменить =)
+[10.07.2014 22:43:17] Sabretooth> "С каждым уровнем можно хранить на четыре межпланетных или двенадцать ракет-перехватчиков больше" - как-то не правильно
+
+
+Настраиваемая ссылка на ридми
+
+Переименование планеты - 1кТМ. Или 100 ТМ. Глянуть по системе
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [14:48:02] Project "SuperNova.WS": Механизм подтверждения - это потенциально -50% рег
 [14:48:12] Project "SuperNova.WS": Я вообще такой, что автоматом впускать игрока в игру
 [14:48:32] igorrnc Капустьянов Игорь Сергеевич: ну после входа уже просить, при определенном действии
@@ -5,6 +720,7 @@
 [14:49:35] Project "SuperNova.WS": А чо тебе по рассылке не нравится?
 [14:49:39] Project "SuperNova.WS": Возвратов - 7%
 [14:49:42] igorrnc Капустьянов Игорь Сергеевич: типа, "хоппа! вы решили колонизировать вторую планету? Ваша империя растёт, и для защиты её от вашей забывчивости давайте ка закрепим секурность почтой!"
+
 
 [*] SELECT round(year(user_birthday) / 5) * 5, count(*) FROM `game_users` group by round(year(user_birthday) / 5) * 5;
 [*] SELECT round(year(user_birthday) / 5) * 5, sum(payment_amount) FROM
@@ -42,8 +758,6 @@
     И ЮНИТЫ ТАК МОЖНО БУДЕТ ВЫНИМАТЬ ИЗ БД!
     http://stackoverflow.com/questions/2881431/arrayaccess-multidimensional-unset
 
-[*] Добавить в темплейт поддержку префикса Fx_ - форматирование строки, скажем,
-    в целое - FI и в число - FF
 
 [*] Вынести поддержку мультикошельковых систем из webmoney в module_payment
     И исправить ошибку: pursue -> purse или вообще wallet

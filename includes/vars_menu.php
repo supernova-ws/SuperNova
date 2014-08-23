@@ -48,8 +48,9 @@ $sn_menu = array(
 
   'menu_admin' => $user['authlevel'] <= 0 ? array() : array(
     'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'user_level[USER_LEVEL]',
+//    'TYPE'  => 'lang',
+//    'ITEM'  => 'user_level[AUTH_LEVEL]',
+    'ITEM'  => $lang['user_level'][$user['authlevel']],
     'LINK'  => 'admin/overview.php',
   ),
   'menu_impersonator' => !is_array($user_impersonator) ? array() : array(
