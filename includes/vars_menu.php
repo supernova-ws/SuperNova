@@ -467,8 +467,9 @@ $sn_menu_admin = array(
 
   'USER_AUTHLEVEL_NAME' => array(
     'LEVEL' => 'header',
-    'TYPE' => 'lang',
-    'ITEM'  => 'user_level[USER_LEVEL]',
+//    'TYPE' => 'lang',
+//    'ITEM'  => 'user_level[USER_LEVEL]',
+    'ITEM'  => $lang['user_level'][$user['authlevel']],
   ),
   'menu_admin_overview' => array(
     'TYPE' => 'lang',
