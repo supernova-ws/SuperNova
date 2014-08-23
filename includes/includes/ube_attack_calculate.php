@@ -1205,7 +1205,7 @@ function sn_ube_combat_result_apply(&$combat_data)
       {
         if($fleet_query)
         {
-          doquery("UPDATE {{fleets}} SET {$fleet_query} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
+          doquery("UPDATE {{fleets}} SET {$fleet_query}, `fleet_amount` = '{$new_fleet_count}' WHERE `fleet_id` = {$fleet_id} LIMIT 1");
         }
       }
       else
