@@ -14,7 +14,7 @@ function coe_compress_add_units($unit_group, $target_planet, &$compress_data, $t
 {
   foreach($unit_group as $unit_id)
   {
-    if(($unit_count = mrc_get_level($target_user, $target_planet, $unit_id)) > 0)
+    if(($unit_count = mrc_get_level($target_user, $target_planet, $unit_id, false, true)) > 0)
     {
       $compress_data[$unit_id] = $unit_count;
     }
@@ -36,7 +36,7 @@ function flt_spy_scan($target_planet, $group_name, $section_title, $target_user 
   $result = "<tr><td class=\"c\" colspan=\"4\">{$section_title}</td></tr>";
   foreach(sn_get_groups($group_name) as $unit_id)
   {
-    if(($unit_amount = mrc_get_level($target_user, $target_planet, $unit_id)) > 0)
+    if(($unit_amount = mrc_get_level($target_user, $target_planet, $unit_id, false, true)) > 0)
     {
       $result .= "<tr><td align=\"left\" colspan=\"3\">{$lang['tech'][$unit_id]}</td><td align=\"right\">{$unit_amount}</td></tr>";
     }
