@@ -444,6 +444,11 @@ defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
 defined('SN_CLIENT_TIME_LOCAL') or define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
 
 
+if(!empty($user) && sys_get_param_id('only_hide_news'))
+{
+  nws_mark_read($user);
+  die();
+}
 
 
 /*

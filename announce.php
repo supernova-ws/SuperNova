@@ -12,11 +12,6 @@ $allow_anonymous = true;
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 nws_mark_read($user);
-if(sys_get_param_id('only_hide_news'))
-{
-  die();
-}
-
 $template     = gettemplate('announce', true);
 
 $announce_id   = sys_get_param_id('id');

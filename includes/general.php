@@ -264,7 +264,7 @@ function sys_user_vacation($user)
       'RANDOM' => mt_rand(1, 2),
     ));
 
-    display(parsetemplate($template));
+    display(parsetemplate($template), '', false, '', false, false);
   }
 
   return false;
