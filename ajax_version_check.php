@@ -74,5 +74,3 @@ if($ajax)
   define('IN_AJAX', true);
   print($version_check);
 }
-
-?>

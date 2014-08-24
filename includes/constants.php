@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a10.21');
+define('SN_VERSION', '39a11.0');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -284,6 +284,10 @@ define('PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR', 20);
 define('AUTH_LEVEL_ANONYMOUS', -10);
 define('AUTH_LEVEL_GUEST', -5);
 define('AUTH_LEVEL_REGISTERED', 0);
+define('AUTH_LEVEL_MODERATOR', 1);
+define('AUTH_LEVEL_OPERATOR', 2);
+define('AUTH_LEVEL_ADMINISTRATOR', 3);
+define('AUTH_LEVEL_DEVELOPER', 4);
 
 // Global template_result fields
 define('AUTH_LEVEL', 'AUTH_LEVEL');

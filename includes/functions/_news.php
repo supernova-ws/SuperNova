@@ -4,7 +4,14 @@ function nws_render(&$template, $query_where = '', $query_limit = 20)
 {
   global $config;
 
-  $announce_list = doquery("SELECT *, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time FROM {{announce}} {$query_where} ORDER BY `tsTimeStamp` DESC, idAnnounce" . ($query_limit ? " LIMIT {$query_limit}" : ''));
+  $announce_list = doquery(
+    "SELECT a.*, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time, u.authlevel
+    FROM
+      {{announce}} AS a
+      LEFT JOIN {{users}} AS u ON u.id = a.user_id
+    {$query_where}
+    ORDER BY `tsTimeStamp` DESC, idAnnounce" .
+    ($query_limit ? " LIMIT {$query_limit}" : ''));
 
   $template->assign_var('NEWS_COUNT', mysql_num_rows($announce_list));
 
@@ -18,7 +25,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20)
     $template->assign_block_vars('announces', array(
       'ID'         => $announce['idAnnounce'],
       'TIME'       => date(FMT_DATE_TIME, $announce['unix_time'] + SN_CLIENT_TIME_DIFF),
-      'ANNOUNCE'   => sys_bbcodeParse($announce['strAnnounce']),
+      'ANNOUNCE'   => cht_message_parse($announce['strAnnounce'], false, intval($announce['authlevel'])),
       'DETAIL_URL' => $announce['detail_url'],
       'USER_NAME'  =>
         isset($users[$announce['user_id']]) && $users[$announce['user_id']] ? render_player_nick($users[$announce['user_id']], array('color' => true)):

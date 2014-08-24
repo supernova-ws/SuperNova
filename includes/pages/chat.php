@@ -34,6 +34,8 @@ function sn_chat_model()
   $config->array_set('users', $user['id'], 'chat_last_activity', $microtime);
   $config->array_set('users', $user['id'], 'chat_last_refresh', 0);
 
+  $user_auth_level = isset($user['authlevel']) ? $user['authlevel'] : AUTH_LEVEL_ANONYMOUS;
+
   $mode = sys_get_param_int('mode');
   switch($mode)
   {
@@ -49,12 +51,18 @@ function sn_chat_model()
   }
 
   $template_result['.']['smiles'] = array();
-  foreach($supernova->design['smiles'] as $bbcode => $filename)
-  {
-    $template_result['.']['smiles'][] = array(
-      'BBCODE' => $bbcode,
-      'FILENAME' => $filename,
-    );
+  foreach($supernova->design['smiles'] as $auth_level => $replaces) {
+    if($auth_level > $user_auth_level) {
+      continue;
+    }
+
+    foreach($replaces as $bbcode => $filename)
+    {
+      $template_result['.']['smiles'][] = array(
+        'BBCODE' => $bbcode,
+        'FILENAME' => $filename,
+      );
+    }
   }
 
   $template_result['PAGE_HEADER'] = $page_title;
@@ -70,6 +78,7 @@ function sn_chat_add_model()
 {
   global $skip_fleet_update, $config, $microtime, $user, $time_now;
 
+  define('IN_AJAX', true);
   $skip_fleet_update = true;
 
   if($config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && $microtime - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
@@ -83,7 +92,7 @@ function sn_chat_add_model()
     $nick = mysql_real_escape_string(render_player_nick($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id)));
     $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $message);
 
-    doquery("INSERT INTO {{chat}} (user, ally_id, message, timestamp) VALUES ('{$nick}', '{$ally_id}', '{$message}', '{$time_now}');");
+    doquery("INSERT INTO {{chat}} (chat_message_sender_id, user, ally_id, message, timestamp) VALUES ('{$user['id']}', '{$nick}', '{$ally_id}', '{$message}', '{$time_now}');");
 
     $config->array_set('users', $user['id'], 'chat_last_activity', $microtime);
   }
@@ -92,10 +101,9 @@ function sn_chat_add_model()
 }
 function sn_chat_msg_view($template = null)
 {
+  global $config, $skip_fleet_update, $microtime, $user, $time_diff, $lang;
+
   define('IN_AJAX', true);
-
-  global $config, $skip_fleet_update, $microtime, $user, $time_now, $time_diff, $lang;
-
   $skip_fleet_update = true;
 
   $history = sys_get_param_str('history');
@@ -145,7 +153,12 @@ function sn_chat_msg_view($template = null)
     }
 
     $start_row = $page * $page_limit;
-    $query = doquery("SELECT * FROM {{chat}} WHERE ally_id = '{$alliance}' {$where_add} ORDER BY messageid DESC LIMIT {$start_row}, {$page_limit};");
+    $query = doquery(
+      "SELECT c.*, u.authlevel
+      FROM
+        {{chat}} AS c
+        LEFT JOIN {{users}} AS u ON u.id = c.chat_message_sender_id
+      WHERE c.ally_id = '{$alliance}' {$where_add} ORDER BY messageid DESC LIMIT {$start_row}, {$page_limit};");
     while($chat_row = mysql_fetch_assoc($query))
     {
       // Little magik here - to retain HTML codes from DB and stripping HTML codes from nick
@@ -159,7 +172,7 @@ function sn_chat_msg_view($template = null)
       $template_result['.']['chat'][] = array(
         'TIME' => cht_message_parse(date(FMT_DATE_TIME, $chat_row['timestamp'] + $time_diff)),
         'NICK' => $nick,
-        'TEXT' => cht_message_parse($chat_row['message']),
+        'TEXT' => cht_message_parse($chat_row['message'], false, intval($chat_row['authlevel'])),
       );
 
       $last_message = max($last_message, $chat_row['messageid']);
