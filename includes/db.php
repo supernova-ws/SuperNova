@@ -190,7 +190,7 @@ function sn_db_connect()
   return true;
 }
 
-function doquery($query, $table = '', $fetch = false)
+function doquery($query, $table = '', $fetch = false, $skip_query_check = false)
 {
   global $numqueries, $link, $debug, $sn_cache, $config, $db_prefix;
 
@@ -206,7 +206,7 @@ function doquery($query, $table = '', $fetch = false)
 
   $query = trim($query);
   security_watch_user_queries($query);
-  security_query_check_bad_words($query);
+  $skip_query_check or security_query_check_bad_words($query);
 
   $sql = $query;
   if(!(strpos($sql, '{{') === false) )

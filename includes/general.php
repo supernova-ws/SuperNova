@@ -1472,3 +1472,8 @@ function str_raw2unsafe($raw)
 {
   return trim(strip_tags($raw));
 }
+
+function ip2longu($ip)
+{
+  return sprintf('%u', ip2long($ip));
+}

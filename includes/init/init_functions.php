@@ -42,13 +42,12 @@ function sys_refresh_tablelist($db_prefix)
 {
   global $sn_cache;
 
+  $tl = array();
   $query = doquery('SHOW TABLES;');
-
-  while ( $row = mysql_fetch_assoc($query) )
-  {
-    foreach($row as $row)
-    {
-      $tl[] = str_replace($db_prefix, '', $row);
+  while($row = mysql_fetch_assoc($query)) {
+    foreach($row as $row) {
+      $table_name = str_replace($db_prefix, '', $row);
+      $tl[$table_name] = $table_name;
     }
   }
   $sn_cache->tables = $tl;

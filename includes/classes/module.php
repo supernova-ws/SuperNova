@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #39a7.20# copyright © 2009-2012 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #39a11.6# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -101,6 +101,15 @@ class sn_module
     $sn_module[$class_module_name] = $this;
   }
 
+  protected function __patch_menu(&$sn_menu_extra, &$menu_patch) {
+    if(isset($menu_patch) && is_array($menu_patch) && !empty($menu_patch)) {
+      foreach($menu_patch as $menu_item_name => $menu_item_data) {
+        $sn_menu_extra[$menu_item_name] = $menu_item_data;
+      }
+    }
+  }
+
+
   public function initialize()
   {
     // Checking module status - is it installed and active
@@ -179,7 +188,12 @@ class sn_module
     global $functions;
     sn_sys_handler_add($functions, $this->manifest['functions'], $this);
 
-    // Pathcing game menu - if any
+
+    global $sn_menu_extra, $sn_menu_admin_extra;
+    isset($this->manifest['menu']) and $this->__patch_menu($sn_menu_extra, $this->manifest['menu']);
+    isset($this->manifest['menu_admin']) and $this->__patch_menu($sn_menu_admin_extra, $this->manifest['menu_admin']);
+    // Patching game menu - if any
+    /*
     if(isset($this->manifest['menu']) && is_array($this->manifest['menu']) && !empty($this->manifest['menu']))
     {
       global $sn_menu_extra;
@@ -189,6 +203,16 @@ class sn_module
         $sn_menu_extra[$menu_item_name] = $menu_item_data;
       }
     }
+
+    // Patching admin menu - if any
+    if(isset($this->manifest['menu_admin']) && is_array($this->manifest['menu_admin']) && !empty($this->manifest['menu_admin'])) {
+      global $sn_menu_admin_extra;
+
+      foreach($this->manifest['menu_admin'] as $menu_item_name => $menu_item_data) {
+        $sn_menu_admin_extra[$menu_item_name] = $menu_item_data;
+      }
+    }
+    */
 
     global $sn_mvc;
     foreach($sn_mvc as $handler_type => &$handler_data)

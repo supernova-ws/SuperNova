@@ -133,7 +133,6 @@ define('SN_ROOT_VIRTUAL' , 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . ':/
 
 
 
-
 // Это нужно для работы PTL
 global $phpbb_root_path;
 $phpbb_root_path = SN_ROOT_PHYSICAL;

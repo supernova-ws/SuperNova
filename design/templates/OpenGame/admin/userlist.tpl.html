@@ -7,6 +7,9 @@
     <!-- IF ! RESTRICTED -->
     <th class="c_c" rowspan="2"><a href="admin/userlist.php?sort={D_SORT_EMAIL}">{L_sys_email}</a></th>
     <th class="c_c" rowspan="2"><a href="admin/userlist.php?sort={D_SORT_IP}">{L_sys_ip}</a></th>
+    <!-- IF GEOIP -->
+    <th class="c_c" rowspan="2">{L_geoip}</th>
+    <!-- ENDIF -->
     <!-- ENDIF -->
     <th class="c_c" rowspan="2"><a href="admin/userlist.php?sort={D_SORT_TIME_REGISTERED}">{L_adm_ul_time_registered}</a></th>
     <th class="c_c" rowspan="2"><a href="admin/userlist.php?sort={D_SORT_TIME_LAST_VISIT}">{L_adm_ul_time_played}</a></th>
@@ -23,10 +26,9 @@
   <!-- BEGIN user -->
   <tr>
     <td>{user.ID}</td>
-    <!-- IF ! RESTRICTED -->
     <td>{user.NAME}</td>
+    <!-- IF ! RESTRICTED -->
     <td>{user.EMAIL}</td>
-    <!-- ENDIF -->
     <td>
       <!-- IF user.IP_MULTI -->
         <span class="error">{user.IP} ({user.IP_MULTI})</span>
@@ -34,6 +36,10 @@
         {user.IP}
       <!-- ENDIF -->
     </td>
+    <!-- IF GEOIP -->
+    <th>{user.COUNTRY}</th>
+    <!-- ENDIF -->
+    <!-- ENDIF -->
     <td>{user.TIME_REGISTERED}</td>
     <td>{user.TIME_PLAYED}</td>
     <td>

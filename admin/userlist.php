@@ -69,13 +69,18 @@ while($ip = mysql_fetch_assoc($ip_query))
   $multi_ip[$ip['user_lastip']] = $ip['ip_count'];
 }
 
-$query = db_user_list_admin_sorted($sort_fields[$sort]);
+$geoip = geoip_status();
 
-while ($user_row = mysql_fetch_assoc($query))
-{
-  if($user_row['banaday'])
-  {
+$query = db_user_list_admin_sorted($sort_fields[$sort]);
+while($user_row = mysql_fetch_assoc($query)) {
+  if($user_row['banaday']) {
     $ban_details = doquery("SELECT * FROM {{banned}} WHERE `ban_user_id` = {$user_row['id']} ORDER BY ban_id DESC LIMIT 1", true);
+  }
+
+  $geoip_info = $geoip ? geoip_ip_info(ip2longu($user_row['user_lastip'])) : array();
+  foreach($geoip_info as $key => $value) {
+    $geoip_info[strtoupper($key)] = $value;
+    unset($geoip_info[$key]);
   }
 
   $template->assign_block_vars('user', array(
@@ -95,14 +100,15 @@ while ($user_row = mysql_fetch_assoc($query))
     'BAN_REASON' => $ban_details['ban_reason'],
     'ACTION' => $user_row['authlevel'] < $user['authlevel'],
     'RESTRICTED' => $user['authlevel'] < 3,
-  ));
+  ) + $geoip_info);
 }
+
+// pdump($template);
 
 $template->assign_vars(array(
   'USER_COUNT' => mysql_num_rows($query),
   'SORT' => $sort,
+  'GEOIP' => $geoip,
 ));
 
 display($template, $lang['adm_ul_title'], false, '', true);
-
-?>
