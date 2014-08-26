@@ -19,6 +19,9 @@ if($user['authlevel'] < 3)
   AdminMessage($lang['adm_err_denied']);
 }
 
+global $config;
+ini_set('memory_limit', $config->stats_php_memory ? $config->stats_php_memory : '256M');
+
 lng_include('admin');
 
 $sort_fields = array(

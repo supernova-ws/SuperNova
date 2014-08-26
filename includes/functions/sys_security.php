@@ -10,10 +10,10 @@ function sec_player_ip() {
   $ip = array(
     'ip' => $_SERVER["REMOTE_ADDR"],
     'proxy_chain' => $_SERVER["HTTP_X_FORWARDED_FOR"]
-        ? $_SERVER["HTTP_X_FORWARDED_FOR"]
-        : ($_SERVER["HTTP_CLIENT_IP"]
-          ? $_SERVER["HTTP_CLIENT_IP"]
-          : $_SERVER["REMOTE_ADDR"]
+      ? $_SERVER["HTTP_X_FORWARDED_FOR"]
+      : ($_SERVER["HTTP_CLIENT_IP"]
+        ? $_SERVER["HTTP_CLIENT_IP"]
+        : '' // $_SERVER["REMOTE_ADDR"]
         ),
   );
 
