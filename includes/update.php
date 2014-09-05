@@ -1245,6 +1245,9 @@ switch($new_version)
     upd_check_key('stats_php_memory', '1024M', !isset($config->stats_php_memory));
     upd_check_key('stats_minimal_interval', '600', !isset($config->stats_minimal_interval));
 
+    upd_check_key('payment_currency_exchange_uah', 15, true);
+    upd_check_key('payment_currency_exchange_wmu', 16, true);
+
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
 };

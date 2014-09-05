@@ -361,7 +361,7 @@ Stay out of my shed
 ======================
 
 
-Текущий билд #39a10.21#
+Текущий билд #39a11.10#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять flt_lastUpdate
@@ -674,7 +674,10 @@ sec_restore_password_confirm($confirm_safe, $result); - кукесы тут вы
 
 Переименование планеты - 1кТМ. Или 100 ТМ. Глянуть по системе
 
-
+[20:29:48 | Изменены 20:30:29] igorrnc Капустьянов Игорь Сергеевич:
+http://robertomurray.co.uk/blog/2013/server-side-google-play-in-app-billing-receipt-validation-and-testing/
+https://code.google.com/p/android-market-license-verification/
+http://habrahabr.ru/post/160911/
 
 
 
