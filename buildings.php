@@ -26,22 +26,22 @@ $mode = (!$mode || $mode == 'buildings') ? QUE_STRUCTURES : ($mode == 'fleet' ? 
 
 sn_sys_sector_buy('buildings.php?mode=' . $mode);
 
-switch ($mode)
-{
+switch ($mode) {
+//  case UNIT_MERCENARIES:
+//    require_once('includes/includes/eco_bld_structures.php');
+//    eco_build(QUE_MERCENARY, $user, $planetrow);
+//  break;
+
   case 'research':
   case QUE_RESEARCH:
     require_once('includes/includes/eco_bld_structures.php');
     eco_build(QUE_RESEARCH, $user, $planetrow);
-//    require_once('includes/includes/eco_bld_tech.php');
-//    eco_bld_tech(QUE_RESEARCH, $user, $planetrow);
   break;
 
   case SUBQUE_FLEET:
   case SUBQUE_DEFENSE:
     require_once('includes/includes/eco_bld_structures.php');
     eco_build($mode, $user, $planetrow);
-//    require_once('includes/includes/eco_bld_hangar.php');
-//    eco_bld_hangar($mode, $user, $planetrow);
   break;
 
   case QUE_STRUCTURES:

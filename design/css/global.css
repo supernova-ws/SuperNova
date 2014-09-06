@@ -703,3 +703,8 @@ th.c_j, td.c_j
   font-weight: bold;
   line-height: 1em;
 }
+
+#unit_require li {
+  margin: 0;
+  padding: 0;
+}

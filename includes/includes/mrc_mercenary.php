@@ -123,8 +123,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
   return $operation_result;
 }
 
-function mrc_mercenary_render($user)
-{
+function mrc_mercenary_render($user) {
   global $time_now, $config, $lang, $sn_pwr_buy_discount;
 
   $mode = sys_get_param_int('mode', UNIT_MERCENARIES);

@@ -37,10 +37,15 @@ function sn_eco_build($que_type, &$auser, &$planet) {
   switch($action = sys_get_param_escaped('action')) {
     case 'create': // Add unit to que for build
     case 'destroy': // Add unit to que for remove
-      $operation_result = que_build($user, $planet, $action == 'destroy' ? BUILD_DESTROY : BUILD_CREATE); break;
+      $operation_result = que_build($user, $planet, $action == 'destroy' ? BUILD_DESTROY : BUILD_CREATE);
+    break;
 
-    case 'trim':que_delete($que_type, $user, $planet, false);break;
-    case 'clear':que_delete($que_type, $user, $planet, true);break;
+    case 'trim':
+      que_delete($que_type, $user, $planet, false);
+    break;
+    case 'clear':
+      que_delete($que_type, $user, $planet, true);
+    break;
   }
 
   $group_missile = sn_get_groups('missile');
@@ -61,8 +66,18 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     $build_unit_list = sn_get_groups('tech');
     $artifact_id = ART_HEURISTIC_CHIP;
     $page_header = $lang['tech'][UNIT_TECHNOLOGIES] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : '');
-  }
-  else {
+  } elseif($que_type == QUE_MERCENARY) {
+//    if(!mrc_get_level($user, $planet, STRUC_LABORATORY)) {
+//      message($lang['no_laboratory'], $lang['tech'][UNIT_TECHNOLOGIES]);
+//    }
+
+//    if(eco_unit_busy($user, $planet, UNIT_TECHNOLOGIES)) {
+//      message($lang['eco_bld_msg_err_laboratory_upgrading'], $lang['tech'][UNIT_TECHNOLOGIES]);
+//    }
+    $build_unit_list = sn_get_groups('mercenaries');
+    $artifact_id = 0;
+    $page_header = $lang['tech'][UNIT_MERCENARIES] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : '');
+  } else {
     if(mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) == 0) {
       message($lang['need_hangar'], $lang['tech'][STRUC_FACTORY_HANGAR]);
     }
@@ -92,7 +107,8 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     $template->assign_block_vars('result', $operation_result);
   }
 
-  $planet_id = $que_type == QUE_RESEARCH ? 0 : $planet['id'];
+  $planet_id = $que_type == QUE_RESEARCH || $que_type == QUE_MERCENARY ? 0 : $planet['id'];
+
   $ques = que_get($user['id'], $planet_id, $que_type);
   $in_que = &$ques['in_que'][$que_type][$user['id']][$planet_id];
   $que = &$ques['ques'][$que_type][$user['id']][$planet_id];
@@ -114,6 +130,8 @@ function sn_eco_build($que_type, &$auser, &$planet) {
   $sn_groups_density = sn_get_groups('planet_density');
   $density_info = $sn_groups_density[$planet['density_index']][UNIT_RESOURCES];
 
+  $user_dark_matter = mrc_get_level($user, null, RES_DARK_MATTER);
+
   foreach($build_unit_list as $unit_id) {
     $level_base = mrc_get_level($user, $planet, $unit_id, false, true);
     $level_effective = mrc_get_level($user, $planet, $unit_id);
@@ -122,12 +140,15 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     $level_base_and_que = $level_base + $level_in_que;
 
     $unit_info = get_unit_param($unit_id);
+// pdump($unit_info, '$unit_info');
     $unit_stackable = isset($unit_info[P_STACKABLE]) && $unit_info[P_STACKABLE];
 
     $build_data = eco_get_build_data($user, $planet, $unit_id, $level_base_and_que);
+// pdump($build_data, '$build_data');
     $temp[RES_METAL]     = floor($planet['metal'] + $fleet_list['own']['total'][RES_METAL] - $build_data[BUILD_CREATE][RES_METAL]);
     $temp[RES_CRYSTAL]   = floor($planet['crystal'] + $fleet_list['own']['total'][RES_CRYSTAL] - $build_data[BUILD_CREATE][RES_CRYSTAL]);
     $temp[RES_DEUTERIUM] = floor($planet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_data[BUILD_CREATE][RES_DEUTERIUM]);
+    $temp[RES_DARK_MATTER] = floor($user_dark_matter - $build_data[BUILD_CREATE][RES_DARK_MATTER]);
 
     $build_data['RESULT'][BUILD_CREATE] = $build_data['RESULT'][BUILD_CREATE] == BUILD_ALLOWED && !$can_que_element ? BUILD_QUE_FULL : $build_data['RESULT'][BUILD_CREATE];
 
@@ -165,11 +186,13 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
       'BUILD_CAN'          => $build_data['CAN'][BUILD_CREATE],
       'TIME'               => pretty_time($build_data[RES_TIME][BUILD_CREATE]),
+      'TIME_SECONDS'       => $build_data[RES_TIME][BUILD_CREATE],
       'METAL'              => $build_data[BUILD_CREATE][RES_METAL],
       'CRYSTAL'            => $build_data[BUILD_CREATE][RES_CRYSTAL],
       'DEUTERIUM'          => $build_data[BUILD_CREATE][RES_DEUTERIUM],
       'ENERGY'             => $build_data[BUILD_CREATE][RES_ENERGY],
-
+      'DARK_MATTER'        => $build_data[BUILD_CREATE][RES_DARK_MATTER],
+      'DARK_MATTER_ONLY'   => $build_data[P_OPTIONS][P_ONLY_DARK_MATTER],
 
       'BUILD_RESULT'      => $build_data['RESULT'][BUILD_CREATE],
       'BUILD_RESULT_TEXT' => $build_result_text,
@@ -184,9 +207,11 @@ function sn_eco_build($que_type, &$auser, &$planet) {
       'METAL_REST'        => pretty_number($temp[RES_METAL], true, true),
       'CRYSTAL_REST'      => pretty_number($temp[RES_CRYSTAL], true, true),
       'DEUTERIUM_REST'    => pretty_number($temp[RES_DEUTERIUM], true, true),
+      'DARK_MATTER_REST'  => pretty_number($temp[RES_DARK_MATTER], true, true),
       'METAL_REST_NUM'    => $temp[RES_METAL],
       'CRYSTAL_REST_NUM'  => $temp[RES_CRYSTAL],
       'DEUTERIUM_REST_NUM'=> $temp[RES_DEUTERIUM],
+      'DARK_MATTER_REST_NUM'=> $temp[RES_DARK_MATTER],
 
       'UNIT_BUSY'         => eco_unit_busy($user, $planet, $que, $unit_id),
 
@@ -238,7 +263,6 @@ function sn_eco_build($que_type, &$auser, &$planet) {
         $template->assign_block_vars('production.resource', $level_production);
       }
     } elseif($unit_id == TECH_ASTROTECH) {
-      $level_production_base = array();
       $element_level_start = $level_effective + $in_que[$unit_id];
       /*
       foreach($unit_info['production'] as $resource_id => $resource_calc) {
@@ -247,8 +271,10 @@ function sn_eco_build($que_type, &$auser, &$planet) {
         }
       }
       */
-      $level_production_base[UNIT_PLAYER_EXPEDITIONS_MAX] = get_player_max_expeditons($user, $element_level_start);
-      $level_production_base[UNIT_PLAYER_COLONIES_MAX] = get_player_max_colonies($user, $element_level_start);
+      $level_production_base = array(
+        UNIT_PLAYER_EXPEDITIONS_MAX => get_player_max_expeditons($user, $element_level_start),
+        UNIT_PLAYER_COLONIES_MAX => get_player_max_colonies($user, $element_level_start),
+      );
 
       $level_start = $level_base_and_que > 1 ? $level_effective + $level_in_que - 1 : 1;
       for($i = 0; $i < 6; $i++) {
@@ -267,7 +293,16 @@ function sn_eco_build($que_type, &$auser, &$planet) {
                 $template->assign_block_vars('production.resource', $level_production);
         */
         $template->assign_block_vars('production.resource', $level_production);
+
+        $level_production_base = array(
+          UNIT_PLAYER_EXPEDITIONS_MAX => $level_production['R'.UNIT_PLAYER_EXPEDITIONS_MAX],
+          UNIT_PLAYER_COLONIES_MAX => $level_production['R'.UNIT_PLAYER_COLONIES_MAX],
+        );
       }
+    }
+    //pdump(unit_requirements_render($user, $planet, $unit_id));
+    foreach(unit_requirements_render($user, $planet, $unit_id) as $requirement) {
+      $template->assign_block_vars('production.require', $requirement);
     }
   }
 
@@ -294,6 +329,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     'METAL'              => $planet['metal'],
     'CRYSTAL'            => $planet['crystal'],
     'DEUTERIUM'          => $planet['deuterium'],
+    'DARK_MATTER'        => $user_dark_matter,
 
     'METAL_INCOMING'     => $fleet_list['own']['total'][RES_METAL],
     'CRYSTAL_INCOMING'   => $fleet_list['own']['total'][RES_CRYSTAL],
@@ -307,7 +343,6 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     'QUE_HAS_PLACE'      => $can_que_element,
     'QUE_HAS_FIELDS'     => $planet_fields_queable,
 
-
     'PAGE_HINT'          => $lang['eco_bld_page_hint'],
     'PLANET_TYPE'        => $planet['planet_type'],
     'SECTOR_CAN_BUY'     => $sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER),
@@ -315,6 +350,10 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     'SECTOR_COST_TEXT'   => pretty_number($sector_cost),
 
     'STACKABLE'          => $unit_stackable,
+
+    'TEMPORARY'          => intval($config->empire_mercenary_temporary && $que_type == QUE_MERCENARY),
+
+    'STRING_CREATE'      => $que_type == QUE_MERCENARY ? $lang['bld_hire'] : ($que_type == QUE_RESEARCH ? $lang['bld_research'] : $lang['bld_create']),
 
     'U_opt_int_struc_vertical' => $user['option_list'][OPT_INTERFACE]['opt_int_struc_vertical'],
   ));

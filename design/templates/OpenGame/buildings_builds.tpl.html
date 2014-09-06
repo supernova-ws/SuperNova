@@ -2,9 +2,11 @@
 
 <script type="text/javascript"><!--
 var production = Array();
+var require = Array();
 var unit_selected = null;
 var eco_bld_style_probe;
 var STACKABLE = '{STACKABLE}';
+var TEMPORARY = parseInt('{TEMPORARY}');
 
 var ALLY_ID = isNaN(ALLY_ID = '{ALLY_ID}') ? 0 : ALLY_ID;
 var PLANET_ID = isNaN(PLANET_ID = parseInt('{PLN_ID}')) ? 0 : PLANET_ID;
@@ -24,6 +26,7 @@ language = {
   sys_crystal: '{LA_sys_crystal}',
   sys_deuterium: '{LA_sys_deuterium}',
   sys_energy: '{LA_sys_energy}',
+  sys_dark_matter: '{LA_sys_dark_matter}',
   energy: '{LA_sys_energy}',
   shield: '{LA_sys_ship_shield}',
   armor: '{LA_sys_ship_armour}',
@@ -34,6 +37,8 @@ language = {
 
   'sys_expeditions': '{LA_sys_expeditions}',
   'sys_colonies': '{LA_sys_colonies}',
+
+  'No_requirements': '{LA_No_requirements}',
 };
 
 planet = {
@@ -42,10 +47,12 @@ planet = {
   metal: '{METAL}',
   crystal: '{CRYSTAL}',
   deuterium: '{DEUTERIUM}',
+  dark_matter: '{DARK_MATTER}',
 
   metal_incoming: '{METAL_INCOMING}',
   crystal_incoming: '{CRYSTAL_INCOMING}',
   deuterium_incoming: '{DEUTERIUM_INCOMING}',
+  dark_matter_incoming: 0,
 
   que_has_place: '{QUE_HAS_PLACE}',
   que_has_fields: '{QUE_HAS_FIELDS}',
@@ -114,12 +121,8 @@ var que_id = '{QUE_ID}';
         <td colspan="5" id="unit_info" style="vertical-align: top;">
           <table cellspacing=0 cellpadding=0 valign=top style="vertical-align: top; border: 0;" width=100% class="noborder">
             <tr>
-              <th width=120px valign=top>
-                <div id="unit_name"></div>
-              </th>
-              <th colspan=3 valign=top>
-                <div id="unit_description" style="text-align: justify; height: 8ex;"></div>
-              </th>
+              <th width=120px valign=middle  id="unit_name"><!-- <div id="unit_name"></div> --></th>
+              <th colspan=3 valign=middle id="unit_description" style="text-align: justify; height: 8ex;"></th>
             </tr>
 
             <tr>
@@ -131,7 +134,7 @@ var que_id = '{QUE_ID}';
               </th>
 
               <th valign=top width="50%">
-                <table style="margin: 0; font-size: {$FONT_SIZE};" width="100%">
+                <table style="margin: 0; font-size: {$FONT_SIZE};" width="100%" id="unit_cost_table">
                   <tr class="c_c">
                     <th width=45>{L_sys_resources}</th>
                     <th width=65>{L_eco_price}</th>
@@ -156,8 +159,14 @@ var que_id = '{QUE_ID}';
                     <td id="deuterium_left">0</td>
                     <td id="deuterium_fleet" hide_no_fleet="yes">0</td>
                   </tr>
+                  <tr id="unit_dark_matter" class="c_r">
+                    <td class="c_c" nowrap style="font-size: 80%">{L_sys_dark_matter}</td>
+                    <td id="dark_matter_price">0</td>
+                    <td id="dark_matter_left">0</td>
+                    <td id="dark_matter_fleet" hide_no_fleet="yes">0</td>
+                  </tr>
                 </table>
-                <div>{L_ConstructionTime}<span id="unit_time"></span></div>
+                <div id="unit_time_div">{L_ConstructionTime}<span id="unit_time"></span></div>
                 <form action="buildings.php" method="post" id="form_unit">
                   <input type="hidden" name="mode" value="{QUE_ID}" />
                   <input type="hidden" name="ally_id" value="{ALLY_ID}" />
@@ -168,11 +177,11 @@ var que_id = '{QUE_ID}';
                       <script type="text/javascript"><!--
                         sn_ainput_make('unit_amount', {max: 0, button_max: true, button_zero: true});
                       --></script>
-                      <div class="link positive unit_create">{LA_bld_create}</div> <span id="unit_create_amount"></span>
+                      <div class="link positive unit_create">{STRING_CREATE}</div> <span id="unit_create_amount"></span>
                     </div>
                   <!-- ELSE -->
                     <div id="unit_create" style="visibility: hidden" class="link positive unit_create">
-                      {LA_bld_create} {LA_level} <span id="unit_create_level"></span>
+                      {STRING_CREATE} {LA_level} <span id="unit_create_level"></span>
                     </div>
                     <div id="unit_destroy" style="visibility: hidden">
                       <div id="unit_destroy_resources">&nbsp;</div>
@@ -184,6 +193,16 @@ var que_id = '{QUE_ID}';
               </th>
               <td class="c_l noborder" width="50%" id="unit_balance" valign="top">&nbsp;</td>
             </tr>
+            <tr>
+              <th colspan="3" class="c_l" valign="top">
+                {L_wiki_requrements}
+              </th>
+            </tr>
+            <tr id="unit_require_wrapper">
+              <td colspan="3" class="c_l noborder" valign="top">
+                <ul id="unit_require" style="height:5em"></ul>
+              </td>
+            </tr>
           </table>
         </td>
       </tr>
@@ -194,15 +213,17 @@ var que_id = '{QUE_ID}';
             <div class="unit_preview" id="unit{production.ID}" unit_id="{production.ID}">
               <img src="{dpath}gebaeude/{production.ID}.gif" class="unit_image">
 
-              <span class="a75 time">
-                {production.TIME}
-              </span>
+              <!-- IF production.TIME_SECONDS -->
+                <span class="a75 time">
+                  {production.TIME}
+                </span>
+              <!-- ENDIF -->
 
               <span class="a75 <!-- IF STACKABLE -->count<!-- ELSE -->level<!-- ENDIF -->">
                 <!-- IF production.LEVEL_OLD || STACKABLE -->{production.LEVEL_OLD}<!-- IF production.LEVEL_BONUS --><span class="bonus">+{production.LEVEL_BONUS}</span><!-- ENDIF --><!-- ENDIF --><!-- IF production.LEVEL_QUED --><!-- IF production.LEVEL_QUED > 0 -->+<!-- ENDIF -->{production.LEVEL_QUED}<!-- ENDIF -->
               </span>
 
-              <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY && ! STACKABLE -->
+              <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY && ! STACKABLE && ! TEMPORARY -->
                 <!-- IF QUE_HAS_FIELDS && production.BUILD_CAN && production.BUILD_RESULT == 0 -->
                   <div class="right_top a75 unit_create">
                     <div class="icons icon-plus"></div>
@@ -231,6 +252,7 @@ var que_id = '{QUE_ID}';
                 <!-- IF production.METAL --><div><div class="left"><!-- IF $FONT_SIZE == '80%' -->{L_sys_metal_sh}<!-- ELSE -->{L_sys_metal}<!-- ENDIF --></div><div class="fr">{production.METAL_REST}</div></div><br><!-- ENDIF -->
                 <!-- IF production.CRYSTAL --><div><div class="left"><!-- IF $FONT_SIZE == '80%' -->{L_sys_crystal_sh}<!-- ELSE -->{L_sys_crystal}<!-- ENDIF --></div><div class="fr">{production.CRYSTAL_REST}</div></div><br><!-- ENDIF -->
                 <!-- IF production.DEUTERIUM --><div><div class="left"><!-- IF $FONT_SIZE == '80%' -->{L_sys_deuterium_sh}<!-- ELSE -->{L_sys_deuterium}<!-- ENDIF --></div><div class="fr">{production.DEUTERIUM_REST}</div></div><!-- ENDIF -->
+                <!-- IF production.DARK_MATTER && ! TEMPORARY --><div><div class="left">{L_sys_dark_matter_sh}</div><div class="fr">{production.DARK_MATTER_REST}</div></div><!-- ENDIF -->
               </span>
 
 
@@ -240,7 +262,7 @@ var que_id = '{QUE_ID}';
                 </span>
               <!-- ENDIF -->
 
-              <!-- IF ! ALLY_ID -->
+              <!-- IF ! ALLY_ID && ! production.DARK_MATTER_ONLY -->
               <span class="a75 right_bottom gather_resources" title="{L_flt_gather_all}"
                 <!-- IF production.METAL_REST_NUM < 0 -->metal="{production.METAL_REST_NUM}"<!-- ENDIF -->
                 <!-- IF production.CRYSTAL_REST_NUM < 0 -->crystal="{production.CRYSTAL_REST_NUM}"<!-- ENDIF -->
@@ -261,6 +283,20 @@ var que_id = '{QUE_ID}';
           <!-- ENDIF -->
 
           <script type="text/javascript"><!--
+          <!-- IF .production.require -->
+            require[{production.ID}] = [<!-- BEGIN require -->
+              {
+                name: '{require.NAME}',
+                requerements_met: parseInt('{require.REQUEREMENTS_MET}'),
+                level_require: parseInt('{require.LEVEL_REQUIRE}'),
+                level: parseInt('{require.LEVEL}'),
+                level_basic: parseInt('{require.LEVEL_BASIC}'),
+                level_bonus: parseInt('{require.LEVEL_BONUS}'),
+                id: parseInt('{require.ID}'),
+              },
+            <!-- END require -->];
+          <!-- ENDIF -->
+
           production[{production.ID}] = {
             id: '{production.ID}',
             name: '{production.NAME}',
@@ -274,7 +310,9 @@ var que_id = '{QUE_ID}';
             metal: '{production.METAL}',
             crystal: '{production.CRYSTAL}',
             deuterium: '{production.DEUTERIUM}',
+            dark_matter: '{production.DARK_MATTER}',
             time: '{production.TIME}',
+            time_seconds: parseInt('{production.TIME_SECONDS}'),
             build_can: '{production.BUILD_CAN}',
             build_result: '{production.BUILD_RESULT}',
 

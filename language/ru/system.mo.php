@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39a10.11#
+* @version #39a12.0#
 *
 */
 
@@ -195,6 +195,8 @@ $a_lang_array = (array(
 // Build page
   'bld_destroy' => 'Уничтожить',
   'bld_create'  => 'Построить',
+  'bld_research' => 'Исследовать',
+  'bld_hire' => 'Нанять',
 
 // Imperium page
   'imp_imperator' => "Император",

@@ -1,5 +1,124 @@
 Stay out of my shed
 
+
+- ПЕРЕДЕЛАТЬ СОВСЕМ
+  register_time - это вообще TIMESTAMP! И ПОМЕНЯТЬ В ЗАПРОСЕ НА УДАЛЕНИЕ И НА ОБСЛУЖИВАНИЕ!!!
+  player_que - вроде нигде не используется - удалить нахрен
+  deltime - нужно только при обслуживании сервера, не работает, можно удалить пока
+
+- СИСТЕМНОЕ
+  - ПОСТОЯННАЯ ЧАСТЬ. То, что не изменяется регулярно
+    id
+    username
+    authlevel
+    user_as_ally - переделать в user_type: 0 - юзер, 1 - альянс, 2 - бот итд
+    ally_id
+    id_planet
+    galaxy - надо ли держать это в users ???
+    system - надо ли держать это в users ???
+    planet - надо ли держать это в users ???
+
+  - Переменная часть. Из-за неё, собственно, и лочится таблица USER
+    onlinetime
+    que_processed
+
+- ЮНИТЫ
+  metal
+  crystal
+  deuterium
+  dark_matter
+  metamatter
+  metamatter_total
+  player_race
+
+- СТАТИСТИКА - ОТДЕЛЬНАЯ ЗАПИСЬ В НЕБЛОКИРУЕМОЙ ТАБЛИЦЕ?
+  player_rpg_explore_xp
+  player_rpg_explore_level
+  lvl_minier
+  xpminier
+  player_rpg_tech_xp
+  player_rpg_tech_level
+  lvl_raid
+  xpraid
+  raids
+  raidsloose
+  raidswin
+  total_rank - кэш из статистики?
+  total_points - кэш из статистики?
+
+
+--- СОМНИТЕЛЬНОЕ СИСТЕМНОЕ
+  password                  - нужно только при логинах и спецоперациях
+  email                     - нужно только при отправке сообщений
+  email_2                   - нужно только при отправке сообщений
+
+  ally_tag                  - просто кэширует инфу из Альянса, нахуй надо ???
+  ally_name                 - просто кэширует инфу из Альянса, нахуй надо ???
+
+  ally_rank_id              - нужно очень редко
+  ally_register_time        - нужно очень редко
+  current_planet            - нужно очень редко
+  banaday                   - нужно очень редко
+  vacation                  - нужно очень редко
+  vacation_next             - нужно очень редко
+
+
+- ПЕРЕМЕННЫЕ
+  user_agent   - изменяется только при входе
+  user_lastip  - изменяется только при входе
+  user_proxy   - изменяется только при входе
+  ip_int       - изменяется только при входе
+  user_birthday_celebrated  - вообще переменная должна быть
+
+  - Замеры времени
+    user_time_measured
+    user_time_diff
+    user_time_utc_offset
+    user_time_diff_forced
+  - СООБЩЕНИЯ И НОВОСТИ
+    news_lastread
+    mnl_alliance
+    mnl_joueur
+    mnl_attaque
+    mnl_spy
+    mnl_exploit
+    mnl_transport
+    mnl_expedition
+    mnl_buildlist
+    msg_admin
+    new_message
+
+
+- НАСТРОЙКИ
+  user_birthday             - нужно очень редко
+  sign - подпись в сообщениях. Не участвует нигде
+  lang
+  sex
+  avatar
+  dpath
+  design
+  noipcheck
+  options
+  planet_sort
+  planet_sort_order
+  spio_anz
+  settings_tooltiptime
+  settings_fleetactions
+  settings_esp
+  settings_wri
+  settings_bud
+  settings_mis
+  settings_rep
+  settings_statistics
+  settings_info
+  admin_protection          - нужно очень редко
+
+
+
+
+
+
+
 ТУДУ
 ====
   Видное
@@ -361,7 +480,7 @@ Stay out of my shed
 ======================
 
 
-Текущий билд #39a11.10#
+Текущий билд #39a12.0#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять flt_lastUpdate

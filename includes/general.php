@@ -1092,12 +1092,12 @@ function idval($value, $default = 0)
 function unit_requirements_render($user, $planetrow, $unit_id){return sn_function_call('unit_requirements_render', array($user, $planetrow, $unit_id, &$result));}
 function sn_unit_requirements_render($user, $planetrow, $unit_id, &$result)
 {
-  global $lang;
+  global $lang, $config;
 
   $sn_data_unit = get_unit_param($unit_id);
 
   $result = is_array($result) ? $result : array();
-  if($sn_data_unit['require'])
+  if($sn_data_unit['require'] && !($sn_data_unit[P_UNIT_TYPE] == UNIT_MERCENARIES && $config->empire_mercenary_temporary))
   {
     foreach($sn_data_unit['require'] as $require_id => $require_level)
     {
@@ -1106,7 +1106,7 @@ function sn_unit_requirements_render($user, $planetrow, $unit_id, &$result)
       $result[] = array(
         'NAME' => $lang['tech'][$require_id],
         //'CLASS' => $require_level > $level_got ? 'negative' : ($require_level == $level_got ? 'zero' : 'positive'),
-        'REQUEREMENTS_MET' => $require_level <= $level_got ? REQUIRE_MET : REQUIRE_MET_NOT,
+        'REQUEREMENTS_MET' => intval($require_level <= $level_got ? REQUIRE_MET : REQUIRE_MET_NOT),
         'LEVEL_REQUIRE' => $require_level,
         'LEVEL' => $level_got,
         'LEVEL_BASIC' => $level_basic,

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a7.14
+* @version 39a12.0
 *
 */
 
@@ -390,31 +390,37 @@ $lang['info'] = (array(
 
     MRC_TECHNOLOGIST => array(
       'description' => 'Technologist is a recognized expert in astromineralogy and crystalography. With his team of Metalurgists and chemists, he supported the interplanetary Government when developing new resources and optimize their refinery.',
+      'description_short' => 'Technologist is a recognized expert in astromineralogy and crystalography. With his team of Metalurgists and chemists, he supported the interplanetary Government when developing new resources and optimize their refinery.',
       'effect' => 'per level to metal, crystal and deuterium production, to energy production on solar and fusion stations each level',
     ),
 
     MRC_ENGINEER => array(
       'description' => 'Engineer is expert in structures and ship building',
+      'description_short' => 'Engineer is expert in structures and ship building',
       'effect' => 'per level to construction speed for buildings and ships<br />+1 slot per level to planet structures and hangar queries',
     ),
 
     MRC_FORTIFIER => array(
       'description' => 'Fortifier - Army Engineer. His in-depth knowledge of defensive systems allow you to shorten planet defense building time',
+      'description_short' => 'Fortifier - Army Engineer. His in-depth knowledge of defensive systems allow you to shorten planet defense building time',
       'effect' => 'per level to construction speed of missiles and defense structures<br />+10% per level to attack, armor and shields when defending planet<br />+1 slot per level to defence structures and missile queries',
     ),
 
     MRC_STOCKMAN => array(
       'description' => 'Cargo-master is a highly skilled specialist in storage. His genius allows you to get the most out of storage resources to increase their effective capacity beyond the builders.',
+      'description_short' => 'Cargo-master is a highly skilled specialist in storage. His genius allows you to get the most out of storage resources to increase their effective capacity beyond the builders.',
       'effect' => 'size of warehouses for each level',
     ),
 
     MRC_SPY => array(
       'description' => 'Spy-master person Empire. He had hundreds of thousands of individuals and a million ideas for mask works, defensive networks and fleets. Everyone who saw his real face, is now dead.',
+      'description_short' => 'Spy-master person Empire. He had hundreds of thousands of individuals and a million ideas for mask works, defensive networks and fleets. Everyone who saw his real face, is now dead.',
       'effect' => 'level of spying for each level',
     ),
 
     MRC_ACADEMIC => array(
       'description' => 'Academicians are actors Guild Technocrats. Their mind and scholars degree allow them Excel in their acts even constructors. They specialize in the field of technological progress.',
+      'description_short' => 'Academicians are actors Guild Technocrats. Their mind and scholars degree allow them Excel in their acts even constructors. They specialize in the field of technological progress.',
       'effect' => 'per level to technology research speed',
     ),
 
@@ -425,16 +431,19 @@ $lang['info'] = (array(
 
     MRC_ADMIRAL => array(
       'description' => 'Admiral is tried by war veteran and a brilliant strategist. Even in the hottest fights he doesn\'t lose a review and maintains contact with commanders fleets. The wise ruler can rely on him in battle and thereby use to battle more ships.',
+      'description_short' => 'Admiral is tried by war veteran and a brilliant strategist. Even in the hottest fights he doesn\'t lose a review and maintains contact with commanders fleets. The wise ruler can rely on him in battle and thereby use to battle more ships.',
       'effect' => 'armor, shields and attack ships for each level',
     ),
 
     MRC_COORDINATOR => array(
       'description' => 'The Coordinator is an expert in managing fleets. His knowledge can make the most of the fleet management system.',
+      'description_short' => 'The Coordinator is an expert in managing fleets. His knowledge can make the most of the fleet management system.',
       'effect' => 'additional fleet for each level',
     ),
 
     MRC_NAVIGATOR => array(
       'description' => 'Navigator-genius in calculating the trajectories of fleets. His knowledge of laws warp drive-space device jump-drive and technologies all existing types of engines can speed flying ships.',
+      'description_short' => 'Navigator-genius in calculating the trajectories of fleets. His knowledge of laws warp drive-space device jump-drive and technologies all existing types of engines can speed flying ships.',
       'effect' => 'speed of ships for each level',
     ),
 
@@ -445,6 +454,7 @@ $lang['info'] = (array(
 
     MRC_EMPEROR => array(
       'description' => 'Emperor - your personal assistant and Deputy. The accuracy of its reports and punctuality in everything-his best qualities, capable of total control over the Empire.',
+      'description_short' => 'Emperor - your personal assistant and Deputy. The accuracy of its reports and punctuality in everything-his best qualities, capable of total control over the Empire.',
       'effect' => 'Allows you to change the characteristics of the Emperor',
     ),
 

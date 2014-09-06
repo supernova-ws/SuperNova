@@ -15,7 +15,7 @@ function cntchar(m) {
   e.childNodes[0].data = window.document.forms[0].text.value.length;
 }
 
-function sn_format_number(number, precission, style, max)
+function sn_format_number(number, precission, style, max, plus_sign)
 {
   if(!precission)
   {
@@ -66,6 +66,8 @@ function sn_format_number(number, precission, style, max)
   if(number < 0)
   {
     ret_val = '-' + ret_val;
+  } else if (number > 0 && plus_sign) {
+    ret_val = '+' + ret_val;
   }
 
   if(style)

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a10.11
+* @version 39a12.0
 *
 */
 
@@ -194,6 +194,8 @@ $a_lang_array = (array(
 // Build page
   'bld_destroy' => 'Destroy',
   'bld_create'  => 'Build',
+  'bld_research' => 'Research',
+  'bld_hire' => 'Hire',
 
 // Imperium page
   'imp_imperator' => "Emperor",

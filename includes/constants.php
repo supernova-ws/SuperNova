@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a11.10');
+define('SN_VERSION', '39a12.0');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -442,6 +442,13 @@ define('BUILD_MAX_REACHED'     ,11);
 define('QUE_STRUCTURES', 1);
 define('QUE_HANGAR'    , 4);
 define('QUE_RESEARCH'  , 7);
+define('QUE_MERCENARY' , 600); // UNIT_MERCENARIES
+// *** Subque types
+define('SUBQUE_PLANET'  , 1);
+define('SUBQUE_MOON'    , 3);
+define('SUBQUE_FLEET'   , 4);
+define('SUBQUE_DEFENSE' , 6);
+define('SUBQUE_RESEARCH', 7);
 
 // *** Que items
 define('QI_UNIT_ID'   , 0);
@@ -452,12 +459,6 @@ define('QI_QUE_ID'    , 4);
 define('QI_QUE_TYPE'  , 4);
 define('QI_PLANET_ID' , 5);
 
-// *** Subque types
-define('SUBQUE_PLANET'  , 1);
-define('SUBQUE_MOON'    , 3);
-define('SUBQUE_FLEET'   , 4);
-define('SUBQUE_DEFENSE' , 6);
-define('SUBQUE_RESEARCH', 7);
 
 // *** Units
 
@@ -761,6 +762,10 @@ define('P_PART_TYPE', 'P_PART_TYPE');
 define('P_HULL_CAPACITY', 'P_HULL_CAPACITY');
 define('P_COST_TOTAL', 'unit_cost');
 
+define('P_OPTIONS', 'options');
+define('P_ONLY_DARK_MATTER', 'P_ONLY_DARK_MATTER');
+define('P_TIME_RAW', 'P_TIME_RAW');
+
 define('SNC_VER_NEVER', -1);
 define('SNC_VER_ERROR_CONNECT', 0);
 define('SNC_VER_EXACT', 1);
@@ -824,8 +829,8 @@ define('BUDDY_REQUEST_WAITING', 0);
 define('BUDDY_REQUEST_ACTIVE', 1);
 define('BUDDY_REQUEST_DENIED', 2);
 
-define('REQUIRE_MET', 0);
-define('REQUIRE_MET_NOT', 1);
+define('REQUIRE_MET_NOT', 0);
+define('REQUIRE_MET', 1);
 
 
 define('UBE_COMBAT_RESULT_DRAW_END', -1);

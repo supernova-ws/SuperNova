@@ -77,16 +77,10 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
 
   $can_build   = isset($unit_data[P_MAX_STACK]) && $unit_data[P_MAX_STACK] ? $unit_data[P_MAX_STACK] : 1000000000000;
   $can_destroy = 1000000000000;
-  foreach($unit_data[P_COST] as $resource_id => $resource_amount)
-  {
-    if($resource_id === P_FACTOR)
-    {
-      continue;
-    }
-
-    $resource_cost = $resource_amount * $price_increase;
-    if(!$resource_cost)
-    {
+  $time = 0;
+  $only_dark_matter = 0;
+  foreach($unit_data[P_COST] as $resource_id => $resource_amount) {
+    if($resource_id === P_FACTOR || !($resource_cost = $resource_amount * $price_increase)) {
       continue;
     }
 
@@ -94,23 +88,17 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $cost[BUILD_DESTROY][$resource_id] = round($resource_cost / 2);
 
     $resource_db_name = pname_resource_name($resource_id);
-    if(in_array($resource_id, sn_get_groups('resources_loot')))
-    {
+    if(in_array($resource_id, sn_get_groups('resources_loot'))) {
       $time += $resource_cost * $config->__get("rpg_exchange_{$resource_db_name}") / $rpg_exchange_deuterium;
       $resource_got = mrc_get_level($user, $planet, $resource_id);
-    }
-    elseif($resource_id == RES_DARK_MATTER)
-    {
+    } elseif($resource_id == RES_DARK_MATTER) {
       $resource_got = mrc_get_level($user, null, $resource_id);
-    }
-    elseif($resource_id == RES_ENERGY)
-    {
+    } elseif($resource_id == RES_ENERGY) {
       $resource_got = max(0, $planet['energy_max'] - $planet['energy_used']);
-    }
-    else
-    {
+    } else {
       $resource_got = 0;
     }
+    $only_dark_matter = $only_dark_matter ? $only_dark_matter : $resource_id;
 
     $can_build = min($can_build, $resource_got / $cost[BUILD_CREATE][$resource_id]);
     $can_destroy = min($can_destroy, $resource_got / $cost[BUILD_DESTROY][$resource_id]);
@@ -122,21 +110,20 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   $can_destroy = $can_destroy > 0 ? floor($can_destroy) : 0;
   $cost['CAN'][BUILD_DESTROY] = $can_destroy;
 
+  $cost[P_OPTIONS][P_ONLY_DARK_MATTER] = $only_dark_matter = $only_dark_matter == RES_DARK_MATTER;
+  $cost[P_OPTIONS][P_TIME_RAW] = $time = $time * 60 * 60 / get_game_speed() / 2500;
+
   // TODO - Вынести в отдельную процедуру расчёт стоимости
-  if($only_cost)
-  {
+  if($only_cost) {
     return $cost;
   }
-
-  $time = $time * 60 * 60 / get_game_speed() / 2500;
 
   $cost['RESULT'][BUILD_CREATE] = eco_can_build_unit($user, $planet, $unit_id);
   $cost['RESULT'][BUILD_CREATE] = $cost['RESULT'][BUILD_CREATE] == BUILD_ALLOWED ? ($cost['CAN'][BUILD_CREATE] ? BUILD_ALLOWED : BUILD_NO_RESOURCES) : $cost['RESULT'][BUILD_CREATE];
 
   $mercenary = 0;
   $cost['RESULT'][BUILD_DESTROY] = BUILD_INDESTRUCTABLE;
-  if(in_array($unit_id, sn_get_groups('structures')))
-  {
+  if(in_array($unit_id, sn_get_groups('structures'))) {
     $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_ROBOT) + 1);
     $mercenary = MRC_ENGINEER;
     $cost['RESULT'][BUILD_DESTROY] =
@@ -146,50 +133,48 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
             : BUILD_NO_RESOURCES
           )
         : BUILD_NO_UNITS;
-  }
-  elseif(in_array($unit_id, sn_get_groups('tech')))
-  {
+  } elseif(in_array($unit_id, sn_get_groups('tech'))) {
     $lab_level = eco_get_lab_max_effective_level($user, intval($unit_data['require'][STRUC_LABORATORY]));
     $time = $time / $lab_level;
     $mercenary = MRC_ACADEMIC;
-  }
-  elseif(in_array($unit_id, sn_get_groups('defense')))
-  {
+  } elseif(in_array($unit_id, sn_get_groups('defense'))) {
     $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1) ;
     $mercenary = MRC_FORTIFIER;
-  }
-  elseif(in_array($unit_id, sn_get_groups('fleet')))
-  {
+  } elseif(in_array($unit_id, sn_get_groups('fleet'))) {
     $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1);
     $mercenary = MRC_ENGINEER;
   }
 
-  if($mercenary)
-  {
+  if($mercenary) {
     $time = $time / mrc_modify_value($user, $planet, $mercenary, 1);
   }
 
-  $time = ($time >= 1) ? $time : (in_array($unit_id, sn_get_groups('governors')) ? 0 : 1);
-  $cost[RES_TIME][BUILD_CREATE]  = round($time);
-  $cost[RES_TIME][BUILD_DESTROY] = $time <= 1 ? 1 : round($time / 2);
+  if(in_array($unit_id, sn_get_groups('governors')) || $only_dark_matter) {
+    $cost[RES_TIME][BUILD_CREATE] = $cost[RES_TIME][BUILD_DESTROY] = 0;
+  } else {
+    $cost[RES_TIME][BUILD_CREATE]  = round($time >= 1 ? $time : 1);
+    $cost[RES_TIME][BUILD_DESTROY] = round($time / 2 <= 1 ? 1 : $time / 2);
+  }
 
   return $cost;
 }
 
 function eco_can_build_unit($user, $planet, $unit_id){return sn_function_call('eco_can_build_unit', array($user, $planet, $unit_id, &$result));}
-function sn_eco_can_build_unit($user, $planet, $unit_id, &$result)
-{
+function sn_eco_can_build_unit($user, $planet, $unit_id, &$result) {
+  global $config;
+
   $result = isset($result) ? $result : BUILD_ALLOWED;
   $result = $result == BUILD_ALLOWED && eco_unit_busy($user, $planet, $unit_id) ? BUILD_UNIT_BUSY : $result;
-  $requirement = get_unit_param($unit_id, P_REQUIRE);
-  if($result == BUILD_ALLOWED && $requirement)
-  {
-    foreach($requirement as $require_id => $require_level)
-    {
-      if(mrc_get_level($user, $planet, $require_id) < $require_level)
-      {
-        $result = BUILD_REQUIRE_NOT_MEET;
-        break;
+
+  $unit_param = get_unit_param($unit_id);
+  if($unit_param[P_UNIT_TYPE] != UNIT_MERCENARIES || !$config->empire_mercenary_temporary) {
+    $requirement = &$unit_param[P_REQUIRE];
+    if($result == BUILD_ALLOWED && $requirement) {
+      foreach($requirement as $require_id => $require_level) {
+        if(mrc_get_level($user, $planet, $require_id) < $require_level) {
+          $result = BUILD_REQUIRE_NOT_MEET;
+          break;
+        }
       }
     }
   }
