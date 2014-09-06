@@ -137,18 +137,22 @@ function sn_ainput_make(field_name, options)
   document.write('<tr>');
   if(options['button_zero'])
   {
-    document.write('<td><input type="button" value="0" id="' + field_name + 'zero" style=""></td>');
+    document.write('<td width="6"><input type="button" value="0" id="' + field_name + 'zero" style="width: 6px"></td>');
     jQuery('#' + field_name + 'zero').button();
     col_span++;
   }
-  document.write('<td><input type="button" value="-" id="' + field_name + 'dec" style=""></td>');// div_width
+
+  document.write('<td><input type="button" value="-" id="' + field_name + 'dec" style="width: 6px"></td>');
   jQuery('#' + field_name + 'dec').button();
+
   document.write('<td><input type="text" value="0" id="' + field_name + '" style="width: ' + 'auto' + ';" name="' + field_name_orig + '" onfocus="javascript:if(this.value == \'0\') this.value=\'\';" onblur="javascript:if(this.value == \'\') this.value=\'0\';"/></td>');
 
-  document.write('<td>&nbsp;<input type="button" value="+" id="' + field_name + 'inc" style=""></td>');
+  $('#' + field_name).button().addClass('ui-textfield');
+
+  document.write('<td width="6"><input type="button" value="+" id="' + field_name + 'inc" style="width: 6px"></td>');
   if(options['button_max'])
   {
-    document.write('<td><input type="button" value="M" id="' + field_name + 'max" style=""></td>');
+    document.write('<td width="6"><input type="button" value="M" id="' + field_name + 'max" style="width: 6px"></td>');
     jQuery('#' + field_name + 'max').button();
     col_span++;
   }
@@ -191,6 +195,7 @@ function sn_ainput_make(field_name, options)
       }
 
       value = parseInt(jQuery(this).val());
+      value = value ? value : 0;
       slider = jQuery(slider_id);
 
       if(value > parseInt(slider.slider("option", "max"))) {

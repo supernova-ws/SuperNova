@@ -708,3 +708,11 @@ th.c_j, td.c_j
   margin: 0;
   padding: 0;
 }
+
+.ui-textfield {
+  font: inherit;
+  color: inherit;
+  /* text-align: inherit;*/
+  outline: none;
+  text-align: left;
+}
