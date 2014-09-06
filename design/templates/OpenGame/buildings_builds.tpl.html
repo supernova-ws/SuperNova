@@ -79,7 +79,7 @@ var que_id = '{QUE_ID}';
     <table id="unit_table">
       <!-- IF SHOW_SECTORS -->
       <tr>
-        <th colspan="5" class="c_c">
+        <th colspan="4" class="c_c">
           <table class="markup noborder" width="100%">
             <tr>
               <th class="c_l">
@@ -105,7 +105,7 @@ var que_id = '{QUE_ID}';
 
       <!-- IF ! U_opt_int_struc_vertical && $QUE_NOT_EMPTY -->
       <tr>
-        <td colspan="5" class="c_c" align="center">
+        <td colspan="4" class="c_c">
           <!-- INCLUDE eco_bld_queue_list -->
         </td>
       </tr>
@@ -118,91 +118,102 @@ var que_id = '{QUE_ID}';
       <!-- ENDIF -->
 
       <tr>
-        <td colspan="5" id="unit_info" style="vertical-align: top;">
+        <td colspan="4" style="vertical-align: top;">
           <table cellspacing=0 cellpadding=0 valign=top style="vertical-align: top; border: 0;" width=100% class="noborder">
             <tr>
-              <th width=120px valign=middle  id="unit_name"><!-- <div id="unit_name"></div> --></th>
-              <th colspan=3 valign=middle id="unit_description" style="text-align: justify; height: 8ex;"></th>
-            </tr>
-
-            <tr>
               <th>
-                <div style="height: 140px; vertical-align: middle">
-                  <img id="unit_image" border="0" src="" align="top" width="120px">
-                  <span id="unit_level"></span>
+                <div style="vertical-align: middle; min-height: 170px">
+                  <div id="unit_name" align="center" style="font-size: 100%; min-height: 3em;vertical-align: top;"></div>
+                  <div style="vertical-align: middle"><img id="unit_image" border="0" src="" align="top" width="120px" /></div>
+                  <div id="unit_level" style="font-size: 100%; min-height: 1.1em; vertical-align: bottom"></div>
                 </div>
               </th>
+              <th valign="top" width="100%">
+                <div id="unit_description" style="text-align: justify;"></div>
+                <div class="c_l neutral" style="text-align: left;">{L_wiki_requrements}</div>
+                <div id="unit_require_wrapper">
+                  <ul id="unit_require"></ul>
+                </div>
+              </th>
+              <td class="c_l noborder" id="unit_balance" valign="top"></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
 
-              <th valign=top width="50%">
-                <table style="margin: 0; font-size: {$FONT_SIZE};" width="100%" id="unit_cost_table">
+      <tr>
+        <td colspan="4" style="vertical-align: top;">
+          <table cellspacing=0 cellpadding=0 valign=top style="vertical-align: top; border: 0;" width=100% class="noborder">
+            <tr>
+              <th valign=top width="50%" colspan="2">
+                <div id="unit_time_div" align="left">{L_ConstructionTime}<span id="unit_time"></span></div>
+                <table style="margin: 0; font-size: {$FONT_SIZE};" id="unit_cost_table">
                   <tr class="c_c">
-                    <th width=45>{L_sys_resources}</th>
+                    <th width=45px>{L_sys_resources}</th>
                     <th width=65>{L_eco_price}</th>
                     <th width=65>{L_eco_left}</th>
                     <th width=65 hide_no_fleet="yes">{L_sys_fleet_and}</th>
                   </tr>
                   <tr id="unit_metal" class="c_r">
-                    <td class="c_c">{L_sys_metal}</td>
+                    <td width=45px class="c_c">{L_sys_metal}</td>
                     <td id="metal_price">0</td>
                     <td id="metal_left">0</td>
                     <td id="metal_fleet" hide_no_fleet="yes">0</td>
                   </tr>
                   <tr id="unit_crystal" class="c_r">
-                    <td class="c_c">{L_sys_crystal}</td>
+                    <td width=45px class="c_c">{L_sys_crystal}</td>
                     <td id="crystal_price">0</td>
                     <td id="crystal_left">0</td>
                     <td id="crystal_fleet" hide_no_fleet="yes">0</td>
                   </tr>
                   <tr id="unit_deuterium" class="c_r">
-                    <td class="c_c">{L_sys_deuterium}</td>
+                    <td width=45px class="c_c">{L_sys_deuterium}</td>
                     <td id="deuterium_price">0</td>
                     <td id="deuterium_left">0</td>
                     <td id="deuterium_fleet" hide_no_fleet="yes">0</td>
                   </tr>
                   <tr id="unit_dark_matter" class="c_r">
-                    <td class="c_c" nowrap style="font-size: 80%">{L_sys_dark_matter}</td>
+                    <td width=45px class="c_c" nowrap style="font-size: 80%">{L_sys_dark_matter}</td>
                     <td id="dark_matter_price">0</td>
                     <td id="dark_matter_left">0</td>
                     <td id="dark_matter_fleet" hide_no_fleet="yes">0</td>
                   </tr>
                 </table>
-                <div id="unit_time_div">{L_ConstructionTime}<span id="unit_time"></span></div>
+              </th>
+              <th colspan="2" width="50%" >
                 <form action="buildings.php" method="post" id="form_unit">
                   <input type="hidden" name="mode" value="{QUE_ID}" />
                   <input type="hidden" name="ally_id" value="{ALLY_ID}" />
                   <input type="hidden" name="unit_id" id="unit_id" />
                   <input type="hidden" name="action" />
                   <!-- IF STACKABLE -->
-                    <div id="unit_create" style="visibility: hidden">
-                      <script type="text/javascript"><!--
-                        sn_ainput_make('unit_amount', {max: 0, button_max: true, button_zero: true});
-                      --></script>
-                      <div class="link positive unit_create">{STRING_CREATE}</div> <span id="unit_create_amount"></span>
-                    </div>
+                  <div id="unit_create" style="visibility: hidden">
+                    <script type="text/javascript">
+                      sn_ainput_make('unit_amount', {max: 0, button_max: true, button_zero: true});
+                    </script>
+                    <div id="unit_create_button" class="link positive unit_create">{STRING_CREATE}</div> <span id="unit_create_amount"></span>
+                    <script type="text/javascript">
+                      $( "#unit_create_button" ).button();
+                    </script>
+                  </div>
                   <!-- ELSE -->
-                    <div id="unit_create" style="visibility: hidden" class="link positive unit_create">
-                      {STRING_CREATE} {LA_level} <span id="unit_create_level"></span>
-                    </div>
-                    <div id="unit_destroy" style="visibility: hidden">
-                      <div id="unit_destroy_resources">&nbsp;</div>
-                      <div id="unit_destroy_time">&nbsp;</div>
-                      <div class="link negative unit_destroy">{LA_bld_destroy} {LA_level} <span id="unit_destroy_level"></span></div>
-                    </div>
+                  <div id="unit_create" style="visibility: hidden" class="link positive unit_create">
+                    {STRING_CREATE} {LA_level} <span id="unit_create_level"></span>
+                  </div>
+                  <script type="text/javascript">
+                    $( "#unit_create" ).button();
+                  </script>
+                  <div id="unit_destroy" style="visibility: hidden">
+                    <div id="unit_destroy_resources">&nbsp;</div>
+                    <div id="unit_destroy_time">&nbsp;</div>
+                    <div class="link negative unit_destroy">{LA_bld_destroy} {LA_level} <span id="unit_destroy_level"></span></div>
+                  </div>
                   <!-- ENDIF -->
                 </form>
               </th>
-              <td class="c_l noborder" width="50%" id="unit_balance" valign="top">&nbsp;</td>
             </tr>
-            <tr>
-              <th colspan="3" class="c_l" valign="top">
-                {L_wiki_requrements}
-              </th>
-            </tr>
-            <tr id="unit_require_wrapper">
-              <td colspan="3" class="c_l noborder" valign="top">
-                <ul id="unit_require" style="height:5em"></ul>
-              </td>
-            </tr>
+
+
           </table>
         </td>
       </tr>
@@ -278,7 +289,7 @@ var que_id = '{QUE_ID}';
             </div>
           </td>
 
-          <!-- IF (production.S_ROW_COUNT + 1) mod 5 == 0 -->
+          <!-- IF (production.S_ROW_COUNT + 1) mod 4 == 0 -->
             </tr><tr>
           <!-- ENDIF -->
 

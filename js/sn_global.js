@@ -121,7 +121,7 @@ function sn_ainput_make(field_name, options)
   var max_value = options['max'] ? options['max'] : 0;
   var step_value = options['step'] ? options['step'] : 1;
   var start_value = options['value'] ? options['value'] : min_value;
-  var div_width = options['width'] ? options['width'] : 'auto';
+  var col_span = 3;
 
   var field_name_orig = field_name;
 
@@ -131,32 +131,33 @@ function sn_ainput_make(field_name, options)
   var slider_id = "#" + field_name + 'slide';
 
   // top left
-  document.write('<div style="width: ' + div_width + ';">'); // main container - sets width
 
-  document.write('<div style="width: auto">');
+  document.write('<table width="auto" class="markup">'); // main container - sets width
+
+  document.write('<tr>');
   if(options['button_zero'])
   {
-    document.write('<input type="button" value="0" id="' + field_name + 'zero" style="width: 20px; float: left; margin-right: 3px;">');
+    document.write('<td><input type="button" value="0" id="' + field_name + 'zero" style=""></td>');
+    jQuery('#' + field_name + 'zero').button();
+    col_span++;
   }
-  document.write('<input type="button" value="-" id="' + field_name + 'dec" style="width: 20px; float: left; margin-right: 3px;">');// div_width
-  document.write('<div style="width: auto; display: inline-block;"><input type="text" value="0" id="' + field_name + '" style="width: ' + '100%' + ';" name="' +
-    field_name_orig + '" onfocus="javascript:if(this.value == \'0\') this.value=\'\';" onblur="javascript:if(this.value == \'\') this.value=\'0\';"/></div>');
+  document.write('<td><input type="button" value="-" id="' + field_name + 'dec" style=""></td>');// div_width
+  jQuery('#' + field_name + 'dec').button();
+  document.write('<td><input type="text" value="0" id="' + field_name + '" style="width: ' + 'auto' + ';" name="' + field_name_orig + '" onfocus="javascript:if(this.value == \'0\') this.value=\'\';" onblur="javascript:if(this.value == \'\') this.value=\'0\';"/></td>');
+
+  document.write('<td>&nbsp;<input type="button" value="+" id="' + field_name + 'inc" style=""></td>');
   if(options['button_max'])
   {
-    document.write('<input type="button" value="M" id="' + field_name + 'max" style="width: 20px; float: right; margin-left: 3px;">');
+    document.write('<td><input type="button" value="M" id="' + field_name + 'max" style=""></td>');
+    jQuery('#' + field_name + 'max').button();
+    col_span++;
   }
-  document.write('&nbsp;<input type="button" value="+" id="' + field_name + 'inc" style="width: 20px; float: right; margin-left: 3px;">');
-  document.write('</div>');
-  /*
-  if(div_width != 'auto')
-  {
-    div_width += 20 + 20 + 6 + 6 + 2 + 2 + (options['button_zero'] ? 20 + 2 + 6: 0) + (options['button_max'] ? 20 + 2 + 6: 0);
-  }
-  */
+  jQuery('#' + field_name + 'inc').button();
+  document.write('</tr>');
 
-  document.write('<div style="margin: 6px; width: auto" id="' + field_name + 'slide"></div>'); // slider container
+  document.write('<tr><td colspan="' + col_span + '"><div style="margin: 6px; width: auto" id="' + field_name + 'slide"></div></td></tr>'); // slider container
 
-  document.write('</div>'); // main container
+  document.write('</table>'); // main container
 
   jQuery(function()
   {
@@ -182,12 +183,9 @@ function sn_ainput_make(field_name, options)
   });
 
   jQuery("#" + field_name).bind('keyup change',
-    function(event, ui)
-    {
-      if(ui != undefined)
-      {
-        if(ui.type == 'slidechange')
-        {
+    function(event, ui) {
+      if(ui != undefined) {
+        if(ui.type == 'slidechange') {
           return;
         }
       }
@@ -195,16 +193,11 @@ function sn_ainput_make(field_name, options)
       value = parseInt(jQuery(this).val());
       slider = jQuery(slider_id);
 
-// console.log(Number.MAX_VALUE);
-// console.log(parseInt(jQuery(slider_id).slider("option", "max")));
-// console.log(value > parseInt(jQuery(slider_id).slider("option", "max")) ? 1 : 0);
-      if(value > parseInt(slider.slider("option", "max")))
-      {
+      if(value > parseInt(slider.slider("option", "max"))) {
         jQuery(this).val(slider.slider("option", "max"));
       }
 
-      if(value < parseInt(slider.slider("option", "min")))
-      {
+      if(value < parseInt(slider.slider("option", "min"))) {
         jQuery(this).val(slider.slider("option", "min"));
       }
 
@@ -220,19 +213,23 @@ function sn_ainput_make(field_name, options)
     jQuery("#" + field_name).val(jQuery(slider_id).slider("option", "max")).trigger('change', [event, ui]);
   });
 
-  jQuery("#" + field_name + 'dec, ' + "#" + field_name + 'inc').bind('mousedown', function(event, ui) {
-    var element = jQuery("#" + field_name);
-    accelerated = {'element': element, 'step': step_value, 'slider': slider_id, 'ticks': 0, 'step_now': step_value, 'timeout': 0, 'increase': $(this).attr('id') == field_name + 'inc'};
-    // accelerated['timeout'] = window.setTimeout(sn_ainput_mouselerate, 20);
-    sn_ainput_mouselerate();
-  });
-  jQuery("#" + field_name + 'dec, ' + "#" + field_name + 'inc').bind('mouseup', function(event, ui) {
-    if(accelerated)
-    {
-      clearTimeout(accelerated['timeout']);
-      accelerated = undefined;
+  jQuery("#" + field_name + 'dec, ' + "#" + field_name + 'inc')
+    .bind('mousedown', function(event, ui) {
+      var element = jQuery("#" + field_name);
+      if(element.is('[disabled]')) {
+        return;
+      }
+      accelerated = {'element': element, 'step': step_value, 'slider': slider_id, 'ticks': 0, 'step_now': step_value, 'timeout': 0, 'increase': $(this).attr('id') == field_name + 'inc'};
+      sn_ainput_mouselerate();
+    })
+    .bind('mouseup', function(event, ui) {
+      if(accelerated)
+      {
+        clearTimeout(accelerated['timeout']);
+        accelerated = undefined;
+      }
     }
-  });
+  );
 }
 
 function sn_ainput_mouselerate()

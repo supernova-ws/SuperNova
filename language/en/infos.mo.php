@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a12.0
+* @version 39a12.1
 *
 */
 
@@ -33,7 +33,7 @@ if (!defined('INSIDE')) die();
 //$lang->merge(
 $a_lang_array = (array(
   'wiki_title' => 'Novapedia',
-  'wiki_requrements' => 'Requirements for build/research',
+  'wiki_requrements' => 'Requires',
 
   'wiki_char_nominal' => 'Nominal',
   'wiki_char_actual' => 'Actual',

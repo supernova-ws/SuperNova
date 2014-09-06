@@ -34,13 +34,11 @@ var bld_unit_info_width = 0;
 
 function eco_struc_show_unit_info(unit_id, no_color)
 {
-  if(!no_color)
-  {
+  if(!no_color) {
     document.getElementById('unit' + unit_id).style.borderColor = eco_bld_style_probe;
   }
 
-  if(unit_selected)
-  {
+  if(unit_selected) {
     return;
   }
 
@@ -60,10 +58,10 @@ function eco_struc_show_unit_info(unit_id, no_color)
   document.getElementById('unit_name').innerHTML = unit['name'];
   if(unit['level'] > 0 || STACKABLE)
   {
-    document.getElementById('unit_level').innerHTML = '<br>' + (!STACKABLE ? language['level'] + ' ' : '') + unit['level'] + (parseInt(unit['level_bonus']) > 0 ? '<span class="bonus">+' + unit['level_bonus'] + '</span>' : '');
+    document.getElementById('unit_level').innerHTML = (!STACKABLE ? language['level'] + ' ' : '') + unit['level'] + (parseInt(unit['level_bonus']) > 0 ? '<span class="bonus">+' + unit['level_bonus'] + '</span>' : '');
     unit_destroy_link = language['bld_destroy'] + ' ' + language['level'] + ' ' + unit['level'];
   } else {
-    document.getElementById('unit_level').innerHTML = '';
+    document.getElementById('unit_level').innerHTML = '&nbsp;';
   }
 
   $('#unit_create').css('visibility', 'hidden');
@@ -105,22 +103,17 @@ function eco_struc_show_unit_info(unit_id, no_color)
     eco_struc_make_resource_row('deuterium', unit['deuterium'], unit['destroy_deuterium'], unit['dark_matter']);
     eco_struc_make_resource_row('dark_matter', unit['dark_matter'], unit['destroy_dark_matter'], unit['dark_matter']);
 
-    if(planet['que_has_place'] != 0 && !unit['unit_busy'])
-    {
+    if(planet['que_has_place'] != 0 && !unit['unit_busy']) {
 //    var pre_href = '<a href="buildings.php?mode=' + que_id + '&action=';
-      if(STACKABLE)
-      {
+      if(STACKABLE) {
         if(unit['build_can'] != 0 && unit['build_result'] == 0)
         {
           $('#unit_create').css('visibility', 'visible');
           $('#unit_create_level').html(parseInt(unit['level']) + 1);
           $('#unit_amountslide').slider({ max: unit['can_build']});
         }
-      }
-      else
-      {
-        if(unit['level'] > 0 && unit['destroy_can'] != 0 && unit['destroy_result'] == 0)
-        {
+      } else {
+        if(unit['level'] > 0 && unit['destroy_can'] != 0 && unit['destroy_result'] == 0) {
           $('#unit_destroy').css('visibility', 'visible');
           $('#unit_destroy_level').html(unit['level']);
           $('#unit_destroy_resources').html(
@@ -138,8 +131,8 @@ function eco_struc_show_unit_info(unit_id, no_color)
            + '<br />' + '<span class="link negative unit_destroy">' + unit_destroy_link + '</span>';
            */
         }
-        if(planet['fields_free'] > 0 && unit['build_can'] != 0 && unit['build_result'] == 0)
-        {
+
+        if(planet['fields_free'] > 0 && unit['build_can'] != 0 && unit['build_result'] == 0) {
           $('#unit_create').css('visibility', 'visible');
           $('#unit_create_level').html(parseInt(unit['level']) + 1);
           /*
@@ -151,11 +144,9 @@ function eco_struc_show_unit_info(unit_id, no_color)
     }
   }
 
-  document.getElementById('unit_balance').innerHTML = '';
-  if(unit['resource_map'])
-  {
+  result = '';
+  if(unit['resource_map']) {
     var balance_header = '';
-    result = '';
     if(STACKABLE) {
       for(i in unit['resource_map'][0]) {
         if(unit['resource_map'][0][i]) {
@@ -196,7 +187,17 @@ function eco_struc_show_unit_info(unit_id, no_color)
                   break;
               }
             }
-            result += '<td>' + sn_format_number(parseFloat(unit['resource_map'][i][j]), 0, 'positive', j == 'level' ? -unit['level']-unit['level_bonus'] : 0,
+
+//            t = j.indexOf('diff') == -1 ? (  unit['resource_map'][i-1] ? unit['resource_map'][i-1][j]  : 0     ) : 0;
+
+            result += '<td>' +
+
+//              t + ' ' +
+
+
+              sn_format_number(
+                parseFloat(unit['resource_map'][i][j]), 0, 'positive',
+                j == 'level' ? -unit['level']-unit['level_bonus'] : (j.indexOf('diff') == -1 ? (  unit['resource_map'][i-1] ? -unit['resource_map'][i-1][j] : 0) : 0),
               unit['resource_map'][i][j] > 0 && j.indexOf('diff') >= 0) + '</td>';
           }
         }
@@ -205,10 +206,10 @@ function eco_struc_show_unit_info(unit_id, no_color)
       }
     }
 
-    result = result ? '<table>' + (balance_header ? '<tr>' + balance_header + '</tr>' : '') + result + '</table>' : '';
-
-    document.getElementById('unit_balance').innerHTML += result;
+    result = result ? '<table  style="font-size: 8px">' + (balance_header ? '<tr>' + balance_header + '</tr>' : '') + result + '</table>' : '';
   }
+  document.getElementById('unit_balance').innerHTML = result;
+
   bld_unit_info_width = Math.max(bld_unit_info_width, jQuery('#unit_table').width());
   document.getElementById('unit_table').width = bld_unit_info_width;
 //  bld_unit_info_cache[unit_id] = jQuery('#unit_info').html();
