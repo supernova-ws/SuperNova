@@ -65,8 +65,15 @@ var que_id = '{QUE_ID}';
 <script type="text/javascript" src="js/build_unit.js"></script>
 <script type="text/javascript" >
   $(".unit_create,.unit_destroy").live('click', function(){
+    if($(this).is("[disabled]")) {
+      return;
+    }
     $('[name=action]').val($(this).hasClass('unit_create') ? 'create' : 'destroy');
     $('#form_unit').submit();
+  });
+
+  $("#unit_amount").live('change', function(){
+    parseInt($('#unit_amount').val()) ? $('#unit_create_button').button("enable") : $('#unit_create_button').button("disable");
   });
 </script>
 
@@ -130,8 +137,8 @@ var que_id = '{QUE_ID}';
               </th>
               <th valign="top" width="100%">
                 <div id="unit_description" style="text-align: justify;"></div>
-                <div class="c_l neutral" style="text-align: left;">{L_wiki_requrements}</div>
-                <div id="unit_require_wrapper">
+                <div id="unit_require_wrapper" style="font-size: 10px">
+                  <div class="c_l neutral" style="text-align: left;">{L_wiki_requrements}</div>
                   <ul id="unit_require"></ul>
                 </div>
               </th>
@@ -146,7 +153,7 @@ var que_id = '{QUE_ID}';
           <table cellspacing=0 cellpadding=0 valign=top style="vertical-align: top; border: 0;" width=100% class="noborder">
             <tr>
               <th valign=top width="50%" colspan="2">
-                <div id="unit_time_div" align="left">{L_ConstructionTime}<span id="unit_time"></span></div>
+                <div id="unit_time_div" align="left">{STRING_BUILD_TIME}<span id="unit_time"></span></div>
                 <table style="margin: 0; font-size: {$FONT_SIZE};" id="unit_cost_table">
                   <tr class="c_c">
                     <th width=45px>{L_sys_resources}</th>

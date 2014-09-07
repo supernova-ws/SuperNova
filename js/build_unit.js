@@ -70,28 +70,20 @@ function eco_struc_show_unit_info(unit_id, no_color)
 //  <li style="margin: 0; padding: 0;"><span class="<!-- IF require.REQUEREMENTS_MET -->negative<!-- ELSE -->positive<!-- ENDIF -->">{require.NAME}</span><!-- IF require.LEVEL_REQUIRE -->&nbsp;{require.LEVEL_BASIC}<!-- IF require.LEVEL_BONUS --><span class="bonus">+{require.LEVEL_BONUS}</span><!-- ENDIF -->/{require.LEVEL_REQUIRE}<!-- ENDIF --></li>
 
 
-  requirement_string = '';
   if(require[unit_id]) {
-//    $('#unit_require_wrapper').css('display', 'table-row');
+    requirement_string = '';
     for(i in require[unit_id]) {
       req = require[unit_id][i];
-/*
-      $('#unit_require').append(
-        '<li class="' + (req['requerements_met'] ? 'positive' : 'negative  ') + '">'
-          + req['name'] + ' ' + req['level_basic'] + (req['level_bonus'] ? '<span class="bonus">+' + req['level_bonus'] + '</span>' : '') + '/' + req['level_require']
-        + '</li>'
-      );
-*/
       requirement_string = requirement_string + '<li class="' + (req['requerements_met'] ? 'positive' : 'negative  ') + '">'
         + req['name'] + ' ' + req['level_basic'] + (req['level_bonus'] ? '<span class="bonus">+' + req['level_bonus'] + '</span>' : '') + '/' + req['level_require']
         + '</li>';
     }
+    $('#unit_require').empty().append(requirement_string);
+    $('#unit_require_wrapper').show();
   } else {
-    // $('#unit_require').append();
-
-    requirement_string = '<li class="neutral">' + language['No_requirements'] + '</li>';
+    $('#unit_require_wrapper').hide();
+    // requirement_string = '<li class="neutral">' + language['No_requirements'] + '</li>';
   }
-  $('#unit_require').empty().append(requirement_string);
 
   if(TEMPORARY) {
     jQuery("#unit_cost_table").hide();//css.display = "none";
@@ -206,7 +198,7 @@ function eco_struc_show_unit_info(unit_id, no_color)
       }
     }
 
-    result = result ? '<table  style="font-size: 8px">' + (balance_header ? '<tr>' + balance_header + '</tr>' : '') + result + '</table>' : '';
+    result = result ? '<table  style="font-size: 9px">' + (balance_header ? '<tr>' + balance_header + '</tr>' : '') + result + '</table>' : '';
   }
   document.getElementById('unit_balance').innerHTML = result;
 

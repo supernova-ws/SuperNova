@@ -17,19 +17,19 @@
     <th class="c_c" colspan="{$HEADER_COLSPAN}">
       <form name="stat_form" method="post">
         {L_stat_show}
-        <select name="type" onChange="javascript:document.stat_form.submit()">
+        <select name="type" onChange="document.stat_form.submit()">
           <!-- BEGIN type -->
           <option value="{type.ID}"<!-- IF type.SELECTED --> selected<!-- ENDIF -->>{type.HEADER}</option>
           <!-- END type -->
         </select>
         {L_stat_by}
-        <select name="who" onChange="javascript:document.stat_form.submit()">
+        <select name="who" onChange="document.stat_form.submit()">
           <!-- BEGIN subject -->
           <option value="{subject.ID}"<!-- IF subject.SELECTED --> selected<!-- ENDIF -->>{subject.HEADER}</option>
           <!-- END subject -->
         </select>
         {L_stat_range}
-        <select name="range" onChange="javascript:document.stat_form.submit()">
+        <select name="range" onChange="document.stat_form.submit()">
           <!-- BEGIN range -->
           <option value="{range.ID}"<!-- IF range.SELECTED --> selected<!-- ENDIF -->>{range.HEADER}</option>
           <!-- END range -->

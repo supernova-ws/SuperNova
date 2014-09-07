@@ -92,16 +92,14 @@ var EVENT_HINT   = 2;
 
 var sn_timers = new Array();
 
-function sn_timer_compile_que(timer_options)
-{
+function sn_timer_compile_que(timer_options) {
   var compiled = '';
   var unit_name = '';
   var temp = '';
   var total = 0;
   var que = timer_options['que'];
 
-  for(que_id in que)
-  {
+  for(que_id in que) {
 //    if(que_id != 0)
     {
       total += (que[que_id][UNIT_AMOUNT] - (que_id != 0 ? 0 : 1)) * que[que_id][UNIT_TIME_FULL]; // que[que_id][UNIT_TIME] +
@@ -111,13 +109,10 @@ function sn_timer_compile_que(timer_options)
     temp = temp.replace('[UNIT_TIME]', sn_timestampToString(que[que_id][UNIT_TIME]));
 
     unit_name = que[que_id][UNIT_NAME];
-    if(que[que_id][UNIT_LEVEL] > 0)
-    {
+    if(que[que_id][UNIT_LEVEL] > 0) {
       unit_name += ' (' + que[que_id][UNIT_LEVEL] + ')';
       temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_LEVEL]);
-    }
-    else
-    {
+    } else {
       unit_name += ' (' + que[que_id][UNIT_AMOUNT] + ')';
       temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_AMOUNT]);
     }
@@ -139,16 +134,13 @@ function sn_timer()
   var timestamp_server = timestamp - timeDiffSeconds; // Math.round(time_now.valueOf() / 1000 + timeDiff + timeUTCOffset);
   var activeTimers = 0;
 
-  for(timerID in sn_timers)
-  {
-    if(!sn_timers[timerID]['active'])
-    {
+  for(timerID in sn_timers) {
+    if(!sn_timers[timerID]['active']) {
       continue;
     }
 
     timer = sn_timers[timerID];
-    if(!timer['html_main'])
-    {
+    if(!timer['html_main']) {
       sn_timers[timerID]['html_main']   = document.getElementById(timer['id']);
       sn_timers[timerID]['html_timer']  = document.getElementById(timer['id'] + '_timer');
       sn_timers[timerID]['html_finish'] = document.getElementById(timer['id'] + '_finish');

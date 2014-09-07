@@ -1,12 +1,12 @@
 <!-- IF AUTHLEVEL >= 3 -->
   <br>
-  <table width="519">
-    <form action="announce.php" method="post" name="fForm">
+  <form action="announce.php" method="post" name="fForm">
+    <table width="519">
       <tr><td class="c" colspan=2><!-- IF MODE == 'edit' -->{L_news_edit}<!-- ELSEIF MODE == 'copy' -->{L_news_copy}<!-- ELSE -->{L_news_add}<!-- ENDIF --></td></tr>
       <tr>
         <td>{L_news_date}</td>
         <td>
-          <input class="fl" name="dtDateTime" size="19" maxlength="19" value="{tsTimeStamp}">
+          <input type="text" class="fl" name="dtDateTime" maxlength="19" value="{tsTimeStamp}">
           <span class="fr"><!-- IF MODE == 'edit' -->{L_news_mode_edit}<!-- ELSEIF MODE == 'copy' -->{L_news_mode_copy}<!-- ELSE -->{L_news_new}<!-- ENDIF --></span>
           <input type="hidden" name="id" value="{ID}">
           <input type="hidden" name="mode" value="{MODE}">
@@ -15,11 +15,11 @@
 
       <tr>
         <td valign="top">{L_news_announce}</td>
-        <td><textarea name="text" cols=40 rows=5 width="80%">{strAnnounce}</textarea></td>
+        <td><textarea name="text" cols=40 rows=5>{strAnnounce}</textarea></td>
       </tr>
       <tr>
         <td>{L_news_detail_url}</td>
-        <td><input name="detail_url" size=62 maxlength="250" value="{DETAIL_URL}"></td>
+        <td><input type="text" name="detail_url" style="width: 330px" maxlength="250" value="{DETAIL_URL}"></td>
       </tr>
       <tr>
         <td colspan="2" align="center">
@@ -27,8 +27,8 @@
           <input class="fr" type=submit value="<!-- IF MODE == 'edit' -->{L_news_edit}<!-- ELSEIF MODE == 'copy' -->{L_news_copy}<!-- ELSE -->{L_news_add}<!-- ENDIF -->">
         </td>
       </tr>
-    </form>
-  </table>
+    </table>
+  </form>
 <!-- ENDIF -->
 <br>
 <table width="519">

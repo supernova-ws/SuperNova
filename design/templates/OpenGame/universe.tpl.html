@@ -156,7 +156,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     </th>
     <th style="white-space: nowrap;" width=30 valign=middle nowrap>
       <!-- IF galaxyrow.PLANET_ID -->
-        <div style="position: relative; height: 30px; width: 30px;" onmouseover="javascript:show_planet({galaxyrow.PLANET_NUM}, {galaxyrow.PLANET_TYPE});" >
+        <div style="position: relative; height: 30px; width: 30px;" onmouseover="show_planet({galaxyrow.PLANET_NUM}, {galaxyrow.PLANET_TYPE});">
           <span style="position: absolute; top: 0; left: 0; height: 30px; width: 30px;">
             <img style="cursor: pointer;" src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg height=30 width=30>
           </span>
@@ -208,7 +208,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     </th>
     <th width=30 nowrap>
       <!-- IF galaxyrow.MOON_DIAMETER -->
-        <div style="position: relative; height: 30px; width: 30px;" onmouseover="javascript:show_planet({galaxyrow.PLANET_NUM}, 3);" >
+        <div style="position: relative; height: 30px; width: 30px;" onmouseover="show_planet({galaxyrow.PLANET_NUM}, 3);" >
           <span style="position: absolute; top: 0; left: 0; height: 30px; width: 30px;">
             <img src={dpath}planeten/small/s_mond.jpg height=100% width=100%>
           </span>
@@ -237,7 +237,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       <!-- IF galaxyrow.DEBRIS -->
         <div style="position: relative; height: 30px; width: 30px;">
           <span style="position: absolute; top: 0; left: 0; height: 30px; width: 30px;">
-            <img onmouseover='javascript:show_debris({galaxyrow.PLANET_NUM});' src="{dpath}planeten/debris.jpg" height="30px" width="30px">
+            <img onmouseover='show_debris({galaxyrow.PLANET_NUM});' src="{dpath}planeten/debris.jpg" height="30px" width="30px">
           </span>
           <!-- IF ! galaxyrow.DEBRIS_RESERVED_PERCENT -->
             <!-- DEFINE $DEBRIS_FONT_CLASS = 'error' -->
@@ -279,7 +279,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
 
     <th width=150 align=center nowrap>
       <!-- IF galaxyrow.USER_ID -->
-        <!-- IF galaxyrow.USER_BIRTHDAY --><img src="{D_SN_ROOT_VIRTUAL}design/images/birthday.png" alt="{galaxyrow.USER_BIRTHDAY}" title="{galaxyrow.USER_BIRTHDAY}">&nbsp;<!-- ENDIF --><span style="cursor: pointer;" onmouseover='javascript:show_user({galaxyrow.USER_ID});' class="{$USER_CLASS} {$FONT_TYPE}">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACATION --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_PROTECTED --><span class="protected">{L_uni_protected_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)
+        <!-- IF galaxyrow.USER_BIRTHDAY --><img src="{D_SN_ROOT_VIRTUAL}design/images/birthday.png" alt="{galaxyrow.USER_BIRTHDAY}" title="{galaxyrow.USER_BIRTHDAY}">&nbsp;<!-- ENDIF --><span style="cursor: pointer;" onmouseover='show_user({galaxyrow.USER_ID});' class="{$USER_CLASS} {$FONT_TYPE}">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACATION --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_PROTECTED --><span class="protected">{L_uni_protected_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
@@ -287,7 +287,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
 
     <th width=80 nowrap>
       <!-- IF galaxyrow.ALLY_ID -->
-        <span style="line-height: 1em; height: 1em; cursor: pointer;" onmouseover='javascript:show_alliance({galaxyrow.ALLY_ID});' class="<!-- IF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">[{galaxyrow.ALLY_TAG}]</span>
+        <span style="line-height: 1em; height: 1em; cursor: pointer;" onmouseover='show_alliance({galaxyrow.ALLY_ID});' class="<!-- IF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">[{galaxyrow.ALLY_TAG}]</span>
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
@@ -301,14 +301,14 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     <!-- IF ACT_SPY -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-      <img onclick="javascript:doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src="{dpath}img/e.gif" alt="{L_gl_espionner}" title="{L_gl_espionner}" />
+      <img onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src="{dpath}img/e.gif" alt="{L_gl_espionner}" title="{L_gl_espionner}" />
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
     <!-- IF ACT_MISSILE -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-      <img onclick="javascript:uni_missile_planet={galaxyrow.PLANET_NUM};jQuery('#uni_missile_planet').html({galaxyrow.PLANET_NUM});jQuery('#uni_missile_form').show();" src="{dpath}img/r.gif" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" />
+      <img onclick="uni_missile_planet={galaxyrow.PLANET_NUM};jQuery('#uni_missile_planet').html({galaxyrow.PLANET_NUM});jQuery('#uni_missile_form').show();" src="{dpath}img/r.gif" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" />
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
@@ -380,7 +380,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
         </select>
       </th>
       <th class=c>
-        <input type="button" value="{L_gal_mis_launch}" onclick="javascript:doit({D_MT_MISSILE}, uni_missile_planet, {D_PT_PLANET}, document.uni_missile_form.SendMI.value);jQuery('#uni_missile_form').hide();">
+        <input type="button" value="{L_gal_mis_launch}" onclick="doit({D_MT_MISSILE}, uni_missile_planet, {D_PT_PLANET}, document.uni_missile_form.SendMI.value);jQuery('#uni_missile_form').hide();">
       </th>
     </tr>
   </table>

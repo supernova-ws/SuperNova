@@ -86,7 +86,7 @@ function mrc_change(mercenary_id)
             <!-- IF (! officer.LEVEL && ! IS_PERMANENT) || (officer.LEVEL < officer.LEVEL_MAX && IS_PERMANENT) -->
               <!-- IF .officer.level -->
                 {L_sys_level}
-                <select name="mercenary_level" id="level_{officer.ID}" onchange="javascript:mrc_change({officer.ID});">
+                <select name="mercenary_level" id="level_{officer.ID}" onchange="mrc_change({officer.ID});">
                   <!-- BEGIN level -->
                   <option value="{level.VALUE}"<!-- IF officer.LEVEL == level.VALUE --> selected<!-- ENDIF -->>{level.VALUE}</option>
                   <script type="text/javascript">
@@ -96,7 +96,7 @@ function mrc_change(mercenary_id)
                 </select>
 
                 <!-- IF ! IS_PERMANENT -->
-                  <select name="mercenary_period" id="period_{officer.ID}" onchange="javascript:mrc_change({officer.ID});">
+                  <select name="mercenary_period" id="period_{officer.ID}" onchange="mrc_change({officer.ID});">
                     <!-- BEGIN !period -->
                     <option value="{period.LENGTH}"<!-- IF period.SELECTED --> selected<!-- ENDIF -->>{period.TEXT}</option>
                     <!-- END period -->

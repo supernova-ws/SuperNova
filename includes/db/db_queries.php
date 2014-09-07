@@ -10,7 +10,7 @@ function db_planet_list_admin_list($table_parent_columns, $planet_active, $activ
 {
   return doquery(
     "SELECT p.*, u.username" . ($table_parent_columns ? ', p1.name AS parent_name' : '') .
-    " FROM{{planets}} AS p
+    " FROM {{planets}} AS p
       LEFT JOIN {{users}} AS u ON u.id = p.id_owner" .
       ($table_parent_columns ? ' LEFT JOIN {{planets}} AS p1 ON p1.id = p.parent_planet' : '') .
     " WHERE " . ($planet_active ? "p.last_update >= {$active_time}" : "p.planet_type = {$planet_type}"));

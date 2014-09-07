@@ -20,7 +20,7 @@
 |     References:
 |                                                                
 |     Walker II, J. Q., "A Node-Positioning Algorithm for General Trees"
-|	     			   Software — Practice and Experience 10, 1980 553-561.    
+|	     			   Software ï¿½ Practice and Experience 10, 1980 553-561.    
 |                      (Obtained from C++ User's journal. Feb. 1991)                                                                              
 |					   
 |     Last updated: October 26th, 2006
@@ -680,7 +680,7 @@ ECOTree.prototype._drawTree = function () {
 			
 			//HTML part...
 			s.push('<div id="' + node.id + '" class="tch_node" style="z-index:5;cursor:pointer;top:'+(node.YPosition+this.canvasoffsetTop)+'px; left:'+(node.XPosition+this.canvasoffsetLeft)+'px; width:'+node.w+'px; height:'+node.h+'px;" ');
-			s.push('onclick="javascript:'+this.obj+'.collapseNode(\''+node.id+'\', true);" >');
+			s.push('onclick="'+this.obj+'.collapseNode(\''+node.id+'\', true);" >');
 			s.push(node.dsc);										
 			s.push('</div>');		
 			//break;

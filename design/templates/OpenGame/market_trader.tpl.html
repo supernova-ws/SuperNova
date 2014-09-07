@@ -113,7 +113,7 @@ function eco_mrk_trader_recourse()
         <td class="c_l">{resources.NAME}</td>
         <td class="c_r">{resources.AVAIL_TEXT}</td>
         <td>
-          <!-- <input id="spend{resources.ID}" name="spend[{resources.ID}]" value="{resources.SPENT}" onKeyUp="javascript:eco_mrk_trader_recalc();"> -->
+          <!-- <input id="spend{resources.ID}" name="spend[{resources.ID}]" value="{resources.SPENT}" onKeyUp="eco_mrk_trader_recalc();"> -->
           <script type="text/javascript"><!--
             eco_market_resources[{resources.ID}] = { avail: {resources.AVAIL}, rate: {resources.RATE} };
 
@@ -131,7 +131,7 @@ function eco_mrk_trader_recourse()
      <div class="fl">{L_eco_mrk_service_cost} <span id="rpg_cost_trader">{C_rpg_cost_trader}</span> {L_sys_dark_matter_sh}</div>
      <div class="fr">
         <input type="submit" id="submit_trade" name="exchange" value="{L_eco_mrk_trader_to}" onclick = "document.form_trade.exchange.disabled = true; document.form_trade.submit();">
-        <select name="exchangeTo" id="exchangeTo" onChange="javascript:eco_mrk_trader_recourse();">
+        <select name="exchangeTo" id="exchangeTo" onChange="eco_mrk_trader_recourse();">
           <!-- BEGIN resources -->
           <option value="{resources.ID}"><!-- IF resources.ID == 905 -->{L_eco_mrk_trader_resources_all}<!-- ELSE -->{resources.NAME}<!-- ENDIF --></option>
           <!-- END resources -->

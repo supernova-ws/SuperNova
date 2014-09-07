@@ -13,6 +13,10 @@ html, body, form, iframe
   margin: 0; padding: 0; border: 0;
 }
 
+textarea {
+  resize: none;
+}
+
 #sn_menu {
 /*  float:left; */
   width: 130px;
@@ -712,7 +716,33 @@ th.c_j, td.c_j
 .ui-textfield {
   font: inherit;
   color: inherit;
-  /* text-align: inherit;*/
   outline: none;
+}
+
+
+input[type=button].ui-textfield, input[type=submit].ui-textfield {
+  text-align: inherit;
+}
+
+input[type=text].ui-textfield, input[type=password].ui-textfield, input[type=file].ui-textfield, textarea.ui-textfield {
   text-align: left;
+  background-image: none;
+  cursor: text;
+}
+
+input[type=checkbox].ui-textfield {
+  width: 20px;
+  height: 20px;
+  background-image: none;
+}
+/*
+input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[type=file].ui-textfield, textarea.ui-textfield
+
+{
+  cursor: text;
+}
+*/
+input[type=text].coordinate {
+  max-width: 20px;
+  padding: 4px;
 }

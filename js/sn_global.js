@@ -3,6 +3,17 @@ var language = {};
 var x = "";
 var e = null;
 
+jQuery(document).ready(function() {
+  var inputs = jQuery("input");
+  inputs.filter(':button, :submit, :reset').button().addClass('ui-textfield');
+  inputs.filter(':text, :password, :file').button().addClass('ui-textfield');
+  inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
+  $('textarea').button().addClass('ui-textfield');
+
+  sn_timer();
+});
+
+
 function cntchar(m) {
   if(window.document.forms[0].text.value.length > m) {
     window.document.forms[0].text.value = x;
@@ -125,46 +136,32 @@ function sn_ainput_make(field_name, options)
 
   var field_name_orig = field_name;
 
-  field_name = field_name.replace('[', '');
-  field_name = field_name.replace(']', '');
+  field_name = field_name.replace('[', '').replace(']', '');
+//  field_name = field_name.replace('[', '');
+//  field_name = field_name.replace(']', '');
 
   var slider_id = "#" + field_name + 'slide';
 
-  // top left
-
   document.write('<table width="auto" class="markup">'); // main container - sets width
-
   document.write('<tr>');
   if(options['button_zero'])
   {
-    document.write('<td width="6"><input type="button" value="0" id="' + field_name + 'zero" style="width: 6px"></td>');
-    jQuery('#' + field_name + 'zero').button();
+    document.write('<td><input type="button" value="0" id="' + field_name + 'zero" style="max-width: 31px"></td>'); //
     col_span++;
   }
-
-  document.write('<td><input type="button" value="-" id="' + field_name + 'dec" style="width: 6px"></td>');
-  jQuery('#' + field_name + 'dec').button();
-
-  document.write('<td><input type="text" value="0" id="' + field_name + '" style="width: ' + 'auto' + ';" name="' + field_name_orig + '" onfocus="javascript:if(this.value == \'0\') this.value=\'\';" onblur="javascript:if(this.value == \'\') this.value=\'0\';"/></td>');
-
-  $('#' + field_name).button().addClass('ui-textfield');
-
-  document.write('<td width="6"><input type="button" value="+" id="' + field_name + 'inc" style="width: 6px"></td>');
-  if(options['button_max'])
-  {
-    document.write('<td width="6"><input type="button" value="M" id="' + field_name + 'max" style="width: 6px"></td>');
-    jQuery('#' + field_name + 'max').button();
+  document.write('<td><input type="button" value="-" id="' + field_name + 'dec" style="max-width: 31px"></td>'); // style="width: 6px"
+  document.write('<td><input type="text" value="0" id="' + field_name + '" style="width: ' + 'auto' + ';" name="' + field_name_orig + '" onfocus="if(this.value == \'0\') this.value=\'\';" onblur="if(this.value == \'\') this.value=\'0\';"/></td>');
+  document.write('<td><input type="button" value="+" id="' + field_name + 'inc"  style="max-width: 31px"></td>');
+  if(options['button_max']) {
+    document.write('<td><input type="button" value="M" id="' + field_name + 'max"  style="max-width: 31px"></td>');
     col_span++;
   }
-  jQuery('#' + field_name + 'inc').button();
   document.write('</tr>');
-
   document.write('<tr><td colspan="' + col_span + '"><div style="margin: 6px; width: auto" id="' + field_name + 'slide"></div></td></tr>'); // slider container
-
   document.write('</table>'); // main container
 
-  jQuery(function()
-  {
+
+//  jQuery(function() {
     jQuery(slider_id).slider(
     {
       range: "min",
@@ -172,51 +169,48 @@ function sn_ainput_make(field_name, options)
       min: min_value,
       max: max_value,
       step: 1,
-      slide: function(event, ui)
-      {
-        jQuery("#" + field_name).val(ui.value);
-        jQuery("#" + field_name).trigger('change', [event, ui]);
+      slide: function(event, ui) {
+        jQuery("#" + field_name).val(ui.value).trigger('change', [event, ui]);
+//        jQuery("#" + field_name).val(ui.value);
+//        jQuery("#" + field_name).trigger('change', [event, ui]);
       },
-      change: function(event, ui)
-      {
-        jQuery("#" + field_name).val(ui.value);
-        jQuery("#" + field_name).trigger('change', [event, ui]);
+      change: function(event, ui) {
+        jQuery("#" + field_name).val(ui.value).trigger('change', [event, ui]);
+//        jQuery("#" + field_name).val(ui.value);
+//        jQuery("#" + field_name).trigger('change', [event, ui]);
       }
     });
     jQuery("#" + field_name).val(jQuery(slider_id).slider("value"));
-  });
+//  });
 
-  jQuery("#" + field_name).bind('keyup change',
-    function(event, ui) {
-      if(ui != undefined) {
-        if(ui.type == 'slidechange') {
-          return;
-        }
-      }
-
-      value = parseInt(jQuery(this).val());
-      value = value ? value : 0;
-      slider = jQuery(slider_id);
-
-      if(value > parseInt(slider.slider("option", "max"))) {
-        jQuery(this).val(slider.slider("option", "max"));
-      }
-
-      if(value < parseInt(slider.slider("option", "min"))) {
-        jQuery(this).val(slider.slider("option", "min"));
-      }
-
-      slider.slider("value", value);
+  jQuery("#" + field_name).bind('keyup change', function(event, ui) {
+    if(ui != undefined && ui.type == 'slidechange') {
+      return;
     }
-  );
+
+    value = parseInt(jQuery(this).val());
+    value = value ? value : 0;
+
+    slider = jQuery(slider_id);
+
+    if(value > parseInt(slider.slider("option", "max"))) {
+      jQuery(this).val(slider.slider("option", "max"));
+    }
+
+    if(value < parseInt(slider.slider("option", "min"))) {
+      jQuery(this).val(slider.slider("option", "min"));
+    }
+
+    slider.slider("value", value);
+  });
 
   jQuery("#" + field_name + 'zero').bind('click', function(event, ui) {
     jQuery("#" + field_name).val(0).trigger('change', [event, ui]);
-  });
+  }).button();
 
   jQuery("#" + field_name + 'max').bind('click', function(event, ui) {
     jQuery("#" + field_name).val(jQuery(slider_id).slider("option", "max")).trigger('change', [event, ui]);
-  });
+  }).button();
 
   jQuery("#" + field_name + 'dec, ' + "#" + field_name + 'inc')
     .bind('mousedown', function(event, ui) {
@@ -228,13 +222,18 @@ function sn_ainput_make(field_name, options)
       sn_ainput_mouselerate();
     })
     .bind('mouseup', function(event, ui) {
-      if(accelerated)
-      {
+      if(accelerated) {
         clearTimeout(accelerated['timeout']);
         accelerated = undefined;
       }
     }
-  );
+  ).button();
+
+  $('#' + field_name).button().addClass('ui-textfield');
+  //jQuery('#' + field_name + 'zero').button();
+  //jQuery('#' + field_name + 'dec').button();
+  //jQuery('#' + field_name + 'max').button();
+  //jQuery('#' + field_name + 'inc').button();
 }
 
 function sn_ainput_mouselerate()
@@ -269,11 +268,9 @@ popup.mouseleave(function()
   popup.dialog("close");
 });
 
-function popup_show(html, width, aClientX, aClientY)
-{
+function popup_show(html, width, aClientX, aClientY) {
   popup_hide();
-  if(width)
-  {
+  if(width) {
     popup.dialog("option", "width", width);
   }
   popup.dialog("option", "position", [aClientX ? aClientX : clientX, aClientY ? aClientY : clientY]); // + 20
@@ -281,23 +278,19 @@ function popup_show(html, width, aClientX, aClientY)
   popup.dialog("open");
 }
 
-function popup_hide()
-{
+function popup_hide() {
   popup.dialog("close");
 }
 
 // Helper probe to use CSS-values in JS
-function sn_probe_style(element, css_attribute)
-{
-  switch(css_attribute)
-  {
+function sn_probe_style(element, css_attribute) {
+  switch(css_attribute) {
     case 'border-top-color':
       if(element.currentStyle)
         return element.currentStyle.borderTopColor;
       if(document.defaultView)
         return document.defaultView.getComputedStyle(element, '').getPropertyValue('border-top-color');
     break;
-
   }
 
   return false;
@@ -305,19 +298,15 @@ function sn_probe_style(element, css_attribute)
 
 var element_cache = new Object();
 
-function calc_elements()
-{
-  if(element_cache['_IS_INIT'])
-  {
+function calc_elements() {
+  if(element_cache['_IS_INIT']) {
     return;
   }
 
   var all_elements = document.getElementsByTagName('*');
 
-  for(element in all_elements)
-  {
-    if(all_elements[element].id != undefined)
-    {
+  for(element in all_elements) {
+    if(all_elements[element].id != undefined) {
       element_cache[all_elements[element].id] = all_elements[element];
     }
   }
@@ -337,8 +326,7 @@ jQuery(document).mousemove(function(e){
 
 jQuery(document).ready(calc_elements);
 
-function sn_show_hide(element, element_name)
-{
+function sn_show_hide(element, element_name) {
   var element_to_hide = jQuery("#" + element_name);
   var tag_name = element_to_hide[0].tagName;
 
@@ -347,12 +335,11 @@ function sn_show_hide(element, element_name)
 }
 
 
-jQuery(document).on('click', "[go]", function(){
+jQuery(document).on('click', "[go]", function() {
   planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
   unit_id = (unit_id = parseInt(jQuery(this).attr('unit_id'))) ? unit_id : parseInt(jQuery(this).parent().attr('unit_id'));
   mode = jQuery(this).attr('mode');
-  switch(jQuery(this).attr('go'))
-  {
+  switch(jQuery(this).attr('go')) {
     case 'info': page = 'infos'; break;
     // case 'galaxy': page = 'galaxy'; break;
     case 'flying': page = 'flying_fleets'; break;
@@ -397,3 +384,5 @@ jQuery(document).on('click', ".show_unit_info", function(){
 //  document.location = 'infos.php?gid=' + jQuery(this).parent().attr('unit_id') + (parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : '');
 });
  */
+
+

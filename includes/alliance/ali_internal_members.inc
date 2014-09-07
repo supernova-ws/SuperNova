@@ -74,7 +74,7 @@ foreach($userList as $userRow)
   {
     if($user_admin)
     {
-      $ally_range = '<select onchange="javascript:window.location=\'alliance.php?mode=admin&edit=members&id_user=' . $userRow['id'] . '&id_rank=\' + this.value">';
+      $ally_range = '<select onchange="window.location=\'alliance.php?mode=admin&edit=members&id_user=' . $userRow['id'] . '&id_rank=\' + this.value">';
 
       foreach($ranks as $rankID => $rankArray){
         $ally_range .= '<option value="' . $rankID . '"';

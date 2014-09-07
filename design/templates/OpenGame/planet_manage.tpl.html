@@ -109,10 +109,10 @@
     <tr>
       <th>{L_ov_teleport}</th>
       <!-- IF CAN_TELEPORT -->
-      <th>{L_ov_teleport_new_coordinates}&nbsp;<input type="text" name="new_galaxy" size=3 maxlength=3 value="{PLANET_GALAXY}">:<input type="text" name="new_system" size=3 maxlength=3 value="{PLANET_SYSTEM}">:<input type="text" name="new_planet" size=3 maxlength=3 value="{PLANET_PLANET}"></th>
-      <th><input type="submit" name="teleport" value="{L_ov_teleport}"><br />{L_sys_for} {C_planet_teleport_cost} {L_sys_dark_matter_sh}</th>
+        <th nowrap>{L_ov_teleport_new_coordinates}&nbsp;<input type="text" name="new_galaxy" maxlength=3 value="{PLANET_GALAXY}" class="coordinate">:<input type="text" name="new_system" maxlength=3 value="{PLANET_SYSTEM}" class="coordinate">:<input type="text" name="new_planet" maxlength=3 value="{PLANET_PLANET}" class="coordinate"></th>
+        <th><input type="submit" name="teleport" value="{L_ov_teleport}"><br />{L_sys_for} {C_planet_teleport_cost} {L_sys_dark_matter_sh}</th>
       <!-- ELSE -->
-      <th colspan="2" class="error">{CAN_NOT_TELEPORT_MSG}</th>
+        <th colspan="2" class="error">{CAN_NOT_TELEPORT_MSG}</th>
       <!-- ENDIF -->
     </tr>
 

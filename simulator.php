@@ -73,10 +73,10 @@ else
   $show_groups = array(
     UNIT_TECHNOLOGIES => array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR),
     UNIT_MERCENARIES => array(MRC_ADMIRAL),
-    UNIT_GOVERNORS => array(MRC_FORTIFIER),
     UNIT_SHIPS => sn_get_groups('fleet'),
-    UNIT_DEFENCE => sn_get_groups('defense_active'),
     UNIT_RESOURCES => sn_get_groups('resources_loot'),
+    UNIT_GOVERNORS => array(MRC_FORTIFIER),
+    UNIT_DEFENCE => sn_get_groups('defense_active'),
   );
   foreach($show_groups as $unit_group_id => $unit_group)
   {

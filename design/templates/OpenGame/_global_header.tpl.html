@@ -30,70 +30,61 @@
 
   <body class="style">
     <script type="text/javascript" src="{-path_prefix-}js/lib/jquery.js"></script>
+    <script type="text/javascript" src="{-path_prefix-}js/lib/jquery-ui.js"></script>
 
     <script type="text/javascript">
-      function getFrameName(frame) {
-          var frames = parent.frames, 
-              l = frames.length, 
-              name = null;
+      var dpath = '{dpath}';
+      var sn_path_prefix = '{-path_prefix-}';
 
-          for (var x=0; x<l; x++) {
-              if (frames[x] === frame) {
-                  name = frames[x].name;
-              }
-          }
-          return name;
-      }
 
-      var sn_inframe;
-      sn_inframe = window.frameElement ? getFrameName(self) : false;
-    </script>
-
-    <script type="text/javascript">
       var localTime = new Date();
       var serverTime = new Date('{TIME_NOW}' * 1000);
       var timeDiffSeconds = '{TIME_DIFF_SECONDS}';
       var timeUTCOffset = '{TIME_UTC_OFFSET}' ? '{TIME_UTC_OFFSET}' : 0;
       var timeDiff = '{TIME_DIFF}' ? '{TIME_DIFF}' : 0;
 
-      if(timeDiffSeconds === '' || {TIME_DIFF_MEASURE})
-      {
+      // Этот скрипт находится здесь, потому что он должен быть выполнен максимально быстро
+      if(timeDiffSeconds === '' || {TIME_DIFF_MEASURE}) {
         timeDiffSeconds = 0;
-        jQuery.post("time_probe.php", {'localtime': localTime.valueOf(), 'utcoffset': -localTime.getTimezoneOffset() * 60}, function(data)
-          {
-            timeDiffSeconds = parseInt(data);
-          }
-        );
-      }
-      else
-      {
+        jQuery.post("time_probe.php", {'localtime': localTime.valueOf(), 'utcoffset': -localTime.getTimezoneOffset() * 60}, function(data) {
+          timeDiffSeconds = parseInt(data);
+        });
+      } else {
         timeDiffSeconds = parseInt(timeDiffSeconds);
       }
-//      alert('timeDiff: ' + timeDiff + ', timeUTCOffset: ' + timeUTCOffset);
-//      var timeDiff = serverTime.valueOf() - localTime.valueOf();
+      //      alert('timeDiff: ' + timeDiff + ', timeUTCOffset: ' + timeUTCOffset);
+      //      var timeDiff = serverTime.valueOf() - localTime.valueOf();
 
-//      jQuery.post("time_probe.php", {'localtime': localTime.valueOf()}, function(data)
-//        {
-//          localTime = new Date();
-//          serverTime = new Date(data * 1000);
-//          timeDiff = serverTime.valueOf() - localTime.valueOf();
-//        }
-//      );
-
-      jQuery(document).ready(function()
-        {
-          sn_timer();
-        }
-      );
+      //      jQuery.post("time_probe.php", {'localtime': localTime.valueOf()}, function(data)
+      //        {
+      //          localTime = new Date();
+      //          serverTime = new Date(data * 1000);
+      //          timeDiff = serverTime.valueOf() - localTime.valueOf();
+      //        }
+      //      );
     </script>
 
-    <script type="text/javascript" src="{-path_prefix-}js/lib/jquery-ui.js"></script>
+    <script type="text/javascript">
+      function getFrameName(frame) {
+        var frames = parent.frames,
+        l = frames.length,
+        name = null;
+
+        for (var x=0; x < l; x++) {
+          if (frames[x] === frame) {
+            name = frames[x].name;
+          }
+        }
+        return name;
+      }
+
+      var sn_inframe;
+      sn_inframe = window.frameElement ? getFrameName(self) : false;
+    </script>
+
+
     <script type="text/javascript" src="{-path_prefix-}js/sn_global.js"></script>
     <script type="text/javascript" src="{-path_prefix-}js/sn_timer.js"></script>
-    <script type="text/javascript"><!--
-      var dpath = '{dpath}';
-      var sn_path_prefix = '{-path_prefix-}';
-    //--></script>
     <!-- IF IMPERSONATING -->
       <div style="text-align: center" class="warning">{IMPERSONATING}</div>
     <!-- ENDIF -->

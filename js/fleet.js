@@ -24,7 +24,7 @@ function changeMission(mission)
     case '9': // Destroy
     case '15':// Explore
       // element.style.display = "none";
-      jQuery('#resTable').css('display', 'none');
+      jQuery('#resTable').hide();
       jQuery('#resource0').val(0).trigger('change');
       jQuery('#resource1').val(0).trigger('change');
       jQuery('#resource2').val(0).trigger('change');
@@ -32,7 +32,7 @@ function changeMission(mission)
 
     default:
       // element.style.display = "inline";
-      jQuery('#resTable').css('display', 'inline');
+      jQuery('#resTable').show();
     break;
   }
 }
@@ -232,7 +232,8 @@ function fl_calc_stats(event, ui) {
 function calculateTransportCapacity() {
   transportCapacity = fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2);
 
-  document.getElementById("remainingresources").innerHTML = sn_format_number(transportCapacity, 0, 'positive');
+  $("#remainingresources").html(sn_format_number(transportCapacity, 0, 'positive'));
+//  document.getElementById("remainingresources").innerHTML = sn_format_number(transportCapacity, 0, 'positive');
 
   if(transportCapacity<0)
   {
@@ -310,12 +311,12 @@ function max_fleet()
 
 function check_resource(id)
 {
-  var zi_res = parseInt(document.getElementById("resource" + id).value);
-  if (isNaN(zi_res)){
-    zi_res = 0;
-  }
+//  var zi_res = parseInt(document.getElementById("resource" + id).value);
+  var zi_res = parseInt($('#resource' + id).val());
+  zi_res = zi_res ? zi_res : 0;
 
-  document.getElementById('rest_res' + id).innerHTML = sn_format_number(resource_max[id] - zi_res, 0, 'zero');
+  $('#rest_res' + id).html(sn_format_number(resource_max[id] - zi_res, 0, 'zero'));
+  // document.getElementById('rest_res' + id).innerHTML = sn_format_number(resource_max[id] - zi_res, 0, 'zero');
 
   return zi_res;
 }

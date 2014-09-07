@@ -14,16 +14,16 @@
     <tr>
       <th>{L_fl_dest}</th>
       <th>
-        <input name="galaxy" size="3" maxlength="2" onChange="shortInfo()" onKeyUp="shortInfo()" value="{galaxy}" />
-        <input name="system" size="3" maxlength="3" onChange="shortInfo()" onKeyUp="shortInfo()" value="{system}" />
-        <input name="planet" size="3" maxlength="2" onChange="shortInfo()" onKeyUp="shortInfo()" value="{planet}" />
+        <input type="text" name="galaxy" class="coordinate" maxlength="3" onChange="shortInfo()" onKeyUp="shortInfo()" value="{galaxy}" />
+        <input type="text" name="system" class="coordinate" maxlength="3" onChange="shortInfo()" onKeyUp="shortInfo()" value="{system}" />
+        <input type="text" name="planet" class="coordinate" maxlength="3" onChange="shortInfo()" onKeyUp="shortInfo()" value="{planet}" />
         <select name="planet_type" onChange="shortInfo()" onKeyUp="shortInfo()">
           <option value="1" {t1}>{L_fl_planet}</option>
           <option value="2" {t2}>{L_fl_ruins}</option>
           <option value="3" {t3}>{L_fl_moon}</option>
         </select>
-        <input name="fleet_group" type="hidden" onChange="shortInfo()" onKeyUp="shortInfo()" value="0" />
-        <input name="acs_target_mr" type="hidden" onChange="shortInfo()" onKeyUp="shortInfo()" value="0:0:0" />
+        <input type="hidden" name="fleet_group" onChange="shortInfo()" onKeyUp="shortInfo()" value="0" />
+        <input type="hidden" name="acs_target_mr" onChange="shortInfo()" onKeyUp="shortInfo()" value="0:0:0" />
       </th>
     </tr>
 
@@ -132,7 +132,7 @@
           <!-- BEGIN acss -->
             <tr>
               <th>
-                <input type="button" onClick="javascript: setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});shortInfo();setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');" value="{acss.NAME} [{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT}">
+                <input type="button" onClick="setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});shortInfo();setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');" value="{acss.NAME} [{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT}">
               </th>
             </tr>
           <!-- BEGINELSE acss -->
@@ -161,5 +161,5 @@ var ships = Array();
   <!-- ENDIF -->
 <!-- END ships -->
 
-javascript:shortInfo(); 
+shortInfo();
 --></script>

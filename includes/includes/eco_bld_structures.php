@@ -354,6 +354,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     'TEMPORARY'          => intval($config->empire_mercenary_temporary && $que_type == QUE_MERCENARY),
 
     'STRING_CREATE'      => $que_type == QUE_MERCENARY ? $lang['bld_hire'] : ($que_type == QUE_RESEARCH ? $lang['bld_research'] : $lang['bld_create']),
+    'STRING_BUILD_TIME'  => $que_type == QUE_RESEARCH ? $lang['ResearchTime'] : $lang['ConstructionTime'],
 
     'U_opt_int_struc_vertical' => $user['option_list'][OPT_INTERFACE]['opt_int_struc_vertical'],
   ));

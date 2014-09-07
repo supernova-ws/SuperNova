@@ -58,7 +58,7 @@
     <td>
       <a href="messages.php?mode=write&id={user.ID}"><img src="design/images/mail.gif" alt="{L_adm_sys_write_message}" title="{L_adm_sys_write_message}" border="0"></a>
       <!-- IF user.ACTION -->
-      <a href="admin/userlist.php?sort={SORT}&uid={user.ID}&action={D_ACTION_DELETE}" onclick="javascript:return confirm('{L_adm_ul_delete_confirm} {user.NAME_JS}');"><img src="design/images/r1.png" alt="{L_adm_sys_delete_user}" title="{L_adm_sys_delete_user}" ></a>
+      <a href="admin/userlist.php?sort={SORT}&uid={user.ID}&action={D_ACTION_DELETE}" onclick="return confirm('{L_adm_ul_delete_confirm} {user.NAME_JS}');"><img src="design/images/r1.png" alt="{L_adm_sys_delete_user}" title="{L_adm_sys_delete_user}" ></a>
       <a href="admin/userlist.php?sort={SORT}&uid={user.ID}&action={D_ACTION_USE}"><img src="design/images/icon_impersonate.gif" alt="{L_sys_impersonate}" title="{L_sys_impersonate}" border="0"></a>
       <!-- ENDIF -->
     </td>

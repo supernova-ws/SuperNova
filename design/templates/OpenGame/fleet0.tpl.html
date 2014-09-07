@@ -62,18 +62,18 @@ var speed_factor   = {speed_factor};
       <!-- IF FLYING_FLEETS < MAX_FLEETS -->
         <tr class="c_c">
           <th><input type="button" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';"></th>
-          <th style="padding-right: 0; border-right: 0" class="c_l" ><input type="button" value="{L_fl_unselectall}" onclick="javascript:zero_fleet();"></th>
+          <th style="padding-right: 0; border-right: 0" class="c_l" ><input type="button" value="{L_fl_unselectall}" onclick="zero_fleet();"></th>
           <th class="c_c">
             <!-- IF MAX_EXPEDITIONS > 1 -->
-            <input type="button" value="1/{MAX_EXPEDITIONS}" onclick="javascript:expe_fleet({MAX_EXPEDITIONS});">
+            <input type="button" value="1/{MAX_EXPEDITIONS}" onclick="expe_fleet({MAX_EXPEDITIONS});">
             <!-- ENDIF -->
             &nbsp;&nbsp;&nbsp;
             <!-- IF FREE_EXPEDITIONS > 1 && MAX_EXPEDITIONS > 1 && FREE_EXPEDITIONS != MAX_EXPEDITIONS -->
-            <input type="button" value="1/{FREE_EXPEDITIONS}" onclick="javascript:expe_fleet({FREE_EXPEDITIONS});">
+            <input type="button" value="1/{FREE_EXPEDITIONS}" onclick="expe_fleet({FREE_EXPEDITIONS});">
             <!-- ENDIF -->
           </th>
           <th  style="padding-left: 0; border-left: 0" class="c_r">
-            <input type="button" value="{L_fl_selectall}" onclick="javascript:max_fleet();">
+            <input type="button" value="{L_fl_selectall}" onclick="max_fleet();">
           </th>
         </tr>
         <tr class="c_c">

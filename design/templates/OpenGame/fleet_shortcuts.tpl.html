@@ -6,9 +6,9 @@
       <td>{L_sys_coordinates}</td>
       <td>
         <span class="fl">
-          <input name="galaxy" size="3" maxlength="3" value="{GALAXY}"> :
-          <input name="system" size="3" maxlength="4" value="{SYSTEM}"> :
-          <input name="planet" size="3" maxlength="3" value="{PLANET}">
+          <input type="text" name="galaxy" maxlength="3" value="{GALAXY}" class="coordinate"> :
+          <input type="text" name="system" maxlength="4" value="{SYSTEM}" class="coordinate"> :
+          <input type="text" name="planet" maxlength="3" value="{PLANET}" class="coordinate">
           <select name="planet_type" onChange="shortInfo()" onKeyUp="shortInfo()">
             <option value="{D_PT_PLANET}" {t1}>{L_sys_planet_type[1]}</option>
             <option value="{D_PT_DEBRIS}" {t2}>{L_sys_planet_type[2]}</option>
@@ -24,7 +24,7 @@
 
     <tr>
       <td>{L_shortcut_text}</td>
-      <td><input name="text" size="60" maxlength="64" value="{TEXT}"></td>
+      <td><input type="text" name="text" size="60" maxlength="64" value="{TEXT}"></td>
     </tr>
     <tr><td colspan="2" align="center"><input type=submit value="<!-- IF MODE == 'edit' -->{L_shortcut_edit}<!-- ELSEIF MODE == 'copy' -->{L_shortcut_copy}<!-- ELSE -->{L_shortcut_add}<!-- ENDIF -->"></td></tr>
   </form>
