@@ -8,7 +8,7 @@ jQuery(document).ready(function() {
   inputs.filter(':button, :submit, :reset').button().addClass('ui-textfield');
   inputs.filter(':text, :password, :file').button().addClass('ui-textfield');
   inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
-  $('textarea').button().addClass('ui-textfield');
+  jQuery('textarea').button().addClass('ui-textfield');
 
   sn_timer();
 });
@@ -229,7 +229,7 @@ function sn_ainput_make(field_name, options)
     }
   ).button();
 
-  $('#' + field_name).button().addClass('ui-textfield');
+  jQuery('#' + field_name).button().addClass('ui-textfield');
   //jQuery('#' + field_name + 'zero').button();
   //jQuery('#' + field_name + 'dec').button();
   //jQuery('#' + field_name + 'max').button();
