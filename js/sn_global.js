@@ -4,130 +4,209 @@ var x = "";
 var e = null;
 
 jQuery(document).ready(function() {
-  var inputs = jQuery("input");
+  // Натягиваем скины на элементы ввода
+  inputs = jQuery("input");
   inputs.filter(':button, :submit, :reset').button().addClass('ui-textfield');
   inputs.filter(':text, :password, :file').button().addClass('ui-textfield');
   inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
   jQuery('textarea').button().addClass('ui-textfield');
 
+  calc_elements();
+
+  // Хэндлеры для слайдеров
+  jQuery("input:button[id$='_ai_zero']").on('click', function(event, ui) {
+    jQuery("#" + jQuery(this).attr('parent_id')).val(0).trigger('change', [event, ui]);
+  });
+  jQuery("input:button[id$='ai_max']").on('click', function(event, ui) {
+    field_name = '#' + jQuery(this).attr('parent_id');
+    jQuery(field_name).val(parseInt(jQuery(field_name + 'slide').slider("option", "max"))).trigger('change', [event, ui]);
+  });
+  jQuery("input:button[id$='ai_dec'],input:button[id$='ai_inc']")
+    .on('mousedown', function(event, ui) {
+      that = jQuery(this);
+      parent = jQuery('#' + that.attr('parent_id'));
+      if(parent.is('[disabled]') || parent.is('[slider_ticks]')) {
+        return;
+      }
+
+      slider = jQuery("#" + that.attr('parent_id') + 'slide');
+
+      parent.attr('slider_ticks', 0)
+        .attr('step_now', slider.slider('option', 'step'))
+        .attr('increase', that.attr('id') == parent.attr('id') + '_ai_inc' ? 1 : -1);
+      sn_ainput_mouselerate_jquery();
+    })
+    .on('mouseup', function(event, ui) {
+      parent = jQuery('#' + jQuery(this).attr('parent_id'));
+      clearTimeout(parent.attr('timeout'));
+      parent.removeAttr('slider_ticks').removeAttr('step_now').removeAttr('increase').removeAttr('timeout');
+    })
+  ;
+  jQuery("[ainput]")
+    .on('keyup change', function(event, ui) {
+      if(ui != undefined && ui.type == 'slidechange') {
+        return;
+      }
+      slider = jQuery('#' + jQuery(this).attr('id') + 'slide');
+      value = (value = parseInt(jQuery(this).val())) ? value : 0;
+      value = value > (max_slide = parseInt(slider.slider("option", "max"))) ? max_slide :
+        (value < (min_slide = parseInt(slider.slider("option", "min"))) ? min_slide : value);
+
+      jQuery(this).val(value);
+      slider.slider("value", value);
+    })
+    .on('focus', function(event, ui) {
+      if(this.value == '0') this.value='';
+      this.select();
+    })
+    .on('blur', function(event, ui) {
+      that = jQuery(this);
+      that.val(parseInt(that.val()) ? that.val() : 0);
+    })
+  ;
+  // Спецхэндлер - если мышку отпустят за пределом элемента
+  jQuery(document).on('mouseup', function(event, ui) {
+    jQuery('[slider_ticks]').each(function() {
+      clearTimeout(jQuery(this).attr('timeout'));
+      jQuery(this).removeAttr('slider_ticks').removeAttr('step_now').removeAttr('increase').removeAttr('timeout');
+    });
+    // TODO - Код для старых слайдеров. Убрать, когда все старые слайдеры не будут использоваться
+    if(accelerated) {
+      clearTimeout(accelerated['timeout']);
+      accelerated = undefined;
+    }
+  });
+
+  // Хэндлеры других специальных элементов
+  jQuery(document).on('click', "[go]", function() {
+    planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
+    unit_id = (unit_id = parseInt(jQuery(this).attr('unit_id'))) ? unit_id : parseInt(jQuery(this).parent().attr('unit_id'));
+    mode = jQuery(this).attr('mode');
+    switch(jQuery(this).attr('go')) {
+      case 'info': page = 'infos'; break;
+      // case 'galaxy': page = 'galaxy'; break;
+      case 'flying': page = 'flying_fleets'; break;
+      case 'fleet': page = 'fleet'; break;
+      case 'build': page = 'buildings'; break;
+      default: page = 'overview';
+    }
+    document.location = page + '.php?' + (planet_id ? 'cp=' + planet_id + (mode ? '&' : '') : '')
+      + (mode ? 'mode=' + mode : '')
+      + (unit_id ? 'gid=' + unit_id + (typeof ALLY_ID !== 'undefined' && parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : ''): '')
+    ;
+  });
+
+  jQuery(document).on('click', ".gather_resources", function(){
+    that = $(this);
+    document.location = 'fleet.php?fleet_page=5' + (typeof PLANET_ID !== 'undefined' && parseInt(PLANET_ID) ? '&cp=' + parseInt(PLANET_ID) : '')
+      + (parseFloat(that.attr('metal')) ? '&metal=' + parseFloat(that.attr('metal')) : '')
+      + (parseFloat(that.attr('crystal')) ? '&crystal=' + parseFloat(that.attr('crystal')) : '')
+      + (parseFloat(that.attr('deuterium')) ? '&deuterium=' + parseFloat(that.attr('deuterium')) : '')
+    ;
+  });
+
+
+  // Запуск таймеров
   sn_timer();
 });
 
+function sn_ainput_mouselerate_jquery() {
+  jQuery('[slider_ticks]').each(function() {
+    that = jQuery(this);
+    slider = jQuery("#" + that.attr('id') + 'slide');
+    val = (val = parseInt(that.val())) ? val : 0;
+    step_now = parseInt(that.attr('step_now'));
+    val_next = val + step_now * parseInt(that.attr('increase'));
+    val_next = val_next > (option_min = parseInt(slider.slider("option", "min"))) ? val_next : option_min;
+    val_next = val_next < (option_max = parseInt(slider.slider("option", "max"))) ? val_next : option_max;
 
-function cntchar(m) {
-  if(window.document.forms[0].text.value.length > m) {
-    window.document.forms[0].text.value = x;
-  } else {
-    x = window.document.forms[0].text.value;
-  }
-  if(e == null)
-  e = document.getElementById('cntChars');
-  else
-  e.childNodes[0].data = window.document.forms[0].text.value.length;
+    if(val != val_next) {
+      that.val(val_next).trigger('change');
+
+      that
+        .attr('slider_ticks', ticks = parseInt(that.attr('slider_ticks')) + 1)
+        .attr('step_now', Math.round(step_now * (ticks % 4 == 0 ? 3 : 1)));
+      that.attr('timeout', window.setTimeout(sn_ainput_mouselerate_jquery, ticks == 1 ? 700 : 250));
+    }
+  });
 }
 
-function sn_format_number(number, precission, style, max, plus_sign)
-{
-  if(!precission)
-  {
-    precission = 0;
-  }
+function sn_ainput_make_jquery(field_name, options) {
+  jQuery('ainput').each(function(){
+    col_span = 3;
 
-  if(!max)
-  {
-    max = 0;
-  }
+    old = jQuery(this);
+    //min_value = (min_value = old.attr('min')) ? min_value : 0;
+    //max_value = (max_value = old.attr('max')) ? max_value : 0;
+    step_value = (step_value = old.attr('step')) ? step_value : 1; // TODO НЕ РАБОТАЕТ ИСПРАВИТЬ
+    start_value = (start_value = old.val()) ? start_value : 0; // TODO НЕ РАБОТАЕТ ИСПРАВИТЬ
 
-  number = Math.round( number * Math.pow(10, precission) ) / Math.pow(10, precission);
-  if(number > 0)
-  {
-    str_number = number+'';
-  }
-  else
-  {
-    str_number = (-number)+'';
-  }
-  arr_int = str_number.split('.');
-  if(!arr_int[0]) arr_int[0] = '0';
-  if(!arr_int[1]) arr_int[1] = '';
-  if(arr_int[1].length < precission)
-  {
-    nachkomma = arr_int[1];
-    for(i=arr_int[1].length+1; i <= precission; i++)
+    field_name_orig = old.attr('name');
+
+    field_name = field_name_orig.replace('[', '').replace(']', '');
+    field_id = '#' + field_name;
+
+    slider_name = field_name + 'slide';
+    slider_id = "#" + slider_name;
+
+    new_element = '<table width="100%" class="markup">'; // main container - sets width
+    new_element += '<tr>';
+    if(!old.is('[disable_min]'))
     {
-      nachkomma += '0';
+      new_element += '<td><input type="button" value="0" parent_id="' + field_name +'" id="' + field_name + '_ai_zero" style="max-width: 31px"></td>';
+      col_span++;
     }
-    arr_int[1] = nachkomma;
-  }
-
-  if(arr_int[0].length > 3)
-  {
-    Begriff = arr_int[0];
-    arr_int[0] = '';
-    for(j = 3; j < Begriff.length ; j+=3)
+    new_element += '<td><input type="button" value="-" parent_id="' + field_name +'" id="' + field_name + '_ai_dec" style="max-width: 31px"></td>'; // style="width: 6px"
+    new_element += '<td><input type="text" ainput="true" value="0" id="' + field_name + '" style="width: ' + '80%' + ';" name="' + field_name_orig + '" /></td>'; // onfocus="if(this.value == \'0\') this.value=\'\';" onblur="if(this.value == \'\') this.value=\'0\';"
+    new_element += '<td><input type="button" value="+" parent_id="' + field_name +'" id="' + field_name + '_ai_inc"  style="max-width: 31px"></td>';
+    if(!old.is('[disable_max]'))
     {
-      Extrakt = Begriff.slice(Begriff.length - j, Begriff.length - j + 3);
-      arr_int[0] = '.' + Extrakt +  arr_int[0] + '';
+      new_element += '<td><input type="button" value="M" parent_id="' + field_name +'" id="' + field_name + '_ai_max"  style="max-width: 31px"></td>';
+      col_span++;
     }
-    str_first = Begriff.substr(0, (Begriff.length % 3 == 0)?3:(Begriff.length % 3));
-    arr_int[0] = str_first + arr_int[0];
-  }
+    new_element += '</tr>';
+    new_element += '<tr><td colspan="' + col_span + '"><div style="margin: 6px; width: auto" parent_id="' + field_name +'" id="' + slider_name + '"></div></td></tr>'; // slider container
+    new_element += '</table>'; // main container
 
-  ret_val = arr_int[0] + (arr_int[1] ? ','+arr_int[1] : '');
-  if(number < 0)
-  {
-    ret_val = '-' + ret_val;
-  } else if (number > 0 && plus_sign) {
-    ret_val = '+' + ret_val;
-  }
+    jQuery(new_element).insertBefore(old);
+    old.remove();
 
-  if(style)
-  {
-    if(number == Math.abs(max))
-    {
-      ret_val = '<span class="neutral">' + ret_val + '</span>';
-    }
-    else
-      if((max > 0 && -number < -max) || (!max && number < 0) || (max < 0 && number < -max))
-      {
-        ret_val = '<span class="negative">' + ret_val + '</span>';
+    jQuery("#" + field_name).val(start_value);
+
+    jQuery(slider_id).slider({
+      'range': "min",
+      'value': start_value,
+      'min': (min_value = old.attr('min')) ? min_value : 0,
+      'max': (max_value = old.attr('max')) ? max_value : 0,
+      'step': 1, // step_value,
+      slide: function(event, ui) {
+        jQuery("#" + jQuery(this).attr('parent_id')).val(ui.value).trigger('change', [event, ui]);
+      },
+      change: function(event, ui) {
+        jQuery("#" + jQuery(this).attr('parent_id')).val(ui.value).trigger('change', [event, ui]);
       }
-      else
-      {
-        ret_val = '<span class="' + style + '">' + ret_val + '</span>';
-      }
-  }
-
-  return ret_val;
+    });
+  });
 }
 
-function sn_timestampToString(timestamp, useDays){
-  strTime = '';
 
-  if(useDays)
-  {
-    tmp = Math.floor( timestamp / (60*60*24));
-    timestamp -= tmp * 60*60*24;
-    strTime += (tmp>0 ? tmp + 'd ' : '');
-  }
 
-  tmp = Math.floor( timestamp / (60*60));
-  timestamp -= tmp * 60*60;
-  strTime += (tmp<=9 ? '0' + tmp : tmp) + ':';
 
-  tmp = Math.floor( timestamp / 60);
-  timestamp -= tmp * 60;
-  strTime += (tmp<=9 ? '0' + tmp : tmp) + ':';
 
-  strTime += (timestamp<=9 ? '0' + timestamp : timestamp);
 
-  return strTime;
-}
+
+
+
+
+
+
+
+
+
+
 
 var accelerated;
-
-function sn_ainput_make(field_name, options)
-{
+function sn_ainput_make(field_name, options) {
   var min_value = options['min'] ? options['min'] : 0;
   var max_value = options['max'] ? options['max'] : 0;
   var step_value = options['step'] ? options['step'] : 1;
@@ -137,12 +216,10 @@ function sn_ainput_make(field_name, options)
   var field_name_orig = field_name;
 
   field_name = field_name.replace('[', '').replace(']', '');
-//  field_name = field_name.replace('[', '');
-//  field_name = field_name.replace(']', '');
 
   var slider_id = "#" + field_name + 'slide';
 
-  document.write('<table width="auto" class="markup">'); // main container - sets width
+  document.write('<table width="100%" class="markup">'); // main container - sets width
   document.write('<tr>');
   if(options['button_zero'])
   {
@@ -150,7 +227,7 @@ function sn_ainput_make(field_name, options)
     col_span++;
   }
   document.write('<td><input type="button" value="-" id="' + field_name + 'dec" style="max-width: 31px"></td>'); // style="width: 6px"
-  document.write('<td><input type="text" value="0" id="' + field_name + '" style="width: ' + 'auto' + ';" name="' + field_name_orig + '" onfocus="if(this.value == \'0\') this.value=\'\';" onblur="if(this.value == \'\') this.value=\'0\';"/></td>');
+  document.write('<td><input type="text" value="0" id="' + field_name + '" style="width: ' + '80%' + ';" name="' + field_name_orig + '" onfocus="if(this.value == \'0\') this.value=\'\';" onblur="if(this.value == \'\') this.value=\'0\';"/></td>');
   document.write('<td><input type="button" value="+" id="' + field_name + 'inc"  style="max-width: 31px"></td>');
   if(options['button_max']) {
     document.write('<td><input type="button" value="M" id="' + field_name + 'max"  style="max-width: 31px"></td>');
@@ -161,27 +238,21 @@ function sn_ainput_make(field_name, options)
   document.write('</table>'); // main container
 
 
-//  jQuery(function() {
-    jQuery(slider_id).slider(
-    {
-      range: "min",
-      value: start_value,
-      min: min_value,
-      max: max_value,
-      step: 1,
-      slide: function(event, ui) {
-        jQuery("#" + field_name).val(ui.value).trigger('change', [event, ui]);
-//        jQuery("#" + field_name).val(ui.value);
-//        jQuery("#" + field_name).trigger('change', [event, ui]);
-      },
-      change: function(event, ui) {
-        jQuery("#" + field_name).val(ui.value).trigger('change', [event, ui]);
-//        jQuery("#" + field_name).val(ui.value);
-//        jQuery("#" + field_name).trigger('change', [event, ui]);
-      }
-    });
-    jQuery("#" + field_name).val(jQuery(slider_id).slider("value"));
-//  });
+  jQuery(slider_id).slider(
+  {
+    range: "min",
+    value: start_value,
+    min: min_value,
+    max: max_value,
+    step: 1,
+    slide: function(event, ui) {
+      jQuery("#" + field_name).val(ui.value).trigger('change', [event, ui]);
+    },
+    change: function(event, ui) {
+      jQuery("#" + field_name).val(ui.value).trigger('change', [event, ui]);
+    }
+  });
+  jQuery("#" + field_name).val(jQuery(slider_id).slider("value"));
 
   jQuery("#" + field_name).bind('keyup change', function(event, ui) {
     if(ui != undefined && ui.type == 'slidechange') {
@@ -202,7 +273,7 @@ function sn_ainput_make(field_name, options)
     }
 
     slider.slider("value", value);
-  });
+  }).button().addClass('ui-textfield');
 
   jQuery("#" + field_name + 'zero').bind('click', function(event, ui) {
     jQuery("#" + field_name).val(0).trigger('change', [event, ui]);
@@ -229,15 +300,14 @@ function sn_ainput_make(field_name, options)
     }
   ).button();
 
-  jQuery('#' + field_name).button().addClass('ui-textfield');
+  //jQuery('#' + field_name).button().addClass('ui-textfield');
   //jQuery('#' + field_name + 'zero').button();
   //jQuery('#' + field_name + 'dec').button();
   //jQuery('#' + field_name + 'max').button();
   //jQuery('#' + field_name + 'inc').button();
 }
 
-function sn_ainput_mouselerate()
-{
+function sn_ainput_mouselerate() {
   var donext = false;
   if(accelerated['increase'] && (val = parseInt(accelerated['element'].val())) < (option_max = jQuery(accelerated['slider']).slider("option", "max")))
   {
@@ -324,7 +394,6 @@ jQuery(document).mousemove(function(e){
    clientY = e.clientY;
 });
 
-jQuery(document).ready(calc_elements);
 
 function sn_show_hide(element, element_name) {
   var element_to_hide = jQuery("#" + element_name);
@@ -335,54 +404,125 @@ function sn_show_hide(element, element_name) {
 }
 
 
-jQuery(document).on('click', "[go]", function() {
-  planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
-  unit_id = (unit_id = parseInt(jQuery(this).attr('unit_id'))) ? unit_id : parseInt(jQuery(this).parent().attr('unit_id'));
-  mode = jQuery(this).attr('mode');
-  switch(jQuery(this).attr('go')) {
-    case 'info': page = 'infos'; break;
-    // case 'galaxy': page = 'galaxy'; break;
-    case 'flying': page = 'flying_fleets'; break;
-    case 'fleet': page = 'fleet'; break;
-    case 'build': page = 'buildings'; break;
-    default: page = 'overview';
+
+
+
+
+
+
+
+
+
+
+
+
+
+function cntchar(m) {
+  if(window.document.forms[0].text.value.length > m) {
+    window.document.forms[0].text.value = x;
+  } else {
+    x = window.document.forms[0].text.value;
   }
-  document.location = page + '.php?' + (planet_id ? 'cp=' + planet_id + (mode ? '&' : '') : '')
-    + (mode ? 'mode=' + mode : '')
-    + (unit_id ? 'gid=' + unit_id + (typeof ALLY_ID !== 'undefined' && parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : ''): '')
-  ;
-});
+  if(e == null)
+    e = document.getElementById('cntChars');
+  else
+    e.childNodes[0].data = window.document.forms[0].text.value.length;
+}
 
-jQuery(document).on('click', ".gather_resources", function(){
-  that = $(this);
-  document.location = 'fleet.php?fleet_page=5' + (typeof PLANET_ID !== 'undefined' && parseInt(PLANET_ID) ? '&cp=' + parseInt(PLANET_ID) : '')
-    + (parseFloat(that.attr('metal')) ? '&metal=' + parseFloat(that.attr('metal')) : '')
-    + (parseFloat(that.attr('crystal')) ? '&crystal=' + parseFloat(that.attr('crystal')) : '')
-    + (parseFloat(that.attr('deuterium')) ? '&deuterium=' + parseFloat(that.attr('deuterium')) : '')
-  ;
+function sn_format_number(number, precission, style, max, plus_sign)
+{
+  if(!precission)
+  {
+    precission = 0;
+  }
 
-  // onclick="document.location='fleet.php?fleet_page=5&cp={planet.ID}&re=0&metal={production.METAL_REST_NUM}&crystal={production.CRYSTAL_REST_NUM}&deuterium={production.DEUTERIUM_REST_NUM}'"
-});
+  if(!max)
+  {
+    max = 0;
+  }
 
-/*
- jQuery(document).on('click', "[go_fleet]", function(){
- document.location = 'fleet.php?cp=' + jQuery(this).attr('go_fleet') + (jQuery(this).attr('mode') ? '&fleet_page=' + jQuery(this).attr('mode'): '');
- });
+  number = Math.round( number * Math.pow(10, precission) ) / Math.pow(10, precission);
+  if(number > 0)
+  {
+    str_number = number+'';
+  }
+  else
+  {
+    str_number = (-number)+'';
+  }
+  arr_int = str_number.split('.');
+  if(!arr_int[0]) arr_int[0] = '0';
+  if(!arr_int[1]) arr_int[1] = '';
+  if(arr_int[1].length < precission)
+  {
+    nachkomma = arr_int[1];
+    for(i=arr_int[1].length+1; i <= precission; i++)
+    {
+      nachkomma += '0';
+    }
+    arr_int[1] = nachkomma;
+  }
 
- jQuery(document).on('click', "[go_overview]", function(){
-  planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
-  document.location = 'overview.php?' + (planet_id ? 'cp=' + planet_id + '&' : '') + (jQuery(this).attr('go_overview') ? 'mode=' + jQuery(this).attr('go_overview'): '');
-});
+  if(arr_int[0].length > 3)
+  {
+    Begriff = arr_int[0];
+    arr_int[0] = '';
+    for(j = 3; j < Begriff.length ; j+=3)
+    {
+      Extrakt = Begriff.slice(Begriff.length - j, Begriff.length - j + 3);
+      arr_int[0] = '.' + Extrakt +  arr_int[0] + '';
+    }
+    str_first = Begriff.substr(0, (Begriff.length % 3 == 0)?3:(Begriff.length % 3));
+    arr_int[0] = str_first + arr_int[0];
+  }
 
-jQuery(document).on('click', "[go_build]", function(){
-  planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
-  document.location = 'buildings.php?' + (planet_id ? 'cp=' + planet_id + '&' : '') + (jQuery(this).attr('go_build') ? 'mode=' + jQuery(this).attr('go_build'): '');
-});
-jQuery(document).on('click', ".show_unit_info", function(){
-  unit_id = (unit_id = parseInt(jQuery(this).attr('unit_id'))) ? unit_id : parseInt(jQuery(this).parent().attr('unit_id'));
-  document.location = 'infos.php?gid=' + unit_id + (typeof ALLY_ID !== 'undefined' && parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : '');
-//  document.location = 'infos.php?gid=' + jQuery(this).parent().attr('unit_id') + (parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : '');
-});
- */
+  ret_val = arr_int[0] + (arr_int[1] ? ','+arr_int[1] : '');
+  if(number < 0)
+  {
+    ret_val = '-' + ret_val;
+  } else if (number > 0 && plus_sign) {
+    ret_val = '+' + ret_val;
+  }
 
+  if(style)
+  {
+    if(number == Math.abs(max))
+    {
+      ret_val = '<span class="neutral">' + ret_val + '</span>';
+    }
+    else
+    if((max > 0 && -number < -max) || (!max && number < 0) || (max < 0 && number < -max))
+    {
+      ret_val = '<span class="negative">' + ret_val + '</span>';
+    }
+    else
+    {
+      ret_val = '<span class="' + style + '">' + ret_val + '</span>';
+    }
+  }
 
+  return ret_val;
+}
+
+function sn_timestampToString(timestamp, useDays){
+  strTime = '';
+
+  if(useDays)
+  {
+    tmp = Math.floor( timestamp / (60*60*24));
+    timestamp -= tmp * 60*60*24;
+    strTime += (tmp>0 ? tmp + 'd ' : '');
+  }
+
+  tmp = Math.floor( timestamp / (60*60));
+  timestamp -= tmp * 60*60;
+  strTime += (tmp<=9 ? '0' + tmp : tmp) + ':';
+
+  tmp = Math.floor( timestamp / 60);
+  timestamp -= tmp * 60;
+  strTime += (tmp<=9 ? '0' + tmp : tmp) + ':';
+
+  strTime += (timestamp<=9 ? '0' + timestamp : timestamp);
+
+  return strTime;
+}

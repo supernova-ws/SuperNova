@@ -86,14 +86,18 @@ var fleet_slide_changing = false;
         <td class="c_l">{resources.NAME}</td>
         <td class="c_r">{resources.TEXT}</td>
         <td class="c_c">
-          <script type="text/javascript"><!--
-            sn_ainput_make('resource{resources.ID}', {max: Math.min({resources.ON_PLANET}, {fleet_capacity}), step: 1000});
+          <!-- <ainput type="text" name="resource{resources.ID}" id="resource{resources.ID}" max="0" step="1">step="1000"</ainput> -->
+          <script type="text/javascript">
+            // jQuery("#resource{resources.ID}").attr('max', Math.min(parseInt('{resources.ON_PLANET}'), parseInt('{fleet_capacity}')));
+            // sn_ainput_make_jquery();
+            sn_ainput_make('resource{resources.ID}', {max: Math.min({resources.ON_PLANET}, {fleet_capacity}), step: 1000, button_max: true, button_zero: true});
 
-            jQuery('#resource{resources.ID}').bind('keyup change', function(event, ui) {
+          // jQuery(document).ready(function() {
+            jQuery('#resource{resources.ID}').on('keyup change', function(event, ui) {
               var transportCapacity = calculateTransportCapacity();
             });
 
-            jQuery('#resource{resources.ID}slide').bind('slide slidechange', function(event, ui) {
+            jQuery('#resource{resources.ID}slide').on('slide slidechange', function(event, ui) {
               if(fleet_slide_changing) {
                 return;
               } else {
@@ -101,12 +105,14 @@ var fleet_slide_changing = false;
               }
               var transportCapacity = fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2);
               for(i = 0; i < 3; i++) {
+                // jQuery('#resource' + i + 'slide').slider("option", "max", Math.min(parseInt(jQuery('#resource' + i + 'slide').slider("value")) + parseInt(transportCapacity), parseInt(resource_max[i])));
                 jQuery('#resource' + i + 'slide').slider("option", "max", Math.min(jQuery('#resource' + i + 'slide').slider("value") + transportCapacity, resource_max[i]));
-                jQuery('#resource' + i).keyup();
+                jQuery('#resource' + i).change();
               }
               fleet_slide_changing = false;
             });
-          --></script>
+          // });
+          </script>
         </td>
         <td id="rest_res{resources.ID}" class="c_r">{resources.ON_PLANET}</td>
       </tr>

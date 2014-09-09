@@ -719,7 +719,6 @@ th.c_j, td.c_j
   outline: none;
 }
 
-
 input[type=button].ui-textfield, input[type=submit].ui-textfield {
   text-align: inherit;
 }
@@ -735,6 +734,12 @@ input[type=checkbox].ui-textfield {
   height: 20px;
   background-image: none;
 }
+
+input[type=text].coordinate {
+  max-width: 20px;
+  padding: 4px;
+}
+
 /*
 input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[type=file].ui-textfield, textarea.ui-textfield
 
@@ -742,7 +747,3 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
   cursor: text;
 }
 */
-input[type=text].coordinate {
-  max-width: 20px;
-  padding: 4px;
-}

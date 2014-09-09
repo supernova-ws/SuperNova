@@ -50,11 +50,13 @@ var speed_factor   = {speed_factor};
             <!-- IF (ships.SPEED == 0) || (FLYING_FLEETS >= MAX_FLEETS) -->
               &nbsp;
             <!-- ELSE -->
-              <script type="text/javascript"><!--
-                sn_ainput_make('ships[{ships.ID}]', {max: ships[{ships.ID}][0], button_max: true, button_zero: true});
+              <ainput type="text" name="ships[{ships.ID}]" id="ships{ships.ID}" max="{ships.AMOUNT}"></ainput>
+              <script type="text/javascript">
+                sn_ainput_make_jquery();
+//                sn_ainput_make('ships[{ships.ID}]', {max: ships[{ships.ID}][0], button_max: true, button_zero: true});
 
-                jQuery('#ships{ships.ID}slide').bind('slide slidechange', fl_calc_stats);
-              --></script>
+                jQuery('#ships{ships.ID}slide').on('slide slidechange', fl_calc_stats);
+              </script>
             <!-- ENDIF -->
           </th>
         </tr>

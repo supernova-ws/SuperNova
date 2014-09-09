@@ -1,5 +1,65 @@
-function eco_struc_make_resource_row(resource_name, value, value_destroy, value_dm) {
-  if(value>0) {
+jQuery(document).ready( function() {
+  $(".unit_create,.unit_destroy").on('click', function(e){
+    if(!$(this).is("[disabled]")) {
+      $('[name=action]').val($(this).hasClass('unit_create') ? 'create' : 'destroy');
+      $('#form_unit').submit();
+    }
+  });
+  $("#form_unit").on('keypress', function(e) { // 'form input[type="text"]',
+    if(e.which == 13) {
+      if(!$('#unit_create_button').is("[disabled]")) {
+        $('#unit_create_button').click();
+      }
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  $("#unit_amount").on('change', function(){
+     $('#unit_create_button').button(parseInt($('#unit_amount').val()) ? "enable" : "disable");
+  });
+
+  jQuery('#unit_amount').on('keyup change', function(event, ui) {
+    unit_id = $('#unit_id').val();
+    unit = production[unit_id];
+
+    eco_struc_make_resource_row('metal', unit['metal'], unit['destroy_metal'], unit['dark_matter'], STACKABLE);
+    eco_struc_make_resource_row('crystal', unit['crystal'], unit['destroy_crystal'], unit['dark_matter'], STACKABLE);
+    eco_struc_make_resource_row('deuterium', unit['deuterium'], unit['destroy_deuterium'], unit['dark_matter'], STACKABLE);
+    eco_struc_make_resource_row('dark_matter', unit['dark_matter'], unit['destroy_dark_matter'], unit['dark_matter'], STACKABLE);
+  });
+
+  jQuery("#unit_table")
+    .on("mouseenter", "*[unit_id]", function(event, ui) {
+      eco_struc_show_unit_info(jQuery(this).attr('unit_id'));
+    })
+    .on("mouseleave", "*[unit_id]", function(event, ui) {
+      eco_struc_unborder_unit(jQuery(this).attr('unit_id'));
+    })
+    .on("click", "*[unit_id]", function(event, ui) {
+      eco_struc_select_unit(jQuery(this).attr('unit_id'));
+    });
+
+  if(!planet['fleet_own']) {
+    jQuery("[hide_no_fleet]").hide();
+  }
+
+  eco_bld_style_probe = sn_probe_style(element_cache['style_probe'], 'border-top-color');
+
+  production_id_first ? eco_struc_show_unit_info(production_id_first, true) : '';
+  // var production_id_first;
+/*
+  for(var production_id_first in production) {
+    eco_struc_show_unit_info(production_id_first, true);
+    break;
+  }
+*/
+});
+
+
+function eco_struc_make_resource_row(resource_name, value, value_destroy, value_dm, show_actual_price) {
+  if(value > 0) {
+    value = show_actual_price ? value * jQuery('#unit_amount').val() : value;
     document.getElementById('unit_' + resource_name).style.visibility = "visible";
     document.getElementById('unit_' + resource_name).style.display = "table-row";
 
@@ -18,22 +78,10 @@ function eco_struc_make_resource_row(resource_name, value, value_destroy, value_
         : (document.getElementById('unit_' + resource_name).style.visibility = "hidden");
   }
 }
-/*
-var balance_translate = {
-  'level': language['level'],
-  'metal': language['sys_metal'],
-  'crystal': language['sys_crystal'],
-  'deuterium': language['sys_deuterium'],
-  'energy': language['sys_energy'],
 
-//  'shield': language['sys_shield'],
-};
-*/
 var bld_unit_info_width = 0;
-//var bld_unit_info_cache = Array();
 
-function eco_struc_show_unit_info(unit_id, no_color)
-{
+function eco_struc_show_unit_info(unit_id, no_color) {
   if(!no_color) {
     document.getElementById('unit' + unit_id).style.borderColor = eco_bld_style_probe;
   }
@@ -64,7 +112,14 @@ function eco_struc_show_unit_info(unit_id, no_color)
     document.getElementById('unit_level').innerHTML = '&nbsp;';
   }
 
-  $('#unit_create').css('visibility', 'hidden');
+  if(STACKABLE) {
+    $('#unit_max').show();
+    $('#unit_max_number').html(unit['can_build']);
+  }
+
+  $('#unit_create').hide();
+  // $('#unit_max').hide();
+//  $('#unit_create').css('visibility', 'hidden');
   $('#unit_destroy').css('visibility', 'hidden');
 
 //  <li style="margin: 0; padding: 0;"><span class="<!-- IF require.REQUEREMENTS_MET -->negative<!-- ELSE -->positive<!-- ENDIF -->">{require.NAME}</span><!-- IF require.LEVEL_REQUIRE -->&nbsp;{require.LEVEL_BASIC}<!-- IF require.LEVEL_BONUS --><span class="bonus">+{require.LEVEL_BONUS}</span><!-- ENDIF -->/{require.LEVEL_REQUIRE}<!-- ENDIF --></li>
@@ -90,17 +145,18 @@ function eco_struc_show_unit_info(unit_id, no_color)
   } else {
     jQuery("#unit_cost_table").css.display = "table";
 
-    eco_struc_make_resource_row('metal', unit['metal'], unit['destroy_metal'], unit['dark_matter']);
-    eco_struc_make_resource_row('crystal', unit['crystal'], unit['destroy_crystal'], unit['dark_matter']);
-    eco_struc_make_resource_row('deuterium', unit['deuterium'], unit['destroy_deuterium'], unit['dark_matter']);
-    eco_struc_make_resource_row('dark_matter', unit['dark_matter'], unit['destroy_dark_matter'], unit['dark_matter']);
+    eco_struc_make_resource_row('metal', unit['metal'], unit['destroy_metal'], unit['dark_matter'], STACKABLE);
+    eco_struc_make_resource_row('crystal', unit['crystal'], unit['destroy_crystal'], unit['dark_matter'], STACKABLE);
+    eco_struc_make_resource_row('deuterium', unit['deuterium'], unit['destroy_deuterium'], unit['dark_matter'], STACKABLE);
+    eco_struc_make_resource_row('dark_matter', unit['dark_matter'], unit['destroy_dark_matter'], unit['dark_matter'], STACKABLE);
 
     if(planet['que_has_place'] != 0 && !unit['unit_busy']) {
 //    var pre_href = '<a href="buildings.php?mode=' + que_id + '&action=';
       if(STACKABLE) {
         if(unit['build_can'] != 0 && unit['build_result'] == 0)
         {
-          $('#unit_create').css('visibility', 'visible');
+          $('#unit_create').show();
+//          $('#unit_create').css('visibility', 'visible');
           $('#unit_create_level').html(parseInt(unit['level']) + 1);
           $('#unit_amountslide').slider({ max: unit['can_build']});
         }
@@ -125,7 +181,8 @@ function eco_struc_show_unit_info(unit_id, no_color)
         }
 
         if(planet['fields_free'] > 0 && unit['build_can'] != 0 && unit['build_result'] == 0) {
-          $('#unit_create').css('visibility', 'visible');
+          $('#unit_create').show();
+//          $('#unit_create').css('visibility', 'visible');
           $('#unit_create_level').html(parseInt(unit['level']) + 1);
           /*
            document.getElementById('unit_create_link').innerHTML = '<span class="link positive unit_create">' +
@@ -207,17 +264,12 @@ function eco_struc_show_unit_info(unit_id, no_color)
 //  bld_unit_info_cache[unit_id] = jQuery('#unit_info').html();
 }
 
-function eco_struc_select_unit(unit_id)
-{
+function eco_struc_select_unit(unit_id) {
   $('#unit_id').val(unit_id);
-  if(unit_selected == unit_id)
-  {
+  if(unit_selected == unit_id) {
     unit_selected = null;
-  }
-  else
-  {
-    if(unit_selected)
-    {
+  } else {
+    if(unit_selected) {
       document.getElementById('unit' + unit_selected).style.borderColor="";
       unit_selected = null;
       eco_struc_show_unit_info(unit_id);
@@ -227,10 +279,8 @@ function eco_struc_select_unit(unit_id)
   }
 }
 
-function eco_struc_unborder_unit(unit_id)
-{
-  if(unit_selected != unit_id)
-  {
+function eco_struc_unborder_unit(unit_id) {
+  if(unit_selected != unit_id) {
     document.getElementById('unit' + unit_id).style.borderColor="";
   }
 }

@@ -64,17 +64,6 @@ var que_id = '{QUE_ID}';
 
 <script type="text/javascript" src="js/build_unit.js"></script>
 <script type="text/javascript" >
-  $(".unit_create,.unit_destroy").live('click', function(){
-    if($(this).is("[disabled]")) {
-      return;
-    }
-    $('[name=action]').val($(this).hasClass('unit_create') ? 'create' : 'destroy');
-    $('#form_unit').submit();
-  });
-
-  $("#unit_amount").live('change', function(){
-    parseInt($('#unit_amount').val()) ? $('#unit_create_button').button("enable") : $('#unit_create_button').button("disable");
-  });
 </script>
 
 <!-- DEFINE $QUE_ID = '{QUE_ID}' -->
@@ -186,36 +175,39 @@ var que_id = '{QUE_ID}';
                     <td id="dark_matter_fleet" hide_no_fleet="yes">0</td>
                   </tr>
                 </table>
+                <div id="unit_max" style="display: none">{L_sys_maximum} <span id="unit_max_number"></span></div>
               </th>
-              <th colspan="2" width="50%" >
+              <th colspan="2" width="250px" style="max-width: 250px">
                 <form action="buildings.php" method="post" id="form_unit">
                   <input type="hidden" name="mode" value="{QUE_ID}" />
                   <input type="hidden" name="ally_id" value="{ALLY_ID}" />
                   <input type="hidden" name="unit_id" id="unit_id" />
                   <input type="hidden" name="action" />
                   <!-- IF STACKABLE -->
-                  <div id="unit_create" style="visibility: hidden">
+                  <div id="unit_create" style="display: none">
+                    <ainput type="text" name="unit_amount" id="unit_amount" max="0"></ainput>
                     <script type="text/javascript">
-                      sn_ainput_make('unit_amount', {max: 0, button_max: true, button_zero: true});
+                      // sn_ainput_make('unit_amount', {max: 0, button_max: true, button_zero: true});
+                      sn_ainput_make_jquery();
                     </script>
-                    <div id="unit_create_button" class="link positive unit_create">{STRING_CREATE}</div> <span id="unit_create_amount"></span>
-                    <script type="text/javascript">
-                      $( "#unit_create_button" ).button();
-                    </script>
+                    <div id="unit_create_button" class="link positive unit_create">{STRING_CREATE}</div> <!-- <span id="unit_create_amount"></span> -->
+
                   </div>
                   <!-- ELSE -->
-                  <div id="unit_create" style="visibility: hidden" class="link positive unit_create">
-                    {STRING_CREATE} {LA_level} <span id="unit_create_level"></span>
+                  <div id="unit_create" style="display: none" >
+                    <div id="unit_create_button" class="link positive unit_create">
+                      {STRING_CREATE} {LA_level} <span id="unit_create_level"></span>
+                    </div>
                   </div>
-                  <script type="text/javascript">
-                    $( "#unit_create" ).button();
-                  </script>
                   <div id="unit_destroy" style="visibility: hidden">
                     <div id="unit_destroy_resources">&nbsp;</div>
                     <div id="unit_destroy_time">&nbsp;</div>
                     <div class="link negative unit_destroy">{LA_bld_destroy} {LA_level} <span id="unit_destroy_level"></span></div>
                   </div>
                   <!-- ENDIF -->
+                  <script type="text/javascript">
+                    $("#unit_create_button").button();
+                  </script>
                 </form>
               </th>
             </tr>
@@ -227,6 +219,7 @@ var que_id = '{QUE_ID}';
 
       <tr>
         <!-- BEGIN production -->
+          <!-- IF production.S_FIRST_ROW --><script type="text/javascript">var production_id_first = parseInt('{production.ID}');</script><!-- ENDIF -->
           <td class="l" align="center" width="20%">
             <div class="unit_preview" id="unit{production.ID}" unit_id="{production.ID}">
               <img src="{dpath}gebaeude/{production.ID}.gif" class="unit_image">
@@ -267,9 +260,9 @@ var que_id = '{QUE_ID}';
                 <!-- DEFINE $FONT_SIZE = '100%' -->
               <!-- ENDIF -->
               <span class="a75 resource_container" style="font-size: {$FONT_SIZE};">
-                <!-- IF production.METAL --><div><div class="left"><!-- IF $FONT_SIZE == '80%' -->{L_sys_metal_sh}<!-- ELSE -->{L_sys_metal}<!-- ENDIF --></div><div class="fr">{production.METAL_REST}</div></div><br><!-- ENDIF -->
-                <!-- IF production.CRYSTAL --><div><div class="left"><!-- IF $FONT_SIZE == '80%' -->{L_sys_crystal_sh}<!-- ELSE -->{L_sys_crystal}<!-- ENDIF --></div><div class="fr">{production.CRYSTAL_REST}</div></div><br><!-- ENDIF -->
-                <!-- IF production.DEUTERIUM --><div><div class="left"><!-- IF $FONT_SIZE == '80%' -->{L_sys_deuterium_sh}<!-- ELSE -->{L_sys_deuterium}<!-- ENDIF --></div><div class="fr">{production.DEUTERIUM_REST}</div></div><!-- ENDIF -->
+                <!-- IF production.METAL --><div><div class="left"><!-- IF $FONT_SIZE == '80%' -->{L_sys_metal_sh}<!-- ELSE -->{L_sys_metal}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.METAL_TEXT}<!-- ELSE -->{production.METAL_REST}<!-- ENDIF --></div></div><br><!-- ENDIF -->
+                <!-- IF production.CRYSTAL --><div><div class="left"><!-- IF $FONT_SIZE == '80%' -->{L_sys_crystal_sh}<!-- ELSE -->{L_sys_crystal}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.CRYSTAL_TEXT}<!-- ELSE -->{production.CRYSTAL_REST}<!-- ENDIF --></div></div><br><!-- ENDIF -->
+                <!-- IF production.DEUTERIUM --><div><div class="left"><!-- IF $FONT_SIZE == '80%' -->{L_sys_deuterium_sh}<!-- ELSE -->{L_sys_deuterium}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.DEUTERIUM_TEXT}<!-- ELSE -->{production.DEUTERIUM_REST}<!-- ENDIF --></div></div><!-- ENDIF -->
                 <!-- IF production.DARK_MATTER && ! TEMPORARY --><div><div class="left">{L_sys_dark_matter_sh}</div><div class="fr">{production.DARK_MATTER_REST}</div></div><!-- ENDIF -->
               </span>
 
@@ -388,54 +381,3 @@ var que_id = '{QUE_ID}';
 <div id="style_probe"></div>
 
 <!-- INCLUDE page_hint -->
-
-<script type="text/javascript"><!--
-jQuery(document).ready(
-  function()
-  {
-    jQuery("#unit_table").delegate("*[unit_id]", "mouseenter",
-      function(event, ui)
-      {
-        eco_struc_show_unit_info(jQuery(this).attr('unit_id'));
-      }
-    );
-
-    jQuery("#unit_table").delegate("*[unit_id]", "mouseleave",
-      function(event, ui)
-      {
-        eco_struc_unborder_unit(jQuery(this).attr('unit_id'));
-      }
-    );
-
-    jQuery("#unit_table").delegate("*[unit_id]", "click",
-      function(event, ui)
-      {
-        eco_struc_select_unit(jQuery(this).attr('unit_id'));
-      }
-    );
-
-    if(!planet['fleet_own'])
-    {
-      jQuery("[hide_no_fleet]").hide();
-    }
-
-    eco_bld_style_probe = sn_probe_style(element_cache['style_probe'], 'border-top-color');
-
-    var production_id_first;
-    for(production_id_first in production)
-    {
-      eco_struc_show_unit_info(production_id_first, true);
-      break;
-    }
-/*
-    for(production_id in production)
-    {
-      eco_struc_show_unit_info(production_id, true, true);
-      // break;
-    }
-
-    eco_struc_show_unit_info(production_id_first, true);
-*/
-  }
-);
---></script>

@@ -49,7 +49,7 @@ function eco_mrk_ship_recalc()
         <!-- ELSE -->
           {L_eco_mrk_stockman_price}&nbsp;{L_eco_mrk_stockman_perShip}
         <!-- ENDIF -->
-      </hd>
+      </th>
       <th class="c_c" rowspan=2>
         <!-- IF MODE == 2 -->
           {L_eco_mrk_scraper_onOrbit}
@@ -78,11 +78,13 @@ function eco_mrk_ship_recalc()
         <td class="c_r">{ships.DEUTERIUM}</td>
         <td class="c_r">{ships.COUNT}</td>
         <td class="c_c">
-          <script type="text/javascript"><!--
-            sn_ainput_make('ships[{ships.ID}]', {max: ships[{ships.ID}]['count'], value: '{ships.AMOUNT}'});
+          <ainput type="text" name="ships[{ships.ID}]" id="ships{ships.ID}" max="{ships.COUNT}"></ainput>
+          <script type="text/javascript">
+            sn_ainput_make_jquery();
+            //sn_ainput_make('ships[{ships.ID}]', {max: ships[{ships.ID}]['count'], value: '{ships.AMOUNT}'});
 
             jQuery('#ships{ships.ID}slide').bind('slide slidechange', eco_mrk_ship_recalc);
-          --></script>
+          </script>
         </td>
       </tr>
     <!-- BEGINELSE ships -->
