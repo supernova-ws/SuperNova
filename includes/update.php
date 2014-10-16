@@ -1249,7 +1249,7 @@ switch($new_version)
     upd_check_key('payment_currency_exchange_wmu', 16, true);
 
     upd_check_key('payment_currency_exchange_rub', 45, true);
-    upd_check_key('payment_currency_exchange_wmu', 48, true);
+    upd_check_key('payment_currency_exchange_wmr', 48, true);
 
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
