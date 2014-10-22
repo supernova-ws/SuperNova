@@ -413,6 +413,30 @@ TODO БАГ!!!!!
 
 Самайл contract
 
+Гравитационный кокон - блокирует движение флотов во всех системах. 20кММ/день, минимум неделя
+
+
+Сделать настройки адвансед маинтенанс
+(onlinetime - register_time < 1 * 60 and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 1 week))
+OR
+(onlinetime - register_time < 5 * 60 and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 2 week))
+OR
+(onlinetime - register_time < 10 * 60 and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 3 week))
+OR
+(onlinetime - register_time < 20 * 60 and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 1 month))
+
+
+
+select * from beta_users where id = 3267
+Ставит игру раком? 3267	Ace Ventura 76
+Как-то отправляет капитана на планету с уже капитаном
+Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.104 Safari/537.36	5.159.119.173
+sweetweesh@yandex.ru
+
+
+Админка - колонка в списке игроков с количеством купленной ММ
+
+Универсальная очередь - можно ставить что угодно. За ТМ
 
 
 #ctv
