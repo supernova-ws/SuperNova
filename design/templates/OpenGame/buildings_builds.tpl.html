@@ -240,12 +240,6 @@ var que_id = '{QUE_ID}';
                     <div class="icons icon-plus"></div>
                   </div>
                 <!-- ENDIF -->
-
-                <!-- IF production.LEVEL && production.DESTROY_CAN && production.DESTROY_RESULT == 0 -->
-                  <span class="left_top a75 unit_destroy" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}">
-                    <div class="icons icon-minus"></div>
-                  </span>
-                <!-- ENDIF -->
               <!-- ENDIF -->
 
               <span class="a75 name">
@@ -271,6 +265,14 @@ var que_id = '{QUE_ID}';
                 <span class="a75 unit_image">
                   <div class="restrict">{production.BUILD_RESULT_TEXT}</div>
                 </span>
+              <!-- ENDIF -->
+
+              <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY && ! STACKABLE && ! TEMPORARY -->
+                <!-- IF production.LEVEL && production.DESTROY_CAN && production.DESTROY_RESULT == 0 -->
+                  <span class="left_top a75 unit_destroy" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}">
+                    <div class="icons icon-minus"></div>
+                  </span>
+                <!-- ENDIF -->
               <!-- ENDIF -->
 
               <!-- IF ! ALLY_ID && ! production.DARK_MATTER_ONLY -->

@@ -252,18 +252,12 @@
 
     </div>
 
-  <!-- IF LANG -->
-  <!-- DEFINE $SEPARATOR = '&' -->
-  <!-- ELSE -->
-  <!-- DEFINE $SEPARATOR = '?' -->
-  <!-- ENDIF -->
-
   <!-- IF .language -->
   <div id="log_menu">
     <table class="markup c_c"><tr>
       <!-- BEGIN language -->
       <td style="padding: 0px 8px">
-        <a href="{FILENAME}?lang={language.LANG_NAME_ISO2}{referral}">
+        <a href="{FILENAME}?lang={language.LANG_NAME_ISO2}&id_ref={id_ref}">
           <img src="language/{language.LANG_NAME_ISO2}/{language.LANG_FLAG_MEDIUM}" /><br />
           {language.LANG_NAME_NATIVE}
         </a>
@@ -275,13 +269,6 @@
   <!-- ENDIF -->
 
   <div id="login_menu">
-<!--
-    <div class="menu_line">
-      <a href="login.php{LANG}{referral}">{L_log_login_page}</a>
-      <a href="reg.php{LANG}{referral}">{L_log_reg}</a>
-      <a href="lostpassword.php{LANG}{referral}">{L_PasswordLost}</a>
-    </div>
--->
     <div class="menu_line">
       <!-- IF URL_RULES -->
       <a href="{URL_RULES}">{L_log_rules}</a>
@@ -296,15 +283,15 @@
 
 
     <div class="menu_line">
-      <a href="server_info.php{LANG}">{L_log_cred}</a>
-      <a href="announce.php{LANG}">{L_log_news}</a>
+      <a href="server_info.php?lang={LANG}">{L_log_cred}</a>
+      <a href="announce.php?lang={LANG}">{L_log_news}</a>
     </div>
 
 
     <div class="menu_line">
-      <a href="stat.php{LANG}">{L_log_stat_menu}</a>
-      <a href="banned.php{LANG}">{L_log_banned}</a>
-      <a href="index.php{LANG}{$SEPARATOR}page=contact">{L_log_contacts}</a>
+      <a href="stat.php?lang={LANG}">{L_log_stat_menu}</a>
+      <a href="banned.php?lang={LANG}">{L_log_banned}</a>
+      <a href="index.php?page=contact&lang={LANG}">{L_log_contacts}</a>
     </div>
   </div>
 </div>

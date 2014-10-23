@@ -129,8 +129,10 @@ function eco_struc_show_unit_info(unit_id, no_color) {
     requirement_string = '';
     for(i in require[unit_id]) {
       req = require[unit_id][i];
-      requirement_string = requirement_string + '<li class="' + (req['requerements_met'] ? 'positive' : 'negative  ') + '">'
-        + req['name'] + ' ' + req['level_basic'] + (req['level_bonus'] ? '<span class="bonus">+' + req['level_bonus'] + '</span>' : '') + '/' + req['level_require']
+      requirement_string = requirement_string
+        + '<li class="' + (req['requerements_met'] ? 'positive' : 'negative  ') + '">'
+          + req['name']
+          + (!isNaN(req['level_basic']) ? ' ' + req['level_basic'] + (req['level_bonus'] ? '<span class="bonus">+' + req['level_bonus'] + '</span>' : '') + '/' + req['level_require'] : '')
         + '</li>';
     }
     $('#unit_require').empty().append(requirement_string);

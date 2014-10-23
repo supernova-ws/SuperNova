@@ -629,7 +629,8 @@ function tpl_login_lang(&$template)
   }
 
   $template->assign_vars($q = array(
-    'LANG' => $language ? '?lang=' . $language : '',
+//    'LANG' => $language ? '?lang=' . $language : '',
+    'LANG' => $language ? $language : '',
     'referral' => $id_ref ? '&id_ref=' . $id_ref : '',
 
     'REQUEST_PARAMS' => !empty($url_params) ? '?' . implode('&', $url_params) : '',// "?lang={$language}" . ($id_ref ? "&id_ref={$id_ref}" : ''),

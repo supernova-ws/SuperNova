@@ -9,7 +9,7 @@ jQuery(document).ready(function() {
   inputs.filter(':button, :submit, :reset').button().addClass('ui-textfield');
   inputs.filter(':text, :password, :file').button().addClass('ui-textfield');
   inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
-  jQuery('textarea').button().addClass('ui-textfield');
+  // jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield');
 
   calc_elements();
 

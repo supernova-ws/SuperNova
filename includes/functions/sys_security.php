@@ -357,11 +357,9 @@ function sec_login_register($username_unsafe, $password_raw, $remember_me = 1) {
     $user['id'] = $user_new['id'];
     doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = \"{$username_safe}\"");
 
-    if($id_ref = sys_get_param_int('id_ref'))
-    {
+    if($id_ref = sys_get_param_int('id_ref')) {
       $referral_row = db_user_by_id($id_ref, true);
-      if($referral_row)
-      {
+      if($referral_row) {
         doquery("INSERT INTO {{referrals}} SET `id` = {$user['id']}, `id_partner` = {$id_ref}");
       }
     }

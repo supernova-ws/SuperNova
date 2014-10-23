@@ -110,6 +110,7 @@ $template = gettemplate('login_body', true);
 $template->assign_vars(array(
   'last_user'    => db_user_last_registered_username(),
   'online_users' => db_user_count(true),
+  'id_ref' => sys_get_param_int('id_ref'),
   'F_LOGIN_MESSAGE' => $template_result[F_LOGIN_MESSAGE],
   'F_LOGIN_STATUS' => $template_result[F_LOGIN_STATUS],
   'LOGIN_ERROR_USERNAME' => LOGIN_ERROR_USERNAME,

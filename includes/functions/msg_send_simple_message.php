@@ -32,7 +32,7 @@ function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0)
     $list .= "<br>{$u['username']} ";
   }
 
-  msg_send_simple_message($sendList, $user['id'], $time_now, MSG_TYPE_ALLIANCE, $user['username'], $subject, sys_bbcodeParse($message, true));
+  msg_send_simple_message($sendList, $user['id'], $time_now, MSG_TYPE_ALLIANCE, $user['username'], $subject, $message, true);
 
   return $list;
 }

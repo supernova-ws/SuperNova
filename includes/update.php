@@ -1251,6 +1251,16 @@ switch($new_version)
     upd_check_key('payment_currency_exchange_rub', 45, true);
     upd_check_key('payment_currency_exchange_wmr', 48, true);
 
+    upd_do_query(
+      "DELETE {{unit}}
+      FROM {{unit}}
+      LEFT JOIN {{planets}} ON id = unit_location_id
+      WHERE unit_location_type = 1 AND unit_type = 99 AND (
+        (planet_type = 1 AND unit_snid IN (41, 42, 43))
+        OR
+        (planet_type = 3 AND unit_snid NOT IN (14, 15, 21, 34, 41, 42, 43))
+      );");
+
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
 };

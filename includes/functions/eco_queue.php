@@ -112,6 +112,10 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE) {
     if($que_id == QUE_STRUCTURES) {
       $sn_groups_build_allow = sn_get_groups('build_allow');
       $que_data['unit_list'] = $sn_groups_build_allow[$planet['planet_type']];
+
+      if(!isset($que_data['unit_list'][$unit_id])) {
+        throw new exception('Это здание нельзя строить на ' . ($planet['planet_type'] == PT_PLANET ? 'планете' : 'луне'), ERR_ERROR); // TODO EXCEPTION
+      }
     }
     /*
     // TODO Разделить очереди для Верфи и Обороны
@@ -151,7 +155,11 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE) {
       case BUILD_ALLOWED: break;
       case BUILD_UNIT_BUSY: throw new exception('Строение занято', ERR_ERROR); break; // TODO EXCEPTION eco_bld_msg_err_laboratory_upgrading
       // case BUILD_REQUIRE_NOT_MEET:
-      default: throw new exception('Требования не удовлетворены', ERR_ERROR); break; // TODO EXCEPTION eco_bld_msg_err_requirements_not_meet
+      default:
+        if($build_mode == BUILD_CREATE) {
+          throw new exception('Требования не удовлетворены', ERR_ERROR);
+        }
+        break; // TODO EXCEPTION eco_bld_msg_err_requirements_not_meet
     }
 
     $unit_amount = floor(sys_get_param_float('unit_amount', 1));
@@ -220,9 +228,6 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE) {
     }
 
     $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
-    if($build_data['RESULT'][BUILD_CREATE] != BUILD_ALLOWED) {
-      throw new exception('Строительство блокировано', ERR_ERROR); // TODO EXCEPTION
-    }
 
     $unit_amount = min($build_data['CAN'][$build_mode], $unit_amount);
     if($unit_amount < 0) {
@@ -231,6 +236,10 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE) {
 
     if($new_unit_level < 0) {
       throw new exception('Нельзя уничтожить больше юнитов, чем есть', ERR_ERROR); // TODO EXCEPTION
+    }
+
+    if($build_data['RESULT'][$build_mode] != BUILD_ALLOWED) {
+      throw new exception('Строительство блокировано', ERR_ERROR); // TODO EXCEPTION
     }
 
 //    $unit_amount = min($unit_amount, MAX_FLEET_OR_DEFS_PER_ROW);

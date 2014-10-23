@@ -122,7 +122,7 @@ class classSupernova {
   }
   public static function cache_clear($location_type, $hard = true) {
     //print("<br />CACHE CLEAR {$cache_id} " . ($hard ? 'HARD' : 'SOFT') . "<br />");
-    if($hard) {
+    if($hard && !empty(static::$data[$location_type])) {
       // Здесь нельзя делать unset - надо записывать NULL, что бы это отразилось на зависимых записях
       array_walk(static::$data[$location_type], function(&$item){$item = null;});
     }
