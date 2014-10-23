@@ -32,22 +32,19 @@ while ($affilate = mysql_fetch_assoc($affilates))
   $gained += $affilate_gain;
 }
 
-$bannerURL  = SN_ROOT_VIRTUAL . $config->int_banner_URL;
+$bannerURL  = SN_ROOT_VIRTUAL_PARENT . $config->int_banner_URL;
 $bannerURL .= strpos($bannerURL, '?') ? '&' : '?';
 $bannerURL .= "id={$user['id']}";
 
-$userbarURL  = SN_ROOT_VIRTUAL . $config->int_userbar_URL;
+$userbarURL  = SN_ROOT_VIRTUAL_PARENT . $config->int_userbar_URL;
 $userbarURL .= strpos($userbarURL, '?') ? '&' : '?';
 $userbarURL .= "id={$user['id']}";
 
 $template->assign_vars(array(
   'GAINED'     => $gained,
   'user_id'    => $user['id'],
-  'serverURL'  => SN_ROOT_VIRTUAL,
   'bannerURL'  => $bannerURL,
   'userbarURL' => $userbarURL,
 ));
 
 display(parsetemplate($template), $lang['aff_title']);
-
-?>
