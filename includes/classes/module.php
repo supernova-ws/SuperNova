@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #39a14.3# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #39a14.6# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -268,6 +268,12 @@ abstract class sn_module_payment extends sn_module
   );
 
   static $payment_methods = array(
+    PAYMENT_METHOD_BANK_CARD => array(
+      PAYMENT_METHOD_BANK_CARD_STANDARD => array(
+        'currency' => 'RUR',
+      ),
+    ),
+
     PAYMENT_METHOD_EMONEY => array(
       PAYMENT_METHOD_EMONEY_WEBMONEY_WMR => array(
         'currency' => 'WMR',
@@ -303,12 +309,6 @@ abstract class sn_module_payment extends sn_module
         'currency' => 'RUR',
       ),
       PAYMENT_METHOD_EMONEY_TELEMONEY => array(
-        'currency' => 'RUR',
-      ),
-    ),
-
-    PAYMENT_METHOD_BANK_CARD => array(
-      PAYMENT_METHOD_BANK_CARD_STANDARD => array(
         'currency' => 'RUR',
       ),
     ),
