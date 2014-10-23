@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a3.7
+* @version 39a14.3
 *
 */
 
@@ -58,19 +58,28 @@ $a_lang_array = (array(
   'pay_mm_bonus_header' => 'Стоимость Метаматерии и бонусы за оптовую покупку',
   'pay_mm_bonus' => 'При оптовой покупке ММ предоставляются бонусы',
   'pay_mm_bonus_each' => 'от %s ММ - бонус %d%% к количеству ММ',
-
+  'pay_mm_bonus_text' => 'Бонус',
 
   'pay_mm_buy_step1_text' => 'Выберите количество ММ, способ оплаты и подтвердите свой выбор',
-  'pay_mm_buy_unit' => 'единиц Метаматерии',
-  'pay_mm_buy_select' => 'Способ оплаты',
+  'pay_mm_buy_metamatter_amount' => 'Выберите количество Метаматерии из списка',
+  'pay_mm_buy_metamatter_amount_enter' => '...или введите другое количество Метаматерии',
+  'pay_mm_buy_price_for' => 'Цена за',
+  'pay_mm_buy_unit' => 'Метаматерии',
+  'pay_mm_buy_select' => 'Выберите платежную систему',
+  'pay_mm_buy_method_detail' => 'Некоторые способы оплаты предлагают выбор разных платёжных систем. Если платёж не проходит через одну платёжную систему - попробуйте использовать тот же способ оплаты с другой платёжной системой',
   'pay_mm_buy_confirm' => 'Подтвердить выбор',
   'pay_mm_buy_payment_selected' => 'Оплата будет произведена с использованием платежной системы',
+  'pay_mm_buy_purchase' => 'Покупка',
 
-  'pay_mm_buy_step2_text' => 'Проверьте выбранное количество Метаматерии и способ оплаты. Если все правильно - нажмите кнопку "Оплатить Метаматерию". Если вы ошиблись - нажмите кнопку "Начать заново"',
+  'pay_mm_buy_payment_method_select' => 'Выберите способ оплаты',
+  'pay_mm_buy_payment_method_selected' => 'Вы выбрали способ оплаты',
+
+  'pay_mm_buy_step2_text' => 'Рассчётная стоимость не включает дополнительные комиссии, которые могут взимать платёжные системы и/или разнообразные посредники. Проверьте выбранное количество Метаматерии и способ оплаты. Если все правильно - нажмите кнопку "Оплатить Метаматерию". Если вы ошиблись - нажмите кнопку "Начать заново"',
   'pay_mm_buy_pay' => 'Оплатить Метаматерию',
   'pay_mm_buy_reset' => 'Начать заново',
   'pay_mm_buy_in_progress' => 'Происходит оплата...',
-  'pay_mm_buy_conversion_cost' => 'Стоимость %s единиц Метаматерии составит %s %s',
+  'pay_mm_buy_conversion_cost' => 'Рассчётная стоимость %s единиц Метаматерии составит %s %s',
+  'pay_mm_buy_real_income' => 'Бонус за оптовую покупку составит %s%% и на ваш игровой счёт будет зачислено %s ММ',
 
   'pay_currency_name' => 'Валюта',
   'pay_currency_symbol' => 'Символ',
@@ -87,9 +96,69 @@ $a_lang_array = (array(
     'WMB' => 'WebMoney белорусский рубль',
   ),
 
+  'pay_methods' => array(
+    PAYMENT_METHOD_EMONEY => 'Электронный кошелёк',
+    PAYMENT_METHOD_EMONEY_YANDEX => 'Яндекс.Деньги',
+    PAYMENT_METHOD_EMONEY_WEBMONEY_WMR => 'WebMoney WMR',
+    PAYMENT_METHOD_EMONEY_WEBMONEY_WMZ => 'WebMoney WMZ',
+    PAYMENT_METHOD_EMONEY_WEBMONEY_WMU => 'WebMoney WMU',
+    PAYMENT_METHOD_EMONEY_WEBMONEY_WME => 'WebMoney WME',
+    PAYMENT_METHOD_EMONEY_WEBMONEY_WMB => 'WebMoney WMB',
+    PAYMENT_METHOD_EMONEY_QIWI => 'QIWI Кошелек',
+    PAYMENT_METHOD_EMONEY_ELEXNET => 'Кошелек Элекснет',
+    PAYMENT_METHOD_EMONEY_MAILRU => 'Деньги@Mail.Ru',
+    PAYMENT_METHOD_EMONEY_EASYPAY => 'EasyPay',
+    PAYMENT_METHOD_EMONEY_RUR_W1R => 'RUR Единый Кошелек',
+    PAYMENT_METHOD_EMONEY_TELEMONEY => 'TeleMoney',
+
+    PAYMENT_METHOD_BANK_CARD => 'Платежная карта (VISA, MasterCard итд)',
+    PAYMENT_METHOD_BANK_CARD_STANDARD => 'Банковская карта',
+
+    PAYMENT_METHOD_BANK_INTERNET => 'Через интернет-банк',
+    PAYMENT_METHOD_BANK_INTERNET_001 => 'Альфа-Клик',
+    PAYMENT_METHOD_BANK_INTERNET_002 => 'Банк Русский Стандарт',
+    PAYMENT_METHOD_BANK_INTERNET_003 => 'Промсвязьбанк',
+    PAYMENT_METHOD_BANK_INTERNET_004 => 'ВТБ24',
+    PAYMENT_METHOD_BANK_INTERNET_005 => 'Океан Банк',
+    PAYMENT_METHOD_BANK_INTERNET_006 => 'HandyBank',
+    PAYMENT_METHOD_BANK_INTERNET_007 => 'Банк Богородский',
+    PAYMENT_METHOD_BANK_INTERNET_008 => 'Банк Образование',
+    PAYMENT_METHOD_BANK_INTERNET_009 => 'ФлексБанк',
+    PAYMENT_METHOD_BANK_INTERNET_010 => 'ФьючерБанк',
+    PAYMENT_METHOD_BANK_INTERNET_011 => 'КранБанк',
+    PAYMENT_METHOD_BANK_INTERNET_012 => 'Костромаселькомбанк',
+    PAYMENT_METHOD_BANK_INTERNET_013 => 'Липецкий областной банк',
+    PAYMENT_METHOD_BANK_INTERNET_014 => 'Независимый строительный банк',
+    PAYMENT_METHOD_BANK_INTERNET_015 => 'Русский Трастовый Банк',
+    PAYMENT_METHOD_BANK_INTERNET_016 => 'ВестИнтерБанк',
+    PAYMENT_METHOD_BANK_INTERNET_017 => 'Межтопэнергобанк',
+    PAYMENT_METHOD_BANK_INTERNET_018 => 'Московский Индустриальный Банк',
+    PAYMENT_METHOD_BANK_INTERNET_019 => 'Банк Интеза',
+    PAYMENT_METHOD_BANK_INTERNET_020 => 'Банк Город',
+    PAYMENT_METHOD_BANK_INTERNET_021 => 'Банк АВБ',
+
+    PAYMENT_METHOD_BANK_TRANSFER => 'Банковский перевод',
+
+    PAYMENT_METHOD_MOBILE => 'Со счёта сотового оператора',
+    PAYMENT_METHOD_MOBILE_MEGAPHONE => 'Мегафон',
+    PAYMENT_METHOD_MOBILE_MTS => 'МТС',
+
+    PAYMENT_METHOD_TERMINAL => 'Терминал оплаты',
+    PAYMENT_METHOD_TERMINAL_QIWI => 'QIWI Кошелек',
+    PAYMENT_METHOD_TERMINAL_ELEXNET => 'Элекснет',
+    PAYMENT_METHOD_TERMINAL_ELEMENT => 'Мобил Элемент',
+    PAYMENT_METHOD_TERMINAL_KASSIRANET => 'Кассира.нет',
+
+    PAYMENT_METHOD_OTHER => 'Другие способы',
+    PAYMENT_METHOD_OTHER_EVROSET => 'Евросеть',
+    PAYMENT_METHOD_OTHER_SVJAZNOJ => 'Связной',
+    PAYMENT_METHOD_OTHER_ROBOKASSA_MOBILE => 'Мобильная ROBOKASSA',
+  ),
+
   'pay_currency_exchange_title' => 'Внутренние курсы валют',
-  'pay_currency_exchange_direct' => 'Прямой курс',
-  'pay_currency_exchange_reverse' => 'Обратный курс',
+  'pay_currency_exchange_rate' => 'Курс',
+  'pay_currency_exchange_direct' => 'Прямой',
+  'pay_currency_exchange_reverse' => 'Обратный',
   'pay_currency_exchange_mm' => 'ММ за 1 у.е.',
   'pay_currency_exchange_note' => 'Внутренний курс используется для пересчета из основной валюты сервера в валюту плтаженой системы. Курс не включает комиссию посредников и/или платежных систем',
 

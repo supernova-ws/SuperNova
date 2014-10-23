@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a3.7
+* @version 39a14.3
 *
 */
 
@@ -59,19 +59,29 @@ $a_lang_array = (array(
   'pay_mm_bonus_header' => 'Metamatter cost and bonuses for bulk purchases',
   'pay_mm_bonus' => 'When you purchasing large amounts of Metamatter you recieve bonuses:',
   'pay_mm_bonus_each' => 'from %s MM - %d%% bonus to purchased MM amount',
+  'pay_mm_bonus_text' => 'Bonus',
 
 
   'pay_mm_buy_step1_text' => 'Select amount of MM you wish to purchase, select payment system and confirm your selection',
-  'pay_mm_buy_unit' => 'Metamatter units',
-  'pay_mm_buy_select' => 'Payment system',
+  'pay_mm_buy_metamatter_amount' => 'Выберите количество Метаматерии из списка',
+  'pay_mm_buy_metamatter_amount_enter' => '...или введите другое количество Метаматерии',
+  'pay_mm_buy_price_for' => 'Price for',
+  'pay_mm_buy_unit' => 'Metamatter',
+  'pay_mm_buy_select' => 'Выберите платежную систему',
+  'pay_mm_buy_method_detail' => 'Некоторые способы оплаты предлагают выбор разных платёжных систем. Если платёж не проходит через одну платёжную систему - попробуйте использовать тот же способ оплаты с другой платёжной системой',
   'pay_mm_buy_confirm' => 'Confirm selection',
   'pay_mm_buy_payment_selected' => 'Purchase would be made using payment system',
+  'pay_mm_buy_purchase' => 'Покупка',
 
-  'pay_mm_buy_step2_text' => 'Verify selected amount of Metamatter and selected payment system. If everything is OK press button "Purchase Metamatter". If there is any error - press button "Discard and start again"',
+  'pay_mm_buy_payment_method_select' => 'Выберите способ оплаты',
+  'pay_mm_buy_payment_method_selected' => 'Вы выбрали способ оплаты',
+
+  'pay_mm_buy_step2_text' => 'Рассчётная стоимость не включает дополнительные комиссии, которые могут взимать платёжные системы и/или разнообразные посредники. Verify selected amount of Metamatter and selected payment system. If everything is OK press button "Purchase Metamatter". If there is any error - press button "Discard and start again"',
   'pay_mm_buy_pay' => 'Purchase Metamatter',
   'pay_mm_buy_reset' => 'Discard and start again',
   'pay_mm_buy_in_progress' => 'Payment in progress...',
-  'pay_mm_buy_conversion_cost' => 'Cost of %s Metamatter will be %s %s',
+  'pay_mm_buy_conversion_cost' => 'Calculated cost of %s Metamatter will be %s %s',
+  'pay_mm_buy_real_income' => 'Бонус за оптовую покупку составит %s%% и на ваш игровой счёт будет зачислено %s ММ',
 
   'pay_currency_name' => 'Currency',
   'pay_currency_symbol' => 'Symbol',
@@ -88,9 +98,69 @@ $a_lang_array = (array(
     'WMB' => 'WebMoney belorussian rouble',
   ),
 
+  'pay_methods' => array(
+    PAYMENT_METHOD_EMONEY => 'Электронный кошелёк',
+    PAYMENT_METHOD_EMONEY_YANDEX => 'Яндекс.Деньги',
+    PAYMENT_METHOD_EMONEY_WEBMONEY_WMR => 'WebMoney WMR',
+    PAYMENT_METHOD_EMONEY_WEBMONEY_WMZ => 'WebMoney WMZ',
+    PAYMENT_METHOD_EMONEY_WEBMONEY_WMU => 'WebMoney WMU',
+    PAYMENT_METHOD_EMONEY_WEBMONEY_WME => 'WebMoney WME',
+    PAYMENT_METHOD_EMONEY_WEBMONEY_WMB => 'WebMoney WMB',
+    PAYMENT_METHOD_EMONEY_QIWI => 'QIWI Кошелек',
+    PAYMENT_METHOD_EMONEY_ELEXNET => 'Кошелек Элекснет',
+    PAYMENT_METHOD_EMONEY_MAILRU => 'Деньги@Mail.Ru',
+    PAYMENT_METHOD_EMONEY_EASYPAY => 'EasyPay',
+    PAYMENT_METHOD_EMONEY_RUR_W1R => 'RUR Единый Кошелек',
+    PAYMENT_METHOD_EMONEY_TELEMONEY => 'TeleMoney',
+
+    PAYMENT_METHOD_BANK_CARD => 'Платежная карта (VISA, MasterCard итд)',
+    PAYMENT_METHOD_BANK_CARD_STANDARD => 'Банковская карта',
+
+    PAYMENT_METHOD_BANK_INTERNET => 'Через интернет-банк',
+    PAYMENT_METHOD_BANK_INTERNET_001 => 'Альфа-Клик',
+    PAYMENT_METHOD_BANK_INTERNET_002 => 'Банк Русский Стандарт',
+    PAYMENT_METHOD_BANK_INTERNET_003 => 'Промсвязьбанк',
+    PAYMENT_METHOD_BANK_INTERNET_004 => 'ВТБ24',
+    PAYMENT_METHOD_BANK_INTERNET_005 => 'Океан Банк',
+    PAYMENT_METHOD_BANK_INTERNET_006 => 'HandyBank',
+    PAYMENT_METHOD_BANK_INTERNET_007 => 'Банк Богородский',
+    PAYMENT_METHOD_BANK_INTERNET_008 => 'Банк Образование',
+    PAYMENT_METHOD_BANK_INTERNET_009 => 'ФлексБанк',
+    PAYMENT_METHOD_BANK_INTERNET_010 => 'ФьючерБанк',
+    PAYMENT_METHOD_BANK_INTERNET_011 => 'КранБанк',
+    PAYMENT_METHOD_BANK_INTERNET_012 => 'Костромаселькомбанк',
+    PAYMENT_METHOD_BANK_INTERNET_013 => 'Липецкий областной банк',
+    PAYMENT_METHOD_BANK_INTERNET_014 => 'Независимый строительный банк',
+    PAYMENT_METHOD_BANK_INTERNET_015 => 'Русский Трастовый Банк',
+    PAYMENT_METHOD_BANK_INTERNET_016 => 'ВестИнтерБанк',
+    PAYMENT_METHOD_BANK_INTERNET_017 => 'Межтопэнергобанк',
+    PAYMENT_METHOD_BANK_INTERNET_018 => 'Московский Индустриальный Банк',
+    PAYMENT_METHOD_BANK_INTERNET_019 => 'Банк Интеза',
+    PAYMENT_METHOD_BANK_INTERNET_020 => 'Банк Город',
+    PAYMENT_METHOD_BANK_INTERNET_021 => 'Банк АВБ',
+
+    PAYMENT_METHOD_BANK_TRANSFER => 'Банковский перевод',
+
+    PAYMENT_METHOD_MOBILE => 'Со счёта сотового оператора',
+    PAYMENT_METHOD_MOBILE_MEGAPHONE => 'Мегафон',
+    PAYMENT_METHOD_MOBILE_MTS => 'МТС',
+
+    PAYMENT_METHOD_TERMINAL => 'Терминал оплаты',
+    PAYMENT_METHOD_TERMINAL_QIWI => 'QIWI Кошелек',
+    PAYMENT_METHOD_TERMINAL_ELEXNET => 'Элекснет',
+    PAYMENT_METHOD_TERMINAL_ELEMENT => 'Мобил Элемент',
+    PAYMENT_METHOD_TERMINAL_KASSIRANET => 'Кассира.нет',
+
+    PAYMENT_METHOD_OTHER => 'Другие способы',
+    PAYMENT_METHOD_OTHER_EVROSET => 'Евросеть',
+    PAYMENT_METHOD_OTHER_SVJAZNOJ => 'Связной',
+    PAYMENT_METHOD_OTHER_ROBOKASSA_MOBILE => 'Мобильная ROBOKASSA',
+  ),
+
   'pay_currency_exchange_title' => 'Internal currency exchange',
-  'pay_currency_exchange_direct' => 'Exchange rate',
-  'pay_currency_exchange_reverse' => 'Reverse rate',
+  'pay_currency_exchange_rate' => 'Exchange rate',
+  'pay_currency_exchange_direct' => 'Direct',
+  'pay_currency_exchange_reverse' => 'Reverse',
   'pay_currency_exchange_mm' => 'MM for 1 currency',
   'pay_currency_exchange_note' => 'Internal exchange rates used to calculate payment amount in payment system currency. Exchange rates does not includes commission of payment system(s)',
 

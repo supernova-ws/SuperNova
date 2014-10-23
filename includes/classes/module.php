@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #39a11.6# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #39a14.3# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -249,19 +249,174 @@ abstract class sn_module_payment extends sn_module
 {
   static $bonus_table = array(
       2500 => 0,
-      5000 => 0,
+     // 5000 => 0,
      10000 => 0,
      25000 => 0,
 
      50000 => 0.02,
     100000 => 0.04,
+    150000 => 0.05,
     200000 => 0.07,
     250000 => 0.11,
-    375000 => 0.15,
+    380000 => 0.15,
     500000 => 0.22,
     750000 => 0.33,
    1000000 => 0.44,
    1250000 => 0.55,
+   1500000 => 0.57,
+   2500000 => 0.60,
+  );
+
+  static $payment_methods = array(
+    PAYMENT_METHOD_EMONEY => array(
+      PAYMENT_METHOD_EMONEY_WEBMONEY_WMR => array(
+        'currency' => 'WMR',
+      ),
+      PAYMENT_METHOD_EMONEY_WEBMONEY_WMZ => array(
+        'currency' => 'WMZ',
+      ),
+      PAYMENT_METHOD_EMONEY_WEBMONEY_WMU => array(
+        'currency' => 'WMU',
+      ),
+      PAYMENT_METHOD_EMONEY_WEBMONEY_WME => array(
+        'currency' => 'WME',
+      ),
+      PAYMENT_METHOD_EMONEY_WEBMONEY_WMB => array(
+        'currency' => 'WMB',
+      ),
+      PAYMENT_METHOD_EMONEY_YANDEX => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_EMONEY_QIWI => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_EMONEY_ELEXNET => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_EMONEY_MAILRU => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_EMONEY_EASYPAY => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_EMONEY_RUR_W1R => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_EMONEY_TELEMONEY => array(
+        'currency' => 'RUR',
+      ),
+    ),
+
+    PAYMENT_METHOD_BANK_CARD => array(
+      PAYMENT_METHOD_BANK_CARD_STANDARD => array(
+        'currency' => 'RUR',
+      ),
+    ),
+
+    PAYMENT_METHOD_BANK_INTERNET => array(
+      PAYMENT_METHOD_BANK_INTERNET_001 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_002 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_003 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_004 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_005 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_006 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_007 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_008 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_009 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_010 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_011 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_012 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_013 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_014 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_015 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_016 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_017 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_018 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_019 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_020 => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_BANK_INTERNET_021 => array(
+        'currency' => 'RUR',
+      ),
+    ),
+
+    PAYMENT_METHOD_BANK_TRANSFER => array(
+    ),
+
+    PAYMENT_METHOD_MOBILE => array(
+      PAYMENT_METHOD_MOBILE_MEGAPHONE => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_MOBILE_MTS => array(
+        'currency' => 'RUR',
+      ),
+    ),
+
+    PAYMENT_METHOD_TERMINAL => array(
+      PAYMENT_METHOD_TERMINAL_QIWI => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_TERMINAL_ELEXNET => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_TERMINAL_ELEMENT => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_TERMINAL_KASSIRANET => array(
+        'currency' => 'RUR',
+      ),
+    ),
+
+    PAYMENT_METHOD_OTHER => array(
+      PAYMENT_METHOD_OTHER_EVROSET => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_OTHER_SVJAZNOJ => array(
+        'currency' => 'RUR',
+      ),
+      PAYMENT_METHOD_OTHER_ROBOKASSA_MOBILE => array(
+        'currency' => 'RUR',
+      ),
+    ),
   );
 
   // Function converts money values between currencies
@@ -285,45 +440,33 @@ abstract class sn_module_payment extends sn_module
   }
 
   // Function calculates bonused DM amount for bulk purchase and ($direct = false) vice versa
-  static function bonus_calculate($dark_matter, $direct = true)
-  {
+  static function bonus_calculate($dark_matter, $direct = true, $return_bonus = false) {
     $bonus = 0;
     $dark_matter_new = $dark_matter;
-    if(!empty(self::$bonus_table) && $dark_matter >= $bonus_table[0])
-    {
-      if($direct)
-      {
-        foreach(self::$bonus_table as $dm_for_bonus => $multiplyer)
-        {
-          if($dm_for_bonus <= $dark_matter)
-          {
+    if(!empty(self::$bonus_table) && $dark_matter >= self::$bonus_table[0]) {
+      if($direct) {
+        foreach(self::$bonus_table as $dm_for_bonus => $multiplyer) {
+          if($dm_for_bonus <= $dark_matter) {
             $dark_matter_new = $dark_matter * (1 + $multiplyer);
-          }
-          else
-          {
+            $bonus = $multiplyer;
+          } else {
             break;
           }
         }
-      }
-      else
-      {
-
-        foreach(self::$bonus_table as $dm_for_bonus => $multiplyer)
-        {
+      } else {
+        foreach(self::$bonus_table as $dm_for_bonus => $multiplyer) {
           $temp = $dm_for_bonus * (1 + $multiplyer);
-          if($dark_matter >= $temp)
-          {
+          if($dark_matter >= $temp) {
             $dark_matter_new = round($dark_matter / (1 + $multiplyer));
-          }
-          else
-          {
+            $bonus = $multiplyer;
+          } else {
             break;
           }
         }
       }
     }
 
-    return $dark_matter_new;
+    return $return_bonus ? $bonus : $dark_matter_new;
   }
 
   /*

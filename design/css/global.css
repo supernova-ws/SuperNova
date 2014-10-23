@@ -747,3 +747,15 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
   cursor: text;
 }
 */
+
+.payment_mm_amount, .payment_mm_method, .payment_mm_module {
+  float: left;
+  width: 150px;
+  border: 1px solid white;
+  margin: 3px;
+  text-align: center;
+}
+
+.payment_mm_method {
+  height: 4em;
+}
