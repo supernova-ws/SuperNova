@@ -214,8 +214,11 @@ class debug
       {
         $error_backtrace = '';
       }
+
+      $user_safe_name = mysql_real_escape_string($user['username']);
+
       mysql_query("INSERT INTO `{$dbsettings['prefix']}logs` SET
-        `log_time` = '".time()."', `log_code` = '{$error_code}', `log_sender` = '{$user['id']}', `log_username` = '{$user['username']}',
+        `log_time` = '".time()."', `log_code` = '{$error_code}', `log_sender` = '{$user['id']}', `log_username` = '{$user_safe_name}',
         `log_title` = '{$title}',  `log_text` = '{$error_text}', `log_page` = '".mysql_real_escape_string(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'{$error_backtrace};")
       or die($fatal_error . mysql_error());
 

@@ -102,8 +102,9 @@ switch ($mode)
       {
         $error_list[] = array('TEXT' => $lang['msg_not_message_sent'], 'CLASS' => 'success');
 
+        $user_safe_name = mysql_real_escape_string($user['username']);
         $recipient_name = mysql_real_escape_string($recipient_name);
-        msg_send_simple_message($recipient_id, $user['id'], $time_now, MSG_TYPE_PLAYER, "{$user['username']} [{$user['galaxy']}:{$user['system']}:{$user['planet']}]", $subject, $text, true);
+        msg_send_simple_message($recipient_id, $user['id'], $time_now, MSG_TYPE_PLAYER, "{$user_safe_name} [{$user['galaxy']}:{$user['system']}:{$user['planet']}]", $subject, $text, true);
 
         $recipient_id = 0;
         $recipient_name = '';

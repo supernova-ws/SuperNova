@@ -332,12 +332,10 @@ foreach($cached['users'] as $PlanetUser)
     }
 
     $birthday_array = $PlanetUser['user_birthday'] ? date_parse($PlanetUser['user_birthday']) : array();
-    $PlanetUser2 = $PlanetUser;
-    $PlanetUser2['username'] = js_safe_string($PlanetUser2['username']);
     $template->assign_block_vars('users', array(
       'ID'   => $PlanetUser['id'],
       'NAME' => render_player_nick($PlanetUser, true),
-      'NAME_JS' => render_player_nick($PlanetUser2, true),
+      'NAME_JS' => js_safe_string(render_player_nick($PlanetUser, true)),
       'RANK' => in_array($PlanetUser['id'], $user_skip_list) ? '-' : $PlanetUser['total_rank'],
 //      'SEX'      => $PlanetUser['sex'] == 'F' ? 'female' : 'male',
 //      'BIRTHDAY' => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? 1 : 0, // date(FMT_DATE, $time_now)

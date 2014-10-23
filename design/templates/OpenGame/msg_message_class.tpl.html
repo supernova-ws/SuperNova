@@ -10,11 +10,15 @@
   <!-- BEGIN message_class -->
     <tr class="{message_class.STYLE} c_c">
       <td><a href="messages.php?mode=show&message_class={message_class.ID}"><span class="{message_class.STYLE}">{message_class.TEXT}</span></a></td>
-      <td><!-- IF message_class.ID != -1 --><span class="{message_class.STYLE}">{message_class.UNREAD}</span><!-- ELSE --><a href="messages.php?mode=write"><span class="{message_class.STYLE}">{L_msg_compose}</span></a><!-- ENDIF --></td>
+      <td><!-- IF message_class.ID != -1 --><span class="{message_class.STYLE}">{message_class.UNREAD}</span><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
       <td><span class="{message_class.STYLE}">{message_class.TOTAL}</span></td>
       <td><!-- IF message_class.ID != -1 --><a href="messages.php?mode=delete&message_class={message_class.ID}&message_range=class&return=1" title="{L_msg_del_class}"><span class="{message_class.STYLE}"><img src="design/images/r1.png"></span></a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
     </tr>
   <!-- END message_class -->
 </table>
+
+<br />
+<input type="button" value="{L_msg_compose}" onclick="document.location = 'messages.php?mode=write';" />
+<br />
 
 <!-- INCLUDE page_hint -->
