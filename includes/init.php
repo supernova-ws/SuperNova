@@ -130,7 +130,8 @@ $sn_root_relative = str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']);
 define('SN_ROOT_RELATIVE', $sn_root_relative);
 
 define('SN_ROOT_VIRTUAL' , 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . SN_ROOT_RELATIVE);
-define('SN_ROOT_VIRTUAL_PARENT' , 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . str_replace('//google.', '//', $_SERVER['HTTP_HOST']) . SN_ROOT_RELATIVE);
+// define('SN_ROOT_VIRTUAL_PARENT' , 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . str_replace('//google.', '//', $_SERVER['HTTP_HOST']) . SN_ROOT_RELATIVE);
+define('SN_ROOT_VIRTUAL_PARENT' , str_replace('//google.', '//', SN_ROOT_VIRTUAL));
 
 
 
