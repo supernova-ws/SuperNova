@@ -12,6 +12,7 @@
 *
 */
 
+$allow_anonymous = true;
 include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('overview');
@@ -21,5 +22,3 @@ $type = sys_get_param_str('type', 'userbar');
 $format = sys_get_param_str('format', 'png');
 
 int_banner_create($id, $type, $format);
-
-?>
