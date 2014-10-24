@@ -154,9 +154,16 @@ $payment_method_selected = sys_get_param_int('payment_method');
 $payment_module_valid = $payment_module_valid && (!$payment_method_selected || isset($payment_methods_available[$payment_type_selected][$payment_method_selected][$module_name]));
 
 // If payment_module invalid - making it empty OR if there is only one payment_module - selecting it
-$payment_module = $payment_module_valid
-  ? $payment_module
-  : (count($sn_module_list['payment']) == 1 || ($payment_type_selected && count($payment_methods_available[$payment_type_selected][$payment_method_selected]) == 1) ? $module_name : '');
+if($payment_module_valid) {
+  $payment_module = $payment_module;
+} elseif($payment_type_selected && count($payment_methods_available[$payment_type_selected][$payment_method_selected]) == 1) {
+  reset($payment_methods_available[$payment_type_selected][$payment_method_selected]);
+  $payment_module = key($payment_methods_available[$payment_type_selected][$payment_method_selected]);
+} elseif(count($sn_module_list['payment']) == 1) {
+  $payment_module = $module_name;
+} else {
+  $payment_module = '';
+}
 
 foreach($lang['pay_currency_list'] as $key => $value) {
   $var_name = 'payment_currency_exchange_' . strtolower($key);
