@@ -14,8 +14,7 @@ define('INSTALL', false);
 define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 3)
-{
+if($user['authlevel'] < 3) {
   AdminMessage($lang['adm_err_denied']);
 }
 
@@ -38,13 +37,10 @@ $sort_fields = array(
 $sort = sys_get_param_int('sort', SORT_ID);
 $sort = $sort_fields[$sort] ? $sort : SORT_ID;
 
-if(($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid')))
-{
+if(($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid'))) {
   $user_selected = db_user_by_id($user_id, false, 'id, username, password, authlevel');
-  if($user_selected['authlevel'] < $user['authlevel'] && $user['authlevel'] >= 3)
-  {
-    switch($action)
-    {
+  if($user_selected['authlevel'] < $user['authlevel'] && $user['authlevel'] >= 3) {
+    switch($action) {
       case ACTION_DELETE:
         DeleteSelectedUser($user_id);
         sys_redirect("{$_SERVER['SCRIPT_NAME']}?sort={$sort}");
@@ -55,9 +51,7 @@ if(($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid'
         sn_sys_impersonate($user_selected);
       break;
     }
-  }
-  else
-  {
+  } else {
     // Restricted try to delete user higher or equal level
     AdminMessage($lang['adm_err_denied']);
   }
@@ -67,8 +61,7 @@ $template = gettemplate('admin/userlist', true);
 
 $multi_ip = array();
 $ip_query = db_user_list_admin_multiaccounts();
-while($ip = mysql_fetch_assoc($ip_query))
-{
+while($ip = mysql_fetch_assoc($ip_query)) {
   $multi_ip[$ip['user_lastip']] = $ip['ip_count'];
 }
 
@@ -89,29 +82,33 @@ while($user_row = mysql_fetch_assoc($query)) {
   $template->assign_block_vars('user', array(
     'ID' => $user_row['id'],
     'NAME' => $user_row['username'],
-    'NAME_JS' => js_safe_string($user_row['username']),
-    'EMAIL' => $user_row['email'],
+//    'NAME_JS' => js_safe_string($user_row['username']),
+    'NAME_HTML' => htmlentities($user_row['username'], ENT_QUOTES, 'UTF-8'),
+//    'EMAIL' => $user_row['email'],
+// <th rowspan="2"><a href="admin/userlist.php?sort={D_SORT_EMAIL}">{L_sys_email}</a></th>
+// <td>{user.EMAIL}</td>
     'IP' => $user_row['user_lastip'],
     'IP_MULTI' => intval($multi_ip[$user_row['user_lastip']]),
-    'TIME_REGISTERED' => date(FMT_DATE_TIME, $user_row['register_time']),
-    'TIME_PLAYED' => date(FMT_DATE_TIME, $user_row['onlinetime']),
+    'TIME_REGISTERED' => date(FMT_DATE_TIME_SQL, $user_row['register_time']),
+    'TIME_PLAYED' => date(FMT_DATE_TIME_SQL, $user_row['onlinetime']),
+    'ACTIVITY' => pretty_time(SN_TIME_NOW - $user_row['onlinetime']),
     'REFERRAL_COUNT' => $user_row['referral_count'],
-    'REFERRAL_DM' => $user_row['referral_dm'],
-    'BANNED' => $user_row['banaday'] ? date(FMT_DATE_TIME, $user_row['banaday']) : 0,
-    'BAN_DATE' => date(FMT_DATE_TIME, $ban_details['ban_time']),
+    'REFERRAL_DM' => pretty_number($user_row['referral_dm'], true),
+    'BANNED' => $user_row['banaday'] ? date(FMT_DATE_TIME_SQL, $user_row['banaday']) : 0,
+    'BAN_DATE' => date(FMT_DATE_TIME_SQL, $ban_details['ban_time']),
     'BAN_ISSUER' => $ban_details['ban_issuer_name'],
     'BAN_REASON' => $ban_details['ban_reason'],
+    'METAMATTER' => pretty_number($user_row['metamatter_total'], true),
     'ACTION' => $user_row['authlevel'] < $user['authlevel'],
     'RESTRICTED' => $user['authlevel'] < 3,
   ) + $geoip_info);
 }
 
-// pdump($template);
-
 $template->assign_vars(array(
   'USER_COUNT' => mysql_num_rows($query),
   'SORT' => $sort,
   'GEOIP' => $geoip,
+  'METAMATTER' => isset($sn_module['unit_res_metamatter']),
 ));
 
 display($template, $lang['adm_ul_title'], false, '', true);
