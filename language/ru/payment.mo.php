@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a14.3
+* @version 39a15.3
 *
 */
 
@@ -79,6 +79,7 @@ $a_lang_array = (array(
   'pay_mm_buy_reset' => 'Начать заново',
   'pay_mm_buy_in_progress' => 'Происходит оплата...',
   'pay_mm_buy_conversion_cost' => 'Рассчётная стоимость %s единиц Метаматерии составит %s %s',
+  'pay_mm_buy_cost_base' => 'Стоимость в базовой валюте сервера составит %s %s',
   'pay_mm_buy_real_income' => 'Бонус за оптовую покупку составит %s%% и на ваш игровой счёт будет зачислено %s ММ',
 
   'pay_currency_name' => 'Валюта',
@@ -105,7 +106,7 @@ $a_lang_array = (array(
     PAYMENT_METHOD_EMONEY_WEBMONEY_WME => 'WebMoney WME',
     PAYMENT_METHOD_EMONEY_WEBMONEY_WMB => 'WebMoney WMB',
     PAYMENT_METHOD_EMONEY_QIWI => 'QIWI Кошелек',
-    PAYMENT_METHOD_EMONEY_ELEXNET => 'Кошелек Элекснет',
+    PAYMENT_METHOD_EMONEY_ELECSNET => 'Кошелек Элекснет',
     PAYMENT_METHOD_EMONEY_MAILRU => 'Деньги@Mail.Ru',
     PAYMENT_METHOD_EMONEY_EASYPAY => 'EasyPay',
     PAYMENT_METHOD_EMONEY_RUR_W1R => 'RUR Единый Кошелек',
@@ -115,12 +116,12 @@ $a_lang_array = (array(
     PAYMENT_METHOD_BANK_CARD_STANDARD => 'Банковская карта',
 
     PAYMENT_METHOD_BANK_INTERNET => 'Через интернет-банк',
-    PAYMENT_METHOD_BANK_INTERNET_001 => 'Альфа-Клик',
-    PAYMENT_METHOD_BANK_INTERNET_002 => 'Банк Русский Стандарт',
-    PAYMENT_METHOD_BANK_INTERNET_003 => 'Промсвязьбанк',
-    PAYMENT_METHOD_BANK_INTERNET_004 => 'ВТБ24',
-    PAYMENT_METHOD_BANK_INTERNET_005 => 'Океан Банк',
-    PAYMENT_METHOD_BANK_INTERNET_006 => 'HandyBank',
+    PAYMENT_METHOD_BANK_INTERNET_ALFA_BANK => 'Альфа-Клик',
+    PAYMENT_METHOD_BANK_INTERNET_RUSSKIY_STANDART => 'Банк Русский Стандарт',
+    PAYMENT_METHOD_BANK_INTERNET_PROSMVYAZBANK => 'Промсвязьбанк',
+    PAYMENT_METHOD_BANK_INTERNET_VTB24 => 'ВТБ24',
+    PAYMENT_METHOD_BANK_INTERNET_OCEAN_BANK => 'Океан Банк',
+    PAYMENT_METHOD_BANK_INTERNET_HANDY_BANK => 'HandyBank',
     PAYMENT_METHOD_BANK_INTERNET_007 => 'Банк Богородский',
     PAYMENT_METHOD_BANK_INTERNET_008 => 'Банк Образование',
     PAYMENT_METHOD_BANK_INTERNET_009 => 'ФлексБанк',
@@ -132,7 +133,7 @@ $a_lang_array = (array(
     PAYMENT_METHOD_BANK_INTERNET_015 => 'Русский Трастовый Банк',
     PAYMENT_METHOD_BANK_INTERNET_016 => 'ВестИнтерБанк',
     PAYMENT_METHOD_BANK_INTERNET_017 => 'Межтопэнергобанк',
-    PAYMENT_METHOD_BANK_INTERNET_018 => 'Московский Индустриальный Банк',
+    PAYMENT_METHOD_BANK_INTERNET_018 => 'Московский Индустр. Банк',
     PAYMENT_METHOD_BANK_INTERNET_019 => 'Банк Интеза',
     PAYMENT_METHOD_BANK_INTERNET_020 => 'Банк Город',
     PAYMENT_METHOD_BANK_INTERNET_021 => 'Банк АВБ',
@@ -145,13 +146,13 @@ $a_lang_array = (array(
 
     PAYMENT_METHOD_TERMINAL => 'Терминал оплаты',
     PAYMENT_METHOD_TERMINAL_QIWI => 'QIWI Кошелек',
-    PAYMENT_METHOD_TERMINAL_ELEXNET => 'Элекснет',
+    PAYMENT_METHOD_TERMINAL_ELECSNET => 'Элекснет',
     PAYMENT_METHOD_TERMINAL_ELEMENT => 'Мобил Элемент',
     PAYMENT_METHOD_TERMINAL_KASSIRANET => 'Кассира.нет',
 
     PAYMENT_METHOD_OTHER => 'Другие способы',
     PAYMENT_METHOD_OTHER_EVROSET => 'Евросеть',
-    PAYMENT_METHOD_OTHER_SVJAZNOJ => 'Связной',
+    PAYMENT_METHOD_OTHER_SVYAZNOY => 'Связной',
     PAYMENT_METHOD_OTHER_ROBOKASSA_MOBILE => 'Мобильная ROBOKASSA',
   ),
 

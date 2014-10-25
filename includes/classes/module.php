@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #39a14.6# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #39a15.3# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -269,152 +269,190 @@ abstract class sn_module_payment extends sn_module
 
   static $payment_methods = array(
     PAYMENT_METHOD_BANK_CARD => array(
+      /*
+      PAYMENT_METHOD_id => array(
+        'currency' => 'WMR', // Currency code 3 letter
+        'image' => 'design/images/payments/emoney/webmoney.png', // Optional - image location from root. Setting image disables buttoning and name printing
+        'name' => true, // Optional. Forces method name printing with 'image' set
+        'button' => true, // Optional. Forces method buttoning with 'image' set
+      ),
+      */
       PAYMENT_METHOD_BANK_CARD_STANDARD => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/card/generic.png',
+        'name' => true,
       ),
     ),
 
     PAYMENT_METHOD_EMONEY => array(
       PAYMENT_METHOD_EMONEY_WEBMONEY_WMR => array(
         'currency' => 'WMR',
+        'image' => 'design/images/payments/emoney/webmoney_wmr.gif',
       ),
       PAYMENT_METHOD_EMONEY_WEBMONEY_WMZ => array(
         'currency' => 'WMZ',
+        'image' => 'design/images/payments/emoney/webmoney_wmz.gif',
       ),
       PAYMENT_METHOD_EMONEY_WEBMONEY_WMU => array(
         'currency' => 'WMU',
+        'image' => 'design/images/payments/emoney/webmoney_wmu.gif',
       ),
       PAYMENT_METHOD_EMONEY_WEBMONEY_WME => array(
         'currency' => 'WME',
+        'image' => 'design/images/payments/emoney/webmoney_wme.gif',
       ),
       PAYMENT_METHOD_EMONEY_WEBMONEY_WMB => array(
         'currency' => 'WMB',
+        'image' => 'design/images/payments/emoney/webmoney_wmb.gif',
       ),
       PAYMENT_METHOD_EMONEY_YANDEX => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/emoney/yandexmoney.gif',
       ),
       PAYMENT_METHOD_EMONEY_QIWI => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/emoney/qiwi.gif',
       ),
-      PAYMENT_METHOD_EMONEY_ELEXNET => array(
-        'currency' => 'RUR',
+      PAYMENT_METHOD_EMONEY_ELECSNET => array(
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/emoney/elecsnet.gif',
       ),
       PAYMENT_METHOD_EMONEY_MAILRU => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/emoney/mailru.gif',
       ),
       PAYMENT_METHOD_EMONEY_EASYPAY => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/emoney/easypay.gif',
       ),
       PAYMENT_METHOD_EMONEY_RUR_W1R => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/emoney/walletone.gif',
       ),
       PAYMENT_METHOD_EMONEY_TELEMONEY => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/emoney/telemoney.gif',
+      ),
+    ),
+
+    PAYMENT_METHOD_MOBILE => array(
+      PAYMENT_METHOD_MOBILE_MEGAPHONE => array(
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/mobile/mts.gif',
+      ),
+      PAYMENT_METHOD_MOBILE_MTS => array(
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/mobile/megafon.gif',
       ),
     ),
 
     PAYMENT_METHOD_BANK_INTERNET => array(
-      PAYMENT_METHOD_BANK_INTERNET_001 => array(
-        'currency' => 'RUR',
+      PAYMENT_METHOD_BANK_INTERNET_ALFA_BANK => array(
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/bank_internet/alfa_bank.gif',
       ),
-      PAYMENT_METHOD_BANK_INTERNET_002 => array(
-        'currency' => 'RUR',
+      PAYMENT_METHOD_BANK_INTERNET_RUSSKIY_STANDART => array(
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/bank_internet/russkiy_standart.gif',
       ),
-      PAYMENT_METHOD_BANK_INTERNET_003 => array(
-        'currency' => 'RUR',
+      PAYMENT_METHOD_BANK_INTERNET_VTB24 => array(
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/bank_internet/vtb24.gif',
       ),
-      PAYMENT_METHOD_BANK_INTERNET_004 => array(
-        'currency' => 'RUR',
+      PAYMENT_METHOD_BANK_INTERNET_PROSMVYAZBANK => array(
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/bank_internet/prosmvyazbank.gif',
       ),
-      PAYMENT_METHOD_BANK_INTERNET_005 => array(
-        'currency' => 'RUR',
+      PAYMENT_METHOD_BANK_INTERNET_OCEAN_BANK => array(
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/bank_internet/ocean_bank.gif',
       ),
-      PAYMENT_METHOD_BANK_INTERNET_006 => array(
-        'currency' => 'RUR',
+      PAYMENT_METHOD_BANK_INTERNET_HANDY_BANK => array(
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/bank_internet/handy_bank.gif',
       ),
       PAYMENT_METHOD_BANK_INTERNET_007 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_008 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_009 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_010 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_011 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_012 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_013 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_014 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_015 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_016 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_017 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_018 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_019 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_020 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
       PAYMENT_METHOD_BANK_INTERNET_021 => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
       ),
     ),
 
     PAYMENT_METHOD_BANK_TRANSFER => array(
     ),
 
-    PAYMENT_METHOD_MOBILE => array(
-      PAYMENT_METHOD_MOBILE_MEGAPHONE => array(
-        'currency' => 'RUR',
-      ),
-      PAYMENT_METHOD_MOBILE_MTS => array(
-        'currency' => 'RUR',
-      ),
-    ),
-
     PAYMENT_METHOD_TERMINAL => array(
       PAYMENT_METHOD_TERMINAL_QIWI => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/terminal/qiwi.gif',
       ),
-      PAYMENT_METHOD_TERMINAL_ELEXNET => array(
-        'currency' => 'RUR',
+      PAYMENT_METHOD_TERMINAL_ELECSNET => array(
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/terminal/elecsnet.gif',
       ),
       PAYMENT_METHOD_TERMINAL_ELEMENT => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/terminal/element.gif',
       ),
       PAYMENT_METHOD_TERMINAL_KASSIRANET => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/terminal/kassira_net.gif',
       ),
     ),
 
     PAYMENT_METHOD_OTHER => array(
       PAYMENT_METHOD_OTHER_EVROSET => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/other/evroset.gif',
       ),
-      PAYMENT_METHOD_OTHER_SVJAZNOJ => array(
-        'currency' => 'RUR',
+      PAYMENT_METHOD_OTHER_SVYAZNOY => array(
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/other/svyaznoy.gif',
       ),
       PAYMENT_METHOD_OTHER_ROBOKASSA_MOBILE => array(
-        'currency' => 'RUR',
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/other/robokassa_mobile.gif',
+        'name' => true,
       ),
     ),
   );

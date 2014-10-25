@@ -101,7 +101,7 @@ if(!$request['metamatter']) {
   unset($_POST);
 }
 
-$payment_methods_available = array();
+$payment_methods_available = array_combine(array_keys(sn_module_payment::$payment_methods), array_fill(0, count(sn_module_payment::$payment_methods), null));
 $payment_module_valid = false;
 $payment_module = sys_get_param_str('payment_module');
 foreach($sn_module_list['payment'] as $module_name => $module) {
@@ -129,6 +129,8 @@ foreach($sn_module_list['payment'] as $module_name => $module) {
 }
 
 foreach($payment_methods_available as $payment_type_id => $payment_methods) {
+  if(empty($payment_methods)) continue;
+
   $template->assign_block_vars('payment', array(
     'ID' => $payment_type_id,
     'NAME' => $lang['pay_methods'][$payment_type_id],
@@ -137,6 +139,10 @@ foreach($payment_methods_available as $payment_type_id => $payment_methods) {
     $template->assign_block_vars('payment.method', array(
       'ID' => $payment_method_id,
       'NAME' => $lang['pay_methods'][$payment_method_id],
+      'IMAGE' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'])
+                  ? sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'] : '',
+      'NAME_FORCE' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['name']),
+      'BUTTON' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['button']),
     ));
     foreach($module_list as $payment_module_name => $payment_module_method_details) {
       $template->assign_block_vars('payment.method.module', array(
@@ -155,7 +161,7 @@ $payment_module_valid = $payment_module_valid && (!$payment_method_selected || i
 
 // If payment_module invalid - making it empty OR if there is only one payment_module - selecting it
 if($payment_module_valid) {
-  $payment_module = $payment_module;
+  // $payment_module = $payment_module; // Really - do nothing
 } elseif($payment_type_selected && count($payment_methods_available[$payment_type_selected][$payment_method_selected]) == 1) {
   reset($payment_methods_available[$payment_type_selected][$payment_method_selected]);
   $payment_module = key($payment_methods_available[$payment_type_selected][$payment_method_selected]);
@@ -271,13 +277,20 @@ $template->assign_vars(array(
   'UNIT_AMOUNT_TEXT' => pretty_number($request['metamatter']),
   'UNIT_AMOUNT_BONUS_PERCENT' => $bonus_percent,
   'UNIT_AMOUNT_TEXT_DISCOUNTED' => $income_metamatter_text,
+  'UNIT_AMOUNT_TEXT_COST_BASE' => sprintf($lang['pay_mm_buy_cost_base'],
+    //pretty_number($request['metamatter'], true, true),
+    pretty_number(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $config->payment_currency_default), 2, true),
+    $config->payment_currency_default),
 
   'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => pretty_number($config->payment_currency_exchange_mm_, true, true),
   'PAYMENT_CURRENCY_DEFAULT_TEXT' => $lang['pay_currency_list'][$config->payment_currency_default],
 
   'METAMATTER' => mrc_get_level($user, '', RES_METAMATTER),
 
-  'METAMATTER_COST_TEXT' => sprintf($lang['pay_mm_buy_conversion_cost'], pretty_number($request['metamatter'], true, true), pretty_number(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $currency), 2, true), $currency),
+  'METAMATTER_COST_TEXT' => sprintf($lang['pay_mm_buy_conversion_cost'],
+    pretty_number($request['metamatter'], true, true),
+    pretty_number(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $currency), 2, true),
+    $currency),
   'METAMATTER_COST_BONUS_TEXT' => $bonus_percent
     ? sprintf($lang['pay_mm_buy_real_income'], pretty_number($bonus_percent, true, true), $income_metamatter_text)
     : '',

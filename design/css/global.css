@@ -749,15 +749,16 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
 */
 
 .payment_mm_amount, .payment_mm_method, .payment_mm_module {
-  float: left;
+  display: inline-block;
   width: 150px;
-  border: 1px solid white;
+  /* border: 1px solid white;*/
   margin: 3px;
   text-align: center;
+  vertical-align: middle;
 }
 
 .payment_mm_method {
-  height: 4em;
+  /* height: 50px;*/
 }
 
 .i_icon_mail, .i_icon_mail_userlist {

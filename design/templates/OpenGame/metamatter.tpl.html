@@ -54,6 +54,7 @@
 
   jQuery(document).on("click", ".payment_mm_amount", function(){
     jQuery("#metamatter").val(jQuery(this).attr("value")).change();
+    jQuery("#payment_form").submit();
   });
 
   jQuery(document).on("click", '.payment_mm_method', function(){
@@ -69,7 +70,8 @@
 
   jQuery(document).ready(function() {
     // Натягиваем скины на элементы ввода
-    jQuery('.payment_mm_amount, .payment_mm_method, .payment_mm_module').button().addClass('ui-textfield');
+    // jQuery('.payment_mm_amount, .payment_mm_module').button().addClass('ui-textfield');
+    jQuery('.payment_mm_amount, .payment_mm_method:not(.payment_mm_method_nobutton), .payment_mm_module').button().addClass('ui-textfield');
   });
 </script>
 
@@ -222,6 +224,8 @@
           <!-- ENDIF -->
           {L_pay_mm_buy_unit}
           <br />
+          {UNIT_AMOUNT_TEXT_COST_BASE}
+          <br />
           <br />
 
           <input type="hidden" name="payment_type" id="payment_type" value="{PAYMENT_TYPE}" />
@@ -236,8 +240,13 @@
               <tr><td class="c_l">
                 <div style="width: 100%; text-align: center;" value="{payment.ID}">
                 <!-- BEGIN method -->
-                  <div class="payment_mm_method" value="{method.ID}">
-                    {method.NAME}
+                  <div class="payment_mm_method<!-- IF method.IMAGE && ! method.BUTTON--> payment_mm_method_nobutton<!-- ENDIF -->" value="{method.ID}">
+                    <!-- IF method.IMAGE -->
+                    <img src="{method.IMAGE}" />
+                    <!-- ENDIF -->
+                    <!-- IF ! method.IMAGE || method.NAME_FORCE -->
+                    <div>{method.NAME}</div>
+                    <!-- ENDIF -->
                   </div>
                 <!-- END method -->
                 </div>
