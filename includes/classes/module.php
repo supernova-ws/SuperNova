@@ -6,7 +6,7 @@ class sn_module
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #39a15.3# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #39a15.4# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -338,11 +338,11 @@ abstract class sn_module_payment extends sn_module
     PAYMENT_METHOD_MOBILE => array(
       PAYMENT_METHOD_MOBILE_MEGAPHONE => array(
         'currency' => 'RUB',
-        'image' => 'design/images/payments/mobile/mts.gif',
+        'image' => 'design/images/payments/mobile/megafon.gif',
       ),
       PAYMENT_METHOD_MOBILE_MTS => array(
         'currency' => 'RUB',
-        'image' => 'design/images/payments/mobile/megafon.gif',
+        'image' => 'design/images/payments/mobile/mts.gif',
       ),
     ),
 

@@ -113,7 +113,18 @@
         </tr>
         <tr>
           <td class="c_l" colspan="2">
-            <input name="opt_time_diff_clear" type="checkbox" id="opt_time_diff_clear" /> <label for="opt_time_diff_clear">{L_opt_time_diff_clear}</label>
+            <input name="opt_time_diff_clear" type="checkbox" id="opt_time_diff_clear" /> <label for="opt_time_diff_clear">{L_opt_time_diff_clear}</label><br />
+
+            <input name="user_time_diff_forced" type="checkbox" id="user_time_diff_forced" value="1" <!-- IF user_time_diff_forced --> checked="checked" <!-- ENDIF --> /> <label for="user_time_diff_forced">{L_opt_time_diff_manual}</label>
+            <script type="text/javascript">
+              jQuery(document).on('click change', '#user_time_diff_forced', function (){
+                $(this).is(":checked") ? jQuery('#opt_time_diff_clear').attr('disabled', 'disabled').removeAttr('checked') : jQuery('#opt_time_diff_clear').removeAttr('disabled');
+              });
+              $('#user_time_diff_forced').change();
+            </script>
+
+            <input name="user_time_diff" type="text" id="user_time_diff" value="{user_time_diff}" style="width: 60px;"/> {L_sys_sec}<br/>
+            {L_opt_time_diff_explain}
           </td>
         </tr>
         <!-- IF ! USER_VACATION_DISABLE -->
@@ -276,6 +287,8 @@
 
   <br/>
   <input value="{L_save_settings}" type="submit">
+
+  <input type="hidden" name="refresh" value="1" />
 </form>
 
 <script type="text/javascript"><!--

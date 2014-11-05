@@ -23,8 +23,7 @@ function sn_options_model()
 
   $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
 
-  if(sys_get_param_str('mode') == 'change')
-  {
+  if(sys_get_param_str('mode') == 'change') {
     if($user['authlevel'] > 0)
     {
       $planet_protection = sys_get_param_int('adm_pl_prot') ? $user['authlevel'] : 0;
@@ -259,7 +258,11 @@ function sn_options_model()
     $avatar_upload_result = sys_avatar_upload($user['id'], $user['avatar']);
     $template_result['.']['result'][] = $avatar_upload_result;
 
-    $user_birthday .= sys_get_param_int('opt_time_diff_clear') ? ', `user_time_diff` = NULL' : '';
+    if(sys_get_param_int('user_time_diff_forced')) {
+      $user_birthday .= ', `user_time_diff_forced` = 1, `user_time_utc_offset` = 0, `user_time_measured` = ' . SN_TIME_NOW . ', `user_time_diff` = ' . sys_get_param_int('user_time_diff');
+    } else {
+      $user_birthday .= sys_get_param_int('opt_time_diff_clear') ? ', `user_time_diff` = NULL' : '';
+    }
 
 //      `username` = '{$username_safe}',
     db_user_set_by_id($user['id'], "`password` = '{$user['password']}', `email` = '{$user['email']}', `email_2` = '{$user['email_2']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
@@ -272,11 +275,15 @@ function sn_options_model()
       {$user_birthday}"
     );
 
+    sys_redirect('index.php?page=options&result=ok');
+  } elseif(sys_get_param_str('result') == 'ok') {
     $template_result['.']['result'][] = array(
       'STATUS'  => ERR_NONE,
       'MESSAGE' => $lang['opt_msg_saved']
     );
   }
+
+
 }
 
 //-------------------------------
@@ -382,6 +389,9 @@ function sn_options_view($template = null)
     'user_settings_bud' => ($user['settings_bud'] == 1) ? " checked='checked'/":'',
     'user_settings_statistics' => ($user['settings_statistics'] == 1) ? " checked='checked'/":'',
     'user_settings_info' => ($user['settings_info'] == 1) ? " checked='checked'/":'',
+
+    'user_time_diff_forced' => $user['user_time_diff_forced'],
+    'user_time_diff' => SN_CLIENT_TIME_DIFF,
 
     'adm_pl_prot' => $user['admin_protection'],
 

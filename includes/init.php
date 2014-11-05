@@ -17,8 +17,7 @@ define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
 
 // Бенчмарк
 register_shutdown_function(function() {
-  if(!defined('IN_AJAX'))
-  {
+  if(!defined('IN_AJAX')) {
     print('<hr><div class="benchmark">Benchmark ' . (microtime(true) - SN_TIME_MICRO) . 's, memory: ' . number_format(memory_get_usage() - SN_MEM_START) . '</div>');
   }
 });
@@ -439,7 +438,8 @@ if(!(
 // define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
 
 defined('SN_CLIENT_TIME_DIFF_SECONDS') or define('SN_CLIENT_TIME_DIFF_SECONDS', isset($user['user_time_diff']) ? $user['user_time_diff'] : 0);
-defined('SN_CLIENT_TIME_UTC_OFFSET') or define('SN_CLIENT_TIME_UTC_OFFSET', isset($user['user_time_utc_offset']) ? $user['user_time_utc_offset'] : 0);
+defined('SN_CLIENT_TIME_UTC_OFFSET') or define('SN_CLIENT_TIME_UTC_OFFSET',
+  isset($user['user_time_utc_offset']) && !(isset($user['user_time_diff_forced']) && $user['user_time_diff_forced']) ? $user['user_time_utc_offset'] : 0);
 $time_diff = SN_CLIENT_TIME_DIFF_SECONDS + SN_CLIENT_TIME_UTC_OFFSET;
 defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
 defined('SN_CLIENT_TIME_LOCAL') or define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);

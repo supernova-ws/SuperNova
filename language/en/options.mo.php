@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a8.21
+* @version 39a15.4
 *
 */
 
@@ -141,6 +141,10 @@ $a_lang_array = (array(
   'succeful_changepass' => '',
 
   'opt_time_diff_clear' => 'Measure difference between local (client) and server time',
+  'opt_time_diff_manual' => 'Set time difference manually',
+  'opt_time_diff_explain' => 'When time difference set right clocks "Local time" in navbar should click second to second with clocks on player\'s device<br />
+  Usually game automatically detects time difference right. However when time zone is worng on player\'s device or player used several devices for playing or when
+  internet connection is bad you should set time difference manually',
 
   'opt_custom' => array(
     'opt_uni_avatar_user' => 'Show user avatar',
