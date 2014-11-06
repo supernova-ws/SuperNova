@@ -261,7 +261,7 @@ function sn_options_model()
     if(sys_get_param_int('user_time_diff_forced')) {
       $user_birthday .= ', `user_time_diff_forced` = 1, `user_time_utc_offset` = 0, `user_time_measured` = ' . SN_TIME_NOW . ', `user_time_diff` = ' . sys_get_param_int('user_time_diff');
     } else {
-      $user_birthday .= sys_get_param_int('opt_time_diff_clear') ? ', `user_time_diff` = NULL' : '';
+      $user_birthday .= sys_get_param_int('opt_time_diff_clear') || $user['user_time_diff_forced'] ? ', `user_time_diff_forced` = 0, `user_time_diff` = NULL' : '';
     }
 
 //      `username` = '{$username_safe}',

@@ -1,7 +1,6 @@
 <?php
 
-function nws_render(&$template, $query_where = '', $query_limit = 20)
-{
+function nws_render(&$template, $query_where = '', $query_limit = 20) {
   global $config;
 
   $announce_list = doquery(
@@ -16,10 +15,8 @@ function nws_render(&$template, $query_where = '', $query_limit = 20)
   $template->assign_var('NEWS_COUNT', mysql_num_rows($announce_list));
 
   $users = array();
-  while($announce = mysql_fetch_assoc($announce_list))
-  {
-    if($announce['user_id'] && !isset($users[$announce['user_id']]))
-    {
+  while($announce = mysql_fetch_assoc($announce_list)) {
+    if($announce['user_id'] && !isset($users[$announce['user_id']])) {
       $users[$announce['user_id']] = db_user_by_id($announce['user_id']);
     }
     $template->assign_block_vars('announces', array(
@@ -36,10 +33,8 @@ function nws_render(&$template, $query_where = '', $query_limit = 20)
   }
 }
 
-function nws_mark_read(&$user)
-{
-  if(isset($user['id']))
-  {
+function nws_mark_read(&$user) {
+  if(isset($user['id'])) {
     db_user_set_by_id($user['id'], '`news_lastread` = ' . SN_TIME_NOW);
     $user['news_lastread'] = SN_TIME_NOW;
   }

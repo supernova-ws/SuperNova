@@ -2,7 +2,7 @@
     <tr>
       <td>
         <div class="news_header">
-          <div class="news_date fl">{announces.TIME}</div>
+          <div class="news_date fl"><!-- IF announces.FUTURE --><span class="news_future">{L_news_future}</span>&nbsp;<!-- ELSEIF announces.NEW --><span class="news_fresh">{L_news_new}</span>&nbsp;<!-- ENDIF -->{announces.TIME}</div>
           <!-- IF announces.USER_NAME -->
             <div class="news_publisher fr">
               {announces.USER_NAME}
@@ -11,7 +11,6 @@
           <br />
         </div>
         <div class="news_text">
-          <!-- IF announces.FUTURE --><span class="news_future">{L_news_future}</span>&nbsp;<!-- ELSEIF announces.NEW --><span class="news_fresh">{L_news_new}</span>&nbsp;<!-- ENDIF -->
           {announces.ANNOUNCE}
           <!-- IF announces.DETAIL_URL -->
            <a class="news_link" href="{announces.DETAIL_URL}">{L_news_more}</a>
