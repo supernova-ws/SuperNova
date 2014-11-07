@@ -1,6 +1,8 @@
 Stay out of my shed
 
 
+Duplicate entry '3267-1-60088-1500' for key 'I_unit_player_location_snid'<br />/* tID 155<br />classSupernova::db_upd_record_by_id() - 'includes/db/db_queries_unit.php' Line 50<br />db_unit_set_by_id() - 'modules/unit_captain/unit_captain.php' Line 159<br />(unit_captain)unit_captain->unit_captain_restore_fleet_to_planet() - '' Line <br />call_user_func_array() - 'includes/general.php' Line 32<br />sn_function_call() - 'includes/includes/flt_flying_fleet_handler2.php' Line 22<br />RestoreFleetToPlanet() - 'includes/includes/flt_mission_relocate.php' Line 35<br />flt_mission_relocate() - 'includes/includes/flt_flying_fleet_handler2.php' Line 371<br />flt_flying_fleet_handler() - 'includes/init.php' Line 360<br />require_once() - 'common.php' Line 10<br />require_once() - 'index.php' Line 5<br /> */ UPDATE beta_unit SET `unit_location_type` = 1, `unit_location_id` = 60088 WHERE `unit_id` = 94837<br />
+
 - ПЕРЕДЕЛАТЬ СОВСЕМ
   register_time - это вообще TIMESTAMP! И ПОМЕНЯТЬ В ЗАПРОСЕ НА УДАЛЕНИЕ И НА ОБСЛУЖИВАНИЕ!!!
   player_que - вроде нигде не используется - удалить нахрен
@@ -480,7 +482,7 @@ Stay out of my shed
 ======================
 
 
-Текущий билд #39a12.0#
+Текущий билд #39a16.5#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять flt_lastUpdate
