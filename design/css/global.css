@@ -181,7 +181,7 @@ table {margin-left: auto; margin-right: auto}
   padding: 0;
   margin: 0;
   border: 0;
-  font-weight: normal;
+  /* font-weight: normal;*/
   /* border-spacing: 0;*/
   /* border-collapse: collapse;*/
 }
@@ -823,4 +823,61 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
 }
 #chat_command_menu div:not(:first-child):hover {
   background-color: darkgoldenrod;
+}
+
+#shoutbox {
+  background-color: black;
+}
+
+#shoutbox > table {
+  padding: 0;
+  border: 0;
+  margin: 3px 0;
+  background-color: black;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#shoutbox > table > tbody > tr {
+  background-color: black;
+}
+
+#shoutbox > table > tbody > tr > td {
+  background-color: black;
+  text-align: left;
+  vertical-align: top;
+  border: 0;
+  padding: 0;
+}
+
+#shoutbox > table > tbody > tr > td:not(:last-child) {
+  white-space: nowrap;
+}
+
+#shoutbox > table > tbody > tr > td:last-child {
+  width: 100%;
+  padding-left: 2px;
+}
+
+
+#shoutbox img {
+  vertical-align: top;
+  margin: 0 1px 0 0;
+}
+#shoutbox .chat_private {
+  color: lightblue; font-style: italic;
+}
+
+#shoutbox span {
+  vertical-align: top;
+}
+
+.chat_nick_whisper, .chat_nick_msg {
+  border-bottom: 1px dashed;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.player_nick_award, .player_nick_race {
+  cursor: pointer;
 }

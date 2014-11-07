@@ -502,13 +502,16 @@ chat_header
     before 0
 
 
-
-Чат - зачистить
-<table class="chat_message markup" width="100%">
+#ctv
 
 
 
 
+
+2014-11-07 04:56:30 39a16.7
+[#] chat_advanced v4b1
+    (+) Список сообщений
+        Еще уменьшена выдача списка сообщений
 
 
 2014-11-07 02:02:18 39a16.4 - chat_advanced v4
