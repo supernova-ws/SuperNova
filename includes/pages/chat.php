@@ -89,7 +89,7 @@ function sn_chat_add_model()
   if(($message = sys_get_param_str('message')) && $user['username'])
   {
     $ally_id = sys_get_param('ally') && $user['ally_id'] ? $user['ally_id'] : 0;
-    $nick = mysql_real_escape_string(render_player_nick($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id)));
+    $nick = mysql_real_escape_string(player_nick_render_to_html($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id)));
     $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $message);
 
     doquery("INSERT INTO {{chat}} (chat_message_sender_id, user, ally_id, message, timestamp) VALUES ('{$user['id']}', '{$nick}', '{$ally_id}', '{$message}', '{$time_now}');");

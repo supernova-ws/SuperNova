@@ -279,8 +279,8 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
      'DEBRIS_GATHER_TOTAL_PERCENT' => $uni_galaxyRowPlanet['debris_gather_total_percent'],
 
      'USER_ID'       => $uni_galaxyRowUser['id'],
-     'USER_NAME'     => render_player_nick($uni_galaxyRowUser),
-     'USER_NAME_JS'  => js_safe_string(render_player_nick($uni_galaxyRowUser)),
+     'USER_NAME'     => player_nick_render_to_html($uni_galaxyRowUser),
+     'USER_NAME_JS'  => js_safe_string(player_nick_render_to_html($uni_galaxyRowUser)),
      'USER_RANK'     => in_array($uni_galaxyRowUser['id'], $user_skip_list) ? '-' : $uni_galaxyRowUser['total_rank'],
      'USER_BANNED'   => $uni_galaxyRowUser['banaday'],
      'USER_VACATION' => $uni_galaxyRowUser['vacation'],
@@ -334,8 +334,8 @@ foreach($cached['users'] as $PlanetUser)
     $birthday_array = $PlanetUser['user_birthday'] ? date_parse($PlanetUser['user_birthday']) : array();
     $template->assign_block_vars('users', array(
       'ID'   => $PlanetUser['id'],
-      'NAME' => render_player_nick($PlanetUser, true),
-      'NAME_JS' => js_safe_string(render_player_nick($PlanetUser, true)),
+      'NAME' => player_nick_render_to_html($PlanetUser, true),
+      'NAME_JS' => js_safe_string(player_nick_render_to_html($PlanetUser, true)),
       'RANK' => in_array($PlanetUser['id'], $user_skip_list) ? '-' : $PlanetUser['total_rank'],
 //      'SEX'      => $PlanetUser['sex'] == 'F' ? 'female' : 'male',
 //      'BIRTHDAY' => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? 1 : 0, // date(FMT_DATE, $time_now)

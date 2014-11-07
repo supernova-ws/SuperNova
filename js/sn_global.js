@@ -3,6 +3,14 @@ var language = {};
 var x = "";
 var e = null;
 
+
+jQuery(document).on('click', '.player_nick_award', function(e){
+  document.location.assign("index.php?page=imperator&int_user_id=" + jQuery(this).attr('player_id'));
+});
+jQuery(document).on('click', '.player_nick_race', function(e){
+  document.location.assign("index.php?page=races");
+});
+
 jQuery(document).ready(function() {
   // Натягиваем скины на элементы ввода
   inputs = jQuery("input");
@@ -332,6 +340,7 @@ function sn_ainput_mouselerate() {
 }
 
 var popup = jQuery(document.createElement("span"));
+var popupIsOpen = false;
 popup.dialog({ autoOpen: false }); // , width: auto, resizable: false
 popup.mouseleave(function()
 {
@@ -346,10 +355,12 @@ function popup_show(html, width, aClientX, aClientY) {
   popup.dialog("option", "position", [aClientX ? aClientX : clientX, aClientY ? aClientY : clientY]); // + 20
   popup.html(html);
   popup.dialog("open");
+  popupIsOpen = true;
 }
 
 function popup_hide() {
   popup.dialog("close");
+  popupIsOpen = false;
 }
 
 // Helper probe to use CSS-values in JS

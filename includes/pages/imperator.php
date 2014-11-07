@@ -62,7 +62,7 @@ function sn_imperator_view($template = null)
     'USERS_TOTAL'          => $config->users_amount,
 
     'USER_ID'              => $user_id,
-    'user_username'        => render_player_nick($user_data, true),
+    'user_username'        => player_nick_render_to_html($user_data, true),
     'user_sex'             => $user_data['sex'] == 'F' ? 'female' : 'male',
     'USER_AVATAR'          => $user_data['avatar'],
 

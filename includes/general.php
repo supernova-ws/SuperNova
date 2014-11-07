@@ -949,69 +949,181 @@ function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '',
   }
 }
 
-function render_player_nick($render_user, $options = false){return sn_function_call('render_player_nick', array($render_user, $options, &$result));}
-function sn_render_player_nick($render_user, $options = false, &$result)
-{
-  global $config, $time_now, $user;
+// TODO - поменять название
+// Может принимать: (array)$user, $nick_render_array, $nick_render_array_html, $nick_render_string_compact
+function player_nick_render_to_html($result, $options = false){
+  // TODO - обрабатывать разные случаи: $user, $render_nick_array, $string
 
-  $result .= $render_user['username'];
+  if(is_string($result) && strpos($result, ':{i:')) {
+    $result = player_nick_uncompact($result);
+  }
 
-  if($options !== false)
-  {
-    if($options === true || (isset($options['ally']) && $options['ally']))
-    {
-      $result .= $render_user['ally_tag'] ? '[' . str_raw2unsafe($render_user['ally_tag']) . ']' : '';
+  if(is_array($result)) {
+    if(isset($result['id'])) {
+      $result = player_nick_render_current_to_array($result, $options);
     }
-
-    if((isset($options['class']) && $options['class']))
-    {
-      $result = '<span class="' . $options['class'] . '">' . $result . '</span>';
+    if(!isset($result[NICK_HTML])) {
+      $result = player_nick_render_array_to_html($result);
     }
-
-    if($options === true || (isset($options['color']) && $options['color']))
-    {
-      if($render_user['authlevel'])
-      {
-        switch($render_user['authlevel'])
-        {
-          case 4:
-            $highlight = $config->chat_highlight_developer;
-          break;
-
-          case 3:
-            $highlight = $config->chat_highlight_admin;
-          break;
-
-          case 2:
-            $highlight = $config->chat_highlight_operator;
-          break;
-
-          case 1:
-            $highlight = $config->chat_highlight_moderator;
-          break;
-        }
-      }
-      elseif(mrc_get_level($render_user, false, UNIT_PREMIUM))
-      {
-        $highlight = $config->chat_highlight_premium;
-      }
-
-      $result = preg_replace("#(.+)#", $highlight ? $highlight : '$1', $result);
-    }
-
-    if($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['sex']) && $options['sex']))
-    {
-      $result = '<img src="' . ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'images/sex_' . ($render_user['sex'] == 'F' ? 'female' : 'male') . '.png">' . $result;
-    }
-
-    if($render_user['user_birthday'] && ($options === true || isset($options['icons']) || isset($options['birthday'])) && (date('Y', $time_now) . date('-m-d', strtotime($render_user['user_birthday'])) == date('Y-m-d', $time_now)))
-    {
-      $result .= '<img src="design/images/birthday.png">';
-    }
+    unset($result[NICK_HTML]);
+    // unset($result[NICK_ID]);
+    ksort($result);
+    $result = implode('', $result);
   }
 
   return $result;
 }
+
+
+function player_nick_compact($nick_array) {
+  ksort($nick_array);
+  return serialize($nick_array);
+}
+
+function player_nick_uncompact($nick_string) {
+  try {
+    $result = unserialize($nick_string);
+    // ksort($result); // Всегда ksort-ый в player_nick_compact()
+  } catch(exception $e) {
+    $result = strpos($nick_string, ':{i:') ? null : $nick_string; // fallback if it is already string - for old chat strings, for example
+  }
+  return $result;
+}
+
+function player_nick_render_array_to_html($nick_array){return sn_function_call('player_nick_render_array_to_html', array($nick_array, &$result));}
+function sn_player_nick_render_array_to_html($nick_array, &$result) {
+  global $config, $user;
+
+  // ALL STRING ARE UNSAFE!!!
+  if(isset($nick_array[NICK_BIRTHSDAY])) {
+    $result[NICK_BIRTHSDAY] = '<img src="design/images/birthday.png" />';
+  }
+
+  if(isset($nick_array[NICK_GENDER])) {
+    $result[NICK_GENDER] = '<img src="' . ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'images/sex_' . $nick_array[NICK_GENDER] . '.png" />';
+  }
+
+  if(isset($nick_array[NICK_AUTH_LEVEL]) || isset($nick_array[NICK_PREMIUM])) {
+    switch($nick_array[NICK_AUTH_LEVEL]) {
+      case 4:
+        $highlight = $config->chat_highlight_developer;
+        break;
+
+      case 3:
+        $highlight = $config->chat_highlight_admin;
+        break;
+
+      case 2:
+        $highlight = $config->chat_highlight_operator;
+        break;
+
+      case 1:
+        $highlight = $config->chat_highlight_moderator;
+        break;
+
+      default:
+        $highlight = isset($nick_array[NICK_PREMIUM]) ? $config->chat_highlight_premium : '';
+    }
+
+    if($highlight) {
+      list($result[NICK_HIGHLIGHT], $result[NICK_HIGHLIGHT_END]) = explode('$1', $highlight);
+    }
+    // $result = preg_replace("#(.+)#", $highlight, $result);
+  }
+
+  if(isset($nick_array[NICK_CLASS])) {
+    $result[NICK_CLASS] = '<span ' . $nick_array[NICK_CLASS] .'>';
+    $result[NICK_CLASS_END] = '</span>';
+  }
+
+  $result[NICK_NICK] = sys_safe_output($nick_array[NICK_NICK]);
+
+  if(isset($nick_array[NICK_ALLY])) {
+    $result[NICK_ALLY] = '[' . sys_safe_output($nick_array[NICK_ALLY]) . ']';
+  }
+
+  $result[NICK_HTML] = true;
+
+  return $result;
+}
+
+function player_nick_render_current_to_array($render_user, $options = false){return sn_function_call('player_nick_render_current_to_array', array($render_user, $options, &$result));}
+function sn_player_nick_render_current_to_array($render_user, $options = false, &$result) {
+  /*
+  $options = $options !== true ? $options :
+    array(
+      'color' => true,
+      'icons' => true,
+      'gender' => true,
+      'birthday' => true,
+      'ally' => true,
+    );
+  */
+
+
+  if($render_user['user_birthday'] && ($options === true || isset($options['icons']) || isset($options['birthday'])) && (date('Y', SN_TIME_NOW) . date('-m-d', strtotime($render_user['user_birthday'])) == date('Y-m-d', SN_TIME_NOW))) {
+    $result[NICK_BIRTHSDAY] = '';
+  }
+
+  if($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['gender']) && $options['gender'])) {
+    $result[NICK_GENDER] = $render_user['sex'] == 'F' ? 'female' : 'male';
+  }
+
+  if($options === true || (isset($options['color']) && $options['color'])) {
+    if($user_auth_level = $render_user['authlevel']) {
+      $result[NICK_AUTH_LEVEL] = $user_auth_level;
+    }
+    if($user_premium = mrc_get_level($render_user, false, UNIT_PREMIUM)) {
+      $result[NICK_PREMIUM] = $user_premium;
+    }
+  }
+
+  if((isset($options['class']) && $options['class'])) {
+    $result[NICK_CLASS] = (isset($result_options[NICK_CLASS]) ? ' ' . $result_options[NICK_CLASS] : '') . $options['class'];
+  }
+
+  if($render_user['ally_tag'] && ($options === true || (isset($options['ally']) && $options['ally']))) {
+    $result[NICK_ALLY] = $render_user['ally_tag'];
+  }
+
+  $result[NICK_NICK] = $render_user['username'];
+
+  return $result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // TODO sys_stat_get_user_skip_list() ПЕРЕДЕЛАТЬ!
 function sys_stat_get_user_skip_list()
@@ -1052,7 +1164,7 @@ function sys_stat_get_user_skip_list()
   return $user_skip_list;
 }
 
-// function render_player_nick($render_user, $options = false){return sn_function_call('render_player_nick', array($render_user, $options, &$result));}
+// function player_nick_render_to_html($render_user, $options = false){return sn_function_call('player_nick_render_to_html', array($render_user, $options, &$result));}
 // function sn_render_player_nick($render_user, $options = false, &$result)
 
 function get_unit_param($unit_id, $param_name = null, $user = null, $planet = null){return sn_function_call('get_unit_param', array($unit_id, $param_name, $user, $planet, &$result));}

@@ -8,7 +8,7 @@ $supernova->design['bbcodes'] = array(
     "#\[url=(ft|https?://)(.+)\](.+)\[/url\]#isU" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$3</a>",
 //    "#(?:^(?:href=\\\"))((?:ftp|https?)://.+)#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
     "#^((?:ftp|https?)://\S+)#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
-    "#\s((?:ftp|https?)://\S+)#i" => " <a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
+    "#([\s\)\]\}])((?:ftp|https?)://\S+)#i" => "$1<a href=\"$2$3\" target=\"_blank\" class=\"link\">$2$3</a>",
 //    "#^((?:ftp|https?)://.+?)$#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
 //    "#\s((?:ftp|https?)://.+)$#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
 //    "#^((?:ftp|https?)://.+)\s#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",

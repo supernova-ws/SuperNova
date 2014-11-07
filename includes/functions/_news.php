@@ -25,7 +25,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
       'ANNOUNCE'   => cht_message_parse($announce['strAnnounce'], false, intval($announce['authlevel'])),
       'DETAIL_URL' => $announce['detail_url'],
       'USER_NAME'  =>
-        isset($users[$announce['user_id']]) && $users[$announce['user_id']] ? render_player_nick($users[$announce['user_id']], array('color' => true)):
+        isset($users[$announce['user_id']]) && $users[$announce['user_id']] ? player_nick_render_to_html($users[$announce['user_id']], array('color' => true)):
         js_safe_string($announce['user_name']),
       'NEW'        => $announce['unix_time'] + $config->game_news_actual >= SN_TIME_NOW,
       'FUTURE'     => $announce['unix_time'] > SN_TIME_NOW,

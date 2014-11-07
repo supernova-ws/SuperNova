@@ -181,6 +181,7 @@ table {margin-left: auto; margin-right: auto}
   padding: 0;
   margin: 0;
   border: 0;
+  font-weight: normal;
   /* border-spacing: 0;*/
   /* border-collapse: collapse;*/
 }
@@ -605,10 +606,14 @@ th.c_j, td.c_j
   border: 0;
 }
 
-.chat_online
+.chat_online, #onlinebox td
 {
   background-color: black;
   border: 0;
+  white-space: nowrap;
+  text-align: left;
+  vertical-align: top;
+  font-weight: bold;
 }
 
 .link
@@ -618,8 +623,7 @@ th.c_j, td.c_j
   cursor: pointer;
 }
 
-.link_action
-{
+.link_action {
   border-bottom: 1px dashed;
   font-weight: bold;
   cursor: pointer;
@@ -803,4 +807,20 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
 
 #user_list tr td:first-child:hover, #user_list tr td:nth-child(2):hover {
   background-color: yellow;
+}
+
+#chat_muted_tooltip, #chat_command_menu {
+  display: none;
+  background-color: blue;
+  vertical-align: top;
+  text-align: left;
+  font-weight: bold;
+}
+
+#chat_command_menu div:not(:first-child) {
+  cursor: pointer;
+  margin: 0 0 0 10px;
+}
+#chat_command_menu div:not(:first-child):hover {
+  background-color: darkgoldenrod;
 }

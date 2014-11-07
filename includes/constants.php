@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a15.5');
+define('SN_VERSION', '39a16.4');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1045,3 +1045,32 @@ define('FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL', 6);
 define('EVENT_FLT_ARRIVE', 1); // Fleet arrive to destination
 define('EVENT_FLT_ACOMPLISH', 2); // Fleet ends his mission by timer
 define('EVENT_FLT_RETURN', 3); // Fleet returns to starting planet
+
+
+
+// define('NICK_ID',               -1);
+define('NICK_HTML',              0);
+
+define('NICK_FIRST',             1);
+define('NICK_BIRTHSDAY',      1000);
+define('NICK_AWARD',          2000);
+define('NICK_RACE',           3000);
+define('NICK_GENDER',         4000);
+define('NICK_PREMIUM',        5000);
+define('NICK_AUTH_LEVEL',     6000);
+
+define('NICK_HIGHLIGHT',      6300);
+define('NICK_CLASS',          6450);
+
+define('NICK_NICK_CLASS',     6600);
+define('NICK_NICK',           7000);
+define('NICK_NICK_CLASS_END', 7300);
+
+define('NICK_ALLY_CLASS',     7600);
+define('NICK_ALLY',           8000);
+define('NICK_ALLY_CLASS_END', 8300);
+
+define('NICK_CLASS_END',      8450);
+define('NICK_HIGHLIGHT_END',  8600);
+
+define('NICK_LAST',           9999);
