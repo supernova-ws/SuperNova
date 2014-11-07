@@ -881,3 +881,21 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
 .player_nick_award, .player_nick_race {
   cursor: pointer;
 }
+
+#chat_message_smiles2 {
+  display: none;
+  background-color: #233452;
+  max-width: 530px;
+}
+
+#chat_message_smiles2 div {
+  margin: 2px 0;
+  border: 1px solid;
+  background-color: #344566;
+
+  vertical-align: middle;
+  text-align: center;
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+}
