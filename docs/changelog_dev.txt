@@ -492,18 +492,30 @@ OR
 
 chat_online
     before 1596
+    after 1066
 chat_messages
     before 2490
+    after 2223
 chat_body
     before 6669
+    after 5435
 chat_frame
     before 5138
 chat_header
     before 0
+    after 668
+
+
+Чат - При клике на ИД добавлять ид в чат
+
 
 
 #ctv
 
+
+2014-11-07 07:12:28 39a16.9
+[~] Рендерер ников
+    Изменен порядок иконок в нике
 
 
 2014-11-07 05:15:30 39a16.8

@@ -31,7 +31,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a16.8');
+define('SN_VERSION', '39a16.9');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1052,10 +1052,10 @@ define('EVENT_FLT_RETURN', 3); // Fleet returns to starting planet
 define('NICK_HTML',              0);
 
 define('NICK_FIRST',             1);
-define('NICK_BIRTHSDAY',      1000);
-define('NICK_AWARD',          2000);
-define('NICK_RACE',           3000);
-define('NICK_GENDER',         4000);
+define('NICK_RACE',           1000);
+define('NICK_GENDER',         2000);
+define('NICK_AWARD',          3000);
+define('NICK_BIRTHSDAY',      4000);
 define('NICK_PREMIUM',        5000);
 define('NICK_AUTH_LEVEL',     6000);
 
