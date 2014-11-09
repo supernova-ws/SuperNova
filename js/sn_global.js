@@ -115,7 +115,9 @@ jQuery(document).ready(function() {
 
 
   // Запуск таймеров
-  sn_timer();
+  if(typeof sn_timer === 'function') {
+    sn_timer();
+  }
 });
 
 function sn_ainput_mouselerate_jquery() {

@@ -809,19 +809,50 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
   background-color: yellow;
 }
 
+
+
+
+
+
+
+
+
+
+
+
 #chat_muted_tooltip, #chat_command_menu {
   display: none;
-  background-color: blue;
+  background-color: #233452;
   vertical-align: top;
-  text-align: left;
+  text-align: center;
   font-weight: bold;
+  padding: 7px;
+}
+#chat_muted_tooltip img, #chat_command_menu img {
+  vertical-align: top;
 }
 
-#chat_command_menu div:not(:first-child) {
-  cursor: pointer;
-  margin: 0 0 0 10px;
+#chat_muted_tooltip {
+  max-width: 300px;
 }
-#chat_command_menu div:not(:first-child):hover {
+
+#chat_command_menu {
+  max-width: 360px;
+}
+
+#chat_command_menu div:last-child {
+  margin-top: 5px;
+}
+
+#chat_command_menu div:not(:first-child):not(:last-child) {
+  cursor: pointer;
+/*  margin: 0 0 0 10px;*/
+  margin: 4px 2px;
+  display: inline-block;
+  width: 80px;
+  border: 1px solid;
+}
+#chat_command_menu div:not(:first-child):not(:last-child):hover {
   background-color: darkgoldenrod;
 }
 
@@ -882,6 +913,57 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
   cursor: pointer;
 }
 
+#chat_color_button {
+  vertical-align: top;
+  display: inline-block;
+}
+
+#chat_smile_point {
+  width: 24px;
+  height: 24px;
+  vertical-align: top;
+  display: inline-block;
+}
+
+#chat_message_inputs input#msg, #chat_message_inputs textarea#msg {
+  background-color: black;
+  display: inline-block;
+  vertical-align: top;
+  width: auto;
+}
+
+#chat_message_inputs #send {
+  width: 100px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+#chat_message_inputs {
+  vertical-align: top;
+}
+
+
+#chat_color_button div {
+  display: inline-block;
+  /*  height: 16px;
+    width: 16px;*/
+}
+
+
+#chat_color_select {
+  display: none;
+  background-color: #233452;
+  max-width: 280px;
+}
+
+#chat_color_select div {
+  margin: 2px 0;
+  border: 1px solid;
+  background-color: black;
+  /*  height: 16px;
+    width: 16px;*/
+}
+
 #chat_message_smiles2 {
   display: none;
   background-color: #233452;
@@ -898,4 +980,26 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
   display: inline-block;
   width: 60px;
   height: 60px;
+}
+
+#chat_color_select div:first-child, #chat_color_button div:first-child {
+  color: cyan;
+}
+#chat_color_select div:nth-child(2), #chat_color_button div:nth-child(2) {
+  color: yellow;
+}
+#chat_color_select div:nth-child(3), #chat_color_button div:nth-child(3) {
+  color: green;
+}
+#chat_color_select div:nth-child(4), #chat_color_button div:nth-child(4) {
+  color: pink;
+}
+#chat_color_select div:nth-child(5), #chat_color_button div:nth-child(5) {
+  color: maroon;
+}
+#chat_color_select div:nth-child(6), #chat_color_button div:nth-child(6) {
+  color: orange;
+}
+#chat_color_select div:nth-child(7), #chat_color_button div:nth-child(7) {
+  color: white;
 }

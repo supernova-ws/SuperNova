@@ -28,7 +28,7 @@ $supernova->design['bbcodes'] = array(
 
 $supernova->design['smiles'] = array(
   AUTH_LEVEL_REGISTERED => array(
-    ':\)' => 'smile',
+    ':)' => 'smile',
     ':p:' => 'tongue',
     //':D' => 'lol',
     'rofl' => 'rofl',
@@ -55,7 +55,7 @@ $supernova->design['smiles'] = array(
     ':blink:' => 'blink',
 
     ':huh:' => 'huh',
-    '\:\(' => 'mellow',
+    ':(' => 'mellow',
     ':sad:' => 'sad',
     ':c:' => 'cray',
 
@@ -105,7 +105,7 @@ function cht_message_parse($msg, $escaped = false, $author_auth = 0) {
     }
 
     foreach($replaces as $key => $imgName) {
-      $msg = preg_replace("#" . $key . "#isU","<img src=\"design/images/smileys/".$imgName.".gif\" align=\"absmiddle\" title=\"".$key."\" alt=\"".$key."\">",$msg);
+      $msg = preg_replace("#" . addcslashes($key, '()[]{}') . "#isU","<img src=\"design/images/smileys/".$imgName.".gif\" align=\"absmiddle\" title=\"".$key."\" alt=\"".$key."\">",$msg);
     }
   }
 
