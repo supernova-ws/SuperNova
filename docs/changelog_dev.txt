@@ -553,25 +553,6 @@ CSS и JS - релоадер:
 
 
 xsolla:
-  + пейпол
-  +    PAYMENT_METHOD_BANK_CARD_LIQPAY => 'LiqPay',
-  +    PAYMENT_METHOD_BANK_CARD_EASYPAY => 'EasyPay',
-  +    PAYMENT_METHOD_BANK_CARD_AMERICAN_EXPRESS => 'American Express',
-  +    PAYMENT_METHOD_BANK_CARD_JCB => 'JCB',
-  +    PAYMENT_METHOD_BANK_CARD_UNIONPAY => 'UnionPay',
-+    PAYMENT_METHOD_BANK_INTERNET_BANK24 => 'Банк24 Национальный кредит',
-+    PAYMENT_METHOD_BANK_INTERNET_PRIVAT24 => "Приват24",
-+    PAYMENT_METHOD_BANK_INTERNET_SBERBANK => "Сбербанк Онлайн",
-+    PAYMENT_METHOD_MOBILE => 'С мобильного телефона',
-+    PAYMENT_METHOD_MOBILE_SMS => 'SMS',
-+    PAYMENT_METHOD_MOBILE_XSOLLA => 'Со счёта мобильного',
-+    PAYMENT_METHOD_MOBILE_PAYPAL_ZONG => 'Со счёта или SMS',
-+    PAYMENT_METHOD_MOBILE_KYIVSTAR => 'Киевстар',
-+    PAYMENT_METHOD_TERMINAL_IBOX => 'Ibox',
-+    PAYMENT_METHOD_TERMINAL_UKRAINE => 'Терминалы Украины'
-+    PAYMENT_METHOD_TERMINAL_RUSSIA => 'Терминалы России',
-+    PAYMENT_METHOD_TERMINAL_EASYPAY => 'EasyPay',
-
 
 
 Center vertically
@@ -619,7 +600,24 @@ xsolla - передавать описание платежа
 
 
 
-#ctv
+
+2014-11-09 22:44:59 39a17.11
+[#] payment_xsolla v1a0
+    (!) Стартовый релиз для СН 35a17.0
+        Полностью реализован протокол "Shopping Cart 3.0 Xsolla" - команды 'check', 'pay' и 'cancel'
+        Поддержка режима тестирования
+        Конфигурация отдельным файлом config.php в каталоге модуля. Если конфигурация недоступна - модуль отключается
+        Поддержка выбора способа платежа xSolla
+        Генерик-плательщик xSolla
+        Хочу отметить часть методов платежа, добавленных к уже существующим:
+          - мобильные платежи: через SMS, со счета мобильного, сервия ZONG от PayPal, со счета Киевстар
+          - платежные системы: PayPal, EasyPay
+          - банковские переводы: Приват24, Сбербанк Онлайн, Банк24 Национальный кредит
+          - терминалы: EasyPay, Ibox, Терминалы Украины, Терминалы России
+          - кредитные карты American Express, JCB, UnionPay
+        Список далеко не полон - на сайте xSolla можно выбрать десятки других способов оплаты
+
+
 [#] chat_advanced v5b0
     (!) ЭКСПЕРИМЕНТАЛЬНАЯ ФИШКА
         Добавлен код для устранения проблем с потерей фокуса строки ввода под некоторыми браузерами (в частности - IE 11, возможно поможет и на некоторых мобильных устройствах)
