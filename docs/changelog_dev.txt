@@ -577,7 +577,7 @@ xsolla:
 Robokassa Generic
 
 
-
+xsolla - передавать описание платежа
 
 
 
