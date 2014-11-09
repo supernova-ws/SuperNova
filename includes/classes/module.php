@@ -5,7 +5,7 @@ class sn_module {
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #39a17.0# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #39a17.9# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -515,6 +515,13 @@ abstract class sn_module_payment extends sn_module {
         'currency' => 'USD',
         'image' => 'design/images/payments/generic/xsolla.png',
         'name' => true,
+        'button' => true,
+      ),
+
+      PAYMENT_METHOD_GENERIC_ROBOKASSA => array(
+        'currency' => 'RUB',
+        'image' => 'design/images/payments/generic/robokassa.jpeg',
+        // 'name' => true,
         'button' => true,
       ),
     ),

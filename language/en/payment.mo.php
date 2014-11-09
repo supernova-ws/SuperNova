@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a17.0
+* @version 39a17.9
 *
 */
 
@@ -175,6 +175,7 @@ $a_lang_array = (array(
 
     PAYMENT_METHOD_GENERIC => 'Выше перечислены далеко не все возможнные способы оплаты. Если вы не нашли подходящего для себя способа - воспользуйтесь услугами агрегаторов',
     PAYMENT_METHOD_GENERIC_XSOLLA => 'xSolla',
+    PAYMENT_METHOD_GENERIC_ROBOKASSA => 'RoboKassa',
   ),
 
   'pay_currency_exchange_title' => 'Internal currency exchange',
