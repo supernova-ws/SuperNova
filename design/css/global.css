@@ -792,19 +792,15 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
 #user_list {
   white-space: nowrap;
 }
-
 #user_list th {
   text-align: center;
 }
-
 #user_list tr td:first-child, #user_list tr td:nth-child(3) {
   text-align: right;
 }
-
 #user_list tr td:first-child, #user_list tr td:nth-child(2) {
   cursor: pointer;
 }
-
 #user_list tr td:first-child:hover, #user_list tr td:nth-child(2):hover {
   background-color: yellow;
 }
@@ -815,82 +811,40 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
 
 
 
-
-
-
-
-
-#chat_muted_tooltip, #chat_command_menu {
-  display: none;
-  background-color: #233452;
-  vertical-align: top;
-  text-align: center;
-  font-weight: bold;
-  padding: 7px;
-}
-#chat_muted_tooltip img, #chat_command_menu img {
-  vertical-align: top;
-}
-
-#chat_muted_tooltip {
-  max-width: 300px;
-}
-
-#chat_command_menu {
-  max-width: 360px;
-}
-
-#chat_command_menu div:last-child {
-  margin-top: 5px;
-}
-
-#chat_command_menu div:not(:first-child):not(:last-child) {
-  cursor: pointer;
-/*  margin: 0 0 0 10px;*/
-  margin: 4px 2px;
-  display: inline-block;
-  width: 80px;
-  border: 1px solid;
-}
+/*
 #chat_command_menu div:not(:first-child):not(:last-child):hover {
   background-color: darkgoldenrod;
 }
-
+*/
 #shoutbox {
   background-color: black;
 }
 
 #shoutbox > table {
-  padding: 0;
   border: 0;
-  margin: 3px 0;
+  padding: 0;
   background-color: black;
+  margin: 3px 0;
   border-collapse: collapse;
   width: 100%;
 }
-
 #shoutbox > table > tbody > tr {
   background-color: black;
 }
-
 #shoutbox > table > tbody > tr > td {
+  border: 0;
+  padding: 0;
   background-color: black;
   text-align: left;
   vertical-align: top;
-  border: 0;
-  padding: 0;
 }
-
 #shoutbox > table > tbody > tr > td:not(:last-child) {
   white-space: nowrap;
 }
-
 #shoutbox > table > tbody > tr > td:last-child {
   width: 100%;
   padding-left: 2px;
 }
-
-
 #shoutbox img {
   vertical-align: top;
   margin: 0 1px 0 0;
@@ -898,7 +852,6 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
 #shoutbox .chat_private {
   color: lightblue; font-style: italic;
 }
-
 #shoutbox span {
   vertical-align: top;
 }
@@ -908,79 +861,80 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
   font-weight: bold;
   cursor: pointer;
 }
-
 .player_nick_award, .player_nick_race {
   cursor: pointer;
 }
 
-#chat_color_button {
+/* Input elements - color, smile, text, send button */
+#chat_color_button, #chat_smile_point, #chat_message_inputs #msg, #chat_message_inputs #msg, #chat_message_inputs #send {
   vertical-align: top;
   display: inline-block;
+  margin: 0 5px;
 }
-
 #chat_smile_point {
   width: 24px;
   height: 24px;
-  vertical-align: top;
-  display: inline-block;
 }
-
-#chat_message_inputs input#msg, #chat_message_inputs textarea#msg {
+#chat_message_inputs #msg, #chat_message_inputs #msg {
   background-color: black;
-  display: inline-block;
-  vertical-align: top;
-  width: auto;
+  width: 50%;
 }
-
 #chat_message_inputs #send {
   width: 100px;
-  display: inline-block;
-  vertical-align: top;
 }
-
 #chat_message_inputs {
   vertical-align: top;
 }
-
-
-#chat_color_button div {
+#chat_color_button div { /* Colored ABCDEFG */
   display: inline-block;
-  /*  height: 16px;
-    width: 16px;*/
 }
 
 
-#chat_color_select {
+/* Popups - color select, smile select, command menu and tooltip */
+#chat_color_select, #chat_message_smiles2, #chat_command_menu, #chat_muted_tooltip {
   display: none;
   background-color: #233452;
+  vertical-align: top;
+  text-align: center;
+  padding: 4px;
+  border: 1px solid;
+}
+#chat_color_select {
   max-width: 280px;
 }
-
-#chat_color_select div {
-  margin: 2px 0;
-  border: 1px solid;
-  background-color: black;
-  /*  height: 16px;
-    width: 16px;*/
-}
-
 #chat_message_smiles2 {
-  display: none;
-  background-color: #233452;
-  max-width: 530px;
+  max-width: 534px;
+}
+#chat_command_menu {
+  max-width: 360px;
+}
+#chat_muted_tooltip {
+  max-width: 300px;
+}
+#chat_muted_tooltip img, #chat_command_menu img {
+  vertical-align: top;
 }
 
-#chat_message_smiles2 div {
-  margin: 2px 0;
-  border: 1px solid;
-  background-color: #344566;
 
-  vertical-align: middle;
-  text-align: center;
+
+/* Popup internal elements - color buttons, smile buttons, command length buttons */
+#chat_color_select div, #chat_message_smiles2 div, #chat_command_menu div:not(:first-child):not(:last-child) {
+  margin: 2px;
+  border: 1px solid;
+  vertical-align: top;
   display: inline-block;
+}
+#chat_message_smiles2 div {
   width: 60px;
   height: 60px;
 }
+#chat_command_menu div:not(:first-child):not(:last-child) {
+  width: 80px;
+}
+#chat_command_menu div:last-child {
+  margin-top: 5px;
+}
+
 
 #chat_color_select div:first-child, #chat_color_button div:first-child {
   color: cyan;
