@@ -102,6 +102,11 @@ if(!$request['metamatter']) {
 }
 
 $payment_methods_available = array_combine(array_keys(sn_module_payment::$payment_methods), array_fill(0, count(sn_module_payment::$payment_methods), null));
+array_walk($payment_methods_available, function(&$value, $index) {
+  $value = !empty(sn_module_payment::$payment_methods[$index]) ? array_combine(array_keys(sn_module_payment::$payment_methods[$index]), array_fill(0, count(sn_module_payment::$payment_methods[$index]), null)) : $value;
+});
+
+// pdump($payment_methods_available);
 $payment_module_valid = false;
 $payment_module = sys_get_param_str('payment_module');
 foreach($sn_module_list['payment'] as $module_name => $module) {
@@ -119,38 +124,69 @@ foreach($sn_module_list['payment'] as $module_name => $module) {
     }
   }
 
-  $template->assign_block_vars('payment_module', array(
-    'ID' => $module_name,
-    'NAME' => $lang["module_{$module_name}_name"],
-    'DESCRIPTION' => $lang["module_{$module_name}_description"],
-  ));
-
   $payment_module_valid = $payment_module_valid || $module_name == $payment_module;
 }
+
+global $template_result;
 
 foreach($payment_methods_available as $payment_type_id => $payment_methods) {
   if(empty($payment_methods)) continue;
 
-  $template->assign_block_vars('payment', array(
+  $template_result['.']['payment'][$payment_type_id] =array(
     'ID' => $payment_type_id,
     'NAME' => $lang['pay_methods'][$payment_type_id],
-  ));
+  );
   foreach($payment_methods as $payment_method_id => $module_list) {
-    $template->assign_block_vars('payment.method', array(
-      'ID' => $payment_method_id,
-      'NAME' => $lang['pay_methods'][$payment_method_id],
-      'IMAGE' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'])
-                  ? sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'] : '',
+    if(empty($module_list)) {
+      continue;
+    }
+    $template_result['.']['payment'][$payment_type_id]['.']['method'][$payment_method_id] = array(
+      'ID'         => $payment_method_id,
+      'NAME'       => $lang['pay_methods'][$payment_method_id],
+      'IMAGE'      => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'])
+        ? sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'] : '',
       'NAME_FORCE' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['name']),
-      'BUTTON' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['button']),
-    ));
+      'BUTTON'     => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['button']),
+    );
     foreach($module_list as $payment_module_name => $payment_module_method_details) {
-      $template->assign_block_vars('payment.method.module', array(
+      $template_result['.']['payment'][$payment_type_id]['.']['method'][$payment_method_id]['.']['module'][] = array(
         'MODULE' => $payment_module_name,
-      ));
+      );
     }
   }
+
+  if(empty($template_result['.']['payment'][$payment_type_id]['.'])) {
+    unset($template_result['.']['payment'][$payment_type_id]);
+  }
 }
+
+$template->assign_recursive($template_result);
+
+
+//foreach($payment_methods_available as $payment_type_id => $payment_methods) {
+//  if(empty($payment_methods)) continue;
+//
+//  $template->assign_block_vars('payment', array(
+//    'ID' => $payment_type_id,
+//    'NAME' => $lang['pay_methods'][$payment_type_id],
+//  ));
+//  foreach($payment_methods as $payment_method_id => $module_list) {
+//    $template->assign_block_vars('payment.method', array(
+//      'ID' => $payment_method_id,
+//      'NAME' => $lang['pay_methods'][$payment_method_id],
+//      'IMAGE' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'])
+//                  ? sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'] : '',
+//      'NAME_FORCE' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['name']),
+//      'BUTTON' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['button']),
+//    ));
+//    foreach($module_list as $payment_module_name => $payment_module_method_details) {
+//      $template->assign_block_vars('payment.method.module', array(
+//        'MODULE' => $payment_module_name,
+//      ));
+//    }
+//  }
+//}
+//
 
 // pdump($template);die();
 
@@ -170,6 +206,17 @@ if($payment_module_valid) {
 } else {
   $payment_module = '';
 }
+
+if($payment_type_selected && $payment_method_selected) {
+  foreach($payment_methods_available[$payment_type_selected][$payment_method_selected] as $module_name => $temp) {
+    $template->assign_block_vars('payment_module', array(
+      'ID' => $module_name,
+      'NAME' => $lang["module_{$module_name}_name"],
+      'DESCRIPTION' => $lang["module_{$module_name}_description"],
+    ));
+  }
+}
+
 
 foreach($lang['pay_currency_list'] as $key => $value) {
   $var_name = 'payment_currency_exchange_' . strtolower($key);
@@ -216,17 +263,6 @@ if($request['metamatter'] && $payment_module) {
         ));
       }
     }
-
-    /* // TODO PRESUMABLY OUTDATED
-    if(is_string($pay_link) && strpos($pay_link, 'http') === 0)
-    {
-      $template->assign_vars(array(
-        'PAY_LINK' => $pay_link,
-        'PAY_LINK_METHOD' => 'LINK',
-      ));
-    }
-    else
-    */
 
     if(is_array($pay_link) && in_array($pay_link['PAY_LINK_METHOD'], array('POST', 'GET', 'LINK', 'STEP'))) {
       // TODO Переделать это под assign_vars_recursive и возвращать пустые строки если нет платежного метода - для унификации формы в темплейте

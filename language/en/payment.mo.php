@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a15.3
+* @version 39a17.0
 *
 */
 
@@ -55,12 +55,10 @@ $a_lang_array = (array(
   'pay_mm_buy_url_get'  => 'Click here to read details',
   'pay_mm_buy_url_none' => 'Contact with server Administration to get Metamatter',
 
-
   'pay_mm_bonus_header' => 'Metamatter cost and bonuses for bulk purchases',
   'pay_mm_bonus' => 'When you purchasing large amounts of Metamatter you recieve bonuses:',
   'pay_mm_bonus_each' => 'from %s MM - %d%% bonus to purchased MM amount',
   'pay_mm_bonus_text' => 'Bonus',
-
 
   'pay_mm_buy_step1_text' => 'Select amount of MM you wish to purchase, select payment system and confirm your selection',
   'pay_mm_buy_metamatter_amount' => 'Выберите количество Метаматерии из списка',
@@ -72,6 +70,8 @@ $a_lang_array = (array(
   'pay_mm_buy_confirm' => 'Confirm selection',
   'pay_mm_buy_payment_selected' => 'Purchase would be made using payment system',
   'pay_mm_buy_purchase' => 'Покупка',
+
+  'pay_mm_buy_payment_method_more' => 'Нажмите "Показать", что бы увидеть больше способов оплаты',
 
   'pay_mm_buy_payment_method_select' => 'Выберите способ оплаты',
   'pay_mm_buy_payment_method_selected' => 'Вы выбрали способ оплаты',
@@ -116,6 +116,11 @@ $a_lang_array = (array(
 
     PAYMENT_METHOD_BANK_CARD => 'Платежная карта (VISA, MasterCard итд)',
     PAYMENT_METHOD_BANK_CARD_STANDARD => 'Банковская карта',
+    PAYMENT_METHOD_BANK_CARD_LIQPAY => 'LiqPay',
+    PAYMENT_METHOD_BANK_CARD_EASYPAY => 'EasyPay',
+    PAYMENT_METHOD_BANK_CARD_AMERICAN_EXPRESS => 'American Express',
+    PAYMENT_METHOD_BANK_CARD_JCB => 'JCB',
+    PAYMENT_METHOD_BANK_CARD_UNIONPAY => 'UnionPay',
 
     PAYMENT_METHOD_BANK_INTERNET => 'Через интернет-банк',
     PAYMENT_METHOD_BANK_INTERNET_ALFA_BANK => 'Альфа-Клик',
@@ -135,27 +140,41 @@ $a_lang_array = (array(
     PAYMENT_METHOD_BANK_INTERNET_015 => 'Русский Трастовый Банк',
     PAYMENT_METHOD_BANK_INTERNET_016 => 'ВестИнтерБанк',
     PAYMENT_METHOD_BANK_INTERNET_017 => 'Межтопэнергобанк',
-    PAYMENT_METHOD_BANK_INTERNET_018 => 'Московский Индустриальный Банк',
+    PAYMENT_METHOD_BANK_INTERNET_018 => 'Московский Индустр. Банк',
     PAYMENT_METHOD_BANK_INTERNET_019 => 'Банк Интеза',
     PAYMENT_METHOD_BANK_INTERNET_020 => 'Банк Город',
     PAYMENT_METHOD_BANK_INTERNET_021 => 'Банк АВБ',
+    PAYMENT_METHOD_BANK_INTERNET_BANK24 => 'Банк24 Национальный кредит',
+    PAYMENT_METHOD_BANK_INTERNET_PRIVAT24 => "Приват24",
+    PAYMENT_METHOD_BANK_INTERNET_SBERBANK => "Сбербанк Онлайн",
 
     PAYMENT_METHOD_BANK_TRANSFER => 'Банковский перевод',
 
-    PAYMENT_METHOD_MOBILE => 'Со счёта сотового оператора',
+    PAYMENT_METHOD_MOBILE => 'С мобильного телефона',
+    PAYMENT_METHOD_MOBILE_SMS => 'SMS',
+    PAYMENT_METHOD_MOBILE_XSOLLA => 'Со счёта мобильного',
+    PAYMENT_METHOD_MOBILE_PAYPAL_ZONG => 'Со счёта или SMS',
     PAYMENT_METHOD_MOBILE_MEGAPHONE => 'Мегафон',
     PAYMENT_METHOD_MOBILE_MTS => 'МТС',
+    PAYMENT_METHOD_MOBILE_KYIVSTAR => 'Киевстар',
 
     PAYMENT_METHOD_TERMINAL => 'Терминал оплаты',
     PAYMENT_METHOD_TERMINAL_QIWI => 'QIWI Кошелек',
     PAYMENT_METHOD_TERMINAL_ELECSNET => 'Элекснет',
     PAYMENT_METHOD_TERMINAL_ELEMENT => 'Мобил Элемент',
     PAYMENT_METHOD_TERMINAL_KASSIRANET => 'Кассира.нет',
+    PAYMENT_METHOD_TERMINAL_IBOX => 'Ibox',
+    PAYMENT_METHOD_TERMINAL_UKRAINE => 'Терминалы Украины',
+    PAYMENT_METHOD_TERMINAL_RUSSIA => 'Терминалы России',
+    PAYMENT_METHOD_TERMINAL_EASYPAY => 'EasyPay',
 
     PAYMENT_METHOD_OTHER => 'Другие способы',
     PAYMENT_METHOD_OTHER_EVROSET => 'Евросеть',
     PAYMENT_METHOD_OTHER_SVYAZNOY => 'Связной',
     PAYMENT_METHOD_OTHER_ROBOKASSA_MOBILE => 'Мобильная ROBOKASSA',
+
+    PAYMENT_METHOD_GENERIC => 'Выше перечислены далеко не все возможнные способы оплаты. Если вы не нашли подходящего для себя способа - воспользуйтесь услугами агрегаторов',
+    PAYMENT_METHOD_GENERIC_XSOLLA => 'xSolla',
   ),
 
   'pay_currency_exchange_title' => 'Internal currency exchange',
@@ -170,6 +189,8 @@ $a_lang_array = (array(
   'pay_msg_mm_purchase_test'       => 'Really you did not gain anything! Because it was a test payment ha-ha-ha! If you feel it wrong - contact Administration',
 
   'pay_msg_request_user_found' => 'User found',
+  'pay_msg_request_payment_complete' => 'Платёж завершен',
+  'pay_msg_request_payment_cancel_complete' => 'Платёж успешно отменён',
 
   'pay_msg_request_unsupported' => 'Unsupported request',
   'pay_msg_request_signature_invalid' => 'Wrong request signature',
@@ -181,11 +202,17 @@ $a_lang_array = (array(
   'pay_msg_request_internal_error' => 'Server internal error. Try again later',
   'pay_msg_request_paylink_unsupported' => 'This type of paylink is not supported. It\'s looks like you using outdated version of SuperNova which incompatible with selected payment module',
   'pay_msg_request_payment_write_error' => 'Payment write error',
+  'pay_msg_request_payment_cancelled_already' => 'Платёж уже отменен',
+  'pay_msg_request_payment_cancel_not_complete' => 'Платёж еще не завершен и не может быть отменен',
+  'pay_msg_request_payment_cancelled' => '!!! Платёж отозван платёжной системой!!!',
+  'pay_msg_request_payment_not_found' => 'Платёж не найден',
 
   'pay_msg_module_disabled' => 'Payment module disabled',
 
+  'pay_msg_mm_request_money_and_mm_mismatched' => 'Не совпадает сумма оплаты и количество покупаемой ММ',
+
   'pay_msg_mm_request_amount_invalid' => 'Wrong Metamatter amount',
-  'pay_msg_mm_request_config_invalid' => 'There is error in payment module configuration. Please contact server AMMinistration',
+  'pay_msg_mm_request_config_invalid' => 'There is error in payment module configuration. Please contact server Administration',
   'pay_msg_mm_request_mm_adjust_error' => 'Error adjusting Metamatter',
 
 ));

@@ -535,8 +535,64 @@ CSS и JS - релоадер:
 
 /whois - узнать ID пользователя
 
+
+Платежи - переписать централь а-ля иксолла с дефолтным сервером
+
+Попереименовывать константы во всех платёжных модулях - привести их к одному стандарту
+Заменить картинки платежей - взять из иксоллы
+Прописать в иксолле доступные методы платежей
+
+Проверить работу robots.txt
+
+
+Платежи - посмотреть, что там за хня в платежах при иксолле с двойным расчётом суммы платежа на финальной фазе
+
+
+    PAYMENT_METHOD_GENERIC => 'Платежные агрегаторы предлагают дополнительные способы оплаты', - переформулировать
+
+
+
+xsolla:
+  + пейпол
+  +    PAYMENT_METHOD_BANK_CARD_LIQPAY => 'LiqPay',
+  +    PAYMENT_METHOD_BANK_CARD_EASYPAY => 'EasyPay',
+  +    PAYMENT_METHOD_BANK_CARD_AMERICAN_EXPRESS => 'American Express',
+  +    PAYMENT_METHOD_BANK_CARD_JCB => 'JCB',
+  +    PAYMENT_METHOD_BANK_CARD_UNIONPAY => 'UnionPay',
++    PAYMENT_METHOD_BANK_INTERNET_BANK24 => 'Банк24 Национальный кредит',
++    PAYMENT_METHOD_BANK_INTERNET_PRIVAT24 => "Приват24",
++    PAYMENT_METHOD_BANK_INTERNET_SBERBANK => "Сбербанк Онлайн",
++    PAYMENT_METHOD_MOBILE => 'С мобильного телефона',
++    PAYMENT_METHOD_MOBILE_SMS => 'SMS',
++    PAYMENT_METHOD_MOBILE_XSOLLA => 'Со счёта мобильного',
++    PAYMENT_METHOD_MOBILE_PAYPAL_ZONG => 'Со счёта или SMS',
++    PAYMENT_METHOD_MOBILE_KYIVSTAR => 'Киевстар',
++    PAYMENT_METHOD_TERMINAL_IBOX => 'Ibox',
++    PAYMENT_METHOD_TERMINAL_UKRAINE => 'Терминалы Украины'
++    PAYMENT_METHOD_TERMINAL_RUSSIA => 'Терминалы России',
++    PAYMENT_METHOD_TERMINAL_EASYPAY => 'EasyPay',
+
+
+
+Robokassa Generic
+
+
+
+
+
+
+
 #ctv
 
+
+
+2014-11-09 01:54:11 39a17.0
+[!] Платежи
+    Подготовка к подключению модуля xSolla
+    Платежи теперь соблюдают порядок, назначенный им в module
+    Заменены почти все картинки платежей на более качественные
+    Если методов оплаты более 6 - остальные сворачиваются и прячутся с возможностью в дальнейшем развернуть
+    Добавлено 17 новых методов платежей и картинок к ним
 
 
 2014-11-07 22:14:27 39a16.15

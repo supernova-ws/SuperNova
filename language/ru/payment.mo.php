@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a15.5
+* @version 39a17.0
 *
 */
 
@@ -71,6 +71,8 @@ $a_lang_array = (array(
   'pay_mm_buy_payment_selected' => 'Оплата будет произведена с использованием платёжной системы',
   'pay_mm_buy_purchase' => 'Покупка',
 
+  'pay_mm_buy_payment_method_more' => 'Нажмите "Показать", что бы увидеть больше способов оплаты',
+
   'pay_mm_buy_payment_method_select' => 'Выберите способ оплаты',
   'pay_mm_buy_payment_method_selected' => 'Вы выбрали способ оплаты',
 
@@ -114,6 +116,11 @@ $a_lang_array = (array(
 
     PAYMENT_METHOD_BANK_CARD => 'Платежная карта (VISA, MasterCard итд)',
     PAYMENT_METHOD_BANK_CARD_STANDARD => 'Банковская карта',
+    PAYMENT_METHOD_BANK_CARD_LIQPAY => 'LiqPay',
+    PAYMENT_METHOD_BANK_CARD_EASYPAY => 'EasyPay',
+    PAYMENT_METHOD_BANK_CARD_AMERICAN_EXPRESS => 'American Express',
+    PAYMENT_METHOD_BANK_CARD_JCB => 'JCB',
+    PAYMENT_METHOD_BANK_CARD_UNIONPAY => 'UnionPay',
 
     PAYMENT_METHOD_BANK_INTERNET => 'Через интернет-банк',
     PAYMENT_METHOD_BANK_INTERNET_ALFA_BANK => 'Альфа-Клик',
@@ -137,23 +144,37 @@ $a_lang_array = (array(
     PAYMENT_METHOD_BANK_INTERNET_019 => 'Банк Интеза',
     PAYMENT_METHOD_BANK_INTERNET_020 => 'Банк Город',
     PAYMENT_METHOD_BANK_INTERNET_021 => 'Банк АВБ',
+    PAYMENT_METHOD_BANK_INTERNET_BANK24 => 'Банк24 Национальный кредит',
+    PAYMENT_METHOD_BANK_INTERNET_PRIVAT24 => "Приват24",
+    PAYMENT_METHOD_BANK_INTERNET_SBERBANK => "Сбербанк Онлайн",
 
     PAYMENT_METHOD_BANK_TRANSFER => 'Банковский перевод',
 
-    PAYMENT_METHOD_MOBILE => 'Со счёта сотового оператора',
+    PAYMENT_METHOD_MOBILE => 'С мобильного телефона',
+    PAYMENT_METHOD_MOBILE_SMS => 'SMS',
+    PAYMENT_METHOD_MOBILE_XSOLLA => 'Со счёта мобильного',
+    PAYMENT_METHOD_MOBILE_PAYPAL_ZONG => 'Со счёта или SMS',
     PAYMENT_METHOD_MOBILE_MEGAPHONE => 'Мегафон',
     PAYMENT_METHOD_MOBILE_MTS => 'МТС',
+    PAYMENT_METHOD_MOBILE_KYIVSTAR => 'Киевстар',
 
     PAYMENT_METHOD_TERMINAL => 'Терминал оплаты',
     PAYMENT_METHOD_TERMINAL_QIWI => 'QIWI Кошелек',
     PAYMENT_METHOD_TERMINAL_ELECSNET => 'Элекснет',
     PAYMENT_METHOD_TERMINAL_ELEMENT => 'Мобил Элемент',
     PAYMENT_METHOD_TERMINAL_KASSIRANET => 'Кассира.нет',
+    PAYMENT_METHOD_TERMINAL_IBOX => 'Ibox',
+    PAYMENT_METHOD_TERMINAL_UKRAINE => 'Терминалы Украины',
+    PAYMENT_METHOD_TERMINAL_RUSSIA => 'Терминалы России',
+    PAYMENT_METHOD_TERMINAL_EASYPAY => 'EasyPay',
 
     PAYMENT_METHOD_OTHER => 'Другие способы',
     PAYMENT_METHOD_OTHER_EVROSET => 'Евросеть',
     PAYMENT_METHOD_OTHER_SVYAZNOY => 'Связной',
     PAYMENT_METHOD_OTHER_ROBOKASSA_MOBILE => 'Мобильная ROBOKASSA',
+
+    PAYMENT_METHOD_GENERIC => 'Выше перечислены далеко не все возможнные способы оплаты. Если вы не нашли подходящего для себя способа - воспользуйтесь услугами агрегаторов',
+    PAYMENT_METHOD_GENERIC_XSOLLA => 'xSolla',
   ),
 
   'pay_currency_exchange_title' => 'Внутренние курсы валют',
@@ -168,6 +189,8 @@ $a_lang_array = (array(
   'pay_msg_mm_purchase_test'       => 'На самом деле - шутка. Платеж был тестовый, поэтому ты ничего не получил ха-ха-ха! Если считаешь, что это ошибка - обратись к Администрации сервера',
 
   'pay_msg_request_user_found' => 'Пользователь найден',
+  'pay_msg_request_payment_complete' => 'Платёж завершен',
+  'pay_msg_request_payment_cancel_complete' => 'Платёж успешно отменён',
 
   'pay_msg_request_unsupported' => 'Данный тип запроса не поддерживается',
   'pay_msg_request_signature_invalid' => 'Неправильная подпись запроса',
@@ -179,8 +202,14 @@ $a_lang_array = (array(
   'pay_msg_request_internal_error' => 'Внутренняя ошибка сервера. Попробуйте повторить платёж позже',
   'pay_msg_request_paylink_unsupported' => 'Данный тип платёжной ссылке не поддерживается. Возможно используется устаревшая версия СН, не совместимая с данным платёжным модулем',
   'pay_msg_request_payment_write_error' => 'Ошибка записи платежа',
+  'pay_msg_request_payment_cancelled_already' => 'Платёж уже отменен',
+  'pay_msg_request_payment_cancel_not_complete' => 'Платёж еще не завершен и не может быть отменен',
+  'pay_msg_request_payment_cancelled' => '!!! Платёж отозван платёжной системой!!!',
+  'pay_msg_request_payment_not_found' => 'Платёж не найден',
 
   'pay_msg_module_disabled' => 'Платёжный модуль отключен',
+
+  'pay_msg_mm_request_money_and_mm_mismatched' => 'Не совпадает сумма оплаты и количество покупаемой ММ',
 
   'pay_msg_mm_request_amount_invalid' => 'Неправильное количество Метаматерии',
   'pay_msg_mm_request_config_invalid' => 'Ошибка в конфигурации модуля платежа. Свяжитесь с Администрацией сервера',

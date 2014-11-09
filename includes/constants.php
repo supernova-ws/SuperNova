@@ -1,5 +1,7 @@
 <?php
 
+defined('INSIDE') or die('Hacking attempt');
+
 /**
  * constants.php
  *
@@ -7,12 +9,6 @@
  * @copyright 2008 By Chlorel for XNova
  */
 
-// ----------------------------------------------------------------------------------------------------------------
-
-if(!defined('INSIDE'))
-{
-  die('Hacking attempt');
-}
 
 // ****************************************************************************************************************
 // SHOULD BE REPLACED WITH CONFIG!
@@ -31,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a16.17');
+define('SN_VERSION', '39a17.0');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -44,6 +40,7 @@ define('PLANET_COORD_PREG', '/^\[([1-9]):([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]
 define('SCHEDULER_PREG', '/^(?:(?:(?:(?:(?:(2\d\d\d)-)?(1[0-2]|0[1-9])-)?(?:(3[01]|[0-2]\d)\ ))?(?:(2[0-3]|[01]\d):))?(?:([0-5]\d):))?([0-5]\d)$/i');
 define('SCHEDULER_PREG2', '/^(?:\w\@)?(?:(?:(?:(?:(?:(\d*)-)?(\d*)-)?(?:(\d*)\ ))?(?:(\d*):))?(?:(\d*):))?(\d*)?$/i');
 define('PREG_DATE_SQL', '/(20[1-9][0-9])\-(1[0-2]|0[1-9])\-(3[01]|[12]\d|0[1-9]) (2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])/');
+define('PREG_DATE_SQL_FULL', '/(20[1-9][0-9]|19[0-9][0-9])\-(1[0-2]|0[1-9])\-(3[01]|[12]\d|0[1-9]) (2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])/');
 define('PREG_DATE_SQL_RELAXED', '/(20[1-9][0-9])(?:\-(1[0-2]|0[1-9])(?:\-(3[01]|[12]\d|0[1-9])(?: (2[0-3]|[01][0-9])(?::([0-5][0-9])(?::([0-5][0-9]))?)?)?)?)?/');
 
 // Default allowed chars for random string
@@ -187,6 +184,7 @@ define('RPG_NAME_CHANGE', 23);
 define('RPG_PLANET_DENSITY_CHANGE', 24);
 define('RPG_CONVERT_MM', 25);
 define('RPG_EXPLORE', 26);
+define('RPG_PURCHASE_CANCEL', 27);
 
 
 
@@ -205,6 +203,30 @@ define('ERR_HACK'               , 4); // Operation is qualified as hack attempt
 define('PAYMENT_STATUS_TEST' , -1); // Test payment
 define('PAYMENT_STATUS_NONE' , 0); // No status
 define('PAYMENT_STATUS_COMPLETE' , 1); // Money received, DM sent to user
+define('PAYMENT_STATUS_CANCELED' , 2); // Payment cancelled, MM deduced from user
+
+define('SN_PAYMENT_REQUEST_UNDEFINED_ERROR', -1);
+define('SN_PAYMENT_REQUEST_OK', 0);
+define('SN_PAYMENT_REQUEST_ERROR_UNIT_AMOUNT', 1);
+define('SN_PAYMENT_REQUEST_ERROR_PAYLINK_UNSUPPORTED', 2);
+define('SN_PAYMENT_REQUEST_IP_WRONG', 3);  // Неправильный IP входящей системы - обычно хак
+define('SN_PAYMENT_REQUEST_COMMAND_UNSUPPORTED', 4); // Неподдерживаемая команда - обычно хак
+define('SN_PAYMENT_REQUEST_SIGNATURE_INVALID', 5); // Неправильная подпись или не сошлась контрольная сумма - обычно хак
+define('SN_MODULE_DISABLED', 6); // Модуль отключен // УНИВЕРСАЛЬНЫЙ ОТВЕТ!
+define('SN_PAYMENT_REQUEST_SERVER_WRONG', 7); // Не совпадает УРЛ сервера
+define('SN_PAYMENT_REQUEST_USER_NOT_FOUND', 8); // Пользователь не найден
+define('SN_PAYMENT_REQUEST_EXTERNAL_ID_WRONG', 9); // Остуствует или неправильный ИД операции в платежной системе
+define('SN_PAYMENT_REQUEST_CURRENCY_AMOUNT_INVALID', 10); // Неправильная сумма платежа
+define('SN_PAYMENT_REQUEST_DATE_INVALID', 11); // Неправильная дата платежа
+define('SN_DB_ERROR_WRITE', 12); // Ошибка записи в БД // УНИВЕРСАЛЬНЫЙ ОТВЕТ!
+define('SN_METAMATTER_ERROR_ADJUST', 13); // Ошибка начисления ММ // УНИВЕРСАЛЬНЫЙ ОТВЕТ!
+define('SN_PAYMENT_REQUEST_INTERNAL_ID_WRONG', 14); // Остуствует или неправильный внутренний ИД операции
+define('SN_PAYMENT_REQUEST_MM_AMOUNT_INVALID', 15); // Неправильное количеств ММ в платеже
+define('SN_PAYMENT_REQUEST_ORDER_WRONG', 16); // Неправильно составлен ордер от платежной системы
+define('SN_PAYMENT_REQUEST_INVOICE_ALREADY_CANCELLED', 17); // Ошибка отмены платежа - платеж уже отменен
+define('SN_PAYMENT_REQUEST_ORDER_NOT_FOUND', 18); // Ошибка 
+define('SN_PAYMENT_REQUEST_PAYMENT_NOT_COMPLETE', 19); // Ошибка отмены платежа - платеж еще не закончен
+// define('SN_PAYMENT_REQUEST_CANCEL_COMPLETE', 20); // 
 
 
 define('PAYMENT_METHOD_EMONEY', 1000);
@@ -220,19 +242,34 @@ define('PAYMENT_METHOD_EMONEY_ELECSNET', 1009);
 define('PAYMENT_METHOD_EMONEY_EASYPAY', 1010);
 define('PAYMENT_METHOD_EMONEY_RUR_W1R', 1011);
 define('PAYMENT_METHOD_EMONEY_TELEMONEY', 1012);
+define('PAYMENT_METHOD_EMONEY_PAYPAL', 1013);
 
 define('PAYMENT_METHOD_BANK_CARD', 2000);
 define('PAYMENT_METHOD_BANK_CARD_STANDARD', 2001);
+define('PAYMENT_METHOD_BANK_CARD_LIQPAY', 2002);
+define('PAYMENT_METHOD_BANK_CARD_EASYPAY', 2003);
+define('PAYMENT_METHOD_BANK_CARD_AMERICAN_EXPRESS', 2004);
+define('PAYMENT_METHOD_BANK_CARD_JCB', 2005);
+define('PAYMENT_METHOD_BANK_CARD_UNIONPAY', 2006);
 
 define('PAYMENT_METHOD_MOBILE', 3000);
 define('PAYMENT_METHOD_MOBILE_MEGAPHONE', 3001);
 define('PAYMENT_METHOD_MOBILE_MTS', 3002);
+define('PAYMENT_METHOD_MOBILE_KYIVSTAR', 3003);
+define('PAYMENT_METHOD_MOBILE_SMS', 3004);
+define('PAYMENT_METHOD_MOBILE_PAYPAL_ZONG', 3005);
+define('PAYMENT_METHOD_MOBILE_XSOLLA', 3006);
 
 define('PAYMENT_METHOD_TERMINAL', 4000);
 define('PAYMENT_METHOD_TERMINAL_QIWI', 4001);
 define('PAYMENT_METHOD_TERMINAL_ELECSNET', 4002);
 define('PAYMENT_METHOD_TERMINAL_ELEMENT', 4003);
 define('PAYMENT_METHOD_TERMINAL_KASSIRANET', 4004);
+define('PAYMENT_METHOD_TERMINAL_TELEPAY', 4005);
+define('PAYMENT_METHOD_TERMINAL_IBOX', 4006);
+define('PAYMENT_METHOD_TERMINAL_UKRAINE', 4007);
+define('PAYMENT_METHOD_TERMINAL_RUSSIA', 4008);
+define('PAYMENT_METHOD_TERMINAL_EASYPAY', 4009);
 
 define('PAYMENT_METHOD_BANK_INTERNET', 5000);
 define('PAYMENT_METHOD_BANK_INTERNET_ALFA_BANK', 5001);
@@ -256,6 +293,9 @@ define('PAYMENT_METHOD_BANK_INTERNET_018', 5018);
 define('PAYMENT_METHOD_BANK_INTERNET_019', 5019);
 define('PAYMENT_METHOD_BANK_INTERNET_020', 5020);
 define('PAYMENT_METHOD_BANK_INTERNET_021', 5021);
+define('PAYMENT_METHOD_BANK_INTERNET_BANK24', 5022);
+define('PAYMENT_METHOD_BANK_INTERNET_PRIVAT24', 5023);
+define('PAYMENT_METHOD_BANK_INTERNET_SBERBANK', 5024);
 
 define('PAYMENT_METHOD_BANK_TRANSFER', 6000);
 
@@ -263,6 +303,10 @@ define('PAYMENT_METHOD_OTHER', 9000);
 define('PAYMENT_METHOD_OTHER_EVROSET', 9001);
 define('PAYMENT_METHOD_OTHER_SVYAZNOY', 9002);
 define('PAYMENT_METHOD_OTHER_ROBOKASSA_MOBILE', 9003);
+
+define('PAYMENT_METHOD_GENERIC', 10000);
+define('PAYMENT_METHOD_GENERIC_XSOLLA', 10001);
+define('PAYMENT_METHOD_GENERIC_ROBOKASSA', 10002);
 
 
 // Log system codes
@@ -1013,23 +1057,7 @@ define('SERVER_PLAYER_NAME_CHANGE_NONE', 0);
 define('SERVER_PLAYER_NAME_CHANGE_FREE', 1);
 define('SERVER_PLAYER_NAME_CHANGE_PAY', 2);
 
-define('SN_PAYMENT_REQUEST_UNDEFINED_ERROR', -1);
-define('SN_PAYMENT_REQUEST_OK', 0);
-define('SN_PAYMENT_REQUEST_ERROR_UNIT_AMOUNT', 1);
-define('SN_PAYMENT_REQUEST_ERROR_PAYLINK_UNSUPPORTED', 2);
-define('SN_PAYMENT_REQUEST_IP_WRONG', 3);  // Неправильный IP входящей системы - обычно хак
-define('SN_PAYMENT_REQUEST_COMMAND_UNSUPPORTED', 4); // Неподдерживаемая команда - обычно хак
-define('SN_PAYMENT_REQUEST_SIGNATURE_INVALID', 5); // Неправильная подпись или не сошлась контрольная сумма - обычно хак
-define('SN_MODULE_DISABLED', 6); // Модуль отключен // УНИВЕРСАЛЬНЫЙ ОТВЕТ!
-define('SN_PAYMENT_REQUEST_SERVER_WRONG', 7); // Не совпадает УРЛ сервера
-define('SN_PAYMENT_REQUEST_USER_NOT_FOUND', 8); // Пользователь не найден
-define('SN_PAYMENT_REQUEST_EXTERNAL_ID_WRONG', 9); // Остуствует или неправильный ИД операции в платежной системе
-define('SN_PAYMENT_REQUEST_CURRENCY_AMOUNT_INVALID', 10); // Неправильная сумма платежа
-define('SN_PAYMENT_REQUEST_DATE_INVALID', 11); // Неправильная дата платежа
-define('SN_DB_ERROR_WRITE', 12); // Ошибка записи в БД // УНИВЕРСАЛЬНЫЙ ОТВЕТ!
-define('SN_METAMATTER_ERROR_ADJUST', 13); // Ошибка начисления ММ // УНИВЕРСАЛЬНЫЙ ОТВЕТ!
-define('SN_PAYMENT_REQUEST_INTERNAL_ID_WRONG', 14); // Остуствует или неправильный внутренний ИД операции
-define('SN_PAYMENT_REQUEST_MM_AMOUNT_INVALID', 15); // Неправильное количеств ММ в платеже
+
 
 
 define('FLT_EXPEDITION_OUTCOME_NONE', 0);
