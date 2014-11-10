@@ -58,6 +58,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   margin-top: 28px;
   margin-right: 10px;
   text-align: left;
+  z-index: 999;
 }
 
 #left_menu_show {
