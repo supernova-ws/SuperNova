@@ -1,5 +1,52 @@
 <!-- IF .menu -->
-  <table cellspacing="0" cellpadding="0" id="left_menu" align="left" style="margin-right: 10px" class="c_l">
+<script type="text/javascript">
+  sn_timers.unshift({'id': 'menu_admin_server_time', 'type': 2, 'active': true, 'start_time': {TIME_NOW}, options: 3});
+
+  var MENU_HIDDEN = "{MENU_START_HIDE}" ? 1 : 0;
+  var LA_menu_show = "{LA_menu_show}";
+  var LA_menu_hide = "{LA_menu_hide}";
+  var LA_menu_unpin = "{LA_menu_unpin}";
+  var LA_menu_pin = "{LA_menu_pin}";
+  var SN_COOKIE = "{D_SN_COOKIE}";
+  var SN_ROOT_RELATIVE = "{D_SN_ROOT_RELATIVE}";
+
+  jQuery(document).ready(function(){
+    if(MENU_HIDDEN) {
+      jQuery('#left_menu').attr('menu_hidden', '1');
+    }
+    /*
+     jQuery('#left_menu th a').button().addClass('ui-textfield').each(function(){
+     // $(this).css('width', $(this).css('width') - 40);
+     $(this).width($(this).width() + 20);
+     console.log($(this).width());
+     });
+     */
+  });
+
+</script>
+
+  <!-- IF MENU_START_HIDE -->
+  <style type="text/css">
+    #left_menu {
+      display: none;
+      position: fixed;
+    }
+  </style>
+    <!-- DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_pin}' -->
+    <!-- DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_show}' -->
+  <!-- ELSE -->
+    <!-- DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_unpin}' -->
+    <!-- DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_hide}' -->
+  <!-- ENDIF -->
+
+  <input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" />
+
+  <table cellspacing="0" cellpadding="0" id="left_menu" class="c_l">
+    <tr><th>
+
+      <input type="button" id="left_menu_pin" value="{$MENU_START_BUTTON_PIN}"/>
+      <!--position: fixed; left: 0; top: 30px; float: left;-->
+    </th></tr>
   <!-- BEGIN menu -->
     <tr><!-- IF menu.LEVEL == 'header' --><!-- DEFINE $TX = 'th' --><!-- ELSE --><!-- DEFINE $TX = 'td' --><!-- ENDIF -->
       <{$TX}
@@ -38,8 +85,4 @@
 </td>
 <td>&nbsp;</td>
 <td width="100%" valign="top" align="center"><div style="margin: 0 auto">
-
-<script type="text/javascript"><!--
-sn_timers.unshift({'id': 'menu_admin_server_time', 'type': 2, 'active': true, 'start_time': {TIME_NOW}, options: 3});
-// --></script>
 <!-- ENDIF -->

@@ -1,3 +1,21 @@
+/* Menu ------------------------------------------------------------------------- */
+#left_menu {
+  margin-top: 28px;
+  margin-right: 10px;
+  text-align: left;
+}
+
+#left_menu_show {
+  position: fixed;
+  left: 0;
+  top: 0;
+  float: left;
+  width: 142px;
+  z-index: 9999;
+}
+
+
+/* Unit purchase --------------------------------------------------------------- */
 #unit_table {
   width: 530px;
 }
@@ -80,9 +98,193 @@
   line-height: 90%;
 }
 
-.gather_resources {
-}
-
-.ov_planet_fill_bar{
+.ov_planet_fill_bar {
   position: relative; width: 100%; height: 15px; border: 1px solid rgb(153, 153, 255);
 }
+
+
+/* Admin interface - userlist ------------------------------------------------ */
+#user_list {
+  white-space: nowrap;
+}
+#user_list th {
+  text-align: center;
+}
+#user_list tr td:first-child, #user_list tr td:nth-child(3) {
+  text-align: right;
+}
+#user_list tr td:first-child, #user_list tr td:nth-child(2) {
+  cursor: pointer;
+}
+#user_list tr td:first-child:hover, #user_list tr td:nth-child(2):hover {
+  background-color: yellow;
+}
+
+
+
+
+
+
+/* Chat ---------------------------------------------------------------- */
+/*
+#chat_command_menu div:not(:first-child):not(:last-child):hover {
+  background-color: darkgoldenrod;
+}
+*/
+/* Shoutbox */
+#shoutbox {
+  background-color: black;
+}
+#shoutbox > table {
+  border: 0;
+  padding: 0;
+  background-color: black;
+  margin: 3px 0;
+  border-collapse: collapse;
+  width: 100%;
+}
+#shoutbox > table > tbody > tr {
+  background-color: black;
+}
+#shoutbox > table > tbody > tr > td {
+  border: 0;
+  padding: 0;
+  background-color: black;
+  text-align: left;
+  vertical-align: top;
+}
+#shoutbox > table > tbody > tr > td:not(:last-child) {
+  white-space: nowrap;
+}
+#shoutbox > table > tbody > tr > td:last-child {
+  width: 100%;
+  padding-left: 2px;
+}
+#shoutbox img {
+  vertical-align: top;
+  margin: 0 1px 0 0;
+}
+#shoutbox .chat_private {
+  color: lightblue; font-style: italic;
+}
+#shoutbox span {
+  vertical-align: top;
+}
+
+/* Nick colors in chat */
+.chat_nick_whisper, .chat_nick_msg {
+  border-bottom: 1px dashed;
+  font-weight: bold;
+  cursor: pointer;
+}
+.player_nick_award, .player_nick_race {
+  cursor: pointer;
+}
+
+/* Input elements - color, smile, text, send button */
+#chat_color_button, #chat_smile_point, #chat_message_inputs #msg, #chat_message_inputs #msg, #chat_message_inputs #send {
+  vertical-align: top;
+  display: inline-block;
+  margin: 0 5px;
+}
+#chat_smile_point {
+  width: 24px;
+  height: 24px;
+}
+#chat_message_inputs #msg, #chat_message_inputs #msg {
+  background-color: black;
+  width: 50%;
+}
+#chat_message_inputs #send {
+  width: 100px;
+}
+#chat_message_inputs {
+  vertical-align: top;
+}
+#chat_color_button div { /* Colored ABCDEFG */
+  display: inline-block;
+}
+
+
+/* Popups - color select, smile select, tooltip and admin command menu */
+#chat_color_select, #chat_message_smiles2, #chat_command_menu, #chat_muted_tooltip {
+  display: none;
+  background-color: #233452;
+  vertical-align: top;
+  text-align: center;
+  padding: 4px;
+  border: 1px solid;
+}
+#chat_color_select {
+  max-width: 280px;
+}
+#chat_message_smiles2 {
+  max-width: 380px;
+}
+#chat_command_menu {
+  max-width: 360px;
+}
+#chat_muted_tooltip {
+  max-width: 300px;
+}
+#chat_muted_tooltip img, #chat_command_menu img {
+  vertical-align: top;
+}
+
+/* Popup internal elements - color buttons, smile buttons, command length buttons */
+#chat_color_select div, #chat_message_smiles2 div, #chat_command_menu div:not(:first-child):not(:last-child) {
+  margin: 2px;
+  border: 1px solid;
+  vertical-align: top;
+  display: inline-block;
+}
+#chat_message_smiles2 div {
+  width: 54px;
+  height: 54px;
+
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+#chat_message_smiles2 div img {
+  /*  display: inline-block;*/
+  position: relative;
+  top: 50%;
+  -ms-transform: translateY(-51%);
+  -webkit-transform: translateY(-51%);
+  -o-transform: translateY(-51%);
+  -moz-transform: translateY(-51%);
+  transform: translateY(-51%);
+}
+
+
+#chat_command_menu div:not(:first-child):not(:last-child) {
+  width: 80px;
+}
+#chat_command_menu div:last-child {
+  margin-top: 5px;
+}
+
+
+#chat_color_select div:first-child, #chat_color_button div:first-child {
+  color: cyan;
+}
+#chat_color_select div:nth-child(2), #chat_color_button div:nth-child(2) {
+  color: yellow;
+}
+#chat_color_select div:nth-child(3), #chat_color_button div:nth-child(3) {
+  color: green;
+}
+#chat_color_select div:nth-child(4), #chat_color_button div:nth-child(4) {
+  color: pink;
+}
+#chat_color_select div:nth-child(5), #chat_color_button div:nth-child(5) {
+  color: maroon;
+}
+#chat_color_select div:nth-child(6), #chat_color_button div:nth-child(6) {
+  color: orange;
+}
+#chat_color_select div:nth-child(7), #chat_color_button div:nth-child(7) {
+  color: white;
+}
+

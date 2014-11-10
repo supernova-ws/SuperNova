@@ -171,6 +171,7 @@ function tpl_render_menu()
     'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
     'USER_IMPERSONATOR'   => is_array($user_impersonator),
     'PAYMENT'             => sn_module_get_active_count('payment'),
+    'MENU_START_HIDE'     => isset($_COOKIE[SN_COOKIE . '_menu_hidden']) && $_COOKIE[SN_COOKIE . '_menu_hidden'],
   ));
 
   if(IN_ADMIN === true && $user['authlevel'] > 0)
@@ -202,7 +203,6 @@ function tpl_render_menu()
 }
 
 function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true){$func_args = func_get_args();return sn_function_call('display', $func_args);}
-
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
   global $link, $debug, $user, $user_impersonator, $planetrow, $time_now, $config, $lang, $template_result, $time_diff;
@@ -248,26 +248,18 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   ));
   displayP(parsetemplate($template));
 
-  if($isDisplayMenu)
-  {
+  if($isDisplayMenu && !isset($_COOKIE['menu_disable'])) {
     $AdminPage = $AdminPage ? $user['authlevel'] : 0;
     displayP(parsetemplate(tpl_render_menu($AdminPage)));
   }
 
-//  echo '<td class="c_c" valign="top"><center>';
   if($topnav)
   {
     displayP(parsetemplate(tpl_render_topnav($user, $planetrow)));
   }
 
-  if($isDisplayMenu)
-  {
-//    echo '<div id="page_body">';
-  }
-//  echo '<center>';
   displayP(parsetemplate(gettemplate('_content_header', true)));
 
-//  echo '<tr><td class="c_c" valign="top"><div class="c_c" style="margin:0 auto" id="main_content_center">';
   if(!is_array($page))
   {
     $page = array($page);

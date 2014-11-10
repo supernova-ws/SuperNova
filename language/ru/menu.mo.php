@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a9.18
+* @version 39a18.0
 *
 */
 
@@ -121,4 +121,9 @@ $a_lang_array = (array(
   'menu_races' => 'Родные миры',
   'menu_metamatter' => 'Метаматерия',
 
+  'menu_hide' => 'Спрятать меню',
+  'menu_show' => 'Показать меню',
+
+  'menu_pin' => 'Закрепить меню',
+  'menu_unpin' => 'Открепить меню',
 ));
