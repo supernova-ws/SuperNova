@@ -506,36 +506,26 @@ function sn_tpl_render_topnav(&$user, $planetrow)
   return $template;
 }
 
-function displayP($template)
-{
-  if(is_object($template))
-  {
-    if(!$template->parsed)
-    {
+function displayP($template) {
+  if(is_object($template)) {
+    if(!$template->parsed) {
       parsetemplate($template);
     }
 
-    foreach($template->files as $section => $filename)
-    {
+    foreach($template->files as $section => $filename) {
       $template->display($section);
     }
-  }
-  else
-  {
+  } else {
     print($template);
   }
 }
 
-function parsetemplate($template, $array = false)
-{
-  if(is_object($template))
-  {
+function parsetemplate($template, $array = false) {
+  if(is_object($template)) {
     global $time_now, $user;
 
-    if($array)
-    {
-      foreach($array as $key => $data)
-      {
+    if($array) {
+      foreach($array as $key => $data) {
         $template->assign_var($key, $data);
       }
     }
@@ -544,19 +534,18 @@ function parsetemplate($template, $array = false)
 
     $template->assign_vars(array(
       'dpath'         => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
-      'tpath'         => $tmpl_name,
-      'SN_ROOT_PATH'  => SN_ROOT_VIRTUAL,
-      '-path_prefix-' => SN_ROOT_VIRTUAL,
+      // 'tpath'         => $tmpl_name,
+      // 'SN_ROOT_PATH'  => SN_ROOT_VIRTUAL,
+      // '-path_prefix-' => SN_ROOT_VIRTUAL,
       'TIME_NOW'      => $time_now,
       'USER_AUTHLEVEL'=> isset($user['authlevel']) ? $user['authlevel'] : -1,
+      'SN_GOOGLE'     => defined('SN_GOOGLE'),
     ));
 
     $template->parsed = true;
 
     return $template;
-  }
-  else
-  {
+  } else {
     $search[] = '#\{L_([a-z0-9\-_]*?)\[([a-z0-9\-_]*?)\]\}#Ssie';
     $replace[] = '((isset($lang[\'\1\'][\'\2\'])) ? $lang[\'\1\'][\'\2\'] : \'{L_\1[\2]}\');';
 
@@ -582,14 +571,12 @@ function gettemplate($files, $template = false, $template_path = false)
     return sys_file_read(TEMPLATE_DIR . '/' . $files . $template_ex);
   }
 
-  if(is_string($files))
-  {
+  if(is_string($files)) {
 //    $files = array('body' => $files);
     $files = array(basename($files) => $files);
   }
 
-  if(!is_object($template))
-  {
+  if(!is_object($template)) {
     $template = new template();
   }
   //$template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
@@ -597,8 +584,7 @@ function gettemplate($files, $template = false, $template_path = false)
   $tmpl_name = gettemplatename($user['dpath']);
   $template->set_custom_template(($template_path ? $template_path : SN_ROOT_PHYSICAL . 'design/templates/') . $tmpl_name . '/', $tmpl_name, TEMPLATE_DIR);
 
-  foreach($files as &$filename)
-  {
+  foreach($files as &$filename) {
     $filename = $filename . $template_ex;
   }
 

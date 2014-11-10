@@ -60,8 +60,7 @@ else
   // print('Производится обновление сервера. Ждите...');die();
 }
 
-if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false)
-{
+if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false) {
   define('SN_GOOGLE', true);
 }
 
