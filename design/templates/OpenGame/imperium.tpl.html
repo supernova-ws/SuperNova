@@ -96,8 +96,8 @@
       <!-- ELSE -->
         <!-- DEFINE $FIELD_COLOR = 'positive' -->
       <!-- ENDIF -->
-      <td>
-        <a href="resources.php?cp={planet.ID}">{planet.METAL_CUR}</a><br />
+      <td<!-- IF planet.ID --> go="res" planet_id="{planet.ID}"<!-- ENDIF -->>
+        {planet.METAL_CUR}<br />
         <span class="{$FIELD_COLOR}">{planet.METAL_PROD}</span>
       </td>
     <!-- END planet -->
@@ -114,8 +114,8 @@
       <!-- ELSE -->
         <!-- DEFINE $FIELD_COLOR = 'positive' -->
       <!-- ENDIF -->
-      <td>
-        <a href="resources.php?cp={planet.ID}">{planet.CRYSTAL_CUR}</a><br />
+      <td<!-- IF planet.ID --> go="res" planet_id="{planet.ID}"<!-- ENDIF -->>
+        {planet.CRYSTAL_CUR}<br />
         <span class="{$FIELD_COLOR}">{planet.CRYSTAL_PROD}</span>
       </td>
     <!-- END planet -->
@@ -132,16 +132,16 @@
       <!-- ELSE -->
         <!-- DEFINE $FIELD_COLOR = 'positive' -->
       <!-- ENDIF -->
-      <td>
-        <a href="resources.php?cp={planet.ID}">{planet.DEUTERIUM_CUR}</a><br /><span class="{$FIELD_COLOR}">{planet.DEUTERIUM_PROD}</span>
+      <td<!-- IF planet.ID --> go="res" planet_id="{planet.ID}"<!-- ENDIF -->>
+        {planet.DEUTERIUM_CUR}<br /><span class="{$FIELD_COLOR}">{planet.DEUTERIUM_PROD}</span>
       </td>
     <!-- END planet -->
   </tr>
   <tr class="c_c">
     <td>{L_sys_energy}<br>{L_imp_production}</td>
     <!-- BEGIN planet -->
-    <td>
-      <a href="resources.php?cp={planet.ID}">{planet.ENERGY_CUR}</a><br />
+    <td<!-- IF planet.ID --> go="res" planet_id="{planet.ID}"<!-- ENDIF -->>
+      {planet.ENERGY_CUR}<br />
       {planet.ENERGY_MAX}
     </td>
     <!-- END planet -->
@@ -152,7 +152,7 @@
     <!-- IF prods.MODE -->
       <td width="{$CELL_HEADER}">{prods.NAME}</td>
     <!-- ELSE -->
-      <th class="c_l" colspan="{amount}">{prods.NAME}<input type="submit" name="save_production" value="{L_sys_save}" style="float: right;"></th>
+      <th colspan="{amount}"><span>{prods.NAME}</span><input type="submit" name="save_production" value="{L_sys_save}" /></th>
     <!-- ENDIF -->
 
     <!-- BEGIN planet -->
@@ -169,56 +169,34 @@
         <!-- DEFINE $PLUS_CLASS = 'negative' -->
       <!-- ENDIF -->
 
-      <td>
-        <div class="<!-- IF prods.planet.FACTORY && prods.planet.PERCENT != -1 -->empire_cell_double<!-- ELSE -->empire_cell_single<!-- ENDIF -->">
-        <!-- IF prods.planet.PERCENT >= 0 -->
-          <!-- IF prods.planet.PERCENT <= 0 -->
-            <!-- DEFINE $FIELD_COLOR = '' -->
-          <!-- ELSEIF prods.planet.PERCENT < 50 -->
-            <!-- DEFINE $FIELD_COLOR = 'negative_bg' -->
-          <!-- ELSEIF prods.planet.PERCENT < 80 -->
-            <!-- DEFINE $FIELD_COLOR = 'warning_bg' -->
-          <!-- ELSEIF prods.planet.PERCENT < 100 -->
-            <!-- DEFINE $FIELD_COLOR = 'neutral_bg' -->
-          <!-- ELSE -->
-            <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
+      <td <!-- IF prods.planet.FACTORY && prods.planet.PERCENT != -1 -->ecd<!-- ELSE -->ecs<!-- ENDIF -->>
+          <!-- IF prods.planet.PERCENT >= 0 -->
+            <!-- IF prods.planet.PERCENT <= 0 -->
+              <!-- DEFINE $FIELD_COLOR = '' -->
+            <!-- ELSEIF prods.planet.PERCENT < 50 -->
+              <!-- DEFINE $FIELD_COLOR = 'negative_bg' -->
+            <!-- ELSEIF prods.planet.PERCENT < 80 -->
+              <!-- DEFINE $FIELD_COLOR = 'warning_bg' -->
+            <!-- ELSEIF prods.planet.PERCENT < 100 -->
+              <!-- DEFINE $FIELD_COLOR = 'neutral_bg' -->
+            <!-- ELSE -->
+              <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
+            <!-- ENDIF -->
+            <span style="width: {prods.planet.PERCENT}%;" class="{$FIELD_COLOR}"></span>
           <!-- ENDIF -->
-          <span style="width: {prods.planet.PERCENT}%;" class="empire_cell_filler {$FIELD_COLOR}"></span>
-        <!-- ENDIF -->
-        <span class="empire_cell">
-          {prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><span class="neutral">{prods.planet.LEVEL_PLUS_YELLOW}</span><!-- ENDIF -->
-          <!-- IF prods.planet.FACTORY && prods.planet.PERCENT >= 0 -->
-            <br />
-            <select name="percent[{prods.ID}][{prods.planet.ID}]" <!-- IF prods.planet.ID == 0 -->selector="{prods.ID}"<!-- ENDIF -->>
-              <!-- IF prods.planet.ID == 0 -->
-              <option>-</option>
-              <!-- ENDIF -->
-
-              <!-- BEGIN !percent -->
-              <option value="{percent.PERCENT}"<!-- IF prods.planet.PERCENT === percent.PERCENT --> selected<!-- ENDIF -->>{percent.PERCENT}%</option>
-              <!-- END !percent -->
-            </select>
-          <!-- ENDIF -->
-        </span>
-        </div>
+          <span>
+            {prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><span class="neutral">{prods.planet.LEVEL_PLUS_YELLOW}</span><!-- ENDIF -->
+            <!-- IF prods.planet.FACTORY && prods.planet.PERCENT >= 0 -->
+              <br />
+              <select name="percent[{prods.ID}][{prods.planet.ID}]" <!-- IF prods.planet.ID == 0 -->selector="{prods.ID}"<!-- ENDIF -->>
+                <!-- IF prods.planet.ID == 0 --><option>-</option><!-- ENDIF -->
+                <!-- BEGIN !percent --><option value="{percent.PERCENT}"<!-- IF prods.planet.PERCENT === percent.PERCENT --> selected<!-- ENDIF -->>{percent.PERCENT}%</option><!-- END !percent -->
+              </select>
+            <!-- ENDIF -->
+          </span>
       </td>
     <!-- END planet -->
   </tr>
   <!-- END prods -->
 </tbody></table>
 </form>
-
-<script type="text/javascript">
-  /*
-  jQuery(".empire_number").click(function(){
-    document.location = jQuery(this).attr('url') ? jQuery(this).attr('url') : ('buildings.php?cp=' + jQuery(this).attr('planet_id') + '&mode=' + jQuery(this).parent().parent().parent().parent().attr('prod_mode'));
-  });
-  */
-
-  jQuery("select[selector]").change(function(){
-    if(jQuery(this).val() != '-')
-    {
-      jQuery("select[name^='percent[" + jQuery(this).attr('selector') + "][']").val(jQuery(this).val());
-    }
-  });
-</script>

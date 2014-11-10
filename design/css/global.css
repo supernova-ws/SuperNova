@@ -287,54 +287,13 @@ table {margin-left: auto; margin-right: auto}
   color: #33CCFF;
 }
 
-.element_fill_wrap
-{
+.element_fill_wrap {
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%
 }
-
-.empire_cell_single, .empire_cell_double
-{
-  position: relative;
-}
-
-.empire_cell_single
-{
-  height: 13px;
-}
-
-.empire_cell_double
-{
-  height: 35px;
-}
-
-.empire_cell_filler
-{
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-}
-
-.empire_cell
-{
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  vertical-align: middle;
-  text-align: center;
-}
-
-.empire_number
-{
-  cursor: pointer;
-}
-
 
 
 .planet_list_top87 {

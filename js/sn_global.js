@@ -12,6 +12,14 @@ jQuery(document).on('click', '.player_nick_race', function(e){
   document.location.assign("index.php?page=races");
 });
 
+/* Empire ------------------------------------------------------------------------------------------ */
+jQuery(document).on('change', "#empire_overview select[selector]", function(){
+  if(jQuery(this).val() != '-') {
+    jQuery("select[name^='percent[" + jQuery(this).attr('selector') + "][']").val(jQuery(this).val());
+  }
+});
+
+
 /* Left menu - OpenGame template specific ---------------------------------------------------------- */
 jQuery(document).on('click mouseenter', "#left_menu_show", function(){
   left_menu = jQuery('#left_menu');
@@ -28,7 +36,6 @@ jQuery(document).on('mouseleave', "#left_menu[menu_hidden]", function(){
   jQuery('#left_menu').css({'display': 'none'});
   jQuery('#left_menu_show').val(LA_menu_show);
 });
-
 jQuery(document).on('click', "#left_menu_pin", function(){
   left_menu = jQuery('#left_menu');
   if(MENU_HIDDEN) {
@@ -43,6 +50,100 @@ jQuery(document).on('click', "#left_menu_pin", function(){
   document.cookie = SN_COOKIE + "_menu_hidden=" + (MENU_HIDDEN ? 1 : 0) + "; path=" + SN_ROOT_RELATIVE + "; expires=" + date.toUTCString();
 });
 
+// Хэндлеры для слайдеров
+jQuery(document).on('click', "input:button[id$='_ai_zero']", function(event, ui) {
+  jQuery("#" + jQuery(this).attr('parent_id')).val(0).trigger('change', [event, ui]);
+});
+jQuery(document).on('click', "input:button[id$='ai_max']", function(event, ui) {
+  field_name = '#' + jQuery(this).attr('parent_id');
+  jQuery(field_name).val(parseInt(jQuery(field_name + 'slide').slider("option", "max"))).trigger('change', [event, ui]);
+});
+jQuery(document)
+  .on('mousedown', "input:button[id$='ai_dec'],input:button[id$='ai_inc']", function(event, ui) {
+    that = jQuery(this);
+    parent = jQuery('#' + that.attr('parent_id'));
+    if(parent.is('[disabled]') || parent.is('[slider_ticks]')) {
+      return;
+    }
+
+    slider = jQuery("#" + that.attr('parent_id') + 'slide');
+
+    parent.attr('slider_ticks', 0)
+      .attr('step_now', slider.slider('option', 'step'))
+      .attr('increase', that.attr('id') == parent.attr('id') + '_ai_inc' ? 1 : -1);
+    sn_ainput_mouselerate_jquery();
+  })
+  .on('mouseup', "input:button[id$='ai_dec'],input:button[id$='ai_inc']", function(event, ui) {
+    parent = jQuery('#' + jQuery(this).attr('parent_id'));
+    clearTimeout(parent.attr('timeout'));
+    parent.removeAttr('slider_ticks').removeAttr('step_now').removeAttr('increase').removeAttr('timeout');
+  })
+;
+jQuery(document)
+  .on('keyup change', "[ainput]", function(event, ui) {
+    if(ui != undefined && ui.type == 'slidechange') {
+      return;
+    }
+    slider = jQuery('#' + jQuery(this).attr('id') + 'slide');
+    value = (value = parseInt(jQuery(this).val())) ? value : 0;
+    value = value > (max_slide = parseInt(slider.slider("option", "max"))) ? max_slide :
+      (value < (min_slide = parseInt(slider.slider("option", "min"))) ? min_slide : value);
+
+    jQuery(this).val(value);
+    slider.slider("value", value);
+  })
+  .on('focus', "[ainput]", function(event, ui) {
+    if(this.value == '0') this.value='';
+    this.select();
+  })
+  .on('blur', "[ainput]", function(event, ui) {
+    that = jQuery(this);
+    that.val(parseInt(that.val()) ? that.val() : 0);
+  })
+;
+// Спецхэндлер - если мышку отпустят за пределом элемента
+jQuery(document).on('mouseup', function(event, ui) {
+  jQuery('[slider_ticks]').each(function() {
+    clearTimeout(jQuery(this).attr('timeout'));
+    jQuery(this).removeAttr('slider_ticks').removeAttr('step_now').removeAttr('increase').removeAttr('timeout');
+  });
+  // TODO - Код для старых слайдеров. Убрать, когда все старые слайдеры не будут использоваться
+  if(accelerated) {
+    clearTimeout(accelerated['timeout']);
+    accelerated = undefined;
+  }
+});
+
+// Хэндлеры других специальных элементов
+// Элементы редиректа
+jQuery(document).on('click', "[go]", function() {
+  planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
+  unit_id = (unit_id = parseInt(jQuery(this).attr('unit_id'))) ? unit_id : parseInt(jQuery(this).parent().attr('unit_id'));
+  mode = jQuery(this).attr('mode');
+  switch(jQuery(this).attr('go')) {
+    case 'info': page = 'infos'; break;
+    // case 'galaxy': page = 'galaxy'; break;
+    case 'flying': page = 'flying_fleets'; break;
+    case 'fleet': page = 'fleet'; break;
+    case 'build': page = 'buildings'; break;
+    case 'res': page = 'resources'; break;
+    default: page = 'overview';
+  }
+  document.location = page + '.php?' + (planet_id ? 'cp=' + planet_id + (mode ? '&' : '') : '')
+  + (mode ? 'mode=' + mode : '')
+  + (unit_id ? 'gid=' + unit_id + (typeof ALLY_ID !== 'undefined' && parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : ''): '')
+  ;
+});
+// Сбор ресурсов
+jQuery(document).on('click', ".gather_resources", function(){
+  that = $(this);
+  document.location = 'fleet.php?fleet_page=5' + (typeof PLANET_ID !== 'undefined' && parseInt(PLANET_ID) ? '&cp=' + parseInt(PLANET_ID) : '')
+  + (parseFloat(that.attr('metal')) ? '&metal=' + parseFloat(that.attr('metal')) : '')
+  + (parseFloat(that.attr('crystal')) ? '&crystal=' + parseFloat(that.attr('crystal')) : '')
+  + (parseFloat(that.attr('deuterium')) ? '&deuterium=' + parseFloat(that.attr('deuterium')) : '')
+  ;
+});
+
 jQuery(document).ready(function() {
   // Натягиваем скины на элементы ввода
   inputs = jQuery("input");
@@ -52,99 +153,6 @@ jQuery(document).ready(function() {
   // jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield');
 
   calc_elements();
-
-  // Хэндлеры для слайдеров
-  jQuery("input:button[id$='_ai_zero']").on('click', function(event, ui) {
-    jQuery("#" + jQuery(this).attr('parent_id')).val(0).trigger('change', [event, ui]);
-  });
-  jQuery("input:button[id$='ai_max']").on('click', function(event, ui) {
-    field_name = '#' + jQuery(this).attr('parent_id');
-    jQuery(field_name).val(parseInt(jQuery(field_name + 'slide').slider("option", "max"))).trigger('change', [event, ui]);
-  });
-  jQuery("input:button[id$='ai_dec'],input:button[id$='ai_inc']")
-    .on('mousedown', function(event, ui) {
-      that = jQuery(this);
-      parent = jQuery('#' + that.attr('parent_id'));
-      if(parent.is('[disabled]') || parent.is('[slider_ticks]')) {
-        return;
-      }
-
-      slider = jQuery("#" + that.attr('parent_id') + 'slide');
-
-      parent.attr('slider_ticks', 0)
-        .attr('step_now', slider.slider('option', 'step'))
-        .attr('increase', that.attr('id') == parent.attr('id') + '_ai_inc' ? 1 : -1);
-      sn_ainput_mouselerate_jquery();
-    })
-    .on('mouseup', function(event, ui) {
-      parent = jQuery('#' + jQuery(this).attr('parent_id'));
-      clearTimeout(parent.attr('timeout'));
-      parent.removeAttr('slider_ticks').removeAttr('step_now').removeAttr('increase').removeAttr('timeout');
-    })
-  ;
-  jQuery("[ainput]")
-    .on('keyup change', function(event, ui) {
-      if(ui != undefined && ui.type == 'slidechange') {
-        return;
-      }
-      slider = jQuery('#' + jQuery(this).attr('id') + 'slide');
-      value = (value = parseInt(jQuery(this).val())) ? value : 0;
-      value = value > (max_slide = parseInt(slider.slider("option", "max"))) ? max_slide :
-        (value < (min_slide = parseInt(slider.slider("option", "min"))) ? min_slide : value);
-
-      jQuery(this).val(value);
-      slider.slider("value", value);
-    })
-    .on('focus', function(event, ui) {
-      if(this.value == '0') this.value='';
-      this.select();
-    })
-    .on('blur', function(event, ui) {
-      that = jQuery(this);
-      that.val(parseInt(that.val()) ? that.val() : 0);
-    })
-  ;
-  // Спецхэндлер - если мышку отпустят за пределом элемента
-  jQuery(document).on('mouseup', function(event, ui) {
-    jQuery('[slider_ticks]').each(function() {
-      clearTimeout(jQuery(this).attr('timeout'));
-      jQuery(this).removeAttr('slider_ticks').removeAttr('step_now').removeAttr('increase').removeAttr('timeout');
-    });
-    // TODO - Код для старых слайдеров. Убрать, когда все старые слайдеры не будут использоваться
-    if(accelerated) {
-      clearTimeout(accelerated['timeout']);
-      accelerated = undefined;
-    }
-  });
-
-  // Хэндлеры других специальных элементов
-  jQuery(document).on('click', "[go]", function() {
-    planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
-    unit_id = (unit_id = parseInt(jQuery(this).attr('unit_id'))) ? unit_id : parseInt(jQuery(this).parent().attr('unit_id'));
-    mode = jQuery(this).attr('mode');
-    switch(jQuery(this).attr('go')) {
-      case 'info': page = 'infos'; break;
-      // case 'galaxy': page = 'galaxy'; break;
-      case 'flying': page = 'flying_fleets'; break;
-      case 'fleet': page = 'fleet'; break;
-      case 'build': page = 'buildings'; break;
-      default: page = 'overview';
-    }
-    document.location = page + '.php?' + (planet_id ? 'cp=' + planet_id + (mode ? '&' : '') : '')
-      + (mode ? 'mode=' + mode : '')
-      + (unit_id ? 'gid=' + unit_id + (typeof ALLY_ID !== 'undefined' && parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : ''): '')
-    ;
-  });
-
-  jQuery(document).on('click', ".gather_resources", function(){
-    that = $(this);
-    document.location = 'fleet.php?fleet_page=5' + (typeof PLANET_ID !== 'undefined' && parseInt(PLANET_ID) ? '&cp=' + parseInt(PLANET_ID) : '')
-      + (parseFloat(that.attr('metal')) ? '&metal=' + parseFloat(that.attr('metal')) : '')
-      + (parseFloat(that.attr('crystal')) ? '&crystal=' + parseFloat(that.attr('crystal')) : '')
-      + (parseFloat(that.attr('deuterium')) ? '&deuterium=' + parseFloat(that.attr('deuterium')) : '')
-    ;
-  });
-
 
   // Запуск таймеров
   if(typeof sn_timer === 'function') {

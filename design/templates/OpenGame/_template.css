@@ -1,3 +1,58 @@
+/* Empire overview -------------------------------------------------------------- */
+[go] {
+  cursor: pointer;
+}
+
+td[go]:hover { /* Skin specific */
+  background-color: #415680;
+}
+
+[name=save_production] {
+  float: right;
+}
+
+tr[prod_mode] > th:first-child {
+  text-align: left;
+  position: relative;
+}
+
+tr[prod_mode] > td:first-child {
+  text-align: center;
+}
+
+tr[prod_mode] > th:first-child > span  {
+  position: absolute;
+  top: 6px;
+}
+
+tr[prod_mode] > :not(:first-child) {
+  text-align: center;
+  position: relative;
+  z-index: 100;
+}
+/* Production builder filler - i.e. production % for mine etc */
+tr[prod_mode] > :not(:first-child) > span[style] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: 200;
+}
+
+tr[prod_mode] > [ecs]:not(:first-child) {
+/* Standard single-height empire cell */
+  height: 13px;
+}
+/* Double-height empire cell - i.e. for Mines */
+tr[prod_mode] > [ecd]:not(:first-child), tr[prod_mode] > [ecd]:not(:first-child) > span[style] {
+  height: 35px;
+}
+tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire cell */
+  z-index: 300;
+  position: relative;
+}
+
+
 /* Menu ------------------------------------------------------------------------- */
 #left_menu {
   margin-top: 28px;
