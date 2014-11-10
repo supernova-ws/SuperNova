@@ -135,6 +135,17 @@
 #shoutbox {
   background-color: black;
 }
+#shoutbox img {
+  vertical-align: top;
+  margin: 0 1px 0 0;
+}
+#shoutbox .chat_private {
+  color: lightblue; font-style: italic;
+}
+#shoutbox span {
+  vertical-align: top;
+}
+/* Chat messages on table */
 #shoutbox > table {
   border: 0;
   padding: 0;
@@ -160,15 +171,21 @@
   width: 100%;
   padding-left: 2px;
 }
-#shoutbox img {
-  vertical-align: top;
-  margin: 0 1px 0 0;
+
+/* Chat messages on div */
+#shoutbox > div {
+  margin: 2px 0;
 }
-#shoutbox .chat_private {
-  color: lightblue; font-style: italic;
+#shoutbox > div:after { /* Float clear */
+  content: '';
+  display: block;
+  clear: both;
 }
-#shoutbox span {
-  vertical-align: top;
+#shoutbox > div > div:not(:last-child) { /* All div except message should float left */
+  float: left;
+}
+#shoutbox > div > div:last-child { /* Message itself */
+  overflow: hidden;
 }
 
 /* Nick colors in chat */
@@ -184,20 +201,38 @@
 /* Input elements - color, smile, text, send button */
 #chat_color_button, #chat_smile_point, #chat_message_inputs #msg, #chat_message_inputs #msg, #chat_message_inputs #send {
   vertical-align: top;
-  display: inline-block;
   margin: 0 5px;
 }
+#chat_color_button {
+  float: left;
+}
 #chat_smile_point {
+  float: left;
   width: 24px;
   height: 24px;
 }
-#chat_message_inputs #msg, #chat_message_inputs #msg {
-  background-color: black;
-  width: 50%;
-}
+
 #chat_message_inputs #send {
+  float: right;
   width: 100px;
 }
+
+#chat_msg_wrapper {
+  display: block;
+  overflow: hidden;
+}
+#chat_msg_wrapper:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+#chat_msg_wrapper #msg {
+  background-color: black;
+  width: 100%;
+}
+
+
 #chat_message_inputs {
   vertical-align: top;
 }
@@ -287,4 +322,3 @@
 #chat_color_select div:nth-child(7), #chat_color_button div:nth-child(7) {
   color: white;
 }
-

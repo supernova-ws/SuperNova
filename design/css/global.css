@@ -186,9 +186,9 @@ table {margin-left: auto; margin-right: auto}
   /* border-collapse: collapse;*/
 }
 
-#chat_box
-{
+#chat_box {
   width: 100%;
+  padding-right: 15px;
 }
 
 #copyright
@@ -788,4 +788,3 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
   height: 16px;
   display: inline-block;
 }
-
