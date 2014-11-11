@@ -610,9 +610,22 @@ http://www.decorplanit.com/plugin/ - autoNumeric плагин. Добавить 
 Лог транзакций Альянса
 
 
+Чат-адвансед - поменять позиционирование попапов с цветом и смайлами
+Чат - При открытии одного попапа, закрывать остальные
+
+
+Меню - по mouseenter на кнопку только показывать меню
+
+
+
 
 #ctv
 
+
+
+2014-11-11 23:36:15 39a18.14
+[-] Меню
+    Временно отключен функционал показывания/скрытия меню по событиям mouseenter и mouseleave
 
 
 2014-11-11 23:19:28 39a18.13
@@ -632,7 +645,7 @@ http://www.decorplanit.com/plugin/ - autoNumeric плагин. Добавить 
     Добавлены новые смайлики:
       :ban: :bayan: :censored: :contract: :facepalm: :help: :hmm: :maniac: :panic: :poke: :pray: :whistle:
     Заменены лучшими версиями (в основном - без подкладки белого "креста") смайлики:
-      :clapping: :coffee: :give_rose: :nea: :pardon: :pleasantry: :popcorn: :shout: :sorry: :spiteful:
+      :clap: :coffee: :nea: :popcorn: :rose: :quote: :shout: :sorry: :spiteful: :ups:
 
 
 2014-11-10 14:52:37 39a18.11

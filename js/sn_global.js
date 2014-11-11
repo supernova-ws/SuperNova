@@ -21,7 +21,7 @@ jQuery(document).on('change', "#empire_overview select[selector]", function(){
 
 
 /* Left menu - OpenGame template specific ---------------------------------------------------------- */
-jQuery(document).on('click mouseenter', "#left_menu_show", function(){
+jQuery(document).on('click', "#left_menu_show", function(){ // mouseenter
   left_menu = jQuery('#left_menu');
   if(left_menu.css('display') == 'none') {
     left_menu.css({'display': 'table'});
@@ -32,10 +32,10 @@ jQuery(document).on('click mouseenter', "#left_menu_show", function(){
   }
 });
 // Если меню показано по событию
-jQuery(document).on('mouseleave', "#left_menu[menu_hidden]", function(){
-  jQuery('#left_menu').css({'display': 'none'});
-  jQuery('#left_menu_show').val(LA_menu_show);
-});
+//jQuery(document).on('mouseleave', "#left_menu[menu_hidden]", function(){
+//  jQuery('#left_menu').css({'display': 'none'});
+//  jQuery('#left_menu_show').val(LA_menu_show);
+//});
 jQuery(document).on('click', "#left_menu_pin", function(){
   left_menu = jQuery('#left_menu');
   if(MENU_HIDDEN) {
