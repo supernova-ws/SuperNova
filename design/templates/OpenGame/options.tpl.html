@@ -13,7 +13,6 @@
 
 <form action="index.php?page=options&mode=change" method="post" name="fOptions" enctype="multipart/form-data">
   <div id="tab_container" style="width: 550px;display: none">
-
     <ol>
       <li><a href="#tab_account">{L_opt_account}</a></li>
       <li><a href="#tab_interface">{L_opt_int_options}</a></li>
@@ -22,7 +21,22 @@
 
     <div id="tab_account">
       <table width="100%">
-          <!-- IF ADM_PROTECT_PLANETS -->
+        <!-- IF MENU_CUSTOMIZE -->
+        <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}modules/menu_customize/{D_TEMPLATE_PATH}/menu_customize.js?{C_var_db_update}"></script>
+        <tr>
+          <th class="c_c" colspan="2">
+            {Настройка меню}
+          </th>
+        </tr>
+        <tr>
+          <td class="c_c" colspan="2">
+            <input value="{Настроить меню}" type="button" id="menu_customize" />
+          </td>
+        </tr>
+        <!-- ENDIF -->
+
+
+        <!-- IF ADM_PROTECT_PLANETS -->
         <tr class="c_c">
           <th><label for="adm_pl_prot">{L_opt_adm_planet_prot}</label></th>
           <th><input name="adm_pl_prot" type="checkbox" id="adm_pl_prot" <!-- IF adm_pl_prot -->checked<!-- ENDIF --> /></th>

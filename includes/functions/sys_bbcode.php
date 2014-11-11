@@ -79,6 +79,20 @@ $supernova->design['smiles'] = array(
     ':popcorn:' => 'popcorn',
     ':coctail:' => 'coctail',
     ':coffee:' => 'coffee',
+
+    // ':accordion:' => 'accordion',
+    ':hmm:' => 'hmm',
+    ':facepalm:' => 'facepalm',
+    ':ban:' => 'ban',
+    ':bayan:' => 'bayan',
+    ':censored:' => 'censored',
+    ':contract:' => 'contract',
+    ':help:' => 'help',
+    ':maniac:' => 'maniac',
+    ':panic:' => 'panic',
+    ':poke:' => 'poke',
+    ':pray:' => 'pray',
+    ':whistle:' => 'whistle',
   ),
 );
 
