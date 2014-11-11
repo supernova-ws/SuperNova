@@ -1,3 +1,10 @@
+textarea {
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  border-radius: 4px;
+}
+
 /* Empire overview -------------------------------------------------------------- */
 [go] {
   cursor: pointer;
@@ -305,12 +312,16 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   text-align: center;
   padding: 4px;
   border: 1px solid;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  border-radius: 4px;
 }
 #chat_color_select {
   max-width: 280px;
 }
 #chat_message_smiles2 {
-  max-width: 380px;
+  max-width: 340px;
 }
 #chat_command_menu {
   max-width: 360px;
@@ -330,8 +341,8 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   display: inline-block;
 }
 #chat_message_smiles2 div {
-  width: 54px;
-  height: 54px;
+  width: 50px;
+  height: 40px;
 
   -webkit-transform-style: preserve-3d;
   -moz-transform-style: preserve-3d;
