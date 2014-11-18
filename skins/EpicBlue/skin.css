@@ -173,11 +173,11 @@ div.z
   font-weight          : bold;
 }
 
-a
-{
+a {
   text-decoration      : none;
   font-weight          : bold;
-  color                : #f2f2f2;
+  color: inherit;
+  /* color                : #f2f2f2;*/
 }
 
 a:not(.nohover):hover

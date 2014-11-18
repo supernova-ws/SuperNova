@@ -22,6 +22,8 @@ $sn_menu = array(
     'STYLE'    => 'color: white',              // CSS-class for internal SPAN - to override <A> style. NOT COMPATIBLE WITH SPAN!
     'ALT'      => 'Triolan.COM',               // ALT-tag for image
 
+    'HIDE'     => {0|1},                       // Should be this item hide?
+
     'LOCATION' => '+menu_supernova_logo',      // Special atrtribute for modules' $extra_menu. SHOULD BE USE EXCLUSIVE IN MODULES!
                                                // Format
                                                // [-|+][<menu_item_id>]
@@ -36,6 +38,8 @@ $sn_menu = array(
     'LEVEL' => 'text',
     'CLASS' => 'menu_text_t',
     'ITEM' => "{$config->game_name}<br />{$lang['sys_from']} {$config->server_start_date}",
+    'MOVEABLE' => 2,
+    'HIDEABLE' => 3,
   ),
   'menu_server_logo' => array(
     'LEVEL' => 'text',
@@ -44,31 +48,10 @@ $sn_menu = array(
     'ITEM' => 'design/images/supernova.png',
     'LINK' => '.',
     'ALT' => $config->game_name,
+    'MOVEABLE' => 2,
+    'HIDEABLE' => 3,
   ),
 
-  'menu_admin' => $user['authlevel'] <= 0 ? array() : array(
-    'LEVEL' => 'header',
-//    'TYPE'  => 'lang',
-//    'ITEM'  => 'user_level[AUTH_LEVEL]',
-    'ITEM'  => $lang['user_level'][$user['authlevel']],
-    'LINK'  => 'admin/overview.php',
-  ),
-  'menu_impersonator' => !is_array($user_impersonator) ? array() : array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'sys_impersonate_done',
-    'LINK'  => 'logout.php',
-    'SPAN'  => 'important',
-  ),
-
-  'menu_faq' => !$config->url_faq ? array() : array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'm_faq',
-    'LINK'  => $config->url_faq,
-    'BLANK' => true,
-    'ICON'  => true,
-  ),
 
 /*
   'menu_planet' => array(
@@ -402,6 +385,8 @@ $sn_menu = array(
     'TYPE'  => 'lang',
     'ITEM'  => 'Options',
     'LINK'  => 'index.php?page=options',
+    'MOVEABLE' => 2,
+    'HIDEABLE' => 3,
   ),
 
   'menu_logout' => array(
@@ -409,6 +394,8 @@ $sn_menu = array(
     'TYPE'  => 'lang',
     'ITEM'  => 'Logout',
     'LINK'  => 'logout.php',
+    'MOVEABLE' => 2,
+    'HIDEABLE' => 3,
   ),
 
   'menu_supernova_logo' => array(
@@ -419,12 +406,8 @@ $sn_menu = array(
     'LINK' => 'http://supernova.ws/index-ru.html',
     'ALT' => 'Powered by \'Project "SuperNova.WS"\' engine',
     'BLANK' => true,
-  ),
-
-  'menu_extra' => !$config->advGoogleLeftMenuIsOn ? array() : array(
-    'LEVEL' => 'submenu',
-    'CLASS' => 'c_c',
-    'ITEM'  => $config->advGoogleLeftMenuCode,
+    'MOVEABLE' => 2,
+    'HIDEABLE' => 3,
   ),
 
 /*
@@ -439,6 +422,63 @@ $sn_menu = array(
   ),
 */
 );
+
+if(!empty($user_impersonator)) {
+  $sn_menu_extra += array(
+    'menu_impersonator' => array(
+      'LEVEL' => 'header',
+      'TYPE'  => 'lang',
+      'ITEM'  => 'sys_impersonate_done',
+      'LINK'  => 'logout.php',
+      'SPAN'  => 'important',
+      'LOCATION' => '+menu_server_logo',
+      'MOVEABLE' => 2,
+      'HIDEABLE' => 3,
+    ),
+  );
+}
+
+if($user['authlevel'] > 0) {
+  $sn_menu_extra += array(
+    'menu_admin' => array(
+      'LEVEL' => 'header',
+      'ITEM'  => $lang['user_level'][$user['authlevel']],
+      'LINK'  => 'admin/overview.php',
+      'LOCATION' => '+menu_server_logo',
+      'MOVEABLE' => 2,
+      'HIDEABLE' => 3,
+    ),
+  );
+}
+
+
+if($config->url_faq) {
+  $sn_menu_extra += array(
+    'menu_faq' => array(
+      'LEVEL' => 'submenu',
+      'TYPE'  => 'lang',
+      'ITEM'  => 'm_faq',
+      'LINK'  => $config->url_faq,
+      'BLANK' => true,
+      'ICON'  => true,
+      'LOCATION' => '-menu_planet_overview',
+      'MOVEABLE' => 2,
+      'HIDEABLE' => 3,
+    ),
+  );
+}
+
+if($config->advGoogleLeftMenuIsOn) {
+  $sn_menu_extra += array(
+    'menu_extra' => array(
+      'LEVEL' => 'submenu',
+      'CLASS' => 'c_c',
+      'ITEM'  => $config->advGoogleLeftMenuCode,
+      'MOVEABLE' => 2,
+      'HIDEABLE' => 3,
+    ),
+  );
+}
 
 
 global $sn_version_check_class, $lang, $config, $sn_menu_admin_extra;

@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a18.14');
+define('SN_VERSION', '39a19.0');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1102,3 +1102,15 @@ define('NICK_CLASS_END',      8450);
 define('NICK_HIGHLIGHT_END',  8600);
 
 define('NICK_LAST',           9999);
+
+
+define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_FIXED', 0);
+define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_NORMAL', 1);
+define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_HIDDEN', 2);
+
+define('PLAYER_OPTION_MENU_SORT', 1);
+define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON', 2);
+define('PLAYER_OPTION_MENU_SHOW_ON_BUTTON', 3);
+define('PLAYER_OPTION_MENU_HIDE_ON_BUTTON', 4);
+define('PLAYER_OPTION_MENU_HIDE_ON_LEAVE', 5);
+define('PLAYER_OPTION_MENU_UNPIN_ABSOLUTE', 6);

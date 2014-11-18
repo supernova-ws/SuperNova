@@ -4,6 +4,10 @@ var x = "";
 var e = null;
 
 
+function sn_redirect(url) {
+  document.location.assign(url);
+}
+
 /* CHAT_ADVANCED specific */
 jQuery(document).on('click', '.player_nick_award', function(e){
   document.location.assign("index.php?page=imperator&int_user_id=" + jQuery(this).attr('player_id'));
@@ -17,37 +21,6 @@ jQuery(document).on('change', "#empire_overview select[selector]", function(){
   if(jQuery(this).val() != '-') {
     jQuery("select[name^='percent[" + jQuery(this).attr('selector') + "][']").val(jQuery(this).val());
   }
-});
-
-
-/* Left menu - OpenGame template specific ---------------------------------------------------------- */
-jQuery(document).on('click', "#left_menu_show", function(){ // mouseenter
-  left_menu = jQuery('#left_menu');
-  if(left_menu.css('display') == 'none') {
-    left_menu.css({'display': 'table'});
-    jQuery('#left_menu_show').val(LA_menu_hide);
-  } else {
-    left_menu.css({'display': 'none'});
-    jQuery('#left_menu_show').val(LA_menu_show);
-  }
-});
-// Если меню показано по событию
-//jQuery(document).on('mouseleave', "#left_menu[menu_hidden]", function(){
-//  jQuery('#left_menu').css({'display': 'none'});
-//  jQuery('#left_menu_show').val(LA_menu_show);
-//});
-jQuery(document).on('click', "#left_menu_pin", function(){
-  left_menu = jQuery('#left_menu');
-  if(MENU_HIDDEN) {
-    left_menu.css({'position': 'relative'}).removeAttr('menu_hidden');
-    jQuery('#left_menu_pin').val(LA_menu_unpin);
-  } else {
-    left_menu.css({'position': 'absolute'}).attr('menu_hidden', '1');
-    jQuery('#left_menu_pin').val(LA_menu_pin);
-  }
-  MENU_HIDDEN = ! MENU_HIDDEN;
-  date = new Date( new Date().getTime() + 365 * 24 * 60 * 60 * 1000 );
-  document.cookie = SN_COOKIE + "_menu_hidden=" + (MENU_HIDDEN ? 1 : 0) + "; path=" + SN_ROOT_RELATIVE + "; expires=" + date.toUTCString();
 });
 
 // Хэндлеры для слайдеров

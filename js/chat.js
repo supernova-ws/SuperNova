@@ -33,16 +33,13 @@ function addMessage()
   var color = document.getElementById("chat_color");
   color = color.options[color.selectedIndex].value;
 
-  if(color)
-  {
+  if(color) {
     message = "[c="+color+"]" + message + "[/c]";
   }
 
-  jQuery.post("index.php?page=chat_add", {'ally': ally_id, 'message': message}, function(data)
-    {
-      showMessage();
-    }
-  );
+  jQuery.post("index.php?page=chat_add", {'ally': ally_id, 'message': message}, function(data) {
+    showMessage();
+  });
 }
 
 function showMessage(norefresh)

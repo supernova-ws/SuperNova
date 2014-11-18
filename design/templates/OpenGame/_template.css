@@ -5,6 +5,10 @@ textarea {
   border-radius: 4px;
 }
 
+input, textarea {
+  font-weight: bold !important;
+}
+
 /* Empire overview -------------------------------------------------------------- */
 [go] {
   cursor: pointer;
@@ -62,19 +66,61 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 /* Menu ------------------------------------------------------------------------- */
 #left_menu {
-  margin-top: 28px;
   margin-right: 10px;
   text-align: left;
   z-index: 999;
 }
 
 #left_menu_show {
-  position: fixed;
+/*  position: fixed;*/
+/*  float: left;*/
   left: 0;
   top: 0;
-  float: left;
-  width: 142px;
+  width: 140px;
   z-index: 9999;
+}
+
+#left_menu tr, #left_menu td, #left_menu th {
+  height: 16px;
+}
+
+#menu_show_hidden {
+  color: yellow;
+  cursor: pointer;
+}
+
+.menu_visible {
+  width: 16px;
+  margin-left: 5px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  cursor: pointer;
+  z-index: 9999;
+}
+
+.menu_drag {
+  margin-right: 5px;
+  width: 16px;
+  height: 100%;
+  position: absolute;
+  cursor: pointer;
+  left: 0;
+  background-size: contain !important;
+}
+
+.i_icon_visible {
+  background-image: url(../../images/icon_eye_visible.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.i_icon_invisible {
+  background-image: url(../../images/icon_eye_invisible.png);
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 

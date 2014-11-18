@@ -17,43 +17,36 @@ $sn_mvc['i18n']['options'] = array(
 );
  */
 
-function sn_options_model()
-{
+function sn_options_model() {
   global $user, $user_option_list, $lang, $template_result, $time_now, $config;
 
   $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
 
   if(sys_get_param_str('mode') == 'change') {
-    if($user['authlevel'] > 0)
-    {
+    if($user['authlevel'] > 0) {
       $planet_protection = sys_get_param_int('adm_pl_prot') ? $user['authlevel'] : 0;
       db_planet_set_by_owner($user['id'], "`id_level` = '{$planet_protection}'");
       db_user_set_by_id($user['id'], "`admin_protection` = '{$planet_protection}'");
       $user['admin_protection'] = $planet_protection;
     }
 
-    if(sys_get_param_int('vacation') && !$config->user_vacation_disable)
-    {
+    if(sys_get_param_int('vacation') && !$config->user_vacation_disable) {
       sn_db_transaction_start();
-      if($user['authlevel'] < 3)
-      {
-        if($user['vacation_next'] > $time_now)
-        {
+      if($user['authlevel'] < 3) {
+        if($user['vacation_next'] > $time_now) {
           message($lang['opt_vacation_err_timeout'], $lang['Error'], 'index.php?page=options', 5);
           die();
         }
 
         $is_building = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_owner` = '{$user['id']}' LIMIT 1;", true);
 
-        if($is_building)
-        {
+        if($is_building) {
           message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
           die();
         }
 
         $que = que_get($user['id'], false);
-        if(!empty($que))
-        {
+        if(!empty($que)) {
           message($lang['opt_vacation_err_que'], $lang['Error'], 'index.php?page=options', 5);
           die();
         }
@@ -80,21 +73,30 @@ function sn_options_model()
       sn_db_transaction_commit();
     }
 
-    foreach($user_option_list as $option_group_id => $option_group)
-    {
-      foreach($option_group as $option_name => $option_value)
-      {
-        if($user[$option_name] !== null)
-        {
+    foreach($user_option_list as $option_group_id => $option_group) {
+      foreach($option_group as $option_name => $option_value) {
+        if($user[$option_name] !== null) {
           $user[$option_name] = sys_get_param_str($option_name);
-        }
-        else
-        {
+        } else {
           $user[$option_name] = $option_value;
         }
       }
     }
     $options = sys_user_options_pack($user);
+
+
+    $player_options = sys_get_param('options');
+
+    if(!empty($player_options)) {
+      array_walk($player_options, function(&$value){
+        // TODO - Когда будет больше параметров - сделать больше проверок
+        $value = intval($value);
+      });
+      player_save_option_array($user, $player_options);
+      if($player_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] == PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_HIDDEN) {
+        sn_setcookie(SN_COOKIE . '_menu_hidden', '0', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+      }
+    }
 
     $username = substr(sys_get_param_str_unsafe('username'), 0, 32);
     $username_safe = mysql_real_escape_string($username);
@@ -288,8 +290,7 @@ function sn_options_model()
 
 //-------------------------------
 
-function sn_options_view($template = null)
-{
+function sn_options_view($template = null) {
   global $lang, $template_result, $user, $planetrow, $user_option_list, $user_option_types, $sn_message_class_list, $config, $time_now;
 
   sys_user_vacation($user);
@@ -304,8 +305,7 @@ function sn_options_view($template = null)
 //  );
 
   $dir = dir(SN_ROOT_PHYSICAL . 'skins');
-  while(($entry = $dir->read()) !== false)
-  {
+  while(($entry = $dir->read()) !== false) {
     if(is_dir("skins/{$entry}") && $entry[0] !='.')
     {
       $template_result['.']['skin_list'][] = array(
@@ -317,16 +317,14 @@ function sn_options_view($template = null)
   }
   $dir->close();
 
-  for($i = 0; $i < 2; $i++)
-  {
+  for($i = 0; $i < 2; $i++) {
     $template_result['.']['planet_order'][] = array(
       'VALUE' => $i,
       'NAME'  => $lang['opt_lst_cla' . $i],
       'SELECTED' => $user['planet_sort_order'] == $i,
     );
   }
-  for($i = 0; $i < 4; $i++)
-  {
+  for($i = 0; $i < 4; $i++) {
     $template_result['.']['planet_order_type'][] = array(
       'VALUE' => $i,
       'NAME'  => $lang['opt_lst_ord' . $i],
@@ -335,8 +333,7 @@ function sn_options_view($template = null)
   }
 
   $lang_list = lng_get_list();
-  foreach($lang_list as $lang_id => $lang_data)
-  {
+  foreach($lang_list as $lang_id => $lang_data) {
     $template_result['.']['languages'][] = array(
       'VALUE' => $lang_id,
       'NAME'  => $lang_data['LANG_NAME_NATIVE'],
@@ -347,6 +344,14 @@ function sn_options_view($template = null)
 
 
 
+  if(isset($lang['menu_customize_show_hide_button_state'])) {
+    foreach($lang['menu_customize_show_hide_button_state'] as $key => $value) {
+      $template->assign_block_vars('menu_customize_show_hide_button_state', array(
+        'ID' => $key,
+        'NAME' => $value,
+      ));
+    }
+  }
 
 
 
@@ -358,10 +363,23 @@ function sn_options_view($template = null)
 
 
 
+  $player_options = player_load_option($user);
   $template->assign_vars(array(
     'USER_ID'        => $user['id'],
 
     'USER_AUTHLEVEL'           => $user['authlevel'],
+
+    'menu_customize_show_hide_button' => isset($player_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON])
+      ? $player_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] : 0,
+    'menu_customize_show_button_enter' => isset($player_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON])
+      ? $player_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON] : 0,
+    'menu_customize_hide_button_enter' => isset($player_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON])
+      ? $player_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON] : 0,
+    'menu_customize_hide_unpinned_on_exit' => isset($player_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE])
+      ? $player_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE] : 0,
+    'menu_customize_show_absolute' => isset($player_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE])
+      ? $player_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE] : 0,
+
 
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
     'opt_usern_data' => htmlspecialchars($user['username']),
@@ -416,14 +434,10 @@ function sn_options_view($template = null)
     'PAGE_HEADER' => $lang['opt_header'],
   ));
 
-  foreach($user_option_list as $option_group_id => $option_group)
-  {
-    if($option_group_id == OPT_MESSAGE)
-    {
-      foreach($sn_message_class_list as $message_class_id => $message_class_data)
-      {
-        if($message_class_data['switchable'] || ($message_class_data['email'] && $config->game_email_pm))
-        {
+  foreach($user_option_list as $option_group_id => $option_group) {
+    if($option_group_id == OPT_MESSAGE) {
+      foreach($sn_message_class_list as $message_class_id => $message_class_data) {
+        if($message_class_data['switchable'] || ($message_class_data['email'] && $config->game_email_pm)) {
           $option_name = $message_class_data['name'];
 
           $template->assign_block_vars("options_{$option_group_id}", array(
@@ -434,17 +448,11 @@ function sn_options_view($template = null)
           ));
         }
       }
-    }
-    else
-    {
-      foreach($option_group as $option_name => $option_value)
-      {
-        if(array_key_exists($option_name, $user_option_types))
-        {
+    } else {
+      foreach($option_group as $option_name => $option_value) {
+        if(array_key_exists($option_name, $user_option_types)) {
           $option_type = $user_option_types[$option_name];
-        }
-        else
-        {
+        } else {
           $option_type = 'switch';
         }
 

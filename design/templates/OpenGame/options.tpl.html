@@ -21,25 +21,99 @@
 
     <div id="tab_account">
       <table width="100%">
+
+
         <!-- IF MENU_CUSTOMIZE -->
-        <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}modules/menu_customize/{D_TEMPLATE_PATH}/menu_customize.js?{C_var_db_update}"></script>
+        <script type="text/javascript">
+          var LA_menu_customize_customize_start = "{LA_menu_customize_customize_start}";
+          var LA_menu_customize_customize_save = "{LA_menu_customize_customize_save}";
+          var LA_menu_reset_confirm = "{LA_menu_customize_reset_confirm}";
+        </script>
+        <style type="text/css">
+          #menu_customize {
+            margin-right: 20px;
+          }
+        </style>
         <tr>
           <th class="c_c" colspan="2">
-            {Настройка меню}
+            {L_menu_customize_customization}
           </th>
         </tr>
         <tr>
           <td class="c_c" colspan="2">
-            <input value="{Настроить меню}" type="button" id="menu_customize" />
+            <div style="text-align: left; margin-bottom: 10px;">
+              <label for="menu_customize_show_hide_button" style="margin-left: 26px">{L_menu_customize_show_hide_button}</label>
+              <select name="options[2]" id="menu_customize_show_hide_button"><!--
+                BEGIN menu_customize_show_hide_button_state
+                --><option value="{menu_customize_show_hide_button_state.ID}"<!--
+                  IF menu_customize_show_hide_button_state.ID == menu_customize_show_hide_button
+                    --> selected<!--
+                  ENDIF
+                -->>{menu_customize_show_hide_button_state.NAME}</option><!--
+                END menu_customize_show_hide_button_state
+              --></select>
+              <br />
+
+              <input type="hidden" name="options[3]" value="0" />
+              <input type="checkbox" id="menu_customize_show_button_enter" name="options[3]" value="1"<!--
+                IF menu_customize_show_button_enter
+                  --> checked<!--
+                ENDIF
+              -->>
+              <label for="menu_customize_show_button_enter">{L_menu_customize_show_button_enter}</label>
+              <br />
+
+              <input type="hidden" name="options[4]" value="0" />
+              <input type="checkbox" id="menu_customize_hide_button_enter" name="options[4]" value="1"<!--
+                IF menu_customize_hide_button_enter
+                  --> checked<!--
+                ENDIF
+              -->>
+              <label for="menu_customize_hide_button_enter">{L_menu_customize_hide_button_enter}</label>
+              <br />
+
+              <input type="hidden" name="options[5]" value="0" />
+              <input type="checkbox" id="menu_customize_hide_unpinned_on_exit" name="options[5]" value="1"<!--
+                IF menu_customize_hide_unpinned_on_exit
+                  --> checked<!--
+                ENDIF
+              -->>
+              <label for="menu_customize_hide_unpinned_on_exit">{L_menu_customize_hide_unpinned_on_exit}</label>
+              <br />
+
+              <input type="hidden" name="options[6]" value="0" />
+              <input type="checkbox" id="menu_customize_show_absolute" name="options[6]" value="1"<!--
+                IF menu_customize_show_absolute
+                  --> checked<!--
+                ENDIF
+              -->>
+              <label for="menu_customize_show_absolute">{L_menu_customize_show_absolute}</label><br />
+            <!-- IF ! USER_PREMIUM -->
+            {L_menu_customize_premium_0}<br />
+            <!-- ENDIF -->
+            <!-- IF USER_PREMIUM <= 1 -->
+            {L_menu_customize_premium_1}<br />
+            <!-- ENDIF -->
+            <!-- IF USER_PREMIUM <= 2 -->
+            {L_menu_customize_premium_2}<br />
+            <!-- ENDIF -->
+            {L_menu_customize_premium_3}<br />
+            </div>
+            <input value="{L_menu_customize_customize_start}" type="button" id="menu_customize" <!-- IF ! USER_PREMIUM --> disabled<!-- ENDIF --> />
+            <input value="{L_menu_customize_reset}" type="button" id="menu_reset" <!-- IF ! USER_PREMIUM --> disabled<!-- ENDIF --> />
           </td>
         </tr>
         <!-- ENDIF -->
 
 
+
+
         <!-- IF ADM_PROTECT_PLANETS -->
         <tr class="c_c">
-          <th><label for="adm_pl_prot">{L_opt_adm_planet_prot}</label></th>
-          <th><input name="adm_pl_prot" type="checkbox" id="adm_pl_prot" <!-- IF adm_pl_prot -->checked<!-- ENDIF --> /></th>
+          <th colspan="2">
+            <input name="adm_pl_prot" type="checkbox" id="adm_pl_prot" <!-- IF adm_pl_prot -->checked<!-- ENDIF --> />
+            <label for="adm_pl_prot">{L_opt_adm_planet_prot}</label>
+          </th>
         </tr>
         <!-- ENDIF -->
 
@@ -127,9 +201,9 @@
         </tr>
         <tr>
           <td class="c_l" colspan="2">
-            <input name="opt_time_diff_clear" type="checkbox" id="opt_time_diff_clear" /> <label for="opt_time_diff_clear">{L_opt_time_diff_clear}</label><br />
+            <input name="opt_time_diff_clear" type="checkbox" id="opt_time_diff_clear" />
+            <label for="opt_time_diff_clear">{L_opt_time_diff_clear}</label><br />
 
-            <input name="user_time_diff_forced" type="checkbox" id="user_time_diff_forced" value="1" <!-- IF user_time_diff_forced --> checked="checked" <!-- ENDIF --> /> <label for="user_time_diff_forced">{L_opt_time_diff_manual}</label>
             <script type="text/javascript">
               jQuery(document).on('click change', '#user_time_diff_forced', function (){
                 $(this).is(":checked") ? jQuery('#opt_time_diff_clear').attr('disabled', 'disabled').removeAttr('checked') : jQuery('#opt_time_diff_clear').removeAttr('disabled');
@@ -137,8 +211,10 @@
               $('#user_time_diff_forced').change();
             </script>
 
+            {L_opt_time_diff_explain}<br/>
+            <input name="user_time_diff_forced" type="checkbox" id="user_time_diff_forced" value="1" <!-- IF user_time_diff_forced --> checked="checked" <!-- ENDIF --> />
+            <label for="user_time_diff_forced">{L_opt_time_diff_manual}</label>
             <input name="user_time_diff" type="text" id="user_time_diff" value="{user_time_diff}" style="width: 60px;"/> {L_sys_sec}<br/>
-            {L_opt_time_diff_explain}
           </td>
         </tr>
         <!-- IF ! USER_VACATION_DISABLE -->

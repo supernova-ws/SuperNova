@@ -55,64 +55,54 @@ function message ($mes, $title = 'Error', $dest = '', $time = 5, $show_header = 
 */
 }
 
-function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra)
-{
-  if(empty($sn_menu) || empty($sn_menu_extra))
-  {
+function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra) {
+  if(empty($sn_menu) || empty($sn_menu_extra)) {
     return;
   }
 
-  foreach($sn_menu_extra as $menu_item_id => $menu_item)
-  {
+  foreach($sn_menu_extra as $menu_item_id => $menu_item) {
     $item_location = $menu_item['LOCATION'];
     unset($menu_item['LOCATION']);
 
-    if(!$item_location)
-    {
+    if(!$item_location) {
       $sn_menu[$menu_item_id] = $menu_item;
       continue;
     }
 
     $is_positioned = $item_location[0];
-    if($is_positioned == '+' || $is_positioned == '-')
-    {
+    if($is_positioned == '+' || $is_positioned == '-') {
       $item_location = substr($item_location, 1);
-    }
-    else
-    {
+    } else {
       $is_positioned = '';
     }
 
-    if($item_location)
-    {
+    if($item_location) {
       $menu_keys = array_keys($sn_menu);
       $insert_position = array_search($item_location, $menu_keys);
-      if($insert_position === false)
-      {
+      if($insert_position === false) {
         $insert_position = count($sn_menu)-1;
         $is_positioned = '+';
         $item_location = '';
       }
-    }
-    else
-    {
+    } else {
       $insert_position = $is_positioned == '-' ? 0 : count($sn_menu);
     }
 
     $insert_position += $is_positioned == '+' ? 1 : 0;
     $spliced = array_splice($sn_menu, $insert_position, count($sn_menu) - $insert_position);
     $sn_menu[$menu_item_id] = $menu_item;
-    if(!$is_positioned && $item_location)
-    {
+    if(!$is_positioned && $item_location) {
       unset($spliced[$item_location]);
     }
     $sn_menu = array_merge($sn_menu, $spliced);
   }
+
+  $sn_menu_extra = array();
 }
 
 function tpl_menu_assign_to_template(&$sn_menu, &$template)
 {
-  global $lang;
+  global $lang, $user;
 
   if($sn_menu)
   {
@@ -160,18 +150,30 @@ function tpl_menu_assign_to_template(&$sn_menu, &$template)
 
 function tpl_render_menu()
 {
-  global $user, $user_impersonator, $lang; // $config,
+  global $user, $user_impersonator, $lang, $template_result; // $config,
 
   //$template_name = IN_ADMIN === true ? 'admin/menu' : 'menu';
   //$template = gettemplate($template_name, true);
   $template = gettemplate('menu', true);
+  $template->assign_recursive($template_result);
+
+  player_load_option($user, array(PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON, PLAYER_OPTION_MENU_SHOW_ON_BUTTON,
+    PLAYER_OPTION_MENU_HIDE_ON_BUTTON, PLAYER_OPTION_MENU_HIDE_ON_LEAVE, PLAYER_OPTION_MENU_UNPIN_ABSOLUTE,
+  ));
 
   $template->assign_vars(array(
     'USER_AUTHLEVEL'      => $user['authlevel'],
     'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
     'USER_IMPERSONATOR'   => is_array($user_impersonator),
     'PAYMENT'             => sn_module_get_active_count('payment'),
-    'MENU_START_HIDE'     => isset($_COOKIE[SN_COOKIE . '_menu_hidden']) && $_COOKIE[SN_COOKIE . '_menu_hidden'],
+    'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']),
+//    'MENU_START_HIDE'     => isset($_COOKIE[SN_COOKIE . '_menu_hidden']) && $_COOKIE[SN_COOKIE . '_menu_hidden'],
+
+    'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => $user['player_options'][PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON],
+    'PLAYER_OPTION_MENU_SHOW_ON_BUTTON' => $user['player_options'][PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
+    'PLAYER_OPTION_MENU_HIDE_ON_BUTTON' => $user['player_options'][PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
+    'PLAYER_OPTION_MENU_HIDE_ON_LEAVE' => $user['player_options'][PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
+    'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE' => $user['player_options'][PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
   ));
 
   if(IN_ADMIN === true && $user['authlevel'] > 0)
@@ -205,7 +207,7 @@ function tpl_render_menu()
 function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true){$func_args = func_get_args();return sn_function_call('display', $func_args);}
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
-  global $link, $debug, $user, $user_impersonator, $planetrow, $time_now, $config, $lang, $template_result, $time_diff;
+  global $link, $debug, $user, $user_impersonator, $planetrow, $time_now, $config, $lang, $template_result, $time_diff, $sn_mvc;
 
   if(!$user || !isset($user['id']) || !is_numeric($user['id']))
   {
@@ -223,6 +225,8 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   {
     $page->assign_var('PAGE_HEADER', $title);
   }
+
+  isset($sn_mvc['view']['']) and execute_hooks($sn_mvc['view'][''], $page);
 
   // Global header
   $template = gettemplate('_global_header', true);
@@ -246,6 +250,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
     'IMPERSONATING'            => $user_impersonator ? sprintf($lang['sys_impersonated_as'], $user['username'], $user_impersonator['username']) : '',
   ));
+  $template->assign_recursive($template_result);
   displayP(parsetemplate($template));
 
   if($isDisplayMenu && !isset($_COOKIE['menu_disable'])) {

@@ -253,6 +253,10 @@ if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file))
 */
 }
 
+// load_order:
+//  999999 - core_ship_constructor
+//  2000000000 - that requires that all possible modules loaded already
+
 // Генерируем список требуемых модулей
 $load_order = array();
 $sn_req = array();
@@ -270,28 +274,21 @@ foreach($sn_module as $loaded_module_name => $module_data)
 
 // Создаем последовательность инициализации модулей
 // По нормальным делам надо сначала читать их конфиги - вдруг какой-то модуль отключен?
-do
-{
+do {
   $prev_order = $load_order;
 
-  foreach($sn_req as $loaded_module_name => &$req_data)
-  {
+  foreach($sn_req as $loaded_module_name => &$req_data) {
     $level = 1;
-    foreach($req_data as $req_name => &$req_level)
-    {
-      if($load_order[$req_name] == -1 || !isset($load_order[$req_name]))
-      {
+    foreach($req_data as $req_name => &$req_level) {
+      if($load_order[$req_name] == -1 || !isset($load_order[$req_name])) {
         $level = $req_level = -1;
         break;
-      }
-      else
-      {
+      } else {
         $level += $load_order[$req_name];
       }
       $req_level = $load_order[$req_name];
     }
-    if($level > $load_order[$loaded_module_name] || $level == -1)
-    {
+    if($level > $load_order[$loaded_module_name] || $level == -1) {
       $load_order[$loaded_module_name] = $level;
     }
   }
@@ -450,6 +447,9 @@ if(!empty($user) && sys_get_param_id('only_hide_news'))
   die();
 }
 
+
+lng_load_i18n($sn_mvc['i18n'][$sn_page_name]);
+execute_hooks($sn_mvc['model'][''], $template);
 
 /*
 if($sys_user_logged_in)

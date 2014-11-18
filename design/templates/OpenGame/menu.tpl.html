@@ -3,86 +3,155 @@
   sn_timers.unshift({'id': 'menu_admin_server_time', 'type': 2, 'active': true, 'start_time': {TIME_NOW}, options: 3});
 
   var MENU_HIDDEN = "{MENU_START_HIDE}" ? 1 : 0;
+  var SN_COOKIE = "{D_SN_COOKIE}";
+  var SN_ROOT_RELATIVE = "{D_SN_ROOT_RELATIVE}";
+  var PLAYER_OPTION_MENU_SHOW_ON_BUTTON = '{PLAYER_OPTION_MENU_SHOW_ON_BUTTON}';
+  var PLAYER_OPTION_MENU_HIDE_ON_BUTTON = '{PLAYER_OPTION_MENU_HIDE_ON_BUTTON}';
+  var PLAYER_OPTION_MENU_HIDE_ON_LEAVE = '{PLAYER_OPTION_MENU_HIDE_ON_LEAVE}';
+
   var LA_menu_show = "{LA_menu_show}";
   var LA_menu_hide = "{LA_menu_hide}";
   var LA_menu_unpin = "{LA_menu_unpin}";
   var LA_menu_pin = "{LA_menu_pin}";
-  var SN_COOKIE = "{D_SN_COOKIE}";
-  var SN_ROOT_RELATIVE = "{D_SN_ROOT_RELATIVE}";
+  var LA_menu_customize_show_items = "{LA_menu_customize_show_items}";
+  var LA_menu_customize_hide_items = "{LA_menu_customize_hide_items}";
+
 
   jQuery(document).ready(function(){
     if(MENU_HIDDEN) {
       jQuery('#left_menu').attr('menu_hidden', '1');
     }
-    /*
-     jQuery('#left_menu th a').button().addClass('ui-textfield').each(function(){
-     // $(this).css('width', $(this).css('width') - 40);
-     $(this).width($(this).width() + 20);
-     console.log($(this).width());
-     });
-     */
   });
-
 </script>
 
-  <!-- IF MENU_START_HIDE -->
-  <style type="text/css">
+<!--
+  IF MENU_START_HIDE
+  --><style type="text/css">
     #left_menu {
       display: none;
-      position: absolute;
     }
+  </style><!--
+    DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_pin}' --><!--
+    DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_show}' --><!--
+  ELSE --><!--
+    DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_unpin}' --><!--
+    DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_hide}' --><!--
+  ENDIF
+  -->
+  <style type="text/css">
+    <!-- IF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 0 -->
+    #left_menu_show {
+      position: fixed;
+      float: left;
+    }
+    #left_menu {
+      margin-top: 28px;
+    }
+    <!-- ELSEIF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 1 -->
+    #left_menu_show {
+      float: left;
+      margin-bottom: 4px;
+    }
+    <!-- ELSE -->
+    #left_menu_show, #menu_pin {
+      display: none;
+    }
+    <!-- ENDIF -->
+
+    <!-- IF PLAYER_OPTION_MENU_UNPIN_ABSOLUTE -->
+    #left_menu {
+      position: absolute;
+      <!-- IF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 1 -->
+        margin-top: 28px;
+      <!-- ENDIF -->
+    }
+    <!-- ENDIF -->
   </style>
-    <!-- DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_pin}' -->
-    <!-- DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_show}' -->
-  <!-- ELSE -->
-    <!-- DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_unpin}' -->
-    <!-- DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_hide}' -->
-  <!-- ENDIF -->
 
   <input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" />
 
-  <table cellspacing="0" cellpadding="0" id="left_menu" class="c_l">
-    <tr><th>
+  <table cellspacing="0" cellpadding="0" id="left_menu" class="c_l"><!--
+  BEGIN menu
+    --><!--
+    IF menu.LEVEL == 'header' --><!--
+      DEFINE $TX = 'th' --><!--
+    ELSE --><!--
+      DEFINE $TX = 'td' --><!--
+    ENDIF
 
-      <input type="button" id="left_menu_pin" value="{$MENU_START_BUTTON_PIN}"/>
-      <!--position: fixed; left: 0; top: 30px; float: left;-->
-    </th></tr>
-  <!-- BEGIN menu -->
-    <tr><!-- IF menu.LEVEL == 'header' --><!-- DEFINE $TX = 'th' --><!-- ELSE --><!-- DEFINE $TX = 'td' --><!-- ENDIF -->
-      <{$TX}
-        <!-- IF menu.ID && ! menu.LINK --> id="{menu.ID}"<!-- ENDIF -->
-        <!-- IF menu.CLASS --> class="{menu.CLASS}"<!-- ENDIF -->
-        <!-- IF menu.TITLE --> title="{menu.TITLE}"<!-- ELSEIF menu.ALT --> title="{menu.ALT}"<!-- ENDIF -->
-      >
-        <!-- IF menu.LINK --><a href="{menu.LINK}"<!-- IF menu.BLANK --> target="_blank"<!-- ENDIF -->><!-- ENDIF -->
+    --><tr id="{menu.ID}"<!--
+      IF menu.HIDE && !menu.HIDE_LOCK
+        --> is_hide="1" style="display: none"<!--
+      ELSEIF menu.HIDE_LOCK
+      --> hide_lock="1"<!--
+      ENDIF
+      --><!--
+      IF menu.MOVEABLE && menu.MOVE_LOCK
+      --> move_lock="1"<!--
+      ENDIF
+    -->>
+      <{$TX} nowrap<!--
+        IF menu.CLASS
+          --> class="{menu.CLASS}"<!--
+        ENDIF
+        --><!--
+        IF menu.TITLE
+          --> title="{menu.TITLE}"<!--
+        ELSEIF menu.ALT
+          --> title="{menu.ALT}"<!--
+        ENDIF
+        --><!--
+        IF menu.STYLE
+          --> style="{menu.STYLE}"<!--
+        ENDIF
+      -->><!--
+        IF menu.LINK --><!--
+          DEFINE $SPAN_CLASS = 'link'
+          --><!--
+          DEFINE $LINK_CLOSE = '</a>'
+          --><a href="{menu.LINK}" class="link"<!--
+            IF menu.BLANK
+              --> target="_blank"<!--
+            ENDIF -->><!--
+        ELSE
+          --><!--
+          DEFINE $SPAN_CLASS = ''
+          --><!--
+          DEFINE $LINK_CLOSE = ''
+          --><!--
+        ENDIF --><!--
 
-          <!-- IF menu.ICON --><img src="{dpath}icons/{menu.ICON}" height="14px" border="0" /><!-- ENDIF -->
-          <!-- IF menu.SPAN -->
-            <span class="{menu.SPAN}">
-          <!-- ELSEIF menu.STYLE -->
-            <span style="{menu.STYLE}">
-          <!-- ELSEIF menu.ID || menu.LINK -->
-            <span id="{menu.ID}">
-          <!-- ENDIF -->
+        IF menu.ICON
+          --><img src="{dpath}icons/{menu.ICON}" height="14px" border="0" style="margin-right: 5px;" /><!--
+        ENDIF
+        --><!--
+        IF menu.LEVEL == 'header' && menu.LINK
+          -->[&nbsp;<!--
+        ENDIF
+        --><!--
 
-            <!-- IF menu.LEVEL == 'header' && menu.LINK -->[&nbsp;<!-- ENDIF -->
+        IF menu.TYPE == 'image'
+          --><img border="0" src="{menu.ITEM}"<!--
+          IF menu.ALT
+            --> alt="{menu.ALT}"<!--
+          ELSEIF menu.TITLE
+            --> alt="{menu.TITLE}"<!--
+          ENDIF
+          -->/><!--
+        ELSE
+          -->{menu.ITEM}<!--
+        ENDIF --><!--
 
-              <!-- IF menu.TYPE == 'image' -->
-              <img border="0" src="{menu.ITEM}"<!-- IF menu.ALT --> alt="{menu.ALT}"<!-- ELSEIF menu.TITLE --> alt="{menu.TITLE}"<!-- ENDIF -->/>
-              <!-- ELSE -->
-              {menu.ITEM}
-              <!-- ENDIF -->
+        IF menu.LEVEL == 'header' && menu.LINK
+          -->&nbsp;]<!--
+        ENDIF
 
-            <!-- IF menu.LEVEL == 'header' && menu.LINK -->&nbsp;]<!-- ENDIF -->
-
-          <!-- IF menu.SPAN || menu.ID || menu.LINK --></span><!-- ENDIF -->
-
-        <!-- IF menu.LINK --></a><!-- ENDIF -->
+        -->{$LINK_CLOSE}
       </{$TX}>
-    </tr>
-  <!-- END menu -->
-  </table>
+    </tr><!--
+  END menu
+  --></table>
 </td>
 <td>&nbsp;</td>
-<td width="100%" valign="top" align="center"><div style="margin: 0 auto">
-<!-- ENDIF -->
+<td width="100%" valign="top" align="center"><div style="margin: 0 auto"><!--
+ENDIF -->

@@ -41,8 +41,7 @@ $config->debug = 0;
 if($config->db_version == DB_VERSION)
 {
 }
-elseif($config->db_version > DB_VERSION)
-{
+elseif($config->db_version > DB_VERSION) {
   $config->db_saveItem('var_db_update_end', $time_now);
   die(
     'Internal error! Auotupdater detects DB version greater then can be handled!<br />
@@ -84,8 +83,7 @@ if($new_version < 32)
   require_once('update_old.php');
 }
 
-switch($new_version)
-{
+switch($new_version) {
   case 35:
     upd_log_version_update();
 
@@ -1245,11 +1243,6 @@ switch($new_version)
     upd_check_key('stats_php_memory', '1024M', !isset($config->stats_php_memory));
     upd_check_key('stats_minimal_interval', '600', !isset($config->stats_minimal_interval));
 
-    upd_check_key('payment_currency_exchange_uah', 15, true);
-    upd_check_key('payment_currency_exchange_wmu', 16, true);
-
-    upd_check_key('payment_currency_exchange_rub', 45, true);
-    upd_check_key('payment_currency_exchange_wmr', 48, true);
 
     upd_do_query(
       "DELETE {{unit}}
@@ -1260,6 +1253,25 @@ switch($new_version)
         OR
         (planet_type = 3 AND unit_snid NOT IN (14, 15, 21, 34, 41, 42, 43))
       );");
+
+
+
+    if(!$update_tables['player_options']) {
+      upd_create_table('player_options', "(
+        `player_id` bigint(20) UNSIGNED DEFAULT NULL,
+        `option_id` smallint UNSIGNED NOT NULL DEFAULT 0,
+        `value` VARCHAR(1900) NOT NULL DEFAULT '',
+
+        PRIMARY KEY (`player_id`, `option_id`),
+
+        CONSTRAINT `FK_player_options_user_id` FOREIGN KEY (`player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+    }
+
+    upd_check_key('payment_currency_exchange_uah', 18, true);
+    upd_check_key('payment_currency_exchange_wmu', 20, true);
+    upd_check_key('payment_currency_exchange_rub', 48, true);
+    upd_check_key('payment_currency_exchange_wmr', 50, true);
 
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
