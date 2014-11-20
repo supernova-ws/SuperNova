@@ -4,6 +4,23 @@ var x = "";
 var e = null;
 
 
+jQuery(document).ready(function() {
+  // Натягиваем скины на элементы ввода
+  inputs = jQuery("input");
+  inputs.filter(':button, :submit, :reset').button().addClass('ui-textfield');
+  inputs.filter(':text, :password, :file').button().addClass('ui-textfield');
+  inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
+  // jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield');
+
+  calc_elements();
+
+  // Запуск таймеров
+  if(typeof sn_timer === 'function') {
+    sn_timer();
+  }
+});
+
+
 function sn_redirect(url) {
   document.location.assign(url);
 }
@@ -115,22 +132,6 @@ jQuery(document).on('click', ".gather_resources", function(){
   + (parseFloat(that.attr('crystal')) ? '&crystal=' + parseFloat(that.attr('crystal')) : '')
   + (parseFloat(that.attr('deuterium')) ? '&deuterium=' + parseFloat(that.attr('deuterium')) : '')
   ;
-});
-
-jQuery(document).ready(function() {
-  // Натягиваем скины на элементы ввода
-  inputs = jQuery("input");
-  inputs.filter(':button, :submit, :reset').button().addClass('ui-textfield');
-  inputs.filter(':text, :password, :file').button().addClass('ui-textfield');
-  inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
-  // jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield');
-
-  calc_elements();
-
-  // Запуск таймеров
-  if(typeof sn_timer === 'function') {
-    sn_timer();
-  }
 });
 
 function sn_ainput_mouselerate_jquery() {

@@ -28,7 +28,7 @@ function mrc_officer_accessible(&$user, $mercenary_id)
 
 function mrc_mercenary_hire($mode, $user, $mercenary_id)
 {
-  global $config, $lang, $sn_pwr_buy_discount;
+  global $config, $lang, $sn_powerup_buy_discounts;
 
   try
   {
@@ -51,7 +51,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
       throw new Exception($lang['mrc_msg_error_wrong_level'], ERR_ERROR);
     }
 
-    if($mercenary_level && !array_key_exists($mercenary_period = sys_get_param_int('mercenary_period'), $sn_pwr_buy_discount))
+    if($mercenary_level && !array_key_exists($mercenary_period = sys_get_param_int('mercenary_period'), $sn_powerup_buy_discounts))
     {
       throw new Exception($lang['mrc_msg_error_wrong_period'], ERR_ERROR);
     }
@@ -76,7 +76,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
        $darkmater_cost_old = eco_get_total_cost($mercenary_id, $mercenary_level_old);
        $darkmater_cost[BUILD_CREATE][RES_DARK_MATTER] -= $darkmater_cost_old[BUILD_CREATE][RES_DARK_MATTER];
       }
-      $darkmater_cost = ceil($darkmater_cost[BUILD_CREATE][RES_DARK_MATTER] * $mercenary_period * $sn_pwr_buy_discount[$mercenary_period] / $config->empire_mercenary_base_period);
+      $darkmater_cost = ceil($darkmater_cost[BUILD_CREATE][RES_DARK_MATTER] * $mercenary_period * $sn_powerup_buy_discounts[$mercenary_period] / $config->empire_mercenary_base_period);
     }
     else
     {
@@ -124,7 +124,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
 }
 
 function mrc_mercenary_render($user) {
-  global $time_now, $config, $lang, $sn_pwr_buy_discount;
+  global $time_now, $config, $lang, $sn_powerup_buy_discounts;
 
   $mode = sys_get_param_int('mode', UNIT_MERCENARIES);
   $mode = in_array($mode, array(UNIT_MERCENARIES, UNIT_PLANS)) ? $mode : UNIT_MERCENARIES;
@@ -144,7 +144,7 @@ function mrc_mercenary_render($user) {
     $template->assign_block_vars('result', $operation_result);
   }
 
-  foreach($sn_pwr_buy_discount as $hire_period => $hire_discount)
+  foreach($sn_powerup_buy_discounts as $hire_period => $hire_discount)
   {
     $template->assign_block_vars('period', array(
       'LENGTH'   => $hire_period,

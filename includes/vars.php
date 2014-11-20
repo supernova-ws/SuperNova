@@ -804,7 +804,7 @@ $sn_data[UNIT_GROUP]['subques'] = array(
   ),
 );
 
-$sn_pwr_buy_discount = array(
+$sn_powerup_buy_discounts = array(
 //  PERIOD_MINUTE    => 1,
 //  PERIOD_MINUTE_3  => 1,
 //  PERIOD_MINUTE_5  => 1,

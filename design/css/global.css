@@ -221,6 +221,10 @@ table {margin-left: auto; margin-right: auto}
   font-weight: bold;
 }
 
+.disabled {
+  color: grey;
+}
+
 .ok, .success, .positive {
   color: lime;
 }
@@ -242,7 +246,7 @@ table {margin-left: auto; margin-right: auto}
 }
 
 .notice_bg, .zero_bg, .neutral_bg {
-  background-color: #AAAA00;
+  background-color: #AAAA00 !important;
 }
 
 .warning_bg {

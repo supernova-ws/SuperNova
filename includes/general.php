@@ -9,6 +9,7 @@ Reference: https://bugs.php.net/bug.php?id=50394
 */
 
 require_once('general/math.php');
+require_once('general/player_options.php');
 require_once('general_pname.php');
 
 function sn_function_call($func_name, $func_arg = array())
@@ -44,6 +45,16 @@ function sn_function_call($func_name, $func_arg = array())
   }
 
   return $result;
+}
+
+function execute_hooks(&$hook_list, &$template) {
+  if(!empty($hook_list)) {
+    foreach($hook_list as $hook) {
+      if(is_callable($hook_call = (is_string($hook) ? $hook : (is_array($hook) ? $hook['callable'] : $hook->callable)))) {
+        $template = call_user_func($hook_call, $template);
+      }
+    }
+  }
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -160,8 +171,7 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-function pretty_time($seconds)
-{
+function pretty_time($seconds) {
   global $lang;
 
   $day = floor($seconds / (24 * 3600));
@@ -169,26 +179,22 @@ function pretty_time($seconds)
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-function eco_planet_fields_max($planet)
-{
+function eco_planet_fields_max($planet) {
   return $planet['field_max'] + ($planet['planet_type'] == PT_PLANET ? mrc_get_level($user, $planet, STRUC_TERRAFORMER) * 5 : (mrc_get_level($user, $planet, STRUC_MOON_STATION) * 3));
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-function flt_get_missile_range($user)
-{
+function flt_get_missile_range($user) {
   return max(0, mrc_get_level($user, false, TECH_ENGINE_ION) * 5 - 1);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-function GetSpyLevel(&$user)
-{
+function GetSpyLevel(&$user) {
   return mrc_modify_value($user, false, array(MRC_SPY, TECH_SPY), 0);
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-function GetMaxFleets(&$user)
-{
+function GetMaxFleets(&$user) {
   return mrc_modify_value($user, false, array(MRC_COORDINATOR, TECH_COMPUTER), 1);
 }
 
@@ -1591,85 +1597,47 @@ function ip2longu($ip)
 }
 
 
-/*
- * Читает настройки пользователя из таблицы
- *
- * На входе:
- *    null - все настройки
- *    array() - список настроек
- *    строка - конкретная настройка
- *
- * На выходе:
- *    null - если ничего не найдено
- *    значение опции - если на входе была строка
- *    массив значений вида <id> => <value> если на входе был массив
- *
- */
-function player_load_option(&$user, $option_id = null) {
-  $options = null;
+function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null) {
+  global $sn_powerup_buy_discounts;
 
-  if(!empty($option_id)) {
-    if(is_array($option_id)) {
-      foreach($option_id as $key => $option) {
-        if(isset($user['player_options'][$option])) {
-          $options[$option] = $user['player_options'][$option];
-          unset($option_id[$key]);
-        }
-      }
-    } else {
-      if(isset($user['player_options'][$option_id])) {
-        $options = $user['player_options'][$option_id];
-        $option_id = 0;
-      }
+  $result = array();
+
+  $powerup_data = get_unit_param($powerup_id);
+  //pdump($powerup_data, '$powerup_data');
+  $is_upgrade = !empty($powerup_unit) && $powerup_unit;
+
+  // pdump($powerup_unit, '$powerup_unit');
+  $level_current = $term_original = $time_left = 0;
+  if($is_upgrade) {
+    $time_finish = strtotime($powerup_unit['unit_time_finish']);
+    $time_left = max(0, $time_finish - SN_TIME_NOW);
+    if($time_left > 0) {
+      $term_original = $time_finish - strtotime($powerup_unit['unit_time_start']);
+      $level_current = $powerup_unit['unit_level'];
     }
   }
 
-  if(isset($user['id']) && is_numeric($user['id']) && (!isset($option_id) || !empty($option_id))) {
-    !is_array($option_id) or array_walk($option_id, function(&$value){$value = "'{$value}'";});
-
-    $query = doquery($q = "SELECT * FROM {{player_options}} WHERE `player_id` = {$user['id']}" .
-      ($option_id ? " AND option_id " . (is_array($option_id) ? 'IN (' . implode(',',$option_id ) . ')' : "= '{$option_id}'") : '')
-    );
-
-    while($row = mysql_fetch_array($query)) {
-      $user['player_options'][$row['option_id']] = $row['value'];
-      $options[$row['option_id']] = $row['value'];
-    }
-
-    (is_array($option_id) || !$option_id) or ($options = isset($options[$option_id]) ? $options[$option_id] : null);
-  }
-
-  return empty($options) ? null : $options;
-}
-
-// TODO !!!!!!!!!!!!!!!!!!!!
-function player_save_option_array(&$user, $options_array) {
-  if(isset($user['id']) && is_numeric($user['id']) && !empty($options_array)) {
-    foreach($options_array as $option_id => &$option_value) {
-      $user[$option_id] = $option_value;
-
-      $option_id = mysql_real_escape_string($option_id);
-      $option_value = mysql_real_escape_string($option_value);
-
-      $option_value = "({$user['id']},'{$option_id}','{$option_value}')";
-    }
-
-    doquery("REPLACE INTO {{player_options}} (`player_id`, `option_id`, `value`) VALUES " . implode(',', $options_array));
-  }
-}
-
-function player_save_option(&$user, $option_id, $option_value) {
-  player_save_option_array(&$user, array($option_id => $option_value));
-}
-
-
-function execute_hooks(&$hook_list, &$template) {
-  if(!empty($hook_list)) {
-    foreach($hook_list as $hook) {
-      if(is_callable($hook_call = (is_string($hook) ? $hook : (is_array($hook) ? $hook['callable'] : $hook->callable)))) {
-        $template = call_user_func($hook_call, $template);
-      }
+  $level_max = $level_max > $powerup_data[P_MAX_STACK] ? $level_max : $powerup_data[P_MAX_STACK];
+  $original_cost = 0;
+  for($i = 1; $i <= $level_max; $i++) {
+    $base_cost = eco_get_total_cost($powerup_id, $i);
+    $base_cost = $base_cost[BUILD_CREATE][RES_DARK_MATTER];
+    foreach($sn_powerup_buy_discounts as $period => $discount) {
+      $upgrade_price = floor($base_cost * $discount * $period / PERIOD_MONTH);
+      $result[$i][$period] = $upgrade_price;
+      $original_cost = $is_upgrade && $i == $level_current && $period <= $term_original ? $upgrade_price : $original_cost;
     }
   }
-}
 
+  if($is_upgrade && $time_left) {
+    $term_original = round($term_original / PERIOD_DAY);
+    $time_left = min(floor($time_left / PERIOD_DAY), $term_original);
+    $cost_left = $term_original > 0 ? ceil($time_left / $term_original * $original_cost) : 0;
+
+    array_walk_recursive($result, function(&$value) use ($cost_left) {
+      $value -= $cost_left;
+    });
+  }
+
+  return $result;
+}
