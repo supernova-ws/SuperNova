@@ -68,7 +68,7 @@ function player_save_option_array(&$user, $options_array) {
 }
 
 function player_save_option(&$user, $option_id, $option_value) {
-  player_save_option_array(&$user, array($option_id => $option_value));
+  player_save_option_array($user, array($option_id => $option_value));
 }
 
 
