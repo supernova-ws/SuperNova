@@ -22,22 +22,20 @@
       jQuery('#left_menu').attr('menu_hidden', '1');
     }
   });
-</script><!--
-IF MENU_CUSTOMIZE
---><!--
-  IF MENU_START_HIDE
-  --><style type="text/css">
-    #left_menu {
-      display: none;
-    }
-  </style><!--
-    DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_pin}' --><!--
-    DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_show}' --><!--
-  ELSE --><!--
-    DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_unpin}' --><!--
-    DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_hide}' --><!--
-  ENDIF
-  -->
+</script>
+<!-- IF MENU_CUSTOMIZE -->
+  <!-- IF MENU_START_HIDE -->
+    <style type="text/css">
+      #left_menu {
+        display: none;
+      }
+    </style>
+    <!-- DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_pin}' -->
+    <!-- DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_show}' -->
+  <!-- ELSE -->
+    <!-- DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_unpin}' -->
+    <!-- DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_hide}' -->
+  <!-- ENDIF -->
   <style type="text/css">
     <!-- IF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 0 -->
     #left_menu_show {
@@ -68,90 +66,47 @@ IF MENU_CUSTOMIZE
     <!-- ENDIF -->
   </style>
 
-  <input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" /><!--
-ENDIF
-  --><table cellspacing="0" cellpadding="0" id="left_menu" class="c_l"><!--
-  BEGIN menu
-    --><!--
-    IF menu.LEVEL == 'header' --><!--
-      DEFINE $TX = 'th' --><!--
-    ELSE --><!--
-      DEFINE $TX = 'td' --><!--
-    ENDIF
+  <input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" />
+<!-- ENDIF -->
+  <table cellspacing="0" cellpadding="0" id="left_menu" class="c_l"><!-- BEGIN menu -->
+    <!-- IF menu.LEVEL == 'header' -->
+      <!-- DEFINE $TX = 'th' -->
+    <!-- ELSE -->
+      <!-- DEFINE $TX = 'td' -->
+    <!-- ENDIF -->
 
-    --><tr id="{menu.ID}"<!--
-      IF menu.HIDE && !menu.HIDE_LOCK
-        --> is_hide="1" style="display: none"<!--
-      ELSEIF menu.HIDE_LOCK
-      --> hide_lock="1"<!--
-      ENDIF
-      --><!--
-      IF menu.MOVEABLE && menu.MOVE_LOCK
-      --> move_lock="1"<!--
-      ENDIF
-    -->>
-      <{$TX} nowrap<!--
-        IF menu.CLASS
-          --> class="{menu.CLASS}"<!--
-        ENDIF
-        --><!--
-        IF menu.TITLE
-          --> title="{menu.TITLE}"<!--
-        ELSEIF menu.ALT
-          --> title="{menu.ALT}"<!--
-        ENDIF
-        --><!--
-        IF menu.STYLE
-          --> style="{menu.STYLE}"<!--
-        ENDIF
-      -->><!--
-        IF menu.LINK --><!--
-          DEFINE $SPAN_CLASS = 'link'
-          --><!--
-          DEFINE $LINK_CLOSE = '</a>'
-          --><a href="{menu.LINK}" class="link"<!--
-            IF menu.BLANK
-              --> target="_blank"<!--
-            ENDIF -->><!--
-        ELSE
-          --><!--
-          DEFINE $SPAN_CLASS = ''
-          --><!--
-          DEFINE $LINK_CLOSE = ''
-          --><!--
-        ENDIF --><!--
-
-        IF menu.ICON
-          --><img src="{dpath}icons/{menu.ICON}" height="14px" border="0" style="margin-right: 5px;" /><!--
-        ENDIF
-        --><!--
-        IF menu.LEVEL == 'header' && menu.LINK
-          -->[&nbsp;<!--
-        ENDIF
-        --><!--
-
-        IF menu.TYPE == 'image'
-          --><img border="0" src="{menu.ITEM}"<!--
-          IF menu.ALT
-            --> alt="{menu.ALT}"<!--
-          ELSEIF menu.TITLE
-            --> alt="{menu.TITLE}"<!--
-          ENDIF
-          -->/><!--
-        ELSE
-          -->{menu.ITEM}<!--
-        ENDIF --><!--
-
-        IF menu.LEVEL == 'header' && menu.LINK
-          -->&nbsp;]<!--
-        ENDIF
-
-        -->{$LINK_CLOSE}
+    <!-- DEFINE $HEADER_PREFIX = '' -->
+    <!-- DEFINE $HEADER_SUFFIX = '' -->
+    <!-- IF menu.LINK -->
+      <!-- IF menu.LEVEL == 'header' -->
+        <!-- DEFINE $HEADER_PREFIX = '[&nbsp;' -->
+        <!-- DEFINE $HEADER_SUFFIX = '&nbsp;]' -->
+      <!-- ENDIF -->
+      <!-- IF menu.BLANK -->
+        <!-- DEFINE $LINK_BLANK = ' target="_blank"' -->
+      <!-- ELSE -->
+        <!-- DEFINE $LINK_BLANK = '' -->
+      <!-- ENDIF -->
+      <!-- DEFINE $LINK_CLOSE = '</a>' -->
+    <!-- ELSE -->
+      <!-- DEFINE $LINK_CLOSE = '' -->
+    <!-- ENDIF -->
+    <tr id="{menu.ID}"
+      <!-- IF menu.HIDE && !menu.HIDE_LOCK --> is_hide="1" style="display: none"<!-- ELSEIF menu.HIDE_LOCK --> hide_lock="1"<!-- ENDIF -->
+      <!-- IF menu.MOVEABLE && menu.MOVE_LOCK --> move_lock="1"<!-- ENDIF -->
+    >
+      <{$TX} nowrap
+        <!-- IF menu.CLASS --> class="{menu.CLASS}"<!-- ENDIF -->
+        <!-- IF menu.TITLE --> title="{menu.TITLE}"<!-- ELSEIF menu.ALT --> title="{menu.ALT}"<!-- ENDIF -->
+        <!-- IF menu.STYLE --> style="{menu.STYLE}"<!-- ENDIF -->
+      ><!-- IF menu.LINK --><a href="{menu.LINK}" class="link"{$LINK_BLANK}><!-- ENDIF --><!-- IF menu.ICON --><img src="{dpath}icons/{menu.ICON}" height="14px" border="0" style="margin-right: 5px;" /><!-- ENDIF -->{$HEADER_PREFIX}<!-- IF menu.TYPE == 'image' -->
+          <img border="0" src="{menu.ITEM}"
+            <!-- IF menu.ALT --> alt="{menu.ALT}"<!-- ELSEIF menu.TITLE --> alt="{menu.TITLE}"<!-- ENDIF -->
+          /><!-- ELSE -->{menu.ITEM}<!-- ENDIF -->{$HEADER_SUFFIX}{$LINK_CLOSE}
       </{$TX}>
-    </tr><!--
-  END menu
-  --></table>
+    </tr>
+  <!-- END menu --></table>
 </td>
 <td>&nbsp;</td>
-<td width="100%" valign="top" align="center"><div style="margin: 0 auto"><!--
-ENDIF -->
+<td width="100%" valign="top" align="center"><div style="margin: 0 auto">
+<!-- ENDIF -->

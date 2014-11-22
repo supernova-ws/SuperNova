@@ -148,8 +148,7 @@ function tpl_menu_assign_to_template(&$sn_menu, &$template)
   }
 }
 
-function tpl_render_menu()
-{
+function tpl_render_menu() {
   global $user, $user_impersonator, $lang, $template_result; // $config,
 
   //$template_name = IN_ADMIN === true ? 'admin/menu' : 'menu';
@@ -176,8 +175,7 @@ function tpl_render_menu()
     'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE' => $user['player_options'][PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
   ));
 
-  if(IN_ADMIN === true && $user['authlevel'] > 0)
-  {
+  if(IN_ADMIN === true && $user['authlevel'] > 0) {
     //global $sn_version_check_class;
     //$template->assign_vars(array(
     //  'CHECK_DATE' => $config->server_updater_check_last ? date(FMT_DATE, $config->server_updater_check_last) : 0,
@@ -192,9 +190,7 @@ function tpl_render_menu()
 
     tpl_menu_merge_extra($sn_menu_admin, $sn_menu_admin_extra);
     tpl_menu_assign_to_template($sn_menu_admin, $template);
-  }
-  else
-  {
+  } else {
     global $sn_menu, $sn_menu_extra;
 
     tpl_menu_merge_extra($sn_menu, $sn_menu_extra);

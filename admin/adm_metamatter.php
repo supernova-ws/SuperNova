@@ -15,13 +15,11 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if(!sn_module_get_active_count('payment'))
-{
+if(!sn_module_get_active_count('payment')) {
   sys_redirect(SN_ROOT_VIRTUAL . 'admin/overview.php');
 }
 
-if($user['authlevel'] < 3)
-{
+if($user['authlevel'] < 3) {
   AdminMessage($lang['adm_err_denied']);
 }
 
@@ -30,72 +28,36 @@ $template = gettemplate("admin/adm_metamatter", true);
 $message = '';
 $message_status = ERR_ERROR;
 
-if($points = sys_get_param_float('points'))
-{ // If points not empty...
-  if($username = sys_get_param_str_unsafe('id_user'))
-  {
-    /*
-    $id_user = mysql_real_escape_string($username);
-    if(is_numeric($id_user))
-    {
-      $queryPart = " or `id` = {$id_user}";
+if($points = sys_get_param_float('points')) {
+  // If points not empty...
+  if($username = sys_get_param_str_unsafe('id_user')) {
+    $row = db_user_by_id($username, false, 'id, username', true, true);
+    if(!isset($row['id'])) {
+      $row = db_user_by_username($username, false, 'id, username', true, true);
     }
-
-    $query = db_user_list_like_name_extra($id_user, $queryPart, 'id, username');
-    switch (mysql_num_rows($query))
-    {
-      case 0: // Error - no such ID or username
-        $message = sprintf($lang['adm_mm_user_none'], $id_user);
-      break;
-
-      case 1: // Proceeding normal - only one user exists
-        $row = mysql_fetch_assoc($query);
-        // Does anything post to DB?
-        if(mm_points_change($row['id'], RPG_ADMIN, $points, "Through admin interface for user {$row['username']} ID {$row['id']} " . $reason))
-        {
-          $message = sprintf($lang['adm_mm_user_added'], $row['username'], $row['id'], $points);
-          $isNoError = true;
-          $message_status = ERR_NONE;
-        }
-        else // No? We will say it to user...
-        {
-          $message = $lang['adm_mm_add_err'];
-        }
-      break;
-
-      default:// There too much results - can't apply
-        $message = $lang['adm_mm_user_conflict'];
-      break;
-    }
-    */
-    $row = db_user_by_username($username, false, 'id, username', true, true);
-    if(is_array($row) && isset($row['id']))
-    {
+    if(is_array($row) && isset($row['id'])) {
       // Does anything post to DB?
-      if(mm_points_change($row['id'], RPG_ADMIN, $points, "Through admin interface for user {$row['username']} ID {$row['id']} " . $reason))
-      {
+      if(mm_points_change($row['id'], RPG_ADMIN, $points,
+        sprintf($lang['adm_matter_change_log_record'], $row['id'], $row['username'],  $user['id'], mysql_real_escape_string($user['username']), $reason
+      ))) {
         $message = sprintf($lang['adm_mm_user_added'], $row['username'], $row['id'], $points);
         $isNoError = true;
         $message_status = ERR_NONE;
-      }
-      else // No? We will say it to user...
-      {
+      } else {
+        // No? We will say it to user...
         $message = $lang['adm_mm_add_err'];
       }
     }
-  }
-  else // Points not empty but destination is not set - this means error
-  {
+  } else {
+    // Points not empty but destination is not set - this means error
     $message = $lang['adm_mm_no_dest'];
   }
-}
-elseif($id_user) // Points is empty but destination is set - this again means error
-{
+} elseif($id_user) {
+  // Points is empty but destination is set - this again means error
   $message = $lang['adm_mm_no_quant'];
 }
 
-if(!$isNoError)
-{
+if(!$isNoError) {
   $template->assign_vars(array(
     'ID_USER' => $username,
     'POINTS' => $points,
@@ -103,8 +65,7 @@ if(!$isNoError)
   ));
 };
 
-if($message)
-{
+if($message) {
   $template->assign_block_vars('result', array('MESSAGE' => $message, 'STATUS' => $message_status ? $message_status : ERR_NONE));
 }
 
