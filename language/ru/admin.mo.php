@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a20.4
+* @version 39a20.5
 *
 */
 
@@ -569,5 +569,5 @@ $a_lang_array = (array(
 
   'adm_dm_change_hint' => 'Сначала поиск идёт по ID, затем - по имени',
 
-  'adm_matter_change_log_record' => 'Через админку пользователем {%3$s} %4$s для пользователя {%1$d} {%2$s} по причине "%5$s"',
+  'adm_matter_change_log_record' => 'Через админку пользователем {%3$s} %4$s для пользователя {%1$d} %2$s по причине "%5$s"',
 ));

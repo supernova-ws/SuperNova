@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a20.4
+* @version 39a20.5
 *
 */
 
@@ -548,5 +548,5 @@ $a_lang_array = (array(
 
   'adm_dm_change_hint' => 'User IDs searched first. If not found - name search performed',
 
-  'adm_matter_change_log_record' => 'Through admin interface for user {%1$d} {%2$s} by user {%3$s} %4$s reason "%5$s"',
+  'adm_matter_change_log_record' => 'Through admin interface for user {%1$d} %2$s by user {%3$s} %4$s reason "%5$s"',
 ));
