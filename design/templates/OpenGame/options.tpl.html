@@ -88,19 +88,21 @@
                 ENDIF
               -->>
               <label for="menu_customize_show_absolute">{L_menu_customize_show_absolute}</label><br />
-            <!-- IF ! USER_PREMIUM -->
+            <!-- IF ! USER_MENU_CUSTOMIZE -->
             {L_menu_customize_premium_0}<br />
             <!-- ENDIF -->
-            <!-- IF USER_PREMIUM <= 1 -->
+            <!-- IF USER_MENU_CUSTOMIZE <= 1 -->
             {L_menu_customize_premium_1}<br />
             <!-- ENDIF -->
-            <!-- IF USER_PREMIUM <= 2 -->
+            <!-- IF USER_MENU_CUSTOMIZE <= 2 -->
             {L_menu_customize_premium_2}<br />
             <!-- ENDIF -->
             {L_menu_customize_premium_3}<br />
             </div>
-            <input value="{L_menu_customize_customize_start}" type="button" id="menu_customize" <!-- IF ! USER_PREMIUM --> disabled<!-- ENDIF --> />
-            <input value="{L_menu_customize_reset}" type="button" id="menu_reset" <!-- IF ! USER_PREMIUM --> disabled<!-- ENDIF --> />
+            <input value="{L_menu_customize_customize_start}" type="button" id="menu_customize" <!-- IF ! USER_MENU_CUSTOMIZE --> disabled<!-- ENDIF --> />
+            <input value="{L_menu_customize_reset}" type="button" id="menu_reset" <!-- IF ! USER_MENU_CUSTOMIZE --> disabled<!-- ENDIF --> />
+
+            <input type="hidden" value="{MENU_ORDER}" name="menu_order" id="menu_order" />
           </td>
         </tr>
         <!-- ENDIF -->
@@ -376,7 +378,7 @@
   </div>
 
   <br/>
-  <input value="{L_save_settings}" type="submit">
+  <input value="{L_save_settings}" type="submit" id="save_settings" />
 
   <input type="hidden" name="refresh" value="1" />
 </form>
