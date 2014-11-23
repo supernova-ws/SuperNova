@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39a12.0#
+* @version #39a20.18#
 *
 */
 
@@ -962,5 +962,13 @@ $a_lang_array = (array(
   'sys_login_password_show' => 'Показать пароль',
   'sys_login_password_hide' => 'Скрыть пароль',
   'sys_password_repeat' => 'Повторите пароль',
+
+  'sys_game_disable_reason' => array(
+    GAME_DISABLE_NONE => 'Игра включена',
+    GAME_DISABLE_REASON => 'Игра отключена. Игроки увидят сообщение',
+    GAME_DISABLE_UPDATE => 'Игра обновляется',
+    GAME_DISABLE_STAT => 'Происходит пересчет статистики',
+    GAME_DISABLE_INSTALL => 'Игра еще не сконфигурирована',
+  ),
 
 ));

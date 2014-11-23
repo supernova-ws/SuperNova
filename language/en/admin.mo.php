@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a20.5
+* @version 39a20.18
 *
 */
 
@@ -508,7 +508,14 @@ $a_lang_array = (array(
   'adm_opt_stats_hide_player_list' => 'Hide players',
   'adm_opt_stats_hide_player_list_detail' => 'List of hidden players ID separated with comma',
   'adm_opt_stats_schedule' => 'Statistics update schedule',
-  'adm_opt_stats_schedule_detail' => 'Schedule update interval in format Y-M-D H:M:S',
+  'adm_opt_stats_schedule_detail' => 'Format: "[YYYY:[MM:[DD:[HH:[MM:[SS]]]]]][,(...)]"<br />
+    Zero left parameters is optional<br />
+    Empty right parameters counts as zeros<br />
+    Examples:<br />
+     - "00:00:27:00" means "run every hour at 27 minutes";<br />
+     - "04::" - "run at 4am every day";<br />
+     - "02::,17:00" - "run at 2am every day AND each hour at 17 minutes";<br />
+     - "1:4:30:00" - "run every 1st of each month at 04:30am" etc',
   'adm_opt_stats_hide_pm_link' => 'Hide PM links',
 
   'adm_pay' => 'Payments',
@@ -549,4 +556,6 @@ $a_lang_array = (array(
   'adm_dm_change_hint' => 'User IDs searched first. If not found - name search performed',
 
   'adm_matter_change_log_record' => 'Through admin interface for user {%1$d} %2$s by user {%3$s} %4$s reason "%5$s"',
+
+  'adm_game_status' => 'Current game status',
 ));

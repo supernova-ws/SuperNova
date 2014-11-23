@@ -14,12 +14,9 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 1)
-{
+if($user['authlevel'] < 1) {
   AdminMessage($lang['adm_err_denied']);
-}
-elseif($user['authlevel'] < 3)
-{
+} elseif($user['authlevel'] < 3) {
   sys_redirect(SN_ROOT_VIRTUAL . 'admin/banned.php');
 }
 

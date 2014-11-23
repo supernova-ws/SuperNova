@@ -147,11 +147,10 @@ while ($row = mysql_fetch_assoc($query))
   $template->assign_block_vars('stat', $row_stat);
 }
 
+$next_run = sys_schedule_get_prev_run($config->stats_schedule, $config->var_stat_update, true);
 $template->assign_vars(array(
-  'REFRESH_DATE' => $config->var_stat_update ? date(FMT_DATE_TIME, $config->var_stat_update + $time_diff) : '',
-  'NEXT_DATE' => sys_schedule_get_prev_run($config->stats_schedule, $config->var_stat_update, SN_TIME_NOW) ?
-      date(FMT_DATE_TIME, sys_schedule_get_prev_run($config->stats_schedule, $config->var_stat_update, SN_TIME_NOW) + $time_diff)
-      : '',
+  'REFRESH_DATE' => $config->var_stat_update ? date(FMT_DATE_TIME, strtotime($config->var_stat_update) + $time_diff) : '',
+  'NEXT_DATE' => $next_run ? date(FMT_DATE_TIME, $next_run + $time_diff) : '',
   'RANGE' => $range,
   'SUBJECT' => $who,
   'TYPE' => $type,

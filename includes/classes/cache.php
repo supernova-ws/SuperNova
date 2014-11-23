@@ -528,7 +528,7 @@ class classConfig extends classPersistent
     'game_default_skin'            => 'skins/EpicBlue/',
     'game_default_template'        => 'OpenGame',
 
-    'game_disable'                 => 1,
+    'game_disable'                 => GAME_DISABLE_INSTALL,
     'game_disable_reason'          => 'SuperNova is in maintenance mode! Please return later!',
     'game_email_pm'                => 0, // Is allowed forwarding messages from PM to e-mail?
     // Universe size

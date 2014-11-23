@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a12.0
+* @version 39a20.18
 *
 */
 
@@ -956,4 +956,13 @@ $a_lang_array = (array(
   'sys_login_password_show' => 'Show password',
   'sys_login_password_hide' => 'Hide password',
   'sys_password_repeat' => 'Confirm password',
+
+  'sys_game_disable_reason' => array(
+    GAME_DISABLE_NONE => 'Game is enabled',
+    GAME_DISABLE_REASON => 'Game is disabled. Players will see reason',
+    GAME_DISABLE_UPDATE => 'Game is updating',
+    GAME_DISABLE_STAT => 'Statistics update in progress',
+    GAME_DISABLE_INSTALL => 'Game is not configured yet',
+  ),
+
 ));

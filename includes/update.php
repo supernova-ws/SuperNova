@@ -21,8 +21,7 @@
    [!] DB code updates
 */
 
-if(!defined('INIT'))
-{
+if(!defined('INIT')) {
 //  include_once('init.php');
   die('Unauthorized access');
 }
@@ -38,10 +37,8 @@ $config->db_loadAll();
 $config->debug = 0;
 
 //$config->db_loadItem('db_version');
-if($config->db_version == DB_VERSION)
-{
-}
-elseif($config->db_version > DB_VERSION) {
+if($config->db_version == DB_VERSION) {
+} elseif($config->db_version > DB_VERSION) {
   $config->db_saveItem('var_db_update_end', $time_now);
   die(
     'Internal error! Auotupdater detects DB version greater then can be handled!<br />
@@ -50,36 +47,33 @@ elseif($config->db_version > DB_VERSION) {
   );
 }
 
-if($config->db_version < 26)
-{
+if($config->db_version < 26) {
   $sys_log_disabled = true;
 }
 
 $upd_log = '';
 $new_version = floatval($config->db_version);
-upd_check_key('upd_lock_time', 60, !isset($config->upd_lock_time));
+upd_check_key('upd_lock_time', 300, !isset($config->upd_lock_time));
+
+set_time_limit($config->upd_lock_time + 10);
 
 upd_log_message('Update started. Disabling server');
 
-$old_server_status = $config->game_disable;
-$old_server_reason = $config->game_disable_reason;
-$config->db_saveItem('game_disable', 1);
-$config->db_saveItem('game_disable_reason', 'Server is updating. Please wait');
+$old_server_status = $config->db_loadItem('game_disable');
+$config->db_saveItem('game_disable', GAME_DISABLE_UPDATE);
 
 upd_log_message('Server disabled. Loading table info...');
 $update_tables  = array();
 $update_indexes = array();
 $query = upd_do_query('SHOW TABLES;');
-while($row = mysql_fetch_row($query))
-{
+while($row = mysql_fetch_row($query)) {
   upd_load_table_info($row[0]);
 }
 upd_log_message('Table info loaded. Now looking DB for upgrades...');
 
 upd_do_query('SET FOREIGN_KEY_CHECKS=0;');
 
-if($new_version < 32)
-{
+if($new_version < 32) {
   require_once('update_old.php');
 }
 
@@ -1273,6 +1267,18 @@ switch($new_version) {
     upd_check_key('payment_currency_exchange_rub', 48, true);
     upd_check_key('payment_currency_exchange_wmr', 50, true);
 
+
+    upd_do_query(
+      "UPDATE `{{users}}` AS u
+        SET metamatter_total =
+          IF(
+            metamatter_total > (SELECT sum(amount) FROM {{log_metamatter}} AS mm WHERE mm.user_id = u.id AND mm.amount > 0),
+            metamatter_total,
+            (SELECT sum(amount) FROM {{log_metamatter}} AS mm WHERE mm.user_id = u.id AND mm.amount > 0)
+          );");
+
+    upd_check_key('stats_schedule', '04:00:00', $config->stats_schedule !== '04:00:00');
+
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
 };
@@ -1302,4 +1308,3 @@ sys_refresh_tablelist($config->db_prefix);
 
 upd_log_message('Restoring server status');
 $config->db_saveItem('game_disable', $old_server_status);
-$config->db_saveItem('game_disable_reason', $old_server_reason);

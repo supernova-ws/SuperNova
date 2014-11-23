@@ -22,40 +22,57 @@ require_once('includes/init.php');
 
 define('IN_AJAX', true);
 
-function scheduler_process()
-{
-  global $allow_anonymous, $config, $user, $sys_user_logged_in, $debug, $lang;
+function scheduler_process() {
+  global $config, $user, $debug, $lang;
 
   lng_include('admin');
   //if($_SERVER['HTTP_REFERER'] == SN_ROOT_VIRTUAL . 'admin/statbuilder.php')
   $is_admin_request = false;
-  $next_stat_update = sys_schedule_get_prev_run($config->stats_schedule, $config->var_stat_update, SN_TIME_NOW);
+
+/*
+$config->db_saveItem('var_stat_update', '2014-11-23 11:09:55');
+$config->db_saveItem('stats_schedule', '04:00:00, 06:00:00, 23:15:30:00, 24:02:00:00, 23:20:27:00');
+*/
+
+  $ts_var_stat_update = strtotime($config->db_loadItem('var_stat_update'));
+  $ts_scheduled_update = sys_schedule_get_prev_run($config->db_loadItem('stats_schedule'), $config->var_stat_update);
+
+/*
+pdump($ts_scheduled_update);
+print(      $msg = "Running stat updates: {$msg}. Config->var_stat_update = " . $config->var_stat_update .
+  ', $ts_scheduled_update = ' . date(FMT_DATE_TIME_SQL, $ts_scheduled_update) .
+  ', next_stat_update = ' . date(FMT_DATE_TIME_SQL, sys_schedule_get_prev_run($config->stats_schedule, $config->var_stat_update, true)));
+// die();
+*/
+
   if(sys_get_param_int('admin_update'))
   {
     define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
     if(USER_LEVEL > 0)
     {
       $is_admin_request = true;
-      $next_stat_update = SN_TIME_NOW;
+      $ts_scheduled_update = SN_TIME_NOW;
     }
   }
 
-  if($next_stat_update > $config->var_stat_update)
-  {
-    if(SN_TIME_NOW >= $config->var_stat_update_end)
-    {
-      $config->db_saveItem('var_stat_update_end', SN_TIME_NOW + ($config->stats_minimal_interval ? $config->stats_minimal_interval : 600));
+  if($ts_scheduled_update > $ts_var_stat_update) {
+    $ts_var_stat_update_end = strtotime($config->var_stat_update_end);
+    if(SN_TIME_NOW > $ts_var_stat_update_end) {
+      $old_server_status = $config->db_loadItem('game_disable');
+      $config->db_saveItem('game_disable', GAME_DISABLE_STAT);
+      
+      $config->db_saveItem('var_stat_update_end', date(FMT_DATE_TIME_SQL, SN_TIME_NOW + ($config->db_loadItem('stats_minimal_interval') ? $config->stats_minimal_interval : 600)));
       $config->db_saveItem('var_stat_update_msg', 'Update started');
 
-      if($is_admin_request)
-      {
+      if($is_admin_request) {
         $msg = 'admin request';
-      }
-      else
-      {
+      } else {
         $msg = 'scheduler';
       };
-      $msg = "Running stat updates: {$msg}. Config->var_stat_update = " . date(FMT_DATE_TIME, $config->var_stat_update) . ', nextStatUpdate = ' . date(FMT_DATE_TIME, $next_stat_update);
+      $next_run = date(FMT_DATE_TIME_SQL, sys_schedule_get_prev_run($config->stats_schedule, $config->var_stat_update, true));
+      $msg = "Running stat updates: {$msg}. Config->var_stat_update = " . $config->var_stat_update .
+        ', $ts_scheduled_update = ' . date(FMT_DATE_TIME_SQL, $ts_scheduled_update) .
+        ', next_stat_update = ' . $next_run;
       $debug->warning($msg, 'Stat update', 190);
       $total_time = microtime(true);
 
@@ -66,34 +83,31 @@ function scheduler_process()
       $msg = "Stat update complete in {$total_time} seconds.";
       $debug->warning($msg, 'Stat update', 192);
 
-      $msg = "{$lang['adm_done']}: {$total_time} {$lang['sys_sec']}."; // . date(FMT_DATE_TIME, $next_stat_update) . ' ' . date(FMT_DATE_TIME, $config->var_stat_update);
+      $msg = "{$lang['adm_done']}: {$total_time} {$lang['sys_sec']}."; // . date(FMT_DATE_TIME, $ts_scheduled_update) . ' ' . date(FMT_DATE_TIME, $config->var_stat_update);
 
       // TODO: Analyze maintenance result. Add record to log if error. Add record to log if OK
       $maintenance_result = sys_maintenance();
 
-      $config->db_saveItem('var_stat_update', $next_stat_update);
+      $config->db_saveItem('var_stat_update', SN_TIME_SQL);
       $config->db_saveItem('var_stat_update_msg', $msg);
-      $config->db_saveItem('var_stat_update_next', sys_schedule_get_prev_run($config->stats_schedule, $next_stat_update, SN_TIME_NOW, true));
-      $config->db_saveItem('var_stat_update_admin_forced', SN_TIME_NOW);
-      $config->db_saveItem('var_stat_update_end', SN_TIME_NOW);
-    }
-    elseif($next_stat_update > $config->var_stat_update)
-    {
-      $timeout = $config->var_stat_update_end - SN_TIME_NOW;
+      $config->db_saveItem('var_stat_update_next', $next_run);
+      $config->db_saveItem('var_stat_update_admin_forced', SN_TIME_SQL);
+      $config->db_saveItem('var_stat_update_end', SN_TIME_SQL);
+
+      $config->db_saveItem('game_disable', $old_server_status);
+    } elseif($ts_scheduled_update > $ts_var_stat_update) {
+      $timeout = strtotime($config->db_loadItem('var_stat_update_end')) - SN_TIME_NOW;
       $msg = $config->db_loadItem('var_stat_update_msg');
       $msg = "{$msg} ETA {$timeout} seconds. Please wait...";
     }
-  }
-  elseif($is_admin_request)
-  {
+  } elseif($is_admin_request) {
     $msg = 'Stat is up to date';
   }
 
   return $msg;
 }
 
-if(($result = scheduler_process()) && !defined('IN_ADMIN'))
-{
+if(($result = scheduler_process()) && !defined('IN_ADMIN')) {
   $result = htmlspecialchars($result, ENT_QUOTES, 'UTF-8');
   print(json_encode($result));
 }

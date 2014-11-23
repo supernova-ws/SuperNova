@@ -13,15 +13,13 @@ define('INSTALL' , false);
 define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 3)
-{
+if($user['authlevel'] < 3) {
   AdminMessage($lang['adm_err_denied']);
 }
 
 $template = gettemplate('admin/settings', true);
 
-if(sys_get_param('save'))
-{
+if(sys_get_param('save')) {
   $config->game_name               = sys_get_param_str_unsafe('game_name');
   $config->game_mode               = sys_get_param_int('game_mode');
   $config->game_speed              = sys_get_param_float('game_speed', 1);
@@ -91,14 +89,10 @@ if(sys_get_param('save'))
   $config->stats_schedule          = sys_get_param_str('stats_schedule');
 
   $config->empire_mercenary_base_period = sys_get_param_int('empire_mercenary_base_period');
-  if($config->empire_mercenary_temporary != sys_get_param_int('empire_mercenary_temporary'))
-  {
-    if($config->empire_mercenary_temporary)
-    {
+  if($config->empire_mercenary_temporary != sys_get_param_int('empire_mercenary_temporary')) {
+    if($config->empire_mercenary_temporary) {
       db_unit_list_admin_delete_mercenaries_finished();
-    }
-    else
-    {
+    } else {
       db_unit_list_admin_set_mercenaries_expire_time($config->empire_mercenary_base_period);
     }
 
@@ -139,16 +133,21 @@ $template->assign_vars(array(
 //  'STATS_SCHEDULE' => $config->stats_hide_player_list,
 ));
 
-foreach($lang['sys_game_mode'] as $mode_id => $mode_name)
-{
+foreach($lang['sys_game_disable_reason'] as $id => $name) {
+  $template->assign_block_vars('sys_game_disable_reason', array(
+    'ID'   => $id,
+    'NAME' => $name,
+  ));
+}
+
+foreach($lang['sys_game_mode'] as $mode_id => $mode_name) {
   $template->assign_block_vars('game_modes', array(
     'ID'   => $mode_id,
     'NAME' => $mode_name,
   ));
 }
 
-foreach($lang['adm_opt_ver_response'] as $ver_id => $ver_response)
-{
+foreach($lang['adm_opt_ver_response'] as $ver_id => $ver_response) {
   $template->assign_block_vars('ver_response', array(
     'ID'   => $ver_id,
     'NAME' => js_safe_string($ver_response),
@@ -156,8 +155,7 @@ foreach($lang['adm_opt_ver_response'] as $ver_id => $ver_response)
 }
 
 $lang_list = lng_get_list();
-foreach($lang_list as $lang_id => $lang_data)
-{
+foreach($lang_list as $lang_id => $lang_data) {
   $template->assign_block_vars('game_languages', array(
     'ID'   => $lang_id,
     'NAME' => "{$lang_data['LANG_NAME_NATIVE']} ({$lang_data['LANG_NAME_ENGLISH']})",
@@ -166,5 +164,3 @@ foreach($lang_list as $lang_id => $lang_data)
 }
 
 display(parsetemplate($template), $lang['adm_opt_title'], false, '', true);
-
-?>

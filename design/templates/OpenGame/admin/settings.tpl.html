@@ -87,7 +87,18 @@
 
     <tr><td class="c" colspan="2">{L_adm_opt_maintenance}</td></tr>
     <tr>
-      <th colspan=2><input name="game_disable" id="game_disable" type="checkbox" value="1"<!-- IF GAME_DISABLE --> checked<!-- ENDIF -->/> <label for="game_disable">{L_adm_opt_game_online}</label><br />
+      <th colspan=2>
+        <!-- <label for="game_disable">{L_adm_opt_game_online}</label><br /> -->
+        {L_adm_game_status} <select name="game_disable" id="game_disable">
+          <!-- BEGIN sys_game_disable_reason -->
+            <!-- IF sys_game_disable_reason.ID == GAME_DISABLE -->
+              <!-- DEFINE $GAME_MODE = ' selected' -->
+            <!-- ELSE -->
+              <!-- DEFINE $GAME_MODE = '' -->
+            <!-- ENDIF -->
+            <option value="{sys_game_disable_reason.ID}"{$GAME_MODE}>{sys_game_disable_reason.NAME}
+          <!-- END sys_game_disable_reason -->
+        </select><br />
         <input name="game_disable_reason" size="82" value="{C_game_disable_reason}" type="text">
         <!--
         <textarea name="game_disable_reason" cols="50" rows="2" size="50" >{C_game_disable_reason}</textarea>
@@ -171,6 +182,21 @@
     <tr>
       <th>{L_res_basic_income}</th>
       <th>
+        <table class="markup">
+          <tr>
+            <td>{L_sys_metal}</td>
+            <td><input name="metal_basic_income" maxlength="10" size="9" value="{C_metal_basic_income}" type="text"> {L_adm_opt_per_hour}</td>
+            <td>{L_sys_crystal}</td>
+            <td><input name="crystal_basic_income" maxlength="10" size="9" value="{C_crystal_basic_income}" type="text"> {L_adm_opt_per_hour}</td>
+          </tr>
+          <tr>
+            <td>{L_sys_deuterium}</td>
+            <td><input name="deuterium_basic_income" maxlength="10" size="9" value="{C_deuterium_basic_income}" type="text"> {L_adm_opt_per_hour}</td>
+            <td>{L_sys_energy}</td>
+            <td><input name="energy_basic_income" maxlength="10" size="9" value="{C_energy_basic_income}" type="text"> {L_adm_opt_per_hour}</td>
+          </tr>
+        </table>
+        <!--
         <div class="fl" style="width: 5em;">{L_sys_metal}</div>
         <div class="fl" style="width: 10.5em;"><input name="metal_basic_income" maxlength="10" size="9" value="{C_metal_basic_income}" type="text"> {L_adm_opt_per_hour}</div>
         <div class="fl" style="width: 5.5em;">{L_sys_crystal}</div>
@@ -179,6 +205,7 @@
         <div class="fl" style="width: 10.5em;"><input name="deuterium_basic_income" maxlength="10" size="9" value="{C_deuterium_basic_income}" type="text"> {L_adm_opt_per_hour}</div>
         <div class="fl" style="width: 5.5em;">{L_sys_energy}</div>
         <div><input name="energy_basic_income" maxlength="10" size="9" value="{C_energy_basic_income}" type="text"> {L_adm_opt_per_hour}</div>
+        -->
       </th>
     </tr>
 

@@ -438,7 +438,7 @@ function sn_tpl_render_topnav(&$user, $planetrow)
 
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate($time_now);
-  $time_local_parsed = getdate(SN_CLIENT_TIME_LOCAL);
+  $time_local_parsed = getdate(defined('SN_CLIENT_TIME_LOCAL') ? SN_CLIENT_TIME_LOCAL : SN_TIME_NOW);
 
   if($config->game_news_overview)
   {
