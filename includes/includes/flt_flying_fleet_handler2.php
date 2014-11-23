@@ -314,6 +314,13 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
       continue;
     }
 
+    if($fleet_event['fleet_event'] == EVENT_FLT_ARRIVE && $fleet_row['fleet_mess'] != 0)
+    {
+      // При событии EVENT_FLT_ARRIVE флот всегда должен иметь fleet_mess == 0
+      // В противном случае это означает, что флот уже был обработан ранее - например, при САБе
+      sn_db_transaction_commit();
+      continue;
+    }
 
     // TODO: Здесь тоже указатели
     // TODO: Кэширование

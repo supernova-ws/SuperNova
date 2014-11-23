@@ -169,12 +169,12 @@ function tpl_render_menu() {
     'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']),
 //    'MENU_START_HIDE'     => isset($_COOKIE[SN_COOKIE . '_menu_hidden']) && $_COOKIE[SN_COOKIE . '_menu_hidden'],
 
-    'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => $user['player_options'][PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON],
-    'PLAYER_OPTION_MENU_SHOW_ON_BUTTON' => $user['player_options'][PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
-    'PLAYER_OPTION_MENU_HIDE_ON_BUTTON' => $user['player_options'][PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
-    'PLAYER_OPTION_MENU_HIDE_ON_LEAVE' => $user['player_options'][PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
-    'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE' => $user['player_options'][PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
-    'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => $user['player_options'][PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
+    'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => isset($template_result['MENU_CUSTOMIZE']) ? $user['player_options'][PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] : 0,
+    'PLAYER_OPTION_MENU_SHOW_ON_BUTTON' => $template_result['MENU_CUSTOMIZE'] ? $user['player_options'][PLAYER_OPTION_MENU_SHOW_ON_BUTTON] : 0,
+    'PLAYER_OPTION_MENU_HIDE_ON_BUTTON' => $template_result['MENU_CUSTOMIZE'] ? $user['player_options'][PLAYER_OPTION_MENU_HIDE_ON_BUTTON] : 0,
+    'PLAYER_OPTION_MENU_HIDE_ON_LEAVE' => $template_result['MENU_CUSTOMIZE'] ? $user['player_options'][PLAYER_OPTION_MENU_HIDE_ON_LEAVE] : 0,
+    'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE' => $template_result['MENU_CUSTOMIZE'] ? $user['player_options'][PLAYER_OPTION_MENU_UNPIN_ABSOLUTE] : 0,
+    'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => $template_result['MENU_CUSTOMIZE'] ? $user['player_options'][PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS] : 0,
   ));
 
   if(IN_ADMIN === true && $user['authlevel'] > 0) {

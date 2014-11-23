@@ -64,6 +64,7 @@ class template_compile
     {
       if (!file_exists($this->template->files_inherit[$handle]))
       {
+        return;
         trigger_error("template->_tpl_load_file(): File {$this->template->files[$handle]} does not exist or is empty", E_USER_ERROR);
       }
       else
