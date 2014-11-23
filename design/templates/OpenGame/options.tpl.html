@@ -1,12 +1,12 @@
 <h1>{L_opt_header}</h1>
 <!-- IF CHANGE_PASS -->
-<!-- IF CHANGE_PASS == -1 -->
-<h3 class="positive">{L_opt_msg_pass_changed}</h3>
-<!-- ELSEIF CHANGE_PASS == 1  -->
-<h3 class="negative">{L_opt_err_pass_wrong}</h3>
-<!-- ELSEIF CHANGE_PASS == 2  -->
-<h3 class="negative">{L_opt_err_pass_unmatched}</h3>
-<!-- ENDIF -->
+  <!-- IF CHANGE_PASS == -1 -->
+    <h3 class="positive">{L_opt_msg_pass_changed}</h3>
+  <!-- ELSEIF CHANGE_PASS == 1  -->
+    <h3 class="negative">{L_opt_err_pass_wrong}</h3>
+  <!-- ELSEIF CHANGE_PASS == 2  -->
+    <h3 class="negative">{L_opt_err_pass_unmatched}</h3>
+  <!-- ENDIF -->
 <!-- ENDIF -->
 
 <!-- INCLUDE _result_message -->
@@ -21,94 +21,9 @@
 
     <div id="tab_account">
       <table width="100%">
-
-
         <!-- IF MENU_CUSTOMIZE -->
-        <script type="text/javascript">
-          var LA_menu_customize_customize_start = "{LA_menu_customize_customize_start}";
-          var LA_menu_customize_customize_save = "{LA_menu_customize_customize_save}";
-          var LA_menu_reset_confirm = "{LA_menu_customize_reset_confirm}";
-        </script>
-        <style type="text/css">
-          #menu_customize {
-            margin-right: 20px;
-          }
-        </style>
-        <tr>
-          <th class="c_c" colspan="2">
-            {L_menu_customize_customization}
-          </th>
-        </tr>
-        <tr>
-          <td class="c_c" colspan="2">
-            <div style="text-align: left; margin-bottom: 10px;">
-              <label for="menu_customize_show_hide_button" style="margin-left: 26px">{L_menu_customize_show_hide_button}</label>
-              <select name="options[2]" id="menu_customize_show_hide_button"><!--
-                BEGIN menu_customize_show_hide_button_state
-                --><option value="{menu_customize_show_hide_button_state.ID}"<!--
-                  IF menu_customize_show_hide_button_state.ID == menu_customize_show_hide_button
-                    --> selected<!--
-                  ENDIF
-                -->>{menu_customize_show_hide_button_state.NAME}</option><!--
-                END menu_customize_show_hide_button_state
-              --></select>
-              <br />
-
-              <input type="hidden" name="options[3]" value="0" />
-              <input type="checkbox" id="menu_customize_show_button_enter" name="options[3]" value="1"<!--
-                IF menu_customize_show_button_enter
-                  --> checked<!--
-                ENDIF
-              -->>
-              <label for="menu_customize_show_button_enter">{L_menu_customize_show_button_enter}</label>
-              <br />
-
-              <input type="hidden" name="options[4]" value="0" />
-              <input type="checkbox" id="menu_customize_hide_button_enter" name="options[4]" value="1"<!--
-                IF menu_customize_hide_button_enter
-                  --> checked<!--
-                ENDIF
-              -->>
-              <label for="menu_customize_hide_button_enter">{L_menu_customize_hide_button_enter}</label>
-              <br />
-
-              <input type="hidden" name="options[5]" value="0" />
-              <input type="checkbox" id="menu_customize_hide_unpinned_on_exit" name="options[5]" value="1"<!--
-                IF menu_customize_hide_unpinned_on_exit
-                  --> checked<!--
-                ENDIF
-              -->>
-              <label for="menu_customize_hide_unpinned_on_exit">{L_menu_customize_hide_unpinned_on_exit}</label>
-              <br />
-
-              <input type="hidden" name="options[6]" value="0" />
-              <input type="checkbox" id="menu_customize_show_absolute" name="options[6]" value="1"<!--
-                IF menu_customize_show_absolute
-                  --> checked<!--
-                ENDIF
-              -->>
-              <label for="menu_customize_show_absolute">{L_menu_customize_show_absolute}</label><br />
-            <!-- IF ! USER_MENU_CUSTOMIZE -->
-            {L_menu_customize_premium_0}<br />
-            <!-- ENDIF -->
-            <!-- IF USER_MENU_CUSTOMIZE <= 1 -->
-            {L_menu_customize_premium_1}<br />
-            <!-- ENDIF -->
-            <!-- IF USER_MENU_CUSTOMIZE <= 2 -->
-            {L_menu_customize_premium_2}<br />
-            <!-- ENDIF -->
-            {L_menu_customize_premium_3}<br />
-            </div>
-            <input value="{L_menu_customize_customize_start}" type="button" id="menu_customize" <!-- IF ! USER_MENU_CUSTOMIZE --> disabled<!-- ENDIF --> />
-            <input value="{L_menu_customize_reset}" type="button" id="menu_reset" <!-- IF ! USER_MENU_CUSTOMIZE --> disabled<!-- ENDIF --> />
-
-            <input type="hidden" value="{MENU_ORDER}" name="menu_order" id="menu_order" />
-          </td>
-        </tr>
+          <!-- INCLUDE ../../../modules/menu_customize/design/templates/OpenGame/menu_customize_options -->
         <!-- ENDIF -->
-
-
-
 
         <!-- IF ADM_PROTECT_PLANETS -->
         <tr class="c_c">

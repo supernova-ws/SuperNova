@@ -158,6 +158,7 @@ function tpl_render_menu() {
 
   player_load_option($user, array(PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON, PLAYER_OPTION_MENU_SHOW_ON_BUTTON,
     PLAYER_OPTION_MENU_HIDE_ON_BUTTON, PLAYER_OPTION_MENU_HIDE_ON_LEAVE, PLAYER_OPTION_MENU_UNPIN_ABSOLUTE,
+    PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS,
   ));
 
   $template->assign_vars(array(
@@ -173,6 +174,7 @@ function tpl_render_menu() {
     'PLAYER_OPTION_MENU_HIDE_ON_BUTTON' => $user['player_options'][PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
     'PLAYER_OPTION_MENU_HIDE_ON_LEAVE' => $user['player_options'][PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
     'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE' => $user['player_options'][PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
+    'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => $user['player_options'][PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
   ));
 
   if(IN_ADMIN === true && $user['authlevel'] > 0) {

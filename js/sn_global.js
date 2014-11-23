@@ -106,6 +106,14 @@ jQuery(document).on('mouseup', function(event, ui) {
 
 // Хэндлеры других специальных элементов
 // Элементы редиректа
+jQuery(document).on('click', "[go_url]", function() {
+  if(jQuery(this).attr('target') == '_blank') {
+    window.open(jQuery(this).attr('go_url'), '_blank');
+  } else {
+    document.location = jQuery(this).attr('go_url');
+  }
+});
+
 jQuery(document).on('click', "[go]", function() {
   planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
   unit_id = (unit_id = parseInt(jQuery(this).attr('unit_id'))) ? unit_id : parseInt(jQuery(this).parent().attr('unit_id'));

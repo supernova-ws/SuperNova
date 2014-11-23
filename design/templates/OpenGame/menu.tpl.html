@@ -8,6 +8,7 @@
   var PLAYER_OPTION_MENU_SHOW_ON_BUTTON = '{PLAYER_OPTION_MENU_SHOW_ON_BUTTON}';
   var PLAYER_OPTION_MENU_HIDE_ON_BUTTON = '{PLAYER_OPTION_MENU_HIDE_ON_BUTTON}';
   var PLAYER_OPTION_MENU_HIDE_ON_LEAVE = '{PLAYER_OPTION_MENU_HIDE_ON_LEAVE}';
+  var PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS = '{PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS}';
 
   var LA_menu_show = "{LA_menu_show}";
   var LA_menu_hide = "{LA_menu_hide}";
@@ -87,7 +88,6 @@
       <!-- ELSE -->
         <!-- DEFINE $LINK_BLANK = '' -->
       <!-- ENDIF -->
-      <!-- DEFINE $LINK_CLOSE = '</a>' -->
     <!-- ELSE -->
       <!-- DEFINE $LINK_CLOSE = '' -->
     <!-- ENDIF -->
@@ -99,10 +99,43 @@
         <!-- IF menu.CLASS --> class="{menu.CLASS}"<!-- ENDIF -->
         <!-- IF menu.TITLE --> title="{menu.TITLE}"<!-- ELSEIF menu.ALT --> title="{menu.ALT}"<!-- ENDIF -->
         <!-- IF menu.STYLE --> style="{menu.STYLE}"<!-- ENDIF -->
-      ><!-- IF menu.LINK --><a href="{menu.LINK}" class="link"{$LINK_BLANK}><!-- ENDIF --><!-- IF menu.ICON --><img src="{dpath}icons/{menu.ICON}" height="14px" border="0" style="margin-right: 5px;" /><!-- ENDIF -->{$HEADER_PREFIX}<!-- IF menu.TYPE == 'image' -->
-          <img border="0" src="{menu.ITEM}"
-            <!-- IF menu.ALT --> alt="{menu.ALT}"<!-- ELSEIF menu.TITLE --> alt="{menu.TITLE}"<!-- ENDIF -->
-          /><!-- ELSE -->{menu.ITEM}<!-- ENDIF -->{$HEADER_SUFFIX}{$LINK_CLOSE}
+      >
+
+
+
+
+    <!-- IF menu.WRAP_START -->{menu.WRAP_START}<!-- ENDIF -->
+
+    <!-- IF PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS -->
+      <!-- IF menu.ICON --><img src="{dpath}icons/{menu.ICON}" height="14px" border="0" style="margin-right: 5px;" /><!-- ENDIF -->
+
+      <!-- IF menu.LINK -->
+        <!-- IF menu.TYPE == 'image' -->
+          <a href="{menu.LINK}" class="link"{$LINK_BLANK}>
+          <!-- DEFINE $LINK_CLOSE = '</a>' -->
+        <!-- ELSE -->
+          <input type="button" class="link ui-button ui-widget ui-state-default ui-corner-all ui-textfield" value="{$HEADER_PREFIX}{menu.ITEM}{$HEADER_SUFFIX}" go_url="{menu.LINK}"{$LINK_BLANK} />
+          <!-- DEFINE $LINK_CLOSE = '' -->
+        <!-- ENDIF -->
+      <!-- ENDIF -->
+
+
+      <!-- IF menu.TYPE == 'image' -->
+        <img border="0" src="{menu.ITEM}" <!-- IF menu.ALT --> alt="{menu.ALT}"<!-- ELSEIF menu.TITLE --> alt="{menu.TITLE}"<!-- ENDIF --> />
+      <!-- ELSEIF ! menu.LINK -->
+        {$HEADER_PREFIX}{menu.ITEM}{$HEADER_SUFFIX}
+      <!-- ENDIF -->
+    <!-- ELSE -->
+      <!-- IF menu.LINK -->
+        <!-- DEFINE $LINK_CLOSE = '</a>' -->
+        <a href="{menu.LINK}" class="link"{$LINK_BLANK}><!-- ENDIF --><!-- IF menu.ICON --><img src="{dpath}icons/{menu.ICON}" height="14px" border="0" style="margin-right: 5px;" /><!-- ENDIF -->{$HEADER_PREFIX}<!-- IF menu.TYPE == 'image' -->
+            <img border="0" src="{menu.ITEM}"
+              <!-- IF menu.ALT --> alt="{menu.ALT}"<!-- ELSEIF menu.TITLE --> alt="{menu.TITLE}"<!-- ENDIF -->
+            /><!-- ELSE -->{menu.ITEM}<!-- ENDIF -->{$HEADER_SUFFIX}
+      <!-- ENDIF -->
+    {$LINK_CLOSE}
+
+    <!-- IF menu.WRAP_END -->{menu.WRAP_END}<!-- ENDIF -->
       </{$TX}>
     </tr>
   <!-- END menu --></table>

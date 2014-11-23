@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39a20.11');
+define('SN_VERSION', '39a20.14');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1114,3 +1114,4 @@ define('PLAYER_OPTION_MENU_SHOW_ON_BUTTON', 3);
 define('PLAYER_OPTION_MENU_HIDE_ON_BUTTON', 4);
 define('PLAYER_OPTION_MENU_HIDE_ON_LEAVE', 5);
 define('PLAYER_OPTION_MENU_UNPIN_ABSOLUTE', 6);
+define('PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS', 7);

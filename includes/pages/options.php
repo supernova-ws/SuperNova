@@ -379,6 +379,8 @@ function sn_options_view($template = null) {
       ? $player_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE] : 0,
     'menu_customize_show_absolute' => isset($player_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE])
       ? $player_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE] : 0,
+    'menu_customize_items_as_buttons' => isset($player_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS])
+      ? $player_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS] : 0,
 
 
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
