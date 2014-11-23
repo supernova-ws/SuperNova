@@ -347,7 +347,8 @@ $sn_menu = array(
   'menu_news' => array(
     'LEVEL' => 'submenu',
 //    'ITEM'  => $lang['news_title'] . ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\">{$lang['lm_announce_fresh']}</span>" : ''),
-    'ITEM'  => $lang['news_title'] . ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\" style='display:inline'>{$lang['lm_announce_fresh']}</span>" : ''),
+    'ITEM'  => $lang['news_title'],
+    'WRAP_END' => ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\" style='display:inline'>{$lang['lm_announce_fresh']}</span>" : ''),
     'LINK'  => 'announce.php',
     'ICON'  => true,
   ),
