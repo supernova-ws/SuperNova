@@ -21,7 +21,8 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
   if(!$sn_group_modifiers)
   {
     $sn_group_modifiers = sn_get_groups('modifiers');
-    $config_resource_multiplier = $config->resource_multiplier;
+    // $config_resource_multiplier = $config->resource_multiplier;
+    $config_resource_multiplier = game_resource_multiplier();
     $config_eco_scale_storage = $config->eco_scale_storage ? $config_resource_multiplier : 1;
   }
 

@@ -141,7 +141,8 @@ function flt_mission_explore(&$mission_data)
       $outcome_mission_sub = $outcome_percent >= 0.99 ? 0 : ($outcome_percent >= 0.90 ? 1 : 2);
       $outcome_percent = $outcome_description['percent'][$outcome_mission_sub];
       // Рассчитываем эквивалент найденного флота в метале
-      $found_in_metal = min($outcome_percent * $fleet_metal_points, $config->resource_multiplier * 10000000); // game_speed
+      // $found_in_metal = min($outcome_percent * $fleet_metal_points, $config->resource_multiplier * 10000000); // game_speed
+      $found_in_metal = min($outcome_percent * $fleet_metal_points, game_resource_multiplier() * 10000000); // game_speed
       //  13 243 754 000 g x1
       //  60 762 247 000 a x10
       // 308 389 499 488 000 b x500
@@ -210,7 +211,8 @@ function flt_mission_explore(&$mission_data)
       $outcome_mission_sub = $outcome_percent >= 0.99 ? 0 : ($outcome_percent >= 0.90 ? 1 : 2);
       $outcome_percent = $outcome_description['percent'][$outcome_mission_sub];
       // Рассчитываем количество найденных ресурсов
-      $found_in_metal = ceil(min($outcome_percent * $fleet_metal_points, $config->resource_multiplier * 10000000, $fleet_capacity) * mt_rand(950000, 1050000) / 1000000); // game_speed
+      // $found_in_metal = ceil(min($outcome_percent * $fleet_metal_points, $config->resource_multiplier * 10000000, $fleet_capacity) * mt_rand(950000, 1050000) / 1000000); // game_speed
+      $found_in_metal = ceil(min($outcome_percent * $fleet_metal_points, game_resource_multiplier() * 10000000, $fleet_capacity) * mt_rand(950000, 1050000) / 1000000); // game_speed
 
       $resources_found[RES_METAL] = floor(mt_rand(300000, 700000) / 1000000 * $found_in_metal);
       $found_in_metal -= $resources_found[RES_METAL];

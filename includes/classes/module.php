@@ -5,7 +5,7 @@ class sn_module {
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #39a17.9# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #39a21.0# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -191,6 +191,7 @@ class sn_module {
 }
 
 abstract class sn_module_payment extends sn_module {
+/*
   static $bonus_table = array(
       2500 => 0,
      // 5000 => 0,
@@ -209,6 +210,26 @@ abstract class sn_module_payment extends sn_module {
    1250000 => 0.55,
    1500000 => 0.57,
    2500000 => 0.60,
+  );
+*/
+  static $bonus_table = array(
+      2000 => 0,
+     // 5000 => 0,
+     10000 => 0,
+     20000 => 0,
+
+     40000 => 0.025,
+    100000 => 0.05,
+    200000 => 0.075,
+    300000 => 0.10,
+    400000 => 0.15,
+    500000 => 0.20,
+    800000 => 0.25,
+   1000000 => 0.30,
+   1500000 => 0.40,
+   2000000 => 0.50,
+   3000000 => 0.60,
+   5000000 => 0.70,
   );
 
   static $payment_methods = array(

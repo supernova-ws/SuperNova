@@ -166,7 +166,7 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
 
   $unit_data = get_unit_param($BuildID);
 
-  $config_resource_multiplier = $config->resource_multiplier;
+  $config_resource_multiplier = game_resource_multiplier();
 
   $BuildLevelFactor = $CurrentPlanet[pname_factory_production_field_name($BuildID)];
   $BuildTemp = $CurrentPlanet['temp_max'];

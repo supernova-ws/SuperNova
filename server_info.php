@@ -22,6 +22,10 @@ $template->assign_vars(array(
   'PLAYER_MAX_COLONIES' => $config->player_max_colonies,
 
   'GAME_MULTIACCOUNT_ENABLED' => $config->game_multiaccount_enabled,
+
+  'GAME_SPEED' => get_game_speed(),
+  'FLEET_SPEED' => flt_server_flight_speed_multiplier(),
+  'RESOURCE_MULTIPLIER' => game_resource_multiplier(),
 ));
 
 display(parsetemplate($template));

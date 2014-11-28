@@ -614,13 +614,6 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 //ini_set('error_reporting', E_ALL ^ E_NOTICE);
 }
 
-function flt_server_flight_speed_multiplier()
-{
-  global $config;
-
-  return $config->fleet_speed;
-}
-
 function flt_calculate_ship_to_transport_sort($a, $b)
 {
   return $a['transport_effectivness'] == $b['transport_effectivness'] ? 0 : ($a['transport_effectivness'] > $b['transport_effectivness'] ? -1 : 1);

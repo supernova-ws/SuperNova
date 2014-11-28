@@ -69,11 +69,25 @@ function sys_file_write($filename, $content)
   return @file_put_contents($filename, $content);
 }
 
-function get_game_speed()
-{
+function get_game_speed(){return sn_function_call('get_game_speed', array(&$result));}
+function sn_get_game_speed(&$result) {
   global $config;
 
-  return $config->game_speed;
+  return $result = $config->game_speed;
+}
+
+function flt_server_flight_speed_multiplier(){return sn_function_call('flt_server_flight_speed_multiplier', array(&$result));}
+function sn_flt_server_flight_speed_multiplier(&$result) {
+  global $config;
+
+  return $result = $config->fleet_speed;
+}
+
+function game_resource_multiplier(){return sn_function_call('game_resource_multiplier', array(&$result));}
+function sn_game_resource_multiplier(&$result) {
+  global $config;
+
+  return $result = $config->resource_multiplier;
 }
 
 /**
@@ -1597,7 +1611,8 @@ function ip2longu($ip)
 }
 
 
-function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null) {
+function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null){return sn_function_call('sn_powerup_get_price_matrix', array($powerup_id, $powerup_unit, $level_max, &$result));}
+function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, &$result) {
   global $sn_powerup_buy_discounts;
 
   $result = array();

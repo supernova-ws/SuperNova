@@ -17,8 +17,7 @@ if(SN_IN_FLEET !== true)
   $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
 }
 
-function flt_build_gathering($resources_taken = '')
-{
+function flt_build_gathering($resources_taken = '') {
   sn_db_transaction_start();
 
   global $time_now, $planetrow, $user, $lang;
@@ -32,23 +31,20 @@ function flt_build_gathering($resources_taken = '')
   {
     $query = implode(',', array_keys($resources_taken));
     $query = " AND `destruyed` = 0 AND `id` IN ({$query})";
-  }
-  else
-  {
+  } else {
     $query = '';
   }
 
-  foreach(sn_get_groups('flt_transports') as $transport_id)
-  {
+  foreach(sn_get_groups('flt_transports') as $transport_id) {
     $transports[$transport_id] = get_unit_param($transport_id, P_CAPACITY);
   }
   arsort($transports);
 
   $planets_db_list = db_planet_list_sorted($user, $planetrow['id'], '*', $query);
-  foreach($planets_db_list as $planet_db_data)
-  { // begin planet loop
-    if(!$query)
-    {
+  !is_array($planets_db_list) ? $planets_db_list = array() : false;
+  foreach($planets_db_list as $planet_db_data) {
+  // begin planet loop
+    if(!$query) {
       $resources_taken[$planet_db_data['id']] = 1;
     }
     $planet_db_data = sys_o_get_updated($user, $planet_db_data, $time_now, true);
@@ -76,10 +72,8 @@ function flt_build_gathering($resources_taken = '')
     $planet_data = &$planet_list[$planet_id];
 
     $planet_resources = 0;
-    foreach(sn_get_groups('resources_loot') as $resource_id)
-    {
-      if($resources_taken[$planet_id] == 1 || $resources_taken[$planet_id][$resource_id])
-      {
+    foreach(sn_get_groups('resources_loot') as $resource_id) {
+      if($resources_taken[$planet_id] == 1 || $resources_taken[$planet_id][$resource_id]) {
         $planet_resources += floor(mrc_get_level($user, $planet_db_data, $resource_id, true, true)); // $planet_db_data[get_unit_param($resource_id, P_NAME)]);
       }
     }
@@ -89,10 +83,8 @@ function flt_build_gathering($resources_taken = '')
     $fleet_capacity = 0;
     $ship_loadout = array();
     $fleet = array();
-    foreach($transports as $ship_id => $ship_capacity)
-    {
-      if($ship_count = mrc_get_level($user, $planet_db_data, $ship_id, true, true))
-      {
+    foreach($transports as $ship_id => $ship_capacity) {
+      if($ship_count = mrc_get_level($user, $planet_db_data, $ship_id, true, true)) {
         $ship_loadout[$ship_id]['capacity'] = $ship_count * $ship_capacity;
         $ship_loadout[$ship_id]['taken'] = 0;
         $fleet_capacity += $ship_loadout[$ship_id]['capacity'];
@@ -103,11 +95,9 @@ function flt_build_gathering($resources_taken = '')
 
     $will_take = min($planet_resources, $fleet_capacity);
 
-    foreach($ship_loadout as $ship_id => &$planet_ship)
-    {
+    foreach($ship_loadout as $ship_id => &$planet_ship) {
       $can_take = min($will_take, $planet_ship['capacity']);
-      if($can_take <= 0)
-      {
+      if($can_take <= 0) {
         continue;
       }
       $planet_ship['capacity'] -= $can_take;
@@ -115,28 +105,23 @@ function flt_build_gathering($resources_taken = '')
       $fleet[$ship_id] = ceil($planet_ship['taken'] / $transports[$ship_id]);
 
       $will_take -= $can_take;
-      if ($will_take <= 0)
-      {
+      if($will_take <= 0) {
         break;
       }
     }
 
-    if(!empty($fleet))
-    {
+    if(!empty($fleet)) {
       $travel_data = flt_travel_data($user, $planetrow, $planet_db_data, $fleet, 10);
       $planet_data['FLEET_SPEED'] = $travel_data['fleet_speed'];
       $planet_data['DISTANCE']    = $travel_data['distance'];
       $planet_data['DURATION']    = $travel_data['duration'];
       $planet_data['CONSUMPTION'] = $travel_data['consumption'];
 
-      if(floor(mrc_get_level($user, $planet_db_data, RES_DEUTERIUM, true)) >= $planet_data['CONSUMPTION'])
-      {
+      if(floor(mrc_get_level($user, $planet_db_data, RES_DEUTERIUM, true)) >= $planet_data['CONSUMPTION']) {
         $will_take = min($planet_resources, $fleet_capacity) - $planet_data['CONSUMPTION'];
 
-        foreach(sn_get_groups('resources_loot') as $resource_id)
-        {
-          if($resources_taken[$planet_id] != 1 && !$resources_taken[$planet_id][$resource_id])
-          {
+        foreach(sn_get_groups('resources_loot') as $resource_id) {
+          if($resources_taken[$planet_id] != 1 && !$resources_taken[$planet_id][$resource_id]) {
             continue;
           }
 
@@ -145,20 +130,15 @@ function flt_build_gathering($resources_taken = '')
           $fleet[$resource_id] = min($will_take, $resource_amount);
           $will_take -= $resource_amount;
 
-          if($will_take <= 0)
-          {
+          if($will_take <= 0) {
             break;
           }
         }
         $result = ATTACK_ALLOWED;
-      }
-      else
-      {
+      } else {
         $result = ATTACK_NO_FUEL;
       }
-    }
-    else
-    {
+    } else {
       $result = ATTACK_NO_FLEET;
     }
 

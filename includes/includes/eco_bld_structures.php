@@ -94,7 +94,8 @@ function sn_eco_build($que_type, &$auser, &$planet) {
   }
 
   // Caching values that used more then one time into local variables
-  $config_resource_multiplier = $config->resource_multiplier;
+//  $config_resource_multiplier = $config->resource_multiplier;
+  $config_resource_multiplier = game_resource_multiplier();
 
   /*
   // Code for fully working new que system

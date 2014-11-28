@@ -350,7 +350,7 @@ if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TI
 // pdump($skip_fleet_update, '$skip_fleet_update');
 // pdump($supernova->options['fleet_update_skip'], '$supernova->options[fleet_update_skip]');
 
-if(!($skip_fleet_update || $supernova->options['fleet_update_skip']) && SN_TIME_NOW - $config->flt_lastUpdate >= 4)
+if(!($skip_fleet_update || $supernova->options['fleet_update_skip']) && SN_TIME_NOW - $config->flt_lastUpdate >= 4 && !defined('IN_ADMIN'))
 {
   require_once(SN_ROOT_PHYSICAL . "includes/includes/flt_flying_fleet_handler2" . DOT_PHP_EX);
   flt_flying_fleet_handler($config, $skip_fleet_update);
