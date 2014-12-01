@@ -77,32 +77,25 @@ function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = fal
 * @package rpg
 *
 */
-function rpg_points_change($user_id, $change_type, $dark_matter, $comment = false, $already_changed = false)
-{
+function rpg_points_change($user_id, $change_type, $dark_matter, $comment = false, $already_changed = false) {
   global $debug, $config, $dm_change_legit, $user;
 
-  if(!$user_id || !$dark_matter)
-  {
+  if(!$user_id) {
     return false;
   }
 
   $dm_change_legit = true;
   $sn_data_dark_matter_db_name = pname_resource_name(RES_DARK_MATTER);
-  if($already_changed)
-  {
+  if($already_changed) {
     $rows_affected = 1;
-  }
-  else
-  {
+  } else {
     db_user_set_by_id($user_id, "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'");
     $rows_affected = mysql_affected_rows();
   }
 
-  if($rows_affected)
-  {
+  if($rows_affected || !$dark_matter) {
     $page_url = mysql_real_escape_string($_SERVER['SCRIPT_NAME']);
-    if(is_array($comment))
-    {
+    if(is_array($comment)) {
       $comment = call_user_func_array('sprintf', $comment);
     }
     $comment = mysql_real_escape_string($comment);
@@ -112,37 +105,27 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
       "INSERT INTO {{log_dark_matter}} (`log_dark_matter_username`, `log_dark_matter_reason`,
         `log_dark_matter_amount`, `log_dark_matter_comment`, `log_dark_matter_page`, `log_dark_matter_sender`)
       VALUES (
-        '{$row['username']}',
-        {$change_type},
-        {$dark_matter},
-        '{$comment}',
-        '{$page_url}',
-        {$user_id}
+        '{$row['username']}', {$change_type},
+        {$dark_matter}, '{$comment}', '{$page_url}', {$user_id}
       );");
 
-    if($user['id'] == $user_id)
-    {
+    if($user['id'] == $user_id) {
       $user['dark_matter'] += $dark_matter;
     }
 
-    if($dark_matter>0)
-    {
+    if($dark_matter > 0) {
       $old_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE;", '', true);
-      if($old_referral['id'])
-      {
+      if($old_referral['id']) {
         doquery("UPDATE {{referrals}} SET dark_matter = dark_matter + '{$dark_matter}' WHERE `id` = {$user_id} LIMIT 1;");
         $new_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1;", '', true);
 
         $partner_bonus = floor($new_referral['dark_matter'] / $config->rpg_bonus_divisor) - ($old_referral['dark_matter'] >= $config->rpg_bonus_minimum ? floor($old_referral['dark_matter'] / $config->rpg_bonus_divisor) : 0);
-        if($partner_bonus > 0 && $new_referral['dark_matter'] >= $config->rpg_bonus_minimum)
-        {
+        if($partner_bonus > 0 && $new_referral['dark_matter'] >= $config->rpg_bonus_minimum) {
           rpg_points_change($new_referral['id_partner'], RPG_REFERRAL, $partner_bonus, "Incoming From Referral ID {$user_id}");
         }
       }
     }
-  }
-  else
-  {
+  } else {
     $debug->warning("Error adjusting Dark Matter for player ID {$user_id} (Player Not Found?) with {$dark_matter}. Reason: {$comment}", 'Dark Matter Change', 402);
   }
 

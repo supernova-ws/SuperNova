@@ -26,75 +26,76 @@ function mrc_officer_accessible(&$user, $mercenary_id)
   return true;
 }
 
-function mrc_mercenary_hire($mode, $user, $mercenary_id)
-{
+function mrc_mercenary_hire($mode, $user, $mercenary_id) {
   global $config, $lang, $sn_powerup_buy_discounts;
 
-  try
-  {
+  try {
     $is_permanent = $mode == UNIT_PLANS || !$config->empire_mercenary_temporary;
     $cost_alliance_multiplyer = (SN_IN_ALLY === true && $mode == UNIT_PLANS ? $config->ali_bonus_members : 1);
     $cost_alliance_multiplyer = $cost_alliance_multiplyer >= 1 ? $cost_alliance_multiplyer : 1;
-    if(!in_array($mercenary_id, sn_get_groups($mode == UNIT_PLANS ? 'plans' : 'mercenaries')))
-    {
+    if(!in_array($mercenary_id, sn_get_groups($mode == UNIT_PLANS ? 'plans' : 'mercenaries'))) {
       throw new Exception($lang['mrc_msg_error_wrong_mercenary'], ERR_ERROR);
     }
 
-    if(!mrc_officer_accessible($user, $mercenary_id))
-    {
+    if(!mrc_officer_accessible($user, $mercenary_id)) {
       throw new Exception($lang['mrc_msg_error_requirements'], ERR_ERROR);
     }
 
     $mercenary_level = sys_get_param_int('mercenary_level');
-    if($mercenary_level < 0 || $mercenary_level > get_unit_param($mercenary_id, P_MAX_STACK))
-    {
+    if($mercenary_level < 0 || $mercenary_level > get_unit_param($mercenary_id, P_MAX_STACK)) {
       throw new Exception($lang['mrc_msg_error_wrong_level'], ERR_ERROR);
     }
 
-    if($mercenary_level && !array_key_exists($mercenary_period = sys_get_param_int('mercenary_period'), $sn_powerup_buy_discounts))
-    {
+    if($mercenary_level && !array_key_exists($mercenary_period = sys_get_param_int('mercenary_period'), $sn_powerup_buy_discounts)) {
       throw new Exception($lang['mrc_msg_error_wrong_period'], ERR_ERROR);
     }
 
     sn_db_transaction_start();
 
     $mercenary_level_old = mrc_get_level($user, $planetrow, $mercenary_id, true, true);
-    if($config->empire_mercenary_temporary && $mercenary_level_old && $mercenary_level)
-    {
+    if($config->empire_mercenary_temporary && $mercenary_level_old && $mercenary_level) {
       throw new Exception($lang['mrc_msg_error_already_hired'], ERR_ERROR); // Can't hire already hired temp mercenary - dismiss first
-    }
-    elseif($config->empire_mercenary_temporary && !$mercenary_level_old && !$mercenary_level)
-    {
+    } elseif($config->empire_mercenary_temporary && !$mercenary_level_old && !$mercenary_level) {
       throw new Exception('', ERR_NONE); // Can't dismiss (!$mercenary_level) not hired (!$mercenary_level_old) temp mercenary. But no error
     }
 
-    if($mercenary_level)
-    {
+    if($mercenary_level) {
       $darkmater_cost = eco_get_total_cost($mercenary_id, $mercenary_level);
-      if(!$config->empire_mercenary_temporary && $mercenary_level_old)
-      {
+      if(!$config->empire_mercenary_temporary && $mercenary_level_old) {
        $darkmater_cost_old = eco_get_total_cost($mercenary_id, $mercenary_level_old);
        $darkmater_cost[BUILD_CREATE][RES_DARK_MATTER] -= $darkmater_cost_old[BUILD_CREATE][RES_DARK_MATTER];
       }
       $darkmater_cost = ceil($darkmater_cost[BUILD_CREATE][RES_DARK_MATTER] * $mercenary_period * $sn_powerup_buy_discounts[$mercenary_period] / $config->empire_mercenary_base_period);
-    }
-    else
-    {
+    } else {
       $darkmater_cost = 0;
     }
     $darkmater_cost *= $cost_alliance_multiplyer;
 
-    if(mrc_get_level($user, null, RES_DARK_MATTER) < $darkmater_cost)
-    {
+    if(mrc_get_level($user, null, RES_DARK_MATTER) < $darkmater_cost) {
       throw new Exception($lang['mrc_msg_error_no_resource'], ERR_ERROR);
     }
 
-    if(($darkmater_cost && $mercenary_level) || !$is_permanent)
-    {
+    if(($darkmater_cost && $mercenary_level) || !$is_permanent) {
+      $unit_row = db_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
+      if(is_array($unit_row) && ($dismiss_left_days = floor((strtotime($unit_row['unit_time_finish']) - SN_TIME_NOW) / PERIOD_DAY))) {
+        $dismiss_full_cost = eco_get_total_cost($mercenary_id, $unit_row['unit_level']);
+        $dismiss_full_cost = $dismiss_full_cost[BUILD_CREATE][RES_DARK_MATTER];
+
+        $dismiss_full_days = round((strtotime($unit_row['unit_time_finish']) - strtotime($unit_row['unit_time_start'])) / PERIOD_DAY);
+/*
+        print(sprintf($lang['mrc_mercenary_dismissed_log'], $lang['tech'][$mercenary_id], $mercenary_id, $dismiss_full_cost, $dismiss_full_days,
+          $unit_row['unit_time_start'], $unit_row['unit_time_finish'], $dismiss_left_days, floor($dismiss_full_cost * $dismiss_left_days / $dismiss_full_days)
+          ));
+*/
+        rpg_points_change($user['id'], RPG_MERCENARY_DISMISSED, 0,
+          sprintf($lang['mrc_mercenary_dismissed_log'], $lang['tech'][$mercenary_id], $mercenary_id, $dismiss_full_cost, $dismiss_full_days,
+            $unit_row['unit_time_start'], $unit_row['unit_time_finish'], $dismiss_left_days, floor($dismiss_full_cost * $dismiss_left_days / $dismiss_full_days)
+        ));
+      }
       db_unit_list_delete($user['id'], LOC_USER, $user['id'], $mercenary_id);
     }
-    if($darkmater_cost && $mercenary_level)
-    {
+
+    if($darkmater_cost && $mercenary_level) {
       db_unit_set_insert(
         "unit_player_id = {$user['id']},
         unit_location_type = " . LOC_USER . ",
@@ -106,13 +107,12 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id)
         unit_time_finish = " . (!$is_permanent ? 'FROM_UNIXTIME(' . (SN_TIME_NOW + $mercenary_period) . ')' : 'null')
       );
 
-      rpg_points_change($user['id'], $mode == UNIT_PLANS ? RPG_PLANS : RPG_MERCENARY, -($darkmater_cost), "Spent for officer {$lang['tech'][$mercenary_id]} ID {$mercenary_id}");
+      rpg_points_change($user['id'], $mode == UNIT_PLANS ? RPG_PLANS : RPG_MERCENARY, -($darkmater_cost),
+        sprintf($lang[$mode == UNIT_PLANS ? 'mrc_plan_bought_log' : 'mrc_mercenary_hired_log'], $lang['tech'][$mercenary_id], $mercenary_id, $darkmater_cost, round($mercenary_period / PERIOD_DAY)));
     }
     sn_db_transaction_commit();
     sys_redirect($_SERVER['REQUEST_URI']);
-  }
-  catch (Exception $e)
-  {
+  } catch (Exception $e) {
     sn_db_transaction_rollback();
     $operation_result = array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,

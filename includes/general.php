@@ -883,12 +883,10 @@ if(!function_exists('strptime'))
   }
 }
 
-function sn_sys_sector_buy($redirect = 'overview.php')
-{
+function sn_sys_sector_buy($redirect = 'overview.php') {
   global $user, $planetrow;
 
-  if(!sys_get_param_str('sector_buy') || $planetrow['planet_type'] != PT_PLANET)
-  {
+  if(!sys_get_param_str('sector_buy') || $planetrow['planet_type'] != PT_PLANET) {
     return;
   }
 
@@ -898,16 +896,12 @@ function sn_sys_sector_buy($redirect = 'overview.php')
   $planetrow = $planetrow['planet'];
   $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
   $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
-  if($sector_cost <= $user[get_unit_param(RES_DARK_MATTER, P_NAME)])
-  {
+  if($sector_cost <= $user[get_unit_param(RES_DARK_MATTER, P_NAME)]) {
     $planet_name_text = uni_render_planet($planetrow);
-    if(rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, "User {$user['username']} ID {$user['id']} purchased 1 sector on planet {$planet_name_text} planet type {$planetrow['planet_type']} ID {$planetrow['id']} for {$sector_cost} DM"))
-    {
+    if(rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, "User {$user['username']} ID {$user['id']} purchased 1 sector on planet {$planet_name_text} planet type {$planetrow['planet_type']} ID {$planetrow['id']} for {$sector_cost} DM")) {
       $sector_db_name = pname_resource_name(UNIT_SECTOR);
       db_planet_set_by_id($planetrow['id'], "{$sector_db_name} = {$sector_db_name} + 1");
-    }
-    else
-    {
+    } else {
       sn_db_transaction_rollback();
     }
   }
