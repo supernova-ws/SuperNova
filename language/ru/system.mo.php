@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39a20.18#
+* @version #39a21.3#
 *
 */
 
@@ -971,4 +971,5 @@ $a_lang_array = (array(
     GAME_DISABLE_INSTALL => 'Игра еще не сконфигурирована',
   ),
 
+  'sys_sector_purchase_log' => 'Пользователь {%2$d} {%1$s} купил 1 сектор на планете {%5$d} {%3$s} тип "%4$s" за %6$d ТМ',
 ));

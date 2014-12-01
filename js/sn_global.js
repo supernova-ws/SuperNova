@@ -10,6 +10,7 @@ jQuery(document).ready(function() {
   inputs.filter(':button, :submit, :reset').button().addClass('ui-textfield');
   inputs.filter(':text, :password, :file').button().addClass('ui-textfield');
   inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
+  jQuery("button").button().addClass('ui-textfield');
   // jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield');
 
   calc_elements();
@@ -23,6 +24,7 @@ jQuery(document).ready(function() {
 
 function sn_redirect(url) {
   document.location.assign(url);
+//  document.location.href = url;
 }
 
 /* CHAT_ADVANCED specific */

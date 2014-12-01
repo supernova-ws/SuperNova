@@ -34,9 +34,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('overview');
 
-$mode            = sys_get_param_str('mode');
-switch($mode)
-{
+switch($mode = sys_get_param_str('mode')) {
   case 'manage':
     sn_sys_sector_buy('overview.php?mode=manage');
 
@@ -46,33 +44,26 @@ switch($mode)
     $template  = gettemplate('planet_manage', true);
     $planet_id = sys_get_param_id('planet_id');
 
-    if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name'))
-    {
+    if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
       $planetrow['name'] = $new_name;
       $new_name = mysql_real_escape_string($new_name);
       db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name}'");
-    }
-    elseif(sys_get_param_str('capital'))
-    {
-      try
-      {
+    } elseif(sys_get_param_str('capital')) {
+      try {
         sn_db_transaction_start();
         $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
         $user = $global_data['user'];
         $planetrow = $global_data['planet'];
 
-        if($planetrow['planet_type'] != PT_PLANET)
-        {
+        if($planetrow['planet_type'] != PT_PLANET) {
           throw new exception($lang['ov_capital_err_not_a_planet'], ERR_ERROR);
         }
 
-        if($planetrow['id'] == $user['id_planet'])
-        {
+        if($planetrow['id'] == $user['id_planet']) {
           throw new exception($lang['ov_capital_err_capital_already'], ERR_ERROR);
         }
 
-        if($user_dark_matter < $config->planet_capital_cost)
-        {
+        if($user_dark_matter < $config->planet_capital_cost) {
           throw new exception($lang['ov_capital_err_no_dark_matter'], ERR_ERROR);
         }
 
@@ -88,33 +79,31 @@ switch($mode)
           'MESSAGE' => $lang['ov_capital_err_none'],
         );
         sn_db_transaction_commit();
-      }
-      catch(exception $e)
-      {
+        sys_redirect('overview.php?mode=manage');
+      } catch(exception $e) {
         sn_db_transaction_rollback();
         $result = array(
           'STATUS'  => $e->getCode(),
           'MESSAGE' => $e->getMessage(),
         );
       }
-    }
-    elseif(sys_get_param_str('teleport'))
-    {
-      try
-      {
-        if(!uni_coordinates_valid($new_coordinates = array('galaxy' => sys_get_param_int('new_galaxy'), 'system' => sys_get_param_int('new_system'), 'planet' => sys_get_param_int('new_planet'))))
+    } elseif(sys_get_param_str('teleport')) {
+      try {
+        if(!uni_coordinates_valid($new_coordinates = array(
+          'galaxy' => sys_get_param_int('new_galaxy'),
+          'system' => sys_get_param_int('new_system'),
+          'planet' => sys_get_param_int('new_planet'))))
         {
           throw new exception($lang['ov_teleport_err_wrong_coordinates'], ERR_ERROR);
         }
 
         sn_db_transaction_start();
-        $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
+        $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
         $user = $global_data['user'];
         $planetrow = $global_data['planet'];
 
         $can_teleport = uni_planet_teleport_check($user, $planetrow, $new_coordinates);
-        if($can_teleport['result'] != ERR_NONE)
-        {
+        if($can_teleport['result'] != ERR_NONE) {
           throw new exception($can_teleport['message'], $can_teleport['result']);
         }
 
@@ -128,8 +117,7 @@ switch($mode)
         //  SET galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next}
         //  WHERE galaxy = {$planetrow['galaxy']} AND system = {$planetrow['system']} AND planet = {$planetrow['planet']}");
 
-        if($planetrow['id'] == $user['id_planet'])
-        {
+        if($planetrow['id'] == $user['id_planet']) {
           db_user_set_by_id($user['id'], "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}");
         }
 
@@ -141,39 +129,29 @@ switch($mode)
           'STATUS'  => ERR_NONE,
           'MESSAGE' => $lang['ov_teleport_err_none'],
         );
-      }
-      catch(exception $e)
-      {
+        sys_redirect('overview.php?mode=manage');
+      } catch(exception $e) {
         sn_db_transaction_rollback();
         $result = array(
           'STATUS'  => $e->getCode(),
           'MESSAGE' => $e->getMessage(),
         );
       }
-    }
-    elseif(sys_get_param_str('abandon'))
-    {
-      if(md5(sys_get_param('abandon_confirm')) == $user['password'])
-      {
-        if($user['id_planet'] != $user['current_planet'] && $user['current_planet'] == $planet_id)
-        {
+    } elseif(sys_get_param_str('abandon')) {
+      if(md5(sys_get_param('abandon_confirm')) == $user['password']) {
+        if($user['id_planet'] != $user['current_planet'] && $user['current_planet'] == $planet_id) {
           $destroyed = SN_TIME_NOW + 60 * 60 * 24;
           db_planet_set_by_id($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
           db_planet_set_by_parent($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
           db_user_set_by_id($user['id'], '`current_planet` = `id_planet`');
           message($lang['ov_delete_ok'], $lang['colony_abandon'], 'overview.php?mode=manage');
-        }
-        else
-        {
+        } else {
           message($lang['ov_delete_wrong_planet'], $lang['colony_abandon'], 'overview.php?mode=manage');
         }
-      }
-      else
-      {
+      } else {
         message($lang['ov_delete_wrong_pass'] , $lang['colony_abandon'], 'overview.php?mode=manage');
       }
-    }
-    elseif(
+    } elseif(
       ($hire = sys_get_param_int('hire')) && in_array($hire, sn_get_groups('governors'))
       && (
         !get_unit_param($hire, P_MAX_STACK) ||
@@ -189,15 +167,11 @@ switch($mode)
       $user = db_user_by_id($user['id'], true);
       $planetrow = db_planet_by_id($planetrow['id'], true);
       $build_data = eco_get_build_data($user, $planetrow, $hire, $planetrow['PLANET_GOVERNOR_ID'] == $hire ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0);
-      if($build_data['CAN'][BUILD_CREATE])
-      {
-        if($planetrow['PLANET_GOVERNOR_ID'] == $hire)
-        {
+      if($build_data['CAN'][BUILD_CREATE]) {
+        if($planetrow['PLANET_GOVERNOR_ID'] == $hire) {
           $planetrow['PLANET_GOVERNOR_LEVEL']++;
           $query = '`PLANET_GOVERNOR_LEVEL` + 1';
-        }
-        else
-        {
+        } else {
           $planetrow['PLANET_GOVERNOR_LEVEL'] = 1;
           $planetrow['PLANET_GOVERNOR_ID'] = $hire;
           $query = '1';
@@ -206,17 +180,14 @@ switch($mode)
         rpg_points_change($user['id'], RPG_MERCENARY, -$build_data[BUILD_CREATE][RES_DARK_MATTER]);
       }
       sn_db_transaction_commit();
-      header("Location: overview.php?mode=manage");
-      ob_end_flush();
+      sys_redirect('overview.php?mode=manage');
       die();
     }
 
     lng_include('mrc_mercenary');
     int_planet_pretemplate($planetrow, $template);
-    foreach(sn_get_groups('governors') as $governor_id)
-    {
-      if($planetrow['planet_type'] == PT_MOON && $governor_id == MRC_TECHNOLOGIST)
-      {
+    foreach(sn_get_groups('governors') as $governor_id) {
+      if($planetrow['planet_type'] == PT_MOON && $governor_id == MRC_TECHNOLOGIST) {
         continue;
       }
 
@@ -242,7 +213,7 @@ switch($mode)
     $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
     $can_teleport = uni_planet_teleport_check($user, $planetrow);
     $template->assign_vars(array(
-      'DARK_MATTER' => $user['dark_matter'],
+      'DARK_MATTER'           => $user['dark_matter'],
 
       'PLANET_FILL'           => floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100),
       'PLANET_FILL_BAR'       => $planet_fill,
@@ -254,6 +225,10 @@ switch($mode)
 
       'CAN_TELEPORT'          => $can_teleport['result'] == ERR_NONE,
       'CAN_NOT_TELEPORT_MSG'  => $can_teleport['message'],
+      'TELEPORT_COST_TEXT'    => pretty_number($config->planet_teleport_cost, true, $user['dark_matter']),
+
+      'CAN_CAPITAL'           => $user['dark_matter'] >= $config->planet_capital_cost,
+      'CAPITAL_COST_TEXT'     => pretty_number($config->planet_capital_cost, true, $user['dark_matter']),
 
       'PLANET_DENSITY_INDEX'  => $planet_density_index,
       'PLANET_CORE_TEXT'      => $lang['uni_planet_density_types'][$planet_density_index],
@@ -288,8 +263,7 @@ switch($mode)
     sn_db_transaction_start();
     $planets_query = db_planet_list_sorted($user, false, '*');
     // while($UserPlanet = mysql_fetch_assoc($planets_query))
-    foreach($planets_query as $an_id => $UserPlanet)
-    {
+    foreach($planets_query as $an_id => $UserPlanet) {
       $UserPlanet = sys_o_get_updated($user['id'], $UserPlanet['id'], SN_TIME_NOW);
 // pdump(classSupernova::$data[LOC_LOCATION]);
 // die();
@@ -300,23 +274,18 @@ switch($mode)
 
       $planet_fleet_id = 0;
       $fleet_list = $template_planet['fleet_list'];
-      if($fleet_list['own']['count'])
-      {
+      if($fleet_list['own']['count']) {
         $planet_fleet_id = "p{$UserPlanet['id']}";
         $fleets_to_planet[$UserPlanet['id']] = tpl_parse_fleet_sn($fleet_list['own']['total'], $planet_fleet_id);
 //        $fleet_id++;tpl_parse_fleet_sn
       }
-      if($UserPlanet['planet_type'] == PT_MOON)
-      {
+      if($UserPlanet['planet_type'] == PT_MOON) {
         continue;
       }
       $moon = db_planet_by_parent($UserPlanet['id']);
-      if($moon)
-      {
+      if($moon) {
         $moon_fill = min(100, floor($moon['field_current'] / eco_planet_fields_max($moon) * 100));
-      }
-      else
-      {
+      } else {
         $moon_fill = 0;
       }
 
@@ -341,8 +310,7 @@ switch($mode)
     tpl_assign_fleet($template, $fleets);
 
     $lune = $planetrow['planet_type'] == PT_PLANET ? db_planet_by_parent($planetrow['id']) : db_planet_by_id($planetrow['parent_planet']);
-    if($lune)
-    {
+    if($lune) {
       $template->assign_vars(array(
         'MOON_ID' => $lune['id'],
         'MOON_IMG' => $lune['image'],
@@ -354,16 +322,14 @@ switch($mode)
     $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
 
     $planet_recyclers_orbiting = 0;
-    foreach(sn_get_groups('flt_recyclers') as $recycler_id)
-    {
+    foreach(sn_get_groups('flt_recyclers') as $recycler_id) {
       $planet_recyclers_orbiting += mrc_get_level($user, $planetrow, $recycler_id);
     }
 
     int_planet_pretemplate($planetrow, $template);
 
     $sn_group_ques = sn_get_groups('ques');
-    foreach(array(QUE_STRUCTURES => $sn_group_ques[QUE_STRUCTURES]) as $que_id => $que_type_data)
-    {
+    foreach(array(QUE_STRUCTURES => $sn_group_ques[QUE_STRUCTURES]) as $que_id => $que_type_data) {
       $this_que = $que['ques'][$que_id][$user['id']][$planetrow['id']];
       $template->assign_block_vars('ques', array(
         'ID'     => $que_id,
@@ -371,10 +337,8 @@ switch($mode)
         'LENGTH' => empty($this_que) ? 0 : count($this_que),
       ));
 
-      if(!empty($this_que))
-      {
-        foreach($this_que as $que_item)
-        {
+      if(!empty($this_que)) {
+        foreach($this_que as $que_item) {
           $template->assign_block_vars('que', que_tpl_parse_element($que_item));
         }
       }
@@ -397,14 +361,12 @@ switch($mode)
     $overview_planet_rows = $user['opt_int_overview_planet_rows'];
     $overview_planet_columns = $user['opt_int_overview_planet_columns'];
 
-    if($overview_planet_rows <= 0 && $overview_planet_columns <= 0)
-    {
+    if($overview_planet_rows <= 0 && $overview_planet_columns <= 0) {
       $overview_planet_rows = $user_option_list[OPT_INTERFACE]['opt_int_overview_planet_rows'];
       $overview_planet_columns = $user_option_list[OPT_INTERFACE]['opt_int_overview_planet_columns'];
     }
 
-    if($overview_planet_rows > 0 && $overview_planet_columns <= 0)
-    {
+    if($overview_planet_rows > 0 && $overview_planet_columns <= 0) {
       $overview_planet_columns = ceil($planet_count / $overview_planet_rows);
     }
 

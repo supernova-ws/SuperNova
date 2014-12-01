@@ -196,12 +196,14 @@ function int_planet_pretemplate($planetrow, &$template)
 
   $template->assign_vars(array(
     'PLANET_ID'          => $planetrow['id'],
-    'PLANET_NAME'        => $planetrow['name'],
+    'PLANET_NAME'        => htmlentities($planetrow['name'], ENT_QUOTES, 'UTF-8'),
+    'PLANET_NAME_JS'     => htmlentities(js_safe_string($planetrow['name']), ENT_QUOTES, 'UTF-8'),
     'PLANET_GALAXY'      => $planetrow['galaxy'],
     'PLANET_SYSTEM'      => $planetrow['system'],
     'PLANET_PLANET'      => $planetrow['planet'],
     'PLANET_TYPE'        => $planetrow['planet_type'],
     'PLANET_TYPE_TEXT'   => $lang['sys_planet_type'][$planetrow['planet_type']],
+    'PLANET_DEBRIS'      => $planetrow['debris_metal'] + $planetrow['debris_crystal'],
 
     'PLANET_GOVERNOR_ID'        => $governor_id,
     'PLANET_GOVERNOR_NAME'      => $lang['tech'][$governor_id],

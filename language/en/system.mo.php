@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a20.18
+* @version 39a21.3
 *
 */
 
@@ -965,4 +965,5 @@ $a_lang_array = (array(
     GAME_DISABLE_INSTALL => 'Game is not configured yet',
   ),
 
+  'sys_sector_purchase_log' => 'User {%2$d} {%1$s} purchased 1 sector on planet {%5$d} {%3$s} type "%4$s" for %6$d DM',
 ));

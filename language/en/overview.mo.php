@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a21.1
+* @version 39a21.3
 *
 */
 
@@ -186,4 +186,6 @@ $a_lang_array = (array(
   'imp_TBA' => 'To be announced...',
   'imp_experience_current' => 'Current',
   'imp_experience_to_level' => 'Level-up',
+
+  'ov_manage_special' => 'Special functions',
 ));

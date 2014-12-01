@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a21.1
+* @version 39a21.3
 *
 */
 
@@ -190,4 +190,6 @@ $a_lang_array = (array(
   'imp_TBA' => 'Что-то будет...',
   'imp_experience_current' => 'Текущий',
   'imp_experience_to_level' => 'Левелап',
+
+  'ov_manage_special' => 'Особые функции',
 ));

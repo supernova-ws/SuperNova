@@ -11,7 +11,70 @@
         <div class="fr"><a href="overview.php"><font color="green">[{L_ov_return}]</font></a></div>
       </td>
     </tr>
+    <tr>
+      <th>{L_ov_new_name}</th>
+      <th><input type="text" name="new_name" size=25 maxlength=20 value="{PLANET_NAME}"></th>
+      <th><input type="submit" name="rename" value="{L_ov_rename}"></th>
+    </tr>
+    <!-- IF PLANET_TYPE == 1 -->
+    <tr>
+      <th>
+        {L_sys_planet_density_core} <div class="icons icon-info link" style="display: inline-block; vertical-align: middle;" onclick="document.location='infos.php?gid={D_UNIT_PLANET_DENSITY}'"></div>
+      </th>
+      <th>
+        {L_ov_core_type_current}: "{PLANET_CORE_TEXT}"<br/>
+        <label for="density_type">{L_ov_core_change_to}</label>
+        <select name="density_type" id="density_type">
+          <!-- BEGIN densities -->
+          <option value="{densities.ID}" rest="{densities.REST}" html="{densities.COST_TEXT}" html_class="{densities.COST_TEXT_CLASS}"<!-- IF PLANET_DENSITY_INDEX == densities.ID --> selected current="1"<!-- ENDIF -->>{densities.TEXT}</option>
+          <!-- END densities -->
+        </select>
+      </th>
+      <th>
+        <button type="submit" id="transmute_button" name="transmute" value="transmute" disabled="disabled">
+          {L_sys_change}<br />
+          {L_sys_for} <span id="transmutation_cost" class="positive">0</span> {L_sys_dark_matter_sh}
+        </button>
 
+        <script type="text/javascript">
+          jQuery("#density_type").change(function(){
+            selected = jQuery("#density_type option:selected");
+            $("#transmute_button").button({disabled: parseInt(selected.attr("rest")) <= 0 || selected.attr("current") == '1'});
+            $("#transmutation_cost").html(selected.attr("html")).removeClass().addClass(selected.attr("html_class"));
+          });
+        </script>
+      </th>
+    </tr>
+    <!-- ENDIF -->
+    <tr>
+      <th>{L_buildings_on_planet}</th>
+      <td colspan="2" class="c_c" style="position: relative; padding: 0px; height: 100%;">
+        <div style="position: relative; width: 100%; height: 100%; border: 1px solid rgb(153, 153, 255); ">
+          <!-- IF PLANET_FILL >= 100 -->
+          <!-- DEFINE $BAR_COLOR = '#C00000' -->
+          <!-- ELSEIF PLANET_FILL >= 80 -->
+          <!-- DEFINE $BAR_COLOR = '#C0C000' -->
+          <!-- ELSE -->
+          <!-- DEFINE $BAR_COLOR = '#00C000' -->
+          <!-- ENDIF -->
+          <div style="position: absolute; top: 0px; left: 0px; width: {PLANET_FILL_BAR}%; background-color: {$BAR_COLOR}; height:100%;">&nbsp;</div>
+          <div style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; vertical-align: middle;">{planet_field_current}/{planet_field_max} ({PLANET_FILL}%)</div>
+          &nbsp;
+        </div>
+        <!-- IF PLANET_TYPE == 1 -->
+        <!-- IF SECTOR_CAN_BUY -->
+                    <a href="overview.php?mode=manage&sector_buy=1"><span class="positive">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span></a>
+        <!--<button onclick="document.location.href = 'overview.php?sector_buy=1&mode=manage';"><span class="positive">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span></button>-->
+        <!-- ELSE -->
+        <span class="negative">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
+        <!-- ENDIF -->
+        <!-- ENDIF -->
+      </td>
+    </tr>
+
+    <tr>
+      <th style="white-space: nowrap;" class="c_l" colspan=4>{L_sys_governor}</th>
+    </tr>
     <tr>
       <th class="c">
         <!-- DEFINE $PLANET_ID = '{PLANET_ID}' -->
@@ -46,88 +109,42 @@
       </th>
     </tr>
 
-    <tr>
-      <th>{L_buildings_on_planet}</th>
-      <td colspan="2" class="c_c" style="position: relative; padding: 0px; height: 100%;">
-        <div style="position: relative; width: 100%; height: 100%; border: 1px solid rgb(153, 153, 255); ">
-          <!-- IF PLANET_FILL >= 100 -->
-            <!-- DEFINE $BAR_COLOR = '#C00000' -->
-          <!-- ELSEIF PLANET_FILL >= 80 -->
-            <!-- DEFINE $BAR_COLOR = '#C0C000' -->
-          <!-- ELSE -->
-            <!-- DEFINE $BAR_COLOR = '#00C000' -->
-          <!-- ENDIF -->
-          <div style="position: absolute; top: 0px; left: 0px; width: {PLANET_FILL_BAR}%; background-color: {$BAR_COLOR}; height:100%;">&nbsp;</div>
-          <div style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; vertical-align: middle;">{planet_field_current}/{planet_field_max} ({PLANET_FILL}%)</div>
-          &nbsp;
-        </div>
-        <!-- IF PLANET_TYPE == 1 -->
-          <!-- IF SECTOR_CAN_BUY -->
-            <a href="overview.php?mode=manage&sector_buy=1"><span class="positive">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span></a>
-          <!-- ELSE -->
-            <span class="negative">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
-          <!-- ENDIF -->
-        <!-- ENDIF -->
-      </td>
-    </tr>
 
 
     <tr>
-      <th>{L_ov_new_name}</th>
-      <th><input type="text" name="new_name" size=25 maxlength=20 value="{PLANET_NAME}"></th>
-      <th><input type="submit" name="rename" value="{L_ov_rename}"></th>
+      <th style="white-space: nowrap;" class="c_l" colspan=4>{L_ov_manage_special}</th>
     </tr>
-
     <!-- IF PLANET_TYPE == 1 -->
-    <tr>
-      <th>
-        {L_sys_planet_density_core} <div class="icons icon-info link" style="display: inline-block; vertical-align: middle;" onclick="document.location='infos.php?gid={D_UNIT_PLANET_DENSITY}'"></div>
-      </th>
-      <th>
-        {L_ov_core_type_current}: "{PLANET_CORE_TEXT}"<br/>
-        <label for="density_type">{L_ov_core_change_to}</label>
-        <select name="density_type" id="density_type">
-          <!-- BEGIN densities -->
-          <option value="{densities.ID}" rest="{densities.REST}" html="{densities.COST_TEXT}" html_class="{densities.COST_TEXT_CLASS}"<!-- IF PLANET_DENSITY_INDEX == densities.ID --> selected<!-- ENDIF -->>{densities.TEXT}</option>
-          <!-- END densities -->
-        </select>
-      </th>
-      <th>
-        <input type="submit" id="transmute_button" name="transmute" value="{L_sys_change}" disabled="1"/><br />
-        {L_sys_for} <span id="transmutation_cost" class="positive">0</span> {L_sys_dark_matter_sh}
-
-        <script type="text/javascript">
-          jQuery("#density_type").change(function(){
-            selected = jQuery("#density_type option:selected");
-            $("#transmutation_cost").html(selected.attr("html")).removeClass().addClass(selected.attr("html_class"));
-            parseInt(selected.attr("rest")) <= 0 ? $("#transmute_button").attr("disabled", 1) : $("#transmute_button").removeAttr("disabled");
-          });
-        </script>
-      </th>
-    </tr>
-
-    <tr>
-      <th>{L_ov_teleport}</th>
-      <!-- IF CAN_TELEPORT -->
-        <th nowrap>{L_ov_teleport_new_coordinates}&nbsp;<input type="text" name="new_galaxy" maxlength=3 value="{PLANET_GALAXY}" class="coordinate">:<input type="text" name="new_system" maxlength=3 value="{PLANET_SYSTEM}" class="coordinate">:<input type="text" name="new_planet" maxlength=3 value="{PLANET_PLANET}" class="coordinate"></th>
-        <th><input type="submit" name="teleport" value="{L_ov_teleport}"><br />{L_sys_for} {C_planet_teleport_cost} {L_sys_dark_matter_sh}</th>
-      <!-- ELSE -->
-        <th colspan="2" class="error">{CAN_NOT_TELEPORT_MSG}</th>
+      <!-- IF ! IS_CAPITAL -->
+      <tr>
+        <th colspan="3">
+          <button type="submit" name="capital" value="capital"<!-- IF ! CAN_CAPITAL --> disabled="disabled" <!-- ENDIF --> onclick="return confirm('{L_ov_capital} {PLANET_NAME_JS}?');">
+            {L_ov_capital}<br />
+            {L_sys_for} {CAPITAL_COST_TEXT} {L_sys_dark_matter_sh}
+          </button>
+        </th>
+      </tr>
       <!-- ENDIF -->
-    </tr>
-
-    <!-- IF ! IS_CAPITAL -->
-    <tr>
-      <th colspan="3"><input type="submit" name="capital" value="{L_ov_capital}"> {L_sys_for} {C_planet_capital_cost} {L_sys_dark_matter_sh}</th>
-    </tr>
+      <tr>
+        <th>{L_ov_teleport}</th>
+        <!-- IF CAN_TELEPORT -->
+          <th nowrap>{L_ov_teleport_new_coordinates}&nbsp;<input type="text" name="new_galaxy" maxlength=3 value="{PLANET_GALAXY}" class="coordinate">:<input type="text" name="new_system" maxlength=3 value="{PLANET_SYSTEM}" class="coordinate">:<input type="text" name="new_planet" maxlength=3 value="{PLANET_PLANET}" class="coordinate"></th>
+          <!--<th><input type="submit" name="teleport" value="{L_ov_teleport}&#10;test"><br />{L_sys_for} {C_planet_teleport_cost} {L_sys_dark_matter_sh}</th>-->
+          <th>
+            <button type="submit" name="teleport" value="teleport">
+              {L_ov_teleport}<br />
+              {L_sys_for} {TELEPORT_COST_TEXT} {L_sys_dark_matter_sh}
+            </button>
+          </th>
+        <!-- ELSE -->
+          <th colspan="2" class="error">{CAN_NOT_TELEPORT_MSG}</th>
+        <!-- ENDIF -->
+      </tr>
     <!-- ENDIF -->
-
-    <!-- ENDIF -->
-
     <tr>
       <th>{L_colony_abandon}</th>
-      <th>{L_sys_password} <input type="password" name="abandon_confirm" maxlength="32" value=""></th>
-      <th><input type="submit" name="abandon" value="{L_colony_abandon}"></th>
+      <th>{L_sys_password} <input type="password" name="abandon_confirm" maxlength="32" value="" /></th>
+      <th><input type="submit" name="abandon" value="{L_colony_abandon}" /></th>
      </tr>
   </table>
 </form>

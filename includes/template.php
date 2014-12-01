@@ -665,22 +665,20 @@ function tpl_assign_hangar(&$template, $planet, $que_type)
   return $que_length;
 }
 
-function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_matter)
-{
+function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_matter) {
   global $lang;
 
   $density_base_cost = get_unit_param(UNIT_PLANET_DENSITY, P_COST);
   $density_base_cost = $density_base_cost[RES_DARK_MATTER];
 
-  foreach($density_price_chart as $density_price_index => &$density_price_data)
-  {
+  foreach($density_price_chart as $density_price_index => &$density_price_data) {
     $density_number_style = pretty_number($density_cost = $density_base_cost * $density_price_data, true, $user_dark_matter, false, false);
 
     $density_price_data = array(
       'COST' => $density_cost,
       'COST_TEXT' => $density_number_style['text'],
       'COST_TEXT_CLASS' => $density_number_style['class'],
-      'REST' => $user_dark_matter - $density_price_data['COST'],
+      'REST' => $user_dark_matter - ceil($density_base_cost * $density_price_data),
       'ID' => $density_price_index,
       'TEXT' => $lang['uni_planet_density_types'][$density_price_index],
     );
