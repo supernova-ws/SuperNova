@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a8.0
+* @version 39a21.1
 *
 */
 
@@ -187,4 +187,7 @@ $a_lang_array = (array(
 
   'read_all_news' => 'Отметить все как прочитанное',
 
+  'imp_TBA' => 'Что-то будет...',
+  'imp_experience_current' => 'Текущий',
+  'imp_experience_to_level' => 'Левелап',
 ));

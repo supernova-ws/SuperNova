@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a8.0
+* @version 39a21.1
 *
 */
 
@@ -183,4 +183,7 @@ $a_lang_array = (array(
 
   'read_all_news' => 'Read all news',
 
+  'imp_TBA' => 'To be announced...',
+  'imp_experience_current' => 'Current',
+  'imp_experience_to_level' => 'Level-up',
 ));

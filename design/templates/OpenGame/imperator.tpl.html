@@ -1,6 +1,6 @@
-<h2>{L_imp_imperator} {user_username}</h2>
+<!-- IF USER_AVATAR --><br /><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/avatar_{USER_ID}.png"><!-- ENDIF -->
+<h2>{L_imp_imperator} {user_username} <strong>{L_ov_rank}: <a href="stat.php?start={user_rank}"><span class="ov_user_rank">{user_rank} ({RANK_DIFF})</span>/<span class="ov_user_total">{USERS_TOTAL}</span></strong></a></strong></h2>
 <h3>{L_sys_from} {REGISTRATION_DATE}</h3>
-<!-- IF USER_AVATAR --><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/avatar_{USER_ID}.png"><!-- ENDIF -->
 
 <!-- IF SAME_USER && NEW_MESSAGES -->
 <table width=519>
@@ -13,49 +13,73 @@
 <!-- ENDIF -->
 
 <table width=519>
-  <tr>
-    <th colspan=4 class="c_c">
-      <span class="fl">{L_imp_statistics}</span>
-      <span class="fr"><strong>{L_ov_rank}: <a href="stat.php?start={user_rank}"><span class="ov_user_rank">{user_rank} ({RANK_DIFF})</span>/<span class="ov_user_total">{USERS_TOTAL}</span></strong></a></strong></span>
-    </th>
+  <tr class="c_c">
+    <th rowspan="2">{L_imp_statistics}</th>
+    <th rowspan="2">{L_ov_points}</th>
+    <th colspan="2">{L_ov_experience}</th>
+    <th rowspan="2">{L_sys_level}</th>
   </tr>
-  <tr>
-    <th>{L_Economica}</th>
-    <th colspan="1" align="center">{L_ov_experience}: {builder_xp}/{builder_lvl_up}</th>
-    <th colspan="2" align="center">{L_sys_level}: {builder_lvl}</th>
+  <tr class="c_c">
+    <th>{L_imp_experience_current}</th>
+    <th>{L_imp_experience_to_level}</th>
   </tr>
-  <tr>
-    <th>{L_imp_research}</th>
-    <th colspan="1" align="center">{L_ov_experience}: {tech_xp}/{tech_lvl_up}</th>
-    <th colspan="2" align="center">{L_sys_level}: {tech_lvl}</th>
+
+  <tr class="c_r">
+    <th class="c_l">{L_Economica}</th>
+    <td>{build_points}</td>
+    <td>{builder_xp}</td>
+    <td>{builder_lvl_up}</td>
+    <td>{builder_lvl}</td>
   </tr>
-  <tr>
-    <th>{L_imp_exploration}</th>
-    <th colspan="1" align="center">{L_ov_experience}: {explore_xp}/{explore_lvl_up}</th>
-    <th colspan="2" align="center">{L_sys_level}: {explore_lvl}</th>
+  <tr class="c_r">
+    <th class="c_l">{L_imp_research}</th>
+    <td>{tech_points}</td>
+    <td>{tech_xp}</td>
+    <td>{tech_lvl_up}</td>
+    <td>{tech_lvl}</td>
   </tr>
-  <tr>
-    <th rowspan=2>{L_ov_raids}</th>
-    <th colspan="1" align="center">{L_ov_experience}: {raid_xp}/{raid_lvl_up}</th>
-    <th colspan="2" align="center">{L_sys_level}: {raid_lvl}</th>
+  <tr class="c_r">
+    <th class="c_l">{L_imp_exploration}</th>
+    <td>--</td>
+    <td>{explore_xp}</td>
+    <td>{explore_lvl_up}</td>
+    <td>{explore_lvl}</td>
   </tr>
-  <tr>
-    <th>{L_NumberOfRaids}: {raids}</th>
-    <th>{L_RaidsWin}: {raidswin}</th>
-    <th>{L_RaidsLoose}: {raidsloose}</th>
+  <tr class="c_r">
+    <th class="c_l">{L_ov_raids}</th>
+    <td colspan="1" align="center">
+      <table width=100%>
+        <tr>
+          <td class="c_l">{L_NumberOfRaids}</td><td class="c_r">{raids}</td>
+        </tr>
+        <tr>
+          <td class="c_l">{L_RaidsWin}</td><td class="c_r">{raidswin}</td>
+        </tr>
+        <tr>
+          <td class="c_l">{L_RaidsLoose}</td><td class="c_r">{raidsloose}</td>
+        </tr>
+      </table>
+    </td>
+    <td>{raid_xp}</td>
+    <td>{raid_lvl_up}</td>
+    <td>{raid_lvl}</td>
   </tr>
-  <tr align="center" class="c">
-    <th rowspan=3>{L_ov_points}</th>
-    <th>{L_imp_user_points_struc}: {build_points}</th>
-    <th colspan=2>{L_imp_user_points_tech}: {tech_points}</th>
+  <tr class="c_r">
+    <th class="c_l">{L_imp_user_points_fleet}</th>
+    <td>{fleet_points}</td>
+    <td rowspan="4" colspan="3" class="c_c">{L_imp_TBA}</td>
   </tr>
-  <tr>
-    <th>{L_imp_user_points_fleet}: {fleet_points}</th>
-    <th colspan="2">{L_imp_user_points_def}: {defs_points}</th>
+  <tr class="c_r">
+    <th class="c_l">{L_imp_user_points_def}</th>
+    <td>{defs_points}</td>
   </tr>
-  <tr>
-    <th>{L_imp_user_points_res}: {res_points}</th>
-    <th colspan="2">{L_imp_user_points_all}: {total_points}</th>
+  <tr class="c_r">
+    <th class="c_l">{L_imp_user_points_res}</th>
+    <td>{res_points}</td>
+  </tr>
+  <tr class="c_r">
+    <th class="c_l">{L_imp_user_points_all} {Очков}</th>
+    <th>{total_points}</th>
   </tr>
 </table>
 
