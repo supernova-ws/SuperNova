@@ -1,26 +1,6 @@
 if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   var LOADED_GLOBAL = true;
 
-  // Этот скрипт находится здесь, потому что он должен быть выполнен максимально быстро
-  if(timeDiffSeconds === '' || TIME_DIFF_MEASURE) {
-    timeDiffSeconds = 0;
-    jQuery.post("time_probe.php", {'localtime': localTime.valueOf(), 'utcoffset': -localTime.getTimezoneOffset() * 60}, function(data) {
-      timeDiffSeconds = parseInt(data);
-    });
-  } else {
-    timeDiffSeconds = parseInt(timeDiffSeconds);
-  }
-  //      alert('timeDiff: ' + timeDiff + ', timeUTCOffset: ' + timeUTCOffset);
-  //      var timeDiff = serverTime.valueOf() - localTime.valueOf();
-
-  //      jQuery.post("time_probe.php", {'localtime': localTime.valueOf()}, function(data)
-  //        {
-  //          localTime = new Date();
-  //          serverTime = new Date(data * 1000);
-  //          timeDiff = serverTime.valueOf() - localTime.valueOf();
-  //        }
-  //      );
-
   var sn_inframe;
   function getFrameName(frame) {
     var frames = parent.frames,
