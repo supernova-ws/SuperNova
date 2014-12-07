@@ -497,33 +497,25 @@ function sn_sys_impersonate($user_selected)
 //   false - do not redirect
 //   'string' - redirect to 'string' URL
 //
-function sn_sys_logout($redirect = true, $only_impersonator = false)
-{
+function sn_sys_logout($redirect = true, $only_impersonator = false) {
   global $user_impersonator;
 
-  if($only_impersonator && !$user_impersonator)
-  {
+  if($only_impersonator && !$user_impersonator) {
     return;
   }
 
-  if($_COOKIE[SN_COOKIE_I] && $user_impersonator['authlevel'] >= 3)
-  {
+  if($_COOKIE[SN_COOKIE_I] && $user_impersonator['authlevel'] >= 3) {
     sn_set_cookie($user_impersonator, 1);
     $redirect = $redirect === true ? 'admin/userlist.php' : $redirect;
-  }
-  else
-  {
+  } else {
     sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
   }
 
   sn_setcookie(SN_COOKIE_I, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
 
-  if($redirect === true)
-  {
-    sys_redirect(SN_ROOT_RELATIVE);
-  }
-  elseif($redirect !== false)
-  {
+  if($redirect === true) {
+    sys_redirect(SN_ROOT_RELATIVE . 'login.php');
+  } elseif($redirect !== false) {
     sys_redirect($redirect);
   }
 }

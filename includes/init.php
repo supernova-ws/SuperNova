@@ -374,13 +374,18 @@ global $dpath;
 $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
 
+if($config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL) {
+  define('INSTALL_MODE', GAME_DISABLE_INSTALL);
+}
+
+
 if($template_result[F_GAME_DISABLE] = $config->game_disable) {
   $template_result[F_GAME_DISABLE_REASON] = sys_bbcodeParse($config->game_disable == GAME_DISABLE_REASON ? $config->game_disable_reason : $lang['sys_game_disable_reason'][$config->game_disable]);
   if(defined('IN_API')) {
     return;
   }
 
-  if($user['authlevel'] < 1 || !(defined('IN_ADMIN') && IN_ADMIN)) {
+  if(($user['authlevel'] < 1 || !(defined('IN_ADMIN') && IN_ADMIN)) && !(defined('INSTALL_MODE') && defined('LOGIN_LOGOUT'))) {
     message($template_result[F_GAME_DISABLE_REASON], $config->game_name);
     ob_end_flush();
     die();

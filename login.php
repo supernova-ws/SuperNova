@@ -9,12 +9,13 @@
  * @copyright 2008 by ?????? for XNova
  */
 
+define('LOGIN_LOGOUT', true);
+
 $allow_anonymous = true;
 
 include('includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 // die();
-if($template_result[F_USER_AUTHORIZED])
-{
+if($template_result[F_USER_AUTHORIZED]) {
   sys_redirect('index' . DOT_PHP_EX);
 }
 lng_include('login');
