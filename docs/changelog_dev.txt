@@ -796,6 +796,10 @@ nowrap - в таблицу статистики по ячейкам
 
 
 
+2014-12-07 14:27:52 39b0.0 Project "SuperNova.WS" Release 39 Beta
+[!] Project "SuperNova.WS" Release 39 Beta "2014 annual report"
+    Бета-версия 39-го релиза
+
 
 2014-12-07 14:20:35 39a21.4
 [!] Инсталляция
