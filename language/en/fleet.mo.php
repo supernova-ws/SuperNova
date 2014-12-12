@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a10.12
+* @version 39b0.2
 *
 */
 
@@ -136,6 +136,8 @@ $a_lang_array = (array(
     ATTACK_TOO_FAR => 'Your fleet cannot reach this far',
     ATTACK_OVERLOADED => 'Your ships is overloaded. Reduce fleet cargo load or add more transports',
     ATTACK_MISSION_ABSENT => 'There is no such mission type',
+    ATTACK_WRONG_UNIT => 'Wrong unit type',
+    ATTACK_ZERO_SPEED => 'There is orbital structure in the fleet',
   ),
 
   'fl_fleet_err' => 'Error!',

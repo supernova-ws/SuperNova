@@ -23,6 +23,15 @@ function flt_fleet_speed($user, $fleet)
   return empty($speeds) ? 0 : min($speeds);
 }
 
+/**
+ * @param     $user_row
+ * @param     $from
+ * @param     $to
+ * @param     $fleet_array
+ * @param int $speed_percent
+ *
+ * @return array
+ */
 function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 10)
 {
   if($from['galaxy'] != $to['galaxy'])
@@ -230,9 +239,15 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   $recyclers = 0;
   $spies = 0;
   $resources = 0;
+  $ship_ids = sn_get_groups('fleet');
+  $resource_ids = sn_get_groups('resources_loot');
   foreach($fleet as $ship_id => $ship_count)
   {
-    $is_ship = in_array($ship_id, sn_get_groups('fleet'));
+
+    if(!($is_ship = in_array($ship_id, $ship_ids)) && !($is_resource = in_array($ship_id, $resource_ids))) {
+      // TODO Спецобработчик для Капитана и модулей
+//      return ATTACK_WRONG_UNIT;
+    }
     if($ship_count > mrc_get_level($user, $planet_src, $ship_id))
     {
       return $is_ship ? ATTACK_NO_SHIPS : ATTACK_NO_RESOURCES;
@@ -240,6 +255,10 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
 
     if($is_ship)
     {
+      $single_ship_data = get_ship_data($ship_id, $user);
+      if($single_ship_data[P_SPEED] <= 0) {
+        return ATTACK_ZERO_SPEED;
+      }
       $ships += $ship_count;
       $recyclers += in_array($ship_id, sn_get_groups('flt_recyclers')) ? $ship_count : 0;
       $spies += $ship_id == SHIP_SPY ? $ship_count : 0;
@@ -507,7 +526,8 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 {
 //ini_set('error_reporting', E_ALL);
 
-  sn_db_transaction_start();
+  $internal_transaction = !sn_db_transaction_check(false) ? sn_db_transaction_start() : false;
+//pdump($internal_transaction);
 
   $user = db_user_by_id($user['id'], true);
   $from = sys_o_get_updated($user, $from['id'], SN_TIME_NOW);
@@ -516,7 +536,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   $can_attack = flt_can_attack($from, $to, $fleet, $mission, $options);
   if($can_attack != ATTACK_ALLOWED)
   {
-    sn_db_transaction_rollback();
+    $internal_transaction ? sn_db_transaction_rollback() : false;
     return $can_attack;
   }
 
@@ -607,7 +627,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
   db_changeset_apply($db_changeset);
 
-  sn_db_transaction_commit();
+  $internal_transaction ? sn_db_transaction_commit() : false;
   $from = db_planet_by_id($from['id']);
 
   return ATTACK_ALLOWED;

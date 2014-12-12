@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a10.11
+* @version 39b0.2
 *
 */
 
@@ -133,6 +133,8 @@ $a_lang_array = (array(
     ATTACK_TOO_FAR => 'Ваш флот не может лететь так далеко',
     ATTACK_OVERLOADED => 'Ваши корабли перегружены. Уменьшите загрузку трюмов или добавьте транспортных кораблей',
     ATTACK_MISSION_ABSENT => 'Не существует такого типа миссии',
+    ATTACK_WRONG_UNIT => 'Неправильный тип юнита',
+    ATTACK_ZERO_SPEED => 'Во флоте находится нелетающая орбитальная структура',
   ),
 
   'fl_fleet_err' => 'Ошибка!',
