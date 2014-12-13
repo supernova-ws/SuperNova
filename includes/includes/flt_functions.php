@@ -118,28 +118,21 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
 
   $config_bashing_attacks = $config->fleet_bashing_attacks;
   $config_bashing_interval = $config->fleet_bashing_interval;
-  if(!$config_bashing_attacks)
-  {
+  if(!$config_bashing_attacks) {
     // Bashing allowed - protection disabled
     return ATTACK_ALLOWED;
   }
 
   $bashing_result = ATTACK_BASHING;
-  if($user['ally_id'] && $enemy['ally_id'])
-  {
+  if($user['ally_id'] && $enemy['ally_id']) {
     $relations = ali_relations($user['ally_id'], $enemy['ally_id']);
-    if(!empty($relations))
-    {
+    if(!empty($relations)) {
       $relations = $relations[$enemy['ally_id']];
-      switch($relations['alliance_diplomacy_relation'])
-      {
+      switch($relations['alliance_diplomacy_relation']) {
         case ALLY_DIPLOMACY_WAR:
-          if($time_now - $relations['alliance_diplomacy_time'] <= $config->fleet_bashing_war_delay)
-          {
+          if($time_now - $relations['alliance_diplomacy_time'] <= $config->fleet_bashing_war_delay) {
             $bashing_result = ATTACK_BASHING_WAR_DELAY;
-          }
-          else
-          {
+          } else {
             return ATTACK_ALLOWED;
           }
         break;
@@ -165,28 +158,22 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   fleet_end_planet = {$planet_dst['planet']} AND
   fleet_end_type   = {$planet_dst['planet_type']} AND
   fleet_owner = {$user['id']} AND fleet_mission IN (" . MT_ATTACK . "," . MT_AKS . "," . MT_DESTROY . ") AND fleet_mess = 0;");
-  while($bashing_fleets = mysql_fetch_assoc($query))
-  {
+  while($bashing_fleets = mysql_fetch_assoc($query)) {
     // Checking for ACS - each ACS count only once
-    if($bashing_fleets['fleet_group'])
-    {
+    if($bashing_fleets['fleet_group']) {
       $bashing_list["{$user['id']}_{$bashing_fleets['fleet_group']}"] = $bashing_fleets['fleet_start_time'];
-    }
-    else
-    {
+    } else {
       $bashing_list[] = $bashing_fleets['fleet_start_time'];
     }
   }
 
   // Check for joining to ACS - if there are already fleets in ACS no checks should be done
-  if($mission == MT_AKS && $bashing_list["{$user['id']}_{$fleet_group}"])
-  {
+  if($mission == MT_AKS && $bashing_list["{$user['id']}_{$fleet_group}"]) {
     return ATTACK_ALLOWED;
   }
 
   $query = doquery("SELECT bashing_time FROM {{bashing}} WHERE bashing_user_id = {$user['id']} AND bashing_planet_id = {$planet_dst['id']} AND bashing_time >= {$time_limit};");
-  while($bashing_row = mysql_fetch_assoc($query))
-  {
+  while($bashing_row = mysql_fetch_assoc($query)) {
     $bashing_list[] = $bashing_row['bashing_time'];
   }
 
@@ -195,11 +182,9 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   $last_attack = 0;
   $wave = 0;
   $attack = 1;
-  foreach($bashing_list as &$bash_time)
-  {
+  foreach($bashing_list as &$bash_time) {
     $attack++;
-    if($bash_time - $last_attack > $config_bashing_interval || $attack > $config_bashing_attacks)
-    {
+    if($bash_time - $last_attack > $config_bashing_interval || $attack > $config_bashing_attacks) {
       $attack = 1;
       $wave++;
     }
@@ -210,51 +195,56 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   return ($wave > $config->fleet_bashing_waves ? $bashing_result : ATTACK_ALLOWED);
 }
 
-function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false)
-{
+function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false) {
   //TODO: try..catch
-
   global $config, $user;
 
-  if($user['vacation'])
-  {
+  if($user['vacation']) {
     return ATTACK_OWN_VACATION;
   }
 
-  if(empty($fleet) || !is_array($fleet))
-  {
+  if(empty($fleet) || !is_array($fleet)) {
     return ATTACK_NO_FLEET;
   }
 
   $sn_groups_mission = sn_get_groups('missions');
-  if(!isset($sn_groups_mission[$mission]))
-  {
+  if(!isset($sn_groups_mission[$mission])) {
     return ATTACK_MISSION_ABSENT;
   }
   $sn_data_mission = $sn_groups_mission[$mission];
 
-//TODO: Проверка на наличие ресурсов при Транспорте
 //TODO: Проверка на отстуствие ресурсов в нетранспортных миссиях (Транспорт, Передислокация, Колонизация)
+
+  //TODO: Проверка на наличие ресурсов при Транспорте
+  // TODO: Проверка на отрицательные ресурсы при транспорте
+  // TODO: Проверка на перегрузку при транспорте
+
+  // TODO: В ракетных миссиях могут лететь только ракеты
+  // TODO: В неракетных миссиях ракеты должны отсутствовать
   $ships = 0;
   $recyclers = 0;
   $spies = 0;
   $resources = 0;
   $ship_ids = sn_get_groups('fleet');
   $resource_ids = sn_get_groups('resources_loot');
-  foreach($fleet as $ship_id => $ship_count)
-  {
-
-    if(!($is_ship = in_array($ship_id, $ship_ids)) && !($is_resource = in_array($ship_id, $resource_ids))) {
+  foreach($fleet as $ship_id => $ship_count) {
+    $is_ship = in_array($ship_id, $ship_ids);
+    $is_resource = in_array($ship_id, $resource_ids);
+    if(!$is_ship && !$is_resource) {
       // TODO Спецобработчик для Капитана и модулей
 //      return ATTACK_WRONG_UNIT;
     }
-    if($ship_count > mrc_get_level($user, $planet_src, $ship_id))
-    {
+
+    if($ship_count < 0) {
+      return $is_ship ? ATTACK_SHIP_COUNT_WRONG : ATTACK_RESOURCE_COUNT_WRONG;
+    }
+
+    if($ship_count > mrc_get_level($user, $planet_src, $ship_id)) {
+      // TODO ATTACK_NO_MISSILE
       return $is_ship ? ATTACK_NO_SHIPS : ATTACK_NO_RESOURCES;
     }
 
-    if($is_ship)
-    {
+    if($is_ship) {
       $single_ship_data = get_ship_data($ship_id, $user);
       if($single_ship_data[P_SPEED] <= 0) {
         return ATTACK_ZERO_SPEED;
@@ -262,9 +252,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
       $ships += $ship_count;
       $recyclers += in_array($ship_id, sn_get_groups('flt_recyclers')) ? $ship_count : 0;
       $spies += $ship_id == SHIP_SPY ? $ship_count : 0;
-    }
-    else
-    {
+    } elseif($is_resource) {
       $resources += $ship_count;
     }
   }
@@ -275,8 +263,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   }
 */
 
-  if(isset($options['resources']) && $options['resources'] > 0 && !(isset($sn_data_mission['transport']) && $sn_data_mission['transport']))
-  {
+  if(isset($options['resources']) && $options['resources'] > 0 && !(isset($sn_data_mission['transport']) && $sn_data_mission['transport'])) {
     return ATTACK_RESOURCE_FORBIDDEN;
   }
 
@@ -288,130 +275,105 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   */
 
   $speed = $options['fleet_speed_percent'];
-  if($speed && ($speed != intval($speed) || $speed < 1 || $speed > 10))
-  {
+  if($speed && ($speed != intval($speed) || $speed < 1 || $speed > 10)) {
     return ATTACK_WRONG_SPEED;
   }
 
   $travel_data = flt_travel_data($user, $planet_src, $planet_dst, $fleet, $options['fleet_speed_percent']);
 
 
-  if(mrc_get_level($user, $planet_src, RES_DEUTERIUM) < $fleet[RES_DEUTERIUM] + $travel_data['consumption'])
-  {
+  if(mrc_get_level($user, $planet_src, RES_DEUTERIUM) < $fleet[RES_DEUTERIUM] + $travel_data['consumption']) {
     return ATTACK_NO_FUEL;
   }
 
-  if($travel_data['consumption'] > $travel_data['capacity'])
-  {
+  if($travel_data['consumption'] > $travel_data['capacity']) {
     return ATTACK_TOO_FAR;
   }
 
-  if($travel_data['hold'] < 0)
-  {
+  if($travel_data['hold'] - $resources < 0) {
     return ATTACK_OVERLOADED;
   }
 
   $fleet_start_time = SN_TIME_NOW + $travel_data['duration'];
 
   $fleet_group = $options['fleet_group'];
-  if($fleet_group)
-  {
-    if($mission != MT_AKS)
-    {
+  if($fleet_group) {
+    if($mission != MT_AKS) {
       return ATTACK_WRONG_MISSION;
     };
 
     $acs = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}' LIMIT 1;", '', true);
-    if (!$acs['id'])
-    {
+    if(!$acs['id']) {
       return ATTACK_NO_ACS;
     }
 
-    if ($planet_dst['galaxy'] != $acs['galaxy'] || $planet_dst['system'] != $acs['system'] || $planet_dst['planet'] != $acs['planet'] || $planet_dst['planet_type'] != $acs['planet_type'])
-    {
+    if ($planet_dst['galaxy'] != $acs['galaxy'] || $planet_dst['system'] != $acs['system'] || $planet_dst['planet'] != $acs['planet'] || $planet_dst['planet_type'] != $acs['planet_type']) {
       return ATTACK_ACS_WRONG_TARGET;
     }
 
-    if ($fleet_start_time>$acs['ankunft'])
-    {
+    if ($fleet_start_time>$acs['ankunft']) {
       return ATTACK_ACS_TOO_LATE;
     }
   }
 
   $flying_fleets = $options['flying_fleets'];
-  if(!$flying_fleets)
-  {
+  if(!$flying_fleets) {
     $flying_fleets = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
     $flying_fleets = $flying_fleets['flying_fleets'];
   }
-  if(GetMaxFleets($user) <= $flying_fleets && $mission != MT_MISSILE)
-  {
+  if(GetMaxFleets($user) <= $flying_fleets && $mission != MT_MISSILE) {
     return ATTACK_NO_SLOTS;
   }
 
   // В одиночку шпионские зонды могут летать только в миссии Шпионаж, Передислокация и Транспорт
-  if($ships && $spies && $spies == $ships && !($mission == MT_SPY || $mission == MT_RELOCATE || $mission == MT_TRANSPORT))
-  {
+  if($ships && $spies && $spies == $ships && !($mission == MT_SPY || $mission == MT_RELOCATE || $mission == MT_TRANSPORT)) {
     return ATTACK_SPIES_LONLY;
   }
 
   // Checking for no planet
-  if(!$planet_dst['id_owner'])
-  {
-    if($mission == MT_COLONIZE && !$fleet[SHIP_COLONIZER])
-    {
+  if(!$planet_dst['id_owner']) {
+    if($mission == MT_COLONIZE && !$fleet[SHIP_COLONIZER]) {
       return ATTACK_NO_COLONIZER;
     }
 
-    if($mission == MT_EXPLORE || $mission == MT_COLONIZE)
-    {
+    if($mission == MT_EXPLORE || $mission == MT_COLONIZE) {
       return ATTACK_ALLOWED;
     }
     return ATTACK_NO_TARGET;
   }
 
-  if($mission == MT_RECYCLE)
-  {
-    if($planet_dst['debris_metal'] + $planet_dst['debris_crystal'] <= 0)
-    {
+  if($mission == MT_RECYCLE) {
+    if($planet_dst['debris_metal'] + $planet_dst['debris_crystal'] <= 0) {
       return ATTACK_NO_DEBRIS;
     }
-
-    if($recyclers <= 0)
-    {
+    if($recyclers <= 0) {
       return ATTACK_NO_RECYCLERS;
     }
-
     return ATTACK_ALLOWED;
   }
 
   // Got planet. Checking if it is ours
-  if($planet_dst['id_owner'] == $user['id'])
-  {
-    if($mission == MT_TRANSPORT || $mission == MT_RELOCATE)
-    {
+  if($planet_dst['id_owner'] == $user['id']) {
+    if($mission == MT_TRANSPORT || $mission == MT_RELOCATE) {
       return ATTACK_ALLOWED;
     }
     return $planet_src['id'] == $planet_dst['id'] ? ATTACK_SAME : ATTACK_OWN;
   }
 
   // No, planet not ours. Cutting mission that can't be send to not-ours planet
-  if($mission == MT_RELOCATE || $mission == MT_COLONIZE || $mission == MT_EXPLORE)
-  {
+  if($mission == MT_RELOCATE || $mission == MT_COLONIZE || $mission == MT_EXPLORE) {
     return ATTACK_WRONG_MISSION;
   }
 
   $enemy = db_user_by_id($planet_dst['id_owner']);
   // We cannot attack or send resource to users in VACATION mode
-  if($enemy['vacation'] && $mission != MT_RECYCLE)
-  {
+  if($enemy['vacation'] && $mission != MT_RECYCLE) {
     return ATTACK_VACATION;
   }
 
   // Multi IP protection
   // TODO: Here we need a procedure to check proxies
-  if(sys_is_multiaccount($user, $enemy))
-  {
+  if(sys_is_multiaccount($user, $enemy)) {
     return ATTACK_SAME_IP;
   }
 
@@ -419,14 +381,10 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   $enemy_points = $enemy['total_points'];
 
   // Is it transport? If yes - checking for buffing to prevent mega-alliance destroyer
-  if($mission == MT_TRANSPORT)
-  {
-    if($user_points >= $enemy_points || $config->allow_buffing)
-    {
+  if($mission == MT_TRANSPORT) {
+    if($user_points >= $enemy_points || $config->allow_buffing) {
       return ATTACK_ALLOWED;
-    }
-    else
-    {
+    } else {
       return ATTACK_BUFFING;
     }
   }
@@ -434,80 +392,65 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
   // Only aggresive missions passed to this point. HOLD counts as passive but aggresive
 
   // Is it admin with planet protection?
-  if($planet_dst['id_level'] > $user['authlevel'])
-  {
+  if($planet_dst['id_level'] > $user['authlevel']) {
     return ATTACK_ADMIN;
   }
 
   // Okay. Now skipping protection checks for inactive longer then 1 week
-  if(!$enemy['onlinetime'] || $enemy['onlinetime'] >= (SN_TIME_NOW - 60*60*24*7))
-  {
+  if(!$enemy['onlinetime'] || $enemy['onlinetime'] >= (SN_TIME_NOW - 60*60*24*7)) {
     if(
       ($enemy_points <= $config->game_noob_points && $user_points > $config->game_noob_points)
       ||
       ($config->game_noob_factor && $user_points > $enemy_points * $config->game_noob_factor)
-    )
-    {
-      if($mission != MT_HOLD)
-      {
+    ) {
+      if($mission != MT_HOLD) {
         return ATTACK_NOOB;
       }
-      if($mission == MT_HOLD && !($user['ally_id'] && $user['ally_id'] == $enemy['ally_id'] && $config->ally_help_weak))
-      {
+      if($mission == MT_HOLD && !($user['ally_id'] && $user['ally_id'] == $enemy['ally_id'] && $config->ally_help_weak)) {
         return ATTACK_NOOB;
       }
     }
   }
 
   // Is it HOLD mission? If yes - there should be ally deposit
-  if($mission == MT_HOLD)
-  {
-    if(mrc_get_level($user, $planet_dst, STRUC_ALLY_DEPOSIT))
-    {
+  if($mission == MT_HOLD) {
+    if(mrc_get_level($user, $planet_dst, STRUC_ALLY_DEPOSIT)) {
       return ATTACK_ALLOWED;
     }
     return ATTACK_NO_ALLY_DEPOSIT;
   }
 
-  if($mission == MT_SPY)
-  {
+  if($mission == MT_SPY) {
     return $spies >= 1 ? ATTACK_ALLOWED : ATTACK_NO_SPIES;
   }
 
   // Is it MISSILE mission?
-  if($mission == MT_MISSILE)
-  {
+  if($mission == MT_MISSILE) {
     $sn_data_mip = get_unit_param(UNIT_DEF_MISSILE_INTERPLANET);
-    if(mrc_get_level($user, $planet_src, STRUC_SILO) < $sn_data_mip[P_REQUIRE][STRUC_SILO])
-    {
+    if(mrc_get_level($user, $planet_src, STRUC_SILO) < $sn_data_mip[P_REQUIRE][STRUC_SILO]) {
       return ATTACK_NO_SILO;
     }
 
-    if(!$fleet[UNIT_DEF_MISSILE_INTERPLANET])
-    {
+    if(!$fleet[UNIT_DEF_MISSILE_INTERPLANET]) {
       return ATTACK_NO_MISSILE;
     }
 
     $distance = abs($planet_dst['system'] - $planet_src['system']);
     $mip_range = flt_get_missile_range($user);
-    if($distance > $mip_range || $planet_dst['galaxy'] != $planet_src['galaxy'])
-    {
+    if($distance > $mip_range || $planet_dst['galaxy'] != $planet_src['galaxy']) {
       return ATTACK_MISSILE_TOO_FAR;
     }
 
-    if(isset($options['target_structure']) && $options['target_structure'] && !in_array($options['target_structure'], sn_get_groups('defense_active')))
-    {
+    if(isset($options['target_structure']) && $options['target_structure'] && !in_array($options['target_structure'], sn_get_groups('defense_active'))) {
       return ATTACK_WRONG_STRUCTURE;
     }
   }
 
-  if($mission == MT_DESTROY && $planet_dst['planet_type'] != PT_MOON)
-  {
+  if($mission == MT_DESTROY && $planet_dst['planet_type'] != PT_MOON) {
     return ATTACK_WRONG_MISSION;
   }
 
-  if($mission == MT_ATTACK || $mission == MT_AKS || $mission == MT_DESTROY)
-  {
+  if($mission == MT_ATTACK || $mission == MT_AKS || $mission == MT_DESTROY) {
     return flt_bashing_check($user, $enemy, $planet_dst, $mission, $travel_data['duration'], $fleet_group);
   }
 

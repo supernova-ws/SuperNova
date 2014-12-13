@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b0.3');
+define('SN_VERSION', '39b0.4');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -473,6 +473,8 @@ define('ATTACK_OVERLOADED'        , 36);
 define('ATTACK_MISSION_ABSENT'    , 37);
 define('ATTACK_WRONG_UNIT'        , 38);
 define('ATTACK_ZERO_SPEED'        , 39);
+define('ATTACK_SHIP_COUNT_WRONG'  , 40);
+define('ATTACK_RESOURCE_COUNT_WRONG', 41);
 
 
 // *** Market variables

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b0.2
+* @version 39b0.4
 *
 */
 
@@ -135,6 +135,8 @@ $a_lang_array = (array(
     ATTACK_MISSION_ABSENT => 'Не существует такого типа миссии',
     ATTACK_WRONG_UNIT => 'Неправильный тип юнита',
     ATTACK_ZERO_SPEED => 'Во флоте находится нелетающая орбитальная структура',
+    ATTACK_SHIP_COUNT_WRONG => 'Количество кораблей во флоте не может быть негативным',
+    ATTACK_RESOURCE_COUNT_WRONG => 'Количество ресурсов во флоте не может быть негативным',
   ),
 
   'fl_fleet_err' => 'Ошибка!',
