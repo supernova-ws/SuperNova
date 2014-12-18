@@ -23,17 +23,7 @@ function flt_fleet_speed($user, $fleet)
   return empty($speeds) ? 0 : min($speeds);
 }
 
-/**
- * @param     $user_row
- * @param     $from
- * @param     $to
- * @param     $fleet_array
- * @param int $speed_percent
- *
- * @return array
- */
-function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 10)
-{
+function flt_travel_distance($from, $to) {
   if($from['galaxy'] != $to['galaxy'])
   {
     $distance = abs($from['galaxy'] - $to['galaxy']) * 20000;
@@ -50,6 +40,22 @@ function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 1
   {
     $distance = 5;
   }
+
+  return $distance;
+}
+
+/**
+ * @param     $user_row
+ * @param     $from
+ * @param     $to
+ * @param     $fleet_array
+ * @param int $speed_percent
+ *
+ * @return array
+ */
+function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 10)
+{
+  $distance = flt_travel_distance($from, $to);
 
   $consumption = 0;
   $capacity = 0;

@@ -1279,6 +1279,10 @@ switch($new_version) {
 
     upd_check_key('stats_schedule', '04:00:00', $config->stats_schedule !== '04:00:00');
 
+    upd_alter_table('users', array(
+      "ADD COLUMN `user_bot` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0",
+    ), !isset($update_tables['users']['user_bot']));
+
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
 };
