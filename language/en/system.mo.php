@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a21.3
+* @version 39b0.6
 *
 */
 
@@ -963,6 +963,8 @@ $a_lang_array = (array(
     GAME_DISABLE_UPDATE => 'Game is updating',
     GAME_DISABLE_STAT => 'Statistics update in progress',
     GAME_DISABLE_INSTALL => 'Game is not configured yet',
+    GAME_DISABLE_EVENT_BLACK_MOON_RISING => 'Black Moon Rising!',
+    GAME_DISABLE_EVENT_BLACK_MOON_FALLING => 'Black Moon Falling!',
   ),
 
   'sys_sector_purchase_log' => 'User {%2$d} {%1$s} purchased 1 sector on planet {%5$d} {%3$s} type "%4$s" for %6$d DM',

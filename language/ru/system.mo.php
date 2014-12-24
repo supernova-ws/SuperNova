@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39a21.3#
+* @version #39b0.6#
 *
 */
 
@@ -969,6 +969,8 @@ $a_lang_array = (array(
     GAME_DISABLE_UPDATE => 'Игра обновляется',
     GAME_DISABLE_STAT => 'Происходит пересчет статистики',
     GAME_DISABLE_INSTALL => 'Игра еще не сконфигурирована',
+    GAME_DISABLE_EVENT_BLACK_MOON_RISING => 'Восход Чёрной Луны!',
+    GAME_DISABLE_EVENT_BLACK_MOON_FALLING => 'Закат Чёрной Луны!',
   ),
 
   'sys_sector_purchase_log' => 'Пользователь {%2$d} {%1$s} купил 1 сектор на планете {%5$d} {%3$s} тип "%4$s" за %6$d ТМ',

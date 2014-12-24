@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b0.5');
+define('SN_VERSION', '39b0.6');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1126,5 +1126,7 @@ define('GAME_DISABLE_REASON', 1);
 define('GAME_DISABLE_UPDATE', 2);
 define('GAME_DISABLE_STAT', 3);
 define('GAME_DISABLE_INSTALL', 4);
+define('GAME_DISABLE_EVENT_BLACK_MOON_RISING', 5);
+define('GAME_DISABLE_EVENT_BLACK_MOON_FALLING', 6);
 
 define('USER_BOT_BLACK_MOON', 1);
