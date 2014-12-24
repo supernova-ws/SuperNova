@@ -1607,8 +1607,8 @@ function ip2longu($ip)
 }
 
 
-function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null){return sn_function_call('sn_powerup_get_price_matrix', array($powerup_id, $powerup_unit, $level_max, &$result));}
-function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, &$result) {
+function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false){return sn_function_call('sn_powerup_get_price_matrix', array($powerup_id, $powerup_unit, $level_max, $plain, &$result));}
+function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false, &$result) {
   global $sn_powerup_buy_discounts;
 
   $result = array();
