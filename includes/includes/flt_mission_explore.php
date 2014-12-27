@@ -175,7 +175,7 @@ function flt_mission_explore(&$mission_data) {
       unset($can_be_found[SHIP_SPY]);
 
       $fleet_found = array();
-      while($found_in_metal >= $can_be_found && count($can_be_found)) {
+      while(count($can_be_found) && $found_in_metal >= max($can_be_found)) {
         $found_index = mt_rand(1, count($can_be_found)) - 1;
         $found_ship = array_slice($can_be_found, $found_index, 1, true);
         $found_ship_cost = reset($found_ship);
