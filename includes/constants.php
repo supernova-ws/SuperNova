@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b0.8');
+define('SN_VERSION', '39b0.9');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -186,6 +186,7 @@ define('RPG_CONVERT_MM', 25);
 define('RPG_EXPLORE', 26);
 define('RPG_PURCHASE_CANCEL', 27);
 define('RPG_MERCENARY_DISMISSED', 28);
+define('RPG_EVENT_CHRISTMAS', 29);
 
 
 
@@ -786,7 +787,22 @@ define('UNIT_AWARD_MEMORY', 2300); // Памятные знаки за суще�
 define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
 define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
 
-define('UNIT_NEXT', 3000); // !!! Next unit start on 3000 !!!
+define('UNIT_EVENT_UNITS', 3000); // Special event units
+define('UNIT_EVENT_CHRISTMAS', 3001); // Christmas event units
+define('UNIT_EVENT_CHRISTMAS_TREE', 3002); // Christmas event units
+define('UNIT_EVENT_CHRISTMAS_TOP', 3003); // Christmas event units
+define('UNIT_EVENT_CHRISTMAS_ELECTRO', 3004); // Christmas event units
+define('UNIT_EVENT_CHRISTMAS_GARLAND', 3005); // Christmas event units
+define('UNIT_EVENT_CHRISTMAS_RAIN', 3006); // Christmas event units
+define('UNIT_EVENT_CHRISTMAS_DECORATION', 3007); // Christmas event units
+define('UNIT_EVENT_CHRISTMAS_SERPENTINE', 3008); // Christmas event units
+define('UNIT_EVENT_CHRISTMAS_CONFETTI', 3009); // Christmas event units
+
+define('UNIT_EVENT_CHRISTMAS_FIRECRACKER', 3011); // Christmas event units
+define('UNIT_EVENT_CHRISTMAS_SWEET', 3012); // Christmas event units
+define('UNIT_EVENT_CHRISTMAS_CHINESE', 3013); // Christmas event units
+
+define('UNIT_NEXT', 4000); // !!! Next unit start on 4000 !!!
 
 define('GROUP_PART',         800000);
 // Зарезервировано для запчастей: 800.001 - 899.999

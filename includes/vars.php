@@ -425,12 +425,6 @@ mission = array(
         'transport'  => true,
       ),
 
-
-
-
-
-
-
       MT_MISSILE => array(
         'src_planet' => 0,
         'src_user'   => 0,
@@ -439,8 +433,49 @@ mission = array(
         'transport'  => false,
         'AJAX'       => true,
       ),
-
     ),
+
+    'mission_explore_outcome_list' => array(
+      FLT_EXPEDITION_OUTCOME_NONE => array(
+        'chance' => 110,
+      ),
+      FLT_EXPEDITION_OUTCOME_LOST_FLEET => array(
+        'chance' => 9,
+      ),
+      FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL => array(
+        'chance' => 3,
+      ),
+      FLT_EXPEDITION_OUTCOME_FOUND_FLEET => array(
+        'chance' => 200,
+        'percent' => array(
+          0 => 0.1,
+          1 => 0.02,
+          2 => 0.01,
+        ),
+      ),
+      FLT_EXPEDITION_OUTCOME_FOUND_RESOURCES => array(
+        'chance' => 300,
+        'percent' => array(
+          0 => 0.1,
+          1 => 0.050,
+          2 => 0.025,
+        ),
+      ),
+      FLT_EXPEDITION_OUTCOME_FOUND_DM => array(
+        'chance' => 100,
+        'percent' => array(
+          0 => 0.0100,
+          1 => 0.0040,
+          2 => 0.0010,
+        ),
+      ),
+      /*
+      FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT => array(
+        'chance' => 10,
+      ),
+      */
+    ),
+
 
     'planet_density' => array(
       PLANET_DENSITY_NONE => array(
