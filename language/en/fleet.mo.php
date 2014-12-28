@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b0.4
+* @version 39b0.11
 *
 */
 
@@ -140,6 +140,7 @@ $a_lang_array = (array(
     ATTACK_ZERO_SPEED => 'There is orbital structure in the fleet',
     ATTACK_SHIP_COUNT_WRONG => 'Ship amount can not be negative or zero',
     ATTACK_RESOURCE_COUNT_WRONG => 'Resource amount can not be negative or zero',
+    ATTACK_MORATORIUM => 'There is moratorium on this mission type in progress',
   ),
 
   'fl_fleet_err' => 'Error!',

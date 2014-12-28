@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b0.4
+* @version 39b0.11
 *
 */
 
@@ -137,6 +137,7 @@ $a_lang_array = (array(
     ATTACK_ZERO_SPEED => 'Во флоте находится нелетающая орбитальная структура',
     ATTACK_SHIP_COUNT_WRONG => 'Количество кораблей во флоте не может быть негативным',
     ATTACK_RESOURCE_COUNT_WRONG => 'Количество ресурсов во флоте не может быть негативным',
+    ATTACK_MORATORIUM => 'На запуск флота в эту миссию наложен мораторий',
   ),
 
   'fl_fleet_err' => 'Ошибка!',
