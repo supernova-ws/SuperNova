@@ -1283,6 +1283,8 @@ switch($new_version) {
       "ADD COLUMN `user_bot` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0",
     ), !isset($update_tables['users']['user_bot']));
 
+    upd_alter_table('unit', "ADD KEY `I_unit_type_snid` (unit_type, unit_snid) USING BTREE", !$update_indexes['unit']['I_unit_type_snid']);
+
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
 };
