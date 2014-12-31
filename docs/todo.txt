@@ -1,6 +1,16 @@
 Stay out of my shed
 
 
+Админка по ивенту:
+SELECT username, game_unit.* FROM `game_unit`
+left join game_users on id = unit_player_id
+where unit_type = 3001 and unit_snid = 3002;
+
+select unit_snid, sum(unit_level) as count from game_unit
+where unit_type = 3001 group by unit_snid;
+
+select unit_snid, sum(unit_level) as count from game_unit
+where unit_type = 3001 ;
 
 
 НОВЫЙ ГОД
@@ -767,7 +777,7 @@ xsolla - передавать описание платежа
 ======================
 
 
-Текущий билд #39b0.11#
+Текущий билд #39b0.13#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять flt_lastUpdate
