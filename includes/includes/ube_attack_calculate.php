@@ -1239,7 +1239,9 @@ function sn_ube_combat_result_apply(&$combat_data)
 
   if($outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS)
   {
-    $outcome[UBE_MOON_NAME] = uni_create_moon($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], $destination_user_id, $outcome[UBE_MOON_SIZE], '', false);
+    $moon_row = uni_create_moon($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], $destination_user_id, $outcome[UBE_MOON_SIZE], '', false);
+    $outcome[UBE_MOON_NAME] = $moon_row['name'];
+    unset($moon_row);
   }
   elseif($outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS)
   {

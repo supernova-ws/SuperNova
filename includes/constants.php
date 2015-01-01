@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b0.13');
+define('SN_VERSION', '39b0.14');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -188,6 +188,7 @@ define('RPG_PURCHASE_CANCEL', 27);
 define('RPG_MERCENARY_DISMISSED', 28);
 define('RPG_EVENT_CHRISTMAS', 29);
 define('RPG_EVENT_CHRISTMAS_TREE_BURN', 30);
+define('RPG_EVENT_BLACK_MOON_TICK', 31);
 
 
 
@@ -1144,7 +1145,7 @@ define('GAME_DISABLE_REASON', 1);
 define('GAME_DISABLE_UPDATE', 2);
 define('GAME_DISABLE_STAT', 3);
 define('GAME_DISABLE_INSTALL', 4);
-define('GAME_DISABLE_EVENT_BLACK_MOON_RISING', 5);
-define('GAME_DISABLE_EVENT_BLACK_MOON_FALLING', 6);
+define('GAME_DISABLE_EVENT_BLACK_MOON', 5);
 
+define('USER_BOT_PLAYER', 0);
 define('USER_BOT_BLACK_MOON', 1);

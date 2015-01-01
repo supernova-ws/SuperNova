@@ -32,8 +32,8 @@ function art_use(&$user, &$planetrow, $unit_id)
           $random = $unit_id == ART_LHC ? mt_rand(1, 100) : $moon_chance;
           if($random <= $moon_chance)
           {
-            $new_moon_name = uni_create_moon($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], $user['id'], $moon_chance);
-            $message = sprintf($lang['art_moon_create'][$unit_id], $new_moon_name, uni_render_coordinates($planetrow), pretty_number($moon_chance));
+            $new_moon_row = uni_create_moon($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], $user['id'], $moon_chance);
+            $message = sprintf($lang['art_moon_create'][$unit_id], $new_moon_row['name'], uni_render_coordinates($planetrow), pretty_number($moon_chance));
           }
           else
           {

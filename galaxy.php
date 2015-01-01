@@ -262,6 +262,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
      'PLANET_DIAMETER'  => number_format($uni_galaxyRowPlanet['diameter'], 0, '', '.'),
 
      'MOON_NAME_JS'   => js_safe_string($uni_galaxyRowMoon['name']),
+     'MOON_IMAGE'     => $uni_galaxyRowMoon['image'],
      'MOON_DIAMETER'  => number_format($uni_galaxyRowMoon['diameter'], 0, '', '.'),
      'MOON_TEMP'      => number_format($uni_galaxyRowMoon['temp_min'], 0, '', '.'),
      'MOON_FLEET_ID'  => $moon_fleet_id,

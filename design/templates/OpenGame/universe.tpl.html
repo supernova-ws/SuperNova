@@ -66,7 +66,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
 
   moon_name: '{galaxyrow.MOON_NAME_JS}',
   moon_diameter: '{galaxyrow.MOON_DIAMETER}',
-  moon_image: 'mond',
+  moon_image: '{galaxyrow.MOON_IMAGE}',
   moon_fleet_id: '{galaxyrow.MOON_FLEET_ID}',
 
   debris: '{galaxyrow.DEBRIS}',
@@ -210,7 +210,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       <!-- IF galaxyrow.MOON_DIAMETER -->
         <div style="position: relative; height: 30px; width: 30px;" onmouseover="show_planet({galaxyrow.PLANET_NUM}, 3);" >
           <span style="position: absolute; top: 0; left: 0; height: 30px; width: 30px;">
-            <img src={dpath}planeten/small/s_mond.jpg height=100% width=100%>
+            <img src={dpath}planeten/small/s_{galaxyrow.MOON_IMAGE}.jpg height=100% width=100%>
           </span>
           <!-- IF galaxyrow.MOON_FLEET_ID -->
             <span class="alpha50" style="position: absolute; top: 0; left: 0; height: 100%; width: 100%;">

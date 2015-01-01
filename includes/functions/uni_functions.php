@@ -51,7 +51,7 @@ function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
   return $return;
 }
 
-function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_name_unsafe = '', $HomeWorld = false) {
+function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_name_unsafe = '', $HomeWorld = false, $options = array()) {
   global $lang, $config;
 
 /*
@@ -264,9 +264,13 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
     $planet['crystal_perhour']   = $config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
     $planet['deuterium_perhour'] = $config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
 
-    $planet['image']       = $PlanetType[ rand( 0, count( $PlanetType ) -1 ) ];
-    $planet['image']      .= $PlanetClass[ rand( 0, count( $PlanetClass ) - 1 ) ];
-    $planet['image']      .= $PlanetDesign[ rand( 0, count( $PlanetDesign ) - 1 ) ];
+    if(isset($options['image']) && $options['image']) {
+      $planet['image'] = $options['image'];
+    } else {
+      $planet['image']       = $PlanetType[ rand( 0, count( $PlanetType ) -1 ) ];
+      $planet['image']      .= $PlanetClass[ rand( 0, count( $PlanetClass ) - 1 ) ];
+      $planet['image']      .= $PlanetDesign[ rand( 0, count( $PlanetDesign ) - 1 ) ];
+    }
     $planet['planet_type'] = 1;
     $planet['id_owner']    = $PlanetOwnerID;
     $planet['last_update'] = time();
@@ -314,11 +318,12 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
  * @copyright 2008
 */
 
-function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_chance = 0, $moon_name = '', $update_debris = true)
+function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_chance = 0, $moon_name = '', $update_debris = true, $options = array())
 {
   global $lang;
 
   $moon_name = '';
+  $moon_row = array();
   $moon = db_planet_by_gspt($pos_galaxy, $pos_system, $pos_planet, PT_MOON, false, 'id');
   if(!$moon['id'])
   {
@@ -351,8 +356,14 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
 
       $field_max = ceil($size / 1000);
 
+      if(isset($options['image']) && $options['image']) {
+        $moon_image = $options['image'];
+      } else {
+        $moon_image = 'mond';
+      }
+
       $moon_row = classSupernova::db_ins_record(LOC_PLANET,
-        "`id_owner` = '{$user_id}', `parent_planet` = '{$moon_planet['id']}', `name` = '{$moon_name_safe}', `last_update` = " . SN_TIME_NOW . ", `image` = 'mond',
+        "`id_owner` = '{$user_id}', `parent_planet` = '{$moon_planet['id']}', `name` = '{$moon_name_safe}', `last_update` = " . SN_TIME_NOW . ", `image` = '{$moon_image}',
           `galaxy` = '{$pos_galaxy}', `system` = '{$pos_system}', `planet` = '{$pos_planet}', `planet_type` = " . PT_MOON . ",
           `diameter` = '{$size}', `field_max` = '{$field_max}', `density` = 2500, `density_index` = 2, `temp_min` = '{$temp_min}', `temp_max` = '{$temp_max}',
           `metal` = '0', `metal_perhour` = '0', `metal_max` = '{$base_storage_size}',
@@ -371,7 +382,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
     }
   }
 
-  return $moon_name;
+  return $moon_row;
 }
 
 /*

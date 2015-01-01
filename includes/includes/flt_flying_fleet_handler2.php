@@ -127,7 +127,7 @@ function flt_flyingFleetsSort($a, $b)
 // ------------------------------------------------------------------
 function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 {
-  $flt_update_mode = 0;
+  $flt_update_mode = 1;
   // 0 - old
   // 1 - new
 
@@ -164,13 +164,13 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
         }
         else
         {
-          $GLOBALS['debug']->error('Flying fleet handler is on timeout', 'FFH Error', 504);
+          global $debug;
+
+          $debug->warning('Flying fleet handler is on timeout', 'FFH Error', 504);
         }
       }
     break;
   }
-
-  $config->db_saveItem('flt_lastUpdate', SN_TIME_NOW);
 
 /*
 
@@ -206,8 +206,15 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   $fleet_event_list = array();
   $missions_used = array();
 
+  $config->db_saveItem('flt_lastUpdate', SN_TIME_NOW);
 
   sn_db_transaction_start();
+  if($config->db_loadItem('flt_handler_lock')) {
+    sn_db_transaction_rollback();
+    return;
+  }
+  $config->db_saveItem('flt_handler_lock', SN_TIME_SQL);
+
   coe_o_missile_calculate();
   sn_db_transaction_commit();
 
@@ -406,6 +413,8 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
     sn_db_transaction_commit();
 
   }
+
+  $config->db_saveItem('flt_handler_lock', '');
 
 //  if($flt_update_mode == 1)
 //  {
