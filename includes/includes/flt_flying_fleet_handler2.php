@@ -141,6 +141,12 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   doquery('LOCK TABLE {{table}}aks WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}users WRITE, {{table}}logs WRITE, {{table}}iraks WRITE, {{table}}statpoints WRITE, {{table}}referrals WRITE, {{table}}counter WRITE');
   */
 
+  if(xcache_inc('flt_handler_lock') > 1) {
+//print('locked_by_xcache ');
+    xcache_dec('flt_handler_lock');
+    return;
+  }
+
   if($skip_fleet_update)
   {
     return;
@@ -209,11 +215,11 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   $config->db_saveItem('flt_lastUpdate', SN_TIME_NOW);
 
   sn_db_transaction_start();
-  if($config->db_loadItem('flt_handler_lock')) {
-    sn_db_transaction_rollback();
-    return;
-  }
-  $config->db_saveItem('flt_handler_lock', SN_TIME_SQL);
+//  if($config->db_loadItem('flt_handler_lock')) {
+//    sn_db_transaction_rollback();
+//    return;
+//  }
+//  $config->db_saveItem('flt_handler_lock', SN_TIME_SQL);
 
   coe_o_missile_calculate();
   sn_db_transaction_commit();
@@ -414,7 +420,8 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 
   }
 
-  $config->db_saveItem('flt_handler_lock', '');
+  xcache_dec('flt_handler_lock');
+//  $config->db_saveItem('flt_handler_lock', '');
 
 //  if($flt_update_mode == 1)
 //  {
