@@ -123,6 +123,15 @@ function flt_flyingFleetsSort($a, $b)
 //    ;
 }
 
+function log_file($msg) {
+  static $handler;
+
+  if(!$handler) {
+    $handler = fopen('event.log', 'a+');
+  }
+
+  fwrite($handler, date(FMT_DATE_TIME_SQL, time()) .' ' . $msg . "\r\n");
+}
 
 // ------------------------------------------------------------------
 function flt_flying_fleet_handler(&$config, $skip_fleet_update)
@@ -140,12 +149,6 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   $GLOBALS['config']->db_saveItem('flt_lastUpdate', $time_now);
   doquery('LOCK TABLE {{table}}aks WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}users WRITE, {{table}}logs WRITE, {{table}}iraks WRITE, {{table}}statpoints WRITE, {{table}}referrals WRITE, {{table}}counter WRITE');
   */
-
-  if(xcache_inc('flt_handler_lock') > 1) {
-//print('locked_by_xcache ');
-    xcache_dec('flt_handler_lock');
-    return;
-  }
 
   if($skip_fleet_update)
   {
@@ -205,6 +208,12 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 [*] Но не раньше, чем переписать все миссии
 
 */
+
+  if(xcache_inc('flt_handler_lock') > 1) {
+//print('locked_by_xcache ');
+    xcache_dec('flt_handler_lock');
+    return;
+  }
 
   global $time_now;
 
