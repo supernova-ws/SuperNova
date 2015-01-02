@@ -115,6 +115,7 @@ function coe_o_missile_calculate()
 
   while($fleetRow = mysql_fetch_assoc($iraks))
   {
+    set_time_limit(15);
     $db_changeset = array();
 
     $targetUser = db_user_by_id($fleetRow['fleet_target_owner'], true);

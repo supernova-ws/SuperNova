@@ -167,7 +167,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
     case 1:
       if($config->flt_lastUpdate)
       {
-        if(SN_TIME_NOW - $config->flt_lastUpdate <= 15)
+        if(SN_TIME_NOW - $config->flt_lastUpdate <= 60)
         {
           return;
         }
@@ -214,6 +214,8 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
     xcache_dec('flt_handler_lock');
     return;
   }
+
+  log_file('Начинаем обсчёт флотов');
 
   global $time_now;
 
@@ -433,7 +435,8 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 
   }
 
-  xcache_dec('flt_handler_lock');
+  log_file('Закончили обсчёт флотов');
+  xcache_set('flt_handler_lock', 0);
 //  $config->db_saveItem('flt_handler_lock', '');
 
 //  if($flt_update_mode == 1)
