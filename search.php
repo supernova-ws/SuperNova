@@ -25,7 +25,7 @@ if($searchtext && $type)
   switch($type)
   {
     case "planetname":
-      $search = db_planet_list_search($searchtext);
+      // $search = db_planet_list_search($searchtext);
     break;
 
     case "ally":
@@ -72,7 +72,7 @@ if($searchtext && $type)
 
 $search_type = array(
   'playername' => 'srch_player_name',
-  'planetname' => 'srch_planet_name',
+//  'planetname' => 'srch_planet_name',
   'ally' => 'sys_alliance',
 );
 
