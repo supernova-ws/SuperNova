@@ -215,6 +215,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   $config->db_saveItem('flt_lastUpdate', SN_TIME_NOW);
 
   sn_db_transaction_start();
+  set_time_limit(15);
 //  if($config->db_loadItem('flt_handler_lock')) {
 //    sn_db_transaction_rollback();
 //    return;
@@ -225,6 +226,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   sn_db_transaction_commit();
 
   sn_db_transaction_start();
+  set_time_limit(15);
   $_fleets = doquery("SELECT * FROM `{{fleets}}` WHERE
     (`fleet_start_time` <= '{$time_now}' AND `fleet_mess` = 0) 
     OR (`fleet_end_stay` <= '{$time_now}' AND fleet_end_stay > 0 AND `fleet_mess` = 0)
@@ -233,6 +235,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 
   while($fleet_row = mysql_fetch_assoc($_fleets))
   {
+    set_time_limit(15);
     // Унифицировать код с темплейтным разбором эвентов на планете!
     $fleet_list[$fleet_row['fleet_id']] = $fleet_row;
     $missions_used[$fleet_row['fleet_mission']] = 1;
@@ -294,6 +297,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   $sn_groups_mission = sn_get_groups('missions');
   foreach($fleet_event_list as $fleet_event)
   {
+    set_time_limit(15);
     // TODO: Указатель тут потом сделать
     // TODO: СЕЙЧАС НАДО ПРОВЕРЯТЬ ПО БАЗЕ - А ЖИВОЙ ЛИ ФЛОТ?!
     $fleet_row = $fleet_event['fleet_row'];
