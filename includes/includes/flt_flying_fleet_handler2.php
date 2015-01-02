@@ -136,7 +136,7 @@ function log_file($msg) {
 // ------------------------------------------------------------------
 function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 {
-  $flt_update_mode = 1;
+  $flt_update_mode = 0;
   // 0 - old
   // 1 - new
 
@@ -215,7 +215,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
     return;
   }
 
-  log_file('Начинаем обсчёт флотов');
+//  log_file('Начинаем обсчёт флотов');
 
   global $time_now;
 
@@ -233,17 +233,20 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 //  }
 //  $config->db_saveItem('flt_handler_lock', SN_TIME_SQL);
 
+//log_file('Обсчёт ракет');
   coe_o_missile_calculate();
   sn_db_transaction_commit();
 
   sn_db_transaction_start();
   set_time_limit(15);
+//log_file('Запрос на флоты');
   $_fleets = doquery("SELECT * FROM `{{fleets}}` WHERE
     (`fleet_start_time` <= '{$time_now}' AND `fleet_mess` = 0) 
     OR (`fleet_end_stay` <= '{$time_now}' AND fleet_end_stay > 0 AND `fleet_mess` = 0)
     OR (`fleet_end_time` <= '{$time_now}')
   FOR UPDATE;");
 
+//log_file('Выборка флотов');
   while($fleet_row = mysql_fetch_assoc($_fleets))
   {
     set_time_limit(15);
@@ -279,6 +282,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   }
   sn_db_transaction_commit();
 
+//log_file('Сортировка и подгрузка модулей');
   uasort($fleet_event_list, 'flt_flyingFleetsSort');
   unset($_fleets);
 
@@ -305,6 +309,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 
 
 
+//log_file('Обработка миссий');
   $sn_groups_mission = sn_get_groups('missions');
   foreach($fleet_event_list as $fleet_event)
   {
@@ -318,6 +323,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
       continue;
     }
 
+//log_file('Миссия');
     // TODO Обернуть всё в транзакции. Начинать надо заранее, блокируя все таблицы внутренним локом SELECT 1 FROM {{users}}
     sn_db_transaction_start();
 
@@ -435,7 +441,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 
   }
 
-  log_file('Закончили обсчёт флотов');
+//  log_file('Закончили обсчёт флотов');
   xcache_set('flt_handler_lock', 0);
 //  $config->db_saveItem('flt_handler_lock', '');
 
