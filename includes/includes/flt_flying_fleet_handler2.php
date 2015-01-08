@@ -20,13 +20,11 @@ returns         = bitmask for recaching
 
 // ------------------------------------------------------------------
 function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false){return sn_function_call('RestoreFleetToPlanet', array(&$fleet_row, $start, $only_resources, $safe_fleet, &$result));}
-function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false, &$result)
-{
+function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false, &$result) {
   sn_db_transaction_check(true);
 
   $result = CACHE_NOTHING;
-  if(!is_array($fleet_row))
-  {
+  if(!is_array($fleet_row)) {
     return $result;
   }
 
@@ -48,41 +46,31 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
 //  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1 FOR UPDATE;", true);
 
   // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
-  if(!$fleet_row || !is_array($fleet_row) || ($fleet_row['fleet_mess'] == 1 && $only_resources))
-  {
+  if(!$fleet_row || !is_array($fleet_row) || ($fleet_row['fleet_mess'] == 1 && $only_resources)) {
     return $result;
   }
 
 //pdump($planet_arrival);
   $db_changeset = array();
-  if(!$only_resources)
-  {
+  if(!$only_resources) {
     flt_destroy($fleet_row);
 
-    if($fleet_row['fleet_owner'] == $planet_arrival['id_owner'])
-    {
+    if($fleet_row['fleet_owner'] == $planet_arrival['id_owner']) {
       $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
-      foreach($fleet_array as $ship_id => $ship_count)
-      {
-        if($ship_count)
-        {
+      foreach($fleet_array as $ship_id => $ship_count) {
+        if($ship_count) {
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $planet_arrival['id']);
         }
       }
-    }
-    else
-    {
+    } else {
       return CACHE_NOTHING;
     }
-  }
-  else
-  {
+  } else {
     // flt_send_back($fleet_row);
     doquery("UPDATE {{fleets}} SET fleet_resource_metal = 0, fleet_resource_crystal = 0, fleet_resource_deuterium = 0, fleet_mess = 1 WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
   }
 
-  if(!empty($db_changeset))
-  {
+  if(!empty($db_changeset)) {
     db_changeset_apply($db_changeset);
   }
 
@@ -94,8 +82,7 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
 }
 
 // ------------------------------------------------------------------
-function flt_flyingFleetsSort($a, $b)
-{
+function flt_flyingFleetsSort($a, $b) {
   // Сравниваем время флотов - кто раньше, тот и первый обрабатывается
   return $a['fleet_time'] > $b['fleet_time'] ? 1 : ($a['fleet_time'] < $b['fleet_time'] ? -1 :
     // Если время - одинаковое, сравниваем события флотов
@@ -114,13 +101,6 @@ function flt_flyingFleetsSort($a, $b)
       ))
     )
   );
-
-//  return
-//    $a['fleet_time'] > $b['fleet_time'] ? 1 :
-//      ($a['fleet_time'] < $b['fleet_time'] ? -1 :
-//        0
-//      )
-//    ;
 }
 
 function log_file($msg) {
@@ -134,88 +114,64 @@ function log_file($msg) {
 }
 
 // ------------------------------------------------------------------
-function flt_flying_fleet_handler(&$config, $skip_fleet_update)
-{
-  $flt_update_mode = 0;
-  // 0 - old
-  // 1 - new
-
+function flt_flying_fleet_handler($skip_fleet_update = false) {
   /*
-  if(($time_now - $GLOBALS['config']->flt_lastUpdate <= 8 ) || $GLOBALS['skip_fleet_update'])
-  {
-    return;
-  }
 
-  $GLOBALS['config']->db_saveItem('flt_lastUpdate', $time_now);
-  doquery('LOCK TABLE {{table}}aks WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}users WRITE, {{table}}logs WRITE, {{table}}iraks WRITE, {{table}}statpoints WRITE, {{table}}referrals WRITE, {{table}}counter WRITE');
+  [*] Нужно ли заворачивать ВСЕ в одну транзакцию?
+      С одной стороны - да, что бы данные были гарантированно на момент снапшота
+      С другой стороны - нет, потому что при большой активности это все будет блокировать слишком много рядов, да и таймаут будет большой для ожидания всего разлоченного
+      Стоит завернуть каждую миссию отдельно? Это сильно увеличит количество запросов, зато так же сильно снизит количество блокировок.
+
+      Resume: НЕТ! Надо оставить все в одной транзакции! Так можно будет поддерживать consistency кэша. Там буквально сантисекунды блокировки
+
+  [*] Убрать кэшированние данных о пользователях и планета. Офигенно освободит память - проследить!
+      НЕТ! Считать, скольким флотам нужна будет инфа и кэшировать только то, что используется больше раза!
+      Заодно можно будет исключить перересчет очередей/ресурсов - сильно ускорит дело!
+      Особенно будет актуально, когда все бонусы будут в одной таблице
+      Ну и никто не заставляет как сейчас брать ВСЕ из таблицы - только по полям. Гемор, но не сильный - сделать запрос по группам sn_data
+      И писать в БД только один раз результат
+
+  [*] Нужно ли на этом этапе знать полную информацию о флотах?
+      Заблокировать флоты можно и неполным запросом. Блокировка флотов - это не страшно. Ну, не пройдет одна-две отмены - так никто и не гарантировал реалтайма!
+      С одной стороны - да, уменьшит количество запросов
+      С другой стооны - расход памяти
+      Все равно надо будет знать полную инфу о флоте в момент обработки
+
+  [*] Сделать тестовую БД для расчетов
+
+  [*] Но не раньше, чем переписать все миссии
+
   */
-
-  if($skip_fleet_update)
-  {
+  if($skip_fleet_update) {
     return;
   }
 
-  switch($flt_update_mode)
-  {
-    case 0:
-      if(SN_TIME_NOW - $config->flt_lastUpdate <= 4)
-      {
-        return;
-      }
-    break;
+  global $config, $debug;
 
-    case 1:
-      if($config->flt_lastUpdate)
-      {
-        if(SN_TIME_NOW - $config->flt_lastUpdate <= 60)
-        {
-          return;
-        }
-        else
-        {
-          global $debug;
-
-          $debug->warning('Flying fleet handler is on timeout', 'FFH Error', 504);
-        }
-      }
-    break;
-  }
-
-/*
-
-[*] Нужно ли заворачивать ВСЕ в одну транзакцию?
-    С одной стороны - да, что бы данные были гарантированно на момент снапшота
-    С другой стороны - нет, потому что при большой активности это все будет блокировать слишком много рядов, да и таймаут будет большой для ожидания всего разлоченного
-    Стоит завернуть каждую миссию отдельно? Это сильно увеличит количество запросов, зато так же сильно снизит количество блокировок.
-
-    Resume: НЕТ! Надо оставить все в одной транзакции! Так можно будет поддерживать consistency кэша. Там буквально сантисекунды блокировки
-
-[*] Убрать кэшированние данных о пользователях и планета. Офигенно освободит память - проследить!
-    НЕТ! Считать, скольким флотам нужна будет инфа и кэшировать только то, что используется больше раза!
-    Заодно можно будет исключить перересчет очередей/ресурсов - сильно ускорит дело!
-    Особенно будет актуально, когда все бонусы будут в одной таблице
-    Ну и никто не заставляет как сейчас брать ВСЕ из таблицы - только по полям. Гемор, но не сильный - сделать запрос по группам sn_data
-    И писать в БД только один раз результат
-
-[*] Нужно ли на этом этапе знать полную информацию о флотах?
-    Заблокировать флоты можно и неполным запросом. Блокировка флотов - это не страшно. Ну, не пройдет одна-две отмены - так никто и не гарантировал реалтайма!
-    С одной стороны - да, уменьшит количество запросов
-    С другой стооны - расход памяти
-    Все равно надо будет знать полную инфу о флоте в момент обработки
-
-[*] Сделать тестовую БД для расчетов
-
-[*] Но не раньше, чем переписать все миссии
-
-*/
-
-  if(xcache_inc('flt_handler_lock') > 1) {
-//print('locked_by_xcache ');
-    xcache_dec('flt_handler_lock');
+  sn_db_transaction_start();
+  if(SN_TIME_NOW - strtotime($config->db_loadItem('fleet_update_last')) <= $config->fleet_update_interval) {
+    sn_db_transaction_rollback();
     return;
   }
 
-//  log_file('Начинаем обсчёт флотов');
+  // Watchdog timer
+  if($config->game_disable != GAME_DISABLE_NONE || SN_TIME_NOW - strtotime($config->db_loadItem('fleet_update_lock')) <= mt_rand(90, 120)) {
+    sn_db_transaction_rollback();
+    return;
+  } else {
+    $debug->warning('Flying fleet handler was locked too long - watchdog unlocked', 'FFH Error', 504);
+  }
+
+  $config->db_saveItem('fleet_update_lock', SN_TIME_SQL);
+  $config->db_saveItem('fleet_update_last', SN_TIME_SQL);
+  sn_db_transaction_commit();
+
+//log_file('Начинаем обсчёт флотов');
+
+//log_file('Обсчёт ракет');
+  sn_db_transaction_start();
+  coe_o_missile_calculate();
+  sn_db_transaction_commit();
 
   global $time_now;
 
@@ -223,22 +179,8 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   $fleet_event_list = array();
   $missions_used = array();
 
-  $config->db_saveItem('flt_lastUpdate', SN_TIME_NOW);
-
+  $config->db_saveItem('fleet_update_last', SN_TIME_SQL);
   sn_db_transaction_start();
-  set_time_limit(15);
-//  if($config->db_loadItem('flt_handler_lock')) {
-//    sn_db_transaction_rollback();
-//    return;
-//  }
-//  $config->db_saveItem('flt_handler_lock', SN_TIME_SQL);
-
-//log_file('Обсчёт ракет');
-  coe_o_missile_calculate();
-  sn_db_transaction_commit();
-
-  sn_db_transaction_start();
-  set_time_limit(15);
 //log_file('Запрос на флоты');
   $_fleets = doquery("SELECT * FROM `{{fleets}}` WHERE
     (`fleet_start_time` <= '{$time_now}' AND `fleet_mess` = 0) 
@@ -247,14 +189,12 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
   FOR UPDATE;");
 
 //log_file('Выборка флотов');
-  while($fleet_row = mysql_fetch_assoc($_fleets))
-  {
+  while($fleet_row = mysql_fetch_assoc($_fleets)) {
     set_time_limit(15);
     // Унифицировать код с темплейтным разбором эвентов на планете!
     $fleet_list[$fleet_row['fleet_id']] = $fleet_row;
     $missions_used[$fleet_row['fleet_mission']] = 1;
-    if($fleet_row['fleet_start_time'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0)
-    {
+    if($fleet_row['fleet_start_time'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0) {
       $fleet_event_list[] = array(
         'fleet_row' => &$fleet_list[$fleet_row['fleet_id']],
         'fleet_time' => $fleet_list[$fleet_row['fleet_id']]['fleet_start_time'],
@@ -262,8 +202,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
       );
     }
 
-    if($fleet_row['fleet_end_stay'] > 0 && $fleet_row['fleet_end_stay'] <= $time_now && $fleet_row['fleet_mess'] == 0)
-    {
+    if($fleet_row['fleet_end_stay'] > 0 && $fleet_row['fleet_end_stay'] <= $time_now && $fleet_row['fleet_mess'] == 0) {
       $fleet_event_list[] = array(
         'fleet_row' => &$fleet_list[$fleet_row['fleet_id']],
         'fleet_time' => $fleet_list[$fleet_row['fleet_id']]['fleet_end_stay'],
@@ -302,8 +241,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 //    MT_MISSILE => 'flt_mission_missile.php',
     MT_EXPLORE => 'flt_mission_explore',
   );
-  foreach($missions_used as $mission_id => $cork)
-  {
+  foreach($missions_used as $mission_id => $cork) {
     require_once(SN_ROOT_PHYSICAL . "includes/includes/{$mission_files[$mission_id]}" . DOT_PHP_EX);
   }
 
@@ -311,14 +249,11 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 
 //log_file('Обработка миссий');
   $sn_groups_mission = sn_get_groups('missions');
-  foreach($fleet_event_list as $fleet_event)
-  {
-    set_time_limit(15);
+  foreach($fleet_event_list as $fleet_event) {
     // TODO: Указатель тут потом сделать
     // TODO: СЕЙЧАС НАДО ПРОВЕРЯТЬ ПО БАЗЕ - А ЖИВОЙ ЛИ ФЛОТ?!
     $fleet_row = $fleet_event['fleet_row'];
-    if(!$fleet_row)
-    {
+    if(!$fleet_row) {
       // Fleet was destroyed in course of previous actions
       continue;
     }
@@ -326,6 +261,7 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 //log_file('Миссия');
     // TODO Обернуть всё в транзакции. Начинать надо заранее, блокируя все таблицы внутренним локом SELECT 1 FROM {{users}}
     sn_db_transaction_start();
+    $config->db_saveItem('fleet_update_last', SN_TIME_SQL);
 
     $mission_data = $sn_groups_mission[$fleet_row['fleet_mission']];
     // Формируем запрос, блокирующий сразу все нужные записи
@@ -333,23 +269,20 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
     db_flying_fleet_lock($mission_data, $fleet_row);
 
     $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = {$fleet_row['fleet_id']} FOR UPDATE", true);
-    if(!$fleet_row || empty($fleet_row))
-    {
+    if(!$fleet_row || empty($fleet_row)) {
       // Fleet was destroyed in course of previous actions
       sn_db_transaction_commit();
       continue;
     }
 
-    if($fleet_event['fleet_event'] == EVENT_FLT_RETURN)
-    {
+    if($fleet_event['fleet_event'] == EVENT_FLT_RETURN) {
       // Fleet returns to planet
       RestoreFleetToPlanet($fleet_row, true, false, true);
       sn_db_transaction_commit();
       continue;
     }
 
-    if($fleet_event['fleet_event'] == EVENT_FLT_ARRIVE && $fleet_row['fleet_mess'] != 0)
-    {
+    if($fleet_event['fleet_event'] == EVENT_FLT_ARRIVE && $fleet_row['fleet_mess'] != 0) {
       // При событии EVENT_FLT_ARRIVE флот всегда должен иметь fleet_mess == 0
       // В противном случае это означает, что флот уже был обработан ранее - например, при САБе
       sn_db_transaction_commit();
@@ -372,19 +305,16 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
       'fleet_event' => $fleet_event['fleet_event'],
     );
 
-    if($mission_data['dst_planet'])
-    {
+    if($mission_data['dst_planet']) {
       // $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_user'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
-      if($mission_data['dst_planet']['id_owner'])
-      {
+      if($mission_data['dst_planet']['id_owner']) {
         $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_planet']['id_owner'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
       }
       $mission_data['dst_user'] = $mission_data['dst_user'] ? $mission_data['dst_planet']['user'] : null;
       $mission_data['dst_planet'] = $mission_data['dst_planet']['planet'];
     }
 
-    switch($fleet_row['fleet_mission'])
-    {
+    switch($fleet_row['fleet_mission']) {
       // Для боевых атак нужно обновлять по САБу и по холду - таки надо возвращать данные из обработчика миссий!
       case MT_AKS:
       case MT_ATTACK:
@@ -435,19 +365,10 @@ function flt_flying_fleet_handler(&$config, $skip_fleet_update)
 //        doquery("DELETE FROM `{{fleets}}` WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
 //      break;
     }
-
-
     sn_db_transaction_commit();
-
   }
+  $config->db_saveItem('fleet_update_last', SN_TIME_SQL);
+  $config->db_saveItem('fleet_update_lock', '');
 
 //  log_file('Закончили обсчёт флотов');
-  xcache_set('flt_handler_lock', 0);
-//  $config->db_saveItem('flt_handler_lock', '');
-
-//  if($flt_update_mode == 1)
-//  {
-//    $config->db_saveItem('flt_lastUpdate', 0);
-//  }
-
 }

@@ -1,19 +1,21 @@
 <?php
 
 // Защита от двойного инита
-if(defined('INIT'))
-{
+if(defined('INIT')) {
   return;
 }
 define('INIT', true);
 
 // Замеряем начальные параметры
+global $microtime, $time_now;
 define('SN_TIME_MICRO', $microtime = microtime(true));
-define('SN_TIME_NOW', $time_now = intval($microtime));
+define('SN_TIME_NOW', $time_now = intval(SN_TIME_MICRO));
 define('SN_MEM_START', memory_get_usage());
 
 define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
 define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
+
+version_compare(PHP_VERSION, '5.3.1', '==') ? die('FATAL ERROR: you using PHP 5.3.1. Due to bug in PHP 5.3.1 SuperNova is incompatible with this version. Please upgrade or downgrade your PHP. Read more <a href="https://bugs.php.net/bug.php?id=50394">here</a>.') : false;
 
 // Бенчмарк
 register_shutdown_function(function() {
@@ -22,82 +24,40 @@ register_shutdown_function(function() {
   }
 });
 
-
 // Отладка
 // define('BE_DEBUG', true); // Отладка боевого движка
-if($_SERVER['SERVER_NAME'] == 'localhost' && !defined('BE_DEBUG'))
-{
+if($_SERVER['SERVER_NAME'] == 'localhost' && !defined('BE_DEBUG')) {
   define('BE_DEBUG', true);
 }
-
 // define('DEBUG_SQL_ONLINE', true); // Полный дамп запросов в рил-тайме. Подойдет любое значение
 define('DEBUG_SQL_ERROR', true); // Выводить в сообщении об ошибке так же полный дамп запросов за сессию. Подойдет любое значение
 define('DEBUG_SQL_COMMENT_LONG', true); // Добавлять SQL запрос длинные комментарии. Не зависим от всех остальных параметров. Подойдет любое значение
 define('DEBUG_SQL_COMMENT', true); // Добавлять комментарии прямо в SQL запрос. Подойдет любое значение
-
 // Включаем нужные настройки
-if(defined('DEBUG_SQL_ONLINE') && !defined('DEBUG_SQL_ERROR'))
-{
-  define('DEBUG_SQL_ERROR', true);
-}
-if(defined('DEBUG_SQL_ERROR') && !defined('DEBUG_SQL_COMMENT'))
-{
-  define('DEBUG_SQL_COMMENT', true);
-}
-if(defined('DEBUG_SQL_COMMENT_LONG') && !defined('DEBUG_SQL_COMMENT'))
-{
-  define('DEBUG_SQL_COMMENT', true);
-}
+defined('DEBUG_SQL_ONLINE') && !defined('DEBUG_SQL_ERROR') ? define('DEBUG_SQL_ERROR', true) : false;
+defined('DEBUG_SQL_ERROR') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
+defined('DEBUG_SQL_COMMENT_LONG') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
+
+//if($_SERVER['REMOTE_ADDR'] == "109.86.195.192") {
+//} else {
+//  // print('Производится обновление сервера. Ждите...');die();
+//}
+strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false ? define('SN_GOOGLE', true) : false;
 
 
-
-if($_SERVER['REMOTE_ADDR'] == "109.86.195.192")
-{
-
-}
-else
-{
-  // print('Производится обновление сервера. Ждите...');die();
-}
-
-if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false) {
-  define('SN_GOOGLE', true);
-}
-
-if(version_compare(PHP_VERSION, '5.3.1', '=='))
-{
-  die('FATAL ERROR: you using PHP 5.3.1. Due to bug in PHP 5.3.1 SuperNova is incompatible with this version. Please upgrade or downgrade your PHP. Read more <a href="https://bugs.php.net/bug.php?id=50394">here</a>.');
-}
-
-if(!defined('INSIDE'))
-{
-  define('INSIDE', true);
-}
-if(!defined('INSTALL'))
-{
-  define('INSTALL', false);
-}
-if(!defined('IN_PHPBB'))
-{
-  define('IN_PHPBB', true);
-}
+!defined('INSIDE') ? define('INSIDE', true) : false;
+!defined('INSTALL') ? define('INSTALL', false) : false;
+!defined('IN_PHPBB') ? define('IN_PHPBB', true) : false;
 
 // Отключаем magic_quotes
-if(ini_get('magic_quotes_sybase'))
-{
-  die('SN is incompatible with \'magic_quotes_sybase\' turned on. Disable it in php.ini or .htaccess...');
-}
-if(@get_magic_quotes_gpc())
-{
-  function sn_sys_unmagic_quotes(&$value, $key)
-  {
-    $value = stripslashes($value);
-  }
+ini_get('magic_quotes_sybase') ? die('SN is incompatible with \'magic_quotes_sybase\' turned on. Disable it in php.ini or .htaccess...') : false;
+if(@get_magic_quotes_gpc()) {
   $gpcr = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-  array_walk_recursive($gpcr, 'sn_sys_unmagic_quotes');
+  array_walk_recursive($gpcr, function (&$value, $key) {
+    $value = stripslashes($value);
+  });
 }
-if(function_exists('set_magic_quotes_runtime'))
-{
+if(function_exists('set_magic_quotes_runtime')) {
   @set_magic_quotes_runtime(0);
   @ini_set('magic_quotes_runtime', 0);
   @ini_set('magic_quotes_sybase', 0);
@@ -107,10 +67,6 @@ if(function_exists('set_magic_quotes_runtime'))
 header('Content-type: text/html; charset=utf-8');
 ob_start();
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
-
-
-
-
 
 $phpEx = strpos($phpEx = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $phpEx : '';
 define('PHP_EX', $phpEx); // PHP extension on this server
@@ -128,9 +84,7 @@ $sn_root_relative = str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']);
 define('SN_ROOT_RELATIVE', $sn_root_relative);
 
 define('SN_ROOT_VIRTUAL' , 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . SN_ROOT_RELATIVE);
-// define('SN_ROOT_VIRTUAL_PARENT' , 'http' . ($_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . str_replace('//google.', '//', $_SERVER['HTTP_HOST']) . SN_ROOT_RELATIVE);
 define('SN_ROOT_VIRTUAL_PARENT' , str_replace('//google.', '//', SN_ROOT_VIRTUAL));
-
 
 
 // Это нужно для работы PTL
@@ -162,33 +116,26 @@ require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 global $supernova;
 $supernova = new classSupernova();
 
+doquery("SET NAMES 'utf8';");
+
 // Initializing global 'cacher' object
 global $sn_cache;
 $sn_cache = new classCache($db_prefix);
-if(!$sn_cache->tables || empty($sn_cache->tables))
-{
-  sys_refresh_tablelist($db_prefix);
-}
-
-if(empty($sn_cache->tables))
-{
-  print('DB error - cannot find any table. Halting...');
-  die();
-}
+empty($sn_cache->tables) && sys_refresh_tablelist($db_prefix);
+empty($sn_cache->tables) && die('DB error - cannot find any table. Halting...');
 
 // Initializing global "config" object
 $config = new classConfig($db_prefix);
-$config->db_saveItem('db_prefix', $db_prefix);
-$config->db_saveItem('secret_word', $sn_secret_word);
+//$config->db_saveItem('db_prefix', $db_prefix);
+//$config->db_saveItem('secret_word', $sn_secret_word);
+$config->db_prefix = $db_prefix;
+$config->secret_word = $sn_secret_word;
 
-if(defined('BE_DEBUG') || $config->debug)
-{
+if(defined('BE_DEBUG') || $config->debug) {
   @define('BE_DEBUG', true);
   @ini_set('display_errors', 1);
   @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
-}
-else
-{
+} else {
   @define('BE_DEBUG', false);
   @ini_set('display_errors', 0);
 }
@@ -237,11 +184,9 @@ sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
 // Но нужно, пока у нас есть не MVC-страницы
 $sn_page_data = $sn_data['pages'][$sn_page_name];
 $sn_page_name_file = 'includes/pages/' . $sn_page_data['filename'] . DOT_PHP_EX;
-if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file))
-{
+if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file)) {
   require_once($sn_page_name_file);
-  if(is_array($sn_page_data['options']))
-  {
+  if(is_array($sn_page_data['options'])) {
     $supernova->options = array_merge($supernova->options, $sn_page_data['options']);
   }
 //  $sn_page_data
@@ -260,13 +205,10 @@ if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file))
 // Генерируем список требуемых модулей
 $load_order = array();
 $sn_req = array();
-foreach($sn_module as $loaded_module_name => $module_data)
-{
+foreach($sn_module as $loaded_module_name => $module_data) {
   $load_order[$loaded_module_name] = isset($module_data->manifest['load_order']) && !empty($module_data->manifest['load_order']) ? $module_data->manifest['load_order'] : 1;
-  if(isset($module_data->manifest['require']) && !empty($module_data->manifest['require']))
-  {
-    foreach($module_data->manifest['require'] as $require_name)
-    {
+  if(isset($module_data->manifest['require']) && !empty($module_data->manifest['require'])) {
+    foreach($module_data->manifest['require'] as $require_name) {
       $sn_req[$loaded_module_name][$require_name] = 0;
     }
   }
@@ -299,10 +241,8 @@ asort($load_order);
 
 // Инициализируем модули
 // По нормальным делам это должна быть загрузка модулей и лишь затем инициализация - что бы минимизировать размер процесса в памяти
-foreach($load_order as $loaded_module_name => $load_order)
-{
-  if($load_order < 0)
-  {
+foreach($load_order as $loaded_module_name => $load_order) {
+  if($load_order < 0) {
     continue;
   }
   $sn_module[$loaded_module_name]->initialize();
@@ -314,8 +254,7 @@ unset($load_order);
 unset($sn_req);
 
 // А теперь проверяем - поддерживают ли у нас загруженный код такую страницу
-if(!isset($sn_data['pages'][$sn_page_name]))
-{
+if(!isset($sn_data['pages'][$sn_page_name])) {
   $sn_page_name = '';
 }
 
@@ -326,34 +265,30 @@ $lang = new classLocale(DEFAULT_LANG, $config->server_locale_log_usage);
 $lang->lng_switch(sys_get_param_str('lang'));
 
 
-if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= $time_now)
-{
+if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= $time_now) {
   include(SN_ROOT_PHYSICAL . 'ajax_version_check' . DOT_PHP_EX);
 }
 
-if($config->user_birthday_gift && $time_now > $config->user_birthday_celebrate + PERIOD_DAY)
-{
+if($config->user_birthday_gift && $time_now > $config->user_birthday_celebrate + PERIOD_DAY) {
   require_once(SN_ROOT_PHYSICAL . "includes/includes/user_birthday_celebrate" . DOT_PHP_EX);
   sn_user_birthday_celebrate();
 }
 
-if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TIME_NOW)
-{
+if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TIME_NOW) {
   $config->db_saveItem('var_online_user_count', db_user_count(true));
   $config->db_saveItem('var_online_user_time', $time_now);
-  if($config->server_log_online)
-  {
+  if($config->server_log_online) {
     doquery("INSERT IGNORE INTO {{log_users_online}} SET online_count = {$config->var_online_user_count};");
   }
 }
 
 // pdump($skip_fleet_update, '$skip_fleet_update');
 // pdump($supernova->options['fleet_update_skip'], '$supernova->options[fleet_update_skip]');
-
-if(!($skip_fleet_update || $supernova->options['fleet_update_skip']) && SN_TIME_NOW - $config->flt_lastUpdate >= 4 && !defined('IN_ADMIN'))
-{
+global $skip_fleet_update;
+$skip_fleet_update = $skip_fleet_update || $supernova->options['fleet_update_skip'] || defined('IN_ADMIN');
+if(!$skip_fleet_update && SN_TIME_NOW - strtotime($config->fleet_update_last) > $config->fleet_update_interval) {
   require_once(SN_ROOT_PHYSICAL . "includes/includes/flt_flying_fleet_handler2" . DOT_PHP_EX);
-  flt_flying_fleet_handler($config, $skip_fleet_update);
+  flt_flying_fleet_handler($skip_fleet_update);
 }
 
 $result = sec_login();
@@ -373,11 +308,7 @@ $lang->lng_switch(sys_get_param_str('lang'));
 global $dpath;
 $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
-
-if($config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL) {
-  define('INSTALL_MODE', GAME_DISABLE_INSTALL);
-}
-
+$config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL ? define('INSTALL_MODE', GAME_DISABLE_INSTALL) : false;
 
 if($template_result[F_GAME_DISABLE] = $config->game_disable) {
   $template_result[F_GAME_DISABLE_REASON] = sys_bbcodeParse($config->game_disable == GAME_DISABLE_REASON ? $config->game_disable_reason : $lang['sys_game_disable_reason'][$config->game_disable]);
@@ -394,10 +325,8 @@ if($template_result[F_GAME_DISABLE] = $config->game_disable) {
 
 
 // TODO ban
-if($template_result[F_BANNED_STATUS] && !$skip_ban_check)
-{
-  if(defined('IN_API'))
-  {
+if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
+  if(defined('IN_API')) {
     return;
   }
 
@@ -413,8 +342,7 @@ $template_result[F_USER_AUTHORIZED] = $sys_user_logged_in = !empty($user) && iss
 // !!! Просто $allow_anonymous используется в платежных модулях !!!
 $allow_anonymous = $allow_anonymous || (isset($sn_page_data['allow_anonymous']) && $sn_page_data['allow_anonymous']);
 
-if(!$allow_anonymous && !$sys_user_logged_in)
-{
+if(!$allow_anonymous && !$sys_user_logged_in) {
   sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
   sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }
@@ -442,13 +370,7 @@ $time_diff = SN_CLIENT_TIME_DIFF_SECONDS + SN_CLIENT_TIME_UTC_OFFSET;
 defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
 defined('SN_CLIENT_TIME_LOCAL') or define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
 
-
-if(!empty($user) && sys_get_param_id('only_hide_news'))
-{
-  nws_mark_read($user);
-  die();
-}
-
+!empty($user) && sys_get_param_id('only_hide_news') ? die(nws_mark_read($user)) : false;
 
 lng_load_i18n($sn_mvc['i18n'][$sn_page_name]);
 execute_hooks($sn_mvc['model'][''], $template);

@@ -38,4 +38,5 @@ function nws_mark_read(&$user) {
     db_user_set_by_id($user['id'], '`news_lastread` = ' . SN_TIME_NOW);
     $user['news_lastread'] = SN_TIME_NOW;
   }
+  return true;
 }

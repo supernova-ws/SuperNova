@@ -298,10 +298,8 @@ class classCache
     return true;
   }
 
-  public function dumpData()
-  {
-    switch (self::$mode)
-    {
+  public function dumpData() {
+    switch (self::$mode) {
       case CACHER_NO_CACHE:
         return dump(self::$data, $this->prefix);
       break;
@@ -309,24 +307,20 @@ class classCache
       default:
         return false;
       break;
-
     }
   }
 
-  public function reset()
-  {
+  public function reset() {
     $this->unset_by_prefix();
 
     $this->_INITIALIZED = false;
   }
 
-  public function init($reInit = false)
-  {
+  public function init($reInit = false) {
     $this->_INITIALIZED = true;
   }
 
-  public function isInitialized()
-  {
+  public function isInitialized() {
     return $this->_INITIALIZED;
   }
 }
@@ -350,105 +344,88 @@ class classPersistent extends classCache
 
   protected $defaults = array();
 
-  public function __construct($gamePrefix = 'sn_', $table_name = 'table')
-  {
+  public function __construct($gamePrefix = 'sn_', $table_name = 'table') {
     parent::__construct("{$gamePrefix}{$table_name}_");
     $this->table_name = $table_name;
 
     $this->sql_index_field = "{$table_name}_name";
     $this->sql_value_field = "{$table_name}_value";
 
-    if(!$this->_DB_LOADED)
-    {
+    if(!$this->_DB_LOADED) {
       $this->db_loadAll();
     }
   }
 
-  public static function getInstance($gamePrefix = 'sn_', $table_name = '')
-  {
-    if (!isset(self::$cacheObject))
-    {
+  public static function getInstance($gamePrefix = 'sn_', $table_name = '') {
+    if (!isset(self::$cacheObject)) {
       $className = get_class();
       self::$cacheObject = new $className($gamePrefix, $table_name);
     }
     return self::$cacheObject;
   }
 
-  public function db_loadItem($index)
-  {
-    if($index)
-    {
-      $qry = doquery("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index}' FOR UPDATE", true);
-      $this->$index = $qry[$this->sql_value_field];
-
-      return $qry[$this->sql_value_field];
+  public function db_loadItem($index) {
+    $result = null;
+    if($index) {
+      $index_safe = mysql_real_escape_string($index);
+      $result = doquery("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index_safe}' FOR UPDATE", true);
+      // В две строки - что бы быть уверенным в порядке выполнения
+      $result = $result[$this->sql_value_field];
+      $this->$index = $result;
     }
-
-    return null;
+    return $result;
   }
 
-  public function db_loadAll()
-  {
+  public function db_loadAll() {
     $this->loadDefaults();
 
-    $query = doquery("SELECT * FROM {{{$this->table_name}}};");
-    while ( $row = mysql_fetch_assoc($query) )
-    {
+    $query = doquery("SELECT * FROM {{{$this->table_name}}} FOR UPDATE;");
+    while($row = mysql_fetch_assoc($query)) {
       $this->$row[$this->sql_index_field] = $row[$this->sql_value_field];
     }
 
     $this->_DB_LOADED = true;
   }
 
-  public function loadDefaults()
-  {
-    foreach($this->defaults as $defName => $defValue)
-    {
+  public function loadDefaults() {
+    foreach($this->defaults as $defName => $defValue) {
       $this->$defName = $defValue;
     }
   }
 
-  public function db_saveAll()
-  {
+  public function db_saveAll() {
     $toSave = array();
-    foreach($this->defaults as $field => $value)
-    {
+    foreach($this->defaults as $field => $value) {
       $toSave[$field] = NULL;
     }
-
     $this->db_saveItem($toSave);
   }
 
-  public function db_saveItem($item_list, $value = NULL)
-  {
-    if($item_list)
-    {
-      if(!is_array($item_list))
-      {
-        $item_list = array($item_list => $value);
+  public function db_saveItem($item_list, $value = NULL) {
+    if(empty($item_list)) {
+      return;
+    }
+
+    !is_array($item_list) ? $item_list = array($item_list => $value) : false;
+
+    // Сначала записываем данные в базу - что бы поймать все блокировки
+    $qry = array();
+    foreach($item_list as $item_name => $item_value) {
+      if($item_name) {
+//        $item_value === NULL ? $item_value = $this->$item_name : false;
+        $item_value = mysql_real_escape_string($item_value === NULL ? $this->$item_name : $item_value);
+        $item_name = mysql_real_escape_string($item_name);
+        $qry[] = "('{$item_name}', '{$item_value}')";
       }
+    }
+    doquery("REPLACE INTO `{{" . $this->table_name . "}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES " . implode(',', $qry) . ";");
 
-      foreach($item_list as $item_name => $item_value)
-      {
-        if($item_name)
-        {
-          if($item_value !== NULL)
-          {
-            $this->$item_name = $item_value;
-          }
-          else
-          {
-            $item_value = $this->$item_name;
-          }
-
-          $qry .= " ('{$item_name}', '{$item_value}'),";
-        }
+    // И только после взятия блокировок - меняем значения в кэше
+    foreach($item_list as $item_name => $item_value) {
+      if($item_name && $item_value !== NULL) {
+        $this->$item_name = $item_value;
       }
-
-      $qry = substr($qry, 0, -1);
-      $qry = "REPLACE INTO `{{{$this->table_name}}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES {$qry};";
-      doquery($qry);
-    };
+    }
   }
 }
 
@@ -520,6 +497,8 @@ class classConfig extends classPersistent
 
     'Fleet_Cdr'                    => 30,
     'fleet_speed'                  => 1,
+
+    'fleet_update_interval'        => 4,
 
     'game_adminEmail'              => 'root@localhost',    // Admin's email to show to users
     'game_counter'                 => 0,  // Does built-in page hit counter is on?

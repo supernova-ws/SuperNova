@@ -938,35 +938,15 @@ switch($new_version) {
   case 38:
     upd_log_version_update();
 
-    upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
 
-    if($config->payment_currency_default == 'UAH')
-    {
-      upd_check_key('payment_currency_default',      'USD', true);
-      upd_check_key('payment_currency_exchange_dm_', 20000, true);
-      upd_check_key('payment_currency_exchange_mm_', 20000, true);
-      upd_check_key('payment_currency_exchange_eur', 0.80, true);
-      upd_check_key('payment_currency_exchange_rub', 32, true);
-      upd_check_key('payment_currency_exchange_uah', 13.333333333333, true);
-      upd_check_key('payment_currency_exchange_usd', 1, true);
-      upd_check_key('payment_currency_exchange_wmb', 11764.70588235, true);
-      upd_check_key('payment_currency_exchange_wme', 0.7692307692308, true);
-      upd_check_key('payment_currency_exchange_wmr', 33.333333333333, true);
-      upd_check_key('payment_currency_exchange_wmu', 14.28571428571, true);
-      upd_check_key('payment_currency_exchange_wmz', 1.052631578947, true);
-    }
-    upd_check_key('payment_currency_exchange_wmb', 11764.70588235, !$config->payment_currency_exchange_wmb);
-
-    if(!isset($update_tables['planets']['que_processed']))
-    {
+    if(!isset($update_tables['planets']['que_processed'])) {
       upd_alter_table('planets', array(
         "ADD COLUMN `que_processed` INT(11) UNSIGNED NOT NULL DEFAULT 0 AFTER `last_update`",
       ), true);
       upd_do_query("UPDATE {{planets}} SET que_processed = last_update;");
     }
 
-    if(!isset($update_tables['users']['que_processed']))
-    {
+    if(!isset($update_tables['users']['que_processed'])) {
       upd_alter_table('users', array(
         "ADD COLUMN `que_processed` INT(11) UNSIGNED NOT NULL DEFAULT 0 AFTER `onlinetime`",
       ), true);
@@ -977,8 +957,7 @@ switch($new_version) {
 
 
 
-    if(isset($update_tables['planets']['que']))
-    {
+    if(isset($update_tables['planets']['que'])) {
       $sn_data_aux = array(
         SHIP_SMALL_FIGHTER_WRATH => array(
           'name' => 'ship_fighter_wrath',
@@ -1063,28 +1042,20 @@ switch($new_version) {
       $unit_data = array();
       $planets = array();
 
-      foreach($planet_unit_list as $unit_id)
-      {
-        if(!($unit_name = get_unit_param($unit_id, P_NAME)))
-        {
+      foreach($planet_unit_list as $unit_id) {
+        if(!($unit_name = get_unit_param($unit_id, P_NAME))) {
           $unit_name = $sn_data_aux[$unit_id][P_NAME];
         }
-        if(isset($update_tables['planets'][$unit_name]))
-        {
+        if(isset($update_tables['planets'][$unit_name])) {
           $drop[] = "DROP COLUMN `{$unit_name}`";
 
-          if(isset($aux_group[$unit_id]))
-          {
+          if(isset($aux_group[$unit_id])) {
             $units_info[$unit_id] = $sn_data_aux[$unit_id];
             $units_info[$unit_id]['que'] = QUE_HANGAR;
-          }
-          else
-          {
+          } else {
             $units_info[$unit_id] = get_unit_param($unit_id);
-            foreach($ques_info as $que_id => $que_data1)
-            {
-              if(in_array($unit_id, $que_data1['unit_list']))
-              {
+            foreach($ques_info as $que_id => $que_data1) {
+              if(in_array($unit_id, $que_data1['unit_list'])) {
                 $units_info[$unit_id]['que'] = $que_id;
                 break;
               }
@@ -1094,8 +1065,7 @@ switch($new_version) {
       }
 
       $query = upd_do_query("SELECT * FROM {{planets}} FOR UPDATE");
-      while($row = mysql_fetch_assoc($query))
-      {
+      while($row = mysql_fetch_assoc($query)) {
         $user_id = $row['id_owner'];
         $planet_id = $row['id'];
 
@@ -1103,14 +1073,12 @@ switch($new_version) {
 
         // Конвертируем юниты
         $units_levels = array();
-        foreach($planet_unit_list as $unit_id)
-        {
+        foreach($planet_unit_list as $unit_id) {
           $unit_name = &$units_info[$unit_id][P_NAME];
           if(!isset($row[$unit_name]) || !$row[$unit_name]) continue;
           $units_levels[$unit_id] = $row[$unit_name];
           $unit_data[] = "({$user_id}," . LOC_PLANET . ",{$planet_id},{$units_info[$unit_id][P_UNIT_TYPE]},{$unit_id},{$units_levels[$unit_id]})";
-          if(count($unit_data) > 30)
-          {
+          if(count($unit_data) > 30) {
             $unit_data_max = strlen(implode(',', $unit_data)) > $unit_data_max ? strlen(implode(',', $unit_data)) : $unit_data_max;
             upd_do_query('REPLACE INTO {{unit}} (`unit_player_id`, `unit_location_type`, `unit_location_id`, `unit_type`, `unit_snid`, `unit_level`) VALUES ' . implode(',', $unit_data) . ';');
             $unit_data = array();
@@ -1118,11 +1086,9 @@ switch($new_version) {
         }
 
         // Конвертируем очередь построек
-        if($row['que'])
-        {
+        if($row['que']) {
           $que = explode(';', $row['que']);
-          foreach($que as $que_item)
-          {
+          foreach($que as $que_item) {
             if(!$que_item) continue;
 
             $que_item = explode(',', $que_item);
@@ -1136,10 +1102,8 @@ switch($new_version) {
             $unit_factor = $unit_cost[P_FACTOR] ? $unit_cost[P_FACTOR] : 1;
             $price_increase = pow($unit_factor, $unit_level);
             // $unit_time = 0;
-            foreach($unit_cost as $resource_id => &$resource_amount)
-            {
-              if(!in_array($resource_id, $group_resource_loot))
-              {
+            foreach($unit_cost as $resource_id => &$resource_amount) {
+              if(!in_array($resource_id, $group_resource_loot)) {
                 unset($unit_cost[$resource_id]);
                 continue;
               }
@@ -1153,28 +1117,23 @@ switch($new_version) {
         }
 
         // Конвертируем очередь верфи
-        if($row['b_hangar_id'])
-        {
+        if($row['b_hangar_id']) {
           $return_resources = array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0, );
           $hangar_units = sys_unit_str2arr($row['b_hangar_id']);
-          foreach($hangar_units as $unit_id => $unit_count)
-          {
+          foreach($hangar_units as $unit_id => $unit_count) {
             if($unit_count <= 0) continue;
-            foreach($units_info[$unit_id][P_COST] as $resource_id => $resource_amount)
-            {
+            foreach($units_info[$unit_id][P_COST] as $resource_id => $resource_amount) {
               if(!in_array($resource_id, $group_resource_loot)) continue;
               $return_resources[$resource_id] += $unit_count * $resource_amount;
             }
           }
-          if(array_sum($return_resources) > 0)
-          {
+          if(array_sum($return_resources) > 0) {
             upd_do_query("UPDATE {{planets}} SET `metal` = `metal` + {$return_resources[RES_METAL]}, `crystal` = `crystal` + {$return_resources[RES_CRYSTAL]}, `deuterium` = `deuterium` + {$return_resources[RES_DEUTERIUM]} WHERE `id` = {$planet_id} LIMIT 1");
           }
         }
 
 
-        if(count($que_data) > 10)
-        {
+        if(count($que_data) > 10) {
           $que_data_max = strlen(implode(',', $que_data)) > $que_data_max ? strlen(implode(',', $que_data)) : $que_data_max;
           upd_do_query('INSERT INTO {{que}} (`que_player_id`, `que_planet_id`, `que_planet_id_origin`, `que_type`, `que_time_left`, `que_unit_id`, `que_unit_amount`, `que_unit_mode`, `que_unit_level`, `que_unit_time`, `que_unit_price`) VALUES ' . implode(',', $que_data) . ';');
           $que_data = array();
@@ -1194,8 +1153,7 @@ switch($new_version) {
       JOIN `{{users}}` AS u ON a.`id` = u.`user_as_ally` AND `user_as_ally` IS NOT NULL AND `username` = ''
       SET u.`username` = CONCAT('[', a.`ally_tag`, ']');");
 
-    if($update_indexes['statpoints']['I_stats_id_ally'] != 'id_ally,stat_type,stat_code,')
-    {
+    if($update_indexes['statpoints']['I_stats_id_ally'] != 'id_ally,stat_type,stat_code,') {
       upd_do_query("SET FOREIGN_KEY_CHECKS=0;");
       upd_alter_table('statpoints', "DROP FOREIGN KEY `FK_stats_id_ally`", $update_foreigns['statpoints']['FK_stats_id_ally']);
       upd_alter_table('statpoints', "DROP KEY `I_stats_id_ally`", $update_indexes['statpoints']['I_stats_id_ally']);
@@ -1219,24 +1177,17 @@ switch($new_version) {
       "ADD COLUMN `settings_statistics` TINYINT(1) UNSIGNED NOT NULL DEFAULT 1 AFTER `settings_rep`",
     ), !isset($update_tables['users']['settings_statistics']));
 
-    if(!$update_tables['lng_usage_stat'])
-    {
-      upd_create_table('lng_usage_stat',
-        "(
-          `lang_code` char(2) COLLATE utf8_unicode_ci NOT NULL,
-          `string_id` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
-          `file` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
-          `line` smallint(6) NOT NULL,
-          `is_empty` tinyint(1) NOT NULL,
-          `locale` mediumtext COLLATE utf8_unicode_ci,
-          PRIMARY KEY (`lang_code`,`string_id`,`file`,`line`,`is_empty`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
-      );
-    }
-
-    upd_check_key('stats_php_memory', '1024M', !isset($config->stats_php_memory));
-    upd_check_key('stats_minimal_interval', '600', !isset($config->stats_minimal_interval));
-
+    upd_create_table('lng_usage_stat',
+      "(
+        `lang_code` char(2) COLLATE utf8_unicode_ci NOT NULL,
+        `string_id` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+        `file` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+        `line` smallint(6) NOT NULL,
+        `is_empty` tinyint(1) NOT NULL,
+        `locale` mediumtext COLLATE utf8_unicode_ci,
+        PRIMARY KEY (`lang_code`,`string_id`,`file`,`line`,`is_empty`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+    );
 
     upd_do_query(
       "DELETE {{unit}}
@@ -1248,10 +1199,7 @@ switch($new_version) {
         (planet_type = 3 AND unit_snid NOT IN (14, 15, 21, 34, 41, 42, 43))
       );");
 
-
-
-    if(!$update_tables['player_options']) {
-      upd_create_table('player_options', "(
+    upd_create_table('player_options', "(
         `player_id` bigint(20) UNSIGNED DEFAULT NULL,
         `option_id` smallint UNSIGNED NOT NULL DEFAULT 0,
         `value` VARCHAR(1900) NOT NULL DEFAULT '',
@@ -1260,13 +1208,6 @@ switch($new_version) {
 
         CONSTRAINT `FK_player_options_user_id` FOREIGN KEY (`player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-    }
-
-    upd_check_key('payment_currency_exchange_uah', 18, true);
-    upd_check_key('payment_currency_exchange_wmu', 20, true);
-    upd_check_key('payment_currency_exchange_rub', 48, true);
-    upd_check_key('payment_currency_exchange_wmr', 50, true);
-
 
     upd_do_query(
       "UPDATE `{{users}}` AS u
@@ -1277,13 +1218,33 @@ switch($new_version) {
             (SELECT sum(amount) FROM {{log_metamatter}} AS mm WHERE mm.user_id = u.id AND mm.amount > 0)
           );");
 
-    upd_check_key('stats_schedule', '04:00:00', $config->stats_schedule !== '04:00:00');
-
-    upd_alter_table('users', array(
-      "ADD COLUMN `user_bot` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0",
-    ), !isset($update_tables['users']['user_bot']));
-
+    upd_alter_table('users', "ADD COLUMN `user_bot` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0", !isset($update_tables['users']['user_bot']));
     upd_alter_table('unit', "ADD KEY `I_unit_type_snid` (unit_type, unit_snid) USING BTREE", !$update_indexes['unit']['I_unit_type_snid']);
+
+
+    upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
+    upd_check_key('stats_schedule', '04:00:00', $config->stats_schedule !== '04:00:00');
+    upd_check_key('stats_php_memory', '1024M', !isset($config->stats_php_memory));
+    upd_check_key('stats_minimal_interval', '600', !isset($config->stats_minimal_interval));
+
+    upd_check_key('fleet_update_interval', 4, !intval($config->fleet_update_interval));
+    upd_check_key('fleet_update_last', SN_TIME_SQL, true);
+    upd_check_key('fleet_update_lock', '', empty($config->fleet_update_interval));
+
+    if($config->payment_currency_default == 'UAH') {
+      upd_check_key('payment_currency_default',      'USD', true);
+      upd_check_key('payment_currency_exchange_dm_', 20000, true);
+      upd_check_key('payment_currency_exchange_mm_', 20000, true);
+      upd_check_key('payment_currency_exchange_eur', 0.80, true);
+      upd_check_key('payment_currency_exchange_usd', 1, true);
+      upd_check_key('payment_currency_exchange_wme', 0.7692307692308, true);
+      upd_check_key('payment_currency_exchange_wmz', 1.052631578947, true);
+    }
+    upd_check_key('payment_currency_exchange_wmb', 11764.70588235, !$config->payment_currency_exchange_wmb);
+    upd_check_key('payment_currency_exchange_uah', 18, true);
+    upd_check_key('payment_currency_exchange_wmu', 20, true);
+    upd_check_key('payment_currency_exchange_rub', 48, true);
+    upd_check_key('payment_currency_exchange_wmr', 50, true);
 
     upd_do_query('COMMIT;', true);
     // $new_version = 39;

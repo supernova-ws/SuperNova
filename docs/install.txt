@@ -306,22 +306,6 @@ Quotes. Для  нормальной  работы  движка  необход
 Если хостер не поддерживает ни один  из  вышеуказанных  методов,  то  движок  с
 версии 34a0 по мере сил  постарается  скомпенсировать  "работу"  Magic  Quotes.
 Однако  корректность работы движка НЕ ГАРАНТИРУЕТСЯ!
-Пользователи  более  ранних  версий  могут  самостоятельно  добавить   механизм
-компенсации. Для этого в файл  /includes/init.php  необходимо  в  самом  начале
-вставить такой код:
-if(ini_get('magic_quotes_sybase'))
-{
-  die('SN is incompatible with \'magic_quotes_sybase\' turned on. Disable it in php.ini or .htaccess...');
-}
-if(@get_magic_quotes_gpc())
-{
-  function sn_sys_unmagic_quotes(&$value, $key)
-  {
-    $value = stripslashes($value);
-  }
-  $gpcr = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-  array_walk_recursive($gpcr, 'sn_sys_unmagic_quotes');
-}
 
 "Белый экран"
 -------------
