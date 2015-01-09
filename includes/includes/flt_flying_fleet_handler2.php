@@ -142,11 +142,11 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   [*] Но не раньше, чем переписать все миссии
 
   */
-  if($skip_fleet_update) {
+  global $config, $debug;
+
+  if($config->game_disable != GAME_DISABLE_NONE || $skip_fleet_update) {
     return;
   }
-
-  global $config, $debug;
 
   sn_db_transaction_start();
   if(SN_TIME_NOW - strtotime($config->db_loadItem('fleet_update_last')) <= $config->fleet_update_interval) {
@@ -155,11 +155,13 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   }
 
   // Watchdog timer
-  if($config->game_disable != GAME_DISABLE_NONE || SN_TIME_NOW - strtotime($config->db_loadItem('fleet_update_lock')) <= mt_rand(90, 120)) {
-    sn_db_transaction_rollback();
-    return;
-  } else {
-    $debug->warning('Flying fleet handler was locked too long - watchdog unlocked', 'FFH Error', 504);
+  if($config->db_loadItem('fleet_update_lock')) {
+    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(90, 120)) {
+      sn_db_transaction_rollback();
+      return;
+    } else {
+      $debug->warning('Flying fleet handler was locked too long - watchdog unlocked', 'FFH Error', 504);
+    }
   }
 
   $config->db_saveItem('fleet_update_lock', SN_TIME_SQL);
