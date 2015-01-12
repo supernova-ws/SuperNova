@@ -1221,17 +1221,15 @@ switch($new_version) {
     upd_alter_table('users', "ADD COLUMN `user_bot` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0", !isset($update_tables['users']['user_bot']));
     upd_alter_table('unit', "ADD KEY `I_unit_type_snid` (unit_type, unit_snid) USING BTREE", !$update_indexes['unit']['I_unit_type_snid']);
 
-    if(!$update_tables['users']['dark_matter_total']) {
-      upd_alter_table('users', "ADD `dark_matter_total` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Total Dark Matter amount ever gained' AFTER `dark_matter`", !$update_tables['users']['dark_matter_total']);
-      upd_do_query(
-        "UPDATE `{{users}}` AS u
+    upd_alter_table('users', "ADD `dark_matter_total` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Total Dark Matter amount ever gained' AFTER `dark_matter`", !$update_tables['users']['dark_matter_total']);
+    upd_do_query(
+      "UPDATE `{{users}}` AS u
         SET dark_matter_total =
           IF(
-            dark_matter >= (SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
+            dark_matter > 0 AND dark_matter IS NOT NULL AND dark_matter > (SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
             dark_matter,
             (SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0)
           );");
-    }
 
     upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
     upd_check_key('stats_schedule', '04:00:00', $config->stats_schedule !== '04:00:00');
