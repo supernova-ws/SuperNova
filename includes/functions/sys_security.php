@@ -288,8 +288,6 @@ function sec_login_cookie(&$result) {
 // once OK
 function sec_login_process(&$result)
 {
-  global $user_impersonator;
-
   $user = &$result[F_LOGIN_USER];
   sys_user_options_unpack($user);
 
@@ -306,8 +304,12 @@ function sec_login_process(&$result)
   $user['user_agent'] = mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']);
   $result[F_BANNED_STATUS] = $user['banaday'];
   $result[F_VACATION_STATUS] = $user['vacation'];
+}
 
-  if(!$user_impersonator) {
+function sec_login_change_state() {
+  global $user, $user_impersonator;
+
+  if(isset($user['id']) && $user['id'] && !$user_impersonator) {
     db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW . ", `banaday` = {$user['banaday']}, `vacation` = {$user['vacation']},
       `user_lastip` = '{$user['user_lastip']}', `user_proxy`  = '{$user['user_proxy']}', `user_agent`  = '{$user['user_agent']}'"
     );

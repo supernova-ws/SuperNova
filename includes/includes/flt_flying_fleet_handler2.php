@@ -149,7 +149,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   }
 
   sn_db_transaction_start();
-  if(SN_TIME_NOW - strtotime($config->db_loadItem('fleet_update_last')) <= $config->fleet_update_interval) {
+  if($config->db_loadItem('game_disable') != GAME_DISABLE_NONE || SN_TIME_NOW - strtotime($config->db_loadItem('fleet_update_last')) <= $config->fleet_update_interval) {
     sn_db_transaction_rollback();
     return;
   }

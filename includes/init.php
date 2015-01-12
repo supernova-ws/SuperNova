@@ -323,6 +323,7 @@ if($template_result[F_GAME_DISABLE] = $config->game_disable) {
   }
 }
 
+sec_login_change_state();
 
 // TODO ban
 if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
