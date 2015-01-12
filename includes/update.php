@@ -1227,7 +1227,7 @@ switch($new_version) {
         SET dark_matter_total =
           IF(
             dark_matter < (SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
-            SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0,
+            (SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
             dark_matter
           );");
 
