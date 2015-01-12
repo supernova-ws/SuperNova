@@ -89,7 +89,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
   if($already_changed) {
     $rows_affected = 1;
   } else {
-    db_user_set_by_id($user_id, "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'");
+    db_user_set_by_id($user_id, "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}', `dark_matter_total` = `dark_matter_total` + '{$dark_matter}'");
     $rows_affected = mysql_affected_rows();
   }
 
