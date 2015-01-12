@@ -1226,9 +1226,9 @@ switch($new_version) {
       "UPDATE `{{users}}` AS u
         SET dark_matter_total =
           IF(
-            dark_matter > 0 AND dark_matter IS NOT NULL AND dark_matter > (SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
-            dark_matter,
-            (SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0)
+            dark_matter < (SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
+            SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0,
+            dark_matter
           );");
 
     upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
