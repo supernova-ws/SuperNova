@@ -1211,7 +1211,7 @@ switch($new_version) {
 
     upd_create_table('security_browser', " (
       `browser_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-      `browser_user_agent` TEXT NOT NULL DEFAULT '',
+      `browser_user_agent` VARCHAR(250) NOT NULL DEFAULT '',
       PRIMARY KEY (`browser_id`),
       KEY `I_browser_user_agent` (`browser_user_agent`)
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
@@ -1242,7 +1242,7 @@ switch($new_version) {
     ), isset($update_tables['users']['user_agent']));
 
     upd_alter_table('users', array(
-      "ADD COLUMN `user_last_proxy` TEXT DEFAULT NULL AFTER `user_lastip`",
+      "ADD COLUMN `user_last_proxy` VARCHAR(250) NOT NULL DEFAULT '' AFTER `user_lastip`",
       "ADD COLUMN `user_last_browser_id` BIGINT(20) UNSIGNED DEFAULT NULL AFTER `user_last_proxy`",
       "ADD KEY `I_users_last_browser_id` (`user_last_browser_id`)",
       "ADD CONSTRAINT `FK_users_browser_id` FOREIGN KEY (`user_last_browser_id`) REFERENCES `{$config->db_prefix}security_browser` (`browser_id`) ON DELETE SET NULL ON UPDATE CASCADE",
