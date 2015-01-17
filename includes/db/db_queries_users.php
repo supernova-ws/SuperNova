@@ -70,7 +70,7 @@ function db_user_list_to_celebrate($config_user_birthday_range) {
 
 function db_user_list_online_sorted($TypeSort) {
   return doquery(
-    "SELECT `id` AS `ID`, `username` AS `NAME`, `user_agent` AS `BROWSER`, `ally_name` AS `ALLY`, `total_points` AS `STAT_POINTS`,
+    "SELECT `id` AS `ID`, `username` AS `NAME`, `ally_name` AS `ALLY`, `total_points` AS `STAT_POINTS`,
       `onlinetime` AS `ACTIVITY`
     FROM {{users}}
     WHERE `onlinetime` >= '". (SN_TIME_NOW - 15 * PERIOD_MINUTE) ."' ORDER BY user_as_ally, `". $TypeSort ."` ASC;");

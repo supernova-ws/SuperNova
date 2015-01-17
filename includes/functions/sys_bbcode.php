@@ -7,8 +7,8 @@ $supernova->design['bbcodes'] = array(
   AUTH_LEVEL_ADMINISTRATOR => array(
     "#\[url=(ft|https?://)(.+)\](.+)\[/url\]#isU" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$3</a>",
 //    "#(?:^(?:href=\\\"))((?:ftp|https?)://.+)#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
-    "#^((?:ftp|https?)://\S+)#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
-    "#([\s\)\]\}])((?:ftp|https?)://\S+)#i" => "$1<a href=\"$2$3\" target=\"_blank\" class=\"link\">$2$3</a>",
+    "#^((?:ftp|https?)://[^\s\[]+)#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
+    "#([\s\)\]\}])((?:ftp|https?)://[^\s\[]+)#i" => "$1<a href=\"$2$3\" target=\"_blank\" class=\"link\">$2$3</a>",
 //    "#^((?:ftp|https?)://.+?)$#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
 //    "#\s((?:ftp|https?)://.+)$#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
 //    "#^((?:ftp|https?)://.+)\s#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
@@ -20,8 +20,8 @@ $supernova->design['bbcodes'] = array(
     "#\[c=(white|cyan|yellow|green|pink|red|lime|maroon|orange)\](.+)\[/c\]#isU" => "<span style=\"color: $1\">$2</span>",
     "#\[b\](.+)\[/b\]#isU" => "<b>$1</b>",
     "#\[i\](.+)\[/i\]#isU" => "<i>$1</i>",
-    "#\[u\](.+)\[/u\]#isU" => "<u>$1</u>",
-    "#\[s\](.+)\[/s\]#isU" => "<strike>$1</strike>",
+    "#\[u\](.+)\[/u\]#isU" => '<span style="text-decoration: underline;">$1</u>',
+    "#\[s\](.+)\[/s\]#isU" => '<span style="text-decoration: line-through;">$1</u>',
     "#\[ube\=([0-9a-zA-Z]{32})\]#isU" => "<a href=\"index.php?page=battle_report&cypher=$1\" target=_new><span class=\"battle_report_link\">($1)</span></a>",
   ),
 );

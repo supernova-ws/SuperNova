@@ -29,7 +29,7 @@ $Count      = 0;
 while($TheUser = mysql_fetch_assoc($Last15Mins))
 {
   $TheUser['NAME'] = htmlentities($TheUser['NAME'], ENT_COMPAT, 'UTF-8');
-  $TheUser['BROWSER'] = htmlentities($TheUser['BROWSER'], ENT_COMPAT, 'UTF-8');
+//  $TheUser['BROWSER'] = htmlentities($TheUser['BROWSER'], ENT_COMPAT, 'UTF-8');
   $TheUser['ALLY'] = htmlentities($TheUser['ALLY'], ENT_COMPAT, 'UTF-8');
   $TheUser['STAT_POINTS'] = pretty_number($TheUser['STAT_POINTS']);
   $TheUser['ACTIVITY'] = pretty_time(SN_TIME_NOW - $TheUser['ACTIVITY']);

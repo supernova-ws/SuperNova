@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b1.6');
+define('SN_VERSION', '39b2.0');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -64,6 +64,7 @@ define('PERIOD_DAY', PERIOD_HOUR * 24);
 define('PERIOD_WEEK', PERIOD_DAY * 7);
 define('PERIOD_MONTH', PERIOD_DAY * 30);
 define('PERIOD_YEAR', PERIOD_DAY * 365);
+define('PERIOD_FOREVER', PERIOD_YEAR * 100);
 
 define('PERIOD_MINUTE_3' , PERIOD_MINUTE * 3);
 define('PERIOD_MINUTE_5' , PERIOD_MINUTE * 5);
@@ -398,10 +399,16 @@ define('AUTH_LEVEL_DEVELOPER', 4);
 // Global template_result fields
 define('AUTH_LEVEL', 'AUTH_LEVEL');
 
+define('F_DEVICE_ID', 'F_DEVICE_ID');
+define('F_DEVICE_CYPHER', 'F_DEVICE_CYPHER');
+
 define('F_LOGIN_STATUS', 'F_LOGIN_STATUS');
 define('F_LOGIN_MESSAGE', 'F_LOGIN_MESSAGE');
 define('F_LOGIN_USER', 'F_LOGIN_USER');
 define('F_PASSWORD_NEW', 'F_PASSWORD_NEW');
+
+define('F_BROWSER', 'F_BROWSER');
+define('F_BROWSER_ID', 'F_BROWSER_ID');
 
 define('F_BANNED_STATUS', 'F_BANNED_STATUS');
 define('F_BANNED_MESSAGE', 'F_BANNED_MESSAGE');

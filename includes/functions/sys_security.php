@@ -1,7 +1,6 @@
 <?php
 
-function sn_setcookie($name, $value = null, $expire = null, $path = null, $domain = null, $secure = null, $httponly = null)
-{
+function sn_setcookie($name, $value = null, $expire = null, $path = SN_ROOT_RELATIVE, $domain = null, $secure = null, $httponly = null) {
   $_COOKIE[$name] = $value;
   return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
 }
@@ -40,17 +39,13 @@ function sec_player_ip() {
 // TheCookie[2] = md5(Password . '--' . SecretWord)
 // TheCookie[3] = rememberme
 
-function sn_set_cookie($user, $rememberme)
-{
+function sn_set_cookie($user, $rememberme) {
   global $config, $time_now;
 
-  if($rememberme)
-  {
+  if($rememberme) {
     $expiretime = $time_now + 31536000;
     $rememberme = 1;
-  }
-  else
-  {
+  } else {
     $expiretime = 0;
     $rememberme = 0;
   }
@@ -60,33 +55,23 @@ function sn_set_cookie($user, $rememberme)
   return sn_setcookie(SN_COOKIE, $cookie, $expiretime, SN_ROOT_RELATIVE);
 }
 
-function sec_login_username($username_unsafe, $password_raw, $remember_me = 1)
-{
+function sec_login_username($username_unsafe, $password_raw, $remember_me = 1) {
   // TODO - Логин по старым именам
   // $status = LOGIN_UNDEFINED;
   $username_safe = mysql_real_escape_string($username_unsafe);
   if(!$username_safe)
   {
     $status = LOGIN_ERROR_USERNAME;
-  }
-  elseif(!$password_raw)
-  {
+  } elseif(!$password_raw) {
     $status = LOGIN_ERROR_PASSWORD;
-  }
-  else
-  {
+  } else {
     $user = db_user_by_username($username_unsafe);
     // TODO: try..catch
-    if(empty($user) || (isset($user['user_as_ally']) && $user['user_as_ally']))
-    {
+    if(empty($user) || (isset($user['user_as_ally']) && $user['user_as_ally'])) {
       $status = LOGIN_ERROR_USERNAME;
-    }
-    elseif(!$user['password'] || $user['password'] != md5($password_raw))
-    {
+    } elseif(!$user['password'] || $user['password'] != md5($password_raw)) {
       $status = LOGIN_ERROR_PASSWORD;
-    }
-    else
-    {
+    } else {
       sec_set_cookie_by_fields($user['id'], $user['username'], $user['password'], $remember_me);
       $status = LOGIN_SUCCESS;
     }
@@ -202,9 +187,10 @@ function sec_restore_password_confirm($confirm_safe, &$result) {
 
 
 // once OK
-function sec_login()
-{
+function sec_login() {
   $result = array(
+    F_DEVICE_ID => -1,
+    F_DEVICE_CYPHER => $_COOKIE[SN_COOKIE_D],
     F_LOGIN_STATUS => LOGIN_UNDEFINED,
     F_LOGIN_MESSAGE => '',
     F_LOGIN_USER => array(),
@@ -213,6 +199,31 @@ function sec_login()
     F_VACATION_STATUS => 0,
     F_PASSWORD_NEW => '',
   );
+
+  sn_db_transaction_start();
+  if($result[F_DEVICE_CYPHER]) {
+    $cypher_safe = mysql_real_escape_string($result[F_DEVICE_CYPHER]);
+    $device_id = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
+    if(isset($device_id['device_id']) && $device_id['device_id']) {
+      $result[F_DEVICE_ID] = $device_id['device_id'];
+    }
+  }
+
+  if($result[F_DEVICE_ID] <= 0) {
+    do {
+      $cypher_safe = mysql_real_escape_string($result[F_DEVICE_CYPHER] = sys_random_string());
+      $row = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
+    } while (!empty($row));
+    doquery("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
+    $result[F_DEVICE_ID] = mysql_insert_id();
+    sn_setcookie(SN_COOKIE_D, $result[F_DEVICE_CYPHER], PERIOD_FOREVER, SN_ROOT_RELATIVE);
+  }
+  sn_db_transaction_commit();
+
+//  $cypher_safe = mysql_real_escape_string($_COOKIE[SN_COOKIE_D]);
+//  $device_id = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1;", true);
+//  $result[F_DEVICE_CYPHER] = $_COOKIE[SN_COOKIE_D];
+//  $result[F_DEVICE_ID] = $device_id['device_id'];
 
   $username_unsafe = sys_get_param_str_unsafe('username');
   $password_raw = sys_get_param('password');
@@ -273,12 +284,9 @@ function sec_login_cookie(&$result) {
     }
   } else {
     $result[F_LOGIN_USER] = sec_user_by_cookie($_COOKIE[SN_COOKIE]);
-    if(empty($result[F_LOGIN_USER]))
-    {
+    if(empty($result[F_LOGIN_USER])) {
       $result[F_LOGIN_STATUS] = LOGIN_UNDEFINED;
-    }
-    else
-    {
+    } else {
       $result[AUTH_LEVEL] = $result[F_LOGIN_USER]['authlevel'];
       sec_login_process($result);
     }
@@ -286,13 +294,11 @@ function sec_login_cookie(&$result) {
 }
 
 // once OK
-function sec_login_process(&$result)
-{
+function sec_login_process(&$result) {
   $user = &$result[F_LOGIN_USER];
   sys_user_options_unpack($user);
 
-  if($user['banaday'] && $user['banaday'] <= SN_TIME_NOW)
-  {
+  if($user['banaday'] && $user['banaday'] <= SN_TIME_NOW) {
     $user['banaday'] = 0;
     $user['vacation'] = SN_TIME_NOW;
   }
@@ -301,18 +307,35 @@ function sec_login_process(&$result)
   $user['user_lastip'] = $ip['ip'];
   $user['user_proxy'] = $ip['proxy_chain'];
 
-  $user['user_agent'] = mysql_real_escape_string($_SERVER['HTTP_USER_AGENT']);
   $result[F_BANNED_STATUS] = $user['banaday'];
   $result[F_VACATION_STATUS] = $user['vacation'];
 }
 
 function sec_login_change_state() {
-  global $user, $user_impersonator;
+  global $user, $user_impersonator, $template_result;
 
-  if(isset($user['id']) && $user['id'] && !$user_impersonator) {
-    db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW . ", `banaday` = {$user['banaday']}, `vacation` = {$user['vacation']},
-      `user_lastip` = '{$user['user_lastip']}', `user_proxy`  = '{$user['user_proxy']}', `user_agent`  = '{$user['user_agent']}'"
+  if(isset($user['id']) && intval($user['id']) && !$user_impersonator) {
+    sn_db_transaction_start();
+    $browser_safe = mysql_real_escape_string($template_result[F_BROWSER] = $_SERVER['HTTP_USER_AGENT']);
+    $browser_id = doquery("SELECT `browser_id` FROM {{security_browser}} WHERE `browser_user_agent` = '{$browser_safe}' LIMIT 1 FOR UPDATE", true);
+    if(!isset($browser_id['browser_id']) || !$browser_id['browser_id']) {
+      doquery("INSERT INTO {{security_browser}} (`browser_user_agent`) VALUES ('{$browser_safe}');");
+      $template_result[F_BROWSER_ID] = mysql_insert_id();
+    } else {
+      $template_result[F_BROWSER_ID] = $browser_id['browser_id'];
+    }
+    $proxy_safe = mysql_real_escape_string($user['user_proxy']);
+    doquery(
+      "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
+        VALUES ({$user['id']},{$template_result[F_DEVICE_ID]},{$template_result[F_BROWSER_ID]},INET_ATON('{$user['user_lastip']}'), '{$proxy_safe}');"
     );
+
+    db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW . ", `banaday` = {$user['banaday']}, `vacation` = {$user['vacation']},
+      `user_lastip` = '{$user['user_lastip']}', `user_last_proxy` = '{$proxy_safe}', `user_last_browser_id` = {$template_result[F_BROWSER_ID]}"
+    );
+//pdump($template_result);
+//die();
+    sn_db_transaction_commit();
   }
 }
 
@@ -421,8 +444,7 @@ function sec_login_register($username_unsafe, $password_raw, $remember_me = 1) {
 }
 
 // twice OK
-function sec_set_cookie_by_fields($user_id, $username_unsafe, $password_hash, $remember_me)
-{
+function sec_set_cookie_by_fields($user_id, $username_unsafe, $password_hash, $remember_me) {
   global $config;
 
   $expire_time = ($remember_me = intval($remember_me)) ? SN_TIME_NOW + PERIOD_YEAR : 0;
@@ -463,27 +485,21 @@ function sec_user_by_cookie($cookie) {
 
 
 
-function sys_is_multiaccount($user1, $user2)
-{
+function sys_is_multiaccount($user1, $user2) {
   global $config;
 
- return $user1['user_lastip'] == $user2['user_lastip'] && !$config->game_multiaccount_enabled;
+  return $user1['user_lastip'] == $user2['user_lastip'] && !$config->game_multiaccount_enabled;
 }
 
-function sn_sys_impersonate($user_selected)
-{
+function sn_sys_impersonate($user_selected) {
   global $user;
 
-  if($_COOKIE[SN_COOKIE_I])
-  {
-    // TODO: Log here
-    die('You already impersonating someone. Go back to living other\'s life! Or clear your cookies and try again');
+  if($_COOKIE[SN_COOKIE_I]) {
+    die('You already impersonating someone. Go back to living other\'s life! Or clear your cookies and try again'); // TODO: Log it
   }
 
-  if($user['authlevel'] < 3)
-  {
-    // TODO: Log here
-    die('You can\'t impersonate - too low level');
+  if($user['authlevel'] < 3) {
+    die('You can\'t impersonate - too low level'); // TODO: Log it
   }
 
   sn_setcookie(SN_COOKIE_I, $_COOKIE[SN_COOKIE], 0, SN_ROOT_RELATIVE);
@@ -522,8 +538,7 @@ function sn_sys_logout($redirect = true, $only_impersonator = false) {
   }
 }
 
-function DeleteSelectedUser ( $UserID )
-{
+function DeleteSelectedUser ($UserID) {
   // TODO: Full rewrite
   sn_db_transaction_start();
   $TheUser = db_user_by_id($UserID);
@@ -590,8 +605,7 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
   );
 }
 
-function sys_admin_player_ban_unset($banner, $banned, $reason = '')
-{
+function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
   global $time_now;
 
   db_user_set_by_id($banned['id'], "`banaday` = 0, `vacation` = {$time_now}");

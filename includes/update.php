@@ -1209,6 +1209,45 @@ switch($new_version) {
         CONSTRAINT `FK_player_options_user_id` FOREIGN KEY (`player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
+    upd_create_table('security_browser', " (
+      `browser_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+      `browser_user_agent` TEXT NOT NULL DEFAULT '',
+      PRIMARY KEY (`browser_id`),
+      KEY `I_browser_user_agent` (`browser_user_agent`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
+    upd_create_table('security_device', " (
+      `device_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+      `device_cypher` char(16) NOT NULL DEFAULT '',
+      PRIMARY KEY (`device_id`),
+      KEY `I_device_cypher` (`device_cypher`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
+    upd_create_table('security_player_entry', " (
+      `player_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+      `device_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+      `browser_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+      `user_ip` int(10) unsigned NOT NULL DEFAULT '0',
+      `user_proxy` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
+      `first_visit` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (`player_id`,`device_id`,`browser_id`,`user_ip`,`user_proxy`),
+      KEY `I_player_entry_device_id` (`device_id`) USING BTREE,
+      KEY `I_player_entry_browser_id` (`browser_id`),
+      CONSTRAINT `FK_security_player_entry_device_id` FOREIGN KEY (`device_id`) REFERENCES `{{security_device}}` (`device_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+      CONSTRAINT `FK_security_player_entry_browser_id` FOREIGN KEY (`browser_id`) REFERENCES `{{security_browser}}` (`browser_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+      CONSTRAINT `FK_security_player_entry_player_id` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
+
+    upd_alter_table('users', array(
+      "DROP COLUMN `user_agent`",
+      "DROP COLUMN `user_proxy`",
+    ), isset($update_tables['users']['user_agent']));
+
+    upd_alter_table('users', array(
+      "ADD COLUMN `user_last_proxy` TEXT DEFAULT NULL AFTER `user_lastip`",
+      "ADD COLUMN `user_last_browser_id` BIGINT(20) UNSIGNED DEFAULT NULL AFTER `user_last_proxy`",
+      "ADD KEY `I_users_last_browser_id` (`user_last_browser_id`)",
+      "ADD CONSTRAINT `FK_users_browser_id` FOREIGN KEY (`user_last_browser_id`) REFERENCES `{$config->db_prefix}security_browser` (`browser_id`) ON DELETE SET NULL ON UPDATE CASCADE",
+    ), !isset($update_tables['users']['user_last_proxy']));
+
     upd_do_query(
       "UPDATE `{{users}}` AS u
         SET metamatter_total =

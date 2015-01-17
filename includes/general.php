@@ -585,13 +585,11 @@ function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $b
 
 // Generates random string of $length symbols from $allowed_chars charset
 // Usefull for password and confirmation code generation
-function sys_random_string($length = 16, $allowed_chars = SN_SYS_SEC_CHARS_ALLOWED)
-{
+function sys_random_string($length = 16, $allowed_chars = SN_SYS_SEC_CHARS_ALLOWED) {
   $allowed_length = strlen($allowed_chars);
 
   $random_string = '';
-  for($i = 0; $i < $length; $i++)
-  {
+  for($i = 0; $i < $length; $i++) {
     $random_string .= $allowed_chars[mt_rand(0, $allowed_length - 1)];
   }
 
@@ -754,7 +752,11 @@ function sys_time_human($time, $full = false)
     ($full || $time    ? "{$time} {$lang['sys_day']}&nbsp;" : '') .
     ($full || $hours   ? "{$hours} {$lang['sys_hrs']}&nbsp;" : '') .
     ($full || $minutes ? "{$minutes} {$lang['sys_min']}&nbsp;" : '') .
-    ($full || $seconds ? "{$seconds} {$lang['sys_sec']}" : '');
+    ($full || !$time || $seconds ? "{$seconds} {$lang['sys_sec']}" : '');
+}
+
+function sys_time_human_system($time) {
+  return $time ? date(FMT_DATE_TIME_SQL, $time) . " ({$time}), " . sys_time_human(SN_TIME_NOW - $time) : '{NEVER}';
 }
 
 function sys_redirect($url)

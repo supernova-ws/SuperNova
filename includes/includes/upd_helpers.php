@@ -1,56 +1,43 @@
 <?php
 
-if(!defined('IN_UPDATE'))
-{
+if(!defined('IN_UPDATE')) {
   die('Trying to call update helpers externally!');
 }
 
-function upd_do_query($query, $no_log = false)
-{
+function upd_do_query($query, $no_log = false) {
   global $update_tables, $db_prefix;
 
   upd_add_more_time();
-  if(!$no_log)
-  {
+  if(!$no_log) {
     upd_log_message("Performing query '{$query}'");
   }
 
   sn_db_connect();
-  if(!(strpos($query, '{{') === false))
-  {
-    foreach($update_tables as $tableName => $cork)
-    {
+  if(!(strpos($query, '{{') === false)) {
+    foreach($update_tables as $tableName => $cork) {
       $query = str_replace("{{{$tableName}}}", $db_prefix . $tableName, $query);
     }
   }
-
   $result = mysql_query($query) or die('Query error for ' . $query . ': ' . mysql_error());
-
   return $result;
 }
 
-function upd_check_key($key, $default_value, $condition = false)
-{
+function upd_check_key($key, $default_value, $condition = false) {
   global $config, $sys_log_disabled;
 
   $config->db_loadItem($key);
-  if($condition || !isset($config->$key))
-  {
+  if($condition || !isset($config->$key)) {
     upd_add_more_time();
-    if(!$sys_log_disabled)
-    {
+    if(!$sys_log_disabled) {
       upd_log_message("Updating config key '{$key}' with value '{$default_value}'");
     }
     $config->db_saveItem($key, $default_value);
-  }
-  else
-  {
+  } else {
     $config->db_saveItem($key);
   }
 }
 
-function upd_log_version_update()
-{
+function upd_log_version_update() {
   global $new_version;
 
   doquery('START TRANSACTION;');
@@ -187,7 +174,7 @@ function upd_create_table($table_name, $declaration)
 
   if(!$update_tables[$table_name]) {
     doquery('set foreign_key_checks = 0;');
-    $result = mysql_query("CREATE TABLE IF NOT EXISTS `{$config->db_prefix}{$table_name}` {$declaration}");
+    $result = upd_do_query("CREATE TABLE IF NOT EXISTS `{$config->db_prefix}{$table_name}` {$declaration}");
     $error = mysql_error();
     if($error)
     {
