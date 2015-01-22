@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b0.11
+* @version 39b3.0
 *
 */
 
@@ -80,7 +80,7 @@ $a_lang_array = (array(
   'fl_time_back' => 'Возвращение в точку старта',
   'fl_deute_need' => 'Потребление топлива',
   'fl_speed_max' => 'Максимальная скорость',
-  'fl_shortcut' => 'Закладки',
+  'fl_shortcut' => 'Заметки с координатами',
   'fl_shortlnk' => 'Редактировать закладки',
   'fl_shrtcup1' => '(П)',
   'fl_shrtcup2' => '(О)',

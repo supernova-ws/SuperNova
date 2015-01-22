@@ -1,0 +1,79 @@
+<!-- BEGIN note -->
+<tr>
+  <!-- IF note.ID != NOTE_ID_EDIT -->
+    <!-- IF NOTE_FULL_RENDER -->
+    <td class="c_c">
+      <a name="a{note.ID}"></a>
+      <input type="checkbox" name="note[{note.ID}]">
+    </td>
+    <!-- ENDIF -->
+
+    <td class="c_l">
+      <div class="subheader">
+        <!-- IF note.GALAXY || note.SYSTEM || note.PLANET -->
+        <a class="link subheader note_coordinates" href="galaxy.php?mode=2&galaxy={note.GALAXY}&system={note.SYSTEM}">
+          [{note.GALAXY}:{note.SYSTEM}:{note.PLANET}] <!-- IF NOTE_FULL_RENDER -->{note.PLANET_TYPE_TEXT}<!-- ELSE -->{note.PLANET_TYPE_TEXT_SHORT}<!-- ENDIF -->
+        </a>
+        <!-- ENDIF -->
+        <span<!-- IF ! NOTE_FULL_RENDER --> class="{note.PRIORITY_CLASS}"<!-- ENDIF -->>{note.TITLE}</span>
+      </div>
+      <div style="font-weight: normal; text-align: justify;"<!-- IF ! NOTE_FULL_RENDER --> class="{note.PRIORITY_CLASS}"<!-- ENDIF -->>{note.TEXT}</div>
+      <!-- IF NOTE_FULL_RENDER -->
+      <div class="subheader" style="text-align: center;">
+        <span class="fl">{L_note_priority}: <span class="{note.PRIORITY_CLASS}">{note.PRIORITY_TEXT}</span></span>
+        &nbsp;<!-- IF note.STICKY -->{L_note_sticky}<!-- ENDIF -->&nbsp;
+        <span class="fr">{note.TIME_TEXT}</span>
+      </div>
+      <!-- ENDIF -->
+    </td>
+    <!-- IF NOTE_FULL_RENDER -->
+    <td class="c_c">
+      <!-- IF NOTE_ID_EDIT -->
+        &nbsp;
+      <!-- ELSE -->
+        <img src="design/images/icon_edit.png" data-note_id="{note.ID}" />
+      <!-- ENDIF -->
+    </td>
+    <!-- ENDIF -->
+  <!-- ELSE -->
+  <td class="c_l" colspan="2">
+    <!-- IF NOTE_ID_EDIT --><a name="a{note.ID}"></a><!-- ENDIF -->
+    <span class="fl">
+      {L_note_priority}
+      <select name="note_priority">
+        <!-- BEGIN !note_priority -->
+        <option value="{note_priority.ID}" class="{note_priority.CLASS}"<!-- IF note_priority.ID == note.PRIORITY --> selected<!-- ENDIF -->>{note_priority.TEXT}</option>
+        <!-- END !note_priority -->
+      </select>
+    </span>
+
+    <span class="fr {note.PRIORITY_CLASS}">{L_note_date} {note.TIME_TEXT}</span>
+    <br />
+
+    <input type="text" id="note_title" name="note_title" size="61" maxlength="128" value="{note.TITLE}">
+    <br />
+
+    <div class="c_l">
+      {L_sys_coordinates}
+      <input type="text" id="note_galaxy" name="note_galaxy" size="4" maxlength="4" value="{note.GALAXY}">
+      <input type="text" id="note_system" name="note_system" size="4" maxlength="4" value="{note.SYSTEM}">
+      <input type="text" id="note_planet" name="note_planet" size="4" maxlength="4" value="{note.PLANET}" />
+      <select name="note_planet_type">
+        <!-- BEGIN !planet_type -->
+        <option value="{planet_type.ID}"<!-- IF planet_type.ID == planet_type.PLANET_TYPE --> selected<!-- ENDIF -->>{planet_type.TEXT}</option>
+        <!-- END !planet_type -->
+      </select>
+    </div>
+    <textarea id="note_text" name="note_text" cols="40" rows="5">{note.TEXT_EDIT}</textarea>
+    <br />
+
+    <input type="checkbox" id="note_sticky" name="note_sticky" value="1"<!-- IF note.STICKY --> checked<!-- ENDIF -->/>
+    <label for="note_sticky">{L_note_stick_it}</label>
+  </td>
+  <td class="c_c"><img src="design/images/icon_accept.png" onclick="note_validate({note.ID});">
+    <!-- IF NOTE_ID_EDIT -->
+    <img src="design/images/icon_deny.png" data-note_id="0">
+    <!-- ENDIF --></td>
+  <!-- ENDIF -->
+</tr>
+<!-- END note -->

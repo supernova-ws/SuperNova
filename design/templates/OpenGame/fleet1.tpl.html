@@ -95,10 +95,11 @@
         <tr><td colspan=2 class=c>{L_fl_myplanets}</td></tr>
           <!-- BEGIN colonies -->
             <tr>
-              <th>
-                <a href="javascript:setTarget({colonies.GALAXY}, {colonies.SYSTEM}, {colonies.PLANET}, {colonies.TYPE}); shortInfo();">
-                 {colonies.NAME} [{colonies.GALAXY}:{colonies.SYSTEM}:{colonies.PLANET}] {colonies.TYPE_PRINT}</a>
-              </th>
+              <td class="c_l">
+                <button onclick="javascript:setTarget({colonies.GALAXY}, {colonies.SYSTEM}, {colonies.PLANET}, {colonies.TYPE}); shortInfo();">
+                  [{colonies.GALAXY}:{colonies.SYSTEM}:{colonies.PLANET}] {colonies.TYPE_PRINT} {colonies.NAME}
+                </button>
+              </td>
             </tr>
           <!-- BEGINELSE colonies -->
             <tr>
@@ -110,13 +111,14 @@
 
       <td valign="top">
         <table>
-          <tr><td class=c>{L_fl_shortcut}</td></tr>
+          <tr><td class=c><a href="notes.php" class="link">{L_fl_shortcut}</a></td></tr>
           <!-- BEGIN shortcut -->
             <tr>
-              <th>
-                <a href="javascript:setTarget({shortcut.GALAXY}, {shortcut.SYSTEM}, {shortcut.PLANET}, {shortcut.TYPE}); shortInfo();">
-                 {shortcut.NAME} [{shortcut.GALAXY}:{shortcut.SYSTEM}:{shortcut.PLANET}] {shortcut.TYPE_PRINT}</a>
-              </th>
+              <td class="c_l {shortcut.PRIORITY_CLASS}">
+                <button onclick="javascript:setTarget({shortcut.GALAXY}, {shortcut.SYSTEM}, {shortcut.PLANET}, {shortcut.TYPE}); shortInfo();">
+                  [{shortcut.GALAXY}:{shortcut.SYSTEM}:{shortcut.PLANET}] {shortcut.TYPE_PRINT} {shortcut.NAME}
+                </button>
+              </td>
             </tr>
           <!-- BEGINELSE shortcut -->
             <tr>

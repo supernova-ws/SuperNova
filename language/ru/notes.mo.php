@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a8.0
+* @version 39b3.0
 *
 */
 
@@ -23,26 +23,21 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE')) die();
+!defined('INSIDE') && die();
 
 //$lang = array_merge($lang,
 //$lang->merge(
 $a_lang_array = (array(
   'note_page_header' => 'Заметки',
   'note_date' => 'Дата',
-  'note_priority' => 'Важность',
   'note_note' => 'Заметка',
+  'note_priority' => 'Важность',
+  'note_sticky' => 'Прилепленная',
 //  'note_title' => 'Заголовок',
 //  'note_text' => 'Текст',
-  'note_priorities' => array(
-    0 => 'Совсем не важная',
-    1 => 'Не важная',
-    2 => 'Обычная',
-    3 => 'Важная',
-    4 => 'Очень важная',
-  ),
   'note_new_title' => 'Заголовок новой заметки',
   'note_new_text' => 'Текст новой заметки',
+  'note_stick_it' => 'Прилепить заметку под навбар на каждой странице',
 
   'note_err_none_added' => 'Заметка успешно добавлена',
   'note_err_none_changed' => 'Заметка успешно изменена',

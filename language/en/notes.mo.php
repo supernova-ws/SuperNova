@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a8.0
+* @version 39b3.0
 *
 */
 
@@ -23,27 +23,21 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE')) die();
-
+!defined('INSIDE') && die();
 
 //$lang = array_merge($lang,
 //$lang->merge(
 $a_lang_array = (array(
   'note_page_header' => 'Notes',
   'note_date' => 'Date',
-  'note_priority' => 'Priority',
   'note_note' => 'Note',
+  'note_priority' => 'Priority',
+  'note_sticky' => 'Sticky',
 //  'note_title' => 'Title',
 //  'note_text' => 'Text',
-  'note_priorities' => array(
-    0 => 'Low priority',
-    1 => 'Below normal',
-    2 => 'Normal',
-    3 => 'Important',
-    4 => 'Very important',
-  ),
   'note_new_title' => 'New note title',
   'note_new_text' => 'New note text',
+  'note_stick_it' => 'Stick this note under navbar on each page',
 
   'note_err_none_added' => 'Note succesfully added',
   'note_err_none_changed' => 'Note succesfully changed',

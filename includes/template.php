@@ -256,8 +256,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     displayP(parsetemplate(tpl_render_menu($AdminPage)));
   }
 
-  if($topnav)
-  {
+  if($topnav) {
     displayP(parsetemplate(tpl_render_topnav($user, $planetrow)));
   }
 
@@ -389,10 +388,8 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
 }
 
 function tpl_render_topnav(&$user, $planetrow){return sn_function_call('tpl_render_topnav', array(&$user, $planetrow));}
-function sn_tpl_render_topnav(&$user, $planetrow)
-{
-  if (!is_array($user))
-  {
+function sn_tpl_render_topnav(&$user, $planetrow) {
+  if (!is_array($user)) {
     return '';
   }
 
@@ -440,10 +437,14 @@ function sn_tpl_render_topnav(&$user, $planetrow)
   $time_now_parsed = getdate($time_now);
   $time_local_parsed = getdate(defined('SN_CLIENT_TIME_LOCAL') ? SN_CLIENT_TIME_LOCAL : SN_TIME_NOW);
 
-  if($config->game_news_overview)
-  {
+  if($config->game_news_overview) {
     // nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now}", $config->game_news_overview);
     nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user['news_lastread']}", $config->game_news_overview);
+  }
+
+  $notes_query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `sticky` = 1 ORDER BY priority DESC, time DESC");
+  while($note_row = mysql_fetch_assoc($notes_query)) {
+    note_assign($template, $note_row);
   }
 
   $premium_lvl = mrc_get_level($user, false, UNIT_PREMIUM, true, true);

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39b0.14#
+* @version #39b3.0#
 *
 */
 
@@ -973,4 +973,14 @@ $a_lang_array = (array(
   ),
 
   'sys_sector_purchase_log' => 'Пользователь {%2$d} {%1$s} купил 1 сектор на планете {%5$d} {%3$s} тип "%4$s" за %6$d ТМ',
+
+  'sys_notes' => 'Заметки',
+  'sys_notes_priorities' => array(
+    0 => 'Совсем не важная',
+    1 => 'Не важная',
+    2 => 'Обычная',
+    3 => 'Важная',
+    4 => 'Очень важная',
+  ),
+
 ));

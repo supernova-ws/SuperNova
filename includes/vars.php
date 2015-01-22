@@ -35,7 +35,13 @@ $sn_mvc = array(
  ),
 );
 
-
+$note_priority_classes = array(
+  4 => 'error',
+  3 => 'warning',
+  2 => 'notice',
+  1 => 'ok',
+  0 => '',
+);
 
 $sn_ali_admin_internal = array(
   'rights' => array(

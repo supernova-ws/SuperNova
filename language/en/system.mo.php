@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b0.14
+* @version 39b3.0
 *
 */
 
@@ -967,4 +967,14 @@ $a_lang_array = (array(
   ),
 
   'sys_sector_purchase_log' => 'User {%2$d} {%1$s} purchased 1 sector on planet {%5$d} {%3$s} type "%4$s" for %6$d DM',
+
+  'sys_notes' => 'Notes',
+  'sys_notes_priorities' => array(
+    0 => 'Low priority',
+    1 => 'Below normal',
+    2 => 'Normal',
+    3 => 'Important',
+    4 => 'Very important',
+  ),
+
 ));

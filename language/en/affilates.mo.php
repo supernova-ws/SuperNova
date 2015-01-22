@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a8.0
+* @version 39b3.0
 *
 */
 
@@ -26,7 +26,7 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE')) die();
+!defined('INSIDE') && die();
 
 //$lang = array_merge($lang,
 //$lang->merge(
@@ -36,6 +36,7 @@ $a_lang_array = (array(
   'aff_text2' => 'DM earned by Invited.',
   'aff_text3' => 'Bonus starts when your Invited will gain',
   'aff_link' => 'Personal link partner program',
+  'aff_link_direct' => 'Direct link',
   'aff_link_bb' => 'BBCode for placing personal references to Forum',
   'aff_link_html' => 'HTML code to place personal links on a Web page',
   'aff_banner' => 'Banner 416x58',

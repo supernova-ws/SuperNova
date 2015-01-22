@@ -297,7 +297,7 @@ $sn_menu = array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'lm_shortcuts',
-    'LINK'  => 'fleet_shortcuts.php',
+    'LINK'  => 'notes.php',
     'ICON'  => true,
   ),
   'menu_utils_buddies' => array(
@@ -307,13 +307,13 @@ $sn_menu = array(
     'LINK'  => 'buddy.php',
     'ICON'  => true,
   ),
-  'menu_utils_notes' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'Notes',
-    'LINK'  => 'notes.php',
-    'ICON'  => true,
-  ),
+//  'menu_utils_notes' => array(
+//    'LEVEL' => 'submenu',
+//    'TYPE'  => 'lang',
+//    'ITEM'  => 'Notes',
+//    'LINK'  => 'notes.php',
+//    'ICON'  => true,
+//  ),
   'menu_utils_reports' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',

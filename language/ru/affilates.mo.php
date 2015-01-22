@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a8.0
+* @version 39b3.0
 *
 */
 
@@ -24,8 +24,7 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE')) die();
-
+!defined('INSIDE') && die();
 
 //$lang = array_merge($lang,
 //$lang->merge(
@@ -35,6 +34,7 @@ $a_lang_array = (array(
   'aff_text2' => 'ТМ, заработанных приглашенным.',
   'aff_text3' => 'Начисление бонусов начинается после того, как ваш Приглашенный заработает',
   'aff_link' => 'Личная ссылка в партнерской программе',
+  'aff_link_direct' => 'Прямая ссылка',
   'aff_link_bb' => 'BBCode для размещения личной ссылки на форуме',
   'aff_link_html' => 'HTML-код для размещения личной ссылки на веб-странице',
   'aff_banner' => 'Баннер 416x58',

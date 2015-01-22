@@ -4,30 +4,23 @@
 // @version 1.0
 // @copyright 2008 by Chlorel for XNova
 
-if(SN_IN_FLEET !== true)
-{
+if(SN_IN_FLEET !== true) {
   $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
 }
 
 $template = gettemplate('fleet1', true);
 
 $ships = sys_get_param('ships', array());
-if(!is_array($ships))
-{
+if(!is_array($ships)) {
   $ships = array();
 }
 
-foreach($ships as $ship_id => $ship_count)
-{
-  if(in_array($ship_id, sn_get_groups('fleet')) && $ship_count)
-  {
+foreach($ships as $ship_id => $ship_count) {
+  if(in_array($ship_id, sn_get_groups('fleet')) && $ship_count) {
     $ship_info = get_unit_param($ship_id);
-    if($ship_count > mrc_get_level($user, $planetrow, $ship_id, false, true))
-    {
+    if($ship_count > mrc_get_level($user, $planetrow, $ship_id, false, true)) {
       $page .= $lang['fl_noenought'];
-    }
-    else
-    {
+    } else {
       $fleet['fleetarray'][$ship_id]  = $ship_count;
       // $fleet['fleetlist']            .= "{$ship_id},{$ship_count};";
       $fleet['amount']               += $ship_count;
@@ -44,24 +37,35 @@ foreach($ships as $ship_id => $ship_count)
 }
 
 
-if(empty($fleet['fleetarray']))
-{
+if(empty($fleet['fleetarray'])) {
   message($lang['fl_err_no_ships'], $lang['fl_error'], 'fleet' . DOT_PHP_EX, 5);
 }
 
 // Building list of shortcuts
-$query = doquery("SELECT * FROM {{shortcut}} WHERE shortcut_user_id = {$user['id']};");
-while($shortcut = mysql_fetch_assoc($query))
-{
+$query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `galaxy` <> 0 AND `system` <> 0 AND `planet` <> 0 ORDER BY `priority` DESC, `galaxy`, `system`, `planet`, `planet_type`;");
+while($shortcut = mysql_fetch_assoc($query)) {
   $template->assign_block_vars('shortcut', array(
-    'NAME'       => $shortcut['shortcut_text'],
-    'GALAXY'     => $shortcut['shortcut_galaxy'],
-    'SYSTEM'     => $shortcut['shortcut_system'],
-    'PLANET'     => $shortcut['shortcut_planet'],
-    'TYPE'       => $shortcut['shortcut_planet_type'],
-    'TYPE_PRINT' => $lang['fl_shrtcup'][$shortcut['shortcut_planet_type']],
+    'NAME'       => $shortcut['title'],
+    'GALAXY'     => $shortcut['galaxy'],
+    'SYSTEM'     => $shortcut['system'],
+    'PLANET'     => $shortcut['planet'],
+    'PRIORITY'   => $shortcut['priority'],
+    'PRIORITY_CLASS' => $note_priority_classes[$shortcut['priority']],
+    'TYPE'       => $shortcut['planet_type'],
+    'TYPE_PRINT' => $lang['fl_shrtcup'][$shortcut['planet_type']],
   ));
 }
+//$query = doquery("SELECT * FROM {{shortcut}} WHERE shortcut_user_id = {$user['id']};");
+//while($shortcut = mysql_fetch_assoc($query)) {
+//  $template->assign_block_vars('shortcut', array(
+//    'NAME'       => $shortcut['shortcut_text'],
+//    'GALAXY'     => $shortcut['shortcut_galaxy'],
+//    'SYSTEM'     => $shortcut['shortcut_system'],
+//    'PLANET'     => $shortcut['shortcut_planet'],
+//    'TYPE'       => $shortcut['shortcut_planet_type'],
+//    'TYPE_PRINT' => $lang['fl_shrtcup'][$shortcut['shortcut_planet_type']],
+//  ));
+//}
 
 // Building list of own planets & moons
 $colonies = db_planet_list_sorted ( $user );

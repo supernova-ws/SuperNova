@@ -71,5 +71,3 @@ while ($shortcut = mysql_fetch_assoc($query))
 }
 
 display($template, $lang['news_title']);
-
-?>

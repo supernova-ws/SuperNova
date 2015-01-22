@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a18.0
+* @version 39b3.0
 *
 */
 
@@ -109,7 +109,7 @@ $a_lang_array = (array(
   'lm_ifo_game' => 'Игра',
   'lm_ifo_fleet' => 'Флот',
   'lm_ifo_queue' => 'Очередь',
-  'lm_shortcuts' => 'Закладки',
+  'lm_shortcuts' => 'Заметки/Закладки',
   'lm_banned' => 'Список банов',
   'lm_announce_fresh' => 'СВЕЖИЕ',
   'lm_server_info' => 'О сервере',

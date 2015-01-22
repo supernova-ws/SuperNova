@@ -1,25 +1,10 @@
 <h1>{PAGE_HEADER}</h1>
-<script type="text/javascript"><!--
-function note_select_do(status)
-{
-  status = status == undefined ? jQuery("#note_select_all").prop("checked") : status;
-  jQuery('[name^="note["][name$="]"]').prop("checked", status);
-}
 
-function note_edit(obj)
-{
-  jQuery('#note_id_edit').val(jQuery(obj).data('note_id'));
-  jQuery('#note_text,#note_title').val("");
-  jQuery('#note_form').prop('action', jQuery('#note_form').prop('action') + '#edit');
-  jQuery('#note_form').submit();
-}
-
-function note_validate()
-{
-  // TODO: Validate
-  jQuery('#note_form').submit();
-}
---></script>
+<script type="text/javascript" src="js/sn_notes.js?{C_var_db_update}"></script>
+<script type="text/javascript">
+  var LA_note_new_title = '{LA_note_new_title}';
+  var LA_note_new_text = '{LA_note_new_text}';
+</script>
 
 <form action="notes.php" name="note_form" id="note_form" method="POST">
 <input type="hidden" name="note_id_edit" id="note_id_edit" value="{NOTE_ID_EDIT}">
@@ -29,44 +14,7 @@ function note_validate()
     <th class="c_l">{L_note_note}</th>
     <th class="c_c" width="20px">Action</th>
   </tr>
-  <!-- BEGIN note -->
-  <tr>
-    <!-- IF note.ID != NOTE_ID_EDIT -->
-      <td class="c_c"><input type="checkbox" name="note[{note.ID}]"></td>
-
-      <td class="c_l {note.PRIORITY_CLASS}">
-        {note.TITLE}<br />
-        <span style="font-weight: normal; text-align: justify;">{note.TEXT}</span><br />
-        <br />
-        <span class="fl">{L_note_priority}: {note.PRIORITY_TEXT}</span>
-        <span class="fr">{note.TIME_TEXT}</span>
-      </td>
-      <td class="c_c"><!-- IF NOTE_ID_EDIT -->&nbsp;<!-- ELSE --><img src="design/images/icon_edit.png" data-note_id="{note.ID}" /><!-- ENDIF --></td>
-    <!-- ELSE -->
-      <td class="c_c" colspan="2">
-        <!-- IF NOTE_ID_EDIT --><a name="edit"><!-- ENDIF -->
-        <span class="fl">
-          {L_note_priority}
-          <select name="note_priority">
-            <!-- BEGIN !note_priority -->
-              <option value="{note_priority.ID}" class="{note_priority.CLASS}"<!-- IF note_priority.ID == note.PRIORITY --> selected<!-- ENDIF -->>{note_priority.TEXT}</option>
-            <!-- END !note_priority -->
-          </select>
-        </span>
-
-        <span class="fr {note.PRIORITY_CLASS}">{L_note_date} {note.TIME_TEXT}</span>
-
-        <br /><br />
-        <input type="text" id="note_title" name="note_title" size="61" maxlength="128" value="{note.TITLE}"><br /><br />
-        <textarea id="note_text" name="note_text" cols="40" rows="5">{note.TEXT_EDIT}</textarea>
-      </td>
-      <td class="c_c"><img src="design/images/icon_accept.png" onclick="note_validate({note.ID});">
-      <!-- IF NOTE_ID_EDIT -->
-        <img src="design/images/icon_deny.png" data-note_id="0">
-      <!-- ENDIF --></td>
-    <!-- ENDIF -->
-  </tr>
-  <!-- END note -->
+  <!-- INCLUDE note_list -->
   <!-- IF .note > 1 -->
   <tr>
     <th class="c_c" colspan="5">
@@ -83,17 +31,3 @@ function note_validate()
   <!-- ENDIF -->
 </table>
 </form>
-
-<script type="text/javascript"><!--
-jQuery(document).ready(
-  function()
-  {
-    jQuery("#note_form").delegate('[data-note_id]', "click",
-      function(event, ui)
-      {
-        note_edit(jQuery(this));
-      }
-    );
-  }
-);
---></script>

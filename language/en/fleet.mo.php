@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b0.11
+* @version 39b3.0
 *
 */
 
@@ -83,7 +83,7 @@ $a_lang_array = (array(
   'fl_time_back' => 'Return (time)',
   'fl_deute_need' => 'Fuel consumption',
   'fl_speed_max' => 'Maximum speed',
-  'fl_shortcut' => 'Shortcut',
+  'fl_shortcut' => 'Notes with coordinates',
   'fl_shortlnk' => 'Edit shortcuts',
   'fl_shrtcup1' => '(P)',
   'fl_shrtcup2' => '(O)',

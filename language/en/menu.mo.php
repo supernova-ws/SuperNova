@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a18.0
+* @version 39b3.0
 *
 */
 
@@ -111,7 +111,7 @@ $a_lang_array = (array(
   'lm_ifo_game' => 'Game',
   'lm_ifo_fleet' => 'Fleet',
   'lm_ifo_queue' => 'Queue',
-  'lm_shortcuts' => 'Shortcut',
+  'lm_shortcuts' => 'Notes/Shortcuts',
   'lm_banned' => 'Ban List',
   'lm_announce_fresh' => 'Update',
   'lm_server_info' => 'Server',

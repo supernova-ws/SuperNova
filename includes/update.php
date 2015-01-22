@@ -1248,6 +1248,17 @@ switch($new_version) {
       "ADD CONSTRAINT `FK_users_browser_id` FOREIGN KEY (`user_last_browser_id`) REFERENCES `{$config->db_prefix}security_browser` (`browser_id`) ON DELETE SET NULL ON UPDATE CASCADE",
     ), !isset($update_tables['users']['user_last_proxy']));
 
+    upd_alter_table('notes', array(
+//      "ADD COLUMN `planet_name` VARCHAR(64) NOT NULL DEFAULT '' AFTER `title`",
+      "ADD COLUMN `galaxy` SMALLINT(6) UNSIGNED NOT NULL DEFAULT 0 AFTER `title`",
+      "ADD COLUMN `system` SMALLINT(6) UNSIGNED NOT NULL DEFAULT 0 AFTER `galaxy`",
+      "ADD COLUMN `planet` SMALLINT(6) UNSIGNED NOT NULL DEFAULT 0 AFTER `system`",
+      "ADD COLUMN `planet_type` TINYINT(4) UNSIGNED NOT NULL DEFAULT 1 AFTER `planet`",
+      "ADD COLUMN `sticky` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `text`",
+    ), !isset($update_tables['notes']['planet_type']));
+
+    // $update_tables['shortcut'] && upd_do_query("DROP TABLE IF EXISTS {{shortcut}};");
+
     upd_do_query(
       "UPDATE `{{users}}` AS u
         SET metamatter_total =
@@ -1283,16 +1294,20 @@ switch($new_version) {
       upd_check_key('payment_currency_default',      'USD', true);
       upd_check_key('payment_currency_exchange_dm_', 20000, true);
       upd_check_key('payment_currency_exchange_mm_', 20000, true);
-      upd_check_key('payment_currency_exchange_eur', 0.80, true);
       upd_check_key('payment_currency_exchange_usd', 1, true);
-      upd_check_key('payment_currency_exchange_wme', 0.7692307692308, true);
-      upd_check_key('payment_currency_exchange_wmz', 1.052631578947, true);
     }
-    upd_check_key('payment_currency_exchange_wmb', 11764.70588235, !$config->payment_currency_exchange_wmb);
-    upd_check_key('payment_currency_exchange_uah', 18, true);
+    upd_check_key('payment_currency_exchange_wmz', 1.05, true);
+
+    upd_check_key('payment_currency_exchange_eur', 0.87, true);
+    upd_check_key('payment_currency_exchange_wme', 0.90, true);
+
+    upd_check_key('payment_currency_exchange_wmb', 15000, !$config->payment_currency_exchange_wmb);
+
+    upd_check_key('payment_currency_exchange_uah', 20, true);
     upd_check_key('payment_currency_exchange_wmu', 20, true);
-    upd_check_key('payment_currency_exchange_rub', 48, true);
-    upd_check_key('payment_currency_exchange_wmr', 50, true);
+
+    upd_check_key('payment_currency_exchange_rub', 55, true);
+    upd_check_key('payment_currency_exchange_wmr', 55, true);
 
     upd_do_query('COMMIT;', true);
     // $new_version = 39;

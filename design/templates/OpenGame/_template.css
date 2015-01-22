@@ -9,6 +9,14 @@ input, textarea {
   font-weight: bold !important;
 }
 
+.subheader {
+  background: #233452;
+}
+
+.note_coordinates {
+  color: #00B7F3;
+}
+
 /* Empire overview -------------------------------------------------------------- */
 [go] {
   cursor: pointer;
@@ -222,11 +230,16 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 #user_list tr td:first-child, #user_list tr td:nth-child(3) {
   text-align: right;
 }
-#user_list tr td:first-child, #user_list tr td:nth-child(2) {
+#user_list tr td:first-child, #user_list tr td:nth-child(2), #user_list tr td:last-child {
   cursor: pointer;
 }
+/*
 #user_list tr td:first-child:hover, #user_list tr td:nth-child(2):hover {
   background-color: yellow;
+}
+*/
+#user_list tr:hover {
+  color: yellow;
 }
 
 
