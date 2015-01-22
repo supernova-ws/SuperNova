@@ -47,6 +47,8 @@ function setTarget(galaxy, solarsystem, planet, planet_type) {
   document.getElementsByName('system')[0].value = solarsystem;
   document.getElementsByName('planet')[0].value = planet;
   document.getElementsByName('planet_type')[0].value = planet_type;
+  shortInfo();
+  return false;
 }
 
 function setMission(mission) {
@@ -140,8 +142,7 @@ function shortInfo() {
 
   var seconds = duration();
   var duration_tick = seconds * 1000;
-  if(seconds)
-  {
+  if(seconds) {
     var hours = Math.floor(seconds / 3600);
     seconds -= hours * 3600;
 
@@ -166,9 +167,7 @@ function shortInfo() {
 
     time_temp.setTime(time_temp.valueOf() + duration_tick);
     jQuery('#time_src').html(time_temp.toLocaleString());
-  }
-  else
-  {
+  } else {
     jQuery("#duration").html("-");
   }
   var cons = consumption();

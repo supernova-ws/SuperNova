@@ -96,7 +96,7 @@
           <!-- BEGIN colonies -->
             <tr>
               <td class="c_l">
-                <button onclick="javascript:setTarget({colonies.GALAXY}, {colonies.SYSTEM}, {colonies.PLANET}, {colonies.TYPE}); shortInfo();">
+                <button onclick="return setTarget({colonies.GALAXY}, {colonies.SYSTEM}, {colonies.PLANET}, {colonies.TYPE});">
                   [{colonies.GALAXY}:{colonies.SYSTEM}:{colonies.PLANET}] {colonies.TYPE_PRINT} {colonies.NAME}
                 </button>
               </td>
@@ -115,7 +115,7 @@
           <!-- BEGIN shortcut -->
             <tr>
               <td class="c_l {shortcut.PRIORITY_CLASS}">
-                <button onclick="javascript:setTarget({shortcut.GALAXY}, {shortcut.SYSTEM}, {shortcut.PLANET}, {shortcut.TYPE}); shortInfo();">
+                <button onclick="return setTarget({shortcut.GALAXY}, {shortcut.SYSTEM}, {shortcut.PLANET}, {shortcut.TYPE});">
                   [{shortcut.GALAXY}:{shortcut.SYSTEM}:{shortcut.PLANET}] {shortcut.TYPE_PRINT} {shortcut.NAME}
                 </button>
               </td>
@@ -134,7 +134,7 @@
           <!-- BEGIN acss -->
             <tr>
               <th>
-                <input type="button" onClick="setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});shortInfo();setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');" value="{acss.NAME} [{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT}">
+                <input type="button" onClick="return setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');" value="{acss.NAME} [{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT}">
               </th>
             </tr>
           <!-- BEGINELSE acss -->
