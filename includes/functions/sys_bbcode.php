@@ -20,8 +20,8 @@ $supernova->design['bbcodes'] = array(
     "#\[c=(white|cyan|yellow|green|pink|red|lime|maroon|orange)\](.+)\[/c\]#isU" => "<span style=\"color: $1\">$2</span>",
     "#\[b\](.+)\[/b\]#isU" => "<b>$1</b>",
     "#\[i\](.+)\[/i\]#isU" => "<i>$1</i>",
-    "#\[u\](.+)\[/u\]#isU" => '<span style="text-decoration: underline;">$1</u>',
-    "#\[s\](.+)\[/s\]#isU" => '<span style="text-decoration: line-through;">$1</u>',
+    "#\[u\](.+)\[/u\]#isU" => '<span style="text-decoration: underline;">$1</span>',
+    "#\[s\](.+)\[/s\]#isU" => '<span style="text-decoration: line-through;">$1</span>',
     "#\[ube\=([0-9a-zA-Z]{32})\]#isU" => "<a href=\"index.php?page=battle_report&cypher=$1\" target=_new><span class=\"battle_report_link\">($1)</span></a>",
   ),
 );
